@@ -1,0 +1,90 @@
+{
+  "task": "task308",
+  "architecture": "v1",
+  "drawn": "2026-10-25",
+  "slot_note": "",
+  "domain": "product-analytics",
+  "subdomain": "churn-propensity-uplift-modeling",
+  "niche": "which district of a city bike-share gets 600 new e-bikes and the net fare revenue a year they add, when the busiest district's docks rarely run dry and another's run dry at every peak, so the trips on record understate the requests",
+  "objective": "opportunity-sizing-decision",
+  "shape": "other",
+  "decision_type": "pick_one_of_n",
+  "answer_unit": "named_option",
+  "answer": "",
+  "answer_source": "",
+  "gap": [
+    "population",
+    "objective"
+  ],
+  "pattern": [
+    "none"
+  ],
+  "generators": [
+    "G7",
+    "G12"
+  ],
+  "gate_g": "method_or_model_selection",
+  "calibration_form": "parallel_run_overlap",
+  "stump_strategy": "informative_censoring",
+  "decisive_rule_filed": false,
+  "official_decoy": false,
+  "validated_decoy": false,
+  "context_artifact": "monitoring_export",
+  "stump_class": "analytical",
+  "analyst_test": "A strong analyst measures the pilot's net fare revenue per e-bike (the e-bike trips' fares less the classic fares the matched docks show they replaced), carries it to each district in proportion to the district's trips on record, and names Central, the district with the most riders, because nothing on record counts the requests that met an empty dock.",
+  "domain_test": "The deciding quantity is a launch's incremental revenue against the existing product, the uplift a product analyst sizes from a pilot, and in shared mobility the existing product's usage is censored by availability: a dock that runs dry records no request, so the trips on record are served demand only.",
+  "layer2_family": "estimation_fit",
+  "layer2_pattern": "own:served-trips-censored-by-empty-docks",
+  "layer1": [
+    "trip records with start and end dock, bike type and fare",
+    "van rebalancing moves",
+    "the nightly dock count",
+    "open data by district, month and rider type with cells under 10,000 suppressed",
+    "dock elevations and capacities"
+  ],
+  "stakeholder_role": "e-bike product lead",
+  "role_family": "product_manager",
+  "scoring_unit": "other",
+  "spine": {
+    "file": "trips_2025.csv",
+    "rows": 900000,
+    "entity": "one bike-share trip",
+    "grain": "trip",
+    "source": "constructed"
+  },
+  "forum": "board_of_directors",
+  "forcing_event": "season_or_peak",
+  "org_family": "software_or_platform",
+  "world": {
+    "geography": "USA (a fictional mid-sized city's bike-share)",
+    "currency": "USD",
+    "org_type": "city bike-share operator",
+    "invented_names": [],
+    "people": [
+      "Joseph Graham",
+      "Gina Wells"
+    ]
+  },
+  "deliverables": [
+    "ebike_district_2027.xlsx"
+  ],
+  "opening_move": "question-first",
+  "question_form": "which",
+  "driver": "A launch's added revenue is sized from requests, but the record holds only the requests the service met: where the existing supply runs out at every peak, the unmet requests leave no row, so carrying a pilot's uplift by each candidate's recorded use sends the launch to the candidate whose supply never runs out; only the supply rebuilt minute by minute from the movements in and out shows which candidate turns away the most requests.",
+  "driver_concrete": "Each district's turned-away requests are rebuilt from each dock's stock (the nightly count, then every trip and van move through the day) and the requests per available minute, and University, whose docks run dry at every class-change peak, adds the most net fare revenue, while Central, with the most riders on record, rarely runs dry.",
+  "stump": "A competent analyst carries the pilot's e-bike choice share and new-rider uplift to each district's recorded trips and names Central at about USD 100,000 a year, against University, whose dorm docks turn away the noon class-change requests the record never shows.",
+  "lineage": [],
+  "differentiation": {
+    "task199": "task199 reads an event rate from a record that holds an event only where a watcher filed an account, against the watchers' filing volumes; task308's record holds every met request and loses only the ones that met an empty dock, and the turned-away requests are rebuilt from each dock's stock, rebuilt minute by minute from trips, van moves and the nightly count.",
+    "task268": "task268 v2 measures how far a stock fell through collectors who sample where they find most; task308 measures how many requests an empty dock turned away, from the dock's own rebuilt stock and its requests in the steps it was stocked, with no sampler choosing where to look.",
+    "task196": "task196 v2 recovers events a record partly captures from the overlap of two capture channels; task308 has one channel, the trip record, and recovers the requests it never captured from the steps in which the dock had no bike.",
+    "task255": "task255 v1 fits a size distribution's tail with item-specific truncation and a moving censoring ceiling; task308 counts turned-away requests at docks whose stock, not a recording threshold, censors the count, and the censoring times are rebuilt from the flows in and out.",
+    "task271": "task271 v2 reweights reached members by each state's chance of being reached in each window of the day, a nonresponse model fitted to call histories; task308 has no nonresponse and no states: each dock's empty windows are rebuilt exactly from the flows in and out, and the requests in them come from the same dock's requests in the windows it was stocked.",
+    "task471": "task471 v1 weights each returned reply by the share of handout days from which a trip of its length could come back, a selection on return windows; task308 weights no record: it adds the requests that left no record because the dock was empty, counted from the dock's own rebuilt stock.",
+    "task305": "task305 adds a body of short-stay occupants whom the demand model's resident origins never count, measured at outlets beside similar lodgings; task308's riders are all in the record's population, and what the record misses is the requests those riders made when the dock had no bike, recovered from the dock's own stock and request rate."
+  },
+  "architecture_spent": false,
+  "notes": "Architecture 1. Call-only probes on the draw pack (sonnet and opus at medium) both named Central (USD 270,000 and USD 100,000); both rebuilt the pilot's e-bike stock, neither rebuilt the districts' classic stock. WARNs answered in the design note.",
+  "client_domain": "product-analytics",
+  "registered": "2026-10-25T22:28:25Z"
+}

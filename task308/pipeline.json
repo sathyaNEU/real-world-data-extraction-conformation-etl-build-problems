@@ -1,13 +1,13 @@
 {
  "task": "task308",
  "owner": "perssathya",
- "status": "DRAWING",
+ "status": "DESIGN",
  "domain": "product-analytics",
  "objective": "opportunity-sizing-decision",
- "stage": 1,
- "stage_name": "draw",
+ "stage": 2,
+ "stage_name": "design",
  "updated": "2026-10-25",
- "stump": "",
+ "stump": "A competent analyst carries the pilot's e-bike choice share and new-rider uplift to each district's recorded trips and names Central at about USD 100,000 a year, because the trip record holds only the requests that found a bike: University's dorm docks run dry at every term-weekday class change and stay empty until the afternoon van, so its turned-away requests leave no row, and the requests rebuilt for its empty minutes put University first at about USD 200,000 a year.",
  "architecture": 1,
  "loops": 0,
  "precut": {
@@ -28,7 +28,7 @@
   "report": ""
  },
  "returned": [],
- "resume": "Stage 1 draw from seed OS10 (which district gets 600 e-bikes and the net fare revenue a year they add). Candidate: the trips on record are the requests the docks met; University's dorm docks run dry at the noon class change, so its turned-away requests leave no row. Call-only probes running on scratchpad t308/probe.",
+ "resume": "Stage 2 design. Card registered at WARN (repeat.gate_g, repeat.decision, repeat.question_form answered in the note). Draw pack and probes at scratchpad t308 (gen.py, solve.py, quick.py, probe/). Next: world fixes (new dock points for the 600 e-bikes; e-bikes dock only at charging docks; ample pilot e-bikes), shape the world for a determinate censored-demand fit (hourly piecewise rates, homogeneous docks within roles, partial-censoring steps), measure the family spread on the graded figure, then the asks, fork table, closure, prompt and precut.",
  "approved": null,
  "delivered": null,
  "portal": null,
