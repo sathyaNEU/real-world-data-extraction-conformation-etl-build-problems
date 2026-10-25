@@ -141,12 +141,11 @@ def dictionary(path):
     d.add_paragraph("The team's dialler export for 2025: one row per leg the dialler logged.")
     table([("leg_id", "The dialler's row identifier."),
            ("patient_key", "As in the case log."),
-           ("agent_id", "The team member's dialler login, as in team_roster_2025.csv."),
-           ("started", "The dialler's time stamp for the start of the leg."),
-           ("duration_s", "Seconds from the start of the leg until the line was released."),
-           ("result", "Answered, No answer, Voicemail or Busy.")])
-    d.add_heading("team_roster_2025.csv", 2)
-    d.add_paragraph("The team's 2025 shifts, in local time.")
+           ("agent_id", "The team member's dialler login."),
+           ("date_time", "When the dialler wrote the leg's record, in New South Wales time."),
+           ("duration_s", "Seconds from the dial until the line was released."),
+           ("result", "Answered, No answer, Voicemail or Busy; Transferred is the dialler's leg to Quitline's line "
+                      "when a team member transferred a patient there.")])
     d.add_heading("Other files", 2)
     d.add_paragraph("sub_region_profiles_2025.csv holds each sub-region's residents aged 18 or over, remoteness and "
                     "median IRSD decile. gp_workforce_2025.xlsx holds each practice's GP and practice nurse "

@@ -58,29 +58,29 @@ def write(path, F):
     t.append("5. Multiplied each list's expected smokers at the call by that rate: %s about %d quits, the most of the "
              "four." % (win, F["call_quits"]))
     t.append("6. Matched %s's practice names to %s (case, Pty Ltd, Med Centre and GP spellings aside) and summed 2025's "
-             "referrals by the register's sub-region and quarter, Quitline's phn_sub_region column still holding four "
-             "practices in the sub-regions they belonged to before July 2025." % (FL["quitline"], FL["practices"]))
-    t.append("7. In %s dropped the %s legs that start inside an earlier answered leg for the same patient (the nurse's "
-             "part of a handed-over call, whose minutes the first leg already holds) and added an hour to stamps before "
-             "6 April and from 5 October 2025, the dialler stamping standard time while the team worked to New South "
-             "Wales daylight time (%s); then counted calls from 5 pm and the answered ones by weekday, and answered "
-             "calls' minutes per patient reached by month." % (FL["dialler"], c(F["handed_over_legs"]), FL["roster"]))
+             "referrals by the register's sub-region, Quitline's phn_sub_region column placing four "
+             "practices in other sub-regions than the register does." % (FL["quitline"], FL["practices"]))
+    t.append("7. In %s started each leg its duration_s before its date_time, the dialler writing a leg's record when its "
+             "line is released (each of the %s Transferred legs shares its patient's answered leg's date_time to the "
+             "second, and read this way no team member's legs overlap); counted the calls to patients from 5 pm, the "
+             "Transferred legs to Quitline aside, and the answered ones by weekday; and for each login and month took "
+             "its answered legs' minutes less its Transferred legs', the coach leaving at the transfer while the "
+             "patient's leg stays open to the end, per patient it reached." % (FL["dialler"], c(F["transfer_legs"])))
     t.append("\n## 4. Deliverable Answers\n")
     t.append("### %s\n" % GD.DOCX)
     t.append("1. Place the team in %s for 2027: about %d quits." % (win, F["call_quits"]))
     t.append("2. Horizontal bar chart of the four candidate sub-regions' expected 2027 quits, %s highlighted and "
              "labelled about %d." % (win, F["call_quits"]))
     t.append("\n### %s\n" % GD.XLSX)
-    t.append("1. Quitline referrals from each candidate sub-region's practices in 2025 (January to March, April to June, "
-             "July to September, October to December):")
+    t.append("1. Quitline referrals from each candidate sub-region's practices in 2025:")
     for g in S.CANDS:
-        v = F["ask_referrals"][g]
-        t.append("   - %s: %s, %s, %s, %s" % (g, c(v["Q1"]), c(v["Q2"]), c(v["Q3"]), c(v["Q4"])))
-    t.append("2. Calls the 2025 team made from 5 pm local time, and patients reached in them, by weekday:")
+        t.append("   - %s: %s" % (g, c(F["ask_referrals"][g])))
+    t.append("2. Calls the 2025 team made to patients from 5 pm, and patients reached in them, by weekday:")
     for d in S.WEEKDAYS:
         v = F["ask_evening"][d]
         t.append("   - %s: %s calls, %s patients reached" % (d, c(v["calls"]), c(v["reached"])))
-    t.append("3. Minutes on answered calls per patient reached, by month of 2025:")
-    for m, v in F["ask_talk_min"].items():
-        t.append("   - %s: %.1f" % (m, v))
+    t.append("3. Minutes each team member spent on answered calls per patient they reached, by dialler login and month "
+             "of 2025 (February to November):")
+    for ag, months in F["ask_talk_min"].items():
+        t.append("   - %s: %s" % (ag, ", ".join("%.1f" % v for v in months.values())))
     open(path, "w").write("\n".join(t) + "\n")

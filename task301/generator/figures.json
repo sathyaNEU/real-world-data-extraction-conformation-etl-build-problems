@@ -33,65 +33,71 @@
  "pilot_reach_pct": 75.6,
  "pilot_quit_per_smoker_reached_pct": 16.2,
  "ask_referrals": {
-  "Coastal Hinterland": {
-   "Q1": 228,
-   "Q2": 255,
-   "Q3": 214,
-   "Q4": 191
-  },
-  "Inner South": {
-   "Q1": 162,
-   "Q2": 196,
-   "Q3": 173,
-   "Q4": 158
-  },
-  "Northern Corridor": {
-   "Q1": 188,
-   "Q2": 165,
-   "Q3": 138,
-   "Q4": 132
-  },
-  "Western Plains": {
-   "Q1": 153,
-   "Q2": 129,
-   "Q3": 140,
-   "Q4": 149
-  }
+  "Coastal Hinterland": 942,
+  "Inner South": 640,
+  "Northern Corridor": 609,
+  "Western Plains": 574
  },
  "ask_evening": {
   "Monday": {
-   "calls": 596,
-   "reached": 226
+   "calls": 507,
+   "reached": 203
   },
   "Tuesday": {
-   "calls": 605,
-   "reached": 241
+   "calls": 510,
+   "reached": 182
   },
   "Wednesday": {
-   "calls": 581,
-   "reached": 232
+   "calls": 530,
+   "reached": 182
   },
   "Thursday": {
-   "calls": 599,
-   "reached": 246
+   "calls": 493,
+   "reached": 192
   },
   "Friday": {
-   "calls": 605,
-   "reached": 240
+   "calls": 505,
+   "reached": 212
   }
  },
  "ask_talk_min": {
-  "February": 14.2,
-  "March": 14.5,
-  "April": 14.2,
-  "May": 14.5,
-  "June": 14.4,
-  "July": 14.5,
-  "August": 14.4,
-  "September": 14.6,
-  "October": 14.9,
-  "November": 14.4
+  "QO-C1": {
+   "February": 15.2,
+   "March": 14.4,
+   "April": 15.3,
+   "May": 15.4,
+   "June": 14.3,
+   "July": 13.7,
+   "August": 14.8,
+   "September": 14.1,
+   "October": 14.0,
+   "November": 14.0
+  },
+  "QO-C2": {
+   "February": 14.5,
+   "March": 13.7,
+   "April": 15.3,
+   "May": 14.9,
+   "June": 14.0,
+   "July": 13.8,
+   "August": 14.6,
+   "September": 14.0,
+   "October": 13.5,
+   "November": 14.3
+  },
+  "QO-N1": {
+   "February": 14.3,
+   "March": 14.6,
+   "April": 14.2,
+   "May": 14.7,
+   "June": 14.2,
+   "July": 14.2,
+   "August": 14.5,
+   "September": 14.4,
+   "October": 15.0,
+   "November": 14.1
+  }
  },
- "handed_over_legs": 675,
- "dialler_legs": 11328
+ "transfer_legs": 407,
+ "dialler_legs": 11060
 }

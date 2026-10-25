@@ -20,7 +20,7 @@ def compute(target):
     A = S.ask_referrals(target)
     B = S.ask_evening(target)
     C = S.ask_talk(target)
-    calls, handed = S.dialler_calls(target)
+    legs = S.dialler_legs(target)
     F = {
         "call_region": win,
         "call_quits": r(W["quits"], P.CALL_ROUND),
@@ -34,11 +34,11 @@ def compute(target):
                   "smokers_reached": cv["reached"] - cv["stopped"], "quit_dates": cv["quit_dates"], "quits": cv["quits"]},
         "pilot_reach_pct": round(100 * cv["reach"], 1),
         "pilot_quit_per_smoker_reached_pct": round(100 * cv["per_smoker_reached"], 1),
-        "ask_referrals": {g: {q: int(A.loc[g, q]) for q in A.columns} for g in S.CANDS},
+        "ask_referrals": {g: int(A[g]) for g in S.CANDS},
         "ask_evening": {d: {"calls": int(B.loc[d, "calls"]), "reached": int(B.loc[d, "reached"])} for d in S.WEEKDAYS},
-        "ask_talk_min": {m: round(float(v), 1) for m, v in C.items()},
-        "handed_over_legs": int(handed),
-        "dialler_legs": int(len(calls) + handed),
+        "ask_talk_min": {ag: {m: round(float(C.loc[m, ag]), 1) for m in C.index} for ag in S.AGENT_IDS},
+        "transfer_legs": int((legs.result == "Transferred").sum()),
+        "dialler_legs": int(len(legs)),
     }
     X = dict(gold=gold, cv=cv, order=order, A=A, B=B, C=C)
     return F, X

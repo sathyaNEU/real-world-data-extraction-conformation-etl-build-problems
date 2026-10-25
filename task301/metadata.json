@@ -25,7 +25,7 @@
   ],
   "field_terms": [],
   "input_gates": {
-    "files": 12,
+    "files": 11,
     "formats": [
       "csv",
       "docx",
@@ -49,8 +49,8 @@
     {
       "path": "active_patients_2026-09-30.csv",
       "format": "csv",
-      "bytes": 21764110,
-      "rows": 289893,
+      "bytes": 21634219,
+      "rows": 287660,
       "source": "Constructed (seeded generator)",
       "date": "2026-10-21",
       "license": "CC0-1.0 (original work)"
@@ -94,7 +94,7 @@
     {
       "path": "data_dictionary_2026.docx",
       "format": "docx",
-      "bytes": 37104,
+      "bytes": 37122,
       "rows": null,
       "source": "Constructed (seeded generator)",
       "date": "2026-10-21",
@@ -103,8 +103,8 @@
     {
       "path": "quitline_referrals_2023-2025.csv",
       "format": "csv",
-      "bytes": 194905,
-      "rows": 3298,
+      "bytes": 194274,
+      "rows": 3286,
       "source": "Constructed (seeded generator)",
       "date": "2026-10-21",
       "license": "CC0-1.0 (original work)"
@@ -112,17 +112,8 @@
     {
       "path": "dialler_legs_2025.csv",
       "format": "csv",
-      "bytes": 667727,
-      "rows": 11328,
-      "source": "Constructed (seeded generator)",
-      "date": "2026-10-21",
-      "license": "CC0-1.0 (original work)"
-    },
-    {
-      "path": "team_roster_2025.csv",
-      "format": "csv",
-      "bytes": 268,
-      "rows": 3,
+      "bytes": 653301,
+      "rows": 11060,
       "source": "Constructed (seeded generator)",
       "date": "2026-10-21",
       "license": "CC0-1.0 (original work)"
@@ -139,7 +130,7 @@
     {
       "path": "gp_workforce_2025.xlsx",
       "format": "xlsx",
-      "bytes": 8008,
+      "bytes": 8014,
       "rows": null,
       "source": "Constructed (seeded generator)",
       "date": "2026-10-21",
@@ -148,7 +139,7 @@
     {
       "path": "quit_medicines_dispensed_2025.csv",
       "format": "csv",
-      "bytes": 5699,
+      "bytes": 5698,
       "rows": 120,
       "source": "Constructed (seeded generator)",
       "date": "2026-10-21",

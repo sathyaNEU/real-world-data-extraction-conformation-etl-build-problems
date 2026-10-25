@@ -14,6 +14,8 @@ D0 = dt.date(2012, 1, 1)                                   # the status record s
 EXTRACT = dt.date(2026, 9, 30)                             # the active patient extract
 PILOT_LIST = dt.date(2025, 1, 31)                          # the 2025 list: current smokers at the end of January
 PILOT_CALLS = (dt.date(2025, 2, 3), dt.date(2025, 11, 28))  # the team's calling year in Eastern Shore
+# New South Wales public holidays in the calling year (Good Friday, Easter Monday, Anzac Day, King's Birthday, Labour Day)
+HOLIDAYS_2025 = ["2025-04-18", "2025-04-21", "2025-04-25", "2025-06-09", "2025-10-06"]
 YEAR = 2027                                                # the placement year, calls spread evenly through it
 HORIZON = dt.date(2028, 3, 31)                             # trajectories run to here (four weeks past December calls)
 AS_OF = dt.date(2026, 10, 21)                              # the folder for the November executive meeting

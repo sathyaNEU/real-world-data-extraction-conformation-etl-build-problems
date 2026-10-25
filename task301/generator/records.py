@@ -77,8 +77,14 @@ def build(rng=None):
     rng = np.random.default_rng(P.SEED_PILOT)
     pr, pat, sw, rec = W.simulate()
     ent = entries(pr, pat, rec, rng)
-    # active at the extract: everyone but the Eastern Shore leavers
+    # active at the extract: everyone but the Eastern Shore leavers, and in each candidate sub-region the patients with
+    # no status ever recorded whom the practices archived in their 2026 list cleanse
     active = pat.leave.values > W.E_DAY
+    blank = ~np.isin(pat.pid.values, ent.pid.values)
+    rng_c = np.random.default_rng(P.SEED_WORLD + 11)
+    for g in P.CAND:
+        idx = np.flatnonzero((pat.reg.values == g) & blank & active)
+        active[rng_c.choice(idx, int(rng_c.integers(140, 960)), replace=False)] = False
     keys = np.array([key(p) for p in pat.pid])
     # first seen at the practice
     fs = np.where(pat.reg_day.values > 0, pat.reg_day.values,
@@ -124,6 +130,7 @@ def pilot(R, rng=None):
     n = len(lst)
     # working days of the calling year, spread evenly, in list order by practice
     wd = pd.bdate_range(P.PILOT_CALLS[0], P.PILOT_CALLS[1])
+    wd = wd[~wd.isin(pd.to_datetime(P.HOLIDAYS_2025))]
     lst = lst.sample(frac=1.0, random_state=int(rng.integers(1, 10 ** 6))).reset_index(drop=True)
     call_day = np.array([W.day(d.date()) for d in wd[np.floor(np.arange(n) * len(wd) / n).astype(int)]])
     still = W.true_state(pat, sw, lst.pid.values, call_day) == 1

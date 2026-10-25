@@ -109,40 +109,29 @@ def main(zpath):
     q["sr"] = [regmap[nm(x)] for x in q.referring_practice]
     q = q[q.month.str.startswith("2025")]
     for g in CANDS:
-        for i, qq in enumerate(["Q1", "Q2", "Q3", "Q4"]):
-            months = ["2025-%02d" % m for m in range(3 * i + 1, 3 * i + 4)]
-            v = int(q[(q.sr == g) & q.month.isin(months)].referrals.astype(int).sum())
-            say("referrals %s %s" % (g, qq), v == F["ask_referrals"][g][qq], "%d" % v)
-    # asks B and C: legs to calls, stamps to local time
+        val = int(q[q.sr == g].referrals.astype(int).sum())
+        say("referrals %s" % g, val == F["ask_referrals"][g], "%d" % val)
+    # asks B and C: a leg's record is written when its line is released; Transferred legs are the leg to Quitline
     d = read(z, "dialler_legs_2025.csv", dtype={"patient_key": str})
-    d["t"] = pd.to_datetime(d.started)
-    d = d.sort_values(["patient_key", "t", "leg_id"], kind="mergesort")
-    drop = np.zeros(len(d), bool)
-    last_end = {}
-    for i, (p, tt, du, res) in enumerate(zip(d.patient_key.values, d.t.values, d.duration_s.values, d.result.values)):
-        e = last_end.get(p)
-        if e is not None and tt < e:
-            drop[i] = True
-            continue
-        if res == "Answered":
-            last_end[p] = tt + np.timedelta64(int(du), "s")
-    c = d[~drop].copy()
-    say("handed-over legs", int(drop.sum()) == F["handed_over_legs"], "%d" % int(drop.sum()))
-    dd = c.t.dt.date
-    dst = ((dd <= dt.date(2025, 4, 5)) | (dd >= dt.date(2025, 10, 5))).values
-    c["loc"] = c.t + pd.to_timedelta(dst.astype(int), unit="h")
-    ev = c[c["loc"].dt.hour >= 17]
+    d["e"] = pd.to_datetime(d.date_time)
+    d["s"] = d.e - pd.to_timedelta(d.duration_s, unit="s")
+    say("Transferred legs", int((d.result == "Transferred").sum()) == F["transfer_legs"],
+        "%d" % int((d.result == "Transferred").sum()))
+    c = d[(d.result != "Transferred") & (d.s.dt.hour >= 17)]
     for day in ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"]:
-        e = ev[ev["loc"].dt.day_name() == day]
-        say("evening %s" % day, [len(e), int((e.result == "Answered").sum())] ==
-            [F["ask_evening"][day]["calls"], F["ask_evening"][day]["reached"]],
-            "%d calls, %d reached" % (len(e), int((e.result == "Answered").sum())))
-    a = c[c.result == "Answered"]
-    for mth, v in F["ask_talk_min"].items():
-        mi = dt.datetime.strptime(mth, "%B").month
-        x = a[a["loc"].dt.month == mi]
-        val = x.duration_s.sum() / 60.0 / x.patient_key.nunique()
-        say("talk %s" % mth, round(val, 1) == v, "%.3f" % val)
+        e = c[c.s.dt.day_name() == day]
+        got = [len(e), int(e[e.result == "Answered"].patient_key.nunique())]
+        say("evening %s" % day, got == [F["ask_evening"][day]["calls"], F["ask_evening"][day]["reached"]],
+            "%d calls, %d reached" % tuple(got))
+    a = d[d.result == "Answered"]
+    t = d[d.result == "Transferred"]
+    for ag, months in F["ask_talk_min"].items():
+        for mth, val in months.items():
+            mi = dt.datetime.strptime(mth, "%B").month
+            x = a[(a.s.dt.month == mi) & (a.agent_id == ag)]
+            y = t[(t.s.dt.month == mi) & (t.agent_id == ag)]
+            got = (x.duration_s.sum() - y.duration_s.sum()) / 60.0 / x.patient_key.nunique()
+            say("talk %s %s" % (ag, mth), round(got, 1) == val, "%.3f" % got)
     print("%d failures" % len(BAD))
     return len(BAD)
 

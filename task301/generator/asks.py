@@ -1,12 +1,13 @@
-"""The ask files: the state Quitline's monthly referral report to the PHN (2023 to 2025), the 2025 team's dialler
-export and its roster. None of these rows is read by the main call.
+"""The ask files: the state Quitline's monthly referral report to the PHN (2023 to 2025) and the 2025 team's
+dialler export. None of these rows is read by the main call.
 
 Quitline labels each referring practice with the PHN sub-region its directory holds, which it took from the PHN in
 2023 and never updated after the PHN realigned its sub-regions to the new council boundaries on 1 July 2025, and it
-names practices as its own directory spells them. The dialler is hosted in Brisbane and stamps every leg in Australian
-Eastern Standard Time all year, while the team in New South Wales works to local time, an hour ahead of the stamps
-before 6 April and from 5 October 2025. When a coach hands an answered call to the nurse, the dialler writes the
-nurse's leg as a second row that starts inside the first, and the first leg's duration runs to the end of the call."""
+names practices as its own directory spells them. Each team member's dialler legs run one after another through the
+shift, and the dialler writes a leg's record when its line is released, so the record's time is the end of the leg.
+A patient who sets a quit date and wants Quitline's call-back service as well is transferred to Quitline on the call:
+the coach dials Quitline and leaves, the dialler logs that transfer leg, and the patient's own leg stays open until
+the patient hangs up, both lines released together."""
 import datetime as dt
 
 import numpy as np
@@ -17,8 +18,6 @@ import params as P
 # the 1 July 2025 realignment moved four practices round a cycle: (current sub-region, size rank in it, sub-region
 # before July 2025), a large practice and a small one alternately so every candidate's count moves
 MOVED = [("B", 0, "A"), ("C", -1, "B"), ("D", 0, "C"), ("A", -1, "D")]
-DST_END, DST_START = dt.datetime(2025, 4, 6, 3, 0), dt.datetime(2025, 10, 5, 2, 0)   # NSW clock changes in 2025
-TRANSFER = 0.16            # answered calls a coach hands to the nurse
 
 STREETS = ["Banksia", "Wattle", "Lyrebird", "Ironbark", "Kingfisher", "Bottlebrush", "Paperbark", "Riverbend",
            "Hilltop", "Seaview", "Station Street", "Harbourside", "Ridgeway", "Creekside", "Tallowwood", "Jacaranda",
@@ -84,21 +83,55 @@ def quitline(pr, ext, ql_names, rng):
     return q.sort_values(["month", "phn_sub_region", "referring_practice", "channel"]).reset_index(drop=True)
 
 
-def aest(local):
-    """The dialler's stamp for a New South Wales local time."""
-    if DST_END <= local < DST_START:
-        return local
-    return local - dt.timedelta(hours=1)
-
-
 AGENTS = [("QO-N1", (8, 30), (17, 0)), ("QO-C1", (8, 30), (17, 0)), ("QO-C2", (11, 0), (19, 30))]
+QL_TRANSFER = 0.35         # patients setting a quit date who take Quitline's call-back service, transferred on the call
+EVENING = 0.62             # share of QO-C2's attempts made from 5 pm
+
+
+def leg_times(rng, ans, xfer):
+    """(result, seconds from the dial to the line's release, staff seconds, transfer leg seconds, wrap seconds)."""
+    if not ans:
+        res = str(rng.choice(["No answer", "Voicemail", "Busy"], p=[0.55, 0.38, 0.07]))
+        sec = int(rng.integers(3, 11)) if res == "Busy" else int(rng.integers(18, 76))
+        return res, sec, sec, 0, int(rng.integers(15, 61))
+    ring = int(rng.integers(5, 26))
+    if xfer:
+        coach = ring + int(rng.integers(300, 1101))
+        ql = int(rng.integers(8, 41)) + int(rng.integers(360, 1201))
+        return "Answered", coach + ql, coach, ql, int(rng.integers(60, 241))
+    sec = ring + int(rng.integers(240, 1501))
+    return "Answered", sec, sec, 0, int(rng.integers(60, 301))
+
+
+def place(items, t0, t1, rng, tail=None):
+    """Start times (seconds after midnight) for items run one after another, every start in [t0, t1): the idle time is
+    spread at random between them and, with tail, the last start falls about tail seconds before t1, the member working
+    to the end of the shift and that call running past it. Items that do not fit are dropped from the end."""
+    busy = [it["staff"] + it["wrap"] for it in items]
+    while items and sum(busy[:-1]) > (t1 - t0) * 0.92:
+        items, busy = items[:-1], busy[:-1]
+    if not items:
+        return [], []
+    free = (t1 - t0) - sum(busy[:-1])
+    n = len(items)
+    if tail is None:
+        g = rng.dirichlet(np.ones(n + 1)) * free
+    else:
+        slack = min(free, 60 + rng.exponential(tail))
+        g = np.append(rng.dirichlet(np.ones(n)) * (free - slack), slack)
+    t, starts = t0, []
+    for bz, gap in zip(busy, g[:-1]):
+        t += gap
+        starts.append(int(t))
+        t += bz
+    return starts, items
 
 
 def dialler(log, rng):
     """Every leg the dialler logged for the team's 2025 calls, from the case log's attempts and outcomes; the hidden
-    columns (_local, _leg) are the truth and never ship."""
+    columns (_start, _staff_s, _kind) are the truth and never ship."""
     first = P.PILOT_CALLS[0]
-    rows = []
+    by_day = {}
     for r in log.itertuples():
         d = dt.date.fromisoformat(r.call_date)
         k = int(r.attempts)
@@ -107,53 +140,56 @@ def dialler(log, rng):
         for _ in range(k - 1):
             prev = (pd.Timestamp(days[0]) - pd.offsets.BDay(int(rng.integers(1, 5)))).date()
             days.insert(0, max(prev, first))
-        drawn = []
         for j, dd in enumerate(days):
-            ai = int(rng.choice(3, p=[0.30, 0.30, 0.40]))
-            ag, (h0, m0), (h1, m1) = AGENTS[ai]
-            a, b = h0 * 60 + m0, h1 * 60 + m1 - 12
-            if ag == "QO-C2" and rng.uniform() < 0.62:
-                a = 17 * 60
-            drawn.append([dd, ag, int(rng.integers(a, b)), int(rng.integers(0, 60))])
-        # attempts that fall on one day run in order through the working day, 25 minutes or more apart, each made by
-        # someone on shift at that time
-        for dd in sorted({x[0] for x in drawn}):
-            idx = [j for j, x in enumerate(drawn) if x[0] == dd]
-            if len(idx) < 2:
-                continue
-            k = len(idx)
-            span = (19 * 60 + 15) - (8 * 60 + 30) - 25 * (k - 1)
-            ts = np.sort(rng.integers(0, span, k)) + 8 * 60 + 30 + 25 * np.arange(k)
-            for j, t in zip(idx, ts):
-                drawn[j][2] = int(t)
-                if t >= 16 * 60 + 48:
-                    drawn[j][1] = "QO-C2"
-                elif t < 11 * 60 and drawn[j][1] == "QO-C2":
-                    drawn[j][1] = AGENTS[int(rng.integers(0, 2))][0]
-        for j, (dd, ag, t, sec) in enumerate(drawn):
-            local = dt.datetime.combine(dd, dt.time(t // 60, t % 60, sec))
-            ans = (j == len(days) - 1) and reached
-            if ans:
-                talk = int(rng.integers(240, 1500))
-                res = "Answered"
+            ans = (j == k - 1) and reached
+            xfer = ans and r.outcome == "Quit date set" and rng.uniform() < QL_TRANSFER
+            res, sec, staff, ql, wrap = leg_times(rng, ans, xfer)
+            by_day.setdefault(dd, []).append(dict(pk=r.patient_key, res=res, sec=sec, staff=staff, ql=ql, wrap=wrap))
+    rows = []
+    for dd in sorted(by_day):
+        items = by_day[dd]
+        # one agent per patient that day; attempts to the same patient on one day go to the same agent
+        agent_of = {}
+        for it in items:
+            if it["pk"] not in agent_of:
+                agent_of[it["pk"]] = int(rng.choice(3, p=[0.30, 0.30, 0.40]))
+        for ai, (ag, (h0, m0), (h1, m1)) in enumerate(AGENTS):
+            mine = [it for it in items if agent_of[it["pk"]] == ai]
+            rng.shuffle(mine)
+            seen = {}
+            for it in mine:
+                it["occ"] = seen.get(it["pk"], 0)
+                seen[it["pk"]] = it["occ"] + 1
+            mine.sort(key=lambda it: it["occ"])
+            # a member logs in, reads the day's list and starts dialling a few minutes into the shift
+            s0, s1 = (h0 * 60 + m0) * 60 + int(rng.integers(180, 1080)), (h1 * 60 + m1) * 60
+            if ag == "QO-C2":
+                late = [it for it in mine if rng.uniform() < EVENING]
+                early = [it for it in mine if all(it is not x for x in late)]
+                while True:
+                    st_e, early_ok = place(early, s0, 17 * 3600, rng, tail=300)
+                    assert len(early_ok) == len(early), (dd, ag)
+                    end_e = max([s + it["staff"] + it["wrap"] for s, it in zip(st_e, early_ok)] + [17 * 3600])
+                    st_l, late_ok = place(late, end_e, s1, rng, tail=360)
+                    if len(late_ok) == len(late):
+                        break
+                    # the evening cannot hold them all: the last one is made in the afternoon instead
+                    early.append(late.pop())
+                plan = list(zip(st_e, early_ok)) + list(zip(st_l, late_ok))
             else:
-                talk = int(rng.integers(15, 75))
-                res = str(rng.choice(["No answer", "Voicemail", "Busy"], p=[0.55, 0.38, 0.07]))
-            rows.append([r.patient_key, ag, local, talk, res, "call"])
-            if ans and ag != "QO-N1" and rng.uniform() < TRANSFER / 0.70:
-                # the coach hands over to the nurse partway through; the first leg's duration covers the whole call
-                off = int(rng.integers(90, max(120, talk - 120)))
-                rows.append([r.patient_key, "QO-N1", local + dt.timedelta(seconds=off), talk - off, "Answered", "leg"])
-    df = pd.DataFrame(rows, columns=["patient_key", "agent_id", "_local", "duration_s", "result", "_leg"])
-    df["started"] = [aest(x).strftime("%Y-%m-%d %H:%M:%S") for x in df._local]
-    df = df.sort_values(["started", "patient_key"], kind="stable").reset_index(drop=True)
+                st, ok = place(mine, s0, s1, rng, tail=300)
+                assert len(ok) == len(mine), (dd, ag)
+                plan = list(zip(st, ok))
+            for s, it in plan:
+                start = dt.datetime.combine(dd, dt.time()) + dt.timedelta(seconds=s)
+                end = start + dt.timedelta(seconds=it["sec"])
+                rows.append([it["pk"], ag, end, it["sec"], it["res"], start, it["staff"], "call"])
+                if it["ql"]:
+                    rows.append([it["pk"], ag, end, it["ql"], "Transferred",
+                                 start + dt.timedelta(seconds=it["staff"]), 0, "transfer"])
+    df = pd.DataFrame(rows, columns=["patient_key", "agent_id", "_end", "duration_s", "result", "_start", "_staff_s",
+                                     "_kind"])
+    df["date_time"] = df._end.dt.strftime("%Y-%m-%d %H:%M:%S")
+    df = df.sort_values(["date_time", "patient_key", "_kind"], kind="stable").reset_index(drop=True)
     df.insert(0, "leg_id", np.arange(700001, 700001 + len(df)))
-    return df[["leg_id", "patient_key", "agent_id", "started", "duration_s", "result", "_local", "_leg"]]
-
-
-def roster():
-    return pd.DataFrame([
-        ("QO-N1", "Clinical nurse consultant", "Monday to Friday", "08:30", "17:00", "2025-02-03", "2025-11-28"),
-        ("QO-C1", "Quit coach", "Monday to Friday", "08:30", "17:00", "2025-02-03", "2025-11-28"),
-        ("QO-C2", "Quit coach", "Monday to Friday", "11:00", "19:30", "2025-02-03", "2025-11-28")],
-        columns=["agent_id", "role", "days", "shift_start", "shift_end", "from", "to"])
+    return df[["leg_id", "patient_key", "agent_id", "date_time", "duration_s", "result", "_start", "_staff_s", "_kind"]]

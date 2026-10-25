@@ -135,17 +135,16 @@ def workbook(path, F, X):
     ws2 = wb.create_sheet("Quitline referrals")
     ws2.append(["Quitline referrals from each candidate sub-region's practices, 2025"])
     ws2["A1"].font = Font(bold=True)
-    ws2.append(["Sub-region", "Jan to Mar", "Apr to Jun", "Jul to Sep", "Oct to Dec"])
+    ws2.append(["Sub-region", "Referrals 2025"])
     for cell in ws2[2]:
         cell.font, cell.fill = hdr, fill
-    for g in S.CANDS:
-        v = F["ask_referrals"][g]
-        ws2.append([g, v["Q1"], v["Q2"], v["Q3"], v["Q4"]])
+    for g_ in S.CANDS:
+        ws2.append([g_, F["ask_referrals"][g_]])
     ws2.append([])
     ws2.append(["Practices counted in the sub-region the PHN register gives them."])
     ws2.column_dimensions["A"].width = 24
     ws3 = wb.create_sheet("Evening calls")
-    ws3.append(["2025 team: calls from 5 pm local time, by weekday"])
+    ws3.append(["2025 team: calls to patients from 5 pm, by weekday"])
     ws3["A1"].font = Font(bold=True)
     ws3.append(["Weekday", "Calls from 5 pm", "Patients reached"])
     for cell in ws3[2]:
@@ -156,16 +155,19 @@ def workbook(path, F, X):
     ws3.column_dimensions["B"].width = 16
     ws3.column_dimensions["C"].width = 18
     ws4 = wb.create_sheet("Talk time")
-    ws4.append(["2025 team: minutes on answered calls per patient reached"])
+    ws4.append(["2025 team: minutes on answered calls per patient reached, by team member's dialler login"])
     ws4["A1"].font = Font(bold=True)
-    ws4.append(["Month", "Minutes per patient reached"])
+    ags = list(F["ask_talk_min"])
+    ws4.append(["Month"] + ags)
     for cell in ws4[2]:
         cell.font, cell.fill = hdr, fill
-    for m, v in F["ask_talk_min"].items():
-        ws4.append([m, v])
-        ws4.cell(row=ws4.max_row, column=2).number_format = "0.0"
+    for m in F["ask_talk_min"][ags[0]]:
+        ws4.append([m] + [F["ask_talk_min"][ag][m] for ag in ags])
+        for j in range(2, 2 + len(ags)):
+            ws4.cell(row=ws4.max_row, column=j).number_format = "0.0"
     ws4.column_dimensions["A"].width = 14
-    ws4.column_dimensions["B"].width = 28
+    for col in ("B", "C", "D"):
+        ws4.column_dimensions[col].width = 12
     wb.properties.creator = AUTHOR
     wb.properties.lastModifiedBy = AUTHOR
     wb.properties.created = dt.datetime(2026, 10, 27, 9, 5)

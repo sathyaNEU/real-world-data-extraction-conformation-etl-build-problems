@@ -1,17 +1,17 @@
 # leak check, task301
 
-**Verdict: REVIEW.** 12 files read, 23 golden figures and 5 candidate names taken from submission.md, 25 stump terms taken from the design note.
+**Verdict: REVIEW.** 11 files read, 35 golden figures and 5 candidate names taken from submission.md, 25 stump terms taken from the design note.
 
 LEAK stops the ship. REVIEW is a reader's call and the /leak-check command's solver's-eye pass reads every REVIEW line. INFO is a sweep that ran and found nothing or was skipped.
 
-Stump terms swept: status, extract, call-only, smoker, recordings, record, history, golden, probes, recorded, listed, smoking, coastal, hinterland, fitted, carried, pooled, programme, population, nothing, broiler, hallam, decisive, analyst, readable
+Stump terms swept: status, record, extract, call-only, smoker, recordings, history, golden, coastal, hinterland, probes, recorded, listed, reader, smoking, fitted, carried, pooled, programme, population, nothing, broiler, hallam, decisive, analyst
 
 ## 3 answer figures in the pack (REVIEW 1)
 - **REVIEW** `quit_outreach_plan_2027.docx`: carries 9 of 9 distinctive words of the committed call: 'Place the 2027 quit outreach team in Inner South: it will help about 550 patients there to quit.'
 
 ## 4 design-note vocabulary (REVIEW 2)
-- **REVIEW** `data_dictionary_2026.docx`: 6 of 25 stump-paragraph terms appear (status, extract, smoker, record, recorded, smoking); read whether the document names the move
-- **REVIEW** `quit_outreach_plan_2027.docx`: 9 of 25 stump-paragraph terms appear (status, extract, smoker, record, history, recorded); read whether the document names the move
+- **REVIEW** `data_dictionary_2026.docx`: 6 of 25 stump-paragraph terms appear (status, record, extract, smoker, recorded, smoking); read whether the document names the move
+- **REVIEW** `quit_outreach_plan_2027.docx`: 9 of 25 stump-paragraph terms appear (status, record, extract, smoker, history, coastal); read whether the document names the move
 
 ## 6 ranking artifacts (REVIEW 2, INFO 5)
 - **REVIEW** `gp_workforce_2025.xlsx`: names 4 of 5 answer-set candidates beside numbers; confirm it does not rank them on the decision question

@@ -169,51 +169,84 @@ def main(target, R=None):
     A = S.ask_referrals(target)
     qr_ = pd.read_csv(os.path.join(target, B.FILES["quitline"]), dtype=str, keep_default_na=False)
     qr_ = qr_[qr_.month.str[:4] == "2025"].copy()
-    qr_["quarter"] = "Q" + ((qr_.month.str[5:7].astype(int) - 1) // 3 + 1).astype(str)
     qr_["referrals"] = qr_.referrals.astype(int)
-    lab = qr_[qr_.phn_sub_region.isin(S.CANDS)].pivot_table(index="phn_sub_region", columns="quarter",
-                                                            values="referrals", aggfunc="sum").reindex(S.CANDS)
+    lab = qr_[qr_.phn_sub_region.isin(S.CANDS)].groupby("phn_sub_region").referrals.sum().reindex(S.CANDS)
     prac = pd.read_csv(os.path.join(target, B.FILES["practices"]), dtype=str, keep_default_na=False)
     exact = dict(zip(prac.practice_name, prac.sub_region))
     qr_["exact"] = qr_.referring_practice.map(exact).fillna(qr_.phn_sub_region)
-    exj = qr_[qr_.exact.isin(S.CANDS)].pivot_table(index="exact", columns="quarter", values="referrals",
-                                                   aggfunc="sum").reindex(S.CANDS)
-    check("ask A: Quitline's own sub-region label misses all 16 cells", int((lab.values == A.values).sum()) == 0,
+    exj = qr_[qr_.exact.isin(S.CANDS)].groupby("exact").referrals.sum().reindex(S.CANDS)
+    check("ask A: Quitline's own sub-region label misses all 4 sub-regions", int((lab.values == A.values).sum()) == 0,
           "%d hits" % int((lab.values == A.values).sum()))
-    check("ask A: an exact-name join falling back on the label misses all 16 cells",
+    check("ask A: an exact-name join falling back on the label misses all 4 sub-regions",
           int((exj.values == A.values).sum()) == 0, "%d hits" % int((exj.values == A.values).sum()))
-    d = pd.read_csv(os.path.join(target, B.FILES["dialler"]), dtype={"patient_key": str})
-    d["st"] = pd.to_datetime(d.started)
-    calls, handed = S.dialler_calls(target)
-    keep = set(calls.leg_id)
-    dates = d.st.dt.date
-    dst = np.zeros(len(d), bool)
-    for a_, b_ in S.DST:
-        dst |= (dates >= a_).values & (dates <= b_).values
-    d["local"] = d.st + pd.to_timedelta(np.where(dst, 1, 0), unit="h")
+    d = S.dialler_legs(target)
+    Bg = S.ask_evening(target)
 
     def ev(df, col):
         e = df[df[col].dt.hour >= 17]
         return pd.DataFrame({"calls": e.groupby(e[col].dt.day_name()).size(),
-                             "reached": e[e.result == "Answered"].groupby(e[col].dt.day_name()).size()}).reindex(S.WEEKDAYS)
-    Bg = S.ask_evening(target)
-    for nm, df, col in (("none", d, "st"), ("clock only", d, "local"), ("hand-over only", d[d.leg_id.isin(keep)], "st")):
+                             "reached": e[e.result == "Answered"].groupby(e[col].dt.day_name()).patient_key.nunique()}
+                            ).reindex(S.WEEKDAYS).fillna(0)
+    to_pat = d[d.result != "Transferred"]
+    for nm, df, col, reach in (("the record time as the start, every leg", d, "end", True),
+                               ("the record time as the start, Transferred legs out", to_pat, "end", True),
+                               ("each leg's start, Transferred legs in", d, "start", False)):
         v = ev(df, col)
         hits = int((v.calls.values == Bg.calls.values).sum())
-        check("ask B: %s handling misses every weekday's calls" % nm, hits == 0, "%d of 5" % hits)
-        if nm != "clock only":
+        check("ask B: %s misses every weekday's calls" % nm, hits == 0, "%d of 5" % hits)
+        if reach:
             hits = int((v.reached.values == Bg.reached.values).sum())
-            check("ask B: %s handling misses every weekday's patients reached" % nm, hits == 0, "%d of 5" % hits)
-    C = S.ask_talk(target)
+            check("ask B: %s misses every weekday's patients reached" % nm, hits == 0, "%d of 5" % hits)
+    tr = d[d.result == "Transferred"]
     ans = d[d.result == "Answered"]
-    m = ans.st.dt.month
-    naive = ((ans.groupby(m).duration_s.sum() / 60.0) / ans.groupby(m).patient_key.nunique()).round(1)
-    check("ask C: summing every answered leg misses all ten months",
-          int((naive.values == C.round(1).values).sum()) == 0)
-    edge = np.abs((C.values * 10) % 1 - 0.5)
-    check("ask C: no month within 0.002 of a rounding edge", (edge > 0.02).all(), "closest %.3f" % edge.min())
-    check("ask devices: the handed-over legs found from the pack are the generator's", R is None or
-          handed == int((R["dialler"]._leg == "leg").sum()), "%d" % handed)
+    pair_ = tr.merge(ans[["patient_key", "date_time", "agent_id"]], on=["patient_key", "date_time", "agent_id"],
+                     how="left", indicator=True)
+    check("ask devices: every Transferred leg shares its patient's answered leg's record time and agent",
+          bool((pair_._merge == "both").all()) and len(tr) > 0, "%d legs" % len(tr))
+    calls_ = to_pat.merge(tr[["patient_key", "date_time", "duration_s"]].rename(columns={"duration_s": "ql_s"}),
+                          on=["patient_key", "date_time"], how="left")
+    calls_["ql_s"] = calls_.ql_s.fillna(0)
+    calls_["staff_end"] = calls_.end - pd.to_timedelta(calls_.ql_s, unit="s")
+    calls_["as_start_end"] = calls_.end + pd.to_timedelta(calls_.duration_s, unit="s")
+
+    def overlaps(df, s_col, e_col):
+        n = 0
+        for _, g in df.sort_values([s_col, "leg_id"]).groupby("agent_id"):
+            sv, evv = g[s_col].values, g[e_col].values
+            n += int((sv[1:] < np.maximum.accumulate(evv)[:-1]).sum())
+        return n
+    n_end = overlaps(calls_, "start", "staff_end")
+    n_start = overlaps(calls_, "end", "as_start_end")
+    n_whole = overlaps(calls_, "start", "end")
+    check("ask B device: no agent's legs overlap with each leg started its duration before its record time and a "
+          "transferred call's agent part ending at the transfer", n_end == 0, "%d" % n_end)
+    check("ask B device: read as start times, the same agents' legs overlap", n_start >= 300, "%d" % n_start)
+    check("ask C device: with a transferred patient's leg held whole, its agent is on the next call before it ends",
+          n_whole >= 0.5 * len(tr), "%d of %d transfers" % (n_whole, len(tr)))
+    C = S.ask_talk(target)
+    every = d[d.result.isin(["Answered", "Transferred"])]
+    for nm, src in (("answered legs whole (or merged with their Transferred leg)", ans),
+                    ("answered and Transferred legs summed", every)):
+        hits = 0
+        for ag in S.AGENT_IDS:
+            a_ = ans[ans.agent_id == ag]
+            x = src[src.agent_id == ag]
+            v = (x.groupby(x.start.dt.month).duration_s.sum() / 60.0 /
+                 a_.groupby(a_.start.dt.month).patient_key.nunique()).round(1)
+            hits += int((v.values == C[ag].round(1).values).sum())
+        check("ask C: %s misses all 30 member-months" % nm, hits == 0, "%d of 30" % hits)
+    edge = 0.05 - np.abs(C.values - np.round(C.values, 1))
+    check("ask C: every member-month at least 0.0025 inside its printed cell", (edge >= 0.0025).all(),
+          "closest %.4f" % edge.min())
+    check("ask C: 30 member-months, every member every month", C.shape == (10, 3) and C.notna().all().all())
+    if R is not None:
+        Rd = R["dialler"]
+        check("ask devices: the start times found from the pack are the generator's",
+              bool((pd.to_datetime(Rd.date_time) - pd.to_timedelta(Rd.duration_s, unit="s") == Rd._start)
+                   [Rd._kind == "call"].all()))
+        check("ask devices: staff seconds found from the pack are the generator's",
+              int(Rd._staff_s.sum()) == int(ans.duration_s.sum() - tr.duration_s.sum() +
+                                            d[~d.result.isin(["Answered", "Transferred"])].duration_s.sum()))
     # separation: the main call reads only the extract, the history and the case log
     check("separation: no ask file is read by the main call", True,
           "solve.golden opens %s, %s and %s" % (B.FILES["extract"], B.FILES["history"], B.FILES["log"]))

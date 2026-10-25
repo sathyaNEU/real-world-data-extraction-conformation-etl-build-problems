@@ -20,38 +20,38 @@ R_WRONG = 5.0                               # what a wrong call keeps of the rec
 
 
 def face_asks(target):
-    """The asks taken at the files' face: Quitline's own sub-region; every dialler leg a call and its stamp the
-    clock; every answered leg's minutes summed."""
+    """The asks taken at the files' face: Quitline's own sub-region; the dialler's record time the call's time, its
+    Transferred legs to Quitline set aside; every answered leg's minutes summed."""
     q = pd.read_csv(os.path.join(target, B.FILES["quitline"]), dtype=str, keep_default_na=False)
     q = q[q.month.str[:4] == "2025"].copy()
-    q["quarter"] = "Q" + ((q.month.str[5:7].astype(int) - 1) // 3 + 1).astype(str)
     q["referrals"] = q.referrals.astype(int)
-    A = q[q.phn_sub_region.isin(S.CANDS)].pivot_table(index="phn_sub_region", columns="quarter", values="referrals",
-                                                      aggfunc="sum").reindex(S.CANDS)
+    A = q[q.phn_sub_region.isin(S.CANDS)].groupby("phn_sub_region").referrals.sum().reindex(S.CANDS)
     d = pd.read_csv(os.path.join(target, B.FILES["dialler"]), dtype={"patient_key": str})
-    d["st"] = pd.to_datetime(d.started)
-    d = d.drop_duplicates()
+    d["st"] = pd.to_datetime(d.date_time)
+    d = d[d.result != "Transferred"].drop_duplicates()
     ev = d[d.st.dt.hour >= 17]
     Bv = pd.DataFrame({"calls": ev.groupby(ev.st.dt.day_name()).size(),
                        "reached": ev[ev.result == "Answered"].groupby(ev.st.dt.day_name()).patient_key.nunique()}
                       ).reindex(S.WEEKDAYS)
-    a = d[d.result == "Answered"]
-    m = a.st.dt.month
-    C = (a.groupby(m).duration_s.sum() / 60.0) / a.groupby(m).patient_key.nunique()
+    C = {}
+    for ag in S.AGENT_IDS:
+        a = d[(d.result == "Answered") & (d.agent_id == ag)]
+        m = a.st.dt.month
+        C[ag] = ((a.groupby(m).duration_s.sum() / 60.0) / a.groupby(m).patient_key.nunique()).values
     return A, Bv, C
 
 
 def score(F, A, Bv, C):
     hits = {"A": 0, "B": 0, "C": 0}
-    n = {"A": 16, "B": 10, "C": 10}
+    n = {"A": 4, "B": 10, "C": 30}
     for g in S.CANDS:
-        for qq in ("Q1", "Q2", "Q3", "Q4"):
-            hits["A"] += int(abs(A.loc[g, qq] - F["ask_referrals"][g][qq]) < 0.5)
+        hits["A"] += int(abs(A[g] - F["ask_referrals"][g]) < 0.5)
     for dname in S.WEEKDAYS:
         hits["B"] += int(abs(Bv.loc[dname, "calls"] - F["ask_evening"][dname]["calls"]) < 0.5)
         hits["B"] += int(abs(Bv.loc[dname, "reached"] - F["ask_evening"][dname]["reached"]) < 0.5)
-    for i, (mth, v) in enumerate(F["ask_talk_min"].items()):
-        hits["C"] += int(abs(C.iloc[i] - v) < 0.05)
+    for ag, months in F["ask_talk_min"].items():
+        for i, v in enumerate(months.values()):
+            hits["C"] += int(abs(C[ag][i] - v) < 0.05)
     return hits, n
 
 

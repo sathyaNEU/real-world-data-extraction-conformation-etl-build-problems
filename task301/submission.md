@@ -21,8 +21,8 @@ About 85 per cent of Inner South's 5,456 recorded smokers will still smoke when 
 3. Averaged each listed patient's chance of still smoking over calls spread evenly through 2027 from the date of their status: about 85 per cent of Inner South's list, about half of Coastal Hinterland's.
 4. In quit_outreach_calls_eastern_shore_2025.csv the team reached 4,149 of its 5,489 patients (75.6 per cent) and 393 told it they had stopped; 609 of the 3,756 smokers it reached (16.2 per cent) were not smoking four weeks after their quit date, lost to follow-up counted as smoking per quit_outreach_plan_2027.docx: about 12 per cent of the listed patients still smoking when called.
 5. Multiplied each list's expected smokers at the call by that rate: Inner South about 550 quits, the most of the four.
-6. Matched quitline_referrals_2023-2025.csv's practice names to practices.csv (case, Pty Ltd, Med Centre and GP spellings aside) and summed 2025's referrals by the register's sub-region and quarter, Quitline's phn_sub_region column still holding four practices in the sub-regions they belonged to before July 2025.
-7. In dialler_legs_2025.csv dropped the 675 legs that start inside an earlier answered leg for the same patient (the nurse's part of a handed-over call, whose minutes the first leg already holds) and added an hour to stamps before 6 April and from 5 October 2025, the dialler stamping standard time while the team worked to New South Wales daylight time (team_roster_2025.csv); then counted calls from 5 pm and the answered ones by weekday, and answered calls' minutes per patient reached by month.
+6. Matched quitline_referrals_2023-2025.csv's practice names to practices.csv (case, Pty Ltd, Med Centre and GP spellings aside) and summed 2025's referrals by the register's sub-region, Quitline's phn_sub_region column placing four practices in other sub-regions than the register does.
+7. In dialler_legs_2025.csv started each leg its duration_s before its date_time, the dialler writing a leg's record when its line is released (each of the 407 Transferred legs shares its patient's answered leg's date_time to the second, and read this way no team member's legs overlap); counted the calls to patients from 5 pm, the Transferred legs to Quitline aside, and the answered ones by weekday; and for each login and month took its answered legs' minutes less its Transferred legs', the coach leaving at the transfer while the patient's leg stays open to the end, per patient it reached.
 
 ## 4. Deliverable Answers
 
@@ -33,25 +33,18 @@ About 85 per cent of Inner South's 5,456 recorded smokers will still smoke when 
 
 ### quit_outreach_placement_2027.xlsx
 
-1. Quitline referrals from each candidate sub-region's practices in 2025 (January to March, April to June, July to September, October to December):
-   - Coastal Hinterland: 228, 255, 214, 191
-   - Inner South: 162, 196, 173, 158
-   - Northern Corridor: 188, 165, 138, 132
-   - Western Plains: 153, 129, 140, 149
-2. Calls the 2025 team made from 5 pm local time, and patients reached in them, by weekday:
-   - Monday: 596 calls, 226 patients reached
-   - Tuesday: 605 calls, 241 patients reached
-   - Wednesday: 581 calls, 232 patients reached
-   - Thursday: 599 calls, 246 patients reached
-   - Friday: 605 calls, 240 patients reached
-3. Minutes on answered calls per patient reached, by month of 2025:
-   - February: 14.2
-   - March: 14.5
-   - April: 14.2
-   - May: 14.5
-   - June: 14.4
-   - July: 14.5
-   - August: 14.4
-   - September: 14.6
-   - October: 14.9
-   - November: 14.4
+1. Quitline referrals from each candidate sub-region's practices in 2025:
+   - Coastal Hinterland: 942
+   - Inner South: 640
+   - Northern Corridor: 609
+   - Western Plains: 574
+2. Calls the 2025 team made to patients from 5 pm, and patients reached in them, by weekday:
+   - Monday: 507 calls, 203 patients reached
+   - Tuesday: 510 calls, 182 patients reached
+   - Wednesday: 530 calls, 182 patients reached
+   - Thursday: 493 calls, 192 patients reached
+   - Friday: 505 calls, 212 patients reached
+3. Minutes each team member spent on answered calls per patient they reached, by dialler login and month of 2025 (February to November):
+   - QO-C1: 15.2, 14.4, 15.3, 15.4, 14.3, 13.7, 14.8, 14.1, 14.0, 14.0
+   - QO-C2: 14.5, 13.7, 15.3, 14.9, 14.0, 13.8, 14.6, 14.0, 13.5, 14.3
+   - QO-N1: 14.3, 14.6, 14.2, 14.7, 14.2, 14.2, 14.5, 14.4, 15.0, 14.1

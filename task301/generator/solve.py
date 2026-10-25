@@ -116,7 +116,6 @@ def golden(folder):
 # ---------------------------------------------------------------------------------------------------------------
 # The asks, from the shipped files.
 
-DST = [(dt.date(2025, 1, 1), dt.date(2025, 4, 5)), (dt.date(2025, 10, 5), dt.date(2025, 12, 31))]
 WEEKDAYS = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"]
 
 
@@ -129,7 +128,7 @@ def norm_name(s):
 
 
 def ask_referrals(folder):
-    """Quitline referrals from each candidate sub-region's practices (the PHN register's sub-regions), by quarter."""
+    """Quitline referrals in 2025 from each candidate sub-region's practices (the PHN register's sub-regions)."""
     import os
     q = pd.read_csv(os.path.join(folder, "quitline_referrals_2023-2025.csv"), dtype=str, keep_default_na=False)
     pr = pd.read_csv(os.path.join(folder, "practices.csv"), dtype=str, keep_default_na=False)
@@ -137,46 +136,46 @@ def ask_referrals(folder):
     q["sub_region"] = q.referring_practice.map(lambda n: reg.get(norm_name(n)))
     assert q.sub_region.notna().all(), q[q.sub_region.isna()].referring_practice.unique()
     q = q[q.month.str[:4] == "2025"].copy()
-    q["quarter"] = "Q" + ((q.month.str[5:7].astype(int) - 1) // 3 + 1).astype(str)
     q["referrals"] = q.referrals.astype(int)
-    t = q[q.sub_region.isin(CANDS)].pivot_table(index="sub_region", columns="quarter", values="referrals",
-                                                aggfunc="sum").reindex(CANDS)
-    return t.astype(int)
+    return q[q.sub_region.isin(CANDS)].groupby("sub_region").referrals.sum().reindex(CANDS).astype(int)
 
 
-def dialler_calls(folder):
-    """The dialler's legs as calls: the leg a call was handed to (one starting inside an earlier answered leg for the
-    same patient) dropped, and every stamp moved to New South Wales local time."""
+def dialler_legs(folder):
+    """The dialler's legs with the time each started: the dialler writes a leg's record when its line is released, so
+    a leg started its duration before the record's time."""
     import os
     d = pd.read_csv(os.path.join(folder, "dialler_legs_2025.csv"), dtype={"patient_key": str})
-    d["st"] = pd.to_datetime(d.started)
-    d = d.sort_values(["patient_key", "st", "leg_id"], kind="stable").reset_index(drop=True)
-    st_ns = d.st.values.astype("datetime64[ns]").astype(np.int64)
-    end_ns = np.where(d.result.values == "Answered", st_ns + d.duration_s.values.astype(np.int64) * 10 ** 9,
-                      np.iinfo(np.int64).min)
-    prev_end = pd.Series(end_ns).groupby(d.patient_key.values).cummax().groupby(d.patient_key.values).shift(1)
-    inside = pd.Series(st_ns < prev_end.fillna(np.iinfo(np.int64).min).values)
-    calls = d[~inside].copy()
-    dates = calls.st.dt.date
-    in_dst = np.zeros(len(calls), dtype=bool)
-    for a, b in DST:
-        in_dst |= (dates >= a).values & (dates <= b).values
-    calls["local"] = calls.st + pd.to_timedelta(np.where(in_dst, 1, 0), unit="h")
-    return calls, int(inside.sum())
+    d["end"] = pd.to_datetime(d.date_time)
+    d["start"] = d.end - pd.to_timedelta(d.duration_s, unit="s")
+    return d
 
 
 def ask_evening(folder):
-    calls, _ = dialler_calls(folder)
-    ev = calls[calls.local.dt.hour >= 17]
-    out = pd.DataFrame({"calls": ev.groupby(ev.local.dt.day_name()).size(),
-                        "reached": ev[ev.result == "Answered"].groupby(ev.local.dt.day_name()).size()})
+    """The calls the team made to patients from 5 pm and the patients it reached in them, by the weekday the call
+    started; a Transferred leg is the dialler's leg to Quitline, not a call to a patient."""
+    d = dialler_legs(folder)
+    c = d[d.result != "Transferred"]
+    ev = c[c.start.dt.hour >= 17]
+    out = pd.DataFrame({"calls": ev.groupby(ev.start.dt.day_name()).size(),
+                        "reached": ev[ev.result == "Answered"].groupby(ev.start.dt.day_name()).patient_key.nunique()})
     return out.reindex(WEEKDAYS).fillna(0).astype(int)
 
 
+AGENT_IDS = ["QO-C1", "QO-C2", "QO-N1"]
+
+
 def ask_talk(folder):
-    calls, _ = dialler_calls(folder)
-    a = calls[calls.result == "Answered"]
-    m = a.local.dt.month
-    t = (a.groupby(m).duration_s.sum() / 60.0) / a.groupby(m).patient_key.nunique()
-    t.index = [dt.date(2025, i, 1).strftime("%B") for i in t.index]
-    return t
+    """Each team member's minutes on answered calls per patient they reached, by the month the call started: a
+    transferred patient's leg stays open with the Quitline leg until the patient hangs up, so the member's minutes stop
+    where that leg starts."""
+    d = dialler_legs(folder)
+    out = {}
+    for ag in AGENT_IDS:
+        a = d[(d.result == "Answered") & (d.agent_id == ag)]
+        t = d[(d.result == "Transferred") & (d.agent_id == ag)]
+        secs = a.groupby(a.start.dt.month).duration_s.sum().sub(t.groupby(t.start.dt.month).duration_s.sum(),
+                                                                 fill_value=0)
+        v = secs / 60.0 / a.groupby(a.start.dt.month).patient_key.nunique()
+        v.index = [dt.date(2025, i, 1).strftime("%B") for i in v.index]
+        out[ag] = v
+    return pd.DataFrame(out)
