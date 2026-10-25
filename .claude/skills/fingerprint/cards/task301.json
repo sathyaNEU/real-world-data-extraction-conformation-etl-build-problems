@@ -11,8 +11,8 @@
   "shape": "other",
   "decision_type": "pick_one_of_n",
   "answer_unit": "named_option",
-  "answer": "",
-  "answer_source": "",
+  "answer": "Kingsley Fields, 9,700 MWh in 2028",
+  "answer_source": "submission.md block 1; generator/figures.json call_site and call_export_mwh",
   "gap": [
     "population"
   ],
@@ -32,7 +32,7 @@
   "validated_decoy": false,
   "context_artifact": "monitoring_export",
   "stump_class": "analytical",
-  "analyst_test": "A strong analyst who reads every file correctly fits the fleet's bifacial performance, checks dry-day soiling and the environs at the fiscal meter, finds nothing and builds Hallam Down at about 10,000 to 10,260 MWh; Wexcombe's meter sits at its 2012 to 2014 peers' ratio, but its SCADA shows the three blocks at its west end nearest a 10-shed broiler unit losing 3 to 4 per cent to a deposit that builds on dry days, washes off in rain of 10 mm or more and falls with distance from the sheds, and Hallam Down's ten planned blocks sit 75 to 270 m from a unit of the same size on about 480 mm of rain a year, so it loses 6 to 8 per cent and Kingsley Fields wins at about 9,800 MWh.",
+  "analyst_test": "A strong analyst who reads every file correctly takes Knowle Park's measured performance at the fiscal meter, checks dry-day soiling and the environs at farm level, finds nothing and builds Hallam Down at about 10,100 MWh; Wexcombe's meter runs 1.1 per cent above its 2012 to 2014 peers, but its SCADA shows the three blocks nearest a 10-shed broiler unit (87 to 141 m) losing 1.5 to 4.2 per cent to a deposit that builds on dry days, washes off in rain and falls with distance from the sheds, and Hallam Down's ten planned blocks sit 76 to 269 m from a unit of the same size on about 520 mm of rain a year, so it loses at least 4.7 per cent (7.4 on the best fit) against a 4.1 per cent lead and Kingsley Fields wins at 9,700 MWh.",
   "domain_test": "The deciding quantity is each candidate's first-year export, which PV performance engineering builds as plane-of-array irradiation times the fleet's measured performance ratio less a soiling loss, here a deposit whose daily rate falls with each inverter block's distance from a broiler unit, measured on the analog farm's block SCADA and washed off by the site's own rain above a threshold; swap in a hospital or a bus route and there is no array whose blocks soil by their distance from a source between showers.",
   "layer2_family": "field_method",
   "layer2_pattern": "own:a-site-level-ratio-averages-a-deposit-that-falls-off-with-distance-over-the-units-far-from-its-source",
@@ -40,7 +40,8 @@
     "satellite irradiance carrying a daily error against on-site output",
     "fiscal meter export against inverter SCADA, apart by transformer and cable losses",
     "an O&M log with partial-day availability at farm and inverter level",
-    "three module generations across the fleet",
+    "three module generations and two mounting frames across the fleet",
+    "Knowle Park's record from its January 2024 energisation",
     "a GIS environs listing with distances and bearings from each site's centroid",
     "an array layout in national grid coordinates"
   ],
@@ -49,7 +50,7 @@
   "scoring_unit": "other",
   "spine": {
     "file": "inverter_daily_energy_2022-2025.parquet",
-    "rows": 271746,
+    "rows": 282544,
     "entity": "one inverter block's energy on one day",
     "grain": "inverter-day",
     "source": "synthetic"
@@ -78,14 +79,14 @@
     ]
   },
   "deliverables": [
-    "candidate_yield_model_2027.xlsx",
-    "investment_committee_paper_2027.docx"
+    "fenmore_site_selection_2027.xlsx",
+    "fenmore_build_paper_2027.docx"
   ],
   "opening_move": "question-first",
   "question_form": "which",
   "driver": "A loss read at site level averages a deposit that falls off with distance from its source over the many units far from it, so no site in the record looks affected; the candidate's units all sit close to a similar source and its own weather clears the deposit less often, so its expected output is the resource less a loss several times any site-level figure on file, and the leader on the resource falls behind.",
-  "driver_concrete": "Wexcombe's fiscal meter sums 58 central-inverter blocks and sits at its 2012 to 2014 peers' ratio, but the three blocks nearest a 10-shed broiler unit at its west end lose 3 to 4 per cent to litter dust that settles on dry days and washes off in rain of 10 mm or more; Hallam Down's ten planned blocks wrap the yard of a 10-shed unit at 75 to 270 m on about 480 mm of rain a year against Wexcombe's 1,470, so its 4.7 per cent irradiation lead over Kingsley Fields becomes a 6 to 8 per cent soiling loss and it falls from about 10,000 to 10,260 MWh to about 9,470 to 9,650, below Kingsley Fields' 9,800.",
-  "stump": "A competent solver applies the fleet's measured performance to each candidate's average-year irradiation and builds Hallam Down at about 10,000 to 10,260 MWh, where the golden is Kingsley Fields at about 9,800 MWh; the step that lands it there is reading the loss at the fiscal meter, where Wexcombe's three blocks nearest a broiler unit average away among its 58, when Hallam Down's ten planned blocks all sit 75 to 270 m from a unit of the same size on a record a third as wet.",
+  "driver_concrete": "Wexcombe's fiscal meter sums 58 central-inverter blocks and runs 1.1 per cent above its 2012 to 2014 peers, but the three blocks nearest a 10-shed broiler unit lose 1.5 to 4.2 per cent to litter dust that settles on dry days and washes off in rain; Hallam Down's ten planned blocks wrap the yard of a 10-shed unit at 76 to 269 m on about 520 mm of rain a year against Wexcombe's 1,500, so its 4.1 per cent irradiation lead over Kingsley Fields becomes a loss of 4.7 to 7.5 per cent across the deposit fits and it falls from 10,100 MWh to no more than 9,600, below Kingsley Fields' 9,700.",
+  "stump": "A competent solver applies the fleet's measured performance to each candidate's average-year irradiation and builds Hallam Down at about 10,100 MWh, where the golden is Kingsley Fields at 9,700 MWh; the step that lands it there is reading the loss at the fiscal meter, where Wexcombe's three blocks nearest a broiler unit average away among its 58, when Hallam Down's ten planned blocks all sit 76 to 269 m from a unit of the same size on a record a third as wet.",
   "mechanism_source": "design_note",
   "differentiation": {
     "task72": "task72 books a movement to the owner whose agreement covered each piece of a partitioned total; here nothing is booked or partitioned: a deposit is measured at the inverter-block grain, where it falls off with distance from its source, and carried to a candidate whose every block sits near a similar source.",

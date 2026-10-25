@@ -1,34 +1,34 @@
 # task301 design note
 
-Architecture 1, drawn 2026-10-25. Seed `analytical_tasks/04_opportunity_sizing/OS03` (kept only as the shape of the question: a first-year benefit where part of the obvious pool cannot be realised; the seed's road-safety world and the worlds after it were worked and set aside, `## Tried and rejected`).
+Architecture 1, drawn 2026-10-25. Seed `analytical_tasks/04_opportunity_sizing/OS03` (kept only as the shape of the question: a first-year benefit where part of the obvious pool cannot be realised; the seed's road-safety world and the worlds after it were worked and set aside, see the last section).
 
 ## Draw
 
 - **Card:** `.claude/skills/fingerprint/cards/task301.json`, architecture v1, registered 2026-10-25. Guard verdict WARN (`repeat.gate_g` against task170, `repeat.question_form` against task482, both answered below); `test.same_puzzle_older` and `test.same_driver_older` are cleared by differentiation lines against task72, task181 and task60. The first filing as (population, D, `method_or_model_selection`) BLOCKed on a signature spent in eight builds; the decisive step is a forecast the fleet's site-level past, read correctly, does not pin, so the card carries `forecasting`. Nearest drivers on file sit at 0.09 (task184 lineage) and 0.08 (task69 lineage).
 - **Pairing:** Energy Systems & Utilities / `generation-capacity-planning`, drawn for Opportunity Sizing & Decision Support. The task type sizes what a new plant will deliver; here each candidate solar farm's first-year export, pool (the plane-of-array irradiation its 11.0 MWp receives in a year of average weather) to realisable (what the array exports once the fleet's measured performance and the site's own losses are taken off).
-- **Niche:** Fenmore Solar Income plc (fictional, a listed solar fund with fourteen operating farms, 163.7 MWp, from Devon to Essex) builds one of four consented candidates in 2027, each at 11.0 MWp on the layout and bifacial 410 W modules of its newest farm, Knowle Park. The investment committee approves the one that exports the most in its first full year (2028) in a year of average weather, taken as the 2016 to 2025 record in the site weather file, on the fleet's own measured performance.
-- **The call:** the site and its 2028 export: Kingsley Fields at about 9,800 MWh on the prototype; the site-level route builds Hallam Down at about 10,000 to 10,260 MWh, where on its own record it exports about 9,470 to 9,650 and falls behind Kingsley Fields and Larkhill Common.
-- **Shape:** other. The call is one of four sites with its export, and the asks grade the operating fleet on measures the call does not turn on (stage 2 sets the arithmetic); grading every candidate's export would pay the site-level route three of four, since only Hallam Down's figure moves, and Hallam Down's own figure spans more than a printed unit across the standing family.
+- **Niche:** Fenmore Solar Income plc (fictional, a listed solar fund with fourteen operating farms, 163.7 MWp, from Devon to Essex) builds one of four consented candidates in 2027, each at 11.0 MWp on the layout and bifacial 410 W modules of its newest farm, Knowle Park (energised 16 January 2024, the only farm yet built to that design). The investment committee approves the one that exports the most in its first full year (2028) in a year of average weather, taken as the 2016 to 2025 record in the site weather file, on the fleet's own measured performance.
+- **The call:** the site and its 2028 export: Kingsley Fields at 9,700 MWh (9,680 before rounding). The site-level route builds Hallam Down at 10,100 MWh; on its own record Hallam Down exports 9,300 MWh (no deposit fit above 9,600), behind Kingsley Fields.
+- **Shape:** other. The call is one of four sites with its export, a chart of the four, and two measures for each of the fourteen operating farms from their 2025 records (28 figures). Grading every candidate's export would pay the site-level route three of four, and Hallam Down's own figure spans 280 MWh across the deposit family; the runner-up is not graded (last section). Criteria: the site, its export, the chart's four candidates with Hallam Down's after-dust bar below Kingsley Fields, the two files, 14 ratios, 14 means: 36 or more.
 - **Strategy:** `composition_mix`, Gate G `forecasting`, generators G2 (the fiscal meter and the inverter SCADA are two grains of one farm, both correct), G6 (a farm's ratio is a mix of the few blocks near the source and the many far from it, and Hallam Down's mix is all near), G14 (the loss a deposit leaves is conditioned on the site's own rain record); gap population (the fleet's site-level record is not the exposure the candidate faces); pattern D; Layer 2 `field_method`, pattern `own:a-site-level-ratio-averages-a-deposit-that-falls-off-with-distance-over-the-units-far-from-its-source`.
 - **Forum, event, organisation:** committee_or_panel (the fund's investment committee), vote_or_meeting (its December meeting approves one build), financial_institution (a listed fund; `utility_or_infrastructure` is banned against task170). Role capacity_planner (the head of development); context artifact `monitoring_export` (the fleet's SCADA and fiscal-meter exports); calibration form `existing_book_actuals`.
 - **People** (`guard.py names --geo England --seed 301`): Valerie Freeman, head of development, who asks; Terence Coates, head of asset management; Rosie Taylor, performance analyst; Clive Barber, O&M contracts. None appears in the prompt.
 - **Spent mechanisms on the objective** (`guard.py mechanisms --objective opportunity-sizing-decision`, nine builds): task105 the part of a catchment nearer the new outlet; task106 candidates drawing on one shared pool; task116 a group offer reachable through one signatory; task118 the gain on volume a unit does not already treat; task120 a peak draw read through a reserve's drawdown; task127 the step of a wait an intervention removes; task128 a contact's effect where the queue outran the team; task306 the units a roll does not hold yet; task305 an origin the demand data never counts. None reads a loss at a sub-site grain and carries it by distance.
 - **Probes before the draw:** call-only, isolated, sonnet at medium, one pack cut from the prototype (scratch `t301i/pack/`, nine files: the fiscal export, the inverter SCADA, the O&M log, the weather, the register, the block layout, the 2 km environs, the build note and the candidates' terms). Probe Y measured performance from the SCADA at farm level, fitted a fleet-wide dryness term and built Hallam Down at 10,020 MWh, naming the 105 m broiler unit as a loss it could not quantify from the fleet; probe Z fitted the bifacial farms, tested the environs (poultry units, days since rain, wind towards the source, distance) at farm level, found no signal and built Hallam Down at 10,070 MWh. Two of two missed the decisive step.
 - **WARN answered:** `repeat.question_form` (which, against task482): the decision is a pick of one of four sites, so the form is which. `repeat.gate_g` (forecasting, against task170): the label is the honest one, the 2028 export being a forecast the site-level past does not pin, and the driver repeats none on file.
-- **Data-native sentence:** Wexcombe's fiscal meter sums 58 central-inverter blocks, and the three at its west end nearest a 10-shed broiler unit lose 3 to 4 per cent of their output to litter dust that settles on dry days and washes off in rain of 10 mm or more, so the meter's ratio sits at its 2012 to 2014 peers'; Hallam Down's ten planned blocks wrap the yard of a 10-shed broiler unit at 75 to 270 m, on about 480 mm of rain a year against Wexcombe's 1,470.
+- **Data-native sentence:** Wexcombe's fiscal meter sums 58 central-inverter blocks, and the three at its west end nearest a 10-shed broiler unit (87 to 141 m) lose 1.5 to 4.2 per cent of their output to litter dust that settles on dry days and washes off in rain, so the meter runs 1.1 per cent above its 2012 to 2014 peers; Hallam Down's ten planned blocks wrap the yard of a 10-shed broiler unit at 76 to 269 m, on about 520 mm of rain a year against Wexcombe's 1,500.
 
 ## Three rules
 
 Task type: generation-capacity-planning (Energy Systems & Utilities), tagged in the taxonomy for Opportunity Sizing & Decision Support: each candidate solar farm's first-year export, pool (the irradiation its array receives in a year of average weather) to realisable (the export once the fleet's measured performance and the site's own soiling are taken off).
 Domain test: The deciding quantity is each candidate's first-year export, which PV performance engineering builds as plane-of-array irradiation times the fleet's measured performance ratio less a soiling loss; here the loss is a deposit whose daily rate falls with each inverter block's distance from a broiler unit, measured on the analog farm's block SCADA against its far blocks and washed off by the site's own rain above a threshold, and Hallam Down's planned blocks all sit at the distances where it is large.
 Swap: "the farm that exports the most once the deposit its blocks' distances from a dust source and its own showers leave is counted" put into a hospital's beds or a bus operator's corridors loses its mechanism: no ward or route has an array of blocks at measured distances from a source, no output that falls as dust settles between showers, and no meter that sums blocks the source reaches with blocks it does not.
-Layer 1: satellite-derived irradiance with a daily error against on-site output; the fiscal meter's export against the inverter SCADA, apart by transformer and cable losses; an O&M log with partial-day availability at farm and inverter level; three module generations across the fleet; a GIS environs listing with distances and bearings from each site's centroid; the block layout in national grid coordinates; nothing is placed to be caught.
+Layer 1: satellite-derived irradiance with a daily error against on-site output; the fiscal meter's export against the inverter SCADA, apart by transformer and cable losses; an O&M log with partial-day availability at farm and inverter level; three module generations and two mounting frames across the fleet; Knowle Park's record from its January 2024 energisation; a GIS environs listing with distances and bearings from each site's centroid; the block layout in national grid coordinates; nothing is placed to be caught.
 Layer 2: field_method: the soiling loss is measured at the grain it varies over, each block's deposit rate against its distance from the sheds, read from the blocks' own decline on dry days and recovery after rain, and carried to the candidate's planned blocks at their distances through the candidate's own 2016 to 2025 rain; the site-level ratio, the site-level soiling check and a flat transfer of the analog's measured loss all average the deposit away.
 Decisive step: carrying the broiler dust to Hallam Down as a deposit rate by block distance, fitted on Wexcombe's SCADA blocks against its far blocks and run through Hallam Down's own rain at each planned block's distance, rather than reading the fleet's performance at the fiscal meter, where Wexcombe's three exposed blocks average away among its 58.
 Not semantics: every field reads as what it is (the export, each block's energy, the layout's coordinates, the environs' distances and bearings, the rain); no field, code or note marks a block as soiled, a feature as a dust source or a site as exposed, and an analyst who reads all of it correctly still takes the fleet's performance at the meter.
-Not rule application: the build note files the WHAT (the site exporting the most in 2028 in a year of average weather, taken as the 2016 to 2025 record, on the fleet's own measured performance) and nothing about soiling, blocks or distance; executing it at the meter, which is what both probes did, builds Hallam Down. Family measured on the prototype: the enumerated family (site-level ratio from Knowle Park or a bifacial fit, a fleet dryness term, Wexcombe's site-level deficit applied flat, Wexcombe's block losses carried flat at Hallam Down's distances, and eighteen block-distance process transports over three references, three decay forms and four wash thresholds) puts Hallam Down's loss between 0.0 and 7.8 per cent; the standing family, the eighteen process transports, spreads 6.0 to 7.8 per cent against Hallam Down's 4.7 per cent irradiation lead, every member filing Kingsley Fields; what rules the rest out is no clause but the record: the exposed blocks fall on dry days and recover after rain, so a loss read flat or at the meter is refuted by the blocks' own series.
-Analyst test: A strong analyst who reads every file correctly fits the fleet's bifacial performance, checks dry-day soiling and the environs at the meter, finds nothing, applies the model to each candidate's average-year irradiation and builds Hallam Down at about 10,000 to 10,260 MWh, where the golden is Kingsley Fields at about 9,800 MWh; checks.py runs both on the generator's clean truth and on the pack.
-Estimand: the 2028 export of the one 11.0 MWp farm built in 2027 on Knowle Park's layout and modules, in a year of average weather taken as the 2016 to 2025 record in the site weather file, on the fleet's own measured performance (`build_decision_note_2027.docx`).
+Not rule application: the build note files the WHAT (the site exporting the most in 2028 in a year of average weather, taken as the 2016 to 2025 record, on the fleet's own measured performance) and nothing about soiling, blocks or distance; executing it at the meter, which is what both probes did, builds Hallam Down. The enumerated family (the site-level ratio, Wexcombe's farm-level deficit applied flat, Wexcombe's block deficits carried flat by distance, and 42 process transports over two references, partial and full wash models at the thresholds that fit best and three decay forms) puts Hallam Down's loss between 0.0 and 7.5 per cent; the standing family, the 42 process transports, spreads 4.7 to 7.5 per cent against Hallam Down's 4.1 per cent irradiation lead, every member filing Kingsley Fields; what rules the rest out is no clause but the record: the exposed blocks fall on dry days and recover after rain, so a loss read flat or at the meter is refuted by the blocks' own series.
+Analyst test: A strong analyst who reads every file correctly fits Knowle Park's measured performance, checks dry-day soiling and the environs at the meter, finds nothing, applies the ratio to each candidate's average-year irradiation and builds Hallam Down at about 10,100 MWh, where the golden is Kingsley Fields at 9,700 MWh; checks.py runs both on the generator's clean truth and on the pack.
+Estimand: the 2028 export of the one 11.0 MWp farm built in 2027 on Knowle Park's layout and modules, in a year of average weather taken as the 2016 to 2025 record in the site weather file, on the fleet's own measured performance (`build_decision_note_2027.docx`, section 2).
 No decoy: nothing is planted: the meters, the SCADA, the O&M log, the weather, the layout and the environs are the fund's and its GIS contractor's ordinary records; no memo, draft or figure argues for a site, no file ranks the four, and no stakeholder figure is set up to be overturned.
 No certified replay: no certified or published figure sits in the pack to be reproduced, and the method is not recovered from any figure.
 Lesson: a loss read at the meter averages a deposit that falls off with distance over the many blocks far from its source, so a fleet can carry the evidence and show nothing at site level; a candidate whose every block sits near a similar source, on a drier record, loses several times any site-level figure on file, and only the block record prices it; no build on file reads a loss at a sub-site grain and carries it by distance to a planned layout.
@@ -36,17 +36,102 @@ Lesson: a loss read at the meter averages a deposit that falls off with distance
 ## Default path
 
 1. Reads the build note: 11.0 MWp on Knowle Park's layout and modules, the 2028 export in a year of average weather taken as the 2016 to 2025 record, on the fleet's own measured performance.
-2. Builds each farm's daily ratio of fiscal export to irradiation per MWp, leaves out the O&M log's days, and fits the four bifacial farms with temperature, irradiance and age terms.
-3. Checks soiling per farm (the ratio against days since rain) and tests the environs at farm level; Wexcombe's meter sits at its peers' ratio, no feature separates the fleet, and the environs file is read as non-informative.
-4. Runs the model on each candidate's 2016 to 2025 weather at 11.0 MWp and averages the ten years.
-5. Ranks the four: Hallam Down first on its 4.7 per cent irradiation lead, then Kingsley Fields, Larkhill Common and Marston Vale.
+2. Builds Knowle Park's ratio of fiscal export to irradiation per MWp (0.830), checks the bifacial farms' degradation and the O&M log's days.
+3. Checks soiling per farm (the ratio against days since rain) and tests the environs at farm level; Wexcombe's meter runs 1.1 per cent above its peers, no feature separates the fleet, and the environs file is read as non-informative.
+4. Runs the ratio on each candidate's 2016 to 2025 average irradiation at 11.0 MWp, carried to its age in 2028.
+5. Ranks the four: Hallam Down first on its 4.1 per cent irradiation lead, then Kingsley Fields, Larkhill Common and Marston Vale.
 
-Ends on: Hallam Down, about 10,000 to 10,260 MWh
-Golden: Kingsley Fields, about 9,800 MWh
+Ends on: Hallam Down, about 10,100 MWh
+Golden: Kingsley Fields, 9,700 MWh
 
 ## Stump sentence
 
-A competent solver applies the fleet's measured performance to each candidate's average-year irradiation and builds Hallam Down at about 10,000 to 10,260 MWh, where the golden is Kingsley Fields at about 9,800 MWh; the step that lands it there is reading the loss at the fiscal meter, where Wexcombe's three blocks nearest a broiler unit average away among its 58, when Hallam Down's ten planned blocks all sit 75 to 270 m from a unit of the same size on a record a third as wet.
+A competent solver applies the fleet's measured performance to each candidate's average-year irradiation and builds Hallam Down at about 10,100 MWh, where the golden is Kingsley Fields at 9,700 MWh; the step that lands it there is reading the loss at the fiscal meter, where Wexcombe's three blocks nearest a broiler unit average away among its 58, when Hallam Down's ten planned blocks all sit 76 to 269 m from a unit of the same size on a record a third as wet.
+
+## Ladder
+
+| Rung | Construction | Hallam Down 2028 | Files |
+|---|---|---|---|
+| 1 | Knowle Park's measured ratio at the meter on each candidate's average year | 10,100 MWh | Hallam Down |
+| 2 | Rung 1 less Wexcombe's farm-level deficit against its 2012 to 2014 peers (its meter runs 1.1 per cent above them, so nothing) | 10,100 MWh | Hallam Down |
+| 3 | Rung 1 less Wexcombe's measured block deficits carried flat to Hallam Down's blocks by distance (2.4 per cent) | 9,840 MWh | Hallam Down |
+| 4 (decisive) | The deposit fitted on Wexcombe's near blocks as a daily step falling with distance, washed by rain, run through Hallam Down's own rain at each planned block (7.4 per cent on the best fit, never under 4.7) | 9,300 MWh (no fit above 9,600) | Kingsley Fields, 9,700 MWh |
+
+Rung 3 is the partial fix a solver who reaches the blocks takes: the deficit measured at Wexcombe is an average over its wet record, so carried flat it misses that Hallam Down's dry spells let the deposit build several times as far. Asserted in checks.py: rungs 1 to 3 build Hallam Down, rung 4 alone builds Kingsley Fields.
+
+## Readability screen
+
+| Rung | What the pack offers toward it | Verdict |
+|---|---|---|
+| 1 site-level ratio | the note asks for the fleet's measured performance; export and weather files at the farm-day grain | readable |
+| 2 farm-level dust check | the environs file lists poultry units at every site; a farm's ratio against its peers and a dry-day check are reflexes | readable |
+| 3 block-level flat transfer | the SCADA at block grain and the block layout; nothing ties a block to a feature | silent |
+| 4 (decisive) deposit process carried by distance through the candidate's own rain | nothing names a deposit, a wash, a rate or rain as a driver; the blocks' dry-spell decline and recovery after rain shows only once rung 3's block cut is made, and on Wexcombe's 1,500 mm a year the exposed blocks lose little on average | silent |
+
+Cheapest licensed route to the call, in one line: each block's daily ratio against the far blocks, a fitted deposit with a rain wash for each near block, a rate-against-distance curve, run at Hallam Down's blocks through its own rain. Not linear in any shipped column: the loss depends on the order of dry and wet days, so no group-by on a shipped field gives it.
+
+## Semantic fork table
+
+| ID | Term or convention | Golden reading | Alternatives and their call | Ruled out by |
+|---|---|---|---|---|
+| SF1 | first full year (2028) | calendar 2028, the array's age at mid-2028 from its energisation date | age at 1 January 2028; no age carry: Kingsley Fields at 9,700 | same call, same printed figure (asserted) |
+| SF2 | a year of average weather, taken as the 2016 to 2025 record | the ten-year mean of each site's irradiation and rain in the weather file | the median year; any single year | same call: Kingsley Fields first in every year of the record (asserted) |
+| SF3 | the fleet's own measured performance | Knowle Park's export at the meter over its 12.0 MWp and irradiation, energisation to 2025, outages kept | outage days out; 2025 alone; the datasheet's degradation; no age carry: Kingsley Fields at 9,700 on each; the four bifacial farms pooled | same call and figure on the first four (asserted); the pooled basis by the note's "Knowle Park is the only farm yet built to this design" and the register's mounting column |
+| SF4 | export | energy at the fiscal meter | the inverters' AC sum: every candidate scaled alike | same call (asserted) |
+| SF5 | the four candidate sites | the register's four candidates at 11.0 MWp on their planned blocks in the layout file | none | the note's section 1 and the register (asserted) |
+| SF6 | Hallam Down's blocks and the unit beside them | the ten planned blocks, each at its distance from the sheds placed by the environs listing's distance and bearing from the centroid | one centroid distance for every block | same call (asserted) |
+
+## Closure table
+
+| # | Axis | Reading and move |
+|---|---|---|
+| 1 | Population | the register's four candidates (status candidate); C1, nothing else is a candidate |
+| 2 | Unit of account | a site's 2028 export in MWh; the question names it |
+| 3 | Attribution window | calendar 2028; every candidate energised July to October 2027, wholly before it |
+| 4 | As-of dating | the weather 2016 to 2025 and the fleet's records to 31 December 2025, as the note files them |
+| 5 | Version basis | one version of every file; nothing restated |
+| 6 | Denominator | Knowle Park's export over its 12.0 MWp and its irradiation; SF3 bases converge (asserted) |
+| 7 | Weighting | energy-weighted ratio over the record; the mean of daily ratios weights a winter day as a summer day and is no performance ratio, and it moves all four alike |
+| 8 | Window length | the ten-year average (filed); Knowle Park's whole record, C1 against 2025 alone (asserted) |
+| 9 | Boundary inclusivity | no candidate energised near 1 January 2028 (latest 29 October 2027) |
+| 10 | Rounding path | the export rounded once to 100 MWh at the end, 30 MWh inside its cell (asserted) |
+| 11 | Tie-break | none needed: Kingsley Fields leads Larkhill Common by about 2 per cent in every year |
+| 12 | Maturity and censoring | Knowle Park's record from 16 January 2024; 2025 alone gives the same figure (asserted) |
+| 13 | Order of operations | irradiation, ratio, age carry and dust loss multiply; order immaterial |
+| 14 | Row order | sums and medians; no order dependence |
+| 15 | Duplicate resolution | one row a site a day and a block a day (asserted) |
+| 16 | Identity normalisation | site names identical across every file |
+| 17 | Netting against gross | outage days kept in Knowle Park's ratio; taken out, the same figure (asserted) |
+| 18 | Dimensional units | MWh, MWp and kWh/m2 throughout; the ratio is dimensionless |
+| 19 | Code and status semantics | status candidate or operating in the register; O&M event days left out of the block fits |
+| 20 | Integerisation | none |
+| 21 | Clause scope | the note's section 2 governs the call; the asks' figures are separate quantities |
+| 22 | Forward window contents | 2028's weather is the 2016 to 2025 average (filed); the candidates' planned blocks are in the layout file |
+
+## Literal reader
+
+Executing section 2 of the build note word for word gives each candidate's export in 2028 in the ten-year average weather on the fleet's measured performance; the literal estimand is the site's export, so a loss the site will carry is inside it, and the easy route is a worse estimate of the same estimand, never another reading of it. Every literal reading in SF1 to SF6 files Kingsley Fields at 9,700 MWh (asserted in checks.py). The asks' sentences are literal too: ask A over the days the pyranometer recorded, with the sensitivity in force each day by the certificates' Notes sheet; ask B from the alarm's raised time to the arrival of the technician the work order names, the filed fact that a fault stays raised until the inverter is reset on site placing every arrival before the alarm cleared.
+
+## Oracles
+
+- No control ties only under the golden: Wexcombe's fiscal meter sits above its peers whichever route is taken, and no file totals the dust.
+- No round number confirms the golden: every ask figure sits a tenth to a quarter of a unit off its cell's centre, so no route prints round values everywhere (asserted).
+- The asks' consistency checks are fair, not oracles: the CMMS attended stamps after the alarm cleared refute the CMMS as the arrival, and the station file's step at the register's installation date refutes the logger's sensor setting; a grader verifies each from the files.
+
+## Ask sheet
+
+Ask A, each operating farm's 2025 on-site irradiation over the weather file's (14 figures, three decimals). Primary device D2 (an attribute at the wrong vintage): the station file keeps the logger's sensor setting, the sensor that came down in 2025; the register (as at 31 December 2025) names the sensor in the mast now and its installation date; the certificate of the sensor that came down says which mast it was sent from. Hazard D7 (an as-of join): the certificate in force each day, by the certificates' Notes sheet. Every path that misses either lands outside the cell on all 14 farms.
+
+Ask B, each operating farm's average hours in 2025 from a fault alarm to the attending technician's arrival (14 figures, one decimal). Primary device D8 (a clock): the van tracker's portal exports in UK time against the alarm log's UTC, and the CMMS attended stamp is the tablet's sync after the visit at farms without signal. Hazard D7: the van the technician had that day (two van changes and a pool van). Every path that misses the clock or the CMMS stamp lands outside the cell on all 14 farms; the first van of any technician lands 10 of 14 once the clock is met.
+
+| Ask | Cracker's best path | Cracker |
+|---|---|---|
+| A ratios | the station file's sensor serial to its certificate in force each day: 0 of 14 | miss |
+| B hours | the CMMS attended stamp less the CMMS raised stamp: 0 of 14 | miss |
+
+Pair ceiling: 26.0 (both devices missed; 39.8 if the response on the call meets one, 53.5 if it meets both, which the stage 4 readers measure)
+Mirror leakage: 0.0 per cent of ask weight (both devices missed)
+Measured by: generator/pair.py on the cut pack
 
 ## Tried and rejected
 
@@ -69,3 +154,8 @@ A competent solver applies the fleet's measured performance to each candidate's 
 - Solar build choice for 2027, quarry version (energy x OS, generation-capacity-planning: which of four 11 MWp candidates exports the most in its first full year on the 2016 to 2025 weather; the sunniest candidate sits 380 m from an active quarry and the fleet's one quarry-side farm loses about 11 per cent to soiling that builds between showers): both call-only probes (U, V) started from the quarry named in the candidate's constraints, saw the quarry-side farm's ratio far below its same-vintage peer, found the only two quarry rows in a fifty-row constraints register, fitted the build-up and rain clearing on that farm's own days and filed the golden (Kingsley Fields at 9,840 MWh); a loud level gap at the analog and a short list with the source named twice are a trail, not a trace; dead.
 - Solar build choice, whole-farm broiler version (the fleet's soiled farm a wet western farm with a broiler unit 360 m upwind, its loss about 3 per cent a year and its level inside the fleet's spread; the sunniest candidate dry with a broiler unit 340 m upwind, about 8 per cent on its own rain): call-only probe W fitted the four bifacial farms, pooled a rain-gap soiling term at under 1 per cent and built Hallam Down (10,410 MWh), but probe X ran a per-farm soiling check, found Wexcombe falling about 0.45 per cent a dry day and recovering with rain, matched the broiler units by bearing and filed Kingsley Fields (9,790 MWh): one in two; a per-farm dry-day regression is a reflex for half the probes, so a deposit spread over the whole analog farm is a trail.
 - Solar build choice, heavy-rain-only wash (the broiler dust sticky, washed only by rain of 15 mm or more, the candidate drizzly and dry): set aside before probing, because the per-farm check still finds the farm on the pack itself (a daily-ratio slope on days since any rain of -0.36 per cent a day at t -7.6 at Wexcombe against |t| under 2.2 at every other farm); a deposit that builds on dry days leaves a dry-spell decline any reset rule sees, so a threshold hides nothing.
+- The runner-up and its export as graded figures (Larkhill Common at 9,600 MWh on the first build): the full-wash fits on the farm's median block leave Hallam Down at up to 9,604 MWh, above Larkhill Common on some fits, so the runner-up was not determinate; the prompt asks for the site and its export only.
+- Ask figures centred exactly on the printed value (a ratio of 0.975000, a mean of 18.1000 hours): the golden route would be the one route printing round values on every farm, an oracle; each figure now sits a tenth to a quarter of a unit off its centre.
+- Knowle Park commissioned in June 2021: four years of record at a mean age of 2.5 against the build's 0.8 in 2028 made the degradation carry spread the graded export over 0.8 per cent (no carry, the fitted 0.15 per cent, the datasheet's 0.45); commissioned in January 2024 its record sits at the build's age.
+- The pyranometer serial in the station file as the sensor in the mast that day: the swap is then plain in the file; the file now keeps the logger's setting, which nobody changed at the swap.
+- The note's performance basis worded as the measured performance for the design being built: read literally it could leave out every site loss, the stump's own included; the design fact now stands as its own sentence beside the open estimand.
