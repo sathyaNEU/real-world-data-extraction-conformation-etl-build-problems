@@ -11,8 +11,8 @@
   "shape": "01",
   "decision_type": "pick_one_of_n",
   "answer_unit": "count",
-  "answer": "",
-  "answer_source": "",
+  "answer": "Convert the backbone of F-205 (Sorrel Hill) in 2027: 237,600 customer-minutes of sustained interruption a year, worth USD 499,000 a year at USD 2.10 a customer-minute",
+  "answer_source": "task303/submission.md block 1, from generator/figures.json",
   "gap": [
     "population"
   ],
@@ -38,15 +38,18 @@
   "layer1": [
     "an outage-system migration on 1 January 2023: legacy tickets with feeder numbers, codes, Eastern local dates and clock times and minutes of duration; current tickets with feeder ids, worded categories and UTC start and restoration stamps",
     "major event days as Eastern calendar days against UTC stamps",
-    "vegetation work by feeder section on a four-year cycle",
-    "a feeder inventory with LiDAR canopy shares and pole counts"
+    "transformer and service tickets beside the tap fuses",
+    "a feeder inventory with LiDAR canopy shares and pole counts",
+    "vegetation work by feeder section on a four-year cycle (a distractor)",
+    "the storm crews' mobile workforce records: the storm desk's screen in Eastern local time, the contract crews' own devices on Eastern standard time all year, and the desk's late entries of restorations (ask A's path)",
+    "legacy handheld tickets with durations in hours and minutes, dated the day the crew closed them (ask B's path)"
   ],
   "stakeholder_role": "the utility's distribution planning engineer preparing the 2027 storm-hardening filing",
   "role_family": "capacity_planner",
   "scoring_unit": "other",
   "spine": {
     "file": "oms_interruptions_2019_2022.csv and oms_interruptions_2023_2025.csv",
-    "rows": 533,
+    "rows": 15599,
     "entity": "one feeder's sustained interruption on one ticket",
     "grain": "feeder x interruption",
     "source": "synthetic"
@@ -64,8 +67,9 @@
       "Sorrel Hill",
       "Byers Mill",
       "Hollow Fork",
-      "Kettering Run",
-      "Wyeth Crossing"
+      "Kettle Run",
+      "Willow Crossing",
+      "State Utility Regulation Commission"
     ],
     "people": [
       "Zachary Sanders"
@@ -79,7 +83,7 @@
   "question_form": "which",
   "driver": "The decisive quantity is what an intervention on one unit removes from its recorded losses, when part of that record is a shared loss that every unit fed from the same upstream source logs in the same minute under its own first device; summing the unit's records by cause and device credits the intervention with losses that originate upstream, and only the minute every sibling shares separates them.",
   "driver_concrete": "Each candidate's figure is nine in ten of the customer-minutes outside major event days from vegetation, wind and wildlife interruptions on its backbone, after removing the feeder-breaker tickets that every feeder at its substation opened in the same minute, which are losses of the substation's supply that the conversion cannot prevent.",
-  "stump": "A competent solver sums each candidate's breaker and recloser tickets caused by vegetation, wind or wildlife outside major event days, takes nine in ten of their customer-minutes over seven years and converts F-112 at about 356,000 customer-minutes a year, where the golden is F-205 at about 263,000; the step that lands it there is reading every feeder-breaker ticket as a fault on that feeder's backbone, when the Pell Creek tickets that all three of its feeders open in the same minute are losses of the substation's supply.",
+  "stump": "A competent solver sums each candidate's breaker and recloser tickets caused by vegetation, wind or wildlife outside major event days, takes nine in ten of their customer-minutes over seven years and converts F-112 at 455,400 customer-minutes a year, where the golden is F-205 at 237,600; the step that lands it there is reading every feeder-breaker ticket as a fault on that feeder's backbone, when the Pell Creek tickets that all three of its feeders open in the same minute are losses of the substation's supply.",
   "mechanism_source": "design_note",
   "lineage": [
     {

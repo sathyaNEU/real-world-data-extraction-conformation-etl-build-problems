@@ -1,61 +1,58 @@
-# determinism-check report, task303, 2026-10-25
+# determinism-check report, task303 (run r2), 2026-10-25
 
 ## Verdict
-NOT_DETERMINISTIC, SOLUTION_WRONG on the headline figure
-**Disposition:** SEND_BACK
-**Stumping type:** mechanism: statistical_rigor, stumping_family: analytical_non_defect, surface_read_dependency: no, sole_data_defect: no
+DETERMINISTIC (main recommendation forced; every graded figure reproduced). Two ask-level forks are open on the literal text.
+**Disposition:** FIX_NOW (optional pins on the two asks; no model rerun for the main call). Not SEND_BACK.
+**Stumping type:** mechanism: decomposition_attribution, stumping_family: analytical_non_defect (thread wrote analytical_attribution), surface_read_dependency: no, sole_data_defect: no
+
+Pack note: the thread judged the pre-rebuild unzip (all 11 files, hash 784cd964). target.zip was then rebuilt (8f1811e2); the three data files oms_interruptions_2019_2022.csv, oms_interruptions_2023_2025.csv and storm_crew_status_2023_2025.csv differ, the other eight are byte-identical. I re-ran the load-bearing recomputation myself on the new pack (see ledger): every figure is identical to the judged pack. The judged text (prompt, submission, notes) is unchanged.
 
 ## Why
-The product is forced: Essentials leads under every specification the thread tried (Essentials 0.32 to 0.44, Lifetime
-Cat about 0.16, Condition Year about -0.02, Lifetime Dog about -0.32, CAD million). The figure is not: the thread's
-best-faith construction (a logit on the offered change and age by product, claims by age band and continuing condition
-at the start of the policy year) gives 0.425, which prints 0.4, and the timing of the condition flag on the 2025 base
-moves it to 0.32. The golden's 144 constructions print 0.5 (0.463 to 0.509), so across the licensed family the printed
-figure runs over three cells at CAD 0.1 million. Critical components 1 and 2 depend on how a continuing condition is
-marked and do not reproduce at their printed precision.
+Outside the accepted major event days, F-205 removes 237,615 customer-minutes a year (0.9 x backbone breaker and recloser tickets from vegetation, wind and wildlife, over 7). Crediting every breaker ticket to its own backbone gives F-112 455,449. Dropping the tickets that all three feeders at a substation opened in the same minute (Pell Creek 12, Byers Mill 3, Sorrel Hill 0) gives F-112 137,771, about 100k below F-205: a wide, clean margin. The plan says the conversion does nothing for faults elsewhere, and a backbone fault cannot interrupt sibling feeders.
 
 ## Recomputation ledger
-| Figure | Claimed | Judge recomputed | Reproduced |
-|---|---|---|---|
-| Call | Essentials | Essentials under every specification | yes |
-| Addition | CAD 0.5 million | 0.425 best faith; 0.32 to 0.437 over variants | no |
-| Component 1, lifetime renewal with and without a continuing condition | 95 and 70 per cent | 97 and 69 (Dog), 97 and 75 (Cat), observed | no |
-| Component 2, Lifetime Dog 2025 claims with and without | CAD 2,260 and 420 | 2,375 and 424 (flag at year start), 2,185 and 339 (at year end) | 420 only |
-| Ask A calls, 16 cells | listed | identical, option 2 before 5 October and option 3 after, read from the wrap codes | yes, against the dictionary's menu |
-| Ask B complaints, 16 cells | listed | identical with the acknowledgement quarter for the 171 letters-only cases; CR-26-01142 sits between case numbers received 30 September and 1 October | yes, one boundary case read |
-| Ask C instalments, 16 cells | listed | identical with the re-presentation window rolled to the next banking day (10 to 16 days); exactly ten days gives 1,955 against 2,813 | yes, under the rolled window |
+| Figure | Claimed | Judge recomputed (old pack) | Me, rebuilt pack | Reproduced |
+|---|---|---|---|---|
+| F-205 / F-112 / F-301 / F-208 / F-303 / F-114 | 237,600 / 137,800 / 67,300 / 39,000 / 32,100 / 29,600 | 237,615 / 137,771 / 67,316 / 38,986 / 32,086 / 29,634 | identical | yes |
+| F-112 crediting every ticket | 455,400 | 455,449 | 455,450 | yes |
+| Same-minute 3-feeder events | 12 / 3 / 0 | 12 / 3 / 0 | 7+5 / 1+2 / 0 (legacy + current substation labels) | yes |
+| USD value | 499,000 | 498,991 | n/a | yes |
+| Storm record cm (crew Restored, contract crews EST) | 11,615,000; 5,773,000; 7,332,000; 6,210,000; 9,952,000; 4,391,000 | 11,614,771 ... 4,391,082 | identical | yes |
+| Storm min per customer | 411.9 / 339.7 / 393.5 / 413.5 / 406.1 / 420.3 | same | identical | yes |
+| Taps cm/yr | 23,840; 14,450; 25,950; 9,000; 16,410; 13,540 | 23,841 ... 13,540 | identical | yes |
+| Taps min per customer | 125.1 / 116.3 / 119.2 / 116.5 / 110.6 / 118.5 | same | identical | yes |
 
 ## Competing answers that survived
-- The addition: CAD 0.3, 0.4 and 0.5 million under licensed condition markings, flag timings and response fits.
-- Lifetime Dog Q3 and Q4 complaints: 44 and 45 against 45 and 44, on one letters-only case at the quarter boundary.
+Main call: none. Counting each shared event once, reclosers only, and any n>1 same-minute test were stress-tested (identical figures or not defensible).
+Ask-level forks (both repairable by a pin, neither moves the call):
+1. Workbook ask 1, restoration source: OMS restoration_utc gives 14,031,730 / 7,375,539 / 8,480,709 / 7,110,809 / 11,959,696 / 5,027,984 (F-112, F-114, F-205, F-208, F-301, F-303); the crew Restored time (contract crews on EST) gives the golden. The prompt does not say which. The crew note ("the crew reported the customers on the job back in supply") and the data (raw contract times put En route before Assigned) favour the golden but never state it.
+2. Workbook ask 2, legacy handheld tickets (decimal DUR_MIN, h.mm, OUT_DT the closing day): never stated in oms_export_notes.txt. Reading OUT_DT as the start day gives 32,893 / 30,308 / 42,045 / 21,589 / 27,928 / 34,102. The golden is recoverable (ticket numbers run in start order) but not filed. By design this is an ask-level semantic, which the spec allows.
+3. "accepted in 2023 to 2025" read by docket year: strained; the plan's last three years supports the golden.
 
 ## Spec gates
 | Gate | Required | Actual | Pass |
 |---|---|---|---|
-| Files | 10 or more | 16 | yes |
-| Formats | 3 or more | csv, parquet, docx, xlsx | yes |
-| Large file | 25,000 rows | pad_collections_2026-27.csv, 376,301 rows | yes |
-| Distractors | 2 or more, named in metadata.json | vet fee benchmark, clinic network | yes |
-| Deliverables | 1 to 3 | a PDF and a workbook | yes |
-| Asks | unit and rounding stated | stated | yes |
+| Files | 10 or more | 11 | yes |
+| Formats | 3 or more | csv, xlsx, pdf, docx, txt (5) | yes |
+| Large file | 25,000 rows or more | storm_crew_status 29,451 rows | yes |
+| Distractors in metadata | 2 or more, no file name labels one | vegetation_work_orders_2017_2026.csv, line_recloser_settings_2026.xlsx; names neutral | yes |
+| Distractor relevance | unused, weighable, ruled out by a shipped fact | thread confirmed unused and present; I did not test an arithmetic reproduction of a graded quantity from either | partly verified |
+| Deliverables | 1 to 3, all in golden, no format family required | 2 (pdf, xlsx); both in golden/ | yes |
+| Asks | multi-dimensional, unit and rounding stated | 12-figure asks each, rounding in the prompt | yes |
+| Prompt shape / rubric | identifiable, 25 or more criteria | shape 01; about 33 graded figures (call, value, 6 candidates, 12 + 12) | yes |
+| Reads real, not LLM generated | clean | thread found nothing; the golden/ files were not inspected by me | not independently checked |
 
 ## Gate G reconciliation
-The thread's mechanism (statistical rigor: heterogeneous price response and adverse selection on honest data) matches
-the card's stump_class analytical and the note's decisive step. No distractor named as the surface read.
+Thread: decomposition_attribution, surface_read_dependency no, sole_data_defect no. Design note and card: strategy decomposition_attribution (gap population, generators G8 and G3). Match. The surface read the thread names as carrying the task is crediting every breaker ticket to its own backbone, not either declared distractor (vegetation work orders, recloser settings), so the distractors are not too load-bearing. Residual risk: every ticket is true as recorded, but the attribution rests on a fact stated in no field or sentence (the design's readability screen marks it "silent"); the thread treats it as FINE-numbers attribution, and the design's Three rules lines are consistent. The main thread should weigh this with the blind readers' result.
 
 ## Stump power (Gate F)
-The thread rated it good once the figure is fixed: the pooled route names Lifetime Dog at +1.06 and the split route
-turns Lifetime Dog negative. The scored readers measured otherwise: reader A named Essentials with a claims-aware
-retention model by product (lifetime claimants almost never leave) without marking any condition, so the decisive
-step is reachable by a standard covariate reflex.
+Good. The easy route (sum breaker and recloser tickets, take F-112 at 455,400) is what the design's own call-only probes filed. The decisive cross-feeder same-minute check is never prompted. The over-correction (drop all breaker tickets) files F-301, a second wrong answer. The asks add device-time and handheld-format traps. Gate H reconciliation: thread `domain: pass`, `layers: pass`, `decisive_step: analytical`; design note Three rules and card agree (common-cause attribution by origin; swap test fails). No case of classing the decisive step analytical merely because the method is standard: the thread reached the golden only after testing sibling-feeder coincidence, a judgment the data had to settle.
 
 ## Findings, ranked
-1. The headline figure is not forced at CAD 0.1 million (SEND_BACK).
-2. Components 1 and 2 depend on the unfiled condition marking.
-3. The dictionary states the menu as it stood at the extract; the golden reads the earlier option from the wrap codes.
-4. Letters-only complaints carry no received date; one case sits on a quarter boundary.
-5. Step 7's "ten days later" does not execute literally against the banking-day roll.
+1. Ask-level fork: restoration source for the storm record (workbook ask 1). FIX_NOW, optional one-line pin of the WHAT.
+2. Ask-level fork: legacy handheld ticket format and closing-day OUT_DT (workbook ask 2). Optional pin; it would lower that ask's difficulty slightly.
+3. Judge ran on the pre-rebuild unzip; I verified the main call, storm record and taps figures on the rebuilt pack and they match. The thread did not itself test a distractor-arithmetic reproduction.
+4. Hygiene PASS, no exclusion-level finding; provenance and license are recorded in metadata.json (CC0, original work).
 
 ## Next action for the author
-Architecture 1 is spent (reader A landed the call, the judge returned SEND_BACK and both readers took every ask cell):
-re-root task303 at stage 1.
+Decide whether to pin the two ask-level semantics in oms_export_notes.txt and the prompt (file the WHAT only, not the method); if not, ship as is, accepting the two ask forks. The main call needs no change.

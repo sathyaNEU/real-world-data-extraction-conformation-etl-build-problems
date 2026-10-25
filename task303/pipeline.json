@@ -1,34 +1,34 @@
 {
  "task": "task303",
  "owner": "perssathya",
- "status": "DESIGN",
+ "status": "PAUSED",
  "domain": "energy-systems-utilities",
  "objective": "opportunity-sizing-decision",
- "stage": 2,
- "stage_name": "design",
+ "stage": 4,
+ "stage_name": "check",
  "updated": "2026-10-25",
- "stump": "A competent solver credits every feeder-breaker and line-recloser ticket caused by vegetation, wind or wildlife outside the major event days to the feeder's own backbone and converts F-112 at about 356,000 customer-minutes a year, where the golden is F-205 at about 263,000; the step that lands it there is reading each Pell Creek breaker ticket as a fault on F-112's backbone, when the tickets all three Pell Creek feeders open in the same minute are losses of the substation's supply, which the conversion cannot prevent.",
+ "stump": "A competent solver credits every feeder-breaker and line-recloser ticket caused by vegetation, wind or wildlife outside the major event days to the feeder's own backbone and converts F-112 at 455,400 customer-minutes a year, where the golden is F-205 at 237,600; the step that lands it there is reading each Pell Creek breaker ticket as a fault on F-112's backbone, when the tickets all three Pell Creek feeders open in the same minute are losses of the substation's supply.",
  "architecture": 2,
- "loops": 0,
+ "loops": 2,
  "precut": {
-  "exit": null,
-  "date": ""
+  "exit": 0,
+  "date": "2026-10-25"
  },
  "leak": {
-  "leak_py": "",
-  "reader": ""
+  "leak_py": "REVIEW (benign: feeder numbers, the plan's scope sentence and coincident figures in the exports; column names protective_device are the domain's term)",
+  "reader": "round 1 (66cc0eca): both readers filed F-112 at 455,400 (call held); asks leaked 26 and 14 of 30, so both ask devices were re-sited one level below each repair; round 2 (784cd964): both filed F-112 and kept 2 of 30 (no ask cell), measured pair 16.5, PASS"
  },
  "duplicate_check": {
-  "heart": "",
+  "heart": "WARN (people.first, repeat.gate_g, repeat.decision, repeat.question_form; answered in the note)",
   "nearest": "task127 v2 at 0.08 (abstraction test answered in the note)"
  },
  "judge": {
-  "verdict": "",
-  "disposition": "",
-  "report": ""
+  "verdict": "r2 DETERMINISTIC (784cd964); r3 re-judge running on c2fb8f15",
+  "disposition": "r2 FIX_NOW on two ask-level forks (storm restoration source; handheld conventions) and the storm-days wording, fixed by filing the first levels in oms_export_notes.txt and rewording the prompt",
+  "report": "task303/determinism_check_report.md (run r2)"
  },
  "returned": [],
- "resume": "Stage 2, architecture 2 (Shenmore Valley Electric's 2027 backbone conversion, F-205 against F-112, the Pell Creek breaker tickets every feeder opens in the same minute being losses of the substation's supply): card v2 registered 2026-10-25 17:59 UTC, note sections Draw, Three rules, Default path and Stump sentence written, prototype world4.py seed 42 and the probe pack builder in scratch p303uo; both call-only probes (r303ua, r303ub) filed F-112 at 356,000. Next: the ladder, readability screen, fork and closure tables, the asks and their silent devices, the prompt, precut; then the generator in task303/generator.",
+ "resume": "PAUSED at stage 4, architecture 2, target.zip c2fb8f15 (asks re-sited: ask A the contract crews' devices on Eastern standard time, ask B the handheld tickets dated the day they closed; storm tickets folded off 23:25; r2 judge's ask forks fixed). Every gate passes: checks 0, verify 0, byte-identical, figures_check 60, precut 51, leak.py REVIEW, heart WARN, scrub clean, pair 30.8, round 2 readers 2 of 30 each. Next: the one owed re-judge (run r3) on c2fb8f15; if /tmp/determinism-check-task303-r3/verdict.md is gone, re-invoke the determinism-judge for r3, spawn its thread from the brief, then hand the verdict back for the report; then ship (SHIPPED commit with target.zip and golden/ forced, ledger row 303, board).",
  "approved": null,
  "delivered": null,
  "portal": null,

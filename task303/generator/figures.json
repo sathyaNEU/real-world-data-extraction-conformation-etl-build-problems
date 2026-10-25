@@ -1,0 +1,204 @@
+{
+ "call": {
+  "feeder": "F-205",
+  "figure": 237600,
+  "figure_exact": 237614.79,
+  "runner_up": "F-112",
+  "runner_up_figure": 137800,
+  "substation": "Sorrel Hill",
+  "value": 499000,
+  "value_exact": 498991.05
+ },
+ "candidates": {
+  "F-112": {
+   "backbone_miles": 12.6,
+   "cost_musd": 5.3,
+   "exact": 137770.71,
+   "figure": 137800,
+   "rank": 2,
+   "substation": "Pell Creek"
+  },
+  "F-114": {
+   "backbone_miles": 11.2,
+   "cost_musd": 4.7,
+   "exact": 29634.3,
+   "figure": 29600,
+   "rank": 6,
+   "substation": "Pell Creek"
+  },
+  "F-205": {
+   "backbone_miles": 14.4,
+   "cost_musd": 6.0,
+   "exact": 237614.79,
+   "figure": 237600,
+   "rank": 1,
+   "substation": "Sorrel Hill"
+  },
+  "F-208": {
+   "backbone_miles": 12.4,
+   "cost_musd": 5.2,
+   "exact": 38986.46,
+   "figure": 39000,
+   "rank": 4,
+   "substation": "Sorrel Hill"
+  },
+  "F-301": {
+   "backbone_miles": 14.2,
+   "cost_musd": 6.0,
+   "exact": 67316.01,
+   "figure": 67300,
+   "rank": 3,
+   "substation": "Byers Mill"
+  },
+  "F-303": {
+   "backbone_miles": 10.5,
+   "cost_musd": 4.4,
+   "exact": 32085.77,
+   "figure": 32100,
+   "rank": 5,
+   "substation": "Byers Mill"
+  }
+ },
+ "default": {
+  "F-112": {
+   "exact": 455449.5,
+   "figure": 455400
+  },
+  "F-114": {
+   "exact": 285449.27,
+   "figure": 285400
+  },
+  "F-205": {
+   "exact": 237614.79,
+   "figure": 237600
+  },
+  "F-208": {
+   "exact": 38986.46,
+   "figure": 39000
+  },
+  "F-301": {
+   "exact": 132075.9,
+   "figure": 132100
+  },
+  "F-303": {
+   "exact": 83255.91,
+   "figure": 83300
+  }
+ },
+ "default_pick": "F-112",
+ "fdr_example": 112,
+ "hmm_example": {
+  "minutes": 448,
+  "text": "7.28"
+ },
+ "hmm_max_after_point": 59,
+ "rate": 2.1,
+ "shared": {
+  "F-112": {
+   "addressed_cmi_a_year": 317700,
+   "tickets": 12
+  },
+  "F-114": {
+   "addressed_cmi_a_year": 255800,
+   "tickets": 12
+  },
+  "F-205": {
+   "addressed_cmi_a_year": 0,
+   "tickets": 0
+  },
+  "F-208": {
+   "addressed_cmi_a_year": 0,
+   "tickets": 0
+  },
+  "F-301": {
+   "addressed_cmi_a_year": 64800,
+   "tickets": 3
+  },
+  "F-303": {
+   "addressed_cmi_a_year": 51200,
+   "tickets": 3
+  }
+ },
+ "storm": {
+  "F-112": {
+   "ci": 28199,
+   "cmi": 11615000,
+   "cmi_exact": 11614771,
+   "per": 411.9,
+   "per_exact": 411.8859
+  },
+  "F-114": {
+   "ci": 16993,
+   "cmi": 5773000,
+   "cmi_exact": 5773110,
+   "per": 339.7,
+   "per_exact": 339.7346
+  },
+  "F-205": {
+   "ci": 18634,
+   "cmi": 7332000,
+   "cmi_exact": 7332062,
+   "per": 393.5,
+   "per_exact": 393.4776
+  },
+  "F-208": {
+   "ci": 15019,
+   "cmi": 6210000,
+   "cmi_exact": 6210057,
+   "per": 413.5,
+   "per_exact": 413.4801
+  },
+  "F-301": {
+   "ci": 24504,
+   "cmi": 9952000,
+   "cmi_exact": 9951819,
+   "per": 406.1,
+   "per_exact": 406.1304
+  },
+  "F-303": {
+   "ci": 10448,
+   "cmi": 4391000,
+   "cmi_exact": 4391082,
+   "per": 420.3,
+   "per_exact": 420.2797
+  }
+ },
+ "taps": {
+  "F-112": {
+   "per": 125.1,
+   "per_exact": 125.1049,
+   "year": 23840,
+   "year_exact": 23841.43
+  },
+  "F-114": {
+   "per": 116.3,
+   "per_exact": 116.2805,
+   "year": 14450,
+   "year_exact": 14452.0
+  },
+  "F-205": {
+   "per": 119.2,
+   "per_exact": 119.1969,
+   "year": 25950,
+   "year_exact": 25950.86
+  },
+  "F-208": {
+   "per": 116.5,
+   "per_exact": 116.4658,
+   "year": 9000,
+   "year_exact": 9001.14
+  },
+  "F-301": {
+   "per": 110.6,
+   "per_exact": 110.5756,
+   "year": 16410,
+   "year_exact": 16412.57
+  },
+  "F-303": {
+   "per": 118.5,
+   "per_exact": 118.4725,
+   "year": 13540,
+   "year_exact": 13539.71
+  }
+ }
+}
