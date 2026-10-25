@@ -156,6 +156,30 @@ time). `precut.py` refuses an unresolved row; `checks.py` asserts every row.
   **C2 confirm** (a filed criterion shown on closed data to select one candidate, never recovering an
   unfiled rule); **C3 corridor** (the parameter unrecoverable, the answer identical across its range);
   **C4 separate** (every cell mapped to the sentence it violates, nearest wrong cell at least 6 per cent).
+- **When the rival route is another correction of the same graded quantity, all four closure moves are
+  exhausted and none of them closes it.** Worked on a build whose decisive step corrects a classifier's
+  marks with its recall and false-mark rate, and whose open seventh cell is a calibration of the hand code
+  on the mark plus a month index, extrapolated past the audited months: it files 504 and prints 500 against
+  a golden of 450, and a blind reader confirmed both the figure and that nothing in the bundle rules it in.
+  - **C1 converge** aligns the data so the rival agrees, which here means making the month term extrapolate
+    the drift correctly. The rival then becomes a second correct route, so a solver who fits any month trend
+    files the golden and Gate F pays for what Gate C gained.
+  - **C2 confirm** needs a filed criterion that distinguishes the two corrections. The distinguishing
+    property is that one is free of how common the class was inside the audited months and the other is not,
+    **which is the decisive step itself**, so filing the criterion hands over the stump (the Part 4 pin test:
+    delete the clause and the answer stops being forced, which is exactly why it is load-bearing, and
+    exactly why it leaks).
+  - **C3 corridor** needs the answer invariant across the parameter's range, but the parameter is what the
+    two corrections disagree about.
+  - **C4 separate** needs a shipped sentence the rival violates, which is C2 under another name.
+
+  So a build in this position is not repaired, it is re-rooted, and the finding is structural rather than
+  particular: **two corrections of one graded quantity cannot be separated by the record without either
+  naming the separating property or making them agree.** Check it at design time, not at the judge: list
+  every correction of the graded quantity a competent analyst could apply, and if two survive, the decisive
+  step is the wrong shape. This is the Gate C against Gate F dial stated as an enumeration over the closure
+  moves rather than as a tendency.
+
 - **Pin at authority, once** (Part 6.1). The prompt carries the question and no convention. Sweep for
   sentences quotable against the answer and qualify or remove them.
 - **Measure the edge, not the centre.** For a value `v` printed to a unit `u`, the printed cell is centred
