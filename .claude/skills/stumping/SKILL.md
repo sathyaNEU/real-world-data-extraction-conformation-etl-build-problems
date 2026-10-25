@@ -1175,11 +1175,36 @@ the step is a reflex and the build is drawn elsewhere. Twice measured, on two di
 builds' readers landing the call. **2 Schema:** a column, key or marker makes it a row
 predicate or a header-found join. **3 Reflex:** an opponent default. **4 Control bench:** a control or
 corpus scores the rules or refutes the naive read. **5 Hygiene:** the battery finds it (73 v2, 117). **6
-Linear:** one subtraction, ratio or half of a reported figure. The note gives a row per rung, verdict
-last, the decisive row `silent`. Shapes that held: every reflex lands wrong (181); the maturity attack
-(the graded object crystallises after the extract, closed periods tie because developed, the tail sits in
-a registry the natural pipeline never joins, no as-of dates; 73 world seven); a quantity believed to need
-no construction (60 v4).
+Linear:** one subtraction, ratio or half of a reported figure. **7 Dedicated organ:** delete the decisive
+step from the design and ask whether the pack would still carry the file, column, instrument or corpus that
+makes the golden computable. If it would not, its presence announces the step. The note gives a row per
+rung, verdict last, the decisive row `silent`. Shapes that held: every reflex lands wrong (181); the
+maturity attack (the graded object crystallises after the extract, closed periods tie because developed,
+the tail sits in a registry the natural pipeline never joins, no as-of dates; 73 world seven); a quantity
+believed to need no construction (60 v4).
+
+**Test 7 is the one the other six miss, and it is the lane's measured cause.** Determinism requires the
+remedy to be shippable, because a golden nobody can compute fails Gate A. Gate F requires the remedy to be
+invisible. When the remedy is an organ of its own those two requirements resolve against Gate F every time,
+because **anything shipped to make the answer computable is shipped to the solver too**. Measured on two
+builds in one sitting, each with a blind reader holding only the pack, the prompt and the figure names:
+- One shipped a sensitive-limit laboratory beside a legacy-limit one so that censored readings could be
+  recovered. Its reader wrote that the legacy limit is twice the standard so its non-detects say nothing,
+  substituted each one with the same-month mean of the sensitive laboratory's results for that water body,
+  landed the call on members and count, and reported all five rung counts unprompted. The recovery is the
+  decisive step; the second laboratory exists only to make it possible; the reader read it off the pack.
+- One left the construction of a null unfiled so the analyst would have to choose. Its reader chose a
+  permutation null over each pair's own first-receipt dates, said in as many words that the standard does
+  not say how to build it and that the choice was its own, and landed the count. Silence licenses a
+  defensible choice, and the licensed choices agreed: three of them filed the same figure.
+
+So the escape is not a better-hidden organ but a **multi-purpose** one: the remedy must be a property of
+records the organisation ships for a reason it independently has, so that its presence carries no
+information about the decisive step. This is the general form of the attribution law in Part 6 (the record
+that identifies an unlabelled quantity is the one nobody has a reason to keep) and of the design-matrix
+closure (what closes the estimator family is what makes the construction one line): both are test 7 read
+on a particular organ. Run it on the decisive rung before any data is cut, and again on the finished pack,
+where the question is answerable by inspection: name the organ, then name the other use.
 
 ### 2.2 No semantic fork on the main recommendation
 

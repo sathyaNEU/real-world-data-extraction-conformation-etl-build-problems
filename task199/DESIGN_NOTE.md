@@ -647,3 +647,4 @@ path and the prompt's call sentence.
   `ban.shape` on shape 10 against task245, `ban.strategy` on causal_design against task163, and
   `test.same_puzzle_older` on gap, pattern and decision type against task268 v2 with no differentiation on
   the card. A re-root has to redraw the shape and the strategy whatever it does with the ground.
+- **(2026-10-25, measured) Re-measured with the scorer: call landed and ask layer whole.** `score_reader.py` on the stored reader answers: **2 of 2 call figures hit** (Tibu, 92.2 per 100k) and **4 of 4 ask figures (100.0 per cent)**, with the call's window input also hit. The construction being an identity is the diagnosis this note already carries; the reader is the independent confirmation, and it rules out an ask-only repair.

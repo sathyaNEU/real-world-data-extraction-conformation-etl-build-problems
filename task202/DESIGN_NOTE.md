@@ -1810,3 +1810,4 @@ a quantity that stays unobserved while a second file at another grain pins it th
 fixes with no free parameter. The two housekeeping findings still stand and still block a successor: the
 v1/v2 card carries no `architecture_spent`, so its axes fence off ground no live build occupies, and
 `guard.py names --geo PH` has no locale mapped and returns the en_US pool.
+- **(2026-10-25, measured) The ask layer leaks 100.0 per cent, on a pack whose call the reader missed.** `score_reader.py` on the stored reader answers: the call missed (0 of 1, the reader filed PHP 6,000 against 8,000) and **19 of 19 ask figures hit**, every quarter of the held series among them. So the architecture 3 refusal recorded above is not the only thing owed here: even a re-rooted call inherits an ask layer measured at the ceiling, and the devices have to be re-sited onto the reader's own route before the pair can clear the bar.

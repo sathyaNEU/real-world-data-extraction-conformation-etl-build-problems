@@ -815,3 +815,4 @@ written to pass. Nine lines hold, three fail, and the client's own test is answe
   paired comparison of two classifiers, which is the textbook first move on that 2 x 2 rather than a
   judgment the data settle. The library test fires: the golden is a card's method applied as the card
   states it, and the blind reader landed it in one pass at about 70 per cent confidence.
+- **(2026-10-25, measured) Re-measured with the scorer, and the architecture is confirmed spent from the other side.** `score_reader.py` on the stored reader answers: the reader **landed the call, 1 of 1** (0.030), and took **26 of 30 ask figures (86.7 per cent)**. Both halves fail at once, so neither hardening the ladder nor re-siting the devices reaches it; the number needs a re-root, which is what the stage-2 measurement already concluded on the family spread.
