@@ -1,18 +1,18 @@
 {
   "task": "task269",
-  "architecture": "v3 (Pellbrook Metro's 2027 headway management programme: which four of the eight frequent bus routes get the operator's supervisor teams, ranked on the excess wait per weekday-peak boarding on each route's frequent corridor in the August census fortnight, each rider's wait measured against the buses that serve the stop they tag off at)",
-  "drawn": "2026-10-19",
-  "slot_note": "re-drawn at architecture 3, the number's last, in a new domain: the bus world of seed DA20 (the headway programme, eight frequent routes, four branching beyond a shared corridor), its frequent-network population step a WHAT and so not taken; task270 draws its own world",
-  "domain": "urban-regional-science",
-  "subdomain": "network-analysis",
-  "client_domain": "urban-regional-science",
-  "niche": "a frequent bus network whose four branched routes send alternate buses to two branches beyond a shared corridor, so a corridor rider bound for a corridor stop can take either branch's bus and one bound for a branch only that branch's",
+  "architecture": "v4 (Tillford County's FY2027 budget: whether the Board of Commissioners funds a county-wide single-family reappraisal, read on the State Tax Commission's ratio study standard for the certified 2026 roll, whose assessor reviewed every parcel sold in 2025 and moved its value toward its price while every other parcel was trended by its neighbourhood's factor)",
+  "drawn": "2026-10-25",
+  "slot_note": "re-drawn 2026-10-25 at architecture 4 in a fresh world at the author's direction (no number in the lane is retired); the world, decision and quantity are new, the pitfall re-found from the data: a ratio study's sales sample the roll only if the sold parcels were valued like the unsold ones",
+  "domain": "general-statistics-data-science",
+  "subdomain": "missing-data-censoring-measurement-error",
+  "client_domain": "general-statistics-data-science",
+  "niche": "a county board's decision to budget a county-wide single-family reappraisal, judged on the state ratio study of a roll whose assessor revalued the parcels sold in the study year toward their own sale prices while trending every other parcel by its neighbourhood's factor",
   "objective": "descriptive-distribution",
-  "shape": "01",
-  "decision_type": "ranked_slate_under_cap",
-  "answer_unit": "set_of_items",
-  "answer": "Give the 2027 headway supervisor teams to routes 3, 7, 31 and 40.",
-  "answer_source": "task269/submission.md, block 1 (Final Recommendation); retired 2026-10-19, not shipped",
+  "shape": "other",
+  "decision_type": "go_hold_or_stop",
+  "answer_unit": "named_option",
+  "answer": "",
+  "answer_source": "",
   "gap": [
     "population"
   ],
@@ -20,76 +20,90 @@
     "none"
   ],
   "generators": [
-    "G2",
-    "G16"
+    "G16",
+    "G17"
   ],
   "gate_g": "method_or_model_selection",
   "calibration_form": "none",
-  "stump_strategy": "grain_or_unit",
+  "stump_strategy": "population_selection",
   "decisive_rule_filed": false,
   "official_decoy": false,
   "validated_decoy": false,
-  "context_artifact": "published_series",
+  "context_artifact": "filed_standard",
   "stump_class": "analytical",
-  "analyst_test": "A strong analyst who reads every file and rule correctly works each route's excess wait at its corridor timing points from all of the route's departures (the standard's average wait under random arrival, less the timetable's), weights it by the route's corridor boardings and gives the teams to routes 3, 7, 14 and 31; on the four branched routes alternate buses serve different branches, so a rider bound for a branch can take only that branch's buses, and measuring each rider's wait against the buses that serve the stop they tag off at drops route 14 and puts 40 in.",
-  "domain_test": "The deciding quantity is the expected excess wait of passengers arriving at random at a stop on a shared corridor, worked over the attractive set of lines serving each rider's destination (the common-lines problem of transit network analysis), riders bound for the corridor facing both branches' combined headways and riders bound for a branch only that branch's; with another field's nouns (patients for riders, wards for routes) there are no headways, random arrivals or branches sharing a trunk, so the task stops reading the same.",
-  "layer2_family": "field_method",
-  "layer2_pattern": "own:common-lines-wait-over-each-riders-attractive-set",
+  "analyst_test": "A strong analyst who reads every rule and field correctly runs the State's ratio study on the 2025 arm's-length single-family sales, each price carried to 1 January 2026 by the county index and set against the parcel's certified 2026 value, finds a median of 0.95 and a COD of 8, and files that the roll meets the standard and the reappraisal stays out of the budget, though the assessor reset the sold parcels' values toward their prices (up a median 14.9 per cent against 3.4 for the unsold parcels) so the sales no longer sample the roll, and the sold parcels' 2025 values carried forward by their neighbourhoods' factors, with the reset parcels at their 6.7 per cent share, put the roll at 0.87 and 18, failing both tests.",
+  "domain_test": "The deciding quantity is the median and coefficient of dispersion of every single-family parcel's 2026 assessment ratio, a measurement-error distribution known only on the sold parcels, and the field's own analysis is the ratio study with its test of whether the sales sample the roll (sold against unsold parcels' value changes, the sales-chasing screen of mass appraisal) and the sold parcels' prior values carried forward as the out-of-sample measure; replacing that estimate with the sales' own statistics flips the call, and in another field's nouns no recorded value is reset from the very price that measures it.",
+  "layer2_family": "estimand_identification",
+  "layer2_pattern": "own:a-ratio-study-whose-sales-were-used-to-reset-the-values-it-measures",
   "layer1": [
-    "the location vendor's timing-point departures as first released and as revised after its unmatched pings were re-run, both covering the fortnight",
-    "near-duplicate departure records where a bus reopened its doors at a timing point",
-    "tag-on and tag-off journeys with a few per cent of tag-offs missing (default fares)",
-    "two timetable feeds, the second in force from Monday 17 August with new running times on every frequent route",
-    "stops renumbered at a relocation during the fortnight, recorded in the stop changes log"
+    "the 2025 roll exported by the county's retired appraisal system as a workbook with dashed parcel numbers and neighbourhood names, the 2026 roll from its replacement as CSV with undashed numbers and neighbourhood codes",
+    "parcels split or combined between the two rolls, the new numbers traced in the assessor's parcel change log",
+    "the recorder's sales extract with non-market transfers coded U, deeds conveying more than one parcel and re-recorded corrective deeds",
+    "building permits picked up in the 2026 values, some on parcels sold before the work was finaled",
+    "Board of Review reductions of 2025 values carried into the 2026 base, and the assessor's data corrections on a few per cent of parcels",
+    "the county price index published monthly to one decimal on a January 2025 base"
   ],
-  "stakeholder_role": "Pellbrook Metro's network performance manager (Pellbrook City Council's public transport business), who runs the headway management programme and puts its 2027 routes to the council's Public Transport Committee",
-  "role_family": "capacity_planner",
-  "scoring_unit": "per boarded entity",
+  "stakeholder_role": "budget and policy analyst in the Tillford County Administrator's office, preparing the Board of Commissioners' FY2027 budget",
+  "role_family": "policy_adviser",
+  "scoring_unit": "other",
   "spine": {
-    "file": "avl_timingpoint_departures_census_revised.csv",
-    "rows": 55434,
-    "entity": "one bus's departure from one timing point on one trip on one service day",
-    "grain": "trip x timing point x service day",
+    "file": "assessor_roll_2026_certified.csv",
+    "rows": 0,
+    "entity": "one parcel on the certified 2026 assessment roll with its assessed land, improvement and total values",
+    "grain": "parcel",
     "source": "synthetic",
-    "row_meaning": "the location vendor's revised record of a bus leaving a timing point",
-    "source_dataset": "constructed (seeded generator; the city, its transport agency, the bus operator and people are fictional)"
+    "row_meaning": "the assessor's certified 2026 value of one parcel as at 1 January 2026",
+    "source_dataset": "constructed (seeded generator; the county, its state, offices and people are fictional)"
   },
-  "forum": "committee_or_panel",
-  "forcing_event": "vote_or_meeting",
+  "forum": "council_or_assembly",
+  "forcing_event": "budget_or_appropriation",
   "org_family": "local_government",
   "world": {
-    "geography": "Australia (the city of Pellbrook, its council's public transport business, the bus operator and people are fictional)",
-    "currency": "AUD",
-    "org_type": "city council's public transport business (the frequent routes run under contract)",
+    "geography": "United States (Tillford County and its state are fictional)",
+    "currency": "USD",
+    "org_type": "county government (the County Administrator's office for the Board of Commissioners; the elected County Assessor certifies the roll)",
     "invented_names": [
-      "Pellbrook",
-      "Pellbrook Metro",
-      "Pellbrook Bus Company"
+      "Tillford County",
+      "Tillford County Assessor",
+      "State Tax Commission"
     ],
     "people": [
-      "Mary Patton",
-      "Jason Neal"
+      "David Griffin",
+      "Kristen Valdez",
+      "Justin Saunders",
+      "Russell Evans",
+      "Paul Parker",
+      "Nicole Rodgers"
     ]
   },
   "people": [
-    "Mary Patton",
-    "Jason Neal"
+    "David Griffin",
+    "Kristen Valdez",
+    "Justin Saunders",
+    "Russell Evans",
+    "Paul Parker",
+    "Nicole Rodgers"
   ],
   "deliverables": [
-    "pellbrook_2027_headway_programme_routes.xlsx",
-    "excess_wait_by_route_census_2026.png"
+    "fy2027_reappraisal_decision_memo.docx",
+    "ratio_study_2026_single_family.xlsx",
+    "assessment_ratios_2026_by_market_area.png"
   ],
   "opening_move": "question-first",
-  "question_form": "which",
-  "driver": "The decisive quantity is the expected excess wait of units arriving at random at a point served by interleaved streams of departures, where units bound for some destinations can take any stream and units bound for others only one, so each unit's wait is worked over the departures serving its own destination, read from a second file at the unit's grain; the measure over all departures overstates the units tied to one stream wherever the streams bunch with each other, and the measure over the stream each unit happened to take understates the units that could take any.",
-  "driver_concrete": "Each corridor rider's excess wait at the timing point is worked from the headways of the buses serving the stop they tag off at, riders bound for corridor stops (and every inbound rider) over both branches' combined departures and riders bound for a branch over that branch's alone, so routes whose branches run as bunched pairs while each branch keeps its own interval fall back and the four routes are 3, 7, 31 and 40, not the route-level measure's 3, 7, 14 and 31.",
-  "stump": "A competent solver works each route's excess wait from all of its departures at the corridor timing points, weights it by corridor boardings and gives the teams to routes 3, 7, 14 and 31 (or, splitting by the branch of the bus each rider boarded, drops route 7 for route 9); the step that lands it there is taking the route, or the boarded bus, as each rider's service when a rider bound for a branch can take only that branch's buses and one bound for the corridor either.",
+  "question_form": "whether",
+  "driver": "The decisive quantity is the level and spread over a whole population of a ratio of each unit's recorded value to its true value, where the true value is observed only for units an event sampled and the keeper of the record reset the sampled units' recorded values from those very observations, so the sample's ratios sit tighter and nearer the target than the population's; only each sampled unit's recorded value from before the event, carried forward at the change the unsampled units received, mixed with the reset units at their share of the population, measures it.",
+  "driver_concrete": "The 2026 roll's median assessment ratio and COD over every single-family parcel, evidenced by the 2025 arm's-length sales: the assessor reviewed each sold parcel and moved its 2026 value toward its price while trending every other parcel by its neighbourhood's factor, so each sold parcel's 2025 value times its neighbourhood's factor (the unsold parcels' median change), over its indexed price, stands for the 93.3 per cent of the roll that did not sell, the sold parcels' own ratios for the rest.",
+  "stump": "A competent analyst runs the State's ratio study on the 2025 arm's-length sales against the certified 2026 values (median 0.95, COD 8) and files that the roll meets the standard and the reappraisal stays out of the FY2027 budget; the sold parcels' values were reset toward their prices (up 14.9 per cent at the median against 3.4 for the unsold parcels), so only their 2025 values carried forward by the neighbourhood factors, mixed with the reset parcels at their share of the roll, show it failing both tests (median 0.87, COD 18).",
   "mechanism_source": "design_note",
   "differentiation": {
-    "task263": "task263 recovers each source's own level from samples that blend the sources by a mass balance; nothing here is blended or recovered: each rider's expected wait is worked over the departures serving that rider's destination, a usable set read from the rider's tag-off, and the error corrected is waiting counted against buses the rider could not take.",
-    "task120": "task120 v1 forms a unit no file stores through a two-hop join before cutting percentiles; here the unit, the rider's journey, sits on every row, and the decisive move is which departures make up that rider's wait, not which records group.",
-    "task239": "task239 nets member-level covariance out of group means in a factor analysis; nothing here is a covariance: the expected wait under random arrival is worked over a destination-dependent subset of interleaved departure streams.",
-    "task264": "task264 v1 moves the unit up to the chain that sets a price so volume shifts between setters do not pass for price change; here the move goes below the route to the departures each rider can take, set by where that rider is going."
+    "task104": "task104 replays a self-adapting scorer whose flags withheld observations from its own reference, so its log describes only the setting it ran at; here no setting is replayed: the roll's values for the sold parcels were reset from the very prices that measure them, and the roll's accuracy is estimated out of sample from those parcels' values before the review.",
+    "task134": "task134 v1 estimates an event probability under competing exits and follow-up cut short; nothing here is a time to an event: the quantity is the level and dispersion of a ratio distribution, and the sample's defect is that its units' recorded values were reset from the measurement, not that they are followed short.",
+    "task177": "task177 v1 separates imposed from chosen experiences in a conversion rate learned from the record; nothing here converts: the sold parcels' ratios are the in-sample accuracy of a valuation the sale itself reset, and the remedy is each parcel's prior value carried forward, not a separate rate.",
+    "task463": "task463 builds a price index's change over a span by avoiding chained weights through sale periods; no index is built here: the county index is filed and only carries prices to the assessment date, and the decisive move is which values stand for the parcels that did not sell.",
+    "task480": "task480 v1 reads an instrument's under-recording from units of the same kind whose instrument was not replaced; here the instrument (the roll) is not replaced but refitted to the sampled units, and its error over the whole population comes from the sampled units' own values before the refit.",
+    "task501": "task501 sets whether a chain process can sustain itself by a mixing matrix's dominant eigenvalue; nothing here is a matrix or a threshold of spread: the median and dispersion of a ratio distribution are estimated for a roll whose sample was reset.",
+    "task70": "task70 v2 constructs a per-record date with a class-conditional cut that a filed clause bars; nothing here is a date or a filed bar: the sold parcels' values were reset by the assessor's review, which no clause states and no field marks.",
+    "task275": "task275 raises an observer scheme's discards where being observed changes the fishing itself, so the outcome moves and the unobserved trips are rebuilt from a catch rate the observation did not touch; here the outcome (each parcel's market value) is untouched by the sale and it is the measuring record that was refitted to the sampled units, so the population is measured from the record as it stood before the refit, carried forward, and mixed with the refitted units at their share."
   },
   "lineage": [
     {
@@ -152,9 +166,38 @@
       "drawn": "2026-10-19",
       "stump": "A competent solver fits the 2026 marks' variance components with the stations and examiners random from one bank, counts the examiner's stringency as error for one examiner a station and files 16 stations; the step that lands it there is counting the candidate-by-domain variance as error, when the blueprint draws the same number of stations from each domain every year, so a candidate's domain strengths recur in every form and belong to what the total mark measures.",
       "fate": "spent 2026-10-19 at stage 4 round 3 (Gate F): of six scored readers five filed 16 stations by the pooled decision study and the sixth stratified the 2026 marks by the blueprint's domains under policy 4.2 and landed the call (13) and every reliability; the judge's pass 3 found Ask B's namesake device unfair, repaired before round 3"
+    },
+    {
+      "answer_unit": "set_of_items",
+      "decision_type": "ranked_slate_under_cap",
+      "domain": "urban-regional-science",
+      "driver": "The decisive quantity is the expected excess wait of units arriving at random at a point served by interleaved streams of departures, where units bound for some destinations can take any stream and units bound for others only one, so each unit's wait is worked over the departures serving its own destination, read from a second file at the unit's grain; the measure over all departures overstates the units tied to one stream wherever the streams bunch with each other, and the measure over the stream each unit happened to take understates the units that could take any.",
+      "forcing_event": "vote_or_meeting",
+      "forum": "committee_or_panel",
+      "gap": [
+        "population"
+      ],
+      "gate_g": "method_or_model_selection",
+      "generators": [
+        "G2",
+        "G16"
+      ],
+      "objective": "descriptive-distribution",
+      "org_family": "local_government",
+      "pattern": [
+        "none"
+      ],
+      "role_family": "capacity_planner",
+      "shape": "01",
+      "stump": "A competent solver works each route's excess wait from all of its departures at the corridor timing points, weights it by corridor boardings and gives the teams to routes 3, 7, 14 and 31 (or, splitting by the branch of the bus each rider boarded, drops route 7 for route 9); the step that lands it there is taking the route, or the boarded bus, as each rider's service when a rider bound for a branch can take only that branch's buses and one bound for the corridor either.",
+      "stump_strategy": "grain_or_unit",
+      "subdomain": "network-analysis",
+      "architecture": "v3 (Pellbrook Metro's 2027 headway management programme: which four of the eight frequent bus routes get the operator's supervisor teams, ranked on the excess wait per weekday-peak boarding on each route's frequent corridor in the August census fortnight, each rider's wait measured against the buses that serve the stop they tag off at)",
+      "drawn": "2026-10-19",
+      "fate": "spent 2026-10-19 at stage 4 on the judge's SEND_BACK: the departures that end a rider's wait are the outcome's definition, and the industry's route-level excess wait is a licensed literal reading of a standard that says 'the departures', so filing the set is rule application; the two scored readers missed the call"
     }
   ],
-  "notes": "World re-drawn from the seed DA19 at the draw (2026-10-19). Re-rooted the same day after v1 was spent at stage 4 on Gate F; the OSCE world and its operating files are kept, the decisive step moved from the examining arrangement (the reader's own route) to the blueprint's fixed domains. Architecture 2 spent at stage 4 on 2026-10-19: reader 6 of six stratified the decision study by the blueprint domains and landed the call. | v3 drawn 2026-10-19 as the number's last architecture: the shape, forum, forcing event, organisation, role and strategy redrawn against the window (task249, task468, task268); shape 10 (a scorecard against a threshold) was the first draw and is banned by task249, so the programme's cap of four routes makes it a ranked slate under a cap, which is how the programme is funded. | Redrawn at stage 3 on 2026-10-19 against task177 (registered 07:01, reaching this checkout only with the DRAWN pull): forum, forcing event and organisation family. The network is Pellbrook City Council's (Australian councils do run bus networks), so local_government is the honest organisation; the council's Public Transport Committee approves the programme's routes (committee_or_panel) at its November meeting (vote_or_meeting), and the operator's contract variation follows the approval. Architecture 3 spent 2026-10-19 at stage 4 on the judge's first pass (NOT_DETERMINISTIC, SEND_BACK): the standard's 'the departures' read as a route's departures at the timing point files the default path's 7, 14, 31 and 40, and which departures end a rider's wait is the outcome's definition (a WHAT), so filing it is rule application; both scored readers missed the call and landed every pilot figure. task269 retired; architecture_spent set so the card holds no axis ban.",
-  "registered": "2026-10-19T07:19:41Z",
-  "architecture_spent": true
+  "architecture_spent": false,
+  "notes": "World re-drawn from the seed DA19 at the draw (2026-10-19). Re-rooted the same day after v1 was spent at stage 4 on Gate F; the OSCE world and its operating files are kept, the decisive step moved from the examining arrangement (the reader's own route) to the blueprint's fixed domains. Architecture 2 spent at stage 4 on 2026-10-19: reader 6 of six stratified the decision study by the blueprint domains and landed the call. | v3 drawn 2026-10-19 as the number's last architecture: the shape, forum, forcing event, organisation, role and strategy redrawn against the window (task249, task468, task268); shape 10 (a scorecard against a threshold) was the first draw and is banned by task249, so the programme's cap of four routes makes it a ranked slate under a cap, which is how the programme is funded. | Redrawn at stage 3 on 2026-10-19 against task177 (registered 07:01, reaching this checkout only with the DRAWN pull): forum, forcing event and organisation family. The network is Pellbrook City Council's (Australian councils do run bus networks), so local_government is the honest organisation; the council's Public Transport Committee approves the programme's routes (committee_or_panel) at its November meeting (vote_or_meeting), and the operator's contract variation follows the approval. Architecture 3 spent 2026-10-19 at stage 4 on the judge's first pass (NOT_DETERMINISTIC, SEND_BACK): the standard's 'the departures' read as a route's departures at the timing point files the default path's 7, 14, 31 and 40, and which departures end a rider's wait is the outcome's definition (a WHAT), so filing it is rule application; both scored readers missed the call and landed every pilot figure. task269 retired; architecture_spent set so the card holds no axis ban. | v4 drawn 2026-10-25 at the author's direction to rebuild every reopened number in a fresh world: General Statistics & Data Science, a ratio study's sales reset by the assessor's review; probed before the draw on a prototype pack (one isolated call-only reader filed 'meets', 0.946 and 8.7).",
+  "registered": "2026-10-25T20:28:39Z"
 }

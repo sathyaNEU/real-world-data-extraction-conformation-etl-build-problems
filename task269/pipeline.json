@@ -1,51 +1,59 @@
 {
   "task": "task269",
   "owner": "sathay3012",
-  "status": "OPEN",
-  "domain": "urban-regional-science",
+  "status": "DESIGN",
+  "domain": "general-statistics-data-science",
   "objective": "descriptive-distribution",
-  "stage": 1,
-  "stage_name": "draw",
+  "stage": 2,
+  "stage_name": "design",
   "updated": "2026-10-25",
-  "stump": "The default path gives the 2027 supervisor teams to routes 7, 14, 31 and 40, because it works every corridor rider's excess wait from all of the route's departures; on the branched routes a rider bound for a branch can take only that branch's buses, which on route 14 keep an even interval while the branches run as bunched pairs, and only working each rider's wait over the departures serving the stop the rider taps off at puts route 3 in and route 14 fifth.",
+  "stump": "The default path runs the State's ratio study on the 2025 arm's-length sales against the certified 2026 values, finds a median of 0.95 and a COD of 8 and files that the roll meets the standard; the Assessor's office moved every sold parcel's value toward its price (up a median 14.9 per cent against the unsold parcels' 3.4), so each sold parcel's 2025 value carried forward by its neighbourhood's factor stands for the unsold parcels, and with the reviewed parcels at their 6.7 per cent share the roll's median is 0.87 and its COD 18: it fails both tests and the reappraisal goes into the FY2027 budget.",
   "architecture": 4,
   "loops": 0,
   "precut": {
-    "exit": 0,
-    "date": "2026-10-19",
-    "checks": 51
+    "exit": null,
+    "date": ""
   },
   "leak": {
-    "leak_py": "REVIEW 2026-10-19: the programme's own nouns in the guidelines, plan and contents list; the standard's own vocabulary; feeds as zips (all harmless, Build record)",
-    "reader": "two scored readers 2026-10-19: both missed the call (7, 14, 31 and 40, route 3 first below, the default path), both 20 of 25 ask figures (exit 1: every pilot figure recomputable from the plan and the timesheets); Q6 the standard's procedure"
+    "leak_py": "",
+    "reader": ""
   },
   "duplicate_check": {
-    "heart": "WARN 2026-10-19 (strategy risk, gate_g repeat and overuse, question form; answered in Draw item 9)",
-    "nearest": "task148 v2 0.11 (a queue whose units leave), others 0.06 or under",
-    "surface": "2 structural promotions (task263, task239: gap population and G2), both differentiated on the card; surface 0.092 and 0.077"
+    "heart": "",
+    "nearest": "",
+    "surface": ""
   },
   "judge": {
-    "verdict": "pass 1 NOT_DETERMINISTIC (main call: the standard's 'the departures' read as a route's departures at the timing point files 7, 14, 31 and 40; every golden figure reproduced under the branch-conditioned reading)",
-    "disposition": "SEND_BACK",
-    "report": "task269/determinism_check_report.md"
+    "verdict": "",
+    "disposition": "",
+    "report": ""
   },
   "returned": [],
-  "resume": "Reopened 2026-10-25 at the author's direction: no number in this lane is retired. Re-root at the draw in a fresh world, architecture 4; read DESIGN_NOTE.md's Tried and rejected first, every dead architecture and screen there stays dead.",
+  "resume": "Stage 2: write the readability screen, fork table, ladder, closure table, literal reader, oracles and the ask sheet (asks on the condominium class and the reappraisal's other inputs, never the call's own population), then prompt.txt to precut exit 0; the world is scratchpad t269v4b/w4.py seed 391 (golden 0.87 and 18, easy 0.95 and 8).",
   "approved": null,
   "delivered": null,
   "portal": null,
   "portal_id": "",
   "portal_status": "",
   "portal_status_date": "",
-  "seed": "analytical_tasks/03_descriptive_distribution/DA20_headway-supervisor-posts-frequent-network-segments.md (header and Situation only; the world and quantity taken at architecture 3, the seed's own step not; task270 draws its own world)",
-  "gates": {
-    "checks": "279 assertions, 0 failed",
-    "verify": "50 figures, 0 disagreements",
-    "rebuild": "byte-identical",
-    "figures_check": "80 figures, 0 absent",
-    "target_zip_md5": "ba9925bdf4330615e4a01dd0685a07d6"
-  },
+  "seed": "none: a fresh world drawn 2026-10-25 (Tillford County's ratio study), probed before the draw on a prototype pack",
   "history": {
-    "architecture_3": "v3 Pellbrook frequent network, each rider's excess wait over the departures serving the stop the rider taps off at (routes 3, 7, 31 and 40): built 2026-10-19, call held by two scored readers, judge SEND_BACK on the unfiled departure set; task269 retired"
+    "architecture_3": "v3 Pellbrook frequent network, each rider's excess wait over the departures serving the stop the rider taps off at (routes 3, 7, 31 and 40): built 2026-10-19, call held by two scored readers, judge SEND_BACK on the unfiled departure set; task269 retired",
+    "architecture_3_gates": {
+      "checks": "279 assertions, 0 failed",
+      "verify": "50 figures, 0 disagreements",
+      "rebuild": "byte-identical",
+      "figures_check": "80 figures, 0 absent",
+      "target_zip_md5": "ba9925bdf4330615e4a01dd0685a07d6"
+    },
+    "architecture_3_judge": {
+      "verdict": "pass 1 NOT_DETERMINISTIC (main call: the standard's 'the departures' read as a route's departures at the timing point files 7, 14, 31 and 40; every golden figure reproduced under the branch-conditioned reading)",
+      "disposition": "SEND_BACK",
+      "report": "task269/determinism_check_report.md"
+    },
+    "architecture_3_leak": {
+      "leak_py": "REVIEW 2026-10-19: the programme's own nouns in the guidelines, plan and contents list; the standard's own vocabulary; feeds as zips (all harmless, Build record)",
+      "reader": "two scored readers 2026-10-19: both missed the call (7, 14, 31 and 40, route 3 first below, the default path), both 20 of 25 ask figures (exit 1: every pilot figure recomputable from the plan and the timesheets); Q6 the standard's procedure"
+    }
   }
 }
