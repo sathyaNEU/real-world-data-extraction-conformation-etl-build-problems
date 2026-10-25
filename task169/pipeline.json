@@ -1,7 +1,7 @@
 {
  "task": "task169",
  "owner": "sathya8571",
- "status": "PAUSED",
+ "status": "SHIPPED",
  "domain": "criminology-justice",
  "objective": "forecasting",
  "stage": 5,
@@ -25,9 +25,9 @@
   "surface": "exit 0 (run with an in-memory guard for ledger rows whose artifact cell is '-', which crash clone-check fingerprint.py artifact_family on main), no personas; the shared rounding sentence with task177 reworded"
  },
  "judge": {
-  "verdict": "DETERMINISTIC / APPROVE, no fix (r2 on 4cd348a9)",
-  "disposition": "portal round 1's margin and competing-basis findings closed in the world; blind 19.7 per cent, every correct variant 20",
-  "report": "scratchpad/determinism-check-task169-r2/verdict.md (blind_derivation.md beside it)"
+  "verdict": "r3 on 73e3137b: the main call DETERMINISTIC; asks 2 and 4 open on their units, closed in the ask clauses",
+  "disposition": "portal round 2's every-arrest conversion answered by the record's evidence in write-up steps 3 to 5; the asks' units filed in the prompt's ask clauses",
+  "report": "task169/determinism_check_report_pass2.md (thread: scratchpad determinism-check-task169-r3/verdict.md)"
  },
  "returned": [
   {
@@ -45,14 +45,29 @@
    ],
    "freeze": "rubric mode: the call, components, stump, card and call sentence untouched; flags only the design note's ladder and default-path sections, their figures re-derived from the new world (methods and end step as they were, rung 2f added); determinism mode fails by construction on 30 items (the 26 ask figures, the history's 30,959 releases, the Deliverable Answers block, those two sections), the author's latitude",
    "commit": "RESHIPPED (task169): determinism, the courts' conversion closed in the world so every route taking the step files 20"
+  },
+  {
+   "date": "2026-10-25",
+   "portal": "round 2 on 73e3137b: determinism failed again; judge 1 unsure (A, C; five reconstructions at 10 to 15 per cent, the covariate Poisson 14.8), judge 2 failed golden_wrong (DOC routes 9 to 10.5, 19.4 only with county-jail sentences); both converted over every arrest, the revoked ones in; judge 2 also flagged the Board orders' grain, the writ trips' end and an extra 1_69.zip in the input assets (this pack's own zip)",
+   "repair": "determinism",
+   "rounds": [
+    {
+     "round": 1,
+     "zip": "73e3137b (unchanged)",
+     "moves": "write-up steps 3 to 5 state the courts' conversion evidence as exact counts (the 9,410 revoked arrests all nolle prossed against 374 of the 15,707 others; DOC sentences by grade among the others; the 10,576 arrests made once the Board could not revoke at the same rates); SF17; after the re-judge, the prompt's ask clauses carry ask 2's unit (one per parolee per hearing date) and ask 4's trip end (back from the writ or released), SF18 and SF19, the call sentence untouched (951 characters); step 3 names its arrest base",
+     "judge": "determinism-check-task169-r3 (order kept): the main call forced (18.2 to 20.9, all 20), table 2 exact, Gates F, G and H pass; asks 2 and 4 open on their units (closed as it named); labelled SEND_BACK, an ask-layer repair by the gate table"
+    }
+   ],
+   "freeze": "determinism PASS: the main call, the stump and every frozen figure unchanged; the prompt's call sentence unchanged",
+   "commit": "RESHIPPED (task169): determinism, the courts' conversion evidence in the write-up and the asks' units in their clauses"
   }
  ],
- "resume": "determinism repair, portal round 2, after the re-judge (determinism-check-task169-r3): main call forced, asks 2 and 4 closed in the prompt's ask clauses with the judge's units (one per parolee per hearing date; the trip ended with the person back from the writ or released), SF18 and SF19 added, step 3 names its arrest base. Next: the rebuild's result (checks with SF17 to SF19, verify, byte-identical), figures_check, precut, voice-check, freeze, determinism_check_report_pass2.md from the r3 verdict, returned entry, ledger, RESHIPPED.",
+ "resume": "",
  "approved": null,
  "delivered": "2026-10-22",
  "portal": null,
  "portal_id": "",
- "portal_status": "returned 2026-10-25 (round 1 on 501d0e28): both responses off the call, rubric about 50; determinism judge 1 unsure (margin), judge 2 FAIL competing_defensible_answer",
+ "portal_status": "returned 2026-10-25 twice (determinism, rounds 1 and 2), reshipped 2026-10-25; upload the 16 files or target.zip, not both",
  "portal_status_date": "2026-10-25",
  "wave": "redraw of a parked number (architecture 1, the cycleway widening, never registered)",
  "gates": {
