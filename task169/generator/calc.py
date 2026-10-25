@@ -337,6 +337,75 @@ def crude_count_route(D, S, cv=None, court_only=True):
     return project(D, lam, cv)
 
 
+def exposure_routes(D, S, cv=None):
+    """portal round 4's exposure readings, each sending every arrest the Board did not revoke on through the courts'
+    DOC share by grade: the record's arrests over the 730 calendar days after each release (judge 2's calendar
+    basis, with and without the arrest-to-admission time), the same scaled by each release's 730 days over its days
+    out of Department custody, and the share scaled whole by 730 over the mean days out (no admission time)"""
+    cv = conversion(D) if cv is None else cv
+    arr = D["arr"].dropna(subset=["doc_number"])
+    ga = {k: (_days(v.date), v.cls.values) for k, v in arr.groupby("doc_number")}
+    cu = custody(D)
+    cu = cu.assign(a=_days(cu.t), e=_days(cu.out))
+    cu_g = {k: v[["a", "e"]].values for k, v in cu.groupby("doc_number")}
+    rd = _days(S.rd)
+    dod = np.where(S.dod.notna(), _days(S.dod.fillna(pd.Timestamp("2099-01-01"))), 10 ** 9)
+    F = {c: (lambda L: (lambda rem: np.searchsorted(L, rem, side="right") / len(L)))(cv["lags"][c]) for c in cv["lags"]}
+    H0, H1, out = np.zeros(len(S)), np.zeros(len(S)), np.zeros(len(S))
+    for i, doc in enumerate(S.doc_number.values):
+        r = rd[i]
+        if doc in ga:
+            d, c = ga[doc]
+            m = (d > r) & (d <= r + 730)
+            for dd, cc in zip(d[m], c[m]):
+                if cc in cv["pc"]:
+                    H0[i] += cv["pc"][cc]
+                    H1[i] += cv["pc"][cc] * F[cc](r + 730 - dd)
+        b = min(r + 730, dod[i])
+        ex = b - r
+        for s_, e_ in cu_g.get(doc, ()):
+            ov = min(b, e_) - max(r, s_)
+            if ov > 0:
+                ex -= ov
+        out[i] = max(ex, 1)
+    cal = float(np.mean(1 - np.exp(-H0)))
+    return dict(calendar=cal, calendar_lag=float(np.mean(1 - np.exp(-H1))),
+                scaled_lag=float(np.mean(1 - np.exp(-H1 * 730 / out))),
+                share_scaled=float((1 - np.exp(-H0.mean())) * 730 / out.mean()), days_out=float(out.mean()))
+
+
+def nc_out_of_custody(D, S):
+    """the record's new-commitment admissions per day out of Department custody, by band and on the covariates,
+    over all 730 days: the default path read on the methodology's days out of custody"""
+    cu = custody(D)
+    cu = cu.assign(a=_days(cu.t), e=_days(cu.out))
+    cu_g = {k: v[["a", "e"]].values for k, v in cu.groupby("doc_number")}
+    nc = cu[cu.movement_reason == "NEW COMMITMENT"]
+    nc_g = {k: np.sort(v.a.values) for k, v in nc.groupby("doc_number")}
+    rd = _days(S.rd)
+    dod = np.where(S.dod.notna(), _days(S.dod.fillna(pd.Timestamp("2099-01-01"))), 10 ** 9)
+    rows = []
+    for i, doc in enumerate(S.doc_number.values):
+        sp, ad = cu_g.get(doc, ()), nc_g.get(doc)
+        for k, (lo, hi) in enumerate(BANDS):
+            a, b = rd[i] + lo, min(rd[i] + hi, dod[i])
+            if b <= a:
+                continue
+            ex = b - a
+            for s_, e_ in sp:
+                ov = min(b, e_) - max(a, s_)
+                if ov > 0:
+                    ex -= ov
+            n = 0 if ad is None else int(np.searchsorted(ad, b, "left") - np.searchsorted(ad, a + 1, "left"))
+            if ex > 0:
+                rows.append((i, k, ex, n))
+    pe = pd.DataFrame(rows, columns=["i", "b", "ex", "n"])
+    m, cols = arrest_model(D, S, pe)
+    lam = lam_projected(D, m, cols)
+    L = lam[:, np.digitize(np.arange(C.WINDOW), (90, 180, 365))]
+    return 1 - np.exp(-L.sum(1))
+
+
 def summarise(D, p):
     proj = D["proj"]
     out = {"all": float(np.mean(p))}
@@ -386,17 +455,36 @@ def _board(D):
     return leg, new
 
 
-def revocations(D, dedupe=True, rescind=True, orders=True, rescind_by=FY[1]):
+def _key(t):
+    return t.doc_number + "|" + t.rep.dt.strftime("%Y-%m-%d")
+
+
+def revocations(D, dedupe=True, rescind=True, orders=True, rescind_by=FY[1], level="event", parallel="match"):
     """the Board's recommitments ordered in fiscal 2025-26: one per parolee per hearing, with its office, whether any
-    report it took up was of an arrest, and the decision date"""
+    report it took up was of an arrest, and the decision date (level "event": a rescission sets aside the case's
+    latest order on or before it, "case": every order on a case with a rescission; parallel "match": a legacy entry
+    after the close is dropped where the new system holds the carried-over case's decision, "date": every one)"""
     leg, new = _board(D)
     close = pd.Timestamp(C.BOARD_MIGRATE_CUT)
     L = leg[(leg.action == "REVOKE") & (leg.ad >= FY[0]) & (leg.ad <= FY[1])].copy()
     if dedupe:
-        L = L[L.ad <= close]          # legacy entries dated after the legacy system closed are the parallel run's
+        late = L.ad > close
+        if parallel == "match":
+            decided = set(_key(new[(new.opened_in == "LEGACY") & (new.decision != "")]))
+            late &= _key(L).isin(decided)
+        L = L[~late]
     if rescind:
-        r = set(leg[(leg.action == "RESCIND") & (leg.ad <= rescind_by)].case_no)
-        L = L[~L.case_no.isin(r)]
+        R_ = leg[(leg.action == "RESCIND") & (leg.ad <= rescind_by)]
+        if level == "case":
+            L = L[~L.case_no.isin(set(R_.case_no))]
+        else:
+            orders_ = leg[leg.action == "REVOKE"][["case_no", "ad"]]
+            gone = set()
+            for case, rd_ in zip(R_.case_no, R_.ad):
+                o = orders_[(orders_.case_no == case) & (orders_.ad <= rd_)]
+                if len(o):
+                    gone.add((case, o.ad.max()))
+            L = L[[(c, a) not in gone for c, a in zip(L.case_no, L.ad)]]
     N = new[(new.decision == "REVOKED") & (new.dd >= FY[0]) & (new.dd <= FY[1])].copy()
     if rescind:
         rd = _ts(N.rescinded_date)
@@ -407,6 +495,28 @@ def revocations(D, dedupe=True, rescind=True, orders=True, rescind_by=FY[1]):
     if orders:
         out = out.groupby(["doc", "d"], as_index=False).agg(office=("office", "first"), arrest=("arrest", "max"))
     return out
+
+
+def board_devices(D):
+    """the counts the write-up states for the Board's records: legacy cases heard again after a rescission (REVOKE,
+    RESCIND, REVOKE), parallel-run recommitments that reached only the legacy system, and carried-over detainers the
+    new system re-issued at its go-live with the legacy lodge dates they replaced"""
+    leg, new = _board(D)
+    acts = leg[leg.action.isin(["REVOKE", "RESCIND"])].sort_values(["case_no", "ad"])
+    seqs = acts.groupby("case_no").action.apply(tuple)
+    rehear = int((seqs == ("REVOKE", "RESCIND", "REVOKE")).sum())
+    late = leg[(leg.ad > pd.Timestamp(C.BOARD_MIGRATE_CUT)) & (leg.action == "REVOKE")]
+    blank = set(_key(new[(new.opened_in == "LEGACY") & (new.decision == "")]))
+    gap = late[_key(late).isin(blank)]
+    pv = D["adm"][(D["adm"].movement_type == "ADM") & (D["adm"].movement_reason == "PAROLE VIOLATOR")]
+    pv = pv.groupby("doc_number").t.apply(list)
+    lag = max(min((t - d).days for t in pv.get(doc, []) if t > d) for doc, d in zip(gap.doc_number, gap.ad))
+    cn = new[(new.opened_in == "LEGACY") & (new.hold_start == C.BOARD_GOLIVE.isoformat())]
+    lg = leg[leg.hold_lodged != ""]
+    lodge = pd.to_datetime(lg.assign(k=_key(lg)).groupby("k").hold_lodged.min())
+    lk = _key(cn).map(lodge)
+    return dict(rehear=rehear, parallel_only=len(gap), pv_within=int(lag), reissued=len(cn),
+                lodge_from=lk.min().date(), lodge_to=lk.max().date())
 
 
 def ask_a(D, **kw):
@@ -423,13 +533,16 @@ def ask_chart(D, **kw):
     return {d: sum(b[d].values()) for d in C.DISTRICTS}
 
 
-def holds(D, blank="admission", dedupe=True, case=None, migr=None, clip=False):
+def holds(D, blank="admission", dedupe=True, case=None, migr=None, clip=False, carry="legacy"):
     """the Board's detainers as intervals [start, end): legacy and new systems, one interval per hold (clip: each also
-    ended at the person's next Department admission, the physical exit, where that comes before the recorded end)"""
+    ended at the person's next Department admission, the physical exit, where that comes before the recorded end;
+    carry "legacy": a carried-over case's detainer runs from its lodge day in the legacy table, the new system having
+    re-issued it at go-live, "new": from the new system's date)"""
     leg, new = _board(D)
     close = pd.Timestamp(C.BOARD_MIGRATE_CUT)
     L = leg[leg.hold_lodged != ""].copy()
     L["s"] = _ts(L.hold_lodged, errors="coerce")
+    lodged = L.assign(k=_key(L)).groupby("k").s.min()
     L["e"] = _ts(L.hold_lifted, errors="coerce")
     L["jail"] = L.hold_facility.str.replace(" CJ", "", regex=False)
     case = dedupe if case is None else case
@@ -456,6 +569,10 @@ def holds(D, blank="admission", dedupe=True, case=None, migr=None, clip=False):
         L = L[~blank_rows]
     N = new[new.hold_start != ""].copy()
     N["s"] = _ts(N.hold_start)
+    if carry == "legacy":
+        k = _key(N)
+        was = (N.opened_in == "LEGACY") & k.isin(lodged.index)
+        N.loc[was, "s"] = k[was].map(lodged).values
     N["e"] = _ts(N.hold_end, errors="coerce").fillna(pd.Timestamp(C.CUT) + pd.Timedelta(days=1))
     N["jail"] = N.hold_facility.str.replace(" County Jail", "", regex=False)
     out = pd.concat([L[["doc_number", "jail", "s", "e"]], N[["doc_number", "jail", "s", "e"]]], ignore_index=True)

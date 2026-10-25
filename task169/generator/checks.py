@@ -27,6 +27,21 @@ import calc          # noqa: E402
 
 FAILS = []
 N = [0]
+# the shipped pack the round 4 repair started from (target.zip 972382ac): files the call reads that no ask device touches
+SHIPPED = {
+    C.F_ACT: "bfbc253e93240919fc321399e898d8094a4d1c96e4186ba061e732925c685301",
+    C.F_AOC: "ea9d5119cc045bc748412e3e6f2853c6aef4e92458756d9c9b9b69a5481e60ef",
+    C.F_ADM: "0383f74886eb99275c15a8aadada0eaa5dd5001800613dc9890de768cc19b733",
+    C.F_CAP: "fbba49e87593587b89387f1504119e636880d970ddb372ffde407c549457adfb",
+    C.F_PROJ: "adfd6c7d9d4cb753273c543ee4ec4f1bce982979b9993c511643a702d6eeb017",
+    C.F_REL: "27181ca95aacdde7b19b328a5cce9ddc37c125ca16ccc167e51af86c97f37c1f",
+    C.F_CASE: "fd3875f438dc55b9cdeb6c40ec0eed187213e6aa494ae4eb96ebdd2268eac4a7",
+    C.F_PRAT: "0431b1ba377918404008f9df4b4bcb6f801f65c4813dcc4e6871ebbca1ab2246",
+    C.F_ARR: "5fd5c3a927f9ba8bc038444002b79d69885e3a9d9af8451a7af6eee595a3df01",
+    C.F_XW: "9aeb6c702d309c85e99b0ba6237b51185f8d04c03f74543dceb9adea54f2fdb7",
+    C.F_DEATH: "9ea159c7b83fa6668fbcd52f285881fce5f8f6821c2736a9bb0b5007b3e2e945",
+    C.F_DICT: "4bfedc28f60529a26f062369e3a3e2ccd947ee8eb8bef6f2a7f4d12b6d442623",
+}
 
 
 def ok(label, cond, detail=""):
@@ -217,7 +232,11 @@ def main(target):
     ok("R2 L6 deaths ignored", st == 20, "%d %s %s" % (st, h, l))
     leg_dup = calc.board_revoked_otns(D)
     D7 = dict(D, leg=D["leg"][pd.to_datetime(D["leg"].action_date, errors="coerce") <= pd.Timestamp(C.BOARD_MIGRATE_CUT)])
-    ok("R2 L7 the Board's two systems: the parallel run adds no revoked arrest", calc.board_revoked_otns(D7) == leg_dup, "")
+    lost7 = leg_dup - calc.board_revoked_otns(D7)
+    late7 = D["arr"][D["arr"].otn.isin(lost7)].date
+    ok("R2 L7 the Board's two systems: dropping the parallel run's rows leaves the courts' conversion",
+       calc.conversion(D7)["pc"] == calc.conversion(D)["pc"] and (late7 > calc.CONV_TO).all() and len(late7) == len(lost7),
+       "%d arrest numbers only in the parallel run, all after 30 June 2024" % len(lost7))
     ok("R2 L8 every county of commitment maps to a district", D["rel"].dist.notna().all() and D["proj"].dist.notna().all(), "")
     # R3c: no plant
     ok("R3c no memo, draft or stakeholder figure ships", not any(f.endswith((".eml", ".docx", ".msg")) for f in files), "")
@@ -318,15 +337,94 @@ def main(target):
     ok("SF19 a trip ends back from the writ or at the release: the prompt files it, and pairing WRO with WRI alone moves "
        "every cell", "with the person back from the writ or released" in prompt
        and all(W1[i][h] != W0[i][h] for i in W0 for h in ("H1", "H2")), json.dumps(W1)[:120])
+    # SF21 the days at risk under the Act (portal round 4, judge 2: the calendar basis 14.8, the golden 20.4, the share
+    # scaled by days out 23.5): methodology 4.1 files that a member of the 2027 cohort is out of Department custody from
+    # release until a return, so the record's arrests stand per day out of custody; the calendar basis carries the
+    # record's days back in custody (554.5 of 730 days out on average) into a cohort that has none
+    from pypdf import PdfReader
+    meth = re.sub(r"\s+", " ", " ".join(pg.extract_text() for pg in PdfReader(os.path.join(target, C.F_METH)).pages))
+    ok("SF21 methodology 4.1 files the cohort's days out of custody",
+       "out of Department custody from release until a return, and for all 730 days where there is none" in meth, "")
+    xr = calc.exposure_routes(D, S, cv)
+    ok("SF21 the calendar basis files 15, with or without the admission time: ruled out by 4.1",
+       calc.step5(xr["calendar"]) == 15 and calc.step5(xr["calendar_lag"]) == 15,
+       "%.2f and %.2f per cent, %.1f days out of 730" % (100 * xr["calendar"], 100 * xr["calendar_lag"], xr["days_out"]))
+    ok("SF21 the share scaled whole by 730 over the days out files 25: ruled out by 3.1 and 3.2",
+       calc.step5(xr["share_scaled"]) == 25, "%.2f per cent" % (100 * xr["share_scaled"]))
+    hh0 = calc._union(calc.holds(D))
+    hd = {k: v[["s", "e"]].values for k, v in hh0.assign(s=calc._days(hh0.s), e=calc._days(hh0.e)).groupby("doc_number")}
+    pe_j = G["pe"].copy()
+    rdj = calc._days(S.rd)
+    exj = pe_j.ex.values.astype(float)
+    for j, (i, b) in enumerate(zip(pe_j.i.values, pe_j.b.values)):
+        for s_, e_ in hd.get(S.doc_number.values[i], ()):
+            lo_, hi_ = calc.BANDS[b]
+            ov = min(rdj[i] + hi_, e_) - max(rdj[i] + lo_, s_)
+            if ov > 0:
+                exj[j] -= ov
+    pe_j["ex"] = np.maximum(exj, 0.5)
+    X0 = pd.DataFrame({"const": np.ones(len(S))})
+    X0p = pd.DataFrame({"const": np.ones(len(D["proj"]))})
+    def liberty_route(pe, nbands=4, X=None, Xp_=None):
+        m_, c_ = calc.arrest_model(D, S, pe, X=X, nbands=nbands)
+        lam_ = calc.lam_projected(D, m_, c_, nbands=nbands, Xp=Xp_)
+        return calc.project(D, np.tile(lam_, (1, 4)) if nbands == 1 else lam_, cv)
+    lib = {"no covariates": liberty_route(G["pe"], X=X0, Xp_=X0p),
+           "no covariates, one rate": liberty_route(G["pe"], nbands=1, X=X0, Xp_=X0p),
+           "detainer days out of the exposure too": liberty_route(pe_j),
+           "detainer days out too, one rate": liberty_route(pe_j, nbands=1)}
+    for k, p in lib.items():
+        ok("SF21 on the days out of custody, %s: same call" % k, call_of(D, p)[0] == 20, "%.2f per cent" % (100 * np.mean(p)))
+    ok("SF21 each release's arrests scaled to its own days out of custody: same call", calc.step5(xr["scaled_lag"]) == 20,
+       "%.2f per cent" % (100 * xr["scaled_lag"]))
+    nco = calc.nc_out_of_custody(D, S)
+    ok("SF21 the default path on the same days (new commitments per day out of custody) still misses",
+       calc.step5(np.mean(nco)) == 10, "%.2f per cent" % (100 * np.mean(nco)))
     # ------------------------------------------------------------ the asks
     A = calc.ask_a(D)
     ok("ASKA golden matches figures.json", all(figs["a1_" + o] == A[o] for o in calc.OFFICES), "")
     def miss_a(a, name):
         hits = sum(a[o][x] == A[o][x] for o in calc.OFFICES for x in ("arrest", "conditions"))
         ok("ASKA stop %s misses every cell" % name, hits == 0, "%d of 8 kept" % hits)
-    miss_a(calc.ask_a(D, orders=False), "readers' path (each case row a recommitment)")
+    miss_a(calc.ask_a(D, level="case", parallel="date"), "round 4 responses' path (every order on a rescinded case out, "
+           "every late legacy entry dropped)")
+    miss_a(calc.ask_a(D, level="case"), "every order on a rescinded case out")
+    miss_a(calc.ask_a(D, parallel="date"), "every legacy entry after the close dropped")
+    miss_a(calc.ask_a(D, orders=False), "each case row a recommitment")
     miss_a(calc.ask_a(D, orders=False, dedupe=False), "both systems added, case rows")
     leg, new = calc._board(D)
+    # A3 a revocation set aside on appeal and heard again: REVOKE, RESCIND, REVOKE on one case, the parolee in Department
+    # custody from the first order's admission past the second hearing, so the second order is what holds the person
+    acts = leg[leg.action.isin(["REVOKE", "RESCIND"])].sort_values(["case_no", "ad"])
+    seqs = acts.groupby("case_no").action.apply(tuple)
+    re_cases = seqs[seqs == ("REVOKE", "RESCIND", "REVOKE")].index
+    other = seqs[(seqs.map(lambda t: t.count("REVOKE")) > 1) & ~seqs.index.isin(re_cases)]
+    rel_by = D["rel"].groupby("doc_number").rd.apply(lambda x: np.sort(x.values))
+    adm_pv = D["adm"][(D["adm"].movement_type == "ADM") & (D["adm"].movement_reason == "PAROLE VIOLATOR")]
+    pv_by = adm_pv.groupby("doc_number").t.apply(lambda x: np.sort(x.values))
+    held = 0
+    for case in re_cases:
+        g = acts[acts.case_no == case]
+        d1, r1, d2 = g.ad.values
+        doc = g.doc_number.iloc[0]
+        a = [t for t in pv_by.get(doc, []) if d1 < t <= r1]
+        rels = [t for t in rel_by.get(doc, []) if a and a[0] < t <= d2 + np.timedelta64(14, "D")]
+        held += bool(a) and not rels and g.hold_lodged.iloc[0] == g.hold_lodged.iloc[2]
+    ok("ASKA A3 re-heard cases: REVOKE, RESCIND, REVOKE, the parolee held throughout",
+       len(re_cases) >= 16 and held == len(re_cases) and len(other) == 0,
+       "%d cases, %d held from the first admission past the second hearing" % (len(re_cases), held))
+    # A4 decisions of the January 2026 parallel run that reached only the legacy system
+    late = leg[(leg.ad > pd.Timestamp(C.BOARD_MIGRATE_CUT)) & leg.action.isin(["REVOKE", "CONTINUE"])]
+    lk = calc._key(late)
+    blank = new[(new.opened_in == "LEGACY") & (new.decision == "")]
+    gap = late[lk.isin(set(calc._key(blank)))]
+    pvd = 0
+    for doc, d in zip(gap[gap.action == "REVOKE"].doc_number, gap[gap.action == "REVOKE"].ad):
+        pvd += any(d < t <= d + np.timedelta64(14, "D") for t in pv_by.get(doc, []))
+    ok("ASKA A4 parallel-run orders with no new-system decision, each followed by a PAROLE VIOLATOR admission",
+       (gap.action == "REVOKE").sum() >= 8 and pvd == (gap.action == "REVOKE").sum() and len(blank) == len(gap),
+       "%d REVOKE and %d CONTINUE entries, %d carried-over cases undecided in the new system"
+       % ((gap.action == "REVOKE").sum(), (gap.action == "CONTINUE").sum(), len(blank)))
     nd = new.assign(d=new.dd.dt.date)
     pairs = nd[nd.decision == "REVOKED"].groupby(["doc_number", "d"]).size()
     ok("ASKA two cases decided at one hearing share the decision timestamp",
@@ -346,6 +444,23 @@ def main(target):
     ok("SF20 no detainer's recorded end falls after a Department admission inside it", inside == 0, "%d inside" % inside)
     ok("SF20 ending each detainer at the earlier of its recorded end and the next admission files the same table",
        calc.ask_b(D, clip=True) == B, "")
+    # B3 every carried-over case still undecided at go-live had its detainer re-issued under the new case that day; the
+    # legacy table keeps the detainer it replaced, lodged earlier and never lifted
+    cn = new[(new.opened_in == "LEGACY") & (new.hold_start != "")]
+    und = cn[(cn.dd.isna()) | (cn.dd >= pd.Timestamp(C.BOARD_GOLIVE))]
+    lg = leg[leg.hold_lodged != ""].assign(k=lambda x: calc._key(x))
+    lodge = lg.groupby("k").hold_lodged.apply(lambda x: pd.to_datetime(x).min())
+    lifted = lg.groupby("k").hold_lifted.apply(lambda x: pd.to_datetime(x[x != ""]).min())
+    ku = calc._key(und)
+    ok("ASKB B3 carried-over detainers re-issued at go-live, the legacy detainer lodged earlier, lifted in neither "
+       "system before go-live", (und.hold_start == C.BOARD_GOLIVE.isoformat()).all() and ku.isin(lodge.index).all()
+       and (ku.map(lodge) < pd.Timestamp(C.BOARD_GOLIVE)).all()
+       and not (ku.map(lifted) < pd.Timestamp(C.BOARD_GOLIVE)).any(),
+       "%d of %d carried-over detainers, legacy lodges %s to %s" % (len(und), len(cn), ku.map(lodge).min().date(), ku.map(lodge).max().date()))
+    bn = calc.ask_b(D, carry="new")
+    ok("ASKB stop the new system's date for a carried-over detainer misses every July to December cell",
+       all(bn[d]["H2"] != B[d]["H2"] for d in C.DISTRICTS) and all(bn[d]["H1"] == B[d]["H1"] for d in C.DISTRICTS),
+       ", ".join("%s %d" % (d, B[d]["H2"] - bn[d]["H2"]) for d in C.DISTRICTS))
     for kw, name in ((dict(union=False), "readers' path (detainers summed)"), (dict(union=False, dedupe=False, blank="action"), "both systems, every row, end at the decision"),
                      (dict(blank="drop"), "blank lifts dropped"), (dict(both_days=True), "both end days counted")):
         b = calc.ask_b(D, **kw)
@@ -391,6 +506,16 @@ def main(target):
     ok("SEP the call is unchanged with every writ row deleted", abs(calc.summarise(D8, calc.golden(D8, S)["p"])["all"] - s["all"]) < 1e-12, "")
     sup = set(new[(new.decision == "REVOKED") & (new.arrest_otn != "")].arrest_otn) | set(leg[(leg.action == "REVOKE") & (leg.arrest_otn != "")].arrest_otn)
     ok("SEP companion reports add no arrest number the Board did not already revoke on", sup == calc.board_revoked_otns(D), "")
+    # the round 4 repair against the shipped pack (target.zip 972382ac): the devices sit in the two Board files and add
+    # no arrest number to the set the call reads; every file the call reads that no ask touches is byte-identical; the
+    # methodology changed by SF21's sentence alone
+    import hashlib
+    revoked = sorted(calc.board_revoked_otns(D))
+    ok("SEP the Board's revoked arrest numbers are the shipped set", len(revoked) == 14445 and
+       hashlib.sha256("\n".join(revoked).encode()).hexdigest().startswith("b3888be781c8b58d"), "%d" % len(revoked))
+    for f, h in SHIPPED.items():
+        ok("SEP %s byte-identical to the shipped pack" % f, hashlib.sha256(open(os.path.join(target, f), "rb").read()).hexdigest() == h, "")
+    ok("SEP the call's unrounded rate is the shipped one", abs(100 * s["all"] - 20.403944052083254) < 1e-9, "%.6f" % (100 * s["all"]))
 
     # ------------------------------------------------------------ distractors
     tmp = tempfile.mkdtemp()

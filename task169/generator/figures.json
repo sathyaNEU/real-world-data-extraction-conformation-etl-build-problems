@@ -49,20 +49,26 @@
   "arrests": 25117,
   "doc": 3483
  },
+ "board_records": {
+  "reheard_cases": 32,
+  "parallel_only_orders": 27,
+  "admitted_within_days": 14,
+  "reissued_detainers": 450
+ },
  "a1_D1": {
-  "arrest": 1277,
-  "conditions": 261
+  "arrest": 1280,
+  "conditions": 262
  },
  "a1_D2": {
-  "arrest": 621,
+  "arrest": 622,
   "conditions": 210
  },
  "a1_D3": {
-  "arrest": 368,
+  "arrest": 369,
   "conditions": 172
  },
  "a1_D4": {
-  "arrest": 116,
+  "arrest": 117,
   "conditions": 149
  },
  "b_Garrison": {

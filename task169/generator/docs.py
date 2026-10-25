@@ -88,7 +88,9 @@ METH = [
     ("4. The 2027 cohort and Act 26-114", [
         "4.1 Act 26-114 takes effect on 1 January 2027 and governs the whole of the 2027 cohort's first two years "
         "after release. Under it the Board of Parole does not recommit parolees, and a parolee comes back to the "
-        "Department only on a new sentence of total confinement in a State correctional institution.",
+        "Department only on a new sentence of total confinement in a State correctional institution. A member of the "
+        "2027 cohort is therefore out of Department custody from release until a return, and for all 730 days where "
+        "there is none.",
         "4.2 The 2027 cohort's return rate is therefore the share of the cohort the Department will admit on a new "
         "court commitment within 730 days of release."]),
     ("5. Review", [

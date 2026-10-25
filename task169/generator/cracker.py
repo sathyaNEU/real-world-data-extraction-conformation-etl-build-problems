@@ -1,15 +1,15 @@
 """task169 cracker: the pair ceiling and the mirror leakage measured on the cut pack, on Part 0's weights (the
 recommendation and its components 38, instructions 7, the asks 55 shared over the 26 ask figures).
 
-The cracker is the stage 4 readers' quoted paths, executed literally. It landed the call, ran the hygiene battery,
-executed every convention the asking sentences state (not rescinded by 30 June 2026, the first day counted and the
-last not, halves by the day, county jails to districts by the methodology's Table 1), took each carried-over case
-once, ended a legacy detainer with no lift date at the person's next admission, and paired each writ out with its
-return. Two readers' paths are run separately (reader A: the Board's two systems deduplicated on DOC number, report
-date and arrest number, every rescission out; reader B: legacy decisions to the close plus the new system, cases with
-a RESCIND row or a rescinded date out); both then sum one detainer per case and pair writs WRO to WRI. The mirror
-stopped on the record's new-commitment rate and trusted each file as written: both systems added, rescissions kept,
-detainers without a lift date left out, unpaired writs dropped.
+The cracker is portal round 4's responses, which reproduced all three tables of the round 3 pack, executed on this
+pack along the round 3 golden's own path: every convention the asking sentences state (one recommitment per parolee
+per hearing date, not rescinded by 30 June 2026, the first day counted and the last not, halves by the day, county
+jails to districts by the methodology's Table 1, a writ trip ended at the WRI or the release), the legacy entries
+dated after the legacy system's close dropped as the parallel run's, every order on a case with a RESCIND row out,
+one detainer per case with a carried-over case taken from the new system, a legacy detainer with no lift date ended
+at the next admission, each parolee's overlapping detainers merged. The mirror stopped on the record's
+new-commitment rate and trusted each file as written: both systems added, rescissions kept, detainers without a lift
+date left out, unpaired writs dropped.
 
     python3 task169/generator/cracker.py [target]"""
 from __future__ import annotations
@@ -99,11 +99,10 @@ def main(target):
     D = calc.load(target)
     gold = figures(D, {}, {}, {})
     n = len(gold)
-    # the cracker is the stage 4 readers' quoted paths: carried-over cases and rescissions handled, every case row a
-    # recommitment; one detainer per case ended at the admission, detainers summed; a writ trip with no return dropped
-    crack_a = dict(orders=False, rescind_by=pd.Timestamp(C.CUT))
-    crack_b = dict(union=False)
-    crack_c = dict(ended_by_release=False)
+    # the cracker is the round 3 golden's path, which portal round 4's two responses reproduced cell for cell
+    crack_a = dict(level="case", parallel="date")
+    crack_b = dict(carry="new")
+    crack_c = dict()
     cr = figures(D, crack_a, crack_b, crack_c)
     mi = figures(D, dict(orders=False, dedupe=False, rescind=False), dict(union=False, dedupe=False, blank="drop"),
                  dict(ended_by_release=False))
@@ -115,16 +114,16 @@ def main(target):
     print("mirror (call missed):  keeps %d of %d ask figures, scores %.1f" % (km, n, S_))
     print("pair ceiling %.1f   mirror leakage %.1f per cent of ask weight" % ((C_ + S_) / 2, 100 * km / n))
     Bq, Wq = calc.ask_b(D, **crack_b), calc.ask_c(D, **crack_c)
-    for name, tab in (("reader A's quoted path", reader_a_table(D)), ("reader B's quoted path", reader_b_table(D))):
+    for name, tab in (("stage 4 reader A's quoted path", reader_a_table(D)), ("stage 4 reader B's quoted path", reader_b_table(D))):
         k = kept(gold, flat(tab, Bq, Wq))
         c1 = W_CALL + W_INSTR + W_ASK * k / n
         print("%s: keeps %d of %d ask figures (Table 1 %d of 8), scores %.1f, pair %.1f"
               % (name, k, n, kept(gold, flat(tab)), c1, (c1 + S_) / 2))
     print("\none crack at a time (the cracker repairs one device and keeps its other stops):")
-    singles = (("A: one recommitment per parolee per hearing", dict(crack_a, orders=True), crack_b, crack_c),
-               ("A: rescissions by 30 June 2026", dict(crack_a, rescind_by=calc.FY[1]), crack_b, crack_c),
-               ("B: each parolee's overlapping detainers merged", crack_a, dict(union=True), crack_c),
-               ("C: an unreturned trip ended at the release", crack_a, crack_b, dict(ended_by_release=True)))
+    singles = (("A: a rescission sets aside the order before it", dict(crack_a, level="event"), crack_b, crack_c),
+               ("A: a late legacy entry dropped only on a match", dict(crack_a, parallel="match"), crack_b, crack_c),
+               ("A: both of the above", {}, crack_b, crack_c),
+               ("B: a carried-over detainer from its legacy lodge", crack_a, dict(carry="legacy"), crack_c))
     for name, ak, bk, ck in singles:
         k = kept(gold, figures(D, ak, bk, ck))
         c1 = W_CALL + W_INSTR + W_ASK * k / n

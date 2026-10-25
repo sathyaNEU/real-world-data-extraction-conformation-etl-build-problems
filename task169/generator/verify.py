@@ -249,14 +249,30 @@ def main(target):
     close, fy0, fy1 = dt.date(2026, 1, 2), dt.date(2025, 7, 1), dt.date(2026, 6, 30)
     def as_date(v):
         return v.date() if isinstance(v, dt.datetime) else v
-    resc = {r["case_no"] for r in legacy if r["action"] == "RESCIND" and as_date(r["action_date"]) <= fy1}
-    orders = {}
+    # each legacy case's actions in date order: a rescission sets aside the order standing on the case when it came
+    decided_new = {(r["doc_number"], r["report_date"]) for r in new if r["opened_in"] == "LEGACY" and r["decision"]}
+    acts = {}
     for r in legacy:
-        d = as_date(r["action_date"])
-        if r["action"] == "REVOKE" and d and fy0 <= d <= min(fy1, close) and r["case_no"] not in resc:
-            k = (r["doc_number"], d)
-            o = orders.setdefault(k, [r["office"], False])
-            o[1] = o[1] or bool(r["arrest_otn"])
+        if r["action"] in ("REVOKE", "RESCIND") and r["action_date"]:
+            acts.setdefault(r["case_no"], []).append((as_date(r["action_date"]), r["action"] == "REVOKE", r))
+    standing = []
+    for case, xs in acts.items():
+        live = []
+        for d, revoke, r in sorted(xs, key=lambda x: (x[0], not x[1])):
+            if revoke:
+                live.append((d, r))
+            elif d <= fy1 and live:
+                live.pop()
+        standing += live
+    orders = {}
+    for d, r in standing:
+        if not fy0 <= d <= fy1:
+            continue
+        if d > close and (r["doc_number"], as_date(r["report_date"]).isoformat()) in decided_new:
+            continue          # the parallel run's copy of a decision the new system holds
+        k = (r["doc_number"], d)
+        o = orders.setdefault(k, [r["office"], False])
+        o[1] = o[1] or bool(r["arrest_otn"])
     for r in new:
         d = d_iso(r["decision_ts"])
         if r["decision"] == "REVOKED" and d and fy0 <= d <= fy1 and not (r["rescinded_date"] and d_iso(r["rescinded_date"]) <= fy1):
@@ -286,11 +302,19 @@ def main(target):
         if e is None:
             continue
         spans.append((r["doc_number"], table1[r["hold_facility"].replace(" CJ", "").upper()], s, e))
+    first = {}
+    for r in legacy:
+        if r["hold_lodged"]:
+            k = (r["doc_number"], as_date(r["report_date"]).isoformat())
+            first[k] = min(first.get(k, as_date(r["hold_lodged"])), as_date(r["hold_lodged"]))
     for r in new:
         if not r["hold_start"]:
             continue
         e = d_iso(r["hold_end"]) or cut + dt.timedelta(days=1)
-        spans.append((r["doc_number"], table1[r["hold_facility"].replace(" County Jail", "").upper()], d_iso(r["hold_start"]), e))
+        s = d_iso(r["hold_start"])
+        if r["opened_in"] == "LEGACY":
+            s = first.get((r["doc_number"], r["report_date"]), s)     # the detainer the go-live re-issue replaced
+        spans.append((r["doc_number"], table1[r["hold_facility"].replace(" County Jail", "").upper()], s, e))
     # SF20: no detainer runs past a Department admission that falls inside it (the physical exit and the record agree)
     inside = 0
     for doc, dist, s_, e_ in spans:

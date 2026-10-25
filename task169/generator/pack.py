@@ -379,7 +379,77 @@ def board_frames(book, ident):
                     legacy.append(dict(rec, decided=None, decision="", open_at_migration=True))
         else:
             new.append(dict(rec, migrated=False))
+    paired = set(companion_of) | set(companion_of.values())
+    rehearings(legacy, new, book, paired, officers)
+    parallel_gaps(new, paired)
     return legacy, new
+
+
+def _h(*parts):
+    import hashlib
+    return int(hashlib.sha256("/".join(str(p) for p in parts).encode()).hexdigest()[:8], 16) / 0xFFFFFFFF
+
+
+def _pick(cells, share, least):
+    """from each cell's candidates, the ones with the lowest draw: a share of the cell, never fewer than `least`"""
+    out = []
+    for key in sorted(cells):
+        c = sorted(cells[key], key=lambda r: _h("pick", r["vid"]))
+        out += c[:min(len(c), max(least, math.ceil(share * len(c))))]
+    return out
+
+
+def rehearings(legacy, new, book, paired, officers):
+    """a revocation set aside on administrative appeal and heard again: the Board rescinds the order with the parolee
+    still in Department custody and, at a second hearing on the same case, recommits on the same term; the legacy
+    system writes the rescission and the second order as later action rows on the case"""
+    rel_of = {}
+    for pid, rd, rtype, maxd, dist, rno in book.releases:
+        rel_of.setdefault(pid, []).append(rd)
+    pid_of = {vid: pid for vid, pid, *_ in book.violations}
+    heard = set()
+    for r in legacy + new:
+        if r["decided"] is not None:
+            heard.add((r["doc"], r["decided"]))
+    cells = {}
+    for r in legacy:
+        if r.get("parallel") or r.get("open_at_migration") or r["decision"] != "REVOKED" or r["rescind"] is not None:
+            continue
+        if r["vid"] in paired or not r["hold"] or r["hold"][2] is None:
+            continue
+        ad = r["hold"][2]
+        r1 = C.add(ad, 15 + int(_h("rescind", r["vid"]) * 31))
+        d2 = C.add(r1, 7 + int(_h("rehear", r["vid"]) * 22))
+        if not (C.FY_START <= d2 <= C.BOARD_MIGRATE_CUT) or (r["doc"], d2) in heard:
+            continue
+        out = min([d for d in rel_of.get(pid_of.get(r["vid"]), []) if d > ad], default=dt.date(2099, 1, 1))
+        if C.days(d2, out) < 14:
+            continue
+        r["_rehear"] = (r1, d2)
+        cells.setdefault((r["office"], r["otn"] != ""), []).append(r)
+    for r in _pick(cells, 0.02, 2):
+        r1, d2 = r.pop("_rehear")
+        dist = [d for d in C.DISTRICTS if C.OFFICE[d] == r["office"]][0]
+        r["rehear"] = (r1, d2, officers[dist][int(_h("officer", r["vid"]) * 6)])
+    for r in legacy:
+        r.pop("_rehear", None)
+
+
+def parallel_gaps(new, paired):
+    """decisions taken during the January 2026 parallel run that reached only the legacy system: the carried-over
+    case stays undecided in the new system while its hold dates come from the jail"""
+    cells, rest = {}, []
+    for r in new:
+        if not r["migrated"] or r["decided"] is None or not (C.BOARD_GOLIVE <= r["decided"] <= C.BOARD_PARALLEL_END):
+            continue
+        if r["vid"] in paired or r["rescind"] is not None:
+            continue
+        if r["decision"] == "REVOKED":
+            cells.setdefault((r["office"], r["otn"] != ""), []).append(r)
+        elif _h("gap", r["vid"]) < 0.15:
+            rest.append(r)
+    for r in _pick(cells, 0.15, 1) + rest:
+        r["legacy_only"] = True
 
 
 def write_board_legacy(path, legacy, admissions_by_doc):
@@ -409,6 +479,13 @@ def write_board_legacy(path, legacy, admissions_by_doc):
         if r["rescind"] is not None and r["decided"] is not None and r["rescind"] <= C.BOARD_MIGRATE_CUT:
             rows.append([r["case_no"], r["doc"], r["office"], r["rep"], ",".join(r["conds"]), r["otn"], "", "", "",
                          r["rescind"], "RESCIND", "", r["officer"]])
+        if r.get("rehear"):
+            # the order set aside on appeal and the case heard again, the second action row repeating the detainer
+            r1, d2, officer2 = r["rehear"]
+            rows.append([r["case_no"], r["doc"], r["office"], r["rep"], ",".join(r["conds"]), r["otn"], "", "", "",
+                         r1, "RESCIND", "", r["officer"]])
+            rows.append([r["case_no"], r["doc"], r["office"], r["rep"], ",".join(r["conds"]), r["otn"], lodged, lifted,
+                         (r["jail"] + " CJ") if r["jail"] else "", d2, "REVOKE", r["term"], officer2])
     head = ["case_no", "doc_number", "office", "report_date", "conditions", "arrest_otn", "hold_lodged", "hold_lifted",
             "hold_facility", "action_date", "action", "term_days", "hearing_officer"]
     wb = xlsxwriter.Workbook(path, {"default_date_format": "mm/dd/yyyy", "strings_to_numbers": False})
@@ -456,9 +533,15 @@ def write_board_new(path, new):
         if r["hold"]:
             hs = r["hold"][0].isoformat()
             end = r["hold"][1] if r["hold"][1] is not None else r["hold"][2]
+            if r["migrated"] and (r["decided"] is None or r["decided"] >= C.BOARD_GOLIVE):
+                # the Board re-issued the detainer of every carried-over case still undecided at go-live under the new
+                # case, lodged that day; the legacy table keeps the detainer it replaced
+                hs = C.BOARD_GOLIVE.isoformat()
             if end is not None and end <= C.CUT:
                 he = end.isoformat()
         dec = r["decision"]
+        if r.get("legacy_only"):
+            dec = ""
         rdate = ""
         if dec == "REVOKED" and r["rescind"] is not None and r["rescind"] <= C.CUT:
             rdate = r["rescind"].isoformat()
@@ -466,7 +549,7 @@ def write_board_new(path, new):
         rows.append((case_id, r["doc"], r["office"], "LEGACY" if r["migrated"] else "NEW", r["rep"].isoformat(), r["otn"],
                      conds, (r["jail"] + " County Jail") if r["jail"] else "", hs, he,
                      dec, (r["decided"].isoformat() + "T%02d:%02d:00-05:00" % _hearing_time(r["doc"], r["decided"]))
-                     if r["decided"] else "", r["term"] if dec == "REVOKED" else "", rdate, r["officer"]))
+                     if r["decided"] and dec else "", r["term"] if dec == "REVOKED" else "", rdate, r["officer"]))
     head = ("case_id", "doc_number", "office", "opened_in", "report_date", "arrest_otn", "conditions_cited",
             "hold_facility", "hold_start", "hold_end", "decision", "decision_ts", "revocation_term_days",
             "rescinded_date", "hearing_officer")

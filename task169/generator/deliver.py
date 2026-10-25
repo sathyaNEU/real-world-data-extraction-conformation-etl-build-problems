@@ -29,7 +29,9 @@ def compute(target):
     B = calc.ask_b(D)
     W = calc.ask_c(D)
     ev = calc.conversion_evidence(D)
-    return dict(D=D, S=S, g=g, s=s, n=len(proj), dist_n=dist_n, high=order[-1], low=order[0], A=A, B=B, W=W, ev=ev)
+    bd = calc.board_devices(D)
+    return dict(D=D, S=S, g=g, s=s, n=len(proj), dist_n=dist_n, high=order[-1], low=order[0], A=A, B=B, W=W, ev=ev,
+                bd=bd)
 
 
 def figures(r):
@@ -44,6 +46,9 @@ def figures(r):
     f["conv_after_max_date"] = {"arrests": ev["off"], "doc": ev["off_doc"], "felony_ab": ev["off_by"]["F1"],
                                 "felony_ce": ev["off_by"]["F2"], "misdemeanour": ev["off_by"]["M"]}
     f["conv_every_arrest"] = {"arrests": ev["every"], "doc": ev["every_doc"]}
+    bd = r["bd"]
+    f["board_records"] = {"reheard_cases": bd["rehear"], "parallel_only_orders": bd["parallel_only"],
+                          "admitted_within_days": bd["pv_within"], "reissued_detainers": bd["reissued"]}
     for o, d in zip(calc.OFFICES, C.DISTRICTS):
         f["a1_" + o] = {"arrest": r["A"][o]["arrest"], "conditions": r["A"][o]["conditions"]}
     for d in C.DISTRICTS:
@@ -89,7 +94,8 @@ def write_workbook(path, r):
              "A return is an ADM movement from the day after release to day 730 (methodology 3.1). Under the Act the "
              "Board recommits no one, so every return is a new court commitment.",
              "Arrests per day out of Department custody in the first 730 days after each 2019 to September 2024 release "
-             "to parole, by time since release, age, prior commitments, offence, sex and district.",
+             "to parole, by time since release, age, prior commitments, offence, sex and district, carried over all 730 "
+             "days, the cohort being out of Department custody until a return (methodology 4.1).",
              "Each arrest's chance of a Department sentence and the time from arrest to admission are the courts' own, "
              "by charge grade (felony A-B, felony C-E, misdemeanour), from arrests to 30 June 2024 that went to court; "
              "arrests the Board answered by revoking parole are left out because no court decided them.",
@@ -103,8 +109,9 @@ def write_workbook(path, r):
 
     ws2 = wb.add_worksheet("Board revocations FY26")
     ws2.write(0, 0, "Recommitments the Board ordered, 1 July 2025 to 30 June 2026, not rescinded by 30 June 2026", title)
-    ws2.write(1, 0, "One recommitment per parolee per hearing: two reports taken up at one hearing are one order. Legacy "
-                    "system to 2 January 2026, new case system from 5 January.", sub)
+    ws2.write(1, 0, "One recommitment per parolee per hearing: two reports taken up at one hearing are one order, and a "
+                    "case heard again after a rescission keeps its later order. Legacy system to 2 January 2026 with the "
+                    "parallel-run decisions the new case system never received; new case system from 5 January.", sub)
     ws2.write_row(3, 0, ["District office", "Parole district", "On a reported arrest", "On conditions alone", "Total"], hf)
     for i, (o, d) in enumerate(zip(calc.OFFICES, C.DISTRICTS), start=4):
         a, c = r["A"][o]["arrest"], r["A"][o]["conditions"]
@@ -125,7 +132,8 @@ def write_workbook(path, r):
     ws3 = wb.add_worksheet("Detainer days 2025")
     ws3.write(0, 0, "Parolee-days held on Board detainers in each district's county jails, 2025", title)
     ws3.write(1, 0, "A parolee held on two detainers at once is held once. Counting the day a detainer was lodged and not "
-                    "the day the person left; a legacy detainer with no lift date ended at the person's admission.", sub)
+                    "the day the person left; a legacy detainer with no lift date ended at the person's admission; a "
+                    "carried-over detainer counted from its legacy lodge date, not the 5 January 2026 re-issue.", sub)
     ws3.write_row(3, 0, ["Parole district", "January to June", "July to December", "Year"], hf)
     for i, d in enumerate(C.DISTRICTS, start=4):
         ws3.write(i, 0, d)
@@ -189,6 +197,7 @@ def write_chart(path, r):
 def submission(r, f):
     rate = f["call"]["rate_step"]
     ev = r["ev"]
+    bd = r["bd"]
     ob, fb = ev["others_by"], ev["off_by"]
     c = lambda v: "{:,}".format(v)
     lines = ["## Tags", "",
@@ -226,18 +235,25 @@ def submission(r, f):
                                                                           c(fb["F1"][1]), c(fb["F2"][0]), c(fb["F2"][1]),
                                                                           c(fb["M"][0]), c(fb["M"][1]),
                                                                           c(ev["every_doc"]), c(ev["every"])),
-             "5. For each person in %s, sent every arrest the model expects in %d days at liberty through those courts' "
-             "rates for the grade mix of the person's governing offence, each timed by the arrest-to-ADM time, and took "
-             "the share with a return (1 minus e to the minus the expected returns): %.1f per cent, %d per cent to the "
-             "step." % (C.F_PROJ, C.WINDOW, f["_unrounded"]["rate_pct"], rate),
-             "6. Took REVOKE and REVOKED decisions dated 1 July 2025 to 30 June 2026, dropped the legacy entries dated "
-             "after the legacy system closed on 2 January 2026 and those rescinded by 30 June 2026, and counted one "
-             "recommitment per parolee per hearing date (two cases decided together are one order), on a reported "
-             "arrest when any of its cases cites an arrest number.",
-             "7. Took each detainer once (one per legacy case; a carried-over case from the new system), ended a legacy "
+             "5. For each person in %s, out of Department custody from release until a return (methodology 4.1), sent "
+             "every arrest the model expects in the %d days through those courts' rates for the grade mix of the "
+             "person's governing offence, each timed by the arrest-to-ADM time, and took the share with a return (1 "
+             "minus e to the minus the expected returns): %.1f per cent, %d per cent to the step."
+             % (C.F_PROJ, C.WINDOW, f["_unrounded"]["rate_pct"], rate),
+             "6. Took REVOKE and REVOKED decisions dated 1 July 2025 to 30 June 2026 and counted one recommitment per "
+             "parolee per hearing date (two cases decided together are one order), on a reported arrest when any of its "
+             "cases cites an arrest number; a legacy entry dated after the legacy system closed on 2 January 2026 is "
+             "the parallel run's copy only where the new system holds the carried-over case's decision (%s "
+             "recommitments reached the legacy system alone, each parolee admitted PAROLE VIOLATOR within %d days, and "
+             "stand); a rescission dated by 30 June 2026 sets aside the order standing on its case when it came, so the "
+             "%s legacy cases heard again after a rescission (REVOKE, RESCIND, REVOKE, the parolee held throughout) "
+             "keep their later order." % (bd["parallel_only"], bd["pv_within"], bd["rehear"]),
+             "7. Took each detainer once (one per legacy case and lodge date; a carried-over case's detainer from its "
+             "lodge day in the legacy table, the new system having re-issued the detainers of the %s cases still "
+             "undecided at its go-live as lodged on 5 January 2026, to its end in the new system), ended a legacy "
              "detainer with no lift date at the person's next ADM in %s, merged each parolee's overlapping detainers, "
              "and counted days from the lodge day to the day before the end in each half of 2025 by the district of the "
-             "county jail." % C.F_ADM,
+             "county jail." % (bd["reissued"], C.F_ADM),
              "8. Ended each writ trip (a WRO in %s; no person has two open at once) at the person's next WRI or, where "
              "a release movement in %s comes first, at the release, and counted days from the day out to the day before "
              "the trip ended in each half of 2025 by the WRO's institution." % (C.F_ADM, C.F_REL),
