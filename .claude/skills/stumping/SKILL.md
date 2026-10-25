@@ -782,6 +782,34 @@ check that it is there.** A design note whose default path does not contain the 
 `Domain test:` names that method as the deciding analysis, has the ladder upside down, and `Analyst test:`
 will read as plausible because the easy route it names is a generic move the opponent does not make.
 
+### 1.1d A stump at the cap boundary makes Gate F and Gate C the same number
+
+On a `ranked_slate_under_cap` decision, if the decisive step changes the ranking only near the cap, then the
+margin between the last member and the first non-member is **simultaneously** what makes the default path
+wrong and what every licensed estimator must agree on. Widen it and the default path gets the slate right, so
+Gate F goes; narrow it and rival estimators disagree about who is eighth, so Gate C goes. One number cannot
+be both wide and narrow.
+
+**Measured.** A build recovering a latent hour-of-week clock from interval-censored offence records graded an
+eight-slot patrol slate. Its blind reader, briefed with the slate's own key paths stripped, built the same
+estimator unprompted and got **seven of the eight slots**, missing only the marginal one, and said in its own
+report that the eight slots were stable across hourly, two-hour and four-hour resolutions while "the values
+and the 8th-versus-9th ordering moved with the settings". Its judge had already failed the build on Gate C
+for the same margin from the other side. Seven of eight is the signature: the step moved the boundary and
+nothing else.
+
+**The escape, and it is a design requirement rather than a tuning one: the decisive step must reorder the
+ranking GLOBALLY, not at the cap.** Then the default path's slate differs in several members and the cap's
+own margin is free to be wide. Assert both, because they are separate conditions and a build can pass one
+while failing the other:
+- the default path's slate differs from the golden's in **three or more** members, not one;
+- the last-member to first-non-member margin exceeds the **spread of every licensed estimator variant**, not
+  merely the spread of the chosen estimator's placements (the distinction one build's own resume line reached
+  for and could not satisfy).
+
+Read with 1.1c, this is why a cap decision is a demanding frame for a stump: the ranking is where the step
+has to bite, and the cap is where determinism is measured, so the step must bite far from the cap.
+
 ### 1.1c The grouping dichotomy: an estimator's grouping cannot carry a stump
 
 **A decisive step that is a choice of estimation grouping (pooled against stratified, one clock against one
