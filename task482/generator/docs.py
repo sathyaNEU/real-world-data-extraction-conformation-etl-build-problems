@@ -1,11 +1,14 @@
-"""The pack's three documents: the Seasonal Communities Aid Act, the Quillmere Lake Protection Fee ordinance, and the
-basin's wastewater facilities fact sheet."""
+"""The pack's documents: the network's Performance Standard (Exhibit B to each payer agreement), the board's July 2026
+resolution on the 2027 two-sided track, the three payers' 2025 settlement statements on their own contract terms, and
+the network's field guide to the payers' feeds."""
+import datetime as dt
+
 import reportlab.rl_config
 from reportlab.lib import colors
 from reportlab.lib.pagesizes import letter
 from reportlab.lib.styles import ParagraphStyle, getSampleStyleSheet
 from reportlab.lib.units import inch
-from reportlab.platypus import Paragraph, SimpleDocTemplate, Spacer, Table, TableStyle
+from reportlab.platypus import PageBreak, Paragraph, SimpleDocTemplate, Spacer, Table, TableStyle
 
 import world as W
 
@@ -15,8 +18,10 @@ BODY = ParagraphStyle("b", parent=STY["BodyText"], fontName="Helvetica", fontSiz
 SMALL = ParagraphStyle("s", parent=BODY, fontSize=8, leading=10)
 H = ParagraphStyle("h", parent=STY["Heading2"], fontName="Helvetica-Bold", fontSize=11, spaceBefore=8, spaceAfter=4)
 T = ParagraphStyle("t", parent=STY["Title"], fontName="Helvetica-Bold", fontSize=14, spaceAfter=10)
-DISTRICT = "Quillmere Lake Protection District"
-FEE_OFFICE = "Quillmere Lake Basin Fee Office"
+HEAD = ParagraphStyle("hd", parent=STY["BodyText"], fontName="Helvetica-Bold", fontSize=7, leading=8.5, alignment=2)
+HEADL = ParagraphStyle("hdl", parent=HEAD, alignment=0)
+STAMPS = {"standard": b"D:20251216143000-06'00'", "resolution": b"D:20260724101500-05'00'",
+          "statements": b"D:20260612090000-05'00'"}
 
 
 def _pdf(path, title, story, author, org):
@@ -34,10 +39,11 @@ def _pdf(path, title, story, author, org):
     doc.build(story, onFirstPage=footer, onLaterPages=footer)
 
 
-def _table(rows, widths=None):
+def _table(rows, widths=None, size=8):
     t = Table(rows, colWidths=widths, repeatRows=1)
-    t.setStyle(TableStyle([("FONT", (0, 0), (-1, -1), "Helvetica", 8), ("FONT", (0, 0), (-1, 0), "Helvetica-Bold", 8),
+    t.setStyle(TableStyle([("FONT", (0, 0), (-1, -1), "Helvetica", size), ("FONT", (0, 0), (-1, 0), "Helvetica-Bold", size),
                            ("LINEBELOW", (0, 0), (-1, 0), 0.5, colors.black), ("VALIGN", (0, 0), (-1, -1), "TOP"),
+                           ("ALIGN", (1, 1), (-1, -1), "RIGHT"),
                            ("BOTTOMPADDING", (0, 0), (-1, -1), 2), ("TOPPADDING", (0, 0), (-1, -1), 2)]))
     return t
 
@@ -46,110 +52,231 @@ def P(text, style=BODY):
     return Paragraph(text, style)
 
 
-def statute_pdf(path):
-    towns = ", ".join(W.NAMES[:-1]) + " and " + W.NAMES[-1]
-    s = [P("Seasonal Communities Aid Act", T),
-         P("As enacted, Laws 2025, Regular Session, article 7 (Seasonal Communities Aid), sections 1 to 6. Unofficial "
-           "text prepared by the Office of the State Demographer for the 2027 certification.", SMALL),
-         P("Section 1. Purpose", H),
-         P("Aid is paid to the cities of the Quillmere Lake basin whose public services must carry, in their busiest "
-           "season, a population far larger than the people who live in them."),
-         P("Section 2. Definitions", H),
-         P("(a) <b>Basin city</b> means each of the cities of " + towns + "."),
-         P("(b) <b>Resident population</b> means the State Demographer's estimate of a city's population on 1 July of the "
-           "measurement year."),
-         P("(c) <b>Measurement year</b> for an aid year means the twelve months from 1 October two years before the aid "
-           "year through 30 September of the year before it. For aid year 2027 it is 1 October 2025 through "
-           "30 September 2026."),
-         P("(d) <b>Population present</b> on a day means the number of persons in the city that day: its residents and "
-           "every other person staying in or visiting the city, each person counted for the share of the day spent in "
-           "the city."),
-         P("(e) <b>Average population present</b> in a month means the mean of the city's population present over the "
-           "days of the month."),
-         P("(f) <b>Busiest month</b> means the calendar month of the measurement year in which a city's average "
-           "population present was highest."),
-         P("Section 3. Qualification", H),
-         P("A basin city qualifies for aid in an aid year when its average population present in its busiest month of "
-           "the measurement year was at least three times its resident population."),
-         P("Section 4. Appropriation and distribution", H),
-         P("USD 2,400,000 is appropriated for aid year 2027. The Commissioner of Revenue distributes it in equal shares "
-           "to the cities that qualify, half on 20 July 2027 and half on 26 December 2027. A city that does not qualify "
-           "receives no aid for the year."),
-         P("Section 5. Certification", H),
-         P("By 1 December of the year before the aid year the State Demographer certifies to the Commissioner of Revenue, "
-           "for each basin city, its resident population, its busiest month, its average population present in that "
-           "month rounded to the nearest thousand, and whether it qualifies. The certification is final for the aid "
-           "year."),
-         P("Section 6. Reports with the certification", H),
-         P("With the certification the State Demographer reports (1) to the Quillmere Lake Basin Fee Office, the Lake "
-           "Protection Fee generated by stays in each basin city in each quarter of the fiscal year that ended on 30 "
-           "June of the measurement year, for the Office's revenue report; and (2) to the Quillmere Lake Protection "
-           "District, the pounds of total phosphorus each basin wastewater treatment plant discharged in each half of "
-           "the calendar year before the measurement year ended, for the District's phosphorus reduction grants."),
-         Spacer(1, 6),
-         P("Section 6 reports are statistical and do not affect the aid.", SMALL)]
-    _pdf(path, "Seasonal Communities Aid Act", s, W.PEOPLE["estimates"], W.OFFICE)
+def standard_pdf(path):
+    payers = "%s, %s and %s" % tuple(W.PAYER_NAMES[p] for p in W.PAYERS)
+    rates = "; ".join("%s USD %.2f" % (W.PAYER_NAMES[p], W.CCF_RATE[p]) for p in W.PAYERS)
+    s = [P("Performance Standard for Commercial Members", T),
+         P(W.NETWORK + ". Adopted by the Board of Directors on 11 December 2025 and attached as Exhibit B to the network's "
+           "2026 value-based agreements with " + payers + ". Effective for performance year 2026.", SMALL),
+         P("1. Purpose", H),
+         P("This standard sets the one measure the network uses for each member practice's cost performance across its "
+           "commercial payers: the network measure. Each agreement's own settlement of shared savings with its payer is "
+           "governed by that agreement's Schedule A and is not changed by this standard."),
+         P("2. Attribution", H),
+         P("2.1 Each payer attributes its own commercial members on its own claims. A member is attributed for a performance "
+           "year to the member practice whose primary care clinicians furnished the most days of qualifying primary care "
+           "services to the member in that year; where practices tie, to the practice that furnished the latest such day. "
+           "A qualifying primary care service is a service with a code in Appendix A furnished by a clinician on the network's "
+           "primary care roster for that practice on the date of service."),
+         P("2.2 A member with no qualifying primary care service from a network clinician in the year is not attributed for "
+           "that year. A member attributed for a year is attributed for every month of the year in which the member was "
+           "covered by the payer, including the months before the member's first qualifying service."),
+         P("2.3 Each payer runs attribution monthly from March of the performance year (an interim run), on qualifying "
+           "services incurred through the end of the second month before the run and paid by the end of the month before it. "
+           "The final run for a performance year is the payer's April run in the following year, on all qualifying services "
+           "incurred in the performance year and paid by 31 March."),
+         P("3. The network measure", H),
+         P("3.1 A member's total cost of care for a year is the allowed amount, at its current version, of every claim for "
+           "covered medical and pharmacy services incurred in the year and first paid by 31 March of the following year, "
+           "capped at USD 250,000 for the member's year. A claim is incurred on its first date of service (a pharmacy "
+           "claim on its fill date)."),
+         P("3.2 A member month is a calendar month in which the member's coverage with the payer was in force."),
+         P("3.3 A practice's network measure for a year is the total cost of care of the members attributed to it on the "
+           "final runs of the three payers, summed across the payers, divided by those members' member months in the year, "
+           "summed across the payers."),
+         P("3.4 A practice's benchmark for 2026 is its network measure for 2025, rounded to the cent, times the "
+           "agreements' 2026 trend factor of 1.052, rounded to the cent."),
+         P("4. Interim reports", H),
+         P("4.1 After each interim run the network reports each practice's interim measure: the allowed amounts of the "
+           "claims incurred from 1 January through the month of the run's service cut and paid by the date of the payer's "
+           "feed, divided for each payer and month incurred by that payer's completion factor for the month (Appendix C), "
+           "for the members on the interim run, each member's year to date capped at USD 250,000, divided by those members' "
+           "member months from January through the month of the service cut."),
+         P("4.2 Interim reports are management information and are not used to settle shared savings."),
+         P("5. Care coordination fees", H),
+         P("5.1 Each payer pays the network a care coordination fee for each attributed member for each month of the "
+           "performance year the member is covered by the payer: " + rates + " a member month in 2026."),
+         P("5.2 Fees are paid on each interim run: for the month of the run, for each member on the run covered that month, "
+           "and, for a member on the payer's run for the first time in the year, for each earlier month of the year in which "
+           "the member was covered. Fees are paid to the network for the practice to which the run attributes the member."),
+         P("Appendix A. Qualifying primary care services", H),
+         P("The codes are listed in qualifying_primary_care_services.csv, issued with this standard."),
+         P("Appendix B. The payers' feeds", H),
+         P("Each payer sends the network, monthly, its claims and coverage for the members on its latest interim run and, "
+           "for the prior performance year, for the members on its final run, with its attribution runs and its fee "
+           "remittances. The layouts are set out in the network's field guide."),
+         P("Appendix C. Completion factors", H),
+         P("Each payer issues, with its September-paid feed, the share of a month's allowed amounts it has paid by 30 "
+           "September for each month incurred from January, from its lag study of the prior year.")]
+    _pdf(path, "Performance Standard for Commercial Members", s, W.PEOPLE["analytics"], W.NETWORK)
 
 
-def ordinance_pdf(path):
-    s = [P("Quillmere Lake Protection Fee", T),
-         P("Ordinance 2019-4 of the Quillmere Lake Basin Joint Powers Board, as amended by Ordinance 2025-2. "
-           "Administered by the " + FEE_OFFICE + ".", SMALL),
-         P("1. Fee", H),
-         P("A Lake Protection Fee is due on every paid stay of fewer than 30 consecutive nights in a hotel, motel, inn, "
-           "resort, bed and breakfast, campground or whole-home rental in a basin city. The fee is charged for each "
-           "guest for each night of the stay: USD 1.25 a guest-night through 31 December 2025 and USD 1.50 a "
-           "guest-night from 1 January 2026, the rate being the one in force on the night of the stay. A stay of 30 "
-           "consecutive nights or more is exempt."),
-         P("2. Returns", H),
-         P("An operator of eight or more rentable units files a return each month; any other operator files each "
-           "calendar quarter. A return is due by the 20th day of the month after the period and reports the period's "
-           "guest-nights, its exempt guest-nights and the fee due. An operator who finds an error files an amended "
-           "return, which replaces the earlier return for the period; guest-nights left off a return are reported on a "
-           "supplemental return for the same period."),
-         P("3. Marketplace platforms", H),
-         P("A booking platform with a collection agreement collects the fee from its guests and remits it to the Fee "
-           "Office monthly with a detail of the stays remitted; the operator does not report those stays. Lakeward "
-           "Stays and Kettle & Pine hold collection agreements effective 1 July 2024."),
-         P("4. Use of the fee", H),
-         P("The fee is deposited in the Lake Protection Fund. The Fund pays the Fee Office's costs and makes the "
-           "Quillmere Lake Protection District's grants to the basin's wastewater treatment plants for phosphorus "
-           "reduction.")]
-    _pdf(path, "Quillmere Lake Protection Fee ordinance", s, "Fee Office", FEE_OFFICE)
+def resolution_pdf(path):
+    s = [P("Resolution 2026-11: Two-sided risk track for 2027", T),
+         P(W.NETWORK + ", Board of Directors. Adopted at the meeting of 23 July 2026.", SMALL),
+         P("Whereas each of the network's 2026 agreements with its commercial payers offers member practices, from 1 January "
+           "2027, a two-sided track that pays a larger share of savings and recovers a share of losses; and whereas a "
+           "practice should take on losses only where its cost performance is already clear of its benchmark;"),
+         P("<b>Resolved</b>, that the network enters a member practice in the two-sided track for 2027 only where the "
+           "practice's network measure for 2026 under the Performance Standard, on the payers' final 2026 attribution, comes "
+           "in at least 2 per cent below the practice's 2026 benchmark;"),
+         P("<b>Resolved further</b>, that because the payers' elections close before the final 2026 runs, the president "
+           "presents to the Board at its October meeting the network's projection of each practice's 2026 network measure on "
+           "that basis, and the Board elects on it;"),
+         P("<b>Resolved further</b>, that the elections be filed with each payer by 30 October 2026, and that a practice not "
+           "entered remains in the one-sided track for 2027."),
+         Spacer(1, 10),
+         P("Attest: " + W.PEOPLE["president"] + ", President.", SMALL)]
+    _pdf(path, "Board Resolution 2026-11", s, W.PEOPLE["president"], W.NETWORK)
 
 
-def facilities_pdf(path):
-    rows = [["Plant", "Permit", "Cities served", "Treatment", "Design avg flow, MGD", "Receiving water",
-             "Discharge"]]
-    spec = dict(BIR=("Extended aeration, chemical P removal", 0.62, "Birch Creek", "Continuous"),
-                TES=("Activated sludge, chemical P removal", 1.10, "Quill River", "Continuous"),
-                RUD=("Stabilization ponds, three cells", 0.29, "Ruddmere Creek", "Spring and autumn drawdowns"),
-                SOR=("Activated sludge, biological P removal", 1.35, "Quill River", "Continuous"),
-                PIN=("Stabilization ponds, three cells", 0.42, "Arlen Ditch No. 3", "Spring and autumn drawdowns"),
-                TAM=("Sequencing batch reactor, chemical P removal", 1.05, "Tamsen Brook", "Continuous"),
-                NAR=("Activated sludge, chemical P removal", 1.20, "Quill River", "Continuous"))
-    for code, pl in W.PLANTS.items():
-        sp = spec[code]
-        rows.append([Paragraph(pl["name"], SMALL), pl["permit"], Paragraph(", ".join(pl["towns"]), SMALL),
-                     Paragraph(sp[0], SMALL), "%.2f" % sp[1], sp[2], Paragraph(sp[3], SMALL)])
-    s = [P("Quillmere Lake basin wastewater treatment facilities", T),
-         P("Fact sheet, " + DISTRICT + ", revised March 2026.", SMALL),
-         P("The basin's eight cities are served by seven treatment facilities. The townships around them are on private "
-           "septic systems."),
-         _table(rows, [1.55 * inch, 0.75 * inch, 0.9 * inch, 1.25 * inch, 0.7 * inch, 0.85 * inch, 0.9 * inch]),
-         Spacer(1, 8),
-         P("Collection", H),
-         P("Under the District's shoreland rules every developed parcel in a basin city is connected to the city's "
-           "sewer. Esker Narrows and Hollin Bay send their wastewater by force main to the Narrows joint plant, where "
-           "each city's flow is metered at the headworks for the joint board's billing."),
-         P("Reporting", H),
-         P("The Birchwick, Teskadel, Sorrelton, Tamsen Point and Narrows joint plants file their discharge "
-           "monitoring reports through the state's electronic reporting system. " + "Northwoods Utility Services" +
-           " operates the Ruddmere and Pinehold pond systems under contract and keeps their monthly operating reports. "
-           "Influent is sampled as 24-hour composites at the headworks. A load in the District's reports is the flow "
-           "in million gallons a day times the concentration in milligrams per liter times 8.34, in pounds a day."),
-         P("Pond systems", H),
-         P("The stabilization ponds hold the year's wastewater and discharge only during drawdowns after ice-out in "
-           "spring and before freeze-up in autumn, on the days the operator opens the outlet; their reports carry no "
-           "discharge in the other months.")]
-    _pdf(path, "Quillmere Lake basin wastewater treatment facilities", s, "District engineer", DISTRICT)
+STATEMENT_TERMS = {
+    "B": dict(cap=150000.0, rx=True, msr=0.02, share=0.50, note="Schedule A: medical and pharmacy allowed, each member's "
+              "year capped at USD 150,000; savings shared at 50 per cent where the practice's savings reach 2 per cent of its "
+              "benchmark, times the practice's quality multiplier."),
+    "M": dict(cap=100000.0, rx=False, msr=0.0, share=0.45, note="Schedule A: medical allowed only (pharmacy is settled "
+              "under the pharmacy benefit agreement), each member's year capped at USD 100,000; savings shared at 45 per cent, "
+              "times the practice's quality multiplier."),
+    "T": dict(cap=200000.0, rx=True, msr=0.03, share=0.50, note="Schedule A: medical and pharmacy allowed, each member's "
+              "year capped at USD 200,000; savings shared at 50 per cent where the practice's savings reach 3 per cent of its "
+              "benchmark, times the practice's quality multiplier."),
+}
+
+
+def statement_rows(w):
+    """Each payer's 2025 settlement by practice on its own Schedule A terms, from the world's 2025 claims."""
+    col, att, ppl = w["claims"], w["att"], {q.pid: q for q in w["people"]}
+    quality = W.quality_multipliers()
+    out = {}
+    for payer in W.PAYERS:
+        terms = STATEMENT_TERMS[payer]
+        fin = att[("final", payer, 2025)]
+        tot = {}
+        for i in range(len(col["pid"])):
+            if col["payer"][i] != payer or col["year"][i] != 2025 or col["paid"][i] > W.FINAL_PAID[2025]:
+                continue
+            if col["pid"][i] not in fin or (col["ctype"][i] == "RX" and not terms["rx"]):
+                continue
+            tot[col["pid"][i]] = tot.get(col["pid"][i], 0.0) + col["allowed"][i]
+        g = W.rng(51, W.PAYERS.index(payer))
+        rows = []
+        for c in W.CODES:
+            mem = [pid for pid, v in fin.items() if v[0] == c]
+            mm = sum(W.enrolled_months(ppl[pid], 2025) for pid in mem)
+            tc = sum(min(terms["cap"], tot.get(pid, 0.0)) for pid in mem)
+            pmpm = tc / mm
+            bench = round(pmpm * float(g.uniform(0.965, 1.075)), 2)
+            sav = (bench - pmpm) * mm
+            earned = sav if sav >= terms["msr"] * bench * mm and sav > 0 else 0.0
+            qm = quality[(payer, c)]
+            pay = round(earned * terms["share"] * qm, 2)
+            rows.append(dict(practice=c, members=len(mem), mm=mm, tcoc=round(tc, 2), pmpm=round(pmpm, 2), bench=bench,
+                             savings=round(sav, 2), quality=qm, payment=pay))
+        out[payer] = rows
+    return out
+
+
+def statements_pdf(path, w):
+    rows = statement_rows(w)
+    s = []
+    for n, payer in enumerate(W.PAYERS):
+        if n:
+            s.append(PageBreak())
+        s.append(P(W.PAYER_NAMES[payer] + ": Performance Year 2025 Shared Savings Statement", T))
+        s.append(P("Prepared for " + W.NETWORK + ". Final attribution run of April 2026; claims incurred in 2025 and paid "
+                   "through 31 March 2026. Issued 12 June 2026." + (" Signed for the plan: " + W.PEOPLE["payer"] + ", Manager, "
+                   "Provider Performance." if payer == "B" else ""), SMALL))
+        s.append(P(STATEMENT_TERMS[payer]["note"], SMALL))
+        hdr = [P("Practice", HEADL)] + [P(x, HEAD) for x in ("Members", "Member months", "Total cost (USD)", "PMPM",
+                                                             "Benchmark PMPM", "Savings (USD)", "Quality", "Payment (USD)")]
+        body = [[W.PRACTICE_NAMES[r["practice"]], "{:,}".format(r["members"]), "{:,}".format(r["mm"]), "{:,.2f}".format(r["tcoc"]),
+                 "%.2f" % r["pmpm"], "%.2f" % r["bench"], "{:,.2f}".format(r["savings"]), "%.2f" % r["quality"],
+                 "{:,.2f}".format(r["payment"])] for r in rows[payer]]
+        tot = ["Network", "{:,}".format(sum(r["members"] for r in rows[payer])), "{:,}".format(sum(r["mm"] for r in rows[payer])),
+               "{:,.2f}".format(sum(r["tcoc"] for r in rows[payer])), "", "", "{:,.2f}".format(sum(r["savings"] for r in rows[payer])),
+               "", "{:,.2f}".format(sum(r["payment"] for r in rows[payer]))]
+        s.append(_table([hdr] + body + [tot], widths=[1.6 * inch, 0.62 * inch, 0.66 * inch, 0.84 * inch, 0.5 * inch,
+                                                       0.72 * inch, 0.76 * inch, 0.52 * inch, 0.78 * inch], size=7))
+        s.append(Spacer(1, 6))
+        s.append(P("Savings are the benchmark PMPM less the PMPM, times member months; a negative figure is a loss and is not "
+                   "recovered under the one-sided track. The quality multiplier is 1.00 where every measure scored for the "
+                   "practice meets its target, 0.95 where three quarters or more do, 0.90 where half or more do, and 0.85 "
+                   "otherwise.", SMALL))
+    _pdf(path, "Performance Year 2025 Shared Savings Statements", s, W.PEOPLE["payer"],
+         "Payer statements as received by " + W.NETWORK)
+
+
+def guide_txt(path):
+    text = """LARROWBROOK PHYSICIAN NETWORK - FIELD GUIDE TO THE PAYERS' VALUE-BASED FEEDS
+Maintained by Payer Performance Analytics (Joel Brewer, Director). Revised 13 October 2026.
+
+The payers send claims and coverage for the members on their latest interim attribution run and, for the
+prior performance year, for the members on their final run (Performance Standard, Appendix B). Each payer's
+files keep that payer's own layout. A member's identifier is the payer's; the master patient index carries
+one network patient identifier across payers.
+
+MERRINLAKE HEALTH PLAN (MLH)
+  mlh_tcoc_claims_2025-01_2026-09.csv     one row per claim; comma separated; dates YYYY-MM-DD
+    CLM_ID           claim number; a reprocessed claim is voided and replaced under new numbers
+    MBR_ID           Merrinlake member identifier
+    CLM_TYP          PROF professional, OUTP outpatient facility, INPT inpatient facility, PHRM pharmacy
+    SVC_FROM_DT      first date of service (fill date for pharmacy)
+    SVC_THRU_DT      last date of service
+    PD_DT            date paid
+    PROC_CD          CPT or HCPCS code (professional claims)
+    PROC_MOD         procedure modifier, where billed
+    POS_CD           place of service (professional claims)
+    REV_CD           revenue code (facility claims)
+    NDC_11           national drug code (pharmacy claims)
+    REND_NPI         rendering provider NPI (professional claims)
+    ALLOWED_AMT      allowed amount, USD
+    DAYS_SUPPLY      days supply (pharmacy claims)
+    ADJ_TYP          blank for an original claim; VOID for a reversal of it; REPL for its replacement
+    ORIG_CLM_ID      on VOID and REPL rows, the claim they reverse or replace
+  mlh_eligibility_2025_2026.csv           one row per coverage span; COV_TERM_DT 9999-12-31 while open
+  mlh_attribution_runs_py2025_py2026.csv  the final 2025 run (PY2025-F) and the October 2026 interim run (PY2026-10)
+  mlh_care_coordination_remittance_2026.csv  fees paid on each 2026 interim run; COV_MO is the month the fee covers;
+                                          LINE_TYP CUR for the run's month, RETRO for an earlier month
+
+KESSELCREST BENEFIT PARTNERS (KBP)
+  KBP_CLAIMS_LPN_20261009.txt             pipe delimited; dates MM/DD/YYYY
+    CLAIM_NO, LINE_NO, MEMBER_NO          claim, line and member; a reprocessed claim takes a suffix -01
+    CLAIM_FORM                            1500 professional, UB04 facility, NCPDP pharmacy
+    FIRST_DOS, LAST_DOS, PAID_DATE        dates of service and payment
+    PROCEDURE, MODIFIER, PLACE_OF_SVC, REVENUE, NDC, RENDERING_PROV_NPI
+    ALLOWED_CENTS                         allowed amount in cents
+    CLAIM_STATUS                          P paid and current; A adjusted (superseded by a reprocessed claim)
+  KBP_ELIG_LPN_20261009.txt               coverage spans; blank TERM_DATE while open; REL_CD 18 self, 19 child
+  KBP_ATTRIBUTION_PY2025F_PY2026R10.xlsx  one sheet per run; the header row is the fourth row
+  KBP_CCF_REMIT_2026.xlsx                 care coordination remittances to the network's TINs in 2026; Service Period is
+                                          the month the fee covers
+
+PEMBERGLEN MUTUAL HEALTH (PMH)
+  pmh_partner_claims_2026-10-12.json      {"records": [...]}; one object per claim version
+    claimId, memberId, type               type professional, institutional_outpatient, institutional_inpatient, pharmacy
+    serviceStart, serviceEnd, adjudicated dates of service and of adjudication
+    cpt, modifier, pos, renderingNpi      professional claims (modifier where billed)
+    revenueCode                           facility claims
+    ndc, daysSupply                       pharmacy claims
+    allowed                               allowed amount, USD
+    version                               1 for the first adjudication; a reprocessed claim's later version replaces it
+  pmh_members_2026-10-12.csv              coverage; blank coverageEnd while open
+  pmh_attribution_py2025_py2026.csv       FINAL (2025) and INTERIM-10 (2026) runs
+  pmh_ccf_payments_2026.csv               care coordination payments on each 2026 interim run
+
+NETWORK FILES
+  lpn_primary_care_roster_2026-10.xlsx    the network's primary care clinicians by practice with effective dates
+  lpn_master_patient_index.csv            network patient identifier for each payer member identifier
+  payer_completion_factors_2026-09.csv    Appendix C of the Performance Standard
+  qualifying_primary_care_services.csv    Appendix A of the Performance Standard
+  payer_em_fee_schedules_2026.xlsx        each payer's 2026 evaluation and management rates for network clinicians
+"""
+    with open(path, "w", encoding="utf-8", newline="\n") as f:
+        f.write(text)
+
+
+def write_all(t, w, ids, cf):
+    standard_pdf(t("standard"))
+    resolution_pdf(t("resolution"))
+    statements_pdf(t("statements"), w)
+    guide_txt(t("guide"))

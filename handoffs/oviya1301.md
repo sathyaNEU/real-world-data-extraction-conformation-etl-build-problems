@@ -156,4 +156,4 @@ The ask designer's brief, in short:
 
 ## task482
 
-Architecture 13 drawn 2026-10-24 (the Calder Ridge Physician Network's 2027 two-sided track elections, each practice's 2026 cost of care per attributed member month carried from the payers' interim attribution run to the year-end attribution by its own 2025 run-out); architectures 1 to 12 spent at stage 4. Next: stage 2 (`task482/pipeline.json`), reading the design note's ## Draw and ## Tried and rejected first.
+Architecture 13 (the Larrowbrook Physician Network's 2027 two-sided track elections, each practice's interim measure carried to the payers' final attribution by its own 2025 run-out) spent at stage 4 on 2026-10-25, both scored readers landing the call; architectures 1 to 13 spent at stage 4. Next: stage 1 of architecture 14 (`task482/pipeline.json`), reading the design note's ## Tried and rejected first.

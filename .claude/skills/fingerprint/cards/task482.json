@@ -10,8 +10,8 @@
   "shape": "10",
   "decision_type": "designation_set",
   "answer_unit": "set_of_items",
-  "answer": "",
-  "answer_source": "",
+  "answer": "Enter Ostrelwood, Callowglen, Thornelfield, Raddelview, Jesselford, Nerrincreek, Torrinridge, Mallowcrest and Garrowdale in the 2027 two-sided track; keep Haddelcrest, Birrelhaven, Wexelmoor and Prestelglen one-sided.",
+  "answer_source": "submission.md block 1; generator/figures.json call.enter",
   "gap": [
     "population",
     "time"
@@ -33,26 +33,27 @@
   "validated_decoy": false,
   "context_artifact": "close_out_summary",
   "stump_class": "analytical",
-  "analyst_test": "A strong analyst who conforms the three payers' feeds, rosters and claims correctly and reads every clause of the network's performance standard computes each practice's 2026 total cost of care per attributed member month on the payers' September attribution run, carries it to the year flat or at 2025's seasonal pattern, and enters the wrong practices in the two-sided track: the year-end attribution adds mostly members whose single primary care visit of the year falls in September to December, who cost a fraction of the run's members over a whole year's enrollment, so the practices whose members come late are much cheaper on the final attribution than on the run.",
+  "analyst_test": "A strong analyst who conforms the three payers' feeds correctly and reads every clause of the network's performance standard computes each practice's interim measure on the payers' October interim runs as the standard's section 4.1 defines it, takes it as the practice's 2026 figure against 98 per cent of its benchmark, and enters Ostrelwood, Thornelfield and Jesselford alone; the year-end attribution adds the members whose one visit of 2026 falls after August, at a fraction of the cost, and nine practices enter.",
   "domain_test": "The field's own analysis of a retrospective attribution's open year: a practice's cost per attributed member month is a ratio over a population the year's own primary care visits define, so the year-end figure is carried from the payers' interim run by the practice's own attribution run-out after the same cut a year earlier, members and dollars together, the way a value-based finance team accrues a settlement before the final run. With another field's nouns the plurality of qualifying primary care services, the allowed-amount cost of care and the benchmark trend lose their meaning, and the relation that decides (a first primary care visit late in the year marks a low user of care) is a fact about how people use primary care.",
   "layer2_family": "field_method",
   "layer2_pattern": "own:a retrospective attribution's run-out carried from last year's same cut",
   "layer1": [
-    "three payers' feeds in three layouts (member-month csv, pipe-delimited claim lines, xlsx roster)",
-    "member identifiers that differ by payer, with dependent suffixes, joined through the network's master patient index",
-    "NPIs that moved between practices, with effective dates in the network's practice roster",
-    "a payer's feed restating earlier months with replacement records under a later run date",
-    "allowed amounts in dollars and cents in two feeds and whole dollars in one",
-    "the 2025 settlement statements as a PDF table"
+    "three payers' claim feeds in three layouts (csv voiding and replacing reprocessed claims, pipe-delimited lines in cents with adjusted status, JSON claim versions)",
+    "open coverage spans written as 9999-12-31 or left blank",
+    "a title block above the header in a payer's attribution workbook",
+    "TINs with and without a hyphen across the payers' files",
+    "member identifiers that differ by payer, joined through the network's master patient index",
+    "clinicians who moved between practices, with effective dates in the network's roster",
+    "2025 claims paid after the 31 March cut-off still in the October feeds"
   ],
   "stakeholder_role": "the network's director of payer performance analytics",
   "role_family": "portfolio_manager",
   "scoring_unit": "per covered member",
   "spine": {
-    "file": "tcoc_member_months_2025_2026.csv",
-    "rows": 0,
-    "entity": "one member month of one payer's cost of care feed",
-    "grain": "payer x member x month",
+    "file": "mlh_tcoc_claims_2025-01_2026-09.csv",
+    "rows": 273594,
+    "entity": "one claim, void or replacement line of Merrinlake's value-based partner claims extract",
+    "grain": "claim x version",
     "source": "synthetic"
   },
   "forum": "board_of_directors",
@@ -63,10 +64,23 @@
     "currency": "USD",
     "org_type": "a physician-led clinically integrated network holding three commercial payers' total cost of care contracts",
     "invented_names": [
-      "Calder Ridge Physician Network",
-      "Brule Lakes Health Plan",
-      "Meridale Benefit Partners",
-      "Tamarack Mutual Health"
+      "Larrowbrook Physician Network",
+      "Merrinlake Health Plan",
+      "Kesselcrest Benefit Partners",
+      "Pemberglen Mutual Health",
+      "Ostrelwood Internal Medicine",
+      "Callowglen Family Practice",
+      "Thornelfield Family Medicine",
+      "Haddelcrest Internal Medicine",
+      "Birrelhaven Children's Clinic",
+      "Raddelview Family Physicians",
+      "Jesselford Family Medicine",
+      "Nerrincreek Family Practice",
+      "Wexelmoor Internal Medicine",
+      "Torrinridge Family Medicine",
+      "Mallowcrest Pediatrics",
+      "Prestelglen Internal Medicine",
+      "Garrowdale Family Practice"
     ],
     "people": [
       "Andre O'Connor",
@@ -81,8 +95,8 @@
   "opening_move": "question-first",
   "question_form": "which",
   "driver": "A per-member rate for a period is read over the members each unit has been assigned so far, but members are assigned by their own contacts during the period, so part-way through it the members still unassigned are mostly those who need little; they join late with small amounts and the whole period's exposure, so the rate on the members assigned so far overstates the period's rate by an amount that differs by unit with how late its members make contact, and only each unit's own run-out of the assignment after the same cut in the last period carries the rate to the period's end.",
-  "driver_concrete": "Each practice's 2026 cost of care per attributed member month on the year-end attribution is its September-run figure times its own 2025 ratio of the year-end figure to the figure for the members attributed by 31 August (attribution re-run on 2025's January to August qualifying services), because members whose first qualifying visit falls in September to December are mostly healthy members with one visit a year, who join with low allowed amounts and all twelve months of enrollment.",
-  "stump": "The default path computes each practice's cost per member month on the payers' September run and enters the practices that clear the bar there; carried to the year-end attribution by each practice's own run-out, a different set clears it.",
+  "driver_concrete": "Each practice's 2026 cost of care per attributed member month on the year-end attribution is its October interim run's figure times its own 2025 ratio of the year-end figure to the figure for the members attributed by 31 August (attribution re-run on 2025's January to August qualifying services), because members whose first qualifying visit falls in September to December are mostly healthy members with one visit a year, who join with low allowed amounts and all twelve months of enrollment.",
+  "stump": "The default path computes each practice's cost per member month on the payers' October interim run and enters the practices that clear the bar there; carried to the year-end attribution by each practice's own run-out, a different set clears it.",
   "mechanism_source": "design_note",
   "differentiation": {
     "task451": "task451 completes a closed year's unpaid claims for twelve partners' total cost of care, where the payer's adjudication sped up inside the lag history; here the year is open, the claims are complete, and what is still to come is the population: the members a retrospective attribution adds after the cut, carried by each practice's own attribution run-out.",
@@ -302,5 +316,6 @@
   ],
   "notes": "stump_strategy maturity_censoring: the year's attributed population is immature at the cut (late arrival of members into the population), and the decisive move is its run-out; not population_selection (the population is filed in full by the attribution clause, the difficulty is that it has not finished arriving) and not forecast_method_backtest (no method is chosen by a back-test). gate_g etl_conformance: each practice's conformed cost of care on the contract's basis, judged against the board's two-sided standard.",
   "client_domain": "healthcare-delivery-health-economics",
-  "registered": "2026-10-24T22:03:28Z"
+  "registered": "2026-10-24T22:03:28Z",
+  "architecture_spent": true
 }

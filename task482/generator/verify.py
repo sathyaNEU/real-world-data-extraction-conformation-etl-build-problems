@@ -1,16 +1,16 @@
 """The independent verifier: reads only the shipped bundle (target/), the golden deliverables and figures.json, on its
-own code path (pandas for the tables, pdfplumber for the documents), and recomputes the certification, every city's
-figures and both reports.
+own code path (pandas joins and group-bys, pdfplumber for the documents, no import of golden.py), and recomputes the
+elections, every benchmark and threshold, both asks and the write-up's figures.
 
     python3 task482/generator/verify.py
 """
-import calendar
 import json
-import math
 import os
 import re
 import sys
 
+import numpy as np
+import openpyxl
 import pandas as pd
 import pdfplumber
 
@@ -19,6 +19,7 @@ TASK = os.path.dirname(HERE)
 T = os.path.join(TASK, "target")
 GD = os.path.join(TASK, "golden")
 OK, BAD = [0], []
+TS = pd.Timestamp
 
 
 def v(label, cond, detail=""):
@@ -39,197 +40,220 @@ def pdf(prefix):
         return " ".join(" ".join(p.extract_text() or "" for p in d.pages).split())
 
 
-def half_up(x, nd=0):
-    k = 10 ** nd
-    return math.floor(x * k + 0.5) / k
+def claims():
+    """Every claim line of the three feeds at its current version, with the date its claim was first paid."""
+    m = pd.read_csv(f("mlh_tcoc_claims"), dtype=str, keep_default_na=False)
+    voided = set(m.loc[m.ADJ_TYP == "VOID", "ORIG_CLM_ID"])
+    m["key"] = np.where(m.ORIG_CLM_ID != "", m.ORIG_CLM_ID, m.CLM_ID)
+    m["fp"] = pd.to_datetime(m.groupby("key").PD_DT.transform("min"))
+    m = m[(m.ADJ_TYP != "VOID") & ~m.CLM_ID.isin(voided)]
+    a = pd.DataFrame({"payer": "MLH", "member": m.MBR_ID, "typ": m.CLM_TYP.replace({"PHRM": "RX"}), "svc": pd.to_datetime(m.SVC_FROM_DT),
+                      "fp": m.fp, "paid": pd.to_datetime(m.PD_DT), "code": m.PROC_CD, "mod": m.PROC_MOD, "pos": m.POS_CD,
+                      "npi": m.REND_NPI, "amt": m.ALLOWED_AMT.astype(float)})
+    k = pd.read_csv(f("KBP_CLAIMS"), sep="|", dtype=str, keep_default_na=False)
+    k["key"] = k.CLAIM_NO.str.split("-").str[0]
+    k["pd"] = pd.to_datetime(k.PAID_DATE, format="%m/%d/%Y")
+    k["fp"] = k.groupby("key").pd.transform("min")
+    k = k[k.CLAIM_STATUS == "P"]
+    b = pd.DataFrame({"payer": "KBP", "member": k.MEMBER_NO, "typ": k.CLAIM_FORM.map({"1500": "PROF", "UB04": "FAC", "NCPDP": "RX"}),
+                      "svc": pd.to_datetime(k.FIRST_DOS, format="%m/%d/%Y"), "fp": k.fp, "paid": k.pd, "code": k.PROCEDURE,
+                      "mod": k.MODIFIER, "pos": k.PLACE_OF_SVC, "npi": k.RENDERING_PROV_NPI,
+                      "amt": k.ALLOWED_CENTS.astype(float) / 100})
+    j = pd.DataFrame(json.load(open(f("pmh_partner_claims")))["records"])
+    j["fp"] = pd.to_datetime(j.groupby("claimId").adjudicated.transform("min"))
+    j = j.sort_values("version").drop_duplicates("claimId", keep="last")
+    t = pd.DataFrame({"payer": "PMH", "member": j.memberId, "typ": j["type"].map(lambda s: "PROF" if s == "professional" else (
+        "RX" if s == "pharmacy" else "FAC")), "svc": pd.to_datetime(j.serviceStart), "fp": j.fp,
+        "paid": pd.to_datetime(j.adjudicated), "code": j.cpt.fillna(""), "mod": j["modifier"].fillna("") if "modifier" in j else "",
+        "pos": j.pos.fillna(""), "npi": j.renderingNpi.fillna(""), "amt": j.allowed.astype(float)})
+    return pd.concat([a, b, t], ignore_index=True)
 
 
-def ndays(ym):
-    return calendar.monthrange(ym[0], ym[1])[1]
+def coverage():
+    rows = []
+    e = pd.read_csv(f("mlh_eligibility"), dtype=str)
+    rows.append(pd.DataFrame({"payer": "MLH", "member": e.MBR_ID, "s": pd.to_datetime(e.COV_EFF_DT),
+                              "e": pd.to_datetime(e.COV_TERM_DT.str.replace("9999-12-31", "2099-12-31"))}))
+    e = pd.read_csv(f("KBP_ELIG"), sep="|", dtype=str, keep_default_na=False)
+    rows.append(pd.DataFrame({"payer": "KBP", "member": e.MEMBER_NO, "s": pd.to_datetime(e.EFF_DATE, format="%m/%d/%Y"),
+                              "e": pd.to_datetime(e.TERM_DATE.replace("", "12/31/2099"), format="%m/%d/%Y")}))
+    e = pd.read_csv(f("pmh_members"), dtype=str, keep_default_na=False)
+    rows.append(pd.DataFrame({"payer": "PMH", "member": e.memberId, "s": pd.to_datetime(e.coverageStart),
+                              "e": pd.to_datetime(e.coverageEnd.replace("", "2099-12-31"))}))
+    return pd.concat(rows, ignore_index=True)
 
 
-def months(a, b):
-    out = [a]
-    while out[-1] != b:
-        y, m = out[-1]
-        out.append((y + 1, 1) if m == 12 else (y, m + 1))
-    return out
+def months(cov, year, upto):
+    """Member months by payer and member: each calendar month a span touches, January to month upto."""
+    out = {}
+    for mo in range(1, upto + 1):
+        first = TS(year, mo, 1)
+        last = first + pd.offsets.MonthEnd(0)
+        hit = cov[(cov.s <= last) & (cov.e >= first)][["payer", "member"]].drop_duplicates()
+        for key in zip(hit.payer, hit.member):
+            out[key] = out.get(key, 0) + 1
+    return pd.Series(out)
+
+
+def runs():
+    tin = lambda x: str(x).replace("-", "")
+    r = []
+    a = pd.read_csv(f("mlh_attribution"), dtype=str)
+    r.append(pd.DataFrame({"payer": "MLH", "member": a.MBR_ID, "run": np.where(a.RUN_ID == "PY2025-F", "F25", "R26"),
+                           "tin": a.PRACTICE_TIN.map(tin)}))
+    wb = openpyxl.load_workbook(f("KBP_ATTRIBUTION"), read_only=True)
+    for sheet, tag in (("PY2025 Final", "F25"), ("PY2026 Run 10", "R26")):
+        rows = [x for x in wb[sheet].iter_rows(min_row=5, values_only=True) if x[0]]
+        r.append(pd.DataFrame({"payer": "KBP", "member": [str(x[0]) for x in rows], "run": tag, "tin": [tin(x[1]) for x in rows]}))
+    a = pd.read_csv(f("pmh_attribution"), dtype=str)
+    r.append(pd.DataFrame({"payer": "PMH", "member": a.memberId, "run": np.where(a.run == "FINAL", "F25", "R26"), "tin": a.tin.map(tin)}))
+    return pd.concat(r, ignore_index=True)
+
+
+def roster():
+    wb = openpyxl.load_workbook(f("lpn_primary_care_roster"), read_only=True)
+    rows = [x for x in wb.active.iter_rows(min_row=2, values_only=True) if x[0]]
+    return pd.DataFrame({"npi": [str(x[0]) for x in rows], "practice": [x[3] for x in rows],
+                         "tin": [str(x[4]).replace("-", "") for x in rows], "start": pd.to_datetime([x[5] for x in rows]),
+                         "end": pd.to_datetime([x[6] if x[6] else "2099-12-31" for x in rows])})
+
+
+def at_practice(lines, ros):
+    """Each line's practice: the roster row for its rendering NPI in force on its date of service."""
+    x = lines.reset_index().merge(ros[["npi", "practice", "start", "end"]], on="npi", how="inner")
+    x = x[(x.svc >= x.start) & (x.svc <= x.end)]
+    return x.set_index("index").practice
+
+
+def rate(members, cl, mm, cap=250000.0):
+    """Per practice capped cost and member months for a {(payer, member): practice} frame."""
+    tot = cl.groupby(["payer", "member"]).amt.sum()
+    df = members.copy()
+    df["cost"] = [min(cap, tot.get(k, 0.0)) for k in zip(df.payer, df.member)]
+    df["mm"] = [mm.get(k, 0) for k in zip(df.payer, df.member)]
+    return df.groupby("practice")[["cost", "mm"]].sum()
 
 
 def main():
     figs = json.load(open(os.path.join(HERE, "figures.json")))
+    cl = claims()
+    cov = coverage()
+    rn = runs()
+    ros = roster()
+    tin2 = dict(zip(ros.tin, ros.practice))
+    rn["practice"] = rn.tin.map(tin2)
+    v("every attribution TIN maps to a roster practice", rn.practice.notna().all())
+    qual = set(pd.read_csv(f("qualifying_primary_care"), dtype=str).code)
+    cf = pd.read_csv(f("payer_completion_factors"), dtype=str)
+    cfd = {(r.payer, int(r.incurred_month[5:7])): float(r.completion_factor) for r in cf.itertuples()}
 
-    # ---------------------------------------------------------------- the documents, read back
-    act, ordn, fact = pdf("seasonal_communities_aid_act"), pdf("lake_protection_fee_ordinance"), pdf("quillmere_basin_wastewater")
-    v("pdf: the Act reads back", "Busiest month" in act and "Section 5" in act)
-    v("pdf: the ordinance reads back", "Marketplace platforms" in ordn)
-    v("pdf: the fact sheet reads back", "force main" in fact)
-    approp = int(re.search(r"USD ([\d,]+) is appropriated", act).group(1).replace(",", ""))
-    v("pdf: the appropriation is USD 2,400,000 and the test three times residents",
-      approp == 2400000 and "at least three times its resident population" in act)
-    my = re.search(r"For aid year 2027 it is 1 October (\d{4}) through 30 September (\d{4})", act)
-    MY = months((int(my.group(1)), 10), (int(my.group(2)), 9))
-    v("pdf: the measurement year is October 2025 to September 2026", MY[0] == (2025, 10) and MY[-1] == (2026, 9))
-    r1, r2 = [float(x) for x in re.findall(r"USD (1\.\d\d) a guest-night", ordn)]
-    v("pdf: the fee is 1.25 through 2025 and 1.50 from 1 January 2026", (r1, r2) == (1.25, 1.50))
-    k834 = float(re.search(r"per liter times ([\d.]+)", fact).group(1))
-    v("pdf: the fact sheet's load convention is 8.34", k834 == 8.34)
+    # 2025 measure on the final runs, benchmark and threshold
+    f25 = rn[rn.run == "F25"][["payer", "member", "practice"]]
+    c25 = cl[(cl.svc.dt.year == 2025) & (cl.fp <= TS(2026, 3, 31))]
+    F = rate(f25, c25, months(cov, 2025, 12))
+    F["pm"] = F.cost / F.mm
+    bench = F.pm.map(lambda x: round(round(x, 2) * 1.052, 2))     # the standard's section 3.4
+    thr = bench * 0.98
+    cents = [int(round(round(x, 2) * 100)) for x in F.pm]
+    v("no benchmark on a half cent: no 2025 measure's cents times 1052 end in 500",
+      all((c_ * 1052) % 1000 != 500 for c_ in cents))
+    v("no threshold on a half cent: no benchmark's cents times 98 end in 50",
+      all((int(round(b_ * 100)) * 98) % 100 != 50 for b_ in bench))
+    # the October runs' interim measure
+    r26 = rn[rn.run == "R26"][["payer", "member", "practice"]]
+    c26 = cl[(cl.svc.dt.year == 2026) & (cl.svc <= TS(2026, 8, 31)) & (cl.fp <= TS(2026, 9, 30))].copy()
+    c26["amt"] = c26.amt / [cfd[(p, m)] for p, m in zip(c26.payer, c26.svc.dt.month)]
+    I = rate(r26, c26, months(cov, 2026, 8))
+    I["pm"] = I.cost / I.mm
+    # the 2025 attribution re-run at the October run's cut, from the 2025 professional claims
+    q = cl[(cl.typ == "PROF") & cl.code.isin(qual) & (cl.svc.dt.year == 2025) & (cl.svc <= TS(2025, 8, 31))
+           & (cl.fp <= TS(2025, 9, 30))].copy()
+    q["practice"] = at_practice(q, ros)
+    q = q.dropna(subset=["practice"])
+    days = q.groupby(["payer", "member", "practice"]).svc.agg(["nunique", "max"]).reset_index()
+    days = days.sort_values(["payer", "member", "nunique", "max", "practice"], ascending=[True, True, False, False, True])
+    aug = days.drop_duplicates(["payer", "member"])[["payer", "member", "practice"]]
+    c25a = cl[(cl.svc.dt.year == 2025) & (cl.svc <= TS(2025, 8, 31)) & (cl.fp <= TS(2026, 3, 31))]
+    A = rate(aug, c25a, months(cov, 2025, 8))
+    A["pm"] = A.cost / A.mm
+    R = F.pm / A.pm
+    proj = I.pm * R
+    enter = sorted(k for k in proj.index if proj[k] <= thr[k])
+    v("the elections recompute: %d practices enter" % len(enter), enter == sorted(figs["call"]["enter"]), str(enter))
+    v("every benchmark and threshold recomputes to the cent",
+      all(abs(round(bench[k], 2) - figs["practices"][k]["benchmark"]) < 0.006 and
+          abs(round(thr[k], 2) - figs["practices"][k]["threshold"]) < 0.006 for k in proj.index))
+    v("every 2025 measure recomputes to the cent", all(abs(round(F.pm[k], 2) - figs["practices"][k]["f2025"]) < 0.006 for k in proj.index))
+    v("every run-out and projection recomputes", all(abs(R[k] - figs["practices"][k]["runout"]) < 6e-5 and
+                                                   abs(round(proj[k], 2) - figs["practices"][k]["projected"]) < 0.006 for k in proj.index))
+    gap = (proj / thr - 1).abs().min()
+    v("no practice within 4.5 per cent of its threshold", gap >= 0.045, "%.4f" % gap)
+    dflt = sorted(k for k in proj.index if I.pm[k] <= thr[k])
+    v("the default path (the interim measure as it stands) enters %s" % ", ".join(x.split()[0] for x in dflt),
+      dflt == sorted(figs["steps"]["default_enter"]))
+    pooled = (F.cost.sum() / F.mm.sum()) / (A.cost.sum() / A.mm.sum())
+    v("the pooled run-out recomputes", abs(pooled - figs["steps"]["pooled_runout"]) < 0.0006, "%.4f" % pooled)
 
-    # ---------------------------------------------------------------- residents
-    pop = pd.read_csv(f("quillmere_county_population"), dtype={"GEOID": str})
-    cities = pop[pop["GEOGRAPHY"].str.endswith(" city")]
-    R = dict(zip(cities["GEOGRAPHY"].str[:-5], cities["POPEST_2026_07_01"].astype(int)))
-    towns = list(figs["order"])
-    v("residents: eight basin cities, 1 July 2026", sorted(R) == sorted(towns))
-
-    # ---------------------------------------------------------------- the plants' influent
-    e = pd.read_csv(f("edmr_dmr_export"), dtype={"PARAMETER_CODE": str, "MONITORING_LOCATION_CODE": str})
-    e["end"] = pd.to_datetime(e["MONITORING_PERIOD_END_DATE"], format="%m/%d/%Y")
-    e["rec"] = pd.to_datetime(e["RECEIVED_DATE"], format="%m/%d/%Y")
-    acc = e[e["SUBMISSION_STATUS"] == "Accepted"].sort_values("rec")
-    acc = acc.groupby(["PERMIT_ID", "end", "MONITORING_LOCATION_CODE", "PARAMETER_CODE"]).tail(1)
-    acc = acc.assign(ym=list(zip(acc["end"].dt.year, acc["end"].dt.month)))
-    val = {(r.PERMIT_ID, r.ym, r.MONITORING_LOCATION_CODE, r.PARAMETER_CODE): float(r.DMR_VALUE) for r in acc.itertuples()}
-    permit = {"Birchwick": "MN0099127", "Teskadel": "MN0099146", "Sorrelton": "MN0099158", "Tamsen Point": "MN0099173",
-              "Narrows": "MN0099181"}
-    BOD = {}
-    for n, pid in permit.items():
-        if n == "Narrows":
-            continue
-        for ym in {k[1] for k in val if k[0] == pid}:
-            BOD[(n, ym)] = val[(pid, ym, "G", "50050")] * val[(pid, ym, "G", "00310")] * k834
-    for sheet, df in pd.read_excel(f("ruddmere_pinehold_ponds"), sheet_name=None, header=3).items():
-        n = sheet.rsplit(" ", 1)[0]
-        for r in df.itertuples(index=False):
-            if not isinstance(r[0], str):
-                continue
-            d = pd.to_datetime(r[0], format="%b %Y")
-            BOD[(n, (d.year, d.month))] = float(r[1]) * float(r[2]) * k834
-    mt = pd.read_csv(f("narrows_joint_member_meters"))
-    ts = pd.to_datetime(mt["READ_AT"], format="%m/%d/%Y %H:%M")
-    ts = ts.where(~((ts.dt.hour == 0) & (ts.dt.minute == 0)), ts - pd.Timedelta(days=1))
-    mt = mt.assign(ym=list(zip(ts.dt.year, ts.dt.month)))
-    gal = mt.groupby(["MEMBER", "ym"])["VOLUME_SINCE_LAST_READ_GAL"].sum().to_dict()
-    for ym in {k[1] for k in val if k[0] == "MN0099181"}:
-        for n in ("Esker Narrows", "Hollin Bay"):
-            BOD[(n, ym)] = gal[(n, ym)] / ndays(ym) / 1e6 * val[("MN0099181", ym, "G", "00310")] * k834
-    v("plants: 21 months of influent BOD load for each city", all(sum(1 for k in BOD if k[0] == n) == 21 for n in towns))
-
-    # ---------------------------------------------------------------- paid guests on an average day
-    paid = {}
-    rt = pd.read_csv(f("lake_protection_fee_returns_2"))
-    rt["filed"] = pd.to_datetime(rt["DATE_FILED"], format="%m/%d/%Y")
-    rt = rt.sort_values("filed")
-    base = rt[rt["RETURN_TYPE"].isin(["Original", "Amended"])].groupby(["ACCOUNT_NO", "PERIOD_START"]).tail(1)
-    cur = pd.concat([base, rt[rt["RETURN_TYPE"] == "Supplemental"]])
-    for r in cur.itertuples():
-        a = pd.to_datetime(r.PERIOD_START, format="%m/%d/%Y")
-        b = pd.to_datetime(r.PERIOD_END, format="%m/%d/%Y")
-        ms = months((a.year, a.month), (b.year, b.month))
-        tot = sum(ndays(x) for x in ms)
-        for x in ms:
-            paid[(r.PROPERTY_CITY, x)] = paid.get((r.PROPERTY_CITY, x), 0) + r.GUEST_NIGHTS_TOTAL * ndays(x) / tot
-    lw = pd.read_csv(f("lakeward_stays_remittance"))
-    ck = pd.read_csv(f("kettle_and_pine_remittance"))
-    ck_arr = pd.to_datetime(ck["Reservation"].str[1:7], format="%y%m%d") - pd.to_timedelta(ck["Nights"], unit="D")
-    stays = pd.concat([pd.DataFrame(dict(city=lw["listing_city"].str.title(), arr=pd.to_datetime(lw["check_in"]),
-                                         nights=lw["nights"], guests=lw["guests"])),
-                       pd.DataFrame(dict(city=ck["Municipality"], arr=ck_arr, nights=ck["Nights"],
-                                         guests=ck["Party size"]))], ignore_index=True)
-    nights = stays.loc[stays.index.repeat(stays["nights"])].copy()
-    nights["d"] = nights["arr"] + pd.to_timedelta(nights.groupby(level=0).cumcount(), unit="D")
-    gn = nights.groupby(["city", nights["d"].dt.year, nights["d"].dt.month])["guests"].sum()
-    for (c, y, m), g in gn.items():
-        paid[(c, (y, m))] = paid.get((c, (y, m)), 0) + g
-    per_day = {k: g / ndays(k[1]) for k, g in paid.items()}
-
-    # ---------------------------------------------------------------- the certification
-    W = [(2026, m) for m in (1, 2, 3, 4)]
-    qual = []
-    for n in towns:
-        lpp = sum(BOD[(n, ym)] / (R[n] + per_day.get((n, ym), 0)) for ym in W) / len(W)
-        pres = {ym: BOD[(n, ym)] / lpp for ym in MY}
-        b = max(pres, key=pres.get)
-        name = calendar.month_name[b[1]] + " %d" % b[0]
-        c = figs["cities"][n]
-        q = pres[b] >= 3 * R[n]
-        if q:
-            qual.append(n)
-        v("certification: %s busiest %s, %s present, %s" % (n, name, "{:,}".format(int(half_up(pres[b] / 1000) * 1000)),
-                                                            "qualifies" if q else "does not qualify"),
-          c["busiest"] == name and c["present"] == int(half_up(pres[b] / 1000) * 1000) and c["qualifies"] == q
-          and c["residents"] == R[n] and c["three_x"] == 3 * R[n])
-    share = approp // len(qual)
-    v("certification: %d cities qualify at USD %s each" % (len(qual), "{:,}".format(share)),
-      qual == figs["call"]["qualify"] and share == figs["call"]["share"] and share * len(qual) == approp
-      and all(figs["cities"][n]["aid"] == (share if n in qual else 0) for n in towns))
-
-    # ---------------------------------------------------------------- report 1: the fee by city and quarter
-    qmap = {1: [(2025, 7), (2025, 8), (2025, 9)], 2: [(2025, 10), (2025, 11), (2025, 12)],
-            3: [(2026, 1), (2026, 2), (2026, 3)], 4: [(2026, 4), (2026, 5), (2026, 6)]}
-    qof = {ym: q for q, ms in qmap.items() for ym in ms}
+    # ask A: the level each payer paid, read from the allowed amount against its schedule for the visit's setting
+    wb = openpyxl.load_workbook(f("payer_em_fee_schedules"), read_only=True)
+    sched = {}
+    for ws, py in zip(wb.worksheets, ("MLH", "KBP", "PMH")):
+        for x in ws.iter_rows(min_row=5, values_only=True):
+            if x[0] and str(x[0]).startswith("992"):
+                sched[(py, str(x[0]))] = (float(x[2]), float(x[3]) if x[3] is not None else None)
+    em = cl[(cl.typ == "PROF") & cl.code.isin(["99211", "99212", "99213", "99214", "99215"]) & (cl.svc.dt.year == 2026)
+            & (cl.svc <= TS(2026, 8, 31))].copy()
+    em["practice"] = at_practice(em, ros)
+    em = em.dropna(subset=["practice"])
+    fac = em.pos.isin(["19", "22"]) | ((em.payer == "PMH") & em.pos.isin(["02", "10"]))
+    r5 = np.array([sched[(p, "99215")][1 if fa else 0] for p, fa in zip(em.payer, fac)])
+    paid5 = (em.code == "99215") & ((np.abs(em.amt - r5) < 0.005) | (np.abs(2 * em.amt - r5) < 0.01))
+    share = (100 * paid5.groupby(em.practice).mean()).round(1)
+    v("ask A: all 13 level 5 shares recompute", all(abs(share[k] - figs["ask_a"][k]) < 1e-9 for k in share.index),
+      str(share.to_dict()))
+    # ask B: the remittances by the month each line covers, the standard's fees only
+    rem = []
+    m = pd.read_csv(f("mlh_care_coordination"), dtype=str)
+    rem.append(pd.DataFrame({"payer": "MLH", "tin": m.PRACTICE_TIN, "cov": m.COV_MO.str[4:6].astype(int),
+                             "n": m.MBR_CNT.astype(int), "amt": m.PMT_AMT.astype(float)}))
+    wb = openpyxl.load_workbook(f("KBP_CCF_REMIT"), read_only=True)
+    rows = [x for x in wb.active.iter_rows(min_row=2, values_only=True) if x[0]]
+    rem.append(pd.DataFrame({"payer": "KBP", "tin": [str(x[2]).replace("-", "") for x in rows],
+                             "cov": [int(str(x[3])[5:7]) for x in rows], "n": [int(x[4]) for x in rows],
+                             "amt": [float(x[5]) for x in rows]}))
+    pm = pd.read_csv(f("pmh_ccf_payments"), dtype=str)
+    rem.append(pd.DataFrame({"payer": "PMH", "tin": pm.tin.str.replace("-", ""),
+                             "cov": pm.paymentRef.str.extract(r"-2026(\d\d)-")[0].astype(int),
+                             "n": pm.memberCount.astype(int), "amt": pm.amount.astype(float)}))
+    rem = pd.concat(rem, ignore_index=True)
+    std = pdf("lpn_performance_standard")
     fee = {}
-    for r in cur.itertuples():
-        a = pd.to_datetime(r.PERIOD_START, format="%m/%d/%Y")
-        q = qof.get((a.year, a.month))
-        if q:
-            fee[(r.PROPERTY_CITY, q)] = fee.get((r.PROPERTY_CITY, q), 0) + r.FEE_DUE
-    short = nights[nights["nights"] < 30].copy()
-    short["rate"] = (short["d"] >= pd.Timestamp("2026-01-01")).map({True: r2, False: r1})
-    short["q"] = [qof.get((d.year, d.month)) for d in short["d"]]
-    short = short[short["q"].notna()]
-    for (c, q), x in (short["rate"] * short["guests"]).groupby([short["city"], short["q"]]).sum().items():
-        fee[(c, int(q))] = fee.get((c, int(q)), 0) + x
-    okA = [n for n in towns for q in (1, 2, 3, 4) if int(half_up(fee.get((n, q), 0))) == figs["ask_a"][n]["q%d" % q]]
-    v("report 1: 32 fee figures, whole dollars", len(okA) == 32, "%d of 32" % len(okA))
-    cks = ck.assign(arr=ck_arr)
-    cks = cks[cks["Nights"] < 30]
-    first26 = ((pd.Timestamp("2026-01-01") - cks["arr"]).dt.days).clip(lower=0)
-    n25 = first26.where(first26 < cks["Nights"], cks["Nights"])
-    est = (n25 * r1 + (cks["Nights"] - n25) * r2) * cks["Party size"]
-    v("report 1: every Kettle & Pine fee remitted is the party times the rate on each night before the departure its "
-      "reservation carries", bool(((est - cks["Fee remitted (USD)"]).abs() < 0.005).all()))
+    for py, name in (("MLH", "Merrinlake Health Plan"), ("KBP", "Kesselcrest Benefit Partners"), ("PMH", "Pemberglen Mutual Health")):
+        fee[py] = float(re.search(re.escape(name) + r" USD (\d+\.\d\d)", std).group(1))
+    rem = rem[np.abs(rem.n * rem.payer.map(fee) - rem.amt) < 0.005]
+    rem = rem[rem["cov"] <= 9]
+    rem["practice"] = rem.tin.map(tin2)
+    rem["q"] = (rem["cov"] - 1) // 3 + 1
+    fees = rem.groupby(["practice", "q"]).amt.sum().round(2)
+    v("ask B: all 39 fees recompute to the cent", len(fees) == 39 and all(abs(fees[(k, q_)] - figs["ask_b"]["%s|Q%d" % (k, q_)]) < 0.005
+                                                                         for k, q_ in fees.index))
 
-    # ---------------------------------------------------------------- report 2: phosphorus by plant and half
-    tp = {}
-    for n, pid in permit.items():
-        for m in range(1, 13):
-            x = val[(pid, (2025, m), "1", "50050")] * val[(pid, (2025, m), "1", "00665")] * k834 * ndays((2025, m))
-            tp[(n, 1 if m <= 6 else 2)] = tp.get((n, 1 if m <= 6 else 2), 0) + x
-    for sheet, df in pd.read_excel(f("ruddmere_pinehold_ponds"), sheet_name=None, header=3).items():
-        n, yr = sheet.rsplit(" ", 1)
-        if yr != "2025":
-            continue
-        for r in df.itertuples(index=False):
-            if isinstance(r[0], str) and r[4] == "Yes":
-                d = pd.to_datetime(r[0], format="%b %Y")
-                tp[(n, 1 if d.month <= 6 else 2)] = tp.get((n, 1 if d.month <= 6 else 2), 0) + \
-                    float(r[6]) * float(r[9]) * k834 * ndays((d.year, d.month))
-    okB = [n for n in figs["plants"] for h in (1, 2) if abs(half_up(tp[(n, h)], 1) - figs["ask_b"][n]["h%d" % h]) < 1e-9]
-    v("report 2: 14 phosphorus figures, one decimal", len(okB) == 14, "%d of 14" % len(okB))
-
-    # ---------------------------------------------------------------- the golden deliverables carry the same figures
-    wb = pd.read_excel(os.path.join(GD, "seasonal_communities_aid_2027_certification.xlsx"), sheet_name=None, header=None)
-    v("golden: four sheets", list(wb) == ["Certification", "Lake Protection Fee", "Phosphorus 2025", "Notes"])
-    cert = wb["Certification"].iloc[4:12]
-    v("golden: the certification sheet carries every city's figures",
-      all(int(r[3]) == figs["cities"][r[0]]["present"] and r[2] == figs["cities"][r[0]]["busiest"] and
-          int(r[5]) == figs["cities"][r[0]]["aid"] and (r[4] == "Yes") == figs["cities"][r[0]]["qualifies"]
-          for r in cert.itertuples(index=False)))
-    fs = wb["Lake Protection Fee"].iloc[4:12]
-    v("golden: the fee sheet carries the 32 figures",
-      all([int(r[k]) for k in (1, 2, 3, 4)] == [figs["ask_a"][r[0]]["q%d" % q] for q in (1, 2, 3, 4)]
-          for r in fs.itertuples(index=False)))
-    ps = wb["Phosphorus 2025"].iloc[4:11]
-    v("golden: the phosphorus sheet carries the 14 figures",
-      all(abs(float(r[1]) - figs["ask_b"][n]["h1"]) < 1e-9 and abs(float(r[2]) - figs["ask_b"][n]["h2"]) < 1e-9
-          for r, n in zip(ps.itertuples(index=False), figs["plants"])))
-    v("golden: the chart is rendered", os.path.getsize(os.path.join(GD, "busiest_month_population_2026.png")) > 20000)
-
-    print()
-    print("%d checks, %d failed" % (OK[0], len(BAD)))
-    for b in BAD:
-        print("  FAILED: " + b)
+    # the golden workbook carries the same figures
+    wb = openpyxl.load_workbook(os.path.join(GD, "two_sided_track_elections_2027.xlsx"), data_only=True)
+    ws = wb["Elections 2027"]
+    rows = [x for x in ws.iter_rows(min_row=5, values_only=True) if x[0]]
+    v("workbook: the elections sheet carries every benchmark, threshold and election",
+      len(rows) == 13 and all(abs(x[3] - round(bench[x[0]], 2)) < 0.006 and abs(x[4] - round(thr[x[0]], 2)) < 0.006
+                              and (x[9] == "Two-sided") == (x[0] in enter) for x in rows))
+    la = [x for x in wb["Level 5 visits"].iter_rows(min_row=5, values_only=True) if x[0] and x[0] != "Network"]
+    v("workbook: the level 5 sheet carries the 13 shares", all(abs(100 * x[3] - share[x[0]]) < 1e-6 for x in la))
+    fb = [x for x in wb["Care coordination fees"].iter_rows(min_row=5, values_only=True) if x[0] and x[0] != "Network"]
+    v("workbook: the fees sheet carries the 39 fees", all(abs(x[q_] - fees[(x[0], q_)]) < 0.005 for x in fb for q_ in (1, 2, 3)))
+    sub = open(os.path.join(TASK, "submission.md")).read()
+    v("submission: every benchmark and threshold in block 4 as recomputed",
+      all(("benchmark USD {:,.2f}, threshold USD {:,.2f}".format(bench[k], thr[k])) in sub for k in proj.index))
+    v("submission: the nine named in block 1", all(k.split()[0] in sub.split("## 2.")[0] for k in enter))
+    print("\n%d checks, %d failed" % (OK[0], len(BAD)))
     return 1 if BAD else 0
 
 

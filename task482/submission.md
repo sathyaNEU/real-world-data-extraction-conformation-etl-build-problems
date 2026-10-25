@@ -1,58 +1,76 @@
 ## Tags
 
-**Domain:** Survey Research & Official Statistics, census, register and administrative data quality (a state demographer's 2026 peak-season populations for the eight cities of a lake basin under a seasonal aid statute, conformed from its resident estimates, seven treatment plants' operating reports in two layouts and a joint plant's member meters, the basin's lodging fee returns and two booking platforms' remittance files).
+**Domain:** Healthcare Delivery & Health Economics, payment, claims and health plan analytics (a clinically integrated network's 2027 two-sided risk elections for its thirteen primary care practices, conformed from three commercial payers' claim, coverage and attribution feeds in three layouts, the network's clinician roster and master patient index, its performance standard and the payers' care coordination remittances).
 **Analytical objective:** Data Extraction & Conformation (ETL).
 
 ## 1. Final Recommendation
 
-**Birchwick, Ruddmere, Sorrelton, Tamsen Point and Esker Narrows qualify for 2027 Seasonal Communities Aid, USD 480,000 each; Teskadel, Pinehold and Hollin Bay do not.**
-Each of the 5 carried at least three times its residents on an average day of its busiest month, counted by the load its sewer delivered to its plant divided by the load each resident carries in the winter months. Not Sorrelton and Esker Narrows alone: residents plus the paid stays the returns and platforms record put only those two over, because the owners in their cottages and the residents' guests stay where no stay is recorded.
+**Enter Ostrelwood, Callowglen, Thornelfield, Raddelview, Jesselford, Nerrincreek, Torrinridge, Mallowcrest and Garrowdale in the 2027 two-sided track and keep Haddelcrest, Birrelhaven, Wexelmoor and Prestelglen one-sided.**
+On the payers' final 2026 attribution each of the nine comes in 5.4 to 8.4 per cent under its threshold, its October interim measure carried to the year by its own 2025 run-out at the same cut. Not Ostrelwood, Thornelfield and Jesselford alone, the interim measure taken as it stands: the October runs attribute only the members whose qualifying visit has happened, and the year adds the members who visit late, with a whole year of member months and a fraction of the cost. Not Haddelcrest, Birrelhaven and Wexelmoor as well, one pooled network run-out of 0.881: their members come early, or cost what the practice's other members cost.
 
 ## 2. Critical Components
 
-1. Average population present in the busiest month of the measurement year: Birchwick **7,000** (July 2026); Teskadel **10,000** (July 2026); Ruddmere **5,000** (August 2026); Sorrelton **12,000** (July 2026); Pinehold **6,000** (July 2026); Tamsen Point **10,000** (August 2026); Esker Narrows **8,000** (July 2026); Hollin Bay **7,000** (July 2026).
-2. Three times the 1 July 2026 resident population: Birchwick **5,553**; Teskadel **11,706**; Ruddmere **3,591**; Sorrelton **9,156**; Pinehold **7,233**; Tamsen Point **9,282**; Esker Narrows **4,809**; Hollin Bay **8,118**.
+1. 2025 network measure on the payers' final 2025 runs, USD per member month: Ostrelwood **723.67**; Callowglen **376.20**; Thornelfield **469.78**; Haddelcrest **779.07**; Birrelhaven **169.90**; Raddelview **455.26**; Jesselford **530.47**; Nerrincreek **368.78**; Wexelmoor **903.02**; Torrinridge **386.49**; Mallowcrest **161.13**; Prestelglen **747.82**; Garrowdale **433.05**.
+2. 2026 threshold, 98 per cent of the benchmark, the 2025 measure to the cent times 1.052 to the cent (standard, section 3.4): Ostrelwood **746.07**; Callowglen **387.84**; Thornelfield **484.33**; Haddelcrest **803.19**; Birrelhaven **175.16**; Raddelview **469.35**; Jesselford **546.89**; Nerrincreek **380.20**; Wexelmoor **930.98**; Torrinridge **398.46**; Mallowcrest **166.12**; Prestelglen **770.98**; Garrowdale **446.46**.
 
 ## 3. Step-by-Step Solution
 
-1. Took each city's 1 July 2026 resident population from quillmere_county_population_estimates_2024_2026.csv (Pinehold on its 2025 boundary): Birchwick 1,851; Teskadel 3,902; Ruddmere 1,197; Sorrelton 3,052; Pinehold 2,411; Tamsen Point 3,094; Esker Narrows 1,603; Hollin Bay 2,706.
-2. Built each plant's monthly influent BOD load, the average daily flow in MGD times the BOD in mg/L times 8.34, from the e-reporting export (the latest accepted submission for each period) and the pond systems' operating reports, giving Esker Narrows and Hollin Bay the Narrows joint plant's BOD at each city's member-meter flow.
-3. Divided each city's January to April 2026 load by its residents plus the paid guests the fee returns and both platforms' stays put in town on an average day of those months: the load each person carries, 0.17 lb of BOD a day in every city.
-4. Divided each month's load from October 2025 to September 2026 by that load per person to get the average population present, took the highest month and compared it with three times residents: Birchwick, Ruddmere, Sorrelton, Tamsen Point and Esker Narrows qualify, the USD 2,400,000 split equally.
-5. For the fee, took each return for its period (an amended return replacing the earlier one, a supplemental return added to it) and each platform stay's guests on each night falling in the quarter at the rate in force that night, counting Kettle & Pine's nights back from the departure date its reservation reference carries (R and the departure as YYMMDD; its reporting period is the month after that date, and the fee it remitted on the stays across 1 January 2026 matches only that reading).
-6. For phosphorus, summed each month's average daily effluent flow (MGD) times total phosphorus (mg/L) times 8.34 times the days of the month, the e-reporting plants on their latest accepted submission (the revisions returned for correction after acceptance left out) and the pond systems' flow read as the month's average, as ponds that hold the year's wastewater must: so read they released 84 per cent or more of their 2025 inflow, against 33 per cent or less at the days discharged.
+1. Conformed the three payers' claims at their current version (Merrinlake's voided originals out, Kesselcrest's adjusted lines out and its cents in dollars, Pemberglen's latest version), member months from the coverage files, and every run's TIN to its practice through lpn_primary_care_roster_2026-10.xlsx.
+2. Took each practice's 2025 network measure on the payers' final 2025 runs (standard, section 3: claims first paid by 31 March 2026, each member's year capped at USD 250,000) and its threshold at 98 per cent of its benchmark, the measure to the cent times 1.052 to the cent (section 3.4).
+3. Computed each practice's interim measure on the October runs (section 4.1, the factors in payer_completion_factors_2026-09.csv): taken as the 2026 figure it enters Ostrelwood, Thornelfield and Jesselford alone.
+4. Re-ran the standard's attribution (section 2) on the 2025 professional claims at the October run's cut, qualifying services incurred by 31 August 2025 and paid by 30 September 2025, and took each practice's 2025 run-out, its 2025 measure over the January to August 2025 measure of the members so attributed: 0.822 to 0.996.
+5. Carried each practice's interim measure by its own run-out: nine come in under their thresholds.
+6. For the level 5 share, read each visit's paid level from its allowed amount against the payer's 2026 rate for its setting in payer_em_fee_schedules_2026.xlsx: Kesselcrest's reviewed 99215 visits allowed at its 99214 rate are level 4, and Merrinlake's modifier-25 visits with a same-day minor procedure by the same clinician, allowed at half the rate, keep their level.
+7. For the fees, summed the three remittance files by the month each line covers: Pemberglen's by the month in its payment reference (PMH-CCF-TIN-YYYYMM-sequence), not its posting period, and Kesselcrest's only at the standard's USD 2.80 (its USD 6.50 lines are its Medicare Advantage fees).
+8. Entered the nine practices under their thresholds in the two-sided track for 2027.
 
 ## 4. Deliverable Answers
 
-### seasonal_communities_aid_2027_certification.xlsx
+### two_sided_track_elections_2027.xlsx
 
-1. Certification, one row per city (busiest month, average population present to the nearest thousand, whether at least three times residents, aid):
-   - Birchwick: July 2026, 7,000, yes, USD 480,000
-   - Teskadel: July 2026, 10,000, no, USD 0
-   - Ruddmere: August 2026, 5,000, yes, USD 480,000
-   - Sorrelton: July 2026, 12,000, yes, USD 480,000
-   - Pinehold: July 2026, 6,000, no, USD 0
-   - Tamsen Point: August 2026, 10,000, yes, USD 480,000
-   - Esker Narrows: July 2026, 8,000, yes, USD 480,000
-   - Hollin Bay: July 2026, 7,000, no, USD 0
-2. Lake Protection Fee generated by stays in fiscal 2026, by city and quarter, whole dollars:
-   - Birchwick: Q1 USD 145,171, Q2 USD 23,245, Q3 USD 369, Q4 USD 65,622
-   - Teskadel: Q1 USD 331,959, Q2 USD 58,556, Q3 USD 1,031, Q4 USD 156,908
-   - Ruddmere: Q1 USD 83,468, Q2 USD 12,708, Q3 USD 165, Q4 USD 38,666
-   - Sorrelton: Q1 USD 641,583, Q2 USD 112,185, Q3 USD 1,869, Q4 USD 303,992
-   - Pinehold: Q1 USD 235,376, Q2 USD 36,750, Q3 USD 1,008, Q4 USD 105,539
-   - Tamsen Point: Q1 USD 101,294, Q2 USD 16,873, Q3 USD 362, Q4 USD 47,111
-   - Esker Narrows: Q1 USD 467,035, Q2 USD 82,020, Q3 USD 1,394, Q4 USD 218,601
-   - Hollin Bay: Q1 USD 304,618, Q2 USD 48,984, Q3 USD 1,223, Q4 USD 139,599
-3. Total phosphorus discharged in 2025, pounds, by half-year:
-   - Birchwick: January to June 140.2, July to December 222.9
-   - Teskadel: January to June 314.5, July to December 426.2
-   - Ruddmere: January to June 395.6, July to December 271.4
-   - Sorrelton: January to June 213.7, July to December 369.2
-   - Pinehold: January to June 824.4, July to December 321.5
-   - Tamsen Point: January to June 277.5, July to December 491.0
-   - Narrows joint plant: January to June 342.6, July to December 644.1
+1. Elections, one row per practice (2026 benchmark, threshold, election):
+   - Ostrelwood Internal Medicine: benchmark USD 761.30, threshold USD 746.07, two-sided
+   - Callowglen Family Practice: benchmark USD 395.76, threshold USD 387.84, two-sided
+   - Thornelfield Family Medicine: benchmark USD 494.21, threshold USD 484.33, two-sided
+   - Haddelcrest Internal Medicine: benchmark USD 819.58, threshold USD 803.19, one-sided
+   - Birrelhaven Children's Clinic: benchmark USD 178.73, threshold USD 175.16, one-sided
+   - Raddelview Family Physicians: benchmark USD 478.93, threshold USD 469.35, two-sided
+   - Jesselford Family Medicine: benchmark USD 558.05, threshold USD 546.89, two-sided
+   - Nerrincreek Family Practice: benchmark USD 387.96, threshold USD 380.20, two-sided
+   - Wexelmoor Internal Medicine: benchmark USD 949.98, threshold USD 930.98, one-sided
+   - Torrinridge Family Medicine: benchmark USD 406.59, threshold USD 398.46, two-sided
+   - Mallowcrest Pediatrics: benchmark USD 169.51, threshold USD 166.12, two-sided
+   - Prestelglen Internal Medicine: benchmark USD 786.71, threshold USD 770.98, one-sided
+   - Garrowdale Family Practice: benchmark USD 455.57, threshold USD 446.46, two-sided
+2. Share of established-patient visits January to August 2026 the payers paid at level 5, per cent:
+   - Ostrelwood Internal Medicine: 18.6
+   - Callowglen Family Practice: 15.5
+   - Thornelfield Family Medicine: 17.3
+   - Haddelcrest Internal Medicine: 18.5
+   - Birrelhaven Children's Clinic: 8.9
+   - Raddelview Family Physicians: 17.2
+   - Jesselford Family Medicine: 17.6
+   - Nerrincreek Family Practice: 15.9
+   - Wexelmoor Internal Medicine: 19.8
+   - Torrinridge Family Medicine: 16.7
+   - Mallowcrest Pediatrics: 8.9
+   - Prestelglen Internal Medicine: 19.8
+   - Garrowdale Family Practice: 16.6
+3. Care coordination fees paid under the standard, by coverage quarter, USD:
+   - Ostrelwood Internal Medicine: Q1 USD 18,566.10, Q2 USD 18,440.50, Q3 USD 18,296.10
+   - Callowglen Family Practice: Q1 USD 13,614.60, Q2 USD 13,665.85, Q3 USD 13,559.05
+   - Thornelfield Family Medicine: Q1 USD 18,309.90, Q2 USD 18,236.05, Q3 USD 18,030.30
+   - Haddelcrest Internal Medicine: Q1 USD 16,789.85, Q2 USD 16,647.20, Q3 USD 16,483.15
+   - Birrelhaven Children's Clinic: Q1 USD 16,911.10, Q2 USD 16,899.05, Q3 USD 16,693.70
+   - Raddelview Family Physicians: Q1 USD 13,136.15, Q2 USD 13,125.25, Q3 USD 13,081.15
+   - Jesselford Family Medicine: Q1 USD 17,117.35, Q2 USD 17,086.50, Q3 USD 16,967.50
+   - Nerrincreek Family Practice: Q1 USD 12,289.40, Q2 USD 12,303.45, Q3 USD 12,165.30
+   - Wexelmoor Internal Medicine: Q1 USD 16,393.50, Q2 USD 16,407.50, Q3 USD 16,179.75
+   - Torrinridge Family Medicine: Q1 USD 14,672.05, Q2 USD 14,662.55, Q3 USD 14,496.00
+   - Mallowcrest Pediatrics: Q1 USD 13,769.60, Q2 USD 13,908.80, Q3 USD 13,673.70
+   - Prestelglen Internal Medicine: Q1 USD 15,209.10, Q2 USD 15,065.05, Q3 USD 14,973.65
+   - Garrowdale Family Practice: Q1 USD 12,455.45, Q2 USD 12,531.70, Q3 USD 12,438.95
 
-### busiest_month_population_2026.png
+### practice_cost_vs_benchmark_2026.png
 
-1. Horizontal bar chart of each city's average population present in its busiest month, with a marker at three times its residents and each city labelled as qualifying or not, the 5 qualifying cities first.
+1. Horizontal bar chart of each practice's projected 2026 network measure as the per cent above or below its threshold, the nine entering practices shaded apart, with each practice's October interim measure marked beside its bar.

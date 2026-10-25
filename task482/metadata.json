@@ -1,114 +1,177 @@
 {
  "task": "task482",
- "title": "Seasonal Communities Aid certification, 2027",
- "setting": "A fictional lake basin of eight cities in Minnesota: the state demographer's office, the aid statute, the basin's fee office, sanitary utilities, contract operator and two booking platforms are fictional, and every record is synthetic.",
- "as_of": "2026-10-19",
+ "title": "Two-sided risk track elections, 2027",
+ "setting": "A fictional clinically integrated network of thirteen independent primary care practices in Wisconsin and its three commercial payers: the network, the practices, the payers and the people are fictional, and every record is synthetic.",
+ "as_of": "2026-10-16",
  "deliverables": [
-  "seasonal_communities_aid_2027_certification.xlsx",
-  "busiest_month_population_2026.png"
+  "two_sided_track_elections_2027.xlsx",
+  "practice_cost_vs_benchmark_2026.png"
  ],
  "distractor_files": [
-  "target/quillmere_county_traffic_counts_2024_2026.csv",
-  "target/sorrelton_coop_station_daily_2025_2026.csv"
+  "target/kbp_medicare_advantage_attribution_2026.xlsx",
+  "target/lpn_quality_composite_2025.csv"
  ],
  "files": [
   {
-   "file": "edmr_dmr_export_quillmere_basin_2025-01_2026-09.csv",
-   "source": "State electronic discharge monitoring report system, export for five basin permits (fictional, synthetic records)",
-   "date": "2026-10-16",
+   "file": "KBP_ATTRIBUTION_PY2025F_PY2026R10.xlsx",
+   "source": "Kesselcrest Benefit Partners, value-based partner attribution (fictional, synthetic records)",
+   "date": "2026-10-06",
    "license": "CC0-1.0 (synthetic, generated for this task)",
-   "rows": 910
+   "rows": null
   },
   {
-   "file": "edmr_parameter_codes.csv",
-   "source": "State electronic discharge monitoring report system, code lists (fictional, synthetic records)",
-   "date": "2024-03-01",
+   "file": "KBP_CCF_REMIT_2026.xlsx",
+   "source": "Kesselcrest Benefit Partners, care coordination remittances (fictional, synthetic records)",
+   "date": "2026-10-14",
    "license": "CC0-1.0 (synthetic, generated for this task)",
-   "rows": 12
+   "rows": null
   },
   {
-   "file": "kettle_and_pine_remittance_report_2025-07_2026-09.csv",
-   "source": "Kettle & Pine, Lake Protection Fee remittance report (fictional, synthetic records)",
+   "file": "KBP_CLAIMS_LPN_20261009.txt",
+   "source": "Kesselcrest Benefit Partners, partner claims extract (fictional, synthetic records)",
    "date": "2026-10-09",
    "license": "CC0-1.0 (synthetic, generated for this task)",
-   "rows": 34664
+   "rows": 152353
   },
   {
-   "file": "lake_protection_fee_ordinance.pdf",
-   "source": "Quillmere Lake Basin Joint Powers Board, Lake Protection Fee ordinance (fictional, synthetic records)",
-   "date": "2025-06-12",
-   "license": "CC0-1.0 (synthetic, generated for this task)",
-   "rows": null
-  },
-  {
-   "file": "lake_protection_fee_returns_2025-07_2026-09.csv",
-   "source": "Quillmere Lake Basin Fee Office, returns extract (fictional, synthetic records)",
-   "date": "2026-10-16",
-   "license": "CC0-1.0 (synthetic, generated for this task)",
-   "rows": 3319
-  },
-  {
-   "file": "lake_protection_fee_returns_field_list.txt",
-   "source": "Quillmere Lake Basin Fee Office, returns extract field list (fictional, synthetic records)",
-   "date": "2026-10-16",
-   "license": "CC0-1.0 (synthetic, generated for this task)",
-   "rows": 27
-  },
-  {
-   "file": "lakeward_stays_remittance_detail_2025-07_2026-09.csv",
-   "source": "Lakeward Stays, Lake Protection Fee remittance detail (fictional, synthetic records)",
-   "date": "2026-10-08",
-   "license": "CC0-1.0 (synthetic, generated for this task)",
-   "rows": 54211
-  },
-  {
-   "file": "narrows_joint_member_meters_2025_2026.csv",
-   "source": "Narrows Joint Wastewater Board, member meter reads (fictional, synthetic records)",
-   "date": "2026-10-02",
-   "license": "CC0-1.0 (synthetic, generated for this task)",
-   "rows": 43
-  },
-  {
-   "file": "quillmere_basin_wastewater_facilities.pdf",
-   "source": "Quillmere Lake Protection District, wastewater facilities fact sheet (fictional, synthetic records)",
-   "date": "2026-03-17",
-   "license": "CC0-1.0 (synthetic, generated for this task)",
-   "rows": null
-  },
-  {
-   "file": "quillmere_county_population_estimates_2024_2026.csv",
-   "source": "Office of the State Demographer, city and township estimates (fictional, synthetic records)",
-   "date": "2026-10-15",
-   "license": "CC0-1.0 (synthetic, generated for this task)",
-   "rows": 12
-  },
-  {
-   "file": "quillmere_county_traffic_counts_2024_2026.csv",
-   "source": "Quillmere County Highway Department, permanent count stations (fictional, synthetic records)",
-   "date": "2026-10-05",
-   "license": "CC0-1.0 (synthetic, generated for this task)",
-   "rows": 66
-  },
-  {
-   "file": "ruddmere_pinehold_ponds_operating_reports_2025_2026.xlsx",
-   "source": "Northwoods Utility Services, pond systems' monthly operating reports (fictional, synthetic records)",
+   "file": "KBP_ELIG_LPN_20261009.txt",
+   "source": "Kesselcrest Benefit Partners, partner eligibility extract (fictional, synthetic records)",
    "date": "2026-10-09",
    "license": "CC0-1.0 (synthetic, generated for this task)",
-   "rows": null
+   "rows": 9180
   },
   {
-   "file": "seasonal_communities_aid_act.pdf",
-   "source": "Seasonal Communities Aid Act, unofficial text (fictional, synthetic records)",
-   "date": "2025-11-04",
+   "file": "kbp_medicare_advantage_attribution_2026.xlsx",
+   "source": "Kesselcrest Benefit Partners, Medicare Advantage provider attribution (fictional, synthetic records)",
+   "date": "2026-07-16",
    "license": "CC0-1.0 (synthetic, generated for this task)",
    "rows": null
   },
   {
-   "file": "sorrelton_coop_station_daily_2025_2026.csv",
-   "source": "Cooperative observer station at Sorrelton, daily observations (fictional, synthetic records)",
+   "file": "lpn_board_resolution_2026-07.pdf",
+   "source": "Larrowbrook Physician Network, Board Resolution 2026-11 (fictional, synthetic records)",
+   "date": "2026-07-24",
+   "license": "CC0-1.0 (synthetic, generated for this task)",
+   "rows": null
+  },
+  {
+   "file": "lpn_master_patient_index.csv",
+   "source": "Larrowbrook Physician Network, master patient index extract (fictional, synthetic records)",
+   "date": "2026-10-13",
+   "license": "CC0-1.0 (synthetic, generated for this task)",
+   "rows": 29164
+  },
+  {
+   "file": "lpn_payer_feed_field_guide.txt",
+   "source": "Larrowbrook Physician Network, payer performance analytics, feed field guide (fictional, synthetic records)",
+   "date": "2026-10-13",
+   "license": "CC0-1.0 (synthetic, generated for this task)",
+   "rows": 63
+  },
+  {
+   "file": "lpn_performance_standard_2026.pdf",
+   "source": "Larrowbrook Physician Network, Performance Standard for Commercial Members (fictional, synthetic records)",
+   "date": "2025-12-16",
+   "license": "CC0-1.0 (synthetic, generated for this task)",
+   "rows": null
+  },
+  {
+   "file": "lpn_primary_care_roster_2026-10.xlsx",
+   "source": "Larrowbrook Physician Network, credentialing, primary care roster (fictional, synthetic records)",
    "date": "2026-10-01",
    "license": "CC0-1.0 (synthetic, generated for this task)",
-   "rows": 638
+   "rows": null
+  },
+  {
+   "file": "lpn_quality_composite_2025.csv",
+   "source": "The three payers' 2025 quality measure results for the network's practices (fictional, synthetic records)",
+   "date": "2026-05-29",
+   "license": "CC0-1.0 (synthetic, generated for this task)",
+   "rows": 242
+  },
+  {
+   "file": "mlh_attribution_runs_py2025_py2026.csv",
+   "source": "Merrinlake Health Plan, attribution runs (fictional, synthetic records)",
+   "date": "2026-10-07",
+   "license": "CC0-1.0 (synthetic, generated for this task)",
+   "rows": 24667
+  },
+  {
+   "file": "mlh_care_coordination_remittance_2026.csv",
+   "source": "Merrinlake Health Plan, care coordination remittance detail (fictional, synthetic records)",
+   "date": "2026-10-16",
+   "license": "CC0-1.0 (synthetic, generated for this task)",
+   "rows": 676
+  },
+  {
+   "file": "mlh_eligibility_2025_2026.csv",
+   "source": "Merrinlake Health Plan, partner eligibility extract (fictional, synthetic records)",
+   "date": "2026-10-07",
+   "license": "CC0-1.0 (synthetic, generated for this task)",
+   "rows": 16491
+  },
+  {
+   "file": "mlh_tcoc_claims_2025-01_2026-09.csv",
+   "source": "Merrinlake Health Plan, value-based partner claims extract (fictional, synthetic records)",
+   "date": "2026-10-07",
+   "license": "CC0-1.0 (synthetic, generated for this task)",
+   "rows": 273594
+  },
+  {
+   "file": "payer_completion_factors_2026-09.csv",
+   "source": "The three payers' completion factors, Performance Standard Appendix C (fictional, synthetic records)",
+   "date": "2026-10-12",
+   "license": "CC0-1.0 (synthetic, generated for this task)",
+   "rows": 24
+  },
+  {
+   "file": "payer_em_fee_schedules_2026.xlsx",
+   "source": "Larrowbrook Physician Network, managed care contracting, payer fee schedule excerpts (fictional, synthetic records)",
+   "date": "2026-01-12",
+   "license": "CC0-1.0 (synthetic, generated for this task)",
+   "rows": null
+  },
+  {
+   "file": "payer_settlement_statements_py2025.pdf",
+   "source": "The three payers' performance year 2025 shared savings statements (fictional, synthetic records)",
+   "date": "2026-06-12",
+   "license": "CC0-1.0 (synthetic, generated for this task)",
+   "rows": null
+  },
+  {
+   "file": "pmh_attribution_py2025_py2026.csv",
+   "source": "Pemberglen Mutual Health, attribution runs (fictional, synthetic records)",
+   "date": "2026-10-12",
+   "license": "CC0-1.0 (synthetic, generated for this task)",
+   "rows": 7166
+  },
+  {
+   "file": "pmh_ccf_payments_2026.csv",
+   "source": "Pemberglen Mutual Health, care coordination payments (fictional, synthetic records)",
+   "date": "2026-10-16",
+   "license": "CC0-1.0 (synthetic, generated for this task)",
+   "rows": 671
+  },
+  {
+   "file": "pmh_members_2026-10-12.csv",
+   "source": "Pemberglen Mutual Health, partner member coverage (fictional, synthetic records)",
+   "date": "2026-10-12",
+   "license": "CC0-1.0 (synthetic, generated for this task)",
+   "rows": 4960
+  },
+  {
+   "file": "pmh_partner_claims_2026-10-12.json",
+   "source": "Pemberglen Mutual Health, value-based partner claims (fictional, synthetic records)",
+   "date": "2026-10-12",
+   "license": "CC0-1.0 (synthetic, generated for this task)",
+   "rows": null
+  },
+  {
+   "file": "qualifying_primary_care_services.csv",
+   "source": "Larrowbrook Physician Network, Performance Standard Appendix A (fictional, synthetic records)",
+   "date": "2025-12-11",
+   "license": "CC0-1.0 (synthetic, generated for this task)",
+   "rows": 21
   }
  ]
 }

@@ -1,12 +1,12 @@
 {
  "task": "task482",
  "owner": "oviya1301",
- "status": "DESIGN",
+ "status": "PAUSED",
  "domain": "healthcare-delivery-health-economics",
  "objective": "etl",
- "stage": 2,
- "stage_name": "design",
- "updated": "2026-10-24",
+ "stage": 1,
+ "stage_name": "draw",
+ "updated": "2026-10-25",
  "stump": "The default path computes each practice's 2026 cost of care per attributed member month on the payers' October interim run, carries it to the year and enters the practices that come in 2 per cent under their benchmarks there; the run holds only the members whose qualifying visit has happened, and the year-end attribution adds the members whose one visit of the year falls in its last four months, with their whole year of enrollment and small amounts, so each practice's own 2025 run-out at the same cut carries its figure down and a different set enters.",
  "architecture": 13,
  "loops": 0,
@@ -15,11 +15,11 @@
  "duplicate_check": {},
  "judge": {},
  "returned": [],
- "resume": "stage 2 of architecture 13 (drawn 2026-10-24, card registered): build the world on paper in the generator (thirteen practices, three payers, members with persistent visit months, 2025 complete and 2026 to the 31 August cut), measure the standing family (each practice's own run-out, per payer, pooled cost ratio with the practice's added share) and every rung on it, place the practices clear of their thresholds, then the three rules, default path, stump sentence, readability screen, fork table, ladder, closure, ask sheet with silent devices and prompt.txt to precut.py exit 0",
+ "resume": "stage 1 of architecture 14: architecture 13 (each practice's interim measure carried to the payers' final attribution by its own 2025 run-out at the same cut) spent at stage 4 when both scored readers rebuilt the 2025 interim run and landed the call; re-root fresh in the lane's objective with a new draw, reading Tried and rejected first (a decisive step that is the field's completion reflex, last year's interim-to-final ratio, is landed by any reader asked to project an interim figure to a final one; the pack must not let the standard's own definitions rebuild the missing quantity in one pass)",
  "approved": null,
  "delivered": null,
  "portal": null,
- "source_note": "re-root to a fresh world; architectures 1 to 12 spent at stage 4",
+ "source_note": "re-root to a fresh world; architectures 1 to 13 spent at stage 4",
  "lineage_v11": {
   "zip": "ce5456c3620c70081c8372bb8f8231421d635c03a6e7d284bc3af350eac671f7",
   "leak": {
@@ -40,6 +40,18 @@
   },
   "judge": {
    "verdict": "not run to a verdict: the judge thread was stopped at the spend",
+   "disposition": "",
+   "report": ""
+  }
+ },
+ "lineage_v13": {
+  "zip": "ab79a5f44c18f637536e25bef86360e3deb4f1429ef616cc4db54e7f4d70dab0",
+  "leak": {
+   "leak_py": "REVIEW (2026-10-25, no LEAK; zip ab79a5f44c18f637)",
+   "reader": "round 1 (zip ab79a5f4): both scored readers landed the call (the golden nine) by rebuilding the October 2025 interim run from the 2025 claims and carrying each practice's 2026 interim measure by its own 2025 final-to-interim ratio (score_reader exit 1); reader A kept 78 of 78 ask figures, reader B 65 of 78 (every benchmark, threshold and ask B figure, no ask A figure). Architecture 13 spent."
+  },
+  "judge": {
+   "verdict": "not run to a verdict: the determinism-judge agent had no Agent tool and wrote its brief; the judge thread spawned from it was stopped at the spend",
    "disposition": "",
    "report": ""
   }

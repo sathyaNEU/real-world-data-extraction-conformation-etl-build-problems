@@ -1,190 +1,296 @@
 {
  "ask_a": {
-  "Birchwick": {
-   "q1": 145171,
-   "q2": 23245,
-   "q3": 369,
-   "q4": 65622
-  },
-  "Esker Narrows": {
-   "q1": 467035,
-   "q2": 82020,
-   "q3": 1394,
-   "q4": 218601
-  },
-  "Hollin Bay": {
-   "q1": 304618,
-   "q2": 48984,
-   "q3": 1223,
-   "q4": 139599
-  },
-  "Pinehold": {
-   "q1": 235376,
-   "q2": 36750,
-   "q3": 1008,
-   "q4": 105539
-  },
-  "Ruddmere": {
-   "q1": 83468,
-   "q2": 12708,
-   "q3": 165,
-   "q4": 38666
-  },
-  "Sorrelton": {
-   "q1": 641583,
-   "q2": 112185,
-   "q3": 1869,
-   "q4": 303992
-  },
-  "Tamsen Point": {
-   "q1": 101294,
-   "q2": 16873,
-   "q3": 362,
-   "q4": 47111
-  },
-  "Teskadel": {
-   "q1": 331959,
-   "q2": 58556,
-   "q3": 1031,
-   "q4": 156908
-  }
+  "Birrelhaven Children's Clinic": 8.9,
+  "Callowglen Family Practice": 15.5,
+  "Garrowdale Family Practice": 16.6,
+  "Haddelcrest Internal Medicine": 18.5,
+  "Jesselford Family Medicine": 17.6,
+  "Mallowcrest Pediatrics": 8.9,
+  "Nerrincreek Family Practice": 15.9,
+  "Ostrelwood Internal Medicine": 18.6,
+  "Prestelglen Internal Medicine": 19.8,
+  "Raddelview Family Physicians": 17.2,
+  "Thornelfield Family Medicine": 17.3,
+  "Torrinridge Family Medicine": 16.7,
+  "Wexelmoor Internal Medicine": 19.8
  },
  "ask_b": {
-  "Birchwick": {
-   "h1": 140.2,
-   "h2": 222.9
-  },
-  "Narrows": {
-   "h1": 342.6,
-   "h2": 644.1
-  },
-  "Pinehold": {
-   "h1": 824.4,
-   "h2": 321.5
-  },
-  "Ruddmere": {
-   "h1": 395.6,
-   "h2": 271.4
-  },
-  "Sorrelton": {
-   "h1": 213.7,
-   "h2": 369.2
-  },
-  "Tamsen Point": {
-   "h1": 277.5,
-   "h2": 491.0
-  },
-  "Teskadel": {
-   "h1": 314.5,
-   "h2": 426.2
-  }
+  "Birrelhaven Children's Clinic|Q1": 16911.1,
+  "Birrelhaven Children's Clinic|Q2": 16899.05,
+  "Birrelhaven Children's Clinic|Q3": 16693.7,
+  "Callowglen Family Practice|Q1": 13614.6,
+  "Callowglen Family Practice|Q2": 13665.85,
+  "Callowglen Family Practice|Q3": 13559.05,
+  "Garrowdale Family Practice|Q1": 12455.45,
+  "Garrowdale Family Practice|Q2": 12531.7,
+  "Garrowdale Family Practice|Q3": 12438.95,
+  "Haddelcrest Internal Medicine|Q1": 16789.85,
+  "Haddelcrest Internal Medicine|Q2": 16647.2,
+  "Haddelcrest Internal Medicine|Q3": 16483.15,
+  "Jesselford Family Medicine|Q1": 17117.35,
+  "Jesselford Family Medicine|Q2": 17086.5,
+  "Jesselford Family Medicine|Q3": 16967.5,
+  "Mallowcrest Pediatrics|Q1": 13769.6,
+  "Mallowcrest Pediatrics|Q2": 13908.8,
+  "Mallowcrest Pediatrics|Q3": 13673.7,
+  "Nerrincreek Family Practice|Q1": 12289.4,
+  "Nerrincreek Family Practice|Q2": 12303.45,
+  "Nerrincreek Family Practice|Q3": 12165.3,
+  "Ostrelwood Internal Medicine|Q1": 18566.1,
+  "Ostrelwood Internal Medicine|Q2": 18440.5,
+  "Ostrelwood Internal Medicine|Q3": 18296.1,
+  "Prestelglen Internal Medicine|Q1": 15209.1,
+  "Prestelglen Internal Medicine|Q2": 15065.05,
+  "Prestelglen Internal Medicine|Q3": 14973.65,
+  "Raddelview Family Physicians|Q1": 13136.15,
+  "Raddelview Family Physicians|Q2": 13125.25,
+  "Raddelview Family Physicians|Q3": 13081.15,
+  "Thornelfield Family Medicine|Q1": 18309.9,
+  "Thornelfield Family Medicine|Q2": 18236.05,
+  "Thornelfield Family Medicine|Q3": 18030.3,
+  "Torrinridge Family Medicine|Q1": 14672.05,
+  "Torrinridge Family Medicine|Q2": 14662.55,
+  "Torrinridge Family Medicine|Q3": 14496.0,
+  "Wexelmoor Internal Medicine|Q1": 16393.5,
+  "Wexelmoor Internal Medicine|Q2": 16407.5,
+  "Wexelmoor Internal Medicine|Q3": 16179.75
  },
  "call": {
-  "appropriation": 2400000,
-  "qualify": [
-   "Birchwick",
-   "Ruddmere",
-   "Sorrelton",
-   "Tamsen Point",
-   "Esker Narrows"
+  "enter": [
+   "Ostrelwood Internal Medicine",
+   "Callowglen Family Practice",
+   "Thornelfield Family Medicine",
+   "Raddelview Family Physicians",
+   "Jesselford Family Medicine",
+   "Nerrincreek Family Practice",
+   "Torrinridge Family Medicine",
+   "Mallowcrest Pediatrics",
+   "Garrowdale Family Practice"
   ],
-  "share": 480000
+  "n_enter": 9,
+  "stay": [
+   "Haddelcrest Internal Medicine",
+   "Birrelhaven Children's Clinic",
+   "Wexelmoor Internal Medicine",
+   "Prestelglen Internal Medicine"
+  ]
  },
- "cities": {
-  "Birchwick": {
-   "aid": 480000,
-   "busiest": "July 2026",
-   "present": 7000,
-   "qualifies": true,
-   "residents": 1851,
-   "three_x": 5553
-  },
-  "Esker Narrows": {
-   "aid": 480000,
-   "busiest": "July 2026",
-   "present": 8000,
-   "qualifies": true,
-   "residents": 1603,
-   "three_x": 4809
-  },
-  "Hollin Bay": {
-   "aid": 0,
-   "busiest": "July 2026",
-   "present": 7000,
-   "qualifies": false,
-   "residents": 2706,
-   "three_x": 8118
-  },
-  "Pinehold": {
-   "aid": 0,
-   "busiest": "July 2026",
-   "present": 6000,
-   "qualifies": false,
-   "residents": 2411,
-   "three_x": 7233
-  },
-  "Ruddmere": {
-   "aid": 480000,
-   "busiest": "August 2026",
-   "present": 5000,
-   "qualifies": true,
-   "residents": 1197,
-   "three_x": 3591
-  },
-  "Sorrelton": {
-   "aid": 480000,
-   "busiest": "July 2026",
-   "present": 12000,
-   "qualifies": true,
-   "residents": 3052,
-   "three_x": 9156
-  },
-  "Tamsen Point": {
-   "aid": 480000,
-   "busiest": "August 2026",
-   "present": 10000,
-   "qualifies": true,
-   "residents": 3094,
-   "three_x": 9282
-  },
-  "Teskadel": {
-   "aid": 0,
-   "busiest": "July 2026",
-   "present": 10000,
-   "qualifies": false,
-   "residents": 3902,
-   "three_x": 11706
-  }
+ "constants": {
+  "cap": 250000,
+  "codes": [
+   "99211",
+   "99214",
+   "99215"
+  ],
+  "kbp_fee": 2.8,
+  "ma_fee": 6.5,
+  "mlh_fee": 3.25,
+  "pmh_fee": 4.1,
+  "sections": [
+   "2",
+   "3",
+   "3.4",
+   "4.1"
+  ],
+  "threshold_share": 98,
+  "trend": 1.052
  },
  "order": [
-  "Birchwick",
-  "Teskadel",
-  "Ruddmere",
-  "Sorrelton",
-  "Pinehold",
-  "Tamsen Point",
-  "Esker Narrows",
-  "Hollin Bay"
+  "Ostrelwood Internal Medicine",
+  "Callowglen Family Practice",
+  "Thornelfield Family Medicine",
+  "Haddelcrest Internal Medicine",
+  "Birrelhaven Children's Clinic",
+  "Raddelview Family Physicians",
+  "Jesselford Family Medicine",
+  "Nerrincreek Family Practice",
+  "Wexelmoor Internal Medicine",
+  "Torrinridge Family Medicine",
+  "Mallowcrest Pediatrics",
+  "Prestelglen Internal Medicine",
+  "Garrowdale Family Practice"
  ],
- "plants": [
-  "Birchwick",
-  "Teskadel",
-  "Ruddmere",
-  "Sorrelton",
-  "Pinehold",
-  "Tamsen Point",
-  "Narrows"
- ],
+ "practices": {
+  "Birrelhaven Children's Clinic": {
+   "benchmark": 178.73,
+   "enters": false,
+   "f2025": 169.9,
+   "gap_pct": 5.4,
+   "interim": 195.67,
+   "members2025": 2229,
+   "members_run": 1739,
+   "projected": 184.66,
+   "runout": 0.9437,
+   "threshold": 175.16
+  },
+  "Callowglen Family Practice": {
+   "benchmark": 395.76,
+   "enters": true,
+   "f2025": 376.2,
+   "gap_pct": -6.1,
+   "interim": 433.03,
+   "members2025": 2023,
+   "members_run": 1446,
+   "projected": 364.08,
+   "runout": 0.8408,
+   "threshold": 387.84
+  },
+  "Garrowdale Family Practice": {
+   "benchmark": 455.57,
+   "enters": true,
+   "f2025": 433.05,
+   "gap_pct": -6.3,
+   "interim": 487.5,
+   "members2025": 1742,
+   "members_run": 1293,
+   "projected": 418.36,
+   "runout": 0.8582,
+   "threshold": 446.46
+  },
+  "Haddelcrest Internal Medicine": {
+   "benchmark": 819.58,
+   "enters": false,
+   "f2025": 779.07,
+   "gap_pct": 5.3,
+   "interim": 874.11,
+   "members2025": 1774,
+   "members_run": 1782,
+   "projected": 845.49,
+   "runout": 0.9673,
+   "threshold": 803.19
+  },
+  "Jesselford Family Medicine": {
+   "benchmark": 558.05,
+   "enters": true,
+   "f2025": 530.47,
+   "gap_pct": -7.7,
+   "interim": 530.44,
+   "members2025": 1840,
+   "members_run": 1792,
+   "projected": 504.72,
+   "runout": 0.9515,
+   "threshold": 546.89
+  },
+  "Mallowcrest Pediatrics": {
+   "benchmark": 169.51,
+   "enters": true,
+   "f2025": 161.13,
+   "gap_pct": -7.4,
+   "interim": 173.73,
+   "members2025": 1945,
+   "members_run": 1435,
+   "projected": 153.76,
+   "runout": 0.885,
+   "threshold": 166.12
+  },
+  "Nerrincreek Family Practice": {
+   "benchmark": 387.96,
+   "enters": true,
+   "f2025": 368.78,
+   "gap_pct": -5.4,
+   "interim": 437.88,
+   "members2025": 1857,
+   "members_run": 1297,
+   "projected": 359.78,
+   "runout": 0.8216,
+   "threshold": 380.2
+  },
+  "Ostrelwood Internal Medicine": {
+   "benchmark": 761.3,
+   "enters": true,
+   "f2025": 723.67,
+   "gap_pct": -8.4,
+   "interim": 715.78,
+   "members2025": 1999,
+   "members_run": 1935,
+   "projected": 683.66,
+   "runout": 0.9551,
+   "threshold": 746.07
+  },
+  "Prestelglen Internal Medicine": {
+   "benchmark": 786.71,
+   "enters": false,
+   "f2025": 747.82,
+   "gap_pct": 5.7,
+   "interim": 886.29,
+   "members2025": 1594,
+   "members_run": 1605,
+   "projected": 814.98,
+   "runout": 0.9195,
+   "threshold": 770.98
+  },
+  "Raddelview Family Physicians": {
+   "benchmark": 478.93,
+   "enters": true,
+   "f2025": 455.26,
+   "gap_pct": -7.1,
+   "interim": 494.09,
+   "members2025": 1788,
+   "members_run": 1359,
+   "projected": 436.2,
+   "runout": 0.8828,
+   "threshold": 469.35
+  },
+  "Thornelfield Family Medicine": {
+   "benchmark": 494.21,
+   "enters": true,
+   "f2025": 469.78,
+   "gap_pct": -5.8,
+   "interim": 458.09,
+   "members2025": 1969,
+   "members_run": 1893,
+   "projected": 456.04,
+   "runout": 0.9955,
+   "threshold": 484.33
+  },
+  "Torrinridge Family Medicine": {
+   "benchmark": 406.59,
+   "enters": true,
+   "f2025": 386.49,
+   "gap_pct": -7.9,
+   "interim": 422.34,
+   "members2025": 2104,
+   "members_run": 1535,
+   "projected": 366.84,
+   "runout": 0.8686,
+   "threshold": 398.46
+  },
+  "Wexelmoor Internal Medicine": {
+   "benchmark": 949.98,
+   "enters": false,
+   "f2025": 903.02,
+   "gap_pct": 4.9,
+   "interim": 989.81,
+   "members2025": 1719,
+   "members_run": 1702,
+   "projected": 976.86,
+   "runout": 0.9869,
+   "threshold": 930.98
+  }
+ },
  "steps": {
-  "lb_factor": 8.34,
-  "lpp": "0.17",
-  "pond_release_days": 33,
-  "pond_release_month": 84,
-  "qualify_n": 5,
-  "records_qualify": [
-   "Sorrelton",
-   "Esker Narrows"
+  "default_enter": [
+   "Ostrelwood Internal Medicine",
+   "Thornelfield Family Medicine",
+   "Jesselford Family Medicine"
   ],
-  "records_share": 1200000
+  "pooled_enter": [
+   "Ostrelwood Internal Medicine",
+   "Callowglen Family Practice",
+   "Thornelfield Family Medicine",
+   "Haddelcrest Internal Medicine",
+   "Birrelhaven Children's Clinic",
+   "Raddelview Family Physicians",
+   "Jesselford Family Medicine",
+   "Wexelmoor Internal Medicine",
+   "Torrinridge Family Medicine",
+   "Mallowcrest Pediatrics",
+   "Garrowdale Family Practice"
+  ],
+  "pooled_runout": 0.881,
+  "runout_max": 0.996,
+  "runout_min": 0.822,
+  "under_max": 8.4,
+  "under_min": 5.4
  }
 }

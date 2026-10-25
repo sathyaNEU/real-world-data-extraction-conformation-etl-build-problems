@@ -1,8 +1,6 @@
-"""The golden deliverables: the certification workbook (the eight cities' 2027 Seasonal Communities Aid determinations,
-the Lake Protection Fee by city and quarter of fiscal 2026, the plants' 2025 phosphorus by half-year, notes) and the
-chart of each city's busiest month against three times its residents; returns every figure the write-up states."""
-import math
-
+"""The golden deliverables: the board's elections workbook (each practice's projected 2026 network measure against its
+threshold and its election, the level 5 paid share, the care coordination fees by coverage quarter, notes) and the
+chart of each practice's projected figure against its threshold; returns every figure the write-up states."""
 import matplotlib
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt  # noqa: E402
@@ -16,8 +14,8 @@ import golden as G  # noqa: E402
 BOLD = Font(bold=True)
 HEAD_FILL = PatternFill("solid", fgColor="DCE6F1")
 TOTAL_FILL = PatternFill("solid", fgColor="F2F2F2")
-MONTH = {1: "January", 2: "February", 3: "March", 4: "April", 5: "May", 6: "June", 7: "July", 8: "August",
-         9: "September", 10: "October", 11: "November", 12: "December"}
+ENTER_FILL = PatternFill("solid", fgColor="E2EFDA")
+WORDS = {9: "Nine", 10: "Ten", 8: "Eight", 11: "Eleven", 7: "Seven"}
 
 
 def _head(ws, row):
@@ -27,183 +25,223 @@ def _head(ws, row):
         c.alignment = Alignment(wrap_text=True, vertical="top")
 
 
+def short(name):
+    return name.split()[0]
+
+
 def listing(xs):
     xs = list(xs)
     return xs[0] if len(xs) == 1 else ", ".join(xs[:-1]) + " and " + xs[-1]
 
 
+def level5_counts(p):
+    """Each practice's established-patient visits and the visits paid at level 5, the golden's own classification."""
+    share = G.ask_a(p)
+    c = p["claims"]
+    v = c[(c.ctype == "P") & (c.year == 2026) & (c.svc <= G._ts(G.D(2026, 8, 31))) & c.code.isin(G.EM) & c.current]
+    tot = {}
+    for n, d in zip(v.npi, v.svc):
+        prac = G.npi_practice(p, n, d.date())
+        if prac:
+            tot[prac] = tot.get(prac, 0) + 1
+    return {k: (tot[k], int(round(share[k] * tot[k] / 100.0))) for k in share}, share
+
+
 def write(path, p):
     g = G.golden(p)
-    q, share = G.aid(g)
-    a = G.ask_a(p)
+    order = p["practices"]
+    enter = [k for k in order if g[k]["enters"]]
+    stay = [k for k in order if not g[k]["enters"]]
+    a_counts, a = level5_counts(p)
     b = G.ask_b(p)
-    figs = dict(call=dict(qualify=q, share=int(G.APPROPRIATION / len(q)), appropriation=G.APPROPRIATION),
-                cities={}, ask_a={}, ask_b={}, order=list(G.TOWNS), plants=list(G.PLANTS_B))
+    dflt = G.default(p)
+    pooled = G.golden(p, pooled=True)
+    figs = dict(call=dict(enter=enter, stay=stay, n_enter=len(enter)), practices={}, ask_a={}, ask_b={}, order=order,
+                constants=dict(trend=G.TREND, threshold_share=98, cap=int(G.CAP), mlh_fee=G.CCF["MLH"], kbp_fee=G.CCF["KBP"],
+                               pmh_fee=G.CCF["PMH"], ma_fee=6.50, codes=["99211", "99214", "99215"],
+                               sections=["2", "3", "3.4", "4.1"]))
 
     wb = openpyxl.Workbook()
     ws = wb.active
-    ws.title = "Certification"
-    ws.append(["Seasonal Communities Aid 2027: %s qualify, USD %s each" % (listing(q), "{:,}".format(figs["call"]["share"]))])
+    ws.title = "Elections 2027"
+    ws.append(["%s of the thirteen practices enter the 2027 two-sided track: %s" % (WORDS[len(enter)],
+                                                                                   listing([short(k) for k in enter]))])
     ws["A1"].font = Font(bold=True, size=12)
-    ws.append(["Certification to the Commissioner of Revenue under section 5 of the Seasonal Communities Aid Act, "
-               "measurement year 1 October 2025 to 30 September 2026. Average population present from each city's "
-               "treatment plant influent BOD load per person, calibrated on January to April 2026 (residents and "
-               "the paid guests the returns and platforms record)."])
+    ws.append(["Board meeting of 29 October 2026, Resolution 2026-11. Each practice's 2026 network measure on the payers' "
+               "final 2026 attribution, projected from the October interim runs, against 98 per cent of its 2026 "
+               "benchmark; USD per attributed member month."])
     ws.append([])
-    ws.append(["City", "Resident population, 1 July 2026", "Busiest month", "Average population present in the "
-               "busiest month (nearest thousand)", "At least three times residents", "Aid, 2027 (USD)"])
+    ws.append(["Practice", "Practice TIN", "2025 network measure, final 2025 runs", "2026 benchmark (x 1.052)",
+               "Threshold (98% of benchmark)", "Interim measure, October 2026 runs", "2025 run-out at the same cut",
+               "Projected 2026 network measure", "Projected against threshold", "Election"])
     _head(ws, 4)
-    for n in G.TOWNS:
-        x = g[n]
-        bm = MONTH[x["busiest"][1]] + " %d" % x["busiest"][0]
-        pop = G.thousand(x["peak"])
-        ws.append([n, p["residents"][n], bm, pop, "Yes" if x["qualifies"] else "No", int(share[n])])
-        figs["cities"][n] = dict(residents=p["residents"][n], busiest=bm, present=pop, qualifies=bool(x["qualifies"]),
-                                 aid=int(share[n]), three_x=3 * p["residents"][n])
-    rec = G.records_route(p)
-    lpp = sorted({"%.2f" % g[n]["per"] for n in G.TOWNS})
-    assert len(lpp) == 1, lpp
-    figs["steps"] = dict(records_qualify=[n for n in G.TOWNS if rec[n]["qualifies"]], qualify_n=len(q),
-                         records_share=int(G.APPROPRIATION / max(1, sum(1 for n in G.TOWNS if rec[n]["qualifies"]))),
-                         lpp=lpp[0], lb_factor=8.34)
-    ws.append(["Total", sum(p["residents"].values()), None, None, "%d of 8" % len(q), int(sum(share.values()))])
-    for c in ws[ws.max_row]:
-        c.font = BOLD
-        c.fill = TOTAL_FILL
-    for i, w in enumerate([16, 14, 16, 22, 15, 14], 1):
+    tin = {v: k for k, v in p["tin2prac"].items()}
+    for k in order:
+        x = g[k]
+        gap = x["projected"] / x["threshold"] - 1
+        ws.append([k, "%s-%s" % (tin[k][:2], tin[k][2:]), round(x["f2025"], 2), round(x["benchmark"], 2),
+                   round(x["threshold"], 2), round(x["interim"], 2), round(x["runout"], 4), round(x["projected"], 2),
+                   gap, "Two-sided" if x["enters"] else "One-sided"])
+        if x["enters"]:
+            for c in ws[ws.max_row]:
+                c.fill = ENTER_FILL
+        figs["practices"][k] = dict(f2025=round(x["f2025"], 2), benchmark=round(x["benchmark"], 2),
+                                    threshold=round(x["threshold"], 2), interim=round(x["interim"], 2),
+                                    runout=round(x["runout"], 4), projected=round(x["projected"], 2),
+                                    gap_pct=round(100 * gap, 1), enters=bool(x["enters"]),
+                                    members2025=x["members2025"], members_run=x["members_run"])
+    for row in ws.iter_rows(min_row=5, max_row=ws.max_row):
+        for c in (row[2], row[3], row[4], row[5], row[7]):
+            c.number_format = "#,##0.00"
+        row[6].number_format = "0.0000"
+        row[8].number_format = "+0.0%;-0.0%;0.0%"
+    for i, w in enumerate([31, 12, 14, 13, 13, 14, 12, 14, 12, 11], 1):
         ws.column_dimensions[get_column_letter(i)].width = w
     ws.row_dimensions[4].height = 58
-    for row in ws.iter_rows(min_row=5):
-        for c in (row[1], row[3], row[5]):
-            c.number_format = "#,##0"
     ws.freeze_panes = "B5"
 
-    fa = wb.create_sheet("Lake Protection Fee")
-    fa.append(["Lake Protection Fee generated by stays in each basin city, fiscal 2026 (July 2025 to June 2026), by "
-               "quarter, whole dollars"])
-    fa["A1"].font = BOLD
-    fa.append(["Returns as filed (an amended return replacing the earlier one, a supplemental return added to it) and "
-               "both platforms' stays on the nights that fall in each quarter, at the rate in force each night."])
-    fa.append([])
-    fa.append(["City", "Q1 Jul-Sep 2025", "Q2 Oct-Dec 2025", "Q3 Jan-Mar 2026", "Q4 Apr-Jun 2026", "Fiscal 2026"])
-    _head(fa, 4)
-    for n in G.TOWNS:
-        vals = [a[(n, k)] for k in (1, 2, 3, 4)]
-        fa.append([n] + vals + [sum(vals)])
-        figs["ask_a"][n] = dict(q1=vals[0], q2=vals[1], q3=vals[2], q4=vals[3])
-    fa.append(["Basin"] + [sum(a[(n, k)] for n in G.TOWNS) for k in (1, 2, 3, 4)] + [sum(a.values())])
-    for c in fa[fa.max_row]:
+    la = wb.create_sheet("Level 5 visits")
+    la.append(["Established-patient visits by the practices' clinicians paid at level 5, January to August 2026"])
+    la["A1"].font = BOLD
+    la.append(["Visits billed 99211 to 99215 in person or by telehealth, at the claim's current version, by the clinician's "
+               "practice on the date of service; the paid level is the level of the payer's 2026 rate that the allowed "
+               "amount reflects."])
+    la.append([])
+    la.append(["Practice", "Established-patient visits", "Paid at level 5", "Share paid at level 5"])
+    _head(la, 4)
+    for k in order:
+        n, n5 = a_counts[k]
+        la.append([k, n, n5, a[k] / 100.0])
+        figs["ask_a"][k] = a[k]
+    tn = sum(v[0] for v in a_counts.values())
+    t5 = sum(v[1] for v in a_counts.values())
+    la.append(["Network", tn, t5, t5 / tn])
+    for c in la[la.max_row]:
         c.font = BOLD
         c.fill = TOTAL_FILL
-    for i, w in enumerate([16, 14, 14, 14, 14, 14], 1):
-        fa.column_dimensions[get_column_letter(i)].width = w
-    for row in fa.iter_rows(min_row=5, min_col=2):
-        for c in row:
-            c.number_format = "#,##0"
-    fa.freeze_panes = "B5"
+    for row in la.iter_rows(min_row=5):
+        row[1].number_format = "#,##0"
+        row[2].number_format = "#,##0"
+        row[3].number_format = "0.0%"
+    for i, w in enumerate([31, 14, 12, 12], 1):
+        la.column_dimensions[get_column_letter(i)].width = w
+    la.row_dimensions[4].height = 30
+    la.freeze_panes = "B5"
 
-    ph = wb.create_sheet("Phosphorus 2025")
-    ph.append(["Total phosphorus discharged by each basin treatment plant, 2025, by half-year, pounds"])
-    ph["A1"].font = BOLD
-    ph.append(["Each month's average daily effluent flow (MGD) x total phosphorus (mg/L) x 8.34 x the days of the month; "
-               "the latest accepted e-reporting submission for each period; the pond systems in their drawdown months."])
-    ph.append([])
-    ph.append(["Plant", "January to June", "July to December", "2025"])
-    _head(ph, 4)
-    for n in G.PLANTS_B:
-        v1, v2 = b[(n, 1)], b[(n, 2)]
-        ph.append([n if n != "Narrows" else "Narrows joint plant", v1, v2, round(v1 + v2, 1)])
-        figs["ask_b"][n] = dict(h1=v1, h2=v2)
-    ph.append(["Basin", round(sum(b[(n, 1)] for n in G.PLANTS_B), 1), round(sum(b[(n, 2)] for n in G.PLANTS_B), 1),
-               round(sum(b.values()), 1)])
-    for c in ph[ph.max_row]:
+    fb = wb.create_sheet("Care coordination fees")
+    fb.append(["Care coordination fees paid under the Performance Standard, by coverage quarter, January to September "
+               "2026, on the March to October runs, USD"])
+    fb["A1"].font = BOLD
+    fb.append(["The three payers' remittances by the month each line covers; Kesselcrest's Medicare Advantage lines "
+               "(USD 6.50 a member month) are outside the standard and left out; Pemberglen's lines are placed by the "
+               "coverage month in their payment reference."])
+    fb.append([])
+    fb.append(["Practice", "Q1 January to March", "Q2 April to June", "Q3 July to September", "January to September"])
+    _head(fb, 4)
+    for k in order:
+        vals = [b[(k, q)] for q in (1, 2, 3)]
+        fb.append([k] + vals + [round(sum(vals), 2)])
+        for q, v in zip((1, 2, 3), vals):
+            figs["ask_b"]["%s|Q%d" % (k, q)] = v
+    fb.append(["Network"] + [round(sum(b[(k, q)] for k in order), 2) for q in (1, 2, 3)] + [round(sum(b.values()), 2)])
+    for c in fb[fb.max_row]:
         c.font = BOLD
         c.fill = TOTAL_FILL
-    for i, w in enumerate([22, 16, 16, 12], 1):
-        ph.column_dimensions[get_column_letter(i)].width = w
-    for row in ph.iter_rows(min_row=5, min_col=2):
+    for row in fb.iter_rows(min_row=5, min_col=2):
         for c in row:
-            c.number_format = "#,##0.0"
+            c.number_format = "#,##0.00"
+    for i, w in enumerate([31, 13, 13, 13, 13], 1):
+        fb.column_dimensions[get_column_letter(i)].width = w
+    fb.row_dimensions[4].height = 30
+    fb.freeze_panes = "B5"
 
-    rel = {}
-    for name in ("Ruddmere", "Pinehold"):
-        inflow = sum(p["ponds"][name][(2025, m)]["inf_flow"] * G.days_in(2025, m) for m in range(1, 13))
-        rows_ = [p["ponds"][name][(2025, m)] for m in range(1, 13)]
-        rel[name] = (sum((r["eff_flow"] or 0) * (G.days_in(2025, m) if r["days"] else 0) for m, r in enumerate(rows_, 1))
-                     / inflow, sum((r["eff_flow"] or 0) * r["days"] for r in rows_) / inflow)
-    pr_m = int(round(100 * min(v[0] for v in rel.values())))
-    pr_d = int(round(100 * max(v[1] for v in rel.values())))
-    figs["steps"].update(pond_release_month=pr_m, pond_release_days=pr_d)
+    rmin = min(g[k]["runout"] for k in order)
+    rmax = max(g[k]["runout"] for k in order)
+    figs["steps"] = dict(default_enter=[k for k in order if dflt[k]["enters"]], pooled_runout=round(pooled[order[0]]["runout"], 3),
+                         pooled_enter=[k for k in order if pooled[k]["enters"]], runout_min=round(rmin, 3),
+                         runout_max=round(rmax, 3),
+                         under_min=min(-figs["practices"][k]["gap_pct"] for k in enter),
+                         under_max=max(-figs["practices"][k]["gap_pct"] for k in enter))
     no = wb.create_sheet("Notes")
     notes = [
-        "Prepared by the Office of the State Demographer for the 1 December 2026 certification.",
-        "Resident population: the Office's 1 July 2026 estimates (Pinehold on its 2025 boundary).",
-        "Population present: everyone in a city on a day, each person counted for the share of the day spent there "
-        "(Act, section 2(d)). The paid stays are recorded; the owners in their cottages, the residents' guests and "
-        "the day visitors are not, and every one of them sends wastewater to the city's plant.",
-        "Each city's load per person is its plant's January to April 2026 influent BOD load divided by its residents "
-        "and the paid guests recorded in those months; Esker Narrows and Hollin Bay are split at the Narrows joint "
-        "plant by their member meters. Flow and TSS give the same certification.",
-        "Averages present are rounded to the nearest thousand as section 5 requires; the qualification test uses the "
-        "unrounded estimate.",
-        "Lake Protection Fee: generated on the nights in each quarter, whatever month a platform remitted it in; "
-        "Kettle & Pine's nights are counted back from the departure date in its reservation reference.",
-        "Phosphorus: where a revision of an accepted e-reporting report was returned for correction, the accepted "
-        "report stands. The pond systems' effluent flow is the month's average daily flow, as their water balance "
-        "shows: so read, each pond released %d per cent of its 2025 inflow, against %d per cent at the days "
-        "discharged." % (pr_m, pr_d),
+        "Prepared by Payer Performance Analytics for the Board's meeting of 29 October 2026; elections due with the "
+        "payers by 30 October 2026.",
+        "Network measure (Performance Standard, section 3): allowed amounts, at each claim's current version, for covered "
+        "medical and pharmacy services incurred in the year and first paid by 31 March of the next year, each member's "
+        "year capped at USD 250,000, over the members' months of coverage, pooled across Merrinlake, Kesselcrest and "
+        "Pemberglen.",
+        "Benchmark (section 3.4): the 2025 network measure on the payers' final 2025 runs, rounded to the cent, times "
+        "1.052, rounded to the cent. Threshold: 98 per cent of the benchmark; a practice enters at or under it "
+        "(Resolution 2026-11).",
+        "Interim measure (section 4.1): claims incurred January to August 2026 paid by each payer's October feed, "
+        "divided by the payer's completion factor for the month incurred, for the members on the October runs.",
+        "The October runs attribute only the members whose qualifying visit had been paid by 30 September; the final "
+        "runs will add the members whose first qualifying visit of 2026 comes later, for every month of their coverage. "
+        "Each practice's projection carries its interim measure by its own 2025 run-out at the same cut: its 2025 "
+        "network measure over the measure, January to August 2025, of the members the standard's attribution assigns "
+        "to it on qualifying services incurred by 31 August 2025 and paid by 30 September 2025. The practices' run-outs "
+        "run from %.3f to %.3f; the network's pooled run-out of %.3f would misplace the practices whose members come "
+        "early." % (rmin, rmax, pooled[order[0]]["runout"]),
+        "Level 5 paid share: Kesselcrest's level review pays some level 5 visits at its level 4 rate from 1 March 2026, "
+        "and Merrinlake allows an E&M billed with a same-day minor procedure (modifier 25) at half its rate; both are "
+        "read from the allowed amount against the payer's 2026 schedule for the visit's setting.",
+        "Prices are USD per attributed member month, rounded to the cent; the elections are made on unrounded figures.",
     ]
     for t_ in notes:
         no.append([t_])
         no.cell(no.max_row, 1).alignment = Alignment(wrap_text=True, vertical="top")
-    no.column_dimensions["A"].width = 110
+    no.column_dimensions["A"].width = 112
     wb.save(path("workbook"))
 
-    chart(path("chart"), p, g, q)
+    chart(path("chart"), p, g, enter)
     return figs
 
 
-def chart(path, p, g, q):
-    """Each city's busiest-month average population present (bars) against three times its residents (markers),
-    ordered by the margin over the threshold; the certified figure and the qualification are written beside each
-    row, not coloured."""
-    blue, orange, ink, ink2 = "#2a78d6", "#eb6834", "#0b0b0b", "#52514e"
-    names = sorted(G.TOWNS, key=lambda n: -g[n]["peak"] / p["residents"][n])
+def chart(path, p, g, enter):
+    """Each practice's projected 2026 measure against its threshold, as the per cent above or below it, the interim
+    measure as an open marker beside it; ordered by the projection."""
+    green, grey, ink, ink2, line = "#2e7d4f", "#9a9893", "#0b0b0b", "#52514e", "#b9b8b3"
+    names = sorted(p["practices"], key=lambda k: g[k]["projected"] / g[k]["threshold"])
     y = list(range(len(names)))[::-1]
-    fig, ax = plt.subplots(figsize=(8.8, 5.0), dpi=150)
-    pres = [g[n]["peak"] for n in names]
-    three = [3 * p["residents"][n] for n in names]
-    bars = ax.barh(y, pres, height=0.56, color=blue, label="Average population present in the busiest month", zorder=2)
-    ticks, = ax.plot(three, y, linestyle="none", marker="|", markersize=19, markeredgewidth=3, color=orange,
-                     label="Three times the 1 July 2026 residents", zorder=3)
-    ax.set_xlim(0, max(max(pres), max(three)) * 1.06)
-    tr = ax.get_yaxis_transform()
-    top = max(y) + 0.75
-    ax.text(1.03, top, "Certified,\nnearest 1,000", transform=tr, ha="left", va="bottom", fontsize=7.6, color=ink2)
-    ax.text(1.22, top, "Qualifies", transform=tr, ha="left", va="bottom", fontsize=7.6, color=ink2)
-    for yi, n, v in zip(y, names, pres):
-        ax.text(1.03, yi, "{:,}".format(G.thousand(v)), transform=tr, va="center", ha="left", fontsize=8.6, color=ink)
-        ax.text(1.22, yi, "yes" if n in q else "no", transform=tr, va="center", ha="left", fontsize=8.6,
-                color=ink if n in q else ink2, fontweight="bold" if n in q else "normal")
+    proj = [100 * (g[k]["projected"] / g[k]["threshold"] - 1) for k in names]
+    inter = [100 * (g[k]["interim"] / g[k]["threshold"] - 1) for k in names]
+    fig, ax = plt.subplots(figsize=(8.8, 5.4), dpi=150)
+    cols = [green if k in enter else grey for k in names]
+    bars = ax.barh(y, proj, height=0.56, color=cols, zorder=2)
+    dots, = ax.plot(inter, y, linestyle="none", marker="o", markersize=5.5, markerfacecolor="white",
+                    markeredgecolor=ink2, markeredgewidth=1.2, zorder=3)
+    ax.axvline(0, color=ink, linewidth=1.0, zorder=4)
+    lo, hi = min(proj + inter), max(proj + inter)
+    ax.set_xlim(lo - 3, hi + 3)
+    ax.text(0.3, max(y) + 0.75, "threshold: 98% of the 2026 benchmark", fontsize=7.6, color=ink, va="bottom")
+    for yi, v in zip(y, proj):
+        if v >= 0:                       # inside the bar, clear of the interim marker beyond it
+            ax.text(v - 0.3, yi, "%+.1f%%" % v, va="center", ha="right", fontsize=7.8, color="white", fontweight="bold")
+        else:
+            ax.text(v - 0.35, yi, "%+.1f%%" % v, va="center", ha="right", fontsize=7.8, color=ink)
     ax.set_yticks(y)
-    ax.set_yticklabels(["%s, %s" % (n, MONTH[g[n]["busiest"][1]]) for n in names], fontsize=8.8, color=ink)
-    ax.set_ylim(min(y) - 0.6, max(y) + 0.6)
-    ax.xaxis.set_major_formatter(matplotlib.ticker.FuncFormatter(lambda v, _: "{:,.0f}".format(v)))
-    ax.set_xlabel("Persons on an average day of the month", fontsize=8.8, color=ink2)
+    ax.set_yticklabels(names, fontsize=8.6, color=ink)
+    ax.set_ylim(min(y) - 0.6, max(y) + 1.2)
+    ax.xaxis.set_major_formatter(matplotlib.ticker.FuncFormatter(lambda v, _: "%+.0f%%" % v if v else "0%"))
+    ax.set_xlabel("Per cent above (+) or below (-) the practice's threshold", fontsize=8.6, color=ink2)
     ax.tick_params(axis="x", labelsize=8, colors=ink2)
+    ax.tick_params(axis="y", length=0)
     ax.grid(axis="x", color="#e4e3df", linewidth=0.8, zorder=0)
     for s_ in ("top", "right", "left"):
         ax.spines[s_].set_visible(False)
-    ax.spines["bottom"].set_color("#b9b8b3")
-    ax.tick_params(axis="y", length=0)
-    fig.suptitle("%s of the eight basin cities carried at least three times their residents in their busiest month"
-                 % ("Five" if len(q) == 5 else str(len(q))), x=0.012, y=0.975, ha="left", fontsize=10.5, color=ink)
-    ax.legend(handles=[bars, ticks], loc="lower left", bbox_to_anchor=(-0.27, 1.07), ncol=2, frameon=False,
-              fontsize=8.2, handlelength=1.6, borderaxespad=0)
-    fig.text(0.012, 0.012, "Office of the State Demographer. Population present from each plant's influent BOD load per "
-             "person, calibrated on January to April 2026; measurement year October 2025 to September 2026.",
-             fontsize=6.8, color=ink2)
-    fig.subplots_adjust(left=0.2, right=0.8, top=0.8, bottom=0.14)
-    fig.savefig(path, facecolor="white", metadata={"Software": None, "Title": "Busiest-month population 2026",
-                                                   "Author": "Office of the State Demographer"})
+    ax.spines["bottom"].set_color(line)
+    import matplotlib.patches as mpatches
+    handles = [mpatches.Patch(color=green, label="Projected 2026 measure, enters the two-sided track"),
+               mpatches.Patch(color=grey, label="Projected 2026 measure, stays one-sided"), dots]
+    dots.set_label("Interim measure on the October runs")
+    ax.legend(handles=handles, loc="lower left", bbox_to_anchor=(-0.38, 1.04), ncol=3, frameon=False, fontsize=7.4,
+              handlelength=1.3, borderaxespad=0, columnspacing=1.2)
+    fig.suptitle("%s practices come in at least 2 per cent under their 2026 benchmarks once the year's attribution is "
+                 "carried in" % WORDS[len(enter)], x=0.012, y=0.975, ha="left", fontsize=10.2, color=ink)
+    fig.text(0.012, 0.012, "Larrowbrook Physician Network, Payer Performance Analytics. Network measure on the payers' "
+             "final 2026 attribution, projected from the October 2026 runs by each practice's 2025 run-out.",
+             fontsize=6.6, color=ink2)
+    fig.subplots_adjust(left=0.27, right=0.97, top=0.84, bottom=0.13)
+    fig.savefig(path, facecolor="white", metadata={"Software": None, "Title": "Practice cost against benchmark 2026",
+                                                   "Author": "Larrowbrook Physician Network"})
     plt.close(fig)

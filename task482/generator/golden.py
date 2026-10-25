@@ -1,361 +1,374 @@
-"""The golden and every rung, read from the cut pack alone (target/): the paid-stays route the default path takes, the
-plants' loads per resident the golden takes, the family of licensed constructions around it, and the two reports."""
+"""The golden for task482 (architecture 13), read from the cut pack alone.
+
+Conform the three payers' feeds (claims at their current version, eligibility spans, attribution runs) into the network
+measure of the performance standard: each practice's total cost of care per attributed member month, pooled across the
+payers. The benchmark is the 2025 figure on the final 2025 attribution times 1.052; a practice enters the two-sided track
+when its 2026 figure on the final 2026 attribution comes in at least 2 per cent under. The year is open at the extract,
+so the 2026 figure is the October interim run's figure carried to the year by the practice's own run-out: its 2025
+attribution re-run at the same cut (qualifying services incurred through 31 August and paid by 30 September), the 2025
+final figure over the figure of the members that cut attributes. Every rung of the ladder is a function here."""
 import csv
 import datetime as dt
+import json
 import os
 import re
 
 import numpy as np
 import openpyxl
+import pandas as pd
 
-TOWNS = ["Birchwick", "Teskadel", "Ruddmere", "Sorrelton", "Pinehold", "Tamsen Point", "Esker Narrows", "Hollin Bay"]
-PLANT_OF = {"Birchwick": "MN0099127", "Teskadel": "MN0099146", "Ruddmere": "Ruddmere", "Sorrelton": "MN0099158",
-            "Pinehold": "Pinehold", "Tamsen Point": "MN0099173", "Esker Narrows": "MN0099181", "Hollin Bay": "MN0099181"}
-JOINT = ("Esker Narrows", "Hollin Bay")
-MY = [(2025, 10), (2025, 11), (2025, 12)] + [(2026, m) for m in range(1, 10)]
-WINTER = [(2026, m) for m in (1, 2, 3, 4)]
-APPROPRIATION = 2_400_000
-THRESHOLD = 3.0
-QUARTERS = {1: ((2025, 7), (2025, 8), (2025, 9)), 2: ((2025, 10), (2025, 11), (2025, 12)),
-            3: ((2026, 1), (2026, 2), (2026, 3)), 4: ((2026, 4), (2026, 5), (2026, 6))}
-RATE_CHANGE = dt.date(2026, 1, 1)
+D = dt.date
+TREND, MSR, CAP = 1.052, 0.02, 250000.0
+CCF = {"MLH": 3.25, "KBP": 2.80, "PMH": 4.10}     # the standard's care coordination fee a member month (section 5.1)
+PAYERS = ("MLH", "KBP", "PMH")
+CUT = {2025: (D(2025, 8, 31), D(2025, 9, 30)), 2026: (D(2026, 8, 31), D(2026, 9, 30))}
+FINAL_PAID = {2025: D(2026, 3, 31)}
+EM = ("99211", "99212", "99213", "99214", "99215")
 
 
-def days_in(y, m):
-    import calendar
-    return calendar.monthrange(y, m)[1]
+def _ts(x):
+    return pd.Timestamp(x)
 
 
-def rows(path):
-    with open(path, newline="") as f:
-        return list(csv.DictReader(f))
-
-
-def find(T, prefix):
-    for n in sorted(os.listdir(T)):
-        if n.startswith(prefix):
-            return os.path.join(T, n)
-    raise FileNotFoundError(prefix)
-
-
-def mdy(s):
-    return dt.datetime.strptime(s.split(" ")[0], "%m/%d/%Y").date()
-
-
-# ------------------------------------------------------------------------------------------------ loading
-
-def load(T):
-    p = dict(T=T)
-    p["residents"] = {r["GEOGRAPHY"].replace(" city", ""): int(r["POPEST_2026_07_01"])
-                      for r in rows(find(T, "quillmere_county_population")) if r["GEOGRAPHY"].endswith(" city")}
-    # e-reporting: the latest accepted submission for each permit, period, location and parameter
-    best = {}
-    for r in rows(find(T, "edmr_dmr_export")):
-        if r["SUBMISSION_STATUS"] != "Accepted":
-            continue
-        d = mdy(r["MONITORING_PERIOD_END_DATE"])
-        k = (r["PERMIT_ID"], d.year, d.month, r["MONITORING_LOCATION_CODE"], r["PARAMETER_CODE"])
-        rec = mdy(r["RECEIVED_DATE"])
-        if k not in best or rec > best[k][0]:
-            best[k] = (rec, float(r["DMR_VALUE"]))
-    plant = {}
-    for (pid, y, m, loc, pc), (_, v) in best.items():
-        plant.setdefault(pid, {}).setdefault((y, m), {})[(loc, pc)] = v
-    p["edmr"] = plant
-    p["edmr_raw"] = rows(find(T, "edmr_dmr_export"))
-    # the pond systems' workbook
-    wb = openpyxl.load_workbook(find(T, "ruddmere_pinehold_ponds"), data_only=True)
-    ponds = {}
-    mon = {m: i for i, m in enumerate(["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov",
-                                       "Dec"], 1)}
-    for ws in wb.worksheets:
-        town = ws.title.rsplit(" ", 1)[0]
-        for r in ws.iter_rows(min_row=5, values_only=True):
-            if not r[0]:
+def load(target):
+    f = lambda n: os.path.join(target, n)
+    names = sorted(os.listdir(target))
+    pick = lambda pat: f([n for n in names if re.search(pat, n)][0])
+    p = {}
+    # --- claims, one frame with payer, member, type, dates, codes and allowed at the current version ---
+    m = pd.read_csv(pick(r"^mlh_tcoc_claims"), dtype=str, keep_default_na=False)
+    m["allowed"] = m.ALLOWED_AMT.astype(float)
+    m["grp"] = "M" + m.ORIG_CLM_ID.where(m.ORIG_CLM_ID != "", m.CLM_ID)
+    m["first_paid"] = m.groupby("grp").PD_DT.transform("min")
+    mlh = pd.DataFrame(dict(payer="MLH", member=m.MBR_ID, ctype=m.CLM_TYP.map({"PROF": "P", "OUTP": "O", "INPT": "I", "PHRM": "R"}),
+                            svc=pd.to_datetime(m.SVC_FROM_DT), end=pd.to_datetime(m.SVC_THRU_DT), paid=pd.to_datetime(m.PD_DT),
+                            first_paid=pd.to_datetime(m.first_paid),
+                            code=m.PROC_CD, mod=m.PROC_MOD, pos=m.POS_CD, npi=m.REND_NPI, allowed=m.allowed,
+                            reversal=m.ADJ_TYP == "VOID", superseded=m.CLM_ID.isin(m.ORIG_CLM_ID[m.ADJ_TYP == "VOID"]),
+                            grp=m.grp, ver=np.where(m.ADJ_TYP == "REPL", 2, 1)))
+    k = pd.read_csv(pick(r"^KBP_CLAIMS"), sep="|", dtype=str, keep_default_na=False)
+    k["base"] = "K" + k.CLAIM_NO.str.replace(r"-\d+$", "", regex=True)
+    k["fp"] = pd.to_datetime(k.PAID_DATE, format="%m/%d/%Y")
+    k["first_paid"] = k.groupby("base").fp.transform("min")
+    kbp = pd.DataFrame(dict(payer="KBP", member=k.MEMBER_NO, ctype=k.CLAIM_FORM.map({"1500": "P", "UB04": "O", "NCPDP": "R"}),
+                            svc=pd.to_datetime(k.FIRST_DOS, format="%m/%d/%Y"), end=pd.to_datetime(k.LAST_DOS, format="%m/%d/%Y"),
+                            paid=k.fp, first_paid=k.first_paid,
+                            code=k.PROCEDURE, mod=k.MODIFIER, pos=k.PLACE_OF_SVC, npi=k.RENDERING_PROV_NPI,
+                            allowed=k.ALLOWED_CENTS.astype(int) / 100.0, reversal=False, superseded=k.CLAIM_STATUS == "A",
+                            grp=k.base, ver=np.where(k.CLAIM_NO.str.contains("-"), 2, 1)))
+    kbp.loc[(k.CLAIM_FORM == "UB04") & (k.REVENUE == "0120"), "ctype"] = "I"
+    j = json.load(open(pick(r"^pmh_partner_claims")))["records"]
+    t = pd.DataFrame(j)
+    t["first_paid"] = t.groupby("claimId").adjudicated.transform("min")
+    t["latest"] = t.groupby("claimId").version.transform("max") == t.version
+    pmh = pd.DataFrame(dict(payer="PMH", member=t.memberId, ctype=t.type.map({"professional": "P", "institutional_outpatient": "O",
+                                                                             "institutional_inpatient": "I", "pharmacy": "R"}),
+                            svc=pd.to_datetime(t.serviceStart), end=pd.to_datetime(t.serviceEnd), paid=pd.to_datetime(t.adjudicated),
+                            first_paid=pd.to_datetime(t.first_paid), code=t.get("cpt", pd.Series([""] * len(t))).fillna(""),
+                            mod=t.get("modifier", pd.Series([""] * len(t))).fillna(""),
+                            pos=t.get("pos", pd.Series([""] * len(t))).fillna(""),
+                            npi=t.get("renderingNpi", pd.Series([""] * len(t))).fillna(""), allowed=t.allowed.astype(float),
+                            reversal=False, superseded=~t.latest, grp="P" + t.claimId, ver=t.version.astype(int)))
+    c = pd.concat([mlh, kbp, pmh], ignore_index=True)
+    c["current"] = ~c.reversal & ~c.superseded
+    c["year"] = c.svc.dt.year
+    p["claims"] = c
+    # --- eligibility spans: member months by year (a month of coverage counts once) ---
+    spans = []
+    e = pd.read_csv(pick(r"^mlh_eligibility"), dtype=str, keep_default_na=False)
+    spans += [("MLH", r.MBR_ID, r.COV_EFF_DT, r.COV_TERM_DT) for r in e.itertuples()]
+    e = pd.read_csv(pick(r"^KBP_ELIG"), sep="|", dtype=str, keep_default_na=False)
+    spans += [("KBP", r.MEMBER_NO, _mdy(r.EFF_DATE), _mdy(r.TERM_DATE) if r.TERM_DATE else "9999-12-31") for r in e.itertuples()]
+    e = pd.read_csv(pick(r"^pmh_members"), dtype=str, keep_default_na=False)
+    spans += [("PMH", r.memberId, r.coverageStart, r.coverageEnd or "9999-12-31") for r in e.itertuples()]
+    p["spans"] = spans
+    # --- attribution runs ---
+    att, det = {}, {}
+    a = pd.read_csv(pick(r"^mlh_attribution"), dtype=str)
+    for r in a.itertuples():
+        key = ("MLH", r.MBR_ID, "final2025" if r.RUN_ID == "PY2025-F" else "run2026")
+        att[key] = r.PRACTICE_TIN
+        det[key] = (int(r.QUAL_SVC_DAYS), r.LAST_QUAL_SVC_DT)
+    wb = openpyxl.load_workbook(pick(r"^KBP_ATTRIBUTION"), read_only=True)
+    for ws, tag in ((wb["PY2025 Final"], "final2025"), (wb["PY2026 Run 10"], "run2026")):
+        for i, row in enumerate(ws.iter_rows(values_only=True)):
+            if i < 4 or row[0] is None:
                 continue
-            mo, yr = r[0].split(" ")
-            ponds.setdefault(town, {})[(int(yr), mon[mo])] = dict(inf_flow=r[1], inf_bod=r[2], inf_tss=r[3],
-                                                                   discharge=r[4], days=r[5] or 0, eff_flow=r[6],
-                                                                   eff_tp=r[9])
-    p["ponds"] = ponds
-    met = {}
-    for r in rows(find(T, "narrows_joint_member_meters")):
-        d = mdy(r["READ_AT"]) - dt.timedelta(days=1) if r["READ_AT"].endswith("00:00") else mdy(r["READ_AT"])
-        met[(r["MEMBER"], d.year, d.month)] = met.get((r["MEMBER"], d.year, d.month), 0) + int(r["VOLUME_SINCE_LAST_READ_GAL"])
-    p["meters"] = met
-    p["returns"] = rows(find(T, "lake_protection_fee_returns_2"))
-    p["lakeward"] = rows(find(T, "lakeward_stays_remittance"))
-    p["kettlepine"] = rows(find(T, "kettle_and_pine_remittance"))
+            att[("KBP", str(row[0]), tag)] = str(row[1]).replace("-", "")
+            det[("KBP", str(row[0]), tag)] = (int(row[3]), _d(row[4]).isoformat())
+    a = pd.read_csv(pick(r"^pmh_attribution"), dtype=str)
+    for r in a.itertuples():
+        key = ("PMH", r.memberId, "final2025" if r.py == "2025" else "run2026")
+        att[key] = r.tin.replace("-", "")
+        det[key] = (int(r.qualDays), r.lastQualDate)
+    p["att"], p["att_detail"] = att, det
+    # --- the network's roster: NPI to practice by date, TIN to practice ---
+    wb = openpyxl.load_workbook(pick(r"^lpn_primary_care_roster"), read_only=True)
+    ros = []
+    for i, row in enumerate(wb.active.iter_rows(values_only=True)):
+        if i == 0:
+            continue
+        ros.append(dict(npi=str(row[0]), practice=row[3], tin=str(row[4]).replace("-", ""), start=_d(row[5]),
+                        end=_d(row[6]) if row[6] else None))
+    p["roster"] = ros
+    p["tin2prac"] = {r["tin"]: r["practice"] for r in ros}
+    p["practices"] = sorted({r["practice"] for r in ros}, key=lambda n: min(r["tin"] for r in ros if r["practice"] == n))
+    p["qualifying"] = set(pd.read_csv(pick(r"^qualifying_primary_care"), dtype=str).code)
+    cf = pd.read_csv(pick(r"^payer_completion_factors"), dtype=str)
+    p["cf"] = {(r.payer, int(r.incurred_month[5:7])): float(r.completion_factor) for r in cf.itertuples()}
+    # --- fee schedules (ask A) ---
+    wb = openpyxl.load_workbook(pick(r"^payer_em_fee_schedules"), read_only=True)
+    fees = {}
+    for ws, ab in zip(wb.worksheets, PAYERS):
+        for i, row in enumerate(ws.iter_rows(values_only=True)):
+            if i >= 4 and row[0] and str(row[0]).isdigit():
+                fees[(ab, str(row[0]))] = (row[2], row[3])
+    p["fees"] = fees
+    # --- care coordination remittances (ask B) ---
+    rem = []
+    r = pd.read_csv(pick(r"^mlh_care_coordination"), dtype=str)
+    rem += [("MLH", x.PRACTICE_TIN, int(x.COV_MO[4:6]), float(x.PMT_AMT), x.PMT_DT, int(x.MBR_CNT)) for x in r.itertuples()]
+    wb = openpyxl.load_workbook(pick(r"^KBP_CCF_REMIT"), read_only=True)
+    for i, row in enumerate(wb.active.iter_rows(values_only=True)):
+        if i == 0 or row[0] is None:
+            continue
+        rem.append(("KBP", str(row[2]).replace("-", ""), int(str(row[3])[5:7]), float(row[5]), _d(row[0]).isoformat(), int(row[4])))
+    r = pd.read_csv(pick(r"^pmh_ccf_payments"), dtype=str)
+    rem += [("PMH", x.tin.replace("-", ""), int(x.paymentRef.split("-")[3][4:6]), float(x.amount), x.period + "-01",
+             int(x.memberCount)) for x in r.itertuples()]
+    p["remit"] = rem
     return p
 
 
-# ---------------------------------------------------------------------------- each town's plant series
+def _mdy(s):
+    return dt.datetime.strptime(s, "%m/%d/%Y").date().isoformat()
 
-def series(p, town):
-    """Monthly average daily influent flow (gallons), BOD load and TSS load (pounds) carried for the town."""
+
+def _d(x):
+    if isinstance(x, dt.datetime):
+        return x.date()
+    if isinstance(x, dt.date):
+        return x
+    return dt.date.fromisoformat(str(x)[:10])
+
+
+def member_months(p, year, upto):
+    """{(payer, member): months of coverage in year, January through month upto}."""
     out = {}
-    pid = PLANT_OF[town]
-    if town in JOINT:
-        for (y, m), v in p["edmr"][pid].items():
-            g = p["meters"][(town, y, m)] / days_in(y, m)
-            out[(y, m)] = dict(flow=g, bod=g / 1e6 * v[("G", "00310")] * 8.34, tss=g / 1e6 * v[("G", "00530")] * 8.34)
-    elif pid in p["ponds"]:
-        for ym, r in p["ponds"][pid].items():
-            out[ym] = dict(flow=r["inf_flow"] * 1e6, bod=r["inf_flow"] * r["inf_bod"] * 8.34,
-                           tss=r["inf_flow"] * r["inf_tss"] * 8.34)
-    else:
-        for ym, v in p["edmr"][pid].items():
-            f = v[("G", "50050")]
-            out[ym] = dict(flow=f * 1e6, bod=f * v[("G", "00310")] * 8.34, tss=f * v[("G", "00530")] * 8.34)
+    for payer, mid, s, e in p["spans"]:
+        s, e = dt.date.fromisoformat(s), dt.date.fromisoformat(e)
+        n = 0
+        for mo in range(1, upto + 1):
+            first = D(year, mo, 1)
+            last = D(year + (mo == 12), mo % 12 + 1, 1) - dt.timedelta(days=1)
+            if s <= last and e >= first:
+                n += 1
+        if n:
+            out[(payer, mid)] = out.get((payer, mid), 0) + n
     return out
 
 
-def ck_arrival(r, ck="checkout"):
-    """A Kettle & Pine stay's first night: its reference carries the departure date (ck='checkout'); ck='arrival' reads
-    that date as the arrival."""
-    d = dt.datetime.strptime(r["Reservation"][1:7], "%y%m%d").date()
-    return d - dt.timedelta(days=int(r["Nights"])) if ck == "checkout" else d
-
-
-def paid(p, split="days", ck="checkout"):
-    """Paid guests on an average day by town and month: the returns (a quarterly return spread over its months as
-    the split says), Lakeward's stays by night, Kettle & Pine's stays by night from the departure its reference carries
-    (ck='arrival' reads that date as the arrival; ck='period' puts the stay in its reporting period)."""
-    gn = {}
-
-    def add(town, y, m, v):
-        gn[(town, y, m)] = gn.get((town, y, m), 0) + v
-
-    for town, y, m, g in returns_by_month(p, split):
-        add(town, y, m, g)
-    for r in p["lakeward"]:
-        town = r["listing_city"].title()
-        d = dt.date.fromisoformat(r["check_in"])
-        for i in range(int(r["nights"])):
-            x = d + dt.timedelta(days=i)
-            add(town, x.year, x.month, int(r["guests"]))
-    for r in p["kettlepine"]:
-        n, g = int(r["Nights"]), int(r["Party size"])
-        if ck in ("checkout", "arrival"):
-            d = ck_arrival(r, ck)
-            for i in range(n):
-                x = d + dt.timedelta(days=i)
-                add(r["Municipality"], x.year, x.month, g)
-        else:
-            y, m = int(r["Reporting period"][:4]), int(r["Reporting period"][5:])
-            add(r["Municipality"], y, m, g * n)
-    return {k: v / days_in(k[1], k[2]) for k, v in gn.items()}
-
-
-def current_returns(p):
-    """Each account's returns for a period: the latest original or amended return, plus any supplemental."""
-    by = {}
-    for r in p["returns"]:
-        k = (r["ACCOUNT_NO"], r["PERIOD_START"])
-        by.setdefault(k, []).append(r)
-    out = []
-    for k, rs in by.items():
-        rs = sorted(rs, key=lambda r: mdy(r["DATE_FILED"]))
-        base = [r for r in rs if r["RETURN_TYPE"] in ("Original", "Amended")][-1]
-        out.append(base)
-        out += [r for r in rs if r["RETURN_TYPE"] == "Supplemental"]
-    return out
-
-
-def returns_by_month(p, split="days"):
-    for r in current_returns(p):
-        a, b = mdy(r["PERIOD_START"]), mdy(r["PERIOD_END"])
-        g = int(r["GUEST_NIGHTS_TOTAL"])
-        months = [(a.year, a.month)]
-        while months[-1] != (b.year, b.month):
-            y, m = months[-1]
-            months.append((y + 1, 1) if m == 12 else (y, m + 1))
-        w = [days_in(*ym) for ym in months] if split == "days" else [1] * len(months)
-        for ym, wi in zip(months, w):
-            yield r["PROPERTY_CITY"], ym[0], ym[1], g * wi / sum(w)
-
-
-# ------------------------------------------------------------------------------------------------ the rungs
-
-def records_route(p, split="days", ck="checkout"):
-    """The default path: residents plus the paid guests the returns and the platforms record."""
-    pd_ = paid(p, split, ck)
-    out = {}
-    for n in TOWNS:
-        R = p["residents"][n]
-        pres = {ym: R + pd_.get((n,) + ym, 0) for ym in MY}
-        b = max(pres, key=pres.get)
-        out[n] = dict(busiest=b, peak=pres[b], ratio=pres[b] / R, qualifies=pres[b] >= THRESHOLD * R)
-    return out
-
-
-def load_route(p, measure="bod", cal=WINTER, winter_paid=True, pooled=False, pd_=None):
-    """The golden family: each month's load divided by the load per person in the winter months, when the people in
-    town are the residents and the few paid guests the records hold."""
-    pd_ = paid(p) if pd_ is None else pd_
-    S = {n: series(p, n) for n in TOWNS}
-    out = {}
-    if pooled:
-        per_all = np.mean([sum(S[n][ym][measure] for n in TOWNS) /
-                           sum(p["residents"][n] + (pd_.get((n,) + ym, 0) if winter_paid else 0) for n in TOWNS)
-                           for ym in cal])
-    for n in TOWNS:
-        R = p["residents"][n]
-        per = per_all if pooled else np.mean([S[n][ym][measure] / (R + (pd_.get((n,) + ym, 0) if winter_paid else 0))
-                                              for ym in cal])
-        pres = {ym: S[n][ym][measure] / per for ym in MY}
-        b = max(pres, key=pres.get)
-        out[n] = dict(busiest=b, peak=pres[b], ratio=pres[b] / R, qualifies=pres[b] >= THRESHOLD * R, per=per,
-                      present=pres)
-    return out
-
-
-def load_route_paid(p, pd_):
-    """The golden with the paid winter guests from another reading of the records."""
-    return load_route(p, pd_=pd_)
-
-
-FAMILY_CALS = ([(2026, m) for m in c] for c in ((1, 2, 3, 4), (1,), (2,), (3,), (4,), (1, 2, 3), (2, 3, 4), (2, 3),
-                                                 (1, 2), (3, 4)))
-
-
-def family(p):
-    out = {}
-    cals = list(FAMILY_CALS)
-    for measure in ("bod", "flow", "tss"):
-        for cal in cals:
-            for wp in (True, False):
-                out[(measure, tuple(cal), wp, False)] = load_route(p, measure, cal, wp, False)
-            out[(measure, tuple(cal), True, True)] = load_route(p, measure, cal, True, True)
-    return out
-
-
-def golden(p):
-    return load_route(p)
-
-
-def aid(route):
-    q = [n for n in TOWNS if route[n]["qualifies"]]
-    share = APPROPRIATION / len(q) if q else 0
-    return q, {n: (share if n in q else 0) for n in TOWNS}
-
-
-def thousand(x):
-    return int(np.floor(x / 1000.0 + 0.5)) * 1000
-
-
-# --------------------------------------------------------------------------------------------- the reports
-
-def quarter_of(d):
-    for q, months in QUARTERS.items():
-        if (d.year, d.month) in months:
-            return q
+def npi_practice(p, npi, day):
+    for r in p["roster"]:
+        if r["npi"] == npi and r["start"] <= day and (r["end"] is None or day <= r["end"]):
+            return r["practice"]
     return None
 
 
-def rate_on(d):
-    return 1.50 if d >= RATE_CHANGE else 1.25
-
-
-def ask_a(p, ck="checkout", split_nights=True, rate_by_night=True, returns="current"):
-    """The fee generated by stays in each town and quarter of fiscal 2026: the returns' fee for their periods, and
-    each platform stay's fee on the nights in the quarter."""
-    fee = {(n, q): 0.0 for n in TOWNS for q in QUARTERS}
-    rr = current_returns(p) if returns == "current" else (
-        [r for r in p["returns"] if r["RETURN_TYPE"] != "Supplemental"] if returns == "latest" else p["returns"])
-    if returns == "latest":
-        last = {}
-        for r in sorted(p["returns"], key=lambda r: mdy(r["DATE_FILED"])):
-            last[(r["ACCOUNT_NO"], r["PERIOD_START"])] = r
-        rr = list(last.values())
-    for r in rr:
-        a = mdy(r["PERIOD_START"])
-        q = quarter_of(a)
-        if q:
-            fee[(r["PROPERTY_CITY"], q)] += float(r["FEE_DUE"])
-
-    def stay(town, d0, nights, guests, total, period=None):
-        if nights >= 30:
-            return
-        if period is not None:
-            q = quarter_of(period)
-            if q:
-                fee[(town, q)] += total
-            return
-        if not split_nights:
-            q = quarter_of(d0)
-            if q:
-                fee[(town, q)] += total
-            return
-        for i in range(nights):
-            x = d0 + dt.timedelta(days=i)
-            q = quarter_of(x)
-            if q:
-                fee[(town, q)] += (rate_on(x) * guests) if rate_by_night else total / nights
-
-    for r in p["lakeward"]:
-        stay(r["listing_city"].title(), dt.date.fromisoformat(r["check_in"]), int(r["nights"]), int(r["guests"]),
-             float(r["lake_protection_fee_usd"]))
-    for r in p["kettlepine"]:
-        n, g, tot = int(r["Nights"]), int(r["Party size"]), float(r["Fee remitted (USD)"])
-        if ck in ("checkout", "arrival"):
-            stay(r["Municipality"], ck_arrival(r, ck), n, g, tot)
-        else:
-            per = dt.date(int(r["Reporting period"][:4]), int(r["Reporting period"][5:]), 1)
-            stay(r["Municipality"], None, n, g, tot, period=per)
-    return {k: int(np.floor(v + 0.5)) for k, v in fee.items()}
-
-
-PLANTS_B = ["Birchwick", "Teskadel", "Ruddmere", "Sorrelton", "Pinehold", "Tamsen Point", "Narrows"]
-PERMIT_B = dict(PLANT_OF, Narrows="MN0099181")
-
-
-def ask_b(p, pond_days="month", edmr="accepted"):
-    """Pounds of total phosphorus each plant discharged in each half of 2025: the month's average daily flow (MGD) x
-    concentration (mg/L) x 8.34 x the days of the month (pond_days='discharged' takes the pond systems' flow over the
-    days discharged instead)."""
+def attribute(p, year, svc_to, paid_to, first_paid=True, tie="latest"):
+    """Re-run the standard's attribution on the claims the pack holds: qualifying days by practice, plurality, ties to
+    the latest day (tie 'earliest' for the other reading). A visit counts once a version of it was paid by paid_to
+    (first_paid) or at its current version."""
+    c = p["claims"]
+    q = c[(c.ctype == "P") & (c.year == year) & c.code.isin(p["qualifying"]) & c.current & (c.svc <= _ts(svc_to))]
+    q = q[(q.first_paid if first_paid else q.paid) <= _ts(paid_to)]
+    cache = {}
+    days = {}
+    for r in q[["payer", "member", "npi", "svc"]].itertuples(index=False):
+        key = (r.npi, r.svc)
+        if key not in cache:
+            cache[key] = npi_practice(p, r.npi, r.svc.date())
+        pr = cache[key]
+        if pr is None:
+            continue
+        days.setdefault((r.payer, r.member), {}).setdefault(pr, set()).add(r.svc.date())
     out = {}
-    for name in PLANTS_B:
-        for h in (1, 2):
-            months = range(1, 7) if h == 1 else range(7, 13)
-            lb = 0.0
-            for m in months:
-                if name in ("Ruddmere", "Pinehold"):
-                    r = p["ponds"][name][(2025, m)]
-                    if r["days"]:
-                        d = r["days"] if pond_days == "discharged" else days_in(2025, m)
-                        lb += r["eff_flow"] * r["eff_tp"] * 8.34 * d
-                else:
-                    pid = PERMIT_B[name]
-                    v = p["edmr"][pid][(2025, m)] if edmr == "accepted" else edmr_latest(p, pid, 2025, m)
-                    lb += v[("1", "50050")] * v[("1", "00665")] * 8.34 * days_in(2025, m)
-            out[(name, h)] = round(lb, 1)
+    for mk, byp in days.items():
+        if tie == "latest":
+            best = sorted(byp.items(), key=lambda kv: (-len(kv[1]), -max(kv[1]).toordinal(), kv[0]))[0]
+        else:
+            best = sorted(byp.items(), key=lambda kv: (-len(kv[1]), min(kv[1]).toordinal(), kv[0]))[0]
+        out[mk] = best[0]
     return out
 
 
-def edmr_latest(p, pid, y, m):
-    """The latest submission received for the period, whatever its status (the reflex dedupe)."""
-    best = {}
-    for r in p["edmr_raw"]:
-        d = mdy(r["MONITORING_PERIOD_END_DATE"])
-        if r["PERMIT_ID"] != pid or (d.year, d.month) != (y, m):
-            continue
-        k = (r["MONITORING_LOCATION_CODE"], r["PARAMETER_CODE"])
-        rec = mdy(r["RECEIVED_DATE"])
-        if k not in best or rec >= best[k][0]:
-            best[k] = (rec, float(r["DMR_VALUE"]))
-    return {k: v for k, (_, v) in best.items()}
+def run_members(p, tag):
+    return {(payer, mid): p["tin2prac"][tin] for (payer, mid, tg), tin in p["att"].items() if tg == tag}
 
 
-if __name__ == "__main__":
-    import sys
-    T = sys.argv[1] if len(sys.argv) > 1 else os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
-                                                            "target")
-    p = load(T)
+def claims_at(p, year, svc_to, paid_to, version="current"):
+    """The year's claims incurred through svc_to that a cut at paid_to counts. 'current': every claim first paid by the
+    cut, at its current version (the standard's reading); 'asof': each claim at the version it stood at on the cut;
+    'all': every row of the feeds summed as it stands."""
+    c = p["claims"]
+    c = c[(c.year == year) & (c.svc <= _ts(svc_to))]
+    if version == "current":
+        return c[c.current & (c.first_paid <= _ts(paid_to))]
+    if version == "all":
+        return c[c.paid <= _ts(paid_to)]
+    c = c[~c.reversal & (c.paid <= _ts(paid_to))]
+    return c[c.ver == c.groupby("grp").ver.transform("max")]
+
+
+def figure(p, members, year, upto, svc_to, paid_to, complete=False, cap=CAP, version="current"):
+    """Per practice: (capped allowed, member months) over the given {(payer, member): practice} set."""
+    sub = claims_at(p, year, svc_to, paid_to, version)
+    if complete:
+        w = np.array([1.0 / p["cf"][(py, mo)] for py, mo in zip(sub.payer, sub.svc.dt.month)])
+        sub = sub.assign(allowed=sub.allowed.values * w)
+    tot = sub.groupby(["payer", "member"]).allowed.sum().to_dict()
+    mm = member_months(p, year, upto)
+    out = {}
+    for mk, prac in members.items():
+        a = min(cap, tot.get(mk, 0.0))
+        o = out.setdefault(prac, [0.0, 0])
+        o[0] += a
+        o[1] += mm.get(mk, 0)
+    return out
+
+
+def pm(d, k):
+    return d[k][0] / d[k][1]
+
+
+def golden(p, pooled=False, per_payer=False, first_paid=True, cut_paid=True, a_reported=False, f_paid=None, aug=None,
+           season=False, complete=True, version="current", cap=CAP):
+    """Every practice's figures on the golden handling: the October run's interim measure carried to the year by the
+    practice's own 2025 run-out (the 2025 final figure over the figure of the members the 2025 attribution re-run at the
+    same cut attributes, January to August). The options are the family's members and the ladder's rungs: pooled (one
+    network run-out), per_payer (each payer's run-out on its own interim members), first_paid and cut_paid (which paid
+    date counts a visit in the re-run, and by when), a_reported (the re-run's figure as the network would have reported
+    it, paid by 30 September 2025 over the factors), f_paid (the 2025 figure's paid cut-off), aug (another same-cut
+    membership), season (the final 2025 members' own January to August figure in place of the re-run's) and complete
+    (the interim measure with the completion factors); version and cap are the claims' reading and the member cap."""
+    fp = f_paid or FINAL_PAID[2025]
+    f25 = run_members(p, "final2025")
+    r26 = run_members(p, "run2026")
+    if aug is None:
+        aug = attribute(p, 2025, D(2025, 8, 31), D(2025, 9, 30) if cut_paid else FINAL_PAID[2025], first_paid=first_paid)
+    if season:
+        aug = f25
+
+    def Ff(mem):
+        return figure(p, mem, 2025, 12, D(2025, 12, 31), fp, version=version, cap=cap)
+
+    def Af(mem):
+        if a_reported:
+            return figure(p, mem, 2025, 8, D(2025, 8, 31), D(2025, 9, 30), complete=True, version=version, cap=cap)
+        return figure(p, mem, 2025, 8, D(2025, 8, 31), FINAL_PAID[2025], version=version, cap=cap)
+
+    def If(mem):
+        return figure(p, mem, 2026, 8, D(2026, 8, 31), D(2026, 9, 30), complete=complete, version=version, cap=cap)
+
+    F, A, I = Ff(f25), Af(aug), If(r26)
+    if per_payer:
+        sub = lambda mem, py: {mk: v for mk, v in mem.items() if mk[0] == py}
+        parts = {py: (Ff(sub(f25, py)), Af(sub(aug, py)), If(sub(r26, py))) for py in PAYERS}
+    Fn = sum(v[0] for v in F.values()) / sum(v[1] for v in F.values())
+    An = sum(v[0] for v in A.values()) / sum(v[1] for v in A.values())
+    out = {}
+    for k in p["practices"]:
+        bench = round(round(pm(F, k), 2) * TREND, 2)        # the standard's section 3.4, to the cent
+        R = Fn / An if pooled else pm(F, k) / pm(A, k)
+        interim = pm(I, k)
+        proj = interim * R
+        if per_payer:
+            num = den = 0.0
+            for py in PAYERS:
+                Fk, Ak, Ik = parts[py]
+                if k not in Fk or k not in Ak or k not in Ik or not Ak[k][1] or not Ik[k][1]:
+                    continue
+                mmk = Ik[k][1] * Fk[k][1] / Ak[k][1]
+                num += pm(Ik, k) * pm(Fk, k) / pm(Ak, k) * mmk
+                den += mmk
+            proj = num / den
+        out[k] = dict(f2025=pm(F, k), benchmark=bench, threshold=bench * (1 - MSR), interim=interim, runout=R, projected=proj,
+                      enters=proj <= bench * (1 - MSR), members2025=sum(1 for v in f25.values() if v == k),
+                      members_aug=sum(1 for v in aug.values() if v == k), members_run=sum(1 for v in r26.values() if v == k),
+                      mm2025=F[k][1], mm_aug=A[k][1], mm_run=I[k][1])
+    return out
+
+
+def proxy_members(p):
+    """The 2025 same-cut membership read off the final run's own fields, without re-running the attribution: a final 2025
+    member counts unless the one qualifying day the run records falls after August."""
+    det = p["att_detail"]
+    return {mk: v for mk, v in run_members(p, "final2025").items()
+            if not (det[mk + ("final2025",)][0] == 1 and det[mk + ("final2025",)][1] > "2025-08-31")}
+
+
+def dilution(p, basis="members"):
+    """The shortcut that reads the October run's short counts as members still to come who cost nothing: the interim
+    measure scaled by the run's members over the 2025 final run's ('members'), or by the 2025 same-cut member months,
+    carried to twelve months, over the final run's ('months')."""
     g = golden(p)
-    d = records_route(p)
-    for n in TOWNS:
-        print("%-14s golden %d-%02d %7.0f %4.2f %s | records %d-%02d %7.0f %4.2f %s" % (
-            n, g[n]["busiest"][0], g[n]["busiest"][1], g[n]["peak"], g[n]["ratio"], g[n]["qualifies"],
-            d[n]["busiest"][0], d[n]["busiest"][1], d[n]["peak"], d[n]["ratio"], d[n]["qualifies"]))
-    print("golden", aid(g)[0], "records", aid(d)[0])
+    out = {}
+    for k, v in g.items():
+        f = v["members_run"] / v["members2025"] if basis == "members" else v["mm_aug"] * 12 / 8 / v["mm2025"]
+        proj = v["interim"] * f
+        out[k] = dict(v, projected=proj, enters=proj <= v["threshold"])
+    return out
+
+
+def enters(route):
+    return [k for k in route if route[k]["enters"]]
+
+
+def default(p):
+    """The default path: the interim run's figure carried to the year as it stands."""
+    g = golden(p)
+    return {k: dict(v, projected=v["interim"], enters=v["interim"] <= v["threshold"]) for k, v in g.items()}
+
+
+# ---- asks ----
+
+def ask_a(p, rule="golden"):
+    """Each practice's share of its clinicians' 2026 January to August established-patient visits (99211 to 99215) that
+    the payers paid at level 5. rule 'golden': the paid level is the one whose rate for the visit's setting (the payer's
+    place-of-service rule) the allowed amount equals, or half of which it equals where the payer halved an E&M billed
+    with a same-day minor procedure; 'code': the code on the claim; 'rate': the full level-5 rate only."""
+    c = p["claims"]
+    v = c[(c.ctype == "P") & (c.year == 2026) & (c.svc <= _ts(D(2026, 8, 31))) & c.code.isin(EM) & c.current]
+    out = {}
+    for r in v[["payer", "code", "pos", "npi", "svc", "allowed"]].itertuples(index=False):
+        prac = npi_practice(p, r.npi, r.svc.date())
+        if prac is None:
+            continue
+        if rule == "code":
+            lvl5 = r.code == "99215"
+        else:
+            fac = r.pos in ("19", "22") or (r.payer == "PMH" and r.pos in ("02", "10"))
+            rate5 = p["fees"][(r.payer, "99215")][1 if fac else 0]
+            lvl5 = r.code == "99215" and (abs(r.allowed - rate5) < 0.005 or (rule == "golden" and abs(2 * r.allowed - rate5) < 0.01))
+        o = out.setdefault(prac, [0, 0])
+        o[0] += int(lvl5)
+        o[1] += 1
+    return {k: round(100.0 * a / b, 1) for k, (a, b) in out.items()}
+
+
+def ask_b(p, pmh_by_period=False, keep_other_programs=False):
+    """The care coordination fees the three payers paid under the standard for each practice's members, by coverage
+    quarter of 2026, January to September, on the March to October runs: a line counts where its amount is its members
+    times the payer's fee in section 5.1. With pmh_by_period, Pemberglen's lines by the period they were posted to; with
+    keep_other_programs, every line of the remittances whatever its fee."""
+    out = {}
+    for payer, tin, cov, amt, pdate, members in p["remit"]:
+        if not keep_other_programs and abs(members * CCF[payer] - amt) > 0.005:
+            continue
+        m = int(pdate[5:7]) if (pmh_by_period and payer == "PMH") else cov
+        if not 1 <= m <= 9:
+            continue
+        prac = p["tin2prac"][tin]
+        q = (m - 1) // 3 + 1
+        out[(prac, q)] = out.get((prac, q), 0.0) + amt
+    return {k: round(v, 2) for k, v in out.items()}

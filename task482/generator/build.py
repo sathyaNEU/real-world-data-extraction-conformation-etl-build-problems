@@ -1,7 +1,8 @@
-"""Builds task482's pack into target/ and the golden deliverables into golden/, writes generator/figures.json, and
-cuts target.zip; two runs are byte-identical.
+"""Builds task482's pack (architecture 13) into target/ and the golden deliverables into golden/, writes
+generator/figures.json, and cuts target.zip; two runs are byte-identical.
 
-    python3 task482/generator/build.py
+    python3 task482/generator/build.py          # the whole build
+    python3 task482/generator/build.py pack     # the pack only
 """
 import json
 import os
@@ -17,24 +18,21 @@ sys.path.insert(0, HERE)
 
 import world as W          # noqa: E402
 import pack as P           # noqa: E402
-import docs as D           # noqa: E402
-import postprocess as PP   # noqa: E402
 
-NAMES = dict(residents="quillmere_county_population_estimates_2024_2026.csv",
-             edmr="edmr_dmr_export_quillmere_basin_2025-01_2026-09.csv",
-             ponds="ruddmere_pinehold_ponds_operating_reports_2025_2026.xlsx",
-             meters="narrows_joint_member_meters_2025_2026.csv",
-             params="edmr_parameter_codes.csv",
-             facilities="quillmere_basin_wastewater_facilities.pdf",
-             returns="lake_protection_fee_returns_2025-07_2026-09.csv",
-             returns_layout="lake_protection_fee_returns_field_list.txt",
-             lakeward="lakeward_stays_remittance_detail_2025-07_2026-09.csv",
-             kettlepine="kettle_and_pine_remittance_report_2025-07_2026-09.csv",
-             statute="seasonal_communities_aid_act.pdf",
-             ordinance="lake_protection_fee_ordinance.pdf",
-             traffic="quillmere_county_traffic_counts_2024_2026.csv",
-             weather="sorrelton_coop_station_daily_2025_2026.csv")
-GOLD = dict(workbook="seasonal_communities_aid_2027_certification.xlsx", chart="busiest_month_population_2026.png")
+NAMES = dict(
+    mlh_claims="mlh_tcoc_claims_2025-01_2026-09.csv", mlh_elig="mlh_eligibility_2025_2026.csv",
+    mlh_attr="mlh_attribution_runs_py2025_py2026.csv", mlh_ccf="mlh_care_coordination_remittance_2026.csv",
+    kbp_claims="KBP_CLAIMS_LPN_20261009.txt", kbp_elig="KBP_ELIG_LPN_20261009.txt",
+    kbp_attr="KBP_ATTRIBUTION_PY2025F_PY2026R10.xlsx", kbp_ccf="KBP_CCF_REMIT_2026.xlsx",
+    pmh_claims="pmh_partner_claims_2026-10-12.json", pmh_members="pmh_members_2026-10-12.csv",
+    pmh_attr="pmh_attribution_py2025_py2026.csv", pmh_ccf="pmh_ccf_payments_2026.csv",
+    roster="lpn_primary_care_roster_2026-10.xlsx", mpi="lpn_master_patient_index.csv",
+    fees="payer_em_fee_schedules_2026.xlsx", qualifying="qualifying_primary_care_services.csv",
+    cf="payer_completion_factors_2026-09.csv", standard="lpn_performance_standard_2026.pdf",
+    resolution="lpn_board_resolution_2026-07.pdf", statements="payer_settlement_statements_py2025.pdf",
+    guide="lpn_payer_feed_field_guide.txt", ma="kbp_medicare_advantage_attribution_2026.xlsx",
+    quality="lpn_quality_composite_2025.csv")
+GOLD = dict(workbook="two_sided_track_elections_2027.xlsx", chart="practice_cost_vs_benchmark_2026.png")
 
 
 def t(k):
@@ -45,42 +43,46 @@ def gpath(k):
     return os.path.join(GOLDEN, GOLD[k])
 
 
-def pack():
+def pack(with_docs=True):
     for d in (TARGET, GOLDEN):
         shutil.rmtree(d, ignore_errors=True)
         os.makedirs(d)
     w = W.build()
-    mor, meters = W.mor()
-    P.residents_csv(t("residents"))
-    P.edmr_csv(t("edmr"), mor)
-    P.ponds_xlsx(t("ponds"), mor)
-    P.meters_csv(t("meters"), meters)
-    P.parameter_codes_csv(t("params"))
-    P.returns_csv(t("returns"), w["props"], w["lodge_nights"])
-    P.returns_layout_txt(t("returns_layout"))
-    P.lakeward_csv(t("lakeward"), w["listings"], w["bookings"])
-    P.kettlepine_csv(t("kettlepine"), w["listings"], w["bookings"])
-    P.traffic_csv(t("traffic"))
-    P.weather_csv(t("weather"))
-    D.statute_pdf(t("statute"))
-    D.ordinance_pdf(t("ordinance"))
-    D.facilities_pdf(t("facilities"))
-    PP.normalize_ooxml(t("ponds"), "Northwoods Utility Services", "Northwoods Utility Services", "2025-02-11T14:20:00Z",
-                       "2026-10-09T16:05:00Z", excel=True, company="Northwoods Utility Services")
-    for k, stamp in (("statute", b"D:20251104090000-06'00'"), ("ordinance", b"D:20250612100000-05'00'"),
-                     ("facilities", b"D:20260317110000-05'00'")):
-        PP.normalize_pdf(t(k), stamp, stamp)
-    return dict(world=w, mor=mor, meters=meters)
+    ids = W.member_ids(w["people"])
+    idx, members = P.shared_rows(w, ids)
+    P.claims_mlh(t("mlh_claims"), w, ids, idx["B"])
+    P.claims_kbp(t("kbp_claims"), w, ids, idx["M"])
+    P.claims_pmh(t("pmh_claims"), w, ids, idx["T"])
+    P.eligibility_files(t, w, ids, members)
+    P.attribution_files(t, w, ids)
+    lines = P.remittance_files(t, w)
+    P.roster_file(t, w)
+    P.mpi_file(t, w, ids, members)
+    P.fee_schedule_file(t)
+    P.qualifying_codes_file(t)
+    cf = W.completion_factors(w["claims"])
+    P.completion_factor_file(t("cf"), cf)
+    if with_docs:
+        import docs as Dc
+        import postprocess as PP
+        Dc.write_all(t, w, ids, cf)
+        P.distractor_files(t, w, ids)
+        for k in ("kbp_attr", "kbp_ccf", "roster", "fees", "ma"):
+            PP.normalize_ooxml(t(k), excel=True, **PP.OWNERS[k])
+        for k, stamp in Dc.STAMPS.items():
+            PP.normalize_pdf(t(k), stamp, stamp)
+    return dict(world=w, ids=ids, members=members, remit=lines, cf=cf)
 
 
 def main():
-    world = pack()
+    built = pack()
     import golden as G
     import goldfiles as GF
     p = G.load(TARGET)
     figs = GF.write(gpath, p)
-    PP.normalize_ooxml(gpath("workbook"), W.PEOPLE["estimates"], W.PEOPLE["lead"], "2026-10-26T15:10:00Z",
-                       "2026-11-18T20:42:00Z", excel=True, company=W.OFFICE)
+    import postprocess as PP
+    PP.normalize_ooxml(gpath("workbook"), W.PEOPLE["analytics"], W.PEOPLE["analytics"], "2026-10-26T14:05:00Z",
+                       "2026-10-27T21:40:00Z", title="Two-sided track elections 2027", excel=True)
     json.dump(figs, open(os.path.join(HERE, "figures.json"), "w"), indent=1, sort_keys=True)
     import writeup
     writeup.main()
@@ -88,14 +90,14 @@ def main():
     metadata.main()
     cut_zip()
     print("built: %d files in target/, %d in golden/" % (len(os.listdir(TARGET)), len(os.listdir(GOLDEN))))
-    return world
+    return built
 
 
 def cut_zip():
     zp = os.path.join(TASK, "target.zip")
     with zipfile.ZipFile(zp, "w", zipfile.ZIP_DEFLATED) as z:
         for n in sorted(os.listdir(TARGET)):
-            zi = zipfile.ZipInfo(n, date_time=(2026, 10, 19, 9, 0, 0))
+            zi = zipfile.ZipInfo(n, date_time=(2026, 10, 16, 9, 0, 0))
             zi.compress_type = zipfile.ZIP_DEFLATED
             zi.external_attr = 0o644 << 16
             z.writestr(zi, open(os.path.join(TARGET, n), "rb").read())
@@ -103,6 +105,6 @@ def cut_zip():
 
 if __name__ == "__main__":
     if len(sys.argv) > 1 and sys.argv[1] == "pack":
-        pack()
+        pack(with_docs="nodocs" not in sys.argv)
     else:
         main()

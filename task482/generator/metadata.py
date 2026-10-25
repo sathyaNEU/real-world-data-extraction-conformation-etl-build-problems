@@ -8,22 +8,31 @@ T = os.path.join(TASK, "target")
 SYN = " (fictional, synthetic records)"
 LIC = "CC0-1.0 (synthetic, generated for this task)"
 SOURCES = {
-    "kettle_and_pine_remittance_report_2025-07_2026-09.csv": ("Kettle & Pine, Lake Protection Fee remittance report", "2026-10-09"),
-    "edmr_dmr_export_quillmere_basin_2025-01_2026-09.csv": ("State electronic discharge monitoring report system, export for five basin permits", "2026-10-16"),
-    "edmr_parameter_codes.csv": ("State electronic discharge monitoring report system, code lists", "2024-03-01"),
-    "lake_protection_fee_ordinance.pdf": ("Quillmere Lake Basin Joint Powers Board, Lake Protection Fee ordinance", "2025-06-12"),
-    "lake_protection_fee_returns_2025-07_2026-09.csv": ("Quillmere Lake Basin Fee Office, returns extract", "2026-10-16"),
-    "lake_protection_fee_returns_field_list.txt": ("Quillmere Lake Basin Fee Office, returns extract field list", "2026-10-16"),
-    "lakeward_stays_remittance_detail_2025-07_2026-09.csv": ("Lakeward Stays, Lake Protection Fee remittance detail", "2026-10-08"),
-    "narrows_joint_member_meters_2025_2026.csv": ("Narrows Joint Wastewater Board, member meter reads", "2026-10-02"),
-    "quillmere_basin_wastewater_facilities.pdf": ("Quillmere Lake Protection District, wastewater facilities fact sheet", "2026-03-17"),
-    "quillmere_county_population_estimates_2024_2026.csv": ("Office of the State Demographer, city and township estimates", "2026-10-15"),
-    "quillmere_county_traffic_counts_2024_2026.csv": ("Quillmere County Highway Department, permanent count stations", "2026-10-05"),
-    "ruddmere_pinehold_ponds_operating_reports_2025_2026.xlsx": ("Northwoods Utility Services, pond systems' monthly operating reports", "2026-10-09"),
-    "seasonal_communities_aid_act.pdf": ("Seasonal Communities Aid Act, unofficial text", "2025-11-04"),
-    "sorrelton_coop_station_daily_2025_2026.csv": ("Cooperative observer station at Sorrelton, daily observations", "2026-10-01"),
+    "mlh_tcoc_claims_2025-01_2026-09.csv": ("Merrinlake Health Plan, value-based partner claims extract", "2026-10-07"),
+    "mlh_eligibility_2025_2026.csv": ("Merrinlake Health Plan, partner eligibility extract", "2026-10-07"),
+    "mlh_attribution_runs_py2025_py2026.csv": ("Merrinlake Health Plan, attribution runs", "2026-10-07"),
+    "mlh_care_coordination_remittance_2026.csv": ("Merrinlake Health Plan, care coordination remittance detail", "2026-10-16"),
+    "KBP_CLAIMS_LPN_20261009.txt": ("Kesselcrest Benefit Partners, partner claims extract", "2026-10-09"),
+    "KBP_ELIG_LPN_20261009.txt": ("Kesselcrest Benefit Partners, partner eligibility extract", "2026-10-09"),
+    "KBP_ATTRIBUTION_PY2025F_PY2026R10.xlsx": ("Kesselcrest Benefit Partners, value-based partner attribution", "2026-10-06"),
+    "KBP_CCF_REMIT_2026.xlsx": ("Kesselcrest Benefit Partners, care coordination remittances", "2026-10-14"),
+    "pmh_partner_claims_2026-10-12.json": ("Pemberglen Mutual Health, value-based partner claims", "2026-10-12"),
+    "pmh_members_2026-10-12.csv": ("Pemberglen Mutual Health, partner member coverage", "2026-10-12"),
+    "pmh_attribution_py2025_py2026.csv": ("Pemberglen Mutual Health, attribution runs", "2026-10-12"),
+    "pmh_ccf_payments_2026.csv": ("Pemberglen Mutual Health, care coordination payments", "2026-10-16"),
+    "lpn_primary_care_roster_2026-10.xlsx": ("Larrowbrook Physician Network, credentialing, primary care roster", "2026-10-01"),
+    "lpn_master_patient_index.csv": ("Larrowbrook Physician Network, master patient index extract", "2026-10-13"),
+    "payer_em_fee_schedules_2026.xlsx": ("Larrowbrook Physician Network, managed care contracting, payer fee schedule excerpts", "2026-01-12"),
+    "qualifying_primary_care_services.csv": ("Larrowbrook Physician Network, Performance Standard Appendix A", "2025-12-11"),
+    "payer_completion_factors_2026-09.csv": ("The three payers' completion factors, Performance Standard Appendix C", "2026-10-12"),
+    "lpn_performance_standard_2026.pdf": ("Larrowbrook Physician Network, Performance Standard for Commercial Members", "2025-12-16"),
+    "lpn_board_resolution_2026-07.pdf": ("Larrowbrook Physician Network, Board Resolution 2026-11", "2026-07-24"),
+    "payer_settlement_statements_py2025.pdf": ("The three payers' performance year 2025 shared savings statements", "2026-06-12"),
+    "lpn_payer_feed_field_guide.txt": ("Larrowbrook Physician Network, payer performance analytics, feed field guide", "2026-10-13"),
+    "kbp_medicare_advantage_attribution_2026.xlsx": ("Kesselcrest Benefit Partners, Medicare Advantage provider attribution", "2026-07-16"),
+    "lpn_quality_composite_2025.csv": ("The three payers' 2025 quality measure results for the network's practices", "2026-05-29"),
 }
-DISTRACTORS = ["target/quillmere_county_traffic_counts_2024_2026.csv", "target/sorrelton_coop_station_daily_2025_2026.csv"]
+DISTRACTORS = ["target/kbp_medicare_advantage_attribution_2026.xlsx", "target/lpn_quality_composite_2025.csv"]
 
 
 def main():
@@ -34,12 +43,11 @@ def main():
         if n.endswith((".csv", ".txt")):
             rows = sum(1 for _ in open(os.path.join(T, n), "rb")) - (1 if n.endswith(".csv") else 0)
         files.append(dict(file=n, source=src + SYN, date=date, license=LIC, rows=rows))
-    meta = dict(task="task482", title="Seasonal Communities Aid certification, 2027",
-                setting="A fictional lake basin of eight cities in Minnesota: the state demographer's office, the "
-                        "aid statute, the basin's fee office, sanitary utilities, contract operator and two booking "
-                        "platforms are fictional, and every record is synthetic.", as_of="2026-10-19",
-                deliverables=["seasonal_communities_aid_2027_certification.xlsx",
-                              "busiest_month_population_2026.png"],
+    meta = dict(task="task482", title="Two-sided risk track elections, 2027",
+                setting="A fictional clinically integrated network of thirteen independent primary care practices in "
+                        "Wisconsin and its three commercial payers: the network, the practices, the payers and the "
+                        "people are fictional, and every record is synthetic.", as_of="2026-10-16",
+                deliverables=["two_sided_track_elections_2027.xlsx", "practice_cost_vs_benchmark_2026.png"],
                 distractor_files=DISTRACTORS, files=files)
     assert set(SOURCES) == set(os.listdir(T)), set(SOURCES) ^ set(os.listdir(T))
     json.dump(meta, open(os.path.join(TASK, "metadata.json"), "w"), indent=1)

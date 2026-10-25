@@ -4,7 +4,20 @@ banner. Every substitution keeps byte lengths where the format needs it."""
 import re
 import zipfile
 
-COMPANY = "Selwick Basin Clean Air Agency"
+COMPANY = "Larrowbrook Physician Network"
+# each office file's owner and saved stamps in the fiction (UTC)
+OWNERS = {
+    "kbp_attr": dict(creator="KBP Value-Based Reporting", last_by="KBP Value-Based Reporting", created="2026-10-05T21:14:00Z",
+                     modified="2026-10-06T13:02:00Z", company="Kesselcrest Benefit Partners"),
+    "kbp_ccf": dict(creator="KBP Provider Payments", last_by="KBP Provider Payments", created="2026-01-14T15:40:00Z",
+                    modified="2026-10-14T16:22:00Z", company="Kesselcrest Benefit Partners"),
+    "ma": dict(creator="KBP Medicare Partner Reporting", last_by="KBP Medicare Partner Reporting", created="2026-07-15T12:05:00Z",
+               modified="2026-07-16T14:31:00Z", company="Kesselcrest Benefit Partners"),
+    "roster": dict(creator="LPN Credentialing", last_by="LPN Credentialing", created="2024-12-02T15:12:00Z",
+                   modified="2026-10-01T19:47:00Z"),
+    "fees": dict(creator="LPN Managed Care Contracting", last_by="LPN Managed Care Contracting", created="2026-01-08T16:20:00Z",
+                 modified="2026-01-12T18:03:00Z"),
+}
 
 
 def _x(s):

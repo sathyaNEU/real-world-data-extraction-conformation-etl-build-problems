@@ -4,12 +4,15 @@ import os
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 TASK = os.path.dirname(HERE)
-QN = {1: "Q1 (July to September 2025)", 2: "Q2 (October to December 2025)", 3: "Q3 (January to March 2026)",
-      4: "Q4 (April to June 2026)"}
+WORDS = {9: "nine", 10: "ten", 8: "eight", 11: "eleven", 3: "three", 4: "four", 12: "twelve"}
 
 
 def c(n):
     return format(n, ",")
+
+
+def usd(x):
+    return "USD {:,.2f}".format(x)
 
 
 def joined(xs):
@@ -17,79 +20,81 @@ def joined(xs):
     return ", ".join(xs[:-1]) + " and " + xs[-1] if len(xs) > 1 else xs[0]
 
 
+def short(k):
+    return k.split()[0]
+
+
 def main():
     f = json.load(open(os.path.join(HERE, "figures.json")))
-    C = f["cities"]
-    order = f["order"]
-    q = f["call"]["qualify"]
-    no = [n for n in order if n not in q]
-    s = f["steps"]
+    P, order, s, k_ = f["practices"], f["order"], f["steps"], f["constants"]
+    enter, stay = f["call"]["enter"], f["call"]["stay"]
+    late = [k for k in enter if k not in s["default_enter"]]
+    pooled_extra = [k for k in s["pooled_enter"] if k not in enter]
     out = ["## Tags", "",
-           "**Domain:** Survey Research & Official Statistics, census, register and administrative data quality (a state "
-           "demographer's 2026 peak-season populations for the eight cities of a lake basin under a seasonal aid "
-           "statute, conformed from its resident estimates, seven treatment plants' operating reports in two "
-           "layouts and a joint plant's member meters, the basin's lodging fee returns and two booking platforms' "
-           "remittance files).",
+           "**Domain:** Healthcare Delivery & Health Economics, payment, claims and health plan analytics (a clinically "
+           "integrated network's 2027 two-sided risk elections for its thirteen primary care practices, conformed from "
+           "three commercial payers' claim, coverage and attribution feeds in three layouts, the network's clinician "
+           "roster and master patient index, its performance standard and the payers' care coordination remittances).",
            "**Analytical objective:** Data Extraction & Conformation (ETL).", "",
            "## 1. Final Recommendation", "",
-           "**%s qualify for 2027 Seasonal Communities Aid, USD %s each; %s do not.**" % (
-               joined(q), c(f["call"]["share"]), joined(no)),
-           "Each of the %d carried at least three times its residents on an average day of its busiest month, counted "
-           "by the load its sewer delivered to its plant divided by the load each resident carries in the winter "
-           "months. Not %s alone: residents plus the paid stays the returns and platforms record put only those two "
-           "over, because the owners in their cottages and the residents' guests stay where no stay is recorded." % (
-               s["qualify_n"], joined(s["records_qualify"])), "",
+           "**Enter %s in the 2027 two-sided track and keep %s one-sided.**" % (
+               joined([short(k) for k in enter]), joined([short(k) for k in stay])),
+           "On the payers' final 2026 attribution each of the %s comes in %.1f to %.1f per cent under its threshold, its "
+           "October interim measure carried to the year by its own 2025 run-out at the same cut. Not %s alone, the "
+           "interim measure taken as it stands: the October runs attribute only the members whose qualifying visit has "
+           "happened, and the year adds the members who visit late, with a whole year of member months and a fraction of "
+           "the cost. Not %s as well, one pooled network run-out of %.3f: their members come early, or cost what the "
+           "practice's other members cost." % (
+               WORDS[len(enter)], s["under_min"], s["under_max"], joined([short(k) for k in s["default_enter"]]),
+               joined([short(k) for k in pooled_extra]), s["pooled_runout"]), "",
            "## 2. Critical Components", "",
-           "1. Average population present in the busiest month of the measurement year: %s." % "; ".join(
-               "%s **%s** (%s)" % (n, c(C[n]["present"]), C[n]["busiest"]) for n in order),
-           "2. Three times the 1 July 2026 resident population: %s." % "; ".join(
-               "%s **%s**" % (n, c(C[n]["three_x"])) for n in order), "",
+           "1. 2025 network measure on the payers' final 2025 runs, USD per member month: %s." % "; ".join(
+               "%s **%s**" % (short(k), "{:,.2f}".format(P[k]["f2025"])) for k in order),
+           "2. 2026 threshold, 98 per cent of the benchmark, the 2025 measure to the cent times %s to the cent (standard, "
+           "section 3.4): %s." % (
+               k_["trend"], "; ".join("%s **%s**" % (short(k), "{:,.2f}".format(P[k]["threshold"])) for k in order)), "",
            "## 3. Step-by-Step Solution", "",
-           "1. Took each city's 1 July 2026 resident population from quillmere_county_population_estimates_2024_2026.csv "
-           "(Pinehold on its 2025 boundary): %s." % "; ".join("%s %s" % (n, c(C[n]["residents"])) for n in order),
-           "2. Built each plant's monthly influent BOD load, the average daily flow in MGD times the BOD in mg/L times "
-           "8.34, from the e-reporting export (the latest accepted submission for each period) and the pond systems' "
-           "operating reports, giving Esker Narrows and Hollin Bay the Narrows joint plant's BOD at each city's "
-           "member-meter flow.",
-           "3. Divided each city's January to April 2026 load by its residents plus the paid guests the fee returns "
-           "and both platforms' stays put in town on an average day of those months: the load each person carries, "
-           "%s lb of BOD a day in every city." % f["steps"]["lpp"],
-           "4. Divided each month's load from October 2025 to September 2026 by that load per person to get the "
-           "average population present, took the highest month and compared it with three times residents: %s "
-           "qualify, the USD %s split equally." % (joined(q), c(f["call"]["appropriation"])),
-           "5. For the fee, took each return for its period (an amended return replacing the earlier one, a "
-           "supplemental return added to it) and each platform stay's guests on each night falling in the quarter at "
-           "the rate in force that night, counting Kettle & Pine's nights back from the departure date its reservation "
-           "reference carries (R and the departure as YYMMDD; its reporting period is the month after that date, and "
-           "the fee it remitted on the stays across 1 January 2026 matches only that reading).",
-           "6. For phosphorus, summed each month's average daily effluent flow (MGD) times total phosphorus (mg/L) times "
-           "8.34 times the days of the month, the e-reporting plants on their latest accepted submission (the "
-           "revisions returned for correction after acceptance left out) and the pond systems' flow read as the "
-           "month's average, as ponds that hold the year's wastewater must: so read they released %d per cent or more "
-           "of their 2025 inflow, against %d per cent or less at the days discharged." % (
-               s["pond_release_month"], s["pond_release_days"]),
+           "1. Conformed the three payers' claims at their current version (Merrinlake's voided originals out, "
+           "Kesselcrest's adjusted lines out and its cents in dollars, Pemberglen's latest version), member months from "
+           "the coverage files, and every run's TIN to its practice through lpn_primary_care_roster_2026-10.xlsx.",
+           "2. Took each practice's 2025 network measure on the payers' final 2025 runs (standard, section 3: claims "
+           "first paid by 31 March 2026, each member's year capped at USD %s) and its threshold at 98 per cent of its "
+           "benchmark, the measure to the cent times %s to the cent (section 3.4)." % (c(k_["cap"]), k_["trend"]),
+           "3. Computed each practice's interim measure on the October runs (section 4.1, the factors in "
+           "payer_completion_factors_2026-09.csv): taken as the 2026 figure it enters %s alone." % joined(
+               [short(k) for k in s["default_enter"]]),
+           "4. Re-ran the standard's attribution (section 2) on the 2025 professional claims at the October run's cut, "
+           "qualifying services incurred by 31 August 2025 and paid by 30 September 2025, and took each practice's 2025 "
+           "run-out, its 2025 measure over the January to August 2025 measure of the members so attributed: %.3f to "
+           "%.3f." % (s["runout_min"], s["runout_max"]),
+           "5. Carried each practice's interim measure by its own run-out: %s come in under their thresholds." % (
+               WORDS[len(enter)]),
+           "6. For the level 5 share, read each visit's paid level from its allowed amount against the payer's 2026 rate "
+           "for its setting in payer_em_fee_schedules_2026.xlsx: Kesselcrest's reviewed 99215 visits allowed at its "
+           "99214 rate are level 4, and Merrinlake's modifier-25 visits with a same-day minor procedure by the same "
+           "clinician, allowed at half the rate, keep their level.",
+           "7. For the fees, summed the three remittance files by the month each line covers: Pemberglen's by the month "
+           "in its payment reference (PMH-CCF-TIN-YYYYMM-sequence), not its posting period, and Kesselcrest's only at "
+           "the standard's USD %.2f (its USD %.2f lines are its Medicare Advantage fees)." % (k_["kbp_fee"], k_["ma_fee"]),
+           "8. Entered the %s practices under their thresholds in the two-sided track for 2027." % WORDS[len(enter)],
            "", "## 4. Deliverable Answers", "",
-           "### seasonal_communities_aid_2027_certification.xlsx", "",
-           "1. Certification, one row per city (busiest month, average population present to the nearest thousand, "
-           "whether at least three times residents, aid):"]
-    for n in order:
-        x = C[n]
-        out.append("   - %s: %s, %s, %s, USD %s" % (n, x["busiest"], c(x["present"]), "yes" if x["qualifies"] else "no",
-                                                    c(x["aid"])))
-    out.append("2. Lake Protection Fee generated by stays in fiscal 2026, by city and quarter, whole dollars:")
-    for n in order:
-        a = f["ask_a"][n]
-        out.append("   - %s: Q1 USD %s, Q2 USD %s, Q3 USD %s, Q4 USD %s" % (n, c(a["q1"]), c(a["q2"]), c(a["q3"]),
-                                                                          c(a["q4"])))
-    out.append("3. Total phosphorus discharged in 2025, pounds, by half-year:")
-    for n in f["plants"]:
-        b = f["ask_b"][n]
-        out.append("   - %s: January to June %.1f, July to December %.1f" % (
-            "Narrows joint plant" if n == "Narrows" else n, b["h1"], b["h2"]))
-    out += ["", "### busiest_month_population_2026.png", "",
-            "1. Horizontal bar chart of each city's average population present in its busiest month, with a "
-            "marker at three times its residents and each city labelled as qualifying or not, the %d qualifying "
-            "cities first." % s["qualify_n"]]
+           "### two_sided_track_elections_2027.xlsx", "",
+           "1. Elections, one row per practice (2026 benchmark, threshold, election):"]
+    for k in order:
+        x = P[k]
+        out.append("   - %s: benchmark %s, threshold %s, %s" % (k, usd(x["benchmark"]), usd(x["threshold"]),
+                                                               "two-sided" if x["enters"] else "one-sided"))
+    out.append("2. Share of established-patient visits January to August 2026 the payers paid at level 5, per cent:")
+    for k in order:
+        out.append("   - %s: %.1f" % (k, f["ask_a"][k]))
+    out.append("3. Care coordination fees paid under the standard, by coverage quarter, USD:")
+    for k in order:
+        out.append("   - %s: Q1 %s, Q2 %s, Q3 %s" % (k, usd(f["ask_b"]["%s|Q1" % k]), usd(f["ask_b"]["%s|Q2" % k]),
+                                                      usd(f["ask_b"]["%s|Q3" % k])))
+    out += ["", "### practice_cost_vs_benchmark_2026.png", "",
+            "1. Horizontal bar chart of each practice's projected 2026 network measure as the per cent above or below "
+            "its threshold, the %s entering practices shaded apart, with each practice's October interim measure "
+            "marked beside its bar." % WORDS[len(enter)]]
     with open(os.path.join(TASK, "submission.md"), "w") as fh:
         fh.write("\n".join(out) + "\n")
 

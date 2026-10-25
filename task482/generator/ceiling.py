@@ -1,76 +1,51 @@
-"""The ask layer's pair ceiling on the cut pack (supplemental-stumping Part 0 and 1.1).
+"""The ask layer's pair ceiling on the cut pack (supplemental-stumping Part 0 and 1.1): the cracker lands the call, runs
+the hygiene battery and executes every filed rule it points at; the mirror stops on the default rung. Each is scored
+figure by figure against the golden at the asks' rounding, with the partial handlings measured beside them.
 
     python3 task482/generator/ceiling.py
-
-The cracker lands the call, runs the hygiene battery and executes every filed rule: it applies amended and
-supplemental returns as the ordinance says, splits each stay over its nights at the rate in force each night, and reads
-the date in Kettle & Pine's reservation reference as each stay's arrival, the one date that file carries beside its
-reporting period; it multiplies the pond systems' effluent flow by the days they discharged and every other plant's
-by the days of the month, and keeps each e-reporting period's latest submission. The mirror stops at the default rung (residents plus the recorded paid stays) and does
-everything else as the cracker does. Two sensitivity rows price a cracker that also finds one of the devices. Each
-graded ask figure is scored against figures.json at the prompt's rounding."""
-import json
+"""
 import os
 import sys
 
 HERE = os.path.dirname(os.path.abspath(__file__))
-TASK = os.path.dirname(HERE)
+T = os.path.join(os.path.dirname(HERE), "target")
 sys.path.insert(0, HERE)
 import golden as G  # noqa: E402
 
 
-def keep_a(figs, a):
-    return sum(a[(n, q)] == figs["ask_a"][n]["q%d" % q] for n in G.TOWNS for q in (1, 2, 3, 4)), 32
-
-
-def keep_b(figs, b):
-    return sum(abs(b[(n, h)] - figs["ask_b"][n]["h%d" % h]) < 1e-9 for n in G.PLANTS_B for h in (1, 2)), 14
-
-
-def pair(ka, kb, total):
-    lc = (ka + kb) / float(total)
-    C = 38 + 7 + 55 * lc
-    S = 5 + 7 + 55 * lc
-    return lc, C, S, (C + S) / 2
+def keep(gold, other, tol):
+    return sum(1 for k, v in gold.items() if k in other and abs(other[k] - v) < tol)
 
 
 def main():
-    p = G.load(os.path.join(TASK, "target"))
-    figs = json.load(open(os.path.join(HERE, "figures.json")))
-    gold = G.golden(p)
-    rec = G.records_route(p)
-    assert [n for n in G.TOWNS if gold[n]["qualifies"]] == figs["call"]["qualify"]
-    assert [n for n in G.TOWNS if rec[n]["qualifies"]] != figs["call"]["qualify"]
-    ga, ta = keep_a(figs, G.ask_a(p))
-    gb, tb = keep_b(figs, G.ask_b(p))
-    assert ga == ta and gb == tb, "the golden handling must reproduce every ask figure"
-    total = ta + tb
-    ca, _ = keep_a(figs, G.ask_a(p, ck="arrival"))
-    cb, _ = keep_b(figs, G.ask_b(p, pond_days="discharged", edmr="latest"))
-    na, _ = keep_a(figs, G.ask_a(p, ck="period", split_nights=False, returns="latest"))
-    nb, _ = keep_b(figs, G.ask_b(p, edmr="latest"))
-    print("| Ask | Graded figures | Cracker keeps | Mirror keeps | Naive handling keeps | Cracker |")
-    print("|---|---|---|---|---|---|")
-    for name, t, c, nv in (("A fee by city and quarter of fiscal 2026, whole dollars", ta, ca, na),
-                           ("B total phosphorus by plant and half of 2025, one decimal", tb, cb, nb)):
-        print("| %s | %d | %d | %d | %d | %s |" % (name, t, c, c, nv, "misses" if c == 0 else "keeps %d" % c))
-    lc, C, S, P = pair(ca, cb, total)
-    print()
-    print("cracker keeps %.1f per cent of ask weight (scores %.1f with the call); mirror %.1f per cent (scores %.1f); "
-          "naive %.1f per cent" % (100 * lc, C, 100 * lc, S, 100 * (na + nb) / float(total)))
-    print("Pair ceiling: %.1f" % P)
-    print("Mirror leakage: %.1f per cent of ask weight" % (100 * lc))
-    print()
-    print("Sensitivity (a cracker that also finds one device):")
-    for label, ka, kb in (
-            ("reads Kettle & Pine's reference date as the departure (the fee across the rate change says so)",
-             keep_a(figs, G.ask_a(p))[0], cb),
-            ("takes the ponds' flow as the month's average and the latest accepted submission",
-             ca, keep_b(figs, G.ask_b(p))[0])):
-        lc_, C_, S_, P_ = pair(ka, kb, total)
-        print("  %s: keeps %d of %d, pair %.1f" % (label, ka + kb, total, P_))
-    return 0
+    p = G.load(T)
+    A, B = G.ask_a(p), G.ask_b(p)
+    a_code = keep(A, G.ask_a(p, rule="code"), 0.05)
+    a_rate = keep(A, G.ask_a(p, rule="rate"), 0.05)
+    b_crack = keep(B, G.ask_b(p, pmh_by_period=True, keep_other_programs=True), 0.005)
+    b_ref = keep(B, G.ask_b(p, keep_other_programs=True), 0.005)
+    b_fee = keep(B, G.ask_b(p, pmh_by_period=True), 0.005)
+    n = len(A) + len(B)
+    print("ask A, level 5 paid share by practice: %d figures" % len(A))
+    print("  the code on the claim (the cracker)                          keeps %2d" % a_code)
+    print("  the full level-5 rate only                                   keeps %2d" % a_rate)
+    print("ask B, care coordination fees by practice and coverage quarter: %d figures" % len(B))
+    print("  every remittance line, Pemberglen by its period (the cracker) keeps %2d" % b_crack)
+    print("  Pemberglen's coverage month from its reference, every line   keeps %2d" % b_ref)
+    print("  the standard's fees only, Pemberglen by its period           keeps %2d" % b_fee)
+    crack = a_code + b_crack
+    mirror = a_code + b_crack           # the mirror reads both asks as the cracker does
+    lc, lm = crack / n, mirror / n
+    c = 38 + 7 + 55 * lc
+    s = 5 + 7 + 55 * lm
+    print("cracker keeps %d of %d ask figures (%.1f per cent), scores %.1f with the call" % (crack, n, 100 * lc, c))
+    print("mirror keeps %d of %d (%.1f per cent), scores %.1f off it" % (mirror, n, 100 * lm, s))
+    best_partial = max(a_rate, a_code) + max(b_ref, b_fee, b_crack)
+    print("the best single-device handling keeps %d of %d (%.1f per cent)" % (best_partial, n, 100 * best_partial / n))
+    print("Pair ceiling: %.1f" % ((c + s) / 2))
+    print("Mirror leakage: %.1f per cent of ask weight" % (100 * lm))
+    return dict(crack=crack, mirror=mirror, n=n, pair=(c + s) / 2, partial=best_partial)
 
 
 if __name__ == "__main__":
-    sys.exit(main())
+    main()
