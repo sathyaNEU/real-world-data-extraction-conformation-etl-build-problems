@@ -544,3 +544,28 @@ had to be withdrawn.
 components name the measured answer, and define that mechanically: a component is distinguishing when every
 sibling at its position is a member of the answer. Then read the subject's own account of why it chose its
 method, because a subject that was handed the answer usually says so.
+
+## H36. A tolerant comparison placed ahead of the exact one
+
+**The defect.** A comparison routine grows a tolerant branch for a real case (a prose answer that should
+match when the responder spells it with a qualifier) and the branch is written as the first test, keyed on
+type rather than on content. Everything the tolerant branch can parse then takes it, including values the
+exact branch below was written for, and the routine reports agreement where there is none. It fails open, so
+nothing downstream notices.
+
+**What it cost.** A scoring script matched the first three words as a substring whenever either side was
+string-typed, before any numeric compare. Generators file a rounded share or rate as a string to keep its
+trailing zeros, so a golden `"0"` matched a reader's 90, 50 and 40 alike, because `"0"` occurs in each. One
+build's seven brand shares scored six hits where one was right, and five builds' ask-leak figures were
+reported to the author inflated before the re-score.
+
+**The second half of the same defect.** The repair was to put the exact compare first, and that over-corrected:
+a one-member golden list stopped matching a reader that answered the member itself, which turned a landed
+call into a held one on another build. A tolerant branch exists for a reason, so narrowing it needs its own
+cases.
+
+**The check.** Order comparison branches exact first, tolerant last, and gate each tolerant branch on the
+content it was written for rather than on a type that a stricter case also satisfies. Then write the table
+of cases out and run it: both directions of every tolerance (a one-member set against its member, a set in
+another order, a string-typed figure against a number, a prose name with a qualifier) with the wanted verdict
+beside each, as a test the script keeps.

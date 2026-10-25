@@ -757,8 +757,8 @@ a strong analyst applies the field's own method.** A build that puts the field's
 ladder has written its golden as the opponent's first move, and it lands every time while passing every
 other gate.
 
-Measured on one lane, eleven builds read by an isolated reader holding only the pack, the prompt and a key
-list with the answer stripped out. **Every one of the eight scoreable builds had the reader land the call**,
+Measured on one lane, thirteen builds read by an isolated reader holding only the pack, the prompt and a key
+list with the answer stripped out. **Eleven of the twelve scoreable builds had the reader land the call**,
 and in each the step the design called decisive was the step the domain's practitioner takes first:
 - matching the exposure denominator to the mechanism that produces the event, the reader writing that losses
   happen when one aircraft climbs through another's level so crossings and not flight hours are the

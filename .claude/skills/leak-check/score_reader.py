@@ -68,8 +68,13 @@ CALL_INPUT_WORDS = ("recorded", "payments", "population", "denominator", "window
 
 
 def decimals(x):
-    s = repr(x)
-    return len(s.split(".")[1]) if "." in s and "e" not in s.lower() else 0
+    # A figure filed as a string carries its own rounding ("0.030" is three places), and repr() of a
+    # string wraps it in quotes, so read the digits from the text itself and not from repr.
+    s = x.strip() if isinstance(x, str) else repr(x)
+    if "." not in s or "e" in s.lower():
+        return 0
+    tail = "".join(c for c in s.split(".")[-1] if c.isdigit())
+    return len(tail)
 
 
 def walk(value, key):
@@ -101,26 +106,52 @@ def walk(value, key):
 
 
 def same(gold, got, tol_pct):
+    """Compare numerically whenever both sides are numbers, and only then as text.
+
+    The text branch exists so a prose call matches when the reader spells it with a qualifier
+    ("Tallis Petroleum" against "Tallis Petroleum (TAL)"): it matches the first three words as a
+    substring either way round. Running it FIRST, on anything string-typed, scored a generator's
+    string-typed figures as text, so a golden "0" matched a reader's 90, 50 and 40 alike because "0"
+    occurs in each, and one build's seven brand shares scored six hits where only one was right.
+    Many generators file a rounded share or rate as a string to hold its trailing zeros, so this
+    silently inflated the hit count on every build that does. Numbers first.
+    """
+    if isinstance(gold, bool) or isinstance(got, bool):
+        return gold == got
+    if isinstance(gold, (list, tuple)) or isinstance(got, (list, tuple)):
+        # A one-member set and that member are the same answer: a reader asked which plants go over
+        # amber and replying "Pfeilbrunn" has answered ["Pfeilbrunn"], and scoring that a miss is how
+        # a strict comparison turns a landed call into a held one. And a set of named members has no
+        # order, so match them as a set; only a list of records keeps its position.
+        g_list = list(gold) if isinstance(gold, (list, tuple)) else [gold]
+        r_list = list(got) if isinstance(got, (list, tuple)) else [got]
+        if len(g_list) != len(r_list):
+            return False
+        if all(not isinstance(x, (dict, list, tuple)) for x in g_list + r_list):
+            rest = list(r_list)
+            for a in g_list:
+                found = next((b for b in rest if same(a, b, tol_pct)), None)
+                if found is None:
+                    return False
+                rest.remove(found)
+            return True
+        return all(same(a, b, tol_pct) for a, b in zip(g_list, r_list))
+    try:
+        g, r = float(gold), float(got)
+    except (TypeError, ValueError):
+        pass
+    else:
+        if tol_pct:
+            return abs(g - r) <= abs(g) * tol_pct / 100.0
+        d = max(decimals(gold), decimals(got))
+        return round(g, d) == round(r, d)
     if isinstance(gold, str) or isinstance(got, str):
         g, r = str(gold).strip().lower(), str(got).strip().lower()
         if not g or not r:
             return g == r
         head = " ".join(g.split()[:3])
         return head in r or " ".join(r.split()[:3]) in g
-    if isinstance(gold, (list, tuple)):
-        if not isinstance(got, (list, tuple)) or len(gold) != len(got):
-            return False
-        return all(same(a, b, tol_pct) for a, b in zip(gold, got))
-    if isinstance(gold, bool) or isinstance(got, bool):
-        return gold == got
-    try:
-        g, r = float(gold), float(got)
-    except (TypeError, ValueError):
-        return gold == got
-    if tol_pct:
-        return abs(g - r) <= abs(g) * tol_pct / 100.0
-    d = decimals(gold)
-    return round(g, d) == round(r, d)
+    return gold == got
 
 
 def emit_keys(gold, call_keys, quiet=False):

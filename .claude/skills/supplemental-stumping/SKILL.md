@@ -55,13 +55,19 @@ figure, and refuses one whose unscoreable keys outnumber its scored ones, becaus
 not the measurement. **Brief the reader with the flat `figures.json` key paths to fill**, never the prompt
 alone, and read the printed exclusions against the submission's blocks before believing a share.
 
-**On the builds where the reader did answer the key list, the measured leak is not high, it is total:
-100.0, 100.0 and 86.7 per cent.** Two of those three were builds whose call the same reader missed, so the
-devices had every chance to bite and bit nothing. Read together with Part 3's hygiene-battery record, which
+**Measured across a whole lane, thirteen builds read by one blind reader each and scored: the ask leak runs
+42.9, 46.4, 55.6, 57.6, 68.4, 74.0, 86.4, 86.7, 92.5, 93.3, 93.6, 97.7 and 100.0 per cent, a median of 86.4
+against this part's target of about a fifth.** Three of those are builds whose call the same reader missed,
+so the devices had every chance to bite and bit nothing. Read together with Part 3's hygiene-battery record, which
 is the same result from the other side, the law is: **an ask figure a competent reader computes straight
-from the pack has no device on its path at all.** A hundred per cent is the measured default for an ask
-built out of the pack's own quantities, not a bad outcome among good ones, and it is not repaired by
-re-wording the ask or by adding a device the book already lists as executed. The device has to sit where
+from the pack has no device on its path at all.** Something near the ceiling is the measured default for
+an ask built out of the pack's own quantities, not a bad outcome among good ones, and it is not repaired by
+re-wording the ask or by adding a device the book already lists as executed. **The floor of that range is
+where to look for what works:** the two builds at 42.9 and 46.4 per cent are the lane's best ask layers by
+a wide margin, and both of them route the ask through a reconstruction the reader has to get right before
+any figure appears (an annex of per-quarter operational counts behind a recording-completeness correction,
+and a per-regulation delay attribution over flights that operated). Read those two before designing a new
+ask layer. The device has to sit where
 the reader's own route runs, which is why 1.1's cracker sheet is drawn from the cracker's path and not from
 the ask list.
 
