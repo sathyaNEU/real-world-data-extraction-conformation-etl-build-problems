@@ -3,7 +3,74 @@
 Architecture 2's world stands, its pack stands and its three supplemental asks stand. Its ladder does not: a
 blind reader holding only the shipped bundle reproduced the call exactly, so the decisive step is re-sited and
 the even spread of a window over its own hours, which was the golden, is now rung 3. The measurement that
-forced it, and every approach this pass abandoned, are in `## Tried and rejected`.
+forced it, and every approach this pass abandoned, are in `## Architecture 3 draw, 2026-10-25
+
+The re-root keeps the world, the pack, the ask layer and the latent-clock mechanism, because all four
+measured sound (the reader missed the call 0 of 7 and kept only 31.7 per cent of the asks, a pair of 29.4
+under the 40 build target), and changes only what is estimated. Card registered 2026-10-25,
+`stump_strategy: informative_censoring` (a new vocabulary value, reason in the card's `notes`),
+`layer2_family: estimand_identification`, nearest driver on file 0.06.
+
+**Pairing.** criminology-justice / crime-incidence-hotspot-analysis, anomaly-detection, shape 07, a ranked
+slate under a cap. Unchanged, because 1.1d makes a cap a demanding frame rather than an illegal one and names
+the escape.
+
+**Data-native sentence.** Four in five of these offences are recorded as an occurrence window rather than a
+time, and the window is bounded by when the keeper last looked and when the keeper first noticed, so its two
+ends cluster at opening, closing and shift-change times that differ by premises type: the hours nobody looks
+at are present in the record only through windows that end at the next look, which makes the window's
+placement informative about the hour inside it.
+
+**Default path (architecture 3).** 1 Keep the five contract classes from the RMS extract at the five
+registered locations. 2 Place each offence by its occurrence window, refusing window start, window end and
+the midpoint because each piles offences onto slots the data does not support. 3 Refuse flat spreading across
+the slots a window crosses, because offending clusters. 4 Refuse a profile built on the exact-time offences
+alone, because those skew to daytime and are not a random sample. 5 Fit the hour-of-week profile by maximum
+likelihood over the interval-censored windows, iterating to the fixed point, each window weighted by the
+current rate estimate. 6 Sum the five classes, average the two seasons, rank the 42 slots, take the eight the
+cap allows. `Ends on:` a slate in which Thursday 12:00-16:00 and Friday 12:00-16:00 displace two genuine
+late-night slots. `Golden:` the slate the profile gives once each window is weighted by its own keeper type's
+notice distribution.
+
+Steps 2 to 4 are the architecture's own evidence that this default path is the opponent's: a blind reader
+holding only the pack and the prompt wrote all three refusals unprompted and then took step 5.
+
+**Stump sentence.** A competent analyst fits the weekly profile by maximum likelihood over the occurrence
+windows, treating each window as uninformative about the hour inside it, and files the slate in which
+Thursday 12:00-16:00 and Friday 12:00-16:00 displace two genuine late-night slots, because the windows end at
+the keepers' notice times and the fit reads that pile-up as offending.
+
+**The six laws, answered.** This is the first draw made against all of them, so each gets a line.
+- **Test 7, the dedicated organ.** The remedy is each premises type's notice distribution, read off the
+  windows' own endpoints and the premises type the extract already carries. A recorded-crime extract carries
+  the premises type because that is how a force classifies an offence, and a window has endpoints because it
+  is a window, so delete the decisive step and both survive. No organ exists for the step.
+- **1.1b, the rule 1 tension.** The field's own method, an interval-censored latent-clock fit, is written
+  into the default path at step 5 and is not the golden. The decisive step is the recognition that this
+  record violates its precondition.
+- **1.1c, the grouping dichotomy.** The step is not a level of aggregation. Pooled and per-class fits are
+  both wrong here and both at rung 0, because the misspecification is in the censoring mechanism and survives
+  any grouping, which is assertable: the per-class fit must file a slate in the same wrong region as the
+  pooled one.
+- **1.1d, the cap boundary.** The correction moves mass across the whole week, not at the cap. To be asserted
+  in `checks.py` as two separate conditions: the default path's slate differs from the golden's in three or
+  more members, and the eighth-to-ninth margin exceeds the spread of every licensed estimator variant.
+- **Ask layer 1.0 and 1.0b.** The ask layer is carried over unchanged and measured at 31.7 per cent, the
+  lane's best, and it already satisfies both: its figures need a reconstruction (a weekly profile over
+  censored windows, a per-regulation style attribution) and the reader got 32 of 101.
+- **Closure exhaustion.** The rival here is not another correction of the graded quantity but the
+  uncorrected likelihood, so the four closure moves are not exhausted: the data force the correction through
+  the endpoint clustering, which is `determinism-check` §1's preferred route and needs nothing filed.
+
+**Guard WARN, answered.** `repeat.question_form` on `which`: the decision is a pick of slots under a cap, so
+`which` is the form the decision dictates; `guide-to-prompt` takes the form from the decision and a count,
+gate or amount would misdescribe the call.
+
+**What stage 2 owes.** The readability screen with the decisive row `silent`, the semantic fork table, the
+22-axis closure table, the ladder with the three-or-more-members and variant-spread assertions, the literal
+reader line, and `precut.py` at exit 0. The ask sheet carries over and is re-scored against the new cracker.
+
+## Tried and rejected`.
 
 Architecture 1 (a mobile screening team posted among eight flagged airports, decided by the lanes each
 checkpoint actually opens) was sent back at judge pass 3 on Gate C and Gate G and is spent; its lineage is in

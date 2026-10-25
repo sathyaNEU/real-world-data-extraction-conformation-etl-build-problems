@@ -1,17 +1,17 @@
 {
   "task": "task184",
-  "architecture": "v2",
-  "drawn": "2026-10-14",
+  "architecture": "v3",
+  "drawn": "2026-10-25",
   "slot_note": "re-root after the v1 architecture was sent back at Gate C and Gate G; same number and objective",
   "domain": "criminology-justice",
   "subdomain": "crime-incidence-hotspot-analysis",
-  "niche": "night-time economy hotspot patrol slate off offences the force records as an occurrence window rather than a time, the window being the gap in the target keeper's own routine",
+  "niche": "night-time economy hotspot patrol slate off offences the force records as an occurrence window rather than a time, the window being bounded by the keeper's own last look and first notice, so which hours the record can see at all is set by the keeper's routine",
   "objective": "anomaly-detection",
   "shape": "07",
   "decision_type": "ranked_slate_under_cap",
   "answer_unit": "set_of_items",
-  "answer": "Commission Thursday 20:00 to 00:00, Saturday 00:00 to 04:00, Sunday 00:00 to 04:00, Sunday 20:00 to 00:00, Friday 12:00 to 16:00, Wednesday 20:00 to 00:00, Monday 20:00 to 00:00 and Tuesday 20:00 to 00:00, covering 5,700 covered offences a season (5,705.20 unrounded), with Friday 16:00 to 20:00 the runner-up at 400.",
-  "answer_source": "task184/golden/harbourgate_patrol_slate_2027.pdf and harbourgate_slot_weights.xlsx",
+  "answer": "",
+  "answer_source": "",
   "gap": [
     "population",
     "time"
@@ -25,7 +25,7 @@
   ],
   "gate_g": "method_or_model_selection",
   "calibration_form": "none",
-  "stump_strategy": "other",
+  "stump_strategy": "informative_censoring",
   "decisive_rule_filed": false,
   "official_decoy": false,
   "validated_decoy": false,
@@ -50,10 +50,10 @@
     "org_type": "city community safety partnership",
     "invented_names": [],
     "people": [
-      "Bethan Murray",
-      "Mitchell Webb",
-      "Rosie Kelly",
-      "Joshua Davies"
+      "Annette Begum",
+      "Marian Kent",
+      "Timothy Moran",
+      "Eileen Porter"
     ]
   },
   "deliverables": [
@@ -62,8 +62,8 @@
   ],
   "opening_move": "question-first",
   "question_form": "which",
-  "layer2_family": "estimation_fit",
-  "layer2_pattern": "own:placement-the-windows-settle-against-the-even-spread",
+  "layer2_family": "estimand_identification",
+  "layer2_pattern": "own:informative-occurrence-window",
   "layer1": [
     "offence records whose occurrence time is a window (occurred_from and occurred_to) and whose report time is a third timestamp",
     "two recording systems across the window, the force's legacy incident export to March 2026 and the new records management system after it, with different column names and time formats",
@@ -74,16 +74,16 @@
     "offences recorded under a British Summer Time local clock across two clock changes",
     "an offence class whose counts jump when a national counting rule changed, documented in the extract notes"
   ],
-  "driver": "The decisive quantity is a latent cyclical profile recovered from records that observe each event only as the interval it fell in, where the interval is the gap in the target's own inspection routine and its length varies systematically with the part of the cycle it covers, so the flat reading that spreads each event evenly across its own interval divides the busiest parts of the cycle across the longest intervals and the quietest across the shortest, and only the placement under which the recorded intervals are the likeliest set to have been recorded recovers the profile.",
-  "driver_concrete": "A covered offence is against a target its keeper looks at on a routine, so the record's window is the gap in that routine, and the gap covering a Friday or Saturday night is a weekend closure of 39 to 64 hours against a midweek night's 14 to 16. Spreading each window evenly over its own hours, which is the textbook aoristic weight, writes the quarter's heaviest nights down and its daytime absences up and moves the patrol slate onto Friday afternoon; the hour-of-week clock the record settles puts it back on the evenings and the small hours.",
-  "stump": "The default path spreads each occurrence window evenly over its own hours and commissions Friday 12:00 to 16:00, Thursday 20:00 to 00:00, Friday 00:00 to 04:00, Saturday 00:00 to 04:00, Friday 16:00 to 20:00, Thursday 16:00 to 20:00, Friday 20:00 to 00:00 and Sunday 20:00 to 00:00, filing 3,150 covered offences a season, when its eight meet only 4,250 of the golden's 5,700; the step that lands it there is reading the window as a claim that the offence is equally likely in each of its hours, when the window is the keeper's own closure and the closures covering the heaviest nights are the longest.",
+  "driver": "The decisive quantity is a rate over the positions of a cycle, and each record's position is known only within a window whose placement is set by an observer's own routine rather than by the event, so a likelihood treating the window as uninformative piles mass into the positions just before the routine's notice points, and the obvious fit, however well converged, reorders the cycle wrongly.",
+  "driver_concrete": "Each offence's hour has to be estimated from a window bounded by when the keeper last looked and when the keeper first noticed, and those bounds cluster at opening, closing and shift times by premises type, so the hours nobody looks at are represented only through the windows that end at the next look; the hour-of-week profile has to be fitted against each premises type's own notice distribution, and the uninformative-window fit reorders the week.",
+  "stump": "A competent analyst fits the weekly profile by maximum likelihood over the occurrence windows, treating each window as uninformative about the hour inside it, and files a slate in which Thursday and Friday daytime slots displace two genuine late-night slots, because the windows end at the keepers' notice times and the fit reads that pile-up as offending.",
   "stump_class": "analytical",
-  "analyst_test": "A strong analyst who reads every column correctly, conforms the legacy export to the new records management export, drops the cross-system duplicates, fixes the gazetteer and keeps the contracted classes takes the textbook aoristic weight, spreading each window evenly over its own hours, and files the slate led by Friday 12:00 to 16:00 at 3,150 covered offences a season. Executed on the generator's clean truth in checks.py, which asserts that slate, its figure, and that its eight meet at most 0.80 of the golden's coverage.",
-  "domain_test": "The deciding quantity is the quarter's hour-of-week offence clock for the contracted classes, and the field's own method is aoristic crime analysis read as what it is, an interval-censored observation of a time: the clock the record settles is the one under which the recorded windows are the likeliest set to have been recorded, and the record refutes the flat start at a likelihood ratio of 3,035.2. Swap the nouns for a depot's relief crew and breakdowns and there is no keeper routine, so no window and no closure-length variation, and nothing is left to recover.",
+  "analyst_test": "A strong analyst reads every field correctly, sees that four in five offences carry an occurrence window rather than a time, refuses the window start, end and midpoint and refuses flat spreading, and fits the weekly profile by maximum likelihood over the interval-censored windows to its own fixed point, treating each window as uninformative about the hour inside it; that likelihood piles mass into the hours just before the common notice times, so it files a slate whose Thursday and Friday daytime slots displace two genuine late-night slots.",
+  "domain_test": "The deciding quantity is the offence rate by hour of the week over a recorded-crime series whose occurrence times are interval-censored, which criminology estimates with an interval-censored hazard or a latent-clock fit and judges against the observability of each hour; swap the nouns to megawatt-hours or clinic visits and the task breaks, because neither has a keeper whose routine decides when the event can be noticed, so neither has a window whose placement carries information about the hour inside it.",
   "mechanism_source": "design_note",
   "differentiation": {
-    "task180": "t180 distorts the hourly profile by the instruments' sensitivity following a daily cycle, so small events are missing from the record; here every event is in the record and it is the precision of its time that varies, so the distortion is in where the recorded events are placed, not in which are recorded.",
-    "task464": "task464 converts one instrument's scale to another's by matching the two distributions in a sample measured on both, so its decisive step is a conversion between two measured scales and both scales are observed. Here nothing is measured twice: no covered offence's time is observed at all for four in five of them, and the decisive step recovers an unobserved hour-of-week clock from the overlap of interval-censored windows, with the record's own likelihood refuting every alternative placement (the even spread at 3,035.2, the keeper-seen offences' profile at 13,660.0, the witnessed classes' hours at 3,435.4 and footfall at 7,834.8)."
+    "task184": "architecture 2 made the decisive step a choice of estimation GROUPING, one clock across the five offence classes against one per class, which stumping 1.1c closes from both horns and whose judge failed it on Gate C at z = -4.29; and its step moved only the cap boundary, so its reader got seven of the eight slots (stumping 1.1d). Architecture 3 keeps the world, the pack, the ask layer and the latent-clock mechanism and changes what is estimated: the window's PLACEMENT is informative about the hour inside it, so the naive likelihood is misspecified rather than merely grouped at the wrong level, and the correction reorders the week globally instead of at the cap.",
+    "task464": "the shared axes are the generic ones (a population gap, no pattern, Gate G method selection, a ranked slate under a cap). task464 links two measurement SCALES: part of the population was read on an old instrument, a both-ways sample links the scales, and predicting each unit's new value by regression shrinks the converted spread so the tail past the cut is too thin. Nothing there is censored in time and nothing depends on an observer's routine; here each record's POSITION IN A CYCLE is known only within a window an observer's routine placed, so the correction is to the likelihood's censoring mechanism rather than to an attenuated scale, and the quantity reordered is a weekly profile rather than a tail count."
   },
   "lineage": [
     {
@@ -110,8 +110,14 @@
       "gate_g": "decomposition_attribution",
       "stump_strategy": "causal_design",
       "answer": "Post the mobile screening unit to Eskerford from 15 June to 31 August 2027: it moves 342,200 passengers within the 20-minute standard, against 272,600 at Halloran Bay, and 13 per cent is the smallest whole per cent shortfall in Eskerford's forecast passengers at which another posting would move more."
+    },
+    {
+      "architecture": "v2",
+      "fate": "spent 2026-10-25 on measurement, not on a portal result. Its judge failed Gate C (underspecified_objective) with Gate F strong and Gates G and H passing: one clock per offence class gives seven of the eight slots and a different eighth, totalling 4,866 a season against 5,705, at a likelihood ratio of per-class over pooled of 511.1 on 668 degrees of freedom, z = -4.29, so the data neither reject pooling nor prefer it. A blind reader then fitted per class unasked and filed 5,096.6 with the same two slots swapped, missing all seven call figures and taking 31.7 per cent of the asks (a pair of 29.4, under the 40 target). Closed by stumping 1.1c and 1.1d: a grouping choice is not drawable, and a step that bites only at the cap makes Gate F and Gate C the same margin.",
+      "driver": "The decisive quantity is a latent cyclical profile recovered from records that observe each event only as the interval it fell in, where the interval is the gap in the target's own inspection routine and its length varies systematically with the part of the cycle it covers, so the flat reading that spreads each event evenly across its own interval divides the busiest parts of the cycle across the longest intervals and the quietest across the shortest, and only the placement under which the recorded intervals are the likeliest set to have been recorded recovers the profile.",
+      "stump": "The default path spreads each occurrence window evenly over its own hours and commissions Friday 12:00 to 16:00, Thursday 20:00 to 00:00, Friday 00:00 to 04:00, Saturday 00:00 to 04:00, Friday 16:00 to 20:00, Thursday 16:00 to 20:00, Friday 20:00 to 00:00 and Sunday 20:00 to 00:00, filing 3,150 covered offences a season, when its eight meet only 4,250 of the golden's 5,700; the step that lands it there is reading the window as a claim that the offence is equally likely in each of its hours, when the window is the keeper's own closure and the closures covering the heaviest nights are the longest."
     }
   ],
-  "notes": "WARNs answered in DESIGN_NOTE.md ## Draw: strategy_risk (the unit of analysis is the offence-hour the weighted window puts on a slot, a quantity the solver builds, not a field it reads, and the analyst test files a wrong slate with every field read correctly); repeat and overuse of gate_g method_or_model_selection (the mechanism here is the weight a windowed event puts on each slot, not a model chosen from a menu); repeat.question_form which (the decision is a slate under a cap, so the leading question asks which slots). Redraw 2026-10-15 after task459 was registered: shape 01 to 07 (the graded unit is the week's grid of 42 day-by-band slots, each cell's covered-offence figure graded, the eight commissioned read off it), forcing event purchase_order_or_contract to season_or_peak (the 2027 season opens 1 April and the slate has to be set before it), analyst persona redrawn (Adrian collided). Redrawn again 2026-10-15 after task456 landed: the forum is the city council's community safety committee, which funds the patrol, and the forcing event is the close of the 2026 season and the annual review that sets the next season's slate.",
-  "registered": "2026-10-15T13:15:43Z"
+  "notes": "Re-root to architecture 3. New vocab value stump_strategies.informative_censoring: no existing key is honest. maturity_censoring is about an outcome not yet crystallised at the extract, while this is a window whose PLACEMENT depends on the hour inside it through the observer's routine, and it is blocked against task306 regardless; population_selection is about which units the records represent, not which positions within a unit's record are observable; other was architecture 2's own value and says nothing. layer2_family moves from estimation_fit to estimand_identification, because the profile is not identified from the windows alone without the notice process.",
+  "registered": "2026-10-25T02:21:35Z"
 }
