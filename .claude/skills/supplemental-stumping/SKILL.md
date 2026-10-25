@@ -83,6 +83,22 @@ through something else, and the only other identifier on the row is the address*
 collapse into one act, and the hygiene battery's unmatched-join and key-uniqueness sweeps perform the
 discovery.
 
+**1.0b The remedy must be a reconstruction, never an estimator.** 1.0 asks for work left after the
+discovery, and Part 5 asks for one determinate answer. A remedy that is a **choice among estimators** cannot
+satisfy both, and the proof is `../stumping` 1.1c read one layer down: either the data separate the
+estimators, so the solver reads the fit and takes the better-supported one and nothing is left to get wrong,
+or they do not, so two defensible routes give two answers and the ask is forked. Measured when a grossing
+device was designed for a leaking ask and then refused before any code: with the frame a stratified sample
+and the stratum populations published so the factor had to be rebuilt, a Horvitz-Thompson grossing and a
+post-stratified grossing were both defensible, because the register lists every station and its brand, and
+they differ. Closing that by construction needs single-brand strata, which is degenerate.
+
+A **reconstruction** satisfies both, because it is a definition applied to records and has one correct form:
+a state rebuilt over time from an event log, a deduplication under a key that has to be worked out, an
+allocation whose weight is recorded. The work is real and can be done wrong (a gap in the log, a revision, a
+key handed over mid-series), and exactly one answer is right. So when a device needs replacing, ask what
+KIND of thing the remedy is before asking how well hidden it is.
+
 Contrast the two ask layers this lane measured lowest, at 42.9 and 46.4 per cent. In both, the reader has to
 **build** something after the discovery (a weekly profile fitted to interval-censored windows, a
 per-regulation delay attribution over flights that operated), and the building is where it goes wrong. So
