@@ -70,69 +70,61 @@ gate or amount would misdescribe the call.
 22-axis closure table, the ladder with the three-or-more-members and variant-spread assertions, the literal
 reader line, and `precut.py` at exit 0. The ask sheet carries over and is re-scored against the new cracker.
 
-### Architecture 3 stage 2: the step measured on the shipped pack, 2026-10-25
+### Architecture 3 stage 2, measured and REFUSED, 2026-10-25
 
-Measured rather than argued, on the shipped record as a solver holds it, before a line of the generator
-changed. The scripts are in the scratch directory and every number below is reproducible from the pack.
+**Correction to a first pass of this block, which was filed on the wrong population.** The first measurement
+read every recorded row, 33,766 of them, instead of the contracted population the contract scores: the five
+classes at the five registered locations, 25,020 rows. Its numbers (a lambda MLE at 0.60, a 3.23 per cent
+margin, a variant spread of 107.5) describe nothing and are withdrawn. The tell was there to be read and was
+read: that pass's "naive" route did not reproduce architecture 2's own golden, which it must. Everything
+below is on the contracted population, with the generator's own clean truth as the reference.
 
-**The step, precisely.** An offence's window is produced only when nobody was watching: the keeper's last
-look opens it and the first notice closes it. So the probability of seeing a given window is not flat in the
-hour inside it. A window spanning a closed weekend is far likelier to have come from 03:00 Sunday than from
-14:00 Saturday, because at 14:00 most targets are open and the offence would have been noticed sooner. The
-naive fit ignores that and spreads the window's mass in proportion to the clock it is estimating, which
-already favours the busy hours, so it under-counts the small hours and over-counts the evening shoulder.
-The correction weights each windowed record's hours by `1 - d_h`, where `d_h` is the chance an offence at
-hour h is noticed at once, and keeps an exact-time record's likelihood at `q_h * d_h`.
+**The premise is FALSE on the data as architecture 2 generated it.** On the contracted record the naive fit
+reproduces architecture 2's golden slate exactly, and that slate is also the true intensity's own top eight
+(Monday, Tuesday, Wednesday and Thursday 20:00-00:00, Friday 12:00-16:00, Saturday and Sunday 00:00-04:00,
+Sunday 20:00-00:00), with the truth's own eighth-to-ninth gap at 24.60 per cent. So the naive fit is
+consistent here, and the reason is exact rather than empirical: in `covered_record` an offence is recorded
+with a time when `mark[h]` is true and with its keeper's gap otherwise, `mark` is a deterministic function of
+the hour and the keeper, and a keeper's gap IS its unwatched stretch. The set of hours that could have
+produced a window therefore equals the window, `P(window | hour)` is flat on it, the censoring is
+non-informative and the naive fit is the right one. **There was no bias to correct, and the correction I
+proposed was itself the misspecification.**
 
-**Why that is not a free parameter.** `d_h = lambda * open_h`, with `open_h` read off
-`harbourgate_trading_hours.csv` (139 of the week's 168 hours have targets open), and **lambda is fitted by
-maximum likelihood, not chosen**. The profile log-likelihood has a sharp interior maximum:
+**So the generator was changed, and the change works.** A passer-by process was added: an offence in an hour
+its own target was not watching is seen at once with probability proportional to the quarter's measured
+footfall shape, which the pack already ships on four counting heads and which runs 692 to 1 between the
+busiest and the quietest hour of the week. With it, the exact-record share rises from 39.8 to 44.4 per cent
+and **the naive fit falls to 6 of the truth's 8 slots**, losing both Saturday and Sunday 00:00-04:00 and
+gaining Friday 16:00-20:00 and Sunday 12:00-16:00, which is the designed direction: mass leaving the small
+hours for the evening. The bias is real and the organ is multi-purpose.
 
-| lambda | 0.20 | 0.35 | 0.50 | **0.60** | 0.70 | 0.85 | 0.995 |
-|---|---|---|---|---|---|---|---|
-| profile log-lik | -1,192,031.1 | -1,188,770.2 | -1,187,744.1 | **-1,187,721.4** | -1,188,159.7 | -1,190,059.9 | -1,202,304.1 |
+**Then the correction needs one series the pack does not carry, and that is what refuses the architecture.**
+The corrected likelihood is `P(exact | h) = m_h + (1 - m_h) d_h` and `P(the gap | h) = (1 - m_h)(1 - d_h)`,
+with `d_h` the passer-by rate (its shape from the footfall feed, its level the one fitted parameter) and
+`m_h` **the share of targets watching at hour h**. Three ways to supply `m_h` were measured, on the same
+simulated record:
 
-So lambda is identified at 0.60, decisively (a log-likelihood of 23 against 0.50 and 438 against 0.70), and
-the slate is **identical for every lambda from 0.60 to 0.995**, which is a corridor sitting on top of an
-MLE. The exact-time records carry the identifying signal, and a blind reader on architecture 2 refused them
-in as many words, that "the exact-time offences are not a random sample (they skew to daytime), so the
-profile is biased": correct as a direct estimate of the clock and exactly wrong as a reason to discard them,
-because that skew IS the detection model.
-
-**The ladder, measured.** Rungs 0 to 2 (window start, window end, midpoint) and the aoristic flat weight are
-already in `analysis.py` and already refuted. Rung 3 is the field's own method and is where the architecture
-2 reader stopped: the interval-censored latent-clock fit treating the window as uninformative. Rung 4 is the
-decisive move.
-
-| | slate | against the reference |
-|---|---|---|
-| rung 3, the naive fit | Mon 00, Fri 20, Thu 20, Sat 00, Fri 00, Fri 12, Sun 20, Wed 20 | |
-| rung 4, corrected at the MLE | Mon 00, Tue 00, Wed 00, Thu 00, Fri 00, Fri 12, Sat 00, Sun 00 | **5 of 8 members differ** |
-
-**1.1d condition 1 PASSES: five of the eight members move**, well past the three the law requires, and the
-direction is the designed one, mass leaving the evening shoulder for the small hours.
-
-**1.1d condition 2 FAILS, and this is what stage 3 owes.** The reference margin between the eighth slot
-(Friday 12:00-16:00, 1,200.8) and the ninth (Saturday 20:00-00:00, 1,162.0) is 38.8, or 3.23 per cent, while
-the licensed variants move those two figures by up to 107.5:
-
-| licensed variant | slots in common | its own 8th to 9th margin | max shift on the reference 8th or 9th |
+| `m_h` from | lambda identified | slate against the truth | margin at the MLE |
 |---|---|---|---|
-| pooled, hour grid (reference) | 8 of 8 | 38.8 (3.23 per cent) | 0.0 |
-| pooled, 2-hour grid | 8 of 8 | 46.2 (3.62) | 73.6 |
-| pooled, 4-hour grid | **7 of 8** | 65.8 (5.39) | **107.5** |
-| per class, summed | 8 of 8 | 298.8 (27.05) | 398.2 |
-| lambda 0.70 | 8 of 8 | 130.1 (11.05) | 115.3 |
-| lambda 0.90 | 8 of 8 | 109.4 (11.27) | 300.3 |
+| the keeper mix (the generator's own routine weights) | yes, MLE 0.75 against a true 0.62 | 8 of 8 at lambda 0.30 to 0.62, 7 of 8 at the MLE | 53.7 (12.14 per cent) |
+| the trading hours, as a solver reads them | **NO: the profile log-likelihood is -139,423.08 at every lambda from 0.30 to 0.90** | 3 of 8 | 24.6 (6.98 per cent) |
+| nothing (the one-component fit of the first pass) | yes but biased | 7 of 8 | thin |
 
-Five of the six give the same eight slots, which is the family holding together, and the per-class fit
-agreeing at 8 of 8 is the measured proof that 1.1c does not bite here: the misspecification is in the
-censoring mechanism and survives any grouping, so pooled and per-class are both at rung 3 and the grouping
-is not the decisive choice. But **38.8 does not exceed 107.5**, so the cap's own margin is inside the
-family's spread, which is the exact condition architecture 2 died of and the reason 1.1d names it
-separately. Stage 3 must widen the eighth-to-ninth gap under the corrected fit to more than about 110, or
-about 9 per cent, in the generator's intensity, while keeping the naive fit's slate different in three or
-more members. Until that is measured, this architecture is not past stage 2.
+The first row is not shippable: the keeper mix is the generator's internal state, and a solver cannot see
+which premises watches which hours. The second is a Gate C failure of the plainest kind, and its cause is in
+the change itself: `notice()` sets the passer rate to zero outside trading hours, so the passer-by only ever
+operates in hours the target is already watching, `(1 - m_h) d_h` vanishes wherever it would matter, and
+lambda never enters the likelihood. Worse, a 0/1 watch share makes `P(the gap | h)` exactly zero on every
+open hour, which excludes those hours from every window outright rather than down-weighting them.
+
+**Refused, and the generator change reverted.** The pack reproduces at `c507033cde9b779a`. The architecture
+is not dead at the root, and what it needs is now exact: **a watch-share series the solver can see.** The one
+candidate left in the pack is the windows' own endpoints, since a window's start is a keeper's last look and
+its end the first notice, so the empirical distribution of endpoints across the record is the watch schedule
+(`analysis.window_edges` already computes it for another purpose). Reconstructing `m_h` from those endpoints
+is reconstruction-shaped in the sense of `supplemental-stumping` 1.0b and is the next pass, and it needs its
+own design: it is circular with the clock being estimated, so it has to be shown identified before any data
+is cut, which is the step this pass skipped.
 
 ## Tried and rejected`.
 
@@ -860,3 +852,6 @@ the fingerprint skill requires.
   distribution (median 10 hours, a tenth at 4 and a tenth over 30).
 - **(2026-10-25) A blind reader appeared to land the call, and the measurement is VOID because the brief handed it over.** The reader was given the flat `figures.json` key list to fill, and that list carries `call.slot_offences.<slot>`, one component per slot of the committed slate: eight of the week's forty-two slots and only those eight. The reader said so in its own report, that its refined spread "reproduces the same eight slots as the slate the key names, which is why I used it". So this run is evidence about the brief, not about the build. It is worth keeping for one thing it did without help: it rejected flat spreading over each occurrence window after measuring that flat spreading reaches only 4 of the 8 slots, and built an iterative hour-of-week profile to convergence instead, which is this architecture's decisive step. A clean re-measurement is owed, briefed from `score_reader.py --emit-keys`, which now drops exactly those eight paths.
 - **(2026-10-25, measured clean) THE CALL HOLDS, AND THIS IS THE BEST-MEASURING BUILD IN THE LANE.** Re-read with a brief emitted by `score_reader.py --emit-keys`, so the eight slots of the committed slate are no longer named in the key list. The reader filed a **different slate**: it kept Friday 16:00-20:00, which is the golden's runner-up, and dropped Monday 20:00-00:00, and it filed 5,096.6 covered offences against the golden 5,705.2, a runner-up of Thursday 12:00-16:00 at 378.4 against Friday 16:00-20:00 at 400, and a gap of 44.1 against 100. **0 of 7 call figures hit, 32 of 101 ask figures, 31.7 per cent.** It built the decisive construction itself, an EM fit of a weekly timing profile over the interval-censored windows, and rejected window start, end, midpoint, flat spreading and an exact-times-only profile by name, so the construction is reachable; what it could not reproduce is the slate, because it reported the eight slots are stable under its own settings while the eighth against ninth ordering is not. With both top responses missing the call the pair is 12 plus 55 times the ask keep, so this build measures at **29.4, under the 40 build target**, and the earlier `FAILED_TO_STUMP` rests on a judge SEND_BACK rather than on any measurement of its power. It is a `/fix-rubric` candidate at most, and arguably a ship.
+- **(2026-10-25, architecture 3 pass 1) The window's placement as the decisive step, on the data as architecture 2 generated it: refused on an exact argument.** `mark[h]` is deterministic in the hour and the keeper and a keeper's gap is its unwatched stretch, so the hours that could have produced a window are exactly the window, the censoring is non-informative and the naive fit is consistent. Measured: the naive fit reproduces both architecture 2's golden and the true intensity's own top eight.
+- **(2026-10-25, architecture 3 pass 2) The same step with a passer-by process added: the bias is real and the correction is not shippable.** With immediate notice proportional to the measured footfall shape the naive fit falls to 6 of the truth's 8 slots, so the misspecification exists. But the corrected likelihood needs the share of targets watching each hour, and the only version that recovers the truth 8 of 8 takes it from the generator's own routine weights, which no solver can see. Reverted.
+- **(2026-10-25, architecture 3 pass 3) The watch share read off the trading hours: lambda is unidentified.** The profile log-likelihood is -139,423.08 at every lambda from 0.30 to 0.90 and the slate matches the truth 3 of 8. Cause: the passer-by rate was zero outside trading hours, so the term that should identify lambda vanishes exactly where it would matter, and a 0/1 watch share also excludes every open hour from every window outright instead of down-weighting it. A Gate C failure, and the reason the next pass must show the watch share identified before any data is cut.
