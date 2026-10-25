@@ -1,0 +1,38 @@
+{
+ "task": "task302",
+ "owner": "perssathya",
+ "status": "DESIGN",
+ "domain": "economics-econometrics",
+ "objective": "opportunity-sizing-decision",
+ "stage": 2,
+ "stage_name": "design",
+ "updated": "2026-10-25",
+ "stump": "A competent solver prices every out-of-stock line-day at the line's own same-weekday sales in the store, cuts the total by three quarters and moves bottled water at about NZD 150,000, where the golden is infant formula at about NZD 90,000; the step that lands it there is counting a line's absence as the category's loss, when water's shoppers take another brand from the same shelf and pet food's buy the bag after the restock, while a missed formula delivery empties the whole shelf.",
+ "architecture": 1,
+ "loops": 0,
+ "precut": {
+  "exit": null,
+  "date": ""
+ },
+ "leak": {
+  "leak_py": "",
+  "reader": ""
+ },
+ "duplicate_check": {
+  "heart": "WARN (repeat.question_form, answered: a pick of one of four asks which)",
+  "nearest": "task157 at 0.11; task269 v3, task264 v2, task119 v1 and task116 v1 at 0.06"
+ },
+ "judge": {
+  "verdict": "",
+  "disposition": "",
+  "report": ""
+ },
+ "returned": [],
+ "resume": "Stage 2: generator in progress (params, world and stock written in the session scratch; asks and devices on paper next), then the design note's ladder, fork table, closure and ask sheet, prompt, precut.",
+ "approved": null,
+ "delivered": null,
+ "portal": null,
+ "portal_id": "",
+ "portal_status": "",
+ "portal_status_date": ""
+}
