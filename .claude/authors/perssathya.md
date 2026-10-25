@@ -32,4 +32,5 @@ architecture), new. A task from an objective no developer owns says so.
 | 3 | task237 (new) · task238 (new) · task239 (new) · task240 (new) · task241 (new) · task242 (new) |
 | 4 | task243 (new) · task244 (new) · task245 (new) · task246 (new) · task247 (new) · task248 (new) |
 | 5 | task249 (new) · task250 (new) · task251 (new) · task252 (new) |
-| 6 | task301 (new, Opportunity Sizing) · task302 (new, Opportunity Sizing) · task303 (new, Opportunity Sizing) · task304 (new, Opportunity Sizing) · task305 (new, Opportunity Sizing) · task306 (new, Opportunity Sizing) |
+| 6 | task301 (new, Opportunity Sizing) · task302 (new, Opportunity Sizing) · task303 (new, Opportunity Sizing) · task304 (paused at the draw, Opportunity Sizing) · task305 (new, Opportunity Sizing) · task306 (new, Opportunity Sizing) |
+| 7 | task307 (new, Opportunity Sizing) · task308 (new, Opportunity Sizing) · task309 (new, Opportunity Sizing) · task310 (new, Opportunity Sizing) · task311 (new, Opportunity Sizing) · task312 (new, Opportunity Sizing) |
