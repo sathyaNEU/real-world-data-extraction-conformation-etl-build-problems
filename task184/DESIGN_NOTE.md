@@ -126,6 +126,63 @@ is reconstruction-shaped in the sense of `supplemental-stumping` 1.0b and is the
 own design: it is circular with the clock being estimated, so it has to be shown identified before any data
 is cut, which is the step this pass skipped.
 
+### Architecture 5: the design that passes its own arithmetic, measured 2026-10-25
+
+**The first design in this slot to clear all three conditions a corrected route owes** (`stumping` 1.1d and
+1.1f), measured on the generator's clean truth before any of it is built. Every parameter below is settled;
+stage 3 applies them rather than searching again.
+
+**What changes from architecture 4.** The likelihood is written **per keeper type** instead of over a pooled
+watch share, which is what 1.1f says is needed, and that requires two organs the pack does not yet carry:
+the **premises type on each offence record**, which a force classifies for its own crime-recording purposes,
+and the **monitored hours per premises type**, which a keyholding and alarm-monitoring contract records
+because the monitoring is billed. Nothing aggregates, so the fitted level no longer absorbs an aggregation
+error.
+
+**The settled parameters.** `NIGHT_CREST = [26, 21, 26, 26, 26, 26, 22]` (Monday, Wednesday and Thursday
+join Friday and Saturday in cresting after midnight, Tuesday and Sunday before it) and `PASSER = 0.92`, with
+the immediate-notice rate following the quarter's own footfall shape on all 168 hours and never zero
+(`CLOSED_FOOT`, the closed-hour count against the busiest head's base). The fitted level's maximum
+likelihood lands at 0.97.
+
+**The three slates, on the clean truth:**
+
+| | the eight slots |
+|---|---|
+| the truth | Fri 00-04, Sun 00-04, Sat 00-04, Sun 20-24, Tue 00-04, Fri 12-16, Tue 20-24, Thu 00-04 |
+| the golden (corrected, per keeper type) | the same eight, **8 of 8** |
+| the naive fit (rung 3, the field's own method) | Sun 20-24, Fri 12-16, Tue 20-24, Fri 16-20, Fri 00-04, Sun 12-16, Thu 16-20, Sat 12-16, **4 of 8** |
+
+**The stump reads in one line:** the naive interval-censored fit sends the patrol to Friday and Saturday
+**afternoons** (Fri 16-20, Sun 12-16, Thu 16-20, Sat 12-16), because the windows it spreads flat end at the
+hours somebody was about, and the offences are in the small hours.
+
+**The three conditions, measured:**
+
+| condition | required | measured |
+|---|---|---|
+| the two routes differ on three or more graded members (1.1d) | 3 or more | **4 of 8** |
+| the decided figure's margin exceeds the spread of every licensed variant (1.1d) | margin above the spread | margin **114.7, 23.05 per cent**, against a worst variant shift of **77.6**, a cushion of **1.48x** |
+| the corrected route is strictly more accurate against the clean truth (1.1f) | strictly more | **8 of 8 against 4 of 8** |
+
+The eighth slot is Tuesday 20:00-24:00 at 497.7 and the ninth Friday 16:00-20:00 at 383.0. Both licensed
+grid variants, two-hour and four-hour, reproduce the golden's eight slots exactly, shifting the eighth or
+ninth figure by 22.9 and 77.6.
+
+**The search that found it, so it is not repeated.** Twenty-six settings were measured across four
+architectures. The dial is three-way and each pair of conditions trades off: sharpening the clock widens the
+margin and collapses the route difference from 4 to 1; flattening it raises the difference to 7 and narrows
+the margin below the variant spread; and at every setting of architecture 4, where the watch share was
+pooled, the corrected route was no more accurate than the naive one. Only the per-keeper likelihood of
+architecture 5 breaks that, and the route difference is then bought by moving night crests past midnight,
+which puts more small-hours slots in the truth's top eight for the detection bias to displace.
+
+**What stage 3 owes:** the two new organs on the pack, the corrected estimator as the golden with the naive
+fit as rung 3, the three conditions asserted in `checks.py` as three separate assertions, the per-class
+variant measured (it is left over from this pass), the prompt's call sentence re-cut because the slate
+changes, and the ask layer re-scored against the new cracker. The ask layer itself carries over unchanged;
+it measured 31.7 per cent, the lane's best.
+
 ## Tried and rejected`.
 
 Architecture 1 (a mobile screening team posted among eight flagged airports, decided by the lanes each
