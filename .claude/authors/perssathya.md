@@ -4,8 +4,8 @@ Account email pers.sathya@gmail.com. A session for anyone else ignores this file
 
 - **Lane:** Data Quality Monitoring & Alerting, task228 to task252, fully shipped 2026-10-23. From wave 6 on, at the
   author's instruction (2026-10-24, "work on next task items whatever is available"), the open numbers of the unassigned
-  Opportunity Sizing & Decision Support block, lowest first (task301 up). Two builds in flight (the author may allow a
-  third); `status.py next perssathya`.
+  Opportunity Sizing & Decision Support block, lowest first (task301 up). Two builds in flight; the author allowed a third on
+  2026-10-25 (task304 and task307 paused at the draw, task308 opened); `status.py next perssathya`.
 - **Status board:** https://claude.ai/artifact/EJXoU6JxGoZ1oZYKHmSLyt (one row per task: the task and its call, status, links to the prompt, submission and `target.zip` on `main`, a short note, the date), updated at every commit point.
 - **Never retire a task without asking the author.** A re-root past the third architecture, a ban waiver or a
   retirement is the author's call.
