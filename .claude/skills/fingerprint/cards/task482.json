@@ -1,29 +1,28 @@
 {
   "task": "task482",
-  "architecture": "v13",
-  "drawn": "2026-10-24",
-  "slot_note": "architecture 13, re-rooted after architecture 12 was spent at stage 4 (both readers read each city's population present off its plant's influent load per person)",
+  "architecture": "v14",
+  "drawn": "2026-10-25",
+  "slot_note": "architecture 14, re-rooted after architecture 13 was spent at stage 4 (both readers carried the interim measure by each practice's own 2025 run-out and landed the call); the run-out is now the default path's last step (stumping 1.1b) and the decisive step is the stays still open at the cut",
   "domain": "healthcare-delivery-health-economics",
   "subdomain": "payment-claims-health-plan-analytics",
-  "niche": "a clinically integrated network's 2027 two-sided risk elections for its thirteen independent primary care practices, each practice's 2026 total cost of care per attributed member month carried from the payers' September attribution run to the year-end attribution, where the members a retrospective attribution adds after the cut are mostly members whose one primary care visit of the year falls late in it",
+  "niche": "a clinically integrated network's 2027 two-sided risk elections for its thirteen independent primary care practices, each practice's 2026 total cost of care per attributed member month projected to the payers' year-end attribution from the October interim run, where the members still in hospital at the cut carry stays the hospitals bill only at discharge, visible only through the daily professional claims and already past the member cap",
   "objective": "etl",
   "shape": "10",
   "decision_type": "designation_set",
   "answer_unit": "set_of_items",
-  "answer": "Enter Ostrelwood, Callowglen, Thornelfield, Raddelview, Jesselford, Nerrincreek, Torrinridge, Mallowcrest and Garrowdale in the 2027 two-sided track; keep Haddelcrest, Birrelhaven, Wexelmoor and Prestelglen one-sided.",
+  "answer": "Enter Ostrelwood, Callowglen, Thornelfield, Raddelview, Jesselford, Nerrincreek and Torrinridge in the 2027 two-sided track; keep Haddelcrest, Birrelhaven, Wexelmoor, Mallowcrest, Prestelglen and Garrowdale one-sided (to be confirmed by the build).",
   "answer_source": "submission.md block 1; generator/figures.json call.enter",
   "gap": [
-    "population",
-    "time"
+    "time",
+    "population"
   ],
   "pattern": [
     "none"
   ],
   "generators": [
+    "G12",
     "G13",
-    "G6",
-    "G16",
-    "G17"
+    "G16"
   ],
   "gate_g": "etl_conformance",
   "calibration_form": "prior_period_close_out",
@@ -33,10 +32,10 @@
   "validated_decoy": false,
   "context_artifact": "close_out_summary",
   "stump_class": "analytical",
-  "analyst_test": "A strong analyst who conforms the three payers' feeds correctly and reads every clause of the network's performance standard computes each practice's interim measure on the payers' October interim runs as the standard's section 4.1 defines it, takes it as the practice's 2026 figure against 98 per cent of its benchmark, and enters Ostrelwood, Thornelfield and Jesselford alone; the year-end attribution adds the members whose one visit of 2026 falls after August, at a fraction of the cost, and nine practices enter.",
-  "domain_test": "The field's own analysis of a retrospective attribution's open year: a practice's cost per attributed member month is a ratio over a population the year's own primary care visits define, so the year-end figure is carried from the payers' interim run by the practice's own attribution run-out after the same cut a year earlier, members and dollars together, the way a value-based finance team accrues a settlement before the final run. With another field's nouns the plurality of qualifying primary care services, the allowed-amount cost of care and the benchmark trend lose their meaning, and the relation that decides (a first primary care visit late in the year marks a low user of care) is a fact about how people use primary care.",
-  "layer2_family": "field_method",
-  "layer2_pattern": "own:a retrospective attribution's run-out carried from last year's same cut",
+  "analyst_test": "A strong analyst who conforms the three payers' feeds, reads every rule and carries each practice's October interim measure by its own 2025 run-out at the same cut (the field's projection of a retrospective attribution) enters nine practices; the members still in hospital at the cut, whose stays the hospitals bill at discharge, are past the member cap, and only counting each at the cap moves Mallowcrest Pediatrics and Garrowdale Family Practice over their thresholds.",
+  "domain_test": "The deciding quantity is each practice's 2026 total cost of care per attributed member month on the payers' final runs, which a value-based finance team projects from the interim run by completion factors and the attribution's own run-out, with the large claims it already knows of carried separately at the stop-loss; swap the hospital for a school and there is no stay billed at its end and no member cap, so the step has nothing to act on.",
+  "layer2_family": "estimation_fit",
+  "layer2_pattern": "own:a stay billed at its end carried at the member cap from its daily professional charges",
   "layer1": [
     "three payers' claim feeds in three layouts (csv voiding and replacing reprocessed claims, pipe-delimited lines in cents with adjusted status, JSON claim versions)",
     "open coverage spans written as 9999-12-31 or left blank",
@@ -94,15 +93,18 @@
   ],
   "opening_move": "question-first",
   "question_form": "which",
-  "driver": "A per-member rate for a period is read over the members each unit has been assigned so far, but members are assigned by their own contacts during the period, so part-way through it the members still unassigned are mostly those who need little; they join late with small amounts and the whole period's exposure, so the rate on the members assigned so far overstates the period's rate by an amount that differs by unit with how late its members make contact, and only each unit's own run-out of the assignment after the same cut in the last period carries the rate to the period's end.",
-  "driver_concrete": "Each practice's 2026 cost of care per attributed member month on the year-end attribution is its October interim run's figure times its own 2025 ratio of the year-end figure to the figure for the members attributed by 31 August (attribution re-run on 2025's January to August qualifying services), because members whose first qualifying visit falls in September to December are mostly healthy members with one visit a year, who join with low allowed amounts and all twelve months of enrollment.",
-  "stump": "The default path computes each practice's cost per member month on the payers' October interim run and enters the practices that clear the bar there; carried to the year-end attribution by each practice's own run-out, a different set clears it.",
-  "mechanism_source": "design_note",
+  "driver": "A per-member rate for a period still running is carried to the period's end by the last period's own relation at the same cut, but a few members are inside episodes whose amount is recorded only when the episode ends; the episodes show only through the small charges recorded day by day while they run, and they are already past the per-member cap, so each such member's amount for the period is the cap however the episode ends, while the carried rate, built on members whose later amounts are small, leaves it out.",
+  "driver_concrete": "Each practice's 2026 network measure on the payers' final attribution is its October interim measure carried by its own 2025 run-out at the same cut, plus what the members still in hospital on 31 August will bring: the hospitals bill a stay when it ends, so the premature triplets in a neonatal unit since June (Mallowcrest Pediatrics) and the three members of one family in trauma intensive care since a July crash (Garrowdale Family Practice) show only through the neonatologists' and intensivists' daily professional claims, and each is already past the USD 250,000 member cap, so each member's 2026 cost is the cap.",
+  "stump": "The default path carries each practice's October interim measure, completed by the payers' factors, by its own 2025 run-out at the same cut and enters nine practices; the factors and the run-out carry what the year adds on average, but the stays still open at the cut are billed at discharge and show only as daily professional charges, and the six members in them are each past the cap, so Mallowcrest Pediatrics and Garrowdale Family Practice come in over their thresholds and seven practices enter.",
+  "mechanism_source": "stumping 1.1b (the field's own method, the attribution run-out, placed on the default path) and the rigor library's judgment list ('what a cap truncates'); a hospital's discharge billing of long stays and an ACO's large-claim handling at the stop-loss",
   "differentiation": {
-    "task451": "task451 completes a closed year's unpaid claims for twelve partners' total cost of care, where the payer's adjudication sped up inside the lag history; here the year is open, the claims are complete, and what is still to come is the population: the members a retrospective attribution adds after the cut, carried by each practice's own attribution run-out.",
+    "task451": "task451 completes a closed year's unpaid claims by a lag history whose handling sped up; here the completion factors are right on average and what they cannot carry is a few known stays billed at their end, each already past the cap.",
     "task458": "task458 counts a lasting trait seen only through events while each member is observed; here no trait is counted: the population is defined by the year's own visits, and the late-assigned members' small amounts and whole year of exposure carry the rate.",
     "task130": "task130's lineage forecasts a group chosen on an extreme outcome by a group chosen the same way a period earlier; here nobody is chosen on the outcome: the population grows inside the period by contact, and the run-out is measured on last year's same cut.",
-    "task482": "architecture 10 sums each member's share of a lifetime total that later spells add to; here each member counts once for the year and what is still to come is which members the year's attribution adds."
+    "task482": "architecture 13 carried the interim measure by each practice's own run-out of the attribution, and that run-out is now the default path's last step; architecture 10 summed each member's share of a lifetime total that later spells add to; here the members are already attributed and what is still to come is a bill for a stay open at the cut, fixed at the member cap.",
+    "task231": "task231 recovers the exited share of silent units from older rounds whose record of exits has caught up; here nobody is silent or exited: the members are attributed and present in the claims, and what the record lacks is the amount of a stay still running, fixed at the member cap.",
+    "task234": "task234 reads each source's current output from a share a loss in transit cannot move; here nothing is lost: every claim arrives, and the stays open at the cut have not been billed yet because a hospital bills a stay at its end.",
+    "task445": "task445 completes holders whose reports have not arrived from each holder's last report; here every report has arrived, the averages the completion factors and run-out carry are right, and the step is the few members whose open stays are already past the cap, read from their daily professional claims."
   },
   "lineage": [
     {
@@ -312,10 +314,37 @@
       "answer": "Birchwick, Ruddmere, Sorrelton, Tamsen Point and Esker Narrows qualify, USD 480,000 each",
       "architecture": 12,
       "fate": "spent 2026-10-24 at stage 4 round 1: both scored readers read each city's busiest-month population off its plant's influent BOD at 0.17 lb a person a day checked against the winter residents and landed the call (five cities, USD 480,000 each), asks 74 and 68 of 78 (exit 1); the judge thread was stopped at the spend"
+    },
+    {
+      "subdomain": "payment-claims-health-plan-analytics",
+      "niche": "a clinically integrated network's 2027 two-sided risk elections for its thirteen independent primary care practices, each practice's 2026 total cost of care per attributed member month carried from the payers' September attribution run to the year-end attribution, where the members a retrospective attribution adds after the cut are mostly members whose one primary care visit of the year falls late in it",
+      "objective": "etl",
+      "shape": "10",
+      "decision_type": "designation_set",
+      "gap": [
+        "population",
+        "time"
+      ],
+      "pattern": [
+        "none"
+      ],
+      "generators": [
+        "G13",
+        "G6",
+        "G16",
+        "G17"
+      ],
+      "gate_g": "etl_conformance",
+      "stump_strategy": "maturity_censoring",
+      "driver": "A per-member rate for a period is read over the members each unit has been assigned so far, but members are assigned by their own contacts during the period, so part-way through it the members still unassigned are mostly those who need little; they join late with small amounts and the whole period's exposure, so the rate on the members assigned so far overstates the period's rate by an amount that differs by unit with how late its members make contact, and only each unit's own run-out of the assignment after the same cut in the last period carries the rate to the period's end.",
+      "driver_concrete": "Each practice's 2026 cost of care per attributed member month on the year-end attribution is its October interim run's figure times its own 2025 ratio of the year-end figure to the figure for the members attributed by 31 August (attribution re-run on 2025's January to August qualifying services), because members whose first qualifying visit falls in September to December are mostly healthy members with one visit a year, who join with low allowed amounts and all twelve months of enrollment.",
+      "stump": "The default path computes each practice's cost per member month on the payers' October interim run and enters the practices that clear the bar there; carried to the year-end attribution by each practice's own run-out, a different set clears it.",
+      "answer": "Enter Ostrelwood, Callowglen, Thornelfield, Raddelview, Jesselford, Nerrincreek, Torrinridge, Mallowcrest and Garrowdale in the 2027 two-sided track; keep Haddelcrest, Birrelhaven, Wexelmoor and Prestelglen one-sided.",
+      "architecture": 13,
+      "fate": "spent 2026-10-25 at stage 4 round 1: both scored readers re-ran the October 2025 interim run from the 2025 claims and carried each practice's interim measure by its own 2025 final-to-interim ratio, landing the call (the nine), asks 78 and 65 of 78 (exit 1); the judge thread was stopped at the spend"
     }
   ],
   "notes": "stump_strategy maturity_censoring: the year's attributed population is immature at the cut (late arrival of members into the population), and the decisive move is its run-out; not population_selection (the population is filed in full by the attribution clause, the difficulty is that it has not finished arriving) and not forecast_method_backtest (no method is chosen by a back-test). gate_g etl_conformance: each practice's conformed cost of care on the contract's basis, judged against the board's two-sided standard.",
   "client_domain": "healthcare-delivery-health-economics",
-  "registered": "2026-10-24T22:03:28Z",
-  "architecture_spent": true
+  "registered": "2026-10-25T01:34:36Z"
 }
