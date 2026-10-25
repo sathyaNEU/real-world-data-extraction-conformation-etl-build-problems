@@ -6,7 +6,7 @@
  "objective": "forecasting",
  "stage": 5,
  "stage_name": "ship",
- "updated": "2026-10-24",
+ "updated": "2026-10-25",
  "stump": "A competent solver fits an early-warning model on the entrants' own attributes to the 2019 to 2025 entrants' enrolment at the next census, validates it on the 2025 intake, scores the 8,659 2026 entrants and files 2,250 not enrolled on 1 October 2027 against 3,250, because it never reads each entrant's chance at the number of other entrants met in two or more of the entrant's own classes, which the Registry's allocation run kept near 26 and self-enrolment after the ARC cutover leaves near one.",
  "architecture": 3,
  "loops": 1,
@@ -16,8 +16,8 @@
   "date": "2026-10-23"
  },
  "leak": {
-  "leak_py": "REVIEW (2026-10-24, on 5f48e01e): the cutover notes and conventions share the pack's own words (entrant, classes, record, Registry); no figure, none of the decisive step's words (D2)",
-  "reader": "round 1 (fab8b152): call held 2 of 2 (2,250), asks A 10 of 25, B 25 of 25; round 2 (a9f8b878): readers C and D 2,250 against 3,250, 0 of 20 asks each, PASS; the call held in 4 of 4 blind reads; rubric repair (c1b19cef): readers E and F 2,250 against 3,250, 0 of 20 asks each; reader E's leak answers quote no decisive-step sentence and no ranking file; determinism repair (256adf20): readers G and H 2,250 against 3,250, 0 of 20 asks each; G quotes no sentence naming the decisive step"
+  "leak_py": "REVIEW (2026-10-25, on c8032390): the cutover notes, conventions and dictionary share the pack's own words; no figure, none of the decisive step's words (D2)",
+  "reader": "round 1 (fab8b152): call held 2 of 2 (2,250), asks A 10 of 25, B 25 of 25; round 2 (a9f8b878): readers C and D 2,250 against 3,250, 0 of 20 asks each, PASS; the call held in 4 of 4 blind reads; rubric repair (c1b19cef): readers E and F 2,250 against 3,250, 0 of 20 asks each; reader E's leak answers quote no decisive-step sentence and no ranking file; determinism repair (256adf20): readers G and H 2,250 against 3,250, 0 of 20 asks each; G quotes no sentence naming the decisive step; determinism repair round 3 (c8032390): reader 2,250 against 3,250, 0 of 20 asks, exit 0"
  },
  "duplicate_check": {
   "heart": "BLOCK (2026-10-23) on four axes against task175 after task173 was spent and the live window re-formed; registered under the lock at WARN",
@@ -25,9 +25,9 @@
   "ruling": "Author's standing ruling, 'Ship, window fixed at draw': the card registered under the lock at WARN (4afaec0a) and the later heart BLOCK against task175 comes from the window moving after task173 was spent; nothing relabelled."
  },
  "judge": {
-  "verdict": "DETERMINISTIC (r5, 256adf20; FIX_NOW optional on ask 2 closed in GROUP_PIN, 5f48e01e)",
-  "disposition": "portal round 2 judge 2's competing_defensible_answer closed by cutover notes section 6; r5 blind call 2,250, the call forced at 3,240 to 3,253; ask 2's group unit filed in GROUP_PIN",
-  "report": "scratchpad determinism-check-task179-r5/verdict.md (blind_derivation.md beside it)"
+  "verdict": "DETERMINISTIC (r6, c8032390), APPROVE",
+  "disposition": "portal round 3's competing_defensible_answer closed by section 6's comparability sentence and the record's own low-exposure control; blind call 2,250",
+  "report": "task179/determinism_check_report.md (thread: scratchpad determinism-check-task179-r6/verdict.md)"
  },
  "returned": [
   {
@@ -73,6 +73,22 @@
    ],
    "freeze": "determinism PASS: the main call, the stump and every frozen figure unchanged",
    "commit": "RESHIPPED (task179): determinism, the cutover notes record who entered first-year class enrolments and the conventions file two classes sharing one meeting as three groups"
+  },
+  {
+   "date": "2026-10-25",
+   "portal": "round 3 on 5f48e01e: the call held (rubric 18 per cent); determinism FAIL, gates C and D, competing_defensible_answer, fix_location input_files: section 6 read as a change in how the repeat-classmate count is measured, so a forecaster who drops it as not transportable files 2,250 (3,244 with the flag at 10, 2,141 without)",
+   "repair": "determinism",
+   "rounds": [
+    {
+     "round": 1,
+     "zip": "c8032390",
+     "moves": "one Registry sentence added to cutover notes section 6: the change is in who chooses an entrant's classes, not in what a class enrolment records, the student on the class's list at the census in both systems (SF14); write-up step 5 states the record's own control, 5,029 of the 11,640 entrants of 2019 to 2025 meeting fewer than 10 others twice not enrolled against 4,166.2 from the count-free model; transport asserted (the count's model on the 9,497 entrants the July run did not place 3,293.8 and 3,264.4, reweighted to the 2026 mix 3,263.6 and 3,279.3)",
+     "reader": "leak-task179r3: 2,250 against 3,250 (attributes with class-size bands), 0 of 20 cells, score_reader exit 0; no sentence quoted as the decisive step",
+     "judge": "determinism-check-task179-r6 (order kept, blind call 2,250): DETERMINISTIC, APPROVE; the call 3,252 to 3,254, every AIC-competitive form inside 3,125 to 3,375; the segment check reproduced (4,165.9); all 20 cells exact; Gate G analytical_non_defect, Gate H pass"
+    }
+   ],
+   "freeze": "determinism PASS: the main call, the stump and every frozen figure unchanged",
+   "commit": "RESHIPPED (task179): determinism, the cutover notes file a class enrolment as the same record in both systems"
   }
  ],
  "wave": "new, seed FC50: the world, the decision and the quantity kept, the world moved honestly off local_government to a private ambulance company holding a city's 911 ambulance contract (the city the counterparty), deciding its own ten summer surge medic units for the weekend 20:00 to 24:00 block from June to August across three districts at the contract's 9-in-10 evenings standard at 1.2 unit-hours a call, the rest offered to the county's mutual-aid roster; the seed's filed staffing formula, the public dataset's suppression of one- and two-call cells and a pooling sentence were never candidates; redraw cell 1 econometrics time-series macro (2026-10-19, dead), redraw cell 2 epidemiology infectious-disease-transmission-modeling (2026-10-21, architecture v2, re-sited to the fictional Republic of Saldane after the first world was declined on the real-place records concern)",
@@ -125,5 +141,5 @@
  "portal_id": "",
  "portal_status": "returned 2026-10-24 (round 2: both responses 2,250; determinism judge 2 FAIL), reshipped 2026-10-24 with the determinism repair",
  "portal_status_date": "2026-10-24",
- "zip_md5": "5f48e01ef4e262add5d119102612cc18"
+ "zip_md5": "c80323900b08bd7fd4c2c397a6c8884d"
 }

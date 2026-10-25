@@ -84,6 +84,54 @@ def main(target):
        set(off) <= {"log", "sat4", "ge22"}
        and all(aic[k][2] > aic[j][2] for k in off for j in count_forms if j not in off),
        "outside: %s" % ", ".join("%s %.1f (dAIC %.1f)" % (k, aic[k][0], aic[k][2] - amin) for k in off))
+    # SF14 whether the count is comparable across the cutover (portal round 3): the Registry files that a class
+    # enrolment records the same thing in both systems; the model without the count misses the record's own entrants
+    # who meet fewer than 10 others twice; the count's model fitted on the entrants the July run did
+    # not place (part-time, or accepted after it), or reweighted to the 2026 intake's mix of the count, prints the call
+    import pandas as pd
+    from pypdf import PdfReader as _PR
+    cut_flat = re.sub(r"\s+", " ", " ".join(p.extract_text() for p in _PR(os.path.join(target, C.F_CUT)).pages))
+    ok("SF14 the cutover notes file the class record as the same in both systems",
+       re.sub(r"\s+", " ", D.COMPARABLE) in cut_flat and D.CUTOVER[-1][1][-1] == D.COMPARABLE)
+    h14 = a[a["intake"] < 2026]
+    f14 = a[a["intake"] == 2026]
+    y14 = h14["gone"].values.astype(float)
+    low = (h14["ties"] < 10).values
+    seg = figs["check_fewer_than_10_twice_2019_2025"]
+    ok("SF14 the model without the count misses the record's entrants meeting fewer than 10 twice",
+       seg["entrants"] == int(low.sum()) and seg["not_enrolled"] == int(y14[low].sum())
+       and seg["not_enrolled"] - seg["count_free_predicted"] > 600,
+       "%d of %d not enrolled; the count-free model predicts %.1f" % (
+           seg["not_enrolled"], seg["entrants"], seg["count_free_predicted"]))
+    bx, _ = calc.logit_fit(calc.design(h14, r["form"]), y14)
+    p_low = float((1 / (1 + np.exp(-(calc.design(h14[low], r["form"]) @ bx)))).sum())
+    ok("SF14 the golden form carries that segment", abs(p_low - seg["not_enrolled"]) < 5, "%.1f" % p_low)
+    import world as W
+    acc = pd.to_datetime(h14["Offer Accepted"])
+    after = (acc.dt.month > W.ALLOC_DAY[0]) | ((acc.dt.month == W.ALLOC_DAY[0]) & (acc.dt.day > W.ALLOC_DAY[1]))
+    unplaced = ((h14["pt"] == 1) | after).values
+    for form in ("ge10", "bands5"):
+        b14, _ = calc.logit_fit(calc.design(h14[unplaced], form), y14[unplaced])
+        v = float((1 / (1 + np.exp(-(calc.design(f14, form) @ b14)))).sum())
+        ok("SF14 form %s fitted on the %d entrants the run did not place prints the call" % (form, int(unplaced.sum())),
+           inbin(v, figs["call_not_enrolled_2027"]), "%.1f" % v)
+    edges = [0, 1, 3, 6, 10, 15, 22, 10 ** 9]
+    bh, bf = np.digitize(h14["ties"].values, edges), np.digitize(f14["ties"].values, edges)
+    wt = np.zeros(len(h14))
+    for k in np.unique(bh):
+        wt[bh == k] = (bf == k).mean() / (bh == k).mean()
+    for form in ("ge10", "bands5"):
+        X = calc.design(h14, form)
+        b14 = np.zeros(X.shape[1])
+        for _ in range(80):
+            p = 1 / (1 + np.exp(-(X @ b14)))
+            step = np.linalg.solve((X * (wt * p * (1 - p))[:, None]).T @ X + 1e-9 * np.eye(X.shape[1]), X.T @ (wt * (y14 - p)))
+            b14 += step
+            if np.max(np.abs(step)) < 1e-10:
+                break
+        v = float((1 / (1 + np.exp(-(calc.design(f14, form) @ b14)))).sum())
+        ok("SF14 form %s reweighted to the 2026 mix of the count prints the call" % form,
+           inbin(v, figs["call_not_enrolled_2027"]), "%.1f" % v)
     for yrs in ([2022, 2023, 2024, 2025], [2023, 2024, 2025]):
         v = calc.forecast(a, r["form"], yrs)[0]
         ok("B4 the golden form on intakes %d to 2025 prints the call" % yrs[0], inbin(v, figs["call_not_enrolled_2027"]), "%.1f" % v)
@@ -282,8 +330,9 @@ def main(target):
        sha(conv_as_shipped) == digests["conventions"] and D.GROUP_PIN.startswith(digests["group_pin_shipped"][:80]))
     cut_shipped = json.dumps(D.CUTOVER[:-1], ensure_ascii=False, sort_keys=True).encode("utf-8")
     cut_text = re.sub(r"\s+", " ", " ".join(p.extract_text() for p in PdfReader(os.path.join(target, C.F_CUT)).pages))
-    ok("F4 the cutover notes are the shipped ones with section 6 added",
+    ok("F4 the cutover notes are the shipped ones with section 6 added and only its comparability sentence since",
        sha(cut_shipped) == digests["cutover_sections_1_to_5"] and D.CUTOVER[-1][0] == "6. Class enrolments"
+       and D.CUTOVER[-1][1] == [digests["cutover_section_6_round2"], D.COMPARABLE]
        and all(re.sub(r"\s+", " ", p) in cut_text for _, ps in D.CUTOVER for p in ps))
     dic_now = open(os.path.join(target, C.F_DICT), "rb").read().decode("utf-8")
     entry = dic_now[dic_now.index(C.F_CLE):]

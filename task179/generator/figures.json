@@ -33,6 +33,11 @@
   "call_not_enrolled_2027": 3250,
   "cc1_intake_2026_at_census": 8659,
   "cc2_intake_2026_no_repeat_classmate": 3778,
+  "check_fewer_than_10_twice_2019_2025": {
+    "count_free_predicted": 4166.2,
+    "entrants": 11640,
+    "not_enrolled": 5029
+  },
   "hist_intake_entrants_not_enrolled": [
     [
       2019,

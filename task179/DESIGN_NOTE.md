@@ -182,6 +182,7 @@ Lesson: a retention model validated on a later intake is only as good as the pro
 | SF11 | the ask's teaching group (judge pass 3) | the whole set of students taught together in one room at one time, counted once however often and wherever it meets: each distinct set of classes meeting together | every room-and-time meeting its own group (FASS 200 21 and 66); one group per class code (15 and 43) | asks only, the call reads no timetable row | the prompt's clause (2026-10-24) and GROUP_PIN's sentence on two classes sharing one meeting (judge r5), asserted SF11, A4 |
 | SF12 | whether the model reads the entrants' classes (portal judge 2, 2026-10-24) | the 2026 intake's class enrolments are its own while every intake the model is fitted on had the Registry's, so the forecast tests the classes it carries (3,253.0 on the count) | a model on entrant attributes and week-6 ratings alone, the classes never read (2,141.9); the 2026 collapse in repeat classmates read as a migration artefact | 2,250 | cutover notes section 6 (the class-enrolment change, filed as a Registry fact, no measure named); the count-free model 897.2 AIC worse under SELECT_PIN (asserted SF12, verify) |
 | SF13 | the count's form (portal judge 2) | the lowest AIC among the forms fitted (an indicator at 10) | a logarithm of the count alone (3,113.6) or a scale-4 curve (3,090.9) | 3,000 | SELECT_PIN: every form printing outside the bin loses to every form printing inside it (the log 23.0 AIC worse than the best, 3.1 worse than the linear count and 2.7 worse than the square root), so any comparison of two forms prints the call (asserted SF13, verify) |
+| SF14 | whether the repeat-classmate count is comparable across the cutover (portal round 3, 2026-10-25) | a class enrolment records the same thing in both systems, the student on the class's list at the census, so the 2026 collapse in repeat classmates is a change in who chose the classes and the count is carried (3,253.0) | the count read as measured differently across the cutover and dropped as not transportable (2,141.9) | 2,250 | cutover notes section 6's comparability sentence (the Registry's, no measure named); the record's own 11,640 entrants meeting fewer than 10 others twice are 5,029 not enrolled against 4,166.2 from the count-free model (write-up step 5); the count's model fitted on the 9,497 entrants the July run did not place prints 3,293.8 (flag at 10) and 3,264.4 (five bands), and reweighted to the 2026 mix of the count 3,263.6 and 3,279.3 (asserted SF14, verify) |
 
 ## Ladder
 
@@ -237,7 +238,9 @@ sentence or files the same call, and the easy answer (2,250) comes from an easy 
 not from another reading. The cutover notes' section 6 files that the 2026 class enrolments are the entrants' own and
 every earlier intake's were the Registry's, so the change the class records show is a recorded fact, and a model
 that never reads those records ignores a filed difference between the intakes it is fitted on and the one it
-forecasts; no sentence names the count, its form or its effect.
+forecasts; no sentence names the count, its form or its effect. The same section files that a class enrolment
+records the same thing in both systems, so a reading that drops the count as measured differently across the
+cutover breaks a quoted sentence (SF14).
 
 ## Oracles
 
@@ -401,6 +404,39 @@ Measured by: generator/ceiling.py
   the same fork (SF11) closed further, so no third judge. Checks 93 (F5: only that sentence moved), verify 0
   failed, two builds byte-identical, freeze --mode determinism PASS, ceiling 0 of 20 on every route.
   target.zip 5f48e01e.
+
+## Determinism repair, portal round 3 (2026-10-25)
+
+- Portal round 3 on zip 5f48e01e: the call held (rubric 18 per cent). Determinism FAIL, gates C and D,
+  competing_defensible_answer, fix_location input_files. The judge reproduced 3,244 with the flag at 10 and 2,141
+  without, and read section 6 (the Registry entered SIRIUS class enrolments, ARC entrants enrol themselves) as a change
+  in how the count is measured: 79 to 80 per cent of the record's entrants meet 10 or more others twice against 10.7
+  per cent of 2026's, class counts and sizes otherwise alike, so a forecaster who deems the count not transportable
+  drops it and files 2,250; the AIC convention presupposes a candidate set; no control closes it.
+- Stump test: the fork is not the stump. Closing it leaves the default path where it was (a model on entrant
+  attributes never opens the class records and still prints 2,250), and the golden's lead still comes from building
+  the count, which no sentence names. The judge's suggested rule (a predictor whose collection changed at the cutover
+  is excluded unless validated) files the HOW and, read literally, excludes the count: rejected.
+- Move: one Registry sentence added to section 6, after its two filed sentences: the change is in who chooses an
+  entrant's classes, not in what a class enrolment records; in both systems it is the student on the class's list at
+  the census, and the two systems' first-year class extracts hold the same thing (SF14). No count, form, group or
+  effect is named, and D2 finds none of the decisive step's words. The record carries the control the judge asked
+  for, and the write-up's new step 5 states it: the 11,640 entrants of 2019 to 2025 who meet fewer than 10 others
+  twice, one in five of the record and where the 2026 intake sits, were 5,029 not enrolled, and the count-free model
+  predicts 4,166.2 of them. Transport asserted: the count's model fitted on the 9,497 entrants the July run did not
+  place (part-time, or accepted after it) prints 3,293.8 and 3,264.4, and reweighted to the 2026 mix 3,263.6 and
+  3,279.3, all 3,250.
+- Gates: checks 100 green (SF14's seven rows; F4 proves section 6 gained only that sentence), verify 0 failed (its
+  own read of the sentence and its own count-free fit on the segment), two builds byte-identical over 20 files,
+  figures_check 47 present, precut 51 PASS, voice-check PASS (the prompt unchanged), leak.py REVIEW (the documents
+  share the pack's own words; no figure, none of the decisive step's words), guard validate 0 invalid, heart BLOCK
+  unchanged since the first ship, freeze --mode determinism PASS. target.zip c8032390.
+- Reader (leak-task179r3, scored): 2,250 against 3,250 from attribute models with class-size bands, 0 of 20 cells,
+  exit 0; it quoted no sentence naming the step and read section 6 as hinting that the 2026 class profile differs
+  "but it does not say how that matters".
+- Re-judge (determinism-check-task179-r6, order kept, blind call 2,250): DETERMINISTIC, APPROVE. It built the count
+  after its blind pass and reproduced 3,252 to 3,254, every AIC-competitive form inside the bin and the segment check
+  (4,165.9); all 20 cells exact; Gate G analytical_non_defect, Gate H pass. Report: determinism_check_report.md.
 
 ## Architecture v2 record (spent, kept as history)
 
@@ -1097,6 +1133,16 @@ candidate touches them.
     itself, and a stated figure would be a certified record).
   - Judge r5 (2026-10-24) on the group unit left to the prompt's clause alone: two classes sharing one meeting
     were not filed as three groups, nor weeks as part of one time. Closed in GROUP_PIN in the write-up's words.
+  - Portal round 3 (2026-10-25) on the count read as measured differently across the cutover: closed by section 6's
+    comparability sentence (SF14). Rejected for the closure: naming the record's entrants who chose their own
+    classes (confirmed after the July run, part-time) as a control, because it opens a process-indicator route that
+    never builds the count (an indicator for choosing one's classes set for every 2026 entrant: 2,752.0 to 3,047.2 by
+    run date, printing 2,750 or 3,000); the judge's comparability rule (it files the HOW and, read literally,
+    excludes the count, 2,250); rewording section 6 to say the Registry allocated entrants (allocation is the
+    decisive step's own word, D2).
+  - Same round, in the write-up: an out-of-sample figure (the count-free model fitted on the entrants meeting 10 or
+    more, 2,448.2 for the rest). Dropped: part-time entrants never meet 10 or more twice, so the part-time term is
+    unidentified in that fit and the figure rests on a rank-deficient design.
 
 ## Retired
 

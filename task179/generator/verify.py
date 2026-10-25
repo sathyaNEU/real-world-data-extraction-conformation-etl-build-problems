@@ -123,6 +123,18 @@ def main(target):
     cut = " ".join(" ".join(p.extract_text().split()) for p in PdfReader(P("arc_cutover_notes_registry.pdf")).pages)
     if "from Semester 1 2026 entrants choose their classes and enrol in them themselves" not in cut:
         bad.append("SF12 cutover notes section 6 missing")
+    # SF14: the class record means the same in both systems, and the count-free model misses the record's own
+    # entrants who meet fewer than 10 others twice
+    if "not in what a class enrolment records: in both systems it is the student on the class's list at the census" not in cut:
+        bad.append("SF14 cutover notes comparability sentence missing")
+    yh = np.array(yv)
+    th = tie[~isf]
+    lowm = th < 10
+    p_all = m0.predict(base[~isf][lowm]).sum()
+    seg = figs["check_fewer_than_10_twice_2019_2025"]
+    if (int(lowm.sum()) != seg["entrants"] or int(yh[lowm].sum()) != seg["not_enrolled"]
+            or abs(p_all - seg["count_free_predicted"]) > 0.15):
+        bad.append("SF14 segment check %d %d %.2f" % (lowm.sum(), yh[lowm].sum(), p_all))
     Xf = base[isf]
     printed = int(250 * round(call / 250.0))
     if printed != figs["call_not_enrolled_2027"]:

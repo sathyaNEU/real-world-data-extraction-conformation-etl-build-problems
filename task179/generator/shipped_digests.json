@@ -18,5 +18,6 @@
  },
  "cutover_sections_1_to_5": "3a89358384332159eb59e833668483d853ef4a32e56dfafe4c4a6ea2888cd978",
  "conventions": "fd775a127a5889831e9c0c32cd15dd717f8051280fda11cf7c21cce75448710d",
- "group_pin_shipped": "The teaching plan counts teaching groups: the students taught together, in one room at one time. A group belongs to the faculty that owns its paper, and its size is the number of students enrolled at the census whom it teaches. A cancelled class is not a teaching group."
+ "group_pin_shipped": "The teaching plan counts teaching groups: the students taught together, in one room at one time. A group belongs to the faculty that owns its paper, and its size is the number of students enrolled at the census whom it teaches. A cancelled class is not a teaching group.",
+ "cutover_section_6_round2": "In SIRIUS the Registry entered first-year entrants' Semester 1 class enrolments. ARC has no Registry entry of class enrolments: from Semester 1 2026 entrants choose their classes and enrol in them themselves."
 }

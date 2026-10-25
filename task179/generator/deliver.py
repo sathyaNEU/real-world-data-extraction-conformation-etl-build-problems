@@ -31,6 +31,14 @@ def compute(target):
         h = a[a["intake"] == y]
         hist.append((y, int(len(h)), int(h["gone"].sum())))
     o["hist"] = hist
+    # the model without the count, on the record's own entrants who meet fewer than 10 others in two or more classes
+    h = a[a["intake"] < 2026]
+    low = (h["ties"] < 10).values
+    y = h["gone"].values.astype(float)
+    X0 = calc.design(h, "none")
+    b_all, _ = calc.logit_fit(X0, y)
+    o["seg"] = dict(n=int(low.sum()), gone=int(y[low].sum()),
+                    all=float((1 / (1 + np.exp(-(X0[low] @ b_all)))).sum()))
     return o
 
 
@@ -48,6 +56,8 @@ def figures(o):
     F["_model_form"] = o["form"]
     F["_stated"] = {"rounding_of_the_call": 250, "paper_levels": [200, 300]}
     F["hist_intake_entrants_not_enrolled"] = [list(x) for x in o["hist"]]
+    F["check_fewer_than_10_twice_2019_2025"] = {"entrants": o["seg"]["n"], "not_enrolled": o["seg"]["gone"],
+                                                "count_free_predicted": round(o["seg"]["all"], 1)}
     return F
 
 
@@ -211,9 +221,13 @@ def write_submission(path, o, F):
              "0, Some concern 1 and At risk 2, living-learning community, hall, offer acceptance day, faculty) with that "
              "count in several forms, and kept the lowest Akaike information criterion, per the conventions: a flag "
              "for meeting 10 or more other entrants twice.")
-    L.append("5. Applied it to the 2026 entrants and summed their probabilities: %s, about %s to the nearest 250."
+    L.append("5. Checked the model without the count where the 2026 intake sits: %s of the %s entrants of 2019 to "
+             "2025 who meet fewer than 10 other entrants in two or more of their classes were not enrolled at the next "
+             "census, and it predicts %s." % ("{:,}".format(o["seg"]["gone"]), "{:,}".format(o["seg"]["n"]),
+                                              "{:,.1f}".format(o["seg"]["all"])))
+    L.append("6. Applied the kept model to the 2026 entrants and summed their probabilities: %s, about %s to the nearest 250."
              % ("{:,.1f}".format(o["call"]), "{:,}".format(o["call_r"])))
-    L.append("6. Counted Semester 1 2026 teaching groups at 200 level and above from s1_2026_class_timetable.xlsx: each "
+    L.append("7. Counted Semester 1 2026 teaching groups at 200 level and above from s1_2026_class_timetable.xlsx: each "
              "distinct set of active classes meeting together in one room on the same day, start and teaching weeks is "
              "one group however often it meets, so two classes that share only one of their meetings make three groups "
              "(the two at the shared meeting and each at its own); a group's size is the students its classes list in arc_s1_2026_class_enrolments.csv who hold an enrolled "

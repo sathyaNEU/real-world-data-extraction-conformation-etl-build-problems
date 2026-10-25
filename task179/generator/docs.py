@@ -41,6 +41,11 @@ GROUP_PIN = ("The teaching plan counts teaching groups: the students taught toge
              "the shared meeting and each at its own. A group belongs to the faculty that owns its paper, and its size is "
              "the number of students enrolled at the census whom it teaches. A cancelled class is not a teaching group.")
 
+# the Registry's own statement that a class enrolment record means the same on both sides of the cutover
+COMPARABLE = ("The change is in who chooses an entrant's classes, not in what a class enrolment records: in both "
+              "systems it is the student on the class's list at the census, and the two systems' first-year class "
+              "extracts hold the same thing.")
+
 CONVENTIONS = [
     ("1. Purpose", [
         "Each October, once the census is final, Planning and Insight projects the continuing enrolment for the next "
@@ -78,7 +83,8 @@ CUTOVER = [
         "class's teacher of record."]),
     ("6. Class enrolments", [
         "In SIRIUS the Registry entered first-year entrants' Semester 1 class enrolments. ARC has no Registry entry "
-        "of class enrolments: from Semester 1 2026 entrants choose their classes and enrol in them themselves."]),
+        "of class enrolments: from Semester 1 2026 entrants choose their classes and enrol in them themselves.",
+        COMPARABLE]),
 ]
 CODE_TABLE = [
     ("Field", "SIRIUS", "ARC"),
