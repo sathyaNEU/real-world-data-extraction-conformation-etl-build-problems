@@ -161,8 +161,6 @@ Things to know:
 - A row in the price files is one change as submitted: the price stands until the station's next change, or until
   the station closes (the register's closed date).
 - Station numbers changed on 8 Jun 2026. Stations that closed before then keep their old number in the register.
-- In the survey, reference_month is the month a return reports and processing_month the run that processed it; a
-  later revision of a return replaces the earlier one.
 - channel: API is a system-to-system submission, POS the forecourt terminal, PORTAL keyed on the web portal.
 """
 
