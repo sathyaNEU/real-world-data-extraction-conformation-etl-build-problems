@@ -34,10 +34,10 @@
    - D3 (Linwood): 368 that took up a reported arrest, 172 on conditions alone
    - D4 (Corliss): 116 that took up a reported arrest, 149 on conditions alone
 3. Parolee-days held on Board detainers in each district's county jails, 2025:
-   - Garrison: January to June 34,632, July to December 35,505
-   - Ridgway: January to June 21,448, July to December 23,962
-   - Linwood: January to June 17,928, July to December 19,236
-   - Corliss: January to June 10,265, July to December 10,627
+   - Garrison: January to June 34,613, July to December 35,500
+   - Ridgway: January to June 21,409, July to December 23,962
+   - Linwood: January to June 17,928, July to December 19,163
+   - Corliss: January to June 10,241, July to December 10,611
 4. Days people spent out on court writs, by the institution they left, 2025:
    - SCI-KTR: January to June 3,443, July to December 4,237
    - SCI-FNW: January to June 3,838, July to December 4,166

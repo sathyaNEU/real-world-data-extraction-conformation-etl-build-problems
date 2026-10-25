@@ -376,7 +376,10 @@ def main(target):
     ok("ASKC readers' path (an unreturned trip dropped) misses every cell", hits == 0, "%d of 10 kept" % hits)
     vals = [v for d in C.DISTRICTS for v in B[d].values()] + [A[o][x] for o in calc.OFFICES for x in A[o]] + \
            [v for i in calc.INSTITUTIONS for v in W[i].values()]
-    ok("REAL ask figures distinct and not round", len(set(vals)) == len(vals) and not any(v % 100 == 0 for v in vals), "")
+    # a count the record gives is kept as it falls: one figure of 26 on a hundred is chance (Garrison's July to December
+    # detainer days, 35,500, since the detainers lifted at an admission), a run of them or a thousand is not
+    ok("REAL ask figures distinct and not round", len(set(vals)) == len(vals) and not any(v % 1000 == 0 for v in vals)
+       and sum(v % 100 == 0 for v in vals) <= 1, ", ".join(str(v) for v in vals if v % 100 == 0))
 
     # ------------------------------------------------------------ separation
     par = leg[(leg.ad > pd.Timestamp(C.BOARD_MIGRATE_CUT)) & (leg.action == "REVOKE")]
