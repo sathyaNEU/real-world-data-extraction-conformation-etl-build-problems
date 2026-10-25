@@ -1,7 +1,7 @@
 {
  "task": "task179",
  "owner": "sathya8571",
- "status": "PAUSED",
+ "status": "SHIPPED",
  "domain": "education-learning-sciences",
  "objective": "forecasting",
  "stage": 5,
@@ -25,9 +25,9 @@
   "ruling": "Author's standing ruling, 'Ship, window fixed at draw': the card registered under the lock at WARN (4afaec0a) and the later heart BLOCK against task175 comes from the window moving after task173 was spent; nothing relabelled."
  },
  "judge": {
-  "verdict": "DETERMINISTIC (r7, 01124ef4), APPROVE",
-  "disposition": "portal round 4 landed the call on section 6's closures; section 6 withdrawn, the call side the first ship's; blind call 2,250",
-  "report": "task179/determinism_check_report_pass2.md (thread: scratchpad determinism-check-task179-r7/verdict.md)"
+  "verdict": "DETERMINISTIC (r8, 01124ef4), FIX_NOW applied (step 6 wording)",
+  "disposition": "portal round 5's class-code-artefact reading answered by the extracts' comparability in write-up step 4; blind call 2,250",
+  "report": "task179/determinism_check_report_pass3.md (thread: scratchpad determinism-check-task179-r8/verdict.md)"
  },
  "returned": [
   {
@@ -105,6 +105,21 @@
    ],
    "freeze": "determinism PASS: the main call, the stump and every frozen figure unchanged",
    "commit": "RESHIPPED (task179): design, cutover notes section 6 withdrawn so the call side is the first ship's"
+  },
+  {
+   "date": "2026-10-25",
+   "portal": "round 5 on 01124ef4: judge 2 passed every gate (3,250, all 20 cells); judge 1 failed (underspecified_objective, Gate G): the count unforced and the 2026 collapse in repeat classmates read as a class-code artefact",
+   "repair": "determinism",
+   "rounds": [
+    {
+     "round": 1,
+     "zip": "01124ef4 (unchanged)",
+     "moves": "write-up only: step 4 states from the two extracts that a class is the same unit across the cutover (one paper a class; 218,044 places for 57,073 entrants in 8,407 classes against 33,064 for 8,659 in 1,279) and that only the sharing changed (45,433 against 928 meeting 10 or more others twice); step 5 the form corridor; step 6 names the count-free model and its target (after the re-judge's FIX_NOW); SF15 in checks and verify",
+     "judge": "determinism-check-task179-r8 (order kept, blind call 2,250): DETERMINISTIC, FIX_NOW on step 6's wording only, applied; Gate G analytical_non_defect, Gate H pass"
+    }
+   ],
+   "freeze": "determinism PASS: the main call, the stump and every frozen figure unchanged; figures.json unchanged after the step 6 rewording",
+   "commit": "RESHIPPED (task179): determinism, the class unit's comparability across the cutover in the write-up"
   }
  ],
  "wave": "new, seed FC50: the world, the decision and the quantity kept, the world moved honestly off local_government to a private ambulance company holding a city's 911 ambulance contract (the city the counterparty), deciding its own ten summer surge medic units for the weekend 20:00 to 24:00 block from June to August across three districts at the contract's 9-in-10 evenings standard at 1.2 unit-hours a call, the rest offered to the county's mutual-aid roster; the seed's filed staffing formula, the public dataset's suppression of one- and two-call cells and a pooling sentence were never candidates; redraw cell 1 econometrics time-series macro (2026-10-19, dead), redraw cell 2 epidemiology infectious-disease-transmission-modeling (2026-10-21, architecture v2, re-sited to the fictional Republic of Saldane after the first world was declined on the real-place records concern)",
@@ -150,12 +165,12 @@
    "registration": "registered 2026-10-23 (4afaec0a) after two lock BLOCKs on the window (ban.strategy composition_mix vs task274, then vs task175); not relabelled"
   }
  },
- "resume": "determinism repair, portal round 5 (2026-10-25), at stage 4: write-up step 4 states the class unit's comparability across the cutover as exact counts and step 5 the form corridor, SF15 asserted in checks (102 green) and verify (0 failed), two builds byte-identical, target.zip 01124ef4 unchanged, figures_check 58, precut 51, freeze determinism PASS. Next: read the re-judge (scratchpad determinism-check-task179-r8/verdict.md), write determinism_check_report_pass3.md, append returned, reship.",
+ "resume": "",
  "approved": null,
  "delivered": "2026-10-24",
  "portal": null,
  "portal_id": "",
- "portal_status": "returned 2026-10-25 (round 4: both responses 3,250, the call landed), reshipped 2026-10-25 with section 6 withdrawn",
+ "portal_status": "returned 2026-10-25 (round 5: judge 1 FAIL, judge 2 PASS), reshipped 2026-10-25 with the write-up's comparability evidence, the pack unchanged",
  "portal_status_date": "2026-10-25",
  "zip_md5": "01124ef49b164b4860ea4326bd0aa901"
 }

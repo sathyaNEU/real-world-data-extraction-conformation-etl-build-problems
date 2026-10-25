@@ -494,7 +494,13 @@ Measured by: generator/ceiling.py
   change costs). The move is in the solution: step 4 states the comparability as exact counts from the two extracts, step 5
   the form corridor. target.zip 01124ef4 unchanged.
 - Gates: checks 102 (SF15's three rows), verify 0 failed, two builds byte-identical over 20 files, figures_check 58, precut
-  51, freeze --mode determinism PASS. Re-judge: determinism-check-task179-r8, results below.
+  51, freeze --mode determinism PASS.
+- Re-judge (determinism-check-task179-r8, order kept, blind call 2,250): DETERMINISTIC; the forecast 3,244 to 3,250 with
+  the flag and 2,142 without, every threshold from 3 to 15 printing 3,250, all 20 cells exact; Gate G forecasting,
+  analytical_non_defect; Gate H pass. FIX_NOW on step 6 only: it fitted the count-free model on the 11,640 low-exposure
+  entrants and applied it to 2026 (3,408 to 3,436), a reading the step's wording allowed. Step 6 now names the model
+  (all 2019 to 2025 entrants, step 5's attributes, no count) and the entrants it predicts for; 4,166.2 unchanged and
+  asserted, figures.json unchanged, freeze PASS. Report: determinism_check_report_pass3.md.
 
 ## Architecture v2 record (spent, kept as history)
 

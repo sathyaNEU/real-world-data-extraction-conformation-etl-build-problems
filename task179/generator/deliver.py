@@ -237,10 +237,11 @@ def write_submission(path, o, F):
              "count in several forms, and kept the lowest Akaike information criterion, per the conventions: a flag "
              "for meeting 10 or more other entrants twice; every form within 12 AIC of it prints %s."
              % "{:,}".format(o["call_r"]))
-    L.append("6. Checked the model without the count where the 2026 intake sits: %s of the %s entrants of 2019 to "
-             "2025 who meet fewer than 10 other entrants in two or more of their classes were not enrolled at the next "
-             "census, and it predicts %s." % ("{:,}".format(o["seg"]["gone"]), "{:,}".format(o["seg"]["n"]),
-                                              "{:,.1f}".format(o["seg"]["all"])))
+    L.append("6. Checked what the model without the count misses where the 2026 intake sits: fitted on all the 2019 to "
+             "2025 entrants with step 5's attributes and no count, it predicts %s not enrolled among the %s of them who "
+             "meet fewer than 10 other entrants in two or more of their classes, and %s of those %s were not enrolled at "
+             "the next census." % ("{:,.1f}".format(o["seg"]["all"]), "{:,}".format(o["seg"]["n"]),
+                                   "{:,}".format(o["seg"]["gone"]), "{:,}".format(o["seg"]["n"])))
     L.append("7. Applied the kept model to the 2026 entrants and summed their probabilities: %s, about %s to the nearest 250."
              % ("{:,.1f}".format(o["call"]), "{:,}".format(o["call_r"])))
     L.append("8. Counted Semester 1 2026 teaching groups at 200 level and above from s1_2026_class_timetable.xlsx: each "
