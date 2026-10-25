@@ -1,90 +1,104 @@
 {
- "task": "task485",
- "architecture": "v1",
- "drawn": "2026-10-25",
- "slot_note": "re-worlded from seed ET42 (an employer index from H-1B labour condition applications): the seed's world screened and set aside at the draw (Tried and rejected); the decision kept as a designation from a conformed register, the quantity a count the register only partly holds",
- "domain": "survey-research-official-statistics",
- "subdomain": "census-register-administrative-data-quality",
- "niche": "a boundary commission's electoral review of a district's 23 wards, each ward's electors on the register to be published after the 2032 canvass forecast from six canvasses of the register at property level, the address register and the council's housing trajectory, where a new dwelling's electors join the register over several canvasses after it is completed",
- "objective": "etl",
- "shape": "10",
- "decision_type": "designation_set",
- "answer_unit": "set_of_items",
- "answer": "Lorrimere West, Caldenstow Park, Quenbrook, Ebborby and Kettermere lie more than 10 per cent from the district's average electors per councillor on the 2032 forecast; the other 18 wards are within it.",
- "answer_source": "task485/submission.md",
- "gap": [
-  "time",
-  "population"
- ],
- "pattern": [
-  "E"
- ],
- "generators": [
-  "G13",
-  "G14",
-  "G12"
- ],
- "gate_g": "etl_conformance",
- "calibration_form": "none",
- "stump_strategy": "maturity_censoring",
- "decisive_rule_filed": false,
- "official_decoy": false,
- "validated_decoy": false,
- "context_artifact": "filed_standard",
- "stump_class": "analytical",
- "analyst_test": "A strong analyst conforms the 1 December 2025 register to wards, adds every dwelling first in use since and every dwelling the trajectory places before the 2032 register at the settled stock's electors per dwelling by type, keeps each existing dwelling at its 2025 count, and files Ebborby, Kettermere, Lorrimere North and Tibberfield, missing Lorrimere West, Caldenstow Park and Quenbrook.",
- "domain_test": "The 2032 electorate is the register's coverage of each dwelling's electors by the number of canvasses since it was completed, the completeness-by-length-of-residence the electoral field measures, applied dwelling by dwelling to the 2032 canvass; swap electors for pupils on a school roll and the build-up disappears, because a pupil is on roll from the day of admission.",
- "layer2_family": "field_method",
- "layer2_pattern": "own:a new dwelling's electors join the register over the canvasses after completion",
- "layer1": [
-  "the register in two election management system layouts (Electra's property reference before the March 2022 migration, UPRN after)",
-  "the 2022 register's polling districts on the 2014 scheme and the 2023 review's renamed districts with moved streets",
-  "franchise markers: attainers, parliamentary-only overseas electors on the register, local-only electors",
-  "address register records in alternative, provisional and historical logical status beside the approved record, buildings holding flats",
-  "building control's completion dates against the gazetteer's in-use dates; dwelling types in two vocabularies",
-  "the trajectory in monitoring years (April to March) against canvass years (register published 1 December), its 2026/27 column holding October to March",
-  "the old system's 2021 report exported as the register it held at the switch-off, with its notices of alteration"
- ],
- "stakeholder_role": "the Commission's review manager for the district",
- "role_family": "policy_adviser",
- "scoring_unit": "other",
- "spine": {
-  "file": "ems_property_electorate_2022-2025.csv",
-  "rows": 251943,
-  "entity": "one property's elector counts by franchise on one published register",
-  "grain": "property x canvass",
-  "source": "synthetic"
- },
- "forum": "committee_or_panel",
- "forcing_event": "vote_or_meeting",
- "org_family": "government_agency",
- "world": {
-  "geography": "an unnamed UK-like country with individual electoral registration and an annual canvass (the district, its commission and the people are invented)",
-  "currency": "GBP",
-  "org_type": "a national local government boundary commission",
-  "invented_names": [],
-  "people": [
-   "Megan Stewart",
-   "Donald Hayes"
-  ]
- },
- "deliverables": [
-  "ward_electorate_forecast_2032.xlsx",
-  "ward_variance_2032.png"
- ],
- "opening_move": "question-first",
- "question_form": "which",
- "driver": "A new unit's contribution to a register builds up over several annual rounds after the unit is created toward the level settled units hold, so a forecast that keeps each existing unit at its present count and adds the units still to come at the settled units' yield, or at the yield the newest units show today, misses both the recent units still building up and the units that will still be young at the horizon, while a uniform completeness factor moves nothing.",
- "driver_concrete": "Each new dwelling's electors join the register over the canvasses after it comes into use, toward the settled stock's electors per dwelling by type; the 2032 forecast ages every dwelling in use since 2019 and every dwelling the trajectory places before the 2032 register to its number of canvasses on 1 December 2032.",
- "stump": "The default path keeps each dwelling on the 1 December 2025 register at its 2025 count and adds the dwellings since and the trajectory's at the settled stock's electors per dwelling by type, filing Ebborby, Kettermere, Lorrimere North and Tibberfield; the estates completed from 2024 in Lorrimere West, Caldenstow Park and Quenbrook are still joining the register and the North Lorrimere and Tibberfield sites completing from 2030 will still be young in 2032, so aged to their canvasses five wards fail: Lorrimere West, Caldenstow Park, Quenbrook, Ebborby and Kettermere.",
- "mechanism_source": "design_note",
- "differentiation": {
-  "task235": "task235 judges an item lost only once its device has had its next chance to send, read from a real-time contact log; here nothing is lost or waiting to be sent: every dwelling is on the address register and its electors join the register over the canvasses after completion, so the forecast ages each dwelling, built or still to be built, to its canvass count at the horizon.",
-  "task445": "task445 completes holders whose reports have not arrived from each holder's last report and a class drift; here every register has been published and nothing is unreported: a dwelling's electors build up over canvasses toward a settled level, and the step ages dwellings that do not yet exist to their canvass count at the horizon.",
-  "task481": "task481 restates a count onto a new classification by conversion rates whose short window over-represents one kind of record; here no classification changes: a dwelling's electors build up over the canvasses after it is completed, and the forecast ages each dwelling to the 2032 canvass."
- },
- "lineage": [],
- "notes": "",
- "registered": "2026-10-25T08:54:32Z",
- "architecture_spent": true
+  "task": "task485",
+  "architecture": "v2",
+  "drawn": "2026-10-25",
+  "slot_note": "re-rooted after architecture 1 (an electoral review's 2032 electorate with a new dwelling's electors joining the register over its first canvasses) was spent at stage 4; a fresh world and mechanism on the lane's objective, the slot's seed (ET42) set aside at the first draw",
+  "domain": "physical-environmental-sciences",
+  "subdomain": "emissions-inventory",
+  "niche": "a national ammonia programme's 2027 Ammonia Action Regions, designated on each region's cattle-manure ammonia per hectare of farmed land over the 2025-26 programme year, conformed from the bovine register's animal and movement records, the June livestock census, the herd register, the land parcel register and the inventory's factors, where youngstock spend the summer on grazing lets and the winter housed in another region",
+  "objective": "etl",
+  "shape": "10",
+  "decision_type": "designation_set",
+  "answer_unit": "set_of_items",
+  "answer": "",
+  "answer_source": "",
+  "gap": [
+    "population",
+    "time"
+  ],
+  "pattern": [
+    "D"
+  ],
+  "generators": [
+    "G2",
+    "G7",
+    "G4"
+  ],
+  "gate_g": "etl_conformance",
+  "calibration_form": "none",
+  "stump_strategy": "grain_or_unit",
+  "decisive_rule_filed": false,
+  "official_decoy": false,
+  "validated_decoy": false,
+  "context_artifact": "filed_standard",
+  "stump_class": "analytical",
+  "analyst_test": "A strong analyst conforms the 1 June 2026 census holdings to regions, applies the inventory's annual ammonia factor per head by category and region, divides by each region's farmed area and designates the regions at or over the line, filing the upland regions where lowland youngstock spend the summer and missing lowland dairy regions that house them all winter.",
+  "domain_test": "A regional ammonia inventory places each animal's emissions where and when they arise, at the housed rate in the housing season of the region it is in and at the grass rate outside it, so the activity data for a herd that moves with the seasons are animal-days by region and stage rebuilt from the movement register; swap cattle for hospital patients and bed-days for animal-days and nothing is left to place, because a patient's day emits nothing at a rate set by the season and the ward it falls in.",
+  "layer2_family": "field_method",
+  "layer2_pattern": "own:animal-days by region and housing stage rebuilt from the movement register",
+  "layer1": [
+    "the bovine register in two files, one row per animal with birth and exit dates and one row per movement with departure and arrival dates that can differ by a day",
+    "marts and dealers' premises as intermediate herds on many moves",
+    "herd numbers reissued after a holding changes hands, and farmers keeping more than one herd number",
+    "the herd register's region codes revised in 2024 (two regions' boundary moved), the census still on the old codes",
+    "the census keyed by the statistics office's farm number, joined to herd numbers through the herd register",
+    "census categories (dairy cows, suckler cows, other cattle by age band, calves) against categories the register implies from sex, breed, age and calving",
+    "the inventory's factors in kg of ammonia-nitrogen, the programme's line in kg of ammonia",
+    "day-month-year dates in the register, ISO dates elsewhere, the programme year November to October",
+    "farmed area from the land parcel register by herd, commonage shares split across herds"
+  ],
+  "stakeholder_role": "the head of the Department's Ammonia Programme Unit",
+  "role_family": "programme_officer",
+  "scoring_unit": "other",
+  "spine": {
+    "file": "nbr_movements_2025-26.csv",
+    "rows": 0,
+    "entity": "one movement of one animal from one herd to another",
+    "grain": "animal x movement",
+    "source": "synthetic"
+  },
+  "forum": "minister_or_cabinet",
+  "forcing_event": "season_or_peak",
+  "org_family": "government_agency",
+  "world": {
+    "geography": "an unnamed Atlantic country with a national bovine register and an annual June livestock census (the regions, bodies and people are invented)",
+    "currency": "EUR",
+    "org_type": "a national agriculture department's ammonia programme unit",
+    "invented_names": [],
+    "people": [
+      "Emily McAleer",
+      "Noel Herity"
+    ]
+  },
+  "deliverables": [
+    "ammonia_action_regions_2027.xlsx",
+    "cattle_ammonia_per_hectare_2025-26.png"
+  ],
+  "opening_move": "question-first",
+  "question_form": "which",
+  "driver": "A region's period total of a flow is read as each unit's annual rate for that region times the units counted there on one day, but part of the units move between regions with the seasons and their rate is several times higher in the season they spend in their other region; the total belongs to each region by the days each unit spends there in each season, rebuilt from the units' movement histories, and an average of the units present still leaves each unit's high-rate season with the region where it spends the low-rate one.",
+  "driver_concrete": "Each animal's ammonia accrues day by day at the housed rate in the housing season of the region it is in and at the grass rate outside it, so each region's 2025-26 cattle-manure ammonia is rebuilt from the bovine register's movement histories as animal-days by region and stage, not taken as the 1 June census times the region's annual factor per head.",
+  "stump": "The default path multiplies each region's 1 June 2026 census by the inventory's annual factor per head and divides by farmed area, designating the upland regions where lowland youngstock spend the summer and missing the lowland dairy regions that house them all winter; averaging the register's count over the year still leaves the upland regions over the line, because the housed season's ammonia arises where the animals winter.",
+  "mechanism_source": "design_note",
+  "differentiation": {
+    "task181": "There the expected count of events follows the crossings moving units make through each other's positions, so scaling by time spent misses a forward change in crossings; here no event arises between units: each animal's ammonia accrues at the rate of the stage it is in, and the move is placing its days in the region where it spends them, housed or at grass, from the movement register.",
+    "task229": "There the decisive quantity is the standard error of a mean over entities that fail together through a shared node (lineage v1); here nothing is uncertain or correlated: each region's total is a sum of animal-days placed by region and housing stage from the movement records.",
+    "task98": "There a per-unit threshold applies to units formed by chaining members within a fixed distance, which the settled periods hid (lineage v3); here the units are fixed regions and the line reads their totals per hectare, and what moves is which region each animal's days, and its housed season, belong to.",
+    "task70": "There a per-record date is rebuilt from a movement log as the first departure after the record's own timestamp, reshaping a daily distribution behind a per-period threshold (lineage v1); here no date is rebuilt for a record: every animal's whole year is placed day by day across regions and housing stages, and the line reads each region's annual total."
+  },
+  "lineage": [
+    {
+      "version": "v1",
+      "fate": "spent at stage 4, 2026-10-25: both scored readers fitted electors per dwelling to the dwelling's age since completion on the property-level registers and applied the ramp to every dwelling built and to come, landing the golden five",
+      "driver": "A new unit's contribution to a register builds up over several annual rounds after the unit is created toward the level settled units hold, so a forecast that keeps each existing unit at its present count and adds the units still to come at the settled units' yield, or at the yield the newest units show today, misses both the recent units still building up and the units that will still be young at the horizon, while a uniform completeness factor moves nothing.",
+      "stump": "The default path keeps each dwelling on the 1 December 2025 register at its 2025 count and adds the dwellings since and the trajectory's at the settled stock's electors per dwelling by type, filing Ebborby, Kettermere, Lorrimere North and Tibberfield; the estates completed from 2024 in Lorrimere West, Caldenstow Park and Quenbrook are still joining the register and the North Lorrimere and Tibberfield sites completing from 2030 will still be young in 2032, so aged to their canvasses five wards fail: Lorrimere West, Caldenstow Park, Quenbrook, Ebborby and Kettermere.",
+      "domain": "survey-research-official-statistics",
+      "subdomain": "census-register-administrative-data-quality",
+      "niche": "a boundary commission's electoral review of a district's 23 wards, each ward's electors on the register to be published after the 2032 canvass forecast from six canvasses of the register at property level, the address register and the council's housing trajectory, where a new dwelling's electors join the register over several canvasses after it is completed",
+      "gate_g": "etl_conformance",
+      "stump_strategy": "maturity_censoring"
+    }
+  ],
+  "notes": "",
+  "registered": "2026-10-25T14:17:53Z"
 }

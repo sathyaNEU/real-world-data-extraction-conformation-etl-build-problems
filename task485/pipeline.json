@@ -1,40 +1,26 @@
 {
  "task": "task485",
  "owner": "oviya1301",
- "status": "PAUSED",
- "domain": "survey-research-official-statistics",
+ "status": "DESIGN",
+ "domain": "physical-environmental-sciences",
  "objective": "etl",
- "stage": 1,
- "stage_name": "draw",
+ "stage": 2,
+ "stage_name": "design",
  "updated": "2026-10-25",
- "stump": "The default path keeps each dwelling on the 1 December 2025 register at its 2025 count and adds the dwellings since and the trajectory's at the settled stock's electors per dwelling by type, filing Ebborby, Kettermere, Lorrimere North and Tibberfield; but a dwelling's electors join the register over the canvasses after it comes into use (0.45 of the settled level at its first canvass, 0.83 at its third), so aged to their canvasses on 1 December 2032 the estates completed from 2024 take Lorrimere West, Caldenstow Park and Quenbrook over the line and the sites completing from 2030 leave Lorrimere North and Tibberfield inside it: five wards fail.",
- "architecture": 1,
- "loops": 1,
- "precut": {
-  "result": "51 checks, 0 FAIL, 0 WARN (2026-10-25)",
-  "pair_ceiling": 28.5,
-  "mirror_leakage": 0.0
- },
- "leak": {
-  "leak_py": "REVIEW (2026-10-25, no LEAK; zip 237917da)",
-  "reader": "round 1 (zip 237917da): both scored readers landed the call (the golden five) by fitting electors per dwelling to the dwelling's age since completion on the 2022 to 2025 registers and applying the ramp to every dwelling built and to come; score_reader exit 1 on both (asks 6 and 2 of 25); both found the 2021 report's switch-off from its run date and backed the 2022 notices out, missing on handling. Architecture 1 spent."
- },
- "duplicate_check": {
-  "heart": "WARN (2026-10-25)",
-  "surface": "6 pairs promoted for adjudication (task484 back to back on gap and decision type, task483, task275, task481 and two more on card axes); the adjudicated clone-check is author-triggered"
- },
- "judge": {
-  "verdict": "v1r1 DETERMINISTIC, APPROVE (Gate G forecasting and etl_conformance, analytical_non_defect; Gate H pass, decisive step analytical); not taken to a report, the call being spent",
-  "disposition": "APPROVE",
-  "report": ""
- },
+ "architecture": 2,
+ "loops": 0,
+ "stump": "The default path multiplies each region's 1 June 2026 census by the inventory's annual factor per head and divides by farmed area, designating the upland regions where lowland youngstock spend the summer and missing the lowland dairy regions that house them all winter; averaging the register's count over the year still leaves the upland regions over the line, because the housed season's ammonia arises where the animals winter.",
+ "precut": {},
+ "leak": {},
+ "duplicate_check": {},
+ "judge": {},
  "returned": [],
- "resume": "stage 1 of architecture 2: architecture 1 (a dwelling's electors joining the register over the canvasses after it comes into use) spent at stage 4 when both scored readers fitted the ramp from the property-level registers; re-root fresh in the lane's objective with a new draw, reading Tried and rejected first (a unit's yield ramping to a settled level read from a panel beside its start dates is a reflex, as task484 v1's lease-up curve was; screen the draw with guard.py slots on the setting's words as well as the mechanism's)",
+ "resume": "stage 2 for architecture 2 (the Ammonia Reduction Programme's 2027 Ammonia Action Regions on each region's 2025-26 cattle-manure ammonia per hectare of farmed land): world on paper with the twelve regions' herds, grazing lets, weanling and calf flows, farmed areas and the line set so the census route files the upland regions and the golden files lowland dairy regions, every golden margin wide against Layer 1 handling; the standing family measured (animal-days at the season of the region the animal is in, at the home region's season, monthly stock snapshots, the register's mean count), the cheapest licensed member's hit rate, the ladder, the fork table (a mart day's region, the housing season by location, the census categories against the register's, the programme year's bounds), closure, asks on rows outside the main population, prompt.txt, precut.py exit 0.",
  "approved": null,
  "delivered": null,
  "portal": null,
- "source_note": "seed ET42 (H-1B labour condition applications) screened and set aside at the draw; re-worlded into a boundary commission's electoral review",
- "zip": "237917da9ecb5387a7250b4fde842cf2",
+ "source_note": "re-root to a fresh world; architecture 1 (a boundary commission's electoral review) spent at stage 4; the slot's seed ET42 set aside at the first draw",
+ "zip": null,
  "lineage_v1": {
   "zip": "237917da9ecb5387a7250b4fde842cf2",
   "leak": {
