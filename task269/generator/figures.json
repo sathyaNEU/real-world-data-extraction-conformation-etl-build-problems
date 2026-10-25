@@ -1,91 +1,143 @@
 {
  "ask_a": {
-  "14": 167,
-  "22": 165,
-  "3": 205,
-  "31": 106,
-  "40": 209,
-  "52": 101,
-  "7": 160,
-  "9": 103
+  "cod": 7.2,
+  "cod_raw": 7.2141,
+  "level": 0.93,
+  "level_raw": 0.93169,
+  "prd": 0.997,
+  "prd_raw": 0.99688,
+  "sales": 129
  },
  "ask_b": {
-  "14": 47414,
-  "22": 47368,
-  "3": 59702,
-  "31": 28381,
-  "40": 59728,
-  "52": 28274,
-  "7": 47275,
-  "9": 28316
- },
- "boardings": 66404,
- "call": {
-  "routes": [
-   3,
-   7,
-   31,
-   40
-  ]
- },
- "components": {
-  "cut_fifth": {
-   "ewt": 0.8,
-   "route": 9
+  "1": {
+   "name": "North",
+   "parcels": 132,
+   "value_off": 4349600
   },
-  "cut_fourth": {
-   "ewt": 1.0,
-   "route": 3
+  "2": {
+   "name": "Old Town",
+   "parcels": 156,
+   "value_off": 5656500
   },
-  "r14_branch_ewt_all": 1.6,
-  "r14_branch_ewt_own": 0.1,
-  "r14_branch_share": 86,
-  "r7_corridor_share": 66
- },
- "ewt": {
-  "14": 0.7,
-  "22": 0.6,
-  "3": 1.0,
-  "31": 1.5,
-  "40": 1.1,
-  "52": 0.4,
-  "7": 1.1,
-  "9": 0.8
- },
- "first_below": 9,
- "relocated_stop": [
-  222111,
-  222199
- ],
- "rivals": {
-  "boarded_branch": {
-   "r7": 0.6,
-   "routes": [
-    3,
-    9,
-    31,
-    40
-   ]
+  "3": {
+   "name": "Riverside",
+   "parcels": 171,
+   "value_off": 6564800
   },
-  "route_level": {
-   "r14": 1.3,
-   "r3": 1.0,
-   "routes": [
-    7,
-    14,
-    31,
-    40
-   ]
+  "4": {
+   "name": "East Prairie",
+   "parcels": 94,
+   "value_off": 3402200
+  },
+  "5": {
+   "name": "Lakes",
+   "parcels": 166,
+   "value_off": 7095200
+  },
+  "6": {
+   "name": "South",
+   "parcels": 152,
+   "value_off": 6109300
   }
  },
- "routes": [
-  3,
-  7,
-  9,
-  14,
-  22,
-  31,
-  40,
-  52
- ]
+ "ask_b_total": {
+  "parcels": 871,
+  "value_off": 33177600
+ },
+ "call": {
+  "cod": 18,
+  "cod_raw": 17.989,
+  "fails": true,
+  "level": 0.87,
+  "level_raw": 0.8697,
+  "sentence": "Accept the vendor's offer of the county-wide single-family reappraisal: the 2026 single-family roll fails Rule 18-7 on both tests, a median assessment ratio of 0.87 against 0.900 to 1.100 and a coefficient of dispersion of 18 against 15.0 or less."
+ },
+ "cert_2025": "2 June 2025",
+ "condo_meets": true,
+ "default_path": {
+  "cod": 8.0,
+  "cod_raw": 8.007,
+  "level": 0.95,
+  "level_raw": 0.9519
+ },
+ "evidence": {
+  "reviewed_parcels": 1742,
+  "reviewed_share_pct": 6.7,
+  "set_aside_sales": 44,
+  "single_family_parcels": 25988,
+  "sold_change_pct": 14.9,
+  "study_sales": 1698,
+  "unsold_change_pct": 3.4,
+  "unsold_share_pct": 93.3
+ },
+ "family": {
+  "county-wide median change": [
+   0.871,
+   18.009
+  ],
+  "mean without permit or appeal parcels": [
+   0.8697,
+   18.0
+  ],
+  "neighbourhood mean": [
+   0.8713,
+   17.976
+  ],
+  "neighbourhood median": [
+   0.8697,
+   17.989
+  ],
+  "post-sale-work sales kept": [
+   0.8703,
+   18.013
+  ],
+  "post-stratified by neighbourhood": [
+   0.8697,
+   17.965
+  ],
+  "share on the study's sales": [
+   0.8697,
+   18.0
+  ],
+  "unrounded carried values": [
+   0.8698,
+   17.987
+  ],
+  "upper weighted median": [
+   0.8697,
+   17.989
+  ],
+  "value-weighted change": [
+   0.8711,
+   17.975
+  ]
+ },
+ "index": {
+  "jan2025": 100.0,
+  "jan2026": 108.5
+ },
+ "rounding": {
+  "value": 100
+ },
+ "routes": {
+  "all_q": [
+   0.96,
+   8.4
+  ],
+  "roll2025": [
+   0.9,
+   18.7
+  ],
+  "rollfwd": [
+   0.86,
+   18.6
+  ]
+ },
+ "standard": {
+  "cod_max": 15.0,
+  "level_hi": 1.1,
+  "level_lo": 0.9,
+  "prd_hi": 1.03,
+  "prd_lo": 0.98
+ }
 }

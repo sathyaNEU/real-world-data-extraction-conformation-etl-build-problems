@@ -1,55 +1,61 @@
-# determinism-check report, task269, 2026-10-19
+# Determinism check, task269 (architecture 4)
 
-## Verdict
-NOT_DETERMINISTIC (no SOLUTION_WRONG: every golden figure reproduces)
-**Disposition:** SEND_BACK
-**Stumping type:** mechanism: method_or_model_selection, stumping_family: analytical_non_defect, surface_read_dependency: no, sole_data_defect: no
+The isolated judge thread (Sonnet, medium) saw a fresh unzip of target.zip and the submission's graded blocks only. Its verdicts follow as written, round by round.
 
-## Why
-The decisive estimand, which departures count as a branch-route boarding's wait, is filed nowhere in the shipped text. Standard v4 s3.2 works a boarding's wait "at the last timing point" from the revised departures and the timetable in force. Read word for word, that is all departures at the timing point in the direction of travel, and it files routes 7, 14, 31, 40 (route 3 fifth). The golden (3, 7, 31, 40) holds only under the unfiled branch-conditioned reading, where each outbound tag-off is placed in the two branches' stop patterns. That is a competing defensible answer (underspecified_objective). It affects the main call and asks 1, 2, 3. Filing the estimand as a rule would turn the decisive step into rule application, so the step has to be redesigned, not patched.
+## Round 1 (2026-10-25, target.zip e869069b)
 
-## Recomputation ledger
-| Figure | Claimed | Judge recomputed | Reproduced |
+**Verdict:** NOT_DETERMINISTIC (taxonomy: competing_defensible_answer; fix location: prompt, with a filed estimand)
+
+**Disposition:** SEND_BACK. The class-level estimand for the single-family roll has to be filed in the prompt or Rule 18-7 (what stands for the 93.3% of parcels that did not sell, and how the sold parcels enter). That changes what solvers see, so a rerun is required.
+
+**Why:** Read word for word, Rule 18-7 (2.1, 3.1, 3.2) gives single-family 0.95 and COD 8.0 on 1,698 sales. That meets the rule, so the county would decline the offer, and the rule says "Ratios are not otherwise trimmed". The golden (0.87, 18, fails, accept) comes from a method no shipped file states. It takes each sale's 2025 value times its neighbourhood's median change among unsold parcels, rounds to 100, and then weights that proxy set at 93.3% against the sales' actual 2026 ratios at 6.7%. The call direction survives every proxy variant I tried. The two graded single-family figures at the requested rounding do not (see Evidence). Affected: main recommendation (literal reading flips it) and the two single-family figures in reappraisal_recommendation.docx.
+
+## Evidence (recomputed from target/)
+| Item | Golden | Mine | Reproduced |
 |---|---|---|---|
-| Corridor boardings, weekday peaks 10 to 21 Aug | 66,404 | 66,404 | yes |
-| Excess wait R3/7/9/14/22/31/40/52 | 1.0/1.1/0.8/0.7/0.6/1.5/1.1/0.4 | 1.010/1.096/0.814/0.695/0.604/1.493/1.087/0.388 | yes |
-| Shifts, same route order | 205/160/103/167/165/106/209/101 | identical | yes |
-| Pilot cost, same route order | 59,702/47,275/28,316/47,414/47,368/28,381/59,728/28,274 | identical | yes |
-| Route 14 branch-bound 0.1 vs 1.6 | stated | consistent with the judge's cells | broadly |
+| R1 Q-deed sales matched to roll | 1,742 | 1,742 | yes |
+| Set aside by permit finaled after deed | 44 | 44 | yes |
+| Literal sales study (n, median, COD) | 1,698, 0.95, 8.0 | 1,698, 0.9519, 8.007 | yes |
+| Sold-parcel 2025 to 2026 change, median | 14.9% | 14.93% | yes |
+| Unsold-parcel change, median | 3.4% | 3.40% | yes |
+| R1 parcels on 2026 roll | 25,988 | 25,988 (6.7% sold) | yes |
+| Golden R1 median, COD | 0.87, 18 | 0.8697, 17.99 | yes, under the golden's own method |
+| Condo n, median, COD, PRD | 149, 0.93, 7.3, 0.998 | 149, 0.9310, 7.277, 0.9981 | yes |
+| Board of Review, market areas 1 to 6, parcels | 132/156/171/94/166/152 | same | yes |
+| Board of Review, dollars, market areas 1 to 6 | 4,349,600 / 5,656,500 / 6,564,800 / 3,402,200 / 7,095,200 / 6,109,300 | same | yes |
 
-## Competing answers that survived
-1. **Which departures serve a boarding (main call).** Branch-conditioned via tag-off gives 3, 7, 31, 40. The literal s3.2 reading (all departures at the timing point) gives 7, 14, 31, 40 (R14 1.35, R31 2.19, R7 1.34, R3 1.01 fifth). Nothing shipped closes it: guidelines 2.3 and standard 3.1 to 3.3 name no serving-bus set, and standard 2.4 mentions tag-off only for the default fare.
-2. **Pilot cost (ask 5).** "What the pilot cost there" read as post charges only, without the fee share: route 3 is $54,754, not $59,702. The pilot plan files the fee share only "for reporting by route". This is an ask and does not move the call.
-3. **Boardings with no tag-off (ask 3).** Placement is unfiled and the cell average is used. The call holds under every handling tried; the judge's route 14 and 31 figures move by 0.02 or less.
-4. **First release instead of revised.** The call holds, but ask 3 figures move (R14 0.76, R31 1.59). The standard rules this out, so it is closed.
+**The fork on the single-family figures.** All variants below use the shipped data.
+- Literal Rule 18-7 sales study: 0.95 and 8.0, meets, so decline. This is what a word-for-word executor files.
+- Golden: weight 6.7% for the sold parcels at their actual 2026 ratios, 93.3% for the proxy ratios: 0.8697 and 17.99, so 0.87 and 18.
+- Proxy ratios only, sold parcels' actual 2026 values given zero weight: 0.8569 and 18.65, so **0.86 and 19**. Nothing filed excludes it, and it is the simplest correction of the sales-chasing.
+- Weight 5% on the sold parcels: 0.8662 and 18.17, so 0.87 and 18. Weight 10%: 0.8775 and 17.61, so 0.88 and 18.
+- Neighbourhood mean, market-area, countywide or all-parcel factors: 0.867 to 0.871 and about 18.0.
+- Naive 50/50 pooling of the two ratio sets: 0.92 and 13.4, which meets the rule (a wrong method, not a defensible one).
 
-## Spec gates
-| Gate | Required | Actual | Pass |
-|---|---|---|---|
-| Files | 10 or more | 16 | yes |
-| Formats | 3 or more | csv, xlsx, pdf, zip(GTFS txt), txt | yes |
-| Large file | one of 25,000 or more rows | ticketing 123,997 rows | yes |
-| Distractors | two or more named in metadata.json, none labelled in a file name | service_performance_report_august_2026.pdf, customer_feedback_term3_2026.xlsx; neither name labels it | yes |
-| Distractor behaviour | unused by the solution, relevant, ruled out by a shipped fact | the judge found both unused; the August report ranks by on-time running, not excess wait. The first-release AVL is an extra Layer 1 alternative, not a declared distractor | yes |
-| Deliverables | 1 to 3, all in the golden | 2 (xlsx, png), both in golden/ | yes |
-| Asks | multi-dimensional, unit and rounding stated | 8 routes by 3 measures, each with unit and rounding in the prompt | yes |
-| Prompt shape and 25 or more criteria | identifiable | criteria are generated downstream; the shape (every route and cell graded) supports it, but I could not count them | not verifiable here |
-| Reads as real | no LLM tells, goldens real | no authoring leakage found by the judge; I did not open the golden files | not independently checked |
+The pass/fail call holds in every proxy variant except naive pooling. The graded 0.87 and 18 flip to 0.86 and 19 on the zero-weight choice, and no filed rule or selection criterion separates the candidates. The shipped text also never signals that sold parcels were revalued after sale. Only the 14.9% against 3.4% contrast, which the solver has to find, shows it.
 
-## Gate G reconciliation
-Declared by the note: Layer 2 is field_method, the common-lines wait over each rider's attractive set; the easy path is route-level excess wait, giving 7, 14, 31, 40. Thread: mechanism method_or_model_selection, analytical_non_defect, surface_read_dependency no, sole_data_defect no. These match, and the declared distractors are not named as carrying the task. The mismatch is on the line below.
+**Other committed answers.**
+- Condominium: the 153 naive matches (0.94, 16.0, fails) fall to 149 once the 2025-07-01 Wexley Commons renumbering is resolved. Pre-effective-date deeds written at old numbers now point to different units, and 5 COMBINE deeds are set aside because the boundaries changed. This is unique and follows the rule, but it is data semantics. It is acceptable as an ask.
+- Board of Review: hearings whose value_before equals the certified 2025 value, last hearing per case, reduction = before minus after. The 12 two-hearing cases are all REDUCED at the last hearing, and the second value is taken from the original value_before, so it is not cumulative. Counting every REDUCED row instead gives 158/95/155 in areas 2, 4 and 6, which is defeated by the "parcels reduced" wording. Acceptable.
 
-## Gate H reconciliation
-The thread says domain pass, layers pass, decisive_step analytical, only if the estimand is the unit of analysis. The design note's `## Three rules` says "no rule or procedure says over which departures a rider's wait is worked", and its fork table has no row for it (SF1 to SF14 do not cover it). The note therefore admits the decisive rule is left unstated against a stated one. CLAUDE.md names that as a banned hidden rule, and `guard.py` blocks it. The thread read it as a reading fork; the note's own wording makes it the hidden-rule stump as well. The note's "Not semantics" and "Not rule application" lines argue the opposite from the same fact, but only the unfiled-rule reading survives the literal read.
+## Files/Hygiene
+PASS. 13 files (csv x6, xlsx x2, pdf x2, txt x1; the formats number four with the csv/xlsx/pdf/txt mix). The roll is 25,988 R1 rows, which meets the row floor. The distractors are homestead_credits_2026.csv and levy_and_rates_fy2026.xlsx, and the memo explicitly sets them aside. The 2025 xlsx export has the legacy report header and run stamp. Dates are coherent (a 14 September 2026 memo, an offer open to 30 October). I found no authoring leakage and no benchmark disclosure. Nothing is exclusion-level.
 
 ## Stump power (Gate F)
-The easy all-departures reading is the literal reading of s3.2, so a strong solver who executes the text exactly files the wrong answer (7, 14, 31, 40). That is a text-licensed fork, not a method error against a clear spec. The cut margin under the golden reading is clean (route 3 at 1.01 vs route 9 at 0.81). Pilot shifts and costs are deterministic and need no change.
+A strong solver who follows Rule 18-7 as written files 0.95 and 8.0, meets, decline. That is the wrong call. The easy route is the one the rule prescribes, and nothing in the files names sales-chasing, so the main trap is real and strong. A solver who spots the sales-chasing then splits on how to reconstruct the unsold population (the fork above). The Wexley identifier reuse and the 44 permit set-asides are Layer 1 and do not decide the call.
 
-## Findings, ranked
-1. Main call turns on an unfiled population choice, so both answers are defensible from the files (SEND_BACK).
-2. The design note's fork table lacks a row for it, and `precut.py` should have refused the note. The note's no-rule claim and the fork table conflict.
-3. The pilot cost scope (fee share) is ambiguous for ask 5.
-4. The no-tag-off handling is unfiled for ask 3, which is harmless to the call.
+## Stumping type (Gate G)
+`mechanism: statistical_rigor` (selection bias / sales-chasing), `stumping_family: analytical_non_defect` (borderline), `surface_read_dependency: no`, `sole_data_defect: no`.
+The sales study is arithmetically correct and the difficulty is estimating the whole class from a non-representative sample. On clean data without the post-sale revaluation there would be no stump, because the rule's literal method would then give the right answer. The post-sale revaluation is an engineered feature of the data, so I call this borderline and route it to live testing.
 
-## Next action for the author
-Re-root the main call's decisive step so it does not depend on an unfiled rule. One option is to file the WHAT, the serving-departure population (a boarding waits for the buses that can carry it to its destination stop), and move the stump to a genuinely analytical step elsewhere, such as validation or censoring. Do not file the HOW. Also state in the prompt or pilot plan that cost includes the coordination fee share, and add fork rows for both.
+## Three rules (Gate H)
+`domain: pass`, `layers: pass`, `decisive_step: analytical`.
+Domain: mass-appraisal ratio studies (median, COD, PRD, sales chasing) is the field's own work. Layer 1 is the legacy 2025 export, the parcel renumbering with reused identifiers, and the Board of Review re-hearings. Layer 2 is correcting the sale-selected sample for sales-chasing. The easy route computes the rule's sales ratios (0.95, 8.0), says it meets and declines the offer. The decisive step is analytical, but the estimand it must reach is not filed.
+
+## Fix
+- **prompt:** file the WHAT, not the HOW. For example, state the population: the level and COD are for the whole single-family class including parcels not sold, with sold parcels counted at their share of the class. Or add to Rule 18-7 a sentence on parcels revalued after sale.
+- If the zero-weight variant is meant to be wrong, that has to follow from a filed sentence, not from method choice.
+- Alternatively, grade the single-family median and COD with a stated tolerance (0.86 to 0.88, 18 to 19) and keep the accept call.
+- Do not change the data. The condominium and Board of Review answers are fine.
+
+**Disposition read against the gate table** (`determinism-check` section 6): Gates G and H pass and Gate F is strong; the failure is Gate C on the main call (the population left unfiled), so the build was repaired rather than re-rooted: rule 2.1 files the parcels that did not sell, the method stays open, and the one re-judge is owed.

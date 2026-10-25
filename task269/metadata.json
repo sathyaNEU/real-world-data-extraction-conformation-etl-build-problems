@@ -1,106 +1,94 @@
 {
- "answer": "Routes 3, 7, 31, 40",
- "distractors": [
-  "service_performance_report_august_2026.pdf",
-  "customer_feedback_term3_2026.xlsx"
+ "answer": "Accept the vendor's offer of the county-wide single-family reappraisal: the 2026 single-family roll fails Rule 18-7 on both tests, a median assessment ratio of 0.87 against 0.900 to 1.100 and a coefficient of dispersion of 18 against 15.0 or less.",
+ "deliverables": [
+  "golden/reappraisal_recommendation.docx",
+  "golden/ratio_study_2026_roll.xlsx"
  ],
- "domain": "Urban & Regional Science (network analysis)",
+ "distractor_files": [
+  "target/homestead_credits_2026.csv",
+  "target/levy_and_rates_fy2026.xlsx"
+ ],
+ "domain": "General Statistics & Data Science (missing data, censoring and measurement error)",
  "objective": "Descriptive & Distribution Analysis",
  "provenance": {
-  "avl_timingpoint_departures_census_first_release.csv": {
-   "date": "2026-10-02",
+  "assessor_roll_2025_certified.xlsx": {
+   "date": "2026-09-18",
    "licence": "CC0 1.0 (constructed for this task)",
-   "source": "constructed by the task generator (seeded); Pellbrook, Pellbrook Metro, Pellbrook Bus Company and every person are fictional"
+   "source": "constructed by the task generator (seeded); Tillford County, its state, offices, people and records are fictional; the records follow the forms of US county appraisal-system roll exports, recorder deed extracts, building permit logs and board of review hearing logs"
   },
-  "avl_timingpoint_departures_census_revised.csv": {
-   "date": "2026-10-02",
+  "assessor_roll_2026_certified.csv": {
+   "date": "2026-09-18",
    "licence": "CC0 1.0 (constructed for this task)",
-   "source": "constructed by the task generator (seeded); Pellbrook, Pellbrook Metro, Pellbrook Bus Company and every person are fictional"
+   "source": "constructed by the task generator (seeded); Tillford County, its state, offices, people and records are fictional; the records follow the forms of US county appraisal-system roll exports, recorder deed extracts, building permit logs and board of review hearing logs"
   },
-  "bus_service_reliability_standard_v4.pdf": {
-   "date": "2026-10-02",
+  "board_of_review_hearings_2025.csv": {
+   "date": "2026-09-18",
    "licence": "CC0 1.0 (constructed for this task)",
-   "source": "constructed by the task generator (seeded); Pellbrook, Pellbrook Metro, Pellbrook Bus Company and every person are fictional"
+   "source": "constructed by the task generator (seeded); Tillford County, its state, offices, people and records are fictional; the records follow the forms of US county appraisal-system roll exports, recorder deed extracts, building permit logs and board of review hearing logs"
   },
-  "census_working_pack_contents.txt": {
-   "date": "2026-10-02",
+  "building_permits_2025.csv": {
+   "date": "2026-09-18",
    "licence": "CC0 1.0 (constructed for this task)",
-   "source": "constructed by the task generator (seeded); Pellbrook, Pellbrook Metro, Pellbrook Bus Company and every person are fictional"
+   "source": "constructed by the task generator (seeded); Tillford County, its state, offices, people and records are fictional; the records follow the forms of US county appraisal-system roll exports, recorder deed extracts, building permit logs and board of review hearing logs"
   },
-  "customer_feedback_term3_2026.xlsx": {
-   "date": "2026-10-02",
+  "data_dictionary.txt": {
+   "date": "2026-09-18",
    "licence": "CC0 1.0 (constructed for this task)",
-   "source": "constructed by the task generator (seeded); Pellbrook, Pellbrook Metro, Pellbrook Bus Company and every person are fictional"
+   "source": "constructed by the task generator (seeded); Tillford County, its state, offices, people and records are fictional; the records follow the forms of US county appraisal-system roll exports, recorder deed extracts, building permit logs and board of review hearing logs"
   },
-  "frequent_corridors_2026.xlsx": {
-   "date": "2026-10-02",
+  "homestead_credits_2026.csv": {
+   "date": "2026-09-18",
    "licence": "CC0 1.0 (constructed for this task)",
-   "source": "constructed by the task generator (seeded); Pellbrook, Pellbrook Metro, Pellbrook Bus Company and every person are fictional"
+   "source": "constructed by the task generator (seeded); Tillford County, its state, offices, people and records are fictional; the records follow the forms of US county appraisal-system roll exports, recorder deed extracts, building permit logs and board of review hearing logs"
   },
-  "gtfs_pellbrook_2026-07-20.zip": {
-   "date": "2026-10-02",
+  "levy_and_rates_fy2026.xlsx": {
+   "date": "2026-09-18",
    "licence": "CC0 1.0 (constructed for this task)",
-   "source": "constructed by the task generator (seeded); Pellbrook, Pellbrook Metro, Pellbrook Bus Company and every person are fictional"
+   "source": "constructed by the task generator (seeded); Tillford County, its state, offices, people and records are fictional; the records follow the forms of US county appraisal-system roll exports, recorder deed extracts, building permit logs and board of review hearing logs"
   },
-  "gtfs_pellbrook_2026-08-17.zip": {
-   "date": "2026-10-02",
+  "neighborhood_crosswalk.csv": {
+   "date": "2026-09-18",
    "licence": "CC0 1.0 (constructed for this task)",
-   "source": "constructed by the task generator (seeded); Pellbrook, Pellbrook Metro, Pellbrook Bus Company and every person are fictional"
+   "source": "constructed by the task generator (seeded); Tillford County, its state, offices, people and records are fictional; the records follow the forms of US county appraisal-system roll exports, recorder deed extracts, building permit logs and board of review hearing logs"
   },
-  "headway_programme_guidelines_2027.pdf": {
-   "date": "2026-10-02",
+  "parcel_change_log_2025.csv": {
+   "date": "2026-09-18",
    "licence": "CC0 1.0 (constructed for this task)",
-   "source": "constructed by the task generator (seeded); Pellbrook, Pellbrook Metro, Pellbrook Bus Company and every person are fictional"
+   "source": "constructed by the task generator (seeded); Tillford County, its state, offices, people and records are fictional; the records follow the forms of US county appraisal-system roll exports, recorder deed extracts, building permit logs and board of review hearing logs"
   },
-  "headway_supervision_pilot_plan_2026.pdf": {
-   "date": "2026-10-02",
+  "reappraisal_offer_memo.pdf": {
+   "date": "2026-09-18",
    "licence": "CC0 1.0 (constructed for this task)",
-   "source": "constructed by the task generator (seeded); Pellbrook, Pellbrook Metro, Pellbrook Bus Company and every person are fictional"
+   "source": "constructed by the task generator (seeded); Tillford County, its state, offices, people and records are fictional; the records follow the forms of US county appraisal-system roll exports, recorder deed extracts, building permit logs and board of review hearing logs"
   },
-  "ledger_network_performance_fy2026_fy2027.csv": {
-   "date": "2026-10-02",
+  "recorder_deeds_2025.csv": {
+   "date": "2026-09-18",
    "licence": "CC0 1.0 (constructed for this task)",
-   "source": "constructed by the task generator (seeded); Pellbrook, Pellbrook Metro, Pellbrook Bus Company and every person are fictional"
+   "source": "constructed by the task generator (seeded); Tillford County, its state, offices, people and records are fictional; the records follow the forms of US county appraisal-system roll exports, recorder deed extracts, building permit logs and board of review hearing logs"
   },
-  "pbc_staff_list_2026-10-01.csv": {
-   "date": "2026-10-02",
+  "residential_price_index_tillford.csv": {
+   "date": "2026-09-18",
    "licence": "CC0 1.0 (constructed for this task)",
-   "source": "constructed by the task generator (seeded); Pellbrook, Pellbrook Metro, Pellbrook Bus Company and every person are fictional"
+   "source": "constructed by the task generator (seeded); Tillford County, its state, offices, people and records are fictional; the records follow the forms of US county appraisal-system roll exports, recorder deed extracts, building permit logs and board of review hearing logs"
   },
-  "pbc_supervision_timesheets_feb-jun_2026.csv": {
-   "date": "2026-10-02",
+  "str_rule_18-7_residential_ratio_studies.pdf": {
+   "date": "2026-09-18",
    "licence": "CC0 1.0 (constructed for this task)",
-   "source": "constructed by the task generator (seeded); Pellbrook, Pellbrook Metro, Pellbrook Bus Company and every person are fictional"
-  },
-  "service_performance_report_august_2026.pdf": {
-   "date": "2026-10-02",
-   "licence": "CC0 1.0 (constructed for this task)",
-   "source": "constructed by the task generator (seeded); Pellbrook, Pellbrook Metro, Pellbrook Bus Company and every person are fictional"
-  },
-  "stop_changes_log_2026.csv": {
-   "date": "2026-10-02",
-   "licence": "CC0 1.0 (constructed for this task)",
-   "source": "constructed by the task generator (seeded); Pellbrook, Pellbrook Metro, Pellbrook Bus Company and every person are fictional"
-  },
-  "ticketing_journeys_census_2026-08.csv": {
-   "date": "2026-10-02",
-   "licence": "CC0 1.0 (constructed for this task)",
-   "source": "constructed by the task generator (seeded); Pellbrook, Pellbrook Metro, Pellbrook Bus Company and every person are fictional"
+   "source": "constructed by the task generator (seeded); Tillford County, its state, offices, people and records are fictional; the records follow the forms of US county appraisal-system roll exports, recorder deed extracts, building permit logs and board of review hearing logs"
   }
  },
  "rows": {
-  "avl_timingpoint_departures_census_first_release.csv": 54818,
-  "avl_timingpoint_departures_census_revised.csv": 55434,
-  "customer_feedback_term3_2026.xlsx": 318,
-  "frequent_corridors_2026.xlsx": 272,
-  "gtfs_pellbrook_2026-07-20.zip": 38010,
-  "gtfs_pellbrook_2026-08-17.zip": 38010,
-  "ledger_network_performance_fy2026_fy2027.csv": 64,
-  "pbc_staff_list_2026-10-01.csv": 16,
-  "pbc_supervision_timesheets_feb-jun_2026.csv": 1541,
-  "stop_changes_log_2026.csv": 5,
-  "ticketing_journeys_census_2026-08.csv": 123997
+  "assessor_roll_2025_certified.xlsx": 27654,
+  "assessor_roll_2026_certified.csv": 27679,
+  "board_of_review_hearings_2025.csv": 1757,
+  "building_permits_2025.csv": 979,
+  "homestead_credits_2026.csv": 18964,
+  "levy_and_rates_fy2026.xlsx": 10,
+  "neighborhood_crosswalk.csv": 30,
+  "parcel_change_log_2025.csv": 534,
+  "recorder_deeds_2025.csv": 2352,
+  "residential_price_index_tillford.csv": 90
  },
  "task": "task269",
- "title": "Pellbrook Metro: the four frequent routes for the 2027 headway supervisor teams"
+ "title": "Tillford County: does the 2026 single-family roll meet the State's ratio study rule, or does the county accept its vendor's reappraisal offer"
 }

@@ -1,207 +1,168 @@
-"""The analysis, shared by checks.py (on the generator's clean truth) and verify.py (on the shipped files): excess
-wait in cells (timing point, peak, census day, set of departures), each corridor boarding given its cell, and every
-route's figure under the golden, every reflex of the sweep and every member of the golden's own family.
-
-Tables: deps has one row per departure at a timing point (day, route, direction, trip, variant, stop, sched, actual,
-minutes after midnight); jour one row per journey (day, route, direction, trip, variant, board, alight or None, on);
-geo holds each route-direction's corridor stops in order, which of them are timing points, and which variants serve
-every stop of the route in that direction."""
-import collections
-
+"""The main call from the pack: the default path (the State's study on the 2025 sales as they stand), the rungs below
+it, and the golden: the 2026 single-family roll's level and COD measured with the reviewed parcels at their share
+and the parcels that did not sell represented by the sold parcels' 2025 values carried forward by their
+neighbourhoods' factors. The standing family of that construction is computed beside it."""
 import numpy as np
 import pandas as pd
 
 import common as K
 
-PEAKS = K.PEAKS
+AS_OF = pd.Timestamp(K.ASSESS_2026)
 
 
-def awt(h):
-    h = np.asarray(h, float)
-    return float((h ** 2).sum() / (2 * h.sum())) if len(h) else float("nan")
+def cod(r, m):
+    return 100.0 * float(np.mean(np.abs(r - m))) / m
 
 
-def geometry(patterns, corridor, is_tp):
-    """corridor[(route, dir)]: stops in travel order; is_tp: stop -> bool; patterns[(route, dir, variant)]: stops.
-    Returns per route-direction: the corridor list, its timing points, each corridor stop's timing point, and each
-    stop's serving variants."""
-    geo = {}
-    for (rt, d), cor in corridor.items():
-        tps = [s for s in cor if is_tp(s)]
-        tp_of, cur = {}, None
-        for s in cor:
-            if is_tp(s):
-                cur = s
-            tp_of[s] = cur
-        serve = collections.defaultdict(set)
-        for (r2, d2, v), pat in patterns.items():
-            if r2 == rt and d2 == d:
-                for s in pat:
-                    serve[s].add(v)
-        geo[(rt, d)] = dict(cor=cor, cor_set=set(cor), tps=tps, tp_of=tp_of, serve=dict(serve))
-    return geo
+def stat(r):
+    r = np.asarray(r, float)
+    m = float(np.median(r))
+    return m, cod(r, m)
 
 
-def _window(x, t0, t1):
-    x = np.sort(np.asarray(x, float))
-    return x[(x >= t0) & (x < t1)]
+def wstat(x, w, how="lower"):
+    """Weighted median and COD. lower: the smallest value at which the cumulative weight reaches half; upper: the
+    first value past half; mid: the two averaged where the half falls on a boundary."""
+    x, w = np.asarray(x, float), np.asarray(w, float)
+    o = np.argsort(x, kind="mergesort")
+    xs, ws = x[o], w[o]
+    cw = np.cumsum(ws) / ws.sum()
+    i = int(np.searchsorted(cw, 0.5))
+    if how == "upper":
+        j = int(np.searchsorted(cw, 0.5, side="right"))
+        m = xs[min(j, len(xs) - 1)]
+    elif how == "mid" and abs(cw[i] - 0.5) < 1e-12:
+        m = (xs[i] + xs[i + 1]) / 2
+    else:
+        m = xs[i]
+    return float(m), 100.0 * float(np.sum(w * np.abs(x - m)) / w.sum()) / float(m)
 
 
-def cells(deps, pooled=False, sched_col="sched", act_col="actual"):
-    """Excess wait per (day, route, direction, peak, timing point, set) with set 'ALL', 'A' or 'B' (branched routes),
-    worked from the departures inside the peak: the random-arrival wait over the actual headways less the same over
-    the timetable's. pooled=True pools each cell's headways over the census days (a family member)."""
+def sf_frames(pk):
+    r26 = pk.roll26[pk.roll26["class_code"] == "R1"].set_index("parcel_id")
+    r25 = pk.roll25[pk.roll25["Class"] == "Residential single family"].set_index("pid26")
+    return r26, r25
+
+
+def q_sales(pk, r26, physical=True, carry=True):
+    """The 2025 arm's-length single-family sales, set aside where the improvements or boundaries changed after the
+    deed (permits finaled, splits and combinations), each price carried to 1 January 2026."""
+    d = pk.deeds[(pk.deeds["validation_code"] == "Q") & pk.deeds["pid26"].isin(r26.index)].copy()
+    if physical:
+        fin = pk.permits.dropna(subset=["final_inspection_date"])
+        bad = set()
+        for _, p in fin.iterrows():
+            bad.add((p["pid26"], p["final_inspection_date"]))
+        last_fin = fin.groupby("pid26")["final_inspection_date"].max()
+        after = d["pid26"].map(last_fin)
+        changed = after.notna() & (after > d["deed_date"]) & (after < AS_OF)
+        ch = pk.changes[pk.changes["change_type"].isin(["SPLIT", "COMBINE"])]
+        chd = ch.groupby("old_parcel_no")["effective_date"].max()
+        after2 = d["parcel_no"].map(chd)
+        changed |= after2.notna() & (after2 > d["deed_date"]) & (after2 < AS_OF)
+        d = d[~changed]
+    d["carry"] = pk.index_carry(d["deed_date"]) if carry else 1.0
+    d["price_jan26"] = d["consideration"] * d["carry"]
+    d["av26"] = d["pid26"].map(r26["total_assessed_value"])
+    d["nbhd"] = d["pid26"].map(r26["nbhd_code"])
+    return d
+
+
+def changes(pk, r26, r25):
+    """2025 to 2026 change of every single-family parcel on both rolls under one identifier, with its 2025 sale."""
+    both = r26.index.intersection(r25.index)
+    ch = pd.DataFrame({"av26": r26.loc[both, "total_assessed_value"], "av25": r25.loc[both, "Total Assessed"],
+                       "nbhd": r26.loc[both, "nbhd_code"]})
+    ch["chg"] = ch["av26"] / ch["av25"]
+    sold = set(pk.deeds.loc[pk.deeds["validation_code"] == "Q", "pid26"])
+    ch["sold"] = ch.index.isin(sold)
+    return ch
+
+
+def factors(ch, how="median", exclude=None, county=False):
+    u = ch[~ch["sold"]]
+    if exclude is not None:
+        u = u[~u.index.isin(exclude)]
+    if county:
+        v = u["chg"].median() if how == "median" else (u["chg"].mean() if how == "mean" else
+                                                       u["av26"].sum() / u["av25"].sum())
+        return {k: v for k in ch["nbhd"].unique()}
+    if how == "median":
+        return u.groupby("nbhd")["chg"].median().to_dict()
+    if how == "mean":
+        return u.groupby("nbhd")["chg"].mean().to_dict()
+    g = u.groupby("nbhd")
+    return (g["av26"].sum() / g["av25"].sum()).to_dict()
+
+
+def mixture(study, r25, fac, share, rnd=True, how="lower", post=None):
+    av25 = study["pid26"].map(r25["Total Assessed"]).astype(float)
+    cf = av25 * study["nbhd"].map(fac)
+    if rnd:
+        cf = cf.round(-2)
+    rc = (cf / study["price_jan26"]).to_numpy()
+    ra = (study["av26"] / study["price_jan26"]).to_numpy()
+    n = len(study)
+    if post is not None:
+        wu = study["nbhd"].map(post["unsold_w"]).to_numpy()
+        ws = study["nbhd"].map(post["sold_w"]).to_numpy()
+        return wstat(np.r_[rc, ra], np.r_[wu, ws], how)
+    return wstat(np.r_[rc, ra], np.r_[np.full(n, 1 - share), np.full(n, share)], how)
+
+
+def main(pk):
+    r26, r25 = sf_frames(pk)
     out = {}
-    g = deps.groupby(["route", "direction", "stop"] + ([] if pooled else ["day"]), sort=True)
-    for key, df in g:
-        rt, d, stop = key[:3]
-        day = None if pooled else key[3]
-        sets = ["ALL"] + (["A", "B"] if rt in K.BRANCHED else [])
-        for pk, (t0, t1) in PEAKS.items():
-            for st in sets:
-                sub = df if st == "ALL" else df[df["variant"] == st]
-                if pooled:
-                    ha, hs = [], []
-                    for _, dd in sub.groupby("day"):
-                        ha.append(np.diff(_window(dd[act_col], t0, t1)))
-                        hs.append(np.diff(_window(dd[sched_col], t0, t1)))
-                    a = awt(np.concatenate(ha)) if ha else float("nan")
-                    s = awt(np.concatenate(hs)) if hs else float("nan")
-                else:
-                    a, s = awt(np.diff(_window(sub[act_col], t0, t1))), awt(np.diff(_window(sub[sched_col], t0, t1)))
-                out[(day, rt, d, pk, stop, st)] = (a - s, a, s)
+    study = q_sales(pk, r26)
+    allq = q_sales(pk, r26, physical=False)
+    out["study_n"] = len(study)
+    out["q_sf_n"] = int((pk.deeds["validation_code"] == "Q").sum())
+    sold_ids = set(pk.deeds.loc[pk.deeds["validation_code"] == "Q", "pid26"]) & set(r26.index)
+    out["reviewed_n"] = len(sold_ids)
+    out["r1_n"] = int(len(r26))
+    share = len(sold_ids) / len(r26)
+    out["share"] = share
+    # rungs
+    out["easy"] = stat(study["av26"] / study["price_jan26"])
+    out["easy_all_q"] = stat(allq["av26"] / allq["price_jan26"])
+    noc = q_sales(pk, r26, carry=False)
+    out["no_carry"] = stat(noc["av26"] / noc["price_jan26"])
+    allsf = pk.deeds[pk.deeds["pid26"].isin(r26.index) & (pk.deeds["consideration"] > 0)].copy()
+    allsf["carry"] = pk.index_carry(allsf["deed_date"])
+    allsf["p"] = allsf["consideration"] * allsf["carry"]
+    allsf["av26"] = allsf["pid26"].map(r26["total_assessed_value"])
+    out["all_deeds"] = stat(allsf["av26"] / allsf["p"])
+    jan25 = study["consideration"] * study["deed_date"].map(
+        lambda d: pk.idx["2025-01"] / pk.idx["%d-%02d" % (d.year, d.month)])
+    out["roll2025_study"] = stat(study["pid26"].map(r25["Total Assessed"]) / jan25)
+    # the evidence that the sales do not sample the roll
+    ch = changes(pk, r26, r25)
+    out["chg_sold"] = float(ch.loc[ch["sold"], "chg"].median())
+    out["chg_unsold"] = float(ch.loc[~ch["sold"], "chg"].median())
+    out["chg_n_sold"] = int(ch["sold"].sum())
+    out["chg_n_unsold"] = int((~ch["sold"]).sum())
+    fac = factors(ch)
+    out["factors"] = fac
+    out["rollfwd"] = stat((study["pid26"].map(r25["Total Assessed"]) * study["nbhd"].map(fac)).round(-2)
+                          / study["price_jan26"])
+    out["golden"] = mixture(study, r25, fac, share)
+    # the standing family
+    permit_ids = set(pk.permits["pid26"])
+    bor_ids = set(pk.bor["pid26"])
+    fam = {}
+    fam["neighbourhood median"] = out["golden"]
+    fam["neighbourhood mean"] = mixture(study, r25, factors(ch, "mean"), share)
+    fam["mean without permit or appeal parcels"] = mixture(study, r25, factors(ch, "mean", permit_ids | bor_ids), share)
+    fam["value-weighted change"] = mixture(study, r25, factors(ch, "ros"), share)
+    fam["county-wide median change"] = mixture(study, r25, factors(ch, county=True), share)
+    fam["unrounded carried values"] = mixture(study, r25, fac, share, rnd=False)
+    fam["upper weighted median"] = mixture(study, r25, fac, share, how="upper")
+    fam["post-sale-work sales kept"] = mixture(allq, r25, fac, share)
+    fam["share on the study's sales"] = mixture(study, r25, fac, len(study) / len(r26))
+    popn = r26.groupby("nbhd_code").size()
+    sold_nb = r26.loc[r26.index.isin(sold_ids)].groupby("nbhd_code").size().reindex(popn.index, fill_value=0)
+    st_nb = study.groupby("nbhd").size().reindex(popn.index, fill_value=0)
+    post = {"unsold_w": ((popn - sold_nb) / st_nb).to_dict(), "sold_w": (sold_nb / st_nb).to_dict()}
+    fam["post-stratified by neighbourhood"] = mixture(study, r25, fac, share, post=post)
+    out["family"] = fam
     return out
-
-
-def peak_of(t):
-    for pk, (t0, t1) in PEAKS.items():
-        if t0 <= t < t1:
-            return pk
-    return None
-
-
-def corridor_boardings(jour, geo):
-    """The corridor boardings in the census peaks, each with its timing point, its peak and the set of departures
-    that can carry it (the golden's usable set: from the tap-off stop outbound, every bus inbound; "?" when the
-    tap-off is missing)."""
-    rows = []
-    for r in jour.itertuples(index=False):
-        G = geo[(r.route, r.direction)]
-        if r.board not in G["cor_set"]:
-            continue
-        pk = peak_of(r.on)
-        if pk is None:
-            continue
-        if r.route in K.BRANCHED and r.direction == "out":
-            if r.alight is None or (isinstance(r.alight, float) and np.isnan(r.alight)):
-                use = "?"
-            else:
-                sv = G["serve"].get(int(r.alight), set())
-                use = "ALL" if sv == {"A", "B"} else (next(iter(sv)) if len(sv) == 1 else "?")
-        else:
-            use = "ALL"
-        rows.append((r.day, r.route, r.direction, pk, G["tp_of"][r.board], r.trip, r.variant, use))
-    return pd.DataFrame(rows, columns=["day", "route", "direction", "peak", "tp", "trip", "variant", "use"])
-
-
-def figures(cb, cl, method="golden", missing="impute"):
-    """Each route's excess wait per corridor boarding under a method:
-    golden  each boarding over its usable set (outbound tap-off; inbound every bus)
-    R0      every boarding over all of the route's departures
-    R1      every boarding over the branch of the bus it boarded
-    R2      inbound over all departures, outbound over the boarded bus's branch
-    R2b     outbound over its usable set, inbound over the boarded bus's branch
-    Rx      the golden with the branch-bound boardings left out
-    missing (golden family): impute (a boarding with no tap-off takes the average of its cell's tapped-off
-    boardings), drop, all (as if corridor-bound), boarded (its bus's branch)."""
-    tot = collections.defaultdict(float)
-    cnt = collections.defaultdict(float)
-    grp = cb.groupby(["day", "route", "direction", "peak", "tp"], sort=True)
-    for (day, rt, d, pk, tp), df in grp:
-        def e(st):
-            return cl[(day, rt, d, pk, tp, st)][0]
-        vals = []
-        n_missing = 0
-        for u, v in zip(df["use"], df["variant"]):
-            br = rt in K.BRANCHED
-            if method == "R0":
-                vals.append(e("ALL"))
-            elif method == "R1":
-                vals.append(e(v) if br else e("ALL"))
-            elif method == "R2":
-                vals.append(e(v) if (br and d == "out") else e("ALL"))
-            else:
-                if u == "?":
-                    if missing == "drop":
-                        continue
-                    if missing == "all":
-                        vals.append(e("ALL"))
-                        continue
-                    if missing == "boarded":
-                        vals.append(e(v))
-                        continue
-                    n_missing += 1
-                    continue
-                if method == "Rx" and u in ("A", "B"):
-                    continue
-                if method == "R2b" and br and d == "in":
-                    vals.append(e(v))
-                    continue
-                vals.append(e(u))
-        if n_missing and vals:
-            vals.extend([float(np.mean(vals))] * n_missing)
-        tot[rt] += float(np.sum(vals)) if vals else 0.0
-        cnt[rt] += len(vals)
-    return {rt: tot[rt] / cnt[rt] for rt in K.ROUTES if cnt[rt]}
-
-
-def figures_unweighted(cl):
-    """R0u: the route-level excess wait with every cell (timing point, peak, day) counted once."""
-    acc = collections.defaultdict(list)
-    for (day, rt, d, pk, tp, st), (e, a, s) in cl.items():
-        if st == "ALL" and not np.isnan(e):
-            acc[rt].append(e)
-    return {rt: float(np.mean(v)) for rt, v in acc.items()}
-
-
-def figures_peak_direction(cb, cl):
-    """R0p: the route-level measure on the peak direction only (morning inbound, afternoon outbound)."""
-    keep = cb[((cb["peak"] == "AM") & (cb["direction"] == "in")) | ((cb["peak"] == "PM") & (cb["direction"] == "out"))]
-    return figures(keep, cl, "R0")
-
-
-def figures_half_gap(cb, deps, cl, usable=False):
-    """Rh (usable=False): each boarding credited half the gap before the bus it took at its timing point, over all
-    the route's departures, less the timetable's random-arrival wait over all of them; usable=True takes the gap and
-    the timetable over the boarding's usable set (a member of the golden's family, not the standard's formula)."""
-    prev = {}
-    for (day, rt, d, stop), df in deps.groupby(["day", "route", "direction", "stop"], sort=True):
-        df = df.sort_values("actual")
-        t = df["actual"].to_numpy()
-        trips = df["trip"].tolist()
-        var = df["variant"].tolist()
-        gap_all = np.concatenate([[np.nan], np.diff(t)])
-        for i, tr in enumerate(trips):
-            prev[(day, tr, stop, "ALL")] = gap_all[i]
-        for v in ("A", "B"):
-            idx = [i for i, x in enumerate(var) if x == v]
-            for a, b in zip(idx[:-1], idx[1:]):
-                prev[(day, trips[b], stop, v)] = t[b] - t[a]
-    tot = collections.defaultdict(float)
-    cnt = collections.defaultdict(float)
-    for r in cb.itertuples(index=False):
-        st = (r.use if r.use != "?" else "ALL") if usable else "ALL"
-        g = prev.get((r.day, r.trip, r.tp, st))
-        if g is None or np.isnan(g):
-            continue
-        tot[r.route] += g / 2 - cl[(r.day, r.route, r.direction, r.peak, r.tp, st)][2]
-        cnt[r.route] += 1
-    return {rt: tot[rt] / cnt[rt] for rt in K.ROUTES if cnt[rt]}
-
-
-def top(fig, n=K.TEAMS):
-    return sorted(fig, key=lambda r: -fig[r])[:n]
-
-
-def ranking(fig):
-    return sorted(fig, key=lambda r: -fig[r])

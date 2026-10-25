@@ -1,10 +1,8 @@
-"""task269's checks, run by build.py on every build: the input gates; the client's three rules executed on the
-generator's clean truth (R1 the raw material ships, R2 each Layer 1 item neutral, R3a the analyst test, R3b the
-decisive step alone, R3c no plant); the reflex sweep and the golden's own family on the shipped pack; the margins;
-the semantic fork rows; the asks, their devices and the separation line; the cracker; the realism sweep; Gate G and
-the leak greps."""
-import csv
-import datetime as dt
+"""The generator's assertions on the built pack: the call and its standing family at the printed rounding, the
+three-rules block (R1 to R3c) on the clean truth, the semantic fork rows, the asks and their devices, separation from
+the main population, the input gates and the realism sweep.
+
+    python3 task269/generator/checks.py      (run by build.py after every build)"""
 import json
 import os
 import re
@@ -13,304 +11,300 @@ import zipfile
 import numpy as np
 import pandas as pd
 
-import analysis as A
+import analysis as AN
+import asks as AK
 import common as K
-import cracker as CR
 import pack as PK
-import world as W
 
-N = {"ok": 0, "fail": 0}
-FAILS = []
+HERE = os.path.dirname(os.path.abspath(__file__))
 
 
-def check(label, cond, detail=""):
-    if cond:
-        N["ok"] += 1
-    else:
-        N["fail"] += 1
-        FAILS.append("%s %s" % (label, detail))
+def edge(v, u):
+    """Distance from v to the nearest edge of the cell it prints in at unit u."""
+    return u / 2 - abs(v - round(v / u) * u)
 
 
-def printed(f):
-    return {rt: round(v, 1) for rt, v in f.items()}
-
-
-def truth_tables(b):
-    """The clean truth: every departure the simulation ran at a timing point (no doubled records, nothing
-    unmatched), the timetable each day used, every rider's true destination, the original stop numbers."""
-    net, S, J = b["net"], b["S"], b["J"]
-    rows = []
-    for (day, trip), arr in S["deps"].items():
-        rt, d, v = _meta(trip)
-        pat = net["patterns"][(rt, d, v)]
-        sch = S["sched"][(day, trip)]
-        for i, s in enumerate(pat[:-1]):
-            if net["stops"][s]["tp"] and not np.isnan(arr[i]):
-                rows.append((day, rt, d, trip, v, s, sch[i], arr[i]))
-    deps = pd.DataFrame(rows, columns=["day", "route", "direction", "trip", "variant", "stop", "sched", "actual"])
-    jour = pd.DataFrame([dict(day=j["day"], route=j["route"], direction=j["direction"], trip=j["trip"],
-                              variant=j["variant"], board=j["board"], alight=j["alight_true"], on=j["on"]) for j in J])
-    geo = A.geometry(net["patterns"], net["corridor"], lambda s: net["stops"][s]["tp"])
-    return deps, jour, geo
-
-
-def _meta(trip):
-    head = trip.split("-")[0]
-    rt = "".join(ch for ch in head if ch.isdigit())
-    return rt, ("out" if head[len(rt)] == "O" else "in"), head[len(rt) + 1:]
-
-
-def pack_path(target, **kw):
-    L = PK.load(target, **kw)
-    geo = A.geometry(L["patterns"], L["corridor"], lambda s: L["tp"].get(s, False))
-    cl = A.cells(L["deps"])
-    cb = A.corridor_boardings(L["jour"], geo)
-    return L, geo, cl, cb
-
-
-def run(task, b, fig, exact):
-    target = os.path.join(task, "target")
-    golden_set = set(str(r) for r in fig["call"]["routes"])
-    gold = exact["gold"]
-
-    # ------------------------------------------------------------------ input gates
-    files = sorted(os.listdir(target))
-    check("INPUT ten or more files", len(files) >= 10, len(files))
-    exts = {f.rsplit(".", 1)[-1] for f in files}
-    check("INPUT three or more formats", len(exts) >= 3, exts)
-    check("INPUT a file of 25,000 rows or more", max(b["counts"].values()) >= 25000, max(b["counts"].values()))
-    meta = json.load(open(os.path.join(task, "metadata.json")))
-    check("INPUT two or more distractors named in metadata", len(meta["distractors"]) >= 2)
-    for d in meta["distractors"]:
-        check("INPUT distractor shipped " + d, d in files)
-        check("INPUT distractor not named for its role " + d, "distract" not in d.lower())
-    check("INPUT every file has provenance", set(meta["provenance"]) >= set(files))
-
-    # ------------------------------------------------------------------ R3a and R3b on the clean truth
-    deps_t, jour_t, geo_t = truth_tables(b)
-    cl_t = A.cells(deps_t)
-    cb_t = A.corridor_boardings(jour_t, geo_t)
-    check("R3 the clean truth has every destination", (cb_t["use"] != "?").all())
-    g_t = A.figures(cb_t, cl_t, "golden")
-    r0_t = A.figures(cb_t, cl_t, "R0")
-    check("R3a the analyst test: the route-level measure on the clean truth files routes 7, 14, 31 and 40",
-          set(A.top(r0_t)) == {"7", "14", "31", "40"}, sorted(A.top(r0_t), key=int))
-    check("R3b the decisive step alone on the clean truth files the golden",
-          set(A.top(g_t)) == golden_set, sorted(A.top(g_t), key=int))
-    for m in ("R1", "R2", "R2b"):
-        f = A.figures(cb_t, cl_t, m)
-        check("R3b a lower rung's single correction stays wrong on the clean truth: " + m,
-              set(A.top(f)) != golden_set, sorted(A.top(f), key=int))
-    check("R3 the clean truth's golden figures print as the pack's",
-          printed(g_t) == {rt: fig["ewt"][rt] for rt in K.ROUTES}, (printed(g_t), fig["ewt"]))
-
-    # ------------------------------------------------------------------ R1: the field's raw material ships
-    hdr = lambda k: next(csv.reader(open(os.path.join(target, K.FILES[k]), encoding="utf-8")))
-    jh, ah = hdr("journeys"), hdr("avl_rev")
-    check("R1 journeys carry tag-on and tag-off stops and times",
-          {"tag_on_stop", "tag_on_time", "tag_off_stop", "tag_off_time", "trip_id"} <= set(jh))
-    check("R1 departures carry each trip's actual and scheduled times at timing points",
-          {"departure_time", "scheduled_time", "timing_point", "trip_id", "destination"} <= set(ah))
-    for k in ("journeys", "avl_rev", "avl_first", "stops_log", "timesheets", "ledger", "staff"):
-        h = " ".join(hdr(k)).lower()
-        for w in ("excess", "wait", "headway", "usable", "branch", "bound", "attractive"):
-            check("R1 no shipped column names the deciding quantity (%s, %s)" % (k, w), w not in h)
-    with zipfile.ZipFile(os.path.join(target, K.FILES["gtfs1"])) as z:
-        check("R1 the timetable feed carries each trip's stop pattern and shape",
-              {"stop_times.txt", "trips.txt", "stops.txt"} <= set(z.namelist()))
-    L0, geo0, cl0, cb0 = pack_path(target)
-    r0p = A.figures(cb0, cl0, "R0")
-    check("R1 the decisive computation reads the tag-off (without it the set is another)",
-          set(A.top(r0p)) != golden_set)
-
-    # ------------------------------------------------------------------ R2: each Layer 1 item neutral
-    base = printed(gold)
-    for label, kw in (("the first release instead of the revised", dict(avl="avl_first")),
-                      ("both records of a doubled departure kept", dict(doubles="both")),
-                      ("the earlier record of a doubled departure kept", dict(doubles="earlier")),
-                      ("the July feed for the whole fortnight", dict(one_feed=0)),
-                      ("the 17 August feed for the whole fortnight", dict(one_feed=1)),
-                      ("the relocated stop's new number not mapped", dict(map_moved=False))):
-        L, geo, cl, cb = pack_path(target, **kw)
-        f = A.figures(cb, cl, "golden")
-        check("R2 neutral (call): " + label, set(A.top(f)) == golden_set, sorted(A.top(f), key=int))
-        check("R2 neutral (every printed route figure): " + label, printed(f) == base, (printed(f), base))
-        comp = _components(cb, cl)
-        check("R2 neutral (critical components): " + label, comp == _components(cb0, cl0), comp)
-    for mm in ("drop", "all", "boarded"):
-        f = A.figures(cb0, cl0, "golden", missing=mm)
-        check("R2 neutral (call): journeys without a tag-off handled as " + mm, set(A.top(f)) == golden_set)
-        check("R2 neutral (every printed route figure): journeys without a tag-off handled as " + mm,
-              printed(f) == base, printed(f))
-
-    # ------------------------------------------------------------------ R3c: no plant
-    rev = b["rev"]
-    seqs = {}
-    for r in rev:
-        seqs.setdefault((r[0], r[1], r[2], r[6]), []).append(round(r[9], 2))
-    sig = {}
-    for (day, rt, d, stop), ts in seqs.items():
-        h = tuple(np.round(np.diff(sorted(ts)), 2))
-        sig.setdefault((rt, d, stop, h), []).append(day)
-    check("R3c no day's departures repeat another day's at a timing point", all(len(v) == 1 for v in sig.values()))
-    check("R3c no shipped file states an excess wait or a ranking of routes on it", True)
-
-    # ------------------------------------------------------------------ the reflex sweep on the pack
-    sweep = {m: A.figures(cb0, cl0, m) for m in ("R0", "R1", "R2", "R2b", "Rx")}
-    sweep["R0u"] = A.figures_unweighted(cl0)
-    sweep["R0p"] = A.figures_peak_direction(cb0, cl0)
-    sweep["Rh"] = A.figures_half_gap(cb0, L0["deps"], cl0)
-    for m, f in sweep.items():
-        check("SWEEP %s lands a wrong set" % m, set(A.top(f)) != golden_set, sorted(A.top(f), key=int))
-    check("SWEEP the default path ends on routes 7, 14, 31 and 40", set(A.top(sweep["R0"])) == {"7", "14", "31", "40"})
-    r0_sorted = A.ranking(sweep["R0"])
-    check("SWEEP the default path's own cut is clear (0.05 or more)",
-          sweep["R0"][r0_sorted[3]] - sweep["R0"][r0_sorted[4]] >= 0.05,
-          sweep["R0"][r0_sorted[3]] - sweep["R0"][r0_sorted[4]])
-
-    # ------------------------------------------------------------------ the golden's own family
-    fam = {"per-day cells": gold}
-    clp = {("POOL",) + k[1:]: v for k, v in A.cells(L0["deps"], pooled=True).items()}
-    cbp = cb0.copy()
-    cbp["day"] = "POOL"
-    fam["pooled cells"] = A.figures(cbp, clp, "golden")
-    for mm in ("drop", "all", "boarded"):
-        fam["missing " + mm] = A.figures(cb0, cl0, "golden", missing=mm)
-    fam["passenger-sampled over usable sets"] = A.figures_half_gap(cb0, L0["deps"], cl0, usable=True)
-    for name, f in fam.items():
-        if name.startswith("passenger"):
-            continue
-        check("FAMILY one set: " + name, set(A.top(f)) == golden_set, sorted(A.top(f), key=int))
-        check("FAMILY the same printed figures: " + name, printed(f) == base, printed(f))
-
-    # ------------------------------------------------------------------ margins
-    rk = A.ranking(gold)
-    check("MARGIN the golden's fourth and fifth 0.15 or more apart", gold[rk[3]] - gold[rk[4]] >= 0.15,
-          gold[rk[3]] - gold[rk[4]])
-    check("MARGIN the first route below the four is clear of the sixth (0.08 or more)",
-          gold[rk[4]] - gold[rk[5]] >= 0.08, gold[rk[4]] - gold[rk[5]])
-    for name, f in fam.items():
-        if name.startswith("passenger"):
-            continue
-        for rt in K.ROUTES:
-            x = f[rt] * 10
-            edge = abs(x - np.floor(x) - 0.5) / 10
-            check("MARGIN %s route %s at least 0.02 from a rounding edge" % (name, rt), edge >= 0.02, f[rt])
-
-    # ------------------------------------------------------------------ the semantic fork rows
-    std = _pdf_text(os.path.join(target, K.FILES["standard"]))
-    gl = _pdf_text(os.path.join(target, K.FILES["guidelines"]))
-    check("SF1 excess wait is defined on passengers' waiting at the stop",
-          "extra time passengers spend waiting at the stop" in std)
-    check("SF2 a route's figure is per boarding", "in minutes per boarding" in std)
-    check("SF3 the corridor is Network Planning's list", "frequent corridor" in std and "frequent corridors" in gl.lower())
-    check("SF4 the peaks and their ends", "7:00 am to 9:00 am and 3:30 pm to 6:00 pm" in std and
-          "up to but not including its end" in std)
-    check("SF5 the census fortnight", "Monday 10 to Friday 21 August 2026" in gl)
-    check("SF6 a boarding's timing point", "last timing point at or before its stop" in std)
-    check("SF7 the revised release governs", "The revised release governs" in std)
-    check("SF8 a doubled departure: the later time", "the later time" in std)
-    check("SF9 the timetable in force that day", "timetable in force that day" in std)
-    check("SF10 arrivals at random, evenly through each peak", "evenly through each peak" in std)
-    check("SF11 a journey without a tag-off is a boarding", "A journey without a tag-off is a boarding" in std)
-    check("SF12 the relocated stop is in the stop changes log", "Relocated" in open(os.path.join(
-        target, K.FILES["stops_log"]), encoding="utf-8").read())
-    check("SF13 the cell is the timing point, peak and census day", "for the peak and the census day it boarded in" in std)
-    check("SF14 four teams, no tie near the cut", "four teams" in gl and gold[rk[3]] - gold[rk[4]] >= 0.1)
-
-    # ------------------------------------------------------------------ asks
-    T = b["T"]
-    check("ASK A the golden equals the truth", fig["ask_a"] == T["shifts"], (fig["ask_a"], T["shifts"]))
-    check("ASK B the golden equals the truth", fig["ask_b"] == {rt: int(round(v)) for rt, v in T["cost"].items()})
-    cr = CR.run(task, quiet=True)
-    for name, hits in cr["report"].items():
-        check("ASK stop misses every route: " + name, not hits, hits)
-    check("ASK A every route's figure distinct", len(set(fig["ask_a"].values())) == 8)
-    check("ASK B every route's figure distinct", len(set(fig["ask_b"].values())) == 8)
-    ts = b["ts"]
-    a, z = K.CUTOVER
-    both = {(r["day"]) for r in ts if r["src"] == "Payroll"} & {(r["day"]) for r in ts if r["src"] != "Payroll"}
-    check("ASK the two timesheet systems overlap only in the cut-over weeks", both and min(both) >= a and max(both) <= z)
-    check("ASK payroll rows exist before the cut-over and app rows after it",
-          any(r["src"] == "Payroll" and r["day"] < a for r in ts) and any(r["src"] != "Payroll" and r["day"] > z for r in ts))
-    check("ASK no invoice narration states a shift count",
-          all("shift" not in r[5] for r in R_ledger(b)))
-    # the separation line: the call reads none of the ask files
-    import inspect
-    src = inspect.getsource(PK.load)
-    for k in ("timesheets", "staff", "ledger", "pilot_plan"):
-        check("SEPARATION the call's loader opens no ask file (%s)" % k, '"%s"' % k not in src)
-
-    # ------------------------------------------------------------------ cracker and pair
-    check("CRACKER misses every ask figure", cr["cracker_a_hits"] == 0 and cr["cracker_b_hits"] == 0)
-    check("CRACKER pair ceiling 40 or under", cr["pair"] <= 40, cr["pair"])
-
-    # ------------------------------------------------------------------ realism
-    per_route = {rt: int((cb0["route"] == rt).sum()) for rt in K.ROUTES}
-    check("REALISM corridor boardings differ by route", len(set(per_route.values())) == 8, per_route)
-    deps_route = L0["deps"].groupby("route").size().to_dict()
-    check("REALISM departures differ by route", len(set(deps_route.values())) == 8)
-    for k, v in fig["ask_b"].items():
-        check("REALISM pilot cost not round (route %s)" % k, v % 100 != 0, v)
-    names = set()
-    card = json.load(open(os.path.join(os.path.dirname(task), ".claude", "skills", "fingerprint", "cards",
-                                       "task269.json")))
-    for p in card["world"]["people"]:
-        names.add(p)
-    allt = std + gl + _pdf_text(os.path.join(target, K.FILES["pilot_plan"]))
-    for p in names:
-        check("REALISM persona from the card appears: " + p, p in allt)
-    check("REALISM no record after the pack's assembly (2 October 2026)", _latest(target) <= dt.date(2026, 10, 2),
-          _latest(target))
-    for f in files:
-        data = open(os.path.join(target, f), "rb").read()
-        for w in (b"ReportLab", b"openpyxl", b"python-docx", b"matplotlib"):
-            check("REALISM no writer's name in %s (%s)" % (f, w.decode()), w not in data)
-
-    # ------------------------------------------------------------------ Gate G and the leak greps
-    rep = _pdf_text(os.path.join(target, K.FILES["report"]))
-    check("GATE G the monthly report states no excess wait", "excess" not in rep.lower())
-    texts = std + gl + _pdf_text(os.path.join(target, K.FILES["pilot_plan"])) + rep + open(
-        os.path.join(target, K.FILES["contents"]), encoding="utf-8").read()
-    for w in ("attractive", "common line", "usable", "can take", "branch-bound", "tap off at", "tapped off at",
-              "where they are going", "serve the stop"):
-        check("LEAK no shipped document says '%s'" % w, w not in texts.lower())
-
-    print("checks: %d passed, %d failed" % (N["ok"], N["fail"]))
-    for f in FAILS[:40]:
-        print("  FAIL", f)
-    return 0 if not FAILS else 1
-
-
-def _components(cb, cl):
-    out = {}
-    for rt in ("14", "7"):
-        sub = cb[(cb["route"] == rt) & (cb["direction"] == "out") & (cb["use"] != "?")]
-        br = sub[sub["use"].isin(["A", "B"])]
-        own = np.mean([cl[(r.day, r.route, r.direction, r.peak, r.tp, r.use)][0] for r in br.itertuples()])
-        allv = np.mean([cl[(r.day, r.route, r.direction, r.peak, r.tp, "ALL")][0] for r in br.itertuples()])
-        out[rt] = (round(100.0 * len(br) / len(sub)), round(own, 1), round(allv, 1))
-    return out
-
-
-def R_ledger(b):
-    import records as R
-    return R.ledger_rows(b["P"], b["T"])
-
-
-def _pdf_text(path):
+def pdf_text(path):
     from pypdf import PdfReader
-    return re.sub(r"\s+", " ", " ".join(p.extract_text() for p in PdfReader(path).pages))
+    return " ".join((p.extract_text() or "") for p in PdfReader(path).pages)
 
 
-def _latest(target):
-    latest = dt.date(2000, 1, 1)
-    for f in os.listdir(target):
-        if f.endswith(".csv"):
-            for row in csv.reader(open(os.path.join(target, f), encoding="utf-8")):
-                for c in row:
-                    m = re.match(r"^(\d{4})-(\d{2})-(\d{2})", c)
-                    if m:
-                        d = dt.date(int(m.group(1)), int(m.group(2)), int(m.group(3)))
-                        latest = max(latest, d)
-    return latest
+def run(task, b, fig, res):
+    target = os.path.join(task, "target")
+    rows = []
+
+    def ok(label, cond, detail=""):
+        rows.append((label, bool(cond), detail))
+
+    pk = PK.Pack(target)
+    o = AN.main(pk)
+    w = b["w"]
+    s = w.sf
+    F = fig
+    rule = pdf_text(os.path.join(target, K.FILES["rule"]))
+    memo = pdf_text(os.path.join(target, K.FILES["memo"]))
+    ok("control: the rule's text reads back", "Residential ratio studies" in rule and len(rule) > 1500, len(rule))
+    ok("control: the memo's text reads back", "reappraisal" in memo and len(memo) > 800, len(memo))
+    rule_n = re.sub(r"\s+", " ", rule)
+
+    # ---- the call ------------------------------------------------------------------------------------------------------
+    g = o["golden"]
+    ok("C1 golden fails both tests", g[0] < K.STANDARD["level_lo"] and g[1] > K.STANDARD["cod_max"], g)
+    ok("C1 golden prints 0.87 and 18", round(g[0], 2) == F["call"]["level"] == 0.87 and int(round(g[1])) == F["call"]["cod"] == 18)
+    e = o["easy"]
+    ok("C2 the default path meets both tests", K.STANDARD["level_lo"] <= e[0] <= K.STANDARD["level_hi"] and
+       e[1] <= K.STANDARD["cod_max"], e)
+    meds = [v[0] for v in o["family"].values()]
+    cods = [v[1] for v in o["family"].values()]
+    ok("C3 every standing construction prints the golden level", len({round(m, 2) for m in meds}) == 1, sorted(meds))
+    ok("C3 every standing construction prints the golden COD", len({int(round(c)) for c in cods}) == 1, sorted(cods))
+    ok("C3 level family clears its cell edge by 0.003", min(edge(m, 0.01) for m in meds) >= 0.003,
+       min(edge(m, 0.01) for m in meds))
+    ok("C3 COD family clears its cell edge by 0.4", min(edge(c, 1.0) for c in cods) >= 0.4, min(edge(c, 1.0) for c in cods))
+    ok("C3 the family's members all fail the rule", all(m < 0.9 for m in meds) and all(c > 15 for c in cods))
+    rf = o["rollfwd"]
+    ok("C4 the carried-forward values alone print another figure, the same call",
+       (round(rf[0], 2), int(round(rf[1]))) != (0.87, 18) and rf[0] < 0.9 and rf[1] > 15, rf)
+    ok("C4 the rule files the population that rules them out, the parcels that did not sell included",
+       "the median, over every parcel of the class on the county's certified roll, sold or not, of the parcel's "
+       "assessed value on that roll" in rule_n)
+    ev = F["evidence"]
+    ok("C5 sold parcels' median change prints 14.9", ev["sold_change_pct"] == 14.9 and
+       edge(100 * (o["chg_sold"] - 1), 0.1) >= 0.01, o["chg_sold"])
+    ok("C5 other parcels' median change prints 3.4", ev["unsold_change_pct"] == 3.4 and
+       edge(100 * (o["chg_unsold"] - 1), 0.1) >= 0.01, o["chg_unsold"])
+    ok("C5 reviewed share prints 6.7", ev["reviewed_share_pct"] == 6.7 and edge(100 * o["share"], 0.1) >= 0.01,
+       o["share"])
+    ok("C5 the study's sales and the set-asides", ev["study_sales"] == o["study_n"] == 1698 and ev["set_aside_sales"] == 44)
+    ok("C6 the sold parcels moved apart from the rest by more than eight points",
+       o["chg_sold"] - o["chg_unsold"] > 0.08)
+    r25s = o["roll2025_study"]
+    ok("C7 the 2025 roll's own study is another figure", (round(r25s[0], 2), round(r25s[1], 1)) != (0.87, 18.0), r25s)
+
+    # ---- the three rules (R1 to R3c) on the clean truth ----------------------------------------------------------------
+    cols = set(pk.roll26.columns) | set(pk.roll25.columns) | set(pk.deeds.columns)
+    ok("R1 no shipped column holds a ratio, a factor or a review mark",
+       not any(re.search(r"(^|_| )ratio|factor|review|chase|adjust", c, re.I) for c in cols), sorted(cols))
+    ok("R1 the pack carries both rolls parcel by parcel and the deeds sale by sale",
+       len(pk.roll26) > 25000 and len(pk.roll25) > 25000 and len(pk.deeds) > 1700)
+    # the golden reads the 2025 values of the sold parcels: move them and the figure moves
+    st = AN.q_sales(pk, AN.sf_frames(pk)[0])
+    r25 = AN.sf_frames(pk)[1].copy()
+    r25.loc[r25.index.isin(st["pid26"]), "Total Assessed"] *= 1.05
+    moved = AN.mixture(st, r25, o["factors"], o["share"])
+    ok("R1 the decisive computation reads the sold parcels' 2025 values", abs(moved[0] - g[0]) > 0.002, moved)
+    sold, study = s["s25"], s["s25"] & (s["kind"] != 1)
+    pj = s["price"] * K.INDEX_JAN2026 / s["idx"]
+    easy_t = AN.stat(s["av26"][study] / pj[study])
+    ok("R3a the easy route on the clean truth meets the rule (the default path's answer)",
+       0.9 <= easy_t[0] <= 1.1 and easy_t[1] <= 15 and round(easy_t[0], 2) == F["default_path"]["level"], easy_t)
+    cf = np.round(s["av25"] * w.sf["fac"][s["nbi"]], -2)
+    n = int(study.sum())
+    shr = sold.sum() / (len(sold) - K.N_COMBINE)
+    mix_t = AN.wstat(np.r_[cf[study] / pj[study], s["av26"][study] / pj[study]],
+                     np.r_[np.full(n, 1 - shr), np.full(n, shr)])
+    ok("R3b the decisive step alone, on the clean truth, files the golden", round(mix_t[0], 2) == 0.87 and
+       int(round(mix_t[1])) == 18, mix_t)
+    for nm, x in (("no physical-change set-aside", AN.stat(s["av26"][sold] / pj[sold])),
+                  ("no index carry", AN.stat(s["av26"][study] / s["price"][study])),
+                  ("all deeds' parties read as arm's length", o["easy_all_q"])):
+        ok("R3b a lower rung alone still meets the rule: %s" % nm, x[0] >= 0.9 and x[1] <= 15, x)
+    ok("R3c no document states a ratio, level or COD of the roll",
+       not re.search(r"\b0\.[89]\d\b|\bCOD of \d", memo) and "meets" not in memo.lower(), "")
+    d = pk.deeds
+    dup = d.duplicated(subset=["instrument_no", "parcel_no"]).sum()
+    ok("R3c no copied block: no deed row repeats instrument and parcel", dup == 0, dup)
+    rr = pk.roll26.drop(columns=["parcel_id", "situs_address"]).duplicated().sum()
+    ok("R3c no copied block: roll rows repeat at a natural rate", rr < 30, rr)
+
+    # ---- R2: each Layer 1 item, mishandled the natural way, leaves the call and the critical figures --------------------
+    r26f, r25f = AN.sf_frames(pk)
+    lost = set(pk.roll25["pid26"]) - set(pk.roll26["parcel_id"])
+    ch_old = set(pk.changes["old_parcel_no"].map(PK.to26))
+    ok("R2 the two rolls' parcel numbers differ only in form, outside the change log",
+       lost <= ch_old, len(lost - ch_old))
+    ch = AN.changes(pk, r26f, r25f)
+    survivors = set(pk.changes.loc[pk.changes["change_type"] == "COMBINE", "new_parcel_id"])
+    fac2 = AN.factors(ch, exclude=survivors)
+    g2 = AN.mixture(st, r25f, fac2, o["share"])
+    ok("R2 combined parcels' survivors left out of the factors: same figures", round(g2[0], 2) == 0.87 and
+       int(round(g2[1])) == 18, g2)
+    q_only = pk.deeds[pk.deeds["validation_code"] == "Q"]
+    ok("R2 transfers coded U never reach the study", set(st["instrument_no"]) <= set(q_only["instrument_no"]))
+    rec_month = st.copy()
+    rec_month["price_jan26"] = rec_month["consideration"] * pk.index_carry(
+        pk.deeds.set_index("instrument_no").loc[rec_month["instrument_no"], "recorded_date"].reset_index(drop=True)
+        .set_axis(rec_month.index))
+    g3 = AN.mixture(rec_month, r25f, o["factors"], o["share"])
+    ok("R2 SF4 the index carried from the recording month instead: same figures", round(g3[0], 2) == 0.87 and
+       int(round(g3[1])) == 18, g3)
+    big_book = "%03d" % w.condo_book[len(K.CONDO_PROJECTS) - 1]
+    ok("R2 the condominium renumbering touches no single-family row",
+       not pk.changes.loc[pk.changes["change_type"] == "RENUMBER", "old_parcel_no"].str[:3].ne(big_book).any())
+    cperm = pk.permits[pk.permits["parcel_no"].str[:3] >= "200"]
+    ok("R2 the condominium permits touch no single-family parcel", not cperm["pid26"].isin(r26f.index).any() and
+       len(cperm) >= 40, len(cperm))
+
+    # ---- semantic fork rows -------------------------------------------------------------------------------------------
+    ok("SF1 class R1 is single-family; the rule says so", "single-family residential (class R1)" in rule_n)
+    ok("SF2 meeting the rule needs both tests", "its level is from 0.900 to 1.100 and its COD is 15.0 or less" in rule_n)
+    ok("SF3 the level is taken over every parcel of the class on the certified roll, sold or not",
+       "over every parcel of the class on the county's certified roll, sold or not" in rule_n)
+    ok("SF4 the price carried by the deed's month", "divided by the index for the month of the deed" in rule_n)
+    ok("SF5 set-asides: changed improvements or boundaries; no other trimming",
+       "boundaries or improvements changed between the date of the deed and the assessment date" in rule_n and
+       "Ratios are not otherwise trimmed" in rule_n)
+    ok("SF6 COD around the level, as a percentage", "absolute difference between a parcel's ratio and the class's level"
+       in rule_n)
+    ok("SF7 weighted median convention: lower, upper and averaged agree",
+       round(AN.mixture(st, r25f, o["factors"], o["share"], how="mid")[0], 2) == 0.87 and
+       round(o["family"]["upper weighted median"][0], 2) == 0.87)
+    ok("SF8 the reviewed share counted on all reviewed parcels or on the study's sales: same figures",
+       round(o["family"]["share on the study's sales"][0], 2) == 0.87 and
+       int(round(o["family"]["share on the study's sales"][1])) == 18)
+    anyd = set(pk.deeds["pid26"]) & set(r26f.index)
+    g_any = AN.mixture(st, r25f, o["factors"], len(anyd) / len(r26f))
+    qset = set(pk.deeds.loc[pk.deeds["validation_code"] == "Q", "pid26"])
+    u_only = sorted((set(pk.deeds.loc[pk.deeds["validation_code"] != "Q", "pid26"]) - qset) & set(ch.index))
+    u_chg = float(ch.loc[u_only, "chg"].median())
+    ok("SF8 'sold' read as any 2025 deed: the same figures", round(g_any[0], 2) == 0.87 and int(round(g_any[1])) == 18,
+       g_any)
+    ok("SF8 parcels with only non-arm's-length deeds moved with the parcels that did not sell",
+       abs(u_chg - o["chg_unsold"]) < 0.002 and len(u_only) > 300, (len(u_only), u_chg))
+    trimmed = st.copy()
+    rr_ = trimmed["av26"] / trimmed["price_jan26"]
+    q1, q3 = rr_.quantile(.25), rr_.quantile(.75)
+    ok("SF9 the assessment date's month for the carry is January 2026", pk.idx["2026-01"] == K.INDEX_JAN2026)
+    ok("SF10 the reviewed parcels' own ratios are their certified 2026 values over their prices",
+       abs(float((st["av26"] / st["price_jan26"]).median()) - e[0]) < 1e-12)
+
+    # ---- the asks -----------------------------------------------------------------------------------------------------
+    A = AK.ask_a(pk, "golden")
+    Ar, Ae = AK.ask_a(pk, "raw"), AK.ask_a(pk, "every")
+    FA = F["ask_a"]
+    ok("A1 condominium figures as written", (A["n"], round(A["level"], 2), round(A["agg"], 3), round(A["cod"], 1),
+                                              round(A["prd"], 3)) == (FA["sales"], FA["level"], FA["agg"], FA["cod"],
+                                                                      FA["prd"]))
+    ok("A1 condominium sales odd, so the median is one sale's ratio", A["n"] % 2 == 1, A["n"])
+    ok("A1 condominium level clears its cell edge", edge(A["level"], 0.01) >= 0.002, edge(A["level"], 0.01))
+    ok("A1 condominium COD clears its cell edge", edge(A["cod"], 0.1) >= 0.015, edge(A["cod"], 0.1))
+    ok("A1 condominium PRD clears its cell edge", edge(A["prd"], 0.001) >= 0.0002, edge(A["prd"], 0.001))
+    ok("A1 condominium aggregate ratio clears its cell edge", edge(A["agg"], 0.001) >= 0.0002, edge(A["agg"], 0.001))
+    ok("A1 the condominium class meets the rule", 0.9 <= A["level"] <= 1.1 and A["cod"] <= 15)
+    for nm, x in (("raw numbers", Ar), ("the change log applied to every deed", Ae)):
+        ok("A2 %s moves every condominium figure" % nm,
+           x["n"] != A["n"] and round(x["level"], 2) != round(A["level"], 2) and round(x["cod"], 1) != round(A["cod"], 1)
+           and round(x["prd"], 3) != round(A["prd"], 3) and round(x["agg"], 3) != round(A["agg"], 3), x)
+    An, Arp = AK.ask_a(pk, "noperm"), AK.ask_a(pk, "rawperm")
+    for nm, x in (("no permit set aside", An), ("permits joined by their numbers as written", Arp)):
+        ok("A4 %s moves the sales, the aggregate ratio, the COD and the PRD" % nm,
+           x["n"] != A["n"] and round(x["cod"], 1) != round(A["cod"], 1) and round(x["prd"], 3) != round(A["prd"], 3)
+           and round(x["agg"], 3) != round(A["agg"], 3), x)
+    wexp = cperm[cperm["parcel_no"].str[:3] == big_book].copy()
+    oldnos = set(pk.changes.loc[pk.changes["old_parcel_no"].str[:3] == big_book, "old_parcel_no"])
+    newnos = set(pk.changes.loc[pk.changes["old_parcel_no"].str[:3] == big_book, "new_parcel_id"])
+    pre_p = wexp[wexp["issued_date"] < pd.Timestamp(K.REDECLARED)]
+    post_p = wexp[wexp["issued_date"] >= pd.Timestamp(K.REDECLARED)]
+    ok("A5 a Wexley Commons permit carries the unit's number on its issue date",
+       pre_p["parcel_no"].isin(oldnos).all() and post_p["pid26"].isin(newnos).all() and len(pre_p) >= 5 and
+       len(post_p) >= 5, (len(pre_p), len(post_p)))
+    sit = pk.roll26.set_index("parcel_id")["situs_address"]
+    m_new = dict(zip(pk.changes["old_parcel_no"], pk.changes["new_parcel_id"]))
+    m_eff = dict(zip(pk.changes["old_parcel_no"], pk.changes["effective_date"]))
+    mapped = [m_new[p] if (p in m_new and d < m_eff[p]) else PK.to26(p)
+              for p, d in zip(cperm["parcel_no"], cperm["issued_date"])]
+    agree = [str(sit.get(k, "")).endswith("Unit " + wd.rsplit("Unit ", 1)[1])
+             for k, wd in zip(mapped, cperm["work_description"])]
+    ok("A5 every condominium permit's unit agrees with the parcel its number names on its issue date", all(agree),
+       sum(agree))
+    pre = pk.deeds[(pk.deeds["parcel_no"].str[:3] == big_book) & (pk.deeds["deed_date"] < pd.Timestamp(K.REDECLARED))]
+    ok("A3 every deed signed before the re-declaration carries an old number the log lists",
+       pre["parcel_no"].isin(pk.changes["old_parcel_no"]).all() and len(pre) >= 25, len(pre))
+    B = AK.ask_b(pk, "golden")
+    Ball, Brows, Bfirst = AK.ask_b(pk, "all"), AK.ask_b(pk, "rows"), AK.ask_b(pk, "first")
+    Bcase, Ballc, Bpar = AK.ask_b(pk, "case"), AK.ask_b(pk, "allcase"), AK.ask_b(pk, "parcel")
+    ok("B1 Board of Review figures as written", all(B[a]["parcels"] == F["ask_b"][str(a)]["parcels"] and
+                                                     B[a]["off"] == F["ask_b"][str(a)]["value_off"] for a, _ in K.AREAS))
+    ok("B2 the 2024-roll appeals move every area's two figures",
+       all(Ball[a]["parcels"] != B[a]["parcels"] and Ball[a]["off"] != B[a]["off"] for a, _ in K.AREAS), Ball)
+    ok("B3 every REDUCED row summed moves every area's two figures",
+       all(Brows[a]["parcels"] != B[a]["parcels"] and Brows[a]["off"] != B[a]["off"] for a, _ in K.AREAS), Brows)
+    ok("B3 each parcel's first decision moves every area's value",
+       all(Bfirst[a]["off"] != B[a]["off"] for a, _ in K.AREAS), Bfirst)
+    ok("B6 a petition's parcels taken as one moves every area's two figures",
+       all(Bcase[a]["parcels"] != B[a]["parcels"] and Bcase[a]["off"] != B[a]["off"] and
+           Ballc[a]["parcels"] != B[a]["parcels"] and Ballc[a]["off"] != B[a]["off"] for a, _ in K.AREAS), Bcase)
+    ok("B7 each parcel's last decision, keyed by parcel alone, files the golden",
+       all(Bpar[a] == B[a] for a, _ in K.AREAS), Bpar)
+    heard = pk.bor.dropna(subset=["hearing_date"])
+    per_case = heard.groupby("case_no").agg(n=("parcel_no", "nunique"), d=("hearing_date", "nunique"))
+    ok("B8 every case listing several parcels was heard on one day", (per_case.loc[per_case["n"] > 1, "d"] == 1).all() and
+       (per_case["n"] > 1).sum() >= 60, int((per_case["n"] > 1).sum()))
+    after = heard[heard["hearing_date"] >= pd.Timestamp(K.CERT_2025)]
+    ok("B8 no parcel is in two cases on the 2025 roll", after.groupby("parcel_no")["case_no"].nunique().max() == 1)
+    bor = pk.bor.copy()
+    r25p = pk.roll25.set_index("Parcel No.")
+    bor["cert"] = bor["parcel_no"].map(r25p["Total Assessed"])
+    early = bor[bor["hearing_date"] < pd.Timestamp(K.CERT_2025)]
+    late = bor[bor["hearing_date"] >= pd.Timestamp(K.CERT_2025)]
+    ok("B4 every hearing before the 2025 roll's certification appeals another value",
+       (early["value_before"] != early["cert"]).all() and len(early) > 100, len(early))
+    ok("B4 every hearing after it appeals the certified 2025 value", (late["value_before"] == late["cert"]).all())
+    ok("B5 no area total is a round ten thousand", all(B[a]["off"] % 10000 != 0 for a, _ in K.AREAS))
+
+    # ---- separation: the asks' devices sit outside the main population --------------------------------------------------
+    r1_ids = set(pk.roll26.loc[pk.roll26["class_code"] == "R1", "parcel_id"])
+    ok("S1 no renumbered or condominium deed is in the single-family study",
+       not st["pid26"].isin(set(pk.roll26.loc[pk.roll26["class_code"] == "R2", "parcel_id"])).any())
+    import copy
+    pk2 = copy.copy(pk)
+    pk2.bor = pk.bor.iloc[0:0]
+    pk2.changes = pk.changes[pk.changes["old_parcel_no"].str[:3] < "200"]
+    pk2.permits = pk.permits[pk.permits["parcel_no"].str[:3] < "200"]
+    o2 = AN.main(pk2)
+    ok("S2 the golden is unchanged with the Board of Review log, the condominium change rows and permits removed",
+       abs(o2["golden"][0] - g[0]) < 1e-12 and abs(o2["golden"][1] - g[1]) < 1e-9 and o2["study_n"] == o["study_n"],
+       o2["golden"])
+    pk3 = copy.copy(pk)
+    pk3.bor = pk.bor.iloc[0:0]
+    A3 = AK.ask_a(pk3, "golden")
+    ok("S4 the condominium figures do not read the Board of Review log", A3 == A, A3)
+    ok("S3 the single-family study's parcels are all R1", st["pid26"].isin(r1_ids).all())
+
+    # ---- input gates and realism ----------------------------------------------------------------------------------------
+    files = sorted(os.listdir(target))
+    ok("G1 thirteen files", len(files) == len(K.FILES) and len(files) >= 10, len(files))
+    ok("G2 four formats", len({f.rsplit(".", 1)[1] for f in files}) >= 3, {f.rsplit(".", 1)[1] for f in files})
+    ok("G3 a file of 25,000 rows or more", len(pk.roll26) >= 25000, len(pk.roll26))
+    meta = json.load(open(os.path.join(task, "metadata.json")))
+    ok("G4 two distractors declared", len(meta["distractor_files"]) >= 2 and
+       all(os.path.exists(os.path.join(task, x)) for x in meta["distractor_files"]))
+    ok("G4 the study never opens a distractor", not any(K.FILES[k] in open(os.path.join(HERE, m)).read()
+                                                       for k in K.DISTRACTORS for m in ("analysis.py", "asks.py")))
+    unsold_nb = ch[~ch["sold"]].groupby("nbhd").size()
+    ok("G5 no two neighbourhoods carry the same count of parcels", unsold_nb.nunique() >= len(unsold_nb) - 2)
+    ok("G6 deeds recorded in 2025 only", pk.deeds["recorded_date"].dt.year.eq(2025).all())
+    ok("G6 permits issued in 2025 only", pk.permits["issued_date"].dt.year.eq(2025).all())
+    ok("G6 hearings in 2025 only", pk.bor["hearing_date"].dropna().dt.year.eq(2025).all())
+    ok("G6 no deed signed after it was recorded", (pk.deeds["deed_date"] <= pk.deeds["recorded_date"]).all())
+    ok("G7 the PDFs carry no library banner", all(b"ReportLab" not in open(os.path.join(target, K.FILES[k]), "rb").read()
+                                                  for k in ("rule", "memo")))
+    with zipfile.ZipFile(os.path.join(target, K.FILES["roll25"])) as z:
+        core = z.read("docProps/core.xml").decode()
+    ok("G7 the 2025 roll workbook carries its system, not the writing library", "openpyxl" not in core and
+       "CAMA Legacy" in core)
+    people = set(K.PEOPLE.values())
+    named = set(re.findall(r"\b[A-Z][a-z]+ [A-Z][a-z]+\b", memo + " " + rule))
+    ok("G8 every person named in a document was drawn", all(p in people for p in named if p.split()[0] in
+                                                            {q.split()[0] for q in people}))
+    txt = memo + rule + open(os.path.join(target, K.FILES["dictionary"]), encoding="utf-8").read()
+    ok("G9 no em or en dash in the documents", "—" not in txt and "–" not in txt)
+    ok("G10 no document names the review of sold parcels",
+       not re.search(r"sales chasing|chas|selective|sold parcels|revalu", txt, re.I))
+
+    fails = [r for r in rows if not r[1]]
+    for label, good, detail in rows:
+        if not good:
+            print("  FAIL  %s  %s" % (label, str(detail)[:300]))
+    print("checks: %d assertions, %d failed" % (len(rows), len(fails)))
+    return 0 if not fails else 1

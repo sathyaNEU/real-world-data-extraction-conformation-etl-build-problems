@@ -1,12 +1,12 @@
 {
   "task": "task269",
-  "architecture": "v4 (Tillford County's FY2027 budget: whether the Board of Commissioners funds a county-wide single-family reappraisal, read on the State Tax Commission's ratio study standard for the certified 2026 roll, whose assessor reviewed every parcel sold in 2025 and moved its value toward its price while every other parcel was trended by its neighbourhood's factor)",
+  "architecture": "v4 (Tillford County's single-family reappraisal offer: whether the Board of Commissioners accepts its appraisal vendor's offer of a county-wide single-family reappraisal before it lapses on 30 October 2026, read on the State Tax Commission's ratio study standard for the certified 2026 roll, whose assessor reviewed every parcel sold in 2025 and moved its value toward its price while every other parcel was trended by its neighbourhood's factor)",
   "drawn": "2026-10-25",
   "slot_note": "re-drawn 2026-10-25 at architecture 4 in a fresh world at the author's direction (no number in the lane is retired); the world, decision and quantity are new, the pitfall re-found from the data: a ratio study's sales sample the roll only if the sold parcels were valued like the unsold ones",
   "domain": "general-statistics-data-science",
   "subdomain": "missing-data-censoring-measurement-error",
   "client_domain": "general-statistics-data-science",
-  "niche": "a county board's decision to budget a county-wide single-family reappraisal, judged on the state ratio study of a roll whose assessor revalued the parcels sold in the study year toward their own sale prices while trending every other parcel by its neighbourhood's factor",
+  "niche": "a county board's decision to accept a vendor's offer of a county-wide single-family reappraisal, judged on the state ratio study of a roll whose assessor revalued the parcels sold in the study year toward their own sale prices while trending every other parcel by its neighbourhood's factor",
   "objective": "descriptive-distribution",
   "shape": "other",
   "decision_type": "go_hold_or_stop",
@@ -31,7 +31,7 @@
   "validated_decoy": false,
   "context_artifact": "filed_standard",
   "stump_class": "analytical",
-  "analyst_test": "A strong analyst who reads every rule and field correctly runs the State's ratio study on the 2025 arm's-length single-family sales, each price carried to 1 January 2026 by the county index and set against the parcel's certified 2026 value, finds a median of 0.95 and a COD of 8, and files that the roll meets the standard and the reappraisal stays out of the budget, though the assessor reset the sold parcels' values toward their prices (up a median 14.9 per cent against 3.4 for the unsold parcels) so the sales no longer sample the roll, and the sold parcels' 2025 values carried forward by their neighbourhoods' factors, with the reset parcels at their 6.7 per cent share, put the roll at 0.87 and 18, failing both tests.",
+  "analyst_test": "A strong analyst who reads every rule and field correctly runs the State's ratio study on the 2025 arm's-length single-family sales, each price carried to 1 January 2026 by the county index and set against the parcel's certified 2026 value, finds a median of 0.95 and a COD of 8, and files that the roll meets the standard and the county lets its vendor's reappraisal offer lapse, though the assessor reset the sold parcels' values toward their prices (up a median 14.9 per cent against 3.4 for the unsold parcels) so the sales no longer sample the roll, and the sold parcels' 2025 values carried forward by their neighbourhoods' factors, with the reset parcels at their 6.7 per cent share, put the roll at 0.87 and 18, failing both tests.",
   "domain_test": "The deciding quantity is the median and coefficient of dispersion of every single-family parcel's 2026 assessment ratio, a measurement-error distribution known only on the sold parcels, and the field's own analysis is the ratio study with its test of whether the sales sample the roll (sold against unsold parcels' value changes, the sales-chasing screen of mass appraisal) and the sold parcels' prior values carried forward as the out-of-sample measure; replacing that estimate with the sales' own statistics flips the call, and in another field's nouns no recorded value is reset from the very price that measures it.",
   "layer2_family": "estimand_identification",
   "layer2_pattern": "own:a-ratio-study-whose-sales-were-used-to-reset-the-values-it-measures",
@@ -43,7 +43,7 @@
     "Board of Review reductions of 2025 values carried into the 2026 base, and the assessor's data corrections on a few per cent of parcels",
     "the county price index published monthly to one decimal on a January 2025 base"
   ],
-  "stakeholder_role": "budget and policy analyst in the Tillford County Administrator's office, preparing the Board of Commissioners' FY2027 budget",
+  "stakeholder_role": "policy analyst in the Tillford County Administrator's office (Budget and Policy Analysis), advising the Board of Commissioners on its appraisal vendor's reappraisal offer",
   "role_family": "policy_adviser",
   "scoring_unit": "other",
   "spine": {
@@ -56,7 +56,7 @@
     "source_dataset": "constructed (seeded generator; the county, its state, offices and people are fictional)"
   },
   "forum": "council_or_assembly",
-  "forcing_event": "budget_or_appropriation",
+  "forcing_event": "purchase_order_or_contract",
   "org_family": "local_government",
   "world": {
     "geography": "United States (Tillford County and its state are fictional)",
@@ -85,15 +85,14 @@
     "Nicole Rodgers"
   ],
   "deliverables": [
-    "fy2027_reappraisal_decision_memo.docx",
-    "ratio_study_2026_single_family.xlsx",
-    "assessment_ratios_2026_by_market_area.png"
+    "reappraisal_recommendation.docx",
+    "ratio_study_2026_roll.xlsx"
   ],
   "opening_move": "question-first",
   "question_form": "whether",
   "driver": "The decisive quantity is the level and spread over a whole population of a ratio of each unit's recorded value to its true value, where the true value is observed only for units an event sampled and the keeper of the record reset the sampled units' recorded values from those very observations, so the sample's ratios sit tighter and nearer the target than the population's; only each sampled unit's recorded value from before the event, carried forward at the change the unsampled units received, mixed with the reset units at their share of the population, measures it.",
   "driver_concrete": "The 2026 roll's median assessment ratio and COD over every single-family parcel, evidenced by the 2025 arm's-length sales: the assessor reviewed each sold parcel and moved its 2026 value toward its price while trending every other parcel by its neighbourhood's factor, so each sold parcel's 2025 value times its neighbourhood's factor (the unsold parcels' median change), over its indexed price, stands for the 93.3 per cent of the roll that did not sell, the sold parcels' own ratios for the rest.",
-  "stump": "A competent analyst runs the State's ratio study on the 2025 arm's-length sales against the certified 2026 values (median 0.95, COD 8) and files that the roll meets the standard and the reappraisal stays out of the FY2027 budget; the sold parcels' values were reset toward their prices (up 14.9 per cent at the median against 3.4 for the unsold parcels), so only their 2025 values carried forward by the neighbourhood factors, mixed with the reset parcels at their share of the roll, show it failing both tests (median 0.87, COD 18).",
+  "stump": "A competent analyst runs the State's ratio study on the 2025 arm's-length sales against the certified 2026 values (median 0.95, COD 8) and files that the roll meets the standard and the county lets its vendor's reappraisal offer lapse; the sold parcels' values were reset toward their prices (up 14.9 per cent at the median against 3.4 for the unsold parcels), so only their 2025 values carried forward by the neighbourhood factors, mixed with the reset parcels at their share of the roll, show it failing both tests (median 0.87, COD 18).",
   "mechanism_source": "design_note",
   "differentiation": {
     "task104": "task104 replays a self-adapting scorer whose flags withheld observations from its own reference, so its log describes only the setting it ran at; here no setting is replayed: the roll's values for the sold parcels were reset from the very prices that measure them, and the roll's accuracy is estimated out of sample from those parcels' values before the review.",
@@ -198,6 +197,6 @@
     }
   ],
   "architecture_spent": false,
-  "notes": "World re-drawn from the seed DA19 at the draw (2026-10-19). Re-rooted the same day after v1 was spent at stage 4 on Gate F; the OSCE world and its operating files are kept, the decisive step moved from the examining arrangement (the reader's own route) to the blueprint's fixed domains. Architecture 2 spent at stage 4 on 2026-10-19: reader 6 of six stratified the decision study by the blueprint domains and landed the call. | v3 drawn 2026-10-19 as the number's last architecture: the shape, forum, forcing event, organisation, role and strategy redrawn against the window (task249, task468, task268); shape 10 (a scorecard against a threshold) was the first draw and is banned by task249, so the programme's cap of four routes makes it a ranked slate under a cap, which is how the programme is funded. | Redrawn at stage 3 on 2026-10-19 against task177 (registered 07:01, reaching this checkout only with the DRAWN pull): forum, forcing event and organisation family. The network is Pellbrook City Council's (Australian councils do run bus networks), so local_government is the honest organisation; the council's Public Transport Committee approves the programme's routes (committee_or_panel) at its November meeting (vote_or_meeting), and the operator's contract variation follows the approval. Architecture 3 spent 2026-10-19 at stage 4 on the judge's first pass (NOT_DETERMINISTIC, SEND_BACK): the standard's 'the departures' read as a route's departures at the timing point files the default path's 7, 14, 31 and 40, and which departures end a rider's wait is the outcome's definition (a WHAT), so filing it is rule application; both scored readers missed the call and landed every pilot figure. task269 retired; architecture_spent set so the card holds no axis ban. | v4 drawn 2026-10-25 at the author's direction to rebuild every reopened number in a fresh world: General Statistics & Data Science, a ratio study's sales reset by the assessor's review; probed before the draw on a prototype pack (one isolated call-only reader filed 'meets', 0.946 and 8.7).",
-  "registered": "2026-10-25T20:28:39Z"
+  "notes": "World re-drawn from the seed DA19 at the draw (2026-10-19). Re-rooted the same day after v1 was spent at stage 4 on Gate F; the OSCE world and its operating files are kept, the decisive step moved from the examining arrangement (the reader's own route) to the blueprint's fixed domains. Architecture 2 spent at stage 4 on 2026-10-19: reader 6 of six stratified the decision study by the blueprint domains and landed the call. | v3 drawn 2026-10-19 as the number's last architecture: the shape, forum, forcing event, organisation, role and strategy redrawn against the window (task249, task468, task268); shape 10 (a scorecard against a threshold) was the first draw and is banned by task249, so the programme's cap of four routes makes it a ranked slate under a cap, which is how the programme is funded. | Redrawn at stage 3 on 2026-10-19 against task177 (registered 07:01, reaching this checkout only with the DRAWN pull): forum, forcing event and organisation family. The network is Pellbrook City Council's (Australian councils do run bus networks), so local_government is the honest organisation; the council's Public Transport Committee approves the programme's routes (committee_or_panel) at its November meeting (vote_or_meeting), and the operator's contract variation follows the approval. Architecture 3 spent 2026-10-19 at stage 4 on the judge's first pass (NOT_DETERMINISTIC, SEND_BACK): the standard's 'the departures' read as a route's departures at the timing point files the default path's 7, 14, 31 and 40, and which departures end a rider's wait is the outcome's definition (a WHAT), so filing it is rule application; both scored readers missed the call and landed every pilot figure. task269 retired; architecture_spent set so the card holds no axis ban. | v4 drawn 2026-10-25 at the author's direction to rebuild every reopened number in a fresh world: General Statistics & Data Science, a ratio study's sales reset by the assessor's review; probed before the draw on a prototype pack (one isolated call-only reader filed 'meets', 0.946 and 8.7). | v4 forcing event redrawn 2026-10-25 at stage 3 from budget_or_appropriation to purchase_order_or_contract after task485 went spent and task301 v2 (budget_or_appropriation) entered the window: the vendor's offer lapses on 30 October 2026, before the Division's study arrives by 30 November. | ban.strategy overridden by the author in session on 2026-10-25 (AskUserQuestion answer 'Override, ship if stage 4 passes'): population_selection repeats task301 v2, which entered the window when task485 went spent at its PAUSED commit (20:17Z), eleven minutes before this card was filed (20:28Z) against a local copy that still held task485 live. The honest label is population_selection (the 2025 sales no longer sample the roll), so the card keeps it, and the build ships only if both stage 4 readers miss the call and the judge approves.",
+  "registered": "2026-10-25T22:02:48Z"
 }

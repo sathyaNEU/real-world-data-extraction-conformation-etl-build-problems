@@ -1,35 +1,35 @@
 {
   "task": "task269",
   "owner": "sathay3012",
-  "status": "DESIGN",
+  "status": "PAUSED",
   "domain": "general-statistics-data-science",
   "objective": "descriptive-distribution",
-  "stage": 2,
-  "stage_name": "design",
+  "stage": 4,
+  "stage_name": "check",
   "updated": "2026-10-25",
-  "stump": "The default path runs the State's ratio study on the 2025 arm's-length sales against the certified 2026 values, finds a median of 0.95 and a COD of 8 and files that the roll meets the standard; the Assessor's office moved every sold parcel's value toward its price (up a median 14.9 per cent against the unsold parcels' 3.4), so each sold parcel's 2025 value carried forward by its neighbourhood's factor stands for the unsold parcels, and with the reviewed parcels at their 6.7 per cent share the roll's median is 0.87 and its COD 18: it fails both tests and the reappraisal goes into the FY2027 budget.",
+  "stump": "The default path runs the State's ratio study on the 2025 arm's-length sales against the certified 2026 values, finds a median of 0.95 and a COD of 8 and files that the roll meets the standard; the Assessor's office moved every sold parcel's value toward its price (up a median 14.9 per cent against the unsold parcels' 3.4), so each sold parcel's 2025 value carried forward by its neighbourhood's factor stands for the unsold parcels, and with the reviewed parcels at their 6.7 per cent share the roll's median is 0.87 and its COD 18: it fails both tests and the county accepts its vendor's offer of the reappraisal.",
   "architecture": 4,
   "loops": 0,
   "precut": {
-    "exit": null,
-    "date": ""
+    "exit": 0,
+    "date": "2026-10-25"
   },
   "leak": {
-    "leak_py": "",
-    "reader": ""
+    "leak_py": "REVIEW 2026-10-25 (--asof 2026-09-18): sweep 4 only, the stump paragraph's common nouns in the dictionary, the memo and the rule",
+    "reader": "round 1 (2026-10-25, target.zip e869069b): two scored readers both off the call (0.95 and 8, the default path); reader 1 kept 13 of 17 ask figures (Ask B 12 of 12, exit 1), reader 2 5 of 17 (Ask A 5 of 5); question 1 none from both; question 6 both named the rule's procedure on their own default path"
   },
   "duplicate_check": {
-    "heart": "",
-    "nearest": "",
-    "surface": ""
+    "heart": "BLOCK ban.strategy only (population_selection against task301 v2, which entered the window when task485 went spent after this card was filed), overridden by the author in session on 2026-10-25 for a ship conditional on stage 4; ban.forcing_event cleared by redrawing the forcing event in the pack to the vendor's offer; card re-registered 2026-10-25T22:02:48Z",
+    "nearest": "0.08 task264 v2",
+    "surface": "exit 0, people.first WARNs only"
   },
   "judge": {
-    "verdict": "",
-    "disposition": "",
-    "report": ""
+    "verdict": "round 1: NOT_DETERMINISTIC (competing_defensible_answer: rule 2.1 read with 3.1 as the sales' own study, and the carried-forward values alone unexcluded)",
+    "disposition": "SEND_BACK read against the gate table as a Gate C repair: Gates G and H pass, Gate F strong; the population is filed in 2.1 and the one re-judge is owed",
+    "report": "task269/determinism_check_report.md"
   },
   "returned": [],
-  "resume": "Stage 2: write the readability screen, fork table, ladder, closure table, literal reader, oracles and the ask sheet (asks on the condominium class and the reappraisal's other inputs, never the call's own population), then prompt.txt to precut exit 0; the world is scratchpad t269v4b/w4.py seed 391 (golden 0.87 and 18, easy 0.95 and 8).",
+  "resume": "Stage 4 round 2 is owed. First pick SEED_CPERMIT (common.py) by a seed search so the condominium aggregate ratio, which replaced the meets-the-rule verdict in Ask A (every careful route got the verdict), sits mid-bin with every measured route off it; seed 2034 leaves it 0.00019 from its edge and fails checks A1. Then rebuild (checks, verify, byte-identical), writeup, figures_check, the ask sheet's Ask A figures in the design note, precut, leak.py --asof 2026-09-18, guard heart (only the overridden strategy ban), then two fresh scored readers (key ask_a.agg in place of condo_meets) and the one re-judge on the new target.zip.",
   "approved": null,
   "delivered": null,
   "portal": null,
@@ -55,5 +55,13 @@
       "leak_py": "REVIEW 2026-10-19: the programme's own nouns in the guidelines, plan and contents list; the standard's own vocabulary; feeds as zips (all harmless, Build record)",
       "reader": "two scored readers 2026-10-19: both missed the call (7, 14, 31 and 40, route 3 first below, the default path), both 20 of 25 ask figures (exit 1: every pilot figure recomputable from the plan and the timesheets); Q6 the standard's procedure"
     }
+  },
+  "gates": {
+    "checks": "77 assertions, 0 failed",
+    "verify": "PASS",
+    "rebuild": "byte-identical",
+    "figures_check": "48 figures, 0 absent",
+    "cracker": "0 of 17, pair ceiling 28.5",
+    "target_zip_md5": "e869069b58699fa67f0fd2055fee45c7"
   }
 }
