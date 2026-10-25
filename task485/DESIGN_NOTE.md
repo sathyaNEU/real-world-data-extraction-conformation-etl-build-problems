@@ -16,10 +16,13 @@ mechanism on the lane's objective; the candidates screened before it are in `## 
   retailer_or_ecommerce, foundation_or_funder and financial_institution, the roles operations_director, research_desk
   and finance_controller, the context artifacts other, register and close_out_summary, the calibration forms pilot_log
   and existing_book_actuals and the patterns C and E. The draw's honest labels clear all of them: the Minister signs the
-  Order's schedule (minister_or_cabinet), the schedule is a statutory instrument laid under the clean air act
-  (statutory_or_regulatory_filing), the Ministry is the organisation (government_agency), the requester heads the Air
-  Quality Directorate's industrial emissions team (compliance_or_audit), no stakeholder file frames the answer (none),
-  and the shape is a scorecard against a line (`10`).
+  Order's schedule (minister_or_cabinet) once the 2026 inventory year has closed (period_close), the Ministry is the
+  organisation (government_agency), the requester heads the Air Quality Directorate's industrial emissions team
+  (compliance_or_audit), no stakeholder file frames the answer (none),
+  and the shape is a scorecard against a line (`10`). The forcing event was redrawn at the post-filing check: task303
+  v2 (registered 17:59:56Z, reaching main after this draw's first check) took statutory_or_regulatory_filing into the
+  window, and period_close is the honester of the labels left, because the schedule is compiled when the 2026
+  inventory year has closed and the fourth-quarter returns are in; the card was re-registered and checks WARN only.
 - **BLOCK differentiated on the card** (a similarity rule, never an axis): `test.same_driver_older` (gap objective,
   decisive G3, method_or_model_selection) against task477, where each industry's exposure to pay schedules is estimated
   from how its period totals move with the pay dates; here nothing is estimated from co-movement, a conservation law on

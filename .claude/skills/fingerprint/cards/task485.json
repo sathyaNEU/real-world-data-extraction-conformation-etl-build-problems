@@ -52,7 +52,7 @@
     "source": "synthetic"
   },
   "forum": "minister_or_cabinet",
-  "forcing_event": "statutory_or_regulatory_filing",
+  "forcing_event": "period_close",
   "org_family": "government_agency",
   "world": {
     "geography": "an unnamed coal-producing country with a register of permitted industrial boilers in a Northern Priority Area (the provinces, bodies, firms and people are invented)",
@@ -104,5 +104,5 @@
     }
   ],
   "notes": "stump_strategy other: a conservation law on the reagent, the sulphur a wet limestone scrubber removed fixed by the limestone it consumed at its operating stoichiometry",
-  "registered": "2026-10-25T18:55:58Z"
+  "registered": "2026-10-25T18:58:51Z"
 }
