@@ -72,10 +72,11 @@ def main(target):
                "%.1f (dAIC %.1f)%s" % (v[0], v[2] - amin, "" if inbin(v[0], figs["call_not_enrolled_2027"]) else ", outside the bin"))
     for k in ("none", "any", "log", "sqrt", "ge22"):
         ok("B3 rival %s refuted by the criterion" % k, aic[k][2] - amin > 15, "dAIC %.1f" % (aic[k][2] - amin))
-    # SF12 whether the model reads the entrants' classes: the cutover notes record that the 2026 class enrolments are
-    # the entrants' own and every earlier intake's were the Registry's, and the model without the count loses by far
-    ok("SF12 the class-enrolment change is filed (cutover notes section 6) and the count-free model loses loudly",
-       any(h.startswith("6. Class enrolments") for h, _ in D.CUTOVER) and aic["none"][2] - amin > 800,
+    # SF12 whether the model reads the entrants' classes: closed by the filed criterion and the record's own control
+    # (SF14), not by a document; the cutover notes are the first ship's, with no class-enrolment section (portal round 4
+    # landed the call on the one that section 6 and its comparability sentence carried), and the count-free model loses
+    ok("SF12 the cutover notes carry no class-enrolment section and the count-free model loses loudly",
+       not any(h.startswith("6.") for h, _ in D.CUTOVER) and aic["none"][2] - amin > 800,
        "dAIC %.1f, prints %d" % (aic["none"][2] - amin, deliver.r250(aic["none"][0])))
     # SF13 the count's form: the two forms printing outside the bin lose to every other form of the count
     count_forms = [k for k in aic if k not in ("none", "any")]
@@ -84,15 +85,11 @@ def main(target):
        set(off) <= {"log", "sat4", "ge22"}
        and all(aic[k][2] > aic[j][2] for k in off for j in count_forms if j not in off),
        "outside: %s" % ", ".join("%s %.1f (dAIC %.1f)" % (k, aic[k][0], aic[k][2] - amin) for k in off))
-    # SF14 whether the count is comparable across the cutover (portal round 3): the Registry files that a class
-    # enrolment records the same thing in both systems; the model without the count misses the record's own entrants
-    # who meet fewer than 10 others twice; the count's model fitted on the entrants the July run did
-    # not place (part-time, or accepted after it), or reweighted to the 2026 intake's mix of the count, prints the call
+    # SF14 whether the count transports across the cutover (portal round 3), closed in the record: the model without
+    # the count misses the record's own entrants who meet fewer than 10 others twice, where the 2026 intake sits; the
+    # count's model fitted on the entrants the July run did not place (part-time, or accepted after it), or
+    # reweighted to the 2026 intake's mix of the count, prints the call
     import pandas as pd
-    from pypdf import PdfReader as _PR
-    cut_flat = re.sub(r"\s+", " ", " ".join(p.extract_text() for p in _PR(os.path.join(target, C.F_CUT)).pages))
-    ok("SF14 the cutover notes file the class record as the same in both systems",
-       re.sub(r"\s+", " ", D.COMPARABLE) in cut_flat and D.CUTOVER[-1][1][-1] == D.COMPARABLE)
     h14 = a[a["intake"] < 2026]
     f14 = a[a["intake"] == 2026]
     y14 = h14["gone"].values.astype(float)
@@ -318,21 +315,21 @@ def main(target):
     import hashlib
     shipped = json.load(open(os.path.join(HERE, "shipped_digests.json")))["sha256"]
     sha = lambda b: hashlib.sha256(b).hexdigest()
-    moved = [f for f in shipped if f not in (C.F_TT, C.F_DICT, C.F_CUT, C.F_CONV)
+    moved = [f for f in shipped if f not in (C.F_TT, C.F_DICT, C.F_CONV)
              and sha(open(os.path.join(target, f), "rb").read()) != shipped[f]]
-    ok("F1 every file but the timetable, the dictionary and the two notes is the shipped file", not moved,
-       ", ".join(moved))
+    ok("F1 every file but the timetable, the dictionary and the conventions is the first ship's file, the cutover "
+       "notes included", not moved, ", ".join(moved))
     from pypdf import PdfReader
     digests = json.load(open(os.path.join(HERE, "shipped_digests.json")))
     conv_as_shipped = json.dumps([(h, [digests["group_pin_shipped"] if p == D.GROUP_PIN else p for p in ps])
                                   for h, ps in D.CONVENTIONS], ensure_ascii=False, sort_keys=True).encode("utf-8")
     ok("F5 the conventions are the shipped ones with section 4's group sentence added",
        sha(conv_as_shipped) == digests["conventions"] and D.GROUP_PIN.startswith(digests["group_pin_shipped"][:80]))
-    cut_shipped = json.dumps(D.CUTOVER[:-1], ensure_ascii=False, sort_keys=True).encode("utf-8")
+    cut_shipped = json.dumps(D.CUTOVER, ensure_ascii=False, sort_keys=True).encode("utf-8")
     cut_text = re.sub(r"\s+", " ", " ".join(p.extract_text() for p in PdfReader(os.path.join(target, C.F_CUT)).pages))
-    ok("F4 the cutover notes are the shipped ones with section 6 added and only its comparability sentence since",
-       sha(cut_shipped) == digests["cutover_sections_1_to_5"] and D.CUTOVER[-1][0] == "6. Class enrolments"
-       and D.CUTOVER[-1][1] == [digests["cutover_section_6_round2"], D.COMPARABLE]
+    ok("F4 the cutover notes are the first ship's sections 1 to 5 and nothing since",
+       sha(cut_shipped) == digests["cutover_sections_1_to_5"]
+       and digests["cutover_section_6_round2"][:60] not in cut_text and "who chooses" not in cut_text
        and all(re.sub(r"\s+", " ", p) in cut_text for _, ps in D.CUTOVER for p in ps))
     dic_now = open(os.path.join(target, C.F_DICT), "rb").read().decode("utf-8")
     entry = dic_now[dic_now.index(C.F_CLE):]

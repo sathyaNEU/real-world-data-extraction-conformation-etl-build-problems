@@ -180,9 +180,9 @@ Lesson: a retention model validated on a later intake is only as good as the pro
 | SF9 | an entrant's faculty | the admissions Faculty (first-listed programme) | the second programme's | same call | conjoint entrants are 3 per cent and the faculty terms are small (asserted under SF3) |
 | SF10 | the model's form for the repeat-classmate count | the lowest Akaike information criterion among the forms fitted (an indicator at 10, 3,253.0) | a log or square-root term (judge round 1: 3,115, 3,130), a 22-classmate indicator (2,976) | 3,000 | SELECT_PIN (conventions section 3); every form within 12 AIC prints the call (asserted SF10, B0, B1, B3) |
 | SF11 | the ask's teaching group (judge pass 3) | the whole set of students taught together in one room at one time, counted once however often and wherever it meets: each distinct set of classes meeting together | every room-and-time meeting its own group (FASS 200 21 and 66); one group per class code (15 and 43) | asks only, the call reads no timetable row | the prompt's clause (2026-10-24) and GROUP_PIN's sentence on two classes sharing one meeting (judge r5), asserted SF11, A4 |
-| SF12 | whether the model reads the entrants' classes (portal judge 2, 2026-10-24) | the 2026 intake's class enrolments are its own while every intake the model is fitted on had the Registry's, so the forecast tests the classes it carries (3,253.0 on the count) | a model on entrant attributes and week-6 ratings alone, the classes never read (2,141.9); the 2026 collapse in repeat classmates read as a migration artefact | 2,250 | cutover notes section 6 (the class-enrolment change, filed as a Registry fact, no measure named); the count-free model 897.2 AIC worse under SELECT_PIN (asserted SF12, verify) |
+| SF12 | whether the model reads the entrants' classes (portal judge 2, 2026-10-24) | the 2026 intake's class enrolments are its own while every intake the model is fitted on had the Registry's, so the forecast tests the classes it carries (3,253.0 on the count) | a model on entrant attributes and week-6 ratings alone, the classes never read (2,141.9); the 2026 collapse in repeat classmates read as a migration artefact | 2,250 | SELECT_PIN: the count-free model 897.2 AIC worse once the count is a candidate (asserted SF12, verify); the dictionary files both first-year class extracts as one row per Semester 1 class enrolment of a first-time entrant at the census (cited in write-up step 3). Section 6, the round 2 closure, was withdrawn after portal round 4 landed the call on it (2026-10-25); SF12 now asserts the cutover notes carry no class-enrolment section |
 | SF13 | the count's form (portal judge 2) | the lowest AIC among the forms fitted (an indicator at 10) | a logarithm of the count alone (3,113.6) or a scale-4 curve (3,090.9) | 3,000 | SELECT_PIN: every form printing outside the bin loses to every form printing inside it (the log 23.0 AIC worse than the best, 3.1 worse than the linear count and 2.7 worse than the square root), so any comparison of two forms prints the call (asserted SF13, verify) |
-| SF14 | whether the repeat-classmate count is comparable across the cutover (portal round 3, 2026-10-25) | a class enrolment records the same thing in both systems, the student on the class's list at the census, so the 2026 collapse in repeat classmates is a change in who chose the classes and the count is carried (3,253.0) | the count read as measured differently across the cutover and dropped as not transportable (2,141.9) | 2,250 | cutover notes section 6's comparability sentence (the Registry's, no measure named); the record's own 11,640 entrants meeting fewer than 10 others twice are 5,029 not enrolled against 4,166.2 from the count-free model (write-up step 5); the count's model fitted on the 9,497 entrants the July run did not place prints 3,293.8 (flag at 10) and 3,264.4 (five bands), and reweighted to the 2026 mix of the count 3,263.6 and 3,279.3 (asserted SF14, verify) |
+| SF14 | whether the repeat-classmate count is comparable across the cutover (portal round 3, 2026-10-25) | a class enrolment records the same thing in both systems, the student on the class's list at the census, so the 2026 collapse in repeat classmates is a change in who chose the classes and the count is carried (3,253.0) | the count read as measured differently across the cutover and dropped as not transportable (2,141.9) | 2,250 | the record's own 11,640 entrants meeting fewer than 10 others twice are 5,029 not enrolled against 4,166.2 from the count-free model (write-up step 5); the count's model fitted on the 9,497 entrants the July run did not place prints 3,293.8 (flag at 10) and 3,264.4 (five bands), and reweighted to the 2026 mix of the count 3,263.6 and 3,279.3 (asserted SF14, verify). The comparability sentence, the round 3 closure, was withdrawn with section 6 after portal round 4 |
 
 ## Ladder
 
@@ -437,6 +437,50 @@ Measured by: generator/ceiling.py
 - Re-judge (determinism-check-task179-r6, order kept, blind call 2,250): DETERMINISTIC, APPROVE. It built the count
   after its blind pass and reproduced 3,252 to 3,254, every AIC-competitive form inside the bin and the segment check
   (4,165.9); all 20 cells exact; Gate G analytical_non_defect, Gate H pass. Report: determinism_check_report.md.
+
+## Call landed, portal round 4 (2026-10-25)
+
+- Portal round 4 on zip c8032390: both responses filed 3,250, the golden, so the call landed. The author: what the
+  repairs have been doing is not working; start again from the version whose supplemental score was being reduced (the
+  first ship, about 72 per cent with the call held), since the client's cutoff is now 70 per cent; or fix this version
+  so it stumps.
+- Diagnosis. The call held on six of six portal responses in rounds 1 to 3 (a9f8b878, c1b19cef, 5f48e01e) and on
+  every blind reader, and landed on both the first time the cutover notes carried the comparability sentence. Each
+  closure was true and named no count, but section 6 says the 2026 class enrolments came from a different hand and its
+  comparability sentence says the record means the same on both sides and that the change is in who chooses an
+  entrant's classes, which together are the step's premise. The round 2 and round 3 stump tests asked only whether
+  the default path moved (it never reads the classes), not whether the closure turned a strong solver towards the
+  classes: the stump lived partly in the fork.
+- Choice: back to the call side that held, not a new rung on this one. Fixing this version would need a decisive step
+  beneath the classmate count, which is a redesign of the step that has held six times; the first ship's call side
+  costs one withdrawn section.
+- Move: cutover notes section 6 withdrawn whole, so the cutover notes are the first ship's bytes and every file the
+  call reads is the first ship's (F1 asserts each sha256 against shipped_digests.json). The rubric repair's ask layer
+  stays (the class list, the lecture-only pairs, the flip classes, the prompt's group clause), and GROUP_PIN stays
+  (asks only): with the call held it scored 18 per cent in round 3, against about 72 with the first ship's asks. The
+  write-up keeps the record's own control (step 5), and step 3 now cites the dictionary's one definition of both
+  first-year class extracts, which answers the migration-artefact reading from a filed sentence rather than a new one.
+- Open by design: portal round 2's judge 2 found the count unforced on this call side (nothing filed requires reading
+  the classes, no file records a change at the cutover). It is closed as far as it can be without naming the step:
+  SELECT_PIN (the count-free model 897.2 AIC worse once the count is a candidate), SF13, and the control in step 5.
+  The closures that went further are what landed the call, so the residual risk is recorded as the trade, not closed.
+- Pack: target.zip 01124ef4. Against c8032390 only the cutover notes differ; against c1b19cef only the conventions
+  (GROUP_PIN); against a9f8b878 the conventions, the dictionary, the timetable and the added class list.
+- Gates: checks 99 green (SF12 asserts no section 6; SF14's sentence row removed; F1 now covers the cutover notes; F4
+  asserts sections 1 to 5 and nothing since), verify 0 failed (23 figures), two builds byte-identical over 20 files,
+  figures_check 47, precut 51 PASS, voice-check PASS (the prompt unchanged), freeze --mode determinism PASS, leak.py
+  REVIEW (the same shared words), guard validate 0 invalid, heart BLOCK unchanged since the first ship (the author's
+  ruling, window fixed at draw).
+- Readers (scored): both 2,250 against 3,250 (attribute models, about 2,140 to 2,144), neither quoting a sentence
+  that names the count. Asks: reader A 20 of 20 (it joined the class lists to the census history, the device's
+  own remedy), reader B 0 of 20 (the extract's ENROLLED status). On the portal's weights a response that misses
+  the call and keeps every cell scores about 72, as round 1 measured, so the pair stays under 70 unless both
+  responses do; the same ask files scored 18 per cent on the portal in round 3. Kept, and named here as the risk.
+- Judge (determinism-check-task179-r7, order kept, blind call 2,250): DETERMINISTIC, APPROVE, no fix. The call
+  3,239 to 3,259 across the lowest-AIC family, the segment check 5,029 of 11,640, all 20 cells exact; every rival
+  peer definition and the attribute model dominated on AIC by 500 or more (the log count by 23); Gate G forecasting,
+  analytical_non_defect; Gate H pass. Its one advisory: nothing in the files names the class-sharing shift, which
+  it rules correct under the no-method-filing rule since the AIC gap decides. Report: determinism_check_report_pass2.md.
 
 ## Architecture v2 record (spent, kept as history)
 
@@ -1143,6 +1187,13 @@ candidate touches them.
   - Same round, in the write-up: an out-of-sample figure (the count-free model fitted on the entrants meeting 10 or
     more, 2,448.2 for the rest). Dropped: part-time entrants never meet 10 or more twice, so the part-time term is
     unidentified in that fit and the figure rests on a rank-deficient design.
+- Portal round 4 (2026-10-25, zip c8032390): section 6 and its comparability sentence as the determinism closure.
+  Both responses landed 3,250: the closure told a strong solver the classes changed hands and still mean the same,
+  which is the step's premise. Withdrawn whole; the call side is the first ship's again.
+- Same round, considered: keeping section 6's first paragraph alone (round 3's pack). Rejected: it held the call but
+  failed the determinism block on its own reading (a measurement change, so the count dropped as not transportable).
+- Same round, considered: a new rung under the classmate count to re-stump the landed version. Rejected: it redesigns
+  the step that held six of six, against one withdrawn section.
 
 ## Retired
 

@@ -110,7 +110,7 @@ def main(target):
         fits[form] = (float(m.predict(Xa[isf]).sum()), float(m.aic))
     form = min(fits, key=lambda k: fits[k][1])
     call = fits[form][0]
-    # SF12: the count-free model, which the cutover notes' section 6 rules out as the 2026 forecast, loses by far;
+    # SF12: the count-free model loses by far on the filed criterion, and the cutover notes carry no section 6;
     # SF13: the forms here printing outside the bin (the log, the 22-classmate indicator) lose to every form inside it
     m0 = sm.GLM(np.array(yv), base[~isf], family=sm.families.Binomial()).fit()
     if not float(m0.aic) - fits[form][1] > 800:
@@ -121,12 +121,9 @@ def main(target):
         bad.append("SF13 a form outside the bin beats one inside: %s" % ", ".join(outside))
     from pypdf import PdfReader
     cut = " ".join(" ".join(p.extract_text().split()) for p in PdfReader(P("arc_cutover_notes_registry.pdf")).pages)
-    if "from Semester 1 2026 entrants choose their classes and enrol in them themselves" not in cut:
-        bad.append("SF12 cutover notes section 6 missing")
-    # SF14: the class record means the same in both systems, and the count-free model misses the record's own
-    # entrants who meet fewer than 10 others twice
-    if "not in what a class enrolment records: in both systems it is the student on the class's list at the census" not in cut:
-        bad.append("SF14 cutover notes comparability sentence missing")
+    if "6. Class enrolments" in cut or "choose their classes" in cut or "who chooses" in cut:
+        bad.append("SF12 the cutover notes carry a class-enrolment section")
+    # SF14: the count-free model misses the record's own entrants who meet fewer than 10 others twice
     yh = np.array(yv)
     th = tie[~isf]
     lowm = th < 10

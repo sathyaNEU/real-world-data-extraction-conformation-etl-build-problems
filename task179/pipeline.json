@@ -16,8 +16,8 @@
   "date": "2026-10-23"
  },
  "leak": {
-  "leak_py": "REVIEW (2026-10-25, on c8032390): the cutover notes, conventions and dictionary share the pack's own words; no figure, none of the decisive step's words (D2)",
-  "reader": "round 1 (fab8b152): call held 2 of 2 (2,250), asks A 10 of 25, B 25 of 25; round 2 (a9f8b878): readers C and D 2,250 against 3,250, 0 of 20 asks each, PASS; the call held in 4 of 4 blind reads; rubric repair (c1b19cef): readers E and F 2,250 against 3,250, 0 of 20 asks each; reader E's leak answers quote no decisive-step sentence and no ranking file; determinism repair (256adf20): readers G and H 2,250 against 3,250, 0 of 20 asks each; G quotes no sentence naming the decisive step; determinism repair round 3 (c8032390): reader 2,250 against 3,250, 0 of 20 asks, exit 0"
+  "leak_py": "REVIEW (2026-10-25, on 01124ef4): the conventions, dictionary and cutover notes share the pack's own words; no figure, none of the decisive step's words",
+  "reader": "round 1 (fab8b152): call held 2 of 2 (2,250), asks A 10 of 25, B 25 of 25; round 2 (a9f8b878): readers C and D 2,250 against 3,250, 0 of 20 asks each, PASS; the call held in 4 of 4 blind reads; rubric repair (c1b19cef): readers E and F 2,250 against 3,250, 0 of 20 asks each; reader E's leak answers quote no decisive-step sentence and no ranking file; determinism repair (256adf20): readers G and H 2,250 against 3,250, 0 of 20 asks each; G quotes no sentence naming the decisive step; determinism repair round 3 (c8032390): reader 2,250 against 3,250, 0 of 20 asks, exit 0; round 4 rework (01124ef4): readers A and B 2,250 against 3,250, asks A 20 of 20 (class lists joined to the census history) and B 0 of 20; neither quotes a sentence naming the step"
  },
  "duplicate_check": {
   "heart": "BLOCK (2026-10-23) on four axes against task175 after task173 was spent and the live window re-formed; registered under the lock at WARN",
@@ -25,9 +25,9 @@
   "ruling": "Author's standing ruling, 'Ship, window fixed at draw': the card registered under the lock at WARN (4afaec0a) and the later heart BLOCK against task175 comes from the window moving after task173 was spent; nothing relabelled."
  },
  "judge": {
-  "verdict": "DETERMINISTIC (r6, c8032390), APPROVE",
-  "disposition": "portal round 3's competing_defensible_answer closed by section 6's comparability sentence and the record's own low-exposure control; blind call 2,250",
-  "report": "task179/determinism_check_report.md (thread: scratchpad determinism-check-task179-r6/verdict.md)"
+  "verdict": "DETERMINISTIC (r7, 01124ef4), APPROVE",
+  "disposition": "portal round 4 landed the call on section 6's closures; section 6 withdrawn, the call side the first ship's; blind call 2,250",
+  "report": "task179/determinism_check_report_pass2.md (thread: scratchpad determinism-check-task179-r7/verdict.md)"
  },
  "returned": [
   {
@@ -89,6 +89,22 @@
    ],
    "freeze": "determinism PASS: the main call, the stump and every frozen figure unchanged",
    "commit": "RESHIPPED (task179): determinism, the cutover notes file a class enrolment as the same record in both systems"
+  },
+  {
+   "date": "2026-10-25",
+   "portal": "round 4 on c8032390: both responses filed 3,250, the call landed; the author: start again from the version whose supplemental score was being reduced (about 72 per cent with the call held), the client's cutoff now 70 per cent, or fix this version so it stumps",
+   "repair": "design",
+   "rounds": [
+    {
+     "round": 1,
+     "zip": "01124ef4",
+     "moves": "cutover notes section 6 withdrawn whole (the Registry's class-enrolment paragraph and the comparability sentence), so every file the call reads is the first ship's, sha256-asserted; the rubric repair's ask layer, the prompt's group clause and GROUP_PIN kept; the write-up keeps the record's own control (step 5) and step 3 cites the dictionary's one definition of both first-year class extracts",
+     "reader": "leak-task179r4a and leak-task179r4b: both 2,250; asks A 20 of 20, B 0 of 20",
+     "judge": "determinism-check-task179-r7 (order kept, blind call 2,250): DETERMINISTIC, APPROVE, no fix; Gate G forecasting, analytical_non_defect; Gate H pass"
+    }
+   ],
+   "freeze": "determinism PASS: the main call, the stump and every frozen figure unchanged",
+   "commit": "RESHIPPED (task179): design, cutover notes section 6 withdrawn so the call side is the first ship's"
   }
  ],
  "wave": "new, seed FC50: the world, the decision and the quantity kept, the world moved honestly off local_government to a private ambulance company holding a city's 911 ambulance contract (the city the counterparty), deciding its own ten summer surge medic units for the weekend 20:00 to 24:00 block from June to August across three districts at the contract's 9-in-10 evenings standard at 1.2 unit-hours a call, the rest offered to the county's mutual-aid roster; the seed's filed staffing formula, the public dataset's suppression of one- and two-call cells and a pooling sentence were never candidates; redraw cell 1 econometrics time-series macro (2026-10-19, dead), redraw cell 2 epidemiology infectious-disease-transmission-modeling (2026-10-21, architecture v2, re-sited to the fictional Republic of Saldane after the first world was declined on the real-place records concern)",
@@ -139,7 +155,7 @@
  "delivered": "2026-10-24",
  "portal": null,
  "portal_id": "",
- "portal_status": "returned 2026-10-24 (round 2: both responses 2,250; determinism judge 2 FAIL), reshipped 2026-10-24 with the determinism repair",
- "portal_status_date": "2026-10-24",
- "zip_md5": "c80323900b08bd7fd4c2c397a6c8884d"
+ "portal_status": "returned 2026-10-25 (round 4: both responses 3,250, the call landed), reshipped 2026-10-25 with section 6 withdrawn",
+ "portal_status_date": "2026-10-25",
+ "zip_md5": "01124ef49b164b4860ea4326bd0aa901"
 }

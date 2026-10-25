@@ -214,7 +214,8 @@ def write_submission(path, o, F):
              "sirius_arc_student_crosswalk.csv.")
     L.append("3. Counted for every entrant the other entrants of the same intake met in two or more of the entrant's "
              "Semester 1 classes (sirius_fy_cohort_classes_2019_2025.csv by term and class number, "
-             "arc_s1_2026_first_year_classes.csv by class code): %s of the 2026 entrants meet none."
+             "arc_s1_2026_first_year_classes.csv by class code; the dictionary files both as one row per Semester 1 "
+             "class enrolment of a first-time entrant at the census): %s of the 2026 entrants meet none."
              % "{:,}".format(o["no_repeat_2026"]))
     L.append("4. Fitted logistic models of not being enrolled at the next census on the 2019 to 2025 entrants (ASC "
              "points, first in family, part-time, aged 21 or over, hardship grant, mean week-6 rating with Satisfactory "

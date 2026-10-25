@@ -41,11 +41,6 @@ GROUP_PIN = ("The teaching plan counts teaching groups: the students taught toge
              "the shared meeting and each at its own. A group belongs to the faculty that owns its paper, and its size is "
              "the number of students enrolled at the census whom it teaches. A cancelled class is not a teaching group.")
 
-# the Registry's own statement that a class enrolment record means the same on both sides of the cutover
-COMPARABLE = ("The change is in who chooses an entrant's classes, not in what a class enrolment records: in both "
-              "systems it is the student on the class's list at the census, and the two systems' first-year class "
-              "extracts hold the same thing.")
-
 CONVENTIONS = [
     ("1. Purpose", [
         "Each October, once the census is final, Planning and Insight projects the continuing enrolment for the next "
@@ -81,10 +76,6 @@ CUTOVER = [
         "Timetabling exports the Semester 1 timetable from ARC Scheduling, one row per weekly meeting of a class. A "
         "class taught in different rooms in different weeks has a row for each room. Teacher is the "
         "class's teacher of record."]),
-    ("6. Class enrolments", [
-        "In SIRIUS the Registry entered first-year entrants' Semester 1 class enrolments. ARC has no Registry entry "
-        "of class enrolments: from Semester 1 2026 entrants choose their classes and enrol in them themselves.",
-        COMPARABLE]),
 ]
 CODE_TABLE = [
     ("Field", "SIRIUS", "ARC"),
@@ -158,7 +149,7 @@ def write_cutover(path):
          "%s, Registry, Student Systems. Revised 14 August 2026. Malcolm Hussey, Student Systems Manager." % C.UNI,
          CUTOVER, table=CODE_TABLE, table_after="Table 1. Code changes", issued=dt.date(2026, 8, 14),
          author="Malcolm Hussey", widths=[40 * mm, 55 * mm, 75 * mm],
-         foot="First issued 1 June 2026. This revision adds sections 5 and 6.")
+         foot="First issued 1 June 2026. This revision adds section 5.")
 
 
 DICT = """DATA DICTIONARY, CONTINUING ENROLMENT PROJECTION 2027 (Planning and Insight, assembled 16 October 2026)
