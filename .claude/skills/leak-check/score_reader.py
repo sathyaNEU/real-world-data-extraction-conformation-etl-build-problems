@@ -22,13 +22,19 @@ as a pass and is the one output an audit must never produce silently. So name th
 --call-key, once per key; a key named this way is the committed answer whatever it is called, and
 the scorer refuses to run when it can find no call key at all.
 
-**Only figures the submission states are scored.** `figures.json` carries provenance beside the graded
-answers: a pack's row counts, a standard's stated constants, the window's dates. Those are not rubric
-criteria, and counting them as ask figures inflates the leak: one build's reader scored 24 of 49 and 22 of
-the 24 were file row counts, stated constants and window bounds, with every genuine device figure missed
-except two. So the graded set is taken from `submission.md` blocks 1 to 4, which is what the rubric grades,
-by the same extraction `figures_check.py` uses: a figures.json key counts as graded when its value appears
-there. `--all-keys` scores every key instead, for a build whose submission is not written yet.
+**Provenance is not scored.** `figures.json` carries provenance beside the graded answers: a pack's row
+counts, a standard's stated constants, the window's dates. Those are not rubric criteria, and counting them
+as ask figures inflates the leak: one build's reader scored 24 of 49 and 22 of the 24 were file row counts,
+stated constants and window bounds, with every genuine device figure missed except two. They are dropped by
+a prefix and exact-name list, printed in full on every run so the exclusion is auditable; `--all-keys` turns
+it off. The list is a naming convention and not a reading of the submission, so a graded figure filed under
+a provenance-shaped name is dropped silently: check the printed exclusions against the submission's blocks
+before acting on a run.
+
+**Hand the reader the key list.** Keys the reader invents are not in `figures.json`, score as nothing and
+leave the denominator, so a reader that answered twenty ask figures under its own names measures as zero.
+The scorer now refuses such a run rather than passing it, but the cure is the brief: give the reader the
+flat key paths to fill.
 
 A hit is an exact match at the golden's own precision: a float is compared rounded to the golden's
 decimal places, a list elementwise, a string case-insensitively on the golden's first words. Pass
@@ -225,6 +231,30 @@ def main(argv):
         print("call inputs    %d of %d hit (shared route figures, not the verdict)"
               % (sum(1 for r in inputs if r[4]), len(inputs)))
     print("ask figures    %d of %d hit (%.1f per cent)" % (ask_hit, len(asks), share))
+
+    # The same silent pass the call guard above refuses, one axis over. A reader that names its own keys
+    # scores every one of them as nothing, they leave the denominator, and a build whose ask layer was
+    # never measured prints PASS. task187's reader committed to 20 ask figures as curtailment_mwh.CH01
+    # and downtime_mwh.CH01, none of them a figures.json key, and the scorer reported 0 of 0 and passed
+    # the build. Refuse instead, and say which it was: an unmeasured ask layer, or a reader that declined.
+    if not asks:
+        print("\nno ask figure could be scored, so the ask layer is UNMEASURED, not holding.")
+        if unknown:
+            print("The reader committed to %d figure(s) under names figures.json does not carry, so they"
+                  % len(unknown))
+            print("left the denominator. Hand the reader the key list (the flat figures.json key paths)")
+            print("and score again; do not read this run as a pass.")
+        else:
+            print("The reader answered no ask figure at all. Either the brief did not ask for them or it")
+            print("declined; neither is evidence about the devices. Re-run the reader.")
+        return 3
+    # Unknown keys outnumbering scored ones means the same thing in weaker form: most of what the reader
+    # committed to never reached the scorer, so the share below is a floor and not the measurement.
+    if len(unknown) > len(asks):
+        print("\nthin: %d unscoreable key(s) against %d scored, so the share above is a floor, not the"
+              % (len(unknown), len(asks)))
+        print("measurement. Re-run the reader against the key list before acting on it.")
+        return 3
 
     if call_hit:
         print("\nFAIL  the reader landed the call. Gate F has failed and the architecture is spent:")

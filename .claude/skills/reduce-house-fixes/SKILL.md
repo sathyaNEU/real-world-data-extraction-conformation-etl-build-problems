@@ -511,3 +511,19 @@ the task folder, so a `figures.json` left modified is the signal that an entry p
 the build moved. Where a build does have two steps, its own record names them in order so the next audit
 does not have to rediscover it.
 
+## H34. A measuring script that scores nothing reports a pass
+
+**The defect.** A gate script computes a rate over the rows it managed to score and prints its verdict on
+that rate, so a run that scored no row at all divides into an empty set, reports zero per cent and passes.
+The failure is invisible in exactly the case that matters: the build whose evidence never arrived looks
+identical to the build that earned the verdict.
+
+**What it cost.** A shipped build carried a passing ask-layer line on a run that scored zero of its ask
+figures, because the reader had named its own keys and all twenty left the denominator. The line was read
+as evidence in two later sessions and quoted into a design note.
+
+**The check.** Every script that prints a verdict on a rate refuses to print one when its denominator is
+empty, and says which empty it was: nothing to measure, or nothing that could be matched. A guard on one
+axis is not a guard on the next: the same script already refused a run with no call figure for this exact
+reason and still passed one with no ask figure. When a rate is computed, grep the script for every
+`if ... else 0` fallback on its denominator and give each one a refusal.

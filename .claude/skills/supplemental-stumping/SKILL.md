@@ -45,6 +45,26 @@ back high, measure `Lc` before redesigning a single decisive step. The ask layer
 closure argument reaches, because 2.1 licenses an ask to turn on semantics or rule application, which the
 rules that close a main call's decisive step do not touch.
 
+**The instrument can print a pass on an ask layer it never measured, so read its denominator first.**
+`../leak-check/score_reader.py` scores only the keys the reader hands back that `figures.json` also carries.
+A reader given the prompt but not the key list names its own keys, every one of them scores as nothing and
+leaves the denominator, and the run prints `0 of 0 hit (0.0 per cent)` and `PASS`. A shipped build read that
+way: its reader committed to twenty ask figures under its own names, the scorer saw none of them, and the
+build carried a passing ask-layer line it had never earned. The scorer now refuses a run with no scored ask
+figure, and refuses one whose unscoreable keys outnumber its scored ones, because that share is a floor and
+not the measurement. **Brief the reader with the flat `figures.json` key paths to fill**, never the prompt
+alone, and read the printed exclusions against the submission's blocks before believing a share.
+
+**On the builds where the reader did answer the key list, the measured leak is not high, it is total:
+100.0, 100.0 and 86.7 per cent.** Two of those three were builds whose call the same reader missed, so the
+devices had every chance to bite and bit nothing. Read together with Part 3's hygiene-battery record, which
+is the same result from the other side, the law is: **an ask figure a competent reader computes straight
+from the pack has no device on its path at all.** A hundred per cent is the measured default for an ask
+built out of the pack's own quantities, not a bad outcome among good ones, and it is not repaired by
+re-wording the ask or by adding a device the book already lists as executed. The device has to sit where
+the reader's own route runs, which is why 1.1's cracker sheet is drawn from the cracker's path and not from
+the ask list.
+
 ## Part 1. Design against the careful solver's path
 
 **The cracker is a model and the reader is the measurement.** Its stops are the author's guesses at the
