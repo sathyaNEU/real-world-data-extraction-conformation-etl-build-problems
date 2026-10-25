@@ -328,6 +328,11 @@ def main(target):
         ok("C2 stop %s misses every cell" % how, not cells, ", ".join("%s %s" % x for x in cells))
     obr = reg[reg["Reporter"] == "OBR download"]
     ok("C3 the recorder downloads are never linked", obr["Linked To"].isna().all())
+    # SF15 the fold window is a corridor, not a choice: a manual report of the same event trails the recorder's time by
+    # 12 minutes at most and the next report of the same driver, unit and category comes 70 minutes or more after it,
+    # so every window from 15 minutes to an hour files the golden
+    for w in (15, 20, 30, 45, 60):
+        ok("SF15 a %d-minute fold files every cell" % w, calc.events(d, "golden", fold=w) == gold_c)
     # ------------------------------------------------------------------ documents
     dic = open(os.path.join(target, C.F_DICT), encoding="utf-8").read()
     banned = re.compile(r"practi[cs]e|experience|learning|learn|curve|cumulative|familiar|repetition|proficien|pace|"
@@ -340,6 +345,13 @@ def main(target):
        "recorder downloads" in guide and "UTC" not in guide and "UTC" not in conv)
     ok("D4 no em or en dash in documents or the write-up", not re.search("[–—]", conv + roll + guide + accept + dic +
                                                                           open(os.path.join(task, "submission.md")).read()))
+    # H25 every filed sentence reads the same through a second, independent PDF reader
+    import subprocess
+    norm = lambda s: re.sub(r"\s+", " ", s).strip()
+    for f, names in ((C.F_CONV, ("COUNT_PIN", "WORK_PIN", "ROSTER_PIN", "CALL_PIN")), (C.F_ACCEPT, ("ACCEPT_PIN",))):
+        alt = norm(subprocess.run(["pdftotext", os.path.join(target, f), "-"], capture_output=True, text=True).stdout)
+        lost = [n for n in names if norm(getattr(D, n)) not in alt]
+        ok("D5 %s reads its filed sentences through pdftotext too" % f, not lost, ", ".join(lost))
     # ------------------------------------------------------------------ realism
     du = d["duty"]
     per = du[du["status"] == "Worked"].groupby("staff_no").size()

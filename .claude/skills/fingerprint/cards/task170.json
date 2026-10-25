@@ -60,13 +60,13 @@
   "forcing_event": "launch_or_rollout",
   "org_family": "utility_or_infrastructure",
   "world": {
-    "geography": "Arnhallow (a fictional country; Corran Vale Railways, its depots, its regulator and every record are fictional)",
+    "geography": "Elsmarra (a fictional country; Carvanne Vale Railways, its depots, its regulator and every record are fictional)",
     "currency": "none",
     "org_type": "a regional passenger rail operator running about 600 drivers from fourteen depots",
     "invented_names": [
-      "Arnhallow",
-      "Corran Vale Railways",
-      "Arnhallow Office of Rail Safety"
+      "Elsmarra",
+      "Carvanne Vale Railways",
+      "Elsmarra Office of Rail Safety"
     ],
     "people": [
       "Kate Potter",
@@ -82,7 +82,7 @@
   "opening_move": "question-first",
   "question_form": "how-many",
   "driver": "The decisive quantity is a per-attempt failure probability that falls with each operator's own count of attempts, so a forward group whose operators make attempts more slowly spends most of its first year on the steep part of the curve; the earlier groups' first-year rate per attempt, or a curve on time since start, carries their faster practice into the forecast and understates it.",
-  "driver_concrete": "Corran Vale's Phase 1 to 3 suburban depots gave each driver about 110 ETCS start-ups a month, so a driver passed 600 start-ups inside the first six months, where the train data entry error rate has fallen to a fifth of its first-week level; the Phase 4 rural depots' diagrams give 20 to 45, so their drivers spend the first year where the earlier drivers spent their first two months.",
+  "driver_concrete": "Carvanne Vale's Phase 1 to 3 suburban depots gave each driver about 110 ETCS start-ups a month, so a driver passed 600 start-ups inside the first six months, where the train data entry error rate has fallen to a fifth of its first-week level; the Phase 4 rural depots' diagrams give 20 to 45, so their drivers spend the first year where the earlier drivers spent their first two months.",
   "stump": "A competent analyst carries the Phase 1 to 3 depots' train data entry errors per start-up over each depot's first twelve months on ETCS (or the same rate month by month since go-live) to the Phase 4 drivers' start-ups and files about 400, against about 650, because the error probability falls with each driver's own count of start-ups and the Phase 4 diagrams run that count up at a quarter of the suburban pace.",
   "mechanism_source": "design_note",
   "differentiation": {

@@ -1,11 +1,11 @@
-# task170 design note: the train data entry errors Corran Vale Railways' Phase 4 depots' drivers will make in their first twelve months on ETCS
+# task170 design note: the train data entry errors Carvanne Vale Railways' Phase 4 depots' drivers will make in their first twelve months on ETCS
 
 Architecture 5, the tenth cell of a reopened number (Forecasting lane, sathya8571), chosen by this session
 (`## Rebuild`): human-factors-ergonomics / human-reliability-assessment. Architecture 4 (the auto-enrolled employer
 match) is kept under `## Architecture 4 record`, architecture 3 (the repellent net campaign) under `## Architecture 3
 record`, architecture 1 (the paediatric ARV order) under `## Architecture 1 record`; architecture 2's cells and cells
 five to nine died before any card (`## Tried and rejected`). The setting is fictional throughout, country included:
-Arnhallow, Corran Vale Railways, its depots and units, the Arnhallow Office of Rail Safety and every record are
+Elsmarra, Carvanne Vale Railways, its depots and units, the Elsmarra Office of Rail Safety and every record are
 invented, and no record is a real operator's or regulator's. ETCS (the European Train Control System) is named as the
 signalling standard the fictional operator fits, as any operator in Europe would.
 
@@ -21,7 +21,7 @@ signalling standard the fictional operator fits, as any operator in Europe would
    and carried to each forward driver's own start-up rate.
 3. Niche: a regional passenger operator (about 600 drivers from fourteen depots) fitting ETCS route by route; Phases 1
    to 3 (eight suburban and intercity depots) went live from March 2024 to September 2025, Phase 4 (six rural depots)
-   goes live from February to June 2027. The human factors lead's Phase 4 safety case to the Arnhallow Office of Rail
+   goes live from February to June 2027. The human factors lead's Phase 4 safety case to the Elsmarra Office of Rail
    Safety carries the forecast of train data entry errors in each Phase 4 depot's first twelve months, which sets the
    driver monitoring plan (every recorded error is debriefed).
 4. Call and shape: the Phase 4 depots' train data entry errors in each depot's first twelve months on ETCS, a count
@@ -61,7 +61,7 @@ signalling standard the fictional operator fits, as any operator in Europe would
 10. People (`guard.py names --geo "united kingdom" --seed 170`; the country is fictional and English-speaking): Kate
     Potter (human factors lead), Arthur Jackson (head of driver standards), Charlie Coles (ETCS programme manager),
     Gillian Armstrong (safety desk). None appears in the prompt.
-11. Furniture: forum `regulator_or_inspector` (the Arnhallow Office of Rail Safety accepts the Phase 4 safety case and
+11. Furniture: forum `regulator_or_inspector` (the Elsmarra Office of Rail Safety accepts the Phase 4 safety case and
     sets the monitoring condition on the forecast), forcing event `launch_or_rollout` (Phase 4 go-live from February
     2027), organisation family `utility_or_infrastructure` (a passenger rail operator), role family
     `compliance_or_audit` (the human factors lead owns the safety case submission), context artifact `operations_log`

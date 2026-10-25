@@ -184,23 +184,28 @@ def main(target):
             manual[(x[0], x[1], x[2])].append((x[3], i))
     for k in manual:
         manual[k].sort()
-    used, drop = set(), set()
-    for i, x in sorted(enumerate(ev), key=lambda z: z[1][3]):
-        if not x[4]:
-            continue
-        for t, j in manual.get((x[0], x[1], x[2]), []):
-            m = (t - x[3]).total_seconds() / 60.0
-            if 0 <= m <= 30 and j not in used:
-                used.add(j)
-                drop.add(i)
-                break
-    cnt = defaultdict(lambda: [0, 0])
-    for i, x in enumerate(ev):
-        if i not in drop:
-            cnt[x[5]][0 if x[2] == "LTR" else 1] += 1
-    for c in REC:
-        if tuple(cnt[c]) != (figs["ask_level_transition_errors_2026_%s" % c.lower()], figs["ask_brake_interventions_2026_%s" % c.lower()]):
-            bad.append("events %s %s" % (c, cnt[c]))
+    def fold(win):
+        used, drop = set(), set()
+        for i, x in sorted(enumerate(ev), key=lambda z: z[1][3]):
+            if not x[4]:
+                continue
+            for t, j in manual.get((x[0], x[1], x[2]), []):
+                m = (t - x[3]).total_seconds() / 60.0
+                if 0 <= m <= win and j not in used:
+                    used.add(j)
+                    drop.add(i)
+                    break
+        cnt = defaultdict(lambda: [0, 0])
+        for i, x in enumerate(ev):
+            if i not in drop:
+                cnt[x[5]][0 if x[2] == "LTR" else 1] += 1
+        return cnt
+    # the fold window is a corridor (SF15): a quarter of an hour and an hour file the same cells
+    for win in (15, 60):
+        cnt = fold(win)
+        for c in REC:
+            if tuple(cnt[c]) != (figs["ask_level_transition_errors_2026_%s" % c.lower()], figs["ask_brake_interventions_2026_%s" % c.lower()]):
+                bad.append("events %s %s at %d minutes" % (c, cnt[c], win))
     print("verify: call %.1f -> %d, drivers %d, starts %.1f, %d errors placed, %d graded figures checked, %d failed%s"
           % (total, int(250 * round(total / 250.0)), len(p4), starts, nerr, 3 + 12 + 16, len(bad),
              (": " + "; ".join(bad[:8])) if bad else ""))

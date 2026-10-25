@@ -193,8 +193,8 @@ def write_chart(path, o):
            '<rect width="%d" height="%d" fill="#fcfcfb"/>' % (W, H),
            '<text x="%d" y="30" font-size="15" font-weight="bold" fill="%s">%d of the %d Class 461 units will be accepted '
            'for ETCS service by their depot\'s go-live</text>' % (left, ink, tot_a, tot),
-           '<text x="%d" y="50" font-size="11" fill="%s">Units allocated for the 2027 timetable, on the fitment programme\'s '
-           'current dates; a unit is accepted when both driving vehicles are</text>' % (left, muted)]
+           '<text x="%d" y="50" font-size="11" fill="%s">Allocation for the 2027 timetable on the current fitment dates; a '
+           'unit counts once both its driving vehicles are accepted</text>' % (left, muted)]
     for v in range(0, ytop + 1, 2):
         y = sy(v)
         out.append('<line x1="%d" y1="%.1f" x2="%d" y2="%.1f" stroke="%s" stroke-width="1"/>' % (left, y, W - right, y, grid))
@@ -306,7 +306,7 @@ def write_metadata(path):
             "deliverables": [C.DELIV_XLSX, C.DELIV_SVG],
             "objective": "Forecasting & Predictive Modeling",
             "domain": "Human Factors & Ergonomics / Human Reliability Assessment",
-            "setting": "Arnhallow, Corran Vale Railways, its depots and units and the Arnhallow Office of Rail Safety are "
+            "setting": "Elsmarra, Carvanne Vale Railways, its depots and units and the Elsmarra Office of Rail Safety are "
                        "fictional; every record is synthetic, built by the task's generator, and no real operator, "
                        "regulator, system or person is represented. ETCS is named as the signalling standard.",
             "sources": {f: {"source": "synthetic (task generator)", "date": C.ASSEMBLED.isoformat(), "license": "CC0-1.0"}

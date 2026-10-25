@@ -1,4 +1,4 @@
-"""task170 world: Corran Vale Railways (fictional, Arnhallow) from the first ETCS go-live (4 March 2024) to the
+"""task170 world: Carvanne Vale Railways (fictional, Elsmarra) from the first ETCS go-live (4 March 2024) to the
 record's end (31 October 2026), and the six Phase 4 depots that go live from February to June 2027.
 
 What the record carries and the decision turns on: every Start of Mission on an ETCS-fitted unit is logged by the
@@ -333,11 +333,11 @@ class World:
             if g.random() < OBR_CAPTURE:
                 rep.append(("OBR download", t.replace(second=0, microsecond=0)))        # the recorder's own time
             if g.random() < DRIVER_REPORT:
-                rep.append(("Driver", local + dt.timedelta(minutes=float(g.uniform(1, 25)))))
+                rep.append(("Driver", local + dt.timedelta(minutes=float(g.uniform(1, 12)))))
             if cat == "LTR" and g.random() < 0.22:
                 rep.append(("Signaller", local + dt.timedelta(minutes=float(g.uniform(0.5, 6)))))
             if not rep:
-                rep.append(("Driver", local + dt.timedelta(minutes=float(g.uniform(1, 25)))))
+                rep.append(("Driver", local + dt.timedelta(minutes=float(g.uniform(1, 12)))))
             manual = sorted([x for x in rep if x[0] != "OBR download"], key=lambda x: x[1])
             what = {"LTR": ["Level transition not acknowledged", "Level transition: wrong level selected",
                             "Level transition: entered unfitted area without acknowledgement"],

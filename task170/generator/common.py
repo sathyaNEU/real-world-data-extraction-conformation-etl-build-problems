@@ -1,8 +1,8 @@
-"""task170 shared constants: the in-fiction calendar, Corran Vale Railways' depots and fleets, file names, random
+"""task170 shared constants: the in-fiction calendar, Carvanne Vale Railways' depots and fleets, file names, random
 streams and byte-stable writers.
 
-Arnhallow is a fictional country. Corran Vale Railways, its depots, units, staff numbers and every record are
-invented; the Arnhallow Office of Rail Safety is a fictional regulator. ETCS, the European Train Control System, is
+Elsmarra is a fictional country. Carvanne Vale Railways, its depots, units, staff numbers and every record are
+invented; the Elsmarra Office of Rail Safety is a fictional regulator. ETCS, the European Train Control System, is
 the signalling standard the operator fits, as any operator in Europe would."""
 from __future__ import annotations
 
@@ -14,9 +14,9 @@ import io
 import numpy as np
 
 TASK = "task170"
-OPERATOR = "Corran Vale Railways"
-COUNTRY = "Arnhallow"
-REGULATOR = "Arnhallow Office of Rail Safety"
+OPERATOR = "Carvanne Vale Railways"
+COUNTRY = "Elsmarra"
+REGULATOR = "Elsmarra Office of Rail Safety"
 
 D = dt.date
 RECORD_END = D(2026, 10, 31)       # the last day in the extracts (local)
@@ -28,21 +28,21 @@ DUTY_MONTHS = 10
 # depot code, name, phase, ETCS go-live (local date), drivers at go-live
 RECORD_DEPOTS = [
     ("BRN", "Brennick", 1, D(2024, 3, 4)),
-    ("TLM", "Tollmere", 1, D(2024, 3, 25)),
-    ("ALR", "Ashlow Road", 2, D(2024, 11, 11)),
-    ("KDB", "Kelderby", 2, D(2024, 12, 2)),
-    ("MWB", "Marrow Bridge", 2, D(2025, 1, 13)),
-    ("FNJ", "Fennick Junction", 3, D(2025, 5, 12)),
-    ("SNH", "Stanholt", 3, D(2025, 7, 7)),
-    ("CNC", "Corran Central", 3, D(2025, 9, 1)),
+    ("TLM", "Tolmarnie", 1, D(2024, 3, 25)),
+    ("ALR", "Ashlarrick Road", 2, D(2024, 11, 11)),
+    ("KDB", "Keddarby", 2, D(2024, 12, 2)),
+    ("MWB", "Morwennick Bridge", 2, D(2025, 1, 13)),
+    ("FNJ", "Finnachy Junction", 3, D(2025, 5, 12)),
+    ("SNH", "Strannoch", 3, D(2025, 7, 7)),
+    ("CNC", "Cairnmorlie Central", 3, D(2025, 9, 1)),
 ]
 PHASE4_DEPOTS = [
-    ("GLH", "Glenhallow", 4, D(2027, 2, 1)),
+    ("GLH", "Glenhowrie", 4, D(2027, 2, 1)),
     ("DRC", "Drumcarra", 4, D(2027, 3, 1)),
-    ("KVN", "Kilvane", 4, D(2027, 3, 29)),
+    ("KVN", "Kilvennach", 4, D(2027, 3, 29)),
     ("ADM", "Ardmorrow", 4, D(2027, 4, 26)),
-    ("MSB", "Mossbeck", 4, D(2027, 5, 24)),
-    ("FBK", "Fellbrook", 4, D(2027, 6, 21)),
+    ("MSB", "Mossbrackie", 4, D(2027, 5, 24)),
+    ("FBK", "Fellbrackan", 4, D(2027, 6, 21)),
 ]
 DEPOTS = RECORD_DEPOTS + PHASE4_DEPOTS
 DEPOT = {d[0]: d for d in DEPOTS}
@@ -97,7 +97,7 @@ def write_csv(path, head, rows, crlf=True):
 
 
 def is_bst(t):
-    """t a naive UTC datetime: True when Arnhallow keeps summer time (last Sunday in March 01:00 UTC to last Sunday
+    """t a naive UTC datetime: True when Elsmarra keeps summer time (last Sunday in March 01:00 UTC to last Sunday
     in October 01:00 UTC), as the country's clocks follow the European rule"""
     y = t.year
 

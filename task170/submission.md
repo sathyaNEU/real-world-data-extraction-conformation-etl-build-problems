@@ -30,21 +30,21 @@ The figure reads the chance of an error at each Start of Mission at the driver's
 1. Train data entry errors the safety desk will record against the six Phase 4 depots' drivers in each depot's first twelve months on ETCS: **1,250** (nearest 250)
 2. Drivers covered: **276**; their ETCS starts over those twelve months: **111,000** (nearest 1,000)
 3. Class 461 units allocated for the 2027 timetable, accepted for ETCS service by the depot's go-live and not accepted:
-   - Glenhallow: **8** accepted, **6** not accepted
+   - Glenhowrie: **8** accepted, **6** not accepted
    - Drumcarra: **8** accepted, **5** not accepted
-   - Kilvane: **7** accepted, **6** not accepted
+   - Kilvennach: **7** accepted, **6** not accepted
    - Ardmorrow: **6** accepted, **4** not accepted
-   - Mossbeck: **5** accepted, **5** not accepted
-   - Fellbrook: **4** accepted, **6** not accepted
+   - Mossbrackie: **5** accepted, **5** not accepted
+   - Fellbrackan: **4** accepted, **6** not accepted
 4. Level transition errors and ETCS brake interventions of each Phase 1 to 3 depot's drivers, January to October 2026:
    - Brennick: **54** level transition errors, **83** brake interventions
-   - Tollmere: **71** level transition errors, **92** brake interventions
-   - Ashlow Road: **73** level transition errors, **92** brake interventions
-   - Kelderby: **33** level transition errors, **65** brake interventions
-   - Marrow Bridge: **51** level transition errors, **70** brake interventions
-   - Fennick Junction: **60** level transition errors, **59** brake interventions
-   - Stanholt: **76** level transition errors, **83** brake interventions
-   - Corran Central: **61** level transition errors, **64** brake interventions
+   - Tolmarnie: **71** level transition errors, **92** brake interventions
+   - Ashlarrick Road: **73** level transition errors, **92** brake interventions
+   - Keddarby: **33** level transition errors, **65** brake interventions
+   - Morwennick Bridge: **51** level transition errors, **70** brake interventions
+   - Finnachy Junction: **60** level transition errors, **59** brake interventions
+   - Strannoch: **76** level transition errors, **83** brake interventions
+   - Cairnmorlie Central: **61** level transition errors, **64** brake interventions
 
 ### phase4_depot_readiness.svg
 

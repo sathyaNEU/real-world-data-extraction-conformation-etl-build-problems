@@ -232,7 +232,7 @@ def fleet(d, how="formations"):
 
 
 # ------------------------------------------------------------------ ask C: level transition errors and brake interventions
-def events(d, how="golden", window=(dt.datetime(2026, 1, 1), dt.datetime(2026, 11, 1))):
+def events(d, how="golden", window=(dt.datetime(2026, 1, 1), dt.datetime(2026, 11, 1)), fold=30):
     r = d["reg"]
     r = r[r["Category"].isin(["LTR", "BRK"]) & (r["Status"] != "Withdrawn")].copy()
     r["t"] = pd.to_datetime(r["Received"])
@@ -251,7 +251,7 @@ def events(d, how="golden", window=(dt.datetime(2026, 1, 1), dt.datetime(2026, 1
         keep = r.assign(day=r["t"].dt.date).drop_duplicates(["Staff No", "Unit", "Category", "day"])
     else:
         # golden (recorder times read as UTC) and fold_as_local (recorder times read as local): a recorder report
-        # is the same event as a manual report of the driver, unit and category up to 30 minutes after it
+        # is the same event as a manual report of the driver, unit and category up to `fold` minutes after it
         man = r[r["Reporter"] != "OBR download"]
         ob = r[r["Reporter"] == "OBR download"]
         used = set()
@@ -262,7 +262,7 @@ def events(d, how="golden", window=(dt.datetime(2026, 1, 1), dt.datetime(2026, 1
             if g is None:
                 continue
             dtm = (g["t"] - row["t"]).dt.total_seconds() / 60.0
-            cand = [j for j, x in zip(g.index, dtm) if 0 <= x <= 30 and j not in used]
+            cand = [j for j, x in zip(g.index, dtm) if 0 <= x <= fold and j not in used]
             if cand:
                 used.add(cand[0])
                 drop.add(i)

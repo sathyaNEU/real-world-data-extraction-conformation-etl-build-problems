@@ -37,19 +37,19 @@ def _sheet(ws, head, rows, widths=None, money_cols=(), title=None, date_fmt="m/d
     return n
 
 
-def write_table(path, sheet, head, rows, widths=None, title=None, money_cols=(), creator="Corran Vale Railways", modified=None,
+def write_table(path, sheet, head, rows, widths=None, title=None, money_cols=(), creator="Carvanne Vale Railways", modified=None,
                 date_fmt="dd/mm/yyyy"):
     wb = Workbook()
     ws = wb.active
     ws.title = sheet
     n = _sheet(ws, head, rows, widths, money_cols, title, date_fmt=date_fmt)
     wb.save(path)
-    who, when = STAMPS.get(path.rsplit("/", 1)[-1], ("Corran Vale Railways", "2026-10-14T03:10:00Z"))
+    who, when = STAMPS.get(path.rsplit("/", 1)[-1], ("Carvanne Vale Railways", "2026-10-14T03:10:00Z"))
     PP.normalize_ooxml(path, who, who, when, when, excel=True)
     return n
 
 
-def write_workbook(path, sheets, widths=None, creator="Corran Vale Railways", date_fmt="dd/mm/yyyy"):
+def write_workbook(path, sheets, widths=None, creator="Carvanne Vale Railways", date_fmt="dd/mm/yyyy"):
     """sheets: [(title, head, rows)]; every sheet frozen under its header."""
     wb = Workbook()
     first = True
@@ -60,6 +60,6 @@ def write_workbook(path, sheets, widths=None, creator="Corran Vale Railways", da
         ws.title = title
         n += _sheet(ws, head, rows, widths, date_fmt=date_fmt)
     wb.save(path)
-    who, when = STAMPS.get(path.rsplit("/", 1)[-1], ("Corran Vale Railways", "2026-10-14T03:10:00Z"))
+    who, when = STAMPS.get(path.rsplit("/", 1)[-1], ("Carvanne Vale Railways", "2026-10-14T03:10:00Z"))
     PP.normalize_ooxml(path, who, who, when, when, excel=True)
     return n
