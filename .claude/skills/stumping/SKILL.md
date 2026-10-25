@@ -811,6 +811,39 @@ mechanism rather than measuring it has not tested its own premise.
 (the unit type on each event record, and the schedule per unit type) rather than one pooled share. That is a
 further organ on the pack and has to be weighed against readability test 7 before it is drawn.
 
+### 1.1h Interval-censored placement cannot carry a slate decision: the two horns
+
+**When the graded call is a slate of periods and the decisive step is how an interval-censored record is
+placed within its window, the mechanism is closed by two horns and there is no middle.**
+
+- **Offences concentrate in periods that are unattended for every target.** Then those periods are inside
+  almost every window, so every placement rule that spreads a window ranks them top, the slate's head is
+  route-invariant, and only the cap's boundary member differentiates. The default path lands 6 of 8 or
+  better.
+- **Offences concentrate in periods that some targets attend.** Then those offences are mostly seen as they
+  happen, the records carry times rather than windows, the censored set is a minority and the placement
+  step has nothing to bite on.
+
+The horns are the same fact from two sides: a window exists because nobody was watching, so the hours a
+window contains are the hours nobody watches, which are the hours the offences are in. The censoring and
+the signal have the same support.
+
+**Measured across seven architectures on one build**, three worlds and more than forty parameter settings.
+The last two are the cleanest statements of each horn. A wholesale-market world, whose targets trade before
+noon so the gaps run from midday to the small hours, gave the first genuinely **monotone** ladder in the
+slot's history, window start 0.29 to 0.44, midpoint 0.35 to 0.41, window end 0.48 to 0.51, the flat
+aoristic weight 0.60 to 0.86, the field's own interval-censored fit 0.79 to 0.96, the golden 1.00, with the
+golden recovering the truth 8 of 8 at every seed. And still: with a fitted detection level the figures were
+forfeit to the corridor (`../determinism-check`), and with a parameter-free correction (excluding from each
+victim-stated window the hours a keyholding schedule shows attended, which is determinate and needs no
+level) **the field's own method reached 0.95 to 0.96 of the golden and 6 of 8 slots**, because the slate's
+head is the small hours either way.
+
+**So do not draw a placement step against a slate.** The step is fine where the graded quantity is one the
+correction moves materially rather than a ranking whose head is route-invariant: a single level, a rate, a
+share of the censored mass. If the slate is wanted, the decisive step has to be something other than
+placement.
+
 ### 1.1g Score EVERY rung against the golden before cutting data, not the decisive pair
 
 **The pre-draw arithmetic is the whole rung table, not the two routes the design is arguing about.** Four

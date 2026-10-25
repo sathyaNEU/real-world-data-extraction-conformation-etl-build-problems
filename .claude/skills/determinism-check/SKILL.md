@@ -180,6 +180,30 @@ time). `precut.py` refuses an unresolved row; `checks.py` asserts every row.
   step is the wrong shape. This is the Gate C against Gate F dial stated as an enumeration over the closure
   moves rather than as a tendency.
 
+- **A C3 corridor closes the call and forfeits the figures, so it cannot carry a figure-dense prompt shape.**
+  When the decisive construction has a fitted nuisance parameter and the data do not identify it, C3 is the
+  honest closure: the parameter is unrecoverable and the answer is identical across its range. But "the
+  answer" that survives is the set-valued call, not the numbers. Measured on one build's corrected
+  interval-censored placement, over a level corridor from 0.70 to 0.999 whose profile likelihood rises
+  monotonically to the boundary, at four seeds:
+
+  | what is graded | across the corridor |
+  |---|---|
+  | the set of eight slots | **identical at every level and under both grid variants, every seed** |
+  | the ranking of those eight | identical at three seeds of four, **not at the fourth** |
+  | each slot's own figure | spreads up to 347.6 on a figure near 3,500, about 10 per cent |
+  | the covered total | spreads 6.20 to 9.08 per cent |
+
+  So the call is determinate and nothing else is. A prompt shape that draws its criteria from figures per
+  candidate cannot be served, and `../guide-to-prompt` forbids making the count up from stacked asks. **This
+  closes the whole family from the other side:** identify the nuisance parameter and the aggregation bias of
+  1.1f makes the correction no better than the uncorrected route; leave it unidentified and C3 buys the call
+  at the price of every figure. Before drawing a correction with a fitted nuisance level, decide which
+  figures the shape needs graded and check them across the corridor, not just the call.
+
+  **The escape is a correction with no fitted parameter at all**, its rate read off a shipped record rather
+  than estimated: then there is no corridor and every figure is determinate.
+
 - **Pin at authority, once** (Part 6.1). The prompt carries the question and no convention. Sweep for
   sentences quotable against the answer and qualify or remove them.
 - **Measure the edge, not the centre.** For a value `v` printed to a unit `u`, the printed cell is centred
