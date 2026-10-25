@@ -1,88 +1,88 @@
 {
-  "task": "task302",
-  "architecture": "v1",
-  "drawn": "2026-10-25",
-  "slot_note": "fresh draw after the seed's battery congestion counterfactual was landed by both call-only probes before any card (design note ## Tried and rejected)",
-  "domain": "economics-econometrics",
-  "subdomain": "structural-equilibrium-modeling",
-  "client_domain": "economics-econometrics",
-  "niche": "a regional supermarket chain moving one of four categories onto automated store ordering in 2027, sized by what the change adds to the chain's sales in that category, when a shopper who finds a line off the shelf may take another line of the same category, come back for it after the restock, or buy nothing in the category",
-  "objective": "opportunity-sizing-decision",
-  "shape": "other",
-  "decision_type": "pick_one_of_n",
-  "answer_unit": "currency",
-  "answer": "Infant formula, about NZD 90,000 added to the chain's 2027 formula sales (planning value at the draw; fixed from the shipped files at ship)",
-  "answer_source": "design note ## Draw (planning value; submission.md block 1 at ship)",
-  "gap": [
-    "objective"
+ "task": "task302",
+ "architecture": "v1",
+ "drawn": "2026-10-25",
+ "slot_note": "fresh draw after the seed's battery congestion counterfactual was landed by both call-only probes before any card (design note ## Tried and rejected)",
+ "domain": "economics-econometrics",
+ "subdomain": "structural-equilibrium-modeling",
+ "client_domain": "economics-econometrics",
+ "niche": "a regional supermarket chain moving one of four categories onto automated store ordering in 2027, sized by what the change adds to the chain's sales in that category, when a shopper who finds a line off the shelf may take another line of the same category, come back for it after the restock, or buy nothing in the category",
+ "objective": "opportunity-sizing-decision",
+ "shape": "other",
+ "decision_type": "pick_one_of_n",
+ "answer_unit": "currency",
+ "answer": "Infant formula, about NZD 60,000 a year added to the chain's formula sales (half of its out-of-stock line-days removed, valued at the 2025-26 shelf prices)",
+ "answer_source": "design note ## Draw (planning value; submission.md block 1 at ship)",
+ "gap": [
+  "objective"
+ ],
+ "pattern": [
+  "none"
+ ],
+ "generators": [
+  "G5",
+  "G10",
+  "G13"
+ ],
+ "gate_g": "decomposition_attribution",
+ "calibration_form": "none",
+ "stump_strategy": "causal_design",
+ "decisive_rule_filed": false,
+ "official_decoy": false,
+ "validated_decoy": false,
+ "context_artifact": "other",
+ "stump_class": "analytical",
+ "analyst_test": "A strong analyst who joins the opening stock positions to the daily sales, reads every out-of-stock line-day correctly and prices each at the line's own same-weekday sales in that store, halved as the plan's contract sets, moves bottled water at about NZD 110,000 (or dry pet food at about 70,000 after netting the other lines' extra sales on the out days); water's shoppers take another brand from the same shelf and pet food's buy the bag after the restock, so the category loses only what goes to neither, and infant formula, whose whole shelf empties when its weekly direct delivery is missed, adds the most, about NZD 60,000.",
+ "domain_test": "The deciding quantity is the share of a stocked-out line's first-choice demand that the category loses outright, which demand economics estimates from availability variation (each out-of-stock spell is an exogenous change to the shopper's choice set) as diversion to the category's other lines on the out days and to the line itself after the restock; swap in megawatt-hours or hospital beds and a shopper taking the next brand from the same shelf, or buying the pet food bag next week from the stock at home, stops meaning anything.",
+ "layer2_family": "estimand_identification",
+ "layer2_pattern": "own:a-line's-absence-is-the-category's-loss-only-net-of-diversion-to-the-shelf-and-to-the-restock",
+ "layer1": [
+  "daily sales from the point-of-sale system with a till migration part-way through the record",
+  "opening stock positions with count corrections that set the system stock to zero when the shelf was found empty",
+  "line codes reissued when a supplier changed pack sizes, with a code history",
+  "store refits with days closed",
+  "returns booked as negative sales",
+  "a direct-to-store supplier whose weekly delivery day moved during the record"
+ ],
+ "stakeholder_role": "the chain's head of supply chain, who decides which category goes first onto store ordering",
+ "role_family": "operations_director",
+ "scoring_unit": "other",
+ "spine": {
+  "file": "pos_daily_sales_2024-07_2026-06.parquet",
+  "rows": 560000,
+  "entity": "one line's units and net sales in one store on one trading day",
+  "grain": "store x line x day",
+  "source": "synthetic"
+ },
+ "forum": "line_manager_or_team",
+ "forcing_event": "cutover_or_migration",
+ "org_family": "retailer_or_ecommerce",
+ "world": {
+  "geography": "New Zealand (lower North Island and Nelson-Marlborough)",
+  "currency": "NZD",
+  "org_type": "regional supermarket chain of 24 stores with its own distribution centre",
+  "invented_names": [
+   "Ridgeway Foodmarkets"
   ],
-  "pattern": [
-    "none"
-  ],
-  "generators": [
-    "G5",
-    "G10",
-    "G13"
-  ],
-  "gate_g": "decomposition_attribution",
-  "calibration_form": "none",
-  "stump_strategy": "causal_design",
-  "decisive_rule_filed": false,
-  "official_decoy": false,
-  "validated_decoy": false,
-  "context_artifact": "other",
-  "stump_class": "analytical",
-  "analyst_test": "A strong analyst who joins the opening stock positions to the daily sales, reads every out-of-stock line-day correctly and prices each at the line's own same-weekday sales in that store, cut by three quarters, moves bottled water at about NZD 150,000 (or dry pet food at about 100,000 after netting the other lines' extra sales on the out days); water's shoppers take another brand from the same shelf and pet food's buy the bag after the restock, so the category loses only what goes to neither, and infant formula, whose whole shelf empties when its weekly direct delivery is missed, adds the most, about NZD 90,000.",
-  "domain_test": "The deciding quantity is the share of a stocked-out line's first-choice demand that the category loses outright, which demand economics estimates from availability variation (each out-of-stock spell is an exogenous change to the shopper's choice set) as diversion to the category's other lines on the out days and to the line itself after the restock; swap in megawatt-hours or hospital beds and a shopper taking the next brand from the same shelf, or buying the pet food bag next week from the stock at home, stops meaning anything.",
-  "layer2_family": "estimand_identification",
-  "layer2_pattern": "own:a-line's-absence-is-the-category's-loss-only-net-of-diversion-to-the-shelf-and-to-the-restock",
-  "layer1": [
-    "daily sales from the point-of-sale system with a till migration part-way through the record",
-    "opening stock positions with count corrections that set the system stock to zero when the shelf was found empty",
-    "line codes reissued when a supplier changed pack sizes, with a code history",
-    "store refits with days closed",
-    "returns booked as negative sales",
-    "a direct-to-store supplier whose weekly delivery day moved during the record"
-  ],
-  "stakeholder_role": "the chain's head of supply chain, who decides which category goes first onto store ordering",
-  "role_family": "operations_director",
-  "scoring_unit": "other",
-  "spine": {
-    "file": "pos_daily_sales_2024-07_2026-06.parquet",
-    "rows": 560000,
-    "entity": "one line's units and net sales in one store on one trading day",
-    "grain": "store x line x day",
-    "source": "synthetic"
-  },
-  "forum": "line_manager_or_team",
-  "forcing_event": "cutover_or_migration",
-  "org_family": "retailer_or_ecommerce",
-  "world": {
-    "geography": "New Zealand (lower North Island and Nelson-Marlborough)",
-    "currency": "NZD",
-    "org_type": "regional supermarket chain of 24 stores with its own distribution centre",
-    "invented_names": [
-      "Ridgeway Foodmarkets"
-    ],
-    "people": [
-      "Nikau Fletcher",
-      "Archie Eglinton"
-    ]
-  },
-  "deliverables": [
-    "store_ordering_first_category_2027.pptx",
-    "store_ordering_2027_workbook.xlsx"
-  ],
-  "opening_move": "question-first",
-  "question_form": "which",
-  "driver": "A unit's loss while it is unavailable is counted at its own expected rate, when the members of its group take a substitute from the same group or come back for it once it returns, so the group loses only the part that goes to neither; that part is read from the other members' excess while the unit is out and the unit's own excess after it returns, and the group whose whole set fails at once, leaving nothing to take instead and no reason to wait, gains the most from fewer failures.",
-  "driver_concrete": "Each category's 2027 addition is three quarters of what its out-of-stock line-days cost the category over the twelve months to 30 June 2026: the line's expected sales on its out days less what the category's other lines sold above their own level on those days and what the line sold above its level in the two weeks after the restock. Water's shoppers take another brand (about seven in ten) and pet food's mostly buy the bag after the restock, so their large line-level losses shrink to a fraction, while a missed weekly formula delivery empties the whole shelf and those shoppers buy elsewhere.",
-  "stump": "A competent solver prices every out-of-stock line-day at the line's own same-weekday sales in the store, cuts the total by three quarters and moves bottled water at about NZD 150,000, where the golden is infant formula at about NZD 90,000; the step that lands it there is counting a line's absence as the category's loss, when water's shoppers take another brand from the same shelf and pet food's buy the bag after the restock, while a missed formula delivery empties the whole shelf.",
-  "differentiation": {
-    "task118": "task118 nets from a specialist team's measured lift the volume each unit already treats with its own tests, read from the archive's test owners; task302 has no team, test or archive: the demand a stocked-out line's shoppers carry to the category's other lines on the out days and to the line itself after the restock is read from the availability spells in the sales and stock records, and the category whose whole shelf empties at once has nothing to carry it to.",
-    "task120": "task120 reads what a population drew from a supply system as the inflow less what accumulated inside it, the reserve drawn down in the periods that matter; task302 has no reserve and no inflow record: each unavailable line's lost demand is split into what the category's other lines and the line's own restock recapture, read from the availability spells, and only the part that goes to neither is the category's loss."
-  },
-  "architecture_spent": false,
-  "notes": "stump_strategy causal_design: the counterfactual category sales without the stockout, with interference among the lines sharing the category's demand (diversion to the shelf) and across days (purchase deferred to the restock); not composition_mix (no pooled rate is carried to another pool) and not population_selection (every shopper is in the record). context_artifact other: the steering group's paper that files the estimand. Pattern none with G5 (the demand is provided elsewhere on the shelf or later), G10 (the same demand counted lost at the line and bought in the category) and G13 (a day's absence against a year's sales). Forum line_manager_or_team: the head of supply chain decides with the team (committee_or_panel is banned against task301's registered card). WARN repeat.question_form answered: a pick of one of four asks which. Two call-only probes on a prototype pack (seed 3024) both filed bottled water at about NZD 160,000 (155,400 and 155,700) by pricing each out-of-stock line-day at a store-line Poisson demand fit, against infant formula at about 90,000 net of diversion.",
-  "registered": "2026-10-25T07:20:41Z"
+  "people": [
+   "Nikau Fletcher",
+   "Archie Eglinton"
+  ]
+ },
+ "deliverables": [
+  "store_ordering_first_category_2027.pptx",
+  "store_ordering_2027_workbook.xlsx"
+ ],
+ "opening_move": "question-first",
+ "question_form": "which",
+ "driver": "A unit's loss while it is unavailable is counted at its own expected rate, when the members of its group take a substitute from the same group or come back for it once it returns, so the group loses only the part that goes to neither; that part is read from the other members' excess while the unit is out and the unit's own excess after it returns, and the group whose whole set fails at once, leaving nothing to take instead and no reason to wait, gains the most from fewer failures.",
+ "driver_concrete": "Each category's 2027 addition is half of what its out-of-stock line-days cost the category over the twelve months to 30 June 2026: the line's expected sales on its out days less what the category's other lines sold above their own level on those days and what the line sold above its level in the two weeks after the restock. Water's shoppers take another brand (about three in four) and pet food's mostly buy the bag after the restock (about three in four), so their large line-level losses shrink to a fraction, while a missed weekly formula delivery empties the whole shelf and those shoppers buy elsewhere.",
+ "stump": "A competent solver prices every out-of-stock line-day at the line's own same-weekday sales in the store, halves the total and moves bottled water at about NZD 110,000, where the golden is infant formula at about NZD 60,000; the step that lands it there is counting a line's absence as the category's loss, when water's shoppers take another brand from the same shelf and pet food's buy the bag after the restock, while a missed formula delivery empties the whole shelf.",
+ "differentiation": {
+  "task118": "task118 nets from a specialist team's measured lift the volume each unit already treats with its own tests, read from the archive's test owners; task302 has no team, test or archive: the demand a stocked-out line's shoppers carry to the category's other lines on the out days and to the line itself after the restock is read from the availability spells in the sales and stock records, and the category whose whole shelf empties at once has nothing to carry it to.",
+  "task120": "task120 reads what a population drew from a supply system as the inflow less what accumulated inside it, the reserve drawn down in the periods that matter; task302 has no reserve and no inflow record: each unavailable line's lost demand is split into what the category's other lines and the line's own restock recapture, read from the availability spells, and only the part that goes to neither is the category's loss."
+ },
+ "architecture_spent": false,
+ "notes": "stump_strategy causal_design: the counterfactual category sales without the stockout, with interference among the lines sharing the category's demand (diversion to the shelf) and across days (purchase deferred to the restock); not composition_mix (no pooled rate is carried to another pool) and not population_selection (every shopper is in the record). context_artifact other: the steering group's paper that files the estimand. Pattern none with G5 (the demand is provided elsewhere on the shelf or later), G10 (the same demand counted lost at the line and bought in the category) and G13 (a day's absence against a year's sales). Forum line_manager_or_team: the head of supply chain decides with the team (committee_or_panel is banned against task301's registered card). WARN repeat.question_form answered: a pick of one of four asks which. Two call-only probes on a prototype pack (seed 3024) both filed bottled water at about NZD 160,000 (155,400 and 155,700) by pricing each out-of-stock line-day at a store-line Poisson demand fit, against infant formula at about 90,000 net of diversion (the prototype cut three quarters of the line-days; the built pack halves them, formula at about 60,000). Stage 4 over three rounds: six scored readers all filed bottled water (five at about NZD 110,000, one at 90,000) and the judge's runs reproduced the golden; round 3 (target.zip 3b9ace95) both readers kept 8 of 44 ask figures (asks A and B, none of ask C's 36 pallet cells), measured pair 22.0; judge run r3 DETERMINISTIC APPROVE, Gate G decomposition_attribution, analytical_non_defect, Gate H pass. Shipped 2026-10-25.",
+ "registered": "2026-10-25T07:20:41Z"
 }

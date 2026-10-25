@@ -1,0 +1,107 @@
+{
+ "call_category": "Infant formula",
+ "call_add": 60000,
+ "add_nzd": {
+  "Bottled water": 11456,
+  "Infant formula": 57775,
+  "Dry pet food": 16556,
+  "Gluten-free bakery": 11272
+ },
+ "oos_line_days": {
+  "Bottled water": 2714,
+  "Infant formula": 1968,
+  "Dry pet food": 2042,
+  "Gluten-free bakery": 1900
+ },
+ "win_lines": 8,
+ "win_whole_shelf_store_days": 246,
+ "cut_pct": 50,
+ "ask_trial": {
+  "203": {
+   "after": 26,
+   "change_pct": -73.7
+  },
+  "204": {
+   "after": 38,
+   "change_pct": -42.4
+  },
+  "210": {
+   "after": 40,
+   "change_pct": -58.8
+  }
+ },
+ "ask_late_stops": {
+  "North": 339,
+  "South": 169
+ },
+ "ask_pallets": {
+  "Bottled water": {
+   "2025-07": 188,
+   "2025-08": 185,
+   "2025-09": 262,
+   "2025-10": 205,
+   "2025-11": 223,
+   "2025-12": 249,
+   "2026-01": 247,
+   "2026-02": 221,
+   "2026-03": 178,
+   "2026-04": 259,
+   "2026-05": 221,
+   "2026-06": 200
+  },
+  "Dry pet food": {
+   "2025-07": 277,
+   "2025-08": 224,
+   "2025-09": 228,
+   "2025-10": 290,
+   "2025-11": 214,
+   "2025-12": 240,
+   "2026-01": 209,
+   "2026-02": 176,
+   "2026-03": 258,
+   "2026-04": 198,
+   "2026-05": 193,
+   "2026-06": 207
+  },
+  "Gluten-free bakery": {
+   "2025-07": 33,
+   "2025-08": 34,
+   "2025-09": 37,
+   "2025-10": 44,
+   "2025-11": 35,
+   "2025-12": 41,
+   "2026-01": 35,
+   "2026-02": 33,
+   "2026-03": 38,
+   "2026-04": 31,
+   "2026-05": 46,
+   "2026-06": 29
+  }
+ },
+ "store_names": {
+  "201": "Ridgeway Palmerston North Central",
+  "202": "Ridgeway Palmerston North Kelvin Grove",
+  "203": "Ridgeway Feilding",
+  "204": "Ridgeway Levin",
+  "205": "Ridgeway Whanganui Central",
+  "206": "Ridgeway Whanganui Aramoho",
+  "207": "Ridgeway Marton",
+  "208": "Ridgeway Dannevirke",
+  "209": "Ridgeway Masterton",
+  "210": "Ridgeway Carterton",
+  "211": "Ridgeway Martinborough",
+  "212": "Ridgeway Otaki",
+  "213": "Ridgeway Waikanae",
+  "214": "Ridgeway Paraparaumu",
+  "215": "Ridgeway Upper Hutt",
+  "216": "Ridgeway Porirua",
+  "217": "Ridgeway Nelson Central",
+  "218": "Ridgeway Nelson Stoke",
+  "219": "Ridgeway Richmond",
+  "220": "Ridgeway Motueka",
+  "221": "Ridgeway Blenheim Central",
+  "222": "Ridgeway Blenheim Redwoodtown",
+  "223": "Ridgeway Picton",
+  "224": "Ridgeway Takaka"
+ }
+}
