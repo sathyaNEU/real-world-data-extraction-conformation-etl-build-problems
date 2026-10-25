@@ -9,7 +9,7 @@
  "irradiation_kwh_m2": {
   "Hallam Down": 1103,
   "Kingsley Fields": 1060,
-  "Larkhill Common": 1037,
+  "Larkhill Common": 1038,
   "Marston Vale": 1016
  },
  "energised": {
@@ -24,10 +24,10 @@
   9300,
   9600
  ],
- "hallam_loss_pct": 7.4,
+ "hallam_loss_pct": 7.3,
  "hallam_loss_range_pct": [
-  4.7,
-  7.5
+  4.6,
+  7.7
  ],
  "hallam_loss_whole_pct": [
   4,
@@ -43,24 +43,24 @@
  "wexcombe_rain_mm": 1500,
  "knowle_ratio": 0.83,
  "knowle_ratio_2dp": 0.83,
- "fleet_degradation_pct": 0.15,
+ "fleet_degradation_pct": 0.16,
  "wexcombe_blocks": 58,
  "wexcombe_near_blocks": 18,
  "corner_blocks": [
   [
    "INV55",
    87,
-   4.2
+   4.1
   ],
   [
    "INV56",
    102,
-   3.1
+   3.0
   ],
   [
    "INV37",
    141,
-   1.5
+   1.4
   ]
  ],
  "corner_range_m": [
@@ -68,8 +68,8 @@
   141
  ],
  "corner_loss_range_pct": [
-  1.5,
-  4.2
+  1.4,
+  4.1
  ],
  "build_mwp": 11.0,
  "knowle_mwp": 12.0,
@@ -85,19 +85,19 @@
   4,
   10
  ],
- "wexcombe_meter_vs_peers_pct": 1.1,
+ "wexcombe_meter_vs_peers_pct": 1.2,
  "ask_a": {
   "Ashcombe": 0.985,
   "Bramble Hill": 0.984,
   "Wexcombe": 0.988,
   "Coldharbour": 0.991,
   "Brindle Moor": 0.985,
-  "Dunsford Lane": 1.007,
-  "Elmstead": 0.989,
+  "Dunsford Lane": 1.008,
+  "Elmstead": 0.988,
   "Fairoak": 0.987,
   "Greystoke Barns": 0.984,
   "Hartsfield": 0.971,
-  "Ivy Cross": 0.989,
+  "Ivy Cross": 0.99,
   "Furzedown": 0.985,
   "Jessop's Farm": 0.993,
   "Knowle Park": 0.987
@@ -137,34 +137,34 @@
  "ask_b": {
   "Ashcombe": 12.9,
   "Bramble Hill": 11.9,
-  "Wexcombe": 19.6,
-  "Coldharbour": 20.2,
-  "Brindle Moor": 19.5,
-  "Dunsford Lane": 15.0,
-  "Elmstead": 18.6,
-  "Fairoak": 17.4,
-  "Greystoke Barns": 21.5,
-  "Hartsfield": 13.0,
-  "Ivy Cross": 14.6,
-  "Furzedown": 9.5,
-  "Jessop's Farm": 16.1,
-  "Knowle Park": 31.3
+  "Wexcombe": 13.9,
+  "Coldharbour": 14.9,
+  "Brindle Moor": 20.7,
+  "Dunsford Lane": 16.2,
+  "Elmstead": 13.1,
+  "Fairoak": 20.6,
+  "Greystoke Barns": 15.1,
+  "Hartsfield": 14.4,
+  "Ivy Cross": 13.5,
+  "Furzedown": 20.2,
+  "Jessop's Farm": 14.3,
+  "Knowle Park": 6.6
  },
  "ask_b_alarms": {
   "Ashcombe": 16,
   "Bramble Hill": 21,
-  "Wexcombe": 25,
-  "Coldharbour": 20,
-  "Brindle Moor": 15,
-  "Dunsford Lane": 13,
-  "Elmstead": 12,
-  "Fairoak": 15,
-  "Greystoke Barns": 12,
-  "Hartsfield": 12,
-  "Ivy Cross": 15,
-  "Furzedown": 9,
-  "Jessop's Farm": 9,
-  "Knowle Park": 9
+  "Wexcombe": 23,
+  "Coldharbour": 16,
+  "Brindle Moor": 10,
+  "Dunsford Lane": 9,
+  "Elmstead": 8,
+  "Fairoak": 12,
+  "Greystoke Barns": 8,
+  "Hartsfield": 15,
+  "Ivy Cross": 10,
+  "Furzedown": 8,
+  "Jessop's Farm": 16,
+  "Knowle Park": 14
  },
  "ask_a_down": {
   "Ashcombe": "SMP10-177210",

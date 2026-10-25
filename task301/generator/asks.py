@@ -242,6 +242,10 @@ def response(W):
                 continue
             if van_on(t, loc.date()) != v:
                 continue
+            # nor one whose wait spans a change of the clocks (the last Sundays of March and October)
+            if (loc.replace(tzinfo=UK).utcoffset() != arrive.replace(tzinfo=UK).utcoffset()
+                    or any(loc.date() <= dt.date(2025, mo, dd) <= arrive.date() for mo, dd in ((3, 30), (10, 26)))):
+                continue
             last_arrival[v] = leave_site.replace(tzinfo=UK).astimezone(UTC)
             al_no += int(rng.integers(3, 40))
             off = rng.uniform() < offline[f]

@@ -1,6 +1,6 @@
 # perssathya: where work stopped
 
-Updated 2026-10-24 (wave 6, Opportunity Sizing, task301 to task306: task306 SHIPPED 10-24, architecture 1; task301, task302 and task304 parked before a draw after call-only probes landed every mechanism tried, nothing registered for them; task303 and task305 not drawn. Before wave 6, the lane was fully shipped: wave 4 task243 to task248; wave 5 task250 SHIPPED 10-20, task251 and task252 SHIPPED 10-21, task249 SHIPPED 10-23 (architecture 6); `status.py wave perssathya` reports the lane fully taken, so the next numbers are the author's call). Work is on `main` (one branch); each build's state is in its `pipeline.json`.
+Updated 2026-10-25 (wave 6, Opportunity Sizing, task301 to task306: task305 and task306 SHIPPED; task301 PAUSED with architecture 1 spent at stage 4 and its re-root owed; task302 and task304 parked before a draw after call-only probes landed every mechanism tried, nothing registered for them; task303 not drawn. Before wave 6, the lane was fully shipped: wave 4 task243 to task248; wave 5 task250 SHIPPED 10-20, task251 and task252 SHIPPED 10-21, task249 SHIPPED 10-23 (architecture 6)). Work is on `main` (one branch); each build's state is in its `pipeline.json`.
 task229, task131, task122, task231 and task232 (2026-10-13) and task230 and task129 (reshipped 2026-10-14) are SHIPPED
 and wait on the portal; task123's determinism repair is RESHIPPED. Wave 1 is fully shipped: task228 was redrawn as architecture 5
 (a full refresh at the author's request) and SHIPPED 2026-10-15. Wave 2: task231 to task236 shipped. Wave 3: task237 to task242 shipped. Wave 4: task243 to task248 shipped.
@@ -17,6 +17,20 @@ domain General Statistics) though its decisive method is web performance enginee
 author chose: task230 re-rooted inside Data Quality (done, reshipped), task129 re-rooted in a client domain (done,
 reshipped), then the second-layer reviews in the order task232, task231, task229, task122, task131, with task123 last
 (task232 and task229 assessed 10-14: no clean second layer, kept as shipped; task231's second layer, the 2025 rise in closures, was built and returned SEND_BACK at the re-judge, so it was reverted and the shipped build stands; task122 prototyped 10-14: informative hyperkalaemia stops leave the MAR estimators apart and short of the counterfactual, so no clean second layer, kept as shipped; task131 assessed 10-14: no clean second layer, kept as shipped; task123 kept as shipped at the author's call (no Energy task type serves ETL, so its tag is its only legal home). The review is complete; verdicts sit in the board's `assessment` collection. Next: wave 2 (task233 to task236) or task228, at the author's call.)
+
+**task301: PAUSED 2026-10-25, architecture 1 spent at stage 4; re-root owed (architecture 2).**
+- Fenmore Solar Income's 2027 build from four consented sites: Kingsley Fields at 9,700 MWh in 2028 against the
+  site-level route's Hallam Down at 10,100, Hallam Down's planned blocks losing to the dust of a broiler unit that the
+  fleet records only in the SCADA of Wexcombe's corner blocks. Built and every free gate green (precut, checks,
+  byte-identical, verifier, figures, leak REVIEW only).
+- Stage 4 on target.zip 402a51e4: scored reader A landed the call (it reached Wexcombe's blocks because the environs
+  listing names Hallam Down's unit and Wexcombe's in the same words) and both readers took all 31 ask figures (the
+  register's 2025 installation dates and the clearance-inside-the-visit check gave both devices away). Judge
+  DETERMINISTIC SOLUTION_WRONG FIX_NOW on one ask figure across the 30 March clock change. Ledger row under Earlier
+  architectures; card notes and the design note's last Tried and rejected line say why.
+- Next: re-root task301 at stage 1 (a new decisive step and card), or take task302 first at the author's call; the
+  generator's world (fleet, weather geography, site wind, environs mix, clock-change exclusion) can be kept where the
+  new draw uses it.
 
 **task306: SHIPPED 2026-10-24 (architecture 1), waiting on the portal.**
 - Voltwerk Accu Revisie B.V. (Tilburg) tools its 3,000 refurbishment slots for 2027 in lots of 50 across five EV

@@ -4,31 +4,31 @@
  "status": "PAUSED",
  "domain": "energy-systems-utilities",
  "objective": "opportunity-sizing-decision",
- "stage": 4,
- "stage_name": "check",
+ "stage": 1,
+ "stage_name": "draw",
  "updated": "2026-10-25",
  "stump": "A competent solver applies the fleet's measured performance to each candidate's average-year irradiation and builds Hallam Down at about 10,100 MWh, where the golden is Kingsley Fields at 9,700 MWh; the step that lands it there is reading the loss at the fiscal meter, where Wexcombe's three blocks nearest a broiler unit average away among its 58, when Hallam Down's ten planned blocks all sit 76 to 269 m from a unit of the same size on a record a third as wet.",
  "architecture": 1,
- "loops": 0,
+ "loops": 1,
  "precut": {
   "exit": 0,
   "date": "2026-10-25"
  },
  "leak": {
-  "leak_py": "REVIEW (no LEAK; sweeps 3, 4, 6 and 9 answered in the design note)",
-  "reader": ""
+  "leak_py": "REVIEW (no LEAK)",
+  "reader": "two scored readers on 402a51e4: A landed the call (Kingsley Fields 9,700) and 31 of 31 ask figures; B missed the call (Hallam Down 10,100) and took 31 of 31 ask figures; score_reader FAIL (Gate F, architecture spent)"
  },
  "duplicate_check": {
   "heart": "WARN (repeat.gate_g against task170, repeat.question_form against task482, both answered at the draw)",
   "nearest": "task184 lineage at 0.09; task69 lineage at 0.08; task114 and task136 lineage at 0.07"
  },
  "judge": {
-  "verdict": "",
-  "disposition": "",
-  "report": ""
+  "verdict": "DETERMINISTIC SOLUTION_WRONG",
+  "disposition": "FIX_NOW",
+  "report": "Wexcombe ask 4 across the 30 March 2025 clock change (19.654 wall clock, 19.614 elapsed); deposit ceiling closed by fit; Gate G analytical_non_defect; Gate H pass"
  },
  "returned": [],
- "resume": "PAUSED 2026-10-25 at stage 4: two scored readers (scratch r301a, r301b) and the determinism judge (brief at /tmp/determinism-check-task301-r1/judge_brief.md) running on target.zip sha256 402a51e4; on their return score both readers with score_reader.py (map chart.<site> to export_mwh.<site> and chart.Hallam Down to hallam_export_mwh), fix every finding in the generator in one pass, re-run make.py and the free gates, then ship (ledger row, card current, SHIPPED commit with target.zip and golden/ force-added).",
+ "resume": "Architecture 1 spent at stage 4 (reader A landed the call; both readers took every ask figure). Re-root at stage 1 as architecture 2: a new decisive step and card, the old card's lineage saying spent and why, asks re-sited onto devices no careful reader's join crosses; the generator's world (fleet, weather geography, site wind, environs mix, clock-change exclusion) can be kept where the new draw uses it.",
  "approved": null,
  "delivered": null,
  "portal": null,

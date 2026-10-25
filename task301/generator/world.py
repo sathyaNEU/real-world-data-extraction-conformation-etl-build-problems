@@ -64,20 +64,31 @@ def world():
     t_reg = 10.6 + 6.4 * np.sin(2 * np.pi * (doy - 112) / 365.25) + rng.normal(0, 2.0, n)
     wind = np.where(rng.uniform(size=n) < 0.58, rng.normal(232, 38, n), rng.uniform(0, 360, n)) % 360
     W.wind = wind
+    # the weather's own geography: daily gradients across the region (fronts clearing from the west, a sunnier
+    # south coast on some days) and each site's wind turned a little by its own ground
+    rs = np.random.default_rng(P.SEED_WORLD + 17)
+    gE, gN = np.zeros(n), np.zeros(n)
+    eE, eN = rs.normal(size=n), rs.normal(size=n)
+    for i in range(1, n):
+        gE[i] = 0.5 * gE[i - 1] + np.sqrt(1 - 0.25) * eE[i]
+        gN[i] = 0.5 * gN[i - 1] + np.sqrt(1 - 0.25) * eN[i]
     W.site = {}
     for nm, dc, comm, mod, pf, ws, amt, td, E0, N0 in P.SITES + P.CAND:
         loc = z + 0.55 * rng.normal(size=n)
         wet = loc > (0.15 + season + ws)
         a = rng.gamma(0.85, 4.6, n) * amt * np.exp(0.35 * np.clip(loc, 0, None))
         rain = np.where(wet, np.round(a, 1), 0.0)
-        poa = np.clip(clear * sun * pf * rng.lognormal(0, 0.04, n), 0.05, None)
+        geo = np.exp(0.09 * gE * (E0 - 450000) / 150000.0 + 0.06 * gN * (N0 - 150000) / 60000.0)
+        geo = geo / geo.mean()
+        poa = np.clip(clear * sun * pf * geo * rng.lognormal(0, 0.04, n), 0.05, None)
+        site_wind = (wind + rs.normal(0, 6) + rs.normal(0, 14, n)) % 360
         bias = float(rng.lognormal(0, 0.008))
         if nm in P.BIFACIAL:
             bias = 1.0 + (bias - 1.0) * 0.15      # the provider's tiles over the bifacial farms were validated on site
         sat = poa * bias * rng.lognormal(0, 0.06, n)
         temp = t_reg + td + rng.normal(0, 0.5, n)
         W.site[nm] = dict(dc=dc, comm=comm, mod=mod, E0=E0, N0=N0, rain=rain, poa=poa, poa_sat=sat, sat_bias=bias,
-                          temp=temp, blocks=[])
+                          temp=temp, wind=site_wind, blocks=[])
         for (x, y) in _layout(nm, dc):
             dep = np.full(n, P.BG)
             d_src = None
@@ -87,7 +98,7 @@ def world():
                 d_src = float(np.hypot(sx - x, sy - y))
                 b_src = float(np.degrees(np.arctan2(sx - x, sy - y)) % 360)
                 r0 = P.R0 * sheds / 10.0 * np.exp(-(d_src - P.D0) / P.DL)
-                towards = np.abs(((wind - b_src) + 180) % 360 - 180) <= P.PLUME_HALF_ANGLE
+                towards = np.abs(((site_wind - b_src) + 180) % 360 - 180) <= P.PLUME_HALF_ANGLE
                 dep = np.where(towards, r0, P.OFF_PLUME * r0) + P.BG
             W.site[nm]["blocks"].append(dict(x=x, y=y, soil=soil(rain, dep), d_src=d_src))
     # the fleet's output from 2022, block by block, and its outages
@@ -176,12 +187,24 @@ EXTRA = {"Wexcombe": [("Poultry unit", "broiler, 10 sheds", 545, 252)],
          "Ivy Cross": [("Track", "farm track, unsurfaced", 270, 205)]}
 
 
+# how often the surveys list each kind of feature within 2 km of a rural site: fields, hedges and dwellings by the
+# dozen, a church or a golf course now and then
+FREQ = {"Arable field": 10, "Pasture": 8, "Hedgerow": 9, "Woodland": 5, "Dwelling": 6, "Settlement": 1.5, "Road": 4,
+        "Track": 3, "Watercourse": 2.5, "Pond": 1.5, "Overhead line": 2, "Substation": 0.6, "Church": 0.4,
+        "Listed building": 1, "Public right of way": 3, "Farm buildings": 2.5, "Livestock unit": 1, "Poultry unit": 0.6,
+        "Grain store": 0.5, "Equestrian": 0.5, "Caravan site": 0.3, "Golf course": 0.15, "Telecom mast": 0.6,
+        "Wind turbine": 0.3, "Reservoir": 0.3, "Sewage works": 0.2, "Recreation ground": 0.3, "Business unit": 0.5,
+        "Railway": 0.3, "Scheduled monument": 0.4}
+
+
 def environs():
     rng = np.random.default_rng(P.SEED_ENV)
     env = []
+    base = np.array([FREQ[f[0]] for f in FEAT])
     for nm in P.OPERATING + P.CANDIDATES:
         k = int(rng.integers(52, 68))
-        for j in rng.choice(len(FEAT), size=k):
+        wts = base * rng.lognormal(0, 0.5, len(FEAT))      # each site's own country: arable here, pasture there
+        for j in rng.choice(len(FEAT), size=k, p=wts / wts.sum()):
             t, descs, lo, hi = FEAT[j]
             if t == "Poultry unit" and rng.uniform() < 0.6:
                 continue

@@ -46,7 +46,7 @@ def build(target):
         S = W.site[nm]
         for i in range(len(days)):
             rows.append([ds[i], nm, "%.3f" % S["poa_sat"][i], "%.1f" % S["rain"][i], "%.1f" % S["temp"][i],
-                         int(W.wind[i])])
+                         int(S["wind"][i])])
     _csv(F["weather"], ["date", "site", "poa_irradiation_kwh_m2", "rainfall_mm", "air_temperature_c", "wind_from_deg"], rows)
     # the fiscal meters
     rows = []

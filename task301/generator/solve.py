@@ -304,16 +304,18 @@ def ask_b(K):
         v = vans[(vans.technician == t) & (vans["from"] <= d) & (vans["to"].isna() | (vans["to"] >= d))]
         return v.sort_values("from").vehicle.iloc[-1]
 
-    arr, arr_any, arr_raw = [], [], []
+    arr, arr_any, arr_raw, arr_local = [], [], [], []
     for r in j.itertuples():
         v = van_on(r.assigned_to, pd.Timestamp(r.raised_local.date()))
-        g = gf[(gf.vehicle == v) & (gf.site == r.site) & (gf.entered_utc >= r.raised_utc)].entered_utc
-        arr.append(g.min())
+        g = gf[(gf.vehicle == v) & (gf.site == r.site) & (gf.entered_utc >= r.raised_utc)]
+        arr.append(g.entered_utc.min())
+        arr_local.append(g.sort_values("entered_utc").entered.iloc[0])
         arr_any.append(gf[(gf.site == r.site) & (gf.entered_utc >= r.raised_utc)].entered_utc.min())
         arr_raw.append(gf[(gf.vehicle == v) & (gf.site == r.site) & (gf.entered >= r.raised_utc)].entered.min())
     j["arrived_utc"] = arr
     hrs = lambda a, b: (a - b).dt.total_seconds() / 3600
     j["h_gold"] = hrs(j.arrived_utc, j.raised_utc)
+    j["h_wall"] = hrs(pd.Series(arr_local, index=j.index), j.raised_local)
     j["h_attended"] = hrs(j.attended_utc, j.raised_utc)
     j["h_cmms"] = hrs(j.attended, j.raised)
     j["h_mixed"] = hrs(j.attended, j.raised_utc)
@@ -323,7 +325,8 @@ def ask_b(K):
     j["possible"] = j.attended_utc <= j.cleared_utc
     out = {}
     for f, d in j.groupby("site", sort=False):
-        out[f] = dict(gold=d.h_gold.mean(), attended=d.h_attended.mean(), cmms=d.h_cmms.mean(), mixed=d.h_mixed.mean(),
+        out[f] = dict(gold=d.h_gold.mean(), wall=d.h_wall.mean(), attended=d.h_attended.mean(), cmms=d.h_cmms.mean(),
+                      mixed=d.h_mixed.mean(),
                       tracker_raw=d.h_tracker_raw.mean(), from_wo=d.h_from_wo.mean(), any_van=d.h_any_van.mean(),
                       possible_only=d[d.possible].h_attended.mean(), n=len(d), impossible=int((~d.possible).sum()))
     return out

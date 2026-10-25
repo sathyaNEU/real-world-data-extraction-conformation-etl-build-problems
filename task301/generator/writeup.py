@@ -29,9 +29,9 @@ def write(path, F):
              % (F["knowle_ratio_2dp"], F["knowle_mwp"], F["knowle_start"]))
     t.append("2. Hallam Down's average-year irradiation is **%.1f** per cent above Kingsley Fields', the best of the "
              "other three." % F["hallam_lead_pct"])
-    t.append("3. Wexcombe's three blocks nearest its broiler unit, **%d** to **%d** m from the sheds, produce **%.1f** "
-             "to **%.1f** per cent less than its blocks more than **%d** m away, while its fiscal meter runs **%.1f** "
-             "per cent above its 2012 to 2014 peers."
+    t.append("3. On the average day, Wexcombe's three blocks nearest its broiler unit, **%d** to **%d** m from the "
+             "sheds, produce **%.1f** to **%.1f** per cent less for each MWp than the median of its blocks more than "
+             "**%d** m away, while its fiscal meter runs **%.1f** per cent above its 2012 to 2014 peers."
              % (F["corner_range_m"][0], F["corner_range_m"][1], F["corner_loss_range_pct"][0],
                 F["corner_loss_range_pct"][1], F["far_ref_m"], F["wexcombe_meter_vs_peers_pct"]))
     t.append("4. Carried by block distance to Hallam Down's ten planned blocks (**%d** to **%d** m from its unit) through "
@@ -55,8 +55,8 @@ def write(path, F):
              "from the centroid in %s, and measured every block in %s from the sheds."
              % (FL["environs"], FL["register"], FL["layout"]))
     t.append("4. Divided each Wexcombe block's daily energy in %s by its dc_mwp and by that day's median of the blocks "
-             "more than %d m from the sheds, leaving out the block's days in %s: the three nearest run %.1f to %.1f per "
-             "cent low, falling through dry spells and recovering after rain."
+             "more than %d m from the sheds, leaving out the block's days in %s, and averaged the days: the three nearest "
+             "run %.1f to %.1f per cent low, falling through dry spells and recovering after rain."
              % (FL["scada"], F["far_ref_m"], FL["omlog"], F["corner_loss_range_pct"][0], F["corner_loss_range_pct"][1]))
     t.append("5. Fitted each block within %d m a deposit that builds by a daily step on days under %d mm of rain, to no "
              "more than %d per cent, keeps %d per cent of itself on %d to %d mm and %d per cent on %d mm or more (the "

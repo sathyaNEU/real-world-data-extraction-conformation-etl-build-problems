@@ -92,6 +92,30 @@ def main(T):
     worst = max(clean["Hallam Down"] * (1 - r[4]) for r in fam)
     ok("family: %d deposit fits, every one leaves Hallam Down below Kingsley Fields" % len(fam),
        worst < gold["Kingsley Fields"] - 50, "best Hallam %.0f" % worst)
+    # SF7: the deposit's ceiling, chosen by the blocks' own fit; every ceiling the record does not reject files Kingsley
+    s_far = SV.wexcombe_blocks(K, "far")
+    wxr = K.w[K.w.site == "Wexcombe"].set_index("date").sort_index()
+    L7 = SV.block_distances(K, "Hallam Down")
+    h7 = K.w[K.w.site == "Hallam Down"].sort_values("date")
+    caps = []
+    for cap in (0.05, 0.08, 0.10, 0.15, 0.25, 1.0):
+        dep = SV.run_deposit(wxr.rainfall_mm.values, SV.RATES, 4, 10, cap)
+        tot, per = 0.0, {}
+        for inv, d in s_far[s_far.d < 320].groupby("inverter"):
+            d = d.sort_values("date")
+            e, r = SV._best_rate(d, dep[wxr.index.get_indexer(d.date)], SV.RATES)
+            per[inv] = (float(d.d.iloc[0]), r)
+            tot += e * len(d)
+        f7 = SV.rate_fn(per, "exp")
+        hd7 = SV.run_deposit(h7.rainfall_mm.values, [f7(x) for x in L7.d], 4, 10, cap)
+        p7 = h7.poa_irradiation_kwh_m2.values
+        caps.append((tot, cap, float(np.mean((p7[:, None] * hd7).sum(axis=0) / p7.sum()))))
+    best7 = min(caps)[0]
+    standing = [x for x in caps if x[0] <= 1.10 * best7]
+    ok("SF7 the deposit ceiling the blocks fit best is 15 per cent or more, and every ceiling within 10 per cent of the "
+       "best fit files Kingsley Fields", min(caps)[1] >= 0.15 and
+       all(clean["Hallam Down"] * (1 - x[2]) < clean["Kingsley Fields"] for x in standing),
+       str([(x[1], round(x[0] / best7, 2), round(x[2], 4)) for x in caps]))
     ok("family: the partial-wash fits beat the full-wash fits on the blocks' own record",
        min(r[3] for r in fam if r[0] == "far" and r[1].startswith("partial")) * 1.3 <
        min(r[3] for r in fam if r[0] == "far" and r[1].startswith("full")))
@@ -193,6 +217,9 @@ def main(T):
     to_utc = lambda t: pd.Timestamp(t).tz_localize(UK).tz_convert("UTC").tz_localize(None)
     late = sum(to_utc(r.attended) > r.cleared_utc for r in j.itertuples())
     ok("B some CMMS attended stamps fall after the alarm cleared (the sync)", late > 0, str(late))
+    ok("B C1 on the clocks: elapsed and wall-clock hours agree at every farm (no wait spans a change of the clocks)",
+       all(abs(b[f]["gold"] - b[f]["wall"]) < 1e-9 for f in P.OPERATING),
+       str({f: round(b[f]["wall"] - b[f]["gold"], 3) for f in P.OPERATING if abs(b[f]["gold"] - b[f]["wall"]) > 1e-9}))
 
     # ------------------------------------------------------------ the realism sweep
     w = K.w

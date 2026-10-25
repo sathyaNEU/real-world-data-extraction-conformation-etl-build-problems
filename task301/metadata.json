@@ -76,7 +76,7 @@
     {
       "path": "site_weather_daily_2016-2025.csv",
       "format": "csv",
-      "bytes": 2731537,
+      "bytes": 2731630,
       "rows": 65754,
       "source": "Constructed (seeded generator)",
       "date": "2026-11-02",
@@ -85,7 +85,7 @@
     {
       "path": "fleet_daily_export_2022-2025.csv",
       "format": "csv",
-      "bytes": 555102,
+      "bytes": 555097,
       "rows": 19709,
       "source": "Constructed (seeded generator)",
       "date": "2026-11-02",
@@ -94,7 +94,7 @@
     {
       "path": "inverter_daily_energy_2022-2025.parquet",
       "format": "parquet",
-      "bytes": 876446,
+      "bytes": 877149,
       "rows": 282544,
       "source": "Constructed (seeded generator)",
       "date": "2026-11-02",
@@ -112,8 +112,8 @@
     {
       "path": "site_environs_2km.csv",
       "format": "csv",
-      "bytes": 51282,
-      "rows": 1091,
+      "bytes": 48584,
+      "rows": 1111,
       "source": "Constructed (seeded generator)",
       "date": "2026-11-02",
       "license": "CC0-1.0 (original work)"
@@ -139,7 +139,7 @@
     {
       "path": "met_station_daily_2025.csv",
       "format": "csv",
-      "bytes": 236755,
+      "bytes": 236749,
       "rows": 5012,
       "source": "Constructed (seeded generator)",
       "date": "2026-11-02",
@@ -166,8 +166,8 @@
     {
       "path": "scada_alarm_log_2025.csv",
       "format": "csv",
-      "bytes": 77710,
-      "rows": 881,
+      "bytes": 65412,
+      "rows": 745,
       "source": "Constructed (seeded generator)",
       "date": "2026-11-02",
       "license": "CC0-1.0 (original work)"
@@ -175,8 +175,8 @@
     {
       "path": "cmms_work_orders_2025.csv",
       "format": "csv",
-      "bytes": 21167,
-      "rows": 203,
+      "bytes": 19345,
+      "rows": 186,
       "source": "Constructed (seeded generator)",
       "date": "2026-11-02",
       "license": "CC0-1.0 (original work)"
@@ -184,8 +184,8 @@
     {
       "path": "van_tracker_site_visits_2025.csv",
       "format": "csv",
-      "bytes": 28604,
-      "rows": 525,
+      "bytes": 27530,
+      "rows": 505,
       "source": "Constructed (seeded generator)",
       "date": "2026-11-02",
       "license": "CC0-1.0 (original work)"
