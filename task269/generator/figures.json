@@ -1,11 +1,13 @@
 {
  "ask_a": {
-  "cod": 7.2,
-  "cod_raw": 7.2141,
+  "agg": 0.932,
+  "agg_raw": 0.93215,
+  "cod": 7.1,
+  "cod_raw": 7.0924,
   "level": 0.93,
   "level_raw": 0.93169,
   "prd": 0.997,
-  "prd_raw": 0.99688,
+  "prd_raw": 0.99691,
   "sales": 129
  },
  "ask_b": {

@@ -21,7 +21,7 @@ Not the 2025 arm's-length sales against their 2026 values as they stand (0.95 an
 3. Joined assessor_roll_2025_certified.xlsx to the 2026 roll on the same parcel numbers: the 1,742 parcels with a 2025 Q deed rose a median 14.9%, the parcels without one 3.4%, most of them by their neighbourhood's (nbhd_code) common change.
 4. For each study sale took its 2025 value times its neighbourhood's median change among parcels without a 2025 Q deed, to the nearest 100, over its indexed price, standing for the 93.3% of the class that did not sell; its 2026 value over its indexed price stands for the 6.7% that did.
 5. Weighted the two sets of 1,698 ratios by those shares (1,742 of 25,988 parcels sold): the median is 0.87 and the average absolute difference from it 18 per cent, so the class fails both tests.
-6. Condominium class: the Q deeds of R2 parcels, a Wexley Commons deed signed (or permit issued) before its parcel_change_log_2025.csv entry took effect read at the new parcel identifier, a sale set aside where its unit was combined (COMBINE) or its permit work in building_permits_2025.csv finaled after the deed: 129 sales, 0.93, 7.2 and a price-related differential of 0.997, so the class meets the rule.
+6. Condominium class: the Q deeds of R2 parcels, a Wexley Commons deed signed (or permit issued) before its parcel_change_log_2025.csv entry took effect read at the new parcel identifier, a sale set aside where its unit was combined (COMBINE) or its permit work in building_permits_2025.csv finaled after the deed: 129 sales, a median of 0.93, an aggregate ratio of 0.932, a COD of 7.1 and a price-related differential of 0.997.
 7. Board of Review: from board_of_review_hearings_2025.csv the hearings from 2 June 2025 on whose value_before equals the parcel's certified 2025 value (the earlier hearings are appeals of the 2024 roll), each parcel at its last hearing in its case (a case may list several parcels), REDUCED parcels summed by market area through the 2025 roll's neighbourhood and neighborhood_crosswalk.csv.
 8. Recommended accepting the vendor's offer of the single-family reappraisal.
 
@@ -38,9 +38,9 @@ Not the 2025 arm's-length sales against their 2026 values as they stand (0.95 an
 1. Condominium class:
    - Sales the study rests on: 129
    - Median assessment ratio: 0.93
-   - Coefficient of dispersion: 7.2
+   - Aggregate assessment ratio: 0.932
+   - Coefficient of dispersion: 7.1
    - Price-related differential: 0.997
-   - Meets the rule: yes
 2. Board of Review reductions of the 2025 roll, single-family and condominium parcels, by market area:
    - Market area 1 (North): 132 parcels reduced, 4,349,600 dollars taken off
    - Market area 2 (Old Town): 156 parcels reduced, 5,656,500 dollars taken off

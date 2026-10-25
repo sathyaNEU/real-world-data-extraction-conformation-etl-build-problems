@@ -8,7 +8,7 @@ import datetime as dt
 SEED = 391                       # the single-family world (main call)
 SEED_CONDO = 1417                # the condominium class
 SEED_REC = 2391                  # record keeping: identifiers, addresses, dates, transfers, hearings
-SEED_CPERMIT = 2034              # condominium renovation permits (Ask A)
+SEED_CPERMIT = 2461              # condominium renovation permits (Ask A)
 SEED_PETITION = 2452             # petitions listing several parcels, and rehearings (Ask B)
 N_SF = 26000                     # single-family parcels drawn on the 2025 roll before the 2025 splits and combinations
 N_SPLIT = 45                     # single-family parcels split in 2025 (each into two)

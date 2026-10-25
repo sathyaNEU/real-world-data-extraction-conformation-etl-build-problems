@@ -298,7 +298,7 @@ def run(task, b, fig, res):
     ok("G8 every person named in a document was drawn", all(p in people for p in named if p.split()[0] in
                                                             {q.split()[0] for q in people}))
     txt = memo + rule + open(os.path.join(target, K.FILES["dictionary"]), encoding="utf-8").read()
-    ok("G9 no em or en dash in the documents", "—" not in txt and "–" not in txt)
+    ok("G9 no em or en dash in the documents", "\u2014" not in txt and "\u2013" not in txt)
     ok("G10 no document names the review of sold parcels",
        not re.search(r"sales chasing|chas|selective|sold parcels|revalu", txt, re.I))
 
