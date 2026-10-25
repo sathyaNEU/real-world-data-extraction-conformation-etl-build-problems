@@ -1,88 +1,89 @@
 {
   "task": "task137",
-  "architecture": "v1",
-  "drawn": "2026-10-12",
-  "slot_note": "wave 2 (new), round 2 on 2026-10-14. Seed FC08: world, decision and quantity kept (a deposit-taker's quarterly take-or-pay booking of outsourced agent-hours for its term deposit maturity calls, the list fixed a quarter ahead); the seed's withheld dialling rule and callable-number architecture are not used. Round 1's decisive step (the share conditioned on each deposit's repricing drop) was the strong model's reflex and the field's textbook model (10/10 audit, COMPLIANT_WEAK); round 2 moves it to the class of money: what a new-money special won against member money, at the drop.",
-  "domain": "banking-credit-financial-risk",
-  "subdomain": "deposit-liquidity-behaviour",
-  "client_domain": "banking-credit-financial-risk",
-  "niche": "a New Zealand building society's quarterly take-or-pay block of outsourced agent-hours for the calls to holders of maturing term deposits, where a conversation that goes to the retention offer is billed at 22 agent-minutes against 8 for a plain renewal and the January to March 2027 list is mostly the money the society's 2023 four-year new-money special won, meeting a moderate drop as the posted card turns up",
+  "architecture": "v2",
+  "drawn": "2026-10-25",
+  "slot_note": "Architecture 2 re-root of task137 (seed FC08 spent as a source); world, decision and quantity re-drawn in a non-banking cell.",
+  "domain": "healthcare-delivery-health-economics",
+  "subdomain": "utilization-access-demand-forecasting",
+  "niche": "care-home residents' emergency admissions for adverse drug events in the year after a group-wide structured medication review",
   "objective": "forecasting",
-  "shape": "other",
+  "shape": "02",
   "decision_type": "quantity_figure",
   "answer_unit": "count",
-  "answer": "We should book 5,250 agent-hours with Harbourline for the 18,400 term deposits on the January to March 2027 maturity list: 1,250 for the deposits maturing in January, 2,000 for February and 2,000 for March.",
-  "answer_source": "task137/submission.md block 1; task137/generator/figures.json call",
+  "answer": "",
+  "answer_source": "",
   "gap": [
-    "time",
-    "population"
+    "population",
+    "time"
   ],
   "pattern": [
-    "E"
+    "none"
   ],
   "generators": [
-    "G14",
+    "G2",
     "G6"
   ],
   "gate_g": "forecasting",
   "calibration_form": "none",
-  "stump_strategy": "composition_mix",
+  "stump_strategy": "grain_or_unit",
   "decisive_rule_filed": false,
   "official_decoy": false,
   "validated_decoy": false,
-  "context_artifact": "planning_thread",
-  "stakeholder_role": "term deposits product manager",
-  "role_family": "product_manager",
-  "scoring_unit": "other",
+  "context_artifact": "register",
+  "stump_class": "analytical",
+  "analyst_test": "A strong analyst who links the two pharmacies' dispensing to residents, codes each admission's adverse drug event correctly and fits each medicine's own effect on the 2023 to 2026 admissions, then replays it on the regimens the reviews leave for 2027, files a forecast about a tenth too high, because the record's risk sits in interacting pairs a resident holds at once and the reviews stopped the paired medicines in exactly the residents who held the pairs.",
+  "domain_test": "The deciding quantity is the expected count of emergency admissions for adverse drug events across a care population, read from the pairs of interacting medicines each resident holds at once (an anticoagulant with an NSAID, the ACE inhibitor, diuretic and NSAID triple, an opioid with a gabapentinoid or benzodiazepine, trimethoprim with an ACE inhibitor), which is pharmacoepidemiology's own exposure; swap the medicines for any other field's items and there is no interaction table and no reason risk should sit in pairs.",
+  "layer2_family": "estimation_fit",
+  "layer2_pattern": "own:adverse-events-from-interacting-pairs-in-a-regimen",
+  "layer1": [
+    "two pharmacy suppliers' dispensing feeds coded differently (dm+d product codes against BNF sections)",
+    "a care group acquired in 2025 whose homes used a different eMAR system with its own resident numbers",
+    "admissions coded in ICD-10 with the adverse-event Y-codes in secondary positions",
+    "as-required medicines dispensed but not taken every day",
+    "hospital stays and deaths interrupting regimens",
+    "NHS numbers present on one feed only"
+  ],
+  "stakeholder_role": "director of clinical services at a care home group",
+  "role_family": "operations_director",
+  "scoring_unit": "per covered member",
   "spine": {
-    "file": "harbourline_dial_log_2025q1-2026q3.csv",
-    "rows": 269175,
-    "entity": "one dial Harbourline made on a released case",
-    "grain": "dial x case x number",
-    "source": "constructed (the contact centre's acknowledgement records)"
+    "file": "dispensing_lines_2023_2026.csv",
+    "rows": 0,
+    "entity": "one dispensed medicine line for one resident in one 28-day cycle",
+    "grain": "resident x medicine x cycle",
+    "source": "synthetic"
   },
-  "forum": "committee_or_panel",
+  "forum": "executive_team",
   "forcing_event": "purchase_order_or_contract",
-  "org_family": "cooperative_or_member_body",
+  "org_family": "hospital_or_health_provider",
   "world": {
-    "geography": "New Zealand",
-    "currency": "NZD",
-    "org_type": "building society (a mutual deposit-taker)",
+    "geography": "England, United Kingdom",
+    "currency": "GBP",
+    "org_type": "care home group (nursing and residential homes)",
     "invented_names": [
-      "Kaimai Building Society",
-      "Harbourline Contact Services"
+      "Calderbrook Care",
+      "Fellside Pharmacy Services"
     ],
     "people": [
-      "Hazel Johnstone",
-      "Stuart Waller",
-      "Suzanne Wallis",
-      "Joseph Herd",
-      "Sienna Stewart",
-      "Ashton Findlay"
+      "Katherine Storey",
+      "Hugh Metcalfe",
+      "Charlene Dale"
     ]
   },
   "deliverables": [
-    "td_booking_q1_2027.xlsx",
-    "td_booking_note_q1_2027.docx"
+    "ade_admissions_forecast_2027.xlsx",
+    "review_impact_note.docx"
   ],
   "opening_move": "question-first",
   "question_form": "how-many",
-  "driver": "A behavioural share at a one-off repricing is a mixture of two kinds of unit, those a temporary price premium brought in, which take the costly path at their first repricing whatever the price change, and long-standing units, which take it in proportion to the change; conditioned on the price change alone, the share is read off a past in which the forward pool's change was met almost only by long-standing units, so it misses a forward pool made mostly of premium-won units, and only the class, rebuilt from each unit's price against the floor of its own entry cohort, makes every past round agree.",
-  "driver_concrete": "Each conversation Harbourline holds with a maturing term deposit's holder goes to the 22-minute retention offer with a probability set by the class of the money: 87 per cent for money a new-money special won (a rate 0.40 points or more above the lowest of its term and opening quarter), at its first maturity and at every drop it met; about one in seven for member money, rising with the drop from its locked rate to Kaimai's posted card. January to March 2027 is 58 per cent the 2023 four-year special's money (10,697 deposits at 5.65 per cent, 0.50 above the 5.15 of their cohort) meeting a 1.65-point drop to the 4.00 per cent four-year card, a drop at which past conversations, almost all about member money, went to the offer about a third of the time, so classing the money books 5,250 agent-hours where the repricing-gap share books 4,250 and every pooled, latest, term, trend, locked-rate or fitted share 3,750 to 4,750.",
-  "stump": "A competent solver washes the numbers, prices dialling per mix of callable numbers from the seven closed campaigns, conditions the past share of conversations that went to the retention offer on each deposit's drop from its locked rate to the card it reinvests at and books 4,250 agent-hours; the step that lands it there is reading that share off every past conversation at the drop instead of off the conversations of the same class of money: 10,697 of the 18,400 deposits are money the 2023 four-year special won at 5.65 per cent, and money a special won went to the offer at 87 per cent at its first maturity whatever its drop, where past conversations at the special's 1.65-point drop, almost all member money, went at a third: the golden is 5,250.",
-  "stump_class": "analytical",
-  "analyst_test": "A strong analyst who reads the SOW's billing and dialling rules, washes every number against the do-not-call register, prices dialling per mix of callable numbers with the release share and conditions the retention-offer share on each deposit's drop from its locked rate to the card it reinvests at books 4,250 agent-hours (4,267.1; pooled, latest campaign, locked rate or a logistic in the drop the same bin; the drop and term in one logistic 4,750; the locked rate by term 4,500; by term 3,750; split by first listing 4,250), at least two bins short of the golden 5,250.",
-  "domain_test": "The deciding quantity is the share of maturing term deposits whose holders, once reached, will move their money, which deposit-liquidity behaviour forecasts by the stability class of the money (rate-driven money a new-money special won against member money rolling on the posted card) as well as by the repricing gap; with insurance nouns a price change at renewal is the insurer's own and its size carries the renewal, while every deposit-taker's card moves with the cash rate, so a drop sends member money almost nowhere and only money that came for a special's premium leaves at its first maturity whatever its drop.",
+  "driver": "The forward count of harmful events in a population is set by which pairs of exposures each member holds at the same time, because nearly all of the harm sits in a few pairs, so a model of each exposure's own effect, fitted on a record in which the pairs co-occurred at steady rates, spreads each pair's harm over every holder of either exposure and misprices a plan that removes exposures precisely from the members who hold them in pairs.",
+  "driver_concrete": "Calderbrook's residents' emergency admissions for adverse drug events come mostly from interacting pairs held at once (an anticoagulant with an NSAID, the ACE inhibitor, diuretic and NSAID triple, an opioid with a gabapentinoid or a benzodiazepine, trimethoprim with an ACE inhibitor), and the autumn 2026 structured medication reviews stopped the paired medicine in the residents who held each pair, so the 2027 admissions have to be read per pair a resident still holds after the review, not per medicine.",
+  "stump": "A competent solver fits each medicine's own effect on the 2023 to 2026 admissions, replays it on the post-review regimens and files a 2027 count about a tenth above the golden, because each stopped NSAID, gabapentinoid and benzodiazepine carries only its average effect across all its holders rather than the pair harm it carried in the residents who lost it.",
   "mechanism_source": "design_note",
   "differentiation": {
-    "task117": "task117's forward peak turns on draw caps that belong to another entity reached through a dated join and on follow-on operations re-timed behind the one ahead (a queue's timing); here nothing is joined from another entity and nothing is re-timed: the share of conversations that go long is conditioned on how each deposit's money was won and on its repricing gap, and the forward figure is a sum over the list, not a peak.",
-    "task37": "task37's forward count is conditioned on a coupling to a linked entity's authorisation, recovered from a closed outcome roll as an absolute split no document states; here the split is the unit's own entry price against its cohort's floor, rebuilt from the lists, with no linked entity, and the past rounds' outcomes separate the classes at every price change.",
-    "task44": "task44's pooled pilot gain is a mixture of opposite effects split by a behavioural moderator measured over a prior instance of the window; here there is no pilot and no opposite effect: both classes leave more as the price falls, one at nine in ten at any drop, and the forward list's class mix is the shift.",
-    "task97": "task97's chance turns on the cumulative history of the place a unit occupies, counted across every occupant; here it turns on how the unit's own money was won and on its own price change at one repricing, and no place, occupant or history count enters.",
-    "task138": "task138's season order replays thirty past weather years from the depletion each field carries on 31 January 2027, a state rebuilt from each field's last delivery and the dry winter since; here no state is rebuilt or replayed: the share of conversations that go long is carried per class of money and band of drop onto a list whose class mix the past never carried at its drop.",
-    "task95": "task95's yield splits by a stand's age at first thinning, a class recovered by differencing two dated events across two registers, and the blended conversion is the default; here the default is the field's own repricing-gap model, which already conditions on the price change, and the class is how the unit's money was won (a special's premium over its entry cohort's posted rate), whose holders leave at their first repricing whatever the change while the rest leave in proportion to it.",
-    "task20": "task20's rate turns on whether each unit's commitment fence covers its supply lead time, a classification two large units moved across at renewal; here no unit moves class: the class is fixed by the price each deposit was won at, and the forward pool is a new cohort made mostly of one class at a change the past met almost only with the other.",
-    "task137": "round 1 conditioned the share on the repricing drop alone, which the strong model takes by reflex; round 2's decisive step is the class of money beside the drop, and the drop alone books 4,250 against the golden 5,250."
+    "task142": "task142's upper percentile of a period's total is built from the units that arrive and how long each runs inside the window, a spread question; here the forecast is a mean count, and the decisive unit is the pair of exposures one member holds at the same time, with no durations and no percentile.",
+    "task148": "task148 v1 sums the hazards of every unit behind one shared backer, each at its own age; here nothing is shared between members and nothing turns on age: each member's harm is set by which pairs of its own exposures it holds together.",
+    "task173": "task173 v2 splits one meter that two sources share inside a unit, fitted per unit to its two recorded volumes; here no total is split: the harm is a separate quantity that two exposures carry only when one member holds both, read from the record's members who held each pair."
   },
   "lineage": [
     {
@@ -100,19 +101,34 @@
       "gate_g": "forecasting",
       "decision_type": "quantity_figure",
       "driver": "A unit's chance of needing the long, costly form of a service at a one-off repricing is set by the gap between the price it locked in and the schedule it rolls onto, so the share is stable across past rounds only per unit of that gap; carried pooled, from the latest round, trended, by product group or by the unit's own locked price, it misses the coming round, whose dominant cohort meets a gap no past unit of its own group met, and every such carry understates the forward effort by a tenth to a quarter."
+    },
+    {
+      "architecture": "v1 round 2 (architecture 1, Kaimai Building Society's 2027 maturity campaign)",
+      "fate": "spent 2026-10-25: portal round 1 landed the call (response 1 booked 5,250 agent-hours, 1,250, 2,000 and 2,000 by maturity month, the golden); the class of the money is a reflex for the portal's model; re-rooted the same day as architecture 2 in a new cell",
+      "domain": "banking-credit-financial-risk",
+      "subdomain": "deposit-liquidity-behaviour",
+      "objective": "forecasting",
+      "gap": [
+        "time",
+        "population"
+      ],
+      "pattern": [
+        "E"
+      ],
+      "generators": [
+        "G14",
+        "G6"
+      ],
+      "gate_g": "forecasting",
+      "decision_type": "quantity_figure",
+      "stump_strategy": "composition_mix",
+      "forum": "committee_or_panel",
+      "forcing_event": "purchase_order_or_contract",
+      "org_family": "cooperative_or_member_body",
+      "driver": "A behavioural share at a one-off repricing is a mixture of two kinds of unit, those a temporary price premium brought in, which take the costly path at their first repricing whatever the price change, and long-standing units, which take it in proportion to the change; conditioned on the price change alone, the share is read off a past in which the forward pool's change was met almost only by long-standing units, so it misses a forward pool made mostly of premium-won units, and only the class, rebuilt from each unit's price against the floor of its own entry cohort, makes every past round agree.",
+      "stump": "A competent solver washes the numbers, prices dialling per mix of callable numbers from the seven closed campaigns, conditions the past share of conversations that went to the retention offer on each deposit's drop from its locked rate to the card it reinvests at and books 4,250 agent-hours; the step that lands it there is reading that share off every past conversation at the drop instead of off the conversations of the same class of money: 10,697 of the 18,400 deposits are money the 2023 four-year special won at 5.65 per cent, and money a special won went to the offer at 87 per cent at its first maturity whatever its drop, where past conversations at the special's 1.65-point drop, almost all member money, went at a third: the golden is 5,250."
     }
   ],
-  "notes": "Calibration none: the seven past campaigns are the society's own history from which the dialling yields and the retention-offer shares are estimated, not an organ confirming a filed criterion. Pattern E (a conditioned yield, no column naming the conditioning property: the class of money is rebuilt from each list's rates and opening dates against the lowest rate of each term and opening quarter); G14 then G6 (the coming list's mix of special and member money at its drop sits far from the past mix there). Layer 2 pattern own:special-money-runoff-at-first-maturity (banking has no library patterns; the field's stability segmentation of rate-driven against member money). Gap time then population, as at round 1: the decisive quantity is a lapsing term (a special's premium lapses at the deposit's first maturity, and the coming list is the first maturity of a cohort the past never matured at its drop), then the population's class mix. Context artifact planning_thread: the contact centre's request for the quarter's block order and the society's reply. Gate G forecasting answered against task130. Forum committee_or_panel since stage 3 of round 1 (the Deposits Committee approves the block, procedure 6.2). Round 2 (2026-10-14) re-cut the rate path (the curve steepens through 2026 and the January to March 2027 card runs 3.20 to 4.20), added the society's 2024 and 2025 one-year new-money specials, moved Ask A's link into the payments narrative and Ask B's overlap into hand-moved certificates; the round-1 driver is in lineage.",
-  "layer2_family": "field_method",
-  "layer2_pattern": "own:special-money-runoff-at-first-maturity",
-  "layer1": [
-    "past campaign lists in two extract layouts (rate in per cent with dashed account numbers and comma-grouped principal through 2025, then rate as a decimal with unpunctuated account numbers after the January 2026 core banking upgrade)",
-    "the contact centre's dial records in UTC with its own disposition codes and its own case reference format",
-    "the society's case release files listing each case's callable numbers and their types at release",
-    "members' phone numbers in mixed formats (+64, 0-prefixed, spaced, bracketed area codes) normalised before the do-not-call wash",
-    "a do-not-call register keyed on the E.164 number with recorded and withdrawn dates",
-    "posted term deposit cards inside each quarter's campaign brief (PDF tables whose layout changes in 2026)",
-    "maturity proceeds paid through the society's maturity settlement account, the matured deposit named only in the payments system's narrative, beside an account event extract where a change of term opens a new account, on the ask paths",
-    "a core holdings view listing joint deposits under each holder beside a frozen legacy certificate register, a migration log that misses the certificates the operations team moved by hand, and certificate principal carrying the interest capitalised at migration, on the ask paths"
-  ]
+  "notes": "Calibration none. Gap population first (the record's unit is the medicine line; the harm's unit is the interacting pair a resident holds), then time. Pattern none: G2 (grain, the pair within a regimen against the medicine) then G6 (the review moves the pair mix far from the record's). Strategy grain_or_unit: the decisive move is the unit of exposure; answered in the design note against three_rules.strategy_risk. Forecast faces forward: admissions in calendar 2027 for residents during 2027, including residents not yet admitted to the homes.",
+  "registered": "2026-10-25T22:29:02Z"
 }

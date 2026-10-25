@@ -1,102 +1,116 @@
 {
   "task": "task137",
   "owner": "sathya8571",
-  "status": "RETURNED",
-  "domain": "banking-credit-financial-risk",
+  "status": "DESIGN",
+  "domain": "healthcare-delivery-health-economics",
   "objective": "forecasting",
   "stage": 2,
   "stage_name": "design",
   "updated": "2026-10-25",
-  "stump": "A competent solver washes the numbers, prices dialling per mix of callable numbers from the seven closed campaigns, conditions the past share of conversations that went to the retention offer on each deposit's drop from its locked rate to the card it reinvests at and books 4,250 agent-hours (Ends on); the step that lands it there is reading that share off every past conversation at the drop instead of off the conversations about the same class of money: 10,697 of the 18,400 deposits are money the 2023 four-year special won at 5.65 per cent, and money a special won went to the offer at 87 per cent at its first maturity whatever its drop, where past conversations at the special's 1.65-point drop, almost all about member money, went to the offer about a third of the time: the golden is 5,250.",
-  "architecture": 1,
-  "loops": 1,
-  "round": 2,
-  "round2": {
-    "date": "2026-10-14",
-    "trigger": "10/10 audit COMPLIANT_WEAK (round2-brief): the drop was the strong model's reflex, a locked-rate-by-term logit landed the golden bin, the locked-rate rung one bin under, Ask B's file name announced the overlap, Ask A's clause signalled its device, the swap passed narrowly",
-    "redesign": "decisive step moved to the class of money (money a new-money special won against member money) beside the drop; rate path, specials and both asks re-cut; prompt's ask wording changed",
-    "call": "5,250 agent-hours (1,250, 2,000, 2,000)"
-  },
-  "precut": {
-    "exit": 0,
-    "date": "2026-10-14"
-  },
-  "leak": {
-    "leak_py": "REVIEW 2026-10-14 on the final round 2 rebuild (--asof 2026-11-04), no LEAK, sweep 11 clean; the same lines as at stage 3 (sweeps 3, 4 and 9), each answered in the design note's Build record",
-    "reader": "round 2 read 2026-10-14 on the round 2 pack: Q1 to Q4 none; Q5 the literal pooled route about 4,553 (booked 4,500, a lower rung); Q6 analytical, the special-money class not found; REVIEW lines harmless; its readings each on a fork row (SF13, SF18, SF20, SF23, SF24), two assertions added for SF18 and SF20 with no pack change; appended to leak_check_report.md; no second read, since no document or the prompt changed"
-  },
-  "duplicate_check": {
-    "heart": "WARN 2026-10-14 at the final rebuild (repeat.gate_g only, answered under Guard); no BLOCK",
-    "nearest": "0.06 task35 lineage (driver), 0.14 this slot's round-1 lineage (differentiated); surface exit 0, five pairs promoted on card axes (task138, task117, task37, task97, task44), each differentiated on the card"
-  },
-  "judge": {
-    "verdict": "DETERMINISTIC 2026-10-14 (judge-task137r2, round 2 pack): APPROVE, no fix; every figure reproduced (5,280.9; 1,206.9, 2,013.3, 2,060.7; every ask row), rigorous variants 5,192 to 5,281, margins 94 hours to 5,375 and 156 to 5,125; the about-5,500 routes refused by procedure 4.2 and 4.3",
-    "disposition": "APPROVE, shipped; the shipped pack byte-identical to the judged one; the minor point (the 2027Q1 brief titled draft while its card is approved by ALCO) left with its reason in the design note; no graded figure moved",
-    "report": "determinism_check_report_round2.md (round 1: determinism_check_report.md and determinism_check_report_pass2.md, kept as history)",
-    "gate_g": "forecasting, analytical_non_defect, surface_read_dependency no, sole_data_defect no",
-    "gate_h": "domain pass, layers pass, decisive_step analytical"
-  },
-  "rounds": [
-    {
-      "round": 1,
-      "shipped": "2026-10-12",
-      "stump": "A competent solver washes the numbers against the do-not-call register, prices dialling per mix of callable numbers from the seven closed campaigns, carries the past share of conversations that went to the retention offer (pooled, the latest campaign's or each term's) and books about 4,500 agent-hours; the step that lands it there is not conditioning that share on each deposit's drop from its locked rate to the card it reinvests at, which leaves the 10,735 four-year deposits locked at 5.65 per cent, meeting a 2.50-point drop where 92 per cent of past conversations went to the retention offer, at the share of deposits that met smaller drops: the golden is 5,500.",
-      "judge": {
-        "verdict": "DETERMINISTIC 2026-10-12 (judge-task137b, re-judge): APPROVE, no fix; the call forced (5,500 agent-hours, 1,500, 2,000 and 2,000 by maturity month), every supplementary figure reproduced; thinnest margin 5,568.0 against the 5,625 line, no defensible variant across it",
-        "disposition": "APPROVE, shipped; the shipped pack byte-identical to the judged one; pass 1 (judge-task137) DETERMINISTIC with a FIX_NOW, applied in one pass (the write-up's retention share 60 to 62 and non-reaching dials 67,500 to 67,400, the Ask A clause, SF18 to SF21) with no booking, month or Deliverable Answer moved",
-        "report": "determinism_check_report_pass2.md (pass 1: determinism_check_report.md)",
-        "gate_g": "forecasting (covariate-shift-aware forecast), analytical_non_defect, surface_read_dependency no, sole_data_defect no; no reported number is wrong",
-        "gate_h": "domain pass, layers pass, decisive_step analytical"
-      },
-      "leak": {
-        "leak_py": "REVIEW 2026-10-12 on the final rebuild (--asof 2026-11-04), no LEAK, sweep 11 clean; the same 25 lines as at stage 3, each answered in the design note's Build record",
-        "reader": "2026-10-12 on the stage 3 pack: Q1 to Q4 none, REVIEW lines harmless, readings raised closed (SF13, SF18 to SF21); targeted re-read of the changed prompt (the Ask A clause): Q1 to Q4 none, its two readings left open by the text (a switch to a certificate, proceeds paid into another of the member's term deposits) are SF19 and SF20, the same figures on the extracts, asserted"
-      },
-      "duplicate_check": {
-        "heart": "WARN 2026-10-12 at the final rebuild (repeat.gate_g only, answered under Guard); no BLOCK",
-        "nearest": "0.07 task136 (stump); surface exit 0, five pairs promoted on card axes (task117, task37, task97, task44, and task138 cut since stage 3), each differentiated on the card"
-      },
-      "precut": {
-        "exit": 0,
-        "date": "2026-10-12"
-      }
-    }
-  ],
-  "returned": [
-    {
-      "date": "2026-10-13",
-      "portal": "10/10 audit COMPLIANT_WEAK (round 2): the drop the strong model's reflex, a locked-rate-by-term logit landing the golden bin, Ask B's file name announcing the overlap, Ask A's clause signalling its device, the swap test passed narrowly",
-      "repair": "design",
-      "commit": "the RESHIPPED (task137) commit of 2026-10-14"
+  "stump": "A competent solver fits each medicine's own effect on Calderbrook's 2023 to 2026 adverse-drug-event admissions, replays it on the regimens the autumn 2026 reviews left and files a 2027 count about a tenth too high; the step that lands it there is reading the harm per medicine rather than per interacting combination.",
+  "architecture": 2,
+  "loops": 0,
+  "card_registered": "2026-10-25T22:29:02Z",
+  "guard": "check on the registered card 2026-10-25: WARN three_rules.strategy_risk only (answered in the note's Three rules); structural tests NOTE, differentiated against task142, task148 v1, task173 v2",
+  "resume": "architecture 2 drawn 2026-10-25 (Calderbrook Care's 2027 emergency admissions for adverse drug events after the autumn 2026 structured medication reviews, read per interacting combination a resident still holds): stage 2 next, tune the generator so the per-medicine model misses by at least two bins while the pair family sits inside one (the prototype ddi1.py measured +9.5 to +13.1 per cent against -3.3 to +0.9), decide whether the combinations are named by a screening list in the pack or found from the record (fork and Gate F), then the ladder, fork table, closure, asks and prompt.txt to precut.py exit 0",
+  "architecture_1": {
+    "status": "RETURNED",
+    "domain": "banking-credit-financial-risk",
+    "objective": "forecasting",
+    "stage": 2,
+    "stage_name": "design",
+    "updated": "2026-10-25",
+    "stump": "A competent solver washes the numbers, prices dialling per mix of callable numbers from the seven closed campaigns, conditions the past share of conversations that went to the retention offer on each deposit's drop from its locked rate to the card it reinvests at and books 4,250 agent-hours (Ends on); the step that lands it there is reading that share off every past conversation at the drop instead of off the conversations about the same class of money: 10,697 of the 18,400 deposits are money the 2023 four-year special won at 5.65 per cent, and money a special won went to the offer at 87 per cent at its first maturity whatever its drop, where past conversations at the special's 1.65-point drop, almost all about member money, went to the offer about a third of the time: the golden is 5,250.",
+    "architecture": 1,
+    "loops": 1,
+    "round": 2,
+    "round2": {
+      "date": "2026-10-14",
+      "trigger": "10/10 audit COMPLIANT_WEAK (round2-brief): the drop was the strong model's reflex, a locked-rate-by-term logit landed the golden bin, the locked-rate rung one bin under, Ask B's file name announced the overlap, Ask A's clause signalled its device, the swap passed narrowly",
+      "redesign": "decisive step moved to the class of money (money a new-money special won against member money) beside the drop; rate path, specials and both asks re-cut; prompt's ask wording changed",
+      "call": "5,250 agent-hours (1,250, 2,000, 2,000)"
     },
-    {
-      "date": "2026-10-25",
-      "portal": "round 1 on the round 2 pack (delivered 10-14): response 1 booked 5,250 agent-hours with Harbourline, 1,250 for January, 2,000 for February and 2,000 for March, the golden, with td_booking_q1_2027.xlsx and td_booking_note_q1_2027.docx built (143 resources reviewed, 32 minutes); response 2 not reported; the class of the money (what the 2023 four-year special won, read off its rate against its cohort) is a reflex for the portal's model",
-      "repair": "design (call landed: the decisive step is spent; the drop and the class of money both landed, so the world's deposit behaviour layer is exhausted)",
-      "commit": ""
+    "precut": {
+      "exit": 0,
+      "date": "2026-10-14"
+    },
+    "leak": {
+      "leak_py": "REVIEW 2026-10-14 on the final round 2 rebuild (--asof 2026-11-04), no LEAK, sweep 11 clean; the same lines as at stage 3 (sweeps 3, 4 and 9), each answered in the design note's Build record",
+      "reader": "round 2 read 2026-10-14 on the round 2 pack: Q1 to Q4 none; Q5 the literal pooled route about 4,553 (booked 4,500, a lower rung); Q6 analytical, the special-money class not found; REVIEW lines harmless; its readings each on a fork row (SF13, SF18, SF20, SF23, SF24), two assertions added for SF18 and SF20 with no pack change; appended to leak_check_report.md; no second read, since no document or the prompt changed"
+    },
+    "duplicate_check": {
+      "heart": "WARN 2026-10-14 at the final rebuild (repeat.gate_g only, answered under Guard); no BLOCK",
+      "nearest": "0.06 task35 lineage (driver), 0.14 this slot's round-1 lineage (differentiated); surface exit 0, five pairs promoted on card axes (task138, task117, task37, task97, task44), each differentiated on the card"
+    },
+    "judge": {
+      "verdict": "DETERMINISTIC 2026-10-14 (judge-task137r2, round 2 pack): APPROVE, no fix; every figure reproduced (5,280.9; 1,206.9, 2,013.3, 2,060.7; every ask row), rigorous variants 5,192 to 5,281, margins 94 hours to 5,375 and 156 to 5,125; the about-5,500 routes refused by procedure 4.2 and 4.3",
+      "disposition": "APPROVE, shipped; the shipped pack byte-identical to the judged one; the minor point (the 2027Q1 brief titled draft while its card is approved by ALCO) left with its reason in the design note; no graded figure moved",
+      "report": "determinism_check_report_round2.md (round 1: determinism_check_report.md and determinism_check_report_pass2.md, kept as history)",
+      "gate_g": "forecasting, analytical_non_defect, surface_read_dependency no, sole_data_defect no",
+      "gate_h": "domain pass, layers pass, decisive_step analytical"
+    },
+    "rounds": [
+      {
+        "round": 1,
+        "shipped": "2026-10-12",
+        "stump": "A competent solver washes the numbers against the do-not-call register, prices dialling per mix of callable numbers from the seven closed campaigns, carries the past share of conversations that went to the retention offer (pooled, the latest campaign's or each term's) and books about 4,500 agent-hours; the step that lands it there is not conditioning that share on each deposit's drop from its locked rate to the card it reinvests at, which leaves the 10,735 four-year deposits locked at 5.65 per cent, meeting a 2.50-point drop where 92 per cent of past conversations went to the retention offer, at the share of deposits that met smaller drops: the golden is 5,500.",
+        "judge": {
+          "verdict": "DETERMINISTIC 2026-10-12 (judge-task137b, re-judge): APPROVE, no fix; the call forced (5,500 agent-hours, 1,500, 2,000 and 2,000 by maturity month), every supplementary figure reproduced; thinnest margin 5,568.0 against the 5,625 line, no defensible variant across it",
+          "disposition": "APPROVE, shipped; the shipped pack byte-identical to the judged one; pass 1 (judge-task137) DETERMINISTIC with a FIX_NOW, applied in one pass (the write-up's retention share 60 to 62 and non-reaching dials 67,500 to 67,400, the Ask A clause, SF18 to SF21) with no booking, month or Deliverable Answer moved",
+          "report": "determinism_check_report_pass2.md (pass 1: determinism_check_report.md)",
+          "gate_g": "forecasting (covariate-shift-aware forecast), analytical_non_defect, surface_read_dependency no, sole_data_defect no; no reported number is wrong",
+          "gate_h": "domain pass, layers pass, decisive_step analytical"
+        },
+        "leak": {
+          "leak_py": "REVIEW 2026-10-12 on the final rebuild (--asof 2026-11-04), no LEAK, sweep 11 clean; the same 25 lines as at stage 3, each answered in the design note's Build record",
+          "reader": "2026-10-12 on the stage 3 pack: Q1 to Q4 none, REVIEW lines harmless, readings raised closed (SF13, SF18 to SF21); targeted re-read of the changed prompt (the Ask A clause): Q1 to Q4 none, its two readings left open by the text (a switch to a certificate, proceeds paid into another of the member's term deposits) are SF19 and SF20, the same figures on the extracts, asserted"
+        },
+        "duplicate_check": {
+          "heart": "WARN 2026-10-12 at the final rebuild (repeat.gate_g only, answered under Guard); no BLOCK",
+          "nearest": "0.07 task136 (stump); surface exit 0, five pairs promoted on card axes (task117, task37, task97, task44, and task138 cut since stage 3), each differentiated on the card"
+        },
+        "precut": {
+          "exit": 0,
+          "date": "2026-10-12"
+        }
+      }
+    ],
+    "returned": [
+      {
+        "date": "2026-10-13",
+        "portal": "10/10 audit COMPLIANT_WEAK (round 2): the drop the strong model's reflex, a locked-rate-by-term logit landing the golden bin, Ask B's file name announcing the overlap, Ask A's clause signalling its device, the swap test passed narrowly",
+        "repair": "design",
+        "commit": "the RESHIPPED (task137) commit of 2026-10-14"
+      },
+      {
+        "date": "2026-10-25",
+        "portal": "round 1 on the round 2 pack (delivered 10-14): response 1 booked 5,250 agent-hours with Harbourline, 1,250 for January, 2,000 for February and 2,000 for March, the golden, with td_booking_q1_2027.xlsx and td_booking_note_q1_2027.docx built (143 resources reviewed, 32 minutes); response 2 not reported; the class of the money (what the 2023 four-year special won, read off its rate against its cohort) is a reflex for the portal's model",
+        "repair": "design (call landed: the decisive step is spent; the drop and the class of money both landed, so the world's deposit behaviour layer is exhausted)",
+        "commit": ""
+      }
+    ],
+    "resume": "call landed on the portal (response 1 on 5,250): the class of money is a reflex, after round 1's drop was the audit's reflex; read ## Tried and rejected first; a redesign in place needs a deposit-native decisive step the agent-hours world no longer holds (the holder-as-unit step fails the swap test), so the fix is a re-root, and a fresh banking/forecasting draw is banned while task166 v2 sits in the last three live builds",
+    "approved": null,
+    "delivered": "2026-10-14",
+    "portal": {
+      "round1": "2026-10-25: response 1 on the call (5,250 agent-hours: 1,250, 2,000, 2,000); response 2 not reported"
+    },
+    "portal_id": "",
+    "portal_status": "",
+    "portal_status_date": "",
+    "wave": "wave 2 (new), seed FC08",
+    "gates_round2": {
+      "checks": "606 assertions (two added at stage 4 for the reader's Ask A readings)",
+      "verify": "34 checks from the bundle alone",
+      "rebuild": "two builds byte-identical; target.zip sha256 e9d6e93637fe658acbc03425898c8a8d79a6b3e4c47d36238c0cb3c4c655d5c9",
+      "figures_check": "exit 0, 111 figures",
+      "voice_check": "PASS",
+      "guard_validate": "clean",
+      "container": "target and golden clean",
+      "precut": "exit 0, 49 checks",
+      "leak_py": "REVIEW, no LEAK",
+      "surface": "exit 0, five pairs promoted on card axes, each differentiated",
+      "heart": "WARN (repeat.gate_g)"
     }
-  ],
-  "resume": "call landed on the portal (response 1 on 5,250): the class of money is a reflex, after round 1's drop was the audit's reflex; read ## Tried and rejected first; a redesign in place needs a deposit-native decisive step the agent-hours world no longer holds (the holder-as-unit step fails the swap test), so the fix is a re-root, and a fresh banking/forecasting draw is banned while task166 v2 sits in the last three live builds",
-  "approved": null,
-  "delivered": "2026-10-14",
-  "portal": {
-    "round1": "2026-10-25: response 1 on the call (5,250 agent-hours: 1,250, 2,000, 2,000); response 2 not reported"
-  },
-  "portal_id": "",
-  "portal_status": "",
-  "portal_status_date": "",
-  "wave": "wave 2 (new), seed FC08",
-  "gates_round2": {
-    "checks": "606 assertions (two added at stage 4 for the reader's Ask A readings)",
-    "verify": "34 checks from the bundle alone",
-    "rebuild": "two builds byte-identical; target.zip sha256 e9d6e93637fe658acbc03425898c8a8d79a6b3e4c47d36238c0cb3c4c655d5c9",
-    "figures_check": "exit 0, 111 figures",
-    "voice_check": "PASS",
-    "guard_validate": "clean",
-    "container": "target and golden clean",
-    "precut": "exit 0, 49 checks",
-    "leak_py": "REVIEW, no LEAK",
-    "surface": "exit 0, five pairs promoted on card axes, each differentiated",
-    "heart": "WARN (repeat.gate_g)"
   }
 }
