@@ -1,34 +1,34 @@
 {
   "task": "task486",
   "owner": "oviya1301",
-  "status": "PAUSED",
-  "domain": "general-statistics-data-science/data-integration-record-linkage-entity-resolution",
+  "status": "DESIGN",
+  "domain": "survey-research-official-statistics/census-register-administrative-data-quality",
   "objective": "etl",
-  "stage": 1,
-  "stage_name": "draw",
-  "updated": "2026-10-23",
-  "stump": "Merging every record the linkage unit linked, directly or through other records, files the region and Halvering short of the people they served in FY2026 and moves the 2027 fund away from Halvering, because records carrying only a birth year link to every client of that name and year, so chains of links join people one Continuum's own HMIS keeps apart.",
-  "architecture": 2,
+  "stage": 2,
+  "stage_name": "design",
+  "updated": "2026-10-25",
+  "stump": "Placing each multi-site retail employer's March staff at its premises by floor area, or by rateable value, names the wrong set of town centres for the 2027 Town Centre Renewal Fund, because chains opened retail park units and distribution centres between the two Marches, premises holding a fraction of a shop's staff per square metre, and closed small town centre shops, so a share by size moves their staff out of the centres they still trade in and takes too few from the centres they left",
+  "architecture": 3,
   "loops": 0,
   "precut": {
-    "exit": 0,
-    "date": "2026-10-23"
+    "exit": null,
+    "date": ""
   },
   "leak": {
-    "leak_py": "REVIEW (no LEAK), 2026-10-23",
-    "reader": "reader A landed the call (score_reader FAIL: 5 of 5 call, 22 of 32 asks); reader B stopped at the spend"
+    "leak_py": "",
+    "reader": ""
   },
   "duplicate_check": {
-    "heart": "WARN (strategy risk, Gate G repeat beside task483)",
-    "nearest": "task471 v3 lineage 0.07"
+    "heart": "",
+    "nearest": "task470 0.09"
   },
   "judge": {
     "verdict": "",
     "disposition": "",
-    "report": "judge thread stopped at the spend; no report"
+    "report": ""
   },
   "returned": [],
-  "resume": "stage 1 of architecture 3: architecture 2 (pairwise findings resolved into people under each source's grain) spent at stage 4 when scored reader A counted merged groups' records by source and resolved them; re-root fresh in the lane's objective with a new draw, reading Tried and rejected first (the decisive structure must not be a relation a per-group check shows, and the grain or rule that makes the answer determinate must not double as the cue)",
+  "resume": "stage 2 on architecture 3 (DRAWN): build the island on paper (31 centres, independents, chains whose class mix changes between the Marches, single-site employers per rating class), measure the enumerated and standing families (postcode, premises count, floor area, rateable value; class density by ratio of totals, mean, median, regression, rateable-value density, pooled years, calibration pool) with every golden centre clear of the line by the family's spread, then the default path, stump sentence, readability screen, fork table, ladder, closure table, literal reader, asks and prompt.txt to precut.py exit 0; the HMIS generator under generator/ is architecture 2's and is rewritten at stage 3",
   "approved": null,
   "delivered": null,
   "portal": null,
@@ -39,6 +39,10 @@
     {
       "architecture": 2,
       "fate": "spent 2026-10-23 at stage 4: scored reader A landed the call"
+    },
+    {
+      "architecture": 3,
+      "fate": "drawn 2026-10-25 (PAYE employers placed at their premises by rating-class density)"
     }
   ]
 }

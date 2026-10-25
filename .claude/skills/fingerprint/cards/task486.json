@@ -1,18 +1,16 @@
 {
   "task": "task486",
-  "architecture": "v2",
-  "drawn": "2026-10-23",
-  "slot_note": "wave 8, oviya1301 ETL lane; architecture 1 (a privacy-protected census release's small-area counts) spent at stage 4 on the judge's SEND_BACK and re-rooted fresh in the same task type on a new world",
-  "domain": "general-statistics-data-science",
-  "subdomain": "data-integration-record-linkage-entity-resolution",
-  "client_domain": "general-statistics-data-science",
-  "niche": "resolving a state linkage unit's pairwise findings across four Continuums of Care's HMIS exports, a domestic violence coalition's comparable database, a health care for the homeless clinic and a city outreach app into the people a region served once each in FY2026, the count its 2027 regional fund is split on",
+  "architecture": "v3",
+  "drawn": "2026-10-25",
+  "slot_note": "wave 8, oviya1301 ETL lane; architectures 1 (a privacy-protected census release, judge SEND_BACK) and 2 (HMIS pairwise linkage resolved into people, reader A landed) spent at stage 4 and re-rooted fresh by the author's no-retirement rule",
+  "domain": "survey-research-official-statistics",
+  "subdomain": "census-register-administrative-data-quality",
+  "client_domain": "survey-research-official-statistics",
+  "niche": "an island nation's statistics office placing the tax authority's PAYE employer register, which holds each employer's March staff at its PAYE address, at the premises each employer occupies in the valuation list, to name the designated town centres whose workplace retail employment fell by at least 8 per cent between March 2022 and March 2026, the eligibility test of the government's 2027 Town Centre Renewal Fund",
   "objective": "etl",
-  "shape": "05",
-  "decision_type": "allocation_to_total",
-  "answer_unit": "currency",
-  "answer": "Halvering City and County CoC 7,993,704 dollars on 17,774 people served; Melbray County CoC 4,283,337 on 9,524; Ondrava County CoC 2,962,447 on 6,587; Pyrenna County CoC 2,125,478 on 4,726; the Halvering Valley Coalition for Survivors 635,035 on 1,412; the region 40,023 people",
-  "answer_source": "task486/submission.md block 1, task486/golden/halvering_2027_fund_allocation.xlsx",
+  "shape": "10",
+  "decision_type": "designation_set",
+  "answer_unit": "set_of_items",
   "gap": [
     "population"
   ],
@@ -20,69 +18,81 @@
     "none"
   ],
   "generators": [
-    "G17",
+    "G14",
     "G2"
   ],
   "gate_g": "etl_conformance",
   "calibration_form": "none",
-  "stump_strategy": "identity_resolution",
+  "stump_strategy": "grain_or_unit",
   "decisive_rule_filed": false,
   "official_decoy": false,
   "validated_decoy": false,
-  "context_artifact": "published_series",
+  "context_artifact": "register",
   "stump_class": "analytical",
-  "analyst_test": "With every field read and every rule applied, the analyst merges every record the linkage unit linked, directly or through other records, counts the merged groups with FY2026 service and files the downtown Continuum 7,964,889 dollars on 17,644 people and the region 39,874 people; resolving the findings strongest first so that no person holds two records of one source gives 7,993,704 dollars on 17,774 people and the region 40,023, because a record carrying only a birth year links to every client of that name, year and sex and 225 merged groups hold two records of one source.",
-  "domain_test": "The deciding quantity is the number of distinct people across sources, the object of entity resolution: a linkage service's pairwise findings resolved into persons consistently with each source's own deduplication, because pairwise matches are not transitive; the field resolves them by constrained clustering over the match graph, and replacing that with the generic merge (connected components) changes every Continuum's count. Put another setting's nouns in and the task still turns on resolving pairwise matches into entities, which is this task type's own analysis rather than a backdrop for it.",
-  "layer2_family": "field_method",
-  "layer2_pattern": "general-statistics-data-science/data-integration-record-linkage-entity-resolution/3",
+  "analyst_test": "With every field read and the prospectus applied, the strong analyst sees that the register holds a chain at its PAYE address, matches its premises in the rates lists by company number, places its staff across them by floor area, sums the retail employers' staff inside each town centre boundary in both years and names the wrong set of centres; only placing each premises at its rating class's staffing density, measured on the single-site employers, names the golden set",
+  "domain_test": "The deciding quantity is each designated town centre's workplace retail employment, which official business statistics build from an employer register by placing staff at the local units they work in; a payroll register holds a multi-site employer at its PAYE address, and the field places those staff at the employer's premises at the staffing density of each premises' class; with another field's nouns there is no PAYE address, no rating class and no hereditament to place staff at",
+  "layer2_family": "estimation_fit",
+  "layer2_pattern": "own:a multi-site employer's staff placed at its premises by each premises' floor area times the staffing density of its rating class, measured on the single-site employers of that class",
   "layer1": [
-    "each Continuum's HMIS export in the HUD CSV layout stacked as sent, four record-key schemes, one vendor writing month/day/year dates and another the FY2022 destination list",
-    "the DV coalition's comparable database in its own workbook, birth year only by its confidentiality policy, with its own gender and race codes",
-    "the clinic's encounter extract with housing status per encounter in the HRSA categories",
-    "the outreach app's JSON lines in local time with UTC offsets",
-    "the linkage unit's pair file in each source's own keys, per-field agreement codes and scores, across both fiscal years",
-    "approximate dates of birth under data quality codes, the winter respite's bed nights and 30-day exit rule, shelter stays left open after a client moved on, rapid re-housing households moving between projects, one vendor writing the household's move-in date on every member"
+    "the PAYE extract's 2026 layout (a scheme reference split into office and employer parts, an added trading-name field) against its 2022 layout",
+    "employers whose PAYE address is a payroll bureau or an accountant",
+    "the valuation list's 2017 and 2023 editions in their own layouts, shops measured net internal and large stores gross internal",
+    "ratepayer names written per district billing system, with and without company numbers, trading names and previous names",
+    "premises held by a group's property company while its trading company employs the staff",
+    "empty and part-occupied premises flagged differently by district",
+    "postcodes recoded between the two lists",
+    "payroll schemes that merged or split between 2022 and 2026"
   ],
-  "stakeholder_role": "the director of data at the Halvering Valley Homeless Data Partnership, the nonprofit HMIS lead for the region's four Continuums of Care, who heads its data office and compiles the region's FY2026 count of people served and the 2027 allocation table from which the counties renew each recipient's contract",
+  "stakeholder_role": "the head of economic statistics at the island's statistics office, whose team compiles the employment statistics from the tax authority's PAYE returns and prepares the fund's eligibility schedule for the Council of Ministers",
   "role_family": "statistical_office_head",
-  "scoring_unit": "units served",
+  "scoring_unit": "other",
   "spine": {
-    "file": "sdlu_linkage_pairs_run_20261008.csv",
-    "rows": 99546,
-    "entity": "one comparison of two client records from different sources by the linkage unit",
-    "grain": "record pair",
-    "source": "synthetic (constructed in the layout of a privacy-preserving record linkage service's pairwise output)"
+    "file": "paye_employer_returns_march_2022_2026.csv",
+    "rows": 61000,
+    "entity": "one PAYE scheme's return for the tax month ending 5 April, with its employees paid in the month",
+    "grain": "employer x March",
+    "source": "synthetic (constructed in the layout of a tax authority's PAYE employer extract)"
   },
-  "forum": "committee_or_panel",
-  "forcing_event": "purchase_order_or_contract",
-  "org_family": "nonprofit_or_charity",
+  "forum": "minister_or_cabinet",
+  "forcing_event": "vote_or_meeting",
+  "org_family": "research_or_statistics_office",
   "world": {
-    "geography": "United States, an unnamed state (the Halvering Valley region, its counties, agencies and people are fictional)",
-    "currency": "USD",
-    "org_type": "a nonprofit HMIS lead for four Continuums of Care, which runs the region's data integration and prepares the allocation of the four counties' pooled regional fund",
+    "geography": "a fictional self-governing island nation in the British Isles (Lundwold), its districts, towns, firms and people invented",
+    "currency": "GBP",
+    "org_type": "the island's government statistics office, which compiles labour market statistics from PAYE returns",
     "invented_names": [
-      "Halvering Valley",
-      "Halvering Valley Homeless Data Partnership",
-      "Melbray County",
-      "Ondrava County",
-      "Pyrenna County"
+      "Lundwold",
+      "Lundwold Statistics",
+      "Rookgate",
+      "Dorrstead",
+      "Glenholt",
+      "Ingmouth",
+      "Neshdale",
+      "Skelrigg"
     ],
     "people": [
-      "Kathleen Carlson",
-      "Joshua Bell",
-      "Gina Bryant"
+      "Frances Davies",
+      "Stewart Sheppard",
+      "Irene Walters"
     ]
   },
   "deliverables": [
-    "halvering_2027_fund_allocation.xlsx"
+    "town_centre_fund_2027_eligibility.xlsx",
+    "town_centre_retail_employment_2022_2026.png"
   ],
   "opening_move": "question-first",
-  "question_form": "how-much",
-  "driver": "The decisive quantity is a count of distinct units across several lists that each hold a unit once, joined only by pairwise findings; a record carrying fewer identifiers matches several units at once, so merging every chain of findings joins units one list keeps apart, and the count follows only when the findings are resolved so that no group holds two rows of one list, each chain cut at its weakest finding.",
-  "driver_concrete": "Four Continuums of Care's HMIS exports, a domestic violence coalition's database, a homeless clinic's patients and a city outreach app's clients are linked by a state linkage unit that reports scored pairwise findings; outreach contacts, coalition survivors and street intakes carrying only a birth year link to every client of that name, year and sex, so merging every chain of links joins two clients one source keeps apart; resolving the findings strongest first so no person holds two records of one source, cutting each such chain at its weakest link, restores them.",
-  "stump": "Merging every record the linkage unit linked, directly or through other records, files the region at 39,874 people and the downtown Continuum at 17,644 people and 7,964,889 dollars, 28,815 dollars short, because a record carrying only a year of birth links to every client of that name, year and sex, so 225 merged groups hold two records one source keeps apart.",
+  "question_form": "which",
+  "driver": "The decisive quantity is each area's count of the members of multi-site units, which the record holds only at each unit's registered address; the count follows when each unit's members are placed at its sites in proportion to each site's size times the density of its class, measured on the single-site units of that class, so a share by size alone moves members to the large, sparse sites a unit opens and takes too few from the small, dense sites it closes",
+  "driver_concrete": "The employer register built from PAYE returns holds every employer's March staff at its PAYE address; a retail chain's staff work at its shops, superstores, retail warehouses, distribution centres and head office in the councils' business rates lists, and those premises hold very different staff per square metre by rating class (a high-street shop about six per 100 square metres, a distribution centre under one), which only the register's single-site employers, each matched to its one hereditament, measure; placing each chain's staff by floor area alone moves staff to the distribution centres several chains opened in 2025 and understates what the town centres lost when chains shut small shops",
+  "stump": "Placing each multi-site employer's staff at its premises by floor area (or rateable value) names the wrong set of town centres for the 2027 fund, because a share by floor area puts a new distribution centre's share of a chain's staff at many times what it employs and gives a closed high-street shop a share far below its staff",
   "mechanism_source": "design_note",
-  "differentiation": {},
+  "differentiation": {
+    "task233": "task233 carries an imputation departure measured on a follow-up to every unit on the odds scale; here no value is imputed: each multi-site employer's recorded staff are split across its premises by size times a class density measured on single-site employers",
+    "task273": "task273 estimates each group's travel exposure from the uninvolved parties of two-party events within strata; here the exposure is known (floor area) and the decisive quantity is staff per square metre by premises class",
+    "task280": "task280 re-weights self-silenced probes to a continuous load record; here nothing is under-sampled: each employer's whole payroll is recorded, at the wrong place, and is placed at its premises",
+    "task458": "task458 counts trait holders from events seen while observed, inflating by an observation share; here every member is counted once and the decisive step is where each is placed, not how many there are",
+    "task473": "task473 inflates positives by a detection share by trait level; here nothing is undetected and no count is inflated, the total is fixed and is apportioned across an employer's sites"
+  },
   "lineage": [
     {
       "gap": [
@@ -108,9 +118,33 @@
       "drawn": "2026-10-21",
       "stump": "Summing the release's block counts over each provider area's blocks files North Kelvane at 850 residents aged 60 and over where it held about 700, and every rural area 4 to 21 per cent high and both towns 1 to 3 per cent low, because noise-infused counts forced to be non-negative and consistent with their block group drift from the dense town blocks into the sparse rural blocks of the block groups the boundaries cut.",
       "fate": "spent at stage 4 on 2026-10-21: the determinism judge returned NOT_DETERMINISTIC (competing_defensible_answer, SEND_BACK): the release's block counts summed over each area were a defensible reading because nothing shipped separated them from the housing-unit split of the block groups' counts; both isolated readers missed the call but kept every ask figure (the replay cap and the prior-number death chain sat on the careful path); re-rooted fresh by the author's rule (no retirement)"
+    },
+    {
+      "gap": [
+        "population"
+      ],
+      "pattern": [
+        "none"
+      ],
+      "generators": [
+        "G17",
+        "G2"
+      ],
+      "gate_g": "etl_conformance",
+      "decision_type": "allocation_to_total",
+      "stump_strategy": "identity_resolution",
+      "layer2_pattern": "general-statistics-data-science/data-integration-record-linkage-entity-resolution/3",
+      "driver": "The decisive quantity is a count of distinct units across several lists that each hold a unit once, joined only by pairwise findings; a record carrying fewer identifiers matches several units at once, so merging every chain of findings joins units one list keeps apart, and the count follows only when the findings are resolved so that no group holds two rows of one list, each chain cut at its weakest finding.",
+      "driver_concrete": "Four Continuums of Care's HMIS exports, a domestic violence coalition's database, a homeless clinic's patients and a city outreach app's clients are linked by a state linkage unit that reports scored pairwise findings; outreach contacts, coalition survivors and street intakes carrying only a birth year link to every client of that name, year and sex, so merging every chain of links joins two clients one source keeps apart; resolving the findings strongest first so no person holds two records of one source, cutting each such chain at its weakest link, restores them.",
+      "stump": "Merging every record the linkage unit linked, directly or through other records, files the region at 39,874 people and the downtown Continuum at 17,644 people and 7,964,889 dollars, 28,815 dollars short, because a record carrying only a year of birth links to every client of that name, year and sex, so 225 merged groups hold two records one source keeps apart.",
+      "architecture": "v2",
+      "fate": "spent 2026-10-23 at stage 4: scored reader A counted each merged group's records by source, found the groups holding two records of one source, clustered the LINK findings strongest first under the one-per-source rule and landed the allocation; the decisive structure was a relation a per-group check shows",
+      "niche": "resolving a state linkage unit's pairwise findings across four Continuums of Care's HMIS exports, a domestic violence coalition's comparable database, a health care for the homeless clinic and a city outreach app into the people a region served once each in FY2026, the count its 2027 regional fund is split on",
+      "domain": "general-statistics-data-science",
+      "subdomain": "data-integration-record-linkage-entity-resolution"
     }
   ],
-  "notes": "stump_strategy identity_resolution, carrying the strategy-risk warning: the decisive step is not a key reading but the resolution of pairwise findings into persons (the client's own Layer 2 pattern 3 for this task type), and reading every key and grain right still leaves connected components on the wrong count. gate_g etl_conformance: the call is the region's count of people served conformed across six sources and the resolution of the linkage service's findings inside that conformance is the stump; a judge may read it as method_or_model_selection (how pairwise matches become entities), which the first draft carried until the guard's same-driver test placed population, G2 or G12 and method selection on four older builds; G17 leads because the step is the rigor of resolving matches, with G2 (the pair grain against the person grain) beside it. Axes redrawn at the draw after task251 v5 entered the window: organisation local_government to nonprofit_or_charity (the region's HMIS lead is a nonprofit, as many are, and it prepares the allocation for the counties' committee), context artifact operations_log to published_series (the January point-in-time count by Continuum, published, answering how many people one night held), forum committee_or_panel (the counties' Regional Fund Committee). Re-filed 2026-10-23 at stage 2 against that day's window (task483, task275, task179): the forcing event budget_or_appropriation and the role research_desk were banned, so the forcing event is the counties' 2027 contract renewals with each recipient, written at the adopted amounts from 1 January 2027 (purchase_order_or_contract, the event that makes the figure due now; the committee's meeting is the forum), and the requester heads the Partnership's data office, the HMIS lead's own data function (statistical_office_head); the linkage unit's contact redrawn from guard.py names --geo us --seed 486 (Andrew appeared in task478; Joshua Bell is the first drawn name no build carries). Shape 03 to 05 at stage 2 (2026-10-23): the bridge's opening items, each source's records with FY2026 service, are linkage-free and every response banks them, so the graded structure is the allocation's five buckets (people served and amount) and the region's people; shape 05 is clear of the last two builds (16, 10). Spent 2026-10-23 at stage 4: scored reader A found the 225 merged groups holding two records of one source with a per-group count by source, cued by the guide's one-record-per-person grains, resolved the findings strongest first and landed the call exactly (5 of 5 amounts, 22 of 32 ask figures); the same-source conflict is a visible relation a careful reader checks by reflex.",
-  "registered": "2026-10-23T21:04:33Z",
-  "architecture_spent": true
+  "notes": "Re-rooted 2026-10-25 (architecture 3). Forum, forcing event and organisation redrawn off task269 (council_or_assembly, budget_or_appropriation, local_government): the Council of Ministers approves the fund's list at a scheduled meeting and the compiler is the statistics office, which is who would compile it on an island with one PAYE register and one valuation list. stump_strategy grain_or_unit carries the strategy-risk warning, answered in the Three rules: reading the register's grain correctly is the first rung, not the decisive step; the decisive step is the staffing density by premises class that the single-site employers measure. question_form which repeats task485 v3 (spent) because the call is a set of centres.",
+  "architecture_spent": false,
+  "registered": "2026-10-25T22:32:00Z"
 }
