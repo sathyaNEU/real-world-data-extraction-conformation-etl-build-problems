@@ -127,7 +127,11 @@ used in the last three builds. The one portal hold under the current standard is
   checks that see a unit because it was wrong, survivors, replacements that restart a curve.
 - **Default path.** The population a flag, filter or list suggests (habit 5).
 - **Record.** Approved: 25 and 28 (the share one intervention can reach, behind a join). Died: 100 v1 (a
-  clause and labelled columns handed over the forward roll), 57 (the measure tracked unit size, +0.98).
+  clause and labelled columns handed over the forward roll), 57 (the measure tracked unit size, +0.98), 269 v4
+  (a ratio study's sales, revalued by the assessor toward their own prices: with the population unfiled the judge
+  read the sales' own study as the literal estimand, and filed as "sold or not" it sent both readers to the
+  parcels the sales miss, one quoting the phrase as the decisive step; a population the estimand must name cannot
+  also be the step).
   Shipped: 229 (checks see a unit's state just before resetting it, so the checked rate measures reset
   states), 132 (a failed item restarts at the bottom of its wear curve).
 - **Why it holds.** The population is built from histories, never a status word or clause.
