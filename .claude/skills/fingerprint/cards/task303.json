@@ -1,90 +1,90 @@
 {
-  "task": "task303",
-  "architecture": "v1",
-  "drawn": "2026-10-25",
-  "slot_note": "fresh draw after the seed's permit-centre world (plan review load from the builders' plan libraries) was landed by both call-only probes before any card; staffing a stage pipeline reads the same in any office, so the world is re-drawn where the field's own analysis decides (design note ## Tried and rejected)",
-  "domain": "actuarial-science-insurance",
-  "subdomain": "pricing-ratemaking-credibility",
-  "client_domain": "actuarial-science-insurance",
-  "niche": "a Canadian pet insurer choosing which of four products takes a 12 per cent renewal increase in 2027, sized by what the increase adds to the year's underwriting result on the 2027 renewals, when an owner whose pet has a continuing condition covered for life cannot take that cover to a new insurer and renews whatever the price",
-  "objective": "opportunity-sizing-decision",
-  "shape": "other",
-  "decision_type": "pick_one_of_n",
-  "answer_unit": "currency",
-  "answer": "Essentials, about CAD 500,000 added to the 2027 underwriting result (prototype seed 303, retuned: 512,000 to 536,000 across the licensed family; the built pack's value at ship)",
-  "answer_source": "design note ## Draw (planning value; submission.md block 1 at ship)",
-  "gap": [
-    "population"
+ "task": "task303",
+ "architecture": "v1",
+ "drawn": "2026-10-25",
+ "slot_note": "fresh draw after the seed's permit-centre world (plan review load from the builders' plan libraries) was landed by both call-only probes before any card; staffing a stage pipeline reads the same in any office, so the world is re-drawn where the field's own analysis decides (design note ## Tried and rejected)",
+ "domain": "actuarial-science-insurance",
+ "subdomain": "pricing-ratemaking-credibility",
+ "client_domain": "actuarial-science-insurance",
+ "niche": "a Canadian pet insurer choosing which of four products takes a 12 per cent renewal increase in 2027, sized by what the increase adds to the year's underwriting result on the 2027 renewals, when an owner whose pet has a continuing condition covered for life cannot take that cover to a new insurer and renews whatever the price",
+ "objective": "opportunity-sizing-decision",
+ "shape": "other",
+ "decision_type": "pick_one_of_n",
+ "answer_unit": "currency",
+ "answer": "Essentials, CAD 0.5 million added to the 2027 underwriting result (0.463 to 0.509 across the 144 constructions that split the lifetime response by a continuing condition)",
+ "answer_source": "submission.md block 1 (generator/figures.json call_m)",
+ "gap": [
+  "population"
+ ],
+ "pattern": [
+  "none"
+ ],
+ "generators": [
+  "G14",
+  "G6",
+  "G9"
+ ],
+ "gate_g": "decomposition_attribution",
+ "calibration_form": "existing_book_actuals",
+ "stump_strategy": "composition_mix",
+ "decisive_rule_filed": false,
+ "official_decoy": false,
+ "validated_decoy": false,
+ "context_artifact": "other",
+ "stump_class": "analytical",
+ "analyst_test": "A strong analyst who fits the owners' renewal response to past offers by product, with age and claim history, and values every renewing policy at its expected claims puts the increase on Lifetime Dog at about CAD 0.5 to 1.4 million; the extra lapses an increase brings come almost wholly from pets without a continuing condition, whose owners can take their cover elsewhere, while the owners of pets with a continuing condition covered for life renew whatever the price, so Lifetime Dog's increase sheds its profitable dogs and keeps its costly ones, and Essentials, whose conditions leave cover after twelve months, adds the most, CAD 0.5 million.",
+ "domain_test": "The deciding quantity is the change in a product's underwriting result from a rate increase net of the margin on the policies the increase drives away, which pricing actuaries estimate from each policy's renewal response and expected claims; the response is set by whether the owner can replace the cover, and any new insurer excludes a continuing condition as pre-existing, so lifetime cover keeps exactly the owners whose pets cost most; swap in schools or hospitals and a pre-existing-condition exclusion, an annual renewal and an underwriting result stop meaning anything.",
+ "layer2_family": "estimand_identification",
+ "layer2_pattern": "own:the-owners-a-renewal-increase-drives-away-are-those-who-can-replace-the-cover",
+ "layer1": [
+  "a policy administration go-live on 15 April 2024 that renumbered every policy: terms before it in a legacy archive with its own layout, codes and day-first dates, the term in force at the go-live in both systems, a crosswalk joining a pet's two numbers, invitations and claims under the reference in use when issued or lodged",
+  "clinics' free-text diagnoses with abbreviations and variants under the claims team's condition references",
+  "claims paid net of a deductible and co-insurance, a reopened claim's second payment row, claims still being assessed at the extract with no payment",
+  "renewal invitations issued again with a corrected premium",
+  "policies ending mid-term on a death or a cancellation",
+  "multi-pet discounts on part of the book"
+ ],
+ "stakeholder_role": "the insurer's head of pricing, who recommends to the board the product that takes the increase",
+ "role_family": "portfolio_manager",
+ "scoring_unit": "per covered member",
+ "spine": {
+  "file": "policy_terms_2024-2026.csv and policy_terms_legacy_2019-2024.csv",
+  "rows": 310000,
+  "entity": "one pet's policy term: its premium, the premium offered at renewal and what the owner did",
+  "grain": "pet x policy term",
+  "source": "synthetic"
+ },
+ "forum": "board_of_directors",
+ "forcing_event": "launch_or_rollout",
+ "org_family": "financial_institution",
+ "world": {
+  "geography": "Canada (Ontario head office, policies in eight provinces)",
+  "currency": "CAD",
+  "org_type": "a specialist pet insurer writing accident and illness cover for dogs and cats",
+  "invented_names": [
+   "Kestrel Pet Insurance"
   ],
-  "pattern": [
-    "none"
-  ],
-  "generators": [
-    "G14",
-    "G6",
-    "G9"
-  ],
-  "gate_g": "decomposition_attribution",
-  "calibration_form": "existing_book_actuals",
-  "stump_strategy": "composition_mix",
-  "decisive_rule_filed": false,
-  "official_decoy": false,
-  "validated_decoy": false,
-  "context_artifact": "other",
-  "stump_class": "analytical",
-  "analyst_test": "A strong analyst who fits the owners' renewal response to past offers by product, with age, tenure and claim history, and values every renewing policy at its own expected claims puts the increase on Lifetime Dog at about CAD 0.9 to 1.9 million; the extra lapses an increase brings come almost wholly from pets without a continuing condition, whose owners can take their cover elsewhere, while the owners of pets with a continuing condition covered for life renew whatever the price, so Lifetime Dog's increase sheds its profitable dogs and keeps its costly ones, and Essentials, whose conditions leave cover after twelve months, adds the most, about CAD 500,000.",
-  "domain_test": "The deciding quantity is the change in a product's underwriting result from a rate increase net of the margin on the policies the increase drives away, which pricing actuaries estimate from each policy's renewal response and expected claims; the response is set by whether the owner can replace the cover, and any new insurer excludes a continuing condition as pre-existing, so lifetime cover keeps exactly the owners whose pets cost most; swap in schools or hospitals and a pre-existing-condition exclusion, an annual renewal and an underwriting result stop meaning anything.",
-  "layer2_family": "estimand_identification",
-  "layer2_pattern": "own:the-owners-a-renewal-increase-drives-away-are-those-who-can-replace-the-cover",
-  "layer1": [
-    "a policy administration migration in April 2024 that renumbered every policy, so a pet's history runs under two policy numbers joined by a crosswalk",
-    "veterinarians' free-text diagnoses with abbreviations and variants, coded to condition ids by the claims team",
-    "claims paid net of a deductible and co-insurance, with reopened claims adding a second payment row",
-    "renewal invitations logged in a separate system with the premium offered, re-issued after a mid-term change",
-    "mid-term cancellations (rehomed, moved abroad) and deaths ending policies",
-    "multi-pet discounts on part of the book"
-  ],
-  "stakeholder_role": "the insurer's head of pricing, who recommends to the board the product that takes the increase",
-  "role_family": "portfolio_manager",
-  "scoring_unit": "per covered member",
-  "spine": {
-    "file": "policy_periods_2019-2026.csv",
-    "rows": 300000,
-    "entity": "one pet's policy year: its premium, the premium offered at renewal and what the owner did",
-    "grain": "pet x policy year",
-    "source": "synthetic"
-  },
-  "forum": "board_of_directors",
-  "forcing_event": "launch_or_rollout",
-  "org_family": "financial_institution",
-  "world": {
-    "geography": "Canada (Ontario head office, policies in eight provinces)",
-    "currency": "CAD",
-    "org_type": "a specialist pet insurer writing accident and illness cover for dogs and cats",
-    "invented_names": [
-      "Kestrel Pet Insurance"
-    ],
-    "people": [
-      "Brianna Flynn",
-      "John Mullen"
-    ]
-  },
-  "deliverables": [
-    "kestrel_renewal_increase_2027.pdf",
-    "kestrel_renewal_workbook_2027.xlsx"
-  ],
-  "opening_move": "question-first",
-  "question_form": "which",
-  "driver": "A price rise's yield on a book is the rise on those who stay less the margin of those it drives away, and members who cannot take what they hold elsewhere stay whatever the price; when what a member holds is worth most to the members who cost most, the rise drives away the book's profitable members, so their margin rather than the book's average is what it loses, and a book whose holding lapses after a fixed term has no such members.",
-  "driver_concrete": "Each product's 2027 addition is the 12 per cent on the policies that renew less the margin of the extra policies the increase drives away, each valued at its own claims. On the lifetime products a pet with a continuing condition is covered for it every year and no new insurer would cover it, so its owner renews at about 97 per cent whatever the offer, while healthy pets' owners respond strongly; the extra lapses are the healthy pets, whose margin is the book's highest, so Lifetime Dog's increase adds little, and Essentials, whose conditions leave cover after twelve months so that every owner responds alike, adds the most.",
-  "stump": "A competent solver fits the renewal response to past offers by product with claim history, values each renewal at its own expected claims and puts the increase on Lifetime Dog at about CAD 0.9 million or more, where the golden is Essentials at about CAD 500,000; the step that lands it there is reading the renewal response as the product's, when the owners of pets with a continuing condition covered for life renew whatever the price and the increase drives away only the healthy pets, whose margin is the book's highest.",
-  "differentiation": {
-    "task256": "task256 estimates the share of a population inside a box of correlated body measurements from a reference survey that differs from it; task303 has no measurement box or reference group: each policy's renewal response is split by whether its pet carries a continuing condition the product keeps paying, rebuilt from the claims history, and an increase loses the margin of the owners free to leave.",
-    "task262": "task262 corrects a slope on a long-run average for the reliability of a subsample selected on its level; task303 fits no slope and corrects no measurement error: an increase yields the rise on the owners who stay less the margin of those who leave, and those who leave are the pets without a continuing condition, since a pet with one cannot take its cover elsewhere.",
-    "task267": "task267 reweights a verified subsample to recover a referral rule's capture rate over a screened population; task303 has no verification design: the policies a renewal increase drives away are selected by a switching barrier read from each pet's claims history, and their margin, not the product's average, is what the increase loses.",
-    "task238": "task238 separates a reporting channel's effect from who chooses the channel with a randomized nudge; task303 has no channel and no experiment: owners answer a renewal offer according to whether they can replace the cover, which the claims history's continuing conditions reveal, and the margin of those who leave decides which product's increase adds most."
-  },
-  "architecture_spent": false,
-  "notes": "stump_strategy composition_mix: the lapse response's mix on a property no column names (a continuing condition the product keeps paying, rebuilt from the claims history's condition ids) differs between the book and the policies an increase drives away; pattern none with G14 (the yield conditioned on who renews), G6 (the leavers' composition is not the book's) and G9 (what survives the renewal against what was acquired). Two call-only probes on a prototype pack (seed 303) both filed Lifetime Dog (CAD 1,380,000 and 1,250,000) after fitting lapse on claim history, against Essentials at about 460,000 on that pack; the retuned prototype puts Essentials at 512,000 to 536,000 under five licensed constructions and Lifetime Dog at 866,000 to 1,865,000 under three easy routes; neither separated continuing conditions.",
-  "registered": "2026-10-25T11:03:53Z"
+  "people": [
+   "Brianna Flynn",
+   "John Mullen"
+  ]
+ },
+ "deliverables": [
+  "kestrel_renewal_increase_2027.pdf",
+  "kestrel_renewal_workbook_2027.xlsx"
+ ],
+ "opening_move": "question-first",
+ "question_form": "which",
+ "driver": "A price rise's yield on a book is the rise on those who stay less the margin of those it drives away, and members who cannot take what they hold elsewhere stay whatever the price; when what a member holds is worth most to the members who cost most, the rise drives away the book's profitable members, so their margin rather than the book's average is what it loses, and a book whose holding lapses after a fixed term has no such members.",
+ "driver_concrete": "Each product's 2027 addition is the 12 per cent on the policies that renew less the margin of the extra policies the increase drives away, each valued at its own claims. On the lifetime products a pet with a continuing condition is covered for it every year and no new insurer would cover it, so its owner lapses 3 to 7 per cent whatever the offer, while healthy pets' owners lapse 13 to 40 per cent as the offer rises; the extra lapses are the healthy pets, whose margin (about CAD 360 a Lifetime Dog renewal against minus 1,280 with a continuing condition) is the book's highest, so Lifetime Dog's increase adds little, and Essentials, whose renewals carry about nil margin, adds the most.",
+ "stump": "A competent solver fits the renewal response to past offers by product with age and claim history, values each renewal at its expected claims and puts the increase on Lifetime Dog at about CAD 0.5 to 1.4 million, where the golden is Essentials at CAD 0.5 million; the step that lands it there is reading the renewal response as the product's, when the owners of pets with a continuing condition covered for life renew whatever the price and the increase drives away only the healthy pets, whose margin is the book's highest.",
+ "differentiation": {
+  "task256": "task256 estimates the share of a population inside a box of correlated body measurements from a reference survey that differs from it; task303 has no measurement box or reference group: each policy's renewal response is split by whether its pet carries a continuing condition the product keeps paying, rebuilt from the claims history, and an increase loses the margin of the owners free to leave.",
+  "task262": "task262 corrects a slope on a long-run average for the reliability of a subsample selected on its level; task303 fits no slope and corrects no measurement error: an increase yields the rise on the owners who stay less the margin of those who leave, and those who leave are the pets without a continuing condition, since a pet with one cannot take its cover elsewhere.",
+  "task267": "task267 reweights a verified subsample to recover a referral rule's capture rate over a screened population; task303 has no verification design: the policies a renewal increase drives away are selected by a switching barrier read from each pet's claims history, and their margin, not the product's average, is what the increase loses.",
+  "task238": "task238 separates a reporting channel's effect from who chooses the channel with a randomized nudge; task303 has no channel and no experiment: owners answer a renewal offer according to whether they can replace the cover, which the claims history's continuing conditions reveal, and the margin of those who leave decides which product's increase adds most."
+ },
+ "architecture_spent": true,
+ "notes": "stump_strategy composition_mix: the lapse response's mix on a property no column names (a continuing condition the product keeps paying, rebuilt from the claims history's condition references and diagnoses) differs between the book and the policies an increase drives away; pattern none with G14 (the yield conditioned on who renews), G6 (the leavers' composition is not the book's) and G9 (what survives the renewal against what was acquired). Two call-only probes on a prototype pack both filed Lifetime Dog (CAD 1.38 and 1.25 million) after fitting lapse on claim history. On the built pack 144 of 144 constructions that split the lifetime response name Essentials at CAD 0.5 million (0.463 to 0.509), and five one-response routes name Lifetime Dog at 0.48 to 1.89 million; the renewal history prefers marking a condition from its first treatment to marking it on recurrence (log-likelihood 753) or a 90-day span (357). Asks: renewals-line calls under a menu reordered on 5 October 2026 (D2 label before a silent switch), renewal-premium complaints from a case export missing the cases passed to Pricing (D5 silent partial extract, the acknowledgement letters complete), instalments never collected with re-presentations as new items (D1 resubmission); cracker 0 of 48, pair 28.5. Spent at stage 4 on 2026-10-25: reader A named Essentials by a claims-aware retention model by product; the judge returned SEND_BACK on the figure (CAD 0.32 to 0.51 million across licensed constructions); both readers took 48 of 48 ask cells.",
+ "registered": "2026-10-25T11:03:53Z"
 }

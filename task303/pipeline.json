@@ -1,34 +1,34 @@
 {
  "task": "task303",
  "owner": "perssathya",
- "status": "DESIGN",
+ "status": "PAUSED",
  "domain": "actuarial-science-insurance",
  "objective": "opportunity-sizing-decision",
- "stage": 2,
- "stage_name": "design",
+ "stage": 1,
+ "stage_name": "draw",
  "updated": "2026-10-25",
  "stump": "A competent solver fits the renewal response to past offers by product with claim history, values each renewal at its own expected claims and puts the increase on Lifetime Dog at about CAD 0.9 million or more, where the golden is Essentials at about CAD 500,000; the step that lands it there is reading the renewal response as the product's, when the owners of pets with a continuing condition covered for life renew whatever the price and the increase drives away only the healthy pets, whose margin is the book's highest.",
- "architecture": 1,
+ "architecture": 2,
  "loops": 0,
  "precut": {
   "exit": null,
   "date": ""
  },
  "leak": {
-  "leak_py": "",
-  "reader": ""
+  "leak_py": "REVIEW (no LEAK), architecture 1",
+  "reader": "architecture 1: r303ra landed the call (Essentials, claims-aware retention), 48 of 48 asks; r303rb missed (Lifetime Cat), 48 of 48 asks"
  },
  "duplicate_check": {
   "heart": "",
   "nearest": "task137 at 0.06"
  },
  "judge": {
-  "verdict": "",
-  "disposition": "",
-  "report": ""
+  "verdict": "NOT_DETERMINISTIC (architecture 1)",
+  "disposition": "SEND_BACK",
+  "report": "task303/determinism_check_report.md"
  },
  "returned": [],
- "resume": "Stage 2: port the prototype (scratch t303pet: world.py, sim.py, analyst.py, family.py) to task303/generator with Layer 1 mess (2024 policy renumbering with a crosswalk, free-text diagnoses, deductible and co-insurance, reopened claims, a separate renewal invitation log, mid-term cancellations, multi-pet discounts), annual limits enforced and realism fixes from the probes; design the asks and devices; note sections (ladder, readability screen, fork table, closure, literal reader, oracles, ask sheet); prompt; precut.",
+ "resume": "Stage 1 re-root, architecture 2: architecture 1 (lifetime owners held by a continuing condition) spent at stage 4 (reader A landed the call by a claims-aware retention model, the judge returned SEND_BACK on the figure, both readers took 48 of 48 ask cells); its build is out of the task folder. Next: four candidates on paper with a default path and a screen each, a probe pack and two isolated call-only probes, then the card (architecture 1 into lineage) through guard.py check and register, then DRAWN.",
  "approved": null,
  "delivered": null,
  "portal": null,
