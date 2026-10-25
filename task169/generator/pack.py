@@ -303,8 +303,17 @@ def board_frames(book, ident):
     """split the Board's violation records into the legacy system and the new one, with the migration and the
     January 2026 parallel run"""
     rng = C.stream("pack/board")
+    adm_of = {}
+    for pid, d, atype, otn, vid_ in book.admissions:
+        adm_of.setdefault(pid, []).append(d)
     holds = {}
     for vid, pid, lodged, lifted, admitted in book.holds:
+        if lifted is not None:
+            # a parolee the courts sent to the Department while the Board's detainer was still lodged left the county
+            # jail on the day of the admission, and the Board lifted the detainer that day
+            inside = [d for d in adm_of.get(pid, ()) if lodged <= d < lifted]
+            if inside:
+                lifted = min(inside)
         holds[vid] = (lodged, lifted, admitted)
     resc = {vid: d for vid, pid, d in book.rescinds}
     companion_of = {}

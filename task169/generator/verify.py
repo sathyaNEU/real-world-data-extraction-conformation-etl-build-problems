@@ -291,6 +291,12 @@ def main(target):
             continue
         e = d_iso(r["hold_end"]) or cut + dt.timedelta(days=1)
         spans.append((r["doc_number"], table1[r["hold_facility"].replace(" County Jail", "").upper()], d_iso(r["hold_start"]), e))
+    # SF20: no detainer runs past a Department admission that falls inside it (the physical exit and the record agree)
+    inside = 0
+    for doc, dist, s_, e_ in spans:
+        if any(s_ < a < e_ for a, _ in by_adm.get(doc, [])):
+            inside += 1
+    check("SF20 no detainer runs past an admission inside it", inside == 0, "%d" % inside)
     held = {}
     for doc, dist, s, e in spans:
         day = s

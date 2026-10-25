@@ -335,6 +335,17 @@ def main(target):
     ok("ASKA rescission after 30 June 2026 moves at least one cell", late != A, "")
     B = calc.ask_b(D)
     ok("ASKB golden matches figures.json", all(figs["b_" + d] == B[d] for d in C.DISTRICTS), "")
+    # SF20 a detainer's end where the courts sent the person to the Department before the Board lifted it (portal round
+    # 3, judge 2): C1 in the records, the Board lifting the detainer on the admission day, so the recorded end and the
+    # physical exit select the same days
+    hh = calc.holds(D)
+    aa = D["adm"][D["adm"].movement_type == "ADM"][["doc_number", "t"]].sort_values("t")
+    qq = pd.merge_asof(hh.sort_values("s"), aa, left_on="s", right_on="t", by="doc_number", direction="forward",
+                       allow_exact_matches=False)
+    inside = int((qq.t.notna() & (qq.t < qq.e)).sum())
+    ok("SF20 no detainer's recorded end falls after a Department admission inside it", inside == 0, "%d inside" % inside)
+    ok("SF20 ending each detainer at the earlier of its recorded end and the next admission files the same table",
+       calc.ask_b(D, clip=True) == B, "")
     for kw, name in ((dict(union=False), "readers' path (detainers summed)"), (dict(union=False, dedupe=False, blank="action"), "both systems, every row, end at the decision"),
                      (dict(blank="drop"), "blank lifts dropped"), (dict(both_days=True), "both end days counted")):
         b = calc.ask_b(D, **kw)

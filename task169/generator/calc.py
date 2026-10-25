@@ -423,8 +423,9 @@ def ask_chart(D, **kw):
     return {d: sum(b[d].values()) for d in C.DISTRICTS}
 
 
-def holds(D, blank="admission", dedupe=True, case=None, migr=None):
-    """the Board's detainers as intervals [start, end): legacy and new systems, one interval per hold"""
+def holds(D, blank="admission", dedupe=True, case=None, migr=None, clip=False):
+    """the Board's detainers as intervals [start, end): legacy and new systems, one interval per hold (clip: each also
+    ended at the person's next Department admission, the physical exit, where that comes before the recorded end)"""
     leg, new = _board(D)
     close = pd.Timestamp(C.BOARD_MIGRATE_CUT)
     L = leg[leg.hold_lodged != ""].copy()
@@ -459,6 +460,12 @@ def holds(D, blank="admission", dedupe=True, case=None, migr=None):
     N["jail"] = N.hold_facility.str.replace(" County Jail", "", regex=False)
     out = pd.concat([L[["doc_number", "jail", "s", "e"]], N[["doc_number", "jail", "s", "e"]]], ignore_index=True)
     out = out.dropna(subset=["s", "e"])
+    if clip:
+        a = D["adm"][D["adm"].movement_type == "ADM"][["doc_number", "t"]].sort_values("t")
+        q = pd.merge_asof(out.assign(_ix=out.index).sort_values("s"), a, left_on="s", right_on="t", by="doc_number",
+                          direction="forward")
+        hit = q.t.notna() & (q.t < q.e)
+        out.loc[q._ix[hit].values, "e"] = q.t[hit].values
     out["dist"] = out.jail.map(JAIL_DIST)
     return out
 

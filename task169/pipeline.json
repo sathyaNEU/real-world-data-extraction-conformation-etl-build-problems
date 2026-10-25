@@ -1,7 +1,7 @@
 {
  "task": "task169",
  "owner": "sathya8571",
- "status": "SHIPPED",
+ "status": "PAUSED",
  "domain": "criminology-justice",
  "objective": "forecasting",
  "stage": 5,
@@ -62,7 +62,7 @@
    "commit": "RESHIPPED (task169): determinism, the courts' conversion evidence in the write-up and the asks' units in their clauses"
   }
  ],
- "resume": "",
+ "resume": "determinism repair, portal round 3 (2026-10-25): judge 1 passed every gate; judge 2 failed table 2 (detainer days) only, where 123 detainers (21 touching 2025) carry a Board lift date after the person's new-commitment admission. C1 in pack.py: such a detainer is lifted on the admission day (no random draw); calc.holds gains clip; SF20 in checks and verify. Next: the rebuild's result (only table 2's cells should move), freeze --mode determinism --allow the b_ keys (the golden counted jail days after the person entered prison), figures_check, precut, leak.py --asof 2026-10-14, the one re-judge, determinism_check_report_pass3.md, returned entry, ledger, RESHIPPED.",
  "approved": null,
  "delivered": "2026-10-22",
  "portal": null,
