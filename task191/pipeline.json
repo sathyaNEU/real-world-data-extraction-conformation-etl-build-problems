@@ -1,12 +1,12 @@
 {
  "task": "task191",
  "owner": "oviya13ya",
- "status": "FAILED_TO_STUMP",
+ "status": "SHIPPED",
  "domain": "general-statistics-data-science/multiple-testing-selective-inference",
  "objective": "anomaly-detection",
  "stage": 1,
  "stage_name": "draw",
- "updated": "2026-10-21",
+ "updated": "2026-10-25",
  "stump": "A competent solver cleans the panel, excludes the booked maintenance evenings, takes the quarter's worst evening window at 318 kbps on HVT-01, judges it against that interconnect's own evening spread (28 per cent above its own quarterly 99th percentile, z about 3) and files fund the augment on HVT-01, where 318 kbps is the smallest of the nine quarterly worst windows the same seven interconnects have produced and the call is to fund nothing.",
  "architecture": 1,
  "loops": 1,
@@ -28,7 +28,7 @@
   "report": "/tmp/determinism-check-task191-r2/verdict.md"
  },
  "returned": [],
- "resume": "Architecture 1 refused on measurement, screened before any redesign (see DESIGN_NOTE.md '## Measured refusal' and generator/screen_estimator_family.py). Next step is a stage 1 re-root: new draw, architecture 2, loops reset, guard.py mechanisms and check first. The re-root may not reuse clause 4.2's filed comparison criterion in any wording, a reference built as a statistic of a statistic over the same panel, a two-year rollup of the same quantity shipped beside the quarter compared with it, or a decisive step whose only output is a binary while every graded figure is invariant to it. The ask layer is re-cut inside the re-root: 49 of its 119 graded figures are the deliverable's own worst-window grid and chart, which carry no device.",
+ "resume": "STATUS CORRECTED 2026-10-25. This build was marked FAILED_TO_STUMP, which build-pipeline defines as a shipped build the portal list leaves out. No portal list has ever covered this lane: the ledger's portal record runs task100 to task132 plus task500, dated 10-05 to 10-11, and every build here was delivered 10-12 or later, so no list could have left it out. `portal` and `portal_status` are empty on all of them. The status was an in-house judgement filed as a portal outcome. True state: delivered, pending review. IN-HOUSE EVIDENCE, which is not a portal result and must not be recorded as one: one isolated blind reader at medium effort, holding only a fresh unzip of target.zip, the prompt and a key list with the call's own member paths stripped, scored by score_reader.py: call LANDED, asks 111 of 119 at 93.3 per cent. Owed: re-root the decisive step. Prior resume line follows. Architecture 1 refused on measurement, screened before any redesign (see DESIGN_NOTE.md '## Measured refusal' and generator/screen_estimator_family.py). Next step is a stage 1 re-root: new draw, architecture 2, loops reset, guard.py mechanisms and check first. The re-root may not reuse clause 4.2's filed comparison criterion in any wording, a reference built as a statistic of a statistic over the same panel, a two-year rollup of the same quantity shipped beside the quarter compared with it, or a decisive step whose only output is a binary while every graded figure is invariant to it. The ask layer is re-cut inside the re-root: 49 of its 119 graded figures are the deliverable's own worst-window grid and chart, which carry no device.",
  "approved": null,
  "delivered": "2026-10-17",
  "portal": null,

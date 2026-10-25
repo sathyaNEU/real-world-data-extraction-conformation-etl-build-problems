@@ -1,54 +1,54 @@
 {
-  "task": "task188",
-  "owner": "oviya13ya",
-  "status": "FAILED_TO_STUMP",
-  "seed": "analytical_tasks/02_anomaly_detection/AD11_routing-engagement-measured-page-removal.md",
-  "domain": "epidemiology-public-health / disease-surveillance-outbreak-anomaly-detection (a county vector control district's West Nile virus mosquito surveillance)",
-  "objective": "anomaly-detection",
-  "stage": 1,
-  "stage_name": "draw",
-  "updated": "2026-10-21",
-  "stump": "The natural index, each zone's Culex females per CO2 trap-night times the minimum infection rate of all its Culex pools, names Riverside South, because counting one infected mosquito per positive pool understates Westbrook's pools of fifty and the town zones' gravid-trap pools carry the infection of females that have already fed; maximum likelihood on the CO2-trap pools names Westbrook.",
-  "architecture": 1,
-  "loops": 0,
-  "precut": {
-    "exit": 0,
-    "date": "2026-10-13"
+ "task": "task188",
+ "owner": "oviya13ya",
+ "status": "SHIPPED",
+ "seed": "analytical_tasks/02_anomaly_detection/AD11_routing-engagement-measured-page-removal.md",
+ "domain": "epidemiology-public-health / disease-surveillance-outbreak-anomaly-detection (a county vector control district's West Nile virus mosquito surveillance)",
+ "objective": "anomaly-detection",
+ "stage": 1,
+ "stage_name": "draw",
+ "updated": "2026-10-25",
+ "stump": "The natural index, each zone's Culex females per CO2 trap-night times the minimum infection rate of all its Culex pools, names Riverside South, because counting one infected mosquito per positive pool understates Westbrook's pools of fifty and the town zones' gravid-trap pools carry the infection of females that have already fed; maximum likelihood on the CO2-trap pools names Westbrook.",
+ "architecture": 1,
+ "loops": 0,
+ "precut": {
+  "exit": 0,
+  "date": "2026-10-13"
+ },
+ "leak": {
+  "leak_py": "REVIEW (no LEAK), 2026-10-13",
+  "reader": "wave 8 audit: 18 of 18 call figures, Gate F failed"
+ },
+ "duplicate_check": {
+  "heart": "WARN (nearest driver 0.05, task450 v2)",
+  "nearest": "surface promotes task186 (two apart; gap key rule and decision type only)"
+ },
+ "judge": {
+  "verdict": "DETERMINISTIC",
+  "disposition": "APPROVE",
+  "report": "determinism_check_report_pass3.md (pass 1 FIX_NOW on one write-up count, pass 2 APPROVE, pass 3 APPROVE after the second-load recut)"
+ },
+ "returned": [
+  {
+   "date": "2026-10-13",
+   "portal": "author audit: 10/10 alignment",
+   "repair": "alignment",
+   "commit": ""
   },
-  "leak": {
-    "leak_py": "REVIEW (no LEAK), 2026-10-13",
-    "reader": "wave 8 audit: 18 of 18 call figures, Gate F failed"
-  },
-  "duplicate_check": {
-    "heart": "WARN (nearest driver 0.05, task450 v2)",
-    "nearest": "surface promotes task186 (two apart; gap key rule and decision type only)"
-  },
-  "judge": {
-    "verdict": "DETERMINISTIC",
-    "disposition": "APPROVE",
-    "report": "determinism_check_report_pass3.md (pass 1 FIX_NOW on one write-up count, pass 2 APPROVE, pass 3 APPROVE after the second-load recut)"
-  },
-  "returned": [
-    {
-      "date": "2026-10-13",
-      "portal": "author audit: 10/10 alignment",
-      "repair": "alignment",
-      "commit": ""
-    },
-    {
-      "date": "2026-10-21",
-      "portal": "wave 8 blind reader: 18 of 18 call figures, 60 of 82 ask figures, five protocol clauses named",
-      "repair": "design",
-      "commit": ""
-    }
-  ],
-  "resume": "Measured refusal, not a redesign: re-root at stage 1 (architecture 2, loops reset, the old card's lineage saying spent and why). Architecture 1's decisive step has no estimator content and the ladder cannot be re-sited inside this world, because every other candidate decisive step here settles a part of the estimand. Run generator/family_screen.py on any new candidate before designing it.",
-  "approved": null,
-  "delivered": "2026-10-13",
-  "portal": null,
-  "portal_id": "",
-  "portal_status": "",
-  "portal_status_date": "",
-  "alignment_pass": "design note and card: the analyst test follows the prompt's literal route (CO2-only minimum rate, South Prairie)",
-  "architecture_spent": "architecture 1 spent on measurement 2026-10-21: the decisive step's estimator family returns 1 distinct designated zone of 12 licensed constructions (1.15 mean over 20 redraws) while spreading the printed call figure 3.5 printed units, and the designed construction is an identity in a two-group-by route at corr +0.9972 (18 of 20 redraws). generator/family_screen.py; DESIGN_NOTE.md, Gate F re-screen."
+  {
+   "date": "2026-10-21",
+   "portal": "wave 8 blind reader: 18 of 18 call figures, 60 of 82 ask figures, five protocol clauses named",
+   "repair": "design",
+   "commit": ""
+  }
+ ],
+ "resume": "STATUS CORRECTED 2026-10-25. This build was marked FAILED_TO_STUMP, which build-pipeline defines as a shipped build the portal list leaves out. No portal list has ever covered this lane: the ledger's portal record runs task100 to task132 plus task500, dated 10-05 to 10-11, and every build here was delivered 10-12 or later, so no list could have left it out. `portal` and `portal_status` are empty on all of them. The status was an in-house judgement filed as a portal outcome. True state: delivered, pending review. IN-HOUSE EVIDENCE, which is not a portal result and must not be recorded as one: one isolated blind reader at medium effort, holding only a fresh unzip of target.zip, the prompt and a key list with the call's own member paths stripped, scored by score_reader.py: call LANDED (Westbrook), asks 71 of 96 at 74.0 per cent. Owed: re-root the decisive step. Prior resume line follows. Measured refusal, not a redesign: re-root at stage 1 (architecture 2, loops reset, the old card's lineage saying spent and why). Architecture 1's decisive step has no estimator content and the ladder cannot be re-sited inside this world, because every other candidate decisive step here settles a part of the estimand. Run generator/family_screen.py on any new candidate before designing it.",
+ "approved": null,
+ "delivered": "2026-10-13",
+ "portal": null,
+ "portal_id": "",
+ "portal_status": "",
+ "portal_status_date": "",
+ "alignment_pass": "design note and card: the analyst test follows the prompt's literal route (CO2-only minimum rate, South Prairie)",
+ "architecture_spent": "architecture 1 spent on measurement 2026-10-21: the decisive step's estimator family returns 1 distinct designated zone of 12 licensed constructions (1.15 mean over 20 redraws) while spreading the printed call figure 3.5 printed units, and the designed construction is an identity in a two-group-by route at corr +0.9972 (18 of 20 redraws). generator/family_screen.py; DESIGN_NOTE.md, Gate F re-screen."
 }

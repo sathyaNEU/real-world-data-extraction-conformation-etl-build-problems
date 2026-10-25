@@ -1,83 +1,83 @@
 {
-  "task": "task183",
-  "domain": "energy-systems-utilities",
-  "objective": "anomaly-detection",
-  "stage": 1,
-  "stage_name": "draw",
-  "updated": "2026-10-22",
-  "stump": "A competent solver averages each feeder's last five years of cable-condition failures on the sections still in service and files Mill Lane 7 (about 14.4 a year against Quarry Hill 21's 10.4, fifth of eight), or applies failure rates by insulation and age and files Sutter Park 5; the step that lands it there is forecasting from feeder history or visible attributes when a section's next failure depends on how often it has already failed, and only Quarry Hill 21 carries in-service sections that have failed twice or more (17, heading 2027 at about 15 expected failures).",
-  "architecture": 1,
-  "loops": 1,
-  "precut": {
-    "exit": 0,
-    "date": "2026-10-11"
-  },
-  "leak": {
-    "leak_py": "REVIEW on the final build (13 lines, the same kinds, answered in the design note)",
-    "reader": "wave 8 audit: call landed (2 of 2), asks 42 of 44, Gate F failed; the audit brief handed the reader the figure KEY NAMES from figures.json, including sections_twice_failed_in_service (8 keys) and twice_failed_sections_location, which name the decisive quantity outright, so the audit's Gate F evidence is contaminated and the rework was measured independently"
-  },
-  "duplicate_check": {
-    "heart": "PASS (after task181's architecture 4 replaced the spent v3 card)",
-    "nearest": "task132 0.08",
-    "clone_check": "pass 1 CLEAN (5294cdd)",
-    "surface": "0 promoted of 142 pairs"
-  },
-  "solver_rounds": [],
-  "judge": {
-    "verdict": "DETERMINISTIC",
-    "disposition": "APPROVE",
-    "report": "task183/determinism_check_report.md",
-    "date": "2026-10-12",
-    "pass": 3,
-    "gate_g": "method_or_model_selection, analytical_non_defect, surface_read_dependency no, sole_data_defect no",
-    "gate_h": "domain pass, layers pass, decisive_step analytical"
-  },
-  "approved": null,
-  "delivered": "2026-10-12",
-  "portal": null,
-  "build": {
-    "date": "2026-10-12",
-    "files": 14,
-    "formats": 5,
-    "largest_file_rows": 37008,
-    "checks": 236,
-    "verify": "green",
-    "byte_identical": true,
-    "figures_check": 0,
-    "leak_py": "REVIEW (answered in the design note, Build record)",
-    "guard_surface": "no block",
-    "guard_heart": "WARN (repeat.gate_g, overuse.gate_g, answered in Draw)",
-    "precut": 0,
-    "voice_check": 0,
-    "call": "Quarry Hill 21",
-    "r3_lead": 1.52,
-    "figures_moved": "none",
-    "target_zip_sha256": "5d1d5870cc165847"
-  },
-  "status": "FAILED_TO_STUMP",
-  "owner": "oviya13ya",
-  "resume": "RE-ROOT at stage 1, architecture 2, same number and objective (this lane never retires a number). Architecture 1 is spent on measurement: removing the filed adjudication cannot restore Gate F, because the decisive step is reachable by one group-by on section_id, which names the call at an infinite lead in 300 of 300 swept world settings. The 2026-10-20 resume line (make the retired causes inferable from the data rather than announced in a filing) is necessary and not sufficient. The re-root must move the decisive step off a per-unit quantity the records fix by counting: stumping Part 3 step three wants a correcting quantity that is one per CASE, forced arithmetically by a SECOND file at a finer grain than anything the main file carries, with no part of the record escaping it. The water-conditioned and time-since-last-failure layers are already dead above, so the re-root needs a new world, not this one retuned. Before drawing: guard.py recent, coverage and mechanisms --objective anomaly-detection, then guard.py check on a fresh card with architecture v2 and task183 v1 in lineage as spent.",
-  "returned": [
-    {
-      "date": "2026-10-12",
-      "portal": "determinism block failed: Gate C/D competing_defensible_answer (Sutter Park 5 under its 2025 count, two- and three-year averages and a recent cohort Poisson model, the Kessler Avenue loop's overload having no filed end); Gate A contamination (the portal's answer, component and step fields held task181's write-up; the repo's submission.md was correct)",
-      "repair": "determinism",
-      "move": "SF9: the loop's overload and its end filed (2025 report 6.3, extract notes: second feed energised 15 Sep 2026, after the last loop failure on 4 Sep) with a factual precedent (report 6.4, Harrow Road 14's elbow run ended with the 2024 change-out); the write-up's Sutter Park 5 clause corrected; a filed back-test was measured and rejected",
-      "freeze": "determinism mode PASS",
-      "judge": "DETERMINISTIC, APPROVE (pass 3)",
-      "commit": ""
-    }
-  ],
-  "rework": {
-    "date": "2026-10-22",
-    "screens": "three screens on the generator's clean truth, each run twice byte-identical (scratchpad/t183rw/s12.py, s3.py, s4.py)",
-    "estimator_family": "enumerated 30 members, 4 distinct names; standing 16 members, 2 distinct names (QH21 12, HR12 4, all four of them groupings of one estimator); loudness of the ruling-out 2 dlogL 164.58 on 3 df, 41 failures observed on 93.16 section years at two or more against 2.16 expected, Poisson tail probability 0.000e+00",
-    "cheapest_construction": "the designed forecast is exactly linear in the in-service stock counts; five one-group-by routes on section_id name the call (two or more failures infinite, three or more infinite, most failures on any one section 9.000x, repeat-failure events in the default path's own five-year window 4.000x, sections spliced in place twice or more off repair_code 1.889x); regression of the forecast on the twice-failed count alone R-squared 0.8180, same top bar, max difference 2.222",
-    "dial": "300 settings over four dials, requirements listed first, counted jointly: 0 of 300 pass; family unanimous in 32 and a cheap count form lands the call in all 32; the twice-or-more count lands it in 300 of 300; the geometric ceiling for an intermediate rho is 1.2732x and no realistic replacement policy reaches it",
-    "clauses": "two of the four quoted clauses are redundant and removable (report 6.2, report 6.4), one is the estimand's population and not removable (the prompt's in-service sections), one is load-bearing (SF9, required by the portal's 2026-10-12 determinism return; removing it reinstates competing_defensible_answer at 1.025x to 1.088x)",
-    "verdict": "REFUSED: the clause-removal repair cannot restore Gate F, because the pack does not perform the decisive step, one group-by does. Architecture 1 is spent.",
-    "precut_before": "exit 1, 3 FAIL (Not semantics missing, Not rule application missing, no Measured by line)",
-    "precut_after": "exit 1, 2 FAIL (decisive rung readable, no Measured by line)",
-    "pack_touched": "none: target/, generator/, golden/, prompt.txt, submission.md, metadata.json and target.zip are byte-unchanged; only DESIGN_NOTE.md and pipeline.json were edited"
+ "task": "task183",
+ "domain": "energy-systems-utilities",
+ "objective": "anomaly-detection",
+ "stage": 1,
+ "stage_name": "draw",
+ "updated": "2026-10-25",
+ "stump": "A competent solver averages each feeder's last five years of cable-condition failures on the sections still in service and files Mill Lane 7 (about 14.4 a year against Quarry Hill 21's 10.4, fifth of eight), or applies failure rates by insulation and age and files Sutter Park 5; the step that lands it there is forecasting from feeder history or visible attributes when a section's next failure depends on how often it has already failed, and only Quarry Hill 21 carries in-service sections that have failed twice or more (17, heading 2027 at about 15 expected failures).",
+ "architecture": 1,
+ "loops": 1,
+ "precut": {
+  "exit": 0,
+  "date": "2026-10-11"
+ },
+ "leak": {
+  "leak_py": "REVIEW on the final build (13 lines, the same kinds, answered in the design note)",
+  "reader": "wave 8 audit: call landed (2 of 2), asks 42 of 44, Gate F failed; the audit brief handed the reader the figure KEY NAMES from figures.json, including sections_twice_failed_in_service (8 keys) and twice_failed_sections_location, which name the decisive quantity outright, so the audit's Gate F evidence is contaminated and the rework was measured independently"
+ },
+ "duplicate_check": {
+  "heart": "PASS (after task181's architecture 4 replaced the spent v3 card)",
+  "nearest": "task132 0.08",
+  "clone_check": "pass 1 CLEAN (5294cdd)",
+  "surface": "0 promoted of 142 pairs"
+ },
+ "solver_rounds": [],
+ "judge": {
+  "verdict": "DETERMINISTIC",
+  "disposition": "APPROVE",
+  "report": "task183/determinism_check_report.md",
+  "date": "2026-10-12",
+  "pass": 3,
+  "gate_g": "method_or_model_selection, analytical_non_defect, surface_read_dependency no, sole_data_defect no",
+  "gate_h": "domain pass, layers pass, decisive_step analytical"
+ },
+ "approved": null,
+ "delivered": "2026-10-12",
+ "portal": null,
+ "build": {
+  "date": "2026-10-12",
+  "files": 14,
+  "formats": 5,
+  "largest_file_rows": 37008,
+  "checks": 236,
+  "verify": "green",
+  "byte_identical": true,
+  "figures_check": 0,
+  "leak_py": "REVIEW (answered in the design note, Build record)",
+  "guard_surface": "no block",
+  "guard_heart": "WARN (repeat.gate_g, overuse.gate_g, answered in Draw)",
+  "precut": 0,
+  "voice_check": 0,
+  "call": "Quarry Hill 21",
+  "r3_lead": 1.52,
+  "figures_moved": "none",
+  "target_zip_sha256": "5d1d5870cc165847"
+ },
+ "status": "SHIPPED",
+ "owner": "oviya13ya",
+ "resume": "STATUS CORRECTED 2026-10-25. This build was marked FAILED_TO_STUMP, which build-pipeline defines as a shipped build the portal list leaves out. No portal list has ever covered this lane: the ledger's portal record runs task100 to task132 plus task500, dated 10-05 to 10-11, and every build here was delivered 10-12 or later, so no list could have left it out. `portal` and `portal_status` are empty on all of them. The status was an in-house judgement filed as a portal outcome. True state: delivered, pending review. IN-HOUSE EVIDENCE, which is not a portal result and must not be recorded as one: one isolated blind reader at medium effort, holding only a fresh unzip of target.zip, the prompt and a key list with the call's own member paths stripped, scored by score_reader.py: call LANDED (QH21), asks 43 of 44 at 97.7 per cent. Owed: re-root the decisive step. Prior resume line follows. RE-ROOT at stage 1, architecture 2, same number and objective (this lane never retires a number). Architecture 1 is spent on measurement: removing the filed adjudication cannot restore Gate F, because the decisive step is reachable by one group-by on section_id, which names the call at an infinite lead in 300 of 300 swept world settings. The 2026-10-20 resume line (make the retired causes inferable from the data rather than announced in a filing) is necessary and not sufficient. The re-root must move the decisive step off a per-unit quantity the records fix by counting: stumping Part 3 step three wants a correcting quantity that is one per CASE, forced arithmetically by a SECOND file at a finer grain than anything the main file carries, with no part of the record escaping it. The water-conditioned and time-since-last-failure layers are already dead above, so the re-root needs a new world, not this one retuned. Before drawing: guard.py recent, coverage and mechanisms --objective anomaly-detection, then guard.py check on a fresh card with architecture v2 and task183 v1 in lineage as spent.",
+ "returned": [
+  {
+   "date": "2026-10-12",
+   "portal": "determinism block failed: Gate C/D competing_defensible_answer (Sutter Park 5 under its 2025 count, two- and three-year averages and a recent cohort Poisson model, the Kessler Avenue loop's overload having no filed end); Gate A contamination (the portal's answer, component and step fields held task181's write-up; the repo's submission.md was correct)",
+   "repair": "determinism",
+   "move": "SF9: the loop's overload and its end filed (2025 report 6.3, extract notes: second feed energised 15 Sep 2026, after the last loop failure on 4 Sep) with a factual precedent (report 6.4, Harrow Road 14's elbow run ended with the 2024 change-out); the write-up's Sutter Park 5 clause corrected; a filed back-test was measured and rejected",
+   "freeze": "determinism mode PASS",
+   "judge": "DETERMINISTIC, APPROVE (pass 3)",
+   "commit": ""
   }
+ ],
+ "rework": {
+  "date": "2026-10-22",
+  "screens": "three screens on the generator's clean truth, each run twice byte-identical (scratchpad/t183rw/s12.py, s3.py, s4.py)",
+  "estimator_family": "enumerated 30 members, 4 distinct names; standing 16 members, 2 distinct names (QH21 12, HR12 4, all four of them groupings of one estimator); loudness of the ruling-out 2 dlogL 164.58 on 3 df, 41 failures observed on 93.16 section years at two or more against 2.16 expected, Poisson tail probability 0.000e+00",
+  "cheapest_construction": "the designed forecast is exactly linear in the in-service stock counts; five one-group-by routes on section_id name the call (two or more failures infinite, three or more infinite, most failures on any one section 9.000x, repeat-failure events in the default path's own five-year window 4.000x, sections spliced in place twice or more off repair_code 1.889x); regression of the forecast on the twice-failed count alone R-squared 0.8180, same top bar, max difference 2.222",
+  "dial": "300 settings over four dials, requirements listed first, counted jointly: 0 of 300 pass; family unanimous in 32 and a cheap count form lands the call in all 32; the twice-or-more count lands it in 300 of 300; the geometric ceiling for an intermediate rho is 1.2732x and no realistic replacement policy reaches it",
+  "clauses": "two of the four quoted clauses are redundant and removable (report 6.2, report 6.4), one is the estimand's population and not removable (the prompt's in-service sections), one is load-bearing (SF9, required by the portal's 2026-10-12 determinism return; removing it reinstates competing_defensible_answer at 1.025x to 1.088x)",
+  "verdict": "REFUSED: the clause-removal repair cannot restore Gate F, because the pack does not perform the decisive step, one group-by does. Architecture 1 is spent.",
+  "precut_before": "exit 1, 3 FAIL (Not semantics missing, Not rule application missing, no Measured by line)",
+  "precut_after": "exit 1, 2 FAIL (decisive rung readable, no Measured by line)",
+  "pack_touched": "none: target/, generator/, golden/, prompt.txt, submission.md, metadata.json and target.zip are byte-unchanged; only DESIGN_NOTE.md and pipeline.json were edited"
+ }
 }

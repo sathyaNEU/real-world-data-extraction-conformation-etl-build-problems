@@ -1,45 +1,45 @@
 {
-  "task": "task189",
-  "owner": "oviya13ya",
-  "status": "FAILED_TO_STUMP",
-  "domain": "physical-environmental-sciences/environmental-monitoring-exceedance",
-  "objective": "anomaly-detection",
-  "stage": 1,
-  "stage_name": "draw",
-  "updated": "2026-10-21",
-  "stump": "A competent solver conforms the export, removes the QC and superseded rows, crosswalks sample points to water bodies, substitutes half the reporting limit for every non-detect and averages, and files seven non-compliant water bodies, three of them non-compliant only because their samples went to the laboratory with the coarser limit.",
-  "architecture": 1,
-  "loops": 1,
-  "precut": {
-    "exit": 0,
-    "date": "2026-10-16"
-  },
-  "leak": {
-    "leak_py": "REVIEW (six benign lines, answered in the report)",
-    "reader": "wave 8 audit: landed in prose (the key was left unanswered), asks see below"
-  },
-  "duplicate_check": {
-    "heart": "WARN (government_agency overuse; G16 and field_unit_lead given up to task148 v2)",
-    "nearest": "0.08 task62 (lineage)"
-  },
-  "judge": {
-    "verdict": "DETERMINISTIC",
-    "disposition": "APPROVE",
-    "report": "task189/determinism_check_report.md",
-    "passes": 3,
-    "gate_g": "statistical_rigor, analytical_non_defect, surface_read_dependency no, sole_data_defect no",
-    "gate_h": "domain pass, layers pass, decisive_step analytical"
-  },
-  "returned": [],
-  "resume": "Stage-2 re-root attempted and REFUSED on measurement; architecture 1 is spent at stage 1, not stage 2. The licensed imputation family's spread on the graded figure is exactly zero (7 members, 1 named set, 1 count, on the clean truth and the cut pack), so the decisive step carries one bit, value the bounded samples from the record rather than from their limit, and that bit is what clause 7.2's third sentence supplied. Cut the sentence and the record leaves 8 of 13 verdicts open (Owenbeg 0.0488 to 0.1067 against 0.05), the count spanning 3 to 11. A verdict is wrong under a valuation convention if and only if the record does not settle it: 195 of 195 cells, 0 off-diagonal. Next step is a stage-1 re-root (new card, architecture 2) or retirement, the author's call. Two findings on the shipped pack stand either way: submission.md Critical Component 3 claims 12 per cent clearance and recomputes to 11.54, and a Helsel-Cohn ROS, which clause 7.2 does not exclude, puts the discriminating water body 0.73 per cent from the line. See DESIGN_NOTE.md, Tried and rejected.",
-  "approved": null,
-  "delivered": "2026-10-16",
-  "portal": null,
-  "portal_id": "",
-  "portal_status": "",
-  "portal_status_date": "",
-  "architecture_spent": true,
-  "gates": {
-    "bound_repair": "Critical Component 3 claimed every water body sat at least 12 per cent clear of the standard under all four licensed estimates; the pack holds 11.54 (Derryvore under the fitted lognormal's own mean, 0.044228, and Tirneevin Stream at 11.72). int(round()) printed the bound outward. figures.py now floors both bounds, checks.py asserts each printed bound is at or inside the recomputed extremum of the family (318 assertions, was 316), submission.md states 11, figures_check 42 of 42, two rebuilds byte-identical and target/ byte-identical to the shipped pack, so the repair moved one write-up integer and nothing else. Filed as house fix H29."
-  }
+ "task": "task189",
+ "owner": "oviya13ya",
+ "status": "SHIPPED",
+ "domain": "physical-environmental-sciences/environmental-monitoring-exceedance",
+ "objective": "anomaly-detection",
+ "stage": 1,
+ "stage_name": "draw",
+ "updated": "2026-10-25",
+ "stump": "A competent solver conforms the export, removes the QC and superseded rows, crosswalks sample points to water bodies, substitutes half the reporting limit for every non-detect and averages, and files seven non-compliant water bodies, three of them non-compliant only because their samples went to the laboratory with the coarser limit.",
+ "architecture": 1,
+ "loops": 1,
+ "precut": {
+  "exit": 0,
+  "date": "2026-10-16"
+ },
+ "leak": {
+  "leak_py": "REVIEW (six benign lines, answered in the report)",
+  "reader": "wave 8 audit: landed in prose (the key was left unanswered), asks see below"
+ },
+ "duplicate_check": {
+  "heart": "WARN (government_agency overuse; G16 and field_unit_lead given up to task148 v2)",
+  "nearest": "0.08 task62 (lineage)"
+ },
+ "judge": {
+  "verdict": "DETERMINISTIC",
+  "disposition": "APPROVE",
+  "report": "task189/determinism_check_report.md",
+  "passes": 3,
+  "gate_g": "statistical_rigor, analytical_non_defect, surface_read_dependency no, sole_data_defect no",
+  "gate_h": "domain pass, layers pass, decisive_step analytical"
+ },
+ "returned": [],
+ "resume": "STATUS CORRECTED 2026-10-25. This build was marked FAILED_TO_STUMP, which build-pipeline defines as a shipped build the portal list leaves out. No portal list has ever covered this lane: the ledger's portal record runs task100 to task132 plus task500, dated 10-05 to 10-11, and every build here was delivered 10-12 or later, so no list could have left it out. `portal` and `portal_status` are empty on all of them. The status was an in-house judgement filed as a portal outcome. True state: delivered, pending review. IN-HOUSE EVIDENCE, which is not a portal result and must not be recorded as one: one isolated blind reader at medium effort, holding only a fresh unzip of target.zip, the prompt and a key list with the call's own member paths stripped, scored by score_reader.py: call LANDED, asks 51 of 59 at 86.4 per cent. Owed: re-root the decisive step. Prior resume line follows. Stage-2 re-root attempted and REFUSED on measurement; architecture 1 is spent at stage 1, not stage 2. The licensed imputation family's spread on the graded figure is exactly zero (7 members, 1 named set, 1 count, on the clean truth and the cut pack), so the decisive step carries one bit, value the bounded samples from the record rather than from their limit, and that bit is what clause 7.2's third sentence supplied. Cut the sentence and the record leaves 8 of 13 verdicts open (Owenbeg 0.0488 to 0.1067 against 0.05), the count spanning 3 to 11. A verdict is wrong under a valuation convention if and only if the record does not settle it: 195 of 195 cells, 0 off-diagonal. Next step is a stage-1 re-root (new card, architecture 2) or retirement, the author's call. Two findings on the shipped pack stand either way: submission.md Critical Component 3 claims 12 per cent clearance and recomputes to 11.54, and a Helsel-Cohn ROS, which clause 7.2 does not exclude, puts the discriminating water body 0.73 per cent from the line. See DESIGN_NOTE.md, Tried and rejected.",
+ "approved": null,
+ "delivered": "2026-10-16",
+ "portal": null,
+ "portal_id": "",
+ "portal_status": "",
+ "portal_status_date": "",
+ "architecture_spent": true,
+ "gates": {
+  "bound_repair": "Critical Component 3 claimed every water body sat at least 12 per cent clear of the standard under all four licensed estimates; the pack holds 11.54 (Derryvore under the fitted lognormal's own mean, 0.044228, and Tirneevin Stream at 11.72). int(round()) printed the bound outward. figures.py now floors both bounds, checks.py asserts each printed bound is at or inside the recomputed extremum of the family (318 assertions, was 316), submission.md states 11, figures_check 42 of 42, two rebuilds byte-identical and target/ byte-identical to the shipped pack, so the repair moved one write-up integer and nothing else. Filed as house fix H29."
+ }
 }

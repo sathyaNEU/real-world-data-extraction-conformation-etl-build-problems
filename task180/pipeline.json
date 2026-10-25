@@ -1,229 +1,229 @@
 {
-  "task": "task180",
-  "owner": "oviya13ya",
-  "status": "FAILED_TO_STUMP",
-  "domain": "physical-environmental-sciences",
-  "objective": "anomaly-detection",
-  "stage": 2,
-  "stage_name": "design",
-  "updated": "2026-10-21",
-  "stump": "A competent solver counts each plant's earthquakes of ML 1.0 or more within 5 km of its injection well in the reviewed catalogue quarter by quarter, carries the counts into 2027 on the repeated operating plans and files that no plant goes over amber (Moorstetten highest at 92, Pfeilbrunn at 62 and 77); the step that lands it there is reading the 2026 catalogue as complete at ML 1.0 when Pfeilbrunn's town stations lose most daytime earthquakes, so Pfeilbrunn's true rate, recovered from its quiet night hours (442 of its 658 located earthquakes fall in 5.5 hours), is 28.0 per 100,000 m3 injected against 9.6 on its whole-day record, about 223 and 206 in the winter quarters of 2027, which the borehole stations will locate from January.",
-  "architecture": 4,
-  "loops": 1,
-  "precut": {
-    "exit": 0,
-    "date": "2026-10-12"
-  },
-  "leak": {
-    "leak_py": "REVIEW (0 LEAK; 11 REVIEW lines answered in the design note's Draw)",
-    "reader": "wave 8 audit: call landed on the reader's prose, ask layer 51 of 80, Gate F failed"
-  },
-  "duplicate_check": {
-    "heart": "WARN (repeat.gate_g answered on the card; repeat.deliverables answered in the design note)",
-    "nearest": "task181 0.05 (driver); surface pairing on the notes file name cleared by renaming"
-  },
-  "judge": {
+ "task": "task180",
+ "owner": "oviya13ya",
+ "status": "SHIPPED",
+ "domain": "physical-environmental-sciences",
+ "objective": "anomaly-detection",
+ "stage": 2,
+ "stage_name": "design",
+ "updated": "2026-10-25",
+ "stump": "A competent solver counts each plant's earthquakes of ML 1.0 or more within 5 km of its injection well in the reviewed catalogue quarter by quarter, carries the counts into 2027 on the repeated operating plans and files that no plant goes over amber (Moorstetten highest at 92, Pfeilbrunn at 62 and 77); the step that lands it there is reading the 2026 catalogue as complete at ML 1.0 when Pfeilbrunn's town stations lose most daytime earthquakes, so Pfeilbrunn's true rate, recovered from its quiet night hours (442 of its 658 located earthquakes fall in 5.5 hours), is 28.0 per 100,000 m3 injected against 9.6 on its whole-day record, about 223 and 206 in the winter quarters of 2027, which the borehole stations will locate from January.",
+ "architecture": 4,
+ "loops": 1,
+ "precut": {
+  "exit": 0,
+  "date": "2026-10-12"
+ },
+ "leak": {
+  "leak_py": "REVIEW (0 LEAK; 11 REVIEW lines answered in the design note's Draw)",
+  "reader": "wave 8 audit: call landed on the reader's prose, ask layer 51 of 80, Gate F failed"
+ },
+ "duplicate_check": {
+  "heart": "WARN (repeat.gate_g answered on the card; repeat.deliverables answered in the design note)",
+  "nearest": "task181 0.05 (driver); surface pairing on the notes file name cleared by renaming"
+ },
+ "judge": {
+  "verdict": "DETERMINISTIC",
+  "disposition": "FIX_NOW applied twice (pass 1 figures, pass 2 wording)",
+  "report": "determinism_check_report.md (pass 1)",
+  "gate_g": "forecasting, analytical_non_defect, surface_read_dependency no, sole_data_defect no",
+  "gate_h": "domain pass, layers pass, decisive_step analytical",
+  "fix": "forecast volumes from the reported volumes (scheme 6.2), each 2026 report for the month it reports; Lanzenried from August 2025; every 2027 cell stated within 8 per cent under any rate convention on the whole record (asserted); Wendelsried Q4 45",
+  "passes": [
+   {
+    "pass": 1,
     "verdict": "DETERMINISTIC",
-    "disposition": "FIX_NOW applied twice (pass 1 figures, pass 2 wording)",
-    "report": "determinism_check_report.md (pass 1)",
-    "gate_g": "forecasting, analytical_non_defect, surface_read_dependency no, sole_data_defect no",
+    "disposition": "FIX_NOW",
+    "report": "determinism_check_report.md"
+   },
+   {
+    "pass": 2,
+    "verdict": "DETERMINISTIC",
+    "disposition": "FIX_NOW (solution wording only, applied; no figure moved)",
+    "report": "determinism_check_report_pass2.md"
+   }
+  ]
+ },
+ "returned": [
+  {
+   "date": "2026-10-11",
+   "portal": "architecture 1 spent at in-house round 1; architecture 2 spent at judge pass 2 (SEND_BACK); architecture 3 spent at hardening loop 1 under the literal-determinism rule",
+   "repair": "design",
+   "commit": ""
+  },
+  {
+   "date": "2026-10-13",
+   "portal": "author audit: 10/10 alignment",
+   "repair": "alignment",
+   "commit": ""
+  },
+  {
+   "date": "2026-10-21",
+   "portal": "stage-2 magnitude repair pass on the wave-8 audit (two blind readers landed the call; ask layer 51 and 54 of 80)",
+   "repair": "design",
+   "outcome": "MEASURED REFUSAL: architecture 4 spent at stage 2. Screen 1 PASSES: the licensed family of six constructions spreads 95.1 printed units on Pfeilbrunn Q1 (143 to 238), files one call, and leaves every non-Pfeilbrunn cell at a spread of 0.0, so the step is not a reflex. Screen 3 PASSES on its corrected criterion: the shipped setting carries a real separation (no rung cell inside the 1.15x alarm band of 104.35 to 138.00, the worst clearance rung 1's Moorstetten Q1 at 98.4 / 1.219; the golden's named cells clearing at 1.858 and 1.717; rungs 0 and 2 filing no plant and rung 1 filing Lanzenried) and a unanimous licensed family at the same time. Screen 2 FAILS at machine precision and is the refusal: the decisive construction is an exact identity in one group-by on the local hour plus one multiply and one divide, correlation +1.00000000 and maximum absolute difference 0.000e+00 printed units over 8 world redraws and 20 cells, and its count form needs no volume file at all. The dial measurement closes the repair: the entry price of that group-by equals the ladder's dominance by algebra (worst absolute difference 4.441e-16 over nine settings), and over 76 settings of the two parameters that move it only 3 keep every floor checks.py asserts, all at the 5.5-hour window, legibility 2.931 to 3.157, with the shipped pack the quietest of the three. Checked again on the shipped pack rather than the simulation, twice and byte-identical: the joint cell is R1 and R2 and R3 at once at the shipped setting, and the COUNT FORM of the decisive step files the same call as the golden (Pfeilbrunn 170.2, 43.6, 43.6, 235.6) reading only the reviewed catalogue and the well register, with no volume file, no plans file and no record-length normalisation, so the entire injected-volume layer sits off the cheapest path to the call.",
+   "commit": ""
+  }
+ ],
+ "resume": "STATUS CORRECTED 2026-10-25. This build was marked FAILED_TO_STUMP, which build-pipeline defines as a shipped build the portal list leaves out. No portal list has ever covered this lane: the ledger's portal record runs task100 to task132 plus task500, dated 10-05 to 10-11, and every build here was delivered 10-12 or later, so no list could have left it out. `portal` and `portal_status` are empty on all of them. The status was an in-house judgement filed as a portal outcome. True state: delivered, pending review. IN-HOUSE EVIDENCE, which is not a portal result and must not be recorded as one: one isolated blind reader at medium effort, holding only a fresh unzip of target.zip, the prompt and a key list with the call's own member paths stripped, scored by score_reader.py: call LANDED (Pfeilbrunn), asks 36 of 84 at 42.9 per cent. Owed: re-root the decisive step. Prior resume line follows. MEASURED REFUSAL at stage 2, 2026-10-21; no data re-cut, target.zip untouched and no graded figure moved. Screens 1 and 3 pass on their corrected criteria (see the returned entry); the refusal is screen 2. The decisive construction is one group-by on the local hour plus one multiply and one divide, identical to the cheapest route at correlation +1.00000000 and maximum absolute difference 0.000e+00 over 8 world redraws and 20 cells, and its count form drops the volume file too, so there is no estimation step in which a solver who has looked at the hour can still go wrong. The only thing left to charge for is the looking, and the magnitude repair cannot raise that price: the entry price IS the ladder's dominance by algebra, golden/rung2 = (n_window/S)/n_total = (n_window/n_total)/S, worst absolute difference 4.441e-16 over nine settings of Pfeilbrunn's daytime detection magnitude, and over 76 settings of the two parameters that move the hour profile (daytime detection magnitude x window width: a 28-cell coarse grid plus 48 refined cells at the 7.0, 8.5 and 10.0-hour windows, none of which is floor-compliant at any daytime magnitude from 1.90 to 2.65) only 3 keep every floor checks.py asserts, all at the 5.5-hour window, legibility 2.931 to 3.157, and the shipped setting is the quietest of them. Every other axis is measured dead in the design note's Tried and rejected (lowering the daytime magnitude loses rung 2 at 1.40 and rung 0 at 1.30; raising the true response widens the lever 1.407 to 3.999 with legibility flat but breaks rung 0's 0.70-of-amber ceiling from a target of 250; raising the window's own detection magnitude biases the frozen golden to 0.602 of truth; giving the rural plants an hour pattern either moves the call or opens Gate C; thinning the located count to make the profile faint needs about 8 earthquakes against the 532 the call forces, the departure being 27.0 standard errors on the graded subset and 103.6 on the whole catalogue). Next action is the author's: re-root to architecture 5 at stage 1 (a fresh draw, which needs guard.py register, outside this pass's scope) or retire the number. The existing card cannot be resumed either: guard.py heart now returns BLOCK on four axes (ban.role vs task448, ban.shape vs task501 v4, test.same_puzzle_older vs task271 v3/task456/task462, test.same_driver_older vs task133 v2/task179 v2). A re-root needs a decisive step with an estimation step inside it, so that paying the entry price is not the whole of the work; run screen 2's identity check on the cheapest licensed construction, in its count form as well as its rate form, and screen 3's dial algebra, at the draw. ORCHESTRATOR, 2026-10-21: architecture 4 spent at stage 2, re-root to architecture 5, never retired (the author file overrides build-pipeline's retirement rule for this lane). The refusal rests on screen 2 and the dial's floor, NOT on screen 3: the first screen-3 reading was computed against an inverted criterion in my own brief and does not survive its correction, and the agent corrected both artifacts. Screen 3 in fact PASSES here, and that is itself the finding now filed in stumping: the dial is one-ended only where the easy route is a member of the licensed family, which is the case when the decisive step is a choice among estimators. On this build the easy route sits outside the family because the data refutes it, so separation plus unanimity is the cell the build wants, and it has one (six constructions filing one call, no wrong-rung cell inside the alarm band, worst rung clearance 1.219, golden cells 1.857 and 1.717). What kills it is screen 2, by exact identity: the designed construction equals the one-group-by route at correlation 1.00000000 and a maximum absolute difference of 0.000e+00 over 8 redraws by 20 cells, so nothing is estimated between the group-by and the golden. In its count form, one filter, one count by local hour and quarter, one multiply by 24/5.5, it files the same call reading only the catalogue and the well register, so the whole injected-volume layer and its Layer 1 mess sit off the cheapest path to the committed call. The ladder's dominance IS the factor by which the located hour profile departs from flat, worst absolute difference 4.441e-16 over nine settings. And the lever is not on this dial: golden over amber stays 1.802 to 1.886 while legibility runs 1.213 to 3.278, so the dial moves only the thing that lost Gate F. Of 76 swept settings just 3 are floor-compliant and the shipped pack is the quietest of them. Every other axis measured dead. guard.py heart also BLOCKs on four axes against builds registered since this shipped (ban.role, ban.shape, test.same_puzzle_older, test.same_driver_older), so the card cannot be resumed as it stands either. The re-root needs a decisive step with an estimation step INSIDE it, so that paying the entry price is not the whole of the work, and screen 2's identity check must be run in the count form as well as the rate form at the draw, before a world is built.",
+ "approved": null,
+ "delivered": "2026-10-12",
+ "portal": null,
+ "portal_id": "",
+ "portal_status": "",
+ "portal_status_date": "",
+ "solver_rounds": [
+  {
+   "round": 1,
+   "architecture": 1,
+   "plain": {
+    "landed": true,
+    "proxy": 81.3
+   },
+   "skeptic": {
+    "landed": true,
+    "proxy": 85.6
+   },
+   "mean": 83.5,
+   "decision": "reroot",
+   "brief": "Both solvers read RP-07's glossary (a supply is one supply number and its meter) and the CIS Related metering points sheet, rebuilt weekly kWh for all 3,659 supply numbers from the reads, and reconciled the mart to primary plus related reads within 0.19 kWh before rejecting it; every ask device was executed off a filed rule (legacy_job_no, the appeals register, FW-3's Scottish calendar, the rota's field start). The grain of the screen is announced by the procedure the build has to file, so the architecture is spent: a re-root needs a decisive step that no filed sentence turns into a work order, and an ask layer whose devices are silent."
+  },
+  {
+   "round": 2,
+   "architecture": 2,
+   "solver": {
+    "landed": true,
+    "proxy": 74.6
+   },
+   "decision": "harden",
+   "brief": "The solver attributed by the tap counter alone (DSL-T1 and LST-T2 acetylene at a constant ~0.6 ppm per 1,000 operations, excluded; RLS-T2 'in steps unrelated to ops') off 5.2's main-tank qualifier, which the confirming reader also planned; 5.2 stays for determinism, and the next rung makes that exact step return the wrong slate: RLS-T2's arc moves to the tap selector in the main-tank oil, so its acetylene tracks its counter as closely as a leak (r 0.999) and only the gas it arrives with (C2H2/H2 0.64 against 9.8 and 8.2) keeps it on the slate; tracking-only attribution now names SBG-T2, CGT-T1, SPN-T2 (rung 3b)."
+  },
+  {
+   "round": 3,
+   "architecture": 2,
+   "solver": {
+    "landed": false,
+    "proxy": 37.8
+   },
+   "decision": "pass",
+   "brief": "Missed at the decisive analytical step (rung 3b): every field read and every stated rule applied correctly, every ask figure right, but the solver attributed by the tap counter alone (DSL-T1 and LST-T2 about 0.6, RLS-T2 about 0.36 ppm per 1,000 operations, all three in-oil) and dropped RLS-T2, filing SBG-T2, CGT-T1, SPN-T2; it never read the gas RLS-T2's acetylene arrives with (C2H2/H2 0.64 against 9.8 and 8.2). A valid analytical miss under the three rules."
+  },
+  {
+   "round": 4,
+   "architecture": 2,
+   "solver": {
+    "landed": true,
+    "proxy": 74.8
+   },
+   "decision": "harden",
+   "brief": "The re-run after the judge's FIX_NOW landed on the plain gas ratio (DSL-T1 and LST-T2 acetylene with flat hydrogen excluded as tap-changer oil, RLS-T2 kept for its hydrogen). Loop 2: LST-T2's new galvanised radiators (November 2024) give off hydrogen from months before its first acetylene, so its twelve-month C2H2/H2 reads 0.91 and the ratio step keeps it (rung 3c); only the hydrogen the acetylene brings of its own, over the pace hydrogen already had, separates it from RLS-T2. No golden figure moves."
+  },
+  {
+   "round": 5,
+   "architecture": 2,
+   "solver": {
+    "landed": false,
+    "proxy": 47.3
+   },
+   "decision": "pass",
+   "brief": "Missed at the decisive analytical step (rung 3b): every field and stated rule read correctly, every ask figure right, but the solver attributed by tracking alone (DSL-T1, LST-T2 and RLS-T2 at a constant 0.60, 0.60 and 0.37 ppm per 1,000 operations) and dropped RLS-T2, filing SBG-T2, CGT-T1, SPN-T2."
+  },
+  {
+   "label": "round 6 arch3",
+   "date": "2026-10-11",
+   "score": 81.6,
+   "landed": true,
+   "cracked": 2,
+   "items": 5,
+   "round": "6",
+   "architecture": "3",
+   "decision": "harden",
+   "path_step": "measured the channelling from the national-rate table (tasorexant starters 3.43 times the national fall rate in the year before, corinurad 0.60), set every between-person contrast aside, then a self-controlled case series over all observed time, age-adjusted: corinurad 2.58 (2.10 to 3.18), tasorexant 0.99, velaglutide 0.93",
+   "brief": "Harden so the plain full-observation SCCS (days 1 to 30 against all other observed time) completes and names a wrong signal, with only the exposure-anchored design the field uses when the event changes the chance of starting (post-start reference window, rung 3) recovering corinurad.",
+   "stopping_rule_count": "1 of 2 rounds with a self-controlled comparison unprompted"
+  }
+ ],
+ "earlier_architectures": {
+  "arch1": {
+   "spent": "in-house round 1 (screen grain)",
+   "reports": [
+    "leak_check_report_arch1.md",
+    "clone_check_report_arch1.md",
+    "solver_rounds/round-1-plain_arch1.md",
+    "solver_rounds/round-1-skeptic_arch1.md"
+   ]
+  },
+  "arch2": {
+   "spent": "judge pass 2 SEND_BACK (Gate C)",
+   "design_note": "DESIGN_NOTE_arch2.md",
+   "leak": {
+    "leak_py": "REVIEW (0 LEAK; three REVIEW lines, sweep 4 now six ordinary terms; all answered in the design note)",
+    "reader": "pass 1: nothing quoted for question 1, but its plan included checking code-3 rises for tap-changer compartment gas off ES-DGA-02 1.2 and the compartment file; scope sentence, compartment clause and compartment file removed and the pack rebuilt. pass 2: decisive step the 5.2 selection rule, no ranking file, no analyst-only file, no answer-like figure; plan of attack codes on the main-tank results and takes the top three code 3, no attribution step. 5.2 then reworded for determinism (code 3 transformers with such a fault); pass 3 (beside round 2): nothing quoted for question 1, but its plan kept only code 3 units with a main-tank fault and dropped in-oil units whose acetylene tracks tap operations, the step round 2 took; hardened as loop 1 (tap-selector arc at RLS-T2); pass 4 (hardened pack): nothing quoted for question 1, no ranking or analyst-only file, no answer-like figure, REVIEW lines harmless; its plan drops every unit whose acetylene tracks the tap operations, RLS-T2 included (rung 3b) ; pass 5 (after the judge's hygiene fix): clean, plan at rungs 3 and 3b ; pass 6 (loop 2): clean, plan reads the ratio and the tracking together, the radiator row as a maintenance event"
+   },
+   "duplicate_check": {
+    "heart": "PASS (re-run after hardening loop 1; driver unchanged, so the adjudicated pre-flight stands)",
+    "nearest": "task89 surface 0.104 (not promoted); highest driver overlap 0.093",
+    "clone_check": "pre-flight CLEAN: no Track A or B finding, no Shape echo; seven pairs adjudicated in-thread clean (task119, task121, task101, task38, task92, task116, task181); idiom notes acted on (ask sentence rephrased, extract log renamed)"
+   },
+   "judge": {
+    "verdict": "NOT_DETERMINISTIC",
+    "disposition": "SEND_BACK",
+    "report": "determinism_check_report.md (pass 2, on the loop-2 pack)",
+    "gate_g": "decomposition_attribution, analytical_non_defect, surface_read_dependency no, sole_data_defect no",
     "gate_h": "domain pass, layers pass, decisive_step analytical",
-    "fix": "forecast volumes from the reported volumes (scheme 6.2), each 2026 report for the month it reports; Lanzenried from August 2025; every 2027 cell stated within 8 per cent under any rate convention on the whole record (asserted); Wendelsried Q4 45",
+    "finding": "Gate C, competing_defensible_answer: LST-T2's 2026 hydrogen increments track its tap operations (r 0.81, permutation p 0.005; RLS-T2's r 0.14), so the submission's own increment method keeps LST-T2 as a main-tank fault and SBG-T2 and LST-T2 (tied at 8.0674) then RLS-T2 is defensible; companions: the 9.7 ppm-a-year pre-onset pace does not reproduce (9.63 OLS), the exact SBG-T2/LST-T2 tie, and the unstated gas-source rule pressable as an external dependency",
     "passes": [
-      {
-        "pass": 1,
-        "verdict": "DETERMINISTIC",
-        "disposition": "FIX_NOW",
-        "report": "determinism_check_report.md"
-      },
-      {
-        "pass": 2,
-        "verdict": "DETERMINISTIC",
-        "disposition": "FIX_NOW (solution wording only, applied; no figure moved)",
-        "report": "determinism_check_report_pass2.md"
-      }
+     {
+      "verdict": "DETERMINISTIC",
+      "disposition": "FIX_NOW",
+      "report": "determinism_check_report_pass1.md",
+      "gate_g": "decomposition_attribution, analytical_non_defect, surface_read_dependency no, sole_data_defect no",
+      "gate_h": "domain pass, layers pass, decisive_step analytical",
+      "fix": "maintenance log hygiene (annual-inspection remarks varied on their own random stream, follow-up wording, Burnham battery repeat corrected; every OLTC, breather and oil-processing row and every work-order number byte-identical); optional wording in the submission and the golden board paper ('as reported' and 'selector' removed); bookings workbook stamped 9 October 2026. Rebuild byte-identical, checks 151/151, verifier OK, leak.py REVIEW. A document the solver reads changed, so reader pass 5, round 4 and judge pass 2 follow",
+      "pass": 1
+     },
+     {
+      "pass": 2,
+      "verdict": "NOT_DETERMINISTIC",
+      "disposition": "SEND_BACK",
+      "report": "determinism_check_report.md"
+     }
     ]
-  },
-  "returned": [
-    {
-      "date": "2026-10-11",
-      "portal": "architecture 1 spent at in-house round 1; architecture 2 spent at judge pass 2 (SEND_BACK); architecture 3 spent at hardening loop 1 under the literal-determinism rule",
-      "repair": "design",
-      "commit": ""
-    },
-    {
-      "date": "2026-10-13",
-      "portal": "author audit: 10/10 alignment",
-      "repair": "alignment",
-      "commit": ""
-    },
-    {
-      "date": "2026-10-21",
-      "portal": "stage-2 magnitude repair pass on the wave-8 audit (two blind readers landed the call; ask layer 51 and 54 of 80)",
-      "repair": "design",
-      "outcome": "MEASURED REFUSAL: architecture 4 spent at stage 2. Screen 1 PASSES: the licensed family of six constructions spreads 95.1 printed units on Pfeilbrunn Q1 (143 to 238), files one call, and leaves every non-Pfeilbrunn cell at a spread of 0.0, so the step is not a reflex. Screen 3 PASSES on its corrected criterion: the shipped setting carries a real separation (no rung cell inside the 1.15x alarm band of 104.35 to 138.00, the worst clearance rung 1's Moorstetten Q1 at 98.4 / 1.219; the golden's named cells clearing at 1.858 and 1.717; rungs 0 and 2 filing no plant and rung 1 filing Lanzenried) and a unanimous licensed family at the same time. Screen 2 FAILS at machine precision and is the refusal: the decisive construction is an exact identity in one group-by on the local hour plus one multiply and one divide, correlation +1.00000000 and maximum absolute difference 0.000e+00 printed units over 8 world redraws and 20 cells, and its count form needs no volume file at all. The dial measurement closes the repair: the entry price of that group-by equals the ladder's dominance by algebra (worst absolute difference 4.441e-16 over nine settings), and over 76 settings of the two parameters that move it only 3 keep every floor checks.py asserts, all at the 5.5-hour window, legibility 2.931 to 3.157, with the shipped pack the quietest of the three. Checked again on the shipped pack rather than the simulation, twice and byte-identical: the joint cell is R1 and R2 and R3 at once at the shipped setting, and the COUNT FORM of the decisive step files the same call as the golden (Pfeilbrunn 170.2, 43.6, 43.6, 235.6) reading only the reviewed catalogue and the well register, with no volume file, no plans file and no record-length normalisation, so the entire injected-volume layer sits off the cheapest path to the call.",
-      "commit": ""
-    }
-  ],
-  "resume": "MEASURED REFUSAL at stage 2, 2026-10-21; no data re-cut, target.zip untouched and no graded figure moved. Screens 1 and 3 pass on their corrected criteria (see the returned entry); the refusal is screen 2. The decisive construction is one group-by on the local hour plus one multiply and one divide, identical to the cheapest route at correlation +1.00000000 and maximum absolute difference 0.000e+00 over 8 world redraws and 20 cells, and its count form drops the volume file too, so there is no estimation step in which a solver who has looked at the hour can still go wrong. The only thing left to charge for is the looking, and the magnitude repair cannot raise that price: the entry price IS the ladder's dominance by algebra, golden/rung2 = (n_window/S)/n_total = (n_window/n_total)/S, worst absolute difference 4.441e-16 over nine settings of Pfeilbrunn's daytime detection magnitude, and over 76 settings of the two parameters that move the hour profile (daytime detection magnitude x window width: a 28-cell coarse grid plus 48 refined cells at the 7.0, 8.5 and 10.0-hour windows, none of which is floor-compliant at any daytime magnitude from 1.90 to 2.65) only 3 keep every floor checks.py asserts, all at the 5.5-hour window, legibility 2.931 to 3.157, and the shipped setting is the quietest of them. Every other axis is measured dead in the design note's Tried and rejected (lowering the daytime magnitude loses rung 2 at 1.40 and rung 0 at 1.30; raising the true response widens the lever 1.407 to 3.999 with legibility flat but breaks rung 0's 0.70-of-amber ceiling from a target of 250; raising the window's own detection magnitude biases the frozen golden to 0.602 of truth; giving the rural plants an hour pattern either moves the call or opens Gate C; thinning the located count to make the profile faint needs about 8 earthquakes against the 532 the call forces, the departure being 27.0 standard errors on the graded subset and 103.6 on the whole catalogue). Next action is the author's: re-root to architecture 5 at stage 1 (a fresh draw, which needs guard.py register, outside this pass's scope) or retire the number. The existing card cannot be resumed either: guard.py heart now returns BLOCK on four axes (ban.role vs task448, ban.shape vs task501 v4, test.same_puzzle_older vs task271 v3/task456/task462, test.same_driver_older vs task133 v2/task179 v2). A re-root needs a decisive step with an estimation step inside it, so that paying the entry price is not the whole of the work; run screen 2's identity check on the cheapest licensed construction, in its count form as well as its rate form, and screen 3's dial algebra, at the draw. ORCHESTRATOR, 2026-10-21: architecture 4 spent at stage 2, re-root to architecture 5, never retired (the author file overrides build-pipeline's retirement rule for this lane). The refusal rests on screen 2 and the dial's floor, NOT on screen 3: the first screen-3 reading was computed against an inverted criterion in my own brief and does not survive its correction, and the agent corrected both artifacts. Screen 3 in fact PASSES here, and that is itself the finding now filed in stumping: the dial is one-ended only where the easy route is a member of the licensed family, which is the case when the decisive step is a choice among estimators. On this build the easy route sits outside the family because the data refutes it, so separation plus unanimity is the cell the build wants, and it has one (six constructions filing one call, no wrong-rung cell inside the alarm band, worst rung clearance 1.219, golden cells 1.857 and 1.717). What kills it is screen 2, by exact identity: the designed construction equals the one-group-by route at correlation 1.00000000 and a maximum absolute difference of 0.000e+00 over 8 redraws by 20 cells, so nothing is estimated between the group-by and the golden. In its count form, one filter, one count by local hour and quarter, one multiply by 24/5.5, it files the same call reading only the catalogue and the well register, so the whole injected-volume layer and its Layer 1 mess sit off the cheapest path to the committed call. The ladder's dominance IS the factor by which the located hour profile departs from flat, worst absolute difference 4.441e-16 over nine settings. And the lever is not on this dial: golden over amber stays 1.802 to 1.886 while legibility runs 1.213 to 3.278, so the dial moves only the thing that lost Gate F. Of 76 swept settings just 3 are floor-compliant and the shipped pack is the quietest of them. Every other axis measured dead. guard.py heart also BLOCKs on four axes against builds registered since this shipped (ban.role, ban.shape, test.same_puzzle_older, test.same_driver_older), so the card cannot be resumed as it stands either. The re-root needs a decisive step with an estimation step INSIDE it, so that paying the entry price is not the whole of the work, and screen 2's identity check must be run in the count form as well as the rate form at the draw, before a world is built.",
-  "approved": null,
-  "delivered": "2026-10-12",
-  "portal": null,
-  "portal_id": "",
-  "portal_status": "",
-  "portal_status_date": "",
-  "solver_rounds": [
-    {
-      "round": 1,
-      "architecture": 1,
-      "plain": {
-        "landed": true,
-        "proxy": 81.3
-      },
-      "skeptic": {
-        "landed": true,
-        "proxy": 85.6
-      },
-      "mean": 83.5,
-      "decision": "reroot",
-      "brief": "Both solvers read RP-07's glossary (a supply is one supply number and its meter) and the CIS Related metering points sheet, rebuilt weekly kWh for all 3,659 supply numbers from the reads, and reconciled the mart to primary plus related reads within 0.19 kWh before rejecting it; every ask device was executed off a filed rule (legacy_job_no, the appeals register, FW-3's Scottish calendar, the rota's field start). The grain of the screen is announced by the procedure the build has to file, so the architecture is spent: a re-root needs a decisive step that no filed sentence turns into a work order, and an ask layer whose devices are silent."
-    },
-    {
-      "round": 2,
-      "architecture": 2,
-      "solver": {
-        "landed": true,
-        "proxy": 74.6
-      },
-      "decision": "harden",
-      "brief": "The solver attributed by the tap counter alone (DSL-T1 and LST-T2 acetylene at a constant ~0.6 ppm per 1,000 operations, excluded; RLS-T2 'in steps unrelated to ops') off 5.2's main-tank qualifier, which the confirming reader also planned; 5.2 stays for determinism, and the next rung makes that exact step return the wrong slate: RLS-T2's arc moves to the tap selector in the main-tank oil, so its acetylene tracks its counter as closely as a leak (r 0.999) and only the gas it arrives with (C2H2/H2 0.64 against 9.8 and 8.2) keeps it on the slate; tracking-only attribution now names SBG-T2, CGT-T1, SPN-T2 (rung 3b)."
-    },
-    {
-      "round": 3,
-      "architecture": 2,
-      "solver": {
-        "landed": false,
-        "proxy": 37.8
-      },
-      "decision": "pass",
-      "brief": "Missed at the decisive analytical step (rung 3b): every field read and every stated rule applied correctly, every ask figure right, but the solver attributed by the tap counter alone (DSL-T1 and LST-T2 about 0.6, RLS-T2 about 0.36 ppm per 1,000 operations, all three in-oil) and dropped RLS-T2, filing SBG-T2, CGT-T1, SPN-T2; it never read the gas RLS-T2's acetylene arrives with (C2H2/H2 0.64 against 9.8 and 8.2). A valid analytical miss under the three rules."
-    },
-    {
-      "round": 4,
-      "architecture": 2,
-      "solver": {
-        "landed": true,
-        "proxy": 74.8
-      },
-      "decision": "harden",
-      "brief": "The re-run after the judge's FIX_NOW landed on the plain gas ratio (DSL-T1 and LST-T2 acetylene with flat hydrogen excluded as tap-changer oil, RLS-T2 kept for its hydrogen). Loop 2: LST-T2's new galvanised radiators (November 2024) give off hydrogen from months before its first acetylene, so its twelve-month C2H2/H2 reads 0.91 and the ratio step keeps it (rung 3c); only the hydrogen the acetylene brings of its own, over the pace hydrogen already had, separates it from RLS-T2. No golden figure moves."
-    },
-    {
-      "round": 5,
-      "architecture": 2,
-      "solver": {
-        "landed": false,
-        "proxy": 47.3
-      },
-      "decision": "pass",
-      "brief": "Missed at the decisive analytical step (rung 3b): every field and stated rule read correctly, every ask figure right, but the solver attributed by tracking alone (DSL-T1, LST-T2 and RLS-T2 at a constant 0.60, 0.60 and 0.37 ppm per 1,000 operations) and dropped RLS-T2, filing SBG-T2, CGT-T1, SPN-T2."
-    },
-    {
-      "label": "round 6 arch3",
-      "date": "2026-10-11",
-      "score": 81.6,
-      "landed": true,
-      "cracked": 2,
-      "items": 5,
-      "round": "6",
-      "architecture": "3",
-      "decision": "harden",
-      "path_step": "measured the channelling from the national-rate table (tasorexant starters 3.43 times the national fall rate in the year before, corinurad 0.60), set every between-person contrast aside, then a self-controlled case series over all observed time, age-adjusted: corinurad 2.58 (2.10 to 3.18), tasorexant 0.99, velaglutide 0.93",
-      "brief": "Harden so the plain full-observation SCCS (days 1 to 30 against all other observed time) completes and names a wrong signal, with only the exposure-anchored design the field uses when the event changes the chance of starting (post-start reference window, rung 3) recovering corinurad.",
-      "stopping_rule_count": "1 of 2 rounds with a self-controlled comparison unprompted"
-    }
-  ],
-  "earlier_architectures": {
-    "arch1": {
-      "spent": "in-house round 1 (screen grain)",
-      "reports": [
-        "leak_check_report_arch1.md",
-        "clone_check_report_arch1.md",
-        "solver_rounds/round-1-plain_arch1.md",
-        "solver_rounds/round-1-skeptic_arch1.md"
-      ]
-    },
-    "arch2": {
-      "spent": "judge pass 2 SEND_BACK (Gate C)",
-      "design_note": "DESIGN_NOTE_arch2.md",
-      "leak": {
-        "leak_py": "REVIEW (0 LEAK; three REVIEW lines, sweep 4 now six ordinary terms; all answered in the design note)",
-        "reader": "pass 1: nothing quoted for question 1, but its plan included checking code-3 rises for tap-changer compartment gas off ES-DGA-02 1.2 and the compartment file; scope sentence, compartment clause and compartment file removed and the pack rebuilt. pass 2: decisive step the 5.2 selection rule, no ranking file, no analyst-only file, no answer-like figure; plan of attack codes on the main-tank results and takes the top three code 3, no attribution step. 5.2 then reworded for determinism (code 3 transformers with such a fault); pass 3 (beside round 2): nothing quoted for question 1, but its plan kept only code 3 units with a main-tank fault and dropped in-oil units whose acetylene tracks tap operations, the step round 2 took; hardened as loop 1 (tap-selector arc at RLS-T2); pass 4 (hardened pack): nothing quoted for question 1, no ranking or analyst-only file, no answer-like figure, REVIEW lines harmless; its plan drops every unit whose acetylene tracks the tap operations, RLS-T2 included (rung 3b) ; pass 5 (after the judge's hygiene fix): clean, plan at rungs 3 and 3b ; pass 6 (loop 2): clean, plan reads the ratio and the tracking together, the radiator row as a maintenance event"
-      },
-      "duplicate_check": {
-        "heart": "PASS (re-run after hardening loop 1; driver unchanged, so the adjudicated pre-flight stands)",
-        "nearest": "task89 surface 0.104 (not promoted); highest driver overlap 0.093",
-        "clone_check": "pre-flight CLEAN: no Track A or B finding, no Shape echo; seven pairs adjudicated in-thread clean (task119, task121, task101, task38, task92, task116, task181); idiom notes acted on (ask sentence rephrased, extract log renamed)"
-      },
-      "judge": {
-        "verdict": "NOT_DETERMINISTIC",
-        "disposition": "SEND_BACK",
-        "report": "determinism_check_report.md (pass 2, on the loop-2 pack)",
-        "gate_g": "decomposition_attribution, analytical_non_defect, surface_read_dependency no, sole_data_defect no",
-        "gate_h": "domain pass, layers pass, decisive_step analytical",
-        "finding": "Gate C, competing_defensible_answer: LST-T2's 2026 hydrogen increments track its tap operations (r 0.81, permutation p 0.005; RLS-T2's r 0.14), so the submission's own increment method keeps LST-T2 as a main-tank fault and SBG-T2 and LST-T2 (tied at 8.0674) then RLS-T2 is defensible; companions: the 9.7 ppm-a-year pre-onset pace does not reproduce (9.63 OLS), the exact SBG-T2/LST-T2 tie, and the unstated gas-source rule pressable as an external dependency",
-        "passes": [
-          {
-            "verdict": "DETERMINISTIC",
-            "disposition": "FIX_NOW",
-            "report": "determinism_check_report_pass1.md",
-            "gate_g": "decomposition_attribution, analytical_non_defect, surface_read_dependency no, sole_data_defect no",
-            "gate_h": "domain pass, layers pass, decisive_step analytical",
-            "fix": "maintenance log hygiene (annual-inspection remarks varied on their own random stream, follow-up wording, Burnham battery repeat corrected; every OLTC, breather and oil-processing row and every work-order number byte-identical); optional wording in the submission and the golden board paper ('as reported' and 'selector' removed); bookings workbook stamped 9 October 2026. Rebuild byte-identical, checks 151/151, verifier OK, leak.py REVIEW. A document the solver reads changed, so reader pass 5, round 4 and judge pass 2 follow",
-            "pass": 1
-          },
-          {
-            "pass": 2,
-            "verdict": "NOT_DETERMINISTIC",
-            "disposition": "SEND_BACK",
-            "report": "determinism_check_report.md"
-          }
-        ]
-      },
-      "three_rules": {
-        "domain": "pass (DGA fault-gas source diagnosis; the swap breaks it)",
-        "layers": "pass",
-        "decisive_step": "analytical",
-        "analyst_test": "tracking-only attribution drops RLS-T2 (rung 3b: SBG-T2, CGT-T1, SPN-T2); the plain gas ratio keeps LST-T2 (rung 3c: LST-T2, SBG-T2, RLS-T2); only each gas's own source gives SBG-T2, RLS-T2, CGT-T1"
-      },
-      "reports": [
-        "leak_check_report_arch2.md",
-        "clone_check_report_arch2.md",
-        "determinism_check_report_arch2_pass1.md",
-        "determinism_check_report_arch2_pass2.md"
-      ]
-    }
-  },
-  "build": {
-    "checks": 534,
-    "verify": "OK",
-    "byte_identical": true,
-    "figures_check": 0,
-    "precut": "38/38"
-  },
-  "alignment_pass": "prompt: \"none\" made a grammatical answer (presupposition removed)",
-  "gates_2026_10_21": {
-    "checks": "534 assertions passed (shipped pack, no rebuild)",
-    "verify": "OK (call PFB Q1, PFB Q4; 20 forecast cells and 45 annex figures recomputed independently)",
-    "figures_check": "exit 0 (104 figures in blocks 1 to 4, 0 absent)",
-    "voice_check": "PASS, exit 0",
-    "precut": "exit 1, 51 checks, 1 FAIL: no `Measured by:` line in the Ask sheet naming the script that ran the cracker (was 11 FAIL; the thirteen three-rules lines now pass and the analyst test names the default answer)",
-    "leak_py": "REVIEW, 0 LEAK (leak_check_report.md rewritten as a side effect; the wave-8 audit section survived)",
-    "guard_validate": "277 cards, 0 invalid, exit 0",
-    "guard_surface": "exit 0, clean",
-    "guard_heart": "BLOCK: ban.role (task448), ban.shape (task501 v4), test.same_puzzle_older (task271 v3, task456, task462), test.same_driver_older (task133 v2, task179 v2)",
-    "rebuild": "not run: the pass refused, so no data was re-cut, target.zip is untouched and no graded figure moved",
-    "rung_clearance": "no wrong-rung cell inside the 1.15x band of 104.35 to 138.00; worst clearance rung 1 Moorstetten Q1 98.4 (1.219), rung 1 Wendelsried Q4 93.0 (1.290), rung 0 Moorstetten Q1 92.0 (1.304); golden named cells clear at 1.857 and 1.717. Not asserted anywhere in checks.py, which asserts each rung's set and only the golden's margin."
-  },
-  "architecture_spent": true
+   },
+   "three_rules": {
+    "domain": "pass (DGA fault-gas source diagnosis; the swap breaks it)",
+    "layers": "pass",
+    "decisive_step": "analytical",
+    "analyst_test": "tracking-only attribution drops RLS-T2 (rung 3b: SBG-T2, CGT-T1, SPN-T2); the plain gas ratio keeps LST-T2 (rung 3c: LST-T2, SBG-T2, RLS-T2); only each gas's own source gives SBG-T2, RLS-T2, CGT-T1"
+   },
+   "reports": [
+    "leak_check_report_arch2.md",
+    "clone_check_report_arch2.md",
+    "determinism_check_report_arch2_pass1.md",
+    "determinism_check_report_arch2_pass2.md"
+   ]
+  }
+ },
+ "build": {
+  "checks": 534,
+  "verify": "OK",
+  "byte_identical": true,
+  "figures_check": 0,
+  "precut": "38/38"
+ },
+ "alignment_pass": "prompt: \"none\" made a grammatical answer (presupposition removed)",
+ "gates_2026_10_21": {
+  "checks": "534 assertions passed (shipped pack, no rebuild)",
+  "verify": "OK (call PFB Q1, PFB Q4; 20 forecast cells and 45 annex figures recomputed independently)",
+  "figures_check": "exit 0 (104 figures in blocks 1 to 4, 0 absent)",
+  "voice_check": "PASS, exit 0",
+  "precut": "exit 1, 51 checks, 1 FAIL: no `Measured by:` line in the Ask sheet naming the script that ran the cracker (was 11 FAIL; the thirteen three-rules lines now pass and the analyst test names the default answer)",
+  "leak_py": "REVIEW, 0 LEAK (leak_check_report.md rewritten as a side effect; the wave-8 audit section survived)",
+  "guard_validate": "277 cards, 0 invalid, exit 0",
+  "guard_surface": "exit 0, clean",
+  "guard_heart": "BLOCK: ban.role (task448), ban.shape (task501 v4), test.same_puzzle_older (task271 v3, task456, task462), test.same_driver_older (task133 v2, task179 v2)",
+  "rebuild": "not run: the pass refused, so no data was re-cut, target.zip is untouched and no graded figure moved",
+  "rung_clearance": "no wrong-rung cell inside the 1.15x band of 104.35 to 138.00; worst clearance rung 1 Moorstetten Q1 98.4 (1.219), rung 1 Wendelsried Q4 93.0 (1.290), rung 0 Moorstetten Q1 92.0 (1.304); golden named cells clear at 1.857 and 1.717. Not asserted anywhere in checks.py, which asserts each rung's set and only the golden's margin."
+ },
+ "architecture_spent": true
 }
