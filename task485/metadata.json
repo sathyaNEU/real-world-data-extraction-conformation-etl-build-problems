@@ -1,0 +1,125 @@
+{
+ "task": "task485",
+ "title": "Lorrimere electoral review: electorate forecast 2032",
+ "setting": "A fictional district council in an unnamed UK-like country with individual electoral registration and an annual canvass, and its national boundary commission: the district, its wards, the bodies and the people are fictional, and every record is synthetic.",
+ "as_of": "2026-10-16",
+ "deliverables": [
+  "ward_electorate_forecast_2032.xlsx",
+  "ward_variance_2032.png"
+ ],
+ "distractor_files": [
+  "target/snpp_2022based_lorrimere.csv",
+  "target/council_tax_dwellings_by_band_ward_2025-09.csv"
+ ],
+ "stated_inputs": [
+  "43",
+  "10 per cent"
+ ],
+ "files": [
+  {
+   "file": "ELECTRA_NOTICES_OF_ALTERATION_2021-01_2022-03.txt",
+   "source": "Lorrimere District Council, Electra export, notices of alteration (fictional, synthetic records)",
+   "date": "2022-03-04",
+   "license": "CC0-1.0 (synthetic, generated for this task)",
+   "rows": 9308
+  },
+  {
+   "file": "ELECTRA_PROPERTY_ELECTORATE_REV_2020.txt",
+   "source": "Lorrimere District Council, Electra export, property electorate report, 2020 revised register (fictional, synthetic records)",
+   "date": "2022-03-04",
+   "license": "CC0-1.0 (synthetic, generated for this task)",
+   "rows": 62085
+  },
+  {
+   "file": "ELECTRA_PROPERTY_ELECTORATE_REV_2021.txt",
+   "source": "Lorrimere District Council, Electra export, property electorate report, 2021 revised register (fictional, synthetic records)",
+   "date": "2022-03-04",
+   "license": "CC0-1.0 (synthetic, generated for this task)",
+   "rows": 62634
+  },
+  {
+   "file": "council_tax_dwellings_by_band_ward_2025-09.csv",
+   "source": "Lorrimere District Council, Revenues, valuation list dwellings by band and ward (fictional, synthetic records)",
+   "date": "2025-09-02",
+   "license": "CC0-1.0 (synthetic, generated for this task)",
+   "rows": 23
+  },
+  {
+   "file": "ems_migration_property_xref_2022-03.csv",
+   "source": "Lorrimere District Council, Electoral Services, migration property cross-reference (fictional, synthetic records)",
+   "date": "2022-03-07",
+   "license": "CC0-1.0 (synthetic, generated for this task)",
+   "rows": 62628
+  },
+  {
+   "file": "ems_property_electorate_2022-2025.csv",
+   "source": "Lorrimere District Council, Electoral Services, property electorate report, revised registers 2022 to 2025 (fictional, synthetic records)",
+   "date": "2026-10-12",
+   "license": "CC0-1.0 (synthetic, generated for this task)",
+   "rows": 253495
+  },
+  {
+   "file": "housing_completions_monitoring_2014-2026.xlsx",
+   "source": "Lorrimere District Council, Planning Policy, housing completions monitoring (fictional, synthetic records)",
+   "date": "2026-10-09",
+   "license": "CC0-1.0 (synthetic, generated for this task)",
+   "rows": null
+  },
+  {
+   "file": "housing_trajectory_2026-09-30.xlsx",
+   "source": "Lorrimere District Council, Planning Policy, housing trajectory (fictional, synthetic records)",
+   "date": "2026-10-08",
+   "license": "CC0-1.0 (synthetic, generated for this task)",
+   "rows": null
+  },
+  {
+   "file": "lgbc_electorate_forecast_guidance_2024.pdf",
+   "source": "Local Government Boundary Commission, technical guidance note 3 with the review letter (fictional, synthetic records)",
+   "date": "2026-03-02",
+   "license": "CC0-1.0 (synthetic, generated for this task)",
+   "rows": null
+  },
+  {
+   "file": "llpg_extract_2026-10-12.csv",
+   "source": "Lorrimere District Council, local land and property gazetteer extract (fictional, synthetic records)",
+   "date": "2026-10-12",
+   "license": "CC0-1.0 (synthetic, generated for this task)",
+   "rows": 68892
+  },
+  {
+   "file": "lorrimere_annual_canvass_report_2025.pdf",
+   "source": "Lorrimere District Council, annual canvass report 2025 (fictional, synthetic records)",
+   "date": "2025-12-12",
+   "license": "CC0-1.0 (synthetic, generated for this task)",
+   "rows": null
+  },
+  {
+   "file": "lorrimere_review_data_notes.txt",
+   "source": "Lorrimere District Council, data supplied for the electoral review, field guide (fictional, synthetic records)",
+   "date": "2026-10-12",
+   "license": "CC0-1.0 (synthetic, generated for this task)",
+   "rows": 61
+  },
+  {
+   "file": "polling_district_review_2023_schedule.csv",
+   "source": "Lorrimere District Council, review of polling districts 2023, schedule (fictional, synthetic records)",
+   "date": "2023-01-30",
+   "license": "CC0-1.0 (synthetic, generated for this task)",
+   "rows": 58
+  },
+  {
+   "file": "snpp_2022based_lorrimere.csv",
+   "source": "The statistics office, 2022-based sub-national population projections, Lorrimere extract (fictional, synthetic records)",
+   "date": "2024-06-25",
+   "license": "CC0-1.0 (synthetic, generated for this task)",
+   "rows": 84
+  },
+  {
+   "file": "wards_councillors_2014_order.csv",
+   "source": "Lorrimere District Council, wards and councillors under the 2014 electoral changes order (fictional, synthetic records)",
+   "date": "2026-10-12",
+   "license": "CC0-1.0 (synthetic, generated for this task)",
+   "rows": 23
+  }
+ ]
+}

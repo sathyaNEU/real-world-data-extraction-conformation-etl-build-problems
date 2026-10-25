@@ -1,23 +1,55 @@
 {
  "task": "task485",
  "owner": "oviya1301",
- "status": "DESIGN",
+ "status": "PAUSED",
  "domain": "survey-research-official-statistics",
  "objective": "etl",
- "stage": 2,
- "stage_name": "design",
+ "stage": 1,
+ "stage_name": "draw",
  "updated": "2026-10-25",
- "stump": "The default path adds every dwelling the council's trajectory places before the 2032 canvass at the settled stock's electors per dwelling by type to the 1 December 2026 register and flags the wrong wards, because a dwelling's electors join the register over the canvasses after it is completed: the estates finished since 2022 are still building up and the dwellings due in 2030 to 2032 will still be young at the 2032 canvass.",
+ "stump": "The default path keeps each dwelling on the 1 December 2025 register at its 2025 count and adds the dwellings since and the trajectory's at the settled stock's electors per dwelling by type, filing Ebborby, Kettermere, Lorrimere North and Tibberfield; but a dwelling's electors join the register over the canvasses after it comes into use (0.45 of the settled level at its first canvass, 0.83 at its third), so aged to their canvasses on 1 December 2032 the estates completed from 2024 take Lorrimere West, Caldenstow Park and Quenbrook over the line and the sites completing from 2030 leave Lorrimere North and Tibberfield inside it: five wards fail.",
  "architecture": 1,
- "loops": 0,
- "precut": {},
- "leak": {},
- "duplicate_check": {},
- "judge": {},
+ "loops": 1,
+ "precut": {
+  "result": "51 checks, 0 FAIL, 0 WARN (2026-10-25)",
+  "pair_ceiling": 28.5,
+  "mirror_leakage": 0.0
+ },
+ "leak": {
+  "leak_py": "REVIEW (2026-10-25, no LEAK; zip 237917da)",
+  "reader": "round 1 (zip 237917da): both scored readers landed the call (the golden five) by fitting electors per dwelling to the dwelling's age since completion on the 2022 to 2025 registers and applying the ramp to every dwelling built and to come; score_reader exit 1 on both (asks 6 and 2 of 25); both found the 2021 report's switch-off from its run date and backed the 2022 notices out, missing on handling. Architecture 1 spent."
+ },
+ "duplicate_check": {
+  "heart": "WARN (2026-10-25)",
+  "surface": "6 pairs promoted for adjudication (task484 back to back on gap and decision type, task483, task275, task481 and two more on card axes); the adjudicated clone-check is author-triggered"
+ },
+ "judge": {
+  "verdict": "v1r1 DETERMINISTIC, APPROVE (Gate G forecasting and etl_conformance, analytical_non_defect; Gate H pass, decisive step analytical); not taken to a report, the call being spent",
+  "disposition": "APPROVE",
+  "report": ""
+ },
  "returned": [],
- "resume": "stage 2: the world on paper (23 wards, 43 councillors, completions 2014 to 2026, the trajectory to 2032/33), the build-up measured from the six-canvass panel, the standing family's spread, the ladder, the fork and closure tables, the asks and prompt.txt, then precut.py",
+ "resume": "stage 1 of architecture 2: architecture 1 (a dwelling's electors joining the register over the canvasses after it comes into use) spent at stage 4 when both scored readers fitted the ramp from the property-level registers; re-root fresh in the lane's objective with a new draw, reading Tried and rejected first (a unit's yield ramping to a settled level read from a panel beside its start dates is a reflex, as task484 v1's lease-up curve was; screen the draw with guard.py slots on the setting's words as well as the mechanism's)",
  "approved": null,
  "delivered": null,
  "portal": null,
- "source_note": "seed ET42 (H-1B labour condition applications) screened and set aside at the draw; re-worlded into a boundary commission's electoral review"
+ "source_note": "seed ET42 (H-1B labour condition applications) screened and set aside at the draw; re-worlded into a boundary commission's electoral review",
+ "zip": "237917da9ecb5387a7250b4fde842cf2",
+ "lineage_v1": {
+  "zip": "237917da9ecb5387a7250b4fde842cf2",
+  "leak": {
+   "leak_py": "REVIEW (2026-10-25, no LEAK; zip 237917da)",
+   "reader": "round 1 (zip 237917da): both scored readers landed the call (the golden five) by fitting electors per dwelling to the dwelling's age since completion on the 2022 to 2025 registers and applying the ramp to every dwelling built and to come; score_reader exit 1 on both (asks 6 and 2 of 25); both found the 2021 report's switch-off from its run date and backed the 2022 notices out, missing on handling. Architecture 1 spent."
+  },
+  "judge": {
+   "verdict": "v1r1 DETERMINISTIC, APPROVE (Gate G forecasting and etl_conformance, analytical_non_defect; Gate H pass, decisive step analytical); not taken to a report, the call being spent",
+   "disposition": "APPROVE",
+   "report": ""
+  },
+  "precut": {
+   "result": "51 checks, 0 FAIL, 0 WARN (2026-10-25)",
+   "pair_ceiling": 28.5,
+   "mirror_leakage": 0.0
+  }
+ }
 }

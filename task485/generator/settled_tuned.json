@@ -1,0 +1,94 @@
+{
+ "LAB": {
+  "house": 3150,
+  "flat": 1350
+ },
+ "LCA": {
+  "house": 1995,
+  "flat": 1028
+ },
+ "LNO": {
+  "house": 2509,
+  "flat": 409
+ },
+ "LWE": {
+  "house": 3472,
+  "flat": 868
+ },
+ "CCE": {
+  "house": 2036,
+  "flat": 792
+ },
+ "CPK": {
+  "house": 1722,
+  "flat": 328
+ },
+ "QUE": {
+  "house": 1158,
+  "flat": 158
+ },
+ "TIB": {
+  "house": 1288,
+  "flat": 143
+ },
+ "EBB": {
+  "house": 1196,
+  "flat": 104
+ },
+ "KET": {
+  "house": 3500,
+  "flat": 717
+ },
+ "SEL": {
+  "house": 2356,
+  "flat": 416
+ },
+ "VEL": {
+  "house": 2241,
+  "flat": 747
+ },
+ "OST": {
+  "house": 2385,
+  "flat": 325
+ },
+ "HAR": {
+  "house": 1313,
+  "flat": 130
+ },
+ "BRE": {
+  "house": 3523,
+  "flat": 773
+ },
+ "FAU": {
+  "house": 1258,
+  "flat": 95
+ },
+ "GRI": {
+  "house": 2124,
+  "flat": 599
+ },
+ "DOR": {
+  "house": 3387,
+  "flat": 645
+ },
+ "PEL": {
+  "house": 1290,
+  "flat": 159
+ },
+ "ROT": {
+  "house": 2280,
+  "flat": 500
+ },
+ "STE": {
+  "house": 2251,
+  "flat": 598
+ },
+ "VAR": {
+  "house": 1288,
+  "flat": 143
+ },
+ "YAR": {
+  "house": 1209,
+  "flat": 120
+ }
+}

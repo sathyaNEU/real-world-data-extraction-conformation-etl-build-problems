@@ -156,4 +156,11 @@ The ask designer's brief, in short:
 
 ## task482
 
-Architecture 14 drawn 2026-10-25 (architecture 13's world, the Larrowbrook Physician Network's 2027 two-sided track elections, with the attribution run-out on the default path and the decisive step the members still in hospital at the cut, whose stays are billed at discharge and already past the member cap); architectures 1 to 13 spent at stage 4. Next: stage 2 (`task482/pipeline.json`), reading the design note's ## Draw and ## Tried and rejected first.
+Shipped 2026-10-25 (architecture 14, zip 2c0f8d35); waiting for the author's portal list.
+
+## task485
+
+Architecture 1 (a boundary commission's 2032 electorate forecast, each dwelling's electors aged to its canvasses on the
+build-up the registers show) spent at stage 4 on 2026-10-25: both scored readers fitted the ramp from the property-level
+registers and landed the call. Next: stage 1 of architecture 2 (`task485/pipeline.json`), reading the design note's
+## Tried and rejected first.

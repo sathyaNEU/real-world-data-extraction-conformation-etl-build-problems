@@ -1,89 +1,90 @@
 {
-  "task": "task485",
-  "architecture": "v1",
-  "drawn": "2026-10-25",
-  "slot_note": "re-worlded from seed ET42 (an employer index from H-1B labour condition applications): the seed's world screened and set aside at the draw (Tried and rejected); the decision kept as a designation from a conformed register, the quantity a count the register only partly holds",
-  "domain": "survey-research-official-statistics",
-  "subdomain": "census-register-administrative-data-quality",
-  "niche": "a boundary commission's electoral review of a district's 23 wards, each ward's electors on the register to be published after the 2032 canvass forecast from six canvasses of the register at property level, the address register and the council's housing trajectory, where a new dwelling's electors join the register over several canvasses after it is completed",
-  "objective": "etl",
-  "shape": "10",
-  "decision_type": "designation_set",
-  "answer_unit": "set_of_items",
-  "answer": "",
-  "answer_source": "",
-  "gap": [
-    "time",
-    "population"
-  ],
-  "pattern": [
-    "E"
-  ],
-  "generators": [
-    "G13",
-    "G14",
-    "G12"
-  ],
-  "gate_g": "etl_conformance",
-  "calibration_form": "none",
-  "stump_strategy": "maturity_censoring",
-  "decisive_rule_filed": false,
-  "official_decoy": false,
-  "validated_decoy": false,
-  "context_artifact": "filed_standard",
-  "stump_class": "analytical",
-  "analyst_test": "A strong analyst conforms the 1 December 2026 register to wards, adds every dwelling the trajectory places before the 2032 canvass at the settled stock's electors per dwelling by dwelling type, keeps each existing dwelling at its 2026 count, and flags the wrong set of wards outside ten per cent of the average electors per councillor.",
-  "domain_test": "The 2032 electorate is the register's coverage of each dwelling's electors by the number of canvasses since it was completed, the completeness-by-length-of-residence the electoral field measures, applied dwelling by dwelling to the 2032 canvass; swap electors for pupils on a school roll and the build-up disappears, because a pupil is on roll from the day of admission.",
-  "layer2_family": "field_method",
-  "layer2_pattern": "own:a new dwelling's electors join the register over the canvasses after completion",
-  "layer1": [
-    "the register in two election management system layouts (property reference before the 2023 migration, UPRN after)",
-    "polling district codes changed by the 2024 polling district review",
-    "franchise markers: parliamentary-only overseas electors on the register, local-only electors",
-    "attainers on the register with their dates of birth",
-    "address register records in alternative and historical logical status beside the approved record",
-    "the trajectory in monitoring years (April to March) against canvass years (register published 1 December)",
-    "the trajectory's base date after part of 2026/27 was already built and canvassed"
-  ],
-  "stakeholder_role": "the Commission's review manager for the district",
-  "role_family": "policy_adviser",
-  "scoring_unit": "other",
-  "spine": {
-    "file": "",
-    "rows": 0,
-    "entity": "one property's elector counts by franchise on one published register",
-    "grain": "property x canvass",
-    "source": "synthetic"
-  },
-  "forum": "committee_or_panel",
-  "forcing_event": "vote_or_meeting",
-  "org_family": "government_agency",
-  "world": {
-    "geography": "an unnamed UK-like country with individual electoral registration and an annual canvass (the district, its commission and the people are invented)",
-    "currency": "GBP",
-    "org_type": "a national local government boundary commission",
-    "invented_names": [],
-    "people": [
-      "Megan Stewart",
-      "Donald Hayes"
-    ]
-  },
-  "deliverables": [
-    "ward_electorate_forecast_2032.xlsx",
-    "ward_variance_2032.png"
-  ],
-  "opening_move": "question-first",
-  "question_form": "which",
-  "driver": "A new unit's contribution to a register builds up over several annual rounds after the unit is created toward the level settled units hold, so a forecast that keeps each existing unit at its present count and adds the units still to come at the settled units' yield, or at the yield the newest units show today, misses both the recent units still building up and the units that will still be young at the horizon, while a uniform completeness factor moves nothing.",
-  "driver_concrete": "Each new dwelling's electors join the register over the canvasses after it is completed, toward the settled stock's electors per dwelling by type; the 2032 forecast ages every dwelling completed since 2020 and every dwelling the trajectory places before the 2032 canvass to its number of canvasses at December 2032.",
-  "stump": "The default path adds the trajectory's dwellings at the settled stock's electors per dwelling by type to the 1 December 2026 register and flags the wards whose late-phase sites it counts as full, missing the wards whose estates completed since 2022 are still joining the register.",
-  "mechanism_source": "design_note",
-  "differentiation": {
-    "task235": "task235 judges an item lost only once its device has had its next chance to send, read from a real-time contact log; here nothing is lost or waiting to be sent: every dwelling is on the address register and its electors join the register over the canvasses after completion, so the forecast ages each dwelling, built or still to be built, to its canvass count at the horizon.",
-    "task445": "task445 completes holders whose reports have not arrived from each holder's last report and a class drift; here every register has been published and nothing is unreported: a dwelling's electors build up over canvasses toward a settled level, and the step ages dwellings that do not yet exist to their canvass count at the horizon.",
-    "task481": "task481 restates a count onto a new classification by conversion rates whose short window over-represents one kind of record; here no classification changes: a dwelling's electors build up over the canvasses after it is completed, and the forecast ages each dwelling to the 2032 canvass."
-  },
-  "lineage": [],
-  "notes": "",
-  "registered": "2026-10-25T08:54:32Z"
+ "task": "task485",
+ "architecture": "v1",
+ "drawn": "2026-10-25",
+ "slot_note": "re-worlded from seed ET42 (an employer index from H-1B labour condition applications): the seed's world screened and set aside at the draw (Tried and rejected); the decision kept as a designation from a conformed register, the quantity a count the register only partly holds",
+ "domain": "survey-research-official-statistics",
+ "subdomain": "census-register-administrative-data-quality",
+ "niche": "a boundary commission's electoral review of a district's 23 wards, each ward's electors on the register to be published after the 2032 canvass forecast from six canvasses of the register at property level, the address register and the council's housing trajectory, where a new dwelling's electors join the register over several canvasses after it is completed",
+ "objective": "etl",
+ "shape": "10",
+ "decision_type": "designation_set",
+ "answer_unit": "set_of_items",
+ "answer": "Lorrimere West, Caldenstow Park, Quenbrook, Ebborby and Kettermere lie more than 10 per cent from the district's average electors per councillor on the 2032 forecast; the other 18 wards are within it.",
+ "answer_source": "task485/submission.md",
+ "gap": [
+  "time",
+  "population"
+ ],
+ "pattern": [
+  "E"
+ ],
+ "generators": [
+  "G13",
+  "G14",
+  "G12"
+ ],
+ "gate_g": "etl_conformance",
+ "calibration_form": "none",
+ "stump_strategy": "maturity_censoring",
+ "decisive_rule_filed": false,
+ "official_decoy": false,
+ "validated_decoy": false,
+ "context_artifact": "filed_standard",
+ "stump_class": "analytical",
+ "analyst_test": "A strong analyst conforms the 1 December 2025 register to wards, adds every dwelling first in use since and every dwelling the trajectory places before the 2032 register at the settled stock's electors per dwelling by type, keeps each existing dwelling at its 2025 count, and files Ebborby, Kettermere, Lorrimere North and Tibberfield, missing Lorrimere West, Caldenstow Park and Quenbrook.",
+ "domain_test": "The 2032 electorate is the register's coverage of each dwelling's electors by the number of canvasses since it was completed, the completeness-by-length-of-residence the electoral field measures, applied dwelling by dwelling to the 2032 canvass; swap electors for pupils on a school roll and the build-up disappears, because a pupil is on roll from the day of admission.",
+ "layer2_family": "field_method",
+ "layer2_pattern": "own:a new dwelling's electors join the register over the canvasses after completion",
+ "layer1": [
+  "the register in two election management system layouts (Electra's property reference before the March 2022 migration, UPRN after)",
+  "the 2022 register's polling districts on the 2014 scheme and the 2023 review's renamed districts with moved streets",
+  "franchise markers: attainers, parliamentary-only overseas electors on the register, local-only electors",
+  "address register records in alternative, provisional and historical logical status beside the approved record, buildings holding flats",
+  "building control's completion dates against the gazetteer's in-use dates; dwelling types in two vocabularies",
+  "the trajectory in monitoring years (April to March) against canvass years (register published 1 December), its 2026/27 column holding October to March",
+  "the old system's 2021 report exported as the register it held at the switch-off, with its notices of alteration"
+ ],
+ "stakeholder_role": "the Commission's review manager for the district",
+ "role_family": "policy_adviser",
+ "scoring_unit": "other",
+ "spine": {
+  "file": "ems_property_electorate_2022-2025.csv",
+  "rows": 251943,
+  "entity": "one property's elector counts by franchise on one published register",
+  "grain": "property x canvass",
+  "source": "synthetic"
+ },
+ "forum": "committee_or_panel",
+ "forcing_event": "vote_or_meeting",
+ "org_family": "government_agency",
+ "world": {
+  "geography": "an unnamed UK-like country with individual electoral registration and an annual canvass (the district, its commission and the people are invented)",
+  "currency": "GBP",
+  "org_type": "a national local government boundary commission",
+  "invented_names": [],
+  "people": [
+   "Megan Stewart",
+   "Donald Hayes"
+  ]
+ },
+ "deliverables": [
+  "ward_electorate_forecast_2032.xlsx",
+  "ward_variance_2032.png"
+ ],
+ "opening_move": "question-first",
+ "question_form": "which",
+ "driver": "A new unit's contribution to a register builds up over several annual rounds after the unit is created toward the level settled units hold, so a forecast that keeps each existing unit at its present count and adds the units still to come at the settled units' yield, or at the yield the newest units show today, misses both the recent units still building up and the units that will still be young at the horizon, while a uniform completeness factor moves nothing.",
+ "driver_concrete": "Each new dwelling's electors join the register over the canvasses after it comes into use, toward the settled stock's electors per dwelling by type; the 2032 forecast ages every dwelling in use since 2019 and every dwelling the trajectory places before the 2032 register to its number of canvasses on 1 December 2032.",
+ "stump": "The default path keeps each dwelling on the 1 December 2025 register at its 2025 count and adds the dwellings since and the trajectory's at the settled stock's electors per dwelling by type, filing Ebborby, Kettermere, Lorrimere North and Tibberfield; the estates completed from 2024 in Lorrimere West, Caldenstow Park and Quenbrook are still joining the register and the North Lorrimere and Tibberfield sites completing from 2030 will still be young in 2032, so aged to their canvasses five wards fail: Lorrimere West, Caldenstow Park, Quenbrook, Ebborby and Kettermere.",
+ "mechanism_source": "design_note",
+ "differentiation": {
+  "task235": "task235 judges an item lost only once its device has had its next chance to send, read from a real-time contact log; here nothing is lost or waiting to be sent: every dwelling is on the address register and its electors join the register over the canvasses after completion, so the forecast ages each dwelling, built or still to be built, to its canvass count at the horizon.",
+  "task445": "task445 completes holders whose reports have not arrived from each holder's last report and a class drift; here every register has been published and nothing is unreported: a dwelling's electors build up over canvasses toward a settled level, and the step ages dwellings that do not yet exist to their canvass count at the horizon.",
+  "task481": "task481 restates a count onto a new classification by conversion rates whose short window over-represents one kind of record; here no classification changes: a dwelling's electors build up over the canvasses after it is completed, and the forecast ages each dwelling to the 2032 canvass."
+ },
+ "lineage": [],
+ "notes": "",
+ "registered": "2026-10-25T08:54:32Z",
+ "architecture_spent": true
 }
