@@ -1,71 +1,55 @@
-# task121: the source behind the 2026 odor complaints in Harlow Falls
-
 ## Tags
 
-**Domain:** Physical & Environmental Sciences (pollution source attribution: residents' odor complaints against a valley's wind record).
+**Domain:** Marketing & Consumer Research (customer satisfaction driver analysis).
 **Analytical objective:** Root-Cause Analysis.
 
 ## 1. Final Recommendation
 
-**Ridgeway Organics' composting facility is behind the 2026 surge in odor complaints in Harlow Falls, and the district should take it to the hearing board for an order for abatement before the 2027 season.**
-
-It lay upwind of 69 of the season's 499 odor events, 42.6 more than the 26.4 that the wind at the same clock hours on the season's other days would have given (2.6 times); Kestrel Valley Rendering comes closest at 22.5 more (99 against 76.5). Not the Pine Gulch Landfill, upwind of the most events (210) only because the night drainage puts it upwind of the town on most nights, fewer than its 299.1 at those hours. Not the rendering plant on the all-hours comparison (2.69 times), which sets night-only winds against daytime hours when nobody reports an odor.
+**Crowding accounts for most of the fall: 3 of the 5.2 points by which the share of passengers satisfied overall fell, from 86.4% in spring 2025 to 81.2% in spring 2026. Fund the crowding remedy.**
+Measured on the conditions each surveyed passenger's own train ran under, journeys on a train carrying more passengers than seats rose from 7.2% to 16.8% and such a journey ends satisfied 32.5 points less often. Not on-board staffing, which the tracker's attribute ratings put first (2 points by derived importance) because passengers on a crowded train mark every aspect down; not 1 point with the ratings held as controls.
 
 ## 2. Critical Components
 
-1. The season's odor events, May to September 2026: **499**
-2. Ridgeway Organics lay upwind of **69** of them
-3. Kestrel Valley Rendering lay upwind of **99** of them
+1. Every questionnaire is linked through its batch to the train it was handed out on and the passenger's own stations, so each of the four drivers is the Schedule 7 (3.1) condition of that passenger's trip.
+2. Crowding: **7.2%** of journeys in spring 2025, **16.8%** in spring 2026, **32.5** points less likely satisfied when met, **3** points of the fall.
+3. On-board staffing **1**, punctuality **1**, fares **0** points: trains without staff rose from **9.3%** to **39.0%** of journeys but cost **4.3** points when met; late arrivals rose from **8.0%** to **12.5%**.
 
 ## 3. Step-by-Step Solution
 
-1. Formed the odor events in odor_complaints_export_2026-10-02.csv under cp14_odor_complaint_procedure_rev4.pdf (complaints from inside ukvaqmd_boundary.geojson, a report received twice counted once, a household's complaints within two hours of its first): 499 events, May 1 to September 30, 2026.
-2. Averaged hfs_met_5min_2026-01-01_2026-09-30.csv into hourly vector winds in standard time (hfs_station_readme.txt), leaving out the held-vane periods in hfs_station_maintenance_log_2026.csv: 60 events fell in calm hours and 2 in hours without a usable wind.
-3. Applied the procedure's upwind check from each event's geocoded household to each facility in odor_source_list_2026.xlsx at the event's hour: Pine Gulch Landfill upwind of 210 events, Kestrel Valley Rendering 99, Ridgeway Organics 69, Sutter Bend Mushroom Farms 43, Harlow Falls WPCP 10.
-4. Set each event against the same local clock hour on the season's other days with a usable wind at the same household, because complaints come only in the evening, at night and in the early morning while the valley wind turns with the clock: 299.1 expected for the landfill, 76.5 for Kestrel Valley Rendering, 26.4 for Ridgeway Organics.
-5. Took the events beyond expectation: Ridgeway Organics 42.6 (2.6 times), Kestrel Valley Rendering 22.5 (1.3 times), Sutter Bend Mushroom Farms 2.7, the landfill and the treatment plant below expectation.
-6. Compared against all hours of the season instead: Kestrel Valley Rendering leads at 2.69 times and Ridgeway Organics falls to 0.39, because the up-valley wind puts it upwind of the town all day, when nobody reports.
-7. Counted the complaints by the month the odor was noticed (each report once, app times that fall after their receipt converted from UTC, the 38 carried over from ocs_open_complaints_2025-12-31.csv dated to 2025) and the station's usable and calm hours by local month: 632 complaints, 3,607 usable and 202 calm hours.
-8. Ridgeway Organics is behind the surge, Kestrel Valley Rendering comes closest.
+1. Took the Partnership's letter (a) with Schedule 7 Part 3: a driver's points are those by which the tracker's weighted share satisfied (codes 4 and 5) would have fallen less had its condition met passengers as in spring 2025, the other three as they were.
+2. Linked each response's batch_id to the fieldwork log's train and the working timetable in force that day (Dec24 before 14 December 2025, Dec25 after; bank holidays on the SUN schedules), and coded the written-in stations to station codes.
+3. Crowded: the load-weigh passengers of the train's units (class 166 vehicles summed) on departure from any station of the passenger's trip above the standard seats of the units formed that day; late: arrival at the passenger's station five minutes or more after the timetable; unstaffed: no as-worked crew row for the train; fares: the flow's change for the ticket type in spring 2026.
+4. Fitted a weighted linear model of being satisfied on the four conditions and a spring 2026 term over both waves; each driver's points are minus its effect times the change in its weighted share of journeys.
+5. On time: the Dec25 trains timetabled each day of the four weeks ending 19 September 2026 (31 August on the SUN schedules), on time when arriving at the final destination less than five minutes late, an arrival after midnight timed against the evening's schedule, a train with no arrival there not on time.
+6. Staffed: of the trains with any movement row, those whose turn was Rostered or covered by an amendment, an amendment logged in the evening covering the next day's turn (its original_staff_ref).
+7. Standing: weekday trains due at Marlvale Central from 07:00 to 09:59 (31 August left out, the same either way), each formed unit's load-weigh rows at the station before matched by unit and the minute the train left (a class 166's three vehicle rows, each carrying the unit's figure since the May 2026 system move, read once), less the standard seats (the refreshed units at their seats after return), summed where positive.
+8. Crowding 3 points, on-board staffing 1, punctuality 1, fares 0; crowding accounts for most of the fall.
 
 ## 4. Deliverable Answers
 
-### odor_source_determination_2026.docx
+### satisfaction_fall_spring2026.xlsx
 
-1. The facility behind the surge: Ridgeway Organics composting facility
-2. The closest rival: Kestrel Valley Rendering
-3. The season's odor events each facility lay upwind of:
-   - Pine Gulch Landfill: 210
-   - Ridgeway Organics composting facility: 69
-   - Harlow Falls Water Pollution Control Plant: 10
-   - Kestrel Valley Rendering: 99
-   - Sutter Bend Mushroom Farms substrate wharf: 43
+1. Driver accounting for most of the fall: crowding
+2. Points of the fall it accounts for: 3
+3. Share of passengers satisfied overall: spring 2025 86.4%; spring 2026 81.2%
+4. Trains on time at their final destination, four weeks ending 19 September 2026 (per cent):
+   - Marlvale Main Line: 81.0
+   - Hollin Vale: 84.6
+   - Coastway: 85.0
+   - Pellow Branch: 87.4
+   - Corrington Link: 79.0
+5. Trains that ran with on-board staff, same weeks (per cent):
+   - Marlvale Main Line: 89.5
+   - Hollin Vale: 43.9
+   - Coastway: 47.6
+   - Pellow Branch: 43.5
+   - Corrington Link: 88.8
+6. Passengers standing on weekday arrivals at Marlvale Central from 07:00 to 09:59, same weeks:
+   - Marlvale Main Line: 1,720
+   - Hollin Vale: 829
+   - Coastway: 1,210
+   - Corrington Link: 3,021
 
-### odor_events_2026.xlsx
+### satisfaction_bridge_spring2026.png
 
-1. Complaints about odors noticed each month, from inside the district:
-   - January: 29
-   - February: 30
-   - March: 28
-   - April: 27
-   - May: 89
-   - June: 90
-   - July: 120
-   - August: 119
-   - September: 100
-2. Hours the Harlow Falls station recorded a usable wind:
-   - May: 743
-   - June: 669
-   - July: 740
-   - August: 738
-   - September: 717
-3. Hours the station recorded calm:
-   - May: 38
-   - June: 35
-   - July: 44
-   - August: 39
-   - September: 46
-
-### odor_events_by_wind_direction_2026.png
-
-1. Polar chart of the season's 437 odor events with a wind direction, by the sixteen compass sectors (N 82, NNE 23, NE 179, ENE 3, E 4, ESE 43, SE 0, SSE 0, S 1, SSW 4, SW 51, WSW 17, W 0, WNW 0, NW 0, NNW 30), each facility's bearing from the station marked, Ridgeway Organics picked out with the sectors within 30 degrees of it shaded, and the determination in the title.
+1. The fall in the share satisfied by driver (points): crowding 3, on-board staffing 1, punctuality 1, fares 0, not explained by the four 0; the fall 5.2.

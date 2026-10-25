@@ -1,21 +1,35 @@
 {
   "task": "task121",
   "owner": "sathay3012",
-  "status": "DESIGN",
+  "status": "PAUSED",
   "domain": "marketing-consumer-research",
   "objective": "root-cause",
-  "stage": 2,
-  "stage_name": "design",
+  "stage": 1,
+  "stage_name": "re-root",
   "updated": "2026-10-25",
-  "stump": "A competent analyst weights both spring waves of the operator's customer satisfaction tracker, regresses overall satisfaction on the nine attribute ratings and books the fall in the satisfied share to each attribute's derived importance times its fall, filing on-board staffing (the staff rating fell furthest); putting the journeys' conditions beside the ratings as controls leaves staffing on top, and comparing the service groups that lost seats in the autumn fleet cascade with the rest credits crowding with only about a third of the fall; the fall attributed through the conditions each surveyed journey ran under (load against seats on its busiest leg, lateness at the passenger's station, staff rostered, the ticket's January fare change) files crowding with most of it.",
+  "stump": "The tracker industry's derived importance on the ten attribute ratings files on-board staffing, 2 points, because passengers on a crowded train mark every aspect down; the ratings beside the linked conditions leave crowding at 1 point and the cascade comparison at none; the fall attributed through the conditions each surveyed journey ran under files crowding, 3 of the 5.2 points.",
   "architecture": 4,
   "loops": 0,
-  "precut": null,
-  "leak": null,
-  "duplicate_check": null,
-  "judge": null,
+  "precut": {
+    "exit": 0,
+    "date": "2026-10-25",
+    "checks": 51
+  },
+  "leak": {
+    "leak_py": "REVIEW (answered: the letter and Schedule 7 ask the question; group names beside numbers; generic vocabulary)",
+    "reader": "A crowding 4 (call 1 of 2, asks 15 of 20); B crowding 3 (call 2 of 2, asks 16 of 20): Gate F failed"
+  },
+  "duplicate_check": {
+    "heart": "WARN (repeat.gate_g against task303, repeat.question_form; differentiated against task107)",
+    "nearest": "task51 0.07"
+  },
+  "judge": {
+    "verdict": "DETERMINISTIC",
+    "disposition": "SEND_BACK (Gate H: decisive step read as rule application)",
+    "report": "determinism_check_report.md"
+  },
   "returned": [],
-  "resume": "Architecture 4 drawn 2026-10-25 (a train operator's satisfaction fall attributed through the conditions its passengers' journeys ran under, not the tracker's attribute ratings). Next: stage 2 design to precut exit 0 (default path, three rules, fork table, ladder, closure, asks, prompt), then the generator.",
+  "resume": "Architecture 4 spent at stage 4 on 2026-10-25 (both readers landed crowding by linking the conditions; judge SEND_BACK on Gate H). Re-root at the draw in a fresh world as architecture 5, Root-Cause Analysis: the decisive step must sit after any linkage the estimand implies; read DESIGN_NOTE.md's Tried and rejected first.",
   "approved": null,
   "delivered": null,
   "portal": null,
@@ -47,15 +61,14 @@
       "approved": "2026-10-10 (no author checkpoint in the flow; heart WARN)",
       "source_note": "analytical_tasks/06_root_cause/RC01_checkout-release-forward-cost-self-healing.md",
       "status": "FAILED_TO_STUMP"
-    }
+    },
+    "architecture_4": "v4 Marlvale Trains' satisfaction fall (driver analysis on ratings against linked journey conditions): built, spent at stage 4 2026-10-25, both readers on the call, judge SEND_BACK"
   },
   "build": {
-    "checks": 5839,
-    "fork_grid_cells": 24,
-    "verifier": "green",
+    "checks": "110 run, 0 failed",
+    "verifier": "PASS (22 figures)",
     "byte_identical": true,
-    "figures_check": "PASS 58 of 58",
-    "target_zip_bytes": 1102579
-  },
-  "retired_reason": "Third architecture spent: the determinism judge returned SEND_BACK on the re-judge after round 1's FIX_NOW; retired under build-pipeline's retirement rule, not submitted."
+    "figures_check": "45 of 45",
+    "cracker": "0 of 14 ask figures, pair ceiling 28.5"
+  }
 }

@@ -1,74 +1,61 @@
-# determinism-check report, task121, 2026-10-12 (pass 1, round 1)
+# task121 determinism check (architecture 4, stage 4, 2026-10-25)
 
-## Verdict
-NOT_DETERMINISTIC, on one supplementary answer only (odor_events_2026.xlsx ask 1, the monthly complaint counts). Taxonomy label: `underspecified_objective` (an unfiled counting convention), with Gate A (a false citation in solution step 1), Gate C (a surviving competing answer) and Gate E (the prompt does not pin the count unit). The main recommendation and every other graded figure reproduce and are forced. No SOLUTION_WRONG.
-**Disposition:** FIX_NOW
-**Stumping type:** mechanism: statistical_rigor, stumping_family: analytical_non_defect, surface_read_dependency: no, sole_data_defect: no
+One isolated judge thread on the cut pack (target.zip 2fbf1358), briefed by the determinism-judge agent; its verdict follows verbatim. Outcome: DETERMINISTIC, SEND_BACK on Gate H (the decisive step reads as rule application once the data are linked); with both scored readers on the call, architecture 4 is spent.
+
+
+- **Verdict:** DETERMINISTIC
+- **Disposition:** SEND_BACK, on Gate H only (decisive step is rule application and linkage). The determinism of every committed answer is clean. The repair rebuilds the decisive step, so a rerun is needed.
 
 ## Why
-The main call (Ridgeway Organics first, Kestrel Valley Rendering second) is forced: every reasonable hour-matched baseline puts Ridgeway first and Kestrel second, and the other answers need baselines the event-hour distribution rules out. The monthly "complaints logged ... noticed that month" rests on a rule no shipped file states: an app report received twice (same address, same noticed minute, sometimes a different contact_id) counts once. Solution step 1 cites cp14_odor_complaint_procedure_rev4.pdf for that rule, and the PDF contains no such sentence (its only relevant text is "Complaint. One person's report of an odor."). A careful expert can defend either of the other readings below, and all nine cells are exposed.
+Every committed answer reproduces from the shipped files. The letter (WRP/CM/2026/118 (a)) and Schedule 7 Part 3.1 fix the estimand: the four conditions of each passenger's own trip and the counterfactual "had journeys met that driver as in spring 2025, the other three as they were". All reasonable estimators land on the same whole-point answer, so there is no live fork on the main call or the asks. The weakness is Gate H: nothing analytical separates a careful solver from the golden once the data is linked and the definitions are read.
 
-## Recomputation ledger
-All values recomputed by the judge from the round-1 bundle.
-
-| Figure | Claimed | Judge recomputed | Reproduced |
+## Evidence (recomputed from the bundle)
+| Item | Golden | Mine | Reproduced |
 |---|---|---|---|
-| Events May to Sep (boundary filter, 4 outside, all Jan to Mar) | 441 | 441 (227 coordinate keys; golden says 229 households, address-string keys give 230, a unit-formatting difference) | Yes |
-| Legacy carry-over rows (OC-26-00007..00045, no 00031) | 38 excluded | 38, all Nov/Dec 2025 | Yes |
-| Monthly complaints Jan..Sep, golden convention | 22, 24, 23, 20, 73, 78, 106, 110, 86 (542) | Same only under the unfiled dedupe on address + noticed minute | Only under the unfiled convention |
-| Monthly complaints, dedupe only identical contact_id | n/a | 24, 25, 25, 21, 74, 81, 108, 112, 89 | Competing reading |
-| Monthly complaints, no dedupe (literal "complaints logged") | n/a | 24, 26, 25, 22, 75, 82, 109, 116, 89 | Competing reading |
-| App noticed times in UTC before the April release | Jan and Apr cells | Pattern confirmed from data (+7 or +8 h, then about 0 from May); no shipped file states it (fields file says "Pacific time"); moves two cells by 1 | Yes (data-derivable) |
-| Usable hours May..Sep | 743, 670, 740, 738, 717 (3,608) | same | Yes |
-| Calm hours May..Sep | 38, 35, 44, 39, 46 (202) | same | Yes |
-| Events in calm hours / no usable wind / with direction | 58 / 2 / 381 | same | Yes |
-| Upwind counts (landfill, Ridgeway, WPCP, Kestrel, Sutter Bend) | 164, 68, 7, 95, 41 | same | Yes |
-| Same-hour expected (landfill, Ridgeway, WPCP, Kestrel, Sutter Bend) | 259.5, 23.5, 15.5, 73.2, 38.1 | 259.5, 23.5, 15.6, 73.1, 38.1 | Yes, to rounding |
-| Excess / ratio, Ridgeway | +44.5 / 2.9x | +44.5 / 2.9x | Yes |
-| Excess / ratio, Kestrel | +21.8 / 1.3x | +21.9 / 1.3x | Yes, to rounding |
-| All-hours ratio, Kestrel / Ridgeway | 2.76x / 0.43x | same | Yes |
-| Sixteen-sector counts (PNG) | N 77, NNE 21, NE 140, ENE 1, E 4, ESE 41, SE 0, SSE 0, S 1, SSW 3, SW 51, WSW 16, W 0, WNW 0, NW 0, NNW 26 | same | Yes (4 events within 0.5 degree of a sector edge, minor) |
+| Weighted share satisfied (codes 4-5), 2025 / 2026 | 86.4 / 81.2 | 86.35 / 81.16 (fall 5.19) | yes |
+| Crowded journeys 2025 / 2026 (train-level load-weigh sum above formed seats, any departure on the passenger's trip) | 7.2 / 16.8 | 7.22 / 16.84 | yes |
+| Late 2025 / 2026 | 8.0 / 12.5 | 8.04 / 12.45 | yes |
+| Unstaffed 2025 / 2026 | 9.3 / 39.0 | 9.28 / 39.02 | yes |
+| Crowding effect | -32.5 pts | -32.45 (weighted linear, wave term) | yes |
+| Points: crowd / staffing / punctuality / fares | 3 / 1 / 1 / 0 | 3.12 / 1.27 / 0.65 / 0.01, residual 0.13 | yes |
+| On time (MAIN, VALE, COAST, BRANCH, LINK) | 81.0 / 84.6 / 85.0 / 87.4 / 79.0 | 81.03 / 84.61 / 85.01 / 87.40 / 78.98 | yes |
+| Staffed (same order) | 89.5 / 43.9 / 47.6 / 43.5 / 88.8 | 89.51 / 43.94 / 47.59 / 43.46 / 88.84 | yes |
+| Standing at MVC 07:00-09:59 (MAIN, VALE, COAST, LINK) | 1,720 / 829 / 1,210 / 3,021 | 1,720 / 829 / 1,210 / 3,021 | yes |
 
-## Competing answers that survived
-1. odor_events_2026.xlsx ask 1, complaints by month Jan..Sep. The golden vector (22, 24, 23, 20, 73, 78, 106, 110, 86) against "dedupe only identical contact_id" (24, 25, 25, 21, 74, 81, 108, 112, 89) and "no dedupe" (24, 26, 25, 22, 75, 82, 109, 116, 89). 26 app pairs share a household and the noticed minute; the second record has a truncated description and about 15 have a different contact_id. The shipped rule that was supposed to close it does not exist in the files: the PDF defines a complaint as "one person's report of an odor" and says nothing of a resend.
-2. Minor, optional: "usable wind" hours with calm inside the usable count (743 ...) against a disjoint reading (705, 636, 696, 699, 671). The prompt wording can be read either way.
-3. Minor: the app UTC times before the April release move Jan and Apr by 1 each if not converted; derivable from the data pattern.
+Linking steps that reproduce uniquely:
+- Station codes: each lowercased written name maps to exactly one code across the coded rows, so the uncoded rows resolve with no ambiguity.
+- Batches: all 1,588 fieldwork batches match a train in the movements by date and headcode.
+- Roster amendments: all 26 amendments match exactly one Sick or Vacant turn (original_staff_ref, same or next day), with 0 ambiguous. The 19 Sick/Vacant turns left unmatched are correctly unstaffed.
+- Standing: the load-weigh rows must be matched by unit and the departure minute, because a headcode runs twice a day. The 9 trains without a previous-station departure and the 14 missing-unit rows are trains that did not run, which gives 0 either way. Counting seats for missing units gives identical totals.
 
-Main call: none survives. Variants (baseline including the event day, plus or minus 1 hour window, event-free-days baseline, month-matched baseline) all give Ridgeway first (excess +41.3 to +61.4) and Kestrel second (+21.8 to +44.5).
+Estimator robustness for the points, all giving 3 / 1 / 1 / 0:
 
-## Spec gates
-Run against the round-1 bundle at /tmp/determinism-check-task121-r1/target/target/.
+| Estimator | Crowding | Staffing | Punctuality | Fares |
+|---|---|---|---|---|
+| Weighted linear, with or without wave term | 3.1 | 1.3 | 0.65 | 0.01 |
+| Logit standardised (g-computation) | 3.16 | 1.27 | 0.65 | 0.05 |
+| Unadjusted stratified | 3.07 | 0.64 | 0.69 | ~0 |
+| Separate per-wave fits | ~3 | ~1.3 | ~0.7-0.9 | ~0 |
 
-| Gate | Required | Actual | Pass |
-|---|---|---|---|
-| Files | 10 or more | 13 | Yes |
-| Formats | 3 or more | 5 (csv, xlsx, pdf, txt, geojson) | Yes |
-| Large file | 25,000 rows or more | hfs_met_5min_2026-01-01_2026-09-30.csv, 78,624 rows | Yes |
-| Distractors declared | 2 or more in metadata.json, none labelled in a file name | 3 (operator_monthly_reports_2026.xlsx, hfs_pm25_hourly_2026.csv, kestrel_county_airport_hourly_2026.csv); no file name labels one | Yes |
-| Distractors relevant, unused, ruled out | same world, none answers the question | Same world as the decision; none ranks the facilities or answers a graded quantity; the operator reports show process changes that do not decide the call; PM2.5 is particles not odor; the airport is outside the valley | Yes |
-| Deliverable count | 1 to 3 | 3 (docx, xlsx, png) | Yes |
-| Format family | none required | not applied | Yes |
-| Asks multi-dimensional | not stacked lookups | 9 complaint months, 5 usable-hour months, 5 calm-hour months, 5 upwind counts, a 16-sector chart | Yes |
-| Deliverables present | all named | all three in task121/golden/ | Yes |
-| Units and rounding stated | each ask | "Counts are whole numbers" in prompt.txt; hours and counts stated in the asks | Yes |
-| Prompt shape and 25-criteria floor | shape identifiable, 25 or more | shape 07; design note counts 34 criteria; prompt.txt is 922 characters, one paragraph, question first | Yes |
-| Realism | nothing reads as LLM generated | Judge saw district-system exports (mixed address case and suffixes, truncated app resubmissions, a migration batch, a maintenance log), coherent with the Oct 2, 2026 export; no provenance leak | Yes |
-| Determinism of every graded figure | one answer each | Fails on the monthly complaint counts (see above) | No |
+The punctuality and unadjusted-staffing values (0.64 to 0.69) sit near the 0.5 rounding line but stay above it under every variant tried. Rounding to the nearest whole point is licensed by the prompt.
 
-## Gate G reconciliation
-The judge's line is `mechanism: statistical_rigor, stumping_family: analytical_non_defect, surface_read_dependency: no, sole_data_defect: no`, and it passes Gate G. The card claims `stump_class: analytical`, `gate_g: decomposition_attribution`, `stump_strategy: causal_design`, and an `analyst_test` in which a correct cleaner still files the landfill by counting upwind events or the rendering plant by dividing by all-hours frequency. The two readings match: the judge names the diurnal confound (the upwind indicator confounded by the daily wind regime, fixed by an hour-matched baseline) as the difficulty, and says it would stump on perfectly clean data. The judge did not name any declared distractor as carrying the task. Design note and judge agree on the lures (landfill 164, Kestrel 2.76x, unconverted PST hour collapsing Ridgeway to 34). No mismatch.
+Competing answers tried:
+- Unit-level "any unit over its seats" crowding: 8.5 / 18.4 shares, 2.9 points. The answer is the same, and Schedule 7 3.1(a) says "the train".
+- Ratings-controlled model: crowding falls to about 0.9 pts and staffing 2 by derived importance. Neither is licensed, because the letter defines the points through journey conditions, not attribute ratings.
+- Topline Q5 ratings (staffing availability -14): this is a different estimand from the one filed, not a defensible alternative.
 
-## Gate H reconciliation
-The judge's line is `domain: pass, layers: pass, decisive_step: analytical`. The card's `domain_test` (odor source attribution from complaint geometry and the local wind record is the air agency's own analysis; the swap test fails for other fields) and `analyst_test` agree, and the design note's Layer 1 list (PST station against local time, held-vane and unplugged-monitor records, the legacy migration batch, app resends, UTC app times) matches the layers the judge named. The judge's one residual risk: the hour-matched baseline is named in no file, and the author should accept that as the intended method-selection stump, not a fork. Consistent with the card's `decisive_rule_filed: false`. No mismatch.
+## Files/Hygiene
+PASS. 19 files in 4 formats: csv x14, pdf x4, xlsx x1, txt x1. The files read as operational extracts: written-in station spellings, reissued headcodes, a closed archive replaced by a new rostering platform, a Dec24/Dec25 timetable change, and a vehicle-row system change. Distractors present: customer_contacts, delay_attribution, the topline PDF. No authoring or provenance leakage and no temporal incoherence found (field notes 23 Oct 2026, letter 2 Oct 2026, baseline ends 19 Sep 2026). Nothing exclusion-level.
 
-## Stump power (Gate F)
-Moderate to good. The lures are the raw upwind count (landfill 164, the largest and the obvious answer), the all-hours chance comparison (Kestrel 2.76x) and, behind both, the unconverted PST/PDT hour (Ridgeway falls to 34). A strong model that notices the complaints fall only between 18:00 and 08:59 and conditions on clock hour lands on Ridgeway, so some strong runs will pass. The Layer 1 hazards (held vane, unplugged monitor, duplicates, legacy batch, UTC app times) mainly stump the supplementary cells. The judge names no too-easy signal and recommends no hardening of the main call; if more is wanted, tighten the asks.
+## Stump power
+Moderate to low. Every honest estimator reproduces the golden, and unadjusted stratification gets 3 / 1 / 1 too. The only wrong route is the topline or Q5 ratings route (staffing availability -14, derived importance 2 for staffing), which the letter's counterfactual wording already rules out. The real difficulty is the heavy linkage and execution of the defined measures (about 17,800 responses to batches, trains, units, load-weigh, crew, roster, amendments). A strong model that links the data correctly passes, and one that does not is stumped on execution, not insight. Most natural lever: make the effect estimation itself decide the call, so that adjusting for the other three drivers or for service-group and time-band mix, or handling a selection effect in who responds, flips crowding against staffing. The wave-level confound should be real in the data and not defeated by an unadjusted split.
 
-## Findings, ranked
-1. odor_events_2026.xlsx ask 1 (the monthly complaints): the duplicate-report convention (an app report received twice counts once, keyed on household and noticed minute) is in no shipped file. File it in cp14_odor_complaint_procedure_rev4.pdf section 3 or complaint_export_fields.txt, or reword ask 1 as "distinct reports, counting an app report received twice once". The golden counts then stand.
-2. submission.md Step-by-Step Solution step 1 cites cp14_odor_complaint_procedure_rev4.pdf for the duplicate rule, and the PDF has no such sentence. Correct the citation to the file where the rule is actually filed.
-3. Optional: pin that "usable wind" hours include the calm hours, or ask for "usable and not calm", so 743, 670, 740, 738, 717 is the only reading.
-4. Optional: state in complaint_export_fields.txt that app noticed times before the April release are UTC (it moves only Jan and Apr by 1), or accept it as derivable from the data pattern.
+## Stumping type
+mechanism: etl_conformance / rule application (decision is the execution of filed Schedule 7 definitions on linked data); stumping_family: analytical_non_defect (borderline); surface_read_dependency: no (borderline); sole_data_defect: no. The topline and Q5 ratings are correct numbers, and the task asks for a different estimand, so this is not a banned flip. The risk is that it is weakly analytical (see Gate H).
 
-## Next action for the author
-File the duplicate-report convention in the pack (or reword ask 1) and correct the solution step 1 citation, changing nothing in the wind, the events or the main analysis, then rebuild and re-judge once. The design note and submission in the folder may already carry the author's repair; this report judges the round-1 bundle only.
+## Three rules
+domain: pass (the swap test fails to reproduce the same task: a key-driver bridge of a satisfaction tracker through journey-level conditions is customer-research work), layers: pass (Layer 1 is written-in station spellings, headcodes reissued across timetables, Dec24/Dec25 timetables, bank holidays on SUN schedules, vehicle versus unit load-weigh rows, rostering platform change with logged-evening amendments; Layer 2 is the effect estimation and the bridge), decisive_step: rule_application.
+The decisive work is linking and executing definitions that are already filed (Schedule 7 3.1, letter (a)). The easy route a strong analyst would take, a one-driver-at-a-time unadjusted standardisation on the correctly linked conditions, gives the same 3 / 1 / 1 / 0, so no analytical choice separates the solver from the golden. The wrong answers come only from skipping the linkage and using the topline ratings.
+
+## Fix
+prompt / input_files. Do not alter the baseline measures (they are clean and forced). Rebuild the main call so that estimator choice decides it: for example, respondent selection or sample mix that makes the unadjusted and the adjusted effects point to different drivers, or a driver whose effect is only visible with the right comparison group. Then re-run the Gate H test.

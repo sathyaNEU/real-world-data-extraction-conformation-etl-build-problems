@@ -1,326 +1,350 @@
-"""Assertions on the built pack: the rungs and their margins, the fork grid, every semantic fork row (SF1 to SF15),
-the clearances, the separation of the ask devices from the season's events, every ask stop and the cracker's and
-the mirror's sheets, the realism sweep and the input gates."""
-import collections
-import csv
+"""Generator checks for task121, run on every build: the linkage against the world, the call and its family, the
+ladder, the three rules (R1 to R3), each Layer 1 item mishandled, the semantic fork rows, the separation of the asks'
+devices from the call, the asks' devices against their stops, the input gates and the realism sweep."""
+from __future__ import annotations
+
 import datetime as dt
-import math
 import os
 import re
 
-import analysis as AN
-import asks as AK
-import core
-import docs as D
-import logic as L
-import pack as P
+import numpy as np
 
+import analysis as A
+import common as K
+import routes as RT
+
+FAILS = []
 N = [0]
 
 
-def ok(cond, msg):
+def ok(label, cond, detail=""):
     N[0] += 1
     if not cond:
-        raise AssertionError(msg)
+        FAILS.append(label)
+    print("%s %s %s" % ("PASS" if cond else "FAIL", label, detail))
 
 
-def margin(sc, order):
-    a, b = sc[order[0]], sc[order[1]]
-    return a / b if b > 0 else float("inf")
+def pdf_text(path):
+    import subprocess
+    try:
+        return subprocess.run(["pdftotext", "-layout", path, "-"], capture_output=True, text=True).stdout
+    except FileNotFoundError:
+        return ""
 
 
-def ladder(F):
-    O, E = F["count"]
-    order, sc = L.pick(O, E, "count")
-    ok(order[0] == "landfill" and margin(sc, order) >= 1.15, "R0: the landfill on counts, margin %.2f" % margin(sc, order))
-    ok(order.index("compost") >= 2, "R0: the compost facility third or lower on counts")
-    O1, E1 = F["all"]
-    order1, sc1 = L.pick(O1, E1, "ratio")
-    ok(order1[0] == "render" and margin(sc1, order1) >= 1.15, "R1: the rendering plant on the all-hours ratio")
-    ok(sc1["compost"] < 1.0 and order1.index("compost") >= 3, "R1: the compost facility at or below one, near the foot")
-    O3, E3 = F["same"]
-    for metric in ("excess", "ratio"):
-        o3, s3 = L.pick(O3, E3, metric)
-        ok(o3[0] == "compost" and o3[1] == "render", "R3 %s: compost, then rendering" % metric)
-        ok(margin(s3, o3) >= 1.5, "R3 %s margin %.2f" % (metric, margin(s3, o3)))
-        need = 1.15 if metric == "ratio" else 2.0
-        ok(s3[o3[1]] >= need * s3[o3[2]], "R3 %s: the rival clear of the third (%.2f against %.2f)"
-           % (metric, s3[o3[1]], s3[o3[2]]))
-    # R2: the description tally names the landfill
-    d = F["desc"]
-    ok(max(d, key=d.get) == "landfill" and d["landfill"] >= 1.5 * sorted(d.values())[-2], "R2: descriptions name the landfill")
-    # every same-hours variant converges (SF11)
-    for mode in ("same", "month", "pm1", "incl"):
-        O, E = F[mode]
-        for metric in ("excess", "ratio"):
-            o, s = L.pick(O, E, metric)
-            ok(o[:2] == ["compost", "render"] and s[o[0]] >= 1.3 * s[o[1]], "SF11 %s %s" % (mode, metric))
+def whole(x):
+    return int(np.floor(x + 0.5))
 
 
-def fork_grid(F):
-    met, held, evs = F["met"], F["held"], F["events"]
-    hw = {"vector": F["hw"], "scalar": AN.hourly(met, held, "scalar")}
-    cells = []
-    for mode in ("count", "all", "same"):
-        for center in (False, True):
-            for convert in (True, False):
-                for meth in ("vector", "scalar"):
-                    O, E = L.compare(evs, hw[meth], mode, convert=convert, center=center)
-                    metric = {"count": "count", "all": "ratio", "same": "excess"}[mode]
-                    o, s = L.pick(O, E, metric)
-                    cells.append((mode, center, convert, meth, o[0]))
-                    if mode == "same":
-                        ok(o[0] == "compost", "fork grid: same-hours cell %s" % str(cells[-1]))
-                    else:
-                        ok(o[0] in ("landfill", "render", "mush"), "fork grid: cell %s names %s" % (str(cells[-1][:4]), o[0]))
-    ok(len(cells) == 24, "fork grid of 24 cells")
-    return cells
+def run(task, b, fig, res):
+    target = os.path.join(task, "target")
+    w, sv = b["w"], b["sv"]
+    D, J, c = res["D"], res["J"], res["call"]
+    top, pts = c["top"], c["points"]
+    gold = (top, c["top_points"])
 
+    # ------------------------------------------------------------------ the linkage against the world
+    truth = {x["serial"]: x for x in sv.resp}
+    miss = 0
+    for r in J.itertuples():
+        x = truth[r.serial]
+        miss += (r.crowded != int(x["crowded"])) + (r.late != int(x["late"])) + (r.unstaffed != int(x["unstaffed"])) \
+            + (abs(r.fare - x["fare"]) > 1e-9)
+    ok("LINK every questionnaire's four conditions recovered from the shipped records", miss == 0,
+       "%d mismatches over %d" % (miss, len(J)))
+    for col in ("crowded", "late", "unstaffed"):
+        n = sum(getattr(r, col) != int(truth[r.serial][col]) for r in J.itertuples())
+        ok("LINK %s recovered for every questionnaire" % col, n == 0, str(n))
+    tw = {}
+    for wave in (2025, 2026):
+        xs = [x for x in sv.resp if x["wave"] == wave]
+        ww = np.array([x["weight"] for x in xs])
+        tw[wave] = {k: float(np.average([float(x[k]) for x in xs], weights=ww)) for k in ("crowded", "late", "unstaffed", "fare")}
+    true_pts = {nm: -K.EFFECT[col if col != "fare" else "fare"] * (tw[2026][col] - tw[2025][col]) *
+                (100 if col != "fare" else 100) for nm, col in
+                [("crowding", "crowded"), ("punctuality", "late"), ("on-board staffing", "unstaffed"), ("fares", "fare")]}
+    true_top = max(true_pts, key=true_pts.get)
+    ok("CALL the world's own effects name the golden driver", true_top == top, "%s %s" % (true_top, true_pts))
+    ok("CALL the world's own effects give the golden's whole points", whole(true_pts[top]) == c["top_points"],
+       "%.2f" % true_pts[top])
+    ok("CALL crowding, 3 points", gold == ("crowding", 3), str(gold))
+    second = sorted(pts.values())[-2]
+    ok("CALL the second driver sits 1.5 points or more below", pts[top] - second >= 1.5,
+       "%.2f against %.2f" % (pts[top], second))
 
-def semantic_forks(F):
-    met, held, evs, hw = F["met"], F["held"], F["events"], F["hw"]
-    rows, ocs, poly = F["rows"], F["ocs"], F["poly"]
-    O, E = F["count"]
-    ok(L.pick(O, E, "count")[0][0] == "landfill", "SF1: counting upwind events names the landfill")
-    ok("does not" in D.procedure_text() and "show which source did" in D.procedure_text(), "SF1: the procedure's caution")
-    ok("not a finding of its source" in D.procedure_text(), "SF2: descriptions are not findings")
-    # SF3: the season by received time gives the same call
-    gold = F["gold_rows"]
-    rr = [dict(household=r["household"], noticed=r["noticed_local"], lat=r["lat"], lon=r["lon"]) for r in gold
-          if r["noticed_local"] is not None and core.SEASON0 <= r["received_t"].date() <= core.SEASON1]
-    O3, E3 = L.compare(L.events(rr), hw, "same")
-    ok(L.pick(O3, E3)[0][0] == "compost", "SF3: received-time season, same call")
-    edge = [r for r in gold if r["noticed_local"] is not None and any(
-        abs((r["noticed_local"] - x).total_seconds()) < 6 * 3600 for x in (dt.datetime(2026, 5, 1), dt.datetime(2026, 10, 1)))]
-    ok(not edge, "SF3: no complaint within six hours of either season edge")
-    # SF4: complaints instead of events
-    cc = [dict(household=r["household"] + str(i), noticed=r["noticed_local"], lat=r["lat"], lon=r["lon"])
-          for i, r in enumerate(gold) if r["noticed_local"] is not None and core.in_season(r["noticed_local"])]
-    O4, E4 = L.compare(L.events(cc), hw, "same")
-    ok(L.pick(O4, E4)[0][0] == "compost", "SF4: complaints counted one by one, same call")
-    # SF5: the contact as the household
-    c5 = [dict(household=r["contact_id"], noticed=r["noticed_local"], lat=r["lat"], lon=r["lon"]) for r in gold
-          if r["noticed_local"] is not None and core.in_season(r["noticed_local"])]
-    O5, E5 = L.compare(L.events(c5), hw, "same")
-    ok(L.pick(O5, E5)[0][0] == "compost", "SF5: contact key, same call")
-    # SF6 to SF10 and SF15
-    for name, kw, h in (("SF6", dict(convert=False), hw), ("SF7", {}, AN.hourly(met, held, "scalar")),
-                        ("SF10", dict(bearing=core.bearing_planar), hw), ("SF9", dict(deg=22.5), hw),
-                        ("SF15", {}, AN.hourly(met, None))):
-        O6, E6 = L.compare(evs, h, "same", **kw)
-        ok(L.pick(O6, E6)[0][:2] == ["compost", "render"], "%s: same call and rival" % name)
-    # SF8: calm hours given their vector direction
-    hw8 = {k: (max(v[0], core.CALM_MS), v[1], v[2]) if v else None for k, v in hw.items()}
-    O8, E8 = L.compare(evs, hw8, "same")
-    ok(L.pick(O8, E8)[0][0] == "compost", "SF8: calms with a direction, same call")
-    O10, _ = L.compare(evs, hw, "count", bearing=core.bearing_planar)
-    ok(O10 == F["O"], "SF10: planar bearings give the same counts")
-    # SF5b: the household as the address string, its upper case, or the geocode; the window's edge either way
-    def ev_by(keyf, strict=False):
-        rr = [dict(household=keyf(r), noticed=r["noticed_local"], lat=r["lat"], lon=r["lon"]) for r in gold
-              if r["noticed_local"] is not None and core.in_season(r["noticed_local"])]
-        if strict:
-            save = core.EVENT_WINDOW
-            core.EVENT_WINDOW = save - dt.timedelta(microseconds=1)
-            out = L.events(rr)
-            core.EVENT_WINDOW = save
-            return out
-        return L.events(rr)
-    for nm, kf, st in (("raw", lambda r: r["address"], False), ("upper", lambda r: r["address"].upper().strip(), False),
-                       ("geocode", lambda r: (round(r["lat"], 6), round(r["lon"], 6)), False),
-                       ("strict window", lambda r: r["household"], True)):
-        e5 = ev_by(kf, st)
-        ok(len(e5) == F["n_events"] and L.compare(e5, hw, "count")[0] == F["O"], "SF5b %s: the same events" % nm)
-    # SF12: the rival on the call's footing
-    ok(F["rival"] == "render", "SF12: the closest rival is the rendering plant")
-    # SF13: five facilities in the list
-    ok(len(core.FKEYS) == 5, "SF13: five permitted sources")
-    # SF14: the airport is not the record: the procedure says so
-    ok("airport" in D.procedure_text() and "not used for the" in D.procedure_text(), "SF14: the procedure excludes the airport")
-    # SF15: held-vane hours give no source upwind either way at the events
-    hw_raw = AN.hourly(met, None)
-    for e in evs:
-        d, h = L.event_hour(e)
-        if (d, h) in held:
-            a, b = hw.get((d, h)), hw_raw.get((d, h))
-            ok((a is None or a[0] < core.CALM_MS) and (b is None or b[0] < core.CALM_MS), "SF15 event in a held hour")
+    # ------------------------------------------------------------------ the golden family
+    fam = RT.golden_family(J)
+    fam["logit"] = RT.logit_family(J)
+    fam["stratified"] = dict(RT.stratified(J), fares=pts["fares"])
+    for k, p in fam.items():
+        t = max(p, key=p.get)
+        ok("FAMILY %s files %s, %d points" % (k, t, whole(p[t])), (t, whole(p[t])) == gold,
+           str({d: round(v, 2) for d, v in p.items()}))
+        bridge = {d: whole(v) for d, v in p.items()}
+        ok("FAMILY %s gives the golden bridge's whole points" % k,
+           all(bridge[d] == fig["bridge_points"][d] for d in bridge), str(bridge))
+    lo = min(p["crowding"] for p in fam.values())
+    hi = max(p["crowding"] for p in fam.values())
+    ok("MARGIN the family's crowding points sit 0.25 or more inside 2.5 and 3.5", lo >= 2.75 and hi <= 3.25,
+       "%.2f to %.2f" % (lo, hi))
+    edges = [abs(v - np.floor(v) - 0.5) for p in fam.values() for v in p.values()]
+    ok("MARGIN every family member's bridge entry sits 0.03 or more from a half point", min(edges) >= 0.03,
+       "%.3f" % min(edges))
+    fall = c["shares"]["fall"]
+    ok("MARGIN the shares sit off a rounding edge (no exclusion applies to Q1, so every route reads the same rows)",
+       min(abs(v * 10 - np.floor(v * 10) - 0.5) for v in c["shares"]["overall"].values()) >= 0.01 and
+       int(J["q1"].isna().sum()) == 0 and len(J) == len(D["resp"]), str(c["shares"]["overall"]))
 
+    # ------------------------------------------------------------------ the ladder
+    for mp in RT.MAPS:
+        for outcome in ("q1", "sat"):
+            for imp in ("regression", "correlation"):
+                p = RT.kda(D, J, mapping=mp, outcome=outcome, importance=imp)
+                ok("LADDER R0 derived importance (%s items, %s, %s) files on-board staffing" % (mp, outcome, imp),
+                   RT.top(p) == "on-board staffing", str({k: round(v, 2) for k, v in p.items()}))
+    r0 = RT.kda(D, J)
+    ok("LADDER the default path (R0 as worded) ends on on-board staffing, 2 points",
+       (RT.top(r0), whole(r0[RT.top(r0)])) == ("on-board staffing", 2), str(r0))
+    r1 = RT.kitchen_sink(D, J)
+    ok("LADDER R1 the conditions with the ratings as controls credit crowding with 1 point",
+       (RT.top(r1), whole(r1[RT.top(r1)])) == ("crowding", 1), str({k: round(v, 2) for k, v in r1.items()}))
+    ok("LADDER R1 books on-board staffing below nothing (the ratings absorb it)", r1["on-board staffing"] < 0)
+    for mp in RT.MAPS:
+        p = RT.kitchen_sink(D, J, mapping=mp)
+        ok("LADDER R1 with the ratings booked to drivers (%s) stays off the golden" % mp,
+           (RT.top(p), whole(p[RT.top(p)])) != gold, str({k: round(v, 2) for k, v in p.items()}))
+    r2 = RT.cascade_did(J)
+    ok("LADDER R2 the cascade groups against the rest credit crowding with no whole point",
+       whole(r2["credited_to_crowding"]) == 0, str(r2))
+    largest = min(RT.ITEMS, key=lambda q: fig_rating_fall(D, J, q))
+    ok("LADDER the topline's largest fall is on-board staff availability (Q5F)", largest == "q5f", largest)
 
-def clearances(F):
-    for e in F["events"]:
-        d, h = L.event_hour(e)
-        w = F["hw"].get((d, h))
-        if w is None:
-            continue
-        ok(abs(w[0] - core.CALM_MS) >= 0.03, "calm clearance at %s" % ((d, h),))
-        if w[0] < core.CALM_MS:
-            continue
-        for f in core.FKEYS:
-            for bf in (core.bearing_deg, core.bearing_planar):
-                b = bf(e["lat"], e["lon"], core.FAC[f]["lat"], core.FAC[f]["lon"])
-                ok(abs(core.angdiff(w[1], b) - 30.0) >= 0.25 and abs(core.angdiff(w[1], b) - 22.5) >= 0.25,
-                   "edge clearance %s %s" % ((d, h), f))
-    for (d, h) in [(dt.date(2026, 4, 30), 23), (dt.date(2026, 5, 31), 23), (dt.date(2026, 6, 30), 23),
-                   (dt.date(2026, 7, 31), 23), (dt.date(2026, 8, 31), 23), (dt.date(2026, 9, 30), 23)]:
-        w = F["hw"].get((d, h))
-        ok(w is not None and w[0] >= core.CALM_MS, "month-opening hour %s usable and not calm" % d)
-
-
-def separation(F):
-    """The ask devices put no row into the season's events: the events are the same with the app resends, the
-    January carry-over, the app's UTC rows and the routed calls handled or not."""
-    rows, ocs, poly = F["rows"], F["ocs"], F["poly"]
-    base = [(e["household"], e["noticed"]) for e in F["events"]]
-    for kw in (dict(resends=False), dict(utc=False), dict(imported=False), dict(district=False), dict(key="household"),
-               dict(key="contact")):
-        ev = AN.season_events(AN.clean(rows, ocs, poly, **kw))
-        ok([(e["household"], e["noticed"]) for e in ev] == base, "separation: season events unchanged under %s" % kw)
-    imp = [r for r in rows if r["received_t"].date() == dt.date(2026, 1, 6)]
-    ok(len(imp) >= 38, "the carry-over is in the export")
-    ok(all(not core.in_season(r["noticed_t"]) for r in rows if r["channel"] == "App" and r["noticed_t"] > r["received_t"]),
-       "no UTC app row reads into the season")
-
-
-def asks(F):
-    gold_a, stops_a = AK.ask_a(F)
-    ok(gold_a == F["months"], "ask A golden")
-    ok(len(set(gold_a)) == 9, "ask A: no two months alike")
-    for k, v in stops_a.items():
-        ok(v != gold_a, "ask A stop differs: %s" % k)
-    gold_c, stops_c = AK.ask_c(F)
-    ok(gold_c == (F["usable"], F["calm"]), "ask C golden")
-    ok(len(set(gold_c[0])) == 5 and len(set(gold_c[1])) == 5, "ask C: no two months alike")
-    ok(stops_c["standard-time months"] == gold_c, "ask C: local and standard-time months converge")
-    ok(stops_c["held-vane records read as wind (the V flag trusted)"][0] != gold_c[0], "ask C: held-vane stop moves usable")
-    cr = AK.cracker(F)
-    gold = dict(A=gold_a, C_usable=gold_c[0], C_calm=gold_c[1])
-    kept = AK.kept(gold, cr)
-    ok(all(v == 0 for v in kept.values()), "cracker misses every ask cell: %s" % kept)
-    strong = AK.months_contact_dedup(F["rows"], F["poly"])
-    hits = sum(int(a == b) for a, b in zip(strong, gold_a))
-    ok(hits <= 1, "the stronger battery keeps at most one month (%d)" % hits)
-    for k in ("one report once by household and time noticed, carry-over and UTC handled",
-              "one report once by contact and time noticed, carry-over and UTC handled"):
-        h = sum(int(a == b) for a, b in zip(stops_a[k], gold_a))
-        ok(h == 0, "%s: misses every month (%d kept)" % (k, h))
-    return gold, cr, kept, hits
-
-
-def devices(F):
-    """The ask devices as the records carry them: every month has a re-registered resend and a household whose two
-    people gave the same time, both inside the district; a resend's text is a strict prefix of the report it
-    repeats; two people's reports never contain each other's words; nothing else shares a household and a time."""
-    gold = F["gold_rows"]
-    allin = [r for r in AN.clean(F["rows"], F["ocs"], F["poly"], resends=False) if r["noticed_local"] is not None]
-    groups = collections.defaultdict(list)
-    for r in allin:
-        groups[(r["household"], r["noticed"])].append(r)
-    rereg, same = collections.Counter(), collections.Counter()
-    for k, g in groups.items():
-        if len(g) < 2:
-            continue
-        g = sorted(g, key=lambda r: (r["received_t"], r["complaint_no"]))
-        first = g[0]["description"].strip().lower()
-        for r in g[1:]:
-            t = r["description"].strip().lower()
-            if t in first:
-                ok(len(t) < len(first) and first.startswith(t), "resend %s: a strict prefix" % r["complaint_no"])
-                ok(r["channel"] == "App" and g[0]["channel"] == "App", "resends come from the app")
-                if r["contact_id"] != g[0]["contact_id"]:
-                    rereg[r["noticed_local"].month] += 1
-            else:
-                ok(all(t not in x["description"].strip().lower() and x["description"].strip().lower() not in t
-                       for x in g if x is not r), "two people's words apart at %s" % r["complaint_no"])
-                same[r["noticed_local"].month] += 1
-    for m in range(1, 10):
-        ok(rereg[m] >= 1, "month %d has a resend under a new app registration" % m)
-        ok(same[m] >= 1, "month %d has two people in one household giving the same time" % m)
-    # a re-registered app keeps its new registration
-    regs = [r for r in F["rows"] if r["channel"] == "App"]
-    later = collections.Counter(r["contact_id"] for r in regs)
-    ok(sum(1 for c, n in later.items() if n >= 2) >= 20, "app registrations used more than once")
-    return rereg, same
-
-
-def realism(F, target):
-    ok(len(set(F["O"].values())) == 5, "facility counts all differ")
-    ok(F["n_events"] % 10 != 0, "season events not a round count")
-    txt = D.procedure_text() + D.README + D.FIELDS
-    for name in re.findall(r"\b(Erica Schmitt|Alyssa White|Jerome Reed|Roy Heath)\b", txt):
-        ok(name in ("Erica Schmitt", "Alyssa White", "Jerome Reed", "Roy Heath"), "personas from the card")
+    # ------------------------------------------------------------------ the three rules
+    head = open(os.path.join(target, K.FILES["responses"]), encoding="utf-8").readline().strip().split(",")
+    ok("R1 the responses ship the verdict, the ten ratings and the written-in journey, no condition",
+       "q1_overall" in head and all(q in head for q in RT.ITEMS) and
+       not [h for h in head if re.search(r"crowd|late|staff|seat|load|delay", h)], str(head))
+    heads = []
     for f in os.listdir(target):
-        if f.endswith((".csv", ".txt", ".geojson")):
-            s = open(os.path.join(target, f), encoding="utf-8").read()
-            ok("\u2014" not in s and "\u2013" not in s, "no em or en dash in %s" % f)
-    ok("\u2014" not in txt and "\u2013" not in txt, "no dash in documents")
-    with open(os.path.join(target, P.FILES["complaints"]), encoding="utf-8") as f:
-        rows = list(csv.DictReader(f))
-    last = max(dt.datetime.strptime(r["received"], "%Y-%m-%d %H:%M") for r in rows)
-    ok(last <= core.EXPORT, "nothing in the export after the export")
-    descs = collections.Counter(r["description"] for r in rows)
-    ok(max(descs.values()) / len(rows) < 0.03, "no description dominates the log (%d)" % max(descs.values()))
-    ok(len(descs) >= 0.6 * len(rows), "descriptions mostly the complainant's own (%d of %d)" % (len(descs), len(rows)))
-    ok(len({r["contact_id"] for r in rows}) > 200, "many contacts")
-    per = collections.Counter(r["contact_id"] for r in rows)
-    mid = sum(1 for n in per.values() if 3 <= n <= 25)
-    ok(mid >= 5, "contacts between the one-off and the nightly (%d)" % mid)
-    pre = collections.Counter(c[:4] for c in per)
-    ok(max(pre.values()) / len(per) < 0.9 and len(pre) <= 4, "contact numbers run in one sequence")
-    # the maintenance log: no audit while the monitor was out, every audit says the vane was held
-    with open(os.path.join(target, P.FILES["maint"]), encoding="utf-8") as f:
-        mrows = list(csv.DictReader(f))
-    for r in mrows:
-        if r["work"].lower().startswith("monthly"):
-            ok("held" in r["work"].lower(), "audit wording names the held vane")
-            day = dt.date.fromisoformat(r["date"])
-            ok(not (dt.date(2026, 6, 9) <= day <= dt.date(2026, 6, 11)), "no audit while the monitor was out")
-    # the boundary: no complaint within 50 m of the line
-    poly = F["poly"]
-    for r in rows:
-        lat, lon = float(r["latitude"]), float(r["longitude"])
-        dmin = min(_seg_km(lat, lon, poly[i], poly[(i + 1) % len(poly)]) for i in range(len(poly)))
-        ok(dmin >= 0.05, "complaint %s %.3f km from the boundary" % (r["complaint_no"], dmin))
+        if f.endswith(".csv"):
+            heads += open(os.path.join(target, f), encoding="utf-8").readline().strip().split(",")
+    ok("R1 no shipped column holds a driver's points, an effect or a respondent's condition",
+       not [h for h in heads if re.search(r"crowded|importance|effect|driver|points|standing", h)], "")
+    for lbl, kw in (("lateness at the train's destination", dict(late_at="destination")),
+                    ("the whole run's busiest leg", dict(legs="run")),
+                    ("coded stations only (written-in names dropped)", dict(codes_only=True))):
+        cc = A.call(A.journeys(D, **kw))
+        ok("R2 Layer 1: %s leaves the call" % lbl, (cc["top"], cc["top_points"]) == gold,
+           "%s %d" % (cc["top"], cc["top_points"]))
+    for lbl, kw in (("the leading unit's seats only", dict(seats_by="lead")),
+                    ("one vehicle per class 166", dict(vehicles="first"))):
+        cc = A.call(A.journeys(D, **kw))
+        ok("R2 Layer 1: %s keeps crowding on top, the points move" % lbl,
+           cc["top"] == top and cc["top_points"] != c["top_points"], "%s %d" % (cc["top"], cc["top_points"]))
+    ok("R3a analyst test: every rule read, the tracker's driver analysis files on-board staffing",
+       RT.top(r0) == "on-board staffing" and top != "on-board staffing")
+    ok("R3b the decisive step alone (the conditions, no ratings) files the golden by every family member",
+       all(max(p, key=p.get) == top for p in fam.values()))
+    ok("R3b the conditions beside the ratings (R1) and the cascade comparison (R2) stay off the golden",
+       whole(r1[RT.top(r1)]) != c["top_points"] and whole(r2["credited_to_crowding"]) != c["top_points"])
+    docs = "".join(pdf_text(os.path.join(target, K.FILES[k])) for k in ("technote", "topline", "requirement", "standards"))
+    ok("R3c no document names an importance, a halo, a driver analysis or a driver's share of the fall",
+       not re.search(r"importance|halo|key driver|driver analysis|derived|share of the fall", docs, re.I))
+    ok("R3c the requirement files the counterfactual, never a method",
+       "would have fallen less had passengers' journeys met that driver as they did in spring 2025" in
+       re.sub(r"\s+", " ", docs) and not re.search(r"regress|model|weighted least", docs, re.I))
+    ok("R3c the topline reports the ratings without ranking the drivers",
+       "accounts for" not in pdf_text(os.path.join(target, K.FILES["topline"])))
 
+    # ------------------------------------------------------------------ semantic fork rows
+    flat = re.sub(r"\s+", " ", docs)
+    ok("SF1 satisfied is codes 4 and 5 (technical note 6)", "codes 4 and 5" in flat)
+    ok("SF2 the share is weighted, of those who answered (technical note 5 and 6; letter)",
+       "All results the agency reports are weighted" in flat and "of those who answered the question" in flat
+       and "as the tracker reports it" in flat)
+    cc = A.call(A.journeys(D, late_at="destination"))
+    ok("SF3 lateness at the passenger's station (3.1(b)) or the destination, same call",
+       "at the passenger's station five minutes or more" in flat and (cc["top"], cc["top_points"]) == gold)
+    cc = A.call(A.journeys(D, legs="run"))
+    ok("SF4 crowding on any leg of the journey (3.1(a)) or the run's busiest leg, same call",
+       "between any two consecutive stations of the passenger's journey" in flat and
+       (cc["top"], cc["top_points"]) == gold)
+    ok("SF5 seats are the standard seats of the units formed (3.1(a), 2.3); the units carry no first class",
+       "standard-class seats" in flat and set(D["units"]["Standard seats"]) <= {116, 138, 232})
+    ok("SF6 no as-worked row is a train without on-board staff (field notes)",
+       "One row per train worked by a member of on-board staff" in open(os.path.join(target, K.FILES["dictionary"])).read())
+    ok("SF7 fares: the ticket type's change on the flow, nothing in spring 2025 (3.1(d))",
+       "the change, in per cent, in the price of the passenger's ticket" in flat)
+    ok("SF8 pooled, per-wave or logit effects, same call and bridge",
+       all(max(p, key=p.get) == top for k, p in fam.items()))
+    ok("SF9 service group and time band held or not, same call", max(fam["pooled+controls"], key=fam["pooled+controls"].get) == top)
+    ok("SF10 the other three as they were: additive effects, the order of the drivers moves nothing",
+       abs(sum(pts.values()) + c["unexplained"] - fall) < 1e-9)
+    ok("SF11 a blank Q1 leaves the base (technical note 6); none blank", int(J["q1"].isna().sum()) == 0)
+    gf = [d for d in K.BANK_HOLIDAYS if d in K.WINDOWS["w2026"]]
+    nb = int(D["field"]["fieldwork_date"].isin([d.isoformat() for d in gf]).sum())
+    ok("SF12 Good Friday and Easter Monday 2026 run the Sunday schedules (field notes); their batches link",
+       nb > 0 and "Bank holidays run the SUN schedules" in open(os.path.join(target, K.FILES["dictionary"])).read(),
+       str(nb))
+    ok("SF13 every respondent's stations lie on their train's calling pattern, the boarding one first",
+       bool((J["board"] != J["alight"]).all()) and len(J) == len(D["resp"]))
+    ok("SF14 points to the nearest whole point, shares to one decimal (prompt); the bridge rows rounded alone",
+       fig["call"]["points"] == whole(pts[top]))
+    st_bh, n_bh = A.ask_standing(D, bank_holiday=True)
+    st, n_st = A.ask_standing(D)
+    ok("SF15 Bank Holiday Monday's Sunday trains read as a weekday's or not, the same standing",
+       st_bh == st and n_bh != n_st, "%s / %s" % (n_bh, n_st))
+    ok("SF16 the day's trains on the bank holiday are the Sunday schedules (field notes)",
+       A.ask_ontime(D, days_of=A.calendar_days)[0] != res["ontime"])
+    am = D["amend"]
+    ro = {(r.roster_date, r.diagram): r for r in D["roster"].itertuples()}
+    good = 0
+    for r in am.itertuples():
+        day = dt.date.fromisoformat(r.amend_date)
+        if A.mins(r.logged) >= 12 * 60:
+            day += dt.timedelta(days=1)
+        t = ro.get((day.isoformat(), r.diagram))
+        same = ro.get((r.amend_date, r.diagram))
+        orig = "" if not isinstance(r.original_staff_ref, str) else r.original_staff_ref
+        fits = t is not None and t.status in ("Sick", "Vacant") and (orig == (t.staff_ref if isinstance(t.staff_ref, str) else ""))
+        if A.mins(r.logged) >= 12 * 60:
+            fits = fits and (same is None or same.status == "Rostered" or
+                             (isinstance(same.staff_ref, str) and same.staff_ref != orig))
+        good += fits
+    ok("SF17 every amendment fits exactly one turn: the morning's that day, the evening's the next day",
+       good == len(am), "%d of %d" % (good, len(am)))
+    ok("SF18 an arrival after midnight is the train's run date (field notes: a train is its headcode on its run date)",
+       "train is its train identity (headcode) on its run date" in open(os.path.join(target, K.FILES["dictionary"])).read())
 
-def _seg_km(lat, lon, a, b):
-    kx = 111.0 * math.cos(math.radians(lat))
-    px, py = (lon - a[1]) * kx, (lat - a[0]) * 111.0
-    bx, by = (b[1] - a[1]) * kx, (b[0] - a[0]) * 111.0
-    t = max(0.0, min(1.0, (px * bx + py * by) / (bx * bx + by * by)))
-    return math.hypot(px - t * bx, py - t * by)
+    # ------------------------------------------------------------------ separation of the asks from the call
+    mv = D["mv"]
+    arrj = {(r.run_date, r.train_uid, r.station): (r.wtt_time, r.recorded_time) for r in mv[mv["event_type"] == "ARRIVAL"].itertuples()}
+    fw = D["field"].set_index("batch_id")
+    cross = 0
+    tr = A.train_index(D)
+    for r in J.itertuples():
+        b_ = fw.loc[D["resp"].set_index("serial").loc[r.serial, "batch_id"]]
+        d = b_["fieldwork_date"]
+        t = tr[(A.which_tt(d), b_["train_headcode"], A.days_label(d), b_["origin_station"], b_["origin_dep"])]
+        pl, ac = arrj[(d, t["uid"], r.alight)]
+        cross += abs(A.mins(ac) - A.mins(pl)) > 600
+    ok("SEP no surveyed journey's arrival crosses midnight", cross == 0, str(cross))
+    late_uids = {t["uid"] for t in w.tt["Dec24"].trains + w.tt["Dec25"].trains if t["calls"][-1][1] > 23 * 60 + 45}
+    sampled = {bb["uid"] for bb in sv.batches}
+    ok("SEP no fieldwork batch rode a train due after 23:45", not (late_uids & sampled), str(len(late_uids)))
+    ok("SEP the amendments and the roster cover the baseline weeks only",
+       D["amend"]["amend_date"].min() >= "2026-08-22" and D["roster"]["roster_date"].min() >= "2026-08-23")
+    refurb_first = min(dt.date.fromisoformat(str(x)) for x in D["mods"]["Out of service"])
+    ok("SEP the interior refresh began after the spring 2026 wave", refurb_first > K.WAVES[2026][1], str(refurb_first))
+    J2 = A.journeys(D)
+    ok("SEP the call reads no roster, amendment or modification (rebuilt without them, the same)",
+       A.call(J2)["points"] == pts)
 
+    # ------------------------------------------------------------------ the asks' devices
+    gon = res["ontime"]
+    for lbl, kw, need in (("clock times subtracted across midnight", dict(midnight=False), 5),
+                          ("the trains with movement rows as the base", dict(base="ran"), 5),
+                          ("the calendar's weekday on the bank holiday", dict(days_of=A.calendar_days), 5)):
+        v = A.ask_ontime(D, **kw)[0]
+        n = sum(round(v[g], 1) != round(gon[g], 1) for g in K.GROUP_ORDER)
+        ok("DEVICE on time: %s moves %d of 5 groups" % (lbl, n), n >= need, str({g: round(x, 1) for g, x in v.items()}))
+    gst = res["staffed"]
+    for lbl, kw, need in (("amendments read on their log date", dict(cover_by="date"), 4),
+                          ("amendments ignored", dict(cover_by=None), 5),
+                          ("only trains that reached their destination", dict(ran_by="arrived"), 3)):
+        v = A.ask_staffed(D, **kw)[0]
+        n = sum(round(v[g], 1) != round(gst[g], 1) for g in K.GROUP_ORDER)
+        ok("DEVICE staffed: %s moves %d of 5 groups" % (lbl, n), n >= need, str({g: round(x, 1) for g, x in v.items()}))
+    for lbl, kw, need in (("the rows under the train's headcode summed", dict(key="headcode"), 4),
+                          ("every class 166 vehicle row summed after the system move", dict(vehicles="sum"), 1),
+                          ("the register's seats without the modifications", dict(mods=False), 2),
+                          ("the leading unit's seats only", dict(seats_by="lead"), 3)):
+        v = A.ask_standing(D, **kw)[0]
+        n = sum(v[g] != st[g] for g in K.INTO_MVC)
+        ok("DEVICE standing: %s moves %d of 4 groups" % (lbl, n), n >= need, str(v))
+    crossing = sum(1 for d, uid, t in A.timetabled(D, A.latest_days())
+                   if (d, uid, t["calls"][-1]) in arrj and A.mins(arrj[(d, uid, t["calls"][-1])][1]) -
+                   A.mins(t["arr"][-1]) < -600)
+    ok("FAIR every late-evening arrival after midnight is a train due before it (no early arrival across)",
+       crossing > 0 and all(A.mins(t["arr"][-1]) >= 23 * 60 for d, uid, t in A.timetabled(D, A.latest_days())
+                            if (d, uid, t["calls"][-1]) in arrj and
+                            abs(A.mins(arrj[(d, uid, t["calls"][-1])][1]) - A.mins(t["arr"][-1])) > 600), str(crossing))
+    ok("SILENT the cover entries logged in the evening sit among the morning ones (no flag column)",
+       0 < int((am["logged"].map(A.mins) >= 720).sum()) < len(am) and list(am.columns) ==
+       ["amend_date", "diagram", "original_staff_ref", "cover_staff_ref", "reason", "logged"])
 
-def bins(F):
-    """The figures the write-up quotes sit clear of their rounding edges."""
-    for f in core.FKEYS:
-        for v in (F["E"][f], F["excess"][f], F["ratio"][f]):
-            ok(abs((v * 10) % 1 - 0.5) >= 0.08, "%s %.4f clear of its one-decimal edge" % (f, v))
-    for f in ("compost", "render"):
-        v = F["all"][0][f] / F["all"][1][f]
-        ok(abs((v * 100) % 1 - 0.5) >= 0.08, "%s all-hours ratio %.4f clear of its edge" % (f, v))
+    # ------------------------------------------------------------------ input gates
+    files = os.listdir(target)
+    ok("GATE ten or more files", len(files) >= 10, str(len(files)))
+    ok("GATE three or more formats", len({f.rsplit(".", 1)[1] for f in files}) >= 3,
+       str(sorted({f.rsplit(".", 1)[1] for f in files})))
+    ok("GATE a file of 25,000 rows or more", b["counts"]["movements"] >= 25000, str(b["counts"]["movements"]))
+    ok("GATE two or more distractors", len(K.DISTRACTORS) >= 2)
+    ok("GATE no file name names the stump", not [f for f in files if re.search(r"halo|driver|importance|link", f, re.I)])
 
-
-def gates(target, meta):
-    files = sorted(os.listdir(target))
-    ok(len(files) >= 10, "ten or more files")
-    ok(len({f.rsplit(".", 1)[1] for f in files}) >= 3, "three or more formats")
-    big = max(sum(1 for _ in open(os.path.join(target, f), encoding="utf-8")) - 1 for f in files if f.endswith(".csv"))
-    ok(big >= 25000, "a file of 25,000 rows")
-    ok(len(meta["distractor_files"]) >= 2, "two or more distractors")
+    # ------------------------------------------------------------------ realism sweep
+    text = ""
     for f in files:
-        ok("distractor" not in f.lower() and "answer" not in f.lower(), "no tell in file names")
+        if f.endswith((".csv", ".txt")):
+            text += open(os.path.join(target, f), encoding="utf-8").read()
+        elif f.endswith(".pdf"):
+            text += pdf_text(os.path.join(target, f))
+    ok("REAL no em dash in the pack", "—" not in text)
+    ok("REAL every persona named in the pack is drawn", all(p in text for p in
+                                                            (K.PEOPLE["contract"], K.PEOPLE["agency"],
+                                                             K.PEOPLE["authority"])))
+    ok("REAL the topline's overall shares are the golden's at whole per cents",
+       "%.0f%%" % c["shares"]["overall"][2025] in text and "%.0f%%" % c["shares"]["overall"][2026] in text)
+    ok("REAL no standing figure is a round hundred", all(v % 100 for v in st.values()), str(st))
+    lwr = D["lw"]
+    uid_of = {(r.run_date, r.headcode): r.train_uid for r in D["form"].itertuples()}
+    depm = {(r.run_date, r.train_uid, r.station): r.recorded_time for r in D["mv"][D["mv"]["event_type"] == "DEPARTURE"].itertuples()}
+    stale = [r for r in lwr.itertuples()
+             if depm.get((r.run_date, uid_of.get((r.run_date, r.headcode)), r.station)) != r.departed]
+    early = [r for r in stale if r.run_date < K.CREW_SYSTEM_MOVE.isoformat()]
+    trip = lwr[lwr["vehicle"].notna()].groupby(["run_date", "unit_no", "station", "departed"])["passengers_est"].agg(
+        ["nunique", "count", "max"]).reset_index()
+    move = K.CREW_SYSTEM_MOVE.isoformat()
+    before = trip[trip["run_date"] < move]
+    after = trip[trip["run_date"] >= move]
+    chance = int(((before["nunique"] == 1) & (before["max"] > 0)).sum())
+    ok("SEP the class 166 rows written three times sit after the May 2026 move; the waves' 166 rows split the unit",
+       len(after) > 0 and bool((after["nunique"] == 1).all()) and chance < 0.01 * len(before),
+       "%d departures after, all agreeing; %d of %d before agree by chance" % (len(after), chance, len(before)))
+    st_sum = A.ask_standing(D, vehicles="sum")[0]
+    ok("FAIR the class 166 units' figure read once reproduces the world's loads (the golden), summed it triples them",
+       st_sum["COAST"] > 3 * st["COAST"], "%d against %d" % (st_sum["COAST"], st["COAST"]))
+    ok("SEP load-weigh rows under another train's headcode sit after the May 2026 system move only",
+       len(stale) > 0 and not early, "%d rows, %d before" % (len(stale), len(early)))
+    ukey = {}
+    for r in lwr.itertuples():
+        ukey.setdefault((r.run_date, r.unit_no, r.station, r.departed), set()).add(r.headcode)
+    units_of = {}
+    for r in D["form"].itertuples():
+        units_of.setdefault((r.run_date, r.headcode), []).append(r.unit_no)
+    found = total = 0
+    for d, uid, t in A.timetabled(D, A.latest_days()):
+        day = dt.date.fromisoformat(d)
+        if t["calls"][-1] != "MVC" or (d, uid, t["calls"][-2]) not in depm or day.weekday() >= 5 or \
+                day in K.BANK_HOLIDAYS or not (7 * 60 <= A.mins(t["arr"][-1]) <= 9 * 60 + 59):
+            continue
+        for u in units_of.get((d, t["headcode"]), []):
+            total += 1
+            found += len(ukey.get((d, u, t["calls"][-2], depm[(d, uid, t["calls"][-2])]), ())) == 1
+    ok("FAIR every unit of every train into Marlvale Central has one load row at the station before it, by unit, "
+       "station and the minute the train left", found == total and total > 300, "%d of %d" % (found, total))
+    ok("REAL every sampled train ran (no batch on a cancelled train)",
+       all(r["cancel"] is None for r in w.runs if (r["date"], r["uid"]) in {(bb["date"], bb["uid"]) for bb in sv.batches}))
+    print("checks: %d run, %d failed%s" % (N[0], len(FAILS), (": " + "; ".join(FAILS)) if FAILS else ""))
+    return 1 if FAILS else 0
 
 
-def run(F, target, meta):
-    N[0] = 0
-    ladder(F)
-    cells = fork_grid(F)
-    semantic_forks(F)
-    clearances(F)
-    separation(F)
-    gold, cr, kept, hits = asks(F)
-    devices(F)
-    bins(F)
-    realism(F, target)
-    gates(target, meta)
-    return N[0], cells, gold, cr, kept, hits
+def fig_rating_fall(D, J, q):
+    M = RT.ratings(D, J)
+    j = RT.ITEMS.index(q)
+    x = M[:, j]
+    a = ~np.isnan(x)
+    w = J["weight"].values
+    wave = J["wave"].values
+    return np.average(x[a & (wave == 2026)], weights=w[a & (wave == 2026)]) - \
+        np.average(x[a & (wave == 2025)], weights=w[a & (wave == 2025)])

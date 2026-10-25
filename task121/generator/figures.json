@@ -1,99 +1,221 @@
 {
- "call": "The district should take Ridgeway Organics composting facility to the hearing board: its odor is behind the 2026 surge in odor complaints, and Kestrel Valley Rendering comes closest.",
- "call_facility": "Ridgeway Organics composting facility",
- "rival_facility": "Kestrel Valley Rendering",
- "n_events": "499",
- "calm_events": "60",
- "nowind_events": "2",
- "upwind": {
-  "Pine Gulch Landfill": "210",
-  "Ridgeway Organics": "69",
-  "Harlow Falls WPCP": "10",
-  "Kestrel Valley Rendering": "99",
-  "Sutter Bend Mushroom Farms": "43"
+ "ask_on_time_pct": {
+  "BRANCH": 87.4,
+  "COAST": 85.0,
+  "LINK": 79.0,
+  "MAIN": 81.0,
+  "VALE": 84.6
  },
- "expected": {
-  "Pine Gulch Landfill": "299.1",
-  "Ridgeway Organics": "26.4",
-  "Harlow Falls WPCP": "17.8",
-  "Kestrel Valley Rendering": "76.5",
-  "Sutter Bend Mushroom Farms": "40.3"
+ "ask_on_time_trains": {
+  "BRANCH": 960,
+  "COAST": 1094,
+  "LINK": 1056,
+  "MAIN": 1112,
+  "VALE": 1150
  },
- "beyond": {
-  "Pine Gulch Landfill": "-89.1",
-  "Ridgeway Organics": "42.6",
-  "Harlow Falls WPCP": "-7.8",
-  "Kestrel Valley Rendering": "22.5",
-  "Sutter Bend Mushroom Farms": "2.7"
+ "ask_staffed_pct": {
+  "BRANCH": 43.5,
+  "COAST": 47.6,
+  "LINK": 88.8,
+  "MAIN": 89.5,
+  "VALE": 43.9
  },
- "times": {
-  "Pine Gulch Landfill": "0.7",
-  "Ridgeway Organics": "2.6",
-  "Harlow Falls WPCP": "0.6",
-  "Kestrel Valley Rendering": "1.3",
-  "Sutter Bend Mushroom Farms": "1.1"
+ "ask_staffed_trains": {
+  "BRANCH": 948,
+  "COAST": 1080,
+  "LINK": 1048,
+  "MAIN": 1106,
+  "VALE": 1138
  },
- "all_hours_ratio": {
-  "Pine Gulch Landfill": "1.02",
-  "Ridgeway Organics": "0.39",
-  "Harlow Falls WPCP": "0.35",
-  "Kestrel Valley Rendering": "2.69",
-  "Sutter Bend Mushroom Farms": "1.47"
+ "ask_standing": {
+  "COAST": 1210,
+  "LINK": 3021,
+  "MAIN": 1720,
+  "VALE": 829
  },
- "months": {
-  "January": "29",
-  "February": "30",
-  "March": "28",
-  "April": "27",
-  "May": "89",
-  "June": "90",
-  "July": "120",
-  "August": "119",
-  "September": "100"
+ "ask_standing_trains": {
+  "COAST": 74,
+  "LINK": 74,
+  "MAIN": 91,
+  "VALE": 94
  },
- "months_total": "632",
- "usable": {
-  "May": "743",
-  "June": "669",
-  "July": "740",
-  "August": "738",
-  "September": "717"
+ "bridge_exact": {
+  "crowding": 3.1234,
+  "fares": 0.0125,
+  "on-board staffing": 1.2674,
+  "punctuality": 0.6529
  },
- "calm": {
-  "May": "38",
-  "June": "35",
-  "July": "44",
-  "August": "39",
-  "September": "46"
+ "bridge_points": {
+  "crowding": 3,
+  "fares": 0,
+  "on-board staffing": 1,
+  "other": 0,
+  "punctuality": 1
  },
- "usable_total": "3,607",
- "calm_total": "202",
- "sectors": {
-  "N": "82",
-  "NNE": "23",
-  "NE": "179",
-  "ENE": "3",
-  "E": "4",
-  "ESE": "43",
-  "SE": "0",
-  "SSE": "0",
-  "S": "1",
-  "SSW": "4",
-  "SW": "51",
-  "WSW": "17",
-  "W": "0",
-  "WNW": "0",
-  "NW": "0",
-  "NNW": "30"
+ "call": {
+  "driver": "crowding",
+  "points": 3,
+  "sentence": "Crowding accounts for most of the fall: 3 of the 5.2 points by which the share of passengers satisfied overall fell, from 86.4% in spring 2025 to 81.2% in spring 2026"
  },
- "directional_events": "437",
- "carried_over": "38",
- "months_season": "5",
- "checks": 5839,
- "cracker_kept": {
-  "A": 0,
-  "C_usable": 0,
-  "C_calm": 0
+ "effects": {
+  "crowded": -0.3245,
+  "fare": -0.0012,
+  "late": -0.1481,
+  "unstaffed": -0.0426
  },
- "strong_battery_hits": 0
+ "evidence": {
+  "baseline_window": [
+   "2026-08-23",
+   "2026-09-19"
+  ],
+  "class_reporting_each_vehicle": 166,
+  "condition_share_pct": {
+   "crowded": {
+    "2025": 7.2,
+    "2026": 16.8
+   },
+   "late": {
+    "2025": 8.0,
+    "2026": 12.5
+   },
+   "unstaffed": {
+    "2025": 9.3,
+    "2026": 39.0
+   }
+  },
+  "default_path": {
+   "driver": "on-board staffing",
+   "points": 2
+  },
+  "effect_points_if_met": {
+   "crowded": 32.5,
+   "late": 14.8,
+   "unstaffed": 4.3
+  },
+  "late_minutes": 5,
+  "respondents": {
+   "2025": 8913,
+   "2026": 8860
+  },
+  "respondents_answering_q1": {
+   "2025": 8913,
+   "2026": 8860
+  },
+  "seats": {
+   "150/2": 116,
+   "158": 138,
+   "158/9": 126,
+   "166": 232
+  },
+  "standing_window": {
+   "from_hour": 7,
+   "to_hour": 9,
+   "to_minute": 59
+  }
+ },
+ "prevalence_change_points": {
+  "crowded": 9.62,
+  "fare": 0.1,
+  "late": 4.41,
+  "unstaffed": 29.74
+ },
+ "routes": {
+  "R0_derived_importance": {
+   "crowding": 0.39,
+   "fares": 0.36,
+   "on-board staffing": 2.09,
+   "other": 1.66,
+   "punctuality": 0.68
+  },
+  "R0_points": 2,
+  "R0_top": "on-board staffing",
+  "R1_conditions_with_ratings_as_controls": {
+   "crowding": 0.96,
+   "fares": 0.01,
+   "on-board staffing": -1.61,
+   "punctuality": 0.04
+  },
+  "R1_points": 1,
+  "R1_top": "crowding",
+  "R1_with_ratings_booked_to_drivers": {
+   "crowding": 1.33,
+   "fares": 0.29,
+   "on-board staffing": 0.92,
+   "other": 1.3,
+   "punctuality": 0.76
+  },
+  "R2_cascade_groups": {
+   "credited_to_crowding": 0.25,
+   "extra_fall": 0.6
+  },
+  "golden_family": {
+   "2025 effects": {
+    "crowding": 3.18,
+    "fares": 0.01,
+    "on-board staffing": 1.4,
+    "punctuality": 0.54
+   },
+   "2026 effects": {
+    "crowding": 3.1,
+    "fares": 0.01,
+    "on-board staffing": 1.23,
+    "punctuality": 0.73
+   },
+   "pooled": {
+    "crowding": 3.12,
+    "fares": 0.01,
+    "on-board staffing": 1.27,
+    "punctuality": 0.65
+   },
+   "pooled+controls": {
+    "crowding": 3.16,
+    "fares": 0.01,
+    "on-board staffing": 1.35,
+    "punctuality": 0.65
+   }
+  },
+  "logit": {
+   "crowding": 3.09,
+   "fares": 0.01,
+   "on-board staffing": 1.25,
+   "punctuality": 0.65
+  },
+  "stratified": {
+   "crowding": 3.12,
+   "on-board staffing": 1.22,
+   "punctuality": 0.8
+  },
+  "unweighted": {
+   "2025": 87.01,
+   "2026": 82.37,
+   "fall": 4.64
+  }
+ },
+ "shares": {
+  "by_group": {
+   "BRANCH": {
+    "spring_2025": 91.0,
+    "spring_2026": 86.4
+   },
+   "COAST": {
+    "spring_2025": 88.6,
+    "spring_2026": 80.4
+   },
+   "LINK": {
+    "spring_2025": 86.8,
+    "spring_2026": 79.9
+   },
+   "MAIN": {
+    "spring_2025": 83.4,
+    "spring_2026": 80.4
+   },
+   "VALE": {
+    "spring_2025": 86.7,
+    "spring_2026": 83.1
+   }
+  },
+  "fall_points": 5.2,
+  "spring_2025": 86.4,
+  "spring_2026": 81.2
+ }
 }

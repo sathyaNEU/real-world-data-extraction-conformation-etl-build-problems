@@ -21,6 +21,159 @@ Reopened 2026-10-25 at the author's direction: no number is retired. The slot is
    - task170 (a regional train operator, another analysis: drivers' data entry errors at ETCS start-up): the same kind of operator, a different decision and step, differentiated on the card.
 8. People, drawn with `guard.py names --geo GB --seed 121`: Naomi Stanley, Mohamed Hussain, Zoe Williamson (roles fixed at stage 2). Invented names: Marlvale Trains, the Marlvale network's towns and stations, the tracker's research agency.
 
+## Default path
+
+1. Read the Partnership's letter (wrp_recovery_plan_requirement_2026.pdf): the plan states which of the four Schedule 7 drivers accounts for most of the fall in the share satisfied between the spring waves, and by how many points; the tracker's technical note and topline give the share (weighted, codes 4 and 5) at 86% and 81% and every aspect rated lower, staff availability furthest.
+2. Run the tracker industry's driver analysis on the responses file, which holds each respondent's verdict and ten attribute ratings: overall satisfaction regressed on the ten ratings (weighted, complete answers), each aspect's derived importance times the change in its mean rating, the fall shared out in proportion.
+3. Book each aspect to the driver its wording names (punctuality and the scheduled time to punctuality, the seating's comfort to crowding, the two staff items to on-board staffing, value for money to fares, the rest to none): on-board staffing 2.09 points, punctuality 0.68, crowding 0.39, fares 0.36, aspects outside the four 1.66.
+4. Take the largest driver and round to a whole point.
+
+Ends on: on-board staffing, 2 points.
+
+Golden: crowding, 3 points.
+
+## Stump sentence
+
+The default path runs the tracker industry's own driver analysis on the attribute ratings and ends on on-board staffing, 2 points, because a passenger's ratings move with their overall verdict: the passengers whose train carried more people than seats (7.2% of journeys in spring 2025, 16.8% in spring 2026) are 32.5 points less likely to be satisfied and mark down every aspect they are asked about, the staff items most, and the tracker never asks whether they had a seat. Measured on the conditions each surveyed journey actually ran under (the load-weigh passengers against the seats of the units formed on each leg of the passenger's own trip, arrival at their station, the train's crew, the ticket's fare change), the fall is crowding's: 3 points, on-board staffing 1, punctuality 1, fares 0. Putting the ratings beside the conditions as controls leaves crowding 1 point (the ratings absorb the verdict), and comparing the groups that lost their class 166s with the rest credits crowding with nothing.
+
+## Three rules
+
+Task type: Marketing & Consumer Research, `customer-satisfaction-driver-analysis`: a tracker's fall in overall satisfaction attributed to the service drivers behind it, with each response linked to the operational record of the service it rated; it serves Root-Cause Analysis (which driver caused most of the fall, and by how much).
+Domain test: the deciding quantity is each driver's points of the fall in the weighted share satisfied, the change in the share of journeys meeting the driver times its effect on the chance of being satisfied, estimated from the responses linked to the conditions their journeys ran under; the field's own estimator is linkage analysis (survey to operations) against its default, derived importance on attribute ratings, whose known bias is the halo of the overall verdict.
+Swap: rewritten with a hospital's nouns ("which of waiting time, ward noise, staffing and parking accounts for most of the fall in patients satisfied"), the task keeps its shape only if the hospital links each survey to the patient's own wait and ward; the call turns on a satisfaction survey's halo and on joining each response to the train, units, legs and crew it rode, which a ranking of stated scores cannot do.
+Layer 1: the agency's response file with stations written in and only some coded (short forms, slips, codes), questionnaire batches identified by train, date, origin and departure in the fieldwork log against two working timetables whose headcodes were reissued at the December 2025 change, bank holidays on the Sunday schedules, class 166 load-weigh by vehicle and the two-car classes by unit, two-unit peak formations, the October 2025 fleet cascade, the as-worked crew archive (a row only for a train someone worked), fares by flow rounded to 10p; each written by the system named, none placed to be caught (R2 rows in `checks.py`).
+Layer 2: `estimand_identification`, own:attribute-ratings-halo-against-journey-conditions: the drivers' contributions must be measured on the conditions each response was made under, because the attribute ratings carry the respondent's overall verdict; derived importance on the ratings, or the ratings held as controls beside the conditions, books the fall to the rating that moves most with the verdict.
+Decisive step: attribute the fall through the conditions each respondent's journey ran under (linkage analysis), with the ratings neither the measure of a driver nor a control, because the ratings respond to the verdict they would be explaining.
+Not semantics: every field, code, unit and definition read correctly (Schedule 7's per-journey drivers, the technical note's satisfied codes and weights, the load-weigh grain, the crew archive, the fares) still leaves the analyst choosing how to measure each driver for each respondent, and the tracker's ratings are a per-respondent measure of every driver already in the file; nothing defines a rating as invalid, and the ratings route reads every field correctly.
+Not rule application: the letter files the estimand (the points by which the share satisfied would have fallen less had journeys met one driver as in spring 2025, the other three as they were) and Schedule 7 the conditions; nothing files how a driver's effect on satisfaction is estimated or what it is measured on. The enumerated family (derived importance by regression or correlation, on Q1 or on satisfied, under four item mappings; the conditions alone pooled, per wave, with group and band, logit, stratified; the conditions with the ratings as controls, alone or booked to drivers; the cascade comparison) spans on-board staffing 1 to 3 points, crowding 0 to 3; the standing family (the six constructions on the conditions alone) files crowding, 3 points, spread 3.09 to 3.18; what rules the rest out is that the ratings are made after and by the verdict, which no filed clause says.
+Analyst test: a strong analyst who reads every rule and runs the tracker industry's derived importance on the attribute ratings files on-board staffing, 2 points (and 1 to 3 points under every item mapping and importance measure); with the ratings beside the conditions as controls, crowding at 1 point; executed in `checks.py` (R3a, LADDER rows), where the conditions alone file the golden by every family member (R3b).
+Estimand: the letter (a): the points by which the share of passengers satisfied overall (as the tracker reports it: weighted, codes 4 and 5, of those who answered) would have fallen less between the spring 2025 and spring 2026 waves had passengers' journeys met the driver as they did in spring 2025, the other three as they were; the drivers are Schedule 7, 3.1's conditions of a passenger's journey.
+No decoy: nothing is planted to be caught: the topline reports the ratings the tracker always reports, ranks no driver and states no share of the fall; no memo, prior plan, agency analysis or stakeholder figure names a driver's points; the customer contacts and the delay attribution log are distractors that rank nothing.
+No certified replay: no certified or published figure carries a driver's points, an effect or a condition's share of journeys, so no method is recovered by reproducing one; the topline's whole-percent shares are the share itself.
+Lesson: a satisfaction fall is attributed through what each respondent's service actually was, not through their ratings of it, because the ratings carry the verdict being explained; no build on file attributes a survey outcome through linked operational conditions against a halo in the attribute ratings.
+
+## Readability screen
+
+| Rung | 1 Filed sentence | 2 Schema | 3 Reflex | 4 Control bench | 5 Hygiene | 6 Linear | Verdict |
+|---|---|---|---|---|---|---|---|
+| R0 derived importance on the ten ratings (the default path) | none: the letter names drivers, not ratings | q5a to q5j beside q1_overall | the tracker industry's key driver analysis | none | none | one regression and a product a rating | readable |
+| R1 the conditions with the ratings as controls | none | the ratings and the linked conditions in one file | control for everything measured | none | none | one regression | readable |
+| R2 the cascade groups against the rest | none | service_group, the fleet register's cascade notes | difference in differences on the groups the fleet change hit | none | none | four group-by means | readable |
+| R3 lateness at the destination, the run's busiest leg | 3.1 (b), 3.1 (a) file the passenger's station and legs | the train's movements and loads | the train as the unit | none | none | a max over the run | readable |
+| (decisive) the drivers measured on the conditions alone, no rating as measure or control | none: the letter files the counterfactual, Schedule 7 the conditions; nothing says the ratings carry the verdict | the ratings are per respondent and per driver, the same grain as the conditions | none: the field's default analysis reads the ratings | none: no shipped figure ties under either reading | none: the battery passes on both | a regression on four linked columns, once the ratings are seen to respond to the verdict | silent |
+
+## Semantic fork table
+
+| Id | Term or convention | Golden reading | Alternative | Call under it | Ruled out by |
+|---|---|---|---|---|---|
+| SF1 | satisfied | codes 4 and 5 of Q1 | codes 3 to 5 | another share | technical note 6 |
+| SF2 | the share | weighted, of those who answered | unweighted | another share (87.0, 82.4) | technical note 5 and 6; the letter (as the tracker reports it) |
+| SF3 | late | at the passenger's station, five minutes or more | at the train's destination | crowding, 3 | same call |
+| SF4 | crowded | more passengers than standard seats between any two consecutive stations of the passenger's trip | the run's busiest leg | crowding, 3 | same call |
+| SF5 | seats | standard seats of the units formed that day | the leading unit's | crowding, 2 | Schedule 7, 3.1 (a) and 2.3 (as formed); the formations file |
+| SF6 | unstaffed | no as-worked crew row for the train | none | none | the field notes (one row per train worked) |
+| SF7 | fares | the flow's change for the ticket type, spring 2026; none in spring 2025 | the ticket type's nominal change | crowding, 3 | Schedule 7, 3.1 (d) |
+| SF8 | the effect's construction | pooled weighted linear model with a wave term | per wave, logit, stratified | crowding, 3 | same call |
+| SF9 | controls | none | service group and time band | crowding, 3 | same call |
+| SF10 | the other three as they were | additive effects, order free | first-in or last-in | crowding, 3 | same call |
+| SF11 | a blank Q1 | out of the base | none blank | none | technical note 6 |
+| SF12 | Good Friday and Easter Monday 2026 | Sunday schedules | weekday schedules | the batches do not link | field notes |
+| SF13 | the passenger's stations | as written, coded when uncoded | dropped when uncoded | crowding, 3 | same call |
+| SF14 | rounding | shares to one decimal, points whole, each bridge row rounded alone | rounded to sum | the same call | the prompt |
+| SF15 | a weekday (standing) | Monday to Friday, the bank holiday's Sunday trains out | the bank holiday in | the same standing | same call (its trains stand none) |
+| SF16 | the day's timetable (on time) | the bank holiday's Sunday schedules | the calendar weekday's | other shares | field notes |
+| SF17 | a controller's amendment | covers the turn it names: logged in the morning that day's, in the evening the next day's | its log date's turn | other shares | the field notes (amend_date and logged are the log entry's), original_staff_ref, the turns' status |
+| SF18 | an arrival after midnight | the train's run date, timed against its schedule | clock minutes subtracted | other shares | field notes (a train is its headcode on its run date) |
+
+## Ladder
+
+| Rung | Construction | Call | What kills it |
+|---|---|---|---|
+| R0 | derived importance on the ten ratings, items booked by wording (default path) | on-board staffing, 2 (1 to 3 under every mapping and importance) | the ratings respond to the verdict |
+| R1 | the conditions with the ratings as controls | crowding, 1 (staffing -1.61) | as R0: the ratings absorb the verdict the conditions caused |
+| R1b | as R1, the ratings booked to drivers | crowding 1 or 2, or on-board staffing 2 | as R1 |
+| R2 | the cascade groups (Hollin Vale, Coastway) against the rest | crowding, 0 (0.25 of a 0.60 extra fall) | crowding rose on every group, the Main Line and Link with growth |
+| R3 | lateness at the destination, or the run's busiest leg | crowding, 3 | none: same call (SF3, SF4) |
+| golden | the conditions alone, pooled weighted linear model with a wave term | crowding, 3 (3.12; on-board staffing 1.27, punctuality 0.65, fares 0.01) | |
+
+The golden family files crowding, 3 points on every member: pooled 3.12, with group and band 3.16, spring 2025 effects 3.18, spring 2026 effects 3.10, logit 3.09, stratified 3.12; every bridge entry on every member rounds the same way. The world's own effects give crowding 2.98, 3 points. The two Layer 1 mishandlings that move the points (the leading unit's seats only, 2; one class 166 vehicle read for the unit, 4) keep crowding on top.
+
+## Closure table
+
+| # | Axis | Reading and closure |
+|---|---|---|
+| 1 | Population | every returned questionnaire of the two spring waves (Q1 answered by all) |
+| 2 | Unit of account | the respondent's journey; shares in per cent, points of the share |
+| 3 | Attribution window | the spring 2025 wave (3 March to 13 April 2025) against the spring 2026 wave (2 March to 12 April 2026) |
+| 4 | As-of dating | the agency's file as weighted and the operating extracts of 23 October 2026 |
+| 5 | Version basis | one response per serial; one timetable in force each day (Dec24 before 14 December 2025) |
+| 6 | Denominator | those who answered Q1, weighted (technical note 6) |
+| 7 | Weighting | the agency's weights, as shipped |
+| 8 | Window length | the waves' six weeks; the baseline's four weeks ending 19 September 2026 |
+| 9 | Boundary inclusivity | late at five minutes or more (3.1 (b)); crowded above the seats, not at them (3.1 (a)); on time under five minutes (2.1); 07:00 to 09:59 inclusive (2.3) |
+| 10 | Rounding path | points from unrounded effects and shares, each rounded once at the end; every family member 0.03 or more from a half point |
+| 11 | Tie-break | none needed: crowding leads the second driver by 1.86 points |
+| 12 | Maturity and censoring | both waves closed; questionnaires received within 28 days are all in the file |
+| 13 | Order of operations | conditions linked before the model; the model before the points |
+| 14 | Row order | none: sums and a regression |
+| 15 | Duplicate resolution | none needed: serials unique, one formation row a unit and train |
+| 16 | Identity normalisation | written-in stations coded to the station reference (codes as given, names and short forms matched) |
+| 17 | Netting against gross | none |
+| 18 | Dimensional units | passengers, seats, minutes, per cent of fare |
+| 19 | Code and status semantics | satisfied codes 4 and 5; 9 is no opinion (ratings only); the crew archive's rows are trains worked |
+| 20 | Integerisation | points to the nearest whole point; standing passengers whole |
+| 21 | Clause scope | the letter (a) and Schedule 7 Part 3 scope the call; Part 2 and the letter (c) the baselines |
+| 22 | Forward window contents | the plan funds the 2027 remedy; the call is the cause of a closed fall, retrospective by the letter's request, and the baselines are the four weeks it names |
+
+## Literal reader
+
+Executed word for word, the letter asks for the points by which the share satisfied would have fallen less had passengers' journeys met each driver as they did in spring 2025, the other three as they were, and Schedule 7 defines each driver as a condition of a passenger's journey. Everything in that sentence is computed from the records except one input: how much each condition moves the chance of a passenger being satisfied, which no record states. The responses carry the verdict and ten ratings; the operating records, once each questionnaire is linked through its batch to its train and the passenger's own stations, carry the four conditions. Any construction of the effect on the conditions alone (pooled with a wave term, per wave, with group and band, logit, stratified) files crowding at 3 points, and the generator's world does too. The ratings are not a reading of the drivers: they are answers given by passengers who have already reached the verdict being explained.
+
+## Oracles
+
+No shipped figure states a driver's points, an effect, an importance or the share of journeys meeting a condition, and nothing ranks the drivers. The topline reports the share at whole per cents and each rating's change, as the tracker always does; it ranks aspects, not drivers, and no figure in it ties only under the golden. The delay attribution log and the customer contacts are distractors that total nothing the call uses.
+
+## Ask sheet
+
+The asks are the plan's baselines the letter (c) requires: Schedule 7 Part 2's three measures for the four weeks ending 19 September 2026, by service group. They read the Dec25 timetable, the movements, the roster and amendments, the formations, the fleet register and the load-weigh of those four weeks, none of which the call opens (SEP rows in `checks.py`: no surveyed journey crosses midnight, no fieldwork batch rode a train due after 23:45, the roster and amendments cover the baseline only, the refresh began after the spring 2026 wave, and the load-weigh's changed rows sit after the May 2026 system move).
+
+**Ask A. Trains on time at their final destination, by service group, per cent to one decimal (5 figures).** Golden: Main Line 81.0, Hollin Vale 84.6, Coastway 85.0, Pellow Branch 87.4, Corrington Link 79.0. Primary (silent, D8 clocks): the last train of each group is due at its far end between 23:55 and 23:58, and the train describer records clock time only, so a late arrival after midnight subtracts to about minus 1,430 minutes and reads as on time (30 such arrivals in the four weeks); nothing flags them. Hazards (filed, seen): a train cancelled in full has no movement rows, so a base drawn from the movements leaves it out (2.1 counts it); 31 August, a bank holiday, runs the Sunday schedules. Stops: clock minutes subtracted 81.6, 85.0, 85.2, 87.5, 79.9; movement rows as the base 81.5, 85.5, 86.1, 88.5, 79.6; the calendar's Monday on 31 August 78.2, 81.3, 81.5, 84.3, 75.6.
+
+**Ask B. Trains that ran with on-board staff, by service group, per cent to one decimal (5 figures).** Golden: 89.5, 43.9, 47.6, 43.5, 88.8. Primary (silent, D8 the log date for the event date): the crew controller's amendments carry the date and time of the log entry, and 18 of the 26 were logged in the evening for the next day's turn (every vacancy, and sickness reported the night before); joined on their own date they cover the wrong day's turn, which is mostly already Rostered; the original_staff_ref and the turns' status place each one. Hazards: the Sick and Vacant turns uncovered; trains part-cancelled count as having run (2.2). Stops: amendments on their log date 85.7, 40.2, 46.3, 40.1, 85.2; amendments ignored 82.9, 39.2, 45.0, 40.1, 84.8; only trains that reached their destination 89.5, 43.8, 47.5, 43.3, 88.8.
+
+**Ask C. Passengers standing on weekday arrivals at Marlvale Central from 07:00 to 09:59, by service group, whole passengers (4 figures).** Golden: Main Line 1,720, Hollin Vale 829, Coastway 1,210, Corrington Link 3,021. Primary (silent, D7 the true key elsewhere): from the fleet system's move on 17 May 2026 a unit attached to strengthen a peak train reports, for every train of its strengthening turn, the headcode of the first, so summing the load-weigh under each train's headcode adds a later train's second unit to the first and leaves the later one with half its passengers; each unit's rows are found by the unit, the station and the minute the train left. Second primary (silent, D6 an event's quantity on every line it covers): from the same move a class 166 writes the unit's estimate on each of its three vehicle rows, so summing a 166's vehicles, as the field notes' "report each vehicle" invites, triples it (the waves' 166 rows split the unit, so the call is untouched). Hazards: the four refreshed 158s at 126 seats from their return to traffic (the Modifications sheet); two-unit formations; Bank Holiday Monday's Sunday trains stand none. Stops: under the train's headcode 8,932, 11,080, 19,896, 9,869; every 166 vehicle row summed 1,720, 829, 19,896, 3,021; the register's seats without the modifications 1,575, 829, 1,210, 2,889; the leading unit's seats only 10,277, 8,662, 1,210, 9,573.
+
+**Separation.** Zero device rows reach the call: the after-midnight arrivals belong to trains no batch rode (due after 23:45), the amendments and roster to the baseline weeks, the headcode and vehicle rows to dates after 17 May 2026, the refreshed seats to units out of service from June 2026 (all asserted).
+
+**Cracker sheet.** The response that landed the call, ran the hygiene battery (key uniqueness, exact and near duplicates, unmatched joins, fan-out) and executed every filed rule it points at (2.1's timetable base, the bank holiday's Sunday schedules, 2.2's trains that ran, the amendments, the Modifications sheet, a class 166's vehicles summed as the field notes describe):
+
+| Ask row | What the cracker does | Against the golden | Cracker |
+|---|---|---|---|
+| A, on time, five groups | arrival minus timetable as clock times | every group off, +0.1 to +0.9 | miss |
+| B, staffed, five groups | amendments joined on their own date | every group off, -1.3 to -3.8 | miss |
+| C, standing, four groups | load-weigh summed under the train's headcode, vehicles summed | every group off, four to sixteen times | miss |
+
+**Mirror sheet.** The response on R0 reads the asks as the cracker does (they consume nothing the call's construction produces), so its ask rows miss the same way.
+
+Mirror leakage: 0 per cent of ask weight (every ask row misses for the mirror as for the cracker).
+
+Pair ceiling: 28.5 (the one-cracker case: (38 + 7 + 0 + 5 + 7 + 0) / 2).
+
+Measured by: generator/cracker.py on the cut pack.
+
+## Build record
+
+- 2026-10-25: stage 3 green. `checks.py` 110 run, 0 failed; `verify.py` PASS (22 figures, its own code path); two builds byte-identical; `figures_check.py` 45 of 45; 19 files in four formats (csv, pdf, xlsx, txt), the movements file 227,728 rows, two distractors; `precut.py` 51 checks, 0 FAIL, 0 WARN; `guard.py surface` exit 0 (Bernard Burrows added to the card), `heart` WARN (repeat.gate_g, repeat.question_form; task107 differentiated); producer metadata clean in target/ and golden/.
+- `leak.py` REVIEW, the stump-vocabulary lines ruled here (never handed to a reader): the technical note's "ratings", "rating", "change", "passenger", "journeys" describe the questionnaire, its ten rated aspects and its weighting, and say nothing of what a rating carries or of linking a response to its train (harmless); the field notes' "member", "change", "identity", "passenger" are "member of staff", the timetable change, train identity and passengers on board (harmless); Schedule 7's "member", "change", "identity", "nothing", "passenger" are the staffing measure's "member of staff covering their turn", the fares change, "train identity", 2.3's "more than nothing" and the per-journey drivers (harmless). The answer-word and ranking lines went to both readers without figures.
+- Pre-ship check against the 10/10 rules on the built pack: the decisive step is still the measurement of the drivers on the linked conditions against the ratings (R3a and R3b executed in `checks.py`); every Layer 1 item is a system's own output and none decides the call (R2 rows); the asks' devices sit outside the call's population (SEP rows); no shipped artifact ranks the drivers (R3c, Oracles).
+
+## Architecture 4 record (spent 2026-10-25)
+
+- Draw: Marlvale Trains' customer satisfaction recovery plan, which of crowding, punctuality, on-board staffing and fares accounts for most of the fall in the share of passengers satisfied overall between the spring 2025 and spring 2026 waves (86.4% to 81.2%), Marketing & Consumer Research / customer-satisfaction-driver-analysis, shape 03. Golden: crowding, 3 points, through the conditions each surveyed journey ran under; default path: derived importance on the ten ratings, on-board staffing 2.
+- Build: stage 3 green on 2026-10-25 (checks 110 of 110, verify PASS, byte-identical, figures 45 of 45, precut 51/0/0, cracker 0 of 14).
+- Stage 4: both scored readers linked every questionnaire to its train and the passenger's legs, read the letter's counterfactual as the estimand and landed crowding (reader B 3 points and the whole bridge, reader A 4 points by a logit reset); asks 15 and 16 of 20 (the on-time and staffed devices leaked, standing held). The judge thread: DETERMINISTIC, SEND_BACK on Gate H, the decisive step read as rule application (once the conditions are linked, every estimator, unadjusted stratification included, files 3, 1, 1, 0).
+- Fate: spent; re-root in a fresh world as architecture 5.
+
 ## Architecture 3 record (spent 2026-10-12)
 
 - Draw: the Upper Kestrel Valley Air Quality Management District's determination of which of five permitted odor sources around Harlow Falls was behind the summer 2026 surge in odor complaints, Physical & Environmental Sciences / pollution-source-attribution, shape 07. Golden: Ridgeway Organics' composting facility (42.6 events beyond the same local clock hours on the season's other days), against counting upwind events (the Pine Gulch Landfill, 210) and the all-hours wind (Kestrel Valley Rendering, 2.69 times).
@@ -75,3 +228,4 @@ Reopened 2026-10-25 at the author's direction: no number is retired. The slot is
 - One 2026 permit action per facility, drying beds at 0 for April, airport and PM2.5 records without a gap, a seven-point rectangular boundary with mixed precision (stage 3): read as constructed; the source list now carries a permit actions log with administrative actions, the operators' months show part-month changes, the PM2.5 record misses its service hours and a tape break, the airport's feed drops hours and sends specials, and the boundary follows Kestrel Creek at six decimals with every complaint at least 50 m from the line.
 - Stage 4 round 2 (judge SEND_BACK, 2026-10-12): the hour-matched comparison, unfiled by design, was forced against counting and against the all-hours comparison but not against a pre-surge baseline (January to April shares applied to the season's events), which names the rendering plant because winter's storms and short evenings put it upwind less often; filing the comparison would be rule application, so the architecture is spent and the number retired.
 - 2026-10-25, re-root draw (architecture 4) after the reopening, candidates weighed and set aside before the card: a criminal court's custody-rate rise read through the conviction offence when the change sat at charging (unspent in the corpus, but a reader breaks charge reductions down by offence type by reflex once the charging policy is a named candidate, so two readers would likely land it); a plant's trips read through alarm floods against the first-out alarm (the precursor-against-control-window form is architecture 3's own driver, task121 v3); quant performance attribution with a style tilt booked as selection (the paper-against-real portfolio gap is task175's spent route, and the factor model's choice is a filed rule or an open family); transformer failures after a heat wave read by supplier when the thermal aging of each unit's load decides (a strong reader computes loading by reflex once loads ship); the seed-bank regrowth and capture-recapture forms of task283's hogweed world (spent); a staggered roll-out of routing software against a one-off pay change (`causal_design`, banned in the guard's window by task302).
+- 2026-10-25, architecture 4 spent at stage 4: the letter's counterfactual named the drivers as the conditions of each passenger's journey, so both readers went straight to linking the questionnaires to the trains, and once linked every estimator (logit, linear, unadjusted stratification) filed crowding at 3 points; the ratings' halo only catches a solver who never opens the operating records, which the estimand forbids. A satisfaction-driver call needs a decisive step after the linkage, not the linkage itself. The asks' cross-midnight device was handled by both readers' delay arithmetic, and the field notes' sentence on the amendments' log date announced the evening covers.
