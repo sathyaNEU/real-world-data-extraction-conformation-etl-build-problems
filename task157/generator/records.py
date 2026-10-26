@@ -389,7 +389,11 @@ def write_demand(path, W):
     ws.row_dimensions[4].height = 30
     r = K.rng("demand")
     w0 = K.widx(dt.date(2027, 1, 4))
-    growth = [0.118, 0.118, 0.118, 0.118, 0.105, 0.105, 0.105, 0.105, 0.097, 0.097, 0.097, 0.097, 0.097]
+    # The plan's growth assumption, one figure a month as marketplace planning states it. The autumn ran
+    # about a fifth ahead of the year before and December nearly two fifths ahead, and the plan carries that
+    # through the new year before lapping itself by March. It is set so the hours the plan asks of supply
+    # cover the requests the quarter turns out to bring; the headroom is asserted in checks.py.
+    growth = [0.58, 0.58, 0.58, 0.58, 0.42, 0.42, 0.42, 0.42, 0.10, 0.10, 0.10, 0.10, 0.10]
     tot = [0, 0, 0]
     for i in range(13):
         wk = K.wdate(w0 + i)

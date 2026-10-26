@@ -567,6 +567,17 @@ def run():
                         capture_output=True, text=True)
     ok("WRITEUP figures_check: every number in blocks 1 to 4 is in figures.json", fc.returncode == 0,
        fc.stdout.strip()[-200:])
+    # SF15: the out-of-sample line has to say what its per cent is a per cent of, or it reads as the fund's own
+    # precision. The portal's second determinism judge read "within 2 per cent" that way and called the headline
+    # unforced on a band of about plus or minus 94 drivers. The counts it is an error of are a few hundred.
+    _bt_counts = [str(int(K.round_half_up(BT[y]["development"]))) for y in (2025, 2026)] + \
+                 [str(int(BT[y]["actual"])) for y in (2025, 2026)]
+    ok("SF15 the out-of-sample sentence names the return counts its per cent is of (%s), so the referent is the "
+       "returns and not the fund" % ", ".join(_bt_counts),
+       all(c in sub for c in _bt_counts) and re.search(r"within \d+ per cent of the count", sub) is not None,
+       [c for c in _bt_counts if c not in sub])
+    ok("SF15 no sentence in the write-up attaches a per cent band to the fund or the driver count",
+       not re.search(r"\b(?:fund|drivers)\b[^.]{0,60}within \d+ per cent", sub, re.I))
     ok("WRITEUP the call, the components and the rivals' clauses carry no rival figure",
        not re.search(r"\$1,(?:35|45|50|55|60)0,000", sub))
     import openpyxl
@@ -617,6 +628,35 @@ def run():
                 late_rows.append((R.F_ORDERS, c, r[c]))
     acc_max = max(r["last_trip_on"] for r in rows(target, R.F_ACCOUNTS) if r["last_trip_on"])
     ret_max = max(r["return_date"] for r in rows(target, R.F_RETURNS))
+    # SF14: the shipped rider demand plan must be able to serve the window it plans. The portal's first
+    # determinism judge read it as a trip ceiling, divided the planned pool by the trips a qualifier takes
+    # and derived 3,500 drivers against the golden's 4,700. The plan is a declared distractor and nothing in
+    # the solution reads it, so what is asserted is that it cannot bind: the arithmetic a judge does on
+    # shipped data alone has to clear the golden. Every figure here comes from the pack.
+    import openpyxl as _ox
+    _wb = _ox.load_workbook(os.path.join(target, R.F_DEMAND), data_only=True)
+    _ws = _wb["Q1 2027 weekly"]
+    _plan_window = int(sum(_ws.cell(row=5 + k, column=5).value for k in range(4)))
+    _act = {}
+    for _r in rows(target, R.F_ACTIVITY):
+        _act.setdefault(_r["activity_month"], []).append(int(_r["trips_completed"] or 0))
+    _dec = _act["2026-12-01"]
+    _dec_q = [t for t in _dec if t >= 40]
+    _mean_q = sum(_dec_q) / len(_dec_q)
+    _cap = int(_plan_window / _mean_q)
+    ok("SF14 the plan's January window carries %s completed trips, and divided by December's mean qualifier "
+       "trips (%.1f) that is %s qualifiers, clear of the golden's 4,700, so no demand-constrained reading "
+       "binds" % (f"{_plan_window:,}", _mean_q, f"{_cap:,}"), _cap > 4700,
+       {"plan_window": _plan_window, "mean_qualifier_trips": round(_mean_q, 1), "cap": _cap})
+    ok("SF14 the plan's January window is above the last actual month in the pack, December 2026's %s "
+       "completed trips, so the plan is not a ceiling under recent actuals" % f"{sum(_dec):,}",
+       _plan_window > sum(_dec), {"plan_window": _plan_window, "dec_2026": sum(_dec)})
+    _jan3 = sum(_act["2027-01-01"])
+    ok("SF14 the first three days of the window already ran %s completed trips, %.0f per cent of the plan's "
+       "own daily rate, so the plan reads as a floor on the window and not a cap"
+       % (f"{_jan3:,}", 100 * (_jan3 / 3) / (_plan_window / 28)), (_jan3 / 3) > 0.9 * (_plan_window / 28),
+       {"jan_1_to_3": _jan3, "plan_daily": int(_plan_window / 28)})
+
     ok("REALISM H16 no record dated after the extract run (forward dates only in the terms, the email and the demand "
        "plan)", not late_rows and acc_max <= "2027-01-03" and ret_max <= "2026-12-31", late_rows[:3])
     log = texts[DOC.F_LOG]

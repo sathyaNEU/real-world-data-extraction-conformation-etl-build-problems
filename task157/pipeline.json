@@ -1,54 +1,63 @@
 {
-  "task": "task157",
-  "owner": "sathya8571",
-  "status": "SHIPPED",
-  "domain": "product-analytics/retention-cohort-lifetime-value-modeling (client domain product-analytics; world: a Twin Cities ride-hail operator's winter guarantee)",
-  "objective": "forecasting",
-  "stage": 5,
-  "stage_name": "ship",
-  "updated": "2026-10-17",
-  "stump": "Carrying December's roster at last January's qualification shares, adding the onboarding app's approved drivers and the drivers away at last January's return rate files $1,450,000; the step that lands it there is pricing last winter's drivers who are not yet back as a pool at last year's return rate, when they are the rest of a wave whose size is the group's own and whose timing every earlier winter kept, so the part already back on 3 January (1,087 drivers) gives the part still to come: about 1,200 more drivers inside the window, the wave priced at its own January qualification, and a fund of $1,650,000.",
-  "architecture": 1,
-  "loops": 0,
-  "precut": {
-    "exit": 0,
-    "date": "2026-10-17",
-    "checks": "49 checks, 0 FAIL, 0 WARN (built figures)"
-  },
-  "leak": {
-    "leak_py": "REVIEW, no LEAK (2026-10-17 at ship, --asof 2027-01-03; every REVIEW line answered in the design note's ## Leak sweep)",
-    "reader": "clean (stage 4), decisive step analytical"
-  },
-  "duplicate_check": {
-    "heart": "PASS, 2026-10-17 (nearest driver 0.07, task146)",
-    "nearest": "nearest driver 0.07 (task146); task116 v1 lineage, task143, task264 at 0.05",
-    "surface": "two card-level promotions, no hard tell: task156 (consecutive numbers, same pairing, gap and decision type, drivers unrelated, keys honest and not relabelled) and task231 (the same-driver signature, differentiated on the card at the draw); written up in the design note ## Surface screen; adjudicated /clone-check left to the author"
-  },
-  "judge": {
-    "verdict": "DETERMINISTIC",
-    "disposition": "APPROVE (one residual Gate C caution on the driver count's lower rounding edge, recorded in the design note ## Residual)",
-    "report": "task157/determinism_check_report.md"
-  },
-  "returned": [],
-  "resume": "",
-  "approved": null,
-  "delivered": "2026-10-17",
-  "portal": null,
-  "portal_id": "",
-  "portal_status": "",
-  "portal_status_date": "",
-  "wave": "wave 5 (new), seed FC28 (world, decision and quantity kept; the insurer-roster hiding place and any filed payout method not shipped; pitfall re-found from how last winter's seasonal recruits come back)",
-  "build": {
-    "checks": "79 run, 0 failed",
-    "verify": "19 passed, 0 failed (pandas, independent path)",
-    "rebuild": "byte-identical (target, golden, figures.json, submission.md)",
-    "figures_check": "71 figures, 0 absent",
-    "voice_check": "PASS (955 characters)",
-    "h1_audit": "clean (pack and goldens)",
-    "guard_validate": "clean",
-    "input_gates": "20 files, 7 formats, largest 165,826 rows, 2 distractors",
-    "call": "$1,650,000 and 4,700 drivers (expected total $1,644,850); default path $1,450,000",
-    "target_zip_sha256": "335651e8f7085ef6f6bbf2da5846baca96b261cc83bc87ca84fe74e71e04a3e3"
-  },
-  "rule3": "PASS (stage 4 audit): P(one strong solver lands) about 0.10, P(both) about 0.02 to 0.04"
+ "task": "task157",
+ "owner": "sathya8571",
+ "status": "SHIPPED",
+ "domain": "product-analytics/retention-cohort-lifetime-value-modeling (client domain product-analytics; world: a Twin Cities ride-hail operator's winter guarantee)",
+ "objective": "forecasting",
+ "stage": 5,
+ "stage_name": "ship",
+ "updated": "2026-10-26",
+ "stump": "Carrying December's roster at last January's qualification shares, adding the onboarding app's approved drivers and the drivers away at last January's return rate files $1,450,000; the step that lands it there is pricing last winter's drivers who are not yet back as a pool at last year's return rate, when they are the rest of a wave whose size is the group's own and whose timing every earlier winter kept, so the part already back on 3 January (1,087 drivers) gives the part still to come: about 1,200 more drivers inside the window, the wave priced at its own January qualification, and a fund of $1,650,000.",
+ "architecture": 1,
+ "loops": 0,
+ "precut": {
+  "exit": 0,
+  "date": "2026-10-17",
+  "checks": "49 checks, 0 FAIL, 0 WARN (built figures)"
+ },
+ "leak": {
+  "leak_py": "REVIEW, no LEAK (2026-10-17 at ship, --asof 2027-01-03; every REVIEW line answered in the design note's ## Leak sweep)",
+  "reader": "clean (stage 4), decisive step analytical"
+ },
+ "duplicate_check": {
+  "heart": "PASS, 2026-10-17 (nearest driver 0.07, task146)",
+  "nearest": "nearest driver 0.07 (task146); task116 v1 lineage, task143, task264 at 0.05",
+  "surface": "two card-level promotions, no hard tell: task156 (consecutive numbers, same pairing, gap and decision type, drivers unrelated, keys honest and not relabelled) and task231 (the same-driver signature, differentiated on the card at the draw); written up in the design note ## Surface screen; adjudicated /clone-check left to the author"
+ },
+ "judge": {
+  "verdict": "DETERMINISTIC",
+  "disposition": "APPROVE (one residual Gate C caution on the driver count's lower rounding edge, recorded in the design note ## Residual)",
+  "report": "task157/determinism_check_report.md"
+ },
+ "returned": [
+  {
+   "date": "2026-10-26",
+   "portal": "both determinism judges competing_defensible_answer on the main call, Gates C and D fail, A, B, E, G pass, F weak, fix_location input_files: (1) the shipped rider demand plan read as a trip ceiling gave 3,500 drivers and USD 1,250,000 against the golden's 4,700, and nothing shipped ruled that reading out; (2) the out-of-sample line's within-2-per-cent was read as the fund's own precision, about plus or minus 94 drivers, straddling three buckets",
+   "repair": "determinism",
+   "commit": "",
+   "move": "SF14 closed by C1, not by a pin: the demand plan shipped at 316,650 completed trips for the window, 72.5 per cent of the 436,733 the window takes, because it assumed 11.8 per cent growth where the autumn ran 19 to 38 per cent ahead and the window grew 53.7 per cent. The generator now sets its growth off the autumn's own year-on-year rate: the window carries 447,500 trips, which at December 2026's mean qualifier trips is 5,378 qualifiers, clear of 4,700, so no demand-constrained reading binds. SF15 closed in the write-up: the out-of-sample sentence now names the counts its per cent is of, 308 against 306 and 413 against 405. Nothing graded moved.",
+   "gates": "checks 84 of 84, verify 0 failed, two byte-identical rebuilds, figures_check 75 figures none absent, precut 0 FAIL 0 WARN, voice-check PASS, guard validate clean and heart PASS, leak.py 0 LEAK with every REVIEW answered, freeze.py check --mode determinism PASS"
+  }
+ ],
+ "resume": "",
+ "approved": null,
+ "delivered": "2026-10-17",
+ "portal": null,
+ "portal_id": "",
+ "portal_status": "",
+ "portal_status_date": "",
+ "wave": "wave 5 (new), seed FC28 (world, decision and quantity kept; the insurer-roster hiding place and any filed payout method not shipped; pitfall re-found from how last winter's seasonal recruits come back)",
+ "build": {
+  "checks": "79 run, 0 failed",
+  "verify": "19 passed, 0 failed (pandas, independent path)",
+  "rebuild": "byte-identical (target, golden, figures.json, submission.md)",
+  "figures_check": "71 figures, 0 absent",
+  "voice_check": "PASS (955 characters)",
+  "h1_audit": "clean (pack and goldens)",
+  "guard_validate": "clean",
+  "input_gates": "20 files, 7 formats, largest 165,826 rows, 2 distractors",
+  "call": "$1,650,000 and 4,700 drivers (expected total $1,644,850); default path $1,450,000",
+  "target_zip_sha256": "335651e8f7085ef6f6bbf2da5846baca96b261cc83bc87ca84fe74e71e04a3e3"
+ },
+ "rule3": "PASS (stage 4 audit): P(one strong solver lands) about 0.10, P(both) about 0.02 to 0.04"
 }

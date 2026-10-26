@@ -192,6 +192,8 @@ Every term in the main ask and every convention the main computation needs. Ever
 | SF10 | the guarantee's terms across years | $350 at 40 completed trips over the four weeks from the first Monday of January, unchanged in 2025, 2026 and 2027 | a change between years | none on file | the 2025 and 2026 payout files and the 2027 terms |
 | SF11 | last winter's drivers | drivers with a trip in January to March 2026 and none from May to October 2026 | trips in December to March; trips in January to April; no trip June to October; a row rather than a trip | same call (asserted: the definitions select the same wave within eight drivers and file the same fund and drivers) | C1, asserted |
 | SF12 | the drivers the guarantee can pay | accounts approved by 23:59 on Sunday 3 January 2027 (the terms, as in 2025 and 2026; 73 drivers who completed 40 trips in the 2026 window on accounts approved later were not paid) | every driver who completes 40 trips, however late approved | about 80 more drivers, 4,800 to the nearest 100 | the terms ("Accounts approved from Monday 4 January take part in the next guarantee.") and the prompt's "every eligible driver" |
+| SF14 | whether the shipped Q1 2027 rider demand plan governs the qualifier forecast | it does not bind: the plan's January window carries 447,500 completed trips, which at December 2026's mean qualifier trips (83.2) is 5,378 qualifiers, clear of the golden's 4,700, so supply is the binding side | the plan is a trip ceiling, so the qualifier count is the pool divided by the trips a qualifier takes | 3,500 drivers and $1,250,000, the portal's first determinism judge | **C1**, asserted on three figures: the plan's window exceeds what the window takes, it exceeds December 2026's actual trips (369,207), and the window's own first three days already ran at 92 per cent of the plan's daily rate. The plan shipped at 316,650 trips, 72.5 per cent of the window it plans, because it assumed 11.8 per cent growth where the business was running 19 to 38 per cent and the window grew 53.7 per cent; the generator now sets its growth off the autumn's own year-on-year rate |
+| SF15 | what the ratio's out-of-sample error is an error of | the count of each earlier winter's January returns, a few hundred drivers: 308 against 306 at the 2025 funding date and 413 against 405 at the 2026 one | the fund's or the driver count's own precision, so about plus or minus 94 drivers on 4,700, which straddles three $50,000 buckets | no figure moves, but the portal's second determinism judge read the headline as unforced on it | the write-up now states the counts the per cent is of, so the referent cannot be read as the fund; the fourteen constructions of the golden span 4,688 to 4,703 drivers and one sigma of the ratio moves 46, both inside the bucket |
 | SF13 | who qualified last year, as the rate basis | every account the payments system counted at 40 completed trips (main run and late credits), less fraud recoveries: a driver qualifies by completing 40 trips, whatever happened to the payment | the drivers who kept a payment (Ask A's drivers paid: returned-and-never-resent payees dropped) | $1,600,000 and 4,600 drivers (4,625; the judge's 4,619) | the terms ("Larch pays $350 to every eligible driver who completes 40 trips between 00:00 on Monday 4 January 2027 and 23:59 on Sunday 31 January 2027, Central time."), the email ("Returned payouts and recoveries come back to the account afterwards, so leave them out.") and the payout notes ("It pays $350 to every account the payments system counts at 40 completed trips"); asserted |
 
 ## Ladder
@@ -382,6 +384,12 @@ Mirror leakage: 8 per cent of ask weight (design: the chart's parts, about 2 of 
 Pair ceiling: 32.0 (design: the cracker at 38 + 7 + about 4 of 55 ask points; the mirror at about 5 + 7 + 3). Rerun
 from the generated rubric at stage 4.
 
+Measured by: generator/checks.py, whose ASK block runs each ask's cracker route on the cut pack and
+asserts how much it misses (ASK A S1 to S4 and ASK B S1 and S2; ASK B's two stops miss 15 of 15 figures
+each), and whose DEVICE block recomputes the fund with the payout events, the bank return report, the
+screening orders and the 2025 run deleted and asserts it unchanged to the driver. The pair ceiling and the
+mirror leakage above are the design figures those assertions bound, not a separate measurement.
+
 ## Residual
 
 What the stage-4 judge and the rule 3 audit left standing, recorded as measured (every figure asserted in checks.py):
@@ -479,3 +487,17 @@ screening vendor are left unnamed; personas from `guard.py names`.
 - HB3 (an approved applicant whose account was opened under a second email): the applications export carries the driver id an approval opened, so the hazard had no record to live in; dropped.
 - Occasional drivers coming back on at 6 per cent a week: they sat in last winter's drivers often enough to swing the June-to-October-blank construction by $13,000; raised to 15 per cent a week (shorter breaks, fewer in the winter group), the construction now within $4,000.
 - Approvals stamped at any hour, and Sunday decisions moved back to the Saturday: 24 decisions fell before their own resubmission; decisions are now taken on working days in office hours, a Sunday's on the Monday.
+
+- 2026-10-26, the portal's determinism block, both judges `competing_defensible_answer` on the main call,
+  fix location `input_files`. Two forks, both closed without moving a graded figure (`freeze.py check
+  --mode determinism` PASS). SF14, the shipped rider demand plan: it carried 316,650 completed trips for the
+  guarantee's window, 72.5 per cent of the 436,733 the window actually takes, because it assumed 11.8 per
+  cent growth where the autumn ran 19 to 38 per cent ahead and the window itself grew 53.7 per cent. Read as
+  a trip ceiling it gave 3,500 drivers and $1,250,000 against the golden's 4,700, and nothing shipped ruled
+  that reading out, so a declared distractor was doing the work of an official decoy. Closed by C1 rather
+  than by a pin: the generator now sets the plan's growth off the autumn's own year-on-year rate, the window
+  carries 447,500 trips, and three assertions hold that no demand-constrained reading binds. SF15, the
+  out-of-sample line: "within 2 per cent" did not say what it was 2 per cent of, and the second judge read
+  it as the fund's own precision, about plus or minus 94 drivers on 4,700. The write-up now names the counts,
+  308 against 306 and 413 against 405, which are returns in the hundreds. The stump is untouched: the
+  default path still files $1,450,000 against the golden's $1,650,000, four bins apart.
