@@ -1,183 +1,195 @@
 {
- "task": "task270",
- "architecture": 3,
- "drawn": "2026-10-19",
- "slot_note": "re-rooted 2026-10-19 after architecture 1 was spent at stage 4; the slot takes no seed world (DA20 went to task269's third architecture)",
- "domain": "psychology-behavioral-science",
- "subdomain": "longitudinal-growth-curve-modeling",
- "client_domain": "psychology-behavioral-science",
- "niche": "the rate at which memory clinic patients' cognition declines, read from repeated ACE-III sittings whose second completed sitting is lifted by the patient having sat the test before, compared across clinics whose patients have sat it a median of two to five times because the clinics opened between 2014 and 2024",
- "objective": "descriptive-distribution",
- "shape": "01",
- "decision_type": "ranked_slate_under_cap",
- "answer_unit": "set_of_items",
- "answer": "The Research Committee should name Quarndale and Thurlwick as the recruiting sites for ARV-1102.",
- "answer_source": "task270/submission.md, block 1 (Final Recommendation); retired 2026-10-19, not shipped",
- "gap": [
-  "population"
- ],
- "pattern": [
-  "none"
- ],
- "generators": [
-  "G6",
-  "G16"
- ],
- "gate_g": "decomposition_attribution",
- "calibration_form": "none",
- "stump_strategy": "decomposition_attribution",
- "decisive_rule_filed": false,
- "official_decoy": false,
- "validated_decoy": false,
- "context_artifact": "filed_standard",
- "stump_class": "analytical",
- "analyst_test": "A strong analyst who links each patient's sittings across the two record systems, keeps the completed ones, reads the paper's 3.1 (a change the test itself produces is not part of the rate) and sizes that change on the period's sittings, each patient's first sitting from 2022 taken as their first (1.24 points), files Thurlwick and Penwardine; the slope through every sitting files the same pair and dropping first sittings files Thurlwick and Mosswick; only the gain estimated over each patient's whole record, within patients (2.63), puts Quarndale, nearly all of whose patients have sat the test twice, in the pair.",
- "domain_test": "The deciding quantity is each clinic's rate of cognitive decline, which neuropsychology estimates from serial testing net of the practice gain a repeated test carries at its first retest; in a field whose repeated readings learn nothing from being taken (a meter, a scale, a ledger balance) the second reading carries no gain, nothing separates a sitting's number from its time, and the task stops making sense.",
- "layer2_family": "estimation_fit",
- "layer2_pattern": "own:practice-gain-at-the-first-retest-separated-from-the-trend",
- "layer1": [
-  "the memory service's move from CIS to the EPR on 8 January 2024: two ACE-III exports in different layouts (one form a row against one item a row), day-first dates against ISO times with a UTC offset, the hospital patient number against the NHS number, CIS clinic codes against EPR site codes",
-  "ACE-III forms abandoned and EPR sets stopped part-way, recorded with a partial total",
-  "EPR sets entered on the wrong patient's record or with a slip and marked entered in error",
-  "patients registered twice on CIS and merged in the master patient index; NHS numbers written with spaces in the index",
-  "diagnoses revised over time (a working diagnosis confirmed, mild cognitive impairment become dementia) and the current CIS diagnosis copied onto the EPR problem list at migration",
-  "care moved between clinics when patients moved house, and Quarndale's catchment taken from Corvale and Mosswick when it opened",
-  "EPR episodes ended when the discharge or handover letter goes, after the review that ended care (Ask A)",
-  "the pathway tracker's diagnosis date the day the diagnosis reached the problem list, not the day it was given (Ask B)"
- ],
- "stakeholder_role": "the research and development unit's lead for dementia research, preparing the research committee's site selection paper",
- "role_family": "research_desk",
- "scoring_unit": "other",
- "spine": {
-  "file": "epr_cognitive_observations_2024_2026.csv",
-  "rows": 91287,
-  "entity": "one item of an ACE-III set recorded on the EPR",
-  "grain": "patient x set x item",
-  "row_meaning": "one of the five domain scores or the total of an ACE-III set, with the set's status, performed time and EPR site",
-  "source": "synthetic",
-  "source_dataset": "constructed (seeded generator; the trust, its clinics and people are fictional)"
- },
- "forum": "committee_or_panel",
- "forcing_event": "launch_or_rollout",
- "org_family": "hospital_or_health_provider",
- "world": {
-  "geography": "United Kingdom, England (a fictional NHS mental health trust)",
-  "currency": "GBP",
-  "org_type": "an NHS mental health trust's memory assessment service and its research and development unit",
-  "invented_names": [
-   "Hollinsmere Partnership NHS Foundation Trust",
-   "Arvenna Therapeutics",
-   "ARV-1102",
-   "Thurlwick",
-   "Swinholt",
-   "Penwardine",
-   "Brindlemere",
-   "Ravensfold",
-   "Corvale",
-   "Mosswick",
-   "Quarndale"
-  ],
-  "people": [
-   "Georgina Khan",
-   "Jeremy Hurst",
-   "Nicola Lynch"
-  ]
- },
- "deliverables": [
-  "arv1102_site_selection.xlsx",
-  "arv1102_clinic_decline.png"
- ],
- "opening_move": "question-first",
- "question_form": "which",
- "driver": "The decisive quantity is how fast each group's members lose a latent ability, read from repeated tests whose second sitting is lifted by the member having sat the test before; a slope through every sitting flattens most for the groups whose members have sat it only a few times, so those groups look slower than they are, and only separating the one-time gain of the second sitting from the trend puts the groups in their true order.",
- "driver_concrete": "Each memory clinic's average decline in ACE-III points a year over 2022 to September 2026, net of the change the test itself produces, which is the gain a patient's second completed sitting of their whole record carries, estimated within patients across all clinics; sized on the period's sittings alone it is diluted by the patients first assessed before 2022, and a slope through every sitting, per patient or in a random-slopes model, keeps it in, so both leave Quarndale, nearly all of whose patients have sat the test twice, outside the pair and name Thurlwick and Penwardine.",
- "stump": "A competent solver who reads the paper's 3.1 sizes the change the test itself produces on the period's sittings, each patient's first completed sitting from 2022 taken as their first (1.24 points), and files Thurlwick and Penwardine as the two fastest-declining clinics, Penwardine in place of Quarndale, because the gain belongs to each patient's whole record: patients first assessed before 2022 carry it through every sitting in the period, which dilutes a step read inside the period to half its size, while Quarndale, opened in April 2024 with nearly all of its patients at two sittings, stays sixth. Only the gain estimated over each patient's whole record, within patients (2.63), netted from every patient's slope puts Quarndale in the pair.",
- "mechanism_source": "design_note",
- "differentiation": {
-  "task451": "task451 v1 credited spending through commingled intermediaries by the inflow mix each held when it paid out; this build separates a one-time gain that a test's second sitting carries from a person's trend in a measured ability, a measurement process with no money, no intermediaries and no inflow shares.",
-  "task270": "architectures 1 and 2 recovered a quantity hidden by selection (appointment on a composite) and by events never recorded (claims absorbed below a cost); here every sitting is recorded and nobody is selected out, and the second completed sitting carries a one-time gain from the test's own repetition, separated as a step beside each patient's trend",
-  "task262": "task262 removes transitory noise around a persistent level from single-year readings, a reliability correction; here the reading carries a systematic one-time gain tied to the sitting's number, separated as a step beside each patient's trend, and no reliability ratio enters",
-  "task268": "task268 carries each patient the registry lost from the heart failure class recorded at the loss, informative censoring in a survival estimate; here no patient is lost and every sitting is recorded, and the decisive step separates a one-time gain tied to a test's own repetition from each patient's trend",
-  "task269": "task269's third architecture measures each rider's excess wait over the departures serving their own destination, whose wait counts against which buses; here the slate is ranked on a growth rate read from repeated tests, and the decisive step separates a measurement gain from each patient's trend",
-  "task194": "task194 develops the recent periods' complication counts by a coding lag two vintages of the series measure; here the records are final, and the correction is a one-time gain tied to the sitting's number, estimated within patients",
-  "task249": "task249's third architecture read a verification check's flag rate among units chosen on a high first reading, regression to the mean with a retest gain a filed study measured; here nobody is chosen on a reading, nothing in the pack states a gain, and the gain is estimated within patients as a step beside each patient's trend"
- },
- "lineage": [
-  {
-   "architecture": "v1",
-   "domain": "psychology-behavioral-science",
-   "subdomain": "psychometric-measurement-scale-validation",
-   "niche": "the predictive validity of a civil-service police entry examination's components across the candidate pool, estimated from an academy outcome that exists only for the candidates appointed in rank order of two of the components",
-   "objective": "descriptive-distribution",
-   "shape": "01",
-   "decision_type": "ranked_slate_under_cap",
-   "answer_unit": "set_of_items",
-   "gap": [
-    "population"
-   ],
-   "pattern": [
-    "none"
-   ],
-   "generators": [
-    "G9",
-    "G17",
-    "G16"
-   ],
-   "gate_g": "method_or_model_selection",
-   "calibration_form": "none",
-   "stump_strategy": "population_selection",
-   "context_artifact": "filed_standard",
-   "role_family": "research_desk",
-   "forum": "committee_or_panel",
-   "forcing_event": "vote_or_meeting",
-   "org_family": "local_government",
-   "layer2_family": "estimation_fit",
-   "layer2_pattern": "own:indirect-range-restriction-on-a-selection-composite",
-   "driver": "The decisive quantity is how strongly each of several measures predicts an outcome across a whole pool when the outcome exists only for the members picked from the pool in rank order of a weighted sum of two of the measures; the correlations among those picked understate every measure, and correcting each measure as if it alone had picked them leaves the two that formed the sum understated, so only a correction that models the pick on the sum, with the measures' spread across the whole pool, restores which measures predict best.",
-   "driver_concrete": "Each examination component's correlation with the police academy's final average across everyone who sat the 2024 and 2025 examinations, recovered from the appointees' grades by the multivariate correction on the written test, the oral board, the veterans' credit and the physical ability test's points the appointments were made on; the appointees' own correlations and a per-component Case II correction both leave the written test and the oral board looking weaker than they are and keep the work style inventory.",
-   "stump": "A competent solver correlates each component with the academy final average among the appointees, or corrects each correlation separately by Case II, and keeps the written test and the work style inventory, because the appointments were made in rank order of the written test and oral board composite, which restricted those two (and the oral board most, beside the written test it was ranked with) far more than the per-component spreads show.",
-   "answer": "The 2027 entry examination should keep the written test and the oral board.",
-   "fate": "spent 2026-10-19 at stage 4 (Gate F): both isolated scored readers landed the call, the order and the first component below; reader 1 applied the multivariate correction for selection on the variables the appointments were ranked on (Lawley) from the filed rules and the plan's pool, reader 2 the same correction; reader 1 also landed all five costs (5 of 14 ask figures), reader 2 all 14; the judge DETERMINISTIC, APPROVE. A filed selection rule plus a filed population of appointees and non-appointees hands a strong reader the textbook correction."
-  },
-  {
-   "architecture": "v2",
-   "domain": "actuarial-science-insurance",
-   "subdomain": "claims-frequency-severity",
-   "niche": "a no-claims step scale makes an at-fault claim cost a policyholder future premium that depends on the step they stand on, so drivers on the middle steps pay small damage themselves; the frequency a region will show once the 2027 wording removes that cost is recovered from the claims nobody absorbs and the size distribution of the policyholders for whom a claim already costs nothing",
-   "objective": "descriptive-distribution",
-   "shape": "01",
-   "decision_type": "designation_set",
-   "answer_unit": "set_of_items",
-   "gap": [
+  "task": "task270",
+  "architecture": "v4",
+  "drawn": "2026-10-26",
+  "slot_note": "Architecture 4, fresh world (re-root after architectures 1 to 3 spent at stage 4).",
+  "domain": "education-learning-sciences",
+  "subdomain": "psychometrics",
+  "niche": "a fitness professional certification board deciding which of its seven content-area scores to print on 2027 candidate score reports, from the 2026 attempts' item responses",
+  "objective": "descriptive-distribution",
+  "shape": "10",
+  "decision_type": "designation_set",
+  "answer_unit": "set_of_items",
+  "answer": "",
+  "answer_source": "",
+  "gap": [
     "objective",
-    "population"
-   ],
-   "pattern": [
+    "rule"
+  ],
+  "pattern": [
     "none"
-   ],
-   "generators": [
-    "G12",
-    "G14",
-    "G16"
-   ],
-   "gate_g": "method_or_model_selection",
-   "calibration_form": "pilot_log",
-   "stump_strategy": "population_selection",
-   "context_artifact": "filed_standard",
-   "role_family": "portfolio_manager",
-   "forum": "committee_or_panel",
-   "forcing_event": "launch_or_rollout",
-   "org_family": "cooperative_or_member_body",
-   "layer2_family": "estimation_fit",
-   "layer2_pattern": "own:claims-absorbed-under-a-no-claims-step-scale-recovered-from-the-size-every-step-reports",
-   "driver": "The decisive quantity is how often each group's members will report an event once reporting costs them nothing, when today each member absorbs events smaller than what reporting would cost them and that cost rises and falls with their position on a scale, so the reported count understates most the groups whose members stand where reporting costs most; counting only the events too large for anyone to absorb, scaled by how common events that large are among members for whom reporting already costs nothing, recovers it, while a group that buys out the cost is self-selected and gives the size of events, not their rate.",
-   "driver_concrete": "Each region's claims per 100 vehicle-years under the 2027 protected wording, recovered step by step from the at-fault claims above the size no policyholder absorbs, scaled by the share of claims that large among step-0 policyholders and Step Protection holders, plus the not-at-fault claims everyone already makes; the reported frequency and a lift taken from the Step Protection holders' frequency on steps 6 to 9 leave the middle-step regions understated.",
-   "stump": "A competent solver ranks the regions by their 2024 and 2025 reported claim frequency (or lifts steps 6 to 9 by the Step Protection holders' frequency) and files band C as South East, West Midlands and Yorkshire and the Humber, South East in place of North West, because North West's policyholders stand mostly on the middle steps with the book's highest premiums, where a claim costs the most premium over the climb back, and pay small at-fault damage themselves, so North West reports the smallest share of its accidents while South East, on the top steps and under Step Protection, reports nearly all of its own.",
-   "answer": "Band C of the 2027 rating basis holds North West, West Midlands and Yorkshire and the Humber; South East is the first region below.",
-   "fate": "spent 2026-10-19 at stage 4 (Gate F): reader 6 of six isolated scored readers took the claims above 2,500 pounds as fully reported and scaled them by the protected policies' share above that size, landing the call and the first region below; readers 1 to 5 filed the reported or uplifted band; reader 5 took all 32 ask figures. Section 2.1's counterfactual wording says a correction is owed, and claim sizes by step show where the scale stops mattering, so the recovery is reachable for a strong reader."
-  }
- ],
- "notes": "Re-rooted 2026-10-19 (architecture 3, the slot's last). Prototype in scratch (t270c3/proto, gen/scan3.py, family.py): each patient on their own random stream; the world's parameters searched over 1,200 simulated worlds and the seed over 180; seed 521 holds the golden pair, the first clinic below, the naive pair and every shortcut in routes.py with margin, and the estimator family closes on the half-point grid. scoring_unit other: a trial site is chosen on its patients' decline, paid per recruited patient by the sponsor, which no vocabulary unit names. Architecture 3 spent 2026-10-19 at stage 4 round 2 (Gate F): with the outcome filed in the paper's 3.1 (\"a change in a patient's scores that the test itself produces is not part of it\"), both scored readers estimated the second-sitting gain within patients over each whole record and landed Quarndale and Thurlwick; round 1's readers had missed the call with the outcome unfiled, and the judge had sent the unfiled outcome back, so filing the WHAT handed over the HOW. task270 retired; architecture_spent set so the card holds no axis ban.",
- "registered": "2026-10-19T15:34:26Z",
- "architecture_spent": true
+  ],
+  "generators": [
+    "G16",
+    "G17"
+  ],
+  "gate_g": "signal_vs_noise_or_hold",
+  "calibration_form": "none",
+  "stump_strategy": "uncertainty_hold",
+  "decisive_rule_filed": false,
+  "official_decoy": false,
+  "validated_decoy": false,
+  "context_artifact": "register",
+  "stump_class": "analytical",
+  "analyst_test": "A strong analyst who scores every 2026 attempt correctly compares each content area's reliability with the total score's squared correlation with that area's true score, disattenuating the area-total correlation as though the area and the total were two separate tests, and prints only the two most distinct areas, dropping the largest area whose own errors make up much of its agreement with the total.",
+  "domain_test": "Whether a subscore has value beyond the total is the psychometric comparison of each score's proportional reduction in mean squared error for the true subscore, built from item-level responses under classical true-score theory; with another field's nouns there is no item response matrix, no true score and no total that contains its own parts.",
+  "layer2_family": "field_method",
+  "layer2_pattern": "own:a part's value beside a total that contains it, with the part's own error inside the total",
+  "layer1": [
+    "raw response strings parsed by form position",
+    "unscored pretest items interleaved with scored items",
+    "a key change and a deleted item from the post-administration item review",
+    "repeat attempts by the same candidate within the year",
+    "voided attempts from test-centre incidents",
+    "testing windows with different candidate mixes"
+  ],
+  "stakeholder_role": "director of psychometric services",
+  "role_family": "research_desk",
+  "scoring_unit": "other",
+  "spine": {
+    "file": "attempt_responses_2026.csv",
+    "rows": 26000,
+    "entity": "one row is one examination attempt",
+    "grain": "attempt",
+    "source": "synthetic"
+  },
+  "forum": "board_of_directors",
+  "forcing_event": "launch_or_rollout",
+  "org_family": "nonprofit_or_charity",
+  "world": {
+    "geography": "United States",
+    "currency": "USD",
+    "org_type": "fitness professional certification board",
+    "invented_names": [],
+    "people": [
+      "Melanie Howard",
+      "Julia Larson"
+    ]
+  },
+  "deliverables": [
+    "score_report_content_areas_2027.pdf",
+    "content_area_value_2026.xlsx"
+  ],
+  "opening_move": "question-first",
+  "question_form": "which",
+  "driver": "The decisive quantity is whether a part of a composite score estimates a unit's true standing on that part more accurately than the whole composite does; the part's own measurement error sits inside the composite, so taking the composite's agreement with the part as agreement between two separate measures credits the composite with the part's own error and finds the composite better for parts where it is not.",
+  "driver_concrete": "A content-area score is printed in 2027 only where its reliability exceeds the share of the area's true-score variance the total score predicts, with the total's covariance with the true area score taken as its covariance with the observed area score less the area's own error variance.",
+  "stump": "A competent analyst disattenuates each area's correlation with the total for the area's unreliability as though the two were separate tests, finds the total predicts the largest area's true score better than that area's own score does, and prints only the most distinct areas; the step that lands them there is treating the total as a separate measure when the area's items, and their errors, are part of it.",
+  "mechanism_source": "design_note",
+  "differentiation": {
+    "task182": "task182 v1 separates an effect from a shared external driver's lagged response with each unit's own driver-only path; this build has no driver and no effect: it weighs a part score's own precision against what the whole score already says about that part, with the part's error inside the whole.",
+    "task465": "task465 v1 averages a capped payoff over a prediction's error for periods the target was not observed; this build compares two scores' mean squared error for one true score, every attempt observed, and turns on the part's own error sitting inside the composite."
+  },
+  "lineage": [
+    {
+      "architecture": "v1",
+      "domain": "psychology-behavioral-science",
+      "subdomain": "psychometric-measurement-scale-validation",
+      "niche": "the predictive validity of a civil-service police entry examination's components across the candidate pool, estimated from an academy outcome that exists only for the candidates appointed in rank order of two of the components",
+      "objective": "descriptive-distribution",
+      "shape": "01",
+      "decision_type": "ranked_slate_under_cap",
+      "answer_unit": "set_of_items",
+      "gap": [
+        "population"
+      ],
+      "pattern": [
+        "none"
+      ],
+      "generators": [
+        "G9",
+        "G17",
+        "G16"
+      ],
+      "gate_g": "method_or_model_selection",
+      "calibration_form": "none",
+      "stump_strategy": "population_selection",
+      "context_artifact": "filed_standard",
+      "role_family": "research_desk",
+      "forum": "committee_or_panel",
+      "forcing_event": "vote_or_meeting",
+      "org_family": "local_government",
+      "layer2_family": "estimation_fit",
+      "layer2_pattern": "own:indirect-range-restriction-on-a-selection-composite",
+      "driver": "The decisive quantity is how strongly each of several measures predicts an outcome across a whole pool when the outcome exists only for the members picked from the pool in rank order of a weighted sum of two of the measures; the correlations among those picked understate every measure, and correcting each measure as if it alone had picked them leaves the two that formed the sum understated, so only a correction that models the pick on the sum, with the measures' spread across the whole pool, restores which measures predict best.",
+      "driver_concrete": "Each examination component's correlation with the police academy's final average across everyone who sat the 2024 and 2025 examinations, recovered from the appointees' grades by the multivariate correction on the written test, the oral board, the veterans' credit and the physical ability test's points the appointments were made on; the appointees' own correlations and a per-component Case II correction both leave the written test and the oral board looking weaker than they are and keep the work style inventory.",
+      "stump": "A competent solver correlates each component with the academy final average among the appointees, or corrects each correlation separately by Case II, and keeps the written test and the work style inventory, because the appointments were made in rank order of the written test and oral board composite, which restricted those two (and the oral board most, beside the written test it was ranked with) far more than the per-component spreads show.",
+      "answer": "The 2027 entry examination should keep the written test and the oral board.",
+      "fate": "spent 2026-10-19 at stage 4 (Gate F): both isolated scored readers landed the call, the order and the first component below; reader 1 applied the multivariate correction for selection on the variables the appointments were ranked on (Lawley) from the filed rules and the plan's pool, reader 2 the same correction; reader 1 also landed all five costs (5 of 14 ask figures), reader 2 all 14; the judge DETERMINISTIC, APPROVE. A filed selection rule plus a filed population of appointees and non-appointees hands a strong reader the textbook correction."
+    },
+    {
+      "architecture": "v2",
+      "domain": "actuarial-science-insurance",
+      "subdomain": "claims-frequency-severity",
+      "niche": "a no-claims step scale makes an at-fault claim cost a policyholder future premium that depends on the step they stand on, so drivers on the middle steps pay small damage themselves; the frequency a region will show once the 2027 wording removes that cost is recovered from the claims nobody absorbs and the size distribution of the policyholders for whom a claim already costs nothing",
+      "objective": "descriptive-distribution",
+      "shape": "01",
+      "decision_type": "designation_set",
+      "answer_unit": "set_of_items",
+      "gap": [
+        "objective",
+        "population"
+      ],
+      "pattern": [
+        "none"
+      ],
+      "generators": [
+        "G12",
+        "G14",
+        "G16"
+      ],
+      "gate_g": "method_or_model_selection",
+      "calibration_form": "pilot_log",
+      "stump_strategy": "population_selection",
+      "context_artifact": "filed_standard",
+      "role_family": "portfolio_manager",
+      "forum": "committee_or_panel",
+      "forcing_event": "launch_or_rollout",
+      "org_family": "cooperative_or_member_body",
+      "layer2_family": "estimation_fit",
+      "layer2_pattern": "own:claims-absorbed-under-a-no-claims-step-scale-recovered-from-the-size-every-step-reports",
+      "driver": "The decisive quantity is how often each group's members will report an event once reporting costs them nothing, when today each member absorbs events smaller than what reporting would cost them and that cost rises and falls with their position on a scale, so the reported count understates most the groups whose members stand where reporting costs most; counting only the events too large for anyone to absorb, scaled by how common events that large are among members for whom reporting already costs nothing, recovers it, while a group that buys out the cost is self-selected and gives the size of events, not their rate.",
+      "driver_concrete": "Each region's claims per 100 vehicle-years under the 2027 protected wording, recovered step by step from the at-fault claims above the size no policyholder absorbs, scaled by the share of claims that large among step-0 policyholders and Step Protection holders, plus the not-at-fault claims everyone already makes; the reported frequency and a lift taken from the Step Protection holders' frequency on steps 6 to 9 leave the middle-step regions understated.",
+      "stump": "A competent solver ranks the regions by their 2024 and 2025 reported claim frequency (or lifts steps 6 to 9 by the Step Protection holders' frequency) and files band C as South East, West Midlands and Yorkshire and the Humber, South East in place of North West, because North West's policyholders stand mostly on the middle steps with the book's highest premiums, where a claim costs the most premium over the climb back, and pay small at-fault damage themselves, so North West reports the smallest share of its accidents while South East, on the top steps and under Step Protection, reports nearly all of its own.",
+      "answer": "Band C of the 2027 rating basis holds North West, West Midlands and Yorkshire and the Humber; South East is the first region below.",
+      "fate": "spent 2026-10-19 at stage 4 (Gate F): reader 6 of six isolated scored readers took the claims above 2,500 pounds as fully reported and scaled them by the protected policies' share above that size, landing the call and the first region below; readers 1 to 5 filed the reported or uplifted band; reader 5 took all 32 ask figures. Section 2.1's counterfactual wording says a correction is owed, and claim sizes by step show where the scale stops mattering, so the recovery is reachable for a strong reader."
+    },
+    {
+      "answer": "The Research Committee should name Quarndale and Thurlwick as the recruiting sites for ARV-1102.",
+      "answer_unit": "set_of_items",
+      "architecture": "v3",
+      "calibration_form": "none",
+      "context_artifact": "filed_standard",
+      "decision_type": "ranked_slate_under_cap",
+      "domain": "psychology-behavioral-science",
+      "driver": "The decisive quantity is how fast each group's members lose a latent ability, read from repeated tests whose second sitting is lifted by the member having sat the test before; a slope through every sitting flattens most for the groups whose members have sat it only a few times, so those groups look slower than they are, and only separating the one-time gain of the second sitting from the trend puts the groups in their true order.",
+      "driver_concrete": "Each memory clinic's average decline in ACE-III points a year over 2022 to September 2026, net of the change the test itself produces, which is the gain a patient's second completed sitting of their whole record carries, estimated within patients across all clinics; sized on the period's sittings alone it is diluted by the patients first assessed before 2022, and a slope through every sitting, per patient or in a random-slopes model, keeps it in, so both leave Quarndale, nearly all of whose patients have sat the test twice, outside the pair and name Thurlwick and Penwardine.",
+      "forcing_event": "launch_or_rollout",
+      "forum": "committee_or_panel",
+      "gap": [
+        "population"
+      ],
+      "gate_g": "decomposition_attribution",
+      "generators": [
+        "G6",
+        "G16"
+      ],
+      "layer2_family": "estimation_fit",
+      "layer2_pattern": "own:practice-gain-at-the-first-retest-separated-from-the-trend",
+      "niche": "the rate at which memory clinic patients' cognition declines, read from repeated ACE-III sittings whose second completed sitting is lifted by the patient having sat the test before, compared across clinics whose patients have sat it a median of two to five times because the clinics opened between 2014 and 2024",
+      "objective": "descriptive-distribution",
+      "org_family": "hospital_or_health_provider",
+      "pattern": [
+        "none"
+      ],
+      "role_family": "research_desk",
+      "shape": "01",
+      "stump": "A competent solver who reads the paper's 3.1 sizes the change the test itself produces on the period's sittings, each patient's first completed sitting from 2022 taken as their first (1.24 points), and files Thurlwick and Penwardine as the two fastest-declining clinics, Penwardine in place of Quarndale, because the gain belongs to each patient's whole record: patients first assessed before 2022 carry it through every sitting in the period, which dilutes a step read inside the period to half its size, while Quarndale, opened in April 2024 with nearly all of its patients at two sittings, stays sixth. Only the gain estimated over each patient's whole record, within patients (2.63), netted from every patient's slope puts Quarndale in the pair.",
+      "stump_strategy": "decomposition_attribution",
+      "subdomain": "longitudinal-growth-curve-modeling",
+      "fate": "spent 2026-10-19 at stage 4 round 2 (Gate F): round 1 readers missed with the outcome unfiled and the judge sent it back; filing it (a change the test itself produces is not part of the rate) named the practice effect, and both round 2 readers estimated it within patients and landed the pair"
+    }
+  ],
+  "notes": "Architecture 4 re-root in a fresh world; WARN overuse.shape answered in the design note.",
+  "registered": "2026-10-26T08:07:36Z"
 }

@@ -1,36 +1,23 @@
 {
   "task": "task270",
   "owner": "sathay3012",
-  "status": "OPEN",
-  "domain": "psychology-behavioral-science",
+  "status": "DESIGN",
+  "domain": "education-learning-sciences",
   "objective": "descriptive-distribution",
-  "stage": 1,
-  "stage_name": "draw",
-  "updated": "2026-10-25",
-  "stump": "The default path reads the paper's 3.1, sizes the change the test itself produces on the period's sittings (each patient's first sitting from 2022 as their first, 1.24 points) and names Thurlwick and Penwardine as ARV-1102's recruiting sites, because the gain of a second completed sitting belongs to each patient's whole record and the patients first assessed before 2022 carry it through the period; only the whole-record estimate within patients (2.63) puts Quarndale with Thurlwick.",
-  "architecture": 4,
-  "loops": 1,
-  "precut": {
-    "exit": 0,
-    "date": "2026-10-19",
-    "checks": 51
-  },
-  "leak": {
-    "leak_py": "REVIEW (asof 2026-10-09), every line harmless",
-    "reader": "round 1: both readers missed the call and Ask A, took Ask B 16 of 16; round 2 (repaired pack, target.zip d6f415d7): both readers landed the call (Quarndale and Thurlwick, the second-sitting gain estimated within patients over each whole record at about 2.5), reader 3 Ask B 16 of 16 and Ask A 0 of 16 (50 per cent), reader 4 every ask figure (32 of 32); score_reader.py FAIL on both"
-  },
+  "stage": "2",
+  "stage_name": "design",
+  "updated": "2026-10-26",
+  "stump": "A competent analyst scores the 2026 attempts, compares each content area's KR-20 with the total score's squared correlation with the area's true score, disattenuating the area-total correlation as though the area and the total were separate tests, and prints Professional Practice alone (or with Nutrition), dropping Exercise Science, whose own error variance makes up much of its covariance with the total; the golden takes that error out and prints Exercise Science, Nutrition and Professional Practice.",
+  "architecture": "4",
+  "loops": "0",
+  "precut": null,
+  "leak": null,
   "duplicate_check": {
-    "heart": "WARN (people.first, overuse.shape, repeat.question_form), no BLOCK",
-    "nearest": "0.05 task122 v3 stump",
-    "surface": "3 promoted (task268, task269, task194), each answered by a differentiation line on the card"
+    "check_at_draw": "registered 2026-10-26, WARN overuse.shape only (answered in the note); test.same_puzzle_older against task182 v1 and task465 v1 differentiated on the card"
   },
-  "judge": {
-    "verdict": "round 1 (run r5) NOT_DETERMINISTIC, repaired; round 2 re-judge (run r6) stopped unfinished once both readers had spent the architecture",
-    "disposition": "SEND_BACK (round 1), repaired as FIX_NOW; round 2 none",
-    "report": "/tmp/determinism-check-task270-r5/verdict.md (round 1); task270/DESIGN_NOTE.md, Build record"
-  },
+  "judge": null,
   "returned": [],
-  "resume": "Reopened 2026-10-25 at the author's direction: no number in this lane is retired. Re-root at the draw in a fresh world, architecture 4; read DESIGN_NOTE.md's Tried and rejected first, every dead architecture and screen there stays dead. Before the reopen: none: task270 retired (three architectures spent); the number is not reused",
+  "resume": "Stage 2: the design note's sections to precut exit 0 (default path, stump sentence, three rules, readability screen, fork table, ladder, closure table, literal reader, oracles, ask sheet), with a licensed draw-time probe on a prototype pack, then stage 3 (generator, pack, goldens, submission).",
   "architectures": [
     {
       "architecture": 1,
@@ -51,5 +38,5 @@
   "portal_id": "",
   "portal_status": "",
   "portal_status_date": "",
-  "seed": "none: the slot's seed DA20 went to task269's third architecture; task270 draws its own world"
+  "seed": "none: a fresh world drawn 2026-10-26 (the Fitness Professional Certification Board's 2027 score report content areas)"
 }
