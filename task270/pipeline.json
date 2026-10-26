@@ -2,22 +2,22 @@
   "task": "task270",
   "owner": "sathay3012",
   "status": "DESIGN",
-  "domain": "education-learning-sciences",
+  "domain": "product-analytics",
   "objective": "descriptive-distribution",
   "stage": "2",
   "stage_name": "design",
   "updated": "2026-10-26",
-  "stump": "A competent analyst scores the 2026 attempts, compares each content area's KR-20 with the total score's squared correlation with the area's true score, disattenuating the area-total correlation as though the area and the total were separate tests, and prints Professional Practice alone (or with Nutrition), dropping Exercise Science, whose own error variance makes up much of its covariance with the total; the golden takes that error out and prints Exercise Science, Nutrition and Professional Practice.",
-  "architecture": "4",
+  "stump": "A competent analyst correlates the onboarding experiments' scorecard effects on each candidate with their six-month retention effects, disattenuates each for its own sampling error, and adopts sessions in days 1 to 14; the golden takes each experiment's sampling covariance between the candidate and retention (the 2025 holdout's user-level correlation over the arm sizes) out of the cross-experiment covariance and adopts first purchase within 14 days.",
+  "architecture": "5",
   "loops": "0",
   "precut": null,
   "leak": null,
   "duplicate_check": {
-    "check_at_draw": "registered 2026-10-26, WARN overuse.shape only (answered in the note); test.same_puzzle_older against task182 v1 and task465 v1 differentiated on the card"
+    "check_at_draw": "registered 2026-10-26, WARN repeat.decision and repeat.question_form against task308 v2 (answered in the note); test.same_puzzle_older and test.own_lineage differentiated on the card"
   },
   "judge": null,
   "returned": [],
-  "resume": "Stage 2: the design note's sections to precut exit 0 (default path, stump sentence, three rules, readability screen, fork table, ladder, closure table, literal reader, oracles, ask sheet), with a licensed draw-time probe on a prototype pack, then stage 3 (generator, pack, goldens, submission).",
+  "resume": "Stage 2: the design note's sections to precut exit 0 (default path, stump sentence, three rules, readability screen, fork table, ladder, closure table, literal reader, oracles, ask sheet) on the scorecard and holdout design, then stage 3 (generator, pack, goldens, submission).",
   "architectures": [
     {
       "architecture": 1,
@@ -30,6 +30,10 @@
     {
       "architecture": 3,
       "fate": "spent 2026-10-19 at stage 4 round 2 (Gate F): both isolated scored readers landed the call after the round 1 repair filed 3.1's exclusion of the change the test itself produces; each estimated the one-time gain of a second completed sitting within patients over the whole CIS and EPR record (about 2.5) and named Quarndale and Thurlwick; reader 4 took every ask figure, reader 3 Ask B whole; round 1's readers had missed the call with the outcome unfiled; task270 retired"
+    },
+    {
+      "architecture": 4,
+      "fate": "spent 2026-10-26 at the draw probes: p270a and p270b, call-only Sonnet readers on prototypes, computed Haberman's PRMSE with the part-whole correction and printed the golden three; committed as DRAWN in 5e4daa81"
     }
   ],
   "approved": null,
@@ -38,5 +42,5 @@
   "portal_id": "",
   "portal_status": "",
   "portal_status_date": "",
-  "seed": "none: a fresh world drawn 2026-10-26 (the Fitness Professional Certification Board's 2027 score report content areas)"
+  "seed": "none: a fresh world drawn 2026-10-26 (Kleerwissel's 2027 proxy metric for six-month retention)"
 }

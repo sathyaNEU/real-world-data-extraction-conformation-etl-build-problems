@@ -1,20 +1,19 @@
 {
   "task": "task270",
-  "architecture": "v4",
+  "architecture": "v5",
   "drawn": "2026-10-26",
-  "slot_note": "Architecture 4, fresh world (re-root after architectures 1 to 3 spent at stage 4).",
-  "domain": "education-learning-sciences",
-  "subdomain": "psychometrics",
-  "niche": "a fitness professional certification board deciding which of its seven content-area scores to print on 2027 candidate score reports, from the 2026 attempts' item responses",
+  "slot_note": "Architecture 5, fresh world (architecture 4 spent at the draw probes on 2026-10-26).",
+  "domain": "product-analytics",
+  "subdomain": "metric-definition-measurement-science",
+  "niche": "a second-hand fashion marketplace app choosing which two-week metric reads every 2027 onboarding experiment as its proxy for six-month retention, judged on the platform's per-arm scorecards for about 220 onboarding experiments run since 2024, with user-level data only for the 2025 global holdout",
   "objective": "descriptive-distribution",
-  "shape": "10",
-  "decision_type": "designation_set",
-  "answer_unit": "set_of_items",
+  "shape": "01",
+  "decision_type": "pick_one_of_n",
+  "answer_unit": "named_option",
   "answer": "",
   "answer_source": "",
   "gap": [
-    "objective",
-    "rule"
+    "objective"
   ],
   "pattern": [
     "none"
@@ -31,54 +30,60 @@
   "validated_decoy": false,
   "context_artifact": "register",
   "stump_class": "analytical",
-  "analyst_test": "A strong analyst who scores every 2026 attempt correctly compares each content area's reliability with the total score's squared correlation with that area's true score, disattenuating the area-total correlation as though the area and the total were two separate tests, and prints only the two most distinct areas, dropping the largest area whose own errors make up much of its agreement with the total.",
-  "domain_test": "Whether a subscore has value beyond the total is the psychometric comparison of each score's proportional reduction in mean squared error for the true subscore, built from item-level responses under classical true-score theory; with another field's nouns there is no item response matrix, no true score and no total that contains its own parts.",
-  "layer2_family": "field_method",
-  "layer2_pattern": "own:a part's value beside a total that contains it, with the part's own error inside the total",
+  "analyst_test": "A strong analyst who computes every onboarding experiment's treatment-minus-control effects correctly from the scorecards and correlates the candidates' effects with six-month retention's across the experiments, disattenuating for each effect's sampling error, adopts sessions in days 1 to 14 (0.91 disattenuated, 0.42 raw), because each experiment measures both effects on the same users and their sampling errors move together; with the shared sampling covariance taken out, using the holdout panel's user-level correlations, first purchase within 14 days leads at 0.79.",
+  "domain_test": "Choosing a proxy metric from a corpus of randomized experiments is online experimentation's own method, built from user-level results with each experiment's sampling covariance between the proxy and the outcome removed before the effects are correlated; with another field's nouns there is no corpus of randomized experiments measuring two outcomes on the same users.",
+  "layer2_family": "estimation_fit",
+  "layer2_pattern": "own:proxy effects correlated with outcome effects after each experiment's shared sampling covariance between the two is taken out",
   "layer1": [
-    "raw response strings parsed by form position",
-    "unscored pretest items interleaved with scored items",
-    "a key change and a deleted item from the post-administration item review",
-    "repeat attempts by the same candidate within the year",
-    "voided attempts from test-centre incidents",
-    "testing windows with different candidate mixes"
+    "scorecards re-exported after a recomputation, the later export superseding",
+    "metric keys renamed in the scorecard export in 2025",
+    "experiments failing the sample-ratio check or stopped early",
+    "multi-arm experiments, each treatment arm read against the shared control",
+    "arm labels written differently by different teams",
+    "experiments still inside their six-month read beside closed ones"
   ],
-  "stakeholder_role": "director of psychometric services",
+  "stakeholder_role": "head of experimentation",
   "role_family": "research_desk",
   "scoring_unit": "other",
   "spine": {
-    "file": "attempt_responses_2026.csv",
-    "rows": 26000,
-    "entity": "one row is one examination attempt",
-    "grain": "attempt",
+    "file": "global_holdout_users_2025.csv",
+    "rows": 60000,
+    "entity": "one row is one 2025 sign-up held out of every onboarding experiment",
+    "grain": "user",
     "source": "synthetic"
   },
-  "forum": "board_of_directors",
+  "forum": "line_manager_or_team",
   "forcing_event": "launch_or_rollout",
-  "org_family": "nonprofit_or_charity",
+  "org_family": "software_or_platform",
   "world": {
-    "geography": "United States",
-    "currency": "USD",
-    "org_type": "fitness professional certification board",
-    "invented_names": [],
+    "geography": "Netherlands",
+    "currency": "EUR",
+    "org_type": "second-hand fashion marketplace app",
+    "invented_names": [
+      "Kleerwissel"
+    ],
     "people": [
-      "Melanie Howard",
-      "Julia Larson"
+      "Mirthe Lambregt",
+      "Raf Erhout",
+      "Saar Reimes"
     ]
   },
   "deliverables": [
-    "score_report_content_areas_2027.pdf",
-    "content_area_value_2026.xlsx"
+    "proxy_metric_review_2027.pptx",
+    "proxy_metric_scores_2027.xlsx"
   ],
   "opening_move": "question-first",
   "question_form": "which",
-  "driver": "The decisive quantity is whether a part of a composite score estimates a unit's true standing on that part more accurately than the whole composite does; the part's own measurement error sits inside the composite, so taking the composite's agreement with the part as agreement between two separate measures credits the composite with the part's own error and finds the composite better for parts where it is not.",
-  "driver_concrete": "A content-area score is printed in 2027 only where its reliability exceeds the share of the area's true-score variance the total score predicts, with the total's covariance with the true area score taken as its covariance with the observed area score less the area's own error variance.",
-  "stump": "A competent analyst disattenuates each area's correlation with the total for the area's unreliability as though the two were separate tests, finds the total predicts the largest area's true score better than that area's own score does, and prints only the most distinct areas; the step that lands them there is treating the total as a separate measure when the area's items, and their errors, are part of it.",
+  "driver": "The decisive quantity is how closely two quantities' true changes move together across many trials, when each trial measures both changes on the same sample of members, so the two estimates' errors move together wherever the quantities are correlated member by member; the raw correlation of the estimates counts that shared error as shared change and favours the quantity most like the outcome member by member rather than change by change.",
+  "driver_concrete": "Each candidate's effects across the 2024 to 2026 onboarding experiments are correlated with the experiments' six-month retention effects after each experiment's sampling covariance between the candidate and retention (the holdout panel's user-level correlation times the arms' standard deviations over their users) is taken out of the cross-experiment covariance and each sampling variance out of the variances; first purchase within 14 days leads.",
+  "stump": "A competent analyst correlates the experiments' scorecard effects on each candidate with their six-month retention effects, disattenuates for the sampling error in each, and adopts sessions in days 1 to 14; the step that lands them there is treating each experiment's two sampling errors as independent when both effects are measured on the same users, so the shared error counts as shared change for the metrics most like retention user by user.",
   "mechanism_source": "design_note",
   "differentiation": {
-    "task182": "task182 v1 separates an effect from a shared external driver's lagged response with each unit's own driver-only path; this build has no driver and no effect: it weighs a part score's own precision against what the whole score already says about that part, with the part's error inside the whole.",
-    "task465": "task465 v1 averages a capped payoff over a prediction's error for periods the target was not observed; this build compares two scores' mean squared error for one true score, every attempt observed, and turns on the part's own error sitting inside the composite."
+    "task261": "task261 takes the standard error of one difference between two subgroups that share a sample's clusters; this build separates true co-movement from error co-movement across about 200 trials, where the shared error is a covariance between two outcomes measured on the same users and the decision is which outcome's effects track another's.",
+    "task228": "task228 builds a ratio metric's variance at the randomisation unit to set an alarm; this build's variances are plain means at the user, and its decisive term is the covariance between two metrics' errors within an experiment, removed from a correlation across experiments.",
+    "task253": "task253 counts units past a floor from noisy unit averages; this build's noise is shared between two estimates and inflates a correlation rather than spreading a level.",
+    "task190": "task190's architecture 6 decides which member's ratio sits furthest from a published value when the ratio's error comes only from a sampled denominator; this build's error sits in two estimates measured on the same users, and the decisive step removes their shared covariance from a correlation across experiments.",
+    "task270": "Architecture 4 compared a subscore's reliability with the total score's accuracy for the subscore's true score, the part's error inside the whole; this architecture correlates two metrics' effects across experiments, the decisive step removing the covariance of their sampling errors within each experiment, in another domain, world and decision."
   },
   "lineage": [
     {
@@ -188,8 +193,45 @@
       "stump_strategy": "decomposition_attribution",
       "subdomain": "longitudinal-growth-curve-modeling",
       "fate": "spent 2026-10-19 at stage 4 round 2 (Gate F): round 1 readers missed with the outcome unfiled and the judge sent it back; filing it (a change the test itself produces is not part of the rate) named the practice effect, and both round 2 readers estimated it within patients and landed the pair"
+    },
+    {
+      "answer": "",
+      "answer_unit": "set_of_items",
+      "architecture": "v4",
+      "calibration_form": "none",
+      "context_artifact": "register",
+      "decision_type": "designation_set",
+      "domain": "education-learning-sciences",
+      "driver": "The decisive quantity is whether a part of a composite score estimates a unit's true standing on that part more accurately than the whole composite does; the part's own measurement error sits inside the composite, so taking the composite's agreement with the part as agreement between two separate measures credits the composite with the part's own error and finds the composite better for parts where it is not.",
+      "driver_concrete": "A content-area score is printed in 2027 only where its reliability exceeds the share of the area's true-score variance the total score predicts, with the total's covariance with the true area score taken as its covariance with the observed area score less the area's own error variance.",
+      "forcing_event": "launch_or_rollout",
+      "forum": "board_of_directors",
+      "gap": [
+        "objective",
+        "rule"
+      ],
+      "gate_g": "signal_vs_noise_or_hold",
+      "generators": [
+        "G16",
+        "G17"
+      ],
+      "layer2_family": "field_method",
+      "layer2_pattern": "own:a part's value beside a total that contains it, with the part's own error inside the total",
+      "niche": "a fitness professional certification board deciding which of its seven content-area scores to print on 2027 candidate score reports, from the 2026 attempts' item responses",
+      "objective": "descriptive-distribution",
+      "org_family": "nonprofit_or_charity",
+      "pattern": [
+        "none"
+      ],
+      "role_family": "research_desk",
+      "shape": "10",
+      "stump": "A competent analyst disattenuates each area's correlation with the total for the area's unreliability as though the two were separate tests, finds the total predicts the largest area's true score better than that area's own score does, and prints only the most distinct areas; the step that lands them there is treating the total as a separate measure when the area's items, and their errors, are part of it.",
+      "stump_strategy": "uncertainty_hold",
+      "subdomain": "psychometrics",
+      "fate": "spent 2026-10-26 at the draw probes: probes p270a and p270b, call-only Sonnet readers on prototypes of 26,000 attempts, computed Haberman's PRMSE with the part-whole correction (and, with case-study sets added, reliability over the case sets) and printed the golden three each time; the policy's criterion is Haberman's own question"
     }
   ],
-  "notes": "Architecture 4 re-root in a fresh world; WARN overuse.shape answered in the design note.",
-  "registered": "2026-10-26T08:07:36Z"
+  "notes": "Architecture 5 re-root in a fresh world after architecture 4 died at the draw probes; WARN repeat.decision and repeat.question_form against task308 v2 answered in the design note.",
+  "client_domain": "product-analytics",
+  "registered": "2026-10-26T09:10:14Z"
 }
