@@ -8,11 +8,11 @@
   "client_domain": "physical-environmental-sciences",
   "niche": "an upstream oil producer's 2026 release-event methane inventory for the province's release-event levy: thief hatch, combustor pilot and relief valve events at 180 tank batteries on twelve lease operator routes, found at a visit or timed by a tank pressure alarm",
   "objective": "etl",
-  "shape": "03",
+  "shape": "15",
   "decision_type": "quantity_figure",
   "answer_unit": "currency",
-  "answer": "",
-  "answer_source": "",
+  "answer": "Budget CAD 171,000 for the 2027 release-event levy: the 2026 return falls in band C at 54.5 t, CAD 950 for each of 180 batteries.",
+  "answer_source": "task487/submission.md block 1; generator/figures.json call",
   "gap": [
     "population"
   ],
@@ -36,19 +36,20 @@
   "layer2_family": "estimation_fit",
   "layer2_pattern": "own:events the inspecting visit itself starts, read from incidence against window length",
   "layer1": [
-    "two pumper apps across a mid-year migration, one stamping local time and one UTC",
-    "GPS geofence double check-ins on one visit",
-    "a battery renamed after a purchase, its history under the old licence",
-    "event log free text naming the hatch, the valve or the combustor several ways",
-    "production in cubic metres against vapour analyses in mole per cent",
-    "alarm chatter that re-raises one relief event within minutes"
+    "two lease operator apps across a 1 July migration, the route app's local wall clock and the check-in app's local time with its UTC offset",
+    "check-in app geofence exits and re-entries splitting one visit",
+    "two routes logged in both apps for the second half of June",
+    "a battery re-licensed under a new code in August, its earlier records under the old one",
+    "the event register naming each kind several ways in free text",
+    "a SCADA journal in UTC whose messages carry the RTU's own stamp",
+    "production in cubic metres against vapour analyses in mole per cent"
   ],
   "stakeholder_role": "the operator's area production superintendent who signs the 2026 release-event filing",
   "role_family": "field_unit_lead",
   "scoring_unit": "other",
   "spine": {
-    "file": "daily_production_2026.csv",
-    "rows": 65700,
+    "file": "battery_daily_production_20251215_20261231.csv",
+    "rows": 68760,
     "entity": "one battery's production on one day",
     "grain": "battery x day",
     "source": "synthetic"
@@ -73,8 +74,8 @@
   "opening_move": "question-first",
   "question_form": "how-much",
   "driver": "Events found at a scheduled inspection began at unrecorded times since the previous one, but a share of them were started by the previous inspection itself and ran the whole window while the rest arose at a steady rate in between; the started share falls as the window lengthens and is read from how often each kind is found against the window's length, and the events a second record times exactly are a kind the inspection never starts, so they confirm the even spread that misprices the rest.",
-  "driver_concrete": "Each thief hatch and combustor pilot event a lease operator finds at a visit began either as the previous visit ended (a gauge hatch left unlatched, a pilot lost at the knockout drain) or at a steady hourly rate since, so its vented hours are read from how often each kind is found in short weekday windows against long weekend and holiday ones, not from the midpoint the pressure-alarmed relief valve events support.",
-  "stump": "The default path starts every event found at a visit halfway back to the previous departure, which the pressure-alarmed relief valve events confirm, and files the lowest levy tier; the visit-started share of hatch and pilot events, read from incidence against window length, runs those events for most of their windows and puts the filing in the middle tier.",
+  "driver_concrete": "Each open thief hatch a lease operator finds at a visit began either as the previous visit left (a hatch left open after gauging) or at a steady hourly rate since, so its vented hours are read from how often hatches are found after short weekday windows against long weekend and holiday ones, not from the midpoint the alarm-timed relief valves, which no visit starts, appear to confirm.",
+  "stump": "The default path starts every event the records do not date halfway through its window, which the alarm-timed relief valves appear to confirm, and files band B (45.2 t, a 2027 levy of CAD 115,200); 0.85 per cent of departing visits leave a thief hatch open that vents its whole window, read from hatches rising only 2.1 times from a weekday window to a weekend one for 3.0 times the hours, and the hatches' expected starts given their windows put the return in band C at 54.5 t.",
   "mechanism_source": "design_note",
   "differentiation": {
     "task476": "task476 v2 places a surveyed leak's start by the season leaks begin in, measured on a second record of leaks reported as they start; here no season moves anything and the second record (alarm-timed relief events) is blind by physics to the step: the inspection itself starts a share of the events, so their starts sit at each window's opening, and the share is read from incidence against window length.",

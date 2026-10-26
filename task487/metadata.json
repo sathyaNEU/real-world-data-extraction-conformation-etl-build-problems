@@ -1,0 +1,126 @@
+{
+ "task": "task487",
+ "title": "Vennholt Energy's 2026 release-event return and its 2027 levy under the Provincial Energy Board's Directive 17",
+ "setting": "A fictional upstream oil producer's 180 tank batteries in a fictional western Canadian province, whose energy board levies release-event methane in bands: the province, the board, the operator, its field and its people are fictional, and every record is synthetic.",
+ "as_of": "2027-01-14",
+ "deliverables": [
+  "release_events_2026.csv",
+  "release_levy_filing_2026.xlsx"
+ ],
+ "distractor_files": [
+  "target/hauler_load_tickets_2026.csv",
+  "target/sales_gas_meter_statements_2026.csv"
+ ],
+ "stated_inputs": [
+  "calendar 2026",
+  "each half of 2026",
+  "Schedule B methane in tonnes to one decimal"
+ ],
+ "files": [
+  {
+   "file": "battery_daily_production_20251215_20261231.csv",
+   "source": "Vennholt Energy Ltd., Kesmere field, production accounting, daily battery volumes (fictional, synthetic records)",
+   "date": "2027-01-09",
+   "license": "CC0-1.0 (synthetic, generated for this task)",
+   "rows": 68760
+  },
+  {
+   "file": "battery_register_20270108.csv",
+   "source": "Vennholt Energy Ltd., Kesmere field, battery register (fictional, synthetic records)",
+   "date": "2027-01-08",
+   "license": "CC0-1.0 (synthetic, generated for this task)",
+   "rows": 180
+  },
+  {
+   "file": "checkin_app_sites.csv",
+   "source": "Vennholt Energy Ltd., Kesmere field, the check-in app's site list (fictional, synthetic records)",
+   "date": "2027-01-13",
+   "license": "CC0-1.0 (synthetic, generated for this task)",
+   "rows": 180
+  },
+  {
+   "file": "checkin_app_visits_20260615_20270112.jsonl",
+   "source": "Vennholt Energy Ltd., Kesmere field, the check-in app (the lease operators' app from 1 July 2026), check-in export (fictional, synthetic records)",
+   "date": "2027-01-13",
+   "license": "CC0-1.0 (synthetic, generated for this task)",
+   "rows": 28615
+  },
+  {
+   "file": "hauler_load_tickets_2026.csv",
+   "source": "Kesmere Fluid Haulers, load tickets for Vennholt Energy (fictional, synthetic records)",
+   "date": "2027-01-06",
+   "license": "CC0-1.0 (synthetic, generated for this task)",
+   "rows": 26495
+  },
+  {
+   "file": "kesmere_field_data_notes.txt",
+   "source": "Vennholt Energy Ltd., Kesmere field, production data team, notes on the exports (fictional, synthetic records)",
+   "date": "2027-01-13",
+   "license": "CC0-1.0 (synthetic, generated for this task)",
+   "rows": null
+  },
+  {
+   "file": "ldar_leak_tracker_20270112.xlsx",
+   "source": "Vennholt Energy Ltd., Kesmere field, EHS office, leak tracker (fictional, synthetic records)",
+   "date": "2027-01-12",
+   "license": "CC0-1.0 (synthetic, generated for this task)",
+   "rows": null
+  },
+  {
+   "file": "ldar_surveys_2025_2026.csv",
+   "source": "Vennholt Energy Ltd., Kesmere field, EHS office, OGI leak survey log (fictional, synthetic records)",
+   "date": "2027-01-12",
+   "license": "CC0-1.0 (synthetic, generated for this task)",
+   "rows": 858
+  },
+  {
+   "file": "maintenance_work_orders_2026.csv",
+   "source": "Vennholt Energy Ltd., Kesmere field, maintenance system, work orders completed in 2026 (fictional, synthetic records)",
+   "date": "2027-01-08",
+   "license": "CC0-1.0 (synthetic, generated for this task)",
+   "rows": 3694
+  },
+  {
+   "file": "peb_directive_17_release_event_return_2025.pdf",
+   "source": "Provincial Energy Board, Directive 17, 2025 edition (fictional, synthetic records)",
+   "date": "2025-03-14",
+   "license": "CC0-1.0 (synthetic, generated for this task)",
+   "rows": null
+  },
+  {
+   "file": "release_event_register_2026.xlsx",
+   "source": "Vennholt Energy Ltd., Kesmere field, EHS office release event register (fictional, synthetic records)",
+   "date": "2027-01-11",
+   "license": "CC0-1.0 (synthetic, generated for this task)",
+   "rows": null
+  },
+  {
+   "file": "route_app_visits_20251215_20260630.csv",
+   "source": "Vennholt Energy Ltd., Kesmere field, the route app (the lease operators' visit app to 30 June 2026), visit export (fictional, synthetic records)",
+   "date": "2027-01-08",
+   "license": "CC0-1.0 (synthetic, generated for this task)",
+   "rows": 27082
+  },
+  {
+   "file": "sales_gas_meter_statements_2026.csv",
+   "source": "Vennholt Energy Ltd., Kesmere field, gas marketing, sales meter monthly statements (fictional, synthetic records)",
+   "date": "2027-01-11",
+   "license": "CC0-1.0 (synthetic, generated for this task)",
+   "rows": 36
+  },
+  {
+   "file": "scada_alarm_journal_20251215_20270112.csv",
+   "source": "Vennholt Energy Ltd., Kesmere field, SCADA host alarm and event journal (fictional, synthetic records)",
+   "date": "2027-01-13",
+   "license": "CC0-1.0 (synthetic, generated for this task)",
+   "rows": 46537
+  },
+  {
+   "file": "tank_vapour_analyses_2025_2026.xlsx",
+   "source": "Vennholt Energy Ltd., Kesmere field, production engineering, tank vapour laboratory results (fictional, synthetic records)",
+   "date": "2026-11-30",
+   "license": "CC0-1.0 (synthetic, generated for this task)",
+   "rows": null
+  }
+ ]
+}

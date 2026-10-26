@@ -1,23 +1,36 @@
 {
-  "task": "task487",
-  "owner": "oviya1301",
-  "status": "DESIGN",
-  "domain": "physical-environmental-sciences/emissions-inventory",
-  "objective": "etl",
-  "stage": 2,
-  "stage_name": "design",
-  "updated": "2026-10-26",
-  "stump": "Starting every release event a lease operator finds at a visit halfway back to the previous departure, which the pressure-alarmed relief valve events confirm, files the lowest tier of the 2027 release-event levy, because a share of the thief hatch and combustor pilot events are started by the previous visit itself and vent for their whole windows; that share, read from how often each kind is found against the window's length, puts the filing in the middle tier",
-  "architecture": 1,
-  "loops": 0,
-  "precut": {"exit": null, "date": ""},
-  "leak": {"leak_py": "", "reader": ""},
-  "duplicate_check": {"heart": "", "nearest": "task476 v2 at 0.16 (differentiated)"},
-  "judge": {"verdict": "", "disposition": "", "report": ""},
-  "returned": [],
-  "resume": "stage 2: world on paper (routes, schedules, event kinds, vapour rates, levy tiers), the rung table and the family spread on the clean truth, fork table, closure, asks, prompt.txt, precut.py exit 0",
-  "approved": null,
-  "delivered": null,
-  "portal": null,
-  "source_note": "seed ET44 (analytical_tasks/07_data_extraction_conformation/ET44_online-retail-net-spend-loyalty-tier-cuts.md), header and situation only; world not carried"
+ "task": "task487",
+ "owner": "oviya1301",
+ "status": "PAUSED",
+ "domain": "physical-environmental-sciences/emissions-inventory",
+ "objective": "etl",
+ "stage": 4,
+ "stage_name": "check",
+ "updated": "2026-10-26",
+ "stump": "The default path starts every event the records do not date halfway through its window, which the alarm-timed relief valves appear to confirm, and files band B at 45.2 t for a 2027 levy of CAD 115,200; 0.85 per cent of departing visits leave a thief hatch open that vents its whole window, read from hatches rising only 2.1 times from a weekday window to a weekend one for 3.0 times the hours, and the hatches' expected starts given their windows put the return in band C at 54.5 t, CAD 171,000",
+ "architecture": 1,
+ "loops": 0,
+ "precut": {
+  "exit": 0,
+  "date": "2026-10-26"
+ },
+ "leak": {
+  "leak_py": "REVIEW, no LEAK (zip 3556c4e7)",
+  "reader": "round 1 (zip b85062d5): readers A and B both filed band B (45.1 and 44.9 t, mid-window starts); A kept 31 of 47 ask figures (score FAIL), B 14; round 2 (zip 5b6b5f54): readers C and D both filed band B (45.1 t) and kept 5 of 31 (16.1 per cent); round 3 (zip c216be49): readers E and F both filed band B (45.6 and 45.1 t) and kept 28 of 29 (96.6 per cent, FAIL: the redrawn runs and the re-check repairs seen); round 4 (zip 3556c4e7): readers G and H running"
+ },
+ "duplicate_check": {
+  "heart": "WARN repeat.gate_g against task121 v6 (retired), answered in the note (zip c216be49)",
+  "nearest": "task476 v2 at 0.16 (differentiated on the card)",
+  "surface": "PASS, 0 promoted, personas none (zip c216be49)"
+ },
+ "judge": {
+  "verdict": "round 1: DETERMINISTIC on the call with SOLUTION_WRONG, FIX_NOW; round 2 (zip 5b6b5f54): NOT_DETERMINISTIC on Schedule B only (Gate C: the leak across repeat tags, a re-found leak's rate and the sync dates unfiled), the call forced, G and H pass, an ask-layer repair; round 3 (zip c216be49): DETERMINISTIC, SOLUTION_WRONG, FIX_NOW (the stated methane range overstated; the lowest fit, a per-tank form the windows reject, 0.4 t over the 50 t floor), Schedule B reproduced in all 24 cells, G and H pass; round 4 re-judge running on zip 3556c4e7",
+  "report": "round 1 verdict recorded in the design note's Stage 4 round 1 section"
+ },
+ "returned": [],
+ "resume": "stage 4 round 4 on zip 3556c4e7 (python3 task487/generator/build.py rebuilds it byte-identically): two fresh scored readers G and H (round 3's brief and keys, score with score_reader.py --call-key call.band --call-key call.levy_cad) and the FIX_NOW re-judge (round 3's brief, its range clause now 'how near each comes to a band edge'), launched 2026-10-26 in this container; if their outputs are gone, relaunch all three on a fresh rebuild. Ship only if both readers miss the call, Schedule B stays under 35 per cent and the judge approves. Band edges 36, 48, 60 and 72 t; the blocks state 54.5 t with no range; Schedule B on the re-check sessions in the survey log and the contract orders completed at approval (cracker, mirror and each half-fix 0 of 24, pair ceiling 28.5); the eight files the call reads are byte-identical to rounds 1 to 3",
+ "approved": null,
+ "delivered": null,
+ "portal": null,
+ "source_note": "seed ET44 (analytical_tasks/07_data_extraction_conformation/ET44_online-retail-net-spend-loyalty-tier-cuts.md), header and situation only; world not carried"
 }
