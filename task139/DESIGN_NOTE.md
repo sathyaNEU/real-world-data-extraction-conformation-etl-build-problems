@@ -21,10 +21,10 @@ the second draw, while the 2027 counterfactual, a unit with no team, sits on the
 | Decision | `allocation_to_total`, answer unit `count` (teams per unit), with each unit's saving and the credit in dollars |
 | Mechanism | gap population (decisive: the register's two arms were both called, the counterfactual unit is not, and the uncalled intakes are outside the register), then objective (the call reaches every intake of a unit once one team works there, so a unit's first team is worth its whole intake stream and later teams only their places); pattern none, generators G1 (the unit of value: the call per intake reported, the file per place-day), G12 (a blank pilot reference on an intake is the record that it was never called, not an absence of evidence), G9 (architecture 1's per-claim reading, now a lower rung); Gate G `decomposition_attribution` (the programme's saving split between the call and the file, which scale on different units and decide the placement between them); strategy `causal_design` (the comparison the 2027 counterfactual needs) |
 | Layer 2 family / pattern | `estimand_identification` (the right counterfactual: the randomised control arm received a component of the programme the counterfactual lacks); `own:randomised-contrast-nets-out-a-shared-opening-call` (Actuarial Science has no library card for it; the nearest is collections-loss-mitigation-strategy 1, compare by assignment, which is this build's rung 1) |
-| Furniture | forum `trustees_or_governors` (the board of trustees approves the placement with the 2027 contributions), forcing event `vote_or_meeting` (the trustees' meeting of 19 November 2026), organisation family `cooperative_or_member_body` (a group self-insurance trust its member employers own), role family `finance_controller` (the trust's finance director books the pick and recommends the placement), context artifact `register` (the pilot's assignment register), calibration `gold_standard_subsample` (the review's verified ultimates on stratified samples), opening `question-first`, question form `where` |
+| Furniture | forum `trustees_or_governors` (the board of trustees approves the placement with the 2027 contributions), forcing event `vote_or_meeting` (the trustees' meeting of 19 November 2026), organisation family `cooperative_or_member_body` (a group self-insurance trust its member employers own), role family `programme_officer` (the trust's Early Return Nursing programme manager places the teams and supplies the credit to the pick), context artifact `register` (the pilot's assignment register), calibration `gold_standard_subsample` (the review's verified ultimates on stratified samples), opening `question-first`, question form `where` |
 | Spine | `claims_extract_2021-01_to_2026-09.csv`, the claims system's listing: one row per claim reported January 2021 to September 2026 whose first report recorded time lost or that has paid or reserved indemnity; constructed |
 | Deliverables | `ern_placement_ay2027.xlsx` (the placement, each unit's saving, the credit, the asks), `ern_placement_note_ay2027.pdf` (one page opening with the placement and charting each unit's saving with its teams) |
-| People | drawn with `guard.py names --geo "United States" --seed 139`: Stephanie Gay (the trust's finance director, the requester, in no file as the author of a figure), Samantha Hernandez (consulting actuary, Kellerman Pryce Actuarial: the review and the AY2027 pick memo), Kaitlyn Payne (ERN clinical lead, the case log), Alicia Oneal (claims operations, the triage screen and the register), Margaret York (data engineering, the upgrade and the extract), Kimberly Williams (chair of the trustees, signs the charter); none in the prompt |
+| People | drawn with `guard.py names --geo "United States" --seed 139`: Stephanie Gay (the trust's Early Return Nursing programme manager, the requester, in no file as the author of a figure), Samantha Hernandez (consulting actuary, Kellerman Pryce Actuarial: the review and the AY2027 pick memo), Kaitlyn Payne (ERN clinical lead, the case log), Alicia Oneal (claims operations, the triage screen and the register), Margaret York (data engineering, the upgrade and the extract), Kimberly Williams (chair of the trustees, signs the charter); none in the prompt |
 
 **Guard.** `guard.py check` on the draft, then on the registered card: PASS with WARNs. Redrawn against the three live
 builds before this one (task137 v4, task166 v3, task304): the organisation family off `financial_institution` (task304;
@@ -35,7 +35,10 @@ which would also have described the mechanism; G1 is honest, since the step that
 first team on the unit's intakes and later teams on their places. The forum moved to the trustees because in a trust
 the trustees decide. WARNs, answered: `people.first` on Stephanie (task133), Alicia (task87) and Margaret (task258), the
 seed's list having no collision-free name left for those roles; `repeat.deliverables` (xlsx and pdf, as task304), kept
-because a placement workbook and a one-page note are what a finance director takes to trustees.
+because a placement workbook and a one-page note are what a programme manager takes to trustees. After registration,
+task141 v2 (registered ten minutes before this card) put `finance_controller` in the window, so the role was redrawn to
+`programme_officer` and `check` re-run on the registered card: WARN only, the same four lines. The programme manager who
+runs Early Return Nursing is the honester requester for a placement of its own teams in any case.
 
 **Strategy label.** `causal_design`: the decisive step is the comparison the 2027 counterfactual implies, which the
 pilot's own control arm is not. Nothing is transported (the 2027 teams call and file the same population the pilot
@@ -107,7 +110,7 @@ units' 2027 intakes will not pay because of the placement: what they would pay w
 every intake going to its adjuster on report as today, less what they pay with the placement; at run rate (every place
 in use every day of 2027, each unit's 2027 intakes at its intakes reported in the twelve months to September 2026); at
 the review's verified ultimates with no trend; each unit at its own experience; indemnity only. The request is made on
-Monday 9 November 2026 by the trust's finance director, for the trustees' meeting of 19 November.
+Monday 9 November 2026 by the trust's ERN programme manager, for the trustees' meeting of 19 November.
 
 **On paper, before any data.** This world's own courses (`generator/world.py`), 200,000 intakes a unit under each
 handling, the call keeping most of what architecture 1's nurses kept at work and the file the rest with its shorter
