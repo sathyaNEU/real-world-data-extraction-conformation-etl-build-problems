@@ -1,32 +1,31 @@
 {
  "task": "task141",
  "owner": "sathya8571",
- "status": "FAILED_TO_STUMP",
+ "status": "DESIGN",
  "domain": "criminology-justice",
  "objective": "forecasting",
- "stage": 1,
- "stage_name": "draw",
+ "stage": 2,
+ "stage_name": "design",
  "updated": "2026-10-26",
- "stump": "A competent solver links the screens to the first appearances, keeps the eligible charges, counts a new-offence arrest within 365 days of release or before disposition, takes each score's safety rate among the eligible defendants magistrates released and files the tier at scores 1 to 4 (score 4 at 87.9 per cent); the step that lands it there is reading the released defendants as the tier's population, when magistrates held 26 per cent of eligible score-4 defendants, the ones they judged riskiest, and the tier releases them all: read from the magistrates' differing release shares, score 4 falls to about 76 per cent and the tier is scores 1 to 3.",
- "architecture": 1,
+ "stump": "A competent solver prices the county's pretrial releases at the released defendants' own short stays and files about 3,213 detention bed-days a year, where the bill is the custody of the booking that follows each failure to appear, 85.6 per cent of it on charges the policy's eligibility list excludes, and the golden is 13,358 a year.",
+ "architecture": 2,
  "loops": 0,
  "precut": {
-  "exit": 0,
-  "date": "2026-10-15"
+  "exit": null,
+  "date": ""
  },
  "leak": {
-  "leak_py": "REVIEW 2026-10-15 on the final rebuild (no LEAK; every REVIEW line answered in ## Leak review)",
-  "reader": "stage 4 2026-10-15: no leak, Q1 to Q4 none, Q5 executes to the golden, Q6 analytical (difficulty placed at follow-up censoring, a lower rung); its python-docx template tell fixed and five readings ruled (SF31 to SF34, closure 12) in the fix pass; targeted re-read 2026-10-15 of the README's notes and the draft: nothing quoted for Q1 to Q4, Q6 analytical, its realism notes (the pinned notes reading like a specification) recorded and left"
+  "leak_py": "",
+  "reader": ""
  },
  "duplicate_check": {
-  "heart": "PASS 2026-10-15 on the final rebuild, nearest 0.08 (task116 v1 lineage)",
-  "nearest": "driver 0.08 (task116 v1 lineage); surface exit 0, task139 promoted (two apart, gap population and G9 on both cards, drivers differ, differentiation on the card) for the author's /clone-check",
-  "note": "drawn 2026-10-15: guard PASS, no WARN"
+  "heart": "",
+  "nearest": "0.07 (task35, task103) at the draw"
  },
  "judge": {
-  "verdict": "DETERMINISTIC (2026-10-15), every figure reproduced; main call forced, stump power high, Gate H analytical",
-  "disposition": "FIX_NOW optional on the asks, applied in one generator pass (README notes for custody through a boarding, day counts after a release and monitoring days by release; SF30 the disposition day a same-call row; both Word documents in Word's form); freeze determinism and rubric exit 0, no graded figure moved; not re-judged",
-  "report": "task141/determinism_check_report.md"
+  "verdict": "",
+  "disposition": "",
+  "report": ""
  },
  "returned": [
   {
@@ -36,7 +35,7 @@
    "commit": ""
   }
  ],
- "resume": "architecture 1 is spent: both portal responses landed scores 1 to 3, and the decisive step is the domain's reflex as well as an estimator with seven constructions (stumping 1.1j). Measured and also dead: deduplicating to defendants (0.6 points), the exposure family (flat windows, hazard three times too small), the uncapped window (rule application). Every large lever here is a counterfactual for defendants a magistrate held, which is the same selection family, so the re-root must change the decision to one whose population the record holds whole. Measured candidate: the jail bed-day footprint, where a release costs 0.3 days of its own and 0.2 to 4.4 days through the booking that follows a failure, reconstructed exactly by linking each release to the next booking for that person. Re-root at stage 1 as architecture 2.",
+ "resume": "Architecture 2 drawn and registered 2026-10-26, the card filed and the design note's Draw, Default path and Stump sentence rewritten with the ladder measured on the built world (R0 0.241x, R2 0.350x, golden 1.000x, R1 1.976x). Next: stage 2, rewrite Three rules, Readability screen, Semantic fork table, Ladder, Closure table, Literal reader, Oracles and Ask sheet for architecture 2, pin the two population sentences (the first booking inside the window, +13.3 per cent, and the booking that follows rather than the failure arrest's own, -2.7 per cent), redraw the three asks away from the call's path (Ask A's population is the call's own held side and its Halsey device sits on the call's path), then precut.py exit 0.",
  "approved": null,
  "delivered": "2026-10-15",
  "portal": null,
