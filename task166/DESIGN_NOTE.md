@@ -570,3 +570,76 @@ Stage 3, 2026-10-25, worktree build on main at 876c00de (pulled with the work au
   did not yet have, and one first-mortgage statement failed to tie; the desk now quotes the amount funded for a loan
   funded in the statement's month, and no statement predates its loan's funding.
 - Portal round 1 on architecture 2 (2026-10-26): both responses landed the call, Muskegon and the North at about $40 million with the Lakeshore second, the golden; reading each stack's payoff off its blended first-plus-home-equity rate, chosen over the own-rate and first-only curves on fit and back-test, is a reflex for the portal's models, as stage 4's Opus reader showed, so architecture 2 is spent and the build re-roots off the enumerate-and-back-test chain.
+- Architecture 3 candidate 1, a homeowners late-reported claim count by territory completed by occupancy (seasonal
+  homes found at the next visit, a seasonal book grown since July 2025), probed 2026-10-26 (p166b): the Opus call-only
+  probe found the seasonal-residence endorsement at once, built lag curves by that flag and the loss season on the
+  developed 2021 to 2023 losses, used Bornhuetter-Ferguson for the young seasonal book and landed the territory and
+  the runner-up (Lakes about 80, Ridge second); an occupancy lag read off an endorsement column is a move visible in
+  the schema. Its pack also read as built (no policies written 2021 to 2024, every 2025-26 policy a seasonal home, no
+  cancellations, one form).
+- Architecture 3 candidate 2, the same count with the lag driver rebuilt from a record kept for billing (homes standing
+  empty at the loss date: seasonal cottages, and primary homes whose owners winter away, seen only as winter mailing
+  addresses; a June to November 2026 book transfer into Ridge with no winter on the books), probed 2026-10-26 (p166d):
+  the Opus call-only probe matched every claim to the term, the endorsement and the mailing address in force at the
+  loss date, built four occupancy states, ran Bornhuetter-Ferguson on policy-days by territory, state and month and
+  landed Ridge at about 70 with Lakes second; an attribute of the frame's own units, however it is recorded, is joined
+  at the event date and modelled. The pack also carried rows dated after the pull and transfer policies whose original
+  inception equalled the transfer date.
+- Architecture 3 candidate 3, homeowners claims first reported in 2027 by territory with an exiting carrier's book
+  rolling into Ridge at its renewal dates through May 2027, listed in the transfer desk's roster, probed 2026-10-26
+  (p166f): the Opus call-only probe counted every policy in force in 2027, carried the roster's offered and
+  not-yet-mailed rows at the decided acceptance, modelled them on the 2022 transfer block's first-months curve and
+  landed Ridge first and Metro second at about 2,350; a roster listing the incoming units is read as future book
+  growth. It also noticed every term ran exactly 365 days.
+- Architecture 3 candidate 4, the same 2027 count with no roster, the transfer's continuation left to the record's own
+  arrival flow (1,600 a month into Ridge from September 2026) and the 2022 block's twelve-month cycle, probed
+  2026-10-26 (p166g): the Opus call-only probe fitted claims by territory, month and months since transfer on the
+  2022 block, inferred one renewal cycle from the source's definition and the analogue, projected 1,595 a month to
+  August and landed Ridge at about 2,550 with Metro second; an arrival flow that jumps a territory's book by 8 per cent
+  a month, with an analogue block beside it, is salient however unlisted. Pack tells: dates on days 1 to 28 only, a
+  pile of 1979 inceptions.
+- Architecture 3 candidate 5, a self-insured manufacturer's 2027 workers' compensation claims by the claimant's last
+  plant, a laid-off forge cohort turning 62 and filing hearing-loss claims from the HR master's separated rows,
+  probed 2026-10-26 (p166i): the Opus call-only probe sliced the hearing-loss claimants by status (613 of 730 former),
+  fitted a hazard by age, department and length of service on former workers, found the 2014 forge layoff and its
+  1965 births and landed Kessler at about 340 with Harlow second; a separated population in the frame's own file is
+  read once the claimants are sliced by status. It ignored the noise survey, taking department and tenure as the
+  exposure, and flagged the single-date layoff and the birth bunching.
+- Architecture 3 candidate 6, first form (measured 2026-10-26, never probed): the 1988-90 forge cohort crossing 62
+  with a realistic birth spread, the golden on cumulative dose from the noise survey. With births spread over 1962
+  to 1972 the cohort's first crossers fall in 2023-26, so the back-test p166j ran (fit 2016-22, test 2023-26) showed
+  the department-and-tenure hazard over-predicting Kessler's hearing-loss filings by 40 to 70 per cent, and a
+  per-plant recalibration of that hazard lands the golden; the cohort's separation moved to a November 2026 forge
+  closure and the filing hazard onto years since leaving.
+- Architecture 3 candidate 6, a November 2026 forge closure whose 1988-90 hires worked almost entirely under the
+  1991 enclosure, the filing hazard by years since leaving and dB-years from the noise survey, probed 2026-10-26
+  (p166k): the Opus call-only probe split acute injury from hearing loss, put acute claims on the 30 November roster
+  by plant and department (the forge empty, Ellery's 1,625 hires counted), fitted the closure group's propensity by
+  plant, department and hire era, measured the cohort's own low claim rate beside the noise drop, rejected the flat
+  layoff precedent and landed Ellery at about 260 with Harlow second; a cohort the action concentrates on is dug
+  into through every related file, the noise survey included.
+- Architecture 3 candidate 7, a self-insured manufacturer's 2027 carpal tunnel claims by plant, a mid-2026 line
+  speed-up at Ellery hidden by the disorder's onset lag, the ergonomics file carrying each job's Strain Index inputs,
+  probed 2026-10-26 (p166m, p166n): both Opus call-only probes scored the Strain Index from the assessment rows,
+  fitted log rate = -6.76 + 1.54 ln(SI) across the 56 job areas, confirmed it on the one area already changed, applied
+  the speed-up's doubling with an onset ramp and landed Ellery at about 290 to 300 with Harlow second; an exposure
+  field the solver recognises is scored and calibrated across the units.
+- Architecture 3 candidate 8, a new acute hospital's first-year critical care admissions under a practice-allocation
+  model, two independent-sector hospitals beside the new site sending their deteriorating patients to the nearest NHS
+  unit (Ravensholt General today) whatever the patient's practice, probed 2026-10-26 (p166o): the Opus call-only probe
+  ran the practice model (543, back-tested at 505 against 511), tabulated transferring sites in the admissions file,
+  found the two Hindmarsh sites' transfers taken at Ravensholt whatever the practice, reassigned them by site (55 in
+  2025-26, trended to 52.5) and landed 600 (595.4), rejecting the literal model as missing the flow; an outside body
+  carried in the model's own records is tabulated, however small its share.
+- Architecture 3 candidate 9, a new secondary academy's first Year 7 intake under the council's place-planning
+  model (its area's demand less the existing schools' admission numbers, 130), a neighbouring area's oversubscribed
+  schools turning away about 55 applicants a year whom the coordinated scheme's clause 8.1 offers the nearest school
+  with a place (until 2027 one in another authority, from 2027 the new academy, filling it to its 180), built
+  2026-10-26 as probe9 and never probed: it has the anatomy of task137 v3's stage-4 SEND_BACK, a filed clause that
+  decides membership and a cap that makes the body's size immaterial (every golden reading exactly 180), so the
+  decisive step reads as data semantics and rule application to the judge and to any reader of the scheme.
+- The outside-population family as a whole (candidates 5 to 9 here, task137 v3): the decisive step cannot satisfy
+  the three rules. Filed for determinacy, the institutional fact makes the step a presence flip read off a document
+  (Gate H data semantics, task137 stage 4); withheld, the golden rests on a hidden rule; left measurable in the data,
+  the body is tabulated or calibrated and landed (candidates 5 to 8); and a body large enough to move the bin
+  robustly makes its own size immaterial, while a small one leaves the call on the rounding edge.
