@@ -1,11 +1,11 @@
 {
  "task": "task306",
  "owner": "perssathya",
- "status": "SHIPPED",
+ "status": "DESIGN",
  "domain": "energy-systems-utilities",
  "objective": "opportunity-sizing-decision",
- "stage": 5,
- "stage_name": "ship",
+ "stage": 2,
+ "stage_name": "design",
  "updated": "2026-10-26",
  "stump": "A competent solver forecasts 2027 from the 30 June 2026 register alone, each car's current pack from the replacement log at its conditional chance of failing outside cover, and tools the Mira city car four lots short (1,250 against 1,450, 3,400 against 3,800 in total); the step that lands it there is taking the register as the population whose packs fall due in 2027, when the Mira's used imports keep arriving at about 116 a month past their warranty and fall due inside the year.",
  "architecture": 1,
@@ -32,14 +32,15 @@
    "date": "2026-10-26",
    "portal": "determinism block failed, two findings on the 2027 population and the pack basis",
    "repair": "determinism",
-   "commit": "pending the licensed re-judge"
+   "commit": "repair built but not shipped; the fork was the stump"
   }
  ],
- "resume": "The determinism repair is BUILT but NOT re-shipped. Three forks closed in the record (SF25 the 2027 population, SF26 the pack each car counts on, SF27 the lot stock rule), all by convergence or a population sentence, with no method filed. Gates green and re-verified in the main thread: 425 generator assertions, verify 0 failures, two byte-identical rebuilds, figures_check 66 of 66 with figures.json byte-identical to the shipped one, precut 51 checks 0 FAIL 0 WARN, voice-check PASS, guard validate 299 cards 0 invalid, guard heart WARN after a task166 differentiation line was added to the card, leak.py REVIEW with no LEAK, freeze.py check --mode determinism PASS. Measured: 144 projection variants all give the committed split, the one open figure (Mira pack failures outside warranty) spanning 320.2 to 395.5 against a golden of 359.8, the split holding above 318.0 and the total below 398.3. OPEN QUESTION, and the reason this is not re-shipped: the new population sentence makes it readable that cars registered after the 30 June 2026 snapshot are in the 2027 population, which may have spent the part of the stump that consisted of no reader asking about them. What stays silent is which of them fail, since no file says any later registration is a used car or past its warranty cover. NEXT: collect the licensed re-judge (isolated thread, brief at /tmp/determinism-check-task306-r2/judge_brief.md, verdict to verdict.md) and the isolated leak reader, both spawned 2026-10-26. If either finds that reading the register's two date fields and applying the warranty table reaches the committed answer with no analytical judgement, that is a 10/10 rule 3 finding and the build goes back to stage 2 instead of shipping. Otherwise finish /fix-determinism step 7: the returned entry's commit hash, the ledger row, and RESHIPPED (task306). Also stale and to fix at re-ship: the card's analyst_test still describes the register-only route, and this file's judge and leak entries still name the previously shipped zip.",
+ "resume": "Back to stage 2 for a decisive-step re-root, NOT a re-ship. The determinism repair is built and sound (three forks closed, no method filed, every free gate green, freeze.py --mode determinism PASS, 144 projection variants landing the committed split) and it cannot ship: one isolated reader holding only the prompt and the pack reproduced the call cell for cell (Volta 900, Kestrel 250, Plover 350, Mira 1,450, Tern 50, total 3,800) and said it got there by following a rule a shipped document states plus reading dates correctly, not by an analytical choice. That is a 10/10 rule 3 finding from outside the design. The fork and the stump were the same object: the only closure that makes the literal reading the golden is a population pin, and the pin tells the reader the question they were not asking (omitting the later registrations gives 3,400 and 1,250 Mira slots, the old default path). Underneath it the two large levers are field readings, measured by the reader: warranty from the Dutch registration date gives 1,968 total and 550 Mira slots, ignoring logged replacements gives 5,752 and 1,700. Re-root the decisive step at stage 1 keeping the world; the record closures are kept. Also owed on the next cut: the modules ask's eight over-posted pick lists read as planted (bookings stepping 07:05, 07:06, identical quantities per work order), and a golden-realism sweep (life curves smooth to four decimals, round lot sizes, banded recycler weights, a register extract with no noise). The licensed re-judge was still running when this was decided; fold its Gate H line in when it lands.",
  "approved": null,
  "delivered": "2026-10-24",
  "portal": null,
  "portal_id": "",
  "portal_status": "",
- "portal_status_date": ""
+ "portal_status_date": "",
+ "architecture_spent": true
 }

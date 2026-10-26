@@ -224,3 +224,57 @@ Measured by: generator/pair.py on the cut pack (target.zip 7aa71d60; re-run on a
 - Ask C's first device, dock 2 setting its rejects aside without scanning them (absent from the intake export, present at the recycler without a core code), was landed 5 of 5 by the stage 4 reader: dock 2's zero rejects and the blank core codes sit on the path of anyone counting rejects, and the judge found the dock's practice stated in no file. Re-sited onto the grade's date (D2): the intake export carries each core's grade on 1 July 2026, so a core the line built on and scrapped reads AFGEKEURD, and only its work order in the MES shows it passed intake; every ask C figure is unchanged.
 - The plan's "a car in use in the Netherlands is taken to stay in use through 2027" read to the stage 4 reader, and to the judge as its one soft spot, as freezing the register of 30 June 2026; the sentence now places the car in 2027 ("a car in use in the Netherlands in 2027 is taken to stay in use for the rest of the year"), the population the estimand already files, and names no import.
 - The portal returned the build on determinism (both judges: Gates C, D and E, underspecified_objective, A, B and G passing): the plan as shipped named the register as its only source and its only dynamics clause was about exits, so both judges forecast the register of 30 June 2026 alone (3,448, 3,500 with a judge's renewals), and a judge also summed ask A's batch lines as written. Pinning the population to the register was refused (it makes the judges' answer the golden and spends the stump), and filing the projection (a twelfth a month at the trailing rate, mix and age) was refused (rule application, CLAUDE.md rule 3). Closed instead by the WHAT at authority: plan section 3 files the fleet of 2027 as the register and the cars first registered here from 1 July 2026 to the end of 2027 (SF25) and one pack per car (SF26), the projection left open and forced by C1 over 144 projections, and the line notes file the lot stock rule for ask A (SF27); no graded or stated figure moved (freeze.py). The cost: that the later registrations are in the fleet is now readable, so the decisive rung keeps only what no sentence says, which of them fall due; the default path's answer is now the easy route's on the literal estimand (the later registrations carried as new cars).
+
+## The determinism repair spent the stump: redesign, 2026-10-26
+
+**The repair worked and the build still cannot ship.** All three forks closed, no method filed, every free gate green,
+`freeze.py check --mode determinism` PASS, and 144 projection variants landing the committed split. Then one isolated
+reader, holding only `prompt.txt` and the eighteen pack files and nothing else, reproduced the call cell for cell:
+Volta 900, Kestrel 250, Plover 350, Mira 1,450, Tern 50, total 3,814 rounding to 3,800. It also reproduced the modules,
+the first-pass yields and the core rejection shares.
+
+Asked what decided its answer, it said: mainly following a rule a shipped document states, plus reading dates
+correctly, and "I did not reach the answer by an analytical choice". Asked which sentence told it the decisive step,
+it quoted the paragraph the repair added, together with the plan's existing pack-age sentence and the warranty
+document's first-admission clause, and called them "a procedure". Asked which file exists only to help the analyst, it
+named the tooling plan, because it "spells out the method".
+
+**The diagnosis is the one `/fix-determinism` step 3 names, and it was missed at the start of the repair rather than
+at the end.** The fork and the stump were the same object. Before the repair the stump was that no reader thought to
+ask whether cars registered after the 30 June 2026 snapshot belong in the 2027 population; the portal's judges called
+that an unpinned population, which it was. Pinning it is the only closure that makes the literal reading the golden,
+and pinning it tells the reader the one thing they were not asking. The reader confirms both halves: omitting the
+later registrations gives 3,400 and 1,250 Mira slots, which is the old default path, and the filed sentence now rules
+that out.
+
+**And underneath it, the decisive lever was never analytical.** The reader measured what moves its answer: taking the
+warranty from the Dutch registration date instead of the date of first admission gives a total of 1,968 and 550 Mira
+slots, and ignoring the logged pack replacements gives 5,752 and 1,700. Those are the two large levers, and both are
+field readings. The one genuinely analytical element, extrapolating the new-registration cohort, the reader supplied
+itself with an assumption of its own and still landed. So the call turns on reading `datum_eerste_toelating` rather
+than `datum_eerste_tenaamstelling_in_nederland` and on applying a warranty table in which one platform alone carries
+five years to the others' eight. That is data semantics plus rule application, which the client's rule 3 bans as the
+decisive step whatever the determinism verdict.
+
+**Status: back to stage 2, not re-shipped.** The repair's record closures are sound and are kept; what has to be
+re-rooted is the decisive step. A pin cannot be removed to restore the stump, because the portal already failed the
+unpinned version: this architecture has no position in which it is both deterministic and stumped, which is what
+spent means.
+
+**Two findings worth carrying into the redesign, from the same read.**
+
+- **The modules ask reads as planted.** The reader called the eight over-posted pick lists out unprompted: bookings
+  stepping through 07:05, 07:06 and so on, identical quantities repeated per work order, each lot's receipt equal to
+  one copy plus the later small issues. `supplemental-stumping` law 1 and law 7 forbid exactly that signature. The
+  device should survive, the regularity should not.
+- **Realism tells across the pack.** Bookings stepping on exact consecutive minutes, life curves smooth to four
+  decimals, round lot sizes (600, 1,200, 300), recycler weights banded per platform, and the register extract with
+  "no real-world noise". That is a `golden-realism` sweep owed on the next cut.
+
+
+- The determinism repair itself, as a way to keep this architecture: refused on measurement after the fact. The three
+  record closures hold and no method was filed, but the fork and the stump were one object: the only closure that makes
+  the literal reading the golden is a population pin, and that pin tells the reader the question they were not asking.
+  One isolated reader then landed the call cell for cell and said it got there by following filed rules and reading
+  dates, not by an analytical choice. `/fix-determinism` step 3's stop condition, read at the start of the repair
+  rather than the end, would have sent this to stage 2 without the repair being built.
