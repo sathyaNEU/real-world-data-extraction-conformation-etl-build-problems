@@ -1,0 +1,23 @@
+{
+  "task": "task487",
+  "owner": "oviya1301",
+  "status": "DESIGN",
+  "domain": "physical-environmental-sciences/emissions-inventory",
+  "objective": "etl",
+  "stage": 2,
+  "stage_name": "design",
+  "updated": "2026-10-26",
+  "stump": "Starting every release event a lease operator finds at a visit halfway back to the previous departure, which the pressure-alarmed relief valve events confirm, files the lowest tier of the 2027 release-event levy, because a share of the thief hatch and combustor pilot events are started by the previous visit itself and vent for their whole windows; that share, read from how often each kind is found against the window's length, puts the filing in the middle tier",
+  "architecture": 1,
+  "loops": 0,
+  "precut": {"exit": null, "date": ""},
+  "leak": {"leak_py": "", "reader": ""},
+  "duplicate_check": {"heart": "", "nearest": "task476 v2 at 0.16 (differentiated)"},
+  "judge": {"verdict": "", "disposition": "", "report": ""},
+  "returned": [],
+  "resume": "stage 2: world on paper (routes, schedules, event kinds, vapour rates, levy tiers), the rung table and the family spread on the clean truth, fork table, closure, asks, prompt.txt, precut.py exit 0",
+  "approved": null,
+  "delivered": null,
+  "portal": null,
+  "source_note": "seed ET44 (analytical_tasks/07_data_extraction_conformation/ET44_online-retail-net-spend-loyalty-tier-cuts.md), header and situation only; world not carried"
+}

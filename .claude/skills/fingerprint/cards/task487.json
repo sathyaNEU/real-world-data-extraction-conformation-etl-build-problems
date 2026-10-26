@@ -1,0 +1,86 @@
+{
+  "task": "task487",
+  "architecture": "v1",
+  "drawn": "2026-10-26",
+  "slot_note": "seed ET44's number in the ETL lane (an online wholesaler's loyalty tiers); the seed's world carries no quantity the field estimates once its decoy-era mechanism is set aside, so the first draw is made in emissions-inventory",
+  "domain": "physical-environmental-sciences",
+  "subdomain": "emissions-inventory",
+  "client_domain": "physical-environmental-sciences",
+  "niche": "an upstream oil producer's 2026 release-event methane inventory for the province's release-event levy: thief hatch, combustor pilot and relief valve events at 180 tank batteries on twelve lease operator routes, found at a visit or timed by a tank pressure alarm",
+  "objective": "etl",
+  "shape": "03",
+  "decision_type": "quantity_figure",
+  "answer_unit": "currency",
+  "answer": "",
+  "answer_source": "",
+  "gap": [
+    "population"
+  ],
+  "pattern": [
+    "none"
+  ],
+  "generators": [
+    "G7",
+    "G3"
+  ],
+  "gate_g": "decomposition_attribution",
+  "calibration_form": "none",
+  "stump_strategy": "informative_censoring",
+  "decisive_rule_filed": false,
+  "official_decoy": false,
+  "validated_decoy": false,
+  "context_artifact": "operations_log",
+  "stump_class": "analytical",
+  "analyst_test": "A strong analyst who conforms the two pumper apps, the event log and the pressure alarms, prices each event at its pad's vapour rate and starts every event found at a visit halfway back to the previous departure, a placement the alarm-timed relief events confirm, files the lowest levy tier, because a share of the hatch and combustor events are started by the previous visit itself and vent for the whole window.",
+  "domain_test": "The decisive quantity is the operator's 2026 vented methane from release events, each event's tank vapour rate over its active hours, where an event found at a lease operator's visit is split between the share the previous visit starts (a gauge hatch left unlatched, a combustor pilot lost at the knockout drain) and the share that arises hour by hour between visits, read from how often each kind is found against the length of the window since the previous departure; put another field's nouns in and the gauging that opens the hatch, the flash vapour that leaves through it and the relief valve the pressure alarm watches stop making sense.",
+  "layer2_family": "estimation_fit",
+  "layer2_pattern": "own:events the inspecting visit itself starts, read from incidence against window length",
+  "layer1": [
+    "two pumper apps across a mid-year migration, one stamping local time and one UTC",
+    "GPS geofence double check-ins on one visit",
+    "a battery renamed after a purchase, its history under the old licence",
+    "event log free text naming the hatch, the valve or the combustor several ways",
+    "production in cubic metres against vapour analyses in mole per cent",
+    "alarm chatter that re-raises one relief event within minutes"
+  ],
+  "stakeholder_role": "the operator's area production superintendent who signs the 2026 release-event filing",
+  "role_family": "field_unit_lead",
+  "scoring_unit": "other",
+  "spine": {
+    "file": "daily_production_2026.csv",
+    "rows": 65700,
+    "entity": "one battery's production on one day",
+    "grain": "battery x day",
+    "source": "synthetic"
+  },
+  "forum": "regulator_or_inspector",
+  "forcing_event": "statutory_or_regulatory_filing",
+  "org_family": "other",
+  "world": {
+    "geography": "Canada, a fictional western province",
+    "currency": "CAD",
+    "org_type": "an upstream oil producer",
+    "invented_names": [],
+    "people": [
+      "Rhonda Wheeler",
+      "Charlene Logan"
+    ]
+  },
+  "deliverables": [
+    "release_events_2026.csv",
+    "release_levy_filing_2026.xlsx"
+  ],
+  "opening_move": "question-first",
+  "question_form": "how-much",
+  "driver": "Events found at a scheduled inspection began at unrecorded times since the previous one, but a share of them were started by the previous inspection itself and ran the whole window while the rest arose at a steady rate in between; the started share falls as the window lengthens and is read from how often each kind is found against the window's length, and the events a second record times exactly are a kind the inspection never starts, so they confirm the even spread that misprices the rest.",
+  "driver_concrete": "Each thief hatch and combustor pilot event a lease operator finds at a visit began either as the previous visit ended (a gauge hatch left unlatched, a pilot lost at the knockout drain) or at a steady hourly rate since, so its vented hours are read from how often each kind is found in short weekday windows against long weekend and holiday ones, not from the midpoint the pressure-alarmed relief valve events support.",
+  "stump": "The default path starts every event found at a visit halfway back to the previous departure, which the pressure-alarmed relief valve events confirm, and files the lowest levy tier; the visit-started share of hatch and pilot events, read from incidence against window length, runs those events for most of their windows and puts the filing in the middle tier.",
+  "mechanism_source": "design_note",
+  "differentiation": {
+    "task476": "task476 v2 places a surveyed leak's start by the season leaks begin in, measured on a second record of leaks reported as they start; here no season moves anything and the second record (alarm-timed relief events) is blind by physics to the step: the inspection itself starts a share of the events, so their starts sit at each window's opening, and the share is read from incidence against window length.",
+    "task173": "task173 v3 carries maintenance-induced failure risk into a forecast year in which most units are worked on; here nothing is forecast and no risk is carried: each found event's unrecorded active time in a closed year is split between the share the previous visit started and the share that arose between visits."
+  },
+  "lineage": [],
+  "notes": "org_family other: an upstream oil and gas producer (no vocab key fits; utility_or_infrastructure would be untrue).",
+  "registered": "2026-10-26T13:07:47Z"
+}
