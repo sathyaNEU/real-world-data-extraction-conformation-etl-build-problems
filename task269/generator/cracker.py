@@ -1,54 +1,53 @@
-"""The cracker and mirror sheets on the cut pack, scored figure by figure against generator/figures.json, a hit an
-exact match at the asked rounding. The cracker lands the call, runs the hygiene battery and the two stage 4 readers'
-measured routes (deeds read through the change log by their own dates and units combined after the sale set aside;
-permits joined to the 2026 roll by their numbers as written; hearings taken at each case's last decision after the
-2025 roll's certification) and executes every filed rule; the mirror stops on the default path. The asks consume
-nothing the call produces, so the two read them alike (the separation assertions S1 to S4 in checks.py).
-
-    python3 task269/generator/cracker.py"""
+"""The cracker's path on the cut pack (supplemental-stumping 1.1): a response that lands the call, runs the hygiene
+battery (key uniqueness, exact and near-exact duplicate rows, unmatched joins, fan-out) and executes every filed rule
+it points at, as the stage 4 readers did. On Ask A it links every culture to its admission (a retired record number by
+date of birth and sex, the battery's unmatched join), rebuilds the ward at collection from the admitting ward and the
+transfers, keeps each patient's episodes across admissions and applies the onset rule from each admission's own start;
+on Ask B it sums the bottles the store issued to each ward less returns, reads each carton as 24 personal bottles, and
+counts every dispenser refill record (no two rows are alike, so the battery drops nothing); on Ask C it sums the soap
+bottles to each ward and the quantity on every cartridge record at 0.8 litres. Every ask figure is scored against figures.json: a hit
+is within half a unit of the stated rounding. The mirror (the response on R1, 9B alone) runs the asks the same way,
+since they consume nothing the call's construction produces; the separation rows in checks.py prove it. Prints the
+sheet and the pair ceiling."""
 import json
 import os
 import sys
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)
-import asks as AK     # noqa: E402
-import common as K    # noqa: E402
-import pack as PK     # noqa: E402
-
-TASK = os.path.dirname(HERE)
+import asks as AK      # noqa: E402
+import common as K     # noqa: E402
 
 
-def score(target, a_mode="rawperm", b_mode="case"):
+def score(task):
+    target = os.path.join(task, "target")
     fig = json.load(open(os.path.join(HERE, "figures.json")))
-    pk = PK.Pack(target)
-    a = AK.ask_a(pk, a_mode)
-    b = AK.ask_b(pk, b_mode)
-    FA = fig["ask_a"]
-    rows = [("A condominium sales", a["n"], FA["sales"]),
-            ("A condominium level", round(a["level"], 2), FA["level"]),
-            ("A condominium COD", round(a["cod"], 1), FA["cod"]),
-            ("A condominium PRD", round(a["prd"], 3), FA["prd"]),
-            ("A condominium aggregate", round(a["agg"], 3), FA["agg"])]
-    for ar, nm in K.AREAS:
-        rows.append(("B parcels area %d" % ar, b[ar]["parcels"], fig["ask_b"][str(ar)]["parcels"]))
-        rows.append(("B value area %d" % ar, b[ar]["off"], fig["ask_b"][str(ar)]["value_off"]))
-    rows = [(n, got, want, got == want) for n, got, want in rows]
-    hits = sum(r[3] for r in rows)
-    lc = hits / len(rows)
-    crack = 38 + 7 + 55 * lc
-    mirror = 5 + 7 + 55 * lc
-    return rows, hits, (crack + mirror) / 2, lc
+    a = AK.hobsi(target, stay_gap=None)
+    b = AK.hand_rub(target, drop_copies=False)
+    s = AK.hand_soap(target, drop_copies=False, sum_quantity=True)
+    ga, gb, gs = fig["asks"]["A"], fig["asks"]["B"], fig["asks"]["C"]
+    rows = []
+    for c in K.WARD:
+        rows.append(("A", "HOBSI %s" % c, a["n"][c] == ga["hobsi"][c]))
+        rows.append(("A", "rate %s" % c, abs(a["rate"][c] - ga["rate_per_10000_obd"][c]) < 0.05))
+        rows.append(("B", "litres %s" % c, abs(b["litres"][c] - gb["litres"][c]) < 0.05))
+        rows.append(("B", "rate %s" % c, abs(b["rate"][c] - gb["litres_per_1000_obd"][c]) < 0.05))
+        rows.append(("C", "litres %s" % c, abs(s["litres"][c] - gs["litres"][c]) < 0.05))
+        rows.append(("C", "rate %s" % c, abs(s["rate"][c] - gs["litres_per_1000_obd"][c]) < 0.05))
+    return rows
 
 
 if __name__ == "__main__":
-    target = os.path.join(TASK, "target")
-    rows, hits, pair, lc = score(target)
-    for name, got, want, hit in rows:
-        print("%-22s cracker %-12s golden %-12s %s" % (name, got, want, "HIT" if hit else "miss"))
-    print("cracker keeps %d of %d ask figures; mirror leakage %.1f per cent; pair ceiling %.1f"
-          % (hits, len(rows), 100 * lc, pair))
-    for am, bm in (("noperm", "case"), ("noperm", "allcase"), ("raw", "rows"), ("every", "first"),
-                   ("rawperm", "all")):
-        _, h, p, _ = score(target, am, bm)
-        print("variant (A %s, B %s): keeps %d of %d, pair %.1f" % (am, bm, h, len(rows), p))
+    task = sys.argv[1] if len(sys.argv) > 1 else os.path.dirname(HERE)
+    rows = score(task)
+    for ask in ("A", "B", "C"):
+        r = [x for x in rows if x[0] == ask]
+        print("Ask %s: cracker keeps %d of %d figures%s" % (ask, sum(x[2] for x in r), len(r),
+                                                              "" if not any(x[2] for x in r) else
+                                                              " (" + ", ".join(x[1] for x in r if x[2]) + ")"))
+    kept = sum(x[2] for x in rows)
+    n = len(rows)
+    lc = kept / n
+    pair = ((38 + 7 + 55 * lc) + (5 + 7 + 55 * lc)) / 2
+    print("cracker %d of %d ask figures; mirror %d of %d (decoupled asks); pair ceiling %.1f" % (kept, n, kept, n, pair))
+    sys.exit(0 if kept == 0 else 1)

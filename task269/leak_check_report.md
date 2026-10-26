@@ -1,15 +1,19 @@
 # leak check, task269
 
-**Verdict: REVIEW.** 13 files read, 21 golden figures and 3 candidate names taken from submission.md, 25 stump terms taken from the design note.
+**Verdict: REVIEW.** 18 files read, 70 golden figures and 0 candidate names taken from submission.md, 25 stump terms taken from the design note.
 
 LEAK stops the ship. REVIEW is a reader's call and the /leak-check command's solver's-eye pass reads every REVIEW line. INFO is a sweep that ran and found nothing or was skipped.
 
-Stump terms swept: parcel, neighbourhood, change, architecture, record, population, carried, january, sample, reviewed, unsold, method, assessor, window, reader, landed, distribution, validation, carried-forward, branch, selection, forward, evidence, prices, factor
+Stump terms swept: reader, architecture, audited, required, moments, landed, acuity, roster, sample, worked, weighted, record, carries, audits, carried, screen, workload, measure, sessions, window, method, population, readers, branch, dispenser
 
-## 4 design-note vocabulary (REVIEW 3)
-- **REVIEW** `data_dictionary.txt`: 7 of 25 stump-paragraph terms appear (parcel, neighbourhood, change, record, january, assessor); read whether the document names the move
-- **REVIEW** `reappraisal_offer_memo.pdf`: 7 of 25 stump-paragraph terms appear (parcel, change, record, carried, january, assessor); read whether the document names the move
-- **REVIEW** `str_rule_18-7_residential_ratio_studies.pdf`: 8 of 25 stump-paragraph terms appear (parcel, change, record, carried, january, assessor); read whether the document names the move
+## 3 answer figures in the pack (REVIEW 1)
+- **REVIEW** `hand_hygiene_coaching_grant_terms_2027.pdf`: carries 6 of 8 distinctive words of the committed call: 'Fund a 2027 hand hygiene coaching nurse on five wards: AMU, ESSU, 4A, 7A and 9B.'
+
+## 4 design-note vocabulary (REVIEW 4)
+- **REVIEW** `acuity_and_roster_extract_notes.txt`: 5 of 25 stump-paragraph terms appear (required, acuity, roster, worked, carries); read whether the document names the move
+- **REVIEW** `application_pack_index.txt`: 6 of 25 stump-paragraph terms appear (required, acuity, roster, worked, record, dispenser); read whether the document names the move
+- **REVIEW** `hand_hygiene_coaching_grant_terms_2027.pdf`: 6 of 25 stump-paragraph terms appear (required, moments, acuity, record, measure, sessions); read whether the document names the move
+- **REVIEW** `hand_hygiene_program_2025_26.pdf`: 5 of 25 stump-paragraph terms appear (moments, record, measure, sessions, dispenser); read whether the document names the move
 
 ## 10 container metadata (INFO 1)
 - **INFO** `-`: audit reported no writer signature (1 lines)
@@ -17,8 +21,6 @@ Stump terms swept: parcel, neighbourhood, change, architecture, record, populati
 ## 1 file names (clean)
 
 ## 2 author vocabulary (clean)
-
-## 3 answer figures in the pack (clean)
 
 ## 5 announcements (clean)
 
@@ -31,25 +33,3 @@ Stump terms swept: parcel, neighbourhood, change, architecture, record, populati
 ## 9 dates after the setting (clean)
 
 ## 11 prompt gate (clean)
-
-
-## Solver's-eye read
-
-Architecture 4, round 1 (2026-10-25, target.zip e869069b): two isolated scored readers (Sonnet, medium), each on a fresh copy of `prompt.txt` and `target/`, briefed with the Deliverable Answers keys only. The stump-vocabulary sweep's lines were ruled in the main thread and not handed over.
-
-**Scores (`score_reader.py`).** Reader 1: call missed (0.95, 8, meets: the default path); asks 13 of 17 (Ask B 12 of 12, Ask A's sale count), exit 1. Reader 2: call missed (0.95, 8, meets); asks 5 of 17 (Ask A 5 of 5), exit 2.
-
-**Questions.** 1, the decisive step: none from both (each quoted rule 3.2's set-aside as the nearest sentence). 2, a ranking file: none. 3, a helper file: none (reader 2 named the memo's line setting the homestead and levy files aside). 4, an answer-shaped figure: none. 5, a sentence fixing the main figure: both quoted 2.1 with 3.1 and read the sales' own study as its literal result (0.95 and 8.0); reader 2 noted that 2.1 says "every parcel" and read it as the sold parcels. 6, what decides: reader 1 the rule's procedure, reader 2 an analytical choice, each describing its own default path.
-
-**Realism.** Neither found a file built for the analyst; reader 1 named the clean crosswalk and Wexley Commons' renumbering block as the tidiest things in the pack.
-
-**Ruled in the main thread.** The sweep 4 lines (the dictionary, the memo and the rule share common nouns with the stump paragraph): harmless, none states a relation between the two rolls or a review of sold parcels. Question 5 was the fork the judge also found: rule 2.1 now files the population as "every parcel of the class on the county's certified roll, sold or not". Both leaked asks were re-sited (design note, `## Ask sheet`).
-
-Architecture 4, round 2 (2026-10-25, target.zip 34487572), after rule 2.1 filed the population ("sold or not") and both asks were re-sited: two fresh isolated scored readers on the same brief, the condominium verdict key replaced by the aggregate ratio.
-
-**Scores (`score_reader.py`).** Reader 3: call landed (fails, through the carried-forward values alone: 0.86 and 19); asks 17 of 17, exit 1. Reader 4: call landed (fails, 0.87 and 18, the golden construction); asks 17 of 17, exit 1. Gate F failed: the architecture is spent.
-
-**Questions (reader 4).** 1, the decisive step: rule 2.1's "the median, over every parcel of the class on the county's certified roll, sold or not". 5: the same sentence, read as all 25,988 parcels with the unsold needing an estimate. 6: an analytical choice, the estimand covering sold and unsold parcels while the sold ones were revalued toward their prices. Reader 3 returned its figures without the questions.
-
-**Ruled in the main thread.** The population sentence that closes the round-1 judge's fork is the sentence both round-2 readers followed to the correction: the stump lived in the population (WHAT), so the architecture is spent and not repaired.
-

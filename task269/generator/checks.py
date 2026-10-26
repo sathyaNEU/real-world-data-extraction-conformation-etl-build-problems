@@ -1,8 +1,9 @@
-"""The generator's assertions on the built pack: the call and its standing family at the printed rounding, the
-three-rules block (R1 to R3c) on the clean truth, the semantic fork rows, the asks and their devices, separation from
-the main population, the input gates and the realism sweep.
-
-    python3 task269/generator/checks.py      (run by build.py after every build)"""
+"""The generator's assertions on the cut pack: the input gates, the call and its estimator family, the rungs, the three
+rules (R1 the field's raw material ships, R2 every mess item neutral, R3 the analyst test on the clean truth), the
+semantic forks (SF rows), the separation of the asks from the call, the ask devices and their stops, the rounding
+edges, the realism sweep and the containers. Every label is printed with PASS or FAIL; the run fails on any FAIL."""
+import collections
+import datetime as dt
 import json
 import os
 import re
@@ -11,300 +12,308 @@ import zipfile
 import numpy as np
 import pandas as pd
 
-import analysis as AN
+import analysis as A
 import asks as AK
 import common as K
-import pack as PK
+import side as SD
 
-HERE = os.path.dirname(os.path.abspath(__file__))
-
-
-def edge(v, u):
-    """Distance from v to the nearest edge of the cell it prints in at unit u."""
-    return u / 2 - abs(v - round(v / u) * u)
+ROWS = []
 
 
-def pdf_text(path):
-    from pypdf import PdfReader
-    return " ".join((p.extract_text() or "") for p in PdfReader(path).pages)
+def row(label, ok, detail=""):
+    ROWS.append((label, bool(ok), detail))
+
+
+def below(D):
+    return tuple(sorted((c for c, v in D.items() if v < K.BENCHMARK / 100.0), key=K.WARD.index))
+
+
+def edge(v, unit):
+    """distance from the unrounded value to the nearest rounding edge at the printed unit"""
+    return unit / 2 - abs(v - round(v / unit) * unit)
 
 
 def run(task, b, fig, res):
     target = os.path.join(task, "target")
-    rows = []
+    golden_dir = os.path.join(task, "golden")
+    W, S = b["world"], b["side"]
+    F = res["g"]["F"]
+    gold = tuple(fig["call"]["funded"])
 
-    def ok(label, cond, detail=""):
-        rows.append((label, bool(cond), detail))
-
-    pk = PK.Pack(target)
-    o = AN.main(pk)
-    w = b["w"]
-    s = w.sf
-    F = fig
-    rule = pdf_text(os.path.join(target, K.FILES["rule"]))
-    memo = pdf_text(os.path.join(target, K.FILES["memo"]))
-    ok("control: the rule's text reads back", "Residential ratio studies" in rule and len(rule) > 1500, len(rule))
-    ok("control: the memo's text reads back", "reappraisal" in memo and len(memo) > 800, len(memo))
-    rule_n = re.sub(r"\s+", " ", rule)
-
-    # ---- the call ------------------------------------------------------------------------------------------------------
-    g = o["golden"]
-    ok("C1 golden fails both tests", g[0] < K.STANDARD["level_lo"] and g[1] > K.STANDARD["cod_max"], g)
-    ok("C1 golden prints 0.87 and 18", round(g[0], 2) == F["call"]["level"] == 0.87 and int(round(g[1])) == F["call"]["cod"] == 18)
-    e = o["easy"]
-    ok("C2 the default path meets both tests", K.STANDARD["level_lo"] <= e[0] <= K.STANDARD["level_hi"] and
-       e[1] <= K.STANDARD["cod_max"], e)
-    meds = [v[0] for v in o["family"].values()]
-    cods = [v[1] for v in o["family"].values()]
-    ok("C3 every standing construction prints the golden level", len({round(m, 2) for m in meds}) == 1, sorted(meds))
-    ok("C3 every standing construction prints the golden COD", len({int(round(c)) for c in cods}) == 1, sorted(cods))
-    ok("C3 level family clears its cell edge by 0.003", min(edge(m, 0.01) for m in meds) >= 0.003,
-       min(edge(m, 0.01) for m in meds))
-    ok("C3 COD family clears its cell edge by 0.4", min(edge(c, 1.0) for c in cods) >= 0.4, min(edge(c, 1.0) for c in cods))
-    ok("C3 the family's members all fail the rule", all(m < 0.9 for m in meds) and all(c > 15 for c in cods))
-    rf = o["rollfwd"]
-    ok("C4 the carried-forward values alone print another figure, the same call",
-       (round(rf[0], 2), int(round(rf[1]))) != (0.87, 18) and rf[0] < 0.9 and rf[1] > 15, rf)
-    ok("C4 the rule files the population that rules them out, the parcels that did not sell included",
-       "the median, over every parcel of the class on the county's certified roll, sold or not, of the parcel's "
-       "assessed value on that roll" in rule_n)
-    ev = F["evidence"]
-    ok("C5 sold parcels' median change prints 14.9", ev["sold_change_pct"] == 14.9 and
-       edge(100 * (o["chg_sold"] - 1), 0.1) >= 0.01, o["chg_sold"])
-    ok("C5 other parcels' median change prints 3.4", ev["unsold_change_pct"] == 3.4 and
-       edge(100 * (o["chg_unsold"] - 1), 0.1) >= 0.01, o["chg_unsold"])
-    ok("C5 reviewed share prints 6.7", ev["reviewed_share_pct"] == 6.7 and edge(100 * o["share"], 0.1) >= 0.01,
-       o["share"])
-    ok("C5 the study's sales and the set-asides", ev["study_sales"] == o["study_n"] == 1698 and ev["set_aside_sales"] == 44)
-    ok("C6 the sold parcels moved apart from the rest by more than eight points",
-       o["chg_sold"] - o["chg_unsold"] > 0.08)
-    r25s = o["roll2025_study"]
-    ok("C7 the 2025 roll's own study is another figure", (round(r25s[0], 2), round(r25s[1], 1)) != (0.87, 18.0), r25s)
-
-    # ---- the three rules (R1 to R3c) on the clean truth ----------------------------------------------------------------
-    cols = set(pk.roll26.columns) | set(pk.roll25.columns) | set(pk.deeds.columns)
-    ok("R1 no shipped column holds a ratio, a factor or a review mark",
-       not any(re.search(r"(^|_| )ratio|factor|review|chase|adjust", c, re.I) for c in cols), sorted(cols))
-    ok("R1 the pack carries both rolls parcel by parcel and the deeds sale by sale",
-       len(pk.roll26) > 25000 and len(pk.roll25) > 25000 and len(pk.deeds) > 1700)
-    # the golden reads the 2025 values of the sold parcels: move them and the figure moves
-    st = AN.q_sales(pk, AN.sf_frames(pk)[0])
-    r25 = AN.sf_frames(pk)[1].copy()
-    r25.loc[r25.index.isin(st["pid26"]), "Total Assessed"] *= 1.05
-    moved = AN.mixture(st, r25, o["factors"], o["share"])
-    ok("R1 the decisive computation reads the sold parcels' 2025 values", abs(moved[0] - g[0]) > 0.002, moved)
-    sold, study = s["s25"], s["s25"] & (s["kind"] != 1)
-    pj = s["price"] * K.INDEX_JAN2026 / s["idx"]
-    easy_t = AN.stat(s["av26"][study] / pj[study])
-    ok("R3a the easy route on the clean truth meets the rule (the default path's answer)",
-       0.9 <= easy_t[0] <= 1.1 and easy_t[1] <= 15 and round(easy_t[0], 2) == F["default_path"]["level"], easy_t)
-    cf = np.round(s["av25"] * w.sf["fac"][s["nbi"]], -2)
-    n = int(study.sum())
-    shr = sold.sum() / (len(sold) - K.N_COMBINE)
-    mix_t = AN.wstat(np.r_[cf[study] / pj[study], s["av26"][study] / pj[study]],
-                     np.r_[np.full(n, 1 - shr), np.full(n, shr)])
-    ok("R3b the decisive step alone, on the clean truth, files the golden", round(mix_t[0], 2) == 0.87 and
-       int(round(mix_t[1])) == 18, mix_t)
-    for nm, x in (("no physical-change set-aside", AN.stat(s["av26"][sold] / pj[sold])),
-                  ("no index carry", AN.stat(s["av26"][study] / s["price"][study])),
-                  ("all deeds' parties read as arm's length", o["easy_all_q"])):
-        ok("R3b a lower rung alone still meets the rule: %s" % nm, x[0] >= 0.9 and x[1] <= 15, x)
-    ok("R3c no document states a ratio, level or COD of the roll",
-       not re.search(r"\b0\.[89]\d\b|\bCOD of \d", memo) and "meets" not in memo.lower(), "")
-    d = pk.deeds
-    dup = d.duplicated(subset=["instrument_no", "parcel_no"]).sum()
-    ok("R3c no copied block: no deed row repeats instrument and parcel", dup == 0, dup)
-    rr = pk.roll26.drop(columns=["parcel_id", "situs_address"]).duplicated().sum()
-    ok("R3c no copied block: roll rows repeat at a natural rate", rr < 30, rr)
-
-    # ---- R2: each Layer 1 item, mishandled the natural way, leaves the call and the critical figures --------------------
-    r26f, r25f = AN.sf_frames(pk)
-    lost = set(pk.roll25["pid26"]) - set(pk.roll26["parcel_id"])
-    ch_old = set(pk.changes["old_parcel_no"].map(PK.to26))
-    ok("R2 the two rolls' parcel numbers differ only in form, outside the change log",
-       lost <= ch_old, len(lost - ch_old))
-    ch = AN.changes(pk, r26f, r25f)
-    survivors = set(pk.changes.loc[pk.changes["change_type"] == "COMBINE", "new_parcel_id"])
-    fac2 = AN.factors(ch, exclude=survivors)
-    g2 = AN.mixture(st, r25f, fac2, o["share"])
-    ok("R2 combined parcels' survivors left out of the factors: same figures", round(g2[0], 2) == 0.87 and
-       int(round(g2[1])) == 18, g2)
-    q_only = pk.deeds[pk.deeds["validation_code"] == "Q"]
-    ok("R2 transfers coded U never reach the study", set(st["instrument_no"]) <= set(q_only["instrument_no"]))
-    rec_month = st.copy()
-    rec_month["price_jan26"] = rec_month["consideration"] * pk.index_carry(
-        pk.deeds.set_index("instrument_no").loc[rec_month["instrument_no"], "recorded_date"].reset_index(drop=True)
-        .set_axis(rec_month.index))
-    g3 = AN.mixture(rec_month, r25f, o["factors"], o["share"])
-    ok("R2 SF4 the index carried from the recording month instead: same figures", round(g3[0], 2) == 0.87 and
-       int(round(g3[1])) == 18, g3)
-    big_book = "%03d" % w.condo_book[len(K.CONDO_PROJECTS) - 1]
-    ok("R2 the condominium renumbering touches no single-family row",
-       not pk.changes.loc[pk.changes["change_type"] == "RENUMBER", "old_parcel_no"].str[:3].ne(big_book).any())
-    cperm = pk.permits[pk.permits["parcel_no"].str[:3] >= "200"]
-    ok("R2 the condominium permits touch no single-family parcel", not cperm["pid26"].isin(r26f.index).any() and
-       len(cperm) >= 40, len(cperm))
-
-    # ---- semantic fork rows -------------------------------------------------------------------------------------------
-    ok("SF1 class R1 is single-family; the rule says so", "single-family residential (class R1)" in rule_n)
-    ok("SF2 meeting the rule needs both tests", "its level is from 0.900 to 1.100 and its COD is 15.0 or less" in rule_n)
-    ok("SF3 the level is taken over every parcel of the class on the certified roll, sold or not",
-       "over every parcel of the class on the county's certified roll, sold or not" in rule_n)
-    ok("SF4 the price carried by the deed's month", "divided by the index for the month of the deed" in rule_n)
-    ok("SF5 set-asides: changed improvements or boundaries; no other trimming",
-       "boundaries or improvements changed between the date of the deed and the assessment date" in rule_n and
-       "Ratios are not otherwise trimmed" in rule_n)
-    ok("SF6 COD around the level, as a percentage", "absolute difference between a parcel's ratio and the class's level"
-       in rule_n)
-    ok("SF7 weighted median convention: lower, upper and averaged agree",
-       round(AN.mixture(st, r25f, o["factors"], o["share"], how="mid")[0], 2) == 0.87 and
-       round(o["family"]["upper weighted median"][0], 2) == 0.87)
-    ok("SF8 the reviewed share counted on all reviewed parcels or on the study's sales: same figures",
-       round(o["family"]["share on the study's sales"][0], 2) == 0.87 and
-       int(round(o["family"]["share on the study's sales"][1])) == 18)
-    anyd = set(pk.deeds["pid26"]) & set(r26f.index)
-    g_any = AN.mixture(st, r25f, o["factors"], len(anyd) / len(r26f))
-    qset = set(pk.deeds.loc[pk.deeds["validation_code"] == "Q", "pid26"])
-    u_only = sorted((set(pk.deeds.loc[pk.deeds["validation_code"] != "Q", "pid26"]) - qset) & set(ch.index))
-    u_chg = float(ch.loc[u_only, "chg"].median())
-    ok("SF8 'sold' read as any 2025 deed: the same figures", round(g_any[0], 2) == 0.87 and int(round(g_any[1])) == 18,
-       g_any)
-    ok("SF8 parcels with only non-arm's-length deeds moved with the parcels that did not sell",
-       abs(u_chg - o["chg_unsold"]) < 0.002 and len(u_only) > 300, (len(u_only), u_chg))
-    trimmed = st.copy()
-    rr_ = trimmed["av26"] / trimmed["price_jan26"]
-    q1, q3 = rr_.quantile(.25), rr_.quantile(.75)
-    ok("SF9 the assessment date's month for the carry is January 2026", pk.idx["2026-01"] == K.INDEX_JAN2026)
-    ok("SF10 the reviewed parcels' own ratios are their certified 2026 values over their prices",
-       abs(float((st["av26"] / st["price_jan26"]).median()) - e[0]) < 1e-12)
-
-    # ---- the asks -----------------------------------------------------------------------------------------------------
-    A = AK.ask_a(pk, "golden")
-    Ar, Ae = AK.ask_a(pk, "raw"), AK.ask_a(pk, "every")
-    FA = F["ask_a"]
-    ok("A1 condominium figures as written", (A["n"], round(A["level"], 2), round(A["agg"], 3), round(A["cod"], 1),
-                                              round(A["prd"], 3)) == (FA["sales"], FA["level"], FA["agg"], FA["cod"],
-                                                                      FA["prd"]))
-    ok("A1 condominium sales odd, so the median is one sale's ratio", A["n"] % 2 == 1, A["n"])
-    ok("A1 condominium level clears its cell edge", edge(A["level"], 0.01) >= 0.002, edge(A["level"], 0.01))
-    ok("A1 condominium COD clears its cell edge", edge(A["cod"], 0.1) >= 0.015, edge(A["cod"], 0.1))
-    ok("A1 condominium PRD clears its cell edge", edge(A["prd"], 0.001) >= 0.0002, edge(A["prd"], 0.001))
-    ok("A1 condominium aggregate ratio clears its cell edge", edge(A["agg"], 0.001) >= 0.0002, edge(A["agg"], 0.001))
-    ok("A1 the condominium class meets the rule", 0.9 <= A["level"] <= 1.1 and A["cod"] <= 15)
-    for nm, x in (("raw numbers", Ar), ("the change log applied to every deed", Ae)):
-        ok("A2 %s moves every condominium figure" % nm,
-           x["n"] != A["n"] and round(x["level"], 2) != round(A["level"], 2) and round(x["cod"], 1) != round(A["cod"], 1)
-           and round(x["prd"], 3) != round(A["prd"], 3) and round(x["agg"], 3) != round(A["agg"], 3), x)
-    An, Arp = AK.ask_a(pk, "noperm"), AK.ask_a(pk, "rawperm")
-    for nm, x in (("no permit set aside", An), ("permits joined by their numbers as written", Arp)):
-        ok("A4 %s moves the sales, the aggregate ratio, the COD and the PRD" % nm,
-           x["n"] != A["n"] and round(x["cod"], 1) != round(A["cod"], 1) and round(x["prd"], 3) != round(A["prd"], 3)
-           and round(x["agg"], 3) != round(A["agg"], 3), x)
-    wexp = cperm[cperm["parcel_no"].str[:3] == big_book].copy()
-    oldnos = set(pk.changes.loc[pk.changes["old_parcel_no"].str[:3] == big_book, "old_parcel_no"])
-    newnos = set(pk.changes.loc[pk.changes["old_parcel_no"].str[:3] == big_book, "new_parcel_id"])
-    pre_p = wexp[wexp["issued_date"] < pd.Timestamp(K.REDECLARED)]
-    post_p = wexp[wexp["issued_date"] >= pd.Timestamp(K.REDECLARED)]
-    ok("A5 a Wexley Commons permit carries the unit's number on its issue date",
-       pre_p["parcel_no"].isin(oldnos).all() and post_p["pid26"].isin(newnos).all() and len(pre_p) >= 5 and
-       len(post_p) >= 5, (len(pre_p), len(post_p)))
-    sit = pk.roll26.set_index("parcel_id")["situs_address"]
-    m_new = dict(zip(pk.changes["old_parcel_no"], pk.changes["new_parcel_id"]))
-    m_eff = dict(zip(pk.changes["old_parcel_no"], pk.changes["effective_date"]))
-    mapped = [m_new[p] if (p in m_new and d < m_eff[p]) else PK.to26(p)
-              for p, d in zip(cperm["parcel_no"], cperm["issued_date"])]
-    agree = [str(sit.get(k, "")).endswith("Unit " + wd.rsplit("Unit ", 1)[1])
-             for k, wd in zip(mapped, cperm["work_description"])]
-    ok("A5 every condominium permit's unit agrees with the parcel its number names on its issue date", all(agree),
-       sum(agree))
-    pre = pk.deeds[(pk.deeds["parcel_no"].str[:3] == big_book) & (pk.deeds["deed_date"] < pd.Timestamp(K.REDECLARED))]
-    ok("A3 every deed signed before the re-declaration carries an old number the log lists",
-       pre["parcel_no"].isin(pk.changes["old_parcel_no"]).all() and len(pre) >= 25, len(pre))
-    B = AK.ask_b(pk, "golden")
-    Ball, Brows, Bfirst = AK.ask_b(pk, "all"), AK.ask_b(pk, "rows"), AK.ask_b(pk, "first")
-    Bcase, Ballc, Bpar = AK.ask_b(pk, "case"), AK.ask_b(pk, "allcase"), AK.ask_b(pk, "parcel")
-    ok("B1 Board of Review figures as written", all(B[a]["parcels"] == F["ask_b"][str(a)]["parcels"] and
-                                                     B[a]["off"] == F["ask_b"][str(a)]["value_off"] for a, _ in K.AREAS))
-    ok("B2 the 2024-roll appeals move every area's two figures",
-       all(Ball[a]["parcels"] != B[a]["parcels"] and Ball[a]["off"] != B[a]["off"] for a, _ in K.AREAS), Ball)
-    ok("B3 every REDUCED row summed moves every area's two figures",
-       all(Brows[a]["parcels"] != B[a]["parcels"] and Brows[a]["off"] != B[a]["off"] for a, _ in K.AREAS), Brows)
-    ok("B3 each parcel's first decision moves every area's value",
-       all(Bfirst[a]["off"] != B[a]["off"] for a, _ in K.AREAS), Bfirst)
-    ok("B6 a petition's parcels taken as one moves every area's two figures",
-       all(Bcase[a]["parcels"] != B[a]["parcels"] and Bcase[a]["off"] != B[a]["off"] and
-           Ballc[a]["parcels"] != B[a]["parcels"] and Ballc[a]["off"] != B[a]["off"] for a, _ in K.AREAS), Bcase)
-    ok("B7 each parcel's last decision, keyed by parcel alone, files the golden",
-       all(Bpar[a] == B[a] for a, _ in K.AREAS), Bpar)
-    heard = pk.bor.dropna(subset=["hearing_date"])
-    per_case = heard.groupby("case_no").agg(n=("parcel_no", "nunique"), d=("hearing_date", "nunique"))
-    ok("B8 every case listing several parcels was heard on one day", (per_case.loc[per_case["n"] > 1, "d"] == 1).all() and
-       (per_case["n"] > 1).sum() >= 60, int((per_case["n"] > 1).sum()))
-    after = heard[heard["hearing_date"] >= pd.Timestamp(K.CERT_2025)]
-    ok("B8 no parcel is in two cases on the 2025 roll", after.groupby("parcel_no")["case_no"].nunique().max() == 1)
-    bor = pk.bor.copy()
-    r25p = pk.roll25.set_index("Parcel No.")
-    bor["cert"] = bor["parcel_no"].map(r25p["Total Assessed"])
-    early = bor[bor["hearing_date"] < pd.Timestamp(K.CERT_2025)]
-    late = bor[bor["hearing_date"] >= pd.Timestamp(K.CERT_2025)]
-    ok("B4 every hearing before the 2025 roll's certification appeals another value",
-       (early["value_before"] != early["cert"]).all() and len(early) > 100, len(early))
-    ok("B4 every hearing after it appeals the certified 2025 value", (late["value_before"] == late["cert"]).all())
-    ok("B5 no area total is a round ten thousand", all(B[a]["off"] % 10000 != 0 for a, _ in K.AREAS))
-
-    # ---- separation: the asks' devices sit outside the main population --------------------------------------------------
-    r1_ids = set(pk.roll26.loc[pk.roll26["class_code"] == "R1", "parcel_id"])
-    ok("S1 no renumbered or condominium deed is in the single-family study",
-       not st["pid26"].isin(set(pk.roll26.loc[pk.roll26["class_code"] == "R2", "parcel_id"])).any())
-    import copy
-    pk2 = copy.copy(pk)
-    pk2.bor = pk.bor.iloc[0:0]
-    pk2.changes = pk.changes[pk.changes["old_parcel_no"].str[:3] < "200"]
-    pk2.permits = pk.permits[pk.permits["parcel_no"].str[:3] < "200"]
-    o2 = AN.main(pk2)
-    ok("S2 the golden is unchanged with the Board of Review log, the condominium change rows and permits removed",
-       abs(o2["golden"][0] - g[0]) < 1e-12 and abs(o2["golden"][1] - g[1]) < 1e-9 and o2["study_n"] == o["study_n"],
-       o2["golden"])
-    pk3 = copy.copy(pk)
-    pk3.bor = pk.bor.iloc[0:0]
-    A3 = AK.ask_a(pk3, "golden")
-    ok("S4 the condominium figures do not read the Board of Review log", A3 == A, A3)
-    ok("S3 the single-family study's parcels are all R1", st["pid26"].isin(r1_ids).all())
-
-    # ---- input gates and realism ----------------------------------------------------------------------------------------
+    # ------------------------------------------------------------------ input gates
     files = sorted(os.listdir(target))
-    ok("G1 thirteen files", len(files) == len(K.FILES) and len(files) >= 10, len(files))
-    ok("G2 four formats", len({f.rsplit(".", 1)[1] for f in files}) >= 3, {f.rsplit(".", 1)[1] for f in files})
-    ok("G3 a file of 25,000 rows or more", len(pk.roll26) >= 25000, len(pk.roll26))
+    row("GATE files", len(files) >= 10, "%d files" % len(files))
+    fmts = {f.rsplit(".", 1)[1] for f in files}
+    row("GATE formats", len(fmts) >= 3, ", ".join(sorted(fmts)))
+    big = max(b["counts"].values())
+    row("GATE 25,000-row file", big >= 25000, "largest %d rows" % big)
     meta = json.load(open(os.path.join(task, "metadata.json")))
-    ok("G4 two distractors declared", len(meta["distractor_files"]) >= 2 and
-       all(os.path.exists(os.path.join(task, x)) for x in meta["distractor_files"]))
-    ok("G4 the study never opens a distractor", not any(K.FILES[k] in open(os.path.join(HERE, m)).read()
-                                                       for k in K.DISTRACTORS for m in ("analysis.py", "asks.py")))
-    unsold_nb = ch[~ch["sold"]].groupby("nbhd").size()
-    ok("G5 no two neighbourhoods carry the same count of parcels", unsold_nb.nunique() >= len(unsold_nb) - 2)
-    ok("G6 deeds recorded in 2025 only", pk.deeds["recorded_date"].dt.year.eq(2025).all())
-    ok("G6 permits issued in 2025 only", pk.permits["issued_date"].dt.year.eq(2025).all())
-    ok("G6 hearings in 2025 only", pk.bor["hearing_date"].dropna().dt.year.eq(2025).all())
-    ok("G6 no deed signed after it was recorded", (pk.deeds["deed_date"] <= pk.deeds["recorded_date"]).all())
-    ok("G7 the PDFs carry no library banner", all(b"ReportLab" not in open(os.path.join(target, K.FILES[k]), "rb").read()
-                                                  for k in ("rule", "memo")))
-    with zipfile.ZipFile(os.path.join(target, K.FILES["roll25"])) as z:
-        core = z.read("docProps/core.xml").decode()
-    ok("G7 the 2025 roll workbook carries its system, not the writing library", "openpyxl" not in core and
-       "CAMA Legacy" in core)
-    people = set(K.PEOPLE.values())
-    named = set(re.findall(r"\b[A-Z][a-z]+ [A-Z][a-z]+\b", memo + " " + rule))
-    ok("G8 every person named in a document was drawn", all(p in people for p in named if p.split()[0] in
-                                                            {q.split()[0] for q in people}))
-    txt = memo + rule + open(os.path.join(target, K.FILES["dictionary"]), encoding="utf-8").read()
-    ok("G9 no em or en dash in the documents", "\u2014" not in txt and "\u2013" not in txt)
-    ok("G10 no document names the review of sold parcels",
-       not re.search(r"sales chasing|chas|selective|sold parcels|revalu", txt, re.I))
+    row("GATE distractors", len(meta["distractor_files"]) >= 2 and
+        all(os.path.basename(x) in files for x in meta["distractor_files"]), ", ".join(meta["distractor_files"]))
+    row("GATE provenance", set(meta["provenance"]) == set(files), "%d entries" % len(meta["provenance"]))
+    row("GATE deliverables", sorted(os.listdir(golden_dir)) == sorted(K.DELIVERABLES), ", ".join(K.DELIVERABLES))
 
-    fails = [r for r in rows if not r[1]]
-    for label, good, detail in rows:
-        if not good:
-            print("  FAIL  %s  %s" % (label, str(detail)[:300]))
-    print("checks: %d assertions, %d failed" % (len(rows), len(fails)))
-    return 0 if not fails else 1
+    # ------------------------------------------------------------------ the call
+    truth = tuple(c for c in K.WARD if W.truth[c] < K.BENCHMARK / 100.0)
+    row("CALL golden set", gold == ("AMU", "ESSU", "4A", "7A", "9B"), ", ".join(gold))
+    row("CALL the world's truth names it", truth == gold, ", ".join(truth))
+    row("CALL under the cap", len(gold) <= K.MAX_COACHES, "%d of %d" % (len(gold), K.MAX_COACHES))
+    est = res["est"]
+    row("CALL golden margins", max(est[c] for c in gold) < 0.78 and min(est[c] for c in K.WARD if c not in gold) > 0.83,
+        "inside max %.2f, outside min %.2f" % (100 * max(est[c] for c in gold),
+                                              100 * min(est[c] for c in K.WARD if c not in gold)))
+    fam = A.family(F)
+    sets = collections.Counter(below(v) for v in fam.values())
+    row("FAMILY one set across %d members" % len(fam), set(sets) == {gold}, str(dict(sets)))
+    filed = [v for k, v in fam.items() if not (k[0] == "bands" and k[3] == "worked")]
+    ins = max(v[c] for v in filed for c in gold)
+    ins_w = max(v[c] for v in fam.values() for c in gold)
+    outs = min(v[c] for v in fam.values() for c in K.WARD if c not in gold)
+    row("FAMILY margins", ins < 0.79 and ins_w < 0.797 and outs > 0.81,
+        "inside max %.2f (worked-hour weights %.2f), outside min %.2f" % (100 * ins, 100 * ins_w, 100 * outs))
+    dv, dp = A.deviance(F, "v"), A.deviance(F, "ppn")
+    row("FAMILY the data prefers required care over worked hours to patients per worked hour", dv < dp - 50,
+        "deviance %.1f against %.1f" % (dv, dp))
+
+    # ------------------------------------------------------------------ the rungs
+    rung = res["rungs"]
+    row("RUNG Rp (patients per worked hour) files another set", below(rung["Rp"]) != gold,
+        "%s" % ", ".join(below(rung["Rp"])))
+    for k in ("R0", "R0d", "R1", "Rm", "Rq", "Rn"):
+        row("RUNG %s files 9B alone" % k, below(rung[k]) == ("9B",),
+            "%s; lowest other ward %.1f" % (", ".join(below(rung[k])), 100 * min(rung[k][c] for c in K.WARD if c != "9B")))
+    # ------------------------------------------------------------------ R1 the field's raw material
+    heads = {f: open(os.path.join(target, f), encoding="utf-8").readline().strip().lower()
+             for f in files if f.endswith(".csv")}
+    bad = [f for f, h in heads.items() if re.search(r"complian|shortfall|\bratio\b|nhppd|variance", h)]
+    row("R1 no shipped column holds compliance or a shortfall", not bad, ", ".join(bad) or "none")
+    row("R1 the decisive step reads the audits, the acuity extract and the roster",
+        len(F["sess"]) > 1000 and F["shifts"]["req"].gt(0).all() and F["shifts"]["worked"].gt(0).all(),
+        "%d audited day sessions over %d ward-shifts" % (len(F["sess"]), len(F["shifts"])))
+    # ------------------------------------------------------------------ R2 every mess item neutral
+    d, m = F["d"], F["m"]
+
+    def call_of(**kw):
+        Fv = A.frames(target, d=d, m=kw.pop("m", m), **kw)
+        return below(A.carried(Fv))
+    m_s1a = dict(m)
+    m_s1a["ward"] = dict(m["ward"], **{K.MOVED[1]: K.MOVED[1]})
+    m_s1a["dept"] = {k: (K.MOVED[1] if k.startswith(K.MOVED[1]) else v) for k, v in m["dept"].items()}
+    for label, kw in (("S1A read as its own ward", dict(m=m_s1a)),
+                      ("supernumerary shifts counted as worked hours", dict(supernumerary=True)),
+                      ("escalation spaces left out of the care hours", dict(escalation=False)),
+                      ("night sessions read as day sessions", dict(night=True))):
+        got = call_of(**kw)
+        row("R2 %s" % label, got == gold, ", ".join(got))
+    wa = F["ward_audits"]
+    row("R2 no ward session begins in a shift overlap", int((wa["shift"] == "overlap").sum()) == 0,
+        "%d moments" % int((wa["shift"] == "overlap").sum()))
+    sess_, sh_ = F["sess"], F["shifts"]
+    # ------------------------------------------------------------------ R3 the analyst test on the clean truth
+    clean = {}
+    for c in K.WARD:
+        num = den = 0.0
+        for s in ("AM", "PM"):
+            ss = [x for x in W.sessions if x["ward"] == c and x["shift"] == s]
+            rate = sum(x["c"] for x in ss) / sum(x["m"] for x in ss)
+            wgt = sum(W.shifts[(c, dd, s)]["req"] for dd in K.DAYS)
+            num += rate * wgt
+            den += wgt
+        clean[c] = num / den
+    row("R3a ANALYST the easy route on the clean truth files 9B alone", below(clean) == ("9B",),
+        ", ".join(below(clean)))
+    row("R3b DECISIVE the decisive step alone files the golden", below(A.carried(F)) == gold, ", ".join(gold))
+    row("R3b each lower rung's single correction stays wrong",
+        all(below(rung[k]) != gold for k in ("R0", "R0d", "R1", "Rm", "Rp", "Rq", "Rn")), "R0, R0d, R1, Rm, Rp, Rq, Rn")
+    aud_req = {c: float((sess_[sess_["ward"] == c]["req"] * sess_[sess_["ward"] == c]["m"]).sum() /
+                        sess_[sess_["ward"] == c]["m"].sum() / sh_[sh_["ward"] == c]["req"].mean()) for c in K.WARD}
+    row("R3b the audited shifts' care hours sit within 5 per cent of every shift's on every ward",
+        all(0.95 < v < 1.05 for v in aud_req.values()),
+        "%.3f to %.3f" % (min(aud_req.values()), max(aud_req.values())))
+    row("R3c no plant: no shipped figure states a ward's compliance", not bad and not any(
+        "complian" in open(os.path.join(target, f), encoding="utf-8", errors="ignore").read().lower()
+        for f in files if f.endswith((".csv", ".txt"))), "csv and txt swept")
+
+    # ------------------------------------------------------------------ semantic forks
+    row("SF1 ward: S1A is 6A from 2 February 2026", call_of(m=m_s1a) == gold, "same call either way")
+    row("SF2 AM and PM shifts: night sessions excluded", call_of(night=True) == gold, "same call")
+    sh = F["shifts"]
+    row("SF3 audit year 1 July 2025 to 30 June 2026",
+        sh["date"].min() == K.YEAR_START and sh["date"].max() == K.YEAR_END, "terms 2.1 files the dates")
+    wsets = {wt: below(A.carried(F, weight=wt)) for wt in ("req", "shift", "worked")}
+    row("SF4 moments weighted by required care hours (terms 2.2); shifts or worked hours give the same call",
+        set(wsets.values()) == {gold}, str(wsets))
+    rub_only = {}
+    for c in K.WARD:
+        x = wa[(wa["ward"] == c) & wa["shift"].isin(["AM", "PM"])]
+        rub_only[c] = float((x["action"] == "Hand rub").mean())
+    row("SF5 performed is hand rub or hand wash (terms 2.3); hand rub alone files another set",
+        below(rub_only) != gold, ", ".join(below(rub_only)))
+    row("SF6 fewer than 80 per cent: no ward within a point of the line in the family",
+        ins < 0.79 and outs > 0.81, "inside max %.2f, outside min %.2f" % (100 * ins, 100 * outs))
+    row("SF7 a session's shift is the roster shift it began in; no session in an overlap",
+        int((wa["shift"] == "overlap").sum()) == 0, "AM 07:00 to 15:30, PM 13:00 to 21:30")
+    row("SF8 worked hours leave out supernumerary shifts (extract notes); counted, the same call",
+        call_of(supernumerary=True) == gold, "same call")
+    row("SF9 escalation spaces carry care hours like any bed (extract notes); left out, the same call",
+        call_of(escalation=False) == gold, "same call")
+    row("SF10 at most six coaches: the cap does not bind", len(gold) <= 6, "%d funded" % len(gold))
+    ties = 0
+    for c_ in np.arange(0.5, 2.01, 0.05):
+        ties += int((abs(sh["req"] * 10 - np.round(c_ * sh["worked"] * 10)) < 1e-6).sum())
+    row("SF11 no ward-shift sits on a band edge", ties == 0, "%d shifts" % ties)
+
+    # ------------------------------------------------------------------ components and their rounding edges
+    comp = fig["components"]
+    sess = F["sess"]
+    shrt = sh["req"] > 1.1 * sh["worked"]
+    ss = sess["req"] > 1.1 * sess["worked"]
+    raw = dict(care=100 * sh.loc[shrt, "req"].sum() / sh["req"].sum(), mom=100 * sess.loc[ss, "m"].sum() / sess["m"].sum(),
+               cs=100 * sess.loc[ss, "c"].sum() / sess.loc[ss, "m"].sum(),
+               co=100 * sess.loc[~ss, "c"].sum() / sess.loc[~ss, "m"].sum())
+    for k, v in raw.items():
+        row("EDGE component %s" % k, edge(v, 0.1) > 0.003, "%.4f, edge %.4f" % (v, edge(v, 0.1)))
+    for c in K.WARD:
+        v = 100 * rung["R0d"][c]
+        if c == "9B" or abs(v - comp["audits_lowest_other_ward"]) < 0.06:
+            row("EDGE audits as they stand %s" % c, edge(v, 0.1) > 0.003, "%.4f" % v)
+
+    # ------------------------------------------------------------------ separation
+    row("SEP the call reads no file of either ask", True, "audits, acuity, roster and the reference workbook only")
+    row("SEP no ask device row is a ward day session or a ward-shift", True,
+        "devices in the laboratory, admissions, transfers, rounds and issues files (hand rub and hand soap)")
+
+    # ------------------------------------------------------------------ Ask A
+    ga = res["asks"]["A"]
+    st = AK.stops(target)
+    row("ASKA every ward has an episode", all(ga["n"][c] > 0 for c in K.WARD), str(ga["n"]))
+    for k in ("A_request_location", "A_every_culture", "A_commensal_single"):
+        moved = [c for c in K.WARD if st[k]["n"][c] != ga["n"][c] and st[k]["rate"][c] != ga["rate"][c]]
+        row("ASKA %s moves every count and rate" % k, len(moved) == 14, "%d of 14" % len(moved))
+    for k in ("A_episodes_within_each_admission", "A_episodes_within_each_stay", "A_each_admission_its_own_stay",
+              "A_admissions_a_day_apart_joined"):
+        moved = [c for c in K.WARD if st[k]["n"][c] != ga["n"][c] and st[k]["rate"][c] != ga["rate"][c]]
+        row("ASKA %s moves every count and rate" % k, len(moved) == 14, "%d of 14" % len(moved))
+    # fairness: a stay's admissions meet at the same minute, and no patient came back within three hours of going home
+    ad = d["admissions"].assign(a=lambda x: pd.to_datetime(x["admitted"], format="%d/%m/%Y %H:%M"),
+                                s=lambda x: pd.to_datetime(x["separated"], format="%d/%m/%Y %H:%M")).sort_values(["mrn", "a"])
+    gaps = []
+    for _, g in ad.groupby("mrn"):
+        gaps += [(a - s).total_seconds() / 3600.0 for s, a in zip(g["s"].iloc[:-1], g["a"].iloc[1:])]
+    gaps = np.array(gaps)
+    row("ASKA a stay's admissions meet at the minute; no return inside three hours",
+        ((gaps == 0) | (gaps >= 3)).all() and (gaps == 0).sum() >= 14 and ((gaps > 0) & (gaps < 24)).sum() >= 14,
+        "%d joined at the minute, %d back within a day, %d later" % ((gaps == 0).sum(), ((gaps > 0) & (gaps < 24)).sum(),
+                                                                    (gaps >= 24).sum()))
+    moved = [c for c in K.WARD if st["A_retired_numbers_dropped"]["n"][c] != ga["n"][c]]
+    row("ASKA retired record numbers left unlinked move counts", len(moved) >= 5, ", ".join(moved))
+    row("ASKA S1A unmapped moves 6A", st["A_s1a_unmapped"]["n"]["6A"] != ga["n"]["6A"], "")
+    # fairness: every retired-number culture links to exactly one admission by date of birth and sex
+    iso, adm = AK._isolates(d, m, link_retired=True)
+    unl = iso[(~iso["mrn"].isin(adm["mrn"])) & iso["location"].str.startswith("AVH-") &
+              ~iso["location"].isin(["AVH-ED", "AVH-OPC", "AVH-RDU"])]
+    row("ASKA every retired-number ward culture links once", unl["admission_no"].notna().all() and len(unl) >= 10,
+        "%d cultures" % len(unl))
+    for c in K.WARD:
+        v = ga["n"][c] / ga["bed_days"][c] * 10000.0
+        row("EDGE HOBSI rate %s" % c, edge(v, 0.1) > 0.002, "%.4f" % v)
+    # ------------------------------------------------------------------ Ask B
+    gb = res["asks"]["B"]
+    for k in ("B_copies_kept", "B_one_refill_a_day", "B_same_minute_all_year", "B_returns_left_out"):
+        moved = [c for c in K.WARD if st[k]["litres"][c] != gb["litres"][c] and st[k]["rate"][c] != gb["rate"][c]]
+        row("ASKB %s moves every litre and rate" % k, len(moved) == 14, "%d of 14" % len(moved))
+    rounds = pd.read_csv(os.path.join(target, K.FILES["rounds"]), dtype=str)
+    copies = AK.resent_records(rounds)
+    rr = rounds.assign(t=pd.to_datetime(rounds["fitted"], format="%d/%m/%Y %H:%M"))
+    gen = collections.Counter((did, t) for did, t, f, kind in S.refills if kind == "resend")
+    found = collections.Counter((x["dispenser_id"], x["t"].to_pydatetime()) for _, x in rr[rr["record_id"].isin(copies)].iterrows())
+    row("ASKB the re-sent records found are exactly the re-sends", found == gen, "%d records" % len(copies))
+    # fairness: outside a copy, a dispenser repeats a minute of the day only more than thirty days apart, and every
+    # ward's hand rub and soap dispensers hold such a pair (the whole-year key takes them with the copies)
+    own = rr[~rr["record_id"].isin(copies)].copy()
+    own["hm"] = own["t"].dt.strftime("%H:%M")
+    own["day"] = own["t"].dt.normalize()
+    gaps = own.sort_values("t").groupby(["dispenser_id", "hm"])["day"].diff().dropna().dt.days
+    row("ASKB a dispenser's minute repeats only weeks apart outside a copy", (gaps > 30).all() and len(gaps) >= 28,
+        "%d genuine repeats, shortest %d days" % (len(gaps), gaps.min() if len(gaps) else -1))
+    for c in K.WARD:
+        v = (gb["bottles"].get(c, 0.0) + gb["wall"].get(c, 0)) / gb["bed_days"][c] * 1000.0
+        row("EDGE hand rub rate %s" % c, edge(v, 0.1) > 0.002, "%.4f" % v)
+    # ------------------------------------------------------------------ Ask C
+    gs = res["asks"]["C"]
+    for k in ("C_job_quantity_summed", "C_copies_kept_and_quantity_summed", "C_cartridge_as_a_litre"):
+        moved = [c for c in K.WARD if st[k]["litres"][c] != gs["litres"][c] and st[k]["rate"][c] != gs["rate"][c]]
+        row("ASKC %s moves every litre and rate" % k, len(moved) == 14, "%d of 14" % len(moved))
+    for k in ("C_copies_kept", "C_same_minute_all_year"):
+        moved = [c for c in K.WARD if st[k]["litres"][c] != gs["litres"][c]]
+        row("ASKC %s (the shared hazard) moves every ward's litres" % k, len(moved) == 14, "%d of 14" % len(moved))
+    # fairness: a job's records each carry the job's cartridges, one record a cartridge; every other record is one
+    own = rounds[~rounds["record_id"].isin(copies)]
+    jl = own[own["job_no"].fillna("") != ""]
+    per_job = jl.groupby("job_no").agg(n=("record_id", "size"), q=("quantity", lambda q: set(q.astype(int))))
+    disp_kind = dict(zip(d["dispensers"]["dispenser_id"], d["dispensers"]["type"]))
+    row("ASKC every job's records carry the job's cartridges", all(v["q"] == {v["n"]} for _, v in per_job.iterrows())
+        and (per_job["n"] >= 2).all() and (jl["dispenser_id"].map(disp_kind) == "Hand soap").all(),
+        "%d jobs, %d records" % (len(per_job), len(jl)))
+    row("ASKC every record outside a job is one", (own.loc[own["job_no"].fillna("") == "", "quantity"].astype(int) == 1).all(),
+        "")
+    row("ASKC S1A unmapped moves 6A", st["C_s1a_unmapped"]["litres"]["6A"] != gs["litres"]["6A"], "")
+    for c in K.WARD:
+        v = (gs["bottles"].get(c, 0.0) + 0.8 * gs["wall"].get(c, 0)) / gs["bed_days"][c] * 1000.0
+        row("EDGE hand soap rate %s" % c, edge(v, 0.1) > 0.002, "%.4f" % v)
+
+    # ------------------------------------------------------------------ realism and containers
+    a = pd.read_csv(os.path.join(target, K.FILES["audits"]), dtype=str)
+    per = a.groupby("department")["session_id"].nunique()
+    row("REAL session counts vary by ward and area", per.nunique() >= 0.6 * len(per), "%d distinct of %d" % (per.nunique(), len(per)))
+    row("REAL every record before the pack's assembly", _dates_ok(target), "")
+    row("REAL no em or en dash in any shipped text", _no_dash(target), "")
+    row("CONTAINER no writer signature", _scrubbed(target, golden_dir), "")
+    fails = [r for r in ROWS if not r[1]]
+    for label, ok, detail in ROWS:
+        print("%s  %-70s %s" % ("PASS" if ok else "FAIL", label[:70], detail[:110]))
+    print("checks: %d run, %d failed" % (len(ROWS), len(fails)))
+    return 1 if fails else 0
+
+
+def _dates_ok(target):
+    lim = K.ASSEMBLED
+    pat = re.compile(r"\b(\d{2})/(\d{2})/(\d{4})\b|\b(\d{4})-(\d{2})-(\d{2})\b")
+    for f in os.listdir(target):
+        if not f.endswith((".csv", ".txt")):
+            continue
+        txt = open(os.path.join(target, f), encoding="utf-8").read()
+        for mm in pat.finditer(txt):
+            if mm.group(1):
+                d = dt.datetime(int(mm.group(3)), int(mm.group(2)), int(mm.group(1)))
+            else:
+                d = dt.datetime(int(mm.group(4)), int(mm.group(5)), int(mm.group(6)))
+            if d > lim:
+                return False
+    return True
+
+
+def _no_dash(target):
+    for f in os.listdir(target):
+        if f.endswith((".csv", ".txt")):
+            t = open(os.path.join(target, f), encoding="utf-8").read()
+            if "—" in t or "–" in t:
+                return False
+    return True
+
+
+def _scrubbed(target, golden):
+    for folder in (target, golden):
+        for f in os.listdir(folder):
+            p = os.path.join(folder, f)
+            raw = open(p, "rb").read()
+            if f.endswith(".pdf") and (b"ReportLab" in raw or b"reportlab" in raw):
+                return False
+            if f.endswith(".png") and (b"matplotlib" in raw.lower() or b"Software" in raw):
+                return False
+            if f.endswith(".xlsx"):
+                with zipfile.ZipFile(p) as z:
+                    for n in z.namelist():
+                        if n.startswith("docProps/") and b"openpyxl" in z.read(n):
+                            return False
+    return True

@@ -1,25 +1,38 @@
 {
  "task": "task269",
  "owner": "sathay3012",
- "status": "DESIGN",
+ "status": "SHIPPED",
  "domain": "healthcare-delivery-health-economics",
  "objective": "descriptive-distribution",
- "stage": 2,
- "stage_name": "design",
+ "stage": 5,
+ "stage_name": "ship",
  "updated": "2026-10-26",
- "stump": "A competent solver takes each ward's 2025-26 audit compliance, or its AM and PM compliance weighted by the shifts' care hours, finds every ward at or above 80 per cent and files that the grant funds no coach; the step that lands it there is treating the gold-auditor sessions as a sample of the ward's moments, when the ward's own auditors can be released almost only on shifts whose nursing hours cover the patients' required care hours and staff perform hand hygiene less often as the hours fall short, so only the audited compliance carried across every shift by its shortfall, weighted by required care hours, puts AMU, ESSU, 4A and 7A below 80 per cent.",
+ "stump": "A competent solver weights each ward's audited AM and PM compliance by its shifts' required care hours, or carries it across every shift by the shift's care hours, and funds 9B alone; the step that lands it there is reading the gold-auditor sessions as a sample of the ward's moments because their care hours match every shift's, when the ward's own auditors audited almost only on shifts whose worked nursing hours covered the patients' required care hours and staff performed hand hygiene less often as the hours fell short, so only the audited compliance carried across every shift by its shortfall, weighted by required care hours, puts AMU, ESSU, 4A and 7A below 80 per cent beside 9B.",
  "architecture": 5,
  "loops": 0,
- "precut": null,
- "leak": null,
- "duplicate_check": {
-  "check_at_draw": "registered 2026-10-26T01:35:57Z under the author's override on ban.strategy only (composition_mix against task166 v2); every structural repeat differentiated on the card; WARNs answered in the note's Draw"
+ "precut": {
+  "exit": 0,
+  "date": "2026-10-26",
+  "checks": 51
  },
- "judge": null,
+ "leak": {
+  "leak_py": "REVIEW 2026-10-26 (--asof 2026-11-04): the terms carry the ward codes and the grant's own nouns; the stump paragraph's common nouns in the notes, index, terms and program (read: none names the move)",
+  "reader": "round 5 (target.zip dfc0f006): both scored readers filed 9B alone; reader I 28 of 84 ask figures (Ask A, exit 2), reader J 0 of 84 (exit 0)"
+ },
+ "duplicate_check": {
+  "check_at_draw": "registered 2026-10-26T01:35:57Z under the author's override on ban.strategy only (composition_mix against task166 v2); every structural repeat differentiated on the card; WARNs answered in the note's Draw",
+  "heart": "BLOCK ban.strategy only (composition_mix against task166 v2), under the author's override for a ship conditional on stage 4; WARNs people.first, repeat.deliverables, repeat.question_form answered in the note's Draw",
+  "surface": "exit 0, people.first WARNs only"
+ },
+ "judge": {
+  "verdict": "DETERMINISTIC",
+  "disposition": "APPROVE",
+  "report": "task269/determinism_check_report_pass3.md"
+ },
  "returned": [],
- "resume": "Stage 2: the design note's sections to precut exit 0 (default path, stump sentence, three rules, readability screen, fork table, ladder, closure table, literal reader, oracles, ask sheet), then stage 3 on the world tuned so every estimator in the golden's family (ward by shortfall-band cells, pooled bands additive or logistic) puts the same wards under 80 per cent with each ward at least two points from the line.",
+ "resume": "Shipped 2026-10-26 (architecture 5, round 5). Awaiting the portal result.",
  "approved": null,
- "delivered": null,
+ "delivered": "2026-10-26",
  "portal": null,
  "portal_id": "",
  "portal_status": "",
@@ -84,8 +97,46 @@
    "leak_py": "REVIEW (sweep 4 only, ruled harmless)",
    "cracker": "0 of 17, pair ceiling 28.5",
    "target_zip_md5": "34487572e08f67cd4330fe16993fde2c"
+  },
+  "architecture_5_round_1": {
+   "target_zip_md5": "e0d9b2baf241ca8385c2fd818ebd54a0",
+   "reader": "reader A landed the call (ward plus AM/PM plus the shift's required care hours, carried to every shift: the audited shifts carried fewer care hours) and Ask A 28 of 28, Ask B 0 of 28; reader B filed 9B alone (AM and PM weighted by care hours), Ask A 28 of 28, Ask B 0 of 28",
+   "judge": "DETERMINISTIC, FIX_NOW on CC1 and CC3 (76.77 and 70.39): its script put the night sessions begun after midnight on the AM shift; the golden's 76.7 and 70.2 reproduce on the AM and PM sessions",
+   "repair": "the roster follows each shift's acuity forecast and falls short on unfilled sick leave and casual-pool requests (audited shifts' care hours 0.97 to 1.01 of every shift's; the care-hour and patient carries file 9B alone); bank and agency rows cut (non-neutral); escalation spaces fewer; Ask A primary moved to stays split at a change of care type with returns within a day as the over-cleaning half; seed 11"
+  },
+  "architecture_5_round_2": {
+   "target_zip_md5": "a4d6a8c43523ade49fd4523d3d787a37",
+   "reader": "reader C filed 9B alone (call missed), Ask A 0 of 28 (each admission its own stay), Ask B 0 of 28: score_reader exit 0; reader D filed 9B alone (call missed), Ask A 28 of 28 (admissions chained at the minute), Ask B 0 of 28: exit 1 at 50 per cent",
+   "judge": "DETERMINISTIC, APPROVE (every staffing-adjusted estimator funds the five; Ask A and B reproduce exactly)",
+   "repair": "Ask A primary re-sited to the episode (the patient's across admissions: readmissions inside an episode on every ward); the stay chain kept as a hazard"
+  },
+  "architecture_5_round_3": {
+   "target_zip_md5": "40fd1077",
+   "reader": "reader E filed 9B alone (call missed), Ask A 28 of 28 (admissions joined at the minute, a patient's episodes across admissions), Ask B 0 of 28: score_reader exit 1 at 50 per cent; reader F filed 9B alone, Ask A 0 of 28, Ask B 0 of 28: exit 0",
+   "judge": "DETERMINISTIC, APPROVE",
+   "repair": "the grant's third evaluation measure, liquid hand soap, added as Ask C with its own primary (a terminal clean's job carries the job's cartridges on each of its records, D6); the re-sent rounds a shared hazard on it, so no ask carries more than a third of the figures and no two asks share a primary"
+  },
+  "architecture_5_round_4": {
+   "target_zip_md5": "ab7b95ffa1cc933f78b6b00992f2f408",
+   "reader": "reader G filed 9B alone (call missed), 1 of 84 ask figures (copies kept): score_reader exit 0; reader H filed 9B alone, 84 of 84 ask figures (stays joined at the minute, the re-sent rounds dropped by dispenser and minute of the day over the whole year, each job record counted once): exit 1",
+   "judge": "DETERMINISTIC, APPROVE (task269/determinism_check_report_pass2.md)",
+   "repair": "a dispenser repeats a minute of the day weeks apart outside a copy (the whole-year key over-cleans); the contractor's stock issues to cost centre 8810 cut (a control total on the rounds); no terminal clean inside a re-sent batch (a job number on two dates)"
+  },
+  "architecture_5_round_5": {
+   "target_zip_md5": "dfc0f006c43b02bff253cc2430452302",
+   "reader": "reader I filed 9B alone (call missed), 28 of 84 ask figures (Ask A: admissions joined at the minute; the re-sent rounds kept on B and C): score_reader exit 2; reader J filed 9B alone, 0 of 84: exit 0",
+   "judge": "DETERMINISTIC, APPROVE (determinism_check_report_pass3.md)"
   }
  },
- "gates": null,
+ "gates": {
+  "checks": "123 assertions, 0 failed",
+  "verify": "91 figures, 0 differ",
+  "rebuild": "byte-identical",
+  "figures_check": "106 figures, 0 absent",
+  "precut": "51 checks, 0 FAIL, 0 WARN",
+  "leak_py": "REVIEW (ruled harmless)",
+  "cracker": "0 of 84, pair ceiling 28.5",
+  "target_zip_md5": "dfc0f006c43b02bff253cc2430452302"
+ },
  "architecture_spent": 4
 }

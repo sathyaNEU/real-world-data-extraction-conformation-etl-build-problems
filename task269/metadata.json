@@ -1,94 +1,120 @@
 {
- "answer": "Accept the vendor's offer of the county-wide single-family reappraisal: the 2026 single-family roll fails Rule 18-7 on both tests, a median assessment ratio of 0.87 against 0.900 to 1.100 and a coefficient of dispersion of 18 against 15.0 or less.",
+ "answer": "5 wards funded: AMU, ESSU, 4A, 7A, 9B",
  "deliverables": [
-  "golden/reappraisal_recommendation.docx",
-  "golden/ratio_study_2026_roll.xlsx"
+  "coaching_wards_2027.xlsx",
+  "ward_compliance_2025_26.png"
  ],
  "distractor_files": [
-  "target/homestead_credits_2026.csv",
-  "target/levy_and_rates_fy2026.xlsx"
+  "target/patient_experience_survey_2025_26.csv",
+  "target/staff_influenza_vaccination_2025.csv"
  ],
- "domain": "General Statistics & Data Science (missing data, censoring and measurement error)",
+ "domain": "Healthcare Delivery & Health Economics (provider quality and risk adjustment)",
  "objective": "Descriptive & Distribution Analysis",
  "provenance": {
-  "assessor_roll_2025_certified.xlsx": {
-   "date": "2026-09-18",
+  "acuity_and_roster_extract_notes.txt": {
+   "date": "2026-10-26",
    "licence": "CC0 1.0 (constructed for this task)",
-   "source": "constructed by the task generator (seeded); Tillford County, its state, offices, people and records are fictional; the records follow the forms of US county appraisal-system roll exports, recorder deed extracts, building permit logs and board of review hearing logs"
+   "source": "constructed by the task generator (seeded); Ardley Valley Hospital, its Foundation, wards, staff, patients and people are fictional; the records follow the forms of an Australian public hospital's hand hygiene audit application, patient acuity and rostering systems, laboratory, patient administration system, store and cleaning contractor"
   },
-  "assessor_roll_2026_certified.csv": {
-   "date": "2026-09-18",
+  "acuity_patient_shifts_2025_26.csv": {
+   "date": "2026-10-26",
    "licence": "CC0 1.0 (constructed for this task)",
-   "source": "constructed by the task generator (seeded); Tillford County, its state, offices, people and records are fictional; the records follow the forms of US county appraisal-system roll exports, recorder deed extracts, building permit logs and board of review hearing logs"
+   "source": "constructed by the task generator (seeded); Ardley Valley Hospital, its Foundation, wards, staff, patients and people are fictional; the records follow the forms of an Australian public hospital's hand hygiene audit application, patient acuity and rostering systems, laboratory, patient administration system, store and cleaning contractor"
   },
-  "board_of_review_hearings_2025.csv": {
-   "date": "2026-09-18",
+  "application_pack_index.txt": {
+   "date": "2026-10-26",
    "licence": "CC0 1.0 (constructed for this task)",
-   "source": "constructed by the task generator (seeded); Tillford County, its state, offices, people and records are fictional; the records follow the forms of US county appraisal-system roll exports, recorder deed extracts, building permit logs and board of review hearing logs"
+   "source": "constructed by the task generator (seeded); Ardley Valley Hospital, its Foundation, wards, staff, patients and people are fictional; the records follow the forms of an Australian public hospital's hand hygiene audit application, patient acuity and rostering systems, laboratory, patient administration system, store and cleaning contractor"
   },
-  "building_permits_2025.csv": {
-   "date": "2026-09-18",
+  "blood_culture_isolates_2025_26.csv": {
+   "date": "2026-10-26",
    "licence": "CC0 1.0 (constructed for this task)",
-   "source": "constructed by the task generator (seeded); Tillford County, its state, offices, people and records are fictional; the records follow the forms of US county appraisal-system roll exports, recorder deed extracts, building permit logs and board of review hearing logs"
+   "source": "constructed by the task generator (seeded); Ardley Valley Hospital, its Foundation, wards, staff, patients and people are fictional; the records follow the forms of an Australian public hospital's hand hygiene audit application, patient acuity and rostering systems, laboratory, patient administration system, store and cleaning contractor"
   },
-  "data_dictionary.txt": {
-   "date": "2026-09-18",
+  "blood_culture_patient_admissions_2025_26.csv": {
+   "date": "2026-10-26",
    "licence": "CC0 1.0 (constructed for this task)",
-   "source": "constructed by the task generator (seeded); Tillford County, its state, offices, people and records are fictional; the records follow the forms of US county appraisal-system roll exports, recorder deed extracts, building permit logs and board of review hearing logs"
+   "source": "constructed by the task generator (seeded); Ardley Valley Hospital, its Foundation, wards, staff, patients and people are fictional; the records follow the forms of an Australian public hospital's hand hygiene audit application, patient acuity and rostering systems, laboratory, patient administration system, store and cleaning contractor"
   },
-  "homestead_credits_2026.csv": {
-   "date": "2026-09-18",
+  "data_dictionary.csv": {
+   "date": "2026-10-26",
    "licence": "CC0 1.0 (constructed for this task)",
-   "source": "constructed by the task generator (seeded); Tillford County, its state, offices, people and records are fictional; the records follow the forms of US county appraisal-system roll exports, recorder deed extracts, building permit logs and board of review hearing logs"
+   "source": "constructed by the task generator (seeded); Ardley Valley Hospital, its Foundation, wards, staff, patients and people are fictional; the records follow the forms of an Australian public hospital's hand hygiene audit application, patient acuity and rostering systems, laboratory, patient administration system, store and cleaning contractor"
   },
-  "levy_and_rates_fy2026.xlsx": {
-   "date": "2026-09-18",
+  "dispenser_rounds_2025_26.csv": {
+   "date": "2026-10-26",
    "licence": "CC0 1.0 (constructed for this task)",
-   "source": "constructed by the task generator (seeded); Tillford County, its state, offices, people and records are fictional; the records follow the forms of US county appraisal-system roll exports, recorder deed extracts, building permit logs and board of review hearing logs"
+   "source": "constructed by the task generator (seeded); Ardley Valley Hospital, its Foundation, wards, staff, patients and people are fictional; the records follow the forms of an Australian public hospital's hand hygiene audit application, patient acuity and rostering systems, laboratory, patient administration system, store and cleaning contractor"
   },
-  "neighborhood_crosswalk.csv": {
-   "date": "2026-09-18",
+  "hand_hygiene_audit_moments_2025_26.csv": {
+   "date": "2026-10-26",
    "licence": "CC0 1.0 (constructed for this task)",
-   "source": "constructed by the task generator (seeded); Tillford County, its state, offices, people and records are fictional; the records follow the forms of US county appraisal-system roll exports, recorder deed extracts, building permit logs and board of review hearing logs"
+   "source": "constructed by the task generator (seeded); Ardley Valley Hospital, its Foundation, wards, staff, patients and people are fictional; the records follow the forms of an Australian public hospital's hand hygiene audit application, patient acuity and rostering systems, laboratory, patient administration system, store and cleaning contractor"
   },
-  "parcel_change_log_2025.csv": {
-   "date": "2026-09-18",
+  "hand_hygiene_coaching_grant_terms_2027.pdf": {
+   "date": "2026-10-26",
    "licence": "CC0 1.0 (constructed for this task)",
-   "source": "constructed by the task generator (seeded); Tillford County, its state, offices, people and records are fictional; the records follow the forms of US county appraisal-system roll exports, recorder deed extracts, building permit logs and board of review hearing logs"
+   "source": "constructed by the task generator (seeded); Ardley Valley Hospital, its Foundation, wards, staff, patients and people are fictional; the records follow the forms of an Australian public hospital's hand hygiene audit application, patient acuity and rostering systems, laboratory, patient administration system, store and cleaning contractor"
   },
-  "reappraisal_offer_memo.pdf": {
-   "date": "2026-09-18",
+  "hand_hygiene_program_2025_26.pdf": {
+   "date": "2026-10-26",
    "licence": "CC0 1.0 (constructed for this task)",
-   "source": "constructed by the task generator (seeded); Tillford County, its state, offices, people and records are fictional; the records follow the forms of US county appraisal-system roll exports, recorder deed extracts, building permit logs and board of review hearing logs"
+   "source": "constructed by the task generator (seeded); Ardley Valley Hospital, its Foundation, wards, staff, patients and people are fictional; the records follow the forms of an Australian public hospital's hand hygiene audit application, patient acuity and rostering systems, laboratory, patient administration system, store and cleaning contractor"
   },
-  "recorder_deeds_2025.csv": {
-   "date": "2026-09-18",
+  "hobsi_surveillance_definitions_v3.pdf": {
+   "date": "2026-10-26",
    "licence": "CC0 1.0 (constructed for this task)",
-   "source": "constructed by the task generator (seeded); Tillford County, its state, offices, people and records are fictional; the records follow the forms of US county appraisal-system roll exports, recorder deed extracts, building permit logs and board of review hearing logs"
+   "source": "constructed by the task generator (seeded); Ardley Valley Hospital, its Foundation, wards, staff, patients and people are fictional; the records follow the forms of an Australian public hospital's hand hygiene audit application, patient acuity and rostering systems, laboratory, patient administration system, store and cleaning contractor"
   },
-  "residential_price_index_tillford.csv": {
-   "date": "2026-09-18",
+  "midnight_census_2025_26.csv": {
+   "date": "2026-10-26",
    "licence": "CC0 1.0 (constructed for this task)",
-   "source": "constructed by the task generator (seeded); Tillford County, its state, offices, people and records are fictional; the records follow the forms of US county appraisal-system roll exports, recorder deed extracts, building permit logs and board of review hearing logs"
+   "source": "constructed by the task generator (seeded); Ardley Valley Hospital, its Foundation, wards, staff, patients and people are fictional; the records follow the forms of an Australian public hospital's hand hygiene audit application, patient acuity and rostering systems, laboratory, patient administration system, store and cleaning contractor"
   },
-  "str_rule_18-7_residential_ratio_studies.pdf": {
-   "date": "2026-09-18",
+  "nursing_roster_actuals_2025_26.csv": {
+   "date": "2026-10-26",
    "licence": "CC0 1.0 (constructed for this task)",
-   "source": "constructed by the task generator (seeded); Tillford County, its state, offices, people and records are fictional; the records follow the forms of US county appraisal-system roll exports, recorder deed extracts, building permit logs and board of review hearing logs"
+   "source": "constructed by the task generator (seeded); Ardley Valley Hospital, its Foundation, wards, staff, patients and people are fictional; the records follow the forms of an Australian public hospital's hand hygiene audit application, patient acuity and rostering systems, laboratory, patient administration system, store and cleaning contractor"
+  },
+  "patient_experience_survey_2025_26.csv": {
+   "date": "2026-10-26",
+   "licence": "CC0 1.0 (constructed for this task)",
+   "source": "constructed by the task generator (seeded); Ardley Valley Hospital, its Foundation, wards, staff, patients and people are fictional; the records follow the forms of an Australian public hospital's hand hygiene audit application, patient acuity and rostering systems, laboratory, patient administration system, store and cleaning contractor"
+  },
+  "staff_influenza_vaccination_2025.csv": {
+   "date": "2026-10-26",
+   "licence": "CC0 1.0 (constructed for this task)",
+   "source": "constructed by the task generator (seeded); Ardley Valley Hospital, its Foundation, wards, staff, patients and people are fictional; the records follow the forms of an Australian public hospital's hand hygiene audit application, patient acuity and rostering systems, laboratory, patient administration system, store and cleaning contractor"
+  },
+  "store_issues_hand_hygiene_2025_26.csv": {
+   "date": "2026-10-26",
+   "licence": "CC0 1.0 (constructed for this task)",
+   "source": "constructed by the task generator (seeded); Ardley Valley Hospital, its Foundation, wards, staff, patients and people are fictional; the records follow the forms of an Australian public hospital's hand hygiene audit application, patient acuity and rostering systems, laboratory, patient administration system, store and cleaning contractor"
+  },
+  "ward_and_area_reference.xlsx": {
+   "date": "2026-10-26",
+   "licence": "CC0 1.0 (constructed for this task)",
+   "source": "constructed by the task generator (seeded); Ardley Valley Hospital, its Foundation, wards, staff, patients and people are fictional; the records follow the forms of an Australian public hospital's hand hygiene audit application, patient acuity and rostering systems, laboratory, patient administration system, store and cleaning contractor"
+  },
+  "ward_transfers_2025_26.csv": {
+   "date": "2026-10-26",
+   "licence": "CC0 1.0 (constructed for this task)",
+   "source": "constructed by the task generator (seeded); Ardley Valley Hospital, its Foundation, wards, staff, patients and people are fictional; the records follow the forms of an Australian public hospital's hand hygiene audit application, patient acuity and rostering systems, laboratory, patient administration system, store and cleaning contractor"
   }
  },
  "rows": {
-  "assessor_roll_2025_certified.xlsx": 27654,
-  "assessor_roll_2026_certified.csv": 27679,
-  "board_of_review_hearings_2025.csv": 1757,
-  "building_permits_2025.csv": 975,
-  "homestead_credits_2026.csv": 18964,
-  "levy_and_rates_fy2026.xlsx": 10,
-  "neighborhood_crosswalk.csv": 30,
-  "parcel_change_log_2025.csv": 534,
-  "recorder_deeds_2025.csv": 2352,
-  "residential_price_index_tillford.csv": 90
+  "acuity_patient_shifts_2025_26.csv": 224319,
+  "blood_culture_isolates_2025_26.csv": 1072,
+  "blood_culture_patient_admissions_2025_26.csv": 932,
+  "dispenser_rounds_2025_26.csv": 7585,
+  "hand_hygiene_audit_moments_2025_26.csv": 26265,
+  "midnight_census_2025_26.csv": 5110,
+  "nursing_roster_actuals_2025_26.csv": 72749,
+  "patient_experience_survey_2025_26.csv": 168,
+  "staff_influenza_vaccination_2025.csv": 483,
+  "store_issues_hand_hygiene_2025_26.csv": 1647,
+  "ward_transfers_2025_26.csv": 315
  },
  "task": "task269",
- "title": "Tillford County: does the 2026 single-family roll meet the State's ratio study rule, or does the county accept its vendor's reappraisal offer"
+ "title": "Ardley Valley Hospital Foundation: the wards that get a 2027 hand hygiene coaching nurse"
 }

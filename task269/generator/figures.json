@@ -1,145 +1,201 @@
 {
- "ask_a": {
-  "agg": 0.932,
-  "agg_raw": 0.93215,
-  "cod": 7.1,
-  "cod_raw": 7.0924,
-  "level": 0.93,
-  "level_raw": 0.93169,
-  "prd": 0.997,
-  "prd_raw": 0.99691,
-  "sales": 129
- },
- "ask_b": {
-  "1": {
-   "name": "North",
-   "parcels": 132,
-   "value_off": 4349600
+ "asks": {
+  "A": {
+   "hobsi": {
+    "4A": 31,
+    "5A": 29,
+    "6A": 22,
+    "6B": 18,
+    "7A": 32,
+    "7B": 35,
+    "8A": 34,
+    "9A": 13,
+    "9B": 25,
+    "AMU": 29,
+    "CCU": 17,
+    "ESSU": 14,
+    "ICU": 41,
+    "PCU": 11
+   },
+   "occupied_bed_days": {
+    "4A": 10837,
+    "5A": 9247,
+    "6A": 9440,
+    "6B": 7830,
+    "7A": 9338,
+    "7B": 7627,
+    "8A": 8517,
+    "9A": 10300,
+    "9B": 10087,
+    "AMU": 7755,
+    "CCU": 3246,
+    "ESSU": 3920,
+    "ICU": 6053,
+    "PCU": 5239
+   },
+   "rate_per_10000_obd": {
+    "4A": 28.6,
+    "5A": 31.4,
+    "6A": 23.3,
+    "6B": 23.0,
+    "7A": 34.3,
+    "7B": 45.9,
+    "8A": 39.9,
+    "9A": 12.6,
+    "9B": 24.8,
+    "AMU": 37.4,
+    "CCU": 52.4,
+    "ESSU": 35.7,
+    "ICU": 67.7,
+    "PCU": 21.0
+   }
   },
-  "2": {
-   "name": "Old Town",
-   "parcels": 156,
-   "value_off": 5656500
+  "B": {
+   "litres": {
+    "4A": 444.6,
+    "5A": 303.7,
+    "6A": 279.4,
+    "6B": 283.5,
+    "7A": 391.3,
+    "7B": 324.6,
+    "8A": 453.9,
+    "9A": 262.8,
+    "9B": 321.4,
+    "AMU": 404.6,
+    "CCU": 244.0,
+    "ESSU": 181.6,
+    "ICU": 701.5,
+    "PCU": 118.5
+   },
+   "litres_per_1000_obd": {
+    "4A": 41.0,
+    "5A": 32.8,
+    "6A": 29.6,
+    "6B": 36.2,
+    "7A": 41.9,
+    "7B": 42.6,
+    "8A": 53.3,
+    "9A": 25.5,
+    "9B": 31.9,
+    "AMU": 52.2,
+    "CCU": 75.2,
+    "ESSU": 46.3,
+    "ICU": 115.9,
+    "PCU": 22.6
+   }
   },
-  "3": {
-   "name": "Riverside",
-   "parcels": 171,
-   "value_off": 6564800
-  },
-  "4": {
-   "name": "East Prairie",
-   "parcels": 94,
-   "value_off": 3402200
-  },
-  "5": {
-   "name": "Lakes",
-   "parcels": 166,
-   "value_off": 7095200
-  },
-  "6": {
-   "name": "South",
-   "parcels": 152,
-   "value_off": 6109300
+  "C": {
+   "litres": {
+    "4A": 121.1,
+    "5A": 119.3,
+    "6A": 103.6,
+    "6B": 86.0,
+    "7A": 130.1,
+    "7B": 110.0,
+    "8A": 146.6,
+    "9A": 132.6,
+    "9B": 144.1,
+    "AMU": 125.0,
+    "CCU": 60.4,
+    "ESSU": 66.7,
+    "ICU": 154.1,
+    "PCU": 74.8
+   },
+   "litres_per_1000_obd": {
+    "4A": 11.2,
+    "5A": 12.9,
+    "6A": 11.0,
+    "6B": 11.0,
+    "7A": 13.9,
+    "7B": 14.4,
+    "8A": 17.2,
+    "9A": 12.9,
+    "9B": 14.3,
+    "AMU": 16.1,
+    "CCU": 18.6,
+    "ESSU": 17.0,
+    "ICU": 25.5,
+    "PCU": 14.3
+   }
   }
  },
- "ask_b_total": {
-  "parcels": 871,
-  "value_off": 33177600
- },
  "call": {
-  "cod": 18,
-  "cod_raw": 17.989,
-  "fails": true,
-  "level": 0.87,
-  "level_raw": 0.8697,
-  "sentence": "Accept the vendor's offer of the county-wide single-family reappraisal: the 2026 single-family roll fails Rule 18-7 on both tests, a median assessment ratio of 0.87 against 0.900 to 1.100 and a coefficient of dispersion of 18 against 15.0 or less."
- },
- "cert_2025": "2 June 2025",
- "condo_meets": true,
- "default_path": {
-  "cod": 8.0,
-  "cod_raw": 8.007,
-  "level": 0.95,
-  "level_raw": 0.9519
- },
- "evidence": {
-  "reviewed_parcels": 1742,
-  "reviewed_share_pct": 6.7,
-  "set_aside_sales": 44,
-  "single_family_parcels": 25988,
-  "sold_change_pct": 14.9,
-  "study_sales": 1698,
-  "unsold_change_pct": 3.4,
-  "unsold_share_pct": 93.3
- },
- "family": {
-  "county-wide median change": [
-   0.871,
-   18.009
+  "checks": {
+   "4A": "Yes",
+   "5A": "No",
+   "6A": "No",
+   "6B": "No",
+   "7A": "Yes",
+   "7B": "No",
+   "8A": "No",
+   "9A": "No",
+   "9B": "Yes",
+   "AMU": "Yes",
+   "CCU": "No",
+   "ESSU": "Yes",
+   "ICU": "No",
+   "PCU": "No"
+  },
+  "count": 5,
+  "funded": [
+   "AMU",
+   "ESSU",
+   "4A",
+   "7A",
+   "9B"
   ],
-  "mean without permit or appeal parcels": [
-   0.8697,
-   18.0
-  ],
-  "neighbourhood mean": [
-   0.8713,
-   17.976
-  ],
-  "neighbourhood median": [
-   0.8697,
-   17.989
-  ],
-  "post-sale-work sales kept": [
-   0.8703,
-   18.013
-  ],
-  "post-stratified by neighbourhood": [
-   0.8697,
-   17.965
-  ],
-  "share on the study's sales": [
-   0.8697,
-   18.0
-  ],
-  "unrounded carried values": [
-   0.8698,
-   17.987
-  ],
-  "upper weighted median": [
-   0.8697,
-   17.989
-  ],
-  "value-weighted change": [
-   0.8711,
-   17.975
+  "not_funded": [
+   "5A",
+   "6A",
+   "6B",
+   "7B",
+   "8A",
+   "9A",
+   "PCU",
+   "CCU",
+   "ICU"
   ]
  },
- "index": {
-  "jan2025": 100.0,
-  "jan2026": 108.5
+ "components": {
+  "audited_day_moments": 19807,
+  "audited_moments_on_shifts_over_10_per_cent_short": 5.3,
+  "audits_as_they_stand": {
+   "4A": 84.2,
+   "5A": 88.0,
+   "6A": 88.2,
+   "6B": 87.8,
+   "7A": 84.3,
+   "7B": 87.5,
+   "8A": 86.2,
+   "9A": 85.9,
+   "9B": 77.0,
+   "AMU": 83.2,
+   "CCU": 87.6,
+   "ESSU": 82.8,
+   "ICU": 88.4,
+   "PCU": 88.0
+  },
+  "audits_lowest_other_ward": 82.8,
+  "care_hours_on_shifts_over_10_per_cent_short": 18.8,
+  "compliance_on_other_audited_shifts": 87.1,
+  "compliance_on_those_shifts": 58.9,
+  "day_shifts": 10220
  },
- "rounding": {
-  "value": 100
- },
- "routes": {
-  "all_q": [
-   0.96,
-   8.4
+ "max_coaches": 6,
+ "parameters": {
+  "bands": [
+   1.05,
+   1.15,
+   1.25,
+   1.35
   ],
-  "roll2025": [
-   0.9,
-   18.7
-  ],
-  "rollfwd": [
-   0.86,
-   18.6
-  ]
+  "carton_litres": 2.4,
+  "onset_hours": 48,
+  "per_bed_days_a": 10000,
+  "per_bed_days_b": 1000,
+  "pump_litres": 0.5,
+  "short_cut_per_cent": 10,
+  "soap_cartridge_litres": 0.8
  },
- "standard": {
-  "cod_max": 15.0,
-  "level_hi": 1.1,
-  "level_lo": 0.9,
-  "prd_hi": 1.03,
-  "prd_lo": 0.98
- }
+ "threshold": 80.0
 }

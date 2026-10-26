@@ -1,15 +1,42 @@
-"""The county's records, written from the world as each office keeps them: the new appraisal system's 2026 roll, the
-retired system's 2025 roll as an Excel export, the neighbourhood crosswalk, the Assessor's parcel change log, the
-Recorder's 2025 deeds, the building department's permits, the Board of Review's hearings, the price index, and two
-files the study does not use (the homestead credits and the levy sheet)."""
+"""The pack's record files as each system exports them: the hand hygiene audit application's moments, the patient
+acuity system's patient-by-shift extract, the rostering system's actuals, the laboratory's positive blood cultures, the
+patient administration system's admissions, ward transfers and midnight census, the store's hand rub issues, the
+cleaning contractor's dispenser rounds, the patient experience survey and the staff influenza programme."""
 import csv
 import datetime as dt
-
 import numpy as np
 
 import common as K
+import side as SD
 
-CLASS_2025 = {"R1": "Residential single family", "R2": "Residential condominium", "R0": "Residential vacant land"}
+MOMENT_NAME = {1: "1 Before touching a patient", 2: "2 Before a procedure",
+               3: "3 After a procedure or body fluid exposure risk", 4: "4 After touching a patient",
+               5: "5 After touching a patient's surroundings"}
+APP_DEPT = {"AMU": "AMU Acute Medical Unit", "ESSU": "ESSU Emergency Short Stay Unit", "4A": "4A General Medicine",
+            "7A": "7A Respiratory Medicine", "5A": "5A General Surgery", "6A": "6A Orthopaedics",
+            "S1A": "S1A Orthopaedics (Surgical Block)", "6B": "6B Cardiology", "7B": "7B Renal Medicine",
+            "8A": "8A Oncology and Haematology", "9A": "9A Rehabilitation", "9B": "9B Aged Care",
+            "PCU": "Palliative Care Unit", "CCU": "Coronary Care Unit", "ICU": "Intensive Care Unit",
+            "ED": "Emergency Department", "OT": "Operating Theatres and Recovery", "DSU": "Day Surgery Unit",
+            "RDU": "Renal Dialysis Unit", "OPC": "Outpatient Clinics", "MI": "Medical Imaging"}
+LAB_LOC = {u: "AVH-" + u for u in K.WARD + [K.MOVED[1]] + K.AREA}
+COST_CENTRE = {"AMU": ("4012", "AMU ACUTE MEDICAL UNIT"), "ESSU": ("4013", "ESSU EMERG SHORT STAY"),
+               "4A": ("4041", "WARD 4A GEN MEDICINE"), "7A": ("4071", "WARD 7A RESP MEDICINE"),
+               "5A": ("4051", "WARD 5A GEN SURGERY"), "6A": ("4061", "WARD 6A ORTHOPAEDICS"),
+               "6B": ("4062", "WARD 6B CARDIOLOGY"), "7B": ("4072", "WARD 7B RENAL MEDICINE"),
+               "8A": ("4081", "WARD 8A ONCOLOGY HAEM"), "9A": ("4091", "WARD 9A REHABILITATION"),
+               "9B": ("4092", "WARD 9B AGED CARE"), "PCU": ("4085", "PALLIATIVE CARE UNIT"),
+               "CCU": ("4021", "CORONARY CARE UNIT"), "ICU": ("4022", "INTENSIVE CARE UNIT")}
+HANDHELD = {"G": "PDA-0412", "2": "PDA-0415", "4": "PDA-0418", "5": "PDA-0421", "6": "PDA-0423", "7": "PDA-0426",
+            "8": "PDA-0429", "9": "PDA-0433", "S1": "PDA-0440"}
+
+
+def dmy(d):
+    return d.strftime("%d/%m/%Y")
+
+
+def dmy_hm(t):
+    return t.strftime("%d/%m/%Y %H:%M")
 
 
 def write_csv(path, head, rows):
@@ -19,249 +46,249 @@ def write_csv(path, head, rows):
         w.writerows(rows)
 
 
-def dashed(b, p, n):
-    return "%03d-%02d-%03d" % (b, p, n)
-
-
-def undashed(b, p, n, suffix=0):
-    return "%03d%02d%03d%d" % (b, p, n, suffix)
-
-
-def money(v):
-    return int(round(v))
+def h2(x):
+    return "%.2f" % x
 
 
 class Records:
-    def __init__(self, w):
-        self.w = w
-        self.r = np.random.default_rng(K.SEED_REC + 11)
-        s = w.sf
-        self.N = len(s["av25"])
-        self.combined_second = {b for a, b in w.combine_pairs}
-        self.combined_first = {a: b for a, b in w.combine_pairs}
-        self.split = set(w.split_parents)
-        big = len(K.CONDO_PROJECTS) - 1
-        self.big = big
-        for u in w.condo_units:
-            b, p = w.condo_book[u["pj"]], w.condo_page[u["pj"]]
-            u["id25"] = dashed(b, p, u["old"])
-            u["id26"] = undashed(b, p, u["new"])
-            name, nb, n, street = K.CONDO_PROJECTS[u["pj"]]
-            label = ("%s-%d%02d" % (u["tower"], u["floor"], u["pos"] + 1)) if u["tower"] else \
-                ("%d%02d" % (u["floor"], u["pos"] + 1))
-            u["situs"] = "%d %s Unit %s" % (100 + 20 * u["pj"] + (3 if u["tower"] == "B" else 1), street, label)
-        self.condo_year = {pj: int(1979 + (pj * 37) % 44) for pj in range(len(K.CONDO_PROJECTS))}
-        self.condo_year[big] = 2016
+    def __init__(self, world, side, seed=K.SEED):
+        self.w, self.s, self.seed = world, side, seed
 
-    # ---- the 2026 roll (new system) ----------------------------------------------------------------------------
-    def roll26_rows(self):
-        w, s = self.w, self.w.sf
+    # ------------------------------------------------------------------ audits
+    def audit_rows(self):
+        head = ["session_id", "session_date", "session_start", "department", "auditor", "moment_seq", "moment",
+                "hcw_category", "action"]
         rows = []
-        for i in range(self.N):
-            if i in self.split or i in self.combined_second:
-                continue
-            b, p, n = w.sf_id[i]
-            nb = int(s["nbi"][i])
-            total = int(s["av26"][i])
-            sqft = int(w.sf_sqft[i])
-            if i in self.combined_first:
-                j = self.combined_first[i]
-                total = int(s["av26"][i] + s["av26"][j])
-                sqft = int(w.sf_sqft[i])
-            land = int(round(total * w.sf_land_share[i], -2))
-            rows.append([undashed(b, p, n), "R1", K.NBHD[nb][0], w.sf_street[i], int(w.sf_year[i]), sqft,
-                         land, total - land, total])
-        for i in w.split_parents:
-            b, p, n = w.sf_id[i]
-            nb = int(s["nbi"][i])
-            total = int(s["av26"][i])
-            share = w.split_share[i]
-            house = int(round(total * share, -2))
-            lot = total - house
-            land_h = int(round(house * w.sf_land_share[i] * 0.8, -2))
-            rows.append([undashed(b, p, n, 1), "R1", K.NBHD[nb][0], w.sf_street[i], int(w.sf_year[i]),
-                         int(w.sf_sqft[i]), land_h, house - land_h, house])
-            num, street = w.sf_street[i].split(" ", 1)
-            rows.append([undashed(b, p, n, 2), "R0", K.NBHD[nb][0], "%d %s" % (int(num) + 2, street), "", "",
-                         lot, 0, lot])
-        for u in w.condo_units:
-            if u.get("merged_into") is not None:
-                continue
-            total = int(u["av26"])
-            land = int(round(total * 0.11, -2))
-            area = int(round(u["area"] + (u["partner_area"] if "partner_area" in u else 0)))
-            rows.append([u["id26"], "R2", K.NBHD[K.CONDO_PROJECTS[u["pj"]][1]][0], u["situs"],
-                         self.condo_year[u["pj"]], area, land, total - land, total])
-        rows.sort(key=lambda x: x[0])
-        head = ["parcel_id", "class_code", "nbhd_code", "situs_address", "year_built", "living_area_sf",
-                "land_value", "improvement_value", "total_assessed_value"]
+        for s in sorted(self.s.sessions, key=lambda x: x["sid"]):
+            for j, (mo, h, act) in enumerate(s["moments"], 1):
+                rows.append(["HH%06d" % s["sid"], dmy(s["date"]), s["start"].strftime("%H:%M"), APP_DEPT[s["unit"]],
+                             s["auditor"], j, MOMENT_NAME[mo], h, act])
         return head, rows
 
-    # ---- the 2025 roll (retired system, Excel export) ------------------------------------------------------------
-    def roll25_rows(self):
-        w, s = self.w, self.w.sf
-        rows = []
-        for i in range(self.N):
-            b, p, n = w.sf_id[i]
-            nb = int(s["nbi"][i])
-            total = int(s["av25"][i])
-            land = int(round(total * w.sf_land_share[i], -2))
-            rows.append([dashed(b, p, n), CLASS_2025["R1"], K.NBHD[nb][1], w.sf_street[i], int(w.sf_year[i]),
-                         int(w.sf_sqft[i]), land, total - land, total])
-        for u in w.condo_units:
-            total = int(u["av25"])
-            land = int(round(total * 0.11, -2))
-            rows.append([u["id25"], CLASS_2025["R2"], K.NBHD[K.CONDO_PROJECTS[u["pj"]][1]][1], u["situs"],
-                         self.condo_year[u["pj"]], int(round(u["area"])), land, total - land, total])
-        rows.sort(key=lambda x: x[0])
-        head = ["Parcel No.", "Class", "Neighborhood", "Situs Address", "Yr Built", "Sq Ft", "Land", "Improvements",
-                "Total Assessed"]
+    # ------------------------------------------------------------------ acuity
+    def acuity_rows(self):
+        rng = np.random.default_rng([269, self.seed, 60])
+        enc, rows = {}, []
+        head = ["ward", "shift_date", "shift", "bed", "encounter", "required_care_hours"]
+        keys = sorted({k for (code, d, s), x in self.w.shifts.items() for k, b, h in x["patients"]})
+        nums = rng.permutation(len(keys))
+        for k, n in zip(keys, nums):
+            enc[k] = "E%08d" % (30410000 + int(n) * 7 + int(rng.integers(0, 7)))
+        for code in K.WARD:
+            for d in K.DAYS:
+                u = SD.ward_of(code, d)
+                for s in ("AM", "PM"):
+                    for k, b, h in sorted(self.w.shifts[(code, d, s)]["patients"], key=lambda p: p[1]):
+                        bed = ("%s-%02d" % (u, b)) if b < 100 else ("%s-ESC%d" % (u, b - 99))
+                        rows.append([u, d.isoformat(), s, bed, enc[k], "%.1f" % h])
         return head, rows
 
-    def crosswalk_rows(self):
+    # ------------------------------------------------------------------ roster
+    def roster_rows(self):
+        """each ward-shift's worked hours as the shifts of the nurses who worked them: 8-hour shifts and 4-hour
+        half shifts, the ward's own nurses and the casual pool's under their employee numbers; supernumerary shifts beside
+        them; night shifts of 10 hours"""
+        rng = np.random.default_rng([269, self.seed, 61])
+        head = ["roster_date", "ward", "shift_code", "staff_key", "staff_type", "designation", "shift_start",
+                "shift_end", "worked_hours", "shift_category"]
         rows = []
-        for k, (code, name) in enumerate(K.NBHD):
-            a = K.AREAS[k // 5]
-            rows.append([code, name, a[0], a[1]])
-        rows.sort(key=lambda x: x[0])
-        return ["nbhd_code", "nbhd_name", "market_area", "market_area_name"], rows
+        k = 0
+        for code in K.WARD:
+            nmed = np.median([self.w.shifts[(code, d, "AM")]["worked"] for d in K.DAYS]) / 8.0
+            nday = max(sum(int(np.ceil(self.w.shifts[(code, d, s)]["worked"] / 8.0)) for s in ("AM", "PM"))
+                       for d in K.DAYS) + max(2, int(round(nmed * 0.62))) + 2
+            pool = []
+            for _ in range(max(int(nmed * 7 / 4.2 * 1.6) + 4, int(nday * 1.3) + 4)):
+                k += int(rng.integers(1, 12))
+                des = rng.choice(["RN", "EN", "AIN"], p=[0.66, 0.20, 0.14])
+                pool.append(("%06d" % (100000 + k * 3), str(des)))
+            nd_n = max(2, int(round(nmed * 0.62)))
+            for d in K.DAYS:
+                u = SD.ward_of(code, d)
+                used = set()
+                for s in ("AM", "PM", "ND"):
+                    if s == "ND":
+                        n_full, half = nd_n, 0
+                        surge = False
+                    else:
+                        x = self.w.shifts[(code, d, s)]
+                        n_full, half = int(x["worked"] // 8), int(round((x["worked"] % 8) / 4))
+                        surge = x["surge"]
+                    for j in range(n_full + half):
+                        is_half = j >= n_full
+                        free = [p for p in pool if p[0] not in used]
+                        p = free[int(rng.integers(0, len(free)))]
+                        used.add(p[0])
+                        key, typ, des = p[0], "Employee", p[1]
+                        st, en, hrs = self._times(s, is_half, d)
+                        rows.append([dmy(d), u, s, key, typ, des, st, en, h2(hrs), "Rostered"])
+                    if s != "ND" and rng.random() < 0.08:
+                        free = [p for p in pool if p[0] not in used]
+                        p = free[int(rng.integers(0, len(free)))]
+                        used.add(p[0])
+                        cat = str(rng.choice(["Supernumerary - orientation", "Supernumerary - clinical education",
+                                              "Supernumerary - student placement"], p=[0.5, 0.2, 0.3]))
+                        key = p[0] if "student" not in cat else "S%05d" % int(rng.integers(10000, 99999))
+                        des = "RN" if "student" not in cat else "Student"
+                        st, en, hrs = self._times(s, False, d)
+                        rows.append([dmy(d), u, s, key, "Employee" if des != "Student" else "Placement", des, st, en,
+                                     h2(hrs), cat])
+        return head, rows
 
-    # ---- the Assessor's parcel change log --------------------------------------------------------------------------
-    def change_rows(self):
-        w, r = self.w, self.r
+    @staticmethod
+    def _times(s, half, d):
+        if s == "AM":
+            return ("07:00", "11:00", 4.0) if half else ("07:00", "15:30", 8.0)
+        if s == "PM":
+            return ("17:30", "21:30", 4.0) if half else ("13:00", "21:30", 8.0)
+        nxt = d + dt.timedelta(days=1)
+        hrs = 10.0
+        if nxt == dt.date(2025, 10, 5):
+            hrs = 9.0       # clocks forward an hour on the morning of 5 October 2025
+        if nxt == dt.date(2026, 4, 5):
+            hrs = 11.0      # and back on the morning of 5 April 2026
+        return "21:00", "07:30", hrs
+
+    # ------------------------------------------------------------------ laboratory and patient administration
+    def _mrn_at(self, p, t):
+        """the record number a result carries: the retired number for cultures before the index merge"""
+        if p["mrn"] in self.s.retired and t.date() < K.MPI_MERGE:
+            return self.s.retired[p["mrn"]]
+        return p["mrn"]
+
+    def isolate_rows(self):
+        rng = np.random.default_rng([269, self.seed, 62])
+        head = ["lab_number", "mrn", "date_of_birth", "sex", "collected", "received", "location", "specimen",
+                "organism"]
         rows = []
-        for i in w.split_parents:
-            b, p, n = w.sf_id[i]
-            d = dt.date(2025, 2, 3) + dt.timedelta(days=int(r.integers(0, 300)))
-            ref = "PLAT-25-%03d" % int(r.integers(10, 400))
-            for suf in (1, 2):
-                rows.append([d.isoformat(), "SPLIT", dashed(b, p, n), undashed(b, p, n, suf), ref])
-        for a, bb in w.combine_pairs:
-            ba, pa, na = w.sf_id[a]
-            bb_, pb, nb_ = w.sf_id[bb]
-            d = dt.date(2025, 2, 10) + dt.timedelta(days=int(r.integers(0, 290)))
-            ref = "COMB-25-%03d" % int(r.integers(10, 400))
-            rows.append([d.isoformat(), "COMBINE", dashed(ba, pa, na), undashed(ba, pa, na), ref])
-            rows.append([d.isoformat(), "COMBINE", dashed(bb_, pb, nb_), undashed(ba, pa, na), ref])
-        decl = "DECL-25-0117"
-        for u in w.condo_units:
-            if u["pj"] != self.big:
-                continue
-            if u.get("merged_into") is not None:
-                rows.append([K.REDECLARED.isoformat(), "COMBINE", u["id25"], u["merged_into"]["id26"], decl])
-            elif any(a is u for a, b in w.wex_combos):
-                rows.append([K.REDECLARED.isoformat(), "COMBINE", u["id25"], u["id26"], decl])
-            else:
-                rows.append([K.REDECLARED.isoformat(), "RENUMBER", u["id25"], u["id26"], decl])
-        rows.sort(key=lambda x: (x[0], x[2], x[3]))
-        return ["effective_date", "change_type", "old_parcel_no", "new_parcel_id", "reference_doc"], rows
-
-    # ---- the Recorder's 2025 deeds ---------------------------------------------------------------------------------
-    def deed_rows(self):
-        w, s, r = self.w, self.w.sf, self.r
+        for p in self.s.patients:
+            for t, o, loc in p["cultures"]:
+                when = t
+                u = loc if loc in K.AREA else SD.ward_of(loc, when.date())
+                rows.append([when, self._mrn_at(p, when), p["dob"], p["sex"], u, o])
+        rows.sort(key=lambda r: (r[0], r[1]))
         out = []
-        for i in np.where(s["s25"])[0]:
-            b, p, n = w.sf_id[i]
-            u = r.random()
-            dtype = "Warranty Deed" if u < 0.88 else ("Special Warranty Deed" if u < 0.97 else "Trustee's Deed")
-            out.append(dict(rec=w.sf_recorded[i], deed=w.sf_deed[i], parcel=dashed(b, p, n), dtype=dtype,
-                            cons=money(s["price"][i]), code="Q"))
-        for t in w.sf_transfers:
-            rec = t["deed"] + dt.timedelta(days=int(r.integers(1, 12)))
-            if rec.year > 2025:
-                rec = dt.date(2025, 12, 31)
-            for i in t["i"]:
-                b, p, n = w.sf_id[i]
-                out.append(dict(rec=rec, deed=t["deed"], parcel=dashed(b, p, n), dtype=t["dtype"], cons=t["cons"],
-                                code=t["code"], group=id(t)))
-        for sale in w.condo_sales:
-            u = sale["u"]
-            if u["pj"] == self.big and sale["deed"] >= K.REDECLARED:
-                b, p = w.condo_book[u["pj"]], w.condo_page[u["pj"]]
-                parcel = dashed(b, p, u["new"])
-            else:
-                parcel = u["id25"]
-            out.append(dict(rec=sale["recorded"], deed=sale["deed"], parcel=parcel, dtype="Warranty Deed",
-                            cons=money(sale["price"]), code="Q"))
-        # corrective deeds re-recorded to fix a legal description or a name, coded U6
-        base = [x for x in out if x["code"] in ("Q", "U1", "U3")]
-        for j in r.choice(len(base), 41, replace=False):
-            x = base[int(j)]
-            rec = x["rec"] + dt.timedelta(days=int(r.integers(9, 60)))
-            if rec.year > 2025:
+        seqs = {}
+        for when, mrn, dob, sex, u, o in rows:
+            rec = when + dt.timedelta(minutes=int(rng.integers(25, 360)))
+            yy = rec.strftime("%y")
+            seqs[yy] = seqs.get(yy, 41000 + (0 if yy == "25" else 9000)) + int(rng.integers(1, 30))
+            out.append(["%sB%06d" % (yy, seqs[yy]), mrn, dmy(dob), sex, dmy_hm(when), dmy_hm(rec), LAB_LOC[u],
+                        "Blood culture", o])
+        return head, out
+
+    def admission_rows(self):
+        rng = np.random.default_rng([269, self.seed, 63])
+        head = ["admission_no", "mrn", "date_of_birth", "sex", "admitted", "admitting_ward", "separated",
+                "separation_ward"]
+        self.adm_no = {}
+        recs = []
+        for p in self.s.patients:
+            if p["adm"] is None:
                 continue
-            out.append(dict(rec=rec, deed=rec - dt.timedelta(days=int(r.integers(0, 5))), parcel=x["parcel"],
-                            dtype="Corrective " + x["dtype"], cons=x["cons"], code="U6"))
-        out.sort(key=lambda x: (x["rec"], x["parcel"]))
-        rows, inst, last_group = [], 431, {}
-        for x in out:
-            g = x.get("group")
-            if g is not None and g in last_group:
-                no = last_group[g]
-            else:
-                inst += int(1 + (r.random() < 0.6) + (r.random() < 0.3))
-                no = "2025R%06d" % inst
-                if g is not None:
-                    last_group[g] = no
-            rows.append([no, x["rec"].isoformat(), x["deed"].isoformat(), x["parcel"], x["dtype"], x["cons"],
-                         x["code"]])
-        head = ["instrument_no", "recorded_date", "deed_date", "parcel_no", "deed_type", "consideration",
-                "validation_code"]
+            for j, r in enumerate(p.get("pre", [])):
+                recs.append((r["adm"], p["mrn"], (id(p), j), p, r))
+            recs.append((p["adm"], p["mrn"], (id(p), "main"), p, p))
+        recs.sort(key=lambda x: (x[0], x[1], str(x[2][1])))
+        rows = []
+        n = 2104000
+        for adm, mrn, key, p, r in recs:
+            n += int(rng.integers(5, 160))
+            self.adm_no[key] = "IP%07d" % n
+            last = r["moves"][-1][1] if r["moves"] else r["first"]
+            rows.append([self.adm_no[key], p["mrn"], dmy(p["dob"]), p["sex"], dmy_hm(r["adm"]),
+                         SD.ward_of(r["first"], r["adm"].date()), dmy_hm(r["dis"]), SD.ward_of(last, r["dis"].date())])
         return head, rows
 
-    def index_rows(self):
-        rows = [["%d-%02d" % ym, "%.1f" % v] for ym, v in self.w.index.items()]
-        return ["period", "index_jan2025_100"], rows
-
-    def permit_rows(self):
-        w = self.w
+    def transfer_rows(self):
+        head = ["admission_no", "transfer_seq", "from_ward", "to_ward", "transferred"]
         rows = []
-        no = 25001
-        allp = [(p["issued"], 0, p) for p in w.permits] + [(p["issued"], 1, p) for p in w.condo_permits]
-        allp.sort(key=lambda t: (t[0], t[1]))
-        for _, kind, pmt in allp:
-            if kind == 0:
-                b, p, n = w.sf_id[pmt["i"]]
-                work = pmt["work"]
-            else:
-                u = pmt["u"]
-                b, p, n = w.condo_book[u["pj"]], w.condo_page[u["pj"]], pmt["number"]
-                work = "%s, Unit %s" % (pmt["work"], pmt["label"])
-            no += int(1 + (self.r.random() < 0.7) * self.r.integers(1, 9))
-            rows.append(["BP%d" % no, dashed(b, p, n), pmt["issued"].isoformat(),
-                         pmt["finaled"].isoformat() if pmt["finaled"] else "", pmt["status"], work,
-                         pmt["valuation"]])
-        return ["permit_no", "parcel_no", "issued_date", "final_inspection_date", "status", "work_description",
-                "declared_valuation"], rows
-
-    def bor_rows(self):
-        w = self.w
-        rows = []
-        for x in w.hearings:
-            if x["cls"] == "R1":
-                b, p, n = w.sf_id[x["i"]]
-                parcel, cls = dashed(b, p, n), "SFR"
-            else:
-                parcel, cls = x["cu"]["id25"], "CONDO"
-            rows.append([x["case"], parcel, cls, x["heard"].isoformat() if x["heard"] else "", x["decision"],
-                         x["before"], x["after"] if x["after"] is not None else ""])
-        return ["case_no", "parcel_no", "property_class", "hearing_date", "decision", "value_before",
-                "value_after"], rows
-
-    # ---- not used by the study ----------------------------------------------------------------------------------------
-    def homestead_rows(self):
-        head, roll = self.roll26_rows()
-        r = np.random.default_rng(K.SEED_REC + 23)
-        rows = []
-        for x in roll:
-            if x[1] == "R0":
+        for p in self.s.patients:
+            if p["adm"] is None or not p["moves"]:
                 continue
-            u = r.random()
-            if u < 0.69:
-                code, amt = "HS1", 25000
-                if r.random() < 0.21:
-                    code, amt = "HS65", 40000
-                if r.random() < 0.03:
-                    code, amt = "HSDV", int(min(x[8], 75000))
-                rows.append([x[0], code, amt, "2026"])
-        return ["parcel_id", "credit_code", "credit_amount", "tax_year"], rows
+            cur = p["first"]
+            for j, (t, w) in enumerate(p["moves"], 1):
+                rows.append([self.adm_no[(id(p), "main")], j, SD.ward_of(cur, t.date()), SD.ward_of(w, t.date()),
+                             dmy_hm(t)])
+                cur = w
+        rows.sort(key=lambda r: (dt.datetime.strptime(r[4], "%d/%m/%Y %H:%M"), r[0]))
+        return head, rows
+
+    def census_rows(self):
+        head = ["census_date", "ward", "occupied_beds"]
+        rows = []
+        for d in K.DAYS:
+            for code in K.WARD:
+                rows.append([d.isoformat(), SD.ward_of(code, d), self.s.census[(code, d)]])
+        return head, rows
+
+    # ------------------------------------------------------------------ hand rub
+    def issue_rows(self):
+        rng = np.random.default_rng([269, self.seed, 64])
+        head = ["issue_no", "issue_date", "transaction", "cost_centre", "cost_centre_name", "item_code",
+                "item_description", "unit_of_issue", "quantity"]
+        item = {c: (c, dsc, uoi) for c, dsc, uoi, _ in SD.HAND_RUB}
+        # the contractor supplies its own refills and cartridges under its contract, so the store issues only the
+        # wards' bottles
+        lines = [(d, COST_CENTRE[code], it, q) for d, code, it, q in self.s.bottles]
+        lines.sort(key=lambda x: (x[0], x[1][0], x[2]))
+        rows = []
+        n = 7700400
+        for d, (cc, ccn), it, q in lines:
+            n += int(rng.integers(1, 40))
+            c, dsc, uoi = item[it]
+            rows.append(["MI%07d" % n, dmy(d), "RETURN" if q < 0 else "ISSUE", cc, ccn, c, dsc, uoi, q])
+        return head, rows
+
+    def round_rows(self):
+        """the contractor's round records as its handhelds sync them: the day's records at the evening's sync in the order
+        they were scanned, and the records a handheld sent a second time at that day's sync"""
+        rng = np.random.default_rng([269, self.seed, 65])
+        head = ["record_id", "handheld", "job_no", "dispenser_id", "fitted", "product", "quantity", "cleaner"]
+        cleaners = {fl: ["C%04d" % int(x) for x in rng.choice(np.arange(1000, 9999), size=6, replace=False)]
+                    for fl in SD.FLOORS}
+        cl_of = {}
+        on_job = {}             # one cleaner does a terminal clean's whole job
+        recs = []
+        for i, (did, t, fl, kind) in enumerate(self.s.refills):
+            if kind == "genuine":
+                c = cleaners[fl][int(rng.integers(0, 6))]
+                job = self.s.jobs.get((did, t))
+                if job:
+                    c = on_job.setdefault(job[0], c)
+                cl_of[(did, t)] = c
+            recs.append((did, t, fl, kind))
+        out = []
+        for did, t, fl, kind in recs:
+            if kind == "genuine":
+                c = cl_of[(did, t)]
+                sync = (t.date(), 0)
+                job = self.s.jobs.get((did, t))
+            else:
+                # the original record's cleaner and job, found from the record it repeats (same dispenser and time of
+                # day, within the days the handheld held)
+                held = [h for f, d0, h in SD.RESENDS if f == fl and d0 == t.date()][0]
+                src = [x for x in cl_of if x[0] == did and x[1].time() == t.time()
+                       and t.date() - dt.timedelta(days=held) <= x[1].date() < t.date()]
+                c = cl_of[src[0]]
+                sync = (t.date(), 1)
+                job = self.s.jobs.get(src[0])
+            out.append((sync, fl, t, did, c, kind, job))
+        out.sort(key=lambda r: (r[0], r[1], r[2], r[3]))
+        rows = []
+        n = 5531000
+        for sync, fl, t, did, c, kind, job in out:
+            n += 1
+            rows.append([n, HANDHELD[fl], job[0] if job else "", did, t.strftime("%d/%m/%Y %H:%M"),
+                         "FOAM 1L REFILL" if self.s.disp_type[did] == "Hand rub" else "SOAP 800ML CARTRIDGE",
+                         job[1] if job else 1, c])
+        return head, rows
+
+    # ------------------------------------------------------------------ distractors
+    def survey_rows(self):
+        head = ["ward", "survey_month", "responses", "hand_hygiene_yes", "hand_hygiene_no", "hand_hygiene_dont_know"]
+        return head, [[code, d.strftime("%b %Y"), n, y, no, dk] for code, d, n, y, no, dk in self.s.survey]
+
+    def flu_rows(self):
+        head = ["employee_no", "home_ward", "vaccinated_on"]
+        return head, [[e, code, dmy(d) if d else ""] for e, code, d in self.s.flu]

@@ -22,10 +22,34 @@ sys.path.insert(0, HERE)
 import common as K         # noqa: E402
 import docs as DC          # noqa: E402
 import records as R        # noqa: E402
-import world as Wd         # noqa: E402
+import side as SD          # noqa: E402
+import world as WD         # noqa: E402
 
 TASK = os.path.dirname(HERE)
 MTIME = calendar.timegm(K.ASSEMBLED.timetuple())
+
+CONTENTS = [
+    ("terms", "The Foundation's terms for the Hand Hygiene Coaching Grant 2027 (adopted 22 September 2026)."),
+    ("program", "Infection Prevention and Control: the Hand Hygiene Program 2025-26, program summary."),
+    ("audits", "Hand hygiene audit application: every moment recorded in the 2025-26 audit year, all wards and "
+               "departments (export of 2 November 2026)."),
+    ("notes", "Workforce Information's notes on the acuity and roster extracts."),
+    ("acuity", "Patient acuity system: required care hours by patient and shift, inpatient wards, 2025-26."),
+    ("roster", "Rostering system: nursing shifts worked on the inpatient wards, 2025-26."),
+    ("bsidef", "Infection Prevention and Control: hospital-onset bloodstream infection surveillance definitions, "
+               "version 3."),
+    ("isolates", "Laboratory: positive blood cultures collected 1 July 2025 to 30 June 2026."),
+    ("admissions", "Patient administration system: the admissions of the patients with a positive blood culture in "
+                   "2025-26."),
+    ("transfers", "Patient administration system: the ward transfers of those admissions."),
+    ("census", "Patient administration system: midnight census by ward, 2025-26."),
+    ("issues", "Store: hand rub and hand soap items issued and returned, 2025-26."),
+    ("rounds", "Cleaning contractor: dispenser refill and cartridge records from the handhelds, 2025-26."),
+    ("wards", "Ward and area reference: codes, cost centres, application and laboratory names, dispensers."),
+    ("survey", "Patient experience survey: the hand hygiene question by ward and month of discharge, 2025-26."),
+    ("flu", "Staff influenza vaccination program 2025: ward nursing staff."),
+    ("dictionary", "Data dictionary for the files above."),
+]
 
 
 def build(out, seed=K.SEED, keep=False):
@@ -33,35 +57,32 @@ def build(out, seed=K.SEED, keep=False):
         shutil.rmtree(out)
     os.makedirs(out)
     p = lambda k: os.path.join(out, K.FILES[k])
-    w = Wd.World(seed)
-    rc = R.Records(w)
+    w = WD.World(seed)
+    s = SD.Side(w, seed)
+    rc = R.Records(w, s, seed)
     n = {}
-    for key, fn in (("roll26", rc.roll26_rows), ("crosswalk", rc.crosswalk_rows), ("changes", rc.change_rows),
-                    ("deeds", rc.deed_rows), ("index", rc.index_rows), ("permits", rc.permit_rows),
-                    ("bor", rc.bor_rows), ("homestead", rc.homestead_rows)):
+    for key, fn in (("audits", rc.audit_rows), ("acuity", rc.acuity_rows), ("roster", rc.roster_rows),
+                    ("isolates", rc.isolate_rows), ("admissions", rc.admission_rows), ("transfers", rc.transfer_rows),
+                    ("census", rc.census_rows), ("issues", rc.issue_rows), ("rounds", rc.round_rows),
+                    ("survey", rc.survey_rows), ("flu", rc.flu_rows)):
         head, rows = fn()
         R.write_csv(p(key), head, rows)
         n[key] = len(rows)
-    head, rows = rc.roll25_rows()
-    DC.write_roll25(p("roll25"), head, rows)
-    n["roll25"] = len(rows)
-    DC.write_rule(p("rule"))
-    DC.write_memo(p("memo"))
+    DC.write_terms(p("terms"))
+    DC.write_program(p("program"))
+    DC.write_definitions(p("bsidef"))
+    DC.write_notes(p("notes"), n)
     DC.write_dictionary(p("dictionary"))
-    tot = sum(r[8] for r in rows) * 0.83
-    taxable = {name: int(round(tot * sh, -3)) for (name, _, _), sh in
-               zip(DC.LEVY, (1.0, 1.0, 1.0, 0.71, 0.71, 0.29, 0.38, 0.062, 0.54, 0.83))}
-    DC.write_levy(p("levy"), taxable)
-    n["levy"] = len(DC.LEVY)
-    return dict(w=w if keep else None, rc=rc if keep else None, counts=n)
+    DC.write_wards(p("wards"), s)
+    DC.write_contents(p("contents"), [(K.FILES[k], d) for k, d in CONTENTS])
+    return dict(world=w if keep else None, side=s if keep else None, counts=n)
 
 
-PDF_DATES = {"rule": ("D:20210311140000-06'00'", "D:20210311140000-06'00'"),
-             "memo": ("D:20260914101500-05'00'", "D:20260914101500-05'00'")}
-OOXML = {"roll25": ("CAMA Legacy", "CAMA Legacy", "2026-01-08T22:42:00Z", "2026-01-08T22:42:00Z",
-                    "2025 certified roll", True),
-         "levy": ("Tillford County Auditor", "Tillford County Auditor", "2025-11-03T15:10:00Z",
-                  "2025-11-21T19:32:00Z", "FY2026 levies and rates", True)}
+PDF_DATES = {"terms": ("D:20260922143000+10'00'", "D:20260922143000+10'00'"),
+             "program": ("D:20260710091500+10'00'", "D:20260714101000+10'00'"),
+             "bsidef": ("D:20250602113000+10'00'", "D:20250616154500+10'00'")}
+OOXML = {"wards": ("Bryan Ramos", "Trevor Macdonald", "2024-02-12T23:10:00Z", "2026-11-03T22:41:00Z",
+                   "Ward and area reference", True)}
 
 
 def finish(out):
@@ -69,7 +90,7 @@ def finish(out):
     import postprocess as PP
     for k, (c, m) in PDF_DATES.items():
         PP.normalize_pdf(os.path.join(out, K.FILES[k]), c.encode(), m.encode())
-    PP.COMPANY = K.COUNTY
+    PP.COMPANY = K.HOSPITAL
     for k, (cr, lb, c, m, title, excel) in OOXML.items():
         PP.normalize_ooxml(os.path.join(out, K.FILES[k]), cr, lb, c, m, title=title, excel=excel)
     for f in os.listdir(out):
@@ -78,32 +99,29 @@ def finish(out):
 
 def finish_golden(golden):
     import postprocess as PP
-    PP.COMPANY = K.COUNTY
-    PP.normalize_ooxml(os.path.join(golden, K.GOLDEN_BOOK), "Budget and Policy Analysis", "Budget and Policy Analysis",
-                       "2026-09-24T14:05:00Z", "2026-10-01T21:12:00Z", title="2026 roll on Rule 18-7", excel=True)
-    PP.normalize_ooxml(os.path.join(golden, K.GOLDEN_MEMO), "Budget and Policy Analysis", "Budget and Policy Analysis",
-                       "2026-09-29T16:20:00Z", "2026-10-01T22:03:00Z",
-                       title="The single-family reappraisal offer")
+    PP.COMPANY = K.FOUNDATION
+    PP.normalize_ooxml(os.path.join(golden, K.GOLDEN), K.REQUESTER, K.REQUESTER, "2026-11-09T22:05:00Z",
+                       "2026-11-19T05:48:00Z", title="Coaching wards 2027", excel=True)
     for f in os.listdir(golden):
         os.utime(os.path.join(golden, f), (MTIME, MTIME))
 
 
 def metadata(fig, counts):
-    src = ("constructed by the task generator (seeded); %s, its state, offices, people and records are fictional; "
-           "the records follow the forms of US county appraisal-system roll exports, recorder deed extracts, "
-           "building permit logs and board of review hearing logs" % K.COUNTY)
+    src = ("constructed by the task generator (seeded); %s, its Foundation, wards, staff, patients and people are "
+           "fictional; the records follow the forms of an Australian public hospital's hand hygiene audit "
+           "application, patient acuity and rostering systems, laboratory, patient administration system, store and "
+           "cleaning contractor" % K.HOSPITAL)
     return {
         "task": "task269",
-        "title": "%s: does the 2026 single-family roll meet the State's ratio study rule, or does the county accept "
-                 "its vendor's reappraisal offer" % K.COUNTY,
-        "domain": "General Statistics & Data Science (missing data, censoring and measurement error)",
+        "title": "%s: the wards that get a 2027 hand hygiene coaching nurse" % K.FOUNDATION,
+        "domain": "Healthcare Delivery & Health Economics (provider quality and risk adjustment)",
         "objective": "Descriptive & Distribution Analysis",
         "distractor_files": ["target/" + K.FILES[k] for k in K.DISTRACTORS],
         "deliverables": list(K.DELIVERABLES),
-        "provenance": {name: {"source": src, "date": "2026-09-18", "licence": "CC0 1.0 (constructed for this task)"}
+        "provenance": {name: {"source": src, "date": "2026-10-26", "licence": "CC0 1.0 (constructed for this task)"}
                        for name in sorted(K.FILES.values())},
         "rows": {K.FILES[k]: v for k, v in sorted(counts.items())},
-        "answer": fig["call"]["sentence"],
+        "answer": "%d wards funded: %s" % (len(fig["call"]["funded"]), ", ".join(fig["call"]["funded"])),
     }
 
 

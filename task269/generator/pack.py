@@ -1,44 +1,95 @@
-"""The pack as a solver reads it: every file loaded from target/ with the plain tools (pandas, openpyxl), parcel
-numbers carried to the 2026 roll's form, nothing taken from the generator."""
+"""Readers of the shipped pack: every file read the way an analyst reads it, with the reference workbook's codes, so the
+analysis and the asks run on the files and never on the generator's world."""
 import os
+import datetime as dt
 
 import pandas as pd
 
 import common as K
 
 
-def to26(dashed_no):
-    """book-page-parcel as written in 2025 to the 2026 roll's identifier (suffix 0)."""
-    return str(dashed_no).replace("-", "") + "0"
+def load(target):
+    p = lambda k: os.path.join(target, K.FILES[k])
+    d = {}
+    d["audits"] = pd.read_csv(p("audits"), dtype=str)
+    d["acuity"] = pd.read_csv(p("acuity"), dtype={"ward": str, "shift": str, "bed": str, "encounter": str})
+    d["roster"] = pd.read_csv(p("roster"), dtype=str)
+    d["isolates"] = pd.read_csv(p("isolates"), dtype=str)
+    d["admissions"] = pd.read_csv(p("admissions"), dtype=str)
+    d["transfers"] = pd.read_csv(p("transfers"), dtype=str)
+    d["census"] = pd.read_csv(p("census"), dtype={"ward": str})
+    d["issues"] = pd.read_csv(p("issues"), dtype=str)
+    d["rounds"] = pd.read_csv(p("rounds"), dtype=str)
+    x = pd.ExcelFile(p("wards"))
+    d["wards"] = x.parse("Wards", dtype=str)
+    d["areas"] = x.parse("Areas", dtype=str)
+    d["dispensers"] = x.parse("Dispensers", dtype=str)
+    return d
 
 
-class Pack:
-    def __init__(self, target):
-        f = lambda k: os.path.join(target, K.FILES[k])
-        self.roll26 = pd.read_csv(f("roll26"), dtype={"parcel_id": str, "nbhd_code": str})
-        self.roll25 = pd.read_excel(f("roll25"), skiprows=3, dtype={"Parcel No.": str})
-        self.crosswalk = pd.read_csv(f("crosswalk"), dtype={"nbhd_code": str})
-        self.changes = pd.read_csv(f("changes"), dtype={"old_parcel_no": str, "new_parcel_id": str},
-                                   parse_dates=["effective_date"])
-        self.deeds = pd.read_csv(f("deeds"), dtype={"parcel_no": str, "instrument_no": str},
-                                 parse_dates=["recorded_date", "deed_date"])
-        self.index = pd.read_csv(f("index"), dtype={"period": str})
-        self.permits = pd.read_csv(f("permits"), dtype={"parcel_no": str},
-                                   parse_dates=["issued_date", "final_inspection_date"])
-        self.bor = pd.read_csv(f("bor"), dtype={"parcel_no": str}, parse_dates=["hearing_date"])
-        self.idx = dict(zip(self.index["period"], self.index["index_jan2025_100"]))
-        self.roll25["pid26"] = self.roll25["Parcel No."].map(to26)
-        self.deeds["pid26"] = self.deeds["parcel_no"].map(to26)
-        self.permits["pid26"] = self.permits["parcel_no"].map(to26)
-        self.bor["pid26"] = self.bor["parcel_no"].map(to26)
-        name_to_code = dict(zip(self.crosswalk["nbhd_name"], self.crosswalk["nbhd_code"]))
-        code_to_area = dict(zip(self.crosswalk["nbhd_code"], self.crosswalk["market_area"]))
-        self.roll25["nbhd_code"] = self.roll25["Neighborhood"].map(name_to_code)
-        self.roll25["market_area"] = self.roll25["nbhd_code"].map(code_to_area)
-        self.roll26["market_area"] = self.roll26["nbhd_code"].map(code_to_area)
-        self.code_to_area = code_to_area
+def maps(d):
+    """the reference workbook's crosswalks: application department, laboratory location and dispenser to ward, and the
+    code each ward carried; S1A is ward 6A's code from 2 February 2026"""
+    w = d["wards"]
+    code_of = {}
+    for _, r in w.iterrows():
+        c = r["code"]
+        canon = K.MOVED[0] if c == K.MOVED[1] else c
+        code_of[c] = canon
+    dept = {r["audit_application_department"]: code_of[r["code"]] for _, r in w.iterrows()}
+    lab = {r["laboratory_location"]: code_of[r["code"]] for _, r in w.iterrows()}
+    for _, r in d["areas"].iterrows():
+        dept[r["audit_application_department"]] = r["code"]
+        lab[r["laboratory_location"]] = r["code"]
+    disp = {r["dispenser_id"]: code_of.get(r["ward_or_area"], r["ward_or_area"]) for _, r in d["dispensers"].iterrows()}
+    cc = {r["cost_centre"]: code_of[r["code"]] for _, r in w.iterrows()}
+    return dict(ward=code_of, dept=dept, lab=lab, disp=disp, cc=cc)
 
-    def index_carry(self, deed_dates):
-        """Rule 18-7, 3.1: the index for January 2026 over the index for the deed's month."""
-        jan = self.idx["2026-01"]
-        return deed_dates.map(lambda d: jan / self.idx["%d-%02d" % (d.year, d.month)])
+
+def shift_of(hhmm):
+    """the roster shift a session began in: AM 07:00 to 15:30, PM 13:00 to 21:30, night 21:00 to 07:30; no session
+    begins in an overlap"""
+    h, m = int(hhmm[:2]), int(hhmm[3:])
+    t = h * 60 + m
+    if 7 * 60 <= t < 13 * 60:
+        return "AM"
+    if 15 * 60 + 30 <= t < 21 * 60:
+        return "PM"
+    if t >= 21 * 60 + 30 or t < 7 * 60:
+        return "ND"
+    return "overlap"
+
+
+def day_shifts(d, m, supernumerary=False, escalation=True):
+    """each ward's AM and PM shifts with the required care hours of its patients (acuity) and the worked nursing
+    hours of its rostered nurses, supernumerary shifts left out; the options run the mishandled readings"""
+    a = d["acuity"].copy()
+    if not escalation:
+        a = a[~a["bed"].str.contains("ESC")]
+    a["ward"] = a["ward"].map(m["ward"])
+    a["date"] = pd.to_datetime(a["shift_date"]).dt.date
+    a["required_care_hours"] = a["required_care_hours"].astype(float)
+    req = a.groupby(["ward", "date", "shift"])["required_care_hours"].sum()
+    npts = a.groupby(["ward", "date", "shift"]).size()
+    r = d["roster"].copy()
+    r = r[r["shift_code"].isin(["AM", "PM"])]
+    if not supernumerary:
+        r = r[r["shift_category"] == "Rostered"]
+    r["ward"] = r["ward"].map(m["ward"])
+    r["date"] = pd.to_datetime(r["roster_date"], format="%d/%m/%Y").dt.date
+    r["worked_hours"] = r["worked_hours"].astype(float)
+    worked = r.groupby(["ward", "date", "shift_code"])["worked_hours"].sum()
+    worked.index = worked.index.set_names(["ward", "date", "shift"])
+    out = pd.concat([req.rename("req"), worked.rename("worked"), npts.rename("npts")], axis=1).reset_index()
+    out["v"] = out["req"] / out["worked"]
+    return out[out["v"].notna() & (out["worked"] > 0)].reset_index(drop=True)
+
+
+def ward_audits(d, m):
+    """the ward sessions' moments with their ward, date and shift"""
+    a = d["audits"].copy()
+    a["ward"] = a["department"].map(m["dept"])
+    a["date"] = pd.to_datetime(a["session_date"], format="%d/%m/%Y").dt.date
+    a["shift"] = a["session_start"].map(shift_of)
+    a["performed"] = a["action"].isin(["Hand rub", "Hand wash"]).astype(int)
+    return a
