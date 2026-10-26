@@ -1,14 +1,14 @@
 {
   "task": "task121",
   "owner": "sathay3012",
-  "status": "PAUSED",
+  "status": "SHIPPED",
   "domain": "human-factors-ergonomics",
   "objective": "root-cause",
-  "stage": 1,
-  "stage_name": "draw",
+  "stage": 5,
+  "stage_name": "ship",
   "updated": "2026-10-26",
   "stump": "A competent solver sets the monthly under-triage rate against the dated changes, sees the step at protocol release 13.3 on 3 March 2026, rules out the graduates and the call mix and names the release; the step that lands it there is reading the coincident go-live as the cause, when the rotation begun on 2 March put 15.8 per cent of shifts on less than eleven hours' rest and the rise lives in the calls taken on those shifts (31.1 against 10.7 on rested shifts, which held at 10.2 before March), which only each call-taker's rest built from consecutive worked shifts shows.",
-  "architecture": 7,
+  "architecture": 6,
   "loops": 0,
   "precut": {
     "exit": 0,
@@ -16,19 +16,22 @@
     "checks": 51
   },
   "leak": {
-    "leak_py": "REVIEW 2026-10-26 (--asof 2026-11-04): the release number 13.3 in the release note and the index; generic nouns in the definitions, release note and index",
-    "reader": "round 1 (7691f03b): both readers named release 13.3, both landed every ask figure (asks re-sited); round 2 (4eb36d04): reader C release 13.3, reader D the quick returns (call landed), both 0 of 36 ask figures"
+    "leak_py": "REVIEW 2026-10-26: the release number 13.3 in the release note and the index; generic nouns in the definitions, release note and index; every line harmless",
+    "reader": "round 1 (7691f03b): both readers named release 13.3, both landed every ask figure (asks re-sited to silent devices); round 2 (4eb36d04, shipped): reader C release 13.3, reader D the quick returns (the one response the ladder lets onto the call), both 0 of 36 ask figures (score_reader 2 of 38, the two rates)"
   },
-  "duplicate_check": {},
+  "duplicate_check": {
+    "heart": "WARN (people.first, overuse), no BLOCK",
+    "surface": "WARN people.first (Erica, Raymond in older builds)"
+  },
   "judge": {
     "verdict": "DETERMINISTIC (pass 3, round 2)",
     "disposition": "APPROVE",
     "report": "task121/determinism_check_report_pass3.md"
   },
   "returned": [],
-  "resume": "Architecture 6 spent at stage 4 round 2 on 2026-10-26 (reader D landed the quick returns). Re-root at the draw in a fresh world, architecture 7, objective Root-Cause; read DESIGN_NOTE.md's Tried and rejected first (every dead architecture and screen stays dead). The architecture 6 ask devices measured 0 of 36 against two readers; a silent primary of that kind is the bar for the next ask layer.",
+  "resume": "Shipped 2026-10-26 (target.zip 4eb36d04). Next: the portal result; a returned determinism block goes to /fix-determinism, a rubric over 50 with the call held to /fix-rubric.",
   "approved": null,
-  "delivered": null,
+  "delivered": "2026-10-26",
   "portal": null,
   "history": {
     "architecture_1": "v1 the address check's forward weekly cost (self-healing exposure): drafted 2026-10-08, rejected at checkpoint A",
@@ -137,10 +140,5 @@
     "cracker": "0 of 36, pair ceiling 28.5 (measured 0 of 36 by two readers)",
     "target_zip_md5": "4eb36d04b220fc3258350d5d3f42d545"
   },
-  "architectures": [
-    {
-      "architecture": 6,
-      "fate": "spent 2026-10-26 at stage 4 round 2 (Gate F): reader D built each call-taker's rest from the worked roster and named the 2026 rotation's quick returns (31 against 10.7 per cent); reader C and both round 1 readers named release 13.3; the asks held 0 of 36 for both round 2 readers; judge pass 3 DETERMINISTIC, APPROVE; target.zip 4eb36d04"
-    }
-  ]
+  "architectures": []
 }

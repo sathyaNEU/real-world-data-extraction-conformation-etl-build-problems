@@ -52,11 +52,11 @@
   },
   "spine": {
     "file": "cad_medical_calls_2025_2026.csv",
-    "rows": 0,
-    "entity": "one 911 medical call triaged by a call-taker",
-    "grain": "call",
+    "rows": 69080,
+    "entity": "one CAD medical incident (a call split for a second ambulance carries two)",
+    "grain": "incident",
     "source": "synthetic",
-    "row_meaning": "one medical call with its call-taker, times and dispatched determinant",
+    "row_meaning": "one CAD medical incident with its call's answer time, call-taker, determinant and ambulance",
     "source_dataset": "constructed (seeded generator; Quellmont County, its centre and people are fictional)"
   },
   "deliverables": [
@@ -241,9 +241,9 @@
       "fate": "spent 2026-10-25 at stage 4: reader A landed the verdict through the feeder primaries (the cross-classified model fitted from the borough's own pupil records) and the judge returned SEND_BACK on Annex B; paused, then re-rooted on 2026-10-26."
     }
   ],
-  "notes": "v5 drawn 2026-10-25 by sathay3012 after v4 was spent at stage 4 the same day (both readers linked the journey conditions; judge SEND_BACK on Gate H). The candidate list names the academy's own effect, attendance, disadvantage and the rest of the intake; the primary schools are not a named candidate, so the step that books the rest of the intake to them is the analysis, not a reading of the list. Stage 3 green 2026-10-25: walk -0.4 = -0.1, -0.1, 0.0, -0.2 (golden family unanimous at one decimal); default path own effect -0.2; asks 32 figures, cracker 0 of 32. Architecture 5 spent at stage 4 on 2026-10-25: reader A landed the verdict by grouping Halwick pupils by key stage 2 school; judge SEND_BACK on the Annex B cohort. Architecture 6 spent 2026-10-26 at stage 4 round 2: reader D built rest from the worked roster and named the quick returns; the asks held 0 of 36 for both readers.",
-  "architecture_spent": true,
-  "answer": "pending stage 3",
-  "answer_source": "submission.md block 1; generator/figures.json call",
+  "notes": "v5 drawn 2026-10-25 by sathay3012 after v4 was spent at stage 4 the same day (both readers linked the journey conditions; judge SEND_BACK on Gate H). The candidate list names the academy's own effect, attendance, disadvantage and the rest of the intake; the primary schools are not a named candidate, so the step that books the rest of the intake to them is the analysis, not a reading of the list. Stage 3 green 2026-10-25: walk -0.4 = -0.1, -0.1, 0.0, -0.2 (golden family unanimous at one decimal); default path own effect -0.2; asks 32 figures, cracker 0 of 32. Architecture 5 spent at stage 4 on 2026-10-25: reader A landed the verdict by grouping Halwick pupils by key stage 2 school; judge SEND_BACK on the Annex B cohort. Stage 4 round 2 (2026-10-26): reader C named release 13.3, reader D the quick returns (the one response the ladder lets onto the call); both readers 0 of 36 ask figures; judge pass 3 DETERMINISTIC, APPROVE.",
+  "architecture_spent": false,
+  "answer": "The rise came from quick returns, shifts begun less than eleven hours after the call-taker's previous shift ended, which the rotation worked from 2 March 2026 brought in; not from protocol release 13.3.",
+  "answer_source": "task121/submission.md, 1. Final Recommendation; golden/under_triage_cause_2026.xlsx, sheet Cause",
   "registered": "2026-10-26T04:13:59Z"
 }

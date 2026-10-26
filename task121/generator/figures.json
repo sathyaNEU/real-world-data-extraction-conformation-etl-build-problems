@@ -51,8 +51,8 @@
  },
  "call": {
   "began": "2026-03-02",
-  "cause": "quick returns (the 2026 rotation)",
-  "statement": "The rise came from the 2026 rotation's quick returns: shifts begun less than eleven hours after the call-taker's previous shift ended, not from protocol release 13.3."
+  "cause": "quick returns (shifts begun after under eleven hours' rest)",
+  "statement": "The rise came from quick returns, shifts begun less than eleven hours after the call-taker's previous shift ended, which the rotation worked from 2 March 2026 brought in; not from protocol release 13.3."
  },
  "components": {
   "from_march_on_quick_return_shifts": 31.1,

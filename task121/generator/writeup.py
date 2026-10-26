@@ -27,8 +27,8 @@ def text(fig):
            "**Domain:** Human Factors & Ergonomics (workload, fatigue and shift analysis).",
            "**Analytical objective:** Root-Cause Analysis.", "",
            "## 1. Final Recommendation", "",
-           "**The rise in under-triaged medical calls came from the 2026 rotation's quick returns: shifts begun less "
-           "than eleven hours after the call-taker's previous shift ended.**",
+           "**The rise in under-triaged medical calls came from quick returns, shifts begun less than eleven hours "
+           "after the call-taker's previous shift ended, which the rotation worked from 2 March 2026 brought in.**",
            "From March 2026, %s per cent of the critical or emergent calls taken on those shifts were sent cold, "
            "against %s per cent on rested shifts, which ran at %s per cent before March. Not protocol release 13.3, "
            "which the rested shifts ran on too while they held. Not the academy graduates, since the veterans' calls "
@@ -75,11 +75,11 @@ def text(fig):
            "number was released), answered and not abandoned, and each month's share answered 15 seconds or less "
            "after arriving, by the month answered in local time (QA program 4).",
            "7. Named the cause: from March the calls on quick-return shifts were sent cold at %s per cent against %s "
-           "on rested shifts, so the rise came from the 2026 rotation's quick returns." %
+           "on rested shifts, so the rise came from the quick returns." %
            (f1(cp["from_march_on_quick_return_shifts"]), f1(cp["from_march_on_rested_shifts"])), "",
            "## 4. Deliverable Answers", "", "### %s" % K.GOLDEN, "",
-           "1. Cause: the 2026 rotation's quick returns, shifts begun less than eleven hours after the call-taker's "
-           "previous shift ended (not protocol release 13.3).",
+           "1. Cause: quick returns, shifts begun less than eleven hours after the call-taker's previous shift ended "
+           "(the rotation worked from 2 March 2026), not protocol release 13.3.",
            "2. Under-triage rate: September 2025 to February 2026 %s%%; March to August 2026 %s%%." %
            (f1(r["before"]), f1(r["from_march"])),
            "3. 90th percentile call processing time, medical calls, seconds:"]

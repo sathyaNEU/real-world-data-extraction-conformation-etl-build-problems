@@ -15,7 +15,7 @@ import common as K     # noqa: E402
 
 INK, INK2, GRID, SURF = "#14202e", "#52606d", "#e2e6ea", "#fbfbfa"
 BLUE, ORANGE, GREY = "#2f6db5", "#d9622b", "#9aa5b1"
-CAUSE = ("the quick returns of the 2026 rotation: from 2 March 2026 about one shift in six began less than eleven "
+CAUSE = ("quick returns: from 2 March 2026 about one shift in six began less than eleven "
          "hours after the call-taker's previous shift ended, and the calls taken on those shifts were sent cold at "
          "three times the rate of the rest")
 
@@ -29,9 +29,10 @@ def compute(target):
     rg = A.rungs(target, G)
     ak = AK.golden(target)
     fig = {
-        "call": {"cause": "quick returns (the 2026 rotation)", "began": "2026-03-02",
-                 "statement": "The rise came from the 2026 rotation's quick returns: shifts begun less than eleven "
-                              "hours after the call-taker's previous shift ended, not from protocol release 13.3."},
+        "call": {"cause": "quick returns (shifts begun after under eleven hours' rest)", "began": "2026-03-02",
+                 "statement": "The rise came from quick returns, shifts begun less than eleven hours after the "
+                              "call-taker's previous shift ended, which the rotation worked from 2 March 2026 brought "
+                              "in; not from protocol release 13.3."},
         "rates": {"before": K.r1(G["before"]), "from_march": K.r1(G["after"])},
         "components": {
             "quick_return_share_before": K.r1(G["qr_share_before"]),
@@ -70,7 +71,7 @@ def write_workbook(path, fig):
     ws["A1"].font = Font(bold=True, size=13, color="1F3A5F")
     ws.append([])
     ws.append(["Cause", fig["call"]["statement"]])
-    ws.append(["Began", "2 March 2026, the first block of the 2026 rotation"])
+    ws.append(["Began", "2 March 2026, the first block of the rotation that brought quick returns in"])
     ws.append([])
     ws.append(["Under-triage rate", "Per cent of critical or emergent calls dispatched cold"])
     ws.append(["September 2025 to February 2026", fig["rates"]["before"]])
@@ -148,7 +149,7 @@ def write_chart(path, fig, res):
             label="Calls on shifts begun after 11 hours' rest or more")
     cut = dt.date(2026, 3, 2)
     ax.axvline(cut, color=ORANGE, linewidth=1.6, zorder=1)
-    ax.text(cut + dt.timedelta(days=3), 21.2, "2 March 2026: the 2026 rotation\nbegins; quick returns start",
+    ax.text(cut + dt.timedelta(days=3), 21.2, "2 March 2026: the new rotation\nbegins; quick returns start",
             color=ORANGE, fontsize=8.6, va="top")
     ax.set_ylim(0, 22)
     ax.set_ylabel("Under-triage rate (%)", fontsize=9, color=INK2)
@@ -160,7 +161,7 @@ def write_chart(path, fig, res):
     for sp in ax.spines.values():
         sp.set_visible(False)
     ax.legend(loc="lower left", frameon=False, fontsize=8.4)
-    f.suptitle("Under-triage rose with the 2026 rotation's quick returns, not across the board", x=0.02, ha="left",
+    f.suptitle("Under-triage rose with quick returns, not across the board", x=0.02, ha="left",
                fontsize=12, color=INK, fontweight="bold")
     f.text(0.02, 0.905, "Medical calls dispatched cold among those the crew found critical or emergent, by month, "
            "September 2025 to August 2026", fontsize=8.6, color=INK2)

@@ -5,7 +5,7 @@
 
 ## 1. Final Recommendation
 
-**The rise in under-triaged medical calls came from the 2026 rotation's quick returns: shifts begun less than eleven hours after the call-taker's previous shift ended.**
+**The rise in under-triaged medical calls came from quick returns, shifts begun less than eleven hours after the call-taker's previous shift ended, which the rotation worked from 2 March 2026 brought in.**
 From March 2026, 31.1 per cent of the critical or emergent calls taken on those shifts were sent cold, against 10.7 per cent on rested shifts, which ran at 10.2 per cent before March. Not protocol release 13.3, which the rested shifts ran on too while they held. Not the academy graduates, since the veterans' calls rose from 10.4 to 14.5 per cent. Not the call mix, since the March to August rate at the earlier mix is 14.7 per cent.
 
 ## 2. Critical Components
@@ -23,13 +23,13 @@ From March 2026, 31.1 per cent of the critical or emergent calls taken on those 
 4. Ask A: took each medical call in cad_medical_calls_2025_2026.csv once (a split CAD incident repeats its call's che_call_id, answer second and call-taker), its processing time from the answer to the earliest assignment in cad_unit_history_2025_2026.csv among its incidents (unit_assigned holds the ambulance now on the incident), and each month's 90th percentile at rank 0.9 times the calls, rounded up (QA program 3).
 5. Ask B: took each arrest's primary review in tcpr_arrest_reviews_2025_2026.csv where compressions were coached, reading reviewer QA7's times as minutes and seconds keyed without the colon (QA7's calibrated calls agree with the other reviewer only when so read), the first compression at recording_started plus those seconds, less the CAD's call_answered, and each month's median (QA program 5).
 6. Ask C: took the calls in che_call_detail_2025_2026.csv on the 911 trunk groups of centre_reference.xlsx (TG01, TG02, TG03 and TG05, not the 10-digit lines on TG07), leaving out the record of a call passed from one position to another (it arrives the second an earlier record on the same trunk group from the same number was released), answered and not abandoned, and each month's share answered 15 seconds or less after arriving, by the month answered in local time (QA program 4).
-7. Named the cause: from March the calls on quick-return shifts were sent cold at 31.1 per cent against 10.7 on rested shifts, so the rise came from the 2026 rotation's quick returns.
+7. Named the cause: from March the calls on quick-return shifts were sent cold at 31.1 per cent against 10.7 on rested shifts, so the rise came from the quick returns.
 
 ## 4. Deliverable Answers
 
 ### under_triage_cause_2026.xlsx
 
-1. Cause: the 2026 rotation's quick returns, shifts begun less than eleven hours after the call-taker's previous shift ended (not protocol release 13.3).
+1. Cause: quick returns, shifts begun less than eleven hours after the call-taker's previous shift ended (the rotation worked from 2 March 2026), not protocol release 13.3.
 2. Under-triage rate: September 2025 to February 2026 10.5%; March to August 2026 14.8%.
 3. 90th percentile call processing time, medical calls, seconds:
    - September 2025: 121
