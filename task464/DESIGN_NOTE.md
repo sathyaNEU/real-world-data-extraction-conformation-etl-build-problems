@@ -211,6 +211,7 @@ Lesson: a score from one test placed on another test's scale to count students b
 | 20 | Integerisation | whole students | n/a |
 | 21 | Clause scope | grades 9 and 10 alike; the grade 8 cut for every grade 8 result | the rules; SF9 |
 | 22 | Forward window contents | the 2027 grants on the students on the roll on 1 October 2026 | the rules, section 3 |
+| 23 | Selection criterion | the six applicants with the most eligible students, a count and not a share | the rules, section 3, stated in the prompt's question since 2026-10-26 (the portal's prompt check P6 read no ranking rule in the prompt) |
 
 ## Literal reader
 

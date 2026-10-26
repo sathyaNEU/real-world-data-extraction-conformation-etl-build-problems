@@ -6,7 +6,7 @@
  "objective": "etl",
  "stage": 5,
  "stage_name": "ship",
- "updated": "2026-10-17",
+ "updated": "2026-10-26",
  "stump": "The default path places each 2025 retiring-test score at its regression prediction from the bridge study, which pulls the low scores toward the sample's mean and out of Level 1, and funds Harlenbrook in Elmorrow's place (Harlenbrook 323 against Elmorrow 315); the concordance funds Elmorrow at 368 and leaves Harlenbrook out at 353.",
  "architecture": 2,
  "loops": 0,
@@ -27,7 +27,14 @@
   "disposition": "APPROVE",
   "report": "architecture 1: determinism_check_report.md (NOT_DETERMINISTIC, SEND_BACK); architecture 2: determinism_check_report_pass2.md (DETERMINISTIC, APPROVE)"
  },
- "returned": [],
+ "returned": [
+  {
+   "date": "2026-10-26",
+   "portal": "prompt check P6 FAIL: the prompt asks for six of fourteen applicants but states no ranking or prioritisation rule, so several sets of six read as defensible",
+   "repair": "the question now carries the grant rules' section 3 criterion, the six applicants with the most grade 9 and 10 students on the count day at Level 1 (a count, not a share), and the first ask points at those students; every other word of the prompt, the pack (target.zip unchanged) and every graded figure stay as shipped",
+   "gates": "voice-check PASS (921 characters); leak.py --asof 2026-11-20 REVIEW with no LEAK, the same lines as the shipped report; precut 51 checks with 1 FAIL that predates the fix (the 'Measured by:' line a gate added on 10-18 asks of the ask sheet's cracker, which this build measured on paper); no generator check reads the prompt"
+  }
+ ],
  "resume": "",
  "approved": null,
  "delivered": "2026-10-17",
