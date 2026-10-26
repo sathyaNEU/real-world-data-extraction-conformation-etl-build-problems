@@ -1,55 +1,57 @@
-"""Compute every figure the goldens and the write-up state, from the pack alone, and write figures.json."""
+"""figures.json: every figure the write-up states, at the precision it states it, from solve.py on the cut pack."""
 import json
+import os
 
-import numpy as np
+import params as P
 
-import solve as SV
-
-MONTHS = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October",
-          "November", "December"]
+HERE = os.path.dirname(os.path.abspath(__file__))
 
 
-def compute(target):
-    G = SV.solve(target)
-    pl, nr = G["pilot"], G["net"]
-    best = G["best"]
-    others = sorted((n for n in SV.NETS if n != best), key=lambda n: -nr[n]["net"])
-    dflt = max(SV.NETS, key=lambda n: nr[n]["default"])
-    U, R = nr[best]["turned_away"], nr[best]["requests"]
-    fig = {
-        "recommended_network": best,
-        "net_revenue": {n: SV.r25(nr[n]["net"]) for n in SV.NETS},
-        "net_revenue_exact": {n: round(nr[n]["net"], 0) for n in SV.NETS},
-        "runner_up": others[0],
-        "rides_2025": {n: nr[n]["rides"] for n in SV.NETS},
-        "turned_away": {n: int(round(nr[n]["turned_away"], -2)) for n in SV.NETS},
-        "turned_away_exact": {n: round(nr[n]["turned_away"], 1) for n in SV.NETS},
-        "requests": {n: int(round(nr[n]["requests"], -2)) for n in SV.NETS},
-        "turned_away_share": {n: round(100 * nr[n]["turned_away"] / nr[n]["requests"], 1) for n in SV.NETS},
-        "fare_classic": {n: round(nr[n]["fare_classic"], 2) for n in SV.NETS},
-        "recorded_route": {n: SV.r25(nr[n]["default"]) for n in SV.NETS},
-        "recorded_route_exact": {n: round(nr[n]["default"], 0) for n in SV.NETS},
-        "recorded_route_pick": dflt,
-        "pilot": {"ebike_share": round(100 * pl["X"], 1), "uplift": round(100 * pl["i"], 1),
-                  "fare_ebike": round(pl["f_e"], 2), "fare_classic": round(pl["f_c_pilot"], 2),
-                  "premium": round(pl["delta"], 2), "rides_pilot": pl["rides_pilot"],
-                  "rides_comparison": pl["rides_comparison"], "ebike_rides": pl["ebike_rides_pilot"],
-                  "stations_pilot": len(pl["pilot"]), "stations_comparison": len(pl["comparison"])},
-        "people": {n: int(G["people"].get(n, 0)) for n in SV.NETS},
-        "energy_kwh": {MONTHS[m - 1]: int(round(G["energy"][m])) for m in range(1, 13)},
-        "energy_kwh_exact": {MONTHS[m - 1]: round(G["energy"][m], 3) for m in range(1, 13)},
-        "workshop_per_10000": {("E-bike" if t == "ebike" else "Classic") + " Q%d" % q: round(v[2], 1)
-                               for (t, q), v in G["workshop"].items()},
-        "workshop_jobs": {("E-bike" if t == "ebike" else "Classic") + " Q%d" % q: v[0] for (t, q), v in G["workshop"].items()},
-        "workshop_rides": {("E-bike" if t == "ebike" else "Classic") + " Q%d" % q: v[1] for (t, q), v in G["workshop"].items()},
-        "university_turned_away_share": round(100 * U / R, 1),
-        "constants": {"ebikes": 300, "per_rides": 10000, "rounding_usd": 25000, "false_start_seconds": 60,
-                      "energy_year_kwh": int(round(sum(G["energy"].values())))},
+def r1(x):
+    return round(x + 1e-9, 1)
+
+
+def r2(x):
+    return round(x + 1e-9, 2)
+
+
+def build(mc, A, Bq, I27):
+    gold = mc["gold"]
+    pick = max(P.REGIONS, key=lambda r: gold[r]["value"])
+    second = max(gold[r]["value"] for r in P.REGIONS if r != pick)
+    pen = gold["Pennine"]
+    O = mc["O"]
+    ex = O[(O.region == "Pennine") & (O.G - P.RETENTION / 1e6 >= P.LIMIT / 1e6)]
+    fz = O[(O.region == "Pennine") & (O.peril == "freeze") & (O.year < 2021)]
+    figs = {
+        "call": {"region": pick, "value": r1(gold[pick]["value"]), "margin": r1(gold[pick]["value"] - second)},
+        "values": {r: r1(gold[r]["value"]) for r in P.REGIONS},
+        "cc": {"pennine_recoveries": r2(pen["recoveries"]), "pennine_reinstatement": r2(pen["rip"]),
+               "pennine_premium": r2(P.PREMIUM["Pennine"] / 1e6), "pennine_exhausting": int(len(ex)),
+               "layer_limit": P.LIMIT / 1e6},
+        "steps": {"hours": [P.HOURS["windstorm"], P.HOURS["flood"]], "index_2027": round(I27, 1),
+                  "fit_occurrences": int((O.n >= 150).sum()), "fit_min_claims": 150,
+                  "fit_threshold": mc["fit"]["u0"], "fit_slope_pct": round(100 * mc["fit"]["k"], 1),
+                  "pennine_freezes_then": [r1(fz.u_all.min()), r1(fz.u_all.max())],
+                  "pennine_freezes_2027": [r1(fz.u27_all.min()), r1(fz.u27_all.max())],
+                  "annual_cap": P.ANNUAL / 1e6},
+        "askA": {r: {str(y): r2(A["golden"]["%s|%d" % (r, y)]) for y in (2023, 2024, 2025)} for r in P.REGIONS},
+        "askB": {r: r1(Bq["golden"][r]["si_m"]) for r in P.REGIONS},
     }
-    return fig, G
+    raw = {
+        "values": {r: gold[r]["value"] for r in P.REGIONS},
+        "recoveries": {r: gold[r]["recoveries"] for r in P.REGIONS},
+        "rip": {r: gold[r]["rip"] for r in P.REGIONS},
+        "default": {r: mc["default"][r]["value"] for r in P.REGIONS},
+        "askA": A["golden"],
+        "askB": {r: Bq["golden"][r] for r in P.REGIONS},
+        "exhausting": [str(s) for s in ex.start],
+        "fit": mc["fit"],
+    }
+    return figs, raw
 
 
-def write(fig, path):
-    with open(path, "w", encoding="utf-8") as fh:
-        json.dump(fig, fh, indent=1, sort_keys=True, default=lambda x: int(x) if isinstance(x, np.integer) else float(x))
+def write(figs, path=os.path.join(HERE, "figures.json")):
+    with open(path, "w") as fh:
+        json.dump(figs, fh, indent=1, ensure_ascii=False)
         fh.write("\n")

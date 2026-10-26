@@ -1,339 +1,338 @@
-"""task308 goldens: the board paper section ebike_deployment_2027.docx (with its chart) and the workbook behind it,
-ebike_deployment_2027.xlsx, written from figures.json."""
+"""The two deliverables: the board paper (cat_layer_placement_2027.pdf) and its workbook (cat_layer_workbook_2027.xlsx).
+Every figure comes from solve.py on the cut pack and figures.json; nothing is typed."""
+import io
+import math
 import os
-import tempfile
 
 import matplotlib
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
-from docx import Document
-from docx.enum.text import WD_ALIGN_PARAGRAPH
-from docx.oxml import OxmlElement
-from docx.oxml.ns import qn
-from docx.shared import Cm, Pt, RGBColor
-from matplotlib.ticker import FuncFormatter
+import pandas as pd
 from openpyxl import Workbook
-from openpyxl.styles import Alignment, Border, Font, PatternFill, Side
+from openpyxl.styles import Alignment, Font
 from openpyxl.utils import get_column_letter
+from reportlab.lib.pagesizes import A4
+from reportlab.lib.units import mm
+from reportlab.platypus import Image, KeepTogether, Paragraph, SimpleDocTemplate, Spacer
 
+import docs as D
 import params as P
-import postprocess
+import postprocess as PP
 
-XLSX = "ebike_deployment_2027.xlsx"
-DOCX = "ebike_deployment_2027.docx"
-NETS = ["Central", "University", "Riverside", "Old Town", "Hillcrest"]
-MONTHS = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October",
-          "November", "December"]
-HEAD = PatternFill("solid", fgColor="DCE4EC")
-LINE = Border(top=Side(style="thin", color="8A8A8A"))
-
-
-def usd(x):
-    return "USD {:,}".format(int(x))
+PDF = "cat_layer_placement_2027.pdf"
+XLSX = "cat_layer_workbook_2027.xlsx"
+PAPER_DATE = "2026-11-27"
+REF = "B/26/41"
+ORDER = ["Pennine", "Severn Vale", "Coastal North", "Fenland"]
+INK, MUTED, ACCENT, GREY = "#1F2A36", "#5B6670", "#1D6E8C", "#8E979F"
 
 
-def c(x):
-    return "{:,}".format(int(x))
+def m1(x):
+    return "%.1f" % (round(x + 1e-9, 1) + 0.0)
 
 
-def _head(ws, row, cols):
-    for j, h in enumerate(cols, 1):
-        cell = ws.cell(row=row, column=j, value=h)
-        cell.font = Font(bold=True)
-        cell.fill = HEAD
-        cell.alignment = Alignment(wrap_text=True, vertical="top")
+def m2(x):
+    return "%.2f" % (round(x + 1e-9, 2) + 0.0)
 
 
-def _widths(ws, w):
-    for j, x in enumerate(w, 1):
-        ws.column_dimensions[get_column_letter(j)].width = x
+def gbp(x):
+    return "{:,.2f}".format(round(x + 1e-9, 2))
 
 
-def workbook(path, fig):
-    wb = Workbook()
-    ws = wb.active
-    ws.title = "Networks"
-    best = fig["recommended_network"]
-    ws["A1"] = "The 300 e-bikes go to %s: %s a year in net fares at 2025 demand" % (best, usd(fig["net_revenue"][best]))
-    ws["A1"].font = Font(bold=True, size=13)
-    ws["A2"] = ("Net fare revenue a year: what riders would pay with the e-bikes in the network, less what they paid "
-                "there in 2025, at 2025 demand (board paper, item 7). Demand is the rides the stations served plus "
-                "the requests they turned away while empty.")
-    ws["A2"].font = Font(italic=True, size=9)
-    ws["A2"].alignment = Alignment(wrap_text=True, vertical="top")
-    ws.merge_cells("A2:I2")
-    ws.row_dimensions[2].height = 30
-    cols = ["Network", "Rides 2025 (classic)", "Requests turned away while the station was empty",
-            "Demand 2025 (requests)", "Turned away, share of demand", "Classic fare a ride, USD",
-            "Net fare revenue a year, USD", "Net fare revenue, nearest USD 25,000", "On the recorded rides only, USD"]
-    _head(ws, 4, cols)
-    ws.row_dimensions[4].height = 58
-    for n in NETS:
-        ws.append([n, fig["rides_2025"][n], fig["turned_away_exact"][n], fig["rides_2025"][n] + fig["turned_away_exact"][n],
-                   fig["turned_away_share"][n] / 100.0, fig["fare_classic"][n], fig["net_revenue_exact"][n],
-                   fig["net_revenue"][n], fig["recorded_route_exact"][n]])
-    for r in range(5, 10):
-        for col, f in zip("BCDEFGHI", ["#,##0", "#,##0", "#,##0", "0.0%", "0.00", "#,##0", "#,##0", "#,##0"]):
-            ws["%s%d" % (col, r)].number_format = f
-        if ws["A%d" % r].value == best:
-            for col in "ABCDEFGHI":
-                ws["%s%d" % (col, r)].font = Font(bold=True)
-    ws["A11"] = ("Turned-away requests: each station's classic stock rebuilt second by second from the 03:00 audit, "
-                 "every undock and dock in the trip exports and every van move in the dispatch log; requests per "
-                 "stocked second in each month, weekday or weekend, and local hour, times the seconds the station "
-                 "stood empty in it. False starts (under 60 seconds, back at the same station) are not requests.")
-    ws["A12"] = ("With the e-bikes every request is served: %.1f per cent of rides on an e-bike at the e-bike fare, as "
-                 "on the Harbour pilot stations, and %.1f per cent more requests than the comparison stations drew."
-                 % (fig["pilot"]["ebike_share"], fig["pilot"]["uplift"]))
-    ws["A13"] = "Source: trip exports 2025, dispatch log, 03:00 audit, station feeds, Harbour pilot note and fares."
-    for a in ("A11", "A12", "A13"):
-        ws[a].font = Font(size=9)
-        ws[a].alignment = Alignment(wrap_text=True, vertical="top")
-    ws.merge_cells("A11:I11"); ws.merge_cells("A12:I12"); ws.merge_cells("A13:I13")
-    ws.row_dimensions[11].height = 40; ws.row_dimensions[12].height = 28
-    _widths(ws, [14, 13, 17, 14, 13, 11, 15, 16, 15])
-    ws.freeze_panes = "B5"
-    ws.print_title_rows = "4:4"
-    ws.page_setup.orientation = "landscape"
-    ws.page_setup.fitToWidth = 1
-
-    p = wb.create_sheet("Harbour pilot")
-    p["A1"] = "Harbour e-bike pilot, 2025: what a pilot station did against a comparison station"
-    p["A1"].font = Font(bold=True, size=12)
-    _head(p, 3, ["Measure", "Value"])
-    pl = fig["pilot"]
-    rows = [("Pilot stations", pl["stations_pilot"]), ("Comparison stations", pl["stations_comparison"]),
-            ("Rides from pilot stations", pl["rides_pilot"]), ("of which on e-bikes", pl["ebike_rides"]),
-            ("E-bike share of rides at pilot stations", pl["ebike_share"] / 100.0),
-            ("Rides from comparison stations", pl["rides_comparison"]),
-            ("More rides a station at pilot stations than at comparison stations", pl["uplift"] / 100.0),
-            ("Average e-bike fare, USD", pl["fare_ebike"]), ("Average classic fare at pilot stations, USD", pl["fare_classic"]),
-            ("E-bike fare above the classic fare, USD a ride", pl["premium"])]
-    for k, v in rows:
-        p.append([k, v])
-    for r in range(4, 4 + len(rows)):
-        v = p["B%d" % r].value
-        p["B%d" % r].number_format = "0.0%" if isinstance(v, float) and v < 1 and "share" in p["A%d" % r].value.lower() or "More rides" in p["A%d" % r].value else ("0.00" if isinstance(v, float) else "#,##0")
-    _widths(p, [62, 14])
-
-    pe = wb.create_sheet("Riders")
-    pe["A1"] = "People who rode with us in 2025, by where they live"
-    pe["A1"].font = Font(bold=True, size=12)
-    _head(pe, 3, ["Home area", "People"])
-    for n in NETS:
-        pe.append([n, fig["people"][n]])
-        pe["B%d" % pe.max_row].number_format = "#,##0"
-    pe["A10"] = ("One person per rider with at least one ride in 2025 (false starts are not rides), placed by the home "
-                 "area on the account. Accounts on one payment card are one person where the later account was opened "
-                 "after the earlier account's last ride; two accounts riding through the same months on one card are "
-                 "two people. January to June rides carry the old trip system's account numbers.")
-    pe["A10"].alignment = Alignment(wrap_text=True, vertical="top"); pe["A10"].font = Font(size=9)
-    pe.merge_cells("A10:B10"); pe.row_dimensions[10].height = 75
-    _widths(pe, [60, 12])
-
-    ch = wb.create_sheet("Charging")
-    ch["A1"] = "Energy the Harbour pilot's charging points delivered, 2025"
-    ch["A1"].font = Font(bold=True, size=12)
-    _head(ch, 3, ["Month", "kWh"])
-    for m in MONTHS:
-        ch.append([m, fig["energy_kwh"][m]])
-        ch["B%d" % ch.max_row].number_format = "#,##0"
-    ch.append(["2025", sum(fig["energy_kwh"].values())])
-    ch["A16"].font = Font(bold=True); ch["B16"].font = Font(bold=True); ch["B16"].number_format = "#,##0"
-    ch["A18"] = ("Each session once: a controller re-sends its buffered sessions after a restart, stamped from a clock "
-                 "it saved before the restart, so a session whose point already shows the same register readings is "
-                 "not counted again. Sessions count in the local month their plug-out falls.")
-    ch["A18"].alignment = Alignment(wrap_text=True, vertical="top"); ch["A18"].font = Font(size=9)
-    ch.merge_cells("A18:B18"); ch.row_dimensions[18].height = 62
-    _widths(ch, [52, 12])
-
-    wk = wb.create_sheet("Workshop")
-    wk["A1"] = "Workshop jobs per 10,000 rides, 2025"
-    wk["A1"].font = Font(bold=True, size=12)
-    _head(wk, 3, ["Quarter", "E-bike jobs", "E-bike rides", "E-bike jobs per 10,000 rides", "Classic jobs",
-                  "Classic rides", "Classic jobs per 10,000 rides"])
-    for q in range(1, 5):
-        e, k = "E-bike Q%d" % q, "Classic Q%d" % q
-        wk.append(["Q%d" % q, fig["workshop_jobs"][e], fig["workshop_rides"][e], fig["workshop_per_10000"][e],
-                   fig["workshop_jobs"][k], fig["workshop_rides"][k], fig["workshop_per_10000"][k]])
-        r = wk.max_row
-        for col, f in zip("BCDEFG", ["#,##0", "#,##0", "0.0", "#,##0", "#,##0", "0.0"]):
-            wk["%s%d" % (col, r)].number_format = f
-    wk["A9"] = ("A job opened on a bike with no ride since its last job closed is that repair's road test failing, "
-                "not a new fault, and is not counted. Rides exclude false starts; quarters by local time.")
-    wk["A9"].alignment = Alignment(wrap_text=True, vertical="top"); wk["A9"].font = Font(size=9)
-    wk.merge_cells("A9:G9"); wk.row_dimensions[9].height = 30
-    _widths(wk, [10, 12, 13, 16, 12, 13, 16])
-
-    nt = wb.create_sheet("Notes")
-    nt["A1"] = "Notes"
-    nt["A1"].font = Font(bold=True, size=12)
-    notes = [("Prepared", "%s, e-bike product lead, 20 November 2026, for board item 7 (9 December 2026)." % P.PEOPLE["lead"]),
-             ("Records", "Trips: %s and %s (old trip system, to 30 June), %s and %s (new platform, from 1 July). "
-                         "Dispatch log %s; 03:00 audit %s; station feeds %s and %s as at 1 November 2026; account "
-                         "register %s; charging sessions %s; workshop jobs %s."
-                         % (P.FILES["q1"], P.FILES["q2"], P.FILES["q3"], P.FILES["q4"], P.FILES["moves"], P.FILES["audit"],
-                            P.FILES["stations"], P.FILES["regions"], P.FILES["accounts"], P.FILES["charging"], P.FILES["workshop"])),
-             ("Times", "Central Time throughout. The dispatch log and the charging and workshop exports are stamped in "
-                       "UTC and were converted."),
-             ("False starts", "An undock of under 60 seconds that ends at the station it started from is not a ride "
-                              "and is not charged (fare schedule 2025)."),
-             ("Fares", "Annual pass fees are not fares and are left out (board paper, item 7, section 2)."),
-             ("Rounding", "The paper rounds revenue to the nearest USD 25,000 and requests to the nearest hundred; "
-                          "this workbook carries the unrounded figures beside the rounded revenue.")]
-    for i, (k, v) in enumerate(notes, 3):
-        nt.cell(row=i, column=1, value=k).font = Font(bold=True)
-        nt.cell(row=i, column=2, value=v).alignment = Alignment(wrap_text=True, vertical="top")
-        nt.cell(row=i, column=1).alignment = Alignment(vertical="top")
-    nt.row_dimensions[4].height = 92
-    _widths(nt, [14, 96])
-    wb.properties.creator = P.PEOPLE["lead"]
-    wb.save(path)
-    postprocess.scrub(path, P.ORG, "2026-11-20")
-    postprocess.finish_office(path, "2026-11-12T14:05:00Z", "2026-11-20T16:48:00Z", P.ORG, person=P.PEOPLE["lead"])
+def facts(target, mc, fig):
+    """the figures both deliverables print, computed once"""
+    import solve as S
+    O = mc["O"].copy()
+    O["rec"] = (O.G - P.RETENTION / 1e6).clip(lower=0).clip(upper=P.LIMIT / 1e6)
+    O["rec_idx"] = (O.L_loss - P.RETENTION / 1e6).clip(lower=0).clip(upper=P.LIMIT / 1e6)
+    c, ex, I, I27, PLAN = S.load(target)
+    pol = ex.groupby(["year", "region"]).policies_in_force_mid_year.sum()
+    A = S.ask_a(target)
+    Bq = S.ask_b(target)
+    Dd = pd.read_csv(os.path.join(target, P.FILES["direct"]))
+    direct = {r: float(Dd[Dd.region == r].buildings_sums_insured_gbp.sum()) / 1e6 for r in P.REGIONS}
+    panel = c[c.repair_contractor != ""].groupby([c.date_of_loss.dt.year, "region"])["repair_contractor"].nunique()
+    fz = O[(O.region == "Pennine") & (O.peril == "freeze") & (O.year < 2021)].sort_values("start")
+    return dict(O=O, pol=pol, A=A, B=Bq, direct=direct, panel=panel, fz=fz, I27=I27)
 
 
-def chart(path, fig):
-    INK, MUTED, SURF, BLUE, ORANGE = "#0b0b0b", "#52514e", "#ffffff", "#2a78d6", "#eb6834"
-    plt.rcParams.update({"font.family": "DejaVu Sans", "font.size": 9})
-    f, ax = plt.subplots(figsize=(7.2, 3.6), dpi=150)
-    order = sorted(NETS, key=lambda n: -fig["net_revenue_exact"][n])
-    y = list(range(len(order)))[::-1]
-    rec = [fig["recorded_route_exact"][n] / 1000 for n in order]
-    net = [fig["net_revenue_exact"][n] / 1000 for n in order]
-    ax.barh([v + 0.19 for v in y], net, 0.36, color=BLUE, label="At 2025 demand (rides plus requests turned away)", zorder=3)
-    ax.barh([v - 0.19 for v in y], rec, 0.36, color=ORANGE, label="On the rides the stations served", zorder=3)
-    for v, n, a in zip(y, order, net):
-        ax.text(a + 1.5, v + 0.19, "%d" % (fig["net_revenue"][n] // 1000), va="center", fontsize=8, color=INK)
-    ax.set_yticks(y)
-    ax.set_yticklabels(order, color=INK)
-    ax.xaxis.set_major_formatter(FuncFormatter(lambda v, _: "%d" % v))
-    ax.set_xlabel("Net fare revenue a year, USD thousand", color=MUTED)
-    ax.grid(axis="x", color="#e6e6e3", linewidth=0.8, zorder=0)
+def chart(mc, fig):
+    """each book's value: recorded costs carried by the index alone (open) and at the 2027 scale (filled)"""
+    gold = {r: mc["gold"][r]["value"] for r in P.REGIONS}
+    dflt = {r: mc["default"][r]["value"] for r in P.REGIONS}
+    order = sorted(P.REGIONS, key=lambda r: gold[r])
+    fg, ax = plt.subplots(figsize=(6.6, 2.7), dpi=200)
+    for i, r in enumerate(order):
+        col = ACCENT if r == fig["call"]["region"] else GREY
+        ax.plot([dflt[r], gold[r]], [i, i], color=col, lw=2, solid_capstyle="round", zorder=1)
+        ax.scatter([dflt[r]], [i], s=46, facecolor="white", edgecolor=col, linewidth=1.6, zorder=2)
+        ax.scatter([gold[r]], [i], s=58, color=col, edgecolor="white", linewidth=1.2, zorder=3)
+        ax.annotate("GBP %s m" % m1(gold[r]), (max(gold[r], dflt[r]), i), xytext=(9, -3), textcoords="offset points",
+                    fontsize=8, color=INK, fontweight="bold" if r == fig["call"]["region"] else "normal")
+    ax.axvline(0, color=INK, lw=0.9, zorder=0)
+    ax.set_yticks(range(len(order)))
+    ax.set_yticklabels(order, fontsize=8.5, color=INK)
+    ax.set_xlim(-1.0, 0.45)
+    ax.set_ylim(-0.6, len(order) - 0.4)
+    ax.set_xticks([-1.0, -0.75, -0.5, -0.25, 0.0, 0.25])
+    ax.set_xticklabels(["-1.00", "-0.75", "-0.50", "-0.25", "0", "0.25"], fontsize=7.5, color=MUTED)
+    ax.set_xlabel("Value of the layer, GBP million a year", fontsize=7.8, color=MUTED)
+    ax.grid(axis="x", color="#E3E6E8", lw=0.6)
+    ax.set_axisbelow(True)
     for s in ("top", "right", "left"):
         ax.spines[s].set_visible(False)
-    ax.tick_params(length=0, colors=MUTED)
-    ax.set_xlim(0, max(net) * 1.18)
-    ax.legend(frameon=False, loc="lower right", fontsize=7.6)
-    f.suptitle("%s adds the most at 2025 demand; on the rides served alone, %s would lead" %
-               (fig["recommended_network"], fig["recorded_route_pick"]), x=0.015, ha="left", fontsize=9.5, color=INK)
-    f.subplots_adjust(left=0.15, right=0.98, top=0.88, bottom=0.15)
-    f.savefig(path, facecolor=SURF, metadata={"Software": None})
-    plt.close(f)
+    ax.spines["bottom"].set_color("#B5BCC2")
+    ax.tick_params(axis="y", length=0)
+    ax.scatter([], [], s=46, facecolor="white", edgecolor=GREY, linewidth=1.6, label="Recorded costs carried by the index")
+    ax.scatter([], [], s=58, color=GREY, label="Repairs priced at the 2027 scale")
+    ax.legend(loc="lower right", fontsize=7, frameon=False)
+    fg.tight_layout()
+    buf = io.BytesIO()
+    fg.savefig(buf, format="png", metadata={"Software": None})
+    plt.close(fg)
+    buf.seek(0)
+    return buf
 
 
-def paper(path, fig):
-    best = fig["recommended_network"]
-    nr, ta = fig["net_revenue"], fig["turned_away"]
-    pl = fig["pilot"]
-    d = Document()
-    st = d.styles["Normal"]
-    st.font.name = "Calibri"
-    st.font.size = Pt(10.5)
-    for name, size in (("Heading 1", 15), ("Heading 2", 12)):
-        hs = d.styles[name]
-        hs.font.name = "Calibri"
-        hs.font.size = Pt(size)
-        hs.font.color.rgb = RGBColor(0x1F, 0x2A, 0x36)
-    for s in d.sections:
-        s.left_margin = s.right_margin = Cm(2.2)
-        fp = s.footer.paragraphs[0]
-        fp.alignment = WD_ALIGN_PARAGRAPH.RIGHT
-        fr = fp.add_run("%s | Board 9 December 2026 | Item 7 | page " % P.ORG_SHORT)
-        fr.font.size = Pt(8)
-        fr.font.color.rgb = RGBColor(0x66, 0x66, 0x66)
-        pr = fp.add_run()
-        pr.font.size = Pt(8)
-        pr.font.color.rgb = RGBColor(0x66, 0x66, 0x66)
-        for tag, val in (("w:fldChar", "begin"), ("w:instrText", "PAGE"), ("w:fldChar", "end")):
-            el = OxmlElement(tag)
-            if tag == "w:fldChar":
-                el.set(qn("w:fldCharType"), val)
-            else:
-                el.set(qn("xml:space"), "preserve")
-                el.text = val
-            pr._r.append(el)
-    p = d.add_paragraph()
-    r = p.add_run("%s | Board of Directors, 9 December 2026 | Item 7, 2027 e-bike deployment" % P.ORG)
-    r.font.size = Pt(8.5)
-    r.font.color.rgb = RGBColor(0x55, 0x55, 0x55)
-    d.add_heading("The 300 e-bikes should go to %s, where they add %s a year in net fares" % (best, usd(nr[best])), level=1)
-    p = d.add_paragraph()
-    r = p.add_run("%s, e-bike product lead, 20 November 2026. For decision." % P.PEOPLE["lead"])
-    r.italic = True
-    r.font.size = Pt(9.5)
-    d.add_heading("Decision sought", level=2)
-    d.add_paragraph("Approve %s as the network for the %d e-bikes in the 2027 capital plan, so that the order can go to "
-                    "the vendor by 15 January 2027 for the season opening on 1 April." % (best, fig["constants"]["ebikes"]))
-    d.add_heading("Recommendation", level=2)
-    others = sorted((n for n in NETS if n != best), key=lambda n: -fig["net_revenue_exact"][n])
-    d.add_paragraph(
-        "Put the 2027 e-bikes on the %s network. At 2025 demand they add %s a year in net fare revenue there, against "
-        "%s on %s, the next best network, and %s or less on each of the others." %
-        (best, usd(nr[best]), usd(nr[others[0]]), others[0], usd(max(nr[n] for n in others[1:]))))
-    d.add_paragraph(
-        "The case turns on demand rather than rides. A ride only exists when a rider finds a bike, and the two "
-        "residence-hall hubs at %s run dry most teaching weekdays: the morning class change empties them, the noon "
-        "change finds them empty, and they stay short until the 14:00 van. Rebuilding every station's stock from the "
-        "03:00 audit, the trips and the van moves, the %s stations turned away about %s requests in 2025, %.0f per "
-        "cent of their demand. Those riders pay nothing today; with e-bikes at every station they ride, and that "
-        "revenue is new. On %s the stations turned away about %s requests and most e-bike rides would replace a "
-        "classic ride, which adds only the e-bike premium of %s a ride."
-        % (best, best, c(ta[best]), fig["turned_away_share"][best], others[0], c(ta[others[0]]),
-           "USD %.2f" % pl["premium"]))
-    d.add_paragraph(
-        "Read on the rides the stations served, %s looks best (%s against %s for %s): that view counts only the "
-        "riders who found a bike and so sends the e-bikes where supply already meets demand."
-        % (fig["recorded_route_pick"], usd(fig["recorded_route"][fig["recorded_route_pick"]]),
-           usd(fig["recorded_route"][best]), best))
-    d.add_heading("Every network", level=2)
-    t = d.add_table(rows=1, cols=5)
-    t.style = "Light Grid Accent 1"
-    for i, h in enumerate(["Network", "Rides 2025", "Requests turned away", "Net fare revenue a year",
-                           "On served rides only"]):
-        t.rows[0].cells[i].text = h
-    for n in sorted(NETS, key=lambda n: -fig["net_revenue_exact"][n]):
-        row = t.add_row().cells
-        row[0].text, row[1].text, row[2].text = n, c(fig["rides_2025"][n]), "about %s" % c(ta[n])
-        rr = fig["recorded_route"][n]
-        row[3].text, row[4].text = usd(nr[n]), (usd(rr) if rr else "under USD 12,500")
-    p = d.add_paragraph()
-    r = p.add_run("Revenue to the nearest USD 25,000; requests to the nearest hundred. Annual pass fees are not fares and "
-                  "are left out (item 7, section 2). Source: ebike_deployment_2027.xlsx.")
-    r.font.size = Pt(8.5)
-    tmp = tempfile.mkdtemp()
-    png = os.path.join(tmp, "networks.png")
-    chart(png, fig)
-    d.add_picture(png, width=Cm(16))
-    p = d.add_paragraph()
-    r = p.add_run("Net fare revenue a year by network, at 2025 demand and on the rides the stations served; bars to scale, "
-                  "labels in USD thousand to the nearest 25 (the served-rides figures are in the table above).")
-    r.font.size = Pt(8.5)
-    d.add_heading("How the figure is built", level=2)
-    d.add_paragraph(
-        "With the e-bikes, every request at the network's stations is served: %.1f per cent of rides go on an e-bike, "
-        "the share riders chose at the Harbour pilot stations, and the e-bikes draw %.1f per cent more requests, the "
-        "pilot stations' rides against the comparison stations'. Net fare revenue is what those riders would pay at "
-        "the network's classic fare and the pilot's e-bike premium, less the fares the network took in 2025."
-        % (pl["ebike_share"], pl["uplift"]))
-    d.add_paragraph(
-        "Turned-away requests come from each station's own requests per stocked second in each month, weekday or "
-        "weekend, and local hour, applied to the seconds it stood empty in that hour. The pilot ran on Harbour, "
-        "where stations rarely run dry, so the pilot's rides measure its demand.")
-    d.add_heading("Supporting figures", level=2)
-    d.add_paragraph(
-        "The workbook gives the people who rode with us in 2025 by home area (%s: %s), the energy the pilot's "
-        "charging points delivered each month (%s kWh in the year) and the workshop jobs per 10,000 rides by quarter "
-        "(e-bikes %s to %s, classic bikes %s to %s)."
-        % (best, c(fig["people"][best]), c(sum(fig["energy_kwh"].values())),
-           "%.1f" % min(v for k, v in fig["workshop_per_10000"].items() if k.startswith("E")),
-           "%.1f" % max(v for k, v in fig["workshop_per_10000"].items() if k.startswith("E")),
-           "%.1f" % min(v for k, v in fig["workshop_per_10000"].items() if k.startswith("C")),
-           "%.1f" % max(v for k, v in fig["workshop_per_10000"].items() if k.startswith("C"))))
-    d.core_properties.author = P.PEOPLE["lead"]
-    d.core_properties.title = "2027 e-bike deployment"
-    d.save(path)
-    postprocess.scrub(path, P.ORG, "2026-11-20")
-    postprocess.finish_office(path, "2026-11-13T09:40:00Z", "2026-11-20T17:02:00Z", P.ORG, person=P.PEOPLE["lead"], revision=7)
-    os.remove(png)
-    os.rmdir(tmp)
+def paper(path, target, mc, fig, f):
+    body, h1, h2, small = D._styles()
+    gold = mc["gold"]
+    call = fig["call"]["region"]
+    fz = f["fz"]
+    s = [Paragraph("%s | Board of Directors, 9 December 2026 | Paper %s | For decision" % (P.ORG, REF), small),
+         Paragraph("Place the 2027 catastrophe layer on the %s book, where it is worth GBP %s million a year"
+                   % (call, m1(gold[call]["value"])), h1),
+         Paragraph("From Donna Phillips, Head of Reinsurance. Reviewed by Anne Shah, Chief Actuary. 27 November 2026.",
+                   small), Spacer(1, 5),
+         Paragraph("1. Recommendation", h2),
+         Paragraph("The quotations %s gave us on 18 November for the 2027 regional catastrophe layer, GBP 15 million "
+                   "excess of GBP 10 million each loss occurrence with one reinstatement at 100 per cent, are firm until "
+                   "15 December, and the order has to be signed with the lead reinsurer before then for cover from "
+                   "1 January. The 2027 plan provides for one regional layer. Valued under policy RC-07, the layer is "
+                   "worth GBP %s million a year on %s and less on each of the other three books. We recommend that the "
+                   "Board place it on %s, led by %s."
+                   % (P.BROKER, m1(gold[call]["value"]), call, call, P.LEAD[call]), body)]
+    rows = [["Region", "Expected recoveries", "Expected reinstatement premium", "Quoted premium", "Value"]]
+    for r in sorted(P.REGIONS, key=lambda q: -gold[q]["value"]):
+        g = gold[r]
+        rows.append([r, m2(g["recoveries"]), m2(g["rip"]), "%.3f" % (P.PREMIUM[r] / 1e6), m1(g["value"])])
+    s += [D._table(rows, [34, 34, 46, 30, 22], align_right=(1, 2, 3, 4)),
+          Paragraph("GBP million a year. Sixteen-year averages, 2010 to 2025, at the 2027 book and 2027 repair costs "
+                    "(RC-07); premiums as quoted on 18 November 2026.", small), Spacer(1, 6),
+          Image(chart(mc, fig), width=166 * mm, height=68 * mm),
+          Paragraph("Figure 1. The layer's value on each book with recorded repair costs carried forward by the rebuild "
+                    "cost index (open) and with repairs priced at the claims each panel firm would carry in 2027 "
+                    "(filled).", small)]
+    O = f["O"]
+    pan = f["panel"]
+    s += [Paragraph("2. Why %s" % call, h2),
+          Paragraph("Pennine's book doubled on 1 January 2021, when the %s policies moved onto our platforms in eight "
+                    "of its districts. Its repair panel did not grow with it: %d firms in 2010 and %d in 2025. A "
+                    "catastrophe's repairs cost more the more claims each panel firm has to take on at once, as firms "
+                    "subcontract and materials run short. Across the %d loss occurrences of %d claims or more since 2010, "
+                    "the cost of a claim at 2027 prices rises by about %s per cent for each claim a firm above %s."
+                    % (P.TRANSFEROR, pan[(2010, "Pennine")], pan[(2025, "Pennine")],
+                       fig["steps"]["fit_occurrences"], fig["steps"]["fit_min_claims"],
+                       fig["steps"]["fit_slope_pct"], fig["steps"]["fit_threshold"]), body),
+          Paragraph("Pennine's four freezes before the transfer put %s to %s claims on each of its firms. Struck on the "
+                    "2027 book, the same freezes would put %s to %s claims on each of today's firms, and each would cost "
+                    "more than GBP 25 million: every one exhausts the layer, and Pennine recovers GBP %s million a year "
+                    "against a premium of GBP %s million and an expected reinstatement premium of GBP %s million. "
+                    "Carried forward by the rebuild cost index alone, the same freezes recover %s to %s each and the "
+                    "layer would be worth GBP %s million on Pennine, behind Severn Vale. On the other three books the "
+                    "panel grew with the book, and the 2027 scale moves no value by more than GBP %s million."
+                    % (m1(fz.u_all.min()), m1(fz.u_all.max()), m1(fz.u27_all.min()), m1(fz.u27_all.max()),
+                       m2(gold["Pennine"]["recoveries"]), m2(P.PREMIUM["Pennine"] / 1e6), m2(gold["Pennine"]["rip"]),
+                       m1(fz.rec_idx.min()), m1(fz.rec_idx.max()), m1(mc["default"]["Pennine"]["value"]),
+                       "%.2f" % (math.ceil(100 * max(abs(gold[r]["value"] - mc["default"][r]["value"])
+                                                    for r in P.REGIONS if r != call)) / 100)), body)]
+    rows = [["Freeze", "Claims", "Claims a firm, then", "Claims a firm, 2027", "Loss, index alone",
+             "Loss, 2027 scale", "Recovery"]]
+    for r in fz.itertuples():
+        rows.append([pd.Timestamp(r.start).strftime("%-d %B %Y"), "{:,}".format(r.n), m1(r.u_all), m1(r.u27_all),
+                     m1(r.L_loss), m1(r.G), m1(r.rec)])
+    s += [D._table(rows, [30, 16, 26, 26, 24, 24, 20], align_right=(1, 2, 3, 4, 5, 6)),
+          Paragraph("Losses and recoveries in GBP million at the 2027 book. Claims from the claims extract at 31 October "
+                    "2026; panel firms counted from the firms named on the claims each year; 2027 at the plan's policies "
+                    "and the 2025 panel.", small)]
+    s += [Paragraph("3. How the value is built", h2),
+          Paragraph("As RC-07 sets out. Each region's windstorm, flood and freeze claims since 2010 are grouped into loss "
+                    "occurrences under the event definitions: %d hours for a windstorm and %d for a flood or a freeze, "
+                    "one period from each catastrophe's first loss. Each claim is brought to its district's 2027 "
+                    "policies and to 2027 repair costs: the rebuild cost index carries it from its month of loss to the "
+                    "plan's 2027 level of %s, and the cost of a claim against claims per firm carries each catastrophe "
+                    "from its own claims per firm to its 2027 claims per firm. The layer's terms apply to each "
+                    "occurrence, each year is capped at GBP %d million, and the sixteen-year average is taken less the "
+                    "quoted premium and the expected reinstatement premium."
+                    % (P.HOURS["windstorm"], P.HOURS["flood"], fig["steps"]["index_2027"], P.ANNUAL // 1000000), body)]
+    rows = [["Region", "2023", "2024", "2025"]]
+    for r in ORDER:
+        rows.append([r] + [gbp(f["A"]["%s|%d" % (r, y)]) for y in (2023, 2024, 2025)])
+    rows2 = [["Region", "Direct book", "Lowther and Pike", "Total"]]
+    for r in ORDER:
+        rows2.append([r, "{:,.1f}".format(f["direct"][r]), "{:,.1f}".format(f["B"][r]["si_m"] - f["direct"][r]),
+                      "{:,.1f}".format(round(f["B"][r]["si_m"] + 1e-9, 1))])
+    s += [KeepTogether([Paragraph("4. For the reinsurers' submission", h2),
+                        Paragraph("The brokers have asked for each book's recent claims experience and its buildings "
+                                  "exposure at the last year end.", body),
+                        Paragraph("Incurred per policy in force on escape of water, accidental damage, theft, fire and "
+                                  "subsidence claims taken together, GBP", small),
+                        D._table(rows, [40, 30, 30, 30], align_right=(1, 2, 3)),
+                        Paragraph("Incurred at 31 October 2026, paid plus outstanding, by year of loss (note 1); "
+                                  "policies in force at mid-year from the exposure extract.", small), Spacer(1, 5)]),
+          KeepTogether([Paragraph("Buildings sums insured on 31 December 2025, GBP million", small),
+                        D._table(rows2, [40, 30, 34, 30], align_right=(1, 2, 3)),
+                        Paragraph("The direct book from the platform's year-end table; Lowther and Pike homes from %s's "
+                                  "bordereaux, October 2025 to February 2026 (note 2). Totals from unrounded figures."
+                                  % P.COVERHOLDER, small)]),
+          Spacer(1, 6),
+          Paragraph("Note 1. Claims the Major Loss Unit holds are at the unit's figures: a reopened case is added to its "
+                    "claim, and a claim sits in the year of the date of loss the unit's adjusters set. A claim the unit "
+                    "sent back to the home claims team is at the platform's figure.", small),
+          Paragraph("Note 2. A Lowther and Pike term cancelled for a missed payment and then reinstated is in force; a "
+                    "term still listed in the month its cancellation took effect is out from that day; a rewrite onto "
+                    "fuller cover counts at its new sum insured; cancellations and endorsements count from their "
+                    "effective dates.", small)]
+    doc = SimpleDocTemplate(path, pagesize=A4, leftMargin=18 * mm, rightMargin=18 * mm, topMargin=16 * mm,
+                            bottomMargin=18 * mm, title="2027 catastrophe layer: placement", author="Donna Phillips",
+                            creator=P.ORG, subject="Board paper %s" % REF, invariant=1)
+    foot = D._footer("%s | Board paper %s | 2027 catastrophe layer" % (P.ORG, REF))
+    doc.build(s, onFirstPage=foot, onLaterPages=foot)
+    PP.scrub(path, P.ORG, PAPER_DATE)
+
+
+def _head(ws, row, n):
+    D._xl_head(ws, row, n)
+
+
+def _widths(ws, widths):
+    for k, w in enumerate(widths, start=1):
+        ws.column_dimensions[get_column_letter(k)].width = w
+
+
+def workbook(path, target, mc, fig, f):
+    gold = mc["gold"]
+    wb = Workbook()
+    ws = wb.active
+    ws.title = "Summary"
+    ws.append(["2027 catastrophe layer, GBP 15m xs 10m with one reinstatement: value by region under RC-07"])
+    ws["A1"].font = Font(bold=True, size=12, color="1F3A5F")
+    ws.append(["GBP million a year. Recommended: %s." % fig["call"]["region"]])
+    ws.append([])
+    ws.append(["Region", "Expected recoveries", "Expected reinstatement premium", "Quoted premium", "Value", "Rank"])
+    _head(ws, 4, 6)
+    for k, r in enumerate(sorted(P.REGIONS, key=lambda q: -gold[q]["value"]), start=1):
+        g = gold[r]
+        ws.append([r, round(g["recoveries"], 2), round(g["rip"], 2), P.PREMIUM[r] / 1e6, round(g["value"] + 1e-9, 1), k])
+        n = ws.max_row
+        for c, fmt in (("B", "0.00"), ("C", "0.00"), ("D", "0.000"), ("E", "0.0")):
+            ws["%s%d" % (c, n)].number_format = fmt
+    ws.append([])
+    ws.append(["Sixteen-year averages, 2010 to 2025, at the 2027 book (the plan's policies) and 2027 repair costs. Value is "
+               "expected recoveries less the quoted premium and the expected reinstatement premium, rounded once."])
+    ws.freeze_panes = "A5"
+    _widths(ws, [16, 20, 30, 16, 10, 8])
+
+    wo = wb.create_sheet("Occurrences")
+    wo.append(["Region", "Peril", "First day", "Claims", "Claims a firm, then", "Claims a firm, 2027",
+               "Loss at the index alone", "Loss at the 2027 scale", "Recovery before the annual cap"])
+    _head(wo, 1, 9)
+    O = f["O"].sort_values(["region", "start", "peril"])
+    for r in O.itertuples():
+        wo.append([r.region, r.peril.capitalize(), pd.Timestamp(r.start).to_pydatetime(), int(r.n), round(r.u_all, 2),
+                   round(r.u27_all, 2), round(r.L_loss, 3), round(r.G, 3), round(r.rec, 3)])
+        n = wo.max_row
+        wo["C%d" % n].number_format = "dd/mm/yyyy"
+        wo["D%d" % n].number_format = "#,##0"
+        for c in ("E", "F"):
+            wo["%s%d" % (c, n)].number_format = "0.0"
+        for c in ("G", "H", "I"):
+            wo["%s%d" % (c, n)].number_format = "0.000"
+    wo.freeze_panes = "A2"
+    wo.auto_filter.ref = "A1:I%d" % wo.max_row
+    _widths(wo, [15, 12, 12, 9, 12, 12, 14, 14, 16])
+
+    wf = wb.create_sheet("Repair cost")
+    wf.append(["Cost of a claim against claims per panel firm: loss occurrences of %d claims or more since 2010"
+               % fig["steps"]["fit_min_claims"]])
+    wf["A1"].font = Font(bold=True, size=11, color="1F3A5F")
+    wf.append(["Log cost per claim at 2027 prices, weighted by claims, a level for each peril; above %s claims a firm "
+               "the cost rises %s per cent a claim a firm." % (fig["steps"]["fit_threshold"], fig["steps"]["fit_slope_pct"])])
+    wf.append([])
+    wf.append(["Region", "Peril", "First day", "Claims", "Claims a firm", "Cost per claim, 2027 prices",
+               "Multiplier to the 2027 scale"])
+    _head(wf, 4, 7)
+    E = O[O.n >= 150].sort_values("u_all")
+    for r in E.itertuples():
+        wf.append([r.region, r.peril.capitalize(), pd.Timestamp(r.start).to_pydatetime(), int(r.n), round(r.u_all, 2),
+                   round(r.sev_loss, 2), round(r.f, 4)])
+        n = wf.max_row
+        wf["C%d" % n].number_format = "dd/mm/yyyy"
+        wf["D%d" % n].number_format = "#,##0"
+        wf["E%d" % n].number_format = "0.0"
+        wf["F%d" % n].number_format = "#,##0"
+        wf["G%d" % n].number_format = "0.000"
+    wf.freeze_panes = "A5"
+    _widths(wf, [15, 12, 12, 9, 13, 18, 18])
+
+    wa = wb.create_sheet("Incurred per policy")
+    wa.append(["Region", "Year of loss", "Incurred at 31 October 2026", "Policies in force, mid-year", "Incurred per policy"])
+    _head(wa, 1, 5)
+    for r in ORDER:
+        for y in (2023, 2024, 2025):
+            v = f["A"]["%s|%d" % (r, y)]
+            p = int(f["pol"][(y, r)])
+            wa.append([r, y, round(v * p, 2), p, round(v + 1e-9, 2)])
+            n = wa.max_row
+            wa["C%d" % n].number_format = "#,##0"
+            wa["D%d" % n].number_format = "#,##0"
+            wa["E%d" % n].number_format = "#,##0.00"
+    wa.append([])
+    wa.append(["Escape of water, accidental damage, theft, fire and subsidence claims taken together, GBP. Claims the "
+               "Major Loss Unit holds are at the unit's figures, a reopened case added to its claim, in the year of the "
+               "date of loss the unit's adjusters set; a claim sent back to the home claims team is at the platform's "
+               "figure."])
+    wa.freeze_panes = "A2"
+    _widths(wa, [15, 11, 24, 22, 18])
+
+    wbk = wb.create_sheet("Sums insured")
+    wbk.append(["Region", "Direct book", "Lowther and Pike", "Total"])
+    _head(wbk, 1, 4)
+    for r in ORDER:
+        tot = f["B"][r]["si_m"]
+        wbk.append([r, round(f["direct"][r], 1), round(tot - f["direct"][r], 1), round(tot + 1e-9, 1)])
+        n = wbk.max_row
+        for c in ("B", "C", "D"):
+            wbk["%s%d" % (c, n)].number_format = "#,##0.0"
+    wbk.append([])
+    wbk.append(["Buildings sums insured on 31 December 2025, GBP million; totals from unrounded figures. Lowther and Pike "
+                "homes from %s's bordereaux, October 2025 to February 2026: a term cancelled for a missed payment and "
+                "then reinstated is in force; a term still listed in the month its cancellation took effect is out "
+                "from that day; a rewrite onto fuller cover counts at its new sum insured; cancellations and "
+                "endorsements count from their effective dates." % P.COVERHOLDER])
+    wbk.freeze_panes = "A2"
+    _widths(wbk, [15, 14, 16, 14])
+
+    wn = wb.create_sheet("Notes")
+    for line in [["Notes"],
+                 ["Basis", "Board policy RC-07 (catastrophe_layer_valuation_basis.pdf); occurrences under the catastrophe "
+                           "event definitions, version 3."],
+                 ["Claims", "Home claims extract at 31 October 2026, incurred as paid plus outstanding."],
+                 ["Book", "2027 policies from the business plan, spread across districts by the mid-2025 mix."],
+                 ["Costs", "Rebuild cost index for the month of loss, to the plan's 2027 level of %s; repairs at the "
+                           "2027 claims per panel firm on the 2025 panel." % fig["steps"]["index_2027"]],
+                 ["Layer", "GBP 15m xs 10m each loss occurrence, one reinstatement at 100 per cent pro rata as to "
+                           "amount, GBP %d million a year at most." % (P.ANNUAL // 1000000)],
+                 ["Prepared", "Donna Phillips, Head of Reinsurance, 27 November 2026, for the Board of 9 December 2026."]]:
+        wn.append(line)
+    wn["A1"].font = Font(bold=True, size=11, color="1F3A5F")
+    for row in wn.iter_rows(min_row=2):
+        row[0].font = Font(bold=True)
+        if len(row) > 1:
+            row[1].alignment = Alignment(wrap_text=True, vertical="top")
+    _widths(wn, [12, 100])
+    for w in wb.worksheets:
+        w.sheet_view.showGridLines = w.title in ("Occurrences", "Repair cost")
+    wb.save(path)
+    PP.scrub(path, P.ORG, PAPER_DATE)
+    PP.finish_office(path, "2026-11-24T09:12:00Z", "2026-11-27T16:41:00Z", P.ORG, person="Donna Phillips")

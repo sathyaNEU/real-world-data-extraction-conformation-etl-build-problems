@@ -1,160 +1,68 @@
 {
- "constants": {
-  "ebikes": 300,
-  "energy_year_kwh": 4123,
-  "false_start_seconds": 60,
-  "per_rides": 10000,
-  "rounding_usd": 25000
+ "call": {
+  "region": "Pennine",
+  "value": 0.1,
+  "margin": 0.1
  },
- "energy_kwh": {
-  "April": 357,
-  "August": 451,
-  "December": 224,
-  "February": 220,
-  "January": 212,
-  "July": 461,
-  "June": 426,
-  "March": 316,
-  "May": 401,
-  "November": 283,
-  "October": 374,
-  "September": 398
+ "values": {
+  "Fenland": -0.8,
+  "Pennine": 0.1,
+  "Severn Vale": 0.0,
+  "Coastal North": -0.5
  },
- "energy_kwh_exact": {
-  "April": 356.609,
-  "August": 451.384,
-  "December": 223.523,
-  "February": 219.73,
-  "January": 212.492,
-  "July": 461.404,
-  "June": 426.133,
-  "March": 315.609,
-  "May": 401.161,
-  "November": 282.752,
-  "October": 374.142,
-  "September": 397.569
+ "cc": {
+  "pennine_recoveries": 3.75,
+  "pennine_reinstatement": 0.73,
+  "pennine_premium": 2.93,
+  "pennine_exhausting": 4,
+  "layer_limit": 15.0
  },
- "fare_classic": {
-  "Central": 3.04,
-  "Hillcrest": 3.04,
-  "Old Town": 3.04,
-  "Riverside": 3.04,
-  "University": 3.04
+ "steps": {
+  "hours": [
+   72,
+   168
+  ],
+  "index_2027": 146.4,
+  "fit_occurrences": 64,
+  "fit_min_claims": 150,
+  "fit_threshold": 16.5,
+  "fit_slope_pct": 2.8,
+  "pennine_freezes_then": [
+   22.6,
+   25.1
+  ],
+  "pennine_freezes_2027": [
+   44.1,
+   49.6
+  ],
+  "annual_cap": 30.0
  },
- "net_revenue": {
-  "Central": 75000,
-  "Hillcrest": 25000,
-  "Old Town": 25000,
-  "Riverside": 50000,
-  "University": 125000
+ "askA": {
+  "Fenland": {
+   "2023": 117.89,
+   "2024": 117.26,
+   "2025": 121.28
+  },
+  "Pennine": {
+   "2023": 135.36,
+   "2024": 134.52,
+   "2025": 130.95
+  },
+  "Severn Vale": {
+   "2023": 113.58,
+   "2024": 120.57,
+   "2025": 125.88
+  },
+  "Coastal North": {
+   "2023": 122.17,
+   "2024": 116.35,
+   "2025": 135.16
+  }
  },
- "net_revenue_exact": {
-  "Central": 76296.0,
-  "Hillcrest": 24222.0,
-  "Old Town": 22703.0,
-  "Riverside": 47561.0,
-  "University": 127804.0
- },
- "people": {
-  "Central": 9486,
-  "Hillcrest": 3258,
-  "Old Town": 5102,
-  "Riverside": 7759,
-  "University": 4853
- },
- "pilot": {
-  "ebike_rides": 40180,
-  "ebike_share": 41.7,
-  "fare_classic": 3.04,
-  "fare_ebike": 3.16,
-  "premium": 0.11,
-  "rides_comparison": 46098,
-  "rides_pilot": 96275,
-  "stations_comparison": 12,
-  "stations_pilot": 24,
-  "uplift": 4.4
- },
- "recommended_network": "University",
- "recorded_route": {
-  "Central": 50000,
-  "Hillcrest": 0,
-  "Old Town": 25000,
-  "Riverside": 25000,
-  "University": 25000
- },
- "recorded_route_exact": {
-  "Central": 52366.0,
-  "Hillcrest": 10610.0,
-  "Old Town": 14057.0,
-  "Riverside": 31669.0,
-  "University": 32270.0
- },
- "recorded_route_pick": "Central",
- "requests": {
-  "Central": 292200,
-  "Hillcrest": 61900,
-  "Old Town": 79100,
-  "Riverside": 177100,
-  "University": 205100
- },
- "rides_2025": {
-  "Central": 284765,
-  "Hillcrest": 57696,
-  "Old Town": 76442,
-  "Riverside": 172214,
-  "University": 175487
- },
- "runner_up": "Central",
- "turned_away": {
-  "Central": 7400,
-  "Hillcrest": 4200,
-  "Old Town": 2700,
-  "Riverside": 4900,
-  "University": 29600
- },
- "turned_away_exact": {
-  "Central": 7430.0,
-  "Hillcrest": 4229.6,
-  "Old Town": 2689.3,
-  "Riverside": 4930.0,
-  "University": 29622.4
- },
- "turned_away_share": {
-  "Central": 2.5,
-  "Hillcrest": 6.8,
-  "Old Town": 3.4,
-  "Riverside": 2.8,
-  "University": 14.4
- },
- "university_turned_away_share": 14.4,
- "workshop_jobs": {
-  "Classic Q1": 219,
-  "Classic Q2": 333,
-  "Classic Q3": 383,
-  "Classic Q4": 206,
-  "E-bike Q1": 36,
-  "E-bike Q2": 37,
-  "E-bike Q3": 60,
-  "E-bike Q4": 22
- },
- "workshop_per_10000": {
-  "Classic Q1": 12.0,
-  "Classic Q2": 14.3,
-  "Classic Q3": 15.2,
-  "Classic Q4": 10.2,
-  "E-bike Q1": 49.1,
-  "E-bike Q2": 31.9,
-  "E-bike Q3": 46.8,
-  "E-bike Q4": 26.0
- },
- "workshop_rides": {
-  "Classic Q1": 181802,
-  "Classic Q2": 232548,
-  "Classic Q3": 251866,
-  "Classic Q4": 202581,
-  "E-bike Q1": 7327,
-  "E-bike Q2": 11583,
-  "E-bike Q3": 12814,
-  "E-bike Q4": 8456
+ "askB": {
+  "Fenland": 59442.2,
+  "Pennine": 73441.1,
+  "Severn Vale": 131316.2,
+  "Coastal North": 71630.8
  }
 }

@@ -1,224 +1,216 @@
-"""The independent verifier: reads only target.zip, on its own code path (nothing imported from the generator), and
-recomputes every graded figure: the five networks' net fare revenue and the pick, the people by home area, the pilot's
-charging energy by month and the workshop jobs per 10,000 rides; it reads back every format the pack ships (CSV, XLSX,
-JSON, PDF) with a positive control on each document that carries a filed sentence the call leans on."""
-import io
+"""Independent verifier: every graded figure recomputed from target/ by code that shares nothing with solve.py, then
+compared with figures.json.
+
+    python3 task308/generator/verify.py <target dir>
+"""
+import datetime as dt
 import json
-import math
 import os
-import re
 import sys
-import zipfile
-from zoneinfo import ZoneInfo
 
 import numpy as np
 import pandas as pd
 
-TZ = ZoneInfo("America/Chicago")
 HERE = os.path.dirname(os.path.abspath(__file__))
-FAIL = []
+REG = ["Fenland", "Pennine", "Severn Vale", "Coastal North"]
+PREM = {"Fenland": 2.155, "Pennine": 2.93, "Severn Vale": 4.34, "Coastal North": 4.17}
+HOURS_DAYS = {"windstorm": 3, "flood": 7, "freeze": 7}
 
 
-def check(label, cond, detail=""):
-    print(("ok   " if cond else "FAIL ") + label + (("  " + detail) if detail else ""))
-    if not cond:
-        FAIL.append(label)
+def files(t):
+    out = {}
+    for f in os.listdir(t):
+        out[f.split("_")[0]] = os.path.join(t, f)
+    return out
 
 
-def secs_utc(series):
-    t = pd.to_datetime(series, utc=True)
-    return ((t - pd.Timestamp("1970-01-01", tz="UTC")).dt.total_seconds()).round().astype("int64")
+def main(t):
+    fx = sorted(os.listdir(t))
+    get = lambda stem: os.path.join(t, [f for f in fx if f.startswith(stem)][0])
+    claims = pd.read_parquet(get("home_claims"))
+    claims["inc"] = claims.paid.values + claims.outstanding.values
+    expo = pd.read_csv(get("exposure_by_district"))
+    idx = pd.read_excel(get("rebuild_cost_index"), sheet_name=0)
+    idx.columns = ["y", "m", "v"]
+    ix = {(a, b): v for a, b, v in idx.itertuples(index=False)}
+    plan_p = pd.read_excel(get("business_plan"), sheet_name="Policies")
+    plan_a = pd.read_excel(get("business_plan"), sheet_name="Assumptions")
+    i27 = float(plan_a[plan_a.iloc[:, 0].str.startswith("Rebuild cost index")].iloc[0, 1])
+    p27 = dict(zip(plan_p.iloc[:, 0], plan_p.iloc[:, 2]))
 
+    # 2027 policies per district, and each claim's book factor and cost factor
+    e = expo.set_index(["year", "postcode_district"])
+    last = expo[expo.year == expo.year.max()]
+    mix = last.policies_in_force_mid_year / last.groupby("region").policies_in_force_mid_year.transform("sum")
+    d27 = dict(zip(last.postcode_district, mix.values * last.region.map(p27).values))
+    cat = claims[claims.peril.isin(list(HOURS_DAYS))].copy()
+    yrs = cat.date_of_loss.dt.year.values
+    cat["book"] = [d27[d] / e.loc[(y, d), "policies_in_force_mid_year"] for y, d in zip(yrs, cat.postcode_district)]
+    cat["cost"] = [i27 / ix[(a.year, a.month)] for a in cat.date_of_loss]
+    firms = claims[claims.repair_contractor.str.len() > 0].groupby([claims.date_of_loss.dt.year, "region"]).repair_contractor.nunique()
 
-def secs_local(series):
-    t = pd.to_datetime(series).dt.tz_localize(TZ, ambiguous="NaT", nonexistent="shift_forward")
-    # the repeated November hour: take the first pass, as the trip system does
-    bad = t.isna()
-    if bad.any():
-        t2 = pd.to_datetime(series[bad]).dt.tz_localize(TZ, ambiguous=np.ones(int(bad.sum()), bool))
-        t[bad] = t2
-    return ((t - pd.Timestamp("1970-01-01", tz="UTC")).dt.total_seconds()).round().astype("int64")
-
-
-def pdf_text(raw):
-    from pypdf import PdfReader
-    return re.sub(r"\s+", " ", " ".join(p.extract_text() for p in PdfReader(io.BytesIO(raw)).pages))
-
-
-def main(zp):
-    del FAIL[:]
-    fig = json.load(open(os.path.join(HERE, "figures.json")))
-    z = zipfile.ZipFile(zp)
-    names = z.namelist()
-    rd = lambda n, **k: pd.read_csv(io.BytesIO(z.read(n)), **k)
-    # ---------------------------------------------------------------- every format back
-    stations = json.loads(z.read("station_information.json"))["data"]["stations"]
-    regions = {r["region_id"]: r["name"] for r in json.loads(z.read("system_regions.json"))["data"]["regions"]}
-    check("json: station feed and regions", len(stations) == 115 and len(regions) == 6)
-    board = pdf_text(z.read("board_paper_2026-12_item7_extract.pdf"))
-    pilot_txt = pdf_text(z.read("ebike_pilot_harbour_2025.pdf"))
-    fares = pdf_text(z.read("fare_schedule_2025.pdf"))
-    quote = pdf_text(z.read("vendor_quote_ebikes_2026.pdf"))
-    check("pdf: positive control (the vendor's quotation number reads back)", "HVS-Q-26-0418" in quote)
-    check("pdf: the board paper files the measure", "the fares riders would pay in that network in a year with the "
-          "e-bikes, less the fares they paid in that network in 2025, at 2025 demand" in board)
-    check("pdf: the board paper files the deployment", "so that every station holds e-bikes through the day" in board)
-    check("pdf: the fare schedule files the fares", "USD 0.12" in fares and "USD 0.17" in fares and "within 60 seconds is not charged" in fares)
-    audit = pd.read_excel(io.BytesIO(z.read("audit_0300_2025.xlsx")), dtype={"station_id": str})
-    dic = pd.read_excel(io.BytesIO(z.read("data_dictionary.xlsx")), sheet_name=None)
-    check("xlsx: the audit and the dictionary", len(audit) == 115 * 365 and "Read me" in dic)
-    readme = " ".join(str(v) for v in dic["Read me"].fillna("").values.ravel())
-    check("xlsx: the dictionary files the reporting calendar and the false start",
-          "quarters run on Central Time" in readme and "is not a ride" in readme)
-    # ---------------------------------------------------------------- trips on one footing
-    st = pd.DataFrame(stations)
-    st["network"] = st.region_id.map(regions)
-    name2id = dict(zip(st.name, st.station_id)); code2id = dict(zip(st.short_name, st.station_id))
-    rows = []
-    for n in ("tripsys_export_2025Q1.csv", "tripsys_export_2025Q2.csv"):
-        d = rd(n, dtype={"account_no": str})
-        rows.append(pd.DataFrame({"start": secs_local(d.start_time), "dur": d.duration_sec, "a": d.start_station.map(name2id),
-                                  "b": d.end_station.map(name2id), "e": d.bike_type == "electric", "fare": d.fare_usd,
-                                  "acct": "L" + d.account_no, "bike": d.bike_no.str.replace(r"\D", "", regex=True).astype(int)
-                                  + np.where(d.bike_type == "electric", 500000, 100000)}))
-    for n in ("rides_2025Q3.csv", "rides_2025Q4.csv"):
-        d = rd(n, dtype={"account_id": str})
-        rows.append(pd.DataFrame({"start": secs_local(d.started_at), "dur": d.duration_s, "a": d.start_station_code.map(code2id),
-                                  "b": d.end_station_code.map(code2id), "e": d.vehicle_type == "EBIKE",
-                                  "fare": d.fare_cents / 100.0, "acct": d.account_id, "bike": d.vehicle_id}))
-    T = pd.concat(rows, ignore_index=True)
-    T["end"] = T.start + T.dur
-    T["fs"] = (T.dur < 60) & (T.a == T.b)
-    check("trips: every station resolves", T.a.notna().all() and T.b.notna().all())
-    mv = rd("dispatch_moves_2025.csv", dtype={"from_station": str, "to_station": str})
-    mv = mv[mv.bike_class == "classic"].copy()
-    mv["t"] = secs_utc(mv.completed_utc)
-    audit["t"] = secs_local(pd.Series([str(pd.Timestamp(d).date()) + " 03:00:00" for d in audit.audit_date]))
-    # ---------------------------------------------------------------- each station's classic stock, event by event
-    T0 = int(secs_local(pd.Series(["2025-01-01 00:00:00"]))[0]); T1 = int(secs_local(pd.Series(["2026-01-01 00:00:00"]))[0])
-    nh = (T1 - T0) // 3600
-    hrs = pd.to_datetime(np.arange(T0, T1, 3600), unit="s", utc=True).tz_convert(TZ)
-    cell = (hrs.month.values - 1) * 48 + (hrs.weekday.values >= 5) * 24 + hrs.hour.values
-    cls = T[~T.e]
-    turned = {}
-    for sid in st.station_id:
-        ev = []
-        for t in cls.start[cls.a == sid].values:
-            ev.append((t, 0, -1))
-        for t in cls.end[cls.b == sid].values:
-            ev.append((t, 1, 1))
-        for t, q in mv.loc[mv.from_station == sid, ["t", "qty"]].values:
-            ev.append((t, 1, -q))
-        for t, q in mv.loc[mv.to_station == sid, ["t", "qty"]].values:
-            ev.append((t, 1, q))
-        ev.sort()
-        anchors = audit[audit.station_id == sid].sort_values("t")[["t", "classic_docked"]].values
-        stocked = np.zeros(nh); empty = np.zeros(nh)
-        j = 0
-        for k, (a0, c0) in enumerate(anchors):
-            a1 = anchors[k + 1][0] if k + 1 < len(anchors) else T1
-            while j < len(ev) and ev[j][0] <= a0:
-                j += 1
-            cur, tprev = c0, a0
-            while True:
-                tn = ev[j][0] if j < len(ev) and ev[j][0] <= a1 else a1
-                # split [tprev, tn) at hour boundaries
-                x = tprev
-                while x < tn:
-                    h = (x - T0) // 3600
-                    y = min(tn, T0 + (h + 1) * 3600)
-                    if cur > 0:
-                        stocked[h] += y - x
-                    else:
-                        empty[h] += y - x
-                    x = y
-                if tn >= a1 and not (j < len(ev) and ev[j][0] <= a1):
-                    break
-                cur += ev[j][2]; tprev = tn; j += 1
-                assert cur >= 0, (sid, tn)
-        reqs = cls[(cls.a == sid) & (~cls.fs) & (cls.start >= anchors[0][0])]
-        dep = np.bincount(((reqs.start.values - T0) // 3600).astype(int), minlength=nh)[:nh]
-        s_c = np.bincount(cell, weights=stocked, minlength=576); d_c = np.bincount(cell, weights=dep, minlength=576)
-        rate = np.where(s_c > 0, d_c / np.maximum(s_c, 1e-9), 0.0)
-        turned[sid] = float((rate[cell] * empty).sum())
-    # ---------------------------------------------------------------- the pilot and the networks
-    lines = [l for l in re.split(r"(?=HBR-\d\d )", pilot_txt)]
-    pil = re.findall(r"(HBR-\d\d) [^|]*?(?= pilot station)", pilot_txt)
-    grp = dict(re.findall(r"(HBR-\d\d) .*? (pilot station|comparison station)", pilot_txt))
-    pil = [code2id[c] for c, g in grp.items() if g == "pilot station"]
-    cmpn = [code2id[c] for c, g in grp.items() if g == "comparison station"]
-    check("pdf: 24 pilot and 12 comparison stations read from the pilot note", len(pil) == 24 and len(cmpn) == 12)
-    real = T[~T.fs]
-    p_r = real[real.a.isin(pil)]; c_r = real[real.a.isin(cmpn)]
-    share = p_r.e.mean(); upl = (len(p_r) / 24) / (len(c_r) / 12) - 1
-    prem = p_r[p_r.e].fare.mean() - p_r[~p_r.e].fare.mean()
-    netrev = {}
-    for n in ["Central", "University", "Riverside", "Old Town", "Hillcrest"]:
-        ids = set(st.station_id[st.network == n])
-        rides = real[(~real.e) & real.a.isin(ids)]
-        U = sum(turned[s] for s in ids); D = len(rides) + U
-        netrev[n] = (U + upl * D) * rides.fare.mean() + share * D * (1 + upl) * prem
-        r25 = int(25000 * math.floor(netrev[n] / 25000 + 0.5))
-        check("call: %s net fare revenue %s" % (n, "{:,}".format(r25)), r25 == fig["net_revenue"][n], "%.0f" % netrev[n])
-    check("call: the pick", max(netrev, key=netrev.get) == fig["recommended_network"])
-    # ---------------------------------------------------------------- people by home area
-    acc = rd("account_register_2025-12-31.csv", dtype=str)
-    acc["home"] = acc.home_area.str.strip().str.title()
-    m = dict(zip("L" + acc.legacy_account_no.fillna("-"), acc.account_id))
-    real_acct = real.acct.map(lambda x: m.get(x, x))
-    last = real.assign(aid=real_acct).groupby("aid").end.max()
-    a = acc[acc.account_id.isin(last.index)].copy()
-    a["opened"] = secs_local(a.created_at); a["last"] = a.account_id.map(last)
-    people = {}
-    for card, g in a.sort_values("opened").groupby("card_fingerprint"):
-        chains = []
-        for r in g.itertuples():
-            for ch in chains:
-                if ch[0] < r.opened:
-                    ch[0] = max(ch[0], r.last); ch[1] = r.home
-                    break
-            else:
-                chains.append([r.last, r.home])
-        for ch in chains:
-            people[ch[1]] = people.get(ch[1], 0) + 1
-    for n in fig["people"]:
-        check("people: %s %d" % (n, fig["people"][n]), people.get(n.title() if n != "Old Town" else "Old Town") == fig["people"][n])
-    # ---------------------------------------------------------------- charging energy by month
-    ch = rd("charging_sessions_harbour_2025.csv").sort_values("session_id")
-    first = ~ch.duplicated(["station_code", "point", "meter_start_wh", "meter_stop_wh"])
-    ch = ch[first | (ch.meter_start_wh == ch.meter_stop_wh)]
-    mon = pd.to_datetime(ch.plug_out_utc, utc=True).dt.tz_convert(TZ).dt.month
-    for i, mname in enumerate(fig["energy_kwh"], 1):
-        pass
-    months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October",
-              "November", "December"]
-    for i, mname in enumerate(months, 1):
-        v = int(round(ch.energy_kwh[mon == i].sum()))
-        check("energy: %s %d kWh" % (mname, v), v == fig["energy_kwh"][mname])
-    # ---------------------------------------------------------------- workshop jobs per 10,000 rides
-    jb = rd("workshop_jobs_2025.csv")
-    jb["o"] = secs_utc(jb.opened_utc); jb["c"] = secs_utc(jb.closed_utc)
-    jb["q"] = (pd.to_datetime(jb.opened_utc, utc=True).dt.tz_convert(TZ).dt.month - 1) // 3 + 1
-    jb["tag"] = jb.asset_tag.str[2:].astype(int) + np.where(jb.asset_class == "E-bike", 500000, 100000)
-    times = {b: np.sort(g.start.values) for b, g in real.groupby("bike")}
-    keep, prev = [], {}
-    for r in jb.sort_values(["o", "job_no"]).itertuples():
-        p = prev.get(r.tag)
-        if p is not None:
-            ts = times.get(r.tag, np.array([]))
-            if ((ts > p) & (ts < r.o)).sum() == 0:
-                prev[r.tag] = r.c
+    # catastrophes: a run of days whose count stands far above the region's usual day for the peril; one period
+    # from the run's first day
+    occ = []
+    for (rg, pr), g in cat.groupby(["region", "peril"]):
+        days = g.date_of_loss.dt.normalize()
+        cnt = days.value_counts().sort_index()
+        base = float(np.median(cnt.values))
+        spikes = cnt[cnt > max(15, 5 * base)].index
+        taken = pd.DatetimeIndex([])
+        for s0 in spikes:
+            if s0 in taken:
                 continue
-        keep.append(r.Index); prev[r.tag] = r.c
-    jk = jb.loc[keep]
-    rq = (pd.to_datetime(real.start, unit="s", utc=True).dt.tz_convert(TZ).dt.month - 1) // 3 + 1
-    for cls_name, is_e in (("E-bike", True), ("Classic", False)):
-        for q in range(1, 5):
-            v = round(1e4 * ((jk.asset_class == cls_name) & (jk.q == q)).sum() / ((real.e == is_e) & (rq == q)).sum(), 1)
-            check("workshop: %s Q%d %.1f" % (cls_name, q, v), v == fig["workshop_per_10000"]["%s Q%d" % (cls_name, q)])
-    print("%d failure(s)" % len(FAIL))
-    return len(FAIL)
+            first = s0
+            for back in (1, 2):
+                if cnt.get(s0 - pd.Timedelta(days=back), 0) > max(4, 2 * base):
+                    first = s0 - pd.Timedelta(days=back)
+            span = pd.date_range(first, periods=HOURS_DAYS[pr])
+            taken = taken.union(span)
+            w = g[days.isin(span).values]
+            n = len(w)
+            yr = first.year
+            occ.append((rg, pr, yr, n, n / firms[(yr, rg)], w.book.sum() / firms[(2025, rg)],
+                        float((w.inc * w.cost).sum()) / n, float((w.inc * w.book * w.cost).sum()) / 1e6))
+    O = pd.DataFrame(occ, columns=["rg", "pr", "yr", "n", "u", "u27", "sev", "L"])
+
+    # cost per claim on claims per firm: a level per peril and one slope past a threshold, log scale, claim-weighted
+    E = O[O.n >= 150]
+    best = None
+    for th in np.arange(6.0, 34.5, 0.5):
+        X = np.column_stack([pd.get_dummies(E.pr).values.astype(float), np.clip(E.u.values - th, 0, None)])
+        wsq = np.sqrt(E.n.values)
+        beta = np.linalg.lstsq(X * wsq[:, None], np.log(E.sev.values) * wsq, rcond=None)[0]
+        err = float((((X @ beta) - np.log(E.sev.values)) ** 2 * E.n.values).sum())
+        if best is None or err < best[0]:
+            best = (err, th, beta[-1])
+    _, th, k = best
+    O["G"] = O.L * np.exp(k * (np.clip(O.u27 - th, 0, None) - np.clip(O.u - th, 0, None)))
+
+    val = {}
+    for rg in REG:
+        a = np.zeros(16)
+        for yr, L in zip(O[O.rg == rg].yr, O[O.rg == rg].G):
+            a[yr - 2010] += min(max(L - 10.0, 0.0), 15.0)
+        a = np.minimum(a, 30.0)
+        val[rg] = a.mean() - PREM[rg] - (PREM[rg] * np.minimum(a, 15.0) / 15.0).mean()
+
+    # ask A: every report row of every unit case, in report order
+    pol = expo.groupby(["year", "region"]).policies_in_force_mid_year.sum()
+    sheets = pd.read_excel(get("major_loss_unit"), sheet_name=None, header=2)
+    names = list(sheets)
+    hist = {}
+    for i, nm in enumerate(names):
+        sh = sheets[nm]
+        sh = sh[sh.iloc[:, 0].astype(str).str.startswith("MLU-")]
+        for r in sh.itertuples(index=False):
+            hist.setdefault(r[0], []).append((i, str(int(r[1])), r[2], str(r[3]).lower(), pd.Timestamp(r[4]).normalize(),
+                                              float(r[9]), r[10]))
+    # a case's last word: listed in the last report or closed; otherwise it left the report open
+    cases = {}
+    for ref, h in hist.items():
+        i, pno, dist, per, dol, inc, st = h[-1]
+        cases[ref] = dict(pno=pno, dist=dist, per=per, now=dol, dates={x[4] for x in h},
+                          fin=inc if (i == len(names) - 1 or st == "Closed") else None)
+    # cases of one claim share a policy, a peril and a date
+    parent = {r: r for r in cases}
+
+    def root(r):
+        while parent[r] != r:
+            parent[r] = parent[parent[r]]
+            r = parent[r]
+        return r
+    seen_k = {}
+    for r, cs in cases.items():
+        for d in cs["dates"]:
+            k = (cs["pno"], cs["per"], d)
+            if k in seen_k:
+                parent[root(r)] = root(seen_k[k])
+            else:
+                seen_k[k] = r
+    groups = {}
+    for r in cases:
+        groups.setdefault(root(r), []).append(r)
+    nc = claims[claims.peril.isin(["escape of water", "accidental damage", "theft", "fire", "subsidence"])].copy()
+    nc["year"] = nc.date_of_loss.dt.year
+    nc["inc2"] = nc.inc.values
+    look = {}
+    for i, k in zip(nc.index, zip(nc.policy_ref.str[1:], nc.peril, nc.date_of_loss.dt.normalize())):
+        look.setdefault(k, i)
+    dreg = dict(zip(last.postcode_district, last.region))
+    add = {}
+    for g in groups.values():
+        cs = [cases[r] for r in g]
+        now = max(c["now"] for c in cs)
+        ks = [(c["pno"], c["per"], d) for c in cs for d in c["dates"]]
+        hit = [look[k] for k in ks if k in look]
+        if any(c["fin"] is None for c in cs):
+            continue                      # back on the platform: its own figure stands
+        tot = sum(c["fin"] for c in cs)
+        if hit:
+            nc.loc[hit[0], "inc2"] = tot
+            nc.loc[hit[0], "year"] = now.year
+        else:
+            k = (dreg[cs[0]["dist"]], now.year)
+            add[k] = add.get(k, 0.0) + tot
+    tot = nc.groupby(["region", "year"]).inc2.sum()
+    askA = {rg: {str(y): round((tot.get((rg, y), 0.0) + add.get((rg, y), 0.0)) / pol[(y, rg)] + 1e-9, 2)
+                 for y in (2023, 2024, 2025)} for rg in REG}
+
+    # ask B: a term is in force on 31 December when its dates cover the day and no cancellation of it took effect by
+    # then, unless it is listed for a later month that began after the cancellation took effect (a reinstatement); its
+    # sum insured is the first listing's, moved by endorsements effective by then
+    bd = pd.read_csv(get("lowther_pike"), dtype=str)
+    pdt = lambda s: pd.to_datetime(s, format="%d/%m/%Y", errors="coerce")
+    for col in ("term_start", "term_end", "cancellation_effective", "endorsement_effective"):
+        bd[col] = pdt(bd[col])
+    day = pd.Timestamp(2025, 12, 31)
+    terms = {}
+    for r in bd.itertuples(index=False):
+        tm = terms.setdefault((r.scheme_policy_no, r.term_start), dict(rows=[], mtas=[], district=r.postcode_district))
+        if r.transaction == "Mid-term adjustment":
+            tm["mtas"].append((r.endorsement_effective, float(r.buildings_sum_insured)))
+        else:
+            tm["rows"].append(r)
+    dmap = dict(zip(last.postcode_district, last.region))
+    scheme = {rg: 0.0 for rg in REG}
+    for tm in terms.values():
+        covers = [r for r in tm["rows"] if r.transaction != "Cancelled" and r.term_start <= day <= r.term_end]
+        if not covers:
+            continue
+        # out when a cancellation effective by the day was never followed by a month the term was in force after it
+        months = [pd.Timestamp(r.bordereau_month + "-01") for r in tm["rows"] if r.transaction != "Cancelled"]
+        cuts = [r.cancellation_effective for r in tm["rows"] if r.transaction == "Cancelled"
+                and r.cancellation_effective <= day]
+        if any(not any(m > ce for m in months) for ce in cuts):
+            continue
+        si = float(covers[0].buildings_sum_insured)
+        for eff, s in sorted(tm["mtas"], key=lambda q: q[0]):
+            if eff <= day:
+                si = s
+        scheme[dmap[tm["district"]]] += si
+    dr = pd.read_csv(get("direct_policies"))
+    askB = {rg: round((dr[dr.region == rg].buildings_sums_insured_gbp.sum() + scheme[rg]) / 1e6 + 1e-9, 1) for rg in REG}
+
+    figs = json.load(open(os.path.join(HERE, "figures.json")))
+    bad = []
+    for rg in REG:
+        if round(val[rg] + 1e-9, 1) != figs["values"][rg]:
+            bad.append(("value", rg, round(val[rg], 3), figs["values"][rg]))
+        for y in ("2023", "2024", "2025"):
+            if abs(askA[rg][y] - figs["askA"][rg][y]) > 0.001:
+                bad.append(("askA", rg, y, askA[rg][y], figs["askA"][rg][y]))
+        if askB[rg] != figs["askB"][rg]:
+            bad.append(("askB", rg, askB[rg], figs["askB"][rg]))
+    pick = max(val, key=val.get)
+    if pick != figs["call"]["region"]:
+        bad.append(("call", pick, figs["call"]["region"]))
+    print("verify: %s; call %s %.3f; %d figures compared" % ("OK" if not bad else "MISMATCH", pick, val[pick], 1 + 4 + 12 + 4))
+    for b in bad:
+        print("   ", b)
+    return 1 if bad else 0
 
 
 if __name__ == "__main__":
-    sys.exit(1 if main(sys.argv[1] if len(sys.argv) > 1 else os.path.join(HERE, "..", "target.zip")) else 0)
+    tgt = sys.argv[1] if len(sys.argv) > 1 else os.path.join(os.path.dirname(HERE), "target")
+    sys.exit(main(tgt))

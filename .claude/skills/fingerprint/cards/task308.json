@@ -6,12 +6,12 @@
   "domain": "actuarial-science-insurance",
   "subdomain": "catastrophe-exposure-accumulation",
   "client_domain": "actuarial-science-insurance",
-  "niche": "a UK mutual home insurer's reinsurance committee choosing which of four regional home books takes a 2027 catastrophe excess of loss layer (GBP 15 million excess of 10 million each loss occurrence, one reinstatement), valued as the expected 2027 recoveries on its own 2010 to 2025 storm, flood and freeze events brought to the 2027 book less the premium and the expected reinstatement premium, when what a claim costs rises with the claims each repair panel firm has to take on at once and one region's book doubled in 2021 while its panel did not grow",
+  "niche": "a UK mutual home insurer's board choosing which of four regional home books takes a 2027 catastrophe excess of loss layer (GBP 15 million excess of 10 million each loss occurrence, one reinstatement), valued as the expected 2027 recoveries on its own 2010 to 2025 storm, flood and freeze events brought to the 2027 book less the premium and the expected reinstatement premium, when what a claim costs rises with the claims each repair panel firm has to take on at once and one region's book doubled in 2021 while its panel did not grow",
   "objective": "opportunity-sizing-decision",
   "shape": "other",
   "decision_type": "pick_one_of_n",
   "answer_unit": "named_option",
-  "answer": "Pennine: the layer is worth about GBP 0.2 million in 2027, against Severn Vale at about GBP -0.4 million, Coastal North at about -0.6 and Fenland at about -0.9 (figures fixed at stage 2)",
+  "answer": "Pennine: the layer is worth GBP 0.1 million a year in 2027, against Severn Vale at GBP 0.0 million, Coastal North at -0.5 and Fenland at -0.8",
   "answer_source": "task308/submission.md block 1, from generator/figures.json",
   "gap": [
     "objective",
@@ -30,32 +30,31 @@
   "decisive_rule_filed": false,
   "official_decoy": false,
   "validated_decoy": false,
-  "context_artifact": "filed_standard",
+  "context_artifact": "filed_model",
   "stump_class": "analytical",
-  "analyst_test": "A strong analyst who reads every file correctly builds each year's loss occurrences under the hours clause, brings every claim to 2027 by its district's policies against the year's and by the rebuild cost index against its month of loss, and names Severn Vale at about GBP -0.4 million, because no field or document says that what a claim costs depends on how many claims the region's panel firms have to repair at once; the golden prices each event at the repair cost its 2027 scale implies and names Pennine at about GBP 0.2 million.",
+  "analyst_test": "A strong analyst who reads every file correctly builds each year's loss occurrences under the hours clause, brings every claim to 2027 by its district's policies against the year's and by the rebuild cost index against its month of loss, and names Severn Vale at GBP 0.0 million (Pennine -0.4); reading RC-07 s.3 (the index is a standard rebuild's price in ordinary times) and adding the surge the field reads on a catastrophe's size, by its claim count or its loss in any of 16 forms, still names Severn Vale, because no field or document says that what a claim costs depends on how many claims the region's panel firms have to repair at once; the golden prices each event at the repair cost its 2027 claims per panel firm imply and names Pennine at GBP 0.1 million.",
   "domain_test": "The deciding quantity is a catastrophe layer's expected recoveries, which a reinsurance actuary prices from the company's event losses brought to the cover year's exposure and costs; catastrophe modelling knows that claim costs rise with an event's size when local repair capacity is overwhelmed (post-event demand surge), so an event striking a larger book costs more than proportionally more where the repair capacity has not grown.",
   "layer2_family": "field_method",
   "layer2_pattern": "own:post-event-demand-surge-at-the-cover-years-scale",
   "layer1": [
-    "event codes only for declared events and missing on late-notified claims; occurrences built from dates of loss under the hours clause, the company choosing each period's start",
-    "incurred as paid plus outstanding on 31 October 2026, the 2025 claims still part-reserved",
-    "cash settlements carry no panel firm or sign-off date",
+    "event codes only for declared events; storm claims coded at first notice, freeze claims often notified weeks late and without the code; occurrences built from dates of loss under the hours clause, one period from each catastrophe's first loss",
+    "incurred as paid plus outstanding on 31 October 2026, a few 2025 claims still reserved",
+    "cash settlements carry no panel firm or sign-off date; repairs signed off months after the loss",
     "the 1 January 2021 Calder and Colne book transfer into eight Pennine districts, policies by district and year",
-    "storms two days apart (February 2022) that one 72-hour period can hold",
-    "attritional windstorm, flood and freeze claims on ordinary days among the event claims"
+    "ordinary windstorm, flood and freeze claims on quiet days and inside the catastrophe periods"
   ],
-  "stakeholder_role": "the head of reinsurance preparing the committee's placement paper",
+  "stakeholder_role": "the head of reinsurance preparing the board's placement paper",
   "role_family": "portfolio_manager",
   "scoring_unit": "other",
   "spine": {
     "file": "home_claims_2010_2025.parquet",
-    "rows": 480000,
+    "rows": 483625,
     "entity": "one home claim",
     "grain": "claim",
     "source": "synthetic (fictional UK mutual home insurer)"
   },
   "forum": "board_of_directors",
-  "forcing_event": "budget_or_appropriation",
+  "forcing_event": "purchase_order_or_contract",
   "org_family": "financial_institution",
   "world": {
     "geography": "United Kingdom (four English regional books)",
@@ -82,8 +81,8 @@
   "opening_move": "question-first",
   "question_form": "which",
   "driver": "An event's loss carried to a larger book is scaled claim by claim at the cost each claim carried, when what a claim costs rises with how many claims the region's repair capacity has to take on at once; where the book has grown and the capacity has not, the same event costs more per claim at the forward scale, and only the cost per claim read against claims per unit of capacity across every event shows by how much.",
-  "driver_concrete": "Each 2010 to 2025 storm, flood and freeze is re-costed as it would strike the 2027 book: its claims scaled by district policies, each claim's cost re-read from the surge curve at the event's 2027 claims per panel firm (Pennine's panel stayed at about 34 firms while its book doubled with the 2021 transfer), and the layer applied to the occurrences the hours clause allows.",
-  "stump": "A competent analyst brings every claim to 2027 by its district's policies and the rebuild cost index, applies the layer to the occurrences the hours clause allows and names Severn Vale at about GBP -0.4 million, where the golden is Pennine at about GBP 0.2 million; the step that lands it there is pricing a historical event's claims at the cost each claim carried at the event's own scale, when Pennine's pre-2021 events would put about twice as many claims on the same 34 panel firms in 2027.",
+  "driver_concrete": "Each 2010 to 2025 storm, flood and freeze is re-costed as it would strike the 2027 book: its claims scaled by district policies, each claim's cost re-read from the cost per claim against claims per panel firm at the event's 2027 claims per firm (Pennine's panel stayed at 30 to 34 firms while its book doubled with the 2021 transfer), and the layer applied to the occurrences the hours clause allows.",
+  "stump": "A competent analyst brings every claim to 2027 by its district's policies and the rebuild cost index, adds at most the surge the field reads on a catastrophe's size, applies the layer to the occurrences the hours clause allows and names Severn Vale (GBP 0.0 million at the index alone), where the golden is Pennine at GBP 0.1 million; the step that lands it there is pricing a historical event's claims at the cost each claim carried at the event's own load on the repair panel, when Pennine's four pre-2021 freezes, struck at 22.6 to 25.1 claims a panel firm, would put 44 to 50 claims on each of its 34 firms in 2027.",
   "mechanism_source": "design_note",
   "lineage": [
     {
@@ -122,6 +121,7 @@
     }
   ],
   "differentiation": {},
-  "notes": "Architecture 2. Forcing event: the board approves the 2027 business plan and its reinsurance budget, which buys one regional layer. Call-only probes on the probe pack (sonnet and opus at medium, prompt and pack only) both named Severn Vale (GBP +1.2 and +1.9 million on the probe pack's quotations); both built occurrences with a window dynamic programme and on-levelled every claim by district policies and the index, neither read claim cost against event size.",
-  "registered": "2026-10-26T07:29:15Z"
+  "notes": "Architecture 2. Forcing event: the brokers' quotations are firm until 15 December 2026 and the order must be signed with the lead reinsurer before then for cover from 1 January 2027 (purchase_order_or_contract); the board paper leads with it. Context artifact: the 2027 business plan workbook, the planning model the head of reinsurance works from (each region's 2027 policies and the plan's 2027 rebuild cost index), carrying its version, approval date and preparer; the valuation policy RC-07 and the event definitions are the governing documents. Both axes redrawn at stage 3 on 2026-10-26 against task269 (heart BLOCK on ban.artifact filed_standard and ban.forcing_event budget_or_appropriation): the paper's budget sentence is gone and the plan carries its filed-model cover, so neither key is a relabel of the pack it describes. Call-only probes on the probe pack (sonnet and opus at medium, prompt and pack only) both named Severn Vale (GBP +1.2 and +1.9 million on the probe pack's quotations); both built occurrences with a window dynamic programme and on-levelled every claim by district policies and the index, neither read claim cost against event size. Stage 2 probes, isolated, prompt and pack only: C (sonnet) and D (opus) on the first ask layer named Severn Vale and kept 4 and 16 of 16 ask cells; after the asks were re-sited, E (sonnet) and F (opus) named Severn Vale and kept 0 of 16. | Stage 4 round 1 (2026-10-26, pack 22b02f2f): both isolated scored readers (sonnet, opus) filed Severn Vale; reader I kept 0 of 16 ask cells, reader J 5 of 16 (ask B whole, by reading a cancellation followed by later In force rows as a reinstatement); the judge returned DETERMINISTIC with a FIX_NOW on ask A's denominator (now 'at mid-year' in the prompt) and a step 6 wording. Repairs in one pass: ask B re-sited (notice given ahead of the day cover ends, listings for the month a cancellation takes effect), the event-code route at the index alone kept off Pennine (freeze claims notified late more often), and the readers' realism tells fixed (everyday claim rates by region and year, claim numbers in notification order, settlement times per claim, event day shapes, policy counts off round thousands, the S&P escape, table headers). | Stage 4 round 2 (1e97a7a4): both readers off the decisive step; reader K reached Pennine at the default's -0.4 through the coded storms (four late-declared catastrophes now coded on their own stream). Pass 3: SEND_BACK on ask B's population and a Fenland panel fork, both repaired (SF20, SF21). Round 3 (8851863d): both readers on Severn Vale, 3 of 20 each (the default's shared values). Pass 4: SEND_BACK on the main-call estimand, the index-only reading of RC-07's 'what repairing them would cost in the cover year'; answered by filing in s.3 what the index covers (a standard rebuild in ordinary times, not what else made a catastrophe's repairs cost what they did), the method left open; Severn Vale's quote re-priced (GBP 4.42 to 4.34 million) so every surge read on a catastrophe's size files Severn Vale (SF22); realism from round 3 (repair lags by peril, one claim a policy for a peril on a day, each catastrophe's own span). | Architecture 2 spent 2026-10-26 at stage 4 round 4 (eb9d2db9): reader O (sonnet) landed the call, reading RC-07 s.3's index sentence as demand surge and fitting the cost of a claim on claims per panel contractor (Pennine at GBP 0.9 million); reader P (opus) filed Severn Vale at the index alone. Judge pass 5 DETERMINISTIC, FIX_NOW (the 2027 panel unfiled; ask B's term identity). Filing what the index leaves out (the pass-4 fork) hands a reader with the panel-firm column the step; re-root at stage 1.",
+  "registered": "2026-10-26T07:29:15Z",
+  "architecture_spent": true
 }

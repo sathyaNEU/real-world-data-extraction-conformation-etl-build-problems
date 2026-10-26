@@ -2,87 +2,87 @@
 import params as P
 
 F = P.FILES
-NETS = ["Central", "University", "Riverside", "Old Town", "Hillcrest"]
-MONTHS = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October",
-          "November", "December"]
+ORDER = ["Fenland", "Pennine", "Severn Vale", "Coastal North"]
 
 
-def c(x):
-    return "{:,}".format(int(x))
+def v1(x):
+    return "%.1f" % x
 
 
-def usd(x):
-    return "USD {:,}".format(int(x))
+def gbpm(x):
+    return "GBP %s million" % ("{:,.1f}".format(x))
 
 
 def write(path, fig):
-    best = fig["recommended_network"]
-    nr, ta, pl = fig["net_revenue"], fig["turned_away"], fig["pilot"]
-    rp = fig["recorded_route_pick"]
-    order = sorted(NETS, key=lambda n: -fig["net_revenue_exact"][n])
+    call = fig["call"]["region"]
+    val = fig["values"]
+    cc, st = fig["cc"], fig["steps"]
+    others = sorted([r for r in P.REGIONS if r != call], key=lambda r: -val[r])
+    # the rival clauses below hold only while the runner-up rounds to nil and the other two are below it
+    assert val[others[0]] == 0.0 and val[others[1]] < 0 and val[others[2]] < 0, val
     t = ["## Tags\n",
-         "**Domain:** Product analytics (churn propensity and uplift modelling).",
+         "**Domain:** Actuarial science and insurance (catastrophe exposure and accumulation).",
          "**Analytical objective:** Opportunity sizing and decision support.\n",
          "## 1. Final Recommendation\n",
-         "**Put the %d e-bikes on the %s network: at 2025 demand they add %s a year in net fare revenue there.**"
-         % (fig["constants"]["ebikes"], best, usd(nr[best])),
-         "A ride exists only when a rider finds a bike, and %s's residence-hall hubs run empty at the class changes: its "
-         "stations turned away about %s requests in 2025, %.1f per cent of its demand, and with e-bikes at every station "
-         "those riders ride and pay a full fare. %s, which leads on the rides its stations served (%s on that view), "
-         "adds %s, because most of its e-bike rides would only replace a classic ride.\n"
-         % (best, c(ta[best]), fig["turned_away_share"][best], rp, usd(fig["recorded_route"][rp]), usd(nr[rp])),
+         "**%s should take the 2027 catastrophe layer: it is worth %s a year there, %s more than on any other book.** "
+         "Not %s (%s), which leads when recorded repair costs are carried forward by the index alone and where what "
+         "the layer would recover about pays for its premium and expected reinstatement premium; nor %s (%s) or %s "
+         "(%s), where the premium and the expected reinstatement premium exceed what the layer would recover.\n"
+         % (call, gbpm(val[call]), gbpm(fig["call"]["margin"]), others[0], gbpm(val[others[0]]), others[1],
+            gbpm(val[others[1]]), others[2], gbpm(val[others[2]])),
          "## 2. Critical Components\n",
-         "1. Rebuilt from the 03:00 audit, every undock and dock and every van move, %s's stations stood empty while "
-         "riders came for bikes: about **%s** requests turned away in 2025 (**%.1f** per cent of its demand of about "
-         "**%s**), against about **%s** (**%.1f** per cent) on %s."
-         % (best, c(ta[best]), fig["turned_away_share"][best], c(fig["requests"][best]), c(ta[rp]),
-            fig["turned_away_share"][rp], rp),
-         "2. The Harbour pilot measures what e-bikes do where every request finds a bike: **%.1f** per cent of rides at "
-         "pilot stations went on an e-bike, pilot stations drew **%.1f** per cent more rides than comparison stations, "
-         "and an e-bike ride paid **USD %.2f** more than a classic ride." % (pl["ebike_share"], pl["uplift"], pl["premium"]),
-         "3. Net fare revenue a year at 2025 demand: %s. On the rides the stations served alone, %s would lead at **%s**."
-         % ("; ".join("%s **%s**" % (n, usd(nr[n])) for n in order), rp, usd(fig["recorded_route"][rp])),
-         "",
+         "1. Pennine's four pre-2021 freezes (December 2010, January 2013, December 2017 and February 2018) each "
+         "exhaust the layer at the 2027 scale: **%d** full recoveries of GBP %d million." % (cc["pennine_exhausting"],
+                                                                                            int(cc["layer_limit"])),
+         "2. Pennine's expected recoveries are **GBP %.2f million** a year." % cc["pennine_recoveries"],
+         "3. Pennine's expected reinstatement premium is **GBP %.2f million** a year, against a quoted premium of "
+         "**GBP %.2f million**.\n" % (cc["pennine_reinstatement"], cc["pennine_premium"]),
          "## 3. Step-by-Step Solution\n",
-         "1. Put the four trip exports on one footing: %s and %s (old trip system: station names, bike_no, account_no, "
-         "fares in USD) and %s and %s (new platform: station codes, vehicle_id, account_id, fares in cents), every time "
-         "as Central Time, stations through %s and %s; an undock of under %d seconds that ends where it started is a false "
-         "start, kept as an undock and a dock but not counted as a ride or a request."
-         % (F["q1"], F["q2"], F["q3"], F["q4"], F["stations"], F["regions"], fig["constants"]["false_start_seconds"]),
-         "2. Rebuilt each station's classic bikes second by second: the count in %s at 03:00 each day, less each classic "
-         "undock, plus each classic dock, plus and minus the classic moves in %s (UTC), an undock taken before a dock in "
-         "the same second." % (F["audit"], F["moves"]),
-         "3. For each station, month, weekday or weekend and local hour: requests per stocked second (undocks over the "
-         "seconds it held a bike), times the seconds it stood empty, is the requests it turned away; summed by network.",
-         "4. The pilot, from %s's station table: the e-bike share of the rides from pilot stations, the rides a pilot "
-         "station drew over the rides a comparison station drew, less 1, and the mean e-bike fare less the mean classic "
-         "fare at pilot stations." % F["pilot"],
-         "5. Each network's net fare revenue: the requests turned away plus the uplift on demand, at the network's mean "
-         "classic fare, plus the e-bike share of demand grown by the uplift, at the e-bike premium; demand is the classic "
-         "rides plus the requests turned away. That is what riders would pay with the e-bikes less what they paid in "
-         "2025, at 2025 demand (%s, section 2), rounded to the nearest %s." % (F["board"], usd(fig["constants"]["rounding_usd"])),
-         "6. People: the accounts in %s with a ride in 2025 (January to June through legacy_account_no), one person per "
-         "account except that accounts on one card_fingerprint are one person where the later account was opened after "
-         "the earlier account's last ride; counted by home_area with case and spaces set aside." % F["accounts"],
-         "7. Energy: the sessions in %s by the local month of plug_out_utc, each session once: a session whose station, "
-         "point and meter_start_wh and meter_stop_wh repeat a session received earlier is a controller re-send; "
-         "energy_kwh summed." % F["charging"],
-         "8. Workshop: the jobs in %s by the local quarter of opened_utc and asset class, leaving out a job opened on a "
-         "bike with no ride since its previous job closed (the repair's road test failing), over the rides of that class "
-         "in that quarter (false starts out), per %s rides." % (F["workshop"], c(fig["constants"]["per_rides"])),
-         "",
+         "1. Built each region's windstorm, flood and freeze loss occurrences in %s by date of loss under %s: one period "
+         "of %d hours (windstorm) or %d hours (flood, freeze) from each catastrophe's first loss, holding every claim of "
+         "the peril dated in it." % (F["claims"], F["events"], st["hours"][0], st["hours"][1]),
+         "2. Carried each claim to the 2027 book and 2027 costs under %s: its district's 2027 policies (the plan in %s, "
+         "spread by the mid-2025 mix in %s) over the year's, times %s over the index for its month of loss in %s."
+         % (F["basis"], F["plan"], F["exposure"], v1(st["index_2027"]), F["index"]),
+         "3. Counted each region's repair panel firms each year (the distinct repair_contractor on its claims) and each "
+         "occurrence's claims per firm, then and at the 2027 scale on the 2025 panel: Pennine's four pre-2021 freezes go "
+         "from %s to %s claims a firm to %s to %s." % (v1(st["pennine_freezes_then"][0]), v1(st["pennine_freezes_then"][1]),
+                                                       v1(st["pennine_freezes_2027"][0]), v1(st["pennine_freezes_2027"][1])),
+         "4. Fitted the log of each occurrence's index-adjusted cost per claim on its claims per firm across the %d "
+         "occurrences of %d claims or more, claim-weighted, with a level for each peril and a hinge at %s claims a firm "
+         "(%s per cent a claim a firm above it), and re-priced each occurrence by the fit at its 2027 claims per firm "
+         "over the fit at its own." % (st["fit_occurrences"], st["fit_min_claims"], v1(st["fit_threshold"]),
+                                      v1(st["fit_slope_pct"])),
+         "5. Applied the layer under %s to each occurrence, capped each year at GBP %d million, averaged 2010 to 2025 and "
+         "took off the quoted premium and the expected reinstatement premium: %s." %
+         (F["quotes"], int(st["annual_cap"]), "; ".join("%s %s" % (r, gbpm(val[r])) for r in
+                                                        sorted(P.REGIONS, key=lambda q: -val[q]))),
+         "6. Ask A: the five perils' claims in %s; each claim the Major Loss Unit holds in %s (its cases grouped by "
+         "policy, peril and the date of loss on their latest rows, and joined to the platform claim with that policy and "
+         "peril dated on any date of loss the cases have carried) at the sum of its cases' latest incurred, in the year "
+         "of that latest date of loss, unless one of its cases dropped out of the reports before October 2026 without a "
+         "Closed row, when the platform's claim stands as it is; the unit's claims with no platform claim added in the "
+         "year of their latest date of loss unless one of their cases dropped out the same way; over the mid-year "
+         "policies in force in %s: the twelve figures in block 4."
+         % (F["claims"], F["mlu"], F["exposure"]),
+         "7. Ask B: %s plus every Lowther and Pike term in %s whose dates cover 31 December 2025, less each term with "
+         "a cancellation effective by that day unless the term is listed for a later month that began after the "
+         "cancellation took effect (a reinstatement; a rewrite ends one term and starts another under the same policy "
+         "number), each at its first listed sum insured moved by endorsements effective by that day: the four figures "
+         "in block 4." % (F["direct"], F["bdx"]),
+         "8. Recommended %s, where the layer is worth most.\n" % call,
          "## 4. Deliverable Answers\n",
-         "### ebike_deployment_2027.docx\n",
-         "1. The network for the e-bikes: %s." % best,
-         "2. The net fare revenue they add there a year: %s." % usd(nr[best]),
-         "3. Every network's net fare revenue a year, to the nearest %s:" % usd(fig["constants"]["rounding_usd"])]
-    t += ["   - %s: %s" % (n, usd(nr[n])) for n in NETS]
-    t += ["", "### ebike_deployment_2027.xlsx\n", "4. People who rode with us in 2025, by the network they live in:"]
-    t += ["   - %s: %s" % (n, c(fig["people"][n])) for n in NETS]
-    t += ["5. Energy the Harbour pilot's charging points delivered in 2025, kWh:"]
-    t += ["   - %s: %s" % (m, c(fig["energy_kwh"][m])) for m in MONTHS]
-    t += ["6. Workshop jobs per %s rides in 2025:" % c(fig["constants"]["per_rides"])]
-    t += ["   - E-bikes, Q%d: %.1f" % (q, fig["workshop_per_10000"]["E-bike Q%d" % q]) for q in range(1, 5)]
-    t += ["   - Classic bikes, Q%d: %.1f" % (q, fig["workshop_per_10000"]["Classic Q%d" % q]) for q in range(1, 5)]
-    with open(path, "w", encoding="utf-8") as fh:
+         "### cat_layer_placement_2027.pdf\n",
+         "1. Region to take the layer: %s." % call,
+         "2. The layer's value on %s: %s." % (call, gbpm(val[call])),
+         "3. The layer's value on each of the other three: %s.\n" % "; ".join("%s %s" % (r, gbpm(val[r])) for r in others),
+         "### cat_layer_workbook_2027.xlsx\n",
+         "1. Incurred at 31 October 2026 per policy in force, escape of water, accidental damage, theft, fire and "
+         "subsidence claims taken together:"]
+    for y in ("2023", "2024", "2025"):
+        t.append("   - %s: %s" % (y, "; ".join("%s GBP %.2f" % (r, fig["askA"][r][y]) for r in ORDER)))
+    t.append("2. Buildings sums insured on 31 December 2025:")
+    for r in ORDER:
+        t.append("   - %s: %s" % (r, gbpm(fig["askB"][r])))
+    with open(path, "w") as fh:
         fh.write("\n".join(t) + "\n")

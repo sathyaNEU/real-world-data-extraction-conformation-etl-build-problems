@@ -1,34 +1,34 @@
 {
  "task": "task308",
  "owner": "perssathya",
- "status": "DESIGN",
+ "status": "PAUSED",
  "domain": "actuarial-science-insurance",
  "objective": "opportunity-sizing-decision",
- "stage": 2,
- "stage_name": "design",
+ "stage": 1,
+ "stage_name": "draw",
  "updated": "2026-10-26",
- "stump": "A competent analyst brings every claim to 2027 by its district's policies and the rebuild cost index, applies the layer to the occurrences the hours clause allows and names Severn Vale at about GBP -0.4 million, because the record prices each claim at its own event's claims per repair panel firm: Pennine's book doubled with the 2021 transfer while its panel stayed at about 34 firms, so each pre-2021 freeze and storm would put about twice as many claims on each firm in 2027, and the cost of a claim read against claims per firm across every event re-prices those events into the layer and puts Pennine first at about GBP +0.2 million.",
+ "stump": "A competent analyst brings every claim to 2027 by its district's policies and the rebuild cost index, adds at most the surge the field reads on a catastrophe's size, applies the layer to the occurrences the hours clause allows and names Severn Vale (GBP 0.0 million at the index alone), because the record prices each claim at its own event's claims per repair panel firm: Pennine's book doubled with the 2021 transfer while its panel stayed at 30 to 34 firms, so its four pre-2021 freezes, struck at 22.6 to 25.1 claims a firm, would put 44 to 50 claims on each firm in 2027, and the cost of a claim read against claims per firm across every region's events (about 2.8 per cent more for each claim a firm past about 16) carries each of those freezes past the top of the layer and puts Pennine first at GBP 0.1 million.",
  "architecture": 2,
  "loops": 0,
  "precut": {
-  "exit": null,
-  "date": ""
+  "exit": 0,
+  "date": "2026-10-26"
  },
  "leak": {
-  "leak_py": "",
-  "reader": ""
+  "leak_py": "REVIEW 2026-10-26 on eb9d2db9 (coincidental penny matches; the documents' vocabulary; each answered in the design note)",
+  "reader": "round 1 (22b02f2f): both missed the call; reader J kept ask B (40 per cent), re-sited. Round 2 (1e97a7a4): both missed the call on the decisive step (K reached Pennine by the coded storms, closed in the data), 0 of 16 ask cells each. Round 3 (8851863d): M and N both on Severn Vale at the index alone, 3 of 20 each (PASS), both reading RC-07 s.2 literally as the index alone (the pass-4 fork). Round 4 (eb9d2db9): reader O (sonnet) landed the call (Pennine, claims per panel contractor after RC-07 s.3), reader P (opus) missed (Severn Vale); the call is spent"
  },
  "duplicate_check": {
-  "heart": "",
-  "nearest": "task120 v1 0.10 (driver, guard check PASS)"
+  "heart": "PASS 2026-10-26 after the furniture redraw (forcing event and context artifact, against task269)",
+  "nearest": "task120 v1 0.10 (driver)"
  },
  "judge": {
-  "verdict": "",
-  "disposition": "",
-  "report": ""
+  "verdict": "DETERMINISTIC (pass 5)",
+  "disposition": "FIX_NOW (the 2027 panel unfiled; ask B's term identity), moot: architecture 2 spent at stage 4 round 4",
+  "report": "determinism_check_report_pass5.md"
  },
  "returned": [],
- "resume": "Architecture 2 drawn (catastrophe layer, post-event demand surge at the 2027 scale). Stage 2: retune the scratch world (s308) so Pennine's pre-2021 freezes exhaust the layer under every standing surge form and its value sits in one bin of the printed unit, with the default path on Severn Vale; then the fork table, closure, asks and devices, prompt and precut; port to task308/generator at stage 3 (the architecture 1 generator, prompt, metadata and submission are replaced there).",
+ "resume": "Architecture 2 spent at stage 4 round 4 (a reader landed the call through RC-07 s.3 and claims per panel contractor). Re-root at stage 1 as architecture 3, the last before retirement (which needs the author): a new draw whose decisive step stays silent once its estimand is filed; read DESIGN_NOTE.md Tried and rejected first.",
  "approved": null,
  "delivered": null,
  "portal": null,

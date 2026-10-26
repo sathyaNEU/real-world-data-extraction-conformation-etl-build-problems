@@ -1,8 +1,8 @@
 """Build the pack, compute every owed figure from it, write the goldens, figures.json, submission.md and metadata.json,
-run the checks, rebuild into a scratch folder and require byte-identical output, cut target.zip and run the independent
-verifier on it.
+run the checks and the independent verifier, rebuild into a scratch folder and require byte-identical output, and cut
+target.zip.
 
-    python3 task308/generator/make.py            (full: two builds, the zip, the verifier)
+    python3 task308/generator/make.py            (full: two builds, the zip)
     python3 task308/generator/make.py --once     (one build, no zip)
 """
 import datetime as dt
@@ -20,12 +20,26 @@ import build as B
 import figs as FG
 import golden as GD
 import params as P
+import solve as S
 import writeup as WU
 
 TASK = os.path.dirname(HERE)
 TARGET = os.path.join(TASK, "target")
 GOLDEN = os.path.join(TASK, "golden")
-STAMP = (2026, 11, 6, 15, 20, 0)        # the afternoon the board paper's working folder was put together
+STAMP = (2026, 11, 24, 9, 40, 0)        # the morning the placement paper's working folder was put together
+
+
+def rows_of(p):
+    if p.endswith(".csv"):
+        return sum(1 for _ in open(p, encoding="utf-8")) - 1
+    if p.endswith(".parquet"):
+        import pyarrow.parquet as pq
+        return pq.ParquetFile(p).metadata.num_rows
+    if p.endswith(".xlsx"):
+        from openpyxl import load_workbook
+        wb = load_workbook(p, read_only=True)
+        return sum(max(ws.max_row - 1, 0) for ws in wb.worksheets)
+    return None
 
 
 def metadata(target):
@@ -33,46 +47,42 @@ def metadata(target):
     for k in B.PACK:
         f = P.FILES[k]
         p = os.path.join(target, f)
-        rows = (sum(1 for _ in open(p, encoding="utf-8")) - 1) if f.endswith(".csv") else None
-        if f.endswith(".xlsx") and k == "audit":
-            from openpyxl import load_workbook
-            rows = sum(1 for _ in load_workbook(p, read_only=True)["audit"].iter_rows()) - 1
-        files.append({"path": f, "format": f.rsplit(".", 1)[1], "bytes": os.path.getsize(p), "rows": rows,
-                      "source": "Constructed (seeded generator)", "date": "2026-11-06",
+        files.append({"path": f, "format": f.rsplit(".", 1)[1], "bytes": os.path.getsize(p), "rows": rows_of(p),
+                      "source": "Constructed (seeded generator)", "date": "2026-11-24",
                       "license": "CC0-1.0 (original work)"})
     big = max((x for x in files if x["rows"]), key=lambda x: x["rows"])
     meta = {
         "task": "task308",
-        "title": "Which of a bike-share operator's five classic networks gets its 300 e-bikes for the 2027 season, and "
-                 "the net fare revenue a year they add there at 2025 demand, with the riders by home area, the pilot's "
-                 "charging energy by month and the workshop jobs per 10,000 rides",
-        "domain": "Product Analytics",
-        "subdomain": "churn-propensity-uplift-modeling (a launch's incremental revenue against the existing product: "
-                     "the riders the e-bikes add, against the rides they only convert, sized on demand rather than on "
-                     "the rides the stations served)",
+        "title": "Which of a mutual home insurer's four regional books takes its 2027 catastrophe excess of loss layer, "
+                 "and the layer's value on each book under the board's valuation basis, with each book's recent "
+                 "incurred per policy and its buildings sums insured at the year end for the reinsurers' submission",
+        "domain": "Actuarial Science & Insurance",
+        "subdomain": "catastrophe-exposure-accumulation (a catastrophe layer's burning cost at the cover year's book and "
+                     "repair costs, when the cost of a claim rises with the claims each repair panel firm takes on)",
         "objective": "Opportunity Sizing & Decision Support",
-        "prompt_shape": "other: one network picked from five, each network's net fare revenue, and three supporting "
-                        "tables from the operator's other systems",
-        "as_of": "2026-11-06",
-        "deliverables": [GD.DOCX, GD.XLSX],
+        "prompt_shape": "pick one of four books for one layer, the layer's value on each, and two supporting tables "
+                        "from the claims and policy systems",
+        "as_of": "2026-11-24",
+        "deliverables": [GD.PDF, GD.XLSX],
         "distractor_files": [P.FILES[k] for k in B.DISTRACTORS],
         "context_artifacts": [P.FILES[k] for k in B.CONTEXT],
-        "stated_inputs": ["the measure: the fares riders would pay in a year with the e-bikes less the fares they paid "
-                          "in 2025, at 2025 demand (board paper, section 2)",
-                          "the deployment: e-bikes at every station of the chosen network through the day (section 3)",
-                          "fares (fare schedule 2025)"],
+        "stated_inputs": ["the layer: GBP 15 million excess of GBP 10 million each loss occurrence with one "
+                          "reinstatement (the prompt and the quotations)",
+                          "the valuation basis, policy RC-07 (catastrophe_layer_valuation_basis.pdf)",
+                          "the quoted premiums (cat_xl_quotations_2027.pdf)"],
         "field_terms": [],
         "input_gates": {"files": len(files), "formats": sorted({x["format"] for x in files}),
                         "largest_file": big["path"], "largest_file_rows": big["rows"]},
         "sources": [{"files": "all files under target/",
-                     "origin": "generated by task308/generator/make.py (seeded, deterministic) around a fictional "
-                               "bike-share operator in a fictional city: six station networks simulated second by second "
-                               "through 2025 (requests, rides, van runs, the 03:00 audit, a Harbour e-bike pilot with "
-                               "charging points, rider accounts and the workshop); every organisation, place and person "
-                               "is invented, the station feeds follow the public GBFS 2.3 layout, and no real dataset is "
-                               "reproduced.",
-                     "date": "2026-11-06", "license": "CC0-1.0 (original work)"}],
-        "created": "2026-10-25",
+                     "origin": "generated by task308/generator/make.py (seeded, deterministic) around a fictional UK "
+                               "mutual home insurer with four regional books: every home claim from 2010 to 2025 with "
+                               "its repair panel firm, the policies in force by postcode district, a rebuild cost index, "
+                               "the 2027 plan and quotations, the Major Loss Unit's monthly reports and a building "
+                               "society scheme's risk bordereaux; postcode districts are real UK district codes used as "
+                               "labels only, every organisation, event outcome and person is invented, and no real "
+                               "dataset is reproduced.",
+                     "date": "2026-11-24", "license": "CC0-1.0 (original work)"}],
+        "created": "2026-10-26",
         "generator": "task308/generator/make.py",
         "files": files,
     }
@@ -109,41 +119,54 @@ def fresh(folder):
     os.makedirs(folder, exist_ok=True)
 
 
-def goldens(folder, fig):
-    GD.workbook(os.path.join(folder, GD.XLSX), fig)
-    GD.paper(os.path.join(folder, GD.DOCX), fig)
+def figures(target):
+    mc = S.main_call(target)
+    A = {"golden": S.ask_a(target)}
+    Bq = {"golden": S.ask_b(target)}
+    I27 = S.load(target)[3]
+    fig, raw = FG.build(mc, A, Bq, I27)
+    return mc, fig
+
+
+def goldens(folder, target, mc, fig):
+    f = GD.facts(target, mc, fig)
+    GD.paper(os.path.join(folder, GD.PDF), target, mc, fig, f)
+    GD.workbook(os.path.join(folder, GD.XLSX), target, mc, fig, f)
 
 
 def main(second=True, checks=True):
     fresh(TARGET)
-    built = B.build(TARGET)
+    B.build(TARGET)
     stamp(TARGET)
+    mc, fig = figures(TARGET)
+    FG.write(fig)
     fresh(GOLDEN)
-    fig, G = FG.compute(TARGET)
-    FG.write(fig, os.path.join(HERE, "figures.json"))
-    goldens(GOLDEN, fig)
+    goldens(GOLDEN, TARGET, mc, fig)
     stamp(GOLDEN)
     WU.write(os.path.join(TASK, "submission.md"), fig)
     metadata(TARGET)
     if checks:
         import checks as C
-        assert not C.main(TARGET, built, fig, G)
+        assert C.main(TARGET) == 0, "checks failed"
+    import verify as V
+    assert V.main(TARGET) == 0, "verify failed"
     if second:
-        tmp = tempfile.mkdtemp(dir=os.path.join(TASK, ".."))
+        tmp = tempfile.mkdtemp(prefix="task308_rebuild_")
         t2, g2 = os.path.join(tmp, "target"), os.path.join(tmp, "golden")
         B.build(t2)
         stamp(t2)
         os.makedirs(g2, exist_ok=True)
-        goldens(g2, FG.compute(t2)[0])
+        mc2, fig2 = figures(t2)
+        goldens(g2, t2, mc2, fig2)
         stamp(g2)
         d1, d2 = digest(TARGET), digest(t2)
         assert d1 == d2, [f for f in d1 if d1[f] != d2.get(f)]
-        assert digest(GOLDEN) == digest(g2), [f for f in digest(GOLDEN) if digest(GOLDEN)[f] != digest(g2).get(f)]
+        e1, e2 = digest(GOLDEN), digest(g2)
+        assert e1 == e2, [f for f in e1 if e1[f] != e2.get(f)]
+        assert fig == fig2
         shutil.rmtree(tmp)
         zp = cut_zip()
         print("byte-identical; target.zip sha256", hashlib.sha256(open(zp, "rb").read()).hexdigest())
-        import verify as V
-        assert not V.main(zp)
     return fig
 
 

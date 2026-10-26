@@ -1,273 +1,621 @@
-"""The operator's records, cut from the world: the station register, the trip exports (the old trip system to 30 June,
-the new platform from 1 July), riders and their accounts, the dispatch log, the 03:00 audit, the charging points'
-sessions and the workshop's jobs. Each function returns rows and, where a figure is owed, its truth."""
+"""Ardenmoor Mutual's records: every home claim with a date of loss from 2010 to 2025 as the claims platform held it on
+31 October 2026, the policies in force by postcode district and year, the rebuild cost index, the Major Loss Unit's
+monthly reports, the Lowther and Pike scheme's risk bordereaux and the direct book on 31 December 2025.
+
+Each catastrophe, each region-year of everyday claims, the Major Loss Unit and the scheme draw from their own random
+streams, so the records of one never move another's."""
 import datetime as dt
-import heapq
-import itertools
+import math
 
 import numpy as np
+import pandas as pd
 
 import params as P
+import world as W
 
-MIGRATION = dt.datetime(P.YEAR, 7, 1, tzinfo=P.TZ)
-SIZES = [15, 19, 23, 27, 31, 35, 39, 43, 47, 55, 63, 71, 79]
-
-
-def loc(t):
-    return dt.datetime.fromtimestamp(int(t), P.TZ)
-
-
-def utc(t):
-    return dt.datetime.fromtimestamp(int(t), dt.timezone.utc)
-
-
-# ---------------------------------------------------------------------------------------------------- stations
-STREETS = {
-    "CEN": ["Main St", "Court St", "Wabash Ave", "2nd St", "3rd St", "4th St", "5th St", "State St", "Mercer Ave",
-            "Bridge St", "Canal St", "Fulton Ave", "Grand Ave", "Monroe St", "Union Sq"],
-    "RIV": ["River Rd", "Willow Ln", "Mill Race Trl", "Oxbow Dr", "Ferry Rd", "Elm Bend", "Boathouse Rd",
-            "Sycamore Ave", "Levee St", "Heron Way", "Fisher Park", "Locust St", "Weir St"],
-    "OLD": ["Market Sq", "Chapel St", "Tanner St", "Cobble Ln", "Founders Pl", "Ash St", "Brewery Ln", "Gable St",
-            "Linden Ave", "Pump House Sq"],
-    "HIL": ["Summit Ave", "Crest Rd", "Ridge Dr", "Vista Ln", "Overlook Pl", "Hollow Rd", "Quarry St", "Terrace Ave",
-            "Bluff Rd", "Lookout Ct"],
-    "HBR": ["Quay St", "Pier 1", "Pier 2", "Pier 3", "Ferry Terminal", "Marina Dr", "Wharf Rd", "Lighthouse Ln",
-            "Anchor St", "Dock St", "Harbor Walk", "Customs House", "Tug Basin", "Net Loft Ln", "Breakwater Rd"]}
-UNI_NAMES = {"dorm": ["Lakeside Residence Halls", "North Residence Halls"],
-             "class": ["Science Quad", "Library Mall", "Student Union Plaza"]}
-CENTRE = {"CEN": (43.052, -88.911), "UNI": (43.071, -88.935), "RIV": (43.038, -88.884), "OLD": (43.061, -88.893),
-          "HIL": (43.024, -88.928), "HBR": (43.047, -88.866)}
+ASAT = P.AS_AT
+REDATE = 45
+NOTICE = 23         # the stream for notice given ahead of the day cover ends
+W0 = dt.date(2025, 10, 1)   # the first bordereau month
+ADVANCE = 0.075     # the share of scheme terms with a further advance for home improvements
+# an everyday claim: (peril, claims a year per policy, mean cost at 2015 prices, spread)
+PERIL_ATTR = [("escape of water", 0.0118, 3900.0, 1.08), ("accidental damage", 0.0062, 1150.0, 0.8),
+              ("theft", 0.0029, 2300.0, 0.9), ("fire", 0.0011, 14500.0, 1.4), ("subsidence", 0.0007, 9200.0, 1.05),
+              ("windstorm", 0.0021, 1300.0, 0.7), ("flood", 0.0003, 9000.0, 1.0), ("freeze", 0.0006, 4100.0, 0.8)]
+# everyday claims run at different rates by region (housing stock, ground, town and country) and move from year to
+# year: escape of water rising, theft falling and down in the 2020 and 2021 lockdowns, subsidence up in dry summers
+REGION_RATE = {"escape of water": {"Fenland": 0.90, "Pennine": 1.14, "Severn Vale": 0.97, "Coastal North": 1.06},
+               "accidental damage": {"Fenland": 0.94, "Pennine": 0.97, "Severn Vale": 1.08, "Coastal North": 1.01},
+               "theft": {"Fenland": 0.78, "Pennine": 1.09, "Severn Vale": 1.04, "Coastal North": 1.21},
+               "fire": {"Fenland": 1.06, "Pennine": 1.03, "Severn Vale": 0.93, "Coastal North": 0.99},
+               "subsidence": {"Fenland": 1.55, "Pennine": 0.62, "Severn Vale": 1.24, "Coastal North": 0.71}}
 
 
-def stations(W):
-    rs = np.random.default_rng([P.SEED_DOCS, 1])
+def year_rate(peril, y):
+    if peril == "escape of water":
+        return 1.0 + 0.018 * (y - 2017)
+    if peril == "accidental damage":
+        return 1.0 + 0.008 * (y - 2017) + (0.09 if y in (2020, 2021) else 0.0)
+    if peril == "theft":
+        return math.exp(-0.045 * (y - 2017)) * {2020: 0.72, 2021: 0.86}.get(y, 1.0)
+    if peril == "subsidence":
+        return {2018: 1.9, 2022: 2.1, 2025: 1.35}.get(y, 1.0)
+    return 1.0
+
+
+# catastrophes the claims team declared only after the first claims were in, with the code it then gave them
+LATE_DECLARED = {2: "FLD1204", 10: "WND1501", 17: "FLD1906", 18: "FLD1911"}
+# what rebuilding a home costs differs by region (house types, local wages), so sums insured do
+SI_REGION = {"Fenland": 0.87, "Pennine": 0.92, "Severn Vale": 1.11, "Coastal North": 0.95}
+# how many days a catastrophe's claims are dated over, and how likely each length is
+SPAN = {"windstorm": ([1, 2, 3], [0.2, 0.55, 0.25]), "flood": ([3, 4, 5, 6], [0.25, 0.35, 0.25, 0.15]),
+        "freeze": ([4, 5, 6], [0.3, 0.45, 0.25])}
+
+
+def _day_shares(seed, i, peril):
+    """share of a catastrophe's claims by day from its start: storms and floods front-loaded, freezes on the thaw;
+    each catastrophe's length and fall-off from its own stream, inside the hours clause's period"""
+    r = np.random.default_rng([seed, 10, i])
+    days, p = SPAN[peril]
+    n = int(r.choice(days, p=p))
+    k = np.arange(n)
+    if peril == "freeze":
+        w = np.exp(-0.5 * ((k - 0.45 * (n - 1)) / (0.33 * n)) ** 2)
+    else:
+        w = r.uniform(*((0.2, 0.45) if peril == "windstorm" else (0.3, 0.55))) ** k
+    return w / w.sum()
+
+
+# days to a signed-off repair by the work a peril brings (drying out, strip-out, monitoring), before the load and the draws
+REPAIR_DAYS = {"windstorm": 38, "flood": 64, "freeze": 61, "theft": 24, "accidental damage": 31,
+               "escape of water": 57, "fire": 79, "subsidence": 101}
+
+
+def _claims(seed):
     rows = []
-    ids = rs.permutation(np.arange(1001, 1001 + W.ND + 40))[: W.ND]
-    used = set()
-    seq = {a: itertools.count(1) for a in P.NETWORKS}
-    uni = {"dorm": iter(UNI_NAMES["dorm"]), "class": iter(UNI_NAMES["class"])}
-    for k in range(W.ND):
-        a, r = W.docks[k]
-        code = "%s-%02d" % (a, next(seq[a]))
-        if a == "UNI":
-            name = next(uni[r])
+    rota = {}
+    lj = np.random.default_rng([seed, 51])     # how soon a firm can start, apart from the claim's own draws
+
+    def add(region, d, peril, loss_date, amount, code, u, cash, r):
+        if cash:
+            con, sign = "", None
         else:
-            place = ("Sq", "Pl", "Terminal", "House", "Park", "Walk", "Basin", "Pier 1", "Pier 2", "Pier 3")
-            streets = [s for s in STREETS[a] if not s.endswith(place)]
-            while True:
-                s1 = str(rs.choice(STREETS[a]))
-                name = s1 if s1.endswith(place) else "%s & %s" % (s1, rs.choice([s for s in streets if s != s1]))
-                if name not in used:
-                    break
-        used.add(name)
-        lat0, lon0 = CENTRE[a]
-        peak = int(W.maxstock[k]) + 2
-        cap = next(s for s in SIZES if s >= peak)
-        pts = P.POINTS if W.pilot[k] else 0
-        rows.append({"k": k, "station_id": str(int(ids[k])), "code": code, "name": name, "network": a,
-                     "lat": round(lat0 + rs.normal(0, 0.006), 6), "lon": round(lon0 + rs.normal(0, 0.008), 6),
-                     "capacity": cap, "charging_points": pts,
-                     "programme": "e-bike pilot" if W.pilot[k] else ("pilot comparison" if W.matched[k] else "")})
-    return rows
+            ids = W.panel_in(region, loss_date.year)
+            k = int(r.integers(0, len(ids)))
+            if peril in P.CAT_PERILS:
+                # weather work goes round the whole panel before any firm takes a second weather job in the year
+                q = rota.setdefault((region, loss_date.year), list(np.random.default_rng(
+                    [seed, 49, loss_date.year, W.REGIONS.index(region)]).permutation(len(ids))))
+                if q:
+                    k = int(q.pop())
+            con = ids[k]
+            base = REPAIR_DAYS[peril]
+            extra = 0.0 if u is None else 2.6 * max(0.0, u - 20.0)
+            sign = loss_date + dt.timedelta(days=int(base + extra + r.gamma(2.0, 12.0)) - int(lj.integers(0, 16)))
+        rows.append((region, d, peril, loss_date, amount, code, u, cash, con, sign))
+
+    truth = []
+    for i, (d0, peril, code, rates) in enumerate(W.EVENTS):
+        rng = np.random.default_rng([seed, 7, i])
+        prof = np.random.default_rng([seed, 9, i]).dirichlet(40.0 * _day_shares(seed, i, peril))
+        start = dt.date.fromisoformat(d0)
+        y, m = start.year, start.month
+        for rg, rate in rates.items():
+            ds = W.DISTRICTS[rg]
+            w = W.weights(rg, "flood" if peril == "flood" else ("freeze" if peril == "freeze" else "wind"))
+            pol = np.array([W.policies(rg, d, y) for d in ds])
+            lam = pol * rate / 1000.0 * w * pol.sum() / (pol * w).sum()
+            n_d = rng.poisson(lam)
+            n = int(n_d.sum())
+            u = n / W.panel_path(rg, y)
+            mu = W.BASE_SEV[peril] * W.cost_index(y, m) / 100.0 * W.surge(u)
+            sig = {"windstorm": 0.75, "flood": 0.55, "freeze": 0.6}[peril]
+            first_row = len(rows)
+            for d, k in zip(ds, n_d):
+                for _ in range(int(k)):
+                    amt = mu * math.exp(rng.normal(0, sig) - sig * sig / 2)
+                    ld = start + dt.timedelta(days=int(rng.choice(len(prof), p=prof)))
+                    # storm claims are coded at first notice; frozen pipes surface over the following weeks, so
+                    # a freeze's claims more often come in late and without the code
+                    c = code if (code and rng.random() > (0.16 if peril == "freeze" else 0.03)) else None
+                    add(rg, d, peril, ld, amt, c, u, rng.random() < 0.12, rng)
+            if i in LATE_DECLARED:
+                # the code reaches the claims notified once the event is declared, on its own stream
+                rc = np.random.default_rng([seed, 8, i, list(W.REGIONS).index(rg)])
+                for j in range(first_row, len(rows)):
+                    if rc.random() > 0.03:
+                        rows[j] = rows[j][:5] + (LATE_DECLARED[i],) + rows[j][6:]
+            truth.append(dict(event=i, start=d0, peril=peril, code=code or LATE_DECLARED.get(i), region=rg, n=n, u=u,
+                              mu=mu))
+    for y in W.YEARS:
+        days = (dt.date(y, 12, 31) - dt.date(y, 1, 1)).days + 1
+        for ri, rg in enumerate(W.REGIONS):
+            rng = np.random.default_rng([seed, 11, y, ri])
+            rt = np.random.default_rng([seed, 12, y, ri])      # the region and year rates, apart from the base draws
+            ds = W.DISTRICTS[rg]
+            pol = np.array([W.policies(rg, d, y) for d in ds])
+            for peril, freq, sev, sig in PERIL_ATTR:
+                f = REGION_RATE[peril][rg] * year_rate(peril, y) if peril in P.NONCAT else 1.0
+                n = rng.poisson(pol.sum() * freq)
+                dd = rng.choice(len(ds), size=n, p=pol / pol.sum())
+                doy = rng.integers(0, days, size=n)
+                amt = sev * np.array([W.cost_index(y, (int(x) * 12) // days + 1) / 100.0 for x in doy]) * \
+                    np.exp(rng.normal(0, sig, n) - sig * sig / 2)
+                for k in range(n):
+                    add(rg, ds[dd[k]], peril, dt.date(y, 1, 1) + dt.timedelta(days=int(doy[k])), float(amt[k]), None,
+                        None, rng.random() < 0.3, rng)
+                    if f < 1.0 and rt.random() >= f:
+                        rows.pop()
+                if f > 1.0:
+                    m = int(rt.poisson(pol.sum() * freq * (f - 1.0)))
+                    dd2 = rt.choice(len(ds), size=m, p=pol / pol.sum())
+                    doy2 = rt.integers(0, days, size=m)
+                    amt2 = sev * np.array([W.cost_index(y, (int(x) * 12) // days + 1) / 100.0 for x in doy2]) * \
+                        np.exp(rt.normal(0, sig, m) - sig * sig / 2)
+                    for k in range(m):
+                        add(rg, ds[dd2[k]], peril, dt.date(y, 1, 1) + dt.timedelta(days=int(doy2[k])), float(amt2[k]),
+                            None, None, rt.random() < 0.3, rt)
+    df = pd.DataFrame(rows, columns=["region", "postcode_district", "peril", "date_of_loss", "incurred", "event_code",
+                                     "u", "cash", "repair_contractor", "repair_signed_off"])
+    df = df.sort_values(["date_of_loss", "region", "postcode_district"], kind="stable").reset_index(drop=True)
+    return df, truth
 
 
-# ---------------------------------------------------------------------------------------------------- riders
-HOME = {"CEN": {"CEN": .55, "OLD": .12, "RIV": .10, "HIL": .07, "UNI": .03, "HBR": .05, "OUT": .08},
-        "UNI": {"UNI": .80, "CEN": .07, "OLD": .03, "RIV": .02, "HIL": .01, "HBR": .01, "OUT": .06},
-        "RIV": {"RIV": .50, "CEN": .10, "OLD": .08, "HIL": .04, "UNI": .03, "HBR": .05, "OUT": .20},
-        "OLD": {"OLD": .62, "CEN": .10, "RIV": .06, "HIL": .04, "UNI": .02, "HBR": .04, "OUT": .12},
-        "HIL": {"HIL": .74, "CEN": .08, "OLD": .04, "RIV": .03, "UNI": .02, "HBR": .02, "OUT": .07},
-        "HBR": {"HBR": .50, "CEN": .14, "RIV": .06, "OLD": .05, "HIL": .03, "UNI": .02, "OUT": .20}}
-ANNUAL = {"CEN": .40, "UNI": .65, "RIV": .20, "OLD": .35, "HIL": .45, "HBR": .25}
+def _reserve(df, seed):
+    """paid and outstanding on 31 October 2026: a claim settles in its own time, longer for a larger claim and not
+    before its repair is signed off, so recent claims are still part-reserved"""
+    rng = np.random.default_rng([seed, 19])
+    age = np.array([(ASAT - d).days for d in df["date_of_loss"]])
+    amt = np.maximum(df["incurred"].values, 100.0)
+    settle = 50.0 * (amt / 3000.0) ** 0.35 * np.exp(rng.normal(0.0, 0.8, len(df)))
+    lag = np.array([(s - d).days if s is not None else 0 for s, d in zip(df["repair_signed_off"], df["date_of_loss"])])
+    settle = np.minimum(np.maximum(settle, lag + rng.integers(6, 40, len(df))), 700.0)
+    frac_os = np.clip(1.0 - age / settle, 0.0, 1.0) * 0.85
+    osr = np.round(df["incurred"].values * frac_os, 2)
+    df["paid"] = np.round(df["incurred"].values - osr, 2)
+    df["outstanding"] = osr
+    late = [s is not None and s > ASAT for s in df["repair_signed_off"]]
+    df.loc[late, "repair_signed_off"] = None
+    return df
 
 
-def people(W, rides):
-    """riders and the accounts they ride on: the realised rides of each network are dealt to the riders active that
-    day who are not already out on a bike. A few riders re-register mid-year (same card, a new account, the old one
-    left open); a few households pay for two riders' accounts with one card."""
-    rs = np.random.default_rng([P.SEED_PEOPLE, 1])
-    y0 = dt.date(P.YEAR, 1, 1)
-    persons = []
-    by_net = {}
-    for a in P.NETWORKS:
-        idx = [j for j, r in enumerate(rides) if W.area[r[2]] == a]
-        by_net[a] = idx
-        n_r = len(idx)
-        mean = ANNUAL[a] * 55 + (1 - ANNUAL[a]) * 4.0
-        N = int(n_r / mean * 1.05)
-        for _ in range(N):
-            ann = rs.random() < ANNUAL[a]
-            if ann:
-                rate = rs.lognormal(np.log(50), 0.7) / 365.0
-                if rs.random() < 0.7:
-                    s, e = 0, 364
-                else:
-                    s = int(rs.integers(0, 300)); e = int(min(364, s + rs.integers(60, 365)))
-                    if rs.random() < 0.5:
-                        s, e = 0, int(rs.integers(60, 364))
-            else:
-                rate = rs.lognormal(np.log(4), 0.8) / 30.0
-                L = int(rs.integers(1, 90)); s = int(rs.integers(0, 365 - min(L, 364))); e = min(364, s + L)
-            home = rs.choice(list(HOME[a]), p=np.array(list(HOME[a].values())) / sum(HOME[a].values()))
-            persons.append({"net": a, "annual": bool(ann), "rate": rate, "s": s, "e": e, "home": str(home), "rides": []})
-    # deal the rides
-    for a in P.NETWORKS:
-        pids = [i for i, p in enumerate(persons) if p["net"] == a]
-        busy = {i: -1 for i in pids}
-        idx = sorted(by_net[a], key=lambda j: rides[j][0])
-        days = {}
-        for j in idx:
-            days.setdefault((loc(rides[j][0]).date() - y0).days, []).append(j)
-        for d, js in sorted(days.items()):
-            act = [i for i in pids if persons[i]["s"] <= d <= persons[i]["e"]]
-            w = np.array([persons[i]["rate"] for i in act])
-            draw = list(rs.choice(len(act), size=len(js) * 4 + 20, p=w / w.sum()))
-            for j in js:
-                t0, t1 = rides[j][0], rides[j][1]
-                while True:
-                    if not draw:
-                        draw = list(rs.choice(len(act), size=50, p=w / w.sum()))
-                    i = act[draw.pop()]
-                    if busy[i] < t0:
-                        break
-                busy[i] = t1 + 60
-                persons[i]["rides"].append(j)
-    persons = [p for p in persons if p["rides"]]
-    # accounts: one per rider, created before the first ride; re-registrations and shared cards on top
-    accounts = []
-    cards = itertools.count(1)
-    for pi, p in enumerate(persons):
-        first = min(rides[j][0] for j in p["rides"])
-        if p["s"] == 0 and p["annual"]:
-            created = dt.datetime(int(rs.integers(2019, 2025)), int(rs.integers(1, 13)), int(rs.integers(1, 28)),
-                                  int(rs.integers(7, 23)), int(rs.integers(0, 60)), tzinfo=P.TZ)
-        elif rs.random() < 0.35:
-            created = dt.datetime(int(rs.integers(2021, 2025)), int(rs.integers(1, 13)), int(rs.integers(1, 28)),
-                                  int(rs.integers(7, 23)), int(rs.integers(0, 60)), tzinfo=P.TZ)
-        else:
-            created = loc(first - int(rs.integers(120, 86400 * int(rs.integers(1, 20)))))
-        p["card"] = "fp_%012x" % int(rs.integers(16 ** 11, 16 ** 12))
-        accounts.append({"pid": pi, "created": created, "rides": sorted(p["rides"], key=lambda j: rides[j][0]),
-                         "plan": "annual" if p["annual"] else "payg", "home": p["home"], "card": p["card"]})
-    # re-registrations: a rider with at least eight rides starts a new account in a gap of two days or more
-    rereg = []
-    for acc in list(accounts):
-        p = persons[acc["pid"]]
-        if len(acc["rides"]) < 8 or rs.random() > 0.06:
-            continue
-        ts = [rides[j][0] for j in acc["rides"]]
-        gaps = [g for g in range(2, len(ts) - 2) if ts[g] - rides[acc["rides"][g - 1]][1] > 2 * 86400]
-        if not gaps:
-            continue
-        g = int(rs.choice(gaps))
-        last_old = rides[acc["rides"][g - 1]][1]
-        new_created = loc(int(last_old + rs.uniform(0.3, 0.9) * (ts[g] - last_old)))
-        new = {"pid": acc["pid"], "created": new_created, "rides": acc["rides"][g:], "plan": acc["plan"],
-               "home": acc["home"], "card": acc["card"]}
-        acc["rides"] = acc["rides"][:g]
-        accounts.append(new); rereg.append((acc, new))
-    # households: two year-round annual riders of one network and one home area pay with one card
-    pool = {}
-    for acc in accounts:
-        p = persons[acc["pid"]]
-        if p["annual"] and p["s"] == 0 and p["e"] == 364 and acc["created"].year < P.YEAR and len(acc["rides"]) >= 12 \
-                and acc not in [x for pr in rereg for x in pr]:
-            pool.setdefault((p["net"], acc["home"]), []).append(acc)
-    house = []
-    for key in sorted(pool):
-        lst = pool[key]
-        rs.shuffle(lst)
-        for q in range(0, len(lst) - 1, 2):
-            if rs.random() < 0.07:
-                lst[q + 1]["card"] = lst[q]["card"]; house.append((lst[q], lst[q + 1]))
-    # dormant accounts nobody rode in 2025
-    for _ in range(int(len(accounts) * 0.3)):
-        home = str(rs.choice(list(P.AREA_NAME), p=[.24, .12, .18, .1, .08, .1, .18]))
-        accounts.append({"pid": None, "created": dt.datetime(int(rs.integers(2019, 2025)), int(rs.integers(1, 13)),
-                                                              int(rs.integers(1, 28)), int(rs.integers(7, 23)),
-                                                              int(rs.integers(0, 60)), tzinfo=P.TZ),
-                         "rides": [], "plan": str(rs.choice(["annual", "payg"], p=[.2, .8])),
-                         "home": home, "card": "fp_%012x" % int(rs.integers(16 ** 11, 16 ** 12))})
-    # ids: legacy numbers for accounts that existed before the platform switch, new ids for every account
-    accounts.sort(key=lambda x: (x["created"], x["card"]))
-    legacy = int(rs.integers(310000, 330000))
+def _refs(df, seed):
+    """claim numbers in order of loss; policy numbers drawn from each district's own run of numbers, so a policy
+    can claim more than once; notification dates, late notifications usually entered without the event code"""
+    rng = np.random.default_rng([seed, 13])
+    n = len(df)
+    base = {d: 100000000 + 1100000 * k for k, d in enumerate(sorted({d for ds in W.DISTRICTS.values() for d in ds}))}
+    span = {d: int(W.policies(rg, d, 2025) * 1.6) for rg, ds in W.DISTRICTS.items() for d in ds}
+    df["policy_no"] = ["%09d" % (base[d] + int(rng.integers(0, span[d]))) for d in df["postcode_district"]]
+    # one claim a policy for a peril on a day: a second draw for the same day goes to another of the district's policies
+    rd = np.random.default_rng([seed, 53])
+    col = df.columns.get_loc("policy_no")
     seen = set()
-    for acc in accounts:
-        if acc["created"] < MIGRATION:
-            legacy += int(rs.integers(1, 4))
-            acc["legacy"] = str(legacy)
-        else:
-            acc["legacy"] = ""
-        while True:
-            nid = "acct_%08x" % int(rs.integers(16 ** 7, 16 ** 8))
-            if nid not in seen:
-                break
-        seen.add(nid); acc["id"] = nid
-    return persons, accounts, rereg, house
+    for i, (pn, per, dol, d) in enumerate(zip(df["policy_no"], df["peril"], df["date_of_loss"], df["postcode_district"])):
+        while (pn, per, dol) in seen:
+            pn = "%09d" % (base[d] + int(rd.integers(0, span[d])))
+            df.iat[i, col] = pn
+        seen.add((pn, per, dol))
+    df["policy_ref"] = "P" + df["policy_no"]
+    r2 = np.random.default_rng([seed, 17])
+    lag = np.empty(n, dtype=int)
+    is_cat = df["u"].notna().values
+    coded_event = df["event_code"].notna().values
+    late_cat = is_cat & ~coded_event & (r2.random(n) < 0.85)
+    lag[:] = np.round(r2.gamma(1.3, 3.2, n)).astype(int)
+    lag[is_cat & coded_event] = np.round(r2.gamma(1.1, 1.4, int((is_cat & coded_event).sum()))).astype(int)
+    lag[late_cat] = 15 + np.round(r2.gamma(2.0, 11.0, int(late_cat.sum()))).astype(int)
+    df["date_notified"] = [min(d + dt.timedelta(days=int(x)), ASAT) for d, x in zip(df["date_of_loss"], lag)]
+    order = np.lexsort((np.arange(n), np.array([d.toordinal() for d in df["date_notified"]])))
+    ref = np.empty(n, dtype=int)
+    ref[order] = np.arange(n)
+    df["claim_ref"] = ["HC%07d" % (1000000 + i) for i in ref]
+    return df
 
 
-# ---------------------------------------------------------------------------------------------------- charging
-def charging(W, st):
-    """the controller's export: every session with the point's register at plug-in and plug-out. Three stations had
-    their controller replaced (registers start again near zero); after a restart a controller re-sends the sessions
-    still in its buffer, stamped from the clock it saved before the restart"""
-    rs = np.random.default_rng([P.SEED_CHARGE, 1])
-    pilot = [k for k in range(W.ND) if W.pilot[k]]
-    swap = {}
-    for k, (m, d) in zip(sorted(rs.choice(pilot, 3, replace=False)), [(1, 16), (6, 3), (9, 22)]):
-        swap[int(k)] = int(dt.datetime(P.YEAR, m, d, 11, int(rs.integers(5, 50)), tzinfo=P.TZ).timestamp())
-    reg = {(k, p): int(rs.integers(40000, 380000)) for k in pilot for p in range(1, P.POINTS + 1)}
+def _numbering():
+    """each district's own run of nine-digit policy numbers"""
+    base = {d: 100000000 + 1100000 * k for k, d in enumerate(sorted({d for ds in W.DISTRICTS.values() for d in ds}))}
+    span = {d: int(W.policies(rg, d, 2025) * 1.6) for rg, ds in W.DISTRICTS.items() for d in ds}
+    return base, span
+
+
+def _claims_2026(seed):
+    """everyday claims with a date of loss from 1 January to 31 August 2026: outside the extract, but the Major Loss
+    Unit's reports carry the large ones"""
+    rng = np.random.default_rng([seed, 27])
+    base, span = _numbering()
     out = []
-    for (k, p, e, t0, t1, wh) in sorted(W.sessions, key=lambda s: (s[3], s[0], s[1])):
-        parts = [(t0, t1, wh)]
-        if k in swap and t0 < swap[k] < t1:
-            f = (swap[k] - t0) / max(1, t1 - t0)
-            parts = [(t0, swap[k], wh * f), (swap[k] + 600, t1, wh * (1 - f))] if t1 > swap[k] + 600 else [(t0, swap[k], wh)]
-        for a0, a1, w in parts:
-            if k in swap and a0 >= swap[k] and reg.get(("new", k, p)) is None:
-                reg[("new", k, p)] = True; reg[(k, p)] = int(rs.integers(0, 60))
-            ms = reg[(k, p)]; me = ms + int(round(w)); reg[(k, p)] = me
-            out.append({"k": k, "p": p, "e": e, "t0": int(a0), "t1": int(a1), "ms": ms, "me": me, "replay": False})
-    # restarts: about one station-day in twelve; the buffer holds the sessions that ended in the day before
-    days = range(365)
-    replays = []
-    ends = {}
-    for s in out:
-        ends.setdefault(s["k"], []).append(s)
-    for k in pilot:
-        lst = sorted(ends[k], key=lambda s: s["t1"])
-        tl = np.array([s["t1"] for s in lst])
-        for d in days:
-            if rs.random() > 1 / 12:
+    for rg in W.REGIONS:
+        ds = W.DISTRICTS[rg]
+        pol = np.array([W.policies(rg, d, 2025) for d in ds])
+        for peril, freq, sev, sig in PERIL_ATTR:
+            if peril not in P.NONCAT:
                 continue
-            day = dt.date(P.YEAR, 1, 1) + dt.timedelta(days=d)
-            r = int(dt.datetime(day.year, day.month, day.day, int(rs.integers(0, 24)), int(rs.integers(0, 60)), tzinfo=P.TZ).timestamp())
-            lag = int(rs.integers(2 * 3600, 9 * 3600))
-            lo, hi = np.searchsorted(tl, r - int(rs.integers(18, 31)) * 3600), np.searchsorted(tl, r)
-            for s in lst[lo:hi]:
-                if k in swap and s["t0"] < swap[k] <= r:
+            n = int(rng.poisson(pol.sum() * freq * 243 / 365.0))
+            dd = rng.choice(len(ds), size=n, p=pol / pol.sum())
+            doy = rng.integers(0, 243, size=n)
+            z = rng.normal(0, sig, n)
+            lag = np.round(rng.gamma(1.3, 3.2, n)).astype(int)
+            pn = rng.integers(0, 10 ** 9, n)
+            for k in range(n):
+                d0 = dt.date(2026, 1, 1) + dt.timedelta(days=int(doy[k]))
+                amt = sev * W.cost_index(2026, d0.month) / 100.0 * math.exp(z[k] - sig * sig / 2)
+                d = ds[dd[k]]
+                out.append(dict(region=rg, postcode_district=d, peril=peril, date_of_loss=d0, incurred=float(amt),
+                                date_notified=d0 + dt.timedelta(days=int(lag[k])),
+                                policy_no="%09d" % (base[d] + int(pn[k]) % span[d])))
+    return out
+
+
+def _mlu(df, seed):
+    """Claims other than windstorm, flood and freeze whose platform reserve passes GBP 75,000 move to the Major Loss
+    Unit, which runs them in its own system. The platform keeps the date of loss, paid and reserve it held at handover;
+    when the unit closes a claim the platform's reserve is set to nil. A claim whose reserve the unit cuts below
+    GBP 70,000 goes back to the home claims team, which carries it on the platform from then on, and leaves the unit's
+    report. The unit's adjusters date a leak or a subsidence claim from when the damage began, and the unit's report
+    carries that date once the adjuster has fixed it. A closed claim that needs more work is reopened in the unit as a
+    new case under a new reference, carrying only the further costs."""
+    rng = np.random.default_rng([seed, 21])
+    cand = df[df.peril.isin(P.NONCAT) & (df.date_of_loss >= dt.date(2021, 7, 1)) &
+              (df.date_of_loss <= dt.date(2025, 12, 31))].index
+    est = df.loc[cand, "incurred"].values * rng.uniform(0.5, 1.6, len(cand))
+    sel, est = cand[est > 75000.0], est[est > 75000.0]
+    adjusters = ["Quenby Adjusting", "Carrow Loss Adjusters", "in-house"]
+
+    def case(rng, true, e0, notified):
+        ho = notified + dt.timedelta(days=int(rng.integers(6, 62)))
+        cl = ho + dt.timedelta(days=int(rng.gamma(3.0, 150.0)) + 30)
+        ret = None
+        if true < 72000.0:
+            ret = ho + dt.timedelta(days=int(rng.integers(60, 300)))
+            cl = ret
+        ppaid = round(min(true, e0) * rng.uniform(0.08, 0.22), 2)
+        pres = round(max(e0 - ppaid, 1000.0), -2)
+        return dict(handover=ho, close=cl, ret=ret, true=true,
+                    target=(max(true * rng.uniform(1.08, 1.35), 70500.0) if ret else true),
+                    est=ppaid + pres, ppaid=ppaid, pres=pres, noise=rng.normal(0, 0.06, 64),
+                    adjuster=adjusters[int(rng.integers(0, 3))], dol2=None, redate=None, parent=None, kind="claim")
+
+    recs = []
+    for i, e0 in zip(sel, est):
+        r = df.loc[i]
+        rc = case(rng, float(r.incurred), e0, r.date_notified)
+        rc.update(idx=i, pno=r.policy_no, dist=r.postcode_district, peril=r.peril, dol=r.date_of_loss, region=r.region)
+        recs.append(rc)
+    r26 = np.random.default_rng([seed, 29])
+    for x in _claims_2026(seed):
+        e0 = x["incurred"] * r26.uniform(0.5, 1.6)
+        if e0 <= 75000.0:
+            continue
+        rc = case(r26, x["incurred"], e0, x["date_notified"])
+        if rc["handover"] > ASAT:
+            continue
+        rc.update(idx=None, pno=x["policy_no"], dist=x["postcode_district"], peril=x["peril"], dol=x["date_of_loss"],
+                  region=x["region"])
+        recs.append(rc)
+    # the adjuster's date for a leak or a subsidence claim
+    r3 = np.random.default_rng([seed, 23, REDATE])
+    for rc in recs:
+        if rc["peril"] in ("escape of water", "subsidence") and rc["ret"] is None and r3.random() < 0.65:
+            back = int(r3.integers(14, 200)) if rc["peril"] == "escape of water" else int(r3.integers(30, 300))
+            when = rc["handover"] + dt.timedelta(days=int(r3.integers(25, 170)))
+            if when < rc["close"] and dt.date(2023, 3, 1) <= when <= ASAT:
+                rc["dol2"], rc["redate"] = rc["dol"] - dt.timedelta(days=back), when
+
+    def dol_at(rc, day):
+        return rc["dol2"] if (rc["dol2"] is not None and day >= rc["redate"]) else rc["dol"]
+
+    # reopened cases: at least one in each region and loss year 2023 to 2025, and a few more
+    r4 = np.random.default_rng([seed, 25])
+    closed = [rc for rc in recs if rc["ret"] is None and rc["close"] <= ASAT - dt.timedelta(days=90)]
+    pick = set()
+    for rg in W.REGIONS:
+        for y in (2023, 2024, 2025):
+            pool = [k for k, rc in enumerate(closed) if rc["region"] == rg and dol_at(rc, ASAT).year == y]
+            if pool:
+                pick.add(pool[int(r4.integers(0, len(pool)))])
+    for k in range(len(closed)):
+        if r4.random() < 0.03:
+            pick.add(k)
+    reopen = []
+    for k in sorted(pick):
+        rc = closed[k]
+        lo = 45
+        hi = (ASAT - rc["close"]).days - 20
+        if hi <= lo:
+            continue
+        ro = rc["close"] + dt.timedelta(days=int(r4.integers(lo, min(hi, 420))))
+        extra = float(r4.uniform(22000.0, 65000.0))
+        e0 = extra * float(r4.uniform(0.8, 1.25))
+        cl = ro + dt.timedelta(days=int(r4.gamma(2.0, 90.0)) + 20)
+        ppaid = round(e0 * float(r4.uniform(0.0, 0.1)), 2)
+        nc = dict(handover=ro, close=cl, ret=None, true=extra, target=extra, est=e0, ppaid=ppaid,
+                  pres=round(max(e0 - ppaid, 500.0), -2), noise=r4.normal(0, 0.05, 64), adjuster=rc["adjuster"],
+                  dol2=None, redate=None, parent=rc, kind="reopened", idx=None, pno=rc["pno"], dist=rc["dist"],
+                  peril=rc["peril"], dol=dol_at(rc, ro), region=rc["region"])
+        reopen.append(nc)
+    recs += reopen
+    # references in the order cases reach the unit
+    seq = {}
+    for rc in sorted(recs, key=lambda q: (q["handover"], q["pno"], q["kind"])):
+        yy = rc["handover"].year % 100
+        seq[yy] = seq.get(yy, 0) + 1
+        rc["ref"] = "MLU-%02d-%04d" % (yy, seq[yy])
+
+    def incurred_at(rc, day):
+        if rc["ret"] is None and day >= rc["close"]:
+            return rc["true"]
+        f = (day - rc["handover"]).days / max(1, (rc["close"] - rc["handover"]).days)
+        q = min(int(f * 8), 7)
+        base = rc["est"] + (rc["target"] - rc["est"]) * min(1.0, (q + 1) / 8.0)
+        return max(round(base * (1 + rc["noise"][q] * (1 - q / 8.0)), -2), rc["ppaid"] + 500.0)
+
+    def paid_at(rc, day, inc):
+        if rc["ret"] is None and day >= rc["close"]:
+            return rc["true"]
+        f = (day - rc["handover"]).days / max(1, (rc["close"] - rc["handover"]).days)
+        return round(min(0.92, 0.15 + 0.8 * f) * inc, 2)
+
+    sheets = []
+    y, m = 2023, 1
+    while (y, m) <= (2026, 10):
+        ms = dt.date(y, m, 1)
+        me = dt.date(y + (m == 12), m % 12 + 1, 1) - dt.timedelta(days=1)
+        rows = []
+        for rc in recs:
+            if rc["handover"] > me:
+                continue
+            if rc["ret"] is not None:
+                if rc["ret"] <= me:
                     continue
-                q = dict(s); q["t0"] = s["t0"] - lag; q["t1"] = s["t1"] - lag; q["replay"] = True; q["sent"] = r
-                replays.append(q)
-    allr = out + replays
-    allr.sort(key=lambda s: (s.get("sent", s["t1"]), s["k"], s["p"], s["t0"]))
-    for i, s in enumerate(allr):
-        s["sid"] = 7100000 + i * 3 + int(rs.integers(0, 3))
-    return allr, swap
+                closed_, day = False, me
+            else:
+                if rc["close"] < ms:
+                    continue
+                closed_ = rc["close"] <= me
+                day = rc["close"] if closed_ else me
+            inc = incurred_at(rc, day)
+            pd_ = paid_at(rc, day, inc)
+            rows.append((rc["ref"], rc["pno"], rc["dist"], rc["peril"].capitalize(), dol_at(rc, day),
+                         rc["handover"], rc["adjuster"], round(pd_, 2), round(inc - pd_, 2), round(inc, 2),
+                         "Closed" if closed_ else "Open"))
+        rows.sort(key=lambda t: t[0])
+        sheets.append((ms, me, pd.DataFrame(rows, columns=[
+            "MLU reference", "Policy number", "Postcode district", "Peril", "Date of loss", "Transferred to MLU",
+            "Loss adjuster", "Paid to date", "Outstanding", "Incurred", "Status"])))
+        y, m = (y + (m == 12), m % 12 + 1)
+    # the truth: each claim's incurred on 31 October 2026 and the date its damage began
+    truth = {}
+    extra_claims = []
+    df["mlu"] = False
+    df["mlu_returned"] = False
+    df["dol_true"] = df["date_of_loss"]
+    further = {}
+    for rc in reopen:
+        further[id(rc["parent"])] = further.get(id(rc["parent"]), 0.0) + (incurred_at(rc, ASAT) if rc["close"] > ASAT
+                                                                         else rc["true"])
+    for rc in recs:
+        if rc["kind"] != "claim":
+            continue
+        if rc["ret"] is not None and rc["ret"] <= ASAT:
+            inc = None
+        else:
+            inc = (incurred_at(rc, ASAT) if rc["close"] > ASAT else rc["true"]) + further.get(id(rc), 0.0)
+        dol = dol_at(rc, ASAT)
+        i = rc["idx"]
+        if i is None:
+            if inc is not None:
+                extra_claims.append(dict(region=rc["region"], peril=rc["peril"], date_of_loss=dol, incurred=inc,
+                                         ref=rc["ref"]))
+            continue
+        df.loc[i, "mlu"] = True
+        df.loc[i, "dol_true"] = dol
+        if inc is None:
+            df.loc[i, "mlu_returned"] = True
+            truth[i] = float(df.loc[i, "paid"] + df.loc[i, "outstanding"])
+            continue
+        truth[i] = inc
+        df.loc[i, "paid"] = rc["ppaid"]
+        df.loc[i, "outstanding"] = 0.0 if rc["close"] <= ASAT else rc["pres"]
+    return df, sheets, truth, recs, extra_claims
 
 
-# ---------------------------------------------------------------------------------------------------- the workshop
-FAULT_TEXT = {"BRK": "Brakes", "CHN": "Chain / drivetrain", "TYR": "Tyre or wheel", "LCK": "Dock lock",
-              "SAD": "Saddle / seatpost", "LGT": "Lights", "FRM": "Frame / fork", "BAT": "Battery",
-              "MOT": "Motor / controller", "DSP": "Display / app link", "CON": "Charging contacts"}
+def _scheme(seed):
+    """Homes insured through the Lowther and Pike Building Society, bound by Tellwright Underwriting under a delegated
+    authority and reported in a monthly risk bordereau. A bordereau lists every term in force at some time in its
+    month as the coverholder knew it at the month end, and every cancellation processed in the month with its effective
+    date. The society sends its redemptions file on the 10th of each month, so a policy cancelled because the mortgage
+    was redeemed is processed in the following month. A policy cancelled for a missed direct debit is reinstated
+    without a break when the customer pays within the month; a customer moving to the society's fuller cover is
+    rewritten onto a new twelve-month term from the day of the change, under the same policy number."""
+    rng = np.random.default_rng([seed, 31])
+    rw_rng = np.random.default_rng([seed, 33])
+    ri_rng = np.random.default_rng([seed, 35])
+    fd_rng = np.random.default_rng([seed, 37, NOTICE])
+    fa_rng = np.random.default_rng([seed, 39])
+    share = {"Severn Vale": 0.016, "Pennine": 0.031, "Coastal North": 0.012, "Fenland": 0.015}
+    BM = [(2025, 10), (2025, 11), (2025, 12), (2026, 1), (2026, 2)]
+    DD = dt.date(2025, 12, 31)
+    rows, truth = [], {}
+    pid = 400000
+    ptypes = ["Detached house", "Semi-detached house", "Terraced house", "Bungalow", "Flat"]
+    for rg, ds in W.DISTRICTS.items():
+        for d in ds:
+            n = int(round(W.policies(rg, d, 2025) * share[rg]))
+            for _ in range(n):
+                pid += int(rng.integers(1, 9))
+                first = dt.date(2022, 1, 1) + dt.timedelta(days=int(rng.integers(0, 4 * 365 + 58)))
+                if (first.month, first.day) == (1, 1):
+                    first += dt.timedelta(days=1)
+                si = int(round(rng.lognormal(math.log(268000), 0.30) * SI_REGION[rg], -3))
+                prem = round(si * rng.uniform(0.0011, 0.0016), 2)
+                ptype = ptypes[int(rng.choice(5, p=[0.22, 0.31, 0.27, 0.08, 0.12]))]
+                no = "LP%07d" % pid
+                terms, s, alive, rewritten = [], first, True, False
+                while s <= dt.date(2026, 2, 28) and alive:
+                    e = dt.date(s.year + 1, s.month, min(s.day, 28)) - dt.timedelta(days=1)
+                    canc = proc = reason = rein = None
+                    if rng.random() < 0.09:
+                        c = s + dt.timedelta(days=int(rng.integers(15, 365)))
+                        if c <= e and c not in (dt.date(2025, 12, 31), dt.date(2026, 1, 1)):
+                            canc = c
+                            if rng.random() < 0.62:
+                                reason = "Mortgage redeemed"
+                                proc = dt.date(c.year + (c.month == 12), c.month % 12 + 1, 10)
+                            else:
+                                reason = "Customer request" if rng.random() < 0.7 else "Non-payment"
+                                proc = canc + dt.timedelta(days=int(rng.integers(0, 4)))
+                                # a customer moving to another insurer often gives notice ahead of the day cover ends
+                                if reason == "Customer request" and fd_rng.random() < 0.45:
+                                    proc = max(s, canc - dt.timedelta(days=int(fd_rng.integers(6, 46))))
+                                    # a notice for a day inside the bordereaux is keyed inside them, so no term
+                                    # leaves the bordereaux without its cancellation row
+                                    if proc < W0 <= canc:
+                                        proc = W0 + (canc - W0) // 2
+                    mta = None
+                    if rng.random() < 0.07:   # an endorsement: an extension or a revaluation the customer asked for
+                        eff = s + dt.timedelta(days=int(rng.integers(20, 350)))
+                        if eff <= e and (canc is None or eff < canc) and eff not in (dt.date(2025, 12, 31), dt.date(2026, 1, 1)):
+                            lead = int(rng.integers(5, 50)) if rng.random() < 0.45 else -int(rng.integers(0, 12))
+                            mproc = eff - dt.timedelta(days=lead)
+                            mta = dict(eff=eff, proc=max(mproc, s), fac=float(rng.uniform(1.08, 1.32)))
+                    stop = canc is not None or rng.random() < 0.10
+                    # a missed direct debit paid up within the month: the term carries on as if never cancelled
+                    if reason == "Non-payment" and dt.date(2025, 9, 25) <= proc <= dt.date(2025, 12, 22) \
+                            and ri_rng.random() < 0.55:
+                        rein = proc + dt.timedelta(days=int(ri_rng.integers(2, 9)))
+                        stop = ri_rng.random() < 0.10
+                    # a rewrite onto the fuller cover: the term ends the day before, a new term starts that day
+                    rw = None
+                    if canc is None and mta is None and rw_rng.random() < 0.035:
+                        x = s + dt.timedelta(days=int(rw_rng.integers(30, 330)))
+                        if x <= e and x not in (dt.date(2025, 12, 31), dt.date(2026, 1, 1)):
+                            rw = x
+                            canc, reason = x, "Customer request"
+                            proc = x + dt.timedelta(days=int(rw_rng.integers(0, 5)))
+                            stop = False
+                    # a further advance from the society for home improvements: the society tells the coverholder when
+                    # it lends, and the sum insured rises from the day the works are finished, two to five months on
+                    if mta is None and fa_rng.random() < ADVANCE:
+                        adv = max(s + dt.timedelta(days=int(fa_rng.integers(10, 300))),
+                                  terms[-1]["proc"] if rewritten else s)
+                        eff = adv + dt.timedelta(days=int(fa_rng.integers(60, 151)))
+                        if eff <= e and (canc is None or eff < canc) and eff not in (dt.date(2025, 12, 31),
+                                                                                     dt.date(2026, 1, 1)):
+                            if adv < W0 and DD < eff:
+                                adv = W0 + (eff - W0) // 4     # keyed inside the bordereaux when it outlasts the year
+                            mta = dict(eff=eff, proc=adv, fac=float(fa_rng.uniform(1.10, 1.35)))
+                    terms.append(dict(start=s, end=e, canc=canc, proc=proc, reason=reason, rein=rein, rw=rw,
+                                      first=(s == first) or rewritten, keyed=(terms[-1]["proc"] if rewritten else s),
+                                      mta=mta, up=(float(rw_rng.uniform(1.06, 1.25)) if rw else None)))
+                    if stop:
+                        alive = False
+                    rewritten = rw is not None
+                    s = rw if rw is not None else e + dt.timedelta(days=1)
+                tsi, tprem = si, prem
+                for k, t in enumerate(terms):
+                    renewed = k + 1 < len(terms) and terms[k]["rw"] is None
+                    if k > 0:
+                        if terms[k - 1]["rw"] is not None:
+                            tsi = int(round(tsi * terms[k - 1]["up"], -3))
+                            tprem = round(tprem * (terms[k - 1]["up"] + 0.05), 2)
+                        else:
+                            tsi = int(round(tsi * 1.04, -3))      # index-linked at each renewal
+                    t["si"] = tsi
+                    if t["mta"] is not None:      # an endorsement raises the term's own sum insured
+                        t["mta"]["si"] = int(round(tsi * t["mta"]["fac"], -3))
+                    for (by, bm) in BM:
+                        ms = dt.date(by, bm, 1)
+                        me = dt.date(by + (bm == 12), bm % 12 + 1, 1) - dt.timedelta(days=1)
+                        mt = t["mta"]
+                        # the coverholder's system holds one sum insured a term, overwritten when an endorsement is
+                        # processed; the month's own listing is taken before that month's endorsements are keyed
+                        cur = mt["si"] if (mt is not None and mt["proc"] < ms) else tsi
+                        if t["proc"] is not None and ms <= t["proc"] <= me:
+                            rows.append(("%d-%02d" % (by, bm), no, d, ptype, "Cancelled", t["start"], t["end"],
+                                         t["canc"], t["reason"], None, cur, tprem))
+                        # listed when in force at any time in the month, as the coverholder held it at the month end
+                        dead = t["proc"] is not None and t["proc"] <= me and not (t["rein"] is not None and t["rein"] <= me)
+                        last = t["canc"] - dt.timedelta(days=1) if dead else t["end"]
+                        if t["keyed"] > me or t["start"] > me or last < ms:
+                            continue
+                        if mt is not None and ms <= mt["proc"] <= me:
+                            rows.append(("%d-%02d" % (by, bm), no, d, ptype, "Mid-term adjustment", t["start"], t["end"],
+                                         None, None, mt["eff"], mt["si"], tprem))
+                        if ms <= t["start"] <= me:
+                            tx = "New business" if t["first"] else "Renewal"
+                        elif ms <= t["end"] <= me and not dead:
+                            tx = "Renewed" if renewed else "Lapsed"
+                        else:
+                            tx = "In force"
+                        rows.append(("%d-%02d" % (by, bm), no, d, ptype, tx, t["start"], t["end"], None, None, None, cur,
+                                     tprem))
+                for t in terms:
+                    eff_end = t["end"] if (t["canc"] is None or t["rein"] is not None) else t["canc"] - dt.timedelta(days=1)
+                    if t["start"] <= DD <= eff_end:
+                        mt = t["mta"]
+                        truth[no] = (rg, d, mt["si"] if (mt is not None and mt["eff"] <= DD) else t["si"],
+                                     "reinstated" if t["rein"] else ("rewritten" if (t["first"] and t["start"] != first) else ""))
+    B = pd.DataFrame(rows, columns=["bordereau_month", "scheme_policy_no", "postcode_district", "property_type",
+                                    "transaction", "term_start", "term_end", "cancellation_effective",
+                                    "cancellation_reason", "endorsement_effective", "buildings_sum_insured",
+                                    "annual_premium"])
+    B = B.sort_values(["bordereau_month", "scheme_policy_no", "term_start"], kind="stable").reset_index(drop=True)
+    return B, truth
 
 
-def workshop(W):
-    rs = np.random.default_rng([P.SEED_SHOP, 7])
-    jobs = sorted(W.jobs, key=lambda j: (j[2], str(j[0])))
-    rows = []
-    for i, (b, typ, op, cl, code, outcome, retest) in enumerate(jobs):
-        rows.append({"job": "WO-25-%05d" % (i + 1 + int(rs.integers(0, 1))), "bike": b, "typ": typ, "open": op,
-                     "close": cl, "code": code, "outcome": outcome, "bay": int(rs.integers(1, 5)),
-                     "tech": str(rs.choice(["JR", "MS", "AT", "KO", "DL", "PW"])), "retest": retest})
-    return rows
+def build(seed=P.SEED):
+    df, ev_truth = _claims(seed)
+    df = _reserve(df, seed)
+    df = _refs(df, seed)
+    df, mlu_sheets, mlu_truth, mlu_recs, mlu_extra = _mlu(df, seed)
+    df["inc_true"] = df["incurred"]
+    for i, v in mlu_truth.items():
+        df.loc[i, "inc_true"] = v
+    df["status"] = np.where(df["outstanding"] > 0, "Open", "Closed")
+    rng = np.random.default_rng([seed, 41])
+    jit = np.random.default_rng([seed, 43, 18])
+    ex = []
+    for y in W.YEARS:
+        for rg in W.REGIONS:
+            for d in W.DISTRICTS[rg]:
+                p = W.policies(rg, d, y)
+                ex.append((y, rg, d, int(round(p * (1.0 + jit.uniform(-0.006, 0.006)))),
+                           int(round(p * (238000 + 4200 * (y - 2010)) * SI_REGION[rg]
+                                     * rng.uniform(0.97, 1.03) / 1e3)) * 1000))
+    EX = pd.DataFrame(ex, columns=["year", "region", "postcode_district", "policies_in_force_mid_year",
+                                   "sums_insured_buildings_gbp"])
+    BDX, sch_truth = _scheme(seed)
+    sch_cnt = {}
+    for no, (rg, d, si, _) in sch_truth.items():
+        sch_cnt[d] = sch_cnt.get(d, 0) + 1
+    dr = []
+    for rg in W.REGIONS:
+        for d in W.DISTRICTS[rg]:
+            tot = 0.5 * (W.policies(rg, d, 2025) + W.policies(rg, d, 2026))
+            n_dir = int(round(tot - sch_cnt.get(d, 0)))
+            si_d = int(round(n_dir * (238000 + 4200 * 15.5) * SI_REGION[rg] * rng.uniform(0.97, 1.03) / 1e3)) * 1000
+            dr.append((rg, d, n_dir, si_d, int(round(n_dir * rng.uniform(0.11, 0.17)))))
+    DR = pd.DataFrame(dr, columns=["region", "postcode_district", "policies_in_force", "buildings_sums_insured_gbp",
+                                   "policies_over_400k"])
+    fr = []
+    for rg in W.REGIONS:
+        for d in W.DISTRICTS[rg]:
+            sv = int(W.policies(rg, d, 2024) * rng.uniform(0.004, 0.012))
+            fr.append((rg, d, sv, int(sv * rng.uniform(0.05, 0.22)), int(sv * rng.uniform(0.02, 0.10)),
+                       int(sv * rng.uniform(0.10, 0.35))))
+    FR = pd.DataFrame(fr, columns=["region", "postcode_district", "homes_surveyed", "flood_doors_or_barriers",
+                                   "non_return_valves", "raised_sockets_or_services"])
+    # the index as the house publishes it: its monthly movements are uneven about the cost of rebuilding
+    wob = np.random.default_rng([seed, 47])
+    w, pub = 0.0, []
+    for y in range(2010, 2027):
+        for m in range(1, 13):
+            if y == 2026 and m > 9:
+                continue
+            w = 0.75 * w + wob.normal(0.0, 0.0025)
+            pub.append((y, m, round(W.cost_index(y, m) * math.exp(w), 1)))
+    CI = pd.DataFrame(pub, columns=["year", "month", "index"])
+    return dict(claims=df, events=ev_truth, exposure=EX, mlu_sheets=mlu_sheets, mlu_truth=mlu_truth,
+                mlu_recs=mlu_recs, mlu_extra=mlu_extra, bdx=BDX, scheme_truth=sch_truth, direct=DR, flood=FR, index=CI)

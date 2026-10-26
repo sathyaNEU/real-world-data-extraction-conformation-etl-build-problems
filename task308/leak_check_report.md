@@ -1,19 +1,24 @@
 # leak check, task308
 
-**Verdict: REVIEW.** 17 files read, 33 golden figures and 1 candidate names taken from submission.md, 25 stump terms taken from the design note.
+**Verdict: REVIEW.** 13 files read, 20 golden figures and 6 candidate names taken from submission.md, 25 stump terms taken from the design note.
 
 LEAK stops the ship. REVIEW is a reader's call and the /leak-check command's solver's-eye pass reads every REVIEW line. INFO is a sweep that ran and found nothing or was skipped.
 
-Stump terms swept: asserted, station, requests, stations, demand, e-bike, dictionary, uplift, exports, product, stocked, second, request, rebuilt, university, another, seconds, undock, censoring, account, central, served, launch, window, turned
+Stump terms swept: reader, severn, pennine, carried, readers, repair, golden, decisive, plan-only, events, premium, standard, carries, demand, clause, screen, expected, recoveries, capacity, january, station, re-root, mechanism, family, definitions
 
-## 3 answer figures in the pack (REVIEW 1)
-- **REVIEW** `board_paper_2026-12_item7_extract.pdf`: carries 7 of 7 distinctive words of the committed call: 'Put the 300 e-bikes on the University network: at 2025 demand they add USD 125,000 a year in net fare revenue there.'
+## 3 answer figures in the pack (REVIEW 7)
+- **REVIEW** `home_claims_2010_2025.parquet`: golden figure 125.88 appears: ...1,accidental damage,2019-02-19,2019-02-20,,Closed,125.88,0.0,RP-SV-346,2019-05-30 HC1248448,P186921320,Sev...
+- **REVIEW** `home_claims_2010_2025.parquet`: golden figure 121.28 appears: ...7,accidental damage,2024-10-04,2024-10-05,,Closed,121.28,0.0,RP-PN-017,2024-10-24 HC1436529,P142924005,Pen...
+- **REVIEW** `home_claims_2010_2025.parquet`: golden figure 134.52 appears: ...ern Vale,GL52,theft,2012-04-07,2012-04-13,,Closed,134.52,0.0,, HC1054189,P125311688,Severn Vale,GL53,accid...
+- **REVIEW** `home_claims_2010_2025.parquet`: golden figure 113.58 appears: ...5,accidental damage,2021-01-19,2021-01-30,,Closed,113.58,0.0,RP-CN-015,2021-02-27 HC1302264,P107707203,Coa...
+- **REVIEW** `home_claims_2010_2025.parquet`: golden figure 130.95 appears: ...1,accidental damage,2011-06-26,2011-07-06,,Closed,130.95,0.0,RP-SV-183,2011-08-31 HC1035191,P124205947,Sev...
+- **REVIEW** `lowther_pike_risk_bordereaux_2025-10_to_2026-02.csv`: golden figure 134.52 appears: ...hed house,In force,11/03/2025,10/03/2026,,,,93000,134.52 2025-10,LP0414416,IP28,Semi-detached house,In for...
+- **REVIEW** `catastrophe_layer_valuation_basis.pdf`: carries 7 of 9 distinctive words of the committed call: 'Pennine should take the 2027 catastrophe layer: it is worth GBP 0.1 million a year there, GBP 0.1 million more than on a'
 
-## 4 design-note vocabulary (REVIEW 4)
-- **REVIEW** `board_paper_2026-12_item7_extract.pdf`: 9 of 25 stump-paragraph terms appear (station, stations, demand, e-bike, exports, product); read whether the document names the move
-- **REVIEW** `ebike_pilot_harbour_2025.pdf`: 4 of 25 stump-paragraph terms appear (station, stations, e-bike, exports); read whether the document names the move
-- **REVIEW** `fare_schedule_2025.pdf`: 6 of 25 stump-paragraph terms appear (station, e-bike, second, seconds, undock, account); read whether the document names the move
-- **REVIEW** `vendor_quote_ebikes_2026.pdf`: 3 of 25 stump-paragraph terms appear (station, stations, e-bike); read whether the document names the move
+## 4 design-note vocabulary (REVIEW 3)
+- **REVIEW** `cat_xl_quotations_2027.pdf`: 6 of 25 stump-paragraph terms appear (severn, pennine, premium, clause, january, definitions); read whether the document names the move
+- **REVIEW** `catastrophe_layer_valuation_basis.pdf`: 6 of 25 stump-paragraph terms appear (repair, premium, standard, expected, recoveries, definitions); read whether the document names the move
+- **REVIEW** `claims_operations_report_2025.pdf`: 5 of 25 stump-paragraph terms appear (severn, pennine, repair, carries, january); read whether the document names the move
 
 ## 10 container metadata (INFO 1)
 - **INFO** `-`: audit reported no writer signature (1 lines)
@@ -33,23 +38,3 @@ Stump terms swept: asserted, station, requests, stations, demand, e-bike, dictio
 ## 9 dates after the setting (clean)
 
 ## 11 prompt gate (clean)
-
-## Solver's-eye read
-
-Two isolated scored readers (sonnet and opus at medium), prompt and a fresh unzip of target.zip only, 2026-10-26.
-
-- Committed answers: both University (reader A USD 100,000, reader B USD 125,000); `score_reader.py` exit 1 on both
-  (call 1 of 1), asks 12 and 11 of 25 (ask B's twelve months by the re-sends' repeated registers; ask A one person a
-  card; ask C every job card).
-- Q1: none named a sentence; both quoted section 3's deployment sentence as the closest ("so that every station holds
-  e-bikes through the day") and both found the step by rebuilding the stock from the audit, the trips and the dispatch log.
-- Q2 and Q4: no file ranks or names a network. Q3: none, or the distractors.
-- Q5: both quoted section 2's measure; "at 2025 demand" read as requests including those turned away, with the served-rides
-  reading named as the fork that flips the call.
-- Q6: an analytical choice (demand censored at empty stations; reader B also the pilot's lift by origin station).
-- Q7 (realism): the stock reconciling to the next audit with zero difference on every station-day; one 03:00 count per
-  network; Harbour's flat per-station rides; trip durations and the e-bike share flat across networks, hours and
-  distances; the pilot note issued 20 January 2025 describing the year in the past tense; pilot stations' capacities
-  against the stated 5 per cent match; re-sent charging sessions shifted by whole hours.
-- Ruling: the call was landed by both readers on the analysis, not on a leaked sentence; architecture 1 is spent (Gate F,
-  the two-reader rule). The realism tells go to the re-root.
