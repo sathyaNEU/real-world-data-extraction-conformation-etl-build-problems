@@ -1,34 +1,34 @@
 {
  "task": "task308",
  "owner": "perssathya",
- "status": "DESIGN",
+ "status": "PAUSED",
  "domain": "product-analytics",
  "objective": "opportunity-sizing-decision",
- "stage": 2,
- "stage_name": "design",
- "updated": "2026-10-25",
- "stump": "A competent analyst carries the pilot's e-bike choice share and new-rider uplift to each district's recorded trips and names Central at about USD 100,000 a year, because the trip record holds only the requests that found a bike: University's dorm docks run dry at every term-weekday class change and stay empty until the afternoon van, so its turned-away requests leave no row, and the requests rebuilt for its empty minutes put University first at about USD 200,000 a year.",
+ "stage": 1,
+ "stage_name": "draw",
+ "updated": "2026-10-26",
+ "stump": "A competent analyst carries the pilot's e-bike share and new-rider uplift to each network's 2025 rides and names Central at about USD 50,000 a year, because the trip record holds only the requests that found a bike: University's residence-hall hubs run dry at every teaching-weekday class change and stay short until the afternoon van, so about 29,600 of its 2025 requests leave no row, and the requests rebuilt for its empty seconds put University first at USD 125,000 a year.",
  "architecture": 1,
  "loops": 0,
  "precut": {
-  "exit": null,
-  "date": ""
+  "exit": 0,
+  "date": "2026-10-26"
  },
  "leak": {
-  "leak_py": "",
-  "reader": ""
+  "leak_py": "REVIEW (sweep 3: the board paper names the five networks and the measure; sweep 4: generic station and e-bike words; no LEAK)",
+  "reader": "two scored readers landed the call (University; sonnet USD 100,000, opus USD 125,000); asks 12 and 11 of 25 (ask B whole, asks A and C missed); score_reader exit 1 on both"
  },
  "duplicate_check": {
-  "heart": "",
-  "nearest": ""
+  "heart": "WARN (repeat.gate_g, repeat.decision, repeat.deliverables, repeat.question_form; no BLOCK)",
+  "nearest": "task128 v2 0.06 (driver)"
  },
  "judge": {
-  "verdict": "",
-  "disposition": "",
-  "report": ""
+  "verdict": "NOT_DETERMINISTIC",
+  "disposition": "SEND_BACK (Gate C: grain and induced riders unfiled; asks A and C definitions); Gate G and H pass",
+  "report": "task308/determinism_check_report.md"
  },
  "returned": [],
- "resume": "Stage 2 design. Card registered at WARN (repeat.gate_g, repeat.decision, repeat.question_form answered in the note). Draw pack and probes at scratchpad t308 (gen.py, solve.py, quick.py, probe/). Next: world fixes (new dock points for the 600 e-bikes; e-bikes dock only at charging docks; ample pilot e-bikes), shape the world for a determinate censored-demand fit (hourly piecewise rates, homogeneous docks within roles, partial-censoring steps), measure the family spread on the graded figure, then the asks, fork table, closure, prompt and precut.",
+ "resume": "Architecture 1 spent at stage 4 (both scored readers landed University; DESIGN_NOTE.md, Tried and rejected). Re-root at stage 1: a new driver (not censored demand at empty stations, not task302's stockout substitution), probed with two call-only readers before any pack is cut. The arch-1 generator (bike-share world: stations, stock, vans, pilot, accounts, charging, workshop) is reusable if the new draw keeps the world; fix the readers' realism tells (one par per network, exact reconciliation, flat durations and shares, pilot note dates) either way.",
  "approved": null,
  "delivered": null,
  "portal": null,
