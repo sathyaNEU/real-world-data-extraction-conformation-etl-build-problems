@@ -299,6 +299,7 @@ October list (19 spotlights with complete windows).
 | 20 | Integerisation | none before the final rounding | design |
 | 21 | Clause scope | the featuring memo governs the October 2026 issue and after | filed (memo 1) |
 | 22 | Forward window contents | the candidates' organic stars from 28 September to their 90th day and the spotlight's cascade from 6 October | the runners-up's rollup covers every age to day 100; the cascade runs out within about ten days of the issue, inside every candidate's window (asserted) |
+| 23 | Selection criterion and comparison | the shortlisted repository with the most expected external stars in its first 90 days public if spotlighted; the stars the spotlight adds measured against the same repository's stars without it | featuring memo 2.1, stated in the prompt's question since 2026-10-26 (the portal's prompt check P6 read no selection rule or baseline in the prompt) |
 
 ## Literal reader
 

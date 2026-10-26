@@ -6,7 +6,7 @@
   "objective": "forecasting",
   "stage": 5,
   "stage_name": "ship",
-  "updated": "2026-10-15",
+  "updated": "2026-10-26",
   "stump": "A competent solver forecasts each shortlisted repository's organic 90-day external stars from its trajectory against the lottery's runners-up, adds the lottery's average spotlight lift scaled to the October list and spotlights tracewire at about 11,000 (the spotlight adding about 5,000); the step that lands it there is carrying an average lift when the spotlight's stars are the readers' own plus the cascade they set off through their followers' home feeds at each repository's own rate per follower view: slidewell's cascade runs at its 1.8 per cent a view on the readers' 85 followers a star and puts it first at about 12,000, the spotlight adding about 9,000.",
   "architecture": 1,
   "loops": 1,
@@ -30,7 +30,14 @@
     "disposition": "APPROVE",
     "report": "task144/determinism_check_report.md (the re-judge on the repaired cut, every figure reproduced; the first judge was also DETERMINISTIC and APPROVE, its points repaired)"
   },
-  "returned": [],
+  "returned": [
+    {
+      "date": "2026-10-26",
+      "portal": "prompt check P6 FAIL: the prompt asks for forecasts (the pick's 90-day external stars and the stars the spotlight adds) without a model, baseline or method, lists no input files, and cites the featuring memo without listing it",
+      "repair": "the question now carries the featuring memo's section 2.1 criterion, the shortlisted repository with the most expected external stars in its first 90 days public if spotlighted, and asks the spotlight's stars as how many more than without the spotlight; the method stays open (a filed model would make the decisive step rule application, and the archive pointer the check suggested is the default path, the lottery's average lift, which spotlights tracewire); the memo ships in the pack as sluis_featuring_memo_2026-09.pdf; every ask, file name, unit and rounding, the pack (target.zip unchanged) and every graded figure stay as shipped",
+      "gates": "voice-check PASS (997 characters); no 5-gram of the new wording appears in another prompt; leak.py --asof 2026-09-30 REVIEW with no LEAK, the shipped report's lines but for one term in sweep 4's vocabulary list on warehouse_extract_fields.md (leak.py's own term pick, the prompt gate clean); precut 51 checks with 1 FAIL that predates the fix (the 'Measured by:' line a gate added on 10-18 asks of the ask sheet's cracker); no generator check reads the prompt"
+    }
+  ],
   "resume": "",
   "approved": null,
   "delivered": "2026-10-15",
