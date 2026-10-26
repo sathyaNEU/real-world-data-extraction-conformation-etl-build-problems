@@ -30,11 +30,11 @@ def write_workbook(path, fig):
     ws["A1"] = W.POOL
     ws["A1"].font = Font(bold=True, color=NAVY, size=12)
     ws["A2"] = ("Keep the first %s of each 2027 liability occurrence: the lowest quoted attachment the pool expects "
-                "its 2027 occurrences to exceed once or less (%.2f)" % ("${:,.0f}".format(rec), fig["counts"][str(rec)]))
+                "its 2027 occurrences to exceed once or less (%.1f)" % ("${:,.0f}".format(rec), fig["counts"][str(rec)]))
     ws["A2"].font = Font(bold=True, size=11)
-    ws["A3"] = ("Risk financing policy 4.1 to 5.1; expected occurrences from the actuary's %.1f above $25,000 and the "
-                "ground-up severity curve at 2027 cost; premiums from the broker's indications of October 2, 2026."
-                % W.COUNT_25K)
+    ws["A3"] = ("Risk financing policy 4.1 to 5.1; expected occurrences from the actuary's %.1f law enforcement and %.1f "
+                "other occurrences above $25,000, each carried by its own ground-up severity at 2027 cost; premiums from "
+                "the broker's indications of October 2, 2026." % (W.COUNT_LE, W.COUNT_OT))
     ws["A3"].font = Font(italic=True, color="5D646C", size=9)
     heads = ["Attachment per occurrence", "Expected 2027 occurrences above it", "Within the policy (one or fewer)",
              "Rate per $1,000 of operating expenditures", "Rate per scheduled unit", "2027 premium"]
@@ -48,10 +48,10 @@ def write_workbook(path, fig):
     for a in W.OPTIONS:
         gl, al = W.QUOTES[a]
         cnt = fig["counts"][str(a)]
-        ws.append([a, round(cnt, 2), "Yes" if cnt <= W.BAR else "No", gl, al, fig["premiums"][str(a)]])
+        ws.append([a, round(cnt, 1), "Yes" if cnt <= W.BAR else "No", gl, al, fig["premiums"][str(a)]])
         row = ws[ws.max_row]
         row[0].number_format = "$#,##0"
-        row[1].number_format = "0.00"
+        row[1].number_format = "0.0"
         row[2].alignment = Alignment(horizontal="center")
         row[3].number_format = "$0.0000"
         row[4].number_format = "$#,##0.00"
@@ -62,14 +62,21 @@ def write_workbook(path, fig):
                 c.font = bold
     r0 = ws.max_row + 2
     lines = [
-        ("Severity curve (lognormal, cost from the first dollar at 2027 cost)",
-         "log mean %.2f, log standard deviation %.2f" % (fig["curve"]["mu"], fig["curve"]["sigma"])),
+        ("Severity, law enforcement liability (lognormal, from the first dollar at 2027 cost)",
+         "log mean %.2f, log standard deviation %.2f; %d occurrences, %d of them stopped at the retention"
+         % (fig["curves"]["LE"]["mu"], fig["curves"]["LE"]["sigma"], fig["curves"]["LE"]["n"],
+            fig["curves"]["LE"]["capped"])),
+        ("Severity, general, auto, public officials' and employment practices liability",
+         "log mean %.2f, log standard deviation %.2f; %d occurrences, %d of them stopped at the retention"
+         % (fig["curves"]["OT"]["mu"], fig["curves"]["OT"]["sigma"], fig["curves"]["OT"]["n"],
+            fig["curves"]["OT"]["capped"])),
         ("Fitted to", "%d occurrences of accident years 2014 to 2021 in the pool's record (%d closed, %d suits still "
-         "open with the pool's layer paid), %d of them stopped at the retention"
-         % (fig["fit"]["n"], fig["fit"]["closed"], fig["fit"]["open"], fig["fit"]["capped"])),
+         "open with the pool's layer paid)" % (fig["fit"]["n"], fig["fit"]["closed"], fig["fit"]["open"])),
         ("How the record enters the fit", "each occurrence truncated at its member's deductible and, where it reached "
-         "the pool's retention, censored there; costs, deductibles and retentions at 2027 cost by the claim cost index"),
-        ("Runner-up", "%s: %.2f expected occurrences above it, more than the policy's one"
+         "the pool's retention, censored there; costs, deductibles and retentions at 2027 cost by the claim cost index; "
+         "one curve over every coverage part does not fit the record (likelihood ratio %.0f on two degrees of freedom)"
+         % fig["lr"]["pooled"]),
+        ("Runner-up", "%s: %.1f expected occurrences above it, more than the policy's one"
          % ("${:,.0f}".format(fig["call"]["runner_up"]), fig["counts"][str(fig["call"]["runner_up"])])),
         ("Rated exposure", "2027 operating expenditures of ${:,.0f} as declared; {:,d} units on the vehicle schedules "
          "at September 30, 2026 (sheet Rated exposure)".format(fig["exposure"]["toe"], fig["exposure"]["units"])),
@@ -113,16 +120,17 @@ def write_workbook(path, fig):
 
     nt = wb.create_sheet("Notes")
     notes = [
-        "Prepared for the Board of Trustees' meeting of November 18, 2026, from the claims records at September 30, "
-        "2026, the actuary's study of October 9, 2026 and the broker's indications of October 2, 2026.",
+        "Prepared for the executive director's 2027 budget proposal, from the claims records at September 30, 2026, "
+        "the actuary's study of October 9, 2026 and the broker's indications of October 2, 2026.",
         "Cost of an occurrence: from its first dollar, damages and defense together, whoever pays (policy 2.2). "
         "Attachments are from the first dollar, inclusive of the member's deductible (policy 2.3).",
         "The pool's record holds an occurrence only once its member's payments reached the deductible in force on "
-        "the date of the occurrence, and holds its cost only up to the pool's retention ($250,000 for 2014 to 2017, "
-        "$500,000 from 2018); the curve is fitted to that record as it came to exist.",
-        "Expected occurrences above an attachment: %.1f times the curve's probability of a cost above the "
-        "attachment over its probability of a cost above $25,000 (policy 4.3). Shown to two decimals; compared "
-        "unrounded." % W.COUNT_25K,
+        "the date of the occurrence, and holds its cost only up to the pool's retention ($500,000 for 2014 to 2017, "
+        "$1,000,000 from 2018); severity is fitted to that record as it came to exist.",
+        "Expected occurrences above an attachment: the actuary's %.1f law enforcement occurrences above $25,000 times "
+        "that severity's probability of a cost above the attachment given a cost above $25,000, plus the same for "
+        "the %.1f other occurrences (policy 4.3, Exhibit 6). Shown to one decimal; compared unrounded."
+        % (W.COUNT_LE, W.COUNT_OT),
         "Premiums: the indicated rates applied to the declared 2027 operating expenditures and the scheduled units; "
         "annual, before the Washington surplus lines tax and stamping fee; rounded to the dollar.",
         "Vehicles loaded from the fleet consortium's lists on %s carry the consortium's asset numbers; "
@@ -152,10 +160,10 @@ def write_chart(path, fig):
                label="Risk financing policy 5.1: one expected occurrence a year")
     for b, y in zip(bars, ys):
         if abs(y + 0.2 - W.BAR) < 0.3:      # a label the policy line would cross sits inside its bar
-            ax.text(b.get_x() + b.get_width() / 2, y - 0.08, "%.2f" % y, ha="center", va="top", fontsize=8.6,
+            ax.text(b.get_x() + b.get_width() / 2, y - 0.08, "%.1f" % y, ha="center", va="top", fontsize=8.6,
                     color="white", fontweight="bold")
         else:
-            ax.text(b.get_x() + b.get_width() / 2, y + 0.1, "%.2f" % y, ha="center", va="bottom", fontsize=8.6)
+            ax.text(b.get_x() + b.get_width() / 2, y + 0.1, "%.1f" % y, ha="center", va="bottom", fontsize=8.6)
     ax.set_xticks(range(len(xs)))
     ax.set_xticklabels(["$%.1fm" % (a / 1e6) for a in xs])
     ax.set_xlabel("Quoted attachment per occurrence (from the first dollar)")
@@ -170,9 +178,10 @@ def write_chart(path, fig):
     ax.set_title("%s is the lowest quoted attachment the pool expects to be exceeded once a year or less"
                  % millions(rec), fontsize=10.5, loc="left")
     ax.legend(loc="upper right", frameon=False, fontsize=8.8)
-    f.text(0.01, 0.012, "%s, November 2026 trustees' meeting. Ground-up lognormal at 2027 cost fitted to the pool's "
-           "record of 2014 to 2021, open suits included;\n%.1f expected 2027 occurrences above $25,000 (actuary's study, October 9, "
-           "2026); attachments as quoted October 2, 2026." % (W.POOL, W.COUNT_25K), fontsize=7.2, color="#5D646C")
+    f.text(0.01, 0.012, "%s, 2027 budget. Ground-up lognormal severities at 2027 cost for law enforcement liability and "
+           "the other parts, fitted to the pool's record of 2014 to 2021;\n%.1f and %.1f expected 2027 occurrences "
+           "above $25,000 (actuary's study, October 9, 2026); attachments as quoted October 2, 2026."
+           % (W.POOL, W.COUNT_LE, W.COUNT_OT), fontsize=7.2, color="#5D646C")
     f.tight_layout(rect=(0, 0.05, 1, 1))
     f.savefig(path, metadata={"Software": None})
     plt.close(f)

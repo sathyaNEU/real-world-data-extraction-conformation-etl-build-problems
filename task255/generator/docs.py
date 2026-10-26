@@ -86,19 +86,20 @@ POLICY_CLAUSES = [
     ]),
     ("3  Inputs", [
         ("3.1", "The actuary's latest study supplies the liability claim cost index by accident year and the expected "
-                "number of the coverage year's occurrences costing more than $25,000."),
+                "number of the coverage year's occurrences costing more than $25,000, projected for law enforcement "
+                "liability and for the other coverage parts on their own exposures."),
         ("3.2", "The broker gathers excess insurers' indications at the attachments the trustees ask for."),
     ]),
-    ("4  The severity curve", [
-        ("4.1", "The pool's ground-up severity curve for a coverage year is the distribution of the cost of an "
-                "occurrence, at the coverage year's cost level, over all of the members' liability occurrences."),
-        ("4.2", "The curve is lognormal. It is estimated by maximum likelihood from the pool's claims record for "
-                "the eight accident years before the latest five (for the 2027 coverage year, the accident years 2014 "
-                "to 2021), with the record brought to the coverage year's cost level by the ratio of the coverage "
+    ("4  Severity", [
+        ("4.1", "The pool's ground-up severity for a coverage year is the distribution of the cost of an occurrence, "
+                "at the coverage year's cost level, over all of the members' liability occurrences."),
+        ("4.2", "Severity is modelled as lognormal and estimated by maximum likelihood from the pool's claims record "
+                "for the eight accident years before the latest five (for the 2027 coverage year, the accident years "
+                "2014 to 2021), with the record brought to the coverage year's cost level by the ratio of the coverage "
                 "year's claim cost index to the accident year's."),
         ("4.3", "The expected number of the coverage year's occurrences costing more than an amount is the actuary's "
-                "expected number costing more than $25,000, times the curve's probability that an occurrence costs "
-                "more than the amount, divided by the curve's probability that an occurrence costs more than $25,000."),
+                "expected number of the year's occurrences costing more than $25,000, times the estimated probability "
+                "that an occurrence of the year costing more than $25,000 costs more than the amount."),
     ]),
     ("5  The retention", [
         ("5.1", "The pool keeps every layer of cost that it expects its occurrences to reach more than once in a "
@@ -109,8 +110,9 @@ POLICY_CLAUSES = [
         ("5.3", "The retention does not change any member's deductible."),
     ]),
     ("6  Review", [
-        ("6.1", "Each autumn the finance director brings the curve, the expected numbers at each quoted attachment and "
-                "the indications to the trustees, who set the next year's retention at their November meeting."),
+        ("6.1", "The executive director sets each coverage year's retention under this policy when proposing the "
+                "pool's budget for that year, from the severity estimate, the expected numbers at each quoted attachment "
+                "and the indications the finance director brings each autumn."),
     ]),
 ]
 
@@ -150,7 +152,7 @@ def memo_sections():
         ]),
         ("3  Retention and excess insurance", [
             "The pool pays the cost of an occurrence above the member's deductible up to the pool's retention, which "
-            "includes the deductible: $250,000 for occurrences in 2014 to 2017 and $500,000 for occurrences from "
+            "includes the deductible: $500,000 for occurrences in 2014 to 2017 and $1,000,000 for occurrences from "
             "1 January 2018.",
             "Above the retention the excess insurer of the occurrence's year pays the cost directly, up to $10,000,000 "
             "for each occurrence. The excess insurer's payments are not entered in the pool's claims system.",
@@ -183,12 +185,13 @@ def write_memo(path):
 
 
 # ---------------------------------------------------------------- the actuary's exhibits
-def write_study(path, payroll):
+def write_study(path, police, other):
     who, _ = W.PEOPLE["actuary"]
     title = "Actuarial Study of Liability Losses as of September 30, 2026: Selected Exhibits"
     doc = _doc(path, title, who)
-    rate = round(W.COUNT_25K / (payroll / 1e6), 5)
-    assert round(rate * payroll / 1e6, 1) == W.COUNT_25K
+    r_le = round(W.COUNT_LE / (police / 1e6), 5)
+    r_ot = round(W.COUNT_OT / (other / 1e6), 5)
+    assert round(r_le * police / 1e6, 1) == W.COUNT_LE and round(r_ot * other / 1e6, 1) == W.COUNT_OT
     s = [Paragraph(W.POOL.upper(), S_META), Paragraph(title, S_H1),
          Paragraph("Prepared by %s, FCAS, MAAA, consulting actuary to the pool. October 9, 2026. These pages carry "
                    "Exhibits 3 and 6 of the study; the full study is on file with the finance director." % who, S_META),
@@ -211,13 +214,18 @@ def write_study(path, payroll):
           Paragraph("Exhibit 6. Projected 2027 frequency", S_H2),
           Paragraph("Occurrences are counted by their cost from the first dollar, damages and defense together, at "
                     "2027 cost.", S_BODY)]
-    rows = [[Paragraph("2027 payroll exposure, as declared by the members", S_CELL),
-             Paragraph(dollars(payroll), S_CELLR)],
-            [Paragraph("Selected occurrences costing more than $25,000, per $1 million of payroll", S_CELL),
-             Paragraph("%.5f" % rate, S_CELLR)],
-            [Paragraph("Expected 2027 liability occurrences costing more than $25,000", S_CELLB),
+    hd = [Paragraph(h, S_CELLB if k == 0 else S_CELLBR) for k, h in enumerate(
+        ("Coverage", "2027 exposure, payroll as declared", "Selected per $1 million of payroll",
+         "Expected occurrences costing more than $25,000"))]
+    rows = [hd,
+            [Paragraph("Law enforcement liability (police department payroll)", S_CELL), Paragraph(dollars(police), S_CELLR),
+             Paragraph("%.5f" % r_le, S_CELLR), Paragraph("%.1f" % W.COUNT_LE, S_CELLR)],
+            [Paragraph("General, automobile, public officials' and employment practices liability (all other payroll)",
+                       S_CELL), Paragraph(dollars(other), S_CELLR), Paragraph("%.5f" % r_ot, S_CELLR),
+             Paragraph("%.1f" % W.COUNT_OT, S_CELLR)],
+            [Paragraph("All liability", S_CELLB), Paragraph(dollars(police + other), S_CELLBR), Paragraph("", S_CELL),
              Paragraph("%.1f" % W.COUNT_25K, S_CELLBR)]]
-    t = Table(rows, colWidths=[118 * mm, 38 * mm], hAlign="LEFT")
+    t = Table(rows, colWidths=[64 * mm, 34 * mm, 28 * mm, 34 * mm], hAlign="LEFT")
     t.setStyle(TableStyle([("LINEBELOW", (0, 0), (-1, -1), 0.3, GREY), ("TOPPADDING", (0, 0), (-1, -1), 3),
                            ("BOTTOMPADDING", (0, 0), (-1, -1), 3)]))
     s += [t, Spacer(1, 6),
@@ -225,7 +233,7 @@ def write_study(path, payroll):
     foot = "%s | Actuarial study as of 9/30/2026 | Exhibits 3 and 6" % W.POOL
     doc.build(s, onFirstPage=_frame("Actuarial study 2026", "Selected exhibits", foot, "Sans"),
               onLaterPages=_frame("Actuarial study 2026", "Selected exhibits", foot, "Sans"))
-    return rate
+    return r_le, r_ot
 
 
 # ---------------------------------------------------------------- the broker's indications
@@ -255,10 +263,10 @@ def write_quotes(path):
     s += [t, Spacer(1, 6), Paragraph("Basis of the indications", S_H2),
           Paragraph("Attachments are stated per occurrence, from the first dollar of the occurrence and inclusive of "
                     "the member's deductible.", S_BODY),
-          Paragraph("The indicated premium for an option is its operating expenditure rate applied to the members' "
-                    "2027 total operating expenditures as declared for the renewal, plus its unit rate applied to the "
-                    "units on the members' vehicle schedules at September 30, 2026. Premiums are annual and exclude "
-                    "the Washington surplus lines tax and stamping fee.", S_BODY),
+          Paragraph("The indicated premium for an option is its operating expenditure rate applied to the 2027 "
+                    "members' total operating expenditures as last declared for the renewal, plus its unit rate "
+                    "applied to the units on those members' vehicle schedules at September 30, 2026. Premiums are "
+                    "annual and exclude the Washington surplus lines tax and stamping fee.", S_BODY),
           Paragraph("Subjectivities", S_H2),
           Paragraph("The indications are subject to the pool's final 2027 exposure declarations and vehicle "
                     "schedules, to no material change in the pool's loss experience before binding, and to the "
@@ -272,7 +280,7 @@ def write_quotes(path):
 # ---------------------------------------------------------------- the extract notes
 NOTES_TEXT = """# Extract notes: 2027 retention review
 
-Finance office, {pool}. Files pulled for the trustees' November 2026 meeting; questions on the claims files to
+Finance office, {pool}. Files pulled for the 2027 budget; questions on the claims files to
 {claims}, on the declarations and schedules to the finance office. Filed with them as issued:
 {policy}, {memo}, {study} and {quotes}.
 
@@ -307,13 +315,13 @@ under its asset numbers.
 ## {decl}
 
 The 2027 renewal exposure declarations as exported from the declarations intake on 5 October 2026, one row for each
-department line a member declared. Budget Basis says whether the member's 2027 budget was adopted or still proposed
-when it declared.
+department line of each declaration a member submitted. Budget Basis says whether the member's 2027 budget was
+adopted or still proposed when it declared.
 
 ## member_roster.csv
 
 Every member since 2014: member number, legacy member code, class, the date it joined the pool and, where it has
-left, the date it withdrew.
+left or has given notice to leave, the date its withdrawal takes effect.
 
 ## {dedhist}
 

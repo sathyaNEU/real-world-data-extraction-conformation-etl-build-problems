@@ -17,17 +17,19 @@ QUOTE_DATE = dt.date(2026, 10, 2)     # the broker's indications for 1 January 2
 BOARD_DATE = dt.date(2026, 11, 18)    # the trustees adopt the 2027 budget and the retention
 COVER_YEAR = 2027
 
-FIT_YEARS = list(range(2014, 2022))   # the severity curve's accident years, every occurrence now closed
+FIT_YEARS = list(range(2014, 2022))   # the severity's accident years
 OPEN_YEARS = list(range(2022, 2027))
 ALL_YEARS = FIT_YEARS + OPEN_YEARS
 
 # the pool's per-occurrence retention, inclusive of the member's deductible, by accident year
-RETENTION = {y: (250_000 if y <= 2017 else 500_000) for y in ALL_YEARS}
+RETENTION = {y: (500_000 if y <= 2017 else 1_000_000) for y in ALL_YEARS}
 DEDUCTIBLES = (10_000, 25_000, 50_000, 100_000)
 ANCHOR = 25_000                        # the actuary's frequency is counted above this ground-up amount
 OPTIONS = (1_000_000, 1_500_000, 2_000_000, 2_500_000, 3_000_000, 4_000_000, 5_000_000)   # quoted attachments
 BAR = 1.0                              # the policy: no layer the pool expects to be reached more than once a year
-COUNT_25K = 228.7                      # the actuary's expected 2027 occurrences costing more than $25,000 ground up
+# the actuary's expected 2027 occurrences costing more than $25,000 ground up: law enforcement liability, the other parts
+COUNT_LE, COUNT_OT = 84.7, 364.7
+COUNT_25K = round(COUNT_LE + COUNT_OT, 1)
 # the broker's indications: per attachment, the rate per $1,000 of the members' 2027 operating expenditures and the
 # rate per unit on the members' vehicle schedules at 30 September 2026, for $10,000,000 per occurrence above it
 QUOTES = {1_000_000: (0.2412, 71.40), 1_500_000: (0.1928, 56.85), 2_000_000: (0.1597, 48.65),
@@ -39,11 +41,6 @@ DED_CUTS = (0.15, 0.42, 0.72)          # members ranked by size: the largest car
 INDEX = {2012: 90.1, 2013: 95.2, 2014: 100.0, 2015: 105.3, 2016: 110.9, 2017: 117.4, 2018: 124.6, 2019: 132.1, 2020: 138.8,
          2021: 147.9, 2022: 158.6, 2023: 169.5, 2024: 180.1, 2025: 191.4, 2026: 203.2, 2027: 215.6}
 
-# the ground-up severity of a liability occurrence at 2027 cost (lognormal in dollars)
-MU, SIGMA = 9.90, 1.80
-# ground-up liability occurrences a year at the 2027 membership, every size (the members never see most of them
-# as claims: they are the curve the pool's record is a window on)
-GROUND_RATE = 520.0
 
 PEOPLE = {
     "director": ("Laura Williams", "Finance Director"),
@@ -138,13 +135,15 @@ def occurrences(rng, mem):
         p = np.array([m["w"] for m in act]) ** 0.85
         p = p / p.sum()
         who = rng.choice(len(act), n, p=p)
-        x27 = rng.lognormal(MU, SIGMA, n)
         day = rng.integers(0, span, n)
         for k in range(n):
             m = act[int(who[k])]
+            mix = np.array(PART_MIX[m["kind"]]) * np.array(PART_FREQ)
+            part = PARTS[int(rng.choice(5, p=mix / mix.sum()))]
+            x27 = float(rng.lognormal(*SEV[part]))
             d = dt.date(y, 1, 1) + dt.timedelta(days=int(day[k]))
-            out.append({"ay": y, "date": d, "member": m["no"], "x27": float(x27[k]),
-                        "x": float(x27[k]) / factor(y), "ded": deductible_on(m, d), "ret": RETENTION[y]})
+            out.append({"ay": y, "date": d, "member": m["no"], "x27": x27, "part": part,
+                        "x": x27 / factor(y), "ded": deductible_on(m, d), "ret": RETENTION[y]})
     out.sort(key=lambda o: (o["date"], o["member"], o["x27"]))
     return out
 
@@ -240,11 +239,15 @@ LEGACY_ADMIN = "Tallowmark Claims Services"
 CURRENT_ADMIN = "Brisbrook Risk Services"
 PARTS = ("GL", "AL", "LE", "PO", "EP")       # general, auto, law enforcement, public officials, employment practices
 PART_MIX = {"city": (0.31, 0.27, 0.24, 0.10, 0.08), "fire district": (0.36, 0.40, 0.0, 0.12, 0.12),
-            "water-sewer district": (0.52, 0.28, 0.0, 0.10, 0.10), "port district": (0.50, 0.26, 0.06, 0.10, 0.08),
+            "water-sewer district": (0.52, 0.28, 0.0, 0.10, 0.10), "port district": (0.54, 0.28, 0.0, 0.10, 0.08),
             "transit authority": (0.30, 0.56, 0.0, 0.06, 0.08), "park and recreation district": (0.62, 0.18, 0.0, 0.10, 0.10),
             "library district": (0.56, 0.10, 0.0, 0.16, 0.18)}
 
 
+# the ground-up severity at 2027 cost by coverage part: law enforcement's tail is far longer than the other parts'
+SEV = {"GL": (9.2, 1.35), "AL": (9.2, 1.35), "LE": (8.6, 2.45), "PO": (9.2, 1.35), "EP": (9.2, 1.35)}
+PART_FREQ = (1.0, 1.0, 1.5, 1.0, 1.0)
+GROUND_RATE = 2000.0
 # courts closed for much of 2020 and the administrator changed that July, so claims tendered then closed slower
 SLOWDOWN = {2019: 1.12, 2020: 1.48, 2021: 1.31, 2022: 1.14}
 # an occurrence past the retention: the median years its suit adds to the file
@@ -272,8 +275,7 @@ def development(rng, mem, occ):
         x = _cents(o["x"])
         if x <= o["ded"]:
             continue
-        mix = np.array(PART_MIX[m["kind"]])
-        part = PARTS[int(rng.choice(5, p=mix / mix.sum()))]
+        part = o["part"]
         s = 1.0 if rng.random() < 0.11 else float(rng.beta(2.2, 4.5))      # share of the cost that was defence
         tender = o["date"] + dt.timedelta(days=int(18 + rng.gamma(1.5, 80.0)))
         dur = (float(rng.lognormal(math.log(250.0 * (x / 40_000.0) ** 0.25), 0.55)) * SLOWDOWN.get(tender.year, 1.0)
@@ -559,6 +561,7 @@ def schedule_log(rng, mem, units):
                     row(u, u["fmc"], "DELETE", u["disposed"], ent, u["vin"], u["serial"], None)
                 else:
                     row(u, u["unit_no"], "DELETE", u["disposed"], ent, pool_vin, u["serial_keyed"], None)
+    transfers(rng_t=stream(9), mem=mem, units=units, rows=rows)
     rows = [r for r in rows if r["entered"] <= LOG_EXTRACT]
     firsts = {}
     for r in rows:
@@ -574,6 +577,38 @@ def schedule_log(rng, mem, units):
     rows.sort(key=lambda r: (r["entered"], r["member"], r["unit_no"], {"ADD": 0, "CHANGE": 1, "DELETE": 2}[r["type"]]))
     for i, r in enumerate(rows):
         r["txn"] = "T%07d" % (2_204_117 + i * 3 + (i * 7919) % 3)
+    return rows
+
+
+# vehicles one member sold to another inside the pool: the schedule keeps the unit number and changes its member
+TRANSFERS = (("city", "fire district", 2), ("city", "park and recreation district", 1), ("city", "library district", 1),
+             ("city", "transit authority", 1), ("fire district", "water-sewer district", 1),
+             ("port district", "water-sewer district", 1))
+
+
+def transfers(rng_t, mem, units, rows):
+    byno = {m["no"]: m for m in mem}
+    taken = set()
+    for src, dst, n in TRANSFERS:
+        srcm = sorted(m["no"] for m in mem if m["kind"] == src and not m["consortium"] and m["left"] is None)
+        dstm = sorted(m["no"] for m in mem if m["kind"] == dst and m["left"] is None and not m.get("withdraws"))
+        live = [u for u in units if u["member"] in srcm and "fmc" not in u and u["unit_no"] not in taken
+                and u["acquired"] < dt.date(2024, 6, 1) and u["disposed"] > dt.date(2027, 6, 1)]
+        live.sort(key=lambda u: _hash_int("xfer" + u["unit_no"]))
+        for u in live[:n]:
+            taken.add(u["unit_no"])
+            to = dstm[_hash_int("to" + u["unit_no"]) % len(dstm)]
+            d = dt.date(2025, 3, 1) + dt.timedelta(days=int(rng_t.integers(0, 520)))
+            u["transfer"] = (d, to)
+            mine = [r for r in rows if r["unit_no"] == u["unit_no"]]
+            for r in mine:
+                if r["effective"] > d:
+                    r["member"] = to
+            base = max((r for r in mine if r["effective"] <= d), key=lambda r: (r["effective"], r["entered"]))
+            rows.append({"member": to, "unit_no": u["unit_no"], "type": "CHANGE", "effective": d,
+                         "entered": d + dt.timedelta(days=int(rng_t.integers(0, 16))), "vin": base["vin"],
+                         "serial": base["serial"], "year": u["year"], "make": u["make"], "cls": u["cls"],
+                         "value": base["value"], "u": u})
     return rows
 
 
@@ -597,5 +632,53 @@ def declarations(rng, mem):
         sub = dt.date(2026, 8, 3) + dt.timedelta(days=int(rng.integers(0, 50)))
         basis = "Adopted" if rng.random() < 0.3 else "Proposed"
         out.append({"member": m["no"], "kind": m["kind"], "lines": lines, "toe": toe, "submitted": sub, "basis": basis,
-                    "paper": m["paper"]})
+                    "paper": m["paper"], "seq": 1})
     return out
+
+
+WITHDRAWAL_NOTICE = dt.date(2026, 9, 14)     # a member's notice to leave the pool at the end of 2026
+EXPORT_DATE = dt.date(2026, 10, 5)
+
+
+def notices_and_redeclarations(rng, mem, dec):
+    """A member that declared for 2027 and then gave notice to leave the pool on 31 December 2026, and members that
+    declared on a proposed budget and declared again once their budget was adopted (the intake keeps both)."""
+    byno = {m["no"]: m for m in mem}
+    cands = sorted((d for d in dec if d["kind"] == "water-sewer district" and not byno[d["member"]]["consortium"]),
+                   key=lambda d: d["member"])
+    leaver = cands[len(cands) // 2]["member"]
+    byno[leaver]["withdraws"] = dt.date(2026, 12, 31)
+    extra = []
+    for kind, n in REDECLARE:
+        pool = [d for d in dec if d["kind"] == kind and d["member"] != leaver]
+        pick = sorted(pool, key=lambda d: _hash_int("redeclare%d" % d["member"]))[:n]
+        for j, d in enumerate(sorted(pick, key=lambda d: d["member"])):
+            d["basis"] = "Proposed"
+            delta = float(rng.uniform(0.025, 0.085)) * (-1 if j % 2 == 0 else 1)   # budgets cut and raised on adoption
+            sub2 = min(d["submitted"] + dt.timedelta(days=int(rng.integers(18, 44))), EXPORT_DATE - dt.timedelta(days=1))
+            lines = [{"department": ln["department"], "fte": ln["fte"],
+                      "payroll": int(round(ln["payroll"] * (1 + delta * float(rng.uniform(0.3, 0.7))), -2))}
+                     for ln in d["lines"]]
+            extra.append({"member": d["member"], "kind": d["kind"], "lines": lines,
+                          "toe": int(round(d["toe"] * (1 + delta))), "submitted": sub2, "basis": "Adopted",
+                          "paper": d["paper"], "seq": 2})
+    out = sorted(dec + extra, key=lambda d: (d["member"], d["seq"]))
+    return out
+
+
+# members that declared again on an adopted budget, by class
+REDECLARE = (("city", 4), ("fire district", 2), ("water-sewer district", 1), ("port district", 1),
+             ("transit authority", 1), ("park and recreation district", 1), ("library district", 1))
+
+
+def rated(dec, mem):
+    """The 2027 members' declarations as the quotes rate them: each member's latest submission, the members that
+    leave before 2027 left out."""
+    leaving = {m["no"] for m in mem if m.get("withdraws") and m["withdraws"] < dt.date(2027, 1, 1)}
+    last = {}
+    for d in dec:
+        if d["member"] in leaving:
+            continue
+        if d["member"] not in last or (d["submitted"], d["seq"]) > (last[d["member"]]["submitted"], last[d["member"]]["seq"]):
+            last[d["member"]] = d
+    return last

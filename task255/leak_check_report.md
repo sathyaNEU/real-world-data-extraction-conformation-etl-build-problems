@@ -4,19 +4,22 @@
 
 LEAK stops the ship. REVIEW is a reader's call and the /leak-check command's solver's-eye pass reads every REVIEW line. INFO is a sweep that ran and found nothing or was skipped.
 
-Stump terms swept: million, record, closed, likelihood, truncation, censoring, deductible, window, sentence, censored, asserted, memorandum, severity, decisive, fitted, actuary, accident, nothing, distribution, ground-up, observation, thresholds, recorded, archive, current
+Stump terms swept: million, record, coverage, likelihood, severity, deductible, sentence, actuary, closed, truncation, censoring, decisive, censored, golden, fitted, memorandum, payments, window, reflex, search, claims, exposure, accident, carried, nothing
 
-## 3 answer figures in the pack (REVIEW 1)
+## 3 answer figures in the pack (REVIEW 2)
+- **REVIEW** `liability_coverage_memorandum_2026.pdf`: golden figure 1.2 appears: ...under the terms in force in the year it happens. 1.2 One occurrence is one occurrence however many c...
 - **REVIEW** `risk_financing_policy_2026.pdf`: carries 10 of 13 distinctive words of the committed call: "Keep the first $4,000,000 of each 2027 liability occurrence: Fallowmere's 2027 retention is the $4.0 million quoted atta"
 
-## 4 design-note vocabulary (REVIEW 4)
-- **REVIEW** `actuarial_study_2026_selected_exhibits.pdf`: 3 of 25 stump-paragraph terms appear (million, actuary, accident); read whether the document names the move
-- **REVIEW** `extract_notes_2027_retention_review.md`: 5 of 25 stump-paragraph terms appear (closed, deductible, actuary, accident, current); read whether the document names the move
-- **REVIEW** `liability_coverage_memorandum_2026.pdf`: 3 of 25 stump-paragraph terms appear (record, deductible, memorandum); read whether the document names the move
-- **REVIEW** `risk_financing_policy_2026.pdf`: 8 of 25 stump-paragraph terms appear (record, likelihood, deductible, severity, actuary, accident); read whether the document names the move
+## 4 design-note vocabulary (REVIEW 5)
+- **REVIEW** `actuarial_study_2026_selected_exhibits.pdf`: 5 of 25 stump-paragraph terms appear (million, coverage, actuary, exposure, accident); read whether the document names the move
+- **REVIEW** `excess_liability_indications_2027.pdf`: 4 of 25 stump-paragraph terms appear (coverage, deductible, claims, exposure); read whether the document names the move
+- **REVIEW** `extract_notes_2027_retention_review.md`: 9 of 25 stump-paragraph terms appear (coverage, deductible, actuary, closed, payments, claims); read whether the document names the move
+- **REVIEW** `liability_coverage_memorandum_2026.pdf`: 6 of 25 stump-paragraph terms appear (record, coverage, deductible, memorandum, payments, claims); read whether the document names the move
+- **REVIEW** `risk_financing_policy_2026.pdf`: 9 of 25 stump-paragraph terms appear (record, coverage, likelihood, severity, deductible, actuary); read whether the document names the move
 
-## 9 dates after the setting (REVIEW 1)
-- **REVIEW** `vehicle_schedule_log_2022-2026.csv`: 7 ISO dates after 2026-11-18, e.g. 2026-11-19, 2026-11-20, 2026-11-21, 2026-11-22, 2026-11-24
+## 9 dates after the setting (REVIEW 2)
+- **REVIEW** `member_roster.csv`: 1 ISO dates after 2026-10-19, e.g. 2026-12-31
+- **REVIEW** `vehicle_schedule_log_2022-2026.csv`: 25 ISO dates after 2026-10-19, e.g. 2026-10-20, 2026-10-21, 2026-10-26, 2026-10-27, 2026-10-28
 
 ## 10 container metadata (INFO 1)
 - **INFO** `-`: audit reported no writer signature (1 lines)
@@ -34,6 +37,7 @@ Stump terms swept: million, record, closed, likelihood, truncation, censoring, d
 ## 8 column names (clean)
 
 ## 11 prompt gate (clean)
+
 
 ## Solver's-eye read
 

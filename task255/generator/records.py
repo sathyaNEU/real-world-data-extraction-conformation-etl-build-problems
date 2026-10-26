@@ -152,7 +152,8 @@ def write_roster(path, mem):
         w.writerow(["member_no", "member_code", "member_class", "joined", "withdrew"])
         for m in sorted(mem, key=lambda m: m["no"]):
             w.writerow([m["no"], m["code"], m["kind"], founded(m).isoformat(),
-                        dt.date(m["left"], 12, 31).isoformat() if m["left"] is not None else ""])
+                        dt.date(m["left"], 12, 31).isoformat() if m["left"] is not None else
+                        (m["withdraws"].isoformat() if m.get("withdraws") else "")])
     return len(mem)
 
 

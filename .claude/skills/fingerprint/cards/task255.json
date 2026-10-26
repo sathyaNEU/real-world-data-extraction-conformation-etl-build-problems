@@ -11,7 +11,7 @@
     "shape": "04",
     "decision_type": "dial_setting",
     "answer_unit": "named_option",
-    "answer": "Keep the first $4,000,000 of each 2027 liability occurrence: Fallowmere's 2027 retention is the $4.0 million quoted attachment (0.83 expected 2027 occurrences above it, 1.20 above $3.0 million) (to be confirmed at build)",
+    "answer": "Keep the first $4,000,000 of each 2027 liability occurrence: Fallowmere's 2027 retention is the $4.0 million quoted attachment, which the pool expects 0.8 of its 2027 occurrences to cost more than (1.2 above $3.0 million)",
     "answer_source": "submission.md block 1; golden retention_2027.xlsx (sheet Retention 2027)",
     "gap": [
         "population"
@@ -36,8 +36,8 @@
     "scoring_unit": "per covered member",
     "spine": {
         "file": "liability_loss_run_2026-09-30.csv and liability_loss_run_legacy_2014-2020.xlsx",
-        "rows": 1458,
-        "entity": "one liability occurrence the pool handled (above its member's deductible), with the member's deductible and the pool's paid and reserved amounts",
+        "rows": 1071,
+        "entity": "one liability occurrence the pool handled (above its member's deductible), with its coverage part, the member's deductible and the pool's paid and reserved amounts",
         "grain": "occurrence",
         "source": "synthetic (constructed pool records, declared)"
     },
@@ -65,8 +65,8 @@
     "opening_move": "question-first",
     "question_form": "how-much",
     "driver": "The decisive quantity is the upper tail of a size distribution made of two kinds of item whose tails differ by far more than their bulk, with the expected number above a low anchor projected separately for each kind; the record identifies both tails once each kind is fitted on its own through the record's floor and ceiling, and the count above each high threshold is the sum of each kind's anchor times its own tail ratio, while one curve fitted to the pooled record is shaped by the short-tailed majority and puts the dial two steps too low.",
-    "driver_concrete": "Ground-up liability severity is fitted at 2027 cost to the pool's record of accident years 2014 to 2021, each occurrence left-truncated at its member's deductible and censored at the retention, separately for law enforcement liability and for the other four coverage parts, and the expected 2027 occurrences above each quoted attachment are the actuary's 85.5 law enforcement and 364.3 other occurrences above $25,000 each carried by its own curve: they first fall to one at $4.0 million (1.20 above $3.0 million, 0.83 above $4.0 million), while one curve fitted to every occurrence, the same likelihood, clears one at $2.0 million (0.92).",
-    "stump": "The default path fits the policy's lognormal by maximum likelihood to every occurrence of 2014 to 2021, each truncated at its deductible and the 25 at the retention censored, both at 2027 cost, and carries the actuary's 449.8 occurrences above $25,000 by that one curve: $2.0 million (0.92 above it); the law enforcement occurrences, under a third of the record, carry most of the tail, and the one curve is shaped by the other parts; fitted for each group and summed over the actuary's two projections the count first clears one at $4.0 million (1.20 above $3.0 million, 0.83 above $4.0 million).",
+    "driver_concrete": "Ground-up liability severity is fitted at 2027 cost to the pool's record of accident years 2014 to 2021, each occurrence left-truncated at its member's deductible and censored at the retention, separately for law enforcement liability and for the other four coverage parts, and the expected 2027 occurrences above each quoted attachment are the actuary's 84.7 law enforcement and 364.7 other occurrences above $25,000 each carried by its own curve: they first fall to one at $4.0 million (1.2 above $3.0 million, 0.8 above $4.0 million), while one curve fitted to every occurrence, the same likelihood, clears one at $2.0 million (0.92).",
+    "stump": "The default path fits the policy's lognormal by maximum likelihood to every occurrence of 2014 to 2021, each truncated at its deductible and the 25 at the retention censored, both at 2027 cost, and carries the actuary's 449.4 occurrences above $25,000 by that one curve: $2.0 million (0.92 above it); the law enforcement occurrences, under a third of the record, carry most of the tail, and the one curve is shaped by the other parts; fitted for each group and summed over the actuary's two projections the count first clears one at $4.0 million (1.2 above $3.0 million, 0.8 above $4.0 million).",
     "stump_class": "analytical",
     "analyst_test": "A strong analyst who cleans both loss runs, reads every field and filed rule, brings the record to 2027 cost and fits the lognormal by maximum likelihood with each deductible as truncation and the capped occurrences censored at the retention, then carries the actuary's total of 449.8 by that curve, files $2.0 million (0.92 above it); two isolated call-only probes did exactly that.",
     "domain_test": "The call turns on the ground-up severity tail of a public entity pool's liability occurrences at each excess attachment, estimated the way excess layers are priced, with severity curves by coverage (law enforcement liability against general, auto, public officials' and employment practices liability) fitted through the deductible-truncated, retention-censored record and weighted by the actuary's frequency projections on each coverage's own exposure; with another field's nouns there is no coverage part whose verdicts run a longer tail, no deductible floor, no retention ceiling and no excess attachment to set.",
