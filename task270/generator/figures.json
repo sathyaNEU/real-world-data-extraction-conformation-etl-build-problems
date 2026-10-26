@@ -1,111 +1,128 @@
 {
- "ask_a": {
-  "aged_85_or_under": {
-   "Brindlemere": 342,
-   "Corvale": 274,
-   "Mosswick": 235,
-   "Penwardine": 471,
-   "Quarndale": 276,
-   "Ravensfold": 342,
-   "Swinholt": 371,
-   "Thurlwick": 499
+ "asks": {
+  "B": {
+   "detectable": {
+    "OB-27-001": {
+     "active_days_d1_14": 0.093,
+     "first_purchase_d14": 1.15,
+     "items_saved_d1_14": 0.051,
+     "push_opens_d1_14": 0.063,
+     "sessions_d1_14": 0.132
+    },
+    "OB-27-002": {
+     "active_days_d1_14": 0.179,
+     "first_purchase_d14": 2.21,
+     "items_saved_d1_14": 0.098,
+     "push_opens_d1_14": 0.121,
+     "sessions_d1_14": 0.253
+    },
+    "OB-27-003": {
+     "active_days_d1_14": 0.112,
+     "first_purchase_d14": 1.38,
+     "items_saved_d1_14": 0.061,
+     "push_opens_d1_14": 0.075,
+     "sessions_d1_14": 0.158
+    },
+    "OB-27-004": {
+     "active_days_d1_14": 0.084,
+     "first_purchase_d14": 1.03,
+     "items_saved_d1_14": 0.046,
+     "push_opens_d1_14": 0.056,
+     "sessions_d1_14": 0.118
+    },
+    "OB-27-005": {
+     "active_days_d1_14": 0.15,
+     "first_purchase_d14": 1.85,
+     "items_saved_d1_14": 0.082,
+     "push_opens_d1_14": 0.101,
+     "sessions_d1_14": 0.212
+    },
+    "OB-27-006": {
+     "active_days_d1_14": 0.096,
+     "first_purchase_d14": 1.18,
+     "items_saved_d1_14": 0.053,
+     "push_opens_d1_14": 0.065,
+     "sessions_d1_14": 0.136
+    },
+    "OB-27-007": {
+     "active_days_d1_14": 0.141,
+     "first_purchase_d14": 1.74,
+     "items_saved_d1_14": 0.078,
+     "push_opens_d1_14": 0.095,
+     "sessions_d1_14": 0.2
+    }
+   },
+   "users_per_arm": {
+    "OB-27-001": 24786,
+    "OB-27-002": 6749,
+    "OB-27-003": 17353,
+    "OB-27-004": 30936,
+    "OB-27-005": 9644,
+    "OB-27-006": 23571,
+    "OB-27-007": 10845
+   }
   },
-  "under_follow_up": {
-   "Brindlemere": 500,
-   "Corvale": 383,
-   "Mosswick": 326,
-   "Penwardine": 687,
-   "Quarndale": 345,
-   "Ravensfold": 474,
-   "Swinholt": 553,
-   "Thurlwick": 792
-  }
- },
- "ask_b": {
-  "average_days": {
-   "Brindlemere": 46.8,
-   "Corvale": 47.5,
-   "Mosswick": 47.1,
-   "Penwardine": 47.2,
-   "Quarndale": 46.8,
-   "Ravensfold": 47.8,
-   "Swinholt": 47.8,
-   "Thurlwick": 46.9
-  },
-  "within_42_days_pct": {
-   "Brindlemere": 36.8,
-   "Corvale": 35.8,
-   "Mosswick": 42.6,
-   "Penwardine": 37.0,
-   "Quarndale": 38.8,
-   "Ravensfold": 38.0,
-   "Swinholt": 35.2,
-   "Thurlwick": 37.7
+  "C": {
+   "H1": {
+    "active_days_d1_14": 0.04,
+    "first_purchase_d14": 0.62,
+    "items_saved_d1_14": -0.01,
+    "push_opens_d1_14": 0.034,
+    "retained_m6": 0.62,
+    "sessions_d1_14": 0.06
+   },
+   "H2": {
+    "active_days_d1_14": -0.032,
+    "first_purchase_d14": 1.11,
+    "items_saved_d1_14": -0.032,
+    "push_opens_d1_14": -0.022,
+    "retained_m6": 1.69,
+    "sessions_d1_14": 0.147
+   }
   }
  },
  "call": {
-  "below": "Mosswick",
+  "changes": 489,
+  "experiments": 399,
   "order": [
-   "Quarndale",
-   "Thurlwick",
-   "Mosswick",
-   "Penwardine",
-   "Corvale",
-   "Ravensfold",
-   "Swinholt",
-   "Brindlemere"
+   "first_purchase_d14",
+   "sessions_d1_14",
+   "items_saved_d1_14",
+   "push_opens_d1_14",
+   "active_days_d1_14"
   ],
-  "sites": [
-   "Quarndale",
-   "Thurlwick"
-  ]
+  "proxy": "first_purchase_d14",
+  "proxy_correlation": 0.54,
+  "proxy_name": "first purchase within 14 days",
+  "runner_up": "sessions_d1_14",
+  "runner_up_correlation": 0.31,
+  "runner_up_name": "sessions, days 1 to 14",
+  "sentence": "Kleerwissel should adopt first purchase within 14 days (first_purchase_d14) as its 2027 proxy for six-month retention."
  },
- "counts": {
-  "diagnosed_by_clinic": {
-   "Brindlemere": 163,
-   "Corvale": 123,
-   "Mosswick": 101,
-   "Penwardine": 216,
-   "Quarndale": 291,
-   "Ravensfold": 184,
-   "Swinholt": 199,
-   "Thurlwick": 239
-  },
-  "patients_by_clinic": {
-   "Brindlemere": 662,
-   "Corvale": 551,
-   "Mosswick": 432,
-   "Penwardine": 902,
-   "Quarndale": 153,
-   "Ravensfold": 599,
-   "Swinholt": 776,
-   "Thurlwick": 999
-  },
-  "patients_compared": 5074
+ "components": {
+  "holdout_users": 31584,
+  "user_level_correlation": {
+   "active_days_d1_14": 0.54,
+   "first_purchase_d14": 0.06,
+   "items_saved_d1_14": 0.07,
+   "push_opens_d1_14": 0.14,
+   "sessions_d1_14": 0.46
+  }
  },
- "decline": {
-  "Brindlemere": 4.0,
-  "Corvale": 4.0,
-  "Mosswick": 4.5,
-  "Penwardine": 4.5,
-  "Quarndale": 5.0,
-  "Ravensfold": 4.0,
-  "Swinholt": 4.0,
-  "Thurlwick": 4.5
+ "correlations": {
+  "active_days_d1_14": -0.09,
+  "first_purchase_d14": 0.54,
+  "items_saved_d1_14": 0.14,
+  "push_opens_d1_14": 0.02,
+  "sessions_d1_14": 0.31
  },
- "gain": 2.5,
- "rivals": {
-  "period_only": [
-   "Thurlwick",
-   "Penwardine"
-  ],
-  "slope_through_every_sitting": [
-   "Thurlwick",
-   "Penwardine"
-  ]
- },
- "terms": {
-  "age_limit": 85,
-  "six_weeks_days": 42
+ "parameters": {
+  "alpha_per_cent": 5,
+  "holdout_2027_per_cent": 3,
+  "holdout_2027_weekly_q1": 430,
+  "power_per_cent": 80,
+  "z_alpha": "1.96",
+  "z_power": "0.84",
+  "z_sum": "2.80"
  }
 }

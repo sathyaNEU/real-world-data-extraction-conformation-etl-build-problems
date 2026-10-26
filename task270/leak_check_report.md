@@ -1,20 +1,20 @@
 # leak check, task270
 
-**Verdict: REVIEW.** 15 files read, 33 golden figures and 0 candidate names taken from submission.md, 25 stump terms taken from the design note.
+**Verdict: REVIEW.** 13 files read, 59 golden figures and 0 candidate names taken from submission.md, 25 stump terms taken from the design note.
 
 LEAK stops the ship. REVIEW is a reader's call and the /leak-check command's solver's-eye pass reads every REVIEW line. INFO is a sweep that ran and found nothing or was skipped.
 
-Stump terms swept: patient, sitting, sittings, thurlwick, quarndale, change, second, reader, record, completed, window, mosswick, random, penwardine, recorded, asserted, period, decisive, produces, nothing, claims, architecture, slopes, checks, routes
+Stump terms swept: covariance, change, reader, sampling, experiments, outcome, user-level, sessions, correction, measured, clinic, architecture, errors, shared, landed, nothing, claims, scorecards, variance, reading, strong, lesson, reflex, patients, platform
 
-## 3 answer figures in the pack (REVIEW 2)
-- **REVIEW** `contents.txt`: carries 4 of 7 distinctive words of the committed call: 'The Research Committee should name Quarndale and Thurlwick as the recruiting sites for ARV-1102.'
-- **REVIEW** `site_selection_paper_RC-26-11.pdf`: carries 7 of 7 distinctive words of the committed call: 'The Research Committee should name Quarndale and Thurlwick as the recruiting sites for ARV-1102.'
+## 4 design-note vocabulary (REVIEW 3)
+- **REVIEW** `experimentation_platform_guide.pdf`: 5 of 25 stump-paragraph terms appear (change, experiments, user-level, scorecards, platform); read whether the document names the move
+- **REVIEW** `proxy_metric_standard_2027.pdf`: 3 of 25 stump-paragraph terms appear (change, experiments, reading); read whether the document names the move
+- **REVIEW** `scorecard_export_notes.txt`: 3 of 25 stump-paragraph terms appear (experiments, scorecards, platform); read whether the document names the move
 
-## 4 design-note vocabulary (REVIEW 4)
-- **REVIEW** `arvenna_site_feasibility_questionnaire.pdf`: 4 of 25 stump-paragraph terms appear (patient, record, random, recorded); read whether the document names the move
-- **REVIEW** `contents.txt`: 3 of 25 stump-paragraph terms appear (patient, record, recorded); read whether the document names the move
-- **REVIEW** `mas_data_guide_2026.pdf`: 4 of 25 stump-paragraph terms appear (patient, record, completed, recorded); read whether the document names the move
-- **REVIEW** `site_selection_paper_RC-26-11.pdf`: 10 of 25 stump-paragraph terms appear (patient, thurlwick, quarndale, change, record, completed); read whether the document names the move
+## 9 dates after the setting (REVIEW 3)
+- **REVIEW** `new_user_forecast_2027.csv`: 730 ISO dates after 2026-10-23, e.g. 2027-01-01, 2027-01-02, 2027-01-03, 2027-01-04, 2027-01-05
+- **REVIEW** `onboarding_calendar_2027q1.csv`: 14 ISO dates after 2026-10-23, e.g. 2027-01-04, 2027-01-11, 2027-01-18, 2027-01-31, 2027-02-01
+- **REVIEW** `onboarding_experiments_2024_2026.csv`: 110 ISO dates after 2026-10-23, e.g. 2026-10-25, 2026-10-27, 2026-10-28, 2026-10-31, 2026-11-01
 
 ## 10 container metadata (INFO 1)
 - **INFO** `-`: audit reported no writer signature (1 lines)
@@ -22,6 +22,8 @@ Stump terms swept: patient, sitting, sittings, thurlwick, quarndale, change, sec
 ## 1 file names (clean)
 
 ## 2 author vocabulary (clean)
+
+## 3 answer figures in the pack (clean)
 
 ## 5 announcements (clean)
 
@@ -31,11 +33,4 @@ Stump terms swept: patient, sitting, sittings, thurlwick, quarndale, change, sec
 
 ## 8 column names (clean)
 
-## 9 dates after the setting (clean)
-
 ## 11 prompt gate (clean)
-
-## Isolated readers (stage 4)
-
-- Round 1 (target.zip e137a4a3, the outcome unfiled): two scored readers, both missed the call (Thurlwick and Penwardine by the slope through every sitting) and Ask A; both took Ask B 16 of 16 (`score_reader.py` exit 1 on the first clinic below and on 50 per cent of the ask figures). Repaired in one pass.
-- Round 2 (target.zip d6f415d7, 3.1 filing that a change the test itself produces is not part of the rate): both readers landed the call, Quarndale and Thurlwick, each estimating the one-time gain of a second completed sitting within patients over the whole record at about 2.5; reader 3 Ask B 16 of 16 and Ask A 0 of 16, reader 4 32 of 32. `score_reader.py` FAIL on both (the call): Gate F failed, architecture 3 spent, task270 retired.

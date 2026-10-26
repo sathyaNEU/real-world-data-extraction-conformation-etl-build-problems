@@ -1,64 +1,54 @@
 ## Tags
 
-**Domain:** Psychology & Behavioral Science (longitudinal growth curve modelling).
+**Domain:** Product Analytics (metric definition and measurement science).
 **Analytical objective:** Descriptive & Distribution Analysis.
 
 ## 1. Final Recommendation
 
-**The Research Committee should name Quarndale and Thurlwick as the recruiting sites for ARV-1102.**
-
-Once the one-time gain a patient's second completed ACE-III carries from having sat the test before (2.5 points) is taken out of each patient's own decline, Quarndale's patients decline 5.0 ACE-III points a year and Thurlwick's 4.5, ahead of Mosswick on the unrounded figures. Not Penwardine, fourth once the gain is out, which a slope through every assessment ranks second because nearly half of its patients sat their first ACE-III before 2022 and carry the gain through the whole period, where most of Mosswick's are new to the test. Not Quarndale's last place on that slope, which is the gain flattening the slopes drawn through a patient's first two or three assessments at the clinic whose patients are nearly all new to the test. Not that gain estimated from the period's assessments alone, which takes each patient's first assessment in the period for their first, misses the gain the patients seen before 2022 carry throughout, and names Thurlwick and Penwardine again.
+**Kleerwissel should adopt first purchase within 14 days (first_purchase_d14) as its 2027 proxy for six-month retention.**
+Across the 489 past onboarding changes its effects correlate with the same changes' effects on retained_m6 at 0.54, against 0.31 for sessions in days 1 to 14, the runner-up. Not sessions (0.31) or active days (-0.09), whose measured effects move with retention's largely through the sampling error the two effects share on the same users. Not items saved (0.14) or push opens (0.02).
 
 ## 2. Critical Components
 
-1. The second completed ACE-III carries a one-time gain of **2.5** points over the patient's own trend, estimated within patients.
-2. Quarndale's patients decline **5.0** ACE-III points a year net of the gain, the fastest of the eight.
-3. Thurlwick's patients decline **4.5** points a year, ahead of every clinic outside the pair on the unrounded figures.
+1. The correlations rest on **489** changes from **399** onboarding experiments.
+2. Each candidate's correlation under the standard: first purchase **0.54**, sessions **0.31**, items saved **0.14**, push opens **0.02**, active days **-0.09**.
 
 ## 3. Step-by-Step Solution
 
-1. Joined the CIS forms to the EPR sets through the master patient index (merged hospital numbers included, sets entered in error left out) and numbered each patient's completed assessments over their whole record.
-2. Kept the patients whose latest diagnosis on the record on 30 September 2026 is Alzheimer's disease or mild cognitive impairment, with two or more completed assessments from 1 January 2022 to 30 September 2026, at the clinic of the last (paper RC/26/11, section 3): 5,074 patients.
-3. Estimated the change the test itself produces, which the paper's figure excludes, as a step at each patient's second completed assessment of their whole record, CIS assessments before 2022 counted, within patients: each patient with three or more assessments in the period given their own intercept and slope and one shared step: 2.5 points.
-4. Took each patient's decline as the least-squares slope of their totals net of the gain and averaged each clinic's patients, ranked unrounded: Quarndale 5.0 and Thurlwick 4.5 points a year lead.
-5. Questionnaire B1 and B2: episodes open on 30 September 2026 in the EPR episodes extract, less the patients the appointments show discharged at a review, or handed to the care home liaison team, between the episode's start and that day, less deaths on the Spine, by the latest recorded diagnosis and by age on 1 January 2027.
-6. Questionnaire C1 and C2: for each referral's first diagnosis given from 1 October 2025 to 30 September 2026, the tracker's referral date to the appointment that gave it: the one whose outcome records the diagnosis given or, for a finding of no dementia or of depression, the one that discharged the patient, not the tracker's diagnosis date, the day it reached the problem list.
-7. Named Quarndale and Thurlwick as the recruiting sites.
+1. Took from onboarding_experiments_2024_2026.csv the experiments started from 2024 whose six-month read closed by 23 October 2026, completed or stopped early, that passed the sample-ratio check (standard section 2): 399 experiments and 489 changes, each treatment arm against its control.
+2. Read experiment_scorecards_2024_2026.csv at each arm and metric's latest computation, the former keys through metric_catalogue.yaml, and took each change's effect on each candidate and on retained_m6 (treatment mean less control mean), the experiment's measurement of the effect the standard correlates, and its sampling variance (each arm's variance over its users, summed).
+3. Took each candidate's user-level correlation with retained_m6 among the 31,584 users of global_holdout_users_2025.csv (active days 0.54, sessions 0.46, first purchase 0.06, items saved 0.07, push opens 0.14) and set each change's sampling covariance between its two effects at that correlation times each arm's two standard deviations over its users, summed over the arms.
+4. Correlated each candidate's effects with retention's across the 489 changes, each counted once, with the mean sampling covariance taken out of their covariance and the mean sampling variances out of their variances: first purchase 0.54, sessions 0.31, items saved 0.14, push opens 0.02, active days -0.09.
+5. Calendar: took each ISO week's figure in new_user_forecast_2027.csv once (the tool writes a week's forecast on each of its days, as the guide's A2 holdout of about 430 a week confirms), set 3 per cent aside for the 2027 holdout, split each layer's users on a platform evenly among its experiments live that week on that platform and each experiment's users evenly among its arms (experimentation_platform_guide.pdf A2 to A4), and took 2.80 times each candidate's holdout standard deviation times the square root of two over the users per arm.
+6. Holdout read: took the rows of signup_cohorts_2025.csv for accounts that signed up as consumers, those now business included, at their latest refresh, took the holdout's own users and sums out of each half's totals (the table counts every new consumer), and set each half's mean outside the holdout against the holdout's mean.
+7. Named first purchase within 14 days, the highest correlation (0.54 against sessions' 0.31).
 
 ## 4. Deliverable Answers
 
-### arv1102_site_selection.xlsx
+### proxy_metric_scores_2027.xlsx
 
-1. Recruiting sites: Quarndale and Thurlwick.
-2. Decline in ACE-III points a year, to the nearest half point, fastest first:
-   - Quarndale: 5.0
-   - Thurlwick: 4.5
-   - Mosswick: 4.5
-   - Penwardine: 4.5
-   - Corvale: 4.0
-   - Ravensfold: 4.0
-   - Swinholt: 4.0
-   - Brindlemere: 4.0
-3. Gain at the second completed assessment: 2.5 points.
-4. B1, patients with Alzheimer's disease or mild cognitive impairment under follow-up on 30 September 2026, and B2, of whom 85 or under on 1 January 2027:
-   - Thurlwick: 792 under follow-up, 499 aged 85 or under
-   - Penwardine: 687 under follow-up, 471 aged 85 or under
-   - Swinholt: 553 under follow-up, 371 aged 85 or under
-   - Brindlemere: 500 under follow-up, 342 aged 85 or under
-   - Ravensfold: 474 under follow-up, 342 aged 85 or under
-   - Corvale: 383 under follow-up, 274 aged 85 or under
-   - Mosswick: 326 under follow-up, 235 aged 85 or under
-   - Quarndale: 345 under follow-up, 276 aged 85 or under
-5. C1, share given their diagnosis within 42 days of referral, and C2, average days from referral to diagnosis, diagnoses given 1 October 2025 to 30 September 2026:
-   - Thurlwick: 37.7 per cent, 46.9 days
-   - Penwardine: 37.0 per cent, 47.2 days
-   - Swinholt: 35.2 per cent, 47.8 days
-   - Brindlemere: 36.8 per cent, 46.8 days
-   - Ravensfold: 38.0 per cent, 47.8 days
-   - Corvale: 35.8 per cent, 47.5 days
-   - Mosswick: 42.6 per cent, 47.1 days
-   - Quarndale: 38.8 per cent, 46.8 days
+1. Proxy for 2027: first purchase within 14 days (first_purchase_d14).
+2. Correlation with six-month retention under the standard:
+   - First purchase within 14 days: 0.54
+   - Sessions, days 1 to 14: 0.31
+   - Items saved, days 1 to 14: 0.14
+   - Push notifications opened, days 1 to 14: 0.02
+   - Active days, days 1 to 14: -0.09
+3. Past changes the correlations rest on: 489 (399 experiments).
+4. First-quarter 2027 calendar, users per arm and the smallest effect a treatment arm can detect against its control:
+   - OB-27-001: 24,786 users per arm; active days 0.093, sessions 0.132, first purchase 1.15 pp, items saved 0.051, push opens 0.063
+   - OB-27-002: 6,749 users per arm; active days 0.179, sessions 0.253, first purchase 2.21 pp, items saved 0.098, push opens 0.121
+   - OB-27-003: 17,353 users per arm; active days 0.112, sessions 0.158, first purchase 1.38 pp, items saved 0.061, push opens 0.075
+   - OB-27-004: 30,936 users per arm; active days 0.084, sessions 0.118, first purchase 1.03 pp, items saved 0.046, push opens 0.056
+   - OB-27-005: 9,644 users per arm; active days 0.150, sessions 0.212, first purchase 1.85 pp, items saved 0.082, push opens 0.101
+   - OB-27-006: 23,571 users per arm; active days 0.096, sessions 0.136, first purchase 1.18 pp, items saved 0.053, push opens 0.065
+   - OB-27-007: 10,845 users per arm; active days 0.141, sessions 0.200, first purchase 1.74 pp, items saved 0.078, push opens 0.095
+5. 2025 new consumer users outside the global holdout less the holdout's users:
+   - January to June: active days 0.040, sessions 0.060, first purchase 0.62 pp, items saved -0.010, push opens 0.034, six-month retention 0.62 pp
+   - July to December: active days -0.032, sessions 0.147, first purchase 1.11 pp, items saved -0.032, push opens -0.022, six-month retention 1.69 pp
 
-### arv1102_clinic_decline.png
+### proxy_metric_review_2027.pptx
 
-1. Bar chart of the eight clinics' declines, fastest at the top, Quarndale and Thurlwick highlighted above a line marking the recruiting sites, each clinic's half-point figure beside its name.
+1. Slide 1 names first purchase within 14 days as the 2027 proxy, 0.54 against sessions' 0.31.
+2. Slide 2: bar chart of each candidate's correlation under the standard, first purchase highlighted.
+3. Slides 4 and 5: the calendar's users per arm and detectable effects, and the 2025 holdout read, as in the workbook.

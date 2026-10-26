@@ -1,93 +1,63 @@
-"""Constants shared by the task270 generator: the trust, its Memory Assessment Service and eight clinics, the two
-record systems and the day the service moved from one to the other, the window the research committee reads, the
-extract dates and the shipped file names."""
+"""Constants for task270: Kleerwissel's 2027 proxy metric for six-month retention. Dates, metric keys, the layers of
+the experimentation platform, the file names and the people, in one place so the world, the pack and the goldens read
+the same values."""
 import datetime as dt
 
-TRUST = "Hollinsmere Partnership NHS Foundation Trust"
-SHORT = "Hollinsmere Partnership"
-SERVICE = "Memory Assessment Service"
-SPONSOR = "Arvenna Therapeutics"
-TRIAL = "ARV-1102"
-PEOPLE = {"lead": "Georgina Khan", "clinical": "Jeremy Hurst", "analyst": "Nicola Lynch"}
+SEED = 59
+ORG = "Kleerwissel"
+PULL = dt.date(2026, 10, 23)              # the scorecard export and the registry extract
+ASSEMBLED = dt.datetime(2026, 10, 26, 9, 40)
+FIRST_DAY = dt.date(2024, 1, 8)           # the first onboarding experiment of the archive starts
+LAST_DAY = dt.date(2026, 10, 9)           # the last sign-up day the export carries
+RENAME = dt.date(2025, 3, 3)              # metric store migration: the scorecard keys renamed
+LATE_EVENTS = (dt.date(2025, 7, 1), dt.date(2025, 9, 10))   # two-week reads computed before the late iOS events
+RECOMPUTED = dt.date(2025, 9, 15)
+HOLDOUT_YEARS = {2025: 0.05, 2026: 0.05}  # the global holdout's share of new consumer users
+HOLDOUT_2027 = 0.03
 
-# the eight clinics: name, CIS clinic code, EPR site code, the day the clinic saw its first patient
-CLINICS = [
-    ("Thurlwick", "THURL", "HPF-MAS-01", dt.date(2014, 4, 14)),
-    ("Penwardine", "PENWD", "HPF-MAS-02", dt.date(2015, 5, 18)),
-    ("Swinholt", "SWINH", "HPF-MAS-03", dt.date(2016, 3, 7)),
-    ("Brindlemere", "BRIND", "HPF-MAS-04", dt.date(2017, 7, 3)),
-    ("Ravensfold", "RAVEN", "HPF-MAS-05", dt.date(2018, 5, 21)),
-    ("Corvale", "CORVA", "HPF-MAS-06", dt.date(2019, 4, 15)),
-    ("Mosswick", "MOSSW", "HPF-MAS-07", dt.date(2020, 8, 10)),
-    ("Quarndale", None, "HPF-MAS-08", dt.date(2024, 4, 8)),
-]
-NAMES = [c[0] for c in CLINICS]
-CIS_CODE = {c[0]: c[1] for c in CLINICS}
-SITE = {c[0]: c[2] for c in CLINICS}
-OPENED = {c[0]: c[3] for c in CLINICS}
-
-# Quarndale's catchment was Corvale's and Mosswick's until it opened; the patients already under those clinics
-# stayed with them, and new referrals from its districts went to Quarndale
-QUARNDALE_FROM = {"Corvale": ["HL19", "HL20"], "Mosswick": ["HL23", "HL24"]}
-QUARNDALE_NEW = ["HL25", "HL26", "HL27"]      # commissioned from the neighbouring service on the day it opened
-DISTRICTS = {
-    "Thurlwick": ["HL1", "HL2", "HL3"],
-    "Penwardine": ["HL4", "HL5", "HL6"],
-    "Swinholt": ["HL7", "HL8", "HL9"],
-    "Brindlemere": ["HL10", "HL11", "HL12"],
-    "Ravensfold": ["HL13", "HL14", "HL15"],
-    "Corvale": ["HL16", "HL17", "HL18", "HL19", "HL20"],
-    "Mosswick": ["HL21", "HL22", "HL23", "HL24"],
-    "Quarndale": ["HL19", "HL20", "HL23", "HL24", "HL25", "HL26", "HL27"],
-}
-
-EPR_GO_LIVE = dt.date(2024, 1, 8)        # the service's records move from CIS to the electronic patient record
-CIS_LAST = dt.date(2024, 1, 5)           # the CIS archive extract (the last working day before go-live)
-WINDOW = (dt.date(2022, 1, 1), dt.date(2026, 9, 30))
-EXTRACT = dt.date(2026, 10, 2)           # the EPR extracts for the site selection
-ASSEMBLED = dt.datetime(2026, 10, 9, 15, 40)
-PAPER_DATE = dt.date(2026, 10, 14)       # the site selection paper
-QUESTIONNAIRE_DATE = dt.date(2026, 9, 21)
-TRIAL_ENTRY = dt.date(2027, 1, 1)        # the trial's entry window opens; the age limit is read on this day
-AGE_LIMIT = 85
-ASK_YEAR = (dt.date(2025, 10, 1), dt.date(2026, 9, 30))
-SIX_WEEKS = 42
-
-# ACE-III domains and their maxima (total 100)
-DOMAINS = [("ATT", "attention", 18), ("MEM", "memory", 26), ("FLU", "fluency", 14), ("LAN", "language", 26),
-           ("VIS", "visuospatial", 16)]
-
-# diagnoses: code used by the service, ICD-10, description
-DX = {
-    "AD": ("F00.9", "Dementia in Alzheimer's disease, unspecified"),
-    "AD_LATE": ("F00.1", "Dementia in Alzheimer's disease with late onset"),
-    "AD_MIXED": ("F00.2", "Dementia in Alzheimer's disease, atypical or mixed type"),
-    "MCI": ("F06.7", "Mild cognitive disorder"),
-    "VAS": ("F01.9", "Vascular dementia, unspecified"),
-    "DLB": ("F02.8", "Dementia in other specified diseases (Lewy body)"),
-    "PDD": ("F02.3", "Dementia in Parkinson's disease"),
-    "FTD": ("F02.0", "Dementia in Pick's disease (frontotemporal)"),
-    "UNS": ("F03", "Unspecified dementia"),
-    "NOD": ("Z03.2", "Observation for suspected mental disorder, ruled out"),
-    "DEP": ("F32.9", "Depressive episode, unspecified"),
-}
-AD_CODES = ("AD", "AD_LATE", "AD_MIXED")
-IN_SCOPE = AD_CODES + ("MCI",)
+CAND = ["active_days_d1_14", "sessions_d1_14", "first_purchase_d14", "items_saved_d1_14", "push_opens_d1_14"]
+RET = "retained_m6"
+GUARD = ["uninstalled_d14", "support_contacts_d14"]
+METRICS = CAND + [RET] + GUARD
+OLD_KEY = {"active_days_d1_14": "act_days_14", "sessions_d1_14": "sess_count_14", "first_purchase_d14": "first_buy_14",
+           "items_saved_d1_14": "fav_saves_14", "push_opens_d1_14": "push_open_14", "retained_m6": "ret_d180",
+           "uninstalled_d14": "uninst_14", "support_contacts_d14": "cs_contacts_14"}
+LABEL = {"active_days_d1_14": "active days, days 1 to 14", "sessions_d1_14": "sessions, days 1 to 14",
+         "first_purchase_d14": "first purchase within 14 days", "items_saved_d1_14": "items saved, days 1 to 14",
+         "push_opens_d1_14": "push notifications opened, days 1 to 14", "retained_m6": "retained at six months"}
+SHORT = {"active_days_d1_14": "Active days", "sessions_d1_14": "Sessions", "first_purchase_d14": "First purchase",
+         "items_saved_d1_14": "Items saved", "push_opens_d1_14": "Push opens", "retained_m6": "Six-month retention"}
+LAYERS = ["signup_flow", "first_feed", "notifications"]
+TEAMS = {"signup_flow": ["Activation", "Identity"], "first_feed": ["Discovery", "Buyer Experience"],
+         "notifications": ["Messaging", "Lifecycle"]}
 
 FILES = {
-    "cis_ace": "cis_ace3_forms_2014_2023.csv",
-    "epr_obs": "epr_cognitive_observations_2024_2026.csv",
-    "cis_dx": "cis_diagnoses_2014_2023.csv",
-    "epr_dx": "epr_problem_list_2024_2026.csv",
-    "pmi": "patient_master_index.csv",
-    "clinics": "mas_clinic_register.xlsx",
-    "episodes": "epr_mas_episodes_2024_2026.csv",
-    "appts": "epr_outpatient_appointments_2024_2026.csv",
-    "tracker": "mas_pathway_tracker_2024_2026.xlsx",
-    "paper": "site_selection_paper_RC-26-11.pdf",
-    "questionnaire": "arvenna_site_feasibility_questionnaire.pdf",
-    "guide": "mas_data_guide_2026.pdf",
-    "audit": "mas_service_audit_2024_25.xlsx",
-    "population": "catchment_population_65plus_2025.csv",
-    "contents": "contents.txt",
+    "scorecards": "experiment_scorecards_2024_2026.csv",
+    "registry": "onboarding_experiments_2024_2026.csv",
+    "holdout": "global_holdout_users_2025.csv",
+    "catalogue": "metric_catalogue.yaml",
+    "standard": "proxy_metric_standard_2027.pdf",
+    "export_notes": "scorecard_export_notes.txt",
+    "guide": "experimentation_platform_guide.pdf",
+    "calendar": "onboarding_calendar_2027q1.csv",
+    "forecast": "new_user_forecast_2027.csv",
+    "cohorts": "signup_cohorts_2025.csv",
+    "ratings": "app_store_ratings_2024_2026.csv",
+    "spend": "acquisition_spend_2026.xlsx",
 }
+DISTRACTORS = ["ratings", "spend"]
+DELIVERABLES = ["proxy_metric_review_2027.pptx", "proxy_metric_scores_2027.xlsx"]
+DECK, BOOK = DELIVERABLES
+
+HEAD_EXP = "Fiene Kronenberg"     # head of experimentation, owner of the standard
+ENGINEER = "Giel Lansink"          # data engineer, the export notes and the platform guide
+ANALYST = "Saar Reimes"           # growth analyst, the metric catalogue and the 2027 calendar
+
+Z_POWER = 1.959963984540054 + 0.8416212335729143   # two-sided 5 per cent test, 80 per cent power
+
+
+def r(x, n):
+    """round half away from zero at n decimals, the way the deliverables print"""
+    from decimal import Decimal, ROUND_HALF_UP
+    q = Decimal(1).scaleb(-n)
+    return float(Decimal(repr(float(x))).quantize(q, rounding=ROUND_HALF_UP))

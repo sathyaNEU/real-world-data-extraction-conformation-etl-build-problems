@@ -1,19 +1,33 @@
-"""The independent verifier: every graded figure recomputed from target/ alone, with pandas and numpy only (none of
-the generator's modules), and compared with figures.json and the golden workbook."""
+"""The independent verifier for task270: every figure in generator/figures.json recomputed from the shipped pack with
+the standard library's csv reader and plain arithmetic, none of the generator's analysis code, and compared at the
+figure's own rounding."""
+import csv
+import datetime as dt
 import json
+import math
 import os
-import sys
-from decimal import ROUND_HALF_UP, Decimal
-
-import numpy as np
-import pandas as pd
+import statistics
 
 HERE = os.path.dirname(os.path.abspath(__file__))
-W0, W1 = pd.Timestamp("2022-01-01"), pd.Timestamp("2026-09-30")
+CAND = ["active_days_d1_14", "sessions_d1_14", "first_purchase_d14", "items_saved_d1_14", "push_opens_d1_14"]
+RET = "retained_m6"
+PP = {"first_purchase_d14", RET}
+EXPORT = "2026-10-23"
 
 
-def hu(x, nd):
-    return float(Decimal(repr(float(x))).quantize(Decimal(1).scaleb(-nd), rounding=ROUND_HALF_UP))
+def rd(x, n):
+    from decimal import Decimal, ROUND_HALF_UP
+    return float(Decimal(repr(float(x))).quantize(Decimal(1).scaleb(-n), rounding=ROUND_HALF_UP))
+
+
+def rows(path):
+    with open(path, newline="", encoding="utf-8") as f:
+        return list(csv.DictReader(f))
+
+
+def cov(a, b):
+    ma, mb = sum(a) / len(a), sum(b) / len(b)
+    return sum((x - ma) * (y - mb) for x, y in zip(a, b)) / (len(a) - 1)
 
 
 def run(task):
@@ -21,120 +35,122 @@ def run(task):
     fig = json.load(open(os.path.join(HERE, "figures.json")))
     bad = []
 
-    def ok(label, cond, detail=""):
-        print("%s  verify: %s %s" % ("PASS" if cond else "FAIL", label, detail))
-        if not cond:
-            bad.append(label)
-    pmi = pd.read_csv(os.path.join(t, "patient_master_index.csv"), dtype=str, keep_default_na=False)
-    pmi["nhs"] = pmi.nhs_number.str.replace(" ", "")
-    h2n = dict(zip(pmi.hpn.str.strip(), pmi.nhs))
-    reg = pd.read_excel(os.path.join(t, "mas_clinic_register.xlsx"), sheet_name="Clinics", dtype=str)
-    code = {**dict(zip(reg["CIS clinic code"].dropna(), reg.loc[reg["CIS clinic code"].notna(), "Clinic"])),
-            **dict(zip(reg["EPR site code"], reg["Clinic"]))}
-    cis = pd.read_csv(os.path.join(t, "cis_ace3_forms_2014_2023.csv"), dtype=str, keep_default_na=False)
-    a = pd.DataFrame({"nhs": cis.hpn.str.strip().map(h2n), "when": pd.to_datetime(cis.assessment_date, dayfirst=True),
-                      "clinic": cis.clinic_code.map(code), "done": cis.form_status.eq("C"),
-                      "score": cis.total.astype(float), "id": cis.form_id})
-    obs = pd.read_csv(os.path.join(t, "epr_cognitive_observations_2024_2026.csv"), dtype=str, keep_default_na=False)
-    obs = obs[(obs.item_code == "ACE3_TOTAL") & obs.set_status.isin(["Final", "Incomplete"])]
-    b = pd.DataFrame({"nhs": obs.nhs_number, "when": pd.to_datetime(obs.performed_at.str[:10]),
-                      "clinic": obs.site_code.map(code), "done": obs.set_status.eq("Final"),
-                      "score": obs.value.astype(float), "id": obs.obs_set_id})
-    s = pd.concat([a, b]).sort_values(["nhs", "when", "id"])
-    s["prior"] = s.groupby("nhs").done.cumsum() - s.done
-    # diagnoses on the record
-    cd = pd.read_csv(os.path.join(t, "cis_diagnoses_2014_2023.csv"), dtype=str, keep_default_na=False)
-    ed = pd.read_csv(os.path.join(t, "epr_problem_list_2024_2026.csv"), dtype=str, keep_default_na=False)
-    dx = pd.concat([pd.DataFrame({"nhs": cd.hpn.str.strip().map(h2n), "when": pd.to_datetime(cd.diagnosis_date,
-                                                                                            dayfirst=True),
-                                  "code": cd.icd10_code, "o": 0}),
-                    pd.DataFrame({"nhs": ed.nhs_number, "when": pd.to_datetime(ed.recorded_on), "code": ed.problem_code,
-                                  "o": np.where(ed.source.eq("EPR"), 2, 1)})])
-    dx = dx[dx.when <= W1].sort_values(["nhs", "when", "o"])
-    last = dx.groupby("nhs").code.last()
-    scope = last[last.str.match(r"^(F00|G30)") | last.eq("F06.7")].index
-    p = s[s.done & (s.when >= W0) & (s.when <= W1) & s.nhs.isin(scope)].copy()
-    p = p[p.groupby("nhs").when.transform("size") >= 2]
-    p["t"] = (p.when - W0).dt.days / 365.25
-    p["st"] = (p.prior > 0).astype(float)
-    # the gain within patients: residuals on each patient's own line, three or more sittings
-    q = p[p.groupby("nhs").t.transform("size") >= 3]
-    tm = q.groupby("nhs").t.transform("mean")
-    xt = q.t - tm
-    sxx = (xt ** 2).groupby(q.nhs).transform("sum")
+    # former keys from the catalogue
+    former, key = {}, None
+    for line in open(os.path.join(t, "metric_catalogue.yaml"), encoding="utf-8"):
+        s = line.strip()
+        if s.startswith("- key:"):
+            key = s.split(":", 1)[1].strip()
+        if s.startswith("former_key:"):
+            former[s.split(":", 1)[1].split("#")[0].strip()] = key
+    # latest computation of each arm and metric
+    sc = {}
+    for r in rows(os.path.join(t, "experiment_scorecards_2024_2026.csv")):
+        m = former.get(r["metric"], r["metric"])
+        k = (r["experiment_id"], r["arm"], m)
+        if k not in sc or r["computed_at"] >= sc[k]["computed_at"]:
+            sc[k] = dict(r, metric=m)
+    ch = []
+    exps = set()
+    for r in rows(os.path.join(t, "onboarding_experiments_2024_2026.csv")):
+        if not r["six_month_read_closes"] or r["six_month_read_closes"] > EXPORT:
+            continue
+        if r["srm_check"] != "pass" or r["status"] not in ("completed", "stopped_early"):
+            continue
+        ctrl = r["control_arm"]
+        for arm in r["arms"].split(";"):
+            if arm == ctrl:
+                continue
+            need = [(r["experiment_id"], a, m) for a in (arm, ctrl) for m in CAND + [RET]]
+            if not all(x in sc for x in need):
+                continue
+            g = lambda a, m, f: float(sc[(r["experiment_id"], a, m)][f])
+            ch.append({m: (g(arm, m, "mean"), g(arm, m, "std_dev"), g(arm, m, "users"),
+                           g(ctrl, m, "mean"), g(ctrl, m, "std_dev"), g(ctrl, m, "users")) for m in CAND + [RET]})
+            exps.add(r["experiment_id"])
+    if len(ch) != fig["call"]["changes"] or len(exps) != fig["call"]["experiments"]:
+        bad.append(("changes", len(ch), len(exps)))
+    hold = rows(os.path.join(t, "global_holdout_users_2025.csv"))
+    hv = {m: [float(x[m]) for x in hold] for m in CAND + [RET]}
 
-    def res(col):
-        m = q.groupby("nhs")[col].transform("mean")
-        bb = (xt * (q[col] - m)).groupby(q.nhs).transform("sum") / sxx
-        return q[col] - m - bb * xt
-    ry, rs = res("score"), res("st")
-    gain = float((ry * rs).sum() / (rs * rs).sum())
-    p["adj"] = p.score - gain * p.st
-    g = p.groupby("nhs")
-    tm2, am = g.t.transform("mean"), g.adj.transform("mean")
-    slope = ((p.t - tm2) * (p.adj - am)).groupby(p.nhs).sum() / ((p.t - tm2) ** 2).groupby(p.nhs).sum()
-    where = p.sort_values("when").groupby("nhs").clinic.last()
-    dec = -slope.groupby(where).mean()
-    order = list(dec.sort_values(ascending=False).index)
-    ok("the two sites", order[:2] == fig["call"]["sites"], order[:3])
-    ok("the first clinic below", order[2] == fig["call"]["below"])
-    ok("the gain to the half point", hu(2 * gain, 0) / 2 == fig["gain"], round(gain, 3))
-    for c, v in dec.items():
-        ok("%s's decline to the half point" % c, hu(2 * v, 0) / 2 == fig["decline"][c], round(v, 3))
-    # B1 and B2
-    ep = pd.read_csv(os.path.join(t, "epr_mas_episodes_2024_2026.csv"), dtype=str, keep_default_na=False)
-    ep["start"] = pd.to_datetime(ep.episode_start)
-    ep["end"] = pd.to_datetime(ep.episode_end.replace("", None))
-    op = ep[(ep.start <= W1) & (ep.end.isna() | (ep.end > W1))].copy()
-    ap = pd.read_csv(os.path.join(t, "epr_outpatient_appointments_2024_2026.csv"), dtype=str, keep_default_na=False)
-    ap["day"] = pd.to_datetime(ap.appointment_start.str[:10])
-    gone = ap[ap.outcome.isin(["Attended - discharged from service", "Attended - care passed to care home liaison team",
-                               "Attended - diagnosis given, discharged from service"]) & (ap.day <= W1)]
-    op = op.merge(gone[["nhs_number", "day"]], on="nhs_number", how="left")
-    left = op[(op.day >= op.start) & (op.day <= W1)].nhs_number.unique()
-    op = op[~op.nhs_number.isin(left)].drop_duplicates("episode_id")
-    act = pmi[pmi.record_status.eq("Active")].set_index("nhs")
-    dead = pd.to_datetime(act.date_of_death.replace("", None))
-    op = op[~(op.nhs_number.map(dead) <= W1)]
-    op = op[op.nhs_number.isin(scope_on(dx, W1))]
-    dob = pd.to_datetime(act.date_of_birth)
-    born = op.nhs_number.map(dob)
-    age = 2027 - born.dt.year - ((born.dt.month > 1) | ((born.dt.month == 1) & (born.dt.day > 1))).astype(int)
-    op["clinic"] = op.site_code.map(code)
-    for c in fig["ask_a"]["under_follow_up"]:
-        k = op[op.clinic == c]
-        ok("B1 %s" % c, k.nhs_number.nunique() == fig["ask_a"]["under_follow_up"][c], k.nhs_number.nunique())
-        ok("B2 %s" % c, k[age[k.index] <= 85].nhs_number.nunique() == fig["ask_a"]["aged_85_or_under"][c])
-    # C1 and C2
-    tr = pd.read_excel(os.path.join(t, "mas_pathway_tracker_2024_2026.xlsx"), sheet_name="Pathways",
-                       dtype={"NHS number": str})
-    tr["ref"] = pd.to_datetime(tr["Referral date"])
-    gv = ap[ap.outcome.str.contains("diagnosis given") | (ap.outcome == "Attended - discharged from service")]
-    m = tr[["NHS number", "ref"]].merge(gv[["nhs_number", "day"]], left_on="NHS number", right_on="nhs_number")
-    m = m[m.day >= m.ref].groupby(["NHS number", "ref"]).day.min()
-    tr["given"] = [m.get((n, r)) for n, r in zip(tr["NHS number"], tr["ref"])]
-    tr["given"] = pd.to_datetime(tr["given"])
-    u = tr[(tr.given >= pd.Timestamp("2025-10-01")) & (tr.given <= W1)].copy()
-    u["days"] = (u.given - u.ref).dt.days
-    for c in fig["ask_b"]["within_42_days_pct"]:
-        k = u[u.Clinic == c]
-        ok("C1 %s" % c, hu(100 * (k.days <= 42).mean(), 1) == fig["ask_b"]["within_42_days_pct"][c])
-        ok("C2 %s" % c, hu(k.days.mean(), 1) == fig["ask_b"]["average_days"][c])
-    # the golden workbook carries the same figures
-    gw = pd.read_excel(os.path.join(task, "golden", "arv1102_site_selection.xlsx"), sheet_name="Recruiting sites",
-                       header=3)
-    gw = gw[gw["Clinic"].isin(fig["decline"].keys())]
-    ok("the workbook's declines", all(abs(float(r["Decline, ACE-III points a year"]) - fig["decline"][r["Clinic"]]) < 1e-9
-                                      for _, r in gw.iterrows()))
-    print("verify: %d failed" % len(bad))
-    return 0 if not bad else 1
+    def corr(a, b):
+        return cov(a, b) / math.sqrt(cov(a, a) * cov(b, b))
+    rho = {m: corr(hv[m], hv[RET]) for m in CAND}
+    y = [c[RET][0] - c[RET][3] for c in ch]
+    vy = [c[RET][1] ** 2 / c[RET][2] + c[RET][4] ** 2 / c[RET][5] for c in ch]
+    got = {}
+    for m in CAND:
+        x = [c[m][0] - c[m][3] for c in ch]
+        vx = [c[m][1] ** 2 / c[m][2] + c[m][4] ** 2 / c[m][5] for c in ch]
+        s12 = [rho[m] * (c[m][1] * c[RET][1] / c[RET][2] + c[m][4] * c[RET][4] / c[RET][5]) for c in ch]
+        got[m] = (cov(x, y) - statistics.fmean(s12)) / math.sqrt((cov(x, x) - statistics.fmean(vx)) *
+                                                                  (cov(y, y) - statistics.fmean(vy)))
+        if rd(got[m], 2) != fig["correlations"][m]:
+            bad.append(("correlation", m, got[m], fig["correlations"][m]))
+        if rd(rho[m], 2) != fig["components"]["user_level_correlation"][m]:
+            bad.append(("rho", m, rho[m]))
+    if max(got, key=got.get) != fig["call"]["proxy"]:
+        bad.append(("proxy", max(got, key=got.get)))
 
+    # Ask B
+    sd = {m: statistics.stdev(hv[m]) for m in CAND}
+    weekly = {}
+    for r in rows(os.path.join(t, "new_user_forecast_2027.csv")):
+        d = dt.date.fromisoformat(r["date"])
+        weekly[(d - dt.timedelta(days=d.weekday()), r["platform"])] = float(r["new_consumer_users_forecast"])
+    cal = rows(os.path.join(t, "onboarding_calendar_2027q1.csv"))
+    users = {c["experiment_id"]: 0.0 for c in cal}
+    d0 = min(dt.date.fromisoformat(c["start_date"]) for c in cal)
+    d1 = max(dt.date.fromisoformat(c["end_date"]) for c in cal)
+    d = d0
+    while d <= d1:
+        for p in ("ios", "android"):
+            n = weekly[(d - dt.timedelta(days=d.weekday()), p)] / 7 * 0.97
+            for layer in {c["layer"] for c in cal}:
+                live = [c for c in cal if c["layer"] == layer and c["platforms"] in ("all", p) and
+                        c["start_date"] <= d.isoformat() <= c["end_date"]]
+                for c in live:
+                    users[c["experiment_id"]] += n / len(live)
+        d += dt.timedelta(days=1)
+    z = statistics.NormalDist().inv_cdf(0.975) + statistics.NormalDist().inv_cdf(0.80)
+    for c in cal:
+        e = c["experiment_id"]
+        na = users[e] / int(c["arms"])
+        if round(na) != fig["asks"]["B"]["users_per_arm"][e]:
+            bad.append(("users", e, na))
+        for m in CAND:
+            v = z * sd[m] * math.sqrt(2 / na)
+            v = rd(100 * v, 2) if m in PP else rd(v, 3)
+            if v != fig["asks"]["B"]["detectable"][e][m]:
+                bad.append(("mde", e, m, v))
 
-def scope_on(dx, day):
-    d = dx[dx.when <= day]
-    last = d.groupby("nhs").code.last()
-    return set(last[last.str.match(r"^(F00|G30)") | last.eq("F06.7")].index)
+    # Ask C
+    latest = {}
+    for r in rows(os.path.join(t, "signup_cohorts_2025.csv")):
+        if r["signup_account_type"] != "consumer":
+            continue
+        k = (r["signup_date"], r["platform"], r["country"], r["account_type"])
+        if k not in latest or r["refreshed_at"] > latest[k]["refreshed_at"]:
+            latest[k] = r
+    col = {"active_days_d1_14": "active_days_total", "sessions_d1_14": "sessions_total",
+           "first_purchase_d14": "first_purchases", "items_saved_d1_14": "items_saved_total",
+           "push_opens_d1_14": "push_opens_total", RET: "retained_m6_users"}
+    for half, (a, b) in (("H1", ("2025-01-01", "2025-06-30")), ("H2", ("2025-07-01", "2025-12-31"))):
+        cs = [r for k, r in latest.items() if a <= k[0] <= b]
+        hs = [x for x in hold if a <= x["signed_up_on"] <= b]
+        n_all, n_h = sum(int(r["new_users"]) for r in cs), len(hs)
+        for m in CAND + [RET]:
+            s_all, s_h = sum(int(r[col[m]]) for r in cs), sum(float(x[m]) for x in hs)
+            v = (s_all - s_h) / (n_all - n_h) - s_h / n_h
+            v = rd(100 * v, 2) if m in PP else rd(v, 3)
+            if v != fig["asks"]["C"][half][m]:
+                bad.append(("gap", half, m, v))
+    for x in bad:
+        print("VERIFY MISMATCH", x)
+    print("verify: %d changes, %d calendar experiments, %d mismatches" % (len(ch), len(cal), len(bad)))
+    return 1 if bad else 0
 
 
 if __name__ == "__main__":
+    import sys
     sys.exit(run(os.path.dirname(HERE)))

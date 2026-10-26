@@ -63,9 +63,10 @@
       "Kleerwissel"
     ],
     "people": [
-      "Mirthe Lambregt",
-      "Raf Erhout",
-      "Saar Reimes"
+      "Fiene Kronenberg",
+      "Giel Lansink",
+      "Saar Reimes",
+      "Renske Mudden"
     ]
   },
   "deliverables": [
@@ -231,7 +232,8 @@
       "fate": "spent 2026-10-26 at the draw probes: probes p270a and p270b, call-only Sonnet readers on prototypes of 26,000 attempts, computed Haberman's PRMSE with the part-whole correction (and, with case-study sets added, reliability over the case sets) and printed the golden three each time; the policy's criterion is Haberman's own question"
     }
   ],
-  "notes": "Architecture 5 re-root in a fresh world after architecture 4 died at the draw probes; WARN repeat.decision and repeat.question_form against task308 v2 answered in the design note.",
+  "notes": "Architecture 5 re-root in a fresh world after architecture 4 died at the draw probes; WARN repeat.decision and repeat.question_form against task308 v2 answered in the design note. Architecture 5 spent 2026-10-26 at stage 4 round 2 (both readers landed once the estimand was filed).",
   "client_domain": "product-analytics",
-  "registered": "2026-10-26T09:10:14Z"
+  "registered": "2026-10-26T09:10:14Z",
+  "architecture_spent": true
 }

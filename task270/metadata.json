@@ -1,101 +1,91 @@
 {
- "answer": "Recruiting sites: Quarndale and Thurlwick",
- "distractors": [
-  "mas_service_audit_2024_25.xlsx",
-  "catchment_population_65plus_2025.csv"
+ "answer": "Kleerwissel should adopt first purchase within 14 days (first_purchase_d14) as its 2027 proxy for six-month retention.",
+ "deliverables": [
+  "proxy_metric_review_2027.pptx",
+  "proxy_metric_scores_2027.xlsx"
  ],
- "domain": "Psychology & Behavioral Science (longitudinal growth curve modelling)",
+ "distractor_files": [
+  "target/app_store_ratings_2024_2026.csv",
+  "target/acquisition_spend_2026.xlsx"
+ ],
+ "domain": "Product Analytics (metric definition and measurement science)",
  "objective": "Descriptive & Distribution Analysis",
  "provenance": {
-  "arvenna_site_feasibility_questionnaire.pdf": {
-   "date": "2026-10-09",
+  "acquisition_spend_2026.xlsx": {
+   "date": "2026-10-26",
    "licence": "CC0 1.0 (constructed for this task)",
-   "source": "constructed by the task generator (seeded); Hollinsmere Partnership NHS Foundation Trust, its clinics, Arvenna Therapeutics, ARV-1102 and every person are fictional; NHS numbers are drawn from a range the NHS does not issue"
+   "source": "constructed by the task generator (seeded); Kleerwissel, its teams, experiments, users and people are fictional; the records follow the forms of a consumer app's experimentation platform (scorecard export, experiment registry), its data warehouse, its growth analytics tables and its forecasting tool"
   },
-  "catchment_population_65plus_2025.csv": {
-   "date": "2026-10-09",
+  "app_store_ratings_2024_2026.csv": {
+   "date": "2026-10-26",
    "licence": "CC0 1.0 (constructed for this task)",
-   "source": "constructed by the task generator (seeded); Hollinsmere Partnership NHS Foundation Trust, its clinics, Arvenna Therapeutics, ARV-1102 and every person are fictional; NHS numbers are drawn from a range the NHS does not issue"
+   "source": "constructed by the task generator (seeded); Kleerwissel, its teams, experiments, users and people are fictional; the records follow the forms of a consumer app's experimentation platform (scorecard export, experiment registry), its data warehouse, its growth analytics tables and its forecasting tool"
   },
-  "cis_ace3_forms_2014_2023.csv": {
-   "date": "2026-10-09",
+  "data_dictionary.csv": {
+   "date": "2026-10-26",
    "licence": "CC0 1.0 (constructed for this task)",
-   "source": "constructed by the task generator (seeded); Hollinsmere Partnership NHS Foundation Trust, its clinics, Arvenna Therapeutics, ARV-1102 and every person are fictional; NHS numbers are drawn from a range the NHS does not issue"
+   "source": "constructed by the task generator (seeded); Kleerwissel, its teams, experiments, users and people are fictional; the records follow the forms of a consumer app's experimentation platform (scorecard export, experiment registry), its data warehouse, its growth analytics tables and its forecasting tool"
   },
-  "cis_diagnoses_2014_2023.csv": {
-   "date": "2026-10-09",
+  "experiment_scorecards_2024_2026.csv": {
+   "date": "2026-10-26",
    "licence": "CC0 1.0 (constructed for this task)",
-   "source": "constructed by the task generator (seeded); Hollinsmere Partnership NHS Foundation Trust, its clinics, Arvenna Therapeutics, ARV-1102 and every person are fictional; NHS numbers are drawn from a range the NHS does not issue"
+   "source": "constructed by the task generator (seeded); Kleerwissel, its teams, experiments, users and people are fictional; the records follow the forms of a consumer app's experimentation platform (scorecard export, experiment registry), its data warehouse, its growth analytics tables and its forecasting tool"
   },
-  "contents.txt": {
-   "date": "2026-10-09",
+  "experimentation_platform_guide.pdf": {
+   "date": "2026-10-26",
    "licence": "CC0 1.0 (constructed for this task)",
-   "source": "constructed by the task generator (seeded); Hollinsmere Partnership NHS Foundation Trust, its clinics, Arvenna Therapeutics, ARV-1102 and every person are fictional; NHS numbers are drawn from a range the NHS does not issue"
+   "source": "constructed by the task generator (seeded); Kleerwissel, its teams, experiments, users and people are fictional; the records follow the forms of a consumer app's experimentation platform (scorecard export, experiment registry), its data warehouse, its growth analytics tables and its forecasting tool"
   },
-  "epr_cognitive_observations_2024_2026.csv": {
-   "date": "2026-10-09",
+  "global_holdout_users_2025.csv": {
+   "date": "2026-10-26",
    "licence": "CC0 1.0 (constructed for this task)",
-   "source": "constructed by the task generator (seeded); Hollinsmere Partnership NHS Foundation Trust, its clinics, Arvenna Therapeutics, ARV-1102 and every person are fictional; NHS numbers are drawn from a range the NHS does not issue"
+   "source": "constructed by the task generator (seeded); Kleerwissel, its teams, experiments, users and people are fictional; the records follow the forms of a consumer app's experimentation platform (scorecard export, experiment registry), its data warehouse, its growth analytics tables and its forecasting tool"
   },
-  "epr_mas_episodes_2024_2026.csv": {
-   "date": "2026-10-09",
+  "metric_catalogue.yaml": {
+   "date": "2026-10-26",
    "licence": "CC0 1.0 (constructed for this task)",
-   "source": "constructed by the task generator (seeded); Hollinsmere Partnership NHS Foundation Trust, its clinics, Arvenna Therapeutics, ARV-1102 and every person are fictional; NHS numbers are drawn from a range the NHS does not issue"
+   "source": "constructed by the task generator (seeded); Kleerwissel, its teams, experiments, users and people are fictional; the records follow the forms of a consumer app's experimentation platform (scorecard export, experiment registry), its data warehouse, its growth analytics tables and its forecasting tool"
   },
-  "epr_outpatient_appointments_2024_2026.csv": {
-   "date": "2026-10-09",
+  "new_user_forecast_2027.csv": {
+   "date": "2026-10-26",
    "licence": "CC0 1.0 (constructed for this task)",
-   "source": "constructed by the task generator (seeded); Hollinsmere Partnership NHS Foundation Trust, its clinics, Arvenna Therapeutics, ARV-1102 and every person are fictional; NHS numbers are drawn from a range the NHS does not issue"
+   "source": "constructed by the task generator (seeded); Kleerwissel, its teams, experiments, users and people are fictional; the records follow the forms of a consumer app's experimentation platform (scorecard export, experiment registry), its data warehouse, its growth analytics tables and its forecasting tool"
   },
-  "epr_problem_list_2024_2026.csv": {
-   "date": "2026-10-09",
+  "onboarding_calendar_2027q1.csv": {
+   "date": "2026-10-26",
    "licence": "CC0 1.0 (constructed for this task)",
-   "source": "constructed by the task generator (seeded); Hollinsmere Partnership NHS Foundation Trust, its clinics, Arvenna Therapeutics, ARV-1102 and every person are fictional; NHS numbers are drawn from a range the NHS does not issue"
+   "source": "constructed by the task generator (seeded); Kleerwissel, its teams, experiments, users and people are fictional; the records follow the forms of a consumer app's experimentation platform (scorecard export, experiment registry), its data warehouse, its growth analytics tables and its forecasting tool"
   },
-  "mas_clinic_register.xlsx": {
-   "date": "2026-10-09",
+  "onboarding_experiments_2024_2026.csv": {
+   "date": "2026-10-26",
    "licence": "CC0 1.0 (constructed for this task)",
-   "source": "constructed by the task generator (seeded); Hollinsmere Partnership NHS Foundation Trust, its clinics, Arvenna Therapeutics, ARV-1102 and every person are fictional; NHS numbers are drawn from a range the NHS does not issue"
+   "source": "constructed by the task generator (seeded); Kleerwissel, its teams, experiments, users and people are fictional; the records follow the forms of a consumer app's experimentation platform (scorecard export, experiment registry), its data warehouse, its growth analytics tables and its forecasting tool"
   },
-  "mas_data_guide_2026.pdf": {
-   "date": "2026-10-09",
+  "proxy_metric_standard_2027.pdf": {
+   "date": "2026-10-26",
    "licence": "CC0 1.0 (constructed for this task)",
-   "source": "constructed by the task generator (seeded); Hollinsmere Partnership NHS Foundation Trust, its clinics, Arvenna Therapeutics, ARV-1102 and every person are fictional; NHS numbers are drawn from a range the NHS does not issue"
+   "source": "constructed by the task generator (seeded); Kleerwissel, its teams, experiments, users and people are fictional; the records follow the forms of a consumer app's experimentation platform (scorecard export, experiment registry), its data warehouse, its growth analytics tables and its forecasting tool"
   },
-  "mas_pathway_tracker_2024_2026.xlsx": {
-   "date": "2026-10-09",
+  "scorecard_export_notes.txt": {
+   "date": "2026-10-26",
    "licence": "CC0 1.0 (constructed for this task)",
-   "source": "constructed by the task generator (seeded); Hollinsmere Partnership NHS Foundation Trust, its clinics, Arvenna Therapeutics, ARV-1102 and every person are fictional; NHS numbers are drawn from a range the NHS does not issue"
+   "source": "constructed by the task generator (seeded); Kleerwissel, its teams, experiments, users and people are fictional; the records follow the forms of a consumer app's experimentation platform (scorecard export, experiment registry), its data warehouse, its growth analytics tables and its forecasting tool"
   },
-  "mas_service_audit_2024_25.xlsx": {
-   "date": "2026-10-09",
+  "signup_cohorts_2025.csv": {
+   "date": "2026-10-26",
    "licence": "CC0 1.0 (constructed for this task)",
-   "source": "constructed by the task generator (seeded); Hollinsmere Partnership NHS Foundation Trust, its clinics, Arvenna Therapeutics, ARV-1102 and every person are fictional; NHS numbers are drawn from a range the NHS does not issue"
-  },
-  "patient_master_index.csv": {
-   "date": "2026-10-09",
-   "licence": "CC0 1.0 (constructed for this task)",
-   "source": "constructed by the task generator (seeded); Hollinsmere Partnership NHS Foundation Trust, its clinics, Arvenna Therapeutics, ARV-1102 and every person are fictional; NHS numbers are drawn from a range the NHS does not issue"
-  },
-  "site_selection_paper_RC-26-11.pdf": {
-   "date": "2026-10-09",
-   "licence": "CC0 1.0 (constructed for this task)",
-   "source": "constructed by the task generator (seeded); Hollinsmere Partnership NHS Foundation Trust, its clinics, Arvenna Therapeutics, ARV-1102 and every person are fictional; NHS numbers are drawn from a range the NHS does not issue"
+   "source": "constructed by the task generator (seeded); Kleerwissel, its teams, experiments, users and people are fictional; the records follow the forms of a consumer app's experimentation platform (scorecard export, experiment registry), its data warehouse, its growth analytics tables and its forecasting tool"
   }
  },
  "rows": {
-  "catchment_population_65plus_2025.csv": 27,
-  "cis_ace3_forms_2014_2023.csv": 23647,
-  "cis_diagnoses_2014_2023.csv": 9450,
-  "epr_cognitive_observations_2024_2026.csv": 91287,
-  "epr_mas_episodes_2024_2026.csv": 8424,
-  "epr_outpatient_appointments_2024_2026.csv": 26072,
-  "epr_problem_list_2024_2026.csv": 8922,
-  "mas_clinic_register.xlsx": 39,
-  "mas_pathway_tracker_2024_2026.xlsx": 4020,
-  "mas_service_audit_2024_25.xlsx": 8,
-  "patient_master_index.csv": 12621
+  "app_store_ratings_2024_2026.csv": 292,
+  "experiment_scorecards_2024_2026.csv": 8926,
+  "global_holdout_users_2025.csv": 31584,
+  "new_user_forecast_2027.csv": 730,
+  "onboarding_calendar_2027q1.csv": 7,
+  "onboarding_experiments_2024_2026.csv": 510,
+  "signup_cohorts_2025.csv": 4544
  },
  "task": "task270",
- "title": "Hollinsmere Partnership NHS Foundation Trust: the two memory clinics that recruit for ARV-1102"
+ "title": "Kleerwissel: the 2027 proxy metric for six-month retention"
 }
