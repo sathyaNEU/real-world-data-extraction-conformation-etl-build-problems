@@ -1,61 +1,66 @@
 {
-  "task": "task271",
-  "owner": "sathay3012",
-  "status": "OPEN",
-  "domain": "biomedical-clinical-research",
-  "objective": "descriptive-distribution",
-  "stage": 1,
-  "stage_name": "draw",
-  "updated": "2026-10-25",
-  "stump": "A competent analyst who sets the probands aside and runs Kaplan-Meier on the relatives whose final report shows each family's variant names five groups for the 2027 Family Outreach Program, PALB2-PTV, PALB2-MIS, ATM-MIS, BARD1-PTV and RAD51D-PTV, because the relatives of the groups identified late were tested mostly for a cancer of their own; only every mother, sister and daughter, each a carrier with probability one half unless a final report settles it (the kin-cohort or the Mendelian likelihood), names PALB2-PTV and PALB2-MIS.",
-  "architecture": 4,
-  "loops": 0,
-  "precut": {
-    "exit": 0,
-    "date": "2026-10-21",
-    "checks": 51
+ "task": "task271",
+ "owner": "sathay3012",
+ "status": "DESIGN",
+ "domain": "actuarial-science-insurance",
+ "objective": "descriptive-distribution",
+ "stage": 2,
+ "stage_name": "design",
+ "updated": "2026-10-26",
+ "stump": "A competent analyst back-tests frequency models on the homes' recorded attributes (year built, basement, bathrooms, construction, township), keeps the best on 2025 as the mutual's model standard requires, carries it to each township's owner-occupied homes and names Brookmere, whose newer slab-built homes look safest; only the model carrying the water authority's supply zone, which wins the 2025 test outright and finds most of Brookmere's homes in the high-pressure Valley zone, names Ashby Hill.",
+ "architecture": 4,
+ "loops": 0,
+ "precut": {
+  "exit": null,
+  "date": null,
+  "checks": null
+ },
+ "leak": {
+  "leak_py": "pending",
+  "reader": "pending"
+ },
+ "duplicate_check": {
+  "check_at_draw": "WARN 2026-10-26 (no BLOCK; task185, task188, task457 and task80 differentiated on the card)",
+  "heart": "pending",
+  "surface": "pending"
+ },
+ "judge": {
+  "verdict": "pending",
+  "disposition": "pending",
+  "report": ""
+ },
+ "returned": [],
+ "resume": "Stage 2: design the ladder, fork and closure tables, the asks and prompt.txt for architecture 4 (Halbridge Mutual's 2027 agency township, supply zone from the water authority's zone map, the frequency model standard's 2025 hold-out test), gate precut.py; then the generator.",
+ "architectures": [
+  {
+   "architecture": 1,
+   "drawn": "2026-10-19",
+   "paused": "dc454b68",
+   "fate": "spent 2026-10-19 at stage 4: both isolated scored readers landed the call (the earlier-operation flag rebuilt from earlier admissions); judge SEND_BACK on the flag's unfiled definition"
   },
-  "leak": {
-    "leak_py": "REVIEW 2026-10-21: the criteria, the data guide and contents use the register's ordinary words (relatives, carrier, families); the test results file renamed icrs_laboratory_reports after the file-name sweep; no answer figure, ranking or announcement",
-    "reader": "2026-10-21 two isolated scored readers (score_reader.py --call-key call.qualify): r271f call 1 of 1, asks 20 of 20; r271e call 1 of 1, asks 20 of 20; both ran the kin-cohort from criteria 2.3's filed population (every mother, sister and daughter, living or dead), Gate F failed"
+  {
+   "architecture": 2,
+   "drawn": "2026-10-20",
+   "paused": "6dfa888c",
+   "fate": "spent 2026-10-20 at stage 4: both isolated scored readers fitted the latent class callback model and landed the call; judge SEND_BACK on a level-of-effort logit that names North Sound fourth"
   },
-  "duplicate_check": {
-    "heart": "BLOCK 2026-10-21 ban.strategy against task471 v5, the author's override (option a), reasons on the card; ban.forum cleared by the forum redraw",
-    "nearest": "0.08 task267",
-    "surface": "clean 2026-10-21 (persona Katrina Newman)"
+  {
+   "architecture": 3,
+   "drawn": "2026-10-20",
+   "paused": "44e0b471",
+   "fate": "retired 2026-10-21 at stage 4 (Gate F): both isolated scored readers took criteria 2.3's measuring population, ran the kin-cohort (twice the relatives' risk by 70 less the registry's 7.5 percent) and landed the call, each with all 20 ask figures; judge DETERMINISTIC, APPROVE"
   },
-  "judge": {
-    "verdict": "DETERMINISTIC",
-    "disposition": "APPROVE",
-    "report": "isolated judge thread 2026-10-21 (/tmp/determinism-check-task271-1/verdict.md): main call and all 20 ask figures reproduce; Gate G statistical_rigor, analytical_non_defect; Gate H domain pass, layers pass, decisive_step analytical; the tested-carriers reading of 2.1 a watch item only"
-  },
-  "returned": [],
-  "resume": "Reopened 2026-10-25 at the author's direction: no number in this lane is retired. Re-root at the draw in a fresh world, architecture 4; read DESIGN_NOTE.md's Tried and rejected first, every dead architecture and screen there stays dead. Before the reopen: RETIRED 2026-10-21: three architectures spent (v1 and v2 at stage 4 on Gate F, v3 at stage 4 on Gate F with the judge's APPROVE). The number is not reused; the backlog moves to task272.",
-  "architectures": [
-    {
-      "architecture": 1,
-      "drawn": "2026-10-19",
-      "paused": "dc454b68",
-      "fate": "spent 2026-10-19 at stage 4: both isolated scored readers landed the call (the earlier-operation flag rebuilt from earlier admissions); judge SEND_BACK on the flag's unfiled definition"
-    },
-    {
-      "architecture": 2,
-      "drawn": "2026-10-20",
-      "paused": "6dfa888c",
-      "fate": "spent 2026-10-20 at stage 4: both isolated scored readers fitted the latent class callback model and landed the call; judge SEND_BACK on a level-of-effort logit that names North Sound fourth"
-    },
-    {
-      "architecture": 3,
-      "drawn": "2026-10-20",
-      "paused": "44e0b471",
-      "fate": "retired 2026-10-21 at stage 4 (Gate F): both isolated scored readers took criteria 2.3's measuring population, ran the kin-cohort (twice the relatives' risk by 70 less the registry's 7.5 percent) and landed the call, each with all 20 ask figures; judge DETERMINISTIC, APPROVE"
-    }
-  ],
-  "approved": null,
-  "delivered": null,
-  "portal": null,
-  "portal_id": "",
-  "portal_status": "",
-  "portal_status_date": "",
-  "seed": "DA21 (world and decision shape only: a nonprofit health plan's 2027 programme for part of its book; its design set aside, Tried and rejected)"
+  {
+   "architecture": 4,
+   "drawn": "2026-10-26",
+   "fate": "in design"
+  }
+ ],
+ "approved": null,
+ "delivered": null,
+ "portal": null,
+ "portal_id": "",
+ "portal_status": "",
+ "portal_status_date": "",
+ "seed": "DA21 (world and decision shape only: a nonprofit health plan's 2027 programme for part of its book; its design set aside, Tried and rejected)"
 }
