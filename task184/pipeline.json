@@ -2,38 +2,30 @@
  "task": "task184",
  "owner": "oviya13ya",
  "status": "DESIGN",
- "domain": "criminology-justice",
+ "domain": "accounting-audit-forensic",
  "objective": "anomaly-detection",
- "stage": 1,
- "stage_name": "draw",
- "updated": "2026-10-25",
- "stump": "A competent solver conforms the two recording systems, drops the cross-system duplicates, fixes the gazetteer, keeps the contracted classes in the quarter, spreads each occurrence window evenly over its own hours and commissions Friday 12:00, Thursday 20:00, Friday 00:00, Saturday 00:00, Friday 16:00, Thursday 16:00, Friday 20:00 and Sunday 20:00, filing 3,150 covered offences a season when its eight meet 4,250 of the golden's 5,700; the step that lands it there is reading the window as a statement that the offence is equally likely in every hour of it, when the window is the gap in its keeper's own routine and the gap covering a Friday or Saturday night is a weekend closure three to four times as long as a midweek one.",
- "architecture": 7,
+ "stage": 2,
+ "stage_name": "design",
+ "updated": "2026-10-26",
+ "stump": "The analyst reports the monitoring platform's 10,587 flagged entries as the number of postings that tripped the ruleset for the year to date (or 31,282 from the entry flag rate grossed up by the group's postings); the step that lands there is treating the entry verdict as one observation of one posting, when it is an indicator that fires once however many of the voucher's postings trip the rule, so the count has to be recovered by inverting one minus the complement raised to the postings on the entry, entry by entry, with the rate estimated on each trading unit's own population.",
+ "architecture": 8,
  "loops": 0,
  "precut": {
-  "exit": 0,
-  "date": "2026-10-21",
-  "note": "exit 0 on the rebuilt task folder in the repair's scratch directory; exit 1 on the repo folder on one check only, SF11 absent from the shipped generator/checks.py, because this pass was not permitted to write under task184/generator"
+  "exit": null,
+  "date": ""
  },
  "leak": {
-  "leak_py": "REVIEW on the rebuild (sweeps 4 and 6, both answered in the design note)",
-  "reader": "not run: the pack is rebuilt in the repair's scratch directory and not yet in the repo"
+  "leak_py": "",
+  "reader": ""
  },
  "duplicate_check": {
-  "heart": "PASS (WARNs answered in the note)",
-  "nearest": "0.08 task121 v3, task180 v4"
+  "heart": "",
+  "nearest": "0.07 task190 lineage / task132"
  },
  "judge": {
-  "verdict": "NOT_DETERMINISTIC",
-  "disposition": "SEND_BACK",
-  "report": "task184/determinism_check_report_pass2.md",
-  "pass": "architecture 2, pass 1",
-  "taxonomy": "underspecified_objective",
-  "gates": "Gate A reproduces, Gate C FAIL, Gate F strong, Gate G pass, Gate H pass",
-  "gate_g": "passes: mechanism method_or_model_selection, analytical_non_defect, no surface-read dependency, no sole data defect",
-  "gate_h": "passes: domain pass, layers pass, decisive_step analytical",
-  "finding": "Gate C, underspecified_objective. The pooled hour-of-week estimator, one clock across the five classes and both seasons, is filed nowhere in the shipped text and appears only in the write-up's step 4. Verified in the main thread from the generator rather than taken on trust: fitting one clock per offence class and summing across classes gives 7 of 8 slots in common with the golden and a different eighth, Monday 20:00-00:00 replaced by Friday 16:00-20:00, with the eight totalling 4,866 a season against 5,705, and a likelihood ratio of per-class over pooled of 511.1 on 668 degrees of freedom, z = -4.29, so the data neither reject pooling nor prefer it. Two defensible estimators, two committed slates, nothing filed choosing between them.",
-  "root_cause": "The family was counted too narrowly. The ladder measured the record refuting every rival PLACEMENT inside the pooled model (even spread 3,035.2, keeper-seen profile 13,660.0, witnessed classes 3,435.4, footfall 7,834.8) and no rival GROUPING of the same estimator. The build's own gap over standard error of 1.71 at the cap predicted it and was read as conservative because the errors are correlated through the record's fixed total; per-class fitting is the case where that reasoning fails, because five times 168 parameters on the same rows raises the variance rather than sharing it. The cap's gap of 76.80 offences is too small to survive a licensed re-grouping."
+  "verdict": "",
+  "disposition": "",
+  "report": ""
  },
  "returned": [
   {
@@ -49,7 +41,7 @@
    "commit": ""
   }
  ],
- "resume": "THE INTERVAL-CENSORED PLACEMENT MECHANISM IS CLOSED FOR A SLATE DECISION, measured across SEVEN architectures, three worlds and more than forty settings. Pack untouched and reproducing at c507033cde9b779a. The full record is in the design note; the law is stumping 1.1h. THE REDRAW WORKED, AND IT IS WORTH KEEPING: a wholesale-market world, whose targets trade before noon so the gaps run from midday to the small hours and their quiet end is not their middle, gave the FIRST MONOTONE LADDER this slot has ever had (window start 0.29 to 0.44, midpoint 0.35 to 0.41, window end 0.48 to 0.51, flat aoristic 0.60 to 0.66, the field's fit 0.79 to 0.89, golden 1.00, at every seed), with the golden 8 of 8 against the truth and margins near 20 per cent. The parameters are in the note. WHY IT STILL DOES NOT SHIP, both horns measured: with a FITTED detection level the level is unidentified, which is a legal C3 corridor since the eight-slot set is identical from 0.70 to 0.999 and under both grid variants, but only the SET survives (the ranking holds at three seeds of four, per-slot figures spread up to 347.6 on about 3,500, the covered total 6.20 to 9.08 per cent), so a figure-dense shape cannot be served and stacking asks for the criteria count is banned. With a PARAMETER-FREE correction (excluding from each victim-stated window the hours the keyholding schedule shows attended) every figure is determinate and the field's own interval-censored fit then reaches 0.95 to 0.96 of the golden at 6 of 8 slots, so the default path nearly lands. ARCHITECTURE 8: keep the domain, the objective, the quarter and the market world; CHANGE THE DECISIVE STEP, and with it probably the decision type. A placement step needs a graded quantity it moves materially, a level or a rate or a share of the censored mass, rather than a ranking whose head is route-invariant. Draw it from guard.py mechanisms and coverage on anomaly-detection rather than by bending this one further. Everything else carries: the ask layer measured at 31.7 per cent, the lane's best, and the pack's ten files, three formats and 33,699-row spine.",
+ "resume": "stage 2: readability screen, semantic fork table, ladder (3 to 5 rungs with grid and worth), 22-axis closure table, literal reader line, oracles, ask sheet, prompt.txt through voice-check.py, then precut.py exit 0. The architecture is measured at the draw and the figures are in the design note's ## Measured at the draw.",
  "approved": null,
  "delivered": null,
  "portal": null,
