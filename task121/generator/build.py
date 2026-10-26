@@ -1,6 +1,6 @@
 """Build task121: the evidence pack into <task>/target, the goldens into <task>/golden, metadata.json and
-generator/figures.json, then the checks and the independent verifier, then a second build into a scratch folder
-inside the task (removed after) compared byte for byte, then target.zip cut from the final build.
+generator/figures.json, then the checks and the independent verifier, then a second build into a scratch folder inside
+the task (removed after) compared byte for byte, then target.zip cut from the final build.
 
     python3 task121/generator/build.py              everything
     python3 task121/generator/build.py --out DIR    the pack only, into DIR
@@ -21,60 +21,64 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)
 import common as K         # noqa: E402
 import docs as DC          # noqa: E402
-import records as RC       # noqa: E402
-import trust as T          # noqa: E402
-import world as Wd         # noqa: E402
+import records as R        # noqa: E402
+import world as WD         # noqa: E402
 
 TASK = os.path.dirname(HERE)
 MTIME = calendar.timegm(K.ASSEMBLED.timetuple())
 
+CONTENTS = [
+    ("definitions", "Quality assurance program: measures and definitions (effective 1 July 2025)."),
+    ("release", "Systems team: protocol software release 13.3, go-live note."),
+    ("reference", "Centre reference: trunk groups, ambulances, protocols and positions."),
+    ("takers", "Scheduling system: call-takers, with their CAD logins."),
+    ("roster", "Scheduling system: the shifts each call-taker worked, 18 August 2025 to 31 August 2026."),
+    ("calls", "CAD: medical calls answered, 1 September 2025 to 31 August 2026."),
+    ("epcr", "ePCR: the crews' patient care records for those calls."),
+    ("units", "CAD: ambulance assignments for those calls."),
+    ("che", "911 call handling equipment: call detail, every call on the centre's trunks."),
+    ("tcpr", "QA review log: cardiac arrest call reviews."),
+    ("casereview", "QA review log: protocol compliance case reviews."),
+    ("unithours", "EMS operations: ambulance staffed hours by day."),
+    ("dictionary", "Data dictionary for the files above."),
+]
 
-def build(out, keep=False):
+
+def build(out, seed=K.SEED, keep=False):
     if os.path.exists(out):
         shutil.rmtree(out)
     os.makedirs(out)
     p = lambda k: os.path.join(out, K.FILES[k])
-    w = Wd.World()
-    tr = T.Trust()
+    w = WD.World(seed)
+    rc = R.Records(w, seed)
     n = {}
-    tabs = None
-    for key, fn in (("transfer", lambda: RC.transfer(w)), ("register", lambda: RC.register(w)),
-                    ("tables", lambda: RC.tables(w)), ("attendance", lambda: RC.attendance(tr)),
-                    ("movements", lambda: RC.movements(tr)), ("results25", lambda: RC.results(tr, "June 2025")),
-                    ("results26", lambda: RC.results(tr, "June 2026"))):
+    for key, fn in (("takers", rc.taker_rows), ("roster", rc.roster_rows), ("calls", rc.call_rows),
+                    ("epcr", rc.epcr_rows), ("units", rc.unit_rows), ("che", rc.che_rows), ("tcpr", rc.tcpr_rows),
+                    ("casereview", rc.case_rows), ("unithours", rc.unit_hour_rows)):
         head, rows = fn()
-        RC.write_csv(p(key), head, rows)
+        R.write_csv(p(key), head, rows)
         n[key] = len(rows)
-        if key == "tables":
-            tabs = rows
-    RC.estimates(p("estimates"))
-    RC.workforce(p("workforce"), w)
-    RC.funding(p("funding"), w)
-    DC.write_paper(p("paper"), tabs)
-    DC.write_guide(p("guide"))
-    DC.write_measures(p("measures"))
-    DC.write_attnote(p("attnote"))
-    return dict(w=w if keep else None, tr=tr if keep else None, counts=n)
+    DC.write_definitions(p("definitions"))
+    DC.write_release(p("release"))
+    DC.write_reference(p("reference"))
+    DC.write_dictionary(p("dictionary"))
+    DC.write_index(p("index"), [(K.FILES[k], d) for k, d in CONTENTS])
+    return dict(world=w if keep else None, counts=n)
 
 
-PDF_DATES = {"paper": ("D:20261023141500+01'00'", "D:20261023141500+01'00'"),
-             "guide": ("D:20260911093000+01'00'", "D:20260911093000+01'00'"),
-             "measures": ("D:20260929110000+01'00'", "D:20260929110000+01'00'"),
-             "attnote": ("D:20260922154500+01'00'", "D:20260922154500+01'00'")}
-OOXML = {"estimates": ("Department for Education", "Department for Education", "2025-02-06T09:30:00Z",
-                       "2025-02-06T09:30:00Z", "Progress 8 estimates", True),
-         "workforce": (K.PEOPLE["la"], K.PEOPLE["la"], "2026-06-18T10:02:00Z", "2026-06-18T10:41:00Z",
-                       "School workforce, November 2025", True),
-         "funding": (K.PEOPLE["la"], K.PEOPLE["la"], "2025-03-27T13:20:00Z", "2025-04-02T08:55:00Z",
-                     "School funding 2025-26", True)}
+PDF_DATES = {"definitions": ("D:20250618101500-05'00'", "D:20250626153000-05'00'"),
+             "release": ("D:20260219164000-06'00'", "D:20260220091200-06'00'")}
+OOXML = {"reference": (K.PEOPLE["qa"], K.PEOPLE["qa"], "2023-01-09T15:12:00Z", "2026-11-03T21:47:00Z",
+                       "Centre reference", True)}
 
 
 def finish(out):
+    """The containers as their writers save them, then every file's modified time set to the folder's assembly."""
     import postprocess as PP
     for k, (c, m) in PDF_DATES.items():
         PP.normalize_pdf(os.path.join(out, K.FILES[k]), c.encode(), m.encode())
+    PP.COMPANY = K.CENTRE
     for k, (cr, lb, c, m, title, excel) in OOXML.items():
-        PP.COMPANY = K.COUNCIL if k != "estimates" else "Department for Education"
         PP.normalize_ooxml(os.path.join(out, K.FILES[k]), cr, lb, c, m, title=title, excel=excel)
     for f in os.listdir(out):
         os.utime(os.path.join(out, f), (MTIME, MTIME))
@@ -82,36 +86,34 @@ def finish(out):
 
 def finish_golden(golden):
     import postprocess as PP
-    PP.COMPANY = K.TRUST
-    PP.normalize_ooxml(os.path.join(golden, K.GOLDEN), K.PEOPLE["data"], K.PEOPLE["data"],
-                       "2026-10-26T09:05:00Z", "2026-11-04T16:40:00Z", title="Halwick Progress 8 walk", excel=True)
+    PP.COMPANY = K.CENTRE
+    PP.normalize_ooxml(os.path.join(golden, K.GOLDEN), K.REQUESTER, K.REQUESTER, "2026-11-12T16:05:00Z",
+                       "2026-11-24T22:18:00Z", title="Under-triage cause 2026", excel=True)
     for f in os.listdir(golden):
         os.utime(os.path.join(golden, f), (MTIME, MTIME))
 
 
 def metadata(fig, counts):
-    src = ("constructed by the task generator (seeded); %s, %s, the borough of %s, their schools, people and records "
-           "are fictional; the records follow the forms of a local authority's key stage 2 to key stage 4 pupil file, "
-           "the Department for Education's performance tables and Progress 8 estimates, and a multi-academy trust's "
-           "attendance, movements and examination results exports" % (K.TRUST, K.COUNCIL, K.BOROUGH))
+    src = ("constructed by the task generator (seeded); %s, its centre, call-takers, patients and people are fictional; "
+           "the records follow the forms of a US county 911 centre's CAD, scheduling system, 911 call handling "
+           "equipment and quality review logs, and an ambulance service's patient care records" % K.COUNTY)
     return {
         "task": "task121",
-        "title": "%s: whether Halwick Academy's own effect accounts for most of its Progress 8 gap to the trust "
-                 "average, 2022 to 2024" % K.TRUST,
-        "domain": "Education & Learning Sciences (multilevel school effects research)",
+        "title": "%s: what caused the rise in under-triaged medical calls from March 2026" % K.CENTRE,
+        "domain": "Human Factors & Ergonomics (workload, fatigue and shift analysis)",
         "objective": "Root-Cause Analysis",
         "distractor_files": ["target/" + K.FILES[k] for k in K.DISTRACTORS],
         "deliverables": list(K.DELIVERABLES),
-        "provenance": {name: {"source": src, "date": "2026-10-23", "licence": "CC0 1.0 (constructed for this task)"}
+        "provenance": {name: {"source": src, "date": "2026-10-26", "licence": "CC0 1.0 (constructed for this task)"}
                        for name in sorted(K.FILES.values())},
         "rows": {K.FILES[k]: v for k, v in sorted(counts.items())},
-        "answer": fig["call"]["sentence"],
+        "answer": fig["call"]["cause"],
     }
 
 
-def main_build(target, golden):
+def main_build(target, golden, seed=K.SEED):
     import deliver as DV
-    b = build(target, keep=True)
+    b = build(target, seed, keep=True)
     finish(target)
     if os.path.exists(golden):
         shutil.rmtree(golden)
@@ -125,53 +127,57 @@ def main_build(target, golden):
 
 
 def digest(folder):
-    return {f: hashlib.sha256(open(os.path.join(folder, f), "rb").read()).hexdigest() for f in sorted(os.listdir(folder))}
+    h = {}
+    for f in sorted(os.listdir(folder)):
+        with open(os.path.join(folder, f), "rb") as fh:
+            h[f] = hashlib.md5(fh.read()).hexdigest()
+    return h
 
 
 def cut_zip(target, path):
     import zipfile
+    if os.path.exists(path):
+        os.remove(path)
     with zipfile.ZipFile(path, "w", zipfile.ZIP_DEFLATED) as z:
         for f in sorted(os.listdir(target)):
-            zi = zipfile.ZipInfo(f, date_time=K.ASSEMBLED.timetuple()[:6])
-            zi.compress_type = zipfile.ZIP_DEFLATED
-            zi.external_attr = 0o644 << 16
-            z.writestr(zi, open(os.path.join(target, f), "rb").read())
+            info = zipfile.ZipInfo(f, date_time=K.ASSEMBLED.timetuple()[:6])
+            info.compress_type = zipfile.ZIP_DEFLATED
+            info.external_attr = 0o644 << 16
+            with open(os.path.join(target, f), "rb") as fh:
+                z.writestr(info, fh.read())
+    with open(path, "rb") as fh:
+        return hashlib.md5(fh.read()).hexdigest()
 
 
-if __name__ == "__main__":
+def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--out")
     ap.add_argument("--golden", action="store_true")
     a = ap.parse_args()
     if a.out:
-        b = build(a.out)
+        build(a.out)
         finish(a.out)
-        print(b["counts"])
-        sys.exit(0)
+        return 0
     target, golden = os.path.join(TASK, "target"), os.path.join(TASK, "golden")
     b, fig, res = main_build(target, golden)
     print("pack:", b["counts"])
     print("call:", fig["call"])
     if a.golden:
-        sys.exit(0)
-    import checks
-    import verify
-    rc = checks.run(TASK, b, fig, res)
-    rv = verify.run(TASK)
-    scratch = os.path.join(TASK, "_rebuild_check")
-    build(os.path.join(scratch, "target"))
-    finish(os.path.join(scratch, "target"))
-    import deliver as DV
-    DV.write(os.path.join(scratch, "target"), os.path.join(scratch, "golden"))
-    finish_golden(os.path.join(scratch, "golden"))
-    d1, d2 = digest(target), digest(os.path.join(scratch, "target"))
-    g1, g2 = digest(golden), digest(os.path.join(scratch, "golden"))
-    same = d1 == d2 and g1 == g2
-    for f in sorted(set(d1) | set(g1)):
-        if d1.get(f, g1.get(f)) != d2.get(f, g2.get(f)):
-            print("  differs on rebuild:", f)
+        return 0
+    import checks as CK
+    import verify as VF
+    rc = CK.run(TASK, b["world"], res)
+    rv = VF.main(TASK)
+    scratch = os.path.join(TASK, ".rebuild_check")
+    build(scratch)
+    finish(scratch)
+    same = digest(scratch) == digest(target)
     shutil.rmtree(scratch)
     print("second build byte-identical:", same)
-    cut_zip(target, os.path.join(TASK, "target.zip"))
-    print("target.zip:", hashlib.md5(open(os.path.join(TASK, "target.zip"), "rb").read()).hexdigest())
-    sys.exit(0 if (rc == 0 and rv == 0 and same) else 1)
+    md5 = cut_zip(target, os.path.join(TASK, "target.zip"))
+    print("target.zip:", md5)
+    return 0 if (rc == 0 and rv == 0 and same) else 1
+
+
+if __name__ == "__main__":
+    sys.exit(main())

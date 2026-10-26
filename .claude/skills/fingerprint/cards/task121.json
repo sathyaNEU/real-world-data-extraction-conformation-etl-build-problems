@@ -241,8 +241,8 @@
       "fate": "spent 2026-10-25 at stage 4: reader A landed the verdict through the feeder primaries (the cross-classified model fitted from the borough's own pupil records) and the judge returned SEND_BACK on Annex B; paused, then re-rooted on 2026-10-26."
     }
   ],
-  "notes": "v5 drawn 2026-10-25 by sathay3012 after v4 was spent at stage 4 the same day (both readers linked the journey conditions; judge SEND_BACK on Gate H). The candidate list names the academy's own effect, attendance, disadvantage and the rest of the intake; the primary schools are not a named candidate, so the step that books the rest of the intake to them is the analysis, not a reading of the list. Stage 3 green 2026-10-25: walk -0.4 = -0.1, -0.1, 0.0, -0.2 (golden family unanimous at one decimal); default path own effect -0.2; asks 32 figures, cracker 0 of 32. Architecture 5 spent at stage 4 on 2026-10-25: reader A landed the verdict by grouping Halwick pupils by key stage 2 school; judge SEND_BACK on the Annex B cohort.",
-  "architecture_spent": false,
+  "notes": "v5 drawn 2026-10-25 by sathay3012 after v4 was spent at stage 4 the same day (both readers linked the journey conditions; judge SEND_BACK on Gate H). The candidate list names the academy's own effect, attendance, disadvantage and the rest of the intake; the primary schools are not a named candidate, so the step that books the rest of the intake to them is the analysis, not a reading of the list. Stage 3 green 2026-10-25: walk -0.4 = -0.1, -0.1, 0.0, -0.2 (golden family unanimous at one decimal); default path own effect -0.2; asks 32 figures, cracker 0 of 32. Architecture 5 spent at stage 4 on 2026-10-25: reader A landed the verdict by grouping Halwick pupils by key stage 2 school; judge SEND_BACK on the Annex B cohort. Architecture 6 spent 2026-10-26 at stage 4 round 2: reader D built rest from the worked roster and named the quick returns; the asks held 0 of 36 for both readers.",
+  "architecture_spent": true,
   "answer": "pending stage 3",
   "answer_source": "submission.md block 1; generator/figures.json call",
   "registered": "2026-10-26T04:13:59Z"

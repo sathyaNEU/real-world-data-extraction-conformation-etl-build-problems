@@ -1,96 +1,98 @@
 {
- "answer": "No: the academy's own effect accounts for almost none of Halwick's Progress 8 gap to the trust (0.0 of -0.4 points); the largest item is the remainder (-0.2), the shortfall its pupils bring from the seven primary schools that send it most of its intake, ahead of attendance (-0.1) and disadvantage (-0.1)",
+ "answer": "quick returns (the 2026 rotation)",
  "deliverables": [
-  "halwick_progress8_walk_2022_2024.xlsx",
-  "halwick_progress8_walk.png"
+  "under_triage_cause_2026.xlsx",
+  "under_triage_2025_26.png"
  ],
  "distractor_files": [
-  "target/brantholme_school_workforce_nov2025.xlsx",
-  "target/brantholme_school_funding_2025_26.xlsx"
+  "target/protocol_case_reviews_2025_2026.csv",
+  "target/ems_unit_hours_2025_2026.csv"
  ],
- "domain": "Education & Learning Sciences (multilevel school effects research)",
+ "domain": "Human Factors & Ergonomics (workload, fatigue and shift analysis)",
  "objective": "Root-Cause Analysis",
  "provenance": {
-  "brantholme_establishments_2026.csv": {
-   "date": "2026-10-23",
+  "cad_medical_calls_2025_2026.csv": {
+   "date": "2026-10-26",
    "licence": "CC0 1.0 (constructed for this task)",
-   "source": "constructed by the task generator (seeded); Larkhollow Academies Trust, Brantholme Metropolitan Borough Council, the borough of Brantholme, their schools, people and records are fictional; the records follow the forms of a local authority's key stage 2 to key stage 4 pupil file, the Department for Education's performance tables and Progress 8 estimates, and a multi-academy trust's attendance, movements and examination results exports"
+   "source": "constructed by the task generator (seeded); Quellmont County, its centre, call-takers, patients and people are fictional; the records follow the forms of a US county 911 centre's CAD, scheduling system, 911 call handling equipment and quality review logs, and an ambulance service's patient care records"
   },
-  "brantholme_ks2_ks4_transfer_2022_2024.csv": {
-   "date": "2026-10-23",
+  "cad_unit_history_2025_2026.csv": {
+   "date": "2026-10-26",
    "licence": "CC0 1.0 (constructed for this task)",
-   "source": "constructed by the task generator (seeded); Larkhollow Academies Trust, Brantholme Metropolitan Borough Council, the borough of Brantholme, their schools, people and records are fictional; the records follow the forms of a local authority's key stage 2 to key stage 4 pupil file, the Department for Education's performance tables and Progress 8 estimates, and a multi-academy trust's attendance, movements and examination results exports"
+   "source": "constructed by the task generator (seeded); Quellmont County, its centre, call-takers, patients and people are fictional; the records follow the forms of a US county 911 centre's CAD, scheduling system, 911 call handling equipment and quality review logs, and an ambulance service's patient care records"
   },
-  "brantholme_school_funding_2025_26.xlsx": {
-   "date": "2026-10-23",
+  "call_takers.csv": {
+   "date": "2026-10-26",
    "licence": "CC0 1.0 (constructed for this task)",
-   "source": "constructed by the task generator (seeded); Larkhollow Academies Trust, Brantholme Metropolitan Borough Council, the borough of Brantholme, their schools, people and records are fictional; the records follow the forms of a local authority's key stage 2 to key stage 4 pupil file, the Department for Education's performance tables and Progress 8 estimates, and a multi-academy trust's attendance, movements and examination results exports"
+   "source": "constructed by the task generator (seeded); Quellmont County, its centre, call-takers, patients and people are fictional; the records follow the forms of a US county 911 centre's CAD, scheduling system, 911 call handling equipment and quality review logs, and an ambulance service's patient care records"
   },
-  "brantholme_school_workforce_nov2025.xlsx": {
-   "date": "2026-10-23",
+  "centre_reference.xlsx": {
+   "date": "2026-10-26",
    "licence": "CC0 1.0 (constructed for this task)",
-   "source": "constructed by the task generator (seeded); Larkhollow Academies Trust, Brantholme Metropolitan Borough Council, the borough of Brantholme, their schools, people and records are fictional; the records follow the forms of a local authority's key stage 2 to key stage 4 pupil file, the Department for Education's performance tables and Progress 8 estimates, and a multi-academy trust's attendance, movements and examination results exports"
+   "source": "constructed by the task generator (seeded); Quellmont County, its centre, call-takers, patients and people are fictional; the records follow the forms of a US county 911 centre's CAD, scheduling system, 911 call handling equipment and quality review logs, and an ambulance service's patient care records"
   },
-  "brantholme_transfer_file_guide_2026.pdf": {
-   "date": "2026-10-23",
+  "che_call_detail_2025_2026.csv": {
+   "date": "2026-10-26",
    "licence": "CC0 1.0 (constructed for this task)",
-   "source": "constructed by the task generator (seeded); Larkhollow Academies Trust, Brantholme Metropolitan Borough Council, the borough of Brantholme, their schools, people and records are fictional; the records follow the forms of a local authority's key stage 2 to key stage 4 pupil file, the Department for Education's performance tables and Progress 8 estimates, and a multi-academy trust's attendance, movements and examination results exports"
+   "source": "constructed by the task generator (seeded); Quellmont County, its centre, call-takers, patients and people are fictional; the records follow the forms of a US county 911 centre's CAD, scheduling system, 911 call handling equipment and quality review logs, and an ambulance service's patient care records"
   },
-  "ks4_measures_summary_2026.pdf": {
-   "date": "2026-10-23",
+  "data_dictionary.csv": {
+   "date": "2026-10-26",
    "licence": "CC0 1.0 (constructed for this task)",
-   "source": "constructed by the task generator (seeded); Larkhollow Academies Trust, Brantholme Metropolitan Borough Council, the borough of Brantholme, their schools, people and records are fictional; the records follow the forms of a local authority's key stage 2 to key stage 4 pupil file, the Department for Education's performance tables and Progress 8 estimates, and a multi-academy trust's attendance, movements and examination results exports"
+   "source": "constructed by the task generator (seeded); Quellmont County, its centre, call-takers, patients and people are fictional; the records follow the forms of a US county 911 centre's CAD, scheduling system, 911 call handling equipment and quality review logs, and an ambulance service's patient care records"
   },
-  "ks4_performance_tables_brantholme_2022_2024.csv": {
-   "date": "2026-10-23",
+  "ems_unit_hours_2025_2026.csv": {
+   "date": "2026-10-26",
    "licence": "CC0 1.0 (constructed for this task)",
-   "source": "constructed by the task generator (seeded); Larkhollow Academies Trust, Brantholme Metropolitan Borough Council, the borough of Brantholme, their schools, people and records are fictional; the records follow the forms of a local authority's key stage 2 to key stage 4 pupil file, the Department for Education's performance tables and Progress 8 estimates, and a multi-academy trust's attendance, movements and examination results exports"
+   "source": "constructed by the task generator (seeded); Quellmont County, its centre, call-takers, patients and people are fictional; the records follow the forms of a US county 911 centre's CAD, scheduling system, 911 call handling equipment and quality review logs, and an ambulance service's patient care records"
   },
-  "larkhollow_attendance_2025_26.csv": {
-   "date": "2026-10-23",
+  "epcr_patient_records_2025_2026.csv": {
+   "date": "2026-10-26",
    "licence": "CC0 1.0 (constructed for this task)",
-   "source": "constructed by the task generator (seeded); Larkhollow Academies Trust, Brantholme Metropolitan Borough Council, the borough of Brantholme, their schools, people and records are fictional; the records follow the forms of a local authority's key stage 2 to key stage 4 pupil file, the Department for Education's performance tables and Progress 8 estimates, and a multi-academy trust's attendance, movements and examination results exports"
+   "source": "constructed by the task generator (seeded); Quellmont County, its centre, call-takers, patients and people are fictional; the records follow the forms of a US county 911 centre's CAD, scheduling system, 911 call handling equipment and quality review logs, and an ambulance service's patient care records"
   },
-  "larkhollow_attendance_reporting_2025_26.pdf": {
-   "date": "2026-10-23",
+  "protocol_case_reviews_2025_2026.csv": {
+   "date": "2026-10-26",
    "licence": "CC0 1.0 (constructed for this task)",
-   "source": "constructed by the task generator (seeded); Larkhollow Academies Trust, Brantholme Metropolitan Borough Council, the borough of Brantholme, their schools, people and records are fictional; the records follow the forms of a local authority's key stage 2 to key stage 4 pupil file, the Department for Education's performance tables and Progress 8 estimates, and a multi-academy trust's attendance, movements and examination results exports"
+   "source": "constructed by the task generator (seeded); Quellmont County, its centre, call-takers, patients and people are fictional; the records follow the forms of a US county 911 centre's CAD, scheduling system, 911 call handling equipment and quality review logs, and an ambulance service's patient care records"
   },
-  "larkhollow_exam_results_summer2025.csv": {
-   "date": "2026-10-23",
+  "protocol_software_release_13_3.pdf": {
+   "date": "2026-10-26",
    "licence": "CC0 1.0 (constructed for this task)",
-   "source": "constructed by the task generator (seeded); Larkhollow Academies Trust, Brantholme Metropolitan Borough Council, the borough of Brantholme, their schools, people and records are fictional; the records follow the forms of a local authority's key stage 2 to key stage 4 pupil file, the Department for Education's performance tables and Progress 8 estimates, and a multi-academy trust's attendance, movements and examination results exports"
+   "source": "constructed by the task generator (seeded); Quellmont County, its centre, call-takers, patients and people are fictional; the records follow the forms of a US county 911 centre's CAD, scheduling system, 911 call handling equipment and quality review logs, and an ambulance service's patient care records"
   },
-  "larkhollow_exam_results_summer2026.csv": {
-   "date": "2026-10-23",
+  "qa_program_definitions_2025.pdf": {
+   "date": "2026-10-26",
    "licence": "CC0 1.0 (constructed for this task)",
-   "source": "constructed by the task generator (seeded); Larkhollow Academies Trust, Brantholme Metropolitan Borough Council, the borough of Brantholme, their schools, people and records are fictional; the records follow the forms of a local authority's key stage 2 to key stage 4 pupil file, the Department for Education's performance tables and Progress 8 estimates, and a multi-academy trust's attendance, movements and examination results exports"
+   "source": "constructed by the task generator (seeded); Quellmont County, its centre, call-takers, patients and people are fictional; the records follow the forms of a US county 911 centre's CAD, scheduling system, 911 call handling equipment and quality review logs, and an ambulance service's patient care records"
   },
-  "larkhollow_in_year_movements_2025_26.csv": {
-   "date": "2026-10-23",
+  "qa_review_folder_index.txt": {
+   "date": "2026-10-26",
    "licence": "CC0 1.0 (constructed for this task)",
-   "source": "constructed by the task generator (seeded); Larkhollow Academies Trust, Brantholme Metropolitan Borough Council, the borough of Brantholme, their schools, people and records are fictional; the records follow the forms of a local authority's key stage 2 to key stage 4 pupil file, the Department for Education's performance tables and Progress 8 estimates, and a multi-academy trust's attendance, movements and examination results exports"
+   "source": "constructed by the task generator (seeded); Quellmont County, its centre, call-takers, patients and people are fictional; the records follow the forms of a US county 911 centre's CAD, scheduling system, 911 call handling equipment and quality review logs, and an ambulance service's patient care records"
   },
-  "progress8_national_estimates_2022_2024.xlsx": {
-   "date": "2026-10-23",
+  "roster_shifts_worked_2025_2026.csv": {
+   "date": "2026-10-26",
    "licence": "CC0 1.0 (constructed for this task)",
-   "source": "constructed by the task generator (seeded); Larkhollow Academies Trust, Brantholme Metropolitan Borough Council, the borough of Brantholme, their schools, people and records are fictional; the records follow the forms of a local authority's key stage 2 to key stage 4 pupil file, the Department for Education's performance tables and Progress 8 estimates, and a multi-academy trust's attendance, movements and examination results exports"
+   "source": "constructed by the task generator (seeded); Quellmont County, its centre, call-takers, patients and people are fictional; the records follow the forms of a US county 911 centre's CAD, scheduling system, 911 call handling equipment and quality review logs, and an ambulance service's patient care records"
   },
-  "trustees_paper6_halwick_progress8_2026.pdf": {
-   "date": "2026-10-23",
+  "tcpr_arrest_reviews_2025_2026.csv": {
+   "date": "2026-10-26",
    "licence": "CC0 1.0 (constructed for this task)",
-   "source": "constructed by the task generator (seeded); Larkhollow Academies Trust, Brantholme Metropolitan Borough Council, the borough of Brantholme, their schools, people and records are fictional; the records follow the forms of a local authority's key stage 2 to key stage 4 pupil file, the Department for Education's performance tables and Progress 8 estimates, and a multi-academy trust's attendance, movements and examination results exports"
+   "source": "constructed by the task generator (seeded); Quellmont County, its centre, call-takers, patients and people are fictional; the records follow the forms of a US county 911 centre's CAD, scheduling system, 911 call handling equipment and quality review logs, and an ambulance service's patient care records"
   }
  },
  "rows": {
-  "brantholme_establishments_2026.csv": 84,
-  "brantholme_ks2_ks4_transfer_2022_2024.csv": 9842,
-  "ks4_performance_tables_brantholme_2022_2024.csv": 42,
-  "larkhollow_attendance_2025_26.csv": 43134,
-  "larkhollow_exam_results_summer2025.csv": 12004,
-  "larkhollow_exam_results_summer2026.csv": 11400,
-  "larkhollow_in_year_movements_2025_26.csv": 833
+  "cad_medical_calls_2025_2026.csv": 69080,
+  "cad_unit_history_2025_2026.csv": 72874,
+  "call_takers.csv": 60,
+  "che_call_detail_2025_2026.csv": 148589,
+  "ems_unit_hours_2025_2026.csv": 8030,
+  "epcr_patient_records_2025_2026.csv": 56334,
+  "protocol_case_reviews_2025_2026.csv": 2028,
+  "roster_shifts_worked_2025_2026.csv": 9961,
+  "tcpr_arrest_reviews_2025_2026.csv": 819
  },
  "task": "task121",
- "title": "Larkhollow Academies Trust: whether Halwick Academy's own effect accounts for most of its Progress 8 gap to the trust average, 2022 to 2024"
+ "title": "Quellmont County Emergency Communications District: what caused the rise in under-triaged medical calls from March 2026"
 }

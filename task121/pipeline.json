@@ -1,117 +1,146 @@
 {
- "task": "task121",
- "owner": "sathay3012",
- "status": "DESIGN",
- "domain": "education-learning-sciences",
- "objective": "root-cause",
- "stage": 2,
- "stage_name": "design",
- "updated": "2026-10-26",
- "stump": "A competent solver sets the monthly under-triage rate against the dated changes, sees the step at the protocol software upgrade of 3 March 2026, sets aside the new hires and the call mix, and names the upgrade; the step that lands it there is reading the coincident go-live as the cause, when the rotation introduced the day before sent about a quarter of shifts in after eight hours' rest and the rise lives only in the calls taken on those shifts, which only each call-taker's rest built from consecutive roster shifts shows.",
- "architecture": 6,
- "loops": 0,
- "precut": {
-  "exit": 0,
-  "date": "2026-10-25",
-  "checks": 51
- },
- "leak": {
-  "leak_py": "REVIEW (answered: a coincident 1.5 in the technical award points and -0.14 in the paper's published table; generic vocabulary; academy names beside figures that rank nothing on the decision)",
-  "reader": "Gate F failed: reader A exit 1 (verdict no, feeder legacy), reader B exit 0 (default path); Annex A 15 and 16 of 16"
- },
- "duplicate_check": {
-  "heart": "WARN (repeat.gate_g against task303, repeat.deliverables against task485)",
-  "nearest": "task157 0.07",
-  "surface": "exit 0"
- },
- "judge": {
-  "verdict": "NOT_DETERMINISTIC",
-  "disposition": "SEND_BACK",
-  "report": "determinism_check_report.md"
- },
- "returned": [],
- "resume": "Architecture 6 drawn 2026-10-26 (card registered, probe p121b named the release). Resume at stage 2: default path, stump sentence, three rules, readability screen, fork table, ladder, closure, asks, prompt.txt to precut exit 0.",
- "approved": null,
- "delivered": null,
- "portal": null,
- "history": {
-  "architecture_1": "v1 the address check's forward weekly cost (self-healing exposure): drafted 2026-10-08, rejected at checkpoint A",
-  "architecture_2": "v2 signed-out club-app customers behind a checkout conversion fall (RC01): built, solved in-house twice (86.1, 89.5), retired 2026-10-10, FAILED_TO_STUMP",
-  "v2_pipeline": {
-   "stage": "retired",
-   "stage_name": "retired: no admissible hardening rung; RC11 takes the slot",
-   "solver_rounds": [
-    {
-     "label": "round 1, plain",
-     "date": "2026-10-09",
-     "score": 86.1,
-     "landed": true,
-     "cracked": 6,
-     "items": 11
-    },
-    {
-     "label": "round 2, plain",
-     "date": "2026-10-09",
-     "score": 89.5,
-     "landed": true,
-     "cracked": 10,
-     "items": 11
-    }
-   ],
-   "harden_loops": 2,
-   "approved": "2026-10-10 (no author checkpoint in the flow; heart WARN)",
-   "source_note": "analytical_tasks/06_root_cause/RC01_checkout-release-forward-cost-self-healing.md",
-   "status": "FAILED_TO_STUMP"
-  },
-  "architecture_4": "v4 Marlvale Trains' satisfaction fall (driver analysis on ratings against linked journey conditions): built, spent at stage 4 2026-10-25, both readers on the call, judge SEND_BACK",
-  "architecture_4_stage4": {
-   "precut": {
+  "task": "task121",
+  "owner": "sathay3012",
+  "status": "PAUSED",
+  "domain": "human-factors-ergonomics",
+  "objective": "root-cause",
+  "stage": 1,
+  "stage_name": "draw",
+  "updated": "2026-10-26",
+  "stump": "A competent solver sets the monthly under-triage rate against the dated changes, sees the step at protocol release 13.3 on 3 March 2026, rules out the graduates and the call mix and names the release; the step that lands it there is reading the coincident go-live as the cause, when the rotation begun on 2 March put 15.8 per cent of shifts on less than eleven hours' rest and the rise lives in the calls taken on those shifts (31.1 against 10.7 on rested shifts, which held at 10.2 before March), which only each call-taker's rest built from consecutive worked shifts shows.",
+  "architecture": 7,
+  "loops": 0,
+  "precut": {
     "exit": 0,
-    "date": "2026-10-25",
+    "date": "2026-10-26",
     "checks": 51
-   },
-   "leak": {
-    "leak_py": "REVIEW (answered: the letter and Schedule 7 ask the question; group names beside numbers; generic vocabulary)",
-    "reader": "A crowding 4 (call 1 of 2, asks 15 of 20); B crowding 3 (call 2 of 2, asks 16 of 20): Gate F failed"
-   },
-   "duplicate_check": {
-    "heart": "WARN (repeat.gate_g against task303, repeat.question_form; differentiated against task107)",
-    "nearest": "task51 0.07"
-   },
-   "judge": {
-    "verdict": "DETERMINISTIC",
-    "disposition": "SEND_BACK (Gate H: decisive step read as rule application)",
-    "report": "determinism_check_report.md"
-   },
-   "build": {
-    "checks": "110 run, 0 failed",
-    "verifier": "PASS (22 figures)",
+  },
+  "leak": {
+    "leak_py": "REVIEW 2026-10-26 (--asof 2026-11-04): the release number 13.3 in the release note and the index; generic nouns in the definitions, release note and index",
+    "reader": "round 1 (7691f03b): both readers named release 13.3, both landed every ask figure (asks re-sited); round 2 (4eb36d04): reader C release 13.3, reader D the quick returns (call landed), both 0 of 36 ask figures"
+  },
+  "duplicate_check": {},
+  "judge": {
+    "verdict": "DETERMINISTIC (pass 3, round 2)",
+    "disposition": "APPROVE",
+    "report": "task121/determinism_check_report_pass3.md"
+  },
+  "returned": [],
+  "resume": "Architecture 6 spent at stage 4 round 2 on 2026-10-26 (reader D landed the quick returns). Re-root at the draw in a fresh world, architecture 7, objective Root-Cause; read DESIGN_NOTE.md's Tried and rejected first (every dead architecture and screen stays dead). The architecture 6 ask devices measured 0 of 36 against two readers; a silent primary of that kind is the bar for the next ask layer.",
+  "approved": null,
+  "delivered": null,
+  "portal": null,
+  "history": {
+    "architecture_1": "v1 the address check's forward weekly cost (self-healing exposure): drafted 2026-10-08, rejected at checkpoint A",
+    "architecture_2": "v2 signed-out club-app customers behind a checkout conversion fall (RC01): built, solved in-house twice (86.1, 89.5), retired 2026-10-10, FAILED_TO_STUMP",
+    "v2_pipeline": {
+      "stage": "retired",
+      "stage_name": "retired: no admissible hardening rung; RC11 takes the slot",
+      "solver_rounds": [
+        {
+          "label": "round 1, plain",
+          "date": "2026-10-09",
+          "score": 86.1,
+          "landed": true,
+          "cracked": 6,
+          "items": 11
+        },
+        {
+          "label": "round 2, plain",
+          "date": "2026-10-09",
+          "score": 89.5,
+          "landed": true,
+          "cracked": 10,
+          "items": 11
+        }
+      ],
+      "harden_loops": 2,
+      "approved": "2026-10-10 (no author checkpoint in the flow; heart WARN)",
+      "source_note": "analytical_tasks/06_root_cause/RC01_checkout-release-forward-cost-self-healing.md",
+      "status": "FAILED_TO_STUMP"
+    },
+    "architecture_4": "v4 Marlvale Trains' satisfaction fall (driver analysis on ratings against linked journey conditions): built, spent at stage 4 2026-10-25, both readers on the call, judge SEND_BACK",
+    "architecture_4_stage4": {
+      "precut": {
+        "exit": 0,
+        "date": "2026-10-25",
+        "checks": 51
+      },
+      "leak": {
+        "leak_py": "REVIEW (answered: the letter and Schedule 7 ask the question; group names beside numbers; generic vocabulary)",
+        "reader": "A crowding 4 (call 1 of 2, asks 15 of 20); B crowding 3 (call 2 of 2, asks 16 of 20): Gate F failed"
+      },
+      "duplicate_check": {
+        "heart": "WARN (repeat.gate_g against task303, repeat.question_form; differentiated against task107)",
+        "nearest": "task51 0.07"
+      },
+      "judge": {
+        "verdict": "DETERMINISTIC",
+        "disposition": "SEND_BACK (Gate H: decisive step read as rule application)",
+        "report": "determinism_check_report.md"
+      },
+      "build": {
+        "checks": "110 run, 0 failed",
+        "verifier": "PASS (22 figures)",
+        "byte_identical": true,
+        "figures_check": "45 of 45",
+        "cracker": "0 of 14 ask figures, pair ceiling 28.5"
+      },
+      "stump": "The tracker industry's derived importance on the ten attribute ratings files on-board staffing, 2 points, because passengers on a crowded train mark every aspect down; the ratings beside the linked conditions leave crowding at 1 point and the cascade comparison at none; the fall attributed through the conditions each surveyed journey ran under files crowding, 3 of the 5.2 points."
+    },
+    "architecture_5": {
+      "precut": {
+        "exit": 0,
+        "date": "2026-10-25",
+        "checks": 51
+      },
+      "leak": {
+        "leak_py": "REVIEW (answered: a coincident 1.5 in the technical award points and -0.14 in the paper's published table; generic vocabulary; academy names beside figures that rank nothing on the decision)",
+        "reader": "Gate F failed: reader A exit 1 (verdict no, feeder legacy), reader B exit 0 (default path); Annex A 15 and 16 of 16"
+      },
+      "duplicate_check": {
+        "heart": "WARN (repeat.gate_g against task303, repeat.deliverables against task485)",
+        "nearest": "task157 0.07",
+        "surface": "exit 0"
+      },
+      "judge": {
+        "verdict": "NOT_DETERMINISTIC",
+        "disposition": "SEND_BACK",
+        "report": "determinism_check_report.md"
+      },
+      "fate": "spent 2026-10-25 at stage 4: reader A grouped Halwick's pupils by key stage 2 school (score_reader exit 1); judge NOT_DETERMINISTIC, SEND_BACK on Annex B"
+    },
+    "architecture_5_stage4": {
+      "date": "2026-10-25",
+      "reader_a": "score_reader exit 1: call.verdict 'no' hit (feeder legacy found by ks2_urn grouping and key stage 2 school effects), walk filed two-level (own -0.2 largest); asks 20 of 38 (Annex A 15 of 16)",
+      "reader_b": "score_reader exit 0 on the call: 'yes', own -0.245; Annex A 16 of 16",
+      "annex_b": "both readers executed the filed January-census cohort (1,514, 38 leavers at nil) and agree in 16 cells; the golden used the results-file cohort (1,476)",
+      "judge": "NOT_DETERMINISTIC, SEND_BACK (competing_defensible_answer on Annex B's cohort); main call and Annex A reproduced, own -0.023, remainder -0.224; Gate H analytical",
+      "fate": "spent on Gate F (reader A landed the verdict) and the judge's SEND_BACK"
+    }
+  },
+  "build": {
+    "checks": "116 run, 0 failed",
+    "verifier": "PASS (40 figures)",
     "byte_identical": true,
-    "figures_check": "45 of 45",
-    "cracker": "0 of 14 ask figures, pair ceiling 28.5"
-   },
-   "stump": "The tracker industry's derived importance on the ten attribute ratings files on-board staffing, 2 points, because passengers on a crowded train mark every aspect down; the ratings beside the linked conditions leave crowding at 1 point and the cascade comparison at none; the fall attributed through the conditions each surveyed journey ran under files crowding, 3 of the 5.2 points."
+    "figures_check": "86 of 86",
+    "cracker": "0 of 32 ask figures, pair ceiling 28.5",
+    "target_zip_md5": "7cad62bc324a0e6164650cd30920f94a"
   },
-  "architecture_5": {
-   "summary": "Halwick Academy's Progress 8 against its feeder primaries (cross-classified), spent at stage 4 on 2026-10-25: reader A landed the verdict, judge SEND_BACK on Annex B",
-   "resume_at_spend": "Architecture 5 spent at stage 4 on 2026-10-25 (reader A landed the verdict through the feeder primaries; the judge SEND_BACK on Annex B). Architecture 6 draw open (stage 1, fresh world, Root-Cause): three screens on 2026-10-25, one probed (p121a, nitrate source shares under denitrification, landed in 34 seconds), each in DESIGN_NOTE.md Tried and rejected; read it first, every dead architecture and screen there stays dead. Resume at the draw."
+  "seed": "none: a fresh world drawn 2026-10-26 (Quellmont County Emergency Communications District), probed before the card on prototype p121b",
+  "gates": {
+    "checks": "68 assertions, 0 failed",
+    "verify": "55 figures, 0 differ",
+    "rebuild": "byte-identical",
+    "figures_check": "71 figures, 0 absent",
+    "precut": "51 checks, 0 FAIL, 0 WARN",
+    "cracker": "0 of 36, pair ceiling 28.5 (measured 0 of 36 by two readers)",
+    "target_zip_md5": "4eb36d04b220fc3258350d5d3f42d545"
   },
-  "architecture_5_stage4": {
-   "date": "2026-10-25",
-   "reader_a": "score_reader exit 1: call.verdict 'no' hit (feeder legacy found by ks2_urn grouping and key stage 2 school effects), walk filed two-level (own -0.2 largest); asks 20 of 38 (Annex A 15 of 16)",
-   "reader_b": "score_reader exit 0 on the call: 'yes', own -0.245; Annex A 16 of 16",
-   "annex_b": "both readers executed the filed January-census cohort (1,514, 38 leavers at nil) and agree in 16 cells; the golden used the results-file cohort (1,476)",
-   "judge": "NOT_DETERMINISTIC, SEND_BACK (competing_defensible_answer on Annex B's cohort); main call and Annex A reproduced, own -0.023, remainder -0.224; Gate H analytical",
-   "fate": "spent on Gate F (reader A landed the verdict) and the judge's SEND_BACK"
-  }
- },
- "build": {
-  "checks": "116 run, 0 failed",
-  "verifier": "PASS (40 figures)",
-  "byte_identical": true,
-  "figures_check": "86 of 86",
-  "cracker": "0 of 32 ask figures, pair ceiling 28.5",
-  "target_zip_md5": "7cad62bc324a0e6164650cd30920f94a"
- },
- "seed": "none: a fresh world drawn 2026-10-26 (Quellmont County Emergency Communications District), probed before the card on prototype p121b"
+  "architectures": [
+    {
+      "architecture": 6,
+      "fate": "spent 2026-10-26 at stage 4 round 2 (Gate F): reader D built each call-taker's rest from the worked roster and named the 2026 rotation's quick returns (31 against 10.7 per cent); reader C and both round 1 readers named release 13.3; the asks held 0 of 36 for both round 2 readers; judge pass 3 DETERMINISTIC, APPROVE; target.zip 4eb36d04"
+    }
+  ]
 }

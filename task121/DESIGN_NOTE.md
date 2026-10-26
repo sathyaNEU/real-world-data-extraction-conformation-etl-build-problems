@@ -6,6 +6,7 @@ Architecture 6, a re-root drawn on 2026-10-26 in the same objective (Root-Cause 
 
 Reopened 2026-10-25 at the author's direction: no number is retired. Architecture 4 was drawn and spent the same day; architecture 5 is drawn in a fresh world (Education & Learning Sciences). The screens and dead architectures recorded here stay dead.
 Architecture 6 is drawn on 2026-10-26 in a fresh world (Human Factors & Ergonomics), at the author's direction of 2026-10-26 to take every reopened number to ship.
+Architecture 6 was spent at stage 4 round 2 on 2026-10-26 (reader D built each call-taker's rest from the worked roster and named the quick returns); architecture 7 is drawn in a fresh world, and its record replaces the sections above when it is registered.
 
 ## Draw
 
@@ -23,6 +24,149 @@ Architecture 6 is drawn on 2026-10-26 in a fresh world (Human Factors & Ergonomi
 8. People, drawn with `guard.py names --geo US --seed 121`: Erica Schmitt (the centre's quality assurance manager, the requester), Raymond Melendez (the county's EMS medical director), Karen Hayes (the centre's director), Jerome Reed (the centre's workforce scheduler). Invented names: Quellmont County and its Emergency Communications District.
 9. A retrospective call, with its reason: a rise's cause is read from months already closed; the decision it serves is forward, the committee's choice in December and the rotation the centre runs in 2027.
 10. Draw-time probe p121b (licensed by the author): one call-only Sonnet reader on a prototype pack (60,569 calls, the crews' records, the worked roster, the release note, the monthly quality dashboard) named the protocol release in two minutes (11.1 to 15.7 per cent), after ruling out the graduates, the staffing on each shift, workload, units, the day of the week and the acuity mix; it noticed night shifts were flat and never built a call-taker's rest before a shift.
+
+11. Shape arithmetic: the cause 1, the rates before and from March 2, the critical components 5, Ask A 12, Ask B 12, Ask C 12, the chart 1, the two files 2: 47 criteria. The prompt names no candidate and no change; the chart is the monthly rate alone.
+
+## Default path
+
+1. Read the quality assurance program's definitions (2.2): a call is under-triaged when it was sent cold and the crew assessed a patient on it at acuity 1 or 2; match each CAD call to its patient care records by incident number (the crews' tablets key it without the dash) and take each call at its most acute patient.
+2. Take the rate month by month: 9.6 to 11.3 per cent from September 2025 to February 2026 (10.5 over the six months), 13.0 to 16.0 from March to August 2026 (14.8): a step in March.
+3. Set the step against the dated changes the folder holds: protocol release 13.3, live on every position at 06:00 on 3 March 2026, and the six academy graduates taking calls from 9 February. The graduates do not carry it (the veterans' calls rise from 10.4 to 14.5), the call mix does not (the March to August rate at the earlier mix is 14.7), and the protocols the release changed rose most (11.2 to 17.0, against 9.9 to 13.3 on the rest).
+4. Name protocol release 13.3.
+
+Ends on: protocol release 13.3
+Golden: the 2026 rotation's quick returns
+
+## Stump sentence
+
+A competent solver sets the monthly under-triage rate against the dated changes, sees the step at protocol release 13.3 on 3 March 2026, rules out the graduates and the call mix, and names protocol release 13.3; the step that lands it there is reading the coincident go-live as the cause, when the rotation the scheduler began on 2 March put 15.8 per cent of shifts on less than eleven hours' rest (1.5 before) and the rise lives in the calls taken on those shifts: from March 31.1 per cent of their critical or emergent calls went cold against 10.7 on rested shifts, which held at 10.2 before March, so only each call-taker's rest, built from consecutive worked shifts, shows the rotation's quick returns as the cause.
+
+## Three rules
+
+Task type: Human Factors & Ergonomics, `workload-fatigue-shift-analysis`: a rise in an operator error rate traced to the shift system's rest between shifts, the field's exposure built per worker from the shifts worked; it serves Root-Cause Analysis (the cause of a move in a quality measure, the rivals ruled out on evidence).
+Domain test: the deciding quantity is each call-taker's rest before each shift, from the end of the previous shift worked to the start of this one, set against the error rate on the calls taken on that shift; shift-work research holds that a quick return (under eleven hours) cuts the sleep before the next shift and raises errors through it, and that a rotation stepping back from evening to day and from night to evening creates them. With another field's nouns (machines for call-takers, defect rates for under-triage) there is no rest between shifts that a person's sleep depends on and no rotation direction that sets it.
+Swap: put a laboratory's analysers in for the call-takers and a firmware release for the protocol release, and the step at go-live reads the same, but an analyser has no rest between shifts and no shift system generates its errors; the identification needs the people's worked shifts at the shift's grain.
+Layer 1: the CAD's incident numbers against the patient care records' undashed ones; call-takers as CAD logins in the CAD and employee numbers in the scheduling system, joined through the call-taker list; second patients on a few incidents; local time over the two daylight saving changes (nights of seven and nine hours); swaps and overtime shifts among the shifts worked; a call-taker retiring in June and one coming across in October; the release going live at 06:00, that night's earlier calls on 13.1; each produced by the system named, none placed to be caught, each mishandled leaving the call and every critical component where they were (R2 rows in `checks.py`).
+Layer 2: `estimand_identification`, own:a-rise-attributed-by-an-exposure-that-varies-inside-the-period: two changes went live a day apart, so the step at go-live identifies nothing; the rotation's exposure varies shift by shift for the same call-takers on the same software, so the rise is identified on the calls taken on shifts begun after a quick return against those taken after a full rest, before and from March.
+Decisive step: build each call-taker's rest before each shift from the end of the previous shift worked, match each call to the shift it was answered on, and set the rate on shifts begun after under eleven hours' rest against the rest, before and from March.
+Not semantics: every field and definition read correctly (the incident join, the most acute patient, cold as levels O to C, the call-taker crosswalk, local time) leaves the monthly step at the release's go-live; no field holds a shift's rest or flags a quick return, and no document mentions the rotation.
+Not rule application: the QA program files what a cause is (the change without which the measure would have stayed where it was) and nothing on how to find it; executing the filed definitions on the calls gives the step and the release's date, and what rules the release out is a comparison no document invites, the calls on rested shifts holding at 10.2 and 10.7 across the go-live, reached only by building every shift's rest from the shifts worked.
+Analyst test: a strong analyst who cleans every record and applies every filed definition, then sets the monthly rate against the dated changes and rules out the graduates and the call mix, names protocol release 13.3; executed on the generator's clean truth in `checks.py` (R3a ANALYST), where the decisive step alone, the rest before the shift, names the rotation's quick returns (R3b DECISIVE).
+Estimand: QA program 1.1 and 2.2: the change without which the under-triage rate (critical or emergent calls sent cold, each call at its most acute patient) would have stayed at its level before March 2026; the six months before March against the six months from March.
+No decoy: nothing is planted to be caught: the release note describes the release and claims nothing about triage, no memo or earlier analysis names a cause and no shipped file ranks the candidates; the protocols the release changed carry higher base rates, so the quick returns' multiple lifts them most, a property of the calls and not a placed one.
+No certified replay: no certified or published figure carries the cause, a rate on any subset of shifts or a call-taker's rest; the QA program files definitions and no results.
+Lesson: when two changes go live together, find the one whose exposure varies inside the period and read the move on the exposed and the unexposed; a rotation's exposure is each worker's rest, built from the shifts worked.
+
+## Readability screen
+
+| Rung | 1 Filed sentence | 2 Schema | 3 Reflex | 4 Control bench | 5 Hygiene | 6 Linear | Verdict |
+|---|---|---|---|---|---|---|---|
+| R0 the monthly step against the dated changes | QA 2.2 (the rate) | response, crew_acuity | before and after the go-live | none | none | a rate by month | readable |
+| Rp the release's changed protocols against the rest | the release note's table | protocol | a difference by protocol group | none | none | rates by group | readable |
+| Rg the veterans' calls | none | academy_class | leave out the new staff | none | none | rates by group | readable |
+| Rm the March to August rate at the earlier mix | none | protocol | standardise | none | none | a weighted mean | readable |
+| Rt by shift type | none | shift | rates by day, evening and night | none | none | rates by group | readable |
+| (decisive) the rate by the call-taker's rest before the shift, before and from March | none: no document mentions rest, the rotation or a quick return | no column holds rest: it is built from each employee's consecutive shifts worked, joined to the CAD through the call-taker list | none: a dated change invites a before-and-after, not an exposure inside the period | none | none: the battery passes on the records as written | a construction over each worker's sequence of shifts | silent |
+
+## Semantic fork table
+
+| Id | Term or convention | Golden reading | Alternative | Call under it | Ruled out by |
+|---|---|---|---|---|---|
+| SF1 | an under-triaged call | the call at its most acute patient (QA 2.2) | every patient record | the same cause | QA 2.2; second patients are acuity 3 or 4; same call |
+| SF2 | the six months | September 2025 to February 2026 against March to August 2026 | from the go-live date | the same cause | the prompt files the months; same call |
+| SF3 | a quick return | rest under 11 hours | under 10 or 12 hours | the same cause | every rest is 9 hours or less or 15 hours or more (asserted); same call |
+| SF4 | a call's shift | the shift worked whose start and end hold the call's answer time | the call-taker's shift that date | the same cause | every call falls inside one shift worked (asserted); same call |
+| SF5 | local time | the CAD's and the scheduling system's local times | UTC | the same cause | both systems local; same call |
+| SF6 | caused | QA 1.1, the change without which the measure would have stayed where it was | the change at the step's date | protocol release 13.3 | QA 1.1 files the counterfactual; the rested shifts hold across the go-live (asserted) |
+| SF7 | a graduate | the six call-takers of academy class 2026-1 | every call-taker certified in 2026 | the same cause | the call-taker list; the veterans' calls rise as much; same call |
+
+## Ladder
+
+| Rung | Construction | Names | What kills it |
+|---|---|---|---|
+| R0 | the monthly rate against the dated changes | protocol release 13.3 (10.5 to 14.8 across its go-live) | the rotation began the day before |
+| Rp | the protocols the release changed against the rest | protocol release 13.3 (11.2 to 17.0 against 9.9 to 13.3) | the changed protocols carry higher base rates, so any multiple lifts them most; on rested shifts neither group moves |
+| Rg | the veterans' calls | protocol release 13.3 (10.4 to 14.5) | it clears the graduates, not the rotation |
+| Rm | the March to August rate at the earlier mix | protocol release 13.3 (14.7) | it clears the mix, not the rotation |
+| Rt | by shift type | a day and evening problem (day 10.8 to 14.8, evening 9.6 to 15.8, night 11.7 to 11.9) | it names no cause and no change |
+| golden | the rate by the rest before the shift, before and from March | the 2026 rotation's quick returns (rested shifts 10.2 to 10.7; from March 31.1 on quick-return shifts) | |
+
+Every member of the golden's family names the same cause (`checks.py` FAMILY): a quick return at 9 to 15 hours; the comparison within each shift type; the veterans alone; a logistic fit on protocol, hour and quick return; and the call-takers' own before-and-after on rested shifts. The world's true effect is the quick returns' alone.
+
+## Closure table
+
+| # | Axis | Reading and closure |
+|---|---|---|
+| 1 | Population | medical calls answered 1 September 2025 to 31 August 2026 with a patient the crew assessed at acuity 1 or 2 (QA 2.2) |
+| 2 | Unit of account | the call, at its most acute patient (SF1) |
+| 3 | Attribution window | the six months before March and the six from March (the prompt) |
+| 4 | As-of dating | the folder of 4 November 2026; the window closed |
+| 5 | Version basis | one extract of each system |
+| 6 | Denominator | critical or emergent calls (QA 2.2) |
+| 7 | Weighting | none: calls counted |
+| 8 | Window length | six months each side |
+| 9 | Boundary inclusivity | rest under 11 hours; no rest between 9 and 15 hours (SF3) |
+| 10 | Rounding path | rates on unrounded counts, one decimal |
+| 11 | Tie-break | none needed |
+| 12 | Maturity and censoring | closed window; every call matched to a patient record or to none |
+| 13 | Order of operations | calls matched to their shifts before any rate |
+| 14 | Row order | none: counts |
+| 15 | Duplicate resolution | one CAD record an incident; patient records grouped by incident |
+| 16 | Identity normalisation | incident numbers without the dash; CAD logins to employee numbers through the call-taker list |
+| 17 | Netting against gross | none |
+| 18 | Dimensional units | hours of rest; per cent |
+| 19 | Code and status semantics | cold is levels O, A, B and C (QA 2.1); acuity 1 and 2 |
+| 20 | Integerisation | none |
+| 21 | Clause scope | QA 2 the call; QA 3 to 5 the asks |
+| 22 | Forward window contents | a retrospective call: the committee decides in December what to change, read from closed months |
+
+## Literal reader
+
+Executed word for word, QA 1.1 makes the cause the change without which the rate would have stayed where it was. Release 13.3 ran on every call from 3 March, and the calls taken on rested shifts ran on it too and held (10.2 before, 10.7 from March), so the release is not a change without which the rate would have stayed; on the shifts begun after a quick return the rate ran at 31.1. The literal reading names the rotation's quick returns.
+
+## Oracles
+
+No shipped figure states a cause, a rate by shift or a call-taker's rest, and nothing ranks the candidates. The protocol case reviews (a declared distractor in `metadata.json`) score protocol compliance on a random three calls in a hundred and move with neither the release nor the rotation; the ambulance staffed hours (a declared distractor) do not touch triage. No control total ties only under the golden.
+
+## Ask sheet
+
+The asks read the CAD's ambulance assignments and its split incidents, the 911 call handling equipment's call detail and the cardiac arrest reviews, none of which the call opens or counts (SEP rows in `checks.py`), and they are the program's other monthly measures the committee reviews beside under-triage (QA 3 to 5): processing time is where release 13.3 left its mark (its breathing prompt, seconds longer from March), the arrests are the calls the cause would cost most, and answering is the workload rival's measure. Round 1's devices (the CAD's current unit, the recording's start at arrival, the 10-digit trunk) were all seen by both readers and stay as hazards; each primary below is new and silent.
+
+**Ask A. Each month's 90th percentile call processing time for medical calls, whole seconds (12 figures).** Golden: September 2025 121, October 121, November 122, December 123, January 2026 122, February 122, March 128, April 129, May 129, June 128, July 130, August 130. Primary (silent, D6 a ledger at another grain than its name): the CAD extract is one row per incident, and 1,548 calls (one in 44) were split when a second patient went to a second ambulance; the split incident copies the call's answer second, call-taker, phone call and triage and carries its own ambulance, assigned minutes later, so every incident read as a call adds a long processing time to the tail (kept: every month over, 5 to 8 seconds). Only the cardinality shows it: 1,548 che_call_id values carried by two incidents, each pair with the same call_answered and call_taker; no field names a split, the incident numbers are unique and no two rows agree on the other columns. Handling: each call once, at the earliest ambulance any of its incidents had (equal to the first incident's, since a split comes later). Hazards: the CAD's unit_assigned holds the ambulance now on the incident (read as the first: every month over, 33 to 52); keeping the split incident for its call (5 to 8 over). Over-clean: calls answered the same second taken as one merges 82 pairs answered by different call-takers and lands on the golden, so it is not a stop. Path: CAD calls (incident_no, call_answered, call_taker, che_call_id), unit history (incident_no, assigned), QA program (3 files, 6 columns). Realism: a CAD splits a multi-patient incident so each transported patient has an incident of their own, and the split inherits the call's times. Separation: no split incident has a critical or emergent patient (all 1,548 carry an acuity 3 or 4 record), so the call's population never holds one, and the call's figures are the same with the splits taken out (asserted).
+
+**Ask B. Each month's median time to first compression on cardiac arrest calls, whole seconds (12 figures).** Golden: 112, 121, 113, 105, 119, 117, 108, 128, 123, 110, 114, 112 (September 2025 to August 2026). Primary (silent, D3 units set per source): the review form takes each time as minutes and seconds, the log stores seconds, and reviewer QA7 keys every time without the colon, so 2:05 is stored as 205 (QA7 holds 171 of the 659 timed reviews; read as seconds: every month over, 3 to 19). Found only across reviewers: none of QA7's 171 times ends in 60 to 99 where the other reviewers' do about one time in six, and the 45 calibration pairs with QA7 on either side differ by 36 to 162 seconds as stored and by 4 or less when QA7's times are read as minutes and seconds, as every other pair does. Handling: QA7's times of 100 or more read as minutes and seconds. Hazards: the recording starts when the call arrives, so its seconds run from arrival while the measure runs from answer (seconds as recorded: every month over, 9 to 29); calibration reviews (QA 5.2, kept: 8 of 12 months off); arrests with no compressions coached (blank). Over-clean: every reviewer's times read as minutes and seconds (every month under, 19 to 33); QA7's reviews left out (11 of 12 months off). Path: arrest reviews (incident_no, review_type, reviewer, recording_started, first_compression_s), CAD calls (call_answered), QA program (3 files, 6 columns). Realism: a review form's mm:ss field read by a log that takes a bare number as seconds; inter-rater checks are what the calibration reviews exist for.
+
+**Ask C. Each month's share of 911 calls answered within 15 seconds, one decimal (12 figures).** Golden: 92.5, 92.6, 92.2, 90.2, 90.6, 90.0, 92.2, 92.5, 92.4, 92.2, 92.0, 92.7 (September 2025 to August 2026). Primary (silent, D1 the same call under two records): the call detail logs every offer of a call to a position, so a call the call floor passes to a dispatch position (about one non-medical call in five) appears again under a fresh call_id, arriving the second the first record was released, on the same trunk group from the same masked number, and answered within seconds; every record read as a call adds 12,000 fast answers (kept: every month over, 0.4 to 0.7). Found only by chaining a number's records: the passed records are exactly those at no gap from a release, and every other repeat from a number comes 6 seconds or more after it (2,985 within ten minutes: callers ringing back after hanging up, into the same busy spell, and callers ringing again later). No position isolates them: the dispatch positions also answer first offers when the call floor is full, and a third of passed calls go to the call floor. Handling: a record that arrives the second an earlier record on its trunk group from its number was released is left out. Hazards: the 10-digit lines on TG07 (kept: every month under, 3.4 to 3.9); abandoned calls (QA 4.2, counted as misses: every month under); local months against the equipment's UTC (two months move). Over-clean: a number's records within ten minutes counted once also drops the callers who rang back into the busy spell (every month over, 0.3 to 0.6). Path: call detail (trunk_group, ani, arrived_utc, answered_utc, released_utc, abandoned), reference (Trunk groups), QA program (3 files, 8 columns). Realism: call handling equipment logs a transfer as a new call offered to the receiving position, keeping the trunk and the caller's number.
+
+**Separation.** Zero device or hazard rows in the call's population: the call reads the CAD calls' answer time, call-taker, protocol and response for calls with a critical or emergent patient, the patient care records and the shifts worked; the split incidents carry only acuity 3 or 4 records, and every other device lives in the unit history, the call detail and the arrest reviews, which the call never reads (asserted). No two asks share a primary or a family (A on the incident grain, B on a reviewer's time format, C on the equipment's offer records).
+
+**Cracker sheet.** The response that landed the call, ran the hygiene battery (key uniqueness, exact and near-exact duplicates, unmatched joins, fan-out) and executed every filed rule it points at, the path both round 1 readers took:
+
+| Ask row | What the cracker does | Against the golden | Cracker |
+|---|---|---|---|
+| A, 12 months | answer to the earliest unit-history assignment, every CAD incident a call, QA 3.2's rank | every month over, 5 to 8 seconds | miss |
+| B, 12 months | recording_started plus first_compression_s less call_answered, primary reviews with compressions coached, every time as seconds | every month over, 3 to 19 seconds | miss |
+| C, 12 months | the 911 trunk groups' answered calls by local month, abandoned out, every record a call | every month over, 0.4 to 0.7 | miss |
+
+**Mirror sheet.** The response on R0 (the release) reads the asks as the cracker does, since they consume nothing the call's construction produces, so its ask rows miss the same way.
+
+Mirror leakage: 0 per cent of ask weight (every ask row misses for the mirror as for the cracker).
+
+Pair ceiling: 28.5 (the one-cracker case: (38 + 7 + 0 + 5 + 7 + 0) / 2).
+
+Measured by: generator/cracker.py on the cut pack.
+
+## Build record
+
+- Generator: `common`, `world` (the call-takers' eight-day cycle, forward blocks before the 2026 rotation and two-type blocks after it, swaps and overtime, the calls answered on duty with each call's chance of going cold raised on a shift begun after a quick return, for a graduate in the first months and in the small hours, the ambulances assigned and reassigned, the split incidents and the CAD's numbering, the call handling equipment's calls on every trunk with the callers ringing again and the calls passed between positions, the arrest reviews from the recordings, the distractors), `records`, `docs`, `pack`, `analysis`, `asks`, `deliver`, `checks`, `verify` (independent), `cracker`, `writeup`, `postprocess`, `build`. Seed 7.
+- Pack: 14 files (CSV, PDF, TXT, XLSX); call detail 148,589 rows, unit history 72,874, CAD medical incidents 69,080 (67,532 calls), patient care records 56,334, shifts worked 9,961, arrest reviews 819. Distractors (`metadata.json`): the protocol case reviews and the ambulance staffed hours.
+
+## Architecture 6 record (spent 2026-10-26)
+
+- Draw: Quellmont County Emergency Communications District, what caused the rise in under-triaged medical calls from March 2026, Human Factors & Ergonomics / workload-fatigue-shift-analysis, shape 18; golden: the 2026 rotation's quick returns (shifts begun less than eleven hours after the previous one ended), 31.1 per cent sent cold on them from March against 10.7 on rested shifts, against the default path's protocol release 13.3 (10.5 to 14.8).
+- Build: stage 3 green on 2026-10-26 (checks 68 of 68, verify 55 of 55, byte-identical, precut 51/0/0, cracker 0 of 36), target.zip 4eb36d04.
+- Stage 4 round 1 (zip 7691f03b): both readers named release 13.3, both landed every ask figure; the asks were re-sited to silent devices. Round 2 (zip 4eb36d04): reader C named release 13.3 and reader D the rotation's quick returns (rest built from consecutive worked shifts, 31 against 10.7 per cent); both readers took 0 of 36 ask figures (each landed every device's natural stop: split incidents kept, QA7's times as keyed, passed calls kept); the judge (pass 3) DETERMINISTIC, APPROVE, Gate G statistical rigor and Gate H analytical. A call any reader lands is spent.
+- What survives: the ask layer's three silent primaries (a CAD incident grain under a call-named extract, one reviewer's minutes and seconds keyed without the colon, call handling equipment logging a passed call as a new offer at the second the first leg ended) measured 0 of 36 against two readers, and the lesson that a pack's own explanation of a device (a dictionary line naming the reassignment, a recorder that starts at arrival) hands it over.
 
 ## Architecture 5 record (spent 2026-10-25)
 
@@ -100,3 +244,8 @@ Architecture 6 is drawn on 2026-10-26 in a fresh world (Human Factors & Ergonomi
 - Heterogeneous practice effects in a health-equity walk (each practice's effect for its own deprived and non-deprived mix against a common effect): the unit-by-member interaction moved the own-effect item by under 0.002 (het1.py); no stump.
 - Nitrate source shares at a chalk wellfield under denitrification (fertiliser nitrate enriched in 15N toward the slurry signature, corrected by Rayleigh from the dissolved-gas survey's excess N2): on paper the field's enrichment factor (-4 to -25 per mil) moves the fertiliser share from 34 to 100 per cent across the call line unless the loss is strong (iso1.py, iso2.py); the call-only probe on the prototype pack (p121a) landed it in 34 seconds, reading the confined boreholes' low oxygen and the excess N2 as denitrification and fitting the Rayleigh line (epsilon 8.8, fertiliser 72 per cent). Any column that measures the process announces it.
 - The marginal outcome test on bail decisions (task141's leniency gradient), staggered rollouts read against not-yet-treated units (task177, task129, task136), the return gap and returns-based style analysis in factor attribution (the attribution reflex reconciles to the fund's own return; style items cue the factor model), Olley-Pakes reallocation (decomposition_attribution, banned in the window): set aside on paper.
+- An evening-heavy rotation of two patterns, two evenings then two days and two nights then two evenings (stage 2 prototype, 2026-10-26): a quarter of shifts began on quick returns, but day staffing fell by a quarter, so the day shift's rise could be read as workload; a third pattern (two days then two nights, no quick return) keeps each shift type at a third of shifts.
+- Swaps and overtime shifts running straight on from another shift (stage 2 prototype, 2026-10-26): 60 doubles with no rest at all read as a roster built to be found and blurred the quick returns; a swap or an overtime shift within four hours of another is not taken.
+- A learning dip in the release's first fortnight (probe p121b's world): the release would carry part of March's rise and the call would split between two causes; release 13.3 changes processing time only.
+- Stage 4 round 1 (2026-10-26, zip 7691f03b): both readers missed the call (both named release 13.3) and both landed every ask figure, reader B 38 of 38 scored: the CAD's current unit was found from the unit history's reassignment rows the dictionary describes, the recording's start at arrival from setting recording_started against call_answered (one reader through the call detail's ring), and TG07 from the reference's trunk descriptions. Each was a device the pack itself explained; all three primaries re-sited to silent ones (split incidents, a reviewer's time format, the equipment's records of passed calls), the round 1 devices kept as hazards.
+- Architecture 6 (rest before the shift behind a coincident protocol release: the rotation of 2 March put 15.8 per cent of shifts on under eleven hours' rest, the release went live the next day), spent at stage 4 round 2 on 2026-10-26: across two rounds three of four isolated readers named the release, and reader D built each call-taker's rest from the worked roster's consecutive shifts and named the quick returns at 31 against 10.7 per cent. The stratification by rest is one join and one subtraction from files a fatigue question sends a reader to, so a careful reader who thinks of fatigue at all completes it; a rest exposure found in the roster is the field's first move, not a judgment the data must settle.

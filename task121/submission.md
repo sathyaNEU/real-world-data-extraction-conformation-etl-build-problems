@@ -1,55 +1,76 @@
 ## Tags
 
-**Domain:** Education & Learning Sciences (multilevel school effects research).
+**Domain:** Human Factors & Ergonomics (workload, fatigue and shift analysis).
 **Analytical objective:** Root-Cause Analysis.
 
 ## 1. Final Recommendation
 
-**No: Halwick Academy's own effect accounts for almost none of its Progress 8 gap to the Larkhollow trust average (0.0 of the -0.4 gap, pupils finishing key stage 4 in 2022 to 2024). The largest item is the remainder, -0.2: what its pupils bring from the seven primary schools that send it 89% of its intake. Point the 2027 plan at the pupils Halwick admits from those schools, not at Halwick's teaching.**
-Those primaries' pupils average -0.50 at the borough's other secondaries, close to their -0.57 at Halwick, while Halwick's pupils from every other school average -0.10 against the trust's -0.14. Read alone, Progress 8 and a model of pupils within secondaries put -0.2 on the academy itself.
+**The rise in under-triaged medical calls came from the 2026 rotation's quick returns: shifts begun less than eleven hours after the call-taker's previous shift ended.**
+From March 2026, 31.1 per cent of the critical or emergent calls taken on those shifts were sent cold, against 10.7 per cent on rested shifts, which ran at 10.2 per cent before March. Not protocol release 13.3, which the rested shifts ran on too while they held. Not the academy graduates, since the veterans' calls rose from 10.4 to 14.5 per cent. Not the call mix, since the March to August rate at the earlier mix is 14.7 per cent.
 
 ## 2. Critical Components
 
-1. The walk in Progress 8 points: gap **-0.4** (Halwick -0.52 against the trust's -0.14) = attendance **-0.1** + disadvantage **-0.1** + the academy's own effect **0.0** + the remainder **-0.2**.
-2. The academy's own effect is measured with every pupil classified by the school where they sat key stage 2 as well as by their secondary (fixed effects for both, all 9,573 borough pupils with a Progress 8 score), so the same primaries' pupils at other secondaries carry their own shortfall; a model of pupils within secondaries alone books **-0.2** to the academy.
-3. Behind the remainder: Larchmere, Halwick Moor, Sedgefold, Gillcroft, Thursby Lane, Cobden Street and Netherfold send **89%** of Halwick's pupils; their pupils' Progress 8 is **-0.50** at the other secondaries and **-0.57** at Halwick; Halwick's pupils from every other school average **-0.10**.
+1. The under-triage rate was **10.5%** from September 2025 to February 2026 and **14.8%** from March to August 2026.
+2. Shifts begun less than eleven hours after the call-taker's previous shift ended were **1.5%** of the shifts worked from September 2025 to February 2026 and **15.8%** of those worked from March to August 2026.
+3. From March the under-triage rate was **31.1%** on those shifts and **10.7%** on rested shifts.
+4. On rested shifts the rate was **10.2%** before March.
 
 ## 3. Step-by-Step Solution
 
-1. Took Paper 6, section 3: the gap pooled over the trust's pupils with a Progress 8 score in 2022 to 2024; attendance and disadvantage each an effect times Halwick's difference from the trust; the academy's own effect as the same pupils at the trust's average academy, weighted by the trust's pupils; the remainder; every effect measured on all the borough's pupils and unshrunk.
-2. From the transfer file: the absence rate as authorised plus unauthorised sessions over sessions possible in year 11; the disadvantaged flag; the key stage 2 school, a converted academy read through the establishment register's predecessor URN.
-3. Fitted Progress 8 on the absence rate and the disadvantaged flag with a fixed effect for each secondary and each key stage 2 school, by least squares on all 9,573 pupils.
-4. Attendance: -0.041 per point of absence times Halwick's 8.57 against the trust's 7.05, -0.063; disadvantage: -0.46 times 45.4% against 30.4%, -0.068; the academy's own effect, Halwick's effect less the trust's pupil-weighted average, -0.023; the remainder -0.224; the gap -0.378.
-5. Annex A: each half-term row placed at the academy whose roll the pupil was on (the movements log dates each move; the extract labels every row with the current academy), the 2025/26 year group as the extract's less one for pupils still on roll, year 11's summer rows out; per pupil and academy, absence of 10 per cent or more persistent, 50 per cent or more severe.
-6. Annex B: each 2026 pupil's summer 2026 results with their year 10 entries from the summer 2025 file; for English, maths and the EBacc subjects the first entry, otherwise the higher score in a discount code; Attainment 8 and EBacc entry by the measures summary.
-7. The largest item is the remainder; the academy's own effect is not the main reason.
+1. Matched each call in cad_medical_calls_2025_2026.csv to its records in epcr_patient_records_2025_2026.csv by incident number (the tablets drop the dash), each call at its most acute patient (QA program 2.2): the under-triage rate was 10.5 per cent before March and 14.8 from March.
+2. Placed each call on the shift worked in roster_shifts_worked_2025_2026.csv whose start and end hold its answer time, the CAD login joined to the employee number through call_takers.csv, and took each shift's rest from the end of the call-taker's previous shift worked (the extract starts on 18 August 2025): shifts begun under eleven hours after it were 1.5 per cent of those from September 2025 to February 2026 and 15.8 of those from March to August 2026.
+3. Set the other changes against the rested shifts and the calls: on rested shifts, which ran on release 13.3 from 3 March, the rate was 10.2 per cent before March and 10.7 from March; the veterans' calls rose from 10.4 to 14.5 per cent, and at the earlier protocol mix the March to August rate is 14.7.
+4. Ask A: took each medical call in cad_medical_calls_2025_2026.csv once (a split CAD incident repeats its call's che_call_id, answer second and call-taker), its processing time from the answer to the earliest assignment in cad_unit_history_2025_2026.csv among its incidents (unit_assigned holds the ambulance now on the incident), and each month's 90th percentile at rank 0.9 times the calls, rounded up (QA program 3).
+5. Ask B: took each arrest's primary review in tcpr_arrest_reviews_2025_2026.csv where compressions were coached, reading reviewer QA7's times as minutes and seconds keyed without the colon (QA7's calibrated calls agree with the other reviewer only when so read), the first compression at recording_started plus those seconds, less the CAD's call_answered, and each month's median (QA program 5).
+6. Ask C: took the calls in che_call_detail_2025_2026.csv on the 911 trunk groups of centre_reference.xlsx (TG01, TG02, TG03 and TG05, not the 10-digit lines on TG07), leaving out the record of a call passed from one position to another (it arrives the second an earlier record on the same trunk group from the same number was released), answered and not abandoned, and each month's share answered 15 seconds or less after arriving, by the month answered in local time (QA program 4).
+7. Named the cause: from March the calls on quick-return shifts were sent cold at 31.1 per cent against 10.7 on rested shifts, so the rise came from the 2026 rotation's quick returns.
 
 ## 4. Deliverable Answers
 
-### halwick_progress8_walk_2022_2024.xlsx
+### under_triage_cause_2026.xlsx
 
-1. Is the academy's own effect the main reason: no
-2. The walk (Progress 8 points): gap -0.4; attendance -0.1; disadvantage -0.1; the academy's own effect 0.0; the remainder -0.2
-3. Largest item: the remainder, what Halwick's pupils bring from the seven primary schools that send it 89% of its pupils
-4. Annex A, 2025/26 (per cent), persistent absence and severe absence:
-   - Halwick Academy: 30.2 and 1.2
-   - Brantholme Park Academy: 18.3 and 1.1
-   - Fernlea Academy: 21.1 and 2.2
-   - Coldwell Academy: 21.5 and 1.8
-   - Mossgate Academy: 28.8 and 2.1
-   - Saltmoor Academy: 25.8 and 1.9
-   - Ridley Hey Academy: 19.2 and 1.6
-   - Wrayfield Academy: 21.2 and 1.5
-5. Annex B, 2026 cohort, average Attainment 8 and EBacc entry (per cent):
-   - Halwick Academy: 37.0 and 44.8
-   - Brantholme Park Academy: 49.3 and 31.0
-   - Fernlea Academy: 41.4 and 40.2
-   - Coldwell Academy: 42.6 and 37.1
-   - Mossgate Academy: 40.6 and 39.9
-   - Saltmoor Academy: 40.1 and 35.2
-   - Ridley Hey Academy: 47.5 and 37.3
-   - Wrayfield Academy: 43.5 and 35.1
+1. Cause: the 2026 rotation's quick returns, shifts begun less than eleven hours after the call-taker's previous shift ended (not protocol release 13.3).
+2. Under-triage rate: September 2025 to February 2026 10.5%; March to August 2026 14.8%.
+3. 90th percentile call processing time, medical calls, seconds:
+   - September 2025: 121
+   - October 2025: 121
+   - November 2025: 122
+   - December 2025: 123
+   - January 2026: 122
+   - February 2026: 122
+   - March 2026: 128
+   - April 2026: 129
+   - May 2026: 129
+   - June 2026: 128
+   - July 2026: 130
+   - August 2026: 130
+4. Median time to first compression, cardiac arrest calls, seconds:
+   - September 2025: 112
+   - October 2025: 121
+   - November 2025: 113
+   - December 2025: 105
+   - January 2026: 119
+   - February 2026: 117
+   - March 2026: 108
+   - April 2026: 128
+   - May 2026: 123
+   - June 2026: 110
+   - July 2026: 114
+   - August 2026: 112
+5. 911 calls answered within 15 seconds, per cent:
+   - September 2025: 92.5
+   - October 2025: 92.6
+   - November 2025: 92.2
+   - December 2025: 90.2
+   - January 2026: 90.6
+   - February 2026: 90.0
+   - March 2026: 92.2
+   - April 2026: 92.5
+   - May 2026: 92.4
+   - June 2026: 92.2
+   - July 2026: 92.0
+   - August 2026: 92.7
 
-### halwick_progress8_walk.png
+### under_triage_2025_26.png
 
-1. The walk from the trust average (-0.14) to Halwick (-0.52): attendance -0.1, disadvantage -0.1, the academy's own effect 0.0, the remainder -0.2.
+1. Line chart of each month's under-triage rate, September 2025 to August 2026, the rate stepping up from March 2026.

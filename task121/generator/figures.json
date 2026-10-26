@@ -1,157 +1,107 @@
 {
- "annex_a": {
-  "Brantholme Park Academy": {
-   "pa": "18.3",
-   "pupils": 1256,
-   "sa": "1.1"
+ "asks": {
+  "A": {
+   "p90_processing_s": {
+    "2025-09": 121,
+    "2025-10": 121,
+    "2025-11": 122,
+    "2025-12": 123,
+    "2026-01": 122,
+    "2026-02": 122,
+    "2026-03": 128,
+    "2026-04": 129,
+    "2026-05": 129,
+    "2026-06": 128,
+    "2026-07": 130,
+    "2026-08": 130
+   }
   },
-  "Coldwell Academy": {
-   "pa": "21.5",
-   "pupils": 1117,
-   "sa": "1.8"
+  "B": {
+   "median_first_compression_s": {
+    "2025-09": 112,
+    "2025-10": 121,
+    "2025-11": 113,
+    "2025-12": 105,
+    "2026-01": 119,
+    "2026-02": 117,
+    "2026-03": 108,
+    "2026-04": 128,
+    "2026-05": 123,
+    "2026-06": 110,
+    "2026-07": 114,
+    "2026-08": 112
+   }
   },
-  "Fernlea Academy": {
-   "pa": "21.1",
-   "pupils": 994,
-   "sa": "2.2"
-  },
-  "Halwick Academy": {
-   "pa": "30.2",
-   "pupils": 925,
-   "sa": "1.2"
-  },
-  "Mossgate Academy": {
-   "pa": "28.8",
-   "pupils": 844,
-   "sa": "2.1"
-  },
-  "Ridley Hey Academy": {
-   "pa": "19.2",
-   "pupils": 1128,
-   "sa": "1.6"
-  },
-  "Saltmoor Academy": {
-   "pa": "25.8",
-   "pupils": 885,
-   "sa": "1.9"
-  },
-  "Wrayfield Academy": {
-   "pa": "21.2",
-   "pupils": 819,
-   "sa": "1.5"
-  }
- },
- "annex_b": {
-  "Brantholme Park Academy": {
-   "a8": "49.3",
-   "ebacc": "31.0",
-   "pupils": 239
-  },
-  "Coldwell Academy": {
-   "a8": "42.6",
-   "ebacc": "37.1",
-   "pupils": 202
-  },
-  "Fernlea Academy": {
-   "a8": "41.4",
-   "ebacc": "40.2",
-   "pupils": 194
-  },
-  "Halwick Academy": {
-   "a8": "37.0",
-   "ebacc": "44.8",
-   "pupils": 165
-  },
-  "Mossgate Academy": {
-   "a8": "40.6",
-   "ebacc": "39.9",
-   "pupils": 148
-  },
-  "Ridley Hey Academy": {
-   "a8": "47.5",
-   "ebacc": "37.3",
-   "pupils": 212
-  },
-  "Saltmoor Academy": {
-   "a8": "40.1",
-   "ebacc": "35.2",
-   "pupils": 165
-  },
-  "Wrayfield Academy": {
-   "a8": "43.5",
-   "ebacc": "35.1",
-   "pupils": 151
+  "C": {
+   "answered_within_15s_pct": {
+    "2025-09": 92.5,
+    "2025-10": 92.6,
+    "2025-11": 92.2,
+    "2025-12": 90.2,
+    "2026-01": 90.6,
+    "2026-02": 90.0,
+    "2026-03": 92.2,
+    "2026-04": 92.5,
+    "2026-05": 92.4,
+    "2026-06": 92.2,
+    "2026-07": 92.0,
+    "2026-08": 92.7
+   }
   }
  },
  "call": {
-  "largest": "rem",
-  "largest_name": "the remainder",
-  "sentence": "No: the academy's own effect accounts for almost none of Halwick's Progress 8 gap to the trust (0.0 of -0.4 points); the largest item is the remainder (-0.2), the shortfall its pupils bring from the seven primary schools that send it most of its intake, ahead of attendance (-0.1) and disadvantage (-0.1)",
-  "verdict": "no"
+  "began": "2026-03-02",
+  "cause": "quick returns (the 2026 rotation)",
+  "statement": "The rise came from the 2026 rotation's quick returns: shifts begun less than eleven hours after the call-taker's previous shift ended, not from protocol release 13.3."
  },
- "default_path": {
-  "att": "-0.1",
-  "dis": "-0.1",
-  "gap": "-0.4",
-  "own": "-0.2",
-  "rem": "0.0"
+ "components": {
+  "from_march_on_quick_return_shifts": 31.1,
+  "from_march_on_rested_shifts": 10.7,
+  "quick_return_share_before": 1.5,
+  "quick_return_share_from_march": 15.8,
+  "rested_shifts_before": 10.2
  },
- "feeders": {
-  "count": 7,
-  "names": [
-   "Larchmere Primary School",
-   "Halwick Moor Primary School",
-   "Sedgefold Primary School",
-   "Gillcroft Primary Academy",
-   "Thursby Lane Primary School",
-   "Cobden Street Primary Academy",
-   "Netherfold Community Primary School"
+ "monthly_under_triage": {
+  "2025-09": 9.6,
+  "2025-10": 10.0,
+  "2025-11": 10.2,
+  "2025-12": 11.3,
+  "2026-01": 10.7,
+  "2026-02": 10.7,
+  "2026-03": 16.0,
+  "2026-04": 15.1,
+  "2026-05": 15.2,
+  "2026-06": 14.1,
+  "2026-07": 14.8,
+  "2026-08": 13.0
+ },
+ "parameters": {
+  "emergency_number": 911,
+  "percentile_rank": 0.9,
+  "qa_clause_under_triage": 2.2,
+  "release": 13.3
+ },
+ "rates": {
+  "before": 10.5,
+  "from_march": 14.8
+ },
+ "steps": {
+  "release_changed_protocols": [
+   11.2,
+   17.0
   ],
-  "p8_at_halwick": "-0.57",
-  "p8_elsewhere": "-0.50",
-  "p8_others_at_halwick": "-0.10",
-  "share_of_halwick": 89
+  "release_unchanged_protocols": [
+   9.9,
+   13.3
+  ],
+  "standardised_from_march": 14.7,
+  "veterans": [
+   10.4,
+   14.5
+  ]
  },
- "filed_constants": {
-  "persistent_absence_threshold_pct": 10,
-  "severe_absence_threshold_pct": 50,
-  "year_10": 10,
-  "year_11": 11
- },
- "halwick_p8": "-0.52",
- "model": {
-  "absence_halwick": "8.57",
-  "absence_trust": "7.05",
-  "b_absence": "-0.041",
-  "b_disadvantaged": "-0.46",
-  "disadvantaged_halwick_pct": "45.4",
-  "disadvantaged_trust_pct": "30.4",
-  "walk_3dp": {
-   "att": "-0.063",
-   "dis": "-0.068",
-   "gap": "-0.378",
-   "own": "-0.023",
-   "rem": "-0.224"
-  }
- },
- "pupils": {
-  "borough": 9573,
-  "halwick": 681,
-  "trust": 5581
- },
- "trust_p8": "-0.14",
- "walk": {
-  "att": "-0.1",
-  "dis": "-0.1",
-  "gap": "-0.4",
-  "own": "0.0",
-  "rem": "-0.2"
- },
- "walk_unrounded": {
-  "att": -0.0626,
-  "dis": -0.0685,
-  "gap": -0.3781,
-  "own": -0.0228,
-  "rem": -0.2243
+ "threshold": {
+  "answer_seconds": 15,
+  "quick_return_hours": 11
  }
 }

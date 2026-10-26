@@ -1,99 +1,105 @@
-"""submission.md for task121, every figure read from generator/figures.json.
-
-    python3 task121/generator/writeup.py"""
-from __future__ import annotations
-
+"""submission.md from generator/figures.json: the five blocks, every figure emitted from the generator's own
+numbers."""
+import datetime as dt
 import json
 import os
+import sys
 
 HERE = os.path.dirname(os.path.abspath(__file__))
-TASK = os.path.dirname(HERE)
+sys.path.insert(0, HERE)
+import common as K   # noqa: E402
 
 
-def num(x):
-    return x.replace("-", "−") if False else x
+def f1(x):
+    return "%.1f" % x
 
 
-def main():
-    f = json.load(open(os.path.join(HERE, "figures.json")))
-    w, m, fe = f["walk"], f["model"], f["feeders"]
-    names = [n.replace(" Primary School", "").replace(" Community Primary School", "").replace(" Primary Academy", "")
-             for n in fe["names"]]
-    names = [n.replace(" Community", "") for n in names]
-    A, B = f["annex_a"], f["annex_b"]
-    order = ["Halwick Academy", "Brantholme Park Academy", "Fernlea Academy", "Coldwell Academy", "Mossgate Academy",
-             "Saltmoor Academy", "Ridley Hey Academy", "Wrayfield Academy"]
-    lines = []
-    lines += ["## Tags", "",
-              "**Domain:** Education & Learning Sciences (multilevel school effects research).",
-              "**Analytical objective:** Root-Cause Analysis.", ""]
-    lines += ["## 1. Final Recommendation", "",
-              "**No: Halwick Academy's own effect accounts for almost none of its Progress 8 gap to the Larkhollow trust "
-              "average (%s of the %s gap, pupils finishing key stage 4 in 2022 to 2024). The largest item is the "
-              "remainder, %s: what its pupils bring from the seven primary schools that send it %s%% of its intake. "
-              "Point the 2027 plan at the pupils Halwick admits from those schools, not at Halwick's teaching.**"
-              % (w["own"], w["gap"], w["rem"], fe["share_of_halwick"]),
-              "Those primaries' pupils average %s at the borough's other secondaries, close to their %s at Halwick, "
-              "while Halwick's pupils from every other school average %s against the trust's %s. Read alone, Progress "
-              "8 and a model of pupils within secondaries put %s on the academy itself."
-              % (fe["p8_elsewhere"], fe["p8_at_halwick"], fe["p8_others_at_halwick"], f["trust_p8"],
-                 f["default_path"]["own"]), ""]
-    lines += ["## 2. Critical Components", "",
-              "1. The walk in Progress 8 points: gap **%s** (Halwick %s against the trust's %s) = attendance **%s** + "
-              "disadvantage **%s** + the academy's own effect **%s** + the remainder **%s**."
-              % (w["gap"], f["halwick_p8"], f["trust_p8"], w["att"], w["dis"], w["own"], w["rem"]),
-              "2. The academy's own effect is measured with every pupil classified by the school where they sat key "
-              "stage 2 as well as by their secondary (fixed effects for both, all %s borough pupils with a Progress 8 "
-              "score), so the same primaries' pupils at other secondaries carry their own shortfall; a model of pupils "
-              "within secondaries alone books **%s** to the academy." % (format(f["pupils"]["borough"], ","),
-                                                                       f["default_path"]["own"]),
-              "3. Behind the remainder: %s and %s send **%s%%** of Halwick's pupils; their pupils' Progress 8 is "
-              "**%s** at the other secondaries and **%s** at Halwick; Halwick's pupils from every other school "
-              "average **%s**." % (", ".join(names[:-1]), names[-1], fe["share_of_halwick"], fe["p8_elsewhere"],
-                                   fe["p8_at_halwick"], fe["p8_others_at_halwick"]), ""]
-    lines += ["## 3. Step-by-Step Solution", "",
-              "1. Took Paper 6, section 3: the gap pooled over the trust's pupils with a Progress 8 score in 2022 to "
-              "2024; attendance and disadvantage each an effect times Halwick's difference from the trust; the "
-              "academy's own effect as the same pupils at the trust's average academy, weighted by the trust's pupils; "
-              "the remainder; every effect measured on all the borough's pupils and unshrunk.",
-              "2. From the transfer file: the absence rate as authorised plus unauthorised sessions over sessions "
-              "possible in year 11; the disadvantaged flag; the key stage 2 school, a converted academy read through "
-              "the establishment register's predecessor URN.",
-              "3. Fitted Progress 8 on the absence rate and the disadvantaged flag with a fixed effect for each "
-              "secondary and each key stage 2 school, by least squares on all %s pupils." % format(
-                  f["pupils"]["borough"], ","),
-              "4. Attendance: %s per point of absence times Halwick's %s against the trust's %s, %s; disadvantage: "
-              "%s times %s%% against %s%%, %s; the academy's own effect, Halwick's effect less the trust's "
-              "pupil-weighted average, %s; the remainder %s; the gap %s." % (
-                  m["b_absence"], m["absence_halwick"], m["absence_trust"], m["walk_3dp"]["att"], m["b_disadvantaged"],
-                  m["disadvantaged_halwick_pct"], m["disadvantaged_trust_pct"], m["walk_3dp"]["dis"],
-                  m["walk_3dp"]["own"], m["walk_3dp"]["rem"], m["walk_3dp"]["gap"]),
-              "5. Annex A: each half-term row placed at the academy whose roll the pupil was on (the movements log "
-              "dates each move; the extract labels every row with the current academy), the 2025/26 year group as the "
-              "extract's less one for pupils still on roll, year 11's summer rows out; per pupil and academy, absence "
-              "of 10 per cent or more persistent, 50 per cent or more severe.",
-              "6. Annex B: each 2026 pupil's summer 2026 results with their year 10 entries from the summer 2025 file; "
-              "for English, maths and the EBacc subjects the first entry, otherwise the higher score in a discount "
-              "code; Attainment 8 and EBacc entry by the measures summary.",
-              "7. The largest item is the remainder; the academy's own effect is not the main reason.", ""]
-    lines += ["## 4. Deliverable Answers", "", "### halwick_progress8_walk_2022_2024.xlsx", "",
-              "1. Is the academy's own effect the main reason: no",
-              "2. The walk (Progress 8 points): gap %s; attendance %s; disadvantage %s; the academy's own effect %s; "
-              "the remainder %s" % (w["gap"], w["att"], w["dis"], w["own"], w["rem"]),
-              "3. Largest item: the remainder, what Halwick's pupils bring from the seven primary schools that send it "
-              "%s%% of its pupils" % fe["share_of_halwick"],
-              "4. Annex A, 2025/26 (per cent), persistent absence and severe absence:"]
-    for k in order:
-        lines.append("   - %s: %s and %s" % (k, A[k]["pa"], A[k]["sa"]))
-    lines.append("5. Annex B, 2026 cohort, average Attainment 8 and EBacc entry (per cent):")
-    for k in order:
-        lines.append("   - %s: %s and %s" % (k, B[k]["a8"], B[k]["ebacc"]))
-    lines += ["", "### halwick_progress8_walk.png", "",
-              "1. The walk from the trust average (%s) to Halwick (%s): attendance %s, disadvantage %s, the academy's "
-              "own effect %s, the remainder %s." % (f["trust_p8"], f["halwick_p8"], w["att"], w["dis"], w["own"],
-                                                   w["rem"]), ""]
-    open(os.path.join(TASK, "submission.md"), "w").write("\n".join(lines))
+def mname(k):
+    y, m = k.split("-")
+    return dt.date(int(y), int(m), 1).strftime("%B %Y")
+
+
+def text(fig):
+    r, cp, s = fig["rates"], fig["components"], fig["steps"]
+    A, B, C = (fig["asks"]["A"]["p90_processing_s"], fig["asks"]["B"]["median_first_compression_s"],
+               fig["asks"]["C"]["answered_within_15s_pct"])
+    out = ["## Tags", "",
+           "**Domain:** Human Factors & Ergonomics (workload, fatigue and shift analysis).",
+           "**Analytical objective:** Root-Cause Analysis.", "",
+           "## 1. Final Recommendation", "",
+           "**The rise in under-triaged medical calls came from the 2026 rotation's quick returns: shifts begun less "
+           "than eleven hours after the call-taker's previous shift ended.**",
+           "From March 2026, %s per cent of the critical or emergent calls taken on those shifts were sent cold, "
+           "against %s per cent on rested shifts, which ran at %s per cent before March. Not protocol release 13.3, "
+           "which the rested shifts ran on too while they held. Not the academy graduates, since the veterans' calls "
+           "rose from %s to %s per cent. Not the call mix, since the March to August rate at the earlier mix is %s "
+           "per cent." % (f1(cp["from_march_on_quick_return_shifts"]), f1(cp["from_march_on_rested_shifts"]),
+                          f1(cp["rested_shifts_before"]), f1(s["veterans"][0]), f1(s["veterans"][1]),
+                          f1(s["standardised_from_march"])), "",
+           "## 2. Critical Components", "",
+           "1. The under-triage rate was **%s%%** from September 2025 to February 2026 and **%s%%** from March to "
+           "August 2026." % (f1(r["before"]), f1(r["from_march"])),
+           "2. Shifts begun less than eleven hours after the call-taker's previous shift ended were **%s%%** of the "
+           "shifts worked from September 2025 to February 2026 and **%s%%** of those worked from March to August "
+           "2026." % (f1(cp["quick_return_share_before"]), f1(cp["quick_return_share_from_march"])),
+           "3. From March the under-triage rate was **%s%%** on those shifts and **%s%%** on rested shifts." %
+           (f1(cp["from_march_on_quick_return_shifts"]), f1(cp["from_march_on_rested_shifts"])),
+           "4. On rested shifts the rate was **%s%%** before March." % f1(cp["rested_shifts_before"]), "",
+           "## 3. Step-by-Step Solution", "",
+           "1. Matched each call in cad_medical_calls_2025_2026.csv to its records in "
+           "epcr_patient_records_2025_2026.csv by incident number (the tablets drop the dash), each call at its most "
+           "acute patient (QA program 2.2): the under-triage rate was %s per cent before March and %s from March." %
+           (f1(r["before"]), f1(r["from_march"])),
+           "2. Placed each call on the shift worked in roster_shifts_worked_2025_2026.csv whose start and end hold its "
+           "answer time, the CAD login joined to the employee number through call_takers.csv, and took each shift's "
+           "rest from the end of the call-taker's previous shift worked (the extract starts on 18 August 2025): shifts "
+           "begun under eleven hours after it were %s per cent of those from September 2025 to February 2026 and %s "
+           "of those from March to August 2026." % (f1(cp["quick_return_share_before"]),
+                                                    f1(cp["quick_return_share_from_march"])),
+           "3. Set the other changes against the rested shifts and the calls: on rested shifts, which ran on release "
+           "13.3 from 3 March, the rate was %s per cent before March and %s from March; the veterans' calls rose from "
+           "%s to %s per cent, and at the earlier protocol mix the March to August rate is %s." %
+           (f1(cp["rested_shifts_before"]), f1(cp["from_march_on_rested_shifts"]), f1(s["veterans"][0]),
+            f1(s["veterans"][1]), f1(s["standardised_from_march"])),
+           "4. Ask A: took each medical call in cad_medical_calls_2025_2026.csv once (a split CAD incident repeats its "
+           "call's che_call_id, answer second and call-taker), its processing time from the answer to the earliest "
+           "assignment in cad_unit_history_2025_2026.csv among its incidents (unit_assigned holds the ambulance now on "
+           "the incident), and each month's 90th percentile at rank 0.9 times the calls, rounded up (QA program 3).",
+           "5. Ask B: took each arrest's primary review in tcpr_arrest_reviews_2025_2026.csv where compressions were "
+           "coached, reading reviewer QA7's times as minutes and seconds keyed without the colon (QA7's calibrated "
+           "calls agree with the other reviewer only when so read), the first compression at "
+           "recording_started plus those seconds, less the CAD's call_answered, and each month's median (QA program 5).",
+           "6. Ask C: took the calls in che_call_detail_2025_2026.csv on the 911 trunk groups of centre_reference.xlsx "
+           "(TG01, TG02, TG03 and TG05, not the 10-digit lines on TG07), leaving out the record of a call passed from "
+           "one position to another (it arrives the second an earlier record on the same trunk group from the same "
+           "number was released), answered and not abandoned, and each month's share answered 15 seconds or less "
+           "after arriving, by the month answered in local time (QA program 4).",
+           "7. Named the cause: from March the calls on quick-return shifts were sent cold at %s per cent against %s "
+           "on rested shifts, so the rise came from the 2026 rotation's quick returns." %
+           (f1(cp["from_march_on_quick_return_shifts"]), f1(cp["from_march_on_rested_shifts"])), "",
+           "## 4. Deliverable Answers", "", "### %s" % K.GOLDEN, "",
+           "1. Cause: the 2026 rotation's quick returns, shifts begun less than eleven hours after the call-taker's "
+           "previous shift ended (not protocol release 13.3).",
+           "2. Under-triage rate: September 2025 to February 2026 %s%%; March to August 2026 %s%%." %
+           (f1(r["before"]), f1(r["from_march"])),
+           "3. 90th percentile call processing time, medical calls, seconds:"]
+    for k in sorted(A):
+        out.append("   - %s: %d" % (mname(k), A[k]))
+    out.append("4. Median time to first compression, cardiac arrest calls, seconds:")
+    for k in sorted(B):
+        out.append("   - %s: %d" % (mname(k), B[k]))
+    out.append("5. 911 calls answered within 15 seconds, per cent:")
+    for k in sorted(C):
+        out.append("   - %s: %s" % (mname(k), f1(C[k])))
+    out += ["", "### %s" % K.CHART, "",
+            "1. Line chart of each month's under-triage rate, September 2025 to August 2026, the rate stepping up "
+            "from March 2026.", ""]
+    return "\n".join(out)
 
 
 if __name__ == "__main__":
-    main()
+    task = os.path.dirname(HERE)
+    fig = json.load(open(os.path.join(HERE, "figures.json")))
+    with open(os.path.join(task, "submission.md"), "w", encoding="utf-8") as f:
+        f.write(text(fig))
+    print("submission.md written")
