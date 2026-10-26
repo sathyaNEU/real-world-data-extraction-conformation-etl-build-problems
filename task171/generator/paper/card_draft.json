@@ -1,0 +1,152 @@
+{
+  "task": "task171",
+  "architecture": "v5",
+  "drawn": "2026-10-26",
+  "slot_note": "redraw (author's no-retirement rule, 2026-10-23) after architecture 3 was spent at Gate F; cell economics-econometrics / forecasting-forecast-evaluation chosen by this build under the coordinator's conditions Re-rooted 2026-10-26 as architecture 5 after architecture 4 was spent at stage 4 on Gate F (2026-10-23) and the fifth rebuild cell found no draw that holds; this draw was made in the task141 rework, which kept its own architecture 2 (drawn by another session), and was parked here at the author's choice (oviya1301): a new client domain and task type (pharmacology-pharmacoepidemiology-safety / population-pharmacokinetics-exposure-response, Forecasting), owner unchanged.",
+  "domain": "pharmacology-pharmacoepidemiology-safety",
+  "subdomain": "population-pharmacokinetics-exposure-response",
+  "client_domain": "pharmacology-pharmacoepidemiology-safety",
+  "niche": "a monoclonal antibody's phase 3 induction dose for ulcerative colitis, chosen at the end of phase 2 from the exposure-response of the one dose phase 2b tested, when the antibody's clearance falls as the colitis heals",
+  "objective": "forecasting",
+  "shape": "07",
+  "decision_type": "dial_setting",
+  "answer_unit": "named_option",
+  "answer": "300 mg IV at weeks 0, 4 and 8",
+  "answer_source": "submission.md block 1; induction_dose_memo.docx",
+  "gap": [
+    "population",
+    "time"
+  ],
+  "pattern": [
+    "none"
+  ],
+  "generators": [
+    "G16",
+    "G3"
+  ],
+  "gate_g": "forecasting",
+  "calibration_form": "none",
+  "stump_strategy": "causal_design",
+  "decisive_rule_filed": false,
+  "official_decoy": false,
+  "validated_decoy": false,
+  "context_artifact": "filed_standard",
+  "stump_class": "analytical",
+  "analyst_test": "A strong analyst who reads every file correctly, keeps only valid troughs and applies the charter's rule, and runs the field's standard exposure-response on each patient's steady-state exposure (the week-8 or week-12 trough, the mean of the troughs or a one-compartment fit's average concentration), with or without baseline albumin, weight, CRP and prior biologic, forecasts 300 mg 8 to 29 points below 600 mg and 900 mg 5 to 22 points above on the paper worlds, and files 900 mg (600 mg in a few members, never 300).",
+  "domain_test": "The deciding quantity is the week-12 clinical remission each induction dose would produce, forecast from an exposure-response model of the 600 mg arm in the way model-informed dose selection works, and it turns on the pharmacokinetic fact that an antibody's clearance falls as colitis heals; rewritten as a call centre choosing a staffing level from the answer speed each staffing level would give, nothing in the swap has a clearance that the outcome changes, a dosing interval or a first trough read before the response, so the task stops making sense.",
+  "layer2_family": "estimand_identification",
+  "layer2_pattern": "own:exposure-read-after-the-response",
+  "layer1": [
+    "two central laboratories: the US laboratory reports albumin in g/dL and CRP in mg/dL, the European laboratory albumin in g/L and CRP in mg/L",
+    "bioanalytical results with incurred-sample reanalysis repeats beside the reported values and concentrations under the quantification limit reported as text",
+    "pre-dose samples whose collection time falls after the infusion started at a few visits, the sample log in site local time and the infusion pump log in UTC",
+    "infusions interrupted and restarted, the delivered volume rather than the planned dose on the record, and visits outside the plus or minus three day window",
+    "subject identifiers as site-subject numbers in the site-facing systems and as randomisation numbers in the clinical database, mapped through the randomisation log",
+    "the efficacy dataset in two overlapping releases, the topline extract and the database-lock release with adjudicated endoscopy reads",
+    "e-diary entries from two device generations, one stamping UTC and one site local time, with re-synchronised duplicates"
+  ],
+  "stakeholder_role": "the head of clinical pharmacology at the sponsor, who owes the phase 3 induction dose to the end-of-phase-2 briefing package",
+  "role_family": "research_desk",
+  "scoring_unit": "other",
+  "spine": {
+    "file": "cvn2184_201_serum_concentrations.csv",
+    "rows": 0,
+    "entity": "one serum sample's dovikizumab result from the bioanalytical laboratory",
+    "grain": "patient x sample",
+    "source": "synthetic"
+  },
+  "forum": "regulator_or_inspector",
+  "forcing_event": "statutory_or_regulatory_filing",
+  "org_family": "manufacturer",
+  "world": {
+    "geography": "United States (a fictional sponsor in Massachusetts) with phase 2b sites in the United States, Canada, Poland and Hungary",
+    "currency": "USD",
+    "org_type": "a mid-size biopharmaceutical company's clinical pharmacology group",
+    "invented_names": [
+      "Corvane Therapeutics",
+      "dovikizumab",
+      "CVN-2184",
+      "Harlow Central Laboratory",
+      "Vistula Clinical Laboratory",
+      "Brightwater Bioanalytics"
+    ],
+    "people": [
+      "Kathy Harvey",
+      "Bryan Castro",
+      "Kristin Lucas",
+      "Darryl Terry",
+      "Theresa Mcdowell",
+      "Kathleen Riggs"
+    ]
+  },
+  "deliverables": [
+    "induction_dose_memo.docx",
+    "phase2b_induction_tables.xlsx",
+    "exposure_response_chart.png"
+  ],
+  "opening_move": "question-first",
+  "question_form": "what",
+  "driver": "Each unit's response is modelled on its own level of an input it is given, but the units that respond lose the input more slowly once they respond, so every level read after the response began carries the response; changing the amount given moves only the level the amount sets, read before the response could change how the input is lost, and there the relationship is flat, while every later reading, adjusted for the units' starting traits or not, shows a steep one that sends the decision to the largest amount.",
+  "driver_concrete": "Dovikizumab's clearance falls by about a third in patients whose colitis remits, from about week 4 as the bowel heals, so the week-8 and week-12 troughs, the mean of the troughs and any one-compartment fit's average concentration carry the remission; the dose sets only the exposure read before then, the week-4 trough, on which week-12 remission is flat, so 300 mg forecasts within a few points of 600 mg and 900 mg and is the charter's dose.",
+  "stump": "A competent solver merges the valid troughs with the week-12 remission flags, takes each patient's steady-state exposure (the week-8 or week-12 trough, the mean of the troughs or a one-compartment fit's average concentration), fits the exposure-response with baseline albumin, weight, CRP and prior biologic, scales exposure in proportion to dose and files 900 mg, with 300 mg 8 to 29 points below 600 mg; the step that lands it there is reading exposure after clearance had already fallen in the patients who remit.",
+  "mechanism_source": "design_note",
+  "differentiation": {
+    "task104": "task104 re-thresholds a self-adapting scorer's log, which describes only the setting that produced it because flagged observations never enter the scorer's reference; here no log is replayed at another setting: every patient's exposure is recorded, and the dose's effect is read on the exposure the response had not yet touched, because clearance falls once the colitis remits and every later reading carries the remission.",
+    "task168": "task168 completes capped departures' demand from a booking build of the same month; here nothing is censored at a cap or completed: the record holds every patient's exposure and outcome, and the steady-state exposure it holds is partly the remission's doing, so the dose's effect is read on exposure measured before clearance moved.",
+    "task178": "task178 forecasts a dispersion once an absorbing agent that traded against each shock stops; here no agent is removed: the feedback runs inside each patient from the outcome to the exposure, and the forecast reads the exposure the dose alone set.",
+    "task179": "task179 screened this task type and set aside exposure-response confounded by baseline clearance (the client library's card 3, cured by several randomised doses or by adjusting for clearance determinants); here adjusting for every baseline clearance determinant leaves the call at 900 mg, because the confounding runs from the week-12 outcome back to the exposure after baseline."
+  },
+  "lineage": [
+    {
+      "architecture": "3 (optional-rate take-up, Sablewood Electric Cooperative)",
+      "drawn": "2026-10-23",
+      "domain": "economics-econometrics",
+      "subdomain": "discrete-choice-limited-dependent-variable-modeling",
+      "objective": "forecasting",
+      "gap": [
+        "time",
+        "population"
+      ],
+      "pattern": [
+        "E"
+      ],
+      "generators": [
+        "G14",
+        "G3",
+        "G13"
+      ],
+      "gate_g": "forecasting",
+      "decision_type": "quantity_figure",
+      "driver": "Units take up an optional plan by what the plan would save each of them on the behaviour it showed before the plan was offered, so a new optional plan's take-up and cost are priced on each unit's own saving under it, run through the response to own saving that an earlier optional plan's first-year take-up shows, read on the behaviour before that plan was offered because its takers changed theirs after taking it; an average take-up applied to every unit, the earlier takers' profile carried over, or a response read on present behaviour each misprices it.",
+      "fate": "spent at Gate F on ce04ed65 (stage 4, 2026-10-23): scored reader B filed 2,250 services and USD 200,000 and all 20 ask figures; it set the cohort as R-1 services at launch billed the 12 months before launch and fitted a logistic on annual saving on pre-launch use, the textbook covariate window for a launch cohort, so the decisive step was the default; the ask devices (spell merging, EST/ACT duplicates, UTC, duplicate-closed CRM rows) were visible hygiene"
+    },
+    {
+      "architecture": "v4",
+      "fate": "spent at stage 4 on 2026-10-23 on Gate F: a reader measured the renewal-hold channel the policy states and landed the call (USD 13.75 million); the asks held 0 of 22; the fifth rebuild cell (a phase 3 week-12 target-lesion response read lesion by lesion) found no draw that holds",
+      "domain": "economics-econometrics",
+      "subdomain": "forecasting-forecast-evaluation",
+      "objective": "forecasting",
+      "gap": [
+        "time",
+        "population"
+      ],
+      "pattern": [
+        "none",
+        "E"
+      ],
+      "generators": [
+        "G13",
+        "G14",
+        "G7"
+      ],
+      "gate_g": "forecasting",
+      "decision_type": "quantity_figure",
+      "stump_strategy": "maturity_censoring",
+      "forum": "customer_or_counterparty",
+      "forcing_event": "cutover_or_migration",
+      "org_family": "government_agency",
+      "driver": "An unpaid bill is collected only when the payer's own recurring renewal next falls due after the bill reaches enforcement, so the collected share of a young book keeps rising until every payer's renewal has passed; the share a forward book will yield is read on the bills whose payer has already reached that renewal, from the payers who will receive the forward bills (the users of the channel being closed, billed when that channel was shut by the clock), not on bills old enough by age alone and not on bills sent to people billed for evading."
+    }
+  ],
+  "notes": "Drawn in the task141 rework session on 2026-10-26 and moved to task171 at the author's choice; personas redrawn with guard.py names --geo us --seed 171. Paper world in task171/generator/paper/ (sim_er4.py with the calibrated defaults, fam5.py, fam5_sweep.py)."
+}

@@ -1,263 +1,227 @@
 # task171 design note
 
-**Status: PAUSED, architecture 4 spent at Gate F at stage 4 on 9451b6bd (2026-10-23); the number stays open and the next cell comes from the main session.**
-The cell is economics-econometrics / forecasting-forecast-evaluation; the draw is a turnpike authority's first
-all-electronic tolling year and the toll it will collect on what it bills by mail. Architectures 1 to 3 are kept under
-`## Earlier screens`.
+**Status: PAUSED at stage 1. Architecture 5 is drawn on paper and not yet registered: its card
+(`generator/paper/card_draft.json`) BLOCKs on `ban.strategy` alone, causal_design against task139's architecture 2 in
+the last three builds. Register it once that build leaves the window, answer the two WARNs, commit DRAWN and run stage
+2.**
+Architecture 5 is Corvane Therapeutics' dovikizumab phase 3 induction dose, in pharmacology-pharmacoepidemiology-safety
+/ population-pharmacokinetics-exposure-response. It was drawn on 2026-10-26 in the task141 rework, which found task141
+already re-rooted by its own session, and the author chose to park it here, the next open Forecasting number.
+Architecture 4 (the Marrowfield Turnpike's toll-by-mail collection) was spent at Gate F at stage 4 on 9451b6bd
+(2026-10-23) and the fifth rebuild cell found no draw; its record and architectures 1 to 3 are under `## Earlier
+screens`. The tracked generator, golden and `target.zip` are architecture 4's until stage 3 replaces them.
 
 ## Draw
 
-- **Cell, and why this one.** The coordinator left the cell to this build on four conditions: the forward window
-  changes the process in a way no file states, the decisive step is not the textbook set-up of the obvious
-  calibration, no ask device is visible hygiene, and no cell named in this note or a sibling's `## Rebuild` is reused.
-  Client domain Economics & Econometrics (a public authority's revenue forecast is a fiscal read), task type
-  `forecasting-forecast-evaluation` (serves Forecasting). The healthcare utilization cell was screened first and died
-  on code (`## Tried and rejected`), and `urban-regional-science` with Forecasting is banned by `ban.pairing` against
-  task175, which is where a toll road would otherwise sit. In 2027 the Authority removes its cash booths: every vehicle
-  without a transponder is billed by mail. How much of that toll is eventually collected is not on file; it is
-  measured on the overnight hours since 3 March 2025, when the booths have been closed and the cash lanes' users
-  billed by mail. The textbook calibration matures those invoices by their own age (six months, a year). The
-  enforcement cycle does not: an in-state plate's invoice unpaid at 60 days is collected at the plate's next two-year
-  registration renewal, so in a twenty-month record most in-state invoices are still waiting, and the matured share is
-  read on the invoices whose plate has passed its renewal since the hold.
-- **World.** The Marrowfield Turnpike Authority, a fictional public authority running a fictional 48-mile toll road
-  with three mainline barrier plazas in an unnamed US state (people, systems and records fictional; the field's method
-  real). Its toll-by-mail back office invoices each plate monthly; the state Motor Vehicle Division places a
-  registration hold on in-state plates; a collection agency works out-of-state plates and returns what it cannot
-  collect. The AET programme manager files the first AET year's toll-by-mail revenue in the revenue certificate to the
-  bond trustee. Records to 31 October 2026.
-- **Card.** `domain` economics-econometrics, `subdomain` forecasting-forecast-evaluation, `objective` forecasting,
-  `shape` single-figure, `decision_type` quantity_figure, `answer_unit` currency, `gap` [time, population], `pattern`
-  [none, E], `generators` [G13, G14, G7], `gate_g` forecasting, `calibration_form` existing_book_actuals,
-  `stump_strategy` maturity_censoring, `context_artifact` planning_thread, `role_family` programme_officer, `forum`
-  customer_or_counterparty, `forcing_event` cutover_or_migration, `org_family` government_agency; `stump_class`
-  analytical; `layer2_family` estimation_fit; `layer2_pattern`
-  own:toll-by-mail-ultimate-collection-matured-on-each-plates-registration-renewal. People from `guard.py names --geo
-  us --seed 171`: Brittany Moon (AET programme manager), Zachary Mcneil (toll-by-mail back office).
-- **Axes, and why each value is the honest one.** The last three live cards (task170, task274, task175) hold
-  committee_or_panel, board_of_directors and executive_team; budget_or_appropriation, audit_or_inspection and
-  statutory_or_regulatory_filing; hospital_or_health_provider, cooperative_or_member_body and utility_or_infrastructure;
-  strategies other, population_selection and composition_mix; roles other, operations_director and finance_controller.
-  The forecast goes into the annual revenue certificate the trust agreement requires the Authority to deliver to the
-  bond trustee before the AET year, so `customer_or_counterparty` is the forum; the forcing event is the cutover
-  itself; a public authority is a `government_agency`; the requester runs the AET conversion programme
-  (`programme_officer`); the decisive move is a censoring construction on a clock each payer carries
-  (`maturity_censoring`); the population step (the cash lanes' own users, not the violators) is the supporting E.
-- **Pattern labels.** The stage-3 relabel (decisive pattern E, generators reordered) was reverted to the draw's labels, pattern [none, E] and generators [G13, G14, G7], which pass `guard.py check` with WARN only.
-- **Stage 3 record (2026-10-23).** `generator/build.py`: checks 69 of 69, verify 0 problems, two byte-identical
-  rebuilds, target.zip 9451b6bdf0182a8eff3f67f3dc4e30d6; figures_check 43 of 43; precut 51 checks, 0 FAIL;
-  voice-check PASS (967 characters). `leak.py` REVIEW, four lines answered: the plan and the policy share the call's
-  plain words (toll, billed by mail, revenue certificate) and print no figure of it; the policy's registration and
-  renewal sentences (4.1, 4.2) are the enforcement rule the record runs on and say nothing about when a book has
-  finished collecting. `guard.py surface`: no persona pair; ten promoted pairs on axis collisions (task169, task172,
-  task170, task167, task460, task129, task230, task162, task130, task102) for the author's adjudicated read if wanted.
-  `guard.py heart` WARN only. Pair ceiling 28.5 by `generator/cracker.py`.
-- **Data-native sentence.** In-state toll-by-mail invoices are collected when the plate next renews its two-year
-  registration, and the booths have been closing at night for only twenty months, so the overnight book's
-  collected share is censored by each plate's own expiry date, not by the invoice's age.
-- **WARN answers.** `people.first` Zachary appears once in an older build (task141), a different surname and world.
-  `overuse.org_family` government_agency is honest for a public authority. `repeat.gate_g`, `overuse.gate_g` and
-  `repeat.decision` follow from a forecast quantity in the Forecasting lane. `repeat.deliverables` (one workbook) is the
-  product a revenue certificate's back-up is. The older same-puzzle and same-driver signatures are differentiated on the
-  card line by line (task102, task130, task134, task162, task178, task501, and this slot's architecture 3).
+| Axis | Value |
+|---|---|
+| Card | `generator/paper/card_draft.json`, architecture v5, not yet registered: `guard.py check` BLOCKs only on `ban.strategy` (causal_design repeats task139's architecture 2, one of the last three builds), with WARNs `repeat.gate_g` and `repeat.deliverables` against task141's architecture 2 and two NOTEs (task104 and task168, older builds differentiated on the card); architecture 4 moved into `lineage` with its fate |
+| Domain / task type | `pharmacology-pharmacoepidemiology-safety` (client domain), task type `population-pharmacokinetics-exposure-response` (serves Forecasting): the week-12 clinical remission each candidate induction dose would produce in phase 3, forecast from the exposure-response of the one dose phase 2b tested |
+| Objective | Forecasting & Predictive Modeling: the remission rate patients meeting the phase 2b eligibility criteria, which the phase 3 protocol repeats and none of whom is yet enrolled, would show on 300, 600 or 900 mg; forward facing (phase 3 opens in 2027) |
+| Shape | `07` (grid of cells): the asks' arm-by-visit grids carry most of the criteria, the call, its components, the chart's named parts and the three files the rest; the arithmetic goes under `## Ask sheet` at stage 2 |
+| Decision | `dial_setting` (the induction dose, one setting of three allowed), answer unit `named_option` |
+| Mechanism | gap population (decisive: the exposure the file records after week 4 is not the exposure the dose sets, because clearance falls in the patients who remit) then time (it is read after the response began); pattern none, generators G16 (which exposure the forecast is entitled to) then G3 (the recorded exposure is partly the response's doing, not the dose's); Gate G `forecasting`; strategy `causal_design` |
+| Layer 2 family / pattern | `estimand_identification` (the variation that identifies a dose's effect); `own:exposure-read-after-the-response`. The library's card 3 for this task type (exposure-response confounded by clearance, cured by several randomised doses or by adjusting for clearance determinants) is the default path's own careful version here: adjusting for every baseline clearance determinant leaves the call at 900 mg |
+| Furniture | forum `regulator_or_inspector` (the dose is the sponsor's proposal at the end-of-phase-2 meeting, whose agreement on the phase 3 dose the meeting seeks), forcing event `statutory_or_regulatory_filing` (the briefing package is due to the agency on 4 December 2026), organisation family `manufacturer`, role family `research_desk` (the head of clinical pharmacology owes the dose), context artifact `filed_standard` (the phase 3 dose-selection charter: the candidates, the forecast's population, outcome and window, the rule, and no exposure measure), calibration `none`, opening `question-first`, question form `what`. The last three builds at the screen (task270, task141's architecture 2, task139's architecture 2) carry none of them |
+| Spine | `cvn2184_201_serum_concentrations.csv`, the bioanalytical laboratory's dovikizumab results: one row per serum sample and analytical run, pre-dose at weeks 0, 4 and 8 and at week 12 for every dosed patient, with the intensive-sampling substudy's first-interval samples; synthetic |
+| Deliverables | `induction_dose_memo.docx` (the dose for the briefing package and its case), `phase2b_induction_tables.xlsx` (the ask tables), `exposure_response_chart.png` (the chart the call rests on) |
+| People | drawn with `guard.py names --geo us --seed 171 --n 30`, skipping architecture 4's names and every first name the guard warns on: Kathy Harvey (head of clinical pharmacology, the requester), Bryan Castro (biostatistics lead), Kristin Lucas (bioanalytical study director, Brightwater Bioanalytics), Darryl Terry (clinical program lead), Theresa Mcdowell (clinical data manager), Kathleen Riggs (drug safety physician); none appears in the prompt |
 
-## Default path
+**Guard.** `guard.py check` on `generator/paper/card_draft.json`: BLOCK on `ban.strategy` alone. causal_design is
+the honest label (the recorded exposure is partly the response's doing, so the dose's effect has to be read where the
+design isolates it), and it repeats task139's architecture 2, drawn the same evening, so the card is registered only
+once task139's architecture 2 leaves the last three builds; the label is not changed to clear the ban. The WARNs
+`repeat.gate_g` (forecasting, beside task141's architecture 2) and `repeat.deliverables` (docx, png and xlsx, the same)
+are answered at stage 2: the Gate G mechanism follows from a forecast dose in the Forecasting lane, and the deliverable
+set is re-chosen if task141 still sits in the window then. The two NOTEs are differentiated below. In the session that
+drew it, before it moved here, a first version (gap time, decisive G16, `pick_one_of_n`) BLOCKed `test.same_puzzle`
+against task270 and `test.same_driver_older` against five builds, and a second (decisive G3) BLOCKed `ban.pattern`
+against task304; the card reads gap population first, G16 decisive and `dial_setting`. Four first names the guard
+flagged on seed 171 (Sandra, Sean, Erika, Andrew) and three more on the second pass (Bethany, Todd, Marissa) were
+redrawn.
 
-The strong analyst's route, every field read and every filed rule applied (the field's textbook for a toll-by-mail
-leakage estimate: the collected share of the existing toll-by-mail book, read on invoices old enough to have run their
-collection cycle, applied to the billed toll):
+**Same-puzzle and same-driver tests.** Gap population, decisive G16, `dial_setting`: task104 alone carries the triple,
+and its insight is re-thresholding a self-adapting scorer's log whose flagged observations never enter the scorer's
+reference; nothing here is replayed at another setting. Gap population, G16, Gate G `forecasting`: task168 alone, a
+capped departure's demand completed from the same month's booking build; nothing here is censored or completed, the
+record holds every exposure and every outcome.
 
-1. Reads programme note PN-14 for the 2027 toll billed by mail to today's cash-lane users, $11,908,500 on in-state
-   plates and $4,292,700 out-of-state, after image review, and the basis (toll only, collected however long the hold
-   or the agency takes).
-2. Takes the TOLL-BY-MAIL invoices (the overnight booth-lane crossings) from the invoices file and their payments
-   posted to 31 October 2026 from the payments file, nets returned payments and applies each payment toll first
-   (policy 3.3).
-3. Matures the book by age: an invoice is done once the reminder, the hold or agency referral and the agency's
-   270 days have run, a year after issue, so it reads the collected share of the invoices issued a year or more
-   before 31 October 2026: 80.1 per cent in-state, 60.0 per cent out-of-state.
-4. Applies the shares to the billed toll: $12,116,763.
+**Abstraction test.** Stripped of nouns, the driver: each unit's response is modelled on its own level of an input it
+is given, but units that respond lose the input more slowly once they respond, so every level read after the response
+began carries the response; a change in the amount given moves only the level the amount sets, read before the
+response could change how the input is lost, and there the relationship is flat. The three nearest drivers on file
+(0.07): task182 v1 lineage (a level following a shared external driver through a lagged response), task270 v7 (losses
+recorded only as they are replaced, completed at the year's ends) and task479 v4 lineage (a level estimated through a
+known response model). None shares the latent structure, a feedback from the outcome to the exposure within each unit,
+or the default path, a dose-response read on the fed-back exposure. task178's absorbing agent (a forward dispersion
+once an agent that traded against each shock stops) is the nearest idea in kind, a simultaneity, and it removes an
+agent rather than reading an exposure before its feedback.
 
-**Ends on:** $12.00 million (in-state 80 per cent, out-of-state 60 per cent).
-**Golden:** $13.75 million (in-state 94 per cent, out-of-state 60 per cent; $13,743,858 unrounded).
+**Sources read, one line each.** `guard.py mechanisms --objective forecasting` (90 builds): no build carries an
+exposure fed back by its own response; `guard.py slots` on the setting's nouns finds this task type screened three
+times, each set aside before a card: task179 (target-mediated elimination measured dead, eleven on paper including card
+3 and an anti-drug-antibody feedback left as an open fork in a PK forecast), task178 (sixteen on paper, card 3
+blocked as the cell's own card) and task170 (twenty on paper, the confounded exposure-response card blocked by the
+window). Each screened a pharmacokinetic forecast or card 3's baseline confounding; none screened response-dependent
+clearance in an exposure-response dose forecast, and the reason it differs from card 3 is measured below (covariate
+adjustment leaves every late-exposure member at 900 mg). `layer2-rigor-patterns.md`, this task type: card 1
+(covariates inside the mixed model) and card 2 (allometric centring) are lower-rung conventions, card 3 is the default
+path's careful version. `two-layer-task-design.md`: rule 1's swap is run on the call sentence under `## Three rules`.
+`measured-drivers.md`: held tasks sit upstream of every graded figure; the exposure choice sits upstream of every
+forecast and of the call.
 
-## Stump sentence
+**World.** Corvane Therapeutics (fictional, Cambridge, Massachusetts) develops dovikizumab (CVN-2184), a humanised
+IgG1 monoclonal antibody against the p19 subunit of interleukin-23, for moderately to severely active ulcerative
+colitis. Study CVN2184-UC-201, a randomised, double-blind phase 2b at 71 sites in the United States, Canada, Poland and
+Hungary, randomised 540 patients 2 to 1 to dovikizumab 600 mg or placebo, IV at weeks 0, 4 and 8, stratified by prior
+biologic or JAK inhibitor failure; the primary endpoint is clinical remission at week 12 on the modified Mayo score.
+Serum dovikizumab was drawn before the infusions at weeks 0, 4 and 8 and at week 12, and in an intensive-sampling
+substudy of 36 patients also through the first dosing interval. Phase 1 (healthy volunteers, 100 to 1,200 mg IV) found
+linear, dose-proportional pharmacokinetics. Corvane's phase 3 dose-selection charter, adopted before unblinding, sets
+the rule: phase 3 carries the lowest of 300, 600 and 900 mg IV at weeks 0, 4 and 8 whose forecast week-12 clinical
+remission rate is no more than 5 percentage points below the highest of the three forecasts. As-of: the database lock
+of 14 July 2026; the request is made in late October 2026 for the briefing package due 4 December 2026.
 
-A competent solver matures the overnight toll-by-mail invoices by their age, reads the collected share of those
-issued a year or more before 31 October 2026 (80 per cent in-state, 60 per cent out-of-state), applies it to the
-plan's 2027 billed toll and files $12.00 million; the step that lands it there is maturing in-state invoices by age
-when an invoice unpaid at 60 days is collected only at its plate's next two-year registration renewal, so in a
-twenty-month record most held invoices are still waiting on a renewal, and read on the held invoices whose
-registration on file has since expired the in-state share is 94 per cent and the call $13.75 million.
+**Data-native sentence.** The phase 2b records remission at week 12 but serum troughs at weeks 4, 8 and 12, and
+dovikizumab's clearance falls by about a third once a patient's colitis starts to heal, from around week 4, while it
+drifts up in patients who do not respond, so every trough after the first is partly drawn by the response; the dose
+sets the week-4 trough, which comes before it, and on it week-12 remission is flat.
 
 ## Three rules
 
-- Task type: forecasting-forecast-evaluation (Economics & Econometrics; serves Forecasting & Predictive Modeling).
-- Domain test: the deciding quantity is the ultimate collection rate of video-billed tolls for the vehicles that pay cash today, the revenue leakage a traffic-and-revenue forecast carries into an all-electronic conversion year, estimated on the toll-by-mail book of the cash lanes' own users and matured on the enforcement cycle that collects it (the registration hold paid at each plate's two-year renewal, the agency's 270 days); remove the maturity construction and the forecast is the book's young collected share, so the call moves by $1.75 million.
-- Swap: put a hospital's self-pay bills or a utility's arrears in place of the turnpike's invoices and there is no registration renewal clock that collects a held balance and no booth closure that billed the cash lanes' users by mail, so the construction has nothing to run on and the task does not read the same.
-- Layer 1: the back office's export writes one line per billed crossing and one invoice per plate and month, issued on the eighth or the next weekday, carries returned payments as negative REVERSAL rows and postings after the records date to the export run, the Division writes the registration on file as MM/YYYY, the toll schedule changed on 1 January 2026, an express-lane vehicle passing between the two lanes is read twice, and the lane classifier sometimes counts a truck's trailer as a second vehicle; each is what the systems write, and none moves the call (`checks.py` R2).
-- Layer 2: estimation_fit, own pattern: the ultimate collected share of a young billed book is censored by a clock each payer carries (the plate's next registration expiry after the hold), so it is read on the payers whose clock has run, not on the bills old enough by their own age.
-- Decisive step: for the in-state toll unpaid at 60 days, read the collected share on the held invoices whose registration on file (reg_expires) had expired by 31 October 2026, combine it with the share paid inside 60 days and the agency's share on invoices with no Division record, and carry the in-state and out-of-state shares to the plan's billed toll.
-- Not semantics: every field, code, date and status read correctly, including the policy's hold and renewal sentences, still leaves the analyst choosing when a toll-by-mail invoice has finished collecting, and maturing it by its own age (the reminder, the referral and the agency's 270 days, a year) files $12.00 million; no field states an invoice's outcome is final.
-- Not rule application: executing the policy's sentences (invoice cycle, late fee, hold at 60 days, renewal window, agency at 90 days and its 270 days, toll-first application) and the plan's basis gives the bills and their payments but not the share a young book will finally collect; that is an estimate from the record, and the standard route (a year-old cohort) is a valid-looking estimate that lands a wrong figure.
-- Analyst test: a strong analyst who cleans the book and reads every rule correctly, then matures the overnight invoices by age and reads the share of those a year old, files $12.00 million against the golden's $13.75 million; read on invoices 15 months old, $12.50 million; on every invoice as it stands, $10.50 million.
-- Estimand: PN-14 files the population (the toll billed by mail in 2027 to the vehicles that pay cash at the booths today, $11,908,500 in-state and $4,292,700 out-of-state, after image review), the outcome (the toll collected on those invoices however long the hold or the agency takes), the unit (toll dollars; fees left out) and the window (calendar 2027 crossings); the prompt sets the rounding.
-- No decoy: nothing is planted; no memo, draft, briefing or stakeholder figure carries a collection rate, a leakage share or a forecast; the held invoices waiting on renewals are what a two-year registration and a 60-day hold produce and are never stated as such.
-- No certified replay: no published or certified figure is reproduced to recover a method; no shipped file prints a collected share, a leakage rate or a forecast, and the image review and traffic files answer other questions.
-- Lesson: a young book's collected share is censored by whatever clock collects it, and here the clock is each payer's own renewal date, not the bill's age; read the share where that clock has run. No build on file matures a billed book on a renewal each payer carries.
+- Task type: pharmacology-pharmacoepidemiology-safety, population-pharmacokinetics-exposure-response (serves
+  Forecasting): the week-12 remission each candidate induction dose would produce, forecast from the phase 2b
+  exposure-response of the 600 mg arm.
+- Domain test: the deciding quantity is the forecast week-12 clinical remission at 300, 600 and 900 mg, which
+  model-informed dose selection reads off an exposure-response model of the tested arm with exposure scaled to dose by
+  linear pharmacokinetics; it turns on the pharmacokinetic fact that an antibody's clearance tracks the inflammatory
+  burden of the disease it treats and falls as the colitis heals, so the field's own exposure measures differ in what
+  they carry.
+- Swap: "a call centre setting its agent count from the answer speed each staffing level would give, read off its
+  past weeks" keeps a dose-like dial and an outcome, but nothing in it has a clearance the outcome changes, a dosing
+  interval, or a first trough drawn before the response, so the reasoning that decides (which exposure the dose sets)
+  has no counterpart and the task stops making sense.
+- Layer 1: the two central laboratories' units (albumin in g/dL and CRP in mg/dL in the US, g/L and mg/L in Europe);
+  the bioanalytical laboratory's reassays beside reported results and below-limit concentrations as text; pre-dose
+  samples drawn after the infusion started at a few visits, the sample log in site local time and the pump log in UTC;
+  interrupted infusions recorded by delivered volume; site-subject numbers against randomisation numbers through the
+  randomisation log; the efficacy data in two overlapping releases (topline extract and database lock with adjudicated
+  endoscopy); e-diaries from two device generations, one in UTC and one in local time, with re-synchronised
+  duplicates. Each is what the named system produces; none decides the call.
+- Layer 2: family `estimand_identification`; the choice that flips the call is reading the dose's effect on exposure
+  the dose sets (the week-4 trough, drawn before any patient's clearance moved, or the dose itself through it) rather
+  than on steady-state exposure, which the remission itself raises.
+- Decisive step: in the field's words, the exposure-response that carries a dose forecast is read on the first-interval
+  trough, because clearance is time-varying and response-dependent here, so the week-8 and week-12 troughs, the
+  induction-average concentration and every post-hoc exposure from a time-invariant fit are partly an outcome of the
+  remission they are meant to predict.
+- Not semantics: every field, unit and code read correctly (the troughs, the remission flags, the dosing records, the
+  laboratories' units) still leaves the field's steady-state exposure-response on 900 mg; no column, code, flag or
+  definition marks which concentration the dose set, and the step is the causal reading of when each sample was drawn
+  against when clearance moved.
+- Not rule application: the charter files the candidates, the forecast's population, outcome and window and the
+  5-point rule, and no filed rule names an exposure measure, a model or a sample. Measured on five paper worlds
+  (`generator/paper/fam5.py` on `sim_er4.py`): the enumerated family (the week-4, week-8 and week-12 troughs, the mean of
+  the troughs and a one-compartment fit's average concentration, each unadjusted, stratified, fully adjusted for the
+  baseline clearance determinants, as an Emax model and on the week-12 albumin) spreads the 300 mg forecast from 12.6
+  to 43.6 per cent, 31 whole percentage points, and files 300, 600 or 900; the standing family (exposure read before
+  clearance moved: the week-4 trough under every model and adjustment, and the week-12 trough instrumented by it)
+  spreads the 300 mg forecast by 1.7 to 4.8 points on those worlds (median 2.5 over 40) and files 300 on every member
+  in 24 of 40 worlds in the sweep, the build's world chosen and asserted among them. The ruling-out is one group-by
+  nothing invites: the remitter to non-remitter geometric-mean trough ratio by visit, 0.95 to 1.16 at week 4, 2.1 to
+  2.5 at week 8 and 3.0 to 3.6 at week 12.
+- Analyst test: a strong analyst who reads every file correctly, keeps valid troughs and applies the charter runs the
+  field's standard exposure-response on each patient's steady-state exposure (the week-8 or week-12 trough, the mean of
+  the troughs or a one-compartment fit's average concentration), with or without baseline albumin, weight, CRP and
+  prior biologic, forecasts 300 mg 8 to 29 points below 600 mg and 900 mg 5 to 22 points above, and files 900 mg
+  (600 mg in one member of 85 on the five paper worlds, never 300).
+- Estimand: the week-12 clinical remission rate, on the phase 2b protocol's modified Mayo definition with
+  non-responder imputation, that patients meeting the phase 2b eligibility criteria (which phase 3 repeats; none yet
+  enrolled) would show on each candidate induction regimen, each dose's forecast compared with the highest of the
+  three; filed in `cvn2184_phase3_dose_selection_charter.pdf`.
+- No decoy: nothing is planted. The troughs, remission flags and laboratory values come from one generating process;
+  no memo, plan, slide, draft or prior analysis states an exposure measure, an exposure-response or a dose preference;
+  the investigator's brochure states linear pharmacokinetics and phase 1's clearance covariates and nothing about the
+  phase 2b data.
+- No certified replay: no certified, published or prior-period figure is reproduced to recover the method; the
+  forecast is built from the phase 2b records alone and nothing in the pack scores an exposure measure.
+- Lesson: an exposure the response itself changes cannot carry a dose forecast; when an antibody's clearance falls as
+  the disease remits, only the exposure read before the response moved it measures what the dose set. No build on file
+  teaches response-driven exposure, and the library's clearance-confounding card is cured by an adjustment the default
+  path already makes here.
 
-## Readability screen
+## Default path
 
-| Rung | Filed sentence | Schema | Reflex | Control bench | Hygiene | Linear | Verdict |
-|---|---|---|---|---|---|---|---|
-| 0 no leakage, the billed toll collected in full ($16.25 million) | no | no | yes | no | no | yes | readable |
-| 1 every toll-by-mail invoice's collected share as it stands ($10.50 million) | no | no | yes | no | no | yes | readable |
-| 2 invoices matured by age, 180 days ($11.50 million), a year ($12.00 million), 15 months ($12.50 million) | no | no | yes | no | no | yes | readable |
-| 3 the renewal construction run on the toll-by-mail and violation invoices pooled ($13.00 million) | no | no | no | no | no | no | readable |
-| 4 (decisive) in-state held invoices read where the plate's registration on file has expired, the cash lanes' own invoices ($13.75 million) | no: no sentence says when an invoice's collection is complete or that held invoices are still waiting | no: the hold returns carry every invoice's expiry alike, no final flag | no: the reflex is a cohort old enough by age | no: no shipped figure ties only under the golden | no: no repair of a defect reaches it | no: the share is a decomposition read on a subset set by another file's dates | silent |
+1. Read the charter: candidates 300, 600 and 900 mg IV at weeks 0, 4 and 8; the forecast is week-12 clinical
+   remission in the phase 2b population; phase 3 carries the lowest dose within 5 points of the highest forecast.
+2. Join the bioanalytical results (`cvn2184_201_serum_concentrations.csv`) to the randomisation log, keep the reported
+   result of each sample and the troughs drawn before the infusion started, and put every concentration in ug/mL.
+3. Take each 600 mg patient's steady-state exposure, the field's measure for an induction exposure-response: the week-8
+   trough (or the week-12 trough, the mean of the troughs, or the average concentration from a one-compartment fit).
+4. Attach the week-12 clinical remission flag from the database-lock efficacy release, non-responder imputation for
+   discontinuation and rescue.
+5. Fit week-12 remission on log exposure by logistic regression with prior biologic failure, baseline albumin, CRP,
+   modified Mayo score and weight (the library's adjustment for clearance determinants).
+6. Scale every patient's exposure by dose over 600 (linear pharmacokinetics, phase 1) and average the predicted
+   remission: in world 1, on the week-12 trough fully adjusted, about 23 per cent at 300 mg, 40 at 600 mg and 51 at
+   900 mg.
+7. Apply the charter: 900 mg has the highest forecast and 600 mg sits 10.5 points under it, so phase 3 carries 900
+   mg.
 
-## Semantic fork table
+Ends on: 900 mg (the steady-state exposure-response; every late-exposure member of the family files 900 mg on the
+paper worlds, and `checks.py` will assert it on the built world).
+Golden: 300 mg: on the week-4 trough, drawn before any patient's clearance moved, week-12 remission is flat in
+exposure, so 300 mg forecasts within a few points of 600 and 900 mg and is the lowest dose within 5 points of the
+highest forecast.
 
-| Id | Term or convention | Golden reading | Alternative | Call under it | Ruled out by |
-|---|---|---|---|---|---|
-| SF1 | toll billed by mail in 2027 to today's cash-lane users | PN-14's $11,908,500 and $4,292,700 | rebuilt from the traffic counts | not built from the pack | PN-14 states the figures and their basis |
-| SF2 | collected | toll collected however long the hold or agency takes | collected within 2027 | a different quantity | PN-14: "however long the registration hold or the agency takes" |
-| SF3 | toll, not fees | toll only, payments applied toll first | fees counted | none (fees excluded) | PN-14 and policy 3.3 |
-| SF4 | in-state | plate_state HM | plates of nearby states | same call (HM only) | the dictionary: HM is this state |
-| SF5 | records date | payments posted to 31 October 2026 | to the export run | same call (asserted) | the invoices' status date and PN-14 |
-| SF6 | returned payments | netted | gross | same call (asserted) | the dictionary's REVERSAL rows |
-| SF7 | an expired registration on file | reg_expires month end on or before 31 October 2026 | strictly before | same call (asserted) | records converge (SF7 asserted) |
-| SF8 | agency-matured invoices | issued a year or more before 31 October 2026 (placement at 90 days, return at 270) | 400 days | same call (asserted) | policy 4.3 |
-| SF9 | the cash lanes' users' book | TOLL-BY-MAIL invoices | every billed-by-mail invoice | $13.00 million | PN-14: the vehicles that pay cash at the booths today; policy 2.2 |
-| SF10 | rounding | nearest $0.25 million, shares to whole per cent | finer | n/a | the prompt |
+## Stump sentence
 
-## Ladder
+A competent solver fits the exposure-response on each patient's steady-state dovikizumab exposure, adjusted for every
+baseline clearance determinant, scales it by dose and files 900 mg (Ends on; 300 mg 8 to 29 points below 600 mg and
+900 mg 5 to 22 above across the late members on the paper worlds); the step that lands it there is reading exposure
+after clearance had already fallen in the patients who remit, when the week-4 trough, drawn before any patient's
+clearance moved, shows week-12 remission flat in exposure and puts 300 mg within a few points of 600 mg, so phase 3
+carries 300 mg.
 
-| Rung | Route | In-state | Out-of-state | Collected | Printed | Dies to |
+## Paper world
+
+`generator/paper/sim_er4.py` (one-compartment linear clearance about 0.40 L/day, log-normal between-patient variation 35
+per cent, weight and albumin on clearance, the true dose effect an Emax on the induction-average concentration with
+EC50 1 ug/mL so every candidate dose sits on the plateau; in patients who remit an unmeasured inflammatory-burden term
+lowers clearance by 38 per cent from a median of day 26, in responders without remission by 10 per cent, and in
+non-responders clearance rises 10 per cent; albumin rises 2 g/L in remitters and adds its own small fall in clearance),
+360 on 600 mg and 180 on placebo, troughs before the week-4 and week-8 infusions and at week 12, assay error 12 per
+cent. `generator/paper/fam5.py` scores every member on five worlds and `fam5_sweep.py` on 40.
+
+| World (seed) | 600 mg observed | true 300 mg | week-4 trough family, 300 mg forecast | its calls | late family, 300 mg forecast | its calls |
 |---|---|---|---|---|---|---|
-| 0 | no leakage | 100.0 | 100.0 | $16,201,200 | $16.25 million | the book collects far less than it bills |
-| 1 | every invoice as it stands | 69.9 | 51.5 | $10,530,742 | $10.50 million | young invoices are still collecting |
-| 2a | invoices 180 days old | 76.0 | 56.9 | $11,495,557 | $11.50 million | the agency's 270 days and the renewals still to come |
-| 2b | invoices a year old (default path) | 80.1 | 60.0 | $12,116,763 | $12.00 million | in-state invoices wait on a renewal up to two years after the hold |
-| 2c | invoices 15 months old | 82.4 | 61.2 | $12,436,584 | $12.50 million | the same; most renewals have not come |
-| 3 | renewal construction, violations pooled in | 88.0 | 56.6 | $12,912,749 | $13.00 million | the violators are not today's cash-lane users |
-| 4 | renewal construction on the cash lanes' own invoices (golden) | 93.8 | 60.0 | $13,743,858 | $13.75 million | |
+| 1 | 40.0 | 39.2 | 38.9 to 41.1 | 300 in 7 of 7 | 16.8 to 29.8 | 900 in 17 of 17 |
+| 2 | 39.2 | 38.6 | 37.2 to 38.9 | 300 in 7 of 7 | 14.6 to 31.3 | 900 in 16 of 17 (one files 600) |
+| 4 | 41.7 | 40.8 | 40.3 to 43.4 | 300 in 7 of 7 | 19.2 to 32.3 | 900 in 17 of 17 |
+| 17 | 41.4 | 40.0 | 35.2 to 40.0 | 300 in 5 of 7 | 12.6 to 27.6 | 900 in 17 of 17 |
+| 29 | 42.5 | 41.4 | 40.7 to 43.6 | 300 in 7 of 7 | 17.3 to 31.0 | 900 in 17 of 17 |
 
-Margins: the golden family (registration on file expired on or before, or strictly before, the records date; the
-agency read on invoices issued 365 to 400 days before; returned payments netted or not; payments to the records date
-or the export run) sits in one printed cell, the call $13,743,395 to $13,761,443 against the $13.625 to $13.875
-million cell, in-state 93.78 to 93.90 and out-of-state 60.00 to 60.31; every rival misses by at least three cells.
-The in-state share's parts: 61.0 per cent of the toll paid within 60 days; of the unpaid toll, 96.8 per cent put on a
-hold and 86.1 per cent of the held toll collected where the registration on file has expired (7,214 invoices); the
-agency's share on the 279 invoices with no Division record, 23.0 per cent.
+Over 40 worlds the standing family files 300 on every member in 24 (its worst member's gap to the top forecast median
+3.9, at most 9.4) and the default family never files 300 (its closest member's gap at least 11.5, median 15.8). World 17
+is one of the 16 that fail: its week-4 geometric-mean ratio sits at 1.16, so two week-4 members file 600. The build's world is drawn
+among the 24 and its margins asserted. These figures are `python3 generator/paper/fam5.py 1 2 4 17 29` and
+`python3 generator/paper/fam5_sweep.py 40` on the parameters `sim_er4.py` now carries as defaults (the draw's
+calibration; the run that first measured it was not kept, and its figures were one world and a tenth of a point
+apart). The 600 mg forecast equals the observed rate under every logistic member,
+so the three forecasts differ only at 300 and 900 mg.
 
-## Closure table
+## Earlier screens (architectures 1 to 4, kept as history)
 
-| Axis | Name | Reading | Closure |
-|---|---|---|---|
-| 1 | Population | the 2027 toll billed by mail to today's cash-lane users | filed in PN-14 with its two figures |
-| 2 | Unit of account | toll dollars | PN-14; fees left out |
-| 3 | Attribution window | calendar 2027 crossings, collected however long it takes | filed |
-| 4 | As-of dating | payments posted to 31 October 2026; invoice status at that date | SF5 asserted |
-| 5 | Version basis | the 2026 rates, unchanged for 2027 | the schedule |
-| 6 | Denominator | toll billed on the invoices read | C1 |
-| 7 | Weighting | toll-weighted shares | the call is toll dollars |
-| 8 | Window length | invoices issued April 2025 to October 2026 | the record |
-| 9 | Boundary inclusivity | expiry on or before the records date | SF7 asserted |
-| 10 | Rounding path | shares and toll unrounded, round once | the prompt |
-| 11 | Tie-break | none needed | C1 |
-| 12 | Maturity and censoring | in-state held invoices matured on the registration on file; agency invoices at a year | the decisive step; family converges |
-| 13 | Order of operations | payments to toll first, then shares, then the plan's toll | policy 3.3 |
-| 14 | Row order | none matters | C1 |
-| 15 | Duplicate resolution | express-lane double reads occur only on violation lines | SEP asserted |
-| 16 | Identity normalisation | invoice number joins every file | dictionary |
-| 17 | Netting against gross | returned payments netted | SF6 asserted |
-| 18 | Dimensional units | dollars | dictionary |
-| 19 | Code and status semantics | TOLL-BY-MAIL and VIOLATION; HOLD PLACED and NO RECORD | dictionary and policy 4.1, 4.3 |
-| 20 | Integerisation | none before rounding | C1 |
-| 21 | Clause scope | PN-14's first figure is the call, the second the Enforcement tables | PN-14's paragraphs |
-| 22 | Forward window contents | every crossing without a MarrowPass billed by mail from 4 January 2027, on today's cycle | policy 2.3 and PN-14 |
-
-## Literal reader
-
-Executed word for word, PN-14's basis and figures and the policy's sentences fix every input of the golden's quantity
-(the billed toll by plate state, toll only, collected however long it takes), and every literal reading of them (SF1 to
-SF10) lands the same call or is ruled out by a quoted sentence; the easy answer comes from the easy method (a
-year-old cohort) on the same literal estimand, never from another reading.
-
-## Oracles
-
-None tie only under the golden. The invoices' status column is the back office's own as at 31 October and agrees with
-the payments under every reading; the image review summary and the plaza traffic counts are the systems' own totals
-and no graded figure reads them; no shipped figure prints a collected share, a leakage rate or a forecast.
-
-## Ask sheet
-
-**Main call's declared row population:** the TOLL-BY-MAIL invoices issued April 2025 to October 2026, their lines (booth
-lanes, 11 p.m. to 5 a.m.), their payments posted to 31 October 2026, their Division hold returns and agency placements
-(Corrigan Mott Recovery), and PN-14's two billed-toll figures. Device and hazard rows in it: 0 (`checks.py` SEP: no
-express-lane line on a toll-by-mail invoice, so no double read or classifier split; every toll-by-mail agency
-remittance names its own invoice and covers only it; the call never reads the commercial postings).
-
-**Ask A. For each month January to September 2026, the violation crossings and the toll they owe** (18 figures,
-crossings whole, toll to the cent). H18 home: the violation part of the certificate's toll-by-mail line, which
-Enforcement forecasts from it, beside the programme's figure. Path: the invoice lines, the commercial MarrowPass
-postings, the lane table, the policy (four files, eight columns).
-- A1 (classifier splits; silent primary): a five- or six-axle truck with a MarrowPass sometimes passes the express-lane
-  classifier as a three-axle tractor posted to its account and a second, tagless vehicle a tenth to three tenths of a
-  second behind it in the same lane, read on the trailer's (or a towed car's) own plate and billed as a violation. It
-  is not a violation (policy 2.1: the vehicle had a valid MarrowPass), and only the commercial postings place it:
-  2,611 lines over the nine months, every month moves (by 254 to 319 crossings and $553.70 to $707.20).
-- A2 (straddles; seen, repaired right): an express-lane vehicle passing between E1 and E2 is read in both, a fraction of
-  a second apart on one plate, 2,961 lines; the battery counts it once.
-- Stops (asserted): every line (all 18 miss), straddles dropped (all 18 miss), a window of 2.5 seconds behind a posting
-  that also drops the violators following trucks a second or two behind (all 18 miss).
-
-**Ask B. For the out-of-state violation invoices issued in each quarter April 2025 to March 2026, the share of the toll
-owed collected by 31 October 2026** (4 figures, whole per cent). H18 home: the collection record of the violation
-book that becomes toll-by-mail at the cutover, the certificate's companion figure. Path: the invoices, the payments,
-the agency placements, the lines and the postings (five files, ten columns).
-- B1 (whole-account remittances; silent primary): Benbow Associates works a plate's whole violation account, so one
-  remittance names the oldest invoice it holds for the plate and covers every invoice it closed as collected that
-  day; the payment joins its invoice, exceeds that invoice's balance, and the other invoices show no payment. Applied
-  oldest first (policy 3.3) the quarters read 44, 48, 41 and 40 per cent; applied to the named invoice only, 42, 42, 34
-  and 34 (283 of the 812 violation remittances cover more than the invoice they name).
-- B2 (classifier splits; shared hazard): the phantom violations of 2026 owe nothing; left in, the January to March 2026
-  quarter moves.
-- Stops (asserted): every payment on the invoice it names (all 4 miss); the phantoms left in owed (the 2026 quarter).
-
-**Hazard table.**
-
-| Hazard | Root cause | Moves | Per-ask delta |
-|---|---|---|---|
-| H1 classifier splits | the express-lane classifier on tractor-trailers and tows | A, B | A every cell; B the 2026 quarter |
-| H2 straddles | lane change through the express lanes | A | every cell, before the battery |
-| H3 whole-account remittances | the violation agency's contract | B | every quarter, 3 to 6 points |
-| H4 returned payments, postings to the export run | the back office | call (neutral), B | under 0.1 point |
-
-**Referee.** A1: a tagless read in the same lane a tenth to three tenths of a second behind a commercial posting (two
-vehicles cannot pass one lane that close; ordinary followers are 0.9 seconds and more behind); B1: a remittance above
-its invoice's balance and the agency file's other invoices for the plate collected that day. Each is countable from
-shipped rows.
-
-**Cracker sheet** (`generator/cracker.py` on the cut pack: the call landed, returned payments netted, straddles
-counted once, each payment applied to the invoice it names toll first, payments to 31 October)
-
-| Ask row | Figures | Cracker's path | Device that holds | Verdict |
-|---|---|---|---|---|
-| Ask A, violation crossings and toll owed by month | 18 | straddles counted once, every other line kept | A1 | miss |
-| Ask B, out-of-state violation collections by quarter | 4 | each payment on the invoice it names | B1 | miss |
-
-Measured by: `generator/cracker.py` (Part 0's weights: the call and its components 38, the instructions 7, the asks
-55 over the 22 ask figures; a response off the call keeps 5).
-
-Mirror leakage: 0.0 per cent of ask weight (the mirror keeps none of the 22).
-
-Pair ceiling: 28.5 measured on the cut pack (the cracker 45.0, the mirror 12.0). The honest risk: A1 falls to a
-reader who pairs every violation read with the commercial postings by lane and time, which lifts the cracker by 45
-points of ask weight on 18 figures; B1 falls to one who checks each remittance against its invoice's balance.
-
-## Earlier screens (architectures 1 to 3, kept as history)
+**Architecture 4 (2026-10-23, spent at Gate F on 9451b6bd).** The Marrowfield Turnpike Authority's first
+all-electronic tolling year (economics-econometrics / forecasting-forecast-evaluation): the 2027 toll billed by mail to
+today's cash-lane users and how much of it is collected, matured on each in-state plate's two-year registration renewal
+rather than on the invoice's age (golden $13.75 million, in-state 94 per cent and out-of-state 60 per cent, against the
+default path's $12.00 million on year-old invoices). Stage 3 was green (checks 69 of 69, verify, two byte-identical
+rebuilds, figures_check 43 of 43, precut 51 checks, voice-check PASS) and blind reader B landed the call by measuring
+the renewal-hold channel the policy states; the asks held 0 of 22. Its card moves into the architecture 5 draft's
+`lineage` with that fate. Its draw and stage-2 sections (readability screen, fork table, ladder, closure, literal
+reader, oracles, ask sheet) are in this note as of da7c0b81; its generator, golden and zip are still tracked here. The
+death line is in `## Tried and rejected`.
 
 **Architecture 3 (2026-10-23, spent at Gate F on ce04ed65).** Sablewood Electric Cooperative's optional overnight
 rate R-ON for 2027, its members and shortfall priced on each R-1 member's own bill saving through the first-year
@@ -350,6 +314,51 @@ with them.
 - **Rebuild 2026-10-23, fifth cell (chosen shape first): biomedical-clinical-research / dose-response-pk-pd-modeling, a phase 3's week-12 target-lesion response read lesion by lesion (scratch `b171s/proto/l1.py`, `l1b.py`, `l2.py`).** The structure looked right: the response is a threshold on the size-weighted sum of a patient's target-lesion changes, the lesions share a patient effect and vary within it, and a forward population whose sums are dominated by one large lesion averages less than a record of evenly sized metastases, so the record's patient-level rate does not transfer; the concentration (the effective number of lesions) is built from lesion rows and named nowhere, and the count and baseline-sum reflexes move the wrong way. It died on lever and on sigma, measured: over sixteen settings (median lesion ratio 0.70 to 0.90, within-patient correlation 0.10 to 0.50) the forward rate sits only +1.7 to +18.7 per cent from the record's at correlations of 0.23 to 0.50, the published range for lesion response, and reaches +22 to +29 only at a correlation of 0.10 with median shrinkage of 10 to 16 per cent; on 640 patients at the dose the lesion-level mixed model's own figure moves 0.239 to 0.278 across seeds on a truth of 0.265, about 6 per cent, because a trial's patient count cannot carry a sigma near 1 per cent; and the shared patient effect with members summed is task143's insight one step removed. The cell's other structures are named by the field (dose intensity and reductions, cumulative-dose toxicity, schedule, tolerance, the PK-PD index, hysteresis, exposure confounded by clearance) or sit in population PK, which died for task178 and task179.
 - **Fifth cell, the paper half: physical-environmental-sciences / hydrology-flood-frequency, screened beside it (scratch `b171s/proto/h1.py`).** Flood frequency is one weather-driven system per site, so no forward quantity rests on enough events: on a 45-year record the mean annual count of flood-stage days carries a 15 per cent sigma, the 10-year flood about 9 per cent and the 100-year flood about 22 (16th to 84th percentile over 400 records), against the 1 per cent the holds this round had. Every structural break the cell offers is a channel its standard names (regulation and naturalised flows, mixed rain and snowmelt populations, historical floods and perception thresholds, low outliers, urbanisation, non-contributing area, permeable-catchment growth curves, rating extrapolation, compound river and surge flooding), and a hindcast of a forward scheme over the recorded flows is a filed operating rule replayed on the record. A many-unit version (culverts, crossings) reads its catchment property off a map layer, a column.
 - **Fifth cell, while choosing, the grey cells on paper (each died in another number's note this round, so not drawn):** a land-retirement programme's 2017 contracts expiring together, read on the share of each owner's holding enrolled (built from a contract file and an ownership file with no shared key), holds the street-grain shape but is `composition_mix`, banned by task179 in the window, and sits in task175's own task type; lease banks rationed per solar developer read through project-company names is builder absorption in another field (task175's world) and fails the swap test; patients with one or more admissions under a therapy that halves each person's rate is a fitted nonlinearity whose lever is its own sensitivity; habit, default, inertia and reference-point choice structures are named in decision-making (task170 v4's ground); media reach, reserving, ratemaking and model diagnostics carry task174's findings.
+- **Architecture 5 at the draw, 2026-10-26: exposure-response confounded by baseline clearance.** The sickest patients
+  clear the antibody fastest, so low exposure and poor response travel together inside the one dose arm and only the
+  randomised dose groups carry the dose's effect. Set aside before the card: it is the client library's card 3 for
+  this task type, its remedy (adjust for the clearance determinants) is the careful analyst's reflex, and task179 and
+  task170 screened it as the cell's own card. Drawn instead as the feedback from the outcome to the exposure after
+  baseline, which that adjustment does not cure (`generator/paper/cands.json`; `guard.py nearest` 0.07 for the
+  confounding driver and 0.10 for the feedback driver, both against older builds).
+- **Architecture 5, the first paper world (`generator/paper/sim_er.py`).** The true dose effect an Emax on
+  first-interval exposure with EC50 4 against first-interval concentrations near 30, candidates 300, 450 and 600 mg
+  under a 2-point rule: on seeds 141, 1 and 2 the day-14 and week-4 members' slopes ran from minus 0.19 to 0.51 and
+  filed 300, 450 or 600 mg, so the clean family itself forked the call, the true curve still rising between 300 and
+  600 mg and albumin (0.045 a g/L) sitting in both clearance and prognosis. The true effect was put on its plateau
+  (EC50 1 ug/mL, far under every candidate's induction-average concentration) and albumin's prognostic weight cut to
+  0.02 a g/L.
+- **Architecture 5, a day-14 sample or the first-interval AUC as the clean exposure (`sim_er2.py`, `sim_er3.py`,
+  `sweep3.py`).** Both vary little across patients (log SD about 0.5 for the day-14 sample against about 1.0 for the
+  week-4 trough on the five paper worlds), so their exposure-response slope is noisy: in `sim_er2.py`'s 40-world sweep
+  the day-14 member filed 300 mg in 16 to 20 worlds and the highest dose in 16 to 21, and over `sweep3.py`'s 40 worlds
+  the first-interval AUC's 300 mg gap ran from about minus 3 points (its tenth percentile) to plus 15, forking the call
+  inside the standing family. The main schedule keeps only the pre-dose troughs and week 12, so the clean exposure is
+  the week-4 trough.
+- **Architecture 5, clearance moving from a median of day 11 or day 19 (`sim_er3.py`, `sweep3.py`).** The week-4
+  trough then carried part of the response (remitter to non-remitter geometric-mean ratio 1.30 on seed 141 at day 19)
+  and sat between the families: with the change at day 11 its 300 mg gap ran at a median of about 4 points (at most
+  7.1) and no world of 40 held the families apart, and at day 19 only 9 of 40 did. The change was moved to a median of
+  day 26 with a tight spread (`sim_er4.py`), so the week-4 trough is drawn before almost all of it.
+- **Architecture 5, the change at a median of day 36 (`sweep3.py`).** The week-8 trough's 300 mg gap fell to a median
+  of about 4.5 points over 40 worlds, on the rule's margin, so a week-8 reader could land 300 mg by chance. The burden
+  term was raised to 38 per cent with non-responders' clearance rising 10 per cent (`sim_er4.py`), which puts the
+  closest late member's gap at 11.5 points or more over 40 worlds (`fam5_sweep.py`).
+- **Architecture 5, albumin as the only carrier of the clearance change (`sim_er4.py`'s first run, whose parameters
+  were not kept).** Adjusting the week-12 trough for the week-12 albumin flattened it and landed 300 mg through a
+  post-baseline adjustment with no insight. The change now runs mainly through an unmeasured inflammatory burden with
+  albumin rising 2 g/L in remitters, and the week-12 albumin adjustment files 900 mg on four of the five paper worlds
+  and 600 mg on the fifth (300 mg 8 to 14 points under 600 mg).
+- **Architecture 5, a two-dose call (300 against 600 mg).** The steady-state route and the do-nothing route both filed
+  600 mg; the third candidate, 900 mg, gives the default path its own answer (it escalates) and leaves 600 mg as the
+  lazy answer, three distinct stops.
+- **Architecture 5, a forecast remission rate as a critical component at whole percent.** The standing family's 300 mg
+  forecasts spread 1.7 to 4.8 points inside one world on the five paper worlds, so a whole-percent forecast is not
+  determinate (`stumping` 1.2a); the call is graded and the components come from records the data fix, set at stage 2.
+- **Architecture 5, a population pharmacokinetic report with each patient's post-hoc clearance.** A time-invariant
+  fit's individual exposures are a shipped record whose standard use files 900 mg (every post-hoc member on the five
+  paper worlds), which reads as a certified record built to bless the wrong method; no popPK report ships, and the
+  investigator's brochure gives phase 1's linearity and covariates only.
 
 ## Retired
 
@@ -370,4 +379,8 @@ Architecture 3 was spent at Gate F at stage 4 the same day (the scored reader ca
 
 Architecture 4 was spent at Gate F at stage 4 the same day (a blind reader measured the renewal-hold channel the policy states); the number is PAUSED for the main session's next cell.
 
-The fifth rebuild cell was left to this build, shape first: biomedical-clinical-research / dose-response-pk-pd-modeling was taken to code (the lesion-level response, dead on lever and sigma) and physical-environmental-sciences / hydrology-flood-frequency screened beside it (dead on sigma and named channels), with the grey cells read on paper (`## Tried and rejected`, last three lines). No card registered past v4, which stays the card's identity marked spent; PAUSED at stage 1 for the main session's next cell. The number is never retired.
+The fifth rebuild cell was left to this build, shape first: biomedical-clinical-research / dose-response-pk-pd-modeling was taken to code (the lesion-level response, dead on lever and sigma) and physical-environmental-sciences / hydrology-flood-frequency screened beside it (dead on sigma and named channels), with the grey cells read on paper (`## Tried and rejected`, the three fifth-cell lines). No card registered past v4, which stays the card's identity marked spent; PAUSED at stage 1 for the main session's next cell. The number is never retired.
+
+Architecture 5 came from outside this number on 2026-10-26: the dovikizumab induction dose, drawn in the task141 rework,
+which task141 did not take because its own session had already re-rooted it to architecture 2. The author parked it
+here. Its card waits on `ban.strategy` (`## Draw`, Guard); no card is registered past v4 until then.

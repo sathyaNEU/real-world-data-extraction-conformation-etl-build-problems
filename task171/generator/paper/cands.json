@@ -1,0 +1,6 @@
+{
+ "ER_conf": {"domain": "pharmacology-pharmacoepidemiology-safety", "subdomain": "population-pharmacokinetics-exposure-response", "objective": "forecasting",
+   "driver": "A response is modelled on each unit's own exposure, but the units that clear the agent fastest are the sickest, so low exposure and poor response travel together inside every dose group for a reason the dose never caused; the relationship that carries to a new dosing scheme is the one the randomised dose groups show between them, which is nearly flat, while the pooled fit on each unit's exposure, with or without the measured markers of illness, is steep and sends the decision to the highest dose."},
+ "ER_reverse": {"domain": "pharmacology-pharmacoepidemiology-safety", "subdomain": "population-pharmacokinetics-exposure-response", "objective": "forecasting",
+   "driver": "A unit's exposure is read at steady state, but the units that respond clear the agent more slowly as they respond, so steady-state exposure is partly an outcome of the response; the relationship that carries to a new dosing scheme is read on the exposure each unit had before any response could act on it, or across the randomised doses, while the steady-state fit is steep."}
+}
