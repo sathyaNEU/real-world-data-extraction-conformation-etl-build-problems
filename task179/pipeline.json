@@ -1,12 +1,12 @@
 {
  "task": "task179",
  "owner": "sathya8571",
- "status": "SHIPPED",
+ "status": "RETURNED",
  "domain": "education-learning-sciences",
  "objective": "forecasting",
  "stage": 5,
  "stage_name": "ship",
- "updated": "2026-10-25",
+ "updated": "2026-10-26",
  "stump": "A competent solver fits an early-warning model on the entrants' own attributes to the 2019 to 2025 entrants' enrolment at the next census, validates it on the 2025 intake, scores the 8,659 2026 entrants and files 2,250 not enrolled on 1 October 2027 against 3,250, because it never reads each entrant's chance at the number of other entrants met in two or more of the entrant's own classes, which the Registry's allocation run kept near 26 and self-enrolment after the ARC cutover leaves near one.",
  "architecture": 3,
  "loops": 1,
@@ -120,6 +120,11 @@
    ],
    "freeze": "determinism PASS: the main call, the stump and every frozen figure unchanged; figures.json unchanged after the step 6 rewording",
    "commit": "RESHIPPED (task179): determinism, the class unit's comparability across the cutover in the write-up"
+  },
+  {
+   "date": "2026-10-25",
+   "portal": "version 391, reported by the author 2026-10-26: every check passed except Duplicate. The reviewer read it as a re-skin of an accepted task with the same trap (the forecast population at the floor of a local peer count no document names and the standard model leaves out), the same method (the count built from a linkage file, entered as bands or a flag chosen by the conventions' fit criterion, unit-level chances summed and rounded coarsely), the same critical components (the population, then how many sit at zero on the count), the same file roles and the same prompt shell (how many, a workbook with a count-once side table, one labelled stacked bar, nearest N). Our records match it to task175 (Port Ardell 2027 permits, each lot read at the homes on its street): heart BLOCK against task175 at ship, and the card's differentiation line against it. Smaller notes: the 2026 collapse in class sharing has no in-world cause in the pack (section 6 of the cutover notes was withdrawn in round 4), and the side table moves exactly 2 groups in every one of its 20 cells.",
+   "repair": "a redraw of the driver, the prompt shell and the critical components (architecture 4), on the author's decision"
   }
  ],
  "wave": "new, seed FC50: the world, the decision and the quantity kept, the world moved honestly off local_government to a private ambulance company holding a city's 911 ambulance contract (the city the counterparty), deciding its own ten summer surge medic units for the weekend 20:00 to 24:00 block from June to August across three districts at the contract's 9-in-10 evenings standard at 1.2 unit-hours a call, the rest offered to the county's mutual-aid roster; the seed's filed staffing formula, the public dataset's suppression of one- and two-call cells and a pooling sentence were never candidates; redraw cell 1 econometrics time-series macro (2026-10-19, dead), redraw cell 2 epidemiology infectious-disease-transmission-modeling (2026-10-21, architecture v2, re-sited to the fictional Republic of Saldane after the first world was declined on the real-place records concern)",
@@ -165,12 +170,12 @@
    "registration": "registered 2026-10-23 (4afaec0a) after two lock BLOCKs on the window (ban.strategy composition_mix vs task274, then vs task175); not relabelled"
   }
  },
- "resume": "",
+ "resume": "author's decision: re-root task179 to architecture 4 with a new driver, prompt and deliverable shell and critical components (the reviewer suggests a selection-adjusted programme effect with an overlap check, an early-warning contact list recalibrated out of time on 2025, or a 2028 count chained through the census states with leave as its own state), keeping the Corriemoor pack's Layer 1",
  "approved": null,
  "delivered": "2026-10-24",
  "portal": null,
- "portal_id": "",
- "portal_status": "returned 2026-10-25 (round 5: judge 1 FAIL, judge 2 PASS), reshipped 2026-10-25 with the write-up's comparability evidence, the pack unchanged",
+ "portal_id": "2d6c30f6-8d7e-42ed-b73f-8630464142c7",
+ "portal_status": "returned 2026-10-25 (version 391: Duplicate failed, a templated near duplicate of an accepted task, matched in our records to task175; determinism main and supplementary, solution main and supplementary, task type and stumped type all passed); before that returned 2026-10-25 (round 5: judge 1 FAIL, judge 2 PASS), reshipped 2026-10-25 with the write-up's comparability evidence, the pack unchanged",
  "portal_status_date": "2026-10-25",
  "zip_md5": "01124ef49b164b4860ea4326bd0aa901"
 }
