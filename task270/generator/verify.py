@@ -121,7 +121,7 @@ def run(task):
     ok("runner-up", best[1], fig["call"]["runner_up"])
     ok("lead", rnd(100 * (r3[best[0]] - r3[best[1]]), 1), fig["call"]["lead_points"])
     for s in "ABC":
-        ok("3+ %s" % s, rnd(100 * r3[s], 1), fig["call"]["reach3_pct"][s])
+        ok("3+ %s" % s, rnd(100 * r3[s], 1), fig["components"]["reach3_pct"][s])
         ok("1+ %s" % s, rnd(100 * r1[s], 1), fig["context"]["reach1_pct"][s])
     pr = sold[sold["ch_b"].isin(["VRT", "LIT", "PLS"]) & (sold["janela"].str.startswith("Horário nobre"))]
     inside = ((pr["clock"] >= PRIME[0]) & (pr["clock"] < PRIME[1]) & (pr["dia_tv"] == pr["dia_reserva"])).sum()
@@ -130,10 +130,15 @@ def run(task):
     ok("share outside prime", rnd(100 * (len(pr) - inside) / len(pr), 1),
        fig["components"]["share_aired_outside_prime_pct"])
 
-    # ---- the 2025 response: a person is an identity document
-    po = pd.read_csv(os.path.join(T, "marcacoes_portal_dador_2025.csv"), dtype=str)
-    po = po[po["tipo_dadiva"] == "primeira"].copy()
+    # ---- the 2025 response: a person is an identity document, and a booking of a first donation is one made before
+    # that person's first donation, the earliest on any of their donor records (the extract's donor fields are the
+    # record on the extraction day)
+    po = pd.read_csv(os.path.join(T, "marcacoes_portal_dador_2025.csv"), dtype=str, keep_default_na=False)
     po["t"] = pd.to_datetime(po["criada_em"])
+    given = po[po["data_primeira_dadiva"] != ""]
+    gave = pd.to_datetime(given["data_primeira_dadiva"]).groupby(given["documento_hash"]).min()
+    po["gave"] = po["documento_hash"].map(gave)
+    po = po[po["gave"].isna() | (po["t"].dt.normalize() < po["gave"])].copy()
     first = po.sort_values("t").groupby("documento_hash").head(1).copy()
     born = pd.to_datetime(first["data_nascimento"])
     made = first["t"].dt.normalize()
@@ -148,7 +153,7 @@ def run(task):
     ok("2025 baseline weekly average", rnd(avg, 1), fig["asks"]["R"]["baseline_weekly_average"])
     ok("2025 weeks above", [rnd(c - avg, 1) for c in camp], fig["asks"]["R"]["campaign_weeks_above_baseline"])
     ok("2025 weeks total above", rnd(sum(camp) - 4 * avg, 1), fig["asks"]["R"]["campaign_weeks_total_above"])
-    per = (sum(camp) - 4 * avg) / 547.8
+    per = (sum(camp) - 4 * avg) / 543.7
     ok("2025 response", rnd(per, 2), fig["asks"]["R"]["response_per_thousand_reached3"])
     uni = pd.read_csv(os.path.join(T, "universo_2026.csv"))
     U = int(uni[uni["escalao_etario"].isin(YOUNG)]["populacao"].sum())

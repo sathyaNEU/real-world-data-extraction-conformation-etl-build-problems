@@ -32,7 +32,7 @@
   "validated_decoy": false,
   "context_artifact": "register",
   "stump_class": "analytical",
-  "analyst_test": "A strong analyst who converts the panel's UTC statements to the as-run log's local clock, maps the renamed channel, drops guests and time-shifted viewing, weights members by their 28-day weight and replays each schedule spot by spot reads each prime-time rotation spot over the rotation places the as-run log shows inside prime time that day, and buys schedule B at 31.8 per cent three-plus reach against A's 26.6.",
+  "analyst_test": "A strong analyst who converts the panel's UTC statements to the as-run log's local clock, maps the renamed channel, drops guests and time-shifted viewing, weights members by their 28-day weight and replays each schedule spot by spot reads each prime-time rotation spot over the rotation places the as-run log shows inside prime time that day, and buys schedule B at 31.9 per cent three-plus reach against A's 26.6.",
   "domain_test": "The deciding quantity is each schedule's three-plus reach among adults 18 to 34, built from the panel's person-level live viewing at the seconds each spot would air, the field's spot-level reach and frequency; a rotation spot's place is the channel's traffic decision, so where it would air is the airing record of the bookings sold on the same terms, which in sold-out prime includes the daytime places the bookings were moved to. With another field's nouns there is no commercial break, no person-level viewing of a place and no traffic system that places run-of-station bookings outside their window.",
   "layer2_family": "estimand_identification",
   "layer2_pattern": "own:rotation spots read over where the same-terms bookings aired, moved bookings included, not over the window's rotation places",
@@ -87,8 +87,8 @@
   "opening_move": "question-first",
   "question_form": "which",
   "driver": "The decisive quantity is where an item sold without a fixed slot would have landed, and the record of where such items landed shows only the ones that landed inside the slot they were sold for as belonging to it; joining the sales record to the landing record finds that a third were placed elsewhere, in slots worth a fraction as much, so reading the item over the in-slot landings alone credits it with value it would not have had and reverses the choice.",
-  "driver_concrete": "Each 2027 prime-time rotation spot in schedule B is read at the places where that reference day's prime-time rotation bookings on the same channel actually aired, found by joining the sales houses' bookings to the as-run log on the booking number, so the third of them (1,521 of 4,545) the channels' traffic placed in daytime breaks count at their daytime audiences, and B falls from 31.8 to 22.1 per cent three-plus reach, below A's 26.6.",
-  "stump": "A competent analyst replays the three schedules on the reference weeks, reads each rotation spot over the rotation places the as-run log shows in prime time that day and buys schedule B at 31.8 per cent three-plus reach against A's 26.6; the step that lands them there is taking the prime-time rotation places as where a prime-time rotation spot airs, when the bookings joined to the as-run log show the channels placed 1,521 of 4,545 (33.5 per cent) in daytime breaks.",
+  "driver_concrete": "Each 2027 prime-time rotation spot in schedule B is read at the places where that reference day's prime-time rotation bookings on the same channel actually aired, found by joining the sales houses' bookings to the as-run log on the booking number, so the 1,854 of 4,943 (37.5 per cent) the channels' traffic placed in daytime breaks count at their daytime audiences, and B falls from 31.9 to 20.9 per cent three-plus reach, below A's 26.6.",
+  "stump": "A competent analyst replays the three schedules on the reference weeks, reads each rotation spot over the rotation places the as-run log shows in prime time that day and buys schedule B at 31.9 per cent three-plus reach against A's 26.6; the step that lands them there is taking the prime-time rotation places as where a prime-time rotation spot airs, when the bookings joined to the as-run log show the channels placed 1,854 of 4,943 (37.5 per cent) in daytime breaks.",
   "mechanism_source": "design_note",
   "differentiation": {
     "task139": "task139 reads a randomised intervention per assigned unit because the arm changes which units become costly cases; this build reads a schedule's spot where the bookings sold on its terms aired, because the airing record shows only the bookings the channel kept in the window they were sold for.",
@@ -269,5 +269,6 @@
     }
   ],
   "notes": "Architecture 6 re-root in a fresh world after architecture 5 was spent at stage 4. Filed after the build because G9 as the decisive pattern was banned while task485 sat in the window; redrawn at filing: forum to executive_team (task308 held the board), context artifact to register (task487 holds the operations log), forcing event to vote_or_meeting (task137 v4 holds purchase_order_or_contract; the Comissão Executiva decides on 2 December, the channels' April bookings close on 11 December).",
-  "registered": "2026-10-26T14:11:43Z"
+  "registered": "2026-10-26T14:11:43Z",
+  "architecture_spent": true
 }

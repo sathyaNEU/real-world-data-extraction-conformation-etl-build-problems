@@ -1,57 +1,59 @@
 {
-  "task": "task270",
-  "owner": "sathay3012",
-  "status": "BUILD",
-  "domain": "marketing-consumer-research",
-  "objective": "descriptive-distribution",
-  "stage": "4",
-  "stage_name": "check",
-  "updated": "2026-10-26",
-  "stump": "A competent analyst replays the three schedules on the reference weeks, reads each rotation spot over the rotation places the as-run log shows in prime time that day and buys Schedule B at 31.8 per cent three-plus reach against A's 26.6; the golden joins the sales houses' bookings to the as-run log and reads each rotation spot at the places that day's prime-time rotation bookings aired (1,521 of 4,545 in daytime breaks), B 22.1, A 26.6.",
-  "architecture": "6",
-  "loops": "0",
-  "precut": "PASS 2026-10-26 (51 checks, 0 FAIL)",
-  "leak": {
-    "leak_py": "CLEAN 2026-10-26; REVIEW only for the 2027 schedules' and the digital plan's forward dates (plans)",
-    "readers": "pending"
+ "task": "task270",
+ "owner": "sathay3012",
+ "status": "PAUSED",
+ "domain": "marketing-consumer-research",
+ "objective": "descriptive-distribution",
+ "stage": 1,
+ "stage_name": "draw",
+ "updated": "2026-10-26",
+ "stump": "",
+ "architecture": 7,
+ "loops": 0,
+ "precut": null,
+ "leak": {
+  "leak_py": "",
+  "readers": ""
+ },
+ "duplicate_check": {},
+ "judge": {
+  "verdict": "",
+  "disposition": "",
+  "report": ""
+ },
+ "returned": [],
+ "resume": "Re-root at the architecture 7 draw in a fresh world; read DESIGN_NOTE.md's Tried and rejected first, every architecture there stays dead. The lesson to draw on: no shipped field may name the population the decisive step needs (architecture 6's janela handed it over), and a reference population that a field identifies is a cheap route whatever the brief says; the re-sited ask device (a donor record read current, the person's first donation across their numbers) held against both round 2 readers and is spent for the next consecutive build.",
+ "architectures": [
+  {
+   "architecture": 1,
+   "fate": "spent 2026-10-19 at stage 4: both isolated scored readers landed the call (the multivariate correction for selection on the appointment composite), reader 2 all 14 ask figures, reader 1 Ask A; judge DETERMINISTIC, APPROVE; last commit 9507d43f"
   },
-  "duplicate_check": {
-    "check_at_draw": "filed 2026-10-26 after the build, PASS with one NOTE (task139, task182 v4, task265 v1, task452 v2 differentiated); heart PASS; surface exit 0, people clean"
+  {
+   "architecture": 2,
+   "fate": "spent 2026-10-19 at stage 4 (Gate F): reader 6 of six isolated scored readers landed the call and the first region below by taking the claims above 2,500 pounds as fully reported and scaling them by the protected policies' share above that size, with Ask A's sixteen figures; reader 5 missed the call and took all 32 ask figures; judge pass 3 DETERMINISTIC, FIX_NOW on Ask A; recorded in the PAUSED commit of 2026-10-19"
   },
-  "judge": {
-    "verdict": "pending",
-    "disposition": "pending",
-    "report": ""
+  {
+   "architecture": 3,
+   "fate": "spent 2026-10-19 at stage 4 round 2 (Gate F): both isolated scored readers landed the call after the round 1 repair filed 3.1's exclusion of the change the test itself produces; each estimated the one-time gain of a second completed sitting within patients over the whole CIS and EPR record (about 2.5) and named Quarndale and Thurlwick; reader 4 took every ask figure, reader 3 Ask B whole; round 1's readers had missed the call with the outcome unfiled; task270 retired"
   },
-  "returned": [],
-  "resume": "Stage 4: the leak reader and the determinism judge on the cut pack (target.zip 3b93a30f...), both medium; fix every finding in the generator in one pass, re-judge a FIX_NOW once, then ship.",
-  "architectures": [
-    {
-      "architecture": 1,
-      "fate": "spent 2026-10-19 at stage 4: both isolated scored readers landed the call (the multivariate correction for selection on the appointment composite), reader 2 all 14 ask figures, reader 1 Ask A; judge DETERMINISTIC, APPROVE; last commit 9507d43f"
-    },
-    {
-      "architecture": 2,
-      "fate": "spent 2026-10-19 at stage 4 (Gate F): reader 6 of six isolated scored readers landed the call and the first region below by taking the claims above 2,500 pounds as fully reported and scaling them by the protected policies' share above that size, with Ask A's sixteen figures; reader 5 missed the call and took all 32 ask figures; judge pass 3 DETERMINISTIC, FIX_NOW on Ask A; recorded in the PAUSED commit of 2026-10-19"
-    },
-    {
-      "architecture": 3,
-      "fate": "spent 2026-10-19 at stage 4 round 2 (Gate F): both isolated scored readers landed the call after the round 1 repair filed 3.1's exclusion of the change the test itself produces; each estimated the one-time gain of a second completed sitting within patients over the whole CIS and EPR record (about 2.5) and named Quarndale and Thurlwick; reader 4 took every ask figure, reader 3 Ask B whole; round 1's readers had missed the call with the outcome unfiled; task270 retired"
-    },
-    {
-      "architecture": 4,
-      "fate": "spent 2026-10-26 at the draw probes: p270a and p270b, call-only Sonnet readers on prototypes, computed Haberman's PRMSE with the part-whole correction and printed the golden three; committed as DRAWN in 5e4daa81"
-    },
-    {
-      "architecture": 5,
-      "fate": "spent 2026-10-26 at stage 4 round 2: round 1's readers both missed on the raw correlation but the judge held the raw correlation open as the literal estimand (SEND_BACK); with standard 2.3 filing the correlation between the effects themselves the judge approved and both round 2 readers took out the shared sampling covariance and landed first purchase"
-    }
-  ],
-  "approved": null,
-  "delivered": null,
-  "portal": null,
-  "portal_id": "",
-  "portal_status": "",
-  "portal_status_date": "",
-  "seed": "none: a fresh world drawn 2026-10-26 (Kleerwissel's 2027 proxy metric for six-month retention)"
+  {
+   "architecture": 4,
+   "fate": "spent 2026-10-26 at the draw probes: p270a and p270b, call-only Sonnet readers on prototypes, computed Haberman's PRMSE with the part-whole correction and printed the golden three; committed as DRAWN in 5e4daa81"
+  },
+  {
+   "architecture": 5,
+   "fate": "spent 2026-10-26 at stage 4 round 2: round 1's readers both missed on the raw correlation but the judge held the raw correlation open as the literal estimand (SEND_BACK); with standard 2.3 filing the correlation between the effects themselves the judge approved and both round 2 readers took out the shared sampling covariance and landed first purchase"
+  },
+  {
+   "architecture": 6,
+   "fate": "spent 2026-10-26 at stage 4 round 2 (Gate F): round 1's readers both missed (B at 31.8 by the clock window), the judge DETERMINISTIC, FIX_NOW on two sub-figure forks; after the repair pass (3.3 summed statements, same-day traffic, Ask R re-sited onto the donor record read on the extraction day) both round 2 readers landed the call (A 26.6, B 20.9) through the bookings' janela field joined on id_reserva, so one join and a field read reach the golden; the judge DETERMINISTIC, SEND_BACK (Gate G planted_defect_flip, Gate H decisive_step planted); the re-sited asks held, both readers 0 of 7 ask keys at the per-row repair"
+  }
+ ],
+ "approved": null,
+ "delivered": null,
+ "portal": null,
+ "portal_id": "",
+ "portal_status": "",
+ "portal_status_date": "",
+ "seed": "none: a fresh world drawn 2026-10-26 (Kleerwissel's 2027 proxy metric for six-month retention)"
 }

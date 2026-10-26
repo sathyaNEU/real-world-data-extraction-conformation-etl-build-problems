@@ -34,9 +34,9 @@ def compute(target):
     cost = {s: int(sum(ln["price"] for ln in P.sched[s])) for s in K.SCHED}
     spots = {s: len(P.sched[s]) for s in K.SCHED}
     fig = {
-        "call": {"schedule": m["call"], "runner_up": m["runner"], "lead_points": K.r(100 * m["lead"], 1),
-                 "reach3_pct": {s: K.pct(m["reach3"][s]) for s in K.SCHED}},
+        "call": {"schedule": m["call"], "runner_up": m["runner"], "lead_points": K.r(100 * m["lead"], 1)},
         "components": {
+            "reach3_pct": {s: K.pct(m["reach3"][s]) for s in K.SCHED},
             "prime_rotation_bookings": pb["bookings"],
             "prime_rotation_bookings_aired_outside_prime": pb["elsewhere"],
             "share_aired_outside_prime_pct": K.pct(pb["share_elsewhere"]),
@@ -56,7 +56,7 @@ def compute(target):
                     "universe_18_34": a["universe"], "reached3_2025_thousands": AS.REPORT_REACHED3,
                     "baseline_weeks": [S25.BASELINE[0].isoformat(), S25.BASELINE[1].isoformat()],
                     "campaign_weeks_2025": [S25.CAMPAIGN[0].isoformat(), S25.CAMPAIGN[1].isoformat()]},
-        "references": {"brief_clauses": ["3.2", "3.3", "3.4", "3.5"], "weight_days": 28},
+        "references": {"brief_clauses": ["3.2", "3.3", "3.4", "3.5"], "weight_days": 28, "age_band": [18, 34]},
     }
     easy = AN.main_call(target, route="asrun", pack=P)["reach3"]["B"]
     fig["context"]["schedule_b_reach3_in_window_rotation_places_pct"] = K.pct(easy)
@@ -74,11 +74,11 @@ def write_workbook(path, fig):
     fill = PatternFill("solid", fgColor=NAVY)
     pick = PatternFill("solid", fgColor="F3E3E6")
     thin = Side(style="thin", color=LIGHT)
-    c, ctx = fig["call"], fig["context"]
+    c, ctx, r3 = fig["call"], fig["context"], fig["components"]["reach3_pct"]
     ws["A1"] = "Gota Viva, campanha de televisão para jovens dadores, abril de 2027"
     ws["A1"].font = Font(bold=True, size=13)
     ws["A2"] = "Comprar o %s: leva o filme três ou mais vezes a %s%% dos adultos dos 18 aos 34 anos, %s pontos " \
-               "acima do %s." % (K.SCHED_NAME[c["schedule"]].split(",")[0], pt(c["reach3_pct"][c["schedule"]]),
+               "acima do %s." % (K.SCHED_NAME[c["schedule"]].split(",")[0], pt(r3[c["schedule"]]),
                                  pt(c["lead_points"]), K.SCHED_NAME[c["runner_up"]].split(",")[0])
     ws["A2"].font = Font(bold=True, color=RED)
     ws["A3"] = "Meridiano Media para a Comissão Executiva da Associação Gota Viva, 2 de dezembro de 2026"
@@ -93,7 +93,7 @@ def write_workbook(path, fig):
     ws.row_dimensions[5].height = 42
     for s in K.SCHED:
         ws.append([s, K.SCHED_NAME[s].split(", ", 1)[1].capitalize(), ctx["spots"][s], ctx["cost_eur"][s],
-                   ctx["reach1_pct"][s], c["reach3_pct"][s],
+                   ctx["reach1_pct"][s], r3[s],
                    fig["asks"]["X"]["expected_first_donation_bookings"][s]])
     for row in ws.iter_rows(min_row=6, max_row=8):
         row[3].number_format = "#,##0"
@@ -134,7 +134,7 @@ def write_workbook(path, fig):
     for wk, v in zip(weeks, rr["campaign_weeks_above_baseline"]):
         r.append(["Semana de %s, menos a média" % wk, v])
     r.append(["As quatro semanas da campanha, menos a média", rr["campaign_weeks_total_above"]])
-    r.append(["Resposta por mil pessoas dos 18 aos 34 anos levadas três ou mais vezes (547,8 mil)",
+    r.append(["Resposta por mil pessoas dos 18 aos 34 anos levadas três ou mais vezes (%s mil)" % pt(AS.REPORT_REACHED3),
               rr["response_per_thousand_reached3"]])
     for row in r.iter_rows(min_row=5, max_row=10):
         row[1].number_format = "0.0"
@@ -172,7 +172,7 @@ def write_deck(path, fig, res):
     prs = Presentation()
     prs.slide_width, prs.slide_height = Cm(33.867), Cm(19.05)
     blank = prs.slide_layouts[6]
-    c, ctx = fig["call"], fig["context"]
+    c, ctx, r3 = fig["call"], fig["context"], fig["components"]["reach3_pct"]
 
     def text(slide, x, y, w, h, s, size=14, bold=False, color=INK):
         tb = slide.shapes.add_textbox(Cm(x), Cm(y), Cm(w), Cm(h))
@@ -215,22 +215,23 @@ def write_deck(path, fig, res):
     s1 = prs.slides.add_slide(blank)
     text(s1, 1.2, 1.0, 31, 1.2, "Campanha de televisão para jovens dadores, abril de 2027", 14, color=GREY)
     text(s1, 1.2, 2.6, 31, 3.5, "Comprar o Esquema %s: leva o filme três ou mais vezes a %s%% dos adultos dos 18 "
-         "aos 34 anos, %s pontos acima do Esquema %s" % (pick, pt(c["reach3_pct"][pick]), pt(c["lead_points"]), run),
-         28, True, NAVY)
+         "aos 34 anos, %s pontos acima do Esquema %s" % (pick, pt(r3[pick]), pt(c["lead_points"]), run),
+         26, True, NAVY)
     xx = fig["asks"]["X"]["expected_first_donation_bookings"]
     rows = [["Esquema", "Spots", "Custo (euros)", "Três ou mais vezes (%)", "Pelo menos uma vez (%)",
              "Marcações esperadas"]]
     for s in K.SCHED:
         rows.append(["%s, %s" % (s, K.SCHED_NAME[s].split(", ", 1)[1]), ctx["spots"][s], pt(ctx["cost_eur"][s], 0),
-                     pt(c["reach3_pct"][s]), pt(ctx["reach1_pct"][s]), pt(xx[s], 0)])
+                     pt(r3[s]), pt(ctx["reach1_pct"][s]), pt(xx[s], 0)])
     table(s1, 1.2, 7.4, 31.4, rows, [11.4, 2.6, 4.0, 4.6, 4.6, 4.2], red_row=1 + K.SCHED.index(pick))
     text(s1, 1.2, 12.0, 31, 1.6, "Universo: 2.100 mil adultos dos 18 aos 34 anos (painel de 2026). Cada esquema lido "
          "nas quatro semanas de referência de março de 2026, como o briefing pede (3.1 a 3.5).", 11, color=GREY)
     footer(s1, 1, "Meridiano Media para a Comissão Executiva da Associação Gota Viva, 2 de dezembro de 2026")
     # 2. the chart
     s2 = prs.slides.add_slide(blank)
-    text(s2, 1.2, 0.9, 31, 2.2, "O Esquema %s leva mais jovens três ou mais vezes e traz mais marcações: um terço da "
-         "rotação do horário nobre que o Esquema B compra passa em intervalos de dia" % pick, 20, True, NAVY)
+    text(s2, 1.2, 0.9, 31, 2.2, "O Esquema %s leva mais jovens três ou mais vezes e traz mais marcações: %s%% da "
+         "rotação do horário nobre que o Esquema B compra passa em intervalos de dia" % (
+             pick, pt(fig["components"]["share_aired_outside_prime_pct"])), 20, True, NAVY)
     xx = fig["asks"]["X"]["expected_first_donation_bookings"]
 
     def bars(x, title, values, fmt, top):
@@ -262,7 +263,7 @@ def write_deck(path, fig, res):
         bar.format.fill.solid()
         bar.format.fill.fore_color.rgb = RGBColor.from_string(RED)
 
-    bars(1.2, "Três ou mais vezes (% dos 18 aos 34 anos)", [c["reach3_pct"][s] for s in K.SCHED], "0.0", 35.0)
+    bars(1.2, "Três ou mais vezes (% dos 18 aos 34 anos)", [r3[s] for s in K.SCHED], "0.0", 35.0)
     bars(11.6, "Marcações de primeira dádiva esperadas", [xx[s] for s in K.SCHED], "#,##0", 500.0)
     text(s2, 1.2, 17.2, 20, 0.7, "A vermelho, o esquema a comprar.", 10, color=GREY)
     pb = fig["components"]
@@ -294,11 +295,11 @@ def write_deck(path, fig, res):
                      rr["campaign_weeks_above_baseline"]):
         rows.append(["%s, menos a média" % wk, pt(v)])
     rows.append(["As quatro semanas, menos a média", pt(rr["campaign_weeks_total_above"])])
-    rows.append(["Por mil jovens levados três ou mais vezes (547,8 mil)", pt(rr["response_per_thousand_reached3"], 2)])
+    rows.append(["Por mil jovens levados três ou mais vezes (%s mil)" % pt(AS.REPORT_REACHED3), pt(rr["response_per_thousand_reached3"], 2)])
     table(s3, 1.2, 3.8, 15.6, rows, [11.6, 4.0], bold_row=len(rows) - 1)
     rows2 = [["Esquema", "Três ou mais vezes (mil pessoas)", "Marcações esperadas"]]
     for s in K.SCHED:
-        rows2.append([s, pt(c["reach3_pct"][s] * ctx["universe_18_34"] / 100000.0, 0), pt(xx[s], 0)])
+        rows2.append([s, pt(r3[s] * ctx["universe_18_34"] / 100000.0, 0), pt(xx[s], 0)])
     table(s3, 18.2, 3.8, 14.4, rows2, [3.0, 6.4, 5.0], red_row=1 + K.SCHED.index(pick))
     text(s3, 18.2, 8.2, 14.4, 3, "Marcações esperadas: a resposta de 2025 vezes as pessoas que cada esquema leva três "
          "ou mais vezes, arredondadas à dezena.", 11, color=GREY)

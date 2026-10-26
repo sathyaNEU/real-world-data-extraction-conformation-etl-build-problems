@@ -1,5 +1,5 @@
 {
- "answer": "Schedule A (three-plus reach 26.6% of adults 18 to 34, 4.5 points ahead of schedule B)",
+ "answer": "Schedule A (three-plus reach 26.6% of adults 18 to 34, 5.7 points ahead of schedule B)",
  "deliverables": [
   "plano_tv_jovens_2027.xlsx",
   "recomendacao_esquema_tv_2027.pptx"
@@ -110,9 +110,9 @@
   "dadores_novos_2025.csv": 60,
   "emissao_publicitaria_2026-03.csv": 20545,
   "grelha_programacao_2026-03.csv": 1196,
-  "marcacoes_portal_dador_2025.csv": 19980,
+  "marcacoes_portal_dador_2025.csv": 20008,
   "plano_digital_2027.csv": 5,
-  "reservas_publicidade_2026-03.csv": 18979,
+  "reservas_publicidade_2026-03.csv": 19365,
   "universo_2026.csv": 60
  },
  "task": "task270",

@@ -147,6 +147,12 @@ def run(task, b, fig, res):
     pb = res["prime"]
     row("SF6 the bookings say where the window's rotation aired: a third outside prime time",
         0.25 < pb["share_elsewhere"] < 0.4, "%d of %d" % (pb["elsewhere"], pb["bookings"]))
+    bk_day = {r["id_reserva"]: r["dia_tv"] for r in rows_of(os.path.join(target, K.FILES["bookings"]))
+              if r["colocacao"] == "ROTAÇÃO"}
+    off_day = sum(1 for r in rows_of(os.path.join(target, K.FILES["asrun"]))
+                  if r["id_reserva"] in bk_day and r["dia_tv"] != bk_day[r["id_reserva"]])
+    row("SF7 every rotation booking aired on the day it was sold for, so the day's bookings and the day's airings "
+        "are one set", off_day == 0 and len(bk_day) > 0, "%d of %d off their day" % (off_day, len(bk_day)))
 
     # ------------------------------------------------------------------ separation of the asks from the call
     for k in ("portal", "portal_notes", "report2025"):
@@ -158,7 +164,7 @@ def run(task, b, fig, res):
 
     # ------------------------------------------------------------------ the ask device and its stops
     gold_r = res["asks"]["response"]
-    for route in ("donor", "donor_open", "document_open"):
+    for route in ("as_typed", "as_typed_donor", "per_row", "per_row_donor", "over_clean"):
         rr = AS.response(target, route)
         moved_all = all(abs(a - g) > 0.05 for a, g in zip(rr["above"], gold_r["above"])) and \
             abs(rr["avg"] - gold_r["avg"]) > 0.05 and abs(rr["per_thousand"] - gold_r["per_thousand"]) > 0.005
@@ -184,13 +190,38 @@ def run(task, b, fig, res):
         attrs[r["documento_hash"]].add((r["data_nascimento"], r["sexo"], r["distrito"]))
     row("ASK R a document always carries one birth date, sex and district", max(len(v) for v in attrs.values()) == 1,
         "")
+    given = {}
+    for r in portal:
+        if r["data_primeira_dadiva"]:
+            given.setdefault(r["documento_hash"], set()).add(r["data_primeira_dadiva"])
+    realised_first = sum(1 for r in portal if r["tipo_dadiva"] == "primeira" and r["estado"] == "realizada")
+    row("ASK R the donor fields are the record on the extraction day: no booking typed primeira was given",
+        realised_first == 0, "%d" % realised_first)
+    before = sum(1 for r in portal if r["data_primeira_dadiva"] and r["tipo_dadiva"] == "regular" and
+                 r["criada_em"][:10] < r["data_primeira_dadiva"])
+    row("ASK R bookings typed regular that were made before their donor's first donation", before > 1000,
+        "%d" % before)
+    twice = 0
+    for h, ds in given.items():
+        if len(ds) > 1 and min(ds) < "2025-01-01":
+            twice += 1
+    row("ASK R regular donors who registered again: a document carrying a first donation before 2025 and another",
+        twice >= 40, "%d" % twice)
+    for route in ("golden_session", "golden_same_day"):
+        rr = AS.response(target, route)
+        row("ASK R the %s reading of a first-donation booking gives the golden's figures" % route,
+            rr["base"] == gold_r["base"] and rr["camp"] == gold_r["camp"], "%s %s" % (rr["base"], rr["camp"]))
     row("ASK R the response is fair: the golden handling reproduces the generator's truth",
         abs(gold_r["per_thousand"] - S25.response(S25.Bookings(K.SEED))["extra"] / AS.REPORT_REACHED3) < 1e-9,
         "%.4f" % gold_r["per_thousand"])
-    xw = AS.expected_bookings(K.r(gold_r["per_thousand"], 2), {s: K.r(100 * m["reach3"][s], 1) / 100
-                                                               for s in K.SCHED}, res["asks"]["universe"])
-    row("ASK X the same tens from rounded inputs", all(round(xw[s] / 10) == round(res["asks"]["bookings"][s] / 10)
-                                                       for s in K.SCHED), str({s: round(xw[s], 1) for s in K.SCHED}))
+    uni = res["asks"]["universe"]
+    variants = [AS.expected_bookings(K.r(gold_r["per_thousand"], 2), {s: K.r(100 * m["reach3"][s], 1) / 100
+                                                                      for s in K.SCHED}, uni),
+                {s: gold_r["per_thousand"] * round(m["reach3"][s] * uni / 1000.0) for s in K.SCHED},
+                {s: K.r(gold_r["per_thousand"], 2) * round(m["reach3"][s] * uni / 1000.0) for s in K.SCHED}]
+    row("ASK X the same tens from rounded inputs (response, shares, reached thousands)",
+        all(round(xw[s] / 10) == round(res["asks"]["bookings"][s] / 10) for xw in variants for s in K.SCHED),
+        str([{s: round(xw[s], 1) for s in K.SCHED} for xw in variants]))
 
     # ------------------------------------------------------------------ rounding edges
     edges = []
@@ -203,8 +234,9 @@ def run(task, b, fig, res):
     edges.append(("share outside prime", edge(100 * pb["share_elsewhere"], 0.1)))
     worst = min(edges, key=lambda x: x[1] / (10 if x[0].startswith("bookings") else 0.01 if x[0] == "response" else
                                              0.1))
-    row("ROUND every graded figure clear of its rounding edge",
-        all(e > (1.0 if k.startswith("bookings") else 0.0005 if k == "response" else 0.005) for k, e in edges),
+    row("ROUND every graded figure clear of its rounding edge (context figures at least 0.005)",
+        all(e > (1.0 if k.startswith("bookings") else 0.0005 if k == "response" else 0.005 if k.startswith("1+")
+                 else 0.012) for k, e in edges),
         "closest %s (%.4f)" % worst)
     row("ROUND weekly figures exact at one decimal", all(abs(x * 10 - round(x * 10)) < 1e-9 for x in
                                                          gold_r["above"] + [gold_r["avg"]]), "")

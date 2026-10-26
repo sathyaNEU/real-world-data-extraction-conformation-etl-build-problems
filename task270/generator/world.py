@@ -361,17 +361,18 @@ class World:
         return sum(self.wt[i] for i in self.seen(ch, s0, s1) if self.young[i])
 
     # ---------------------------------------------------------------- the sales houses' traffic
-    # rotation bookings per open place by channel and window: prime on the two generalist channels is oversold, so
-    # the channel moves the excess to the same night's late window, then to the next day's daytime breaks
-    ROS_DEMAND = {("VRT", "prime"): 1.45, ("LIT", "prime"): 1.45, ("PLS", "prime"): 1.45,
+    # rotation bookings per open place by channel and window: prime on the generalist channels is oversold, so the
+    # channel airs the excess in the open places of the same day's daytime breaks
+    ROS_DEMAND = {("VRT", "prime"): 1.6, ("LIT", "prime"): 1.6, ("PLS", "prime"): 1.6,
                   ("VRT", "access"): 0.95, ("LIT", "access"): 0.95, ("PLS", "access"): 0.9,
                   ("VRT", "late"): 0.45, ("LIT", "late"): 0.45, ("VRT", "day"): 0.50, ("LIT", "day"): 0.50,
                   ("PLS", "day"): 0.5}
 
     MOVE_TO = ("day",)
+    TRAFFIC_SEED = 1008
 
     def _traffic(self):
-        rng, p = np.random.default_rng(self.seed + 1000), self.p
+        rng, p = np.random.default_rng(self.seed + self.TRAFFIC_SEED), self.p
         for b in self.breaks:
             for s in b["spots"]:
                 s["kind"] = None
@@ -411,18 +412,15 @@ class World:
                 opens[j].update(kind="ROS", booked=(day, ch, w))
             leftover[key] = [opens[j] for j in order[n_ros:]]
             excess[key] = max(0, n_ros - len(opens))
-        # the channel's traffic team places what does not fit in a sold-out window in the open places left that
-        # day or night, or in the next day's daytime breaks
+        # the channel's traffic team places what does not fit in a sold-out window in the open places left in that
+        # same day's daytime breaks
         self.moved = 0
         for key in sorted(excess, key=lambda k: (k[0], K.CH.index(k[1]))):
             day, ch, w = key
             n = excess[key]
             if not n:
                 continue
-            dests = [(day, ch, x) for x in ("day", "late") if x != w]
-            if day + 1 < K.NDAYS:
-                dests.append((day + 1, ch, "day"))
-            dests = [x for x in dests if x[2] in self.MOVE_TO]
+            dests = [(day, ch, x) for x in ("day", "late") if x != w and x in self.MOVE_TO]
             pool = [(dk, j) for dk in dests for j in range(len(leftover.get(dk, [])))]
             n = min(n, len(pool))           # the sales house stops selling a night it cannot place
             pick = sorted((pool[int(j)] for j in rng.choice(len(pool), n, replace=False)), key=lambda x: (x[0], -x[1]))

@@ -120,9 +120,10 @@ def write_brief(path):
                                 "semana n de referência, cada spot no mesmo dia da semana do painel em que está "
                                 "marcado."))
     st.append(_clause(S, "3.3", "Um membro do painel vê um spot quando está a ver o canal em direto durante pelo "
-                                "menos metade dos segundos do lugar em que o spot passa, com o início e a duração "
-                                "que esse lugar teve na emissão de referência. Contam os membros do painel com o seu "
-                                "peso de 28 dias; não contam convidados nem visionamento diferido."))
+                                "menos metade dos segundos do lugar em que o spot passa, somados todos os seus "
+                                "registos nesse canal, com o início e a duração que esse lugar teve na emissão de "
+                                "referência. Contam os membros do painel com o seu peso de 28 dias; não contam "
+                                "convidados nem visionamento diferido."))
     st.append(_clause(S, "3.4", "Cada spot é lido onde teria passado: um spot com lugar marcado, no seu lugar; um spot "
                                 "cujo lugar fica com o canal, em cada lugar com a probabilidade de lá ter passado."))
     st.append(_clause(S, "3.5", "A cobertura é a parte do universo dos 18 aos 34 anos que se espera que veja o filme o "
@@ -220,18 +221,19 @@ def write_notes_2025(path):
         "importados com as suas datas e números.",
         "",
         "Campos",
-        "id_marcacao      número da marcação",
-        "criada_em        data e hora em que a marcação foi feita, hora legal",
-        "canal            portal, telefone (linha do dador) ou presencial (no centro)",
-        "id_dador         número de dador: provisório (P) até à primeira dádiva, definitivo (D) depois dela",
-        "documento_hash   documento de identificação indicado no registo, cifrado",
-        "data_nascimento  como indicada no registo",
-        "sexo             como indicado no registo",
-        "distrito         distrito de residência indicado no registo",
-        "centro           centro de colheita da sessão",
-        "data_sessao      dia da sessão marcada",
-        "tipo_dadiva      primeira (quem ainda não deu sangue) ou regular",
-        "estado           realizada, falta ou cancelada",
+        "id_marcacao           número da marcação",
+        "criada_em             data e hora em que a marcação foi feita, hora legal",
+        "canal                 portal, telefone (linha do dador) ou presencial (no centro)",
+        "id_dador              número de dador: provisório (P) até à primeira dádiva, definitivo (D) depois dela",
+        "documento_hash        documento de identificação indicado no registo, cifrado",
+        "data_nascimento       como indicada no registo",
+        "sexo                  como indicado no registo",
+        "distrito              distrito de residência indicado no registo",
+        "centro                centro de colheita da sessão",
+        "data_sessao           dia da sessão marcada",
+        "tipo_dadiva           primeira (quem ainda não deu sangue) ou regular",
+        "data_primeira_dadiva  dia da primeira dádiva do dador",
+        "estado                realizada, falta ou cancelada",
         "",
         "Avaliação de campanhas (Marketing de Dadores)",
         "A resposta a uma campanha conta as pessoas dos 18 aos 34 anos, com a idade no dia da marcação, que marcaram",
@@ -318,6 +320,7 @@ DICTIONARY = [
     ("marcacoes_portal_dador_2025.csv", "documento_hash", "Documento de identificação indicado no registo, cifrado"),
     ("marcacoes_portal_dador_2025.csv", "criada_em", "Data e hora da marcação, hora legal"),
     ("marcacoes_portal_dador_2025.csv", "tipo_dadiva", "primeira ou regular"),
+    ("marcacoes_portal_dador_2025.csv", "data_primeira_dadiva", "Dia da primeira dádiva do dador"),
 ]
 
 

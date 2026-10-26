@@ -115,7 +115,7 @@ def metadata(fig, counts):
                        for name in sorted(K.FILES.values())},
         "rows": {K.FILES[k]: v for k, v in sorted(counts.items())},
         "answer": "Schedule %s (three-plus reach %.1f%% of adults 18 to 34, %.1f points ahead of schedule %s)" % (
-            fig["call"]["schedule"], fig["call"]["reach3_pct"][fig["call"]["schedule"]], fig["call"]["lead_points"],
+            fig["call"]["schedule"], fig["components"]["reach3_pct"][fig["call"]["schedule"]], fig["call"]["lead_points"],
             fig["call"]["runner_up"]),
     }
 

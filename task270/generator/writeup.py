@@ -20,7 +20,7 @@ def n0(x):
 def text(fig):
     c, cp = fig["call"], fig["components"]
     R, X = fig["asks"]["R"], fig["asks"]["X"]["expected_first_donation_bookings"]
-    r3, ctx = c["reach3_pct"], fig["context"]
+    r3, ctx = cp["reach3_pct"], fig["context"]
     pick, run = c["schedule"], c["runner_up"]
     third = [s for s in K.SCHED if s not in (pick, run)][0]
     above = R["campaign_weeks_above_baseline"]
@@ -63,10 +63,12 @@ def text(fig):
             "chance of seeing the film three or more times across independent spots (clause 3.5), weighted over the 18 "
             "to 34 universe: A %s, B %s and C %s per cent." % (f1(r3["A"]), f1(r3["B"]), f1(r3["C"])),
             "7. Applied the response rule in notas_extracao_portal_dador.txt to marcacoes_portal_dador_2025.csv with a "
-            "person as their identity document (documento_hash), since people who registered again after the portal "
-            "went live on 17 March 2025 hold two donor numbers: %s a week before the campaign, its four weeks %s, %s, "
-            "%s and %s above that (%s in all), %s per thousand of the %s thousand relatorio_campanha_jovens_2025.pdf "
-            "reports reached three or more times." % (f1(R["baseline_weekly_average"]), f1(above[0]), f1(above[1]),
+            "person as their identity document (documento_hash) and a booking of a first donation as one made before "
+            "that person's first donation, the earliest data_primeira_dadiva on any of their donor numbers, since the "
+            "extract carries each donor's record as it stood on 2 July 2025 (tipo_dadiva and id_dador included) and "
+            "people who registered again after the portal went live on 17 March 2025 hold two numbers: %s a week "
+            "before the campaign, its four weeks %s, %s, %s and %s above that (%s in all), %s per thousand of the %s "
+            "thousand relatorio_campanha_jovens_2025.pdf reports reached three or more times." % (f1(R["baseline_weekly_average"]), f1(above[0]), f1(above[1]),
                                                       f1(above[2]), f1(above[3]), f1(R["campaign_weeks_total_above"]),
                                                       "%.2f" % R["response_per_thousand_reached3"],
                                                       f1(ctx["reached3_2025_thousands"])),

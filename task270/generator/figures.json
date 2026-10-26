@@ -1,40 +1,40 @@
 {
  "asks": {
   "R": {
-   "baseline_weekly_average": 135.5,
+   "baseline_weekly_average": 136.0,
    "campaign_weeks_above_baseline": [
-    93.5,
-    100.5,
-    121.5,
-    107.5
+    85.0,
+    118.0,
+    99.0,
+    144.0
    ],
-   "campaign_weeks_total_above": 423.0,
-   "response_per_thousand_reached3": 0.77
+   "campaign_weeks_total_above": 446.0,
+   "response_per_thousand_reached3": 0.82
   },
   "X": {
    "expected_first_donation_bookings": {
-    "A": 430,
+    "A": 460,
     "B": 360,
-    "C": 270
+    "C": 290
    }
   }
  },
  "call": {
-  "lead_points": 4.5,
-  "reach3_pct": {
-   "A": 26.6,
-   "B": 22.1,
-   "C": 16.9
-  },
+  "lead_points": 5.7,
   "runner_up": "B",
   "schedule": "A"
  },
  "components": {
-  "prime_rotation_bookings": 4545,
-  "prime_rotation_bookings_aired_outside_prime": 1521,
-  "schedule_b_reference_places": 4545,
-  "schedule_b_reference_places_outside_prime": 1521,
-  "share_aired_outside_prime_pct": 33.5
+  "prime_rotation_bookings": 4943,
+  "prime_rotation_bookings_aired_outside_prime": 1854,
+  "reach3_pct": {
+   "A": 26.6,
+   "B": 20.9,
+   "C": 16.9
+  },
+  "schedule_b_reference_places": 4943,
+  "schedule_b_reference_places_outside_prime": 1854,
+  "share_aired_outside_prime_pct": 37.5
  },
  "context": {
   "baseline_weeks": [
@@ -53,11 +53,11 @@
   },
   "reach1_pct": {
    "A": 72.7,
-   "B": 69.5,
+   "B": 68.1,
    "C": 61.0
   },
-  "reached3_2025_thousands": 547.8,
-  "schedule_b_reach3_in_window_rotation_places_pct": 31.8,
+  "reached3_2025_thousands": 543.7,
+  "schedule_b_reach3_in_window_rotation_places_pct": 31.9,
   "spots": {
    "A": 30,
    "B": 84,
@@ -66,6 +66,10 @@
   "universe_18_34": 2100000
  },
  "references": {
+  "age_band": [
+   18,
+   34
+  ],
   "brief_clauses": [
    "3.2",
    "3.3",
