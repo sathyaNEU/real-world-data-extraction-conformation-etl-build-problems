@@ -1,106 +1,132 @@
 {
-  "task": "task255",
-  "architecture": "v1",
-  "drawn": "2026-10-13",
-  "slot_note": "new draw for task255 (DA05 seed number); the seed's hospital waiting-list world has no Descriptive task type in the client taxonomy, so redrawn inside Descriptive & Distribution Analysis with the number kept",
-  "domain": "actuarial-science-insurance",
-  "subdomain": "claims-frequency-severity",
-  "client_domain": "actuarial-science-insurance",
-  "niche": "an intergovernmental liability risk pool setting its 2027 per-occurrence retention from the ground-up severity of its members' liability occurrences, which the pool sees only above each member's deductible and records only up to its own limit",
-  "objective": "descriptive-distribution",
-  "shape": "04",
-  "decision_type": "dial_setting",
-  "answer_unit": "named_option",
-  "answer": "Keep the first $4,000,000 of each 2027 liability occurrence: Fallowmere's 2027 retention is the $4.0 million quoted attachment, which the pool expects 0.74 of its 2027 occurrences to cost more than (1.25 above $3.0 million)",
-  "answer_source": "submission.md block 1; golden retention_2027.xlsx (sheet Retention 2027)",
-  "gap": [
-    "population"
-  ],
-  "pattern": [
-    "none"
-  ],
-  "generators": [
-    "G12",
-    "G16"
-  ],
-  "gate_g": "method_or_model_selection",
-  "calibration_form": "none",
-  "stump_strategy": "maturity_censoring",
-  "decisive_rule_filed": false,
-  "official_decoy": false,
-  "validated_decoy": false,
-  "context_artifact": "none",
-  "stakeholder_role": "the pool's finance director",
-  "role_family": "finance_controller",
-  "scoring_unit": "per covered member",
-  "spine": {
-    "file": "liability_loss_run_2026-09-30.csv and liability_loss_run_legacy_2014-2020.xlsx",
-    "rows": 1458,
-    "entity": "one liability occurrence the pool handled (above its member's deductible), with the member's deductible and the pool's paid and reserved amounts",
-    "grain": "occurrence",
-    "source": "synthetic (constructed pool records, declared)"
-  },
-  "forum": "trustees_or_governors",
-  "forcing_event": "vote_or_meeting",
-  "org_family": "cooperative_or_member_body",
-  "world": {
-    "geography": "United States (a fictional intergovernmental risk pool of Washington cities and special districts)",
-    "currency": "USD",
-    "org_type": "intergovernmental risk pool of cities and special districts",
-    "invented_names": [
-      "Fallowmere Intergovernmental Risk Pool"
-    ],
-    "people": [
-      "Laura Williams",
-      "Larry Hodge",
-      "Matthew Klein",
-      "Caleb Payne"
-    ]
-  },
-  "deliverables": [
-    "retention_2027.xlsx",
-    "attachment_test_2027.png"
-  ],
-  "opening_move": "question-first",
-  "question_form": "how-much",
-  "driver": "The decisive quantity is the upper tail of a size distribution whose items reach the record only above a floor that differs from item to item and are recorded only up to a ceiling that moved during the record, and whose largest items stay unfinished long after the small ones finish; the fit has to carry each item's floor as truncation and the ceiling as censoring at the fitted cost level over every item of the window, the unfinished ones included as the censored observations they are, because fitting only the finished items selects on size and thins the tail a step short, and fitting the recorded sizes as complete thins it more.",
-  "driver_concrete": "Ground-up liability severity is fitted at 2027 cost to every occurrence of accident years 2014 to 2021 in the pool's record (800 closed and 20 suits still open while the excess insurer defends them, each with the pool's layer paid), each occurrence left-truncated at its member's deductible and the 108 that reached the retention right-censored there, both at 2027 cost; the expected 2027 occurrences above each quoted attachment first fall to one at $4.0 million, while the same fit on the closed files alone clears one at $3.0 million and the lognormal fitted to the closed files' costs as complete at $2.0 million.",
-  "stump": "The default path keeps the closed occurrences of 2014 to 2021, whose costs are final, brings each recorded ground-up cost to 2027 cost and fits the policy's lognormal by maximum likelihood as a complete sample, which thins the tail and ends on $2.0 million; censoring the 88 closed occurrences stopped at the retention ends on $2.5 million; carrying each deductible as truncation as well, both thresholds at 2027 cost, still ends on $3.0 million (0.70 above it) because the 20 open suits, every one past the retention, were set aside; the same fit on every file of the window files $4.0 million (1.25 above $3.0 million, 0.74 above $4.0 million).",
-  "stump_class": "analytical",
-  "analyst_test": "A strong analyst who reads every field and every filed rule, keeps the closed files of 2014 to 2021 for their final costs, brings each to 2027 cost and fits the policy's lognormal by maximum likelihood to the recorded ground-up costs files $2.0 million, with the occurrences at the retention censored files $2.5 million, and with each deductible as truncation as well still files $3.0 million, because the open suits it set aside are a fifth of the occurrences that reached the retention.",
-  "domain_test": "The call turns on the ground-up severity distribution of liability occurrences, estimated the way loss models are fitted to insurance data observed through deductibles and policy limits (a truncated and censored likelihood with each observation's own thresholds at the fitted cost level) over a claims record whose largest files settle last, and on its tail at each quoted attachment; with another field's nouns there is no deductible below which losses never reach the record, no retention at which they stop being recorded, no excess insurer defending the suits past it, and no excess attachment to set.",
-  "layer2_family": "estimation_fit",
-  "layer2_pattern": "own:ground-up-severity-from-deductible-truncated-retention-censored-occurrences",
-  "layer1": [
-    "legacy administrator's closed-claim archive as one sheet per accident year with title blocks, US dates and currency formatting",
-    "two administrators' records for one claims history: claims open at the July 2020 conversion carried into the current system under new numbers with the legacy number kept",
-    "member codes in the legacy archive against member numbers in the current system and the roster",
-    "occurrence costs in each accident year's own dollars beside a claim cost index",
-    "vehicle schedule kept as a log of adds, deletes and changes since the system's opening load",
-    "exposure declarations taken through an online form and a paper form keyed by staff"
-  ],
-  "mechanism_source": "design_note",
-  "differentiation": {
-    "task254": "task254 v2 (spent at stage 2, never built) cut a time-to-event distribution censored by a lock date with entries crowding toward it; this build fits a size distribution truncated at each item's own deductible and censored at a retention that moved, and the call is the fitted tail far beyond the record, so no observation window or entry-date structure is involved",
-    "task255": "loop 1 keeps loop 0's truncated and censored likelihood and adds the open suits of the window: loop 0's construction on the closed files is now a rung at $3.0 million, wrong because settlement is selected on size"
-  },
-  "lineage": [
-    {
-      "architecture": "v1 (loop 0): the likelihood of the record on a window whose every occurrence had closed",
-      "fate": "hardened at the author's request for a second layer (2026-10-13, before any portal result); kept as rung R3 of loop 1, where the suits past the retention stay open under the excess insurer's defence and the closed-file construction files $3.0 million",
-      "domain": "actuarial-science-insurance",
-      "objective": "descriptive-distribution",
-      "gap": [
+    "task": "task255",
+    "architecture": "v1",
+    "drawn": "2026-10-13",
+    "slot_note": "new draw for task255 (DA05 seed number); the seed's hospital waiting-list world has no Descriptive task type in the client taxonomy, so redrawn inside Descriptive & Distribution Analysis with the number kept",
+    "domain": "actuarial-science-insurance",
+    "subdomain": "claims-frequency-severity",
+    "client_domain": "actuarial-science-insurance",
+    "niche": "an intergovernmental liability risk pool setting its 2027 per-occurrence retention from the ground-up severity of its members' liability occurrences, where the law enforcement occurrences run a far longer tail than the other coverage parts and the actuary projects each group's 2027 frequency on its own exposure",
+    "objective": "descriptive-distribution",
+    "shape": "04",
+    "decision_type": "dial_setting",
+    "answer_unit": "named_option",
+    "answer": "Keep the first $4,000,000 of each 2027 liability occurrence: Fallowmere's 2027 retention is the $4.0 million quoted attachment (0.83 expected 2027 occurrences above it, 1.20 above $3.0 million) (to be confirmed at build)",
+    "answer_source": "submission.md block 1; golden retention_2027.xlsx (sheet Retention 2027)",
+    "gap": [
         "population"
-      ],
-      "pattern": [
+    ],
+    "pattern": [
         "none"
-      ],
-      "gate_g": "method_or_model_selection",
-      "decision_type": "dial_setting",
-      "stump_strategy": "maturity_censoring",
-      "driver": "The decisive quantity is the upper tail of a size distribution whose items reach the record only above a floor that differs from item to item and are recorded only up to a ceiling that moved during the record, so the fit has to carry each item's floor as truncation and the ceiling as censoring, both at the cost level the curve is fitted at; fitting the recorded sizes as a complete sample thins the tail and sets the dial two steps too low, and treating only the ceiling still leaves it a step and more short."
-    }
-  ],
-  "notes": "slot DA05 number; redrawn into Descriptive & Distribution Analysis (the seed's waiting-list world has no Descriptive task type). stump_strategy maturity_censoring names the censoring family: here limit censoring at the pool's retention with deductible truncation, no maturity element.; loop 1 (2026-10-13, the author's request for a second layer): the suits past the retention stay open under the excess insurer's defence, so the window's record holds 20 open files that a closed-file fit drops; the strategy stays maturity_censoring (open files beside limit censoring)"
+    ],
+    "generators": [
+        "G6",
+        "G12",
+        "G16"
+    ],
+    "gate_g": "method_or_model_selection",
+    "calibration_form": "none",
+    "stump_strategy": "other",
+    "decisive_rule_filed": false,
+    "official_decoy": false,
+    "validated_decoy": false,
+    "context_artifact": "none",
+    "stakeholder_role": "the pool's finance director",
+    "role_family": "finance_controller",
+    "scoring_unit": "per covered member",
+    "spine": {
+        "file": "liability_loss_run_2026-09-30.csv and liability_loss_run_legacy_2014-2020.xlsx",
+        "rows": 1458,
+        "entity": "one liability occurrence the pool handled (above its member's deductible), with the member's deductible and the pool's paid and reserved amounts",
+        "grain": "occurrence",
+        "source": "synthetic (constructed pool records, declared)"
+    },
+    "forum": "executive_team",
+    "forcing_event": "budget_or_appropriation",
+    "org_family": "local_government",
+    "world": {
+        "geography": "United States (a fictional intergovernmental risk pool of Washington cities and special districts)",
+        "currency": "USD",
+        "org_type": "intergovernmental risk pool of cities and special districts",
+        "invented_names": [
+            "Fallowmere Intergovernmental Risk Pool"
+        ],
+        "people": [
+            "Laura Williams",
+            "Larry Hodge",
+            "Matthew Klein",
+            "Caleb Payne"
+        ]
+    },
+    "deliverables": [
+        "retention_2027.xlsx",
+        "attachment_test_2027.png"
+    ],
+    "opening_move": "question-first",
+    "question_form": "how-much",
+    "driver": "The decisive quantity is the upper tail of a size distribution made of two kinds of item whose tails differ by far more than their bulk, with the expected number above a low anchor projected separately for each kind; the record identifies both tails once each kind is fitted on its own through the record's floor and ceiling, and the count above each high threshold is the sum of each kind's anchor times its own tail ratio, while one curve fitted to the pooled record is shaped by the short-tailed majority and puts the dial two steps too low.",
+    "driver_concrete": "Ground-up liability severity is fitted at 2027 cost to the pool's record of accident years 2014 to 2021, each occurrence left-truncated at its member's deductible and censored at the retention, separately for law enforcement liability and for the other four coverage parts, and the expected 2027 occurrences above each quoted attachment are the actuary's 85.5 law enforcement and 364.3 other occurrences above $25,000 each carried by its own curve: they first fall to one at $4.0 million (1.20 above $3.0 million, 0.83 above $4.0 million), while one curve fitted to every occurrence, the same likelihood, clears one at $2.0 million (0.92).",
+    "stump": "The default path fits the policy's lognormal by maximum likelihood to every occurrence of 2014 to 2021, each truncated at its deductible and the 25 at the retention censored, both at 2027 cost, and carries the actuary's 449.8 occurrences above $25,000 by that one curve: $2.0 million (0.92 above it); the law enforcement occurrences, under a third of the record, carry most of the tail, and the one curve is shaped by the other parts; fitted for each group and summed over the actuary's two projections the count first clears one at $4.0 million (1.20 above $3.0 million, 0.83 above $4.0 million).",
+    "stump_class": "analytical",
+    "analyst_test": "A strong analyst who cleans both loss runs, reads every field and filed rule, brings the record to 2027 cost and fits the lognormal by maximum likelihood with each deductible as truncation and the capped occurrences censored at the retention, then carries the actuary's total of 449.8 by that curve, files $2.0 million (0.92 above it); two isolated call-only probes did exactly that.",
+    "domain_test": "The call turns on the ground-up severity tail of a public entity pool's liability occurrences at each excess attachment, estimated the way excess layers are priced, with severity curves by coverage (law enforcement liability against general, auto, public officials' and employment practices liability) fitted through the deductible-truncated, retention-censored record and weighted by the actuary's frequency projections on each coverage's own exposure; with another field's nouns there is no coverage part whose verdicts run a longer tail, no deductible floor, no retention ceiling and no excess attachment to set.",
+    "layer2_family": "estimation_fit",
+    "layer2_pattern": "own:ground-up-severity-by-coverage-mixture-tail-at-excess-attachments",
+    "layer1": [
+        "legacy administrator's closed-claim archive as one sheet per accident year with title blocks, US dates and currency formatting",
+        "two administrators' records for one claims history: claims open at the July 2020 conversion carried into the current system under new numbers with the legacy number kept",
+        "member codes in the legacy archive against member numbers in the current system and the roster",
+        "occurrence costs in each accident year's own dollars beside a claim cost index",
+        "vehicle schedule kept as a log of adds, deletes and changes since the system's opening load",
+        "exposure declarations taken through an online form and a paper form keyed by staff"
+    ],
+    "mechanism_source": "design_note",
+    "differentiation": {
+        "task254": "task254 v2 (spent at stage 2, never built) cut a time-to-event distribution censored by a lock date with entries crowding toward it; this build fits a size distribution truncated at each item's own deductible and censored at a retention that moved, and the call is the fitted tail far beyond the record, so no observation window or entry-date structure is involved",
+        "task255": "loop 2 keeps the world and the truncated and censored likelihood as the reflex rung; the decisive step moves to the coverage mixture: one curve over the pooled record, the route both portal responses and both probes took, files $2.0 million",
+        "task34": "task34's subpopulation is named by no column and found by a within-cluster fit with a verification subsample; here the coverage part is on every row and the actuary projects each group's frequency, and the decisive step is fitting the tails apart and weighting them, not finding the group",
+        "task132": "task132 carries a wear-out rate past replacement in one position; here the size distribution is two kinds of liability occurrence whose tails differ, each kind's frequency is projected apart, and the decisive step is fitting each tail on its own and weighting it by its own projection",
+        "task230": "task230 projects a category count's misclassification bias onto a late channel processed under a looser rule; here the size distribution is two kinds of liability occurrence whose tails differ, each kind's frequency is projected apart, and the decisive step is fitting each tail on its own and weighting it by its own projection",
+        "task251": "task251 carries each meter's error from its check conditions to every operating condition; here the size distribution is two kinds of liability occurrence whose tails differ, each kind's frequency is projected apart, and the decisive step is fitting each tail on its own and weighting it by its own projection",
+        "task253": "task253 counts units below a line from noisy small-sample averages (shrinkage); here the size distribution is two kinds of liability occurrence whose tails differ, each kind's frequency is projected apart, and the decisive step is fitting each tail on its own and weighting it by its own projection",
+        "task265": "task265 corrects survival for left truncation of late-entering starters; here the size distribution is two kinds of liability occurrence whose tails differ, each kind's frequency is projected apart, and the decisive step is fitting each tail on its own and weighting it by its own projection",
+        "task269": "task269 reweights audited occasions observed mostly when capacity covered demand; here the size distribution is two kinds of liability occurrence whose tails differ, each kind's frequency is projected apart, and the decisive step is fitting each tail on its own and weighting it by its own projection",
+        "task455": "task455 links continuing units across new identifiers; here the size distribution is two kinds of liability occurrence whose tails differ, each kind's frequency is projected apart, and the decisive step is fitting each tail on its own and weighting it by its own projection",
+        "task68": "task68 builds a matched panel across identity successions with a recovered bar; here the size distribution is two kinds of liability occurrence whose tails differ, each kind's frequency is projected apart, and the decisive step is fitting each tail on its own and weighting it by its own projection"
+    },
+    "lineage": [
+        {
+            "architecture": "v1 (loop 0): the likelihood of the record on a window whose every occurrence had closed",
+            "fate": "hardened at the author's request for a second layer (2026-10-13, before any portal result); kept as rung R3 of loop 1, where the suits past the retention stay open under the excess insurer's defence and the closed-file construction files $3.0 million",
+            "domain": "actuarial-science-insurance",
+            "objective": "descriptive-distribution",
+            "gap": [
+                "population"
+            ],
+            "pattern": [
+                "none"
+            ],
+            "gate_g": "method_or_model_selection",
+            "decision_type": "dial_setting",
+            "stump_strategy": "maturity_censoring",
+            "driver": "The decisive quantity is the upper tail of a size distribution whose items reach the record only above a floor that differs from item to item and are recorded only up to a ceiling that moved during the record, so the fit has to carry each item's floor as truncation and the ceiling as censoring, both at the cost level the curve is fitted at; fitting the recorded sizes as a complete sample thins the tail and sets the dial two steps too low, and treating only the ceiling still leaves it a step and more short."
+        },
+        {
+            "architecture": "v1 (loop 1, shipped 10-14): the truncated and censored likelihood over every file, the open suits censored at the retention",
+            "fate": "FAILED_TO_STUMP 2026-10-26: both portal responses filed the golden (USD 4,000,000, 0.74 above it, the premium to the dollar); the deductible-and-retention likelihood is the field's reflex for a pool's loss run",
+            "domain": "actuarial-science-insurance",
+            "objective": "descriptive-distribution",
+            "gap": [
+                "population"
+            ],
+            "pattern": [
+                "none"
+            ],
+            "gate_g": "method_or_model_selection",
+            "decision_type": "dial_setting",
+            "stump_strategy": "maturity_censoring",
+            "driver": "The decisive quantity is the upper tail of a size distribution whose items reach the record only above a floor that differs from item to item and are recorded only up to a ceiling that moved during the record, and whose largest items stay unfinished long after the small ones finish; the fit has to carry each item's floor as truncation and the ceiling as censoring at the fitted cost level over every item of the window, the unfinished ones included as the censored observations they are, because fitting only the finished items selects on size and thins the tail a step short, and fitting the recorded sizes as complete thins it more."
+        }
+    ],
+    "notes": "slot DA05 number; redrawn into Descriptive & Distribution Analysis (the seed's waiting-list world has no Descriptive task type). stump_strategy maturity_censoring names the censoring family: here limit censoring at the pool's retention with deductible truncation, no maturity element.; loop 1 (2026-10-13, the author's request for a second layer): the suits past the retention stay open under the excess insurer's defence, so the window's record holds 20 open files that a closed-file fit drops; the strategy stays maturity_censoring (open files beside limit censoring); loop 2 (2026-10-26, after the portal's FAILED_TO_STUMP): composition_mix, the law enforcement tail against the other parts, retention history raised to 500,000 and 1,000,000, probes p255a and p255b both filed $2.0 million on the pooled curve; loop 2 labels: stump_strategy other = heterogeneous tails, one parametric curve fitted over two kinds of occurrence whose tails differ (no comparison is reweighted or reversed, so composition_mix is not the honest key); generators lead with G6, the coverage mix the decisive step turns on; forum executive_team and forcing event budget_or_appropriation because loop 2's policy has the executive director set the retention in the 2027 budget the pool's excess premium is carried in, under the trustees' delegated authority (the trustees' November meeting no longer sets it); org family local_government: the pool is an interlocal agency its member cities and districts formed under the state's interlocal cooperation law"
 }

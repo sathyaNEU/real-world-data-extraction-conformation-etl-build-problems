@@ -1,34 +1,32 @@
 {
   "task": "task255",
   "owner": "sathay3012",
-  "status": "FAILED_TO_STUMP",
+  "status": "DESIGN",
   "domain": "actuarial-science-insurance / claims-frequency-severity",
   "objective": "descriptive-distribution",
   "stage": 2,
   "stage_name": "design",
   "updated": "2026-10-26",
-  "stump": "The default path fits the closed files' recorded costs as a complete sample and files $2.0 million; censoring the capped closed files files $2.5 million; the truncated and censored likelihood at 2027 cost on the closed files still files $3.0 million, because the 20 open suits of 2014 to 2021, every one past the retention, were set aside; the same likelihood on every file files $4.0 million.",
+  "stump": "The default path fits the lognormal by maximum likelihood to every occurrence of 2014 to 2021, each truncated at its deductible and the 25 at the retention censored, both at 2027 cost, and carries the actuary's 449.8 occurrences above $25,000 by that one curve: $2.0 million (0.92 above it); the law enforcement occurrences carry most of the tail and the one curve is shaped by the other parts; fitted for each coverage group and weighted by the actuary's two projections (85.5 and 364.3) the count first clears one at $4.0 million (1.20 above $3.0 million, 0.83 above $4.0 million).",
   "architecture": 1,
-  "loops": 1,
+  "loops": 2,
   "precut": {
-    "exit": 0,
-    "date": "2026-10-14"
+    "exit": null,
+    "date": ""
   },
   "leak": {
-    "leak_py": "REVIEW (no LEAK) on the loop-1 cut",
-    "reader": "loop 1: three reads; the memorandum's file-closing clause contradicted the open suits and was cut; no decisive-step sentence; nothing names the open suits"
+    "leak_py": "",
+    "reader": ""
   },
   "duplicate_check": {
-    "heart": "WARN (Gate G overuse, answered in the note)",
-    "surface": "0 promoted",
-    "nearest": "task93 0.07 (driver), task254 v2 lineage differentiated on the card"
+    "heart": "WARN (loop 2 card; people, Gate G, decision and deliverable repeats answered in the note)",
+    "surface": "",
+    "nearest": "task255 lineage 0.28, task202 0.06"
   },
   "judge": {
-    "verdict": "DETERMINISTIC (loop 1 pass 2)",
-    "disposition": "APPROVE",
-    "report": "task255/determinism_check_report_loop1_pass2.md (pass 1 NOT_DETERMINISTIC on the vehicle count, fixed: determinism_check_report_loop1.md; loop 0: determinism_check_report.md)",
-    "gate_g": "analytical, surface_read_dependency no, sole_data_defect no",
-    "gate_h": "domain pass, layers pass, decisive_step analytical"
+    "verdict": "",
+    "disposition": "",
+    "report": ""
   },
   "returned": [
     {
@@ -44,7 +42,7 @@
       "commit": "STATUS: task255 FAILED_TO_STUMP"
     }
   ],
-  "resume": "Portal 10-26: both responses walked to the golden (the truncated and censored lognormal on every file, open suits censored at the retention). The decisive step is the domain's reflex (Loss Models' deductible-and-limit likelihood), so it is demoted to a lower rung; redesign the decisive step at stage 2 (10/10 gate first), or re-root at stage 1 if no analytical step survives in this world.",
+  "resume": "Loop 2 drawn 2026-10-26: severity by coverage group (law enforcement against the other four parts), the actuary's 2027 frequency split by group, retention history 500,000 and 1,000,000, GROUND_RATE 2000, SALT 2. Prototype generator and probe pack in scratch t255/gen (world, docs, build changed); probes p255a (sonnet) and p255b (opus) both filed $2.0 million on the pooled curve. Next: port world/docs/build to the repo generator, golden per group in analysis.py, ladder and fork assertions in checks.py (pooled, common-sigma shift LR 29, five parts, closed-only, nominal thresholds), verify, goldens, submission, design note sections, prompt, precut.",
   "approved": null,
   "delivered": "2026-10-13",
   "portal": "FAILED_TO_STUMP",
