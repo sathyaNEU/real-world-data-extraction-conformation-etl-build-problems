@@ -1,638 +1,284 @@
-# task139: Haverline Casualty Company, where the seventeen Early Return Nursing teams work in 2027 and the indemnity they save (architecture 1)
+# task139: Haverline Workers' Compensation Trust, where the seventeen Early Return Nursing teams work in 2027 and the indemnity they save (architecture 2)
 
-Private, never ships. A new build (wave 2), numbered from seed FC10: the seed's world, decision and quantity are kept
-(a workers' compensation insurer funds seventeen nurse case-management teams of twenty places for the next accident
-year, places them across eight claim segments with at most three teams a segment, and books the ultimate indemnity they
-save in that accident year's pick; a randomised pilot verified by an independent actuarial review is the evidence). Its
-architecture (a saving that exists only at employers with light-duty capacity, carried onto segments whose mix of such
-employers differs from the pilot's) is not used: it is a conditioned yield under a composition shift, and pattern E and
-`composition_mix` are spent on task137, one of the three builds before this one. The pitfall is re-found from how the
-pilot's records came to exist: the pilot assigned intakes, the review verified indemnity claims, and the nurses decided
-which intakes ever became indemnity claims.
-
-Resumed on 2026-10-15 at stage 2 (the first build agent stopped after the draw on a usage limit). `guard.py check` re-run
-after `git pull`: one BLOCK, `test.same_driver_older` against task452 v2 (population, G9, method_or_model_selection),
-cleared by a differentiation line on the card (a stratified sample's design weights after a reclassification, against a
-treatment that moves assigned units out of the recorded class); one WARN, `people.first` (Margaret, task258), answered by
-redrawing the requester as Julie Winters from the same `guard.py names` list; Gregory Friedman added for the charter's
-signature. No axis is banned against the builds filed before this one; the card is edited in place (no new filing stamp;
-the draw dates from 2026-10-12). `guard.py check`: PASS.
+Private, never ships. Re-rooted on 2026-10-26 after the portal result on architecture 1, where both responses filed its
+golden placement and credit (`## Architecture 1 record`). The world, the decision and the quantity are kept: seventeen
+nurse case-management teams of twenty places placed across eight claim units with at most three a unit, the ultimate
+indemnity they save booked in the AY2027 pick, a randomised pilot verified by an independent actuarial review. Two
+things change. The organisation is redrawn from a stock carrier to a member-owned group self-insurance trust, because
+`financial_institution` is banned against task304 among the three live builds before this draw. And the decisive step
+is new, re-found from how the pilot's two random draws came to exist: the triage screen drew one in three intakes at
+random and a pilot nurse called every intake it drew before the pairs were split at random, so the register records only
+the second draw, while the 2027 counterfactual, a unit with no team, sits on the far side of the first.
 
 ## Draw
 
 | Axis | Value |
 |---|---|
-| Card | `.claude/skills/fingerprint/cards/task139.json`, architecture v1, registered 2026-10-12; re-checked 2026-10-15, PASS (above); `guard.py validate` clean |
-| Domain / task type | actuarial-science-insurance / claims-frequency-severity (a client domain, never drawn before): the saving is a workers' compensation pure premium, indemnity per intake as the indemnity-claim rate times the indemnity severity at ultimate, the frequency-severity build of the claims actuary |
-| Objective | Forecasting & Predictive Modeling: the ultimate indemnity the 2027 teams will save, booked at run rate in the AY2027 indemnity pick before the year opens, forecast from the randomised pilot, with each unit's 2027 intakes forecast to see how many teams it keeps in use |
-| Shape | 05 (allocation to a fixed total): seventeen teams across eight segments, each segment's teams and its saving per team-year, the credit, the note's opening and chart, and two per-segment asks on rows the call never reads |
-| Decision | `allocation_to_total`, answer unit `count` (teams per segment) with the credit in dollars to the nearest 100,000 |
-| Mechanism | gap population (decisive: the review's file holds indemnity claims, the decision buys intakes, and which intakes become indemnity claims is the nurses' own effect), then objective (the twenty places are the scarce resource, so a team is valued per place-day, and a unit takes no more teams than its intakes keep in use); pattern none, generators G9 (downstream survival against upstream acquisition), G1 (unit of value: the place-day) and G14 (each segment's own yield); Gate G `method_or_model_selection` (two comparisons of one pilot, per verified indemnity claim and per assigned intake, the randomised design pinning the second); strategy `causal_design` |
-| Layer 2 family / pattern | `estimand_identification` (selection on an outcome the treatment moves: comparing the arms on their indemnity claims conditions on a status the nurses changed); `own:indemnity-saving-read-per-assigned-intake` (Actuarial Science has no library patterns; the nearest lines are biomedical-clinical-research/clinical-trial-design-analysis/1, analyse as randomised, and healthcare-delivery-health-economics/payment-claims-health-plan-analytics/4, a ratio of totals over the exposure that bears it) |
-| Furniture | forum `executive_team`, forcing event `launch_or_rollout` (teams live Monday 4 January 2027), organisation family `financial_institution` (a stock carrier), role family `capacity_planner`, context artifact `close_out_summary` (the independent review), calibration `gold_standard_subsample` (the review's verified ultimates on a stratified sample of the pilot's indemnity claims), opening `question-first`, question form `where` |
-| Spine | `claims_extract_2021-01_to_2026-09.csv`, the claims system's listing: one row per claim reported January 2021 to September 2026 whose first report recorded time lost or that has paid or reserved indemnity (59,875 rows); constructed |
-| Deliverables | `ern_placement_ay2027.xlsx` (placement, the pilot basis, the two asks, notes), `ern_placement_note_ay2027.pdf` (one page opening with the placement and charting each segment's saving per team-year with its teams) |
-| People | drawn with `guard.py names --geo "United States" --seed 139`: Julie Winters (director of medical case management, the requester), Joanna Sullivan (consulting actuary, Kellerman Pryce Actuarial, signs the review), Kathleen Reilly (chief pricing actuary, the pick memo), Joel Kelly (ERN clinical lead, the case log), Kristen Hansen (claims operations, the triage screen and the register), Juan Castillo (data engineering, the upgrade, the extract), Gregory Friedman (president and CEO, signs the charter); none in the prompt |
+| Card | `.claude/skills/fingerprint/cards/task139.json`, architecture v2, registered 2026-10-26; architecture 1 moved to `lineage` with its fate |
+| Domain / task type | actuarial-science-insurance / claims-frequency-severity (a client domain): the deciding quantity is a workers' compensation pure premium per intake, the share of intakes paying indemnity times the verified ultimate severity, under three handlings (no call, the call, the call and a file) |
+| Objective | Forecasting & Predictive Modeling: the ultimate indemnity the 2027 teams will save, booked at run rate in the AY2027 pick before the year opens, forecast from the pilot and the book, with each unit's 2027 intakes forecast for the calls and the fill limit |
+| Shape | 05 (allocation to a fixed total): seventeen teams across eight units, each unit's teams and the indemnity they save there in a year, the credit, the note's opening and chart, and the asks |
+| Decision | `allocation_to_total`, answer unit `count` (teams per unit), with each unit's saving and the credit in dollars |
+| Mechanism | gap population (decisive: the register's two arms were both called, the counterfactual unit is not, and the uncalled intakes are outside the register), then objective (the call reaches every intake of a unit once one team works there, so a unit's first team is worth its whole intake stream and later teams only their places); pattern none, generators G1 (the unit of value: the call per intake reported, the file per place-day), G12 (a blank pilot reference on an intake is the record that it was never called, not an absence of evidence), G9 (architecture 1's per-claim reading, now a lower rung); Gate G `decomposition_attribution` (the programme's saving split between the call and the file, which scale on different units and decide the placement between them); strategy `causal_design` (the comparison the 2027 counterfactual needs) |
+| Layer 2 family / pattern | `estimand_identification` (the right counterfactual: the randomised control arm received a component of the programme the counterfactual lacks); `own:randomised-contrast-nets-out-a-shared-opening-call` (Actuarial Science has no library card for it; the nearest is collections-loss-mitigation-strategy 1, compare by assignment, which is this build's rung 1) |
+| Furniture | forum `trustees_or_governors` (the board of trustees approves the placement with the 2027 contributions), forcing event `vote_or_meeting` (the trustees' meeting of 19 November 2026), organisation family `cooperative_or_member_body` (a group self-insurance trust its member employers own), role family `finance_controller` (the trust's finance director books the pick and recommends the placement), context artifact `register` (the pilot's assignment register), calibration `gold_standard_subsample` (the review's verified ultimates on stratified samples), opening `question-first`, question form `where` |
+| Spine | `claims_extract_2021-01_to_2026-09.csv`, the claims system's listing: one row per claim reported January 2021 to September 2026 whose first report recorded time lost or that has paid or reserved indemnity; constructed |
+| Deliverables | `ern_placement_ay2027.xlsx` (the placement, each unit's saving, the credit, the asks), `ern_placement_note_ay2027.pdf` (one page opening with the placement and charting each unit's saving with its teams) |
+| People | drawn with `guard.py names --geo "United States" --seed 139`: Stephanie Gay (the trust's finance director, the requester, in no file as the author of a figure), Samantha Hernandez (consulting actuary, Kellerman Pryce Actuarial: the review and the AY2027 pick memo), Kaitlyn Payne (ERN clinical lead, the case log), Alicia Oneal (claims operations, the triage screen and the register), Margaret York (data engineering, the upgrade and the extract), Kimberly Williams (chair of the trustees, signs the charter); none in the prompt |
 
-**Guard.** At the draw, PASS after two redraws against task136, task137 and task138: strategy off
-`population_selection`, `composition_mix` and `time_semantics`; decisive mechanism off G8, E and G16; shape off `other`
-and 02; forum, forcing event, organisation family, role and context artifact each off the three. The question form
-moved from `how-many` (task137) to `where`.
+**Guard.** `guard.py check` on the draft, then on the registered card: PASS with WARNs. Redrawn against the three live
+builds before this one (task137 v4, task166 v3, task304): the organisation family off `financial_institution` (task304;
+once the carrier is redrawn as a member-owned trust the honest label is `cooperative_or_member_body`, not a relabel of the
+same carrier), the role family off `capacity_planner` (task137), the context artifact off `close_out_summary` (task137),
+the forcing event off `launch_or_rollout` (task304), the decisive generator off G5 (task137) and G3 (task304), both of
+which would also have described the mechanism; G1 is honest, since the step that finishes the golden is valuing the
+first team on the unit's intakes and later teams on their places. The forum moved to the trustees because in a trust
+the trustees decide. WARNs, answered: `people.first` on Stephanie (task133), Alicia (task87) and Margaret (task258), the
+seed's list having no collision-free name left for those roles; `repeat.deliverables` (xlsx and pdf, as task304), kept
+because a placement workbook and a one-page note are what a finance director takes to trustees.
 
-**Strategy label.** `causal_design`, not `population_selection`: the 2027 teams take exactly the population the pilot
-randomised (intakes at the daily triage), so nothing is transported; the error is the comparison, the two arms read on a
-status the treatment changed. The card says so in `notes`.
+**Strategy label.** `causal_design`: the decisive step is the comparison the 2027 counterfactual implies, which the
+pilot's own control arm is not. Nothing is transported (the 2027 teams call and file the same population the pilot
+drew, by the same routine) and no population is chosen (the estimand files every intake of the eight units at run
+rate).
 
-**Same-puzzle and same-driver tests.** Gap population, decisive G9, decision `allocation_to_total`, Gate G
-`method_or_model_selection`: no build in the last twelve carries the structural keys together; task452 v2 (an ETL build
-filed after this draw) shares gap, pattern and Gate G and is differentiated on the card.
+**Same-puzzle and same-driver tests.** Gap population, decisive G1, decision `allocation_to_total`, Gate G
+`decomposition_attribution`: `guard.py check` returns no structural block in the last twelve or older. Architecture 1
+(population, G9, `method_or_model_selection`) differs in its decisive pattern and its Gate G mechanism.
 
-**Abstraction test.** Stripped of nouns, the driver is: an intervention assigned at random at intake changes how many of
-its units go on to become the recorded costly cases as well as what those cases cost, so its effect is read per assigned
-unit, each arm's own conversion times its own cost, and valued per unit of the capacity each assigned unit holds; read
-per recorded case, it compares the costlier remainder of one arm with the ordinary cases of the other. The nearest
-drivers (`guard.py nearest`: task73 world ten 0.07, task121 v1 lineage 0.06, task131 v1 lineage 0.05) share no latent
-structure, default path or correction with it.
+**Abstraction test.** Stripped of nouns, the driver is: a pilot that randomised a service only among units that had all
+first received the programme's opening contact measures what the service adds to a contacted unit, while a group the
+programme does not reach gets no contact at all; the programme's saving is the contacted units' own gain over the units
+the pilot never drew, which every unit of a group receives once one team works there, plus the service's increment on
+the units the capacity takes. The nearest drivers on `check` (task128 v3 at 0.09, a contact's effect read where a queue
+outran a team, a natural experiment in capacity; task103 v3 at 0.07, one record of contact standing for further units;
+task127 v1 at 0.06, a team's throughput before a period closes) share no latent structure with it: none has a randomised
+contrast netting out a component both arms received. Against task177 v2 (an average effect over a cycle carried to one
+point of it) nothing here is conditioned on a covariate or transported, each of the pilot's two draws being read as
+randomised; against task131 v1 and task249 (spillover inside a parent unit) no unit's outcome moves another's.
+`guard.py slots` on the mechanism's words and on the setting's (opening call, nurse, triage, undrawn, intakes, waiting)
+returns this slot's own architecture 1 only.
 
-**Data-native sentence.** Haverline's pilot assigned each intake at the daily triage, before anyone could know whether
-the worker would lose more than the three-day waiting period, and an Early Return nurse's first call went to the
-employer about suitable duties, so in the healthcare, retail and manufacturing strain segments the nurses kept about a
-fifth to a quarter of their intakes from ever paying a day of indemnity (64.9 against 86.6 per cent paid in healthcare
-strains); Kellerman Pryce drew its verification sample, 100 claims a segment
-and group, from the claims that paid indemnity, so its two samples set the nurses' costlier remainder against an
-ordinary usual-handling group, and nothing in either file says so.
+**Data-native sentence.** Haverline's triage screen drew one in three intakes at random each working morning and a
+pilot nurse called every drawn intake that day, the worker and the employer's contact, before the drawn intakes were
+paired and one of each pair kept on a file at random, so both arms of the register were called and the randomised
+contrast is what a file adds to a called intake; the two in three the screen did not draw went to their adjusters on
+report, uncalled, and they sit in the claims extract with no pilot reference and in the claim audit's sample that the
+funding study verifies for its own ultimates.
 
-**Sources read, one line each.** `guard.py mechanisms --objective forecasting`: hazards by time since entry (134),
-selection on the outcome by examination (124), a campaign's yield per untapped member (136), a retention share
-conditioned on a repricing gap (137), the state at the forecast date (138), a capacity-overflow natural experiment (128),
-conditional survival (133): none reads a randomised pilot per assigned unit because the treatment moves units out of the
-recorded class. `two-layer-task-design.md`: the client's own pin, "a randomised design means an intention-to-treat
-difference on the randomised unit", is this build's forcing organ (the design forces the method, `forcing-the-answer`
-Part 5.1). `measured-drivers.md`: under 0.25 the miss is the unit or population a row stands for; here the review's row
-is an indemnity claim and the decision's unit an intake. The seed's header and Situation (FC10) for the world only.
+**Sources read, one line each.** `guard.py mechanisms --objective forecasting`: transports of a randomised test's
+average (task177 v2), an upgraded level's gain on the untreated part (task165), marginal entrants (task163), a
+protection's exposure overlap (task170 v3) and a capacity-overflow natural experiment (task128): none reads a control arm
+as treated by a component the counterfactual lacks. `layer2-rigor-patterns.md`: collections-loss-mitigation-strategy 1
+(compare by assignment) is architecture 1's reflex and this build's rung 1; frequency-severity 1 (frequency per unit of
+exposure) is the per-intake frame. `measured-drivers.md`: held tasks put the decisive move upstream of every graded
+figure and on a dimension in another file; the uncalled intakes are in the extract and the audit sample, not the
+register, and all eight team counts, all eight savings and the credit move with the call. The portal result on
+architecture 1: both responses read the register's two arms per intake, which is this build's default path.
 
-**World.** Haverline Casualty Company is a stock workers' compensation carrier writing Missouri employers from St. Louis
-and Kansas City; its claims are worked in claim units by segment, an industry group crossed with an injury class
-(healthcare and social assistance, retail and warehousing, manufacturing, construction; strains and sprains, other
-injuries). An intake is a claim whose first report of injury records time lost from work. Missouri pays temporary total
-disability at two-thirds of the average weekly wage up to the state maximum, nothing for the first three days unless the
-disability passes fourteen days, temporary partial disability on reduced earnings, and permanent partial disability on a
-rating; an intake whose worker is back inside the waiting period pays no indemnity.
+**World.** Haverline Workers' Compensation Trust is a group self-insurance trust of Missouri employers in healthcare and
+social assistance, retail and warehousing, manufacturing, construction, transportation and other industries, owned by
+its member employers and administering its own claims from St. Louis and Kansas City; its claims are worked in claim
+units by segment, an industry group crossed with an injury class (strains and sprains, other injuries). An intake is a
+claim whose first report of injury records time lost from work. Missouri pays temporary total disability at two-thirds
+of the average weekly wage up to the state maximum, nothing for the first three days unless the disability passes
+fourteen days, temporary partial disability on reduced earnings, and permanent partial disability on a rating; an intake
+whose worker is back inside the waiting period pays no indemnity.
 
-Early Return Nursing (ERN) puts a nurse case manager on an intake from triage: calls within a working day, care
-coordinated, suitable duties arranged where the employer can offer them, the file held until the worker is back at full
-duty. The pilot ran on triage dates 1 March 2023 to 28 February 2025: each working morning the triage screen drew one in
-three intakes in the eight segments into the pilot and assigned each segment's drawn intakes in pairs in triage order,
-one of each pair to ERN at random: 5,227 pilot intakes, 2,613 to ERN, every one taken by a pilot team. Kellerman Pryce
-Actuarial verified the pilot in 2026: from the 4,339 pilot claims with paid or reserved indemnity at 30 June 2026 it drew
-100 at random from each segment and group (1,600 claims), verified each blind to its group and projected the open ones
-to ultimate. Its report says what it verified and how; it does not estimate the programme's effect.
+Early Return Nursing (ERN) has two parts. The opening call: on the working day after the report a nurse calls the
+worker and the employer's contact, assesses the time off to expect and asks the employer what suitable duties it can
+offer. The file: the nurse keeps the intake, coordinates its care, arranges suitable duties and holds the file until the
+worker is back at full duty. The pilot ran on triage dates 1 March 2023 to 28 February 2025: each working morning the
+triage screen drew one in three intakes in the eight units at random, a pilot nurse made the opening call to every drawn
+intake, and the drawn intakes were paired in triage order and one of each pair kept on a file at random, the other
+passed to its adjuster (usual handling); the intakes the screen did not draw went to their adjusters on report.
+Kellerman Pryce Actuarial reviewed the claims in 2026 at a 30 June valuation: for the pilot, 100 indemnity claims at
+random from each unit and group; for the funding study's claim audit, 100 indemnity claims at random from each unit's
+claims reported over the same two years outside the pilot; each verified blind to its group and the open ones projected
+to ultimate. Its report says what it verified and how; it estimates no effect.
 
-For 2027 the executive committee funded seventeen teams of twenty places (the charter, signed 19 October 2026): a unit
-houses at most three teams and takes no more than its 2027 intakes keep in use over the year; teams take intakes at the
-daily triage while a place is free; a file holds its place from the day it is taken to the day it closes, both counted,
-and again on a reopening. The pick memo (chief pricing actuary, 28 October 2026) books the credit as the ultimate
-indemnity the AY2027 intakes the teams take will not pay because the teams took them, at run rate (every place in use
-every day of 2027), at the review's verified ultimates with no trend, each segment's teams at what the pilot measured in
-that segment, indemnity only. The request is made on Monday 9 November 2026 (the pack's export stamp).
+For 2027 the trustees funded seventeen teams of twenty places (the charter, signed 19 October 2026 by the chair): a unit
+houses at most three teams and takes no more than its 2027 intakes keep in use over the year; a team's nurses make the
+opening call to every intake their unit reports and take it into a place if one is free, an intake reported while every
+place is taken going to its adjuster after the call; a unit with no team goes on as today, its intakes to their
+adjusters on report; a file holds its place from the day it is taken to the day it closes, both counted, and again on a
+reopening. The pick memo (Kellerman Pryce, 28 October 2026) books the credit as the AY2027 ultimate indemnity the eight
+units' 2027 intakes will not pay because of the placement: what they would pay with no Early Return Nursing in 2027,
+every intake going to its adjuster on report as today, less what they pay with the placement; at run rate (every place
+in use every day of 2027, each unit's 2027 intakes at its intakes reported in the twelve months to September 2026); at
+the review's verified ultimates with no trend; each unit at its own experience; indemnity only. The request is made on
+Monday 9 November 2026 by the trust's finance director, for the trustees' meeting of 19 November.
 
-## Default path
+**On paper, before any data.** This world's own courses (`generator/world.py`), 200,000 intakes a unit under each
+handling, the call keeping most of what architecture 1's nurses kept at work and the file the rest with its shorter
+disabilities and permanent awards (prototype `proto_call.py`):
 
-1. Read the charter (seventeen teams of twenty places, at most three a unit, intakes taken at triage, a place-day counted
-   with its first and last days, a unit given no more teams than its intakes keep in use) and the pick memo (run rate,
-   7,300 place-days a team, the review's verified ultimates, each segment on its own pilot measure).
-2. Read the review's workbook (one sheet per segment, verified ultimate TTD, TPD and PPD per sampled claim, summed), join
-   each sampled claim to the register for its group through the claim number (the control digit stripped) and its
-   segment through the 2025 crosswalk.
-3. In each segment, the saving per managed claim is usual handling's mean verified ultimate less ERN's: 3.7 per cent in
-   healthcare strains, 4.2 in retail strains, 5.8 in manufacturing strains and 4.5 in construction strains, 9.8 to 13.1
-   per cent in the other-injury segments.
-4. From the case log, the place-days an ERN indemnity claim held (file open to file close, both days, a reopening
-   added); each segment's saving per team-year is 7,300 times step 3 over step 4.
-5. Rank the segments on saving per team-year; three teams to each in turn, the unit's intakes over the twelve months to
-   30 September 2026 keeping its places in use (they do, at an indemnity claim's place-days, in every unit); the credit
-   is each team's saving per team-year, summed.
+| Unit | per intake, no call | the call | call and file | call's saving | file's saving | place-days | call over a year's intakes | a team's files a year |
+|---|---|---|---|---|---|---|---|---|
+| HC-SS | 2,857 | 2,317 | 1,972 | 540 | 345 | 24.2 | 891,000 | 104,000 |
+| HC-OT | 6,387 | 6,277 | 5,217 | 110 | 1,059 | 43.0 | 97,000 | 180,000 |
+| RW-SS | 2,297 | 1,811 | 1,535 | 486 | 276 | 21.0 | 482,000 | 96,000 |
+| RW-OT | 6,776 | 6,661 | 5,751 | 114 | 910 | 51.1 | 94,000 | 130,000 |
+| MF-SS | 3,497 | 2,980 | 2,580 | 516 | 401 | 25.3 | 738,000 | 116,000 |
+| MF-OT | 8,211 | 8,070 | 6,828 | 141 | 1,242 | 45.4 | 116,000 | 199,000 |
+| CN-SS | 4,939 | 4,570 | 4,203 | 369 | 367 | 30.2 | 443,000 | 89,000 |
+| CN-OT | 13,269 | 13,167 | 11,471 | 101 | 1,697 | 61.7 | 72,000 | 201,000 |
 
-Ends on: three teams each to construction other injuries, manufacturing other injuries, healthcare other injuries,
-retail and warehousing other injuries and construction strains and sprains, two to manufacturing strains and sprains,
-none to healthcare or retail and warehousing strains and sprains; a credit of 2,000,000 dollars (2,048,524 unrounded).
-Golden: three teams each to healthcare strains and sprains, manufacturing strains and sprains, manufacturing other
-injuries, construction other injuries and healthcare other injuries, two to retail and warehousing strains and sprains;
-a credit of 4,100,000 dollars (4,105,562 unrounded).
+Per indemnity claim the call is invisible (healthcare strains 3,357 dollars with no call against 3,429 with it, the
+costlier remainder again), so the call's saving is a frequency effect read per intake. The placements every route
+files (teams for HC-SS, HC-OT, RW-SS, RW-OT, MF-SS, MF-OT, CN-SS, CN-OT):
 
-## Stump sentence
+| Route | Teams | Credit |
+|---|---|---|
+| per verified claim, the file's contrast (architecture 1's rung 0) | 0 3 0 3 3 3 2 3 | 2.54 million |
+| per assigned intake, the file's contrast (architecture 1's golden route; this build's default path) | 2 3 0 3 3 3 0 3 | 2.69 million |
+| the call per indemnity claim over every intake, with the files | 0 3 2 3 3 3 0 3 | 2.51 million |
+| the undrawn intakes against the file arm per served intake (architecture 1's golden placement) | 3 3 2 0 3 3 0 3 | 4.02 million |
+| the call over every intake, units ranked on their average team at the cap | 3 0 2 0 3 3 3 3 | 5.06 million |
+| golden: the call over every intake of a unit with a team, the files per place-day, placed on each team's marginal saving | 1 3 1 3 2 3 1 3 | 5.58 million |
 
-A competent solver joins Kellerman Pryce's verified ultimates to the pilot register, takes usual handling's mean
-indemnity claim less ERN's in each segment, values each segment's teams at that saving over the place-days an ERN
-indemnity claim held, and files teams weighted to the other-injury and construction segments with none in healthcare or
-retail strains and a credit of 2,000,000 dollars (Ends on); the step that lands it there is reading the saving per
-verified indemnity claim when the nurses kept a fifth to a quarter of the strain intakes from ever paying indemnity, so
-ERN's indemnity claims there are the costlier remainder and the saving reads as four to six per cent: read per assigned
-intake, as the pilot was randomised, each group's own indemnity-claim rate times its own verified severity over the
-place-days an ERN intake held, the teams go to the strain segments, retail strains takes the two teams its intakes keep
-in use, and the credit is 4,100,000 dollars.
+The golden's cut on paper is MF-SS's second team (115,600) against HC-SS's second (104,000), 1.11 times; the build
+widens it past the 1.15 floor before a pack is cut (stage 2).
 
 ## Three rules
 
 - **Task type:** actuarial-science-insurance, claims-frequency-severity (serves Forecasting): the AY2027 indemnity a
-  nurse programme will save, forecast from a randomised pilot as a pure premium per intake, frequency times severity,
-  each arm's own, carried to 2027 at run rate with each unit's 2027 intakes forecast to see the teams it keeps in use.
-- **Domain test:** the deciding quantity is a workers' compensation pure premium per intake (the share of intakes that
-  pay indemnity, which the three-day waiting period and a return on suitable duties decide, times the verified ultimate
-  indemnity severity) compared between the arms of a randomised pilot and valued per nurse place-day; the claims
-  actuary's frequency-severity build decides, not a sort or a stated score.
-- **Swap:** "place seventeen readmission coaching teams across eight wards from a randomised pilot verified on readmitted
-  patients" keeps a pilot and a costly class, but an intake that pays nothing because the worker was back on suitable
-  duties inside a three-day waiting period, a severity that is ultimate indemnity across temporary total, temporary
-  partial and permanent partial benefits, and a file held to full duty have no meaning outside workers' compensation, so
-  the mechanism that moves intakes out of the verified class, and with it the call, stops making sense.
+  nurse programme will save, forecast as pure premiums per intake (frequency times severity) under no call, the call and
+  the call with a file, carried to 2027 at run rate with each unit's 2027 intakes forecast for the calls and the places.
+- **Domain test:** the quantity that decides the call is each unit's indemnity per intake under the three handlings,
+  each the share of intakes paying indemnity times the verified ultimate severity, the claims actuary's frequency and
+  severity build; the call works through the employer's suitable duties inside Missouri's three-day waiting period, so in
+  the strain units it moves frequency (intakes that never pay) and leaves severity per indemnity claim where it was.
+- **Swap:** "where should seventeen care-transition teams work across eight hospital service lines in 2027, and how many
+  readmission days will they save" has no waiting period inside which a contact turns a reported absence into a claim
+  that pays nothing, no conversion of a report into an indemnity claim and no accident-year ultimate across temporary
+  total, temporary partial and permanent partial benefits; the call's saving, a frequency effect invisible per claim,
+  has nothing to be in, and the task stops reading the same.
 - **Layer 1:** claim numbers written four ways (the register's legacy numbers, the extract's new numbers with the legacy
-  number beside converted claims, the review's legacy numbers with Kellerman Pryce's control digit, the nurses' typed
-  variants), segment codes recoded at the 2 June 2025 upgrade (the register in legacy codes, the extract and the review in
-  2025 codes, a crosswalk between), a review workbook of eight sheets with header blocks, three benefit columns and sheet
-  totals, a case log with reopenings on second rows and US dates, a claims extract mixing intakes with later indemnity
-  conversions, and a superseded charter draft beside the signed one; on the ask paths, converted rows whose
-  `time_off_at_report` carries the legacy lost-time indicator, claims keyed in both systems during the parallel run, a
-  payment register that repeats a payment's amount on each weekly line (the three documented in the dictionary, as a
-  data engineering team documents a migration and an export), first reports an employer's EDI sent twice in the new
-  system's first weeks, each set up as a second claim and merged into the first (the claims system's merge file),
-  voided checks and the bank's ACH returns. Each is what these systems write; none decides the call (the call is
-  unchanged with every ask file removed, and with the reopenings dropped, asserted).
-- **Layer 2:** `estimand_identification`: the shortcut reads the pilot on the claims its gold-standard file holds; the
-  expert reads a randomised pilot per assigned unit, frequency and severity together, because the treatment moves units
-  between the classes the records keep, and values a capacity-bound team per unit of the capacity an assigned unit holds.
-- **Decisive step:** read the pilot per assigned intake, as it was randomised: each group's indemnity per intake is its
-  own share of intakes that paid indemnity times its own mean verified ultimate, and a team's year is 7,300 place-days
-  over the place-days an ERN intake held (the short files of the intakes kept at work included), instead of the saving
-  per verified indemnity claim over an indemnity claim's place-days; this moves healthcare strains from 34,106 to
-  292,364 dollars a team-year and the credit from 2,000,000 to 4,100,000.
-- **Not semantics:** every field, code, unit and definition can be read correctly, and the default path reads them all
-  correctly (the groups, the verified TTD, TPD and PPD, the claim types, the place-day with both days counted, the
-  crosswalk) and still files 2,000,000; nothing flips on what a field means, only on which comparison of a randomised
-  pilot estimates the saving on the intakes the teams take.
-- **Not rule application:** no filed sentence says to compare per intake, to multiply a group's indemnity-claim rate by
-  its severity, that the nurses changed which intakes paid indemnity, or that the review's sample conditions on that;
-  the pick memo files only what the credit is (the indemnity the teams' intakes will not pay because the teams took
-  them) and the charter what a place-day is, and executing every filed rule leaves the estimator to the analyst, where
-  the per-claim reflex files 2,000,000.
-- **Analyst test:** a strong analyst who reads the protocol, the review, the charter and the memo correctly, joins the
-  verified ultimates to their groups, takes usual handling's mean indemnity claim less ERN's in each segment and values
-  each team per place-day of an indemnity claim files construction and other-injury teams and a credit of 2,000,000
-  dollars (Ends on); on the generator's clean truth (every pilot intake's course under both groups, no sample) the same
-  route files the same healthcare and retail strain units empty, and the per-intake route the golden allocation (R3a,
-  R3b asserted).
-- **Estimand:** the pick memo, paragraphs 2 to 5 (`ay2027_indemnity_pick_ern_credit.pdf`): the credit is the ultimate
-  indemnity that the AY2027 intakes the teams take will not pay because the teams took them (stated once; an intake not
-  taken stays with its adjuster, charter 4.2), at run rate (every place every day, twenty places for 365 days), at the
-  verified ultimates (TTD, TPD and PPD, open and closed, no trend), each segment at its own pilot measure; the charter
-  2.1 to 5.3 files the teams, places, the three-a-unit limit, the fill rule over the year and the place-day. The
-  population, outcome, window, unit and comparison are filed; the estimator of the comparison is not.
-- **No decoy:** no memo, briefing, prior placement, scorecard or stakeholder figure states or argues a saving per claim,
-  a per-segment saving or a placement; the review states what it verified and refuses an effect; the kept-at-work intakes
-  are the nurses' own work, written in the claim types and the case log, not defects; the three distractors (the charter
-  draft, the worker survey, the staffing plan) rank nothing.
+  number beside converted claims, the review's numbers with Kellerman Pryce's control digit, the nurses' typed
+  variants), produced by the 2025 claims-system upgrade and the review's referencing; segment codes recoded at the
+  upgrade, joined through a crosswalk; the review workbook's sheet per unit with header blocks, three benefit columns
+  and three strata; the case log's reopened files on second rows and US dates; an extract mixing intakes with later
+  indemnity conversions, whose converted rows carry the legacy time-off flag; on the ask paths the parallel run's double
+  listings, the EDI resends merged into their claims, a payment register at line grain, voided checks and the bank's
+  returned transfers; a superseded charter draft. Each is what these systems write and none is placed to be caught.
+- **Layer 2:** `estimand_identification`, the right counterfactual: the pilot's randomised contrast is what a file adds
+  to a called intake, the 2027 counterfactual has no call, and the call's own saving is read from the pilot's first
+  random draw (the intakes the screen drew against those it did not), then credited on the unit it reaches.
+- **Decisive step:** read a unit with no team against the intakes the screen never drew rather than against the
+  usual-handling arm, because both arms of the register had the opening call; then credit the call to every intake of a
+  unit with a team and the files to their places, and place the teams on each team's marginal saving.
+- **Not semantics:** every field, code and definition read correctly (the groups, the intake definition, the claim
+  type, the verified TTD, TPD and PPD, the charter's call, the memo's counterfactual) still leaves the easy route on the
+  register's two arms: no sentence defines the usual-handling arm as the counterfactual or excludes it, the call reads as
+  the assessment that sets the pairs, and its saving exists only as an estimate the reader builds from intakes no pilot
+  file lists.
+- **Not rule application:** no filed rule or procedure computes the call's saving or says which intakes estimate a unit
+  with no team: the memo files the counterfactual and the basis, the charter the operation. Enumerated family for the
+  counterfactual, on paper (200,000 intakes a unit): the usual-handling arm per intake files 2 3 0 3 3 3 0 3 at 2.69
+  million; the undrawn intakes per indemnity claim file 0 3 2 3 3 3 0 3 at 2.51 million (the call per claim is minus 72
+  dollars in HC-SS); the undrawn intakes against the file arm per served intake file 3 3 2 0 3 3 0 3 at 4.02 million;
+  the undrawn intakes per intake with the call over every intake file 1 3 1 3 2 3 1 3 at 5.58 million, a spread of 3.07
+  million and four placements. The standing family (the undrawn intakes per intake, counted by report or by triage date,
+  the audit's sample cut to intakes or not) is measured on the pack at stage 2 and must file one placement and one
+  credit bin. What rules the usual-handling arm out is quiet: three sentences in three files (the pilot's protocol, the
+  charter's call, the memo's counterfactual) and a gap of 17 points in the share of strain intakes paying indemnity that
+  shows only once the undrawn intakes are counted.
+- **Analyst test:** a strong analyst who reads the register, the review, the charter and the memo correctly reads the
+  pilot per assigned intake, each arm's indemnity-claim rate times its verified severity, values each unit's teams at
+  that saving over an ERN intake's place-days and files two teams in HC-SS, three in MF-SS, none in RW-SS or CN-SS and
+  three in each other-injury unit with a credit of about 2,700,000 dollars (Ends on); on the generator's clean truth the same
+  route files the same placement, and only the undrawn comparison with the call over every intake files the golden
+  (asserted in `checks.py`).
+- **Estimand:** the pick memo (`ay2027_indemnity_pick_ern_credit.pdf`): the credit is the AY2027 ultimate indemnity the
+  eight units' 2027 intakes will not pay because of the placement, what they would pay with no Early Return Nursing in
+  2027 (every intake to its adjuster on report, as today) less what they pay with the placement; at run rate (every
+  place every day, each unit's 2027 intakes at its intakes reported October 2025 to September 2026); at the review's
+  verified ultimates, no trend; each unit at its own experience; indemnity only. The charter files the teams, places,
+  the three-a-unit limit, the fill rule, the call and the place-day. Population, outcome, window, unit and comparison
+  are filed; which intakes estimate the comparison is not.
+- **No decoy:** no memo, briefing, prior placement, scorecard or stakeholder figure states or argues a saving, an
+  effect or a placement; the review states what it verified and estimates nothing; the usual-handling label is the
+  pilot's own name for an arm handled by its adjuster after the call, not a planted misdirection; the charter draft, the
+  worker survey and the staffing plan are declared distractors that rank nothing.
 - **No certified replay:** no published saving, past placement, programme evaluation or certified figure ships, so the
-  comparison cannot be recovered by matching certified numbers; the review's only results are its verified amounts and
-  their total, which every comparison uses alike.
-- **Lesson:** a randomised intervention that changes which units become the recorded costly cases has to be valued per
-  assigned unit, each arm's own conversion times its own severity, and a capacity-bound team per unit of the capacity an
-  assigned unit holds; reading it on the recorded cases a gold-standard sample holds compares the treated arm's costlier
-  remainder with the control's ordinary cases. No build on file reads a randomised pilot per assigned unit because the
-  treatment moves units out of the verified class (task131 reads interference inside households; task124 a selection by
-  examination carried to an unexamined population).
+  comparison cannot be recovered by matching certified numbers; the review's results are its verified amounts, which
+  every route uses alike.
+- **Lesson:** a randomised pilot whose arms both received an active component measures only the increment over that
+  component; where the decision's counterfactual lacks the component, its value is read from the pilot's own earlier
+  random draw and credited on what it reaches (every intake of a unit with a team), not on the capacity. No build on
+  file reads a randomised control arm as treated by a component the counterfactual lacks (task131 v1 and task249 read
+  spillover inside a parent unit, task177 v2 an average carried to one point of a cycle, task139 v1 the costlier
+  remainder of the verified class).
 
-## Readability screen
+## Default path
 
-Six tests per rung: 1 a filed sentence names it or makes the solver ask; 2 schema (a column, key or marker); 3 a reflex
-of the opponent; 4 a control or corpus scores it; 5 the hygiene battery finds it; 6 linear (one subtraction, ratio or
-half of a reported figure). Verdict last.
+1. Read the charter (seventeen teams of twenty places, at most three a unit, the fill rule over the year, a place-day
+   counted with its first and last days) and the pick memo (run rate, 7,300 place-days a team, the review's verified
+   ultimates, each unit at its own experience).
+2. Join the register's pilot intakes to the claims extract through the legacy claim number (normalised) for each
+   intake's claim type, and to the crosswalk for its 2025 unit; in each unit, each arm's share of its assigned intakes
+   that paid indemnity.
+3. From the review's pilot strata (the control digit stripped, joined to the register for the arm), each arm's mean
+   verified ultimate TTD plus TPD plus PPD; each arm's indemnity per assigned intake is its share times its severity, as
+   the pilot was randomised, and the saving per intake is usual handling's less ERN's.
+4. From the case log, the place-days an ERN intake held (both days counted, a reopening added); a team's year is 7,300
+   place-days over that.
+5. Each unit's saving per team-year is step 3 times step 4; its fill limit is its intakes over the twelve months to
+   September 2026 times the place-days per ERN intake over 7,300, at most three.
+6. Rank the units on saving per team-year and fill each to its limit in turn until seventeen teams are placed; the
+   credit is each team's saving per team-year, summed.
 
-| Rung | 1 Filed | 2 Schema | 3 Reflex | 4 Control | 5 Hygiene | 6 Linear | Verdict |
-|---|---|---|---|---|---|---|---|
-| R0 saving per verified claim over an indemnity claim's place-days (the default path) | the memo files amounts at the verified ultimates; the charter the place-day | the review's rows are verified indemnity claims | yes (compare the verified amounts of the two groups) | no | no | yes (one subtraction of two sample means) | readable |
-| R1 the per-claim saving times ERN's indemnity-claim rate, over all of an ERN intake's place-days | the memo's credit is on the intakes the teams take | the register lists intakes | yes (scale the claim saving to intakes) | no | no | no | readable |
-| R1b the per-claim saving over all of an ERN intake's place-days | charter 5.1 to 5.3 (every taken intake holds a place) | the case log lists every ERN file | yes | no | no | no | readable |
-| R2 the per-intake saving ranked per intake, not per place-day | charter 2.2 (twenty places) | no | yes (a capacity-bound team is valued by throughput) | no | no | no | readable |
-| R2b the per-intake saving over an indemnity claim's place-days | charter 5.1 (a file is held from the day it is taken) | no | no | no | no | no | readable |
-| R3 the golden saving with no fill check | charter 3.3 | no | yes (check the places can be kept full) | no | no | no | readable |
-| R4 (decisive) each group's own indemnity-claim rate times its own verified severity, per assigned intake, as randomised | no: the memo files what the credit is (the indemnity the teams' intakes will not pay because the teams took them) and the default path answers that sentence too, with the per-claim saving; no sentence names a rate, a frequency, a conversion, a kept-at-work intake or the review's sampling on the outcome | no: no column holds an intake's indemnity under either group; `claim_type` is every claim's current type in a 59,875-row listing the default path opens only for the units' volumes, and the review's sample is 100 per group in every segment, so its counts show no difference | no: the reflex on a verified gold-standard sample is to compare its amounts, and the per-claim saving reconciles (positive in every segment, four to thirteen per cent, a plausible nurse effect) | no: no saving, placement or evaluation ships | no | no: per segment, two group rates from a 5,227-intake register joined to a 59,875-row extract, times two sample means, over a place-day mean built from a log with reopenings | silent |
+Ends on: two teams to healthcare strains and sprains, three each to manufacturing strains and sprains and the four
+other-injury units, none to retail and warehousing or construction strains and sprains; a credit of about 2,700,000
+dollars (2,686,000 on paper).
+Golden: one team each to healthcare, retail and warehousing and construction strains and sprains, two to manufacturing
+strains and sprains, three to each other-injury unit; a credit of about 5,600,000 dollars (5,582,000 on paper).
 
-The decisive rung is silent because the question the pack raises (what does a team save on the intakes it takes) is the
-one the default path believes it has answered: the per-claim saving is a real comparison of verified amounts, and
-nothing in the review, the memo or the register points at the intakes that never reached the review's frame.
+## Stump sentence
 
-## Semantic fork table
+A competent solver reads the pilot per assigned intake, values each unit's teams at usual handling's indemnity per
+intake less ERN's over the place-days an ERN intake held, and files two teams in healthcare strains, three in
+manufacturing strains, none in retail or construction strains and three in each other-injury unit with a credit of about
+2,700,000 dollars (Ends on); the step that lands it there is taking the usual-handling arm as a unit with no team, when
+every drawn intake had the opening call before its pair was split and a unit with no team has no calls: read against the
+intakes the screen never drew, the call keeps about a fifth of the strain intakes from ever paying indemnity and reaches
+every intake of a unit once one team works there, so each strain unit takes a team for its calls, manufacturing strains
+a second for its files, the other-injury units three each, and the credit is about 5,600,000 dollars.
 
-One row per term of the main ask and per convention the main computation needs, then the asks' rows. `checks.py`
-asserts each. Ch is the charter; PM the pick memo; R the review report.
+## Architecture 1 record (spent 2026-10-26)
 
-| Id | Term or convention | Golden reading | Alternative | Call under it | Ruled out by |
-|---|---|---|---|---|---|
-| SF1 | "where ... work" | teams per segment, each segment's claims in one unit | teams per office or per unit name | same call (Appendix A: one unit a segment) | Ch 3.1, Appendix A |
-| SF2 | "seventeen teams" | all seventeen placed | fewer where a saving is low | same call (every segment's saving per team-year is positive, asserted) | Ch 2.1 |
-| SF3 | at most three a unit | three | four (the draft's silence) | four would move the call | Ch 3.2; the draft is superseded (Ch heading) |
-| SF4 | a unit's fill limit | the place-days its 2027 intakes would hold over the year fill every place: teams no more than intakes times place-days per ERN intake over 7,300 | a monthly or daily basis | RW-SS keeps 2 on every month (2.04 to 2.76, asserted); MF-OT's lowest month (2.80) would cap it at 2 | Ch 3.3 ("over the year") |
-| SF5 | a unit's 2027 intakes | any forecast of the units' intakes: the latest twelve months, 2025, 2024, Jan to Sep 2026 annualised, a trend to 2027, the flag as filed | (a forecast that moves a cap) | converges: RW-SS 2.33 to 2.65 teams' worth, every other unit 3.97 or more (asserted on eight bases) | the records converge |
-| SF6 | "ultimate indemnity" | TTD, TPD and PPD together, verified ultimate | TTD only | 2,900,000 and another allocation (asserted) | PM 4 |
-| SF7 | "save" | the ultimate indemnity the intakes will not pay because the teams took them, against staying with their adjusters (Ch 4.2) | with medical, or net of the teams' cost | same estimand; medical out | PM 2 (the credit is ultimate indemnity, stated once), PM 6 |
-| SF8 | the AY2027 window | run rate, 7,300 place-days a team | a fill-up transient from 4 January; accident-date shares | (none: the memo sets run rate) | PM 3 |
-| SF9 | the amounts | verified at 30 June 2026, no trend | trended two years at 4 per cent | 4,400,000 (asserted) | PM 4 |
-| SF10 | each segment's measure | the pilot's own in that segment | pooled or credibility-weighted across segments | (a pooled measure cannot place teams) | PM 5 |
-| SF11 | a place-day | both the opening and the closing day counted | the day difference only | 4,300,000, five team savings a bin or two higher (asserted) | Ch 5.3 |
-| SF12 | a reopening | holds a place again | the reopening rows dropped | converges: same allocation, 4,121,010, every team saving in its bin (asserted) | Ch 5.2; the records converge |
-| SF13 | the pilot's groups | as assigned in the register | as treated | converges: every ERN intake has a file and no usual-handling intake has one (asserted) | the records converge |
-| SF14 | an intake that paid indemnity | `claim_type` IND | a first indemnity date on file; the review's frame at 30 June 2026 | converges: the same 4,339 intakes (asserted) | the records converge |
-| SF15 | a group's severity | the mean verified TTD + TPD + PPD of its 100 sampled claims | the sample weighted to the frame (the same within a stratum); closed claims only | weighting converges; closed only 4,200,000 (asserted) | PM 4 ("open and closed claims alike") |
-| SF16 | a pilot intake's segment | the register's legacy code through the crosswalk | the extract's 2025 segment | converges (asserted for every pilot intake) | the records converge |
-| SF17 | the estimate's grain | each segment as a whole | each office then pooled by intakes | converges: same allocation, 4,123,300 (asserted) | PM 5; the records converge |
-| SF18 | the credit's rounding path | the unrounded team savings summed, rounded once | the rounded team savings summed | converges: 4,090,000 rounds to 4,100,000 (asserted) | the records converge |
-| SF19 | ties at the cut | none: the last unit funded (HC-OT 191,656) stands 1.47 times the first left out (RW-OT 130,715) | (a tie-break) | n/a (asserted at 1.3) | the records converge |
-| SF20 | what decides the call | an analytical choice: the memo and the charter file the WHAT, no sentence files how the saving per intake is estimated | executing the filed rules alone | (no credit: the rules leave the comparison open; the per-claim reflex files 2,000,000) | the estimand and the data: on the clean truth the two estimators of the same filed credit stand apart (R3a, R3b) |
-| SF21 | Ask 1: an intake | a claim whose first report records time lost (Ch 4.1): `disability_began` on or before `report_date`, which on new-system rows is the flag and on converted rows the dates | `time_off_at_report` = Y as filed; time lost beginning before the report date only | flag as filed every segment 24 to 80 high; before only every segment 37 to 124 low (asserted) | the dictionary's `time_off_at_report` ("Y when the first report of injury records time lost from work (disability_began on or before report_date). On claims converted at the 2 June 2025 upgrade the field holds the legacy LOST_TIME indicator"); the records (no new-system row departs from its dates) |
-| SF22 | Ask 1: the parallel-run copies | counted once: the 62 converted claims of 29 May to 1 June 2025 that pair one new-number claim on the six fields the dictionary names; the four converted claims there with no new-number twin counted as listed | both listings kept; every converted claim of those days dropped; a dedup on the six fields across the year | both kept every segment 2 to 9 high; all dropped HC-SS 2, MF-SS 1 and CN-SS 1 low; across the year every segment 3 to 34 low (asserted) | the dictionary's file row ("A first report received in the parallel run of 29 May to 1 June 2025 and keyed in both systems is listed twice ... the two rows carrying the same office, segment, class_code, injury_date, report_date and disability_began"); the records (the pairs are one to one) |
-| SF23 | Ask 1: "reported in 2025" | report date in 2025 | injury date in 2025 | five segments 2 to 9 off, three the same (asserted) | the prompt ("intakes reported in 2025") |
-| SF24 | Ask 2: paid January to September 2026 | payments issued in the window, each once | each line summed | every segment 1.66 to 1.86 times (asserted) | the dictionary (`amount`: "Amount of the payment, US dollars, repeated on each line of the payment"; `line`: one line for each week the payment covers); the records (a payment's lines all carry the same amount) |
-| SF25 | Ask 2: returned EFTs | left out; the re-issued check counts | kept | every segment 10,300 to 50,186 dollars high (asserted) | the bank's return file, its ACH return items each on one register EFT by trace number; the records (271 of the 275 paid again by a check for the same claim, benefit, payee, period and amount, the other four returned on 29 September 2026; kept, a period is paid twice) |
-| SF26 | Ask 2: voided checks | left out; the replacement counts | kept | every segment 3,814 to 15,519 dollars high (asserted) | the register's status (`VOID when the check was voided before it was cashed`); the records (each of the 85 replaced by a new check for the same claim, benefit, payee, period and amount) |
-| SF27 | Ask 2: a payment's segment | its claim's segment on the extract | (none) | n/a | the records converge (every payment's claim is on the extract, asserted) |
-| SF28 | Ask 1: a claim merged into another claim | counted once, with the claim it was merged into (`claim_merges_2025.csv`) | both counted; both dropped; a dedup on office, segment, class, injury and disability dates across the year instead | both counted every segment 4 to 17 high; both dropped every segment 4 to 17 low; the dedup every segment 23 to 186 low (asserted) | the merge file (each merged claim and the claim it joined); the records (a merged claim repeats its claim's first report, received 2 to 12 days later, and is closed on its merge date) |
+Haverline Casualty Company, a stock carrier writing Missouri employers; drawn 2026-10-12, shipped 2026-10-15 (commit
+1384f0e9, `target.zip` sha256 da3c19bf42dff8ef; checks.py 343 assertions, verify.py, byte-identical rebuilds,
+figures_check 67, precut 49 with 0 FAIL, voice-check PASS, leak.py REVIEW answered, guard heart PASS, surface exit 0).
+Stage 4: the leak reader found no leak (Q6 analytical); the judge returned NOT_DETERMINISTIC on supplementary 3 only,
+FIX_NOW applied (the intake filed as a WHAT in the dictionary, Ask 1's silent device redrawn as EDI resends merged into
+their claims), and the re-judge DETERMINISTIC and APPROVE, stump power moderate (`determinism_check_report.md`,
+`determinism_check_report_pass2.md`).
 
-The stump is none of these rows: every term is read the same way by a careful reader, and the default path reads them
-all as the golden does. SF20 is the reader's Q6 guard written down: the memo and the charter fix the population, outcome,
-window, unit and comparison, and the per-intake estimator is forced by the design (the randomised unit is the intake),
-not by a sentence.
+**The design.** The pilot's nurses kept a fifth to a quarter of the strain intakes from ever paying indemnity, and the
+review verified 100 indemnity claims a unit and group, so ERN's verified claims were the costlier remainder. The default
+path compared the two groups' mean verified claim and valued a team per place-day of an indemnity claim; the decisive
+step read the pilot per assigned intake (each group's share paying indemnity times its own verified severity) over an
+ERN intake's place-days. The ladder: per verified claim 0 3 0 3 2 3 3 3 at 2,048,524 (booked 2,000,000); the per-claim
+family 2.0 to 2.2 million; per assigned intake without the place-day 3,793,208, with an indemnity claim's place-days
+3,398,667, without the fill check 4,200,799; the golden 3 3 2 0 3 3 0 3 at 4,105,562 (booked 4,100,000), RW-SS held to
+the two teams its 944 intakes keep in use (teams listed HC-SS, HC-OT, RW-SS, RW-OT, MF-SS, MF-OT, CN-SS, CN-OT).
 
-## Ladder
+**Portal result, 2026-10-26.** Both responses placed three teams each in HC-SS, MF-SS, MF-OT, CN-OT and HC-OT, two in
+RW-SS and none in RW-OT or CN-SS, and booked the 4.1 million dollar credit, with the workbook and the note: the golden
+exactly.
 
-Every rung is a complete pipeline on the same literal estimand, computed by `checks.py` from the pack (5,227 pilot
-intakes, 1,600 verified claims, 2,613 ERN files); the golden and the default path again by `verify.py`.
+**Why it was reachable, and it is not a near miss.** Reading a randomised pilot per assigned intake is the textbook
+reading, analyse as randomised, which this note quoted as the client's pin, so readability test 3 fired on the decisive
+rung where the screen had recorded it silent; the default path it overturned conditions on a status the treatment
+moves, which a strong analyst refuses by reflex. And the whole ladder sat inside the register's two arms: once a reader
+read the arms per intake, nothing in the pack was left to find.
 
-| Rung | Saving | Place-days | Fill check | Teams (HC-SS HC-OT RW-SS RW-OT MF-SS MF-OT CN-SS CN-OT) | Credit (unrounded) | Booked |
-|---|---|---|---|---|---|---|
-| R0 (default) | per verified claim | an indemnity claim's | at an indemnity claim's | 0 3 0 3 2 3 3 3 | 2,048,524 | 2,000,000 |
-| R0' | per verified claim | a sampled claim's | at a sampled claim's | 0 3 0 3 2 3 3 3 | 2,048,360 | 2,000,000 |
-| R1 | per claim times ERN's rate | an ERN intake's | at an intake's | 0 3 0 3 2 3 3 3 | 1,985,501 | 2,000,000 |
-| R1' | per claim times usual handling's rate | an ERN intake's | at an intake's | 0 3 0 3 3 3 2 3 | 2,081,829 | 2,100,000 |
-| R1b | per verified claim | an ERN intake's | at an intake's | 0 3 0 3 3 3 2 3 | 2,248,360 | 2,200,000 |
-| R2b | per assigned intake | an indemnity claim's | at an indemnity claim's | 3 2 3 0 3 3 0 3 | 3,398,667 | 3,400,000 |
-| R2 | per assigned intake, ranked per intake | an ERN intake's | at an intake's | 3 3 0 2 3 3 0 3 | 3,793,208 | 3,800,000 |
-| R3 | per assigned intake | an ERN intake's | none | 3 2 3 0 3 3 0 3 | 4,200,799 | 4,200,000 |
-| R4 golden | per assigned intake | an ERN intake's | at an intake's | 3 3 2 0 3 3 0 3 | 4,105,562 | 4,100,000 |
-
-- **Separation.** The per-claim family (R0 to R1b) files 2.0 to 2.2 million with healthcare and retail strains empty;
-  the per-intake family without the place-day (R2) or with an indemnity claim's place-days (R2b) puts a team in retail
-  other injuries or a third in retail strains and books 3.4 to 3.8 million; the golden saving without the fill check (R3)
-  books 4.2 million. Every rival misses the credit by at least one 100,000 bin and the allocation by at least two teams.
-- **Position.** The golden credit sits 44,438 under the 4,150,000 edge and 55,562 over 4,050,000; every team saving sits
-  at least 1,892 dollars from its 10,000 edge (RW-SS 286,892), asserted at 1,500.
-- **The decisive move.** R0 to R4 moves healthcare strains from 34,106 to 292,364 dollars a team-year, retail strains
-  from 28,214 to 286,892, manufacturing strains from 56,016 to 281,996; it reverses the per-claim ranking (strains last
-  to strains first) and no lower correction reaches it (R1, R1b, R2, R2b asserted).
-- **The cut.** HC-OT (191,656) is the last unit funded and RW-OT (130,715) the first left out, 1.47 times apart; RW-SS
-  keeps two teams' places in use (944 intakes in the twelve months to September 2026 at 18.85 place-days, 2.44 teams'
-  worth), every other funded unit four or more.
-- **Worth on the graded figures.** The default path keeps 3 of 8 team counts (HC-OT, MF-OT, CN-OT) and none of the eight
-  team savings or the credit; R3 keeps the eight team savings and six team counts.
-
-## Closure table
-
-| # | Axis | Reading and move |
-|---|---|---|
-| 1 | Population | the pilot: every intake on the register, as assigned (SF13); the 2027 credit: the AY2027 intakes the teams take (PM 2), at run rate (PM 3); members not yet observed: the 2027 intakes, carried at the pilot's per-intake measures (PM 5) |
-| 2 | Unit of account | the intake (the randomised and the decided unit); teams per segment; dollars of ultimate indemnity; the team-year of 7,300 place-days (PM 3) |
-| 3 | Attribution window | pilot triage dates 1 March 2023 to 28 February 2025 (the register); the review's valuation 30 June 2026; 2027 at run rate |
-| 4 | As-of dating | extract and payments pulled 30 September 2026; the register 7 March 2025; the case log 4 August 2025 (every pilot file closed, asserted); verified amounts at 30 June 2026 |
-| 5 | Version basis | the signed charter (supersedes the drafts); the review as issued |
-| 6 | Denominator | each group's intakes on the register for the rate (SF13, SF14); each ERN intake for the place-days (Ch 5.1 to 5.3) |
-| 7 | Weighting | none: group rates and sample means within a segment; a sample weighted to its frame gives the same mean within a stratum (SF15) |
-| 8 | Window length | the whole pilot; the fill check on any forecast basis (SF5) |
-| 9 | Boundary inclusivity | a place-day counts its first and last days (Ch 5.3, SF11); pilot triage dates inclusive |
-| 10 | Rounding path | unrounded throughout; team savings to 10,000 and the credit to 100,000 once (SF18 converges) |
-| 11 | Tie-break | none at the cut (SF19) |
-| 12 | Maturity and censoring | every pilot file closed by the log's export; every pilot indemnity status fixed by 30 June 2026 (SF14); open claims projected by the review (PM 4: open and closed alike) |
-| 13 | Order of operations | value, then rank, then three a unit, then the fill limit: a unit's teams are the least of three, its fill limit and the teams left |
-| 14 | Row order | file order changes nothing (asserted: the register and the log reversed give the same figures) |
-| 15 | Duplicate resolution | the log's reopening rows are added to their file (Ch 5.2, SF12); register claims unique (asserted) |
-| 16 | Identity normalisation | the four claim-number forms resolve to one legacy number each (asserted: every review and log row matches exactly one register intake) |
-| 17 | Netting against gross | none on the call; Ask 2's voids and returns (SF25, SF26) |
-| 18 | Dimensional units | dollars and cents; place-days; 365 days and twenty places a team |
-| 19 | Code and status semantics | claim types, groups, closure reasons, payment statuses in the dictionary (field semantics, never the stump) |
-| 20 | Integerisation | whole teams; the fill limit floored (a team whose places would sit empty is not given) |
-| 21 | Clause scope | PM 4's verified amounts are the credit's; the charter's fill rule over the year (SF4) |
-| 22 | Forward window contents | 2027's intakes: the units' own history in the extract (SF5); the per-intake saving and place-days: the pilot's |
-
-## Literal reader
-
-Executed word for word, the pick memo defines the credit once, as the ultimate indemnity that the AY2027 intakes the
-teams take will not pay because the teams took them, at run rate (7,300 place-days a team), at the review's verified
-ultimates, each segment at what its pilot measured; the charter defines the places, the three-a-unit limit, the fill
-rule over the year, the place-day, and that an intake no team takes stays with its adjuster (4.2). The literal reader
-must estimate, from the pilot, what a segment's intakes pay under each group: the register gives every intake and its
-group, the extract which of them paid indemnity, the review the verified amount of a sample of those that did, and the
-log the place-days each ERN intake held. Read literally, the indemnity the intakes will not pay because a team took them
-is what they would pay staying with their adjusters, as usual handling's intakes did, its rate times its severity, less
-what ERN's intakes paid; the randomised design rules out every other comparison (SF20). Every term in the fork table
-resolves to one reading or converges. The asks read literally too: the dictionary files what an intake is in the
-extract's own fields and what its flag holds on converted claims (SF21), that a parallel-run claim is listed twice and on
-which fields its two rows agree (SF22), and that a payment's amount repeats on each of its lines (SF24); the bank's
-return file and the register's status close the returned EFTs and the voided checks (SF25, SF26), and the claims
-system's merge file the claims merged into other claims (SF28).
-
-## Oracles
-
-- **None on the call path.** No saving, evaluation, placement, scorecard or prior credit ships; the review states what it
-  verified and refuses an effect (R 1.2).
-- **The review's totals** (the 1,600 claims' $9,747,283.11 in R 5.1 and the sheet totals) are sums of the verified
-  amounts every comparison reads alike; they tie under every basis.
-- **The review's frame count** (4,339 pilot claims with indemnity, R 3.1) is the register's intakes that paid indemnity in
-  both groups together; the per-claim and per-intake readings both reproduce it, and it does not split by group.
-- **The ask paths** (the payments, the ACH returns, the merge file, the 2025 intakes): no rung of the call reads them;
-  no merged claim is reported in the call's window or is a converted (pilot) claim, asserted.
-
-## Ask sheet
-
-**Main call's declared row population:** every row of the register, the case log, the review workbook and the
-crosswalk; the extract's `legacy_claim_no` and `claim_type` on the 5,227 pilot claims (all converted, reported March
-2023 to February 2025) and its intakes reported October 2025 to September 2026 (all new-system rows, flag as written)
-for the fill check; the charter and the memo. The asks' devices live in the extract's rows reported in 2025 (the
-converted rows' flag, the parallel-run copies, the merged second claims of June to September 2025), in the claims
-system's merge file, and in the payment register and the bank's return file, which no rung of the call reads.
-`checks.py` asserts the call unchanged with the payments, the returns and the three distractors removed, the fill check
-unchanged with the merge file removed or unread, and the call unchanged with every 2025 row's flag as filed and every
-copy kept in the fill check (SF5). Zero device rows sit in the call's population: no merged claim is reported in
-October 2025 to September 2026, and none is a converted claim.
-
-Both asks, eight segments each (16 figures), are what the segments' claims cost now, set beside the credit in the note:
-a measure every candidate carries that the call does not turn on.
-
-**Ask 1. Each segment's intakes reported in 2025** (8 figures, whole numbers).
-- H18 home: the volume each unit's teams would draw from, beside the placement; the call reads the units' latest twelve
-  months and does not turn on 2025 (SF5).
-- Construction: the extract's claims reported in 2025 in each segment whose first report recorded time lost (charter
-  4.1), which the dictionary files as `disability_began` on or before `report_date`: the flag on new-system rows, the
-  dates on the rows converted at the 2 June 2025 upgrade, whose flag holds the legacy LOST_TIME indicator; each claim
-  keyed in both systems in the 29 May to 1 June parallel run counted once, its two rows paired on the six fields the
-  dictionary names (62 pairs, one to one; the four converted claims there with no new-number twin count as listed);
-  each claim merged into another claim counted with the claim it joined (`claim_merges_2025.csv`).
-- Primary device (D1 with its evidence split, a resubmission that opened a second claim, the merge recorded in a file no
-  habitual join reaches): from the upgrade until its duplicate check on first reports was switched back on (15
-  September 2025), a first report an employer's EDI sent again set up a second claim, and claims staff merged each
-  second claim into the first as they came across it. In the extract each second claim is an ordinary new-system row:
-  its own number, the first report's office, segment, class, injury and disability dates and flag, received 2 to 12
-  days after the first, medical only, closed on its merge date; nothing on it or on its claim points at the other, and
-  the two share no key. The merges are only in the claims system's merge file (92 rows: 86 merged claims on the
-  extract, 4 to 17 a segment, and six second claims of first reports that recorded no time lost, off the extract),
-  which the dictionary describes flatly and no filed rule names. The tell is a medical-only claim closed within weeks
-  whose first-report fields repeat another claim's a few days earlier, which genuine same-day claims also do (148 groups
-  on the six fields, more on five), so a dedup on the extract over-cleans.
-- Seen hazards: the converted claims' flag (D2) and the parallel run's double listing (D1), both filed in the dictionary
-  since the stage 4 judge: the cracker executes them, and each still moves every segment when mishandled.
-- Path (5 files, 10 columns): the extract (`claim_no`, `legacy_claim_no`, `segment`, `report_date`,
-  `disability_began`, `time_off_at_report`, `office`, `class_code`, `injury_date`), the merge file (`claim_no`), the
-  dictionary, the charter (4.1), the crosswalk.
-- Stops (asserted): S1 the natural read, the flag as filed on every row and the merges unread (1,638, 864, 1,002, 738,
-  1,453, 819, 1,187, 706): 8 of 8 off; S2 the cracker, the dictionary executed and the merge file unread (1,554, 830,
-  950, 712, 1,367, 777, 1,118, 672): 8 of 8 off, 4 to 17 high; S3 both claims of each merge dropped: 8 of 8 off, 4 to 17
-  low; S4 a dedup on office, segment, class, injury and disability dates across the year in place of the merge file: 8
-  of 8 off, 23 to 186 low; with the merges read, the flag as filed is 24 to 80 high, both parallel-run listings 2 to 9
-  high, the strict dates 37 to 124 low, every converted claim of the parallel run dropped 3 of 8 low and a dedup on the
-  six fields 3 to 34 low; answer 1,537, 822, 939, 708, 1,356, 770, 1,109, 666. Lazy delta: S1 wrong on 8 of 8.
-- Realism: a go-live that lost a duplicate check for a few months, employers' EDI resending first reports when no
-  acknowledgment came back, and claims staff merging the second claims as they found them, leave a merge table in the
-  claims system and medical-only stubs in its listing, the way a conversion leaves a legacy flag and a parallel run a
-  double keying.
-
-**Ask 2. The indemnity paid on each segment's claims, January to September 2026** (8 figures, nearest 1,000 dollars).
-- H18 home: what each unit's claims pay now, beside the credit; the call reads the verified amounts and never the payments.
-- Construction: each payment issued 1 January to 30 September 2026 once, its claim's segment on the extract; voided checks
-  out and their replacements in; the EFTs the bank returned out and the checks re-issued for them in.
-- First device (D6, an event's quantity on every line it covers): the register lists one line for each week a payment
-  covers and carries the payment's amount on each line, so summing lines counts a two-week payment twice. Since the
-  stage 4 judge the dictionary files the amount as the payment's, repeated on each line (seen); the tell is still a
-  payment whose lines all show the same amount.
-- Primary device (D4, absence evidenced in a file no habitual join reaches): 275 EFTs the claimants' banks returned stay
-  in the register as issued; the returns are only in the bank's file, keyed by trace number, 271 of them paid again by a
-  check for the same claim, benefit, payee, period and amount, the other four returned on 29 September 2026. No
-  sentence narrates it: the bank's file is the dictionary's ACH return items and nothing more.
-- Hazard (seen, repaired right): 85 voided checks carry status VOID with their replacement as a new payment.
-- Path (4 files, 10 columns): the register (`payment_no`, `line`, `claim_no`, `amount`, `status`, `method`,
-  `check_or_trace`, `issue_date`), the bank's file (`trace_number`), the extract (`claim_no`, `segment`), the dictionary.
-- Stops (asserted): S1 every line, returns in: 8 of 8 off (1.66 to 1.86 times); S2 each payment once, returns in: 8 of
-  8 off (10,300 to 50,186 dollars high); S3 lines summed, returns out: 8 of 8 off; answer 3,725,000, 4,652,000,
-  1,805,000, 3,993,000, 4,277,000, 5,233,000, 4,999,000, 7,282,000. Lazy delta: S1 wrong on 8 of 8.
-- Realism: payment registers export at line grain with the header amount joined on, and ACH returns arrive in the bank's
-  own file, not in the claims system.
-
-**Hazard table**
-
-| Hazard | Root cause | Moves | Per-ask delta |
-|---|---|---|---|
-| HA0 merged second claims (primary, silent) | EDI resends while the duplicate check was off, 2 June to 15 September 2025 | Ask 1 | every segment, 4 to 17 |
-| HA1 converted flag (seen, filed) | the 2025 conversion mapping | Ask 1 | every segment, 24 to 80 |
-| HA2 parallel-run copies (seen, filed) | double keying 29 May to 1 June 2025 | Ask 1 | every segment, 2 to 9 |
-| HB1 weekly lines (seen, filed) | the register's export grain | Ask 2 | every segment, 1.65 to 1.84 times |
-| HB2 ACH returns | claimants' closed or changed accounts | Ask 2 | every segment, 10,300 to 50,186 dollars |
-| HB3 voids | lost and stale checks | Ask 2 (seen) | every segment, 3,814 to 15,519 dollars |
-
-**The cracker sheet.** The cracker filed 4,100,000, ran the hygiene battery (keys unique, exact duplicates, every join
-matched, no fan-out, counts that tie), executed every filed rule and definition (the charter's intake, the dictionary's
-fields, grain statements and statuses):
-
-| Ask figures | The cracker's path | What keeps it wrong | Cracker result |
-|---|---|---|---|
-| Ask 1, 8 intake counts | claims reported in 2025 whose first report recorded time lost, read as the dictionary files it (the dates on converted claims), each parallel-run claim once on its six fields | the merged second claims, ordinary rows of the extract whose merges sit only in the claims system's merge file: every segment 4 to 17 high | miss |
-| Ask 2, 8 paid totals | issued payments in the window, each once (the dictionary's amount line), voids out, by the claim's segment | the returned EFTs only in the bank's file: every segment 10,300 to 50,186 dollars high | miss |
-| The placement, team savings, credit and chart (recommendation block, not asks) | from the pilot | carried by the call, scored with it | outside |
-
-The mirror sheet (the same response stopped at R0, 2,000,000) differs only on the recommendation criteria: no ask couples
-to the call.
-
-Mirror leakage: 8 per cent of the ask weight (method credit on the ask paths, no figure).
-
-**Pair arithmetic.** Planning weights 38 recommendation (eight team counts, eight team savings, the credit, the note's
-opening and chart), 7 instruction following, 55 asks over 16 figures (3.4 each). The cracker lands the call and cracks
-the most obvious devices, the filed ones (the converted flag, the parallel run's double listing, the repeated amount),
-and still misses every figure of both asks, each held by a device in a file its path never joins (the merge file, the
-bank's returns): C = 38 + 7 + 4.4 = 49.4 with the method credit; the mirror keeps r of about 5 (the files, the chart's
-form, the three team counts it shares): S = 5 + 7 + 4.4 = 16.4, a pair of 32.9. Both top responses on the call keep 49.4
-each, under 50. Cracking one ask's silent device as well adds 27.5: C = 76.9, a pair of 46.7.
-
-Pair ceiling: 32.9
-
-## Pins
-
-| Pin | Authority | What it fixes | Never says |
-|---|---|---|---|
-| Charter 2.1 to 5.3 and Appendix A | 2, the signed programme charter | seventeen teams, twenty places, one segment a team, three a unit, the fill rule over the year, the intake, the place-day, reopenings | how the saving is estimated, a rate, a kept-at-work intake |
-| Pick memo 2 to 6 | 3, the chief pricing actuary's booking memo | the credit as the indemnity the teams' intakes will not pay because the teams took them; run rate; the verified amounts; each segment's own measure; indemnity only | a comparison of the groups, a frequency, a sample |
-| Review report 3.1 to 4.4 | 5, the consultant's method notes | the frame, the strata and the sample, the blind verification, the projection of open claims | an effect, a group's frame size |
-| The dictionary | 4 | field semantics and grain: claim types; the flag in the extract's own fields and what it holds on converted claims; the parallel run's double listing and the six fields its rows share; statuses; a payment's amount repeated on each line | how the pilot is read, anything on the call's path beyond what a field holds |
-
-## Prompt
-
-`prompt.txt`, 817 characters, gated by `voice-check.py` (PASS): the call as a question with its pick, the workbook's
-placement (each segment's teams and what one team there saves in a year, the total), the note's opening and chart, the
-two asks tied to the note by one motive (what the segments' claims cost now), rounding once at the close (team savings
-to 10,000, the total to 100,000, the paid indemnity to 1,000, intakes whole).
-
-## Build record
-
-- **Generator.** `python3 generator/build.py` writes `target/` (16 files, 4 formats; the extract 59,875 rows, the
-  payment register 63,135), `golden/` (2), `metadata.json`, `generator/figures.json` and `target.zip`; runs `checks.py`
-  (343 assertions: the input gates, R1 to R3c on the clean truth, every SF row, the ladder and every figure this note
-  states, the asks' stops, separation, bins, the realism sweep, the registers and the dates) and `verify.py` (the
-  placement, the credit, the default path and both asks recomputed from the bundle alone with the csv module and
-  openpyxl); then builds again and compares every byte: identical.
-- **Write-up and gates.** `figures_check.py` 67 figures, none absent; `voice-check.py` PASS; `precut.py` 49 checks, 0
-  FAIL, 0 WARN (after the FIX_NOW pass it was red on the ask sheet until the Ask 1 redraw below).
-- **golden-realism.** The note: memo block, a finding as title, the basis paragraphs lopsided toward the call, the
-  table with its total, a true footnote from the memo (run rate, the 30 June 2026 valuation, indemnity only), the chart
-  with direct labels and the funded, capped and unfunded bars told apart. The workbook: named sheets, frozen headers,
-  formats per column, a Notes sheet with definitions, exclusions, rounding and the as-of.
-- **reduce-house-fixes.** H1: the container audit is clean on `target/` (floor 2023-01-01, ceiling 2026-11-09) and
-  `golden/`; the draft charter is saved as Word leaves it (the library template's bibliography part, effects styles,
-  blank preview, Mac namespaces and fixed ids out, its styles cut to those used, its counts from its text). H3: the
-  write-up's and the note's default-path clause now say the healthcare and retail strain units get no team (the per-claim
-  reading still gives construction and manufacturing strains teams). H4: the zip's members equal `target/` byte for
-  byte. H8: every citation resolves (charter 3.2, 3.3 and section 5, pick memo 3 to 5). H9: the manifest lists every
-  shipped file and the dictionary's scope line names its six files, asserted. H11: one `prompt.txt`, one
-  `submission.md`. H16: no extract, void, bank-return or survey date past its pull, asserted. H2: every figure in this
-  note is asserted in `checks.py`. The charter's Appendix A writes each office with its code, so no city name runs into
-  the next row's first word.
-- **leak.py** (`--asof 2026-11-09`): REVIEW, seven lines, each harmless. The pick memo names Early Return Nursing, the
-  programme the prompt names. The signed charter carries the call's distinctive words because Appendix A lists the eight
-  segments and their units; it places no team. The pick memo, the draft, the signed charter and the review use the
-  programme's own words (intake, verified, place-day, assigned, sample) and none names the comparison: the memo files
-  what the credit is, the charter the place-day and the fill rule, the review its frame and sample and that it
-  estimates no effect, the draft nothing on placement. The staffing plan's 2027 dates are the 2027 plan's own.
-- **guard.py.** `check` PASS (NOTE `same_driver_older`, differentiated against task452 v2); `validate` clean; `surface`
-  exit 0, its people Gregory Friedman, Joanna Sullivan, Julie Winters and Kathleen Reilly, all on the card ("Early
-  Return" and "Missouri Early" are the programme's name and a heading after a place name), two pairs promoted for an
-  adjudicated read: task229 (surface 0.102, a hydrometry monitoring build, no shared mechanism) and task452 (gap,
-  pattern, Gate G and calibration form shared, differentiated on the card); `heart` PASS (nearest 0.06, task128's
-  ledger row).
-- **Stage 4, the leak reader** (medium, isolated): no leak; nothing quoted for Q1 to Q4; Q5 no sentence fixes the
-  estimator; Q6 analytical, the reader itself describing the per-intake route and naming the easy routes; its realism
-  tells (uniform KPA references and control digits, formulaic remarks, the memo's "AY2027 pick memo 4") and its
-  readings (VOID checks and ACH returns in the paid ask) taken into the FIX_NOW pass. Its read is appended to
-  `leak_check_report.md`.
-- **Stage 4, the judge** (medium, isolated): NOT_DETERMINISTIC on supplementary 3 only, FIX_NOW
-  (`determinism_check_report.md`); the main call, supplementary 1, 2 and 4 reproduce; Gate F moderate to good; Gate G
-  `binding_constraint`, `analytical_non_defect`; Gate H domain and layers pass, the decisive step analytical, borderline
-  toward rule application on memo paragraph 2.
-- **The FIX_NOW pass** (`freeze.py` snapshot first; the call, the stump and the ladder frozen). Supplementary 3: the
-  golden's filter is charter 4.1's intake (a first report recording time lost) with the parallel run's second listings
-  out, and it is the organisation's own definition, so it is filed as a WHAT in the dictionary (SF21, SF22): the
-  flag's definition in the extract's fields, what it holds on converted claims, the double listing and its six fields.
-  The counts do not move (1,537, 822, 939, 708, 1,356, 770, 1,109, 666); the dictionary executed literally reproduces
-  them on its own code path in `checks.py` and `verify.py`, and the flag as filed, the strict dates, both listings kept,
-  every converted claim of the parallel run dropped and a dedup across the year each miss. The call's fill check reads
-  the same definition (every row of October 2025 to September 2026 is a new-system row, flag and dates equal on each).
-  Supplementary 4: the dictionary's `amount` is the payment's, repeated on each line; VOID reads "voided before it was
-  cashed"; the returned EFTs stay closed by the bank's return file alone (271 of 275 paid again by check, the four
-  returned on 29 September not yet), so Ask 2 keeps its silent primary. Memo paragraph 2 states the credit once, what it
-  is, its restated comparison of what the intakes would pay under each group cut. Realism, figure-neutral: the review's
-  references are workpaper sections B1 to B8 with item numbers in the blind order the files were worked, its remarks
-  vary in form, date style and rate by sheet, and the memo carries Pricing's reference PR-2026-041; the control digit
-  stays (it sits on the call's join). Changed under `target/`: the dictionary, the pick memo and the review workbook;
-  the golden workbook's Notes line follows the dictionary. `freeze.py check` PASS in rubric and in determinism mode
-  (no graded figure moved). It left Ask 1 with no silent device: precut red on the ask sheet (pair ceiling 58.2,
-  mirror leakage 54, the cracker landing Ask 1), redrawn next.
-- **The Ask 1 redraw** (rubric mode; the call, the placement, the credit, Ask 2 and every graded figure frozen). The new
-  primary is the claims system's merge file: from the upgrade until the duplicate check on first reports was switched
-  back on (15 September 2025), an employer's EDI resend set up a second claim, merged into the first when found (92
-  merges in 2025, 86 merged claims on the extract, 4 to 17 a program segment, six off it). The merged claims are new
-  rows of the extract and take new-system numbers in report order, so later new-system claims renumber; the payment
-  register and the bank's returns change only in those numbers (every other column identical, Ask 2 asserted to the
-  cent), and the extract without the merged claims is the old extract bar the numbers. Ask 1's figures do not move
-  (1,537, 822, 939, 708, 1,356, 770, 1,109, 666); the cracker's path lands 4 to 17 high on every segment; the fill
-  check's window holds no merged claim. SF28 asserts both readings and the over-cleaning dedup; the cracker sheet misses
-  both asks and the pair is back to 32.9. Changed under `target/` since the stage 3 pack, cumulatively: the dictionary,
-  the pick memo, the review workbook, the export manifest, the new claim merge file, and (numbers only, plus the 86
-  merged rows in the extract) the claims extract, the payment register and the ACH returns. Owed: the targeted re-read
-  and the one re-judge.
-- **Ship** (2026-10-15): the targeted re-read found no leak and the re-judge returned DETERMINISTIC and APPROVE with no
-  fix (`determinism_check_report_pass2.md`); `target.zip` is cut from the final rebuild, byte-identical to the judged
-  pack; guard heart PASS, validate clean, precut 0 FAIL, leak.py REVIEW on the same seven lines.
-
-## Pre-ship check
-
-Written at stage 5 against the built pack (the stage 4 FIX_NOW pass and the Ask 1 redraw in); the reader and judge
-lines are stage 4's and the re-judge's.
-
-1. Domain: the deciding quantity is a workers' compensation pure premium per intake, each group's share of intakes
-   paying indemnity times its verified ultimate severity, read from a randomised pilot and valued per nurse place-day;
-   with a hospital's nouns there is no three-day waiting period, no intake that pays nothing because the worker is
-   back on suitable duties and no ultimate indemnity across TTD, TPD and PPD, and with the comparison read per
-   verified claim the call moves to 2,000,000 with the healthcare and retail strain units empty.
-2. Real work, nothing planted: claim numbers written four ways, segment codes recoded at the upgrade, the review's
-   eight sheets with control digits, a case log with reopenings and US dates, an extract mixing intakes with later
-   conversions, a superseded draft; on the ask paths the converted claims' legacy flag, the parallel run's double
-   listing, the EDI resends merged into their claims, a payment register at line grain, voided checks and the bank's
-   returns. Each is what these systems write; each mishandled leaves the call and every component where they were (R2,
-   asserted), and the call is unchanged with every ask file removed.
-3. The flip is a method choice: reading the randomised pilot per assigned intake, frequency and severity together,
-   instead of per verified indemnity claim; no field, unit or stated rule decides it, and the default path reads every
-   filed rule the same (R3a on the clean truth: the strain units empty).
-4. The analyst test holds: the default path files 2,000,000 (2,048,524) with HC-SS and RW-SS empty; the per-claim
-   family files 2.0 to 2.2 million, the per-intake saving without the place-day or with an indemnity claim's 3.4 to
-   3.8 million, the golden saving without the fill check 4.2 million; only the decisive rung files 4,100,000, on the
-   pack and on the clean truth (R3b).
-5. One defensible answer: pick memo 2 to 5 and charter 2.1 to 5.3 file the estimand and the rules; the 28 fork rows
-   are each asserted; the fill check keeps RW-SS at two teams on every base SF5 asserts (2.33 to 2.65 teams' worth),
-   every other funded unit 3.97 or more.
-6. No decoy: no file states a saving, a placement, an evaluation or a credit; the review refuses an effect (R 1.2);
-   the draft charter, the worker survey and the staffing plan are declared distractors, each deleted with the call and
-   every ask unchanged.
-7. Nothing hidden and recovered: no certified saving or past placement ships to reproduce; the review's totals and
-   frame count tie under every basis.
-8. A new lesson: a randomised intervention that moves its units out of the recorded costly class is valued per
-   assigned unit, each arm's own conversion times its own severity, and a capacity-bound team per unit of the capacity
-   an assigned unit holds; no build on file reads a randomised pilot per assigned unit for that reason.
-9. Leak reader (stage 4): no leak; Q1 to Q4 none; Q6 analytical; its realism tells fixed at stage 4. The targeted
-   re-read of the dictionary, the pick memo, the review workbook, the manifest and the merge file: no leak, Q6
-   analytical; its note that the dictionary's parallel-run and converted-flag lines read as briefing is recorded and
-   left (both filed for determinism).
-10. Judge (stage 4): NOT_DETERMINISTIC on supplementary 3 only, FIX_NOW applied (`determinism_check_report.md`). The
-   re-judge: DETERMINISTIC, APPROVE, every figure reproduced; Gate H domain and layers pass, the decisive step
-   analytical; stump power moderate; the merged-claim reading a mild fork, asserted both ways (SF28); the optional
-   metadata dates left (`determinism_check_report_pass2.md`). The rubric's exposure is Ask 1, which rests on one silent
-   device since its first two were filed; the pair on paper is 32.9.
-
-## Portal result and the stage 2 diagnosis, 2026-10-26
-
-**Both portal responses landed the call.** Response 1 and response 2 each placed three teams in HC-SS, MF-SS, MF-OT,
-CN-OT and HC-OT, two in RW-SS and none in RW-OT or CN-SS, and booked a 4.1 million dollar AY2027 credit, with the
-workbook and the note: the golden exactly.
-
-**Why it was reachable, and it is not a near miss.** The decisive step was reading the pilot per assigned intake (each
-group's own indemnity-claim rate times its own verified severity) instead of per verified indemnity claim. That is the
-textbook reading of a randomised pilot, analyse as randomised, which the note itself quotes as the client's pin, so the
-readability screen's test 3 fires on the decisive rung where the screen recorded it silent; the default path it
-overturned conditions on a status the treatment moves, which a strong analyst refuses by reflex. And the whole ladder
-sat inside the register's two arms: once the arms were read per intake, nothing in the pack was left to find.
-
-**The structural constraint this leaves.** Inside the two arms the per-intake contrast is unbiased and the design forces
-it, so every further step there is either a stratification of it (the triage tier, the office), which is the opponent's
-first group-by, or a transport of its average onto the intakes the teams reach in 2027, which is task177 v2's driver and
-whose population would have to be filed. The re-root has to find something the two arms share that the 2027
-counterfactual does not have.
-
-**The re-root candidate, measured on paper.** What the arms share is the pilot's opening call. Every drawn intake was
-called by a pilot nurse on its triage day, the worker and the employer's contact, to assess it before its pair was
-split, and the assessment's own question about suitable duties is the lever that keeps a strain intake inside the
-waiting period. In 2027 a unit's team calls every intake the unit reports and files the ones it has places for, while a
-unit with no team sends its intakes to their adjusters on report, as the two in three intakes the pilot never drew were
-handled. Run through this world's own courses (200,000 intakes a segment, the call taking most of what architecture 1's
-nurses kept at work): healthcare strains pay 2,857 dollars an intake with no call, 2,317 with the call and 1,972 with the
-call and a file, so the randomised contrast is the file's increment (345 dollars) and misses the call's 540, and per
-indemnity claim the call is invisible (3,357 against 3,429 dollars, the costlier remainder again). The call reaches every
-intake of a unit with a team, 891,000 dollars a year in HC-SS, while each team's files add 104,000. Read through the
-register alone the teams go HC-SS 2, RW-SS 0, MF-SS 3, CN-SS 0 and three to each other-injury unit at a 2.7 million
-credit; the call and file per served intake (this architecture's own golden, now a rung) files 3 3 2 0 3 3 0 3 at 4.0
-million; the golden is HC-SS 1, HC-OT 3, RW-SS 1, RW-OT 3, MF-SS 2, MF-OT 3, CN-SS 1, CN-OT 3 at 5.6 million. Large, not
-the domain's reflex (nothing tells a reader that a randomised control arm is not the counterfactual), and recoverable
-exactly from the intakes outside the pilot, which the claims extract already lists and a reserve review already samples.
+**The constraint it leaves.** Inside the two arms the per-intake contrast is unbiased and the design forces it, so any
+further step there is a stratification of it (the triage tier, the office), the opponent's first group-by, or a
+transport of its average onto the intakes the 2027 teams reach, which is task177 v2's driver and needs that population
+filed. Architecture 2 finds what the two arms share that the counterfactual lacks: the opening call.
 
 ## Tried and rejected
 
@@ -689,3 +335,20 @@ exactly from the intakes outside the pilot, which the claims extract already lis
   two arms, so a reader who reads the arms per intake has nothing left to find. Every further step inside those arms is
   a stratification of the contrast or a transport of its average, both spent or filed. The re-root is recorded in
   `## Portal result and the stage 2 diagnosis`.
+- 2026-10-26, at the architecture 2 draw: the triage tier as the decisive step (2027 teams take intakes highest
+  predicted lost time first, so a unit's teams reach the top of its tier distribution, where the file saves least in the
+  strain units and most in the other-injury units). Measured on paper (200,000 intakes a unit, five tiers): the golden
+  4.28 million against the pilot average's placement at 4.16 million, both booking 4.3 million, so the credit did not
+  separate; the stratification by tier is the opponent's first group-by, the teams' population has to be filed, and the
+  driver is task177 v2's (a randomised average carried to the part of the population the deployment reaches).
+- 2026-10-26, at the draw: employer spillover (a nurse's suitable-duty work at an employer also helping its
+  usual-handling claimants), the randomised contrast understating the at-scale effect: the interference family of
+  task131 v1 and task249, a parent unit's shared resource; dropped unmeasured.
+- 2026-10-26, at the draw: the file's effect falling with the team's load (the pilot ran below the full load 2027
+  teams will carry), a dose-response read from the pilot's daily open-file counts: a fitted curve with a free form,
+  and a randomised average carried to one covariate value again; dropped.
+- 2026-10-26, at the draw: the pilot's claims developed to ultimate arm by arm (a file closing claims sooner, so one
+  set of book factors overstates ERN's ultimates): the chain-ladder variants a reader would defend fork the graded
+  figures (stumping 1.6a's task194 death), and the review already projects the open claims; dropped.
+- 2026-10-26, at the draw: segment savings blended by credibility before placing: shrinkage is the opponent's reflex,
+  and the credibility standard would have to be filed, which is the method; dropped.
