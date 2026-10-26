@@ -1,68 +1,118 @@
 {
  "task": "task486",
- "domain": "General Statistics & Data Science (data integration, record linkage and entity resolution)",
- "client_domain": "General Statistics & Data Science",
- "task_type": "data-integration-record-linkage-entity-resolution",
- "objective": "Data Extraction & Conformation (ETL)",
- "distractor_files": [
-  "pit_2026_counts_by_coc.csv",
-  "hic_2026_inventory.xlsx"
- ],
- "distractor_reasons": {
-  "pit_2026_counts_by_coc.csv": "the region's 2026 point-in-time count by Continuum, people sheltered and unsheltered on the night of 28 January 2026; a one-night count, not the FY2026 people served that policy RF-2027 section 2 splits the fund on, so no figure reads it",
-  "hic_2026_inventory.xlsx": "the 2026 housing inventory count, each project's beds and units on that night; a capacity inventory that no people-served count, night or wait is computed from"
- },
- "wrong_basis_distractors": {
-  "pit_2026_counts_by_coc.csv": "ranks the Continuums by one night's count; ruled out by RF-2027 section 2, which splits the fund in proportion to the people each recipient served in FY2026"
- },
- "stated_inputs": [
-  "policy RF-2027",
-  "FY2026",
-  "2027 Fund",
-  "each quarter of FY2026",
-  "whole dollars",
-  "whole numbers",
-  "one decimal"
- ],
+ "title": "The 2027 Town Centre Renewal Fund: which designated town centres qualify",
+ "setting": "A fictional self-governing island nation, Torvasay, whose statistics office compiles each designated town centre's workplace retail employment from the tax authority's PAYE returns, the valuation office's rating lists and the district councils' business rates accounts: the island, its bodies, the firms and the people are fictional, and every record is synthetic.",
+ "as_of": "2026-10-29",
  "deliverables": [
-  "halvering_2027_fund_allocation.xlsx"
+  "town_centre_fund_2027_eligibility.xlsx",
+  "town_centre_retail_employment_2022_2026.png"
  ],
- "as_of": "2026-10-14",
+ "distractor_files": [
+  "target/town_centre_footfall_daily_2021-2026.csv",
+  "target/labour_force_survey_employment_by_industry_2022_2026.xlsx"
+ ],
+ "stated_inputs": [
+  "8 per cent",
+  "March 2022 and March 2026"
+ ],
  "files": [
-  "data_inventory.csv",
-  "dvc_comparable_db_export.xlsx",
-  "hic_2026_inventory.xlsx",
-  "hmis_client_fy2025_fy2026.csv",
-  "hmis_enrollment_fy2025_fy2026.csv",
-  "hmis_exit_fy2025_fy2026.csv",
-  "hmis_services_fy2025_fy2026.csv",
-  "hot_field_app_contacts.jsonl",
-  "partnership_extract_guide.txt",
-  "partnership_project_register.xlsx",
-  "pit_2026_counts_by_coc.csv",
-  "regional_fund_policy_RF-2027.docx",
-  "sdlu_linkage_pairs_run_20261008.csv",
-  "sdlu_record_linkage_method_note_v3.pdf",
-  "wsh_hch_encounters_fy2025_fy2026.csv"
- ],
- "rows": {
-  "hmis_client_fy2025_fy2026.csv": 55701,
-  "dvc_comparable_db_export.xlsx": 9956,
-  "hmis_enrollment_fy2025_fy2026.csv": 85846,
-  "hmis_exit_fy2025_fy2026.csv": 70940,
-  "hic_2026_inventory.xlsx": 31,
-  "hot_field_app_contacts.jsonl": 30177,
-  "data_inventory.csv": 15,
-  "sdlu_linkage_pairs_run_20261008.csv": 99546,
-  "pit_2026_counts_by_coc.csv": 4,
-  "partnership_project_register.xlsx": 36,
-  "hmis_services_fy2025_fy2026.csv": 17912,
-  "wsh_hch_encounters_fy2025_fy2026.csv": 24854
- },
- "sources": {
-  "constructed": "every file is constructed for this task by its generator (task486/generator); the Halvering Valley region, its counties, Continuums of Care, the Homeless Data Partnership, the coalition, the clinic, the outreach team, the State Data Linkage Unit, their staff and every record and number in the files are fictional",
-  "public_specifications": "the HMIS files follow the HUD HMIS CSV layout and the HMIS Data Standards' project types, relationship, date-of-birth quality and destination codes (FY2024, and FY2022 for one vendor); the clinic's housing statuses are HRSA's UDS categories; the pair file follows the layout a privacy-preserving linkage service returns (per-field agreement codes and Fellegi-Sunter style scores)",
-  "licence": "CC0 1.0 (constructed data)",
-  "date": "2026-10-14"
- }
+  {
+   "file": "business_rates_accounts_2017-2026.xlsx",
+   "source": "The six district councils' business rates accounts with a liability, April 2017 to April 2026, as supplied to Torvasay Statistics (fictional, synthetic records)",
+   "date": "2026-05-12",
+   "license": "CC0-1.0 (synthetic, generated for this task)",
+   "rows": null
+  },
+  {
+   "file": "companies_register_extract_20260501.csv",
+   "source": "Torvasay Companies Registry, register extract (fictional, synthetic records)",
+   "date": "2026-05-01",
+   "license": "CC0-1.0 (synthetic, generated for this task)",
+   "rows": 24725
+  },
+  {
+   "file": "labour_force_survey_employment_by_industry_2022_2026.xlsx",
+   "source": "Torvasay Statistics, Labour Force Survey, residents in employment by industry and district (fictional, synthetic records)",
+   "date": "2026-06-11",
+   "license": "CC0-1.0 (synthetic, generated for this task)",
+   "rows": null
+  },
+  {
+   "file": "paye_extract_specification_v4.pdf",
+   "source": "Revenue Office, Statistics and Data Sharing, PAYE employer extract specification, version 4 (fictional, synthetic records)",
+   "date": "2026-05-11",
+   "license": "CC0-1.0 (synthetic, generated for this task)",
+   "rows": null
+  },
+  {
+   "file": "paye_returns_m12_2021-22.csv",
+   "source": "Revenue Office, PAYE employer extract, tax month 12 of 2021-22, layout version 3 (fictional, synthetic records)",
+   "date": "2022-05-16",
+   "license": "CC0-1.0 (synthetic, generated for this task)",
+   "rows": 27497
+  },
+  {
+   "file": "paye_returns_m12_2025-26.csv",
+   "source": "Revenue Office, PAYE employer extract, tax month 12 of 2025-26, layout version 4 (fictional, synthetic records)",
+   "date": "2026-05-18",
+   "license": "CC0-1.0 (synthetic, generated for this task)",
+   "rows": 27349
+  },
+  {
+   "file": "rating_list_2017_extract_20220404.csv",
+   "source": "Torvasay Valuation Office, 2017 rating list extract (fictional, synthetic records)",
+   "date": "2022-04-04",
+   "license": "CC0-1.0 (synthetic, generated for this task)",
+   "rows": 17609
+  },
+  {
+   "file": "rating_list_2023_extract_20260413.csv",
+   "source": "Torvasay Valuation Office, 2023 rating list extract (fictional, synthetic records)",
+   "date": "2026-04-13",
+   "license": "CC0-1.0 (synthetic, generated for this task)",
+   "rows": 17377
+  },
+  {
+   "file": "rating_list_extract_guide.pdf",
+   "source": "Torvasay Valuation Office, rating list extracts field guide (fictional, synthetic records)",
+   "date": "2026-04-13",
+   "license": "CC0-1.0 (synthetic, generated for this task)",
+   "rows": null
+  },
+  {
+   "file": "sic2007_subclasses.csv",
+   "source": "Torvasay Statistics, SIC 2007 subclasses in use in the extracts (fictional, synthetic records)",
+   "date": "2026-05-20",
+   "license": "CC0-1.0 (synthetic, generated for this task)",
+   "rows": 97
+  },
+  {
+   "file": "town_centre_footfall_daily_2021-2026.csv",
+   "source": "Department for the Economy, Town Centres Unit, footfall counters, daily counts (fictional, synthetic records)",
+   "date": "2026-04-06",
+   "license": "CC0-1.0 (synthetic, generated for this task)",
+   "rows": 76974
+  },
+  {
+   "file": "town_centre_renewal_fund_2027_prospectus.pdf",
+   "source": "Department for the Economy, Town Centre Renewal Fund 2027 prospectus (fictional, synthetic records)",
+   "date": "2026-09-07",
+   "license": "CC0-1.0 (synthetic, generated for this task)",
+   "rows": null
+  },
+  {
+   "file": "town_centre_schedule_2026.csv",
+   "source": "Department for the Economy, Town Centres Unit, postcode schedule of the designated town centres (fictional, synthetic records)",
+   "date": "2026-08-20",
+   "license": "CC0-1.0 (synthetic, generated for this task)",
+   "rows": 649
+  },
+  {
+   "file": "valuation_description_codes.json",
+   "source": "Torvasay Valuation Office, primary description codes (fictional, synthetic records)",
+   "date": "2023-02-14",
+   "license": "CC0-1.0 (synthetic, generated for this task)",
+   "rows": null
+  }
+ ]
 }

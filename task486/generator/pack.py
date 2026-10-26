@@ -1,300 +1,409 @@
-"""The pack's source files, written from the world as each system exports them: the four Continuums' HMIS client,
-enrollment, exit and services files (stacked by the Partnership's warehouse, each vendor's identifiers and date habits
-kept), the coalition's comparable-database workbook, the clinic's encounter extract, the outreach app's contacts, the
-linkage unit's pair file, the project register, and the 2026 point-in-time count and housing inventory."""
-import collections
+"""Writes the pack's records from the world and its timeline: the Revenue Office's two month-12 PAYE extracts in their
+own layouts, the Valuation Office's 2017 and 2023 list extracts and its description codes, the six districts' rate
+accounts in their billing systems' layouts, the companies register, the Department's centre schedule, the SIC 2007
+lookup, and the Department's footfall counts and 2025 health check."""
 import csv
 import datetime as dt
 import json
+import os
 
 import numpy as np
 import openpyxl
-from openpyxl.styles import Alignment, Font, PatternFill
+from openpyxl.styles import Alignment, Font
 
-import sim as S
+import names as N
+import timeline as T
 import world as W
 
-FILES = {
-    "client": "hmis_client_fy2025_fy2026.csv",
-    "enrollment": "hmis_enrollment_fy2025_fy2026.csv",
-    "exit": "hmis_exit_fy2025_fy2026.csv",
-    "services": "hmis_services_fy2025_fy2026.csv",
-    "dvc": "dvc_comparable_db_export.xlsx",
-    "vsm": "wsh_hch_encounters_fy2025_fy2026.csv",
-    "hot": "hot_field_app_contacts.jsonl",
-    "pairs": "sdlu_linkage_pairs_run_20261008.csv",
-    "note": "sdlu_record_linkage_method_note_v3.pdf",
-    "policy": "regional_fund_policy_RF-2027.docx",
-    "guide": "partnership_extract_guide.txt",
-    "register": "partnership_project_register.xlsx",
-    "pit": "pit_2026_counts_by_coc.csv",
-    "hic": "hic_2026_inventory.xlsx",
-    "inventory": "data_inventory.csv",
+BA_CODE = {"RKG": "5110", "DOR": "5120", "GLN": "5130", "ING": "5140", "NSH": "5150", "SKL": "5160"}
+SIC_TITLES = {
+    "01110": "Growing of cereals (except rice), leguminous crops and oil seeds",
+    "10710": "Manufacture of bread; manufacture of fresh pastry goods and cakes",
+    "10890": "Manufacture of other food products n.e.c.", "16100": "Sawmilling and planing of wood",
+    "25110": "Manufacture of metal structures and parts of structures", "25620": "Machining",
+    "28990": "Manufacture of other special-purpose machinery n.e.c.", "33120": "Repair of machinery",
+    "41201": "Construction of commercial buildings", "41202": "Construction of domestic buildings",
+    "43210": "Electrical installation", "43220": "Plumbing, heat and air-conditioning installation",
+    "43320": "Joinery installation", "43341": "Painting", "43390": "Other building completion and finishing",
+    "45200": "Maintenance and repair of motor vehicles", "46390": "Non-specialised wholesale of food, beverages and tobacco",
+    "46710": "Wholesale of solid, liquid and gaseous fuels and related products", "46900": "Non-specialised wholesale trade",
+    "47110": "Retail sale in non-specialised stores with food, beverages or tobacco predominating",
+    "47190": "Other retail sale in non-specialised stores",
+    "47210": "Retail sale of fruit and vegetables in specialised stores",
+    "47220": "Retail sale of meat and meat products in specialised stores",
+    "47230": "Retail sale of fish, crustaceans and molluscs in specialised stores",
+    "47240": "Retail sale of bread, cakes, flour confectionery and sugar confectionery in specialised stores",
+    "47250": "Retail sale of beverages in specialised stores", "47260": "Retail sale of tobacco products in specialised stores",
+    "47290": "Other retail sale of food in specialised stores",
+    "47410": "Retail sale of computers, peripheral units and software in specialised stores",
+    "47421": "Retail sale of mobile telephones", "47510": "Retail sale of textiles in specialised stores",
+    "47520": "Retail sale of hardware, paints and glass in specialised stores",
+    "47530": "Retail sale of carpets, rugs, wall and floor coverings in specialised stores",
+    "47540": "Retail sale of electrical household appliances in specialised stores",
+    "47591": "Retail sale of musical instruments and scores",
+    "47599": "Retail of furniture, lighting, and similar (not musical instruments or scores) in specialised store",
+    "47610": "Retail sale of books in specialised stores", "47620": "Retail sale of newspapers and stationery in specialised stores",
+    "47640": "Retail sale of sports goods, fishing gear, camping goods, boats and bicycles",
+    "47650": "Retail sale of games and toys in specialised stores", "47710": "Retail sale of clothing in specialised stores",
+    "47721": "Retail sale of footwear in specialised stores", "47730": "Dispensing chemist in specialised stores",
+    "47741": "Retail sale of hearing aids",
+    "47749": "Retail sale of medical and orthopaedic goods in specialised stores (not incl. hearing aids) n.e.c.",
+    "47750": "Retail sale of cosmetic and toilet articles in specialised stores",
+    "47760": "Retail sale of flowers, plants, seeds, fertilisers, pet animals and pet food in specialised stores",
+    "47770": "Retail sale of watches and jewellery in specialised stores",
+    "47781": "Retail sale in commercial art galleries", "47782": "Retail sale by opticians",
+    "47789": "Other retail sale of new goods in specialised stores (not commercial art galleries and opticians)",
+    "47791": "Retail sale of antiques including antique books in stores",
+    "47799": "Retail sale of other second-hand goods in stores (not incl. antiques)",
+    "47910": "Retail sale via mail order houses or via Internet", "49320": "Taxi operation",
+    "49410": "Freight transport by road", "52103": "Operation of warehousing and storage facilities for land transport activities",
+    "55100": "Hotels and similar accommodation", "56101": "Licensed restaurants", "56102": "Unlicensed restaurants and cafes",
+    "56103": "Take-away food shops and mobile food stands", "56302": "Public houses and bars",
+    "62012": "Business and domestic software development", "62020": "Information technology consultancy activities",
+    "64191": "Banks", "64192": "Building societies", "66220": "Activities of insurance agents and brokers",
+    "41100": "Development of building projects",
+    "68209": "Other letting and operating of own or leased real estate", "68310": "Real estate agencies",
+    "69102": "Solicitors", "69201": "Accounting and auditing activities", "69202": "Bookkeeping activities",
+    "70100": "Activities of head offices", "70229": "Management consultancy activities other than financial management",
+    "71111": "Architectural activities", "71129": "Other engineering activities", "74100": "Specialised design activities",
+    "78200": "Temporary employment agency activities", "80100": "Private security activities",
+    "81210": "General cleaning of buildings", "82990": "Other business support service activities n.e.c.",
+    "84110": "General public administration activities", "85200": "Primary education",
+    "85310": "General secondary education", "86101": "Hospital activities", "86210": "General medical practice activities",
+    "86230": "Dental practice activities", "87300": "Residential care activities for the elderly and disabled",
+    "88100": "Social work activities without accommodation for the elderly and disabled",
+    "88990": "Other social work activities without accommodation n.e.c.", "92000": "Gambling and betting activities",
+    "93110": "Operation of sports facilities", "93130": "Fitness facilities", "94910": "Activities of religious organisations",
+    "96020": "Hairdressing and other beauty treatment", "96090": "Other personal service activities n.e.c.",
 }
-SITE_COC = {"WSH-01": "HAL", "WSH-02": "HAL", "WSH-05": "HAL", "WSH-03": "MEL", "WSH-04": "OND", "WSH-MP": "PYR"}
-SITE_NAME = {"WSH-01": "Wayfarer Street Health, Fourth Street clinic", "WSH-02": "Wayfarer Street Health, "
-             "Harbor Street clinic (in Harbor Street Family Shelter)", "WSH-05": "Wayfarer Street Health, Riverside "
-             "clinic", "WSH-03": "Wayfarer Street Health, Melbray clinic", "WSH-04": "Wayfarer Street Health, Ondrava "
-             "clinic", "WSH-MP": "Wayfarer Street Health, mobile clinic (Pyrenna County days)"}
 
 
-def _iso(d):
-    return d.isoformat() if d else ""
-
-
-class Keys:
-    """Every source's own record keys, drawn once and stable for the build."""
-    def __init__(self, world):
-        rng = np.random.default_rng(W.SEED * 101 + 3)
-        self.rec = {}
-        used = set()
-        for r in sorted(world.records, key=lambda r: (r["src"], r["pid"])):
-            s = r["src"]
-            while True:
-                if s == "HMIS-HAL":
-                    k = str(int(rng.integers(100000, 999999)))
-                elif s == "HMIS-MEL":
-                    k = "M-%05d" % int(rng.integers(10000, 99999))
-                elif s == "HMIS-OND":
-                    k = "%08x" % int(rng.integers(0x10000000, 0xFFFFFFFF))
-                elif s == "HMIS-PYR":
-                    k = str(int(rng.integers(20000, 79999)))
-                elif s == "DVC":
-                    k = "DV-%05d" % int(rng.integers(10000, 99999))
-                elif s == "WSH":
-                    k = str(int(rng.integers(3000000, 9999999)))
-                else:
-                    k = "C-%05d" % int(rng.integers(10000, 99999))
-                if (s, k) not in used:
-                    used.add((s, k))
-                    break
-            self.rec[(s, r["pid"])] = k
-
-
-def write_csv(path, cols, rows):
-    with open(path, "w", newline="", encoding="utf-8") as fh:
-        w = csv.writer(fh, lineterminator="\r\n")
-        w.writerow(cols)
-        n = 0
-        for r in rows:
-            w.writerow(["" if v is None else v for v in r])
-            n += 1
-    return n
-
-
-# ------------------------------------------------------------------------------------------------ HMIS
-CLIENT_COLS = ["PersonalID", "SourceCoC", "YearOfBirth", "DOBDataQuality", "NameDataQuality", "SSNDataQuality",
-               "Woman", "Man", "NonBinary", "CulturallySpecific", "Transgender", "Questioning", "DifferentIdentity",
-               "GenderNone", "AmIndAKNative", "Asian", "BlackAfAmerican", "HispanicLatinaeo", "MidEastNAfrican",
-               "NativeHIPacific", "White", "RaceNone", "VeteranStatus", "DateCreated", "DateUpdated", "UserID",
-               "ExportID"]
-ENR_COLS = ["EnrollmentID", "PersonalID", "SourceCoC", "ProjectID", "EntryDate", "HouseholdID", "RelationshipToHoH",
-            "LivingSituation", "DisablingCondition", "MoveInDate", "DateCreated", "DateUpdated", "ExportID"]
-EXIT_COLS = ["ExitID", "EnrollmentID", "PersonalID", "SourceCoC", "ExitDate", "Destination", "DateCreated",
-             "DateUpdated", "ExportID"]
-SERV_COLS = ["ServicesID", "EnrollmentID", "PersonalID", "SourceCoC", "DateProvided", "RecordType", "TypeProvided",
-             "DateCreated", "ExportID"]
-EXPORT = {"HAL": "HAL-20261005-01", "MEL": "MEL-20261005-02", "OND": "OND-20261006-01", "PYR": "PYR-20261005-01"}
-
-
-EXPORTED = {"HAL": dt.datetime(2026, 10, 5, 5, 40), "MEL": dt.datetime(2026, 10, 5, 6, 10),
-            "OND": dt.datetime(2026, 10, 6, 5, 55), "PYR": dt.datetime(2026, 10, 5, 6, 25)}
-
-
-def _ts(d, rng, lag=(0, 6), coc=None):
-    """A record's created or updated stamp, never later than its Continuum's export."""
-    t = dt.datetime(d.year, d.month, d.day, 8, 0) + dt.timedelta(days=int(rng.integers(*lag)),
-                                                                 minutes=int(rng.integers(0, 600)))
-    if coc in EXPORTED and t > EXPORTED[coc]:
-        t = EXPORTED[coc] - dt.timedelta(hours=7, minutes=(t.minute * 7 + t.hour * 13) % 600)
-        t = max(t, dt.datetime(d.year, d.month, d.day, 7, 0))
-    return t.strftime("%m/%d/%Y %H:%M") if coc == "MEL" else t.strftime("%Y-%m-%d %H:%M:%S")
-
-
-def _stamps(created_day, updated_day, rng, lag_c, lag_u, coc):
-    """DateCreated and DateUpdated, the update never before the creation."""
-    c, u = _ts(created_day, rng, lag_c, coc), _ts(updated_day, rng, lag_u, coc)
-    fmt = "%m/%d/%Y %H:%M" if coc == "MEL" else "%Y-%m-%d %H:%M:%S"
-    if dt.datetime.strptime(u, fmt) < dt.datetime.strptime(c, fmt):
-        u = c
-    return c, u
-
-
-def _dd(d, coc):
-    """A date as the Continuum's HMIS vendor exports it: Melbray's writes month/day/year, the others ISO."""
-    if d is None:
+def _d(x, fmt):
+    if x is None:
         return ""
-    return "%d/%d/%d" % (d.month, d.day, d.year) if coc == "MEL" else d.isoformat()
+    return x.strftime(fmt)
 
 
-# Ondrava's vendor still exports the FY2022 destination list; the others the FY2024 list
-DEST_FY2022 = {410: 10, 435: 20, 422: 22, 302: 2, 116: 16, 101: 1, 99: 99}
+def rv_round(v):
+    if v < 10000:
+        return int(round(v / 25.0)) * 25
+    if v < 100000:
+        return int(round(v / 50.0)) * 50
+    return int(round(v / 250.0)) * 250
 
 
-def client_rows(world, keys):
-    rng = np.random.default_rng(W.SEED * 7 + 1)
-    race = {}
-    for p in world.people:
-        race[p["pid"]] = "HispanicLatinaeo" if p["hisp"] else str(rng.choice(
-            ["White", "BlackAfAmerican", "AmIndAKNative", "Asian", "NativeHIPacific"], p=[0.58, 0.27, 0.07, 0.05,
-                                                                                         0.03]))
-    first_entry = {}
-    for e in world.enrollments:
-        k = ("HMIS-" + e["coc"], e["pid"])
-        first_entry[k] = min(first_entry.get(k, e["entry"]), e["entry"])
-    vet = {p["pid"]: (p["role"] != "child" and rng.random() < 0.08) for p in world.people}
-    out = []
-    for r in sorted(world.records, key=lambda r: (r["src"], keys.rec[(r["src"], r["pid"])])):
-        if not r["src"].startswith("HMIS"):
-            continue
-        p = world.people[r["pid"]]
-        coc = r["src"][5:]
-        created = first_entry[(r["src"], r["pid"])]
-        ssnq = (1 if rng.random() < 0.7 else 2) if r["ssn"] is not None else int(rng.choice([8, 9, 99],
-                                                                                           p=[0.3, 0.2, 0.5]))
-        g = [1 if p["sex"] == "F" else 0, 1 if p["sex"] == "M" else 0, 0, 0, 0, 0, 0, ""]
-        rc = [1 if race[r["pid"]] == c else 0 for c in ("AmIndAKNative", "Asian", "BlackAfAmerican",
-                                                        "HispanicLatinaeo", "MidEastNAfrican", "NativeHIPacific",
-                                                        "White")] + [""]
-        veteran = 99 if p["role"] == "child" else (1 if vet[r["pid"]] else 0)
-        out.append([keys.rec[(r["src"], r["pid"])], coc, r["by"], 1 if r["full"] else 2,
-                    1 if r["fn"] == p["fn"] else 2, ssnq] + g + rc + [veteran] +
-                   list(_stamps(created, created, rng, (0, 6), (0, 200), coc)) +
-                   ["U%03d" % int(rng.integers(1, 80)), EXPORT[coc]])
-    return out
+def ba_ref(district, n):
+    return dict(RKG="RG%07d" % n, DOR="D/%08d" % n, GLN="GLN-%06d" % n, ING="I%07d" % n, NSH="N/%06d" % n,
+                SKL="SK%07d" % n)[district]
 
 
-def enrollment_rows(world, keys):
-    rng = np.random.default_rng(W.SEED * 7 + 2)
-    out, exits, servs = [], [], []
-    eid_key = {}
-    for e in sorted(world.enrollments, key=lambda e: (e["coc"], e["entry"], e["eid"])):
-        coc = e["coc"]
-        pk = keys.rec[("HMIS-" + coc, e["pid"])]
-        if coc == "MEL":
-            ek = "E-%07d" % e["eid"]
-        elif coc == "OND":
-            ek = "%08x" % ((e["eid"] * 2654435761) % 0xFFFFFFFF)
+# ------------------------------------------------------------------------------------------------ PAYE
+
+def _paye_name(E, year):
+    nm = E["name"]
+    if E.get("prev") and year == "22":
+        old, when = E["prev"][0]
+        if when > dt.date(2022, 5, 16):
+            nm = old
+    return nm
+
+
+def paye(w, path22, path26):
+    rows22, rows26 = [], []
+    for sc in w.schemes:
+        E = w.E[sc["eid"]]
+        sic = E.get("sic", "")
+        crn = E.get("company_no", "") if E.get("incorporated") else ""
+        if sc["in22"]:
+            rows22.append(["%s/%s" % (sc["office"], sc["ref22"]), _paye_name(E, "22").upper(), crn, sic,
+                           E["held"]["22"][0], sc["s22"], "2021-22 M12"])
+        if sc["in26"]:
+            trading = E.get("brand_name") or E.get("trading") or ""
+            rows26.append([sc["office"], sc["ref26"], E["name"], trading if trading != E["name"] else "", crn, sic,
+                           E["held"]["26"][0], sc["s26"], "2025/26 M12"])
+    rows22.sort(key=lambda r: r[0])
+    rows26.sort(key=lambda r: (r[0], r[1]))
+    with open(path22, "w", newline="", encoding="utf-8") as fh:
+        c = csv.writer(fh)
+        c.writerow(["scheme_ref", "employer_name", "company_no", "sic2007", "scheme_postcode", "employees_paid", "return_period"])
+        c.writerows(rows22)
+    with open(path26, "w", newline="", encoding="utf-8") as fh:
+        c = csv.writer(fh)
+        c.writerow(["tax_office", "employer_ref", "employer_name", "trading_name", "crn", "sic_2007", "paye_postcode",
+                    "paid_employees", "period"])
+        c.writerows(rows26)
+    return len(rows22), len(rows26)
+
+
+# ------------------------------------------------------------------------------------------------ lists
+
+def lists(w, path17, path23, pathcodes):
+    with open(path17, "w", newline="", encoding="utf-8") as fh:
+        c = csv.writer(fh)
+        c.writerow(["UARN", "BA_CODE", "BA_REFERENCE", "NUMBER_OR_NAME", "STREET", "TOWN", "POSTCODE", "DESCRIPTION_CODE",
+                    "DESCRIPTION", "TOTAL_AREA", "AREA_BASIS", "RATEABLE_VALUE", "EFFECTIVE_DATE", "EFFECTIVE_TO"])
+        for e in sorted(w.entries17, key=lambda e: (BA_CODE[e["district"]], e["uarn"], e["frm"])):
+            c.writerow([e["uarn"], BA_CODE[e["district"]], ba_ref(e["district"], e["ba_n"]), e["number"], e["street"].upper(),
+                        e["locality"].upper(), e["pc"], e["d"], W.DESC[e["d"]][0].upper(), "%.2f" % e["a"], W.DESC[e["d"]][1],
+                        rv_round(e["rv"]), _d(e["frm"], "%d/%m/%Y"), _d(e["to"], "%d/%m/%Y")])
+    with open(path23, "w", newline="", encoding="utf-8") as fh:
+        c = csv.writer(fh)
+        c.writerow(["uarn", "billing_authority", "ba_ref", "address", "postcode", "primary_desc_code", "primary_description",
+                    "floor_area_m2", "measurement_basis", "rateable_value", "effective_from", "effective_to"])
+        for e in sorted(w.entries23, key=lambda e: (BA_CODE[e["district"]], e["uarn"], e["frm"])):
+            c.writerow([e["uarn"], BA_CODE[e["district"]], ba_ref(e["district"], e["ba_n"]),
+                        "%s %s, %s" % (e["number"], e["street"], e["locality"]), e["pc"], e["d"], W.DESC[e["d"]][0],
+                        "%.1f" % e["a"], W.DESC[e["d"]][1], rv_round(e["rv"]), _d(e["frm"], "%Y-%m-%d"), _d(e["to"], "%Y-%m-%d")])
+    codes = dict(publisher="Torvasay Valuation Office", dataset="Primary description codes, rating lists 2017 and 2023",
+                 updated="2023-02-14",
+                 codes=[dict(code=k, description=v[0], measurement_basis=v[1]) for k, v in sorted(W.DESC.items())])
+    json.dump(codes, open(pathcodes, "w", encoding="utf-8"), indent=1)
+    return len(w.entries17), len(w.entries23)
+
+
+# ------------------------------------------------------------------------------------------------ accounts
+
+LAYOUT = {
+    "RKG": dict(sheet="Rookgate", cols=["Account Number", "UARN", "Liable Party", "Company Number", "Liability Start",
+                                         "Liability End", "Relief"], date="%d/%m/%Y", ref="uarn", crn=True, status=False),
+    "GLN": dict(sheet="Glenskarn", cols=["Acct", "Property Reference", "Ratepayer", "Co. Reg. No.", "From", "To",
+                                         "Reliefs"], date="%d/%m/%Y", ref="ba", crn=True, status=False),
+    "DOR": dict(sheet="Dorrstead", cols=["Account No", "Prop Ref", "Ratepayer Name", "Start Date", "End Date", "Relief Code"],
+                date="%d/%m/%Y", ref="ba", crn=False, status=False),
+    "ING": dict(sheet="Ingmouth", cols=["account_ref", "uarn", "ratepayer", "company_no", "liable_from", "liable_to", "relief"],
+                date="%d-%b-%Y", ref="uarn", crn=True, status=False),
+    "NSH": dict(sheet="Neshdale", cols=["Account", "Property", "Name", "Liability Start", "Liability End", "Relief Type"],
+                date="%d/%m/%Y", ref="ba", crn=False, status=False),
+    "SKL": dict(sheet="Skelrigg", cols=["AccountId", "UARN", "RatepayerName", "CompanyRegNo", "StartDate", "EndDate", "ReliefCode"],
+                date="%Y-%m-%d", ref="uarn", crn=True, status=False),
+}
+
+
+def styled(district, name, person=None, partnership=False, trading=None):
+    """a ratepayer's name as each district's billing system writes it"""
+    def ltd(x):
+        return x.replace(" Limited", " Ltd")
+    if person is not None:
+        f, s = person
+        if district == "RKG":
+            out = name
+        elif district == "GLN":
+            out = name if partnership else "%s %s" % (f[0], s)
+        elif district == "DOR":
+            out = (name if partnership else "%s %s" % (f[0], s)).upper()
+        elif district == "ING":
+            out = name if partnership else "%s, %s" % (s, f)
+        elif district == "NSH":
+            out = name if partnership else "%s %s" % (f[0], s)
         else:
-            ek = str(e["eid"])
-        eid_key[e["eid"]] = ek
-        mi = e["move_in"] if e["rel"] == 1 else world.member_move_in.get(e["eid"])
-        living = int(rng.choice([116, 101, 118, 215, 435, 302], p=[0.42, 0.24, 0.14, 0.08, 0.06, 0.06]))
-        dis = 1 if rng.random() < 0.38 else 0
-        out.append([ek, pk, coc, e["project"], _dd(e["entry"], coc), e["hh_id"], e["rel"], living, dis, _dd(mi, coc)] +
-                   list(_stamps(e["entry"], e["exit"] or e["entry"], rng, (0, 6), (0, 12), coc)) + [EXPORT[coc]])
-        if e["exit"] is not None:
-            dest = int(rng.choice([410, 435, 422, 302, 116, 101, 99], p=[0.2, 0.16, 0.12, 0.1, 0.14, 0.12, 0.16]))
-            if coc == "OND":
-                dest = DEST_FY2022[dest]
-            exits.append(["X%07d" % (e["eid"] % 10000000), ek, pk, coc, _dd(e["exit"], coc), dest] +
-                         list(_stamps(e["exit"], e["exit"], rng, (0, 6), (0, 9), coc)) + [EXPORT[coc]])
-    sid = 7000000
-    for n in sorted(world.bed_nights, key=lambda n: (n["date"], n["eid"])):
-        sid += 1 + int(rng.integers(0, 3))
-        servs.append(["S%08d" % sid, eid_key[n["eid"]], keys.rec[("HMIS-" + n["coc"], n["pid"])], n["coc"],
-                      _dd(n["date"], n["coc"]), 200, 200, _ts(n["date"], rng, (0, 2), coc=n["coc"]), EXPORT[n["coc"]]])
-    return out, exits, servs
-
-
-# ------------------------------------------------------------------------------------------------ other sources
-def dvc_workbook(path, world, keys):
-    rng = np.random.default_rng(W.SEED * 7 + 3)
-    wb = openpyxl.Workbook()
-    ws = wb.active
-    ws.title = "Clients"
-    ws.append(["ClientKey", "BirthYear", "Gender", "RaceCode", "Veteran", "CreatedOn"])
-    first = {}
-    for s in world.dv_stays:
-        first[s["pid"]] = min(first.get(s["pid"], s["start"]), s["start"])
-    for r in sorted((r for r in world.records if r["src"] == "DVC"), key=lambda r: keys.rec[("DVC", r["pid"])]):
-        p = world.people[r["pid"]]
-        ws.append([keys.rec[("DVC", r["pid"])], r["by"], {"F": "Female", "M": "Male"}[p["sex"]],
-                   "H" if p["hisp"] else str(rng.choice(["W", "B", "I", "A", "P"], p=[0.6, 0.25, 0.08, 0.05, 0.02])),
-                   None if p["role"] == "child" else ("N" if rng.random() < 0.96 else "Y"),
-                   dt.datetime.combine(first[r["pid"]], dt.time(10, int(rng.integers(0, 59))))])
-    st = wb.create_sheet("Stays")
-    st.append(["StayID", "ClientKey", "Program", "StayStart", "StayEnd"])
-    progs = ["Hearthstone Emergency Shelter", "Haven House", "Bridges Transitional Program"]
-    for k, s in enumerate(sorted(world.dv_stays, key=lambda s: (s["start"], s["pid"]))):
-        end = s["end"] if s["end"] <= W.PULL - dt.timedelta(days=10) else None
-        st.append(["ST-%05d" % (20000 + 3 * k), keys.rec[("DVC", s["pid"])], progs[s["pid"] % 3], s["start"], end])
-    for w_ in (ws, st):
-        for c in w_[1]:
-            c.font = Font(bold=True)
-        w_.freeze_panes = "A2"
-    for row in st.iter_rows(min_row=2):
-        for c in row[3:5]:
-            c.number_format = "m/d/yyyy"
-    for row in ws.iter_rows(min_row=2):
-        row[5].number_format = "m/d/yyyy h:mm"
-    wb.save(path)
-    return ws.max_row - 1 + st.max_row - 1
-
-
-def vsm_rows(world, keys):
-    rng = np.random.default_rng(W.SEED * 7 + 4)
-    out = []
-    n = 4100000
-    visit = ["Medical", "Medical", "Medical", "Behavioral health", "Dental", "Enabling services"]
-    for e in sorted(world.encounters, key=lambda e: (e["date"], e["pid"])):
-        n += 1 + int(rng.integers(0, 4))
-        p = world.people[e["pid"]]
-        out.append(["V%08d" % n, keys.rec[("WSH", e["pid"])], e["date"].strftime("%m/%d/%Y"), e["site"], e["status"],
-                    visit[int(rng.integers(len(visit)))], p["by"], p["sex"]])
+            out = name.upper()
+    else:
+        out = dict(RKG=name, GLN=ltd(name), DOR=ltd(name).upper(), ING=name, NSH=ltd(name), SKL=name.upper())[district]
+    if trading and district in ("DOR", "NSH") and trading.lower() not in out.lower():
+        out += (" T/A " if district == "DOR" else " t/a ") + (trading.upper() if district == "DOR" else trading)
     return out
 
 
-def _pacific_offset(t):
-    """Pacific time: daylight time from 2:00 on the second Sunday of March to 2:00 on the first Sunday of
-    November."""
-    y = t.year
-    mar = dt.date(y, 3, 1)
-    start = dt.datetime.combine(mar + dt.timedelta(days=(6 - mar.weekday()) % 7 + 7), dt.time(2, 0))
-    nov = dt.date(y, 11, 1)
-    end = dt.datetime.combine(nov + dt.timedelta(days=(6 - nov.weekday()) % 7), dt.time(2, 0))
-    return "-07:00" if start <= t < end else "-08:00"
-
-
-def hot_lines(world, keys):
-    rng = np.random.default_rng(W.SEED * 7 + 5)
-    rec = {r["pid"]: r for r in world.records if r["src"] == "HOT"}
-    lines = []
-    for k, c in enumerate(sorted(world.contacts, key=lambda c: (c["date"], c["minute"], c["pid"]))):
-        p = world.people[c["pid"]]
-        t = dt.datetime.combine(c["date"], dt.time(c["minute"] // 60, c["minute"] % 60))
-        age = c["date"].year - p["by"] - (1 if (c["date"].month, c["date"].day) < (p["bm"], p["bd"]) else 0)
-        r = rec[c["pid"]]
-        line = {"contact_id": "HC-%06d" % (310000 + 7 * k), "client_key": keys.rec[("HOT", c["pid"])],
-                "contact_time": t.strftime("%Y-%m-%dT%H:%M:00") + _pacific_offset(t),
-                "zone": "Z%02d" % (1 + (c["pid"] * 7 + k) % 14),
-                "engagement": str(rng.choice(["engaged", "engaged", "declined", "not found"])),
-                "reported_age": int(age), "birth_year": r["by"], "dob_on_file": bool(r["full"])}
-        lines.append(line)
-    return lines
-
-
-def pair_rows(world, keys):
+def _charged(lo, hi, entries):
+    """the parts of a trader's spell from lo to hi (None: open) on which the list entry in force values the premises
+    at or over the relief's ceiling, an entry's value standing from the spell's start until it takes effect"""
+    if not entries or (hi is not None and lo > hi):
+        return []
+    entries = sorted(entries, key=lambda e: e["frm"])
     out = []
-    n = 0
-    for i, j, sc, codes in world.pairs:
-        if sc < 4.0:
+    for i, e in enumerate(entries):
+        a = lo if i == 0 else max(lo, e["frm"])
+        b = entries[i + 1]["frm"] - T.DAY if i + 1 < len(entries) else hi
+        if hi is not None and b is not None:
+            b = min(b, hi)
+        if (b is not None and a > b) or rv_round(e["rv"]) < T.STR_CEILING:
             continue
-        a, b = world.records[i], world.records[j]
-        if (W.SOURCES.index(a["src"]), keys.rec[(a["src"], a["pid"])]) > (W.SOURCES.index(b["src"]),
-                                                                          keys.rec[(b["src"], b["pid"])]):
-            a, b = b, a
-        out.append([a["src"], keys.rec[(a["src"], a["pid"])], b["src"], keys.rec[(b["src"], b["pid"])], codes["fn"],
-                    codes["ln"], codes["by"], codes["bm"], codes["bd"], codes["sex"], codes["ssn"], "%.1f" % sc,
-                    "LINK" if sc >= W.THRESHOLD else "NONLINK"])
-    out.sort(key=lambda r: (W.SOURCES.index(r[0]), r[1], W.SOURCES.index(r[2]), r[3]))
+        if out and out[-1][1] is not None and out[-1][1] + T.DAY == a:
+            out[-1] = (out[-1][0], b)
+        else:
+            out.append((a, b))
+    return out
+
+
+def accounts(w, path, rng):
+    """one row per account with a liability: an occupier's, or an owner's while the premises stood empty"""
+    wb = openpyxl.Workbook()
+    contents = wb.active
+    contents.title = "Contents"
+    rows = {d: [] for d in BA_CODE}
+    counter = {d: int(rng.integers(100000, 400000)) for d in BA_CODE}
+    landlord_by = {l["lid"]: l for l in w.landlords}
+    prior = {}
+    w.account_truth = []
+    allp = list(w.P) + list(w.deleted)
+    traders = {}
+    ents = {"17": {}, "23": {}}
+    for k, src in (("17", w.entries17), ("23", w.entries23)):
+        for e in src:
+            ents[k].setdefault(e["uarn"], []).append(e)
+    for p in allp:
+        d = p["district"]
+        lay = LAYOUT[d]
+        ref = str(p["uarn"]) if lay["ref"] == "uarn" else ba_ref(d, p["ba_n"])
+        for sp in p["spells"]:
+            kind, who = sp["who"]
+            frm, to = sp["frm"], sp["to"]
+            if to is not None and to < T.D0:
+                continue
+            pieces = [(frm, to)]
+            if kind == "t":
+                # a trader with no employees pays nothing while the list values its premises below the relief's
+                # ceiling, so it has no account then
+                pieces = (_charged(frm, min(to or T.END, T.L23 - T.DAY), ents["17"].get(p["uarn"], []))
+                          + _charged(max(frm, T.L23), to, ents["23"].get(p["uarn"], [])))
+            for a, b in pieces:
+                relief, status = "", "Occupied"
+                company_no = ""
+                if kind == "e":
+                    E = w.E[who]
+                    if E["kind"] == "chain" and who in w.groupprop and p["d"] == "R3":
+                        name = "Kestle Properties Limited"
+                        company_no = w.groupprop[who]
+                        person = None
+                        trading = "Kestle"
+                    else:
+                        name = E["name"]
+                        if E.get("prev") and a < E["prev"][0][1]:
+                            name = E["prev"][0][0]
+                        company_no = E.get("company_no", "") if E.get("incorporated") else ""
+                        person = E.get("person")
+                        trading = E.get("brand_name") or E.get("trading")
+                    rvn = p.get("rv23") if (b is None or b >= T.L23) else p.get("rv17")
+                    if E.get("sic") == "88990":
+                        relief = "CHR"
+                    elif E["kind"] in ("ind", "ind_out") and rvn is not None and rv_round(rvn) < 15000:
+                        relief = "SBR"
+                    styled_name = styled(d, name, person, E.get("partnership"), trading if rng.random() < 0.7 else None)
+                elif kind == "t":
+                    if who not in traders:
+                        f, s = w.namer.person(avoid=True)
+                        traders[who] = (f, s, "%s's %s" % (s, ["Crafts", "Gifts", "Repairs", "Hair", "Tailoring", "Prints"][int(rng.integers(0, 6))]))
+                    f, s, trading = traders[who]
+                    styled_name = styled(d, "%s %s" % (f, s), (f, s), False, trading)
+                    rvn = p.get("rv23") if (b is None or b >= T.L23) else p.get("rv17")
+                    if rvn is not None and rv_round(rvn) < 15000:
+                        relief = "SBR"
+                elif kind == "x":
+                    L = landlord_by[sp["owner"]]
+                    styled_name = styled(d, L["name"])
+                    company_no = L["company_no"]
+                    status = "Empty"
+                    months = 6 if p["d"] in T.INDUSTRIAL else 3
+                    span_end = b or T.END
+                    if (span_end - a).days < months * 30.4 and not sp.get("sold"):
+                        relief = "EPR"
+                else:
+                    key = p["uarn"]
+                    if key not in prior:
+                        if rng.random() < 0.5:
+                            f, s = w.namer.person(avoid=True)
+                            prior[key] = (styled(d, "%s %s" % (f, s), (f, s)), "")
+                        else:
+                            f, s = w.namer.person(avoid=True)
+                            nm = w.namer.company("%s %s Limited" % (s, ["Trading", "Retail", "Services", "Enterprises"][int(rng.integers(0, 4))]))
+                            num = w.company(nm, "47190", status="Dissolved", dissolved=a + dt.timedelta(days=int(rng.integers(400, 2400))))
+                            prior[key] = (styled(d, nm), num)
+                    styled_name, company_no = prior[key]
+                counter[d] += int(rng.integers(1, 40))
+                acct = dict(RKG="10%06d" % counter[d], GLN="%08d" % (counter[d] * 3), DOR="D%07d" % counter[d],
+                            ING="ING/%06d" % counter[d], NSH="%07d" % counter[d], SKL="SK-%06d" % counter[d])[d]
+                fmt = lay["date"]
+                rowv = [acct, ref, styled_name]
+                if lay["crn"]:
+                    rowv.append(company_no)
+                rowv += [_d(a, fmt), _d(b, fmt)]
+                if lay["status"]:
+                    rowv.append(status if d == "RKG" else ("Y" if status == "Occupied" else "N"))
+                rowv.append(relief)
+                rows[d].append((ref, a, rowv))
+                w.account_truth.append(dict(pid=p.get("pid"), uarn=p["uarn"], district=d, frm=a, to=b, kind=kind,
+                                            who=who, relief=relief))
+    for d in ("RKG", "DOR", "GLN", "ING", "NSH", "SKL"):
+        lay = LAYOUT[d]
+        ws = wb.create_sheet(lay["sheet"])
+        ws.append(lay["cols"])
+        for c in ws[1]:
+            c.font = Font(bold=True)
+        for _, _, r in sorted(rows[d], key=lambda x: (x[0], x[1])):
+            ws.append([None if v == "" else v for v in r])
+        ws.freeze_panes = "A2"
+        for i, col in enumerate(lay["cols"]):
+            ws.column_dimensions[openpyxl.utils.get_column_letter(i + 1)].width = max(12, min(42, len(col) + 6)) if i != 2 else 44
+    contents.append(["Business rates accounts supplied to Torvasay Statistics under the 2024 data-sharing arrangement"])
+    contents.append([])
+    contents.append(["Sheet", "Billing authority", "System", "Extract run", "Accounts from"])
+    systems = dict(RKG="Civica Rates 7", DOR="NDR Plus", GLN="Civica Rates 7", ING="Revenue Manager", NSH="NDR Plus", SKL="RatesOnline")
+    for d in ("RKG", "DOR", "GLN", "ING", "NSH", "SKL"):
+        contents.append([LAYOUT[d]["sheet"], "%s District Council" % dict(N.DISTRICTS_NAMES)[d], systems[d],
+                         "0%d/05/2026" % (4 + list(BA_CODE).index(d) % 3), "01/04/2017"])
+    contents.append([])
+    contents.append(["Each sheet lists the accounts with a liability on a property: the occupier's, or the owner's while the "
+                     "property stands empty."])
+    contents.append(["An occupier whose bill is wholly relieved under small trader relief (rateable value under 8,000) has "
+                     "no account while the relief applies."])
+    contents["A1"].font = Font(bold=True)
+    for c in contents[3]:
+        c.font = Font(bold=True)
+    contents.column_dimensions["A"].width = 14
+    contents.column_dimensions["B"].width = 30
+    contents.column_dimensions["C"].width = 18
+    contents.column_dimensions["D"].width = 13
+    contents.column_dimensions["E"].width = 14
+    wb.save(path)
+    return {d: len(v) for d, v in rows.items()}
+
+
+# ------------------------------------------------------------------------------------------------ companies
+
+def companies(w, path, rng):
+    reg_pc = {}
+    for e, E in w.E.items():
+        if E.get("incorporated") and E.get("company_no"):
+            held = E.get("held", {}).get("26") or E.get("held", {}).get("22")
+            reg_pc[E["company_no"]] = held[0] if held else w.pc_unit("RKG")
+    with open(path, "w", newline="", encoding="utf-8") as fh:
+        c = csv.writer(fh)
+        c.writerow(["company_number", "company_name", "previous_names", "company_status", "incorporation_date",
+                    "dissolution_date", "registered_office_postcode", "sic_codes", "psc_corporate"])
+        for co in sorted(w.companies, key=lambda x: x["number"]):
+            prev = "; ".join("%s (to %s)" % (n, (d - T.DAY).strftime("%d/%m/%Y")) for n, d in co["prev"])
+            pc = reg_pc.get(co["number"]) or w.pc_unit(["RKG", "DOR", "GLN", "ING", "NSH", "SKL"][int(rng.integers(0, 6))])
+            c.writerow([co["number"], co["name"].upper(), prev.upper(), co["status"], co["incorporated"].strftime("%d/%m/%Y"),
+                        _d(co.get("dissolved"), "%d/%m/%Y"), pc, co["sic"], co.get("psc") or ""])
+    return len(w.companies)
+
+
+# ------------------------------------------------------------------------------------------------ the schedule, SIC
+
+def schedule(w, path):
     rows = []
-    for k, r in enumerate(out):
-        rows.append(["P%07d" % (k + 1), "SDLU-20261008-CV"] + r)
-    return rows
+    for c in w.centres:
+        for pc, st in w.centre_units[c["k"]]:
+            if pc in w.recoded:
+                rows.append([c["code"], c["name"], dict(N.DISTRICTS_NAMES)[c["district"]], pc, "terminated", "31/03/2023"])
+                rows.append([c["code"], c["name"], dict(N.DISTRICTS_NAMES)[c["district"]], w.recoded[pc], "live", ""])
+            else:
+                rows.append([c["code"], c["name"], dict(N.DISTRICTS_NAMES)[c["district"]], pc, "live", ""])
+    rows.sort(key=lambda r: (r[0], r[3]))
+    with open(path, "w", newline="", encoding="utf-8") as fh:
+        cw = csv.writer(fh)
+        cw.writerow(["centre_code", "centre_name", "district", "postcode", "postcode_status", "terminated_on"])
+        cw.writerows(rows)
+    return len(rows)
 
 
-PAIR_COLS = ["pair_id", "run_id", "source_a", "record_a", "source_b", "record_b", "agr_first_name", "agr_surname",
-             "agr_birth_year", "agr_birth_month", "agr_birth_day", "agr_sex", "agr_ssn4", "score", "finding"]
-VSM_COLS = ["EncounterID", "PatientKey", "EncounterDate", "Site", "HousingStatus", "VisitType", "PatientBirthYear",
-            "PatientSex"]
+def sic_lookup(w, path):
+    used = set(E.get("sic") for E in w.E.values() if E.get("sic")) | set(co["sic"] for co in w.companies)
+    missing = sorted(u for u in used if u not in SIC_TITLES)
+    assert not missing, missing
+    with open(path, "w", newline="", encoding="utf-8") as fh:
+        c = csv.writer(fh)
+        c.writerow(["sic2007_subclass", "title"])
+        for k in sorted(used):
+            c.writerow([k, SIC_TITLES[k]])
+    return len(used)

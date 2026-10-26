@@ -1,84 +1,404 @@
 {
- "admin": 749999,
- "admin_pct": 4,
- "amount|DVC": 635035,
- "amount|HAL": 7993704,
- "amount|MEL": 4283337,
- "amount|OND": 2962447,
- "amount|PYR": 2125478,
- "conflict_groups": 225,
- "default_amount|DVC": 635602,
- "default_amount|HAL": 7964889,
- "default_amount|MEL": 4294829,
- "default_amount|OND": 2972162,
- "default_amount|PYR": 2132517,
- "default_people|ALL": 39874,
- "default_people|DVC": 1408,
- "default_people|HAL": 17644,
- "default_people|MEL": 9514,
- "default_people|OND": 6584,
- "default_people|PYR": 4724,
- "default_short|HAL": 28815,
- "fund": 18750000,
- "links": 24952,
- "nights|ALL|FY": 853182,
- "nights|ALL|Q1": 208815,
- "nights|ALL|Q2": 213475,
- "nights|ALL|Q3": 213932,
- "nights|ALL|Q4": 216960,
- "nights|HAL|FY": 375361,
- "nights|HAL|Q1": 91851,
- "nights|HAL|Q2": 93815,
- "nights|HAL|Q3": 93703,
- "nights|HAL|Q4": 95992,
- "nights|MEL|FY": 190910,
- "nights|MEL|Q1": 46860,
- "nights|MEL|Q2": 50582,
- "nights|MEL|Q3": 46167,
- "nights|MEL|Q4": 47301,
- "nights|OND|FY": 171475,
- "nights|OND|Q1": 42354,
- "nights|OND|Q2": 41466,
- "nights|OND|Q3": 43578,
- "nights|OND|Q4": 44077,
- "nights|PYR|FY": 115436,
- "nights|PYR|Q1": 27750,
- "nights|PYR|Q2": 27612,
- "nights|PYR|Q3": 30484,
- "nights|PYR|Q4": 29590,
- "people|ALL": 40023,
- "people|DVC": 1412,
- "people|HAL": 17774,
- "people|MEL": 9524,
- "people|OND": 6587,
- "people|PYR": 4726,
- "pool": 18000000,
- "records": 77238,
- "records_fy2026": 51149,
- "rrh_n|ALL|adults": 4853,
- "rrh_n|ALL|children": 996,
- "rrh_n|HAL|adults": 2115,
- "rrh_n|HAL|children": 427,
- "rrh_n|MEL|adults": 1240,
- "rrh_n|MEL|children": 252,
- "rrh_n|OND|adults": 888,
- "rrh_n|OND|children": 199,
- "rrh_n|PYR|adults": 610,
- "rrh_n|PYR|children": 118,
- "rrh|ALL|adults": 45.3,
- "rrh|ALL|children": 43.8,
- "rrh|HAL|adults": 45.9,
- "rrh|HAL|children": 43.6,
- "rrh|MEL|adults": 47.0,
- "rrh|MEL|children": 42.7,
- "rrh|OND|adults": 43.2,
- "rrh|OND|children": 44.0,
- "rrh|PYR|adults": 42.9,
- "rrh|PYR|children": 46.8,
- "share|DVC": 3.53,
- "share|HAL": 44.41,
- "share|MEL": 23.8,
- "share|OND": 16.46,
- "share|PYR": 11.81,
- "split": 18000001
+ "asks": {
+  "ask_a": {
+   "Dorrstead": {
+    "2022": 38,
+    "2026": 51
+   },
+   "Glenskarn": {
+    "2022": 55,
+    "2026": 56
+   },
+   "Ingmouth": {
+    "2022": 46,
+    "2026": 56
+   },
+   "Neshdale": {
+    "2022": 48,
+    "2026": 65
+   },
+   "Rookgate": {
+    "2022": 100,
+    "2026": 153
+   },
+   "Skelrigg": {
+    "2022": 34,
+    "2026": 48
+   }
+  },
+  "ask_b": {
+   "Dorrstead": {
+    "2022": 25,
+    "2026": 29
+   },
+   "Glenskarn": {
+    "2022": 34,
+    "2026": 40
+   },
+   "Ingmouth": {
+    "2022": 29,
+    "2026": 41
+   },
+   "Neshdale": {
+    "2022": 31,
+    "2026": 48
+   },
+   "Rookgate": {
+    "2022": 52,
+    "2026": 114
+   },
+   "Skelrigg": {
+    "2022": 22,
+    "2026": 33
+   }
+  }
+ },
+ "call": {
+  "n": 15,
+  "qualifying": [
+   "Dorrstead",
+   "Ingmouth",
+   "Fenmoss",
+   "Kellgarth",
+   "Quengate",
+   "Ravthwaite",
+   "Molwold",
+   "Ravbeck",
+   "Molscar",
+   "Vaskhope",
+   "Tormoss",
+   "Vaskrigg",
+   "Quenstead",
+   "Ravwold",
+   "Tavscar"
+  ]
+ },
+ "components": {
+  "centres_total_2022_thousands": 27,
+  "centres_total_2026_thousands": 25,
+  "multi_site_employees_2022": 10279,
+  "multi_site_employees_2026": 10990,
+  "multi_site_employers_2022": 45,
+  "multi_site_employers_2026": 45,
+  "qualifying": 15,
+  "retail_employees_2022": 44651,
+  "retail_employees_2026": 43909,
+  "retail_employers_2022": 3545,
+  "retail_employers_2026": 3319
+ },
+ "ladder": {
+  "area": {
+   "added": [
+    "Rookgate City Centre",
+    "Glenskarn",
+    "Neshdale",
+    "Skelrigg",
+    "Halmoss"
+   ],
+   "dropped": [
+    "Ravbeck"
+   ],
+   "n": 19
+  },
+  "count": {
+   "added": [],
+   "dropped": [
+    "Ingmouth",
+    "Fenmoss",
+    "Quengate"
+   ],
+   "n": 12
+  },
+  "postcode": {
+   "added": [
+    "Skelrigg"
+   ],
+   "dropped": [
+    "Dorrstead",
+    "Fenmoss",
+    "Kellgarth",
+    "Ravbeck",
+    "Vaskhope",
+    "Tormoss",
+    "Quenstead"
+   ],
+   "n": 9
+  },
+  "rv": {
+   "added": [
+    "Rookgate City Centre",
+    "Glenskarn",
+    "Neshdale",
+    "Skelrigg",
+    "Halmoss"
+   ],
+   "dropped": [],
+   "n": 20
+  }
+ },
+ "schedule": [
+  {
+   "centre": "Rookgate City Centre",
+   "change_pct": -6,
+   "code": "TC01",
+   "employment_2022": 2550,
+   "employment_2026": 2400,
+   "qualifies": "No"
+  },
+  {
+   "centre": "Dorrstead",
+   "change_pct": -13,
+   "code": "TC02",
+   "employment_2022": 950,
+   "employment_2026": 850,
+   "qualifies": "Yes"
+  },
+  {
+   "centre": "Glenskarn",
+   "change_pct": -6,
+   "code": "TC03",
+   "employment_2022": 1650,
+   "employment_2026": 1550,
+   "qualifies": "No"
+  },
+  {
+   "centre": "Ingmouth",
+   "change_pct": -10,
+   "code": "TC04",
+   "employment_2022": 1200,
+   "employment_2026": 1100,
+   "qualifies": "Yes"
+  },
+  {
+   "centre": "Neshdale",
+   "change_pct": -6,
+   "code": "TC05",
+   "employment_2022": 1350,
+   "employment_2026": 1250,
+   "qualifies": "No"
+  },
+  {
+   "centre": "Skelrigg",
+   "change_pct": -6,
+   "code": "TC06",
+   "employment_2022": 1850,
+   "employment_2026": 1750,
+   "qualifies": "No"
+  },
+  {
+   "centre": "Bromgate",
+   "change_pct": 10,
+   "code": "TC07",
+   "employment_2022": 850,
+   "employment_2026": 950,
+   "qualifies": "No"
+  },
+  {
+   "centre": "Fenmoss",
+   "change_pct": -10,
+   "code": "TC08",
+   "employment_2022": 800,
+   "employment_2026": 700,
+   "qualifies": "Yes"
+  },
+  {
+   "centre": "Halmoss",
+   "change_pct": -5,
+   "code": "TC09",
+   "employment_2022": 950,
+   "employment_2026": 900,
+   "qualifies": "No"
+  },
+  {
+   "centre": "Kellgarth",
+   "change_pct": -17,
+   "code": "TC10",
+   "employment_2022": 1500,
+   "employment_2026": 1250,
+   "qualifies": "Yes"
+  },
+  {
+   "centre": "Quengate",
+   "change_pct": -11,
+   "code": "TC11",
+   "employment_2022": 950,
+   "employment_2026": 850,
+   "qualifies": "Yes"
+  },
+  {
+   "centre": "Ravthwaite",
+   "change_pct": -18,
+   "code": "TC12",
+   "employment_2022": 900,
+   "employment_2026": 750,
+   "qualifies": "Yes"
+  },
+  {
+   "centre": "Lundgate",
+   "change_pct": 15,
+   "code": "TC13",
+   "employment_2022": 400,
+   "employment_2026": 450,
+   "qualifies": "No"
+  },
+  {
+   "centre": "Molwold",
+   "change_pct": -18,
+   "code": "TC14",
+   "employment_2022": 650,
+   "employment_2026": 550,
+   "qualifies": "Yes"
+  },
+  {
+   "centre": "Quenmouth",
+   "change_pct": 5,
+   "code": "TC15",
+   "employment_2022": 750,
+   "employment_2026": 800,
+   "qualifies": "No"
+  },
+  {
+   "centre": "Ravbeck",
+   "change_pct": -10,
+   "code": "TC16",
+   "employment_2022": 800,
+   "employment_2026": 700,
+   "qualifies": "Yes"
+  },
+  {
+   "centre": "Kellholm",
+   "change_pct": 3,
+   "code": "TC17",
+   "employment_2022": 800,
+   "employment_2026": 800,
+   "qualifies": "No"
+  },
+  {
+   "centre": "Tavmoss",
+   "change_pct": 8,
+   "code": "TC18",
+   "employment_2022": 850,
+   "employment_2026": 900,
+   "qualifies": "No"
+  },
+  {
+   "centre": "Bromwold",
+   "change_pct": 3,
+   "code": "TC19",
+   "employment_2022": 900,
+   "employment_2026": 900,
+   "qualifies": "No"
+  },
+  {
+   "centre": "Molscar",
+   "change_pct": -15,
+   "code": "TC20",
+   "employment_2022": 850,
+   "employment_2026": 700,
+   "qualifies": "Yes"
+  },
+  {
+   "centre": "Lundstead",
+   "change_pct": 8,
+   "code": "TC21",
+   "employment_2022": 500,
+   "employment_2026": 500,
+   "qualifies": "No"
+  },
+  {
+   "centre": "Orrstead",
+   "change_pct": -3,
+   "code": "TC22",
+   "employment_2022": 350,
+   "employment_2026": 350,
+   "qualifies": "No"
+  },
+  {
+   "centre": "Vaskhope",
+   "change_pct": -21,
+   "code": "TC23",
+   "employment_2022": 600,
+   "employment_2026": 450,
+   "qualifies": "Yes"
+  },
+  {
+   "centre": "Skelgate",
+   "change_pct": 8,
+   "code": "TC24",
+   "employment_2022": 600,
+   "employment_2026": 650,
+   "qualifies": "No"
+  },
+  {
+   "centre": "Tormoss",
+   "change_pct": -14,
+   "code": "TC25",
+   "employment_2022": 650,
+   "employment_2026": 550,
+   "qualifies": "Yes"
+  },
+  {
+   "centre": "Orrwold",
+   "change_pct": 11,
+   "code": "TC26",
+   "employment_2022": 450,
+   "employment_2026": 500,
+   "qualifies": "No"
+  },
+  {
+   "centre": "Vaskrigg",
+   "change_pct": -13,
+   "code": "TC27",
+   "employment_2022": 400,
+   "employment_2026": 350,
+   "qualifies": "Yes"
+  },
+  {
+   "centre": "Quenstead",
+   "change_pct": -14,
+   "code": "TC28",
+   "employment_2022": 400,
+   "employment_2026": 350,
+   "qualifies": "Yes"
+  },
+  {
+   "centre": "Vaskstow",
+   "change_pct": 6,
+   "code": "TC29",
+   "employment_2022": 550,
+   "employment_2026": 600,
+   "qualifies": "No"
+  },
+  {
+   "centre": "Ravwold",
+   "change_pct": -14,
+   "code": "TC30",
+   "employment_2022": 650,
+   "employment_2026": 550,
+   "qualifies": "Yes"
+  },
+  {
+   "centre": "Tavscar",
+   "change_pct": -23,
+   "code": "TC31",
+   "employment_2022": 450,
+   "employment_2026": 350,
+   "qualifies": "Yes"
+  }
+ ],
+ "stated": {
+  "centres_total_2022": 27000,
+  "centres_total_2026": 25000,
+  "employment_unit": 50,
+  "empty_2022": 321,
+  "empty_2026": 429,
+  "largest_other_fall": 6.4,
+  "long_2022": 193,
+  "long_2026": 305,
+  "owner_class_development": "41100",
+  "owner_class_letting": "68209",
+  "sic_division": "47",
+  "smallest_qualifying_fall": 9.9,
+  "test_clause": "3.3"
+ }
 }

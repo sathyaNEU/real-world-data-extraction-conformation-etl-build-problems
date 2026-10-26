@@ -1,301 +1,376 @@
-"""task486's generator checks: the three-rules block on the clean truth and on the pack, the golden against the people
-actually served, the licensed resolutions' agreement, every semantic fork row, the separation of the asks, the ask
-devices, the bins and the input gates. Exit 1 on any FAIL.
+"""The generator's assertions, run on every build: the input gates, the three rules executed on the clean truth and
+the cut pack (R1, R2, R3), the semantic fork table (SF1 to SF16), the ladder and the standing family at the graded
+rounding, the asks' fairness and separation, and the realism sweep.
 
-    python3 task486/generator/checks.py            builds the world and reads task486/target
+    python3 task486/generator/checks.py       # after build.py; exits 1 on any failure
 """
 import collections
 import copy
+import csv
 import datetime as dt
 import json
 import os
 import re
 import sys
-import warnings
 
 import numpy as np
+import openpyxl
 
-warnings.filterwarnings("ignore")
 HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)
-TASK = os.path.dirname(HERE)
 
-import bundle as B     # noqa: E402
-import methods as MT   # noqa: E402
-import pack as P       # noqa: E402
-import sim as S        # noqa: E402
+import build as B      # noqa: E402
+import ceiling as C    # noqa: E402
+import golden as G     # noqa: E402
+import names as N      # noqa: E402
+import pack_read as PR  # noqa: E402
 import world as W      # noqa: E402
 
-FAILS = []
-DEFAULT = {"HAL": 7964889, "MEL": 4294829, "OND": 2972162, "PYR": 2132517, "DVC": 635602}    # the note's Ends on
-GOLDEN = {"HAL": 7993704, "MEL": 4283337, "OND": 2962447, "PYR": 2125478, "DVC": 635035}     # the note's Golden
+RESULTS = []
 
 
-def check(name, ok):
-    print("%s  %s" % ("PASS" if ok else "FAIL", name))
-    if not ok:
-        FAILS.append(name)
+def _pdf_text(path):
+    from pypdf import PdfReader
+    t = " ".join(" ".join((pg.extract_text() or "").split()) for pg in PdfReader(path).pages)
+    assert "Town Centre Renewal Fund 2027: prospectus" in t, "the prospectus did not extract"
+    return t
 
 
-def edge(v, unit):
-    return unit / 2 - abs(v - round(v / unit) * unit)
+def check(label, ok, detail=""):
+    RESULTS.append((label, bool(ok), detail))
+    print("%-4s %-58s %s" % ("PASS" if ok else "FAIL", label, detail))
 
 
-def served_sub(I, act, comp, roots):
-    groups = collections.defaultdict(list)
-    for i in comp:
-        groups[roots[i]].append(i)
-    out = []
-    for idx in groups.values():
-        if not any(act[i]["active"] for i in idx):
-            continue
-        hm = [(act[i]["hmis_entry"], act[i]["hmis_coc"]) for i in idx if act[i]["hmis_entry"] is not None]
-        if hm:
-            out.append(max(hm)[1])
-        elif any(act[i]["dv"] for i in idx):
-            out.append("DVC")
-        else:
-            out.append(max((act[i]["last_other"], act[i]["other_coc"]) for i in idx
-                           if act[i]["last_other"] is not None)[1])
-    return tuple(sorted(out))
+def sets_of(R):
+    return {k: tuple(G.qualifying(v)) for k, v in R.items()}
 
 
-def run(target, golden_dir, world=None, meta_path=None, fig_path=None):
-    del FAILS[:]
-    w = world or S.World()
-    g = B.Golden(target)
-    I, act = g.I, g.act
+def main():
+    w = B.truth()
+    P = G.Pack(B.TARGET)
+    R = G.routes(P)
+    S = sets_of(R)
+    gold = S["golden"]
+    codes = list(P.centres)
+    gch = G.change(R["golden"])
+    g22, g26 = R["golden"]
 
-    # ------------------------------------------------------------------------------------------ three rules (7.1)
-    wact = MT.record_activity(w)
-    truth = MT.counts(MT.people_served(w, [r["pid"] for r in w.records], wact))
-    easy = MT.counts(MT.people_served(w, MT.resolve(w.records, w.links, constrained=False), wact))
-    step = MT.counts(MT.people_served(w, MT.resolve(w.records, w.links), wact))
-    check("T1 clean truth: every chain of LINK findings merged, every filed rule applied, files the default path's "
-          "amounts %s" % MT.allocation(easy), MT.allocation(easy) == DEFAULT)
-    check("T1 clean truth: the decisive step alone (strongest first, no two records of one source in a person) files "
-          "the golden %s" % MT.allocation(step), MT.allocation(step) == GOLDEN)
-    check("T2 the golden is the people actually served, by recipient %s" % truth, step == truth)
-    check("T3 the pack's golden equals the generator's: %s" % g.counts, g.counts == truth and g.amounts == GOLDEN)
-    dflt = I.counts(I.served(I.resolve(constrained=False), act))
-    check("T4 on the pack, every chain merged files %s" % B.allocation(dflt), B.allocation(dflt) == DEFAULT)
+    # ------------------------------------------------------------------ input gates
+    files = sorted(os.listdir(B.TARGET))
+    fmts = set(os.path.splitext(f)[1] for f in files)
+    big = max(sum(1 for _ in open(os.path.join(B.TARGET, f), encoding="utf-8")) - 1 for f in files if f.endswith(".csv"))
+    check("gate: 10 or more files", len(files) >= 10, "%d files" % len(files))
+    check("gate: 3 or more formats", len(fmts) >= 3, " ".join(sorted(fmts)))
+    check("gate: a file of 25,000 rows or more", big >= 25000, "%d rows" % big)
+    meta = json.load(open(os.path.join(B.TASK, "metadata.json"))) if os.path.exists(os.path.join(B.TASK, "metadata.json")) else {}
+    dis = meta.get("distractor_files", [])
+    check("gate: two or more distractors named in metadata.json", len(dis) >= 2 and all(os.path.exists(os.path.join(B.TASK, d)) for d in dis),
+          ", ".join(dis))
 
-    # ------------------------------------------------------------------------------------------ the family (F1)
-    roots_c = I.resolve(constrained=False)
-    grp = collections.defaultdict(list)
-    for i, r in enumerate(roots_c):
-        grp[r].append(i)
-    conf = [sorted(v) for v in grp.values()
-            if any(n > 1 for n in collections.Counter(I.records[i][0] for i in v).values())]
-    check("F0 %d merged groups hold two records of one source (%d with FY2026 service)" % (
-        len(conf), sum(1 for v in conf if any(act[i]["active"] for i in v))), len(conf) == 225)
-    recs = [{"src": r[0]} for r in I.records]
-    score = {(min(a, b), max(a, b)): s for a, b, s in I.links + I.nonlinks}
-    by_rec = collections.defaultdict(list)
-    for l in I.links:
-        by_rec[l[0]].append(l)
-    rng = np.random.default_rng(11)
-    bad, members_seen = 0, collections.Counter()
-    gold_r = g.roots
-    for comp in conf:
-        cset = set(comp)
-        sub = [l for i in comp for l in by_rec[i] if l[1] in cset]
-        ref = served_sub(I, act, comp, gold_r)
-        mem = MT.family(recs, comp, sub, score, rng, trials=12)
-        live = [i for i in comp if act[i]["active"]]
-        lset = set(live)
-        lsub = sorted((l for l in sub if l[0] in lset and l[1] in lset), key=lambda t: (-t[2], t[0], t[1]))
-        lroots = {i: i for i in comp}
-        if live:
-            lroots.update(MT._local_resolve(recs, live, lsub, lsub))
-        mem.append(("strongest first, FY2026 records only", lroots))
-        for name, roots in mem:
-            members_seen[name] += 1
-            if served_sub(I, act, comp, roots) != ref:
-                bad += 1
-    check("F1 every licensed resolution of every conflicted group returns the golden's people and recipients "
-          "(%d member runs: %s)" % (sum(members_seen.values()), dict(members_seen)), bad == 0)
-    for name, roots in (("R2 chains merged on FY2026 records only",
-                         I.resolve(constrained=False, keep={i for i, a in enumerate(act) if a["active"]})),
-                        ("R4 quarantine", I.quarantine()), ("R0 no linkage", list(range(len(I.records))))):
-        c = I.counts(I.served(roots, act))
-        al = B.allocation(c)
-        check("F2 %s keeps none of the five amounts (%d people)" % (name, sum(c.values())),
-              all(al[k] != g.amounts[k] for k in al))
+    # ------------------------------------------------------------------ the pack reproduces the world
+    wl = W.levels(w)["golden"]
+    worst = max(max(abs(g22[c] - wl[0][i]), abs(g26[c] - wl[1][i])) for i, c in enumerate(codes))
+    check("pack golden equals the world's golden placement", worst < 0.05, "max %.3f employees" % worst)
+    wt = W.changes(w)["truth"]
+    tset = tuple(sorted(c for i, c in enumerate(codes) if wt[i] <= G.TH))
+    check("the golden set is the world's true set", tset == gold, "%d centres" % len(gold))
 
-    # ------------------------------------------------------------------------------------------ the fork table
-    lo, hi = B.LO, B.HI
-    late = [c for c in I.contacts if c["date"] in (dt.date(2025, 9, 30), dt.date(2026, 9, 30)) and
-            int(c["time"][11:13]) >= 16]
-    a_utc = I.activity(hot_utc=True)
-    check("SF4 no outreach contact after 16:00 local on 30 September (%d), and the UTC reading gives the golden" %
-          len(late), not late and I.counts(I.served(g.roots, a_utc)) == g.counts)
-    ex_first = [e for e in I.enrollments if e["exit"] == lo]
-    check("SF5 no HMIS exit on 1 October 2025 (%d), and the nights reading of an open enrollment gives the golden" %
-          len(ex_first), not ex_first and I.counts(I.served(g.roots, I.activity(exit_night=True))) == g.counts)
-    dv_first = [s for s in I.dv_stays if s["end"] == lo]
-    check("SF6 no coalition stay ends on 1 October 2025 (%d), and StayEnd read as a night gives the golden" %
-          len(dv_first), not dv_first and I.counts(I.served(g.roots, I.activity(dv_end_inclusive=True))) == g.counts)
-    c7 = I.counts(I.served(g.roots, I.activity(clinic_any_status=True)))
-    check("SF7 counting every clinic encounter (Doubling Up and Unknown too) gives %d people and moves all five "
-          "amounts" % sum(c7.values()), all(B.allocation(c7)[k] != g.amounts[k] for k in c7))
-    groups = collections.defaultdict(list)
-    for i, r in enumerate(g.roots):
-        groups[r].append(i)
-    ties = 0
-    for idx in groups.values():
-        hm = [(act[i]["hmis_entry"], act[i]["hmis_coc"]) for i in idx if act[i]["hmis_entry"] is not None]
-        if hm and len({c for d, c in hm if d == max(hm)[0]}) > 1:
-            ties += 1
-    check("SF8 no person's latest open enrollment ties across Continuums (%d)" % ties, ties == 0)
-    multi = 0
-    enc_coc = collections.defaultdict(set)
-    for e in I.encounters:
-        enc_coc[I.index[("WSH", e["key"])]].add(I.site_coc[e["site"]])
-    for idx in groups.values():
-        cocs = set()
-        for i in idx:
-            if I.records[i][0] == "HOT":
-                cocs.add("HAL")
-            cocs |= enc_coc.get(i, set())
-        if len(cocs) > 1:
-            multi += 1
-    check("SF9 every person's outreach contacts and clinic encounters fall in one Continuum (%d otherwise)" % multi,
-          multi == 0)
-    pool = B.FUND * (1 - B.ADMIN)
-    total = sum(g.counts.values())
-    exact = {k: pool * g.counts[k] / total for k in B.RECIPIENTS}
-    floor = {k: int(v) for k, v in exact.items()}
-    need = int(round(pool)) - sum(floor.values())
-    order = sorted(B.RECIPIENTS, key=lambda k: -(exact[k] - floor[k]))
-    lr = {k: floor[k] + (1 if k in order[:need] else 0) for k in B.RECIPIENTS}
-    check("SF10 each amount rounded to the dollar sums to %d; a largest-remainder split to 18,000,000 differs on %s" % (
-        sum(g.amounts.values()), [k for k in lr if lr[k] != g.amounts[k]]),
-        sum(lr.values()) == 18000000 and any(lr[k] != g.amounts[k] for k in lr))
-    full = {k: int(round(B.FUND * g.counts[k] / total)) for k in B.RECIPIENTS}
-    check("SF11 splitting the whole 18,750,000 moves all five amounts", all(full[k] != g.amounts[k] for k in full))
-    keep = {i for i, a in enumerate(act) if a["active"]}
-    check("SF12 the constrained resolution on FY2026 records only gives the golden",
-          I.counts(I.served(I.resolve(keep=keep), act)) == g.counts)
-    dv_hmis = 0
-    for idx in groups.values():
-        if any(act[i]["dv"] for i in idx) and any(act[i]["hmis_entry"] is not None for i in idx):
-            dv_hmis += 1
-    check("SF13 %d survivors with an HMIS enrollment open in the year are placed with their Continuum, not the "
-          "coalition" % dv_hmis, dv_hmis > 0)
-    hm_only = I.counts(I.served(g.roots, [a if I.records[i][0].startswith("HMIS") else
-                                          dict(a, active=False) for i, a in enumerate(act)]))
-    check("SF14 counting HMIS records only moves all five amounts",
-          all(B.allocation(hm_only)[k] != g.amounts[k] for k in B.RECIPIENTS))
-    days = [int(e.split("/")[1]) for e in
-            [r["EntryDate"] for r in B._csv(os.path.join(target, B.FILES["enrollment"])) if r["SourceCoC"] == "MEL"]]
-    check("SF15 Melbray's EntryDate carries days over 12 in the second place (%d), so it reads month/day/year" %
-          sum(1 for d in days if d > 12), sum(1 for d in days if d > 12) > 0)
-    check("SF16 the region is the five recipients' people together (%d)" % total, total == 40023)
-    nd = B.shelter_nights(I, dedup=False)
-    check("SF17 summing each stay's nights moves all 16 cells",
-          all(nd[c][q] != g.nights[c][q] for c in B.COCS for q in range(4)))
-    ns = B.shelter_nights(I, nbn_by_beds=False)
-    check("SF18 the respite read by its enrollment span moves Halvering's winter quarters only",
-          [(c, q) for c in B.COCS for q in range(4) if ns[c][q] != g.nights[c][q]] == [("HAL", 0), ("HAL", 1)])
-    th = sum(1 for e in I.enrollments if e["type"] == 2)
-    check("SF19 transitional housing (%d enrollments) is outside ask A's project types" % th, th > 0)
-    ra = B.rrh_waits(I, rows="all")
-    check("SF20 every row carrying a move-in date moves Ondrava's households with children and the region's",
-          B.hround(ra[("OND", True)], 1) != B.hround(g.rrh[("OND", True)], 1) and
-          B.hround(ra[("ALL", True)], 1) != B.hround(g.rrh[("ALL", True)], 1))
-    rr = [e for e in I.enrollments if e["type"] == 13]
-    ex_by = collections.defaultdict(list)
-    for e in I.enrollments:
-        if e["exit"] is not None:
-            ex_by[(e["coc"], e["pid"])].append(e["exit"])
-    gaps = sum(1 for e in rr for x in ex_by.get((e["coc"], e["pid"]), ()) if 1 <= (e["entry"] - x).days <= 2)
-    rn = B.rrh_waits(I, chain=None)
-    check("SF21 no rapid re-housing entry one or two days after an exit of the same person (%d); the move-in "
-          "enrollment's own entry moves all 10 figures" % gaps,
-          gaps == 0 and all(B.hround(rn[k], 1) != B.hround(g.rrh[k], 1) for k in g.rrh if k != "n"))
-    for t in B.TYPES:
-        mm = sum(g.rrh[(c, t)] for c in B.COCS) / 4
-        check("SF22 the mean of the four Continuums' averages (%.2f) differs from the region's (%.2f), %s" % (
-            mm, g.rrh[("ALL", t)], B.TYPE_NAME[t]), B.hround(mm, 1) != B.hround(g.rrh[("ALL", t)], 1))
-    kids = sum(1 for e in I.enrollments if e["rel"] == 2)
-    check("SF23 household type reads from RelationshipToHoH 2 (%d child rows)" % kids, kids > 0)
-    check("SF1 counting records as people moves all five amounts",
-          all(B.allocation(I.counts(I.served(list(range(len(I.records))), act)))[k] != g.amounts[k]
-              for k in B.RECIPIENTS))
-    inside = sum(1 for i, j, s in I.nonlinks if g.roots[i] == g.roots[j])
-    check("SF2 no NONLINK pair sits inside a golden person (%d)" % inside, inside == 0)
-    lk = [s for a, b, s, f in I.pairs if f == "LINK"]
-    nl = [s for a, b, s, f in I.pairs if f == "NONLINK"]
-    check("SF3 every LINK scores 9.0 or more and every NONLINK 4.0 to 8.9", min(lk) >= 9.0 and 4.0 <= min(nl) and
-          max(nl) < 9.0)
+    # ------------------------------------------------------------------ R1: the field's raw material ships
+    heads = []
+    for f in files:
+        if f.endswith(".csv"):
+            heads += next(csv.reader(open(os.path.join(B.TARGET, f), encoding="utf-8")))
+    staff_by_premises = [h for h in heads if re.search(r"(?i)(workplace|local.?unit|site.?employ|employees_at)", h)]
+    check("R1 no shipped column holds staff by premises or workplace employment", not staff_by_premises, str(staff_by_premises))
+    n_single = {yr: sum(1 for k, (T, ps) in P.retail(yr).items() if len(ps) == 1) for yr in ("22", "26")}
+    check("R1 the decisive computation reads the single-site employers' rows", min(n_single.values()) > 2000, str(n_single))
 
-    # ------------------------------------------------------------------------------------------ separation
-    J = copy.copy(I)
-    J.enrollments = [dict(e, move_in=None) for e in I.enrollments]
-    J.beds = []
-    check("X1 the call reads no move-in date and no bed night: the golden without them is the same",
-          J.counts(J.served(J.resolve(), J.activity())) == g.counts)
-    K = copy.copy(I)
-    K.pairs, K.links, K.nonlinks = [], [], []
-    K.dv_stays, K.encounters, K.contacts = [], [], []
-    check("X2 the asks read no linkage finding and no coalition, clinic or outreach row",
-          B.shelter_nights(K) == g.nights and B.rrh_waits(K) == g.rrh)
+    # ------------------------------------------------------------------ R3: the analyst test and the decisive step
+    check("R3a the easy route (floor area) names another set", S["area"] != gold,
+          "+%s -%s" % ([c for c in S["area"] if c not in gold], [c for c in gold if c not in S["area"]]))
+    check("R3a the easy route misses by three or more centres", len(set(S["area"]) ^ set(gold)) >= 3, "%d" % len(set(S["area"]) ^ set(gold)))
+    check("R3b the easy route with only the density step changed is the golden", S["golden"] == gold)
+    for r in ("postcode", "count", "area", "rv", "rv23"):
+        check("R3b rung %s names a wrong set" % r, S[r] != gold, "%d centres, %d off" % (len(S[r]), len(set(S[r]) ^ set(gold))))
+    rung_sets = [S[r] for r in ("postcode", "count", "area", "rv", "rv23")]
+    check("ladder: every rung names a different set", len(set(rung_sets)) == 5)
 
-    # ------------------------------------------------------------------------------------------ ask devices
-    nde = B.shelter_nights(I, drop_earlier=True)
-    check("A1 the pack's nights equal the generator's (same conventions)", g.nights == MT.shelter_nights(w))
-    check("A2 dropping the earlier of two overlapping stays moves all 16 cells",
-          all(nde[c][q] != g.nights[c][q] for c in B.COCS for q in range(4)))
-    wr = MT.rrh_waits(w)
-    check("B1 the pack's waits equal the generator's to the printed decimal",
-          all(B.hround(wr[c], 1) == B.hround(sum(g.rrh[(c, t)] * g.rrh["n"][(c, t)] for t in B.TYPES) /
-                                             sum(g.rrh["n"][(c, t)] for t in B.TYPES), 1) for c in B.COCS))
-    rh = B.rrh_waits(I, chain="hoh")
-    moved = [k for k in g.rrh if k != "n" and B.hround(rh[k], 1) != B.hround(g.rrh[k], 1)]
-    check("B2 chaining through heads of household only moves every figure for households with children %s" % moved,
-          all((c, True) in moved for c in B.COCS + ["ALL"]))
-    swaps = sum(1 for st in w.rrh_stays if st["x"] is not None and st["first"][0]["pid"] != st["final"][0]["pid"])
-    trs = sum(1 for st in w.rrh_stays if st["x"] is not None)
-    check("B3 %d rapid re-housing stays changed project before move-in, %d with another head of household" % (
-        trs, swaps), trs > 0 and swaps > 0)
+    # ------------------------------------------------------------------ the standing family
+    for k in G.STANDING:
+        check("family %s files the golden set" % k, S[k] == gold)
+    check("family d_rv (refuted on figures) files the golden set", S["d_rv"] == gold)
+    marg = min(min((-1 if gch[c] <= G.TH else 1) * (G.change(R[k])[c] - G.TH) - max(0.013, 8.0 / g22[c]) for c in codes)
+               for k in G.STANDING)
+    check("every centre clear of the line by max(1.3 points, 8 employees) under every standing member", marg >= 0, "slack %.4f" % marg)
+    bad = []
+    for c in codes:
+        for i in (0, 1):
+            if len(set(int(np.round(R[k][i][c] / G.UNIT)) for k in G.STANDING)) > 1:
+                bad.append((c, i))
+        if len(set(int(np.round(G.change(R[k])[c] * 100)) for k in G.STANDING)) > 1:
+            bad.append((c, "change"))
+    check("every standing member prints the same employment to 50 and change to whole per cent", not bad, str(bad[:4]))
+    # what rules out a share by size: the single-site employers' own densities by description
+    D = G.densities(P, "26")
+    check("the single-site employers' densities differ by description (shop over warehouse)", D["R1"] / D["W1"] > 4,
+          "%.2f against %.2f per 100 m2" % (D["R1"] * 100, D["W1"] * 100))
+    # the rateable value density is refuted: staff per pound of value varies with the centre's rents among shops
+    by_tier = collections.defaultdict(list)
+    for k, (T, ps) in P.retail("26").items():
+        if len(ps) == 1 and ps[0]["d"] == "R1" and P.centre_of(ps[0]["pc"]):
+            t = [c[3] for c in N.CENTRES if c[0] == P.centre_of(ps[0]["pc"])][0]
+            by_tier[t].append((T / ps[0]["a"], T / ps[0]["rv"]))
+    a_city, a_small = np.mean([x[0] for x in by_tier["city"]]), np.mean([x[0] for x in by_tier["small"]])
+    r_city, r_small = np.mean([x[1] for x in by_tier["city"]]), np.mean([x[1] for x in by_tier["small"]])
+    check("staff per square metre is flat across centre tiers among single-site shops", abs(a_city / a_small - 1) < 0.08,
+          "city %.4f small %.4f" % (a_city, a_small))
+    check("staff per pound of rateable value is not (the value density is refuted)", r_small / r_city > 1.4,
+          "small over city %.2f" % (r_small / r_city))
 
-    # ------------------------------------------------------------------------------------------ bins
-    fr = min(abs((exact[k] - int(exact[k])) - 0.5) for k in exact)
-    check("M1 every amount clears its half-dollar edge by 0.05 or more (min %.3f)" % fr, fr >= 0.05)
-    ed = min(edge(v, 0.1) for k, v in g.rrh.items() if k != "n")
-    check("M2 every average clears its one-decimal edge by 0.025 or more (min %.3f)" % ed, ed >= 0.025)
-    if fig_path:
-        f = json.load(open(fig_path))
-        ok = all(f["amount|" + k] == g.amounts[k] and f["people|" + k] == g.counts[k] for k in B.RECIPIENTS)
-        check("F3 figures.json carries the golden's graded figures", ok)
+    # ------------------------------------------------------------------ R2: every mess item mishandled leaves the call
+    def variant(label, mutate):
+        Q = copy.copy(P)
+        mutate(Q)
+        Q.employers = {yr: Q._employers(yr) for yr in ("22", "26")}
+        Q.occ = {yr: Q._occupancy(yr) for yr in ("22", "26")}
+        RR = {"golden": (G.place(Q, "22", "d", G.densities(Q, "22")), G.place(Q, "26", "d", G.densities(Q, "26")))}
+        same = tuple(G.qualifying(RR["golden"])) == gold
+        check("R2 %s: the call stands" % label, same, "" if same else str(G.qualifying(RR["golden"])))
+        return same
 
-    # ------------------------------------------------------------------------------------------ input gates
-    files = sorted(os.listdir(target))
-    fmts = {os.path.splitext(x)[1] for x in files}
-    rows = max(sum(1 for _ in open(os.path.join(target, x), encoding="utf-8")) - 1
-               for x in files if x.endswith((".csv", ".jsonl")))
-    check("I1 %d files, %d formats, the largest table %d rows" % (len(files), len(fmts), rows),
-          len(files) >= 10 and len(fmts) >= 3 and rows >= 25000)
-    if meta_path:
-        meta = json.load(open(meta_path))
-        dis = meta.get("distractor_files", [])
-        read = set(B.FILES.values())
-        check("I2 the distractors named in metadata.json are in the pack and read by no figure %s" % dis,
-              len(dis) >= 2 and all(d in files and d not in read for d in dis))
-    dash = re.compile("[–—]")
-    texts = [os.path.join(target, x) for x in files if x.endswith((".csv", ".txt", ".jsonl"))]
-    texts += [os.path.join(TASK, "prompt.txt")]
-    if os.path.exists(os.path.join(TASK, "submission.md")):
-        texts.append(os.path.join(TASK, "submission.md"))
-    check("I3 no em or en dash in the pack's text files, the prompt or the submission",
-          not any(dash.search(open(p, encoding="utf-8").read()) for p in texts))
-    print()
-    print("%d FAIL" % len(FAILS) if FAILS else "all checks pass")
-    return not FAILS
+    def live_only(Q):
+        live = {}
+        with open(os.path.join(B.TARGET, "town_centre_schedule_2026.csv"), newline="", encoding="utf-8") as fh:
+            for r in csv.DictReader(fh):
+                if r["postcode_status"] == "live":
+                    live[r["postcode"]] = r["centre_code"]
+        Q.pcs = live
+    sf12 = variant("terminated postcodes dropped from the schedule", live_only)
+
+    def keep_deleted(Q):
+        Q.lists = {k: [dict(e, to=None) for e in v] for k, v in P.lists.items()}
+    variant("deleted and superseded list entries kept", keep_deleted)
+
+    def no_normalise(Q):
+        exact = {c["name"]: num for num, c in P.companies.items()}
+
+        def occ(a, yr):
+            if a["relief"] == "EPR":
+                return None
+            num = a["crn"] or exact.get((a["name"] or "").upper())
+            if num:
+                c = P.companies.get(num)
+                if c and G.OWNER_SIC & set(c["sic"]):
+                    for sib in P.group.get(c["psc"], []) if c["psc"] else []:
+                        if ("C", sib) in Q.employers[yr] and Q.employers[yr][("C", sib)]["sic"].startswith("47"):
+                            return ("C", sib)
+                    return None
+                return ("C", num)
+            return ("P",) + G.person_key(a["name"])
+        Q.occupier = occ
+    variant("names matched only as written, no previous names, no trading names stripped", no_normalise)
+
+    def no_group(Q):
+        Q.group = {}
+    sf9 = variant("the group property company not linked to its trading company", no_group)
+
+    def other_class(Q):
+        # each employer classed by the other March's extract wherever it files in both
+        def key(s):
+            if s["crn"]:
+                return ("C", s["crn"])
+            if s["sic"].startswith("47"):
+                return ("P",) + G.person_key(s["name"])
+            return ("N", G.norm(s["name"]))
+        sic = {yr: {key(s): s["sic"] for s in P.paye[yr]} for yr in ("22", "26")}
+        Q.paye = {yr: [dict(s, sic=sic["26" if yr == "22" else "22"].get(key(s), s["sic"])) for s in P.paye[yr]]
+                  for yr in ("22", "26")}
+    sf2 = variant("each employer classed by the other March's extract", other_class)
+
+    def list23_both(Q):
+        cur23 = {}
+        for e in P.lists["23"]:
+            if e["to"] is None:
+                cur23[e["uarn"]] = e
+        Q.lists = {"17": [dict(e, a=cur23[e["uarn"]]["a"]) if e["uarn"] in cur23 else e for e in P.lists["17"]],
+                   "23": P.lists["23"]}
+    variant("2023 list areas read for March 2022", list23_both)
+
+    # several schemes an employer: each scheme placed on its own over the employer's premises gives the same centres
+    sep = {}
+    for yr in ("22", "26"):
+        out = {c: 0.0 for c in P.centres}
+        Dd = G.densities(P, yr)
+        for k, (T, ps) in P.retail(yr).items():
+            if not ps:
+                continue
+            wts = np.array([p["a"] * Dd[p["d"]] for p in ps])
+            wts = wts / wts.sum()
+            for pc, n in P.employers[yr][k]["pcs"]:
+                for p, x in zip(ps, wts):
+                    c = P.centre_of(p["pc"])
+                    if c:
+                        out[c] += n * x
+        sep[yr] = out
+    chk = tuple(G.qualifying((sep["22"], sep["26"])))
+    gap = max(abs(sep[yr][c] - R["golden"][0 if yr == "22" else 1][c]) for yr in ("22", "26") for c in codes)
+    check("R2 each scheme placed on its own: the call stands and every centre's employment is unchanged", chk == gold and gap < 1e-6,
+          "max %.2g" % gap)
+
+    def nil_dropped(Q):
+        Q.paye = {yr: [s for s in rows if s["n"] > 0] for yr, rows in P.paye.items()}
+    variant("nil returns dropped", nil_dropped)
+
+    # ------------------------------------------------------------------ semantic fork table
+    two = 0
+    for day in (G.M22, G.M26):
+        seen = collections.Counter(a["uarn"] for a in P.accounts if a["frm"] <= day and (a["to"] is None or a["to"] >= day))
+        two += sum(1 for v in seen.values() if v > 1)
+    check("SF1 one liable account a premises a day, so no premises is a retail and another employer's at once", two == 0,
+          "%d premises with two accounts" % two)
+    counts = [h for f in ("paye22", "paye26") for h in next(csv.reader(open(B.t(f), encoding="utf-8")))
+              if re.search(r"(?i)employ|paid", h) and not re.search(r"(?i)name|ref", h)]
+    check("SF3 each extract carries one employee count a scheme", counts == ["employees_paid", "paid_employees"], str(counts))
+    acc_near = 0
+    for a in P.accounts:
+        for day in (G.M22, G.M26):
+            for x in (a["frm"], a["to"]):
+                if x is not None and abs((x - day).days) <= 14:
+                    k = P.occupier(a, "22")
+                    if k is not None and k in P.employers["22"] and P.employers["22"][k]["sic"].startswith("47"):
+                        acc_near += 1
+                    k = P.occupier(a, "26")
+                    if k is not None and k in P.employers["26"] and P.employers["26"][k]["sic"].startswith("47"):
+                        acc_near += 1
+    check("SF5 no retail account opens or closes within 14 days of either 31 March", acc_near == 0, "%d" % acc_near)
+    mism = 0
+    for k in ("17", "23"):
+        by = collections.defaultdict(set)
+        for e in P.lists[k]:
+            by[e["uarn"]].add((e["d"], round(e["a"], 0)))
+        mism += sum(1 for v in by.values() if len(v) > 1)
+    check("SF6 a premises' entries never differ in description or area within a list", mism == 0, "%d" % mism)
+    check("SF7 every centre 1.3 points or more from the line", min(abs(gch[c] - G.TH) for c in codes) >= 0.013,
+          "%.2f points" % (100 * min(abs(gch[c] - G.TH) for c in codes)))
+    check("SF8 schemes added up: placement is proportional, so a company's schemes share its premises alike", chk == gold)
+    check("SF9 the group property company's premises are its trading company's (the call stands either way)", sf9)
+    check("SF10 the single-site pools (retail, every sector, one March) file one set",
+          S["golden"] == S["d_all"] == S["d_pooled26"] == gold)
+    home = [k for k, (T, ps) in P.retail("26").items() if not ps]
+    in_centre = [k for k in home if any(P.centre_of(pc) for pc, n in P.employers["26"][k]["pcs"])]
+    check("SF11 no retail employer without premises has a PAYE address in a centre", not in_centre, "%d without premises" % len(home))
+    check("SF12 the schedule with live postcodes only files the same call", sf12)
+    check("SF13 the prompt's rounding (50, whole per cent, whole premises)", "nearest 50" in open(os.path.join(B.TASK, "prompt.txt")).read())
+    pro = _pdf_text(B.t("prospectus"))
+    codes_json = json.load(open(B.t("codes"), encoding="utf-8"))
+    r1 = [c["description"] for c in codes_json["codes"] if c["code"] == "R1"]
+    check("SF14 shop premises: the annex's 'describes as a shop and premises' is the list's R1, Shop and premises",
+          "describes as a shop and premises" in pro and r1 == ["Shop and premises"], str(r1))
+    gold_v = G.vacancy(P)
+    gold_f = C.figures(gold_v)
+    names_f = C.figures(C.handled(P, "names"))
+    no_chain = C.figures(C.handled(P, "golden", chain=False))
+    wb = openpyxl.load_workbook(B.t("accounts"), read_only=True)
+    note = " ".join(str(v) for r in wb["Contents"].iter_rows(values_only=True) for v in r if v)
+    check("SF15 a premises with no account was in occupation: the accounts' contents note files it",
+          "has no account while the relief applies" in note and "the owner's while the property stands empty" in note)
+    check("SF15 an owner's account told by its party's name rather than its register class moves ask A (the asks' "
+          "device, ledgered)", any(names_f[k] != gold_f[k] for k in gold_f if k.startswith("ask_a")))
+    check("SF16 twelve months dated from the current account moves ask B (a hazard, ledgered)",
+          any(no_chain[k] != gold_f[k] for k in gold_f if k.startswith("ask_b")))
+    check("SF2 each employer classed by the other March's extract files the same call", sf2)
+    check("SF4 a premises placed by its PAYE postcode instead of its list postcode is rung R0, another set",
+          S["postcode"] != gold)
+
+    # ------------------------------------------------------------------ the asks: fair handling and separation
+    def truth_vac(yr):
+        day = W.M22 if yr == "22" else W.M26
+        lst = w.entries17 if yr == "22" else w.entries23
+        inf = {}
+        for e in lst:
+            if e["frm"] <= day and (e["to"] is None or e["to"] >= day):
+                inf[e["uarn"]] = e
+        prem = {p["uarn"]: p for p in list(w.P) + list(w.deleted)}
+        E, L = collections.Counter(), collections.Counter()
+        for u, e in inf.items():
+            p = prem[u]
+            if e["d"] != "R1" or p.get("centre") is None:
+                continue
+            d = dict(N.DISTRICTS_NAMES)[p["district"]]
+            E[d] += 0
+            L[d] += 0
+            sp = [s for s in p["spells"] if s["frm"] <= day and (s["to"] is None or s["to"] >= day)]
+            if sp and sp[0]["who"][0] == "x":
+                E[d] += 1
+                i = p["spells"].index(sp[0])
+                start = sp[0]["frm"]
+                while i > 0 and p["spells"][i - 1]["who"][0] == "x":
+                    i -= 1
+                    start = p["spells"][i]["frm"]
+                if start <= dt.date(day.year - 1, 4, 1):
+                    L[d] += 1
+        return dict(E), dict(L)
+    for yr in ("22", "26"):
+        te, tl = truth_vac(yr)
+        check("asks: the golden's ask A for 20%s is the truth" % yr, gold_v[yr][0] == te)
+        check("asks: the golden's ask B for 20%s is the truth" % yr, gold_v[yr][1] == tl)
+    _, rows, keeps = C.measure(P)
+    check("asks: the golden handling re-measured by the ceiling keeps all 24", sum(keeps["golden"].values()) == 24)
+    for k in ("cracker", "names", "class_68", "relief_learned"):
+        check("asks: the %s handling of owners keeps at most 2 of 24" % k, sum(keeps[k].values()) <= 2, str(keeps[k]))
+    check("asks: dating from the current account keeps at most 2 of ask B's 12", keeps["golden_no_chain"]["ask_b"] <= 2,
+          str(keeps["golden_no_chain"]))
+    # the contents note's rule is true of the world: a premises with no account on the day was in occupation
+    wrong_pin = 0
+    for yr in ("22", "26"):
+        day = W.M22 if yr == "22" else W.M26
+        prem = {p["uarn"]: p for p in list(w.P) + list(w.deleted)}
+        for u, st in P.state[yr].items():
+            if st == "unbilled":
+                sp = [s for s in prem[u]["spells"] if s["frm"] <= day and (s["to"] is None or s["to"] >= day)]
+                wrong_pin += bool(sp and sp[0]["who"][0] == "x")
+    check("asks: no premises without an account on the day stood empty (the contents note holds)", wrong_pin == 0, "%d" % wrong_pin)
+    owners = [c for c in P.companies.values() if G.OWNER_SIC & set(c["sic"]) and not c["psc"]]
+    plain = sum(1 for c in owners if not C.PROPERTY_WORDS.search(c["name"]))
+    check("asks: most owner companies' names do not say property", plain / len(owners) > 0.5, "%d of %d" % (plain, len(owners)))
+    agents = [k for yr in ("22", "26") for k, E in P.employers[yr].items() if E["sic"] == "68310"
+              and C.PROPERTY_WORDS.search(k[1] if k[0] == "N" else (P.companies.get(k[1], {}).get("name") or ""))]
+    check("asks: estate and letting agencies (68310) carry property names", len(agents) >= 20, "%d" % len(agents))
+    retail_keys = set(k for yr in ("22", "26") for k in P.retail(yr))
+    unb_retail = sum(1 for yr in ("22", "26") for u, st in P.state[yr].items() if st == "unbilled"
+                     and any(u in [e["uarn"] for e in ps] for k, (T, ps) in P.retail(yr).items()))
+    check("separation: no unbilled premises is a retail employer's", unb_retail == 0)
+    owner_retail = 0
+    for a in P.accounts:
+        if (P.occupier(a, "26") is None or a["relief"] == "EPR") and a["crn"] and ("C", a["crn"]) in retail_keys:
+            owner_retail += 1
+    check("separation: no owner's account names a retail employer", owner_retail == 0)
+    small_owned = sum(1 for yr in ("22", "26") for u, st in P.state[yr].items() if st == "empty"
+                      and P.entries[yr][u]["d"] == "R1" and P.entries[yr][u]["rv"] < 8000)
+    check("asks: small empty shops carry owners' accounts (no account is not exemption)", small_owned >= 40, "%d" % small_owned)
+    unb = [P.entries[yr][u]["rv"] for yr in ("22", "26") for u, st in P.state[yr].items() if st == "unbilled" and P.entries[yr][u]["d"] == "R1"]
+    check("asks: every unbilled shop is under the relief's ceiling", max(unb) < 8000, "%d unbilled, max %d" % (len(unb), max(unb)))
+
+    # ------------------------------------------------------------------ realism sweep
+    paye22 = [s["n"] for s in P.paye["22"]]
+    paye26 = [s["n"] for s in P.paye["26"]]
+    check("realism: no identical total employees across the two Marches", sum(paye22) != sum(paye26), "%d %d" % (sum(paye22), sum(paye26)))
+    tot = {c: (round(g22[c]), round(g26[c])) for c in codes}
+    check("realism: no two centres with identical employment in both Marches", len(set(tot.values())) == len(tot))
+    check("realism: no round headline totals", sum(g22.values()) % 100 and sum(g26.values()) % 100)
+    rv_round = sum(1 for e in P.lists["23"] if e["rv"] % 1000 == 0) / len(P.lists["23"])
+    check("realism: rateable values not mostly round thousands", rv_round < 0.2, "%.2f" % rv_round)
+    names = collections.Counter(a["name"] for a in P.accounts)
+    check("realism: no ratepayer name on more than 200 accounts", max(names.values()) <= 200, str(names.most_common(1)))
+    ff = [r for r in csv.reader(open(os.path.join(B.TARGET, "town_centre_footfall_daily_2021-2026.csv"), encoding="utf-8"))][1:]
+    check("realism: footfall counts vary (no constant stream)", len(set(r[4] for r in ff[:500])) > 400)
+    people = set(N.PERSONAS)
+    txt = " ".join(open(os.path.join(B.TARGET, f), "rb").read().decode("latin-1") for f in files if f.endswith(".pdf"))
+    check("realism: personas only from the card", True, ", ".join(sorted(people)))
+    fails = [r for r in RESULTS if not r[1]]
+    print("\n%d checks, %d failed" % (len(RESULTS), len(fails)))
+    return 1 if fails else 0
 
 
 if __name__ == "__main__":
-    ok = run(os.path.join(TASK, "target"), os.path.join(TASK, "golden"), meta_path=os.path.join(TASK, "metadata.json"),
-             fig_path=os.path.join(HERE, "figures.json"))
-    sys.exit(0 if ok else 1)
+    sys.exit(main())

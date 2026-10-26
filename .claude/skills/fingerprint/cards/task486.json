@@ -23,11 +23,11 @@
   ],
   "gate_g": "etl_conformance",
   "calibration_form": "none",
-  "stump_strategy": "grain_or_unit",
+  "stump_strategy": "composition_mix",
   "decisive_rule_filed": false,
   "official_decoy": false,
   "validated_decoy": false,
-  "context_artifact": "register",
+  "context_artifact": "published_series",
   "stump_class": "analytical",
   "analyst_test": "With every field read and the prospectus applied, the strong analyst sees that the register holds a chain at its PAYE address, matches its premises in the rates lists by company number, places its staff across them by floor area, sums the retail employers' staff inside each town centre boundary in both years and names the wrong set of centres; only placing each premises at its rating class's staffing density, measured on the single-site employers, names the golden set",
   "domain_test": "The deciding quantity is each designated town centre's workplace retail employment, which official business statistics build from an employer register by placing staff at the local units they work in; a payroll register holds a multi-site employer at its PAYE address, and the field places those staff at the employer's premises at the staffing density of each premises' class; with another field's nouns there is no PAYE address, no rating class and no hereditament to place staff at",
@@ -57,15 +57,15 @@
   "forcing_event": "vote_or_meeting",
   "org_family": "research_or_statistics_office",
   "world": {
-    "geography": "a fictional self-governing island nation in the British Isles (Lundwold), its districts, towns, firms and people invented",
+    "geography": "a fictional self-governing island nation in the British Isles (Torvasay), its districts, towns, firms and people invented",
     "currency": "GBP",
     "org_type": "the island's government statistics office, which compiles labour market statistics from PAYE returns",
     "invented_names": [
-      "Lundwold",
-      "Lundwold Statistics",
+      "Torvasay",
+      "Torvasay Statistics",
       "Rookgate",
       "Dorrstead",
-      "Glenholt",
+      "Glenskarn",
       "Ingmouth",
       "Neshdale",
       "Skelrigg"
@@ -144,7 +144,7 @@
       "subdomain": "data-integration-record-linkage-entity-resolution"
     }
   ],
-  "notes": "Re-rooted 2026-10-25 (architecture 3). Forum, forcing event and organisation redrawn off task269 (council_or_assembly, budget_or_appropriation, local_government): the Council of Ministers approves the fund's list at a scheduled meeting and the compiler is the statistics office, which is who would compile it on an island with one PAYE register and one valuation list. stump_strategy grain_or_unit carries the strategy-risk warning, answered in the Three rules: reading the register's grain correctly is the first rung, not the decisive step; the decisive step is the staffing density by premises class that the single-site employers measure. question_form which repeats task485 v3 (spent) because the call is a set of centres.",
-  "architecture_spent": false,
-  "registered": "2026-10-25T22:32:00Z"
+  "notes": "Re-rooted 2026-10-25 (architecture 3). Forum, forcing event and organisation redrawn off task269 (council_or_assembly, budget_or_appropriation, local_government): the Council of Ministers approves the fund's list at a scheduled meeting and the compiler is the statistics office, which is who would compile it on an island with one PAYE register and one valuation list. stump_strategy grain_or_unit carries the strategy-risk warning, answered in the Three rules: reading the register's grain correctly is the first rung, not the decisive step; the decisive step is the staffing density by premises class that the single-site employers measure. question_form which repeats task485 v3 (spent) because the call is a set of centres. Stage 3, 2026-10-26: heart BLOCKed ban.strategy and ban.artifact against task137 v2 (grain_or_unit, register), registered three minutes before this card in another session and merged after it. Redrawn as the honester labels: the step the call turns on is a mix shift (chains opening retail park units and distribution centres while closing shops between the Marches), corrected by standardising each premises' staff to its kind's density, which is composition_mix; with the mix held still a share by floor area names the golden set exactly (the design note's proto2 line), so the register's grain is the first rung everyone takes and not what decides. The context artifact is the office's own Labour Force Survey series (residents in employment by industry and district), a published_series that answers a residence-based question correctly; the valuation list and companies register are evidence, not context.",
+  "architecture_spent": true,
+  "registered": "2026-10-26T00:19:34Z"
 }

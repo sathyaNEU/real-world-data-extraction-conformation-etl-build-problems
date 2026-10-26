@@ -1,50 +1,51 @@
-"""metadata.json in the task folder, outside target/: the distractors by bundle path and the portal's keys."""
+"""metadata.json in the task folder: per shipped file its source, date, licence and rows, and the distractors."""
 import json
+import os
 
-import pack as P
+HERE = os.path.dirname(os.path.abspath(__file__))
+TASK = os.path.dirname(HERE)
+T = os.path.join(TASK, "target")
+SYN = " (fictional, synthetic records)"
+LIC = "CC0-1.0 (synthetic, generated for this task)"
+SOURCES = {
+    "paye_returns_m12_2021-22.csv": ("Revenue Office, PAYE employer extract, tax month 12 of 2021-22, layout version 3", "2022-05-16"),
+    "paye_returns_m12_2025-26.csv": ("Revenue Office, PAYE employer extract, tax month 12 of 2025-26, layout version 4", "2026-05-18"),
+    "paye_extract_specification_v4.pdf": ("Revenue Office, Statistics and Data Sharing, PAYE employer extract specification, version 4", "2026-05-11"),
+    "rating_list_2017_extract_20220404.csv": ("Torvasay Valuation Office, 2017 rating list extract", "2022-04-04"),
+    "rating_list_2023_extract_20260413.csv": ("Torvasay Valuation Office, 2023 rating list extract", "2026-04-13"),
+    "valuation_description_codes.json": ("Torvasay Valuation Office, primary description codes", "2023-02-14"),
+    "rating_list_extract_guide.pdf": ("Torvasay Valuation Office, rating list extracts field guide", "2026-04-13"),
+    "business_rates_accounts_2017-2026.xlsx": ("The six district councils' business rates accounts with a liability, April 2017 to April 2026, as supplied to Torvasay Statistics", "2026-05-12"),
+    "companies_register_extract_20260501.csv": ("Torvasay Companies Registry, register extract", "2026-05-01"),
+    "town_centre_schedule_2026.csv": ("Department for the Economy, Town Centres Unit, postcode schedule of the designated town centres", "2026-08-20"),
+    "town_centre_renewal_fund_2027_prospectus.pdf": ("Department for the Economy, Town Centre Renewal Fund 2027 prospectus", "2026-09-07"),
+    "sic2007_subclasses.csv": ("Torvasay Statistics, SIC 2007 subclasses in use in the extracts", "2026-05-20"),
+    "town_centre_footfall_daily_2021-2026.csv": ("Department for the Economy, Town Centres Unit, footfall counters, daily counts", "2026-04-06"),
+    "labour_force_survey_employment_by_industry_2022_2026.xlsx": ("Torvasay Statistics, Labour Force Survey, residents in employment by industry and district", "2026-06-11"),
+}
+DISTRACTORS = ["target/town_centre_footfall_daily_2021-2026.csv",
+               "target/labour_force_survey_employment_by_industry_2022_2026.xlsx"]
 
-DISTRACTORS = [P.FILES["pit"], P.FILES["hic"]]
+
+def main():
+    files = []
+    for n in sorted(os.listdir(T)):
+        src, date = SOURCES[n]
+        rows = None
+        if n.endswith(".csv"):
+            rows = sum(1 for _ in open(os.path.join(T, n), "rb")) - 1
+        files.append(dict(file=n, source=src + SYN, date=date, license=LIC, rows=rows))
+    meta = dict(task="task486", title="The 2027 Town Centre Renewal Fund: which designated town centres qualify",
+                setting="A fictional self-governing island nation, Torvasay, whose statistics office compiles each designated "
+                        "town centre's workplace retail employment from the tax authority's PAYE returns, the valuation "
+                        "office's rating lists and the district councils' business rates accounts: the island, its bodies, "
+                        "the firms and the people are fictional, and every record is synthetic.",
+                as_of="2026-10-29",
+                deliverables=["town_centre_fund_2027_eligibility.xlsx", "town_centre_retail_employment_2022_2026.png"],
+                distractor_files=DISTRACTORS, stated_inputs=["8 per cent", "March 2022 and March 2026"], files=files)
+    assert set(SOURCES) == set(os.listdir(T)), set(SOURCES) ^ set(os.listdir(T))
+    json.dump(meta, open(os.path.join(TASK, "metadata.json"), "w"), indent=1)
 
 
-def write(path, n):
-    meta = {
-        "task": "task486",
-        "domain": "General Statistics & Data Science (data integration, record linkage and entity resolution)",
-        "client_domain": "General Statistics & Data Science",
-        "task_type": "data-integration-record-linkage-entity-resolution",
-        "objective": "Data Extraction & Conformation (ETL)",
-        "distractor_files": DISTRACTORS,
-        "distractor_reasons": {
-            P.FILES["pit"]: "the region's 2026 point-in-time count by Continuum, people sheltered and unsheltered on the "
-                            "night of 28 January 2026; a one-night count, not the FY2026 people served that policy "
-                            "RF-2027 section 2 splits the fund on, so no figure reads it",
-            P.FILES["hic"]: "the 2026 housing inventory count, each project's beds and units on that night; a capacity "
-                            "inventory that no people-served count, night or wait is computed from",
-        },
-        "wrong_basis_distractors": {
-            P.FILES["pit"]: "ranks the Continuums by one night's count; ruled out by RF-2027 section 2, which splits the "
-                            "fund in proportion to the people each recipient served in FY2026",
-        },
-        "stated_inputs": ["policy RF-2027", "FY2026", "2027 Fund", "each quarter of FY2026", "whole dollars",
-                          "whole numbers", "one decimal"],
-        "deliverables": ["halvering_2027_fund_allocation.xlsx"],
-        "as_of": "2026-10-14",
-        "files": sorted(P.FILES.values()),
-        "rows": {P.FILES[k]: v for k, v in sorted(n.items())},
-        "sources": {
-            "constructed": "every file is constructed for this task by its generator (task486/generator); the Halvering "
-                           "Valley region, its counties, Continuums of Care, the Homeless Data Partnership, the "
-                           "coalition, the clinic, the outreach team, the State Data Linkage Unit, their staff and every "
-                           "record and number in the files are fictional",
-            "public_specifications": "the HMIS files follow the HUD HMIS CSV layout and the HMIS Data Standards' project "
-                                     "types, relationship, date-of-birth quality and destination codes (FY2024, and "
-                                     "FY2022 for one vendor); the clinic's housing statuses are HRSA's UDS categories; "
-                                     "the pair file follows the layout a privacy-preserving linkage service returns "
-                                     "(per-field agreement codes and Fellegi-Sunter style scores)",
-            "licence": "CC0 1.0 (constructed data)",
-            "date": "2026-10-14",
-        },
-    }
-    with open(path, "w", encoding="utf-8") as fh:
-        json.dump(meta, fh, indent=1)
-        fh.write("\n")
+if __name__ == "__main__":
+    main()

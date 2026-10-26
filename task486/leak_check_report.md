@@ -1,22 +1,18 @@
 # leak check, task486
 
-**Verdict: REVIEW.** 15 files read, 41 golden figures and 6 candidate names taken from submission.md, 25 stump terms taken from the design note.
+**Verdict: REVIEW.** 14 files read, 29 golden figures and 2 candidate names taken from submission.md, 25 stump terms taken from the design note.
 
 LEAK stops the ship. REVIEW is a reader's call and the /leak-check command's solver's-eye pass reads every REVIEW line. INFO is a sweep that ran and found nothing or was skipped.
 
-Stump terms swept: records, source, section, person, findings, groups, method, record, merged, strongest, service, asserted, linkage, street, finding, pairwise, counts, october, counted, client, sources, merging, matches, resolution, housing
+Stump terms swept: employer, employers, density, payroll, records, address, description, rateable, accounts, valuation, square, chains, register, single-site, office, employees, groups, people, placed, holding, postcode, reader, nothing, places, published
 
-## 3 answer figures in the pack (REVIEW 2)
-- **REVIEW** `partnership_extract_guide.txt`: carries 20 of 26 distinctive words of the committed call: 'Under policy RF-2027 the 2027 Fund pays Halvering City and County CoC $7,993,704 on 17,774 people served; Melbray County'
-- **REVIEW** `regional_fund_policy_RF-2027.docx`: carries 25 of 26 distinctive words of the committed call: 'Under policy RF-2027 the 2027 Fund pays Halvering City and County CoC $7,993,704 on 17,774 people served; Melbray County'
+## 3 answer figures in the pack (REVIEW 1)
+- **REVIEW** `town_centre_renewal_fund_2027_prospectus.pdf`: carries 24 of 25 distinctive words of the committed call: "15 of Torvasay's 31 designated town centres meet the 2027 Town Centre Renewal Fund's test: Dorrstead, Ingmouth, Fenmoss,"
 
 ## 4 design-note vocabulary (REVIEW 3)
-- **REVIEW** `partnership_extract_guide.txt`: 15 of 25 stump-paragraph terms appear (records, source, person, findings, groups, method); read whether the document names the move
-- **REVIEW** `regional_fund_policy_RF-2027.docx`: 14 of 25 stump-paragraph terms appear (records, source, person, findings, record, service); read whether the document names the move
-- **REVIEW** `sdlu_record_linkage_method_note_v3.pdf`: 11 of 25 stump-paragraph terms appear (records, source, person, findings, method, record); read whether the document names the move
-
-## 6 ranking artifacts (INFO 1)
-- **INFO** `pit_2026_counts_by_coc.csv`: names 5 of 6 answer-set candidates; confirm it does not rank them on the decision question
+- **REVIEW** `paye_extract_specification_v4.pdf`: 8 of 25 stump-paragraph terms appear (employer, employers, payroll, address, register, office); read whether the document names the move
+- **REVIEW** `rating_list_extract_guide.pdf`: 7 of 25 stump-paragraph terms appear (address, description, rateable, valuation, square, office); read whether the document names the move
+- **REVIEW** `town_centre_renewal_fund_2027_prospectus.pdf`: 9 of 25 stump-paragraph terms appear (employer, employers, payroll, accounts, valuation, office); read whether the document names the move
 
 ## 10 container metadata (INFO 1)
 - **INFO** `-`: audit reported no writer signature (1 lines)
@@ -26,6 +22,8 @@ Stump terms swept: records, source, section, person, findings, groups, method, r
 ## 2 author vocabulary (clean)
 
 ## 5 announcements (clean)
+
+## 6 ranking artifacts (clean)
 
 ## 7 hidden content (clean)
 
