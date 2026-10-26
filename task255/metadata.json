@@ -21,9 +21,9 @@
     "25,000",
     "500,000",
     "10,000,000",
-    "85.0",
-    "375.0",
-    "460.0"
+    "85.1",
+    "347.6",
+    "432.7"
   ],
   "forward_dated": {
     "vehicle_schedule_log_2022-2026.csv": "deletes and adds keyed before they take effect",

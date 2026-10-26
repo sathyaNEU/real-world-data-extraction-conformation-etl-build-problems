@@ -4,7 +4,7 @@
 
 LEAK stops the ship. REVIEW is a reader's call and the /leak-check command's solver's-eye pass reads every REVIEW line. INFO is a sweep that ran and found nothing or was skipped.
 
-Stump terms swept: million, record, coverage, likelihood, severity, member, deductible, sentence, actuary, golden, closed, truncation, censoring, decisive, memorandum, censored, fitted, reader, premium, exposure, accident, payments, window, reflex, truncated
+Stump terms swept: million, record, coverage, likelihood, severity, member, deductible, sentence, actuary, golden, closed, truncation, censoring, decisive, memorandum, censored, reader, fitted, premium, exposure, accident, payments, window, reflex, truncated
 
 ## 3 answer figures in the pack (REVIEW 2)
 - **REVIEW** `liability_coverage_memorandum_2026.pdf`: golden figure 1.2 appears: ...under the terms in force in the year it happens. 1.2 One occurrence is one occurrence however many c...

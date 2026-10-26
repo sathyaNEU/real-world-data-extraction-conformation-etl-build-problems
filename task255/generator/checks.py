@@ -105,7 +105,7 @@ def run(target, golden, st, metadata):
     ok(lad["G"]["pick"] == fig["call"]["attachment"] == 4_000_000, "golden $4.0 million")
     ok(g[4_000_000] <= 0.83 and g[3_000_000] >= 1.18, "golden margins: 0.82 at $4.0m, 1.19 at $3.0m")
     r3 = lad["R3"]["counts"]
-    ok(r3[2_000_000] <= 0.95 and r3[1_500_000] >= 1.6, "R3, the pooled curve: 0.94 at $2.0m, 1.65 at $1.5m")
+    ok(r3[2_000_000] <= 0.9 and r3[1_500_000] >= 1.5, "R3, the pooled curve: 0.89 at $2.0m, 1.55 at $1.5m")
     ok(lad["shift"]["counts"][2_500_000] <= 0.8 and lad["shift"]["counts"][2_000_000] >= 1.15, "one spread at $2.5m")
     ok(lad["G_closed"]["counts"][2_500_000] <= 0.99 and lad["G_closed"]["counts"][2_000_000] >= 1.3,
        "the groups on the closed files alone at $2.5m")

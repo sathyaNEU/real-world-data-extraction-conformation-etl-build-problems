@@ -1,51 +1,57 @@
-# determinism-check report, task255, 2026-10-13
+# Verdict, task255 (loop 2, rebuilt pack)
 
-## Verdict
-DETERMINISTIC (no SOLUTION_WRONG)
-**Disposition:** APPROVE
-**Stumping type:** mechanism: statistical_rigor (deductible truncation and retention censoring in a severity fit), stumping_family: analytical_non_defect, surface_read_dependency: no, sole_data_defect: no
+**Verdict:** DETERMINISTIC (no SOLUTION_WRONG; every golden figure reproduced).
 
-## Why
-One isolated judge thread (sonnet, medium) saw only the fresh unzip at /tmp/determinism-check-task255-1791853130/target/ and the inlined blocks. The prompt, policy 4.2/4.3/5.1, the coverage memorandum (2.3, 3.1, 3.2) and the broker letter pin the estimand: trended lognormal MLE on the 820-occurrence 2014-2021 record, counts scaled from 228.7 above $25,000, retention = lowest quoted attachment with at most one expected occurrence. Literal execution gives 1.25 at $3.0M and 0.74 at $4.0M, so $4.0M. Every graded figure reproduced. Verdict file: /tmp/determinism-check-task255-1791853130/verdict.md.
+**Disposition:** APPROVE. No repair is needed and no rerun. One optional watch item is listed under Why.
 
-## Recomputation ledger
-| Figure | Claimed | Judge recomputed | Reproduced |
-|---|---|---|---|
-| Record / stopped at retention | 820 / 108 (67 at $250k, 41 at $500k) | same | yes |
-| Log mean, log SD | 10.18, 1.71 | 10.1769, 1.7102 | yes |
-| Expected counts $1.0M to $5.0M | 7.46 4.03 2.53 1.73 1.25 0.74 0.48 | 7.4575 4.0328 2.5281 1.7289 1.2528 0.7378 0.4805 | yes |
-| Premiums, same order | 1,678,252 ... 536,691 | same | yes |
-| Total operating expenditure | $5,351,537 thousand, 60 members | 5,351,537,064 | yes |
-| Class expenditure (7 classes) | 4,694,899 / 113,908 / 125,382 / 149,725 / 202,850 / 48,527 / 16,247 | same | yes |
-| Units at 2026-09-30 | 5,629 (4,199 / 301 / 242 / 202 / 515 / 139 / 31) | same | yes |
+**Why:** The files force the 4.0M call once the record is read at its grain and the severity is fitted the way the record's structure requires. Every occurrence's cost is deductible plus pool paid plus reserve. Each is left-truncated at its deductible (memorandum 2.3). The 25 occurrences stopped at the retention are right-censored there (memorandum 3.2). The record is trended to 2027, and law enforcement liability (LEL/LAWE) is fitted apart from the other four parts. That gives 0.824 expected occurrences above 4.0M, 1.197 above 3.0M, and so 4.0M under policy 5.1. Competing answers exist only under methods the record itself rejects: one curve gives 2.0M, a common spread gives 2.5M, and ignoring truncation or censoring gives 1.5M to 2.5M. Watch item: policy 4.2 says "modelled as lognormal" in the singular and never names the LEL split. A literal single-curve reading therefore gives 2.0M, but its likelihood is worse by 158.2 on 2 df, so it is not defensible. This is a method selection pinned by the data, not by an unstated rule.
 
-## Competing answers that survived
-None on the main call. Tested and closed: no truncation ($2.5M), no censoring ($2.0M), neither ($2.0M), untrended deductible/retention (mixed fit still $4.0M), each contradicting a stated memorandum mechanism. One ask-only fork: vehicle identity by entered_date gives 5,602 units ($4.0M premium 662,116) against the golden 5,629; the file's effective_date definition and the letter's "on the schedules at September 30, 2026" close it. It does not move the retention. Cosmetic: class rows rounded individually sum to 5,351,538 against the stated 5,351,537 total.
+## Evidence (recomputed from the bundle)
+| Item | Result | Source |
+|---|---|---|
+| Record size | 1,071 reproduced: 610 Tallowmark (AY2014-19 sheets, all CL) plus 461 Brisbrook with loss year 2014-2021. Prior_claim_no links overlap Tallowmark: 0. | closed-claims xlsx, loss-run csv |
+| Group split | 314 LEL/LAWE and 757 other, as claimed. | same |
+| Censored at retention | 25 reproduced: 15 at 500,000 and 10 at 1,000,000, all LEL. 8 of them are Open. | same, memorandum 3.1 |
+| Deductibles | The file deductible equals the deductible-history value in force on the loss date for every claim (0 mismatches). | member_deductible_history.csv |
+| Duplicates | No duplicate occurrences by member and date. | |
+| Max uncensored cost | 496,087 (all below the retention). | |
+| Index trend | 2027 cost = cost x 215.6/index(AY), applied to deductible and retention as well. | actuarial Exhibit 3 |
+| LEL fit (MLE, truncated and censored) | mu 8.516, sigma 2.371. | |
+| Other-parts fit | mu 9.885, sigma 1.135. | |
+| LR test, one curve | 158.2 on 2 df. | |
+| LR test, common spread | 28.8 on 1 df. | |
+| Expected counts, 85/375 weights | 4.59, 2.82, 1.99, 1.51, 1.20, 0.82, 0.61 for the seven attachments. Rounded: 4.6, 2.8, 2.0, 1.5, 1.2, 0.8, 0.6. | Exhibit 6 |
+| Layer losses, 10M limit | 8.27M, 6.58M, 5.49M, 4.72M, 4.12M, 3.28M, 2.70M. Rounded: 8.3, 6.6, 5.5, 4.7, 4.1, 3.3, 2.7 million. None sits on a rounding boundary. | |
+| Retention test | Lowest attachment with 1.0 or fewer is 4.0M (0.824). 3.0M gives 1.197. | policy 5.1 |
 
-## Spec gates
-| Gate | Required | Actual | Pass |
-|---|---|---|---|
-| Files | 10 or more | 12 | yes |
-| Formats | 3 or more | 4 (pdf, xlsx, csv, md) | yes |
-| Large file | 25,000 rows or more | vehicle_schedule_log 39,109 rows | yes |
-| Distractors named | 2 or more in metadata.json, none labelled by file name | member_deductible_history.csv, liability_triangles_2026-09-30.csv | yes (names label nothing) |
-| Distractor quality | unused by solution, weighable, ruled out by shipped fact if it answers a quantity | not independently recomputed by me; judge saw no file rank or rate the candidates | not verified (see findings) |
-| Deliverables | 1 to 3, all in the golden | 2 (xlsx, png), both in golden/ | yes |
-| Asks | multi-dimensional, unit and rounding stated | 7 attachments x (count, premium), 7 classes x (expenditure, vehicles); units and rounding in the prompt | yes |
-| Prompt shape and rubric | identifiable shape, 25 or more criteria | shape 04 (setting one dial); design note counts 39 | yes |
-| Reads as real | no LLM tells | 4 PDFs and extract notes read as in-fiction documents; golden is an xlsx and a chart; no generator disclosure found | yes |
+**Competing answers and the forks that give them**
+- One lognormal for all occurrences, with truncation and censoring, gives 2.0M (0.94 at 2.0M, 1.65 at 1.5M). This is the golden's named wrong route.
+- Common spread with separate means gives 2.5M (0.79 at 2.5M).
+- Separate groups, truncation only, give 2.0M. Separate groups, censoring only, give 3.0M (1.07 at 3.0M, 0.56 at 4.0M, so the call is 4.0M).
+- Separate groups with neither truncation nor censoring give 2.5M.
+- Thresholds left untrended give 4.0M, the same call.
+- No trend at all gives 2.5M.
+- Splitting the other parts by coverage gives LR 8.7 on 6 df (not significant). Splitting by deductible gives 3.2 on 3 df, and by pre/post 2018 gives 0.9 on 1 df. Nothing finer than the LEL split is supported, so the grouping is forced.
 
-## Gate G reconciliation
-Thread: mechanism statistical_rigor, stumping_family analytical_non_defect, surface_read_dependency no, sole_data_defect no. Design note and card: stump class analytical, strategy maturity_censoring (limit censoring plus deductible truncation), Layer 2 estimation_fit, Gate G method_or_model_selection, declared distractors the deductible history and the triangles. Match. The thread did not name either declared distractor as the surface read carrying the task, and no shipped file ranks the attachments. The note's default path ends on $2.0M and the thread's competing answers ($2.0M / $2.5M) match its ladder rungs R0 to R2. Gate G: pass.
+**Margin:** The 3.0M count is 1.197 against a threshold of 1.0, and the 4.0M count is 0.824. The policy defines a point estimate (4.3: the actuary's count times the estimated probability), so every rigorous MLE solver lands the same way. This is a thin-but-clean gap. Note that sampling uncertainty is wide: a bootstrap 90% interval at 4.0M is 0.41 to 1.42. The policy does not ask for an interval, so this is not a Gate C failure.
 
-## Stump power (Gate F)
-Good. The thread says an analyst fitting paid or ground-up costs by plain lognormal MLE lands on $2.0M or $2.5M, and only the truncated and censored likelihood at trended thresholds reaches $4.0M. Wrong fits move the call by one to three steps, not by a coin flip. Thread's caution: the memorandum and policy describe the mechanism fairly directly, so the risk of the task being too easy is in discovery, not computation.
+**Gates:** A passes (all figures consistent across blocks). B passes: policy, memorandum, Exhibits 3 and 6, the indications and both claim files supply every decisive fact. "Law enforcement" vocabulary appears in the files. C and E pass (see watch item). D passes: the split among wrong answers comes from the analysis, not from a word.
 
-## Findings, ranked
-1. Gate H line: domain pass, layers pass, decisive_step analytical. This matches the card (`stump_class` analytical) and the note's `## Three rules`. The thread's H3 test agrees: a clean-data analyst reading every field still lands on $2.0M or $2.5M.
-2. Residual risk (low): the design note's "Not semantics" claims no sentence names the truncation, but the thread found the memorandum 2.3/3.2 states the mechanism in prose. A reviewer could read the decisive step as following from a stated mechanism. The thread judged it still analytical because no rule files the likelihood.
-3. Distractor quality was not independently verified by me, and the thread did not test whether the triangles or the deductible history reproduce a graded quantity.
-4. Cosmetic: the class rows of the expenditure ask foot to 5,351,538 against the stated 5,351,537. Optional note that the total is computed from exact values.
+## Files/Hygiene
+**PASS.** There are 12 files in 4 formats: PDF (4), xlsx (2), csv (5), md (1). Distractors: vehicle_schedule_log (43,862 rows, the large file), exposure_declarations, liability_triangles, member_deductible_history and member_roster, none used by the solution except the roster and deductible history as cross-checks. Two systems (Tallowmark and Brisbrook) give legitimate Layer 1 mess: different coverage codes (LEL/LAWE), a conversion link through prior_claim_no, sheet-per-year layout, and mm/dd/yyyy against ISO dates. Timeline is coherent: indications 2 Oct 2026, actuarial study 9 Oct 2026, vehicle log keyed to 19 Oct 2026. No authoring or benchmark language found in the files read. Not exclusion-level. I did not open exposure_declarations_2027.xlsx beyond noting it is a distractor.
 
-## Next action for the author
-None required; proceed to ship. Optionally, ask the leak reader to confirm that the memorandum's wording does not file the likelihood.
+## Stump power
+Good. The easy routes are all plausible and wrong: one curve (2.0M), no truncation or censoring (1.5M to 2.5M), and a common spread (2.5M). No file announces the LEL tail difference or the censoring. The memorandum states the retention structure and the policy never says how to fit it. The decisive likelihood test is something a strong model must run itself.
+
+## Stumping type
+`mechanism: method_or_model_selection` (with statistical_rigor: truncation, censoring and heterogeneous tail), `stumping_family: analytical_non_defect`, `surface_read_dependency: no`, `sole_data_defect: no`. The reported inputs (index, frequency, quotes) are all fine. The difficulty is choosing and validating the severity model, and it survives clean data. Gate G passes.
+
+## Three rules
+`domain: pass`, `layers: pass`, `decisive_step: analytical`.
+- **Domain:** fitting a truncated, censored severity curve and testing it by likelihood ratio is core actuarial retention work. The swap test fails to carry over (a school or an energy substitution breaks the lognormal-excess structure).
+- **Layer 1:** two administrators' layouts and codes, converted claims, and a deductible history.
+- **Layer 2:** truncated and censored MLE with a tested LEL split.
+- **Easy route:** a strong analyst who read everything correctly could still pool all occurrences into one lognormal, as the policy's singular wording invites. That files 2.0M, not 4.0M.
+
+## Fix
+none. Optional, to remove the singular-wording risk without moving the call: nothing needs filing, since the data separates the candidates.

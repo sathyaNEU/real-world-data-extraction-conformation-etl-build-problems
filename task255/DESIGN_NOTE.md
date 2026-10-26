@@ -59,7 +59,7 @@
    defence) and bring cost, deductible and retention to 2027 cost with the claim cost index.
 3. Fit the lognormal by maximum likelihood to the 1,071 costs at 2027 cost, each truncated at its deductible and the
    25 at the retention censored there: log mean 8.09, log standard deviation 1.86.
-4. Expected 2027 occurrences above each quoted attachment: the actuary's 460.0 above $25,000 (Exhibit 6's total)
+4. Expected 2027 occurrences above each quoted attachment: the actuary's 432.7 above $25,000 (Exhibit 6's total)
    times the fitted probability of exceeding the attachment over that of exceeding $25,000.
 5. Take the lowest quoted attachment where that is one or fewer.
 
@@ -69,11 +69,11 @@ Golden: $4.0 million
 ## Stump sentence
 
 The default path fits one lognormal, deductible-truncated and retention-censored at 2027 cost, to all 1,071
-occurrences of 2014 to 2021 and carries Exhibit 6's 460.0 occurrences above $25,000 by that curve, which ends on $2.0
+occurrences of 2014 to 2021 and carries Exhibit 6's 432.7 occurrences above $25,000 by that curve, which ends on $2.0
 million (0.9 expected 2027 occurrences above it), because law enforcement liability, under a third of the record and
 every one of the 25 occurrences that reached the retention, runs a far longer tail than the other four coverage parts
 and one curve takes its shape from the 757 others; giving law enforcement its own log mean but one spread still ends
-on $2.5 million; fitting the two groups apart and carrying the actuary's 85.0 law enforcement and 375.0 other
+on $2.5 million; fitting the two groups apart and carrying the actuary's 85.1 law enforcement and 347.6 other
 occurrences by their own curves files $4.0 million (1.2 above $3.0 million, 0.8 above $4.0 million).
 
 ## Three rules
@@ -113,7 +113,7 @@ occurrences by their own curves files $4.0 million (1.2 above $3.0 million, 0.8 
   step no rule performs.
 - **Analyst test:** a strong analyst who cleans both loss runs, reads every field and rule, brings the record to 2027
   cost and fits the lognormal by maximum likelihood with each deductible as truncation and the capped occurrences
-  censored at the retention, then carries Exhibit 6's 460.0 by that one curve, files $2.0 million (0.9 above it);
+  censored at the retention, then carries Exhibit 6's 432.7 by that one curve, files $2.0 million (0.9 above it);
   both portal responses to loop 1 and both call-only probes on this pack (p255a, p255b) took that route.
 - **Estimand:** the trustees' risk financing policy fixes severity as the distribution of what a member's liability
   occurrence of the coverage year costs from its first dollar, damages and defence together, at 2027 cost, over all
@@ -155,8 +155,8 @@ occurrences by their own curves files $4.0 million (1.2 above $3.0 million, 0.8 
 | SF9 | thresholds' cost level | each deductible and retention at 2027 cost with the occurrence | the likelihood in each year's own dollars, the log mean moving with the index | same fit to the fourth decimal in both groups (asserted) | same call; thresholds left nominal against trended costs mixes two cost levels in one likelihood (a rung, $5.0m) |
 | SF10 | the deductible of an occurrence | the one on the loss-run row, in force on the date of loss | the member's current deductible | not on any row | the memorandum: the deductible in force on the date of the occurrence applies; the loss runs carry it |
 | SF11 | the quoted attachments | the seven in the broker's indications | an interpolated attachment | not quoted | policy 5.1: the lowest attachment quoted for the year |
-| SF12 | rounding | counts unrounded until compared, shown to one decimal; premiums rounded once at the total | rounded before comparing | same call; every count, golden and five-part, at least 0.23 of the last place from its edge; every layer loss at least $20,000 from its edge | same call |
-| SF13 | the anchors | Exhibit 6's 85.0 and 375.0 above $25,000 from the first dollar at 2027 cost, total 460.0 | at each year's cost | not the actuary's figures | Exhibit 6 states its counts at 2027 cost from the first dollar |
+| SF12 | rounding | counts unrounded until compared, shown to one decimal; premiums rounded once at the total | rounded before comparing | same call; every count, golden and five-part, at least 0.2 of the last place from its edge; every layer loss at least $20,000 from its edge | same call |
+| SF13 | the anchors | Exhibit 6's 85.1 and 347.6 above $25,000 from the first dollar at 2027 cost, total 432.7 | at each year's cost | not the actuary's figures | Exhibit 6 states its counts at 2027 cost from the first dollar |
 | SF14 | maximum likelihood | the maximum over each lognormal's two parameters, one optimum | a local optimum | same call | same call: five starting points reach one optimum in each group (asserted) |
 | SF15 | an open file's recorded cost | the deductible plus what the pool has paid and still reserves | the deductible plus payments to date | same record (asserted): every open file of 2014 to 2021 is a law enforcement suit with its layer paid and nothing reserved | same call and same counts |
 | SF16 | a vehicle on the schedule (the asks) | one vehicle by its VIN, or its serial without a VIN, on the schedule at 30 September 2026 by effective date, a consortium vehicle by its FMC- record | the last row across every number the vehicle holds, any number in force (6,387), every unit number in force (8,233) | other premiums and class vehicles | the extract notes file a vehicle's identity and how the consortium's numbers relate to the earlier ones |
@@ -167,10 +167,10 @@ occurrences by their own curves files $4.0 million (1.2 above $3.0 million, 0.8 
 
 | Rung | Likelihood | Expected 2027 occurrences above $3.0m and $4.0m | Call |
 |---|---|---|---|
-| R0 | one curve, the recorded costs as a complete sample | 0.16, 0.05 | $2.0 million (0.71) |
-| R1 | one curve, the capped censored, no truncation | 0.22, 0.07 | $2.0 million (0.89) |
-| R2 | one curve, each deductible as truncation, caps read as exact | 0.26, 0.13 | $2.0 million (0.65) |
-| R3 | one curve, truncation and censoring at 2027 cost (the reflex, both portal responses, both probes) | 0.41, 0.22 | $2.0 million (0.94) |
+| R0 | one curve, the recorded costs as a complete sample | 0.15, 0.05 | $2.0 million (0.67) |
+| R1 | one curve, the capped censored, no truncation | 0.20, 0.07 | $2.0 million (0.84) |
+| R2 | one curve, each deductible as truncation, caps read as exact | 0.24, 0.12 | $2.0 million (0.61) |
+| R3 | one curve, truncation and censoring at 2027 cost (the reflex, both portal responses, both probes) | 0.39, 0.21 | $2.0 million (0.89) |
 | Shift | law enforcement's own log mean, one spread | 0.56, 0.31 | $2.5 million (0.79) |
 | G_closed | the groups apart, the 8 open suits set aside | 0.75, 0.48 | $2.5 million (0.99) |
 | G | the groups apart on every file, each carried by its own projection | 1.20, 0.82 | $4.0 million |
@@ -220,7 +220,7 @@ Executed word for word, the policy fixes severity as the distribution of all the
 the first dollar at 2027 cost (4.1), modelled as lognormal and estimated by maximum likelihood from the pool's claims
 record for accident years 2014 to 2021 (4.2), and the expected number above an attachment as the actuary's expected
 number above $25,000 times the estimated probability that an occurrence above $25,000 exceeds it (4.3); Exhibit 6
-gives that expected number as 85.0 law enforcement and 375.0 other occurrences, 460.0 in all. The record of those
+gives that expected number as 85.1 law enforcement and 347.6 other occurrences, 432.7 in all. The record of those
 years holds 1,071 files, 8 of them open law enforcement suits whose payments have reached the retention; the
 memorandum files how the record came to exist (truncation at the deductible in force, nothing above the retention).
 The text files the family and the estimator and is silent on whether one lognormal or one per coverage group; the
@@ -231,7 +231,7 @@ model the record rejects, not from another reading.
 
 ## Oracles
 
-- The actuary's 85.0 and 375.0 occurrences above $25,000: inputs of every rung (the reflex uses their total); they tie
+- The actuary's 85.1 and 347.6 occurrences above $25,000: inputs of every rung (the reflex uses their total); they tie
   to nothing.
 - The claim cost index: an input; it ties to nothing.
 - The liability triangles (distractor): the pool's paid and incurred, net of deductibles and limited to its
@@ -249,7 +249,7 @@ model the record rejects, not from another reading.
 | Ask | Figures | H18 home | Use | Primary device | Hazards | Path (files, columns) | Stops (lazy delta) | Realism |
 |---|---|---|---|---|---|---|---|---|
 | A, each quoted layer's expected 2027 losses | 7 | the cost side of each attachment the call chooses among | the board sets each layer's expected losses beside its quote | the construction: each layer's expected losses carry each group's projection by its own severity between the attachment and the attachment plus the $10,000,000 limit | the limit (an unlimited excess cost is ruled out by the indications' limit) | the golden fit, the indications' limit | the pooled curve 3.3, 2.1, 1.5, 1.1, 0.8, 0.6, 0.4 million; the one spread and the groups on the closed files lower at every attachment; the answer | an excess layer's expected losses set beside its quote |
-| C, the policy's test per attachment and the chart | 7 counts (in the call's question) and 5 chart parts | the construction | the call's own table | none | none | the golden fit | R3's values (3.5, 1.7, 0.9, 0.6, 0.4, 0.2, 0.1) and the one spread's (4.0, 2.0, 1.2, 0.8, 0.6, 0.3, 0.2) | the actuary's exhibit layout |
+| C, the policy's test per attachment and the chart | 7 counts (in the call's question) and 5 chart parts | the construction | the call's own table | none | none | the golden fit | R3's values (3.3, 1.6, 0.9, 0.6, 0.4, 0.2, 0.1) and the one spread's (3.9, 2.0, 1.2, 0.8, 0.6, 0.3, 0.2) | the actuary's exhibit layout |
 
 - **Loop 2 ask history:** the exposure asks (premiums by attachment, expenditure and vehicles by class) were solved to
   the dollar by both loop 1 portal responses and, after their devices were re-sited (D9 a member leaving on 31
@@ -301,8 +301,8 @@ Pair ceiling: 56.0 (the cracker at 100.0 on the call and every ask, the mirror a
   coverage part reproduces every count there; at two decimals it parted at $1.0 million). 281 assertions; the
   independent verifier fits both groups from target/ alone (8.5158 and 2.3713; 9.8851 and 1.1352) and reprices the
   exposure; two builds byte-identical; figures_check 93; precut 51; leak.py REVIEW; heart WARN; surface PASS;
-  pair.py ceiling 35.4. Then, after stage 4's readers solved every exposure figure, the anchors moved to 85.0 and
-  375.0, the premium ask gave way to each quoted layer's expected losses (a downstream ask), the quotes were
+  pair.py ceiling 35.4. Then, after stage 4's readers solved every exposure figure, the anchors moved to 85.1 and
+  347.6, the premium ask gave way to each quoted layer's expected losses (a downstream ask), the quotes were
   rescaled by one market factor, same-day occurrences were separated; 282 assertions, pair.py ceiling 56.0.
 
 ## Judge record
@@ -465,3 +465,7 @@ Pair ceiling: 56.0 (the cracker at 100.0 on the call and every ask, the mirror a
 - Two same-member, same-day occurrences in the record (thirteen pairs before the fix): a careful reader merges them
   under the memorandum's one-occurrence clause; each member's second occurrence of a day is now dated the next free
   day, no fit moved.
+- The anchors 85.0 and 375.0: a stage 4 reader read the two round projections as reverse-engineered; 85.1 and
+  347.6 keep the call, every count and every layer loss in its cell (at least 0.2 of the last place from each edge).
+- The same unit rate at $4.0 million and $5.0 million (a market minimum): flagged by two readers; the $5.0 million rate
+  is now $222.50.

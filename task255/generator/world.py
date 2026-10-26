@@ -28,11 +28,11 @@ ANCHOR = 25_000                        # the actuary's frequency is counted abov
 OPTIONS = (1_000_000, 1_500_000, 2_000_000, 2_500_000, 3_000_000, 4_000_000, 5_000_000)   # quoted attachments
 BAR = 1.0                              # the policy: no layer the pool expects to be reached more than once a year
 # the actuary's expected 2027 occurrences costing more than $25,000 ground up: law enforcement liability, the other parts
-COUNT_LE, COUNT_OT = 85.0, 375.0
+COUNT_LE, COUNT_OT = 85.1, 347.6
 COUNT_25K = round(COUNT_LE + COUNT_OT, 1)
 # the broker's indications: per attachment, the rate per $1,000 of the members' 2027 operating expenditures and the
 # rate per unit on the members' vehicle schedules at 30 September 2026, for $10,000,000 per occurrence above it
-QUOTES = {1000000: (1.7608, 521.22), 1500000: (1.4074, 415.00), 2000000: (1.1658, 355.14), 2500000: (1.0111, 300.76), 3000000: (0.8716, 264.99), 4000000: (0.7161, 231.78), 5000000: (0.5949, 231.78)}
+QUOTES = {1000000: (1.7608, 521.22), 1500000: (1.4074, 415.00), 2000000: (1.1658, 355.14), 2500000: (1.0111, 300.76), 3000000: (0.8716, 264.99), 4000000: (0.7161, 231.78), 5000000: (0.5949, 222.50)}
 DED_CUTS = (0.15, 0.42, 0.72)          # members ranked by size: the largest carry the $100,000 deductible
 
 # liability claim cost index (accident year average, 2014 = 100.0), the 2027 value the study's projection
