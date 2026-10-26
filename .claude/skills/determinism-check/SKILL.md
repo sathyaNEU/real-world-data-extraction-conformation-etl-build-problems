@@ -116,6 +116,25 @@ writing as fixing the unit a level is taken at while leaving open how the distri
 did not leave that open, it determined it. **The stump lives in HOW, never in WHAT.** If a literal estimand makes the call
 easy, the stump was a fork; redesign the decisive step (`stumping`), never keep the estimand vague.
 
+**Run the fork-is-the-stump test before building the repair, not after.** The test is cheap on paper and the repair
+is not. Its signature: the portal's finding is an unpinned population, and the stump sentence says the easy route
+omitted that same population. Then the only closure that makes the literal reading the golden is a pin that tells the
+reader the one question they were not asking, and no wording saves it, because the pin and the stump are one object.
+Measured on one build: the repair closed three forks without filing any method, kept every graded figure frozen, and
+passed every free gate and 144 projection variants; the next isolated reader then reproduced the call cell for cell
+from the pack alone and said it had followed a rule a shipped document states and read dates correctly, not made an
+analytical choice. It also quoted the added paragraph as the sentence that told it the decisive step, and named the
+document carrying it as a file existing only to help the analyst. Omitting the pinned population reproduced the old
+default path exactly. An architecture with no position that is both deterministic and stumped is spent: send it to
+stage 1 before a generator is touched.
+
+**A large lever that is a field reading means the step was never analytical.** Ask the repair's own measurements which
+quantities move the answer most, and name what each one is. On the same build the two largest were which of two date
+fields a warranty term runs from and whether logged replacements count, moving the committed total from the golden to
+roughly half and to roughly one and a half times it; the one analytical element, extrapolating a cohort, a cold reader
+supplied with its own assumption and still landed. When the biggest levers are readings and rules, closing the forks
+makes the build deterministic and leaves it unstumped, which is rule 3 whatever the determinism verdict.
+
 **What is left open after the WHAT is filed must be a method, not a knob.** Filing the five parts is
 mandatory, so a design whose decisive step is one of them has no stump once it is filed, and a design
 whose only remaining residue is a tolerance, a cut-off, a rounding or a nearest-k has a convention rather
