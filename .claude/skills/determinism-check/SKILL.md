@@ -315,7 +315,7 @@ the write-up does not grade it.
 | C | Does an answer flip under an open definition, threshold, scope, window or rounding path? Literal reading first. | `underspecified_objective` |
 | D | Would rigorous solvers differ by reading a term, not by analysing? | `semantic_fork` |
 | E | Decision pinned, every ask single and precise? | `prompt_ambiguity` |
-| F | Can the stump sentence be written (the default path ends on a wrong answer), and do the asks hold both top responses near a fifth of the ask weight? | too easy |
+| F | Can the stump sentence be written (the default path ends on a wrong answer), does at least one of the top two miss the call, and do the asks hold both top responses under two fifths of the ask weight? | too easy |
 
 The judge's own text: `guidelines/determinism_judge_system_prompt.md`.
 

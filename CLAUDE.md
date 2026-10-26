@@ -86,7 +86,7 @@ Each command sets its own effort in its frontmatter, so a session gets the right
 |---|---|---|
 | `/build taskNN` | draw, design, build, leak read and judge, ship; resumes from `pipeline.json` | max |
 | `/fix-determinism taskNN <portal finding>` | closes the determinism block's finding; the main call, the stump and every graded figure stay frozen | max |
-| `/fix-rubric taskNN <portal finding>` | reworks the supplemental asks until the top two sit under 50; the main recommendation side stays frozen | max |
+| `/fix-rubric taskNN <portal finding>` | reworks the supplemental asks until the top two sit under 70, built to 60; the main recommendation side stays frozen | max |
 | `/approve taskNN` | the mechanical sign-off (heart, surface, precut, leak verdict) | medium |
 | `/leak-check taskNN` | `leak.py` plus one isolated reader | medium |
 | `/clone-check [scope]` | the adjudicated corpus comparison, **author-triggered only** | medium |
@@ -114,7 +114,7 @@ No isolated thread runs on the model's own initiative; the commands above licens
             then the next open number at once
 6 PORTAL    the author's list: APPROVED is SHIPPED_APPROVED, PENDING_REVIEW stays SHIPPED, a shipped build
             left off it is FAILED_TO_STUMP and joins its lane owner's backlog wave; a determinism finding goes
-            to /fix-determinism, a rubric over 50 with the call held to /fix-rubric
+            to /fix-determinism, a rubric at or over 70 with the call held to /fix-rubric
 ```
 
 One session runs the whole build in its main thread at max effort: design and build are the same hand, and
@@ -186,7 +186,7 @@ note's `## Tried and rejected`.
 - Skills state the current spec only: rules rewritten in place, no changelogs, no dated blocks, no
   "as of", no retired rules. Build IDs and measured numbers stay only where a rule stands on them.
 - `guidelines/` is the client's dated spec and is behind the skills; where they disagree the skill wins.
-  It still says top two under 70, built to 60; the bar is 50 and the target is 40.
+  Its bar and this file's agree, top two under 70 built to 60; a page there that says 50 is behind.
 
 ## Current spec
 
@@ -222,10 +222,13 @@ roll call or bullets, gated by `voice-check.py` (`guide-to-prompt`).
 or reconciling item graded), never by stacking simple asks. Weights: 30 to 40 percent recommendation and
 critical components, 5 to 10 percent instruction-following, 55 to 60 percent asks.
 
-**The bar:** the top two responses average under 50 percent with at least one genuinely stumped; build
-to 40. A response on the main call banks about 45 before any ask, so the ladder keeps all but one
-response off the call and the asks hold each of the top two to about a fifth of the ask weight. The
-ten points are margin for the portal's regrade. The flip-the-wrong-number trap is banned.
+**The bar:** the top two responses average under 70 percent with at least one of them genuinely stumped
+on the main call; build to 60. A response on the main call banks about 45 before any ask and a response
+off it about 12, so the ladder keeps at least one of the top two off the call, and the asks are built hard
+regardless: each of the top two keeps under two fifths of the ask weight, which puts the pair near 51. If
+both land the call the pair reaches 60 only with each held to about a quarter of the ask weight, so a
+build whose two cold readers both land the call is redesigned, not shipped. The ten points are margin for
+the portal's regrade. The flip-the-wrong-number trap is banned.
 
 **Goldens look business-realistic**; an LLM first draft is sent back (`golden-realism`).
 

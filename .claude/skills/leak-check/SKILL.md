@@ -115,19 +115,25 @@ holding only the figures it actually answered. Score it before reading its verdi
 python3 .claude/skills/leak-check/score_reader.py taskNN <reader.json>   # 0 holds; 2 thin; 1 Gate F failed
 ```
 
-A hit is an exact match at the golden's own precision. Exit 1 on a hit of the call, or on 35 per cent or
-more of the ask figures: Gate F has failed, and **a reader hit means the device is absent from that
+A hit is an exact match at the golden's own precision. The scorer prints the reader's estimated rubric
+share (about 45 for a landed call or 12 for a missed one, plus 55 times the ask share); the two scored
+readers' estimates averaged are the pair, which builds to 60 against the bar of 70, and a pair whose readers
+both land the call is a ladder failure whatever it averages. Exit 1 on 55 per cent or more of the ask
+figures, or on a landed call with 40 per cent or more: **a reader hit means the device is absent from that
 reader's path rather than weak**, so the repair re-sites the device and never re-words the ask
-(`supplemental-stumping` 1.1c). Exit 2 between a fifth and 35 per cent names the ask that leaked. The
+(`supplemental-stumping` 1.1c). Exit 2 is thin: a missed call with 40 to 55 per cent names the ask that
+leaked, and a landed call under 40 per cent holds only while the other reader misses the call. The
 design note's cracker table is a model of the opponent written by the author; this is the measurement, and
 it outranks the table. task190 architecture 6 shipped a cracker table claiming all three asks missed and a
 `precut.py` pair ceiling of 28.5 through three stage 4 rounds; its round-3 reader reported 43 of 43.
 
 **One reader is a sample, so the pack that ships is read twice.** Two isolated scored readers, each on its
-own fresh copy, each scored with `score_reader.py`; the build ships when both miss the call and neither
-exits 1. Readers on one pack differ by whole asks and by the call itself: three readers on task164's
-frozen call split two landed and one missed, and on task162 and task165 one of two readers found an ask
-device the other never saw. A call any reader lands is spent, whatever the other reader does.
+own fresh copy, each scored with `score_reader.py`; the build ships when at least one of them misses the
+call, neither exits 1, and their two estimated rubric shares average 60 or under. Readers on one pack
+differ by whole asks and by the call itself: three readers on task164's frozen call split two landed and
+one missed, and on task162 and task165 one of two readers found an ask device the other never saw. A call
+both readers land is spent, whatever the asks hold; a call one reader lands ships only on the other
+reader's miss, and no third reader is run to break the tie.
 
 ## The scored read, and how its own harness leaks
 
@@ -187,6 +193,6 @@ per cent means the devices are absent from the reader's path, not weak.
 
 - [ ] `leak.py --asof` CLEAN or REVIEW, sweep 11 clean; every REVIEW answered or fixed
 - [ ] Reader run once after the realism sweep: nothing quoted for question 1, every question-5 sentence executes to the golden
-- [ ] `score_reader.py` run on the reader's own figures before its verdict is read: exit 0, the call missed
-- [ ] The pack that ships read by two scored readers: both miss the call, neither exits 1
+- [ ] `score_reader.py` run on the reader's own figures before its verdict is read: exit 0, or 2 on a landed call under 40 per cent
+- [ ] The pack that ships read by two scored readers: at least one misses the call, neither exits 1, the pair at or under 60
 - [ ] All reader findings fixed in the generator before the judge; `leak.py` re-run after every rebuild

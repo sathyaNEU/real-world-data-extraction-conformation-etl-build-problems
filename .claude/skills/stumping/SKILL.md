@@ -20,8 +20,9 @@ portal is the only stump oracle; the leak reader and the judge's Gate F check th
 
 ## Part 0. The goal and the opponent
 
-The top two average under 50 per cent, one genuinely stumped; build to 40. A response on the call banks
-about 45: the ladder keeps all but one off it, the asks hold the top two to a fifth of their weight
+The top two average under 70 per cent with at least one of them genuinely stumped on the call; build to
+60. A response on the call banks about 45 and one off it about 12: the ladder keeps at least one of the
+top two off the call, and the asks hold each of them under two fifths of their weight
 (`supplemental-stumping` Part 0). Builds fail when the call lands (Gate F), rigorous solvers disagree (A
 to E), or the difficulty is a wrong number, a plant, a reading or a rule (G, H).
 
@@ -1987,7 +1988,7 @@ Nothing is cut until `DESIGN_NOTE.md` carries these H2 headings, spelt exactly, 
 | `## Closure table` | the 22 axes with reading and closure; rows 1 to 22 filled |
 | `## Literal reader` | the `determinism-check` §2 line |
 | `## Oracles` | each control's wrong-path reading, or `none` |
-| `## Ask sheet` | asks, devices, spans, cracker sheet; `Pair ceiling:` 40 or under, `Mirror leakage:` under 35 (a WARN when absent), cracker misses all |
+| `## Ask sheet` | asks, devices, spans, cracker sheet; `Pair ceiling:` 60 or under, `Mirror leakage:` under 50 (a WARN when absent), cracker misses all |
 | `## Tried and rejected` | a line per dead approach, appended when it dies |
 
 It also runs `voice-check.py` on `prompt.txt`. Any FAIL exits 1 and blocks the build; a repair moving the

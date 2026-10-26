@@ -25,7 +25,7 @@ card and the note's `## Three rules` before the default path is written. A rewor
 (`build-pipeline`, Failed to stump) before it is resumed: `status.py next` prints what it still owes, and a
 stump that is a plant, a withheld rule, a field reading or an executed procedure is re-rooted.
 
-A returned task is not a `/build`: a determinism finding is `/fix-determinism`, a rubric over 50 with the call
+A returned task is not a `/build`: a determinism finding is `/fix-determinism`, a rubric at or over 70 with the call
 held is `/fix-rubric`, a landed call is `/build taskNN from 2` with the portal result in the design note.
 
 **Run the stages in order** in this thread, invoking each stage's skills before its work and leaving a stage

@@ -1,6 +1,6 @@
 ---
 name: supplemental-stumping
-description: Design the asks (55 to 60 per cent of the rubric) and their data-quality devices so the top two responses average 40 or less. Use after stumping fixes the ladder and before data is cut, and to revise a returned task's asks.
+description: Design the asks (55 to 60 per cent of the rubric) and their data-quality devices so the top two responses average 60 or less against a bar of 70. Use after stumping fixes the ladder and before data is cut, and to revise a returned task's asks.
 ---
 
 # The Ask Layer
@@ -9,15 +9,15 @@ Three to five wide, criteria-dense, decoupled asks on silent realistic mess, har
 
 ## Part 0. The pair arithmetic
 
-The landed call scores `C = 38 + 7 + 55 Lc`, the best miss `S = r + 7 + 55 Ls`, so `(C + S) / 2 <= 40` when `55 (Lc + Ls) <= 28 - r`. `L` is the ask weight kept, `r` the recommendation weight a wrong call keeps (about 5, from the generated rubric). The pair keeps about 23 of 110 ask points, **a fifth each**. Build for one response on the call (the cracker): only devices hold it. With none on it the construction layer costs the pair everything and devices are margin; two on it is a ladder failure. The ten points under 50 are bought here, since the ladder's margin goes to determinism. Levers: references A1, A2.
+The landed call scores `C = 38 + 7 + 55 Lc`, the best miss `S = r + 7 + 55 Ls`, so `(C + S) / 2 <= 60` when `55 (Lc + Ls) <= 68 - r`. `L` is the ask weight kept, `r` the recommendation weight a wrong call keeps (about 5, from the generated rubric). That budget is about 63 of 110 ask points, a little over half each; build to **two fifths each**, which puts the pair near 51 and keeps the margin under 60 for the portal's regrade. Build for one response on the call (the cracker): only devices hold it. With none on it the construction layer costs the pair everything and devices are margin. Two on it is a ladder failure: the pair then reaches 60 only if each keeps about a quarter of the ask weight (`55 (Lc + Lc') <= 30`), so the ladder carries one response off the call and the asks are never counted on to rescue a landed pair. The ten points under 70 are bought here, since the ladder's margin goes to determinism. Levers: references A1, A2.
 
 **The pair ceiling cannot validate the ladder it assumes, so check the premise before believing the
 number.** The arithmetic above takes one response onto the call and one off it. A script that
 constructs the mirror as a response stopping at a wrong rung is therefore structurally incapable of
 reporting that the second-best real response lands the call: every figure in it can be honest and the
 number still mean nothing. And the failure is not recoverable by ask work, because a response on the
-call banks about 45 before any ask, so if both top responses land it the pair cannot reach 40 however
-strong the devices are. task190 was retired on exactly this. Its measured pair of 38.1 was
+call banks about 45 before any ask, so if both top responses land it the pair reaches 60 only with every
+ask held to about a quarter, a layer no lane has shown it can build. task190 was retired on exactly this. Its measured pair of 38.1 was
 `(56.0 + 20.1) / 2` with the 20.1 a response that misses the call, while its cold reader had already
 landed the call at 80 to 90 per cent and its judge's blind enumeration matched the golden on every
 graded figure. Four passes went into driving that number down, and the premise had been falsified
@@ -32,14 +32,15 @@ redesigned decisive step, not a fourth device.
 
 **Where a whole lane actually bled, measured across thirteen builds: the ask layer, not the call.** An
 in-house audit scored a reader against thirteen FAILED_TO_STUMP builds and the ask figures came back at **61,
-61, 64, 80, 92, 93, 95 and 98 per cent solved** against this part's target of about a fifth each, three to
-five times the bar. Run the pair arithmetic on those numbers and the cause is unambiguous: with one response
-on the call the pair is `28.5 + 27.5 (Lc + Ls)`, so the audited ask layers put the pair at **62.0 to 82.3**,
-while the SAME call with the asks at their own spec puts it at **39.5**, under the build target. Every one of
-the eight would have cleared the bar on its existing call if this layer had met the spec.
+61, 64, 80, 92, 93, 95 and 98 per cent solved** against this part's target of two fifths each, one and a
+half to two and a half times the target. Run the pair arithmetic on those numbers and the cause is
+unambiguous: with one response on the call the pair is `28.5 + 27.5 (Lc + Ls)`, so the audited ask layers
+put the pair at **62.0 to 82.3**, over the build target of 60 in every case and over the bar of 70 in five,
+while the SAME call with the asks at their own spec puts it at **50.5**. Every one of the eight would have
+cleared the bar on its existing call if this layer had met the spec.
 
 Two things follow. **The ask layer is not margin, it is the pair**: the call contributes a fixed 45 against 12
-on the miss side, and everything that moves the average past 50 is ask weight. And **a weak ask layer is a
+on the miss side, and everything that moves the average past 60 is ask weight. And **a weak ask layer is a
 systemic failure, not thirteen accidents**: the same author produced all thirteen, so when a lane's pairs come
 back high, measure `Lc` before redesigning a single decisive step. The ask layer is also the one layer no
 closure argument reaches, because 2.1 licenses an ask to turn on semantics or rule application, which the
@@ -57,7 +58,7 @@ alone, and read the printed exclusions against the submission's blocks before be
 
 **Measured across a whole lane, thirteen builds read by one blind reader each and scored: the ask leak runs
 42.9, 46.4, 55.6, 57.6, 68.4, 74.0, 86.4, 86.7, 92.5, 93.3, 93.6, 97.7 and 100.0 per cent, a median of 86.4
-against this part's target of about a fifth.** Three of those are builds whose call the same reader missed,
+against this part's target of two fifths.** Three of those are builds whose call the same reader missed,
 so the devices had every chance to bite and bit nothing. Read together with Part 3's hygiene-battery record, which
 is the same result from the other side, the law is: **an ask figure a competent reader computes straight
 from the pack has no device on its path at all.** Something near the ceiling is the measured default for
@@ -118,7 +119,7 @@ keeps an ask, re-device it from the silent list (Part 3) rather than re-pricing 
 measured pair off the reader's score: twelve of eighteen with a landed call is a pair near 65, whatever the
 sheet said.
 
-**1.1 The cracker and mirror sheets**, on paper before any device. The **cracker** landed the call, ran the hygiene battery (key uniqueness, exact duplicates, unmatched joins, fan-out, count ties), executed every filed rule it points at and matched every control and published figure. Score each ask figure and chart criterion, a hit within half a unit of the stated rounding: **every row misses** or the ask is rebuilt. The **mirror** stops at the most attractive wrong rung and keeps **under 35 per cent of ask weight** (target a fifth), no ask whole. A figure differing between sheets is coupled: re-route or drop it.
+**1.1 The cracker and mirror sheets**, on paper before any device. The **cracker** landed the call, ran the hygiene battery (key uniqueness, exact duplicates, unmatched joins, fan-out, count ties), executed every filed rule it points at and matched every control and published figure. Score each ask figure and chart criterion, a hit within half a unit of the stated rounding: **every row misses** or the ask is rebuilt. The **mirror** stops at the most attractive wrong rung and keeps **under 50 per cent of ask weight** (target two fifths), no ask whole. A figure differing between sheets is coupled: re-route or drop it.
 
 **1.1b The blind-response test, run at the draw.** For the widest graded component, ask what a response
 that applies one obvious rate to one obvious size column would score, before any file exists. task190's
@@ -178,7 +179,7 @@ internal inconsistency; a fork is resolved by reading a sentence. So closing the
 response that reads it, and leaving it open is a determinism finding against the build. Two builds in one
 sitting lived in that gap: one ask's primary became a filed rule the moment the determinism judge required
 the grain pinned, and the measured pair ceiling went from 28.5 to 38.3, with 48.1 if both responses read the
-pinned clause and 67.8 with a second such ask also found, against a bar of 50; the other build's whole ask
+pinned clause and 67.8 with a second such ask also found, against a build target of 60; the other build's whole ask
 layer was the call's own construction over the call's own population, so the cracker kept 26 of 26 criteria
 and the pair measured 65.5. **Test every ask against the pin the call needs:** if filing what the call must
 file resolves the ask, the ask is sited wrong, and no device can repair it in place, because an ask over the
@@ -487,4 +488,4 @@ figures it governs and the figures sitting next to it that it must leave alone, 
 
 ## Part 7. The ask sheet
 
-`## Ask sheet` is the device ledger `dataset-generation` builds against and `precut.py` reads. Per ask: figures, H18 home, use, primary device and hazards, file path and column count, stops and lazy delta, realism sentence, any reused device. Then the main population's zero-counts, the hazard table (asks moved, per-ask deltas), the referee, the cracker sheet (a table whose header names the cracker, every row ending `miss`), `Mirror leakage:` under 35 per cent, `Pair ceiling:` at or under 40, rerun from the generated rubric. Reuse is legal re-skinned, measured devices first (references Part 3); a device in consecutive builds or a repeated set is a template finding, and demoting a retired main mechanism is reuse.
+`## Ask sheet` is the device ledger `dataset-generation` builds against and `precut.py` reads. Per ask: figures, H18 home, use, primary device and hazards, file path and column count, stops and lazy delta, realism sentence, any reused device. Then the main population's zero-counts, the hazard table (asks moved, per-ask deltas), the referee, the cracker sheet (a table whose header names the cracker, every row ending `miss`), `Mirror leakage:` under 50 per cent, `Pair ceiling:` at or under 60, rerun from the generated rubric. Reuse is legal re-skinned, measured devices first (references Part 3); a device in consecutive builds or a repeated set is a template finding, and demoting a retired main mechanism is reuse.

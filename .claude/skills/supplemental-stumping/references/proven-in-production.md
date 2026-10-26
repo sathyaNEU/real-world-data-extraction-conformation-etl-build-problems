@@ -5,9 +5,9 @@ Evidence for `../SKILL.md`: shipped submissions (tasks 35 to 83), portal results
 ## Part 1. The arithmetic, measured
 
 - **A1 Reachability [G].** Landing the call banks about `0.45 + 0.55c`, `c` the ask weight reachable from it: 58 v15 had 13 of 24 asks reachable (62.5 per cent); 58 v1 put about 75 per cent downstream of the main discovery (75 to 95 on a landed call). Keep `c` under a third.
-- **A2 The denominator [G].** 60 v7, a real 87-point rubric with responses at 65 and 32: `N` added asks both fail gives `97 / (2 (87 + N))`, under 50 from `N = 11`, under 40 from `N = 35`; the only move once the ladder is measured out.
+- **A2 The denominator [G].** 60 v7, a real 87-point rubric with responses at 65 and 32: `N` added asks both fail gives `97 / (2 (87 + N))`, 55.7 at `N = 0` and about three points lower for every five such asks; the only move once the ladder is measured out.
 - **A3 Plan for the cracker [P].** The top slot sat at or near 100 on 98 v3 (100 and 62), 98 v4 and 133 v1.
-- **A4 The second slot missed the call [P][R].** 181: the call failed (48 points) yet all 15 graded CSV figures filed, 52, each device a stated rule or a battery step; in-house runs missing the call kept 65.2 and 59.0. 102, 103, 105, 106, 107 and 133 also scored 50 to 100 with the call stumped or deterministic. Hence the 35 per cent mirror ceiling.
+- **A4 The second slot missed the call [P][R].** 181: the call failed (48 points) yet all 15 graded CSV figures filed, 52, each device a stated rule or a battery step; in-house runs missing the call kept 65.2 and 59.0. 102, 103, 105, 106, 107 and 133 also scored 50 to 100 with the call stumped or deterministic. Hence the mirror ceiling, under half the ask weight with a target of two fifths.
 - **A5 Inheriting asks** hand the cracker their whole weight in the top slot; a device ask costs the pair `2L`, so devices win below `L` = 0.5. They pay only if nobody lands the call (58 v12.1).
 - **62 [G]:** seven primary families over eleven asks, four inheriting, still a 61.8 single-response ceiling: diversity does not rescue coupled weight.
 

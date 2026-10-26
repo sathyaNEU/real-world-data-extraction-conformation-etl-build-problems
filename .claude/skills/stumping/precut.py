@@ -30,8 +30,8 @@ VOCAB = os.path.join(REPO, ".claude", "skills", "fingerprint", "vocab.json")
 # The client's check before a build ships, one label per point (stumping 1.1).
 THREE_RULES = ("Task type", "Domain test", "Swap", "Layer 1", "Layer 2", "Decisive step", "Not semantics",
                "Not rule application", "Analyst test", "Estimand", "No decoy", "No certified replay", "Lesson")
-PAIR_CEILING = 40.0
-MIRROR_CEILING = 35.0   # per cent of ask weight the best response off the call may keep (supplemental Part 1.1)
+PAIR_CEILING = 60.0    # the build target under the bar of 70 (supplemental Part 0)
+MIRROR_CEILING = 50.0   # per cent of ask weight the best response off the call may keep, target two fifths (supplemental Part 1.1)
 AXES = set(range(1, 23))
 STOP = {"the", "and", "with", "from", "that", "this", "than", "into", "over", "under", "about", "ends",
         "golden", "answer", "figure", "candidate", "navigators", "per", "cent"}

@@ -47,11 +47,18 @@ A hit is an exact match at the golden's own precision: a float is compared round
 decimal places, a list elementwise, a string case-insensitively on the golden's first words. Pass
 --tol-pct to allow a relative tolerance instead, for a figure whose rounding the ask does not state.
 
+Every run also prints the reader's estimated rubric share, about 45 for a landed call or 12 for a missed
+one plus 55 times the ask share, because the bar is read on the pair: the top two average under 70 with at
+least one of them off the call, built to 60 (supplemental-stumping Part 0). Average the two scored readers'
+estimates for the pair; a pair whose readers both landed the call is a ladder failure whatever it averages.
+
 Exit status
-    0  the call missed and under 20 per cent of ask figures hit: the ask layer holds
-    1  the call was hit, or 35 per cent or more of ask figures hit: Gate F has failed, and the repair
-       re-sites the devices rather than re-wording the asks (supplemental-stumping 1.1c)
-    2  between 20 and 35 per cent of ask figures hit, call missed: thin, one ask needs re-siting
+    0  the call missed and under 40 per cent of ask figures hit: the ask layer holds at two fifths
+    1  55 per cent or more of ask figures hit, or the call was hit with 40 per cent or more: the asks cannot
+       carry the pair, and the repair re-sites the devices rather than re-wording the asks
+       (supplemental-stumping 1.1c)
+    2  thin: the call missed with 40 to 55 per cent of ask figures hit (one ask needs re-siting), or the
+       call was hit with under 40 per cent (the pair holds only while the other scored reader misses it)
     3  usage or file error
 """
 import json
@@ -370,19 +377,27 @@ def main(argv):
         print("measurement. Re-run the reader against the key list before acting on it.")
         return 3
 
-    if call_hit:
-        print("\nFAIL  the reader landed the call. Gate F has failed and the architecture is spent:")
-        print("      a ladder is not repaired by hardening, and an ask is not repaired by re-wording.")
-        return 1
-    if share >= 35.0:
-        print("\nFAIL  the ask layer leaks %.1f per cent, at or over the 35 bar. Re-site the devices:" % share)
+    estimate = (45.0 if call_hit else 12.0) + 0.55 * share
+    print("estimated rubric share %.1f (%s, plus 55 times the ask share); average it with the other"
+          % (estimate, "a landed call banks about 45" if call_hit else "a missed call keeps about 12"))
+    print("scored reader's for the pair, which builds to 60 against the bar of 70.")
+    if share >= 55.0:
+        print("\nFAIL  the ask layer leaks %.1f per cent, at or over 55. Re-site the devices:" % share)
         print("      a reader hit means the device is absent from its path, not weak.")
         return 1
-    if share >= 20.0:
-        print("\nWARN  %.1f per cent of ask figures hit, over the fifth the pair arithmetic budgets." % share)
+    if call_hit and share >= 40.0:
+        print("\nFAIL  the reader landed the call and kept %.1f per cent of the ask figures, so the pair" % share)
+        print("      cannot reach 60 however the other reader does. Re-site the devices before anything else.")
+        return 1
+    if call_hit:
+        print("\nWARN  the reader landed the call. The pair holds only if the other scored reader misses it;")
+        print("      if both land it the ladder has failed and the decisive step is redesigned, not hardened.")
+        return 2
+    if share >= 40.0:
+        print("\nWARN  %.1f per cent of ask figures hit, over the two fifths the pair arithmetic budgets." % share)
         print("      Name the ask that leaked and re-site its primary device.")
         return 2
-    print("\nPASS  the call missed and the ask layer holds under a fifth.")
+    print("\nPASS  the call missed and the ask layer holds under two fifths.")
     return 0
 
 

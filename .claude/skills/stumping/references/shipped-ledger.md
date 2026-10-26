@@ -604,7 +604,7 @@ One line each, with the builds that paid for it. The techniques behind them are 
 - A response stumped on the call still clears the bar when the asks are by-products of one forward pass (94 r6, 103 v3, 105 v2, 133 r1, 181 r1 at 52).
 - Asks downstream of the construction pay only when nobody lands the call (58 v12.1 moved 38 of 49 there); with one response on it, decoupled asks cost the pair less while ask leakage is under a half (`supplemental-stumping` references A5), so asks stay decoupled.
 - An ask whose rule sits beside it, or that is a dictionary line, is a reading exercise (61, 107 v2).
-- N asks both top responses fail drag both down: 97/(2 x (87 + N)) is under 50 from N = 11 (60 v7).
+- N asks both top responses fail drag both down: 97/(2 x (87 + N)) loses about three points per five such asks (60 v7).
 - Redo the decorrelation count after any prompt repair; the ask mix moves (61).
 
 **Determinism, scope and clones**

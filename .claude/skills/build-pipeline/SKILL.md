@@ -74,7 +74,7 @@ gate (generator checks, `verify`, byte-identical rebuilds, `leak.py`, `guard.py 
 - **Determinism block failed** (the judges found a fork, a competing defensible answer or a figure that does
   not recompute): `/fix-determinism`. The fork is closed in the record so the literal execution is the golden;
   the main call, the stump, the ladder and every graded figure are frozen.
-- **Call held, rubric at or over 50:** `/fix-rubric`. The ask layer is reworked against the responses' paths;
+- **Call held, rubric at or over 70:** `/fix-rubric`. The ask layer is reworked against the responses' paths;
   the main recommendation side is frozen, because touching it can turn a passed verdict into a failed one.
 - **Call landed:** back to stage 2 with this session as designer. Read the response against the default path
   and rungs; it left the ladder after the last rung it shows:
