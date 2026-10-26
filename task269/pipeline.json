@@ -1,73 +1,66 @@
 {
-  "task": "task269",
-  "owner": "sathay3012",
-  "status": "PAUSED",
-  "domain": "general-statistics-data-science",
-  "objective": "descriptive-distribution",
-  "stage": 4,
-  "stage_name": "check",
-  "updated": "2026-10-25",
-  "stump": "The default path runs the State's ratio study on the 2025 arm's-length sales against the certified 2026 values, finds a median of 0.95 and a COD of 8 and files that the roll meets the standard; the Assessor's office moved every sold parcel's value toward its price (up a median 14.9 per cent against the unsold parcels' 3.4), so each sold parcel's 2025 value carried forward by its neighbourhood's factor stands for the unsold parcels, and with the reviewed parcels at their 6.7 per cent share the roll's median is 0.87 and its COD 18: it fails both tests and the county accepts its vendor's offer of the reappraisal.",
-  "architecture": 4,
-  "loops": 0,
-  "precut": {
-    "exit": 0,
-    "date": "2026-10-25"
+ "task": "task269",
+ "owner": "sathay3012",
+ "status": "DESIGN",
+ "domain": "healthcare-delivery-health-economics",
+ "objective": "descriptive-distribution",
+ "stage": 2,
+ "stage_name": "design",
+ "updated": "2026-10-26",
+ "stump": "A competent solver takes each ward's 2025-26 audit compliance, or its AM and PM compliance weighted by the shifts' care hours, finds every ward at or above 80 per cent and files that the grant funds no coach; the step that lands it there is treating the gold-auditor sessions as a sample of the ward's moments, when the ward's own auditors can be released almost only on shifts whose nursing hours cover the patients' required care hours and staff perform hand hygiene less often as the hours fall short, so only the audited compliance carried across every shift by its shortfall, weighted by required care hours, puts AMU, ESSU, 4A and 7A below 80 per cent.",
+ "architecture": 5,
+ "loops": 0,
+ "precut": null,
+ "leak": null,
+ "duplicate_check": {
+  "check_at_draw": "registered 2026-10-26T01:35:57Z under the author's override on ban.strategy only (composition_mix against task166 v2); every structural repeat differentiated on the card; WARNs answered in the note's Draw"
+ },
+ "judge": null,
+ "returned": [],
+ "resume": "Stage 2: the design note's sections to precut exit 0 (default path, stump sentence, three rules, readability screen, fork table, ladder, closure table, literal reader, oracles, ask sheet), then stage 3 on the world tuned so every estimator in the golden's family (ward by shortfall-band cells, pooled bands additive or logistic) puts the same wards under 80 per cent with each ward at least two points from the line.",
+ "approved": null,
+ "delivered": null,
+ "portal": null,
+ "portal_id": "",
+ "portal_status": "",
+ "portal_status_date": "",
+ "seed": "none: a fresh world drawn 2026-10-26 (Ardley Valley Hospital Foundation's hand hygiene coaching grant), probed before the card on prototype p269g",
+ "history": {
+  "architecture_3": "v3 Pellbrook frequent network, each rider's excess wait over the departures serving the stop the rider taps off at (routes 3, 7, 31 and 40): built 2026-10-19, call held by two scored readers, judge SEND_BACK on the unfiled departure set; task269 retired",
+  "architecture_3_gates": {
+   "checks": "279 assertions, 0 failed",
+   "verify": "50 figures, 0 disagreements",
+   "rebuild": "byte-identical",
+   "figures_check": "80 figures, 0 absent",
+   "target_zip_md5": "ba9925bdf4330615e4a01dd0685a07d6"
   },
-  "leak": {
+  "architecture_3_judge": {
+   "verdict": "pass 1 NOT_DETERMINISTIC (main call: the standard's 'the departures' read as a route's departures at the timing point files 7, 14, 31 and 40; every golden figure reproduced under the branch-conditioned reading)",
+   "disposition": "SEND_BACK",
+   "report": "task269/determinism_check_report.md"
+  },
+  "architecture_3_leak": {
+   "leak_py": "REVIEW 2026-10-19: the programme's own nouns in the guidelines, plan and contents list; the standard's own vocabulary; feeds as zips (all harmless, Build record)",
+   "reader": "two scored readers 2026-10-19: both missed the call (7, 14, 31 and 40, route 3 first below, the default path), both 20 of 25 ask figures (exit 1: every pilot figure recomputable from the plan and the timesheets); Q6 the standard's procedure"
+  },
+  "architecture_4": {
+   "summary": "v4 Tillford County's ratio study, the sales chasing the roll (0.87 and 18 against the sales' own 0.95 and 8): built 2026-10-25, spent at stage 4 round 2 when rule 2.1's 'sold or not' sent both readers to the unsold parcels",
+   "stump": "The default path runs the State's ratio study on the 2025 arm's-length sales against the certified 2026 values, finds a median of 0.95 and a COD of 8 and files that the roll meets the standard; the Assessor's office moved every sold parcel's value toward its price (up a median 14.9 per cent against the unsold parcels' 3.4), so each sold parcel's 2025 value carried forward by its neighbourhood's factor stands for the unsold parcels, and with the reviewed parcels at their 6.7 per cent share the roll's median is 0.87 and its COD 18: it fails both tests and the county accepts its vendor's offer of the reappraisal.",
+   "leak": {
     "leak_py": "REVIEW 2026-10-25 (--asof 2026-09-18): sweep 4 only, the stump paragraph's common nouns in the dictionary, the memo and the rule",
     "reader": "round 1 (2026-10-25, target.zip e869069b): two scored readers both off the call (0.95 and 8, the default path); reader 1 kept 13 of 17 ask figures (Ask B 12 of 12, exit 1), reader 2 5 of 17 (Ask A 5 of 5); question 1 none from both; question 6 both named the rule's procedure on their own default path | round 2 (target.zip 34487572): both readers landed the call (reader 4 0.87 and 18, quoting rule 2.1's 'sold or not' as the decisive sentence; reader 3 0.86 and 19, the carried-forward values alone) and kept 17 of 17 ask figures each: Gate F failed, architecture 4 spent"
-  },
-  "duplicate_check": {
-    "heart": "BLOCK ban.strategy only (population_selection against task301 v2, which entered the window when task485 went spent after this card was filed), overridden by the author in session on 2026-10-25 for a ship conditional on stage 4; ban.forcing_event cleared by redrawing the forcing event in the pack to the vendor's offer; card re-registered 2026-10-25T22:02:48Z",
-    "nearest": "0.08 task264 v2",
-    "surface": "exit 0, people.first WARNs only"
-  },
-  "judge": {
+   },
+   "judge": {
     "verdict": "round 1 NOT_DETERMINISTIC (the population unfiled); round 2 DETERMINISTIC (figure-level forks: the carried-forward values alone, 0.86 and 19; 31 parcels heard twice)",
     "disposition": "round 2 FIX_NOW, moot: the architecture is spent on Gate F",
     "report": "task269/determinism_check_report.md"
-  },
-  "returned": [],
-  "resume": "Architecture 5 draw open (stage 1, fresh world, Descriptive): on 2026-10-25 about thirty mechanisms were screened on paper against the corpus's slot notes and two prototypes probed (p269e, county tails past an open income class; p269f, true-position capability), each landed by the call-only reader in under a minute; every line is in DESIGN_NOTE.md Tried and rejected. Architectures 1 to 4 are spent. Avoid a stump whose decisive step is whether a sample stands for an unfiled population (architecture 4), and a correction that a visible column cues (the probes). Resume at the draw.",
-  "approved": null,
-  "delivered": null,
-  "portal": null,
-  "portal_id": "",
-  "portal_status": "",
-  "portal_status_date": "",
-  "seed": "none: a fresh world drawn 2026-10-25 (Tillford County's ratio study), probed before the draw on a prototype pack",
-  "history": {
-    "architecture_3": "v3 Pellbrook frequent network, each rider's excess wait over the departures serving the stop the rider taps off at (routes 3, 7, 31 and 40): built 2026-10-19, call held by two scored readers, judge SEND_BACK on the unfiled departure set; task269 retired",
-    "architecture_3_gates": {
-      "checks": "279 assertions, 0 failed",
-      "verify": "50 figures, 0 disagreements",
-      "rebuild": "byte-identical",
-      "figures_check": "80 figures, 0 absent",
-      "target_zip_md5": "ba9925bdf4330615e4a01dd0685a07d6"
-    },
-    "architecture_3_judge": {
-      "verdict": "pass 1 NOT_DETERMINISTIC (main call: the standard's 'the departures' read as a route's departures at the timing point files 7, 14, 31 and 40; every golden figure reproduced under the branch-conditioned reading)",
-      "disposition": "SEND_BACK",
-      "report": "task269/determinism_check_report.md"
-    },
-    "architecture_3_leak": {
-      "leak_py": "REVIEW 2026-10-19: the programme's own nouns in the guidelines, plan and contents list; the standard's own vocabulary; feeds as zips (all harmless, Build record)",
-      "reader": "two scored readers 2026-10-19: both missed the call (7, 14, 31 and 40, route 3 first below, the default path), both 20 of 25 ask figures (exit 1: every pilot figure recomputable from the plan and the timesheets); Q6 the standard's procedure"
-    },
-    "architecture_4": "v4 Tillford County's single-family ratio study under sales chasing (the vendor's reappraisal offer): built 2026-10-25; round 1 both readers off the call, the judge's Gate C finding on the unfiled population repaired by filing 'sold or not'; round 2 both readers landed the call; spent",
-    "architecture_4_gates": {
-      "checks": "91 assertions, 0 failed",
-      "verify": "PASS",
-      "rebuild": "byte-identical",
-      "figures_check": "50 figures, 0 absent",
-      "precut": "51 checks, 0 FAIL, 0 WARN",
-      "leak_py": "REVIEW (sweep 4 only, ruled harmless)",
-      "cracker": "0 of 17, pair ceiling 28.5",
-      "target_zip_md5": "34487572e08f67cd4330fe16993fde2c"
-    }
-  },
-  "gates": {
+   },
+   "duplicate_check": {
+    "heart": "BLOCK ban.strategy only (population_selection against task301 v2, which entered the window when task485 went spent after this card was filed), overridden by the author in session on 2026-10-25 for a ship conditional on stage 4; ban.forcing_event cleared by redrawing the forcing event in the pack to the vendor's offer; card re-registered 2026-10-25T22:02:48Z",
+    "nearest": "0.08 task264 v2",
+    "surface": "exit 0, people.first WARNs only"
+   },
+   "gates": {
     "checks": "91 assertions, 0 failed",
     "verify": "PASS",
     "rebuild": "byte-identical",
@@ -76,6 +69,23 @@
     "leak_py": "REVIEW (sweep 4 only, ruled harmless)",
     "cracker": "0 of 17, pair ceiling 28.5",
     "target_zip_md5": "34487572e08f67cd4330fe16993fde2c"
+   },
+   "precut": {
+    "exit": 0,
+    "date": "2026-10-25"
+   }
   },
-  "architecture_spent": 4
+  "architecture_4_gates": {
+   "checks": "91 assertions, 0 failed",
+   "verify": "PASS",
+   "rebuild": "byte-identical",
+   "figures_check": "50 figures, 0 absent",
+   "precut": "51 checks, 0 FAIL, 0 WARN",
+   "leak_py": "REVIEW (sweep 4 only, ruled harmless)",
+   "cracker": "0 of 17, pair ceiling 28.5",
+   "target_zip_md5": "34487572e08f67cd4330fe16993fde2c"
+  }
+ },
+ "gates": null,
+ "architecture_spent": 4
 }

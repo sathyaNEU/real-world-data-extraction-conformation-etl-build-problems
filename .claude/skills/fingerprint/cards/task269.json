@@ -1,202 +1,228 @@
 {
-  "task": "task269",
-  "architecture": "v4 (Tillford County's single-family reappraisal offer: whether the Board of Commissioners accepts its appraisal vendor's offer of a county-wide single-family reappraisal before it lapses on 30 October 2026, read on the State Tax Commission's ratio study standard for the certified 2026 roll, whose assessor reviewed every parcel sold in 2025 and moved its value toward its price while every other parcel was trended by its neighbourhood's factor)",
-  "drawn": "2026-10-25",
-  "slot_note": "re-drawn 2026-10-25 at architecture 4 in a fresh world at the author's direction (no number in the lane is retired); the world, decision and quantity are new, the pitfall re-found from the data: a ratio study's sales sample the roll only if the sold parcels were valued like the unsold ones",
-  "domain": "general-statistics-data-science",
-  "subdomain": "missing-data-censoring-measurement-error",
-  "client_domain": "general-statistics-data-science",
-  "niche": "a county board's decision to accept a vendor's offer of a county-wide single-family reappraisal, judged on the state ratio study of a roll whose assessor revalued the parcels sold in the study year toward their own sale prices while trending every other parcel by its neighbourhood's factor",
-  "objective": "descriptive-distribution",
-  "shape": "other",
-  "decision_type": "go_hold_or_stop",
-  "answer_unit": "named_option",
-  "answer": "accept the vendor's offer of the county-wide single-family reappraisal: the certified 2026 single-family roll fails Rule 18-7 on both tests (median assessment ratio 0.87, COD 18)",
-  "answer_source": "submission.md block 1; generator/figures.json call",
-  "gap": [
-    "population"
+ "task": "task269",
+ "architecture": "v5 (Ardley Valley Hospital Foundation's 2027 hand hygiene coaching grant: which wards get a coaching nurse, the grant funding one for every ward whose staff performed hand hygiene at fewer than 80 per cent of the hand hygiene moments that arose on its AM and PM shifts in the 2025-26 audit year, read from gold-auditor sessions run by the ward's own nurses, who audit mostly on shifts whose worked nursing hours covered the care hours their patients required, while staff perform hand hygiene less often the further a shift's hours fall short)",
+ "drawn": "2026-10-26",
+ "slot_note": "re-drawn 2026-10-26 at architecture 5 in a fresh world at the author's direction (complete freedom on world and strategy, nothing left paused); a held family (a sample's mix on a property rebuilt from operating records, reweighted to the population's) written to differ, prototype-probed before the card (p269g: the call-only reader weighted each ward's AM and PM audits by care hours and missed the call)",
+ "domain": "healthcare-delivery-health-economics",
+ "subdomain": "provider-quality-risk-adjustment",
+ "client_domain": "healthcare-delivery-health-economics",
+ "niche": "a hospital foundation funding a hand hygiene coaching nurse for every ward below the national 80 per cent benchmark on day-shift compliance, read from ward gold-auditor sessions that run on well-staffed shifts while compliance falls as worked nursing hours fall short of the care hours the acuity system requires",
+ "objective": "descriptive-distribution",
+ "shape": "10",
+ "decision_type": "designation_set",
+ "answer_unit": "set_of_items",
+ "answer": "",
+ "answer_source": "submission.md block 1; generator/figures.json call",
+ "gap": [
+  "population"
+ ],
+ "pattern": [
+  "none"
+ ],
+ "generators": [
+  "G6",
+  "G14"
+ ],
+ "gate_g": "method_or_model_selection",
+ "calibration_form": "none",
+ "stump_strategy": "composition_mix",
+ "decisive_rule_filed": false,
+ "official_decoy": false,
+ "validated_decoy": false,
+ "context_artifact": "filed_standard",
+ "stump_class": "analytical",
+ "analyst_test": "A strong analyst who reads every audit record and filed rule correctly takes each ward's 2025-26 audit compliance (moments performed over moments observed), or weights each ward's AM and PM audit compliance by its shifts' required care hours, finds every ward at or above 80 per cent and files that the grant funds no coach; the wards' own gold auditors audit almost only on shifts whose worked nursing hours covered the patients' required care hours, while staff perform hand hygiene less often the further a shift's hours fall short, so only each ward's audited compliance carried across all of its shifts by how far each shift's hours fell short, weighted by the care hours that generate the moments, puts AMU, ESSU, 4A and 7A below the benchmark.",
+ "domain_test": "The deciding quantity is each ward's hand hygiene compliance over every moment that arose on its day shifts, the five-moments process measure the field audits by direct observation; the field's own analysis reads it from gold-auditor sessions with the sample's skew toward well-staffed shifts removed, placing every shift on the workload scale (required care hours against worked nursing hours) on which compliance falls, the moments weighted by the care that generates them. With another field's nouns there are no moments arising from patient care, no auditors drawn from the ward's own nurses and no acuity-based care hours.",
+ "layer2_family": "estimation_fit",
+ "layer2_pattern": "own:audited-moments-reweighted-to-each-shift's-care-hour-shortfall",
+ "layer1": [
+  "the audit application's export with sessions re-entered after its March outage carrying new session numbers over the same moments",
+  "the acuity system's patient-by-shift extract, patients moved between wards within a shift appearing on both wards' lists",
+  "the roster actuals with bank shifts booked through the bank office's system under its own staff keys and agency shifts entered by the agency's invoice reference",
+  "Ward 5B's move to the new surgical block in February 2026 under a new ward code",
+  "daylight saving starting on 5 October 2025 and ending on 5 April 2026, the acuity extract in local time and the audit application's timestamps in UTC",
+  "supernumerary orientation shifts and student placements on the roster that carry no worked hours toward the ward's staffing"
+ ],
+ "stakeholder_role": "grants manager, Ardley Valley Hospital Foundation, preparing the 2027 hand hygiene coaching grant's ward placements for the Foundation's grants committee",
+ "role_family": "programme_officer",
+ "scoring_unit": "other",
+ "spine": {
+  "file": "hand_hygiene_audit_moments_2025_26.csv",
+  "rows": 25000,
+  "entity": "one hand hygiene moment observed in a ward gold auditor's session",
+  "grain": "moment",
+  "source": "synthetic",
+  "row_meaning": "one of the five moments observed by a gold auditor, with the health care worker group and whether hand hygiene was performed",
+  "source_dataset": "constructed (seeded generator; Ardley Valley, its hospital, foundation and people are fictional)"
+ },
+ "forum": "funder_or_donor",
+ "forcing_event": "budget_or_appropriation",
+ "org_family": "foundation_or_funder",
+ "world": {
+  "geography": "Australia (New South Wales; Ardley Valley and its hospital are fictional)",
+  "currency": "AUD",
+  "org_type": "hospital foundation (a charity funding nursing positions at its regional public hospital)",
+  "invented_names": [
+   "Ardley Valley",
+   "Ardley Valley Hospital",
+   "Ardley Valley Hospital Foundation"
   ],
-  "pattern": [
+  "people": [
+   "Lisa Burns",
+   "Trevor Macdonald",
+   "Mary Patton",
+   "Bryan Ramos"
+  ]
+ },
+ "people": [
+  "Lisa Burns",
+  "Trevor Macdonald",
+  "Mary Patton",
+  "Bryan Ramos"
+ ],
+ "deliverables": [
+  "coaching_wards_2027.xlsx",
+  "ward_compliance_2025_26.png"
+ ],
+ "opening_move": "question-first",
+ "question_form": "which",
+ "driver": "The decisive quantity is each unit's rate of meeting a standard over every occasion that arose in a period, read from a sample of occasions whose observers, drawn from the unit's own staff, could sample mostly the periods when the unit's capacity covered its demand, while the rate falls as demand outruns capacity; only each unit's sampled rate carried across all of its own periods by how far demand outran capacity in each, weighted by the demand that generates the occasions, gives the rate, where the sample as it stands or a reweighting by time of day files other units.",
+ "driver_concrete": "Each ward's 2025-26 share of the hand hygiene moments on its AM and PM shifts at which staff performed hand hygiene, against the 80 per cent benchmark, where gold auditors drawn from the ward's own nurses audit mostly on shifts whose worked nursing hours covered the acuity system's required care hours and compliance falls as the hours fall short: each ward's audited compliance carried across all its shifts by their shortfall, the shifts weighted by required care hours; not the audits as they stand, nor the AM and PM audit shares weighted by care hours.",
+ "stump": "A competent solver takes each ward's 2025-26 audit compliance, or its AM and PM compliance weighted by the shifts' care hours, finds every ward at or above 80 per cent and files that the grant funds no coach; the step that lands it there is treating the gold-auditor sessions as a sample of the ward's moments, when the ward's own auditors can be released almost only on shifts whose nursing hours cover the patients' required care hours and staff perform hand hygiene less often as the hours fall short, so only the audited compliance carried across every shift by its shortfall, weighted by required care hours, puts AMU, ESSU, 4A and 7A below 80 per cent.",
+ "mechanism_source": "held family under the author's 2026-10-25 allowance (a sample's mix on a property rebuilt from operating records, reweighted to the population's; F5), written to differ in a fresh world; the workload-compliance relation from the infection control literature on hand hygiene and intensity of care",
+ "differentiation": {
+  "task270": "task270 v3 separates a one-time practice gain from a decline across repeated tests of the same members; nothing here is measured twice: each moment is observed once, and the sample's defect is when the observers could audit, not a gain from having been measured before.",
+  "task451": "task451 credits commingled spending to its sources by an intermediary's inflow mix period by period; nothing here passes through an intermediary: the quantity is a rate over every occasion, read from a sample selected on the unit's own staffing and carried across each period by how far demand outran capacity.",
+  "task230": "task230 v1 reads a staggered switch against not-yet-switched units of the same usage band; nothing here switches and no counterfactual is taken: the rate is descriptive over all occasions, and the remedy carries an audit sample across the unit's own workload mix.",
+  "task251": "task251 v5 estimates each instrument's error from checks taken where two error-raising effects were absent, each effect read from pairs of units counting one stream; here no instrument errs and no pairs exist: each audited moment is recorded exactly, the sample's skew toward covered shifts is the whole defect, and the remedy carries each ward's audited rate across its own shifts' care-hour shortfall.",
+  "task253": "task253 v1 adjusts a survey count for nonresponse within classes of a frame attribute; nothing here responds or refuses: every audited moment is recorded, the skew comes from when the ward's own auditors could be released, and the reweighting property is rebuilt shift by shift from the acuity extract and the roster, never read from a frame.",
+  "task265": "task265 v0 (never registered) solves a class mix from a classifier's measured error rates; nothing here is classified or predicted: the measure is a rate over occasions and the remedy carries an observed rate across an unobserved workload mix.",
+  "task455": "task455 v1 solves a register's two-way misfiling from a full review of one period; nothing here is misfiled: every audited moment carries its true outcome, and only the audited shifts' workload mix differs from the ward's.",
+  "task68": "task68 reads a like-for-like change on a matched panel linked across identity successions; nothing here changes over time or succeeds another unit: the rate is one audit year's, and the remedy carries each ward's audited moments across its own shifts' care-hour shortfall.",
+  "task465": "task465 v1 recovers values a published history withholds in exactly the bad years, each fixed by its group's published total less the published members; nothing here is withheld or recoverable by subtraction: every audited moment is published, and the defect is that the ward's own auditors sampled its well-staffed shifts, so the audited rate is carried across the ward's own care-hour shortfall mix."
+ },
+ "lineage": [
+  {
+   "domain": "education-learning-sciences",
+   "subdomain": "psychometrics",
+   "objective": "descriptive-distribution",
+   "shape": "04",
+   "decision_type": "dial_setting",
+   "answer_unit": "count",
+   "gap": [
+    "time",
+    "objective"
+   ],
+   "pattern": [
     "none"
-  ],
-  "generators": [
+   ],
+   "generators": [
+    "G4",
+    "G13",
+    "G17"
+   ],
+   "gate_g": "decomposition_attribution",
+   "stump_strategy": "decomposition_attribution",
+   "role_family": "programme_officer",
+   "forum": "regulator_or_inspector",
+   "forcing_event": "statutory_or_regulatory_filing",
+   "org_family": "university_or_school",
+   "driver": "The decisive quantity is how consistently a total over several scored parts will rank units once each part is scored by one scorer drawn from a pool and different units meet different scorers, estimated from a round in which the same two scorers scored every unit on each part; in that round a scorer's own level was shared by every unit and so never moved a ranking, so the agreement between parts, each scorer's marks taken alone and a decomposition that keeps the scorers shared all leave it out, while under the new arrangement it adds to every unit's error, so the number of parts has to come from the round's sources of variance recombined with the scorers' levels counted as error.",
+   "architecture": "v1 (Callowfield University's 2027 final-year OSCE, single-examined in three parallel circuits once Fennabeg Clinical School's cohort joins: the number of stations its total marks need for the school's reliability standard of 0.80, projected from the 2026 sitting's dual-examined marks with each station's examiner stringency counted as error)",
+   "drawn": "2026-10-19",
+   "stump": "A competent solver computes the 2026 sitting's reliability on single-examiner marks (alpha across the stations, or a generalizability study with the examiners crossed with the candidates) and steps it to more stations by Spearman-Brown, filing the current 12 stations as enough; the step that lands it there is reading each examiner's leniency as 2026 showed it, a shift every candidate at that station shared, when in 2027's parallel circuits different candidates meet different examiners and the leniency spread between examiners becomes error in every candidate's total.",
+   "fate": "spent 2026-10-19 at stage 4 (Gate F): the cold reader split the 2026 marks into candidates by examiners within stations and counted the stringency as error for one examiner a station, committing the golden call and every ask figure; the judge DETERMINISTIC with Gates G and H passing"
+  },
+  {
+   "domain": "education-learning-sciences",
+   "subdomain": "psychometrics",
+   "objective": "descriptive-distribution",
+   "shape": "04",
+   "decision_type": "dial_setting",
+   "answer_unit": "count",
+   "gap": [
+    "objective"
+   ],
+   "pattern": [
+    "none"
+   ],
+   "generators": [
+    "G2",
     "G16",
     "G17"
-  ],
-  "gate_g": "method_or_model_selection",
-  "calibration_form": "none",
-  "stump_strategy": "population_selection",
-  "decisive_rule_filed": false,
-  "official_decoy": false,
-  "validated_decoy": false,
-  "context_artifact": "filed_standard",
-  "stump_class": "analytical",
-  "analyst_test": "A strong analyst who reads every rule and field correctly runs the State's ratio study on the 2025 arm's-length single-family sales, each price carried to 1 January 2026 by the county index and set against the parcel's certified 2026 value, finds a median of 0.95 and a COD of 8, and files that the roll meets the standard and the county lets its vendor's reappraisal offer lapse, though the assessor reset the sold parcels' values toward their prices (up a median 14.9 per cent against 3.4 for the unsold parcels) so the sales no longer sample the roll, and the sold parcels' 2025 values carried forward by their neighbourhoods' factors, with the reset parcels at their 6.7 per cent share, put the roll at 0.87 and 18, failing both tests.",
-  "domain_test": "The deciding quantity is the median and coefficient of dispersion of every single-family parcel's 2026 assessment ratio, a measurement-error distribution known only on the sold parcels, and the field's own analysis is the ratio study with its test of whether the sales sample the roll (sold against unsold parcels' value changes, the sales-chasing screen of mass appraisal) and the sold parcels' prior values carried forward as the out-of-sample measure; replacing that estimate with the sales' own statistics flips the call, and in another field's nouns no recorded value is reset from the very price that measures it.",
-  "layer2_family": "estimand_identification",
-  "layer2_pattern": "own:a-ratio-study-whose-sales-were-used-to-reset-the-values-it-measures",
-  "layer1": [
-    "the 2025 roll exported by the county's retired appraisal system as a workbook with dashed parcel numbers and neighbourhood names, the 2026 roll from its replacement as CSV with undashed numbers and neighbourhood codes",
-    "parcels split or combined between the two rolls, the new numbers traced in the assessor's parcel change log",
-    "the recorder's sales extract with non-market transfers coded U, deeds conveying more than one parcel and re-recorded corrective deeds",
-    "building permits picked up in the 2026 values, some on parcels sold before the work was finaled",
-    "Board of Review reductions of 2025 values carried into the 2026 base, and the assessor's data corrections on a few per cent of parcels",
-    "the county price index published monthly to one decimal on a January 2025 base"
-  ],
-  "stakeholder_role": "policy analyst in the Tillford County Administrator's office (Budget and Policy Analysis), advising the Board of Commissioners on its appraisal vendor's reappraisal offer",
-  "role_family": "policy_adviser",
-  "scoring_unit": "other",
-  "spine": {
-    "file": "assessor_roll_2026_certified.csv",
-    "rows": 27679,
-    "entity": "one parcel on the certified 2026 assessment roll with its assessed land, improvement and total values",
-    "grain": "parcel",
-    "source": "synthetic",
-    "row_meaning": "the assessor's certified 2026 value of one parcel as at 1 January 2026",
-    "source_dataset": "constructed (seeded generator; the county, its state, offices and people are fictional)"
+   ],
+   "gate_g": "method_or_model_selection",
+   "stump_strategy": "decomposition_attribution",
+   "role_family": "programme_officer",
+   "forum": "regulator_or_inspector",
+   "forcing_event": "statutory_or_regulatory_filing",
+   "org_family": "university_or_school",
+   "driver": "The decisive quantity is how consistently a total over parts will rank units when the specification fixes how many parts come from each content area every time, so each unit's strength in an area recurs in every form and belongs to the true score; estimated from a round whose parts were drawn the same way, the analysis that treats the parts as drawn from one undivided pool counts that strength as error and overstates the number of parts a standard needs.",
+   "architecture": "v2 (Callowfield University's 2027 final OSCE, single-examined in three parallel circuits on a blueprint that draws the same number of stations from each of four domains every year: the number of stations for the school's 0.80 reliability standard, from the 2026 marks' variance components with each candidate's domain-specific strength counted as true score under the fixed blueprint and the examiner's stringency as error)",
+   "drawn": "2026-10-19",
+   "stump": "A competent solver fits the 2026 marks' variance components with the stations and examiners random from one bank, counts the examiner's stringency as error for one examiner a station and files 16 stations; the step that lands it there is counting the candidate-by-domain variance as error, when the blueprint draws the same number of stations from each domain every year, so a candidate's domain strengths recur in every form and belong to what the total mark measures.",
+   "fate": "spent 2026-10-19 at stage 4 round 3 (Gate F): of six scored readers five filed 16 stations by the pooled decision study and the sixth stratified the 2026 marks by the blueprint's domains under policy 4.2 and landed the call (13) and every reliability; the judge's pass 3 found Ask B's namesake device unfair, repaired before round 3"
   },
-  "forum": "council_or_assembly",
-  "forcing_event": "purchase_order_or_contract",
-  "org_family": "local_government",
-  "world": {
-    "geography": "United States (Tillford County and its state are fictional)",
-    "currency": "USD",
-    "org_type": "county government (the County Administrator's office for the Board of Commissioners; the elected County Assessor certifies the roll)",
-    "invented_names": [
-      "Tillford County",
-      "Tillford County Assessor",
-      "State Tax Commission"
-    ],
-    "people": [
-      "David Griffin",
-      "Kristen Valdez",
-      "Justin Saunders",
-      "Russell Evans",
-      "Paul Parker",
-      "Nicole Rodgers"
-    ]
+  {
+   "answer_unit": "set_of_items",
+   "decision_type": "ranked_slate_under_cap",
+   "domain": "urban-regional-science",
+   "driver": "The decisive quantity is the expected excess wait of units arriving at random at a point served by interleaved streams of departures, where units bound for some destinations can take any stream and units bound for others only one, so each unit's wait is worked over the departures serving its own destination, read from a second file at the unit's grain; the measure over all departures overstates the units tied to one stream wherever the streams bunch with each other, and the measure over the stream each unit happened to take understates the units that could take any.",
+   "forcing_event": "vote_or_meeting",
+   "forum": "committee_or_panel",
+   "gap": [
+    "population"
+   ],
+   "gate_g": "method_or_model_selection",
+   "generators": [
+    "G2",
+    "G16"
+   ],
+   "objective": "descriptive-distribution",
+   "org_family": "local_government",
+   "pattern": [
+    "none"
+   ],
+   "role_family": "capacity_planner",
+   "shape": "01",
+   "stump": "A competent solver works each route's excess wait from all of its departures at the corridor timing points, weights it by corridor boardings and gives the teams to routes 3, 7, 14 and 31 (or, splitting by the branch of the bus each rider boarded, drops route 7 for route 9); the step that lands it there is taking the route, or the boarded bus, as each rider's service when a rider bound for a branch can take only that branch's buses and one bound for the corridor either.",
+   "stump_strategy": "grain_or_unit",
+   "subdomain": "network-analysis",
+   "architecture": "v3 (Pellbrook Metro's 2027 headway management programme: which four of the eight frequent bus routes get the operator's supervisor teams, ranked on the excess wait per weekday-peak boarding on each route's frequent corridor in the August census fortnight, each rider's wait measured against the buses that serve the stop they tag off at)",
+   "drawn": "2026-10-19",
+   "fate": "spent 2026-10-19 at stage 4 on the judge's SEND_BACK: the departures that end a rider's wait are the outcome's definition, and the industry's route-level excess wait is a licensed literal reading of a standard that says 'the departures', so filing the set is rule application; the two scored readers missed the call"
   },
-  "people": [
-    "David Griffin",
-    "Kristen Valdez",
-    "Justin Saunders",
-    "Russell Evans",
-    "Paul Parker",
-    "Nicole Rodgers"
-  ],
-  "deliverables": [
-    "reappraisal_recommendation.docx",
-    "ratio_study_2026_roll.xlsx"
-  ],
-  "opening_move": "question-first",
-  "question_form": "whether",
-  "driver": "The decisive quantity is the level and spread over a whole population of a ratio of each unit's recorded value to its true value, where the true value is observed only for units an event sampled and the keeper of the record reset the sampled units' recorded values from those very observations, so the sample's ratios sit tighter and nearer the target than the population's; only each sampled unit's recorded value from before the event, carried forward at the change the unsampled units received, mixed with the reset units at their share of the population, measures it.",
-  "driver_concrete": "The 2026 roll's median assessment ratio and COD over every single-family parcel, evidenced by the 2025 arm's-length sales: the assessor reviewed each sold parcel and moved its 2026 value toward its price while trending every other parcel by its neighbourhood's factor, so each sold parcel's 2025 value times its neighbourhood's factor (the unsold parcels' median change), over its indexed price, stands for the 93.3 per cent of the roll that did not sell, the sold parcels' own ratios for the rest.",
-  "stump": "A competent analyst runs the State's ratio study on the 2025 arm's-length sales against the certified 2026 values (median 0.95, COD 8) and files that the roll meets the standard and the county lets its vendor's reappraisal offer lapse; the sold parcels' values were reset toward their prices (up 14.9 per cent at the median against 3.4 for the unsold parcels), so only their 2025 values carried forward by the neighbourhood factors, mixed with the reset parcels at their share of the roll, show it failing both tests (median 0.87, COD 18).",
-  "mechanism_source": "design_note",
-  "differentiation": {
-    "task104": "task104 replays a self-adapting scorer whose flags withheld observations from its own reference, so its log describes only the setting it ran at; here no setting is replayed: the roll's values for the sold parcels were reset from the very prices that measure them, and the roll's accuracy is estimated out of sample from those parcels' values before the review.",
-    "task134": "task134 v1 estimates an event probability under competing exits and follow-up cut short; nothing here is a time to an event: the quantity is the level and dispersion of a ratio distribution, and the sample's defect is that its units' recorded values were reset from the measurement, not that they are followed short.",
-    "task177": "task177 v1 separates imposed from chosen experiences in a conversion rate learned from the record; nothing here converts: the sold parcels' ratios are the in-sample accuracy of a valuation the sale itself reset, and the remedy is each parcel's prior value carried forward, not a separate rate.",
-    "task463": "task463 builds a price index's change over a span by avoiding chained weights through sale periods; no index is built here: the county index is filed and only carries prices to the assessment date, and the decisive move is which values stand for the parcels that did not sell.",
-    "task480": "task480 v1 reads an instrument's under-recording from units of the same kind whose instrument was not replaced; here the instrument (the roll) is not replaced but refitted to the sampled units, and its error over the whole population comes from the sampled units' own values before the refit.",
-    "task501": "task501 sets whether a chain process can sustain itself by a mixing matrix's dominant eigenvalue; nothing here is a matrix or a threshold of spread: the median and dispersion of a ratio distribution are estimated for a roll whose sample was reset.",
-    "task70": "task70 v2 constructs a per-record date with a class-conditional cut that a filed clause bars; nothing here is a date or a filed bar: the sold parcels' values were reset by the assessor's review, which no clause states and no field marks.",
-    "task275": "task275 raises an observer scheme's discards where being observed changes the fishing itself, so the outcome moves and the unobserved trips are rebuilt from a catch rate the observation did not touch; here the outcome (each parcel's market value) is untouched by the sale and it is the measuring record that was refitted to the sampled units, so the population is measured from the record as it stood before the refit, carried forward, and mixed with the refitted units at their share."
-  },
-  "lineage": [
-    {
-      "domain": "education-learning-sciences",
-      "subdomain": "psychometrics",
-      "objective": "descriptive-distribution",
-      "shape": "04",
-      "decision_type": "dial_setting",
-      "answer_unit": "count",
-      "gap": [
-        "time",
-        "objective"
-      ],
-      "pattern": [
-        "none"
-      ],
-      "generators": [
-        "G4",
-        "G13",
-        "G17"
-      ],
-      "gate_g": "decomposition_attribution",
-      "stump_strategy": "decomposition_attribution",
-      "role_family": "programme_officer",
-      "forum": "regulator_or_inspector",
-      "forcing_event": "statutory_or_regulatory_filing",
-      "org_family": "university_or_school",
-      "driver": "The decisive quantity is how consistently a total over several scored parts will rank units once each part is scored by one scorer drawn from a pool and different units meet different scorers, estimated from a round in which the same two scorers scored every unit on each part; in that round a scorer's own level was shared by every unit and so never moved a ranking, so the agreement between parts, each scorer's marks taken alone and a decomposition that keeps the scorers shared all leave it out, while under the new arrangement it adds to every unit's error, so the number of parts has to come from the round's sources of variance recombined with the scorers' levels counted as error.",
-      "architecture": "v1 (Callowfield University's 2027 final-year OSCE, single-examined in three parallel circuits once Fennabeg Clinical School's cohort joins: the number of stations its total marks need for the school's reliability standard of 0.80, projected from the 2026 sitting's dual-examined marks with each station's examiner stringency counted as error)",
-      "drawn": "2026-10-19",
-      "stump": "A competent solver computes the 2026 sitting's reliability on single-examiner marks (alpha across the stations, or a generalizability study with the examiners crossed with the candidates) and steps it to more stations by Spearman-Brown, filing the current 12 stations as enough; the step that lands it there is reading each examiner's leniency as 2026 showed it, a shift every candidate at that station shared, when in 2027's parallel circuits different candidates meet different examiners and the leniency spread between examiners becomes error in every candidate's total.",
-      "fate": "spent 2026-10-19 at stage 4 (Gate F): the cold reader split the 2026 marks into candidates by examiners within stations and counted the stringency as error for one examiner a station, committing the golden call and every ask figure; the judge DETERMINISTIC with Gates G and H passing"
-    },
-    {
-      "domain": "education-learning-sciences",
-      "subdomain": "psychometrics",
-      "objective": "descriptive-distribution",
-      "shape": "04",
-      "decision_type": "dial_setting",
-      "answer_unit": "count",
-      "gap": [
-        "objective"
-      ],
-      "pattern": [
-        "none"
-      ],
-      "generators": [
-        "G2",
-        "G16",
-        "G17"
-      ],
-      "gate_g": "method_or_model_selection",
-      "stump_strategy": "decomposition_attribution",
-      "role_family": "programme_officer",
-      "forum": "regulator_or_inspector",
-      "forcing_event": "statutory_or_regulatory_filing",
-      "org_family": "university_or_school",
-      "driver": "The decisive quantity is how consistently a total over parts will rank units when the specification fixes how many parts come from each content area every time, so each unit's strength in an area recurs in every form and belongs to the true score; estimated from a round whose parts were drawn the same way, the analysis that treats the parts as drawn from one undivided pool counts that strength as error and overstates the number of parts a standard needs.",
-      "architecture": "v2 (Callowfield University's 2027 final OSCE, single-examined in three parallel circuits on a blueprint that draws the same number of stations from each of four domains every year: the number of stations for the school's 0.80 reliability standard, from the 2026 marks' variance components with each candidate's domain-specific strength counted as true score under the fixed blueprint and the examiner's stringency as error)",
-      "drawn": "2026-10-19",
-      "stump": "A competent solver fits the 2026 marks' variance components with the stations and examiners random from one bank, counts the examiner's stringency as error for one examiner a station and files 16 stations; the step that lands it there is counting the candidate-by-domain variance as error, when the blueprint draws the same number of stations from each domain every year, so a candidate's domain strengths recur in every form and belong to what the total mark measures.",
-      "fate": "spent 2026-10-19 at stage 4 round 3 (Gate F): of six scored readers five filed 16 stations by the pooled decision study and the sixth stratified the 2026 marks by the blueprint's domains under policy 4.2 and landed the call (13) and every reliability; the judge's pass 3 found Ask B's namesake device unfair, repaired before round 3"
-    },
-    {
-      "answer_unit": "set_of_items",
-      "decision_type": "ranked_slate_under_cap",
-      "domain": "urban-regional-science",
-      "driver": "The decisive quantity is the expected excess wait of units arriving at random at a point served by interleaved streams of departures, where units bound for some destinations can take any stream and units bound for others only one, so each unit's wait is worked over the departures serving its own destination, read from a second file at the unit's grain; the measure over all departures overstates the units tied to one stream wherever the streams bunch with each other, and the measure over the stream each unit happened to take understates the units that could take any.",
-      "forcing_event": "vote_or_meeting",
-      "forum": "committee_or_panel",
-      "gap": [
-        "population"
-      ],
-      "gate_g": "method_or_model_selection",
-      "generators": [
-        "G2",
-        "G16"
-      ],
-      "objective": "descriptive-distribution",
-      "org_family": "local_government",
-      "pattern": [
-        "none"
-      ],
-      "role_family": "capacity_planner",
-      "shape": "01",
-      "stump": "A competent solver works each route's excess wait from all of its departures at the corridor timing points, weights it by corridor boardings and gives the teams to routes 3, 7, 14 and 31 (or, splitting by the branch of the bus each rider boarded, drops route 7 for route 9); the step that lands it there is taking the route, or the boarded bus, as each rider's service when a rider bound for a branch can take only that branch's buses and one bound for the corridor either.",
-      "stump_strategy": "grain_or_unit",
-      "subdomain": "network-analysis",
-      "architecture": "v3 (Pellbrook Metro's 2027 headway management programme: which four of the eight frequent bus routes get the operator's supervisor teams, ranked on the excess wait per weekday-peak boarding on each route's frequent corridor in the August census fortnight, each rider's wait measured against the buses that serve the stop they tag off at)",
-      "drawn": "2026-10-19",
-      "fate": "spent 2026-10-19 at stage 4 on the judge's SEND_BACK: the departures that end a rider's wait are the outcome's definition, and the industry's route-level excess wait is a licensed literal reading of a standard that says 'the departures', so filing the set is rule application; the two scored readers missed the call"
-    }
-  ],
-  "architecture_spent": true,
-  "notes": "World re-drawn from the seed DA19 at the draw (2026-10-19). Re-rooted the same day after v1 was spent at stage 4 on Gate F; the OSCE world and its operating files are kept, the decisive step moved from the examining arrangement (the reader's own route) to the blueprint's fixed domains. Architecture 2 spent at stage 4 on 2026-10-19: reader 6 of six stratified the decision study by the blueprint domains and landed the call. | v3 drawn 2026-10-19 as the number's last architecture: the shape, forum, forcing event, organisation, role and strategy redrawn against the window (task249, task468, task268); shape 10 (a scorecard against a threshold) was the first draw and is banned by task249, so the programme's cap of four routes makes it a ranked slate under a cap, which is how the programme is funded. | Redrawn at stage 3 on 2026-10-19 against task177 (registered 07:01, reaching this checkout only with the DRAWN pull): forum, forcing event and organisation family. The network is Pellbrook City Council's (Australian councils do run bus networks), so local_government is the honest organisation; the council's Public Transport Committee approves the programme's routes (committee_or_panel) at its November meeting (vote_or_meeting), and the operator's contract variation follows the approval. Architecture 3 spent 2026-10-19 at stage 4 on the judge's first pass (NOT_DETERMINISTIC, SEND_BACK): the standard's 'the departures' read as a route's departures at the timing point files the default path's 7, 14, 31 and 40, and which departures end a rider's wait is the outcome's definition (a WHAT), so filing it is rule application; both scored readers missed the call and landed every pilot figure. task269 retired; architecture_spent set so the card holds no axis ban. | v4 drawn 2026-10-25 at the author's direction to rebuild every reopened number in a fresh world: General Statistics & Data Science, a ratio study's sales reset by the assessor's review; probed before the draw on a prototype pack (one isolated call-only reader filed 'meets', 0.946 and 8.7). | v4 forcing event redrawn 2026-10-25 at stage 3 from budget_or_appropriation to purchase_order_or_contract after task485 went spent and task301 v2 (budget_or_appropriation) entered the window: the vendor's offer lapses on 30 October 2026, before the Division's study arrives by 30 November. | ban.strategy overridden by the author in session on 2026-10-25 (AskUserQuestion answer 'Override, ship if stage 4 passes'): population_selection repeats task301 v2, which entered the window when task485 went spent at its PAUSED commit (20:17Z), eleven minutes before this card was filed (20:28Z) against a local copy that still held task485 live. The honest label is population_selection (the 2025 sales no longer sample the roll), so the card keeps it, and the build ships only if both stage 4 readers miss the call and the judge approves. | Architecture 4 spent 2026-10-25 at stage 4 round 2: both scored readers landed the call once rule 2.1 filed the population (\"sold or not\"), which the round-1 judge had required; the stump lived in the population and is spent. The number re-roots to architecture 5 in a fresh world.",
-  "registered": "2026-10-25T22:02:48Z"
+  {
+   "answer_unit": "named_option",
+   "architecture": "v4 (Tillford County's single-family reappraisal offer: whether the Board of Commissioners accepts its appraisal vendor's offer of a county-wide single-family reappraisal before it lapses on 30 October 2026, read on the State Tax Commission's ratio study standard for the certified 2026 roll, whose assessor reviewed every parcel sold in 2025 and moved its value toward its price while every other parcel was trended by its neighbourhood's factor)",
+   "decision_type": "go_hold_or_stop",
+   "domain": "general-statistics-data-science",
+   "drawn": "2026-10-25",
+   "driver": "The decisive quantity is the level and spread over a whole population of a ratio of each unit's recorded value to its true value, where the true value is observed only for units an event sampled and the keeper of the record reset the sampled units' recorded values from those very observations, so the sample's ratios sit tighter and nearer the target than the population's; only each sampled unit's recorded value from before the event, carried forward at the change the unsampled units received, mixed with the reset units at their share of the population, measures it.",
+   "forcing_event": "purchase_order_or_contract",
+   "forum": "council_or_assembly",
+   "gap": [
+    "population"
+   ],
+   "gate_g": "method_or_model_selection",
+   "generators": [
+    "G16",
+    "G17"
+   ],
+   "objective": "descriptive-distribution",
+   "org_family": "local_government",
+   "pattern": [
+    "none"
+   ],
+   "role_family": "policy_adviser",
+   "shape": "other",
+   "stump": "A competent analyst runs the State's ratio study on the 2025 arm's-length sales against the certified 2026 values (median 0.95, COD 8) and files that the roll meets the standard and the county lets its vendor's reappraisal offer lapse; the sold parcels' values were reset toward their prices (up 14.9 per cent at the median against 3.4 for the unsold parcels), so only their 2025 values carried forward by the neighbourhood factors, mixed with the reset parcels at their share of the roll, show it failing both tests (median 0.87, COD 18).",
+   "stump_strategy": "population_selection",
+   "subdomain": "missing-data-censoring-measurement-error",
+   "fate": "spent 2026-10-25 at stage 4 round 2 (Gate F): with rule 18-7 2.1 reading every parcel of the class on the roll, both round-1 readers ran the sales' own study and the judge read it as the literal estimand; filed as 'sold or not', the population sent both round-2 readers to the parcels the sales miss (0.87 and 18, the call). A population the estimand must name cannot also be the step."
+  }
+ ],
+ "architecture_spent": false,
+ "notes": "World re-drawn from the seed DA19 at the draw (2026-10-19). Re-rooted the same day after v1 was spent at stage 4 on Gate F; the OSCE world and its operating files are kept, the decisive step moved from the examining arrangement (the reader's own route) to the blueprint's fixed domains. Architecture 2 spent at stage 4 on 2026-10-19: reader 6 of six stratified the decision study by the blueprint domains and landed the call. | v3 drawn 2026-10-19 as the number's last architecture: the shape, forum, forcing event, organisation, role and strategy redrawn against the window (task249, task468, task268); shape 10 (a scorecard against a threshold) was the first draw and is banned by task249, so the programme's cap of four routes makes it a ranked slate under a cap, which is how the programme is funded. | Redrawn at stage 3 on 2026-10-19 against task177 (registered 07:01, reaching this checkout only with the DRAWN pull): forum, forcing event and organisation family. The network is Pellbrook City Council's (Australian councils do run bus networks), so local_government is the honest organisation; the council's Public Transport Committee approves the programme's routes (committee_or_panel) at its November meeting (vote_or_meeting), and the operator's contract variation follows the approval. Architecture 3 spent 2026-10-19 at stage 4 on the judge's first pass (NOT_DETERMINISTIC, SEND_BACK): the standard's 'the departures' read as a route's departures at the timing point files the default path's 7, 14, 31 and 40, and which departures end a rider's wait is the outcome's definition (a WHAT), so filing it is rule application; both scored readers missed the call and landed every pilot figure. task269 retired; architecture_spent set so the card holds no axis ban. | v4 drawn 2026-10-25 at the author's direction to rebuild every reopened number in a fresh world: General Statistics & Data Science, a ratio study's sales reset by the assessor's review; probed before the draw on a prototype pack (one isolated call-only reader filed 'meets', 0.946 and 8.7). | v4 forcing event redrawn 2026-10-25 at stage 3 from budget_or_appropriation to purchase_order_or_contract after task485 went spent and task301 v2 (budget_or_appropriation) entered the window: the vendor's offer lapses on 30 October 2026, before the Division's study arrives by 30 November. | ban.strategy overridden by the author in session on 2026-10-25 (AskUserQuestion answer 'Override, ship if stage 4 passes'): population_selection repeats task301 v2, which entered the window when task485 went spent at its PAUSED commit (20:17Z), eleven minutes before this card was filed (20:28Z) against a local copy that still held task485 live. The honest label is population_selection (the 2025 sales no longer sample the roll), so the card keeps it, and the build ships only if both stage 4 readers miss the call and the judge approves. | Architecture 4 spent 2026-10-25 at stage 4 round 2: both scored readers landed the call once rule 2.1 filed the population (\"sold or not\"), which the round-1 judge had required; the stump lived in the population and is spent. The number re-roots to architecture 5 in a fresh world. | v5 drawn 2026-10-26 in a fresh world (hand hygiene coaching, a hospital foundation); v4 moved into lineage, spent at stage 4 round 2. Prototype probe p269g before the card: the call-only Sonnet reader weighted each ward's AM and PM audit compliance by care hours and filed ESSU, 9A, PCU and 4A against the prototype's AMU, ESSU, 4A and 7A. | Registered 2026-10-26 under the author's override (--force) on ban.strategy only: composition_mix is the honest label and repeats task166 (v2, a credit union's home equity payoffs), which shares no world, domain, driver or organ with this build; the author's direction of 2026-10-26 gives complete freedom to take every reopened number to ship, and the same override was given for this number's architecture 4. Shape (01 to 10, the grant funds every ward under the benchmark) and forcing event (launch_or_rollout to budget_or_appropriation, the Foundation's 2027 grants budget) were redrawn against task303 and task166 because the grant's own terms carry them honestly.",
+ "registered": "2026-10-26T01:35:57Z"
 }
