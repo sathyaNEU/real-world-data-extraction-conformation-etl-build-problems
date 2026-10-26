@@ -118,22 +118,30 @@ easy, the stump was a fork; redesign the decisive step (`stumping`), never keep 
 
 **Run the fork-is-the-stump test before building the repair, not after.** The test is cheap on paper and the repair
 is not. Its signature: the portal's finding is an unpinned population, and the stump sentence says the easy route
-omitted that same population. Then the only closure that makes the literal reading the golden is a pin that tells the
-reader the one question they were not asking, and no wording saves it, because the pin and the stump are one object.
-Measured on one build: the repair closed three forks without filing any method, kept every graded figure frozen, and
-passed every free gate and 144 projection variants; the next isolated reader then reproduced the call cell for cell
-from the pack alone and said it had followed a rule a shipped document states and read dates correctly, not made an
-analytical choice. It also quoted the added paragraph as the sentence that told it the decisive step, and named the
-document carrying it as a file existing only to help the analyst. Omitting the pinned population reproduced the old
-default path exactly. An architecture with no position that is both deterministic and stumped is spent: send it to
-stage 1 before a generator is touched.
+omitted that same population. The pin then tells the reader the one question they were not asking, and no wording
+avoids it. Measured on one build: closing three forks without filing any method left every graded figure frozen and
+every free gate green, and the next cold reader reproduced the committed call cell for cell. The pin does not
+necessarily make the decisive step unanalytical, but it removes whatever difficulty consisted of nobody asking, so
+decide before building whether anything else carries the task.
 
-**A large lever that is a field reading means the step was never analytical.** Ask the repair's own measurements which
-quantities move the answer most, and name what each one is. On the same build the two largest were which of two date
-fields a warranty term runs from and whether logged replacements count, moving the committed total from the golden to
-roughly half and to roughly one and a half times it; the one analytical element, extrapolating a cohort, a cold reader
-supplied with its own assumption and still landed. When the biggest levers are readings and rules, closing the forks
-makes the build deterministic and leaves it unstumped, which is rule 3 whatever the determinism verdict.
+**A pin can leave the decisive step analytical and still spend its difficulty.** The two failures are different and
+the repair reaches them in order. Rule 3 asks what KIND of step decides; Gate F asks whether anyone is stopped by it.
+On the same build the licensed judge ran 40 variants and measured that every easy route lands materially wrong (the
+unconditional reading wrong on three platforms, stopping at the snapshot wrong on four, two field misreadings at
+roughly half and one and a half times the golden), so the decisive step was an estimand choice and rule 3 passed.
+It still failed, because the remaining step was a reflex: a competent solver conditions a survival curve on survival
+to the as-of date without deliberating, and the cold reader's reflex reached the golden while the filed record
+supplied every other convention. **A reflex reaching the golden spends the stump** (`stumping` Part 6), whatever the
+step's kind. When a pin closes the last thing a reader had to ask, list the reflexes for what remains and check that
+each lands wrong.
+
+**Do not take a cold reader's account of its own route as evidence about the task.** Ask what it scored, not what it
+thinks it did. On the same build the reader answered that it had followed filed rules and read dates rather than made
+an analytical choice, while the formula in its own write-up carried the survival-conditioning denominator it never
+named as a choice, and it missed ten of fifteen ask figures, which is not what a fully specified procedure predicts.
+Its score is evidence; its introspection is not. Where a reader's self-report and a judge's measurement of the
+alternatives disagree, the measurement decides what kind of step it is, and the reader's landing of the call decides
+whether it stops anyone.
 
 **What is left open after the WHAT is filed must be a method, not a knob.** Filing the five parts is
 mandatory, so a design whose decisive step is one of them has no stump once it is filed, and a design
