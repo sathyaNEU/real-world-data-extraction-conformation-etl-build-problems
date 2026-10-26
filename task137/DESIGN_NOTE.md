@@ -1,124 +1,87 @@
 # task137 design note
 
-Architecture 2, drawn 2026-10-25 (wave 2 slot, Forecasting lane, sathya8571), a re-root after portal round 1.
-Architecture 1 (Kaimai Building Society's maturity calls booked in agent-hours with an outsourced contact centre, seed
-FC08) was landed on its golden by a portal response: reading each deposit's retention-offer share by the class of the
-money is a reflex for the portal's models. Its identity is in the card's lineage and its dead ends below. Nothing of the
-seed's world or of architecture 1 is kept, and no banking: this draw is a care home group's emergency admissions for
-adverse drug events in the year after a group-wide structured medication review.
+Architecture 2, drawn 2026-10-25 (wave 2 slot, Forecasting lane, sathya8571), a re-root after portal round 1, decisive step
+re-registered 2026-10-26. Architecture 1 (Kaimai Building Society's maturity calls booked in agent-hours, seed FC08) was
+landed on its golden by a portal response; its identity is in the card's lineage and its dead ends below. Nothing of the
+seed's world is kept, and no banking: this draw is a care home group's 2027 baseline of emergency admissions for adverse
+drug events. The draw's first two decisive steps (the interacting pairs a resident holds; the restarts of the medicines the
+autumn 2026 programme stopped) died before any pack was cut, the second to two isolated Opus probes (`## Tried and
+rejected`); both stay as rungs every careful solver climbs.
 
 ## Draw
 
-1. Card: `.claude/skills/fingerprint/cards/task137.json`, architecture v2, registered 2026-10-25T22:29:02Z, v1's two
-   rounds in its lineage. `guard.py check` on the registered card: WARN, `three_rules.strategy_risk` only (answered in
-   `## Three rules`, `Not semantics:` and `Analyst test:`); the structural tests are NOTE, differentiated on the card
-   against task142, task148 (v1) and task173 (v2).
+1. Card: `.claude/skills/fingerprint/cards/task137.json`, architecture v2, re-registered 2026-10-26 (`guard.py check` WARN,
+   `ban.source` only: every pack on file is constructed; `test.same_puzzle_older` and `test.same_driver_older` NOTE,
+   differentiated against task133, task196, task180 and task305).
 2. Pairing: Healthcare Delivery & Health Economics (client domain) / `utilization-access-demand-forecasting` /
-   Forecasting & Predictive Modeling. The deciding quantity is a care population's 2027 emergency admissions for adverse
-   drug events, a utilisation forecast whose exposure is pharmacoepidemiology's own: the pairs of interacting medicines
-   each resident holds at once.
-3. Niche: Calderbrook Care, a care home group in the north of England (34 nursing and residential homes, about 2,400
-   beds, six of them acquired in 2025 with their own pharmacy supplier and eMAR system). Between September and December
-   2026 a clinical pharmacist team reviewed every resident's medicines (structured medication reviews); each medicine's
-   outcome (continued, stopped, reduced, switched) is recorded and dated. The reviews worked from the high-risk
-   combinations clinicians screen for in older people, so the medicines they stopped were stopped mostly in the residents
-   who held them with an interacting partner.
-4. Call and shape: how many emergency admissions for adverse drug events Calderbrook's residents will have in calendar
-   2027 (residents during 2027, including the residents the homes will admit in 2027), a count (`quantity_figure`,
-   question form how-many), the rounding fixed at stage 2 from the family spread. Shape `02` (forecast across periods):
-   the call with its quarterly path and an ask layer counted in `## Ask sheet` at stage 2.
-5. Mechanism keys: gap population first (the record's unit is the dispensed medicine line; the harm's unit is the
-   interacting pair a resident holds), then time; pattern none, generators G2 (the pair within a regimen against the
-   medicine) then G6 (the reviews move the pair mix far from every closed quarter's); Gate G `forecasting`; strategy
-   `grain_or_unit`.
-6. Layer 2: `estimation_fit`, pattern `own:adverse-events-from-interacting-pairs-in-a-regimen`. The utilisation task
-   type's client cards (capped demand, age-specific rates, floating catchments, overdispersed quantiles) leave the
-   exposure unit untouched; the field's method for drug harm is exposure to interacting combinations, not to medicines.
-7. Furniture: forum `executive_team` (Calderbrook's executive team signs the 2027 contract); forcing event
-   `purchase_order_or_contract` (the 2027 enhanced health in care homes contract with the integrated care board, whose
-   gain-share pays against an admissions baseline the group proposes for 2027); organisation family
-   `hospital_or_health_provider` (a nursing and residential care provider); role family `operations_director` (the
-   director of clinical services, who prepares the forecast); context artifact `register` (the residents' medicines
-   register: the review outcomes by resident and medicine); calibration `none`.
-8. Spine: `dispensing_lines_2023_2026.csv`, one dispensed medicine line for one resident in one 28-day cycle, from the
-   two pharmacy suppliers' feeds (dm+d product codes on Fellside Pharmacy Services' feed, BNF sections on the acquired
-   homes' supplier's). The forcing file is the review outcomes register. Other files at stage 3: admissions extracts
-   from the two acute trusts (ICD-10 with the adverse-event Y-codes in secondary positions), the residents' register
-   (admissions to and discharges from the homes, deaths), the acquired homes' eMAR export, distractors.
-9. Deliverables: `ade_admissions_forecast_2027.xlsx` and `review_impact_note.docx`, fixed at stage 2 (the set is checked
-   against the last three builds then; `guard.py check` raised no repeat on it).
-10. People, drawn with `guard.py names --geo "United Kingdom" --seed 137`: Katherine Storey, Hugh Metcalfe, Charlene
-    Dale (roles at stage 3; no persona in the prompt). Rachel and Patricia were dropped on `people.first`.
+   Forecasting & Predictive Modeling. The deciding quantity is a care provider's 2027 emergency admissions for adverse
+   drug events over every bed it provides, a utilisation forecast whose denominator is two populations.
+3. Niche: Calderbrook Care, a care home group in the north of England (34 homes, about 2,400 long-term beds, six homes
+   joined from Ferncliffe Lodge Homes in April 2025). Its 2027 gain-share agreement with Wethermoor Integrated Care Board
+   pays against a baseline Calderbrook proposes: the emergency admissions for an adverse drug event of every person
+   accommodated in its beds during 2027. Since April 2025 the board has also bought discharge-to-assess step-down beds in
+   six of the homes (40 beds), booked through the board's placement system; the 2027 contract buys 180, across fifteen
+   homes, from 1 January 2027.
+4. Call and shape: the 2027 count (`quantity_figure`, question form how-many), rounding fixed at stage 2 from the family
+   spread; shape `02` (the call with its path by quarter and an ask layer counted in `## Ask sheet`).
+5. Mechanism keys: gap population (the residents register, and the returns drawn on it, are not everyone the baseline
+   counts); pattern none, generators G12 (the register's silence about the guests read as nobody there), G3 (the register
+   records residents, the beds accommodate guests too), G6 (the forward year's beds hold four and a half times as many
+   guests); Gate G `forecasting`; strategy `population_selection`.
+6. Layer 2: `field_method`, pattern `own:utilisation-denominator-covers-the-step-down-beds-off-the-register`.
+7. Furniture: forum `executive_team` (the executive team signs the agreement); forcing event `purchase_order_or_contract`
+   (the 2027 gain-share agreement and step-down contract); organisation family `hospital_or_health_provider`; role family
+   `operations_director` (the director of clinical services prepares the baseline); context artifact `capacity_report`
+   (the homes' 2027 bed plan, kept for staffing and registration); calibration `realised_outcome_roster` (the board's
+   placement returns since April 2025: each step-down placement's dates and how it ended).
+8. Spine: Fellside Pharmacy Services' monthly dispensing for the long-term residents, January 2023 to December 2026.
+   The forcing files are the board's placement returns and the bed plan; other files at stage 3.
+9. Deliverables: `ade_admissions_forecast_2027.xlsx` and `review_impact_note.docx` (checked against the last three builds
+   at stage 2).
+10. People, drawn with `guard.py names --geo "United Kingdom" --seed 137`: Katherine Storey, Hugh Metcalfe, Charlene Dale,
+    Richard Davies, Emma Roberts.
 
-**Data-native sentence.** In the record an adverse drug event admission is almost never the work of one medicine: a
-gastrointestinal bleed comes from an anticoagulant taken with an NSAID or an SSRI, an acute kidney injury from the ACE
-inhibitor, diuretic and NSAID triple, a fall or respiratory depression from an opioid with a gabapentinoid or a
-benzodiazepine, hyperkalaemia from trimethoprim with an ACE inhibitor; a resident holding either medicine alone carries
-little of that risk, and the 2026 reviews removed the paired medicine from the residents who held the pairs.
+**Data-native sentence.** A discharge-to-assess guest arrives from a hospital ward for a few weeks of assessment before a
+decision on long-term care, in the first weeks after a stay when a changed regimen is most likely to bring them back, and
+the board books the bed on its own placement system: the guest is never on Calderbrook's residents register, so the
+trusts' returns, drawn on the register's NHS numbers, never carry their admissions, and the record the residents' forecast
+is built and checked on is complete without them.
 
 ## Three rules
 
-Task type: utilization-access-demand-forecasting (healthcare delivery), which serves Forecasting in the taxonomy: a
-care population's emergency admissions in a coming year.
-Domain test: the expected count of adverse drug event admissions read from the interacting combinations each resident
-holds at once, pharmacoepidemiology's exposure for drug harm (the combinations prescribing screens in older people are
-built on), estimated as each combination's excess admission risk on the 2023 to 2026 record and summed over the 2027
-residents' post-review regimens.
-Swap: "admissions follow the interacting pairs of medicines a resident still holds" with machines for medicines and
-breakdowns for admissions reads as nothing: there is no interaction table, and no reason a breakdown should need two
-machines in one owner.
-Layer 1: two pharmacy suppliers' feeds coded differently (dm+d against BNF sections), an acquired group of homes on its
-own eMAR with its own resident numbers, admissions from two trusts with the adverse-event codes in secondary diagnosis
-positions, as-required medicines dispensed but not taken daily, hospital stays and deaths interrupting regimens, NHS
-numbers on one feed only: each is what these systems produce, none is placed to be caught.
-Layer 2: estimation that fits the data (`estimation_fit`): the risk model's unit is the combination, so a per-medicine
-model that back-tests cleanly on every closed quarter misprices the one forward period whose combinations the reviews
-broke apart.
-Decisive step: reading each resident's 2027 risk off the interacting pairs and triples it still holds after the review,
-with each combination's excess risk estimated on the residents who held it, rather than off each medicine's average
-effect.
-Not semantics: reading every field, code and outcome correctly (every admission's adverse-event code, every review
-outcome, every regimen) still leaves the per-medicine model on the wrong answer, because nothing in any field says the
-risk sits in combinations; the record has to be modelled that way.
-Not rule application: no filed rule or procedure sets how admissions are forecast; the reviews' screening criteria say
-which combinations to stop, not how admissions follow. Measured on the prototype (`ddi1.py`, three seeds, 2,400
-residents a quarter for 16 closed quarters, the review plan replayed on four forward quarters): the enumerated family
-(per-medicine logistic, the historical rate, the pair model) spreads from +9.5 to +27.5 per cent around the truth; the
-standing family (models whose combination terms the record supports) sits at -3.3 to +0.9 per cent; the ruling-out is
-quiet, since the per-medicine model back-tests within noise on every closed quarter (the record's combinations
-co-occurred at steady rates). The spread and the rounding are re-measured at stage 2 on the tuned generator.
-Analyst test: a strong analyst who links the two feeds to residents, codes every admission correctly and fits each
-medicine's own effect on the 2023 to 2026 admissions, then replays it on the post-review regimens, files a 2027 count
-about a tenth above the golden (+9.5 to +13.1 per cent on the prototype), because each stopped NSAID, gabapentinoid and
-benzodiazepine carries only its average effect across all its holders rather than the pair harm it carried in the
-residents who lost it.
-Estimand: emergency admissions with an adverse-drug-event code among Calderbrook's residents in calendar 2027, residents
-being everyone living in its 34 homes at any time in 2027 (including residents not yet admitted), against the record of
-2023 to 2026; filed in the contract schedule the prompt names at stage 2.
-No decoy: nothing is planted to be caught; no memo, draft, briefing or stakeholder figure carries the per-medicine
-answer.
-No certified replay: no certified or published figure blesses either model; the method is open and the record decides
-it.
-Lesson: drug harm in a population is a property of the combinations its members hold, so a medicines programme that
-targets combinations moves admissions further than its count of stopped medicines says; no build on file reads an
-outcome off pairs of exposures held inside one member.
+Task type: utilization-access-demand-forecasting (healthcare delivery), which serves Forecasting in the taxonomy: a care provider's emergency admissions in a coming year over every bed it provides.
+Domain test: the deciding quantity is the 2027 emergency admissions for adverse drug events over every bed-day Calderbrook provides, a utilisation forecast whose denominator is two populations with different exposure: long-term residents, whose risk follows the medicines they hold, and discharge-to-assess guests in their first weeks out of hospital, whose readmission risk the step-down placements' own outcomes measure; a hotel's guests have no discharge-to-assess pathway, no first weeks after a hospital stay and no medicines the risk follows.
+Swap: "the baseline counts the step-down guests the register never holds" with a hotel group's guests and its loyalty members reads as nothing: there is no placement booked by a commissioner, no assessment after a hospital stay, and no adverse drug event whose rate a readmission return measures.
+Layer 1: two pharmacy suppliers' feeds coded differently, the acquired homes' eMAR with its own resident numbers, the trusts' returns in two layouts with the adverse-effect codes in secondary positions, a coding backlog during one trust's system change, residents' NHS numbers in mixed formats, the board's placement return in its own layout; each is what these systems produce, none carries the call.
+Layer 2: field_method: the utilisation forecast's denominator is every occupied bed in 2027, so the residents' model (medicines, the autumn 2026 programme and its restarts) is completed by the step-down guests, sized from the bed plan and priced per occupied bed-month from the board's own placement returns.
+Decisive step: carrying the step-down guests as the second population of the baseline, their 2027 bed-months from the bed plan's 180 beds at the placements' measured occupancy, their adverse-drug-event readmissions per bed-month from the placement returns since April 2025, rather than taking the residents register as everyone the baseline counts.
+Not semantics: every field reads as what it is; the register is complete for residents, the returns for the register's patients and the placement return for the board's placements; no field says the guests are missing from the residents' forecast, and an analyst who reads every field correctly still forecasts the residents alone.
+Not rule application: the agreement files the WHAT (every person accommodated in Calderbrook's beds during 2027, from arrival to departure, emergency admissions with a Y40 to Y59 code, calendar 2027, the rounding) and nothing about how the count is built; executing it needs the guests modelled, which no rule describes.
+Analyst test: a strong analyst who links every file to the residents, fits the residents' admissions on their medicines, frailty and care type, carries the autumn reviews and the medicines' restarts, and back-tests on the 2024 and 2025 year-start cohorts files the residents' 2027 admissions, about a fifth under the golden (measured on the prototype at stage 2).
+Estimand: emergency admissions for an adverse drug event (a Y40 to Y59 code in any diagnosis position) beginning in calendar 2027 of every person accommodated in one of Calderbrook's beds at any time in 2027, each counted while they are accommodated there; filed in the agreement's Schedule 2.
+No decoy: nothing is planted; no memo, draft or figure argues for a count; the placement return is the board's own monitoring of the contract.
+No certified replay: no certified figure is reproduced; the residents' history reconciles and the guests' are measured from their own returns.
+Lesson: a provider's utilisation baseline is only as complete as its population; a commissioner's short-stay beds inside the provider's homes hold people its own register never sees, and their own placement returns are what price them; no build on file prices a care population that lives off the provider's register.
 
 ## Default path
 
-The reflex: link the two feeds, build each resident's quarterly regimen, fit a logistic (or Poisson) model of an
-adverse-drug-event admission on each medicine class (with age, sex and home type), check it on the closed quarters (it
-fits every one), replay it on the post-review regimens and the expected 2027 intake. Ends on: a 2027 count about a tenth
-above the golden (prototype: +9.5, +12.3 and +13.1 per cent on three seeds; the unchanged historical rate +27 per cent).
-Rungs to measure at stage 2: the historical rate carried; the per-medicine model; the per-medicine model with the
-review's stopped counts only; the pair model; the pair model with the combinations discovered from the record against
-named from the screening list.
+1. Link Fellside's dispensing, the Ferncliffe eMAR and the reviews to the residents register; code each trust return's
+   admissions to an adverse drug event (Y40 to Y59 in any position) and link them to residents by NHS number.
+2. Fit the residents' monthly admission rate on their medicines and the interacting pairs, frailty, care type and time
+   since admission; carry the autumn 2026 programme's stops and the medicines' restarts month by month, the annual
+   reviews in 2027, exits and new residents (the probes' microsimulation).
+3. Back-test on the 2024 and 2025 year-start cohorts (both reconcile) and file the residents' 2027 total.
+
+Ends on: the long-term residents' 2027 admissions (figure measured on the prototype)
+Golden: the residents' admissions plus the step-down guests' (figure measured on the prototype)
 
 ## Stump sentence
 
-A competent solver fits each medicine's own effect on Calderbrook's 2023 to 2026 adverse-drug-event admissions,
-replays it on the regimens the autumn 2026 reviews left and files a 2027 count about a tenth too high; the step that
-lands it there is reading the harm per medicine rather than per interacting combination, so the medicines the reviews
-stopped carry their average effect instead of the combination harm they carried in the residents who lost them.
+A competent analyst models Calderbrook's long-term residents from the register, the dispensing and the trusts' returns,
+which reconcile month by month, and files the residents' 2027 admissions; the step that lands it there is taking the
+register as everyone the baseline counts, when the step-down guests in the board's discharge-to-assess beds live in the
+same homes, sit in no register and no return drawn on it, fill 180 beds from January 2027 against 40 before, and are
+readmitted for an adverse drug event at about five per cent a month.
 
 ## Tried and rejected
 
@@ -213,3 +176,39 @@ stopped carry their average effect instead of the combination harm they carried 
   5 to 14 per cent: the textbook fallback for an immature year is the golden, so dead.
 - Architecture 2 draw, warranty claims on a months-in-service clock a new retail channel delays (`war1.py`, two seeds):
   the shipment-clock default missed by only -2 to -5 per cent; dead on lever.
+
+- Interacting pairs as the decisive step (the registered card's, 2026-10-25, restarted thread): a strong enumerator's own
+  pick, so on the enumerable chain. On the generator's world a logistic with the canonical pairs wins out of sample
+  (log-likelihood -1,629.7 against -1,741.2 per medicine and -1,641.8 for every two-way pair, 2023 to mid-2025 fitted,
+  the next nine months scored), and replayed on the regimens the reviews left it files 191 admissions against the
+  golden's 343; the pairs stay as a rung any solver climbs, and the decisive step moves to the stopped medicines'
+  restarts.
+- The dead thread's restart world with the programme counting as each resident's annual review: the 2027 annual reviews
+  then all fall in October to December 2027, and leaving them out filed 9 per cent high, a fork between two readings of
+  the procedure; the programme is now additional to the annual review, which continues in its usual month, so an
+  implicit stop hazard over every month and explicit 2027 reviews agree within 1 per cent (345.4 against 343.0).
+- Start hazards scaled by frailty: the pooled restart clock then sat 3 to 6 per cent under the truth, so a frailty-
+  stratified estimator would have crossed a bin; the start and restart hazards are frailty-free and the record's clock
+  recovers the truth within 1 per cent.
+- Pair partners stopped only where the pair is held, with small main effects for NSAIDs and benzodiazepines: the per-
+  medicine model with a pooled start hazard landed within 1 per cent of the golden (two errors of opposite sign); the
+  criteria now stop NSAIDs and benzodiazepines in every regular user, their own effects carry most of their harm, and
+  that route sits at 329 (4 per cent under).
+
+- The restart clock as the decisive step (the stopped medicines restarted on the record's clock from each earlier
+  stop), probed 2026-10-26 on a six-file pack (golden 343.0, nearest 25 = 350; frozen 191 to 220, pooled Markov 295):
+  two isolated Opus call-only probes landed it, p137a at 350 (355.4) and p137b at 350 (361.9), each with a monthly
+  Poisson rate on the month's medicines and their combinations, frailty and care type, validated on October to December
+  2026, every medicine switched month by month with recent stoppers restarting faster and about three in ten stopped at
+  an annual review, a leaving hazard and a microsimulation, back-tested on the 2024 and 2025 year-start cohorts within 2
+  to 5 per cent. Any transition the record shows as a rate gets measured; dead. Their realism catches carried forward:
+  the programme stopped 93 per cent of the NSAIDs and benzodiazepines it reviewed against 31 per cent at annual reviews
+  under criteria the schedule called the same; no annual reviews after 26 October 2026; 24 admissions overlapping the
+  person's previous stay; discharge dates after the pull.
+- The blanket-programme restart curve (the programme's stops restarting like Ferncliffe's 2025 blanket programme rather
+  than like selective annual-review stops), prototyped 2026-10-26 before a probe: the pooled clock landed 9 to 17 per cent
+  under it and the per-medicine model with the pooled clock within one bin (two errors of opposite sign); set aside
+  unprobed for the coordinator's evidence from five probe deaths: every dead step put the decisive attribute on the frame's
+  own units, where a thorough modeller joins it and measures it, and the survivors (task305, task306) carry a body the
+  frame does not hold; re-registered on the step-down guests.
+

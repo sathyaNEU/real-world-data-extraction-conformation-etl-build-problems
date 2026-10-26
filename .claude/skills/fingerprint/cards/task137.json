@@ -1,11 +1,11 @@
 {
   "task": "task137",
   "architecture": "v2",
-  "drawn": "2026-10-25",
-  "slot_note": "Architecture 2 re-root of task137 (seed FC08 spent as a source); world, decision and quantity re-drawn in a non-banking cell.",
+  "drawn": "2026-10-26",
+  "slot_note": "wave 2 (new), re-rooted 2026-10-25 to architecture 2 in a new cell (healthcare utilisation forecasting, no banking); the decisive step re-registered 2026-10-26 after probes: the interacting pairs (an enumerator's out-of-sample pick) and the stopped medicines' restart clock (landed by two isolated Opus probes, 350 against 350) are rungs; the step is now the body of short-stay guests the baseline counts and the register does not hold",
   "domain": "healthcare-delivery-health-economics",
   "subdomain": "utilization-access-demand-forecasting",
-  "niche": "care-home residents' emergency admissions for adverse drug events in the year after a group-wide structured medication review",
+  "niche": "a care home group's 2027 baseline of emergency admissions for adverse drug events for its gain-share agreement with the integrated care board, counted over everyone accommodated in its beds during 2027, where the long-term residents' register, dispensing and the trusts' returns reconcile month by month while the board's discharge-to-assess step-down guests, booked through the board's placement system, rise from 40 beds to 180 in January 2027",
   "objective": "forecasting",
   "shape": "02",
   "decision_type": "quantity_figure",
@@ -13,28 +13,28 @@
   "answer": "",
   "answer_source": "",
   "gap": [
-    "population",
-    "time"
+    "population"
   ],
   "pattern": [
     "none"
   ],
   "generators": [
-    "G2",
+    "G12",
+    "G3",
     "G6"
   ],
   "gate_g": "forecasting",
-  "calibration_form": "none",
-  "stump_strategy": "grain_or_unit",
+  "calibration_form": "realised_outcome_roster",
+  "stump_strategy": "population_selection",
   "decisive_rule_filed": false,
   "official_decoy": false,
   "validated_decoy": false,
-  "context_artifact": "register",
+  "context_artifact": "capacity_report",
   "stump_class": "analytical",
-  "analyst_test": "A strong analyst who links the two pharmacies' dispensing to residents, codes each admission's adverse drug event correctly and fits each medicine's own effect on the 2023 to 2026 admissions, then replays it on the regimens the reviews leave for 2027, files a forecast about a tenth too high, because the record's risk sits in interacting pairs a resident holds at once and the reviews stopped the paired medicines in exactly the residents who held the pairs.",
-  "domain_test": "The deciding quantity is the expected count of emergency admissions for adverse drug events across a care population, read from the pairs of interacting medicines each resident holds at once (an anticoagulant with an NSAID, the ACE inhibitor, diuretic and NSAID triple, an opioid with a gabapentinoid or benzodiazepine, trimethoprim with an ACE inhibitor), which is pharmacoepidemiology's own exposure; swap the medicines for any other field's items and there is no interaction table and no reason risk should sit in pairs.",
-  "layer2_family": "estimation_fit",
-  "layer2_pattern": "own:adverse-events-from-interacting-pairs-in-a-regimen",
+  "analyst_test": "A strong analyst who links every file to the residents, fits the residents' adverse-drug-event admissions on their medicines, frailty and care type, carries the autumn 2026 reviews and the medicines' later restarts, and back-tests on the 2024 and 2025 year-start cohorts (both reconcile) files the long-term residents' 2027 admissions, about a fifth under the golden, because the baseline counts everyone accommodated in Calderbrook's beds and the step-down guests are on no register.",
+  "domain_test": "The deciding quantity is a care provider's 2027 emergency admissions for adverse drug events over every bed-day it provides, a utilisation forecast whose denominator is the occupied beds of two populations with different exposure: long-term residents, whose risk follows the medicines they hold, and discharge-to-assess guests in their first weeks out of hospital, whose readmission risk the step-down placements' own outcomes measure; swap the nouns for a hotel's guests and there is no discharge-to-assess pathway, no first weeks after a hospital stay and no medicines the risk follows.",
+  "layer2_family": "field_method",
+  "layer2_pattern": "own:utilisation-denominator-covers-the-step-down-beds-off-the-register",
   "layer1": [
     "two pharmacy suppliers' dispensing feeds coded differently (dm+d product codes against BNF sections)",
     "a care group acquired in 2025 whose homes used a different eMAR system with its own resident numbers",
@@ -47,11 +47,11 @@
   "role_family": "operations_director",
   "scoring_unit": "per covered member",
   "spine": {
-    "file": "dispensing_lines_2023_2026.csv",
+    "file": "dispensing_2023-01_2026-12.csv",
     "rows": 0,
-    "entity": "one dispensed medicine line for one resident in one 28-day cycle",
+    "entity": "one medicine supplied to a long-term resident for a monthly cycle",
     "grain": "resident x medicine x cycle",
-    "source": "synthetic"
+    "source": "constructed"
   },
   "forum": "executive_team",
   "forcing_event": "purchase_order_or_contract",
@@ -76,14 +76,18 @@
   ],
   "opening_move": "question-first",
   "question_form": "how-many",
-  "driver": "The forward count of harmful events in a population is set by which pairs of exposures each member holds at the same time, because nearly all of the harm sits in a few pairs, so a model of each exposure's own effect, fitted on a record in which the pairs co-occurred at steady rates, spreads each pair's harm over every holder of either exposure and misprices a plan that removes exposures precisely from the members who hold them in pairs.",
-  "driver_concrete": "Calderbrook's residents' emergency admissions for adverse drug events come mostly from interacting pairs held at once (an anticoagulant with an NSAID, the ACE inhibitor, diuretic and NSAID triple, an opioid with a gabapentinoid or a benzodiazepine, trimethoprim with an ACE inhibitor), and the autumn 2026 structured medication reviews stopped the paired medicine in the residents who held each pair, so the 2027 admissions have to be read per pair a resident still holds after the review, not per medicine.",
-  "stump": "A competent solver fits each medicine's own effect on the 2023 to 2026 admissions, replays it on the post-review regimens and files a 2027 count about a tenth above the golden, because each stopped NSAID, gabapentinoid and benzodiazepine carries only its average effect across all its holders rather than the pair harm it carried in the residents who lost it.",
+  "driver": "A forward count over everyone a provider's capacity accommodates is read off the register of its long-term members, whose history reconciles with every outcome return drawn on that register, while a second body of short-stay occupants, booked through another organisation's system and absent from the register and from the returns, takes a growing share of the capacity in the forward year and carries several times the members' rate; its size sits in the capacity plan and its rate in the other system's own placement returns.",
+  "driver_concrete": "Calderbrook's 2027 baseline counts the emergency admissions for an adverse drug event of every person accommodated in its beds during 2027; its residents register, Fellside's dispensing and the two trusts' returns (drawn on the register's NHS numbers) reconcile month by month, but the Wethermoor ICB's discharge-to-assess step-down guests, booked through the board's placement system and on no register, fill 40 beds from April 2025 and 180 from January 2027, and the board's placement returns show them readmitted for an adverse drug event at about five per cent a month against about one and a half for the long-term residents.",
+  "stump": "A competent analyst models Calderbrook's long-term residents from the register, the dispensing and the trusts' returns, which reconcile month by month, and files the residents' 2027 admissions; the step that lands it there is taking the register as everyone the baseline counts, when the step-down guests in the board's discharge-to-assess beds live in the same homes, sit in no register and no return drawn on it, fill 180 beds from January 2027 against 40 before, and are readmitted for an adverse drug event at about five per cent a month.",
   "mechanism_source": "design_note",
   "differentiation": {
     "task142": "task142's upper percentile of a period's total is built from the units that arrive and how long each runs inside the window, a spread question; here the forecast is a mean count, and the decisive unit is the pair of exposures one member holds at the same time, with no durations and no percentile.",
     "task148": "task148 v1 sums the hazards of every unit behind one shared backer, each at its own age; here nothing is shared between members and nothing turns on age: each member's harm is set by which pairs of its own exposures it holds together.",
-    "task173": "task173 v2 splits one meter that two sources share inside a unit, fitted per unit to its two recorded volumes; here no total is split: the harm is a separate quantity that two exposures carry only when one member holds both, read from the record's members who held each pair."
+    "task173": "task173 v2 splits one meter that two sources share inside a unit, fitted per unit to its two recorded volumes; here no total is split: the harm is a separate quantity that two exposures carry only when one member holds both, read from the record's members who held each pair.",
+    "task133": "task133 v2's young population's outcome rates are biased low because taken-over units' months before the takeover enter the denominator; here no denominator is mis-timed: the forecast's own frame is complete and correct for the residents, and the miss is a second body of occupants, on another organisation's placement system, that the frame never holds.",
+    "task196": "task196 v2 recovers how many events two partial capture channels missed, the second channel produced by the unit's own follow-up; here no event is uncaptured within the frame and nothing is estimated from an overlap: the uncounted admissions belong to people the frame does not contain, priced from their own placement returns.",
+    "task180": "task180 v4's small events are masked by a daily noise cycle that a forward change removes; here nothing in the record is masked or under-detected: the residents' admissions are complete, and the forward year adds a population (step-down guests in four and a half times as many beds) whose own returns give its rate.",
+    "task305": "task305's demand model misses holiday-park guests because the census counts people where they usually live, priced per pitch from card spend at park-side stores; here the baseline's frame is the provider's own residents register and its returns, the outsiders are short-stay discharge-to-assess guests on the commissioner's placement system, and their size changes in the forward year (40 beds to 180), priced per occupied bed-month from the placements' own readmissions."
   },
   "lineage": [
     {
@@ -127,8 +131,24 @@
       "org_family": "cooperative_or_member_body",
       "driver": "A behavioural share at a one-off repricing is a mixture of two kinds of unit, those a temporary price premium brought in, which take the costly path at their first repricing whatever the price change, and long-standing units, which take it in proportion to the change; conditioned on the price change alone, the share is read off a past in which the forward pool's change was met almost only by long-standing units, so it misses a forward pool made mostly of premium-won units, and only the class, rebuilt from each unit's price against the floor of its own entry cohort, makes every past round agree.",
       "stump": "A competent solver washes the numbers, prices dialling per mix of callable numbers from the seven closed campaigns, conditions the past share of conversations that went to the retention offer on each deposit's drop from its locked rate to the card it reinvests at and books 4,250 agent-hours; the step that lands it there is reading that share off every past conversation at the drop instead of off the conversations of the same class of money: 10,697 of the 18,400 deposits are money the 2023 four-year special won at 5.65 per cent, and money a special won went to the offer at 87 per cent at its first maturity whatever its drop, where past conversations at the special's 1.65-point drop, almost all member money, went at a third: the golden is 5,250."
+    },
+    {
+      "architecture": "v2 pairs and restarts (2026-10-25 to 10-26)",
+      "fate": "superseded before any pack was cut: the interacting pairs were the strong enumerator's out-of-sample pick, and two isolated Opus probes landed the restart clock (350 against 350)",
+      "domain": "healthcare-delivery-health-economics",
+      "objective": "forecasting",
+      "gap": [
+        "population",
+        "time"
+      ],
+      "pattern": [
+        "none"
+      ],
+      "gate_g": "forecasting",
+      "decision_type": "quantity_figure",
+      "driver": "The forward count of harmful events in a population is set by which pairs of exposures each member holds at the same time, and by the exposures a one-off review removed coming back on the clock the record's earlier removals show."
     }
   ],
-  "notes": "Calibration none. Gap population first (the record's unit is the medicine line; the harm's unit is the interacting pair a resident holds), then time. Pattern none: G2 (grain, the pair within a regimen against the medicine) then G6 (the review moves the pair mix far from the record's). Strategy grain_or_unit: the decisive move is the unit of exposure; answered in the design note against three_rules.strategy_risk. Forecast faces forward: admissions in calendar 2027 for residents during 2027, including residents not yet admitted to the homes.",
-  "registered": "2026-10-25T22:29:02Z"
+  "notes": "Calibration realised_outcome_roster: the board's step-down placement returns since April 2025, each placement's dates and how it ended (home, long-term care, readmitted with the hospital's codes, died), are the analogue that prices the guests. Context artifact capacity_report: the homes' 2027 bed plan, kept for staffing and registration, carries the 180 step-down beds. Gap population: the register is not everyone the baseline counts. Pattern none: G12 (the register's and the returns' silence about the guests is an absence of record, read as nobody there), G3 (the register records residents; the beds accommodate guests too), G6 (in 2027 the beds hold four and a half times as many guests). Rungs: the restart clock and the interacting pairs carry the residents' forecast and are climbed by every careful solver.",
+  "registered": "2026-10-26T01:09:08Z"
 }
