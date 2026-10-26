@@ -1,11 +1,11 @@
 {
  "task": "task270",
  "owner": "sathay3012",
- "status": "PAUSED",
- "domain": "marketing-consumer-research",
+ "status": "DESIGN",
+ "domain": "general-statistics-data-science",
  "objective": "descriptive-distribution",
- "stage": 1,
- "stage_name": "draw",
+ "stage": 2,
+ "stage_name": "design",
  "updated": "2026-10-26",
  "stump": "",
  "architecture": 7,
@@ -22,7 +22,7 @@
   "report": ""
  },
  "returned": [],
- "resume": "Re-root at the architecture 7 draw in a fresh world; read DESIGN_NOTE.md's Tried and rejected first, every architecture there stays dead. The lesson to draw on: no shipped field may name the population the decisive step needs (architecture 6's janela handed it over), and a reference population that a field identifies is a cheap route whatever the brief says; the re-sited ask device (a donor record read current, the person's first donation across their numbers) held against both round 2 readers and is spent for the next consecutive build.",
+ "resume": "Architecture 7 drawn and registered 2026-10-26; next: the stage 2 design (default path, stump sentence, three rules, fork table, ladder, closure, asks, prompt.txt) to precut.py, then the generator. Read DESIGN_NOTE.md's Tried and rejected first.",
  "architectures": [
   {
    "architecture": 1,
@@ -47,6 +47,10 @@
   {
    "architecture": 6,
    "fate": "spent 2026-10-26 at stage 4 round 2 (Gate F): round 1's readers both missed (B at 31.8 by the clock window), the judge DETERMINISTIC, FIX_NOW on two sub-figure forks; after the repair pass (3.3 summed statements, same-day traffic, Ask R re-sited onto the donor record read on the extraction day) both round 2 readers landed the call (A 26.6, B 20.9) through the bookings' janela field joined on id_reserva, so one join and a field read reach the golden; the judge DETERMINISTIC, SEND_BACK (Gate G planted_defect_flip, Gate H decisive_step planted); the re-sited asks held, both readers 0 of 7 ask keys at the per-row repair"
+  },
+  {
+   "architecture": 7,
+   "fate": "in design (Hallowmere Foodstores' HFC packs, the 2026 loss completed at the year's ends from receiver levels)"
   }
  ],
  "approved": null,
@@ -55,5 +59,5 @@
  "portal_id": "",
  "portal_status": "",
  "portal_status_date": "",
- "seed": "none: a fresh world drawn 2026-10-26 (Kleerwissel's 2027 proxy metric for six-month retention)"
+ "seed": "none: a fresh world drawn 2026-10-26 (Hallowmere Foodstores' 2027 HFC pack replacement programme)"
 }

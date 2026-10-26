@@ -1,101 +1,93 @@
 {
   "task": "task270",
-  "architecture": "v6",
+  "architecture": "v7 (Hallowmere Foodstores' 2027 HFC pack replacement programme: which packs lost more than 10 per cent of their refrigerant charge in 2026)",
   "drawn": "2026-10-26",
-  "slot_note": "Architecture 6 in a fresh world (architectures 1 to 5 spent, lineage). Its first wording (rotation read over the window's rotation places) died at the draw probes; the drawn design passed two call-only probes on 2026-10-26 and waited for the guard window before filing.",
-  "domain": "marketing-consumer-research",
-  "subdomain": "media-reach-frequency-audience-measurement",
-  "client_domain": "marketing-consumer-research",
-  "niche": "a national blood donor charity choosing which of three draft television schedules for a four-week April 2027 youth campaign puts its film before the most adults aged 18 to 34 three or more times, each schedule replayed second by second on the audience panel's March 2026 reference weeks, where the channels' traffic placed oversold prime-time rotation bookings in daytime breaks",
+  "slot_note": "Architecture 7 in a fresh world (architectures 1 to 6 spent, lineage). The decisive step estimates each pack's 2026 loss through the year-end holdings its receiver level records, read through the pack's own response to the top-ups its job sheets weigh.",
+  "domain": "general-statistics-data-science",
+  "subdomain": "missing-data-censoring-measurement-error",
+  "client_domain": "general-statistics-data-science",
+  "niche": "a regional supermarket chain fixing which of its HFC refrigeration packs it replaces in the 2027 programme, the packs that lost more than 10 per cent of their full charge in 2026, from its contractor's job sheets and its monitoring bureau's receiver levels",
   "objective": "descriptive-distribution",
   "shape": "14",
-  "decision_type": "pick_one_of_n",
-  "answer_unit": "named_option",
+  "decision_type": "designation_set",
+  "answer_unit": "set_of_items",
   "answer": "",
   "answer_source": "",
   "gap": [
+    "time",
     "population"
   ],
   "pattern": [
     "none"
   ],
   "generators": [
-    "G9",
-    "G3",
-    "G7"
+    "G16",
+    "G13"
   ],
   "gate_g": "method_or_model_selection",
   "calibration_form": "none",
-  "stump_strategy": "population_selection",
-  "decisive_rule_filed": false,
+  "stump_strategy": "maturity_censoring",
+  "decisive_rule_filed": true,
   "official_decoy": false,
   "validated_decoy": false,
   "context_artifact": "register",
   "stump_class": "analytical",
-  "analyst_test": "A strong analyst who converts the panel's UTC statements to the as-run log's local clock, maps the renamed channel, drops guests and time-shifted viewing, weights members by their 28-day weight and replays each schedule spot by spot reads each prime-time rotation spot over the rotation places the as-run log shows inside prime time that day, and buys schedule B at 31.9 per cent three-plus reach against A's 26.6.",
-  "domain_test": "The deciding quantity is each schedule's three-plus reach among adults 18 to 34, built from the panel's person-level live viewing at the seconds each spot would air, the field's spot-level reach and frequency; a rotation spot's place is the channel's traffic decision, so where it would air is the airing record of the bookings sold on the same terms, which in sold-out prime includes the daytime places the bookings were moved to. With another field's nouns there is no commercial break, no person-level viewing of a place and no traffic system that places run-of-station bookings outside their window.",
-  "layer2_family": "estimand_identification",
-  "layer2_pattern": "own:rotation spots read over where the same-terms bookings aired, moved bookings included, not over the window's rotation places",
+  "analyst_test": "A strong analyst who reads every job sheet, the asset register and the strategy correctly sums each in-scope pack's 2026 refrigerant charged (commissioning and decommissioning jobs out) over its register charge, the F-gas industry's top-up leak rate, and designates the packs over 10 per cent; packs that entered 2026 short of charge are in that set without having lost it in 2026 and packs that left 2026 short are missing, so the set is wrong both ways (checks.py R3a ANALYST).",
+  "domain_test": "The deciding quantity is each pack's refrigerant lost in 2026, which no record holds at the year's two ends: there it sits only in a proxy, the receiver level, whose scale has to be calibrated against direct measurements of the same quantity within the same unit (the weighed top-ups with the levels read before and after them), the measurement-error field's calibration of a proxy against a validation sample, combined with the completion of a count recorded only as it is made good. With hospitals for stores and patients for refrigerant the sentence reads the same, but a ward has no gauge whose reading falls kilogram by kilogram with what it holds and no weighed refills to calibrate it against, so the year-end holdings could not be recovered; the task works only where a continuous proxy and occasional direct measurements see the same physical quantity.",
+  "layer2_family": "estimation_fit",
+  "layer2_pattern": "own:year-end holdings read through each pack's own receiver response to weighed top-ups",
   "layer1": [
-    "panel viewing statements in UTC against the as-run log's local time across the 29 March clock change",
-    "the panel day running 02:00 to 26:00 against the civil date",
-    "Pulsar renamed Pulsar+ with a new channel code from 16 March",
-    "guests in panel homes and time-shifted viewing in the viewing file",
-    "members out of tab on some days carrying a zero 28-day weight",
-    "channel self-promotions filling unsold places in the as-run log",
-    "each sales house numbering its bookings in its own format",
-    "spots of 10 to 45 seconds in every break"
+    "job sheets exported with day-first dates and the contractor's store numbers without the chain's leading zeros",
+    "refrigerants named by trade name on some job sheets (Solstice N40, Opteon XP40)",
+    "the bureau's pack tags (HFS-031-MT1) against the register's pack codes (031/MT1)",
+    "days missing from the bureau's export during communications outages and sensor fault codes on some days",
+    "commissioning charges of new CO2 packs and decommissioning recoveries in the same job sheet export",
+    "engineers' receiver readings recorded as whole per cents"
   ],
-  "stakeholder_role": "head of donor marketing",
-  "role_family": "other",
+  "stakeholder_role": "head of property and sustainability",
+  "role_family": "programme_officer",
   "scoring_unit": "other",
   "spine": {
-    "file": "audimetria_visionamentos_2026-03.csv",
-    "rows": 433990,
-    "entity": "one row is one continuous spell of one person in a panel home present before one channel",
-    "grain": "panel member x channel spell",
+    "file": "coldwatch_receiver_levels_2024_2026.csv",
+    "rows": 0,
+    "entity": "one row is one pack's daily mean receiver level",
+    "grain": "pack x day",
     "source": "synthetic"
   },
   "forum": "executive_team",
-  "forcing_event": "vote_or_meeting",
-  "org_family": "nonprofit_or_charity",
+  "forcing_event": "period_close",
+  "org_family": "retailer_or_ecommerce",
   "world": {
-    "geography": "Portugal",
-    "currency": "EUR",
-    "org_type": "national blood donor charity",
+    "geography": "England (Yorkshire, Lancashire, the North East and Cumbria)",
+    "currency": "GBP",
+    "org_type": "regional supermarket chain",
     "invented_names": [
-      "Associação Gota Viva",
-      "Meridiano Media",
-      "Audimetria Lusa",
-      "Comissão de Audiometria",
-      "Vértice",
-      "Litoral",
-      "Pulsar+",
-      "Arena",
-      "Aurora"
+      "Hallowmere Foodstores",
+      "Kelbray Refrigeration",
+      "Coldwatch Monitoring"
     ],
     "people": [
-      "Lara Gomes",
-      "Helena Gaspar",
-      "Dinis Vaz"
+      "Jayne Gallagher",
+      "Denis Webster",
+      "Steven Ashton"
     ]
   },
   "deliverables": [
-    "plano_tv_jovens_2027.xlsx",
-    "recomendacao_esquema_tv_2027.pptx"
+    "hfc_pack_replacements_2027.xlsx",
+    "pack_leakage_2026.png"
   ],
   "opening_move": "question-first",
   "question_form": "which",
-  "driver": "The decisive quantity is where an item sold without a fixed slot would have landed, and the record of where such items landed shows only the ones that landed inside the slot they were sold for as belonging to it; joining the sales record to the landing record finds that a third were placed elsewhere, in slots worth a fraction as much, so reading the item over the in-slot landings alone credits it with value it would not have had and reverses the choice.",
-  "driver_concrete": "Each 2027 prime-time rotation spot in schedule B is read at the places where that reference day's prime-time rotation bookings on the same channel actually aired, found by joining the sales houses' bookings to the as-run log on the booking number, so the 1,854 of 4,943 (37.5 per cent) the channels' traffic placed in daytime breaks count at their daytime audiences, and B falls from 31.9 to 20.9 per cent three-plus reach, below A's 26.6.",
-  "stump": "A competent analyst replays the three schedules on the reference weeks, reads each rotation spot over the rotation places the as-run log shows in prime time that day and buys schedule B at 31.9 per cent three-plus reach against A's 26.6; the step that lands them there is taking the prime-time rotation places as where a prime-time rotation spot airs, when the bookings joined to the as-run log show the channels placed 1,854 of 4,943 (37.5 per cent) in daytime breaks.",
+  "driver": "The decisive quantity is what each unit lost over a calendar year when its losses are recorded only as they are made good, after lags that leave the year's replacements out of step with its losses at both ends of the year; the unit's continuous level reading measures how far short it stood at each end, but in units of the reading, convertible only through the unit's own response to the replacements whose size was recorded.",
+  "driver_concrete": "Each HFC pack's 2026 refrigerant loss as the refrigerant charged into it in 2026, plus the refrigerant it was short on 31 December 2026 and less what it was short on 1 January 2026, each shortfall read from Coldwatch's daily receiver level through the pack's own rise in receiver level per kilogram charged on its 2024 to 2026 job sheets (arrival and departure readings), against 10 per cent of its full charge on the asset register.",
+  "stump": "A competent analyst takes each pack's 2026 refrigerant charged, the F-gas log's top-up method, as its 2026 leakage and designates the packs over 10 per cent of charge; the step that lands it there is reading the year's top-ups as the year's losses when packs entered and left 2026 short of charge by amounts their receiver levels record.",
   "mechanism_source": "design_note",
   "differentiation": {
-    "task139": "task139 reads a randomised intervention per assigned unit because the arm changes which units become costly cases; this build reads a schedule's spot where the bookings sold on its terms aired, because the airing record shows only the bookings the channel kept in the window they were sold for.",
-    "task182": "task182 corrects a duration distribution sampled in proportion to length; here every booking airs once and the airing record is complete, and the step is joining each airing to the sale that defines what a 2027 spot would replay.",
-    "task265": "task265 handles left truncation, earlier starters entering the record only if event-free; here nothing is truncated in time, the moved bookings are all in the record at other hours, and the step is attributing each airing to the window it was sold for.",
-    "task452": "task452 reweights reference observations by inclusion probabilities from a revised classification; here there is no sampling design, a complete census of airings and sales, and the step is the join that says which airings a prime-time sale produced.",
-    "task270": "architecture 1 corrected correlations for selection on a rank of two measures; this architecture reads a 2027 spot's place from the 2026 bookings sold on its terms, where the window's airings are the bookings the channel kept there."
+    "task148": "task148 estimates a patience distribution censored by service in a queue; here nothing is censored by the outcome: each pack's 2026 loss is completed at the year's two ends from the holdings its receiver level records, read through the pack's own response to weighed top-ups.",
+    "task241": "task241 reads a sensor's error against a moving external reference; here the level gauge is never judged against a reference but converted to kilograms through the pack's own weighed top-ups, and the decisive move is completing the year's loss at its two ends.",
+    "task479": "task479 shrinks noisy small-unit records toward a pool; here every pack's loss is measured and none is shrunk, and the move is adding the change in what each pack holds across the year to the year's recorded top-ups.",
+    "task254": "task254 estimates a time-to-event cut from events truncated at a lock date; here no time to an event is estimated: the year's top-ups are a lagged record of the year's losses, completed at both ends by the holdings the level gauge records.",
+    "task501": "task501 picks a pacing basis by a walk-forward test on closed years; here no candidate method is tested on past years, and the material balance's two end-of-year terms come from each pack's own level-to-kilogram response."
   },
   "lineage": [
     {
@@ -266,9 +258,34 @@
       "driver_concrete": "Each candidate's effects across the 2024 to 2026 onboarding experiments are correlated with the experiments' six-month retention effects after each experiment's sampling covariance between the candidate and retention (the holdout panel's user-level correlation times the arms' standard deviations over their users) is taken out of the cross-experiment covariance and each sampling variance out of the variances; first purchase within 14 days leads.",
       "stump": "A competent analyst correlates the experiments' scorecard effects on each candidate with their six-month retention effects, disattenuates for the sampling error in each, and adopts sessions in days 1 to 14; the step that lands them there is treating each experiment's two sampling errors as independent when both effects are measured on the same users, so the shared error counts as shared change for the metrics most like retention user by user.",
       "fate": "spent 2026-10-26 at stage 4 round 2 (Gate F): with 2.3 filing that the correlation is between the effects themselves, both isolated readers took the full sampling-covariance correction and landed first purchase; round 1's readers had missed with the estimand unfiled and the judge held the raw correlation open"
+    },
+    {
+      "architecture": "v6",
+      "domain": "marketing-consumer-research",
+      "subdomain": "media-reach-frequency-audience-measurement",
+      "niche": "a national blood donor charity choosing which of three draft television schedules for a four-week April 2027 youth campaign puts its film before the most adults aged 18 to 34 three or more times, each schedule replayed second by second on the audience panel's March 2026 reference weeks, where the channels' traffic placed oversold prime-time rotation bookings in daytime breaks",
+      "objective": "descriptive-distribution",
+      "shape": "14",
+      "decision_type": "pick_one_of_n",
+      "gap": [
+        "population"
+      ],
+      "pattern": [
+        "none"
+      ],
+      "generators": [
+        "G9",
+        "G3",
+        "G7"
+      ],
+      "gate_g": "method_or_model_selection",
+      "stump_strategy": "population_selection",
+      "driver": "The decisive quantity is where an item sold without a fixed slot would have landed, and the record of where such items landed shows only the ones that landed inside the slot they were sold for as belonging to it; joining the sales record to the landing record finds that a third were placed elsewhere, in slots worth a fraction as much, so reading the item over the in-slot landings alone credits it with value it would not have had and reverses the choice.",
+      "driver_concrete": "Each 2027 prime-time rotation spot in schedule B is read at the places where that reference day's prime-time rotation bookings on the same channel actually aired, found by joining the sales houses' bookings to the as-run log on the booking number, so the 1,854 of 4,943 (37.5 per cent) the channels' traffic placed in daytime breaks count at their daytime audiences, and B falls from 31.9 to 20.9 per cent three-plus reach, below A's 26.6.",
+      "stump": "A competent analyst replays the three schedules on the reference weeks, reads each rotation spot over the rotation places the as-run log shows in prime time that day and buys schedule B at 31.9 per cent three-plus reach against A's 26.6; the step that lands them there is taking the prime-time rotation places as where a prime-time rotation spot airs, when the bookings joined to the as-run log show the channels placed 1,854 of 4,943 (37.5 per cent) in daytime breaks.",
+      "fate": "spent 2026-10-26 at stage 4 round 2 (Gate F): after the repair pass both round 2 readers read the prime-time places through the bookings' janela field and landed buy A, so a join and one field reach the golden; the round 2 judge classed the moved bookings as a planted flip"
     }
   ],
-  "notes": "Architecture 6 re-root in a fresh world after architecture 5 was spent at stage 4. Filed after the build because G9 as the decisive pattern was banned while task485 sat in the window; redrawn at filing: forum to executive_team (task308 held the board), context artifact to register (task487 holds the operations log), forcing event to vote_or_meeting (task137 v4 holds purchase_order_or_contract; the Comissão Executiva decides on 2 December, the channels' April bookings close on 11 December).",
-  "registered": "2026-10-26T14:11:43Z",
-  "architecture_spent": true
+  "notes": "Architecture 6 re-root in a fresh world after architecture 5 was spent at stage 4. Filed after the build because G9 as the decisive pattern was banned while task485 sat in the window; redrawn at filing: forum to executive_team (task308 held the board), context artifact to register (task487 holds the operations log), forcing event to vote_or_meeting (task137 v4 holds purchase_order_or_contract; the Comissão Executiva decides on 2 December, the channels' April bookings close on 11 December). Architecture 7 drawn 2026-10-26 in a fresh world after architecture 6 was spent at stage 4.",
+  "registered": "2026-10-26T19:20:47Z"
 }

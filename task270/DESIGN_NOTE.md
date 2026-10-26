@@ -1,155 +1,25 @@
 # task270 design note
 
-Architecture 6, drawn 2026-10-26 in a fresh world (wave 4, Descriptive lane, sathay3012), after architecture 5 was spent at stage 4 the same day. Architectures 1 to 5 and every screen under the tried-and-rejected section stay dead. Associação Gota Viva, a Portuguese blood donor association, runs a four-week television campaign in April 2027 asking adults aged 18 to 34 to book their first donation. Its media agency, Meridiano Media, drafted three schedules at one budget; the brief chooses the one that puts the film before the most adults 18 to 34 three or more times, each schedule replayed on the audience panel's four reference weeks of March 2026.
+Architecture 7, drawn 2026-10-26 in a fresh world (wave 4, Descriptive lane, sathay3012), after architecture 6 was spent at stage 4 the same day. Architectures 1 to 6 and every screen under the tried-and-rejected section stay dead. Hallowmere Foodstores, a regional supermarket chain of 72 stores across Yorkshire, Lancashire, the North East and Cumbria, cools its cases with central refrigeration packs, most still charged with HFC refrigerants. Its Refrigerant Strategy replaces, in the 2027 programme, every HFC pack that lost more than 10 per cent of its full charge in 2026; the list is fixed when the 2026 records close. Kelbray Refrigeration services every pack and its engineers weigh each charge into a pack and read the receiver level on arrival and departure; Coldwatch Monitoring, the chain's remote monitoring bureau, logs each pack's receiver level every day.
 
 ## Draw
 
-1. Card: `.claude/skills/fingerprint/cards/task270.json`, architecture v6, filed 2026-10-26 after the build with PASS and one NOTE (similarity to task139, task182 v4, task265 v1 and task452 v2, differentiated on the card); architectures v1 to v5 in its lineage with their fates. Gap population, pattern none with G9 (downstream survival) decisive, then G3 and G7; Gate G `method_or_model_selection`; strategy `population_selection`; context artifact register (the sales houses' booking extract). It was filed after the build because G9 as the decisive pattern was banned while task485 sat among the last three live cards (task308 going spent kept it there); task137's architecture 4 moved the window. Redrawn axes and why: forum board_of_directors to executive_team (the brief's Comissão Executiva decides; task308 held the board); context artifact operations_log to register (task487 holds the operations log, and the booking extract is the file the step turns on); forcing event purchase_order_or_contract to vote_or_meeting (task137 v4 holds the first; the Comissão Executiva's meeting of 2 December is the decision, the channels' April bookings closing on 11 December follow it).
-2. Pairing: Marketing & Consumer Research / `media-reach-frequency-audience-measurement` / Descriptive & Distribution Analysis. The task type's own object decides the call: a schedule's reach and frequency among a target from a people-meter panel's person-level viewing at each spot's seconds, a rotation spot placed by the channel.
-3. Niche: a national blood donor charity choosing among three draft television schedules for a four-week youth campaign, each replayed second by second on the panel's reference weeks, where the channels' traffic placed oversold prime-time rotation bookings in daytime breaks.
-4. Objective: Descriptive & Distribution Analysis. The quantity is a property of the distribution of exposures across the 18 to 34 universe (the share seeing the film three or more times); the decision faces forward (the April 2027 booking). Nothing is predicted for a window beyond the brief's replay, so the tag is not Forecasting.
-5. Shape 14 (cuts of a distribution per segment): each schedule's share of the universe reached three or more times, the call, runner-up and lead, and two measures every schedule carries beside it (Ask sheet). Shape arithmetic: the call, runner-up and lead 3, three-plus reach 3, the critical components 4, Ask R 7, Ask X 3, the chart's named parts 3, the two files 2: 25 criteria.
-6. Decision type `pick_one_of_n`; answer unit named_option; question form which. Forum executive_team (Gota Viva's Comissão Executiva); forcing event vote_or_meeting (its meeting of 2 December 2026, before the channels close April bookings on 11 December); organisation nonprofit_or_charity; stakeholder Gota Viva's head of donor marketing (role family other).
-7. Deliverables: `plano_tv_jovens_2027.xlsx` (the schedule to buy, each schedule's reach, the 2025 response and the expected bookings) and `recomendacao_esquema_tv_2027.pptx` (the deck for the Comissão Executiva, the reach chart on slide 2).
-8. People, drawn with `guard.py names --geo PT --seed 270`: Lara Gomes (Gota Viva, head of donor marketing), Helena Gaspar (Meridiano Media, planning director), Dinis Vaz (Audimetria Lusa, client methods).
-9. Data-native sentence: the sales houses sold 4,943 prime-time rotation spots on Vértice, Litoral and Pulsar+ over the reference weeks and their traffic placed 1,854 of them (37.5 per cent) in the same day's daytime breaks, where adults under 35 hardly watch, while the as-run log labels every rotation spot ROTAÇÃO wherever it aired and the rate card sells rotation by window; so the rotation places prime time shows are the bookings that cleared their window, not the places a prime-time rotation spot gets.
-10. Sources, one line each:
-    - Reach and frequency from respondent-level panel data (person weights projected to the universe, live viewing at the spot's seconds, the frequency distribution built person by person) and the buying practice that run-of-station spots are pre-emptible and clear only in part when a window is oversold: the build carries the practice, not any market's figures.
-    - `guard.py slots` on rotation, run of station, pre-emption, make-good, as-run, clearance, booking log and reach: nothing on file in this cell; the media-reach-frequency cell has no build on file (task265's lineage holds an unregistered connected-TV seed).
-11. Probes on the drawn design (licensed draw-time probes, call-only Sonnet readers at medium effort, scratch `probe270a6-p3` and `-p4`): both replayed the schedules spot by spot, read every rotation spot over the ROTAÇÃO places of its channel and panel day in prime time and filed B at 31.8 against A's 26.6 and C's 16.9, A and C exactly the golden's; neither opened the booking extract.
+1. Card: `.claude/skills/fingerprint/cards/task270.json`, architecture v7, `guard.py check` WARN only (the png and xlsx deliverable set repeats task121 v6 and task137), five older builds sharing the time gap, G16 and the decision type or Gate G differentiated on the card (task148 v2, task241, task479 v6, task254 v2, task501 v2); architectures v1 to v6 in its lineage with their fates. Gap time, then population; pattern none with G16 (method selection: the material balance over the top-up count) decisive and G13 (the window the losses fall in) as the frame; Gate G `method_or_model_selection`; strategy `maturity_censoring` (the count is not finished: the year's losses arrive in the record only as they are made good). Redrawn at the draw: emissions-inventory (the honest task type) is banned while task487 sits in the window, so the cell is general statistics' measurement-error task type; the context artifact is the register (the chain's F-gas register of packs and charges), operations_log being banned by task487; the forcing event is the 2026 period close, purchase_order_or_contract being banned by task137.
+2. Pairing: General Statistics & Data Science / `missing-data-censoring-measurement-error` / Descriptive & Distribution Analysis. The task type's own object decides the call: a quantity recorded only as it is made good, completed at both ends of the window from a continuous proxy (the receiver level) whose scale is calibrated within each unit against direct measurements of the same quantity (the weighed charges with the levels read before and after).
+3. Niche: a supermarket chain fixing which HFC packs it replaces in 2027, those that lost more than 10 per cent of their full charge in 2026, from a contractor's job sheets and a monitoring bureau's daily receiver levels.
+4. Objective: Descriptive & Distribution Analysis. The quantity is each pack's share of its charge lost in 2026 and the call is the set over a line (how a metric is distributed across the fleet); the call faces forward (the 2027 programme), nothing is predicted, so the tag is not Forecasting, and the object is the packs' losses, not the health of the records, so it is not Data Quality Monitoring.
+5. Shape 14 (cuts of a distribution per segment): the packs over the line, each with its 2026 loss rate, the count over the line by region, and the asks (stage 2).
+6. Decision type `designation_set`; answer unit set_of_items; question form which. Forum executive_team (Hallowmere's executive committee); forcing event period_close (the 2026 F-gas records close at the year end and the list is fixed from them); organisation retailer_or_ecommerce; stakeholder Hallowmere's head of property and sustainability (role family programme_officer).
+7. Deliverables: `hfc_pack_replacements_2027.xlsx` (the packs to replace with each one's 2026 loss and the asks) and `pack_leakage_2026.png` (every pack's 2026 loss against the 10 per cent line).
+8. People, drawn with `guard.py names --geo GB --seed 270`: Jayne Gallagher (Hallowmere, head of property and sustainability), Denis Webster (Kelbray Refrigeration, contracts manager), Steven Ashton (Hallowmere, chief executive).
+9. Data-native sentence (target, to be measured on the build): every pack's refrigerant reaches the record only when an engineer weighs a charge into it, after a low-level alarm or at a routine visit weeks or months after the loss, so a pack short of charge on 1 January 2026 is topped up in 2026 for a 2025 loss and a pack short on 31 December 2026 carries a 2026 loss no 2026 job sheet shows; the bureau's receiver level records how short each pack stood at both ends, in per cent of the receiver, and each pack's own rise in level per kilogram charged, read off its job sheets, turns that into kilograms.
+10. Draw-time measurement (prototype, five worlds of about 145 packs): the top-up count and the completed balance designate different sets in every world (3 to 13 packs apart, both ways); the balance read through each pack's own response tracks the true loss to within 1 to 2 points of charge at the 95th percentile and its variants (median against least-squares response, mean against median full level) agree on the set; the level read through the register's receiver volume parts from the golden on 0 to 5 packs, so its separation is to be widened at the build.
 
-## Default path
+## Architecture 6 record (spent 2026-10-26)
 
-1. Read the brief (briefing_campanha_jovens_2027.pdf, 3.1 to 3.5): buy the schedule that puts the film three or more times before the most adults 18 to 34; each schedule replayed on 2 to 29 March 2026, week n on week n, same weekday; a member sees a spot watching live for at least half the place's seconds, as the place aired; 28-day weights, no guests, no playback; a fixed spot at its place, a rotation spot at each place with the probability of having aired there; the expected share, spots independent.
-2. Read the panel's live statements on the local clock (UTC, an hour added from 01:00 UTC on 29 March), the members 18 to 34 with their weights, Pulsar+ as Pulsar through the channel list.
-3. Place A's first places and C's last places at the first or last place of the named break in the as-run log, by panel day, programme and break number.
-4. Read each of B's rotation spots in equal shares over the places the as-run log labels ROTAÇÃO on its channel that panel day inside prime time (20:00 to 00:30), the window the rate card sells it in.
-5. Build each member's chance of three or more exposures (Poisson-binomial) and weight it over the universe: A 26.6, B 31.9, C 16.9; buy B.
+Stump sentence as drawn: A competent solver replays the three schedules on the reference weeks, reads each rotation spot over the rotation places the as-run log shows in prime time that day and buys Schedule B at 31.9 per cent three-plus reach against A's 26.6; the step that lands it there is taking the prime-time rotation places as where a prime-time rotation spot airs, when the sales houses' bookings joined to the as-run log show 1,854 of the 4,943 prime-time rotation bookings on the three channels (37.5 per cent) aired in daytime breaks, so that read at the places the same day's prime-time bookings got, B falls to 20.9 per cent and A leads by 5.7 points.
 
-Ends on: Schedule B at 31.9 per cent three-plus reach
-Golden: Schedule A at 26.6 per cent three-plus reach
-
-## Stump sentence
-
-A competent solver replays the three schedules on the reference weeks, reads each rotation spot over the rotation places the as-run log shows in prime time that day and buys Schedule B at 31.9 per cent three-plus reach against A's 26.6; the step that lands it there is taking the prime-time rotation places as where a prime-time rotation spot airs, when the sales houses' bookings joined to the as-run log show 1,854 of the 4,943 prime-time rotation bookings on the three channels (37.5 per cent) aired in daytime breaks, so that read at the places the same day's prime-time bookings got, B falls to 20.9 per cent and A leads by 5.7 points.
-
-## Three rules
-
-Task type: Marketing & Consumer Research, `media-reach-frequency-audience-measurement`: each schedule's reach and frequency among adults 18 to 34 built from a people-meter panel's person-level live viewing at each spot's seconds; it serves Descriptive & Distribution Analysis (the distribution of exposures across the universe, cut at three or more).
-Domain test: the deciding quantity is each schedule's three-plus reach among adults 18 to 34, the field's spot-level reach and frequency from respondent-level data (weights to the universe, live viewing at the spot's seconds, the frequency distribution person by person), and a rotation spot's place is the channel traffic's decision, so where it would air is the airing record of the bookings sold on the same terms, which in sold-out prime time includes the daytime places the traffic moved them to; with another field's nouns there is no commercial break, no person-level viewing of a place and no traffic system that places run-of-station bookings outside their window.
-Swap: with hospital beds for commercial places and admissions for viewers the sentence still parses, but nothing there sells a slot by window and places it where capacity allows while a second system records only where it landed; the identification needs the buying system's two records, the booking and the as-run, at the spot's grain.
-Layer 1: the panel's statements in UTC against the as-run log's legal time across the 29 March clock change; the panel day from 02:00 to 26:00 against the civil date; Pulsar renamed Pulsar+ with a new code from 16 March; guests and time-shifted viewing in the viewing file; members out of tab with a zero weight; the channels' self-promotions in the as-run log; each sales house's own booking numbers; spots of 10 to 45 seconds; each produced by the system named, none placed to be caught, each mishandled leaving the call on A (R2 rows in `checks.py`).
-Layer 2: `estimand_identification`, own pattern (a rotation spot read over where same-terms bookings aired, moved bookings included): the in-window rotation places are the bookings that cleared their window, a sample selected on the outcome, and the population a 2027 rotation spot is drawn from is the bookings.
-Decisive step: join the sales houses' bookings to the as-run log on the booking number and read each 2027 rotation spot at the places that reference day's prime-time rotation bookings on its channel aired, each with the share of them that aired there.
-Not semantics: every field, code and definition read correctly (the panel day, the clock change, Pulsar+, guests, playback, the 28-day weights, first and last places, ROTAÇÃO, a booking's janela and dia_tv) leaves a solver on B: the as-run log labels the moved bookings ROTAÇÃO in the daytime breaks they aired in, correctly, no field marks a booking as moved, and what moves the call is taking the bookings, not the airings, as the population of places.
-Not rule application: the brief files the estimand (where the spot would have aired, each place with its probability) and nothing on how to estimate that probability; executing the filed rules over the window's rotation places files B, and what rules it out is a comparison no document invites, the bookings sold for prime time joined to the places they aired.
-Analyst test: a strong analyst who converts the clocks, maps Pulsar+, drops guests and playback, weights by the 28-day weight and replays each schedule reads the rotation spots over the prime-time rotation places and buys Schedule B at 31.9 per cent against A's 26.6; executed on the generator's clean truth in `checks.py` (R3a ANALYST), where the decisive step alone files A (R3b DECISIVE).
-Estimand: brief clauses 3.1 to 3.5: each schedule's expected share of the 2026 panel universe of adults 18 to 34 seeing the film three or more times when replayed on 2 to 29 March 2026 (week n on week n, same weekday), a fixed spot at its place, a rotation spot at each place with the probability of having aired there, a place seen when watched live for at least half its seconds as it aired, spots independent, members with their 28-day weights.
-No decoy: nothing is planted to be caught: no memo, earlier estimate or stakeholder figure states a schedule's reach; the rate card sells rotation by window and guarantees no programme or place, which is true; the moved bookings are the channels' traffic, each in a daytime place left open.
-No certified replay: no certified or published figure carries a 2027 schedule's reach; the Comissão's weekly programme audiences are programme averages and rank B first on rating points (rung R0), a route, not an answer.
-Lesson: when the seller places what was sold, read where the same sales landed, not where the window's sales that landed sit; a log of airings alone hides the selection on clearance.
-
-## Readability screen
-
-| Rung | 1 Filed sentence | 2 Schema | 3 Reflex | 4 Control bench | 5 Hygiene | 6 Linear | Verdict |
-|---|---|---|---|---|---|---|---|
-| R0 the Comissão's programme audiences as rating points | none | rat_18_34_pct | rating points per spot | none | none | a sum of ratings | readable |
-| R1 anyone tuned 15 seconds into the break | none | inicio_utc, fim_utc | break audience | none | none | a count per break | readable |
-| R2 every place in the window, equal shares | 3.4 (probability over places) | colocacao | equal shares over a window | none | none | a mean over places | readable |
-| R3 the places first- and last-place bookings left | 3.4 | colocacao | non-premium places | none | none | a mean over places | readable |
-| R4 the ROTAÇÃO places inside prime time (the default path) | 3.4 and the rate card's window | colocacao, hora_inicio | rotation within its sold window | none | none | a mean over labelled places | readable |
-| (decisive) the places that day's prime-time rotation bookings aired, from the bookings joined to the as-run log | none: 3.4 files the probability, nothing says where rotation goes | no column marks a moved booking: janela sits in the booking extract, the airing time in the as-run log | none: the window the rate card sells reads as the window it airs in | none: no shipped figure ties under either reading | none: every key is unique and every join closes | a join of two systems on id_reserva, then shares over the places | silent |
-
-## Semantic fork table
-
-| Id | Term or convention | Golden reading | Alternative | Call under it | Ruled out by |
-|---|---|---|---|---|---|
-| SF1 | reference mapping | campaign week n on reference week n, same weekday | calendar date a year back | another day | brief 3.2 files week n on week n, same weekday |
-| SF2 | a fixed place | the first or last place of the named break on the panel day | the civil date's break | same call (A) | the schedule names programme and break; the as-run log's dia_tv; R2 row |
-| SF3 | a rotation spot's places | where that panel day's prime-time rotation bookings on its channel aired | the ROTAÇÃO places inside prime time | B | 3.4 files the probability of having aired there; the bookings joined on id_reserva show a third aired in daytime breaks, so the window's places alone do not carry probability one |
-| SF4 | independence | spots independent (3.5); one rotation spot per channel and night | spots sharing a place | same call | 3.5; asserted one spot per channel and night |
-| SF5 | seconds seen | live seconds on the channel inside the place, summed over all the member's statements on it (3.3); no statement overlaps another of the same member | each statement alone | same call (B 20.86) | 3.3 files the sum; asserted: no member's statements overlap |
-| SF6 | a place's length | the start and length it had on air (3.3) | 30 seconds from its start | same call (A 25.0, B 20.9) | 3.3 files the place as it aired |
-| SF7 | a reference day's rotation bookings | the bookings sold for that day's window (dia_tv) | the bookings that aired that day | same figures | asserted: the traffic places a window's excess in the same day's daytime breaks, so every rotation booking airs on the day it was sold for and the two readings select one set |
-
-## Ladder
-
-| Rung | Construction | Call | What kills it |
-|---|---|---|---|
-| R0 | the Comissão's weekly 18 to 34 programme ratings summed per spot, rotation at its window's average | B (308.0 points against A 152.8) | programme averages are not the audience at a place, and rating points are not three-plus reach |
-| R1 | anyone tuned 15 seconds into the break | B (57.3 against A 34.2) | a break's leavers do not see its later places |
-| R2 | every place in the window, equal shares | B (40.3 against A 17.6) | first and last places held by other bookings are not places rotation gets |
-| R3 | the places first- and last-place bookings left | B (38.9 against A 26.6) | fixed bookings hold places rotation never gets |
-| R4 | the ROTAÇÃO places inside prime time (the default path) | B (31.9 against A 26.6) | 37.5 per cent of the prime-time bookings aired in daytime breaks |
-| golden | the places that day's prime-time rotation bookings aired, each with its share | A (26.6; B 20.9, C 16.9) | |
-
-The golden's margin over the runner-up is 1.27; the default path's over A 1.20. The world's truth names A at the same figures to four decimals (CALL row).
-
-## Closure table
-
-| # | Axis | Reading and closure |
-|---|---|---|
-| 1 | Population | adults 18 to 34 in the 2026 panel universe, members with a positive 28-day weight (3.3) |
-| 2 | Unit of account | people seeing the film three or more times |
-| 3 | Attribution window | the four reference weeks, 2 to 29 March 2026, by panel day (3.2) |
-| 4 | As-of dating | the panel delivery of April 2026 and the channels' and sales houses' March files |
-| 5 | Version basis | one delivery of each file |
-| 6 | Denominator | the 18 to 34 universe as the members' weights project it |
-| 7 | Weighting | the 28-day weight (3.3) |
-| 8 | Window length | four weeks, week n on week n |
-| 9 | Boundary inclusivity | three or more (3.1, 3.5) |
-| 10 | Rounding path | shares to one decimal from unrounded reach |
-| 11 | Tie-break | none needed (margin 1.27) |
-| 12 | Maturity and censoring | closed reference weeks |
-| 13 | Order of operations | places per spot, then each member's chance per spot, then the Poisson-binomial, then the weighted share |
-| 14 | Row order | none: sums |
-| 15 | Duplicate resolution | one row a statement, a spot, a booking; no member's statements overlap (SF5) |
-| 16 | Identity normalisation | Pulsar+ as Pulsar through the channel list; bookings to airings on id_reserva |
-| 17 | Netting against gross | guests and time-shifted viewing out (3.3) |
-| 18 | Dimensional units | seconds on the panel's local clock, UTC converted across the 29 March change |
-| 19 | Code and status semantics | colocacao: 1.º LUGAR, ÚLTIMO LUGAR, FIXO, ROTAÇÃO, AUTOPROMOÇÃO; modo AO VIVO, DIFERIDO |
-| 20 | Integerisation | none |
-| 21 | Clause scope | 3.1 to 3.5 scope the call; the extract notes scope Ask R |
-| 22 | Forward window contents | the brief maps April 2027 onto March 2026 by week and weekday (3.2); no forward data is read |
-
-## Literal reader
-
-Executed word for word, the brief files each schedule's expected share of adults 18 to 34 seeing the film three or more times on the reference weeks, a rotation spot at each place with the probability of having aired there. A literal reader who takes the rate card's window as where the spot airs reads the window's rotation places; the literal estimand still asks where it would have aired, and the records answer it: the bookings sold for that channel, window and day aired at 4,943 places of which 1,854 lay in daytime breaks, so a probability that sums to one over the window's places alone assigns no chance to places that same day's identical sales got. Reading the spot over those bookings' places is the estimate the records support, and the generator's world names A at the same figures.
-
-## Oracles
-
-No shipped figure states a schedule's reach or a booking's clearance, and none ranks the schedules on the brief's basis. The Comissão's weekly programme audiences rank B first on rating points (R0), a different quantity. The digital plan and the 2025 new donors are declared distractors in `metadata.json`. No control total ties only under the golden or only under the easy route.
-
-## Ask sheet
-
-The asks read the Portal do Dador's 2025 booking extract, its extraction notes and the agency's 2025 campaign report, none of which the call opens (SEP rows in `checks.py`), and Ask X also the call's own reach; each is a measure every schedule carries that the call does not turn on, or the trail behind it: how many first-donation bookings each schedule's reach brings at the 2025 campaign's response, and that response from the portal's records.
-
-**Ask R. The April 2025 campaign's average weekly first-donation bookings by adults 18 to 34 in the four weeks before it, each of its four weeks' bookings minus that average and their total, one decimal, and its response per thousand adults it reached three or more times, two decimals (7 figures).** Golden: 136.0; 85.0, 118.0, 99.0, 144.0; 446.0; 0.82. Primary (silent, D2 an attribute at the wrong vintage, a donor record read current): the extract joins each booking to its donor's record as the record stood on 2 July 2025, so tipo_dadiva, id_dador and data_primeira_dadiva are the record's values on the extraction day, and a first-time donor who booked and then gave blood shows as a regular donor with a definitive number on the booking of that first donation; the notes count the people who booked a first donation, whatever the outcome. Nothing narrates it: the tell is internal (no booking typed primeira was ever given, and 3,952 bookings typed regular were made before their own donor's first donation), and the remedy is a reconstruction, a booking of a first donation being one made before the person's first donation. Second layer (D7, repeated keys with opposite meanings, inside the reconstruction): after the 17 March 2025 go-live, first-time donors who registered again hold two numbers (48 documents P and P, 148 P and D) and count once at their first booking, while 118 regular donors who held an old-system booking and registered again (42 aged 18 to 34) hold a provisional or 2025 record beside a record whose first donation is years old and never count; so a person's first donation is the earliest data_primeira_dadiva on any of their numbers, and repairing each booking against its own record counts the regular donors. Stops: tipo_dadiva as typed, keyed on the document (average 42.5, total 72.0, response 0.13) or the donor number (48.0, 51.0, 0.09); each booking against its own record, keyed on the document (146.5, 404.0, 0.74) or the donor number (171.5, 313.0, 0.58); every document that ever gave blood dropped (32.0, 114.0, 0.21). Hazards closed by construction and asserted: the session booked against the day of booking, and a booking made on the day of the first donation, select the golden's bookings. Path: the portal extract (13 columns), its notes, the 2025 report (3 files). Realism: a booking extract joined to the donor table carries the donor's current number and type, and a portal that imports registrations without their passwords sees its users register again.
-
-**Ask X. Each schedule's expected first-donation bookings at that response, to the nearest ten (3 figures).** Golden: A 460, B 360, C 290. Each schedule's three-plus reach over the 2,100 thousand of the universe times Ask R's response; it carries Ask R's device and, for B, the call's step. Stops: as typed (A 70, B 60, C 50), each booking against its own record (A 410, B 330, C 260), every stop asserted off every schedule; the response, the shares and the reached thousands rounded first give the golden's tens.
-
-**Separation.** Zero device or hazard rows in the call's population: the call reads the panel, the as-run log, the bookings, the channel list, the schedules and the brief, and the asks' device lives in the 2025 portal extract (asserted); the brief carries no ask organ (asserted).
-
-**Cracker sheet.** The response that landed the call, ran the hygiene battery (key uniqueness, exact and near-exact duplicates, unmatched joins, fan-out) and executed every filed rule it points at (the notes' response rule, every outcome kept):
-
-| Ask row | What the cracker does | Against the golden | Cracker |
-|---|---|---|---|
-| R, the 2025 response, 7 figures | keys a person on the identity document (the key-uniqueness sweep finds documents under two numbers) and counts the bookings tipo_dadiva calls primeira, every outcome kept | every figure off (average 42.5 against 136.0) | miss |
-| X, expected bookings, 3 schedules | that response onto the call's reach | every schedule off | miss |
-
-The half-handled reader (finds that the donor fields are the record on the extraction day and repairs each booking against its own record) is measured beside them: every figure off (average 146.5, response 0.74), 0 of 10.
-
-**Mirror sheet.** The response on R4 (B at 31.9) reads the asks as the cracker does, so its rows miss the same way; its Ask X for B also carries the call's step.
-
-Mirror leakage: 0 per cent of ask weight (every ask row misses for the mirror as for the cracker).
-
-Pair ceiling: 28.5 (the one-cracker case: (38 + 7 + 0 + 5 + 7 + 0) / 2).
-
-Measured by: generator/cracker.py on the cut pack.
-
-## Build record
-
-- Stage 3, 2026-10-26: `generator/build.py` builds the pack (18 files, 441,227 viewing statements), the goldens, `figures.json` and `metadata.json`; `checks.py` 64 rows PASS; `verify.py` 19 figures agree; the second build is byte-identical; `cracker.py` keeps 0 of 10 ask figures, pair ceiling 28.5.
+Build record: - Stage 3, 2026-10-26: `generator/build.py` builds the pack (18 files, 441,227 viewing statements), the goldens, `figures.json` and `metadata.json`; `checks.py` 64 rows PASS; `verify.py` 19 figures agree; the second build is byte-identical; `cracker.py` keeps 0 of 10 ask figures, pair ceiling 28.5.
 - Stage 4 round 1, 2026-10-26: both isolated readers filed B (31.8 against A 26.6), missing the call, and kept 6 of 7 ask keys; the judge DETERMINISTIC, FIX_NOW on two sub-figure forks of B's share (Gate F good, G analytical, H pass).
 - Repair pass, 2026-10-26: Ask R re-sited (the donor record read current, the person's first donation across their numbers); the traffic places a window's excess in the same day's daytime breaks (SF7) and 3.3 sums a member's statements (SF5); the prime-time oversell raised from 1.45 to 1.6 and the traffic draw re-seeded, which lifts the golden's margin to 1.27 and keeps B's share and the lead clear of their rounding edges; the 2025 report's three-plus reach set at 26.0 per cent so the response and every expected-bookings figure sit clear of their edges. `checks.py` 74 rows PASS; `verify.py` 19 figures agree; byte-identical; `cracker.py` keeps 0 of 10 for the cracker, the mirror and the half-handled reader, pair ceiling 28.5.
 
