@@ -48,7 +48,8 @@ def write(path, fig):
                 fig["remainders"]["Mira city car"], fig["remainders"]["Plover saloon"], fig["remainders"]["Tern van"]))
     t.append("")
     t.append("## 3. Step-by-Step Solution\n")
-    t.append("1. Took each car on %s (its make is its platform) with the pack it carried on 30 June 2026 from %s: "
+    t.append("1. Took each car on %s (its make is its platform) with the pack it carried at the end of 30 June 2026 "
+             "from %s, one pack per car as the plan's section 3 files it: "
              "its last replacement on or before that day (an OEM nieuw pack on the "
              "platform's curve, a Voltwerk revisie pack on the refurbished curve), else the pack it was built with from "
              "its datum eerste toelating; the OEM warranty ends 8 years after datum eerste toelating, 5 for the Mira "
@@ -56,8 +57,11 @@ def write(path, fig):
     t.append("2. Gave each car the chance its pack fails in 2027 after the warranty, given it works on 30 June 2026: "
              "F(a1) less F(a0), over 1 less F(a) on 30 June 2026, pack ages in days since fitting over 365.25, F the "
              "curve in %s read by straight lines, a0 at the later of 1 January 2027 and the warranty's end, a1 at 1 "
-             "January 2028; summed by platform, %s in all." % (F["curves"], c(fig["base_total"])))
-    t.append("3. Took the used imports first registered here from 1 July 2025 to 30 June 2026 (datum eerste toelating "
+             "January 2028 (a pack fitted in its place after 30 June 2026 is left out); summed by platform, %s in all."
+             % (F["curves"], c(fig["base_total"])))
+    t.append("3. The plan's fleet of 2027 also holds the cars first registered here from 1 July 2026 to the end of 2027, "
+             "each from the day it is registered; the new cars among them stay inside their warranty all year. Took "
+             "the used imports first registered here from 1 July 2025 to 30 June 2026 (datum eerste toelating "
              "before datum eerste tenaamstelling in Nederland), each with the pack the log shows it arrived with (its "
              "last replacement before that registration, else its original pack), and carried them into July 2026 to "
              "December 2027 at that rate and mix: each month takes in a twelfth of them on the same day of the month "
@@ -68,11 +72,12 @@ def write(path, fig):
              "section 2)." % (", ".join("%s %s" % (n, c(fig["forecast"][n]["whole"])) for n in order), c(fig["total"]),
                               c(P.SLOTS), F["plan"]))
     t.append("5. Modules: took the stores movements booked from 1 July 2025 to 30 June 2026 in %s, issues less "
-             "returns, each line in modules by %s (a Kestrel carrier is 2) and on its work order's platform; on a "
-             "supplier lot whose lines add up to more than %s shows it received (the replacement lots for held "
-             "packs), a pick list carrying one quantity against several work orders went out once; divided by the "
-             "packs shipped in those months in %s and multiplied by 50." % (F["stores"], F["parts"], F["receipts"],
-                                                                           F["shipments"]))
+             "returns, each line in modules by %s (a Kestrel carrier is 2) and on its work order's platform; no lot's "
+             "stock goes below zero (%s), so on a supplier lot whose lines add up to more than %s shows it received "
+             "(the replacement lots for held packs), the one quantity a pick list carries against several work "
+             "orders went out once, which brings the lot back to what it received; divided by the packs shipped in "
+             "those months in %s and multiplied by 50." % (F["stores"], F["parts"], F["line_notes"], F["receipts"],
+                                                         F["shipments"]))
     t.append("6. First-run passes: followed each pakket_id in %s to its work order through %s (a BMS replaced on "
              "rework gives the pack a new pakket_id), took each work order's first run that was not an ABORT, kept the "
              "packs whose first run started from 1 July 2025 to 30 June 2026 and took the share that passed."

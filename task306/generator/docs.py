@@ -144,12 +144,13 @@ the line) and `afgesloten` (date closed).
 
 Stores movements against work orders with a booking date from 1 July 2025 to 30 June 2026. `soort` is UITGIFTE for an
 issue and RETOUR for a return to stores, which carries a negative quantity. `aantal` is in the article's unit (see
-%(parts)s). `partij` is the supplier lot the units came from. `picklijst` is the pick list the units went out on; one
-list can serve several work orders.
+%(parts)s). `partij` is the supplier lot the units came from; stores keeps its stock by lot, and no lot's stock goes
+below zero. `picklijst` is the pick list the units went out on; one list can serve several work orders.
 
 ## %(receipts)s
 
-Goods received into stores from 1 July 2025 to 30 June 2026, by supplier lot, with the supplier's delivery note.
+Goods received into stores from 1 July 2025 to 30 June 2026, one row per supplier lot, with the supplier's delivery
+note.
 
 ## %(parts)s
 
@@ -219,6 +220,11 @@ def plan(path, created):
     d.add_paragraph("A failure counts when a pack fails in 2027 on a car in use in the Netherlands and the OEM's pack "
                     "warranty on that car has ended (%s). A Voltwerk refurbished pack's failure counts whether or not "
                     "our own warranty still covers it: either way the line supplies the pack." % F["warranty"])
+    d.add_paragraph("The cars in use in the Netherlands in 2027 are those on the register on 30 June 2026 and those first "
+                    "registered here from 1 July 2026 to the end of 2027, each from the day it is registered. The "
+                    "forecast follows one pack per car and counts its failure: the pack a car carries at the end of 30 "
+                    "June 2026 or, for a car first registered here later, the pack it carries when it is registered; a "
+                    "pack fitted in its place later is left out.")
     d.add_paragraph("The forecast takes no car out of use: a car in use in the Netherlands in 2027 is taken to stay in "
                     "use for the rest of the year. Packs fail as the life curves say (%s), read by straight lines "
                     "between whole years of pack age. A pack's age runs from the day it was fitted, or from the car's "

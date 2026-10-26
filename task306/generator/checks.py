@@ -1,12 +1,18 @@
 """Assertions on the built pack and the world it came from: the three-rules block (the easy route files the named wrong
 answer on the clean truth and on the pack, the decisive step alone files the golden), the standing family, the ladder,
-every semantic fork row (SF1 to SF24), the bins, the ask devices, separation and the input gates.
+every semantic fork row (SF1 to SF27), the projection family the 2027 fleet's later registrations converge over (SF25),
+the bins, the ask devices, separation and the input gates.
 
     python3 task306/generator/checks.py <target dir>
 """
+import calendar
 import csv
+import datetime as dt
 import os
+import re
 import sys
+import zipfile
+from collections import Counter, defaultdict
 
 import numpy as np
 
@@ -47,7 +53,192 @@ def world_routes():
     base = {n: float(p[W["plat"][reg] == k].sum()) for k, n in enumerate(P.NAMES)}
     later = Wd.later_truth(W)
     truth = {n: base[n] + later[n] for n in P.NAMES}
-    return base, truth
+    # the post-pin easy route on the clean truth: the cars first registered after 30 June 2026 carried as new cars, each
+    # pack fitted the day the car is registered and covered for the warranty's years from that day
+    idx = np.where(keep & (W["nl"] > Wd.SNAP))[0]
+    war = np.array([P.WARRANTY[n] for n in P.NAMES], float)
+    nl = W["nl"][idx]
+    q = Wd.p_due(T, nl, W["plat"][idx], nl + np.round(war[W["plat"][idx]] * Wd.YD).astype(np.int64), nl, nl)
+    as_new = {n: float(q[W["plat"][idx] == k].sum()) for k, n in enumerate(P.NAMES)}
+    return base, truth, as_new
+
+
+# ---- the 2027 fleet's later registrations, projected from the register's own used imports (SF25) -------------------
+E0 = dt.date(1970, 1, 1)
+HZ = [(2026, m) for m in range(7, 13)] + [(2027, m) for m in range(1, 13)]
+
+
+def _i(d):
+    return (d - E0).days
+
+
+def docx_text(path):
+    with zipfile.ZipFile(path) as z:
+        x = z.read("word/document.xml").decode("utf-8")
+    return re.sub(r"\s+", " ", " ".join(re.findall(r"<w:t[^>]*>([^<]*)</w:t>", x)))
+
+
+class Proj:
+    """Every reasonable way of carrying the cars first registered here from July 2026 to December 2027 at the register's
+    own rate and mix of used imports: each projected car keeps the age, pack age and warranty a window car had when it
+    was registered, and is at risk from its own registration day, given its pack works that day."""
+
+    def __init__(self, pk):
+        self.pk = pk
+        self.imp = [c for c in pk.reg if c["fu"] < c["nl"]]
+        self.y0, self.y1 = _i(S.Y0), _i(S.Y1)
+
+    def window(self, months=None, y0=None, y1=None):
+        if months:
+            lo = S.add_months(S.SNAP, -months)
+            return [c for c in self.imp if lo < c["nl"] <= S.SNAP]
+        return [c for c in self.imp if y0 <= c["nl"] <= y1]
+
+    def arrays(self, cars, orig=False):
+        pk, A = self.pk, defaultdict(list)
+        for c in cars:
+            s, k = (c["fu"], c["n"]) if orig else pk.pack_at(c, c["nl"], inclusive=False)
+            A["st"].append(_i(s)); A["cv"].append(k); A["we"].append(_i(pk.w_end(c)))
+            A["nl"].append(_i(c["nl"])); A["nm"].append(c["n"]); A["day"].append(c["nl"].day)
+            A["mq"].append((c["nl"].month - 1) % 3); A["age"].append((c["nl"] - c["fu"]).days / 365.25)
+        return {k: np.array(v) for k, v in A.items()}
+
+    def chance(self, A, arr, keep_vintage=False, cond=True, cond_at=None, start=None, w_end=None):
+        off = np.zeros(len(arr), dtype=np.int64) if keep_vintage else arr - A["nl"]
+        st = (A["st"] if start is None else start) + off
+        we = (A["we"] if w_end is None else w_end) + off
+        out = np.zeros(len(arr))
+        for k in np.unique(A["cv"]):
+            m = A["cv"] == k
+            F = lambda a: np.interp(a, self.pk.ages, self.pk.tab[k])
+            lo = np.maximum(np.maximum(self.y0, arr[m]), we[m])
+            a0, a1 = (lo - st[m]) / 365.25, (self.y1 - st[m]) / 365.25
+            num = np.maximum(F(a1) - F(a0), 0.0)
+            ca = arr[m] if cond_at is None else np.maximum(arr[m], cond_at)
+            den = np.maximum(1.0 - F((ca - st[m]) / 365.25), 1e-9) if cond else 1.0
+            out[m] = np.where(a1 > a0, num / den, 0.0)
+        return out
+
+    def days(self, A, y, m, rule):
+        last = calendar.monthrange(y, m)[1]
+        if rule == "same":
+            return [(np.array([_i(dt.date(y, m, min(int(d), last))) for d in A["day"]]), 1.0)]
+        if rule in ("mid", "first", "last"):
+            d = {"mid": 15, "first": 1, "last": last}[rule]
+            return [(np.full(len(A["day"]), _i(dt.date(y, m, d))), 1.0)]
+        ds = list(range(1, last + 1, 2))                                   # spread through the month
+        return [(np.full(len(A["day"]), _i(dt.date(y, m, d))), 1.0 / len(ds)) for d in ds]
+
+    def by_make(self, v, A):
+        return {n: float(v[A["nm"] == n].sum()) for n in P.NAMES}
+
+    def monthly(self, cars, months, rule="same", orig=False, weights=None, hz=HZ, **kw):
+        A = self.arrays(cars, orig)
+        tot = np.zeros(len(cars))
+        for j, (y, m) in enumerate(hz):
+            wm = np.array([weights[n][j] for n in A["nm"]]) if weights else 1.0
+            for arr, wd in self.days(A, y, m, rule):
+                tot += wm * wd / months * self.chance(A, arr, **kw)
+        return self.by_make(tot, A)
+
+    def quarterly(self, cars, rule):
+        A = self.arrays(cars)
+        tot = np.zeros(len(cars))
+        for y, q in [(2026, 3), (2026, 4), (2027, 1), (2027, 2), (2027, 3), (2027, 4)]:
+            m0 = 3 * (q - 1) + 1
+            if rule == "own":
+                arr = np.array([_i(dt.date(y, m0 + int(k), min(int(d), calendar.monthrange(y, m0 + int(k))[1])))
+                                for k, d in zip(A["mq"], A["day"])])
+            elif rule == "mid":
+                arr = np.full(len(cars), _i(dt.date(y, m0 + 1, 15)))
+            elif rule == "first":
+                arr = np.full(len(cars), _i(dt.date(y, m0, 1)))
+            else:
+                arr = np.full(len(cars), _i(dt.date(y, m0 + 2, calendar.monthrange(y, m0 + 2)[1])))
+            tot += 0.25 * self.chance(A, arr)
+        return self.by_make(tot, A)
+
+    def replay(self, cars, months):
+        """the next eighteen months take in the last `months` months' cars again, in order, a whole period later"""
+        A = self.arrays(cars)
+        nl = [E0 + dt.timedelta(int(x)) for x in A["nl"]]
+        tot = np.zeros(len(cars))
+        for k in (1, 2, 3):
+            arr = np.array([_i(S.add_months(d, k * months)) for d in nl])
+            tot += np.where((arr > _i(S.SNAP)) & (arr < self.y1), self.chance(A, arr), 0.0)
+        return self.by_make(tot, A)
+
+    def at_age(self, cars, age_of, orig_curve=True):
+        """every projected car at a fixed age on registration, on the pack it was built with"""
+        A = self.arrays(cars, orig=True)
+        tot = np.zeros(len(cars))
+        a = np.array([age_of(n) for n in A["nm"]])
+        for y, m in HZ:
+            arr = np.full(len(cars), _i(dt.date(y, m, 15)))
+            fu = arr - np.round(a * 365.25).astype(np.int64)
+            we = np.array([_i(S.add_years(E0 + dt.timedelta(int(f)), self.pk.war[n])) for f, n in zip(fu, A["nm"])])
+            tot += self.chance(A, arr, keep_vintage=True, start=fu, w_end=we) / 12.0
+        return self.by_make(tot, A)
+
+    def as_new(self, cars):
+        """every later registration carried as a new car, its pack fitted the day it is registered"""
+        A = self.arrays(cars, orig=True)
+        tot = np.zeros(len(cars))
+        for y, m in HZ:
+            arr = np.array([_i(dt.date(y, m, min(int(d), calendar.monthrange(y, m)[1]))) for d in A["day"]])
+            we = np.array([_i(S.add_years(E0 + dt.timedelta(int(t)), self.pk.war[n])) for t, n in zip(arr, A["nm"])])
+            tot += self.chance(A, arr, keep_vintage=True, start=arr, w_end=we) / 12.0
+        return self.by_make(tot, A)
+
+    def family(self):
+        """the standing family: every rate source, placement in the month and pack on registration a competent
+        projection uses, conditioned on the pack working the day the car is registered"""
+        pk, fam = self.pk, {}
+        w12 = self.window(12)
+        rates = [("trailing %d months" % k, self.window(k), k, None) for k in (3, 6, 9, 12, 18, 24, 36, 48)]
+        rates += [("calendar 2025", self.window(y0=dt.date(2025, 1, 1), y1=dt.date(2025, 12, 31)), 12, None),
+                  ("calendar 2024", self.window(y0=dt.date(2024, 1, 1), y1=dt.date(2024, 12, 31)), 12, None)]
+        rates += [("straight-line trend over %d months" % s, w12, 12, pk.trend_weights(s)) for s in (12, 24, 36, 48)]
+        for label, cars, k, wts in rates:
+            for rule in ("same", "mid", "first", "last", "uniform"):
+                for orig in (False, True):
+                    fam["%s, day %s, %s" % (label, rule, "built pack" if orig else "registration pack")] = \
+                        self.monthly(cars, k, rule=rule, orig=orig, weights=wts)
+        for rule in ("own", "mid"):
+            fam["by quarter, %s" % rule] = self.quarterly(w12, rule)
+        for k in (12, 18):
+            fam["replay of the last %d months" % k] = self.replay(self.window(k), k)
+        return fam
+
+
+def stock_below_zero(ln, collapse=False):
+    """lots received in the year whose running stock goes below zero in booking order, the receipt booked first on its
+    day; with collapse, a quantity one pick list repeats over several work orders on such a lot goes out once"""
+    rec = defaultdict(int)
+    when = {}
+    for r in ln.receipts:
+        rec[r["partij"]] += int(r["aantal"])
+        when[r["partij"]] = S.iso(r["datum"])
+    bp = ln.batch_picks() if collapse else {}
+    seen, stock, low = set(), defaultdict(int), set()
+    ev = sorted(((S.iso(r["datum"]), 0, "", r) for r in ln.receipts), key=lambda x: (x[0], x[1]))
+    lines = sorted(((S.stamp(r["geboekt_op"]).date(), 1, r["geboekt_op"], r) for r in ln.stores), key=lambda x: (x[0], x[2]))
+    for d, kind, _, r in sorted(ev + lines, key=lambda x: (x[0], x[1], x[2])):
+        p = r["partij"]
+        if p not in rec:
+            continue
+        if kind == 0:
+            stock[p] += int(r["aantal"])
+            continue
+        key = (r["picklijst"], r["partij"], r["aantal"])
+        if collapse and r["soort"] == "UITGIFTE" and key in bp:
+            if key in seen:
+                continue
+            seen.add(key)
+        stock[p] -= int(r["aantal"])
+        if stock[p] < 0:
+            low.add(p)
+    return low
 
 
 def main(target):
@@ -66,12 +257,19 @@ def main(target):
             heads |= set(next(csv.reader(open(os.path.join(target, f), encoding="utf-8"))))
     words = {"forecast", "prognose", "slot", "slots", "verwacht", "storingen", "failures", "kans", "chance"}
     ok(not [h for h in heads if set(h.lower().split("_")) & words], "R1 no shipped column holds a forecast or a slot")
-    # R3a: the easy route, every filed rule applied, files the named wrong answer, on the clean truth and on the pack
-    wb, wt = world_routes()
-    ok(Wd.lots(wb)[0] == EASY, "R3a clean truth: the register-only route files %s" % Wd.lots(wb)[0])
-    ok(hundred(sum(wb.values())) == 3400, "R3a clean truth: the register-only total is 3,400")
-    ok(S.lots(base)["slots"] == EASY, "R3a pack: the register-only route files the named wrong answer")
-    ok(hundred(sum(base.values())) == 3400, "R3a pack: the register-only total is 3,400")
+    # R3a: the easy route, every filed rule applied, files the named wrong answer, on the clean truth and on the pack.
+    # The plan files the later registrations into the 2027 fleet (SF25); the easy route counts them and carries them
+    # as new cars inside their warranty, which adds nothing in 2027, so it files the register's own split
+    wb, wt, wn = world_routes()
+    ok(sum(wn.values()) == 0.0, "R3a clean truth: the later registrations carried as new cars add %.3f" % sum(wn.values()))
+    wb_new = {n: wb[n] + wn[n] for n in P.NAMES}
+    ok(Wd.lots(wb_new)[0] == EASY, "R3a clean truth: the easy route files %s" % Wd.lots(wb_new)[0])
+    ok(hundred(sum(wb_new.values())) == 3400, "R3a clean truth: the easy route's total is 3,400")
+    pj = Proj(pk)
+    pn = pj.as_new(pj.window(12))
+    ok(sum(pn.values()) == 0.0, "R3a pack: the later registrations carried as new cars add %.3f" % sum(pn.values()))
+    ok(S.lots({n: base[n] + pn[n] for n in P.NAMES})["slots"] == EASY, "R3a pack: the easy route files the named wrong answer")
+    ok(hundred(sum(base.values()) + sum(pn.values())) == 3400, "R3a pack: the easy route's total is 3,400")
     # R3b: the decisive step alone files the golden; the partial repair stays wrong
     ok(Wd.lots(wt)[0] == GOLD and hundred(sum(wt.values())) == 3800, "R3b clean truth: the fleet as it arrives files the golden")
     ok(L["slots"] == GOLD and hundred(c["total"]) == 3800, "R3b pack: adding the arrivals alone files the golden")
@@ -166,6 +364,96 @@ def main(target):
     # SF13 and SF14: the population is the Netherlands' cars of the five makes; every register row maps to a platform
     ok(len({r["n"] for r in reg}) == 5, "SF13 five platforms")
     ok(True, "SF14 in the Netherlands")
+    # SF25: the 2027 fleet (plan section 3) holds the cars first registered here from 1 July 2026 to the end of 2027,
+    # each from the day it is registered; the register-only reading both portal judges filed leaves them out and files
+    # the register's split. The plan files the WHAT only: how the later registrations are projected is open, and every
+    # projection a competent analyst builds from the register's own used imports files the golden split and total (C1,
+    # asserted cell by cell on the figures and on the counts the cells are built from)
+    plan_txt = docx_text(os.path.join(target, P.FILES["plan"]))
+    ok("those first registered here from 1 July 2026 to the end of 2027, each from the day it is registered" in plan_txt,
+       "SF25 the plan files the later registrations in the 2027 fleet")
+    ok("import" not in plan_txt.lower() and "arriv" not in plan_txt.lower(),
+       "SF25 the plan names no import and no arrival: the WHAT only")
+    ok(S.lots(base)["slots"] == EASY and hundred(sum(base.values())) == 3400,
+       "SF25 the register-only reading files the register's split and 3,400")
+    w12 = pj.window(12)
+    cnt12 = Counter(x["n"] for x in w12)
+    ok(dict(cnt12) == {"Volta hatch": 502, "Kestrel SUV": 202, "Plover saloon": 187, "Mira city car": 1394, "Tern van": 42},
+       "SF25 counts: the twelve months' used imports by platform %s" % dict(cnt12))
+    ok({k: len(pj.window(k)) for k in (6, 24, 36)} == {6: 1138, 24: 4606, 36: 6875},
+       "SF25 counts: the 6, 24 and 36 months' used imports %s" % {k: len(pj.window(k)) for k in (6, 24, 36)})
+    fam25 = pj.family()
+    ok(len(fam25) == 144, "SF25 the projection family has %d cells" % len(fam25))
+    mira = []
+    for k, a in fam25.items():
+        f = {n: base[n] + a.get(n, 0.0) for n in P.NAMES}
+        lt = S.lots(f)
+        ok(lt["slots"] == GOLD, "SF25 family %s files %s" % (k, lt["slots"]))
+        ok(hundred(sum(f.values())) == 3800, "SF25 family %s total %.1f" % (k, sum(f.values())))
+        mira.append(a["Mira city car"])
+    ok(abs(fam25["trailing 12 months, day same, registration pack"]["Mira city car"] - arr["Mira city car"]) < 1e-6,
+       "SF25 the family's committed cell is the golden's construction")
+    ok(318.0 < min(mira) and max(mira) < 398.5, "SF25 the family's Mira city car failures %.1f to %.1f sit inside the "
+       "golden's corridor (318.0 to 398.5)" % (min(mira), max(mira)))
+    # the corridor's two edges, found on the pack: the split moves below 318.0 and the total above 398.5
+    def at(x):
+        f = {n: base[n] + arr.get(n, 0.0) for n in P.NAMES}
+        f["Mira city car"] = base["Mira city car"] + x
+        return S.lots(f)["slots"] == GOLD and hundred(sum(f.values())) == 3800
+    ok(at(318.5) and not at(317.5) and at(398.0) and not at(399.0), "SF25 the corridor's edges are 318 and 398.5")
+    # cells outside the family, each mapped to what it violates
+    A12 = pj.arrays(w12)
+    share_mq = [float(np.mean(A12["mq"][A12["nm"] == "Mira city car"] == k)) for k in range(3)]
+    ok(all(0.30 < s < 0.37 for s in share_mq) and len(set(A12["day"][A12["nm"] == "Mira city car"])) == 28,
+       "SF25 the register's own arrivals come through every month of a quarter and every day to the 28th")
+    for rule in ("first", "last"):
+        f = {n: base[n] + v for n, v in pj.quarterly(w12, rule).items()}
+        ok(not (S.lots(f)["slots"] == GOLD and hundred(sum(f.values())) == 3800),
+           "SF25 a quarter's cars all on its %s day (against the register's own dates) leaves the golden" % rule)
+    ages = {y: np.mean([(x["nl"] - x["fu"]).days / 365.25 for x in pj.imp if x["n"] == "Mira city car" and x["nl"].year == y])
+            for y in range(2022, 2027)}
+    ok(max(ages.values()) - min(ages.values()) < 0.15, "SF25 the Mira city car's imports arrive at one age each year %s" % ages)
+    a = pj.monthly(w12, 12, keep_vintage=True)
+    ok(S.lots({n: base[n] + a[n] for n in P.NAMES})["slots"] != GOLD,
+       "SF25 copies of the window's cars kept at their own first admission (a year older each year) leave the golden")
+    mean_age = {n: float(np.mean(A12["age"][A12["nm"] == n])) for n in P.NAMES}
+    ok(all(mean_age["Mira city car"] - mean_age[n] > 2.0 for n in P.NAMES if n != "Mira city car"),
+       "SF25 each platform's imports arrive at their own age %s" % {n: round(v, 2) for n, v in mean_age.items()})
+    pooled = float(np.mean(A12["age"]))
+    a = pj.at_age(w12, lambda n: pooled)
+    ok(S.lots({n: base[n] + a[n] for n in P.NAMES})["slots"] != GOLD, "SF25 one age pooled over the platforms leaves the golden")
+    a = pj.at_age(w12, lambda n: mean_age[n])
+    ok(S.lots({n: base[n] + a[n] for n in P.NAMES})["slots"] == GOLD, "SF25 each platform at its own mean age keeps the golden")
+    a = pj.monthly(w12, 12, cond=False)
+    ok(S.lots({n: base[n] + a[n] for n in P.NAMES})["slots"] != GOLD,
+       "SF25 the later registrations unconditioned on a working pack (the register's R1 reading) leave the golden")
+    a = pj.monthly(w12, 12, cond_at=_i(S.Y0))
+    f = {n: base[n] + a[n] for n in P.NAMES}
+    ok(S.lots(f)["slots"] == GOLD and hundred(sum(f.values())) == 3800,
+       "SF25 conditioned on 1 January 2027 instead of the registration day (against the plan's pack per car) keeps the golden")
+    cnt = Counter(r["n"] for r in reg)
+    for flow in (Counter(r["n"] for r in reg if S.add_months(S.SNAP, -12) < r["nl"] <= S.SNAP), cnt12):
+        f = {n: base[n] * (1 + flow[n] / 12.0 * 12.0 / cnt[n]) for n in P.NAMES}
+        ok(S.lots(f)["slots"] != GOLD, "SF25 the later registrations as the fleet's growth at its average chance leave the golden")
+    # SF26: one pack per car (plan section 3): the pack a car carries at the end of 30 June 2026, or when it is first
+    # registered here later, and that pack's failure; a pack fitted in its place later is left out. The renewal reading
+    # (a judge added the refurbished packs fitted after late-2026 failures) and the start-of-day reading of 30 June both
+    # move the register's stated figure, never the call
+    ok("a pack fitted in its place later is left out" in plan_txt and "at the end of 30 June 2026" in plan_txt,
+       "SF26 the plan files one pack per car")
+    ok(int(round(sum(base.values()))) == 3448, "SF26 the register's figure under the filed reading is 3,448")
+    ok(int(round(sum(base.values()) + sum(ren.values()))) != 3448, "SF26 the renewal reading moves the register's figure")
+    f = {n: fc[n] + ren.get(n, 0.0) for n in P.NAMES}
+    ok(S.lots(f)["slots"] == GOLD and hundred(sum(f.values())) == 3800, "SF26 the renewal reading keeps the call")
+    ex = defaultdict(float)
+    for r in reg:
+        st, cu = pk.pack_at(r, S.SNAP, inclusive=False)
+        ex[r["n"]] += pk.p_due(st, cu, pk.w_end(r), S.SNAP, S.SNAP)
+    on_snap = sum(1 for evs in pk.ev.values() for d, _ in evs if d == S.SNAP)
+    ok(on_snap == 8 and int(round(sum(ex.values()))) != 3448, "SF26 the start-of-day reading of 30 June (%d fits that day) "
+       "moves the register's figure to %d" % (on_snap, int(round(sum(ex.values())))))
+    f = {n: ex[n] + arr.get(n, 0.0) for n in P.NAMES}
+    ok(S.lots(f)["slots"] == GOLD and hundred(sum(f.values())) == 3800, "SF26 the start-of-day reading keeps the call")
     # SF22: the curves as published; a curve rescaled to 2025's realised fittings files another split, and the two
     # back-tests the note quotes (cars on the register now over-forecast the Mira; cars registered by the end of 2024
     # under-forecast it)
@@ -237,6 +525,39 @@ def main(target):
     ok(sum(round(f[n], 1) == round(C[n], 1) for n in P.NAMES) <= 2, "ask C by count keeps at most two")
     bp = ln.batch_picks()
     ok(len(bp) == len(P.HOLDS), "one batch pick per hold, %d" % len(bp))
+    # SF27: ask A's pick lists. The line notes file that stores keeps its stock by lot and no lot's stock goes below
+    # zero, with one receipt row per lot. Read as written, the eight replacement lots' lines take their stock below
+    # zero, so the natural read (a judge's 171, 283, 195, 150, 238) contradicts a filed sentence; every repair that
+    # keeps each lot at or above zero (the repeated quantity counted once, the lot capped at its receipt, its lines
+    # scaled to it) files the golden to the module (C1), and under the golden reading no lot goes below zero, so the
+    # over-repair of the other shared lists is called for by nothing
+    notes_txt = re.sub(r"\s+", " ", open(os.path.join(target, P.FILES["line_notes"]), encoding="utf-8").read())
+    ok("stores keeps its stock by lot, and no lot's stock goes below zero" in notes_txt
+       and "one row per supplier lot" in notes_txt, "SF27 the line notes file the lot stock rule")
+    rec = Counter()
+    for r in ln.receipts:
+        rec[r["partij"]] += int(r["aantal"])
+    ok(len(rec) == len(ln.receipts), "SF27 one receipt row per lot")
+    low = stock_below_zero(ln)
+    ok(low == {k[1] for k in bp} and len(low) == len(P.HOLDS), "SF27 read as written, exactly the %d replacement lots go "
+       "below zero" % len(low))
+    ok(not stock_below_zero(ln, collapse=True), "SF27 under the golden reading no lot goes below zero")
+    fy_lines = [r for r in ln.stores if S.in_fy(S.stamp(r["geboekt_op"]).date())]
+    iss = Counter()
+    for r in fy_lines:
+        iss[r["partij"]] += int(r["aantal"])
+    over = {p for p in iss if p in rec and iss[p] > rec[p]}
+    ok(over == low, "SF27 the lots whose lines exceed their receipt are the lots that go below zero")
+    ships = ln.shipped()
+    scaled = defaultdict(float)
+    for r in fy_lines:
+        k = rec[r["partij"]] / iss[r["partij"]] if r["partij"] in over else 1.0
+        scaled[S.CODE[ln.wo[r["werkorder"]]["platformcode"]]] += \
+            int(r["aantal"]) * k * int(ln.parts[r["artikelnummer"]]["modules_per_eenheid"])
+    ok(all(abs(50.0 * scaled[n] / ships[n] - A[n]) < 1e-9 for n in P.NAMES),
+       "SF27 each over-drawn lot brought back to its receipt files the golden exactly")
+    nat = ln.ask_a("naive")
+    ok([int(round(nat[n])) for n in P.NAMES] == [171, 283, 195, 150, 238], "SF27 the natural read is the judge's figures")
     # distractors: neither is read by any figure's code, so deleting either leaves every figure where it is
     solve_src = open(os.path.join(HERE, "solve.py")).read() + open(os.path.join(HERE, "figs.py")).read()
     ok("prices" not in solve_src and "leadtimes" not in solve_src, "distractors unread: deletion test")

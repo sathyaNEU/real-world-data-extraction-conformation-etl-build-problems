@@ -4,13 +4,14 @@
 
 LEAK stops the ship. REVIEW is a reader's call and the /leak-check command's solver's-eye pass reads every REVIEW line. INFO is a sweep that ran and found nothing or was skipped.
 
-Stump terms swept: register, netherlands, arrive, imports, population, arrival, sentence, stream, asserted, registration, register-only, decisive, reader, forecasts, replacement, kestrel, calendar, prompt, history, abroad, carries, extract, curves, golden, lineage
+Stump terms swept: register, registered, sentence, population, imports, netherlands, carries, registrations, arrive, registration, arrival, stream, decisive, carried, section, asserted, register-only, golden, reader, calendar, estimand, replacement, kestrel, plover, generator
 
-## 4 design-note vocabulary (REVIEW 4)
-- **REVIEW** `garantievoorwaarden_tractieaccu_2026.pdf`: 5 of 25 stump-paragraph terms appear (netherlands, registration, replacement, kestrel, carries); read whether the document names the move
-- **REVIEW** `prijslijst_revisiepakketten_2026.pdf`: 3 of 25 stump-paragraph terms appear (netherlands, replacement, kestrel); read whether the document names the move
-- **REVIEW** `rdw_extract_veldbeschrijving.pdf`: 6 of 25 stump-paragraph terms appear (register, netherlands, registration, kestrel, abroad, extract); read whether the document names the move
-- **REVIEW** `tooling_plan_2027_draft.docx`: 9 of 25 stump-paragraph terms appear (register, netherlands, registration, replacement, kestrel, calendar); read whether the document names the move
+## 4 design-note vocabulary (REVIEW 5)
+- **REVIEW** `garantievoorwaarden_tractieaccu_2026.pdf`: 6 of 25 stump-paragraph terms appear (netherlands, carries, registration, replacement, kestrel, plover); read whether the document names the move
+- **REVIEW** `lijn_exports_toelichting.md`: 3 of 25 stump-paragraph terms appear (carries, kestrel, plover); read whether the document names the move
+- **REVIEW** `prijslijst_revisiepakketten_2026.pdf`: 4 of 25 stump-paragraph terms appear (netherlands, replacement, kestrel, plover); read whether the document names the move
+- **REVIEW** `rdw_extract_veldbeschrijving.pdf`: 6 of 25 stump-paragraph terms appear (register, registered, netherlands, registration, kestrel, plover); read whether the document names the move
+- **REVIEW** `tooling_plan_2027_draft.docx`: 8 of 25 stump-paragraph terms appear (register, registered, netherlands, carries, registration, calendar); read whether the document names the move
 
 ## 10 container metadata (INFO 1)
 - **INFO** `-`: audit reported no writer signature (1 lines)
@@ -32,6 +33,7 @@ Stump terms swept: register, netherlands, arrive, imports, population, arrival, 
 ## 9 dates after the setting (clean)
 
 ## 11 prompt gate (clean)
+
 
 ## Solver's-eye read
 
