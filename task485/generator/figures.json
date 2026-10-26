@@ -1,313 +1,193 @@
 {
- "ash": {
-  "Candrigg Soda Works": {
-   "rec": 87.2,
-   "t": 16560
-  },
-  "Dremstead Chemicals": {
-   "rec": 72.9,
-   "t": 8490
-  },
-  "Eskfold Sugar": {
-   "rec": 82.2,
-   "t": 6200
-  },
-  "Haskmouth Paper": {
-   "rec": 71.4,
-   "t": 3410
-  },
-  "Kirlgate Maltings": {
-   "rec": 68.8,
-   "t": 2280
-  },
-  "Lathgarth Fibres": {
-   "rec": 71.3,
-   "t": 4000
-  },
-  "Nethstead Tissue": {
-   "rec": 88.5,
-   "t": 11060
-  },
-  "Pridwold Starch": {
-   "rec": 20.9,
-   "t": 9890
-  },
-  "Quarholt Board Mills": {
-   "rec": 87.4,
-   "t": 23610
-  },
-  "Sellhope Rubber": {
-   "rec": 15.8,
-   "t": 4860
-  },
-  "Thalwold Foods": {
-   "rec": 74.3,
-   "t": 7000
-  },
-  "Ulvdale Dyeworks": {
-   "rec": 13.9,
-   "t": 4120
-  },
-  "Umbgarth District Heating": {
-   "rec": 68.8,
-   "t": 6760
-  },
-  "Vornfield Brewery": {
-   "rec": 85.3,
-   "t": 5870
-  },
-  "Wendscar Tannery": {
-   "rec": 17.2,
-   "t": 8320
-  },
-  "Yeldholt General Hospital Energy Centre": {
-   "rec": 75.0,
-   "t": 7320
-  }
- },
- "ash_area": {
-  "rec": 68.0,
-  "t": 129750
- },
- "ash_order": [
-  "Quarholt Board Mills",
-  "Eskfold Sugar",
-  "Dremstead Chemicals",
-  "Ulvdale Dyeworks",
-  "Kirlgate Maltings",
-  "Vornfield Brewery",
-  "Yeldholt General Hospital Energy Centre",
-  "Haskmouth Paper",
-  "Nethstead Tissue",
-  "Pridwold Starch",
-  "Lathgarth Fibres",
-  "Candrigg Soda Works",
-  "Thalwold Foods",
-  "Sellhope Rubber",
-  "Umbgarth District Heating",
-  "Wendscar Tannery"
+ "arrivals.2025_26": 4281,
+ "back.arrivals.2018-19.AGR": 203,
+ "back.arrivals.2018-19.CON": 571,
+ "back.arrivals.2018-19.DIG": 322,
+ "back.arrivals.2018-19.FIN": 535,
+ "back.arrivals.2018-19.HOS": 868,
+ "back.arrivals.2018-19.HSC": 932,
+ "back.arrivals.2018-19.OTH": 377,
+ "back.arrivals.2018-19.RET": 480,
+ "back.arrivals.2018-19.total": 4288,
+ "back.arrivals.2019-20.AGR": 205,
+ "back.arrivals.2019-20.CON": 427,
+ "back.arrivals.2019-20.DIG": 225,
+ "back.arrivals.2019-20.FIN": 446,
+ "back.arrivals.2019-20.HOS": 667,
+ "back.arrivals.2019-20.HSC": 661,
+ "back.arrivals.2019-20.OTH": 275,
+ "back.arrivals.2019-20.RET": 403,
+ "back.arrivals.2019-20.total": 3309,
+ "back.arrivals.2020-21.AGR": 171,
+ "back.arrivals.2020-21.CON": 406,
+ "back.arrivals.2020-21.DIG": 227,
+ "back.arrivals.2020-21.FIN": 443,
+ "back.arrivals.2020-21.HOS": 665,
+ "back.arrivals.2020-21.HSC": 756,
+ "back.arrivals.2020-21.OTH": 285,
+ "back.arrivals.2020-21.RET": 419,
+ "back.arrivals.2020-21.total": 3372,
+ "back.arrivals.2021-22.AGR": 161,
+ "back.arrivals.2021-22.CON": 499,
+ "back.arrivals.2021-22.DIG": 283,
+ "back.arrivals.2021-22.FIN": 467,
+ "back.arrivals.2021-22.HOS": 777,
+ "back.arrivals.2021-22.HSC": 822,
+ "back.arrivals.2021-22.OTH": 320,
+ "back.arrivals.2021-22.RET": 508,
+ "back.arrivals.2021-22.total": 3837,
+ "back.arrivals.2022-23.AGR": 191,
+ "back.arrivals.2022-23.CON": 518,
+ "back.arrivals.2022-23.DIG": 256,
+ "back.arrivals.2022-23.FIN": 457,
+ "back.arrivals.2022-23.HOS": 659,
+ "back.arrivals.2022-23.HSC": 799,
+ "back.arrivals.2022-23.OTH": 263,
+ "back.arrivals.2022-23.RET": 491,
+ "back.arrivals.2022-23.total": 3634,
+ "back.long.2018-19.AGR": 89,
+ "back.long.2018-19.CON": 250,
+ "back.long.2018-19.DIG": 296,
+ "back.long.2018-19.FIN": 476,
+ "back.long.2018-19.HOS": 333,
+ "back.long.2018-19.HSC": 462,
+ "back.long.2018-19.OTH": 334,
+ "back.long.2018-19.RET": 138,
+ "back.long.2018-19.total": 2378,
+ "back.long.2019-20.AGR": 91,
+ "back.long.2019-20.CON": 185,
+ "back.long.2019-20.DIG": 196,
+ "back.long.2019-20.FIN": 394,
+ "back.long.2019-20.HOS": 266,
+ "back.long.2019-20.HSC": 302,
+ "back.long.2019-20.OTH": 250,
+ "back.long.2019-20.RET": 125,
+ "back.long.2019-20.total": 1809,
+ "back.long.2020-21.AGR": 70,
+ "back.long.2020-21.CON": 171,
+ "back.long.2020-21.DIG": 199,
+ "back.long.2020-21.FIN": 382,
+ "back.long.2020-21.HOS": 219,
+ "back.long.2020-21.HSC": 394,
+ "back.long.2020-21.OTH": 255,
+ "back.long.2020-21.RET": 137,
+ "back.long.2020-21.total": 1827,
+ "back.long.2021-22.AGR": 64,
+ "back.long.2021-22.CON": 235,
+ "back.long.2021-22.DIG": 233,
+ "back.long.2021-22.FIN": 408,
+ "back.long.2021-22.HOS": 325,
+ "back.long.2021-22.HSC": 400,
+ "back.long.2021-22.OTH": 275,
+ "back.long.2021-22.RET": 159,
+ "back.long.2021-22.total": 2099,
+ "back.long.2022-23.AGR": 91,
+ "back.long.2022-23.CON": 186,
+ "back.long.2022-23.DIG": 228,
+ "back.long.2022-23.FIN": 400,
+ "back.long.2022-23.HOS": 243,
+ "back.long.2022-23.HSC": 327,
+ "back.long.2022-23.OTH": 225,
+ "back.long.2022-23.RET": 145,
+ "back.long.2022-23.total": 1845,
+ "backtest.flat_sector": 0.19,
+ "backtest.golden": 0.155,
+ "backtest.scored": 2763,
+ "backtest.sector_months": 0.172,
+ "call": [
+  "DIG",
+  "FIN",
+  "HOS"
  ],
- "boilers": {
-  "Candrigg Soda Works": {
-   "listed": "listed",
-   "over_line_pct": 27.1,
-   "ratio": 0.9,
-   "so2": 320,
-   "so2_unrounded": 317.8,
-   "tested": 340
-  },
-  "Dremstead Chemicals": {
-   "listed": "listed",
-   "over_line_pct": 34.8,
-   "ratio": 4.3,
-   "so2": 340,
-   "so2_unrounded": 336.9,
-   "tested": 80
-  },
-  "Eskfold Sugar": {
-   "listed": "not listed",
-   "over_line_pct": -72.9,
-   "ratio": 0.9,
-   "so2": 70,
-   "so2_unrounded": 67.7,
-   "tested": 70
-  },
-  "Haskmouth Paper": {
-   "listed": "not listed",
-   "over_line_pct": -85.4,
-   "ratio": 0.9,
-   "so2": 40,
-   "so2_unrounded": 36.6,
-   "tested": 40
-  },
-  "Kirlgate Maltings": {
-   "listed": "not listed",
-   "over_line_pct": -91.6,
-   "ratio": 1.1,
-   "so2": 20,
-   "so2_unrounded": 21.1,
-   "tested": 20
-  },
-  "Lathgarth Fibres": {
-   "listed": "not listed",
-   "over_line_pct": -83.7,
-   "ratio": 1.1,
-   "so2": 40,
-   "so2_unrounded": 40.8,
-   "tested": 40
-  },
-  "Nethstead Tissue No. 1 boiler": {
-   "listed": "not listed",
-   "over_line_pct": -73.5,
-   "ratio": 1.7,
-   "so2": 70,
-   "so2_unrounded": 66.3,
-   "tested": 40
-  },
-  "Nethstead Tissue No. 2 boiler": {
-   "listed": "not listed",
-   "over_line_pct": -76.1,
-   "ratio": 1.0,
-   "so2": 60,
-   "so2_unrounded": 59.9,
-   "tested": 60
-  },
-  "Pridwold Starch": {
-   "listed": "not listed",
-   "over_line_pct": -51.2,
-   "ratio": 1.0,
-   "so2": 120,
-   "so2_unrounded": 122.0,
-   "tested": 130
-  },
-  "Quarholt Board Mills boiler 1": {
-   "listed": "not listed",
-   "over_line_pct": -35.6,
-   "ratio": 0.9,
-   "so2": 160,
-   "so2_unrounded": 161.1,
-   "tested": 170
-  },
-  "Quarholt Board Mills boiler 2": {
-   "listed": "listed",
-   "over_line_pct": 55.5,
-   "ratio": 3.3,
-   "so2": 390,
-   "so2_unrounded": 388.7,
-   "tested": 120
-  },
-  "Sellhope Rubber": {
-   "listed": "listed",
-   "over_line_pct": 39.1,
-   "ratio": 5.9,
-   "so2": 350,
-   "so2_unrounded": 347.6,
-   "tested": 60
-  },
-  "Thalwold Foods": {
-   "listed": "listed",
-   "over_line_pct": 31.1,
-   "ratio": 3.5,
-   "so2": 330,
-   "so2_unrounded": 327.7,
-   "tested": 90
-  },
-  "Ulvdale Dyeworks": {
-   "listed": "not listed",
-   "over_line_pct": -65.2,
-   "ratio": 1.7,
-   "so2": 90,
-   "so2_unrounded": 87.0,
-   "tested": 50
-  },
-  "Umbgarth District Heating": {
-   "listed": "listed",
-   "over_line_pct": 36.8,
-   "ratio": 5.6,
-   "so2": 340,
-   "so2_unrounded": 342.0,
-   "tested": 60
-  },
-  "Vornfield Brewery": {
-   "listed": "not listed",
-   "over_line_pct": -80.9,
-   "ratio": 1.0,
-   "so2": 50,
-   "so2_unrounded": 47.7,
-   "tested": 50
-  },
-  "Wendscar Tannery": {
-   "listed": "not listed",
-   "over_line_pct": -51.2,
-   "ratio": 1.0,
-   "so2": 120,
-   "so2_unrounded": 122.0,
-   "tested": 120
-  },
-  "Yeldholt General Hospital Energy Centre": {
-   "listed": "not listed",
-   "over_line_pct": -73.0,
-   "ratio": 1.0,
-   "so2": 70,
-   "so2_unrounded": 67.4,
-   "tested": 60
-  }
- },
- "call": {
-  "listed": [
-   "Quarholt Board Mills boiler 2",
-   "Dremstead Chemicals",
-   "Candrigg Soda Works",
-   "Thalwold Foods",
-   "Sellhope Rubber",
-   "Umbgarth District Heating"
-  ],
-  "n_listed": 6,
-  "not_listed": [
-   "Quarholt Board Mills boiler 1",
-   "Eskfold Sugar",
-   "Ulvdale Dyeworks",
-   "Kirlgate Maltings",
-   "Vornfield Brewery",
-   "Yeldholt General Hospital Energy Centre",
-   "Haskmouth Paper",
-   "Nethstead Tissue No. 1 boiler",
-   "Nethstead Tissue No. 2 boiler",
-   "Pridwold Starch",
-   "Lathgarth Fibres",
-   "Wendscar Tannery"
-  ]
- },
- "components": {
-  "coal": 893723,
-  "formed": 25400,
-  "leaving_10": 2960,
-  "removed": 22400
- },
- "constants": {
-  "ash_sites": 16,
-  "ask_figures": 32,
-  "boilers": 18,
-  "contractors": 3,
-  "guidance_section_sulphur": "4.2",
-  "line": 250,
-  "mcaco3": 100.087,
-  "ms": 32.065,
-  "mso2": 64.066,
-  "ratios": [
-   1.03,
-   1.05,
-   1.07
-  ],
-  "sites": 16
- },
- "default": {
-  "listed": [
-   "Candrigg Soda Works"
-  ]
- },
- "design": {
-  "name": "Quarholt Board Mills boiler 1",
-  "so2": 310
- },
- "order": [
-  "Quarholt Board Mills boiler 1",
-  "Quarholt Board Mills boiler 2",
-  "Eskfold Sugar",
-  "Dremstead Chemicals",
-  "Ulvdale Dyeworks",
-  "Kirlgate Maltings",
-  "Vornfield Brewery",
-  "Yeldholt General Hospital Energy Centre",
-  "Haskmouth Paper",
-  "Nethstead Tissue No. 1 boiler",
-  "Nethstead Tissue No. 2 boiler",
-  "Pridwold Starch",
-  "Lathgarth Fibres",
-  "Candrigg Soda Works",
-  "Thalwold Foods",
-  "Sellhope Rubber",
-  "Umbgarth District Heating",
-  "Wendscar Tannery"
- ]
+ "easy.CON.provisional": 226.0,
+ "easy.HSC.provisional": 447.0,
+ "easy.RET.provisional": 184.0,
+ "easy.call": [
+  "CON",
+  "DIG",
+  "FIN",
+  "HOS",
+  "HSC",
+  "RET"
+ ],
+ "first.CON.2024_25.long_pct": 40.0,
+ "first.HSC.2024_25.long_pct": 51.0,
+ "first.RET.2024_25.long_pct": 34.0,
+ "history_window_days": 365,
+ "returning.CON.2024_25.long_pct": 1.0,
+ "returning.CON.2024_25.share_pct": 13.0,
+ "returning.CON.2025_26.open": 180,
+ "returning.CON.2025_26.share_pct": 31.0,
+ "returning.HSC.2024_25.long_pct": 3.0,
+ "returning.HSC.2024_25.share_pct": 12.0,
+ "returning.HSC.2025_26.open": 239,
+ "returning.HSC.2025_26.share_pct": 26.0,
+ "returning.RET.2024_25.long_pct": 0.0,
+ "returning.RET.2024_25.share_pct": 18.0,
+ "returning.RET.2025_26.open": 184,
+ "returning.RET.2025_26.share_pct": 33.0,
+ "sector.AGR.allowance": 110,
+ "sector.AGR.arrivals": 177,
+ "sector.AGR.long_at_cut": 15,
+ "sector.AGR.open_at_cut": 104,
+ "sector.AGR.over": false,
+ "sector.AGR.provisional": 90.2,
+ "sector.AGR.published": 100,
+ "sector.AGR.short_at_cut": 58,
+ "sector.CON.allowance": 210,
+ "sector.CON.arrivals": 654,
+ "sector.CON.long_at_cut": 28,
+ "sector.CON.open_at_cut": 523,
+ "sector.CON.over": false,
+ "sector.CON.provisional": 181.0,
+ "sector.CON.published": 200,
+ "sector.CON.short_at_cut": 103,
+ "sector.DIG.allowance": 190,
+ "sector.DIG.arrivals": 232,
+ "sector.DIG.long_at_cut": 33,
+ "sector.DIG.open_at_cut": 187,
+ "sector.DIG.over": true,
+ "sector.DIG.provisional": 208.7,
+ "sector.DIG.published": 200,
+ "sector.DIG.short_at_cut": 12,
+ "sector.FIN.allowance": 350,
+ "sector.FIN.arrivals": 434,
+ "sector.FIN.long_at_cut": 57,
+ "sector.FIN.open_at_cut": 348,
+ "sector.FIN.over": true,
+ "sector.FIN.provisional": 380.5,
+ "sector.FIN.published": 400,
+ "sector.FIN.short_at_cut": 29,
+ "sector.HOS.allowance": 230,
+ "sector.HOS.arrivals": 745,
+ "sector.HOS.long_at_cut": 44,
+ "sector.HOS.open_at_cut": 497,
+ "sector.HOS.over": true,
+ "sector.HOS.provisional": 253.8,
+ "sector.HOS.published": 250,
+ "sector.HOS.short_at_cut": 204,
+ "sector.HSC.allowance": 420,
+ "sector.HSC.arrivals": 1062,
+ "sector.HSC.long_at_cut": 51,
+ "sector.HSC.open_at_cut": 825,
+ "sector.HSC.over": false,
+ "sector.HSC.provisional": 380.2,
+ "sector.HSC.published": 400,
+ "sector.HSC.short_at_cut": 186,
+ "sector.OTH.allowance": 300,
+ "sector.OTH.arrivals": 318,
+ "sector.OTH.long_at_cut": 47,
+ "sector.OTH.open_at_cut": 245,
+ "sector.OTH.over": false,
+ "sector.OTH.provisional": 278.6,
+ "sector.OTH.published": 300,
+ "sector.OTH.short_at_cut": 26,
+ "sector.RET.allowance": 170,
+ "sector.RET.arrivals": 659,
+ "sector.RET.long_at_cut": 24,
+ "sector.RET.open_at_cut": 511,
+ "sector.RET.over": false,
+ "sector.RET.provisional": 149.4,
+ "sector.RET.published": 150,
+ "sector.RET.short_at_cut": 124
 }

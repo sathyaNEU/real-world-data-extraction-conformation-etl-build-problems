@@ -7,11 +7,11 @@
   "subdomain": "census-register-administrative-data-quality",
   "niche": "an island Statistics Unit's provisional long-term immigration for the year to 30 June 2026 by employment sector, conformed from the Population Register's arrival registrations and leaving notices cut at 31 August 2026, set against the Population Policy's sector allowances that fix each sector's 2027 work permit quota",
   "objective": "etl",
-  "shape": "10",
+  "shape": "07",
   "decision_type": "designation_set",
   "answer_unit": "set_of_items",
-  "answer": "",
-  "answer_source": "",
+  "answer": "Hospitality and tourism, financial and professional services and digital and e-gaming exceed their 2025-26 allowances (253.8 against 230, 380.5 against 350, 208.7 against 190); construction, health and social care and retail and distribution stay under (181.0 against 210, 380.2 against 420, 149.4 against 170)",
+  "answer_source": "task485/submission.md block 1 and generator/figures.json (call, sector.*.provisional)",
   "gap": [
     "time",
     "population"
@@ -51,7 +51,7 @@
   "scoring_unit": "other",
   "spine": {
     "file": "population_register_extract_20260930.csv",
-    "rows": 0,
+    "rows": 25332,
     "entity": "one stay on the island, from an arrival registration to its leaving notice",
     "grain": "person x stay",
     "source": "synthetic"
@@ -85,7 +85,10 @@
   "mechanism_source": "design_note",
   "differentiation": {
     "task100": "There a member's exit is fixed by a course structure (two stages, an optional interim stage) and found by matching the member to the prior period's snapshot; here no structure fixes a stay's length: whether an open arrival stays twelve months is estimated from the year-before arrivals' retention, and the person's own earlier stay changes which retention applies.",
-    "task136": "There an intervention's enrolments overstate its addition and the comparison is against sites not yet treated over the same months, a causal design; here nothing is treated: a provisional count of stays reaching twelve months is completed from the year-before arrivals' retention, and the arrival's migration history, rebuilt from its earlier stays, splits that retention."
+    "task136": "There an intervention's enrolments overstate its addition and the comparison is against sites not yet treated over the same months, a causal design; here nothing is treated: a provisional count of stays reaching twelve months is completed from the year-before arrivals' retention, and the arrival's migration history, rebuilt from its earlier stays, splits that retention.",
+    "task483": "There a group's half point is rebuilt from its parts' percentile tables and a unit's day from period totals, a grain change in published records; here no record is coarsened: a provisional count's open stays are completed from the year-before arrivals, and the person's own earlier stays split the retention.",
+    "task484": "There a fuel's use is carried from a survey through a price shock read off metered and unmetered households' deliveries, a difference against an earlier pair of periods; here nothing is metered or shocked: each open stay's chance of reaching twelve months is read from earlier arrivals with the same migration history.",
+    "task486": "There a multi-site unit's members are placed at its sites by size times class density measured on single-site units, an allocation across premises; here nothing is allocated across places: a stay still open at the cut is completed on the year-before arrivals of the same sector and migration history."
   },
   "lineage": [
     {
@@ -122,6 +125,6 @@
       "stump_strategy": "other"
     }
   ],
-  "notes": "stump_strategy maturity_censoring: the year's long-term immigration is not finished at the cut and its open stays are completed from the year-before arrivals' retention; the completion that holds conditions on each arrival's own migration history (a stay that ended in the twelve months before arriving), not its sector alone. G9 decisive: the arrivals counted upstream against the stays that survive twelve months, the survival class (returning circular workers) behind a self-join of the register. Pattern none.",
-  "registered": "2026-10-26T03:15:36Z"
+  "notes": "stump_strategy maturity_censoring: the year's long-term immigration is not finished at the cut and its open stays are completed from the year-before arrivals' retention; the completion that holds conditions on each arrival's own migration history (a stay that ended in the twelve months before arriving), not its sector alone. G9 decisive: the arrivals counted upstream against the stays that survive twelve months, the survival class (returning circular workers) behind a self-join of the register. Pattern none. Shape redrawn from 10 to 07 at the stage 3 heart check (task269 v5, registered 01:35:57Z and reaching main after this draw's check, carries 10): the rubric's widest component is the back series' 80 cells by sector and year (arrivals and long-term immigration), the call's eight sector rows beside it, so a grid of cells is the honester label.",
+  "registered": "2026-10-26T04:06:12Z"
 }

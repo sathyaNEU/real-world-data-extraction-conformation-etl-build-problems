@@ -1,22 +1,22 @@
 {
  "task": "task485",
  "owner": "oviya1301",
- "status": "DESIGN",
+ "status": "SHIPPED",
  "domain": "survey-research-official-statistics",
  "objective": "etl",
- "stage": 2,
- "stage_name": "design",
+ "stage": 5,
+ "stage_name": "ship",
  "updated": "2026-10-26",
  "architecture": 4,
  "loops": 0,
- "stump": "",
+ "stump": "Completing each stay still open at the 31 August cut on the 2024-25 arrivals of its sector and whole months on the island files construction, health and social care and retail and distribution over their allowances with the three that are, because returning circular workers, whose previous stay under the same registration number ended in the year before they arrived, rose from 13, 12 and 18 to 31, 26 and 33 per cent of those sectors' arrivals and reach twelve months 1, 3 and 0 per cent of the time against 40, 51 and 34 per cent for first arrivals; the completion the methods note's one-year-back test selects conditions on that history and keeps the three under",
  "returned": [],
- "resume": "stage 2 of architecture 4 (Esklett's provisional long-term immigration by employment sector for the year to 30 June 2026, each open stay completed on the 2024-25 arrivals with the same migration history): build the world in the generator from prototype 7 (placements of nine and a half to eleven and a half months, returns concentrated from November 2025), set the allowances on the generator's own figures, measure the enumerated and standing families, then the default path, stump sentence, ladder, fork and closure tables, the asks and prompt.txt to precut.py exit 0",
+ "resume": "",
  "approved": null,
- "delivered": null,
+ "delivered": "2026-10-26",
  "portal": null,
  "source_note": "re-root to a fresh world; architecture 1 (a boundary commission's electoral review), architecture 2 (cattle-manure ammonia by region) and architecture 3 (coal boiler scrubbers' limestone balance) spent at stage 4; the slot's seed ET42 set aside at the first draw",
- "zip": null,
+ "zip": "c11307e9d8a0592f19e47aa823a6c293",
  "lineage_v1": {
   "zip": "237917da9ecb5387a7250b4fde842cf2",
   "leak": {
@@ -62,11 +62,32 @@
   },
   "fate": "spent 2026-10-25 at stage 4 round 1: both scored readers landed the call"
  },
- "precut": {},
- "leak": {},
- "duplicate_check": {},
- "judge": {},
- "gates": {},
+ "precut": {
+  "result": "51 checks, 0 FAIL, 0 WARN (2026-10-26, zip c11307e9)",
+  "pair_ceiling": 29.2,
+  "mirror_leakage": 1.2
+ },
+ "leak": {
+  "leak_py": "REVIEW (2026-10-26, no LEAK; zip c11307e9)",
+  "reader": "round 2 (zip 56904a09): readers C and D missed the call and kept 1 of 80 ask figures each (exit 0 twice); round 1 (zip 86b54856): readers A and B missed the call and kept the back series 40 of 40, re-sited"
+ },
+ "duplicate_check": {
+  "heart": "WARN (no BLOCK), 2026-10-26",
+  "surface": "exit 0, five promotions (task483, task484, task486, task136, task100) answered by differentiation lines on the card"
+ },
+ "judge": {
+  "verdict": "DETERMINISTIC (round 2, zip 56904a09)",
+  "disposition": "APPROVE",
+  "report": "determinism_check_report.md"
+ },
+ "gates": {
+  "checks": "95 PASS, 0 FAIL",
+  "verify": "61 of 61",
+  "rebuild": "byte-identical, zip c11307e9d8a0592f19e47aa823a6c293",
+  "figures_check": "119 figures, 0 absent",
+  "scrub": "target and golden clean",
+  "house_fixes": "H21 parishes and invented names screened clear of real places and every card; personas from guard.py names"
+ },
  "lineage_v3": {
   "zip": "9263b80dcd8ccb1c8722ce81d63f66d3",
   "precut": {
@@ -94,5 +115,18 @@
    "r1": "stopped at the spend (the isolated thread was running when both readers had landed)"
   },
   "fate": "spent 2026-10-25 at stage 4 round 1: both scored readers landed the call"
+ },
+ "round_1": {
+  "zip": "86b54856ca11980730274464dae8cd3c",
+  "readers": "A and B (sonnet, medium, fresh copies) missed the call, both completing the open stays by sector and age in days and filing the default six; both took the back series 40 of 40 through the crosswalk's two-to-one rows and the TRANSFER fields (score_reader FAIL on both, asks 100 per cent)",
+  "judge": "NOT_DETERMINISTIC, SEND_BACK: methods note 3.2 left the open-stay estimate's conditioning open (four literal estimators on 2, 3, 4 and 6 sectors); the specification's TRANSFER arrival date and activity were at odds with the data",
+  "report": "determinism_check_report.md (round 1)"
+ },
+ "fix_pass": "one pass: methods note 3.3 files a one-year-back selection criterion naming no grouping (best candidate 0.1549, best filing another set 0.1700, golden 0.1555); the specification states the TRANSFER fields; the twice-held people re-sited onto one-to-one crosswalk pairs beside genuine same-day companions; the back series asks for arrivals beside long-term immigration (80 figures); history read from both systems; register date order repaired; 3.1 and 3.3 name the 30 September extract",
+ "round_2": {
+  "zip": "56904a09695fe59485b6540a8db76db3",
+  "readers": "C and D (sonnet, medium, fresh copies) missed the call, both completing on sector by elapsed days (test 0.171 and 0.172 against 0.155) and filing the default six; both counted every archive record and kept 1 of 80 ask figures (score_reader exit 0 twice)",
+  "judge": "DETERMINISTIC, APPROVE (Gate G method_or_model_selection, analytical_non_defect, surface_read_dependency no, sole_data_defect no; Gate H domain pass, layers pass, decisive_step analytical); optional notes (an open-pair reading of the back series, the chart's colour) closed in the generator after the verdict",
+  "report": "determinism_check_report.md (round 2)"
  }
 }

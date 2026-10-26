@@ -1,137 +1,96 @@
 {
  "task": "task485",
- "title": "The 2027 Sulphur Dioxide Order: which coal boilers its schedule lists",
- "setting": "A fictional environment ministry's air quality directorate in an unnamed coal-producing country with a register of permitted coal boilers in a Northern Priority Area: the country, its bodies, the firms, the contractors and the people are fictional, and every record is synthetic.",
- "as_of": "2027-02-09",
+ "title": "Esklett's provisional long-term immigration by employment sector, 2025-26, against the Population Policy's allowances",
+ "setting": "A fictional self-governing island in the Irish Sea, Esklett, with a Population Register kept in two systems either side of a 2023 move and a Population Policy that sets each employment sector an allowance of long-term immigration: the island, its parishes, its bodies and its people are fictional, and every record is synthetic.",
+ "as_of": "2026-10-07",
  "deliverables": [
-  "sulphur_dioxide_order_schedule_2027.xlsx",
-  "boiler_sulphur_dioxide_2026.png"
+  "provisional_long_term_immigration_2025_26.xlsx",
+  "long_term_immigration_by_sector_2025_26.png"
  ],
  "distractor_files": [
-  "target/npa_ambient_so2_2026.csv",
-  "target/national_coal_consumption_2025.json"
+  "target/port_passenger_movements_2024_2026.xlsx",
+  "target/census_2021_population_by_parish.xlsx"
  ],
  "stated_inputs": [
-  "250 tonnes",
-  "calendar 2026"
+  "31 August 2026 cut",
+  "year to 30 June 2026",
+  "nearest 50"
  ],
  "files": [
   {
-   "file": "ash_contractor_customers.csv",
-   "source": "Ministry of the Environment, Air Quality Directorate, ash contractors' customer names mapped to permits (fictional, synthetic records)",
-   "date": "2027-01-15",
-   "license": "CC0-1.0 (synthetic, generated for this task)",
-   "rows": 32
-  },
-  {
-   "file": "boiler_returns_2026.xlsx",
-   "source": "Ministry of the Environment, Air Quality Directorate, operators' quarterly returns for 2026 (fictional, synthetic records)",
-   "date": "2027-02-02",
+   "file": "census_2021_population_by_parish.xlsx",
+   "source": "Esklett Statistics Unit, Census 2021 table CT03, usual residents by parish and country of birth (fictional, synthetic records)",
+   "date": "2022-06-29",
    "license": "CC0-1.0 (synthetic, generated for this task)",
    "rows": null
   },
   {
-   "file": "carnhope_jobs_2026.csv",
-   "source": "Carnhope Skips, 2026 job sheet for permitted sites, supplied to the Ministry of the Environment, Air Quality Directorate (fictional, synthetic records)",
-   "date": "2027-01-07",
-   "license": "CC0-1.0 (synthetic, generated for this task)",
-   "rows": 887
-  },
-  {
-   "file": "coal_deliveries_2026.csv",
-   "source": "Ministry of the Environment, Air Quality Directorate, coal suppliers' 2026 delivery statements, collated (fictional, synthetic records)",
-   "date": "2027-01-22",
-   "license": "CC0-1.0 (synthetic, generated for this task)",
-   "rows": 31461
-  },
-  {
-   "file": "coal_supplier_customers.csv",
-   "source": "Ministry of the Environment, Air Quality Directorate, coal suppliers' customer codes mapped to permits (fictional, synthetic records)",
-   "date": "2027-01-22",
-   "license": "CC0-1.0 (synthetic, generated for this task)",
-   "rows": 23
-  },
-  {
-   "file": "limestone_certificates_2026.xlsx",
-   "source": "Bromscar Quarry and Molhope Lime and Stone, 2026 weekly certificates, collated by the Ministry of the Environment, Air Quality Directorate (fictional, synthetic records)",
-   "date": "2027-01-14",
+   "file": "long_term_immigration_by_sector_2023_24.xlsx",
+   "source": "Esklett Statistics Unit, Population and Migration Statistics, Table 1, published 16 October 2025 (fictional, synthetic records)",
+   "date": "2025-10-16",
    "license": "CC0-1.0 (synthetic, generated for this task)",
    "rows": null
   },
   {
-   "file": "limestone_tickets_2026.csv",
-   "source": "Bromscar Quarry and Molhope Lime and Stone, 2026 delivery tickets to permitted sites (fictional, synthetic records)",
-   "date": "2027-01-14",
-   "license": "CC0-1.0 (synthetic, generated for this task)",
-   "rows": 1394
-  },
-  {
-   "file": "national_coal_consumption_2025.json",
-   "source": "National Statistics Office, coal consumption by sector, 2025 (provisional) (fictional, synthetic records)",
-   "date": "2026-06-25",
+   "file": "long_term_migration_methods_2026.pdf",
+   "source": "Esklett Statistics Unit, methods note for long-term migration statistics, 2026 edition (fictional, synthetic records)",
+   "date": "2026-09-01",
    "license": "CC0-1.0 (synthetic, generated for this task)",
    "rows": null
   },
   {
-   "file": "npa_ambient_so2_2026.csv",
-   "source": "Ministry of the Environment, Air Quality Directorate, Northern Priority Area ambient monitoring network, 2026 monthly means (fictional, synthetic records)",
-   "date": "2027-01-20",
+   "file": "parish_codes.csv",
+   "source": "Population Office, Cabinet Office, Esklett, parish codes (fictional, synthetic records)",
+   "date": "2025-04-01",
    "license": "CC0-1.0 (synthetic, generated for this task)",
-   "rows": 96
+   "rows": 15
   },
   {
-   "file": "pellrigg_dockets_2026.xlsx",
-   "source": "Pellrigg and Sons Haulage, 2026 dockets for permitted sites, supplied to the Ministry of the Environment, Air Quality Directorate (fictional, synthetic records)",
-   "date": "2027-01-08",
-   "license": "CC0-1.0 (synthetic, generated for this task)",
-   "rows": null
-  },
-  {
-   "file": "permitted_boilers_register_2026.xlsx",
-   "source": "Ministry of the Environment, permit register of coal boilers, Northern Priority Area (fictional, synthetic records)",
-   "date": "2027-01-06",
+   "file": "population_policy_2024_2028_sector_allowances.pdf",
+   "source": "Cabinet Office, Population Policy Unit, Population Policy 2024 to 2028: sector allowances and work permit quotas (fictional, synthetic records)",
+   "date": "2024-04-09",
    "license": "CC0-1.0 (synthetic, generated for this task)",
    "rows": null
   },
   {
-   "file": "scrubber_guarantee_schedules.pdf",
-   "source": "Ministry of the Environment, Air Quality Directorate, scrubber suppliers' guarantee schedules copied from the permit files (fictional, synthetic records)",
-   "date": "2024-03-14",
+   "file": "population_register_extract_20260930.csv",
+   "source": "Population Office, Cabinet Office, Esklett, Population Register current system, extract of 30 September 2026 for the Statistics Unit (fictional, synthetic records)",
+   "date": "2026-09-30",
+   "license": "CC0-1.0 (synthetic, generated for this task)",
+   "rows": 25332
+  },
+  {
+   "file": "population_register_extract_specification.pdf",
+   "source": "Population Office, Cabinet Office, Esklett, extract specification for the Statistics Unit, version 3 (fictional, synthetic records)",
+   "date": "2026-09-01",
    "license": "CC0-1.0 (synthetic, generated for this task)",
    "rows": null
   },
   {
-   "file": "scrubber_tests_2026_iverstow.pdf",
-   "source": "Iverstow Emission Testing, 2026 abatement performance tests, summary (fictional, synthetic records)",
-   "date": "2026-10-16",
+   "file": "population_register_legacy_archive_2014_2023.csv",
+   "source": "Population Office, Cabinet Office, Esklett, legacy register archive, records from 1 January 2014 to 12 March 2023 (fictional, synthetic records)",
+   "date": "2026-09-30",
+   "license": "CC0-1.0 (synthetic, generated for this task)",
+   "rows": 35550
+  },
+  {
+   "file": "port_passenger_movements_2024_2026.xlsx",
+   "source": "Esklett Ports Authority, monthly passenger movements by port (fictional, synthetic records)",
+   "date": "2026-09-09",
    "license": "CC0-1.0 (synthetic, generated for this task)",
    "rows": null
   },
   {
-   "file": "scrubber_tests_2026_jarrness.pdf",
-   "source": "Jarrness Stack Testing, 2026 FGD performance tests, results summary (fictional, synthetic records)",
-   "date": "2026-11-06",
+   "file": "registration_number_crosswalk_2023.csv",
+   "source": "Population Office, Cabinet Office, Esklett, registration numbers issued at the move to the current system (fictional, synthetic records)",
+   "date": "2023-03-13",
    "license": "CC0-1.0 (synthetic, generated for this task)",
-   "rows": null
+   "rows": 32707
   },
   {
-   "file": "so2_inventory_guidance_2026.pdf",
-   "source": "Ministry of the Environment, Air Quality Directorate, sulphur dioxide inventory guidance for the 2026 inventory year (fictional, synthetic records)",
-   "date": "2026-11-02",
-   "license": "CC0-1.0 (synthetic, generated for this task)",
-   "rows": null
-  },
-  {
-   "file": "so2_order_2027_schedule_note.pdf",
-   "source": "Ministry of the Environment, Air Quality Directorate, note on the 2027 Sulphur Dioxide Order's schedule (fictional, synthetic records)",
-   "date": "2027-02-08",
-   "license": "CC0-1.0 (synthetic, generated for this task)",
-   "rows": null
-  },
-  {
-   "file": "whinmoss_invoice_lines_2026.xlsx",
-   "source": "Whinmoss Waste Haulage, 2026 invoice lines for permitted sites, supplied to the Ministry of the Environment, Air Quality Directorate (fictional, synthetic records)",
-   "date": "2027-01-11",
+   "file": "sector_classification_2026.json",
+   "source": "Esklett Statistics Unit, employment sector classification, 2026 edition (fictional, synthetic records)",
+   "date": "2025-11-14",
    "license": "CC0-1.0 (synthetic, generated for this task)",
    "rows": null
   }

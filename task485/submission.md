@@ -1,70 +1,62 @@
 ## Tags
 
-**Domain:** Physical & Environmental Sciences, emissions inventory (an environment ministry's 2026 sulphur dioxide inventory of eighteen permitted coal boilers with wet limestone scrubbers, conformed from four coal suppliers' delivery analyses, the operators' quarterly returns, two quarries' tickets and weekly certificates, the scrubber guarantee schedules and two laboratories' test reports).
+**Domain:** Survey Research & Official Statistics, census, register and administrative data quality (an island statistics unit's provisional long-term immigration by employment sector for the year to 30 June 2026, conformed from its Population Register's current extract and legacy archive, the crosswalk between their registration numbers and two sector classifications, against the Population Policy's sector allowances).
 **Analytical objective:** Data Extraction & Conformation (ETL).
 
 ## 1. Final Recommendation
 
-**The 2027 Sulphur Dioxide Order lists six boilers, Quarholt Board Mills boiler 2, Dremstead Chemicals, Candrigg Soda Works, Thalwold Foods, Sellhope Rubber and Umbgarth District Heating, whose sulphur dioxide leaving the stack over 2026 was 390, 340, 320, 330, 350 and 340 tonnes against the 250 tonne line; the other twelve boilers are under it.**
-Candrigg Soda Works is the nearest to the line among the six at 320 tonnes, and Quarholt Board Mills boiler 1 the highest of the rest at 160. Not Candrigg Soda Works alone, which the removals the scrubbers showed at their 2026 performance tests give when carried across the year: the scrubbers at Quarholt Board Mills boiler 2, Dremstead Chemicals, Thalwold Foods, Sellhope Rubber and Umbgarth District Heating consumed too little limestone for those removals, so their sulphur dioxide runs 3.3 to 5.9 times their tested figures. Not Quarholt Board Mills boiler 1, which its design removal puts at 310 tonnes: over the year its scrubber removed more than its design.
+**The Council should cut the 2027 work permit quotas of hospitality and tourism, financial and professional services and digital and e-gaming, the three sectors whose provisional long-term immigration for 2025-26 exceeds its allowance.**
+Construction, health and social care and retail and distribution stay under their allowances once each stay still open at the cut is completed on the 2024-25 arrivals of the same sector, migration history and months on the island: the completion that would have predicted the 2024-25 arrivals best a year earlier (mean squared difference 0.155, against 0.172 by sector and months alone). Not those three as well, which the sector-by-months completion gives: returning workers, whose previous stay ended within the year before they arrived, made 31, 26 and 33 per cent of their 2025-26 arrivals against 13, 12 and 18 per cent a year earlier, and in 2024-25 reached twelve months 1, 3 and 0 per cent of the time against 40, 51 and 34 per cent for first arrivals.
 
 ## 2. Critical Components
 
-1. Sulphur dioxide formed from the coal the eighteen boilers fired in 2026, less the ash's share, to the nearest 100: **25,400 tonnes**.
-2. Sulphur dioxide the eighteen scrubbers removed over 2026, from the calcium carbonate they consumed, to the nearest 100: **22,400 tonnes**.
+1. 2025-26 arrivals still on the island at the 31 August 2026 cut short of their first anniversary: construction **523**, health and social care **825** and retail and distribution **511**, of which **180**, **239** and **184** are returns (a previous stay under the same registration number ended in the 365 days before the arrival).
+2. Of the 2024-25 arrivals in those sectors, returning arrivals reached twelve months **1**, **3** and **0** per cent of the time and first arrivals **40**, **51** and **34** per cent.
+3. The methods note's test, on the 2,763 arrivals of 2024-25 still open at 31 August 2025: the completion by sector, history and months scores **0.155**, by sector and months **0.172**, the sector's share of all arrivals **0.190**.
 
 ## 3. Step-by-Step Solution
 
-1. Took each boiler's coal burned from the four quarters of boiler_returns_2026.xlsx, quarters 1 and 2 on the 2019 template and 3 and 4 on the 2026 template: 893,723 tonnes in all.
-2. Took each site's sulphur as received from coal_deliveries_2026.csv, the deliveries received from 1 January to 31 December 2026 weighted by net tonnes (guidance section 4.2), each customer code put to its site through coal_supplier_customers.csv.
-3. Took off each boiler's sulphur retained in ash from permitted_boilers_register_2026.xlsx and converted at 64.066 over 32.065: 25,400 tonnes of sulphur dioxide formed.
-4. Took each scrubber's limestone consumed as its 2026 tickets in limestone_tickets_2026.csv, put to permits by the Delivery points sheet of limestone_certificates_2026.xlsx, less its silo's change from the first quarter's opening to the fourth quarter's closing stock in the returns, each ticket at its ISO week's calcium carbonate in the same workbook.
-5. Converted each scrubber's calcium carbonate to sulphur dioxide removed at its operating stoichiometry in scrubber_guarantee_schedules.pdf, 1.03 to 1.07 moles of calcium carbonate per mole removed: 22,400 tonnes.
-6. Subtracted each boiler's removal from its sulphur dioxide formed and tested the remainder unrounded against 250 tonnes (the Order's note, section 2): six boilers at or over the line.
-7. For the ash, conformed whinmoss_invoice_lines_2026.xlsx, carnhope_jobs_2026.csv and pellrigg_dockets_2026.xlsx to the sites through ash_contractor_customers.csv, kept bottom and fly ash collected in 2026, read Carnhope's net weights in kilograms, and dropped every Whinmoss line whose reference is a Carnhope or Pellrigg job number, because that line bills the local contractor's own collection, counted on its record: each site's tonnes and recovery share below.
-8. The Order lists Quarholt Board Mills boiler 2, Dremstead Chemicals, Candrigg Soda Works, Thalwold Foods, Sellhope Rubber and Umbgarth District Heating.
+1. Took the ARRIVAL records with an arrival date from 1 July 2025 to 30 June 2026 in population_register_extract_20260930.csv, each sector from its 2014 activity code or 2026 sector code in sector_classification_2026.json: 4,281 arrivals.
+2. At the 31 August 2026 cut counted a stay as long-term when its first anniversary had passed with no leaving date before it, and as not when its leaving date fell before its anniversary (the methods note's definitions); the rest are open: construction 523, health and social care 825 and retail and distribution 511.
+3. Gave each arrival its migration history from the other stays under the same reg_no: a return when one of them has a leaving date in the 365 days before the arrival date.
+4. Scored the candidate completions on the methods note's test, each estimated from the 2023-24 arrivals and given to the 2024-25 arrivals open at 31 August 2025 (leaving notices received by 30 September 2025): by sector, history and whole calendar months on the island 0.155, by sector and months 0.172.
+5. Counted each open 2025-26 stay at the share of the 2024-25 arrivals of its sector and history still on the island after its whole months at 31 August 2026 whose stays reached their first anniversary (returns 1, 3 and 0 per cent and first arrivals 40, 51 and 34 per cent overall in construction, health and social care and retail and distribution), and added the stays counted long-term.
+6. Compared each unrounded figure with its 2025-26 allowance in Table 1 of population_policy_2024_2028_sector_allowances.pdf: hospitality and tourism, financial and professional services and digital and e-gaming exceed.
+7. For the back series, read the archive's day-first dates, gave each TRANSFERRED record the leaving date and notice date of the TRANSFER record its legacy number's reg_no holds in registration_number_crosswalk_2023.csv, kept the archive's own arrival date and activity, counted once any records identical in arrival date, sex, birth year, nationality and activity whose stays ended on the same date on notices received the same day (one stay registered at two parish offices), and added the current extract's ARRIVAL records with arrival dates in each year: the figures below.
+8. The Council cuts the 2027 quotas of hospitality and tourism, financial and professional services and digital and e-gaming.
 
 ## 4. Deliverable Answers
 
-### sulphur_dioxide_order_schedule_2027.xlsx
+### provisional_long_term_immigration_2025_26.xlsx
 
-1. Each boiler's sulphur dioxide leaving the stack in 2026, tonnes to the nearest 10, and whether the Order lists it, in the register's order:
-   - Quarholt Board Mills boiler 1: 160 tonnes, not listed
-   - Quarholt Board Mills boiler 2: 390 tonnes, listed
-   - Eskfold Sugar: 70 tonnes, not listed
-   - Dremstead Chemicals: 340 tonnes, listed
-   - Ulvdale Dyeworks: 90 tonnes, not listed
-   - Kirlgate Maltings: 20 tonnes, not listed
-   - Vornfield Brewery: 50 tonnes, not listed
-   - Yeldholt General Hospital Energy Centre: 70 tonnes, not listed
-   - Haskmouth Paper: 40 tonnes, not listed
-   - Nethstead Tissue No. 1 boiler: 70 tonnes, not listed
-   - Nethstead Tissue No. 2 boiler: 60 tonnes, not listed
-   - Pridwold Starch: 120 tonnes, not listed
-   - Lathgarth Fibres: 40 tonnes, not listed
-   - Candrigg Soda Works: 320 tonnes, listed
-   - Thalwold Foods: 330 tonnes, listed
-   - Sellhope Rubber: 350 tonnes, listed
-   - Umbgarth District Heating: 340 tonnes, listed
-   - Wendscar Tannery: 120 tonnes, not listed
-2. Each site's boiler ash taken off site in 2026 by the three contractors, tonnes to the nearest 10, and the share sent to recovery at Yarrdale Blocks or Velthwaite Cement Works, per cent to one decimal:
-   - Quarholt Board Mills: 23,610 tonnes, 87.4 per cent
-   - Eskfold Sugar: 6,200 tonnes, 82.2 per cent
-   - Dremstead Chemicals: 8,490 tonnes, 72.9 per cent
-   - Ulvdale Dyeworks: 4,120 tonnes, 13.9 per cent
-   - Kirlgate Maltings: 2,280 tonnes, 68.8 per cent
-   - Vornfield Brewery: 5,870 tonnes, 85.3 per cent
-   - Yeldholt General Hospital Energy Centre: 7,320 tonnes, 75.0 per cent
-   - Haskmouth Paper: 3,410 tonnes, 71.4 per cent
-   - Nethstead Tissue: 11,060 tonnes, 88.5 per cent
-   - Pridwold Starch: 9,890 tonnes, 20.9 per cent
-   - Lathgarth Fibres: 4,000 tonnes, 71.3 per cent
-   - Candrigg Soda Works: 16,560 tonnes, 87.2 per cent
-   - Thalwold Foods: 7,000 tonnes, 74.3 per cent
-   - Sellhope Rubber: 4,860 tonnes, 15.8 per cent
-   - Umbgarth District Heating: 6,760 tonnes, 68.8 per cent
-   - Wendscar Tannery: 8,320 tonnes, 17.2 per cent
+1. Each sector's provisional long-term immigration for 2025-26 against its allowance:
+   - Hospitality and tourism: exceeds
+   - Agriculture, fishing and food: does not exceed
+   - Construction: does not exceed
+   - Financial and professional services: exceeds
+   - Health and social care: does not exceed
+   - Retail and distribution: does not exceed
+   - Digital and e-gaming: exceeds
+   - Public and other services: does not exceed
+2. Arrivals registered for work by sector, persons, for the years 2018-19 to 2022-23:
+   - Hospitality and tourism: 2018-19 868, 2019-20 667, 2020-21 665, 2021-22 777, 2022-23 659
+   - Agriculture, fishing and food: 2018-19 203, 2019-20 205, 2020-21 171, 2021-22 161, 2022-23 191
+   - Construction: 2018-19 571, 2019-20 427, 2020-21 406, 2021-22 499, 2022-23 518
+   - Financial and professional services: 2018-19 535, 2019-20 446, 2020-21 443, 2021-22 467, 2022-23 457
+   - Health and social care: 2018-19 932, 2019-20 661, 2020-21 756, 2021-22 822, 2022-23 799
+   - Retail and distribution: 2018-19 480, 2019-20 403, 2020-21 419, 2021-22 508, 2022-23 491
+   - Digital and e-gaming: 2018-19 322, 2019-20 225, 2020-21 227, 2021-22 283, 2022-23 256
+   - Public and other services: 2018-19 377, 2019-20 275, 2020-21 285, 2021-22 320, 2022-23 263
+3. Final long-term immigration by sector, persons, for the years 2018-19 to 2022-23:
+   - Hospitality and tourism: 2018-19 333, 2019-20 266, 2020-21 219, 2021-22 325, 2022-23 243
+   - Agriculture, fishing and food: 2018-19 89, 2019-20 91, 2020-21 70, 2021-22 64, 2022-23 91
+   - Construction: 2018-19 250, 2019-20 185, 2020-21 171, 2021-22 235, 2022-23 186
+   - Financial and professional services: 2018-19 476, 2019-20 394, 2020-21 382, 2021-22 408, 2022-23 400
+   - Health and social care: 2018-19 462, 2019-20 302, 2020-21 394, 2021-22 400, 2022-23 327
+   - Retail and distribution: 2018-19 138, 2019-20 125, 2020-21 137, 2021-22 159, 2022-23 145
+   - Digital and e-gaming: 2018-19 296, 2019-20 196, 2020-21 199, 2021-22 233, 2022-23 228
+   - Public and other services: 2018-19 334, 2019-20 250, 2020-21 255, 2021-22 275, 2022-23 225
 
-### boiler_sulphur_dioxide_2026.png
+### long_term_immigration_by_sector_2025_26.png
 
-1. A horizontal bar chart of the eighteen boilers' 2026 sulphur dioxide leaving the stack, highest at the top, against a line at 250 tonnes, the six listed boilers in red-brown and every bar labelled with its tonnes to the nearest 10.
+1. A bar chart of each sector's provisional long-term immigration for 2025-26 against its 2025-26 allowance, the three sectors over their allowances marked.

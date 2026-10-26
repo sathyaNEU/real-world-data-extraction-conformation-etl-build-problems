@@ -1,208 +1,343 @@
-"""task485 world: eighteen permitted coal boilers in the Northern Priority Area over calendar 2026, day by day.
-
-Each boiler fires coal from its site's yard; its wet limestone scrubber removes a share of the sulphur dioxide
-while it runs and doses limestone at its operating ratio per mole removed; some scrubbers stand on bypass for
-spells while their boilers fire, which no record carries. Deliveries, stocks, returns and tests are cut from
-these daily flows, so every file the pack ships is a view of one world."""
+"""Esklett's Population Register from its opening on 1 January 2014 to the 31 August 2026 cut: every person who arrived
+to work, every stay from arrival to departure, the legacy register to the move of 13 March 2023 and the current system
+after it. This is the clean truth; pack.py cuts the register's files from it and golden.py never reads it."""
 import datetime as dt
 
 import numpy as np
 
-SEED = 485
-YEAR = 2026
-DAYS = 365
-D0 = dt.date(YEAR, 1, 1)
-MS, MSO2, MCACO3, MCO2, MC = 32.065, 64.066, 100.087, 44.010, 12.011
-LINE = 250.0
+D = dt.date
+TD = dt.timedelta
+SEED = 3
+OPEN = D(2014, 1, 1)
+MOVE = D(2023, 3, 13)          # the current register system's first day; the legacy register closed on 12 March
+CUT = D(2026, 8, 31)
+EXTRACT = D(2026, 9, 30)
+SWITCH = D(2025, 10, 31)       # agency placements ending after this are re-placed after a short break
+CODES26 = D(2026, 1, 1)        # registrations from this day carry the 2026 sector list
+MERGE = D(2025, 4, 1)          # Haldervoe and Ivarsby merged
 
-SUPPLIERS = {
-    # mean sulphur % as received, lot sd, ash %, total moisture %, carbon % ar, gross CV MJ/kg ar, lot tonnes
-    "Ormthwaite Colliery": dict(s=1.08, sd=0.07, ash=13.6, tm=9.2, c=61.2, gcv=25.3, lot=(27.5, 31.5)),
-    "Brisgarth Main Colliery": dict(s=2.14, sd=0.11, ash=16.1, tm=8.1, c=59.0, gcv=24.5, lot=(27.5, 31.5)),
-    "Ostmouth Coal Imports": dict(s=0.71, sd=0.05, ash=11.2, tm=12.6, c=60.4, gcv=25.0, lot=(54.0, 60.0)),
-    "Zellfold Fuels": dict(s=1.33, sd=0.09, ash=14.2, tm=10.1, c=60.1, gcv=24.8, lot=(27.5, 31.5)),
-}
-SUP_CODE = {"Ormthwaite Colliery": "OTC", "Brisgarth Main Colliery": "BGC", "Ostmouth Coal Imports": "OCI",
-            "Zellfold Fuels": "ZFF"}
+SECTORS = [("HOS", "Hospitality and tourism"), ("AGR", "Agriculture, fishing and food"), ("CON", "Construction"),
+           ("FIN", "Financial and professional services"), ("HSC", "Health and social care"),
+           ("RET", "Retail and distribution"), ("DIG", "Digital and e-gaming"), ("OTH", "Public and other services")]
+SECT = [s for s, _ in SECTORS]
+ACT14 = [("01", "Accommodation", "HOS"), ("02", "Restaurants, bars and catering", "HOS"),
+         ("03", "Agriculture and horticulture", "AGR"), ("04", "Fishing and aquaculture", "AGR"),
+         ("05", "Food and drink manufacturing", "AGR"), ("06", "Construction and building trades", "CON"),
+         ("07", "Banking", "FIN"), ("08", "Insurance and fund management", "FIN"),
+         ("09", "Legal, accounting and professional services", "FIN"), ("10", "Hospital and medical services", "HSC"),
+         ("11", "Residential and domiciliary care", "HSC"), ("12", "Retail trade", "RET"),
+         ("13", "Wholesale, warehousing and distribution", "RET"), ("14", "Information technology", "DIG"),
+         ("15", "E-gaming and online services", "DIG"), ("16", "Public administration and education", "OTH"),
+         ("17", "Other services", "OTH")]
+TO26 = {c: s for c, _, s in ACT14}
+PARISHES = [("PES", "Port Esklett"), ("RAV", "Ravelsay"), ("DRU", "Drumskea"), ("HAL", "Haldervoe"),
+            ("DUN", "Dunvallow"), ("IVA", "Ivarsby"), ("PEN", "Pennaval"), ("COR", "Corvanagh"),
+            ("THO", "Thornavick"), ("BRA", "Brackmuir"), ("STR", "Strathvenny"), ("ARD", "Ardvollan"),
+            ("FER", "Fernhaskey"), ("ELL", "Elloravon")]
+PARISH_W = [.27, .09, .06, .05, .07, .04, .08, .06, .05, .06, .05, .04, .04, .04]
 
-# site, firm, industry
-SITES = [
-    ("S01", "Quarholt Board Mills", "paper and board"),
-    ("S02", "Eskfold Sugar", "sugar"),
-    ("S03", "Dremstead Chemicals", "chemicals"),
-    ("S04", "Ulvdale Dyeworks", "textiles"),
-    ("S05", "Kirlgate Maltings", "malting"),
-    ("S06", "Vornfield Brewery", "brewing"),
-    ("S07", "Yeldholt General Hospital Energy Centre", "hospital campus"),
-    ("S08", "Haskmouth Paper", "paper"),
-    ("S09", "Nethstead Tissue", "tissue"),
-    ("S10", "Pridwold Starch", "starch"),
-    ("S11", "Lathgarth Fibres", "textiles"),
-    ("S12", "Candrigg Soda Works", "chemicals"),
-    ("S13", "Thalwold Foods", "food"),
-    ("S14", "Sellhope Rubber", "rubber"),
-    ("S15", "Umbgarth District Heating", "district heating"),
-    ("S16", "Wendscar Tannery", "leather"),
-]
+# yearly first arrivals at the 2019 level, by sector and kind
+VOL = {"HOS": dict(contract=150, settler=100, seasonal=150, circular=70),
+       "AGR": dict(contract=40, settler=40, seasonal=50),
+       "CON": dict(contract=120, settler=60, circular=200),
+       "FIN": dict(contract=150, settler=200),
+       "HSC": dict(contract=140, settler=190, circular=300),
+       "RET": dict(contract=60, settler=60, seasonal=30, circular=190),
+       "DIG": dict(contract=90, settler=110),
+       "OTH": dict(contract=110, settler=140)}
+GROWTH = {2014: .85, 2015: .88, 2016: .91, 2017: .94, 2018: .97, 2019: 1.0, 2020: .55, 2021: .85, 2022: 1.0,
+          2023: 1.02, 2024: 1.04, 2025: 1.06, 2026: 1.08}
+MONTH_W = [1.2, .9, 1.0, 1.1, 1.0, .9, .9, .9, 1.2, 1.0, .9, .8]
+SEASON_W = [.1, .3, 1.2, 1.6, 1.5, 1.0, .3, .1, .05, .05, .05, .05]
+# activity codes by sector and kind (the agencies place care, building and warehouse staff)
+CODE_W = {"HOS": (("01", .45), ("02", .55)), "AGR": (("03", .45), ("04", .2), ("05", .35)),
+          "CON": (("06", 1.0),), "FIN": (("07", .35), ("08", .35), ("09", .3)),
+          "HSC": (("10", .55), ("11", .45)), "RET": (("12", .6), ("13", .4)),
+          "DIG": (("14", .55), ("15", .45)), "OTH": (("16", .6), ("17", .4))}
+CIRC_CODE = {"HOS": (("01", .5), ("02", .5)), "CON": (("06", 1.0),), "HSC": (("11", 1.0),),
+             "RET": (("12", .5), ("13", .5))}
+# a change of employment notified to the legacy register: yearly rate out of the sector, and where people went
+EXIT = {"HOS": .12, "AGR": .10, "CON": .07, "FIN": .05, "HSC": .05, "RET": .10, "DIG": .06, "OTH": .04}
+DEST = {"HOS": (("RET", .35), ("OTH", .35), ("FIN", .15), ("HSC", .15)), "AGR": (("CON", .4), ("OTH", .3), ("RET", .3)),
+        "CON": (("OTH", .5), ("RET", .3), ("AGR", .2)), "FIN": (("DIG", .4), ("OTH", .6)),
+        "HSC": (("OTH", .7), ("FIN", .3)), "RET": (("HOS", .3), ("OTH", .4), ("FIN", .3)),
+        "DIG": (("FIN", .7), ("OTH", .3)), "OTH": (("FIN", .5), ("HSC", .3), ("DIG", .2))}
+FEMALE = {"HOS": .55, "AGR": .3, "CON": .08, "FIN": .45, "HSC": .78, "RET": .55, "DIG": .3, "OTH": .5}
+OTHER_NAT = ["ESP", "ITA", "FRA", "DEU", "NLD", "HUN", "SVK", "CZE", "BRA", "NZL", "CAN", "CHN", "MYS", "PAK", "LKA",
+             "NPL", "GHA", "GRC", "SWE", "USA", "AUS", "MLT", "UKR", "HRV"]
+NAT = {"HOS": dict(GBR=.25, IRL=.06, POL=.08, ROU=.08, PRT=.07, LVA=.05, LTU=.05, PHL=.06, IND=.05, ZAF=.04,
+                   BGR=.04),
+       "AGR": dict(GBR=.30, IRL=.10, POL=.15, ROU=.15, LVA=.08, LTU=.08, BGR=.06),
+       "CON": dict(GBR=.30, IRL=.10, POL=.14, ROU=.12, LTU=.07, LVA=.06, BGR=.05, PRT=.04),
+       "FIN": dict(GBR=.55, IRL=.10, ZAF=.07, USA=.04, AUS=.03, IND=.05, FRA=.03, DEU=.03),
+       "HSC": dict(GBR=.30, IRL=.06, PHL=.14, IND=.14, ZWE=.05, NGA=.05, ZAF=.05, KEN=.03, POL=.04, ROU=.04),
+       "RET": dict(GBR=.32, IRL=.06, POL=.10, ROU=.10, LVA=.06, LTU=.06, PRT=.05, PHL=.04, IND=.04),
+       "DIG": dict(GBR=.40, IRL=.06, IND=.10, POL=.06, UKR=.05, BGR=.04, ZAF=.04, MLT=.04),
+       "OTH": dict(GBR=.45, IRL=.10, ZAF=.05, USA=.04, AUS=.04, POL=.05, IND=.05)}
 
-# boiler roles fix the ladder; secondary parameters are drawn.  bypass: share of the year's sulphur fired that went
-# to the stack on bypass; mix: supplier shares (by half-year where two are given); eff_on: mean removal while running
-BOILERS = [
-    dict(site="S01", unit=1, type="PF", mwth=97.4, cf=0.80, mix={"Brisgarth Main Colliery": 1.0},
-         design=0.925, ratio=1.05, eff_on=0.962, bypass=0.0, role="beats"),
-    dict(site="S01", unit=2, type="PF", mwth=58.9, cf=0.69, mix=None, design=0.95, ratio=1.05, eff_on=0.944,
-         bypass=0.14, role="bypassed"),
-    dict(site="S02", unit=1, type="stoker", mwth=52.4, cf=0.66, mix={"Zellfold Fuels": 1.0}, design=0.94, ratio=1.07,
-         eff_on=0.936, bypass=0.0, role="plain"),
-    dict(site="S03", unit=1, type="stoker", mwth=71.8, cf=0.71, mix={"Ormthwaite Colliery": 0.6, "Zellfold Fuels": 0.4},
-         design=0.95, ratio=1.03, eff_on=0.943, bypass=0.205, role="bypassed"),
-    dict(site="S04", unit=1, type="stoker", mwth=36.6, cf=0.64, mix={"Zellfold Fuels": 1.0}, design=0.94, ratio=1.07,
-         eff_on=0.932, bypass=0.055, role="bypassed_under"),
-    dict(site="S05", unit=1, type="stoker", mwth=28.4, cf=0.58, mix={"Ostmouth Coal Imports": 1.0}, design=0.93,
-         ratio=1.05, eff_on=0.927, bypass=0.0, role="plain"),
-    dict(site="S06", unit=1, type="PF", mwth=58.3, cf=0.62, mix={"Ormthwaite Colliery": 1.0}, design=0.95, ratio=1.05,
-         eff_on=0.947, bypass=0.0, role="plain"),
-    dict(site="S07", unit=1, type="PF", mwth=69.2, cf=0.62, mix={"Zellfold Fuels": 0.6, "Ormthwaite Colliery": 0.4},
-         design=0.95, ratio=1.05, eff_on=0.945, bypass=0.0, role="plain"),
-    dict(site="S08", unit=1, type="stoker", mwth=29.8, cf=0.67, mix={"Zellfold Fuels": 0.5, "Ormthwaite Colliery": 0.5},
-         design=0.94, ratio=1.07, eff_on=0.934, bypass=0.0, role="plain"),
-    dict(site="S09", unit=1, type="stoker", mwth=35.6, cf=0.68, mix={"Ormthwaite Colliery": 1.0}, design=0.94,
-         ratio=1.03, eff_on=0.935, bypass=0.045, role="bypassed_under"),
-    dict(site="S09", unit=2, type="PF", mwth=66.7, cf=0.66, mix=None, design=0.95, ratio=1.03, eff_on=0.946,
-         bypass=0.0, role="plain"),
-    dict(site="S10", unit=1, type="stoker", mwth=88.4, cf=0.78,
-         mix=[(0, {"Ostmouth Coal Imports": 1.0}), (98, {"Brisgarth Main Colliery": 1.0}),
-              (152, {"Ostmouth Coal Imports": 1.0})], design=0.94, ratio=1.05, eff_on=0.910, bypass=0.0,
-         role="conc"),
-    dict(site="S11", unit=1, type="stoker", mwth=38.6, cf=0.63, mix={"Ormthwaite Colliery": 1.0}, design=0.94,
-         ratio=1.07, eff_on=0.936, bypass=0.0, role="plain"),
-    dict(site="S12", unit=1, type="PF", mwth=98.2, cf=0.83, mix={"Brisgarth Main Colliery": 1.0}, design=0.93,
-         ratio=1.05, eff_on=0.921, bypass=0.0, role="big"),
-    dict(site="S13", unit=1, type="stoker", mwth=56.9, cf=0.69, mix={"Zellfold Fuels": 0.7, "Brisgarth Main Colliery": 0.3},
-         design=0.94, ratio=1.03, eff_on=0.933, bypass=0.175, role="bypassed"),
-    dict(site="S14", unit=1, type="stoker", mwth=40.2, cf=0.72, mix={"Zellfold Fuels": 1.0}, design=0.94, ratio=1.07,
-         eff_on=0.934, bypass=0.35, role="bypassed"),
-    dict(site="S15", unit=1, type="stoker", mwth=64.0, cf=0.61, mix={"Ormthwaite Colliery": 0.5, "Zellfold Fuels": 0.5},
-         design=0.95, ratio=1.05, eff_on=0.944, bypass=0.28, role="bypassed"),
-    dict(site="S16", unit=1, type="stoker", mwth=61.2, cf=0.73, mix={"Brisgarth Main Colliery": 0.5, "Zellfold Fuels": 0.5},
-         design=0.94, ratio=1.03, eff_on=0.935, bypass=0.0, role="plain"),
-]
 
-QUARRIES = {"Bromscar Quarry": dict(caco3=96.1, sd=0.6), "Molhope Lime and Stone": dict(caco3=94.2, sd=0.8)}
+def anniversary(a):
+    """the first anniversary of an arrival date (1 March for an arrival on 29 February)"""
+    return D(a.year + 1, 3, 1) if (a.month, a.day) == (2, 29) else D(a.year + 1, a.month, a.day)
+
+
+class Stay:
+    __slots__ = ("pid", "sector", "code", "kind", "arrive", "leave", "registered", "notice", "parish", "n", "move_code",
+                 "dup_registered", "dup_parish")
+
+    def __init__(self, pid, sector, code, kind, arrive, leave):
+        self.pid, self.sector, self.code, self.kind, self.arrive, self.leave = pid, sector, code, kind, arrive, leave
+        self.registered = self.notice = self.parish = self.move_code = None
+        self.dup_registered = self.dup_parish = None
+        self.n = 0
+
+    def transferred(self):
+        """open on the legacy register when it closed: registered before the move and no leaving notice in by then"""
+        return self.registered < MOVE and not (self.leave < MOVE and self.notice < MOVE)
+
+    def long(self):
+        """the true twelve-month outcome (the world knows every departure)"""
+        return self.leave >= anniversary(self.arrive)
 
 
 class World:
-    pass
+    def __init__(self, seed=SEED):
+        self.rng = np.random.default_rng(seed)
+        self.stays = []
+        self.people = {}
+
+    # ---------------------------------------------------------------- draws
+    def pick(self, pairs):
+        keys = [k for k, _ in pairs]
+        p = np.array([w for _, w in pairs], float)
+        return keys[int(self.rng.choice(len(keys), p=p / p.sum()))]
+
+    def day_in(self, year, weights):
+        w = np.array(weights, float)
+        if year == 2020:
+            w = w * np.array([1, 1, .6, .15, .15, .3, .6, .7, .8, .8, .7, .7])
+        m = int(self.rng.choice(12, p=w / w.sum())) + 1
+        last = (D(year + (m == 12), m % 12 + 1, 1) - TD(days=1)).day
+        return D(year, m, int(self.rng.integers(1, last + 1)))
+
+    def person(self, sector):
+        r = self.rng
+        pid = len(self.people) + 1
+        nat = dict(NAT[sector])
+        rest = 1 - sum(nat.values())
+        pairs = list(nat.items()) + [(c, rest / len(OTHER_NAT)) for c in OTHER_NAT]
+        self.people[pid] = dict(sex="F" if r.random() < FEMALE[sector] else "M", nat=self.pick(pairs),
+                                age=float(min(64, 18 + r.gamma(3.0, 4.6))))
+        return pid
+
+    def code(self, sector, kind):
+        return self.pick(CIRC_CODE[sector] if kind == "circular" else CODE_W[sector])
+
+    # ---------------------------------------------------------------- stays
+    def add(self, pid, sector, kind, arrive, days, code=None):
+        s = Stay(pid, sector, code or self.code(sector, kind), kind, arrive, arrive + TD(days=int(days)))
+        self.stays.append(s)
+        return s
+
+    def length(self, kind):
+        r = self.rng
+        if kind == "contract":
+            return r.integers(380, 1200) if r.random() < .80 else r.integers(30, 356)
+        if kind == "settler":
+            return r.integers(1000, 5000) if r.random() < .93 else r.integers(30, 356)
+        if kind == "returning":
+            return r.integers(700, 4000) if r.random() < .85 else r.integers(40, 356)
+        raise ValueError(kind)
+
+    def circular(self, pid, sector, arrive):
+        """an agency worker's placements: under eleven and a half months each, then a break and, often, another"""
+        r = self.rng
+        code = self.code(sector, "circular")
+        while arrive <= CUT:
+            if r.random() < .03:
+                self.add(pid, sector, "circular", arrive, r.integers(380, 1500), code)
+                return
+            s = self.add(pid, sector, "circular", arrive, r.integers(285, 351), code)
+            new = s.leave > SWITCH
+            if r.random() > (.92 if new else .25):
+                return
+            arrive = s.leave + TD(days=int(r.integers(25, 61) if new else r.integers(60, 151)))
+
+    def seasonal(self, pid, sector, arrive):
+        r = self.rng
+        code = self.code(sector, "seasonal")
+        while arrive <= CUT:
+            s = self.add(pid, sector, "seasonal", arrive, r.integers(60, 201), code)
+            if r.random() > .35:
+                return
+            arrive = D(arrive.year + 1, 1, 1) + TD(days=int((arrive - D(arrive.year, 1, 1)).days + r.integers(-30, 31)))
+            if arrive <= s.leave:
+                return
+
+    def settle(self, pid, sector, kind, arrive):
+        r = self.rng
+        s = self.add(pid, sector, kind, arrive, self.length(kind))
+        if s.leave <= CUT and r.random() < .05:
+            back = s.leave + TD(days=int(r.integers(400, 2500)))
+            if back <= CUT:
+                sec = sector if r.random() < .6 else SECT[int(r.integers(0, len(SECT)))]
+                self.add(pid, sec, "returning", back, self.length("returning"))
+
+    def build(self):
+        r = self.rng
+        for year in range(2014, 2027):
+            g = GROWTH[year]
+            for sector in SECT:
+                for kind, base in sorted(VOL[sector].items()):
+                    w = list(SEASON_W if kind == "seasonal" else MONTH_W)
+                    frac = 1.0
+                    if year == 2026:
+                        frac = sum(w[:8]) / sum(w)
+                        w[8:] = [0.0] * 4
+                    for _ in range(r.poisson(base * g * frac * 1.12)):
+                        arrive = self.day_in(year, w)
+                        pid = self.person(sector)
+                        if kind == "circular":
+                            self.circular(pid, sector, arrive)
+                        elif kind == "seasonal":
+                            self.seasonal(pid, sector, arrive)
+                        else:
+                            self.settle(pid, sector, kind, arrive)
+        self.companions()
+        self.stays = [s for s in self.stays if OPEN <= s.arrive <= CUT]
+        self.stays.sort(key=lambda s: (s.arrive, s.pid))
+        self.records()
+        self.apart()
+        return self
+
+    def apart(self):
+        """people who came over together and are still on the island at the extract differ in birth year, so no two
+        legacy records still open at the extract share every declared particular"""
+        def yob(s):
+            first = self.by_person[s.pid][0].arrive
+            return int(first.year - self.people[s.pid]["age"] - (first.timetuple().tm_yday / 366.0) + .5)
+        while True:
+            seen, moved = {}, False
+            for s in self.stays:
+                if s.registered >= MOVE or (s.leave <= CUT and s.notice <= EXTRACT):
+                    continue
+                p = self.people[s.pid]
+                k = (s.arrive, p["sex"], yob(s), p["nat"], s.code)
+                if k in seen and seen[k] != s.pid:
+                    p["age"] += 1.0
+                    moved = True
+                else:
+                    seen[k] = s.pid
+            if not moved:
+                return
+
+    def companions(self):
+        """people who came over together: an agency or employer bringing two to five workers from one country for one
+        kind of work on one day, or a firm's graduate intake starting together, each on a contract of their own and of
+        much the same age. Drawn from a stream of their own, so the rest of the world is untouched; legacy-era arrivals
+        only, none of them returning"""
+        r = np.random.default_rng(SEED + 101)
+        leads = [s for s in self.stays if s.arrive < D(2022, 5, 1) and s.kind in ("contract", "seasonal", "settler")]
+        for s in leads:
+            if r.random() >= .15:
+                continue
+            lead = self.people[s.pid]
+            for _ in range(int(r.integers(1, 5))):
+                pid = len(self.people) + 1
+                nat = lead["nat"] if r.random() < .85 else self.pick(list(NAT[s.sector].items()))
+                self.people[pid] = dict(sex="F" if r.random() < FEMALE[s.sector] else "M", nat=nat,
+                                        age=float(min(64, max(18, lead["age"] + r.uniform(-2.5, 2.5)))))
+                if s.kind == "seasonal":
+                    days = int(r.integers(60, 201))
+                elif s.kind == "contract":
+                    days = int(r.integers(380, 1200)) if r.random() < .8 else int(r.integers(30, 356))
+                else:
+                    days = int(r.integers(1000, 5000)) if r.random() < .93 else int(r.integers(30, 356))
+                self.stays.append(Stay(pid, s.sector, s.code, s.kind, s.arrive, s.arrive + TD(days=days)))
+
+    # ---------------------------------------------------------------- the register's own records
+    def records(self):
+        r = self.rng
+        for s in self.stays:
+            if s.arrive < MOVE:
+                lag = min(90, int(r.exponential(24)))
+            else:
+                lag = min(45, int(r.exponential(4))) + (int(r.integers(15, 46)) if r.random() < .03 else 0)
+            s.registered = s.arrive + TD(days=lag)
+            nl = int(r.exponential(5)) + (int(r.integers(20, 121)) if r.random() < .04 else 0)
+            s.notice = s.leave + TD(days=nl)
+            s.parish = PARISHES[int(r.choice(len(PARISHES), p=np.array(PARISH_W) / sum(PARISH_W)))][0]
+        for s in self.stays:
+            if s.transferred():
+                s.move_code = self.job_changes(s)
+        all_stays = {}
+        for s in self.stays:
+            all_stays.setdefault(s.pid, []).append(s)
+        for pid in sorted(all_stays):
+            v = all_stays[pid]
+            # registered a second time at another parish office, by an employer or by the person: the legacy register
+            # held the person twice, and its leaving notice closed both records
+            if len(v) != 1 or not (v[0].registered < MOVE and v[0].leave <= CUT and v[0].notice <= EXTRACT):
+                continue
+            if r.random() >= .06:
+                continue
+            s = v[0]
+            d = s.registered + TD(days=int(r.integers(5, 61)))
+            if d < s.leave:
+                k = int(r.integers(0, len(PARISHES) - 1))
+                if d < MOVE:
+                    s.dup_registered = d
+                    s.dup_parish = [c for c, _ in PARISHES if c != s.parish][k]
+        # a few registrations made late: the legacy register's three months overrun, the current system's 14 days
+        for s in self.stays:
+            u = r.random()
+            if s.arrive < MOVE and u < .02:
+                d = s.arrive + TD(days=int(r.integers(91, 241)))
+                if d < MOVE - TD(days=30) and d < s.leave and (s.dup_registered is None or d < s.dup_registered):
+                    s.registered = d
+            elif s.arrive >= MOVE and u < .01:
+                d = s.arrive + TD(days=int(r.integers(46, 121)))
+                if d < s.leave and d <= EXTRACT - TD(days=30):
+                    s.registered = d
+        # nobody is registered after the stay has ended: a registration still outstanding on the leaving day is made
+        # the day before, and a stay that comes to be open on the legacy register at the move keeps its declared code
+        for s in self.stays:
+            if s.registered >= s.leave:
+                s.registered = s.leave - TD(days=1)
+                if s.transferred() and s.move_code is None:
+                    s.move_code = s.code
+        by = {}
+        for s in self.stays:
+            by.setdefault(s.pid, []).append(s)
+        for v in by.values():
+            v.sort(key=lambda s: s.arrive)
+            for i, s in enumerate(v):
+                s.n = i + 1
+        self.by_person = by
 
 
-def day(d):
-    return D0 + dt.timedelta(days=int(d))
-
-
-def stream(tag, *keys):
-    """an independent random stream per module and entity, so a change to one boiler moves only its own draws"""
-    return np.random.default_rng([SEED, tag] + [int(k) for k in keys])
-
-
-def key(b):
-    return int(b["site"][1:]), b["unit"]
+    def job_changes(self, s):
+        """the activity the legacy register held for the person on its last day: the code declared at registration,
+        overwritten at each change of employment the person notified (three in ten within the same sector)"""
+        r = self.rng
+        code, sector, t = s.code, s.sector, s.registered
+        while True:
+            t = t + TD(days=int(r.exponential(365.25 * .7 / EXIT[sector])) + 1)
+            if t >= MOVE or t >= s.leave:
+                return code
+            if r.random() < .3:
+                others = [c for c, _ in CODE_W[sector] if c != code]
+                if others:
+                    code = others[int(r.integers(0, len(others)))]
+                continue
+            sector = self.pick(DEST[sector])
+            code = self.pick(CODE_W[sector])
 
 
 def build(seed=SEED):
-    w = World()
-    sites = {s: dict(site=s, firm=f, industry=i) for s, f, i in SITES}
-    B = [dict(b) for b in BOILERS]
-    for b in B:
-        b.update(sites[b["site"]])
-        b["ash_ret"] = 0.02 if b["type"] == "PF" else 0.05
-        b["id"] = "%s-%d" % (b["site"], b["unit"])
-    # a second boiler on a site shares its unit 1's yard and supplier mix
-    for b in B:
-        if b["mix"] is None:
-            b["mix"] = next(x["mix"] for x in B if x["site"] == b["site"] and x["unit"] == 1)
-        if isinstance(b["mix"], dict):
-            b["mix"] = [(0, b["mix"])]
-    w.B, w.sites = B, sites
-    t = np.arange(DAYS)
-    # daily coal fired, t: rating MW x 86.4 GJ per MW-day x load / GCV MJ per kg
-    for b in B:
-        rng = stream(1, *key(b))
-        mix = b["mix"][0][1]
-        gcv = sum(sh * SUPPLIERS[s]["gcv"] for s, sh in mix.items())
-        if b["industry"] in ("hospital campus", "district heating"):
-            season = 1 + 0.22 * np.cos(2 * np.pi * (t - 18) / 365)
-        elif b["industry"] == "sugar":
-            season = np.where((t >= 268) | (t < 32), 1.42, 0.82)
-        else:
-            season = 1 + 0.05 * np.cos(2 * np.pi * (t - 30) / 365)
-            season = season * np.where((t % 7) == 6, 0.86, 1.0)
-        load = b["cf"] * season * rng.lognormal(0, 0.06, DAYS)
-        stops = []
-        for _ in range(int(rng.integers(1, 3))):
-            s0 = int(rng.integers(20, DAYS - 20))
-            stops.append((s0, int(rng.integers(4, 11))))
-        for s0, n in stops:
-            load[s0:s0 + n] = 0.0
-        b["load"] = np.clip(load, 0, 1.0)
-        b["stops"] = stops
-        b["coal_day"] = b["mwth"] * 86.4 * b["load"] / gcv
-    return w
+    return World(seed).build()
 
 
-def flows(w):
-    """the scrubber's day: bypass hours while firing, removal while running, limestone dosed"""
-    for b in w.B:
-        rng = stream(11, *key(b))
-        firing = b["coal_day"] > 0
-        off = np.zeros(DAYS)
-        spells = []
-        if b["bypass"] > 0:
-            # spells of 5 to 64 hours, never notified (the guidance asks only for planned outages in the return)
-            s_gas = b["coal_day"] * b["s_day"] * (1 - b["ash_ret"])
-            target = b["bypass"] * s_gas.sum()
-            got = 0.0
-            while got < target:
-                hrs = float(rng.uniform(5, 64))
-                start = float(rng.uniform(0, (DAYS - 3) * 24))
-                h0, h1 = start, start + hrs
-                add = 0.0
-                trial = off.copy()
-                for d in range(int(h0 // 24), int(h1 // 24) + 1):
-                    a, z = max(h0, d * 24), min(h1, (d + 1) * 24)
-                    if z > a and firing[d]:
-                        new = min(1.0, trial[d] + (z - a) / 24)
-                        add += (new - trial[d]) * s_gas[d]
-                        trial[d] = new
-                if add <= 0:
-                    continue
-                off = trial
-                got += add
-                spells.append((round(h0, 1), round(hrs, 1)))
-        else:
-            for _ in range(int(rng.integers(0, 3))):
-                start = float(rng.uniform(0, (DAYS - 3) * 24))
-                hrs = float(rng.uniform(1.5, 7))
-                d = int(start // 24)
-                if firing[d]:
-                    off[d] = min(1.0, off[d] + hrs / 24)
-                    spells.append((round(start, 1), round(hrs, 1)))
-        b["off"], b["bypass_spells"] = off, sorted(spells)
-        b["eff_day"] = np.clip(b["eff_on"] + rng.normal(0, 0.0035, DAYS), 0.88, 0.99)
-        s_fired = b["coal_day"] * b["s_day"]
-        s_gas = s_fired * (1 - b["ash_ret"])
-        s_rem = s_gas * (1 - off) * b["eff_day"]
-        b["S_fired_true"], b["S_gas_true"], b["S_rem_true"] = s_fired, s_gas, s_rem
-        b["SO2_true"] = float((s_gas - s_rem).sum() * MSO2 / MS)
-        b["caco3_day"] = s_rem / MS * b["ratio"] * MCACO3
-        b["bypass_share_true"] = float(((s_gas * off).sum()) / s_gas.sum())
-
-
-if __name__ == "__main__":
-    import coal
-    w = build()
-    coal.deliveries(w)
-    flows(w)
-    for b in w.B:
-        print("%-5s %-6s %5.1f coal %7.0f S %.2f%% byp %.3f SO2 %6.0f %s" % (
-            b["id"], b["type"], b["mwth"], b["coal_day"].sum(), 100 * b["S_fired_true"].sum() / b["coal_day"].sum(),
-            b["bypass_share_true"], b["SO2_true"], b["role"]))
+def returner(stays_of_person, s, window=365):
+    """true when the person's previous stay ended within `window` days before this arrival"""
+    return any(o is not s and o.leave < s.arrive and (s.arrive - o.leave).days <= window for o in stays_of_person)

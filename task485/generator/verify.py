@@ -1,222 +1,189 @@
-"""The independent verifier: recomputes every graded figure from target/ alone, with its own readers and none of the
-generator's modules, and compares with generator/figures.json and the golden workbook.
+"""An independent recomputation of every graded figure from the shipped files alone (csv, json and the Policy's
+numbers as the PDF prints them), sharing no code with golden.py, checked against figures.json and the golden workbook.
 
     python3 task485/generator/verify.py
 """
+import collections
 import csv
 import datetime as dt
 import json
-import math
 import os
 import re
 import sys
-
-import openpyxl
-import pdfplumber
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 TASK = os.path.dirname(HERE)
 T = os.path.join(TASK, "target")
 GOLD = os.path.join(TASK, "golden")
-MS, MSO2, MCACO3 = 32.065, 64.066, 100.087
-N, BAD = [0], []
+D = dt.date
+CUT = D(2026, 8, 31)
+OK = []
 
 
-def ok(label, cond, detail=""):
-    N[0] += 1
-    if not cond:
-        BAD.append(label)
-    print("%s  %s%s" % ("ok  " if cond else "FAIL", label, ("  (" + detail + ")") if detail else ""))
+def say(label, ok, detail=""):
+    OK.append(ok)
+    print("%s  %-60s %s" % ("PASS" if ok else "FAIL", label, detail))
 
 
-def ten(x):
-    return int(math.floor(x / 10.0 + 0.5) * 10)
+def iso(s):
+    return D(*map(int, s.split("-"))) if s else None
 
 
-def hundred(x):
-    return int(math.floor(x / 100.0 + 0.5) * 100)
+def dmy(s):
+    if not s:
+        return None
+    d, m, y = map(int, s.split("/"))
+    return D(y, m, d)
 
 
-def r1(x):
-    return math.floor(x * 10 + 0.5) / 10.0
+def anniv(a):
+    try:
+        return a.replace(year=a.year + 1)
+    except ValueError:
+        return D(a.year + 1, 3, 1)
 
 
-def date(s):
-    s = str(s)[:10]
-    return dt.date.fromisoformat(s) if "-" in s else dt.datetime.strptime(s, "%d/%m/%Y").date()
+def whole_months(a, b):
+    m = (b.year - a.year) * 12 + (b.month - a.month)
+    return m - 1 if b.day < a.day else m
 
 
-def read_csv(name):
-    with open(os.path.join(T, name), newline="", encoding="utf-8") as fh:
-        return list(csv.DictReader(fh))
-
-
-def text(name):
-    with pdfplumber.open(os.path.join(T, name)) as p:
-        return "\n".join(pg.extract_text() or "" for pg in p.pages)
+def allowances():
+    """Table 1 of the Policy as printed: each sector code followed by its name and four allowances, 2025-26 second"""
+    from pypdf import PdfReader
+    pdf = PdfReader(os.path.join(T, "population_policy_2024_2028_sector_allowances.pdf"))
+    words = "\n".join(p.extract_text() for p in pdf.pages).split("\n")
+    out = {}
+    for i, w in enumerate(words):
+        w = w.strip()
+        if w in ("HOS", "AGR", "CON", "FIN", "HSC", "RET", "DIG", "OTH") and w not in out:
+            nums = [x.strip() for x in words[i + 1:i + 7] if re.fullmatch(r"\d+", x.strip())]
+            if len(nums) >= 4:
+                out[w] = int(nums[1])
+    return out
 
 
 def main():
-    figs = json.load(open(os.path.join(HERE, "figures.json")))
-    y0, y1 = dt.date(2026, 1, 1), dt.date(2026, 12, 31)
-    # the register: permit, operator, unit, ash retention
-    reg = {}
-    for r in openpyxl.load_workbook(os.path.join(T, "permitted_boilers_register_2026.xlsx"),
-                                    read_only=True)["Register"].iter_rows(min_row=2, values_only=True):
-        if r[0]:
-            reg[r[0]] = dict(op=r[1], unit=r[2], ret=r[11] / 100.0, design=r[10] / 100.0)
-    ok("register: 18 permitted coal boilers at 16 sites", len(reg) == 18 and len({v["op"] for v in reg.values()}) == 16)
-    # coal: each site's 2026 receipts, sulphur weighted by tonnes
-    cust = {}
-    for r in read_csv("coal_supplier_customers.csv"):
-        cust[(r["Supplier"], r["Customer Code"])] = r["Customer"]
-    num, den = {}, {}
-    rows = read_csv("coal_deliveries_2026.csv")
+    sc = json.load(open(os.path.join(T, "sector_classification_2026.json")))
+    to26 = {c["code"]: c["sector_2026"] for c in sc["activity_codes_2014"]}
+    to26.update({c["code"]: c["code"] for c in sc["sectors_2026"]})
+    sectors = [c["code"] for c in sc["sectors_2026"]]
+    rows = list(csv.DictReader(open(os.path.join(T, "population_register_extract_20260930.csv"))))
+    stays_of = collections.defaultdict(list)
     for r in rows:
-        rec = date(r["Received"])
-        if not (y0 <= rec <= y1):
+        stays_of[r["reg_no"]].append((iso(r["arrival_date"]), iso(r["leaving_date"])))
+    xw0 = {r["legacy_no"]: r["reg_no"] for r in csv.DictReader(open(os.path.join(T, "registration_number_crosswalk_2023.csv")))}
+    for a in csv.DictReader(open(os.path.join(T, "population_register_legacy_archive_2014_2023.csv"))):
+        if a["CLOSURE"] == "LEFT":
+            stays_of[xw0[a["LEGACY_NO"]]].append((dmy(a["DATE_OF_ARRIVAL"]), dmy(a["DATE_OF_LEAVING"])))
+
+    def returning(r):
+        a = iso(r["arrival_date"])
+        return any(lv is not None and lv < a and (a - lv).days <= 365 for (ar, lv) in stays_of[r["reg_no"]]
+                   if ar != a or lv != iso(r["leaving_date"]))
+
+    def year_rows(y0):
+        lo, hi = D(y0, 7, 1), D(y0 + 1, 6, 30)
+        return [r for r in rows if r["record_origin"] == "ARRIVAL" and lo <= iso(r["arrival_date"]) <= hi]
+
+    ref = collections.defaultdict(lambda: [0, 0])
+    for r in year_rows(2024):
+        a, lv = iso(r["arrival_date"]), iso(r["leaving_date"])
+        reached = lv is None or lv >= anniv(a)
+        stayed = 12 if lv is None else whole_months(a, lv)
+        for m in range(0, min(stayed, 12) + 1):
+            c = ref[(to26[r["activity_code"]], returning(r), m)]
+            c[0] += 1
+            c[1] += reached
+    prov = {s: 0.0 for s in sectors}
+    for r in year_rows(2025):
+        a, lv, s = iso(r["arrival_date"]), iso(r["leaving_date"]), to26[r["activity_code"]]
+        if lv is not None and lv < anniv(a):
             continue
-        site = cust[(r["Supplier"], r["Customer Code"])]
-        t = float(r["Net Tonnes"])
-        num[site] = num.get(site, 0.0) + t * float(r["Total Sulphur % (ar)"])
-        den[site] = den.get(site, 0.0) + t
-    S = {k: num[k] / den[k] for k in num}
-    ok("coal: every site has 2026 receipts", len(S) == 16)
-    # the returns: coal burned and silo stocks by permit, read by header in both templates
-    wb = openpyxl.load_workbook(os.path.join(T, "boiler_returns_2026.xlsx"), read_only=True)
-    coal, ls = {}, {}
-    for q in range(1, 5):
-        it = wb["Q%d 2026" % q].iter_rows(values_only=True)
-        head = list(next(it))
-        col = {h: i for i, h in enumerate(head)}
-        pk = "Permit No" if "Permit No" in col else "Permit reference"
-        ck = "Coal burned (t)" if "Coal burned (t)" in col else "Fuel fired: coal (tonnes)"
-        lo = "Reagent held at start of quarter (t)" if q <= 2 else "Limestone in silo, opening (tonnes)"
-        lc = "Reagent held at end of quarter (t)" if q <= 2 else "Limestone in silo, closing (tonnes)"
-        for r in it:
-            if not r[0]:
+        if anniv(a) <= CUT:
+            prov[s] += 1
+            continue
+        n, k = ref[(s, returning(r), whole_months(a, CUT))]
+        prov[s] += k / n if n else 0.0
+    allow = allowances()
+    say("Policy Table 1 read from the PDF", len(allow) == 8, json.dumps(allow))
+    over = sorted(s for s in sectors if prov[s] > allow[s])
+    f = json.load(open(os.path.join(HERE, "figures.json")))
+    say("the call", over == f["call"], ",".join(over))
+    for s in sectors:
+        say("provisional %s" % s, abs(round(prov[s], 1) - f["sector.%s.provisional" % s]) < 1e-9,
+            "%.1f against %s" % (prov[s], allow[s]))
+    # the back series: the archive's records, those open at the move with their TRANSFER record's leaving and notice
+    # dates, a stay registered twice counted once, and the current system's own arrivals
+    xw = {r["legacy_no"]: r["reg_no"] for r in csv.DictReader(open(os.path.join(T, "registration_number_crosswalk_2023.csv")))}
+    tr = {r["reg_no"]: (iso(r["leaving_date"]), iso(r["notice_received"])) for r in rows if r["record_origin"] == "TRANSFER"}
+    seen, stays = set(), []
+    for a in csv.DictReader(open(os.path.join(T, "population_register_legacy_archive_2014_2023.csv"))):
+        if a["CLOSURE"] == "LEFT":
+            lv, nt = dmy(a["DATE_OF_LEAVING"]), dmy(a["CLOSED_ON"])
+        else:
+            lv, nt = tr[xw[a["LEGACY_NO"]]]
+        if lv is not None:
+            key = (a["DATE_OF_ARRIVAL"], a["SEX"], a["YOB"], a["NATIONALITY"], a["ACTIVITY"], lv, nt)
+            if key in seen:
                 continue
-            coal[r[col[pk]]] = coal.get(r[col[pk]], 0) + r[col[ck]]
-            ls.setdefault(r[col[pk]], {})[q] = (r[col[lo]], r[col[lc]])
-    ok("returns: four quarters for every boiler", all(len(v) == 4 for v in ls.values()) and len(ls) == 18)
-    # limestone: tickets to permits, each at its ISO week's certificate
-    wbc = openpyxl.load_workbook(os.path.join(T, "limestone_certificates_2026.xlsx"), read_only=True)
-    pur = {}
-    for q, sh in (("Bromscar Quarry", "Bromscar weekly"), ("Molhope Lime and Stone", "Molhope weekly")):
-        pur[q] = {r[0]: r[2] for r in wbc[sh].iter_rows(min_row=2, values_only=True) if r[0]}
-    dp = {}
-    for r in wbc["Delivery points"].iter_rows(min_row=2, values_only=True):
-        if r[0]:
-            dp[(r[0], r[1], r[3])] = r[4]
-    tons, caco3 = {}, {}
-    for r in read_csv("limestone_tickets_2026.csv"):
-        p = dp[(r["Quarry"], r["Account"], r["Delivery Point"])]
-        d = date(r["Date"])
-        wk = d.isocalendar()[1]
-        t = float(r["Net t"])
-        tons[p] = tons.get(p, 0.0) + t
-        caco3[p] = caco3.get(p, 0.0) + t * pur[r["Quarry"]][wk] / 100.0
-    # the guarantees' stoichiometry, parsed from the schedules
-    g = text("scrubber_guarantee_schedules.pdf")
-    ratio = {}
-    for m in re.finditer(r"(NPA/CB/\d{4})", g):
-        tail = g[m.end():m.end() + 400]
-        n = re.search(r"([\d,]{5,}) ([\d,]{3,}) (\d{2}\.\d) ([\d,]+) (\d\.\d{2}) ", tail)
-        if n and m.group(1) not in ratio:
-            ratio[m.group(1)] = float(n.group(5))
-    ok("guarantees: a stoichiometry for each of the 18 permits", len(ratio) == 18,
-       ", ".join(sorted(set("%.2f" % v for v in ratio.values()))))
-    # the balance
-    so2, formed, removed = {}, {}, {}
-    for p, v in reg.items():
-        s_gas = coal[p] * S[v["op"]] / 100.0 * (1 - v["ret"])
-        used = tons[p] - (ls[p][4][1] - ls[p][1][0])
-        ca = caco3[p] / tons[p] * used
-        formed[p] = s_gas * MSO2 / MS
-        removed[p] = ca / MCACO3 / ratio[p] * MSO2
-        so2[p] = formed[p] - removed[p]
-    listed = sorted(p for p in so2 if so2[p] >= 250)
-
-    def label(p):
-        v = reg[p]
-        two = sum(1 for x in reg.values() if x["op"] == v["op"]) > 1
-        if not two:
-            return v["op"]
-        u = v["unit"]
-        return "%s %s" % (v["op"], u[0].lower() + u[1:]) if u.startswith("Boiler") else "%s %s" % (v["op"], u)
-    want = sorted(figs["call"]["listed"])
-    ok("call: the boilers at or over 250 tonnes are the write-up's six", sorted(label(p) for p in listed) == want,
-       ", ".join(sorted(label(p) for p in listed)))
-    for p in sorted(so2):
-        f = figs["boilers"][label(p)]
-        ok("%s: %s tonnes, %s" % (label(p), ten(so2[p]), "listed" if so2[p] >= 250 else "not listed"),
-           f["so2"] == ten(so2[p]) and f["listed"] == ("listed" if so2[p] >= 250 else "not listed"))
-    ok("component: sulphur dioxide formed, to the nearest 100", figs["components"]["formed"] == hundred(sum(formed.values())),
-       "{:,}".format(hundred(sum(formed.values()))))
-    ok("component: sulphur dioxide removed, to the nearest 100", figs["components"]["removed"] ==
-       hundred(sum(removed.values())), "{:,}".format(hundred(sum(removed.values()))))
-    ok("step 1: coal burned in all", figs["components"]["coal"] == round(sum(coal.values())),
-       "{:,}".format(round(sum(coal.values()))))
-    # the default path: each test's removal carried over the year
-    rem = {}
-    for f in ("scrubber_tests_2026_iverstow.pdf", "scrubber_tests_2026_jarrness.pdf"):
-        s = text(f)
-        rep_permit = dict(re.findall(r"((?:IET/26/|JST-2026-)\d+).*?(NPA/CB/\d{4})", s))
-        for rep, val in re.findall(r"((?:IET/26/|JST-2026-)\d+) [\d,]+ [\d,]+ [\d,]+ (\d{2}\.\d)", s):
-            rem[rep_permit[rep]] = float(val) / 100.0
-    tested = {p: coal[p] * S[reg[p]["op"]] / 100.0 * (1 - reg[p]["ret"]) * (1 - rem[p]) * MSO2 / MS for p in reg}
-    ok("default path: the tested removal over the year lists Candrigg Soda Works alone",
-       [label(p) for p in tested if tested[p] >= 250] == ["Candrigg Soda Works"] and len(rem) == 18)
-    # the ask: the three ash exports, a Whinmoss line billing a local job dropped
-    xref = {}
-    for r in read_csv("ash_contractor_customers.csv"):
-        ops = {reg[p.strip()]["op"] for p in r["Permit Numbers"].split(";")}
-        xref[(r["Contractor"], r["Customer as recorded"])] = ops.pop()
-    tol = read_csv("carnhope_jobs_2026.csv")
-    gre = [r for r in openpyxl.load_workbook(os.path.join(T, "pellrigg_dockets_2026.xlsx"),
-                                             read_only=True)["Dockets"].iter_rows(min_row=2, values_only=True) if r[0]]
-    local_jobs = {r["Job No"] for r in tol} | {r[0] for r in gre}
-    tot, rec = {}, {}
-
-    def add(site, d, t, dest, material):
-        if not (y0 <= d <= y1) or "ash" not in material.lower() and "pfa" not in material.lower():
-            return
-        tot[site] = tot.get(site, 0.0) + t
-        if "Yarrdale" in dest or "Velthwaite" in dest:
-            rec[site] = rec.get(site, 0.0) + t
-    for r in openpyxl.load_workbook(os.path.join(T, "whinmoss_invoice_lines_2026.xlsx"),
-                                    read_only=True)["Invoice lines"].iter_rows(min_row=2, values_only=True):
-        if not r[0] or r[10] in local_jobs:
-            continue
-        add(xref[("Whinmoss Waste Haulage", r[3])], date(r[1]), float(r[6]), r[5], r[5])
-    for r in tol:
-        add(xref[("Carnhope Skips", r["Site"])], date(r["Date"]), int(r["Net kg"]) / 1000.0, r["Destination"],
-            r["Material"])
-    for r in gre:
-        add(xref[("Pellrigg and Sons Haulage", r[2])], date(r[1]), float(r[5]), r[4], r[3])
-    for site in sorted(tot):
-        f = figs["ash"][site]
-        ok("ask A %s: %s tonnes, %.1f per cent" % (site, "{:,}".format(ten(tot[site])), r1(100 * rec[site] / tot[site])),
-           f["t"] == ten(tot[site]) and abs(f["rec"] - r1(100 * rec[site] / tot[site])) < 1e-9)
-    ok("ask A: sixteen sites", len(tot) == 16)
+            seen.add(key)
+        stays.append((dmy(a["DATE_OF_ARRIVAL"]), to26[a["ACTIVITY"]], lv))
+    for r in rows:
+        if r["record_origin"] == "ARRIVAL":
+            stays.append((iso(r["arrival_date"]), to26[r["activity_code"]], iso(r["leaving_date"])))
+    labels = ["2018-19", "2019-20", "2020-21", "2021-22", "2022-23"]
+    for y0, lab in zip(range(2018, 2023), labels):
+        lo, hi = D(y0, 7, 1), D(y0 + 1, 6, 30)
+        ca = collections.Counter(s for a, s, lv in stays if lo <= a <= hi)
+        cl = collections.Counter(s for a, s, lv in stays if lo <= a <= hi and (lv is None or lv >= anniv(a)))
+        for s in sectors:
+            say("back series %s %s arrivals and long-term" % (lab, s),
+                ca[s] == f["back.arrivals.%s.%s" % (lab, s)] and cl[s] == f["back.long.%s.%s" % (lab, s)],
+                "%d, %d" % (ca[s], cl[s]))
+    # the methods note's test: 2023-24 arrivals as the year before, the 2024-25 arrivals open at 31 August 2025
+    cut25, ext25 = D(2025, 8, 31), D(2025, 9, 30)
+    for name, use_history in (("golden", True), ("sector_months", False)):
+        t = collections.defaultdict(lambda: [0, 0])
+        for r in year_rows(2023):
+            a, lv = iso(r["arrival_date"]), iso(r["leaving_date"])
+            reached = lv is None or lv >= anniv(a)
+            stayed = 12 if lv is None else whole_months(a, lv)
+            for m in range(0, min(stayed, 12) + 1):
+                c = t[(to26[r["activity_code"]], returning(r) if use_history else None, m)]
+                c[0] += 1
+                c[1] += reached
+        err, n = 0.0, 0
+        for r in year_rows(2024):
+            a, lv, nt = iso(r["arrival_date"]), iso(r["leaving_date"]), iso(r["notice_received"])
+            if iso(r["registered_on"]) > ext25 or anniv(a) <= cut25 or (lv is not None and lv <= cut25 and nt <= ext25):
+                continue
+            k, rr = t[(to26[r["activity_code"]], returning(r) if use_history else None, whole_months(a, cut25))]
+            err += (rr / k - (lv is None or lv >= anniv(a))) ** 2
+            n += 1
+        say("the methods note's test, %s" % name, abs(round(err / n, 3) - f["backtest.%s" % name]) < 1e-9,
+            "%.4f on %d stays" % (err / n, n))
     # the golden workbook carries the same figures
-    wg = openpyxl.load_workbook(os.path.join(GOLD, "sulphur_dioxide_order_schedule_2027.xlsx"), read_only=True)
-    sched = {r[0]: r for r in wg["Schedule"].iter_rows(min_row=5, values_only=True) if r[0] and str(r[0]).startswith("NPA")}
-    ok("golden workbook: every boiler's tonnes and listing as verified",
-       all(sched[p][10] == ten(so2[p]) and (sched[p][11] == "Listed") == (so2[p] >= 250) for p in reg))
-    ash = {r[0]: r for r in wg["Ash 2026"].iter_rows(min_row=5, values_only=True) if r[0] in tot}
-    ok("golden workbook: every site's ash and recovery share as verified",
-       all(ash[s][2] == ten(tot[s]) and abs(ash[s][3] - r1(100 * rec[s] / tot[s])) < 1e-9 for s in tot))
-    md = open(os.path.join(TASK, "submission.md")).read()
-    ok("submission.md: every boiler's line as verified", all(
-        "   - %s: %s tonnes, %s" % (label(p), "{:,}".format(ten(so2[p])), "listed" if so2[p] >= 250 else "not listed") in md
-        for p in reg))
-    ok("submission.md: every site's ash line as verified", all(
-        "   - %s: %s tonnes, %.1f per cent" % (s, "{:,}".format(ten(tot[s])), r1(100 * rec[s] / tot[s])) in md for s in tot))
-    print("\n%d of %d verified" % (N[0] - len(BAD), N[0]))
-    if BAD:
-        sys.exit(1)
+    import openpyxl
+    wb = openpyxl.load_workbook(os.path.join(GOLD, "provisional_long_term_immigration_2025_26.xlsx"))
+    ws = wb["Provisional 2025-26"]
+    cells = {r[0].value: r for r in ws.iter_rows(min_row=5, max_row=12)}
+    for s in sectors:
+        say("workbook row %s" % s, cells[s][6].value == 50 * int(prov[s] / 50.0 + 0.5) and
+            (cells[s][8].value == "Yes") == (prov[s] > allow[s]) and cells[s][7].value == allow[s])
+    wb2 = wb["Back series"]
+    blocks, cur = {}, None
+    for r in wb2.iter_rows(min_row=1, values_only=True):
+        if r[0] in ("Arrivals registered for work", "Long-term immigration"):
+            cur = "arrivals" if r[0].startswith("Arrivals") else "long"
+        elif cur and r[0] in sectors:
+            blocks[(cur, r[0])] = list(r[2:7])
+    say("workbook back series", all(blocks[(k, s)] == [f["back.%s.%s.%s" % (k, lab, s)] for lab in labels]
+                                    for k in ("arrivals", "long") for s in sectors))
+    n = len(OK)
+    print("%d of %d" % (sum(OK), n))
+    return all(OK)
 
 
 if __name__ == "__main__":
-    main()
+    sys.exit(0 if main() else 1)
