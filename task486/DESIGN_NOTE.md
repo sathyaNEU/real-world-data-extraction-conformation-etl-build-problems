@@ -405,3 +405,20 @@ Mirror leakage: 0.0 per cent of ask weight.
   status columns gone, both round 2 readers took the companies register's class (68209 and 41100) as the owner's
   mark, the obvious next signal, so an owner told by its register class is the careful route, not a device. Spent by
   the lane's rule (a call any reader lands is spent); reader C stopped at the spend.
+- 2026-10-26, architecture 4 draw, screened against every card, slot note and the four ETL cells the window leaves open
+  (data integration, payment claims, emissions inventory, IRT test equating; the census-register pairing banned by
+  task485), each dead on file or on the rules: a common stack's units unmixed by their hourly mix (task263); startup
+  excess carried from monitored to unmonitored units by starts or by downtime before each start (a rate set by an
+  operating condition, task478 v7, and a state rebuilt from the unit's own record, task485 v4's driver); landfill first
+  order decay, load estimation from sparse samples, Fellegi-Sunter frequency weights, non-detects, age heaping and
+  degree days (this note's architecture 2 screen); length-biased durations from snapshots (task182, task120, task130,
+  task135, task201); rapid guessing read from response times (task479, task249); capacity-censored demand (task120's
+  screen, and no ETL task type works it); repeaters in a random-groups equating (population_selection, banned against
+  task137, and NEAT is task450's); opt-outs imputed from prior scores (a missing-data step no ETL task type works);
+  benefit accumulators against an out-of-pocket maximum (executing the stated benefit design member by member is rule
+  application); pharmacy rebates allocated by product (a grain read off the rebate file); hourly grid factors against
+  the annual factor (the reporting standard's own choice, semantics); the sampling variance of a fuel's composite
+  analyses behind a listing bound (the variance family forks a borderline listing). The lane's last three ships turn on
+  one shape (a rate conditioned on a covariate whose mix shifted: heat content, class density, migration history), so a
+  fourth is a strategy monoculture whatever its label. The UCI order log (task487's seed spine) is refused by the
+  network proxy, so that pack would be constructed too. Resume at the draw with a step outside those families.

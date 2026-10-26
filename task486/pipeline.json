@@ -1,49 +1,49 @@
 {
-  "task": "task486",
-  "owner": "oviya1301",
-  "status": "PAUSED",
-  "domain": "survey-research-official-statistics/census-register-administrative-data-quality",
-  "objective": "etl",
-  "stage": 1,
-  "stage_name": "draw",
-  "updated": "2026-10-26",
-  "stump": "Placing each multi-site retail employer's March staff at its premises by floor area, or by rateable value, names the wrong set of town centres for the 2027 Town Centre Renewal Fund, because chains opened retail park units and distribution centres between the two Marches, premises holding a fraction of a shop's staff per square metre, and closed small town centre shops, so a share by size moves their staff out of the centres they still trade in and takes too few from the centres they left",
-  "architecture": 4,
-  "loops": 0,
-  "precut": {
-    "exit": 0,
-    "date": "2026-10-26",
-    "note": "51 checks, 0 FAIL, 0 WARN on the cut-pack note (seed 490)"
+ "task": "task486",
+ "owner": "oviya1301",
+ "status": "PAUSED",
+ "domain": "survey-research-official-statistics/census-register-administrative-data-quality",
+ "objective": "etl",
+ "stage": 1,
+ "stage_name": "draw",
+ "updated": "2026-10-26",
+ "stump": "Placing each multi-site retail employer's March staff at its premises by floor area, or by rateable value, names the wrong set of town centres for the 2027 Town Centre Renewal Fund, because chains opened retail park units and distribution centres between the two Marches, premises holding a fraction of a shop's staff per square metre, and closed small town centre shops, so a share by size moves their staff out of the centres they still trade in and takes too few from the centres they left",
+ "architecture": 4,
+ "loops": 0,
+ "precut": {
+  "exit": 0,
+  "date": "2026-10-26",
+  "note": "51 checks, 0 FAIL, 0 WARN on the cut-pack note (seed 490)"
+ },
+ "leak": {
+  "leak_py": "REVIEW (no LEAK): the prospectus annex names every centre; three documents share generic terms with the design note",
+  "reader": "round 2 on zip 032f619f: reader D landed the call and every figure (exit 1); reader C missed the call (17 centres by floor area) but kept all 24 ask figures; architecture 3 spent"
+ },
+ "duplicate_check": {
+  "heart": "WARN (repeat.question_form) after the stage-3 redraw of strategy and context artifact off task137 v2",
+  "nearest": "task470 0.09"
+ },
+ "judge": {
+  "verdict": "DETERMINISTIC (pass 3, round 2)",
+  "disposition": "APPROVE (optional: six 2017-list rows dated after the extract)",
+  "report": "determinism_check_report_pass2.md (round 1); round 2 verdict recorded in the design note"
+ },
+ "returned": [],
+ "resume": "stage 1 of architecture 4: the 2026-10-26 draw screen (the last line of Tried and rejected) found every candidate in the four open ETL cells dead on file or on the rules; draw a decisive step outside those families and outside the lane's recent shape (a rate conditioned on a covariate whose mix shifted), re-reading the guard window first (task485, task121, task137 at the screen: causal_design, population_selection and maturity_censoring banned; the census-register pairing reopens once task485 leaves the window)",
+ "approved": null,
+ "delivered": null,
+ "portal": null,
+ "portal_id": "",
+ "portal_status": "",
+ "portal_status_date": "",
+ "architectures": [
+  {
+   "architecture": 2,
+   "fate": "spent 2026-10-23 at stage 4: scored reader A landed the call"
   },
-  "leak": {
-    "leak_py": "REVIEW (no LEAK): the prospectus annex names every centre; three documents share generic terms with the design note",
-    "reader": "round 2 on zip 032f619f: reader D landed the call and every figure (exit 1); reader C missed the call (17 centres by floor area) but kept all 24 ask figures; architecture 3 spent"
-  },
-  "duplicate_check": {
-    "heart": "WARN (repeat.question_form) after the stage-3 redraw of strategy and context artifact off task137 v2",
-    "nearest": "task470 0.09"
-  },
-  "judge": {
-    "verdict": "DETERMINISTIC (pass 3, round 2)",
-    "disposition": "APPROVE (optional: six 2017-list rows dated after the extract)",
-    "report": "determinism_check_report_pass2.md (round 1); round 2 verdict recorded in the design note"
-  },
-  "returned": [],
-  "resume": "stage 1 of architecture 4: architecture 3 (PAYE staff placed at premises by the single-site employers' density by description) spent at stage 4 round 2 when reader D read the densities off the single-site employers and landed the call; re-root fresh in the lane's objective with a new draw, reading Tried and rejected first (a per-kind rate read off the one-to-one units is one group-by once the tight ratio is seen; an owner told by register class is the careful route)",
-  "approved": null,
-  "delivered": null,
-  "portal": null,
-  "portal_id": "",
-  "portal_status": "",
-  "portal_status_date": "",
-  "architectures": [
-    {
-      "architecture": 2,
-      "fate": "spent 2026-10-23 at stage 4: scored reader A landed the call"
-    },
-    {
-      "architecture": 3,
-      "fate": "spent 2026-10-26 at stage 4 round 2: reader D landed the call and every figure; round 1 both readers had missed the call, reader B keeping all 24 ask figures"
-    }
-  ]
+  {
+   "architecture": 3,
+   "fate": "spent 2026-10-26 at stage 4 round 2: reader D landed the call and every figure; round 1 both readers had missed the call, reader B keeping all 24 ask figures"
+  }
+ ]
 }
