@@ -1,0 +1,36 @@
+{
+ "task": "task488",
+ "owner": "oviya1301",
+ "status": "PAUSED",
+ "domain": "",
+ "objective": "etl",
+ "stage": 1,
+ "stage_name": "draw",
+ "updated": "2026-10-26",
+ "stump": "",
+ "architecture": 1,
+ "loops": 0,
+ "precut": {
+  "exit": null,
+  "date": ""
+ },
+ "leak": {
+  "leak_py": "",
+  "reader": ""
+ },
+ "duplicate_check": {
+  "heart": "",
+  "nearest": ""
+ },
+ "judge": {
+  "verdict": "",
+  "disposition": "",
+  "report": ""
+ },
+ "returned": [],
+ "resume": "stage 1 draw: the screen is recorded in DESIGN_NOTE.md (## Draw lists the two live record-linkage candidates, value-specific agreement weight and matcher calibration, with each one's open problem; ## Tried and rejected holds the five dead ones). Paused at the author's request to rework task139 and task141; resume by fixing one candidate's determinism on paper (or redrawing outside the seed's world as task487 did), then the card through guard.py check and register, and commit DRAWN (task488).",
+ "approved": null,
+ "delivered": null,
+ "portal": null,
+ "source_note": "seed ET45 (analytical_tasks/07_data_extraction_conformation/ET45_gtin-normalization-product-master-matching.md), header and situation only"
+}
