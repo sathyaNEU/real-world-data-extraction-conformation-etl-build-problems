@@ -105,64 +105,83 @@ the charge class must not be filtered, stays unfiled.
 
 ## Three rules
 
-- **Task type:** `criminology-justice` / `recidivism-risk-assessment` (forecasting): the call rests on each PAS score's
-  pretrial new-offence rate among the defendants a 2027 presumptive tier would release, a risk-assessment forecast
-  for a population the outcome record covers only where a magistrate released.
-- **Domain test:** the deciding quantity is the new-offence rate within the pretrial window that each score's eligible
-  defendants would show if every one were released, which pretrial research estimates from the release shares and
-  outcomes of magistrates the duty rota assigns without regard to the defendant (the selective-labels problem of risk
-  assessment); validating the scale on the defendants magistrates released, the field's habit, files scores 1 to 4.
-- **Swap:** "Dorrance County's presumptive release tier for 2027 reaches PAS score 3: score 4 falls below the 85 per
-  cent safety floor once the defendants magistrates now hold are counted" read with a hospital's nouns ("the emergency
-  department's discharge protocol reaches triage level 3") stops making sense: there is no pretrial window from release
-  to disposition, no new-offence arrest recorded only for the released, and no duty rota of magistrates whose release
-  shares identify the held defendants' risk; with the method swapped (the released defendants' own rate), the call moves
-  to scores 1 to 4.
-- **Layer 1:** two first-appearance exports from the clerk's old and new case management systems (layouts, case-number
-  formats and magistrate keys differ across the 4 March 2024 change), screens keyed by booking number, name and date of
-  birth (paper screens carry no booking number) against the court's party numbers, jail times in UTC against court
-  times in Eastern local time, offence codes
-  recoded at the system change and joined through the clerk's crosswalk, a state arrest extract that mixes new-offence
-  arrests with warrant service and arrests for older offences, dispositions in their own export with cases still open
-  at the extract; each is what these systems write, and none decides the call.
-- **Layer 2:** family `estimand_identification`: the shortcut validates each score on the defendants with an outcome
-  (the released) and carries that rate to every eligible defendant the tier will release; the expert reads each score's
-  full-release rate from the variation in release shares across magistrates the rota assigns at random, the selection
-  the outcome record carries.
-- **Decisive step:** estimating each score's pretrial new-offence rate for all its eligible defendants from the
-  leniency gradient (each magistrate's new-offence arrests per eligible first appearance against that magistrate's
-  release share at the score, extended to full release) instead of from the released defendants alone: the
-  selective-labels correction of pretrial risk assessment, done on the rota's quasi-random assignment.
-- **Not semantics:** every field the call reads means one thing and the easy route reads each correctly (the release
-  decision and the jail release time, the score, the offence and arrest dates, the disposition, the eligibility codes);
-  the fork table's rows are closed and none is the stump, and with every field read right the released defendants'
-  own rate still puts score 4 at 87.9 per cent and files scores 1 to 4.
-- **Not rule application:** the draft revision files the estimand (the eligible population, the 365-day window to
-  disposition, the 85 per cent floor, the tier's defendants as the safety rate's population) and leaves the estimate to
-  the analyst; executing every filed rule with the released defendants' rate files scores 1 to 4, and no rule,
-  procedure or document performs the step that moves it to scores 1 to 3 (reading the full-release rate from the
-  magistrates' release shares).
-- **Analyst test:** a strong analyst who links every file correctly, applies the eligibility rules and the 365-day
-  window and computes each score's safety rate among the eligible defendants magistrates released files scores 1 to 4
-  (score 4 at 87.9 per cent); with a logistic model on the released defendants' charges and records, a reweighting
-  of them to the eligible population, or the latest year alone, the same; with the held counted as not arrested, the
-  same; only each score's rate read from the magistrates' differing release shares out to full release files scores 1 to
-  3.
-- **Estimand:** the draft revision's sections on the presumptive tier and its safety floor (the eligible defendants
-  the tier releases at a score, a new-offence arrest within 365 days of release or before disposition, at least 85 per
-  cent with none) with the prompt's question (the 2027 policy); the draft is the filed standard for the estimand, the
-  scoring guide and the extract notes carry the scale and the files.
-- **No decoy:** nothing is planted to be caught: no copied or backfilled block, no hidden rule, and no memo, draft,
-  briefing or stakeholder figure gives a per-score safety rate, a tier or a method; the scoring guide states the scale's
-  items and points and no outcome rate; the current policy is context, and the advisory council's 2025 jail population
-  report and the reported-crime series are declared distractors.
-- **No certified replay:** the full-release rates are estimated from the first appearances, the jail releases and the
-  arrests on file; no certified or published figure has to be reproduced to find them, and nothing in the pack reports a
-  safety rate by score.
-- **Lesson:** an outcome recorded only where a decision-maker let a unit through is selected on what that
-  decision-maker saw, so a rule that lets every unit through is priced from the variation among decision-makers
-  assigned at random (the outcome per case rising with the share let through), never from the units already let
-  through; no build on file teaches selection by a decision-maker or the leniency design.
+**Task type:** recidivism-risk-assessment, in criminology-justice, which is the one task type of this domain the guard
+scores as serving Forecasting & Predictive Modeling. It is also the truthful one: the quantity is the custody
+consequence of re-arrest after a pretrial release, graded by the assessment score, which is a recidivism-risk product
+stated in detention bed-days instead of in a rate.
+
+**Domain test:** the deciding quantity is the detention bed-day footprint of a pretrial release, which corrections and
+pretrial research estimate by following each released defendant through the failure-to-appear event into the custody
+that follows it, at the midnight-count convention the jail books beds on, and reading it per assessment score. A
+generalist prices the release at the release's own custody episode.
+
+**Swap:** "how many detention bed-days will the defendants we release at a first appearance cost us next year through
+the custody that follows a failure to appear" becomes, with a utility's nouns, "how many megawatt-hours will the
+substations we return to service cost us next year through the generation that follows an outage". It stops making
+sense at the middle term: a substation does not fail to appear, there is no second record opened under a new number on
+an unrelated category when it does, and nothing answers to the policy's eligibility list excluding the very category
+the cost lands in. The chain that carries the whole quantity has no analogue.
+
+**Layer 1:** a court case management system replaced on 4 March 2024, so the appearance history arrives in two exports
+with different layouts, case-number formats and magistrate keys, joined through the clerk's crosswalk; jail booking
+and release stamps in UTC against court times in Eastern local; one custody episode spread across booking rows,
+because a move to the Mill Street annex closes one row and opens another at the same minute and a board-out to the
+contract facility closes a row while the defendant stays in the Sheriff's custody; the contract facility billing per
+day or part of a day against the detention centre's midnight counts; offence codes recoded at the system change while
+the policy appendix is listed by general statute number the charge rows do not carry; a state arrest extract keyed by
+state identification number with warrant arrests mixed in with new-offence arrests; dispositions in a separate export
+with cases still open at the extract. Every item is something the county's own systems produce, none is placed to be
+caught, and the whole of it is handled correctly by a careful solver who still files the wrong bill.
+
+**Layer 2:** `field_method`, corrections bed-day accounting done right. The decision's unit is one release and all
+custody it causes; the file's row is one booking. The analysis that decides is identifying the population of custody a
+release is answerable for, and it crosses the boundary the policy's own eligibility rule draws.
+
+**Decisive step:** follow each released defendant's failure to appear into the booking that follows it, inside the
+policy's own window, and count that custody whatever the charge, because the bed-days a release costs the jail are
+served on the next case and not on the one the release was granted in.
+
+**Not semantics:** nothing here turns on a misread field. A solver who reads every booking type, release type and
+facility code correctly, chains the annex moves and the board-outs, resolves the recoded offences through the
+crosswalk, converts UTC to Eastern and counts midnights by the README's rule still files 12,851 bed-days over the four
+years, because the error is not a field read wrongly but a population boundary drawn where the policy draws it. The
+person key exists and the join is available; what is missing is any reason in the record to make it.
+
+**Not rule application:** no filed rule performs this step. The draft revision and the current policy state who may be
+released, on what conditions, and over what window a pretrial period runs. Not one sentence anywhere in the pack says
+what a release costs the jail, that the cost includes custody opened on a later case, or that the charge class must
+not be filtered when counting it. A solver executing every stated rule to the letter executes rules about release
+eligibility and gets a bill about release eligibility.
+
+**Analyst test:** the easy route stacks the two appearance exports, keeps the eligible screened appearances, takes the
+defendants released within 24 hours, chains their custody episodes correctly, sums the bed-days of those stays and
+files 12,851 over the four closed years, about 3,213 a year (the default path's `Ends on:`), against the golden's
+53,430 and 13,358. It is wrong by a factor of 4.2 and, worse for the budget it feeds, it reverses the grading: it
+captures 47.7 per cent of the bill at the lowest assessment score and 5.3 per cent at the highest, so it reports the
+riskiest releases as the cheapest the county makes.
+
+**Estimand:** the detention bed-days, counted one per midnight held in the Sheriff's custody, served by defendants
+released at a first appearance on eligible screened charges in the four fiscal years to 30 September 2025, on their
+own stays and on the first booking that follows a failure to appear inside the pretrial period, whatever that
+booking's charges, divided by four. Filed as one population sentence in the county budget office's instruction and one
+in the README's detention note; the window and the failure condition come from the draft revision's own section. The
+method of reaching the following booking is nowhere filed.
+
+**No decoy:** nothing is planted to be caught. There is no copied block of readings, no withheld rule, no memo or
+briefing arguing the own-stay figure, and no stakeholder number written to be overturned. The advisory council's
+capacity report, the contract facility's bills and the price list are all correct at their own grain and all tie to
+the jail export; the two declared distractors are relevant enough to weigh and are ruled out by shipped facts.
+
+**No certified replay:** the method is not hidden and recovered by reproducing a certified figure. The capacity report's
+monthly bookings, releases, average daily population and highest count all tie exactly to the jail export under the
+golden convention, and they tie under the own-stay route too, because they are counts of custody and not of the
+footprint of a release decision. No published figure in the pack is reproduced only by the golden method.
+
+**Lesson:** that the resource a reversible decision consumes is often recorded against a different entity, a different
+case and a different category than the decision itself, so the population a cost question is asked over is not the
+population the decision's own rules name. No build on file teaches it: the nearest driver on the corpus measures 0.07,
+and the three builds sharing this gap and mechanism turn on a duration distribution (task142), censored observation
+(task148) and a rate against exposure (task173), none of which is a reachability boundary.
 
 ## Readability screen
 
