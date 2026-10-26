@@ -1,114 +1,38 @@
 {
- "call": {
-  "quarter": "January to March 2027",
-  "booking_hours": "5,250",
-  "hours_by_month": {
-   "January": "1,250",
-   "February": "2,000",
-   "March": "2,000"
-  }
- },
- "components": {
-  "no_callable_number": "464",
-  "special_deposits": "10,697",
-  "special_opened": "January to March 2023",
-  "special_term_years": "4",
-  "special_rate_pct": "5.65",
-  "cohort_lowest_rate_pct": "5.15",
-  "card_pct": "4.00",
-  "drop_points": "1.65",
-  "past_special_share_pct": "87",
-  "past_band_special_share_pct": "88",
-  "past_band_member_share_pct": "28",
-  "expected_conversations": "14,000",
-  "retention_share_pct": "54",
-  "past_pooled_share_pct": "21"
- },
- "steps": {
-  "listed_deposits": "18,400",
-  "deposits_by_month": {
-   "January": "4,474",
-   "February": "6,835",
-   "March": "7,091"
-  },
-  "release_share_pct": "95.2",
-  "non_reaching_dials": "66,700",
-  "past_conversations": "46,298",
-  "past_special_conversations": "4,093",
-  "special_gap_points": "0.40",
-  "band_points": "0.25",
-  "band_from_points": "1.50",
-  "band_to_points": "1.75",
-  "past_specials": "the one-year deposits at 6.35, 5.45, 5.10, 4.75 and 4.45 per cent, the two-year at 6.30 and the three-year at 6.00",
-  "hours_unrounded": "5,280.9",
-  "hours_by_month_unrounded": {
-   "January": "1,206.9",
-   "February": "2,013.3",
-   "March": "2,060.7"
-  }
- },
- "rules": {
-  "minutes_not_reached": "1.5",
-  "minutes_conversation": "8",
-  "minutes_retention": "22",
-  "release_days_before_maturity": "21",
-  "days_after_maturity": "30",
-  "listing_threshold_nzd": "25,000"
- },
- "default_path": {
-  "pooled_share_hours": "4,250",
-  "drop_hours": "4,250",
-  "latest_campaign_hours": "4,250",
-  "by_term_hours": "3,750",
-  "by_locked_rate_hours": "4,250",
-  "trend_hours": "4,500",
-  "locked_rate_by_term_logit_hours": "4,500",
-  "latest_hours_per_listed_deposit": "4,250",
-  "without_release_share_hours": "5,500"
- },
- "ask_a": {
-  "2025Q1": {
-   "campaign": "January to March 2025",
-   "deposits": "6,700",
-   "principal_nzd": "497,825,000"
-  },
-  "2025Q2": {
-   "campaign": "April to June 2025",
-   "deposits": "7,186",
-   "principal_nzd": "537,491,000"
-  },
-  "2025Q3": {
-   "campaign": "July to September 2025",
-   "deposits": "7,226",
-   "principal_nzd": "532,430,000"
-  },
-  "2025Q4": {
-   "campaign": "October to December 2025",
-   "deposits": "7,172",
-   "principal_nzd": "536,002,000"
-  },
-  "2026Q1": {
-   "campaign": "January to March 2026",
-   "deposits": "7,591",
-   "principal_nzd": "562,096,000"
-  },
-  "2026Q2": {
-   "campaign": "April to June 2026",
-   "deposits": "7,494",
-   "principal_nzd": "557,067,000"
-  },
-  "2026Q3": {
-   "campaign": "July to September 2026",
-   "deposits": "7,765",
-   "principal_nzd": "573,831,000"
-  }
- },
- "ask_b": {
-  "maturing_nzd": {
-   "January": "415,506,000",
-   "February": "646,816,000",
-   "March": "672,944,000"
-  },
-  "quarter_not_on_list_nzd": "214,491,000"
- }
+ "call.planning_figure": 4000,
+ "call.planning_figure_unrounded": 4035.9,
+ "components.own_arrests_model": 3754.4,
+ "components.own_arrests_2025_26": 3732,
+ "components.btp_crimes_hub_2025_26": 1702,
+ "components.btp_detentions": 281.4,
+ "components.default_answer": 3750,
+ "components.warrant_share_pct": 5.3,
+ "components.btp_crimes.Calderwick": 1600,
+ "components.btp_crimes.Kingsway": 102,
+ "chart.six_wards_arrests.2021-22": 3472,
+ "chart.six_wards_arrests.2022-23": 3734,
+ "chart.six_wards_arrests.2023-24": 3615,
+ "chart.six_wards_arrests.2024-25": 3680,
+ "chart.six_wards_arrests.2025-26": 3732,
+ "ask_a.Northgate.cell_hours": 4487,
+ "ask_a.Northgate.over_24_hours": 183,
+ "ask_a.Eastmoor.cell_hours": 2811,
+ "ask_a.Eastmoor.over_24_hours": 109,
+ "ask_a.Southfields.cell_hours": 7767,
+ "ask_a.Southfields.over_24_hours": 296,
+ "ask_a.Wendle Cross.cell_hours": 5595,
+ "ask_a.Wendle Cross.over_24_hours": 240,
+ "steps.remand_defendants_2025_26": 1206,
+ "steps.remand_defendants.Northgate": 266,
+ "steps.remand_defendants.Eastmoor": 165,
+ "steps.remand_defendants.Southfields": 445,
+ "steps.remand_defendants.Wendle Cross": 330,
+ "ask_b.Northgate.day": 1178,
+ "ask_b.Northgate.night": 1470,
+ "ask_b.Eastmoor.day": 526,
+ "ask_b.Eastmoor.night": 670,
+ "ask_b.Southfields.day": 1571,
+ "ask_b.Southfields.night": 2078,
+ "ask_b.Wendle Cross.day": 1115,
+ "ask_b.Wendle Cross.night": 1515
 }

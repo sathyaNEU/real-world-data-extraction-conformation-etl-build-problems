@@ -1,353 +1,231 @@
-"""task137 constants and helpers shared by every generator module.
-
-Kaimai Building Society (fictional), a mutual deposit-taker in Tauranga, New Zealand: its term deposit maturity calls,
-made since December 2024 by Harbourline Contact Services (fictional, Palmerston North) under a statement of work that
-bills agent time per event against a quarterly take-or-pay block. The January to March 2027 list (18,400 deposits) was
-cut on 2 November 2026; the block is due on 20 November 2026."""
-from __future__ import annotations
-
-import csv
+"""Calderwick Police's custody world: the force area's wards and LSOAs, the recorded crime and the force's own arrests
+by LSOA, month and offence type, British Transport Police's crime at the railway stations, and the expected
+2027-28 detentions at the Tanner Street hub. Everything here is the clean truth: no mess, no documents."""
 import datetime as dt
-import hashlib
-import io
-import math
 
 import numpy as np
 
-SEED = 1370411
+TYPES = ["Violence and sexual offences", "Public order", "Drugs", "Possession of weapons", "Robbery", "Burglary",
+         "Criminal damage and arson", "Shoplifting", "Theft from the person", "Other theft", "Vehicle crime",
+         "Bicycle theft", "Other crime"]
+WARRANT_GROUP = "Warrant, recall or breach"
+RATE = np.array([0.165, 0.20, 0.70, 0.55, 0.20, 0.07, 0.06, 0.12, 0.04, 0.035, 0.025, 0.015, 0.19])
+INNER_MIX = np.array([0.34, 0.11, 0.05, 0.015, 0.02, 0.05, 0.08, 0.11, 0.03, 0.09, 0.06, 0.02, 0.025])
+OUTER_MIX = np.array([0.36, 0.08, 0.035, 0.012, 0.01, 0.07, 0.11, 0.08, 0.01, 0.10, 0.09, 0.013, 0.03])
+COUNTY_MIX = np.array([0.36, 0.075, 0.03, 0.01, 0.005, 0.075, 0.12, 0.07, 0.008, 0.10, 0.10, 0.012, 0.035])
+STATION_MIX = np.array([0.30, 0.14, 0.05, 0.02, 0.025, 0.005, 0.07, 0.03, 0.12, 0.105, 0.03, 0.07, 0.035])
+WARRANT = 0.05                      # share of arrests on a warrant, recall or breach, with no recorded crime of their own
 
-# ---------------------------------------------------------------------------------------------------------------
-# Calendar of the fiction
-REQUEST = dt.date(2026, 11, 4)
-CUT_FWD = dt.date(2026, 11, 2)
-CARD_APPROVED = dt.date(2026, 10, 27)
-BLOCK_DUE = dt.date(2026, 11, 20)
-LAST_CLOSEOUT = dt.date(2026, 10, 21)
-SOW_START = dt.date(2024, 12, 1)
-CORE_UPGRADE = dt.date(2026, 1, 12)          # the society's core banking upgrade (list layout, account format)
-KIP_FROZEN = dt.date(2026, 6, 30)            # legacy investment platform's final full register
-EVENTS_FROM, EVENTS_TO = dt.date(2025, 1, 1), dt.date(2026, 10, 31)
-EXPORT_STAMP = dt.datetime(2026, 11, 3, 20, 35, tzinfo=dt.timezone.utc)   # 9.35 am on 4 November in Tauranga
+HUB = ["Abbey Fields", "Castle", "Cathedral", "Mill Bank", "St Peter's", "Kingsway"]
+OUTER = ["Northgate", "Highfield", "Brookside", "Parkway", "Ashgrove", "Elmwood", "Fernhill", "Glebe", "Hollins",
+         "Ivydene", "Jubilee", "Lark Hill", "Marsh Lane", "Newtown", "Oakfield", "Eastmoor", "Quarry Bank", "Ravensdale"]
+CITY = HUB + OUTER
+_STEMS = ["Ald", "Ash", "Bar", "Brad", "Burn", "Chal", "Clay", "Cot", "Dal", "Den", "Elm", "Far", "Fen", "Gar", "Glen",
+          "Hal", "Hat", "Hay", "Hol", "Kel", "Kings", "Lang", "Lid", "Mar", "Mel", "Mor", "New", "North", "Oak", "Ors",
+          "Pen", "Pres", "Red", "Sand", "Shel", "Sted", "Sut", "Thorn", "Wal", "Wes"]
+_SUF = ["ton", "ley", "ford", "field", "bury", "worth", "ham", "wick", "thorpe", "by"]
+COUNTY = []
+_i = 0
+while len(COUNTY) < 100:
+    _n = _STEMS[_i % 40] + _SUF[(_i * 3 + _i // 40) % 10]
+    if _n not in COUNTY and _n not in CITY:
+        COUNTY.append(_n)
+    _i += 1
+WARDS = CITY + COUNTY
+DISTRICTS = ["Calderwick", "North Carvell", "Wendlebury", "South Carvell", "Moorhaven"]
+DISTRICT = {w: "Calderwick" for w in CITY}
+for _j, _w in enumerate(COUNTY):
+    DISTRICT[_w] = DISTRICTS[1 + _j // 25]
+SUITES = ["Northgate", "Eastmoor", "Southfields", "Wendle Cross"]
+HUB_SUITE = "Tanner Street"
+SUITE_NOW = {}
+for _w in HUB:
+    SUITE_NOW[_w] = "Eastmoor" if _w == "St Peter's" else "Northgate"
+for _j, _w in enumerate(OUTER):
+    SUITE_NOW[_w] = "Northgate" if _j < 9 else "Eastmoor"
+for _w in COUNTY:
+    SUITE_NOW[_w] = "Wendle Cross" if DISTRICT[_w] in ("North Carvell", "Wendlebury") else "Southfields"
+SUITE_2027 = {w: (HUB_SUITE if w in HUB else s) for w, s in SUITE_NOW.items()}
+# the railway stations: name, ward, share of the main station's recorded crime
+STATIONS = [("Calderwick", "Abbey Fields", 1.0), ("Kingsway", "Kingsway", 0.07), ("Northgate", "Northgate", 0.05),
+            ("Eastmoor", "Eastmoor", 0.045)] + [(COUNTY[j] + (" Road" if j % 3 == 0 else ""), COUNTY[j], f) for j, f in
+            [(3, 0.016), (11, 0.012), (27, 0.014), (38, 0.010), (52, 0.013), (64, 0.009), (77, 0.011), (90, 0.008)]]
 
-COMPANY = "Kaimai Building Society"
-VENDOR = "Harbourline Contact Services"
-SOW_REF = "HCS-KBS-2025-01"
-
-PEOPLE = {
-    "product": "Hazel Johnstone",      # term deposits product manager (the requester; never named in the prompt)
-    "head": "Stuart Waller",           # head of deposits, signs the block order
-    "vendor": "Suzanne Wallis",        # Harbourline account manager
-    "data": "Joseph Herd",             # customer data steward, keeps the do-not-call register
-    "treasury": "Sienna Stewart",      # treasury pricing analyst, prepares the quarterly card for ALCO
-    "wfm": "Ashton Findlay",           # Harbourline workforce planner
-}
-
-# ---------------------------------------------------------------------------------------------------------------
-# Quarters
-def q_of(d):
-    return "%dQ%d" % (d.year, (d.month - 1) // 3 + 1)
-
-
-def q_add(q, n):
-    y, k = int(q[:4]), int(q[-1])
-    idx = y * 4 + (k - 1) + n
-    return "%dQ%d" % (idx // 4, idx % 4 + 1)
-
-
-def q_start(q):
-    return dt.date(int(q[:4]), 3 * (int(q[-1]) - 1) + 1, 1)
-
-
-def q_end(q):
-    return q_start(q_add(q, 1)) - dt.timedelta(days=1)
-
-
-def q_label(q):
-    names = {1: "January to March", 2: "April to June", 3: "July to September", 4: "October to December"}
-    return "%s %s" % (names[int(q[-1])], q[:4])
-
-
-PAST = ["2025Q1", "2025Q2", "2025Q3", "2025Q4", "2026Q1", "2026Q2", "2026Q3"]
-FWD = "2027Q1"
-FWD_LIST_SIZE = 18400
-CUTS = {"2025Q1": dt.date(2024, 11, 1), "2025Q2": dt.date(2025, 2, 3), "2025Q3": dt.date(2025, 5, 2),
-        "2025Q4": dt.date(2025, 8, 1), "2026Q1": dt.date(2025, 11, 3), "2026Q2": dt.date(2026, 2, 2),
-        "2026Q3": dt.date(2026, 5, 1), "2026Q4": dt.date(2026, 8, 3), "2027Q1": CUT_FWD}
-TERMS = [1, 2, 3, 4, 5]
-
-# ---------------------------------------------------------------------------------------------------------------
-# The posted term deposit card (per cent a year), set by ALCO each quarter for the quarter.
-ONE_YEAR = {
-    "2019Q1": 3.30, "2019Q2": 3.20, "2019Q3": 3.00, "2019Q4": 2.95,
-    "2020Q1": 2.90, "2020Q2": 2.40, "2020Q3": 1.80, "2020Q4": 1.40,
-    "2021Q1": 1.25, "2021Q2": 1.35, "2021Q3": 1.60, "2021Q4": 2.10,
-    "2022Q1": 2.75, "2022Q2": 3.40, "2022Q3": 4.20, "2022Q4": 4.90,
-    "2023Q1": 5.40, "2023Q2": 5.75, "2023Q3": 6.00, "2023Q4": 6.00,
-    "2024Q1": 5.90, "2024Q2": 5.85, "2024Q3": 5.45, "2024Q4": 4.95,
-    "2025Q1": 4.50, "2025Q2": 4.15, "2025Q3": 3.85, "2025Q4": 3.65,
-    "2026Q1": 3.40, "2026Q2": 3.30, "2026Q3": 3.20, "2026Q4": 3.15,
-    "2027Q1": 3.20,
-}
+NM = 66                                                                    # April 2021 to September 2026
+MONTHS = [(2021 + (3 + k) // 12, (3 + k) % 12 + 1) for k in range(NM)]
+K25 = list(range(48, 60))                                                  # April 2025 to March 2026
+SEASON = 1 + 0.08 * np.cos(2 * np.pi * (np.arange(12) - 6.5) / 12)        # summer a little higher
+# the last COVID-19 months: pubs open outdoors only until 17 May 2021, every restriction lifted on 19 July,
+# Plan B guidance from 8 December 2021 to 27 January 2022 (k = 0 is April 2021)
+COVID = {0: 0.80, 1: 0.86, 2: 0.93, 3: 0.98, 8: 0.95, 9: 0.97}
+# wards whose night-time economy moved: Kingsway lost its clubs to the Kingsway Quarter redevelopment from 2022,
+# Mill Bank's canal-side bars opened from 2023
+WARD_TREND = {"Kingsway": -0.045, "Mill Bank": 0.035, "Castle": 0.01, "St Peter's": -0.01}
+FYS = [2021, 2022, 2023, 2024, 2025, 2026]
 
 
-def spread(q):
-    y, k = int(q[:4]), int(q[-1])
-    if q == "2027Q1":
-        return [0, .30, .55, .80, 1.00]
-    if y == 2026:
-        return [0, .25, .50, .75, .95]
-    if y <= 2021:
-        return [0, .15, .30, .45, .55]
-    if y == 2022 and k <= 2:
-        return [0, .30, .50, .60, .95]
-    if y == 2022:
-        return [0, .20, .25, .25, .25]
-    if y == 2023 and k == 1:
-        return [0, -.05, -.15, -.25, -.30]
-    if (y == 2023) or (y == 2024 and k <= 2):
-        return [0, -.20, -.50, -.70, -.80]
-    if y == 2024:
-        return [0, -.25, -.45, -.55, -.55]
-    if y == 2025 and k == 1:
-        return [0, -.10, -.15, -.15, -.10]
-    return [0, .10, .25, .40, .55]
+def fy_of(y, m):
+    return y if m >= 4 else y - 1
 
 
-def card(q, term):
-    return round(ONE_YEAR[q] + spread(q)[term - 1], 2)
+FYK = np.array([fy_of(*MONTHS[k]) for k in range(NM)])
 
 
-# New-money specials: (opening quarter, term) -> rate, and the share of that cohort's new deposits taken at it.
-SPECIALS = {("2023Q3", 3): (6.00, 0.35), ("2023Q4", 2): (6.30, 0.35), ("2024Q2", 1): (6.35, 0.35),
-            ("2024Q4", 1): (5.45, 0.22),
-            ("2023Q1", 4): (5.65, 0.0)}   # the 2023Q1 four-year special: its volume is set separately
-WINDOW_SPECIALS = {("2025Q1", 1): (5.10, 0.50), ("2025Q2", 1): (4.75, 0.50), ("2025Q3", 1): (4.45, 0.50)}
-SPECIAL_NAMES = {("2023Q3", 3): "Three-year special", ("2023Q4", 2): "Two-year special",
-                 ("2024Q2", 1): "One-year special", ("2023Q1", 4): "Four-year special"}
-
-# ---------------------------------------------------------------------------------------------------------------
-# Harbourline's dialling calendar: weekdays, less New Zealand public holidays, Wellington Anniversary Day
-# (Harbourline is in the Wellington province) and its close-down from 24 December to 3 January.
-def _easter(y):
-    a = y % 19
-    b, c = divmod(y, 100)
-    d, e = divmod(b, 4)
-    f = (b + 8) // 25
-    g = (b - f + 1) // 3
-    h = (19 * a + b - d - g + 15) % 30
-    i, k = divmod(c, 4)
-    l_ = (32 + 2 * e + 2 * i - h - k) % 7
-    m = (a + 11 * h + 22 * l_) // 451
-    month = (h + l_ - 7 * m + 114) // 31
-    day = ((h + l_ - 7 * m + 114) % 31) + 1
-    return dt.date(y, month, day)
+def world(seed, btp_main=1600.0, hub_lam=300.0, shock_sd=0.022):
+    """The draw: LSOAs with their crime level, mix and trend; the year-to-year swing in how many arrests the force
+    makes per crime (staffing, operations); BTP's crime at each station."""
+    rng = np.random.default_rng(seed)
+    lsoas = []
+    for w in WARDS:
+        n = int(rng.integers(11, 15)) if w in CITY else int(rng.integers(9, 13))
+        for k in range(n):
+            if w in HUB:
+                lam, mix = rng.lognormal(np.log(hub_lam), 0.5), INNER_MIX
+            elif w in CITY:
+                lam, mix = rng.lognormal(np.log(115), 0.5), OUTER_MIX
+            else:
+                lam, mix = rng.lognormal(np.log(88), 0.5), COUNTY_MIX
+            lsoas.append(dict(ward=w, lam=lam, mix=mix, trend=WARD_TREND.get(w, 0.0) + rng.normal(0.0, 0.008)))
+    for name, ward, f in STATIONS:
+        [l for l in lsoas if l["ward"] == ward][0]["station"] = name
+    shock = {fy: float(np.exp(rng.normal(0.0, shock_sd))) for fy in FYS}
+    btp = {name: btp_main * f for name, ward, f in STATIONS}
+    return dict(seed=seed, lsoas=lsoas, btp=btp, shock=shock, btp_main=btp_main, hub_lam=hub_lam)
 
 
-def _mondayise(d):
-    if d.weekday() == 5:
-        return d + dt.timedelta(days=2)
-    if d.weekday() == 6:
-        return d + dt.timedelta(days=1)
-    return d
+def lam_months(l, ks):
+    ks = np.asarray(ks)
+    mon = np.array([(3 + k) % 12 for k in ks])
+    cov = np.array([COVID.get(int(k), 1.0) for k in ks])
+    return l["lam"] * (1 + l["trend"]) ** (ks / 12.0) * SEASON[mon] * cov / 12.0
 
 
-def _nth_weekday(y, m, wd, n):
-    d = dt.date(y, m, 1)
-    while d.weekday() != wd:
-        d += dt.timedelta(days=1)
-    return d + dt.timedelta(days=7 * (n - 1))
+def counts(W):
+    """Crime and the force's arrests by LSOA (months x types, plus warrants); BTP crime and arrests by station."""
+    rng = np.random.default_rng(W["seed"] + 17)
+    fc, ar, wa = [], [], []
+    ks = np.arange(NM)
+    sh = np.array([W["shock"][fy] for fy in FYK])
+    for l in W["lsoas"]:
+        n = rng.poisson(lam_months(l, ks)[:, None] * l["mix"][None, :])
+        a = rng.poisson(n * RATE[None, :] * sh[:, None])
+        fc.append(n)
+        ar.append(a)
+        wa.append(rng.poisson(a.sum(1) * WARRANT / (1 - WARRANT)))
+    mon = np.array([(3 + k) % 12 for k in ks])
+    bc, ba = {}, {}
+    for name, ward, f in STATIONS:
+        c = rng.poisson((W["btp"][name] * SEASON[mon] / 12.0)[:, None] * STATION_MIX[None, :])
+        bc[name] = c
+        b = rng.poisson(c * RATE[None, :])
+        ba[name] = b.sum(1) + rng.poisson(b.sum(1) * WARRANT / (1 - WARRANT))
+    return dict(fc=fc, ar=ar, wa=wa, bc=bc, ba=ba)
 
 
-MATARIKI = {2022: dt.date(2022, 6, 24), 2023: dt.date(2023, 7, 14), 2024: dt.date(2024, 6, 28),
-            2025: dt.date(2025, 6, 20), 2026: dt.date(2026, 7, 10), 2027: dt.date(2027, 6, 25)}
-
-
-def _pair(first, second):
-    """Two consecutive holidays (New Year, Christmas): a day falling on a weekend is observed on the next weekday not
-    already taken."""
-    out = set()
-    for d in (first, second):
-        k = d
-        while k.weekday() >= 5 or k in out:
-            k += dt.timedelta(days=1)
-        out.add(k)
-    return out
-
-
-def holidays(y):
-    e = _easter(y)
-    out = {e - dt.timedelta(days=2), e + dt.timedelta(days=1), _mondayise(dt.date(y, 2, 6)),
-           _mondayise(dt.date(y, 4, 25)), _nth_weekday(y, 6, 0, 1), _nth_weekday(y, 10, 0, 4),
-           } | ({MATARIKI[y]} if y in MATARIKI else set())
-    out |= _pair(dt.date(y, 1, 1), dt.date(y, 1, 2)) | _pair(dt.date(y, 12, 25), dt.date(y, 12, 26))
-    # Wellington Anniversary: the Monday nearest 22 January
-    d = dt.date(y, 1, 22)
-    mon = d - dt.timedelta(days=d.weekday())
-    if (d - mon).days > 3:
-        mon += dt.timedelta(days=7)
-    out.add(mon)
-    return out
-
-
-_HOL = set()
-for _y in range(2019, 2028):
-    _HOL |= holidays(_y)
-
-
-def closedown(d):
-    return (d.month == 12 and d.day >= 24) or (d.month == 1 and d.day <= 3)
-
-
-def dialling_day(d):
-    return d.weekday() < 5 and d not in _HOL and not closedown(d)
-
-
-def dialling_days(release, maturity):
-    """Days Harbourline may dial a case: from its release date to the day before maturity."""
-    out, d = [], release
-    while d < maturity:
-        if dialling_day(d):
-            out.append(d)
-        d += dt.timedelta(days=1)
-    return out
-
-
-def business_day(d):
-    return d.weekday() < 5 and d not in _HOL
+def truth_2027(W):
+    """Expected detentions at Tanner Street from 1 April 2027 to 31 March 2028: the force's arrests in the six wards
+    (at no year shock) and BTP's arrests at the stations in them, warrants included on both."""
+    force = 0.0
+    for l in W["lsoas"]:
+        if l["ward"] in HUB:
+            lam = lam_months(l, np.arange(72, 84))
+            force += float(lam.sum() * (l["mix"] * RATE).sum()) / (1 - WARRANT)
+    btp = sum(W["btp"][n] * float((STATION_MIX * RATE).sum()) / (1 - WARRANT) for n, w, f in STATIONS if w in HUB)
+    return dict(force=force, btp=btp, total=force + btp)
 
 
 # ---------------------------------------------------------------------------------------------------------------
-# The SOW: billing and dispositions
-MIN_NOT_REACHED = 1.5
-MIN_CONVERSATION = 8.0
-MIN_RETENTION = 22.0
-NOT_REACHED = ("NOA", "BSY", "VML", "DIS", "WNG")
-CONVERSATION = ("RNW", "CHG", "DEC")
-RETENTION = ("RTK", "RTW")
-DEAD_CODE, WRONG_CODE = "DIS", "WNG"
-CODES = {
-    "NOA": "No answer", "BSY": "Busy", "VML": "Voicemail reached, no message left",
-    "DIS": "Number disconnected or not in service", "WNG": "Answered by someone other than the holder",
-    "RNW": "Holder reached: reinvestment confirmed as notified", "CHG": "Holder reached: other instructions taken",
-    "DEC": "Holder reached: declined to discuss", "RTK": "Holder reached: retention offer, deposit kept",
-    "RTW": "Holder reached: retention offer, funds to be withdrawn or moved",
-}
+# the routes on aggregates, for the seed search (the file-based routes are golden.py's)
+def _model(wardmonths, base, ahead, cap=0.10):
+    tot = 0.0
+    for v in wardmonths.values():
+        b = v[FYK == base].sum()
+        b3 = v[FYK == base - 3].sum()
+        ch = (b / b3) ** (1 / 3) - 1
+        if cap is not None:
+            ch = min(cap, max(-cap, ch))
+        tot += b * (1 + ch) ** ahead
+    return tot
 
 
-def billed_minutes(code):
-    if code in NOT_REACHED:
-        return MIN_NOT_REACHED
-    if code in RETENTION:
-        return MIN_RETENTION
-    return MIN_CONVERSATION
+def routes_agg(W, C=None, hw=True):
+    C = C or counts(W)
+    L = W["lsoas"]
+    hubw, mon = {}, np.zeros(NM)
+    suites = {}
+    for i, l in enumerate(L):
+        a = C["ar"][i].sum(1) + C["wa"][i]
+        if l["ward"] in HUB:
+            hubw.setdefault(l["ward"], np.zeros(NM))
+            hubw[l["ward"]] += a
+            mon += a
+        suites.setdefault(SUITE_NOW[l["ward"]], {}).setdefault(l["ward"], np.zeros(NM))
+        suites[SUITE_NOW[l["ward"]]][l["ward"]] += a
+    fyt = {y: float(mon[FYK == y].sum()) for y in range(2021, 2026)}
+    force_fy = {y: sum(float((C["ar"][i].sum(1) + C["wa"][i])[FYK == y].sum()) for i in range(len(L)))
+                for y in (2022, 2025)}
+    F = {"F1": _model(hubw, 2025, 2), "F2": fyt[2025], "F3": float(np.mean([fyt[2023], fyt[2024], fyt[2025]])),
+         "F4": float(np.polyval(np.polyfit(range(2021, 2026), [fyt[y] for y in range(2021, 2026)], 1), 2027)),
+         "F6": float(mon[-12:].sum()), "F7": _model(hubw, 2025, 2, None),
+         "F8": fyt[2025] * (force_fy[2025] / force_fy[2022]) ** (2 / 3), "F9": float(np.mean([fyt[2024], fyt[2025]]))}
+    if hw:
+        import warnings
+        from statsmodels.tsa.holtwinters import ExponentialSmoothing
+        warnings.filterwarnings("ignore")
+        m = ExponentialSmoothing(mon.astype(float), trend="add", damped_trend=True, seasonal="add",
+                                 seasonal_periods=12).fit()
+        F["F5"] = float(m.forecast(18)[6:18].sum())
+    sel = np.isin(np.arange(NM), K25)
+    ar_t, cr_t, war, hub_ar, hub_cr = np.zeros(13), np.zeros(13), 0.0, 0.0, 0.0
+    for i, l in enumerate(L):
+        ar_t += C["ar"][i][sel].sum(0)
+        cr_t += C["fc"][i][sel].sum(0)
+        war += C["wa"][i][sel].sum()
+        if l["ward"] in HUB:
+            hub_ar += C["ar"][i][sel].sum() + C["wa"][i][sel].sum()
+            hub_cr += C["fc"][i][sel].sum()
+    b25 = sum(C["bc"][n][sel].sum(0) for n, w, f in STATIONS if w in HUB)
+    ball = sum(C["bc"][n][sel].sum(0) for n, w, f in STATIONS)
+    rate_t = np.where(cr_t > 0, ar_t / np.maximum(cr_t, 1), 0)
+    overall = (ar_t.sum() + war) / cr_t.sum()
+    B = {"B1": float((b25 * rate_t).sum()), "B2": float((b25 * rate_t).sum() * (1 + war / ar_t.sum())),
+         "B3": float(b25.sum() * overall), "B4": float(b25.sum() * hub_ar / hub_cr)}
+    G = {"%s+%s" % (f, b): F[f] + B[b] for f in ("F1", "F2", "F3", "F5", "F6") if f in F for b in B}
+    share = ball.sum() / (ball.sum() + cr_t.sum())
+    R = {"R0": F["F1"], "R1": F["F1"] * (1 + share), "R2": F["F1"] + float(ball.sum() * overall)}
+    val = {}
+    for s in SUITES:
+        fc_ = _model(suites[s], 2024, 1)
+        act = sum(v[FYK == 2025].sum() for v in suites[s].values())
+        val[s] = (fc_, act, fc_ / act)
+    return dict(F=F, B=B, G=G, R=R, share=share, overall=overall, truth=truth_2027(W), val=val, fyt=fyt,
+                btp_hub=float(b25.sum()), btp_all=float(ball.sum()), crime=float(cr_t.sum()))
 
 
-# ---------------------------------------------------------------------------------------------------------------
-# The process (the data's generating parameters; none ships)
-P_ANSWER = {"M": 0.22, "H": 0.13, "W": 0.085}
-P_DEAD = {"M": 0.02, "H": 0.06, "W": 0.08}
-P_WRONG = {"M": 0.03, "H": 0.02, "W": 0.05}
-NONANSWER = (("NOA", 0.72), ("BSY", 0.08), ("VML", 0.20))
-DIALS_PER_NUMBER = 6
-WITHDRAW_PER_DAY = 0.004
-PRE_RELEASE_INSTRUCTED = 0.046
-RET_SLOPE, RET_MID = 1.8, 2.20
-SPEC_LEVEL, SPEC_SLOPE, SPEC_MID = 0.87, 6.0, 0.30
-RETENTION_KEPT = 0.55
-PLAIN = (("RNW", 0.70), ("CHG", 0.22), ("DEC", 0.08))
+def binned(x, b=250):
+    return int(np.floor(x / b + 0.5))
 
 
-def p_retention(drop, special=False):
-    if special:
-        return SPEC_LEVEL / (1.0 + math.exp(-SPEC_SLOPE * (drop - SPEC_MID)))
-    return 1.0 / (1.0 + math.exp(-RET_SLOPE * (drop - RET_MID)))
+def judge(r, b=250, margin=30, gap=1, share=(0.007, 0.02), frame_keys=None):
+    """Check 2 on a routes result: the frame family in one printed cell with margin, the golden family in a cell at
+    least `gap` above it with margin, R1 in the frame's cell, the truth in the golden's, the validation within 3%."""
+    fr = [v for k, v in r["F"].items() if frame_keys is None or k in frame_keys]
+    go = list(r["G"].values())
+
+    def one_bin(xs):
+        ks = {binned(x, b) for x in xs}
+        if len(ks) != 1:
+            return None, 0.0
+        k = ks.pop()
+        lo, hi = (k - 0.5) * b, (k + 0.5) * b
+        return k, min(min(xs) - lo, hi - max(xs))
+    kf, mf = one_bin(fr)
+    kg, mg = one_bin(go)
+    ok = (kf is not None and kg is not None and mf >= margin and mg >= margin and kg - kf >= gap
+          and binned(r["R"]["R1"], b) == kf and binned(r["truth"]["total"], b) == kg
+          and share[0] <= r["share"] <= share[1] and all(0.97 <= v[2] <= 1.03 for v in r["val"].values()))
+    return ok, kf, mf, kg, mg
 
 
-# ---------------------------------------------------------------------------------------------------------------
-# Identifiers and formats
-BANK_BRANCH = "86-0410"
-TD_SUFFIXES = ("030", "031", "032", "033", "034", "035")
-SAV_SUFFIXES = ("000", "001", "002")
-KIC_SUFFIX = "060"
-SETTLEMENT = "8604109000017099"     # the society's term deposit maturity settlement account (payments system)
-
-
-def acct_dashed(body, suffix):
-    return "%s-%07d-%s" % (BANK_BRANCH, body, suffix)
-
-
-def acct_plain(body, suffix):
-    return "%s%07d%s" % (BANK_BRANCH.replace("-", ""), body, suffix)
-
-
-def norm_acct(s):
-    return "".join(ch for ch in str(s) if ch.isdigit())
-
-
-def e164(digits_nat):
-    """'0274123456' or '075781234' (national, leading zero) to '+64274123456'."""
-    return "+64" + digits_nat[1:]
-
-
-def norm_phone(s):
-    d = "".join(ch for ch in str(s) if ch.isdigit())
-    if d.startswith("64"):
-        d = d[2:]
-    if d.startswith("0"):
-        d = d[1:]
-    return "+64" + d
-
-
-# ---------------------------------------------------------------------------------------------------------------
-# Deterministic random streams: one per named purpose, independent of call order elsewhere.
-def rng(name):
-    h = int(hashlib.sha256(("%d/%s" % (SEED, name)).encode()).hexdigest()[:16], 16)
-    return np.random.default_rng(h)
-
-
-def write_csv(path, cols, rows, crlf=False, quote_all=False):
-    buf = io.StringIO()
-    w = csv.writer(buf, lineterminator="\r\n" if crlf else "\n",
-                   quoting=csv.QUOTE_ALL if quote_all else csv.QUOTE_MINIMAL)
-    w.writerow(cols)
-    n = 0
-    for r in rows:
-        w.writerow(r)
-        n += 1
-    with open(path, "w", encoding="utf-8", newline="") as f:
-        f.write(buf.getvalue())
-    return n
-
-
-def money(x):
-    return "%.2f" % x
-
-
-# ---------------------------------------------------------------------------------------------------------------
-# File names in the pack (target/)
-F_LIST_FWD = "kbs_td_retention_list_2027Q1.csv"
-F_LISTS_2025 = "kbs_td_retention_lists_2025.csv"
-F_LISTS_2026 = "kbs_td_retention_lists_2026.csv"
-F_RELEASE = "kbs_case_release_log_2025q1-2026q3.csv"
-F_DIALS = "harbourline_dial_log_2025q1-2026q3.csv"
-F_CLOSEOUT = "harbourline_case_closeouts_2025q1-2026q3.csv"
-F_CONTACTS = "kbs_contact_points_2026-11-02.csv"
-F_DNC = "kbs_do_not_call_register_2026-11-02.csv"
-F_SOW = "harbourline_sow_HCS-KBS-2025-01.pdf"
-F_PROCEDURE = "kbs_td_retention_procedure_v4.docx"
-F_THREAD = "harbourline_q1_2027_block_order.eml"
-F_EVENTS = "kbs_td_account_events_2025-01_2026-10.csv"
-F_TRANSFERS = "kbs_member_transfers_2025-01_2026-10.csv"
-F_HOLDINGS = "kbs_term_holdings_2026-11-02.csv"
-F_KIP = "kip_certificate_register_2026-06-30.csv"
-F_BATCHES = "kip_migration_batches_2026.csv"
-F_NOTES = "kbs_extract_notes_2026-11.txt"
-F_OUTLOOK = "kbs_treasury_funding_outlook_fy2027.xlsx"
-F_PROPOSAL = "harbourline_2027_staffing_proposal.pdf"
-
-
-def brief_name(q):
-    return "harbourline_campaign_brief_%s.pdf" % q
-
-
-DISTRACTORS = [F_OUTLOOK, F_PROPOSAL]
+def local_dt(y, m, d, hh, mi):
+    return dt.datetime(y, m, d, hh, mi)

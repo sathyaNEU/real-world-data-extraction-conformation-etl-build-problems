@@ -2,7 +2,7 @@
  "task": "task137",
  "architecture": "v3",
  "drawn": "2026-10-26",
- "slot_note": "wave 2 (new), re-rooted 2026-10-26 to architecture 3 after the care world (architecture 2) was spent on probes; architecture 3's first two candidates (a borough council's homelessness assessments, households placed by other councils; an ICB's new urgent treatment centre beside a defence establishment) were landed by Opus probes p137f and p137h before registration, and this third candidate was missed by both isolated Opus probes p137i and p137j (4,500 against the golden 4,750) on a six-file probe pack before it was registered",
+ "slot_note": "wave 2 (new), re-rooted 2026-10-26 to architecture 3 after the care world (architecture 2) was spent on probes; architecture 3's first two candidates (a borough council's homelessness assessments, households placed by other councils; an ICB's new urgent treatment centre beside a defence establishment) were landed by Opus probes p137f and p137h before registration, and this third candidate was missed by both isolated Opus probes p137i and p137j (4,500 against the golden 4,750) on a six-file probe pack before it was registered; architecture 3 spent 2026-10-26 at stage 4 (judge SEND_BACK on Gate H data_semantics, both scored readers landed the call through allocation note 2); retirement or an author decision pending, no architecture 4 drawn",
  "domain": "urban-regional-science",
  "subdomain": "municipal-service-demand-resource-allocation",
  "niche": "a police force's forecast of a new city-centre custody hub's first-year detentions from its ward-based custody demand model, validated on the four suites already open, when the hub's six wards hold the city's main railway station, where British Transport Police officers, with no cells of their own, arrest and book their detainees into the force suite that serves the ward, and the force's arrest records hold none of them",
@@ -10,8 +10,8 @@
  "shape": "other",
  "decision_type": "quantity_figure",
  "answer_unit": "count",
- "answer": "",
- "answer_source": "",
+ "answer": "4,000 detentions",
+ "answer_source": "task137/generator/figures.json call.planning_figure",
  "gap": [
   "population"
  ],
@@ -31,7 +31,7 @@
  "validated_decoy": false,
  "context_artifact": "filed_model",
  "stump_class": "analytical",
- "analyst_test": "A strong analyst who reads every file correctly runs the force's custody demand model over the six wards' arrest records, confirms it on the four open suites (0.982 to 1.014), checks it against Holt-Winters, a trend and the latest year (4,418 to 4,516) and files 4,500, because the arrest records hold every arrest Harrowdown officers make, while the British Transport Police officers who police Harrowdown and Kingsway stations, inside two of the six wards, book about 260 detainees a year into the force suite that serves the ward, sized from their 1,740 recorded crimes at the force's own arrests per crime: the golden is 4,750.",
+ "analyst_test": "A strong analyst who reads every file correctly runs the force's custody demand model over the six wards' arrest records, reproduces its back-test on the four open suites (0.966 to 1.016), checks it against Holt-Winters, a five-year trend, the latest year and the last twelve months (3,676 to 3,833) and files 3,750, because the arrest records hold every arrest Calderwick officers make, while the British Transport Police officers who police Calderwick and Kingsway stations, inside two of the six wards, book about 280 detainees a year into the force suite that serves the ward, sized from their 1,702 recorded crimes there at the force's own arrests per crime: the golden is 4,000.",
  "domain_test": "The deciding quantity is a custody suite's demand, the detentions it books, which a custody planner counts by arresting agency, and its population includes the arrests of a second police force that polices the railway with no cells of its own and books into the territorial force's suite for the ward; the size comes from that force's recorded crime on data.police.uk at the territorial force's arrests per crime by offence type. Swapping in a hospital's patients or a utility's meters loses the two forces, the custody arrangement between them and the arrest-per-crime conversion by offence type.",
  "layer2_family": "field_method",
  "layer2_pattern": "own:custody-demand-counts-every-arresting-agency-not-the-force-records-alone",
@@ -40,16 +40,18 @@
   "data.police.uk street-level crime for the force area as the partnership downloads it, two reporting forces in one file, LSOAs not wards",
   "a 2021 LSOA to ward best-fit lookup",
   "arrest offence groups against data.police.uk crime types, with a warrant, recall or breach group that has no crime type",
-  "custody references numbered by suite and year, half a per cent of arrests booked away from the ward's suite",
+  "co-arrests booked minutes apart, overflow bookings at the nearest suite and two suite closures in 2025-26 (Eastmoor after a flood, Wendle Cross for its cell refit)",
+  "remand files in UK time keyed to the case's first arrest, one file for co-defendants charged in turn",
+  "a healthcare contact export by the clinician's team, an assessment split at the shift handover, a second assessment after the emergency department",
   "a validation table in the model note against the arrest records"
  ],
  "stakeholder_role": "the force's Estates and Custody Programme (the prompt speaks to the hub's fit-out contract)",
  "role_family": "capacity_planner",
  "scoring_unit": "per episode",
  "spine": {
-  "file": "harrowdown_police_arrests_2021-04_2026-09.csv",
-  "rows": 135200,
-  "entity": "one arrest by a Harrowdown officer",
+  "file": "calderwick_police_arrests_2021-04_2026-09.csv",
+  "rows": 127845,
+  "entity": "one arrest by a Calderwick officer",
   "grain": "arrest",
   "source": "synthetic"
  },
@@ -57,23 +59,22 @@
  "forcing_event": "purchase_order_or_contract",
  "org_family": "local_government",
  "world": {
-  "geography": "England (a metropolitan county force, Harrowdown and Carvell)",
+  "geography": "England (a metropolitan county force, Calderwick and Carvell)",
   "currency": "GBP",
   "org_type": "territorial police force custody services",
   "invented_names": [
-   "Harrowdown Police",
+   "Calderwick Police",
    "Tanner Street custody hub",
    "Northgate",
    "Eastmoor",
    "Southfields",
    "Wendle Cross",
-   "Harrowdown station",
+   "Calderwick station",
    "Kingsway station",
-   "Harrowdown and Carvell Community Safety Partnership"
+   "Calderwick and Carvell Community Safety Partnership"
   ],
   "people": [
-   "Charlene Dale",
-   "Hugh Metcalfe",
+   "Liam Clayton",
    "Emma Roberts"
   ]
  },
@@ -84,8 +85,8 @@
  "opening_move": "question-first",
  "question_form": "how-many",
  "driver": "A new site's demand is forecast with a model validated on the existing sites over the units in the operator's own records, while part of the new site's intake will come from a second organisation that does the same work in the same territory, keeps no facility of its own and hands its cases to whichever of the operator's sites serves the area; the second organisation is a percent of the territory's recorded activity and absent from the operator's records, so the model reconciles wherever it is small and misses where it concentrates, at the new site.",
- "driver_concrete": "Tanner Street's 2027-28 detentions are the six wards' arrests by Harrowdown officers (about 4,500 by the model) plus British Transport Police's arrests at Harrowdown and Kingsway stations, booked into the suite serving the ward, about 260 from 1,740 recorded crimes a year at the force's own arrests per crime.",
- "stump": "A competent analyst runs the force's validated custody demand model over the six wards' arrest records and files 4,500, where the golden is 4,750; the step that lands it there is taking the force's arrest records as everyone the hub will book, when British Transport Police officers policing Harrowdown and Kingsway stations, inside the hub's wards, have no cells of their own and book their detainees into the force suite that serves the ward, about 260 a year from the 1,740 crimes they record there, which sit in data.police.uk and in none of the force's records.",
+ "driver_concrete": "Tanner Street's 2027-28 detentions are the six wards' arrests by Calderwick officers (3,754 by the model) plus British Transport Police's arrests at Calderwick and Kingsway stations, booked into the suite serving the ward, 281 from 1,702 recorded crimes a year at the force's own arrests per crime of each type.",
+ "stump": "A competent analyst runs the force's validated custody demand model over the six wards' arrest records and files 3,750, where the golden is 4,000; the step that lands it there is taking the force's arrest records as everyone the hub will book, when British Transport Police officers policing Calderwick and Kingsway stations, inside the hub's wards, have no cells of their own and book their detainees into the force suite that serves the ward, about 280 a year from the 1,702 crimes they record there, which sit in data.police.uk and in none of the force's records.",
  "mechanism_source": "design_note",
  "differentiation": {
   "task305": "task305's spend model misses holiday-park guests, a lodging whose occupants the census counts elsewhere, priced per pitch from card spend at park-side stores; here the missing intake is a second police force's arrests booked into the territorial force's cells, sized from its recorded crime at the host force's arrests per crime by offence type, and nothing about it is seasonal or a lodging.",
@@ -95,7 +96,8 @@
   "task150": "task150 v2 places classrooms by projecting enrolment over attendance areas whose new housing the district register does not yet hold; here nothing is new or registered late: the second force has policed the station for years and its arrests have never been in the host force's records.",
   "task196": "task196 v2 recovers how many events two partial capture channels missed; here every arrest the force makes is recorded, and the missing demand is another agency's arrests at a site not yet open.",
   "task133": "task133 v2's young population's outcome rates are biased low because taken-over units' months before the takeover enter the denominator; here no denominator is mis-timed: the force's arrest records are complete for its own officers, and the miss is a second force's arrests booked into the same cells.",
-  "task180": "task180 v4's small events are masked by a daily noise cycle a forward change removes; here nothing is masked: the open suites' records are complete, and the new hub's wards add another force's detainees that the records never held."
+  "task180": "task180 v4's small events are masked by a daily noise cycle a forward change removes; here nothing is masked: the open suites' records are complete, and the new hub's wards add another force's detainees that the records never held.",
+  "task138": "task138 rebuilds each unit's starting store from its recorded inputs at the share that reaches the store, in the physical sciences; here no store or balance is rebuilt: the missing demand is a second agency's arrests booked into the operator's new facility, priced from that agency's recorded crime."
  },
  "lineage": [
   {
@@ -236,8 +238,39 @@
    "forcing_event": "launch_or_rollout",
    "org_family": "hospital_or_health_provider",
    "driver": "A new site's demand is forecast with a model validated on the existing sites over the population on the service's own register, while the new site's catchment holds a large body of people the register never holds, because another organisation gives them their first-line service, who still use this service at the model's own per-person rates; the register-only forecast reconciles wherever the body is small and misses it where the new site sits."
+  },
+  {
+   "architecture": "v3 (architecture 3, Calderwick Police's Tanner Street custody hub, 2027-28 detentions)",
+   "fate": "spent 2026-10-26 at stage 4 on d1d38e72: the determinism judge DETERMINISTIC on every figure, SEND_BACK on Gate H (decisive_step data_semantics) and Gate G (single_conceptual_flip, surface_read_rejection, sole_data_defect): the flip rests on the brief's coverage line and allocation note 2, and any BTP figure from 121 to 371 rounds to 4,000; both scored readers landed 4,000 through note 2 (reader A Sonnet quoting it for question 1, reader B Opus calling it close to reading a stated rule), asks 0 of 16 for both; the probes missed only while the coverage fact was unfiled, and filing it, which determinism needs, makes it semantics; the third spent architecture, so the retirement rule applies unless the author sets another cap",
+   "domain": "urban-regional-science",
+   "subdomain": "municipal-service-demand-resource-allocation",
+   "objective": "forecasting",
+   "gap": [
+    "population"
+   ],
+   "pattern": [
+    "none"
+   ],
+   "generators": [
+    "G12",
+    "G5",
+    "G3"
+   ],
+   "gate_g": "forecasting",
+   "decision_type": "quantity_figure",
+   "stump_strategy": "population_selection",
+   "forum": "executive_team",
+   "forcing_event": "purchase_order_or_contract",
+   "org_family": "local_government",
+   "driver": "A new site's demand is forecast with a model validated on the existing sites over the units in the operator's own records, while part of the new site's intake will come from a second organisation that does the same work in the same territory, keeps no facility of its own and hands its cases to whichever of the operator's sites serves the area; the second organisation is a percent of the territory's recorded activity and absent from the operator's records, so the model reconciles wherever it is small and misses where it concentrates, at the new site.",
+   "stump": "A competent analyst runs the force's validated custody demand model over the six wards' arrest records and files 3,750, where the golden is 4,000; the step that lands it there is taking the force's arrest records as everyone the hub will book, when British Transport Police officers policing Calderwick and Kingsway stations, inside the hub's wards, have no cells of their own and book their detainees into the force suite that serves the ward, about 280 a year from the 1,702 crimes they record there, which sit in data.police.uk and in none of the force's records.",
+   "shape": "other",
+   "calibration_form": "existing_book_actuals",
+   "context_artifact": "filed_model",
+   "role_family": "capacity_planner"
   }
  ],
- "notes": "Calibration existing_book_actuals: the four open suites' arrest records 2021-22 to 2025-26 against the model (0.98 to 1.03 on the probe pack). Context artifact filed_model: the force's Custody Demand Model version 2 note. Gap population: the force's arrest records are not everyone its suites book. Pattern none: G12 (the arrest records' silence about British Transport Police's arrests is an absence of record), G5 (the railway is policed by another force, whose custody the territorial force provides), G3 (the records count the force's arrests; the hub books every detainee from its wards). Gate G forecasting rather than method_or_model_selection: the graded object is a forward projection whose history is read correctly, and the step is the new site's intake, not a choice between fitted models (task305's judges read its origin set as model selection because its call was a site pick). Org family local_government: a territorial police force under a locally elected commissioner (government_agency is spent against task121). Probe packs t137_a3/probe7 (p137i, p137j).",
- "registered": "2026-10-26T05:10:19Z"
+ "notes": "Calibration existing_book_actuals: the four open suites' arrest records 2021-22 to 2025-26 against the model (0.966 to 1.016 on the shipped pack; 0.98 to 1.03 on the probe pack). Context artifact filed_model: the force's Custody Demand Model version 2 note. Gap population: the force's arrest records are not everyone its suites book. Pattern none: G12 (the arrest records' silence about British Transport Police's arrests is an absence of record), G5 (the railway is policed by another force, whose custody the territorial force provides), G3 (the records count the force's arrests; the hub books every detainee from its wards). Gate G forecasting rather than method_or_model_selection: the graded object is a forward projection whose history is read correctly, and the step is the new site's intake, not a choice between fitted models (task305's judges read its origin set as model selection because its call was a site pick). Org family local_government: a territorial police force under a locally elected commissioner (government_agency is spent against task121). Probe packs t137_a3/probe7 (p137i, p137j).",
+ "registered": "2026-10-26T05:10:19Z",
+ "architecture_spent": true
 }

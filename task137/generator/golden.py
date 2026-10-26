@@ -1,578 +1,325 @@
-"""The golden deliverables: td_booking_q1_2027.xlsx (the booking by maturity month with its basis, what each closed
-campaign kept on term deposit 30 days after maturity, and the quarter's maturing book against the list) and
-td_booking_note_q1_2027.docx (the one-page note for the head of deposits, opening with the booking and charting it by
-maturity month), plus generator/figures.json and metadata.json. Every figure is computed from the shipped pack
-(calc.py for the call, asks.py for the asks)."""
-from __future__ import annotations
-
-import io
+"""The golden figures, computed forward from the shipped files under target/ (pandas): the planning figure and its
+components, the frame family and the golden family, the wrong rungs, ask A (remand holds) and ask B (initial health
+assessments) with their stops. Writes generator/figures.json."""
+import datetime as dt
 import json
 import os
+import sys
+import warnings
+from zoneinfo import ZoneInfo
 
 import numpy as np
-import openpyxl
-from openpyxl.styles import Alignment, Font, PatternFill
-from openpyxl.utils import get_column_letter
+import pandas as pd
 
-import asks as AK
-import calc as C
-import postprocess as PP
-import world as W
+warnings.filterwarnings("ignore")
+HERE = os.path.dirname(os.path.abspath(__file__))
+sys.path.insert(0, HERE)
+import build as BD   # noqa: E402
 
-BOOK = "td_booking_q1_2027.xlsx"
-NOTE = "td_booking_note_q1_2027.docx"
-MONTHS = {1: "January", 2: "February", 3: "March"}
-CAMPAIGN_LABEL = {q: W.q_label(q) for q in W.PAST}
+UK = ZoneInfo("Europe/London")
+BIN = 250
+SUITES = ["Northgate", "Eastmoor", "Southfields", "Wendle Cross"]
+REMAND = "Charged - remanded in custody"
+WARRANT = "Warrant, recall or breach"
+
+
+def load(tgt):
+    a = pd.read_csv(os.path.join(tgt, BD.F_ARR))
+    t = pd.to_datetime(a.arrested_utc, utc=True).dt.tz_convert(UK)
+    a["fy"] = np.where(t.dt.month >= 4, t.dt.year, t.dt.year - 1)
+    a["ym"] = t.dt.strftime("%Y-%m")
+    a["book_utc"] = pd.to_datetime(a.booked_in_utc, utc=True)
+    hm = a.detention_hhmm.str.split(":", expand=True).astype(int)
+    a["det_min"] = hm[0] * 60 + hm[1]
+    a["charge_utc"] = a.book_utc + pd.to_timedelta(a.det_min, unit="m")
+    p = pd.read_csv(os.path.join(tgt, BD.F_POL))
+    lk = pd.read_csv(os.path.join(tgt, BD.F_LOOK))
+    al = pd.read_excel(os.path.join(tgt, BD.F_ALLOC), sheet_name="Allocation")
+    return a, p, lk, al
+
+
+def model(byw, base, ahead, cap=0.10):
+    ch = (byw[base] / byw[base - 3]) ** (1 / 3) - 1
+    if cap is not None:
+        ch = ch.clip(-cap, cap)
+    return float((byw[base] * (1 + ch) ** ahead).sum())
+
+
+def cell(x, b=BIN):
+    return int(np.floor(x / b + 0.5)) * b
+
+
+def edge(x, b=BIN):
+    return b / 2 - abs(x - cell(x, b))
+
+
+def main_call(a, p, lk, al):
+    hub = sorted(al[al.suite_from_1_april_2027 == "Tanner Street"].ward)
+    ah = a[a.ward.isin(hub)]
+    fyt = ah.groupby("fy").size()
+    byw = ah.groupby(["ward", "fy"]).size().unstack(fill_value=0)
+    force_fy = a.groupby("fy").size()
+    mon = ah.groupby("ym").size()
+    mon = mon[(mon.index >= "2021-04") & (mon.index <= "2026-09")]
+    from statsmodels.tsa.holtwinters import ExponentialSmoothing
+    hw = ExponentialSmoothing(mon.values.astype(float), trend="add", damped_trend=True, seasonal="add",
+                              seasonal_periods=12).fit()
+    F = {"F1 the model as filed": model(byw, 2025, 2),
+         "F2 2025-26 level": float(fyt[2025]),
+         "F3 three-year mean": float(fyt[[2023, 2024, 2025]].mean()),
+         "F4 linear trend on five years": float(np.polyval(np.polyfit(range(2021, 2026), fyt[list(range(2021, 2026))].values, 1), 2027)),
+         "F5 Holt-Winters damped": float(hw.forecast(18)[6:18].sum()),
+         "F6 last twelve months": float(mon[-12:].sum()),
+         "F7 the model without its cap": model(byw, 2025, 2, None),
+         "F8 2025-26 at the force's change": float(fyt[2025] * (force_fy[2025] / force_fy[2022]) ** (2 / 3)),
+         "F9 two-year mean": float(fyt[[2024, 2025]].mean())}
+    p = p.merge(lk[["lsoa21_code", "ward"]], left_on="LSOA code", right_on="lsoa21_code", how="left")
+    hp = p[p["Reported by"] == "Calderwick Police"]
+    bt = p[p["Reported by"] == "British Transport Police"]
+    a25 = a[a.fy == 2025]
+    ar_t = a25.groupby("offence_group").size()
+    cr_t = hp.groupby("Crime type").size()
+    rate_t = (ar_t.reindex(cr_t.index) / cr_t).fillna(0)
+    warr = ar_t.get(WARRANT, 0) / ar_t.drop(WARRANT, errors="ignore").sum()
+    overall = len(a25) / len(hp)
+    hub_rate = len(a25[a25.ward.isin(hub)]) / len(hp[hp.ward.isin(hub)])
+    bth = bt[bt.ward.isin(hub)]
+    b25 = bth.groupby("Crime type").size()
+    per_type = float((b25 * rate_t.reindex(b25.index).fillna(0)).sum())
+    B = {"B1 per-type rates": per_type,
+         "B2 per-type rates with the warrant share": per_type * (1 + warr),
+         "B3 the force's overall rate": float(b25.sum() * overall),
+         "B4 the six wards' overall rate": float(b25.sum() * hub_rate)}
+    G = {}
+    for fk in ("F1 the model as filed", "F2 2025-26 level", "F3 three-year mean", "F5 Holt-Winters damped",
+               "F6 last twelve months"):
+        for bk, bv in B.items():
+            G["%s + %s" % (fk.split(" ")[0], bk.split(" ")[0])] = F[fk] + bv
+    share = len(bt) / len(p)
+    hs = bth[bth.Location.str.contains("Calderwick")]
+    R = {"R0 the model as filed": F["F1 the model as filed"],
+         "R1 scaled by BTP's share of the street-level file": F["F1 the model as filed"] * (1 + share),
+         "R2 every BTP crime in the force area at the overall rate": F["F1 the model as filed"] + len(bt) * overall,
+         "R3 Calderwick station only, per-type with the warrant share": F["F1 the model as filed"] +
+         float((hs.groupby("Crime type").size() * rate_t).fillna(0).sum()) * (1 + warr)}
+    golden_raw = F["F1 the model as filed"] + B["B2 per-type rates with the warrant share"]
+    return dict(hub=hub, F=F, B=B, G=G, R=R, golden_raw=golden_raw, golden=cell(golden_raw),
+                default_raw=F["F1 the model as filed"], default=cell(F["F1 the model as filed"]),
+                fy_hub={int(k): int(v) for k, v in fyt.items() if k <= 2025}, by_ward_fy={w: {int(y): int(byw.loc[w, y]) for y in byw.columns if y <= 2025} for w in hub},
+                btp_hub_crimes=int(b25.sum()), btp_hub_by_station={s: int(n) for s, n in bth.Location.value_counts().items()},
+                btp_all=int(len(bt)), crime_force=int(len(hp)), share=share, overall=overall, hub_rate=hub_rate,
+                warrant_share=warr, rate_t={k: float(v) for k, v in rate_t.items()}, b25={k: int(v) for k, v in b25.items()},
+                own_2025=int(fyt[2025]))
 
 
 # ---------------------------------------------------------------------------------------------------------------
-def h250(x):
-    return int(np.floor(x / 250.0 + 0.5) * 250)
+def to_utc_local(s):
+    """A UK wall-clock time 'dd/mm/yyyy HH:MM' as UTC; no shipped time sits in an ambiguous or missing hour."""
+    t = dt.datetime.strptime(s, "%d/%m/%Y %H:%M")
+    return pd.Timestamp(t.replace(tzinfo=UK)).tz_convert("UTC")
 
 
-def k1000(x):
-    return int(np.floor(x / 1000.0 + 0.5) * 1000)
+def fy_of(ts_utc):
+    t = ts_utc.dt.tz_convert(UK)
+    return np.where(t.dt.month >= 4, t.dt.year, t.dt.year - 1)
 
 
-def n500(x):
-    return int(np.floor(x / 500.0 + 0.5) * 500)
+def remand_defendants(a, tgt):
+    """Every defendant kept in custody for court on a remand file. A file's own detention is the remanded arrest at the
+    file's suite whose charge (booking plus the detention clock) is the file's charge time: the linked arrest itself,
+    or, where the linked arrest is an earlier one in the case, the arrest the person was charged on. Its co-defendants
+    are the remanded arrests with no file of their own arrested in the same minute, ward and offence group, each
+    charged on their own clock and handed to the escort with the file."""
+    c = pd.read_csv(os.path.join(tgt, BD.F_CJU))
+    c["charged_utc"] = c.charged.map(to_utc_local)
+    c["hand_utc"] = c.handed_to_escort.map(to_utc_local)
+    c["fy"] = fy_of(c.charged_utc)
+    rem = a[a.outcome == REMAND].copy()
+    lead = rem.set_index("arrest_ref")
+    own = {}
+    for f in c.itertuples():             # the linked arrest itself, when it is the remand charged at the file's time
+        if f.linked_arrest in lead.index and lead.loc[f.linked_arrest].charge_utc == f.charged_utc \
+                and lead.loc[f.linked_arrest].custody_suite == f.custody_suite:
+            own[f.urn] = f.linked_arrest
+    by_charge = rem[~rem.arrest_ref.isin(set(own.values()))].groupby(["custody_suite", "charge_utc"]).arrest_ref.apply(list).to_dict()
+    for f in c.itertuples():             # otherwise the remand charged at the file's suite and time that no file claims
+        if f.urn not in own:
+            refs = by_charge.get((f.custody_suite, f.charged_utc), [])
+            assert len(refs) == 1, (f.urn, refs)
+            own[f.urn] = refs[0]
+    c["detention"] = c.urn.map(own)
+    assert c.detention.is_unique
+    rest = rem[~rem.arrest_ref.isin(set(c.detention))]
+    inc = rest.groupby(["arrested_utc", "ward", "offence_group"]).arrest_ref.apply(list).to_dict()
+    linked = a.set_index("arrest_ref")
+    defs, taken = [], set()
+    for f in c.itertuples():
+        L = lead.loc[f.detention]
+        co = inc.get((L.arrested_utc, L.ward, L.offence_group), [])
+        taken.update(co)
+        for ref in [f.detention] + co:
+            r = lead.loc[ref]
+            defs.append(dict(urn=f.urn, ref=ref, lead=ref == f.detention, rearrest=f.linked_arrest != f.detention,
+                             suite=f.custody_suite, fy=int(fy_of(pd.Series([r.charge_utc]))[0]), arrest_fy=int(r.fy),
+                             book=r.book_utc, charge=r.charge_utc, file_charge=f.charged_utc,
+                             linked_book=linked.loc[f.linked_arrest].book_utc, hand=f.hand_utc,
+                             hand_naive=pd.Timestamp(dt.datetime.strptime(f.handed_to_escort, "%d/%m/%Y %H:%M"), tz="UTC"),
+                             det_min=int(r.det_min)))
+    d = pd.DataFrame(defs)
+    assert d.ref.is_unique
+    orphans = rest[~rest.arrest_ref.isin(taken)]
+    return c, d, orphans
 
 
-def n100(x):
-    return int(np.floor(x / 100.0 + 0.5) * 100)
-
-
-def c(x):
-    return "{:,}".format(int(x))
-
-
-def compute(target):
-    L = C.load(target)
-    G = C.golden(L)
-    Rg = C.rungs(L, G)
-    F, cases = G["F"], G["cases"]
-    has = (F["cfg"] != "").values
-    R = G["R"]
-    per_month = {}
-    for k in (1, 2, 3):
-        sel = (F["month"] == k).values
-        per_month[k] = dict(
-            deposits=int(sel.sum()), callable=int((sel & has).sum()),
-            nr=float((R * G["U"] * has * sel).sum()), conv=float((R * G["C"] * has * sel).sum()),
-            ret=float((R * G["C"] * G["p"] * has * sel).sum()), hours=G["months"][k])
-    cv = cases[cases["conv"]]
-    sp = F[F["special"]]
-    assert sp["term"].nunique() == 1 and sp["rate"].nunique() == 1 and sp["drop"].nunique() == 1
-    term_sp, rate_sp, drop_sp = int(sp["term"].iloc[0]), float(sp["rate"].iloc[0]), float(sp["drop"].iloc[0])
-    oq = C.opening_quarter(sp["opened"])
-    assert oq.nunique() == 1
-    cohort = F[(F["term"] == term_sp) & (C.opening_quarter(F["opened"]) == oq.iloc[0])]
-    lo_band = float(np.floor(drop_sp / 0.25 + 1e-9) * 0.25)
-    band = cv[(cv["drop"] >= lo_band - 1e-9) & (cv["drop"] < lo_band + 0.25 - 1e-9)]
-    specials = sorted({(int(t), float(r)) for t, r in zip(cv.loc[cv["special"], "term"], cv.loc[cv["special"], "rate"])})
-    A = AK.load(target)
-    ask_a = AK.ask_a(A, "golden")
-    ask_b = AK.ask_b(A, "golden")
-    listed = A["lists"].groupby("campaign").size().to_dict()
-    return dict(L=L, G=G, Rg=Rg, F=F, cases=cases, per_month=per_month, pooled=float(cv["ret"].mean()),
-                n_conv_past=len(cv), n_special_past=int(cv["special"].sum()),
-                share_special=float(cv[cv["special"]]["ret"].mean()),
-                share_member=float(cv[~cv["special"]]["ret"].mean()),
-                band_lo=lo_band, share_band_all=float(band["ret"].mean()),
-                share_band_special=float(band[band["special"]]["ret"].mean()),
-                share_band_member=float(band[~band["special"]]["ret"].mean()),
-                special=len(sp), term_sp=term_sp, rate_sp=rate_sp, drop_sp=drop_sp,
-                cohort_lowest=float(cohort["rate"].min()), card_sp=L["cards"][W.FWD][term_sp],
-                specials=specials, no_callable=int((~has).sum()), ask_a=ask_a, ask_b=ask_b, listed=listed, A=A,
-                opened_sp=str(oq.iloc[0]))
-
-
-WORD = {1: "one", 2: "two", 3: "three", 4: "four", 5: "five"}
-
-
-def specials_phrase(specials):
-    """'the one-year deposits at 6.35, 5.45 and 5.10 per cent, the two-year at 6.30 and the three-year at 6.00'."""
-    by = {}
-    for t, r in specials:
-        by.setdefault(t, []).append("%.2f" % r)
-    parts = []
-    for i, t in enumerate(sorted(by)):
-        rs = sorted(by[t], key=float, reverse=True)
-        rates = ", ".join(rs[:-1]) + " and " + rs[-1] if len(rs) > 1 else rs[0]
-        parts.append(("the %s-year deposits at %s per cent" if i == 0 else "the %s-year at %s") % (WORD[t], rates))
-    return ", ".join(parts[:-1]) + " and " + parts[-1] if len(parts) > 1 else parts[0]
-
-
-def pct(x):
-    return "%d" % int(np.floor(100 * x + 0.5))
-
-
-def figures(c_):
-    G, pm, Rg = c_["G"], c_["per_month"], c_["Rg"]
-    share = G["ret"] / G["conv"]
-    rv = Rg["rivals"]
-    out = {
-        "call": {"quarter": W.q_label(W.FWD), "booking_hours": c(h250(G["total"])),
-                 "hours_by_month": {MONTHS[k]: c(h250(pm[k]["hours"])) for k in (1, 2, 3)}},
-        "components": {
-            "no_callable_number": c(c_["no_callable"]),
-            "special_deposits": c(c_["special"]),
-            "special_opened": W.q_label(c_["opened_sp"]),
-            "special_term_years": "%d" % c_["term_sp"],
-            "special_rate_pct": "%.2f" % c_["rate_sp"],
-            "cohort_lowest_rate_pct": "%.2f" % c_["cohort_lowest"],
-            "card_pct": "%.2f" % c_["card_sp"],
-            "drop_points": "%.2f" % c_["drop_sp"],
-            "past_special_share_pct": pct(c_["share_special"]),
-            "past_band_special_share_pct": pct(c_["share_band_special"]),
-            "past_band_member_share_pct": pct(c_["share_band_member"]),
-            "expected_conversations": c(n500(G["conv"])),
-            "retention_share_pct": pct(share),
-            "past_pooled_share_pct": pct(c_["pooled"]),
-        },
-        "steps": {
-            "listed_deposits": c(len(c_["F"])),
-            "deposits_by_month": {MONTHS[k]: c(pm[k]["deposits"]) for k in (1, 2, 3)},
-            "release_share_pct": "%.1f" % (100 * G["R"]),
-            "non_reaching_dials": c(n100(G["nr"])),
-            "past_conversations": c(c_["n_conv_past"]),
-            "past_special_conversations": c(c_["n_special_past"]),
-            "special_gap_points": "%.2f" % C.SPECIAL_GAP,
-            "band_points": "0.25",
-            "band_from_points": "%.2f" % c_["band_lo"],
-            "band_to_points": "%.2f" % (c_["band_lo"] + 0.25),
-            "past_specials": specials_phrase(c_["specials"]),
-            "hours_unrounded": "{:,.1f}".format(G["total"]),
-            "hours_by_month_unrounded": {MONTHS[k]: "{:,.1f}".format(pm[k]["hours"]) for k in (1, 2, 3)},
-        },
-        "rules": {"minutes_not_reached": "1.5", "minutes_conversation": "8", "minutes_retention": "22",
-                  "release_days_before_maturity": "21", "days_after_maturity": "30", "listing_threshold_nzd": "25,000"},
-        "default_path": {
-            "pooled_share_hours": c(h250(rv["pooled"][0])), "drop_hours": c(h250(rv["drop bands"][0])),
-            "latest_campaign_hours": c(h250(rv["latest"][0])), "by_term_hours": c(h250(rv["term"][0])),
-            "by_locked_rate_hours": c(h250(rv["locked rate"][0])), "trend_hours": c(h250(rv["trend"][0])),
-            "locked_rate_by_term_logit_hours": c(h250(rv["locked rate by term logit"][0])),
-            "latest_hours_per_listed_deposit": c(h250(Rg["R0_latest"])),
-            "without_release_share_hours": c(h250(Rg["R3_no_release"]))},
-        "ask_a": {q: {"campaign": CAMPAIGN_LABEL[q], "deposits": c(n), "principal_nzd": c(k1000(a))}
-                  for q, (n, a) in c_["ask_a"].items()},
-        "ask_b": {"maturing_nzd": {MONTHS[k]: c(k1000(c_["ask_b"][k])) for k in (1, 2, 3)},
-                  "quarter_not_on_list_nzd": c(k1000(c_["ask_b"]["off"]))},
-    }
+def holds(x, hand="hand", book="book", charge="charge", clock=False):
+    """Per suite: cell hours from charge to handover (to the nearest hour), and how many were held more than 24 hours
+    from booking in (or, with clock=True, whose detention clock ran past 24 hours)."""
+    out = {}
+    for s in SUITES:
+        y = x[x.suite == s]
+        hrs = float(((y[hand] - y[charge]).dt.total_seconds() / 3600).sum())
+        n24 = int((y.det_min > 24 * 60).sum()) if clock else int(((y[hand] - y[book]).dt.total_seconds() / 3600 > 24).sum())
+        out[s] = dict(cell_hours_raw=hrs, cell_hours=int(round(hrs)), over_24=n24, defendants=int(len(y)),
+                      codefendants=int((~y.lead).sum()), rearrests=int(y.rearrest.sum()))
     return out
 
 
-# ---------------------------------------------------------------------------------------------------------------
-HEAD = PatternFill("solid", fgColor="DDE5EC")
-KEY = PatternFill("solid", fgColor="F4EFE3")
-NAVY = "173A5E"
-
-
-def _head(ws, row, values, height=32):
-    for j, v in enumerate(values, 1):
-        cell = ws.cell(row=row, column=j, value=v)
-        cell.font = Font(bold=True, size=10)
-        cell.fill = HEAD
-        cell.alignment = Alignment(wrap_text=True, vertical="top")
-    ws.row_dimensions[row].height = height
-
-
-def write_book(path, c_, figs):
-    G, pm = c_["G"], c_["per_month"]
-    wb = openpyxl.Workbook()
-    ws = wb.active
-    ws.title = "Booking"
-    ws["A1"] = "TDR-2027Q1: agent-hours to book with Harbourline Contact Services"
-    ws["A1"].font = Font(bold=True, size=13, color=NAVY)
-    ws["A2"] = ("List cut 2 November 2026, 18,400 term deposits maturing 1 January to 31 March 2027. Hours at the "
-                "SOW HCS-KBS-2025-01 schedule 2 minutes. Block order due 20 November 2026.")
-    ws["A2"].font = Font(italic=True, size=9)
-    _head(ws, 4, ["Maturity month", "Deposits on the list", "With a callable number", "Expected dials not reaching "
-                  "the holder", "Expected conversations", "of which retention offer", "Forecast agent-hours",
-                  "Agent-hours to book"])
-    r = 5
-    for k in (1, 2, 3):
-        m = pm[k]
-        vals = ["%s 2027" % MONTHS[k], m["deposits"], m["callable"], round(m["nr"]), round(m["conv"]), round(m["ret"]),
-                round(m["hours"], 1), h250(m["hours"])]
-        for j, v in enumerate(vals, 1):
-            cell = ws.cell(row=r, column=j, value=v)
-            cell.number_format = "#,##0.0" if j == 7 else "#,##0"
-        ws.cell(row=r, column=8).fill = KEY
-        r += 1
-    tot = ["Quarter", sum(pm[k]["deposits"] for k in pm), sum(pm[k]["callable"] for k in pm), round(G["nr"]),
-           round(G["conv"]), round(G["ret"]), round(G["total"], 1), h250(G["total"])]
-    for j, v in enumerate(tot, 1):
-        cell = ws.cell(row=r, column=j, value=v)
-        cell.font = Font(bold=True)
-        cell.number_format = "#,##0.0" if j == 7 else "#,##0"
-    ws.cell(row=r, column=8).fill = KEY
-    r += 2
-    ws.cell(row=r, column=1, value="Basis").font = Font(bold=True, color=NAVY)
-    basis = [
-        ("Do-not-call wash at the cut",
-         "%s deposits have no callable number once the holders' numbers are washed against the register as it stood on "
-         "2 November 2026; they are not released (procedure 4.3) and carry no hours." % figs["components"][
-             "no_callable_number"]),
-        ("Release", "%s per cent of listed deposits with a callable number reached release in the seven closed "
-                    "campaigns; the rest had given instructions first (procedure 4.2)." % figs["steps"][
-                        "release_share_pct"]),
-        ("Dialling", "Non-reaching dials and the chance of a conversation per released case, by the mix of callable "
-                     "number types, from the release log, dial log and close-outs of the seven closed campaigns."),
-        ("Retention offer", "Each deposit's chance that a conversation goes to the retention offer is the share of past "
-                            "conversations of its class at the same drop from its rate to the reinvestment rate for its "
-                            "term (0.25-point bands). Money a special won (a rate %s points or more above the lowest rate "
-                            "of the deposits of its term opened in the same quarter) went to the offer at %s per cent of "
-                            "%s conversations in the seven campaigns, much the same at every drop; other deposits far less often, more "
-                            "as the drop grows (%s per cent at drops of %s to %s points, where special money ran at %s). "
-                            "%s %s-year deposits opened at the %s per cent special (the other %s-year deposits of January "
-                            "to March 2023 from %s per cent) meet the %s per cent rate for January to March 2027, a drop of "
-                            "%s points." % (
-                                figs["steps"]["special_gap_points"], figs["components"]["past_special_share_pct"],
-                                figs["steps"]["past_special_conversations"],
-                                figs["components"]["past_band_member_share_pct"], figs["steps"]["band_from_points"],
-                                figs["steps"]["band_to_points"], figs["components"]["past_band_special_share_pct"],
-                                figs["components"]["special_deposits"], figs["components"]["special_term_years"],
-                                figs["components"]["special_rate_pct"], figs["components"]["special_term_years"],
-                                figs["components"]["cohort_lowest_rate_pct"], figs["components"]["card_pct"],
-                                figs["components"]["drop_points"])),
-        ("Minutes", "1.5 per dial that does not reach the holder, 8 per conversation, 22 per retention-offer "
-                    "conversation (schedule 2). Hours to book rounded to the nearest 250 (procedure 6.1)."),
-    ]
-    for k, v in basis:
-        r += 1
-        ws.cell(row=r, column=1, value=k).alignment = Alignment(vertical="top")
-        cell = ws.cell(row=r, column=2, value=v)
-        ws.merge_cells(start_row=r, start_column=2, end_row=r, end_column=8)
-        cell.alignment = Alignment(wrap_text=True, vertical="top")
-        ws.row_dimensions[r].height = 56 if len(v) > 380 else (42 if len(v) > 190 else 30)
-    for j, w in enumerate([22, 13, 13, 15, 14, 13, 13, 13], 1):
-        ws.column_dimensions[get_column_letter(j)].width = w
-    ws.freeze_panes = "A5"
-
-    ws2 = wb.create_sheet("Kept at 30 days")
-    ws2["A1"] = "Principal on each closed campaign's list still on term deposit with the Society 30 days after maturity"
-    ws2["A1"].font = Font(bold=True, size=12, color=NAVY)
-    ws2["A2"] = ("Reinvested on the deposit's own account at maturity, or maturity proceeds paid for it that day into a "
-                 "term deposit opened with them; either still open 30 days after maturity. Principal: the deposit's "
-                 "own, or the proceeds paid into the new deposit (new money added to it excluded). NZ$, nearest thousand.")
-    ws2["A2"].font = Font(italic=True, size=9)
-    ws2["A2"].alignment = Alignment(wrap_text=True, vertical="top")
-    ws2.merge_cells("A2:E2")
-    ws2.row_dimensions[2].height = 40
-    _head(ws2, 4, ["Campaign", "Maturities", "Deposits on the list", "Principal still on term deposit (NZ$)",
-                   "Deposits it came from"])
-    r = 5
-    for q in W.PAST:
-        n, a = c_["ask_a"][q]
-        for j, v in enumerate(["TDR-%s" % q, CAMPAIGN_LABEL[q], int(c_["listed"][q]), k1000(a), n], 1):
-            cell = ws2.cell(row=r, column=j, value=v)
-            if j >= 3:
-                cell.number_format = "#,##0"
-        r += 1
-    for j, w in enumerate([14, 24, 16, 24, 18], 1):
-        ws2.column_dimensions[get_column_letter(j)].width = w
-
-    ws3 = wb.create_sheet("Maturing Q1 2027")
-    ws3["A1"] = "Principal maturing January to March 2027: term deposits and investment certificates, all members"
-    ws3["A1"].font = Font(bold=True, size=12, color=NAVY)
-    ws3["A2"] = ("Term deposits and certificates held in the core on 2 November 2026, each account once, and the "
-                 "certificates still on the investment platform; the quarter's part not on the TDR-2027Q1 list. NZ$, "
-                 "nearest thousand.")
-    ws3["A2"].font = Font(italic=True, size=9)
-    ws3["A2"].alignment = Alignment(wrap_text=True, vertical="top")
-    ws3.merge_cells("A2:C2")
-    ws3.row_dimensions[2].height = 40
-    _head(ws3, 4, ["Maturity month", "Principal maturing (NZ$)"])
-    r = 5
-    for k in (1, 2, 3):
-        for j, v in enumerate(["%s 2027" % MONTHS[k], k1000(c_["ask_b"][k])], 1):
-            cell = ws3.cell(row=r, column=j, value=v)
-            if j >= 2:
-                cell.number_format = "#,##0"
-        r += 1
-    cell = ws3.cell(row=r, column=1, value="Quarter")
-    cell.font = Font(bold=True)
-    cell = ws3.cell(row=r, column=2, value=sum(k1000(c_["ask_b"][k]) for k in (1, 2, 3)))
-    cell.number_format = "#,##0"
-    cell.font = Font(bold=True)
-    r += 2
-    ws3.cell(row=r, column=1, value="Not on the list").font = Font(bold=True)
-    cell = ws3.cell(row=r, column=2, value=k1000(c_["ask_b"]["off"]))
-    cell.number_format = "#,##0"
-    cell.fill = KEY
-    ws3.cell(row=r, column=3, value="the quarter's maturing principal less the list's").font = Font(italic=True, size=9)
-    for j, w in enumerate([18, 24, 40], 1):
-        ws3.column_dimensions[get_column_letter(j)].width = w
-
-    ws4 = wb.create_sheet("Notes")
-    ws4["A1"] = "Notes"
-    ws4["A1"].font = Font(bold=True, size=12, color=NAVY)
-    notes = [
-        ("As of", "List TDR-2027Q1 cut 2 November 2026 (18,400 term deposits); contact points and the do-not-call "
-                  "register as held that day; reinvestment rates for January to March 2027 as approved by ALCO and "
-                  "carried in the draft campaign brief of 3 November 2026; Harbourline close-outs to the July to "
-                  "September 2026 campaign."),
-        ("Agent-hours", "Billed agent-minutes under SOW HCS-KBS-2025-01 schedule 2 (1.5 a dial that does not reach "
-                        "the holder, 8 a conversation, 22 a conversation that goes to the retention offer), over 60. "
-                        "Not rostered time."),
-        ("Retention offer", "Conversations closed RTK or RTW (schedule 3)."),
-        ("Drop", "The deposit's rate less the reinvestment rate for its term in the campaign brief for the quarter it "
-                 "matures in. Shares of past conversations are taken by class in 0.25-point bands of drop across all "
-                 "seven closed campaigns, as procedure 6.1 has the forecast draw on every closed campaign."),
-        ("Special money", "A deposit whose rate is %s points or more above the lowest rate among the same list's "
-                          "deposits of its term opened in the same quarter (the specials sold new money one rate for "
-                          "every amount; other deposits sit on the posted rate or up to 0.25 above it). In the seven "
-                          "campaigns: %s." % (figs["steps"]["special_gap_points"], figs["steps"]["past_specials"])),
-        ("Not released", "Deposits whose holders have no callable number after the do-not-call wash (procedure "
-                         "4.3), and the share of the rest that instruct before release (procedure 4.2)."),
-        ("Rounding", "Hours to the nearest 250, each month from its own forecast (procedure 6.1); deposits whole; "
-                     "NZ$ to the nearest thousand."),
-        ("Kept at 30 days", "Own-account reinvestments, and maturity proceeds the payments system paid for the deposit "
-                            "that day into a new term deposit (its settlement payments name the matured account in "
-                            "the narrative), still open 30 days after maturity; new money added to a new deposit is "
-                            "not counted."),
-        ("Maturing Q1 2027", "The core holdings view lists a joint deposit under each holder; counted once per "
-                             "account, at the core's principal. Certificates still on the investment platform are taken "
-                             "from its register of 30 June 2026, less those already in the core: moved by a migration "
-                             "batch, or moved by hand and found by issue date, maturity date, rate and term."),
-    ]
-    for r, (k, v) in enumerate(notes, 3):
-        ws4.cell(row=r, column=1, value=k).font = Font(bold=True)
-        ws4.cell(row=r, column=1).alignment = Alignment(vertical="top")
-        cell = ws4.cell(row=r, column=2, value=v)
-        cell.alignment = Alignment(wrap_text=True, vertical="top")
-        ws4.row_dimensions[r].height = 15 * (1 + len(v) // 95)
-    ws4.column_dimensions["A"].width = 18
-    ws4.column_dimensions["B"].width = 100
-    for sh in (ws, ws2, ws3, ws4):
-        sh.page_setup.orientation = "landscape"
-        sh.page_setup.paperSize = sh.PAPERSIZE_A4
-        sh.sheet_properties.pageSetUpPr.fitToPage = True
-        sh.page_setup.fitToWidth = 1
-        sh.page_setup.fitToHeight = 0
-    ws.print_title_rows = "4:4"
-    wb.save(path)
-    PP.normalize_ooxml(path, W.PEOPLE["product"], W.PEOPLE["product"], "2026-11-04T01:05:12Z",
-                       "2026-11-05T03:48:30Z", excel=True)
+def ask_a(a, tgt):
+    c, d, orphans = remand_defendants(a, tgt)
+    d25 = d[d.fy == 2025]
+    out = holds(d25)
+    # the file's own rows only, each at the linked arrest's booking and the file's charge time
+    fl = d[d.lead & (d.file_charge.map(lambda t: fy_of(pd.Series([t]))[0]) == 2025)]
+    stops = {"each file's linked arrest": holds(fl, book="linked_book", charge="file_charge"),
+             "files with co-defendants at the file's charge time": holds(d25, book="linked_book", charge="file_charge"),
+             "co-defendants on their own clocks, linked arrest's booking": holds(d25, book="linked_book"),
+             "the case's own detentions, co-defendants left out": holds(d25[d25.lead]),
+             "detention clock for the 24 hours": holds(d25, clock=True),
+             "remand file times read as UTC": holds(d25, hand="hand_naive"),
+             "defendants arrested in 2025-26": holds(d[d.arrest_fy == 2025]),
+             "every file in the extract": holds(d)}
+    info = dict(files_2025=int((c.fy == 2025).sum()), files_all=int(len(c)), defendants_2025=int(len(d25)),
+                codefendants_2025=int((~d25.lead).sum()), rearrest_files_2025=int((d25.lead & d25.rearrest).sum()),
+                orphans=int(len(orphans)), orphans_in_window=int(((orphans.charge_utc >= pd.Timestamp("2025-04-01", tz="UTC"))
+                                                                  & (orphans.charge_utc < pd.Timestamp("2026-04-01", tz="UTC"))).sum()))
+    return out, stops, info, d
 
 
 # ---------------------------------------------------------------------------------------------------------------
-def chart_png(c_, figs):
-    import matplotlib
-    matplotlib.use("Agg")
-    import matplotlib.pyplot as plt
-    G, pm = c_["G"], c_["per_month"]
-    surface, ink, ink2, muted, grid = "#ffffff", "#1f2428", "#4a535b", "#7d868e", "#e3e6e8"
-    cols = ("#b9c7d3", "#6f8fab", "#173a5e")
-    plt.rcParams.update({"font.family": "DejaVu Sans", "svg.hashsalt": "task137"})
-    fig, ax = plt.subplots(figsize=(6.6, 3.15), dpi=200)
-    fig.patch.set_facecolor(surface)
-    ax.set_facecolor(surface)
-    x = np.arange(3)
-    dial = np.array([pm[k]["nr"] * W.MIN_NOT_REACHED / 60.0 for k in (1, 2, 3)])
-    conv = np.array([pm[k]["conv"] * W.MIN_CONVERSATION / 60.0 for k in (1, 2, 3)])
-    ret = np.array([pm[k]["ret"] * (W.MIN_RETENTION - W.MIN_CONVERSATION) / 60.0 for k in (1, 2, 3)])
-    w = 0.52
-    ax.bar(x, dial, w, color=cols[0], label="Dials that do not reach the holder", zorder=2)
-    ax.bar(x, conv, w, bottom=dial, color=cols[1], label="Conversations (first 8 minutes)", zorder=2)
-    ax.bar(x, ret, w, bottom=dial + conv, color=cols[2], label="Retention offer (further 14 minutes)", zorder=2)
-    for i, k in enumerate((1, 2, 3)):
-        top = dial[i] + conv[i] + ret[i]
-        ax.annotate("%s hours" % figs["call"]["hours_by_month"][MONTHS[k]], xy=(i, top), xytext=(0, 4),
-                    textcoords="offset points", ha="center", va="bottom", fontsize=8.6, color=ink, weight="bold")
-    ax.set_xticks(x)
-    ax.set_xticklabels(["%s\n%s deposits" % (MONTHS[k], figs["steps"]["deposits_by_month"][MONTHS[k]])
-                        for k in (1, 2, 3)], fontsize=8, color=ink2)
-    ax.set_ylim(0, 2400)
-    ax.set_yticks(range(0, 2401, 500))
-    ax.set_yticklabels(["{:,}".format(v) for v in range(0, 2401, 500)])
-    ax.tick_params(axis="y", colors=muted, labelsize=7.5, length=0)
-    ax.tick_params(axis="x", length=0, pad=4)
-    ax.yaxis.grid(True, color=grid, linewidth=0.7, zorder=0)
-    ax.set_axisbelow(True)
-    for side in ("top", "right", "left"):
-        ax.spines[side].set_visible(False)
-    ax.spines["bottom"].set_color("#a7b0b8")
-    ax.set_ylabel("Agent-hours", color=ink2, fontsize=8)
-    ax.legend(loc="upper left", frameon=False, fontsize=7.2, labelcolor=ink2)
-    ax.set_title("Conversations with holders take about two-thirds of the hours in every month",
-                 fontsize=9, color=ink, loc="left", weight="bold")
-    fig.subplots_adjust(left=0.11, right=0.985, top=0.9, bottom=0.17)
-    buf = io.BytesIO()
-    fig.savefig(buf, format="png", facecolor=surface, metadata={"Software": None})
-    plt.close(fig)
-    return buf.getvalue()
+def quarter(ts):
+    return ((ts.dt.month - 4) % 12) // 3 + 1
 
 
-def write_note(path, c_, figs):
-    import docx
-    from docx.shared import Mm, Pt, RGBColor
-    d = docx.Document()
-    st = d.styles["Normal"]
-    st.font.name = "Calibri"
-    st.font.size = Pt(10)
-    sec = d.sections[0]
-    sec.page_width, sec.page_height = Mm(210), Mm(297)
-    sec.left_margin = sec.right_margin = Mm(20)
-    sec.top_margin, sec.bottom_margin = Mm(16), Mm(14)
-    fc, fs = figs["components"], figs["steps"]
+def closures(a, al):
+    """Every stretch of more than three days with no detainee booked into a suite, from the arrest records: the last
+    booking before it, the first after it (both as UK times), and the suite the closed suite's own wards were booked
+    into meanwhile."""
+    home = dict(zip(al.ward, al.suite_to_31_march_2027))
+    out = {}
+    for s in SUITES:
+        b = a[a.custody_suite == s].book_utc.sort_values().reset_index(drop=True)
+        gaps = b.diff()
+        for j in gaps.index[gaps > pd.Timedelta(days=3)]:
+            lo, hi = b[j - 1], b[j]
+            inn = a[(a.book_utc > lo) & (a.book_utc < hi) & (a.ward.map(home) == s)]
+            host = inn.custody_suite.value_counts().index[0]
+            out[s] = dict(last=lo.tz_convert(UK).tz_localize(None), first=hi.tz_convert(UK).tz_localize(None), host=host,
+                          own_wards_in_gap=int(len(inn)), at_host=int((inn.custody_suite == host).sum()))
+    return out
 
-    def para(text=None, bold=False, size=None, color=None, after=4, italic=False):
-        p = d.add_paragraph()
-        p.paragraph_format.space_after = Pt(after)
-        if text:
-            run = p.add_run(text)
-            run.bold, run.italic = bold, italic
-            if size:
-                run.font.size = Pt(size)
-            if color:
-                run.font.color.rgb = RGBColor.from_string(color)
+
+SHIFTS = ("day", "night")
+
+
+def shift(ts):
+    return np.where((ts.dt.hour >= 7) & (ts.dt.hour < 19), "day", "night")
+
+
+def ask_b(a, al, tgt):
+    """Each suite's initial health assessments in 2025-26, begun in the day (07:00 to 19:00) and at night: one
+    assessment per line, except a line that continues the episode's previous assessment at the 07:00 or 19:00
+    handover, placed at the suite the clinician's team was working in (a closed suite's team at its host)."""
+    h = pd.read_csv(os.path.join(tgt, BD.F_HC))
+    h["start"] = pd.to_datetime(h.started)
+    h["end"] = pd.to_datetime(h.ended)
+    iha = h[h.contact_type == "Initial health assessment"].sort_values(["episode_ref", "start"]).copy()
+    prev_end = iha.groupby("episode_ref").end.shift()
+    iha["cont"] = (prev_end == iha.start) & iha.start.dt.minute.eq(0) & iha.start.dt.hour.isin([7, 19])
+    cl = closures(a, al)
+
+    def placed(x, which=None):
+        p = x.suite.copy()
+        for s, c in cl.items():
+            if which is None or s in which:
+                m = (x.suite == s) & (x.start >= c["last"]) & (x.start < c["first"])
+                p[m] = c["host"]
         return p
 
-    para("Kaimai Building Society  |  Term Deposits", size=9, color="5B6670", after=2)
-    para("January to March 2027 maturity calls: book %s agent-hours with Harbourline" % figs["call"]["booking_hours"],
-         bold=True, size=14, color=NAVY, after=2)
-    para("To the Deposits Committee (chair %s, Head of Deposits), for its meeting on 17 November. From %s, Term "
-         "Deposits Product Manager. 5 November 2026." % (W.PEOPLE["head"], W.PEOPLE["product"]), size=9,
-         color="5B6670", after=8)
-    p = para(after=6)
-    p.add_run("Book %s agent-hours with Harbourline for the January to March 2027 list: %s for the deposits maturing "
-              "in January, %s for February and %s for March." % (
-                  figs["call"]["booking_hours"], figs["call"]["hours_by_month"]["January"],
-                  figs["call"]["hours_by_month"]["February"], figs["call"]["hours_by_month"]["March"])).bold = True
-    p.add_run(" The block is due with Harbourline on Friday 20 November; it is payable in full, and hours beyond it "
-              "cost the block rate plus 35 per cent.")
-    d.add_picture(io.BytesIO(chart_png(c_, figs)), width=Mm(168))
-    d.paragraphs[-1].paragraph_format.space_after = Pt(1)
-    para("Agent-hours to book by maturity month. Source: TDR-2027Q1 list and contact points at 2 November 2026; "
-         "Harbourline dial logs and close-outs for the seven campaigns closed since January 2025; SOW HCS-KBS-2025-01 "
-         "schedule 2.", size=8, color="5B6670", after=6, italic=True)
-    para("Why the block is larger per deposit than any campaign so far", bold=True, size=10.5, color=NAVY, after=2)
-    para("%s of the %s deposits on the list are %s-year deposits opened at the %s per cent special in January to "
-         "March 2023; the other %s-year deposits opened that quarter carry %s per cent or a little more. Money a "
-         "special brings in behaves differently at its first maturity: in the seven campaigns since January 2025, "
-         "%s per cent of the conversations Harbourline held about deposits opened at a special went to the 22-minute "
-         "retention offer, much the same at every drop to the rate they rolled onto, and those about other deposits "
-         "far less often. The "
-         "special's deposits now meet a %s-point drop to the %s per cent %s-year rate. At drops of %s to %s points "
-         "past conversations about other deposits went to the offer %s per cent of the time, and they were almost "
-         "all the conversations at that drop; those about a special's money went at %s per cent. On this list about "
-         "%s per cent of an expected %s conversations should go to the retention offer, against %s per cent across "
-         "the seven campaigns." % (
-             fc["special_deposits"], fs["listed_deposits"], fc["special_term_years"], fc["special_rate_pct"],
-             fc["special_term_years"], fc["cohort_lowest_rate_pct"], fc["past_special_share_pct"], fc["drop_points"],
-             fc["card_pct"], fc["special_term_years"], fs["band_from_points"], fs["band_to_points"],
-             fc["past_band_member_share_pct"], fc["past_band_special_share_pct"], fc["retention_share_pct"],
-             fc["expected_conversations"], fc["past_pooled_share_pct"]), after=6)
-    para("How the hours are built", bold=True, size=10.5, color=NAVY, after=2)
-    para("Harbourline bills 1.5 minutes for each dial that does not reach the holder, 8 for each conversation and 22 "
-         "for each retention-offer conversation. Dialling per case comes from the seven closed campaigns for each mix "
-         "of callable numbers, after washing the list's numbers against the do-not-call register at the cut: %s "
-         "deposits have no callable number and will get the maturity letter only. %s per cent of deposits with a "
-         "callable number have reached release in past campaigns; the rest gave us instructions first." % (
-             fc["no_callable_number"], fs["release_share_pct"]), after=6)
-    para("In the workbook", bold=True, size=10.5, color=NAVY, after=2)
-    para("td_booking_q1_2027.xlsx carries the booking by month with its basis, what each campaign since January 2025 "
-         "kept on term deposit 30 days after maturity, and the principal maturing across the book in each month of "
-         "the quarter with the part the list does not cover.", after=8)
-    para("Hours are Harbourline's billed agent-minutes under schedule 2, not rostered time. Each month is rounded "
-         "from its own forecast to the nearest 250 hours, as procedure v4 rounds the block.", size=8, color="5B6670",
-         after=0, italic=True)
-    foot = d.sections[0].footer.paragraphs[0]
-    run = foot.add_run("Kaimai Building Society  |  Term Deposits  |  Internal")
-    run.font.size = Pt(7.5)
-    run.font.color.rgb = RGBColor.from_string("5B6670")
-    d.core_properties.title = "TDR-2027Q1 Harbourline block"
-    d.save(path)
-    PP.normalize_ooxml(path, W.PEOPLE["product"], W.PEOPLE["product"], "2026-11-05T02:16:40Z", "2026-11-05T04:02:19Z",
-                       title="TDR-2027Q1 Harbourline block")
+    def grid(x, place):
+        g = x.assign(place=place, sh=shift(x.start)).groupby(["place", "sh"]).size()
+        return {s: {k: int(g.get((s, k), 0)) for k in SHIFTS} for s in SUITES}
+
+    kept = iha[~iha.cont]
+    out = grid(kept, placed(kept))
+    first = iha.groupby("episode_ref").head(1)
+    stops = {"every line by its suite": grid(iha, iha.suite),
+             "handover lines joined, suite as labelled": grid(kept, kept.suite),
+             "closures moved, handover lines kept": grid(iha, placed(iha)),
+             "one assessment an episode, closures moved": grid(first, placed(first)),
+             "one assessment an episode, suite as labelled": grid(first, first.suite),
+             "only the Wendle Cross refit moved": grid(kept, placed(kept, {"Wendle Cross"})),
+             "only the Eastmoor closure moved": grid(kept, placed(kept, {"Eastmoor"}))}
+    info = dict(lines=int(len(iha)), continuations=int(iha.cont.sum()), episodes=int(iha.episode_ref.nunique()),
+                repeats=int(len(kept) - kept.episode_ref.nunique()),
+                closures={s: {k: str(v) for k, v in c.items()} for s, c in cl.items()},
+                moved=int((placed(kept) != kept.suite).sum()))
+    return out, stops, info
 
 
-# ---------------------------------------------------------------------------------------------------------------
-SOURCES = {
-    W.F_LIST_FWD: "the society's retention list for term deposits maturing January to March 2027, cut 2 November 2026",
-    W.F_LISTS_2025: "the retention lists for the four 2025 campaigns, from the pre-upgrade core banking report",
-    W.F_LISTS_2026: "the retention lists for the three 2026 campaigns, from the upgraded core",
-    W.F_RELEASE: "the society's case release log for the seven closed campaigns",
-    W.F_DIALS: "Harbourline's dial log for the seven closed campaigns",
-    W.F_CLOSEOUT: "Harbourline's case close-outs for the seven closed campaigns",
-    W.F_CONTACTS: "contact points held at the cut for the members on the January to March 2027 list",
-    W.F_DNC: "the society's do-not-call register at 2 November 2026",
-    W.F_SOW: "statement of work HCS-KBS-2025-01 between the society and Harbourline, with its schedules",
-    W.F_PROCEDURE: "the society's term deposit retention procedure, version 4",
-    W.F_THREAD: "the block-order email thread between the society and Harbourline, 28 October to 4 November 2026",
-    W.F_EVENTS: "term deposit account events, January 2025 to October 2026, for the listed accounts and their holders' "
-                "new term deposits",
-    W.F_TRANSFERS: "transfers of principal into and out of the accounts in the events extract",
-    W.F_HOLDINGS: "the core's term holdings view at 2 November 2026 (term deposits and migrated certificates maturing "
-                  "January to June 2027)",
-    W.F_KIP: "the legacy investment platform's certificate register at 30 June 2026",
-    W.F_BATCHES: "the investment platform to core migration batches, July to October 2026",
-    W.F_NOTES: "the deposits analytics team's notes on the extracts",
-    W.F_OUTLOOK: "treasury's FY2027 term funding outlook prepared for ALCO",
-    W.F_PROPOSAL: "Harbourline's 2027 service and staffing proposal",
-}
-for _q in W.PAST + [W.FWD]:
-    SOURCES[W.brief_name(_q)] = "the campaign brief for TDR-%s, with the quarter's reinvestment rates%s" % (
-        _q, " (draft)" if _q == W.FWD else "")
+def figures(tgt):
+    a, p, lk, al = load(tgt)
+    M = main_call(a, p, lk, al)
+    A, A_stops, A_info, _ = ask_a(a, tgt)
+    Bq, B_stops, B_info = ask_b(a, al, tgt)
+    return dict(M=M, A=A, A_stops=A_stops, A_info=A_info, B=Bq, B_stops=B_stops, B_info=B_info)
 
 
-def rows_of(path):
-    if path.endswith(".csv"):
-        with open(path, encoding="utf-8") as fh:
-            return sum(1 for _ in fh) - 1
-    return None
+def flat(R):
+    M = R["M"]
+    f = {"call.planning_figure": M["golden"], "call.planning_figure_unrounded": round(M["golden_raw"], 1),
+         "components.own_arrests_model": round(M["F"]["F1 the model as filed"], 1),
+         "components.own_arrests_2025_26": M["own_2025"],
+         "components.btp_crimes_hub_2025_26": M["btp_hub_crimes"],
+         "components.btp_detentions": round(M["B"]["B2 per-type rates with the warrant share"], 1),
+         "components.default_answer": M["default"],
+         "components.warrant_share_pct": round(100 * M["warrant_share"], 1)}
+    for st, n in M["btp_hub_by_station"].items():
+        f["components.btp_crimes.%s" % st.replace("On or near ", "").replace(" (station)", "")] = n
+    for y, n in M["fy_hub"].items():
+        f["chart.six_wards_arrests.%d-%02d" % (y, (y + 1) % 100)] = n
+    for s in SUITES:
+        f["ask_a.%s.cell_hours" % s] = R["A"][s]["cell_hours"]
+        f["ask_a.%s.over_24_hours" % s] = R["A"][s]["over_24"]
+    f["steps.remand_defendants_2025_26"] = sum(R["A"][s]["defendants"] for s in SUITES)
+    for s in SUITES:
+        f["steps.remand_defendants.%s" % s] = R["A"][s]["defendants"]
+    for s in SUITES:
+        for k in SHIFTS:
+            f["ask_b.%s.%s" % (s, k)] = R["B"][s][k]
+    return f
 
 
-def write_metadata(target, out_path):
-    files = []
-    for f in sorted(os.listdir(target)):
-        p = os.path.join(target, f)
-        files.append({"path": f, "format": f.rsplit(".", 1)[1], "bytes": os.path.getsize(p), "rows": rows_of(p),
-                      "source": "Constructed: " + SOURCES[f], "date": "2026-10-12",
-                      "license": "CC0-1.0 (original work, constructed for this task)"})
-    big = max((x for x in files if x["rows"]), key=lambda x: x["rows"])
-    meta = {
-        "task": "task137",
-        "title": "How many agent-hours Kaimai Building Society books with Harbourline for its January to March 2027 "
-                 "term deposit maturity calls",
-        "domain": "Banking, Credit & Financial Risk",
-        "subdomain": "deposit-liquidity-behaviour (term deposit retention at maturity on the repricing gap, at a New "
-                     "Zealand building society that outsources its maturity calls)",
-        "objective": "Forecasting & Predictive Modeling",
-        "prompt_shape": "other: the booking and its three maturity months, the note's chart, what each of seven closed "
-                        "campaigns kept on term deposit at 30 days (count and principal), and the quarter's maturing "
-                        "principal by month with the part off the list",
-        "as_of": "2026-11-04",
-        "deliverables": [BOOK, NOTE],
-        "distractor_files": list(W.DISTRACTORS),
-        "input_gates": {"files": len(files), "formats": sorted({x["format"] for x in files}),
-                        "largest_file": big["path"], "largest_file_rows": big["rows"]},
-        "sources": [{"files": "all files under target/",
-                     "origin": "constructed for this task by task137/generator/build.py (seeded, deterministic) around a "
-                               "fictional New Zealand building society (Kaimai Building Society), contact centre "
-                               "(Harbourline Contact Services) and people; no real organisation, person, account or "
-                               "telephone number is depicted.",
-                     "date": "2026-10-12", "license": "CC0-1.0 (original work)"}],
-        "created": "2026-10-12",
-        "generator": "task137/generator/build.py",
-        "files": files,
-    }
-    with open(out_path, "w") as fh:
-        json.dump(meta, fh, indent=2)
-        fh.write("\n")
-    return meta
+def main(argv):
+    tgt = argv[0] if argv else BD.TARGET
+    R = figures(tgt)
+    f = flat(R)
+    with open(os.path.join(HERE, "figures.json"), "w") as fh:
+        json.dump(f, fh, indent=1)
+    if len(argv) > 1:                       # the full working, for the author's own reading
+        with open(argv[1], "w") as fh:
+            json.dump(R, fh, indent=1, default=str)
+    return f
 
 
-def main(target, golden, figures_path, metadata_path):
-    os.makedirs(golden, exist_ok=True)
-    c_ = compute(target)
-    figs = figures(c_)
-    write_book(os.path.join(golden, BOOK), c_, figs)
-    write_note(os.path.join(golden, NOTE), c_, figs)
-    with open(figures_path, "w", encoding="utf-8") as fh:
-        json.dump(figs, fh, indent=1, ensure_ascii=False)
-        fh.write("\n")
-    write_metadata(target, metadata_path)
-    return c_, figs
+if __name__ == "__main__":
+    print(json.dumps(main(sys.argv[1:]), indent=1))

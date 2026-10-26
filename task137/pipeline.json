@@ -1,18 +1,18 @@
 {
   "task": "task137",
   "owner": "sathya8571",
-  "status": "DESIGN",
+  "status": "PAUSED",
   "domain": "urban-regional-science",
   "objective": "forecasting",
-  "stage": 2,
-  "stage_name": "design",
+  "stage": 4,
+  "stage_name": "check",
   "updated": "2026-10-26",
-  "stump": "A competent analyst runs the force's validated custody demand model over the six wards' arrest records and files 4,500, where the golden is 4,750; the step that lands it there is taking the force's arrest records as everyone the hub will book, when British Transport Police officers policing Harrowdown and Kingsway stations, inside the hub's wards, have no cells of their own and book their detainees into the force suite serving the ward, about 260 a year from the 1,740 crimes they record there, which sit in data.police.uk's street-level file and in none of the force's records.",
+  "stump": "A competent analyst runs the force's validated custody demand model over the six wards' arrest records and files 3,750, where the golden is 4,000; the step that lands it there is taking the force's arrest records as everyone the hub will book, when British Transport Police officers policing Calderwick and Kingsway stations, inside the hub's wards, have no cells of their own and book their detainees into the force suite serving the ward, 281 a year from the 1,702 crimes they record there, which sit in data.police.uk's street-level file and in none of the force's records.",
   "architecture": 3,
   "loops": 0,
   "card_registered": "2026-10-26T05:10:19Z",
-  "guard": "check on the registered card 2026-10-26 (main 437a0102): PASS, NOTEs only (same_puzzle_older against task133 and task196, same_driver_older against task133 and task180, driver.near 0.25 against this slot's never-registered v3 candidate 2)",
-  "resume": "architecture 3 drawn and registered 2026-10-26 after the probe gate (p137i and p137j both filed 4,500 against the golden 4,750 on probe7); next: stage 2 design (readability screen, fork table, ladder, closure, the custody fact in the allocation notes with its single-use and deletion tests, the ask layer for the healthcare tender, prompt.txt) to precut exit 0, then stage 3 in task137/generator from p7lib's world with the probes' realism fixes",
+  "guard": "check on the stage 3 card 2026-10-26: PASS, NOTEs only (same_puzzle_older against task133 and task196, same_driver_older against task133 and task180, driver.near 0.25 against this slot's never-registered v3 candidate 2)",
+  "resume": "architecture 3 spent at stage 4 (judge SEND_BACK, Gate H data_semantics; both scored readers landed via allocation note 2); the build-pipeline retirement rule applies to the third spent architecture unless the author sets another cap; on the author's go, architecture 4 is a fresh draw",
   "architecture_1": {
     "status": "RETURNED",
     "domain": "banking-credit-financial-risk",
@@ -119,5 +119,38 @@
     "objective": "forecasting",
     "updated": "2026-10-26",
     "summary": "Calderbrook Care's 2027 adverse-drug-event admissions (the care world): the interacting pairs were the strong enumerator's pick, Opus probes p137a and p137b landed the restart clock, p137c and p137d took the step-down guests; card v2 registered 2026-10-26T01:09:08Z, moved to lineage at the architecture 3 registration"
+  },
+  "precut": {
+    "exit": 0,
+    "date": "2026-10-26"
+  },
+  "leak": {
+    "leak_py": "2026-10-26 REVIEW, no LEAK, every line answered in ## Stage 3 gates",
+    "reader": "2026-10-26 stage 4 on d1d38e72: reader A (Sonnet) and reader B (Opus) both landed the call 4,000 through allocation note 2 (score_reader FAIL, call 1 of 1, ask figures 5 of 21, the chart's five years, 0 of 16 remand and assessment figures); appended to task137/leak_check_report.md"
+  },
+  "duplicate_check": {
+    "heart": "PASS 2026-10-26 (nearest 0.05)",
+    "nearest": "surface: four history-severity promotions on card axes (task133, task138, task180, task196), all differentiated on the card"
+  },
+  "judge": {
+    "verdict": "DETERMINISTIC",
+    "disposition": "SEND_BACK",
+    "report": "task137/determinism_check_report.md (run 1792999105): Gate H data_semantics; Gate G single_conceptual_flip, surface_read_rejection, surface_read_dependency yes, sole_data_defect yes; its other fixes recorded and not made (19:00 pin, the assessment unit and place, defendants from the arrest records, the model PDF's HARROWDOWN POLICE header)"
+  },
+  "stage3": {
+    "date": "2026-10-26",
+    "checks": "85 of 85",
+    "verify": "green",
+    "rebuilds": "byte-identical twice, target and golden",
+    "figures_check": "51 of 51",
+    "pair": "cracker 0 of 16, mirror 0 of 16, pair ceiling 28.5",
+    "target_zip": "md5 8b091e27, 12 members",
+    "call": "4,000 (4,035.9); default 3,750 (3,754.4)"
+  },
+  "architecture_3": {
+    "status": "SPENT",
+    "date": "2026-10-26",
+    "pack": "d1d38e72",
+    "why": "judge SEND_BACK: Gate H decisive_step data_semantics, Gate G single_conceptual_flip (surface_read_rejection, surface_read_dependency yes, sole_data_defect yes); the flip rests on the brief's coverage line and allocation note 2, and any BTP figure from 121 to 371 rounds to 4,000; both scored readers landed 4,000 through note 2"
   }
 }

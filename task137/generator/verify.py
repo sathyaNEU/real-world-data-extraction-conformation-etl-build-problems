@@ -1,310 +1,201 @@
-"""Independent verifier for task137. Reads only the shipped bundle (target/) and the golden workbook, imports nothing
-from the generator, and recomputes on its own code path (csv, pypdf, openpyxl; no pandas): the do-not-call wash, the
-dialling yields per mix of callable number types, the release share, each deposit's class (money a special won: a rate
-0.40 points or more above the lowest rate of the same list's deposits of its term opened in the same quarter), the
-share of conversations that went to the retention offer by class and 0.25-point band of drop, the hours by maturity
-month and the booking, the pooled and drop-only defaults, and both asks. Exits non-zero on any disagreement with the
-golden.
+"""The independent verifier: reads only the bundle under target/ (csv, xlsx, pdf, docx), shares no code or state with
+the generator or golden.py, recomputes the planning figure, its parts and every ask figure on its own path (the
+standard library's csv and datetime, no pandas), and compares them with generator/figures.json.
 
-    python3 task137/generator/verify.py [target] [golden]"""
-from __future__ import annotations
-
+    python3 verify.py [target_dir]
+"""
+import collections
 import csv
 import datetime as dt
-import math
+import json
 import os
 import re
 import sys
-from collections import defaultdict
+import zipfile
+from zoneinfo import ZoneInfo
 
 import openpyxl
-from pypdf import PdfReader
+import pypdf
+import docx
 
-NOT_REACHED = {"NOA", "BSY", "VML", "DIS", "WNG"}
-TALKED = {"RNW", "CHG", "DEC", "RTK", "RTW"}
-RETENTION = {"RTK", "RTW"}
-CUT = dt.date(2026, 11, 2)
-PAST = ["2025Q1", "2025Q2", "2025Q3", "2025Q4", "2026Q1", "2026Q2", "2026Q3"]
-LABEL = {"2025Q1": "January to March 2025", "2025Q2": "April to June 2025", "2025Q3": "July to September 2025",
-         "2025Q4": "October to December 2025", "2026Q1": "January to March 2026", "2026Q2": "April to June 2026",
-         "2026Q3": "July to September 2026"}
-GAP = 0.40
-
-FAIL = []
-PASSED = [0]
+HERE = os.path.dirname(os.path.abspath(__file__))
+UK = ZoneInfo("Europe/London")
+UTC = dt.timezone.utc
+FAILS = []
 
 
-def check(cond, msg):
-    if cond:
-        PASSED[0] += 1
-    else:
-        FAIL.append(msg)
+def ok(cond, label):
+    print(("ok    " if cond else "FAIL  ") + label)
+    if not cond:
+        FAILS.append(label)
 
 
 def rows(path):
-    with open(path, encoding="utf-8", newline="") as fh:
-        return list(csv.DictReader(fh))
+    with open(path, newline="", encoding="utf-8") as f:
+        return list(csv.DictReader(f))
 
 
-def day(s):
-    return dt.date.fromisoformat(s)
+def utc(s):
+    return dt.datetime.strptime(s, "%Y-%m-%dT%H:%M:00Z").replace(tzinfo=UTC)
 
 
-def dmy(s):
-    d, m, y = s.split("/")
-    return dt.date(int(y), int(m), int(d))
+def uk(s):
+    return dt.datetime.strptime(s, "%d/%m/%Y %H:%M").replace(tzinfo=UK).astimezone(UTC)
 
 
-def digits(s):
-    return "".join(ch for ch in s if ch.isdigit())
+def fy(t):
+    t = t.astimezone(UK)
+    return t.year if t.month >= 4 else t.year - 1
 
 
-def phone(s):
-    d = digits(s)
-    if d.startswith("64"):
-        d = d[2:]
-    return "64" + d.lstrip("0")
+def pdf_text(path):
+    return "\n".join(p.extract_text() or "" for p in pypdf.PdfReader(path).pages)
 
 
-def half_up(x, unit):
-    return int(math.floor(x / unit + 0.5) * unit)
+def docx_text(path):
+    return "\n".join(p.text for p in docx.Document(path).paragraphs)
 
 
-def quarter(d):
-    return (d.year, (d.month - 1) // 3)
+def main(tgt):
+    fig = json.load(open(os.path.join(HERE, "figures.json")))
+    names = sorted(os.listdir(tgt))
+    pick = lambda pre: os.path.join(tgt, [n for n in names if n.startswith(pre)][0])
+    # documents read back, each with a positive control on the same extractor
+    brief = docx_text(pick("tanner_street_hub_planning_brief"))
+    ok("opens on 1 April 2027" in brief and len(brief) > 1500, "brief read back (positive control)")
+    model = pdf_text(pick("custody_demand_model"))
+    ok("capped at 10 per cent a year" in model.replace("\n", " "), "model note read back (positive control)")
+    wb = openpyxl.load_workbook(pick("custody_suite_allocation"), read_only=True)
+    alloc = [r for r in wb["Allocation"].iter_rows(values_only=True)]
+    notes = " ".join(str(c) for r in wb["Notes"].iter_rows(values_only=True) for c in r if c)
+    ok("whichever force or agency" in notes, "allocation notes read back (positive control)")
+    hdr = alloc[0]
+    hub = sorted(r[hdr.index("ward")] for r in alloc[1:] if r[hdr.index("suite_from_1_april_2027")] == "Tanner Street")
+    home = {r[hdr.index("ward")]: r[hdr.index("suite_to_31_march_2027")] for r in alloc[1:]}
+    ok(len(hub) == 6, "six wards move to Tanner Street")
 
+    # the force's arrests in the six wards by UK financial year
+    arr = rows(pick("calderwick_police_arrests"))
+    per = collections.Counter((r["ward"], fy(utc(r["arrested_utc"]))) for r in arr if r["ward"] in hub)
+    own = 0.0
+    for w in hub:
+        ch = (per[(w, 2025)] / per[(w, 2022)]) ** (1 / 3) - 1
+        own += per[(w, 2025)] * (1 + max(-0.1, min(0.1, ch))) ** 2
+    ok(abs(own - fig["components.own_arrests_model"]) < 0.05, "model on the six wards %.1f" % own)
+    ok(sum(per[(w, 2025)] for w in hub) == fig["components.own_arrests_2025_26"], "six wards' 2025-26 arrests")
+    for y in range(2021, 2026):
+        ok(sum(per[(w, y)] for w in hub) == fig["chart.six_wards_arrests.%d-%02d" % (y, (y + 1) % 100)], "chart %d" % y)
+    # the model note's validation table reproduces from the arrest records
+    by_suite = collections.defaultdict(lambda: collections.Counter())
+    for r in arr:
+        by_suite[home[r["ward"]]][(r["ward"], fy(utc(r["arrested_utc"])))] += 1
+    flat = re.sub(r"\s+", " ", model)
+    for s in ("Northgate", "Eastmoor", "Southfields", "Wendle Cross"):
+        c = by_suite[s]
+        wards = {w for w, _ in c}
+        fc = sum(c[(w, 2024)] * (1 + max(-0.1, min(0.1, (c[(w, 2024)] / c[(w, 2021)]) ** (1 / 3) - 1))) for w in wards)
+        act = sum(c[(w, 2025)] for w in wards)
+        ok(("%s %s %s %.3f" % (s, "{:,}".format(round(fc)), "{:,}".format(act), fc / act)) in flat,
+           "validation row %s reproduces" % s)
 
-def card(path):
-    text = " ".join(" ".join((pg.extract_text() or "").split()) for pg in PdfReader(path).pages)
-    m = re.search(r"Rate % p\.a\. ([\d.]+) ([\d.]+) ([\d.]+) ([\d.]+) ([\d.]+)", text)
-    if m:
-        return {t: float(m.group(t)) for t in range(1, 6)}
-    return {int(t): float(v) for t, v in re.findall(r"(\d) years? ([\d.]+)", text)}
+    # British Transport Police's crime at the hub's stations, at the force's own arrests per crime of each type
+    lsoa = {r["lsoa21_code"]: r["ward"] for r in rows(pick("lsoa21_to_ward_lookup"))}
+    pol = rows(pick("police_uk_street_crime"))
+    hp = collections.Counter(r["Crime type"] for r in pol if r["Reported by"] == "Calderwick Police")
+    bt = collections.Counter(r["Crime type"] for r in pol if r["Reported by"] == "British Transport Police"
+                             and lsoa[r["LSOA code"]] in hub)
+    ok(sum(bt.values()) == fig["components.btp_crimes_hub_2025_26"], "BTP crimes in the six wards %d" % sum(bt.values()))
+    a25 = collections.Counter(r["offence_group"] for r in arr if fy(utc(r["arrested_utc"])) == 2025)
+    warr = a25["Warrant, recall or breach"] / (sum(a25.values()) - a25["Warrant, recall or breach"])
+    btp = sum(n * a25[t] / hp[t] for t, n in bt.items()) * (1 + warr)
+    ok(abs(btp - fig["components.btp_detentions"]) < 0.05, "BTP detentions %.1f" % btp)
+    tot = own + btp
+    ok(int(tot / 250 + 0.5) * 250 == fig["call.planning_figure"], "planning figure %d (%.1f)" % (int(tot / 250 + 0.5) * 250, tot))
+    ok(int(own / 250 + 0.5) * 250 == fig["components.default_answer"], "the model alone prints %d" % (int(own / 250 + 0.5) * 250))
 
-
-def mix(types):
-    return "-".join(sorted(types))
-
-
-def classify(deps):
-    """deps: list of dicts with term, rate, opened. Sets dep['special']."""
-    low = {}
-    for d in deps:
-        k = (d["term"], quarter(d["opened"]))
-        low[k] = min(low.get(k, 99.0), d["rate"])
-    for d in deps:
-        d["special"] = d["rate"] - low[(d["term"], quarter(d["opened"]))] >= GAP - 1e-9
-
-
-def main(target, golden):
-    P = lambda f: os.path.join(target, f)
-    cards = {q: card(P("harbourline_campaign_brief_%s.pdf" % q)) for q in PAST + ["2027Q1"]}
-    check(all(len(c) == 5 for c in cards.values()), "a brief's card did not read")
-
-    # ------------------------------------------------------------- the past lists (two layouts), classed per list
-    listed = {}
-    for r in rows(P("kbs_td_retention_lists_2025.csv")):
-        q = r["Campaign"].replace("TDR ", "").replace("-Q", "Q")
-        listed[(q, digits(r["Account No"]))] = dict(term=int(r["Term (mths)"]) // 12, rate=float(r["Rate %"]),
-                                                    principal=float(r["Principal"].replace(",", "")),
-                                                    opened=dmy(r["Opened"]), maturity=dmy(r["Maturity"]),
-                                                    cust=r["Customer No"], q=q)
-    for r in rows(P("kbs_td_retention_lists_2026.csv")):
-        q = r["campaign"].replace("TDR-", "")
-        listed[(q, r["account"])] = dict(term=int(r["term_months"]) // 12, rate=round(float(r["int_rate"]) * 100, 2),
-                                         principal=float(r["principal"]), opened=day(r["start_date"]),
-                                         maturity=day(r["maturity_date"]), cust=r["customer_no"], q=q)
-    for q in PAST:
-        classify([d for (qq, _), d in listed.items() if qq == q])
-
-    # ------------------------------------------------------------- past cases
-    close = {}
-    for r in rows(P("harbourline_case_closeouts_2025q1-2026q3.csv")):
-        close[(digits(r["kbs_ref"]), r["released"])] = r["case_ref"]
-    per_case = defaultdict(lambda: [0, False, False])
-    for r in rows(P("harbourline_dial_log_2025q1-2026q3.csv")):
-        c = per_case[r["case_ref"]]
-        if r["outcome"] in NOT_REACHED:
-            c[0] += 1
-        if r["outcome"] in TALKED:
-            c[1] = True
-        if r["outcome"] in RETENTION:
-            c[2] = True
-    yields = defaultdict(lambda: [0, 0.0, 0.0])
-    by_class = defaultdict(lambda: [0, 0])
-    by_band = defaultdict(lambda: [0, 0])
-    released = instructed = 0
-    pooled = [0, 0]
-    special_conv = [0, 0]
-    for r in rows(P("kbs_case_release_log_2025q1-2026q3.csv")):
-        q = r["campaign"].replace("TDR-", "")
-        if r["status"] != "RELEASED":
-            instructed += r["reason"] == "INSTRUCTED"
-            continue
-        released += 1
-        types = [r["type_%d" % k][0] for k in range(1, 5) if r["type_%d" % k]]
-        nr, talked, ret = per_case[close[(r["account"], r["release_date"])]]
-        y = yields[mix(types)]
-        y[0] += 1
-        y[1] += nr
-        y[2] += talked
-        if talked:
-            dep = listed[(q, r["account"])]
-            band = math.floor(round(dep["rate"] - cards[q][dep["term"]], 2) / 0.25 + 1e-9)
-            for tally in (by_class[(dep["special"], band)], by_band[band], pooled):
-                tally[0] += 1
-                tally[1] += ret
-            if dep["special"]:
-                special_conv[0] += 1
-                special_conv[1] += ret
-    R = released / (released + instructed)
-
-    # ------------------------------------------------------------- the coming list
-    blocked = set()
-    for r in rows(P("kbs_do_not_call_register_2026-11-02.csv")):
-        if day(r["recorded"]) <= CUT and (not r["withdrawn"] or day(r["withdrawn"]) > CUT):
-            blocked.add(phone(r["number"]))
-    numbers = defaultdict(list)
-    for r in rows(P("kbs_contact_points_2026-11-02.csv")):
-        if phone(r["number"]) not in blocked:
-            numbers[r["customer_no"]].append(r["contact_type"][0].upper())
-    fwd = rows(P("kbs_td_retention_list_2027Q1.csv"))
-    deps = [dict(term=int(r["term_months"]) // 12, rate=round(float(r["int_rate"]) * 100, 2),
-                 opened=day(r["start_date"]), month=day(r["maturity_date"]).month, cust=r["customer_no"],
-                 principal=float(r["principal"])) for r in fwd]
-    classify(deps)
-    minutes, minutes_pooled, minutes_drop = defaultdict(float), 0.0, 0.0
-    conv = ret = 0.0
-    nocall = special = 0
-    p_pool = pooled[1] / pooled[0]
-    for d in deps:
-        special += d["special"]
-        types = numbers.get(d["cust"], [])
-        if not types:
-            nocall += 1
-            continue
-        y = yields[mix(types)]
-        U, Cv = y[1] / y[0], y[2] / y[0]
-        band = math.floor(round(d["rate"] - cards["2027Q1"][d["term"]], 2) / 0.25 + 1e-9)
-        t = by_class[(d["special"], band)]
-        p = t[1] / t[0]
-        minutes[d["month"]] += R * (1.5 * U + Cv * (8 + 14 * p))
-        minutes_pooled += R * (1.5 * U + Cv * (8 + 14 * p_pool))
-        b = by_band[band]
-        minutes_drop += R * (1.5 * U + Cv * (8 + 14 * b[1] / b[0]))
-        conv += R * Cv
-        ret += R * Cv * p
-    hours = {m: v / 60.0 for m, v in minutes.items()}
-    total = sum(hours.values())
-
-    # ------------------------------------------------------------- ask A
-    reinv, gone, opens, td = set(), defaultdict(list), {}, set()
-    for r in rows(P("kbs_td_account_events_2025-01_2026-10.csv")):
-        td.add(r["account"])
-        if r["event_type"] == "REINVEST":
-            reinv.add((r["account"], r["event_date"]))
-        elif r["event_type"] in ("BREAK", "CLOSE"):
-            gone[r["account"]].append(day(r["event_date"]))
-        elif r["event_type"] == "OPEN":
-            opens[r["account"]] = r["event_date"]
-    paid = defaultdict(list)
-    direct = defaultdict(list)
-    for r in rows(P("kbs_member_transfers_2025-01_2026-10.csv")):
-        ref = re.search(r"(\d{2}-\d{4}-\d{7}-\d{3})", r["narrative"])
-        src = digits(ref.group(1)) if ref else r["from_account"]
-        paid[(src, r["value_date"])].append((r["to_account"], float(r["amount"])))
-        direct[(r["from_account"], r["value_date"])].append(r["to_account"])
-    ask_a, own_only = {}, {}
-    for q in PAST:
-        n, amt, n_own = 0, 0.0, 0
-        for (qq, acct), dep in listed.items():
-            if qq != q:
+    # ask A: remand holds by suite, defendants charged in 2025-26
+    rem = {r["arrest_ref"]: r for r in arr if r["outcome"] == "Charged - remanded in custody"}
+    for r in rem.values():
+        h, m = map(int, r["detention_hhmm"].split(":"))
+        r["_book"] = utc(r["booked_in_utc"])
+        r["_charge"] = r["_book"] + dt.timedelta(minutes=60 * h + m)
+    by_ch = collections.defaultdict(list)
+    for ref, r in rem.items():
+        by_ch[(r["custody_suite"], r["_charge"])].append(ref)
+    files = rows(pick("cju_remand_files"))
+    own_det = {}
+    for f in files:
+        L = rem.get(f["linked_arrest"])
+        if L is not None and L["_charge"] == uk(f["charged"]) and L["custody_suite"] == f["custody_suite"]:
+            own_det[f["urn"]] = f["linked_arrest"]
+    claimed = set(own_det.values())
+    for f in files:
+        if f["urn"] not in own_det:
+            hit = [ref for ref in by_ch[(f["custody_suite"], uk(f["charged"]))] if ref not in claimed]
+            if len(hit) != 1:
+                ok(False, "file %s has one detention (%s)" % (f["urn"], hit))
                 continue
-            m = dep["maturity"]
-            alive = lambda a: not any(m < x <= m + dt.timedelta(days=30) for x in gone.get(a, []))
-            kept = dep["principal"] if ((acct, m.isoformat()) in reinv and alive(acct)) else 0.0
-            n_own += kept > 0
-            if not kept:
-                kept = sum(v for to, v in paid.get((acct, m.isoformat()), [])
-                           if opens.get(to) == m.isoformat() and alive(to))
-            if kept > 0:
-                n += 1
-                amt += kept
-        ask_a[q] = (half_up(amt, 1000), n)
-        own_only[q] = n_own
-    check(all(own_only[q] < ask_a[q][1] for q in PAST), "ask A: own accounts alone keep as many deposits")
-    listed_accts = {a for (_, a) in listed}
-    check(not any(opens.get(to) for (acct, _), tos in direct.items() if acct in listed_accts for to in tos),
-          "ask A: a listed deposit pays its proceeds straight into a new account")
+            own_det[f["urn"]] = hit[0]
+    ok(len(set(own_det.values())) == len(files), "every file has its own detention")
+    left = {ref for ref in rem if ref not in set(own_det.values())}
+    inc = collections.defaultdict(list)
+    for ref in left:
+        r = rem[ref]
+        inc[(r["arrested_utc"], r["ward"], r["offence_group"])].append(ref)
+    hold = collections.defaultdict(float)
+    over = collections.Counter()
+    for f in files:
+        L = rem[own_det[f["urn"]]]
+        hand = uk(f["handed_to_escort"])
+        for ref in [own_det[f["urn"]]] + inc.get((L["arrested_utc"], L["ward"], L["offence_group"]), []):
+            r = rem[ref]
+            if fy(r["_charge"]) != 2025:
+                continue
+            hold[f["custody_suite"]] += (hand - r["_charge"]).total_seconds() / 3600
+            over[f["custody_suite"]] += (hand - r["_book"]).total_seconds() > 24 * 3600
+    for s in ("Northgate", "Eastmoor", "Southfields", "Wendle Cross"):
+        ok(round(hold[s]) == fig["ask_a.%s.cell_hours" % s], "ask A %s cell hours %d" % (s, round(hold[s])))
+        ok(over[s] == fig["ask_a.%s.over_24_hours" % s], "ask A %s over 24 hours %d" % (s, over[s]))
 
-    # ------------------------------------------------------------- ask B
-    seen, maturing, core_kic = set(), defaultdict(float), set()
-    for r in rows(P("kbs_term_holdings_2026-11-02.csv")):
-        if r["product"] == "KIC":
-            core_kic.add((r["start_date"], r["maturity_date"], round(float(r["int_rate"]) * 100, 2),
-                          int(r["term_months"])))
-        mdate = day(r["maturity_date"])
-        if r["account"] in seen or not (dt.date(2027, 1, 1) <= mdate <= dt.date(2027, 3, 31)):
-            continue
-        seen.add(r["account"])
-        maturing[mdate.month] += float(r["principal"])
-    moved = {r["cert_no"] for r in rows(P("kip_migration_batches_2026.csv")) if r["status"] == "MIGRATED"}
-    by_hand = 0
-    for r in rows(P("kip_certificate_register_2026-06-30.csv")):
-        mdate = day(r["maturity_date"])
-        if not (dt.date(2027, 1, 1) <= mdate <= dt.date(2027, 3, 31)) or r["cert_no"] in moved:
-            continue
-        if (r["issue_date"], r["maturity_date"], round(float(r["rate"]), 2), int(r["term_months"])) in core_kic:
-            by_hand += 1
-            continue
-        maturing[mdate.month] += float(r["principal"])
-    check(by_hand > 5, "ask B: no certificate moved by hand (%d)" % by_hand)
-    off = sum(maturing.values()) - sum(d["principal"] for d in deps)
-    ask_b = {m: half_up(maturing[m], 1000) for m in (1, 2, 3)}
-
-    # ------------------------------------------------------------- against the golden workbook
-    wb = openpyxl.load_workbook(os.path.join(golden, "td_booking_q1_2027.xlsx"), data_only=True)
-    ws = wb["Booking"]
-    book = {ws.cell(row=r, column=1).value: ws.cell(row=r, column=8).value for r in range(5, 9)}
-    check(len(fwd) == 18400, "list size %d" % len(fwd))
-    check(book["Quarter"] == half_up(total, 250), "booking %s against %d (%.1f)" % (book["Quarter"],
-                                                                                   half_up(total, 250), total))
-    for m, nm in ((1, "January"), (2, "February"), (3, "March")):
-        check(book["%s 2027" % nm] == half_up(hours[m], 250), "%s %s against %.1f" % (nm, book["%s 2027" % nm],
-                                                                                     hours[m]))
-    check(half_up(total, 250) == sum(half_up(hours[m], 250) for m in (1, 2, 3)), "months do not add to the booking")
-    check(abs(ws.cell(row=8, column=7).value - round(total, 1)) < 0.05, "unrounded hours")
-    check(ws.cell(row=8, column=5).value == round(conv) and ws.cell(row=8, column=6).value == round(ret),
-          "conversations")
-    for nm, h in (("pooled share", minutes_pooled / 60.0), ("share by drop", minutes_drop / 60.0)):
-        check(half_up(h, 250) <= half_up(total, 250) - 500, "the %s books %d, within two bins of %d" % (
-            nm, half_up(h, 250), half_up(total, 250)))
-    check(special_conv[1] / special_conv[0] > 0.8 > 0.3 > p_pool, "special money's share %.3f, pooled %.3f" % (
-        special_conv[1] / special_conv[0], p_pool))
-    check(special > 9000 and nocall > 0, "special %d, no callable %d" % (special, nocall))
-    ws2 = wb["Kept at 30 days"]
-    for r, q in enumerate(PAST, 5):
-        check(ws2.cell(row=r, column=2).value == LABEL[q], "campaign label %s" % q)
-        check((ws2.cell(row=r, column=4).value, ws2.cell(row=r, column=5).value) == ask_a[q],
-              "ask A %s: workbook %s, verifier %s" % (q, (ws2.cell(row=r, column=4).value,
-                                                         ws2.cell(row=r, column=5).value), ask_a[q]))
-    ws3 = wb["Maturing Q1 2027"]
-    for r, m in enumerate((1, 2, 3), 5):
-        check(ws3.cell(row=r, column=2).value == ask_b[m], "ask B month %d: workbook %s, verifier %s" % (
-            m, ws3.cell(row=r, column=2).value, ask_b[m]))
-    check(ws3.cell(row=10, column=2).value == half_up(off, 1000), "ask B off the list: workbook %s, verifier %s" % (
-        ws3.cell(row=10, column=2).value, half_up(off, 1000)))
-    if FAIL:
-        print("verify: %d checks failed" % len(FAIL))
-        for f in FAIL:
-            print("  " + f)
-        raise SystemExit(1)
-    print("verify: %d checks passed from the bundle alone (booking %d, months %s; total %.1f)" % (
-        PASSED[0], half_up(total, 250), [half_up(hours[m], 250) for m in (1, 2, 3)], total))
+    # ask B: initial health assessments by the suite they took place in, begun by day and at night
+    bk = collections.defaultdict(list)
+    for r in arr:
+        bk[r["custody_suite"]].append(utc(r["booked_in_utc"]))
+    shut = {}
+    for s, ts in bk.items():
+        ts.sort()
+        for t0, t1 in zip(ts, ts[1:]):
+            if t1 - t0 > dt.timedelta(days=3):
+                during = collections.Counter(r["custody_suite"] for r in arr if home[r["ward"]] == s
+                                             and t0 < utc(r["booked_in_utc"]) < t1)
+                shut[s] = (t0.astimezone(UK).replace(tzinfo=None), t1.astimezone(UK).replace(tzinfo=None),
+                           during.most_common(1)[0][0])
+    ok(sorted(shut) == ["Eastmoor", "Wendle Cross"], "two suites closed in the records: %s" % sorted(shut))
+    hc = rows(pick("custody_healthcare_contacts"))
+    ep = collections.defaultdict(list)
+    for r in hc:
+        if r["contact_type"] == "Initial health assessment":
+            ep[r["episode_ref"]].append(r)
+    grid = collections.Counter()
+    for lines in ep.values():
+        lines.sort(key=lambda r: r["started"])
+        prev = None
+        for r in lines:
+            s0 = dt.datetime.strptime(r["started"], "%Y-%m-%d %H:%M")
+            cont = prev is not None and prev == r["started"] and s0.minute == 0 and s0.hour in (7, 19)
+            prev = r["ended"]
+            if cont:
+                continue
+            place = r["suite"]
+            if place in shut and shut[place][0] <= s0 < shut[place][1]:
+                place = shut[place][2]
+            grid[(place, "day" if 7 <= s0.hour < 19 else "night")] += 1
+    for s in ("Northgate", "Eastmoor", "Southfields", "Wendle Cross"):
+        for k in ("day", "night"):
+            ok(grid[(s, k)] == fig["ask_b.%s.%s" % (s, k)], "ask B %s %s %d" % (s, k, grid[(s, k)]))
+    print("%d checks failed" % len(FAILS) if FAILS else "verify: every figure reproduces from the bundle")
+    return 1 if FAILS else 0
 
 
 if __name__ == "__main__":
-    here = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-    t = sys.argv[1] if len(sys.argv) > 1 else os.path.join(here, "target")
-    gd = sys.argv[2] if len(sys.argv) > 2 else os.path.join(here, "golden")
-    main(t, gd)
+    sys.exit(main(sys.argv[1] if len(sys.argv) > 1 else os.path.join(os.path.dirname(HERE), "target")))
