@@ -1,12 +1,12 @@
 {
   "task": "task139",
   "owner": "sathya8571",
-  "status": "SHIPPED",
+  "status": "FAILED_TO_STUMP",
   "domain": "actuarial-science-insurance",
   "objective": "forecasting",
-  "stage": 5,
-  "stage_name": "ship",
-  "updated": "2026-10-15",
+  "stage": 1,
+  "stage_name": "draw",
+  "updated": "2026-10-26",
   "stump": "A competent solver joins Kellerman Pryce's verified ultimates to the pilot register, takes usual handling's mean indemnity claim less ERN's in each segment, values each segment's teams at that saving over the place-days an ERN indemnity claim held, and files teams weighted to the other-injury and construction segments with none in healthcare or retail strains and a credit of 2,000,000 dollars; the step that lands it there is reading the saving per verified indemnity claim when the nurses kept a fifth to a quarter of the strain intakes from ever paying indemnity, so ERN's indemnity claims there are the costlier remainder: read per assigned intake, as the pilot was randomised, the teams go to the strain segments, retail strains takes the two teams its intakes keep in use, and the credit is 4,100,000 dollars.",
   "architecture": 1,
   "loops": 0,
@@ -27,8 +27,15 @@
     "disposition": "APPROVE, no fix; the merged-claim reading a mild fork, asserted both ways (SF28); the optional metadata dates left; no further judge owed",
     "report": "task139/determinism_check_report.md, task139/determinism_check_report_pass2.md"
   },
-  "returned": [],
-  "resume": "",
+  "returned": [
+    {
+      "date": "2026-10-26",
+      "portal": "both responses landed the call: three teams each in HC-SS, MF-SS, MF-OT, CN-OT and HC-OT, two in RW-SS, none in RW-OT or CN-SS, and the 4.1 million credit",
+      "repair": "design",
+      "commit": ""
+    }
+  ],
+  "resume": "architecture 1 is spent: both portal responses read the randomised pilot per assigned intake, the domain's own reflex, and filed the golden; the whole ladder sat inside the register's two arms. Measured on paper and alive: the pilot's opening call. Every drawn intake was called and assessed before its pair was split, so the randomised contrast is the file's increment over a called intake (healthcare strains 345 dollars an intake) while the call itself is worth 540 (2,857 with no call, 2,317 with it, 1,972 with call and file) and reaches every intake of a unit with a team; read through the register alone the teams go HC-SS 2, RW-SS 0, MF-SS 3, CN-SS 0 at 2.7 million, architecture 1's golden becomes a rung at 4.0 million, and the golden is 1 3 1 3 2 3 1 3 at 5.6 million. Re-root at stage 1 as architecture 2: the stock carrier's organisation family is banned against task304, so the world's organisation is redrawn (a group self-insurance trust), and the role, context artifact and forcing event are redrawn off task137, task166 and task304.",
   "approved": null,
   "delivered": "2026-10-15",
   "portal": null,

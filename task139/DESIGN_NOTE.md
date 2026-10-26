@@ -599,6 +599,41 @@ lines are stage 4's and the re-judge's.
    metadata dates left (`determinism_check_report_pass2.md`). The rubric's exposure is Ask 1, which rests on one silent
    device since its first two were filed; the pair on paper is 32.9.
 
+## Portal result and the stage 2 diagnosis, 2026-10-26
+
+**Both portal responses landed the call.** Response 1 and response 2 each placed three teams in HC-SS, MF-SS, MF-OT,
+CN-OT and HC-OT, two in RW-SS and none in RW-OT or CN-SS, and booked a 4.1 million dollar AY2027 credit, with the
+workbook and the note: the golden exactly.
+
+**Why it was reachable, and it is not a near miss.** The decisive step was reading the pilot per assigned intake (each
+group's own indemnity-claim rate times its own verified severity) instead of per verified indemnity claim. That is the
+textbook reading of a randomised pilot, analyse as randomised, which the note itself quotes as the client's pin, so the
+readability screen's test 3 fires on the decisive rung where the screen recorded it silent; the default path it
+overturned conditions on a status the treatment moves, which a strong analyst refuses by reflex. And the whole ladder
+sat inside the register's two arms: once the arms were read per intake, nothing in the pack was left to find.
+
+**The structural constraint this leaves.** Inside the two arms the per-intake contrast is unbiased and the design forces
+it, so every further step there is either a stratification of it (the triage tier, the office), which is the opponent's
+first group-by, or a transport of its average onto the intakes the teams reach in 2027, which is task177 v2's driver and
+whose population would have to be filed. The re-root has to find something the two arms share that the 2027
+counterfactual does not have.
+
+**The re-root candidate, measured on paper.** What the arms share is the pilot's opening call. Every drawn intake was
+called by a pilot nurse on its triage day, the worker and the employer's contact, to assess it before its pair was
+split, and the assessment's own question about suitable duties is the lever that keeps a strain intake inside the
+waiting period. In 2027 a unit's team calls every intake the unit reports and files the ones it has places for, while a
+unit with no team sends its intakes to their adjusters on report, as the two in three intakes the pilot never drew were
+handled. Run through this world's own courses (200,000 intakes a segment, the call taking most of what architecture 1's
+nurses kept at work): healthcare strains pay 2,857 dollars an intake with no call, 2,317 with the call and 1,972 with the
+call and a file, so the randomised contrast is the file's increment (345 dollars) and misses the call's 540, and per
+indemnity claim the call is invisible (3,357 against 3,429 dollars, the costlier remainder again). The call reaches every
+intake of a unit with a team, 891,000 dollars a year in HC-SS, while each team's files add 104,000. Read through the
+register alone the teams go HC-SS 2, RW-SS 0, MF-SS 3, CN-SS 0 and three to each other-injury unit at a 2.7 million
+credit; the call and file per served intake (this architecture's own golden, now a rung) files 3 3 2 0 3 3 0 3 at 4.0
+million; the golden is HC-SS 1, HC-OT 3, RW-SS 1, RW-OT 3, MF-SS 2, MF-OT 3, CN-SS 1, CN-OT 3 at 5.6 million. Large, not
+the domain's reflex (nothing tells a reader that a randomised control arm is not the counterfactual), and recoverable
+exactly from the intakes outside the pilot, which the claims extract already lists and a reserve review already samples.
+
 ## Tried and rejected
 
 - The seed's light-duty conditioned yield (the saving exists only at employers with a record of temporary-partial
@@ -647,3 +682,10 @@ lines are stage 4's and the re-judge's.
   is a marker, and its denied or withdrawn outcomes in the call's window would move the fill count when mishandled.
 - Legacy claims parked as unassigned (G9) and converted to GN-AL (Ask 1 redraw, 2026-10-15): the injury class cannot be
   recovered from the class code, so the true segment would be a guess.
+- 2026-10-26, architecture 1's decisive step (the pilot read per assigned intake, each group's own indemnity-claim rate
+  times its own verified severity, instead of per verified indemnity claim), after both portal responses landed the
+  placement and the 4.1 million credit. Spent, not repairable: analysing a randomised pilot as randomised is the
+  domain's own reflex, so readability test 3 fires on the decisive rung, and the whole ladder sat inside the register's
+  two arms, so a reader who reads the arms per intake has nothing left to find. Every further step inside those arms is
+  a stratification of the contrast or a transport of its average, both spent or filed. The re-root is recorded in
+  `## Portal result and the stage 2 diagnosis`.
