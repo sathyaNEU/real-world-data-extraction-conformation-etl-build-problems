@@ -16,7 +16,7 @@
  },
  "leak": {
   "leak_py": "REVIEW on 7aa71d60 (four design-note vocabulary lines, each ruled harmless)",
-  "reader": "round 1 (4442d745): register-only call, asks 5 of 15 (ask C); round 2 (a62fa349): register-only call, asks 0 of 15"
+  "reader": "pass 2, isolated, pack and prompt only: LANDED the call (all five slots and the 3,800 total) and took 5 of 15 ask figures, 33.3 per cent (all five modules, none of the ten yield and core-rejection figures). Report task306/leak_reader_pass2.md. Its question-6 answer (filed rules and date reading rather than an analytical choice) is self-introspection the judge's measurement contradicts, and its own formula carries the conditioning denominator it does not name as a choice."
  },
  "duplicate_check": {
   "heart": "",
@@ -25,7 +25,15 @@
  "judge": {
   "verdict": "DETERMINISTIC",
   "disposition": "APPROVE",
-  "report": "determinism_check_report.md (Gate G analytical_non_defect; Gate H domain pass, layers pass, decisive step analytical)"
+  "report": "determinism_check_report.md (Gate G analytical_non_defect; Gate H domain pass, layers pass, decisive step analytical)",
+  "rejudge_2026_10_26": {
+   "verdict": "DETERMINISTIC",
+   "disposition": "APPROVE",
+   "gate_g": "forecasting, method/estimand selection on correctly read data, surface_read_dependency no, sole_data_defect no",
+   "gate_h": "domain pass, layers pass, decisive_step analytical",
+   "report": "task306/determinism_check_report_pass2.md",
+   "note": "40 variants run end to end. Golden family (survival conditioning, daily pro-rata) 8 variants give 3,681 to 3,810 and the committed split in 7 of 8. Unconditional reading about 2,700 and wrong on three platforms; register-only Mira 1,250 Volta 1,000; warranty from the Dutch registration date 1,968; ignoring the replacement log 5,732. One fork closed by inference (survival conditioning is not stated in words; the data force it, the curve reaching certainty at age 13 while surviving older packs are on the register). Optional hardening offered, not required."
+  }
  },
  "returned": [
   {
@@ -35,7 +43,7 @@
    "commit": "repair built but not shipped; the fork was the stump"
   }
  ],
- "resume": "Back to stage 2 for a decisive-step re-root, NOT a re-ship. The determinism repair is built and sound (three forks closed, no method filed, every free gate green, freeze.py --mode determinism PASS, 144 projection variants landing the committed split) and it cannot ship: one isolated reader holding only the prompt and the pack reproduced the call cell for cell (Volta 900, Kestrel 250, Plover 350, Mira 1,450, Tern 50, total 3,800) and said it got there by following a rule a shipped document states plus reading dates correctly, not by an analytical choice. That is a 10/10 rule 3 finding from outside the design. The fork and the stump were the same object: the only closure that makes the literal reading the golden is a population pin, and the pin tells the reader the question they were not asking (omitting the later registrations gives 3,400 and 1,250 Mira slots, the old default path). Underneath it the two large levers are field readings, measured by the reader: warranty from the Dutch registration date gives 1,968 total and 550 Mira slots, ignoring logged replacements gives 5,752 and 1,700. Re-root the decisive step at stage 1 keeping the world; the record closures are kept. Also owed on the next cut: the modules ask's eight over-posted pick lists read as planted (bookings stepping 07:05, 07:06, identical quantities per work order), and a golden-realism sweep (life curves smooth to four decimals, round lot sizes, banded recycler weights, a register extract with no noise). The licensed re-judge was still running when this was decided; fold its Gate H line in when it lands.",
+ "resume": "AUTHOR DECISION PENDING, and the earlier rule-3 diagnosis is WITHDRAWN as wrong (see the design note's Correction section). The two licensed reads split: the judge returned DETERMINISTIC APPROVE with decisive_step analytical and measured that every easy route lands materially wrong, while the cold reader landed the call but took only 33.3 per cent of the asks. The surviving finding is Gate F, not rule 3: the decisive step is analytical but reflex reachable, since a competent solver conditions on survival without deliberating. The repo's test is that TWO cold readers landing forces a redesign; one landed, and a second cold read is the deciding evidence and is banned (no solver round, none rebuilt under another name). Pair arithmetic on what was measured: about 68 for this response, about 23 for one off the call, averaging about 46 against a bar of 70 built to 60, so the bar is met unless a second response also lands the call. EITHER (a) re-ship on that arithmetic: finish /fix-determinism step 7, the returned entry's commit, the ledger row, RESHIPPED (task306), and fix the card's stale analyst_test; OR (b) re-root the decisive step at stage 1 keeping the world and the record closures, so no reflex reaches the golden. Owed either way on the next cut: the modules ask's eight over-posted pick lists read as planted (bookings stepping 07:05, 07:06, identical quantities per work order), and a golden-realism sweep (curves smooth to four decimals, round lot sizes, banded recycler weights, a register extract with no noise).",
  "approved": null,
  "delivered": "2026-10-24",
  "portal": null,

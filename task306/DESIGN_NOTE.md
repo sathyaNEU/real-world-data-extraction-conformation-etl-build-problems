@@ -278,3 +278,54 @@ spent means.
   One isolated reader then landed the call cell for cell and said it got there by following filed rules and reading
   dates, not by an analytical choice. `/fix-determinism` step 3's stop condition, read at the start of the repair
   rather than the end, would have sent this to stage 2 without the repair being built.
+
+## Correction: the two licensed reads split, and the diagnosis above was wrong twice, 2026-10-26
+
+The section above was written from the leak reader alone, while the licensed re-judge was still running. The judge
+then returned **DETERMINISTIC, APPROVE**, with `decisive_step: analytical`, and it contradicts that section on the
+point that matters. Both errors were mine and both change what should happen next.
+
+**Error 1: the reader's ask performance was overstated.** Scored against `figures.json` at the asked rounding, the
+reader took the call and **5 of 15 ask figures, 33.3 per cent**: all five module figures, and **none** of the ten
+first-pass-yield and core-rejection figures. Its yields (92.3, 87.2, 94.2, 88.0, 91.3) are the pakket_id grouping the
+judge names as a wrong route, against the golden's 92.6, 88.2, 94.0, 88.3, 90.5; its rejection shares (12.6, 10.1,
+13.2, 17.6, 12.5) are the raw grade against the golden's 8.9, 5.9, 11.0, 14.7, 8.3. The ask layer did its job.
+
+**Error 2: this is not a rule 3 finding.** The reader's answer to question 6, that it followed filed rules and read
+dates rather than making an analytical choice, was introspection about its own route, and its own write-up undercuts
+it: the formula it quotes carries the conditioning denominator, divided by one minus the curve at the snapshot age,
+and it never names that as a choice. The judge measured what the alternatives cost. The text does not state the
+conditioning; the data force it, the curve reaching certainty at age 13 while the register holds surviving original
+packs older than that. Conditional survival with left truncation is an estimand choice, which the client's rules count
+as analysis.
+
+**What the judge measured, over 40 variants run end to end.** Inside the golden family (conditioning on survival,
+daily pro-rata) eight variants give a total of 3,681 to 3,810 and the committed split in seven of eight. Outside it:
+the unconditional reading gives about 2,700 with Mira 1,300, Plover 400, Kestrel 300 and Tern 100, **wrong on three
+platforms**; stopping at the register gives Mira 1,250 and Volta 1,000; taking the warranty from the Dutch
+registration date gives 1,968; ignoring the replacement log gives 5,732. So the easy routes do land wrong, which is
+what the section above denied.
+
+**The real finding, and it is Gate F rather than Gate H.** The decisive step is analytical, and it is reflex
+reachable: a competent solver doing survival analysis conditions on survival without deliberating, and one cold
+reader's reflex reached the golden. The judge saw the same thing from the other side: "the docx specifies nearly every
+convention, so the careful solver only has to recognise conditioning." `stumping` Part 6 is explicit that a reflex
+reaching the golden spends the stump.
+
+**Where that leaves the decision, stated rather than settled.** The repo's test is that a build whose **two** cold
+readers both land the call is redesigned. One landed. A second cold read is the deciding evidence and it is banned:
+there is no solver round and none is rebuilt under another name. So the evidence available is one APPROVE from the
+licensed judge and one cold read that landed the call while taking a third of the asks.
+
+Pair arithmetic on what was measured: this response banks about 45 on the call plus 33.3 per cent of the 55 ask
+points, about 63, and about 68 with instruction following. A second response off the call sits near 23. The pair
+averages about 46 against a bar of 70 built to 60, so the bar is met unless a second response also lands the call.
+
+The status stays at stage 2 pending the author's call between shipping on that arithmetic and re-rooting the decisive
+step so no reflex reaches it.
+
+
+- The rule 3 reading of the leak reader's question 6, filed earlier today and withdrawn the same day: the judge's
+  measurement contradicts it. The easy routes land materially wrong (the unconditional reading wrong on three
+  platforms, register-only wrong on four), so the decisive step is an estimand choice and not a field reading plus a
+  stated rule. What survives is the weaker and still serious finding that the step is reflex reachable.
