@@ -1,11 +1,11 @@
 {
  "task": "task306",
  "owner": "perssathya",
- "status": "DESIGN",
+ "status": "SHIPPED",
  "domain": "energy-systems-utilities",
  "objective": "opportunity-sizing-decision",
- "stage": 2,
- "stage_name": "design",
+ "stage": 5,
+ "stage_name": "ship",
  "updated": "2026-10-26",
  "stump": "A competent solver forecasts 2027 from the 30 June 2026 register alone, each car's current pack from the replacement log at its conditional chance of failing outside cover, and tools the Mira city car four lots short (1,250 against 1,450, 3,400 against 3,800 in total); the step that lands it there is taking the register as the population whose packs fall due in 2027, when the Mira's used imports keep arriving at about 116 a month past their warranty and fall due inside the year.",
  "architecture": 1,
@@ -40,15 +40,15 @@
    "date": "2026-10-26",
    "portal": "determinism block failed, two findings on the 2027 population and the pack basis",
    "repair": "determinism",
-   "commit": "repair built but not shipped; the fork was the stump"
+   "commit": "RESHIPPED (task306), determinism repair, 2026-10-26"
   }
  ],
- "resume": "AUTHOR DECISION PENDING, and the earlier rule-3 diagnosis is WITHDRAWN as wrong (see the design note's Correction section). The two licensed reads split: the judge returned DETERMINISTIC APPROVE with decisive_step analytical and measured that every easy route lands materially wrong, while the cold reader landed the call but took only 33.3 per cent of the asks. The surviving finding is Gate F, not rule 3: the decisive step is analytical but reflex reachable, since a competent solver conditions on survival without deliberating. The repo's test is that TWO cold readers landing forces a redesign; one landed, and a second cold read is the deciding evidence and is banned (no solver round, none rebuilt under another name). Pair arithmetic on what was measured: about 68 for this response, about 23 for one off the call, averaging about 46 against a bar of 70 built to 60, so the bar is met unless a second response also lands the call. EITHER (a) re-ship on that arithmetic: finish /fix-determinism step 7, the returned entry's commit, the ledger row, RESHIPPED (task306), and fix the card's stale analyst_test; OR (b) re-root the decisive step at stage 1 keeping the world and the record closures, so no reflex reaches the golden. Owed either way on the next cut: the modules ask's eight over-posted pick lists read as planted (bookings stepping 07:05, 07:06, identical quantities per work order), and a golden-realism sweep (curves smooth to four decimals, round lot sizes, banded recycler weights, a register extract with no noise).",
+ "resume": "Re-shipped 2026-10-26 after the determinism repair, on the author's call. Three forks closed in the record with no method filed; freeze.py --mode determinism PASS so no graded figure moved; licensed re-judge DETERMINISTIC APPROVE with decisive_step analytical over 40 measured variants; one isolated cold reader landed the call and took 5 of 15 ask figures, putting the pair near 46 against a bar of 70. Waits on the portal. The surviving risk is stated in the design note's Correction section and is Gate F, not rule 3: the decisive step is analytical but reflex reachable, since a competent solver conditions a survival curve on survival to the as-of date without deliberating. If the portal's two responses both land the call, this is a decisive-step re-root at stage 1 and not another determinism fix. Owed on any next cut whatever the portal says: the modules ask's eight over-posted pick lists read as planted (bookings stepping 07:05, 07:06, identical quantities per work order), and a golden-realism sweep (curves smooth to four decimals, round lot sizes, banded recycler weights, a register extract with no noise). The card's stump sentence still names the register-only route, which the population sentence now rules out; left as filed because /fix-determinism freezes the stump.",
  "approved": null,
  "delivered": "2026-10-24",
  "portal": null,
  "portal_id": "",
  "portal_status": "",
  "portal_status_date": "",
- "architecture_spent": true
+ "architecture_spent": false
 }

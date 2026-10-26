@@ -4,14 +4,14 @@
 
 LEAK stops the ship. REVIEW is a reader's call and the /leak-check command's solver's-eye pass reads every REVIEW line. INFO is a sweep that ran and found nothing or was skipped.
 
-Stump terms swept: register, registered, sentence, population, imports, netherlands, carries, registrations, arrive, registration, arrival, stream, decisive, carried, section, asserted, register-only, golden, reader, calendar, estimand, replacement, kestrel, plover, generator
+Stump terms swept: register, registered, sentence, population, reader, decisive, carries, imports, registrations, netherlands, registration, arrive, arrival, stream, carried, golden, section, repair, asserted, register-only, calendar, estimand, replacement, kestrel, plover
 
 ## 4 design-note vocabulary (REVIEW 5)
-- **REVIEW** `garantievoorwaarden_tractieaccu_2026.pdf`: 6 of 25 stump-paragraph terms appear (netherlands, carries, registration, replacement, kestrel, plover); read whether the document names the move
+- **REVIEW** `garantievoorwaarden_tractieaccu_2026.pdf`: 6 of 25 stump-paragraph terms appear (carries, netherlands, registration, replacement, kestrel, plover); read whether the document names the move
 - **REVIEW** `lijn_exports_toelichting.md`: 3 of 25 stump-paragraph terms appear (carries, kestrel, plover); read whether the document names the move
 - **REVIEW** `prijslijst_revisiepakketten_2026.pdf`: 4 of 25 stump-paragraph terms appear (netherlands, replacement, kestrel, plover); read whether the document names the move
 - **REVIEW** `rdw_extract_veldbeschrijving.pdf`: 6 of 25 stump-paragraph terms appear (register, registered, netherlands, registration, kestrel, plover); read whether the document names the move
-- **REVIEW** `tooling_plan_2027_draft.docx`: 8 of 25 stump-paragraph terms appear (register, registered, netherlands, carries, registration, calendar); read whether the document names the move
+- **REVIEW** `tooling_plan_2027_draft.docx`: 8 of 25 stump-paragraph terms appear (register, registered, carries, netherlands, registration, calendar); read whether the document names the move
 
 ## 10 container metadata (INFO 1)
 - **INFO** `-`: audit reported no writer signature (1 lines)
