@@ -4,28 +4,28 @@
  "status": "DESIGN",
  "domain": "accounting-audit-forensic",
  "objective": "anomaly-detection",
- "stage": 2,
- "stage_name": "design",
+ "stage": 1,
+ "stage_name": "draw",
  "updated": "2026-10-26",
  "stump": "The analyst reports the monitoring platform's 10,587 flagged entries as the number of postings that tripped the ruleset for the year to date (or 31,282 from the entry flag rate grossed up by the group's postings); the step that lands there is treating the entry verdict as one observation of one posting, when it is an indicator that fires once however many of the voucher's postings trip the rule, so the count has to be recovered by inverting one minus the complement raised to the postings on the entry, entry by entry, with the rate estimated on each trading unit's own population.",
  "architecture": 8,
  "loops": 0,
  "precut": {
-  "exit": null,
-  "date": ""
+  "exit": 0,
+  "date": "2026-10-26"
  },
  "leak": {
-  "leak_py": "",
-  "reader": ""
+  "leak_py": "REVIEW, every line answered in the design note",
+  "reader": "missed the call, 12,000 against 15,000, but reached the decisive estimator unaided"
  },
  "duplicate_check": {
-  "heart": "",
+  "heart": "WARN (strategy_risk, answered)",
   "nearest": "0.07 task190 lineage / task132"
  },
  "judge": {
-  "verdict": "",
-  "disposition": "",
-  "report": ""
+  "verdict": "NOT_DETERMINISTIC",
+  "disposition": "SEND_BACK",
+  "report": "/tmp/claude-0/-home-user/5ec7cb86-793f-5895-a00b-808e36976e12/scratchpad/determinism-check-task184-r2/verdict.md"
  },
  "returned": [
   {
@@ -41,7 +41,7 @@
    "commit": ""
   }
  ],
- "resume": "stage 2: readability screen, semantic fork table, ladder (3 to 5 rungs with grid and worth), 22-axis closure table, literal reader line, oracles, ask sheet, prompt.txt through voice-check.py, then precut.py exit 0. The architecture is measured at the draw and the figures are in the design note's ## Measured at the draw.",
+ "resume": "architecture 8 is spent on stumping 1.1j: the decisive step was an estimator and its grouping is a free choice (group 14,712, unit 14,989, unit by stream 14,472, two bins), and the isolated reader reached that estimator unaided. Re-root at stage 1 with a decisive step that has exactly one defensible execution given the records: a reconstruction the records force, not a fit. The accounting world, the pack and the three asks all measured sound and can be kept.",
  "approved": null,
  "delivered": null,
  "portal": null,

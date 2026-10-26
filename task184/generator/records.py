@@ -1,187 +1,221 @@
-"""The two recording systems' exports.
+"""Writing the pack: the ledger extract as a SQLite database, the exception register and the reference files.
 
-Kelverstoke City Police moved from its crime information system to a records management system class by class
-through 2025. The five classes the patrol contract covers moved in January and February, before either season
-opens, so the records management export holds them whole. The four witnessed classes moved on 28 July 2025, and
-for the fortnight of 14 to 27 July three of them were written to both systems, each under that system's own
-reference. The records management export carries a location code for every offence the contract covers, because
-the tasking contract is settled on them; for the witnessed classes the code is whatever the call handler entered,
-and often nothing, so those rows reach a location only through their address.
+The ledger extract carries FY26 P1 to P9 at the entry, which is what the question is about, plus the line
+detail of a stratified sample of vouchers, which is what an auditor pulls to see how a voucher is made up.
+FY25 ships as a period summary, which is how a comparative year reaches an extract.
 """
+import csv
 import datetime as dt
+import os
+import sqlite3
+import zlib
 
 import numpy as np
 
-import places as PL
+import ledger as L
 import world as W
 
-RMS = "kcp_rms_offence_extract_2027-01-22.csv"
-LEGACY = "kcp_cis_offence_extract_2025.csv"
+GL_DB = "drumcondra_gl_fy26.sqlite"
+EXCEPTIONS = "monitoring_exceptions_fy26.csv"
+FY25_SUMMARY = "gl_period_summary_fy25.csv"
+UNIT_REGISTER = "trading_unit_register.csv"
+CALENDAR = "period_calendar.csv"
+ACCOUNTS = "chart_of_accounts.csv"
+MANIFEST = "extract_manifest.txt"
 
-# the street number ranges the register gives the quarter
-NUMBERS = {
-    "Harbourgate Street": (2, 178, 2),
-    "Quayside": (1, 1, 1),
-    "Lamphouse Lane": (1, 63, 1),
-    "Fishmarket Square": (1, 28, 1),
-    "Netherbow Wynd": (14, 14, 1),
-}
-ALT = {"Harbourgate Street": "Harbour Gate Street", "Lamphouse Lane": "Lamp House Lane"}
-FRINGE_STREET = "Harbourgate Street"          # Cranstoun's street of the same name, numbered above 178
-UNCODED_SHARE = 0.22                          # witnessed-class rows the call handler left without a location code
-ALT_SHARE = 0.38                              # uncoded rows written with the gazetteer's alternative spelling
-FRINGE_PER_SEASON = 310                       # offences on Cranstoun's Harbourgate Street caught by the extract
+# a stratified voucher sample: how many vouchers of each posting-count band carry their full line detail
+LINE_SAMPLE = ((1, 1, 500), (2, 9, 400), (10, 99, 300), (100, 999, 60), (1000, 10 ** 9, 12))
 
 
-def rng(k):
-    return np.random.default_rng([W.SEED, 5, k, W.NUDGE])
+def _w(path, header, rows):
+    with open(path, "w", newline="", encoding="utf-8") as fh:
+        wr = csv.writer(fh, lineterminator="\n")
+        wr.writerow(header)
+        wr.writerows(rows)
+    return len(rows)
 
 
-def in_legacy(r):
-    """Was the offence recorded in the crime information system? Only the witnessed classes, and only until the
-    system stopped taking them on 27 July 2025."""
-    return r["cls"] not in W.CONTRACTED and r["reported"].date() <= W.MIGRATION[r["cls"]] - dt.timedelta(days=1)
+def write_gl(path, table, lines_period=9):
+    """The extract: journal_entries for FY26 P1 to P9, journal_lines for the sampled vouchers."""
+    if os.path.exists(path):
+        os.remove(path)
+    con = sqlite3.connect(path)
+    con.execute("""CREATE TABLE journal_entries (
+        entry_no INTEGER PRIMARY KEY, voucher_ref TEXT NOT NULL, unit_code TEXT NOT NULL,
+        fiscal_year TEXT NOT NULL, fiscal_period INTEGER NOT NULL, posting_date TEXT NOT NULL,
+        source_interface TEXT NOT NULL, item_count INTEGER NOT NULL, line_count INTEGER NOT NULL,
+        debit_total REAL NOT NULL, credit_total REAL NOT NULL,
+        entered_by TEXT NOT NULL, released_by TEXT NOT NULL)""")
+    con.execute("""CREATE TABLE journal_lines (
+        entry_no INTEGER NOT NULL, line_no INTEGER NOT NULL, account_code TEXT NOT NULL,
+        source_doc_ref TEXT NOT NULL, debit REAL NOT NULL, credit REAL NOT NULL,
+        PRIMARY KEY (entry_no, line_no))""")
+    con.executemany("INSERT INTO journal_entries VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)",
+                    [(r["entry_no"], r["voucher_ref"], r["unit_code"], "FY26", r["period"],
+                      r["day"].isoformat(), r["source_interface"] if "source_interface" in r
+                      else r["interface"], r["items"], r["lines"], r["amount"], r["amount"],
+                      r["entered_by"], r["released_by"]) for r in table])
+    con.executemany("INSERT INTO journal_lines VALUES (?,?,?,?,?,?)",
+                    line_rows(table, lines_period))
+    con.execute("CREATE INDEX ix_entries_unit ON journal_entries (unit_code, fiscal_period)")
+    con.execute("CREATE INDEX ix_lines_entry ON journal_lines (entry_no)")
+    con.commit()
+    n_e = con.execute("SELECT count(*) FROM journal_entries").fetchone()[0]
+    n_l = con.execute("SELECT count(*) FROM journal_lines").fetchone()[0]
+    con.close()
+    return n_e, n_l
 
 
-def in_rms(r):
-    """Was it recorded in the records management system? Everything the contract covers, and the witnessed classes
-    from the day their class migrated, plus the fortnight of parallel running for the three that were double
-    written."""
-    if r["cls"] in W.CONTRACTED:
-        return True
-    d = r["reported"].date()
-    if d >= W.MIGRATION[r["cls"]]:
-        return True
-    return r["cls"] in W.LEGACY_NAMES and r["cls"] != "Theft from the person" and W.PARALLEL[0] <= d <= W.PARALLEL[1]
+def sampled_entries(table, period):
+    """The stratified voucher sample whose line detail ships, drawn inside one closed period."""
+    rng = np.random.default_rng(L.SEED + 409)
+    pool = [r for r in table if r["period"] == period]
+    picked = []
+    for lo, hi, want in LINE_SAMPLE:
+        band = [r for r in pool if lo <= r["items"] <= hi]
+        if not band:
+            continue
+        take = min(want, len(band))
+        idx = rng.choice(len(band), size=take, replace=False)
+        picked += [band[int(i)] for i in sorted(idx)]
+    picked.sort(key=lambda r: r["entry_no"])
+    return picked
 
 
-def address(street, number, alt):
-    name = ALT[street] if alt and street in ALT else street
-    if street == "Quayside":
-        return "Quayside Multi-Storey, Quayside"
-    if street == "Netherbow Wynd":
-        return "Netherbow Car Park, 14 Netherbow Wynd"
-    return "%d %s" % (number, name)
-
-
-def decorate(rows):
-    """Give every offence its references, its address as each system wrote it, and whether its location code was
-    entered. Mutates the rows."""
-    g = rng(1)
-    seq = {}
-    for i, r in enumerate(rows):
-        year = r["from"].year
-        seq[year] = seq.get(year, 0) + 1
-        r["ref"] = "KC/%d/%06d" % (year, 100000 + seq[year] * 3 + (i % 3))
-        street = PL.REG[W.LOCATIONS.index(r["loc"])][2]
-        lo, hi, step = NUMBERS[street]
-        n = int(lo + step * g.integers(0, max(1, (hi - lo) // step + 1)))
-        alt = bool(g.random() < ALT_SHARE)
-        r["street"], r["number"] = street, n
-        r["address"] = address(street, n, alt)
-        r["coded"] = r["cls"] in W.CONTRACTED or g.random() >= UNCODED_SHARE
-        r["beat"] = PL.REG[W.LOCATIONS.index(r["loc"])][5]
-    lg = rng(2)
-    k = 0
-    for r in rows:
-        if in_legacy(r) or (in_rms(r) and r["cls"] in W.LEGACY_NAMES and
-                            W.PARALLEL[0] <= r["reported"].date() <= W.PARALLEL[1]):
-            k += 1
-            r["cis"] = "CIS-%02d-%05d" % (r["from"].year % 100, 14000 + k * 2 + int(lg.integers(0, 2)))
-    return rows
-
-
-def fringe():
-    """The offences the extract caught on the Cranstoun length of Harbourgate Street, which carries the same street
-    name as the quarter's and is numbered above the quarter's 178. They are not in the quarter: the classes under a
-    tasking agreement carry Cranstoun's own location codes, and the rest carry the address alone."""
-    import offences as O
+def line_rows(table, period):
+    """Every ledger line of each sampled voucher. One source document posts its own balanced set of lines,
+    so counting distinct source_doc_ref on an entry reproduces its item_count."""
+    rng = np.random.default_rng(L.SEED + 503)
+    cost = [a for a, _n, k in W.ACCOUNTS if k in ("cost", "revenue")]
+    ctrl = [a for a, _n, k in W.ACCOUNTS if k == "control"]
     out = []
-    g = rng(3)
-    classes = list(W.CLASSES)
-    for si in range(len(W.SEASONS)):
-        days = W.season_days(si)
-        for j in range(FRINGE_PER_SEASON):
-            cls = classes[int(g.integers(0, len(classes)))]
-            kind = W.CLASSES[cls][1]
-            if kind == "routine":
-                by_dow = {k: [x for x in days if x.weekday() == k] for k in range(7)}
-                at, end, _true = O.covered_record(cls, g, by_dow, W.SEASONS[si])
-            else:
-                d = days[int(g.integers(0, len(days)))]
-                sh, _ln = O.window(kind, g, 1)
-                at = (dt.datetime.combine(d, dt.time()) +
-                      dt.timedelta(hours=float(sh[0]))).replace(second=0, microsecond=0)
-                end = at
-            n = int(180 + 2 * g.integers(0, 60))
-            alt = bool(g.random() < ALT_SHARE)
-            coded = cls in W.CONTRACTED
-            out.append({
-                "cls": cls, "season": si, "from": at, "to": end, "true": at,
-                "reported": (end + dt.timedelta(hours=float(g.gamma(1.6, 5.0)))).replace(second=0, microsecond=0),
-                "loc": None, "street": FRINGE_STREET, "number": n,
-                "address": address(FRINGE_STREET, n, alt), "coded": coded, "beat": "KC-06",
-                "code": PL.CRANSTOUN[int(g.integers(0, len(PL.CRANSTOUN)))] if coded else "",
-                "ref": None,
-            })
-    out.sort(key=lambda r: (r["reported"], r["cls"]))
-    g2 = rng(4)
-    for i, r in enumerate(out):
-        year = r["from"].year
-        r["ref"] = "KC/%d/%06d" % (year, 700000 + i * 2 + int(g2.integers(0, 2)))
-        if r["cls"] not in W.CONTRACTED and r["reported"].date() <= W.MIGRATION[r["cls"]] - dt.timedelta(days=1):
-            r["cis"] = "CIS-%02d-%05d" % (year % 100, 60000 + i * 2)
+    for r in sampled_entries(table, period):
+        per_doc = max(r["lines"] // r["items"], 2)
+        line_no = 0
+        for d in range(r["items"]):
+            doc = "%s/%06d/%04d" % (r["source_interface"][:3] if "source_interface" in r
+                                    else r["interface"][:3], r["entry_no"], d + 1)
+            val = round(float(r["amount"]) / r["items"], 2)
+            split = max(per_doc - 1, 1)
+            part = round(val / split, 2)
+            for j in range(split):
+                line_no += 1
+                amt = part if j < split - 1 else round(val - part * (split - 1), 2)
+                out.append((r["entry_no"], line_no, cost[int(rng.integers(0, len(cost)))], doc, amt, 0.0))
+            line_no += 1
+            out.append((r["entry_no"], line_no, ctrl[int(rng.integers(0, len(ctrl)))], doc, 0.0, val))
     return out
 
 
-def unique_keys(*groups):
-    """No two offences of a witnessed class share a class, an occurrence time and an address. Those are the classes
-    the two systems both held through the parallel fortnight, so the occurrence details are what reconciles the two
-    exports, and a recording officer does not file two reports at the same minute for the same address."""
-    seen = set()
-    for rows in groups:
-        for r in rows:
-            if r["cls"] not in W.LEGACY_NAMES:
-                continue
-            key = (r["cls"], r["from"], r["to"], r["address"])
-            while key in seen:
-                r["from"] += dt.timedelta(minutes=1)
-                r["to"] = r["from"]
-                r["true"] = r["from"]
-                key = (r["cls"], r["from"], r["to"], r["address"])
-            seen.add(key)
-    return groups
+def write_exceptions(path, reg):
+    """The platform's output: one row per flagged journal entry, with the rules that fired on it."""
+    return _w(path, ["exception_id", "entry_no", "voucher_ref", "unit_code", "raised_at_utc",
+                     "rules_fired", "rule_count"],
+              [(r["exception_id"], r["entry_no"], r["voucher_ref"], r["unit_code"],
+                dt.datetime.combine(r["day"], dt.time(2, 15)).isoformat(timespec="seconds") + "Z",
+                r["rules"], r["n_rules"]) for r in reg])
 
 
-def fmt(ts):
-    return ts.strftime("%Y-%m-%d %H:%M")
+def write_unit_register(path):
+    rows = []
+    for code, old, name, kind, county in W.UNITS:
+        rows.append((code, name, kind, county, old, W.RENUMBER_DATE.isoformat(),
+                     "code_to in force from this date; code_from in force before it"))
+    return _w(path, ["unit_code", "unit_name", "unit_kind", "county", "former_unit_code",
+                     "code_effective_from", "note"], rows)
 
 
-def rms_rows(rows, fr):
-    head = ("crime_reference", "offence_class", "occurred_from", "occurred_to", "reported_at", "location_code",
-            "address_text", "beat_code", "record_status")
-    out = []
-    for r in list(rows) + list(fr):
-        if not in_rms(r):
-            continue
-        code = PL.CODE[r["loc"]] if (r["coded"] and r["loc"]) else r.get("code", "")
-        out.append([r["ref"], r["cls"], fmt(r["from"]), fmt(r["to"]) if r["to"] > r["from"] else fmt(r["from"]),
-                    fmt(r["reported"]), code, r["address"], r["beat"], "recorded"])
-    out.sort(key=lambda x: (x[4], x[0]))
-    return [head] + out
+def write_calendar(path):
+    rows = []
+    for label, pers in (("FY25", W.FY25_PERIODS), ("FY26", W.FY26_PERIODS)):
+        for n, a, b in pers:
+            rows.append((label, n, a.isoformat(), b.isoformat(), (b - a).days + 1,
+                         W.PERIOD_WEEKS[n - 1]))
+    return _w(path, ["fiscal_year", "fiscal_period", "period_start", "period_end", "days", "weeks"], rows)
 
 
-def legacy_rows(rows, fr):
-    head = ("cis_ref", "offence_type", "occ_from_date", "occ_from_time", "occ_to_date", "occ_to_time",
-            "address_text", "beat", "recorded_date")
-    out = []
-    for r in list(rows) + list(fr):
-        if "cis" not in r:
-            continue
-        out.append([r["cis"], W.LEGACY_NAMES[r["cls"]],
-                    r["from"].strftime("%d/%m/%Y"), r["from"].strftime("%H:%M"),
-                    r["to"].strftime("%d/%m/%Y") if r["to"] > r["from"] else "",
-                    r["to"].strftime("%H:%M") if r["to"] > r["from"] else "",
-                    r["address"], r["beat"], r["reported"].strftime("%d/%m/%Y")])
-    out.sort(key=lambda x: (x[8].split("/")[::-1], x[0]))
-    return [head] + out
+def write_accounts(path):
+    return _w(path, ["account_code", "account_name", "account_type"],
+              [(a, n, k) for a, n, k in W.ACCOUNTS])
+
+
+def write_fy25_summary(path, table25):
+    """FY25 as a period summary: how a comparative year reaches an extract."""
+    agg = {}
+    for r in table25:
+        key = (r["unit_code"], r["period"], r["stream"])
+        a = agg.setdefault(key, [0, 0, 0.0])
+        a[0] += 1
+        a[1] += r["items"]
+        a[2] += r["amount"]
+    rows = [(u, p, i, n, items, round(val, 2)) for (u, p, i), (n, items, val) in sorted(agg.items())]
+    return _w(path, ["unit_code", "fiscal_period", "posting_stream", "entries", "postings",
+                     "value_eur"], rows)
+
+
+def write_manifest(path, counts):
+    lines = [
+        "DRUMCONDRA PROVISIONS GROUP",
+        "General ledger and continuous monitoring extract",
+        "",
+        "Extract date          : %s" % W.EXTRACT_DATE.isoformat(),
+        "Financial year        : FY26, which runs %s to %s" % (
+            W.FY26_START.isoformat(), (W.FY26_PERIODS[-1][2]).isoformat()),
+        "Periods closed        : P1 to P%d, P%d closed %s" % (
+            W.GRADED_PERIODS, W.GRADED_PERIODS, W.FY26_PERIODS[W.GRADED_PERIODS - 1][2].isoformat()),
+        "Periods still to run  : P%d to P12" % (W.GRADED_PERIODS + 1),
+        "Currency              : %s" % W.CURRENCY,
+        "",
+        "Scope of this extract",
+        "  Journal entries for FY26 P1 to P%d, every trading unit, every posting interface." % W.GRADED_PERIODS,
+        "  Entries posted after the extract date are not included.",
+        "  Ledger line detail for a stratified sample of P%d vouchers, drawn across posting-count" % W.GRADED_PERIODS,
+        "  bands so that each band is represented. Line detail for every voucher is held in the",
+        "  ledger and is not extracted; its volume is some five and a half million lines a year.",
+        "  FY25 is summarised by unit, period and interface. FY25 line and entry detail is archived.",
+        "",
+        "Row counts",
+    ]
+    for k, v in counts.items():
+        lines.append("  %-34s %12s" % (k, "{:,}".format(v)))
+    lines += ["", "Prepared by Group Finance Systems for Group Internal Audit."]
+    with open(path, "w", encoding="utf-8") as fh:
+        fh.write("\n".join(lines) + "\n")
+    return len(lines)
+
+
+FUEL = "fleet_fuel_card_transactions_fy26.csv"
+STOCK = "branch_stock_count_variances_fy26.csv"
+
+
+def write_fuel(path):
+    """A distractor: fuel card spend by vehicle. Relevant to the group's expense controls and to the audit
+    plan's scoping, and read by nothing in the solution."""
+    rng = np.random.default_rng(L.SEED + 701)
+    rows = []
+    for code in W.BRANCHES + ("DPG-510",):
+        for v in range(1, int(rng.integers(9, 22))):
+            reg = "%02d-%s-%d" % (int(rng.integers(21, 27)),
+                                  ("D", "C", "G", "L", "W", "MO")[int(rng.integers(0, 6))],
+                                  int(rng.integers(1000, 99999)))
+            for p in range(1, W.GRADED_PERIODS + 1):
+                litres = round(float(rng.uniform(380.0, 1_650.0)), 1)
+                rows.append((code, reg, p, int(rng.integers(4, 19)), litres,
+                             "%.2f" % round(litres * float(rng.uniform(1.52, 1.79)), 2)))
+    return _w(path, ["unit_code", "vehicle_reg", "fiscal_period", "fills", "litres", "spend_eur"], rows)
+
+
+def write_stock(path):
+    """A distractor: branch stock count variances. Relevant to where the audit plan puts effort, and read
+    by nothing in the solution."""
+    rng = np.random.default_rng(L.SEED + 709)
+    rows = []
+    for code in W.BRANCHES:
+        for p in range(1, W.GRADED_PERIODS + 1):
+            for cat in ("ambient", "chilled", "frozen", "non-food"):
+                counted = int(rng.integers(1_200, 9_400))
+                var = round(float(rng.normal(0.0, counted * 0.004)), 2)
+                rows.append((code, p, cat, counted, "%.2f" % var,
+                             "%.3f" % round(100.0 * var / counted, 3)))
+    return _w(path, ["unit_code", "fiscal_period", "stock_category", "lines_counted",
+                     "variance_eur", "variance_pct"], rows)

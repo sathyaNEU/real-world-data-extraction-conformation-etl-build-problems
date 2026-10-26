@@ -1,25 +1,38 @@
 # leak check, task184
 
-**Verdict: REVIEW.** 16 files read, 45 golden figures and 6 candidate names taken from submission.md, 25 stump terms taken from the design note.
+**Verdict: LEAK.** 20 files read, 252 golden figures and 1 candidate names taken from submission.md, 25 stump terms taken from the design note.
 
 LEAK stops the ship. REVIEW is a reader's call and the /leak-check command's solver's-eye pass reads every REVIEW line. INFO is a sweep that ran and found nothing or was skipped.
 
-Stump terms swept: window, spread, weight, shipped, reader, covered, windows, records, occurred, decisive, golden, sentence, nothing, standard, construction, carries, timestamps, keeper, re-root, recording, classes, placement, profile, measured, exactly
+Stump terms swept: voucher, indicator, register, decisive, carries, golden, inversion, twelve, question, sentence, verdict, outside, summary, battery, nothing, asserted, estimand, interface, writes, window, source, graded, reading, catalogue, states
+
+## 3 answer figures in the pack (LEAK 2, REVIEW 15)
+- **LEAK** `extract_manifest.txt`: golden figure 7,481 appears: ...8,729 monitoring_exceptions_fy26.csv 7,481 gl_period_summary_fy25.csv 852...
+- **LEAK** `monitoring_platform_operating_guide.pdf`: golden figure 7,481 appears: ...oup 798 795 835 775 731 866 870 900 911 7,481...
+- **REVIEW** `extract_manifest.txt`: golden figure 108 appears: ...480 sales_control_account_fy25.csv 108 monitoring_run_log_fy25.csv 144...
+- **REVIEW** `monitoring_platform_operating_guide.pdf`: golden figure 320 appears: ...-310 55 59 62 67 75 67 87 72 79 623 DPG-320 64 64 78 88 70 83 79 85 84 695 DPG-410...
+- **REVIEW** `monitoring_platform_operating_guide.pdf`: golden figure 130 appears: ...88 114 109 106 72 122 93 105 111 920 DPG-130 78 87 72 82 70 70 81 96 96 732 DPG-210...
+- **REVIEW** `monitoring_platform_operating_guide.pdf`: golden figure 792 appears: ...al DPG-110 70 91 84 77 75 96 111 86 102 792 DPG-120 88 114 109 106 72 122 93 105 111...
+- **REVIEW** `monitoring_platform_operating_guide.pdf`: golden figure 920 appears: ...PG-120 88 114 109 106 72 122 93 105 111 920 DPG-130 78 87 72 82 70 70 81 96 96 732...
+- **REVIEW** `monitoring_platform_operating_guide.pdf`: golden figure 310 appears: ...-220 72 53 72 59 60 68 58 82 75 599 DPG-310 55 59 62 67 75 67 87 72 79 623 DPG-320...
+- **REVIEW** `monitoring_platform_operating_guide.pdf`: golden figure 900 appears: ...-610 59 58 59 47 50 64 65 51 49 502 DPG-900 24 11 17 13 14 9 14 16 13 131 Group 79...
+- **REVIEW** `monitoring_platform_operating_guide.pdf`: golden figure 610 appears: ...-510 67 48 60 50 53 65 47 57 67 514 DPG-610 59 58 59 47 50 64 65 51 49 502 DPG-900...
+- **REVIEW** `monitoring_platform_operating_guide.pdf`: golden figure 514 appears: ...754 DPG-510 67 48 60 50 53 65 47 57 67 514 DPG-610 59 58 59 47 50 64 65 51 49 502...
+- **REVIEW** `monitoring_platform_operating_guide.pdf`: golden figure 659 appears: ...732 DPG-210 74 63 67 56 62 80 80 92 85 659 DPG-220 72 53 72 59 60 68 58 82 75 599...
+- **REVIEW** `monitoring_platform_operating_guide.pdf`: golden figure 120 appears: ...10 70 91 84 77 75 96 111 86 102 792 DPG-120 88 114 109 106 72 122 93 105 111 920 DP...
+- **REVIEW** `monitoring_platform_operating_guide.pdf`: golden figure 510 appears: ...-420 88 83 90 76 68 81 93 92 83 754 DPG-510 67 48 60 50 53 65 47 57 67 514 DPG-610...
+- **REVIEW** `monitoring_platform_operating_guide.pdf`: and 14 more golden figures
+- **REVIEW** `continuous_monitoring_rule_catalogue.pdf`: carries 8 of 12 distinctive words of the committed call: "15,000 postings in Drumcondra Provisions Group's general ledger tripped the continuous monitoring ruleset in FY26 P1 to "
+- **REVIEW** `monitoring_platform_operating_guide.pdf`: carries 8 of 12 distinctive words of the committed call: "15,000 postings in Drumcondra Provisions Group's general ledger tripped the continuous monitoring ruleset in FY26 P1 to "
 
 ## 4 design-note vocabulary (REVIEW 3)
-- **REVIEW** `harbourgate_patrol_tasking_contract_2027.pdf`: 5 of 25 stump-paragraph terms appear (covered, records, occurred, nothing, classes); read whether the document names the move
-- **REVIEW** `kcp_crime_recording_standard_extract.pdf`: 3 of 25 stump-paragraph terms appear (occurred, standard, recording); read whether the document names the move
-- **REVIEW** `kcp_rms_extract_notes.md`: 4 of 25 stump-paragraph terms appear (records, timestamps, recording, classes); read whether the document names the move
+- **REVIEW** `epos_interface_change_note.pdf`: 3 of 25 stump-paragraph terms appear (voucher, carries, interface); read whether the document names the move
+- **REVIEW** `general_ledger_data_dictionary.pdf`: 5 of 25 stump-paragraph terms appear (voucher, carries, interface, writes, source); read whether the document names the move
+- **REVIEW** `monitoring_platform_operating_guide.pdf`: 5 of 25 stump-paragraph terms appear (register, verdict, writes, window, catalogue); read whether the document names the move
 
-## 6 ranking artifacts (REVIEW 2, INFO 6)
-- **REVIEW** `kcp_cis_offence_extract_2025.csv`: names 5 of 6 answer-set candidates beside numbers; confirm it does not rank them on the decision question
-- **REVIEW** `kcp_rms_offence_extract_2027-01-22.csv`: names 5 of 6 answer-set candidates beside numbers; confirm it does not rank them on the decision question
-- **INFO** `footfall_sensor_register.csv`: names 4 of 6 answer-set candidates; confirm it does not rank them on the decision question
-- **INFO** `harbourgate_licensed_premises.csv`: names 3 of 6 answer-set candidates; confirm it does not rank them on the decision question
-- **INFO** `harbourgate_location_register.csv`: names 5 of 6 answer-set candidates; confirm it does not rank them on the decision question
-- **INFO** `kcp_rms_extract_notes.md`: names 3 of 6 answer-set candidates; confirm it does not rank them on the decision question
-- **INFO** `kelverstoke_beat_map.csv`: names 3 of 6 answer-set candidates; confirm it does not rank them on the decision question
-- **INFO** `kelverstoke_street_gazetteer.csv`: names 3 of 6 answer-set candidates; confirm it does not rank them on the decision question
+## 9 dates after the setting (REVIEW 2)
+- **REVIEW** `extract_manifest.txt`: 1 ISO dates after 2026-07-03, e.g. 2026-09-27
+- **REVIEW** `period_calendar.csv`: 5 ISO dates after 2026-07-03, e.g. 2026-07-26, 2026-07-27, 2026-08-23, 2026-08-24, 2026-09-27
 
 ## 10 container metadata (INFO 1)
 - **INFO** `-`: audit reported no writer signature (1 lines)
@@ -28,15 +41,13 @@ Stump terms swept: window, spread, weight, shipped, reader, covered, windows, re
 
 ## 2 author vocabulary (clean)
 
-## 3 answer figures in the pack (clean)
-
 ## 5 announcements (clean)
+
+## 6 ranking artifacts (clean)
 
 ## 7 hidden content (clean)
 
 ## 8 column names (clean)
-
-## 9 dates after the setting (clean)
 
 ## 11 prompt gate (clean)
 

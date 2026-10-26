@@ -28,31 +28,36 @@
  "decisive_rule_filed": false,
  "official_decoy": false,
  "validated_decoy": false,
- "context_artifact": "planning_thread",
+ "context_artifact": "monitoring_export",
  "stakeholder_role": "group head of internal audit",
  "role_family": "compliance_or_audit",
  "scoring_unit": "per settled transaction",
  "spine": {
-  "file": "kcp_rms_offence_extract_2027-01-22.csv",
-  "rows": 33699,
-  "row_meaning": "one recorded offence, with the earliest and the latest time it can have occurred",
-  "grain": "offence",
-  "source_dataset": "constructed",
-  "entity": "a recorded offence"
+  "file": "drumcondra_gl_fy26.sqlite, table journal_entries",
+  "rows": 313678,
+  "row_meaning": "one journal entry (voucher) posted to the group ledger in FY26 P1 to P9, with the number of postings recorded under it",
+  "grain": "journal entry",
+  "source_dataset": "synthetic"
  },
  "forum": "auditor",
  "forcing_event": "audit_or_inspection",
  "org_family": "logistics_or_3pl",
  "world": {
-  "geography": "Kelverstoke, a fictional city in a UK-like island state",
-  "currency": "GBP",
-  "org_type": "city community safety partnership",
+  "geography": "Republic of Ireland",
+  "currency": "EUR",
+  "org_type": "cash and carry and delivered wholesale group",
   "invented_names": [],
   "people": [
-   "Annette Begum",
-   "Marian Kent",
-   "Timothy Moran",
-   "Eileen Porter"
+   "Ruairi Barnett",
+   "Alana Marnan",
+   "Fergus Rynne",
+   "Myles Connaughton"
+  ],
+  "invented_nouns": [
+   "Drumcondra Provisions Group",
+   "Transpoint RA 7",
+   "Kerridge EPOS",
+   "Megabyte Payroll"
   ]
  },
  "deliverables": [

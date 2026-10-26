@@ -1,93 +1,151 @@
 ## Tags
 
-**Domain:** Criminology and justice (crime incidence and hotspot analysis).
-**Analytical objective:** Anomaly detection and diagnostics.
+**Domain:** Accounting, Audit & Forensic (a wholesale group's continuous monitoring of its general ledger: the population exception rate the internal audit plan is sized against).
+**Analytical objective:** Anomaly Detection & Diagnostics.
 
 ## 1. Final Recommendation
 
-**Commission Thursday 20:00 to 00:00, Saturday 00:00 to 04:00, Sunday 00:00 to 04:00, Sunday 20:00 to 00:00, Friday 12:00 to 16:00, Wednesday 20:00 to 00:00, Monday 20:00 to 00:00 and Tuesday 20:00 to 00:00, which together meet 5,700 of the offences the tasking contract covers in a season.**
-The ninth slot by weight, Friday 16:00 to 20:00, carries 400 against the 500 of the weakest of the eight. Not the slate a flat reading of each occurrence window gives, which puts the patrol on Friday 12:00 to 16:00 and the afternoons and whose eight meet 4,250. Not the slate from the earliest time each offence can have happened: 2,700. Not the slate from the time each offence was found: 1,400. Not the slate from each window's midpoint: 3,150.
+**15,000 postings in Drumcondra Provisions Group's general ledger tripped the continuous monitoring ruleset in FY26 P1 to P9, to the nearest thousand.**
+The platform raised 7,481 journal entries as exceptions over the same window. The two are not alternative counts of one thing: the platform writes one verdict for a journal entry, and an entry in this ledger carries between 1 and 2,347 postings, so the entry count is a count of vouchers. Recovering the posting count means inverting the entry-level indicator entry by entry, on each trading unit's own population.
 
 ## 2. Critical Components
 
-1. The contract covers **12,510** recorded offences a season in the quarter
-2. The share of those offences whose record gives an occurrence window rather than a time is **80.1 per cent**
-3. The share whose window runs longer than one patrol slot is **79.6 per cent**
-4. The heaviest slot of the week meets **1,100** offences a season, and the lightest **50**
-5. The eight commissioned slots meet **5,700** a season
+1. Postings that tripped the ruleset, group, FY26 P1 to P9: **15,000** (to the nearest thousand; unrounded 14989.3).
+2. Journal entries raised as exceptions over the same window: **7,481**.
+3. Postings in the window: **1,225,763** across **313,678** journal entries.
+4. Postings that tripped the ruleset by trading unit, to the nearest hundred:
+
+| Trading unit | Postings that tripped | Entries raised | Postings |
+|---|---|---|---|
+| DPG-110 Drumcondra Central Cash and Carry | 1,700 | 792 | 120,384 |
+| DPG-120 Finglas Cash and Carry | 2,100 | 920 | 123,438 |
+| DPG-130 Naas Road Cash and Carry | 1,500 | 732 | 116,460 |
+| DPG-210 Cork Kinsale Road Cash and Carry | 1,300 | 659 | 114,990 |
+| DPG-220 Mallow Cash and Carry | 1,100 | 599 | 112,734 |
+| DPG-310 Galway Oranmore Cash and Carry | 1,200 | 623 | 114,870 |
+| DPG-320 Castlebar Cash and Carry | 1,400 | 695 | 115,806 |
+| DPG-410 Limerick Raheen Cash and Carry | 1,000 | 560 | 107,172 |
+| DPG-420 Waterford Belview Cash and Carry | 1,600 | 754 | 118,608 |
+| DPG-510 National Contracts | 900 | 514 | 89,374 |
+| DPG-610 Drumcondra Bakery | 800 | 502 | 68,967 |
+| DPG-900 Group Services | 400 | 131 | 22,960 |
+| **Group** | **15,000** | **7,481** | **1,225,763** |
+
 
 ## 3. Step-by-Step Solution
 
-1. Took the offence classes the tasking contract covers from Annex B of harbourgate_patrol_tasking_contract_2027.pdf and the quarter's five locations from harbourgate_location_register.csv: five classes at five registered locations.
-2. Kept the rows of kcp_rms_offence_extract_2027-01-22.csv in those classes whose location code is one of the register's five: 25,020 recorded offences over the two seasons, 12,510 a season.
-3. Read occurred_from and occurred_to as kcp_rms_data_dictionary.csv defines them, the earliest and the latest time the offence can have occurred: 80.1 per cent of these offences carry a window rather than a time, and 79.6 per cent of them a window longer than a patrol slot, so no slot's count is in the record.
-4. Laid the week's 42 four-hour slots down from harbourgate_tasking_schedule.csv and took the hour-of-week shares under which the windows the force recorded are the likeliest set of windows to have been recorded, iterating the shares against the record until they stopped moving, since the agreement builds the count from the force's record of those offences and from nothing else, and makes the time that governs the time the offence occurred.
-5. Summed those shares by slot over both seasons and divided by two, as the question asks: the week's grid, from 1,100 a season in the heaviest slot to 50 in the lightest.
-6. Took the eight heaviest slots, the number harbourgate_patrol_tasking_contract_2027.pdf buys: Thursday 20:00 to 00:00, Saturday 00:00 to 04:00, Sunday 00:00 to 04:00, Sunday 20:00 to 00:00, Friday 12:00 to 16:00, Wednesday 20:00 to 00:00, Monday 20:00 to 00:00 and Tuesday 20:00 to 00:00, meeting 5,700 a season, with Friday 16:00 to 20:00 ninth at 400.
-7. Commissioned those eight slots for the 2027 season.
+1. Read general_ledger_data_dictionary.pdf: a posting is one source document's entry into the ledger and item_count is the number of postings recorded under a journal entry, while line_count is the entry's debit and credit lines. Confirmed on the sampled vouchers in journal_lines that the distinct source_doc_ref on an entry numbers the same as its item_count.
+2. Read monitoring_platform_operating_guide.pdf: every posting on an entry is evaluated against every live rule and the platform then writes one verdict for the entry, retaining no posting-level detail. So monitoring_exceptions_fy26.csv holds one row per entry raised, not one per posting that tripped.
+3. Took the window from period_calendar.csv and extract_manifest.txt (FY26 P1 to P9, closed 2026-06-28) and resolved the two unit-code vintages in journal_entries through trading_unit_register.csv, whose renumbering took effect 2026-03-30. Kept the nine rules continuous_monitoring_rule_catalogue.pdf marks live in FY26.
+4. Reconciled the register to the exception summary in monitoring_platform_operating_guide.pdf: 7,481 entries raised, tying by unit and period.
+5. Rejected the two routes the entry count supports. Reporting the 7,481 raised entries as the posting count understates it, because an entry carrying 2,347 postings raises the same one verdict as a manual journal carrying one. Taking the entry flag rate and grossing it up by the group's postings gives 29,234, because the indicator cannot fire twice on one voucher, so the entry rate is an upper bound on the posting rate and not an estimate of it.
+6. Recovered the rate instead. An entry of k postings is raised when at least one of them trips, with probability 1 - (1 - r) ** k, so r is the root of the per-entry likelihood over that unit's own entries. The root is unique because the score is monotone. Inverting once on the group's mean entry size instead returns 7,548, which is the raised-entry count again: the mean of the inverses is not the inverse of the mean, and entry sizes here run from 1 to 2,347.
+7. Multiplied each unit's recovered rate by that unit's postings and summed: 15,000 for the group, unrounded 14989.3. Method of moments on the total and the complementary log-log form give 15,006 and 15,102, and one rate pooled across the group gives 14,712, all within the same thousand.
+8. Built the three FY25 reconciliations: the payables accrual, where a restatement supersedes an earlier accrual without reversing it; the till takings, where the EPOS interface uploads a trading day on the next working day; and the monitoring coverage, where the in-scope population comes from the ledger's own period summary filtered to the streams the ruleset covers, not from the run log's completion flag.
 
 ## 4. Deliverable Answers
 
-### harbourgate_patrol_slate_2027.pdf
+### exception_population_bridge.xlsx
 
-1. The eight slots to commission in the 2027 season, with the offences each meets a season, to the nearest fifty:
-   - Thursday 20:00 to 00:00: 1,100
-   - Saturday 00:00 to 04:00: 900
-   - Sunday 00:00 to 04:00: 850
-   - Sunday 20:00 to 00:00: 800
-   - Friday 12:00 to 16:00: 550
-   - Wednesday 20:00 to 00:00: 500
-   - Monday 20:00 to 00:00: 500
-   - Tuesday 20:00 to 00:00: 500
-2. The eight together meet 5,700 offences a season.
-3. Heatmap of the week on page 1, seven days across by six four-hour bands down, each cell labelled with the offences that slot meets a season and the eight commissioned cells outlined.
+Bridge, by trading unit: journal entries, postings, entries raised as exceptions, postings that tripped the ruleset, and the bridge between the last two.
 
-### harbourgate_slot_weights.xlsx
+| Trading unit | Entries raised | Postings that tripped | Bridge |
+|---|---|---|---|
+| DPG-110 | 792 | 1,700 | 908 |
+| DPG-120 | 920 | 2,100 | 1,180 |
+| DPG-130 | 732 | 1,500 | 768 |
+| DPG-210 | 659 | 1,300 | 641 |
+| DPG-220 | 599 | 1,100 | 501 |
+| DPG-310 | 623 | 1,200 | 577 |
+| DPG-320 | 695 | 1,400 | 705 |
+| DPG-410 | 560 | 1,000 | 440 |
+| DPG-420 | 754 | 1,600 | 846 |
+| DPG-510 | 514 | 900 | 386 |
+| DPG-610 | 502 | 800 | 298 |
+| DPG-900 | 131 | 400 | 269 |
+| **Group** | **7,481** | **15,000** | **7,519** |
 
-1. The offences each of the week's 42 slots meets a season, to the nearest fifty, in the order Monday first:
-   - Monday: 00:00 to 04:00 50, 04:00 to 08:00 100, 08:00 to 12:00 150, 12:00 to 16:00 300, 16:00 to 20:00 300, 20:00 to 00:00 500
-   - Tuesday: 00:00 to 04:00 200, 04:00 to 08:00 50, 08:00 to 12:00 150, 12:00 to 16:00 350, 16:00 to 20:00 300, 20:00 to 00:00 500
-   - Wednesday: 00:00 to 04:00 100, 04:00 to 08:00 100, 08:00 to 12:00 150, 12:00 to 16:00 350, 16:00 to 20:00 250, 20:00 to 00:00 500
-   - Thursday: 00:00 to 04:00 200, 04:00 to 08:00 50, 08:00 to 12:00 150, 12:00 to 16:00 350, 16:00 to 20:00 300, 20:00 to 00:00 1,100
-   - Friday: 00:00 to 04:00 50, 04:00 to 08:00 100, 08:00 to 12:00 200, 12:00 to 16:00 550, 16:00 to 20:00 400, 20:00 to 00:00 100
-   - Saturday: 00:00 to 04:00 900, 04:00 to 08:00 200, 08:00 to 12:00 150, 12:00 to 16:00 350, 16:00 to 20:00 300, 20:00 to 00:00 150
-   - Sunday: 00:00 to 04:00 850, 04:00 to 08:00 150, 08:00 to 12:00 150, 12:00 to 16:00 300, 16:00 to 20:00 250, 20:00 to 00:00 800
-2. The quarter's recorded offences of each class in the extract, each season, to the nearest ten:
-   - Theft from a motor vehicle 2025: 2,520
-   - Theft from a motor vehicle 2026: 2,680
-   - Theft of a pedal cycle 2025: 2,040
-   - Theft of a pedal cycle 2026: 2,160
-   - Criminal damage 2025: 3,690
-   - Criminal damage 2026: 3,910
-   - Burglary business 2025: 2,580
-   - Burglary business 2026: 2,740
-   - Burglary residential 2025: 1,310
-   - Burglary residential 2026: 1,390
-   - Theft from the person 2025: 760
-   - Theft from the person 2026: 800
-   - Assault without injury 2025: 1,150
-   - Assault without injury 2026: 1,220
-   - Public order 2025: 1,420
-   - Public order 2026: 1,510
-   - Shoplifting 2025: 2,170
-   - Shoplifting 2026: 2,310
-3. The share of all the quarter's recorded offences at each of its five locations, each season, to one decimal place:
-   - Harbourgate Street 2025: 35.8 per cent
-   - Harbourgate Street 2026: 35.7 per cent
-   - Quayside Multi-Storey 2025: 13.8 per cent
-   - Quayside Multi-Storey 2026: 13.8 per cent
-   - Lamphouse Lane 2025: 19.3 per cent
-   - Lamphouse Lane 2026: 19.8 per cent
-   - Fishmarket Square 2025: 21.2 per cent
-   - Fishmarket Square 2026: 21.1 per cent
-   - Netherbow Car Park 2025: 9.9 per cent
-   - Netherbow Car Park 2026: 9.6 per cent
-4. The footfall each sensor's location saw per trading hour, each season, to the nearest ten:
-   - FG-01 2025: 1,320
-   - FG-01 2026: 1,380
-   - FG-02 2025: 860
-   - FG-02 2026: 900
-   - FG-04 2025: 600
-   - FG-04 2026: 620
-   - FG-07 2025: 480
-   - FG-07 2026: 500
+Payables reconciliation, FY25 close, EUR.
+
+| Trading unit | Subledger accrual | Control account | Difference | Goods received not invoiced | Posted to another unit |
+|---|---|---|---|---|---|
+| DPG-110 | 3,370,438.09 | 3,412,118.20 | 41,680.11 | 54,803.60 | -13,123.49 |
+| DPG-120 | 3,407,688.00 | 3,461,176.89 | 53,488.89 | 73,058.34 | -19,569.45 |
+| DPG-130 | 3,312,527.91 | 3,316,519.24 | 3,991.33 | 41,250.86 | -37,259.53 |
+| DPG-210 | 3,478,211.77 | 3,535,634.67 | 57,422.90 | 17,078.05 | 40,344.85 |
+| DPG-220 | 4,164,592.26 | 4,238,891.02 | 74,298.76 | 88,713.56 | -14,414.80 |
+| DPG-310 | 3,534,676.56 | 3,577,895.89 | 43,219.33 | 33,459.16 | 9,760.17 |
+| DPG-320 | 3,748,141.41 | 3,712,758.85 | -35,382.56 | 51,749.21 | -87,131.77 |
+| DPG-410 | 3,771,488.85 | 3,817,464.80 | 45,975.95 | 22,014.52 | 23,961.43 |
+| DPG-420 | 3,634,085.04 | 3,666,082.98 | 31,997.94 | 36,242.37 | -4,244.43 |
+| DPG-510 | 2,714,983.45 | 2,805,791.30 | 90,807.85 | 89,978.86 | 828.99 |
+| DPG-610 | 2,089,129.61 | 2,200,255.03 | 111,125.42 | 44,326.07 | 66,799.35 |
+| DPG-900 | 1,830,264.68 | 1,933,427.08 | 103,162.40 | 69,113.72 | 34,048.68 |
+| GROUP | 39,056,227.63 | 39,678,015.95 | 621,788.32 | 621,788.32 | 0.00 |
+
+Till takings against the sales control account, FY25, EUR.
+
+| Trading unit | Quarter | Till takings | Sales control account | Gap |
+|---|---|---|---|---|
+| DPG-110 | Q1 | 3,892,571.63 | 3,831,436.75 | 61,134.88 |
+| DPG-110 | Q2 | 3,695,028.78 | 3,719,617.00 | -24,588.22 |
+| DPG-110 | Q3 | 3,977,306.04 | 3,972,112.03 | 5,194.01 |
+| DPG-110 | Q4 | 3,942,129.51 | 3,949,584.66 | -7,455.15 |
+| DPG-120 | Q1 | 3,184,113.42 | 3,142,791.37 | 41,322.05 |
+| DPG-120 | Q2 | 3,147,509.53 | 3,135,867.28 | 11,642.25 |
+| DPG-120 | Q3 | 3,148,904.39 | 3,161,621.23 | -12,716.84 |
+| DPG-120 | Q4 | 3,130,858.67 | 3,139,257.21 | -8,398.54 |
+| DPG-130 | Q1 | 3,060,694.54 | 3,021,359.42 | 39,335.12 |
+| DPG-130 | Q2 | 3,329,948.40 | 3,331,268.63 | -1,320.23 |
+| DPG-130 | Q3 | 3,086,151.56 | 3,084,290.77 | 1,860.79 |
+| DPG-130 | Q4 | 3,173,317.76 | 3,170,546.76 | 2,771.00 |
+| DPG-210 | Q1 | 3,908,169.45 | 3,875,412.66 | 32,756.79 |
+| DPG-210 | Q2 | 3,944,018.25 | 3,928,526.39 | 15,491.86 |
+| DPG-210 | Q3 | 4,102,729.56 | 4,096,231.08 | 6,498.48 |
+| DPG-210 | Q4 | 4,014,399.22 | 4,037,486.04 | -23,086.82 |
+| DPG-220 | Q1 | 2,285,912.29 | 2,255,361.39 | 30,550.90 |
+| DPG-220 | Q2 | 2,338,916.92 | 2,335,763.87 | 3,153.05 |
+| DPG-220 | Q3 | 2,498,366.27 | 2,499,112.65 | -746.38 |
+| DPG-220 | Q4 | 2,437,131.08 | 2,444,094.11 | -6,963.03 |
+| DPG-310 | Q1 | 3,973,533.17 | 3,939,215.18 | 34,317.99 |
+| DPG-310 | Q2 | 3,910,980.27 | 3,876,874.83 | 34,105.44 |
+| DPG-310 | Q3 | 3,814,259.55 | 3,794,490.02 | 19,769.53 |
+| DPG-310 | Q4 | 3,964,897.68 | 4,001,674.69 | -36,777.01 |
+| DPG-320 | Q1 | 3,811,395.72 | 3,754,663.56 | 56,732.16 |
+| DPG-320 | Q2 | 4,004,106.03 | 4,004,786.38 | -680.35 |
+| DPG-320 | Q3 | 3,852,938.33 | 3,848,282.17 | 4,656.16 |
+| DPG-320 | Q4 | 3,858,949.37 | 3,864,728.72 | -5,779.35 |
+| DPG-410 | Q1 | 3,098,132.98 | 3,060,194.89 | 37,938.09 |
+| DPG-410 | Q2 | 3,163,465.56 | 3,167,705.97 | -4,240.41 |
+| DPG-410 | Q3 | 3,066,279.96 | 3,056,985.13 | 9,294.83 |
+| DPG-410 | Q4 | 3,233,400.44 | 3,229,661.87 | 3,738.57 |
+| DPG-420 | Q1 | 4,010,073.59 | 3,978,408.02 | 31,665.57 |
+| DPG-420 | Q2 | 3,850,666.18 | 3,823,971.56 | 26,694.62 |
+| DPG-420 | Q3 | 4,079,601.62 | 4,075,256.41 | 4,345.21 |
+| DPG-420 | Q4 | 3,939,078.50 | 3,943,591.04 | -4,512.54 |
+
+Entries in scope of the ruleset not evaluated, FY25, by trading unit and period.
+
+| Trading unit | P1 | P2 | P3 | P4 | P5 | P6 | P7 | P8 | P9 | P10 | P11 | P12 |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| DPG-110 | 19 | 13 | 34 | 32 | 22 | 19 | 33 | 301 | 574 | 798 | 29 | 48 |
+| DPG-120 | 16 | 19 | 19 | 37 | 54 | 24 | 18 | 301 | 624 | 1,097 | 18 | 39 |
+| DPG-130 | 36 | 36 | 21 | 20 | 21 | 44 | 11 | 262 | 814 | 1,018 | 24 | 14 |
+| DPG-210 | 36 | 17 | 36 | 25 | 10 | 23 | 18 | 328 | 610 | 867 | 33 | 41 |
+| DPG-220 | 30 | 40 | 30 | 16 | 38 | 49 | 47 | 270 | 540 | 975 | 40 | 16 |
+| DPG-310 | 28 | 16 | 28 | 45 | 45 | 30 | 26 | 279 | 576 | 893 | 31 | 10 |
+| DPG-320 | 39 | 33 | 11 | 27 | 37 | 19 | 34 | 283 | 695 | 1,152 | 32 | 12 |
+| DPG-410 | 25 | 22 | 43 | 35 | 17 | 29 | 22 | 335 | 649 | 784 | 44 | 46 |
+| DPG-420 | 12 | 22 | 14 | 23 | 35 | 50 | 27 | 358 | 730 | 1,100 | 12 | 41 |
+| DPG-510 | 50 | 39 | 47 | 24 | 26 | 32 | 72 | 525 | 1,362 | 1,698 | 66 | 79 |
+| DPG-610 | 31 | 17 | 16 | 15 | 12 | 39 | 18 | 290 | 667 | 793 | 33 | 17 |
+| DPG-900 | 2 | 2 | 4 | 1 | 4 | 2 | 3 | 26 | 58 | 108 | 3 | 3 |
+
+### audit_plan_paper.pdf
+
+15,000 postings tripped the continuous monitoring ruleset in FY26 P1 to P9, against 7,481 journal entries raised as exceptions. Per unit figures as in the bridge above.
+
+### recovered_exceptions_by_unit.png
+
+One pair of bars per trading unit: entries raised as exceptions against postings that tripped the ruleset, every bar labelled with its figure.
+

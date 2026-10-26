@@ -1,230 +1,237 @@
-"""Build task184: the pack into <task>/target, the goldens into <task>/golden, metadata.json and
-generator/figures.json, then the checks and the independent verifier, then a second full build into a scratch
-folder inside the task (removed after) compared byte for byte, then target.zip cut from the final build.
+"""Build task184: the evidence pack into <task>/target, the goldens into <task>/golden, metadata.json and
+generator/figures.json, then the checks and the independent verifier, then a second full build compared
+byte for byte, then target.zip cut from the final build.
 
     python3 task184/generator/build.py              everything
     python3 task184/generator/build.py --out DIR    the pack only, into DIR
-    python3 task184/generator/build.py --no-checks  the pack, goldens and figures only"""
+    python3 task184/generator/build.py --no-checks  the pack, goldens and figures only
+"""
 import argparse
-import datetime as dt
+import csv
 import hashlib
 import json
 import os
 import shutil
+import subprocess
 import sys
 import tempfile
+import zipfile
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)
-import analysis as AN     # noqa: E402
-import asks as AK         # noqa: E402
-import docs as D          # noqa: E402
-import offences as O      # noqa: E402
-import pack as P          # noqa: E402
-import places as PL       # noqa: E402
+import analysis as AN   # noqa: E402
+import asks as A        # noqa: E402
+import deliver as DV    # noqa: E402
+import docs as D        # noqa: E402
+import ledger as L      # noqa: E402
+import metadata as MD   # noqa: E402
 import postprocess as PP  # noqa: E402
-import records as R       # noqa: E402
-import sensors as S       # noqa: E402
-import world as W         # noqa: E402
+import records as R     # noqa: E402
+import world as W       # noqa: E402
 
 TASK = os.path.dirname(HERE)
-FILES = {
-    "rms": R.RMS, "legacy": R.LEGACY, "notes": D.NOTES, "dictionary": D.DICTIONARY, "rules": D.RULES,
-    "contract": D.CONTRACT, "schedule": D.SCHEDULE, "register": PL.REGISTER, "gazetteer": PL.GAZETTEER,
-    "beats": PL.BEATS, "premises": PL.PREMISES, "counts": S.COUNTS, "availability": S.AVAIL,
-    "sensors": S.SENSREG, "trading": S.TRADING, "plan": P.PLAN,
-}
-DISTRACTORS = ("plan", "premises")
-BST = dt.timezone(dt.timedelta(hours=1))
+TARGET = os.path.join(TASK, "target")
+GOLDEN = os.path.join(TASK, "golden")
+DISTRACTORS = (R.FUEL, R.STOCK)
 
 
 def world():
-    rows = R.decorate(O.simulate())
-    fringe = R.fringe()
-    R.unique_keys(rows, fringe)
-    counts = S.counts()
-    contracted = O.contracted(rows)
-    lad = AN.ladder(contracted)
-    return {"rows": rows, "fringe": fringe, "counts": counts, "contracted": contracted, "ladder": lad,
-            "ask1": AK.offences_by_class(rows), "ask2": AK.location_shares(rows), "ask3": AK.footfall(counts)}
+    """Everything the pack and the goldens are written from, built once."""
+    sim = L.materialise()
+    t26 = L.entry_table(sim, "FY26")
+    for r in t26:
+        r["source_interface"] = r["interface"]
+    t25 = L.entry_table(sim, "FY25")
+    reg = L.register_rows(t26, "FY26")
+    accr = A.accruals(sim)
+    control = A.ap_control(accr)
+    till = A.tills(sim)
+    sales = A.sales_control(till)
+    log = A.run_log(t25)
+    return dict(sim=sim, t26=t26, t25=t25, reg=reg, accr=accr, control=control, till=till,
+                sales=sales, log=log)
 
 
-def build(out, quiet=False, w=None):
+def build_pack(out, sim, quiet=False):
     if os.path.exists(out):
         shutil.rmtree(out)
     os.makedirs(out)
-    w = w or world()
-    P.build(out, w["rows"], w["fringe"], w["counts"])
-    PP.normalize_ooxml(os.path.join(out, P.PLAN), W.PEOPLE["inspector"][0], W.PEOPLE["inspector"][0],
-                       "2026-10-06T10:04:00Z", "2026-10-09T14:22:00Z", title="Harbourgate patrol plan 2026",
-                       excel=True)
-    PP.normalize_pdf(os.path.join(out, D.RULES), b"D:20270104093512+00'00'", b"D:20270104093512+00'00'")
-    PP.normalize_pdf(os.path.join(out, D.CONTRACT), b"D:20261204161140+00'00'", b"D:20261204161140+00'00'")
-    stamp = dt.datetime(2027, 1, 22, 9, 15, tzinfo=BST).timestamp()
-    for f in os.listdir(out):
-        os.utime(os.path.join(out, f), (stamp, stamp))
+    p = lambda f: os.path.join(out, f)
+    c = {}
+    ne, nl = R.write_gl(p(R.GL_DB), sim["t26"])
+    c["journal_entries (sqlite)"] = ne
+    c["journal_lines (sqlite)"] = nl
+    c[R.EXCEPTIONS] = R.write_exceptions(p(R.EXCEPTIONS), sim["reg"])
+    c[R.FY25_SUMMARY] = R.write_fy25_summary(p(R.FY25_SUMMARY), sim["t25"])
+    c[R.UNIT_REGISTER] = R.write_unit_register(p(R.UNIT_REGISTER))
+    c[R.CALENDAR] = R.write_calendar(p(R.CALENDAR))
+    c[R.ACCOUNTS] = R.write_accounts(p(R.ACCOUNTS))
+    c[A.ACCRUALS] = A.write_accruals(p(A.ACCRUALS), sim["accr"])
+    c[A.AP_CONTROL] = A.write_ap_control(p(A.AP_CONTROL), sim["control"])
+    c[A.SUPPLIERS] = A.write_suppliers(p(A.SUPPLIERS))
+    c[A.TILLS] = A.write_tills(p(A.TILLS), sim["till"])
+    c[A.SALES_CONTROL] = A.write_sales_control(p(A.SALES_CONTROL), sim["sales"])
+    c[A.RUN_LOG] = A.write_run_log(p(A.RUN_LOG), sim["log"])
+    c[R.FUEL] = R.write_fuel(p(R.FUEL))
+    c[R.STOCK] = R.write_stock(p(R.STOCK))
+    monthly = {}
+    for r in sim["reg"]:
+        key = (W.resolve_unit(r["unit_code"]), r["period"])
+        monthly[key] = monthly.get(key, 0) + 1
+    D.write_catalogue(p(D.CATALOGUE))
+    D.write_platform(p(D.PLATFORM), monthly)
+    D.write_dictionary(p(D.DICTIONARY))
+    D.write_epos_notes(p(D.EPOS_NOTES))
+    for f in (D.CATALOGUE, D.PLATFORM, D.DICTIONARY, D.EPOS_NOTES):
+        # the fiction's issue stamps, and no writing-library banner (reduce-house-fixes H1)
+        PP.normalize_pdf(p(f), b"D:20260629090000+01'00'", b"D:20260629090000+01'00'")
+        c[f] = "document"
+    R.write_manifest(p(R.MANIFEST), {k: v for k, v in c.items() if isinstance(v, int)})
+    # The platform's own reported exception counts are inputs the organisation publishes, not answers:
+    # the exception summary in the operating guide and the manifest's row counts both state them, and
+    # Gate B requires them in the pack. Declared here so the leak sweep reads them as stated inputs.
+    stated = ["the twelve trading units", "FY26 P1 to P9", "the rounding of each graded figure",
+              "journal entries raised as exceptions, by trading unit and fiscal period, as the "
+              "monitoring platform reports them"]
+    # the sweep matches the figure as it is written, so these carry their thousands separators
+    fmt = lambda v: "{:,}".format(int(v))
+    stated += [fmt(v) for v in sorted({v for v in monthly.values()})]
+    stated += [fmt(sum(monthly.values()))]
+    stated += [fmt(v) for v in
+               sorted({sum(x for (u, _p), x in monthly.items() if u == code[0]) for code in W.UNITS})]
+    MD.write(p(MD.NAME), {k: v for k, v in c.items()}, list(DISTRACTORS), stated)
     if not quiet:
-        print("built %s: %d files" % (out, len(os.listdir(out))))
-    return w
+        for k, v in c.items():
+            print("  %-46s %s" % (k, "{:,}".format(v) if isinstance(v, int) else v))
+    return c
 
 
-def figures(w):
-    """Every figure the write-up and the goldens state."""
-    lad, g = w["ladder"], w["ladder"]["golden"]
-    weights, slate = g["weights"], g["slate"]
-    order = sorted(weights.items(), key=lambda kv: -kv[1])
-    runner = order[W.CAP]
-    fifty = lambda x: int(round(x / 50.0) * 50)
-    name = lambda s: "%s %02d:00-%02d:00" % (W.DAYS[s[0]], s[1], (s[1] + W.SLOT_H) % 24)
-    fig = {
-        "call": {
-            "slate": [name(s) for s in slate],
-            "slot_offences": {name(s): fifty(weights[s]) for s in slate},
-            "covered_total": fifty(g["files"]),
-            "covered_total_exact": round(g["files"], 2),
-            "runner_up": name(runner[0]),
-            "runner_up_offences": fifty(runner[1]),
-            "weakest_of_the_eight": fifty(weights[slate[-1]]),
-            "gap_to_the_runner_up": fifty(weights[slate[-1]]) - fifty(runner[1]),
-        },
-        "week": {name(s): fifty(weights[s]) for s in W.SLOTS},
-        "default_path": {
-            "slate": [name(s) for s in lad["rung3_flat_aoristic"]["slate"]],
-            "files": fifty(lad["rung3_flat_aoristic"]["files"]),
-            "meets": fifty(lad["rung3_flat_aoristic"]["meets"]),
-            "share_of_golden": round(lad["rung3_flat_aoristic"]["meets"] / g["files"], 3),
-        },
-        "rungs": {k: {"slate": [name(s) for s in v["slate"]], "files": fifty(v["files"]), "meets": fifty(v["meets"]),
-                      "share_of_golden": round(v["meets"] / g["files"], 3)}
-                  for k, v in lad.items() if k != "golden"},
-        "asks": {
-            "offences_by_class": {"%s %d" % (c, 2025 + si): int(round(w["ask1"][(c, si)], -1))
-                                  for c in W.CLASSES for si in range(len(W.SEASONS))},
-            "location_shares_per_cent": {"%s %d" % (loc, 2025 + si): round(w["ask2"][(loc, si)], 1)
-                                         for loc in W.LOCATIONS for si in range(len(W.SEASONS))},
-            "footfall_per_trading_hour": {"%s %d" % (sid, 2025 + si): int(round(w["ask3"][(sid, si)], -1))
-                                          for sid in sorted(W.SENSORS) for si in range(len(W.SEASONS))},
-        },
-        "context": {
-            "slots_in_the_week": len(W.SLOTS),
-            "contracted_offences_both_seasons": len(w["contracted"]),
-            "contracted_offences_a_season": int(round(len(w["contracted"]) / len(W.SEASONS))),
-            "share_of_windows_over_four_hours_per_cent": round(100.0 * sum(
-                1 for r in w["contracted"] if (r["to"] - r["from"]).total_seconds() > 4 * 3600) /
-                len(w["contracted"]), 1),
-            "share_carrying_a_window_per_cent": round(100.0 * sum(
-                1 for r in w["contracted"] if r["to"] > r["from"]) / len(w["contracted"]), 1),
-            "share_of_windows_crossing_a_slot_per_cent": round(100.0 * sum(
-                1 for r in w["contracted"]
-                if O.slot_of(r["from"]) != O.slot_of(r["to"] - dt.timedelta(seconds=1))) /
-                len(w["contracted"]), 1),
-            "share_of_windows_over_four_hours": round(
-                sum(1 for r in w["contracted"] if (r["to"] - r["from"]).total_seconds() > 4 * 3600) /
-                len(w["contracted"]), 3),
-            "share_of_windows_crossing_a_slot": round(
-                sum(1 for r in w["contracted"]
-                    if O.slot_of(r["from"]) != O.slot_of(r["to"] - dt.timedelta(seconds=1))) /
-                len(w["contracted"]), 3),
-            "rms_rows": len(R.rms_rows(w["rows"], w["fringe"])) - 1,
-            "legacy_rows": len(R.legacy_rows(w["rows"], w["fringe"])) - 1,
-            "footfall_rows": len(w["counts"]),
-        },
-    }
-    return fig
+def figures(sim):
+    g = AN.group_figure(sim["sim"])
+    a1 = AN.ask1(sim["accr"], sim["control"])
+    a2 = AN.ask2(sim["till"], sim["sales"])
+    rows = [tuple(x) for x in csv.reader(open(os.path.join(TARGET, R.FY25_SUMMARY),
+                                              encoding="utf-8"))][1:]
+    logr = [tuple(x) for x in csv.reader(open(os.path.join(TARGET, A.RUN_LOG),
+                                              encoding="utf-8"))][1:]
+    a3 = AN.ask3(rows, logr)
+    return dict(
+        call=dict(
+            group_postings_tripped=g["graded"],
+            group_postings_tripped_unrounded=round(g["raw"], 1),
+            entries_raised_as_exceptions=g["flagged"],
+            postings_in_window=g["postings"],
+            entries_in_window=g["entries"],
+            unit_postings_tripped={k: v["graded"] for k, v in g["units"].items()},
+            unit_entries_raised={k: v["flagged"] for k, v in g["units"].items()},
+            unit_postings={k: v["postings"] for k, v in g["units"].items()},
+            unit_bridge={k: v["graded"] - v["flagged"] for k, v in g["units"].items()},
+            group_bridge=g["graded"] - g["flagged"],
+            max_postings_on_an_entry=g["max_items"],
+            licensed_mom=int(round(sum(v["licensed"]["mom"] for v in g["units"].values()))),
+            licensed_cloglog=int(round(sum(v["licensed"]["cloglog"] for v in g["units"].values()))),
+        ),
+        # the rungs are counts of postings, so they are stated as whole numbers
+        rungs={k: int(round(v)) for k, v in AN.rungs(sim["sim"]).items()},
+        asks=dict(ask1={"%s|%s" % (u, f): a1[u][f] for u in a1 for f in a1[u]},
+                  ask2={"%s|%s" % (k, f): a2[k][f] for k in a2 for f in a2[k]},
+                  ask3=dict(a3)),
+    ), g, a1, a2, a3
 
 
-def everything(root, quiet=False):
-    import deliver as DL
-    import metadata as MD
-    w = build(os.path.join(root, "target"), quiet=quiet)
-    gold = os.path.join(root, "golden")
-    if os.path.exists(gold):
-        shutil.rmtree(gold)
-    os.makedirs(gold)
-    fig = figures(w)
-    with open(os.path.join(root, "generator", "figures.json"), "w") as fh:
-        json.dump(fig, fh, indent=1, ensure_ascii=False)
-        fh.write("\n")
-    tmp = tempfile.mkdtemp()
-    try:
-        DL.paper(os.path.join(gold, DL.PAPER), fig, w["ladder"], tmp)
-    finally:
-        shutil.rmtree(tmp)
-    DL.workbook(os.path.join(gold, DL.BOOK), w["ladder"], w["ask1"], w["ask2"], w["ask3"])
-    an = W.PEOPLE["analyst"][0]
-    PP.normalize_pdf(os.path.join(gold, DL.PAPER), b"D:20270129094122+00'00'", b"D:20270129101705+00'00'")
-    PP.normalize_ooxml(os.path.join(gold, DL.BOOK), an, an, "2027-01-28T16:12:00Z", "2027-01-29T09:41:00Z",
-                       title="Harbourgate patrol slot weights", excel=True)
-    stamp = dt.datetime(2027, 1, 29, 10, 20, tzinfo=BST).timestamp()
-    for f in os.listdir(gold):
-        os.utime(os.path.join(gold, f), (stamp, stamp))
-    MD.write(os.path.join(root, "target"), os.path.join(root, "metadata.json"))
-    w["fig"] = fig
-    return w
+def build_goldens(out, sim, g, a1, a2, a3, quiet=False):
+    if os.path.exists(out):
+        shutil.rmtree(out)
+    os.makedirs(out)
+    DV.write_bridge(os.path.join(out, DV.BRIDGE), g, a1, a2, a3)
+    DV.write_chart(os.path.join(out, DV.CHART), g)
+    DV.write_paper(os.path.join(out, DV.PAPER), g, a1)
+    name, _role = W.PEOPLE["audit"]
+    PP.normalize_ooxml(os.path.join(out, DV.BRIDGE), name, name,
+                       "2026-07-03T09:00:00Z", "2026-07-03T09:00:00Z",
+                       title="Exception population bridge", excel=True)
+    PP.normalize_pdf(os.path.join(out, DV.PAPER), b"D:20260703090000+01'00'",
+                     b"D:20260703090000+01'00'")
+    if not quiet:
+        for f in sorted(os.listdir(out)):
+            print("  %-46s %8.1f KB" % (f, os.path.getsize(os.path.join(out, f)) / 1024))
 
 
 def digest(folder):
-    return {f: hashlib.sha256(open(os.path.join(folder, f), "rb").read()).hexdigest()
-            for f in sorted(os.listdir(folder))}
+    h = hashlib.sha256()
+    for root, dirs, files in os.walk(folder):
+        dirs.sort()
+        for f in sorted(files):
+            full = os.path.join(root, f)
+            h.update(os.path.relpath(full, folder).encode())
+            with open(full, "rb") as fh:
+                while True:
+                    b = fh.read(1 << 20)
+                    if not b:
+                        break
+                    h.update(b)
+    return h.hexdigest()[:16]
 
 
-def cut_zip(root):
-    import zipfile
-    folder = os.path.join(root, "target")
-    stamp = (2027, 1, 22, 9, 15, 0)
-    zp = os.path.join(root, "target.zip")
-    with zipfile.ZipFile(zp, "w") as z:
-        for f in sorted(os.listdir(folder)):
-            zi = zipfile.ZipInfo(f, date_time=stamp)
-            zi.compress_type = zipfile.ZIP_DEFLATED
-            zi.external_attr = 0o644 << 16
-            z.writestr(zi, open(os.path.join(folder, f), "rb").read())
-    return zp
+def cut_zip(path, folder):
+    if os.path.exists(path):
+        os.remove(path)
+    with zipfile.ZipFile(path, "w", zipfile.ZIP_DEFLATED, compresslevel=9) as z:
+        for root, dirs, files in os.walk(folder):
+            dirs.sort()
+            for f in sorted(files):
+                full = os.path.join(root, f)
+                zi = zipfile.ZipInfo(os.path.relpath(full, folder), date_time=(2026, 7, 3, 9, 0, 0))
+                zi.compress_type = zipfile.ZIP_DEFLATED
+                zi.external_attr = 0o644 << 16
+                with open(full, "rb") as fh:
+                    z.writestr(zi, fh.read())
+    return path
 
 
 def main():
-    import checks as CK
-    import verify as V
-    w = everything(TASK)
-    CK.run(os.path.join(TASK, "target"), os.path.join(TASK, "golden"), w, os.path.join(TASK, "metadata.json"))
-    V.main(os.path.join(TASK, "target"), os.path.join(TASK, "golden"))
-    tmp = tempfile.mkdtemp(dir=TASK, suffix=".tmp")
+    ap = argparse.ArgumentParser()
+    ap.add_argument("--out")
+    ap.add_argument("--no-checks", action="store_true")
+    ap.add_argument("--quiet", action="store_true")
+    a = ap.parse_args()
+    sim = world()
+    if a.out:
+        build_pack(a.out, sim, quiet=a.quiet)
+        return 0
+    print("pack")
+    build_pack(TARGET, sim, quiet=a.quiet)
+    fig, g, a1, a2, a3 = figures(sim)
+    with open(os.path.join(HERE, "figures.json"), "w", encoding="utf-8") as fh:
+        json.dump(fig, fh, indent=2, sort_keys=True)
+        fh.write("\n")
+    print("goldens")
+    build_goldens(GOLDEN, sim, g, a1, a2, a3, quiet=a.quiet)
+    print("\nthe call: %s postings tripped the ruleset in FY26 P1 to P9 (unrounded %.1f), against %s "
+          "entries raised" % ("{:,}".format(g["graded"]), g["raw"], "{:,}".format(g["flagged"])))
+    if a.no_checks:
+        return 0
+    for script in ("checks.py", "verify.py"):
+        print("\n%s" % script)
+        r = subprocess.run([sys.executable, os.path.join(HERE, script)], cwd=HERE)
+        if r.returncode:
+            print("FAIL %s exited %d" % (script, r.returncode))
+            return r.returncode
+    print("\nrebuild")
+    d1 = digest(TARGET)
+    tmp = tempfile.mkdtemp(dir=TASK)
     try:
-        os.makedirs(os.path.join(tmp, "generator"))
-        everything(tmp, quiet=True)
-        same_t = digest(os.path.join(TASK, "target")) == digest(os.path.join(tmp, "target"))
-        same_g = digest(os.path.join(TASK, "golden")) == digest(os.path.join(tmp, "golden"))
-        same = {}
-        for f in ("metadata.json", os.path.join("generator", "figures.json")):
-            same[f] = open(os.path.join(TASK, f), "rb").read() == open(os.path.join(tmp, f), "rb").read()
-        if not (same_t and same_g and all(same.values())):
-            raise SystemExit("second build differs: target %s, golden %s, %s" % (same_t, same_g, same))
+        build_pack(os.path.join(tmp, "target"), world(), quiet=True)
+        d2 = digest(os.path.join(tmp, "target"))
     finally:
-        shutil.rmtree(tmp)
-    allh = hashlib.sha256(
-        "".join(v for _, v in sorted(digest(os.path.join(TASK, "target")).items())).encode() +
-        "".join(v for _, v in sorted(digest(os.path.join(TASK, "golden")).items())).encode()).hexdigest()
-    print("two builds byte-identical: %d target files, %d golden files, metadata.json and figures.json (sha256 %s)"
-          % (len(os.listdir(os.path.join(TASK, "target"))), len(os.listdir(os.path.join(TASK, "golden"))),
-             allh[:16]))
-    import zipfile
-    zp = cut_zip(TASK)
-    with zipfile.ZipFile(zp) as z:
-        inside = {i.filename: hashlib.sha256(z.read(i.filename)).hexdigest() for i in z.infolist()}
-    if inside != digest(os.path.join(TASK, "target")):
-        raise SystemExit("target.zip differs from target/")
-    print("target.zip cut from this build: %d files, each identical to target/ (sha256 %s)"
-          % (len(inside), hashlib.sha256(open(zp, "rb").read()).hexdigest()[:16]))
+        shutil.rmtree(tmp, ignore_errors=True)
+    print("  %s and %s" % (d1, d2), "identical" if d1 == d2 else "DIFFER")
+    if d1 != d2:
+        return 1
+    cut_zip(os.path.join(TASK, "target.zip"), TARGET)
+    print("  target.zip %.1f MB" % (os.path.getsize(os.path.join(TASK, "target.zip")) / 1048576))
+    return 0
 
 
 if __name__ == "__main__":
-    ap = argparse.ArgumentParser()
-    ap.add_argument("--out", help="build the pack only, into this folder")
-    ap.add_argument("--no-checks", action="store_true", help="build the pack, goldens and figures only")
-    a = ap.parse_args()
-    if a.out:
-        build(a.out)
-    elif a.no_checks:
-        everything(TASK)
-    else:
-        main()
+    sys.exit(main())

@@ -1,423 +1,208 @@
-"""Independent verifier: reads only the shipped pack and the goldens and recomputes every graded figure by its own
-route (the placement the record settles, reached in plain Python over the record's distinct window shapes rather
-than by the generator's numpy iteration over offence-hours, the quarter taken from the register's own street
-ranges, the two exports reconciled on the occurrence key, the footfall hours counted against the supplier's fault
-log), then compares them with the goldens.
+"""The independent verifier. It reads only the shipped bundle under <task>/target and the claims in
+generator/figures.json, and recomputes every graded figure from the files a solver gets.
 
-    python3 task184/generator/verify.py [target] [golden]"""
+Nothing here imports the world, the ledger or the asks: the point is to reach the same answers from the
+pack alone, the way the judge does.
+
+    python3 task184/generator/verify.py
+"""
 import csv
 import datetime as dt
-import io
+import json
 import os
-import re
+import sqlite3
 import sys
 
-import openpyxl
+import numpy as np
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 TASK = os.path.dirname(HERE)
-DAYS = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]
-RMS = "kcp_rms_offence_extract_2027-01-22.csv"
-LEGACY = "kcp_cis_offence_extract_2025.csv"
-REGISTER = "harbourgate_location_register.csv"
-GAZETTEER = "kelverstoke_street_gazetteer.csv"
-SCHEDULE = "harbourgate_tasking_schedule.csv"
-CONTRACT = "harbourgate_patrol_tasking_contract_2027.pdf"
-COUNTS = "harbourgate_footfall_hourly.csv"
-FAULTS = "footfall_sensor_availability.csv"
-TRADING = "harbourgate_trading_hours.csv"
-PAPER = "harbourgate_patrol_slate_2027.pdf"
-BOOK = "harbourgate_slot_weights.xlsx"
-SEASONS = [(dt.date(2025, 4, 1), dt.date(2025, 9, 30)), (dt.date(2026, 4, 1), dt.date(2026, 9, 30))]
-
-n = [0]
+TARGET = os.path.join(TASK, "target")
+UBIN, GBIN = 100, 1_000
+MONITORED = ("EPOS", "ROUTE_DOCKET", "ROUTE_VAN", "AP_BATCH", "MANUAL")
+N = [0]
+FAIL = []
 
 
-def ok(cond, what):
-    n[0] += 1
+def ok(tag, cond, msg):
+    N[0] += 1
     if not cond:
-        raise AssertionError("verify: " + what)
+        FAIL.append("%s  %s" % (tag, msg))
 
 
-def rows_of(path):
-    with io.open(path, encoding="utf-8", newline="") as fh:
-        r = list(csv.reader(fh))
-    return [dict(zip(r[0], x)) for x in r[1:]]
+def rows(name):
+    with open(os.path.join(TARGET, name), encoding="utf-8") as fh:
+        return [tuple(r) for r in csv.reader(fh)][1:]
 
 
-def pdf_text(path):
-    from pypdf import PdfReader
-    return re.sub(r"\s+", " ", " ".join(pg.extract_text() for pg in PdfReader(path).pages))
+def unit_map():
+    """The twelve current unit codes, and the former codes the register and FY25 files carry."""
+    m = {}
+    for code, name, kind, county, former, eff, _note in rows("trading_unit_register.csv"):
+        m[code] = code
+        m[former] = code
+    return m
 
 
-def season_of(d):
-    for i, (a, b) in enumerate(SEASONS):
-        if a <= d <= b:
-            return i
-    return None
+def recover(k, f):
+    """The per-posting rate that maximises the per-entry likelihood of 1 - (1 - r) ** k."""
+    k = np.asarray(k, dtype=np.float64)
+    f = np.asarray(f, dtype=np.int64)
+    sizes, inv = np.unique(k.astype(np.int64), return_inverse=True)
+    s = sizes.astype(np.float64)
+    n = np.bincount(inv, minlength=s.size).astype(np.float64)
+    hit = np.bincount(inv, weights=f, minlength=s.size)
+    if hit.sum() == 0:
+        return 0.0
 
+    def score(r):
+        q = (1.0 - r) ** s
+        return float((hit * s * q / (np.maximum(1.0 - q, 1e-300) * (1.0 - r))).sum()
+                     - ((n - hit) * s / (1.0 - r)).sum())
 
-def ts(x):
-    return dt.datetime.strptime(x, "%Y-%m-%d %H:%M")
-
-
-HOURS_WEEK = 168
-def shape_of(a, b):
-    """(first hour of the week, length in hours) for one record's window, or (hour, 0) for a seen time."""
-    start = a.weekday() * 24 + a.hour
-    span = int(round((b - a).total_seconds() / 3600.0))
-    return start, max(span, 0)
-
-
-def settled_placement(rows, tol=1e-13, iters=20000):
-    """The hour-of-week shares the record settles, in plain Python, collapsed to distinct window shapes."""
-    shapes = {}
-    seen = [0.0] * HOURS_WEEK
-    n = 0
-    for r in rows:
-        s, ln = shape_of(r["from"], r["to"])
-        n += 1
-        if ln == 0:
-            seen[s % HOURS_WEEK] += 1.0
+    lo, hi = 1e-10, 0.9
+    for _ in range(72):
+        mid = (lo + hi) / 2
+        if -score(mid) < 0:
+            lo = mid
         else:
-            shapes[(s, ln)] = shapes.get((s, ln), 0) + 1
-    members = {k: [(k[0] + i) % HOURS_WEEK for i in range(k[1])] for k in shapes}
-    q = [1.0 / HOURS_WEEK] * HOURS_WEEK
-    for _ in range(iters):
-        nxt = list(seen)
-        for key, cnt in shapes.items():
-            hs = members[key]
-            tot = 0.0
-            for h in hs:
-                tot += q[h]
-            if tot <= 0.0:
-                share = cnt / float(len(hs))
-                for h in hs:
-                    nxt[h] += share
-                continue
-            f = cnt / tot
-            for h in hs:
-                nxt[h] += q[h] * f
-        s = sum(nxt)
-        nxt = [x / s for x in nxt]
-        d = max(abs(x - y) for x, y in zip(nxt, q))
-        q = nxt
-        if d < tol:
-            break
-    return [x * n for x in q], n
+            hi = mid
+    return (lo + hi) / 2
 
 
-def settled_grid(rows, slot_h=4):
-    """The placement folded into the week's 42 four-hour slots."""
-    per_hour, _n = settled_placement(rows)
-    w = {(d, h): 0.0 for d in range(7) for h in range(0, 24, slot_h)}
-    for h in range(HOURS_WEEK):
-        w[(h // 24, (h % 24) // slot_h * slot_h)] += per_hour[h]
-    return w
+def main():
+    claims = json.load(open(os.path.join(HERE, "figures.json"), encoding="utf-8"))
+    um = unit_map()
 
+    # ------------------------------------------------ the call, from the extract and the register
+    con = sqlite3.connect(os.path.join(TARGET, "drumcondra_gl_fy26.sqlite"))
+    ent = con.execute("SELECT entry_no, unit_code, item_count FROM journal_entries").fetchall()
+    flagged = {int(r[1]) for r in rows("monitoring_exceptions_fy26.csv")}
+    by_unit = {}
+    for entry_no, code, items in ent:
+        u = um[code]
+        d = by_unit.setdefault(u, {"k": [], "f": []})
+        d["k"].append(int(items))
+        d["f"].append(1 if entry_no in flagged else 0)
+    ok("V1", len(by_unit) == 12, "the extract resolves to %d units, not twelve" % len(by_unit))
 
-def identification(rows, slot_h=4):
-    """(the week's hours at which some window begins or ends, the slot edges none of them lands on)."""
-    edges = set()
-    for r in rows:
-        if r["to"] <= r["from"]:
+    raw_total = 0.0
+    for u in sorted(by_unit):
+        k, f = np.array(by_unit[u]["k"]), np.array(by_unit[u]["f"])
+        v = recover(k, f) * k.sum()
+        raw_total += v
+        graded = int(round(v / UBIN) * UBIN)
+        want = claims["call"]["unit_postings_tripped"][u]
+        ok("V2", graded == want, "%s recomputes to %d, figures.json claims %d" % (u, graded, want))
+        ok("V3", int(f.sum()) == claims["call"]["unit_entries_raised"][u],
+           "%s raised %d entries, figures.json claims %d"
+           % (u, int(f.sum()), claims["call"]["unit_entries_raised"][u]))
+    group = int(round(raw_total / GBIN) * GBIN)
+    ok("V4", group == claims["call"]["group_postings_tripped"],
+       "the group figure recomputes to %d, figures.json claims %d"
+       % (group, claims["call"]["group_postings_tripped"]))
+    ok("V5", len(flagged) == claims["call"]["entries_raised_as_exceptions"],
+       "the register holds %d entries, figures.json claims %d"
+       % (len(flagged), claims["call"]["entries_raised_as_exceptions"]))
+    ok("V6", sum(int(r[2]) for r in ent) == claims["call"]["postings_in_window"],
+       "the extract holds %d postings, figures.json claims %d"
+       % (sum(int(r[2]) for r in ent), claims["call"]["postings_in_window"]))
+    ok("V7", len(ent) == claims["call"]["entries_in_window"],
+       "the extract holds %d entries, figures.json claims %d"
+       % (len(ent), claims["call"]["entries_in_window"]))
+    # the rounded unit figures sum to the group's own rounded figure
+    ok("V8", sum(claims["call"]["unit_postings_tripped"].values()) == group,
+       "the rounded unit figures do not sum to the group figure")
+
+    # the rungs, recomputed from the pack
+    n, T = len(ent), sum(int(r[2]) for r in ent)
+    nf = len(flagged)
+    ok("V9", abs(claims["rungs"]["rung0_flagged_entries"] - nf) < 0.5, "rung 0 does not recompute")
+    ok("V10", abs(claims["rungs"]["rung1_entry_rate_grossed_up"] - nf / n * T) < 1.0,
+       "rung 1 does not recompute")
+    kbar, p = T / n, nf / n
+    ok("V11", abs(claims["rungs"]["rung2_inversion_on_mean_entry_size"]
+                  - (1.0 - (1.0 - p) ** (1.0 / kbar)) * T) < 1.0, "rung 2 does not recompute")
+
+    # ------------------------------------------------ ask 1
+    accr = rows("payables_accruals_fy25.csv")
+    superseded = {r[6] for r in accr if r[6]}
+    sub, led = {}, {}
+    for ref, unit, _p, _d, _s, amt, restates, posted in accr:
+        if ref in superseded:
             continue
-        a, b = r["from"], r["to"]
-        edges.add(a.weekday() * 24 + a.hour)
-        edges.add((b.weekday() * 24 + b.hour) % HOURS_WEEK)
-    missing = sorted(set(range(0, HOURS_WEEK, slot_h)) - edges)
-    return edges, missing
+        sub[um[unit]] = sub.get(um[unit], 0.0) + float(amt)
+        led[um[posted]] = led.get(um[posted], 0.0) + float(amt)
+    for unit, acc, grni, total in rows("payables_control_account_fy25.csv"):
+        u = um[unit]
+        want = claims["asks"]["ask1"]["%s|subledger" % u]
+        ok("V12", abs(round(sub.get(u, 0.0), 2) - want) < 0.02,
+           "%s subledger recomputes to %.2f, figures.json claims %.2f" % (u, sub.get(u, 0.0), want))
+        wd = claims["asks"]["ask1"]["%s|difference" % u]
+        ok("V13", abs(round(float(total) - sub.get(u, 0.0), 2) - wd) < 0.02,
+           "%s difference recomputes to %.2f, figures.json claims %.2f"
+           % (u, float(total) - sub.get(u, 0.0), wd))
 
-
-def even_spread_grid(rows, slot_h=4):
-    """The textbook weight, kept so the verifier can state that it is a different answer: each window spread
-    evenly over its own hours."""
-    w = {(d, h): 0.0 for d in range(7) for h in range(0, 24, slot_h)}
-    for r in rows:
-        s, ln = shape_of(r["from"], r["to"])
-        if ln == 0:
-            w[(s // 24, (s % 24) // slot_h * slot_h)] += 1.0
+    # ------------------------------------------------ ask 2
+    cal = {}
+    for fy, p, a, b, _d, _w in rows("period_calendar.csv"):
+        if fy == "FY25":
+            cal[int(p)] = (dt.date.fromisoformat(a), dt.date.fromisoformat(b))
+    def period_of(d):
+        for p, (a, b) in cal.items():
+            if a <= d <= b:
+                return p
+        return None
+    takings = {}
+    for unit, _till, bdate, _txn, val in rows("epos_till_takings_fy25.csv"):
+        p = period_of(dt.date.fromisoformat(bdate))
+        if p is None:
             continue
-        for i in range(ln):
-            h = (s + i) % HOURS_WEEK
-            w[(h // 24, (h % 24) // slot_h * slot_h)] += 1.0 / ln
-    return w
+        key = (um[unit], (p - 1) // 3 + 1)
+        takings[key] = takings.get(key, 0.0) + float(val)
+    posted = {}
+    for unit, p, val in rows("sales_control_account_fy25.csv"):
+        key = (um[unit], (int(p) - 1) // 3 + 1)
+        posted[key] = posted.get(key, 0.0) + float(val)
+    for (u, q), t in sorted(takings.items()):
+        gap = round(t - posted.get((u, q), 0.0), 2)
+        want = claims["asks"]["ask2"]["%s-Q%d|gap" % (u, q)]
+        ok("V14", abs(gap - want) < 0.02,
+           "%s Q%d gap recomputes to %.2f, figures.json claims %.2f" % (u, q, gap, want))
 
+    # ------------------------------------------------ ask 3
+    scope = {}
+    for unit, p, stream, entries, _post, _val in rows("gl_period_summary_fy25.csv"):
+        if stream in MONITORED:
+            key = (um[unit], int(p))
+            scope[key] = scope.get(key, 0) + int(entries)
+    ev = {}
+    for unit, p, _runs, evald, _c, _v, _h in rows("monitoring_run_log_fy25.csv"):
+        ev[(um[unit], int(p))] = int(evald)
+    for key, s in sorted(scope.items()):
+        u, p = key
+        got = max(s - ev.get(key, 0), 0)
+        want = claims["asks"]["ask3"]["%s-P%02d" % (u, p)]
+        ok("V15", got == want,
+           "%s P%02d recomputes to %d, figures.json claims %d" % (u, p, got, want))
 
-def main(target=None, golden=None):
-    target = target or os.path.join(TASK, "target")
-    golden = golden or os.path.join(TASK, "golden")
-    files = os.listdir(target)
-    ok(len(files) >= 10, "ten files or more")
-    ok(len({f.rsplit(".", 1)[1] for f in files}) >= 3, "three formats or more")
+    # ------------------------------------------------ the input gates, on the shipped folder
+    files = sorted(os.listdir(TARGET))
+    ok("V16", len(files) >= 10, "the pack has %d files" % len(files))
+    ok("V17", len({os.path.splitext(f)[1].lower() for f in files}) >= 3,
+       "the pack has fewer than three formats")
+    ok("V18", len(ent) >= 25000, "no shipped file carries 25,000 rows")
+    md = json.load(open(os.path.join(TARGET, "metadata.json"), encoding="utf-8"))
+    ok("V19", len(md.get("distractors", [])) >= 2, "metadata.json declares fewer than two distractors")
+    for d in md.get("distractors", []):
+        ok("V20", d in files, "declared distractor %s is not in the pack" % d)
+    ok("V21", md["provenance"]["licence"].startswith("CC0"), "no licence recorded")
 
-    # the contract's own words fix the population, the window and the unit
-    ct = pdf_text(os.path.join(target, CONTRACT))
-    ok("eight patrol slots in each week" in ct, "the contract buys eight slots")
-    ok("occurred within the quarter" in ct, "the contract's quarter clause")
-    classes = [c for c in ("Theft from a motor vehicle", "Theft of a pedal cycle", "Criminal damage",
-                           "Burglary business", "Burglary residential") if c in ct]
-    ok(len(classes) == 5, "Annex B names five classes")
-
-    reg = rows_of(os.path.join(target, REGISTER))
-    codes = {r["location_code"] for r in reg}
-    ok(len(codes) == 5, "the register holds five locations")
-
-    sched = rows_of(os.path.join(target, SCHEDULE))
-    starts = sorted({int(r["slot_start_local"][:2]) for r in sched})
-    ok(starts == [0, 4, 8, 12, 16, 20] and len(sched) == 42, "the schedule's 42 slots from midnight")
-
-    # the main population, from the extract alone
-    ext = rows_of(os.path.join(target, RMS))
-    main_rows = []
-    for r in ext:
-        if r["offence_class"] not in classes or r["location_code"] not in codes:
-            continue
-        a, b = ts(r["occurred_from"]), ts(r["occurred_to"])
-        si = season_of(a.date())
-        if si is None:
-            continue
-        main_rows.append({"from": a, "to": b, "cls": r["offence_class"], "season": si})
-    ok(len(main_rows) > 20000, "the main population is the quarter's contracted offences (%d)" % len(main_rows))
-    ok(all(r["from"].minute == 0 and r["to"].minute == 0 for r in main_rows if r["to"] > r["from"]),
-       "every window is on the hour")
-
-    edges, missing_edges = identification(main_rows)
-    ok(not missing_edges,
-       "every four-hour slot edge of the week is a window edge in the record, so no cell the record "
-       "separates straddles a slot edge (missing %r)" % (missing_edges,))
-    ok(len(edges) >= 40, "the record's windows cut the week at %d distinct hours" % len(edges))
-    grid = {k: v / len(SEASONS) for k, v in settled_grid(main_rows).items()}
-    even = {k: v / len(SEASONS) for k, v in even_spread_grid(main_rows).items()}
-    moved = max(abs(even[k] - grid[k]) for k in grid)
-    ok(moved > 50.0,
-       "the even spread over each window is a different placement, not the same one (worst slot moves "
-       "%.1f offences)" % moved)
-    even_slate = [s for s, _ in sorted(even.items(), key=lambda kv: -kv[1])[:8]]
-    order = sorted(grid.items(), key=lambda kv: -kv[1])
-    slate = [s for s, _ in order[:8]]
-    total = sum(v for _, v in order[:8])
-    fifty = lambda x: int(round(x / 50.0) * 50)
-
-    # the paper
-    paper = pdf_text(os.path.join(golden, PAPER))
-    for s in slate:
-        label = "%s %02d:00 to %02d:00" % (DAYS[s[0]], s[1], (s[1] + 4) % 24)
-        ok(label in paper, "the paper names %s" % label)
-        ok("{:,}".format(fifty(grid[s])) in paper, "the paper's figure for %s" % label)
-    ok("{:,}".format(fifty(total)) in paper, "the paper's covered total %d" % fifty(total))
-    runner = order[8]
-    ok("%s %02d:00 to %02d:00" % (DAYS[runner[0][0]], runner[0][1], (runner[0][1] + 4) % 24) in paper,
-       "the paper names the runner-up")
-
-    # the workbook's grid
-    book = openpyxl.load_workbook(os.path.join(golden, BOOK))
-    seen = 0
-    for day, slot, fig, mark in book["Week"].iter_rows(min_row=2, values_only=True):
-        s = (DAYS.index(day), int(slot[:2]))
-        ok(fig == fifty(grid[s]), "the workbook's figure for %s %s (%d against %d)" % (day, slot, fig, fifty(grid[s])))
-        ok((mark == "commissioned") == (s in set(slate)), "the workbook's mark on %s %s" % (day, slot))
-        seen += 1
-    ok(seen == 42, "the workbook carries all 42 slots")
-
-    # ask 1, the two exports reconciled on the occurrence key
-    leg = rows_of(os.path.join(target, LEGACY))
-    xwalk = {"THEFT - FROM PERSON": "Theft from the person", "ASSAULT - NO INJURY": "Assault without injury",
-             "PUBLIC ORDER OFFENCE": "Public order", "THEFT - SHOP PREMISES": "Shoplifting"}
-    numbers = {}
-    for r in reg:
-        numbers[r["street_name"]] = (int(r["number_from"]), int(r["number_to"]))
-    gaz = rows_of(os.path.join(target, GAZETTEER))
-    quarter_streets = {r["street_name"]: r["street_ref"] for r in gaz if r["locality"] == "Harbourgate"}
-    refs = {r["street_ref"] for r in gaz if r["locality"] == "Harbourgate"}
-    primary = {r["street_ref"]: r["street_name"] for r in gaz if r["name_status"] == "primary"}
-
-    all_names = sorted({r["street_name"] for r in gaz}, key=len, reverse=True)
-    ref_of = {}
-    for r in gaz:
-        ref_of.setdefault(r["street_name"], []).append((r["street_ref"], r["locality"]))
-
-    def street_of(address):
-        """The street an address sits on, and the number if it carries one: the gazetteer's names matched longest
-        first, so an alternative spelling resolves to the same street reference as the primary."""
-        for nm in all_names:
-            i = address.find(nm)
-            if i < 0:
-                continue
-            m = re.search(r"(\d+)\s*$", address[:i])
-            num = int(m.group(1)) if m else None
-            cands = ref_of[nm]
-            return nm, num, cands
-        return None, None, []
-
-    def in_quarter(address, code):
-        if code:
-            return code in codes
-        nm, num, cands = street_of(address)
-        if nm is None:
-            return False
-        local = [ref for ref, loc in cands if loc == "Harbourgate"]
-        if not local:
-            return False
-        name = primary[local[0]]
-        if name in numbers:
-            lo, hi = numbers[name]
-            if num is None:
-                return lo == hi                     # a named building on a single-numbered street
-            return lo <= num <= hi
-        return True
-
-    def location_of(address, code):
-        if code:
-            return [x["location_name"] for x in reg if x["location_code"] == code][0]
-        nm, _num, cands = street_of(address)
-        name = primary[[ref for ref, loc in cands if loc == "Harbourgate"][0]]
-        return [x["location_name"] for x in reg if x["street_name"] == name][0]
-
-    counted = {}
-    keys = set()
-    for r in ext:
-        if not in_quarter(r["address_text"], r["location_code"]):
-            continue
-        si = season_of(ts(r["occurred_from"]).date())
-        if si is None:
-            continue
-        keys.add((r["offence_class"], r["occurred_from"], r["occurred_to"], r["address_text"]))
-        counted[(r["offence_class"], si)] = counted.get((r["offence_class"], si), 0) + 1
-    for r in leg:
-        cls = xwalk[r["offence_type"]]
-        d = dt.datetime.strptime(r["occ_from_date"] + " " + r["occ_from_time"], "%d/%m/%Y %H:%M")
-        si = season_of(d.date())
-        if si is None or not in_quarter(r["address_text"], ""):
-            continue
-        frm = d.strftime("%Y-%m-%d %H:%M")
-        to = (dt.datetime.strptime(r["occ_to_date"] + " " + r["occ_to_time"], "%d/%m/%Y %H:%M").strftime(
-            "%Y-%m-%d %H:%M") if r["occ_to_date"] else frm)
-        if (cls, frm, to, r["address_text"]) in keys:
-            continue                      # the same offence, written to both systems in the parallel fortnight
-        counted[(cls, si)] = counted.get((cls, si), 0) + 1
-    for cls, yr, fig in book["Offences by class"].iter_rows(min_row=2, values_only=True):
-        got = counted.get((cls, yr - 2025), 0)
-        ok(fig == int(round(got, -1)), "ask 1 %s %d: the workbook says %d, the pack gives %d" % (cls, yr, fig, got))
-
-    # ask 1 again, by the other reconciliation route a solver can take: the crime information system is the
-    # system of record until the class migrates, the records management system from the migration date on. It has
-    # to give the same count as the matched union above, offence for offence.
-    migration = {}
-    for line in io.open(os.path.join(target, "kcp_rms_extract_notes.md"), encoding="utf-8"):
-        parts = [x.strip() for x in line.strip().strip("|").split("|")]
-        if len(parts) == 2 and parts[0] in (
-                "Theft from a motor vehicle", "Theft of a pedal cycle", "Criminal damage", "Burglary business",
-                "Burglary residential", "Theft from the person", "Assault without injury", "Public order",
-                "Shoplifting"):
-            try:
-                migration[parts[0]] = dt.datetime.strptime(parts[1], "%d %B %Y").date()
-            except ValueError:
-                pass
-    ok(len(migration) == 9, "the extract notes give a migration date for every class")
-    by_migration = {}
-    for r in ext:
-        if not in_quarter(r["address_text"], r["location_code"]):
-            continue
-        si = season_of(ts(r["occurred_from"]).date())
-        if si is None:
-            continue
-        if ts(r["reported_at"]).date() < migration[r["offence_class"]]:
-            continue                      # the crime information system was still the system of record
-        by_migration[(r["offence_class"], si)] = by_migration.get((r["offence_class"], si), 0) + 1
-    for r in leg:
-        cls = xwalk[r["offence_type"]]
-        d = dt.datetime.strptime(r["occ_from_date"] + " " + r["occ_from_time"], "%d/%m/%Y %H:%M")
-        si = season_of(d.date())
-        if si is None or not in_quarter(r["address_text"], ""):
-            continue
-        by_migration[(cls, si)] = by_migration.get((cls, si), 0) + 1
-    for k, v in counted.items():
-        ok(by_migration.get(k, 0) == v,
-           "ask 1 %s %d: the migration-date route gives %d against the matched union's %d"
-           % (k[0], 2025 + k[1], by_migration.get(k, 0), v))
-
-    # ask 2, the location shares
-    at, tot = {}, {}
-    for r in ext:
-        code = r["location_code"]
-        if not in_quarter(r["address_text"], code):
-            continue
-        si = season_of(ts(r["occurred_from"]).date())
-        if si is None:
-            continue
-        name = location_of(r["address_text"], code)
-        at[(name, si)] = at.get((name, si), 0) + 1
-        tot[si] = tot.get(si, 0) + 1
-    for r in leg:
-        if not in_quarter(r["address_text"], ""):
-            continue
-        d = dt.datetime.strptime(r["occ_from_date"] + " " + r["occ_from_time"], "%d/%m/%Y %H:%M")
-        si = season_of(d.date())
-        cls = xwalk[r["offence_type"]]
-        frm = d.strftime("%Y-%m-%d %H:%M")
-        to = (dt.datetime.strptime(r["occ_to_date"] + " " + r["occ_to_time"], "%d/%m/%Y %H:%M").strftime(
-            "%Y-%m-%d %H:%M") if r["occ_to_date"] else frm)
-        if si is None or (cls, frm, to, r["address_text"]) in keys:
-            continue
-        name = location_of(r["address_text"], "")
-        at[(name, si)] = at.get((name, si), 0) + 1
-        tot[si] = tot.get(si, 0) + 1
-    for name_, yr, fig in book["Location shares"].iter_rows(min_row=2, values_only=True):
-        si = yr - 2025
-        got = 100.0 * at[(name_, si)] / tot[si]
-        ok(abs(fig - round(got, 1)) < 1e-9,
-           "ask 2 %s %d: the workbook says %.1f, the pack gives %.3f" % (name_, yr, fig, got))
-
-    # ask 3, the footfall per trading hour
-    trading = {}
-    for r in rows_of(os.path.join(target, TRADING)):
-        d = DAYS.index(r["day_of_week"])
-        o = int(r["opens_local"][:2])
-        c = int(r["closes_local"][:2])
-        if r["closes_on"] != r["day_of_week"]:
-            c += 24                       # the schedule says the day closes on the following day
-        trading[d] = (o, c)
-
-    def open_at(day, hour):
-        o, c = trading[day]
-        if o <= hour < min(c, 24):
-            return True
-        po, pc = trading[(day - 1) % 7]
-        return pc > 24 and hour < pc - 24
-
-    faults = {}
-    for r in rows_of(os.path.join(target, FAULTS)):
-        a = dt.datetime.fromisoformat(r["fault_from"]).date()
-        b = dt.datetime.fromisoformat(r["fault_to"]).date()
-        d = a
-        while d < b:
-            for h in range(24):
-                faults.setdefault(r["sensor_id"], set()).add((d, h))
-            d += dt.timedelta(days=1)
-    num, den = {}, {}
-    for r in rows_of(os.path.join(target, COUNTS)):
-        local = dt.datetime.strptime(r["count_hour_utc"], "%Y-%m-%dT%H:%M:%SZ") + dt.timedelta(hours=1)
-        si = season_of(local.date())
-        if si is None or not open_at(local.weekday(), local.hour):
-            continue
-        if (local.date(), local.hour) in faults.get(r["sensor_id"], set()):
-            continue
-        num[(r["sensor_id"], si)] = num.get((r["sensor_id"], si), 0) + int(r["pedestrians"])
-        den[(r["sensor_id"], si)] = den.get((r["sensor_id"], si), 0) + 1
-    for sid, yr, fig in book["Footfall"].iter_rows(min_row=2, values_only=True):
-        si = yr - 2025
-        got = num[(sid, si)] / den[(sid, si)]
-        ok(fig == int(round(got, -1)),
-           "ask 3 %s %d: the workbook says %d, the pack gives %.2f" % (sid, yr, fig, got))
-
-    print("verify: %d checks passed from the pack alone (slate %s and five more at %d a season, runner-up %s at %d; "
-          "%d quarter offences of the contracted classes; the placement recomputed over the record's own "
-          "distinct window shapes agrees with the goldens to "
-          "the stated rounding)"
-          % (n[0], ", ".join("%s %02d:00" % (DAYS[s[0]][:3], s[1]) for s in slate[:3]), fifty(total),
-             "%s %02d:00" % (DAYS[runner[0][0]][:3], runner[0][1]), fifty(runner[1]), len(main_rows)))
+    print("task184 verify: %d assertions, %d FAIL" % (N[0], len(FAIL)))
+    for f in FAIL:
+        print("  FAIL %s" % f)
+    return 1 if FAIL else 0
 
 
 if __name__ == "__main__":
-    main(*(sys.argv[1:3]))
+    sys.exit(main())
