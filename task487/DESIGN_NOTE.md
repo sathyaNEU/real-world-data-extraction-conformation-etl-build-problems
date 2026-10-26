@@ -370,6 +370,24 @@ all the year's windows, band C, with no range. The ask layer was re-sited onto t
 path (the crews' re-check sessions in the survey log, contract work completed at its tickets' approval); the eight files
 the call reads are byte-identical to round 3's (md5 asserted), so the call, all 1,660 event rows and every rung stand.
 
+## Stage 4 round 4 (zip 3556c4e7, 2026-10-26)
+
+Readers G and H (sonnet, medium, fresh copies) both filed band B and CAD 115,200 (45.1 t and 45.2 t, every undated
+start halfway through its window, G's previous visit the last complete inspection) and kept 4 of 29 scored figures each
+(13.8 per cent, the event counts; score_reader exit 0 twice): both read the survey log's sessions of 20 points or fewer
+as re-checks and took each repair on its order's Completed day, so the contract approval held both and Schedule B kept
+0 of 24 (G's 24 cells and 21 of H's are exactly the sessions-right, Completed-day handling the ceiling prices at 0).
+The FIX_NOW re-judge (order kept) returned DETERMINISTIC and APPROVE: band C and CAD 171,000 forced (six share-plus-rate
+fits 53.71 to 54.27 t, 5.7 t from both edges; every midpoint reading 44.6 to 45.3 t, band B; the found time 0.64 t,
+band A; the previous departure about 89 t, band E), Schedule B reproduced in all 24 cells, Gate G
+method_or_model_selection and analytical_non_defect, Gate H domain, layers and decisive step pass. Its two residual
+notes, weighed and left as built: R10's July to December figure is 7.8497 t, 272 g under its rounding edge; of the
+conventions that move one cell alone, only a fall-back hour on 1 November moves it (2.1 kg), the data notes say the
+province kept its clocks at UTC-6 then, and the filed day convention gives the figure exactly; the survey and repair cut-offs are read from the data (sessions of 2 to 20
+points that tag nothing against surveys of 100 to 410, field tickets against approval days), which the judge weighs as
+data-supported and not reasonably contested, and pinning what a survey is in the notes would hand the device over.
+Shipped on zip 3556c4e7.
+
 ## Tried and rejected
 
 - 2026-10-26, draw screen for this number, each dead on file, on the rules or on paper before a card was written: the
