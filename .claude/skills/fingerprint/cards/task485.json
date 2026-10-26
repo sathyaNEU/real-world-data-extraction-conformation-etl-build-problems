@@ -1,126 +1,127 @@
 {
- "task": "task485",
- "architecture": "v3",
- "drawn": "2026-10-25",
- "slot_note": "re-rooted after architecture 2 (a region's cattle-manure ammonia from animal-days by region and housing season) was spent at stage 4; a fresh world and mechanism on the lane's objective, the slot's seed (ET42) set aside at the first draw",
- "domain": "physical-environmental-sciences",
- "subdomain": "emissions-inventory",
- "niche": "an environment ministry's 2027 Sulphur Dioxide Order, listing the permitted industrial coal boilers whose 2026 sulphur dioxide reached 250 tonnes, the inventory conformed from the coal suppliers' delivery analyses, the boiler operators' quarterly returns, the limestone quarries' delivery tickets, the annual scrubber performance tests and the permits' scrubber design data, where each wet limestone scrubber's real removal over the year is closed on the limestone it consumed",
- "objective": "etl",
- "shape": "10",
- "decision_type": "designation_set",
- "answer_unit": "set_of_items",
- "answer": "",
- "answer_source": "",
- "gap": [
-  "objective"
- ],
- "pattern": [
-  "none"
- ],
- "generators": [
-  "G3",
-  "G12"
- ],
- "gate_g": "method_or_model_selection",
- "calibration_form": "none",
- "stump_strategy": "other",
- "decisive_rule_filed": false,
- "official_decoy": false,
- "validated_decoy": false,
- "context_artifact": "none",
- "stump_class": "analytical",
- "analyst_test": "A strong analyst conforms each boiler's 2026 coal burned and its as-received sulphur from the suppliers' delivery analyses and the quarterly stock changes, takes off the permit's ash retention, applies the removal its scrubber showed at the 2026 performance test (or the permit's design removal) to the whole year and lists the boilers at or over 250 tonnes, filing one or two large boilers; it is wrong because several scrubbers stood bypassed for weeks while their boilers ran, which no return records and no announced test sees, and the limestone each scrubber consumed fixes the sulphur it actually removed.",
- "domain_test": "A sulphur dioxide inventory for abated combustion closes each unit's sulphur balance over the year (sulphur fired, less sulphur kept in the ash, less sulphur the absorber removed), and for a wet limestone scrubber the sulphur removed is set by the calcium carbonate it consumed at its operating stoichiometry, so the year's emissions come from the reagent balance, not from a removal rate observed while the absorber runs; with hospitals for boilers and infections for sulphur nothing stoichiometric binds a reagent to what it removes and the task stops making sense.",
- "layer2_family": "field_method",
- "layer2_pattern": "own:the year's sulphur removed read from the limestone each wet scrubber consumed at its guaranteed stoichiometry, closing the sulphur balance, against the scrubber's design removal or its announced annual test",
- "layer1": [
-  "four coal suppliers' statements collated into one file, a row per truck or wagon under its lot's certificate, one supplier writing dates day first, the collation reaching from December 2025 dispatches to January 2027 receipts, corrected certificates re-issued with a revision letter",
-  "operators' quarterly returns in a template whose layout changed between the first and second half of 2026, the coal yard reported once on a two-boiler site's first row, stocks surveyed to the nearest 10 tonnes, weigh feeders a little off the weighbridges",
-  "limestone quarry tickets keyed to the quarries' accounts and delivery points, not the ministry's permit numbers, through a cross-reference, with purity certified by ISO week",
-  "annual performance test reports issued as PDF tables by two accredited laboratories with concentrations at different reference oxygen contents",
-  "three ash contractors' exports in kilograms and tonnes, under trading names, with other waste and January 2027 collections in them"
- ],
- "stakeholder_role": "the Air Quality Directorate's head of industrial emissions, who prepares the schedule of boilers the 2027 Sulphur Dioxide Order lists for the Minister",
- "role_family": "compliance_or_audit",
- "scoring_unit": "other",
- "spine": {
-  "file": "coal_deliveries_2026.csv",
-  "rows": 31461,
-  "entity": "one delivery of coal to a boiler site with its supplier's laboratory analysis",
-  "grain": "site x delivery",
-  "source": "synthetic"
- },
- "forum": "minister_or_cabinet",
- "forcing_event": "period_close",
- "org_family": "government_agency",
- "world": {
-  "geography": "an unnamed coal-producing country with a register of permitted industrial boilers in a Northern Priority Area (the provinces, bodies, firms and people are invented)",
-  "currency": "none",
-  "org_type": "an environment ministry's air quality directorate",
-  "invented_names": [
-   "Northern Priority Area",
-   "Quarholt Board Mills",
-   "Candrigg Soda Works",
-   "Ormthwaite Colliery",
-   "Brisgarth Main Colliery",
-   "Ostmouth Coal Imports",
-   "Zellfold Fuels",
-   "Bromscar Quarry",
-   "Molhope Lime and Stone",
-   "Iverstow Emission Testing",
-   "Jarrness Stack Testing",
-   "Kellfold Process Systems",
-   "Lundsett Absorber Engineering",
-   "Whinmoss Waste Haulage",
-   "Carnhope Skips",
-   "Pellrigg and Sons Haulage"
+  "task": "task485",
+  "architecture": "v4",
+  "drawn": "2026-10-26",
+  "slot_note": "re-rooted after architecture 3 (each scrubber's year closed on the limestone it consumed) was spent at stage 4; a fresh world and mechanism on the lane's objective, keeping only the seed's (ET42) immigration theme",
+  "domain": "survey-research-official-statistics",
+  "subdomain": "census-register-administrative-data-quality",
+  "niche": "an island Statistics Unit's provisional long-term immigration for the year to 30 June 2026 by employment sector, conformed from the Population Register's arrival registrations and leaving notices cut at 31 August 2026, set against the Population Policy's sector allowances that fix each sector's 2027 work permit quota",
+  "objective": "etl",
+  "shape": "10",
+  "decision_type": "designation_set",
+  "answer_unit": "set_of_items",
+  "answer": "",
+  "answer_source": "",
+  "gap": [
+    "time",
+    "population"
   ],
-  "people": [
-   "Maria Burgess",
-   "Timothy Peterson",
-   "Brenda Cook"
-  ]
- },
- "deliverables": [
-  "sulphur_dioxide_order_schedule_2027.xlsx",
-  "boiler_sulphur_dioxide_2026.png"
- ],
- "opening_move": "question-first",
- "question_form": "which",
- "driver": "Each unit's period output of a pollutant is the content of what it burned less what its ash kept and less what its removal step took out, and the removal step's share over the period is read neither from its design nor from its one announced test, which see it only while it runs, but from the reagent it consumed, which it uses in a fixed ratio to what it removes; no record carries the hours the step stood idle while the unit ran, so only the reagent balance shows them.",
- "driver_concrete": "Each boiler's 2026 sulphur dioxide is the sulphur in the coal it burned, less the sulphur its ash kept, less the sulphur its wet limestone scrubber removed, and the sulphur removed is the limestone the scrubber consumed (deliveries less the quarter-end stock change, at each delivery's carbonate purity) over the vendor's guaranteed moles of calcium carbonate per mole of sulphur dioxide removed; scrubbers that stood bypassed for part of the year while their boilers ran consumed too little limestone for their design removal, and their sulphur dioxide runs three to six times what their design or their annual test implies.",
- "stump": "The default path takes each boiler's 2026 coal sulphur from the delivery analyses and the quarter-end stock changes, less the permit's ash retention, times one minus the removal its scrubber showed at the 2026 performance test, and lists only the largest boiler or two; the step that lands it there is carrying a removal observed while the scrubber ran across a year in which several scrubbers stood bypassed for weeks with their boilers firing, when the limestone each scrubber consumed, at its guaranteed stoichiometry, fixes the sulphur it removed and puts those boilers at three to six times their tested emissions, over the line.",
- "mechanism_source": "design_note",
- "differentiation": {
-  "task477": "There each industry's exposure to pay schedules is estimated from how its period totals move with the pay dates the periods hold; here nothing is estimated from co-movement: a conservation law on a consumed reagent fixes how much a removal step removed, and the period's output is the balance's remainder.",
-  "task482": "Its architecture 7 reads a removal device's share through the outlet floor it holds against a diluting inlet; here no model of the device is fitted at all, the reagent the device consumed bounds what it removed, and the shortfall is idle time no record carries."
- },
- "lineage": [
-  {
-   "version": "v1",
-   "fate": "spent at stage 4, 2026-10-25: both scored readers fitted electors per dwelling to the dwelling's age since completion on the property-level registers and applied the ramp to every dwelling built and to come, landing the golden five",
-   "driver": "A new unit's contribution to a register builds up over several annual rounds after the unit is created toward the level settled units hold, so a forecast that keeps each existing unit at its present count and adds the units still to come at the settled units' yield, or at the yield the newest units show today, misses both the recent units still building up and the units that will still be young at the horizon, while a uniform completeness factor moves nothing.",
-   "stump": "The default path keeps each dwelling on the 1 December 2025 register at its 2025 count and adds the dwellings since and the trajectory's at the settled stock's electors per dwelling by type, filing Ebborby, Kettermere, Lorrimere North and Tibberfield; the estates completed from 2024 in Lorrimere West, Caldenstow Park and Quenbrook are still joining the register and the North Lorrimere and Tibberfield sites completing from 2030 will still be young in 2032, so aged to their canvasses five wards fail: Lorrimere West, Caldenstow Park, Quenbrook, Ebborby and Kettermere.",
-   "domain": "survey-research-official-statistics",
-   "subdomain": "census-register-administrative-data-quality",
-   "niche": "a boundary commission's electoral review of a district's 23 wards, each ward's electors on the register to be published after the 2032 canvass forecast from six canvasses of the register at property level, the address register and the council's housing trajectory, where a new dwelling's electors join the register over several canvasses after it is completed",
-   "gate_g": "etl_conformance",
-   "stump_strategy": "maturity_censoring"
+  "pattern": [
+    "none"
+  ],
+  "generators": [
+    "G9",
+    "G14",
+    "G13"
+  ],
+  "gate_g": "method_or_model_selection",
+  "calibration_form": "none",
+  "stump_strategy": "maturity_censoring",
+  "decisive_rule_filed": false,
+  "official_decoy": false,
+  "validated_decoy": false,
+  "context_artifact": "published_series",
+  "stump_class": "analytical",
+  "analyst_test": "A strong analyst conforms the register's stays, counts each sector's arrivals in the year to 30 June 2026, resolves those whose twelve months had run or who had already left by the cut, and gives each open arrival the share of the 2024-25 arrivals of its sector still on the island after the same whole months who stayed twelve months; that files care, construction and retail over their allowances, because the returning circular workers, whose arrivals doubled in 2025-26, are counted at the rate of the first-timers among whom the reference cohort hides them.",
+  "domain_test": "Provisional long-term migration under the twelve-month usual-residence rule is official migration statistics' own estimand, and the field estimates the stays not yet completed from earlier arrivals' retention given what is known of each arrival, its migration history included; put patients for migrants and a hospital for the island and the circular returner and the twelve-month residence test stop making sense.",
+  "layer2_family": "field_method",
+  "layer2_pattern": "own:an open arrival's twelve-month stay judged on earlier arrivals with the same migration history (a stay on the register ended in the year before), not on its sector's retention by months present",
+  "layer1": [
+    "the register's extract of 30 September 2026 holds leaving notices filed in September for departures on or before the 31 August cut",
+    "registration numbers re-issued at the 2023 move to the current register system, stays closed before it held in the legacy archive under the legacy number beside a crosswalk",
+    "stays open at the 2023 move closed in the legacy archive on the move date and reopened in the current extract under the new number",
+    "the legacy archive writing dates day first and the current extract ISO dates",
+    "the sector list revised on 1 January 2026, earlier registrations carrying the 2019 codes, several merged into one 2026 sector",
+    "dependants registered under their sponsor's number with no sector of their own",
+    "arrival dates declared on the form beside the later registration date, registrations late by days to weeks",
+    "two parishes merged in 2025, older stays carrying the old parish code"
+  ],
+  "stakeholder_role": "the Chief Statistician of the Statistics Unit, who certifies the provisional long-term immigration by sector to the Council of Ministers before it sets the 2027 work permit quotas",
+  "role_family": "statistical_office_head",
+  "scoring_unit": "other",
+  "spine": {
+    "file": "population_register_extract_20260930.csv",
+    "rows": 0,
+    "entity": "one stay on the island, from an arrival registration to its leaving notice",
+    "grain": "person x stay",
+    "source": "synthetic"
   },
-  {
-   "version": "v2",
-   "fate": "spent at stage 4 round 1, 2026-10-25: both scored readers rebuilt each animal's days from the movement register at the factor note's per-day rates by region and housing season and landed the golden six",
-   "driver": "A region's period total of a flow is read as each unit's annual rate for that region times the units counted there on one day, but part of the units move between regions with the seasons and their rate is several times higher in the season they spend in their other region; the total belongs to each region by the days each unit spends there in each season, rebuilt from the units' movement histories, and an average of the units present still leaves each unit's high-rate season with the region where it spends the low-rate one.",
-   "stump": "The default path multiplies each region's 1 June 2026 census by the factor note's annual factor per head and divides by farmed land, designating nine regions: it adds Lake Uplands, Middle Uplands, Eastern Uplands, Western Seaboard and Atlantic Coast, whose June herds hold lowland yearlings out on summer grazing lets and calves bought from dairy farms that spring, and it misses Inner Basin and Lower Basin, whose finishers house stores all winter and send them to slaughter before June; averaging the bovine register's count over the year still adds Lake Uplands, Middle Uplands and Western Seaboard, because the annual factor's housed days never happen there.",
-   "domain": "physical-environmental-sciences",
-   "subdomain": "emissions-inventory",
-   "niche": "a national ammonia programme's 2027 Ammonia Action Regions, designated on each region's cattle-manure ammonia per hectare of farmed land over the 2025-26 programme year, conformed from the bovine register's animal and movement records, the June livestock census, the herd register, the land parcel register and the inventory's factors, where youngstock spend the summer on grazing lets and the winter housed in another region",
-   "gate_g": "etl_conformance",
-   "stump_strategy": "grain_or_unit"
-  }
- ],
- "notes": "stump_strategy other: a conservation law on the reagent, the sulphur a wet limestone scrubber removed fixed by the limestone it consumed at its operating stoichiometry",
- "registered": "2026-10-25T18:58:51Z",
- "architecture_spent": true
+  "forum": "minister_or_cabinet",
+  "forcing_event": "vote_or_meeting",
+  "org_family": "research_or_statistics_office",
+  "world": {
+    "geography": "a fictional self-governing island in the British Isles (Esklett), its parishes, firms and people invented",
+    "currency": "GBP",
+    "org_type": "the island government's Statistics Unit, which compiles migration statistics from the Population Register",
+    "invented_names": [
+      "Esklett",
+      "Esklett Statistics Unit"
+    ],
+    "people": [
+      "Jean Grant",
+      "Gordon Hope",
+      "Melanie Hilton"
+    ]
+  },
+  "deliverables": [
+    "provisional_long_term_immigration_2025_26.xlsx",
+    "long_term_immigration_by_sector_2025_26.png"
+  ],
+  "opening_move": "question-first",
+  "question_form": "which",
+  "driver": "An arrival's chance of staying past a fixed horizon is read from earlier arrivals still present at the same point, but an arrival that left within the year before and came back repeats its earlier short stay, a property rebuilt from its own earlier records and read off no column, so a cohort in which such repeat arrivals have grown is over-counted by any retention measured on the earlier cohort by group and elapsed time.",
+  "driver_concrete": "Each sector's provisional long-term immigration for 2025-26 counts the arrivals whose twelve months had run on the island or who had left, plus each open arrival's chance of staying twelve months read from the 2024-25 arrivals of the same sector and the same migration history (a stay on the register that ended in the twelve months before the arrival) still present the same whole months after arriving; agency-placed care, construction and retail workers on eight- to ten-month placements from 2025 return after a break, nearly always for another short stay, so those sectors' returning arrivals doubled and their sector retention counts them at first-timers' rates.",
+  "stump": "The default path conforms the stays, resolves the arrivals whose twelve months had run or who had left by the cut, gives the rest the 2024-25 arrivals' twelve-month retention by sector and whole months present, and files care, construction and retail over their allowances beside the sectors that are; the step that lands it there is reading the retention without each arrival's migration history, so the returning circular workers are counted at the rate of the first-timers among whom the reference cohort hides them.",
+  "mechanism_source": "design_note",
+  "differentiation": {
+    "task100": "There a member's exit is fixed by a course structure (two stages, an optional interim stage) and found by matching the member to the prior period's snapshot; here no structure fixes a stay's length: whether an open arrival stays twelve months is estimated from the year-before arrivals' retention, and the person's own earlier stay changes which retention applies.",
+    "task136": "There an intervention's enrolments overstate its addition and the comparison is against sites not yet treated over the same months, a causal design; here nothing is treated: a provisional count of stays reaching twelve months is completed from the year-before arrivals' retention, and the arrival's migration history, rebuilt from its earlier stays, splits that retention."
+  },
+  "lineage": [
+    {
+      "version": "v1",
+      "fate": "spent at stage 4, 2026-10-25: both scored readers fitted electors per dwelling to the dwelling's age since completion on the property-level registers and applied the ramp to every dwelling built and to come, landing the golden five",
+      "driver": "A new unit's contribution to a register builds up over several annual rounds after the unit is created toward the level settled units hold, so a forecast that keeps each existing unit at its present count and adds the units still to come at the settled units' yield, or at the yield the newest units show today, misses both the recent units still building up and the units that will still be young at the horizon, while a uniform completeness factor moves nothing.",
+      "stump": "The default path keeps each dwelling on the 1 December 2025 register at its 2025 count and adds the dwellings since and the trajectory's at the settled stock's electors per dwelling by type, filing Ebborby, Kettermere, Lorrimere North and Tibberfield; the estates completed from 2024 in Lorrimere West, Caldenstow Park and Quenbrook are still joining the register and the North Lorrimere and Tibberfield sites completing from 2030 will still be young in 2032, so aged to their canvasses five wards fail: Lorrimere West, Caldenstow Park, Quenbrook, Ebborby and Kettermere.",
+      "domain": "survey-research-official-statistics",
+      "subdomain": "census-register-administrative-data-quality",
+      "niche": "a boundary commission's electoral review of a district's 23 wards, each ward's electors on the register to be published after the 2032 canvass forecast from six canvasses of the register at property level, the address register and the council's housing trajectory, where a new dwelling's electors join the register over several canvasses after it is completed",
+      "gate_g": "etl_conformance",
+      "stump_strategy": "maturity_censoring"
+    },
+    {
+      "version": "v2",
+      "fate": "spent at stage 4 round 1, 2026-10-25: both scored readers rebuilt each animal's days from the movement register at the factor note's per-day rates by region and housing season and landed the golden six",
+      "driver": "A region's period total of a flow is read as each unit's annual rate for that region times the units counted there on one day, but part of the units move between regions with the seasons and their rate is several times higher in the season they spend in their other region; the total belongs to each region by the days each unit spends there in each season, rebuilt from the units' movement histories, and an average of the units present still leaves each unit's high-rate season with the region where it spends the low-rate one.",
+      "stump": "The default path multiplies each region's 1 June 2026 census by the factor note's annual factor per head and divides by farmed land, designating nine regions: it adds Lake Uplands, Middle Uplands, Eastern Uplands, Western Seaboard and Atlantic Coast, whose June herds hold lowland yearlings out on summer grazing lets and calves bought from dairy farms that spring, and it misses Inner Basin and Lower Basin, whose finishers house stores all winter and send them to slaughter before June; averaging the bovine register's count over the year still adds Lake Uplands, Middle Uplands and Western Seaboard, because the annual factor's housed days never happen there.",
+      "domain": "physical-environmental-sciences",
+      "subdomain": "emissions-inventory",
+      "niche": "a national ammonia programme's 2027 Ammonia Action Regions, designated on each region's cattle-manure ammonia per hectare of farmed land over the 2025-26 programme year, conformed from the bovine register's animal and movement records, the June livestock census, the herd register, the land parcel register and the inventory's factors, where youngstock spend the summer on grazing lets and the winter housed in another region",
+      "gate_g": "etl_conformance",
+      "stump_strategy": "grain_or_unit"
+    },
+    {
+      "version": "v3",
+      "fate": "spent at stage 4 round 1, 2026-10-25: both scored readers closed each scrubber's year on the limestone it consumed and landed the golden six with every boiler's tonnes",
+      "driver": "Each unit's period output of a pollutant is the content of what it burned less what its ash kept and less what its removal step took out, and the removal step's share over the period is read neither from its design nor from its one announced test, which see it only while it runs, but from the reagent it consumed, which it uses in a fixed ratio to what it removes; no record carries the hours the step stood idle while the unit ran, so only the reagent balance shows them.",
+      "stump": "The default path takes each boiler's 2026 coal sulphur from the delivery analyses and the quarter-end stock changes, less the permit's ash retention, times one minus the removal its scrubber showed at the 2026 performance test, and lists only the largest boiler or two; the step that lands it there is carrying a removal observed while the scrubber ran across a year in which several scrubbers stood bypassed for weeks with their boilers firing, when the limestone each scrubber consumed, at its guaranteed stoichiometry, fixes the sulphur it removed and puts those boilers at three to six times their tested emissions, over the line.",
+      "domain": "physical-environmental-sciences",
+      "subdomain": "emissions-inventory",
+      "niche": "an environment ministry's 2027 Sulphur Dioxide Order, listing the permitted industrial coal boilers whose 2026 sulphur dioxide reached 250 tonnes, the inventory conformed from the coal suppliers' delivery analyses, the boiler operators' quarterly returns, the limestone quarries' delivery tickets, the annual scrubber performance tests and the permits' scrubber design data, where each wet limestone scrubber's real removal over the year is closed on the limestone it consumed",
+      "gate_g": "method_or_model_selection",
+      "stump_strategy": "other"
+    }
+  ],
+  "notes": "stump_strategy maturity_censoring: the year's long-term immigration is not finished at the cut and its open stays are completed from the year-before arrivals' retention; the completion that holds conditions on each arrival's own migration history (a stay that ended in the twelve months before arriving), not its sector alone. G9 decisive: the arrivals counted upstream against the stays that survive twelve months, the survival class (returning circular workers) behind a self-join of the register. Pattern none.",
+  "registered": "2026-10-26T03:15:36Z"
 }
