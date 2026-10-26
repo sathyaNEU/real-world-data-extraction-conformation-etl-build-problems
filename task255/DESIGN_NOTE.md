@@ -416,3 +416,8 @@ the seven counts as asks the pair is about 40).
 - A window extended to the open years 2022 and 2023 with their reserves developed: the development of individual
   large files from aggregate triangles is the actuary's judgment, several defensible factors and several counts;
   the window kept at 2014 to 2021, where the only open files are the paid-up suits.
+- Loop 1 as shipped (portal 2026-10-26, FAILED_TO_STUMP): both responses filed USD 4,000,000 with 0.74 above it and
+  the premium to the dollar. The deductible-truncated, retention-censored likelihood is the field's textbook reflex
+  for a pool's loss run (readability test 3 fires on R2, R3 and G, recorded silent), and an open suit whose layer is
+  paid reads as a censored observation to anyone who has already censored the caps, so the settlement selection
+  added no rung. The observation-process likelihood is demoted below the new decisive step.

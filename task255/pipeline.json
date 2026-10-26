@@ -1,12 +1,12 @@
 {
   "task": "task255",
   "owner": "sathay3012",
-  "status": "SHIPPED",
+  "status": "FAILED_TO_STUMP",
   "domain": "actuarial-science-insurance / claims-frequency-severity",
   "objective": "descriptive-distribution",
-  "stage": 5,
-  "stage_name": "ship",
-  "updated": "2026-10-14",
+  "stage": 2,
+  "stage_name": "design",
+  "updated": "2026-10-26",
   "stump": "The default path fits the closed files' recorded costs as a complete sample and files $2.0 million; censoring the capped closed files files $2.5 million; the truncated and censored likelihood at 2027 cost on the closed files still files $3.0 million, because the 20 open suits of 2014 to 2021, every one past the retention, were set aside; the same likelihood on every file files $4.0 million.",
   "architecture": 1,
   "loops": 1,
@@ -36,11 +36,19 @@
       "portal": "none: hardened at the author's request for a second stumping layer before any portal result",
       "repair": "design",
       "commit": "the RESHIPPED (task255) commit of 2026-10-14"
+    },
+    {
+      "date": "2026-10-26",
+      "portal": "both responses landed the call: USD 4,000,000 per occurrence from the first dollar, 0.74 expected occurrences above it, premium 735,429 (the golden to the dollar)",
+      "repair": "design",
+      "commit": "STATUS: task255 FAILED_TO_STUMP"
     }
   ],
-  "resume": "shipped; next event is the author's portal result",
+  "resume": "Portal 10-26: both responses walked to the golden (the truncated and censored lognormal on every file, open suits censored at the retention). The decisive step is the domain's reflex (Loss Models' deductible-and-limit likelihood), so it is demoted to a lower rung; redesign the decisive step at stage 2 (10/10 gate first), or re-root at stage 1 if no analytical step survives in this world.",
   "approved": null,
   "delivered": "2026-10-13",
-  "portal": null,
-  "seed": "DA05 number (START_HERE); the seed's world is not used"
+  "portal": "FAILED_TO_STUMP",
+  "seed": "DA05 number (START_HERE); the seed's world is not used",
+  "portal_status": "FAILED_TO_STUMP",
+  "portal_status_date": "2026-10-26"
 }
