@@ -842,6 +842,44 @@ ranking. The criteria then come from the structure a recovered quantity already 
 reported figure to the recovered one with each unit as a reconciling item (shape 03), which supplies one
 criterion per unit plus the two totals and the gap.
 
+**What the decision type does not buy, measured on the build that was drawn from this rule.** The separation
+above is real and it survived into the built pack: the crude routes came in at 0.50 and 1.95 times the
+golden. The build still failed its judge, NOT_DETERMINISTIC, and the reason is 1.1j. Dropping the ranking
+removes the cap boundary; it does not make the decisive step uniquely executable. Read 1.1i and 1.1j
+together or the first one will cost a full build.
+
+### 1.1j A decisive step that is an estimator fitted per group has no unique execution, whatever the decision type
+
+**An estimator has to be fitted over some population, and the choice of population is free unless the data
+settle it, so 1.1c applies to a recovered quantity exactly as it applies to a ranking.** Measured on one
+build whose call was a single recovered count, with the same records and the same likelihood, fitted at
+three groupings a competent analyst would each defend:
+
+| Grouping the rate is fitted over | Recovered count | Graded to the nearest thousand |
+|---|---|---|
+| one rate for the whole group | 14,712 | 15,000 |
+| a rate per trading unit, summed | 14,989 | 15,000 |
+| a rate per unit and posting stream, summed | 14,472 | 14,000 |
+
+Three defensible executions, two bins. Filing the grouping closes the fork and turns the decisive step into
+rule application; leaving it open fails Gate C. There is no third move, which is 1.1c's dichotomy arriving
+by another road: the free parameter was never the cap, it was the fit.
+
+**The second measurement from the same build, and the one that settles it.** An isolated reader at medium
+effort, holding only the pack and the prompt, reached the decisive step unaided in one pass: it wrote that
+it had fitted the per-posting rate by maximum likelihood on the entry-level outcome by entry size and then
+taken the expected tripped postings per raised entry. Executed per unit, that estimator returns the golden
+to the figure, 14,989.3 against 14,989.3. It filed a different number only because the pack contradicted
+itself elsewhere. So the step was not hard; it was hidden by a defect.
+
+**The rule.** The decisive step must have exactly one defensible execution given the records, and a fitted
+estimator never does. Make the decisive step a **reconstruction** the records determine (which is
+`supplemental-stumping` 1.0b, filed for ask devices and true of the call for the same reason): the easy
+route omits a piece the records supply exactly, so there is one right answer and no grouping to choose. A
+step whose output moves when a reasonable analyst re-chooses its population is a fork wearing a method's
+clothes.
+
+
 ### 1.1h Interval-censored placement cannot carry a slate decision: the two horns
 
 **When the graded call is a slate of periods and the decisive step is how an interval-censored record is
