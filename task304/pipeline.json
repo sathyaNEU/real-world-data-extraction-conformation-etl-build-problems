@@ -1,13 +1,13 @@
 {
  "task": "task304",
  "owner": "perssathya",
- "status": "PAUSED",
- "domain": "economics-econometrics",
+ "status": "DESIGN",
+ "domain": "banking-credit-financial-risk",
  "objective": "opportunity-sizing-decision",
- "stage": 1,
- "stage_name": "draw",
- "updated": "2026-10-25",
- "stump": "",
+ "stage": 2,
+ "stage_name": "design",
+ "updated": "2026-10-26",
+ "stump": "A competent solver fits the hazard of falling two payments behind on book, the payment rise at the last switch, loan age and current arrears, carries every live account through 2027 at the filed possession rates and files High LTV 2022-24 at about 19 possessions avoided; the step that lands it there is reading the up-to-date first-time buyers' small payment rise as low risk when their remaining term rose at the switch, the Charter extension that hid a budget the new rate broke.",
  "architecture": 1,
  "loops": 0,
  "precut": {
@@ -28,7 +28,7 @@
   "report": ""
  },
  "returned": [],
- "resume": "Stage 1 draw, nothing registered. Six candidates died at call-only probes (DESIGN_NOTE.md, Tried and rejected): balance-point class, fuel substitution, documented and undocumented price steps, and a waiting list partly treated by its assessment visits (landed by both probes at 27.47 and 28.75 against a golden of 28). The legal re-home is economics-econometrics / elasticity-welfare-policy-impact-estimation with a county programme (local_government, council_or_assembly, vote_or_meeting, programme_officer); re-draw from what the record double-counts, omits or misstates, never a per-unit effect, a recorded event or a comparison group. Scratch generator: scratchpad t304c/gen.py.",
+ "resume": "Drawn 2026-10-26 (card registered, WARN answered). Stage 2: final world parameters (prototype m304m/gen: slack 1.42 elsewhere and 1.02 for the 2021 first-time buyers, HLTV hazard x3.0, FTB lending 2019-01 to 2021-06, HLTV from 2022-07), pilot simulated on account parity, then fork table, closure, asks and devices, prompt, precut. Prototype probes: sonnet and opus both filed High LTV.",
  "approved": null,
  "delivered": null,
  "portal": null,

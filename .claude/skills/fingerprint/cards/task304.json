@@ -1,0 +1,90 @@
+{
+  "task": "task304",
+  "architecture": "v1",
+  "drawn": "2026-10-26",
+  "slot_note": "",
+  "domain": "banking-credit-financial-risk",
+  "subdomain": "collections-recovery",
+  "client_domain": "banking-credit-financial-risk",
+  "niche": "a building society's 2027 financial support team going to the one mortgage book where it avoids the most possessions among the borrowers who fall two payments behind in 2027, when the first-time buyers of the 2021 stamp-duty rush took Mortgage Charter term extensions at their 2026 rate switch that keep them up to date for months before they fall behind",
+  "objective": "opportunity-sizing-decision",
+  "shape": "other",
+  "decision_type": "pick_one_of_n",
+  "answer_unit": "count",
+  "answer": "",
+  "answer_source": "",
+  "gap": [
+    "time",
+    "population"
+  ],
+  "pattern": [
+    "none"
+  ],
+  "generators": [
+    "G3",
+    "G6",
+    "G13"
+  ],
+  "gate_g": "forecasting",
+  "calibration_form": "none",
+  "stump_strategy": "composition_mix",
+  "decisive_rule_filed": false,
+  "official_decoy": false,
+  "validated_decoy": false,
+  "context_artifact": "monitoring_export",
+  "stump_class": "analytical",
+  "analyst_test": "A strong analyst fits the monthly hazard of an account falling two payments behind on book, the payment rise at its last rate switch, loan age and current arrears, carries every live account through 2027 at the filed 18-month possession rates and files the High LTV 2022-24 book, while the 2021 first-time buyers who extended their terms at the 2026 switch fall behind eight to fifteen months later at the rate the earlier extensions show and make the first-time-buyer book the largest.",
+  "domain_test": "The deciding quantity is each book's 2027 entries into two payments of arrears, the collections forecaster's arrears-entry hazard carried account by account with forbearance as a state: a term extension at the rate switch lowers the payment and keeps the account up to date while the budget the new rate broke stays broken, so the account carries its own hazard by months since the concession; put another field's units in and the rate switch, the Charter concession and the route from arrears to possession stop making sense.",
+  "layer2_family": "field_method",
+  "layer2_pattern": "own:forbearance-carried-as-a-state-in-the-arrears-entry-forecast",
+  "layer1": [
+    "product codes that lost their dashes before the July 2022 platform change",
+    "month rows re-sent in a later extract and duplicated",
+    "payments in arrears derived from an arrears balance in pounds against the current payment",
+    "possession register dated day-first and receiver sales recorded as possessions",
+    "arrears capitalised by collections clearing without a payment",
+    "redeemed and possessed accounts absent from the book snapshot"
+  ],
+  "stakeholder_role": "head of collections and recoveries at a building society",
+  "role_family": "operations_director",
+  "scoring_unit": "per resolved case",
+  "spine": {
+    "file": "mortgage_payment_history_2019-01_to_2026-09.parquet",
+    "rows": 4250000,
+    "entity": "one mortgage account's position at a month end",
+    "grain": "account x month",
+    "source": "synthetic"
+  },
+  "forum": "committee_or_panel",
+  "forcing_event": "launch_or_rollout",
+  "org_family": "financial_institution",
+  "world": {
+    "geography": "United Kingdom, West Yorkshire and the Pennine towns",
+    "currency": "GBP",
+    "org_type": "building society",
+    "invented_names": [
+      "Calderbrook Building Society"
+    ],
+    "people": [
+      "Aimee Atkinson",
+      "Oliver O'Brien",
+      "Elliot Hunt"
+    ]
+  },
+  "deliverables": [
+    "support_team_2027_placement_paper.pdf",
+    "support_team_2027_workbook.xlsx"
+  ],
+  "opening_move": "question-first",
+  "question_form": "which",
+  "driver": "The decisive quantity is next year's entries into a failure state from units whose recorded good standing was produced by the organisation's own concession at a scheduled reset, which lowered what each owes while the condition that prompted it stayed; a forecast keyed on each unit's current state and on the size of the change it absorbed treats them as sound, and only each unit's concession, rebuilt from the changes in an ordinary field over its history, with the delayed re-entry rate the earlier concessions show by time since the concession, carries the forward count.",
+  "driver_concrete": "Each book's 2027 borrowers falling two payments behind: the 2021 first-time buyers whose five-year fixes ended in the first half of 2026 took term extensions at the switch under the Mortgage Charter, which cut the payment rise and kept them up to date, and they fall behind eight to fifteen months later at the rate the 2023 to 2025 extensions show, so the first-time-buyer book's 2027 entries run far above any model on payment shock, loan age and arrears.",
+  "stump": "A competent solver fits the hazard of falling two payments behind on book, the payment rise at the last switch, loan age and current arrears, carries every live account through 2027 at the filed possession rates and files High LTV 2022-24; the step that lands it there is reading the up-to-date first-time buyers' small payment rise as low risk when their remaining term rose at the switch, the Charter extension that hid a budget the new rate broke.",
+  "mechanism_source": "design_note",
+  "differentiation": {
+    "task169": "task169 sends the events a closed processing route pre-empted through the remaining route's own conversion after a filed change; task304 has no closed route and no filed change: the organisation's own concession produced the up-to-date record, and the forward count comes from each concession's delayed re-entry hazard by months since it, rebuilt from the remaining-term history."
+  },
+  "lineage": [],
+  "notes": "Axes redrawn at the check: context_artifact register to monitoring_export (ban.artifact against task270); decisive generator G6 to G3 with time as the decisive gap after (population, G6) and (population, G3) repeated older and in-batch signatures. WARNs answered in the design note: repeat.gate_g, repeat.decision, repeat.question_form.",
+  "registered": "2026-10-26T17:06:56Z"
+}
