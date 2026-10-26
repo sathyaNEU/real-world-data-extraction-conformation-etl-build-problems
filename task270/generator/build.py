@@ -20,83 +20,103 @@ warnings.filterwarnings("ignore")
 HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)
 import common as K         # noqa: E402
-import docs as DC          # noqa: E402
-import records as R        # noqa: E402
-import world as WD         # noqa: E402
+import pack as PK          # noqa: E402
 
 TASK = os.path.dirname(HERE)
 MTIME = calendar.timegm(K.ASSEMBLED.timetuple())
-FILES = dict(K.FILES, dictionary="data_dictionary.csv")
+PDF_DATES = {"brief": ("D:20261028114500+00'00'", "D:20261028121000+00'00'"),
+             "method": ("D:20260209093000+00'00'", "D:20260212160500+00'00'"),
+             "rates": ("D:20261015101500+01'00'", "D:20261016090000+01'00'"),
+             "report2025": ("D:20250530143000+01'00'", "D:20250530151500+01'00'")}
+OOXML = {"schedules": ("Helena Gaspar", "Helena Gaspar", "2026-11-10T09:20:00Z", "2026-11-17T17:42:00Z",
+                       "Esquemas de campanha 2027", True)}
 
 
 def build(out, seed=K.SEED, keep=False):
     if os.path.exists(out):
         shutil.rmtree(out)
-    os.makedirs(out)
-    p = lambda k: os.path.join(out, FILES[k])
-    w = WD.World(seed)
-    rc = R.Records(w, seed)
-    n = {}
-    for key, fn in (("scorecards", rc.scorecard_rows), ("registry", rc.registry_rows), ("holdout", rc.holdout_rows),
-                    ("cohorts", rc.cohort_rows), ("calendar", rc.calendar_rows), ("forecast", rc.forecast_rows),
-                    ("ratings", rc.ratings_rows)):
-        head, rows = fn()
-        R.write_csv(p(key), head, rows)
-        n[key] = len(rows)
-    DC.write_standard(p("standard"))
-    DC.write_guide(p("guide"))
-    DC.write_catalogue(p("catalogue"))
-    DC.write_dictionary(p("dictionary"))
-    DC.write_spend(p("spend"), rc.spend_rows())
-    exps = len({r[0] for r in rc.scorecard_rows()[1]})
-    DC.write_export_notes(p("export_notes"), dict(experiments=exps, rows="{:,}".format(n["scorecards"])))
+    w, rc, n = PK.build_pack(out, seed)
     return dict(world=w if keep else None, records=rc if keep else None, counts=n)
-
-
-PDF_DATES = {"standard": ("D:20261012161500+02'00'", "D:20261012161500+02'00'"),
-             "guide": ("D:20240212101000+01'00'", "D:20261005143000+02'00'")}
-OOXML = {"spend": ("Renske Mudden", "Renske Mudden", "2026-02-03T08:20:00Z", "2026-10-07T13:42:00Z",
-                   "Acquisition spend 2026", True)}
 
 
 def finish(out):
     """The containers as their writers save them, then every file's modified time set to the pack's assembly."""
     import postprocess as PP
     for k, (c, m) in PDF_DATES.items():
-        PP.normalize_pdf(os.path.join(out, FILES[k]), c.encode(), m.encode())
-    PP.COMPANY = K.ORG
+        PP.normalize_pdf(os.path.join(out, K.FILES[k]), c.encode(), m.encode())
+    PP.COMPANY = K.AGENCY
     for k, (cr, lb, c, m, title, excel) in OOXML.items():
-        PP.normalize_ooxml(os.path.join(out, FILES[k]), cr, lb, c, m, title=title, excel=excel)
+        PP.normalize_ooxml(os.path.join(out, K.FILES[k]), cr, lb, c, m, title=title, excel=excel)
     for f in os.listdir(out):
         os.utime(os.path.join(out, f), (MTIME, MTIME))
 
 
+def fix_embedded(path, stamp):
+    """the chart's data workbook inside the deck as PowerPoint keeps it: no writer name, the deck's own stamp"""
+    import io
+    import re
+    import zipfile
+    with zipfile.ZipFile(path) as z:
+        items = [(i.filename, z.read(i.filename)) for i in z.infolist()]
+    out = []
+    for name, data in items:
+        if name.startswith("ppt/embeddings/") and name.endswith(".xlsx"):
+            with zipfile.ZipFile(io.BytesIO(data)) as e:
+                inner = [(i.filename, e.read(i.filename)) for i in e.infolist()]
+            buf = io.BytesIO()
+            with zipfile.ZipFile(buf, "w") as e:
+                for n, d in inner:
+                    if n == "docProps/core.xml":
+                        d = re.sub(rb"<dcterms:(created|modified)([^>]*)>[^<]*</dcterms:", lambda m: b"<dcterms:" +
+                                   m.group(1) + m.group(2) + b">" + stamp.encode() + b"</dcterms:", d)
+                        d = re.sub(rb"<dc:creator>[^<]*</dc:creator>", b"<dc:creator>" + K.PLANNER.encode() +
+                                   b"</dc:creator>", d)
+                    if n == "docProps/app.xml":
+                        d = re.sub(rb"<Application>[^<]*</Application>", b"<Application>Microsoft Excel</Application>",
+                                   d)
+                    zi = zipfile.ZipInfo(n, date_time=(1980, 1, 1, 0, 0, 0))
+                    zi.compress_type = zipfile.ZIP_DEFLATED
+                    e.writestr(zi, d)
+            data = buf.getvalue()
+        out.append((name, data))
+    with zipfile.ZipFile(path, "w") as z:
+        for name, data in out:
+            zi = zipfile.ZipInfo(name, date_time=(1980, 1, 1, 0, 0, 0))
+            zi.compress_type = zipfile.ZIP_DEFLATED
+            z.writestr(zi, data)
+
+
 def finish_golden(golden):
     import postprocess as PP
-    PP.COMPANY = K.ORG
-    PP.normalize_ooxml(os.path.join(golden, K.BOOK), K.HEAD_EXP, K.HEAD_EXP, "2026-10-26T07:55:00Z",
-                       "2026-10-30T15:20:00Z", title="Proxy metric scores 2027", excel=True)
-    PP.normalize_ooxml(os.path.join(golden, K.DECK), K.HEAD_EXP, K.HEAD_EXP, "2026-10-27T09:05:00Z",
-                       "2026-10-30T15:41:00Z", title="Proxy metric review 2027")
+    fix_embedded(os.path.join(golden, K.DECK), "2026-12-01T11:48:00Z")
+    PP.COMPANY = K.AGENCY
+    PP.normalize_ooxml(os.path.join(golden, K.BOOK), K.PLANNER, K.PLANNER, "2026-11-25T10:05:00Z",
+                       "2026-11-30T18:12:00Z", title="Plano de televisão para jovens dadores 2027", excel=True)
+    PP.normalize_ooxml(os.path.join(golden, K.DECK), K.PLANNER, K.PLANNER, "2026-11-26T15:30:00Z",
+                       "2026-12-01T11:48:00Z", title="Esquema de televisão para jovens dadores, abril de 2027")
     for f in os.listdir(golden):
         os.utime(os.path.join(golden, f), (MTIME, MTIME))
 
 
 def metadata(fig, counts):
-    src = ("constructed by the task generator (seeded); %s, its teams, experiments, users and people are fictional; "
-           "the records follow the forms of a consumer app's experimentation platform (scorecard export, experiment "
-           "registry), its data warehouse, its growth analytics tables and its forecasting tool" % K.ORG)
+    src = ("constructed by the task generator (seeded); %s, %s, %s, the %s, the channels, their sales houses, "
+           "programmes, advertisers, panel members and people are fictional; the records follow the forms of a "
+           "Portuguese television audience panel's client files, the channels' commercial as-run logs and booking "
+           "extracts, a media agency's schedules and price compilation, and a blood donor association's booking "
+           "portal" % (K.ORG, K.AGENCY, K.PANEL_CO, K.JIC))
     return {
         "task": "task270",
-        "title": "%s: the 2027 proxy metric for six-month retention" % K.ORG,
-        "domain": "Product Analytics (metric definition and measurement science)",
+        "title": "%s: the television schedule for the April 2027 young donor campaign" % K.ORG,
+        "domain": "Marketing & Consumer Research (media reach, frequency and audience measurement)",
         "objective": "Descriptive & Distribution Analysis",
-        "distractor_files": ["target/" + FILES[k] for k in K.DISTRACTORS],
-        "deliverables": list(K.DELIVERABLES),
+        "distractor_files": ["target/" + K.FILES[k] for k in K.DISTRACTORS],
+        "deliverables": [K.BOOK, K.DECK],
         "provenance": {name: {"source": src, "date": "2026-10-26", "licence": "CC0 1.0 (constructed for this task)"}
-                       for name in sorted(FILES.values())},
-        "rows": {FILES[k]: v for k, v in sorted(counts.items())},
-        "answer": fig["call"]["sentence"],
+                       for name in sorted(K.FILES.values())},
+        "rows": {K.FILES[k]: v for k, v in sorted(counts.items())},
+        "answer": "Schedule %s (three-plus reach %.1f%% of adults 18 to 34, %.1f points ahead of schedule %s)" % (
+            fig["call"]["schedule"], fig["call"]["reach3_pct"][fig["call"]["schedule"]], fig["call"]["lead_points"],
+            fig["call"]["runner_up"]),
     }
 
 
@@ -110,7 +130,7 @@ def main_build(target, golden, seed=K.SEED):
     finish_golden(golden)
     DV.write_figures(os.path.join(HERE, "figures.json"), fig)
     with open(os.path.join(TASK, "metadata.json"), "w") as f:
-        json.dump(metadata(fig, b["counts"]), f, indent=1, sort_keys=True)
+        json.dump(metadata(fig, b["counts"]), f, indent=1, sort_keys=True, ensure_ascii=False)
         f.write("\n")
     return b, fig, res
 
@@ -143,7 +163,7 @@ if __name__ == "__main__":
     target, golden = os.path.join(TASK, "target"), os.path.join(TASK, "golden")
     b, fig, res = main_build(target, golden, a.seed)
     print("pack:", b["counts"])
-    print("call:", fig["call"]["sentence"])
+    print("call:", fig["call"])
     if a.golden:
         sys.exit(0)
     import checks

@@ -1,20 +1,14 @@
 # leak check, task270
 
-**Verdict: REVIEW.** 13 files read, 59 golden figures and 0 candidate names taken from submission.md, 25 stump terms taken from the design note.
+**Verdict: REVIEW.** 18 files read, 17 golden figures and 2 candidate names taken from submission.md, 25 stump terms taken from the design note.
 
 LEAK stops the ship. REVIEW is a reader's call and the /leak-check command's solver's-eye pass reads every REVIEW line. INFO is a sweep that ran and found nothing or was skipped.
 
-Stump terms swept: covariance, change, reader, sampling, experiments, outcome, user-level, sessions, correction, measured, clinic, architecture, errors, shared, landed, nothing, claims, scorecards, variance, reading, strong, lesson, reflex, patients, platform
+Stump terms swept: rotation, places, window, reader, booking, landed, architecture, readers, effect, clinic, viewing, as-run, golden, estimand, correlation, distribution, change, strong, reflex, reading, correction, claims, experiment, frequency, nothing
 
-## 4 design-note vocabulary (REVIEW 3)
-- **REVIEW** `experimentation_platform_guide.pdf`: 5 of 25 stump-paragraph terms appear (change, experiments, user-level, scorecards, platform); read whether the document names the move
-- **REVIEW** `proxy_metric_standard_2027.pdf`: 3 of 25 stump-paragraph terms appear (change, experiments, reading); read whether the document names the move
-- **REVIEW** `scorecard_export_notes.txt`: 3 of 25 stump-paragraph terms appear (experiments, scorecards, platform); read whether the document names the move
-
-## 9 dates after the setting (REVIEW 3)
-- **REVIEW** `new_user_forecast_2027.csv`: 730 ISO dates after 2026-10-23, e.g. 2027-01-01, 2027-01-02, 2027-01-03, 2027-01-04, 2027-01-05
-- **REVIEW** `onboarding_calendar_2027q1.csv`: 14 ISO dates after 2026-10-23, e.g. 2027-01-04, 2027-01-11, 2027-01-18, 2027-01-31, 2027-02-01
-- **REVIEW** `onboarding_experiments_2024_2026.csv`: 110 ISO dates after 2026-10-23, e.g. 2026-10-25, 2026-10-27, 2026-10-28, 2026-10-31, 2026-11-01
+## 9 dates after the setting (REVIEW 2)
+- **REVIEW** `esquemas_campanha_2027.xlsx`: 164 ISO dates after 2026-11-24, e.g. 2027-04-05, 2027-04-06, 2027-04-07, 2027-04-08, 2027-04-09
+- **REVIEW** `plano_digital_2027.csv`: 10 ISO dates after 2026-11-24, e.g. 2027-04-05, 2027-04-12, 2027-04-19, 2027-04-25, 2027-05-02
 
 ## 10 container metadata (INFO 1)
 - **INFO** `-`: audit reported no writer signature (1 lines)
@@ -24,6 +18,8 @@ Stump terms swept: covariance, change, reader, sampling, experiments, outcome, u
 ## 2 author vocabulary (clean)
 
 ## 3 answer figures in the pack (clean)
+
+## 4 design-note vocabulary (clean)
 
 ## 5 announcements (clean)
 

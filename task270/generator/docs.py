@@ -1,9 +1,9 @@
-"""The pack's documents for task270: the 2027 proxy metric standard and the experimentation platform guide (PDF), the
-scorecard export notes (TXT), the metric catalogue (YAML), the data dictionary (CSV) and the acquisition spend
-workbook (XLSX)."""
+"""The pack's documents for task270: Gota Viva's campaign brief, Audimetria Lusa's methodology note and the sales
+houses' second-quarter 2027 price lists (PDF), and the data dictionary (CSV)."""
 from __future__ import annotations
 
 import csv
+import datetime as dt
 
 from reportlab import rl_config
 
@@ -14,7 +14,7 @@ from reportlab.lib.styles import ParagraphStyle                                 
 from reportlab.lib.units import cm                                                  # noqa: E402
 from reportlab.pdfbase import pdfmetrics                                            # noqa: E402
 from reportlab.pdfbase.ttfonts import TTFont                                        # noqa: E402
-from reportlab.platypus import Paragraph, SimpleDocTemplate, Table, TableStyle      # noqa: E402
+from reportlab.platypus import Paragraph, SimpleDocTemplate, Spacer, Table, TableStyle  # noqa: E402
 
 import common as K   # noqa: E402
 
@@ -23,8 +23,24 @@ for nm, f in (("Sans", "LiberationSans-Regular"), ("Sans-B", "LiberationSans-Bol
     pdfmetrics.registerFont(TTFont(nm, FONT_DIR + f + ".ttf"))
 pdfmetrics.registerFontFamily("Sans", normal="Sans", bold="Sans-B", italic="Sans-I", boldItalic="Sans-B")
 INK, GREY, RULE = colors.HexColor("#1f2328"), colors.HexColor("#5b6470"), colors.HexColor("#c3c9d0")
-GREEN = colors.HexColor("#0f6b4f")
-SLATE = colors.HexColor("#33475b")
+RED = colors.HexColor("#a3132b")
+NAVY = colors.HexColor("#1d3557")
+TEAL = colors.HexColor("#00606b")
+MONTHS = ["janeiro", "fevereiro", "março", "abril", "maio", "junho", "julho", "agosto", "setembro", "outubro",
+          "novembro", "dezembro"]
+CAMPAIGN_END = K.CAMPAIGN_START + dt.timedelta(days=27)
+
+
+def pt_date(d):
+    return "%d de %s de %d" % (d.day, MONTHS[d.month - 1], d.year)
+
+
+def low(s):
+    return s[:1].lower() + s[1:]
+
+
+def eur(x):
+    return ("%s €" % format(int(x), ",")).replace(",", ".")
 
 
 def styles(accent):
@@ -37,7 +53,8 @@ def styles(accent):
         meta=ParagraphStyle("m", fontName="Sans", fontSize=8.3, leading=11, textColor=GREY, spaceAfter=9),
         cell=ParagraphStyle("c", fontName="Sans", fontSize=7.9, leading=9.9, textColor=INK),
         cellb=ParagraphStyle("cb", fontName="Sans-B", fontSize=7.9, leading=9.9, textColor=INK),
-        clause=ParagraphStyle("p", parent=body, leftIndent=26, firstLineIndent=-26))
+        clause=ParagraphStyle("p", parent=body, leftIndent=26, firstLineIndent=-26),
+        note=ParagraphStyle("n", fontName="Sans", fontSize=7.8, leading=10.2, textColor=GREY, spaceBefore=4))
 
 
 def _frame(left, right):
@@ -68,281 +85,244 @@ def _clause(S, num, text):
     return Paragraph("<b>%s</b>&nbsp;&nbsp;%s" % (num, text), S["clause"])
 
 
-def _doc(path, title, author, left, right):
+def _doc(path, title, author, subject):
     return SimpleDocTemplate(path, pagesize=A4, leftMargin=2.0 * cm, rightMargin=2.0 * cm, topMargin=2.0 * cm,
-                             bottomMargin=1.9 * cm, title=title, author=author, subject=title, creator=author,
-                             producer=author), _frame(left, right)
+                             bottomMargin=1.8 * cm, title=title, author=author, subject=subject, creator=author,
+                             producer=author)
 
 
-# ----------------------------------------------------------------------------------------------------- the standard
-def write_standard(path):
-    S = styles(GREEN)
-    doc, fr = _doc(path, "Proxy metric standard for onboarding experiments, 2027", K.HEAD_EXP,
-                   "%s Growth" % K.ORG, "Proxy metric standard 2027")
-    st = [Paragraph("Proxy metric standard for onboarding experiments, 2027", S["h1"]),
-          Paragraph("%s Growth. Owner: %s, Head of Experimentation. Version 2027.1, approved by the growth leadership "
-                    "team on 12 October 2026; replaces the 2026 reading guide for onboarding experiments." %
-                    (K.ORG, K.HEAD_EXP), S["meta"]),
-          Paragraph("1. Why a proxy", S["h2"]),
-          _clause(S, "1.1", "We judge onboarding changes by how many of our new users are still with us six months "
-                            "after they sign up. That read arrives half a year after a change ships, so from 1 January "
-                            "2027 every onboarding experiment is read at two weeks on one proxy metric, and its "
-                            "six-month read follows as the check."),
-          _clause(S, "1.2", "The proxy is chosen once a year from the metrics the metric catalogue marks as "
-                            "candidates for that year's review."),
-          Paragraph("2. Choosing the proxy", S["h2"]),
-          _clause(S, "2.1", "The proxy is the candidate whose movement in an experiment best tells us how the change "
-                            "will move six-month retention across all our new users once it ships."),
-          _clause(S, "2.2", "Each candidate is judged by the correlation, across our past onboarding changes, between "
-                            "the change's effect on the candidate and the change's effect on six-month retention. The "
-                            "candidate with the highest correlation is the proxy for the year."),
-          _clause(S, "2.3", "A change's effect on a metric is the difference the change makes to the metric's mean "
-                            "across all our new users. An experiment measures it on the users it enrols; the "
-                            "correlation in 2.2 is between the changes' effects themselves."),
-          _clause(S, "2.4", "The past changes are those tested in onboarding experiments that started on or after "
-                            "1 January 2024 and whose six-month read had closed by the review's data cut, the "
-                            "scorecard export of 23 October 2026. Each treatment arm tested against its "
-                            "experiment's control is one change, and each change counts once. An experiment that "
-                            "failed the sample-ratio check is not read; an experiment stopped before its planned end "
-                            "is read on the users it enrolled."),
-          _clause(S, "2.5", "Six-month retention is retained_m6, and every metric is as the metric catalogue defines "
-                            "it."),
-          Paragraph("3. Reading experiments in 2027", S["h2"]),
-          _clause(S, "3.1", "A 2027 onboarding change ships when, at two weeks, the proxy rises at the 5 per cent level "
-                            "in a two-sided test and neither guardrail (uninstalled_d14, support_contacts_d14) "
-                            "worsens at that level."),
-          _clause(S, "3.2", "The owning team sizes each experiment so that the smallest effect on the proxy it can "
-                            "detect with 80 per cent power is no larger than the effect the team expects. Experiments "
-                            "run in their layer for the dates on the onboarding calendar."),
-          _clause(S, "3.3", "The six-month read of every 2027 change is reported to the growth leadership team when "
-                            "it closes."),
-          Paragraph("4. The review", S["h2"]),
-          _clause(S, "4.1", "The proxy review gives each candidate's correlation and names the proxy. It goes to the "
-                            "growth leadership team before the 2027 onboarding calendar opens on 4 January 2027."),
-          _clause(S, "4.2", "The review is repeated each autumn on the changes whose six-month read closed in the "
-                            "year.")]
-    doc.build(st, onFirstPage=fr, onLaterPages=fr)
+def write_brief(path):
+    S = styles(RED)
+    doc = _doc(path, "Briefing: campanha de televisão para jovens dadores 2027", K.ORG, "Briefing de meios")
+    st = [Paragraph("Campanha de televisão para jovens dadores, abril de 2027", S["h1"]),
+          Paragraph("Briefing à %s &middot; %s, Marketing de Dadores &middot; %s &middot; ref. GV-MKT-2027-04" %
+                    (K.AGENCY, K.REQUESTER, pt_date(K.BRIEF_DATE)), S["meta"]),
+          Paragraph("1. Porque fazemos esta campanha", S["h2"]),
+          Paragraph("Os dadores com menos de 35 anos foram 45 por cento das inscrições novas em 2025, mas só 31 por "
+                    "cento das dádivas regulares. A campanha de abril de 2027 pede aos adultos dos 18 aos 34 anos que "
+                    "marquem a primeira dádiva. Os nossos estudos de 2024 e 2025 mostram que um jovem que vê a "
+                    "mensagem uma ou duas vezes raramente marca; a partir da terceira vez a marcação sobe de forma "
+                    "clara, por isso o objetivo de meios é a cobertura com frequência de três ou mais.", S["body"]),
+          Paragraph("2. O que pedimos à agência", S["h2"])]
+    rows = [["Item", "Pedido"],
+            ["Público", "Adultos dos 18 aos 34 anos (universo do painel de 2026)"],
+            ["Período", "Quatro semanas, de segunda-feira %s a domingo %s" % (pt_date(K.CAMPAIGN_START),
+                                                                             pt_date(CAMPAIGN_END))],
+            ["Orçamento", "%s, preços das tabelas do 2.º trimestre de 2027, sem descontos de volume" % eur(K.BUDGET)],
+            ["Filme", "Um filme de 30 segundos"],
+            ["Esquemas", "Três esquemas alternativos ao mesmo orçamento, para decisão da Comissão Executiva"]]
+    st.append(_table(S, rows, [3.2, 13.6]))
+    st.append(Paragraph("3. Como vamos escolher", S["h2"]))
+    st.append(_clause(S, "3.1", "Compramos o esquema que leva o filme a mais adultos dos 18 aos 34 anos três ou "
+                                "mais vezes."))
+    st.append(_clause(S, "3.2", "Cada esquema é lido como o painel o teria medido se tivesse ido para o ar nas quatro "
+                                "semanas de referência de 2026, de 2 a 29 de março: a semana n da campanha é lida na "
+                                "semana n de referência, cada spot no mesmo dia da semana do painel em que está "
+                                "marcado."))
+    st.append(_clause(S, "3.3", "Um membro do painel vê um spot quando está a ver o canal em direto durante pelo "
+                                "menos metade dos segundos do lugar em que o spot passa, com o início e a duração "
+                                "que esse lugar teve na emissão de referência. Contam os membros do painel com o seu "
+                                "peso de 28 dias; não contam convidados nem visionamento diferido."))
+    st.append(_clause(S, "3.4", "Cada spot é lido onde teria passado: um spot com lugar marcado, no seu lugar; um spot "
+                                "cujo lugar fica com o canal, em cada lugar com a probabilidade de lá ter passado."))
+    st.append(_clause(S, "3.5", "A cobertura é a parte do universo dos 18 aos 34 anos que se espera que veja o filme o "
+                                "número de vezes indicado ou mais, com os spots tomados como independentes entre si."))
+    st.append(Paragraph("4. Calendário", S["h2"]))
+    st.append(Paragraph("A agência entrega os três esquemas até meados de novembro. A Comissão Executiva decide a %s; "
+                        "as reservas de abril fecham nos canais a %s." % (pt_date(K.DECISION_DATE),
+                                                                     pt_date(K.BOOKING_DEADLINE)), S["body"]))
+    st.append(Spacer(1, 6))
+    st.append(Paragraph("Contacto: %s, Marketing de Dadores, %s." % (K.REQUESTER, K.ORG), S["note"]))
+    f = _frame(K.ORG, "Briefing de meios 2027")
+    doc.build(st, onFirstPage=f, onLaterPages=f)
 
 
-# ------------------------------------------------------------------------------------------- the platform guide
-def write_guide(path):
-    S = styles(SLATE)
-    doc, fr = _doc(path, "Experimentation platform: how onboarding experiments run", K.ENGINEER,
-                   "%s Experimentation Platform" % K.ORG, "Platform guide, onboarding layers")
-    st = [Paragraph("How onboarding experiments run on the experimentation platform", S["h1"]),
-          Paragraph("%s Experimentation Platform. Maintained by %s, data engineering. Revised 5 October 2026 for "
-                    "the 2027 holdout." % (K.ORG, K.ENGINEER), S["meta"]),
-          Paragraph("Assignment", S["h2"]),
-          _clause(S, "A1", "A new consumer user is assigned when they first open the app after signing up. Business "
-                           "(seller) accounts are not assigned and are not part of any holdout."),
-          _clause(S, "A2", "The global holdout is set aside first: a random 5 per cent of each year's new consumer "
-                           "users in 2025 and 2026, and a random 3 per cent from 1 January 2027, about 430 new users "
-                           "a week in the first quarter. A holdout user keeps "
-                           "the onboarding as it stood on 1 January of their sign-up year and enters no onboarding "
-                           "experiment."),
-          _clause(S, "A3", "Every other new consumer user is assigned once in each of the three onboarding layers: "
-                           "signup_flow, first_feed and notifications. Within a layer, experiments are mutually "
-                           "exclusive: on each day, the layer's new users on each platform are split evenly among the "
-                           "layer's experiments that are live that day on that platform."),
-          _clause(S, "A4", "Within an experiment, users are split evenly among its arms. An experiment enrols from "
-                           "the start of its start date to the end of its end date, Amsterdam time."),
-          Paragraph("Scorecards", S["h2"]),
-          _clause(S, "S1", "The platform computes a scorecard for each arm: the arm's users, and each metric's mean "
-                           "and standard deviation over those users. Two-week metrics are computed the day after the "
-                           "last enrolled user's fourteenth day, and retained_m6 when the experiment's six-month read "
-                           "closes, 180 days after its last enrolment day."),
-          _clause(S, "S2", "Each experiment's arm sizes are tested against an even split with a chi-squared test. An "
-                           "experiment fails the sample-ratio check at p &lt; 0.001; the registry records the result."),
-          _clause(S, "S3", "Metric keys were renamed on 3 March 2025 when the metric store moved; scorecards computed "
-                           "before that date carry the former keys, which the metric catalogue lists."),
-          Paragraph("Data kept", S["h2"]),
-          _clause(S, "D1", "User-level experiment data is deleted once an experiment's six-month read closes; its "
-                           "scorecards are kept. The global holdout's user table is kept until the year's holdout "
-                           "review."),
-          Paragraph("Layers in 2027", S["h2"]),
-          _table(S, [["Layer", "What it changes", "Platforms"],
-                     ["signup_flow", "Sign-up screens up to the first feed", "iOS and Android"],
-                     ["first_feed", "The first feed and the first item pages", "iOS and Android"],
-                     ["notifications", "Pushes and in-app messages in the first 14 days", "iOS and Android"]],
-                 [3.2, 9.0, 4.0]),
-          Paragraph("An experiment on the onboarding calendar may run on one platform only; its platforms are on the "
-                    "calendar.", S["body"])]
-    doc.build(st, onFirstPage=fr, onLaterPages=fr)
+def write_method(path, n_members, n_homes):
+    S = styles(NAVY)
+    doc = _doc(path, "Painel de audiometria: nota metodológica para clientes", K.PANEL_CO, "Nota metodológica")
+    st = [Paragraph("Painel de audiometria: nota metodológica para clientes", S["h1"]),
+          Paragraph("%s &middot; para a %s &middot; edição de fevereiro de 2026 &middot; contacto: %s" %
+                    (K.PANEL_CO, K.JIC, K.PANEL_CONTACT), S["meta"])]
+    th = lambda n: format(n, ",").replace(",", ".")
+    paras = [
+        ("1. O painel", "O ficheiro de clientes de março de 2026 tem %s lares e %s indivíduos com 18 ou mais anos. "
+                        "Cada televisor do lar tem um audímetro que identifica o canal por marca de áudio; cada "
+                        "pessoa regista a presença no comando." % (th(n_homes), th(n_members))),
+        ("2. Os registos de visionamento", "Cada linha do ficheiro de visionamentos é um período contínuo em que "
+                                           "uma pessoa esteve presente diante de um canal. As horas estão em UTC. "
+                                           "O dia de televisão vai das 02:00 às 26:00, hora legal de Portugal "
+                                           "continental. O modo indica se o visionamento foi em direto ou "
+                                           "diferido (gravações e televisão de recuperação vistas até sete dias "
+                                           "depois da emissão, à velocidade normal; o avanço rápido não é "
+                                           "registado). O início e o fim são as horas do visionamento; a hora de "
+                                           "emissão identifica, pelo som, o que estava a ser visto."),
+        ("3. Convidados", "As pessoas de fora do lar registam-se como convidados; aparecem com o código do lar "
+                          "seguido de -C1 e não pertencem à amostra."),
+        ("4. Pesos", "O peso de 28 dias é dado a quem esteve em amostra nos 28 dias do período e projeta a amostra "
+                     "no universo de 2026 por escalão etário, sexo e região. Quem falhou algum dia tem peso zero no "
+                     "período."),
+        ("5. Canais", "Os códigos de canal seguem a lista de códigos em vigor em cada dia; um canal que muda de "
+                      "nome muda também de código a partir da data indicada na lista."),
+        ("6. Dados de publicidade", "Com o ficheiro de clientes seguem a emissão publicitária dos canais (cada spot "
+                                    "emitido, com o seu lugar no intervalo) e as reservas das comerciais para os mesmos "
+                                    "dias de televisão, com os anunciantes codificados."),
+    ]
+    for h, t in paras:
+        st.append(Paragraph(h, S["h2"]))
+        st.append(Paragraph(t, S["body"]))
+    f = _frame(K.PANEL_CO, "Nota metodológica")
+    doc.build(st, onFirstPage=f, onLaterPages=f)
 
 
-# ------------------------------------------------------------------------------------------ the export notes
-def write_export_notes(path, counts):
-    text = """Kleerwissel experimentation platform: scorecard export
-=========================================================
-File:      experiment_scorecards_2024_2026.csv
-Exported:  23 October 2026, 07:12 (Europe/Amsterdam)
-By:        %s, data engineering
-Scope:     every onboarding experiment started from 8 January 2024 whose two-week scorecards had
-           been computed by the export ({experiments} experiments, {rows} rows)
-
-Columns
--------
-experiment_id   the experiment's id in the registry (onboarding_experiments_2024_2026.csv)
-arm             the arm's label as the owning team named it; the registry gives each experiment's
-                arms and its control arm
-metric          the metric's key as stored when the scorecard was computed
-users           users assigned to the arm and counted in its scorecard
-mean            the metric's mean over those users
-std_dev         the metric's standard deviation over those users (n - 1)
-computed_at     the date the platform computed the scorecard
-
-Rows
-----
-One row per experiment, arm, metric and computation. Two-week metrics (the five candidates and
-the two guardrails) come from the computation the day after the last enrolled user's day 14;
-retained_m6 comes from the computation when the six-month read closes, so experiments whose
-six-month read is still open have no retained_m6 rows yet.
-
-Experiments in the signup_flow and first_feed layers whose two-week scorecards were computed
-between 1 July and 10 September 2025 were computed again on 15 September 2025, after iOS events
-held back by an SDK fault were delivered. A scorecard computed again replaces the earlier
-computation for every purpose; the export keeps both rows.
-
-Keys were renamed on 3 March 2025 (metric store migration). See metric_catalogue.yaml for the
-former key of each metric.
-
-Numbers are written to six decimals. Questions to the data engineering channel.
-""" % K.ENGINEER
-    with open(path, "w", encoding="utf-8") as f:
-        f.write(text.format(**counts))
+def write_rates(path, rate, ros_rate, prog_window):
+    S = styles(TEAL)
+    doc = _doc(path, "Tabelas de preços de publicidade, 2.º trimestre de 2027", K.AGENCY, "Tabelas de preços")
+    st = [Paragraph("Tabelas de preços de televisão, 2.º trimestre de 2027", S["h1"]),
+          Paragraph("Compilação de %s a partir das tabelas publicadas pelas comerciais dos canais em %s; preços por "
+                    "spot de 30 segundos, em euros, sem IVA e sem descontos de volume." %
+                    (K.AGENCY, pt_date(K.RATES_ISSUED)), S["meta"]),
+          Paragraph("Colocação", S["h2"]),
+          Paragraph("Os preços abaixo são de spot fixo num intervalo de um programa. O primeiro lugar no intervalo "
+                    "custa mais 15 por cento e o último lugar mais 10 por cento. A rotação é vendida por janela "
+                    "horária, sem programa nem lugar garantidos.", S["body"])]
+    order = {"day": 0, "access": 1, "prime": 2, "late": 3}
+    for ch in ("VRT", "LIT", "PLS", "ARN", "FAR1"):
+        st.append(Paragraph("%s (%s)" % (K.CH_NAME[ch] if ch != "PLS" else "Pulsar+", K.SALES[ch]), S["h2"]))
+        rows = [["Programa", "Janela", "Spot fixo", "1.º lugar", "Último lugar"]]
+        items = sorted([(t, v) for (c, t), v in rate.items() if c == ch],
+                       key=lambda x: (order[prog_window[(ch, x[0])]], x[0]))
+        for t, v in items:
+            rows.append([t, low(K.WINDOW_NAME[prog_window[(ch, t)]]), eur(v), eur(K.r(v * 1.15)), eur(K.r(v * 1.10))])
+        for w in ("day", "access", "prime", "late"):
+            if (ch, w) in ros_rate:
+                rows.append(["Rotação", low(K.WINDOW_NAME[w]), eur(ros_rate[(ch, w)]), "", ""])
+        st.append(_table(S, rows, [5.4, 4.6, 2.2, 2.2, 2.4], right=(2, 3, 4)))
+    f = _frame(K.AGENCY, "Tabelas 2T2027")
+    doc.build(st, onFirstPage=f, onLaterPages=f)
 
 
-# ----------------------------------------------------------------------------------------------- the catalogue
-CATALOGUE = [
-    ("active_days_d1_14", "act_days_14", "Active days, days 1 to 14", "days", "count",
-     "Days from day 1 to day 14 after sign-up on which the user opened the app. Day 1 is the sign-up day, "
-     "Amsterdam time.", "candidate", "2021-04"),
-    ("sessions_d1_14", "sess_count_14", "Sessions, days 1 to 14", "sessions", "count",
-     "App sessions from day 1 to day 14 after sign-up. A session ends after 30 minutes without an event.",
-     "candidate", "2021-04"),
-    ("first_purchase_d14", "first_buy_14", "First purchase within 14 days", "share of users", "binary",
-     "1 when the user completed a purchase (paid, not cancelled within 48 hours) within 14 days of sign-up, "
-     "otherwise 0.", "candidate", "2022-02"),
-    ("items_saved_d1_14", "fav_saves_14", "Items saved, days 1 to 14", "items", "count",
-     "Items the user added to favourites from day 1 to day 14 after sign-up and had not removed by the end of day 14.",
-     "candidate", "2022-09"),
-    ("push_opens_d1_14", "push_open_14", "Push notifications opened, days 1 to 14", "opens", "count",
-     "Push notifications the user opened from day 1 to day 14 after sign-up, one open per notification. Users "
-     "without push permission count 0.", "candidate", "2023-03"),
-    ("retained_m6", "ret_d180", "Retained at six months", "share of users", "binary",
-     "1 when the user opened the app on at least one day from day 151 to day 180 after sign-up, otherwise 0.",
-     "north star (onboarding)", "2021-04"),
-    ("uninstalled_d14", "uninst_14", "Uninstalled within 14 days", "share of users", "binary",
-     "1 when the app was uninstalled from the user's last active device within 14 days of sign-up.", "guardrail",
-     "2023-06"),
-    ("support_contacts_d14", "cs_contacts_14", "Support contacts, days 1 to 14", "contacts", "count",
-     "Contacts the user opened with customer support from day 1 to day 14 after sign-up.", "guardrail", "2023-06"),
-    ("gmv_d30", None, "Gross merchandise value, days 1 to 30", "EUR", "sum",
-     "Value of the user's completed purchases in their first 30 days, excluding buyer protection fees and shipping.",
-     "reporting", "2022-02"),
-    ("listings_d30", None, "Items listed, days 1 to 30", "items", "count",
-     "Items the user listed for sale in their first 30 days.", "reporting", "2022-02"),
-]
+def write_notes_2025(path):
+    """the Portal do Dador team's notes that travel with the booking extract"""
+    import side2025 as S
+    lines = [
+        "Portal do Dador: extração de marcações",
+        "Associação Gota Viva, Sistemas de Informação",
+        "Extraído a %s para a Marketing de Dadores (pedido de %s)" % (pt_date(S.EXTRACTED), K.REQUESTER),
+        "",
+        "Âmbito",
+        "Todas as marcações para sessões de colheita de %s a %s nos doze centros do continente, qualquer que seja a"
+        % (pt_date(S.SESSIONS[0]), pt_date(S.SESSIONS[1])),
+        "data em que foram feitas e o seu desfecho. Uma linha por marcação.",
+        "",
+        "Sistema",
+        "O Portal do Dador entrou em produção a %s. As marcações e os registos de dadores do sistema anterior foram"
+        % pt_date(S.GO_LIVE),
+        "importados com as suas datas e números.",
+        "",
+        "Campos",
+        "id_marcacao      número da marcação",
+        "criada_em        data e hora em que a marcação foi feita, hora legal",
+        "canal            portal, telefone (linha do dador) ou presencial (no centro)",
+        "id_dador         número de dador: provisório (P) até à primeira dádiva, definitivo (D) depois dela",
+        "documento_hash   documento de identificação indicado no registo, cifrado",
+        "data_nascimento  como indicada no registo",
+        "sexo             como indicado no registo",
+        "distrito         distrito de residência indicado no registo",
+        "centro           centro de colheita da sessão",
+        "data_sessao      dia da sessão marcada",
+        "tipo_dadiva      primeira (quem ainda não deu sangue) ou regular",
+        "estado           realizada, falta ou cancelada",
+        "",
+        "Avaliação de campanhas (Marketing de Dadores)",
+        "A resposta a uma campanha conta as pessoas dos 18 aos 34 anos, com a idade no dia da marcação, que marcaram",
+        "a primeira dádiva. Cada pessoa conta uma vez, na data da primeira marcação de primeira dádiva que fez,",
+        "qualquer que tenha sido o desfecho. A referência é a média semanal das quatro semanas anteriores à campanha,",
+        "de segunda-feira a domingo; a resposta é o que as semanas da campanha somam acima dessa média, por mil",
+        "pessoas dos 18 aos 34 anos que a campanha levou três ou mais vezes, como o relatório da agência as dá.",
+        "",
+    ]
+    with open(path, "w", encoding="utf-8", newline="\n") as f:
+        f.write("\n".join(lines))
 
 
-def write_catalogue(path):
-    out = ["# Kleerwissel metric catalogue: growth metrics",
-           "# exported from the metric store on 2026-10-20",
-           "# owner: growth analytics (%s)" % K.ANALYST,
-           "# proxy_review_2027: the candidates for the 2027 proxy review are marked 'candidate'", "", "metrics:"]
-    for key, old, name, unit, typ, defn, role, since in CATALOGUE:
-        out.append("  - key: %s" % key)
-        if old:
-            out.append("    former_key: %s     # until 2025-03-03" % old)
-        out.append("    name: \"%s\"" % name)
-        out.append("    unit: %s" % unit)
-        out.append("    type: %s" % typ)
-        out.append("    definition: >-")
-        words, line = defn.split(), "     "
-        for wd in words:
-            if len(line) + len(wd) + 1 > 100:
-                out.append(line)
-                line = "     "
-            line += " " + wd
-        out.append(line)
-        if role == "candidate":
-            out.append("    proxy_review_2027: candidate")
-        else:
-            out.append("    role: %s" % role)
-        out.append("    in_scorecards: %s" % ("true" if old else "false"))
-        out.append("    since: \"%s\"" % since)
-    with open(path, "w", encoding="utf-8") as f:
-        f.write("\n".join(out) + "\n")
+def write_report_2025(path):
+    """Meridiano Media's report on the April 2025 campaign"""
+    import side2025 as S
+    St = styles(NAVY)
+    doc = _doc(path, "Gota Viva: campanha de televisão para jovens dadores, abril de 2025", K.AGENCY,
+               "Relatório de campanha")
+    end = S.CAMPAIGN[1]
+    st = [Paragraph("Campanha de televisão para jovens dadores, abril de 2025: relatório", St["h1"]),
+          Paragraph("%s para a %s &middot; %s &middot; ref. MM-GV-2025-RC" % (K.AGENCY, K.ORG, pt_date(S.REPORT_DATE)),
+                    St["meta"]),
+          Paragraph("1. A campanha", St["h2"]),
+          Paragraph("Quatro semanas, de segunda-feira %s a domingo %s: %d spots de 30 segundos em primeiro lugar no "
+                    "intervalo, no horário nobre de Vértice, Litoral e Pulsar, ao preço das tabelas do 2.º trimestre "
+                    "de 2025." % (pt_date(S.CAMPAIGN[0]), pt_date(end), S.SPOTS_2025), St["body"]),
+          Paragraph("2. Cobertura e frequência", St["h2"]),
+          Paragraph("Lida no painel da %s, em direto, com os pesos do período e o universo de 2025 dos adultos dos 18 "
+                    "aos 34 anos (%s mil pessoas)." % (K.PANEL_CO, format(S.UNIVERSE_2025 // 1000, ",").replace(",", ".")),
+                    St["body"])]
+    rows = [["Vezes que viu o filme", "Cobertura (% do universo)", "Pessoas (milhares)"]]
+    for k, r in enumerate(S.REACH_2025, start=1):
+        rows.append(["%d ou mais" % k, ("%.1f" % (100 * r)).replace(".", ","),
+                     ("%.1f" % (S.UNIVERSE_2025 * r / 1000)).replace(".", ",")])
+    st.append(_table(St, rows, [5.0, 5.0, 4.0], right=(1, 2)))
+    st.append(Paragraph("Fonte: %s, painel de abril e maio de 2025; cálculo da %s." % (K.PANEL_CO, K.AGENCY), St["note"]))
+    st.append(Paragraph("3. Notas", St["h2"]))
+    st.append(Paragraph("Os spots passaram todos no lugar reservado. A resposta em marcações é medida pela %s a partir "
+                        "do Portal do Dador." % K.ORG_SHORT, St["body"]))
+    f = _frame(K.AGENCY, "Relatório de campanha 2025")
+    doc.build(st, onFirstPage=f, onLaterPages=f)
 
 
-# --------------------------------------------------------------------------------------------- the dictionary
 DICTIONARY = [
-    ("onboarding_experiments_2024_2026.csv", "experiment_id", "Registry id of the experiment"),
-    ("onboarding_experiments_2024_2026.csv", "layer", "Onboarding layer the experiment ran in"),
-    ("onboarding_experiments_2024_2026.csv", "start_date", "First enrolment day"),
-    ("onboarding_experiments_2024_2026.csv", "planned_end_date", "Last enrolment day as planned at launch"),
-    ("onboarding_experiments_2024_2026.csv", "end_date", "Last enrolment day; blank while enrolling"),
-    ("onboarding_experiments_2024_2026.csv", "arms", "Arm labels, separated by semicolons"),
-    ("onboarding_experiments_2024_2026.csv", "control_arm", "Label of the control arm"),
-    ("onboarding_experiments_2024_2026.csv", "status", "completed, stopped_early, analysing or running"),
-    ("onboarding_experiments_2024_2026.csv", "srm_check", "Sample-ratio check result: pass or fail"),
-    ("onboarding_experiments_2024_2026.csv", "decision", "The owning team's decision at the two-week read"),
-    ("onboarding_experiments_2024_2026.csv", "shipped_on", "Date the shipped arm went to all new users"),
-    ("onboarding_experiments_2024_2026.csv", "six_month_read_closes", "Date the six-month read closes"),
-    ("global_holdout_users_2025.csv", "user_id", "Pseudonymous user id; one row per user in the 2025 global holdout"),
-    ("global_holdout_users_2025.csv", "signed_up_on", "Sign-up date, Amsterdam time"),
-    ("global_holdout_users_2025.csv", "platform", "Platform of the first app open"),
-    ("global_holdout_users_2025.csv", "country", "Country of the account"),
-    ("global_holdout_users_2025.csv", "active_days_d1_14 to retained_m6", "The user's value of each metric, as the metric catalogue defines it"),
-    ("signup_cohorts_2025.csv", "signup_date", "Sign-up date, Amsterdam time"),
-    ("signup_cohorts_2025.csv", "account_type", "The account's type at the table's refresh: consumer or business"),
-    ("signup_cohorts_2025.csv", "signup_account_type", "The type the account signed up as: consumer or business"),
-    ("signup_cohorts_2025.csv", "new_users", "Accounts that signed up on the day, platform and country"),
-    ("signup_cohorts_2025.csv", "active_days_total to retained_m6_users", "Sums of the metrics over those accounts"),
-    ("signup_cohorts_2025.csv", "refreshed_at", "Date the row was computed; a row refreshed later replaces the earlier one"),
-    ("onboarding_calendar_2027q1.csv", "platforms", "all, ios or android"),
-    ("onboarding_calendar_2027q1.csv", "start_date", "First enrolment day"),
-    ("onboarding_calendar_2027q1.csv", "end_date", "Last enrolment day"),
-    ("onboarding_calendar_2027q1.csv", "arms", "Number of arms, control included"),
-    ("new_user_forecast_2027.csv", "date", "Calendar day"),
-    ("new_user_forecast_2027.csv", "iso_week", "ISO week of the day"),
-    ("new_user_forecast_2027.csv", "new_consumer_users_forecast", "The forecasting tool's new consumer user forecast for the platform"),
-    ("app_store_ratings_2024_2026.csv", "week_starting", "Monday of the week"),
-    ("app_store_ratings_2024_2026.csv", "average_rating", "Average of the week's new ratings, 1 to 5 stars"),
+    ("audimetria_visionamentos_2026-03.csv", "id_lar", "Código do lar do painel"),
+    ("audimetria_visionamentos_2026-03.csv", "id_individuo", "Código da pessoa; convidados com o código do lar seguido de -C1"),
+    ("audimetria_visionamentos_2026-03.csv", "dia_tv", "Dia de televisão (02:00 a 26:00, hora legal)"),
+    ("audimetria_visionamentos_2026-03.csv", "canal", "Código do canal em vigor no dia"),
+    ("audimetria_visionamentos_2026-03.csv", "inicio_utc", "Início do período de presença diante do canal, UTC"),
+    ("audimetria_visionamentos_2026-03.csv", "fim_utc", "Fim do período de presença diante do canal, UTC"),
+    ("audimetria_visionamentos_2026-03.csv", "emissao_utc", "Hora de emissão do que a pessoa estava a ver no início do "
+                                                         "período, UTC; em direto, igual ao início"),
+    ("audimetria_visionamentos_2026-03.csv", "modo", "AO VIVO ou DIFERIDO"),
+    ("audimetria_visionamentos_2026-03.csv", "convidado", "S para convidados, N para membros do painel"),
+    ("audimetria_individuos_2026-03.csv", "peso_28d", "Peso do período de 28 dias (zero para quem falhou algum dia)"),
+    ("audimetria_individuos_2026-03.csv", "dias_em_amostra", "Dias do período em que a pessoa esteve em amostra"),
+    ("emissao_publicitaria_2026-03.csv", "dia_tv", "Dia de televisão do intervalo"),
+    ("emissao_publicitaria_2026-03.csv", "data", "Data civil da emissão do spot"),
+    ("emissao_publicitaria_2026-03.csv", "hora_inicio", "Hora de início do spot, hora legal"),
+    ("emissao_publicitaria_2026-03.csv", "id_intervalo", "Intervalo: canal, data do dia de televisão e número de ordem no dia"),
+    ("emissao_publicitaria_2026-03.csv", "intervalo_no_programa", "Número de ordem do intervalo dentro do programa"),
+    ("emissao_publicitaria_2026-03.csv", "posicao", "Lugar do spot no intervalo, a contar do início"),
+    ("emissao_publicitaria_2026-03.csv", "colocacao", "Tipo de reserva: 1.º LUGAR, ÚLTIMO LUGAR, FIXO (spot fixo no "
+                                                     "intervalo), ROTAÇÃO (spot vendido por janela horária) ou "
+                                                     "AUTOPROMOÇÃO (promoção do próprio canal, sem reserva)"),
+    ("emissao_publicitaria_2026-03.csv", "id_reserva", "Número da reserva na comercial do canal"),
+    ("reservas_publicidade_2026-03.csv", "casa_comercial", "Comercial que vendeu o spot"),
+    ("reservas_publicidade_2026-03.csv", "id_reserva", "Número da reserva, atribuído pela comercial"),
+    ("reservas_publicidade_2026-03.csv", "data_reserva", "Data em que a reserva foi feita"),
+    ("reservas_publicidade_2026-03.csv", "canal", "Código do canal em vigor no dia de televisão da reserva"),
+    ("reservas_publicidade_2026-03.csv", "dia_tv", "Dia de televisão para que o spot foi vendido"),
+    ("reservas_publicidade_2026-03.csv", "colocacao", "Tipo de reserva, nos termos da emissão publicitária"),
+    ("reservas_publicidade_2026-03.csv", "programa", "Programa reservado; vazio na rotação"),
+    ("reservas_publicidade_2026-03.csv", "intervalo_no_programa", "Intervalo reservado dentro do programa; vazio na "
+                                                                  "rotação"),
+    ("reservas_publicidade_2026-03.csv", "janela", "Janela horária vendida na rotação; vazio nas outras reservas"),
+    ("grelha_programacao_2026-03.csv", "inicio", "Início do programa, hora legal"),
+    ("audiencias_programas_semanais_2026-03.csv", "audiencia_media_18_34_milhares",
+     "Audiência média do programa (média das emissões da semana), adultos 18-34, milhares"),
+    ("esquemas_campanha_2027.xlsx", "Colocação", "1.º lugar no intervalo, último lugar no intervalo ou rotação"),
+    ("universo_2026.csv", "populacao", "Universo de 2026, pessoas com 18 ou mais anos"),
+    ("marcacoes_portal_dador_2025.csv", "id_dador", "Número de dador: provisório (P) até à primeira dádiva"),
+    ("marcacoes_portal_dador_2025.csv", "documento_hash", "Documento de identificação indicado no registo, cifrado"),
+    ("marcacoes_portal_dador_2025.csv", "criada_em", "Data e hora da marcação, hora legal"),
+    ("marcacoes_portal_dador_2025.csv", "tipo_dadiva", "primeira ou regular"),
 ]
 
 
 def write_dictionary(path):
     with open(path, "w", newline="", encoding="utf-8") as f:
         w = csv.writer(f, lineterminator="\n")
-        w.writerow(["file", "column", "description"])
+        w.writerow(["ficheiro", "campo", "descricao"])
         w.writerows(DICTIONARY)
-
-
-# ---------------------------------------------------------------------------------------------- the spend book
-def write_spend(path, rows):
-    from openpyxl import Workbook
-    from openpyxl.styles import Font, PatternFill
-    wb = Workbook()
-    sh = wb.active
-    sh.title = "Spend 2026"
-    sh.append(["Month", "Channel", "Spend (EUR)", "Installs attributed", "Cost per install (EUR)"])
-    for m, c, s, i in rows:
-        sh.append([m, c, s, i, None])
-        r = sh.max_row
-        sh.cell(r, 5).value = "=C%d/D%d" % (r, r)
-        sh.cell(r, 1).number_format = "mmm yyyy"
-        sh.cell(r, 3).number_format = "#,##0.00"
-        sh.cell(r, 4).number_format = "#,##0"
-        sh.cell(r, 5).number_format = "0.00"
-    for c in "ABCDE":
-        sh.column_dimensions[c].width = {"A": 11, "B": 26, "C": 14, "D": 19, "E": 22}[c]
-    for cell in sh[1]:
-        cell.font = Font(bold=True, color="FFFFFF")
-        cell.fill = PatternFill("solid", fgColor="0F6B4F")
-    sh.freeze_panes = "A2"
-    n = wb.create_sheet("Notes")
-    n.append(["Paid acquisition spend by channel, January to September 2026, from the marketing finance ledger."])
-    n.append(["Installs attributed: the attribution partner's last-click installs; organic installs are not shown."])
-    n.column_dimensions["A"].width = 100
-    wb.save(path)

@@ -1,228 +1,278 @@
-"""The main call from the shipped pack, read the way an analyst reads it: the registry's population under the
-standard's 2.4, the scorecards' latest computation of each metric under its current key, each change's effect on the
-five candidates and on retained_m6, and each candidate's correlation with retention across the changes.
+"""The main call from the shipped pack, read the way an analyst reads it: the panel's members with their 28-day
+weight, their live viewing on the panel's local clock, the as-run log's places, and each 2027 schedule replayed over
+the four reference weeks under the brief's clauses 3.2 to 3.5.
 
-The golden takes each change's sampling error out of the cross-change moments: the variance of each effect (the arms'
-variances over their users) and, because both effects are measured on the same users, the covariance between the two
-effects' errors (the 2025 holdout's user-level correlation between the candidate and retention, times the arms'
-standard deviations, over their users). Every other rung is the same code with one argument changed."""
+route "golden": a fixed-place spot at its place; a rotation spot at each place where that day's rotation bookings
+for the same channel and window aired (the sales houses' bookings joined to the as-run log by booking number), each
+with the share of those bookings that aired there. The other routes are the same code with one reading changed:
+"asrun" (the rotation places inside the window that day, as the as-run log shows them), "nonpremium" (every place in
+the window that a first- or last-place booking did not hold), "uniform" (every place in the window, and every place
+of a fixed spot's break) and "breaks" (anyone tuned for 15 seconds or more of the break)."""
+import csv
+import datetime as dt
 import os
 
 import numpy as np
-import pandas as pd
+from openpyxl import load_workbook
 
 import common as K
 
-FILES = dict(K.FILES, dictionary="data_dictionary.csv")
+T0 = dt.datetime.combine(K.REF_START, dt.time(0, 0))
+SWITCH = dt.datetime(2026, 3, 29, 1, 0)        # UTC
+NAME2CODE = {"Farol": "FAR1", "Farol 2": "FAR2", "Vértice": "VRT", "Litoral": "LIT", "Pulsar": "PLS", "Pulsar+": "PLS",
+             "Arena": "ARN"}
+PRIME = (20 * 3600, 24 * 3600 + 30 * 60)
 
 
-def load(target):
-    p = lambda k: os.path.join(target, FILES[k])
-    d = {}
-    d["scorecards"] = pd.read_csv(p("scorecards"), dtype={"experiment_id": str, "arm": str, "metric": str})
-    d["registry"] = pd.read_csv(p("registry"), dtype=str, keep_default_na=False)
-    d["holdout"] = pd.read_csv(p("holdout"))
-    d["cohorts"] = pd.read_csv(p("cohorts"))
-    d["calendar"] = pd.read_csv(p("calendar"))
-    d["forecast"] = pd.read_csv(p("forecast"))
-    return d
+def rows(path):
+    with open(path, newline="", encoding="utf-8") as f:
+        return list(csv.DictReader(f))
 
 
-def former_keys(target):
-    """the catalogue's former key of each metric"""
-    out, key = {}, None
-    for line in open(os.path.join(target, FILES["catalogue"]), encoding="utf-8"):
-        s = line.strip()
-        if s.startswith("- key:"):
-            key = s.split(":", 1)[1].strip()
-        elif s.startswith("former_key:"):
-            out[s.split(":", 1)[1].split("#")[0].strip()] = key
-    return out
+def wall_from_utc(s, dst=True):
+    t = dt.datetime.strptime(s, "%Y-%m-%dT%H:%M:%SZ")
+    if dst and t >= SWITCH:
+        t += dt.timedelta(hours=1)
+    return int((t - T0).total_seconds())
 
 
-def scorecards(d, target, latest=True, rename=True):
-    """latest=True keeps each arm and metric's latest computation (the export notes); "first" its earliest"""
-    s = d["scorecards"].copy()
-    if rename:
-        s["metric"] = s["metric"].replace(former_keys(target))
-    if latest:
-        s = s.sort_values("computed_at").drop_duplicates(["experiment_id", "arm", "metric"],
-                                                         keep="first" if latest == "first" else "last")
-    return s
+def wall_from_local(date, hms):
+    t = dt.datetime.strptime(date + " " + hms, "%Y-%m-%d %H:%M:%S")
+    return int((t - T0).total_seconds())
 
 
-def changes(d, target, srm_out=True, latest=True, rename=True, stopped=True, closed_by=K.PULL, keep_all_versions=False,
-            first_arm_only=False):
-    """one row per change: users, means and standard deviations of the five candidates and retained_m6 in the
-    treatment arm and in its control"""
-    reg = d["registry"]
-    reg = reg[(reg["six_month_read_closes"] != "") & (reg["six_month_read_closes"] <= closed_by.isoformat())]
-    reg = reg[reg["status"].isin(["completed", "stopped_early"] if stopped else ["completed"])]
-    if srm_out:
-        reg = reg[reg["srm_check"] == "pass"]
-    s = scorecards(d, target, latest=latest and not keep_all_versions, rename=rename)
-    s = s[s["metric"].isin(K.CAND + [K.RET])]
-    if keep_all_versions:
-        # every computation read as its own scorecard: two-week metrics by computation, retention its own
-        two = s[s["metric"] != K.RET]
-        ret = s[s["metric"] == K.RET].sort_values("computed_at").drop_duplicates(["experiment_id", "arm"], keep="last")
-        versions = [(eid, c) for eid, c in two[["experiment_id", "computed_at"]].drop_duplicates().itertuples(index=False)]
-    rows = []
-    for _, r in reg.iterrows():
-        eid = r["experiment_id"]
-        arms = r["arms"].split(";")
-        ctrl = r["control_arm"]
-        treats = [a for a in arms if a != ctrl][: 1 if first_arm_only else None]
-        if keep_all_versions:
-            vs = [c for e, c in versions if e == eid]
-            frames = [pd.concat([two[(two["experiment_id"] == eid) & (two["computed_at"] == c)],
-                                 ret[ret["experiment_id"] == eid]]) for c in vs]
-        else:
-            frames = [s[s["experiment_id"] == eid]]
-        for g in frames:
-            if not len(g):
-                continue
-            tab = {(a, m): (u, mu, sd) for a, m, u, mu, sd in g[["arm", "metric", "users", "mean", "std_dev"]]
-                   .itertuples(index=False)}
-            if any((a, m) not in tab for a in [ctrl] + treats for m in K.CAND + [K.RET]):
-                continue
-            for t in treats:
-                row = dict(experiment_id=eid, arm=t, nt=tab[(t, K.RET)][0], nc=tab[(ctrl, K.RET)][0])
-                for m in K.CAND + [K.RET]:
-                    row["mt_" + m], row["st_" + m] = tab[(t, m)][1], tab[(t, m)][2]
-                    row["mc_" + m], row["sc_" + m] = tab[(ctrl, m)][1], tab[(ctrl, m)][2]
-                    row["nt_" + m], row["nc_" + m] = tab[(t, m)][0], tab[(ctrl, m)][0]
-                rows.append(row)
-    return pd.DataFrame(rows)
-
-
-def holdout_moments(d):
-    h = d["holdout"]
-    X = h[K.CAND].to_numpy(float)
-    y = h[K.RET].to_numpy(float)
-    rho = np.array([np.corrcoef(X[:, k], y)[0, 1] for k in range(5)])
-    cov = np.array([np.cov(X[:, k], y)[0, 1] for k in range(5)])
-    return dict(rho=rho, cov=cov, sd=X.std(0, ddof=1), sdy=y.std(ddof=1), n=len(h))
-
-
-def effects(c):
+def channel_map(target):
+    """every code in the channel list to the channel it names (a renamed channel keeps one identity)"""
     out = {}
-    for m in K.CAND + [K.RET]:
-        out[m] = (c["mt_" + m] - c["mc_" + m]).to_numpy()
-        out["v_" + m] = (c["st_" + m] ** 2 / c["nt_" + m] + c["sc_" + m] ** 2 / c["nc_" + m]).to_numpy()
+    for r in rows(os.path.join(target, K.FILES["channels"])):
+        out[r["codigo"]] = NAME2CODE[r["nome"]]
     return out
 
 
-def correlations(c, hm, method="golden", ddof=1, cov_from="rho", weights=None):
-    """each candidate's correlation with retained_m6 across the changes under one construction:
-    raw: the correlation of the effects as measured
-    disattenuated: raw over the square root of each effect's reliability (its sampling variance taken out)
-    golden: the sampling variances and the sampling covariance taken out of the cross-change moments"""
-    e = effects(c)
-    y, vy = e[K.RET], e["v_" + K.RET]
-    n = len(y)
-    w = np.ones(n) / n if weights is None else weights / weights.sum()
-    f = 1 / (1 - (w ** 2).sum()) if ddof == 1 else 1.0
-    out = []
-    for k, m in enumerate(K.CAND):
-        x, vx = e[m], e["v_" + m]
-        mx, my = (w * x).sum(), (w * y).sum()
-        cxy = f * (w * (x - mx) * (y - my)).sum()
-        vxx = f * (w * (x - mx) ** 2).sum()
-        vyy = f * (w * (y - my) ** 2).sum()
-        if method == "raw":
-            out.append(cxy / np.sqrt(vxx * vyy))
-            continue
-        if cov_from == "rho":
-            s12 = hm["rho"][k] * (c["st_" + m] * c["st_" + K.RET] / c["nt_" + K.RET] +
-                                 c["sc_" + m] * c["sc_" + K.RET] / c["nc_" + K.RET]).to_numpy()
-        elif cov_from == "holdout":
-            s12 = hm["cov"][k] * (1 / c["nt_" + K.RET] + 1 / c["nc_" + K.RET]).to_numpy()
-            vx = hm["sd"][k] ** 2 * (1 / c["nt_" + m] + 1 / c["nc_" + m]).to_numpy()
-            vy = hm["sdy"] ** 2 * (1 / c["nt_" + K.RET] + 1 / c["nc_" + K.RET]).to_numpy()
-        elif cov_from == "pooled":
-            nt, nc = c["nt_" + m].to_numpy(), c["nc_" + m].to_numpy()
-            sp = np.sqrt(((nt - 1) * c["st_" + m] ** 2 + (nc - 1) * c["sc_" + m] ** 2) / (nt + nc - 2)).to_numpy()
-            sq = np.sqrt(((nt - 1) * c["st_" + K.RET] ** 2 + (nc - 1) * c["sc_" + K.RET] ** 2) / (nt + nc - 2)).to_numpy()
-            s12 = hm["rho"][k] * sp * sq * (1 / nt + 1 / nc)
-            vx = sp ** 2 * (1 / nt + 1 / nc)
-            vy = sq ** 2 * (1 / nt + 1 / nc)
-        else:
-            raise ValueError(cov_from)
-        a = vxx - (w * vx).sum()
-        b = vyy - (w * vy).sum()
-        if method == "disattenuated":
-            out.append(cxy / np.sqrt(a * b))
-        elif method == "golden":
-            out.append((cxy - (w * s12).sum()) / np.sqrt(a * b))
-        elif method == "half":
-            out.append((cxy - 0.5 * (w * s12).sum()) / np.sqrt(a * b))
-        else:
-            raise ValueError(method)
-    return np.array(out)
+class Pack:
+    def __init__(self, target, dst=True, rename=True, guests=False, playback=False, civil=False, length=None):
+        """the readings an analyst can get wrong, each a switch: dst (the panel's UTC read across the clock change),
+        rename (Pulsar+ as Pulsar), guests and playback (left out), civil (a break found by its civil date instead of
+        its panel day), length (every place read at this many seconds from its start instead of its own length)"""
+        self.target = target
+        p = lambda k: os.path.join(target, K.FILES[k])
+        cm = channel_map(target) if rename else {}
+        canon = lambda c: cm.get(c, c)
+        self.members = {}
+        if guests:
+            for r in rows(p("viewing")):
+                if r["convidado"] != "N":
+                    self.members[r["id_individuo"]] = ("18-24", 0.0)
+        for r in rows(p("panel")):
+            self.members[r["id_individuo"]] = (r["escalao_etario"], float(r["peso_28d"]))
+        self.young = {m for m, (a, w) in self.members.items() if a in K.YOUNG and w > 0}
+        self.wt = {m: w for m, (a, w) in self.members.items()}
+        by = {}
+        for r in rows(p("viewing")):
+            if (r["modo"] != "AO VIVO" and not playback) or (r["convidado"] != "N" and not guests):
+                continue
+            by.setdefault(canon(r["canal"]), []).append((wall_from_utc(r["inicio_utc"], dst),
+                                                         wall_from_utc(r["fim_utc"], dst), r["id_individuo"]))
+        self.view = {}
+        for c, lst in by.items():
+            lst.sort()
+            arr = np.array([(a, b) for a, b, _ in lst], dtype=np.int64)
+            self.view[c] = (arr, [m for _, _, m in lst])
+        self.maxlen = max(int((a[:, 1] - a[:, 0]).max()) for a, _ in self.view.values())
+        self.booking = {}
+        for r in rows(p("bookings")):
+            self.booking[r["id_reserva"]] = dict(ch=canon(r["canal"]), day=r["dia_tv"], kind=r["colocacao"],
+                                                 window=r["janela"])
+        self.asrun = []
+        for r in rows(p("asrun")):
+            s0 = wall_from_local(r["data"], r["hora_inicio"])
+            self.asrun.append(dict(ch=canon(r["canal"]), day=r["data"] if civil else r["dia_tv"], prog=r["programa"],
+                                   brk=int(r["intervalo_no_programa"]), pos=int(r["posicao"]),
+                                   n=int(r["spots_no_intervalo"]), s0=s0, s1=s0 + (length or int(r["duracao_s"])),
+                                   kind=r["colocacao"], ref=r["id_reserva"],
+                                   clock=s0 - int((dt.datetime.strptime(r["dia_tv"], "%Y-%m-%d") - T0).total_seconds())))
+        self.sold = {}
+        for a in self.asrun:
+            bk = self.booking.get(a["ref"])
+            if bk and bk["kind"] == "ROTAÇÃO":
+                self.sold.setdefault((bk["ch"], bk["day"], bk["window"].lower()), []).append(a)
+        self.by_break = {}
+        self.by_day = {}
+        for a in self.asrun:
+            self.by_break.setdefault((a["ch"], a["day"], a["prog"], a["brk"]), []).append(a)
+            self.by_day.setdefault((a["ch"], a["day"]), []).append(a)
+        self.sched = self._schedules(p("schedules"))
+        self._seen = {}
+
+    def _schedules(self, path):
+        wb = load_workbook(path, data_only=False)
+        out = {}
+        for s in K.SCHED:
+            ws = wb["Esquema %s" % s]
+            lines = []
+            for row in ws.iter_rows(min_row=2, values_only=True):
+                if row[0] in (None, "Total"):
+                    continue
+                week, date, _, chname, prog, brk, place = row[:7]
+                d = dt.date.fromisoformat(date) if isinstance(date, str) else date
+                ref = K.REF_START + dt.timedelta(days=7 * (int(week) - 1) + d.weekday())
+                kind = {"1.º lugar no intervalo": "FP", "Último lugar no intervalo": "LP", "Rotação": "ROS"}[place]
+                lines.append(dict(week=int(week), ref=ref.isoformat(), ch=NAME2CODE[chname], prog=prog,
+                                  brk=int(brk) if brk not in (None, "") else None, kind=kind, price=row[8],
+                                  window=prog[len("Rotação "):].lower() if kind == "ROS" else None))
+            out[s] = lines
+        return out
+
+    def seen(self, ch, s0, s1, need=None):
+        key = (ch, s0, s1, need)
+        if key in self._seen:
+            return self._seen[key]
+        arr, mem = self.view[ch]
+        lo = np.searchsorted(arr[:, 0], s0 - self.maxlen)
+        hi = np.searchsorted(arr[:, 0], s1)
+        acc = {}
+        for j in range(lo, hi):
+            o = min(arr[j, 1], s1) - max(arr[j, 0], s0)
+            if o > 0:
+                acc[mem[j]] = acc.get(mem[j], 0) + int(o)
+        need = (s1 - s0) / 2.0 if need is None else need
+        out = {m for m, v in acc.items() if v >= need}
+        self._seen[key] = out
+        return out
+
+    def places(self, line, route="golden"):
+        if line["kind"] == "ROS":
+            if route == "golden":
+                return self.sold.get((line["ch"], line["ref"], line["window"]), [])
+            day = [a for a in self.by_day.get((line["ch"], line["ref"]), []) if PRIME[0] <= a["clock"] < PRIME[1]]
+            if route == "asrun":
+                return [a for a in day if a["kind"] == "ROTAÇÃO"]
+            if route == "nonpremium":
+                return [a for a in day if a["kind"] in ("FIXO", "ROTAÇÃO", "AUTOPROMOÇÃO")]
+            if route == "breaks":
+                br = {}
+                for a in day:
+                    br.setdefault((a["prog"], a["brk"]), []).append(a)
+                return [("break", v) for v in br.values()]
+            return day
+        b = sorted(self.by_break.get((line["ch"], line["ref"], line["prog"], line["brk"]), []), key=lambda a: a["pos"])
+        if not b:
+            return []
+        if route == "uniform":
+            return b
+        if route == "breaks":
+            return [("break", b)]
+        return [b[0]] if line["kind"] == "FP" else [b[-1]]
+
+    def exposures(self, s, route="golden", weeks=None):
+        E = {}
+        for line in self.sched[s]:
+            if weeks and line["week"] not in weeks:
+                continue
+            pl = self.places(line, route)
+            if not pl:
+                continue
+            cnt = {}
+            for x in pl:
+                if isinstance(x, tuple):
+                    v = x[1]
+                    got = self.seen(line["ch"], v[0]["s0"], v[-1]["s1"], 15)
+                else:
+                    got = self.seen(line["ch"], x["s0"], x["s1"])
+                for m in got & self.young:
+                    cnt[m] = cnt.get(m, 0) + 1
+            for m, c in cnt.items():
+                E.setdefault(m, []).append(c / len(pl))
+        return E
+
+    def dist(self, E):
+        """each young member's distribution of the number of spots seen"""
+        out = {}
+        for m, ps in E.items():
+            d = np.zeros(len(ps) + 1)
+            d[0] = 1.0
+            for q in ps:
+                d[1:] = d[1:] * (1 - q) + d[:-1] * q
+                d[0] *= (1 - q)
+            out[m] = d
+        return out
+
+    def reach(self, E, kmin):
+        tot = sum(self.wt[m] for m in self.young)
+        D = self.dist(E)
+        return sum(self.wt[m] * d[kmin:].sum() for m, d in D.items()) / tot
+
+    def cuts(self, E):
+        """the shares of the 18 to 34 universe seeing the film at least once to at least five times"""
+        return [self.reach(E, k) for k in (1, 2, 3, 4, 5)]
 
 
-def bivariate_reml(c, hm, ml=False):
-    """the precision-weighted bivariate random-effects fit with each change's sampling covariance: not the standard's
-    estimand (each change counts once), kept to show it names the same proxy"""
-    from scipy.optimize import minimize
-    e = effects(c)
-    y, vy = e[K.RET], e["v_" + K.RET]
-    out = []
-    for k, m in enumerate(K.CAND):
-        x, vx = e[m], e["v_" + m]
-        s12 = hm["rho"][k] * (c["st_" + m] * c["st_" + K.RET] / c["nt_" + K.RET] +
-                             c["sc_" + m] * c["sc_" + K.RET] / c["nc_" + K.RET]).to_numpy()
-        D = np.column_stack([x, y])
-
-        def nll(p):
-            T = np.array([[np.exp(p[0]), 0], [p[1], np.exp(p[2])]])
-            T = T @ T.T
-            V = np.empty((len(x), 2, 2))
-            V[:, 0, 0], V[:, 1, 1] = T[0, 0] + vx, T[1, 1] + vy
-            V[:, 0, 1] = V[:, 1, 0] = T[0, 1] + s12
-            Vi = np.linalg.inv(V)
-            A = Vi.sum(0)
-            mu = np.linalg.solve(A, np.einsum("eij,ej->i", Vi, D))
-            R = D - mu
-            v = 0.5 * (np.linalg.slogdet(V)[1].sum() + np.einsum("ei,eij,ej->", R, Vi, R))
-            return v + (0 if ml else 0.5 * np.linalg.slogdet(A)[1])
-        sx = np.sqrt(max(x.var() - vx.mean(), 1e-8))
-        sy = np.sqrt(max(y.var() - vy.mean(), 1e-10))
-        r = minimize(nll, [np.log(sx), 0.0, np.log(sy)], method="Nelder-Mead",
-                     options=dict(xatol=1e-10, fatol=1e-12, maxiter=20000))
-        T = np.array([[np.exp(r.x[0]), 0], [r.x[1], np.exp(r.x[2])]])
-        T = T @ T.T
-        out.append(T[0, 1] / np.sqrt(T[0, 0] * T[1, 1]))
-    return np.array(out)
+def main_call(target, route="golden", pack=None, **kw):
+    P = pack or Pack(target, **kw)
+    r3 = {s: P.reach(P.exposures(s, route), 3) for s in K.SCHED}
+    order = sorted(K.SCHED, key=lambda s: -r3[s])
+    return dict(pack=P, reach3=r3, call=order[0], runner=order[1], lead=r3[order[0]] - r3[order[1]])
 
 
-def spearman(c):
-    e = effects(c)
-    y = pd.Series(e[K.RET]).rank().to_numpy()
-    return np.array([np.corrcoef(pd.Series(e[m]).rank().to_numpy(), y)[0, 1] for m in K.CAND])
+def prime_bookings(P, chans=("VRT", "LIT", "PLS")):
+    """the reference weeks' prime-time rotation bookings on the channels schedule B buys: where each aired"""
+    win = K.WINDOW_NAME["prime"].lower()
+    n = inside = 0
+    for (ch, day, w), lst in P.sold.items():
+        if ch in chans and w == win:
+            for a in lst:
+                n += 1
+                inside += PRIME[0] <= a["clock"] < PRIME[1] and a["day"] == day
+    return dict(bookings=n, in_prime=inside, elsewhere=n - inside, share_elsewhere=(n - inside) / n)
 
 
-def user_level(d):
-    return holdout_moments(d)["rho"]
+def b_places(P):
+    """schedule B's reference places under the golden reading: how many, and how many outside prime time"""
+    n = out = 0
+    for line in P.sched["B"]:
+        for a in P.places(line, "golden"):
+            n += 1
+            out += not (PRIME[0] <= a["clock"] < PRIME[1] and a["day"] == line["ref"])
+    return dict(places=n, outside=out)
 
 
-def pick(v):
-    return K.CAND[int(np.argmax(v))]
+def ratings_grps(target, P):
+    """rung 0: each schedule's 18-34 rating points from the Comissão's weekly programme audiences, a rotation line at
+    the average of its window's programmes that week"""
+    import csv as _csv
+    cm = channel_map(target)
+    rat = {}
+    with open(os.path.join(target, K.FILES["ratings"]), newline="", encoding="utf-8") as f:
+        for r in _csv.DictReader(f):
+            rat[(int(r["semana"][-2:]) - 9, cm.get(r["canal"], r["canal"]), r["programa"])] = float(r["rat_18_34_pct"])
+    win = {}
+    for a in P.asrun:
+        win.setdefault((a["ch"], a["prog"]), set()).add(window_of_clock(a["clock"]))
+    out = {}
+    for s in K.SCHED:
+        g = 0.0
+        for line in P.sched[s]:
+            wk = line["week"]
+            if line["kind"] == "ROS":
+                w = [v for (k, ch, prog), v in rat.items() if k == wk and ch == line["ch"] and
+                     "prime" in win.get((ch, prog), ())]
+                g += sum(w) / len(w)
+            else:
+                g += rat[(wk, line["ch"], line["prog"])]
+        out[s] = g
+    return out
 
 
-def main_call(target):
-    d = load(target)
-    c = changes(d, target)
-    hm = holdout_moments(d)
-    gold = correlations(c, hm)
-    order = list(np.argsort(-gold))
-    res = dict(
-        n_changes=len(c), n_experiments=int(c["experiment_id"].nunique()),
-        golden=gold, proxy=K.CAND[order[0]], runner_up=K.CAND[order[1]],
-        raw=correlations(c, hm, "raw"), disattenuated=correlations(c, hm, "disattenuated"),
-        half=correlations(c, hm, "half"), spearman=spearman(c), user=hm["rho"],
-        family=dict(mom=gold, mom_n=correlations(c, hm, ddof=0), holdout=correlations(c, hm, cov_from="holdout"),
-                    pooled=correlations(c, hm, cov_from="pooled")),
-        hm=hm, changes=c, data=d)
-    return res
+def window_of_clock(sec):
+    m = sec / 60.0
+    for w, (a, b) in K.WINDOWS.items():
+        if a <= m < b:
+            return w
+    return "late"
+
+
+def rungs(target, P):
+    out = {"R0_ratings_grps": ratings_grps(target, P)}
+    for route in ("breaks", "uniform", "nonpremium", "asrun", "golden"):
+        out[route] = {s: P.reach(P.exposures(s, route), 3) for s in K.SCHED}
+    return out

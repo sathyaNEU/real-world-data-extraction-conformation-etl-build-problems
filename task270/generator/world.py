@@ -1,326 +1,558 @@
-"""Kleerwissel's world, day by day: every consumer who signs up is simulated once, set aside in the year's global
-holdout or routed through the three onboarding layers into whichever experiment and arm the platform assigns, and
-shaped by every onboarding change shipped before their sign-up. The scorecards, the holdout's rows and the 2025 cohort
-table are all summaries of these same users, so the pack's files agree with each other the way real exports do.
+"""The clean truth for task270: the six channels' programme grids and commercial breaks over the four reference
+weeks, the audience panel's members and their viewing second by second, the sales houses' traffic (first-in-break,
+last-in-break, fixed and rotation bookings placed by demand for the breaks' young audiences), the 2027 rate cards
+and the three schedules Meridiano Media drafted at one budget.
 
-Each user carries an engagement factor u that drives six-month retention, and each candidate metric a latent score
-that loads on u by RU (how the metric tracks retention user by user). Each change shifts the latent scores and the
-retention threshold; its shifts on the candidates correlate with its retention shift by RT (how the metric's effects
-track retention's effects change by change). RU and RT are set apart on purpose: active days and sessions follow
-retention user by user, first purchase is moved by the changes that move retention."""
-import datetime as dt
-import math
-
+Everything is simulated on the panel's local wall clock (seconds from 00:00 local on 2 March 2026); records.py
+writes the panel's statements in UTC and the as-run log in local time."""
 import numpy as np
 
 import common as K
 
-DEFAULT = dict(
-    RU=(0.80, 0.80, 0.18, 0.15, 0.50),       # loading of each candidate's latent score on u
-    RT=(0.00, 0.30, 0.62, 0.20, 0.05),       # correlation of each candidate's shifts with the retention shift
-    TS=(0.022, 0.022, 0.045, 0.030, 0.030),  # spread of the changes' latent shifts
-    TY=0.010,                                # spread of the changes' retention shifts (threshold units / 3)
-    BASE=1520.0,                             # consumer sign-ups a day, January 2024
-    LAUNCH=0.30,                             # share of a change's experiment effect its launch keeps
-)
-WEEKDAY = (1.03, 0.95, 0.94, 0.95, 0.99, 1.10, 1.15)                       # Monday first
-MONTH = (1.14, 1.04, 1.00, 0.98, 0.96, 0.92, 0.88, 0.90, 1.04, 1.01, 1.06, 1.10)
+# genre appeal for adults 18 to 34 and for older adults; the share of viewers who leave the channel at a break
+APPEAL_YOUNG = {"reality": 2.4, "drama": 0.75, "football": 1.6, "sporttalk": 0.7, "series": 2.0, "comedy": 1.8,
+                "talk": 0.5, "news": 0.45, "magazine": 0.2, "game": 0.6, "film": 1.1, "music": 1.4, "docs": 0.3,
+                "sport": 0.9, "kids": 0.1, "sitcom": 1.2}
+APPEAL_OLD = {"reality": 0.8, "drama": 2.0, "football": 1.1, "sporttalk": 0.8, "series": 0.4, "comedy": 0.4,
+              "talk": 1.1, "news": 2.0, "magazine": 1.5, "game": 1.4, "film": 0.8, "music": 0.3, "docs": 0.8,
+              "sport": 0.6, "kids": 0.2, "sitcom": 0.9}
+BASE_Q = {"reality": 0.30, "drama": 0.26, "football": 0.10, "sporttalk": 0.30, "series": 0.34, "comedy": 0.30,
+          "talk": 0.34, "news": 0.24, "magazine": 0.40, "game": 0.28, "film": 0.32, "music": 0.42, "docs": 0.25,
+          "sport": 0.22, "kids": 0.30, "sitcom": 0.30}
+# share of a window's breaks whose first place is sold as a first-in-break booking, at the top of demand
+P_FP = {("VRT", "prime"): 0.93, ("LIT", "prime"): 0.92, ("VRT", "access"): 0.75, ("LIT", "access"): 0.72,
+        ("VRT", "late"): 0.55, ("LIT", "late"): 0.50, ("PLS", "prime"): 0.45, ("ARN", "prime"): 0.85,
+        ("ARN", "access"): 0.75, ("FAR1", "prime"): 0.80}
+# fixed-spot demand by window (daytime sells few fixed spots)
+FIX_W = {"day": 0.45, "access": 0.85, "prime": 1.0, "late": 0.9}
+SPOT_LEN = [30, 30, 30, 30, 30, 30, 20, 20, 15, 45, 10, 30]
 
 
-def days(a, b):
-    d = a
-    while d <= b:
-        yield d
-        d += dt.timedelta(days=1)
+def templates(ch, wd):
+    """(start minute, length in minutes, title, genre, breaks inside) for one channel on one weekday"""
+    wk = wd >= 5
+    if ch == "FAR1":
+        return [(420, 180, "Farol da Manhã", "magazine", 2), (780, 60, "Notícias da Tarde", "news", 0),
+                (840, 240, "Tardes do Farol", "magazine", 2), (1080, 75, "Aposta Certa", "game", 1),
+                (1200, 60, "Jornal do Farol", "news", 1), (1260, 60, "Mãe Coragem", "drama", 1),
+                (1320, 75, "Sexta em Cena" if wd == 4 else "Grande Conversa", "comedy" if wd == 4 else "talk", 1),
+                (1395, 105, "Cinema Farol", "film", 1)]
+    if ch == "FAR2":
+        return [(600, 300, "Farol 2 Infantil", "kids", 0), (900, 240, "Documentários", "docs", 0),
+                (1140, 60, "Euronotícias", "news", 0), (1200, 120, "Arte e Ofícios", "docs", 1),
+                (1320, 120, "Série Europeia", "series", 1), (1440, 60, "Concerto", "music", 0)]
+    if ch == "VRT":
+        return [(420, 210, "Manhã Vértice", "magazine", 4), (780, 60, "Primeiro Jornal Vértice", "news", 1),
+                (840, 180, "Tarde Vértice", "magazine", 4), (1020, 120, "Herança", "drama", 3),
+                (1140, 60, "Quem Arrisca", "game", 2), (1200, 60, "Jornal Vértice", "news", 2),
+                (1260, 75, "Rosa dos Ventos", "drama", 2),
+                (1335, 120, "Lote Sete: Gala" if wd == 6 else "Lote Sete", "reality", 4),
+                (1455, 75, "Fim de Noite", "talk", 2)]
+    if ch == "LIT":
+        return [(420, 210, "Bom Dia Litoral", "magazine", 4), (780, 60, "Litoral Notícias", "news", 1),
+                (840, 180, "Tardes do Litoral", "magazine", 4), (1020, 120, "Quiz Litoral", "game", 3),
+                (1140, 60, "Família Lopes", "sitcom", 2), (1200, 60, "Litoral Hoje", "news", 2),
+                (1260, 90, "Vento Norte", "drama", 3), (1350, 90, "Pedra Negra", "drama", 2),
+                (1440, 90, "Mesa Redonda", "sporttalk", 2)]
+    if ch == "PLS":
+        return [(600, 360, "Riso Contínuo", "series", 12), (960, 120, "Top Pulsar", "music", 4),
+                (1080, 120, "Pulsar Reality: Repetição", "reality", 4), (1200, 60, "Os Lunáticos", "series", 2),
+                (1260, 120, "Ilha Proibida", "reality", 4), (1380, 120, "Palco Aberto", "comedy", 4)]
+    if ch == "ARN":
+        if wk:
+            return [(600, 360, "Arena em Direto", "sport", 6), (1080, 120, "Liga: Jogo da Tarde", "football", 1),
+                    (1230, 120, "Liga: Jogo da Noite", "football", 1), (1350, 90, "Resumo da Jornada", "sporttalk", 2)]
+        euro = wd in (1, 2)
+        return [(600, 300, "Arena em Direto", "sport", 6), (900, 120, "Antevisão", "sporttalk", 3),
+                (1080, 120, "Arena Notícias", "sporttalk", 3),
+                (1200, 120, "Taça Europeia" if euro else "Arena Magazine", "football" if euro else "sporttalk",
+                 1 if euro else 3),
+                (1320, 90, "Futebol Total", "sporttalk", 2)]
+    raise KeyError(ch)
 
 
-def sigmoid(x):
-    return 1.0 / (1.0 + np.exp(-x))
-
-
-class Experiment:
-    __slots__ = ("idx", "eid", "layer", "team", "start", "end", "planned_end", "arms", "control", "status", "srm",
-                 "late", "shifts", "changes", "decision", "ship", "title", "two_week_at", "six_month_at", "labels")
-
-    def __init__(self, **kw):
-        for k in self.__slots__:
-            setattr(self, k, kw.get(k))
+def window_of(ch, minute):
+    for w, (a, b) in K.WINDOWS.items():
+        if a <= minute < b:
+            return w
+    return "late"
 
 
 class World:
-    def __init__(self, seed=K.SEED, params=None, last_day=None):
+    def __init__(self, seed=K.SEED, npan=2400, p=None):
+        self.p = dict(h=1.4, vis=0.75, dur=42, young_z=1.35, L=30, R=30, ret=0.62, f0=0.05, f1=1.0, fe=2.0,
+                      dn=0.12, **(p or {}))
         self.seed = seed
-        self.p = dict(DEFAULT, **(params or {}))
-        self.RU = np.array(self.p["RU"])
-        self.RT = np.array(self.p["RT"])
-        self.TS = np.array(self.p["TS"])
-        self.last_day = last_day or K.LAST_DAY
-        self.schedule()
-        self.effects()
-        self.simulate()
+        self.rng = np.random.default_rng(seed)
+        self._grid()
+        self._panel(npan)
+        self._viewing()
+        self._index()
+        self._traffic()
+        self._rates()
+        self._schedules()
 
-    # ----------------------------------------------------------------------------------------------------- schedule
-    def schedule(self):
-        """each layer starts a new experiment every few days, at most four live at once; most run three weeks"""
-        exps = []
-        for li, layer in enumerate(K.LAYERS):
-            rng = np.random.default_rng([270, self.seed, 1, li])
-            d = K.FIRST_DAY + dt.timedelta(days=int(rng.integers(0, 4)))
-            live = []
-            while d <= K.LAST_DAY + dt.timedelta(days=24):
-                live = [e for e in live if e.end >= d]
-                if len(live) < 4 and d.weekday() < 5:
-                    dur = int(rng.choice([14, 21, 28], p=[0.25, 0.5, 0.25]))
-                    arms = 3 if rng.random() < 0.22 else 2
-                    e = Experiment(layer=layer, team=str(rng.choice(K.TEAMS[layer])), start=d,
-                                   planned_end=d + dt.timedelta(days=dur - 1), arms=arms, status="completed",
-                                   srm=False, late=False)
-                    e.end = e.planned_end
-                    u = rng.random()
-                    if u < 0.03:
-                        e.status = "stopped_early"
-                        e.end = d + dt.timedelta(days=dur // 2 - 1)
-                    elif u < 0.055:
-                        e.srm = True
-                    exps.append(e)
-                    live.append(e)
-                    d += dt.timedelta(days=int(rng.choice([2, 3, 4, 5, 6, 7, 8], p=[.1, .2, .2, .2, .15, .1, .05])))
-                else:
-                    d += dt.timedelta(days=1)
-        exps.sort(key=lambda e: (e.start, K.LAYERS.index(e.layer)))
-        for i, e in enumerate(exps):
-            e.idx = i
-            e.eid = "OB-%d-%03d" % (e.start.year % 100, 1 + sum(1 for f in exps[:i] if f.start.year == e.start.year))
-            e.two_week_at = e.end + dt.timedelta(days=15)
-            e.six_month_at = e.end + dt.timedelta(days=181)
-            e.late = (e.layer != "notifications" and K.LATE_EVENTS[0] <= e.two_week_at <= K.LATE_EVENTS[1])
-        self.experiments = exps
+    # ---------------------------------------------------------------- the grids and the breaks
+    def _grid(self):
+        rng = self.rng
+        self.progs, self.breaks, self.spots = [], [], []
+        for d in range(K.NDAYS):
+            wd = K.REF_DAYS[d].weekday()
+            for ch in K.CH:
+                for (st, dur, title, genre, nb) in templates(ch, wd):
+                    t0, t1 = d * 86400 + st * 60, d * 86400 + (st + dur) * 60
+                    if d == K.DST_DAY - 1 and st + dur > 1500:       # the night the clocks go forward
+                        t1 = min(t1, d * 86400 + 1500 * 60)
+                        if t1 <= t0 + 600:
+                            continue
+                    pid = len(self.progs)
+                    self.progs.append(dict(pid=pid, day=d, ch=ch, title=title, genre=genre,
+                                           window=window_of(ch, st), t0=t0, t1=t1, start=st))
+                    for k in range(nb):
+                        if genre == "football":
+                            bs = t0 + 47 * 60 + int(rng.integers(0, 120))
+                            nsp = int(rng.integers(10, 14))
+                        else:
+                            bs = t0 + int((k + 1) / (nb + 1) * (t1 - t0) + rng.normal(0, 60))
+                            w = window_of(ch, st)
+                            if ch in ("VRT", "LIT"):
+                                nsp = int(rng.integers(9, 14)) if w == "prime" else int(rng.integers(6, 10))
+                            elif ch == "PLS":
+                                nsp = int(rng.integers(5, 8))
+                            else:
+                                nsp = int(rng.integers(4, 7))
+                        t, sp = bs, []
+                        for pos in range(1, nsp + 1):
+                            ln = int(rng.choice(SPOT_LEN))
+                            sp.append(dict(bid=len(self.breaks), pos=pos, n=nsp, t0=t, t1=t + ln, kind=None))
+                            t += ln
+                        if t > t1:
+                            continue
+                        b = dict(bid=len(self.breaks), pid=pid, day=d, ch=ch, no=k + 1, t0=bs, t1=t, n=nsp,
+                                 window=window_of(ch, (bs - d * 86400) / 60), genre=genre, title=title, spots=sp)
+                        self.breaks.append(b)
+                        self.spots += sp
 
-    # ------------------------------------------------------------------------------------------------------ effects
-    def effects(self):
-        """every treatment arm is a change: latent shifts on the five candidates, the retention threshold and the
-        two guardrails"""
-        RT, TS = self.RT, self.TS
-        for e in self.experiments:
-            rng = np.random.default_rng([270, self.seed, 2, e.idx])
-            e.changes = []
-            for a in range(e.arms - 1):
-                z = rng.standard_normal(6)
-                sh = np.zeros(8)
-                sh[:5] = TS * (RT * z[0] + np.sqrt(1 - RT ** 2) * z[1:])
-                sh[5] = self.p["TY"] * z[0]
-                sh[6] = 0.06 * rng.standard_normal() + (0.45 if e.status == "stopped_early" else 0.0)
-                sh[7] = 0.05 * rng.standard_normal()
-                e.changes.append(sh)
-            e.shifts = [np.zeros(8)] + e.changes          # arm 0 is the control
-            e.decision, e.ship = None, None
+    # ---------------------------------------------------------------- the panel
+    def _panel(self, npan):
+        rng = self.rng
+        sizes = rng.choice([1, 2, 3, 4], 1100, p=[0.25, 0.33, 0.22, 0.20])
+        hh = np.repeat(np.arange(len(sizes)), sizes)[:npan]
+        n = len(hh)
+        self.hh = hh
+        self.age = rng.choice(K.AGE_BANDS, n, p=[0.10, 0.15, 0.18, 0.18, 0.17, 0.22])
+        self.sex = rng.choice(["F", "M"], n)
+        hreg = rng.choice(K.REGIONS, len(sizes), p=[0.35, 0.22, 0.28, 0.07, 0.08])
+        self.region = hreg[hh]
+        self.young = np.isin(self.age, K.YOUNG)
+        AF = {"18-24": 0.42, "25-34": 0.62, "35-44": 1.0, "45-54": 1.25, "55-64": 1.5, "65+": 1.8}
+        self.heavy = np.exp(rng.normal(0, 0.6, n)) * np.array([AF[a] for a in self.age]) * self.p["h"]
+        self.zap = np.clip(np.exp(rng.normal(0, 0.35, n)) * np.where(self.young, self.p["young_z"], 1.0), 0.3, 3.0)
+        pref = np.exp(rng.normal(0, 0.6, (n, len(K.CH))))
+        pref[:, K.CH.index("PLS")] *= np.where(self.young, 0.9, 0.3)
+        pref[:, K.CH.index("VRT")] *= np.where(self.young, 1.5, 1.0)
+        pref[:, K.CH.index("FAR2")] *= np.where(self.young, 0.3, 0.8)
+        pref[:, K.CH.index("ARN")] *= np.where(rng.random(n) < 0.45, 1.6, 0.25)
+        self.pref = pref
+        # days out of tab: about one member in fourteen misses one or more days of the four weeks
+        self.out_days = {}
+        for i in range(n):
+            if rng.random() < 0.07:
+                a = int(rng.integers(0, K.NDAYS))
+                self.out_days[i] = set(range(a, min(K.NDAYS, a + int(rng.integers(1, 6)))))
+        self.intab = np.array([i not in self.out_days for i in range(n)])
+        self._weights()
 
-    # ---------------------------------------------------------------------------------------------------- the users
-    def metrics(self, n, shift, rng, ios):
-        """the five candidates, retention and the guardrails for n users carrying latent shifts (n x 8)"""
-        RU = self.RU
-        u = rng.standard_normal(n)
-        w = rng.standard_normal((n, 5))
-        L = RU[None, :] * u[:, None] + np.sqrt(1 - RU ** 2)[None, :] * w + shift[:, :5]
-        out = np.empty((n, 8))
-        out[:, 0] = 1 + rng.binomial(13, sigmoid(-0.45 + 1.45 * L[:, 0]))
-        out[:, 1] = rng.poisson(np.exp(1.95 + 0.50 * L[:, 1]))
-        out[:, 2] = (rng.random(n) < sigmoid(-1.25 + 1.35 * L[:, 2])).astype(float)
-        out[:, 3] = rng.poisson(np.exp(0.55 + 0.60 * L[:, 3]))
-        push_on = rng.random(n) < np.where(ios, 0.56, 0.74)
-        out[:, 4] = np.where(push_on, rng.poisson(np.exp(1.10 + 0.45 * L[:, 4])), 0)
-        out[:, 5] = ((0.9 * u + 0.44 * rng.standard_normal(n)) > 0.30 - 3.0 * shift[:, 5]).astype(float)
-        out[:, 6] = (rng.random(n) < sigmoid(-2.05 - 0.55 * u + shift[:, 6])).astype(float)
-        out[:, 7] = rng.poisson(0.055 * np.exp(0.25 * rng.standard_normal(n) + shift[:, 7]))
-        return out, u
+    def _weights(self):
+        """the 28-day weight: members in tab every day, raked to the universe by age band and sex, then region"""
+        rng = np.random.default_rng(97)
+        uni_age = dict(zip(K.AGE_BANDS, [0.103, 0.139, 0.165, 0.172, 0.165, 0.256]))
+        uni_reg = dict(zip(K.REGIONS, [0.345, 0.218, 0.287, 0.069, 0.081]))
+        self.universe = {}
+        tot = K.UNIVERSE_ADULT
+        for a in K.AGE_BANDS:
+            for s, fs in (("F", 0.525 if a in ("55-64", "65+") else 0.505), ("M", 0.475 if a in ("55-64", "65+")
+                                                                                else 0.495)):
+                for g in K.REGIONS:
+                    self.universe[(a, s, g)] = int(round(tot * uni_age[a] * fs * uni_reg[g] *
+                                                         float(np.exp(rng.normal(0, 0.03))), -3))
+        young_tot = sum(v for (a, s, g), v in self.universe.items() if a in K.YOUNG)
+        scale = K.UNIVERSE_YOUNG / young_tot
+        for k in list(self.universe):
+            if k[0] in K.YOUNG:
+                self.universe[k] = int(round(self.universe[k] * scale, -3))
+        w = self.intab.astype(float)
+        for _ in range(25):
+            for key, arr in (("as", [(a, s) for a, s in zip(self.age, self.sex)]), ("g", list(self.region))):
+                tgt, cur = {}, {}
+                for (a, s, g), v in self.universe.items():
+                    kk = (a, s) if key == "as" else g
+                    tgt[kk] = tgt.get(kk, 0) + v
+                for i, kk in enumerate(arr):
+                    cur[kk] = cur.get(kk, 0) + w[i]
+                w = np.array([w[i] * tgt[kk] / cur[kk] if cur[kk] > 0 else 0 for i, kk in enumerate(arr)])
+        self.wt = np.round(w, 1)
 
-    def volume(self, d, rng):
-        g = 1.0 + 0.085 * ((d - dt.date(2024, 1, 1)).days / 365.25)
-        lam = self.p["BASE"] * g * WEEKDAY[d.weekday()] * MONTH[d.month - 1]
-        return int(rng.poisson(lam))
-
-    def simulate(self):
-        E = self.experiments
-        nm = 8
-        self.sums = {}                  # (exp idx, arm) -> [n, sum x (8), sum x^2 (8)]
-        self.sums_late = {}             # the first computation of the late-events experiments
-        self.holdout_rows = []
-        self.cohort = {}                # (date, platform, country) -> [users, holdout users, sums (6), holdout sums (6)]
-        self.business = {}
-        self.converted = {}             # (date, platform, country) -> [users who later became business, sums (6)]
-        shipped = []                    # (ship date, layer, shift)
-        cum = np.zeros(nm)
-        frozen = {}
-        by_start = {}
-        for e in E:
-            by_start.setdefault(e.start, []).append(e)
-        live = {layer: [] for layer in K.LAYERS}
-        decide_on = {}
-        for e in E:
-            decide_on.setdefault(e.end + dt.timedelta(days=15), []).append(e)
-        ship_on = {}
-        for d in days(K.FIRST_DAY, self.last_day):
-            for e in decide_on.get(d, []):
-                self.decide(e)
-                if e.ship:
-                    for a, ch in enumerate(e.changes):
-                        if e.decision[a] == "shipped":
-                            ship_on.setdefault(e.ship, []).append(self.p["LAUNCH"] * ch)
-            if d == dt.date(d.year, 1, 1) or d == K.FIRST_DAY:
-                frozen[d.year] = cum.copy()
-            for ch in ship_on.get(d, []):
-                cum = cum + ch
-            for e in by_start.get(d, []):
-                live[e.layer].append(e)
-            for layer in K.LAYERS:
-                live[layer] = [e for e in live[layer] if e.end >= d]
-            rng = np.random.default_rng([270, self.seed, 3, d.toordinal()])
-            n = self.volume(d, rng)
-            ios = rng.random(n) < 0.46
-            be = rng.random(n) < 0.28
-            hold_share = K.HOLDOUT_YEARS.get(d.year, 0.0)
-            hold = rng.random(n) < hold_share
-            shift = np.tile(cum, (n, 1))
-            if hold.any():
-                shift[hold] = frozen.get(d.year, cum)
-            assign = {}
-            for layer in K.LAYERS:
-                L = live[layer]
-                if not L:
+    # ---------------------------------------------------------------- viewing
+    def _viewing(self):
+        rng, p = self.rng, self.p
+        byday = {}
+        for pr in self.progs:
+            byday.setdefault(pr["day"], []).append(pr)
+        bprog = {}
+        for b in self.breaks:
+            bprog.setdefault(b["pid"], []).append(b)
+        # visits per daypart; adults under 35 watch little in the working day
+        dayparts = [(420, 720, 0.5, 0.45), (720, 900, 0.8, 0.55), (900, 1020, 0.65, 0.6), (1020, 1140, 0.8, 0.9),
+                    (1140, 1260, 1.2, 1.0), (1260, 1410, 1.5, 1.0), (1410, 1530, 0.6, 1.1)]
+        live, play = [], []
+        n = len(self.age)
+        for i in range(n):
+            A = APPEAL_YOUNG if self.young[i] else APPEAL_OLD
+            for d in range(K.NDAYS):
+                if d in self.out_days.get(i, ()):
                     continue
-                pick = rng.integers(0, len(L), n)
-                arm = np.zeros(n, dtype=int)
-                for j, e in enumerate(L):
-                    m = (pick == j) & ~hold
-                    arm[m] = rng.integers(0, e.arms, int(m.sum()))
-                    for a in range(1, e.arms):
-                        ma = m & (arm == a)
-                        shift[ma] += e.shifts[a]
-                assign[layer] = (pick, arm)
-            X, u = self.metrics(n, shift, rng, ios)
-            # the experiments' sums
-            for layer, (pick, arm) in assign.items():
-                for j, e in enumerate(live[layer]):
-                    m = (pick == j) & ~hold
-                    for a in range(e.arms):
-                        ma = m & (arm == a)
-                        if e.srm and a > 0:
-                            # the new flow crashed for some low-engagement users before their assignment logged
-                            lost = ma & (u < -1.1) & (rng.random(n) < 0.3)
-                            ma = ma & ~lost
-                        self._add(self.sums, (e.idx, a), X[ma])
-                        if e.late:
-                            Y = X[ma].copy()
-                            io = ios[ma]
-                            Y[io, 1] = rng.binomial(Y[io, 1].astype(int), 0.955)
-                            Y[io, 4] = rng.binomial(Y[io, 4].astype(int), 0.94)
-                            dec = io & (Y[:, 0] > 1) & (rng.random(len(Y)) < 0.06)
-                            Y[dec, 0] -= 1
-                            self._add(self.sums_late, (e.idx, a), Y)
-            # the 2025 holdout's rows and the 2025 cohort table
-            if d.year == 2025:
-                hid = np.flatnonzero(hold)
-                for i in hid:
-                    self.holdout_rows.append((d, bool(ios[i]), bool(be[i])) + tuple(X[i, :6]))
-                # consumers who later upgrade to a business (seller) account, the keenest sellers among them; drawn
-                # on their own stream so the rest of the world is untouched
-                cr = np.random.default_rng([270, self.seed, 5, d.toordinal()])
-                conv = cr.random(n) < sigmoid(-4.55 + 0.055 * X[:, 1] + 0.30 * X[:, 3])
-                for pi in (True, False):
-                    for ci in (False, True):
-                        m = (ios == pi) & (be == ci)
-                        key = (d, pi, ci)
-                        acc = self.cohort.setdefault(key, np.zeros(14))
-                        acc[0] += m.sum()
-                        acc[1] += (m & hold).sum()
-                        acc[2:8] += X[m, :6].sum(0)
-                        acc[8:14] += X[m & hold, :6].sum(0)
-                        cv = self.converted.setdefault(key, np.zeros(7))
-                        cv[0] += (m & conv).sum()
-                        cv[1:7] += X[m & conv, :6].sum(0)
-                self.business_day(d, rng)
-        self.cum_end = cum
-        self.frozen = frozen
+                plist = byday[d]
+                busy = -1
+                for (m0, m1, rate, yf) in dayparts:
+                    nvis = rng.poisson(rate * (yf if self.young[i] else 1.0) * self.heavy[i] * p["vis"])
+                    starts = sorted(d * 86400 + int(rng.uniform(m0, m1) * 60) for _ in range(nvis))
+                    for ts in starts:
+                        if ts < busy:
+                            continue
+                        cands = [pr for pr in plist if pr["t0"] <= ts < pr["t1"]]
+                        if not cands:
+                            continue
+                        w = np.array([self.pref[i, K.CH.index(pr["ch"])] * A[pr["genre"]] for pr in cands])
+                        pr = cands[rng.choice(len(cands), p=w / w.sum())]
+                        dur = np.exp(rng.normal(np.log(p["dur"] * 60 * (0.6 + 0.4 * min(self.heavy[i], 2.5))), 0.6))
+                        te = int(ts + max(dur, 180))
+                        if rng.random() < 0.5:
+                            te = int(min(te, pr["t1"]))
+                        te = min(te, d * 86400 + (1500 if d == K.DST_DAY - 1 else 1560) * 60)
+                        busy = te
+                        if rng.random() < (0.07 if self.young[i] else 0.03):
+                            play.append((i, K.CH.index(pr["ch"]), ts, te))      # a recording, watched now
+                            continue
+                        ch, cur, ended = pr["ch"], ts, False
+                        bl = [b for pr2 in plist if pr2["ch"] == ch and pr2["t1"] > ts and pr2["t0"] < te
+                              for b in bprog.get(pr2["pid"], [])]
+                        bl.sort(key=lambda b: b["t0"])
+                        for b in bl:
+                            if b["t0"] < cur or b["t0"] >= te:
+                                continue
+                            q = min(0.97, BASE_Q[b["genre"]] * self.zap[i] * (1.15 if b["no"] >= 3 else 1.0))
+                            if rng.random() < q:
+                                leave = int(b["t0"] + min(rng.exponential(p["L"]), 120))
+                                if leave >= b["t1"]:
+                                    continue
+                                live.append((i, K.CH.index(ch), cur, leave))
+                                if rng.random() < p["ret"]:
+                                    back = int(b["t1"] - min(rng.exponential(p["R"]), max(b["t1"] - leave - 5, 0)))
+                                    if rng.random() < 0.4:
+                                        och = K.CH[int(rng.integers(0, len(K.CH)))]
+                                        if och != ch and back - leave > 20:
+                                            live.append((i, K.CH.index(och), leave + 3, back - 2))
+                                    cur = back
+                                else:
+                                    ended = True
+                                    break
+                        if not ended and te > cur:
+                            live.append((i, K.CH.index(ch), cur, te))
+        # one set, one channel at a time: a statement that would begin before the member's previous one ended
+        # begins when it ends (a channel-hop during a break that ran past the end of the visit)
+        clipped, last = [], {}
+        for (i, c, a0, a1) in sorted(live, key=lambda x: (x[0], x[2], x[3])):
+            a0 = max(a0, last.get(i, a0))
+            if a1 > a0:
+                clipped.append((i, c, a0, a1))
+                last[i] = a1
+        self.live = np.array(clipped, dtype=np.int64)
+        self.recordings = [s for s in play if s[3] > s[2]]
+        self.play = self._playback(self.recordings)
+        # guests in panel homes: a visitor watching beside a member
+        guests = []
+        for s in self.live:
+            if rng.random() < 0.012:
+                guests.append((int(self.hh[s[0]]), int(s[1]), int(s[2]), int(s[3])))
+        self.guests = guests
 
-    def business_day(self, d, rng):
-        """sellers' business accounts: outside the consumer onboarding, its experiments and its holdout"""
-        n = int(rng.poisson(0.032 * self.p["BASE"] * WEEKDAY[d.weekday()]))
-        ios = rng.random(n) < 0.38
-        be = rng.random(n) < 0.24
-        sh = np.zeros((n, 8))
-        sh[:, :5] = (0.9, 0.7, -0.6, -0.3, 0.2)
-        X, _ = self.metrics(n, sh, rng, ios)
-        for pi in (True, False):
-            for ci in (False, True):
-                m = (ios == pi) & (be == ci)
-                acc = self.business.setdefault((d, pi, ci), np.zeros(7))
-                acc[0] += m.sum()
-                acc[1:7] += X[m, :6].sum(0)
-
-    @staticmethod
-    def _add(store, key, X):
-        acc = store.get(key)
-        if acc is None:
-            acc = store[key] = np.zeros(1 + 2 * X.shape[1] if X.size else 17)
-        if len(X):
-            acc[0] += len(X)
-            acc[1:9] += X.sum(0)
-            acc[9:17] += (X ** 2).sum(0)
-
-    def arm_stats(self, e, a, late=False):
-        """users, means and standard deviations (n - 1) of the eight metrics"""
-        acc = (self.sums_late if late else self.sums).get((e.idx, a))
-        if acc is None or acc[0] < 2:
-            return None
-        n = acc[0]
-        mean = acc[1:9] / n
-        var = (acc[9:17] - n * mean ** 2) / (n - 1)
-        return int(n), mean, np.sqrt(np.maximum(var, 0))
-
-    def decide(self, e):
-        """the two-week read as the teams read it before a proxy was set: a change shipped when sessions or first
-        purchase rose clearly and uninstalls did not"""
-        e.decision = []
-        c = self.arm_stats(e, 0)
-        for a in range(1, e.arms):
-            t = self.arm_stats(e, a)
-            if c is None or t is None or e.srm or e.status == "stopped_early":
-                e.decision.append("not_shipped")
+    def _playback(self, recordings):
+        """time-shifted viewing: each recording watched later at normal speed, most breaks fast-forwarded, now and
+        then a few seconds played again; one statement per stretch of broadcast seen at normal speed, as
+        (member, channel, viewing start, viewing end, broadcast second at the start)"""
+        rng = np.random.default_rng(self.seed + 2000)
+        brk = {}
+        for b in self.breaks:
+            brk.setdefault(K.CH.index(b["ch"]), []).append((b["t0"], b["t1"]))
+        for c in brk:
+            brk[c].sort()
+        gap = (26 * 86400 + 1500 * 60, 27 * 86400 + 120 * 60)       # the hour the clocks skip on 29 March
+        last = 27 * 86400 + 1560 * 60
+        out = []
+        for (i, c, b0, b1) in recordings:
+            d = (b0 - 7200) // 86400
+            day_end = d * 86400 + (1500 if d == K.DST_DAY - 1 else 1560) * 60
+            span = b1 - b0
+            if rng.random() < (0.55 if self.young[i] else 0.45) and b1 + 300 + span < day_end:
+                v = b0 + int(rng.uniform(300, max(301, min(10800, day_end - b0 - span))))
+            else:
+                v = b0 + int(rng.integers(1, 8)) * 86400 + int(rng.uniform(-5400, 5400))
+            if v + span > last:
                 continue
-            z = (t[1] - c[1]) / np.sqrt(t[2] ** 2 / t[0] + c[2] ** 2 / c[0])
-            ok = (z[1] > 2.4 or z[2] > 2.4) and z[6] < 1.0 and z[0] > -1.0
-            e.decision.append("shipped" if ok else "not_shipped")
-        if "shipped" in e.decision:
-            e.ship = e.end + dt.timedelta(days=21 + 7 * (e.idx % 2))
-            if e.decision.count("shipped") == 2:
-                # a three-arm test ships its better arm only
-                c = self.arm_stats(e, 0)
-                zs = []
-                for a in (1, 2):
-                    t = self.arm_stats(e, a)
-                    zs.append(((t[1] - c[1]) / np.sqrt(t[2] ** 2 / t[0] + c[2] ** 2 / c[0]))[1])
-                worse = 1 + int(zs[0] >= zs[1])
-                e.decision[worse - 1] = "not_shipped"
+            if v < gap[1] and v + span > gap[0]:
+                v += gap[1] - gap[0]
+            cur, segs = b0, []
+            for (t0, t1) in brk.get(c, []):
+                if t1 <= cur or t0 >= b1:
+                    continue
+                if rng.random() < 0.62:                                   # fast-forwarded
+                    if t0 > cur:
+                        segs.append((cur, t0))
+                    cur = min(t1, b1)
+            if b1 > cur:
+                segs.append((cur, b1))
+            prev_end = None
+            for (s0, s1) in segs:
+                if prev_end is not None:
+                    v += int((s0 - prev_end) / 8)                         # the break at eight times speed
+                v = max(v, s0 + 20)                                       # nobody overtakes the broadcast
+                if s1 - s0 > 240 and rng.random() < 0.06:                 # a scene played again
+                    cut = int(rng.uniform(s0 + 60, s1 - 60))
+                    back = int(rng.uniform(10, 45))
+                    out.append((i, c, v, v + cut - s0, s0))
+                    v += cut - s0
+                    v = max(v, cut - back + 20)
+                    out.append((i, c, v, v + s1 - cut + back, cut - back))
+                    v += s1 - cut + back
+                else:
+                    out.append((i, c, v, v + s1 - s0, s0))
+                    v += s1 - s0
+                prev_end = s1
+        return np.array(out, dtype=np.int64)
 
-    # ------------------------------------------------------------------------------------------------- the truth
-    def expected(self, shift):
-        """each metric's expected mean across all users for latent shifts (8), by Gauss-Hermite quadrature: the
-        latent scores are standard normal plus the shift"""
-        x, w = np.polynomial.hermite_e.hermegauss(96)
-        w = w / w.sum()
-        p_on = 0.46 * 0.56 + 0.54 * 0.74
-        m = np.empty(6)
-        m[0] = 1 + 13 * (w * sigmoid(-0.45 + 1.45 * (x + shift[0]))).sum()
-        m[1] = math.exp(1.95 + 0.50 * shift[1] + 0.50 ** 2 / 2)
-        m[2] = (w * sigmoid(-1.25 + 1.35 * (x + shift[2]))).sum()
-        m[3] = math.exp(0.55 + 0.60 * shift[3] + 0.60 ** 2 / 2)
-        m[4] = p_on * math.exp(1.10 + 0.45 * shift[4] + 0.45 ** 2 / 2)
-        from statistics import NormalDist
-        m[5] = 1 - NormalDist().cdf((0.30 - 3.0 * shift[5]) / math.sqrt(0.81 + 0.44 ** 2))
-        return m
+    def _index(self):
+        S = self.live
+        self.idx = {}
+        for c in range(len(K.CH)):
+            Sc = S[S[:, 1] == c]
+            self.idx[c] = Sc[np.argsort(Sc[:, 2], kind="stable")]
+        self.maxlen = int((S[:, 3] - S[:, 2]).max())
 
-    def true_effects(self):
-        """each change's effect on the six metrics' means across all users at the 2024 baseline: the world's own
-        answer, never shipped"""
-        m0 = self.expected(np.zeros(8))
-        return {(e.idx, a): self.expected(ch) - m0 for e in self.experiments for a, ch in enumerate(e.changes, 1)}
+    def seconds(self, ch, s0, s1):
+        """each panel member's live seconds on channel ch inside [s0, s1)"""
+        Sc = self.idx[K.CH.index(ch)]
+        lo = np.searchsorted(Sc[:, 2], s0 - self.maxlen)
+        hi = np.searchsorted(Sc[:, 2], s1)
+        seg = Sc[lo:hi]
+        ov = np.clip(np.minimum(seg[:, 3], s1) - np.maximum(seg[:, 2], s0), 0, None)
+        out = {}
+        for pid, o in zip(seg[:, 0].tolist(), ov.tolist()):
+            if o > 0:
+                out[pid] = out.get(pid, 0) + o
+        return out
+
+    def seen(self, ch, s0, s1):
+        """members tuned live for at least half of [s0, s1)"""
+        need = (s1 - s0) / 2.0
+        return {k for k, v in self.seconds(ch, s0, s1).items() if v >= need}
+
+    def young_aud(self, ch, s0, s1):
+        return sum(self.wt[i] for i in self.seen(ch, s0, s1) if self.young[i])
+
+    # ---------------------------------------------------------------- the sales houses' traffic
+    # rotation bookings per open place by channel and window: prime on the two generalist channels is oversold, so
+    # the channel moves the excess to the same night's late window, then to the next day's daytime breaks
+    ROS_DEMAND = {("VRT", "prime"): 1.45, ("LIT", "prime"): 1.45, ("PLS", "prime"): 1.45,
+                  ("VRT", "access"): 0.95, ("LIT", "access"): 0.95, ("PLS", "access"): 0.9,
+                  ("VRT", "late"): 0.45, ("LIT", "late"): 0.45, ("VRT", "day"): 0.50, ("LIT", "day"): 0.50,
+                  ("PLS", "day"): 0.5}
+
+    MOVE_TO = ("day",)
+
+    def _traffic(self):
+        rng, p = np.random.default_rng(self.seed + 1000), self.p
+        for b in self.breaks:
+            for s in b["spots"]:
+                s["kind"] = None
+                s.pop("booked", None)
+                s.pop("moved", None)
+        for b in self.breaks:
+            b["demand"] = self.young_aud(b["ch"], b["t0"], b["t0"] + 30) * float(np.exp(rng.normal(0, p["dn"])))
+        win = {}
+        for b in self.breaks:
+            win.setdefault((b["day"], b["ch"], b["window"]), []).append(b)
+        for lst in win.values():
+            o = sorted(lst, key=lambda x: x["demand"])
+            for j, b in enumerate(o):
+                b["rank"] = (j + 1) / len(o)
+        for b in self.breaks:
+            r, sp = b["rank"], b["spots"]
+            pfp = P_FP.get((b["ch"], b["window"]), 0.25) * (0.5 + 0.5 * r)
+            sp[0]["kind"] = "FP" if rng.random() < pfp else None
+            sp[-1]["kind"] = "LP" if rng.random() < 0.8 * pfp else None
+            share = min(1.0, max(0.1, FIX_W[b["window"]] * (p["f0"] + p["f1"] * r ** p["fe"]) + rng.normal(0, 0.05)))
+            for s in sp:
+                if s["kind"] is None and rng.random() < share:
+                    s["kind"] = "FIX"
+        self.win = win
+        leftover, excess = {}, {}
+        for key in sorted(win, key=lambda k: (k[0], K.CH.index(k[1]), ["day", "access", "prime", "late"].index(k[2]))):
+            day, ch, w = key
+            ob = [(b, s) for b in sorted(win[key], key=lambda x: x["t0"]) for s in b["spots"] if s["kind"] is None]
+            opens = [s for _, s in ob]
+            n_ros = int(round(len(opens) * self.ROS_DEMAND.get((ch, w), 0.8) * float(np.exp(rng.normal(0, 0.06)))))
+            n_ros = max(n_ros, sum(1 for b, x in ob if x["pos"] in (1, b["n"])))      # a break's ends are always sold
+            # the window's own rotation goes to the better open places; what stays open is the weakest
+            pri = np.array([b["demand"] for b, _ in ob]) * np.exp(rng.normal(0, 0.5, len(ob))) + \
+                np.array([1e9 if s["pos"] in (1, b["n"]) else 0.0 for b, s in ob])
+            order = [int(j) for j in np.argsort(-pri, kind="stable")]
+            for j in order[:n_ros]:
+                opens[j].update(kind="ROS", booked=(day, ch, w))
+            leftover[key] = [opens[j] for j in order[n_ros:]]
+            excess[key] = max(0, n_ros - len(opens))
+        # the channel's traffic team places what does not fit in a sold-out window in the open places left that
+        # day or night, or in the next day's daytime breaks
+        self.moved = 0
+        for key in sorted(excess, key=lambda k: (k[0], K.CH.index(k[1]))):
+            day, ch, w = key
+            n = excess[key]
+            if not n:
+                continue
+            dests = [(day, ch, x) for x in ("day", "late") if x != w]
+            if day + 1 < K.NDAYS:
+                dests.append((day + 1, ch, "day"))
+            dests = [x for x in dests if x[2] in self.MOVE_TO]
+            pool = [(dk, j) for dk in dests for j in range(len(leftover.get(dk, [])))]
+            n = min(n, len(pool))           # the sales house stops selling a night it cannot place
+            pick = sorted((pool[int(j)] for j in rng.choice(len(pool), n, replace=False)), key=lambda x: (x[0], -x[1]))
+            for dk, j in pick:
+                s = leftover[dk].pop(j)
+                s.update(kind="ROS", booked=(day, ch, w), moved=True)
+                self.moved += 1
+        for lst in leftover.values():
+            for s in lst:
+                s["kind"] = "PROMO"
+        self.booked = {}
+        for b in self.breaks:
+            for s in b["spots"]:
+                s["ch"] = b["ch"]
+                if s["kind"] == "ROS":
+                    self.booked.setdefault(s["booked"], []).append(s)
+
+    # ---------------------------------------------------------------- the 2027 rate cards
+    def _rates(self):
+        aud = {}
+        for b in self.breaks:
+            aud.setdefault((b["ch"], b["title"]), []).append(self.young_aud(b["ch"], b["t0"], b["t0"] + 30) / 1000)
+        self.rate = {}
+        for (ch, title), v in aud.items():
+            prem = K.ARENA_PREMIUM if ch == "ARN" else 1.0
+            self.rate[(ch, title)] = max(150, int(K.r(K.CPM_YOUNG * float(np.mean(v)) * prem / 50) * 50))
+        self.prog_window = {(pr["ch"], pr["title"]): pr["window"] for pr in self.progs}
+        acc = {}
+        for (ch, title), v in self.rate.items():
+            acc.setdefault((ch, self.prog_window[(ch, title)]), []).append((v, len(aud[(ch, title)])))
+        self.ros_rate = {k: int(K.r((1 - K.ROS_DISCOUNT) * np.average([x[0] for x in v], weights=[x[1] for x in v])
+                                    / 50) * 50) for k, v in acc.items()}
+
+    # ---------------------------------------------------------------- the three schedules
+    MENU = {
+        "A": [(0, "VRT", "Lote Sete", 2, "FP"), (1, "PLS", "Ilha Proibida", 2, "FP"), (2, "VRT", "Lote Sete", 3, "FP"),
+              (3, "LIT", "Vento Norte", 2, "FP"), (4, "VRT", "Lote Sete", 2, "FP"), (6, "VRT", "Lote Sete: Gala", 2, "FP"),
+              (1, "VRT", "Lote Sete", 3, "FP"), (3, "PLS", "Ilha Proibida", 3, "FP"), (0, "LIT", "Vento Norte", 3, "FP"),
+              (2, "PLS", "Ilha Proibida", 2, "FP"), (3, "VRT", "Lote Sete", 2, "FP"), (6, "VRT", "Lote Sete: Gala", 3, "FP")],
+        "B": [(wd, ch, None, "prime", "ROS") for wd in range(7) for ch in ("VRT", "LIT", "PLS")],
+        "C": [(1, "ARN", "Taça Europeia", 1, "LP"), (0, "PLS", "Palco Aberto", 2, "LP"),
+              (5, "ARN", "Liga: Jogo da Noite", 1, "LP"), (1, "LIT", "Mesa Redonda", 1, "LP"),
+              (2, "PLS", "Palco Aberto", 3, "LP"), (6, "ARN", "Liga: Jogo da Noite", 1, "LP"),
+              (3, "VRT", "Fim de Noite", 1, "LP"), (2, "ARN", "Taça Europeia", 1, "LP"),
+              (4, "PLS", "Palco Aberto", 2, "LP"), (0, "LIT", "Mesa Redonda", 1, "LP"),
+              (2, "LIT", "Mesa Redonda", 1, "LP"), (1, "VRT", "Fim de Noite", 1, "LP"),
+              (5, "ARN", "Liga: Jogo da Tarde", 1, "LP"), (3, "PLS", "Palco Aberto", 3, "LP"),
+              (4, "VRT", "Fim de Noite", 1, "LP"), (3, "LIT", "Mesa Redonda", 1, "LP")],
+    }
+
+    def _schedules(self):
+        """each schedule's spot lines, taken week by week through its menu until the budget is spent"""
+        self.sched = {}
+        for s in K.SCHED:
+            lines, spent = [], 0
+            for i, it in enumerate(self.MENU[s]):
+                for wk in range(4):
+                    wd, ch, title, b_no, kind = it
+                    if kind == "ROS":
+                        price = self.ros_rate[(ch, b_no)]
+                    else:
+                        price = int(K.r(self.rate[(ch, title)] * K.PREMIUM[kind]))
+                    if spent + price > K.BUDGET:
+                        continue
+                    spent += price
+                    lines.append(dict(week=wk + 1, wd=wd, ch=ch, title=title, brk=b_no, kind=kind, price=price))
+            lines.sort(key=lambda x: (x["week"], x["wd"], x["ch"], x["title"] or "", x["brk"] if x["kind"] != "ROS"
+                                      else 0))
+            self.sched[s] = lines
+
+    # ---------------------------------------------------------------- the replay
+    def break_of(self, day, ch, title, no):
+        for b in self.breaks:
+            if b["day"] == day and b["ch"] == ch and b["title"] == title and b["no"] == no:
+                return b
+        return None
+
+    def places(self, line, route="golden"):
+        """the places a 2027 spot line takes in its reference week, read in equal shares"""
+        day = (line["week"] - 1) * 7 + line["wd"]
+        if line["kind"] == "ROS":
+            bl = self.win[(day, line["ch"], line["brk"])]
+            allsp = [s for b in bl for s in b["spots"]]
+            if route == "golden":
+                return self.booked[(day, line["ch"], line["brk"])]
+            if route == "asrun":
+                return [s for s in allsp if s["kind"] == "ROS"]
+            if route == "nonpremium":
+                return [s for s in allsp if s["kind"] in ("FIX", "ROS", "PROMO")]
+            if route == "breaks":
+                return [("break", b) for b in bl]
+            return allsp
+        b = self.break_of(day, line["ch"], line["title"], line["brk"])
+        if route in ("uniform", "breaks"):
+            return b["spots"] if route == "uniform" else [("break", b)]
+        return [b["spots"][0]] if line["kind"] == "FP" else [b["spots"][-1]]
+
+    def exposures(self, sched, route="golden", ids=None):
+        """each member's chance of seeing each spot line, as a list per member"""
+        ch_of = {}
+        E = {}
+        for line in self.sched[sched]:
+            pl = self.places(line, route)
+            cnt = {}
+            for x in pl:
+                if isinstance(x, tuple):
+                    b = x[1]
+                    got = {k for k, v in self.seconds(b["ch"], b["t0"], b["t1"]).items() if v >= 15}
+                else:
+                    got = self.seen(x["ch"], x["t0"], x["t1"])
+                for v in got:
+                    cnt[v] = cnt.get(v, 0) + 1
+            for v, c in cnt.items():
+                if ids is None or v in ids:
+                    E.setdefault(v, []).append(c / len(pl))
+        return E
+
+    def reach(self, E, kmin, ids):
+        tot = sum(self.wt[i] for i in ids)
+        acc = 0.0
+        for i, ps in E.items():
+            if i not in ids:
+                continue
+            dist = np.zeros(len(ps) + 1)
+            dist[0] = 1.0
+            for q in ps:
+                dist[1:] = dist[1:] * (1 - q) + dist[:-1] * q
+                dist[0] *= (1 - q)
+            acc += self.wt[i] * dist[kmin:].sum()
+        return acc / tot
+
+    def young_ids(self):
+        return set(np.where(self.young & (self.wt > 0))[0].tolist())

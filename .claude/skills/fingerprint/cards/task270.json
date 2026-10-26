@@ -1,90 +1,101 @@
 {
   "task": "task270",
-  "architecture": "v5",
+  "architecture": "v6",
   "drawn": "2026-10-26",
-  "slot_note": "Architecture 5, fresh world (architecture 4 spent at the draw probes on 2026-10-26).",
-  "domain": "product-analytics",
-  "subdomain": "metric-definition-measurement-science",
-  "niche": "a second-hand fashion marketplace app choosing which two-week metric reads every 2027 onboarding experiment as its proxy for six-month retention, judged on the platform's per-arm scorecards for about 220 onboarding experiments run since 2024, with user-level data only for the 2025 global holdout",
+  "slot_note": "Architecture 6 in a fresh world (architectures 1 to 5 spent, lineage). Its first wording (rotation read over the window's rotation places) died at the draw probes; the drawn design passed two call-only probes on 2026-10-26 and waited for the guard window before filing.",
+  "domain": "marketing-consumer-research",
+  "subdomain": "media-reach-frequency-audience-measurement",
+  "client_domain": "marketing-consumer-research",
+  "niche": "a national blood donor charity choosing which of three draft television schedules for a four-week April 2027 youth campaign puts its film before the most adults aged 18 to 34 three or more times, each schedule replayed second by second on the audience panel's March 2026 reference weeks, where the channels' traffic placed oversold prime-time rotation bookings in daytime breaks",
   "objective": "descriptive-distribution",
-  "shape": "01",
+  "shape": "14",
   "decision_type": "pick_one_of_n",
   "answer_unit": "named_option",
   "answer": "",
   "answer_source": "",
   "gap": [
-    "objective"
+    "population"
   ],
   "pattern": [
     "none"
   ],
   "generators": [
-    "G16",
-    "G17"
+    "G9",
+    "G3",
+    "G7"
   ],
-  "gate_g": "signal_vs_noise_or_hold",
+  "gate_g": "method_or_model_selection",
   "calibration_form": "none",
-  "stump_strategy": "uncertainty_hold",
+  "stump_strategy": "population_selection",
   "decisive_rule_filed": false,
   "official_decoy": false,
   "validated_decoy": false,
   "context_artifact": "register",
   "stump_class": "analytical",
-  "analyst_test": "A strong analyst who computes every onboarding experiment's treatment-minus-control effects correctly from the scorecards and correlates the candidates' effects with six-month retention's across the experiments, disattenuating for each effect's sampling error, adopts sessions in days 1 to 14 (0.91 disattenuated, 0.42 raw), because each experiment measures both effects on the same users and their sampling errors move together; with the shared sampling covariance taken out, using the holdout panel's user-level correlations, first purchase within 14 days leads at 0.79.",
-  "domain_test": "Choosing a proxy metric from a corpus of randomized experiments is online experimentation's own method, built from user-level results with each experiment's sampling covariance between the proxy and the outcome removed before the effects are correlated; with another field's nouns there is no corpus of randomized experiments measuring two outcomes on the same users.",
-  "layer2_family": "estimation_fit",
-  "layer2_pattern": "own:proxy effects correlated with outcome effects after each experiment's shared sampling covariance between the two is taken out",
+  "analyst_test": "A strong analyst who converts the panel's UTC statements to the as-run log's local clock, maps the renamed channel, drops guests and time-shifted viewing, weights members by their 28-day weight and replays each schedule spot by spot reads each prime-time rotation spot over the rotation places the as-run log shows inside prime time that day, and buys schedule B at 31.8 per cent three-plus reach against A's 26.6.",
+  "domain_test": "The deciding quantity is each schedule's three-plus reach among adults 18 to 34, built from the panel's person-level live viewing at the seconds each spot would air, the field's spot-level reach and frequency; a rotation spot's place is the channel's traffic decision, so where it would air is the airing record of the bookings sold on the same terms, which in sold-out prime includes the daytime places the bookings were moved to. With another field's nouns there is no commercial break, no person-level viewing of a place and no traffic system that places run-of-station bookings outside their window.",
+  "layer2_family": "estimand_identification",
+  "layer2_pattern": "own:rotation spots read over where the same-terms bookings aired, moved bookings included, not over the window's rotation places",
   "layer1": [
-    "scorecards re-exported after a recomputation, the later export superseding",
-    "metric keys renamed in the scorecard export in 2025",
-    "experiments failing the sample-ratio check or stopped early",
-    "multi-arm experiments, each treatment arm read against the shared control",
-    "arm labels written differently by different teams",
-    "experiments still inside their six-month read beside closed ones"
+    "panel viewing statements in UTC against the as-run log's local time across the 29 March clock change",
+    "the panel day running 02:00 to 26:00 against the civil date",
+    "Pulsar renamed Pulsar+ with a new channel code from 16 March",
+    "guests in panel homes and time-shifted viewing in the viewing file",
+    "members out of tab on some days carrying a zero 28-day weight",
+    "channel self-promotions filling unsold places in the as-run log",
+    "each sales house numbering its bookings in its own format",
+    "spots of 10 to 45 seconds in every break"
   ],
-  "stakeholder_role": "head of experimentation",
-  "role_family": "research_desk",
+  "stakeholder_role": "head of donor marketing",
+  "role_family": "other",
   "scoring_unit": "other",
   "spine": {
-    "file": "global_holdout_users_2025.csv",
-    "rows": 60000,
-    "entity": "one row is one 2025 sign-up held out of every onboarding experiment",
-    "grain": "user",
+    "file": "audimetria_visionamentos_2026-03.csv",
+    "rows": 433990,
+    "entity": "one row is one continuous spell of one person in a panel home present before one channel",
+    "grain": "panel member x channel spell",
     "source": "synthetic"
   },
-  "forum": "line_manager_or_team",
-  "forcing_event": "launch_or_rollout",
-  "org_family": "software_or_platform",
+  "forum": "executive_team",
+  "forcing_event": "vote_or_meeting",
+  "org_family": "nonprofit_or_charity",
   "world": {
-    "geography": "Netherlands",
+    "geography": "Portugal",
     "currency": "EUR",
-    "org_type": "second-hand fashion marketplace app",
+    "org_type": "national blood donor charity",
     "invented_names": [
-      "Kleerwissel"
+      "Associação Gota Viva",
+      "Meridiano Media",
+      "Audimetria Lusa",
+      "Comissão de Audiometria",
+      "Vértice",
+      "Litoral",
+      "Pulsar+",
+      "Arena",
+      "Aurora"
     ],
     "people": [
-      "Fiene Kronenberg",
-      "Giel Lansink",
-      "Saar Reimes",
-      "Renske Mudden"
+      "Lara Gomes",
+      "Helena Gaspar",
+      "Dinis Vaz"
     ]
   },
   "deliverables": [
-    "proxy_metric_review_2027.pptx",
-    "proxy_metric_scores_2027.xlsx"
+    "plano_tv_jovens_2027.xlsx",
+    "recomendacao_esquema_tv_2027.pptx"
   ],
   "opening_move": "question-first",
   "question_form": "which",
-  "driver": "The decisive quantity is how closely two quantities' true changes move together across many trials, when each trial measures both changes on the same sample of members, so the two estimates' errors move together wherever the quantities are correlated member by member; the raw correlation of the estimates counts that shared error as shared change and favours the quantity most like the outcome member by member rather than change by change.",
-  "driver_concrete": "Each candidate's effects across the 2024 to 2026 onboarding experiments are correlated with the experiments' six-month retention effects after each experiment's sampling covariance between the candidate and retention (the holdout panel's user-level correlation times the arms' standard deviations over their users) is taken out of the cross-experiment covariance and each sampling variance out of the variances; first purchase within 14 days leads.",
-  "stump": "A competent analyst correlates the experiments' scorecard effects on each candidate with their six-month retention effects, disattenuates for the sampling error in each, and adopts sessions in days 1 to 14; the step that lands them there is treating each experiment's two sampling errors as independent when both effects are measured on the same users, so the shared error counts as shared change for the metrics most like retention user by user.",
+  "driver": "The decisive quantity is where an item sold without a fixed slot would have landed, and the record of where such items landed shows only the ones that landed inside the slot they were sold for as belonging to it; joining the sales record to the landing record finds that a third were placed elsewhere, in slots worth a fraction as much, so reading the item over the in-slot landings alone credits it with value it would not have had and reverses the choice.",
+  "driver_concrete": "Each 2027 prime-time rotation spot in schedule B is read at the places where that reference day's prime-time rotation bookings on the same channel actually aired, found by joining the sales houses' bookings to the as-run log on the booking number, so the third of them (1,521 of 4,545) the channels' traffic placed in daytime breaks count at their daytime audiences, and B falls from 31.8 to 22.1 per cent three-plus reach, below A's 26.6.",
+  "stump": "A competent analyst replays the three schedules on the reference weeks, reads each rotation spot over the rotation places the as-run log shows in prime time that day and buys schedule B at 31.8 per cent three-plus reach against A's 26.6; the step that lands them there is taking the prime-time rotation places as where a prime-time rotation spot airs, when the bookings joined to the as-run log show the channels placed 1,521 of 4,545 (33.5 per cent) in daytime breaks.",
   "mechanism_source": "design_note",
   "differentiation": {
-    "task261": "task261 takes the standard error of one difference between two subgroups that share a sample's clusters; this build separates true co-movement from error co-movement across about 200 trials, where the shared error is a covariance between two outcomes measured on the same users and the decision is which outcome's effects track another's.",
-    "task228": "task228 builds a ratio metric's variance at the randomisation unit to set an alarm; this build's variances are plain means at the user, and its decisive term is the covariance between two metrics' errors within an experiment, removed from a correlation across experiments.",
-    "task253": "task253 counts units past a floor from noisy unit averages; this build's noise is shared between two estimates and inflates a correlation rather than spreading a level.",
-    "task190": "task190's architecture 6 decides which member's ratio sits furthest from a published value when the ratio's error comes only from a sampled denominator; this build's error sits in two estimates measured on the same users, and the decisive step removes their shared covariance from a correlation across experiments.",
-    "task270": "Architecture 4 compared a subscore's reliability with the total score's accuracy for the subscore's true score, the part's error inside the whole; this architecture correlates two metrics' effects across experiments, the decisive step removing the covariance of their sampling errors within each experiment, in another domain, world and decision."
+    "task139": "task139 reads a randomised intervention per assigned unit because the arm changes which units become costly cases; this build reads a schedule's spot where the bookings sold on its terms aired, because the airing record shows only the bookings the channel kept in the window they were sold for.",
+    "task182": "task182 corrects a duration distribution sampled in proportion to length; here every booking airs once and the airing record is complete, and the step is joining each airing to the sale that defines what a 2027 spot would replay.",
+    "task265": "task265 handles left truncation, earlier starters entering the record only if event-free; here nothing is truncated in time, the moved bookings are all in the record at other hours, and the step is attributing each airing to the window it was sold for.",
+    "task452": "task452 reweights reference observations by inclusion probabilities from a revised classification; here there is no sampling design, a complete census of airings and sales, and the step is the join that says which airings a prime-time sale produced.",
+    "task270": "architecture 1 corrected correlations for selection on a rank of two measures; this architecture reads a 2027 spot's place from the 2026 bookings sold on its terms, where the window's airings are the bookings the channel kept there."
   },
   "lineage": [
     {
@@ -230,10 +241,33 @@
       "stump_strategy": "uncertainty_hold",
       "subdomain": "psychometrics",
       "fate": "spent 2026-10-26 at the draw probes: probes p270a and p270b, call-only Sonnet readers on prototypes of 26,000 attempts, computed Haberman's PRMSE with the part-whole correction (and, with case-study sets added, reliability over the case sets) and printed the golden three each time; the policy's criterion is Haberman's own question"
+    },
+    {
+      "architecture": "v5",
+      "domain": "product-analytics",
+      "subdomain": "metric-definition-measurement-science",
+      "niche": "a second-hand fashion marketplace app choosing which two-week metric reads every 2027 onboarding experiment as its proxy for six-month retention, judged on the platform's per-arm scorecards for about 220 onboarding experiments run since 2024, with user-level data only for the 2025 global holdout",
+      "objective": "descriptive-distribution",
+      "shape": "01",
+      "decision_type": "pick_one_of_n",
+      "gap": [
+        "objective"
+      ],
+      "pattern": [
+        "none"
+      ],
+      "generators": [
+        "G16",
+        "G17"
+      ],
+      "gate_g": "signal_vs_noise_or_hold",
+      "stump_strategy": "uncertainty_hold",
+      "driver": "The decisive quantity is how closely two quantities' true changes move together across many trials, when each trial measures both changes on the same sample of members, so the two estimates' errors move together wherever the quantities are correlated member by member; the raw correlation of the estimates counts that shared error as shared change and favours the quantity most like the outcome member by member rather than change by change.",
+      "driver_concrete": "Each candidate's effects across the 2024 to 2026 onboarding experiments are correlated with the experiments' six-month retention effects after each experiment's sampling covariance between the candidate and retention (the holdout panel's user-level correlation times the arms' standard deviations over their users) is taken out of the cross-experiment covariance and each sampling variance out of the variances; first purchase within 14 days leads.",
+      "stump": "A competent analyst correlates the experiments' scorecard effects on each candidate with their six-month retention effects, disattenuates for the sampling error in each, and adopts sessions in days 1 to 14; the step that lands them there is treating each experiment's two sampling errors as independent when both effects are measured on the same users, so the shared error counts as shared change for the metrics most like retention user by user.",
+      "fate": "spent 2026-10-26 at stage 4 round 2 (Gate F): with 2.3 filing that the correlation is between the effects themselves, both isolated readers took the full sampling-covariance correction and landed first purchase; round 1's readers had missed with the estimand unfiled and the judge held the raw correlation open"
     }
   ],
-  "notes": "Architecture 5 re-root in a fresh world after architecture 4 died at the draw probes; WARN repeat.decision and repeat.question_form against task308 v2 answered in the design note. Architecture 5 spent 2026-10-26 at stage 4 round 2 (both readers landed once the estimand was filed).",
-  "client_domain": "product-analytics",
-  "registered": "2026-10-26T09:10:14Z",
-  "architecture_spent": true
+  "notes": "Architecture 6 re-root in a fresh world after architecture 5 was spent at stage 4. Filed after the build because G9 as the decisive pattern was banned while task485 sat in the window; redrawn at filing: forum to executive_team (task308 held the board), context artifact to register (task487 holds the operations log), forcing event to vote_or_meeting (task137 v4 holds purchase_order_or_contract; the Comissão Executiva decides on 2 December, the channels' April bookings close on 11 December).",
+  "registered": "2026-10-26T14:11:43Z"
 }

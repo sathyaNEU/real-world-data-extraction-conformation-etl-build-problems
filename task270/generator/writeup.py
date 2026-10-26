@@ -1,4 +1,5 @@
-"""submission.md from generator/figures.json: the five blocks, every figure emitted from the generator's own numbers."""
+"""submission.md from generator/figures.json: the five blocks, every figure emitted from the generator's own
+numbers."""
 import json
 import os
 import sys
@@ -7,105 +8,93 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)
 import common as K   # noqa: E402
 
-PP = {"first_purchase_d14", "retained_m6"}
-SHORT = {"active_days_d1_14": "active days", "sessions_d1_14": "sessions", "first_purchase_d14": "first purchase",
-         "items_saved_d1_14": "items saved", "push_opens_d1_14": "push opens", "retained_m6": "six-month retention"}
+
+def f1(x):
+    return "%.1f" % x
 
 
-def u(m, v):
-    return ("%.2f pp" % v) if m in PP else ("%.3f" % v)
-
-
-def c2(v):
-    return "%.2f" % v
+def n0(x):
+    return "{:,}".format(int(x))
 
 
 def text(fig):
-    c, cr, rho = fig["call"], fig["correlations"], fig["components"]["user_level_correlation"]
-    B, C, P = fig["asks"]["B"], fig["asks"]["C"], fig["parameters"]
-    order = c["order"]
+    c, cp = fig["call"], fig["components"]
+    R, X = fig["asks"]["R"], fig["asks"]["X"]["expected_first_donation_bookings"]
+    r3, ctx = c["reach3_pct"], fig["context"]
+    pick, run = c["schedule"], c["runner_up"]
+    third = [s for s in K.SCHED if s not in (pick, run)][0]
+    above = R["campaign_weeks_above_baseline"]
     out = ["## Tags", "",
-           "**Domain:** Product Analytics (metric definition and measurement science).",
-           "**Analytical objective:** Descriptive & Distribution Analysis.", "",
-           "## 1. Final Recommendation", "",
-           "**Kleerwissel should adopt first purchase within 14 days (first_purchase_d14) as its 2027 proxy for "
-           "six-month retention.**",
-           "Across the %d past onboarding changes its effects correlate with the same changes' effects on retained_m6 "
-           "at %s, against %s for sessions in days 1 to 14, the runner-up. Not sessions (%s) or active days (%s), "
-           "whose measured effects move with retention's largely through the sampling error the two effects share "
-           "on the same users. Not items saved (%s) or push opens (%s)." %
-           (c["changes"], c2(cr["first_purchase_d14"]), c2(cr["sessions_d1_14"]), c2(cr["sessions_d1_14"]),
-            c2(cr["active_days_d1_14"]), c2(cr["items_saved_d1_14"]), c2(cr["push_opens_d1_14"])), "",
-           "## 2. Critical Components", "",
-           "1. The correlations rest on **%d** changes from **%d** onboarding experiments." % (c["changes"],
-                                                                                               c["experiments"]),
-           "2. Each candidate's correlation under the standard: first purchase **%s**, sessions **%s**, items saved "
-           "**%s**, push opens **%s**, active days **%s**." % tuple(c2(cr[m]) for m in
-                                                                    ["first_purchase_d14", "sessions_d1_14",
-                                                                     "items_saved_d1_14", "push_opens_d1_14",
-                                                                     "active_days_d1_14"]), "",
-           "## 3. Step-by-Step Solution", "",
-           "1. Took from onboarding_experiments_2024_2026.csv the experiments started from 2024 whose six-month read "
-           "closed by 23 October 2026, completed or stopped early, that passed the sample-ratio check (standard section 2): "
-           "%d experiments and %d changes, each treatment arm against its control." % (c["experiments"], c["changes"]),
-           "2. Read experiment_scorecards_2024_2026.csv at each arm and metric's latest computation, the former keys "
-           "through metric_catalogue.yaml, and took each change's effect on each candidate and on retained_m6 "
-           "(treatment mean less control mean), the experiment's measurement of the effect the standard correlates, and "
-           "its sampling "
-           "variance (each arm's variance over its users, summed).",
-           "3. Took each candidate's user-level correlation with retained_m6 among the %s users of "
-           "global_holdout_users_2025.csv (active days %s, sessions %s, first purchase %s, items saved %s, push opens "
-           "%s) and set each change's sampling covariance between its two effects at that correlation times each "
-           "arm's two standard deviations over its users, summed over the arms." %
-           ("{:,}".format(fig["components"]["holdout_users"]), c2(rho["active_days_d1_14"]),
-            c2(rho["sessions_d1_14"]), c2(rho["first_purchase_d14"]), c2(rho["items_saved_d1_14"]),
-            c2(rho["push_opens_d1_14"])),
-           "4. Correlated each candidate's effects with retention's across the %d changes, each counted once, with the "
-           "mean sampling covariance taken out of their covariance and the mean sampling variances out of their "
-           "variances: first purchase %s, sessions %s, items saved %s, push opens %s, active days %s." %
-           ((c["changes"],) + tuple(c2(cr[m]) for m in ["first_purchase_d14", "sessions_d1_14", "items_saved_d1_14",
-                                                        "push_opens_d1_14", "active_days_d1_14"])),
-           "5. Calendar: took each ISO week's figure in new_user_forecast_2027.csv once (the tool writes a week's "
-           "forecast on each of its days, as the guide's A2 holdout of about 430 a week confirms), set %s per cent "
-           "aside for the 2027 holdout, split each layer's users on a "
-           "platform evenly among its experiments live that week on that platform and each experiment's users evenly "
-           "among its arms (experimentation_platform_guide.pdf A2 to A4), and took %s times each candidate's holdout "
-           "standard deviation times the square root of two over the users per arm." %
-           (P["holdout_2027_per_cent"], P["z_sum"]),
-           "6. Holdout read: took the rows of signup_cohorts_2025.csv for accounts that signed up as consumers, those "
-           "now business included, at their latest refresh, took the holdout's own users and sums out of each half's "
-           "totals (the table counts every new consumer), and set each half's mean outside the holdout against the "
-           "holdout's mean.",
-           "7. Named first purchase within 14 days, the highest correlation (%s against sessions' %s)." %
-           (c2(cr["first_purchase_d14"]), c2(cr["sessions_d1_14"])), "",
-           "## 4. Deliverable Answers", "", "### %s" % K.BOOK, "",
-           "1. Proxy for 2027: first purchase within 14 days (first_purchase_d14).",
-           "2. Correlation with six-month retention under the standard:"]
-    for m in order:
-        out.append("   - %s: %s" % (K.LABEL[m][0].upper() + K.LABEL[m][1:], c2(cr[m])))
-    out.append("3. Past changes the correlations rest on: %d (%d experiments)." % (c["changes"], c["experiments"]))
-    out.append("4. First-quarter 2027 calendar, users per arm and the smallest effect a treatment arm can detect "
-               "against its control:")
-    for e in sorted(B["users_per_arm"]):
-        d = B["detectable"][e]
-        out.append("   - %s: %s users per arm; %s" % (e, "{:,}".format(B["users_per_arm"][e]),
-                                                      ", ".join("%s %s" % (SHORT[m], u(m, d[m])) for m in K.CAND)))
-    out.append("5. 2025 new consumer users outside the global holdout less the holdout's users:")
-    for half, name in (("H1", "January to June"), ("H2", "July to December")):
-        out.append("   - %s: %s" % (name, ", ".join("%s %s" % (SHORT[m], u(m, C[half][m]))
-                                                    for m in K.CAND + [K.RET])))
-    out += ["", "### %s" % K.DECK, "",
-            "1. Slide 1 names first purchase within 14 days as the 2027 proxy, %s against sessions' %s." %
-            (c2(cr["first_purchase_d14"]), c2(cr["sessions_d1_14"])),
-            "2. Slide 2: bar chart of each candidate's correlation under the standard, first purchase highlighted.",
-            "3. Slides 4 and 5: the calendar's users per arm and detectable effects, and the 2025 holdout read, as in "
-            "the workbook.", ""]
+           "**Domain:** Marketing & Consumer Research (media reach, frequency and audience measurement).",
+           "**Analytical objective:** Descriptive & Distribution Analysis.", ""]
+    out += ["## 1. Final Recommendation", "",
+            "**Gota Viva should buy Schedule %s, first place in young prime time, for April 2027.**" % pick,
+            "It puts the film three or more times before %s per cent of adults aged 18 to 34, %s points ahead of "
+            "Schedule %s at %s per cent. Not Schedule %s: its prime-time rotation spots are placed by the channels, "
+            "and of the %s rotation bookings Vértice, Litoral and Pulsar+ sold for prime time in the reference weeks, "
+            "%s (%s per cent) aired in daytime breaks, so the rotation places prime time shows overstate it. Not "
+            "Schedule %s, whose last places in sport and late night reach %s per cent." % (
+                f1(r3[pick]), f1(c["lead_points"]), run, f1(r3[run]), run, n0(cp["prime_rotation_bookings"]),
+                n0(cp["prime_rotation_bookings_aired_outside_prime"]), f1(cp["share_aired_outside_prime_pct"]), third,
+                f1(r3[third])), ""]
+    out += ["## 2. Critical Components", "",
+            "1. Of the **%s** prime-time rotation bookings on Vértice, Litoral and Pulsar+ in the reference weeks, "
+            "**%s** (**%s** per cent) aired outside prime time." % (
+                n0(cp["prime_rotation_bookings"]), n0(cp["prime_rotation_bookings_aired_outside_prime"]),
+                f1(cp["share_aired_outside_prime_pct"])),
+            "2. Schedule A reaches **%s** per cent of adults 18 to 34 three or more times." % f1(r3["A"]),
+            "3. Schedule B reaches **%s** per cent three or more times." % f1(r3["B"]),
+            "4. Schedule C reaches **%s** per cent three or more times." % f1(r3["C"]), ""]
+    out += ["## 3. Step-by-Step Solution", "",
+            "1. Mapped each spot line of esquemas_campanha_2027.xlsx to the same weekday of reference week n, 2 to 29 "
+            "March 2026 (briefing_campanha_jovens_2027.pdf, clause 3.2), Pulsar+ as Pulsar through canais_codigos.csv.",
+            "2. Kept the live statements of panel members in audimetria_visionamentos_2026-03.csv on the local clock "
+            "(UTC, one hour added from the clock change of 29 March), and the members of 18 to 34 with their 28-day "
+            "weight from audimetria_individuos_2026-03.csv (clause 3.3).",
+            "3. Placed each first-place and last-place spot at the first or last place of its break in "
+            "emissao_publicitaria_2026-03.csv (dia_tv, programa, intervalo_no_programa), with the start and length "
+            "that place had (clause 3.3).",
+            "4. Joined reservas_publicidade_2026-03.csv to the as-run log on id_reserva: %s of the %s rotation "
+            "bookings sold for prime time on Vértice, Litoral and Pulsar+ aired outside prime time, in daytime "
+            "breaks." % (n0(cp["prime_rotation_bookings_aired_outside_prime"]), n0(cp["prime_rotation_bookings"])),
+            "5. Read each rotation spot at every place where that reference day's prime-time rotation bookings on its "
+            "channel aired, each with the share of those bookings that aired there (clause 3.4).",
+            "6. Counted a member as seeing a place watched live for at least half its seconds and took each member's "
+            "chance of seeing the film three or more times across independent spots (clause 3.5), weighted over the 18 "
+            "to 34 universe: A %s, B %s and C %s per cent." % (f1(r3["A"]), f1(r3["B"]), f1(r3["C"])),
+            "7. Applied the response rule in notas_extracao_portal_dador.txt to marcacoes_portal_dador_2025.csv with a "
+            "person as their identity document (documento_hash), since people who registered again after the portal "
+            "went live on 17 March 2025 hold two donor numbers: %s a week before the campaign, its four weeks %s, %s, "
+            "%s and %s above that (%s in all), %s per thousand of the %s thousand relatorio_campanha_jovens_2025.pdf "
+            "reports reached three or more times." % (f1(R["baseline_weekly_average"]), f1(above[0]), f1(above[1]),
+                                                      f1(above[2]), f1(above[3]), f1(R["campaign_weeks_total_above"]),
+                                                      "%.2f" % R["response_per_thousand_reached3"],
+                                                      f1(ctx["reached3_2025_thousands"])),
+            "8. Bought Schedule %s, %s points ahead of %s; at that response it brings about %s first-donation "
+            "bookings, against %s for %s and %s for %s." % (pick, f1(c["lead_points"]), run, n0(X[pick]), n0(X[run]),
+                                                           run, n0(X[third]), third), ""]
+    out += ["## 4. Deliverable Answers", "",
+            "### plano_tv_jovens_2027.xlsx", "",
+            "1. Schedule to buy: %s; runner-up %s; lead **%s** points of the 18 to 34 universe." % (
+                pick, run, f1(c["lead_points"])),
+            "2. Reached three or more times: A **%s**, B **%s**, C **%s** per cent." % (f1(r3["A"]), f1(r3["B"]),
+                                                                                    f1(r3["C"])),
+            "3. April 2025 campaign: average weekly first-donation bookings by adults 18 to 34 in the four weeks before "
+            "it **%s**; its four weeks minus that average **%s**, **%s**, **%s** and **%s**, **%s** in all; response "
+            "**%s** per thousand adults it reached three or more times." % (
+                f1(R["baseline_weekly_average"]), f1(above[0]), f1(above[1]), f1(above[2]), f1(above[3]),
+                f1(R["campaign_weeks_total_above"]), "%.2f" % R["response_per_thousand_reached3"]),
+            "4. Expected first-donation bookings at that response: A **%s**, B **%s**, C **%s**." % (
+                n0(X["A"]), n0(X["B"]), n0(X["C"])), "",
+            "### recomendacao_esquema_tv_2027.pptx", "",
+            "1. Two column charts on slide 2, each schedule's share reached three or more times beside its expected "
+            "first-donation bookings, Schedule %s's columns in red as the one to buy." % pick, ""]
     return "\n".join(out)
 
 
 if __name__ == "__main__":
-    task = os.path.dirname(HERE)
     fig = json.load(open(os.path.join(HERE, "figures.json")))
-    with open(os.path.join(task, "submission.md"), "w", encoding="utf-8") as f:
+    path = os.path.join(os.path.dirname(HERE), "submission.md")
+    with open(path, "w", encoding="utf-8") as f:
         f.write(text(fig))
-    print("submission.md written")
+    print("wrote", path)

@@ -1,91 +1,120 @@
 {
- "answer": "Kleerwissel should adopt first purchase within 14 days (first_purchase_d14) as its 2027 proxy for six-month retention.",
+ "answer": "Schedule A (three-plus reach 26.6% of adults 18 to 34, 4.5 points ahead of schedule B)",
  "deliverables": [
-  "proxy_metric_review_2027.pptx",
-  "proxy_metric_scores_2027.xlsx"
+  "plano_tv_jovens_2027.xlsx",
+  "recomendacao_esquema_tv_2027.pptx"
  ],
  "distractor_files": [
-  "target/app_store_ratings_2024_2026.csv",
-  "target/acquisition_spend_2026.xlsx"
+  "target/plano_digital_2027.csv",
+  "target/dadores_novos_2025.csv"
  ],
- "domain": "Product Analytics (metric definition and measurement science)",
+ "domain": "Marketing & Consumer Research (media reach, frequency and audience measurement)",
  "objective": "Descriptive & Distribution Analysis",
  "provenance": {
-  "acquisition_spend_2026.xlsx": {
+  "audiencias_programas_semanais_2026-03.csv": {
    "date": "2026-10-26",
    "licence": "CC0 1.0 (constructed for this task)",
-   "source": "constructed by the task generator (seeded); Kleerwissel, its teams, experiments, users and people are fictional; the records follow the forms of a consumer app's experimentation platform (scorecard export, experiment registry), its data warehouse, its growth analytics tables and its forecasting tool"
+   "source": "constructed by the task generator (seeded); Associação Gota Viva, Meridiano Media, Audimetria Lusa, the Comissão de Audiometria, the channels, their sales houses, programmes, advertisers, panel members and people are fictional; the records follow the forms of a Portuguese television audience panel's client files, the channels' commercial as-run logs and booking extracts, a media agency's schedules and price compilation, and a blood donor association's booking portal"
   },
-  "app_store_ratings_2024_2026.csv": {
+  "audimetria_individuos_2026-03.csv": {
    "date": "2026-10-26",
    "licence": "CC0 1.0 (constructed for this task)",
-   "source": "constructed by the task generator (seeded); Kleerwissel, its teams, experiments, users and people are fictional; the records follow the forms of a consumer app's experimentation platform (scorecard export, experiment registry), its data warehouse, its growth analytics tables and its forecasting tool"
+   "source": "constructed by the task generator (seeded); Associação Gota Viva, Meridiano Media, Audimetria Lusa, the Comissão de Audiometria, the channels, their sales houses, programmes, advertisers, panel members and people are fictional; the records follow the forms of a Portuguese television audience panel's client files, the channels' commercial as-run logs and booking extracts, a media agency's schedules and price compilation, and a blood donor association's booking portal"
   },
-  "data_dictionary.csv": {
+  "audimetria_nota_metodologica.pdf": {
    "date": "2026-10-26",
    "licence": "CC0 1.0 (constructed for this task)",
-   "source": "constructed by the task generator (seeded); Kleerwissel, its teams, experiments, users and people are fictional; the records follow the forms of a consumer app's experimentation platform (scorecard export, experiment registry), its data warehouse, its growth analytics tables and its forecasting tool"
+   "source": "constructed by the task generator (seeded); Associação Gota Viva, Meridiano Media, Audimetria Lusa, the Comissão de Audiometria, the channels, their sales houses, programmes, advertisers, panel members and people are fictional; the records follow the forms of a Portuguese television audience panel's client files, the channels' commercial as-run logs and booking extracts, a media agency's schedules and price compilation, and a blood donor association's booking portal"
   },
-  "experiment_scorecards_2024_2026.csv": {
+  "audimetria_visionamentos_2026-03.csv": {
    "date": "2026-10-26",
    "licence": "CC0 1.0 (constructed for this task)",
-   "source": "constructed by the task generator (seeded); Kleerwissel, its teams, experiments, users and people are fictional; the records follow the forms of a consumer app's experimentation platform (scorecard export, experiment registry), its data warehouse, its growth analytics tables and its forecasting tool"
+   "source": "constructed by the task generator (seeded); Associação Gota Viva, Meridiano Media, Audimetria Lusa, the Comissão de Audiometria, the channels, their sales houses, programmes, advertisers, panel members and people are fictional; the records follow the forms of a Portuguese television audience panel's client files, the channels' commercial as-run logs and booking extracts, a media agency's schedules and price compilation, and a blood donor association's booking portal"
   },
-  "experimentation_platform_guide.pdf": {
+  "briefing_campanha_jovens_2027.pdf": {
    "date": "2026-10-26",
    "licence": "CC0 1.0 (constructed for this task)",
-   "source": "constructed by the task generator (seeded); Kleerwissel, its teams, experiments, users and people are fictional; the records follow the forms of a consumer app's experimentation platform (scorecard export, experiment registry), its data warehouse, its growth analytics tables and its forecasting tool"
+   "source": "constructed by the task generator (seeded); Associação Gota Viva, Meridiano Media, Audimetria Lusa, the Comissão de Audiometria, the channels, their sales houses, programmes, advertisers, panel members and people are fictional; the records follow the forms of a Portuguese television audience panel's client files, the channels' commercial as-run logs and booking extracts, a media agency's schedules and price compilation, and a blood donor association's booking portal"
   },
-  "global_holdout_users_2025.csv": {
+  "canais_codigos.csv": {
    "date": "2026-10-26",
    "licence": "CC0 1.0 (constructed for this task)",
-   "source": "constructed by the task generator (seeded); Kleerwissel, its teams, experiments, users and people are fictional; the records follow the forms of a consumer app's experimentation platform (scorecard export, experiment registry), its data warehouse, its growth analytics tables and its forecasting tool"
+   "source": "constructed by the task generator (seeded); Associação Gota Viva, Meridiano Media, Audimetria Lusa, the Comissão de Audiometria, the channels, their sales houses, programmes, advertisers, panel members and people are fictional; the records follow the forms of a Portuguese television audience panel's client files, the channels' commercial as-run logs and booking extracts, a media agency's schedules and price compilation, and a blood donor association's booking portal"
   },
-  "metric_catalogue.yaml": {
+  "dadores_novos_2025.csv": {
    "date": "2026-10-26",
    "licence": "CC0 1.0 (constructed for this task)",
-   "source": "constructed by the task generator (seeded); Kleerwissel, its teams, experiments, users and people are fictional; the records follow the forms of a consumer app's experimentation platform (scorecard export, experiment registry), its data warehouse, its growth analytics tables and its forecasting tool"
+   "source": "constructed by the task generator (seeded); Associação Gota Viva, Meridiano Media, Audimetria Lusa, the Comissão de Audiometria, the channels, their sales houses, programmes, advertisers, panel members and people are fictional; the records follow the forms of a Portuguese television audience panel's client files, the channels' commercial as-run logs and booking extracts, a media agency's schedules and price compilation, and a blood donor association's booking portal"
   },
-  "new_user_forecast_2027.csv": {
+  "dicionario_dados.csv": {
    "date": "2026-10-26",
    "licence": "CC0 1.0 (constructed for this task)",
-   "source": "constructed by the task generator (seeded); Kleerwissel, its teams, experiments, users and people are fictional; the records follow the forms of a consumer app's experimentation platform (scorecard export, experiment registry), its data warehouse, its growth analytics tables and its forecasting tool"
+   "source": "constructed by the task generator (seeded); Associação Gota Viva, Meridiano Media, Audimetria Lusa, the Comissão de Audiometria, the channels, their sales houses, programmes, advertisers, panel members and people are fictional; the records follow the forms of a Portuguese television audience panel's client files, the channels' commercial as-run logs and booking extracts, a media agency's schedules and price compilation, and a blood donor association's booking portal"
   },
-  "onboarding_calendar_2027q1.csv": {
+  "emissao_publicitaria_2026-03.csv": {
    "date": "2026-10-26",
    "licence": "CC0 1.0 (constructed for this task)",
-   "source": "constructed by the task generator (seeded); Kleerwissel, its teams, experiments, users and people are fictional; the records follow the forms of a consumer app's experimentation platform (scorecard export, experiment registry), its data warehouse, its growth analytics tables and its forecasting tool"
+   "source": "constructed by the task generator (seeded); Associação Gota Viva, Meridiano Media, Audimetria Lusa, the Comissão de Audiometria, the channels, their sales houses, programmes, advertisers, panel members and people are fictional; the records follow the forms of a Portuguese television audience panel's client files, the channels' commercial as-run logs and booking extracts, a media agency's schedules and price compilation, and a blood donor association's booking portal"
   },
-  "onboarding_experiments_2024_2026.csv": {
+  "esquemas_campanha_2027.xlsx": {
    "date": "2026-10-26",
    "licence": "CC0 1.0 (constructed for this task)",
-   "source": "constructed by the task generator (seeded); Kleerwissel, its teams, experiments, users and people are fictional; the records follow the forms of a consumer app's experimentation platform (scorecard export, experiment registry), its data warehouse, its growth analytics tables and its forecasting tool"
+   "source": "constructed by the task generator (seeded); Associação Gota Viva, Meridiano Media, Audimetria Lusa, the Comissão de Audiometria, the channels, their sales houses, programmes, advertisers, panel members and people are fictional; the records follow the forms of a Portuguese television audience panel's client files, the channels' commercial as-run logs and booking extracts, a media agency's schedules and price compilation, and a blood donor association's booking portal"
   },
-  "proxy_metric_standard_2027.pdf": {
+  "grelha_programacao_2026-03.csv": {
    "date": "2026-10-26",
    "licence": "CC0 1.0 (constructed for this task)",
-   "source": "constructed by the task generator (seeded); Kleerwissel, its teams, experiments, users and people are fictional; the records follow the forms of a consumer app's experimentation platform (scorecard export, experiment registry), its data warehouse, its growth analytics tables and its forecasting tool"
+   "source": "constructed by the task generator (seeded); Associação Gota Viva, Meridiano Media, Audimetria Lusa, the Comissão de Audiometria, the channels, their sales houses, programmes, advertisers, panel members and people are fictional; the records follow the forms of a Portuguese television audience panel's client files, the channels' commercial as-run logs and booking extracts, a media agency's schedules and price compilation, and a blood donor association's booking portal"
   },
-  "scorecard_export_notes.txt": {
+  "marcacoes_portal_dador_2025.csv": {
    "date": "2026-10-26",
    "licence": "CC0 1.0 (constructed for this task)",
-   "source": "constructed by the task generator (seeded); Kleerwissel, its teams, experiments, users and people are fictional; the records follow the forms of a consumer app's experimentation platform (scorecard export, experiment registry), its data warehouse, its growth analytics tables and its forecasting tool"
+   "source": "constructed by the task generator (seeded); Associação Gota Viva, Meridiano Media, Audimetria Lusa, the Comissão de Audiometria, the channels, their sales houses, programmes, advertisers, panel members and people are fictional; the records follow the forms of a Portuguese television audience panel's client files, the channels' commercial as-run logs and booking extracts, a media agency's schedules and price compilation, and a blood donor association's booking portal"
   },
-  "signup_cohorts_2025.csv": {
+  "notas_extracao_portal_dador.txt": {
    "date": "2026-10-26",
    "licence": "CC0 1.0 (constructed for this task)",
-   "source": "constructed by the task generator (seeded); Kleerwissel, its teams, experiments, users and people are fictional; the records follow the forms of a consumer app's experimentation platform (scorecard export, experiment registry), its data warehouse, its growth analytics tables and its forecasting tool"
+   "source": "constructed by the task generator (seeded); Associação Gota Viva, Meridiano Media, Audimetria Lusa, the Comissão de Audiometria, the channels, their sales houses, programmes, advertisers, panel members and people are fictional; the records follow the forms of a Portuguese television audience panel's client files, the channels' commercial as-run logs and booking extracts, a media agency's schedules and price compilation, and a blood donor association's booking portal"
+  },
+  "plano_digital_2027.csv": {
+   "date": "2026-10-26",
+   "licence": "CC0 1.0 (constructed for this task)",
+   "source": "constructed by the task generator (seeded); Associação Gota Viva, Meridiano Media, Audimetria Lusa, the Comissão de Audiometria, the channels, their sales houses, programmes, advertisers, panel members and people are fictional; the records follow the forms of a Portuguese television audience panel's client files, the channels' commercial as-run logs and booking extracts, a media agency's schedules and price compilation, and a blood donor association's booking portal"
+  },
+  "relatorio_campanha_jovens_2025.pdf": {
+   "date": "2026-10-26",
+   "licence": "CC0 1.0 (constructed for this task)",
+   "source": "constructed by the task generator (seeded); Associação Gota Viva, Meridiano Media, Audimetria Lusa, the Comissão de Audiometria, the channels, their sales houses, programmes, advertisers, panel members and people are fictional; the records follow the forms of a Portuguese television audience panel's client files, the channels' commercial as-run logs and booking extracts, a media agency's schedules and price compilation, and a blood donor association's booking portal"
+  },
+  "reservas_publicidade_2026-03.csv": {
+   "date": "2026-10-26",
+   "licence": "CC0 1.0 (constructed for this task)",
+   "source": "constructed by the task generator (seeded); Associação Gota Viva, Meridiano Media, Audimetria Lusa, the Comissão de Audiometria, the channels, their sales houses, programmes, advertisers, panel members and people are fictional; the records follow the forms of a Portuguese television audience panel's client files, the channels' commercial as-run logs and booking extracts, a media agency's schedules and price compilation, and a blood donor association's booking portal"
+  },
+  "tabelas_precos_2T2027.pdf": {
+   "date": "2026-10-26",
+   "licence": "CC0 1.0 (constructed for this task)",
+   "source": "constructed by the task generator (seeded); Associação Gota Viva, Meridiano Media, Audimetria Lusa, the Comissão de Audiometria, the channels, their sales houses, programmes, advertisers, panel members and people are fictional; the records follow the forms of a Portuguese television audience panel's client files, the channels' commercial as-run logs and booking extracts, a media agency's schedules and price compilation, and a blood donor association's booking portal"
+  },
+  "universo_2026.csv": {
+   "date": "2026-10-26",
+   "licence": "CC0 1.0 (constructed for this task)",
+   "source": "constructed by the task generator (seeded); Associação Gota Viva, Meridiano Media, Audimetria Lusa, the Comissão de Audiometria, the channels, their sales houses, programmes, advertisers, panel members and people are fictional; the records follow the forms of a Portuguese television audience panel's client files, the channels' commercial as-run logs and booking extracts, a media agency's schedules and price compilation, and a blood donor association's booking portal"
   }
  },
  "rows": {
-  "app_store_ratings_2024_2026.csv": 292,
-  "experiment_scorecards_2024_2026.csv": 8926,
-  "global_holdout_users_2025.csv": 31584,
-  "new_user_forecast_2027.csv": 730,
-  "onboarding_calendar_2027q1.csv": 7,
-  "onboarding_experiments_2024_2026.csv": 510,
-  "signup_cohorts_2025.csv": 4544
+  "audiencias_programas_semanais_2026-03.csv": 196,
+  "audimetria_individuos_2026-03.csv": 2400,
+  "audimetria_visionamentos_2026-03.csv": 441227,
+  "canais_codigos.csv": 7,
+  "dadores_novos_2025.csv": 60,
+  "emissao_publicitaria_2026-03.csv": 20545,
+  "grelha_programacao_2026-03.csv": 1196,
+  "marcacoes_portal_dador_2025.csv": 19980,
+  "plano_digital_2027.csv": 5,
+  "reservas_publicidade_2026-03.csv": 18979,
+  "universo_2026.csv": 60
  },
  "task": "task270",
- "title": "Kleerwissel: the 2027 proxy metric for six-month retention"
+ "title": "Associação Gota Viva: the television schedule for the April 2027 young donor campaign"
 }

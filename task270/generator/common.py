@@ -1,63 +1,93 @@
-"""Constants for task270: Kleerwissel's 2027 proxy metric for six-month retention. Dates, metric keys, the layers of
-the experimentation platform, the file names and the people, in one place so the world, the pack and the goldens read
-the same values."""
+"""Constants for task270 architecture 6: Associação Gota Viva's spring 2027 television campaign for young donors,
+the audience panel's four reference weeks of March 2026, the channels, the people, the dates and the pack's files."""
 import datetime as dt
+from decimal import Decimal, ROUND_HALF_UP
 
-SEED = 59
-ORG = "Kleerwissel"
-PULL = dt.date(2026, 10, 23)              # the scorecard export and the registry extract
-ASSEMBLED = dt.datetime(2026, 10, 26, 9, 40)
-FIRST_DAY = dt.date(2024, 1, 8)           # the first onboarding experiment of the archive starts
-LAST_DAY = dt.date(2026, 10, 9)           # the last sign-up day the export carries
-RENAME = dt.date(2025, 3, 3)              # metric store migration: the scorecard keys renamed
-LATE_EVENTS = (dt.date(2025, 7, 1), dt.date(2025, 9, 10))   # two-week reads computed before the late iOS events
-RECOMPUTED = dt.date(2025, 9, 15)
-HOLDOUT_YEARS = {2025: 0.05, 2026: 0.05}  # the global holdout's share of new consumer users
-HOLDOUT_2027 = 0.03
+SEED = 4
+REF_START = dt.date(2026, 3, 2)            # Monday; the four reference weeks run to Sunday 29 March 2026
+NDAYS = 28
+REF_DAYS = [REF_START + dt.timedelta(d) for d in range(NDAYS)]
+DST_DAY = 27                               # 29 March 2026: clocks go forward at 01:00 UTC (02:00 to 03:00 local)
+TV_DAY_START = 120                         # the panel's day runs 02:00 to 26:00 local
+CAMPAIGN_START = dt.date(2027, 4, 5)       # Monday; campaign week n is read in reference week n
+RENAME_DAY = 14                            # 16 March 2026: Pulsar becomes Pulsar+ (code PLSP)
+PANEL_DELIVERED = dt.date(2026, 4, 14)
+RATES_ISSUED = dt.date(2026, 10, 15)
+BRIEF_DATE = dt.date(2026, 10, 28)
+SCHEDULES_DATE = dt.date(2026, 11, 17)
+ASSEMBLED = dt.datetime(2026, 11, 24, 10, 15)
+DECISION_DATE = dt.date(2026, 12, 2)
+BOOKING_DEADLINE = dt.date(2026, 12, 11)
+BUDGET = 230000
+ROS_DISCOUNT = 0.37
+PREMIUM = {"FP": 1.15, "LP": 1.10, "FIX": 1.00}
+CPM_YOUNG = 62.0                           # euros per thousand adults 18 to 34 at a break's first place
+ARENA_PREMIUM = 1.35
+UNIVERSE_YOUNG = 2104000
+UNIVERSE_ADULT = 8712000
 
-CAND = ["active_days_d1_14", "sessions_d1_14", "first_purchase_d14", "items_saved_d1_14", "push_opens_d1_14"]
-RET = "retained_m6"
-GUARD = ["uninstalled_d14", "support_contacts_d14"]
-METRICS = CAND + [RET] + GUARD
-OLD_KEY = {"active_days_d1_14": "act_days_14", "sessions_d1_14": "sess_count_14", "first_purchase_d14": "first_buy_14",
-           "items_saved_d1_14": "fav_saves_14", "push_opens_d1_14": "push_open_14", "retained_m6": "ret_d180",
-           "uninstalled_d14": "uninst_14", "support_contacts_d14": "cs_contacts_14"}
-LABEL = {"active_days_d1_14": "active days, days 1 to 14", "sessions_d1_14": "sessions, days 1 to 14",
-         "first_purchase_d14": "first purchase within 14 days", "items_saved_d1_14": "items saved, days 1 to 14",
-         "push_opens_d1_14": "push notifications opened, days 1 to 14", "retained_m6": "retained at six months"}
-SHORT = {"active_days_d1_14": "Active days", "sessions_d1_14": "Sessions", "first_purchase_d14": "First purchase",
-         "items_saved_d1_14": "Items saved", "push_opens_d1_14": "Push opens", "retained_m6": "Six-month retention"}
-LAYERS = ["signup_flow", "first_feed", "notifications"]
-TEAMS = {"signup_flow": ["Activation", "Identity"], "first_feed": ["Discovery", "Buyer Experience"],
-         "notifications": ["Messaging", "Lifecycle"]}
+ORG = "Associação Gota Viva"
+ORG_SHORT = "Gota Viva"
+AGENCY = "Meridiano Media"
+PANEL_CO = "Audimetria Lusa"
+JIC = "Comissão de Audiometria"
+REQUESTER = "Lara Gomes"          # Gota Viva, head of donor marketing
+PLANNER = "Helena Gaspar"         # Meridiano Media, planning director
+PANEL_CONTACT = "Dinis Vaz"       # Audimetria Lusa, client methods
 
-FILES = {
-    "scorecards": "experiment_scorecards_2024_2026.csv",
-    "registry": "onboarding_experiments_2024_2026.csv",
-    "holdout": "global_holdout_users_2025.csv",
-    "catalogue": "metric_catalogue.yaml",
-    "standard": "proxy_metric_standard_2027.pdf",
-    "export_notes": "scorecard_export_notes.txt",
-    "guide": "experimentation_platform_guide.pdf",
-    "calendar": "onboarding_calendar_2027q1.csv",
-    "forecast": "new_user_forecast_2027.csv",
-    "cohorts": "signup_cohorts_2025.csv",
-    "ratings": "app_store_ratings_2024_2026.csv",
-    "spend": "acquisition_spend_2026.xlsx",
-}
-DISTRACTORS = ["ratings", "spend"]
-DELIVERABLES = ["proxy_metric_review_2027.pptx", "proxy_metric_scores_2027.xlsx"]
-DECK, BOOK = DELIVERABLES
+# channel code, name, sales house
+CHANNELS = [("FAR1", "Farol", "Farol Publicidade"), ("FAR2", "Farol 2", "Farol Publicidade"),
+            ("VRT", "Vértice", "Vértice Comercial"), ("LIT", "Litoral", "Litoral Media Vendas"),
+            ("PLS", "Pulsar", "Litoral Media Vendas"), ("ARN", "Arena", "Arena Desporto Media")]
+CH = [c[0] for c in CHANNELS]
+CH_NAME = {c[0]: c[1] for c in CHANNELS}
+SALES = {c[0]: c[2] for c in CHANNELS}
+NEW_CODE = {"PLS": "PLSP"}
+NEW_NAME = {"PLS": "Pulsar+"}
 
-HEAD_EXP = "Fiene Kronenberg"     # head of experimentation, owner of the standard
-ENGINEER = "Giel Lansink"          # data engineer, the export notes and the platform guide
-ANALYST = "Saar Reimes"           # growth analyst, the metric catalogue and the 2027 calendar
+# windows of the day by channel (minutes from midnight of the panel day, local); a rotation spot is placed
+# by the channel anywhere in its window
+WINDOWS = {"day": (420, 1020), "access": (1020, 1200), "prime": (1200, 1470), "late": (1470, 1560)}
+WINDOW_NAME = {"day": "Dia (07:00-17:00)", "access": "Acesso (17:00-20:00)", "prime": "Horário nobre (20:00-00:30)",
+               "late": "Noite (00:30-02:00)"}
 
-Z_POWER = 1.959963984540054 + 0.8416212335729143   # two-sided 5 per cent test, 80 per cent power
+AGE_BANDS = ["18-24", "25-34", "35-44", "45-54", "55-64", "65+"]
+YOUNG = ("18-24", "25-34")
+REGIONS = ["Norte", "Centro", "Área Metropolitana de Lisboa", "Alentejo", "Algarve"]
+
+FILES = dict(
+    viewing="audimetria_visionamentos_2026-03.csv",
+    panel="audimetria_individuos_2026-03.csv",
+    asrun="emissao_publicitaria_2026-03.csv",
+    bookings="reservas_publicidade_2026-03.csv",
+    epg="grelha_programacao_2026-03.csv",
+    channels="canais_codigos.csv",
+    universe="universo_2026.csv",
+    ratings="audiencias_programas_semanais_2026-03.csv",
+    schedules="esquemas_campanha_2027.xlsx",
+    rates="tabelas_precos_2T2027.pdf",
+    brief="briefing_campanha_jovens_2027.pdf",
+    method="audimetria_nota_metodologica.pdf",
+    digital="plano_digital_2027.csv",
+    donors="dadores_novos_2025.csv",
+    dictionary="dicionario_dados.csv",
+    portal="marcacoes_portal_dador_2025.csv",
+    portal_notes="notas_extracao_portal_dador.txt",
+    report2025="relatorio_campanha_jovens_2025.pdf",
+)
+DISTRACTORS = ["digital", "donors"]
+BOOK = "plano_tv_jovens_2027.xlsx"
+DECK = "recomendacao_esquema_tv_2027.pptx"
+SCHED = ["A", "B", "C"]
+SCHED_NAME = {"A": "Esquema A, primeiro lugar no horário nobre jovem",
+              "B": "Esquema B, rotação em horário nobre",
+              "C": "Esquema C, desporto e noite, último lugar"}
 
 
-def r(x, n):
-    """round half away from zero at n decimals, the way the deliverables print"""
-    from decimal import Decimal, ROUND_HALF_UP
-    q = Decimal(1).scaleb(-n)
-    return float(Decimal(repr(float(x))).quantize(q, rounding=ROUND_HALF_UP))
+def r(x, n=0):
+    """half-up rounding at n decimals"""
+    return float(Decimal(repr(float(x))).quantize(Decimal(1).scaleb(-n), rounding=ROUND_HALF_UP))
+
+
+def pct(x, n=1):
+    return r(100 * x, n)

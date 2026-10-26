@@ -1,128 +1,77 @@
 {
  "asks": {
-  "B": {
-   "detectable": {
-    "OB-27-001": {
-     "active_days_d1_14": 0.093,
-     "first_purchase_d14": 1.15,
-     "items_saved_d1_14": 0.051,
-     "push_opens_d1_14": 0.063,
-     "sessions_d1_14": 0.132
-    },
-    "OB-27-002": {
-     "active_days_d1_14": 0.179,
-     "first_purchase_d14": 2.21,
-     "items_saved_d1_14": 0.098,
-     "push_opens_d1_14": 0.121,
-     "sessions_d1_14": 0.253
-    },
-    "OB-27-003": {
-     "active_days_d1_14": 0.112,
-     "first_purchase_d14": 1.38,
-     "items_saved_d1_14": 0.061,
-     "push_opens_d1_14": 0.075,
-     "sessions_d1_14": 0.158
-    },
-    "OB-27-004": {
-     "active_days_d1_14": 0.084,
-     "first_purchase_d14": 1.03,
-     "items_saved_d1_14": 0.046,
-     "push_opens_d1_14": 0.056,
-     "sessions_d1_14": 0.118
-    },
-    "OB-27-005": {
-     "active_days_d1_14": 0.15,
-     "first_purchase_d14": 1.85,
-     "items_saved_d1_14": 0.082,
-     "push_opens_d1_14": 0.101,
-     "sessions_d1_14": 0.212
-    },
-    "OB-27-006": {
-     "active_days_d1_14": 0.096,
-     "first_purchase_d14": 1.18,
-     "items_saved_d1_14": 0.053,
-     "push_opens_d1_14": 0.065,
-     "sessions_d1_14": 0.136
-    },
-    "OB-27-007": {
-     "active_days_d1_14": 0.141,
-     "first_purchase_d14": 1.74,
-     "items_saved_d1_14": 0.078,
-     "push_opens_d1_14": 0.095,
-     "sessions_d1_14": 0.2
-    }
-   },
-   "users_per_arm": {
-    "OB-27-001": 24786,
-    "OB-27-002": 6749,
-    "OB-27-003": 17353,
-    "OB-27-004": 30936,
-    "OB-27-005": 9644,
-    "OB-27-006": 23571,
-    "OB-27-007": 10845
-   }
+  "R": {
+   "baseline_weekly_average": 135.5,
+   "campaign_weeks_above_baseline": [
+    93.5,
+    100.5,
+    121.5,
+    107.5
+   ],
+   "campaign_weeks_total_above": 423.0,
+   "response_per_thousand_reached3": 0.77
   },
-  "C": {
-   "H1": {
-    "active_days_d1_14": 0.04,
-    "first_purchase_d14": 0.62,
-    "items_saved_d1_14": -0.01,
-    "push_opens_d1_14": 0.034,
-    "retained_m6": 0.62,
-    "sessions_d1_14": 0.06
-   },
-   "H2": {
-    "active_days_d1_14": -0.032,
-    "first_purchase_d14": 1.11,
-    "items_saved_d1_14": -0.032,
-    "push_opens_d1_14": -0.022,
-    "retained_m6": 1.69,
-    "sessions_d1_14": 0.147
+  "X": {
+   "expected_first_donation_bookings": {
+    "A": 430,
+    "B": 360,
+    "C": 270
    }
   }
  },
  "call": {
-  "changes": 489,
-  "experiments": 399,
-  "order": [
-   "first_purchase_d14",
-   "sessions_d1_14",
-   "items_saved_d1_14",
-   "push_opens_d1_14",
-   "active_days_d1_14"
-  ],
-  "proxy": "first_purchase_d14",
-  "proxy_correlation": 0.54,
-  "proxy_name": "first purchase within 14 days",
-  "runner_up": "sessions_d1_14",
-  "runner_up_correlation": 0.31,
-  "runner_up_name": "sessions, days 1 to 14",
-  "sentence": "Kleerwissel should adopt first purchase within 14 days (first_purchase_d14) as its 2027 proxy for six-month retention."
+  "lead_points": 4.5,
+  "reach3_pct": {
+   "A": 26.6,
+   "B": 22.1,
+   "C": 16.9
+  },
+  "runner_up": "B",
+  "schedule": "A"
  },
  "components": {
-  "holdout_users": 31584,
-  "user_level_correlation": {
-   "active_days_d1_14": 0.54,
-   "first_purchase_d14": 0.06,
-   "items_saved_d1_14": 0.07,
-   "push_opens_d1_14": 0.14,
-   "sessions_d1_14": 0.46
-  }
+  "prime_rotation_bookings": 4545,
+  "prime_rotation_bookings_aired_outside_prime": 1521,
+  "schedule_b_reference_places": 4545,
+  "schedule_b_reference_places_outside_prime": 1521,
+  "share_aired_outside_prime_pct": 33.5
  },
- "correlations": {
-  "active_days_d1_14": -0.09,
-  "first_purchase_d14": 0.54,
-  "items_saved_d1_14": 0.14,
-  "push_opens_d1_14": 0.02,
-  "sessions_d1_14": 0.31
+ "context": {
+  "baseline_weeks": [
+   "2025-03-10",
+   "2025-04-06"
+  ],
+  "budget_eur": 230000,
+  "campaign_weeks_2025": [
+   "2025-04-07",
+   "2025-05-04"
+  ],
+  "cost_eur": {
+   "A": 227710,
+   "B": 229600,
+   "C": 229460
+  },
+  "reach1_pct": {
+   "A": 72.7,
+   "B": 69.5,
+   "C": 61.0
+  },
+  "reached3_2025_thousands": 547.8,
+  "schedule_b_reach3_in_window_rotation_places_pct": 31.8,
+  "spots": {
+   "A": 30,
+   "B": 84,
+   "C": 50
+  },
+  "universe_18_34": 2100000
  },
- "parameters": {
-  "alpha_per_cent": 5,
-  "holdout_2027_per_cent": 3,
-  "holdout_2027_weekly_q1": 430,
-  "power_per_cent": 80,
-  "z_alpha": "1.96",
-  "z_power": "0.84",
-  "z_sum": "2.80"
+ "references": {
+  "brief_clauses": [
+   "3.2",
+   "3.3",
+   "3.4",
+   "3.5"
+  ],
+  "weight_days": 28
  }
 }

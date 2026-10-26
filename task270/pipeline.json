@@ -1,30 +1,30 @@
 {
   "task": "task270",
   "owner": "sathay3012",
-  "status": "PAUSED",
-  "domain": "product-analytics",
+  "status": "BUILD",
+  "domain": "marketing-consumer-research",
   "objective": "descriptive-distribution",
-  "stage": "1",
-  "stage_name": "draw",
+  "stage": "4",
+  "stage_name": "check",
   "updated": "2026-10-26",
-  "stump": "A competent analyst correlates the onboarding experiments' scorecard effects on each candidate with their six-month retention effects, disattenuates each for its own sampling error, and adopts sessions in days 1 to 14; the golden takes each experiment's sampling covariance between the candidate and retention (the 2025 holdout's user-level correlation over the arm sizes) out of the cross-experiment covariance and adopts first purchase within 14 days.",
-  "architecture": "5",
+  "stump": "A competent analyst replays the three schedules on the reference weeks, reads each rotation spot over the rotation places the as-run log shows in prime time that day and buys Schedule B at 31.8 per cent three-plus reach against A's 26.6; the golden joins the sales houses' bookings to the as-run log and reads each rotation spot at the places that day's prime-time rotation bookings aired (1,521 of 4,545 in daytime breaks), B 22.1, A 26.6.",
+  "architecture": "6",
   "loops": "0",
-  "precut": null,
+  "precut": "PASS 2026-10-26 (51 checks, 0 FAIL)",
   "leak": {
-    "leak_py": "REVIEW 2026-10-26: design-note vocabulary in the guide and standard, forward-dated plan files; no answer figure, ranking or announcement",
-    "readers": "round 1 A and B off the call (raw correlation), 12 of 54 ask figures each (Ask C); round 2 C and D on the call, C 12 and D 54 of 54 ask figures"
+    "leak_py": "CLEAN 2026-10-26; REVIEW only for the 2027 schedules' and the digital plan's forward dates (plans)",
+    "readers": "pending"
   },
   "duplicate_check": {
-    "check_at_draw": "registered 2026-10-26, WARN repeat.decision and repeat.question_form against task308 v2 (answered in the note); test.same_puzzle_older and test.own_lineage differentiated on the card"
+    "check_at_draw": "filed 2026-10-26 after the build, PASS with one NOTE (task139, task182 v4, task265 v1, task452 v2 differentiated); heart PASS; surface exit 0, people clean"
   },
   "judge": {
-    "verdict": "DETERMINISTIC",
-    "disposition": "APPROVE",
-    "report": "round 2 isolated judge 2026-10-26 (/tmp/determinism-check-task270-v5r2/verdict.md); round 1 NOT_DETERMINISTIC, SEND_BACK (task270/determinism_check_report.md)"
+    "verdict": "pending",
+    "disposition": "pending",
+    "report": ""
   },
   "returned": [],
-  "resume": "Stage 1: the architecture 6 draw in a fresh world (architectures 1 to 5 spent; read DESIGN_NOTE.md's Tried and rejected first). Probe stump power at the draw with the estimand filed as it will ship (call-only readers on a prototype pack) before any full build: architecture 5 showed a stump that lives only while the estimand is unfiled is a fork.",
+  "resume": "Stage 4: the leak reader and the determinism judge on the cut pack (target.zip 3b93a30f...), both medium; fix every finding in the generator in one pass, re-judge a FIX_NOW once, then ship.",
   "architectures": [
     {
       "architecture": 1,
