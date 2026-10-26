@@ -1,0 +1,99 @@
+{
+ "askA": {
+  "FTB": {
+   "open": 18,
+   "orders": 31,
+   "suspended": 21
+  },
+  "HLTV": {
+   "open": 26,
+   "orders": 43,
+   "suspended": 33
+  },
+  "SO": {
+   "open": 6,
+   "orders": 8,
+   "suspended": 6
+  }
+ },
+ "askB": {
+  "FTB": {
+   "at_loss": 10,
+   "avg_loss": 6000,
+   "sold": 17
+  },
+  "HLTV": {
+   "at_loss": 18,
+   "avg_loss": 25900,
+   "sold": 18
+  },
+  "SO": {
+   "at_loss": 0,
+   "avg_loss": 0,
+   "sold": 4
+  }
+ },
+ "basis": {
+  "as_of": "30 September 2026",
+  "effect_pct": 15,
+  "forecast_year": 2027,
+  "rise_bands_pct": [
+   5,
+   20,
+   40
+  ],
+  "smoothing_weight": 20,
+  "term_bands_months": [
+   8,
+   15,
+   16
+  ]
+ },
+ "call": {
+  "avoided": {
+   "BTL": 0.7,
+   "FTB": 8.9,
+   "HLTV": 2.9,
+   "SO": 0.4
+  },
+  "avoided_ten": {
+   "BTL": 0,
+   "FTB": 10,
+   "HLTV": 0,
+   "SO": 0
+  },
+  "book": "First-time buyer 2019-21",
+  "next_best": "High LTV 2022-24",
+  "rate_pct": {
+   "BTL": 6.5,
+   "FTB": 4.3,
+   "HLTV": 4.5,
+   "SO": 1.4
+  }
+ },
+ "easy": {
+  "avoided": {
+   "BTL": 0.7,
+   "FTB": 2.7,
+   "HLTV": 2.9,
+   "SO": 0.4
+  },
+  "avoided_ten": {
+   "BTL": 0,
+   "FTB": 0,
+   "HLTV": 0,
+   "SO": 0
+  },
+  "book": "High LTV 2022-24"
+ },
+ "ext": {
+  "behind_8m": 3,
+  "behind_by_asof": 98,
+  "ftb_on_book": 16243,
+  "ftb_raised_2026": 6997,
+  "pay_rise_extended": 10,
+  "pay_rise_kept": 26,
+  "raised_2024": 345,
+  "years_added_median": 10
+ }
+}
