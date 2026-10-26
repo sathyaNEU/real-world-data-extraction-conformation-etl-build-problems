@@ -1,298 +1,306 @@
 # task137 design note
 
-Architecture 3, drawn and registered 2026-10-26 (wave 2 slot, Forecasting lane, sathya8571), the number's third and last
-architecture. Architecture 1 (Kaimai Building Society's maturity campaign booked in agent-hours, banking) was landed on
-the portal; architecture 2 (Calderbrook Care's 2027 adverse-drug-event admissions, the care world) lost every decisive
-step it held to isolated probes before a pack shipped. Both identities are in the card's lineage and their dead ends in
-the last section; nothing of either world is kept. This draw is Calderwick Police's forecast of the first-year
-detentions at its new city-centre custody hub.
+Architecture 4, drawn and registered 2026-10-26 (wave 2 slot, Forecasting lane, sathya8571), under the author's ruling
+that task137 is neither retired nor paused. Architecture 1 (Kaimai Building Society's maturity campaign booked in
+agent-hours, banking) was landed on the portal; architecture 2 (Calderbrook Care's 2027 adverse-drug-event admissions)
+lost every decisive step it held to isolated probes before a pack shipped; architecture 3 (Calderwick Police's Tanner
+Street custody hub) was spent at stage 4 when the judge read its decisive step as data semantics. All three identities
+are in the card's lineage and their dead ends in the last section; nothing of any of them is kept. This draw is
+Hollinsfield and Brantmoor Hospitals NHS Foundation Trust's plan for the GP-referred blood-test visits its new
+community phlebotomy hub at Kingsmead Health Village will see in 2027-28.
+
+## Reopened
+
+2026-10-26, after architecture 3 was spent at stage 4 (SEND_BACK) and the build was paused (30e89353): the author ruled
+that task137 is neither retired nor paused and continues until it ships. Architecture 4 is authorised, in any world and
+with any stump strategy; the author asked for heavier realistic data messiness and for techniques where several
+defensible methods compete while the answer stays deterministic. Two architecture 4 candidates were probed in parallel:
+thread A's staggered food waste rollout (probe8) was landed by Opus probe p137lb before registration (`## Tried and
+rejected`), and explorer B's walk-in phlebotomy clinic (probeB1) was missed by both isolated Opus probes, p137ka and
+p137kb, which filed 51,000 against that pack's golden of 54,000. The clinic is architecture 4, registered 2026-10-26;
+the sections below describe it.
 
 ## Draw
 
-1. Card: `.claude/skills/fingerprint/cards/task137.json`, architecture v3, registered 2026-10-26T05:10:19Z on main
-   437a0102, brought to the shipped pack at stage 3 (answer, analyst test, stump, layer 1, spine rows, people).
-   `guard.py check` on the card: PASS, with NOTEs only (`test.same_puzzle_older` differentiated against task133 and
-   task196, `test.same_driver_older` against task133 and task180, `driver.near` 0.25 against this slot's
-   never-registered architecture 3 candidate 2).
-2. Pairing: Urban & Regional Science (client domain) / `municipal-service-demand-resource-allocation` / Forecasting &
-   Predictive Modeling. The deciding quantity is a public service's demand at a new site, the detentions a custody suite
-   books in its first year, forecast from the service's demand model over the site's catchment and used to size the
-   site's cells and staff.
-3. Niche: Calderwick Police, a metropolitan county force in England (124 wards in five districts, four custody suites:
-   Northgate and Eastmoor in Calderwick city, Southfields and Wendle Cross in the county). The Tanner Street custody hub
-   opens on 1 April 2027 and takes the six city centre wards from Northgate and Eastmoor; the fit-out contract signed on
-   9 December 2026 fixes its cells and detention officer posts from its planning figure for 2027-28, its remand cells
-   from the four suites' remand holds and its medical rooms from their initial health assessments.
-4. Call and shape: the hub's 2027-28 detentions to the nearest 250 (`quantity_figure`, how-many); shape `other`: the
-   call with its two parts and the note's chart, plus two ask grids on the four existing suites' 2025-26 operations
-   (remand holds, two figures a suite; initial health assessments, day and night a suite), counted in `## Ask sheet`.
-   Criteria: the call, its two parts and BTP's crimes (4), the chart (5 years and the stacked 2027-28 bar), 16 ask
-   figures, the two files: 28 or more.
-5. Mechanism keys: gap population (the force's arrest records are not everyone its suites book); pattern none,
-   generators G12 (the records' silence about BTP's arrests read as nobody there), G5 (the railway is policed by another
-   force, whose custody the territorial force provides), G3 (the records count the force's arrests, the suite books every
-   detainee from its wards); strategy `population_selection`; Gate G `forecasting`, not `method_or_model_selection`,
-   because the graded object is a forward projection whose history is read correctly and the step is the new site's
-   intake rather than a choice between fitted models (task305's judges read its origin set as model selection because
-   its call was a site pick).
-6. Layer 2: `field_method`, pattern `own:custody-demand-counts-every-arresting-agency-not-the-force-records-alone`.
-7. Furniture: forum `executive_team` (the chief officer team signs the fit-out contract); forcing event
-   `purchase_order_or_contract`; organisation family `local_government` (a territorial force under a locally elected
-   commissioner; `government_agency` is spent against task121); role family `capacity_planner` (Custody Services
-   Planning); context artifact `filed_model` (the custody demand model note); calibration `existing_book_actuals` (the
-   four suites' arrest records against the model). `committee_or_panel` is spent against task121 as well.
-8. Spine: the force's arrest records, April 2021 to September 2026 (127,845 rows), one row per arrest by a Calderwick
-   officer. The forcing file is data.police.uk's street-level crime for the force area as the community safety
-   partnership downloads it (158,906 rows), which carries British Transport Police's crime at the stations; the custody
-   fact is note 2 of the custody service's suite allocation notes. The asks read the Criminal Justice Unit's remand files
-   and the custody healthcare provider's contact export.
-9. Deliverables: `tanner_street_planning_figure_2027-28.xlsx` and `hub_planning_note.docx`.
-10. People, from `guard.py names --geo GB --seed 137`: Liam Clayton (programme manager) and Emma Roberts (Custody
-    Services Planning), the two people the brief and the note need. Katherine, Rachel, Duncan, Rebecca, Richard, Joseph
-    and Amelia repeat older builds' first names. None appears in the prompt.
+1. Card: `.claude/skills/fingerprint/cards/task137.json`, architecture v4, registered 2026-10-26T14:03:36Z with v1 to v3 and
+   thread A's unregistered v4 candidate in its lineage and the author's ruling in its notes. `guard.py check`: WARN,
+   answered: `repeat.decision` (quantity_figure after task487: the forecast's call is a level, which is the honest type)
+   and `repeat.deliverables` (png and xlsx after task121's architecture 6: a plan workbook and the chart of the demand
+   it rests on); NOTEs `test.same_puzzle_older` against task156 and `test.same_driver_older` against task111 v2 and
+   task86 v2, each differentiated on the card, as are task168, task308 v1, task108, task147 and task18, the
+   unconstrained-demand builds on file.
+2. Pairing: Healthcare Delivery & Health Economics (client domain) / `utilization-access-demand-forecasting` /
+   Forecasting & Predictive Modeling. The deciding quantity is a service's unconstrained demand at a new site: the
+   GP-referred blood tests a community hub staffed never to run out of tickets will draw in its first year, forecast
+   from the walk-in clinic's record with the capacity effects taken out.
+3. Niche: Hollinsfield General Hospital's walk-in phlebotomy clinic (Outpatients block A, Monday to Friday 07:30 to
+   15:30, seven posts, adults with a GP or hospital-clinic request). The senior phlebotomist sets the day's tickets at
+   40 a substantive and 32 a bank phlebotomist on the floor; once they have gone, reception turns arrivals away with
+   the offer of a booked slot at Brantmoor Community Hospital and logs them for the PALS return. It ran out on 58 of 253
+   clinic days in 2025-26, mostly in the weeks a hospital clinic's recall programme crowded the queue. Twelve practices
+   refer, seven of them running their own phlebotomy clinics under the local enhanced service. From 1 April 2027 the
+   Kingsmead hub takes every patient with a GP request and never runs out; hospital-clinic patients stay at block A.
+   The integrated care board's planning assumption (3.5 per cent a year) is applied to 2025-26.
+4. Call and shape: the hub's 2027-28 GP-referred visits to the nearest 2,500 (`quantity_figure`, how-many); shape
+   `other`: the call with its three components, the weekly chart of 2025-26 GP-referred demand (seen, turned away and
+   kept in-house, 53 weeks), and two ask grids on the walk-in clinic's other work (hospital-clinic visits by specialty
+   and quarter, 28 figures; working days lost to sickness and the sickness absence rate by quarter, 8 figures).
+   Criteria: the call and its three components (4), the chart (3 or more), 36 ask figures, the two files: 25 or more.
+5. Mechanism keys: gap time then population (the record was made under a clinic that ran out and the plan bets on one
+   that never does, and the patients the run-outs sent elsewhere are in no record); pattern none, generators G5 (the
+   practices' own phlebotomists bleed the deterred patients), G12 (a turned-away patient is logged, a deterred one
+   leaves no record), G13 (the record's horizon held run-outs, the hub's holds none); strategy `other`, because the
+   nearest key, `informative_censoring`, is task487's inside the three-build window and `causal_design` is banned
+   against task121; Gate G `forecasting`: the graded object is a forward level whose history is read correctly.
+6. Layer 2: `field_method`, pattern
+   `own:walk-in-unconstrained-demand-adds-patients-deterred-by-recent-run-outs-not-only-those-turned-away`.
+7. Furniture: forum `customer_or_counterparty` (the integrated care board agrees the trust's 2027-28 activity plan);
+   forcing event `purchase_order_or_contract` (the activity plan in the 2027-28 contract); organisation family
+   `hospital_or_health_provider`; role family `capacity_planner` (Clinical Support Services planning); context
+   artifact `close_out_summary` (the clinic's 2025-26 annual report); calibration `none`.
+8. Spine: the new kiosk's queue events, 18 November 2024 to 30 September 2026 (311,893 rows: check-in, call and
+   completion events, the check-in carrying the request form's type, the issuing organisation's code and the request
+   date read from its barcode); with the legacy ticket file (April 2023 to November 2024) the daily record runs 883
+   clinic days. The deterrence is identified from the record's own variation in run-outs, which the hospital clinics'
+   recall programmes mostly drive and which the reception log records day by day.
+9. Deliverables: `hub_plan_2027-28.xlsx` and `gp_demand_2025-26.png`.
+10. People, from `guard.py names --geo GB --seed 137`: Katherine Storey (the phlebotomy service manager, the annual
+    report's author), Hugh Metcalfe (pathology operations lead), Charlene Dale (reception, the log's owner), Bethan
+    Matthews (the board's head of planned care) and Joseph Wood (the hub's session planner). Patricia, Rachel, Richard,
+    Rebecca and Duncan from the same draw repeat older builds' first names (`people.first`), so they are left out.
+    None appears in the prompt.
 
-**Spent mechanisms on the ground** (`guard.py mechanisms --objective forecasting --strategy population_selection`, seven
-builds): task22 a declining segment masked by inflations of its own base; task132 a wear curve restarted by
-replacements; task136 an intervention enrolling units about to take up anyway; task141 outcomes recorded only for the
-units a decision-maker let through; task150 arrivals from outside at a steady count beside transfers from siblings;
-task168 capped units completed from slow-season builds; task137 v2 short-stay occupants booked through another
-organisation's system. None prices a second agency's caseload booked into the operator's own facility.
+**Spent mechanisms on the ground** (`guard.py mechanisms --objective forecasting --strategy causal_design`, six builds):
+task88 an added booking displacing full-rate demand; task139 an intervention read per assigned unit; task144 seeded
+adoptions through followers; task163 a cut drawing in marginal entrants; task178 a forward dispersion with an absorbing
+agent removed; task173 work-induced failures spread thinly. The unconstrained-demand builds on file recover demand
+truncated on the day or counted twice after it: task18's lost-volume replays, task108's resubmissions, task147's runs
+through full nights, task168's detruncation of sold-out departures, task308 v1's supply rebuilt at its peaks. None
+prices demand held down in later weeks by a service's own run-outs; here the day's truncation is logged in full and its
+detruncation is a rung below the golden.
 
-**Slot screens.** `guard.py slots` on the driver's words returns task117, task179, task134, task182, task190, task194,
-task198 and task229, none an outside agency's intake; on the setting's words (custody, police, detention, station,
-arrest) it returns task141 (a county detention centre's bed-days, defendants boarded out), task169 (arrests per day out
-of custody under a revocation change), task473 (blood draws under a sheriff's agency number) and task273, none a
-suite's intake from another force's arrests.
+**Slot screens.** `guard.py slots` on the setting's words (phlebotomy, blood, walk-in, ticket, turned away) returns
+task147, task168, task173, task280, task303 and task305, none a walk-in clinic; on the mechanism's (deterred,
+unconstrained, latent, demand, refused, capacity, balk) task168, task147, task194, task116, task117 and task120, none a
+deterrence carried from one week's run-outs into the next.
 
-**Probes before the draw.** The candidate was probed before registration on a six-file pack (`t137_a3/probe7` in the
-session scratchpad: the planning brief, the model note, the arrest records, the street-level extract, the allocation and
-the LSOA lookup; generator `p7lib.py`, seed 7216), call plus the over-24-hour share, by two isolated Opus probes.
-- p137i filed 4,500 (4,515.7). It ran model v2 ward by ward, reproduced the published validation exactly (5,904, 3,093,
-  7,883 and 7,435), checked pooled growth, a flat level, the last twelve months and a seasonal Poisson, and wrote that the
-  street crime file and the LSOA lookup were not needed: the file includes British Transport Police records, and BTP
-  detainees are not in the force arrest file and are not counted. Ask 14.8.
-- p137j filed 4,500 (4,516). It ran the same model and six alternatives and wrote that the street file has 1,740 of its
-  2,022 BTP crimes in the hub wards around the station, that BTP detainees are not in the force's arrest register, and
-  that if BTP books into Tanner Street the hub will see extra detentions not captured here; it left that as a caveat.
-  Ask 14.8.
-Both saw the outside body and dismissed it, the survivor pattern (task305's out-of-region cardholders, task306's
-imports). The golden on that pack was 4,750 (4,779.0); two of two missed. Their realism notes are answered in the
-shipped pack: the possible duplicate pair is now the ordinary co-arrest pattern (12.2 per cent of the six wards' arrests
-are in incidents of two or more, each a person with their own record, R2c); 2,780 arrests are booked away from their
-ward's suite (overflow at 0.6 per cent, plus Eastmoor's 19-day flood closure and Wendle Cross's 88-day cell refit,
-realistic and kept); demand moves year to year (3,472, 3,734, 3,615, 3,680 and 3,732 in the six wards, the 2021-22
-COVID tail, Kingsway down after its clubs closed, Mill Bank up with its canal-side bars, X1); the arrest records are
-keyed by the force's arrest reference, numbered by year; `detention_hhmm` stops at charge, which ask A turns on.
+**Probes before the draw.** The candidate was probed before registration on a call-only pack (`t137_b/probeB1` in the
+session scratchpad: the two queue systems, the reception log, the e-roster and the annual report; seed 16, a
+deterrence of 0.30 on every arrival, golden 54,000 against 51,000 at the nearest 1,000), by two isolated Opus probes.
+- p137ka filed 51,000 (50,857.0): it completed each run-out day from the arrival-time profile of the days that did not
+  run out (a 2025-26 base of 47,475.55), checked seen plus turned away against it (50,821), and found that turned-away
+  patients do not return the next day (a coefficient of 0.008).
+- p137kb filed 51,000 (50,821): seen plus the log's turned away, checked against the profile gross-up (a ratio of
+  1.03), a regression of uncapped-day visits on the previous one and two days' turned-away counts (0.01 and -0.01) and
+  staffing, and read the flat years as capped demand.
+Both priced the same-day censoring and the return of the turned away, and neither asked whether a week of run-outs
+kept later patients away. Their notes are answered in the shipped pack: service times vary by phlebotomist, with
+fasting and long draws and re-calls; the log's AM and PM boxes split at the 12:30 shift change, with an "inc PM" comment
+on some mornings; the probe pack's 35 tickets a phlebotomist became the senior phlebotomist's 40 and 32; the call moved
+to GP-referred visits, the hub's population.
 
-**The Gate B fact.** p137j's own words, "if BTP books into Tanner Street", are the judge's question, so the fact that a
-detainee is booked at the suite serving the ward of arrest, whatever force or agency arrested them, is filed as note 2
-of the custody service's allocation notes, among six other operating notes (the allocation's start date, a full or
-closed suite, terrorism detainees, section 136, children, the unchanged wards), never in the brief's estimand sentence
-and never naming the railway force. Single use: the clause is in that note and nowhere else in the pack (asserted X8;
-no shipped document names British Transport Police, which appears only as a value of the street-level file's `Reported
-by`). Deletion: with note 2 removed nothing says where a railway arrest is booked (a force with no cells could use any
-suite, or its own in another city), so the BTP part loses its place at Tanner Street and the golden is no longer forced:
-the note is load-bearing once and stated once. Whether it turns the probes' caveat into a landing is the stage 4
-reader's and the judge's Gate F question.
+**The domain anchor and the Gate B facts.** The deterrence is held by the practices that can bleed their own patients:
+the annual report's "Most of the catchment's practices run their own phlebotomy clinics under the local enhanced
+service" (a fact about the practices, in the service description) and the practice register's
+`phlebotomy_les_2025-26` flag, with the request form's practice code from November 2024, make it measurable by
+practice: practices with a clinic dip after run-out weeks and practices without do not, and that comparison is a member
+of the golden family (44,528). No shipped sentence says that run-outs keep later patients away, that practices bleed
+patients in-house because of them, or how many (asserted: no document carries "in-house" or "own clinic" in that
+sense). The hub's population is filed in the prompt and section 6 of the annual report (every patient with a GP request,
+never out of tickets, set from 2025-26), with Brantmoor's booked clinic carrying on as now.
 
-**Data-native sentence.** British Transport Police polices Calderwick and Kingsway stations, inside two of the six
-wards, and with no cells of its own books the people its officers arrest there into the force suite serving the ward;
-their arrests are BTP's, so the force's arrest records, on which the custody demand model is built and validated, hold
-none of them, and their only trace in the pack is BTP's recorded crime at the stations in the partnership's
-data.police.uk extract, 1.28 per cent of the force area's recorded crime and one crime in fourteen in the six wards.
+**Data-native sentence.** The clinic runs out mostly when a hospital clinic's recall programme crowds its queue, for
+weeks at a time, and seven of the twelve referring practices have phlebotomists of their own, so in the week after the
+clinic has kept running out those practices bleed their patients in-house rather than send them to queue, and the
+next week's GP-referred arrivals fall by about a fifth at a full week of run-outs (a coefficient of -0.210); the
+patients kept are in no file, while reception's log, which counts only the patients turned away at the door, reads as
+the clinic's whole unmet demand.
 
 ## Three rules
 
-Task type: municipal-service-demand-resource-allocation (Urban & Regional Science), which serves Forecasting in the taxonomy: a public service's demand at a new site from its demand model over the site's catchment, sized to set the site's cells and staff.
-Domain test: The deciding quantity is the hub's first-year detentions worked the way custody planning works a suite's demand, every detainee the suite books counted by the agency that arrested them and carried forward from the catchment's record; the hub's catchment holds two railway stations policed by British Transport Police, which has no cells of its own and books its arrests into the territorial force's suite for the ward, so the demand is the force's own arrests by its model (3,754) plus BTP's arrests sized from BTP's recorded crime at the force's own arrests per crime by offence type (281), which moves the planning figure from 3,750 to 4,000.
-Swap: "the hub books another police force's arrests at the stations in its wards" put into a hospital's admissions or a utility's megawatt-hours loses its mechanism: no second health service admits patients with no beds of its own and hands them to the nearest hospital by ward, no utility's load is metered by another company that books it into the first's substations, and neither converts another body's recorded incidents into its own intake at an incident type's arrest rate.
-Layer 1: the arrest records' UTC clock against UK-time financial years (the custody system's export), arrests booked away from their ward's suite when a suite is full or closed (the Force Control Room's routing, with Eastmoor's flood and Wendle Cross's refit), co-arrests booked minutes apart (one custody record per person), data.police.uk's anonymised map points and LSOAs rather than wards with two reporting forces in one file (the partnership's download), a best-fit LSOA to ward lookup (ONS), arrest offence groups against data.police.uk's crime types with a warrant, recall or breach group that has no crime type (the custody system's offence list), a pull with half of 2026-27 in it; each is what these systems produce, none carries the call, and each is asserted neutral (R2a to R2g).
-Layer 2: field_method: the demand model's population is every detainee booked into the suite, so the force's own arrests, modelled and validated on four suites, are completed by BTP's arrests at the hub's two stations, sized from BTP's recorded crime there at the force's own arrests per recorded crime by offence type.
-Decisive step: carrying British Transport Police's arrests at Calderwick and Kingsway stations as the second population of the hub's demand, each crime BTP recorded there in 2025-26 at the force's own arrests per recorded crime of its type, rather than taking the force's arrest records as everyone the hub will book.
-Not semantics: every field reads as what it is: the arrest records hold the force's officers' arrests, the street-level file names the force that recorded each crime, and the allocation notes say a detainee goes to the ward's suite whoever arrests them; no field, code or definition says that BTP's arrests are missing from the model, that BTP polices the hub's wards or how many it arrests, and the analyst who reads all of it correctly still counts the force's arrests, as both probes did knowing BTP's detainees are not in the force's records.
-Not rule application: the model note files the WHAT (a suite's demand is the people arrested in the wards it serves) and the HOW for the force's own records (each ward's latest year carried at its capped three-year change), and no rule says which arrests the records omit or how to size them, so executing every filed rule over the arrest records files 3,750. Measured on the shipped pack: the enumerated own-arrest family (nine constructions: the model with and without its cap, Holt-Winters damped, the latest year, the three- and two-year means, a five-year trend, the last twelve months, the latest year at the force's change) spreads 3,675.7 to 3,833.0, every member printing 3,750; the standing family that carries BTP (twenty constructions: five own-arrest bases by four sizings, per-type rates with and without the warrant share, the force's overall rate and the six wards' overall rate) spreads 3,933.1 to 4,044.5, every member printing 4,000; what rules the frame out is no filed clause but the record, BTP's 1,702 crimes at the two stations in the street-level file read with note 2's routing by ward of arrest, and nothing names it.
-Analyst test: A strong analyst who reads every file correctly runs the custody demand model over the six wards' arrest records, reproduces its back-test on the four open suites (0.966 to 1.016), cross-checks Holt-Winters, a trend, the latest year and the last twelve months and files 3,750, where the golden is 4,000; checks.py runs both on the generator's clean truth (R3a, R3b) and on the pack.
-Estimand: the detentions the Tanner Street hub will book from 1 April 2027 to 31 March 2028 (the brief and the prompt), a suite's demand being the people arrested in the wards it serves (the model note, 2.1), each detainee booked at the suite serving the ward of arrest whichever force or agency arrests them (the allocation notes, note 2).
-No decoy: nothing is planted: the arrest records are the force's own, the street-level file is data.police.uk's, the allocation is the custody service's; no memo, draft or figure argues for a count, no file states a figure for the hub (R3c), and no stakeholder figure is set up to be overturned.
-No certified replay: no certified or published figure sits in the pack to be reproduced; the model's validation table is its own back-test on the arrest records, blind to BTP because both of its sides are those records, and the sizing of BTP's arrests is recovered from no figure.
-Lesson: a custody suite's demand is every detainee booked into it, while a territorial force's arrest records hold only its own officers' arrests; where another force works inside the catchment with no cells of its own, as the railway police do at a city's stations, its arrests are demand the force's model never sees, and its own recorded crime read at the host force's arrests per crime is what prices it; no build on file prices a second agency's caseload booked into the operator's own facility.
+Task type: utilization-access-demand-forecasting (Healthcare Delivery & Health Economics), which serves Forecasting in the taxonomy: a service's unconstrained demand at a new site, forecast from its activity record with the capacity effects taken out, to set the site's activity plan.
+Domain test: The deciding quantity is the hub's unconstrained GP-referred demand, which a healthcare demand planner estimates by taking capacity effects out of observed activity; at a walk-in phlebotomy clinic the capacity effect is not only the patients turned away on a run-out day but the patients whose practices, running their own phlebotomy clinics under the local enhanced service, keep them in-house in the week after the clinic has kept running out, measurable in the practice codes on the GP request forms, so the estimate is a count model of daily GP-referred arrivals on calendar terms and the previous week's run-out share, with the deterrence undone day by day and the result grown at the board's planning assumption.
+Swap: "the hub will see the GP-referred patients whose practices bled them in-house after the walk-in clinic's run-out weeks" put into a school's pupils or a utility's megawatt-hours loses its mechanism: no referrer teaches a pupil for a week because the school was full the week before, and no network meters another's load because a substation ran short; the step needs a referral the referrer can fulfil itself, a GP blood test request that the practice's own phlebotomist or the hospital can draw, and the board's growth assumption for GP direct access phlebotomy.
+Layer 1: two queue systems with a parallel-run fortnight held by both (the legacy file in local time with re-keyed times and test tickets, the new kiosk's events in UTC), reception's log in two layouts with month totals and dates typed as text (the PALS return), blank practice barcodes and a practice merger (the forms and the ODS codes), clinic codes reallocated on 1 April 2026 with only the current register shipped (the patient administration system's replacement), long-term sickness as one row a spell (the e-roster's HR feed), vacant lines and bank shifts, financial years, bank holidays, varied service times and re-calls; nothing is placed to be caught.
+Layer 2: field_method: unconstrained demand at a capacity-limited walk-in service is its arrivals with every capacity effect taken out, and the run-outs' effect reaches the following week through the practices that can bleed patients themselves, so the demand is estimated by a count model of daily GP-referred arrivals on the previous week's run-out share with calendar terms, the deterrence undone day by day, rather than by adding the log's turned away or detruncating the run-out days.
+Decisive step: undoing, in each 2025-26 clinic day's GP-referred arrivals, the fall that follows a week in which the clinic kept running out, read from a Poisson model of daily arrivals on weekday, month, trend, the day after a bank holiday and the share of the previous calendar week's clinic days that ran out, rather than taking seen plus turned away as the demand a hub that never runs out will see.
+Not semantics: every field reads as what it is: the queue records count the patients seen, the log counts the patients turned away at the door, the register says which practices hold the phlebotomy enhanced service, and the annual report says the hub will not run out; no field, code or definition says that run-outs keep later patients away or that practices bleed them in-house, and an analyst who reads all of it correctly files 42,500, as both probes did after checking the log against the ticket-issue curve and checking that the turned away do not come back.
+Not rule application: the prompt, the annual report and the board's letter file the WHAT (every patient with a GP request at a hub that never runs out, 2025-26 grown 3.5 per cent a year for two years with no working-day adjustment) and no rule says what 2025-26's demand was or how to measure it, so executing every filed rule files 42,500. Measured on the shipped pack: the enumerated family spreads 40,355 to 45,114 over three printed cells (seen alone and every arrival pooled 40,000; seen plus turned away, the run-out days completed from the ticket-issue curve and a fit on the days that did not run out 42,500; every deterrence specification 45,000); the standing family, the 27 deterrence specifications the record leaves defensible (five windows, negative binomial, an instrument, the practices with a clinic against those without, a programme-week dummy, six added covariates or windows, two fitting spans, the fitted mean at nil, two least-squares forms, weekly totals and six quiet-period fits), spreads 44,035 to 45,114, 0.43 of one printed unit and one call; and nothing loud does the ruling-out: no sentence, column or control refutes seen plus turned away, whose own checks agree with it (42,749 and 42,745), and only the fitted coefficient (-0.210, standard error 0.014) does once a solver puts the previous week's run-outs into the model.
+Analyst test: A strong analyst who reads every file correctly joins the two queue systems with the parallel-run fortnight counted once, adds reception's GP-referred turned-away patients to the GP-referred patients seen (39,731 in 2025-26), confirms the log against each run-out day's ticket-issue curve and a fit on the days that did not run out (42,749 and 42,745 grown) and grows 3.5 per cent a year for two years, filing 42,500 (42,561), where the golden is 45,000 (44,685); checks.py runs both on the generator's clean truth (R3a 42,561, R3b 44,992) and on the pack.
+Estimand: the GP-referred blood-test visits the Kingsmead hub will see from 1 April 2027 to 31 March 2028, every patient with a GP request, the hub never running out of tickets (the prompt; the annual report, section 6, with Brantmoor's booked clinic carrying on as now), planned from 2025-26's underlying demand grown 3.5 per cent a year for two years with no working-day adjustment (the prompt; the board's planning assumptions letter), to the nearest 2,500 visits.
+No decoy: nothing is planted: the queue records, the log, the e-roster, the kiosk file and the registers are the clinic's own systems' exports, the annual report states the clinic's own year correctly and the board's letter its growth assumptions; no memo, draft or figure argues for a count, no file states a demand figure for the hub (the draft session plan carries chairs and slots, a distractor), and no stakeholder figure is set up to be overturned (R3c).
+No certified replay: no certified or published figure is reproduced to recover a method; the annual report's activity table is the clinic's own count of patients seen and turned away, which the easy route and the golden both reproduce, and the deterrence is recovered from the record's own variation, not from any figure.
+Lesson: a walk-in service's unconstrained demand is not its patients seen plus its patients refused: where referrers can provide the service themselves, the service's recent run-outs send later patients to them, so the record's arrivals, refusals included, are held down by the service's own record of running out, and a forward site that never runs out gets them back; no build on file prices demand deterred by a service's own recent run-outs, the unconstrained-demand builds (task18, task108, task147, task168, task308 v1) all recovering demand truncated on the day or counted twice after it.
 
 ## Default path
 
-1. Read the brief and the allocation: the six city centre wards move to Tanner Street on 1 April 2027.
-2. Count each of the six wards' arrests in the force's records by UK-time financial year, converting `arrested_utc`
-   (3,732 in 2025-26).
-3. Run the custody demand model as filed: each ward's 2025-26 arrests carried two years at its three-year average
-   change, capped at 10 per cent a year, summed over the six wards (3,754.4).
-4. Re-run the model's validation from 2024-25 and reproduce its table; cross-check Holt-Winters, the latest year, a trend
-   and the last twelve months, all in the same printed cell.
-5. Read the street-level file as context: BTP's rows are BTP's crimes and its detainees are not in the force's records,
-   so they are left out.
+1. Read the prompt and the annual report: from 1 April 2027 the hub takes every patient with a GP request and never runs
+   out; the plan is 2025-26 grown 3.5 per cent a year for two years.
+2. Count each clinic day's GP-form visits from the legacy ticket file (Outcome Seen) to 17 November 2024 and the new
+   system's CHECKED_IN events (UTC converted to UK time) from 18 November, the parallel-run fortnight once: 38,386 in
+   2025-26, which matches the annual report.
+3. Read both layouts of the reception log, month totals left out: 1,345 GP-form patients turned away on 58 run-out days
+   in 2025-26, which matches the annual report.
+4. Check the log: complete each run-out day from the ticket-issue curve of the days that did not run out (42,748.6 when
+   grown) and fit GP-referred arrivals on the days that did not run out (42,744.7); both agree with it.
+5. Check that the turned away do not come back later (they are offered a booked slot at Brantmoor), so adding them
+   counts nobody twice.
+6. Grow 39,731 at 3.5 per cent a year for two years: 42,560.8, filed at the nearest 2,500.
 
-Ends on: 3,750 (3,754.4)
-Golden: 4,000 (4,035.9)
+Ends on: 42,500 (42,561)
+Golden: 45,000 (44,685)
 
 ## Stump sentence
 
-A competent analyst runs the force's validated custody demand model over the six wards' arrest records and files 3,750,
-where the golden is 4,000; the step that lands it there is taking the force's arrest records as everyone the hub will
-book, when British Transport Police officers policing Calderwick and Kingsway stations, inside the hub's wards, have no
-cells of their own and book their detainees into the force suite serving the ward, 281 a year from the 1,702 crimes they
-record there, which sit in data.police.uk's street-level file and in none of the force's records.
+A competent analyst adds reception's GP-referred turned-away patients to the GP-referred patients the walk-in clinic saw
+in 2025-26 and grows the sum, filing 42,500, where the golden is 45,000; the step that lands it there is taking seen
+plus turned away as the demand a clinic that never runs out will see, when practices running their own phlebotomy
+clinics keep their patients in-house in the week after the clinic has kept running out, 1,983 GP-referred patients in
+2025-26 who never reached the clinic and appear in no count, recovered only from how each day's GP-referred arrivals
+fall with the share of the previous week's clinic days that ran out.
 
 ## Readability screen
 
-| Rung | Filed sentence | Schema | Reflex | Control bench | Hygiene | Linear | Verdict |
-|---|---|---|---|---|---|---|---|
-| 0 the custody demand model on the six wards' arrest records | yes (model note 2.1 to 2.4) | yes (ward, arrested_utc) | yes | yes (the model's own validation table reproduces) | no | yes | readable |
-| 1 another forecast on the same records (Holt-Winters, trend, latest year, means, last twelve months) | no | yes | yes (add a method, back-test it) | yes (the same back-test) | no | yes | readable |
-| 2 BTP as a share of the street-level file, scaled onto the model | no | yes (`Reported by`) | yes (a visible second reporter) | no | no | yes | readable |
-| 3 (decisive) BTP's arrests at the hub's two stations as a second population, sized from BTP's crimes there at the force's own arrests per crime of each type | no (note 2 states only where any detainee is booked; no sentence names BTP, the stations or a missing population) | no (no column holds BTP's arrests; BTP is a value of `Reported by` in a file the model never reads) | no (the opponent's reflexes are validate, add methods, back-test; the back-test cannot see BTP because both of its sides are the force's records) | no | no | no (a second population placed by ward and priced by type, not a column of the frame) | silent |
+| Rung | Filed sentence | Schema | Reflex | Control bench | Hygiene | Linear | Dedicated organ | Verdict |
+|---|---|---|---|---|---|---|---|---|
+| 0 GP-referred patients seen, grown | yes (the report's GP seen) | yes (Request, request_type) | yes | yes (the report's table) | no | yes | no | readable |
+| 1 seen plus GP-referred turned away (the default) | yes (the report's turned-away column, a hub that never runs out) | yes (the log) | yes (add the refusals) | yes (the report's column) | no | yes (one sum) | no | readable |
+| 2 the run-out days completed from the ticket-issue curve, or demand fitted on the days that did not run out | no | yes (issue times, the logged run-out days) | yes (detruncation, the revenue manager's move) | yes (agrees with the log) | no | no | no | readable |
+| 2b every walk-in arrival modelled together with last week's run-outs | no | yes | yes (one demand model for the clinic) | no | no | no | no | readable |
+| 3 (decisive) the previous week's run-out deterrence undone day by day | no (no sentence names run-outs keeping later patients away, the practices keeping patients in-house or how many; the report's line on the practices' own clinics describes the practices) | no (no column holds the deterrence or the patients kept; the run-out share is built from the log by week) | no (the reflexes are detruncation and the return check: the first agrees with the default, and the second reads positive on all visits, t 8.8 and 9.6, because the recall programmes run on) | no (no control ties under the golden) | no | no (a fitted coefficient on a constructed weekly share, undone day by day) | no (the log is the PALS return, the queue records the activity count, the register the practices' list sizes and contracts) | silent |
+
+The decisive row's risk is the return check on GP-form visits alone: on this pack it reads negative (t -4.5 and -7.9
+for the previous one and two days' GP turned away), where on probeB1 both probes read it at nought on all visits; a
+reader who runs it on GP forms and asks why the days after a run-out are quieter can reach the step. That is the stage
+4 reader's Gate F question.
 
 ## Semantic fork table
 
 | Id | Term or convention | Golden reading | Alternative | Call under it | Ruled out by |
 |---|---|---|---|---|---|
-| SF1 | the detentions the hub will book | every person booked into Tanner Street from 1 April 2027 to 31 March 2028, whoever arrested them | only the arrests in the force's records | 3,750, the easy route on the same estimand rather than a second reading of it | the brief's sentence (the detentions the hub will book) with allocation note 2 (a detainee goes to the ward's suite whichever force or agency arrests them) |
-| SF2 | 2027-28 | 1 April 2027 to 31 March 2028, the base year 2025-26 carried two years | the base carried one year (3,741.0) | same call (asserted SF2, SF5) | the brief's dates; same call |
-| SF3 | the hub's wards | the six wards the allocation moves to Tanner Street | Northgate's and Eastmoor's whole catchments | another population | the allocation's `suite_from_1_april_2027` column |
-| SF4 | an arrest's financial year | the UK date of arrest (model 2.2) | the UTC date in the records (3,755.2) | same call (asserted) | model 2.2; same call |
-| SF5 | carried forward | two years from 2025-26 | one year | same call (asserted) | same call |
-| SF6 | the cap | 10 per cent a year either way | no cap | same call: no hub ward reaches it (asserted L6) | same call |
-| SF7 | rounding | the nearest 250 | nearest 100 or 50 | another print | the prompt and the brief |
-| SF8 | BTP's year | the street-level file's April 2025 to March 2026 | another span | none in the file | the file's months (asserted) |
-| SF9 | the stations in the hub | Calderwick station in Abbey Fields and Kingsway station in Kingsway, placed by the LSOA lookup | placed by map point or station name | same call | the lookup (asserted) |
-| SF10 | arrests per recorded crime | the force's 2025-26 arrests per its own recorded crime of each type, with its warrant share | without warrants (267.4), the force's overall rate (257.4), the six wards' rate (290.0) | same call: 3,933.1 to 4,044.5 across five bases by four sizings (asserted) | same call |
-| SF11 | BTP's crime that comes to the hub | the two stations in the six wards | every BTP crime in the force area at the overall rate (4,061.0) | same print | allocation note 2: the county stations' detainees go to their own wards' suites |
-| SF12 | a detention | one person booked in, the records' one row per arrest | one incident, co-arrests collapsed (3,787.0) | 3,750 | the dictionary's "one row per arrest by a Calderwick Police officer" |
-| SF13 | whose arrest rates | the force's whole area | the six wards' arrests per crime | same call (asserted) | same call |
-| SF14 | warrant arrests in the model | counted, as the records hold them | left out and grossed back up | same call (asserted) | same call |
+| SF1 | GP-referred | the request form the patient chose at the kiosk (Request GP form, request_type GP) | a practice code on the form (426 forms without a barcode left out) | same call (44,429) | same call |
+| SF2 | 2025-26 | 1 April 2025 to 31 March 2026 | calendar 2025 (44,222) | same call | the board's letter ("2025-26, the last complete year") and the report's financial year |
+| SF3 | growing 3.5 per cent a year for two years | compounded, 1.035 squared | simple, 1.07 (44,633) | same call | same call |
+| SF4 | no working-day adjustment | none | 2027-28's 256 clinic days against 2025-26's 253 (45,214) | same call | the prompt and the board's letter |
+| SF5 | every patient with a GP request at a hub that never runs out | the turned away are demand | the patients seen alone (40,000) | 40,000 | the prompt ("staffed never to run out of tickets") and the report's section 6 |
+| SF6 | the parallel-run fortnight | counted once (the two systems agree day by day) | counted twice (45,527) | same call | same call |
+| SF7 | the hub's own run-out record | nil throughout 2027-28 | a share carried from the walk-in clinic | another estimand | the prompt ("staffed never to run out of tickets") |
+| SF8 | visits | one ticket a visit | distinct patients | none: the records carry no patient key | the prompt's "visits" |
+| SF9 | every patient with a GP request | the GP-referred demand of the trust's walk-in service, set from 2025-26 | every GP blood test in the catchment, the practices' own clinics included | no file counts the practices' work | the report's section 6 ("Its activity plan is to be set from 2025-26") |
+| SF10 | Brantmoor's booked clinic | carries on as now, outside the hub | its booked patients moving to the hub | no file counts them | the report's section 6 ("the booked clinic at Brantmoor Community Hospital carries on as now") |
 
 ## Ladder
 
-| Rung | Route | 2027-28 | Printed (nearest 250) | Distance from the golden's cell (3,875 to 4,125) | Dies to |
+| Rung | Route | 2027-28 | Printed (nearest 2,500) | Distance from the golden's cell (43,750 to 46,250) | Dies to |
 |---|---|---|---|---|---|
-| 0 | the custody demand model on the six wards' records | 3,754.4 | 3,750 | 120.6 | BTP's arrests at the two stations, booked at the ward's suite (note 2), in no force record |
-| 1 | the other own-record methods (nine in all) | 3,675.7 to 3,833.0 | 3,750 | 42.0 at the nearest | the same |
-| 2 | the model scaled by BTP's share of the street-level file (1.28 per cent) | 3,802.3 | 3,750 | 72.7 | a share of the area's crime is not the arrests at the hub's two stations |
-| 3 | golden family: five own-record bases by four BTP sizings | 3,933.1 to 4,044.5 | 4,000 | inside, 58.1 or more from each edge | |
-| over-reach | every BTP crime in the force area at the overall rate | 4,061.0 | 4,000 | inside | the county stations' detainees go to Southfields and Wendle Cross |
+| 0 | GP-referred patients seen, grown | 41,120.0 | 40,000 | 2,630 | the hub never runs out, so the 1,345 turned away are demand |
+| 2b | every walk-in arrival, GP and hospital, modelled with last week's run-outs | 40,354.7 | 40,000 | 3,395 | the hospital-form arrivals that rise in the recall programmes' weeks cancel the GP fall; the hub takes GP-referred patients only |
+| 1 | seen plus GP-referred turned away (the default) | 42,560.8 | 42,500 | 1,189 | the patients the practices kept in-house after run-out weeks |
+| 2 | the run-out days completed from the ticket-issue curve; a fit on the days that did not run out | 42,748.6; 42,744.7 | 42,500 | 1,001; 1,005 | the same: both complete the day, and the deterred patients never arrived |
+| 3 | golden family: 27 deterrence specifications | 44,035.4 to 45,114.5 | 45,000 | inside, 285 or more from each edge | |
 
-Position and margins: the default and every own-record method sit in one cell with 42.0 to spare; the decisive step
-moves the figure 281.4 (7.5 per cent of the default) against an honest-family spread of 111.4 on a cell of 250; the
-golden sits 89.1 from its nearer edge; the world's own expected 2027-28 detentions (3,912.5, the clean truth) are in the
-golden's cell (R3b').
+Position and margins: the default and both careful-frame methods sit in one cell with 1,001 to 1,189 to spare (check 2,
+asserted); the decisive step moves the figure 2,124 (5.0 per cent of the default) against a standing-family spread of
+1,079 on a cell of 2,500; the golden sits 935 inside its nearer edge; the record's fit picks the previous calendar
+week's share over two weeks and rolling 5, 10 and 20 clinic days (AIC 7,568.0 against 7,608.2 to 7,668.6); on the
+clean truth the default files 42,561 and the deterrence undone 44,992 (R3a, R3b), and the generator's latent 2025-26
+demand grown files 45,074. Across seeds 26 to 37 the same construction holds check 2 at 11 of 12, seed 34 failing by
+the programme-week dummy alone.
 
 ## Closure table
 
 | Axis | Reading | Closure |
 |---|---|---|
-| 1 Population | everyone booked at Tanner Street in 2027-28 | filed: the brief, model 2.1, allocation note 2 |
-| 2 Unit of account | detentions, one person booked in | the question names it; SF12 |
-| 3 Attribution window | 1 April 2027 to 31 March 2028 | the brief and the prompt |
-| 4 As-of dating | records pulled 6 October 2026; street-level crime to March 2026 | the brief's file notes |
-| 5 Version basis | custody demand model version 2.0 | the model note |
-| 6 Denominator | the force's recorded crime of each type for the arrest rates | C3: every sizing prints 4,000 (SF10) |
-| 7 Weighting | by crime type | C3 (SF10, SF13) |
-| 8 Window length | three-year change; one year of BTP crime | model 2.3; the file's year |
-| 9 Boundary inclusivity | financial years from 1 April | model 2.2 |
-| 10 Rounding path | once, the total to the nearest 250 | the prompt; the golden family in one cell (L2) |
+| 1 Population | every patient with a GP request at the hub in 2027-28 | filed: the prompt, the report's section 6; SF9, SF10 |
+| 2 Unit of account | visits, one ticket a visit | the prompt; SF8 |
+| 3 Attribution window | 1 April 2027 to 31 March 2028, from 2025-26 | the prompt; SF2 |
+| 4 As-of dating | records to 30 September 2026, the folder dated 2 October 2026 | the files' own spans |
+| 5 Version basis | the board's 2026-27 to 2028-29 planning assumptions | the letter |
+| 6 Denominator | none: a level | n/a |
+| 7 Weighting | each clinic day's arrivals | C1: the 27 specifications print one call |
+| 8 Window length | the deterrence window | C2: the record's fit picks the previous calendar week (AIC), and every other window prints the same call |
+| 9 Boundary inclusivity | financial years from 1 April; the parallel-run fortnight | SF2; SF6 same call |
+| 10 Rounding path | once, the plan to the nearest 2,500 | the prompt; the family in one cell |
 | 11 Tie-break | none | no ranking |
-| 12 Maturity and censoring | 2026-27 is half a year in the pull | C1: the model reads full years; the last twelve months print the same (R2e) |
-| 13 Order of operations | model then sum; BTP sized then added | C1, additive |
+| 12 Maturity and censoring | run-out days censored at the last ticket | the log completes them; the ticket-issue completion prints the default's cell (C1 for the careful frame) |
+| 13 Order of operations | the deterrence undone, then grown | C1: multiplicative, either order |
 | 14 Row order | none | C1 |
-| 15 Duplicate resolution | co-arrests are people | SF12; look-alike co-arrests dropped print the same (R2c) |
-| 16 Identity normalisation | LSOA to ward, best fit | the lookup; every row maps (R2f) |
+| 15 Duplicate resolution | the parallel-run fortnight, re-calls (one visit, several calls), test tickets | SF6; CHECKED_IN counts visits; R2 test tickets |
+| 16 Identity normalisation | practice codes, the merger of K91027 into K91031 | SF1: the call reads the kiosk's GP choice |
 | 17 Netting against gross | none | n/a |
-| 18 Dimensional units | counts | n/a |
-| 19 Code and status semantics | offence groups against crime types; warrants | dictionary; SF14 |
-| 20 Integerisation | the rounding of an expected count | the prompt's rounding |
-| 21 Clause scope | note 2 covers every arrest, the allocation's wards | the note's wording |
-| 22 Forward window contents | the six wards' arrests and the two stations' BTP arrests in 2027-28 | the model's carry and BTP's 2025-26 crime held level (the golden family spans both choices) |
+| 18 Dimensional units | visits | n/a |
+| 19 Code and status semantics | request types, the log's AM and PM boxes and month totals, Outcome values | the dictionary; R2 |
+| 20 Integerisation | an expected count | the prompt's rounding |
+| 21 Clause scope | "every patient with a GP request"; "underlying demand" | SF9, SF10; the report's section 6 |
+| 22 Forward window contents | the hub never runs out, so no deterrence in 2027-28 | SF7: the base is grown at the board's assumption |
 
 ## Literal reader
 
-Executed word for word, the prompt, the brief, the model note and the allocation notes fix the count (the detentions
-Tanner Street books from 1 April 2027 to 31 March 2028, a suite's demand being the people arrested in its wards, each
-detainee booked at the suite serving the ward of arrest whoever arrests them, to the nearest 250) and leave the estimate
-of each part to the data; every reading of SF2 to SF14 either violates a quoted sentence or files the same call, and the
-easy answer (3,750) comes from an easy method on the same literal estimand, the force's own records taken as everyone the
-hub will book, not from another reading.
+Executed word for word, the prompt, the annual report and the board's letter fix the count (the GP-referred visits the
+Kingsmead hub will see from 1 April 2027 to 31 March 2028, every patient with a GP request, never out of tickets, the
+2025-26 base grown 3.5 per cent a year for two years with no working-day adjustment, to the nearest 2,500) and leave the
+estimate of 2025-26's underlying demand to the data; every reading of SF1 to SF10 either violates a quoted sentence or
+files the same call, and the easy answer (42,500) comes from an easy method on the same literal estimand, seen plus
+turned away taken as the demand, not from another reading.
 
 ## Oracles
 
 none: no control, published figure or reconciliation column in the pack confirms either the default or the golden. The
-model note's validation table is the force's own back-test and reconciles under both answers, because both of its sides
-are the force's arrest records; the street-level file carries crimes, not arrests; the distractors (the estates register,
-the ward populations, the late-night licences, the bank holidays) carry no detentions.
+annual report's activity table (GP seen 38,386, GP turned away 1,345, 58 run-out days) reconciles under both answers,
+because both reproduce it before the decisive step; the kiosk's ticket allocations tie the capped days' seen counts
+under both; the distractors (the patient survey and the hub's draft session plan) carry no demand figure.
 
 ## Ask sheet
 
-Both asks sit on the four existing suites' 2025-26 operations, a population the call never reads (the call reads the six
-wards' arrests by ward and BTP's street-level crime; the asks read the remand files, the healthcare export and the
-arrest records' bookings and clocks). H18 home for both: the same fit-out contract the call sizes, its remand cells and
-its medical rooms, each turned from the planning figure into rooms with the existing suites' rates.
+Both asks sit on the walk-in clinic's other work in 2025-26, rows the call never reads: the call reads GP-form arrivals
+by day and the log's GP counts; ask A reads the hospital-form check-ins and the clinic register, ask B the e-roster's
+substantive lines. H18 homes: ask A is the hospital-clinic demand that stays at block A when the GP-referred patients
+move to the hub, by specialty and quarter for its session plan; ask B is the sickness allowance the hub's establishment
+carries, from the clinic team's own 2025-26 record under the report's definition.
 
-- **Ask A, remand holds by suite for defendants charged in 2025-26 and kept in custody for court (8 figures: cell hours
-  from charge to handover, to the nearest hour, and how many were held more than 24 hours from booking in).** Files:
-  `cju_remand_files_2025-03_2026-04.csv` (urn, linked_arrest, custody_suite, charged, first_hearing, court,
-  handed_to_escort), `calderwick_police_arrests_2021-04_2026-09.csv` (arrest_ref, custody_suite, arrested_utc,
-  booked_in_utc, ward, offence_group, detention_hhmm, outcome), the brief's file notes. Primary (which records are one
-  event, from an identity): a file carries the case's arrest reference, which for 104 of the 2025-26 files is the
-  case's earlier arrest (a release under investigation or on bail in the same ward and offence group), so the detention
-  that ended in the remand is the remanded arrest charged at the file's suite at the file's charge time, found by the
-  identity booking plus clock equals charge; joined on the linked arrest, those holds start weeks early and every one
-  counts as over 24 hours. Second primary (a paper row covering several ledger lines): 77 co-defendants charged in turn
-  after the file's first-named defendant have no file of their own; they are the remanded arrests arrested in the same
-  minute, ward and offence group, each on their own charge and booking times and the file's handover. Hazards: UK
-  wall-clock remand times against UTC arrest times (the dictionary states both), the detention clock stopping at charge,
-  the extract running March 2025 to April 2026, charge year against arrest year. Stops (each a complete pipeline, the
-  golden 4,487, 2,811, 7,767, 5,595 hours and 183, 109, 296, 240 held): each file at its linked arrest (4,077, 2,512,
-  7,422, 5,298; 179, 104, 289, 237), co-defendants attached at the file's charge time (4,498, 2,817, 7,775, 5,603; 197,
-  117, 304, 249), the linked arrest's booking with co-defendants on their own clocks (cell hours right; 197, 117, 304,
-  249), the detention clock for the 24 hours (22, 16, 30, 34), the remand times read as UTC (4,642, 2,907, 7,955,
-  5,848), every file in the extract (5,427, 3,133, 8,546, 6,847). Realism: a CJU case file is keyed to its
-  investigation's arrest and names its first defendant; nothing is planted, and every suite carries both kinds of
-  record (asserted A10).
-- **Ask B, initial health assessments by suite in 2025-26, begun from 07:00 to 19:00 and at night (8 figures).** Files:
-  `custody_healthcare_contacts_2025-26.csv` (contact_ref, episode_ref, suite, clinician, contact_type, started, ended,
-  outcome), the arrest records' bookings by suite, the allocation (each ward's suite), the brief's file notes. Primary
-  (an inconsistency only a cross-file cut shows): the export's suite is the clinician's team, and two suites closed in
-  2025-26 (Eastmoor after a flood, 14 August to 2 September 2025; Wendle Cross for its cell refit, 3 November 2025 to
-  30 January 2026) while their teams worked at the suites their wards were booked into, so 889 assessments labelled with
-  a closed suite took place at Northgate or Southfields; nothing in the export is odd, and only the arrest records' gap
-  in bookings and the closed suite's wards booked at the host place them. Second device (which records are one event):
-  an assessment running across the 07:00 or 19:00 handover is closed by the outgoing clinician and finished by the
-  incoming one on a new line (291 lines), while a detainee back from the emergency department is assessed again (323
-  second assessments): one line a contact over-counts, one assessment an episode under-counts. Stops (the golden 1,178
-  and 1,470, 526 and 670, 1,571 and 2,078, 1,115 and 1,515): every line by its suite (1,159 and 1,484, 567 and 737,
-  1,226 and 1,684, 1,498 and 2,059), handover lines joined with the suite as labelled (1,146 and 1,426, 558 and 714,
-  1,217 and 1,619, 1,469 and 1,974), closures moved with the handover lines kept, one assessment an episode, one
-  closure found (each keeps at most four of eight, B7). The closure window is the arrest records' own, from the last
-  booking before the gap to the first after it; no assessment of a detainee booked before a closure falls after it and
-  no closed suite's line falls between its last booking and its team's move (B3, B4), so reading the detainees already
-  in the cells either way selects the same rows (C1).
-- Separation: the call recomputes byte for byte with the remand and healthcare files deleted (S1); the asks' device rows
-  are remand files and healthcare lines, none of them an arrest row, and the closures move bookings, never wards (S2,
-  S3). The main population's zero-counts: no device row in the six wards' arrest counts or the street-level file.
-- Reuse: neither primary repeats a device of the last three builds; the closure relabel and the case-keyed file are
-  bespoke to custody (screened against 1.1e: no duplicate row, no comment, code or flag names the closures, the
-  continuation or the case key).
+- **Ask A, hospital-clinic visits in 2025-26 by specialty and quarter (28 figures, whole visits).** Files:
+  `phlebotomy_queue_events_2024-11-18_to_2026-09-30.csv` (CHECKED_IN rows: request_type HOSP, request_org, the clinic
+  code, request_date), `outpatient_clinic_codes.csv` (clinic_code, specialty, clinic_days, code_in_use_from
+  01/04/2026). Primary (a reconstruction from an identity in the data): the trust reallocated its seven outpatient
+  clinic codes alphabetically by specialty when the patient administration system was replaced on 1 April 2026, and the
+  register carries only the current codes; every 2025-26 request was issued under the old codes, the same seven strings
+  attached to other specialties, so the join matches every row, leaves nothing unmatched and puts every count under the
+  wrong name. The old codes are recovered from the weekdays each code's requests were issued on, which are its clinic's
+  days, matched to the register's clinic_days (one specialty each, asserted). Hazards: requests issued from 1 April
+  2026 carry the new codes; quarter by the visit's date, not the request's; the recall programmes' surges (Cardiology
+  1,690 in Q1, Diabetes and endocrinology 3,367 in Q3, Rheumatology 2,269 in Q4), which the current-register join hands
+  to Diabetes and endocrinology, Cardiology and Gastroenterology. Stop: the current register read as 2025-26's codes
+  (0 of 28, asserted). Realism: a code reallocation at a PAS replacement is ordinary, the register describes the
+  current system, and nothing in any file narrates the change.
+- **Ask B, working days lost to sickness and the sickness absence rate by quarter of 2025-26 (8 figures, whole days and
+  per cent to one decimal).** Files: `eroster_phlebotomy_2023-04_to_2026-09.csv` (Employee no, Assignment, Roster date,
+  Hours, Absence, Vacant line), the clinic days (the queue records and `bank_holidays_england.json`), the report's
+  section 4 definition. Primary (a paper row covering several ledger lines): the e-roster records a long-term sickness
+  spell as one row on its first day carrying the spell's hours (270.00 from 29 May 2025, 337.50 from 17 November 2025),
+  and the spell runs over the post's clinic days to its next roster line, crossing a quarter each time; the remedy is to
+  spread the hours over those clinic days, bank holidays excluded, in numerator and denominator alike. Hazards: vacant
+  lines and bank shifts outside the denominator, annual leave inside it, bank holidays not clinic days (spreading the
+  November spell over weekdays moves two days from Q4 to Q3), 7.5 hours a day. Stops: the rows on their own dates (42,
+  10, 53, 9 days; 9.6, 2.5, 11.5, 2.1 per cent; 0 of 8, asserted); sickness rows counted as days (7, 10, 9, 9; 0 of 4,
+  asserted). Golden: 29, 23, 39, 23 days; 6.8, 5.6, 8.7, 5.2 per cent, each rate at least 0.02 inside its cell.
+- Separation: the call recomputes unchanged with the hospital-form codes scrambled and reads no roster row (asserted);
+  the asks' device rows are hospital-form check-ins and roster lines, none of them a GP-form arrival or a log count.
+- Reuse: neither primary repeats a device of the last three builds; the code reallocation and the spell row are bespoke
+  to a hospital's systems and screened against the hygiene battery (no duplicate, no unmatched join, no comment, flag or
+  code names either).
 
-| Ask | Figures | Cracker (lands the call; UK times converted, charges in 2025-26, files joined to their linked arrests, co-arrested remands without a file attached at the file's times; handover lines merged, suite as labelled) | Verdict |
+| Ask | Figures | Cracker (lands the call; UK times, the parallel run once, the log's two layouts; hospital codes joined to the clinic register; roster rows on their own dates under the report's definition) | Verdict |
 |---|---|---|---|
-| A cell hours, four suites | 4 | co-defendants carried at the file's charge time, not their own | miss |
-| A held more than 24 hours, four suites | 4 | the linked arrest's booking for the files keyed to a case's first arrest | miss |
-| B begun 07:00 to 19:00, four suites | 4 | the closed suites' teams counted at their own suites | miss |
-| B begun at night, four suites | 4 | the same | miss |
+| A hospital-clinic visits, seven specialties by quarter | 28 | the current register's codes read as 2025-26's, every cell under the wrong specialty | miss |
+| B days lost, four quarters | 4 | the long-term rows' hours taken on their first day | miss |
+| B sickness rate, four quarters | 4 | the same | miss |
 
-Measured on the cut pack: the cracker keeps 0 of 16 ask figures and the mirror (off the call, each file at its linked
-arrest, handover lines merged, suites as labelled) 0 of 16. A reader who rebuilds every remand defendant, re-keying the
-case-keyed files by charge time and carrying co-defendants on their own clocks, keeps ask A's eight and none of ask B's;
-on the call that reader scores 72.5 and off it 39.5, so the build rests on the closures holding ask B and on the call
-holding, which the stage 4 reader and the judge measure.
+Measured on the cut pack by `pair.py`: the cracker keeps 0 of 36 ask figures and the mirror (off the call at 42,500,
+the same ask routes) 0 of 36. The modelled risk is ask B: a 270-hour day is an impossible row the hygiene battery can
+see, and a reader who spreads it over clinic days keeps all eight; with that on both sides the cracker scores 57.2, the
+mirror 24.2 and the pair 40.7. The stage 4 reader measures both.
 
-Pair ceiling: 28.5 (cracker 45.0 with 0 of 16 ask figures, mirror 12.0 with 0 of 16, on weights 38, 7 and 55)
+Pair ceiling: 28.5 (cracker 45.0 with 0 of 36 ask figures, mirror 12.0 with 0 of 36, on weights 38, 7 and 55)
 
 Mirror leakage: 0.0 per cent of ask weight
 
@@ -302,47 +310,18 @@ Measured by: generator/pair.py
 
 | Mess | System that writes it | File | Natural mishandling | Asserted |
 |---|---|---|---|---|
-| UTC arrest times against UK financial years | the custody system's export | arrests | financial years by the UTC date | R2a, SF4: 3,755.2, same call |
-| bookings away from the ward's suite (overflow, Eastmoor's flood, Wendle Cross's refit) | the Force Control Room's routing | arrests | a suite's demand counted by booking suite | R2b, S3: same call |
-| co-arrests booked minutes apart | one custody record per person | arrests | look-alike co-arrests dropped as duplicates | R2c: 229 dropped, same call |
-| warrant, recall or breach arrests with no crime type | the custody system's offence list | arrests | warrants left out of BTP's sizing | R2d, SF14: same call |
-| half of 2026-27 in the pull | the 6 October 2026 pull | arrests | the partial year read as a year | R2e: the model reads full years |
-| two reporting forces, LSOAs not wards, anonymised map points | data.police.uk via the partnership | street-level, lookup | rows the lookup misses dropped | R2f: every row maps |
-| remand files in UK time, keyed to the case, one file for co-defendants | the Criminal Justice Unit's system | remand files | ask A only | A1 to A10 |
-| contacts by the clinician's team, split assessments, second assessments | the healthcare provider's system | healthcare export | ask B only | B1 to B7 |
+| a parallel-run fortnight in both queue systems | the cutover's double keying | legacy file, events | counted twice | SF6: 45,527, same call |
+| legacy times re-keyed, test tickets | the old kiosk, the IT team's tests | legacy file | test tickets kept as visits | R2: no test ticket carries a GP form |
+| events in UTC against UK clinic days | the new kiosk's export | events | dates read in UTC | R2: every check-in falls on the same UK date |
+| the log's two layouts, month totals, dates typed as text | reception's PALS return | reception log | typed-in dates dropped, totals counted | R2: 2 rows, same call |
+| blank practice barcodes, a practice merger | the request forms, the ODS register | events, practices | GP-referred read by practice code | SF1: 426 forms, same call |
+| clinic codes reallocated on 1 April 2026 | the PAS replacement | events, clinic register | ask A only | ask A assertions |
+| long-term sickness as one row a spell, vacant lines, bank shifts | the e-roster's HR feed | e-roster | ask B only | ask B assertions |
+| financial years, bank holidays | the trust's calendar | all | calendar years, bank holidays as clinic days | SF2; ask B |
 
 ## Stage 3 gates
 
-Run 2026-10-26 on the final rebuild (target.zip md5 8b091e27, 12 members, 11,265,244 bytes).
-
-- `precut.py task137`: 51 checks, 0 FAIL, 0 WARN (the prompt gate inside it: `voice-check.py` exit 0, 883 characters).
-- `generator/checks.py`: 85 assertions, 0 failed (input gates G1 to G6, the three rules R1a to R3c', ladder L1 to L6,
-  SF1 to SF14, separation S1 to S3, ask A A1 to A10, ask B B1 to B7, realism X1 to X11, each distractor's deletion D1,
-  figures.json F1).
-- `generator/verify.py` (csv, openpyxl, pypdf and python-docx, no generator state, no pandas): every figure reproduces,
-  the model note's validation table included.
-- Two rebuilds byte-identical to each other and to `target/`; the goldens rebuilt twice byte-identical to `golden/`;
-  `build.py --zip` cut twice byte-identical.
-- `figures_check.py task137`: 51 figures in blocks 1 to 4, 0 absent.
-- `generator/pair.py`: cracker 0 of 16 ask figures, mirror 0 of 16, pair ceiling 28.5, mirror leakage 0.0.
-- Realism sweep (X1 to X11) green; `golden-realism` pass done (finding titles, a Notes sheet, a source note, the chart
-  labelled with its parts, the cell-hours total that would not foot left out); container audit
-  (`scrub_producer_metadata.py`) clean on `target/` and `golden/`; the model note reads the same through pypdf lenient
-  and strict, pdftotext and pdfminer (H25).
-- House fixes: H1 clean; H2 every design-note figure asserted (X11) or printed by golden.py and pair.py; H9 the brief's
-  file notes name every other shipped file (X10); H11 one submission.md and one prompt.txt, architecture 1's three
-  determinism reports removed; H18 both asks enter the fit-out contract the call sizes; H20 the prompt names the
-  catchment; H21 the city renamed from Harrowdown; H23 every ask reads with "none".
-- `leak.py --asof 2026-10-26`: REVIEW, no LEAK. Each line is harmless: "the model" three times in the model note is the
-  document's subject; the 109 it finds is inside the validation table's 8,109, not an ask figure; the brief carries the
-  call's words because it is the request and states no figure; the stump-paragraph words in the brief and the model
-  note (records, arrest, demand, population, booked, service, programme) are the field's own nouns, and neither
-  document names the railway force, another agency or a missing population; the two December 2026 dates are GOV.UK's
-  published bank holidays.
-- `guard.py check task137`: PASS, NOTEs only. `guard.py heart task137`: PASS (nearest 0.05). `guard.py surface
-  task137`: no BLOCK; four pairs promoted for adjudication, all history severity on card mechanism axes (task133,
-  task180 and task196 differentiated on the card since the draw; task138, drawn 10-12 in the physical sciences with a
-  store-balance driver, differentiated at stage 3); Abbey Fields read as a person is a ward.
+To be run in the worktree after the DRAWN commit; the results replace this line.
 
 ## Tried and rejected
 
@@ -558,3 +537,42 @@ Run 2026-10-26 on the final rebuild (target.zip md5 8b091e27, 12 members, 11,265
   local time in the skipped hour converted as GMT). By build-pipeline an architecture is spent on a SEND_BACK, and the
   retirement rule applies to this third spent architecture unless the author sets another cap; that decision is the
   author's, and no architecture 4 is drawn.
+
+- Re-root to architecture 4 (2026-10-26): architecture 3 spent at stage 4 (above) and the author's ruling the same day
+  that task137 is neither retired nor paused; the number moves to healthcare-delivery-health-economics /
+  utilization-access-demand-forecasting with nothing of Calderwick kept.
+- Architecture 4 backup candidate (probe8, 2026-10-26, never registered): Kestermoor District Council's 2027-28 Annual Tonnage Nomination to the Thrumley ERF, kerbside residual after a staggered weekly food waste rollout (two caddy-only pilot waves, then three waves that also swapped in a 180-litre residual bin, the 48-round wave 4 six periods in, wave 5 live from 2027-28 period 1), golden 53,000 against 55,000 to 58,000 for the static and pooled TWFE routes; died on Opus probe p137lb, which landed 53,000 (53,174.5) by comparing each wave period by period with wave 5, the one not yet treated, splitting the two packages and running wave 4 along wave 3's path: the package column in the rollout schedule hands over the clean comparison by package, so a staggered rollout with a documented package split is a reflex for the probe model, not a stump.
+- Architecture 4 draw, explorer B's families: demand censored by capacity and vintages, never the staggered rollout. The
+  recapture form (a patient turned away comes back on a later day and is counted twice, so only the refusals that never
+  return are demand the record missed) was dropped before code: a regression of later days' visits on the turned-away
+  counts is the opponent's own return check, which both probes then ran unprompted on probeB1. The deterrence form
+  (a week of run-outs keeps the next week's patients away) went to the probe pack.
+- Architecture 4 probe pack probeB1 (seed 16, a deterrence of 0.30 on every arrival, golden 54,000 against the default
+  51,000 at the nearest 1,000): both Opus probes missed (`## Draw`), but its own rolling five-day share attenuated to
+  52,000 (52,046) and its clean-day fits printed 49,000 and 52,000, forks a full pack could not ship.
+- Stage 2 prototypes v2 and v3 (the deterrence on every arrival, the run-outs from staffing shortfalls): whenever the
+  run-outs were scattered the rolling-window members attenuated a cell under the previous-week share, and a vacancy
+  overlapping a surge gave the vacancy a t of 3 or more. The run-outs now come mostly from the hospital clinics' recall
+  programmes, which run for weeks; the vacancy sits in summer; the bank backfills the long-term sickness lines; so every
+  window files one call and staffing has no effect of its own (t 0.29 for the vacancy, -0.20 for staff on the floor).
+- The deterrence on every GP-referred patient: it is now held by the seven practices with their own phlebotomy clinics
+  (arrivals times exp(-0.45 x the previous week's run-out share)), the five without one untouched, so the step is a
+  referral pattern the request forms' practice codes show rather than a property of every patient.
+- The plan to the nearest 1,000: the deterrence specifications spread 44,035 to 45,114 across two cells. At the nearest
+  2,500 they sit in one (43,750 to 46,250), with the default (42,561) and both careful-frame methods one cell under.
+- A practice barcode blank on 3.1 per cent of GP forms: a solver counting GP-referred visits by practice code would
+  have moved the call; 0.6 per cent now (426 forms), the same call either way (SF1).
+- The annual report's sentence on the hospital clinics' recall programmes (which months each specialty recalled its
+  patients): it named the run-outs' driver and made the GP dips readable beside it; removed, the programmes show only
+  in the hospital-form visits by clinic code, which ask A counts.
+- Personas outside the seed-137 draw (Liam Clayton, carried from architecture 3) and from it with first names older
+  builds use (Rachel Reynolds, Patricia Bryant; Richard, Rebecca and Duncan also warn): replaced with Charlene Dale,
+  Bethan Matthews and Joseph Wood from `guard.py names --geo GB --seed 137`.
+- Strategy `causal_design` on the card: `ban.strategy` against task121's architecture 6 inside the three-build window,
+  and `informative_censoring`, the nearest key, is task487's; filed as `other`.
+- Brantmoor Community Hospital's booked clinic left unstated: with the turned away offered a booked slot there, "the hub
+  takes every patient with a GP request, walk-in and booked" left open whether Brantmoor's own booked patients move to
+  the hub, which no file counts; the annual report now says the booked clinic at Brantmoor carries on as now (SF10).
+- A family-spread assertion at 0.4 of the printed unit: the 27 specifications spread 0.43 (44,035 for the programme-week
+  dummy to 45,114 for the quiet-period fit over ten clinic days), every one at least 285 inside the cell; the assertion
+  is one printed cell and a spread under 0.45, with the figure stated rather than the family trimmed.
