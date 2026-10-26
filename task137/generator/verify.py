@@ -1,12 +1,8 @@
-"""The independent verifier: reads only the bundle under target/ (csv, xlsx, pdf, docx), shares no code or state with
-the generator or golden.py, recomputes the planning figure, its parts and every ask figure on its own path (the
-standard library's csv and datetime, no pandas), and compares them with generator/figures.json.
-
-    python3 verify.py [target_dir]
-"""
-import collections
+"""Independent verifier: reads only target.zip, on its own code path (csv module, openpyxl, its own IRLS Poisson fit), and
+recomputes the call and every ask figure against figures.json. Returns the number of failures."""
 import csv
 import datetime as dt
+import io
 import json
 import os
 import re
@@ -14,188 +10,199 @@ import sys
 import zipfile
 from zoneinfo import ZoneInfo
 
-import openpyxl
-import pypdf
-import docx
+import numpy as np
 
 HERE = os.path.dirname(os.path.abspath(__file__))
-UK = ZoneInfo("Europe/London")
-UTC = dt.timezone.utc
-FAILS = []
+BAD = []
 
 
-def ok(cond, label):
-    print(("ok    " if cond else "FAIL  ") + label)
+def ok(name, cond, info=""):
+    print(("ok   " if cond else "FAIL ") + name + ((" :: " + str(info)) if info != "" else ""))
     if not cond:
-        FAILS.append(label)
+        BAD.append(name)
 
 
-def rows(path):
-    with open(path, newline="", encoding="utf-8") as f:
-        return list(csv.DictReader(f))
+def rows(z, name):
+    with z.open(name) as fh:
+        return list(csv.DictReader(io.TextIOWrapper(fh, encoding="utf-8")))
 
 
-def utc(s):
-    return dt.datetime.strptime(s, "%Y-%m-%dT%H:%M:00Z").replace(tzinfo=UTC)
+def irls_poisson(X, y, iters=60):
+    b = np.zeros(X.shape[1])
+    b[0] = np.log(y.mean())
+    for _ in range(iters):
+        eta = X @ b
+        mu = np.exp(eta)
+        z = eta + (y - mu) / mu
+        WX = X * mu[:, None]
+        b_new = np.linalg.solve(X.T @ WX, WX.T @ z)
+        if np.max(np.abs(b_new - b)) < 1e-10:
+            b = b_new
+            break
+        b = b_new
+    return b
 
 
-def uk(s):
-    return dt.datetime.strptime(s, "%d/%m/%Y %H:%M").replace(tzinfo=UK).astimezone(UTC)
-
-
-def fy(t):
-    t = t.astimezone(UK)
-    return t.year if t.month >= 4 else t.year - 1
-
-
-def pdf_text(path):
-    return "\n".join(p.extract_text() or "" for p in pypdf.PdfReader(path).pages)
-
-
-def docx_text(path):
-    return "\n".join(p.text for p in docx.Document(path).paragraphs)
-
-
-def main(tgt):
-    fig = json.load(open(os.path.join(HERE, "figures.json")))
-    names = sorted(os.listdir(tgt))
-    pick = lambda pre: os.path.join(tgt, [n for n in names if n.startswith(pre)][0])
-    # documents read back, each with a positive control on the same extractor
-    brief = docx_text(pick("tanner_street_hub_planning_brief"))
-    ok("opens on 1 April 2027" in brief and len(brief) > 1500, "brief read back (positive control)")
-    model = pdf_text(pick("custody_demand_model"))
-    ok("capped at 10 per cent a year" in model.replace("\n", " "), "model note read back (positive control)")
-    wb = openpyxl.load_workbook(pick("custody_suite_allocation"), read_only=True)
-    alloc = [r for r in wb["Allocation"].iter_rows(values_only=True)]
-    notes = " ".join(str(c) for r in wb["Notes"].iter_rows(values_only=True) for c in r if c)
-    ok("whichever force or agency" in notes, "allocation notes read back (positive control)")
-    hdr = alloc[0]
-    hub = sorted(r[hdr.index("ward")] for r in alloc[1:] if r[hdr.index("suite_from_1_april_2027")] == "Tanner Street")
-    home = {r[hdr.index("ward")]: r[hdr.index("suite_to_31_march_2027")] for r in alloc[1:]}
-    ok(len(hub) == 6, "six wards move to Tanner Street")
-
-    # the force's arrests in the six wards by UK financial year
-    arr = rows(pick("calderwick_police_arrests"))
-    per = collections.Counter((r["ward"], fy(utc(r["arrested_utc"]))) for r in arr if r["ward"] in hub)
-    own = 0.0
-    for w in hub:
-        ch = (per[(w, 2025)] / per[(w, 2022)]) ** (1 / 3) - 1
-        own += per[(w, 2025)] * (1 + max(-0.1, min(0.1, ch))) ** 2
-    ok(abs(own - fig["components.own_arrests_model"]) < 0.05, "model on the six wards %.1f" % own)
-    ok(sum(per[(w, 2025)] for w in hub) == fig["components.own_arrests_2025_26"], "six wards' 2025-26 arrests")
-    for y in range(2021, 2026):
-        ok(sum(per[(w, y)] for w in hub) == fig["chart.six_wards_arrests.%d-%02d" % (y, (y + 1) % 100)], "chart %d" % y)
-    # the model note's validation table reproduces from the arrest records
-    by_suite = collections.defaultdict(lambda: collections.Counter())
-    for r in arr:
-        by_suite[home[r["ward"]]][(r["ward"], fy(utc(r["arrested_utc"])))] += 1
-    flat = re.sub(r"\s+", " ", model)
-    for s in ("Northgate", "Eastmoor", "Southfields", "Wendle Cross"):
-        c = by_suite[s]
-        wards = {w for w, _ in c}
-        fc = sum(c[(w, 2024)] * (1 + max(-0.1, min(0.1, (c[(w, 2024)] / c[(w, 2021)]) ** (1 / 3) - 1))) for w in wards)
-        act = sum(c[(w, 2025)] for w in wards)
-        ok(("%s %s %s %.3f" % (s, "{:,}".format(round(fc)), "{:,}".format(act), fc / act)) in flat,
-           "validation row %s reproduces" % s)
-
-    # British Transport Police's crime at the hub's stations, at the force's own arrests per crime of each type
-    lsoa = {r["lsoa21_code"]: r["ward"] for r in rows(pick("lsoa21_to_ward_lookup"))}
-    pol = rows(pick("police_uk_street_crime"))
-    hp = collections.Counter(r["Crime type"] for r in pol if r["Reported by"] == "Calderwick Police")
-    bt = collections.Counter(r["Crime type"] for r in pol if r["Reported by"] == "British Transport Police"
-                             and lsoa[r["LSOA code"]] in hub)
-    ok(sum(bt.values()) == fig["components.btp_crimes_hub_2025_26"], "BTP crimes in the six wards %d" % sum(bt.values()))
-    a25 = collections.Counter(r["offence_group"] for r in arr if fy(utc(r["arrested_utc"])) == 2025)
-    warr = a25["Warrant, recall or breach"] / (sum(a25.values()) - a25["Warrant, recall or breach"])
-    btp = sum(n * a25[t] / hp[t] for t, n in bt.items()) * (1 + warr)
-    ok(abs(btp - fig["components.btp_detentions"]) < 0.05, "BTP detentions %.1f" % btp)
-    tot = own + btp
-    ok(int(tot / 250 + 0.5) * 250 == fig["call.planning_figure"], "planning figure %d (%.1f)" % (int(tot / 250 + 0.5) * 250, tot))
-    ok(int(own / 250 + 0.5) * 250 == fig["components.default_answer"], "the model alone prints %d" % (int(own / 250 + 0.5) * 250))
-
-    # ask A: remand holds by suite, defendants charged in 2025-26
-    rem = {r["arrest_ref"]: r for r in arr if r["outcome"] == "Charged - remanded in custody"}
-    for r in rem.values():
-        h, m = map(int, r["detention_hhmm"].split(":"))
-        r["_book"] = utc(r["booked_in_utc"])
-        r["_charge"] = r["_book"] + dt.timedelta(minutes=60 * h + m)
-    by_ch = collections.defaultdict(list)
-    for ref, r in rem.items():
-        by_ch[(r["custody_suite"], r["_charge"])].append(ref)
-    files = rows(pick("cju_remand_files"))
-    own_det = {}
-    for f in files:
-        L = rem.get(f["linked_arrest"])
-        if L is not None and L["_charge"] == uk(f["charged"]) and L["custody_suite"] == f["custody_suite"]:
-            own_det[f["urn"]] = f["linked_arrest"]
-    claimed = set(own_det.values())
-    for f in files:
-        if f["urn"] not in own_det:
-            hit = [ref for ref in by_ch[(f["custody_suite"], uk(f["charged"]))] if ref not in claimed]
-            if len(hit) != 1:
-                ok(False, "file %s has one detention (%s)" % (f["urn"], hit))
+def main(zp):
+    del BAD[:]
+    F = json.load(open(os.path.join(HERE, "figures.json")))
+    z = zipfile.ZipFile(zp)
+    names = z.namelist()
+    LON = ZoneInfo("Europe/London")
+    leg = [r for r in rows(z, "walkin_tickets_legacy_2023-04_to_2024-11.csv") if r["Outcome"] == "Seen"]
+    ev = rows(z, "phlebotomy_queue_events_2024-11-18_to_2026-09-30.csv")
+    cut = dt.date(2024, 11, 18)
+    seen = {}
+    for r in leg:
+        d = dt.datetime.strptime(r["Date"], "%d/%m/%Y").date()
+        if d < cut:
+            k = (d, "GP" if r["Request"] == "GP form" else "HOSP")
+            seen[k] = seen.get(k, 0) + 1
+    hosp = []
+    for r in ev:
+        if r["event_type"] != "CHECKED_IN":
+            continue
+        d = dt.datetime.strptime(r["event_utc"], "%Y-%m-%dT%H:%M:%SZ").replace(tzinfo=ZoneInfo("UTC")).astimezone(LON).date()
+        seen[(d, r["request_type"])] = seen.get((d, r["request_type"]), 0) + 1
+        if r["request_type"] == "HOSP":
+            hosp.append((d, r["request_org"], dt.date.fromisoformat(r["request_date"])))
+    from openpyxl import load_workbook
+    wb = load_workbook(io.BytesIO(z.read("reception_turned_away_log.xlsx")), data_only=True)
+    away = {}
+    for ws in wb.worksheets:
+        layout = None
+        for row in ws.iter_rows(values_only=True):
+            if row and row[0] == "Date":
+                layout = "A" if row[3] == "GP form AM" else "B"
                 continue
-            own_det[f["urn"]] = hit[0]
-    ok(len(set(own_det.values())) == len(files), "every file has its own detention")
-    left = {ref for ref in rem if ref not in set(own_det.values())}
-    inc = collections.defaultdict(list)
-    for ref in left:
-        r = rem[ref]
-        inc[(r["arrested_utc"], r["ward"], r["offence_group"])].append(ref)
-    hold = collections.defaultdict(float)
-    over = collections.Counter()
-    for f in files:
-        L = rem[own_det[f["urn"]]]
-        hand = uk(f["handed_to_escort"])
-        for ref in [own_det[f["urn"]]] + inc.get((L["arrested_utc"], L["ward"], L["offence_group"]), []):
-            r = rem[ref]
-            if fy(r["_charge"]) != 2025:
+            if layout is None or not row:
                 continue
-            hold[f["custody_suite"]] += (hand - r["_charge"]).total_seconds() / 3600
-            over[f["custody_suite"]] += (hand - r["_book"]).total_seconds() > 24 * 3600
-    for s in ("Northgate", "Eastmoor", "Southfields", "Wendle Cross"):
-        ok(round(hold[s]) == fig["ask_a.%s.cell_hours" % s], "ask A %s cell hours %d" % (s, round(hold[s])))
-        ok(over[s] == fig["ask_a.%s.over_24_hours" % s], "ask A %s over 24 hours %d" % (s, over[s]))
+            d = row[0]
+            if isinstance(d, str) and re.fullmatch(r"\d{2}/\d{2}/\d{4}", d.strip()):
+                d = dt.datetime.strptime(d.strip(), "%d/%m/%Y")
+            if not isinstance(d, (dt.date, dt.datetime)):
+                continue
+            d = d.date() if isinstance(d, dt.datetime) else d
+            if layout == "A":
+                gp, h = (row[3] or 0) + (row[4] or 0), (row[5] or 0) + (row[6] or 0)
+                if gp + h:
+                    away[d] = (gp, h)
+            else:
+                away[d] = (row[2] or 0, row[3] or 0)
+    days = sorted({d for d, _ in seen})
+    gp = np.array([seen.get((d, "GP"), 0) for d in days], float)
+    agp = np.array([away.get(d, (0, 0))[0] for d in days], float)
+    ro = np.array([1.0 if d in away else 0.0 for d in days])
+    arr = gp + agp
+    wkday = {}
+    for d, r in zip(days, ro):
+        w = d - dt.timedelta(d.weekday())
+        a, b = wkday.get(w, (0, 0))
+        wkday[w] = (a + r, b + 1)
+    wsh = {w: a / b for w, (a, b) in wkday.items()}
 
-    # ask B: initial health assessments by the suite they took place in, begun by day and at night
-    bk = collections.defaultdict(list)
-    for r in arr:
-        bk[r["custody_suite"]].append(utc(r["booked_in_utc"]))
-    shut = {}
-    for s, ts in bk.items():
-        ts.sort()
-        for t0, t1 in zip(ts, ts[1:]):
-            if t1 - t0 > dt.timedelta(days=3):
-                during = collections.Counter(r["custody_suite"] for r in arr if home[r["ward"]] == s
-                                             and t0 < utc(r["booked_in_utc"]) < t1)
-                shut[s] = (t0.astimezone(UK).replace(tzinfo=None), t1.astimezone(UK).replace(tzinfo=None),
-                           during.most_common(1)[0][0])
-    ok(sorted(shut) == ["Eastmoor", "Wendle Cross"], "two suites closed in the records: %s" % sorted(shut))
-    hc = rows(pick("custody_healthcare_contacts"))
-    ep = collections.defaultdict(list)
-    for r in hc:
-        if r["contact_type"] == "Initial health assessment":
-            ep[r["episode_ref"]].append(r)
-    grid = collections.Counter()
-    for lines in ep.values():
-        lines.sort(key=lambda r: r["started"])
-        prev = None
-        for r in lines:
-            s0 = dt.datetime.strptime(r["started"], "%Y-%m-%d %H:%M")
-            cont = prev is not None and prev == r["started"] and s0.minute == 0 and s0.hour in (7, 19)
-            prev = r["ended"]
-            if cont:
-                continue
-            place = r["suite"]
-            if place in shut and shut[place][0] <= s0 < shut[place][1]:
-                place = shut[place][2]
-            grid[(place, "day" if 7 <= s0.hour < 19 else "night")] += 1
-    for s in ("Northgate", "Eastmoor", "Southfields", "Wendle Cross"):
-        for k in ("day", "night"):
-            ok(grid[(s, k)] == fig["ask_b.%s.%s" % (s, k)], "ask B %s %s %d" % (s, k, grid[(s, k)]))
-    print("%d checks failed" % len(FAILS) if FAILS else "verify: every figure reproduces from the bundle")
-    return 1 if FAILS else 0
+    def window_share(L):
+        return np.array([sum(wsh.get(d - dt.timedelta(d.weekday() + 7 * j), 0.0) for j in range(1, L + 1)) / L for d in days])
+    cols = [np.ones(len(days))]
+    for k in range(1, 5):
+        cols.append(np.array([1.0 if d.weekday() == k else 0.0 for d in days]))
+    for m in range(2, 13):
+        cols.append(np.array([1.0 if d.month == m else 0.0 for d in days]))
+    cols.append(np.array([(d - dt.date(2023, 4, 3)).days / 365.25 for d in days]))
+    cols.append(np.array([1.0] + [1.0 if (days[i] - days[i - 1]).days not in (1, 3) else 0.0 for i in range(1, len(days))]) * 0 +
+                np.array([0.0] + [1.0 if (days[i] - days[i - 1]).days not in (1, 3) else 0.0 for i in range(1, len(days))]))
+    # the run-out window: the mean share of the previous L weeks, L from one to twelve, the lowest AIC
+    from math import lgamma
+    lgy = sum(lgamma(y + 1) for y in arr)
+    fits = {}
+    for L in (1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 12):
+        sh = window_share(L)
+        X = np.column_stack(cols + [sh])
+        bb = irls_poisson(X, arr)
+        mu = np.exp(X @ bb)
+        fits[L] = (2 * X.shape[1] - 2 * (float((arr * np.log(mu) - mu).sum()) - lgy), bb, sh)
+    L = min(fits, key=lambda k: fits[k][0])
+    b, share = fits[L][1], fits[L][2]
+    ok("call: the fit picks the %d-week window" % F["window_weeks"], L == F["window_weeks"], {k: round(v[0] - fits[L][0], 1) for k, v in fits.items()})
+    fy = np.array([dt.date(2025, 4, 1) <= d <= dt.date(2026, 3, 31) for d in days])
+    base = float((arr[fy] * np.exp(-b[-1] * share[fy])).sum())
+    plan = base * 1.035 ** 2
+    ok("call: the plan rounds to %s" % F["plan_visits_2027_28"], int(round(plan / 2500.0) * 2500) == F["plan_visits_2027_28"], round(plan))
+    ok("call: unrounded plan within one visit", abs(plan - F["plan_unrounded"]) <= 1.0, round(plan, 2))
+    ok("call: base within one visit", abs(base - F["base_2025_26"]) <= 1.0, round(base, 2))
+    ok("component: GP-referred seen", int(gp[fy].sum()) == F["gp_seen_2025_26"], int(gp[fy].sum()))
+    ok("component: GP-referred turned away", int(agp[fy].sum()) == F["gp_turned_away_2025_26"], int(agp[fy].sum()))
+    ok("component: run-out days", int(ro[fy].sum()) == F["run_out_days_2025_26"], int(ro[fy].sum()))
+    ok("coefficient", abs(b[-1] - F["coef_window_share"]) < 0.0006, round(b[-1], 4))
+    ok("default path", int(round(arr[fy].sum() * 1.035 ** 2 / 2500.0) * 2500) == F["default_path_plan"])
+    # ask A, own route: each new code's issue weekdays before the April templates link it to the old code with the
+    # same weekdays; every 2025-26 visit then takes its specialty from the register
+    reg = rows(z, "outpatient_clinic_codes.csv")
+    newmap = {r["clinic_code"]: r["specialty"] for r in reg}
+    early = {}
+    oldw = {}
+    for d, code, rd in hosp:
+        if code in newmap and rd < dt.date(2026, 4, 1):
+            early.setdefault(code, set()).add(rd.weekday())
+        elif code not in newmap:
+            oldw.setdefault(code, set()).add(rd.weekday())
+    oldmap = {}
+    for c, w in oldw.items():
+        hit = [n for n, e in early.items() if e == w]
+        ok("ask A: old code %s links to one new code" % c, len(hit) == 1, hit)
+        oldmap[c] = newmap[hit[0]] if len(hit) == 1 else None
+    tab = {}
+    for d, code, rd in hosp:
+        if dt.date(2025, 4, 1) <= d <= dt.date(2026, 3, 31):
+            sp = newmap.get(code) or oldmap.get(code)
+            q = "Q%d" % (((d.month - 4) % 12) // 3 + 1)
+            tab[(sp, q)] = tab.get((sp, q), 0) + 1
+    miss = [(sp, q) for sp, qq in F["hospital_visits_2025_26"].items() for q, v in qq.items() if tab.get((sp, q), 0) != v]
+    ok("ask A: all 28 cells", not miss, miss[:3])
+    # ask B, own route by identity: an unassigned line belongs to a holder who has no line that day, whose last line
+    # before was sickness and who comes back; any other unassigned line is the vacant post
+    ro_rows = [r for r in rows(z, "eroster_phlebotomy_2023-04_to_2026-09.csv") if r["Assignment"] != "Bank Phlebotomist"]
+    by_day = {}
+    for r in ro_rows:
+        by_day.setdefault(r["Roster date"], []).append(r)
+    span = {}
+    for r in ro_rows:
+        if r["Employee no"]:
+            a0, a1 = span.get(r["Employee no"], (r["Roster date"], r["Roster date"]))
+            span[r["Employee no"]] = (min(a0, r["Roster date"]), max(a1, r["Roster date"]))
+    last = {}
+    sick, rost = {}, {}
+    for day in sorted(by_day):
+        rs = by_day[day]
+        present = {r["Employee no"] for r in rs if r["Employee no"]}
+        absent_sick = [e for e, (a0, a1) in span.items() if a0 < day < a1 and e not in present and last.get(e) == "Sickness"]
+        unassigned = sum(1 for r in rs if r["Vacant line"] == "Y")
+        d = dt.date.fromisoformat(day)
+        if dt.date(2025, 4, 1) <= d <= dt.date(2026, 3, 31):
+            q = "Q%d" % (((d.month - 4) % 12) // 3 + 1)
+            k = min(len(absent_sick), unassigned)
+            sick[q] = sick.get(q, 0) + sum(1 for r in rs if r["Absence"] == "Sickness") + k
+            rost[q] = rost.get(q, 0) + sum(1 for r in rs if r["Vacant line"] == "N") + k
+        for r in rs:
+            if r["Employee no"]:
+                last[r["Employee no"]] = r["Absence"]
+    for q, v in F["sickness_by_quarter"].items():
+        ok("ask B %s days lost" % q, sick.get(q, 0) == v["days_lost"], sick.get(q, 0))
+        ok("ask B %s rate" % q, round(100.0 * sick.get(q, 0) / rost[q], 1) == v["rate_pct"], round(100.0 * sick.get(q, 0) / rost[q], 3))
+    # every format read back
+    from pypdf import PdfReader
+    rep = re.sub(r"\s+", " ", " ".join(p.extract_text() for p in PdfReader(io.BytesIO(z.read("phlebotomy_annual_report_2025-26.pdf"))).pages))
+    icb = re.sub(r"\s+", " ", " ".join(p.extract_text() for p in PdfReader(io.BytesIO(z.read("icb_pathology_planning_assumptions_2026-27.pdf"))).pages))
+    ok("pdf: the report's sickness definition reads back", "hours rostered to the substantive team" in rep)
+    ok("pdf: the ICB's 3.5% reads back", "GP direct access phlebotomy 3.5%" in icb)
+    bh = json.loads(z.read("bank_holidays_england.json"))
+    ok("json: bank holidays read back", len(bh["england-and-wales"]["events"]) > 30)
+    wbh = load_workbook(io.BytesIO(z.read("community_hub_session_plan_2027.xlsx")))
+    ok("xlsx: the hub plan reads back", wbh.active.max_row > 5)
+    ok("zip: thirteen files", len(names) == 13, len(names))
+    print("verify: %d failed" % len(BAD))
+    return len(BAD)
 
 
 if __name__ == "__main__":
-    sys.exit(main(sys.argv[1] if len(sys.argv) > 1 else os.path.join(os.path.dirname(HERE), "target")))
+    sys.exit(main(sys.argv[1]))

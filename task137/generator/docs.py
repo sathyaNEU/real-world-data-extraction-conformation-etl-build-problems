@@ -1,326 +1,389 @@
-"""The pack's documents: the planning brief (docx), the custody demand model note (pdf), the suite allocation workbook
-with the custody service's notes (xlsx), the estates register (xlsx), and the three background files (ONS ward
-population, the late-night licences register, GOV.UK's bank holidays)."""
+"""Writers for every shipped file."""
+import calendar
+import csv
 import datetime as dt
+import io
 import json
+import os
+from zoneinfo import ZoneInfo
 
-import docx
-from docx.enum.text import WD_ALIGN_PARAGRAPH
-from docx.shared import Pt, RGBColor, Mm
-import openpyxl
-from openpyxl.styles import Alignment, Font, PatternFill
-from reportlab import rl_config
+import numpy as np
+import params as P
+import records as RC
 
-rl_config.invariant = 1
-from reportlab.lib import colors                                                      # noqa: E402
-from reportlab.lib.pagesizes import A4                                                # noqa: E402
-from reportlab.lib.styles import ParagraphStyle                                       # noqa: E402
-from reportlab.lib.units import mm                                                    # noqa: E402
-from reportlab.pdfbase import pdfmetrics                                              # noqa: E402
-from reportlab.pdfbase.ttfonts import TTFont                                          # noqa: E402
-from reportlab.platypus import Paragraph, SimpleDocTemplate, Spacer, Table, TableStyle  # noqa: E402
-
-import world as WD   # noqa: E402
-
-FONT_DIR = "/usr/share/fonts/truetype/"
-for _n, _f in (("Carlito", "crosextra/Carlito-Regular.ttf"), ("Carlito-Bold", "crosextra/Carlito-Bold.ttf"),
-               ("Carlito-Italic", "crosextra/Carlito-Italic.ttf")):
-    pdfmetrics.registerFont(TTFont(_n, FONT_DIR + _f))
-SANS, SANS_B, SANS_I = "Carlito", "Carlito-Bold", "Carlito-Italic"
-INK = colors.HexColor("#1f2428")
-GREY = colors.HexColor("#5b6670")
-NAVY = colors.HexColor("#1b365d")
-RULE = colors.HexColor("#a7b0b8")
-BODY = ParagraphStyle("body", fontName=SANS, fontSize=10, leading=13.4, textColor=INK, spaceAfter=5)
-CLAUSE = ParagraphStyle("clause", parent=BODY, leftIndent=26, firstLineIndent=-26)
-H1 = ParagraphStyle("h1", fontName=SANS_B, fontSize=15, leading=19, textColor=NAVY, spaceAfter=2)
-H1S = ParagraphStyle("h1s", fontName=SANS, fontSize=10, leading=13, textColor=GREY, spaceAfter=10)
-H2 = ParagraphStyle("h2", fontName=SANS_B, fontSize=11, leading=14, textColor=INK, spaceBefore=8, spaceAfter=3)
-NOTE = ParagraphStyle("note", fontName=SANS_I, fontSize=8.6, leading=11, textColor=GREY, spaceBefore=3)
-CELL = ParagraphStyle("cell", fontName=SANS, fontSize=9.2, leading=11.4, textColor=INK)
-CELLB = ParagraphStyle("cellb", parent=CELL, fontName=SANS_B)
-CELLR = ParagraphStyle("cellr", parent=CELL, alignment=2)
-CELLBR = ParagraphStyle("cellbr", parent=CELLB, alignment=2)
-
-PEOPLE = {"planner": "Emma Roberts", "programme": "Liam Clayton", "custody": "Emma Roberts"}   # guard.py names --geo GB --seed 137
+LON, UTC = ZoneInfo("Europe/London"), ZoneInfo("UTC")
+FILES = {
+    "legacy": "walkin_tickets_legacy_2023-04_to_2024-11.csv",
+    "events": "phlebotomy_queue_events_2024-11-18_to_2026-09-30.csv",
+    "log": "reception_turned_away_log.xlsx",
+    "roster": "eroster_phlebotomy_2023-04_to_2026-09.csv",
+    "kiosk": "kiosk_ticket_allocations_2023-04_to_2026-09.csv",
+    "practices": "gp_practices_catchment.csv",
+    "clinics": "outpatient_clinic_codes.csv",
+    "report": "phlebotomy_annual_report_2025-26.pdf",
+    "icb": "icb_pathology_planning_assumptions_2026-27.pdf",
+    "bh": "bank_holidays_england.json",
+    "survey": "phlebotomy_patient_survey_2025.csv",
+    "hub": "community_hub_session_plan_2027.xlsx",
+    "dict": "data_dictionary.csv",
+}
+PACK = list(FILES)
+DISTRACTORS = ["survey", "hub"]
+CONTEXT = ["report", "icb"]
 
 
-def _footer(left, right):
-    def draw(canvas, doc):
-        canvas.saveState()
-        canvas.setFont(SANS, 7.6)
-        canvas.setFillColor(GREY)
-        canvas.drawString(20 * mm, 11 * mm, left)
-        canvas.drawRightString(A4[0] - 20 * mm, 11 * mm, "%s  |  Page %d" % (right, doc.page))
-        canvas.restoreState()
-    return draw
+def save_xlsx(wb, path, when=dt.datetime(2026, 10, 2, 9, 12), author=None):
+    """Save a workbook with fixed document properties and fixed zip entry times, so a rebuild is byte-identical."""
+    import zipfile
+    wb.properties.created = when
+    wb.properties.modified = when
+    if author:
+        wb.properties.creator = author
+        wb.properties.lastModifiedBy = author
+    tmp = path + ".tmp"
+    wb.save(tmp)
+    with zipfile.ZipFile(tmp) as zin, zipfile.ZipFile(path, "w", zipfile.ZIP_DEFLATED) as zout:
+        for info in zin.infolist():
+            zi = zipfile.ZipInfo(info.filename, date_time=(when.year, when.month, when.day, when.hour, when.minute, 0))
+            zi.compress_type = zipfile.ZIP_DEFLATED
+            zi.external_attr = 0o644 << 16
+            data = zin.read(info.filename)
+            if info.filename == "docProps/app.xml":
+                data = (b'<?xml version="1.0" encoding="UTF-8" standalone="yes"?>\n<Properties xmlns="http://schemas.'
+                        b'openxmlformats.org/officeDocument/2006/extended-properties" xmlns:vt="http://schemas.openxmlformats'
+                        b'.org/officeDocument/2006/docPropsVTypes"><Application>Microsoft Excel</Application><DocSecurity>0'
+                        b'</DocSecurity><ScaleCrop>false</ScaleCrop><Company>' + P.HOSPITAL.encode() + b'</Company>'
+                        b'<LinksUpToDate>false</LinksUpToDate><SharedDoc>false</SharedDoc><HyperlinksChanged>false'
+                        b'</HyperlinksChanged><AppVersion>16.0300</AppVersion></Properties>')
+            if info.filename == "docProps/core.xml":
+                import re
+                stamp = when.strftime("%Y-%m-%dT%H:%M:%SZ").encode()
+                data = re.sub(rb"(<dcterms:modified[^>]*>)[^<]*(</dcterms:modified>)", rb"\g<1>" + stamp + rb"\g<2>", data)
+            zout.writestr(zi, data)
+    os.remove(tmp)
 
 
-def fmt(n):
-    return "{:,}".format(int(round(n)))
+def hms(m):
+    s = int(round(m * 60))
+    return "%02d:%02d:%02d" % (s // 3600, (s % 3600) // 60, s % 60)
 
 
-# ------------------------------------------------------------------------------------------------------------------
-# The custody demand model (pdf)
-MODEL_METHOD = [
-    ("2.1", "A suite's demand is the people arrested in the wards it serves, as set in the suite allocation."),
-    ("2.2", "Each ward's arrests are counted by financial year (1 April to 31 March), by the date of arrest in UK "
-            "time."),
-    ("2.3", "The ward's arrests in the latest full year are carried forward at its average annual change over the "
-            "three years to that year (the cube root of the latest year's arrests over the arrests three years "
-            "earlier, less one), capped at 10 per cent a year in either direction."),
-    ("2.4", "A suite's figure for a year is the sum of its wards' figures."),
-]
+def utc(d, m):
+    x = dt.datetime(d.year, d.month, d.day, tzinfo=LON) + dt.timedelta(minutes=float(m))
+    return x.astimezone(UTC).strftime("%Y-%m-%dT%H:%M:%SZ")
 
 
-def model_validation_text(rows):
-    worst = max(abs(r[3] - 1) for r in rows)
-    pct = int(-(-worst * 100 // 1))           # whole per cent, rounded up
-    return pct
+def write_csv(path, header, rows):
+    with open(path, "w", newline="", encoding="utf-8") as fh:
+        w = csv.writer(fh, lineterminator="\n")
+        w.writerow(header)
+        w.writerows(rows)
 
 
-def write_model(path, val_rows):
-    """val_rows: (suite, forecast, actual, ratio) for 2025-26 from the records to 31 March 2025."""
-    doc = SimpleDocTemplate(path, pagesize=A4, leftMargin=22 * mm, rightMargin=22 * mm, topMargin=20 * mm,
-                            bottomMargin=22 * mm, title="Custody demand model, version 2.0", author="Custody Services Planning",
-                            subject="", creator="", producer="")
-    pct = model_validation_text(val_rows)
-    s = [Paragraph("HARROWDOWN POLICE", ParagraphStyle("hp", parent=H1S, fontName=SANS_B, textColor=NAVY, spaceAfter=0)),
-         Paragraph("Custody Services", H1S),
-         Paragraph("Custody demand model", H1),
-         Paragraph("Version 2.0. Approved by the Custody Programme Board on 11 June 2026. Owner: Custody Services "
-                   "Planning, Force Headquarters, Wendle Cross.", H1S),
-         Paragraph("1  Purpose", H2),
-         Paragraph("The model gives each custody suite a planning figure: the detentions the suite should expect to book "
-                   "in a financial year. Cells, detention officer posts and the custody healthcare contract are sized "
-                   "from it.", BODY),
-         Paragraph("2  Method", H2)]
-    for no, t in MODEL_METHOD:
-        s.append(Paragraph("%s&nbsp;&nbsp;&nbsp;%s" % (no, t), CLAUSE))
-    s += [Paragraph("3  Validation", H2),
-          Paragraph("The model was run on the arrest records to 31 March 2025 (base year 2024-25, change measured from "
-                    "2021-22) and its forecast for 2025-26 compared with the arrest records for that year.", BODY)]
-    data = [[Paragraph("Suite", CELLB), Paragraph("Forecast 2025-26", CELLBR), Paragraph("Arrest records 2025-26", CELLBR),
-             Paragraph("Forecast / records", CELLBR)]]
-    for suite, f, a, r in val_rows:
-        data.append([Paragraph(suite, CELL), Paragraph(fmt(f), CELLR), Paragraph(fmt(a), CELLR),
-                     Paragraph("%.3f" % r, CELLR)])
-    t = Table(data, colWidths=[46 * mm, 36 * mm, 42 * mm, 36 * mm], hAlign="LEFT")
-    t.setStyle(TableStyle([("LINEBELOW", (0, 0), (-1, 0), 0.6, RULE), ("LINEBELOW", (0, -1), (-1, -1), 0.4, RULE),
-                           ("VALIGN", (0, 0), (-1, -1), "TOP"), ("TOPPADDING", (0, 0), (-1, -1), 2),
-                           ("BOTTOMPADDING", (0, 0), (-1, -1), 2)]))
-    s += [t, Spacer(1, 6),
-          Paragraph("Every suite came within %d per cent. Version 1 (2022) carried every ward at the force-wide change "
-                    "and was 6 per cent out at Eastmoor; version 2 replaced it." % pct, BODY),
-          Paragraph("4  Review", H2),
-          Paragraph("The model is reviewed each June, and when a suite opens or closes.", BODY)]
-    doc.build(s, onFirstPage=_footer("Custody Services Planning", "Custody demand model v2.0"),
-              onLaterPages=_footer("Custody Services Planning", "Custody demand model v2.0"))
-    return pct
-
-
-# ------------------------------------------------------------------------------------------------------------------
-# The planning brief (docx)
-FILES = [
-    ("calderwick_police_arrests_2021-04_2026-09.csv",
-     "The force's arrest records, pulled on 6 October 2026: one row per arrest by a Calderwick Police officer, 1 April "
-     "2021 to 30 September 2026. custody_suite is the suite the person was booked into, and arrested_utc and "
-     "booked_in_utc are in UTC. ward is the ward where the arrest was made and offence_group the main offence. "
-     "detention_hhmm is the PACE detention clock in hours and minutes, from detention being authorised to release, "
-     "charge or transfer."),
-    ("police_uk_street_crime_2025-26.csv",
-     "Street-level crime in the force area from data.police.uk, April 2025 to March 2026, as the Calderwick and Carvell "
-     "Community Safety Partnership downloads it each month (anti-social behaviour taken out). Locations are "
-     "data.police.uk's anonymised map points."),
-    ("lsoa21_to_ward_lookup.csv", "2021 LSOAs to the wards they sit in (best fit)."),
-    ("custody_suite_allocation_2027.xlsx",
-     "Each ward's custody suite to 31 March 2027 and from 1 April 2027, with the custody service's notes."),
-    ("custody_demand_model_v2.pdf", "The custody demand model as the Custody Programme Board approved it in June."),
-    ("cju_remand_files_2025-03_2026-04.csv",
-     "The Criminal Justice Unit's remand files: one row per case file prepared for a remand court, for charges from "
-     "1 March 2025 to 30 April 2026. linked_arrest is the arrest reference on the file; charged and handed_to_escort "
-     "are UK times."),
-    ("custody_healthcare_contacts_2025-26.csv",
-     "Calderwick Healthcare Partners' contact export for the four suites, 1 April 2025 to 31 March 2026: one row per "
-     "clinician contact. suite is the custody suite of the clinician's team; started and ended are UK times."),
-    ("custody_estate_register_2026.xlsx", "The estates team's register of the four suites."),
-    ("ward_population_mid-2024.csv", "ONS mid-2024 population estimates for the force area's wards."),
-    ("late_night_licences_2026.csv", "The licensing team's register of premises licensed to open past midnight."),
-    ("bank-holidays.json", "Bank holidays from GOV.UK."),
-]
-
-
-def _para(d, text, size=10.5, bold=False, italic=False, color=None, after=6, before=0, align=None):
-    p = d.add_paragraph()
-    r = p.add_run(text)
-    r.font.size = Pt(size)
-    r.bold = bold
-    r.italic = italic
-    if color:
-        r.font.color.rgb = RGBColor.from_string(color)
-    p.paragraph_format.space_after = Pt(after)
-    p.paragraph_format.space_before = Pt(before)
-    if align:
-        p.alignment = align
-    return p
-
-
-def write_brief(path):
-    d = docx.Document()
-    sec = d.sections[0]
-    sec.page_height, sec.page_width = Mm(297), Mm(210)
-    sec.left_margin = sec.right_margin = Mm(22)
-    sec.top_margin, sec.bottom_margin = Mm(20), Mm(20)
-    st = d.styles["Normal"]
-    st.font.name = "Calibri"
-    st.font.size = Pt(10.5)
-    _para(d, "Calderwick Police  |  Estates and Custody Programme", size=9, color="5B6670", after=2)
-    _para(d, "Tanner Street custody hub: planning figure for 2027-28", size=15, bold=True, color="1B365D", after=4)
-    _para(d, "To: %s, Custody Services Planning\nFrom: %s, Programme Manager\nDate: 20 October 2026"
-          % (PEOPLE["planner"], PEOPLE["programme"]), size=9.5, color="5B6670", after=10)
-    _para(d, "The Tanner Street custody hub opens on 1 April 2027. From that date it takes the six city centre wards "
-             "(Abbey Fields, Castle, Cathedral, Kingsway, Mill Bank and St Peter's), which Northgate and Eastmoor serve "
-             "until 31 March 2027. The suite allocation workbook gives every ward's suite before and after the change.")
-    _para(d, "The fit-out contract with Brennand Interiors is signed on 9 December. It fixes the hub's cells and "
-             "detention officer posts from the hub's planning figure for 2027-28, its first year: the detentions the "
-             "hub will book from 1 April 2027 to 31 March 2028, to the nearest 250.")
-    _para(d, "The contract sizes the remand cells from the four suites' remand holds for the defendants charged in "
-             "2025-26 and kept in custody for court, suite by suite: their cell hours from charge to handover to the "
-             "court escort, and how many of them were held for more than 24 hours from booking in. It sizes the medical "
-             "rooms from each suite's initial health assessments in 2025-26, those begun in the day (07:00 to 19:00) "
-             "and those begun at night.")
-    _para(d, "Files", size=11, bold=True, before=6, after=4)
-    for name, text in FILES:
-        p = d.add_paragraph()
-        r = p.add_run(name)
-        r.bold = True
-        r.font.size = Pt(9.5)
-        r2 = p.add_run("  " + text)
-        r2.font.size = Pt(9.5)
-        p.paragraph_format.space_after = Pt(4)
-        p.paragraph_format.left_indent = Mm(4)
-    _para(d, PEOPLE["programme"].split()[0], size=10.5, before=8, after=0)
-    d.save(path)
-
-
-# ------------------------------------------------------------------------------------------------------------------
-# The suite allocation workbook (xlsx)
-ALLOC_NOTES = [
-    "This allocation takes effect at 00:00 on 1 April 2027 and replaces the allocation of 1 April 2019.",
-    "A detainee is taken to the custody suite that serves the ward where the arrest was made, whichever force or agency "
-    "the arresting officer belongs to, and the custody officer there decides whether to authorise detention.",
-    "When the ward's suite is full or closed, the Force Control Room sends the arresting officer to the nearest suite "
-    "with a free cell, and the detainee is booked in and stays there.",
-    "Detainees held under section 41 of the Terrorism Act 2000 go to the regional designated suite outside the force "
-    "area.",
-    "People detained under section 136 of the Mental Health Act 1983 go to the health-based place of safety at "
-    "Calderwick Royal Infirmary, not to a custody suite.",
-    "Children aged 10 to 17 go to the ward's suite like adults; Tanner Street has two detention rooms for children.",
-    "Northgate and Eastmoor keep their other wards, and no county ward changes suite.",
-]
-
-
-def write_allocation(path, wcode):
-    wb = openpyxl.Workbook()
-    ws = wb.active
-    ws.title = "Allocation"
-    hdr = ["ward_code", "ward", "district", "suite_to_31_march_2027", "suite_from_1_april_2027"]
-    ws.append(hdr)
-    for w in WD.WARDS:
-        ws.append([wcode[w], w, WD.DISTRICT[w], WD.SUITE_NOW[w], WD.SUITE_2027[w]])
-    for c in ws[1]:
-        c.font = Font(bold=True)
-    for col, wdt in zip("ABCDE", (13, 18, 15, 24, 25)):
-        ws.column_dimensions[col].width = wdt
-    ws.freeze_panes = "A2"
-    ns = wb.create_sheet("Notes")
-    ns.append(["Custody suite allocation by ward: notes"])
-    ns["A1"].font = Font(bold=True, size=12)
-    ns.append(["Custody Services, Force Headquarters. Approved by the Custody Programme Board, 10 September 2026."])
-    ns.append([])
-    for k, t in enumerate(ALLOC_NOTES, 1):
-        ns.append([k, t])
-        ns.cell(row=ns.max_row, column=2).alignment = Alignment(wrap_text=True, vertical="top")
-        ns.cell(row=ns.max_row, column=1).alignment = Alignment(vertical="top")
-    ns.column_dimensions["A"].width = 5
-    ns.column_dimensions["B"].width = 110
-    wb.save(path)
-
-
-def write_estate(path):
-    wb = openpyxl.Workbook()
-    ws = wb.active
-    ws.title = "Suites"
-    ws.append(["suite", "address", "opened", "cells", "cells_for_children", "interview_rooms", "medical_rooms",
-               "constant_watch_cells", "vehicle_bays", "status"])
-    for r in [("Northgate", "Northgate Police Station, 41 Prospect Row, Calderwick CK3 2QL", 1998, 32, 2, 6, 2, 4, 3, "Open"),
-              ("Eastmoor", "Eastmoor Police Station, Ladysmith Road, Calderwick CK7 1BW", 2004, 18, 1, 4, 1, 2, 2, "Open"),
-              ("Southfields", "Southfields Custody Centre, Carvell Road, South Carvell CL12 8NE", 2011, 40, 2, 8, 2, 4, 4, "Open"),
-              ("Wendle Cross", "Force Headquarters, Wendle Cross, Wendlebury WY4 6PD", 2009, 36, 2, 7, 2, 4, 3, "Open"),
-              ("Tanner Street", "Tanner Street, Calderwick CK1 4TS", 2027, None, 2, 10, 3, 6, 4, "Fit-out from January 2027")]:
-        ws.append(list(r))
-    for c in ws[1]:
-        c.font = Font(bold=True)
-    for col, wdt in zip("ABCDEFGHIJ", (14, 58, 8, 7, 18, 15, 13, 20, 13, 26)):
-        ws.column_dimensions[col].width = wdt
-    ws.freeze_panes = "A2"
-    wb.save(path)
-
-
-# ------------------------------------------------------------------------------------------------------------------
-# Background files
-def population_rows(W, rng, wcode):
+def legacy(target, V, rng):
     rows = []
-    for w in WD.WARDS:
-        if w in WD.HUB:
-            tot = int(rng.integers(9800, 14200))
-            sh = (0.11, 0.74, 0.15)
-        elif w in WD.CITY:
-            tot = int(rng.integers(11500, 16500))
-            sh = (0.19, 0.64, 0.17)
+    by_day = {}
+    for v in V:
+        if v[0] <= P.OLD_SYSTEM_OFF:
+            by_day.setdefault(v[0], []).append(v)
+    for d in sorted(by_day):
+        a = f = 0
+        lst = sorted(by_day[d], key=lambda v: v[6])
+        for v in lst:
+            dd, g, sp, prac, org, issued, m, called, recall, done, bay, fasting = v
+            if fasting:
+                f += 1
+                tk = "F%03d" % f
+            else:
+                a += 1
+                tk = "A%03d" % a
+            key = m + (rng.uniform(0.2, 2.8) if dd >= P.NEW_SYSTEM_LIVE else 0.0)
+            shown_call = recall if recall is not None else called
+            desk = str(bay) if not str(bay).startswith("B") else "B"
+            rows.append(["HGH Outpatients", d.strftime("%d/%m/%Y"), tk, hms(key), hms(max(shown_call, key + 0.1)), desk,
+                         "Hospital form" if g == "H" else "GP form", "Fasting blood test" if fasting else "Blood test", "Seen"])
+        if rng.random() < 0.025:
+            rows.append(["HGH Outpatients", d.strftime("%d/%m/%Y"), "Z001", "07:01:12", "07:01:40", "1", "", "Test", "Test ticket"])
+    write_csv(os.path.join(target, FILES["legacy"]),
+              ["Site", "Date", "Ticket", "Issued", "Called", "Desk", "Request", "Service", "Outcome"], rows)
+    return len(rows)
+
+
+def events(target, V, rng):
+    rows, eid, vid = [], 50200000, 1048000
+    for v in V:
+        dd, g, sp, prac, org, issued, m, called, recall, done, bay, fasting = v
+        if dd < P.NEW_SYSTEM_LIVE:
+            continue
+        vid += 1
+        ref = "PV%08d" % vid
+        blank = (g != "H") and rng.random() < 0.006
+        rtype = "HOSP" if g == "H" else "GP"
+        eid += 1
+        rows.append([eid, ref, "CHECKED_IN", utc(dd, m), "", rtype, "" if blank else org,
+                     "" if blank else issued.isoformat(), "WALK_IN_FASTING" if fasting else "WALK_IN"])
+        eid += 1
+        bayname = "Bay %s" % bay
+        rows.append([eid, ref, "CALLED", utc(dd, called), bayname, "", "", "", ""])
+        if recall is not None:
+            eid += 1
+            rows.append([eid, ref, "CALLED", utc(dd, recall), bayname, "", "", "", ""])
+        eid += 1
+        rows.append([eid, ref, "COMPLETED", utc(dd, done), bayname, "", "", "", ""])
+    write_csv(os.path.join(target, FILES["events"]),
+              ["event_id", "visit_ref", "event_type", "event_utc", "bay", "request_type", "request_org", "request_date",
+               "pathway"], rows)
+    return len(rows)
+
+
+def gone_text(m, style):
+    h, mi = int(m // 60), int(m % 60)
+    if style == 0:
+        return "%02d:%02d" % (h, mi)
+    if style == 1:
+        return "%d.%02d" % (h, mi)
+    return "%d:%02d%s" % (h if h <= 12 else h - 12, mi, "am" if h < 12 else "pm")
+
+
+def reception_log(target, W, V, AW, rng):
+    from openpyxl import Workbook
+    from openpyxl.styles import Font
+    gone = {}
+    for v in V:
+        gone[v[0]] = max(gone.get(v[0], 0), v[6])
+    turned = {}
+    for d, g, m in AW:
+        key = "H" if g == "H" else "G"
+        half = "AM" if m < 750 else "PM"
+        turned.setdefault(d, {"G": {"AM": 0, "PM": 0}, "H": {"AM": 0, "PM": 0}})[key][half] += 1
+    wb = Workbook()
+    wb.remove(wb.active)
+    days = [d for d in W["days"] if d <= P.REC_END]
+    for fy in (2023, 2024, 2025, 2026):
+        ws = wb.create_sheet("%d-%s" % (fy, str(fy + 1)[2:]))
+        ws.append(["Phlebotomy reception: patients turned away after the day's tickets had gone (PALS monthly return)"])
+        ws["A1"].font = Font(bold=True)
+        fdays = [d for d in days if (d.year - (d.month < 4)) == fy]
+        if fy <= 2024:
+            ws.append(["One line per clinic day. Leave the boxes blank if nobody was turned away. AM is the morning "
+                       "receptionist's shift (to 12:30). Totals to %s by the 3rd." % P.PEOPLE["reception"]])
+            ws.append([])
+            ws.append(["Date", "Day", "Tickets gone at", "GP form AM", "GP form PM", "Hospital form AM",
+                       "Hospital form PM", "Comments"])
+            cur, tot = None, [0, 0, 0, 0]
+            for d in fdays:
+                if cur is not None and d.month != cur.month:
+                    ws.append(["Total %s" % cur.strftime("%B %Y"), None, None] + [x or None for x in tot] + [None])
+                    ws.append([])
+                    tot = [0, 0, 0, 0]
+                cur = d
+                if d in turned:
+                    t = turned[d]
+                    vals = [t["G"]["AM"], t["G"]["PM"], t["H"]["AM"], t["H"]["PM"]]
+                    com = None
+                    if (vals[1] or vals[3]) and rng.random() < 0.18:
+                        vals = [vals[0] + vals[1], 0, vals[2] + vals[3], 0]
+                        com = "inc PM"
+                    tot = [a + b for a, b in zip(tot, vals)]
+                    ws.append([d, d.strftime("%a"), gone_text(gone[d], int(rng.choice([0, 0, 1, 2])))] +
+                              [x if x else None for x in vals] + [com])
+                else:
+                    ws.append([d, d.strftime("%a"), None, None, None, None, None, None])
+            if cur is not None:
+                ws.append(["Total %s" % cur.strftime("%B %Y"), None, None] + [x or None for x in tot] + [None])
         else:
-            tot = int(rng.integers(5200, 9800))
-            sh = (0.17, 0.59, 0.24)
-        a = int(round(tot * (sh[0] + rng.normal(0, 0.01))))
-        c = int(round(tot * (sh[2] + rng.normal(0, 0.015))))
-        b = tot - a - c
-        rows.append([wcode[w], w, WD.DISTRICT[w], tot, a, b, c])
-    return rows
+            ws.append(["From April 2025 log only the days the tickets ran out, one line per day."])
+            ws.append([])
+            ws.append(["Date", "Tickets gone", "GP forms turned away", "Hospital forms turned away", "Initials"])
+            for d in fdays:
+                if d in turned:
+                    t = turned[d]
+                    dv = d if rng.random() > 0.03 else d.strftime("%d/%m/%Y")
+                    ws.append([dv, gone_text(gone[d], int(rng.choice([0, 0, 0, 1]))), t["G"]["AM"] + t["G"]["PM"],
+                               t["H"]["AM"] + t["H"]["PM"], str(rng.choice(["RR", "CD", "RW", "RR", "CD"]))])
+        for row in ws.iter_rows(min_row=1):
+            for cell in row:
+                if isinstance(cell.value, dt.date):
+                    cell.number_format = "DD/MM/YYYY"
+    path = os.path.join(target, FILES["log"])
+    save_xlsx(wb, path, dt.datetime(2026, 10, 1, 16, 48), P.PEOPLE["reception"])
+    return turned
 
 
-LIC_NAMES = ["The Old Bell", "Canal House", "Mill Bank Social", "The Tannery", "Velvet", "Arches", "The Cooper's Arms",
-             "Kingsway Rooms", "Halo", "The Corn Exchange", "Basin Bar", "The Lamplighter", "Ritz Lounge", "Sanctuary",
-             "The Abbey Tap", "Quayside", "Electric Mill", "The Jolly Sailor", "Copper Still", "Neon Lane", "The Granary",
-             "Cathedral Vaults", "The Fleece", "Castle Hotel", "The Wharf", "Ballroom 23", "Glasshouse", "The Feathers",
-             "Number Nine", "Bank Street Club"]
+EMP = ["20441735", "20495208", "20611843", "20730512", "20884271", "21006734", "21139068"]
+GRADES = ["Senior Phlebotomist Band 3"] + ["Phlebotomist Band 2"] * 6
+BANKPOOL = ["B-38812", "B-40157", "B-41930", "B-42288"]
 
 
-def licence_rows(rng, wcode):
+def eroster(target, W, rng):
     rows = []
-    wards = (["Mill Bank"] * 9 + ["Abbey Fields"] * 6 + ["Castle"] * 4 + ["Cathedral"] * 3 + ["Kingsway"] * 5 +
-             ["St Peter's"] * 3 + ["Northgate"] * 2 + ["Eastmoor"] * 2 + ["Highfield"] + ["Parkway"])
-    for k, w in enumerate(wards):
-        name = LIC_NAMES[k % len(LIC_NAMES)] + ("" if k < len(LIC_NAMES) else " (Upstairs)")
-        latest_wk = ["00:30", "01:00", "01:30", "02:00"][int(rng.integers(0, 4))]
-        latest_we = ["02:00", "02:30", "03:00", "04:00"][int(rng.integers(0, 4))]
-        status = "Current"
-        if w == "Kingsway" and k % 2 == 0:
-            status = "Surrendered %s" % ["03/2023", "11/2023", "06/2024"][k % 3]
-        granted = "%02d/%02d/%d" % (int(rng.integers(1, 28)), int(rng.integers(1, 13)),
-                                    int(rng.integers(2023, 2025)) if w == "Mill Bank" and k % 3 else int(rng.integers(2006, 2020)))
-        rows.append(["HDL/PREM/%04d" % (210 + 7 * k), name, w, wcode[w], latest_wk, latest_we,
-                     int(rng.integers(8, 70)) * 10, granted, status])
-    return rows
+    days = W["days"]
+    n = sum(1 for d in days if d <= P.REC_END)
+    st = W["status"]
+    # once a holder's sickness passes five clinic days the e-roster unassigns the line until the holder returns
+    unassigned = np.zeros((n, P.POSTS), bool)
+    for p in range(P.POSTS):
+        i = 0
+        while i < n:
+            if st[i, p] == "SICK":
+                j = i
+                while j < n and st[j, p] == "SICK":
+                    j += 1
+                if j - i > P.UNASSIGN_AFTER:
+                    unassigned[i + P.UNASSIGN_AFTER:j, p] = True
+                i = j
+            else:
+                i += 1
+    for i in range(n):
+        d = days[i]
+        for p in range(P.POSTS):
+            s = st[i, p]
+            if s == "VAC" or unassigned[i, p]:
+                rows.append([d.isoformat(), "", GRADES[p], "CLIN 07:30-15:30", "", "Y", "7.50"])
+                continue
+            emp = P.VACANCY_SUCCESSOR if (p == P.POSTS - 1 and d > P.VACANCY[1]) else EMP[p]
+            absn = {"CLIN": "", "SICK": "Sickness", "AL": "Annual leave"}[s]
+            rows.append([d.isoformat(), emp, GRADES[p], "CLIN 07:30-15:30", absn, "N", "7.50"])
+        for k in range(int(W["bank"][i])):
+            rows.append([d.isoformat(), BANKPOOL[(i + k) % len(BANKPOOL)] if rng.random() < 0.9 else str(rng.choice(BANKPOOL)),
+                         "Bank Phlebotomist", "BANK 07:30-15:30", "", "N", "7.50"])
+    write_csv(os.path.join(target, FILES["roster"]),
+              ["Roster date", "Employee no", "Assignment", "Shift", "Absence", "Vacant line", "Hours"], rows)
+    return len(rows)
 
 
-def bank_holidays():
-    ev = [("New Year’s Day", "2025-01-01"), ("Good Friday", "2025-04-18"), ("Easter Monday", "2025-04-21"),
-          ("Early May bank holiday", "2025-05-05"), ("Spring bank holiday", "2025-05-26"),
-          ("Summer bank holiday", "2025-08-25"), ("Christmas Day", "2025-12-25"), ("Boxing Day", "2025-12-26"),
-          ("New Year’s Day", "2026-01-01"), ("Good Friday", "2026-04-03"), ("Easter Monday", "2026-04-06"),
-          ("Early May bank holiday", "2026-05-04"), ("Spring bank holiday", "2026-05-25"),
-          ("Summer bank holiday", "2026-08-31"), ("Christmas Day", "2026-12-25"), ("Boxing Day", "2026-12-28")]
-    events = [{"title": t, "date": d, "notes": "Substitute day" if t == "Boxing Day" and d == "2026-12-28" else "",
-               "bunting": t not in ("Good Friday",)} for t, d in ev]
-    return json.dumps({"england-and-wales": {"division": "england-and-wales", "events": events}}, ensure_ascii=False,
-                      separators=(",", ":"))
+def kiosk(target, W, rng):
+    rows = []
+    for i, d in enumerate(W["days"]):
+        if d > P.REC_END:
+            break
+        rows.append([d.strftime("%d/%m/%Y"), "07:%02d" % int(rng.integers(2, 14)), int(W["alloc"][i]),
+                     str(rng.choice(["RD", "RD", "RD", "JP", "SM"]))])
+    write_csv(os.path.join(target, FILES["kiosk"]), ["Date", "Set at", "Tickets", "Set by"], rows)
+
+
+def practices(target):
+    rows = []
+    for code, name, size, g, own in P.PRACTICES:
+        sizes = [round(size * (1 + g) ** k) for k in range(4)]
+        note = ""
+        if code == P.MERGED_FROM:
+            note = "Merged into Fellside Health Centre (K91031) on 1 October 2025; list closed at the merger"
+            sizes[3] = ""
+        if code == P.MERGED_INTO:
+            cv = [x for x in P.PRACTICES if x[0] == P.MERGED_FROM][0]
+            sizes[3] = sizes[3] + round(cv[2] * (1 + cv[3]) ** 3)
+            note = "Includes Castle View Medical Centre's patients from 1 October 2025"
+        rows.append([code, name] + sizes + ["Y" if own else "N", note])
+    write_csv(os.path.join(target, FILES["practices"]),
+              ["practice_code", "practice_name", "list_size_2023-04", "list_size_2024-04", "list_size_2025-04",
+               "list_size_2026-04", "phlebotomy_les_2025-26", "notes"], rows)
+
+
+DAYN = ["Mon", "Tue", "Wed", "Thu", "Fri"]
+
+
+def clinics(target):
+    rows = []
+    loc = {"Cardiology": "Outpatients block C", "Diabetes and endocrinology": "Diabetes Centre",
+           "Gastroenterology": "Outpatients block C", "General medicine": "Outpatients block A",
+           "Haematology": "Haematology Day Unit", "Renal medicine": "Renal Unit", "Rheumatology": "Outpatients block B"}
+    for name, (code, wds) in sorted(P.NEW_CLINIC.items(), key=lambda kv: kv[1][0]):
+        rows.append([code, "%s outpatient clinic" % name, name, ", ".join(DAYN[x] for x in wds), loc[name]])
+    write_csv(os.path.join(target, FILES["clinics"]),
+              ["clinic_code", "clinic_name", "specialty", "clinic_days", "location"], rows)
+
+
+def bank_holidays(target):
+    titles = {(1, 1): "New Year's Day", (12, 25): "Christmas Day", (12, 26): "Boxing Day"}
+    ev = []
+    for y, m, d in P.BANK_HOLIDAYS:
+        x = dt.date(y, m, d)
+        if (m, d) in titles:
+            t = titles[(m, d)]
+        elif m == 12 or (m == 1):
+            t = "Substitute day" if m == 12 else "New Year's Day"
+        elif m in (3, 4) and x.weekday() == 4:
+            t = "Good Friday"
+        elif m in (3, 4) and x.weekday() == 0:
+            t = "Easter Monday"
+        elif m == 5 and x.day <= 7:
+            t = "Early May bank holiday"
+        elif m == 5 and x.day == 8:
+            t = "Bank holiday for the coronation of King Charles III"
+        elif m == 5:
+            t = "Spring bank holiday"
+        else:
+            t = "Summer bank holiday"
+        ev.append({"title": t, "date": x.isoformat(), "notes": "Substitute day" if t == "Substitute day" else "",
+                   "bunting": True})
+    doc = {"england-and-wales": {"division": "england-and-wales", "events": ev}}
+    with open(os.path.join(target, FILES["bh"]), "w") as fh:
+        json.dump(doc, fh, indent=1)
+        fh.write("\n")
+
+
+def survey(target, rng):
+    rows = []
+    bands = ["Under 15 minutes", "15 to 30 minutes", "30 to 45 minutes", "45 to 60 minutes", "Over an hour"]
+    for k in range(412):
+        rows.append([3100 + k, "2025-06", str(rng.choice(["GP request", "Hospital clinic request"], p=[0.74, 0.26])),
+                     bands[int(rng.choice(5, p=[0.12, 0.22, 0.25, 0.23, 0.18]))],
+                     int(rng.choice([1, 2, 3, 4, 5], p=[0.04, 0.07, 0.11, 0.38, 0.40])),
+                     str(rng.choice(["Yes", "No", "Not sure"], p=[0.71, 0.12, 0.17]))])
+    write_csv(os.path.join(target, FILES["survey"]),
+              ["response_id", "survey_month", "request_type", "time_waited", "rating_1_to_5", "would_recommend"], rows)
+
+
+def hub_plan(target):
+    from openpyxl import Workbook
+    from openpyxl.styles import Font
+    wb = Workbook()
+    ws = wb.active
+    ws.title = "Sessions"
+    ws.append(["Kingsmead Health Village community phlebotomy hub: draft session plan from April 2027 (Outpatients "
+               "business office)"])
+    ws["A1"].font = Font(bold=True)
+    ws.append(["Day", "Opens", "Closes", "Chairs", "Booked slots per chair", "Walk-in tickets per chair",
+               "Phlebotomists rostered"])
+    for d, o, c, ch, b, w, ph in [("Monday", "07:30", "16:00", 10, 16, 26, 10), ("Tuesday", "07:30", "16:00", 9, 16, 24, 9),
+                                   ("Wednesday", "07:30", "16:00", 9, 16, 24, 9), ("Thursday", "07:30", "18:30", 9, 20, 24, 10),
+                                   ("Friday", "07:30", "15:00", 8, 14, 22, 8)]:
+        ws.append([d, o, c, ch, b, w, ph])
+    ws.append([])
+    ws.append(["Walk-in tickets are not capped: the senior phlebotomist adds bank chairs on the day."])
+    ws2 = wb.create_sheet("Staffing")
+    ws2.append(["Role", "Band", "WTE", "Funding"])
+    for r in [("Hub lead phlebotomist", 4, 1.0, "Recurrent"), ("Senior phlebotomist", 3, 2.0, "Recurrent"),
+              ("Phlebotomist", 2, 9.6, "Recurrent"), ("Receptionist", 2, 2.0, "Recurrent"),
+              ("Bank phlebotomist", 2, 1.5, "Non-recurrent")]:
+        ws2.append(list(r))
+    save_xlsx(wb, os.path.join(target, FILES["hub"]), dt.datetime(2026, 9, 24, 11, 3), P.PEOPLE["outpatients"])
+
+
+def dictionary(target):
+    rows = [
+        (FILES["legacy"], "Date", "Clinic day the ticket was issued (dd/mm/yyyy, UK local time)"),
+        (FILES["legacy"], "Ticket", "Ticket number shown to the patient; numbering restarts each day, A for blood tests and F for fasting blood tests"),
+        (FILES["legacy"], "Issued", "Time the kiosk issued the ticket (UK local time)"),
+        (FILES["legacy"], "Called", "Time of the last call of the ticket to a desk (UK local time)"),
+        (FILES["legacy"], "Desk", "Desk number; B is the bank phlebotomist's desk"),
+        (FILES["legacy"], "Request", "Request form the patient brought, as chosen at the kiosk"),
+        (FILES["legacy"], "Outcome", "Seen, or Test ticket for kiosk tests by the IT team"),
+        (FILES["events"], "event_utc", "Time of the event in UTC"),
+        (FILES["events"], "event_type", "CHECKED_IN when the patient takes a ticket; CALLED each time the ticket is called to a bay; COMPLETED when the bay closes the visit"),
+        (FILES["events"], "visit_ref", "One reference per ticket"),
+        (FILES["events"], "request_type", "GP or HOSP, the request form the patient brought, as chosen at the kiosk"),
+        (FILES["events"], "request_org", "Code of the organisation that issued the request, read from the form's barcode: the practice's ODS code or the outpatient clinic code; blank where the form has no barcode"),
+        (FILES["events"], "request_date", "Date the request was issued, read from the form's barcode"),
+        (FILES["events"], "pathway", "WALK_IN or WALK_IN_FASTING"),
+        (FILES["roster"], "Hours", "Rostered hours for the line on the roster date"),
+        (FILES["roster"], "Absence", "Blank when worked; Annual leave; Sickness"),
+        (FILES["roster"], "Vacant line", "Y where no substantive post holder was assigned to the line on the roster date"),
+        (FILES["kiosk"], "Tickets", "Walk-in tickets the senior phlebotomist set the kiosk to issue that day"),
+        (FILES["practices"], "phlebotomy_les_2025-26", "Y where the practice holds the 2025-26 phlebotomy local enhanced service"),
+        (FILES["clinics"], "clinic_code", "Outpatient clinic code on the trust's patient administration system"),
+        (FILES["clinics"], "clinic_days", "Weekdays the clinic runs"),
+        (FILES["survey"], "time_waited", "Patient's own estimate of the wait after taking a ticket"),
+    ]
+    write_csv(os.path.join(target, FILES["dict"]), ["file", "column", "description"], rows)

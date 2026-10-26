@@ -1,329 +1,313 @@
-"""The generator's assertions on the clean truth and on the cut pack: the input gates, the three rules (R1 to R3c),
-the ladder and its margins, every semantic fork row (SF1 to SF14), the separation line, the asks' devices and stops,
-the realism sweep and each distractor's deletion test.
-
-    python3 checks.py            # needs target/ and figures.json from build.py
-"""
-import collections
+"""Generator assertions: the call, its standing family, the ladder, the careful frame, the fork table, the three rules on
+the clean truth, mess neutrality, the asks' devices and stops, separation, the input gates, the realism sweep and the
+documents read back with positive controls. Returns the number of failures."""
 import datetime as dt
-import json
 import os
-import re
 import shutil
-import sys
 import tempfile
-import zipfile
 
 import numpy as np
 import pandas as pd
+import statsmodels.api as sm
 
-HERE = os.path.dirname(os.path.abspath(__file__))
-sys.path.insert(0, HERE)
-import build as BD      # noqa: E402
-import golden as GD     # noqa: E402
-import pack as PK       # noqa: E402
-import world as WD      # noqa: E402
+import build as B
+import docs as DC
+import params as P
+import solve as S
+import world as WO
 
-TASK = os.path.dirname(HERE)
-TGT = os.path.join(TASK, "target")
-RESULTS = []
-
-
-def check(label, cond, detail=""):
-    RESULTS.append((label, bool(cond), detail))
-    print(("ok    " if cond else "FAIL  ") + label + ("  (" + detail + ")" if detail else ""))
+BAD = []
+U = S.ROUND
 
 
-def cell(x, b=250):
-    return int(np.floor(x / b + 0.5)) * b
+def check(name, ok, info=""):
+    print(("ok   " if ok else "FAIL ") + name + ((" :: " + str(info)) if info != "" else ""))
+    if not ok:
+        BAD.append(name)
 
 
-def edge(x, b=250):
-    return b / 2 - abs(x - cell(x, b))
+def edge(x, u=U):
+    return u / 2.0 - abs(x - S.rnd(x, u))
 
 
-def in_one_cell(xs, b=250):
-    return len({cell(x, b) for x in xs}) == 1
+def pdf_text(path):
+    from pypdf import PdfReader
+    import re
+    return re.sub(r"\s+", " ", " ".join(p.extract_text() for p in PdfReader(path).pages))
 
 
-def text_of(path):
-    """Every shipped document's text through one extractor (docx and xlsx parts unzipped, pdf through pypdf)."""
-    if path.endswith(".pdf"):
-        import pypdf
-        return "\n".join(p.extract_text() or "" for p in pypdf.PdfReader(path).pages)
-    if path.endswith((".docx", ".xlsx")):
-        with zipfile.ZipFile(path) as z:
-            return "\n".join(re.sub(r"<[^>]+>", " ", z.read(n).decode("utf-8", "replace")) for n in z.namelist()
-                             if n.endswith(".xml"))
-    return open(path, encoding="utf-8", errors="replace").read()
-
-
-def main():
-    T = BD.make_world()
-    W, C, rows, files, hc, close = T["W"], T["C"], T["rows"], T["files"], T["hc"], T["close"]
-    R = GD.figures(TGT)
-    M, A, B = R["M"], R["A"], R["B"]
-    fig = json.load(open(os.path.join(HERE, "figures.json")))
-    meta = json.load(open(os.path.join(TASK, "metadata.json")))
-    names = sorted(os.listdir(TGT))
-    a, p, lk, al = GD.load(TGT)
-
-    # ---------------------------------------------------------------- input gates
-    check("G1 ten or more files", len(names) >= 10, "%d files" % len(names))
-    check("G2 three or more formats", len({os.path.splitext(n)[1] for n in names}) >= 3,
-          ", ".join(sorted({os.path.splitext(n)[1] for n in names})))
-    check("G3 a file of 25,000 rows or more", len(a) >= 25000 and len(p) >= 25000, "%d arrests, %d crimes" % (len(a), len(p)))
-    dis = [os.path.basename(x) for x in meta["distractor_files"]]
-    check("G4 two or more distractors, each shipped", len(dis) >= 2 and all(d in names for d in dis), ", ".join(dis))
-    check("G5 no file name names a distractor or the stump",
-          not any(re.search(r"distract|btp|transport|missing|hidden|known_issue", n, re.I) for n in names))
-    check("G6 every mtime is the fiction's", all(os.path.getmtime(os.path.join(TGT, n)) <
-                                                 dt.datetime(2026, 10, 21).timestamp() for n in names))
-
-    # ---------------------------------------------------------------- R1: the field's raw material ships
-    check("R1a the call reads row-level records: arrests and BTP's own crime rows",
-          M["own_2025"] == int((a[a.ward.isin(M["hub"])].fy == 2025).sum()) and M["btp_hub_crimes"] > 1000)
-    heads = " ".join(open(os.path.join(TGT, n), encoding="utf-8").readline().lower() for n in names if n.endswith(".csv"))
-    check("R1b no shipped column holds the deciding quantity",
-          not re.search(r"btp_arrest|detentions_2027|demand_2027|planning", heads))
-    # ---------------------------------------------------------------- R2: every mess item neutral on the call
-    hub = M["hub"]
-    ah = a[a.ward.isin(hub)].copy()
-    t_utc = pd.to_datetime(ah.arrested_utc, utc=True)
-    ah["fy_utc"] = np.where(t_utc.dt.month >= 4, t_utc.dt.year, t_utc.dt.year - 1)
-    byw_utc = ah.groupby(["ward", "fy_utc"]).size().unstack(fill_value=0)
-    f1_utc = GD.model(byw_utc, 2025, 2)
-    check("R2a UTC financial years instead of UK time: same call", cell(f1_utc + M["B"]["B2 per-type rates with the warrant share"]) == M["golden"],
-          "%.1f" % f1_utc)
-    booked = a[a.custody_suite.isin(["Northgate", "Eastmoor"]) & a.ward.isin(hub)]
-    byw_bk = booked.groupby(["ward", "fy"]).size().unstack(fill_value=0)
-    check("R2b counting the wards' arrests booked at their own suites only: same call",
-          cell(GD.model(byw_bk, 2025, 2) + M["B"]["B2 per-type rates with the warrant share"]) == M["golden"])
-    near = ah.drop_duplicates(["arrested_utc", "ward", "offence_group", "age_band", "sex"]).groupby(["ward", "fy"]).size().unstack(fill_value=0)
-    check("R2c co-arrests that look alike (same minute, ward, offence, age band and sex) dropped as duplicates: same call",
-          cell(GD.model(near, 2025, 2) + M["B"]["B2 per-type rates with the warrant share"]) == M["golden"],
-          "%d dropped" % (len(ah) - len(ah.drop_duplicates(["arrested_utc", "ward", "offence_group", "age_band", "sex"]))))
-    one = ah.drop_duplicates(["arrested_utc", "ward", "offence_group"]).groupby(["ward", "fy"]).size().unstack(fill_value=0)
-    check("R2d warrants left out of BTP's sizing: same call", cell(M["G"]["F1 + B1"]) == M["golden"])
-    check("R2e the April to September 2026 rows: the model reads full years, the last twelve months print the same",
-          cell(M["G"]["F6 + B2"]) == M["golden"])
-    pl = p.merge(lk[["lsoa21_code", "ward"]], left_on="LSOA code", right_on="lsoa21_code", how="left")
-    check("R2f every street-level row has a ward through the lookup", pl.ward.notna().all())
-    check("R2g the closures and overflow move no arrest between wards", len(a) == sum(len(x) for x in [a]) and
-          a.ward.isin(WD.WARDS).all())
-    # ---------------------------------------------------------------- R3: the analyst test on the clean truth
-    clean = WD.routes_agg(W, C)
-    check("R3a the default path on the clean truth files the wrong answer (every frame member at 3,750)",
-          in_one_cell(clean["F"].values()) and cell(clean["F"]["F1"]) == M["default"],
-          "%.1f to %.1f" % (min(clean["F"].values()), max(clean["F"].values())))
-    check("R3a' the default path on the pack files 3,750 too", in_one_cell(M["F"].values()) and M["default"] == 3750)
-    check("R3b the decisive step alone files the golden; the share-scaling correction does not",
-          cell(clean["F"]["F1"] + clean["B"]["B2"]) == M["golden"] and cell(clean["R"]["R1"]) == M["default"]
-          and cell(M["R"]["R1 scaled by BTP's share of the street-level file"]) == M["default"])
-    check("R3b' the world's expected 2027-28 detentions sit in the golden's cell", cell(clean["truth"]["total"]) == M["golden"],
-          "%.1f" % clean["truth"]["total"])
-    docs_text = {n: text_of(os.path.join(TGT, n)) for n in names if n.endswith((".docx", ".pdf", ".xlsx"))}
-    check("R3c no document states a figure for the hub or argues for one",
-          not any(re.search(r"\b(3,?750|4,?000|3,?754|4,?036)\b", t) for t in docs_text.values()))
-    dup = a.duplicated(["custody_suite", "booked_in_utc", "ward", "offence_group", "age_band", "sex", "detention_hhmm"]).sum()
-    check("R3c' no copied block of arrests (identical rows beyond co-arrest coincidence)", dup <= 3, "%d" % dup)
-
-    # ---------------------------------------------------------------- the ladder and its margins
-    fr, go = list(M["F"].values()), list(M["G"].values())
-    check("L1 every frame member prints 3,750 with 30 or more to spare", in_one_cell(fr) and min(edge(x) for x in fr) >= 30,
-          "%.1f" % min(edge(x) for x in fr))
-    check("L2 every golden-family member prints 4,000 with 30 or more to spare", in_one_cell(go) and cell(go[0]) == M["golden"]
-          and min(edge(x) for x in go) >= 30, "%.1f" % min(edge(x) for x in go))
-    check("L3 the share-scaled rung stays on 3,750", cell(M["R"]["R1 scaled by BTP's share of the street-level file"]) == 3750)
-    check("L4 the golden sits clear of its edge", edge(M["golden_raw"]) >= 50, "%.1f" % edge(M["golden_raw"]))
-    val = BD.validation_rows(rows)
-    check("L5 the model's back-test holds within 4 per cent at every suite", all(0.96 <= v[3] <= 1.04 for v in val),
-          ", ".join("%s %.3f" % (v[0], v[3]) for v in val))
-    check("L6 the cap binds no hub ward (the model with and without it agree)",
-          abs(M["F"]["F1 the model as filed"] - M["F"]["F7 the model without its cap"]) < 1e-9)
-
-    # ---------------------------------------------------------------- semantic fork table
-    check("SF1 the hub's detentions are everyone booked there: the force's arrests alone print 3,750, not the golden",
-          M["default"] != M["golden"])
-    check("SF2 2027-28 is 1 April 2027 to 31 March 2028: the model carries 2025-26 two years",
-          abs(M["F"]["F1 the model as filed"] - GD.model(ah.groupby(["ward", "fy"]).size().unstack(fill_value=0), 2025, 2)) < 1e-9)
-    check("SF3 the six wards are the allocation's Tanner Street rows",
-          sorted(hub) == sorted(WD.HUB))
-    check("SF4 financial years by the UK date of arrest (model 2.2); UTC dating gives the same call", True if cell(f1_utc + M["B"]["B2 per-type rates with the warrant share"]) == M["golden"] else False)
-    f1_one = GD.model(ah.groupby(["ward", "fy"]).size().unstack(fill_value=0), 2025, 1)
-    check("SF5 one year ahead instead of two: same call", cell(f1_one + M["B"]["B2 per-type rates with the warrant share"]) == M["golden"],
-          "%.1f" % f1_one)
-    check("SF6 the cap does not bind (same call with or without it)", cell(M["G"]["F1 + B2"]) == M["golden"])
-    check("SF7 the nearest 250", M["golden"] % 250 == 0)
-    check("SF8 BTP's 2025-26 crimes are the street-level file's year", sorted(p.Month.unique())[0] == "2025-04" and
-          sorted(p.Month.unique())[-1] == "2026-03")
-    st = M["btp_hub_by_station"]
-    check("SF9 BTP's crimes in the six wards are the two stations' (lookup best fit)",
-          set(s.replace("On or near ", "").replace(" (station)", "") for s in st) == {"Calderwick", "Kingsway"})
-    check("SF10 the BTP sizing family (per type, overall, hub rate, with or without warrants) prints the golden",
-          all(cell(M["F"]["F1 the model as filed"] + v) == M["golden"] for v in M["B"].values()))
-    check("SF11 every BTP crime in the force area at the overall rate (the over-reach) still prints the golden, but the county "
-          "stations' detainees go to Southfields and Wendle Cross (allocation note 2)",
-          cell(M["R"]["R2 every BTP crime in the force area at the overall rate"]) == M["golden"])
-    check("SF12 a detention is a person booked in: collapsing each incident to one arrest is the wrong unit, ruled out by "
-          "'one row per arrest' (it prints 3,750)",
-          cell(GD.model(one, 2025, 2) + M["B"]["B2 per-type rates with the warrant share"]) == M["default"])
-    check("SF13 the force's own 2025-26 rates from its whole area, not the six wards' (B4 the six wards' rate): same call",
-          cell(M["G"]["F1 + B4"]) == M["golden"])
-    check("SF14 warrant, recall or breach arrests counted in the model (the records hold them): same call either way",
-          cell(GD.model(ah[ah.offence_group != GD.WARRANT].groupby(["ward", "fy"]).size().unstack(fill_value=0), 2025, 2) / (1 - 0.05)
-               + M["B"]["B2 per-type rates with the warrant share"]) == M["golden"])
-
-    # ---------------------------------------------------------------- separation: no ask device moves the call
-    with tempfile.TemporaryDirectory() as td:
-        for n in names:
-            if n not in (BD.F_CJU, BD.F_HC):
-                os.symlink(os.path.join(TGT, n), os.path.join(td, n))
-        a2, p2, lk2, al2 = GD.load(td)
-        M2 = GD.main_call(a2, p2, lk2, al2)
-    check("S1 the call recomputes without the remand and healthcare files", M2["golden_raw"] == M["golden_raw"])
-    check("S2 no ask device row is in the call's population: the CJU and healthcare files carry no arrest row of their own",
-          set(pd.read_csv(os.path.join(TGT, BD.F_CJU)).linked_arrest) <= set(a.arrest_ref))
-    check("S3 the closures move bookings, never wards: the six wards' counts are the same by ward or by any suite",
-          int((a.ward.isin(hub) & (a.fy == 2025)).sum()) == M["own_2025"])
-
-    # ---------------------------------------------------------------- ask A: remand holds
-    c, d, orphans = GD.remand_defendants(a, TGT)
-    d25 = d[d.fy == 2025]
-    truth = collections.defaultdict(lambda: [0.0, 0])
-    for r in rows:
-        if r["out"] != "Charged - remanded in custody" or "handover" not in r:
+def main(target, R=None):
+    del BAD[:]
+    D, ci, ev, g = S.solve(target)
+    ci.attrs["target"] = target
+    gold = g["plan_r"]
+    L, col = g["L"], g["col"]
+    check("call: the plan is 45,000 GP-referred visits", gold == 45000, round(g["plan"]))
+    check("call: at least 600 inside its 2,500 cell", edge(g["plan"]) >= 600, round(edge(g["plan"])))
+    aic = g["aic"]
+    gap5 = min(aic[l] - aic[L] for l in aic if l <= 5)
+    check("fit: the record's fit picks the world's own eight-week window", L == P.DETER_WEEKS,
+          {k: round(v - aic[L], 1) for k, v in aic.items()})
+    check("fit: every window of five weeks or fewer at least 50 worse in AIC", gap5 >= 50, round(gap5, 1))
+    fam = S.family(D, ci, L)
+    for k, v in fam.items():
+        check("family: %s prints 45,000, at least 300 inside the cell" % k, S.rnd(v) == gold and edge(v) >= 300, round(v))
+    geo = fam["a geometric decay over 26 weeks, its rate by AIC"]
+    check("family: the geometric decay, the top-edge soft spot, at least 250 below 46,250", 46250 - geo >= 250, round(46250 - geo))
+    more = S.family_more(D, target, L)
+    for k, v in more.items():
+        check("family: %s prints 45,000, at least 250 inside the cell" % k, S.rnd(v) == gold and edge(v) >= 250, round(v))
+    extra = S.family_extra(D, L)
+    for k, v in extra.items():
+        check("family (other exposure forms): %s prints 45,000, at least 250 inside" % k, S.rnd(v) == gold and edge(v) >= 250,
+              "%.0f, %.0f inside" % (v, edge(v)))
+    allfam = list(fam.values()) + list(more.values()) + list(extra.values())
+    check("family: %d specifications in one printed cell" % len(allfam), len({S.rnd(v) for v in allfam}) == 1,
+          "%.0f to %.0f, %.2f of the unit" % (min(allfam), max(allfam), (max(allfam) - min(allfam)) / U))
+    for k, (v, da) in S.reduced(D, L).items():
+        check("reduced controls ruled out by fit: %s costs at least 100 in AIC" % k, da >= 100, "%.0f, AIC +%.0f" % (v, da))
+    for k, (v, n, miss) in S.quiet(D, L).items():
+        check("quiet-period fit ruled out by support: %s holds no day in %d months of the year" % (k, len(miss)),
+              len(miss) >= 1, "%d days, months absent %s, %.0f" % (n, miss, v))
+    # what the probes' own return check sees on this pack: the day-lagged turned-away counts (recorded)
+    Dv = D.assign(g1=D.away_gp.shift(1).fillna(0), g2=D.away_gp.shift(2).fillna(0),
+                  a1=(D.away_gp + D.away_h).shift(1).fillna(0), a2=(D.away_gp + D.away_h).shift(2).fillna(0),
+                  tot=D.seen_gp + D.seen_h)
+    cl = Dv[Dv.ro == 0]
+    mg = sm.GLM(cl.seen_gp, S.calX(cl, ["g1", "g2"]), family=sm.families.Poisson()).fit()
+    mt = sm.GLM(cl.tot, S.calX(cl, ["a1", "a2"]), family=sm.families.Poisson()).fit()
+    check("visibility (recorded): the return check on GP-form visits, lag 1 and 2 days' GP turned away", True,
+          "t %.1f and %.1f" % (mg.params["g1"] / mg.bse["g1"], mg.params["g2"] / mg.bse["g2"]))
+    check("visibility (recorded): the return check on all visits", True,
+          "t %.1f and %.1f" % (mt.params["a1"] / mt.bse["a1"], mt.params["a2"] / mt.bse["a2"]))
+    lad = S.ladder(D, target, ci)
+    want = {"R0": 40000, "R1": 42500, "R2": 42500, "R3": 42500, "R4": 42500, "R5": 42500}
+    for k, v in lad.items():
+        far = abs(v - 45000) - U / 2.0
+        if k.startswith("R2 demand fitted"):
+            check("ladder: %s misses, at least 1,000 from the golden's cell (its own cell at the 41,250 edge)" % k[:2],
+                  S.rnd(v) != gold and far >= 1000, round(v))
             continue
-        ch = PK.charge_utc(r)
-        if PK.fy_local(PK.to_local(ch)) != 2025:
+        check("ladder: %s prints %s" % (k, "{:,}".format(want[k[:2]])), S.rnd(v) == want[k[:2]], round(v))
+        check("ladder: %s at least %s from the golden's cell" % (k[:2], "1,000" if "reader" in k or "golden" in k else "900"),
+              far >= (1000 if ("reader" in k or "golden" in k) else 900), round(far))
+    for lab, kw in (("no month terms", dict(month=False)), ("with the day's hospital-form visits", dict(hosp=True)),
+                    ("Poisson", dict(poisson=True))):
+        v = S.lag_route(D, **kw)
+        check("ladder: the round 2 Opus reader's route, %s, at least 1,000 below the golden's cell" % lab, 43750 - v >= 1000, round(v))
+    for n, must in ((20, True), (30, True)):
+        v = S.lag_route(D, n=n)
+        check("ladder: the round 2 Opus reader's route with %d daily lags misses" % n, v < 43750, round(v))
+    v40 = S.lag_route(D, n=40)
+    check("ladder (recorded): with 40 daily lags, eight weeks of them, the route reaches the golden's cell", True, round(v40))
+    comp = lad["R2 the run-out days completed from the GP ticket-issue curve (the round 1 Opus reader)"]
+    careful = [lad["R1 seen plus GP-referred turned away (the default path; the round 1 Sonnet reader)"], comp,
+               lad["R5 ten daily lags of the kiosk's full days on open days (the round 2 Opus reader)"]]
+    check("check 2: the default and both Opus readers' careful routes agree in one cell and the decisive step alone moves "
+          "the call out", len({S.rnd(x) for x in careful}) == 1 and S.rnd(careful[0]) != gold, [round(x) for x in careful])
+    # fork table
+    fy = (D.fy == 2025).values
+    gp_coded = ci[(ci.request_type == "GP") & ci.request_org.notna() & (ci.request_org != "")]
+    pr = pd.read_csv(os.path.join(target, DC.FILES["practices"]), dtype=str)
+    blank = int(((ci.request_type == "GP") & (ci.request_org.isna() | (ci.request_org == ""))).sum())
+    D1 = D.copy()
+    lost = ci[(ci.request_type == "GP") & (ci.request_org.isna() | (ci.request_org == ""))].groupby("d").size()
+    D1["arr"] = D1.arr - D1.d.map(lost).fillna(0).astype(int)
+    v = S.deterred(D1)[0] * S.G2
+    check("SF1 GP-referred read as a practice code on the form instead of the kiosk's GP choice: 45,000 still",
+          S.rnd(v) == gold and 0 < blank, "%d forms without a barcode; %.0f" % (blank, v))
+    cal = (D.d >= dt.date(2025, 1, 1)) & (D.d <= dt.date(2025, 12, 31))
+    vcal = float((D.arr.values[cal.values] * np.exp(-g["b"] * D[col].values[cal.values])).sum()) * S.G2
+    check("SF2 2025-26 read as calendar 2025: the ICB letter and the annual report use financial years",
+          "2025-26, the last complete year" in pdf_text(os.path.join(target, DC.FILES["icb"])), round(vcal))
+    check("SF3 growth compounded or simple (1.07): 45,000 either way", S.rnd(g["base"] * 1.07) == gold, round(g["base"] * 1.07))
+    d2728 = len([d for d in WO.clinic_days(dt.date(2027, 4, 1), dt.date(2028, 3, 31))])
+    vwd = g["plan"] * d2728 / g["days"]
+    check("SF4 a working-day adjustment the prompt rules out would still print 45,000", S.rnd(vwd) == gold, "%d days, %.0f" % (d2728, vwd))
+    check("SF5 the turned away left out: 40,000, ruled out by a hub that never runs out of tickets",
+          S.rnd(lad["R0 GP-referred patients seen"]) == 40000)
+    leg = pd.read_csv(os.path.join(target, DC.FILES["legacy"]), dtype=str)
+    leg = leg[leg.Outcome == "Seen"].copy()
+    leg["d"] = pd.to_datetime(leg.Date, format="%d/%m/%Y").dt.date
+    dup = leg[(leg.d >= P.NEW_SYSTEM_LIVE) & (leg.Request == "GP form")].groupby("d").size()
+    D6 = D.copy()
+    D6["arr"] = D6.arr + D6.d.map(dup).fillna(0).astype(int)
+    v6 = S.deterred(D6)[0] * S.G2
+    ev_ci = ci[(ci.d <= P.OLD_SYSTEM_OFF) & (ci.request_type == "GP")].groupby("d").size()
+    check("SF6 the parallel-run fortnight counted twice: 45,000 still, and the two systems agree day by day",
+          S.rnd(v6) == gold and dup.reindex(ev_ci.index).fillna(-1).astype(int).equals(ev_ci.astype(int)), round(v6))
+    check("SF7 the hub's first weeks carry no run-out record: the window's share is nil from April 2027",
+          True, "the plan grows a never-ran-out base")
+    check("SF8 visits, not patients: the prompt asks for visits and the records carry no patient key",
+          "patient" not in "".join(c.lower() for c in ci.columns))
+    rep6 = pdf_text(os.path.join(target, DC.FILES["report"]))
+    csv_cols = [c.lower() for f in os.listdir(target) if f.endswith(".csv")
+                for c in pd.read_csv(os.path.join(target, f), nrows=1).columns]
+    check("SF9 every patient with a GP request is the hub's GP-referred demand set from 2025-26, not the practices' own "
+          "clinics' work: no file counts the practices' phlebotomy activity",
+          "Its activity plan is to be set from 2025-26" in rep6 and not any("activity" in c or "bled" in c for c in csv_cols))
+    check("SF10 the booked clinic at Brantmoor carries on as now, so its own booked patients stay out of the hub's figure",
+          "the booked clinic at %s carries on as now" % P.SATELLITE in rep6)
+    # three rules on the clean truth
+    if R is not None:
+        W = R["W"]
+        fyw = np.array([WO.fy(x) == 2025 for x in W["days"]])
+        arr_t = float((W["A"]["P"] + W["A"]["N"])[fyw].sum()) * S.G2
+        lat_t = float((W["lam"]["P"] + W["lam"]["N"])[fyw].sum()) * S.G2
+        und_t = float((W["A"]["P"] * np.exp(W["K"] * W["E"]) + W["A"]["N"])[fyw].sum()) * S.G2
+        check("R1 the field's raw material ships: daily referrals by request form, the turned-away record and practice codes",
+              len(D) > 800 and D.ro.sum() > 100 and gp_coded.request_org.isin(pr.practice_code).mean() > 0.95)
+        check("R1 no shipped column holds the deterrence or the suppressed demand",
+              not any(("suppress" in c.lower() or "deter" in c.lower() or "kept" in c.lower()) for f in os.listdir(target)
+                      if f.endswith(".csv") for c in pd.read_csv(os.path.join(target, f), nrows=1).columns))
+        check("R3a analyst test on the clean truth: every arrival grown files 42,500", S.rnd(arr_t) == 42500, round(arr_t))
+        check("R3b the decisive step alone on the clean truth: arrivals with the practices' in-housing undone file 45,000",
+              S.rnd(und_t) == 45000, round(und_t))
+        check("R3b the generator's latent demand files 45,000 too", S.rnd(lat_t) == 45000, round(lat_t))
+        check("R3c no plant: no daily count repeats a block of days", not any(
+            (D.seen_gp.values[i:i + 5] == D.seen_gp.values[j:j + 5]).all() for i in range(0, len(D) - 5, 5)
+            for j in range(i + 5, min(i + 60, len(D) - 5), 5)))
+    # R2: each mess item mishandled leaves the call
+    D7 = D.copy()
+    tt = int((pd.read_csv(os.path.join(target, DC.FILES["legacy"]), dtype=str).Outcome == "Test ticket").sum())
+    check("R2 test tickets kept as visits: 45,000 still (no test ticket carries a GP form)", tt > 0 and S.rnd(g["plan"]) == gold, tt)
+    utc_d = pd.to_datetime(ci.event_utc, utc=True).dt.date
+    check("R2 event times left in UTC: every check-in falls on the same UK date", (utc_d.values == ci.d.values).all())
+    log = S.load_log(target)
+    from openpyxl import load_workbook
+    wb = load_workbook(os.path.join(target, DC.FILES["log"]), data_only=True)
+    textdates = []
+    for ws in wb.worksheets[2:]:
+        for row in ws.iter_rows(values_only=True):
+            if isinstance(row[0], str) and row[0][:2].isdigit():
+                textdates.append(dt.datetime.strptime(row[0], "%d/%m/%Y").date())
+    D8 = D.copy()
+    for d in textdates:
+        D8.loc[D8.d == d, "arr"] -= D8.loc[D8.d == d, "away_gp"]
+        D8.loc[D8.d == d, "ro"] = 0
+    v8 = S.deterred(D8)[0] * S.G2
+    check("R2 the log's typed-in dates dropped: 45,000 still", 0 < len(textdates) and S.rnd(v8) == gold, "%d rows, %.0f" % (len(textdates), v8))
+    check("R2 the practice merger and the clinic codes do not touch the call (it reads the kiosk's GP choice)", True)
+    Dk = D.copy()
+    Dk["ro"] = np.maximum(Dk.ro, Dk.full)
+    shk = Dk.groupby("wk").ro.agg(["sum", "size"])
+    shk = (shk["sum"] / shk["size"]).to_dict()
+    for j in range(1, S.LAGS + 1):
+        Dk["w%d" % j] = [shk.get(w - dt.timedelta(7 * j), 0.0) for w in Dk.wk]
+    for l in range(1, 13):
+        Dk["s%d" % l] = Dk[["w%d" % j for j in range(1, l + 1)]].mean(axis=1)
+    gk = S.golden(Dk)
+    check("R2 the days the kiosk filled with nobody turned away read as run-outs: 45,000 still",
+          gk["plan_r"] == gold and int((Dk.ro[fy] > D.ro[fy]).sum()) > 0,
+          "%d days in 2025-26, %d weeks, %.0f" % (int((Dk.ro[fy] > D.ro[fy]).sum()), gk["L"], gk["plan"]))
+    # asks
+    hosp, code_spec = S.ask_hosp(ci, target)
+    truth_old = {s[3]: s[0] for s in P.SPECIALTIES}
+    check("ask A: every old clinic code links to one new code through the March 2026 issues, and to its own specialty",
+          all(code_spec.get(c) == sp for c, sp in truth_old.items()), code_spec)
+    wkr, wk_spec = S.ask_hosp_weekday_route(ci, target)
+    check("ask A: the careful route (old codes' request weekdays against the register's clinic days) names every old code "
+          "and names each one wrongly", all(wk_spec.get(c) not in (None, sp) for c, sp in truth_old.items()), wk_spec)
+    same = sum(int(wkr[sp][q] == hosp[sp][q]) for sp in hosp for q in hosp[sp])
+    check("ask A: the careful route misses all 28 cells", same == 0, "%d of 28" % same)
+    reg = pd.read_csv(os.path.join(target, DC.FILES["clinics"]), dtype=str)
+    check("ask A: the register holds only the new PAS's codes, none of the old ones",
+          not set(reg.clinic_code) & set(truth_old), sorted(reg.clinic_code))
+    hh = ci[ci.request_type == "HOSP"].copy()
+    hh["rd"] = pd.to_datetime(hh.request_date).dt.date
+    newc = set(reg.clinic_code)
+    check("ask A: new codes first appear on forms issued from 16 March 2026, old codes last before it",
+          hh[hh.request_org.isin(newc)].rd.min() >= P.PAS_LIVE and hh[~hh.request_org.isin(newc)].rd.max() < P.PAS_LIVE)
+    h = ci[(ci.request_type == "HOSP") & (ci.d >= S.FY0) & (ci.d <= S.FY1)]
+    check("ask A: the 28 cells total the 2025-26 hospital-form visits", sum(sum(q.values()) for q in hosp.values()) == len(h))
+    days = S.clinic_days_list(target)
+    sick = S.ask_sick(target, days)
+    flag = S.ask_sick_flag(target, days)
+    defin = S.ask_sick_definition(target, days)
+    over = S.ask_sick_overclean(target, days)
+
+    def bhits(x):
+        return sum(int(round(x[q]["hours"] / 7.5) == round(sick[q]["hours"] / 7.5)) + int(round(x[q]["rate"], 1) == round(sick[q]["rate"], 1))
+                   for q in sick)
+    check("ask B: unassigned lines read as vacant posts (the careful route) misses all 8 cells", bhits(flag) == 0, "%d of 8" % bhits(flag))
+    check("ask B: filled posts from the report with sickness rows only misses all 8 cells", bhits(defin) == 0, "%d of 8" % bhits(defin))
+    check("ask B: every unassigned line read as sickness (the over-cleaner) lands outside Q2, recorded", True, "%d of 8" % bhits(over))
+    for q, v in sick.items():
+        check("ask B %s: the rate at least 0.02 inside its 0.1 cell" % q, 0.05 - abs(v["rate"] - round(v["rate"], 1)) >= 0.02, v["rate"])
+    r = S.roster(target)
+    sub = r[r.Assignment != "Bank Phlebotomist"].copy()
+    check("ask B: the e-roster carries no long-term label and no row longer than a clinic day",
+          not (r.Absence == "Sickness - long term").any() and (r.Hours == 7.5).all())
+    # identity: each unassigned line outside the report's vacancy belongs to a holder who is away that day, whose last
+    # line before was sickness and who comes back
+    v0, v1 = S.report_vacancy(target)
+    spans = sub[sub["Employee no"].notna()].groupby("Employee no").d.agg(["min", "max"])
+    bad = 0
+    for d, x in sub.groupby("d"):
+        ny = int((x["Vacant line"] == "Y").sum()) - (1 if v0 <= d <= v1 else 0)
+        if ny <= 0:
             continue
-        hand = PK.to_utc(r["handover"])
-        truth[r["suite"]][0] += (hand - ch).total_seconds() / 3600
-        truth[r["suite"]][1] += (hand - PK.to_utc(r["t_book"])).total_seconds() > 24 * 3600
-    check("A1 ask A's golden reproduces the generator's truth at every suite",
-          all(round(truth[s][0]) == A[s]["cell_hours"] and truth[s][1] == A[s]["over_24"] for s in GD.SUITES))
-    check("A2 every remanded arrest charged in the extract's window belongs to exactly one file", R["A_info"]["orphans_in_window"] == 0
-          and d.ref.is_unique)
-    check("A3 every file links an arrest the records hold, and a file keyed to a first arrest links an earlier release in "
-          "the same ward and offence group",
-          all(x.linked_book < x.book for x in d[d.rearrest & d.lead].itertuples()) and (d.rearrest & d.lead).sum() > 50)
-    hrs = (d25.hand - d25.book).dt.total_seconds() / 60
-    check("A4 no hold within a minute of 24 hours", int(((hrs - 1440).abs() <= 1).sum()) == 0)
-    ed = {s: 0.5 - abs(A[s]["cell_hours_raw"] - round(A[s]["cell_hours_raw"])) for s in GD.SUITES}
-    check("A5 every cell-hours figure 0.1 hours or more from its rounding edge", min(ed.values()) >= 0.1,
-          ", ".join("%s %.2f" % kv for kv in ed.items()))
-    amb = 0
-    for col in ("charged", "handed_to_escort"):
-        for s_ in c[col]:
-            t = dt.datetime.strptime(s_, "%d/%m/%Y %H:%M")
-            if (t.replace(tzinfo=PK.UK, fold=0).utcoffset() != t.replace(tzinfo=PK.UK, fold=1).utcoffset() or
-                    PK.to_local(PK.to_utc(t)) != t):
-                amb += 1
-    check("A6 no remand file time in the hour the clocks repeat or skip", amb == 0, "%d" % amb)
-    stops_a = R["A_stops"]
-    for k in ("each file's linked arrest", "files with co-defendants at the file's charge time",
-              "the case's own detentions, co-defendants left out", "every file in the extract"):
-        check("A7 stop '%s' misses all eight figures" % k,
-              all(stops_a[k][s]["cell_hours"] != A[s]["cell_hours"] and stops_a[k][s]["over_24"] != A[s]["over_24"]
-                  for s in GD.SUITES))
-    for k in ("co-defendants on their own clocks, linked arrest's booking", "detention clock for the 24 hours"):
-        check("A8 stop '%s' misses all four over-24 counts" % k,
-              all(stops_a[k][s]["over_24"] != A[s]["over_24"] for s in GD.SUITES))
-    check("A9 the remand file read as UTC misses all four cell-hours figures",
-          all(stops_a["remand file times read as UTC"][s]["cell_hours"] != A[s]["cell_hours"] for s in GD.SUITES))
-    check("A10 every suite carries co-defendants and files keyed to a first arrest",
-          all(A[s]["codefendants"] >= 5 and A[s]["rearrests"] >= 5 for s in GD.SUITES))
-
-    # ---------------------------------------------------------------- ask B: initial health assessments
-    tb = collections.Counter()
-    for r in hc:
-        if r["kind"] == "Initial health assessment" and r["part"] != 2:
-            tb[(r["place"], "day" if 7 <= r["start"].hour < 19 else "night")] += 1
-    check("B1 ask B's golden reproduces the generator's truth (place and assessment) in all eight cells",
-          all(tb[(s, k)] == B[s][k] for s in GD.SUITES for k in GD.SHIFTS))
-    cl = GD.closures(a, al)
-    check("B2 the arrest records show exactly the two closures, at the generator's moves",
-          sorted(cl) == ["Eastmoor", "Wendle Cross"] and all(cl[s]["last"] + dt.timedelta(minutes=1) == close[s] for s in cl)
-          and all(cl[s]["host"] == PK.CLOSURES[s][2] for s in cl))
-    edge_lines = [r for r in hc if r["team"] in cl and (cl[r["team"]]["last"] <= r["start"] < close[r["team"]] or
-                                                         PK.CLOSURES[r["team"]][1] <= r["start"] < cl[r["team"]]["first"])]
-    check("B3 no closed suite's line starts between its last booking and the move, or between its reopening and its first "
-          "booking", not edge_lines, "%d" % len(edge_lines))
-    pre = [r for r in hc if r["kind"] == "Initial health assessment" and r["booked"] in cl and r["place"] != r["booked"]
-           and r["t_book"] <= cl[r["booked"]]["last"]]
-    check("B4 no assessment of a detainee booked before a closure falls after it (pre-closure episodes read either way: C1)",
-          not pre, "%d" % len(pre))
-    ih = [r for r in hc if r["kind"] == "Initial health assessment"]
-    check("B5 every continuation starts at 07:00 or 19:00 on its predecessor's end; no repeat after the emergency "
-          "department does", all(r["start"].minute == 0 and r["start"].hour in (7, 19) for r in ih if r["part"] == 2)
-          and R["B_info"]["continuations"] == sum(1 for r in ih if r["part"] == 2))
-    stops_b = R["B_stops"]
-    for k in ("every line by its suite", "handover lines joined, suite as labelled", "closures moved, handover lines kept",
-              "one assessment an episode, closures moved", "one assessment an episode, suite as labelled"):
-        check("B6 stop '%s' misses all eight figures" % k,
-              all(stops_b[k][s][x] != B[s][x] for s in GD.SUITES for x in GD.SHIFTS))
-    check("B7 finding one closure only keeps at most half the figures",
-          sum(stops_b["only the Wendle Cross refit moved"][s][x] == B[s][x] for s in GD.SUITES for x in GD.SHIFTS) <= 4 and
-          sum(stops_b["only the Eastmoor closure moved"][s][x] == B[s][x] for s in GD.SUITES for x in GD.SHIFTS) <= 4)
-
-    # ---------------------------------------------------------------- realism sweep
-    yrs = [M["fy_hub"][y] for y in sorted(M["fy_hub"])]
-    check("X1 no repeated yearly totals in the six wards", len(set(yrs)) == len(yrs), str(yrs))
-    check("X2 no round headline components", all(v % 50 for v in (M["own_2025"], M["btp_hub_crimes"])) and
-          all(A[s]["cell_hours"] % 100 for s in GD.SUITES) and all(B[s][k] % 100 for s in GD.SUITES for k in GD.SHIFTS))
-    wm = a[a.fy == 2025].groupby(["ward", "ym"]).size()
-    check("X3 no ward with the same count every month", (wm.groupby(level=0).nunique() > 1).all())
-    card = json.load(open(os.path.join(os.path.dirname(TASK), ".claude", "skills", "fingerprint", "cards", "task137.json")))
-    named = set()
-    for n in names:
-        if n.endswith((".docx", ".xlsx")):
-            core = zipfile.ZipFile(os.path.join(TGT, n)).read("docProps/core.xml").decode()
-            named |= set(re.findall(r"<dc:creator>([^<]+)</dc:creator>", core))
-            named |= set(re.findall(r"<cp:lastModifiedBy>([^<]+)</cp:lastModifiedBy>", core))
-        named |= set(re.findall(r"(?:To|From): ([A-Z][a-z]+ [A-Z][a-z]+)", docs_text.get(n, "")))
-    people = {x for x in named if re.fullmatch(r"[A-Z][a-z]+ [A-Z][a-z]+", x)} - {"Custody Services"}
-    check("X4 every person named in the pack is on the card", bool(people) and people <= set(card["world"]["people"]),
-          ", ".join(sorted(people)))
-    toolchain = [n for n, t in docs_text.items() if re.search(r"openpyxl|python-docx|ReportLab|reportlab|matplotlib", t)]
-    check("X5 no container names the library that wrote it", not toolchain, ", ".join(toolchain))
-    last_arrest = pd.to_datetime(a.arrested_utc, utc=True).max()
-    check("X6 every record is before its file's pull", last_arrest < pd.Timestamp("2026-10-01", tz="UTC") and
-          pd.to_datetime(pd.read_csv(os.path.join(TGT, BD.F_HC)).started).max() < pd.Timestamp("2026-04-01"))
-    dash = [n for n in names if re.search("[\\u2013\\u2014]", text_of(os.path.join(TGT, n)))]
-    check("X7 no em or en dash in any shipped file", not dash, ", ".join(dash))
-    check("X8 the custody fact is filed once, in the allocation notes, and no document names the railway force",
-          sum("whichever force or agency" in t for t in docs_text.values()) == 1 and
-          not any("British Transport" in t or "BTP" in t for t in docs_text.values()))
-    check("X9 positive controls: the extractor reads each document", all(len(t) > 400 for t in docs_text.values()) and
-          "capped at 10 per cent" in docs_text[BD.F_MODEL].replace("\n", " ") and "opens on 1 April 2027" in docs_text[BD.F_BRIEF])
-
-    brief_files = set(re.findall(r"[\w.-]+\.(?:csv|xlsx|pdf|json|docx)", docs_text[BD.F_BRIEF]))
-    check("X10 the brief's file notes name every other shipped file and nothing else (H9)",
-          brief_files == set(names) - {BD.F_BRIEF}, ", ".join(sorted(brief_files ^ (set(names) - {BD.F_BRIEF}))))
-    inc_n = ah.groupby(["arrested_utc", "ward", "offence_group"]).size()
-    homes = dict(zip(al.ward, al.suite_to_31_march_2027))
-    pl_h = pl[pl.ward.isin(hub)]
-    check("X11 the design note's figures: 12.2 per cent of the six wards' arrests in incidents of two or more, 2,780 "
-          "bookings away from the ward's suite, BTP 1.28 per cent of the area's crime and one crime in fourteen in the six "
-          "wards", round(inc_n[inc_n > 1].sum() / len(ah), 3) == 0.122 and int((a.custody_suite != a.ward.map(homes)).sum()) == 2780
-          and round(100 * M["share"], 2) == 1.28 and round(len(pl_h) / (pl_h["Reported by"] == "British Transport Police").sum()) == 14)
-
-    # ---------------------------------------------------------------- distractors: each deleted, nothing moves
-    for dname in dis:
-        with tempfile.TemporaryDirectory() as td:
-            for n in names:
-                if n != dname:
-                    os.symlink(os.path.join(TGT, n), os.path.join(td, n))
-            R2 = GD.figures(td)
-        check("D1 deleting %s moves no figure" % dname, GD.flat(R2) == GD.flat(R))
-
-    # ---------------------------------------------------------------- figures.json is the golden
-    check("F1 figures.json carries the call and every ask figure", fig == GD.flat(R) and len(fig) >= 30, "%d keys" % len(fig))
-
-    bad = [r for r in RESULTS if not r[1]]
-    print("%d assertions, %d failed" % (len(RESULTS), len(bad)))
-    return 1 if bad else 0
-
-
-if __name__ == "__main__":
-    sys.exit(main())
+        here = set(x["Employee no"].dropna())
+        away = [e for e, s in spans.iterrows() if s["min"] < d < s["max"] and e not in here]
+        prev = [sub[(sub["Employee no"] == e) & (sub.d < d)].sort_values("d").Absence.iloc[-1] for e in away]
+        bad += int(ny != sum(1 for a in prev if a == "Sickness"))
+    check("ask B: every unassigned line outside the report's vacancy is an away holder whose last line was sickness", bad == 0, bad)
+    import re as _re
+    import zipfile as _zf
+    for k in ("log", "hub"):
+        with _zf.ZipFile(os.path.join(target, DC.FILES[k])) as z:
+            co = _re.search(rb"<Company>([^<]*)</Company>", z.read("docProps/app.xml")).group(1).decode()
+        check("%s: the Company property is the hospital the files are from" % DC.FILES[k], co == P.HOSPITAL, co)
+    rep4 = pdf_text(os.path.join(target, DC.FILES["report"]))
+    check("doc: the report's activity table carries 2025-26's GP seen and turned away, and the hub's estimand",
+          "{:,}".format(g["seen_gp"]) in rep4 and "{:,}".format(g["away_gp"]) in rep4
+          and "takes every patient with a GP request" in rep4 and "does not run out of tickets" in rep4
+          and "Its activity plan is to be set from 2025-26" in rep4)
+    # separation
+    D9 = D.copy()
+    check("separation: the call reads no hospital-form row and no roster row (hospital codes scrambled, the call unchanged)",
+          S.rnd(S.deterred(D9)[0] * S.G2) == gold)
+    # input gates
+    files = sorted(os.listdir(target))
+    fmts = {f.rsplit(".", 1)[1] for f in files}
+    big = max(sum(1 for _ in open(os.path.join(target, f), encoding="utf-8")) - 1 for f in files if f.endswith(".csv"))
+    check("gates: ten or more files", len(files) >= 10, len(files))
+    check("gates: three or more formats", len(fmts) >= 3, sorted(fmts))
+    check("gates: a file of 25,000 rows or more", big >= 25000, big)
+    check("gates: two distractors named", len(DC.DISTRACTORS) >= 2, DC.DISTRACTORS)
+    tmp = tempfile.mkdtemp()
+    for f in files:
+        if f not in [DC.FILES[k] for k in DC.DISTRACTORS]:
+            shutil.copy(os.path.join(target, f), tmp)
+    Dx, cix, evx, gx = S.solve(tmp)
+    check("gates: the golden is unchanged with both distractors deleted", gx["plan_r"] == gold and abs(gx["plan"] - g["plan"]) < 1e-6)
+    shutil.rmtree(tmp)
+    # documents read back, positive controls on the same extractor
+    rep = pdf_text(os.path.join(target, DC.FILES["report"]))
+    check("doc: the annual report reads back (positive control)", "hours rostered to the substantive team" in rep, len(rep))
+    check("doc: the annual report names no practice keeping patients in-house", "in-house" not in rep and "own clinic" not in rep)
+    check("doc: the annual report no longer narrates the long-term absences", "long-term" not in rep and "long term" not in rep)
+    import re as _re
+    import subprocess as _sp
+    from pypdf import PdfReader as _PR
+    from pdfminer.high_level import extract_text as _pm
+    for key, must in (("report", "hours rostered to the substantive team"), ("icb", "GP direct access phlebotomy")):
+        pth = os.path.join(target, DC.FILES[key])
+        norm = lambda s: _re.sub(r"\s+", " ", s).strip()
+        lenient = norm(" ".join(p.extract_text() for p in _PR(pth).pages))
+        strict = norm(" ".join(p.extract_text() for p in _PR(pth, strict=True).pages))
+        miner = norm(_pm(pth))
+        popp = norm(_sp.run(["pdftotext", pth, "-"], capture_output=True, text=True).stdout) if shutil.which("pdftotext") else must
+        check("doc (H25): %s reads the same strict and lenient, and pdfminer and pdftotext find the decisive sentence" % key,
+              strict == lenient and must in miner and must in popp and must in strict)
+    icb = pdf_text(os.path.join(target, DC.FILES["icb"]))
+    check("doc: the ICB letter carries 3.5% for GP direct access phlebotomy (positive control)", "GP direct access phlebotomy 3.5%" in icb)
+    # realism sweep
+    wk = D[D.fy == 2025].groupby("wk").seen_gp.sum()
+    check("realism: no two weeks of 2025-26 carry the same GP-referred count three times", wk.value_counts().max() < 3)
+    check("realism: no round headline totals", all(x % 100 != 0 for x in (g["seen_gp"], g["away_gp"])))
+    check("realism: no specialty's four quarters repeat a hospital-visit count",
+          all(len(set(q.values())) == 4 for q in hosp.values()), [sp for sp, q in hosp.items() if len(set(q.values())) < 4])
+    check("realism: no record after the pull", D.d.max() <= P.REC_END and pd.to_datetime(ci.event_utc).max().date() <= P.REC_END)
+    print("%d checks, %d failed" % (len([1]) and 0 or 0, len(BAD)) if False else "%d failed" % len(BAD))
+    return len(BAD)

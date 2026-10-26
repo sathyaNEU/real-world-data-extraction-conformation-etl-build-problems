@@ -1,38 +1,95 @@
 {
- "call.planning_figure": 4000,
- "call.planning_figure_unrounded": 4035.9,
- "components.own_arrests_model": 3754.4,
- "components.own_arrests_2025_26": 3732,
- "components.btp_crimes_hub_2025_26": 1702,
- "components.btp_detentions": 281.4,
- "components.default_answer": 3750,
- "components.warrant_share_pct": 5.3,
- "components.btp_crimes.Calderwick": 1600,
- "components.btp_crimes.Kingsway": 102,
- "chart.six_wards_arrests.2021-22": 3472,
- "chart.six_wards_arrests.2022-23": 3734,
- "chart.six_wards_arrests.2023-24": 3615,
- "chart.six_wards_arrests.2024-25": 3680,
- "chart.six_wards_arrests.2025-26": 3732,
- "ask_a.Northgate.cell_hours": 4487,
- "ask_a.Northgate.over_24_hours": 183,
- "ask_a.Eastmoor.cell_hours": 2811,
- "ask_a.Eastmoor.over_24_hours": 109,
- "ask_a.Southfields.cell_hours": 7767,
- "ask_a.Southfields.over_24_hours": 296,
- "ask_a.Wendle Cross.cell_hours": 5595,
- "ask_a.Wendle Cross.over_24_hours": 240,
- "steps.remand_defendants_2025_26": 1206,
- "steps.remand_defendants.Northgate": 266,
- "steps.remand_defendants.Eastmoor": 165,
- "steps.remand_defendants.Southfields": 445,
- "steps.remand_defendants.Wendle Cross": 330,
- "ask_b.Northgate.day": 1178,
- "ask_b.Northgate.night": 1470,
- "ask_b.Eastmoor.day": 526,
- "ask_b.Eastmoor.night": 670,
- "ask_b.Southfields.day": 1571,
- "ask_b.Southfields.night": 2078,
- "ask_b.Wendle Cross.day": 1115,
- "ask_b.Wendle Cross.night": 1515
+ "plan_visits_2027_28": 45000,
+ "plan_unrounded": 44760,
+ "base_2025_26": 41784,
+ "kept_in_house_2025_26": 2566,
+ "window_weeks": 8,
+ "window_runner_up_weeks": 9,
+ "base_2025_26_runner_up": 41990,
+ "aic_gap_five_weeks_or_fewer": 67,
+ "base_2025_26_low": 41800,
+ "base_2025_26_high": 42000,
+ "kept_in_house_low": 2600,
+ "kept_in_house_high": 2800,
+ "plan_unrounded_low": 44800,
+ "plan_unrounded_high": 45000,
+ "coef_about": -0.37,
+ "gp_seen_2025_26": 37853,
+ "gp_turned_away_2025_26": 1365,
+ "gp_arrivals_2025_26": 39218,
+ "run_out_days_2025_26": 56,
+ "clinic_days_2025_26": 253,
+ "coef_window_share": -0.374,
+ "coef_se": 0.026,
+ "growth_pct": 3.5,
+ "growth_years": 2,
+ "hours_per_day": 7.5,
+ "rounding_unit": 2500,
+ "default_path_plan": 42500,
+ "default_path_unrounded": 42011,
+ "seen_only_plan": 40000,
+ "seen_only_unrounded": 40549,
+ "hospital_visits_2025_26": {
+  "Cardiology": {
+   "Q1": 1797,
+   "Q2": 389,
+   "Q3": 357,
+   "Q4": 397
+  },
+  "Diabetes and endocrinology": {
+   "Q1": 632,
+   "Q2": 675,
+   "Q3": 3280,
+   "Q4": 651
+  },
+  "Gastroenterology": {
+   "Q1": 240,
+   "Q2": 257,
+   "Q3": 250,
+   "Q4": 286
+  },
+  "General medicine": {
+   "Q1": 330,
+   "Q2": 320,
+   "Q3": 334,
+   "Q4": 323
+  },
+  "Haematology": {
+   "Q1": 424,
+   "Q2": 437,
+   "Q3": 454,
+   "Q4": 495
+  },
+  "Renal medicine": {
+   "Q1": 378,
+   "Q2": 361,
+   "Q3": 398,
+   "Q4": 440
+  },
+  "Rheumatology": {
+   "Q1": 406,
+   "Q2": 376,
+   "Q3": 343,
+   "Q4": 2192
+  }
+ },
+ "sickness_by_quarter": {
+  "Q1": {
+   "days_lost": 29,
+   "rate_pct": 6.8
+  },
+  "Q2": {
+   "days_lost": 23,
+   "rate_pct": 5.6
+  },
+  "Q3": {
+   "days_lost": 39,
+   "rate_pct": 8.7
+  },
+  "Q4": {
+   "days_lost": 23,
+   "rate_pct": 5.2
+  }
+ },
+ "weekly_weeks": 53
 }

@@ -1,111 +1,62 @@
-"""The cracker and the mirror run on the cut pack, scored figure by figure against figures.json, and the pair ceiling
-on the weights of supplemental-stumping Part 0 (38 for the call and its components, 7 for instruction-following, 55
-for the asks).
+"""The pair ceiling on Part 0's weights (38 recommendation, 7 instruction-following, 55 asks), run on the cut pack.
 
-The cracker lands the call and, on the asks, does what the pack's filed sentences and the hygiene battery do: it reads
-the remand files' times as UK times and filters to charges in 2025-26, joins each file to its linked arrest (every key
-matches), runs the reverse unmatched join and attaches each remanded arrest without a file that was arrested in the same
-minute, ward and offence group as a file's arrest to that file, on the file's times; it merges an episode's assessment
-lines that abut at a shift handover, and counts each line at the suite its row names.
-The mirror misses the call and stops one sweep earlier on each ask: the remand files as they stand, each at its linked
-arrest, and the assessment lines merged the same way.
-
-    python3 pair.py [target_dir]
+The cracker lands the call and takes every ask by the route stage 4's Opus reader took on the previous pack, the careful
+route: the old clinic codes named by matching the weekdays their requests were issued on to the register's clinic days,
+and the sickness rate built under the annual report's definition with every unassigned e-roster line read as a vacant
+post. The mirror files the default path's 42,500 and takes the asks the same way: the asks read nothing the call
+constructs, so the two ask rows agree by construction (the separation assertions in checks.py). The other routes a
+reader could take are printed beside it, each scored on the same cells.
 """
-import datetime as dt
 import json
 import os
 import sys
-from zoneinfo import ZoneInfo
-
-import numpy as np
-import pandas as pd
 
 HERE = os.path.dirname(os.path.abspath(__file__))
-UK = ZoneInfo("Europe/London")
-SUITES = ["Northgate", "Eastmoor", "Southfields", "Wendle Cross"]
-W_CALL, W_IF, W_ASK, R_MISS = 38.0, 7.0, 55.0, 5.0
+sys.path.insert(0, HERE)
+import solve as S
 
 
-def load(tgt):
-    names = os.listdir(tgt)
-    pick = lambda pre: os.path.join(tgt, [n for n in names if n.startswith(pre)][0])
-    a = pd.read_csv(pick("calderwick_police_arrests"))
-    a["book"] = pd.to_datetime(a.booked_in_utc, utc=True)
-    hm = a.detention_hhmm.str.split(":", expand=True).astype(int)
-    a["charge"] = a.book + pd.to_timedelta(hm[0] * 60 + hm[1], unit="m")
-    c = pd.read_csv(pick("cju_remand_files"))
-    for col in ("charged", "handed_to_escort"):
-        c[col + "_t"] = pd.to_datetime(c[col], format="%d/%m/%Y %H:%M").dt.tz_localize(UK, ambiguous=True).dt.tz_convert("UTC")
-    h = pd.read_csv(pick("custody_healthcare_contacts"))
-    h["start"], h["end"] = pd.to_datetime(h.started), pd.to_datetime(h.ended)
-    return a, c, h
+def hits_a(F, tab):
+    return sum(int(tab[sp][q] == v) for sp, qq in F["hospital_visits_2025_26"].items() for q, v in qq.items())
 
 
-def fy(ts):
-    t = ts.dt.tz_convert(UK)
-    return np.where(t.dt.month >= 4, t.dt.year, t.dt.year - 1)
+def hits_b(F, sk):
+    return sum(int(round(sk[q]["hours"] / 7.5) == v["days_lost"]) + int(round(sk[q]["rate"], 1) == v["rate_pct"])
+               for q, v in F["sickness_by_quarter"].items())
 
 
-def ask_a_routes(a, c):
-    rem = a[a.outcome == "Charged - remanded in custody"]
-    c = c[fy(c.charged_t) == 2025]
-    j = c.merge(a[["arrest_ref", "book", "arrested_utc", "ward", "offence_group"]], left_on="linked_arrest",
-                right_on="arrest_ref", how="left")
-    assert j.arrest_ref.notna().all()
-    mirror = j.assign(hours=(j.handed_to_escort_t - j.charged_t).dt.total_seconds() / 3600,
-                      over=(j.handed_to_escort_t - j.book).dt.total_seconds() > 86400)
-    # the reverse join: remanded arrests charged in 2025-26 that no file links
-    orphan = rem[(fy(rem.charge) == 2025) & ~rem.arrest_ref.isin(set(c.linked_arrest))]
-    co = orphan.merge(j[["urn", "custody_suite", "arrested_utc", "ward", "offence_group", "charged_t", "handed_to_escort_t"]],
-                      on=["arrested_utc", "ward", "offence_group"], suffixes=("", "_file"))
-    co = co.assign(hours=(co.handed_to_escort_t - co.charged_t).dt.total_seconds() / 3600,
-                   over=(co.handed_to_escort_t - co.book).dt.total_seconds() > 86400)
-    cracker = pd.concat([mirror[["custody_suite", "hours", "over"]],
-                         co[["custody_suite_file", "hours", "over"]].rename(columns={"custody_suite_file": "custody_suite"})])
-    out = {}
-    for name, x in (("cracker", cracker), ("mirror", mirror)):
-        g = x.groupby("custody_suite")
-        out[name] = {}
-        for s in SUITES:
-            out[name]["ask_a.%s.cell_hours" % s] = int(round(g.hours.sum()[s]))
-            out[name]["ask_a.%s.over_24_hours" % s] = int(g.over.sum()[s])
-    out["orphans_left"] = int(len(orphan) - co.arrest_ref.nunique())
-    return out
-
-
-def ask_b_routes(h):
-    iha = h[h.contact_type == "Initial health assessment"].sort_values(["episode_ref", "start"])
-    prev = iha.groupby("episode_ref").end.shift()
-    abut = (prev == iha.start) & iha.start.dt.minute.eq(0) & iha.start.dt.hour.isin([7, 19])
-    kept = iha[~abut]
-    sh = np.where((kept.start.dt.hour >= 7) & (kept.start.dt.hour < 19), "day", "night")
-    g = kept.assign(sh=sh).groupby(["suite", "sh"]).size()
-    f = {"ask_b.%s.%s" % (s, k): int(g.get((s, k), 0)) for s in SUITES for k in ("day", "night")}
-    return {"cracker": f, "mirror": f}
-
-
-def main(tgt):
-    fig = json.load(open(os.path.join(HERE, "figures.json")))
-    a, c, h = load(tgt)
-    A, B = ask_a_routes(a, c), ask_b_routes(h)
-    keys = [k for k in fig if k.startswith("ask_")]
-    res = {}
-    for who in ("cracker", "mirror"):
-        got = dict(A[who], **B[who])
-        hits = [k for k in keys if abs(got[k] - fig[k]) <= 0.5]
-        res[who] = hits
-        for k in keys:
-            print("%-8s %-36s golden %6d  route %6d  %s" % (who, k, fig[k], got[k], "keep" if k in hits else "miss"))
-    lc, ls = len(res["cracker"]) / len(keys), len(res["mirror"]) / len(keys)
-    C = W_CALL + W_IF + W_ASK * lc
-    S = R_MISS + W_IF + W_ASK * ls
-    print("cracker keeps %d of %d ask figures; mirror keeps %d of %d; remanded arrests the cracker cannot place: %d"
-          % (len(res["cracker"]), len(keys), len(res["mirror"]), len(keys), A["orphans_left"]))
-    print("cracker %.1f, mirror %.1f, pair ceiling %.1f; mirror leakage %.1f per cent of ask weight"
-          % (C, S, (C + S) / 2, 100 * ls))
-    return 0
+def score(target):
+    F = json.load(open(os.path.join(HERE, "figures.json")))
+    D, ci, ev, g = S.solve(target)
+    ci.attrs["target"] = target
+    days = S.clinic_days_list(target)
+    weekday, _ = S.ask_hosp_weekday_route(ci, target)
+    golden_a, _ = S.ask_hosp(ci, target)
+    flag = S.ask_sick_flag(target, days)
+    defin = S.ask_sick_definition(target, days)
+    over = S.ask_sick_overclean(target, days)
+    a, b = hits_a(F, weekday), max(hits_b(F, flag), hits_b(F, defin))
+    cells = 28 + 8
+    print("ask A, old codes by request weekday against the register's clinic days (the careful route): %d of 28" % a)
+    print("ask A, the golden's link through the March 2026 issues (control): %d of 28" % hits_a(F, golden_a))
+    print("ask B, unassigned lines read as vacant posts: %d of 8; filled posts from the report, sickness rows only: %d of 8"
+          % (hits_b(F, flag), hits_b(F, defin)))
+    print("ask B, every unassigned line read as sickness, the vacant post included (the over-cleaner): %d of 8"
+          % hits_b(F, over))
+    keep = a + b
+    Lc = keep / float(cells)
+    C = 38 + 7 + 55 * Lc
+    Sm = 5 + 7 + 55 * Lc
+    pair = (C + Sm) / 2.0
+    print("cracker on the call: %d (plan), keeps %d of %d ask cells, scores %.1f" % (g["plan_r"], keep, cells, C))
+    print("mirror at the default path 42,500, keeps %d of %d ask cells, scores %.1f" % (keep, cells, Sm))
+    print("Pair ceiling: %.1f" % pair)
+    print("Mirror leakage: %.1f per cent of ask weight" % (100 * Lc))
+    over_keep = a + hits_b(F, over)
+    print("with the over-cleaner's ask B instead: keeps %d of %d, pair %.1f"
+          % (over_keep, cells, (38 + 7 + 5 + 7 + 2 * 55 * over_keep / float(cells)) / 2.0))
+    return pair, 100 * Lc
 
 
 if __name__ == "__main__":
-    sys.exit(main(sys.argv[1] if len(sys.argv) > 1 else os.path.join(os.path.dirname(HERE), "target")))
+    score(sys.argv[1] if len(sys.argv) > 1 else os.path.join(os.path.dirname(HERE), "target"))

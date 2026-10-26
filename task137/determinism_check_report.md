@@ -1,61 +1,53 @@
-# determinism-check report, task137 (architecture 3), 2026-10-26
+# determinism-check report, task137, 2026-10-26
 
 ## Verdict
-DETERMINISTIC on every committed figure. Main call not forced by analysis: Gate H3 fails.
-**Disposition:** SEND_BACK
-**Stumping type:** mechanism: single_conceptual_flip, stumping_family: surface_read_rejection, surface_read_dependency: yes, sole_data_defect: yes
+DETERMINISTIC
+**Disposition:** APPROVE
+**Stumping type:** mechanism: statistical_rigor, stumping_family: analytical_non_defect, surface_read_dependency: no, sole_data_defect: no
+(Judge thread: one pass, sonnet medium, fresh unzip at /tmp/determinism-check-task137-20261026T142655/target/, verdict at /tmp/determinism-check-task137-20261026T142655/verdict.md.)
 
 ## Why
-Every graded figure recomputes from the bundle (run 1792999105, one sonnet thread). The call turns on one move: the arrests file holds only Calderwick officers' arrests (brief) and allocation note 2 books every detainee at the ward's suite whichever agency arrests them, so BTP's station arrests are added. The size of the addition is immaterial: any BTP figure from 121 to 371 rounds to 4,000, and the forecast method is immaterial too (model v2 3,754, flat 3,732, 5-year trend about 3,833 all give 4,000 once BTP is added). Skipping BTP gives 3,750. That is coverage reading plus rule application, with the forecast pinned by a supplied, validated model.
+2025-26 GP arrivals at the walk-in clinic (seen 38,386 plus turned away 1,345 = 39,731) understate underlying demand, because practices with their own phlebotomy clinics keep patients in-house in the week after a run-out. The data separates it: lag coefficient about -0.21 overall, about -0.40 in LES-practice arrivals and about -0.03 in the rest. Removing it gives 41.6k to 41.8k, 44.4k to 44.8k grown, and every fitted specification rounds to 45,000 (band 43,750 to 46,250). The naive routes give 42,500 and 40,000.
 
 ## Recomputation ledger
 | Figure | Claimed | Judge recomputed | Reproduced |
 |---|---|---|---|
-| Six wards' arrests FY21-22..25-26 | 3,472/3,734/3,615/3,680/3,732 | same | yes |
-| Model v2 2027-28 | 3,754 | 3,754.4 (no ward at cap) | yes |
-| PDF validation table, four suites | as printed | exact | yes |
-| BTP crimes in six wards | 1,702 (1,600 + 102) | 1,702 | yes |
-| BTP arrests | 281 | 262.1 to 267.4 by type ratios; 275 to 282 with 5.0 to 5.3 pct warrant share | only under one unfiled convention |
-| Planning figure | 4,000 | 4,000 under every variant | yes |
-| Ask 3 remand (cell hours / over 24h) | N 4,487/183, E 2,811/109, S 7,767/296, W 5,595/240 | identical, 1,206 defendants | yes |
-| Ask 4 assessments (day/night) | N 1,178/1,470, E 526/670, S 1,571/2,078, W 1,115/1,515 | identical, 10,123 | yes (under the golden's reading) |
+| GP seen 2025-26 | 38,386 | 38,386 (queue_events CHECKED_IN, GP, UTC to UK date; matches annual report) | Yes |
+| GP turned away | 1,345 on 58 days | 1,345 on 58 days (two text-date rows included, 10 and 44) | Yes |
+| Underlying demand | 41,714 (coef -0.210) | 41,663 (coef -0.209) | Approximate, 51 visits off, plan unmoved |
+| Grown 2 years at 3.5 per cent | 44,685 | 44,630 | Yes, both round to 45,000 |
+| Asks 2 and 3, chart | as filed | per verdict.md, reproduced; Cardiology Q1 is 1,685 on visit date against 1,690 on request date | Yes, minor fork on a free ask |
 
 ## Competing answers that survived
-All on supplementary asks; none moves the main call.
-1. Ask 4, 19:00 boundary: 9 first assessments start at exactly 19:00; prompt silent on whether 19:00 is day. Day-inclusive gives N 1,180/1,468, S 1,576/2,073, W 1,117/1,513.
-2. Ask 4, suite attribution: the csv "suite" is the clinician team's suite. Literal no-relocation counts: N 1,146/1,426, E 558/714, S 1,217/1,619, W 1,469/1,974. Relocation is deducible only from gaps in the arrests file; no file says the teams moved.
-3. Ask 4, unit: 323 return-from-hospital second initial assessments; episodes (9,800) vs lines (10,123).
-4. Ask 3, unit: "defendants" vs file "one row per case file"; 76 co-arrestee holds are missed by a file-only count.
-5. Main call, BTP 281: needs the type-ratio-plus-warrant convention, not filed; the rounded 4,000 is unaffected, the quoted 281 is not forced.
+- Seen plus turned away, 42,500: closed by "underlying demand", a hub that never runs out, and the lag effect (z about -15, only in LES practices). This is the intended wrong route, not a fork.
+- Booked GP patients: the annual report says the hub takes "walk-in and booked", but no booked volume ships. The walk-in basis is the only computable one. Minor residual (Gate E).
+- Quarter definition (financial quarters assumed) and visit date against request date: affect a few free-ask cells only.
+- Chart week bucket unstated; graded on shape.
 
 ## Spec gates
 | Gate | Required | Actual | Pass |
 |---|---|---|---|
-| Files | 10+ | 12 | yes |
-| Formats | 3+ | 5 (csv, xlsx, pdf, docx, json) | yes |
-| Large file | 25,000+ rows | 127,845 and 158,906 rows | yes |
-| Distractors named, none labelled in a file name | 2+ | 4 in metadata.json (estate register, ward population, late-night licences, bank holidays); no name labels one | yes |
-| Distractors unused yet weighable, none answers a graded quantity | yes | none answers a graded quantity; all wrong_basis false; none is a Gate G wrong-basis case | yes |
-| Deliverables | 1 to 3, all in golden | 2 (xlsx, docx), both in golden/ | yes |
-| Asks multi-dimensional, unit and rounding stated | yes | multi-cut; nearest 250 and nearest hour stated; counts have no rounding sentence; 19:00 boundary and assessment unit unstated | partial |
-| Prompt shape identifiable, rubric 25+ criteria | yes | shape identifiable; rubric not generated here, not verifiable | not checked |
-| Not LLM-generated, goldens realistic | yes | PDF header reads "HARROWDOWN POLICE" (leftover, confirmed by pdftotext); no other leakage found | FAIL (hygiene) |
+| Files | 10 or more | 13 | Yes |
+| Formats | 3 or more | 4 (csv, xlsx, pdf, json) | Yes |
+| Large file | 25,000 rows or more | 311,893 rows (queue events) | Yes |
+| Distractors | 2 or more in metadata.json, none labelled by file name | survey csv, session plan xlsx; neither names itself a distractor; neither answers the graded quantity | Yes |
+| Deliverables | 1 to 3, all in golden | 2 (xlsx, png) | Yes |
+| Asks | multi-dimensional, unit and rounding stated | plan, 7 specialties by 4 quarters, 4 quarters of days and rates, chart; prompt fixes precision | Yes |
+| Prompt shape and 25 or more criteria | identifiable; 25+ | shape recorded as "other"; about 36 graded ask figures plus components; the generated rubric count is not verifiable here | Yes, count unverified |
+| Reads as real work product | yes | judge found real-looking artifacts, no authoring disclosures | Yes |
 
 ## Gate G reconciliation
-Thread: single_conceptual_flip / surface_read_rejection / surface_read_dependency yes / sole_data_defect yes. Design note and card: stump_strategy population_selection, layer2 field_method, gap population, gate_g forecasting; the note's own driver is "taking the force's arrest records as everyone the hub will book". The note and the thread agree on the mechanism itself (an absent second population). They disagree on its class. The note calls it field_method and gate_g forecasting, and the thread calls it a single coverage flip with a sole data defect. The declared distractors are not the surface read (the surface read is model v2 on the arrests file). No distractor is too load-bearing. Mismatch on classification is the predictive finding.
-
-## Gate H reconciliation
-Thread: domain pass, layers pass, decisive_step data_semantics. Note's `## Three rules` claims Not semantics and Not rule application. The note's own evidence (nine own-arrest constructions all print 3,750; twenty BTP constructions all print 4,000, with the whole spread 3,933 to 4,045) supports the thread, not the note: the BTP piece is a presence/absence flip whose sizing never matters, and note 2 plus the brief's "one row per arrest by a Calderwick Police officer" state the coverage and the routing in shipped text. The domain test is reasonable (custody demand counted by arresting agency, with a two-force arrangement), so H1 passes. The card's analyst_test is satisfied only in the sense that a model-only analyst files 3,750; whether strong analysts skip note 2 is the scored readers' question, and the card records two Opus probes that did (4,500 vs 4,750 on the earlier probe pack).
+Thread: mechanism statistical_rigor, family analytical_non_defect, surface_read no, sole_data_defect no. Design note and card: stump_class analytical; the stump is taking seen plus turned away (39,731, 42,500) as demand when LES practices keep patients in-house after run-outs, recovered only from the lagged-run-out arrival model. These match. The declared distractors (patient survey, hub session plan) are not named as the surface read; the surface read is the pooled count. No finding on distractor load.
+Gate H: domain pass, layers pass, decisive_step analytical. The card's analyst_test and domain_test agree: a strong analyst who cleaned and read everything files 42,500. The design note's Three rules lines are consistent with the thread.
 
 ## Stump power (Gate F)
-Weak on the main call by the thread's read: a solver who reads the brief and note 2 adds BTP and cannot go wrong on size or method. Per the standing guidance, the scored readers' result decides; the card's probe misses (p137i, p137j) are the counter-evidence and the main thread should weigh them. The remaining difficulty is in the asks (shift-split lines, co-arrestee holds, team relocation), which are semantics-heavy and, as above, partly under-specified.
+Judge: Good, with a caveat that "underlying demand" is a mild cue so some strong runs will find the lag. The scored readers bear this out on the call. Reader A (Sonnet) filed 42,500 on seen plus turned away and hit 8 of 36 ask figures. Reader B (Opus) filed 42,500 on run-out days completed from the arrival profile (39,900 grown) and hit 36 of 36 ask figures. Both missed the call; the ask layer was held by Reader A only at 8 of 36, though Reader B cleared it (the main thread weighs the ask-layer bar, since a 36 of 36 reader sits well above it). The method (a count model on a lagged capacity effect) is a textbook demand-planning route, so a strong solver can take it; the readers did not.
 
 ## Findings, ranked
-1. Gate H3 / Gate G: decisive step reads as data semantics plus rule application; answer insensitive to both BTP size and forecast method (4,000 across every variant). SEND_BACK per judge. Lever: make the call turn on a forecast the supplied model does not pin, with a filed back-test choosing between methods, answer clear of the 250 boundary by more than the method spread.
-2. Ask 4 forks: 19:00 boundary, suite attribution (team vs place, relocation inferred only from arrest gaps) and assessment unit are open; pin in the prompt (WHAT, not HOW).
-3. Ask 3 unit: say defendants are counted from the arrest records.
-4. 281 is not forced by a filed convention; rounding hides it on the main call, but critical component 3 and the ask 2 figure are gradeable and open. File the population and window or quote a range.
-5. Hygiene FIX_NOW: custody_demand_model_v2.pdf header "HARROWDOWN POLICE" should read Calderwick Police. Stump-neutral.
+1. Ask layer: Reader B reached 36 of 36 (clinic-code weekday mapping and long-term sickness expansion). This is a rubric-pressure concern for the main thread, not a determinism defect.
+2. Critical component 3 (41,714) is specification-sensitive: judge refit gives 41,663. Optional fix: quote it as about 41,700 or state the exact specification. Does not move the plan.
+3. Booked GP patients are not quantified anywhere; optional prompt clause that booked patients are planned separately, which needs a rerun.
+4. Minor free-ask forks: quarter definition, visit against request date (Cardiology Q1 1,685 against 1,690), chart week bucket.
 
 ## Next action for the author
-Decide, with the scored readers' result, whether the main call stands on the card's probe evidence or is re-rooted so the forecast method is chosen by a filed back-test; either way fix the PDF header and pin the ask 4 and ask 3 wording in prompt.txt in one generator pass.
+Ship as is, or optionally reword critical component 3 in submission.md as "about 41,700" with the specification stated (no data or golden change); weigh Finding 1 with the scored readers.

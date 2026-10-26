@@ -1,231 +1,133 @@
-"""Calderwick Police's custody world: the force area's wards and LSOAs, the recorded crime and the force's own arrests
-by LSOA, month and offence type, British Transport Police's crime at the railway stations, and the expected
-2027-28 detentions at the Tanner Street hub. Everything here is the clean truth: no mess, no documents."""
+"""The world at day grain, before any record is written: latent demand by referrer group and practice, the clinic's
+staffing and ticket allocation, which days ran out, and who was turned away. Practices with their own phlebotomy
+clinic book their patients in-house for weeks after the walk-in clinic has kept running out: each week's run-out share
+holds their referrals down for the eight weeks that follow."""
 import datetime as dt
-
 import numpy as np
+import params as P
 
-TYPES = ["Violence and sexual offences", "Public order", "Drugs", "Possession of weapons", "Robbery", "Burglary",
-         "Criminal damage and arson", "Shoplifting", "Theft from the person", "Other theft", "Vehicle crime",
-         "Bicycle theft", "Other crime"]
-WARRANT_GROUP = "Warrant, recall or breach"
-RATE = np.array([0.165, 0.20, 0.70, 0.55, 0.20, 0.07, 0.06, 0.12, 0.04, 0.035, 0.025, 0.015, 0.19])
-INNER_MIX = np.array([0.34, 0.11, 0.05, 0.015, 0.02, 0.05, 0.08, 0.11, 0.03, 0.09, 0.06, 0.02, 0.025])
-OUTER_MIX = np.array([0.36, 0.08, 0.035, 0.012, 0.01, 0.07, 0.11, 0.08, 0.01, 0.10, 0.09, 0.013, 0.03])
-COUNTY_MIX = np.array([0.36, 0.075, 0.03, 0.01, 0.005, 0.075, 0.12, 0.07, 0.008, 0.10, 0.10, 0.012, 0.035])
-STATION_MIX = np.array([0.30, 0.14, 0.05, 0.02, 0.025, 0.005, 0.07, 0.03, 0.12, 0.105, 0.03, 0.07, 0.035])
-WARRANT = 0.05                      # share of arrests on a warrant, recall or breach, with no recorded crime of their own
-
-HUB = ["Abbey Fields", "Castle", "Cathedral", "Mill Bank", "St Peter's", "Kingsway"]
-OUTER = ["Northgate", "Highfield", "Brookside", "Parkway", "Ashgrove", "Elmwood", "Fernhill", "Glebe", "Hollins",
-         "Ivydene", "Jubilee", "Lark Hill", "Marsh Lane", "Newtown", "Oakfield", "Eastmoor", "Quarry Bank", "Ravensdale"]
-CITY = HUB + OUTER
-_STEMS = ["Ald", "Ash", "Bar", "Brad", "Burn", "Chal", "Clay", "Cot", "Dal", "Den", "Elm", "Far", "Fen", "Gar", "Glen",
-          "Hal", "Hat", "Hay", "Hol", "Kel", "Kings", "Lang", "Lid", "Mar", "Mel", "Mor", "New", "North", "Oak", "Ors",
-          "Pen", "Pres", "Red", "Sand", "Shel", "Sted", "Sut", "Thorn", "Wal", "Wes"]
-_SUF = ["ton", "ley", "ford", "field", "bury", "worth", "ham", "wick", "thorpe", "by"]
-COUNTY = []
-_i = 0
-while len(COUNTY) < 100:
-    _n = _STEMS[_i % 40] + _SUF[(_i * 3 + _i // 40) % 10]
-    if _n not in COUNTY and _n not in CITY:
-        COUNTY.append(_n)
-    _i += 1
-WARDS = CITY + COUNTY
-DISTRICTS = ["Calderwick", "North Carvell", "Wendlebury", "South Carvell", "Moorhaven"]
-DISTRICT = {w: "Calderwick" for w in CITY}
-for _j, _w in enumerate(COUNTY):
-    DISTRICT[_w] = DISTRICTS[1 + _j // 25]
-SUITES = ["Northgate", "Eastmoor", "Southfields", "Wendle Cross"]
-HUB_SUITE = "Tanner Street"
-SUITE_NOW = {}
-for _w in HUB:
-    SUITE_NOW[_w] = "Eastmoor" if _w == "St Peter's" else "Northgate"
-for _j, _w in enumerate(OUTER):
-    SUITE_NOW[_w] = "Northgate" if _j < 9 else "Eastmoor"
-for _w in COUNTY:
-    SUITE_NOW[_w] = "Wendle Cross" if DISTRICT[_w] in ("North Carvell", "Wendlebury") else "Southfields"
-SUITE_2027 = {w: (HUB_SUITE if w in HUB else s) for w, s in SUITE_NOW.items()}
-# the railway stations: name, ward, share of the main station's recorded crime
-STATIONS = [("Calderwick", "Abbey Fields", 1.0), ("Kingsway", "Kingsway", 0.07), ("Northgate", "Northgate", 0.05),
-            ("Eastmoor", "Eastmoor", 0.045)] + [(COUNTY[j] + (" Road" if j % 3 == 0 else ""), COUNTY[j], f) for j, f in
-            [(3, 0.016), (11, 0.012), (27, 0.014), (38, 0.010), (52, 0.013), (64, 0.009), (77, 0.011), (90, 0.008)]]
-
-NM = 66                                                                    # April 2021 to September 2026
-MONTHS = [(2021 + (3 + k) // 12, (3 + k) % 12 + 1) for k in range(NM)]
-K25 = list(range(48, 60))                                                  # April 2025 to March 2026
-SEASON = 1 + 0.08 * np.cos(2 * np.pi * (np.arange(12) - 6.5) / 12)        # summer a little higher
-# the last COVID-19 months: pubs open outdoors only until 17 May 2021, every restriction lifted on 19 July,
-# Plan B guidance from 8 December 2021 to 27 January 2022 (k = 0 is April 2021)
-COVID = {0: 0.80, 1: 0.86, 2: 0.93, 3: 0.98, 8: 0.95, 9: 0.97}
-# wards whose night-time economy moved: Kingsway lost its clubs to the Kingsway Quarter redevelopment from 2022,
-# Mill Bank's canal-side bars opened from 2023
-WARD_TREND = {"Kingsway": -0.045, "Mill Bank": 0.035, "Castle": 0.01, "St Peter's": -0.01}
-FYS = [2021, 2022, 2023, 2024, 2025, 2026]
+WD = np.array([1.21, 1.05, 1.00, 0.96, 0.85])
+MON = np.array([1.05, 1.04, 1.02, 1.00, 1.00, 0.96, 0.92, 0.85, 0.97, 1.03, 1.05, 0.89])
 
 
-def fy_of(y, m):
-    return y if m >= 4 else y - 1
+def clinic_days(a=P.START, b=P.END):
+    out, d = [], a
+    while d <= b:
+        if d.weekday() < 5 and d not in P.BH:
+            out.append(d)
+        d += dt.timedelta(1)
+    return out
 
 
-FYK = np.array([fy_of(*MONTHS[k]) for k in range(NM)])
+def fy(d):
+    return d.year - (d.month < 4)
 
 
-def world(seed, btp_main=1600.0, hub_lam=300.0, shock_sd=0.022):
-    """The draw: LSOAs with their crime level, mix and trend; the year-to-year swing in how many arrests the force
-    makes per crime (staffing, operations); BTP's crime at each station."""
-    rng = np.random.default_rng(seed)
-    lsoas = []
-    for w in WARDS:
-        n = int(rng.integers(11, 15)) if w in CITY else int(rng.integers(9, 13))
-        for k in range(n):
-            if w in HUB:
-                lam, mix = rng.lognormal(np.log(hub_lam), 0.5), INNER_MIX
-            elif w in CITY:
-                lam, mix = rng.lognormal(np.log(115), 0.5), OUTER_MIX
+def simulate(seed=P.SEED, K=P.K_DETER, dseed=P.DEMAND_SEED, weeks=P.DETER_WEEKS):
+    rs = np.random.default_rng([seed, 1])     # staffing
+    rd = np.random.default_rng([dseed, 2])    # demand
+    days = clinic_days()
+    n = len(days)
+    t = np.array([(x - P.START).days / 365.25 for x in days])
+    cal = np.array([WD[x.weekday()] * MON[x.month - 1] for x in days]) * (1 + P.GROWTH) ** t
+    pbh = np.zeros(n, bool)
+    for i in range(1, n):
+        if (days[i] - days[i - 1]).days not in (1, 3):
+            pbh[i] = True
+    cal[pbh] *= 1.17
+    lam = {g: P.BASE_DAILY * s * cal for g, s in P.SHARES.items()}
+    # hospital programmes add visits on their specialty's clinic weekdays and the day after
+    spec_days = {s[0]: s[1] for s in P.SPECIALTIES}
+    prog = np.zeros(n)
+    prog_spec = [dict() for _ in range(n)]
+    for sp, a, b, v in P.PROGRAMMES:
+        for i, x in enumerate(days):
+            if a <= x <= b:
+                w = 1.0 if x.weekday() in spec_days[sp] else 0.55
+                add = v * w * WD[x.weekday()] / 1.03
+                prog[i] += add
+                prog_spec[i][sp] = prog_spec[i].get(sp, 0.0) + add
+    lamH2 = lam["H"] + prog
+    # staffing: short sickness, long-term sickness, annual leave, the vacancy and bank cover
+    status = np.full((n, P.POSTS), "CLIN", dtype=object)
+    for p in range(P.POSTS):
+        i = 0
+        while i < n:
+            if rs.random() < 0.0010:
+                L = int(rs.choice([3, 5, 5, 8, 10]))
+                status[i:i + L, p] = "SICK"
+                i += L
             else:
-                lam, mix = rng.lognormal(np.log(88), 0.5), COUNTY_MIX
-            lsoas.append(dict(ward=w, lam=lam, mix=mix, trend=WARD_TREND.get(w, 0.0) + rng.normal(0.0, 0.008)))
-    for name, ward, f in STATIONS:
-        [l for l in lsoas if l["ward"] == ward][0]["station"] = name
-    shock = {fy: float(np.exp(rng.normal(0.0, shock_sd))) for fy in FYS}
-    btp = {name: btp_main * f for name, ward, f in STATIONS}
-    return dict(seed=seed, lsoas=lsoas, btp=btp, shock=shock, btp_main=btp_main, hub_lam=hub_lam)
+                if rs.random() < 0.010:
+                    status[i, p] = "SICK"
+                i += 1
+    lts = np.zeros((n, P.POSTS), bool)
+    for p, a, b in P.LONG_TERM_SICK:
+        for i, x in enumerate(days):
+            if a <= x <= b:
+                status[i, p] = "SICK"
+                lts[i, p] = True
+    for i, x in enumerate(days):
+        pal = 0.07 if x.month in (7, 8) else (0.04 if x.month in (4, 10, 12, 2) else 0.022)
+        for p in range(P.POSTS):
+            if status[i, p] == "CLIN" and rs.random() < pal:
+                status[i, p] = "AL"
+    vac = np.array([P.VACANCY[0] <= x <= P.VACANCY[1] for x in days])
+    status[vac, P.POSTS - 1] = "VAC"
+    worked = (status == "CLIN").sum(axis=1)
+    nlts = lts.sum(axis=1)
+    short = P.POSTS - worked - vac.astype(int) - nlts
+    # the bank office backfills the vacant line and long-term sickness lines on most days
+    vbank = np.array([(1 if (vac[i] and rs.random() < 0.85) else 0) + sum(1 for _ in range(int(nlts[i])) if rs.random() < 0.9)
+                      for i in range(n)])
+    obank = np.array([min(s, rs.binomial(s, 0.5)) if s >= 1 else 0 for s in short])
+    bank = vbank + obank
+    adj = rs.choice([0, 0, 0, 0, 5, -5], size=n)
+    alloc = (worked * P.PER_HEAD + bank * P.BANK_HEAD + adj).astype(int)
+    # demand, run-outs and the turned away
+    wk = np.array([x - dt.timedelta(x.weekday()) for x in days])
+    A = {g: np.zeros(n, int) for g in "PNH"}
+    seen = {g: np.zeros(n, int) for g in "PNH"}
+    away = {g: np.zeros(n, int) for g in "PNH"}
+    ro = np.zeros(n, bool)
+    E = np.zeros(n)
+    wk_ro = {}
+    for i in range(n):
+        sh = [wk_ro.get(wk[i] - dt.timedelta(7 * k), (0, 0)) for k in range(1, weeks + 1)]
+        E[i] = sum(r / c if c else 0.0 for r, c in sh) / weeks
+        mus = {"P": lam["P"][i] * np.exp(-K * E[i]), "N": lam["N"][i], "H": lamH2[i]}
+        for g in "PNH":
+            A[g][i] = int(rd.poisson(rd.gamma(P.SHAPE, mus[g] / P.SHAPE)))
+        tot = A["P"][i] + A["N"][i] + A["H"][i]
+        if tot > alloc[i]:
+            ro[i] = True
+            ex = tot - alloc[i]
+            w = np.array([A["P"][i], A["N"][i], A["H"][i] * 1.3], float)
+            aw = rd.multinomial(ex, w / w.sum())
+            cap = np.array([A["P"][i], A["N"][i], A["H"][i]])
+            aw = np.minimum(aw, cap)
+            j = 0
+            while aw.sum() < ex:
+                if aw[j % 3] < cap[j % 3]:
+                    aw[j % 3] += 1
+                j += 1
+            for k, g in enumerate("PNH"):
+                away[g][i] = int(aw[k])
+                seen[g][i] = A[g][i] - int(aw[k])
+        else:
+            for g in "PNH":
+                seen[g][i] = A[g][i]
+        r0, c0 = wk_ro.get(wk[i], (0, 0))
+        wk_ro[wk[i]] = (r0 + int(ro[i]), c0 + 1)
+    return dict(days=days, n=n, t=t, pbh=pbh, lam=lam, lamH2=lamH2, prog=prog, prog_spec=prog_spec, status=status,
+                lts=lts, vac=vac, bank=bank, vbank=vbank, worked=worked, alloc=alloc, wk=wk, A=A, seen=seen, away=away,
+                ro=ro, E=E, K=K)
 
 
-def lam_months(l, ks):
-    ks = np.asarray(ks)
-    mon = np.array([(3 + k) % 12 for k in ks])
-    cov = np.array([COVID.get(int(k), 1.0) for k in ks])
-    return l["lam"] * (1 + l["trend"]) ** (ks / 12.0) * SEASON[mon] * cov / 12.0
-
-
-def counts(W):
-    """Crime and the force's arrests by LSOA (months x types, plus warrants); BTP crime and arrests by station."""
-    rng = np.random.default_rng(W["seed"] + 17)
-    fc, ar, wa = [], [], []
-    ks = np.arange(NM)
-    sh = np.array([W["shock"][fy] for fy in FYK])
-    for l in W["lsoas"]:
-        n = rng.poisson(lam_months(l, ks)[:, None] * l["mix"][None, :])
-        a = rng.poisson(n * RATE[None, :] * sh[:, None])
-        fc.append(n)
-        ar.append(a)
-        wa.append(rng.poisson(a.sum(1) * WARRANT / (1 - WARRANT)))
-    mon = np.array([(3 + k) % 12 for k in ks])
-    bc, ba = {}, {}
-    for name, ward, f in STATIONS:
-        c = rng.poisson((W["btp"][name] * SEASON[mon] / 12.0)[:, None] * STATION_MIX[None, :])
-        bc[name] = c
-        b = rng.poisson(c * RATE[None, :])
-        ba[name] = b.sum(1) + rng.poisson(b.sum(1) * WARRANT / (1 - WARRANT))
-    return dict(fc=fc, ar=ar, wa=wa, bc=bc, ba=ba)
-
-
-def truth_2027(W):
-    """Expected detentions at Tanner Street from 1 April 2027 to 31 March 2028: the force's arrests in the six wards
-    (at no year shock) and BTP's arrests at the stations in them, warrants included on both."""
-    force = 0.0
-    for l in W["lsoas"]:
-        if l["ward"] in HUB:
-            lam = lam_months(l, np.arange(72, 84))
-            force += float(lam.sum() * (l["mix"] * RATE).sum()) / (1 - WARRANT)
-    btp = sum(W["btp"][n] * float((STATION_MIX * RATE).sum()) / (1 - WARRANT) for n, w, f in STATIONS if w in HUB)
-    return dict(force=force, btp=btp, total=force + btp)
-
-
-# ---------------------------------------------------------------------------------------------------------------
-# the routes on aggregates, for the seed search (the file-based routes are golden.py's)
-def _model(wardmonths, base, ahead, cap=0.10):
-    tot = 0.0
-    for v in wardmonths.values():
-        b = v[FYK == base].sum()
-        b3 = v[FYK == base - 3].sum()
-        ch = (b / b3) ** (1 / 3) - 1
-        if cap is not None:
-            ch = min(cap, max(-cap, ch))
-        tot += b * (1 + ch) ** ahead
-    return tot
-
-
-def routes_agg(W, C=None, hw=True):
-    C = C or counts(W)
-    L = W["lsoas"]
-    hubw, mon = {}, np.zeros(NM)
-    suites = {}
-    for i, l in enumerate(L):
-        a = C["ar"][i].sum(1) + C["wa"][i]
-        if l["ward"] in HUB:
-            hubw.setdefault(l["ward"], np.zeros(NM))
-            hubw[l["ward"]] += a
-            mon += a
-        suites.setdefault(SUITE_NOW[l["ward"]], {}).setdefault(l["ward"], np.zeros(NM))
-        suites[SUITE_NOW[l["ward"]]][l["ward"]] += a
-    fyt = {y: float(mon[FYK == y].sum()) for y in range(2021, 2026)}
-    force_fy = {y: sum(float((C["ar"][i].sum(1) + C["wa"][i])[FYK == y].sum()) for i in range(len(L)))
-                for y in (2022, 2025)}
-    F = {"F1": _model(hubw, 2025, 2), "F2": fyt[2025], "F3": float(np.mean([fyt[2023], fyt[2024], fyt[2025]])),
-         "F4": float(np.polyval(np.polyfit(range(2021, 2026), [fyt[y] for y in range(2021, 2026)], 1), 2027)),
-         "F6": float(mon[-12:].sum()), "F7": _model(hubw, 2025, 2, None),
-         "F8": fyt[2025] * (force_fy[2025] / force_fy[2022]) ** (2 / 3), "F9": float(np.mean([fyt[2024], fyt[2025]]))}
-    if hw:
-        import warnings
-        from statsmodels.tsa.holtwinters import ExponentialSmoothing
-        warnings.filterwarnings("ignore")
-        m = ExponentialSmoothing(mon.astype(float), trend="add", damped_trend=True, seasonal="add",
-                                 seasonal_periods=12).fit()
-        F["F5"] = float(m.forecast(18)[6:18].sum())
-    sel = np.isin(np.arange(NM), K25)
-    ar_t, cr_t, war, hub_ar, hub_cr = np.zeros(13), np.zeros(13), 0.0, 0.0, 0.0
-    for i, l in enumerate(L):
-        ar_t += C["ar"][i][sel].sum(0)
-        cr_t += C["fc"][i][sel].sum(0)
-        war += C["wa"][i][sel].sum()
-        if l["ward"] in HUB:
-            hub_ar += C["ar"][i][sel].sum() + C["wa"][i][sel].sum()
-            hub_cr += C["fc"][i][sel].sum()
-    b25 = sum(C["bc"][n][sel].sum(0) for n, w, f in STATIONS if w in HUB)
-    ball = sum(C["bc"][n][sel].sum(0) for n, w, f in STATIONS)
-    rate_t = np.where(cr_t > 0, ar_t / np.maximum(cr_t, 1), 0)
-    overall = (ar_t.sum() + war) / cr_t.sum()
-    B = {"B1": float((b25 * rate_t).sum()), "B2": float((b25 * rate_t).sum() * (1 + war / ar_t.sum())),
-         "B3": float(b25.sum() * overall), "B4": float(b25.sum() * hub_ar / hub_cr)}
-    G = {"%s+%s" % (f, b): F[f] + B[b] for f in ("F1", "F2", "F3", "F5", "F6") if f in F for b in B}
-    share = ball.sum() / (ball.sum() + cr_t.sum())
-    R = {"R0": F["F1"], "R1": F["F1"] * (1 + share), "R2": F["F1"] + float(ball.sum() * overall)}
-    val = {}
-    for s in SUITES:
-        fc_ = _model(suites[s], 2024, 1)
-        act = sum(v[FYK == 2025].sum() for v in suites[s].values())
-        val[s] = (fc_, act, fc_ / act)
-    return dict(F=F, B=B, G=G, R=R, share=share, overall=overall, truth=truth_2027(W), val=val, fyt=fyt,
-                btp_hub=float(b25.sum()), btp_all=float(ball.sum()), crime=float(cr_t.sum()))
-
-
-def binned(x, b=250):
-    return int(np.floor(x / b + 0.5))
-
-
-def judge(r, b=250, margin=30, gap=1, share=(0.007, 0.02), frame_keys=None):
-    """Check 2 on a routes result: the frame family in one printed cell with margin, the golden family in a cell at
-    least `gap` above it with margin, R1 in the frame's cell, the truth in the golden's, the validation within 3%."""
-    fr = [v for k, v in r["F"].items() if frame_keys is None or k in frame_keys]
-    go = list(r["G"].values())
-
-    def one_bin(xs):
-        ks = {binned(x, b) for x in xs}
-        if len(ks) != 1:
-            return None, 0.0
-        k = ks.pop()
-        lo, hi = (k - 0.5) * b, (k + 0.5) * b
-        return k, min(min(xs) - lo, hi - max(xs))
-    kf, mf = one_bin(fr)
-    kg, mg = one_bin(go)
-    ok = (kf is not None and kg is not None and mf >= margin and mg >= margin and kg - kf >= gap
-          and binned(r["R"]["R1"], b) == kf and binned(r["truth"]["total"], b) == kg
-          and share[0] <= r["share"] <= share[1] and all(0.97 <= v[2] <= 1.03 for v in r["val"].values()))
-    return ok, kf, mf, kg, mg
-
-
-def local_dt(y, m, d, hh, mi):
-    return dt.datetime(y, m, d, hh, mi)
+def truth(W):
+    """Latent GP-referred demand by financial year: what a clinic that never ran out would have seen."""
+    out = {}
+    for i, x in enumerate(W["days"]):
+        f = fy(x)
+        out[f] = out.get(f, 0.0) + W["lam"]["P"][i] + W["lam"]["N"][i]
+    return out

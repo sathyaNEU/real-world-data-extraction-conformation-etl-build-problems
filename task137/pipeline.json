@@ -1,24 +1,64 @@
 {
   "task": "task137",
   "owner": "sathya8571",
-  "status": "BUILD",
+  "status": "SHIPPED",
   "domain": "healthcare-delivery-health-economics",
   "objective": "forecasting",
-  "stage": 3,
-  "stage_name": "build",
+  "stage": 5,
+  "stage_name": "ship",
   "updated": "2026-10-26",
-  "stump": "A competent analyst adds reception's GP-referred turned-away patients to the GP-referred patients the walk-in clinic saw in 2025-26 and grows the sum, filing 42,500, where the golden is 45,000; the step that lands it there is taking seen plus turned away as the demand a clinic that never runs out will see, when practices running their own phlebotomy clinics keep their patients in-house in the week after the clinic has kept running out, 1,983 GP-referred patients in 2025-26 who never reached the clinic and appear in no count, recovered only from how each day's GP-referred arrivals fall with the share of the previous week's clinic days that ran out.",
+  "stump": "A competent analyst adds reception's GP-referred turned-away patients to the GP-referred patients the walk-in clinic saw in 2025-26 and grows the sum, filing 42,500, where the golden is 45,000, and one who suspects the run-outs keep later patients away and models them over the previous week, or over ten clinic days of lags, files 42,500 too; the step that lands both there is taking the run-outs' reach to end within a week or two, when practices running their own phlebotomy clinics keep their patients in-house for eight weeks after the clinic's run-out weeks, 2,566 GP-referred patients in 2025-26 who never reached the clinic and appear in no count, recovered only by a model of daily GP-referred arrivals on the run-out share of the preceding weeks with the window's length chosen by fit.",
   "architecture": 4,
   "loops": 0,
   "card_registered": "2026-10-26T14:03:36Z",
   "guard": "check and register 2026-10-26: WARN (repeat.decision against task487, repeat.deliverables against task121 v6), NOTEs test.same_puzzle_older (task156) and test.same_driver_older (task111 v2, task86 v2), each differentiated on the card",
   "probes": "probeB1 (call-only, seed 16, golden 54,000 at the nearest 1,000): Opus p137ka 51,000 (50,857.0) and p137kb 51,000 (50,821), both missed; thread A's v4 candidate (probe8) landed by p137lb at 53,000 before registration",
   "precut": {
-    "exit": null,
-    "date": ""
+    "exit": 0,
+    "date": "2026-10-26"
   },
-  "call": "45,000 GP-referred visits (44,684.6); default 42,500 (42,560.8)",
-  "resume": "architecture 4 at stage 3 in this worktree: the generator copied in from the session scratchpad t137_b/build; run make.py, precut, figures_check, voice-check, leak.py, guard.py surface and heart, then hand stage 4 (the leak reader and the judge, together) to the coordinator; read ## Tried and rejected first",
+  "stage3": {
+    "date": "2026-10-26",
+    "checks": "104 of 104 (the three-rules block R1 to R3c, SF1 to SF10, the standing family of 27 and 8 more, the asks, H25)",
+    "verify": "22 of 22 from target.zip alone",
+    "rebuilds": "byte-identical twice, target and golden",
+    "figures_check": "61 of 61",
+    "pair": "cracker 0 of 36, mirror 0 of 36, pair ceiling 28.5, mirror leakage 0.0",
+    "seeds": "check 2 holds at the nearest 2,500 on seeds 26 to 37 in 11 of 12 (seed 34's programme-week dummy 15 under the cell)",
+    "leak_py": "REVIEW, no LEAK, every line answered in ## Stage 3 gates",
+    "container": "scrub audit clean on target and golden; PDFs read the same through four readers",
+    "guard": "validate clean; heart WARN (repeat.decision, repeat.deliverables); surface exit 0, five card-axis pairs promoted, each differentiated on the card",
+    "target_zip": "sha256 6611e9371b07c6de8b208f98a913a4a3abe0116933d350689a7056f4156624b2, md5 5008c2cb, 13 members",
+    "call": "45,000 (44,684.59); default 42,500 (42,560.8)"
+  },
+  "leak": {
+    "leak_py": "2026-10-26 REVIEW, no LEAK (pack c011ac53, --asof 2026-10-02)",
+    "reader": "2026-10-26 round 1 on 6611e937: Sonnet and Opus readers both missed the call at 42,500, asks 8 and 36 of 36 (ask devices re-sited). Round 2 on d3c6d25d: reader E (Sonnet) 42,500 and 0 of 36; reader F (Opus) LANDED 45,000 (base 41,217, grown 44,153) through ten daily lags of run-out days on open days with weekday, financial year and month terms, 8 of 36 (sickness only). Round 3 on c011ac53 (hardened, eight-week persistence): reader G (Sonnet) 42,500 from seen plus turned away, 0 of 36; reader H (Opus) 42,500 from the full days completed by the arrival profile, 0 of 36; score_reader PASS on both"
+  },
+  "judge": {
+    "verdict": "DETERMINISTIC 2026-10-26 on 6611e937",
+    "disposition": "APPROVE",
+    "report": "task137/determinism_check_report.md",
+    "gate_g": "statistical_rigor, analytical_non_defect, surface no, sole defect no",
+    "gate_h": "domain pass, layers pass, decisive_step analytical",
+    "applied": "item (a) the model figures to the nearest 100; item (b) the hub's booked slots for the same patients; finding 4's ask pins (financial quarters, visit date, Monday-to-Friday weeks)",
+    "pass2": {
+      "verdict": "DETERMINISTIC 2026-10-26 on d3c6d25d",
+      "disposition": "FIX_NOW (wording only)",
+      "report": "task137/determinism_check_report_pass2.md",
+      "applied": "the model intermediates as bands over the previous week's share and the previous ten clinic days' share (about 41,700 to 41,800, about 2,000 to 2,100, about 44,700 to 44,800) in submission.md, the workbook and the chart; the workbooks' Company property is the hospital"
+    },
+    "pass3": {
+      "verdict": "DETERMINISTIC 2026-10-26 on c011ac53",
+      "disposition": "FIX_NOW with both items optional, ruled notes by the judge agent: the ship goes on c011ac53 unchanged",
+      "report": "task137/determinism_check_report_pass3.md",
+      "gate_g": "method_or_model_selection, analytical_non_defect, surface no, sole defect no",
+      "gate_h": "domain pass, layers pass, decisive_step analytical",
+      "notes": "ask 3's Vacant line continuation is forced by the annual report's single vacancy and no file states it (a literal portal grader could read Y as a vacant post: 11, 10, 13, 9 days at 2.7, 2.5, 3.1, 2.1 per cent); the chart's two partial edge weeks are presentation only"
+    }
+  },
+  "call": "45,000 GP-referred visits (44,760.2); default 42,500 (42,011.3); the round 2 Opus reader's ten daily lags 42,500 (41,934.0)",
+  "resume": "",
   "architecture_1": {
     "status": "RETURNED",
     "domain": "banking-credit-financial-risk",
@@ -164,5 +204,34 @@
       "call": "4,000 (4,035.9); default 3,750 (3,754.4)"
     }
   },
-  "author_ruling": "2026-10-26: no retiring and no pausing; task137 continues until it ships; architecture 4 authorised, new worlds and new stump strategies allowed; heavier realistic messiness; competing defensible methods with a deterministic answer"
+  "author_ruling": "2026-10-26: no retiring and no pausing; task137 continues until it ships; architecture 4 authorised, new worlds and new stump strategies allowed; heavier realistic messiness; competing defensible methods with a deterministic answer",
+  "repair": {
+    "date": "2026-10-26",
+    "mode": "rubric (ask side), call side frozen",
+    "zip": "sha256 d3c6d25dc693cf9339cf8a6fd5277f6121f432acf64d32359f3fb71d8bd783bc, md5 fd03aa64",
+    "ask_A": "new PAS codes from 16 March 2026 and the 2026-27 clinic templates from 1 April: the careful weekday route names every old code wrongly (0 of 28); the golden links each old code through the late-March issues",
+    "ask_B": "the e-roster unassigns a holder's line after five clinic days of sickness: unassigned lines read as vacancy miss all 8; the over-cleaner keeps 6 of 8",
+    "freeze": "rubric exit 1 on item (a) only (41,714, 1,983 and 44,685 restated to the nearest 100); no ask figure moved",
+    "gates": "checks 115 of 115, verify 29 of 29, byte-identical twice, figures_check 61 of 61, precut 51 of 51, leak.py REVIEW no LEAK, heart WARN, surface exit 0"
+  },
+  "round2_fix": {
+    "date": "2026-10-26",
+    "zip": "sha256 5c27c2ab7c0724fce210b659a4927fe6dbbdfbc6bd00793a75320087dc4064a1, md5 fdd18286",
+    "moved": "two target entries only (docProps/app.xml of reception_turned_away_log.xlsx and community_hub_session_plan_2027.xlsx); every other target byte and every graded figure unchanged",
+    "freeze": "rubric exit 1 on the intermediates' wording only (blocks 1 and 2); ask files and ask figures unmoved",
+    "gates": "checks 117 of 117, verify 29 of 29, byte-identical twice, figures_check 67 of 67, precut 51 of 51, leak.py REVIEW no LEAK, scrub clean"
+  },
+  "hardening": {
+    "date": "2026-10-26",
+    "why": "stage 4 round 2: the Opus reader landed the previous-week version at 45,000 through ten daily lags of the kiosk's full days",
+    "world": "the practices' in-housing persists eight weeks after a run-out week (uniform weight), strength 0.8; demand seed 14, records seed 33, staffing seed 31 (sickness unchanged)",
+    "golden": "window picked by AIC from one to twelve weeks: eight (five weeks or fewer at least 67.2 worse, nine 2.7, seven 5.4); coefficient -0.374 (SE 0.026); base 41,784.2; kept in-house 2,566.2; plan 44,760.2, 1,010 inside the cell",
+    "family": "26 specifications 44,377.0 to 45,524.4; geometric decay 45,524.4 (726 under 46,250); weekly totals 44,589; ten weekly lags 44,996; practices with a clinic against those without 45,123 (-0.81 against +0.02)",
+    "rungs": "seen 40,549.1; seen plus turned away 42,011.3 (round 1 Sonnet); full days completed 42,265.0 (round 1 Opus); fit on days that did not run out 41,309.4; all arrivals 42,846.5; previous week's share 42,483.4 (round 2 golden); ten clinic days 42,609.0; ten daily lags 41,934.0 (round 2 Opus), without months 41,143.5, with hospital visits 41,693.8, Poisson 42,036.8; twenty lags 42,547.1; thirty 43,222.2; forty 43,938.3 (lands)",
+    "zip": "sha256 c011ac5357b4d24236bddacc09bc399feb222f05c68dcc6aa152cd29f9c7be27, md5 4c994536",
+    "gates": "checks 116 of 116, verify 30 of 30, byte-identical twice, figures_check 68 of 68, precut 51 of 51, pair 28.5 (over-cleaner 37.7), leak.py REVIEW no LEAK, scrub clean, guard validate clean, heart WARN (repeat.decision, repeat.deliverables), surface exit 0",
+    "reader_keys": "plan_visits_2027_28, hospital_visits_2025_26.* (28) and sickness_by_quarter.* (8); every other figures.json key withheld"
+  },
+  "zip_sha256": "c011ac5357b4d24236bddacc09bc399feb222f05c68dcc6aa152cd29f9c7be27",
+  "delivered": "2026-10-26"
 }

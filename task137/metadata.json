@@ -1,146 +1,167 @@
 {
- "task": "task137",
- "title": "Calderwick Police's planning figure for its Tanner Street custody hub in 2027-28, the detentions the hub will book in its first year, with the remand holds and initial health assessments its fit-out is sized from",
- "domain": "Urban & Regional Science",
- "client_domain": "Urban & Regional Science",
- "subdomain": "municipal service demand and resource allocation (a public service's first-year demand at a new site from its demand model over the site's catchment, completed by a second agency's caseload booked into the operator's facility)",
- "objective": "Forecasting & Predictive Modeling",
- "prompt_shape": "one figure to the nearest 250 with its two parts and a chart; remand cell hours and holds over 24 hours by suite; initial health assessments by suite, day and night",
- "as_of": "2026-10-26",
- "deliverables": [
-  "tanner_street_planning_figure_2027-28.xlsx",
-  "hub_planning_note.docx"
- ],
- "distractor_files": [
-  "target/custody_estate_register_2026.xlsx",
-  "target/ward_population_mid-2024.csv",
-  "target/late_night_licences_2026.csv",
-  "target/bank-holidays.json"
- ],
- "distractors": [
-  {
-   "file": "target/custody_estate_register_2026.xlsx",
-   "wrong_basis": false,
-   "why_relevant": "the estates register of the four suites and Tanner Street: cells, children's cells, interview and medical rooms, status",
-   "why_unused": "it records the estate, not demand or detentions; no figure reads it",
-   "ruled_out_by": "its own columns"
+  "task": "task137",
+  "title": "How many GP-referred blood-test visits a trust's new community phlebotomy hub should plan for in 2027-28, from a walk-in clinic that ran out of tickets, with the clinic's hospital-clinic visits by specialty and its phlebotomists' sickness absence",
+  "domain": "Healthcare Delivery & Health Economics",
+  "subdomain": "utilization-access-demand-forecasting (latent demand: the GP-referred demand a walk-in clinic never sees because practices with their own phlebotomy clinics keep patients in-house after it has been running out)",
+  "objective": "Forecasting & Predictive Modeling",
+  "prompt_shape": "other: one planning figure at the nearest 2,500, a weekly chart of 2025-26 GP-referred demand, and two asks on the hospital clinics' visits and the team's sickness absence",
+  "as_of": "2026-10-02",
+  "deliverables": [
+    "hub_plan_2027-28.xlsx",
+    "gp_demand_2025-26.png"
+  ],
+  "distractor_files": [
+    "phlebotomy_patient_survey_2025.csv",
+    "community_hub_session_plan_2027.xlsx"
+  ],
+  "context_artifacts": [
+    "phlebotomy_annual_report_2025-26.pdf",
+    "icb_pathology_planning_assumptions_2026-27.pdf"
+  ],
+  "stated_inputs": [
+    "the hub takes every patient with a GP request from 1 April 2027 and is staffed never to run out of tickets (prompt, annual report section 6)",
+    "underlying demand grows 3.5 per cent a year for two years from 2025-26, with no working-day adjustment (prompt; ICB planning assumptions)",
+    "sickness absence is the hours lost to sickness as a percentage of the hours rostered to the substantive team (annual report section 4)"
+  ],
+  "field_terms": [],
+  "input_gates": {
+    "files": 13,
+    "formats": [
+      "csv",
+      "json",
+      "pdf",
+      "xlsx"
+    ],
+    "largest_file": "phlebotomy_queue_events_2024-11-18_to_2026-09-30.csv",
+    "largest_file_rows": 306115
   },
-  {
-   "file": "target/ward_population_mid-2024.csv",
-   "wrong_basis": false,
-   "why_relevant": "the wards' mid-2024 population, a natural driver for a demand per head",
-   "why_unused": "the custody demand model is built on arrests, not population; no figure reads it",
-   "ruled_out_by": "the model note's method (2.1 to 2.4)"
-  },
-  {
-   "file": "target/late_night_licences_2026.csv",
-   "wrong_basis": false,
-   "why_relevant": "the premises licensed past midnight in the city centre wards, where night-time arrests come from",
-   "why_unused": "the arrest records already carry the wards' arrests; no figure reads it",
-   "ruled_out_by": "the model note's method"
-  },
-  {
-   "file": "target/bank-holidays.json",
-   "wrong_basis": false,
-   "why_relevant": "the bank holidays on which the remand courts do not sit",
-   "why_unused": "the remand files carry each handover time; no figure reads it",
-   "ruled_out_by": "the remand files' handed_to_escort column"
-  }
- ],
- "provenance": [
-  {
-   "file": "target/calderwick_police_arrests_2021-04_2026-09.csv",
-   "source": "Calderwick Police arrest records (custody system export), pulled 6 October 2026",
-   "dated": "2026-10-06",
-   "licence": "constructed; released with the task under the task's licence",
-   "made": "constructed for this task by the generator under generator/, in the layout of the named organisation's own export; no real person, record or organisation's data"
-  },
-  {
-   "file": "target/police_uk_street_crime_2025-26.csv",
-   "source": "data.police.uk street-level crime layout (Crime ID, Month, Reported by, Falls within, Longitude, Latitude, Location, LSOA code, LSOA name, Crime type, Last outcome category, Context), April 2025 to March 2026; values constructed",
-   "dated": "2026-06-04",
-   "licence": "constructed; released with the task under the task's licence",
-   "made": "constructed for this task by the generator under generator/, in the layout of the named organisation's own export; no real person, record or organisation's data"
-  },
-  {
-   "file": "target/lsoa21_to_ward_lookup.csv",
-   "source": "2021 LSOA to ward best-fit lookup in the ONS layout; codes and names constructed",
-   "dated": "2024-07-22",
-   "licence": "constructed; released with the task under the task's licence",
-   "made": "constructed for this task by the generator under generator/, in the layout of the named organisation's own export; no real person, record or organisation's data"
-  },
-  {
-   "file": "target/custody_suite_allocation_2027.xlsx",
-   "source": "Calderwick Police custody suite allocation with Custody Services' notes",
-   "dated": "2026-09-10",
-   "licence": "constructed; released with the task under the task's licence",
-   "made": "constructed for this task by the generator under generator/, in the layout of the named organisation's own export; no real person, record or organisation's data"
-  },
-  {
-   "file": "target/custody_demand_model_v2.pdf",
-   "source": "Calderwick Police custody demand model note, version 2.0",
-   "dated": "2026-06-11",
-   "licence": "constructed; released with the task under the task's licence",
-   "made": "constructed for this task by the generator under generator/, in the layout of the named organisation's own export; no real person, record or organisation's data"
-  },
-  {
-   "file": "target/tanner_street_hub_planning_brief.docx",
-   "source": "Estates and Custody Programme planning brief",
-   "dated": "2026-10-20",
-   "licence": "constructed; released with the task under the task's licence",
-   "made": "constructed for this task by the generator under generator/, in the layout of the named organisation's own export; no real person, record or organisation's data"
-  },
-  {
-   "file": "target/cju_remand_files_2025-03_2026-04.csv",
-   "source": "Criminal Justice Unit remand file export",
-   "dated": "2026-10-12",
-   "licence": "constructed; released with the task under the task's licence",
-   "made": "constructed for this task by the generator under generator/, in the layout of the named organisation's own export; no real person, record or organisation's data"
-  },
-  {
-   "file": "target/custody_healthcare_contacts_2025-26.csv",
-   "source": "custody healthcare provider contact export",
-   "dated": "2026-04-14",
-   "licence": "constructed; released with the task under the task's licence",
-   "made": "constructed for this task by the generator under generator/, in the layout of the named organisation's own export; no real person, record or organisation's data"
-  },
-  {
-   "file": "target/custody_estate_register_2026.xlsx",
-   "source": "estates register of the custody suites",
-   "dated": "2026-09-01",
-   "licence": "constructed; released with the task under the task's licence",
-   "made": "constructed for this task by the generator under generator/, in the layout of the named organisation's own export; no real person, record or organisation's data"
-  },
-  {
-   "file": "target/ward_population_mid-2024.csv",
-   "source": "ward population estimates in the ONS mid-year layout; values constructed",
-   "dated": "2025-07-15",
-   "licence": "constructed; released with the task under the task's licence",
-   "made": "constructed for this task by the generator under generator/, in the layout of the named organisation's own export; no real person, record or organisation's data"
-  },
-  {
-   "file": "target/late_night_licences_2026.csv",
-   "source": "licensing register of late-night premises",
-   "dated": "2026-10-01",
-   "licence": "constructed; released with the task under the task's licence",
-   "made": "constructed for this task by the generator under generator/, in the layout of the named organisation's own export; no real person, record or organisation's data"
-  },
-  {
-   "file": "target/bank-holidays.json",
-   "source": "GOV.UK bank holidays JSON layout (england-and-wales), 2025 and 2026 dates as published",
-   "dated": "2026-10-19",
-   "licence": "constructed; released with the task under the task's licence",
-   "made": "constructed for this task by the generator under generator/, in the layout of the named organisation's own export; no real person, record or organisation's data"
-  }
- ],
- "stated_inputs": [
-  "1 April 2027",
-  "31 March 2028",
-  "250",
-  "2025-26",
-  "24 hours",
-  "07:00",
-  "19:00"
- ],
- "field_terms": []
+  "sources": [
+    {
+      "files": "all files under target/",
+      "origin": "generated by task137/generator/make.py (seeded, deterministic) around a fictional NHS trust's walk-in phlebotomy clinic: twelve referring GP practices (seven running their own phlebotomy clinics), seven hospital outpatient specialties with their recall programmes, a seven-post phlebotomy team with sickness, leave, a vacancy and bank cover, a daily ticket allocation, the patients turned away when the tickets ran out, two queue systems and a clinic code reallocation; every organisation, practice, code and person is invented, and no real dataset is reproduced.",
+      "date": "2026-10-02",
+      "license": "CC0-1.0 (original work)"
+    }
+  ],
+  "created": "2026-10-26",
+  "generator": "task137/generator/make.py",
+  "files": [
+    {
+      "path": "walkin_tickets_legacy_2023-04_to_2024-11.csv",
+      "format": "csv",
+      "bytes": 6769318,
+      "rows": 85649,
+      "source": "Constructed (seeded generator)",
+      "date": "2026-10-02",
+      "license": "CC0-1.0 (original work)"
+    },
+    {
+      "path": "phlebotomy_queue_events_2024-11-18_to_2026-09-30.csv",
+      "format": "csv",
+      "bytes": 20694841,
+      "rows": 306115,
+      "source": "Constructed (seeded generator)",
+      "date": "2026-10-02",
+      "license": "CC0-1.0 (original work)"
+    },
+    {
+      "path": "reception_turned_away_log.xlsx",
+      "format": "xlsx",
+      "bytes": 18715,
+      "rows": null,
+      "source": "Constructed (seeded generator)",
+      "date": "2026-10-02",
+      "license": "CC0-1.0 (original work)"
+    },
+    {
+      "path": "eroster_phlebotomy_2023-04_to_2026-09.csv",
+      "format": "csv",
+      "bytes": 430397,
+      "rows": 6501,
+      "source": "Constructed (seeded generator)",
+      "date": "2026-10-02",
+      "license": "CC0-1.0 (original work)"
+    },
+    {
+      "path": "kiosk_ticket_allocations_2023-04_to_2026-09.csv",
+      "format": "csv",
+      "bytes": 21219,
+      "rows": 883,
+      "source": "Constructed (seeded generator)",
+      "date": "2026-10-02",
+      "license": "CC0-1.0 (original work)"
+    },
+    {
+      "path": "gp_practices_catchment.csv",
+      "format": "csv",
+      "bytes": 937,
+      "rows": 12,
+      "source": "Constructed (seeded generator)",
+      "date": "2026-10-02",
+      "license": "CC0-1.0 (original work)"
+    },
+    {
+      "path": "outpatient_clinic_codes.csv",
+      "format": "csv",
+      "bytes": 643,
+      "rows": 7,
+      "source": "Constructed (seeded generator)",
+      "date": "2026-10-02",
+      "license": "CC0-1.0 (original work)"
+    },
+    {
+      "path": "phlebotomy_annual_report_2025-26.pdf",
+      "format": "pdf",
+      "bytes": 5564,
+      "rows": null,
+      "source": "Constructed (seeded generator)",
+      "date": "2026-10-02",
+      "license": "CC0-1.0 (original work)"
+    },
+    {
+      "path": "icb_pathology_planning_assumptions_2026-27.pdf",
+      "format": "pdf",
+      "bytes": 2606,
+      "rows": null,
+      "source": "Constructed (seeded generator)",
+      "date": "2026-10-02",
+      "license": "CC0-1.0 (original work)"
+    },
+    {
+      "path": "bank_holidays_england.json",
+      "format": "json",
+      "bytes": 4521,
+      "rows": null,
+      "source": "Constructed (seeded generator)",
+      "date": "2026-10-02",
+      "license": "CC0-1.0 (original work)"
+    },
+    {
+      "path": "phlebotomy_patient_survey_2025.csv",
+      "format": "csv",
+      "bytes": 20695,
+      "rows": 412,
+      "source": "Constructed (seeded generator)",
+      "date": "2026-10-02",
+      "license": "CC0-1.0 (original work)"
+    },
+    {
+      "path": "community_hub_session_plan_2027.xlsx",
+      "format": "xlsx",
+      "bytes": 6102,
+      "rows": null,
+      "source": "Constructed (seeded generator)",
+      "date": "2026-10-02",
+      "license": "CC0-1.0 (original work)"
+    },
+    {
+      "path": "data_dictionary.csv",
+      "format": "csv",
+      "bytes": 2648,
+      "rows": 22,
+      "source": "Constructed (seeded generator)",
+      "date": "2026-10-02",
+      "license": "CC0-1.0 (original work)"
+    }
+  ]
 }
