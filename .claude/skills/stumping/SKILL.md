@@ -811,6 +811,37 @@ mechanism rather than measuring it has not tested its own premise.
 (the unit type on each event record, and the schedule per unit type) rather than one pooled share. That is a
 further organ on the pack and has to be weighed against readability test 7 before it is drawn.
 
+### 1.1i A recovered quantity separates where a ranking cannot: read the lane's own shipped builds
+
+**When eight architectures in one slot all die because some simpler route reaches 85 to 100 per cent of the
+golden, stop changing the mechanism and look at the decision type.** A ranking forces the gates into
+conflict: to be determinate the golden must be forced by the data, to be hard it must sit far from the
+simple routes, and a ranking's head is the same under every route that estimates the same quantity, so only
+the cap's boundary differentiates and that boundary is a near-tie by construction (1.1d, 1.1h).
+
+**A recovered quantity has no such boundary.** Measured on one slot's ninth design, where the call is a
+single figure the group needs (how many genuine exceptions its ledger holds) rather than which units to
+visit, over six seeds:
+
+| route | share of the truth |
+|---|---|
+| the monitoring system's own flag count | 37 to 72 per cent |
+| the per-entry rate scaled up by transactions | 157 to 247 per cent |
+| the per-line rate scaled up | 13 to 20 per cent |
+| **the golden** | **97.6 to 102.0 per cent** |
+
+Every simple route is wrong by a factor and the golden is right to within two and a half per cent, with the
+golden standing at 1.40 to 2.77 times the naive count. Nothing is a near-tie, there is no cap to sit on, and
+the inversion carries no fitted nuisance parameter because its expectation is monotone in the unknown, so it
+has exactly one root and every figure it produces is determinate.
+
+**So check the decision type against the objective's own shipped record before drawing.** In the lane this
+was measured in, every build that shipped and held its call was a recovered quantity or a decomposition (a
+rise split into two causes, recovered energy, a share of a contracted gain), and every build that died was a
+ranking. The criteria then come from the structure a recovered quantity already has: the bridge from the
+reported figure to the recovered one with each unit as a reconciling item (shape 03), which supplies one
+criterion per unit plus the two totals and the gap.
+
 ### 1.1h Interval-censored placement cannot carry a slate decision: the two horns
 
 **When the graded call is a slate of periods and the decisive step is how an interval-censored record is
