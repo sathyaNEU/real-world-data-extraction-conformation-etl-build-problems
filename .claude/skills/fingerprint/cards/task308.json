@@ -1,95 +1,127 @@
 {
   "task": "task308",
-  "architecture": "v1",
-  "drawn": "2026-10-25",
-  "slot_note": "",
-  "domain": "product-analytics",
-  "subdomain": "churn-propensity-uplift-modeling",
-  "niche": "which of a bike-share operator's five classic networks gets 300 e-bikes and the net fare revenue a year they add, when the busiest network's stations rarely run dry and the campus network's residence-hall hubs run dry at every teaching-weekday class change, so the rides on record understate the requests",
+  "architecture": "v2",
+  "drawn": "2026-10-26",
+  "slot_note": "re-root at stage 1 after architecture 1 (e-bikes by network, the trip record censored by empty docks) was spent at stage 4; about sixty candidates screened on paper and by call-only probes before this draw (design note ## Tried and rejected)",
+  "domain": "actuarial-science-insurance",
+  "subdomain": "catastrophe-exposure-accumulation",
+  "client_domain": "actuarial-science-insurance",
+  "niche": "a UK mutual home insurer's reinsurance committee choosing which of four regional home books takes a 2027 catastrophe excess of loss layer (GBP 15 million excess of 10 million each loss occurrence, one reinstatement), valued as the expected 2027 recoveries on its own 2010 to 2025 storm, flood and freeze events brought to the 2027 book less the premium and the expected reinstatement premium, when what a claim costs rises with the claims each repair panel firm has to take on at once and one region's book doubled in 2021 while its panel did not grow",
   "objective": "opportunity-sizing-decision",
   "shape": "other",
   "decision_type": "pick_one_of_n",
   "answer_unit": "named_option",
-  "answer": "University: USD 125,000 a year in net fare revenue at 2025 demand (Central USD 75,000, Riverside USD 50,000, Old Town USD 25,000, Hillcrest USD 25,000)",
-  "answer_source": "submission.md, Final Recommendation; ebike_deployment_2027.docx",
+  "answer": "Pennine: the layer is worth about GBP 0.2 million in 2027, against Severn Vale at about GBP -0.4 million, Coastal North at about -0.6 and Fenland at about -0.9 (figures fixed at stage 2)",
+  "answer_source": "task308/submission.md block 1, from generator/figures.json",
   "gap": [
-    "population",
-    "objective"
+    "objective",
+    "time"
   ],
   "pattern": [
     "none"
   ],
   "generators": [
-    "G7",
-    "G12"
+    "G14",
+    "G13"
   ],
-  "gate_g": "method_or_model_selection",
-  "calibration_form": "parallel_run_overlap",
-  "stump_strategy": "informative_censoring",
+  "gate_g": "binding_constraint",
+  "calibration_form": "none",
+  "stump_strategy": "binding_constraint",
   "decisive_rule_filed": false,
   "official_decoy": false,
   "validated_decoy": false,
-  "context_artifact": "monitoring_export",
+  "context_artifact": "filed_standard",
   "stump_class": "analytical",
-  "analyst_test": "A strong analyst reads every field and rule correctly, measures the Harbour pilot's e-bike share (41.7 per cent of rides) and new-rider uplift (4.4 per cent), carries them to each network's 2025 rides at its classic fare and the e-bike premium, and names Central at about USD 50,000 a year, because no field, flag or document says a request met an empty station.",
-  "domain_test": "The deciding quantity is a launch's incremental revenue against the existing product, the uplift a product analyst sizes from a pilot, and in shared mobility the existing product's usage is censored by availability: a dock that runs dry records no request, so the trips on record are served demand only.",
-  "layer2_family": "estimation_fit",
-  "layer2_pattern": "own:served-trips-censored-by-empty-docks",
+  "analyst_test": "A strong analyst who reads every file correctly builds each year's loss occurrences under the hours clause, brings every claim to 2027 by its district's policies against the year's and by the rebuild cost index against its month of loss, and names Severn Vale at about GBP -0.4 million, because no field or document says that what a claim costs depends on how many claims the region's panel firms have to repair at once; the golden prices each event at the repair cost its 2027 scale implies and names Pennine at about GBP 0.2 million.",
+  "domain_test": "The deciding quantity is a catastrophe layer's expected recoveries, which a reinsurance actuary prices from the company's event losses brought to the cover year's exposure and costs; catastrophe modelling knows that claim costs rise with an event's size when local repair capacity is overwhelmed (post-event demand surge), so an event striking a larger book costs more than proportionally more where the repair capacity has not grown.",
+  "layer2_family": "field_method",
+  "layer2_pattern": "own:post-event-demand-surge-at-the-cover-years-scale",
   "layer1": [
-    "two trip systems across the 1 July platform switch: station names against station codes, legacy against new account ids, three bike-number formats, fares in dollars against cents",
-    "local time with the repeated November hour in the trip exports; the dispatch log, charging and workshop exports in UTC",
-    "false starts (an undock put straight back) in the trip exports",
-    "the 03:00 audit as a fleet-audit workbook, GBFS station and region feeds",
-    "the City's open data by area and month with small cells suppressed",
-    "re-registered accounts, re-sent charging sessions and road-test retests in the asks' files"
+    "event codes only for declared events and missing on late-notified claims; occurrences built from dates of loss under the hours clause, the company choosing each period's start",
+    "incurred as paid plus outstanding on 31 October 2026, the 2025 claims still part-reserved",
+    "cash settlements carry no panel firm or sign-off date",
+    "the 1 January 2021 Calder and Colne book transfer into eight Pennine districts, policies by district and year",
+    "storms two days apart (February 2022) that one 72-hour period can hold",
+    "attritional windstorm, flood and freeze claims on ordinary days among the event claims"
   ],
-  "stakeholder_role": "e-bike product lead",
-  "role_family": "product_manager",
+  "stakeholder_role": "the head of reinsurance preparing the committee's placement paper",
+  "role_family": "portfolio_manager",
   "scoring_unit": "other",
   "spine": {
-    "file": "tripsys_export_2025Q1.csv, tripsys_export_2025Q2.csv, rides_2025Q3.csv, rides_2025Q4.csv",
-    "rows": 920231,
-    "entity": "one undock (a ride or a false start)",
-    "grain": "undock",
-    "source": "constructed"
+    "file": "home_claims_2010_2025.parquet",
+    "rows": 480000,
+    "entity": "one home claim",
+    "grain": "claim",
+    "source": "synthetic (fictional UK mutual home insurer)"
   },
   "forum": "board_of_directors",
-  "forcing_event": "season_or_peak",
-  "org_family": "software_or_platform",
+  "forcing_event": "budget_or_appropriation",
+  "org_family": "financial_institution",
   "world": {
-    "geography": "USA (a fictional mid-sized city's bike-share)",
-    "currency": "USD",
-    "org_type": "city bike-share operator",
+    "geography": "United Kingdom (four English regional books)",
+    "currency": "GBP",
+    "org_type": "a mutual home insurer",
     "invented_names": [
-      "Brackenford Bikeshare Inc.",
-      "Harlan Velo Supply Co."
+      "Ardenmoor Mutual",
+      "Whitlow Carrick Re Brokers",
+      "Halvorsen Re",
+      "Castellan Re",
+      "Merrow Re",
+      "Calder and Colne Insurance Services"
     ],
     "people": [
-      "Joseph Graham",
-      "Gina Wells"
+      "Donna Phillips",
+      "Anne Shah",
+      "Nicholas Hardy"
     ]
   },
   "deliverables": [
-    "ebike_deployment_2027.docx",
-    "ebike_deployment_2027.xlsx"
+    "cat_layer_placement_2027.pdf",
+    "cat_layer_workbook_2027.xlsx"
   ],
   "opening_move": "question-first",
   "question_form": "which",
-  "driver": "A launch's added revenue is sized from requests, but the record holds only the requests the service met: where the existing supply runs out at every peak, the unmet requests leave no row, so carrying a pilot's uplift by each candidate's recorded use sends the launch to the candidate whose supply never runs out; only the supply rebuilt second by second from the movements in and out shows which candidate turns away the most requests.",
-  "driver_concrete": "Each network's turned-away requests are rebuilt from each station's classic stock (the 03:00 audit, then every undock, dock and van move, second by second) and its requests per stocked second by month, day type and hour, and University, whose residence-hall hubs run dry at every class change, adds the most net fare revenue, while Central, with the most rides on record, rarely runs dry.",
-  "stump": "A competent analyst carries the pilot's e-bike share and new-rider uplift to each network's 2025 rides and names Central at about USD 50,000 a year, against University at USD 125,000, whose residence-hall hubs turn away the class-change requests the trip record never shows.",
-  "lineage": [],
-  "differentiation": {
-    "task199": "task199 reads an event rate from a record that holds an event only where a watcher filed an account, against the watchers' filing volumes; task308's record holds every met request and loses only the ones that met an empty station, and the turned-away requests are rebuilt from each station's stock, rebuilt second by second from trips, van moves and the nightly count.",
-    "task268": "task268 v2 measures how far a stock fell through collectors who sample where they find most; task308 measures how many requests an empty station turned away, from the station's own rebuilt stock and its requests in the steps it was stocked, with no sampler choosing where to look.",
-    "task196": "task196 v2 recovers events a record partly captures from the overlap of two capture channels; task308 has one channel, the trip record, and recovers the requests it never captured from the steps in which the station had no bike.",
-    "task255": "task255 v1 fits a size distribution's tail with item-specific truncation and a moving censoring ceiling; task308 counts turned-away requests at docks whose stock, not a recording threshold, censors the count, and the censoring times are rebuilt from the flows in and out.",
-    "task271": "task271 v2 reweights reached members by each state's chance of being reached in each window of the day, a nonresponse model fitted to call histories; task308 has no nonresponse and no states: each station's empty windows are rebuilt exactly from the flows in and out, and the requests in them come from the same station's requests in the windows it was stocked.",
-    "task471": "task471 v1 weights each returned reply by the share of handout days from which a trip of its length could come back, a selection on return windows; task308 weights no record: it adds the requests that left no record because the station was empty, counted from the station's own rebuilt stock.",
-    "task305": "task305 adds a body of short-stay occupants whom the demand model's resident origins never count, measured at outlets beside similar lodgings; task308's riders are all in the record's population, and what the record misses is the requests those riders made when the station had no bike, recovered from the station's own stock and request rate."
-  },
-  "architecture_spent": true,
-  "notes": "Architecture 1. Call-only probes on the draw pack (sonnet and opus at medium) both named Central (USD 270,000 and USD 100,000); both rebuilt the pilot's e-bike stock, neither rebuilt the districts' classic stock. WARNs answered in the design note. Stage 3 (2026-10-26): 86 generator checks, two byte-identical builds, verify on the zip, figures_check and precut green; the realism sweep moved the crews' pace, the point choice, the New Year's Eve plug-ins and the night par off fixed values. Spent 2026-10-26 at stage 4: both isolated scored readers rebuilt the classic stock from the audit, trips and van moves and named University (USD 100,000 and 125,000); judge NOT_DETERMINISTIC SEND_BACK on Gate C, Gate G and H pass. Re-root pending.",
-  "client_domain": "product-analytics",
-  "registered": "2026-10-25T22:28:25Z"
+  "driver": "An event's loss carried to a larger book is scaled claim by claim at the cost each claim carried, when what a claim costs rises with how many claims the region's repair capacity has to take on at once; where the book has grown and the capacity has not, the same event costs more per claim at the forward scale, and only the cost per claim read against claims per unit of capacity across every event shows by how much.",
+  "driver_concrete": "Each 2010 to 2025 storm, flood and freeze is re-costed as it would strike the 2027 book: its claims scaled by district policies, each claim's cost re-read from the surge curve at the event's 2027 claims per panel firm (Pennine's panel stayed at about 34 firms while its book doubled with the 2021 transfer), and the layer applied to the occurrences the hours clause allows.",
+  "stump": "A competent analyst brings every claim to 2027 by its district's policies and the rebuild cost index, applies the layer to the occurrences the hours clause allows and names Severn Vale at about GBP -0.4 million, where the golden is Pennine at about GBP 0.2 million; the step that lands it there is pricing a historical event's claims at the cost each claim carried at the event's own scale, when Pennine's pre-2021 events would put about twice as many claims on the same 34 panel firms in 2027.",
+  "mechanism_source": "design_note",
+  "lineage": [
+    {
+      "architecture": "v1",
+      "domain": "product-analytics",
+      "subdomain": "churn-propensity-uplift-modeling",
+      "niche": "which of a bike-share operator's five classic networks gets 300 e-bikes and the net fare revenue a year they add, when the busiest network's stations rarely run dry and the campus network's residence-hall hubs run dry at every teaching-weekday class change, so the rides on record understate the requests",
+      "objective": "opportunity-sizing-decision",
+      "shape": "other",
+      "decision_type": "pick_one_of_n",
+      "gap": [
+        "population",
+        "objective"
+      ],
+      "pattern": [
+        "none"
+      ],
+      "generators": [
+        "G7",
+        "G12"
+      ],
+      "gate_g": "method_or_model_selection",
+      "stump_strategy": "informative_censoring",
+      "calibration_form": "parallel_run_overlap",
+      "context_artifact": "monitoring_export",
+      "forum": "board_of_directors",
+      "forcing_event": "season_or_peak",
+      "org_family": "software_or_platform",
+      "role_family": "product_manager",
+      "layer2_family": "estimation_fit",
+      "layer2_pattern": "own:served-trips-censored-by-empty-docks",
+      "driver": "A launch's added revenue is sized from requests, but the record holds only the requests the service met: where the existing supply runs out at every peak, the unmet requests leave no row, so carrying a pilot's uplift by each candidate's recorded use sends the launch to the candidate whose supply never runs out; only the supply rebuilt second by second from the movements in and out shows which candidate turns away the most requests.",
+      "driver_concrete": "Each network's turned-away requests are rebuilt from each station's classic stock (the 03:00 audit, then every undock, dock and van move, second by second) and its requests per stocked second by month, day type and hour, and University, whose residence-hall hubs run dry at every class change, adds the most net fare revenue, while Central, with the most rides on record, rarely runs dry.",
+      "stump": "A competent analyst carries the pilot's e-bike share and new-rider uplift to each network's 2025 rides and names Central at about USD 50,000 a year, against University at USD 125,000, whose residence-hall hubs turn away the class-change requests the trip record never shows.",
+      "fate": "spent at stage 4 (2026-10-26): both scored readers landed the call (University) by rebuilding the empty-dock seconds; the judge returned SEND_BACK on the grain and the induced riders"
+    }
+  ],
+  "differentiation": {},
+  "notes": "Architecture 2. Forcing event: the board approves the 2027 business plan and its reinsurance budget, which buys one regional layer. Call-only probes on the probe pack (sonnet and opus at medium, prompt and pack only) both named Severn Vale (GBP +1.2 and +1.9 million on the probe pack's quotations); both built occurrences with a window dynamic programme and on-levelled every claim by district policies and the index, neither read claim cost against event size.",
+  "registered": "2026-10-26T07:29:15Z"
 }

@@ -1,34 +1,34 @@
 {
  "task": "task308",
  "owner": "perssathya",
- "status": "PAUSED",
- "domain": "product-analytics",
+ "status": "DESIGN",
+ "domain": "actuarial-science-insurance",
  "objective": "opportunity-sizing-decision",
- "stage": 1,
- "stage_name": "draw",
+ "stage": 2,
+ "stage_name": "design",
  "updated": "2026-10-26",
- "stump": "A competent analyst carries the pilot's e-bike share and new-rider uplift to each network's 2025 rides and names Central at about USD 50,000 a year, because the trip record holds only the requests that found a bike: University's residence-hall hubs run dry at every teaching-weekday class change and stay short until the afternoon van, so about 29,600 of its 2025 requests leave no row, and the requests rebuilt for its empty seconds put University first at USD 125,000 a year.",
- "architecture": 1,
+ "stump": "A competent analyst brings every claim to 2027 by its district's policies and the rebuild cost index, applies the layer to the occurrences the hours clause allows and names Severn Vale at about GBP -0.4 million, because the record prices each claim at its own event's claims per repair panel firm: Pennine's book doubled with the 2021 transfer while its panel stayed at about 34 firms, so each pre-2021 freeze and storm would put about twice as many claims on each firm in 2027, and the cost of a claim read against claims per firm across every event re-prices those events into the layer and puts Pennine first at about GBP +0.2 million.",
+ "architecture": 2,
  "loops": 0,
  "precut": {
-  "exit": 0,
-  "date": "2026-10-26"
+  "exit": null,
+  "date": ""
  },
  "leak": {
-  "leak_py": "REVIEW (sweep 3: the board paper names the five networks and the measure; sweep 4: generic station and e-bike words; no LEAK)",
-  "reader": "two scored readers landed the call (University; sonnet USD 100,000, opus USD 125,000); asks 12 and 11 of 25 (ask B whole, asks A and C missed); score_reader exit 1 on both"
+  "leak_py": "",
+  "reader": ""
  },
  "duplicate_check": {
-  "heart": "WARN (repeat.gate_g, repeat.decision, repeat.deliverables, repeat.question_form; no BLOCK)",
-  "nearest": "task128 v2 0.06 (driver)"
+  "heart": "",
+  "nearest": "task120 v1 0.10 (driver, guard check PASS)"
  },
  "judge": {
-  "verdict": "NOT_DETERMINISTIC",
-  "disposition": "SEND_BACK (Gate C: grain and induced riders unfiled; asks A and C definitions); Gate G and H pass",
-  "report": "task308/determinism_check_report.md"
+  "verdict": "",
+  "disposition": "",
+  "report": ""
  },
  "returned": [],
- "resume": "Architecture 1 spent at stage 4 (censored demand at empty stations). Re-root candidates at stage 1, all dead (Tried and rejected): the pilot's censored comparison stations, household interference, desmoothed fund returns, first-round screening yield, the journey unit, five plan-screened economic mechanisms, the job-board save offer (placement invoices joined by the Opus probe), six general statistical mechanisms and three world-specific ones on paper, and the bus corridor whose late running carries along the running boards (both probes replayed the AVL board by board). Resume at the stage 1 draw: a component of the deciding quantity that the main records hold only as a static attribute or a pattern, never as a process a replay of the records would carry, probed with two call-only readers before any card is filed; the guard bans population_selection, composition_mix and decomposition_attribution until the window rolls.",
+ "resume": "Architecture 2 drawn (catastrophe layer, post-event demand surge at the 2027 scale). Stage 2: retune the scratch world (s308) so Pennine's pre-2021 freezes exhaust the layer under every standing surge form and its value sits in one bin of the printed unit, with the default path on Severn Vale; then the fork table, closure, asks and devices, prompt and precut; port to task308/generator at stage 3 (the architecture 1 generator, prompt, metadata and submission are replaced there).",
  "approved": null,
  "delivered": null,
  "portal": null,
