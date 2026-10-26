@@ -298,3 +298,18 @@ Measured by: generator/pair.py on the cut pack.
   named: the inventory closing to zero on every station-day, one par per network at the 03:00 audit, Harbour's flat
   per-station rides, trip durations and the e-bike share flat across networks, hours and distances, the pilot note issued
   in January in the past tense, the pilot stations' capacities against the 5 per cent match. Re-root at stage 1.
+- 2026-10-26, re-root screen (scratch t308v2): the pilot's comparison stations ran dry too, so the ride-based uplift
+  double counts the relief; call-only probe B (opus) found the comparison stations' empty hours and measured the uplift
+  on demand (University at USD 125,000). Any stump that runs through censoring or stock in this world is spent.
+- 2026-10-26, re-root concept readers (opus, medium, scenario text only): household interference in an
+  account-randomised retention trial, appraisal-smoothed private-fund returns, first-round against repeat screening
+  yield. Each reader took the named textbook move at once (household-level contrasts, Geltner desmoothing, first kits
+  split from repeats). Dropped before a pack.
+- 2026-10-26, re-root, the journey unit (scratch t308v3): members re-dock at 45 minutes and day-pass holders at 30 to
+  restart their included minutes, and the pilot's riders choose an e-bike once per journey, so take-up read per ride
+  undervalues Central's day-pass tours. Both concept readers and both call-only probes on the first pack missed it
+  (Riverside at USD 125,000 against the golden Central at USD 200,000). On the second pack (tourists riding two or
+  three journeys a pass-day), probe D (opus) read the pile-up of classic rides just under the included minutes and
+  the cliff after them as riders re-docking, chained same-station restarts within five minutes and filed the golden
+  exactly (Central USD 225,000), and probe C (sonnet) reached Central through the day-pass e-bike rides' uncapped
+  lengths. The allowance's cliff in the ride-length distribution announces the re-dock. Dead.

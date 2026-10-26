@@ -28,7 +28,7 @@
   "report": "task308/determinism_check_report.md"
  },
  "returned": [],
- "resume": "Architecture 1 spent at stage 4 (both scored readers landed University; DESIGN_NOTE.md, Tried and rejected). Re-root at stage 1: a new driver (not censored demand at empty stations, not task302's stockout substitution), probed with two call-only readers before any pack is cut. The arch-1 generator (bike-share world: stations, stock, vans, pilot, accounts, charging, workshop) is reusable if the new draw keeps the world; fix the readers' realism tells (one par per network, exact reconciliation, flat durations and shares, pilot note dates) either way.",
+ "resume": "Architecture 1 spent at stage 4 (censored demand at empty stations). Re-root candidates at stage 1, all dead (Tried and rejected): the pilot's censored comparison stations, household interference, desmoothed fund returns, first-round screening yield, and the journey unit (riders re-docking under the included minutes; probe D chained the re-docks off the ride-length cliff). Resume at the stage 1 draw with a structure that leaves no anomaly in the data (no cliff, no empty-station pattern, no shared key), probed with two call-only readers before any card is filed.",
  "approved": null,
  "delivered": null,
  "portal": null,
