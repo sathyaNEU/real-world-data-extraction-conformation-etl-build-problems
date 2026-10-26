@@ -1,50 +1,57 @@
 {
-  "task": "task141",
-  "owner": "sathya8571",
-  "status": "SHIPPED",
-  "domain": "criminology-justice",
-  "objective": "forecasting",
-  "stage": 5,
-  "stage_name": "ship",
-  "updated": "2026-10-15",
-  "stump": "A competent solver links the screens to the first appearances, keeps the eligible charges, counts a new-offence arrest within 365 days of release or before disposition, takes each score's safety rate among the eligible defendants magistrates released and files the tier at scores 1 to 4 (score 4 at 87.9 per cent); the step that lands it there is reading the released defendants as the tier's population, when magistrates held 26 per cent of eligible score-4 defendants, the ones they judged riskiest, and the tier releases them all: read from the magistrates' differing release shares, score 4 falls to about 76 per cent and the tier is scores 1 to 3.",
-  "architecture": 1,
-  "loops": 0,
-  "precut": {
-    "exit": 0,
-    "date": "2026-10-15"
-  },
-  "leak": {
-    "leak_py": "REVIEW 2026-10-15 on the final rebuild (no LEAK; every REVIEW line answered in ## Leak review)",
-    "reader": "stage 4 2026-10-15: no leak, Q1 to Q4 none, Q5 executes to the golden, Q6 analytical (difficulty placed at follow-up censoring, a lower rung); its python-docx template tell fixed and five readings ruled (SF31 to SF34, closure 12) in the fix pass; targeted re-read 2026-10-15 of the README's notes and the draft: nothing quoted for Q1 to Q4, Q6 analytical, its realism notes (the pinned notes reading like a specification) recorded and left"
-  },
-  "duplicate_check": {
-    "heart": "PASS 2026-10-15 on the final rebuild, nearest 0.08 (task116 v1 lineage)",
-    "nearest": "driver 0.08 (task116 v1 lineage); surface exit 0, task139 promoted (two apart, gap population and G9 on both cards, drivers differ, differentiation on the card) for the author's /clone-check",
-    "note": "drawn 2026-10-15: guard PASS, no WARN"
-  },
-  "judge": {
-    "verdict": "DETERMINISTIC (2026-10-15), every figure reproduced; main call forced, stump power high, Gate H analytical",
-    "disposition": "FIX_NOW optional on the asks, applied in one generator pass (README notes for custody through a boarding, day counts after a release and monitoring days by release; SF30 the disposition day a same-call row; both Word documents in Word's form); freeze determinism and rubric exit 0, no graded figure moved; not re-judged",
-    "report": "task141/determinism_check_report.md"
-  },
-  "returned": [],
-  "resume": "",
-  "approved": null,
-  "delivered": "2026-10-15",
-  "portal": null,
-  "portal_id": "",
-  "portal_status": "",
-  "portal_status_date": "",
-  "wave": "wave 2 (new), seed FC12 (world redrawn)",
-  "build": {
-    "checks": "193 assertions, 0 failed",
-    "verify": "pass (independent path, Word documents' word counts included)",
-    "rebuild": "two builds byte-identical (target.zip sha256 662eb5196dcbc2df)",
-    "figures_check": "61 figures, exit 0",
-    "voice_check": "PASS (992 characters)",
-    "containers": "clean (scrub audit, target and golden; both docx in Word's form)",
-    "precut": "49 checks, exit 0",
-    "freeze": "determinism and rubric exit 0"
+ "task": "task141",
+ "owner": "sathya8571",
+ "status": "FAILED_TO_STUMP",
+ "domain": "criminology-justice",
+ "objective": "forecasting",
+ "stage": 1,
+ "stage_name": "draw",
+ "updated": "2026-10-26",
+ "stump": "A competent solver links the screens to the first appearances, keeps the eligible charges, counts a new-offence arrest within 365 days of release or before disposition, takes each score's safety rate among the eligible defendants magistrates released and files the tier at scores 1 to 4 (score 4 at 87.9 per cent); the step that lands it there is reading the released defendants as the tier's population, when magistrates held 26 per cent of eligible score-4 defendants, the ones they judged riskiest, and the tier releases them all: read from the magistrates' differing release shares, score 4 falls to about 76 per cent and the tier is scores 1 to 3.",
+ "architecture": 1,
+ "loops": 0,
+ "precut": {
+  "exit": 0,
+  "date": "2026-10-15"
+ },
+ "leak": {
+  "leak_py": "REVIEW 2026-10-15 on the final rebuild (no LEAK; every REVIEW line answered in ## Leak review)",
+  "reader": "stage 4 2026-10-15: no leak, Q1 to Q4 none, Q5 executes to the golden, Q6 analytical (difficulty placed at follow-up censoring, a lower rung); its python-docx template tell fixed and five readings ruled (SF31 to SF34, closure 12) in the fix pass; targeted re-read 2026-10-15 of the README's notes and the draft: nothing quoted for Q1 to Q4, Q6 analytical, its realism notes (the pinned notes reading like a specification) recorded and left"
+ },
+ "duplicate_check": {
+  "heart": "PASS 2026-10-15 on the final rebuild, nearest 0.08 (task116 v1 lineage)",
+  "nearest": "driver 0.08 (task116 v1 lineage); surface exit 0, task139 promoted (two apart, gap population and G9 on both cards, drivers differ, differentiation on the card) for the author's /clone-check",
+  "note": "drawn 2026-10-15: guard PASS, no WARN"
+ },
+ "judge": {
+  "verdict": "DETERMINISTIC (2026-10-15), every figure reproduced; main call forced, stump power high, Gate H analytical",
+  "disposition": "FIX_NOW optional on the asks, applied in one generator pass (README notes for custody through a boarding, day counts after a release and monitoring days by release; SF30 the disposition day a same-call row; both Word documents in Word's form); freeze determinism and rubric exit 0, no graded figure moved; not re-judged",
+  "report": "task141/determinism_check_report.md"
+ },
+ "returned": [
+  {
+   "date": "2026-10-26",
+   "portal": "both responses landed the call at NCA scores 1 to 3",
+   "repair": "design",
+   "commit": ""
   }
+ ],
+ "resume": "architecture 1 is spent: both portal responses landed scores 1 to 3, and the decisive step is the domain's reflex as well as an estimator with seven constructions (stumping 1.1j). Measured and also dead: deduplicating to defendants (0.6 points), the exposure family (flat windows, hazard three times too small), the uncapped window (rule application). Every large lever here is a counterfactual for defendants a magistrate held, which is the same selection family, so the re-root must change the decision to one whose population the record holds whole. Measured candidate: the jail bed-day footprint, where a release costs 0.3 days of its own and 0.2 to 4.4 days through the booking that follows a failure, reconstructed exactly by linking each release to the next booking for that person. Re-root at stage 1 as architecture 2.",
+ "approved": null,
+ "delivered": "2026-10-15",
+ "portal": null,
+ "portal_id": "",
+ "portal_status": "",
+ "portal_status_date": "",
+ "wave": "wave 2 (new), seed FC12 (world redrawn)",
+ "build": {
+  "checks": "193 assertions, 0 failed",
+  "verify": "pass (independent path, Word documents' word counts included)",
+  "rebuild": "two builds byte-identical (target.zip sha256 662eb5196dcbc2df)",
+  "figures_check": "61 figures, exit 0",
+  "voice_check": "PASS (992 characters)",
+  "containers": "clean (scrub audit, target and golden; both docx in Word's form)",
+  "precut": "49 checks, exit 0",
+  "freeze": "determinism and rubric exit 0"
+ }
 }

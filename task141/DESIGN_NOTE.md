@@ -652,6 +652,63 @@ the targeted re-read's.
    response cracking it and about 41.0 with both. The clone screen promotes task139 (two apart, gap population and G9
    on both cards) for the author's `/clone-check`; the drivers differ, recorded on the card.
 
+## Portal result and the stage 2 diagnosis, 2026-10-26
+
+**Both portal responses landed the call.** Response 1 and response 2 each set the tier at NCA scores 1 to 3,
+response 2 naming the top score explicitly, and both produced all three deliverables with the supporting
+calculations. The call is landed, so this is a stage 2 redesign of the decisive step and not a repair
+(`build-pipeline`, Returned tasks): a response that walks the default path to the golden means the decisive
+step is redesigned, never that a rung is added above it.
+
+**Why it was reachable, and it is not a near miss.** The decisive step was the selective-labels correction:
+outcomes exist only for the defendants a magistrate released, the tier releases every eligible defendant at
+its scores, so the rate is read off the magistrates' leniency gradient out to full release. Pretrial risk
+assessment is the textbook setting for that problem and judge leniency is its textbook instrument, so the
+correction is this domain's reflex rather than a step a competent analyst skips. Readability screen test 3
+fires on the decisive rung, and the screen recorded it as `silent`. The ladder also lists seven
+constructions of the gradient, all landing scores 1 to 3; that is the tell for `stumping` 1.1j, filed the
+same day on another build: the decisive step is an estimator fitted over a population the analyst chooses,
+and an estimator never has a unique defensible execution. Both facts point the same way.
+
+**What was measured before redesigning**, on the built pack through `generator/calc.py`, safety rates in per
+cent by NCA score. The world reproduces: the default path returns 95.5, 93.9, 91.9, 87.9, 78.0 and 73.8.
+
+| Candidate decisive step | Score 3 | Score 4 | Score 5 | Tier | Leverage |
+|---|---|---|---|---|---|
+| the default path, window capped at the last disposition | 91.9 | 87.9 | 78.0 | 1 to 4 | the figure to beat |
+| one row per defendant, first appearance only | 92.0 | 87.9 | 78.3 | 1 to 4 | none, 0.0 points |
+| one row per defendant, any failure at that score | 91.5 | 87.3 | 76.6 | 1 to 4 | none, 0.6 points |
+| the window uncapped, 365 days from release | 78.3 | 75.3 | 53.6 | 1 to 1 | very large, and unusable |
+
+**The three findings.** First, **the unit of analysis has no leverage here.** Deduplicating to defendants
+moves score 4 by 0.6 points, because the serial-arrest mix is nearly the same at every score: 74 per cent of
+releases belong to defendants with one appearance in the year, 22 per cent to two and 5 per cent to three or
+more, with failure rates of 8.3, 16.6 and 27.8 per cent at score 4, and those shares barely vary by score.
+Second, **exposure has no leverage either.** The median window is 104 to 108 days at every score and 98 per
+cent of windows are capped by disposition at every score, so there is no differential exposure to price and
+the window-lengthening family (a written promise's higher failure-to-appear rate postponing disposition, or
+custody days converted to street days) is arithmetically too small: the measured arrest hazard is about 0.13
+per cent a day, so moving score 4 three points would need twenty-three extra days of exposure per defendant
+and the largest such mechanism supplies about eight. Third, **the only other large lever is the window
+definition, and the draft rule defines it**, so taking it is rule application and banned as the decisive
+step.
+
+**The structural constraint this leaves.** Every large lever in this world is a counterfactual outcome for
+defendants a magistrate held, and that is the selection family by construction. So a re-root cannot keep the
+decision: a call about releasing currently-held defendants will always need their unobserved outcome. The
+re-rooted call has to be about a population whose outcomes the record holds whole.
+
+**The re-root candidate, measured.** The jail's bed-day footprint, where the records are complete and the
+difficulty is a reconstruction rather than a fit. An eligible defendant released within 24 hours of a first
+appearance occupies 0.3 bed-days; the booking that follows when they fail runs 5.5 days at score 1 and 16.9
+at score 6, so the bed-days a release costs are 0.2 days at score 1, 1.2 at score 4 and 4.4 at score 6,
+against the 0.3 the release's own stay shows. The natural pipeline never joins it, because a return is a new
+booking under a new booking number on a new case and nothing links it to the earlier release but the person
+and the date. Against it, holding an eligible defendant costs 12.9 to 13.5 bed-days, and the overall average
+length of stay is 6.2 days, so the back-of-envelope saving (admissions avoided times the average stay)
+understates the true figure by 2.1 times in the other direction. At score 6 the saving and the returns are
+nearly a wash. That is large, steeply graded by score, exactly reconstructable, and not the domain's reflex.
+
 ## Tried and rejected
 
 - The seed's world, decision and quantity (a serverless platform's warm-pool memory to reserve for next quarter, a
@@ -688,3 +745,13 @@ the targeted re-read's.
   every later person's draws, so the asks' year could not be set without moving the call; streams are keyed by person
   and the person's own arrest index, and the first appearances from 1 October 2025, the failures to appear and the
   monitoring each draw from their own stream.
+
+- 2026-10-26, architecture 1's decisive step (the magistrates' leniency gradient read out to full release),
+  after both portal responses landed scores 1 to 3. Spent, not repairable: the correction is pretrial risk
+  assessment's own reflex rather than a step a competent analyst skips, and the ladder's seven constructions
+  of the gradient are `stumping` 1.1j in plain sight, an estimator fitted over a chosen population. Measured
+  at the same time and also dead: one row per defendant (0.6 points at score 4, the serial-arrest mix is flat
+  across scores), the exposure family (windows are 104 to 108 days at every score with 98 per cent capped by
+  disposition, and the 0.13 per cent daily hazard makes every window-lengthening mechanism about three times
+  too small), and the uncapped window (very large but the draft rule defines the window, so taking it is rule
+  application). The re-root is recorded in `## Portal result and the stage 2 diagnosis`.
