@@ -1,186 +1,237 @@
-"""The goldens: the committee's workbook (every group's estimated risk of breast cancer by 70 for a woman who carries
-it, whether the program takes it on, and the two High-Risk Breast Clinic planning figures) and the chart of the ten
-risks against the 30 percent line, plus figures.json."""
-import decimal
+"""The goldens: the board paper's workbook (agency_township_2027.xlsx) and its chart
+(water_claims_by_township_2027.png), and generator/figures.json, every figure the write-up states, computed from
+the shipped pack by analysis.py."""
 import json
 import os
 
-import matplotlib
-matplotlib.use("Agg")
-import matplotlib.pyplot as plt                       # noqa: E402
-from openpyxl import Workbook                         # noqa: E402
-from openpyxl.styles import Alignment, Border, Font, PatternFill, Side   # noqa: E402
-from openpyxl.utils import get_column_letter          # noqa: E402
+import numpy as np
 
-import analysis as A                                  # noqa: E402
-import common as K                                    # noqa: E402
-import models as M                                    # noqa: E402
+import analysis as A
+import common as K
 
-PLUM = "5A2D5C"
-THIN = Side(style="thin", color="B8BFC4")
+NAME = {t: K.TOWN_NAME[t] for t in K.CANDIDATES}
+INK, MUTED, SURFACE, PICK, OTHER, LINE = "#0b0b0b", "#52514e", "#fcfcfb", "#2a78d6", "#b9b8b2", "#3d3c39"
 
 
-def pct(x):
-    return int(decimal.Decimal(repr(float(x) * 100)).quantize(decimal.Decimal("1"), rounding=decimal.ROUND_HALF_UP))
-
-
-def figures(c, k):
-    res = c["res"]
-    fam = M.FAMILY
-    qualify = [g for g in K.CODES if res[g]["kin"] >= A.LINE]
-    lo = {g: min(res[g][f] for f in fam) for g in K.CODES}
-    hi = {g: max(res[g][f] for f in fam) for g in K.CODES}
-    routes = {r: A.sets(res, r) for r in M.FAMILY + M.ROUTES + M.RECORDED}
-    return {
-        "call": {"qualify": qualify, "qualify_labels": [K.LABEL[g] for g in qualify],
-                 "not": [g for g in K.CODES if g not in qualify]},
-        "verdict": {g: ("Yes" if g in qualify else "No") for g in K.CODES},
-        "risk_kin_pct": {g: pct(res[g]["kin"]) for g in K.CODES},
-        "risk_kin": {g: round(float(res[g]["kin"]), 4) for g in K.CODES},
-        "family_range_pct": {g: [pct(lo[g]), pct(hi[g])] for g in K.CODES},
-        "family_unrounded": {g: {f: round(float(res[g][f]), 4) for f in fam} for g in K.CODES},
-        "routes": routes,
-        "route_values": {g: {r: round(float(res[g][r]), 4) for r in M.ROUTES + M.RECORDED} for g in K.CODES},
-        "f_n": round(c["f_n"], 4),
-        "f_n_pct": round(c["f_n"] * 100, 1),
-        "families": {g: res[g]["n_families"] for g in K.CODES},
-        "relatives": {g: res[g]["n_relatives"] for g in K.CODES},
-        "tested": {g: res[g]["n_tested"] for g in K.CODES},
-        "tested_carriers": {g: res[g]["n_tested_carriers"] for g in K.CODES},
-        "totals": {"families": sum(res[g]["n_families"] for g in K.CODES),
-                   "relatives": sum(res[g]["n_relatives"] for g in K.CODES),
-                   "ask_a": sum(k["a"].values()), "ask_b": sum(k["b"].values())},
-        "ask_a": k["a"],
-        "ask_b": k["b"],
-        "default_pct": {g: pct(res[g]["default"]) for g in K.CODES},
-        "sloppy_pct": {g: pct(res[g]["sloppy"]) for g in K.CODES},
-        "tested_total": sum(res[g]["n_tested"] for g in K.CODES),
-        "tested_carriers_total": sum(res[g]["n_tested_carriers"] for g in K.CODES),
-        "late_testing": c["late_testing"],
-        "filed": {"threshold_pct": 30, "age": 70, "clinic_ages": [30, 74], "registry_both": [42, 56],
-                  "registry_one": [41, 51], "cpt": [19303, 19307], "clauses": ["2.3", "3.1", "3.2"]},
-        "margin_floor_points": int(min(((res[g][f] - A.LINE) if g in qualify else (A.LINE - res[g][f])) * 100
-                                       for g in K.CODES for f in fam)),
+def figures(r):
+    best = r["best"]
+    town = {t: int(K.r(best["town"][t])) for t in K.CANDIDATES}
+    order = sorted(K.CANDIDATES, key=lambda t: best["town"][t])
+    pick, runner = order[0], order[1]
+    noz = [x for x in r["res"] if "zone" not in x["cols"]][0]
+    d = r["d"]
+    homes = r["homes"]
+    levels = {c: sorted(set(d[c])) for c in best["cols"]}
+    rel = {}
+    for c in best["cols"]:
+        for i, lv in enumerate(levels[c][1:]):
+            pos = 1 + sum(len(levels[cc]) - 1 for cc in best["cols"][:best["cols"].index(c)]) + i
+            rel["%s=%s vs %s" % (c, lv, levels[c][0])] = K.r(float(np.exp(best["params"][pos])), 2)
+    book = 1000.0 * d["n"].sum() / d["expo"].sum()
+    fig = {
+        "call": {"township": pick, "name": NAME[pick], "runner_up": runner, "runner_up_name": NAME[runner],
+                 "gap_per_1000": town[runner] - town[pick]},
+        "components": {
+            "frequency_per_1000": town,
+            "valley_zone_homes": {t: int((homes[homes["town"] == t]["zone"] == K.VALLEY).sum()) for t in K.CANDIDATES},
+            "homes": {t: int((homes["town"] == t).sum()) for t in K.CANDIDATES},
+            "chosen_model": list(best["cols"]),
+            "deviance_2025_chosen": K.r(best["dev"], 1),
+            "deviance_2025_best_recorded_only": K.r(noz["dev"], 1),
+            "best_recorded_only_model": list(noz["cols"]),
+        },
+        "asks": {
+            "protected_homes": {t: int(homes[homes["town"] == t]["protected"].sum()) for t in K.CANDIDATES},
+            "market_value_musd": r["market"],
+            "water_payment_by_accident_year": r["pay"],
+            "fire_per_1000": {"unprotected": r["fire"]["unprotected"]},
+        },
+        "context": {
+            "book_frequency_per_1000": int(K.r(book)),
+            "book_house_years": K.r(d["expo"].sum(), 1),
+            "book_water_claims": int(d["n"].sum()),
+            "relativities": rel,
+            "recorded_only_frequency_per_1000": {t: K.r(noz["town"][t], 1) for t in K.CANDIDATES},
+            "common_level_ratio": r["clr"],
+        },
+        "references": {"rounding": "frequencies whole per 1,000 house-years; market values to 0.1 million dollars; "
+                                    "payments whole dollars; the fire frequency to 0.1 per 1,000 house-years",
+                       "dates": [2023, 2024, 2025, 2026, 2027],
+                       "standard_sections": [2.1, 2.4],
+                       "cause_codes": [3110, 3120, 3130, 5110, 5120],
+                       "nfpa_standard": 291, "nfpa_exponent": 0.54},
     }
-
-
-def _head(ws, row, cols, widths):
-    for j, (h, wd) in enumerate(zip(cols, widths), 1):
-        cell = ws.cell(row, j, h)
-        cell.font = Font(bold=True, color="FFFFFF")
-        cell.fill = PatternFill("solid", fgColor=PLUM)
-        cell.alignment = Alignment(wrap_text=True, vertical="center")
-        ws.column_dimensions[get_column_letter(j)].width = wd
-
-
-def workbook(path, fig):
-    wb = Workbook()
-    ws = wb.active
-    ws.title = "Groups 2027"
-    ws["A1"] = "Family Outreach Program: variant groups for 2027"
-    ws["A1"].font = Font(bold=True, size=13, color=PLUM)
-    ws["A2"] = ("Program takes on the PALB2 protein-truncating and PALB2 missense groups; the other eight groups stay "
-                "below 30 percent by age 70.")
-    ws["A2"].font = Font(italic=True, size=10)
-    cols = ["Group", "Gene", "Variant type", "Families", "Probands' mothers, sisters and daughters",
-            "Risk of breast cancer by 70 for a carrier (estimate)", "Taken on from 1 April 2027",
-            "Known carriers the clinic would be offered to on 1 April 2027",
-            "Of whom no screening breast MRI, 1 Oct 2025 to 30 Sep 2026"]
-    _head(ws, 4, cols, [13, 9, 18, 10, 16, 17, 13, 19, 19])
-    ws.row_dimensions[4].height = 58
-    r = 5
-    for g in K.CODES:
-        vals = [g, K.GENE[g], K.KIND[g], fig["families"][g], fig["relatives"][g], fig["risk_kin"][g],
-                fig["verdict"][g], fig["ask_a"][g], fig["ask_b"][g]]
-        for j, v in enumerate(vals, 1):
-            cell = ws.cell(r, j, v)
-            cell.border = Border(bottom=THIN)
-            if j == 6:
-                cell.number_format = "0%"
-            elif j in (4, 5, 8, 9):
-                cell.number_format = "#,##0"
-            if j >= 4:
-                cell.alignment = Alignment(horizontal="right" if j != 7 else "center")
-        if fig["verdict"][g] == "Yes":
-            for j in range(1, 10):
-                ws.cell(r, j).fill = PatternFill("solid", fgColor="F1E6F2")
-                ws.cell(r, j).font = Font(bold=True)
-        r += 1
-    ws.cell(r, 1, "All groups").font = Font(bold=True)
-    for j, key in ((4, "families"), (5, "relatives"), (8, "ask_a"), (9, "ask_b")):
-        cell = ws.cell(r, j, fig["totals"][key])
-        cell.number_format = "#,##0"
-        cell.font = Font(bold=True)
-        cell.alignment = Alignment(horizontal="right")
-        cell.border = Border(top=Side(style="thin", color="1F2428"))
-    ws.freeze_panes = "B5"
-    n = wb.create_sheet("Notes")
-    notes = [
-        "How the figures were made",
-        "Risk by 70: criteria 2.1 to 2.4. Each group is measured on all of its probands' mothers, sisters and daughters, "
-        "living or dead, tested or not (the probands and half-sisters left out). A first-degree relative carries the "
-        "family's variant with probability one half, so the share of these women with a first breast cancer before 70 "
-        "(Kaplan-Meier on age, censored at the age the pedigree gives) is half the carriers' risk plus half the "
-        "population's; the carriers' risk is twice that share less the population's risk.",
-        "Population risk by 70: %.1f percent, from the tumor registry's 2016 to 2025 rates for female patients (first "
-        "primary breast cancer, invasive or in situ), deaths from other causes set aside." % fig["f_n_pct"],
-        "Check: a Mendelian likelihood over the same women (tested women's genotypes, the one-half prior for the "
-        "others, the population's hazard for noncarriers) puts every group on the same side of 30 percent.",
-        "Known carriers (criteria 3.1): final laboratory report showing the family's variant, enterprise ID, no death "
-        "recorded to 30 September 2026, aged 30 to 74 on 1 April 2027, not both breasts removed on the tumor registry's "
-        "first-course surgery or the surgical record.",
-        "No screening MRI (criteria 3.2): no completed high-risk screening breast MRI at an Ellisford hospital from "
-        "1 October 2025 to 30 September 2026, each study matched to its woman through the EMPI merge log.",
-        "Prepared by %s, %s, from the registry extracts cut 30 September 2026." % (K.PEOPLE["requester"],
-                                                                                  K.PEOPLE["requester_title"]),
-    ]
-    n.column_dimensions["A"].width = 120
-    for i, t in enumerate(notes, 1):
-        cell = n.cell(i, 1, t)
-        cell.alignment = Alignment(wrap_text=True, vertical="top")
-        if i == 1:
-            cell.font = Font(bold=True)
-    wb.save(path)
+    return fig
 
 
 def chart(path, fig):
-    order = sorted(K.CODES, key=lambda g: fig["risk_kin"][g])
-    vals = [fig["risk_kin"][g] * 100 for g in order]
-    colors = ["#5A2D5C" if fig["verdict"][g] == "Yes" else "#A9B1B8" for g in order]
-    fig_, ax = plt.subplots(figsize=(8.2, 5.0), dpi=150)
-    ax.barh(range(len(order)), vals, color=colors, height=0.62)
-    ax.axvline(30, color="#B23A48", lw=1.4, ls="--")
-    ax.text(30.4, len(order) - 0.45, "30% by age 70: program takes the group on", color="#B23A48", fontsize=8.5,
-            va="center")
-    for i, (g, v) in enumerate(zip(order, vals)):
-        ax.text(v + 0.6, i, "%d%%" % round(v), va="center", fontsize=8.5, color="#1F2428")
-    ax.set_yticks(range(len(order)))
-    ax.set_yticklabels(["%s (%s)" % (g, "%d families" % fig["families"][g]) for g in order], fontsize=8.5)
-    ax.set_xlim(0, max(vals) + 9)
-    ax.set_xlabel("Estimated risk of breast cancer by age 70 for a woman who carries the variant (%)", fontsize=9)
-    ax.set_title("Only the two PALB2 groups clear 30% by age 70", fontsize=11.5, loc="left", color="#1F2428")
-    for s in ("top", "right"):
+    import matplotlib
+    matplotlib.use("Agg")
+    import matplotlib.pyplot as plt
+    from matplotlib import rcParams
+    rcParams["font.family"] = "DejaVu Sans"
+    rcParams["svg.hashsalt"] = "task271"
+    f = fig["components"]["frequency_per_1000"]
+    book = fig["context"]["book_frequency_per_1000"]
+    order = sorted(K.CANDIDATES, key=lambda t: f[t])
+    fg, ax = plt.subplots(figsize=(7.6, 4.3), dpi=150)
+    fg.patch.set_facecolor(SURFACE)
+    ax.set_facecolor(SURFACE)
+    ys = np.arange(len(order))[::-1]
+    for y, t in zip(ys, order):
+        ax.barh(y, f[t], height=0.56, color=PICK if t == fig["call"]["township"] else OTHER, edgecolor=SURFACE,
+                linewidth=2)
+        ax.text(f[t] + 0.35, y, "%d" % f[t], va="center", ha="left", fontsize=10.5, color=INK,
+                fontweight="bold" if t == fig["call"]["township"] else "normal")
+    ax.set_yticks(ys)
+    ax.set_yticklabels(["%s %s" % (K.TOWN_NAME[t], dict((c, k) for c, n, k in K.TOWNS)[t]) for t in order],
+                       fontsize=10, color=INK)
+    ax.axvline(book, color=LINE, linewidth=1.4, linestyle=(0, (4, 3)))
+    ax.text(book + 0.25, ys[0] + 0.48, "Our book, 2023 to 2025: %d" % book, fontsize=8.8, color=MUTED, va="bottom")
+    ax.set_xlim(0, max(f.values()) * 1.18)
+    ax.set_ylim(-0.6, len(order) - 0.15)
+    ax.set_xlabel("Non-weather water claims per 1,000 house-years, at our 2023 to 2025 experience", fontsize=9,
+                  color=MUTED)
+    for s in ("top", "right", "left"):
         ax.spines[s].set_visible(False)
-    ax.tick_params(axis="x", labelsize=8.5)
-    fig_.text(0.01, 0.01, "Kin-cohort estimate on each group's probands' mothers, sisters and daughters; population risk "
-                          "from the Ellisford tumor registry. Ellisford Health ICRS, October 2026.", fontsize=7,
-              color="#5D646A")
-    fig_.tight_layout(rect=(0, 0.03, 1, 1))
-    fig_.savefig(path, metadata={"Software": None})
-    plt.close(fig_)
+    ax.spines["bottom"].set_color("#c9c8c2")
+    ax.tick_params(axis="x", colors=MUTED, labelsize=8.5)
+    ax.tick_params(axis="y", length=0)
+    ax.grid(axis="x", color="#e6e5e0", linewidth=0.8)
+    ax.set_axisbelow(True)
+    p = fig["call"]
+    fg.suptitle("%s's homes would bring the fewest non-weather water claims" % p["name"], x=0.02, ha="left",
+                fontsize=12.2, color=INK, fontweight="bold", y=0.975)
+    ax.set_title("Owner-occupied single-family homes on the 2026 roll, each at the Frequency Model Standard's\n"
+                 "chosen model (foundation and water supply zone)", loc="left", fontsize=8.3, color=MUTED, pad=8)
+    fg.text(0.02, 0.018, "Source: Halverstead Mutual policy and claim extracts of August 31, 2026; Tamswold County "
+                         "certified 2026 roll;\nTamswold County Water Authority pressure zones (November 2025).",
+            fontsize=7.2, color=MUTED, va="bottom")
+    fg.subplots_adjust(left=0.24, right=0.97, top=0.79, bottom=0.22)
+    fg.savefig(path, facecolor=SURFACE, metadata={"Software": None})
+    plt.close(fg)
+
+
+def workbook(path, fig, r):
+    import openpyxl
+    from openpyxl.styles import Alignment, Border, Font, PatternFill, Side
+    wb = openpyxl.Workbook()
+    ws = wb.active
+    ws.title = "Townships"
+    bold = Font(bold=True)
+    thin = Side(style="thin", color="999999")
+    p = fig["call"]
+    f = fig["components"]["frequency_per_1000"]
+    ws["A1"] = "2027 agency: the township"
+    ws["A1"].font = Font(bold=True, size=13)
+    ws["A2"] = ("Recommendation: open the 2027 agency in %s Borough. Its homes would bring %d non-weather water "
+                "claims per 1,000 house-years at our 2023 to 2025 experience, against %d in %s and %d in %s." % (
+                    p["name"], f[p["township"]], f[p["runner_up"]], p["runner_up_name"],
+                    f[[t for t in K.CANDIDATES if t not in (p["township"], p["runner_up"])][0]],
+                    K.TOWN_NAME[[t for t in K.CANDIDATES if t not in (p["township"], p["runner_up"])][0]]))
+    ws["A2"].alignment = Alignment(wrap_text=True, vertical="top")
+    ws.merge_cells("A2:G2")
+    ws.row_dimensions[2].height = 33
+    hdr = ["Township", "Owner-occupied single-family homes", "Of which in the Valley zone",
+           "Non-weather water claims per 1,000 house-years", "Protected homes", "Market value ($ millions)"]
+    ws.append([])
+    ws.append(hdr)
+    for c in ws[4]:
+        c.font = bold
+        c.alignment = Alignment(wrap_text=True, vertical="bottom")
+        c.border = Border(bottom=thin)
+    order = sorted(K.CANDIDATES, key=lambda t: f[t])
+    for t in order:
+        ws.append([K.TOWN_FULL[t], fig["components"]["homes"][t], fig["components"]["valley_zone_homes"][t], f[t],
+                   fig["asks"]["protected_homes"][t], fig["asks"]["market_value_musd"][t]])
+    for row in ws.iter_rows(min_row=5, max_row=4 + len(order)):
+        row[1].number_format = "#,##0"
+        row[2].number_format = "#,##0"
+        row[3].number_format = "0"
+        row[4].number_format = "#,##0"
+        row[5].number_format = "#,##0.0"
+        if row[0].value.startswith(p["name"]):
+            for c in row:
+                c.fill = PatternFill("solid", fgColor="DCE9F7")
+    ws.append([])
+    ws.append(["Our book, 2023 to 2025", None, None, fig["context"]["book_frequency_per_1000"]])
+    ws.cell(ws.max_row, 4).number_format = "0"
+    ws.append([])
+    notes = [
+        "Frequency: the Frequency Model Standard's model for a territory we have not written, the mean over the "
+        "township's homes of each home's frequency; homes are the owner-occupied single-family detached homes on the "
+        "certified 2026 roll (land use R-SFD, homestead exclusion).",
+        "Protected: an in-service Authority hydrant within 1,000 feet whose latest flow test shows 500 gpm at 20 psi "
+        "(underwriting guide 2), from the Authority's register and test log of June 30, 2026.",
+        "Market value: 2026 assessments after the 2026 appeal decisions, at the common level ratio in effect on "
+        "January 1, 2026 (%.3f)." % fig["context"]["common_level_ratio"]]
+    for n in notes:
+        ws.append([n])
+        ws.merge_cells(start_row=ws.max_row, start_column=1, end_row=ws.max_row, end_column=7)
+        ws.cell(ws.max_row, 1).alignment = Alignment(wrap_text=True, vertical="top")
+        ws.cell(ws.max_row, 1).font = Font(size=9, color="555555")
+        ws.row_dimensions[ws.max_row].height = 30
+    for col, w in zip("ABCDEFG", (26, 17, 15, 19, 12, 14, 4)):
+        ws.column_dimensions[col].width = w
+    ws.freeze_panes = "A5"
+
+    m = wb.create_sheet("Model test")
+    m["A1"] = "Frequency Model Standard section 4: fitted on accident years 2023 and 2024, judged on 2025"
+    m["A1"].font = bold
+    m.append(["Model (main effects)", "Poisson deviance, 2025"])
+    for c in m[2]:
+        c.font = bold
+    shown = r["res"][:6] + [x for x in r["res"] if "zone" not in x["cols"]][:3]
+    lab = {"found": "foundation", "era": "year built era", "bath": "full bathrooms", "cons": "construction",
+           "st": "stories", "zone": "water supply zone"}
+    for x in shown:
+        m.append([", ".join(lab[c] for c in x["cols"]) or "none", K.r(x["dev"], 1)])
+        m.cell(m.max_row, 2).number_format = "#,##0.0"
+    m.append([])
+    m.append(["Chosen: %s, refitted on 2023 to 2025. Relativities:" % ", ".join(lab[c] for c in r["best"]["cols"])])
+    for k, v in fig["context"]["relativities"].items():
+        c, rest = k.split("=")
+        m.append(["%s %s" % (lab[c], rest), v])
+        m.cell(m.max_row, 1).alignment = Alignment(indent=1)
+        m.cell(m.max_row, 2).number_format = "0.00"
+    m.column_dimensions["A"].width = 64
+    m.column_dimensions["B"].width = 22
+
+    b = wb.create_sheet("Book")
+    b["A1"] = "Our book, accident years 2023 to 2025"
+    b["A1"].font = bold
+    b.append(["Accident year", "Average non-weather water claim payment ($)"])
+    for c in b[2]:
+        c.font = bold
+    for y, v in fig["asks"]["water_payment_by_accident_year"].items():
+        b.append([int(y), v])
+        b.cell(b.max_row, 1).alignment = Alignment(horizontal="left")
+        b.cell(b.max_row, 2).number_format = "#,##0"
+    b.append([])
+    b.append(["Fire and lightning, accident years 2023 to 2025", "Claims per 1,000 house-years"])
+    for c in b[b.max_row]:
+        c.font = bold
+    b.append(["Homes the guide classes as unprotected (class 9 rate)", fig["asks"]["fire_per_1000"]["unprotected"]])
+    b.cell(b.max_row, 2).number_format = "0.0"
+    b.append([])
+    b.append(["Payments: indemnity paid to date per claim with indemnity paid, net of recoveries, from the claim "
+              "system and Corrigan Adjusting Services' bordereau, to August 31, 2026."])
+    b.cell(b.max_row, 1).font = Font(size=9, color="555555")
+    b.column_dimensions["A"].width = 58
+    b.column_dimensions["B"].width = 26
+    wb.save(path)
+
+
+def write(target, golden):
+    os.makedirs(golden, exist_ok=True)
+    r = A.run(target)
+    fig = figures(r)
+    workbook(os.path.join(golden, K.BOOK), fig, r)
+    chart(os.path.join(golden, K.CHART), fig)
+    return fig, r
 
 
 def write_figures(path, fig):
     with open(path, "w") as f:
         json.dump(fig, f, indent=1, sort_keys=True)
         f.write("\n")
-
-
-def write(target, golden):
-    os.makedirs(golden, exist_ok=True)
-    c = A.call(target)
-    k = A.asks(target)
-    fig = figures(c, k)
-    workbook(os.path.join(golden, K.DELIVERABLES[0]), fig)
-    chart(os.path.join(golden, K.DELIVERABLES[1]), fig)
-    return fig, dict(call=c, asks=k)

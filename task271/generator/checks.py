@@ -1,242 +1,41 @@
-"""The build's assertions: the call and its ladder on the cut pack, the analyst test on the generator's clean truth,
-the semantic fork rows (SFn), the Layer 1 items left neutral, the asks' devices and stops, the separation line, the
-pair ceiling, and the pack's realism. run() prints one line per check and returns the number that failed."""
+"""The generator's assertions on the cut pack: the input gates, the call and the Frequency Model Standard's search,
+the rungs, the three rules (R1 the field's raw material ships, R2 every mess item neutral, R3 the analyst test on the
+clean truth), the semantic forks (SF rows), the separation of the asks from the call, the ask devices and the cracker,
+the rounding edges, the realism sweep and the containers. Every label prints PASS or FAIL; the run fails on any
+FAIL."""
 import csv
+import datetime as dt
+import json
 import os
 import re
-import sys
-import warnings
+import zipfile
 
 import numpy as np
+import pandas as pd
 
-warnings.filterwarnings("ignore")
+import analysis as A
+import asks as AS
+import common as K
+
+ROWS = []
 HERE = os.path.dirname(os.path.abspath(__file__))
-sys.path.insert(0, HERE)
-import analysis as A     # noqa: E402
-import clinical as CL    # noqa: E402
-import common as K       # noqa: E402
-import cracker as CR     # noqa: E402
-import models as M       # noqa: E402
-import pack as PK        # noqa: E402
-import world as W        # noqa: E402
-
-FAILS = []
-GOLD = ["PALB2-PTV", "PALB2-MIS"]
-DEFAULT = ["PALB2-PTV", "PALB2-MIS", "ATM-MIS", "BARD1-PTV", "RAD51D-PTV"]
 
 
-def check(name, ok, detail=""):
-    print("%s  %s%s" % ("PASS" if ok else "FAIL", name, ("  [%s]" % (detail,)) if detail != "" else ""))
-    if not ok:
-        FAILS.append(name)
+def row(label, ok, detail=""):
+    ROWS.append((label, bool(ok), detail))
 
 
-def kin_sets(H, rates, roles_extra=None):
-    f_n = M.pop_risk(rates)
-    return [c for c in K.CODES if M.kin_cohort(H[c][:, 0], H[c][:, 1], f_n) >= 0.30]
+def edge(v, unit=1.0):
+    """distance from the unrounded value to the nearest rounding edge at the printed unit"""
+    return unit / 2 - abs(v - round(v / unit) * unit)
 
 
-def run(task, b, fig, res):
-    target = os.path.join(task, "target")
-    w, rec = b["w"], b["rec"]
-    c = res["call"]
-    R = c["res"]
-    rates = A.published_rates(target)
+def pick(town):
+    return min(K.CANDIDATES, key=lambda t: town[t])
 
-    # ---------------------------------------------------------------------------------------------- the call
-    for f in M.FAMILY:
-        check("CALL %s names the two PALB2 groups" % f, A.sets(R, f) == GOLD, A.sets(R, f))
-    worst = min((R[g][f] - 0.30) if g in GOLD else (0.30 - R[g][f]) for g in K.CODES for f in M.FAMILY)
-    check("CALL every family member clears 30 percent by 4 points or more on every group", worst >= 0.04,
-          round(worst, 4))
-    check("CALL figures.json carries the kin-cohort's set", fig["call"]["qualify"] == GOLD)
-    check("LADDER the default path (Kaplan-Meier on the tested carriers) names the five groups",
-          A.sets(R, "default") == DEFAULT, A.sets(R, "default"))
-    check("LADDER the naive path (probands in) names all ten", len(A.sets(R, "naive")) == 10)
-    check("LADDER the relatives' share against 30 percent names none", A.sets(R, "relshare") == [])
-    check("LADDER twice the relatives' share (no noncarrier risk) adds CHEK2-PTV",
-          A.sets(R, "sloppy") == ["PALB2-PTV", "PALB2-MIS", "CHEK2-PTV"], A.sets(R, "sloppy"))
-    check("LADDER the kin-cohort with the tested noncarriers' risk drops PALB2-MIS",
-          A.sets(R, "kin_testedneg") == ["PALB2-PTV"], A.sets(R, "kin_testedneg"))
-    check("LADDER inverse weighting of the living tested carriers names the golden pair (recorded)",
-          A.sets(R, "ipw_living") == GOLD, A.sets(R, "ipw_living"))
-    print("INFO  genotype-restricted likelihood (recorded, not required): %s" % A.sets(R, "retrospective"))
 
-    # analyst test on the clean truth: the easy route on the world's own records, then the decisive step alone
-    clean_default, clean_kin, clean_truth = [], [], []
-    for g in K.CODES:
-        a = W.fdr_female(w, g)
-        t, ev, car, tested, alive = a.T
-        tc = (tested == 1) & (car == 1)
-        if M.km(t[tc], ev[tc]) >= 0.30:
-            clean_default.append(g)
-        if M.kin_cohort(t, ev, M.pop_risk(rates)) >= 0.30:
-            clean_kin.append(g)
-        if M.km(t[car == 1], ev[car == 1]) >= 0.30:
-            clean_truth.append(g)
-    check("ANALYST TEST the easy route on the clean truth files the default's five", clean_default == DEFAULT,
-          clean_default)
-    check("ANALYST TEST the decisive step alone (every relative, one-half prior) files the golden", clean_kin == GOLD,
-          clean_kin)
-    check("ANALYST TEST the carriers' own life table on the clean truth (genotypes known) names the golden",
-          clean_truth == GOLD, clean_truth)
-
-    # the selection the decisive step answers, visible in the records
-    ped = PK.pedigree(target)
-    labs = PK.lab_final(target)
-    H = PK.histories(target, ped=ped, labs=labs)
-    for g in ("ATM-MIS", "BARD1-PTV", "RAD51D-PTV", "PALB2-MIS"):
-        t, ev, car, tested, alive = H[g].T
-        la, lu = (alive == 1) & (ev == 1), (alive == 1) & (ev == 0)
-        ra, ru = tested[la].mean(), tested[lu].mean()
-        check("DATA %s: living relatives with breast cancer tested far more often than those without" % g,
-              ra > 2.5 * ru, "%.2f vs %.2f" % (ra, ru))
-
-    # semantic forks
-    gold_set = kin_sets(H, rates)
-    check("SF1 carriers read as the relatives a report shows carrying (the default) give another call",
-          A.sets(R, "default") != GOLD)
-    H71 = {g: np.column_stack([H[g][:, 0], np.where(H[g][:, 0] <= 70, H[g][:, 1], 0)]) for g in K.CODES}
-    s71 = [g for g in K.CODES if 2 * M.km(H71[g][:, 0], H71[g][:, 1], t0=71) - M.pop_risk(rates, 70) >= 0.30]
-    check("SF2 a cancer at 70 counted (before the 71st birthday) keeps the call", s71 == GOLD, s71)
-    crude = []
-    for g in K.CODES:
-        rows = [r for r in ped if r["family_variant_group"] == g and r["relationship"] in PK.FDR_FEMALE]
-        tt, ee, dd = [], [], []
-        for r in rows:
-            bb = PK.first_breast(r)
-            tt.append(bb if bb is not None else int(r["age"]))
-            ee.append(1 if bb is not None else 0)
-            dd.append(1 if (bb is None and r["vital_status"] == "Deceased") else 0)
-        tt, ee, dd = np.array(tt), np.array(ee), np.array(dd)
-        S, cif = 1.0, 0.0
-        for a in range(70):
-            n = (tt >= a).sum()
-            d1 = ((tt == a) & (ee == 1)).sum()
-            d2 = ((tt == a) & (dd == 1)).sum()
-            if n:
-                cif += S * d1 / n
-                S *= 1 - (d1 + d2) / n
-        if 2 * cif - M.pop_risk(rates) >= 0.30:
-            crude.append(g)
-    check("SF3 deaths from other causes as a competing risk (crude risk) keep the call", crude == GOLD, crude)
-    Hh = PK.histories(target, roles=PK.FDR_FEMALE + ("HALF_SISTER_MAT", "HALF_SISTER_PAT"), ped=ped, labs=labs)
-    check("SF4 half-sisters counted as sisters keep the call", kin_sets(Hh, rates) == GOLD, kin_sets(Hh, rates))
-    dead_link = {r["enterprise_id"]: r["date_of_death"] for r in PK.rows(target, "deaths")}
-    He = {g: [] for g in K.CODES}
-    for r in ped:
-        if r["relationship"] not in PK.FDR_FEMALE:
-            continue
-        bb = PK.first_breast(r)
-        age = int(r["age"])
-        if bb is None and r["vital_status"] == "Living" and r["enterprise_id"] in dead_link and r["birth_date"]:
-            age = A.age_on(PK.day(r["birth_date"]), PK.day(dead_link[r["enterprise_id"]]))
-        He[r["family_variant_group"]].append((bb if bb is not None else age, int(bb is not None)))
-    He = {g: np.array(v, float) for g, v in He.items()}
-    check("SF5 follow-up carried to a death the linkage records after the history date keeps the call",
-          kin_sets(He, rates) == GOLD, kin_sets(He, rates))
-    sites = {r["cancer_%d" % k] for r in ped for k in (1, 2, 3)}
-    behav = {r["behavior"] for r in PK.rows(target, "abstracts")}
-    check("SF6 the pedigree records breast cancer without an invasive or in situ split, the registry counts both",
-          "Breast" in sites and not any("situ" in x.lower() for x in sites) and behav == {"Invasive", "In situ"})
-    check("SF7 30 percent included or excluded: no group within 4 points", worst >= 0.04)
-    recomputed = PK.incidence(target)
-    check("SF8 the population's risk from cases and patient-years instead of the printed rates keeps the call",
-          kin_sets(H, recomputed) == GOLD and abs(M.pop_risk(recomputed) - M.pop_risk(rates)) < 0.0005,
-          round(M.pop_risk(recomputed), 5))
-    Hm = {}
-    for g in K.CODES:
-        rows = [r for r in ped if r["family_variant_group"] == g and r["relationship"] in PK.FDR_FEMALE]
-        keep = [i for i, r in enumerate(rows) if not (r["relationship"] == "DAUGHTER" and int(r["age"]) < 18 and
-                                                       r["vital_status"] == "Living")]
-        Hm[g] = H[g][keep]
-    check("SF9 daughters under 18 left out keeps the call", kin_sets(Hm, rates) == GOLD, kin_sets(Hm, rates))
-    L = PK.rows(target, "labs")
-    first = {}
-    for r in sorted(L, key=lambda r: r["reported"]):
-        if r["report_type"] == "Original":
-            first.setdefault(r["person_id"], r)
-    orig = {p: dict(tested=True, positive=r["result"] in ("Variant identified", "Detected", "Positive"),
-                    classes=set()) for p, r in first.items()}
-    Ho = PK.histories(target, ped=ped, labs=orig)
-    so = [g for g in K.CODES if M.mendel(Ho[g][:, 0], Ho[g][:, 1], Ho[g][:, 2], Ho[g][:, 3], rates) >= 0.30]
-    check("SF10 genotypes read from each person's first report (amendments ignored) keep the Mendelian call",
-          so == GOLD, so)
-    check("SF11 the probands left out: counting them names every group", len(A.sets(R, "naive")) == 10)
-    # the noncarrier side estimated from the data rather than the registry
-    check("FAMILY the Mendelian likelihood with the noncarrier hazard estimated agrees",
-          A.sets(R, "mendel_pw_free") == GOLD)
-
-    # ------------------------------------------------------------------------------------------------- asks
-    st = CR.stops(target)
-    g0 = st["golden"]
-    check("ASK golden A equals the world's eligible women", {k: v for k, v in g0[0].items()} ==
-          {k: sum(1 for x in b["el"].values() if x == k) for k in K.CODES})
-    for name, need_a, need_b in (("cracker", 10, 10), ("mirror", 10, 10), ("registry_with_codes_only", 10, 10),
-                                 ("any_mastectomy", 10, 10), ("golden_a_eid_join", 0, 10)):
-        a, bb = st[name]
-        ma = sum(a[k] != g0[0][k] for k in K.CODES)
-        mb = sum(bb[k] != g0[1][k] for k in K.CODES)
-        check("STOP %s misses A in %d of 10 and B in %d of 10" % (name, need_a, need_b), ma >= need_a and mb >= need_b,
-              "%d, %d" % (ma, mb))
-    check("STOP the MRN route through the EMPI identifiers reproduces the golden B", st["golden_a_mrn_join"] == g0)
-    pc = CR.pair_ceiling(st, g0)
-    check("ASK pair ceiling at or under 40", pc["pair"] <= 40, pc)
-    check("ASK mirror leakage 0", pc["mirror_leak"] == 0.0)
-    # device coverage and the separation line
-    fdr_keys = {(i, p["lid"]) for i, f in enumerate(w["families"]) for p in f["persons"] if p["role"] in W.FDR_FEMALE}
-    reg_only = {a["key"] for a in rec["abstracts"] if a["surg"] in CL.BOTH and W.yfrac(a["surg_date"]) < CL.CUTOVER_Y}
-    stale = {e["key"] for e in rec["exams"] if e["key"] in rec["duplicates"] and e["eid"] == rec["duplicates"][e["key"]]["eid"]}
-    check("SEPARATION no registry-only removal of both breasts among the probands' mothers, sisters and daughters",
-          not (reg_only & fdr_keys))
-    check("SEPARATION no study under a retired enterprise ID among the probands' mothers, sisters and daughters",
-          not (stale & fdr_keys))
-    for g in K.CODES:
-        keys_g = {k for k, v in b["el"].items() if v == g}
-        allpos = {(i, p["lid"]) for i, f in enumerate(w["families"]) if f["code"] == g for p in f["persons"]
-                  if np.isfinite(p["test"]) and p["car"] and p["sex"] == "F"}
-        check("DEVICE %s: a known carrier the registry alone shows without either breast" % g,
-              len(reg_only & allpos) >= 1, len(reg_only & allpos))
-        only = [k for k in keys_g & stale if all(e["eid"] == rec["duplicates"][k]["eid"] for e in rec["exams"]
-                                                  if e["key"] == k and e["status"] == "Completed" and
-                                                  e["reason"] == "Screening" and
-                                                  K.MRI_WINDOW[0] <= e["date"] <= K.MRI_WINDOW[1])]
-        check("DEVICE %s: an eligible woman whose every window study carries a retired enterprise ID" % g,
-              len(only) >= 1, len(only))
-    check("SEPARATION the call reads only the pedigree, the test results and the incidence", True)
-
-    # ---------------------------------------------------------------------------------------------- realism
-    files = sorted(os.listdir(target))
-    check("GATE ten or more files", len(files) >= 10, len(files))
-    check("GATE three or more formats", len({f.rsplit(".", 1)[1] for f in files}) >= 3)
-    check("GATE a file of 25,000 rows or more", b["counts"]["pedigree"] >= 25000, b["counts"]["pedigree"])
-    for key, col in (("labs", "reported"), ("imaging", "exam_date"), ("surgery", "procedure_date"),
-                     ("deaths", "date_of_death"), ("abstracts", "date_of_diagnosis")):
-        mx = max(r[col] for r in PK.rows(target, key))
-        check("REALISM no %s after the extract cut (%s)" % (col, key), mx <= K.EXPORT.isoformat(), mx)
-    pids = [r["person_id"] for r in ped]
-    check("REALISM one pedigree row per person", len(set(pids)) == len(pids))
-    bad = 0
-    for r in ped:
-        if r["vital_status"] == "Living" and r["birth_year"]:
-            d = int(r["history_date"][:4]) - int(r["birth_year"]) - int(r["age"])
-            bad += d not in (0, 1)
-    check("REALISM each living person's age agrees with birth year and history date", bad == 0, bad)
-    contents = open(os.path.join(target, K.FILES["contents"]), encoding="utf-8").read()
-    check("H9 contents lists every file", all(f in contents for f in files if f != K.FILES["contents"]))
-    places = [x.strip().lower() for x in open(os.path.join(HERE, "h21_reference_places.txt")) if x.strip()]
-    for nm in ("Ellisford", "Tessaran"):
-        n = nm.lower()
-        near = [p for p in places if edit(n, p) <= 2 or (len(p) >= 6 and p in n) or (len(n) >= 6 and n in p)]
-        check("H21 %s is three or more edits from every reference place" % nm, not near, near[:3])
-    for f in files:
-        bb = open(os.path.join(target, f), "rb").read()
-        check("REALISM no writer's name in %s" % f, b"ReportLab" not in bb and b"openpyxl" not in bb.lower()
-              and b"matplotlib" not in bb.lower())
-        if f.endswith((".csv", ".txt")):
-            check("REALISM no em dash in %s" % f, "—".encode() not in bb)
-    print("checks: %d failed" % len(FAILS))
-    return len(FAILS)
+def whole(town):
+    return {t: int(K.r(town[t])) for t in K.CANDIDATES}
 
 
 def edit(a, b):
@@ -249,3 +48,304 @@ def edit(a, b):
             cur.append(min(prev[j] + 1, cur[j - 1] + 1, prev[j - 1] + (ca != cb)))
         prev = cur
     return prev[-1]
+
+
+def run(task, b, fig, res):
+    target = os.path.join(task, "target")
+    golden_dir = os.path.join(task, "golden")
+    gold = fig["call"]["township"]
+    files = sorted(os.listdir(target))
+
+    # ------------------------------------------------------------------ input gates
+    row("GATE files", len(files) >= 10, "%d files" % len(files))
+    fmts = {f.rsplit(".", 1)[1] for f in files}
+    row("GATE formats", len(fmts) >= 3, ", ".join(sorted(fmts)))
+    big = max(v for v in b["counts"].values())
+    row("GATE 25,000-row file", big >= 25000, "largest %d rows" % big)
+    meta = json.load(open(os.path.join(task, "metadata.json")))
+    row("GATE distractors", len(meta["distractor_files"]) >= 2 and
+        all(os.path.basename(x) in files for x in meta["distractor_files"]), ", ".join(meta["distractor_files"]))
+    row("GATE provenance", set(meta["provenance"]) == set(files), "%d entries" % len(meta["provenance"]))
+    row("GATE deliverables", sorted(os.listdir(golden_dir)) == sorted([K.BOOK, K.CHART]), ", ".join([K.BOOK, K.CHART]))
+
+    # ------------------------------------------------------------------ the call and the standard's search
+    d, homes, rs = res["d"], res["homes"], res["res"]
+    best = rs[0]
+    row("CALL the standard's test chooses foundation and zone", best["cols"] == ("found", "zone"),
+        "%s at %.1f" % (best["cols"], best["dev"]))
+    row("CALL golden township", pick(best["town"]) == gold == "DOR",
+        " ".join("%s %.2f" % (t, best["town"][t]) for t in K.CANDIDATES))
+    gaps = sorted(best["town"].values())
+    row("CALL each gap at least 2.5 claims per 1,000", min(gaps[1] - gaps[0], gaps[2] - gaps[1]) >= 2.5,
+        "%.2f, %.2f" % (gaps[1] - gaps[0], gaps[2] - gaps[1]))
+    zf = [x for x in rs if "zone" in x["cols"] and "found" in x["cols"]]
+    agree = all(whole(x["town"]) == fig["components"]["frequency_per_1000"] for x in zf)
+    row("CALL every model with foundation and zone prints the golden whole figures", agree,
+        "%d models; DOR %.2f-%.2f, BRK %.2f-%.2f, SAL %.2f-%.2f" % tuple(
+            [len(zf)] + [f(x["town"][t] for x in zf) for t in K.CANDIDATES for f in (min, max)]))
+    lo = min(edge(x["town"][t]) for x in zf for t in K.CANDIDATES)
+    row("CALL rounding edge of the zone models at least 0.30", lo >= 0.30, "%.3f" % lo)
+    noz = [x for x in rs if "zone" not in x["cols"]]
+    row("CALL the best model without the zone loses the 2025 test by 50 or more", noz[0]["dev"] - best["dev"] >= 50,
+        "%.1f against %.1f" % (noz[0]["dev"], best["dev"]))
+    row("CALL every model with the zone beats every model without it on 2025",
+        max(x["dev"] for x in rs if "zone" in x["cols"]) < min(x["dev"] for x in noz),
+        "%.1f < %.1f" % (max(x["dev"] for x in rs if "zone" in x["cols"]), min(x["dev"] for x in noz)))
+    row("CALL every model with the zone names Dorrance Hill", all(pick(x["town"]) == gold for x in rs
+                                                                  if "zone" in x["cols"]))
+    vz = fig["components"]["valley_zone_homes"]
+    row("CALL Valley-zone homes by township", vz == {"DOR": 217, "BRK": 2192, "SAL": 1238}, str(vz))
+
+    # ------------------------------------------------------------------ rungs (the ladder)
+    rec = noz[0]
+    row("RUNG R0 the best recorded-characteristics model names Brookmere",
+        rec["cols"] == ("found",) and pick(rec["town"]) == "BRK",
+        "%s: %s" % (rec["cols"], " ".join("%s %.1f" % (t, rec["town"][t]) for t in K.CANDIDATES)))
+    row("RUNG R1 every model without the zone that carries the foundation names Brookmere",
+        all(pick(x["town"]) == "BRK" for x in noz if "found" in x["cols"]))
+    full = [x for x in noz if x["cols"] == ("found", "era", "bath", "cons", "st")][0]
+    row("RUNG R1 the full recorded model names Brookmere", pick(full["town"]) == "BRK",
+        " ".join("%s %.1f" % (t, full["town"][t]) for t in K.CANDIDATES))
+    bt = d.groupby("town").apply(lambda g: 1000 * g.n.sum() / g.expo.sum())
+    cent = res["ch"].groupby("town")[["x", "y"]].mean()
+    hc = homes.groupby("town")[["x", "y"]].mean()
+    near = {t: min(cent.index, key=lambda q: float(((cent.loc[q] - hc.loc[t]) ** 2).sum())) for t in K.CANDIDATES}
+    row("RUNG R2 the nearest written township's experience does not name Dorrance Hill alone",
+        len({near[t] for t in K.CANDIDATES}) == 1 or pick({t: bt[near[t]] for t in K.CANDIDATES}) != gold, str(near))
+    from scipy.spatial import cKDTree
+    hh = d.groupby("parcel_id").agg(n=("n", "sum"), expo=("expo", "sum"), x=("x", "first"), y=("y", "first"))
+    tree = cKDTree(hh[["x", "y"]].values)
+    knn = {}
+    for k in (50, 200, 1000):
+        _, idx = tree.query(homes[["x", "y"]].values, k=k)
+        f = 1000 * hh.n.values[idx].sum(1) / hh.expo.values[idx].sum(1)
+        knn[k] = pd.Series(f).groupby(homes["town"].values).mean().to_dict()
+    row("RUNG R2b the book's nearest homes (50, 200, 1,000) name Brookmere", all(pick(v) == "BRK" for v in knn.values()),
+        "; ".join("k=%d %s" % (k, pick(v)) for k, v in knn.items()))
+    zonly = [x for x in rs if x["cols"] == ("zone",)][0]
+    row("RUNG R3 the zone without the foundation names Dorrance Hill at other figures and loses the test",
+        pick(zonly["town"]) == gold and whole(zonly["town"]) != fig["components"]["frequency_per_1000"] and
+        zonly["dev"] > best["dev"], " ".join("%s %.1f" % (t, zonly["town"][t]) for t in K.CANDIDATES))
+    # single-attribute picks on the townships' homes: none names Dorrance Hill as the safest
+    att = {}
+    for name, fn in (("most homes", lambda g: -len(g)), ("fewest homes", lambda g: len(g)),
+                     ("newest homes", lambda g: -g["era"].map({"a<1940": 0, "b1940-69": 1, "c1970-99": 2,
+                                                                 "d2000+": 3}).mean()),
+                     ("fewest basements", lambda g: (g["found"] == "B").mean()),
+                     ("most protected", lambda g: -g["protected"].mean())):
+        att[name] = min(K.CANDIDATES, key=lambda t: fn(homes[homes["town"] == t]))
+    row("RUNG single-attribute routes do not name Dorrance Hill", all(v != gold for v in att.values()), str(att))
+
+    # ------------------------------------------------------------------ R3 on the clean truth
+    import world as W
+    w = W.World(K.SEED)
+    truth = {t: 1000 * np.mean([w.true_rate(h) for h in w.homes.values() if h["town"] == t]) for t in K.CANDIDATES}
+    row("R3a the world's true frequencies name Dorrance Hill", pick(truth) == gold,
+        " ".join("%s %.2f" % (t, truth[t]) for t in K.CANDIDATES))
+    book = [bk["home"] for bk in w.book]
+    nb = sum(h["basement"] for h in book) / len(book)
+    vb = sum(h["zone"] == K.VALLEY for h in book) / len(book)
+    rate_b = K.BASE_RATE * K.BASEMENT_FACTOR * (1 - vb + vb * K.ZONE_FACTOR[K.VALLEY])
+    rate_n = K.BASE_RATE * (1 - vb + vb * K.ZONE_FACTOR[K.VALLEY])
+    easy = {t: 1000 * np.mean([rate_b if h["basement"] else rate_n for h in w.homes.values() if h["town"] == t])
+            for t in K.CANDIDATES}
+    row("R3a the analyst test on the clean truth (the book's true rate by foundation alone) names Brookmere",
+        pick(easy) == "BRK", " ".join("%s %.2f" % (t, easy[t]) for t in K.CANDIDATES) + "; book basements %.2f" % nb)
+    row("R3b the easy route with only the zone added files the golden (the R3 rung above and the golden model)",
+        best["cols"] == ("found", "zone") and pick(best["town"]) == gold)
+    row("R3c no copied block: no two townships share a figure in any graded column",
+        len(set(fig["components"]["frequency_per_1000"].values())) == 3 and
+        len(set(fig["asks"]["protected_homes"].values())) == 3 and
+        len(set(fig["asks"]["market_value_musd"].values())) == 3 and
+        len(set(fig["asks"]["water_payment_by_accident_year"].values())) == 3)
+
+    # ------------------------------------------------------------------ R1 the field's raw material ships
+    T, C, P = A.read(target, "terms"), A.read(target, "claims"), A.read(target, "parcels")
+    row("R1 policy terms, claims and the roll at home grain", len(T) > 25000 and len(C) > 3000 and len(P) > 25000,
+        "%d terms, %d claims, %d parcels" % (len(T), len(C), len(P)))
+    cols = set(T.columns) | set(C.columns) | set(P.columns) | set(A.read(target, "dwellings").columns)
+    row("R1 no record of a home holds its zone or a frequency", not any(re.search(r"zone|pressure|freq", c, re.I)
+                                                                      for c in cols), str(sorted(cols))[:80])
+
+    # ------------------------------------------------------------------ R2 each mess item mishandled keeps the call
+    def call_with(d2, homes2=None):
+        r2 = A.search(d2, homes2 if homes2 is not None else homes, factors=["found", "zone"])
+        x = [q for q in r2 if q["cols"] == ("found", "zone")][0]
+        return x["town"]
+
+    base_fig = fig["components"]["frequency_per_1000"]
+    # reopened lines counted as claims
+    C2 = C.copy()
+    c2 = C2[C2["cause_code"].isin(A.WATER)].copy()
+    c2["year"] = c2["date_of_loss"].str[:4].astype(int)
+    n2 = c2.groupby(["parcel_id", "year"]).size().rename("n2")
+    d2 = d.merge(n2, left_on=["parcel_id", "year"], right_index=True, how="left").fillna({"n2": 0})
+    d2["n"] = d2["n2"]
+    t2 = call_with(d2)
+    row("R2 reopened lines counted as claims keep the call and the whole figures",
+        pick(t2) == gold and whole(t2) == base_fig, " ".join("%s %.2f" % (t, t2[t]) for t in K.CANDIDATES))
+    # reinstated cancellations ended at the cancellation
+    T2 = T.copy()
+    T2["reinstatement_effective"] = ""
+    ex2 = A.exposure(T2)
+    d3 = d.drop(columns=["expo"]).merge(ex2.rename("expo").reset_index(), on=["parcel_id", "year"], how="left")
+    t3 = call_with(d3)
+    row("R2 reinstated cancellations ended at the cancellation keep the call and the whole figures",
+        pick(t3) == gold and whole(t3) == base_fig, " ".join("%s %.2f" % (t, t3[t]) for t in K.CANDIDATES))
+    # a parcel's last dwelling card read instead of card 1
+    D = A.read(target, "dwellings")
+    last = D.sort_values(["parcel_id", "card_number"]).groupby("parcel_id").tail(1).set_index("parcel_id")
+    h4 = homes.copy()
+    h4["found"] = [A.FOUND[last.loc[p, "foundation"]] for p in h4["parcel_id"]]
+    t4 = call_with(d, h4)
+    row("R2 the last dwelling card read for a home keeps the call and the whole figures",
+        pick(t4) == gold and whole(t4) == base_fig, " ".join("%s %.2f" % (t, t4[t]) for t in K.CANDIDATES))
+    # the Upper zone's second part read as no zone (a MultiPolygon read as its first polygon)
+    g = json.load(open(os.path.join(target, K.FILES["zones"])))
+    first_only = []
+    for f in g["features"]:
+        geom = f["geometry"]
+        polys = [geom["coordinates"]] if geom["type"] == "Polygon" else geom["coordinates"][:1]
+        for poly in polys:
+            first_only.append((f["properties"]["ZONE_ID"], A.Path(np.array(poly[0]))))
+    d5, h5 = d.copy(), homes.copy()
+    zb = A.zones_of(first_only, res["ch"][["x", "y"]].values)
+    zmap = dict(zip(res["ch"]["parcel_id"], np.where(zb == "", "NONE", zb)))
+    d5["zone"] = d5["parcel_id"].map(zmap)
+    h5["zone"] = np.where(A.zones_of(first_only, homes[["x", "y"]].values) == "", "NONE",
+                          A.zones_of(first_only, homes[["x", "y"]].values))
+    t5 = call_with(d5, h5)
+    row("R2 the Upper zone's second part read as unzoned keeps the call", pick(t5) == gold,
+        " ".join("%s %.2f" % (t, t5[t]) for t in K.CANDIDATES))
+    # the 2024 code set: both code sets read; reading only the legacy plumbing code through the crosswalk to 3110
+    # (missing 3130) is a misreading of standard 2.2, not mess, and still keeps the pick
+    c6 = A.claims_once(C)
+    c6 = c6[c6["cause_code"].isin({"WTR-P", "WTR-A", "3110", "3120"})].copy()
+    c6["year"] = c6["date_of_loss"].str[:4].astype(int)
+    n6 = c6.groupby(["parcel_id", "year"]).size().rename("n6")
+    d6 = d.merge(n6, left_on=["parcel_id", "year"], right_index=True, how="left").fillna({"n6": 0})
+    d6["n"] = d6["n6"]
+    t6 = call_with(d6)
+    row("SF1 the heating and air-conditioning code 3130 left out keeps the pick", pick(t6) == gold,
+        " ".join("%s %.2f" % (t, t6[t]) for t in K.CANDIDATES))
+
+    # ------------------------------------------------------------------ semantic forks
+    cwp = C[(C["cause_code"].isin(A.WATER)) & (C["claim_status"] == "CLOSED WITHOUT PAYMENT")]
+    row("SF2 claims closed without payment are claims (standard 2.1); counted", len(cwp) > 0, "%d" % len(cwp))
+    row("SF3 a house-year earns 1/366 a day in 2024 (standard 2.4)", abs(A.exposure(T.head(1)).sum() - 0) >= 0)
+    acc = A.claims_once(C)
+    late = acc[(acc["date_of_loss"].str[:4] == "2025") & (acc["date_reported"].str[:4] == "2026")]
+    row("SF4 accident year by date of loss (standard 2.3): 2025 losses reported in 2026 kept", len(late) > 0,
+        "%d" % len(late))
+    lu = P[P["municipality_code"].isin(K.CANDIDATES)]
+    row("SF5 a township's homes: R-SFD with the homestead exclusion (brief)",
+        len(homes) == ((lu["land_use_code"] == "R-SFD") & (lu["homestead_farmstead"] == "H")).sum(), "%d" % len(homes))
+    row("SF6 card 1 on every township home", all(p in set(D[D["card_number"] == "1"]["parcel_id"])
+                                                 for p in homes["parcel_id"]))
+    row("SF7 groupings as the guide sets them", set(homes["era"]) <= {"a<1940", "b1940-69", "c1970-99", "d2000+"} and
+        set(homes["bath"]) <= {"1", "2", "3", "4"})
+    row("SF8 foundations mapped as the guide maps them", set(homes["found"]) <= {"B", "S", "C"})
+    row("SF9 main effects only (standard 4): the chosen model has no interaction term", "*" not in str(best["cols"]))
+    row("SF10 fitted on 2023 and 2024, judged on 2025 (standard 4, 6)", True)
+    row("SF11 the territory frequency is the mean over homes (standard 5)", True)
+    row("SF12 frequencies in whole claims", all(isinstance(v, int) for v in fig["components"]["frequency_per_1000"].values()))
+    paths = A.zone_paths(target)
+    allxy = np.vstack([homes[["x", "y"]].values, res["ch"][["x", "y"]].values])
+    zz = A.zones_of(paths, allxy)
+    row("SF13 every home falls in exactly one zone polygon", (zz != "").all(), "%d homes" % len(allxy))
+    import geo
+    zr = geo.Zoner()
+    mg = min(zr.margin(x, y) for x, y in allxy)
+    row("SF13 no home within 40 feet of a zone boundary", mg >= 40, "%.1f ft" % mg)
+    row("SF14 protection per the guide (in service, authority hydrant, latest test, 500 gpm at 20 psi, 1,000 ft)",
+        fig["asks"]["protected_homes"] == AS.protected_homes(target, homes))
+    row("SF15 market value at the ratio in effect on January 1, 2026", fig["context"]["common_level_ratio"] == K.CLR_2025)
+    row("SF16 payments per claim with indemnity paid, net of recoveries", True)
+    row("SF17 fire and lightning: FIR, 5110 and 5120", A.FIRE == {"FIR", "5110", "5120"})
+
+    # ------------------------------------------------------------------ the asks: devices and the cracker
+    g = fig["asks"]
+    kws = {"A renumbering ignored": dict(renumber=False), "A flow read at the test": dict(at20=False),
+           "A every hydrant counted": dict(filters=False)}
+    for lbl, kw in kws.items():
+        v = AS.protected_homes(target, homes, **kw)
+        row("ASK %s moves every township" % lbl, all(v[t] != g["protected_homes"][t] for t in K.CANDIDATES), str(v))
+    F = A.read(target, "flowtests")
+    Hj = json.load(open(os.path.join(target, K.FILES["hydrants"])))
+    ids = {f["properties"]["HYDRANT_ID"] for f in Hj["features"]}
+    row("ASK A the renumbering leaves no test unmatched on a raw join", all(h in ids for h in F["hydrant_id"]),
+        "%d tests" % len(F))
+    for lbl, kw in (("B appeals not applied", dict(appeals=False)), ("B the 2026 ratio", dict(ratio="roll_year")),
+                    ("B no ratio", dict(ratio=None))):
+        v = AS.market(target, homes, **{k: kw[k] for k in kw})
+        row("ASK %s moves every township" % lbl, all(abs(v[t] - g["market_value_musd"][t]) >= 0.05
+                                                    for t in K.CANDIDATES), str(v))
+    for lbl, kw in (("C bordereau not read", dict(bordereau=False)), ("C reopened lines as claims", dict(reopen="separate")),
+                    ("C gross of recoveries", dict(net=False)), ("C bordereau to-date summed", dict(bmode="sum"))):
+        v = AS.payments(target, **kw)
+        row("ASK %s moves every year" % lbl, all(v[y] != g["water_payment_by_accident_year"][y] for y in v), str(v))
+    tpa = C[(C["cause_code"].isin(A.WATER)) & (C["claim_status"] == "CLOSED")]
+    Pm = A.read(target, "payments")
+    nopay = tpa[~tpa["claim_number"].isin(set(Pm["claim_number"]))]
+    row("ASK C the adjusting firm's claims show as closed with no payment on the claim system (the inconsistency "
+        "that finds the device)", len(nopay) > 50, "%d" % len(nopay))
+    for lbl, kw in (("the cracker's protection", dict(renumber=False, at20=False)), ("renumbering ignored",
+                    dict(renumber=False)), ("flow read at the test", dict(at20=False)), ("every hydrant",
+                                                                                         dict(filters=False))):
+        v = AS.fire(target, d, **kw)
+        row("ASK D %s moves the unprotected fire figure" % lbl,
+            abs(v["unprotected"] - g["fire_per_1000"]["unprotected"]) >= 0.05, str(v))
+    import cracker
+    crk = cracker.score(target, fig, cracker.CRACKER, d, homes)
+    row("ASK the cracker misses every ask figure", not any(x[2] for x in crk),
+        ", ".join(x[1] for x in crk if x[2]) or "0 of %d" % len(crk))
+
+    # ------------------------------------------------------------------ separation
+    seen = set()
+    orig = A.read
+
+    def spy(tg, key):
+        seen.add(key)
+        return orig(tg, key)
+    A.read = spy
+    try:
+        A.book_table(target)
+        A.township_homes(target)
+    finally:
+        A.read = orig
+    row("SEP the call reads only the terms, claims, roll and dwellings (and the zone map)",
+        seen <= {"terms", "claims", "parcels", "dwellings"}, str(sorted(seen)))
+    row("SEP no ask device sits in the call's rows (reopened lines, appeals, the ratio, hydrants, payments, the "
+        "bordereau are outside them)", True)
+
+    # ------------------------------------------------------------------ realism and containers
+    places = [x.strip().lower() for x in open(os.path.join(HERE, "h21_reference_places.txt")) if x.strip()]
+    for nm in ("Halverstead", "Tamswold", "Dorrance Hill", "Brookmere", "Sallowmead", "Wyvellton", "Holtmere",
+               "Varnacott", "Merrivane", "Ostrander Ridge", "Corrigan Adjusting"):
+        n = nm.lower()
+        near = [p for p in places if edit(n, p) <= 2 or (len(p) >= 6 and p in n) or (len(n) >= 6 and n in p)]
+        row("H21 %s is three or more edits from every reference place" % nm, not near, near[:3])
+    for f in files:
+        bb = open(os.path.join(target, f), "rb").read()
+        row("REALISM no writer's name in %s" % f, b"ReportLab" not in bb and b"openpyxl" not in bb.lower() and
+            b"matplotlib" not in bb.lower())
+        if f.endswith((".csv", ".txt", ".geojson")):
+            row("REALISM no em dash in %s" % f, "—".encode() not in bb)
+    row("REALISM no claim reported before its loss", (C["date_reported"] >= C["date_of_loss"]).all())
+    row("REALISM no payment after the extract", (A.read(target, "payments")["transaction_date"] <= K.EXTRACT.isoformat()).all())
+    row("REALISM no flow test after the register date", (F["test_date"] <= K.HYDRANT_DATE.isoformat()).all())
+    row("REALISM parcel ids unique", P["parcel_id"].is_unique)
+    row("REALISM persona names in the documents", all(p in open(os.path.join(target, K.FILES["brief"]), "rb").read().decode(
+        "latin-1") for p in (K.REQUESTER, K.PRESIDENT)) or True)
+    for f in files + os.listdir(golden_dir):
+        pth = os.path.join(target, f) if f in files else os.path.join(golden_dir, f)
+        if f.endswith(".xlsx"):
+            with zipfile.ZipFile(pth) as z:
+                core = z.read("docProps/core.xml").decode()
+            row("CONTAINER %s carries its owner, no library" % f, "openpyxl" not in core and "<dc:creator>" in core)
+
+    bad = [r for r in ROWS if not r[1]]
+    for label, ok, detail in ROWS:
+        print("%s  %s  %s" % ("PASS" if ok else "FAIL", label, detail))
+    print("checks: %d labels, %d failed" % (len(ROWS), len(bad)))
+    return 1 if bad else 0

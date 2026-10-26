@@ -1,14 +1,14 @@
 {
  "task": "task271",
  "owner": "sathay3012",
- "status": "DESIGN",
+ "status": "PAUSED",
  "domain": "actuarial-science-insurance",
  "objective": "descriptive-distribution",
- "stage": 2,
- "stage_name": "design",
+ "stage": 1,
+ "stage_name": "draw",
  "updated": "2026-10-26",
  "stump": "A competent analyst back-tests frequency models on the homes' recorded attributes (year built, basement, bathrooms, construction, township), keeps the best on 2025 as the mutual's model standard requires, carries it to each township's owner-occupied homes and names Brookmere, whose newer slab-built homes look safest; only the model carrying the water authority's supply zone, which wins the 2025 test outright and finds most of Brookmere's homes in the high-pressure Valley zone, names Ashby Hill.",
- "architecture": 4,
+ "architecture": 5,
  "loops": 0,
  "precut": {
   "exit": null,
@@ -30,7 +30,7 @@
   "report": ""
  },
  "returned": [],
- "resume": "Stage 2: design the ladder, fork and closure tables, the asks and prompt.txt for architecture 4 (Halbridge Mutual's 2027 agency township, supply zone from the water authority's zone map, the frequency model standard's 2025 hold-out test), gate precut.py; then the generator.",
+ "resume": "Re-root at the architecture 5 draw in a fresh world; read DESIGN_NOTE.md's Tried and rejected first, every architecture there stays dead. The lesson to draw on: a characteristic the model must include cannot be the stump, since the candidate set is a WHAT the judge needs filed; file only the unobserved outcome and let a comparison no document invites force the construction (task275's shape), and site every ask device where no column, filed rule or announced date reaches it.",
  "architectures": [
   {
    "architecture": 1,
@@ -53,7 +53,11 @@
   {
    "architecture": 4,
    "drawn": "2026-10-26",
-   "fate": "in design"
+   "fate": "spent 2026-10-26 at stage 4 round 1: both scored readers searched standard 3's five characteristics and filed Brookmere, the judge NOT_DETERMINISTIC and SEND_BACK on the unfiled candidate set (filing the zone names the step), and both readers took all ten ask figures"
+  },
+  {
+   "architecture": 5,
+   "fate": "to draw"
   }
  ],
  "approved": null,

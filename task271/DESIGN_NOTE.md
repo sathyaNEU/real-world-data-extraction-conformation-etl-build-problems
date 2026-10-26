@@ -1,27 +1,179 @@
 # task271 design note
 
-Architecture 4, re-rooted 2026-10-26 in a fresh world (wave 4, Descriptive lane, sathay3012) after the author's reopen of 2026-10-25; architectures 1 to 3 are recorded below and in `## Tried and rejected`, and stay dead. Halbridge Mutual Fire Insurance Company, a county mutual in Tamsen County, Pennsylvania, insures about 15,000 owner-occupied homes in four townships (Okerton, Wyvell, Gansey and Marrow Creek). Its board opens one agency in 2027 in a township it has never written, Ashby Hill, Brookmere or Rillwood, and its expansion brief puts the agency where the township's owner-occupied homes would bring the fewest non-weather water claims per house-year at the mutual's own 2023 to 2025 experience. The mutual's frequency model standard says how a frequency for an unwritten territory is taken: from the model of the book that best predicts the latest full policy year's claims when fitted to the years before it (Poisson deviance), refitted on every year. Non-weather water (a pipe, fixture or appliance letting go) is the peril that cost the mutual its 2025 underwriting result.
+Architecture 4, re-rooted 2026-10-26 in a fresh world (wave 4, Descriptive lane, sathay3012) after the author's reopen of 2026-10-25; architectures 1 to 3 are recorded below and in `## Tried and rejected`, and stay dead. Halverstead Mutual Fire Insurance Company, a county mutual in Tamswold County, Pennsylvania, insures about 18,000 owner-occupied homes at a time in four townships (18,788 homes and 18,217.5 house-years in 2025) (Wyvellton, Holtmere, Varnacott and Merrivane). Its board opens one agency in 2027 in a township it has never written, Dorrance Hill, Brookmere or Sallowmead, and its expansion brief puts the agency where the township's owner-occupied homes would bring the fewest non-weather water claims per house-year at the mutual's own 2023 to 2025 experience. The mutual's frequency model standard says how a frequency for an unwritten territory is taken: from the model of the book that best predicts the latest full policy year's claims when fitted to the years before it (Poisson deviance), refitted on every year. Non-weather water (a pipe, fixture or appliance letting go) is the peril that cost the mutual its 2025 underwriting result.
 
 ## Draw
 
-1. Card: `.claude/skills/fingerprint/cards/task271.json`, architecture 4, registered 2026-10-26 with `guard.py check` at WARN (no BLOCK) before and after registration; architectures 1 to 3 are in its lineage with their fates. The mutual is a member-owned insurer (`financial_institution`); its board chooses the agency's township (`board_of_directors`); the forcing event is the agency's opening in 2027 (`launch_or_rollout`); the requester is the mutual's underwriting manager (`portfolio_manager`). Context artifact `register` (the county assessor's roll and the water authority's zone and hydrant registers); no calibration organ.
+1. Card: `.claude/skills/fingerprint/cards/task271.json`, architecture 4, registered 2026-10-26 with `guard.py check` at WARN (no BLOCK) before and after registration; architectures 1 to 3 are in its lineage with their fates. The mutual is owned by its policyholders (`cooperative_or_member_body`, redrawn at stage 2 from `financial_institution`); its board chooses the agency's township (`board_of_directors`) at its November 18, 2026 meeting, which forces the paper (`vote_or_meeting`, redrawn at stage 2 from `launch_or_rollout`, the agency's April 2027 opening being the decision's subject rather than its clock); both redraws followed task304's registration at 17:06:56Z, before this card's, which carries the two old values (item 9); the requester is the mutual's underwriting manager (`portfolio_manager`). Context artifact `register` (the county assessor's roll and the water authority's zone and hydrant registers); no calibration organ.
 2. Pairing: Actuarial Science & Insurance (client domain) / claims-frequency-severity / Descriptive & Distribution Analysis. The task type's own object decides the call: a claim frequency per earned house-year, fitted on the mutual's book, validated on a held-out policy year and carried to a population of homes by their composition (indirect standardisation), which is the frequency side of the field's frequency-severity work.
 3. Niche: a county mutual choosing the township for its first agency outside its territory on the non-weather water claims the township's homes would bring, where the claims are driven by the static supply pressure of the water authority zone each home draws from, a property no policy, claim or assessor record holds.
 4. Call and shape: which of the three townships the agency opens in (`pick_one_of_n`, question form which), with each township's frequency at the book's experience. Shape 14 (cuts of a distribution per segment): each township is a segment and its homes' frequency, the runner-up and the gap are graded, with the asks' per-township and per-year figures beside them.
 5. Gate G `method_or_model_selection`, strategy `forecast_method_backtest`, decisive gap rule (population second), pattern none, generators G16 then G14. The standard's hold-out test is the filed selection criterion (`determinism-check` section 1: a filed criterion with the data separating the candidates); it does not name a model, and the model that wins it carries a variable no record holds. The decisive step is building that variable, each home's supply zone, by placing the home's parcel in the authority's zone map, and offering the model that carries it to the test, against the best model the recorded home attributes can build, which passes for the winner on the test it is shown.
-6. Data-native sentence: the authority feeds its Valley zone straight from the Ridge Tank with no pressure-reducing station, so homes on the valley floor take water at 92 to 126 psi while every other zone serves 40 to 78 psi, and supply lines, water heaters and fixture valves let go more often under that pressure; the mutual's rating plan carries no water-supply variable, and the newest subdivisions of the county were built on slabs on the valley floor.
+6. Data-native sentence: the authority feeds its Valley zone straight from the Ostrander Ridge Tank with no pressure-reducing station, so homes on the valley floor take water at 96 to 126 psi while every other zone serves 37 to 74 psi, and supply lines, water heaters and fixture valves let go more often under that pressure; the mutual's rating plan carries no water-supply variable, and the newest subdivisions of the county were built on slabs on the valley floor.
 7. Sources, one line each:
    - The client's rigor library, frequency-severity-aggregate-loss-modeling (an exposure offset; censoring and truncation of severity; compounding for the aggregate tail): the exposure offset is the field's reflex here and stays a hygiene step; the library has no card on carrying a frequency to an unwritten territory through a variable the rating plan lacks.
    - task173 (a water utility's service leak repairs, with a rate by material and pressure zone as a lower rung): the pressure zone there is a GIS column of the utility's own asset records and decides nothing; here no record of the insured homes holds a zone, it is built by geometry and decides the call (differentiation in the note, WARN-level).
    - task255 in this lane (claims-frequency-severity, the upper tail of a severity distribution under varying floors and limits): severity and censoring, not frequency carried to a new population.
    - task185, task188, task457 and task80 (the coarse key rule, none, method_or_model_selection): differentiated on the card.
    - `guard.py slots` on the driver sentence and on the setting's words (water, pressure, zone, claims; static pressure; hydrant; water damage; supply zone): no screen of this mechanism on file; task120's hit is maximum-day demand at a well field, task173's is item 7's lower rung.
-8. People, drawn with `guard.py names --geo us --seed 271`: Dillon Evans (the mutual's underwriting manager, the requester), Luis Thomas (the mutual's president, who signs the expansion brief) and Robin Fields (the authority's engineer of record on the master plan excerpt). Invented names (Halbridge, Tamsen, Ashby Hill, Brookmere, Rillwood, Okerton, Wyvell, Gansey, Marrow Creek, Ridge Tank) screened against the H21 reference register at the build and asserted in `checks.py`.
-9. BLOCKs cleared and WARNs answered. The first draft of the card carried the honest composition reading (gap population, pattern E, `composition_mix`) and BLOCKed on `test.same_puzzle` and `test.same_driver` inside the batch against task166 v2's lineage entry and against seven and twelve older builds; differentiation cannot clear a batch BLOCK, so the draw was redrawn onto the filed selection criterion the mutual's actuarial governance would carry anyway (item 5), which also closes the model fork the composition draft left open (`## Tried and rejected`). The remaining WARNs: `repeat.gate_g` against task270 v6 (a spent card) is the honest mechanism; `repeat.decision` (pick_one_of_n after task166) and `repeat.question_form` (which) follow from a pick of one township; `repeat.deliverables` (png and xlsx after task137) is the genre a board paper's workbook and chart take.
+8. People, drawn with `guard.py names --geo us --seed 271`: Dillon Evans (the mutual's underwriting manager, the requester), Luis Thomas (the mutual's president, who signs the expansion brief) and Robin Fields (the authority's engineer of record on the master plan excerpt). Invented names (Halverstead, Tamswold, Dorrance Hill, Brookmere, Sallowmead, Wyvellton, Holtmere, Varnacott, Merrivane, Ostrander Ridge, Corrigan Adjusting Services) screened against the H21 reference register at the build and asserted in `checks.py`.
+9. BLOCKs cleared and WARNs answered. At stage 2 the window moved under the card: task304 (registered 17:06:56Z, eight minutes before this card) carries `launch_or_rollout` and `financial_institution`, so `ban.forcing_event` and `ban.org_family` BLOCKed on the re-check, and both axes were redrawn to the honester labels in item 1 rather than argued. The first draft of the card carried the honest composition reading (gap population, pattern E, `composition_mix`) and BLOCKed on `test.same_puzzle` and `test.same_driver` inside the batch against task166 v2's lineage entry and against seven and twelve older builds; differentiation cannot clear a batch BLOCK, so the draw was redrawn onto the filed selection criterion the mutual's actuarial governance would carry anyway (item 5), which also closes the model fork the composition draft left open (`## Tried and rejected`). The remaining WARNs: `repeat.gate_g` against task270 v6 (a spent card) is the honest mechanism; `repeat.decision` (pick_one_of_n after task166) and `repeat.question_form` (which) follow from a pick of one township; `repeat.deliverables` (png and xlsx after task137) is the genre a board paper's workbook and chart take.
 10. Screens, run as code at the draw (scratch `t271a4/proto.py` to `proto4.py`, 60 worlds each):
-    - The hidden zone against the recorded attributes: with the book's Valley-zone homes claiming at about 2.2 times the rest, the basement a real 1.45 times and no other attribute moving the frequency, the recorded-attribute fits and the neighbouring township's experience name Brookmere in 56 to 60 of 60 worlds and the zone models name Ashby Hill in 60 of 60.
+    - The hidden zone against the recorded attributes: with the book's Valley-zone homes claiming at about 2.2 times the rest, the basement a real 1.45 times and no other attribute moving the frequency, the recorded-attribute fits and the neighbouring township's experience name Brookmere in 56 to 60 of 60 worlds and the zone models name Dorrance Hill in 60 of 60.
     - Confounding: with the Valley zone's homes older than the rest in the book, a fit carrying both the zone and year-built bands moves Brookmere by about 5 per 1,000 (a collinear fork), so the book's zones are drawn independent of age and the towns differ from the book on the basement and the zone alone.
     - Figure determinacy: the zone models (zone by basement cells, zone and basement main effects, the same with every null attribute, the interaction) agree at whole claims per 1,000 house-years in 11 of 60 worlds at the prototype's size; the build asserts that set on its own world and the standard's hold-out test picks among them.
+
+## Default path
+
+1. Read the brief and the Frequency Model Standard: the agency goes to the township whose owner-occupied single-family homes (land use R-SFD with the homestead exclusion, certified 2026 roll) would bring the fewest non-weather water claims per house-year, each home at the model section 4's 2025 test chooses, refitted on 2023 to 2025 (section 5).
+2. Build the book from policy_terms_2023_2025.csv and claims_register_2023_2025.csv: 54,233.4 house-years (cancellations reinstated without a lapse earn through), 1,258 non-weather water claims (WTR-P, WTR-A, 3110, 3120, 3130, each claim once), 23 per 1,000 house-years.
+3. Run section 4 over the characteristics the policy terms record (foundation, year built era, full bathrooms, construction, stories), every main-effects Poisson model fitted on 2023 and 2024 and judged on 2025: foundation alone wins at 3,252.4.
+4. Refit on 2023 to 2025 and carry it to each township's homes from the roll and card 1 of the dwellings file, mapped per the underwriting guide: Brookmere 18.1, Sallowmead 22.4, Dorrance Hill 26.0 per 1,000 house-years.
+5. Name the township with the fewest.
+
+Ends on: Brookmere (18 claims per 1,000 house-years)
+
+Golden: Dorrance Hill (21 claims per 1,000 house-years)
+
+## Stump sentence
+
+A competent analyst who builds the book's house-years and claims correctly and runs the Frequency Model Standard's 2025 test over models on the characteristics the policy terms record keeps the foundation model, carries it to each township's homes and names Brookmere (18 claims per 1,000 house-years) for the 2027 agency, because its slab-built homes look safest; the homes in the water authority's Valley zone claim at 2.31 times the Upper zone and 2,192 of Brookmere's 2,584 homes draw from it, which only placing each home's parcel point in the authority's zone map shows, and the model carrying the zone wins the 2025 test outright (3,169.4 against 3,252.4) and names Dorrance Hill (21).
+
+## Three rules
+
+Task type: claims-frequency-severity (Actuarial Science & Insurance), which serves Descriptive & Distribution Analysis in the taxonomy.
+Domain test: the quantity that decides the call is the non-weather water claim frequency per earned house-year that property insurance estimates for its rating cells, validated on a held-out accident year and carried to a population of homes by their composition; the peril's physical driver, the static supply pressure of the zone a home draws from, is in no rating record and is placed from the water authority's zone map.
+Swap: "which of three hospital wards should the new infection-control nurse join, on the infections each ward's patients would bring at the hospital's experience" has no water supply zone, no service pressure and no plumbing that pressure breaks, so the move that decides the call (placing each unit in a utility's pressure zone by its coordinates and carrying the zone's claim rate) has nothing to act on.
+Layer 1: the claim system's cause codes replaced on January 1, 2024 (legacy WTR-P and WTR-A against 3110, 3120 and 3130, with a crosswalk), reopened claims entered as new lines under suffixed numbers, cancellations for non-payment reinstated without a lapse, the county roll's base-year assessed values and its separate dwelling cards in the assessor's own codes, state plane coordinates, the authority's GeoJSON layers in its own field names with the Upper zone as one zone of two polygons, the April 2024 hydrant renumbering, voided and reissued checks, and the adjusting firm's monthly bordereau; each is produced by its system, nothing is placed to be caught, and on the call's path each mishandled keeps the call (R2 rows in `checks.py`).
+Layer 2: estimation_fit: the frequency model the standard's filed hold-out test chooses, where the winning model carries a characteristic no record of the homes holds, each home's water supply zone, placed by geometry from the authority's zone map.
+Decisive step: placing every home (the book's and each township's) in the authority's pressure zones from its parcel point and offering a model with the zone to the standard's 2025 test, which every such model wins against every model without it; not the best model the recorded characteristics can build.
+Not semantics: every field read correctly (the terms' dates and characteristics, every cause code in both code sets, the roll's land use and homestead, card 1, the guide's foundation mapping) and the standard and brief applied still leave the zone unread, and the easy route on the correctly read records files Brookmere.
+Not rule application: the standard fixes the model family (main-effects Poisson with a house-year offset), the selection test and the territory frequency, and names no characteristic; executing every stated rule over the characteristics the records hold files Brookmere.
+Analyst test: a strong analyst who reads every policy, claim and assessor record and the model standard correctly runs the 2025 test over the recorded characteristics, keeps foundation alone, carries it to each township's homes and names Brookmere (18 claims per 1,000 house-years, Sallowmead 22.4, Dorrance Hill 26.0); the homes in the Valley zone claim at 2.31 times the Upper zone and 2,192 of Brookmere's 2,584 homes draw from it, so only the model with the zone, which wins the 2025 test outright, names Dorrance Hill at 21 (`checks.py`, R3a, on the generator's clean truth).
+Estimand: the brief, "the agency opens in the township whose homes would bring the fewest non-weather water claims per house-year at our own 2023 to 2025 experience, the frequency taken as the Frequency Model Standard sets out for a territory we have not written. A township's homes are its owner-occupied single-family detached homes on the county's certified 2026 assessment roll: land use R-SFD with the homestead exclusion"; the standard's 2.1 to 2.5 (claim, non-weather water, accident year, house-year, frequency), 3 (characteristics in the rating plan's groupings, card 1), 4 (the main-effects Poisson family and the 2025 test), 5 (the mean over a territory's homes) and 6 (accident years 2023 to 2025 at the August 31, 2026 extract).
+No decoy: no memo, briefing, draft or stakeholder figure states a township's frequency or ranks the townships; the guide's protection rule, the master plan excerpt, the assessment files, the weather summaries and the permits answer other questions.
+No certified replay: no published or certified frequency ships to be reproduced; the standard's test is run on the book's own 2025 claims and selects among models the analyst builds, it blesses none.
+Lesson: a frequency carried to homes the book never wrote is only as good as the characteristics its model carries, and a physical driver of the peril that no rating record holds (the static supply pressure of the zone a home draws from) reverses the ranking every recorded characteristic produces; the standard's hold-out test chooses the model that carries it once the analyst builds it from the water authority's zone map. No build on file places homes in a utility's network zones to carry a claim rate.
+
+## Readability screen
+
+| Rung | What a reader needs to take it | Verdict |
+|---|---|---|
+| R0 the foundation model, best of the recorded characteristics on the 2025 test | the terms' foundation column and the standard | readable |
+| R1 every recorded characteristic, or the full recorded model | the terms' characteristic columns | readable |
+| R2 the nearest written township's experience, or the book's nearest homes | the terms' municipality, the parcel points | readable |
+| R3 (decisive) each home's water supply zone from the authority's polygons | the zone map against the roll's parcel points; no record of a home names its zone, the master plan gives grades and elevations, not a home's zone | silent |
+
+## Semantic fork table
+
+| Id | Term | Readings | Ruled out by |
+|---|---|---|---|
+| SF1 | non-weather water | WTR-P, WTR-A, 3110, 3120, 3130; with or without freezing, backup, seepage; without 3130 | standard 2.2 names the codes; 3130 left out keeps the pick (asserted) |
+| SF2 | a claim | each claim number; each line including -R1; paid claims only | standard 2.1: a claim paid or not, a reopened line the same claim; -R1 lines counted keep the call (R2) |
+| SF3 | house-year | days to expiration or to a cancellation; reinstated cancellations; 365 or 366 days | standard 2.4; reinstatements ended at the cancellation keep the call (R2) |
+| SF4 | accident year | date of loss; date reported | standard 2.3 |
+| SF5 | a township's homes | R-SFD with the homestead exclusion; every residential parcel; every R-SFD | the brief |
+| SF6 | a home's characteristics on the roll | card 1; the last card; every card | standard 3; the last card keeps the call (R2) |
+| SF7 | characteristic groupings | the rating plan's eras, bathrooms and stories; raw values | standard 3 and the guide's table 3 |
+| SF8 | foundation on the roll | BSMT FULL and PART to B, SLAB to S, CRAWL and PIERS to C | the guide's note to table 3 |
+| SF9 | the model family | main-effects Poisson with a log house-year offset; interactions; other families | standard 4 |
+| SF10 | the selection test | fitted on 2023 and 2024, Poisson deviance on 2025, refitted on 2023 to 2025 | standard 4 and 6 |
+| SF11 | a territory's frequency | the mean of its homes' frequencies; the frequency of the average home | standard 5 |
+| SF12 | rounding | whole claims per 1,000 house-years | the prompt; every zone model's figures sit 0.30 or more from an edge (asserted) |
+| SF13 | a home's zone | the polygon its parcel point falls in; the Upper zone as two zones | same call: every home falls in one polygon and none within 40 feet of a boundary; the second Upper polygon read as unzoned keeps the pick (asserted) |
+| SF14 | protected | the guide's rule: in-service authority hydrant within 1,000 feet, latest flow test, 500 gpm available at 20 psi | the guide, section 2 |
+| SF15 | market value | the 2026 assessments over the ratio in effect when the roll was certified | the brief |
+| SF16 | a water claim payment | indemnity paid to date per claim with indemnity paid, net of recoveries | the brief |
+| SF17 | fire and lightning claims | FIR, 5110 and 5120 | the code table |
+
+## Ladder
+
+Measured on the cut pack (`checks.py` RUNG and CALL rows):
+
+| Rung | Route | Dorrance Hill | Sallowmead | Brookmere | Names |
+|---|---|---|---|---|---|
+| R0 | foundation alone, the best recorded model on the 2025 test (3,252.4) | 26.0 | 22.4 | 18.1 | Brookmere |
+| R1 | every recorded characteristic (3,255.7) | 26.1 | 22.4 | 18.2 | Brookmere |
+| R2 | the nearest written township (Holtmere for all three) | 26.4 | 26.4 | 26.4 | no pick |
+| R2b | the book's 50, 200 or 1,000 nearest homes | 20.8 to 26.3 | 16.5 to 27.6 | 7.5 to 24.3 | Brookmere |
+| R3 | the zone without the foundation (3,185.7, loses the test) | 18.7 | 25.9 | 35.9 | Dorrance Hill, figures off |
+| Golden | foundation and zone (3,169.4, wins) | 21.0 | 25.1 | 27.9 | Dorrance Hill |
+
+Every model with the foundation and the zone (32 of the 64) prints 21, 25 and 28, at least 0.30 from a rounding edge; every model with the zone beats every model without it on 2025. The world's true frequencies are Dorrance Hill 21.7, Sallowmead 25.6 and Brookmere 27.6 (R3a).
+
+## Closure table
+
+| # | Axis | Reading and closure |
+|---|---|---|
+| 1 | Population | each township's owner-occupied single-family detached homes on the certified 2026 roll (the brief) |
+| 2 | Unit of account | non-weather water claims per 1,000 house-years (standard 2.5) |
+| 3 | Attribution window | accident years 2023 to 2025 (standard 6) |
+| 4 | As-of dating | the August 31, 2026 extract; the roll certified January 1, 2026; the zone map of November 2025 |
+| 5 | Version basis | one extract of each file |
+| 6 | Denominator | earned house-years (standard 2.4) |
+| 7 | Weighting | each home once in its township's mean (standard 5) |
+| 8 | Window length | three accident years; 2023 and 2024 to fit and 2025 to judge (standard 4) |
+| 9 | Boundary inclusivity | a cancellation date ends cover at 12:01 a.m. (the dictionary); a zone polygon's interior (no home on a boundary) |
+| 10 | Rounding path | whole claims per 1,000 from the unrounded mean |
+| 11 | Tie-break | none needed (gaps 4 and 3 claims per 1,000) |
+| 12 | Maturity and censoring | closed accident years; claims reported to August 31, 2026 |
+| 13 | Order of operations | house-years and claims, the zone, the test, the refit, the township mean |
+| 14 | Row order | none: sums and fits |
+| 15 | Duplicate resolution | a reopened line is the same claim (standard 2.1) |
+| 16 | Identity normalisation | a home is its parcel id on the terms, the claims and the roll |
+| 17 | Netting against gross | none on the call; payments net of recoveries (the brief, Ask C) |
+| 18 | Dimensional units | state plane US survey feet for the parcel points and the polygons (EPSG:2272) |
+| 19 | Code and status semantics | cause codes in both sets (code table), foundations and walls (guide table 3), homestead H |
+| 20 | Integerisation | none |
+| 21 | Clause scope | the standard's 2 to 6 scope the call; the guide's 2 scopes Ask A; the brief scopes Asks B to D |
+| 22 | Forward window contents | the 2027 agency is judged at the book's 2023 to 2025 experience; no forward data is read |
+
+## Literal reader
+
+Executed word for word, the brief and the standard fix the population, the window, the claim, the house-year, the family of models, the test and the territory frequency, and leave open only which characteristics of a home the models carry; a literal reader who carries the recorded ones files Brookmere, and one who builds the supply zone from the authority's map, which section 4's "categorical characteristics of the home" admits, files Dorrance Hill, the only township every zone model names.
+
+## Oracles
+
+None. No file states a township's frequency, a home's zone or a zone's claim rate; the master plan gives each zone's hydraulic grade and service elevations, and the hydrant flow tests give static pressures at hydrants, which describe the water system, not the claims.
+
+## Ask sheet
+
+The asks read files the call never opens (`checks.py` SEP rows): the hydrant register and flow tests (Ask A and Ask D), the appeals and the ratio table (Ask B), the payments extract and the adjusting firm's bordereau (Ask C), and the fire claims (Ask D). Each is a measure every township carries or the trail of the book's water experience that the call does not turn on.
+
+**Ask A. How many of each township's owner-occupied single-family homes the guide would class as protected (3 figures).** Golden: Dorrance Hill 2,182, Brookmere 1,994, Sallowmead 2,686. Devices: the April 2024 renumbering reused the range, so every pre-renumbering test joins to another hydrant on a raw join and no test goes unmatched (D7, silent); the flow is recorded at the test's residual, not at 20 psi (D3); out-of-service and private hydrants (texture).
+
+**Ask B. Their total market value, in millions of dollars to one decimal (3 figures).** Golden: $804.6, $768.0 and $906.7 million. Devices: the 2026 appeal decisions after certification (D2, the latest accepted value); the ratio in effect when the roll was certified is the 2025 ratio, not the one labelled 2026 (D8).
+
+**Ask C. The book's average non-weather water claim payment for each accident year, whole dollars (3 figures).** Golden: $10,769, $11,056 and $11,670. Devices: Corrigan Adjusting Services paid the spring 2023 property claims and every large water loss from its own account, so those claims show closed on the claim system with no payment and their indemnity is only on the bordereau (D4, silent); the bordereau's paid to date is cumulative across its monthly sheets (D6); reopened lines' payments (D1).
+
+**Ask D. The book's fire and lightning frequency per 1,000 house-years for the homes the guide classes as unprotected, one decimal (1 figure).** Golden: 5.3. It carries Ask A's devices on the book's homes: the cracker's protection files 4.5, the renumbering alone 5.4, the flow alone 4.4, every hydrant 4.9. The protected homes' frequency (2.3) was dropped from the ask at the build: under-classification moves few protected homes, so it barely moves (2.32 against 2.28) and the cracker kept it.
+
+**Separation.** Zero device or hazard rows in the call's population: the call reads the terms, the water claims, the roll and card 1 and the zone map (asserted by a spy on the reader); none of them carries an ask's device.
+
+**Cracker sheet.** The response that landed the call, ran the hygiene battery (key uniqueness, exact and near-exact duplicates, unmatched joins, fan-out) and executed every filed rule it points at:
+
+| Ask row | What the cracker does | Against the golden | Cracker |
+|---|---|---|---|
+| A, protected homes, 3 townships | joins the tests to the register on the hydrant number (nothing unmatched) and reads each test's flow as the flow the guide asks for | every township off | miss |
+| B, market value, 3 townships | the brief's ratio rule executed on the roll's assessed values | every township off | miss |
+| C, payments, 3 accident years | the claim system's payments per claim, reopened lines folded in, recoveries netted | every year off (about $7,000 against $11,000) | miss |
+| D, fire frequency, 1 figure | Ask A's protection on the book's homes | off (4.5 against 5.3) | miss |
+
+**Mirror sheet.** The response on R0 (Brookmere) reads the asks as the cracker does, so its rows miss the same way; no ask reads the call.
+
+Mirror leakage: 0 per cent of ask weight (every ask row misses for the mirror as for the cracker).
+
+Pair ceiling: 28.5 (the one-cracker case: (38 + 7 + 0 + 5 + 7 + 0) / 2).
+
+Measured by: generator/cracker.py on the cut pack.
+
+## Stage 3 and 4 record
+
+- Build 2026-10-26: `checks.py` 122 labels and 0 failed, `verify.py` 20 figures and 0 differ, a second build byte-identical, `figures_check.py` 71 figures and 0 absent, `precut.py` 51 checks and 0 FAIL, the cracker 0 of 10 ask figures (pair ceiling 28.5), the golden container audit clean, target.zip md5 237400fe115e48e0355fed64bec9b0a1 (20 files).
+- `leak.py` REVIEW, design-note vocabulary in five documents (standard, territory, record, pressure, authority, family, rating, supply, carried, characteristics): harmless, each is the document's own subject word (the standard governs frequencies by territory, the plan describes the Authority's pressure zones, the guide rates homes), and none states a relation between a home's supply zone and its claims.
+- `leak.py` REVIEW, the master plan's "Zone boundaries follow the ground and the history of the system rather than municipal lines, and several townships are served from two or more zones": harmless, a fact about the network that the zones layer itself shows to anyone who draws it, and it says nothing of claims; deleting it leaves every figure where it is, since the township split is read from the parcel points either way.
+- `leak.py` REVIEW, dates after 2026-10-21: the policy terms' expiration dates (twelve-month terms written to August 2026 run to August 2027) and the ratio table's effective_to of 2027-06-30 for the 2026 ratio year, both forward-looking by their genre (H16 allow-list).
+- `guard.py heart` WARN only: pick_one_of_n repeats task304's decision type and "which" its question form, because the board picks one township of three, the decision's own form; the png and xlsx deliverable set repeats task137's, a workbook for the board paper's figures and a chart of the comparison being what an underwriting manager hands a board. `guard.py surface`: the cut pack's personas are the card's three.
 
 ## Architecture 3 record (spent 2026-10-21)
 
@@ -61,3 +213,4 @@ A 38-hospital nonprofit health system's 2027 Family Outreach Program (statistica
 - Architecture 3 (penetrance by 70 from the referred families, testing selected on the relative's own cancer, kin-cohort against Kaplan-Meier on tested carriers): retired 2026-10-21 at stage 4, both scored readers ran the kin-cohort from criteria 2.3's filed population and landed the call, and each took all 20 ask figures; a filed measuring population of every relative hands over the one-half prior.
 - Screens at the architecture 4 draw on 2026-10-26, each set aside with its record before this card: a rapid antigen test's sensitivity carried from a validation study to a test-and-treat programme by days since symptom onset (no screen on file, but days since onset is the covariate every antigen evaluation reports, so a reader stratifies on it by reflex); declustering a preferential soil or groundwater sample (task269's architecture 5 screens, no DD task type in the physical sciences); a dissimilarity index's small-unit bias (task262 and task265: the estimand names the random-allocation correction); bus waiting time from headways (task135: the inspection paradox is a reflex); unconstrained demand from stock-outs (task137, task168, task482); a generator's emission rate at part load (task459, task482); a loyalty metric's dependence on a panel member's reporting weeks (dropping the part-year reporters reads as cleaning); a drifted anchor item, glycolysis and the other task274 architecture 3 screens.
 - The composition reading of this draw (gap population, pattern E, `composition_mix`, the zone and basement rates carried to each township by direct standardisation), set aside at the card on 2026-10-26: `test.same_puzzle` and `test.same_driver` BLOCK inside the batch against task166 v2, and its graded frequencies forked by the fit's specification (whole claims per 1,000 agreed across the zone models in 11 of 60 prototype worlds); the mutual's filed hold-out test is the selection criterion an actuarial standard carries, so the same world is drawn on it.
+- Architecture 4 (each township's non-weather water frequency per 1,000 house-years as the mean of its homes' frequencies under the Frequency Model Standard's model chosen by its 2025 hold-out test, foundation and the water authority's pressure zone placed from the parcel point; Dorrance Hill 21 against Sallowmead 25), spent at stage 4 round 1 on 2026-10-26: both isolated scored readers searched the five characteristics standard 3 lists, chose foundation alone and filed Brookmere (18), and the judge read that search as the literal execution (NOT_DETERMINISTIC, SEND_BACK: standard 3 enumerates the characteristics and standard 4's "of the models considered" licenses nothing beyond them, so the zone model is not forced). Filing the zone as a candidate names the decisive step, and an open "anything the records establish" sends a reader to the zones layer, so the stump lived in the WHAT. Both readers also took all ten ask figures: the hydrant numbers carried a FORMER_ID column and a dated renumbering in the dictionary, the 20 psi conversion was the field's reflex, the appeals and the ratio were filed, and the adjusting firm's claims showed closed with no payment, so every device was a work order the reader ran.

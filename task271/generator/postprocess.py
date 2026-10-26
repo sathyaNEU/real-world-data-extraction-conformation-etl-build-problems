@@ -4,7 +4,7 @@ banner. Every substitution keeps byte lengths where the format needs it."""
 import re
 import zipfile
 
-COMPANY = "Corrisbrook Health Cooperative"
+COMPANY = "Ardley Valley Hospital Foundation"
 
 APP = {".xlsx": ("Microsoft Excel", "16.0300"), ".docx": ("Microsoft Office Word", "16.0000"),
        ".pptx": ("Microsoft Office PowerPoint", "16.0000")}
@@ -17,6 +17,11 @@ EXCEL_ORDER = ("[Content_Types].xml", "_rels/.rels", "xl/workbook.xml", "xl/_rel
 
 def _sheet_no(name):
     return int(re.search(r"sheet(\d+)\.xml$", name).group(1))
+
+
+def xml_attr(v):
+    """A value as Excel writes it inside a double-quoted attribute (a currency format's quotes become &quot;)."""
+    return v.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;").replace('"', "&quot;")
 
 
 def share_strings(items):
@@ -109,7 +114,7 @@ def _excel_styles(data):
            'xmlns:xr="http://schemas.microsoft.com/office/spreadsheetml/2014/revision">' % (MAIN, X14AC)]
     if used:
         out.append('<numFmts count="%d">%s</numFmts>' % (len(used), "".join(
-            '<numFmt numFmtId="%d" formatCode="%s"/>' % (renum[o], fmts[o]) for o in used)))
+            '<numFmt numFmtId="%d" formatCode="%s"/>' % (renum[o], xml_attr(fmts[o])) for o in used)))
     fonts = []
     for f in root.findall("m:fonts/m:font", ns):
         get = lambda tag: f.find("m:" + tag, ns)

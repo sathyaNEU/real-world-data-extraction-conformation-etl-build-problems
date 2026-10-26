@@ -1,134 +1,194 @@
-"""Independent verifier: recomputes the call and both planning figures from target/ alone with code that shares
-nothing with analysis.py or models.py (pandas joins, a hand-rolled life table, an EM fit of the Mendelian mixture),
-and compares them with generator/figures.json."""
+"""The independent verifier: reads only the shipped bundle (target/ and figures.json) and recomputes the call, the
+critical components and every ask figure with its own code (vectorised house-years, an even-odd ray test for the
+zone polygons, statsmodels' formula interface for the chosen model, pandas joins for the asks), then compares with
+figures.json."""
+import datetime as dt
 import json
 import os
 import sys
+import warnings
 
 import numpy as np
 import pandas as pd
 
+warnings.filterwarnings("ignore")
 HERE = os.path.dirname(os.path.abspath(__file__))
+sys.path.insert(0, HERE)
+import common as K    # noqa: E402
+
+TOWNS = ["DOR", "BRK", "SAL"]
 
 
-def life_table_risk(age, event, upto=70):
-    """1 - prod(1 - d/n) over completed ages below upto; events counted before censorings at a tied age."""
-    df = pd.DataFrame({"age": np.asarray(age, int), "ev": np.asarray(event, int)})
-    s = 1.0
-    for a in range(upto):
-        n = (df["age"] >= a).sum()
-        d = ((df["age"] == a) & (df["ev"] == 1)).sum()
-        if n:
-            s *= 1 - d / n
-    return 1 - s
+def half_up(x, n=0):
+    from decimal import Decimal, ROUND_HALF_UP
+    return float(Decimal(repr(float(x))).quantize(Decimal(1).scaleb(-n), rounding=ROUND_HALF_UP))
 
 
-def em_mendel(age, event, genotype, rates, iters=400):
-    """EM for the two-component mixture: E-step, each untested woman's posterior chance of carrying (prior one half);
-    M-step, carrier hazards by band as weighted events over weighted exposure. Noncarrier hazard = population."""
-    age = np.asarray(age, float)
-    ev = np.asarray(event, int)
-    ev = np.where(age < 70, ev, 0)
-    t = np.minimum(age + 0.5, 70.0)
-    edges = [0, 40, 50, 60, 70]
-    expo = np.stack([np.clip(t - edges[k], 0, edges[k + 1] - edges[k]) for k in range(4)], 1)
-    band = np.clip(np.searchsorted(edges, t, side="right") - 1, 0, 3)
-    h_pop = np.asarray(rates, float) / 1e5
-    full = np.minimum(np.maximum(t[:, None] - np.arange(0, 5 * len(h_pop), 5), 0), 5)
-    Hn = (full * h_pop).sum(1)
-    hn_ev = h_pop[np.minimum((t // 5).astype(int), len(h_pop) - 1)]
-    g = np.asarray(genotype, float)          # 1 carrier, 0 noncarrier, nan untested
-    hc = np.full(4, 0.005)
-    for _ in range(iters):
-        lc = -(expo @ hc) + np.where(ev == 1, np.log(hc[band]), 0.0)
-        ln = -Hn + np.where(ev == 1, np.log(np.maximum(hn_ev, 1e-12)), 0.0)
-        post = 1 / (1 + np.exp(ln - lc))
-        w = np.where(np.isnan(g), post, g)
-        new = np.array([(w * ev * (band == k)).sum() / max((w * expo[:, k]).sum(), 1e-12) for k in range(4)])
-        new = np.maximum(new, 1e-9)
-        if np.max(np.abs(new - hc)) < 1e-10:
-            hc = new
-            break
-        hc = new
-    return 1 - np.exp(-(hc * np.diff(edges)).sum())
+def inside(px, py, ring):
+    ring = np.asarray(ring)
+    x1, y1 = ring[:-1, 0], ring[:-1, 1]
+    x2, y2 = ring[1:, 0], ring[1:, 1]
+    res = np.zeros(len(px), bool)
+    for a, b, c, e in zip(x1, y1, x2, y2):
+        crosses = ((b > py) != (e > py))
+        xint = a + (py - b) * (c - a) / np.where(e != b, e - b, 1e-12)
+        res ^= crosses & (px < xint)
+    return res
 
 
 def run(task):
-    target = os.path.join(task, "target")
+    T = os.path.join(task, "target")
     fig = json.load(open(os.path.join(HERE, "figures.json")))
-    files = {f: os.path.join(target, f) for f in os.listdir(target)}
-    find = lambda stem: next(v for k, v in files.items() if k.startswith(stem))
-    ped = pd.read_csv(find("icrs_pedigree_export"), dtype=str, keep_default_na=False)
-    lab = pd.read_csv(find("icrs_laboratory_reports"), dtype=str, keep_default_na=False)
-    inc = pd.read_csv(find("ellisford_tumor_registry_breast_incidence"), dtype=str)
-    rates = inc["rate_per_100000"].astype(float).values
-    f_n = 1 - np.exp(-(rates[:14] * 5).sum() / 1e5)
+    out = []
 
-    live = lab[~lab["report_id"].isin(set(lab["supersedes"]) - {""})]
-    pos = set(live.loc[live["result"].isin(["Variant identified", "Detected", "Positive"]), "person_id"])
-    tested = set(live["person_id"])
+    def ok(label, a, b):
+        out.append((label, a == b, "%s | %s" % (a, b)))
 
-    def first_breast(r):
-        a = [int(r["cancer_%d_age" % k]) for k in (1, 2, 3) if r["cancer_%d" % k] == "Breast" and r["cancer_%d_age" % k]]
-        return min(a) if a else None
-    fdr = ped[ped["relationship"].isin(["MOTHER", "SISTER", "DAUGHTER"])].copy()
-    fb = fdr.apply(first_breast, axis=1)
-    fdr["ev"] = fb.notna().astype(int)
-    fdr["t"] = np.where(fb.notna(), fb.fillna(0).astype(int), fdr["age"].astype(int))
-    fdr["g"] = [np.nan if p not in tested else (1.0 if p in pos else 0.0) for p in fdr["person_id"]]
-    bad = 0
-    out = {}
-    for code, d in fdr.groupby("family_variant_group"):
-        kin = 2 * life_table_risk(d["t"], d["ev"]) - f_n
-        em = em_mendel(d["t"].values, d["ev"].values, d["g"].values, rates)
-        out[code] = (kin, em)
-        verdict = "Yes" if kin >= 0.30 else "No"
-        ok = verdict == fig["verdict"][code] and (em >= 0.30) == (kin >= 0.30) and \
-            abs(kin - fig["risk_kin"][code]) < 5e-4
-        bad += not ok
-        print("%-11s kin %.4f  EM %.4f  verdict %s  %s" % (code, kin, em, verdict, "ok" if ok else "MISMATCH"))
+    rd = lambda k: pd.read_csv(os.path.join(T, K.FILES[k]), dtype=str, keep_default_na=False)   # noqa: E731
+    terms, claims, parcels, dw = rd("terms"), rd("claims"), rd("parcels"), rd("dwellings")
+    # house-years, vectorised per term and year
+    s = pd.to_datetime(terms["term_effective"])
+    e = pd.to_datetime(terms["term_expiration"])
+    cx = pd.to_datetime(terms["cancellation_effective"].where(terms["reinstatement_effective"] == ""), errors="coerce")
+    e = e.where(cx.isna() | (cx > e), cx)
+    rows = []
+    for y in (2023, 2024, 2025):
+        lo = s.clip(lower=pd.Timestamp(y, 1, 1))
+        hi = e.clip(upper=pd.Timestamp(y + 1, 1, 1))
+        days = (hi - lo).dt.days.clip(lower=0)
+        rows.append(pd.DataFrame({"parcel_id": terms["parcel_id"], "year": y, "expo": days / (366.0 if y == 2024 else 365.0)}))
+    ex = pd.concat(rows).groupby(["parcel_id", "year"], as_index=False)["expo"].sum()
+    ex = ex[ex["expo"] > 0]
+    wc = claims[claims["cause_code"].isin(["WTR-P", "WTR-A", "3110", "3120", "3130"]) &
+                ~claims["claim_number"].str.contains(r"-R\d+$", regex=True)].copy()
+    wc["year"] = wc["date_of_loss"].str[:4].astype(int)
+    n = wc.groupby(["parcel_id", "year"]).size().rename("n").reset_index()
+    d = ex.merge(n, on=["parcel_id", "year"], how="left").fillna({"n": 0})
+    lastterm = terms.assign(tn=terms["term_number"].astype(int)).sort_values(["parcel_id", "tn"]).groupby("parcel_id").tail(1)
+    found = lastterm.set_index("parcel_id")["foundation"]
+    xy = parcels.set_index("parcel_id")[["x_coord_ft", "y_coord_ft"]].astype(float)
+    g = json.load(open(os.path.join(T, K.FILES["zones"])))
 
-    # planning figures
-    deaths = set(pd.read_csv(find("ellisford_death_linkage"), dtype=str)["enterprise_id"])
-    ab = pd.read_csv(find("ellisford_tumor_registry_breast_abstracts"), dtype=str)
-    sx = pd.read_csv(find("ellisford_surgical_procedures"), dtype=str, keep_default_na=False)
-    mri = pd.read_csv(find("ellisford_breast_mri_exams"), dtype=str)
-    empi = pd.read_csv(find("ellisford_empi_identifiers"), dtype=str)
-    pos_pp = set(live.loc[live["result"].isin(["Variant identified", "Detected", "Positive"]) &
-                          live["classification"].isin(["Pathogenic", "Likely pathogenic"]), "person_id"])
-    w = ped[ped["person_id"].isin(pos_pp) & (ped["sex"] == "F") & (ped["enterprise_id"] != "") &
-            (ped["vital_status"] == "Living") & ~ped["enterprise_id"].isin(deaths)].copy()
-    dob = pd.to_datetime(w["birth_date"])
-    age = 2027 - dob.dt.year - ((dob.dt.month > 4) | ((dob.dt.month == 4) & (dob.dt.day > 1))).astype(int)
-    w = w[(age >= 30) & (age <= 74)]
-    sides = {}
-    for _, r in ab.iterrows():
-        c = int(r["surgery_primary_site_code"])
-        s = sides.setdefault(r["enterprise_id"], set())
-        if c in (41, 42, 51, 56):
-            s.add("L" if r["laterality"] == "Left" else "R")
-        if c in (42, 56):
-            s |= {"L", "R"}
-    for _, r in sx.iterrows():
-        if r["cpt_code"] in ("19303", "19305", "19306", "19307"):
-            s = sides.setdefault(r["enterprise_id"], set())
-            s |= {"L", "R"} if r["modifier"] == "50" else {r["modifier"][0]}
-    w = w[[len(sides.get(e, set())) < 2 for e in w["enterprise_id"]]]
-    m = mri[(mri["status"] == "COMPLETED") & (mri["indication"] == "SCREENING - HIGH RISK") &
-            (mri["exam_date"] >= "2025-10-01") & (mri["exam_date"] <= "2026-09-30")]
-    m = m.merge(empi, on=["hospital", "mrn"], suffixes=("_order", ""))
-    seen = set(m["enterprise_id"])
-    a = w.groupby("family_variant_group").size().to_dict()
-    b = w[~w["enterprise_id"].isin(seen)].groupby("family_variant_group").size().to_dict()
-    for code in fig["ask_a"]:
-        ok = a.get(code, 0) == fig["ask_a"][code] and b.get(code, 0) == fig["ask_b"][code]
-        bad += not ok
-        print("%-11s A %4d (figures %4d)  B %4d (figures %4d)  %s" % (code, a.get(code, 0), fig["ask_a"][code],
-                                                                     b.get(code, 0), fig["ask_b"][code],
-                                                                     "ok" if ok else "MISMATCH"))
-    print("verify:", "PASS" if bad == 0 else "FAIL %d" % bad)
-    return 0 if bad == 0 else 1
+    def zone(px, py):
+        z = np.array([""] * len(px), dtype=object)
+        for f in g["features"]:
+            geom = f["geometry"]
+            polys = [geom["coordinates"]] if geom["type"] == "Polygon" else geom["coordinates"]
+            for p in polys:
+                z[inside(px, py, p[0])] = f["properties"]["ZONE_ID"]
+        return z
+    bk = pd.DataFrame({"parcel_id": found.index})
+    bk["found"] = found.values
+    pxy = xy.loc[bk["parcel_id"]].values
+    bk["zone"] = zone(pxy[:, 0], pxy[:, 1])
+    d = d.merge(bk, on="parcel_id")
+    # the townships' homes
+    h = parcels[parcels["municipality_code"].isin(TOWNS) & (parcels["land_use_code"] == "R-SFD") &
+                (parcels["homestead_farmstead"] == "H")]
+    c1 = dw[dw["card_number"] == "1"].set_index("parcel_id")
+    fmap = {"BSMT FULL": "B", "BSMT PART": "B", "SLAB": "S", "CRAWL": "C", "PIERS": "C"}
+    hm = pd.DataFrame({"parcel_id": h["parcel_id"].values, "town": h["municipality_code"].values,
+                       "found": [fmap[c1.loc[p, "foundation"]] for p in h["parcel_id"]]})
+    hxy = h[["x_coord_ft", "y_coord_ft"]].astype(float).values
+    hm["zone"] = zone(hxy[:, 0], hxy[:, 1])
+    import statsmodels.api as sm
+    import statsmodels.formula.api as smf
+
+    def fitdev(formula, train, test):
+        m = smf.glm(formula, data=train, family=sm.families.Poisson(), offset=np.log(train["expo"])).fit()
+        mu = m.predict(test, offset=np.log(test["expo"]))
+        y = test["n"].values
+        t = np.where(y > 0, y * np.log(np.where(y > 0, y, 1) / mu), 0)
+        return m, float(2 * np.sum(t - (y - mu)))
+    tr, te = d[d["year"] < 2025], d[d["year"] == 2025]
+    _, dev_z = fitdev("n ~ C(found) + C(zone)", tr, te)
+    _, dev_f = fitdev("n ~ C(found)", tr, te)
+    ok("deviance 2025 foundation and zone", half_up(dev_z, 1), fig["components"]["deviance_2025_chosen"])
+    ok("deviance 2025 foundation alone", half_up(dev_f, 1), fig["components"]["deviance_2025_best_recorded_only"])
+    m = smf.glm("n ~ C(found) + C(zone)", data=d, family=sm.families.Poisson(), offset=np.log(d["expo"])).fit()
+    p = m.predict(hm, offset=np.zeros(len(hm))) * 1000
+    town = p.groupby(hm["town"]).mean()
+    for t in TOWNS:
+        ok("frequency %s" % t, int(half_up(town[t])), fig["components"]["frequency_per_1000"][t])
+        ok("Valley-zone homes %s" % t, int((hm[hm["town"] == t]["zone"] == "PZ-3").sum()),
+           fig["components"]["valley_zone_homes"][t])
+    best = min(TOWNS, key=lambda t: town[t])
+    ok("call", best, fig["call"]["township"])
+    ok("book frequency", int(half_up(1000 * d["n"].sum() / d["expo"].sum())), fig["context"]["book_frequency_per_1000"])
+    # protection
+    H = pd.DataFrame([dict(f["properties"], x=f["geometry"]["coordinates"][0], y=f["geometry"]["coordinates"][1])
+                      for f in json.load(open(os.path.join(T, K.FILES["hydrants"])))["features"]])
+    ft = rd("flowtests")
+    ft["date"] = pd.to_datetime(ft["test_date"])
+    old = ft[ft["date"] < pd.Timestamp(2024, 4, 1)].merge(H[H["FORMER_ID"] != ""][["FORMER_ID", "HYDRANT_ID"]],
+                                                           left_on="hydrant_id", right_on="FORMER_ID")
+    new = ft[ft["date"] >= pd.Timestamp(2024, 4, 1)].merge(H[["HYDRANT_ID"]], left_on="hydrant_id",
+                                                            right_on="HYDRANT_ID")
+    allt = pd.concat([old, new]).sort_values("date").groupby("HYDRANT_ID").tail(1)
+    sp, rp, fl = allt["static_psi"].astype(float), allt["residual_psi"].astype(float), allt["flow_gpm"].astype(float)
+    allt["q"] = fl * ((sp - 20) / (sp - rp)) ** 0.54
+    good = H.merge(allt[["HYDRANT_ID", "q"]], on="HYDRANT_ID")
+    good = good[(good["STATUS"] == "IN SERVICE") & (good["OWNER"] == "TCWA") & (good["q"] >= 500)]
+    gx, gy = good["x"].values, good["y"].values
+
+    def prot(px, py):
+        res = np.zeros(len(px), bool)
+        for i in range(0, len(px), 400):
+            dx = px[i:i + 400, None] - gx[None, :]
+            dy = py[i:i + 400, None] - gy[None, :]
+            res[i:i + 400] = (dx * dx + dy * dy).min(1) <= 1000.0 ** 2
+        return res
+    hp = prot(hxy[:, 0], hxy[:, 1])
+    for t in TOWNS:
+        ok("protected %s" % t, int(hp[hm["town"].values == t].sum()), fig["asks"]["protected_homes"][t])
+    # market value
+    ap = rd("appeals")
+    ap = ap[(ap["tax_year"] == "2026") & ap["decision"].isin(["REDUCED", "INCREASED", "SUSTAINED"])]
+    val = h.set_index("parcel_id")["assessed_total"].astype(float)
+    val.update(ap.set_index("parcel_id")["assessed_total_after"].astype(float))
+    clr = rd("clr")
+    c = float(clr[(clr["effective_from"] <= "2026-01-01") & (clr["effective_to"] >= "2026-01-01")]["common_level_ratio"].iloc[0])
+    mv = (val / c).groupby(h.set_index("parcel_id")["municipality_code"]).sum()
+    for t in TOWNS:
+        ok("market %s" % t, half_up(mv[t] / 1e6, 1), fig["asks"]["market_value_musd"][t])
+    # payments
+    pm = rd("payments")
+    pm["amount"] = pm["amount"].astype(float)
+    pm["claim"] = pm["claim_number"].str.replace(r"-R\d+$", "", regex=True)
+    base = wc.set_index("claim_number")
+    pm = pm[pm["claim"].isin(base.index)]
+    ind = pm[pm["transaction_type"].isin(["INDEMNITY", "VOID"])].groupby("claim")["amount"].sum()
+    rec = pm[pm["transaction_type"] == "RECOVERY"].groupby("claim")["amount"].sum()
+    import openpyxl
+    wb = openpyxl.load_workbook(os.path.join(T, K.FILES["bordereau"]), read_only=True)
+    bl = {}
+    for sh in wb.sheetnames:
+        for r in wb[sh].iter_rows(min_row=3, values_only=True):
+            if r[0]:
+                bl[r[0]] = (r[5], r[6])
+    bdf = pd.DataFrame([(k, v[0], v[1]) for k, v in bl.items() if k in base.index], columns=["claim", "paid", "rec"])
+    ind = ind.add(bdf.set_index("claim")["paid"], fill_value=0)
+    rec = rec.add(-bdf.set_index("claim")["rec"], fill_value=0)
+    net = ind.add(rec, fill_value=0)
+    paid = ind[ind > 0.005]
+    for y in (2023, 2024, 2025):
+        ids = [k for k in paid.index if base.loc[k, "year"] == y]
+        ok("payment %d" % y, int(half_up(net.loc[ids].mean())), fig["asks"]["water_payment_by_accident_year"][str(y)])
+    # fire
+    fc = claims[claims["cause_code"].isin(["FIR", "5110", "5120"]) & ~claims["claim_number"].str.contains(r"-R\d+$")]
+    fc = fc[fc["date_of_loss"].str[:4].isin(["2023", "2024", "2025"])]
+    bxy = xy.loc[bk["parcel_id"]].values
+    bp = pd.Series(prot(bxy[:, 0], bxy[:, 1]), index=bk["parcel_id"].values)
+    exh = d.groupby("parcel_id")["expo"].sum()
+    nf = fc.groupby("parcel_id").size().reindex(exh.index).fillna(0)
+    idx = bp[~bp].index.intersection(exh.index)
+    ok("fire unprotected", half_up(1000 * nf.loc[idx].sum() / exh.loc[idx].sum(), 1), fig["asks"]["fire_per_1000"]["unprotected"])
+    bad = [o for o in out if not o[1]]
+    for label, good_, detail in out:
+        print("%s  verify %s  [%s]" % ("PASS" if good_ else "FAIL", label, detail))
+    print("verify: %d figures, %d differ" % (len(out), len(bad)))
+    return 1 if bad else 0
 
 
 if __name__ == "__main__":
-    sys.exit(run(os.path.dirname(HERE)))
+    sys.exit(run(sys.argv[1] if len(sys.argv) > 1 else os.path.dirname(HERE)))

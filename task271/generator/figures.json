@@ -1,447 +1,94 @@
 {
- "ask_a": {
-  "ATM-MIS": 60,
-  "ATM-PTV": 335,
-  "BARD1-PTV": 72,
-  "BRIP1-PTV": 151,
-  "CHEK2-MIS": 384,
-  "CHEK2-PTV": 516,
-  "PALB2-MIS": 62,
-  "PALB2-PTV": 380,
-  "RAD51C-PTV": 129,
-  "RAD51D-PTV": 64
- },
- "ask_b": {
-  "ATM-MIS": 35,
-  "ATM-PTV": 211,
-  "BARD1-PTV": 49,
-  "BRIP1-PTV": 118,
-  "CHEK2-MIS": 242,
-  "CHEK2-PTV": 336,
-  "PALB2-MIS": 28,
-  "PALB2-PTV": 192,
-  "RAD51C-PTV": 95,
-  "RAD51D-PTV": 39
+ "asks": {
+  "fire_per_1000": {
+   "unprotected": 5.3
+  },
+  "market_value_musd": {
+   "BRK": 768.0,
+   "DOR": 804.6,
+   "SAL": 906.7
+  },
+  "protected_homes": {
+   "BRK": 1994,
+   "DOR": 2182,
+   "SAL": 2686
+  },
+  "water_payment_by_accident_year": {
+   "2023": 10769,
+   "2024": 11056,
+   "2025": 11670
+  }
  },
  "call": {
-  "not": [
-   "ATM-PTV",
-   "ATM-MIS",
-   "CHEK2-PTV",
-   "CHEK2-MIS",
-   "BARD1-PTV",
-   "RAD51C-PTV",
-   "RAD51D-PTV",
-   "BRIP1-PTV"
-  ],
-  "qualify": [
-   "PALB2-PTV",
-   "PALB2-MIS"
-  ],
-  "qualify_labels": [
-   "PALB2 protein-truncating",
-   "PALB2 missense"
-  ]
+  "gap_per_1000": 4,
+  "name": "Dorrance Hill",
+  "runner_up": "SAL",
+  "runner_up_name": "Sallowmead",
+  "township": "DOR"
  },
- "default_pct": {
-  "ATM-MIS": 46,
-  "ATM-PTV": 23,
-  "BARD1-PTV": 41,
-  "BRIP1-PTV": 10,
-  "CHEK2-MIS": 14,
-  "CHEK2-PTV": 29,
-  "PALB2-MIS": 84,
-  "PALB2-PTV": 44,
-  "RAD51C-PTV": 16,
-  "RAD51D-PTV": 34
- },
- "f_n": 0.0749,
- "f_n_pct": 7.5,
- "families": {
-  "ATM-MIS": 130,
-  "ATM-PTV": 450,
-  "BARD1-PTV": 160,
-  "BRIP1-PTV": 200,
-  "CHEK2-MIS": 500,
-  "CHEK2-PTV": 700,
-  "PALB2-MIS": 110,
-  "PALB2-PTV": 450,
-  "RAD51C-PTV": 150,
-  "RAD51D-PTV": 120
- },
- "family_range_pct": {
-  "ATM-MIS": [
-   18,
-   20
+ "components": {
+  "best_recorded_only_model": [
+   "found"
   ],
-  "ATM-PTV": [
-   17,
-   19
+  "chosen_model": [
+   "found",
+   "zone"
   ],
-  "BARD1-PTV": [
-   16,
-   18
-  ],
-  "BRIP1-PTV": [
-   7,
-   8
-  ],
-  "CHEK2-MIS": [
-   12,
-   14
-  ],
-  "CHEK2-PTV": [
-   24,
-   25
-  ],
-  "PALB2-MIS": [
-   46,
-   53
-  ],
-  "PALB2-PTV": [
-   38,
-   43
-  ],
-  "RAD51C-PTV": [
-   12,
-   14
-  ],
-  "RAD51D-PTV": [
-   12,
-   16
-  ]
- },
- "family_unrounded": {
-  "ATM-MIS": {
-   "kin": 0.1765,
-   "mendel_pw_fix": 0.1854,
-   "mendel_pw_free": 0.1864,
-   "mendel_wb_fix": 0.1951
+  "deviance_2025_best_recorded_only": 3252.4,
+  "deviance_2025_chosen": 3169.4,
+  "frequency_per_1000": {
+   "BRK": 28,
+   "DOR": 21,
+   "SAL": 25
   },
-  "ATM-PTV": {
-   "kin": 0.1732,
-   "mendel_pw_fix": 0.1719,
-   "mendel_pw_free": 0.1869,
-   "mendel_wb_fix": 0.1899
+  "homes": {
+   "BRK": 2584,
+   "DOR": 2769,
+   "SAL": 3096
   },
-  "BARD1-PTV": {
-   "kin": 0.1649,
-   "mendel_pw_fix": 0.1617,
-   "mendel_pw_free": 0.1682,
-   "mendel_wb_fix": 0.1812
-  },
-  "BRIP1-PTV": {
-   "kin": 0.0688,
-   "mendel_pw_fix": 0.0765,
-   "mendel_pw_free": 0.0843,
-   "mendel_wb_fix": 0.0841
-  },
-  "CHEK2-MIS": {
-   "kin": 0.1437,
-   "mendel_pw_fix": 0.1281,
-   "mendel_pw_free": 0.119,
-   "mendel_wb_fix": 0.1332
-  },
-  "CHEK2-PTV": {
-   "kin": 0.2374,
-   "mendel_pw_fix": 0.2367,
-   "mendel_pw_free": 0.2372,
-   "mendel_wb_fix": 0.2485
-  },
-  "PALB2-MIS": {
-   "kin": 0.4902,
-   "mendel_pw_fix": 0.4683,
-   "mendel_pw_free": 0.4582,
-   "mendel_wb_fix": 0.5273
-  },
-  "PALB2-PTV": {
-   "kin": 0.4201,
-   "mendel_pw_fix": 0.3926,
-   "mendel_pw_free": 0.3838,
-   "mendel_wb_fix": 0.4337
-  },
-  "RAD51C-PTV": {
-   "kin": 0.1208,
-   "mendel_pw_fix": 0.1231,
-   "mendel_pw_free": 0.1219,
-   "mendel_wb_fix": 0.1388
-  },
-  "RAD51D-PTV": {
-   "kin": 0.1188,
-   "mendel_pw_fix": 0.1191,
-   "mendel_pw_free": 0.1557,
-   "mendel_wb_fix": 0.1214
+  "valley_zone_homes": {
+   "BRK": 2192,
+   "DOR": 217,
+   "SAL": 1238
   }
  },
- "filed": {
-  "age": 70,
-  "clauses": [
-   "2.3",
-   "3.1",
-   "3.2"
-  ],
-  "clinic_ages": [
-   30,
-   74
-  ],
-  "cpt": [
-   19303,
-   19307
-  ],
-  "registry_both": [
-   42,
-   56
-  ],
-  "registry_one": [
-   41,
-   51
-  ],
-  "threshold_pct": 30
- },
- "late_testing": {
-  "affected_hi": 80,
-  "affected_lo": 43,
-  "unaffected_hi": 17,
-  "unaffected_lo": 13
- },
- "margin_floor_points": 5,
- "relatives": {
-  "ATM-MIS": 421,
-  "ATM-PTV": 1381,
-  "BARD1-PTV": 478,
-  "BRIP1-PTV": 634,
-  "CHEK2-MIS": 1514,
-  "CHEK2-PTV": 2191,
-  "PALB2-MIS": 332,
-  "PALB2-PTV": 1386,
-  "RAD51C-PTV": 480,
-  "RAD51D-PTV": 362
- },
- "risk_kin": {
-  "ATM-MIS": 0.1765,
-  "ATM-PTV": 0.1732,
-  "BARD1-PTV": 0.1649,
-  "BRIP1-PTV": 0.0688,
-  "CHEK2-MIS": 0.1437,
-  "CHEK2-PTV": 0.2374,
-  "PALB2-MIS": 0.4902,
-  "PALB2-PTV": 0.4201,
-  "RAD51C-PTV": 0.1208,
-  "RAD51D-PTV": 0.1188
- },
- "risk_kin_pct": {
-  "ATM-MIS": 18,
-  "ATM-PTV": 17,
-  "BARD1-PTV": 16,
-  "BRIP1-PTV": 7,
-  "CHEK2-MIS": 14,
-  "CHEK2-PTV": 24,
-  "PALB2-MIS": 49,
-  "PALB2-PTV": 42,
-  "RAD51C-PTV": 12,
-  "RAD51D-PTV": 12
- },
- "route_values": {
-  "ATM-MIS": {
-   "default": 0.4615,
-   "ipw_living": 0.2194,
-   "kin_testedneg": 0.0847,
-   "naive": 0.6678,
-   "relshare": 0.1257,
-   "retrospective": 0.4124,
-   "sloppy": 0.2514
+ "context": {
+  "book_frequency_per_1000": 23,
+  "book_house_years": 54233.4,
+  "book_water_claims": 1258,
+  "common_level_ratio": 0.451,
+  "recorded_only_frequency_per_1000": {
+   "BRK": 18.1,
+   "DOR": 26.0,
+   "SAL": 22.4
   },
-  "ATM-PTV": {
-   "default": 0.2324,
-   "ipw_living": 0.1711,
-   "kin_testedneg": 0.1796,
-   "naive": 0.5321,
-   "relshare": 0.124,
-   "retrospective": 0.2361,
-   "sloppy": 0.2481
-  },
-  "BARD1-PTV": {
-   "default": 0.4109,
-   "ipw_living": 0.151,
-   "kin_testedneg": 0.0705,
-   "naive": 0.6325,
-   "relshare": 0.1199,
-   "retrospective": 0.2399,
-   "sloppy": 0.2398
-  },
-  "BRIP1-PTV": {
-   "default": 0.1004,
-   "ipw_living": 0.0777,
-   "kin_testedneg": 0.095,
-   "naive": 0.4993,
-   "relshare": 0.0718,
-   "retrospective": 0.1044,
-   "sloppy": 0.1437
-  },
-  "CHEK2-MIS": {
-   "default": 0.1424,
-   "ipw_living": 0.0951,
-   "kin_testedneg": 0.109,
-   "naive": 0.5337,
-   "relshare": 0.1093,
-   "retrospective": 0.1033,
-   "sloppy": 0.2185
-  },
-  "CHEK2-PTV": {
-   "default": 0.2853,
-   "ipw_living": 0.2049,
-   "kin_testedneg": 0.2107,
-   "naive": 0.5813,
-   "relshare": 0.1561,
-   "retrospective": 0.2604,
-   "sloppy": 0.3123
-  },
-  "PALB2-MIS": {
-   "default": 0.8442,
-   "ipw_living": 0.5254,
-   "kin_testedneg": 0.2079,
-   "naive": 0.7573,
-   "relshare": 0.2825,
-   "retrospective": 0.4867,
-   "sloppy": 0.565
-  },
-  "PALB2-PTV": {
-   "default": 0.4388,
-   "ipw_living": 0.3276,
-   "kin_testedneg": 0.3761,
-   "naive": 0.6442,
-   "relshare": 0.2475,
-   "retrospective": 0.3554,
-   "sloppy": 0.4949
-  },
-  "RAD51C-PTV": {
-   "default": 0.1557,
-   "ipw_living": 0.1235,
-   "kin_testedneg": 0.13,
-   "naive": 0.5656,
-   "relshare": 0.0978,
-   "retrospective": 0.1542,
-   "sloppy": 0.1956
-  },
-  "RAD51D-PTV": {
-   "default": 0.3359,
-   "ipw_living": 0.1117,
-   "kin_testedneg": -0.0581,
-   "naive": 0.6124,
-   "relshare": 0.0968,
-   "retrospective": 0.2084,
-   "sloppy": 0.1937
+  "relativities": {
+   "found=C vs B": 0.62,
+   "found=S vs B": 0.6,
+   "zone=PZ-3 vs PZ-2": 2.31
   }
  },
- "routes": {
-  "default": [
-   "PALB2-PTV",
-   "PALB2-MIS",
-   "ATM-MIS",
-   "BARD1-PTV",
-   "RAD51D-PTV"
+ "references": {
+  "cause_codes": [
+   3110,
+   3120,
+   3130,
+   5110,
+   5120
   ],
-  "ipw_living": [
-   "PALB2-PTV",
-   "PALB2-MIS"
+  "dates": [
+   2023,
+   2024,
+   2025,
+   2026,
+   2027
   ],
-  "kin": [
-   "PALB2-PTV",
-   "PALB2-MIS"
-  ],
-  "kin_testedneg": [
-   "PALB2-PTV"
-  ],
-  "mendel_pw_fix": [
-   "PALB2-PTV",
-   "PALB2-MIS"
-  ],
-  "mendel_pw_free": [
-   "PALB2-PTV",
-   "PALB2-MIS"
-  ],
-  "mendel_wb_fix": [
-   "PALB2-PTV",
-   "PALB2-MIS"
-  ],
-  "naive": [
-   "PALB2-PTV",
-   "PALB2-MIS",
-   "ATM-PTV",
-   "ATM-MIS",
-   "CHEK2-PTV",
-   "CHEK2-MIS",
-   "BARD1-PTV",
-   "RAD51C-PTV",
-   "RAD51D-PTV",
-   "BRIP1-PTV"
-  ],
-  "relshare": [],
-  "retrospective": [
-   "PALB2-PTV",
-   "PALB2-MIS",
-   "ATM-MIS"
-  ],
-  "sloppy": [
-   "PALB2-PTV",
-   "PALB2-MIS",
-   "CHEK2-PTV"
+  "nfpa_exponent": 0.54,
+  "nfpa_standard": 291,
+  "rounding": "frequencies whole per 1,000 house-years; market values to 0.1 million dollars; payments whole dollars; the fire frequency to 0.1 per 1,000 house-years",
+  "standard_sections": [
+   2.1,
+   2.4
   ]
- },
- "sloppy_pct": {
-  "ATM-MIS": 25,
-  "ATM-PTV": 25,
-  "BARD1-PTV": 24,
-  "BRIP1-PTV": 14,
-  "CHEK2-MIS": 22,
-  "CHEK2-PTV": 31,
-  "PALB2-MIS": 57,
-  "PALB2-PTV": 49,
-  "RAD51C-PTV": 20,
-  "RAD51D-PTV": 19
- },
- "tested": {
-  "ATM-MIS": 48,
-  "ATM-PTV": 523,
-  "BARD1-PTV": 56,
-  "BRIP1-PTV": 243,
-  "CHEK2-MIS": 599,
-  "CHEK2-PTV": 840,
-  "PALB2-MIS": 48,
-  "PALB2-PTV": 543,
-  "RAD51C-PTV": 220,
-  "RAD51D-PTV": 50
- },
- "tested_carriers": {
-  "ATM-MIS": 27,
-  "ATM-PTV": 275,
-  "BARD1-PTV": 29,
-  "BRIP1-PTV": 122,
-  "CHEK2-MIS": 307,
-  "CHEK2-PTV": 425,
-  "PALB2-MIS": 32,
-  "PALB2-PTV": 283,
-  "RAD51C-PTV": 116,
-  "RAD51D-PTV": 25
- },
- "tested_carriers_total": 1641,
- "tested_total": 3170,
- "totals": {
-  "ask_a": 2153,
-  "ask_b": 1345,
-  "families": 2970,
-  "relatives": 9179
- },
- "verdict": {
-  "ATM-MIS": "No",
-  "ATM-PTV": "No",
-  "BARD1-PTV": "No",
-  "BRIP1-PTV": "No",
-  "CHEK2-MIS": "No",
-  "CHEK2-PTV": "No",
-  "PALB2-MIS": "Yes",
-  "PALB2-PTV": "Yes",
-  "RAD51C-PTV": "No",
-  "RAD51D-PTV": "No"
  }
 }

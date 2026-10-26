@@ -1,4 +1,4 @@
-"""submission.md from figures.json: every figure the write-up states is one the generator wrote."""
+"""submission.md from generator/figures.json: every figure the write-up states is emitted from the figures file."""
 import json
 import os
 import sys
@@ -7,99 +7,109 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)
 import common as K   # noqa: E402
 
+KIND = {c: k for c, n, k in K.TOWNS}
+
 
 def n(x):
-    return format(x, ",")
-
-
-def rng(fig, g):
-    lo, hi = fig["family_range_pct"][g]
-    return "%d to %d" % (lo, hi) if lo != hi else "%d" % lo
+    return "{:,}".format(x)
 
 
 def write(task):
-    fig = json.load(open(os.path.join(HERE, "figures.json")))
-    q = fig["call"]["qualify"]
-    d = fig["default_pct"]
-    s = fig["sloppy_pct"]
-    t = fig["totals"]
-    lt = fig["late_testing"]
-    a, b = fig["ask_a"], fig["ask_b"]
-    L = []
-    L.append("## Tags\n")
-    L.append("**Domain:** Biomedical & Clinical Research (statistical genomics).")
-    L.append("**Analytical objective:** Descriptive & Distribution Analysis.\n")
-    L.append("## 1. Final Recommendation\n")
-    L.append("**The Family Outreach Program should take on the PALB2 protein-truncating and PALB2 missense groups, and "
-             "none of the other eight.**\n")
-    L.append("Measured on every mother, sister and daughter of the probands, each a carrier with probability one half "
-             "unless a final report settles it, the two PALB2 groups' risks of breast cancer by 70 are %s and %s percent "
-             "across the kin-cohort and the Mendelian likelihood, and no other group's is above %d percent. Not ATM "
-             "missense, BARD1 or RAD51D, which Kaplan-Meier on the relatives whose report shows the variant puts at %d, "
-             "%d and %d percent: those groups were identified late (the ATM missense variants reclassified in May 2024, "
-             "BARD1 and RAD51D added to the panel in July 2023), their tested relatives are mostly women tested for a "
-             "breast cancer of their own, and counting every relative they stand at %s, %s and %s percent. Not CHEK2 "
-             "protein-truncating, which twice the relatives' share puts at %d percent before the half who do not carry "
-             "the variant are given the population's %s percent; it stands at %s percent."
-             % (rng(fig, "PALB2-PTV"), rng(fig, "PALB2-MIS"),
-                max(fig["family_range_pct"][g][1] for g in K.CODES if g not in q),
-                d["ATM-MIS"], d["BARD1-PTV"], d["RAD51D-PTV"], rng(fig, "ATM-MIS"), rng(fig, "BARD1-PTV"),
-                rng(fig, "RAD51D-PTV"), s["CHEK2-PTV"], fig["f_n_pct"], rng(fig, "CHEK2-PTV")))
-    L.append("\n## 2. Critical Components\n")
-    L.append("1. Every group is measured on all **%s** mothers, sisters and daughters of its probands (**%s** "
-             "families), **%s** of them with a test result." % (n(t["relatives"]), n(t["families"]),
-                                                               n(fig["tested_total"])))
-    L.append("2. Among the living relatives of the four groups identified late, **%d to %d percent** of those with "
-             "breast cancer were tested against **%d to %d percent** of those without."
-             % (lt["affected_lo"], lt["affected_hi"], lt["unaffected_lo"], lt["unaffected_hi"]))
-    L.append("3. Counting every relative, ATM missense, BARD1 and RAD51D stand at **%s**, **%s** and **%s percent** "
-             "and the two PALB2 groups at **%s** and **%s percent**." % (rng(fig, "ATM-MIS"), rng(fig, "BARD1-PTV"),
-                                                                         rng(fig, "RAD51D-PTV"), rng(fig, "PALB2-PTV"),
-                                                                         rng(fig, "PALB2-MIS")))
-    L.append("\n## 3. Step-by-Step Solution\n")
-    L.append("1. Took each family's group and its probands' mothers, sisters and daughters from %s (the probands and "
-             "half-sisters left out, criteria 2.3): %s women, each with her age at a first breast cancer or her age at "
-             "the history date or at death." % (K.FILES["pedigree"], n(t["relatives"])))
-    L.append("2. Took each woman's final report from %s (an Amended or Reanalysis report replacing the one it "
-             "supersedes): %s tested, %s showing the family's variant." % (K.FILES["labs"], n(fig["tested_total"]),
-                                                                            n(fig["tested_carriers_total"])))
-    L.append("3. Took the population's risk of a first breast cancer by 70 from the rates under 70 in %s: %s percent."
-             % (K.FILES["incidence"], fig["f_n_pct"]))
-    L.append("4. For each group ran Kaplan-Meier on all its mothers, sisters and daughters to the 70th birthday (death "
-             "and the history date censor) and took the carriers' risk as twice that share less %s percent, each "
-             "relative a carrier with probability one half: PALB2-PTV %d, PALB2-MIS %d, every other group %d or less."
-             % (fig["f_n_pct"], fig["risk_kin_pct"]["PALB2-PTV"], fig["risk_kin_pct"]["PALB2-MIS"],
-                max(fig["risk_kin_pct"][g] for g in K.CODES if g not in q)))
-    L.append("5. Checked with a Mendelian likelihood over the same women (the tested women's genotypes, the one-half "
-             "prior for the rest, the population's hazard for noncarriers or both hazards estimated): the same two "
-             "groups clear 30 percent and no other group comes within 5 points of it.")
-    L.append("6. Known carriers for the clinic (criteria 3.1): women whose final report shows the variant as pathogenic "
-             "or likely pathogenic, with an enterprise ID, living and not in %s, aged 30 to 74 on 1 April 2027, less "
-             "those with both breasts removed on the first-course surgery in %s (codes 42 and 56, or 41 and 51 by side) "
-             "and %s (19303 and 19307 by modifier) together." % (K.FILES["deaths"], K.FILES["abstracts"],
-                                                                K.FILES["surgery"]))
-    L.append("7. No screening MRI (criteria 3.2): of those women, the ones with no COMPLETED SCREENING - HIGH RISK study "
-             "dated 1 October 2025 to 30 September 2026 in %s, each study matched to its woman by hospital and record "
-             "number through %s." % (K.FILES["imaging"], K.FILES["empi"]))
-    L.append("8. Named PALB2-PTV and PALB2-MIS for the program.")
-    L.append("\n## 4. Deliverable Answers\n")
-    L.append("### %s\n" % K.DELIVERABLES[0])
-    L.append("1. Whether the program takes each group on:")
-    for g in K.CODES:
-        L.append("   - %s (%s): %s" % (g, K.LABEL[g], "taken on" if g in q else "not taken on"))
-    L.append("2. Women already known to carry a variant in the group whom the program would offer the clinic on "
-             "1 April 2027:")
-    for g in K.CODES:
-        L.append("   - %s: %s" % (g, n(a[g])))
-    L.append("3. Of those women, how many had no screening breast MRI at Ellisford from 1 October 2025 to 30 September "
-             "2026:")
-    for g in K.CODES:
-        L.append("   - %s: %s" % (g, n(b[g])))
-    L.append("\n### %s\n" % K.DELIVERABLES[1])
-    L.append("1. Bar chart of the ten groups' estimated risk of breast cancer by age 70 for a woman who carries the "
-             "variant, with a dashed line at 30 percent and the two PALB2 groups, the only bars past it, highlighted.")
-    open(os.path.join(task, "submission.md"), "w").write("\n".join(L) + "\n")
+    f = json.load(open(os.path.join(HERE, "figures.json")))
+    c, co, a, cx = f["call"], f["components"], f["asks"], f["context"]
+    fr = co["frequency_per_1000"]
+    order = sorted(K.CANDIDATES, key=lambda t: fr[t])
+    pick, run, last = order
+    nm = lambda t: "%s %s" % (K.TOWN_NAME[t], KIND[t])   # noqa: E731
+    rel = cx["relativities"]["zone=PZ-3 vs PZ-2"]
+    mv, pr, pay, fi = a["market_value_musd"], a["protected_homes"], a["water_payment_by_accident_year"], a["fire_per_1000"]
+    vz, hm = co["valley_zone_homes"], co["homes"]
+    lines = [
+        "## Tags",
+        "",
+        "> **Domain:** Actuarial Science & Insurance (claims frequency and severity).",
+        "> **Analytical objective:** Descriptive & Distribution Analysis.",
+        "",
+        "## 1. Final Recommendation",
+        "",
+        "**Open the 2027 agency in %s.** Its owner-occupied single-family homes would bring %d non-weather water claims "
+        "per 1,000 house-years at our 2023 to 2025 experience, %d fewer than %s's %d. Not %s, %s of whose %s homes "
+        "draw from the water authority's Valley zone. Not %s (%d), whose newer slab-built homes look safest on the "
+        "policy record but %s of whose %s homes draw from the Valley zone, where our homes claim at %.2f times the "
+        "rate of the Upper zone." % (nm(pick), fr[pick], c["gap_per_1000"], K.TOWN_NAME[run], fr[run], K.TOWN_NAME[run],
+                                    n(vz[run]), n(hm[run]), K.TOWN_NAME[last], fr[last], n(vz[last]), n(hm[last]), rel),
+        "",
+        "## 2. Critical Components",
+        "",
+        "1. Homes in the Valley zone: %s **%s** of %s, %s **%s** of %s, %s **%s** of %s" % (
+            K.TOWN_NAME[pick], n(vz[pick]), n(hm[pick]), K.TOWN_NAME[run], n(vz[run]), n(hm[run]), K.TOWN_NAME[last],
+            n(vz[last]), n(hm[last])),
+        "2. The Frequency Model Standard's 2025 test chooses foundation and water supply zone at a Poisson deviance of "
+        "**{:,.1f}**, against **{:,.1f}** for the best model on the characteristics the policy terms record "
+        "(foundation alone)".format(co["deviance_2025_chosen"], co["deviance_2025_best_recorded_only"]),
+        "3. Non-weather water claims per 1,000 house-years: %s **%d**, %s **%d**, %s **%d**" % (
+            K.TOWN_NAME[pick], fr[pick], K.TOWN_NAME[run], fr[run], K.TOWN_NAME[last], fr[last]),
+        "",
+        "## 3. Step-by-Step Solution",
+        "",
+        "1. Earned house-years by home and accident year from policy_terms_2023_2025.csv (standard 2.4) and non-weather "
+        "water claims from claims_register_2023_2025.csv (standard 2.1 to 2.3: WTR-P, WTR-A, 3110, 3120 and 3130, "
+        "each claim once with the -R1 lines dropped, by date of loss): {:,} claims over {:,.1f} house-years, {} per "
+        "1,000.".format(cx["book_water_claims"], cx["book_house_years"], cx["book_frequency_per_1000"]),
+        "2. Placed each home's parcel point from tamswold_parcels_2026.csv in tcwa_pressure_zones.geojson (the Upper "
+        "zone's two polygons are one zone): %s, %s and %s of the townships' homes are in the Valley zone." % (
+            n(vz[pick]), n(vz[run]), n(vz[last])),
+        "3. Ran the standard's section 4 search over every main-effects Poisson model on foundation, year built era, "
+        "full bathrooms, construction, stories and zone, fitted on 2023 and 2024 and judged on 2025: foundation and "
+        "zone win at {:,.1f}, the best model without the zone (foundation alone) scores {:,.1f}.".format(
+            co["deviance_2025_chosen"], co["deviance_2025_best_recorded_only"]),
+        "4. Refitted the model on 2023 to 2025 (Valley zone %.2f times the Upper zone) and averaged each township's "
+        "owner-occupied single-family homes (R-SFD with the homestead exclusion, card 1 of tamswold_dwellings_2026.csv "
+        "mapped per the underwriting guide): %s %d, %s %d, %s %d per 1,000 house-years." % (
+            rel, K.TOWN_NAME[pick], fr[pick], K.TOWN_NAME[run], fr[run], K.TOWN_NAME[last], fr[last]),
+        "5. Protected homes per the underwriting guide section 2: each test in tcwa_hydrant_flow_tests.csv joined to "
+        "its hydrant by the number in force on its date (FORMER_ID before April 1, 2024), the latest test's flow "
+        "carried to 20 psi residual by NFPA 291 (flow times ((static - 20) / (static - residual)) to the 0.54), "
+        "in-service authority hydrants within 1,000 feet: %s %s, %s %s, %s %s." % (
+            K.TOWN_NAME[pick], n(pr[pick]), K.TOWN_NAME[run], n(pr[run]), K.TOWN_NAME[last], n(pr[last])),
+        "6. Market value: the roll's 2026 assessed totals, replaced by the 2026 decisions in "
+        "assessment_appeals_2026.csv, over the common level ratio in effect on January 1, 2026 (%.3f): %s $%.1f "
+        "million, %s $%.1f million, %s $%.1f million." % (
+            cx["common_level_ratio"], K.TOWN_NAME[pick], mv[pick], K.TOWN_NAME[run], mv[run], K.TOWN_NAME[last],
+            mv[last]),
+        "7. Water claim payments: indemnity per claim from claim_payments_2023_2026.csv (the -R1 lines' payments "
+        "folded into their claim) plus the latest paid to date in cas_bordereau_halverstead_2023_2026.xlsx for the "
+        "claims Corrigan Adjusting Services handled, net of recoveries: 2023 $%s, 2024 $%s, 2025 $%s; fire and "
+        "lightning claims (FIR, 5110, 5120) on the book's unprotected homes: %.1f per 1,000 house-years." % (
+            n(pay["2023"]), n(pay["2024"]), n(pay["2025"]), fi["unprotected"]),
+        "8. The agency opens in %s, the township with the fewest non-weather water claims per house-year." % nm(pick),
+        "",
+        "## 4. Deliverable Answers",
+        "",
+        "### %s" % K.BOOK,
+        "",
+        "1. Non-weather water claims per 1,000 house-years: %s %d; %s %d; %s %d" % (
+            K.TOWN_NAME[pick], fr[pick], K.TOWN_NAME[run], fr[run], K.TOWN_NAME[last], fr[last]),
+        "2. Protected owner-occupied single-family homes: %s %s; %s %s; %s %s" % (
+            K.TOWN_NAME[pick], n(pr[pick]), K.TOWN_NAME[run], n(pr[run]), K.TOWN_NAME[last], n(pr[last])),
+        "3. Total market value of those homes: %s $%.1f million; %s $%.1f million; %s $%.1f million" % (
+            K.TOWN_NAME[pick], mv[pick], K.TOWN_NAME[run], mv[run], K.TOWN_NAME[last], mv[last]),
+        "4. Average non-weather water claim payment: 2023 $%s; 2024 $%s; 2025 $%s" % (
+            n(pay["2023"]), n(pay["2024"]), n(pay["2025"])),
+        "5. Fire and lightning claims per 1,000 house-years, 2023 to 2025, on the homes the guide classes as "
+        "unprotected: %.1f" % fi["unprotected"],
+        "",
+        "### %s" % K.CHART,
+        "",
+        "1. Horizontal bars of the three townships' frequencies, %s (%d) highlighted, %s %d and %s %d, against a "
+        "dashed line at the book's own %d per 1,000 house-years" % (
+            K.TOWN_NAME[pick], fr[pick], K.TOWN_NAME[run], fr[run], K.TOWN_NAME[last], fr[last],
+            cx["book_frequency_per_1000"]),
+        "",
+    ]
+    with open(os.path.join(task, "submission.md"), "w") as fh:
+        fh.write("\n".join(lines))
 
 
 if __name__ == "__main__":
-    write(os.path.dirname(HERE))
+    write(sys.argv[1] if len(sys.argv) > 1 else os.path.dirname(HERE))
