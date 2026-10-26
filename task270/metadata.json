@@ -1,120 +1,91 @@
 {
- "answer": "Schedule A (three-plus reach 26.6% of adults 18 to 34, 5.7 points ahead of schedule B)",
+ "answer": "Lancashire (16 per cent of its HFC packs' full charge lost in 2026, against Yorkshire 13)",
  "deliverables": [
-  "plano_tv_jovens_2027.xlsx",
-  "recomendacao_esquema_tv_2027.pptx"
+  "hfc_pack_replacements_2027.xlsx",
+  "pack_leakage_2026.png"
  ],
  "distractor_files": [
-  "target/plano_digital_2027.csv",
-  "target/dadores_novos_2025.csv"
+  "target/store_electricity_2024_2026.csv",
+  "target/kelbray_kpi_report_2026.pdf"
  ],
- "domain": "Marketing & Consumer Research (media reach, frequency and audience measurement)",
+ "domain": "General Statistics & Data Science (missing data, censoring and measurement error)",
  "objective": "Descriptive & Distribution Analysis",
  "provenance": {
-  "audiencias_programas_semanais_2026-03.csv": {
-   "date": "2026-10-26",
+  "data_dictionary.csv": {
+   "date": "2027-01-12",
    "licence": "CC0 1.0 (constructed for this task)",
-   "source": "constructed by the task generator (seeded); Associação Gota Viva, Meridiano Media, Audimetria Lusa, the Comissão de Audiometria, the channels, their sales houses, programmes, advertisers, panel members and people are fictional; the records follow the forms of a Portuguese television audience panel's client files, the channels' commercial as-run logs and booking extracts, a media agency's schedules and price compilation, and a blood donor association's booking portal"
+   "source": "constructed by the task generator (seeded); Hallowmere Foodstores, Kelbray Refrigeration, Tarnley Monitoring and every store, pack, job, cylinder and person are fictional; the records follow the forms of a UK retailer's F-gas register, a refrigeration contractor's job sheet export and cylinder log, and a remote monitoring bureau's daily export"
   },
-  "audimetria_individuos_2026-03.csv": {
-   "date": "2026-10-26",
+  "fgas_register_2026.xlsx": {
+   "date": "2027-01-12",
    "licence": "CC0 1.0 (constructed for this task)",
-   "source": "constructed by the task generator (seeded); Associação Gota Viva, Meridiano Media, Audimetria Lusa, the Comissão de Audiometria, the channels, their sales houses, programmes, advertisers, panel members and people are fictional; the records follow the forms of a Portuguese television audience panel's client files, the channels' commercial as-run logs and booking extracts, a media agency's schedules and price compilation, and a blood donor association's booking portal"
+   "source": "constructed by the task generator (seeded); Hallowmere Foodstores, Kelbray Refrigeration, Tarnley Monitoring and every store, pack, job, cylinder and person are fictional; the records follow the forms of a UK retailer's F-gas register, a refrigeration contractor's job sheet export and cylinder log, and a remote monitoring bureau's daily export"
   },
-  "audimetria_nota_metodologica.pdf": {
-   "date": "2026-10-26",
+  "hallowmere_stores.csv": {
+   "date": "2027-01-12",
    "licence": "CC0 1.0 (constructed for this task)",
-   "source": "constructed by the task generator (seeded); Associação Gota Viva, Meridiano Media, Audimetria Lusa, the Comissão de Audiometria, the channels, their sales houses, programmes, advertisers, panel members and people are fictional; the records follow the forms of a Portuguese television audience panel's client files, the channels' commercial as-run logs and booking extracts, a media agency's schedules and price compilation, and a blood donor association's booking portal"
+   "source": "constructed by the task generator (seeded); Hallowmere Foodstores, Kelbray Refrigeration, Tarnley Monitoring and every store, pack, job, cylinder and person are fictional; the records follow the forms of a UK retailer's F-gas register, a refrigeration contractor's job sheet export and cylinder log, and a remote monitoring bureau's daily export"
   },
-  "audimetria_visionamentos_2026-03.csv": {
-   "date": "2026-10-26",
+  "kelbray_cylinder_log_2026.csv": {
+   "date": "2027-01-12",
    "licence": "CC0 1.0 (constructed for this task)",
-   "source": "constructed by the task generator (seeded); Associação Gota Viva, Meridiano Media, Audimetria Lusa, the Comissão de Audiometria, the channels, their sales houses, programmes, advertisers, panel members and people are fictional; the records follow the forms of a Portuguese television audience panel's client files, the channels' commercial as-run logs and booking extracts, a media agency's schedules and price compilation, and a blood donor association's booking portal"
+   "source": "constructed by the task generator (seeded); Hallowmere Foodstores, Kelbray Refrigeration, Tarnley Monitoring and every store, pack, job, cylinder and person are fictional; the records follow the forms of a UK retailer's F-gas register, a refrigeration contractor's job sheet export and cylinder log, and a remote monitoring bureau's daily export"
   },
-  "briefing_campanha_jovens_2027.pdf": {
-   "date": "2026-10-26",
+  "kelbray_job_sheets_2024_2026.csv": {
+   "date": "2027-01-12",
    "licence": "CC0 1.0 (constructed for this task)",
-   "source": "constructed by the task generator (seeded); Associação Gota Viva, Meridiano Media, Audimetria Lusa, the Comissão de Audiometria, the channels, their sales houses, programmes, advertisers, panel members and people are fictional; the records follow the forms of a Portuguese television audience panel's client files, the channels' commercial as-run logs and booking extracts, a media agency's schedules and price compilation, and a blood donor association's booking portal"
+   "source": "constructed by the task generator (seeded); Hallowmere Foodstores, Kelbray Refrigeration, Tarnley Monitoring and every store, pack, job, cylinder and person are fictional; the records follow the forms of a UK retailer's F-gas register, a refrigeration contractor's job sheet export and cylinder log, and a remote monitoring bureau's daily export"
   },
-  "canais_codigos.csv": {
-   "date": "2026-10-26",
+  "kelbray_kpi_report_2026.pdf": {
+   "date": "2027-01-12",
    "licence": "CC0 1.0 (constructed for this task)",
-   "source": "constructed by the task generator (seeded); Associação Gota Viva, Meridiano Media, Audimetria Lusa, the Comissão de Audiometria, the channels, their sales houses, programmes, advertisers, panel members and people are fictional; the records follow the forms of a Portuguese television audience panel's client files, the channels' commercial as-run logs and booking extracts, a media agency's schedules and price compilation, and a blood donor association's booking portal"
+   "source": "constructed by the task generator (seeded); Hallowmere Foodstores, Kelbray Refrigeration, Tarnley Monitoring and every store, pack, job, cylinder and person are fictional; the records follow the forms of a UK retailer's F-gas register, a refrigeration contractor's job sheet export and cylinder log, and a remote monitoring bureau's daily export"
   },
-  "dadores_novos_2025.csv": {
-   "date": "2026-10-26",
+  "kelbray_service_specification_2024.pdf": {
+   "date": "2027-01-12",
    "licence": "CC0 1.0 (constructed for this task)",
-   "source": "constructed by the task generator (seeded); Associação Gota Viva, Meridiano Media, Audimetria Lusa, the Comissão de Audiometria, the channels, their sales houses, programmes, advertisers, panel members and people are fictional; the records follow the forms of a Portuguese television audience panel's client files, the channels' commercial as-run logs and booking extracts, a media agency's schedules and price compilation, and a blood donor association's booking portal"
+   "source": "constructed by the task generator (seeded); Hallowmere Foodstores, Kelbray Refrigeration, Tarnley Monitoring and every store, pack, job, cylinder and person are fictional; the records follow the forms of a UK retailer's F-gas register, a refrigeration contractor's job sheet export and cylinder log, and a remote monitoring bureau's daily export"
   },
-  "dicionario_dados.csv": {
-   "date": "2026-10-26",
+  "pack_contents.txt": {
+   "date": "2027-01-12",
    "licence": "CC0 1.0 (constructed for this task)",
-   "source": "constructed by the task generator (seeded); Associação Gota Viva, Meridiano Media, Audimetria Lusa, the Comissão de Audiometria, the channels, their sales houses, programmes, advertisers, panel members and people are fictional; the records follow the forms of a Portuguese television audience panel's client files, the channels' commercial as-run logs and booking extracts, a media agency's schedules and price compilation, and a blood donor association's booking portal"
+   "source": "constructed by the task generator (seeded); Hallowmere Foodstores, Kelbray Refrigeration, Tarnley Monitoring and every store, pack, job, cylinder and person are fictional; the records follow the forms of a UK retailer's F-gas register, a refrigeration contractor's job sheet export and cylinder log, and a remote monitoring bureau's daily export"
   },
-  "emissao_publicitaria_2026-03.csv": {
-   "date": "2026-10-26",
+  "refrigerant_strategy_2026.pdf": {
+   "date": "2027-01-12",
    "licence": "CC0 1.0 (constructed for this task)",
-   "source": "constructed by the task generator (seeded); Associação Gota Viva, Meridiano Media, Audimetria Lusa, the Comissão de Audiometria, the channels, their sales houses, programmes, advertisers, panel members and people are fictional; the records follow the forms of a Portuguese television audience panel's client files, the channels' commercial as-run logs and booking extracts, a media agency's schedules and price compilation, and a blood donor association's booking portal"
+   "source": "constructed by the task generator (seeded); Hallowmere Foodstores, Kelbray Refrigeration, Tarnley Monitoring and every store, pack, job, cylinder and person are fictional; the records follow the forms of a UK retailer's F-gas register, a refrigeration contractor's job sheet export and cylinder log, and a remote monitoring bureau's daily export"
   },
-  "esquemas_campanha_2027.xlsx": {
-   "date": "2026-10-26",
+  "store_electricity_2024_2026.csv": {
+   "date": "2027-01-12",
    "licence": "CC0 1.0 (constructed for this task)",
-   "source": "constructed by the task generator (seeded); Associação Gota Viva, Meridiano Media, Audimetria Lusa, the Comissão de Audiometria, the channels, their sales houses, programmes, advertisers, panel members and people are fictional; the records follow the forms of a Portuguese television audience panel's client files, the channels' commercial as-run logs and booking extracts, a media agency's schedules and price compilation, and a blood donor association's booking portal"
+   "source": "constructed by the task generator (seeded); Hallowmere Foodstores, Kelbray Refrigeration, Tarnley Monitoring and every store, pack, job, cylinder and person are fictional; the records follow the forms of a UK retailer's F-gas register, a refrigeration contractor's job sheet export and cylinder log, and a remote monitoring bureau's daily export"
   },
-  "grelha_programacao_2026-03.csv": {
-   "date": "2026-10-26",
+  "tarnley_pack_tags.csv": {
+   "date": "2027-01-12",
    "licence": "CC0 1.0 (constructed for this task)",
-   "source": "constructed by the task generator (seeded); Associação Gota Viva, Meridiano Media, Audimetria Lusa, the Comissão de Audiometria, the channels, their sales houses, programmes, advertisers, panel members and people are fictional; the records follow the forms of a Portuguese television audience panel's client files, the channels' commercial as-run logs and booking extracts, a media agency's schedules and price compilation, and a blood donor association's booking portal"
+   "source": "constructed by the task generator (seeded); Hallowmere Foodstores, Kelbray Refrigeration, Tarnley Monitoring and every store, pack, job, cylinder and person are fictional; the records follow the forms of a UK retailer's F-gas register, a refrigeration contractor's job sheet export and cylinder log, and a remote monitoring bureau's daily export"
   },
-  "marcacoes_portal_dador_2025.csv": {
-   "date": "2026-10-26",
+  "tarnley_receiver_levels_2024_2026.csv": {
+   "date": "2027-01-12",
    "licence": "CC0 1.0 (constructed for this task)",
-   "source": "constructed by the task generator (seeded); Associação Gota Viva, Meridiano Media, Audimetria Lusa, the Comissão de Audiometria, the channels, their sales houses, programmes, advertisers, panel members and people are fictional; the records follow the forms of a Portuguese television audience panel's client files, the channels' commercial as-run logs and booking extracts, a media agency's schedules and price compilation, and a blood donor association's booking portal"
+   "source": "constructed by the task generator (seeded); Hallowmere Foodstores, Kelbray Refrigeration, Tarnley Monitoring and every store, pack, job, cylinder and person are fictional; the records follow the forms of a UK retailer's F-gas register, a refrigeration contractor's job sheet export and cylinder log, and a remote monitoring bureau's daily export"
   },
-  "notas_extracao_portal_dador.txt": {
-   "date": "2026-10-26",
+  "tarnley_service_description_2025.pdf": {
+   "date": "2027-01-12",
    "licence": "CC0 1.0 (constructed for this task)",
-   "source": "constructed by the task generator (seeded); Associação Gota Viva, Meridiano Media, Audimetria Lusa, the Comissão de Audiometria, the channels, their sales houses, programmes, advertisers, panel members and people are fictional; the records follow the forms of a Portuguese television audience panel's client files, the channels' commercial as-run logs and booking extracts, a media agency's schedules and price compilation, and a blood donor association's booking portal"
-  },
-  "plano_digital_2027.csv": {
-   "date": "2026-10-26",
-   "licence": "CC0 1.0 (constructed for this task)",
-   "source": "constructed by the task generator (seeded); Associação Gota Viva, Meridiano Media, Audimetria Lusa, the Comissão de Audiometria, the channels, their sales houses, programmes, advertisers, panel members and people are fictional; the records follow the forms of a Portuguese television audience panel's client files, the channels' commercial as-run logs and booking extracts, a media agency's schedules and price compilation, and a blood donor association's booking portal"
-  },
-  "relatorio_campanha_jovens_2025.pdf": {
-   "date": "2026-10-26",
-   "licence": "CC0 1.0 (constructed for this task)",
-   "source": "constructed by the task generator (seeded); Associação Gota Viva, Meridiano Media, Audimetria Lusa, the Comissão de Audiometria, the channels, their sales houses, programmes, advertisers, panel members and people are fictional; the records follow the forms of a Portuguese television audience panel's client files, the channels' commercial as-run logs and booking extracts, a media agency's schedules and price compilation, and a blood donor association's booking portal"
-  },
-  "reservas_publicidade_2026-03.csv": {
-   "date": "2026-10-26",
-   "licence": "CC0 1.0 (constructed for this task)",
-   "source": "constructed by the task generator (seeded); Associação Gota Viva, Meridiano Media, Audimetria Lusa, the Comissão de Audiometria, the channels, their sales houses, programmes, advertisers, panel members and people are fictional; the records follow the forms of a Portuguese television audience panel's client files, the channels' commercial as-run logs and booking extracts, a media agency's schedules and price compilation, and a blood donor association's booking portal"
-  },
-  "tabelas_precos_2T2027.pdf": {
-   "date": "2026-10-26",
-   "licence": "CC0 1.0 (constructed for this task)",
-   "source": "constructed by the task generator (seeded); Associação Gota Viva, Meridiano Media, Audimetria Lusa, the Comissão de Audiometria, the channels, their sales houses, programmes, advertisers, panel members and people are fictional; the records follow the forms of a Portuguese television audience panel's client files, the channels' commercial as-run logs and booking extracts, a media agency's schedules and price compilation, and a blood donor association's booking portal"
-  },
-  "universo_2026.csv": {
-   "date": "2026-10-26",
-   "licence": "CC0 1.0 (constructed for this task)",
-   "source": "constructed by the task generator (seeded); Associação Gota Viva, Meridiano Media, Audimetria Lusa, the Comissão de Audiometria, the channels, their sales houses, programmes, advertisers, panel members and people are fictional; the records follow the forms of a Portuguese television audience panel's client files, the channels' commercial as-run logs and booking extracts, a media agency's schedules and price compilation, and a blood donor association's booking portal"
+   "source": "constructed by the task generator (seeded); Hallowmere Foodstores, Kelbray Refrigeration, Tarnley Monitoring and every store, pack, job, cylinder and person are fictional; the records follow the forms of a UK retailer's F-gas register, a refrigeration contractor's job sheet export and cylinder log, and a remote monitoring bureau's daily export"
   }
  },
  "rows": {
-  "audiencias_programas_semanais_2026-03.csv": 196,
-  "audimetria_individuos_2026-03.csv": 2400,
-  "audimetria_visionamentos_2026-03.csv": 441227,
-  "canais_codigos.csv": 7,
-  "dadores_novos_2025.csv": 60,
-  "emissao_publicitaria_2026-03.csv": 20545,
-  "grelha_programacao_2026-03.csv": 1196,
-  "marcacoes_portal_dador_2025.csv": 20008,
-  "plano_digital_2027.csv": 5,
-  "reservas_publicidade_2026-03.csv": 19365,
-  "universo_2026.csv": 60
+  "fgas_register_2026.xlsx": 2164,
+  "hallowmere_stores.csv": 72,
+  "kelbray_cylinder_log_2026.csv": 384,
+  "kelbray_job_sheets_2024_2026.csv": 1489,
+  "store_electricity_2024_2026.csv": 2590,
+  "tarnley_pack_tags.csv": 182,
+  "tarnley_receiver_levels_2024_2026.csv": 196440
  },
  "task": "task270",
- "title": "Associação Gota Viva: the television schedule for the April 2027 young donor campaign"
+ "title": "Hallowmere Foodstores: the first region of the 2027 pack programme"
 }

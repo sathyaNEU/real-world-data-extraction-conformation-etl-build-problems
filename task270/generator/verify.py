@@ -1,165 +1,113 @@
 """The independent verifier: reads only the shipped bundle (target/ and figures.json) and recomputes the call, the
-critical components and every ask figure with its own code (pandas joins, interval sums per member, a Poisson-binomial
-by convolution), then compares with figures.json."""
+regional shares and every ask figure with its own code (csv and openpyxl readers, plain dictionaries, its own
+day-first date parsing), then compares with figures.json."""
+import csv
+import datetime as dt
 import json
 import os
+import statistics as stx
 import sys
-from decimal import Decimal, ROUND_HALF_UP
 
-import numpy as np
-import pandas as pd
+import openpyxl
 
-YOUNG = ("18-24", "25-34")
-PRIME = (20 * 3600, 24 * 3600 + 30 * 60)
+HERE = os.path.dirname(os.path.abspath(__file__))
+sys.path.insert(0, HERE)
+import common as K    # noqa: E402
 
 
-def rnd(x, n):
+def half_up(x, n=0):
+    from decimal import Decimal, ROUND_HALF_UP
     return float(Decimal(repr(float(x))).quantize(Decimal(1).scaleb(-n), rounding=ROUND_HALF_UP))
 
 
-def local_seconds(ts, t0):
-    return ((ts - t0).dt.total_seconds()).astype(np.int64)
+def rows(path):
+    with open(path, encoding="utf-8") as f:
+        return list(csv.DictReader(f))
+
+
+def d(s):
+    return dt.datetime.strptime(s, "%d/%m/%Y").date()
 
 
 def run(task):
     T = os.path.join(task, "target")
-    fig = json.load(open(os.path.join(task, "generator", "figures.json")))
+    fig = json.load(open(os.path.join(HERE, "figures.json")))
     out = []
 
     def ok(label, a, b):
         out.append((label, a == b, "%s | %s" % (a, b)))
 
-    t0 = pd.Timestamp("2026-03-02 00:00:00")
-    switch = pd.Timestamp("2026-03-29 01:00:00")
-    chans = pd.read_csv(os.path.join(T, "canais_codigos.csv"), dtype=str)
-    byname = {"Farol": "FAR1", "Farol 2": "FAR2", "Vértice": "VRT", "Litoral": "LIT", "Pulsar": "PLS",
-              "Pulsar+": "PLS", "Arena": "ARN"}
-    canon = {c: byname[n] for c, n in zip(chans["codigo"], chans["nome"])}
-
-    # ---- the members who count and their live viewing on the panel's local clock
-    pan = pd.read_csv(os.path.join(T, "audimetria_individuos_2026-03.csv"), dtype={"id_individuo": str})
-    young = pan[pan["escalao_etario"].isin(YOUNG) & (pan["peso_28d"] > 0)].set_index("id_individuo")["peso_28d"]
-    v = pd.read_csv(os.path.join(T, "audimetria_visionamentos_2026-03.csv"), dtype=str)
-    v = v[(v["modo"] == "AO VIVO") & (v["convidado"] == "N") & v["id_individuo"].isin(young.index)].copy()
-    for c in ("inicio_utc", "fim_utc"):
-        u = pd.to_datetime(v[c].str.rstrip("Z"))
-        v[c] = local_seconds(u + pd.to_timedelta(np.where(u >= switch, 3600, 0), unit="s"), t0)
-    v["ch"] = v["canal"].map(canon)
-    view = {c: g.sort_values("inicio_utc")[["inicio_utc", "fim_utc", "id_individuo"]].to_numpy() for c, g in
-            v.groupby("ch")}
-
-    # ---- the as-run places and the bookings behind them
-    ar = pd.read_csv(os.path.join(T, "emissao_publicitaria_2026-03.csv"), dtype=str)
-    ar["ch"] = ar["canal"].map(canon)
-    s0 = local_seconds(pd.to_datetime(ar["data"] + " " + ar["hora_inicio"]), t0)
-    ar["s0"], ar["s1"] = s0, s0 + ar["duracao_s"].astype(int)
-    ar["clock"] = ar["s0"] - local_seconds(pd.to_datetime(ar["dia_tv"]), t0)
-    bk = pd.read_csv(os.path.join(T, "reservas_publicidade_2026-03.csv"), dtype=str)
-    bk["ch_b"] = bk["canal"].map(canon)
-    sold = ar.merge(bk[["id_reserva", "ch_b", "dia_tv", "colocacao", "janela"]].rename(
-        columns={"dia_tv": "dia_reserva", "colocacao": "tipo"}), on="id_reserva", how="inner")
-    sold = sold[sold["tipo"] == "ROTAÇÃO"]
-
-    # ---- the three schedules on their reference days
-    lines = []
-    for s in "ABC":
-        sh = pd.read_excel(os.path.join(T, "esquemas_campanha_2027.xlsx"), sheet_name="Esquema %s" % s)
-        sh = sh[sh["Semana"] != "Total"]
-        for _, r in sh.iterrows():
-            d = pd.Timestamp(r["Data"])
-            ref = (pd.Timestamp("2026-03-02") + pd.Timedelta(days=7 * (int(r["Semana"]) - 1) + d.weekday()))
-            lines.append(dict(s=s, ch=byname[r["Canal"]], ref=ref.strftime("%Y-%m-%d"), prog=r["Programa ou janela"],
-                              brk=r["Intervalo no programa"], place=r["Colocação"]))
-
-    def seen(ch, a, b):
-        arr = view[ch]
-        lo = np.searchsorted(arr[:, 0].astype(np.int64), a - 6 * 3600)
-        hi = np.searchsorted(arr[:, 0].astype(np.int64), b)
-        acc = {}
-        for x0, x1, mm in arr[lo:hi]:
-            o = min(int(x1), b) - max(int(x0), a)
-            if o > 0:
-                acc[mm] = acc.get(mm, 0) + o
-        return {mm for mm, sec in acc.items() if sec >= (b - a) / 2}
-
-    probs = {s: {} for s in "ABC"}
-    in_window_b = {}
-    for ln in lines:
-        if ln["place"] == "Rotação":
-            win = ln["prog"].replace("Rotação ", "").lower()
-            pl = sold[(sold["ch_b"] == ln["ch"]) & (sold["dia_reserva"] == ln["ref"]) &
-                      (sold["janela"].str.lower() == win)]
-            iw = ar[(ar["ch"] == ln["ch"]) & (ar["dia_tv"] == ln["ref"]) & (ar["colocacao"] == "ROTAÇÃO") &
-                    (ar["clock"] >= PRIME[0]) & (ar["clock"] < PRIME[1])]
-            in_window_b.setdefault(ln["ref"] + ln["ch"], iw)
-        else:
-            br = ar[(ar["ch"] == ln["ch"]) & (ar["dia_tv"] == ln["ref"]) & (ar["programa"] == ln["prog"]) &
-                    (ar["intervalo_no_programa"].astype(int) == int(ln["brk"]))].sort_values("posicao", key=lambda x:
-                                                                                           x.astype(int))
-            pl = br.head(1) if ln["place"].startswith("1.") else br.tail(1)
-        cnt = {}
-        for _, a in pl.iterrows():
-            for mm in seen(a["ch"], int(a["s0"]), int(a["s1"])):
-                cnt[mm] = cnt.get(mm, 0) + 1
-        for mm, c in cnt.items():
-            probs[ln["s"]].setdefault(mm, []).append(c / len(pl))
-
-    def reach(P, k):
-        tot = young.sum()
-        acc = 0.0
-        for mm, ps in P.items():
-            d = np.array([1.0])
-            for q in ps:
-                d = np.convolve(d, [1 - q, q])
-            acc += young[mm] * d[k:].sum()
-        return acc / tot
-
-    r3 = {s: reach(probs[s], 3) for s in "ABC"}
-    r1 = {s: reach(probs[s], 1) for s in "ABC"}
-    best = sorted("ABC", key=lambda s: -r3[s])
-    ok("call", best[0], fig["call"]["schedule"])
-    ok("runner-up", best[1], fig["call"]["runner_up"])
-    ok("lead", rnd(100 * (r3[best[0]] - r3[best[1]]), 1), fig["call"]["lead_points"])
-    for s in "ABC":
-        ok("3+ %s" % s, rnd(100 * r3[s], 1), fig["components"]["reach3_pct"][s])
-        ok("1+ %s" % s, rnd(100 * r1[s], 1), fig["context"]["reach1_pct"][s])
-    pr = sold[sold["ch_b"].isin(["VRT", "LIT", "PLS"]) & (sold["janela"].str.startswith("Horário nobre"))]
-    inside = ((pr["clock"] >= PRIME[0]) & (pr["clock"] < PRIME[1]) & (pr["dia_tv"] == pr["dia_reserva"])).sum()
-    ok("prime rotation bookings", int(len(pr)), fig["components"]["prime_rotation_bookings"])
-    ok("aired outside prime", int(len(pr) - inside), fig["components"]["prime_rotation_bookings_aired_outside_prime"])
-    ok("share outside prime", rnd(100 * (len(pr) - inside) / len(pr), 1),
-       fig["components"]["share_aired_outside_prime_pct"])
-
-    # ---- the 2025 response: a person is an identity document, and a booking of a first donation is one made before
-    # that person's first donation, the earliest on any of their donor records (the extract's donor fields are the
-    # record on the extraction day)
-    po = pd.read_csv(os.path.join(T, "marcacoes_portal_dador_2025.csv"), dtype=str, keep_default_na=False)
-    po["t"] = pd.to_datetime(po["criada_em"])
-    given = po[po["data_primeira_dadiva"] != ""]
-    gave = pd.to_datetime(given["data_primeira_dadiva"]).groupby(given["documento_hash"]).min()
-    po["gave"] = po["documento_hash"].map(gave)
-    po = po[po["gave"].isna() | (po["t"].dt.normalize() < po["gave"])].copy()
-    first = po.sort_values("t").groupby("documento_hash").head(1).copy()
-    born = pd.to_datetime(first["data_nascimento"])
-    made = first["t"].dt.normalize()
-    age = made.dt.year - born.dt.year - ((made.dt.month * 100 + made.dt.day) < (born.dt.month * 100 + born.dt.day))
-    first = first[(age >= 18) & (age <= 34)]
-    d = first["t"].dt.normalize()
-    base = [int(((d >= pd.Timestamp("2025-03-10") + pd.Timedelta(days=7 * k)) &
-                 (d < pd.Timestamp("2025-03-17") + pd.Timedelta(days=7 * k))).sum()) for k in range(4)]
-    camp = [int(((d >= pd.Timestamp("2025-04-07") + pd.Timedelta(days=7 * k)) &
-                 (d < pd.Timestamp("2025-04-14") + pd.Timedelta(days=7 * k))).sum()) for k in range(4)]
-    avg = sum(base) / 4.0
-    ok("2025 baseline weekly average", rnd(avg, 1), fig["asks"]["R"]["baseline_weekly_average"])
-    ok("2025 weeks above", [rnd(c - avg, 1) for c in camp], fig["asks"]["R"]["campaign_weeks_above_baseline"])
-    ok("2025 weeks total above", rnd(sum(camp) - 4 * avg, 1), fig["asks"]["R"]["campaign_weeks_total_above"])
-    per = (sum(camp) - 4 * avg) / 543.7
-    ok("2025 response", rnd(per, 2), fig["asks"]["R"]["response_per_thousand_reached3"])
-    uni = pd.read_csv(os.path.join(T, "universo_2026.csv"))
-    U = int(uni[uni["escalao_etario"].isin(YOUNG)]["populacao"].sum())
-    for s in "ABC":
-        ok("expected bookings %s" % s, int(rnd(per * r3[s] * U / 1000 / 10, 0) * 10),
-           fig["asks"]["X"]["expected_first_donation_bookings"][s])
+    names = {"SOLSTICE N40": "R448A", "OPTEON XP40": "R449A"}
+    norm = lambda g: names.get(g.strip().upper(), g.strip().upper().replace("-", ""))   # noqa: E731
+    region = {v: k for k, v in K.REGION_NAME.items()}
+    stores = {int(r["store_no"]): region[r["region"]] for r in rows(os.path.join(T, K.FILES["stores"]))}
+    wb = openpyxl.load_workbook(os.path.join(T, K.FILES["register"]), read_only=True)
+    packs = {}
+    for r in list(wb["Packs"].iter_rows(values_only=True))[1:]:
+        code, _, _, gas, charge, since, dec, _ = r
+        if norm(gas) not in {"R404A", "R448A", "R449A", "R407F"} or dec or d(since) > dt.date(2026, 1, 1):
+            continue
+        packs[code] = dict(region=stores[int(code[:3])], charge=float(charge), gas=norm(gas))
+    eq = {}
+    for r in list(wb["Cabinets and cold rooms"].iter_rows(values_only=True))[1:]:
+        eq[r[0]] = int(r[1])
+    jobs = rows(os.path.join(T, K.FILES["jobs"]))
+    net = {c: 0.0 for c in packs}
+    ratios, deps, last = {}, {}, {}
+    for j in jobs:
+        code = "%03d/%s" % (int(j["store"]), j["asset"])
+        if code not in packs or j["job_type"] not in ("ROUTINE", "BREAKDOWN"):
+            continue
+        ch, rc = float(j["charged_kg"]), float(j["recovered_kg"])
+        day = d(j["job_date"])
+        if day.year == 2026:
+            net[code] += ch - rc
+        if ch > 0 and j["receiver_departure_pct"]:
+            deps.setdefault(code, []).append(float(j["receiver_departure_pct"]))
+        if ch - rc > 0.5 and j["receiver_arrival_pct"] and float(j["receiver_arrival_pct"]) > 1 and \
+                float(j["receiver_departure_pct"]) < 99:
+            ratios.setdefault(code, []).append((float(j["receiver_departure_pct"]) - float(j["receiver_arrival_pct"]))
+                                               / (ch - rc))
+        if code not in last or day >= last[code][0]:
+            last[code] = (day, norm(j["refrigerant"]))
+    tags = {r["bureau_tag"]: r["pack_code"] for r in rows(os.path.join(T, K.FILES["tags"]))}
+    lev = {}
+    with open(os.path.join(T, K.FILES["levels"]), encoding="utf-8") as f:
+        for r in csv.DictReader(f):
+            if r["date"] in ("2025-12-31", "2026-12-31") and r["receiver_level_pct"]:
+                lev[(tags.get(r["bureau_tag"]), r["date"])] = float(r["receiver_level_pct"])
+    loss = {}
+    for c in packs:
+        k, full = stx.median(ratios[c]), stx.median(deps[c])
+        short = lambda day: max(0.0, (full - lev[(c, day)]) / k)   # noqa: E731
+        loss[c] = net[c] + short("2026-12-31") - short("2025-12-31")
+    share = {}
+    for g in K.REGIONS:
+        cs = [c for c in packs if packs[c]["region"] == g]
+        share[g] = 100 * sum(loss[c] for c in cs) / sum(packs[c]["charge"] for c in cs)
+        ok("share %s" % g, int(half_up(share[g])), fig["components"]["loss_share_pct"][g])
+    top = sorted(share, key=lambda g: -share[g])
+    ok("call", top[0], fig["call"]["region"])
+    ok("runner-up", top[1], fig["call"]["runner_up"])
+    ok("gap", int(half_up(share[top[0]] - share[top[1]])), fig["call"]["gap_points"])
+    # asks: CO2e of the full charge at the refrigerant Kelbray charged, all packs and R404A
+    for g in K.REGIONS:
+        cs = [c for c in packs if packs[c]["region"] == g]
+        gas = {c: last[c][1] if c in last else packs[c]["gas"] for c in cs}
+        tot = sum(packs[c]["charge"] * K.GWP[gas[c]] for c in cs) / 1000
+        r4 = sum(packs[c]["charge"] * K.GWP[gas[c]] for c in cs if gas[c] == "R404A") / 1000
+        ok("full charge CO2e %s" % g, int(half_up(tot)), fig["asks"]["charge_co2e_t"][g])
+        ok("R404A CO2e %s" % g, int(half_up(r4)), fig["asks"]["r404a_co2e_t"][g])
+    used = {}
+    for r in rows(os.path.join(T, K.FILES["cylinders"])):
+        used[r["job_no"]] = used.get(r["job_no"], 0.0) + float(r["gross_before_kg"]) - float(r["gross_after_kg"])
+    seen, kg = set(), {g: 0.0 for g in K.REGIONS}
+    for j in jobs:
+        if j["asset"] in eq and d(j["job_date"]).year == 2026 and j["job_no"] not in seen:
+            seen.add(j["job_no"])
+            kg[stores[int(j["store"])]] += used.get(j["job_no"], 0.0)
+    for g in K.REGIONS:
+        ok("cabinets and cold rooms %s" % g, half_up(kg[g], 1), fig["asks"]["equipment_kg"][g])
     bad = [o for o in out if not o[1]]
     for label, good, detail in out:
         print("%s  verify %s  [%s]" % ("PASS" if good else "FAIL", label, detail))
@@ -168,4 +116,4 @@ def run(task):
 
 
 if __name__ == "__main__":
-    sys.exit(run(sys.argv[1] if len(sys.argv) > 1 else os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
+    sys.exit(run(sys.argv[1] if len(sys.argv) > 1 else os.path.dirname(HERE)))

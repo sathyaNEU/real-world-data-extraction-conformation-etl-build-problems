@@ -1,51 +1,48 @@
-"""The cracker's path on the cut pack (supplemental-stumping 1.1): a response that lands the call (each rotation spot
-over the places the reference day's bookings aired), runs the hygiene battery (key uniqueness, exact and near-exact
-duplicate rows, unmatched joins, fan-out) and executes every filed rule it points at. On Ask R it executes the extract
-notes' rule (each person once, at the date of the first booking of a first donation they made, aged 18 to 34 that
-day, whatever the outcome) the way the battery leaves it: the key-uniqueness sweep finds documents under two donor
-numbers and makes the document the person, and a booking of a first donation is one whose tipo_dadiva says primeira.
-Ask X takes that response onto the call's reach. Every ask figure is scored against figures.json: a hit is within half
-a unit of the stated rounding. The mirror (the response on the in-window rotation places, schedule B) runs the asks
-the same way; its Ask X figure for schedule B also moves. The half-handled stop, a reader who finds that the donor
-fields are the record on the extraction day and repairs each booking against its own record, is printed beside them.
-Prints the sheet and the pair ceiling."""
+"""The cracker's path on the cut pack (supplemental-stumping 1.1): a response that lands the call, runs the hygiene
+battery (key uniqueness, exact and near-exact duplicates, unmatched joins, fan-out) and executes every filed rule it
+points at. On the asks it reads each file as the battery leaves it: each pack's refrigerant from the F-gas register,
+the record of what each pack holds, at the strategy's GWP table; the job sheet's kilograms on each cabinet and cold
+room line added up, every line a distinct asset and no two lines duplicates. The mirror (the response on the top-up
+count, the North East) reads the asks the same way. Every ask figure is scored against figures.json: a hit is within
+half a unit of the stated rounding. Prints the sheet and the pair ceiling."""
 import json
 import os
 import sys
+import warnings
 
+warnings.filterwarnings("ignore")
 HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)
-import analysis as AN    # noqa: E402
-import asks as AS        # noqa: E402
-import common as K       # noqa: E402
+import analysis as A    # noqa: E402
+import asks as AS       # noqa: E402
+import common as K      # noqa: E402
+
+CRACKER = dict(gas_source="register", eq_mode="lines")
 
 
-def score(task, route_main, route_resp="as_typed"):
-    target = os.path.join(task, "target")
-    fig = json.load(open(os.path.join(HERE, "figures.json")))
-    P = AN.Pack(target)
-    a = AS.all_asks(target, P, route_main=route_main, route_resp=route_resp)
+def score(target, fig, kw, P, J):
+    a = AS.all_asks(target, P=P, J=J, **kw)
     g = fig["asks"]
     rows = []
-    r = a["response"]
-    rows.append(("R", "baseline average", abs(r["avg"] - g["R"]["baseline_weekly_average"]) < 0.05))
-    for k, (x, y) in enumerate(zip(r["above"], g["R"]["campaign_weeks_above_baseline"])):
-        rows.append(("R", "week %d above" % (k + 1), abs(x - y) < 0.05))
-    rows.append(("R", "total above", abs(r["extra"] - g["R"]["campaign_weeks_total_above"]) < 0.05))
-    rows.append(("R", "response", abs(r["per_thousand"] - g["R"]["response_per_thousand_reached3"]) < 0.005))
-    for s in K.SCHED:
-        rows.append(("X", "bookings %s" % s, int(K.r(a["bookings"][s] / 10.0) * 10) ==
-                     g["X"]["expected_first_donation_bookings"][s]))
+    for t in K.REGIONS:
+        rows.append(("A", "full charge CO2e %s" % t, a["charge_co2e_t"][t] == g["charge_co2e_t"][t]))
+    for t in K.REGIONS:
+        rows.append(("A", "R404A CO2e %s" % t, a["r404a_co2e_t"][t] == g["r404a_co2e_t"][t]))
+    for t in K.REGIONS:
+        rows.append(("B", "cabinets and cold rooms %s" % t, abs(a["equipment_kg"][t] - g["equipment_kg"][t]) < 0.05))
     return rows
 
 
 if __name__ == "__main__":
     task = sys.argv[1] if len(sys.argv) > 1 else os.path.dirname(HERE)
-    crk = score(task, "golden")
-    mir = score(task, "asrun")
-    half = score(task, "golden", "per_row")
-    for name, rows in (("cracker", crk), ("mirror", mir), ("half-handled (per row)", half)):
-        for ask in ("R", "X"):
+    target = os.path.join(task, "target")
+    fig = json.load(open(os.path.join(HERE, "figures.json")))
+    P = A.packs(target)
+    J = A.pack_jobs(target, P)
+    crk = score(target, fig, CRACKER, P, J)
+    mir = crk                     # the mirror reads the asks as the cracker does; no ask reads the call
+    for name, rows in (("cracker", crk), ("mirror", mir)):
+        for ask in "AB":
             r = [x for x in rows if x[0] == ask]
             print("%s Ask %s: keeps %d of %d%s" % (name, ask, sum(x[2] for x in r), len(r),
                                                    "" if not any(x[2] for x in r) else

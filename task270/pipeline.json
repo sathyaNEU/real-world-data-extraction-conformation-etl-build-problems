@@ -1,14 +1,14 @@
 {
  "task": "task270",
  "owner": "sathay3012",
- "status": "DESIGN",
+ "status": "PAUSED",
  "domain": "general-statistics-data-science",
  "objective": "descriptive-distribution",
- "stage": 2,
- "stage_name": "design",
+ "stage": 1,
+ "stage_name": "draw",
  "updated": "2026-10-26",
  "stump": "",
- "architecture": 7,
+ "architecture": 8,
  "loops": 0,
  "precut": null,
  "leak": {
@@ -22,7 +22,7 @@
   "report": ""
  },
  "returned": [],
- "resume": "Architecture 7 drawn and registered 2026-10-26; next: the stage 2 design (default path, stump sentence, three rules, fork table, ladder, closure, asks, prompt.txt) to precut.py, then the generator. Read DESIGN_NOTE.md's Tried and rejected first.",
+ "resume": "Re-root at the architecture 8 draw in a fresh world; read DESIGN_NOTE.md's Tried and rejected first. The lesson of architecture 7: a filed estimand that says what escaped, beside a stock proxy whose calibration readings sit on every job sheet, hands a strong reader the stock-and-flow balance; the decisive step has to be one the careful reader's own sophisticated route gets wrong, not the first correction a careful reader makes.",
  "architectures": [
   {
    "architecture": 1,
@@ -50,7 +50,11 @@
   },
   {
    "architecture": 7,
-   "fate": "in design (Hallowmere Foodstores' HFC packs, the 2026 loss completed at the year's ends from receiver levels)"
+   "fate": "spent 2026-10-26 at stage 4 round 1 (target.zip aec69c19d254e18c5490f12c66c33516): both isolated scored readers netted each pack's 2026 charges against the change in its receiver stock, fitting kilograms per level point from each pack's own arrival and departure readings, and landed Lancashire (reader 1 8 of 16 ask figures, Ask B whole; reader 2 16 of 16); judge DETERMINISTIC, APPROVE, reading stump power as strong"
+  },
+  {
+   "architecture": 8,
+   "fate": "to draw"
   }
  ],
  "approved": null,

@@ -1,81 +1,72 @@
-"""Write task270's evidence pack into a folder: every data file, the schedules workbook and the documents."""
+"""Assemble the task270 evidence pack: the world, the records in their systems' layouts, the documents."""
 import os
 
-from openpyxl import Workbook
-from openpyxl.styles import Alignment, Font, PatternFill
-from openpyxl.utils import get_column_letter
+import numpy as np
+import openpyxl
+from openpyxl.styles import Alignment, Font
 
 import common as K
-import docs as DC
-import records as R
-import side2025 as S25
-import world as WD
+import docs as D
+import records as RC
+import world as W
 
 
-def write_schedules(path, rc):
-    wb = Workbook()
+def register_xlsx(path, packs, eq):
+    wb = openpyxl.Workbook()
     ws = wb.active
-    ws.title = "Resumo"
-    head = Font(bold=True, color="FFFFFF")
-    fill = PatternFill("solid", fgColor="1D3557")
-    ws.append(["Gota Viva, campanha de televisão para jovens dadores, abril de 2027"])
-    ws["A1"].font = Font(bold=True, size=12)
-    ws.append(["%s, rascunho para decisão da Comissão Executiva, %s" % (K.AGENCY, K.SCHEDULES_DATE.strftime("%d/%m/%Y"))])
-    ws.append([])
-    ws.append(["Esquema", "Descrição", "Spots", "Custo (EUR)"])
-    for c in ws[4]:
-        c.font, c.fill = head, fill
-    for s in K.SCHED:
-        lines = rc.schedule_lines(s)
-        ws.append([s, K.SCHED_NAME[s], len(lines), sum(x[-1] for x in lines)])
-    ws.append([])
-    ws.append(["Preços das tabelas do 2.º trimestre de 2027, filme de 30 segundos, sem descontos de volume."])
-    for col, wdt in zip("ABCD", (10, 62, 9, 14)):
-        ws.column_dimensions[col].width = wdt
-    for row in ws.iter_rows(min_row=5, max_row=7):
-        row[3].number_format = "#,##0"
-    for s in K.SCHED:
-        sh = wb.create_sheet("Esquema %s" % s)
-        sh.append(["Semana", "Data", "Dia", "Canal", "Programa ou janela", "Intervalo no programa", "Colocação",
-                   "Duração (s)", "Preço (EUR)"])
-        for c in sh[1]:
-            c.font, c.fill = head, fill
-            c.alignment = Alignment(wrap_text=True, vertical="top")
-        for line in rc.schedule_lines(s):
-            sh.append(line)
-        n = sh.max_row
-        sh.append(["Total", None, None, None, None, None, None, None, "=SUM(I2:I%d)" % n])
-        sh.cell(row=n + 1, column=1).font = Font(bold=True)
-        for col, wdt in enumerate((8, 11, 14, 10, 34, 11, 24, 10, 12), start=1):
-            sh.column_dimensions[get_column_letter(col)].width = wdt
-        for row in sh.iter_rows(min_row=2, max_row=n + 1):
-            row[8].number_format = "#,##0"
-        sh.freeze_panes = "A2"
+    ws.title = "Packs"
+    ws.append(["Pack", "Store", "Store name", "Refrigerant", "Full charge (kg)", "In service from", "Decommissioned",
+               "Leak detection"])
+    for r in packs:
+        ws.append([None if v == "" else v for v in r])
+    for c in ws[1]:
+        c.font = Font(bold=True)
+    for col, wd in zip("ABCDEFGH", (11, 7, 26, 12, 15, 15, 15, 14)):
+        ws.column_dimensions[col].width = wd
+    ws.freeze_panes = "A2"
+    w2 = wb.create_sheet("Cabinets and cold rooms")
+    w2.append(["Asset", "Store", "Type", "Refrigerant", "Charge (kg)", "Installed"])
+    for r in eq:
+        w2.append(r)
+    for c in w2[1]:
+        c.font = Font(bold=True)
+    for col, wd in zip("ABCDEF", (9, 7, 17, 12, 12, 10)):
+        w2.column_dimensions[col].width = wd
+    w2.freeze_panes = "A2"
+    w3 = wb.create_sheet("Notes")
+    w3["A1"] = "F-gas register kept by the property team; charges as commissioned or as last certified by Kelbray."
+    w3["A1"].alignment = Alignment(wrap_text=True)
+    w3.column_dimensions["A"].width = 90
     wb.save(path)
 
 
-def build_pack(out, seed=K.SEED, world=None):
+def kpi_stats(w):
+    jb = w["jobs"]
+    out = {}
+    rng = np.random.default_rng([K.SEED, 59])
+    for reg in K.REGIONS:
+        sub = jb[(jb.pack.map(w["packs"].region) == reg) & (jb.date.map(lambda d: d.year) == K.YEAR)]
+        out[reg] = dict(routine=int((sub.type == "ROUTINE").sum()), breakdown=int((sub.type == "BREAKDOWN").sum()),
+                        hours=int(rng.integers(5, 14)), fix=int(rng.integers(78, 93)))
+    return out
+
+
+def build_pack(out, seed=K.SEED):
     os.makedirs(out, exist_ok=True)
-    w = world or WD.World(seed)
-    rc = R.Records(w)
-    p = lambda k: os.path.join(out, K.FILES[k])
-    n = {}
-    for key, fn in (("viewing", rc.viewing_rows), ("panel", rc.panel_rows), ("asrun", rc.asrun_rows),
-                    ("bookings", rc.booking_rows),
-                    ("epg", rc.epg_rows), ("channels", rc.channel_rows), ("universe", rc.universe_rows),
-                    ("ratings", rc.ratings_rows), ("digital", rc.digital_rows), ("donors", rc.donor_rows)):
-        head, rows = fn()
-        R.write_csv(p(key), head, rows)
-        n[key] = len(rows)
-    write_schedules(p("schedules"), rc)
-    DC.write_brief(p("brief"))
-    DC.write_method(p("method"), len(w.age), len(set(w.hh.tolist())))
-    DC.write_rates(p("rates"), w.rate, w.ros_rate, w.prog_window)
-    DC.write_dictionary(p("dictionary"))
-    bk = S25.Bookings(seed)
-    head, rows = bk.table()
-    R.write_csv(p("portal"), head, rows)
-    n["portal"] = len(rows)
-    DC.write_notes_2025(p("portal_notes"))
-    DC.write_report_2025(p("report2025"))
-    return w, rc, n
+    w = W.extras(W.simulate(seed), seed)
+    rc = RC.Records(w, seed)
+    p = lambda k: os.path.join(out, K.FILES[k])   # noqa: E731
+    rc.stores(p("stores"))
+    packs, eq = rc.register_rows()
+    register_xlsx(p("register"), packs, eq)
+    rc.counts["register"] = len(packs) + len(eq)
+    rc.jobs(p("jobs"), p("cylinders"))
+    rc.levels(p("levels"), p("tags"))
+    rc.power(p("power"))
+    D.strategy(p("strategy"))
+    D.spec(p("spec"))
+    D.bureau(p("bureau"))
+    D.kpi(p("kpi"), kpi_stats(w))
+    D.dictionary(p("dictionary"))
+    D.contents(p("contents"), rc.counts)
+    return w, rc.counts

@@ -1,5 +1,4 @@
-"""submission.md from generator/figures.json: the five blocks, every figure emitted from the generator's own
-numbers."""
+"""submission.md from generator/figures.json: every figure the write-up states is emitted from the figures file."""
 import json
 import os
 import sys
@@ -9,94 +8,90 @@ sys.path.insert(0, HERE)
 import common as K   # noqa: E402
 
 
-def f1(x):
-    return "%.1f" % x
+def n(x):
+    return "{:,}".format(x)
 
 
-def n0(x):
-    return "{:,}".format(int(x))
-
-
-def text(fig):
-    c, cp = fig["call"], fig["components"]
-    R, X = fig["asks"]["R"], fig["asks"]["X"]["expected_first_donation_bookings"]
-    r3, ctx = cp["reach3_pct"], fig["context"]
-    pick, run = c["schedule"], c["runner_up"]
-    third = [s for s in K.SCHED if s not in (pick, run)][0]
-    above = R["campaign_weeks_above_baseline"]
-    out = ["## Tags", "",
-           "**Domain:** Marketing & Consumer Research (media reach, frequency and audience measurement).",
-           "**Analytical objective:** Descriptive & Distribution Analysis.", ""]
-    out += ["## 1. Final Recommendation", "",
-            "**Gota Viva should buy Schedule %s, first place in young prime time, for April 2027.**" % pick,
-            "It puts the film three or more times before %s per cent of adults aged 18 to 34, %s points ahead of "
-            "Schedule %s at %s per cent. Not Schedule %s: its prime-time rotation spots are placed by the channels, "
-            "and of the %s rotation bookings Vértice, Litoral and Pulsar+ sold for prime time in the reference weeks, "
-            "%s (%s per cent) aired in daytime breaks, so the rotation places prime time shows overstate it. Not "
-            "Schedule %s, whose last places in sport and late night reach %s per cent." % (
-                f1(r3[pick]), f1(c["lead_points"]), run, f1(r3[run]), run, n0(cp["prime_rotation_bookings"]),
-                n0(cp["prime_rotation_bookings_aired_outside_prime"]), f1(cp["share_aired_outside_prime_pct"]), third,
-                f1(r3[third])), ""]
-    out += ["## 2. Critical Components", "",
-            "1. Of the **%s** prime-time rotation bookings on Vértice, Litoral and Pulsar+ in the reference weeks, "
-            "**%s** (**%s** per cent) aired outside prime time." % (
-                n0(cp["prime_rotation_bookings"]), n0(cp["prime_rotation_bookings_aired_outside_prime"]),
-                f1(cp["share_aired_outside_prime_pct"])),
-            "2. Schedule A reaches **%s** per cent of adults 18 to 34 three or more times." % f1(r3["A"]),
-            "3. Schedule B reaches **%s** per cent three or more times." % f1(r3["B"]),
-            "4. Schedule C reaches **%s** per cent three or more times." % f1(r3["C"]), ""]
-    out += ["## 3. Step-by-Step Solution", "",
-            "1. Mapped each spot line of esquemas_campanha_2027.xlsx to the same weekday of reference week n, 2 to 29 "
-            "March 2026 (briefing_campanha_jovens_2027.pdf, clause 3.2), Pulsar+ as Pulsar through canais_codigos.csv.",
-            "2. Kept the live statements of panel members in audimetria_visionamentos_2026-03.csv on the local clock "
-            "(UTC, one hour added from the clock change of 29 March), and the members of 18 to 34 with their 28-day "
-            "weight from audimetria_individuos_2026-03.csv (clause 3.3).",
-            "3. Placed each first-place and last-place spot at the first or last place of its break in "
-            "emissao_publicitaria_2026-03.csv (dia_tv, programa, intervalo_no_programa), with the start and length "
-            "that place had (clause 3.3).",
-            "4. Joined reservas_publicidade_2026-03.csv to the as-run log on id_reserva: %s of the %s rotation "
-            "bookings sold for prime time on Vértice, Litoral and Pulsar+ aired outside prime time, in daytime "
-            "breaks." % (n0(cp["prime_rotation_bookings_aired_outside_prime"]), n0(cp["prime_rotation_bookings"])),
-            "5. Read each rotation spot at every place where that reference day's prime-time rotation bookings on its "
-            "channel aired, each with the share of those bookings that aired there (clause 3.4).",
-            "6. Counted a member as seeing a place watched live for at least half its seconds and took each member's "
-            "chance of seeing the film three or more times across independent spots (clause 3.5), weighted over the 18 "
-            "to 34 universe: A %s, B %s and C %s per cent." % (f1(r3["A"]), f1(r3["B"]), f1(r3["C"])),
-            "7. Applied the response rule in notas_extracao_portal_dador.txt to marcacoes_portal_dador_2025.csv with a "
-            "person as their identity document (documento_hash) and a booking of a first donation as one made before "
-            "that person's first donation, the earliest data_primeira_dadiva on any of their donor numbers, since the "
-            "extract carries each donor's record as it stood on 2 July 2025 (tipo_dadiva and id_dador included) and "
-            "people who registered again after the portal went live on 17 March 2025 hold two numbers: %s a week "
-            "before the campaign, its four weeks %s, %s, %s and %s above that (%s in all), %s per thousand of the %s "
-            "thousand relatorio_campanha_jovens_2025.pdf reports reached three or more times." % (f1(R["baseline_weekly_average"]), f1(above[0]), f1(above[1]),
-                                                      f1(above[2]), f1(above[3]), f1(R["campaign_weeks_total_above"]),
-                                                      "%.2f" % R["response_per_thousand_reached3"],
-                                                      f1(ctx["reached3_2025_thousands"])),
-            "8. Bought Schedule %s, %s points ahead of %s; at that response it brings about %s first-donation "
-            "bookings, against %s for %s and %s for %s." % (pick, f1(c["lead_points"]), run, n0(X[pick]), n0(X[run]),
-                                                           run, n0(X[third]), third), ""]
-    out += ["## 4. Deliverable Answers", "",
-            "### plano_tv_jovens_2027.xlsx", "",
-            "1. Schedule to buy: %s; runner-up %s; lead **%s** points of the 18 to 34 universe." % (
-                pick, run, f1(c["lead_points"])),
-            "2. Reached three or more times: A **%s**, B **%s**, C **%s** per cent." % (f1(r3["A"]), f1(r3["B"]),
-                                                                                    f1(r3["C"])),
-            "3. April 2025 campaign: average weekly first-donation bookings by adults 18 to 34 in the four weeks before "
-            "it **%s**; its four weeks minus that average **%s**, **%s**, **%s** and **%s**, **%s** in all; response "
-            "**%s** per thousand adults it reached three or more times." % (
-                f1(R["baseline_weekly_average"]), f1(above[0]), f1(above[1]), f1(above[2]), f1(above[3]),
-                f1(R["campaign_weeks_total_above"]), "%.2f" % R["response_per_thousand_reached3"]),
-            "4. Expected first-donation bookings at that response: A **%s**, B **%s**, C **%s**." % (
-                n0(X["A"]), n0(X["B"]), n0(X["C"])), "",
-            "### recomendacao_esquema_tv_2027.pptx", "",
-            "1. Two column charts on slide 2, each schedule's share reached three or more times beside its expected "
-            "first-donation bookings, Schedule %s's columns in red as the one to buy." % pick, ""]
-    return "\n".join(out)
+def write(task):
+    f = json.load(open(os.path.join(HERE, "figures.json")))
+    c, co, a, cx = f["call"], f["components"], f["asks"], f["context"]
+    sh, pk, tp = co["loss_share_pct"], co["packs_in_scope"], cx["topup_share_pct"]
+    nm = K.REGION_NAME
+    order = cx["order"]
+    pick, run = c["region"], c["runner_up"]
+    by_share = "; ".join("%s %d%%" % (nm[g], sh[g]) for g in order)
+    lines = [
+        "## Tags",
+        "",
+        "> **Domain:** General Statistics & Data Science (missing data, censoring and measurement error).",
+        "> **Analytical objective:** Descriptive & Distribution Analysis.",
+        "",
+        "## 1. Final Recommendation",
+        "",
+        "**Start the 2027 pack programme in %s.** Its HFC packs lost %d%% of their full charge in 2026, %d points "
+        "more than %s's %d%%. Not the North East, whose packs were charged %d%% of their charge in 2026 but entered "
+        "the year short of refrigerant they had lost in 2025, so they lost %d%%; not %s on the charges alone (%d%%), "
+        "which leave out the refrigerant its packs had lost by the end of 2026 and not yet had replaced." % (
+            nm[pick], sh[pick], c["gap_points"], nm[run], sh[run], tp["NE"], sh["NE"], nm[pick], tp[pick]),
+        "",
+        "## 2. Critical Components",
+        "",
+        "1. 2026 refrigerant lost as a share of the HFC packs' full charge: %s" % by_share,
+        "2. HFC packs in service throughout 2026: %s" % "; ".join("%s %d" % (nm[g], pk[g]) for g in K.REGIONS),
+        "3. Refrigerant charged less recovered in 2026, as a share of full charge: %s" % "; ".join(
+            "%s %d%%" % (nm[g], tp[g]) for g in K.REGIONS),
+        "",
+        "## 3. Step-by-Step Solution",
+        "",
+        "1. Took the HFC packs in service throughout 2026 from the Packs sheet of fgas_register_2026.xlsx (Refrigerant "
+        "Strategy 2.3), each to its region by its store in hallowmere_stores.csv: %d packs." % cx["packs_total"],
+        "2. Summed each pack's 2026 refrigerant charged less recovered on its routine and breakdown jobs in "
+        "kelbray_job_sheets_2024_2026.csv (the store number padded to three digits, trade names read as R448A and "
+        "R449A).",
+        "3. Measured each pack's own receiver response from its 2024 to 2026 job sheets: the median of (departure "
+        "level less arrival level) over (kilograms charged less recovered) on its charges over 0.5 kg, and its full "
+        "level as the median departure level.",
+        "4. Read each pack's shortfall on 31 December 2025 and on 31 December 2026 from "
+        "tarnley_receiver_levels_2024_2026.csv through tarnley_pack_tags.csv: full level less the day's mean level, "
+        "over the response, and not below zero.",
+        "5. Each pack's 2026 loss is its net charge plus its shortfall at the end of 2026 less its shortfall at the "
+        "end of 2025; each region's losses added up over its full charges added up (Strategy section 3): %s." %
+        by_share,
+        "6. Full charge in tonnes of CO2 equivalent at the strategy's GWP table, each pack at the refrigerant on its "
+        "latest job sheet, which for packs retrofitted by the gas supplier is the new blend while the register still "
+        "lists R404A: %s; on R404A %s." % (
+            "; ".join("%s %s" % (nm[g], n(a["charge_co2e_t"][g])) for g in K.REGIONS),
+            "; ".join("%s %s" % (nm[g], n(a["r404a_co2e_t"][g])) for g in K.REGIONS)),
+        "7. Cabinet and cold room charges: each 2026 job on an asset of the register's Cabinets and cold rooms sheet "
+        "counted once at the weight its cylinder lost in kelbray_cylinder_log_2026.csv, since some handheld jobs "
+        "carry the job's total on every asset line: %s kg." % "; ".join(
+            "%s %.1f" % (nm[g], a["equipment_kg"][g]) for g in K.REGIONS),
+        "8. The programme starts in %s, the region whose packs lost the largest share of their charge in 2026." %
+        nm[pick],
+        "",
+        "## 4. Deliverable Answers",
+        "",
+        "### %s" % K.BOOK,
+        "",
+        "1. First region of the 2027 programme: %s" % nm[pick],
+        "2. 2026 refrigerant loss as a share of full charge: %s" % "; ".join("%s %d%%" % (nm[g], sh[g])
+                                                                              for g in K.REGIONS),
+        "3. HFC packs' full charge in tonnes of CO2 equivalent: %s" % "; ".join(
+            "%s %s" % (nm[g], n(a["charge_co2e_t"][g])) for g in K.REGIONS),
+        "4. Of which on R404A, in tonnes of CO2 equivalent: %s" % "; ".join(
+            "%s %s" % (nm[g], n(a["r404a_co2e_t"][g])) for g in K.REGIONS),
+        "5. Refrigerant charged in 2026 into integral cabinets and cold rooms, kilograms: %s" % "; ".join(
+            "%s %.1f" % (nm[g], a["equipment_kg"][g]) for g in K.REGIONS),
+        "",
+        "### %s" % K.CHART,
+        "",
+        "1. Horizontal bars of the four regions' 2026 loss shares, %s (%d%%) highlighted, %s" % (
+            nm[pick], sh[pick], ", ".join("%s %d%%" % (nm[g], sh[g]) for g in order[1:])),
+        "",
+    ]
+    with open(os.path.join(task, "submission.md"), "w") as fh:
+        fh.write("\n".join(lines))
 
 
 if __name__ == "__main__":
-    fig = json.load(open(os.path.join(HERE, "figures.json")))
-    path = os.path.join(os.path.dirname(HERE), "submission.md")
-    with open(path, "w", encoding="utf-8") as f:
-        f.write(text(fig))
-    print("wrote", path)
+    write(sys.argv[1] if len(sys.argv) > 1 else os.path.dirname(HERE))

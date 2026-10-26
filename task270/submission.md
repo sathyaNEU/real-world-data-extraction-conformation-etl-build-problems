@@ -1,40 +1,39 @@
 ## Tags
 
-**Domain:** Marketing & Consumer Research (media reach, frequency and audience measurement).
-**Analytical objective:** Descriptive & Distribution Analysis.
+> **Domain:** General Statistics & Data Science (missing data, censoring and measurement error).
+> **Analytical objective:** Descriptive & Distribution Analysis.
 
 ## 1. Final Recommendation
 
-**Gota Viva should buy Schedule A, first place in young prime time, for April 2027.**
-It puts the film three or more times before 26.6 per cent of adults aged 18 to 34, 5.7 points ahead of Schedule B at 20.9 per cent. Not Schedule B: its prime-time rotation spots are placed by the channels, and of the 4,943 rotation bookings Vértice, Litoral and Pulsar+ sold for prime time in the reference weeks, 1,854 (37.5 per cent) aired in daytime breaks, so the rotation places prime time shows overstate it. Not Schedule C, whose last places in sport and late night reach 16.9 per cent.
+**Start the 2027 pack programme in Lancashire.** Its HFC packs lost 16% of their full charge in 2026, 3 points more than Yorkshire's 13%. Not the North East, whose packs were charged 16% of their charge in 2026 but entered the year short of refrigerant they had lost in 2025, so they lost 13%; not Lancashire on the charges alone (9%), which leave out the refrigerant its packs had lost by the end of 2026 and not yet had replaced.
 
 ## 2. Critical Components
 
-1. Of the **4,943** prime-time rotation bookings on Vértice, Litoral and Pulsar+ in the reference weeks, **1,854** (**37.5** per cent) aired outside prime time.
-2. Schedule A reaches **26.6** per cent of adults 18 to 34 three or more times.
-3. Schedule B reaches **20.9** per cent three or more times.
-4. Schedule C reaches **16.9** per cent three or more times.
+1. 2026 refrigerant lost as a share of the HFC packs' full charge: Lancashire 16%; Yorkshire 13%; North East 13%; Cumbria 11%
+2. HFC packs in service throughout 2026: Yorkshire 56; Lancashire 48; North East 43; Cumbria 29
+3. Refrigerant charged less recovered in 2026, as a share of full charge: Yorkshire 9%; Lancashire 9%; North East 16%; Cumbria 10%
 
 ## 3. Step-by-Step Solution
 
-1. Mapped each spot line of esquemas_campanha_2027.xlsx to the same weekday of reference week n, 2 to 29 March 2026 (briefing_campanha_jovens_2027.pdf, clause 3.2), Pulsar+ as Pulsar through canais_codigos.csv.
-2. Kept the live statements of panel members in audimetria_visionamentos_2026-03.csv on the local clock (UTC, one hour added from the clock change of 29 March), and the members of 18 to 34 with their 28-day weight from audimetria_individuos_2026-03.csv (clause 3.3).
-3. Placed each first-place and last-place spot at the first or last place of its break in emissao_publicitaria_2026-03.csv (dia_tv, programa, intervalo_no_programa), with the start and length that place had (clause 3.3).
-4. Joined reservas_publicidade_2026-03.csv to the as-run log on id_reserva: 1,854 of the 4,943 rotation bookings sold for prime time on Vértice, Litoral and Pulsar+ aired outside prime time, in daytime breaks.
-5. Read each rotation spot at every place where that reference day's prime-time rotation bookings on its channel aired, each with the share of those bookings that aired there (clause 3.4).
-6. Counted a member as seeing a place watched live for at least half its seconds and took each member's chance of seeing the film three or more times across independent spots (clause 3.5), weighted over the 18 to 34 universe: A 26.6, B 20.9 and C 16.9 per cent.
-7. Applied the response rule in notas_extracao_portal_dador.txt to marcacoes_portal_dador_2025.csv with a person as their identity document (documento_hash) and a booking of a first donation as one made before that person's first donation, the earliest data_primeira_dadiva on any of their donor numbers, since the extract carries each donor's record as it stood on 2 July 2025 (tipo_dadiva and id_dador included) and people who registered again after the portal went live on 17 March 2025 hold two numbers: 136.0 a week before the campaign, its four weeks 85.0, 118.0, 99.0 and 144.0 above that (446.0 in all), 0.82 per thousand of the 543.7 thousand relatorio_campanha_jovens_2025.pdf reports reached three or more times.
-8. Bought Schedule A, 5.7 points ahead of B; at that response it brings about 460 first-donation bookings, against 360 for B and 290 for C.
+1. Took the HFC packs in service throughout 2026 from the Packs sheet of fgas_register_2026.xlsx (Refrigerant Strategy 2.3), each to its region by its store in hallowmere_stores.csv: 176 packs.
+2. Summed each pack's 2026 refrigerant charged less recovered on its routine and breakdown jobs in kelbray_job_sheets_2024_2026.csv (the store number padded to three digits, trade names read as R448A and R449A).
+3. Measured each pack's own receiver response from its 2024 to 2026 job sheets: the median of (departure level less arrival level) over (kilograms charged less recovered) on its charges over 0.5 kg, and its full level as the median departure level.
+4. Read each pack's shortfall on 31 December 2025 and on 31 December 2026 from tarnley_receiver_levels_2024_2026.csv through tarnley_pack_tags.csv: full level less the day's mean level, over the response, and not below zero.
+5. Each pack's 2026 loss is its net charge plus its shortfall at the end of 2026 less its shortfall at the end of 2025; each region's losses added up over its full charges added up (Strategy section 3): Lancashire 16%; Yorkshire 13%; North East 13%; Cumbria 11%.
+6. Full charge in tonnes of CO2 equivalent at the strategy's GWP table, each pack at the refrigerant on its latest job sheet, which for packs retrofitted by the gas supplier is the new blend while the register still lists R404A: Yorkshire 14,087; Lancashire 13,056; North East 13,054; Cumbria 8,123; on R404A Yorkshire 2,506; Lancashire 3,744; North East 5,710; Cumbria 2,057.
+7. Cabinet and cold room charges: each 2026 job on an asset of the register's Cabinets and cold rooms sheet counted once at the weight its cylinder lost in kelbray_cylinder_log_2026.csv, since some handheld jobs carry the job's total on every asset line: Yorkshire 38.9; Lancashire 28.7; North East 23.5; Cumbria 36.6 kg.
+8. The programme starts in Lancashire, the region whose packs lost the largest share of their charge in 2026.
 
 ## 4. Deliverable Answers
 
-### plano_tv_jovens_2027.xlsx
+### hfc_pack_replacements_2027.xlsx
 
-1. Schedule to buy: A; runner-up B; lead **5.7** points of the 18 to 34 universe.
-2. Reached three or more times: A **26.6**, B **20.9**, C **16.9** per cent.
-3. April 2025 campaign: average weekly first-donation bookings by adults 18 to 34 in the four weeks before it **136.0**; its four weeks minus that average **85.0**, **118.0**, **99.0** and **144.0**, **446.0** in all; response **0.82** per thousand adults it reached three or more times.
-4. Expected first-donation bookings at that response: A **460**, B **360**, C **290**.
+1. First region of the 2027 programme: Lancashire
+2. 2026 refrigerant loss as a share of full charge: Yorkshire 13%; Lancashire 16%; North East 13%; Cumbria 11%
+3. HFC packs' full charge in tonnes of CO2 equivalent: Yorkshire 14,087; Lancashire 13,056; North East 13,054; Cumbria 8,123
+4. Of which on R404A, in tonnes of CO2 equivalent: Yorkshire 2,506; Lancashire 3,744; North East 5,710; Cumbria 2,057
+5. Refrigerant charged in 2026 into integral cabinets and cold rooms, kilograms: Yorkshire 38.9; Lancashire 28.7; North East 23.5; Cumbria 36.6
 
-### recomendacao_esquema_tv_2027.pptx
+### pack_leakage_2026.png
 
-1. Two column charts on slide 2, each schedule's share reached three or more times beside its expected first-donation bookings, Schedule A's columns in red as the one to buy.
+1. Horizontal bars of the four regions' 2026 loss shares, Lancashire (16%) highlighted, Yorkshire 13%, North East 13%, Cumbria 11%

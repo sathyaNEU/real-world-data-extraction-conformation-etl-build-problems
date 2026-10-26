@@ -1,19 +1,143 @@
 # task270 design note
 
-Architecture 7, drawn 2026-10-26 in a fresh world (wave 4, Descriptive lane, sathay3012), after architecture 6 was spent at stage 4 the same day. Architectures 1 to 6 and every screen under the tried-and-rejected section stay dead. Hallowmere Foodstores, a regional supermarket chain of 72 stores across Yorkshire, Lancashire, the North East and Cumbria, cools its cases with central refrigeration packs, most still charged with HFC refrigerants. Its Refrigerant Strategy replaces, in the 2027 programme, every HFC pack that lost more than 10 per cent of its full charge in 2026; the list is fixed when the 2026 records close. Kelbray Refrigeration services every pack and its engineers weigh each charge into a pack and read the receiver level on arrival and departure; Coldwatch Monitoring, the chain's remote monitoring bureau, logs each pack's receiver level every day.
+Architecture 7, drawn 2026-10-26 in a fresh world (wave 4, Descriptive lane, sathay3012), after architecture 6 was spent at stage 4 the same day. Architectures 1 to 6 and every screen under the tried-and-rejected section stay dead. Hallowmere Foodstores, a regional supermarket chain of 72 stores across Yorkshire, Lancashire, the North East and Cumbria, cools its cases with central refrigeration packs, most still charged with HFC refrigerants. Its Refrigerant Strategy replaces the packs with transcritical CO2 packs region by region, one region a year, and starts the programme in the region whose HFC packs lost, together, the largest share of their full charge in the year; for the 2027 programme the year is 2026. Kelbray Refrigeration services every pack and its engineers weigh each charge into a pack and read the receiver level on arrival and departure; Tarnley Monitoring, the chain's remote monitoring bureau, logs each pack's receiver level every day.
 
 ## Draw
 
-1. Card: `.claude/skills/fingerprint/cards/task270.json`, architecture v7, `guard.py check` WARN only (the png and xlsx deliverable set repeats task121 v6 and task137), five older builds sharing the time gap, G16 and the decision type or Gate G differentiated on the card (task148 v2, task241, task479 v6, task254 v2, task501 v2); architectures v1 to v6 in its lineage with their fates. Gap time, then population; pattern none with G16 (method selection: the material balance over the top-up count) decisive and G13 (the window the losses fall in) as the frame; Gate G `method_or_model_selection`; strategy `maturity_censoring` (the count is not finished: the year's losses arrive in the record only as they are made good). Redrawn at the draw: emissions-inventory (the honest task type) is banned while task487 sits in the window, so the cell is general statistics' measurement-error task type; the context artifact is the register (the chain's F-gas register of packs and charges), operations_log being banned by task487; the forcing event is the 2026 period close, purchase_order_or_contract being banned by task137.
+1. Card: `.claude/skills/fingerprint/cards/task270.json`, architecture v7, `guard.py check` WARN only at the draw (the png and xlsx deliverable set repeats task121 v6 and task137), and WARN only on the built card at stage 3 (the decision moved at stage 2 from a set over a line to the region the programme starts in, `pick_one_of_n`: the question form which and the decision type repeat task304 and task271 v4, the Gate G label task271 v4, whose architecture is spent; the png and xlsx set repeats task137, the form a property team's programme workbook and one chart take), five older builds sharing the time gap, G16 and the decision type or Gate G differentiated on the card (task148 v2, task241, task479 v6, task254 v2, task501 v2); architectures v1 to v6 in its lineage with their fates. Gap time, then population; pattern none with G16 (method selection: the material balance over the top-up count) decisive and G13 (the window the losses fall in) as the frame; Gate G `method_or_model_selection`; strategy `maturity_censoring` (the count is not finished: the year's losses arrive in the record only as they are made good). Redrawn at the draw: emissions-inventory (the honest task type) is banned while task487 sits in the window, so the cell is general statistics' measurement-error task type; the context artifact is the register (the chain's F-gas register of packs and charges), operations_log being banned by task487; the forcing event is the 2026 period close, purchase_order_or_contract being banned by task137.
 2. Pairing: General Statistics & Data Science / `missing-data-censoring-measurement-error` / Descriptive & Distribution Analysis. The task type's own object decides the call: a quantity recorded only as it is made good, completed at both ends of the window from a continuous proxy (the receiver level) whose scale is calibrated within each unit against direct measurements of the same quantity (the weighed charges with the levels read before and after).
-3. Niche: a supermarket chain fixing which HFC packs it replaces in 2027, those that lost more than 10 per cent of their full charge in 2026, from a contractor's job sheets and a monitoring bureau's daily receiver levels.
-4. Objective: Descriptive & Distribution Analysis. The quantity is each pack's share of its charge lost in 2026 and the call is the set over a line (how a metric is distributed across the fleet); the call faces forward (the 2027 programme), nothing is predicted, so the tag is not Forecasting, and the object is the packs' losses, not the health of the records, so it is not Data Quality Monitoring.
-5. Shape 14 (cuts of a distribution per segment): the packs over the line, each with its 2026 loss rate, the count over the line by region, and the asks (stage 2).
-6. Decision type `designation_set`; answer unit set_of_items; question form which. Forum executive_team (Hallowmere's executive committee); forcing event period_close (the 2026 F-gas records close at the year end and the list is fixed from them); organisation retailer_or_ecommerce; stakeholder Hallowmere's head of property and sustainability (role family programme_officer).
-7. Deliverables: `hfc_pack_replacements_2027.xlsx` (the packs to replace with each one's 2026 loss and the asks) and `pack_leakage_2026.png` (every pack's 2026 loss against the 10 per cent line).
+3. Niche: a supermarket chain choosing the region its 2027 HFC pack replacement programme starts in, the region whose packs lost the largest share of their full charge in 2026, from a contractor's job sheets and a monitoring bureau's daily receiver levels.
+4. Objective: Descriptive & Distribution Analysis. The quantity is the share of their full charge each region's packs lost in 2026 (how the fleet's losses are distributed across its regions); the call faces forward (the 2027 programme), nothing is predicted, so the tag is not Forecasting, and the object is the packs' losses, not the health of the records, so it is not Data Quality Monitoring.
+5. Shape 14 (cuts of a distribution per segment): four regions, each with its 2026 loss share, its packs' full charge in CO2 equivalent and the part on R404A, and its cabinet and cold room charges (16 figures), the call, runner-up and gap, a chart of the four shares with the pick highlighted, two files.
+6. Decision type `pick_one_of_n`; answer unit named_option; question form which. Forum executive_team (Hallowmere's executive committee); forcing event period_close (the 2026 F-gas records close at the year end and the list is fixed from them); organisation retailer_or_ecommerce; stakeholder Hallowmere's head of property and sustainability (role family programme_officer).
+7. Deliverables: `hfc_pack_replacements_2027.xlsx` (the first region, each region's 2026 loss share and the asks) and `pack_leakage_2026.png` (the four regions' loss shares, the first region highlighted).
 8. People, drawn with `guard.py names --geo GB --seed 270`: Jayne Gallagher (Hallowmere, head of property and sustainability), Denis Webster (Kelbray Refrigeration, contracts manager), Steven Ashton (Hallowmere, chief executive).
-9. Data-native sentence (target, to be measured on the build): every pack's refrigerant reaches the record only when an engineer weighs a charge into it, after a low-level alarm or at a routine visit weeks or months after the loss, so a pack short of charge on 1 January 2026 is topped up in 2026 for a 2025 loss and a pack short on 31 December 2026 carries a 2026 loss no 2026 job sheet shows; the bureau's receiver level records how short each pack stood at both ends, in per cent of the receiver, and each pack's own rise in level per kilogram charged, read off its job sheets, turns that into kilograms.
-10. Draw-time measurement (prototype, five worlds of about 145 packs): the top-up count and the completed balance designate different sets in every world (3 to 13 packs apart, both ways); the balance read through each pack's own response tracks the true loss to within 1 to 2 points of charge at the 95th percentile and its variants (median against least-squares response, mean against median full level) agree on the set; the level read through the register's receiver volume parts from the golden on 0 to 5 packs, so its separation is to be widened at the build.
+9. Data-native sentence (measured on the build): every pack's refrigerant reaches the record only when an engineer weighs a charge into it, at a routine round or after a low-level alarm, weeks or months after the loss, so a pack short of charge at the end of 2025 is topped up in 2026 for a 2025 loss and a pack short at the end of 2026 carries a 2026 loss no 2026 job sheet shows; the regional teams' rounds fall differently around the year's ends (the North East's second 2025 round ran in January 2026, Lancashire's second 2026 round never ran), the bureau's receiver level records how short each pack stood at both ends, in per cent of the receiver, and each pack's own rise in level per kilogram charged, read off its job sheets, turns that into kilograms.
+10. Draw-time measurement (prototype, five worlds of about 145 packs): the top-up count and the completed balance designated different sets of packs over a 10 per cent line in every world (3 to 13 packs apart, both ways), but the set call forked at the line on the estimator's variants and the per-pack figures were too many to grade, so stage 2 moved the call to the region the programme starts in, where every variant (median against least-squares or mean response, mean against median full level, 31 December against 1 January) gives the same whole per cents (`checks.py` R2 and SF5).
+
+## Default path
+
+1. Take the HFC packs in service throughout 2026 from the F-gas register (Strategy 2.3): 176 packs, Yorkshire 56, Lancashire 48, North East 43, Cumbria 29.
+2. Sum each pack's 2026 refrigerant charged less recovered on Kelbray's routine and breakdown job sheets (the F-gas industry's top-up count of leakage), set each region's sum against its packs' full charges: Yorkshire 9%, Lancashire 9%, North East 16%, Cumbria 10%.
+3. Start the programme in the region with the largest share.
+
+Ends on: the North East (16 per cent of its packs' charge charged in 2026)
+
+Golden: Lancashire (16 per cent of its packs' charge lost in 2026)
+
+## Stump sentence
+
+The default path counts the refrigerant charged into each pack in 2026 as the refrigerant it lost in 2026 and ends on the North East (16 per cent), because a pack's losses reach the record only when an engineer makes them good: the North East's second 2025 round ran in January 2026, so its packs entered 2026 short of refrigerant lost in 2025 and its 2026 charges replace it, while Lancashire's second 2026 round never ran and Yorkshire's ran in June, so their packs ended 2026 short of refrigerant lost in 2026 that no 2026 job sheet shows; Tarnley's receiver level records how short each pack stood at both ends of the year, and only each pack's own rise in level per kilogram charged, read off its job sheets, turns that into kilograms, which puts Lancashire first (16 per cent) ahead of Yorkshire (13), the North East (13) and Cumbria (11).
+
+## Three rules
+
+Task type: missing-data-censoring-measurement-error (General Statistics & Data Science), which serves Descriptive & Distribution Analysis in the taxonomy.
+Domain test: the deciding quantity is each pack's refrigerant lost in 2026, which no record holds at the year's two ends: there it sits only in a proxy, the receiver level, whose scale has to be calibrated against direct measurements of the same quantity in the same unit (the weighed charges with the levels read before and after them), the measurement-error field's calibration of a proxy against a validation sample, combined with the completion of a count recorded only as it is made good.
+Swap: "which ward's patients lost the most weight in 2026, from the meals the kitchen replaced" reads the same, but a ward has no gauge whose reading falls kilogram by kilogram with what it holds and no weighed refills to calibrate it against, so the year-end holdings could not be recovered; the task works only where a continuous proxy and occasional direct measurements see the same physical quantity.
+Layer 1: Kelbray's job sheets exported with day-first dates and store numbers without the chain's leading zeros, refrigerants named by trade name (Solstice N40, Opteon XP40) on some sheets, commissioning and decommissioning jobs in the same export, Tarnley's own pack tags (HFS-031-MT1) against the register's codes (031/MT1), days missing in communications outages and probe faults exported blank, and readings recorded to one decimal; each written by the system named, none placed to be caught.
+Layer 2: estimation_fit, own:year-end holdings read through each pack's own receiver response to weighed top-ups: the year's top-ups are a lagged record of the year's losses, completed at both ends by holdings a proxy records in its own units.
+Decisive step: completing each pack's 2026 charges with the charge it was short at the end of 2026 less the charge it was short at the end of 2025, each shortfall read from Tarnley's level for 31 December through the pack's own rise in receiver level per kilogram charged on its 2024 to 2026 job sheets.
+Not semantics: every field, code, unit and definition read correctly (charged and recovered kilograms, the register's full charge, the receiver level in per cent of the receiver's working range, the trade names) leaves the top-up count on the North East; no definition says how a level becomes kilograms, and reading the level's span as the pack's full charge names Yorkshire.
+Not rule application: the strategy files the loss as the refrigerant that escaped in the calendar year and the region's share as losses over charges, and nothing on how to estimate what escaped; executing the filed rules on the job sheets gives the top-up count (North East), and the receiver levels enter only through an estimate the analyst builds.
+Analyst test: a strong analyst who reads every job sheet, the register and the strategy correctly sums each in-scope pack's 2026 charges less recoveries over its full charge, the F-gas industry's top-up leak rate, and files the North East (16 per cent against Lancashire's 9); executed on the generator's clean truth in `checks.py` (R3a ANALYST), where the decisive step alone files Lancashire (R3b DECISIVE).
+Estimand: Refrigerant Strategy 2.2 (a pack's loss is the refrigerant that escaped from it during the calendar year), 2.3 (in service throughout the year) and 3 (the region whose packs' losses added up over their full charges added up is largest).
+No decoy: no memo, report or stakeholder figure states a region's loss or ranks the regions; Kelbray's service report gives visit counts and response times, which every route reads the same way.
+No certified replay: no certified or published leak rate ships; the register carries charges, not losses.
+Lesson: a quantity recorded only when it is made good belongs to the window in which it was lost, not the one in which it was replaced, and the stock at the window's two ends, read through the unit's own calibration, is the completion; no build on file completes a replenishment record from a proxy level.
+
+## Readability screen
+
+| Rung | What a reader needs to take it | Verdict |
+|---|---|---|
+| R0 the 2026 charges, gross | the job sheets' charged column | readable |
+| R1 the 2026 charges less recoveries (the F-gas top-up count) | the job sheets' charged and recovered columns | readable |
+| R2 and R3 one end of the year completed | the receiver level on one boundary day and a conversion | readable |
+| R4 the level's span read as the pack's full charge | the receiver level and the register's charge | readable |
+| R5 one response for every pack | the pooled level rise per kilogram | readable |
+| R6 (decisive) each pack's own response to its weighed charges, both ends of the year | the job sheets' arrival and departure levels against the kilograms, joined to Tarnley's levels through the tag list; no field gives a pack's holdings in kilograms or its response | silent |
+
+## Semantic fork table
+
+| # | Term | Readings | Ruled out by |
+|---|---|---|---|
+| SF1 | packs in the programme | every HFC pack on the register; in service throughout 2026; with the decommissioned and the new CO2 packs | Strategy 2.3 files in service throughout the year |
+| SF2 | a pack's loss in 2026 | what escaped in the calendar year; what was charged in 2026 | Strategy 2.2 files the refrigerant that escaped during the calendar year |
+| SF3 | a region's share | losses over charges added up; the mean of the packs' shares | Strategy 3 files losses added up over charges added up |
+| SF4 | full charge | the register's; the commissioning charge | Strategy 2.1 names the register |
+| SF5 | the start of 2026 | the level of 31 December 2025; of 1 January 2026 | same whole per cents (asserted) |
+| SF6 | refrigerant names | R448A and R449A; Solstice N40 and Opteon XP40 | same call; the trade names are the blends' |
+| SF7 | CO2 equivalent | the strategy's table; another GWP set | Strategy 2.4 lists the GWPs |
+| SF8 | cabinets and cold rooms | the register's second sheet; every non-pack asset | the register's sheet names them |
+| SF9 | rounding | half up to whole per cents | the prompt's rounding sentence |
+
+## Ladder
+
+Measured on the cut pack (`checks.py` RUNG and CALL rows), each region's 2026 share in per cent:
+
+| Rung | Route | Yorkshire | Lancashire | North East | Cumbria | Names |
+|---|---|---|---|---|---|---|
+| R0 | 2026 charges, gross | 9.4 | 9.2 | 17.0 | 10.8 | North East |
+| R1 | charges less recoveries (default) | 9.0 | 9.0 | 16.4 | 10.4 | North East |
+| R2 | end of 2026 completed only | 14.2 | 18.2 | 18.4 | 14.5 | North East |
+| R3 | start of 2026 completed only | 8.0 | 7.2 | 10.8 | 6.7 | North East |
+| R4 | level span read as the full charge | 25.0 | 19.1 | 8.4 | 11.3 | Yorkshire |
+| R5 | one response for every pack | 15.6 | 13.1 | 12.8 | 10.8 | Yorkshire |
+| R6 | golden | 13.3 | 16.4 | 12.8 | 10.7 | Lancashire |
+
+## Closure table
+
+| # | Axis | Reading and closure |
+|---|---|---|
+| 1 | Population | HFC packs in service throughout 2026 (Strategy 2.3) |
+| 2 | Unit of account | kilograms of refrigerant; shares in per cent of full charge |
+| 3 | Attribution window | the calendar year 2026 (Strategy 2.2) |
+| 4 | As-of dating | job sheets exported 7 January 2027; levels exported 6 January 2027; the register as of November 2026 |
+| 5 | Version basis | one export of each file |
+| 6 | Denominator | the region's packs' full charges added up (Strategy 3) |
+| 7 | Weighting | kilograms, not packs (Strategy 3) |
+| 8 | Window length | one year for the call; 2024 to 2026 for each pack's response |
+| 9 | Boundary inclusivity | a job dated 31 December 2026 is a 2026 job; the year-end level is the day's mean (SF5) |
+| 10 | Rounding path | whole per cents from the unrounded shares |
+| 11 | Tie-break | none needed (Lancashire 16.4 against Yorkshire 13.3) |
+| 12 | Maturity and censoring | the 2026 records closed; the year-end shortfall completes the charges |
+| 13 | Order of operations | packs, net charges, responses, shortfalls, losses, regions |
+| 14 | Row order | none: sums and medians |
+| 15 | Duplicate resolution | a job's asset line is one asset on one job (the spec); Ask B reads a job once |
+| 16 | Identity normalisation | the store number padded to three digits; Tarnley's tag to the pack code through the tag list |
+| 17 | Netting against gross | charges less recoveries (the spec records both) |
+| 18 | Dimensional units | kilograms; receiver level in per cent of the working range |
+| 19 | Code and status semantics | job types (routine, breakdown, commissioning, decommissioning); probe faults blank |
+| 20 | Integerisation | none |
+| 21 | Clause scope | Strategy 2 and 3 scope the call; 2.4 scopes Ask A; the register's second sheet scopes Ask B |
+| 22 | Forward window contents | the 2027 programme is chosen on 2026's losses; no forward data is read |
+
+## Literal reader
+
+Executed word for word, the strategy fixes the packs, the year, the loss as what escaped, the region's share and the start rule, and leaves open only how the escaped refrigerant is estimated; a literal reader who equates the year's charges with the year's losses files the North East, and one who completes the year's two ends through each pack's own response files Lancashire. The level on 31 December 2025 or on 1 January 2026 gives the same whole per cents (SF5).
+
+## Oracles
+
+None. No file states a pack's holdings in kilograms, its response or its loss; the register carries full charges and the service report visit counts.
+
+## Ask sheet
+
+The asks read rows the call never reads (`checks.py` SEP rows): the refrigerant each pack held in 2026 (Ask A, the register's refrigerant column and the job sheets' refrigerant column, neither read by the call), and the jobs on integral cabinets and cold rooms with Kelbray's cylinder log (Ask B). Each is a measure every region carries that the call does not turn on.
+
+**Ask A. Each region's HFC packs' full charge in tonnes of CO2 equivalent, and how much of it is on R404A, to the nearest tonne (8 figures).** Primary device: the R404A packs the gas supplier's own team retrofitted to R448A or R449A in 2024 and 2025 are still listed as R404A on the register for at least one pack in each region, and only the refrigerant Kelbray charges into them afterwards shows the blend they hold; the register's refrigerant files every figure wrong.
+
+**Ask B. Each region's refrigerant charged in 2026 into its integral cabinets and cold rooms, in kilograms to one decimal (4 figures).** Primary device: the handheld stamps a two-asset job's total on both asset lines on some cold room jobs, each line still within its asset's charge, so the sheet looks whole; the cylinder log weighs each job once. Summing the sheet's lines files every figure high.
+
+| Ask | Device | Cracker | Verdict |
+|---|---|---|---|
+| A, full charge CO2e, 4 figures | the register's refrigerant for retrofitted packs | the register read as the pack's refrigerant | miss |
+| A, R404A CO2e, 4 figures | the same | the same | miss |
+| B, cabinets and cold rooms, 4 figures | job totals stamped on every asset line | the sheet's lines added up | miss |
+
+Mirror leakage: 0 per cent of ask weight (every ask row misses for the mirror as for the cracker).
+
+Pair ceiling: 28.5 (the one-cracker case: (38 + 7 + 0 + 5 + 7 + 0) / 2).
+
+Measured by: generator/cracker.py on the cut pack.
 
 ## Architecture 6 record (spent 2026-10-26)
 
@@ -73,3 +197,4 @@ Build record: - Stage 3, 2026-10-26: `generator/build.py` builds the pack (18 fi
 - A reference day's rotation bookings read from the next day's daytime breaks too (stage 4 round 1, 2026-10-26): with the traffic free to move a night's excess into the next day, the judge read the day's bookings by the day they aired as well as the day they were sold for (B 21.99 against 22.07, lead 4.6 against 4.5); the excess now airs in the same day's daytime breaks, so the two readings are one set (SF7).
 - Brief 3.3 silent on a member's split statements (stage 4 round 1, 2026-10-26): the judge took each viewing statement alone (B 22.05 against 22.07, against the 22.05 rounding line); 3.3 now sums all the member's statements on the channel.
 - Architecture 6 (each 2027 prime-time rotation spot read where the reference day's prime-time rotation bookings on its channel aired, the bookings joined to the as-run log on id_reserva; buy A, 5.7 points ahead of B), spent at stage 4 round 2 on 2026-10-26: round 1's two readers and both draw probes filed B by the clock window, but after the repair pass both round 2 readers read the horário nobre places through the bookings' janela field and landed the call, so a join and one field reach the golden (Gate F counts cheap routes, and this is one); the round 2 judge classed the moved bookings as a planted flip (Gate G, Gate H decisive_step planted) where round 1's had classed the step analytical. The re-sited ask device held (0 of 7 ask keys for both readers, each stopping at the per-row repair).
+- Architecture 7 (each HFC pack's 2026 refrigerant loss as its 2026 charges less recoveries plus the charge it was short at the end of 2026 less the charge it was short at the end of 2025, each shortfall read from Tarnley's receiver level through the pack's own rise in level per kilogram charged on its 2024 to 2026 job sheets; Lancashire 16 per cent against the top-up count's North East), spent at stage 4 round 1 on 2026-10-26 (target.zip aec69c19): both isolated scored readers netted each pack's 2026 charges against the change in its receiver stock with kilograms per level point fitted from its own arrival and departure readings and landed Lancashire, in 15 and 23 tool calls; reader 1 kept 8 of 16 ask figures (Ask B whole, the cylinder log read once per job) and reader 2 all 16 (each pack's refrigerant read off its latest job sheet); the judge DETERMINISTIC, APPROVE, reading stump power as strong. Strategy 2.2's "the refrigerant that escaped" beside a stock proxy whose calibration readings sit on every job sheet is a stock-and-flow balance any careful reader runs first: the readers' own sophisticated route was the golden. Reader 2 also flagged the 24 readings a day on 99 per cent of Tarnley's rows and region-level response factors tighter than real controllers give.

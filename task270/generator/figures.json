@@ -1,81 +1,81 @@
 {
  "asks": {
-  "R": {
-   "baseline_weekly_average": 136.0,
-   "campaign_weeks_above_baseline": [
-    85.0,
-    118.0,
-    99.0,
-    144.0
-   ],
-   "campaign_weeks_total_above": 446.0,
-   "response_per_thousand_reached3": 0.82
+  "charge_co2e_t": {
+   "CUM": 8123,
+   "LAN": 13056,
+   "NE": 13054,
+   "YOR": 14087
   },
-  "X": {
-   "expected_first_donation_bookings": {
-    "A": 460,
-    "B": 360,
-    "C": 290
-   }
+  "equipment_kg": {
+   "CUM": 36.6,
+   "LAN": 28.7,
+   "NE": 23.5,
+   "YOR": 38.9
+  },
+  "r404a_co2e_t": {
+   "CUM": 2057,
+   "LAN": 3744,
+   "NE": 5710,
+   "YOR": 2506
   }
  },
  "call": {
-  "lead_points": 5.7,
-  "runner_up": "B",
-  "schedule": "A"
+  "gap_points": 3,
+  "name": "Lancashire",
+  "region": "LAN",
+  "runner_up": "YOR",
+  "runner_up_name": "Yorkshire"
  },
  "components": {
-  "prime_rotation_bookings": 4943,
-  "prime_rotation_bookings_aired_outside_prime": 1854,
-  "reach3_pct": {
-   "A": 26.6,
-   "B": 20.9,
-   "C": 16.9
+  "loss_share_pct": {
+   "CUM": 11,
+   "LAN": 16,
+   "NE": 13,
+   "YOR": 13
   },
-  "schedule_b_reference_places": 4943,
-  "schedule_b_reference_places_outside_prime": 1854,
-  "share_aired_outside_prime_pct": 37.5
+  "packs_in_scope": {
+   "CUM": 29,
+   "LAN": 48,
+   "NE": 43,
+   "YOR": 56
+  }
  },
  "context": {
-  "baseline_weeks": [
-   "2025-03-10",
-   "2025-04-06"
+  "ladder": {
+   "R0 top-ups charged": "NE",
+   "R1 top-ups charged less recovered": "NE",
+   "R2 shortfall at the year's end only": "NE",
+   "R3 shortfall at the year's start only": "NE",
+   "R4 level read as the full charge": "YOR",
+   "R5 one response for every pack": "YOR",
+   "golden": "LAN"
+  },
+  "order": [
+   "LAN",
+   "YOR",
+   "NE",
+   "CUM"
   ],
-  "budget_eur": 230000,
-  "campaign_weeks_2025": [
-   "2025-04-07",
-   "2025-05-04"
-  ],
-  "cost_eur": {
-   "A": 227710,
-   "B": 229600,
-   "C": 229460
-  },
-  "reach1_pct": {
-   "A": 72.7,
-   "B": 68.1,
-   "C": 61.0
-  },
-  "reached3_2025_thousands": 543.7,
-  "schedule_b_reach3_in_window_rotation_places_pct": 31.9,
-  "spots": {
-   "A": 30,
-   "B": 84,
-   "C": 50
-  },
-  "universe_18_34": 2100000
+  "packs_total": 176,
+  "topup_share_pct": {
+   "CUM": 10,
+   "LAN": 9,
+   "NE": 16,
+   "YOR": 9
+  }
  },
  "references": {
-  "age_band": [
-   18,
-   34
+  "calibration_min_net_kg": 0.5,
+  "line_pct": 10,
+  "rounding": "shares to the nearest whole per cent; CO2 equivalents to the nearest tonne; kilograms to one decimal place",
+  "strategy_sections": [
+   2.3
   ],
-  "brief_clauses": [
-   "3.2",
-   "3.3",
-   "3.4",
-   "3.5"
-  ],
-  "weight_days": 28
+  "years": [
+   2024,
+   2025,
+   2026,
+   2027
+  ]
  }
 }

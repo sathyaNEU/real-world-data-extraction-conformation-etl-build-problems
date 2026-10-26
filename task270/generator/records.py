@@ -1,29 +1,19 @@
-"""The pack's data files for task270, each in its own system's layout: the audience panel's viewing statements and
-member file (Audimetria Lusa, UTC), the channels' as-run log of commercial spots and programme grid (local time, the
-panel day from 02:00), the channel code list, the 2026 universe estimates, the Comissão de Audiometria's weekly
-programme audiences, Meridiano Media's three draft schedules, Gota Viva's 2027 digital plan and its 2025 new-donor
-counts."""
+"""The pack's data files for task270, each in its own system's layout: Hallowmere's F-gas register (packs, and
+integral cabinets and cold rooms) and store list, Kelbray's job sheet export (day-first dates, store numbers without
+the chain's leading zeros, trade names on some sheets) and cylinder log, Tarnley's daily receiver levels under its own
+pack tags and the tag list, and the stores' electricity readings."""
 import csv
 import datetime as dt
-import hashlib
 
 import numpy as np
+import pandas as pd
 
 import common as K
+import world as W
 
-T0 = dt.datetime.combine(K.REF_START, dt.time(0, 0))
-WEST_FROM = K.DST_DAY * 86400 + 120 * 60            # 29 March 2026, 02:00 local summer time = 01:00 UTC
-WEEKDAY = ["segunda-feira", "terça-feira", "quarta-feira", "quinta-feira", "sexta-feira", "sábado", "domingo"]
-SECTORS = ["Alimentação", "Bebidas", "Telecomunicações", "Automóvel", "Banca e seguros", "Distribuição",
-           "Higiene e beleza", "Saúde e farmácia", "Lazer e turismo", "Media e entretenimento", "Serviços públicos",
-           "Casa e decoração", "Vestuário", "Energia"]
-
-
-BOOK_FMT = {"Farol Publicidade": "AP-%06d", "Vértice Comercial": "VC26.%05d", "Litoral Media Vendas": "LMV/26/%06d",
-            "Arena Desporto Media": "ADM%07d"}
-BOOK_START = {"Farol Publicidade": 3100, "Vértice Comercial": 12405, "Litoral Media Vendas": 50232,
-              "Arena Desporto Media": 880}
-LABEL = {"FP": "1.º LUGAR", "LP": "ÚLTIMO LUGAR", "FIX": "FIXO", "ROS": "ROTAÇÃO", "PROMO": "AUTOPROMOÇÃO"}
+ENGINEERS = ["A. Kenyon", "M. Dobson", "S. Pratt", "L. Haworth", "K. Nolan", "R. Bisset", "J. Firth", "D. Carr",
+             "T. Ostle", "P. Varey"]
+TEAM = {"YOR": [0, 1, 6], "LAN": [2, 3, 7], "NE": [4, 5, 8], "CUM": [9, 6]}
 
 
 def write_csv(path, head, rows):
@@ -33,237 +23,162 @@ def write_csv(path, head, rows):
         w.writerows(rows)
 
 
-def local(s):
-    return T0 + dt.timedelta(seconds=int(s))
+def dmy(d):
+    return d.strftime("%d/%m/%Y")
 
 
-def utc(s):
-    return T0 + dt.timedelta(seconds=int(s) - (3600 if s >= WEST_FROM else 0))
-
-
-def tvday(s):
-    """the panel day of a local wall-clock second: the day runs from 02:00 to 26:00"""
-    return (int(s) - 7200) // 86400
-
-
-def code(ch, day):
-    return K.NEW_CODE.get(ch, ch) if day >= K.RENAME_DAY else ch
-
-
-def name(ch, day):
-    return K.NEW_NAME.get(ch, K.CH_NAME[ch]) if day >= K.RENAME_DAY else K.CH_NAME[ch]
-
-
-def hid(prefix, n, salt, width):
-    h = int(hashlib.sha1(("%s|%d" % (salt, n)).encode()).hexdigest()[:8], 16)
-    return "%s%0*d" % (prefix, width, h % (10 ** width))
+def gas_label(gas, rng):
+    return K.TRADE[gas] if gas in K.TRADE and rng.random() < 0.18 else gas
 
 
 class Records:
-    def __init__(self, w):
-        self.w = w
-        n = len(w.age)
-        ids, used = [], set()
-        for i in range(n):
-            k = 0
-            while True:
-                x = hid("I", i * 7 + k, "membro", 5)
-                if x not in used:
-                    break
-                k += 1
-            used.add(x)
-            ids.append(x)
-        self.mid = ids
-        hids, usedh = {}, set()
-        for h in sorted(set(w.hh.tolist())):
-            k = 0
-            while True:
-                x = hid("L", h * 5 + k, "lar", 4)
-                if x not in usedh:
-                    break
-                k += 1
-            usedh.add(x)
-            hids[h] = x
-        self.hid = hids
-        rng = np.random.default_rng(31)
-        self.adv = ["A%04d" % int(x) for x in rng.choice(np.arange(100, 9999), 340, replace=False)]
-        self.adv_sector = {a: SECTORS[int(rng.integers(0, len(SECTORS)))] for a in self.adv}
-        self.adv_of = {}
-        for b in w.breaks:
-            for s in b["spots"]:
-                self.adv_of[(b["bid"], s["pos"])] = self.adv[int(rng.integers(0, len(self.adv)))]
-        # the sales houses' booking numbers, issued in order of booking date
-        rng2 = np.random.default_rng(37)
-        items = []
-        for b in w.breaks:
-            for s in b["spots"]:
-                if s["kind"] == "PROMO":
-                    continue
-                day = s["booked"][0] if s["kind"] == "ROS" else b["day"]
-                lead = int(rng2.integers(2, 45)) if s["kind"] == "ROS" else int(rng2.integers(4, 64))
-                items.append((K.SALES[b["ch"]], K.REF_DAYS[day] - dt.timedelta(days=lead), float(rng2.random()), b, s,
-                              day))
-        items.sort(key=lambda x: (x[0], x[1], x[2]))
-        seq = {}
-        self.bk = {}
-        for house, bdate, _, b, s, day in items:
-            n = seq.get(house, BOOK_START[house]) + 1
-            seq[house] = n
-            self.bk[(b["bid"], s["pos"])] = dict(house=house, ref=BOOK_FMT[house] % n, date=bdate, day=day, b=b, s=s)
+    def __init__(self, w, seed=K.SEED):
+        self.w, self.seed = w, seed
+        self.st, self.pk = w["stores"], w["packs"]
+        self.store_name = {s.store: "Hallowmere %s" % s.town for s in self.st.itertuples(index=False)}
+        self.counts = {}
 
-    # ---------------------------------------------------------------- panel
-    def panel_rows(self):
-        w = self.w
+    # ---- the stores and the register ----
+    def stores(self, path):
         rows = []
-        for i in range(len(w.age)):
-            days = K.NDAYS - len(w.out_days.get(i, ()))
-            rows.append([self.mid[i], self.hid[int(w.hh[i])], w.sex[i], w.age[i], w.region[i],
-                         "%.1f" % w.wt[i], days])
-        rows.sort(key=lambda r: (r[1], r[0]))
-        return ["id_individuo", "id_lar", "sexo", "escalao_etario", "regiao", "peso_28d", "dias_em_amostra"], rows
+        for s in self.st.itertuples(index=False):
+            closed = W.CLOSED.get(s.town)
+            rows.append(["%03d" % s.store, self.store_name[s.store], K.REGION_NAME[s.region], s.opened,
+                         dmy(closed) if closed else "", s.sqm])
+        write_csv(path, ["store_no", "store_name", "region", "opened", "closed", "sales_area_sqm"], rows)
+        self.counts["stores"] = len(rows)
 
-    def viewing_rows(self):
-        w = self.w
-        rows = []
-        for (i, c, s0, s1) in w.live.tolist():
-            rows.append((self.hid[int(w.hh[i])], self.mid[i], code(K.CH[c], tvday(s0)), s0, s1, s0, "AO VIVO", "N"))
-        for (i, c, s0, s1, b0) in w.play.tolist():
-            rows.append((self.hid[int(w.hh[i])], self.mid[i], code(K.CH[c], tvday(b0)), s0, s1, b0, "DIFERIDO", "N"))
-        for (h, c, s0, s1) in w.guests:
-            rows.append((self.hid[h], self.hid[h] + "-C1", code(K.CH[c], tvday(s0)), s0, s1, s0, "AO VIVO", "S"))
-        rows.sort(key=lambda r: (r[0], r[1], r[3], r[2]))
-        out = []
-        f = "%Y-%m-%dT%H:%M:%SZ"
-        for (lar, ind, ch, s0, s1, b0, modo, conv) in rows:
-            out.append([lar, ind, K.REF_DAYS[tvday(s0)].isoformat(), ch, utc(s0).strftime(f), utc(s1).strftime(f),
-                        utc(b0).strftime(f), modo, conv])
-        return ["id_lar", "id_individuo", "dia_tv", "canal", "inicio_utc", "fim_utc", "emissao_utc", "modo",
-                "convidado"], out
+    def register_rows(self):
+        rng = np.random.default_rng([self.seed, 41])
+        packs = []
+        for p, r in self.pk.iterrows():
+            gas = r.gas
+            if p in self.w["retro"] and not self.w["retro"][p][2]:
+                gas = self.w["retro"][p][1]
+            since = dt.date(int(r.installed), int(rng.integers(2, 12)), int(rng.integers(1, 28)))
+            dec = self.w["dec"].get(p)
+            packs.append([r.code, "%03d" % r.store, self.store_name[r.store], gas, r.charge, dmy(since),
+                          dmy(dec[0]) if dec else "", "Tarnley"])
+        for c in self.w["co2"]:
+            code = "%03d/%s" % (c["store"], c["kind"])
+            packs.append([code + "C", "%03d" % c["store"], self.store_name[c["store"]], "R744", c["charge"],
+                          dmy(c["since"]), "", "Tarnley"])
+        packs.sort(key=lambda x: (x[0]))
+        eq = [[e.asset, "%03d" % e.store, e.type, e.gas, e.charge, e.installed]
+              for e in self.w["eq"].itertuples(index=False)]
+        return packs, eq
 
-    # ---------------------------------------------------------------- as-run log and grid
-    def asrun_rows(self):
-        w = self.w
-        rows = []
-        seq = {}
-        for b in sorted(w.breaks, key=lambda x: (x["ch"], x["t0"])):
-            d = b["day"]
-            k = seq.get((b["ch"], d), 0) + 1
-            seq[(b["ch"], d)] = k
-            brk = "%s-%s-%03d" % (code(b["ch"], d), K.REF_DAYS[d].strftime("%Y%m%d"), k)
-            for s in b["spots"]:
-                lt = local(s["t0"])
-                if s["kind"] == "PROMO":
-                    adv, sector, ref = "", "", ""
-                else:
-                    adv = self.adv_of[(b["bid"], s["pos"])]
-                    sector, ref = self.adv_sector[adv], self.bk[(b["bid"], s["pos"])]["ref"]
-                rows.append([code(b["ch"], d), name(b["ch"], d), K.REF_DAYS[d].isoformat(), lt.date().isoformat(),
-                             lt.strftime("%H:%M:%S"), brk, b["title"], b["no"], s["pos"], b["n"], s["t1"] - s["t0"],
-                             adv, sector, LABEL[s["kind"]], ref])
-        return ["canal", "nome_canal", "dia_tv", "data", "hora_inicio", "id_intervalo", "programa",
-                "intervalo_no_programa", "posicao", "spots_no_intervalo", "duracao_s", "anunciante", "setor",
-                "colocacao", "id_reserva"], rows
+    # ---- Kelbray's job sheets and cylinder log ----
+    def jobs(self, path, cyl_path):
+        rng = np.random.default_rng([self.seed, 43])
+        rows, cyl = [], []
+        jb = self.w["jobs"].sort_values(["date", "hour", "job"])
+        cyl_no = {g: 0 for g in K.GWP}
+        stock = {}
 
-    def booking_rows(self):
-        """the sales houses' bookings for the reference weeks: what was sold, for which day and on what terms"""
-        rows = []
-        for (bid, pos), k in self.bk.items():
-            b, s, day = k["b"], k["s"], k["day"]
-            if s["kind"] == "ROS":
-                prog, brk, win = "", "", K.WINDOW_NAME[s["booked"][2]]
-            else:
-                prog, brk, win = b["title"], b["no"], ""
-            rows.append([k["house"], k["ref"], k["date"].isoformat(), self.adv_of[(bid, pos)], code(b["ch"], day),
-                         K.REF_DAYS[day].isoformat(), LABEL[s["kind"]], prog, brk, win, s["t1"] - s["t0"]])
-        rows.sort(key=lambda r: (r[0], r[1]))
-        return ["casa_comercial", "id_reserva", "data_reserva", "anunciante", "canal", "dia_tv", "colocacao", "programa",
-                "intervalo_no_programa", "janela", "duracao_s"], rows
+        def cylinder(g, kg, day, job, region, out=True):
+            key = (region, g)
+            c = stock.get(key)
+            if c is None or c[1] < kg + 0.5:
+                cyl_no[g] += 1
+                serial = "KR-%s-%04d" % (g.replace("R", ""), 300 + 37 * cyl_no[g] % 9000 + cyl_no[g])
+                c = [serial, round(float(rng.choice([10.0, 11.3, 12.0, 45.0 if kg > 9 else 12.0])) + 0.0, 1)]
+                c[1] = max(c[1], round(kg + 2.0, 1))
+                stock[key] = c
+            before = round(c[1] + float(rng.uniform(7.8, 8.6)), 1)          # gross, cylinder tare included
+            c[1] = round(c[1] - kg, 1)
+            if day.year == K.YEAR:
+                cyl.append([c[0], g, job, dmy(day), before, round(before - kg, 1)])
 
-    def epg_rows(self):
-        w = self.w
-        genre = {"reality": "Entretenimento", "drama": "Ficção", "football": "Desporto", "sporttalk": "Desporto",
-                 "series": "Ficção", "comedy": "Entretenimento", "talk": "Entretenimento", "news": "Informação",
-                 "magazine": "Entretenimento", "game": "Concurso", "film": "Cinema", "music": "Música",
-                 "docs": "Documentário", "sport": "Desporto", "kids": "Infantil", "sitcom": "Ficção"}
-        rows = []
-        for pr in sorted(w.progs, key=lambda x: (x["ch"], x["t0"])):
-            d = pr["day"]
-            rows.append([code(pr["ch"], d), name(pr["ch"], d), K.REF_DAYS[d].isoformat(), pr["title"],
-                         genre[pr["genre"]], local(pr["t0"]).strftime("%Y-%m-%d %H:%M"),
-                         local(pr["t1"]).strftime("%Y-%m-%d %H:%M")])
-        return ["canal", "nome_canal", "dia_tv", "programa", "genero", "inicio", "fim"], rows
-
-    def channel_rows(self):
-        rows = []
-        for c, n, s in K.CHANNELS:
-            if c in K.NEW_CODE:
-                rows.append([c, n, s, "2019-09-01", "2026-03-15"])
-                rows.append([K.NEW_CODE[c], K.NEW_NAME[c], s, "2026-03-16", ""])
-            else:
-                rows.append([c, n, s, "2004-01-01" if c != "ARN" else "2011-08-12", ""])
-        return ["codigo", "nome", "comercializacao", "em_vigor_desde", "em_vigor_ate"], rows
-
-    def universe_rows(self):
-        rows = [[a, s, g, v] for (a, s, g), v in sorted(self.w.universe.items())]
-        return ["escalao_etario", "sexo", "regiao", "populacao"], rows
-
-    def ratings_rows(self):
-        """the Comissão's weekly programme audiences: average audience over each programme's airings (thousands)"""
-        w = self.w
-        acc = {}
-        for pr in w.progs:
-            wk = pr["day"] // 7 + 1
-            secs = w.seconds(pr["ch"], pr["t0"], pr["t1"])
-            dur = pr["t1"] - pr["t0"]
-            yng = sum(w.wt[i] * v for i, v in secs.items() if w.young[i]) / dur
-            adl = sum(w.wt[i] * v for i, v in secs.items()) / dur
-            k = (wk, pr["ch"], pr["title"])
-            a = acc.setdefault(k, [0, 0.0, 0.0])
-            a[0] += 1
-            a[1] += yng
-            a[2] += adl
-        rows = []
-        for (wk, ch, title), (n, y, a) in sorted(acc.items()):
-            if ch in ("FAR2",) and a / n < 40000:
+        for j in jb.itertuples(index=False):
+            if j.type == "RETROFIT":           # retrofits were done by the gas supplier's own team, not Kelbray
                 continue
-            day = (wk - 1) * 7
-            rows.append(["2026-S%02d" % (9 + wk), code(ch, day + 6), title, n, "%.1f" % (y / n / 1000),
-                         "%.2f" % (100 * y / n / K.UNIVERSE_YOUNG), "%.1f" % (a / n / 1000),
-                         "%.2f" % (100 * a / n / K.UNIVERSE_ADULT)])
-        return ["semana", "canal", "programa", "emissoes", "audiencia_media_18_34_milhares", "rat_18_34_pct",
-                "audiencia_media_adultos_milhares", "rat_adultos_pct"], rows
+            r = self.pk.loc[j.pack]
+            day = j.date
+            eng = ENGINEERS[TEAM[r.region][int(rng.integers(0, len(TEAM[r.region])))]]
+            g = j.gas
+            arr = "" if j.arr is None or (isinstance(j.arr, float) and np.isnan(j.arr)) else "%.1f" % j.arr
+            dep = "" if j.dep is None or (isinstance(j.dep, float) and np.isnan(j.dep)) else "%.1f" % j.dep
+            rows.append([j.job, dmy(day), int(r.store), r.kind, j.type, gas_label(g, rng), "%.1f" % j.charged,
+                         "%.1f" % j.recovered if j.recovered else "0.0", arr, dep, j.leak, eng])
+            if j.charged > 0:
+                cylinder(g, j.charged, day, j.job, r.region)
+        for c in self.w["co2"]:
+            code = "%sC" % c["kind"]
+            rows.append([90000 + c["store"], dmy(c["since"]), c["store"], code, "COMMISSIONING", "R744",
+                         "%.1f" % c["charge"], "0.0", "", "%.1f" % c["full"], "N", "Kelbray projects"])
+        # cabinets and cold rooms: one sheet line per asset; some handhelds stamp the visit's total on every line
+        jn = 70500
+        for v in self.w["visits"]:
+            reg = v["region"]
+            eng = ENGINEERS[TEAM[reg][int(rng.integers(0, len(TEAM[reg])))]]
+            tot = round(sum(v["kg"]), 1)
+            jn += int(rng.integers(1, 5))
+            for a, kg in zip(v["assets"], v["kg"]):
+                shown = tot if v["stamp_total"] else kg
+                rows.append([jn, dmy(v["date"]), v["store"], a, "REPAIR", gas_label(v["gas"], rng), "%.1f" % shown,
+                             "0.0", "", "", "Y", eng])
+            cylinder(v["gas"], tot, v["date"], jn, reg)
+        rows.sort(key=lambda x: (dt.datetime.strptime(x[1], "%d/%m/%Y"), x[0]))
+        write_csv(path, ["job_no", "job_date", "store", "asset", "job_type", "refrigerant", "charged_kg",
+                         "recovered_kg", "receiver_arrival_pct", "receiver_departure_pct", "leak_found", "engineer"],
+                  rows)
+        cyl.sort(key=lambda x: (dt.datetime.strptime(x[3], "%d/%m/%Y"), x[2], x[0]))
+        write_csv(cyl_path, ["cylinder", "refrigerant", "job_no", "job_date", "gross_before_kg", "gross_after_kg"],
+                  cyl)
+        self.counts["jobs"], self.counts["cylinders"] = len(rows), len(cyl)
 
-    # ---------------------------------------------------------------- schedules
-    def schedule_lines(self, s):
-        out = []
-        for ln in self.w.sched[s]:
-            date = K.CAMPAIGN_START + dt.timedelta(days=7 * (ln["week"] - 1) + ln["wd"])
-            if ln["kind"] == "ROS":
-                prog, brk, place = "Rotação %s" % K.WINDOW_NAME[ln["brk"]].lower(), None, "Rotação"
-            else:
-                prog, brk = ln["title"], ln["brk"]
-                place = "1.º lugar no intervalo" if ln["kind"] == "FP" else "Último lugar no intervalo"
-            out.append([ln["week"], date.isoformat(), WEEKDAY[date.weekday()], K.CH_NAME[ln["ch"]] if ln["ch"] != "PLS"
-                        else "Pulsar+", prog, brk, place, 30, ln["price"]])
-        return out
+    # ---- Tarnley's receiver levels and tags ----
+    def levels(self, path, tag_path):
+        rng = np.random.default_rng([self.seed, 47])
+        L = self.w["levels"]
+        rows, tags = [], []
+        days = W.DAYS
+        guard = {pd.Timestamp(2025, 12, 30), pd.Timestamp(2025, 12, 31), pd.Timestamp(2026, 1, 1),
+                 pd.Timestamp(2026, 1, 2), pd.Timestamp(2026, 12, 30), pd.Timestamp(2026, 12, 31)}
+        for p, r in self.pk.iterrows():
+            tag = "HFS-%03d-%s" % (r.store, r.kind)
+            tags.append([tag, r.code, self.store_name[r.store]])
+            out = set()
+            for _ in range(int(rng.integers(0, 4))):          # communications outages, a day to a few days
+                s = int(rng.integers(0, len(days) - 6))
+                out.update(range(s, s + int(rng.integers(1, 5))))
+            for t, day in enumerate(days):
+                v = L[p, t]
+                if np.isnan(v):
+                    continue
+                if t in out and day not in guard:
+                    continue
+                n = 24 if rng.random() > 0.01 or day in guard else int(rng.integers(9, 23))
+                status = "OK"
+                lv = "%.1f" % v
+                if day not in guard and rng.random() < 0.002:
+                    status, lv = "SENSOR FAULT", ""
+                rows.append([day.strftime("%Y-%m-%d"), tag, lv, n, status])
+        for c in self.w["co2"]:
+            tag = "HFS-%03d-%sC" % (c["store"], c["kind"])
+            tags.append([tag, "%03d/%sC" % (c["store"], c["kind"]), self.store_name[c["store"]]])
+            for day in days:
+                if day.date() < c["since"]:
+                    continue
+                rows.append([day.strftime("%Y-%m-%d"), tag, "%.1f" % (c["full"] + rng.normal(0, 0.6)), 24, "OK"])
+        rows.sort(key=lambda x: (x[0], x[1]))
+        write_csv(path, ["date", "bureau_tag", "receiver_level_pct", "readings", "status"], rows)
+        tags.sort()
+        write_csv(tag_path, ["bureau_tag", "pack_code", "site"], tags)
+        self.counts["levels"], self.counts["tags"] = len(rows), len(tags)
 
-    # ---------------------------------------------------------------- distractors and context
-    def digital_rows(self):
-        rows = [["YouTube", "TrueView in-stream", "2027-04-05", "2027-05-02", "18-34", 4200000, 0.011, 38500],
-                ["Instagram", "Reels", "2027-04-05", "2027-05-02", "18-34", 3600000, 0.0068, 21800],
-                ["TikTok", "In-feed", "2027-04-12", "2027-05-02", "18-24", 5100000, 0.0042, 19600],
-                ["Spotify", "Audio 30s", "2027-04-05", "2027-04-25", "18-34", 1250000, 0.0095, 9800],
-                ["Meta", "Lead form (inscrição)", "2027-04-19", "2027-05-16", "18-44", 900000, 0.0185, 14200]]
-        return ["plataforma", "formato", "inicio", "fim", "publico", "impressoes_previstas", "cpm_eur_por_impressao",
-                "orcamento_eur"], rows
-
-    def donor_rows(self):
-        rng = np.random.default_rng(55)
-        base = {"18-24": 0.21, "25-34": 0.24, "35-44": 0.2, "45-54": 0.17, "55-64": 0.13, "65+": 0.05}
+    # ---- electricity (a distractor) ----
+    def power(self, path):
+        rng = np.random.default_rng([self.seed, 53])
         rows = []
-        for g, gw in zip(K.REGIONS, [0.33, 0.24, 0.29, 0.06, 0.08]):
-            for a, aw in base.items():
-                for s in ("F", "M"):
-                    n = int(round(14630 * gw * aw * (0.54 if s == "F" else 0.46) * float(np.exp(rng.normal(0, 0.08)))))
-                    rows.append([2025, g, a, s, n])
-        return ["ano", "regiao", "escalao_etario", "sexo", "novos_dadores"], rows
+        for s in self.st.itertuples(index=False):
+            base = s.sqm * rng.uniform(26, 34)
+            for y in (2024, 2025, 2026):
+                for m in range(1, 13):
+                    if s.town in W.CLOSED and dt.date(y, m, 1) > W.CLOSED[s.town]:
+                        continue
+                    season = 1 + 0.12 * np.cos(2 * np.pi * (m - 7) / 12)
+                    rows.append(["%03d" % s.store, "%d-%02d" % (y, m), int(base * season * rng.uniform(0.95, 1.05))])
+        write_csv(path, ["store_no", "month", "kwh"], rows)
+        self.counts["power"] = len(rows)
