@@ -133,6 +133,25 @@ def counts_groups(curves, anc=None):
     return {a: sum(anc[g] * tail_ratio(*curves[g], a) for g in GROUPS) for a in W.OPTIONS}
 
 
+LIMIT = 10_000_000     # each quoted layer: $10,000,000 for each occurrence above its attachment
+
+
+def lev(mu, sigma, d):
+    """Limited expected value of a lognormal cost at d, E[min(X, d)]."""
+    return (math.exp(mu + sigma * sigma / 2) * stats.norm.cdf((math.log(d) - mu - sigma * sigma) / sigma)
+            + d * stats.norm.sf((math.log(d) - mu) / sigma))
+
+
+def layer_per_anchor(mu, sigma, a):
+    """Expected cost a quoted layer pays per occurrence costing more than $25,000."""
+    return (lev(mu, sigma, a + LIMIT) - lev(mu, sigma, a)) / W.lognormal_sf(W.ANCHOR, mu, sigma)
+
+
+def layer_losses(curves, anc=None):
+    anc = anc or anchors()
+    return {a: sum(anc[g] * layer_per_anchor(*curves[g], a) for g in GROUPS) for a in W.OPTIONS}
+
+
 def group_fits(rows, **kw):
     out = {}
     for g, parts in GROUPS.items():
@@ -191,10 +210,17 @@ def ladder(rec):
     c5 = {a: W.COUNT_LE * tail_ratio(*parts["LE"], a)
           + sum(W.COUNT_OT * n25[p] / tot * tail_ratio(*parts[p], a) for p in oth) for a in W.OPTIONS}
     out["parts5"] = {"curves": parts, "counts": c5}
+    out["parts5"]["layer"] = {a: W.COUNT_LE * layer_per_anchor(*parts["LE"], a)
+                              + sum(W.COUNT_OT * n25[p] / tot * layer_per_anchor(*parts[p], a) for p in oth)
+                              for a in W.OPTIONS}
     _, _, cv, cg = golden(rec)
     out["G"] = {"curves": cv, "counts": cg}
-    for v in out.values():
+    for k, v in out.items():
         v["pick"] = pick(v["counts"])
+        if "layer" not in v:
+            cvs = v["curves"]
+            v["layer"] = ({a: W.COUNT_25K * layer_per_anchor(*cvs["pooled"], a) for a in W.OPTIONS} if "pooled" in cvs
+                          else layer_losses(cvs))
     return out
 
 
@@ -308,6 +334,7 @@ def figures(st):
         by[k] = {"members": len(ms), "toe_000": round(sum(toe[m] for m in ms) / 1000),
                  "units": sum(units.get(m, 0) for m in ms)}
     lad = ladder(rec)
+    lay = layer_losses(curves)
     r1, r2 = W.RETENTION[W.FIT_YEARS[0]], W.RETENTION[W.FIT_YEARS[-1]]
     return {
         "call": {"attachment": call, "runner_up": runner, "count": round(cnt[call], 1),
@@ -326,11 +353,14 @@ def figures(st):
                 "capped_r2": sum(1 for r in rows if r["capped"] and r["ret"] == r2),
                 "open": sum(r["open"] for r in rows), "closed": sum(not r["open"] for r in rows)},
         "premiums": prem,
+        "layer_loss": {str(a): lay[a] for a in W.OPTIONS},
+        "layer_loss_100k": {str(a): int(round(lay[a] / 1e5) * 100_000) for a in W.OPTIONS},
         "exposure": {"toe": T, "toe_000": round(T / 1000), "units": U, "members": len(toe)},
         "by_class": by,
         "rungs": {k: {"pick": v["pick"], "count_3m": v["counts"][3_000_000], "count_4m": v["counts"][4_000_000]}
                   for k, v in lad.items()},
         "anchor": W.ANCHOR,
+        "layer_limit": LIMIT,
         "retentions": sorted(set(W.RETENTION.values())),
         "fit_sources": {"legacy": sum(1 for r in rec if r["ay"] in W.FIT_YEARS and r["system"] == "legacy"),
                         "current": sum(1 for r in rec if r["ay"] in W.FIT_YEARS and r["system"] == "current")},

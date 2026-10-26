@@ -1,10 +1,10 @@
 # leak check, task255
 
-**Verdict: REVIEW.** 12 files read, 43 golden figures and 0 candidate names taken from submission.md, 25 stump terms taken from the design note.
+**Verdict: REVIEW.** 12 files read, 29 golden figures and 0 candidate names taken from submission.md, 25 stump terms taken from the design note.
 
 LEAK stops the ship. REVIEW is a reader's call and the /leak-check command's solver's-eye pass reads every REVIEW line. INFO is a sweep that ran and found nothing or was skipped.
 
-Stump terms swept: million, record, coverage, likelihood, severity, deductible, sentence, actuary, closed, truncation, censoring, decisive, censored, golden, fitted, memorandum, payments, window, reflex, search, claims, exposure, accident, carried, nothing
+Stump terms swept: million, record, coverage, likelihood, severity, member, deductible, sentence, actuary, golden, closed, truncation, censoring, decisive, memorandum, censored, fitted, reader, premium, exposure, accident, payments, window, reflex, truncated
 
 ## 3 answer figures in the pack (REVIEW 2)
 - **REVIEW** `liability_coverage_memorandum_2026.pdf`: golden figure 1.2 appears: ...under the terms in force in the year it happens. 1.2 One occurrence is one occurrence however many c...
@@ -12,10 +12,10 @@ Stump terms swept: million, record, coverage, likelihood, severity, deductible, 
 
 ## 4 design-note vocabulary (REVIEW 5)
 - **REVIEW** `actuarial_study_2026_selected_exhibits.pdf`: 5 of 25 stump-paragraph terms appear (million, coverage, actuary, exposure, accident); read whether the document names the move
-- **REVIEW** `excess_liability_indications_2027.pdf`: 4 of 25 stump-paragraph terms appear (coverage, deductible, claims, exposure); read whether the document names the move
-- **REVIEW** `extract_notes_2027_retention_review.md`: 9 of 25 stump-paragraph terms appear (coverage, deductible, actuary, closed, payments, claims); read whether the document names the move
-- **REVIEW** `liability_coverage_memorandum_2026.pdf`: 6 of 25 stump-paragraph terms appear (record, coverage, deductible, memorandum, payments, claims); read whether the document names the move
-- **REVIEW** `risk_financing_policy_2026.pdf`: 9 of 25 stump-paragraph terms appear (record, coverage, likelihood, severity, deductible, actuary); read whether the document names the move
+- **REVIEW** `excess_liability_indications_2027.pdf`: 5 of 25 stump-paragraph terms appear (coverage, member, deductible, premium, exposure); read whether the document names the move
+- **REVIEW** `extract_notes_2027_retention_review.md`: 8 of 25 stump-paragraph terms appear (coverage, member, deductible, actuary, closed, exposure); read whether the document names the move
+- **REVIEW** `liability_coverage_memorandum_2026.pdf`: 6 of 25 stump-paragraph terms appear (record, coverage, member, deductible, memorandum, payments); read whether the document names the move
+- **REVIEW** `risk_financing_policy_2026.pdf`: 9 of 25 stump-paragraph terms appear (record, coverage, likelihood, severity, member, deductible); read whether the document names the move
 
 ## 9 dates after the setting (REVIEW 2)
 - **REVIEW** `member_roster.csv`: 1 ISO dates after 2026-10-19, e.g. 2026-12-31

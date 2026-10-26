@@ -46,7 +46,7 @@ def main(target, golden):
     win = re.search(r"accident years (\d{4}) to (\d{4})\)", policy)
     years = range(int(win.group(1)), int(win.group(2)) + 1)
     opts = [(int(a.replace(",", "")), float(gl), float(al)) for a, gl, al in
-            re.findall(r"\$([\d,]{9,}) \$10,000,000 \$(0\.\d{4}) \$([\d.]+)", quotes)]
+            re.findall(r"\$([\d,]{9,}) \$10,000,000 \$(\d\.\d{4}) \$([\d.]+)", quotes)]
     assert len(opts) == 7 and len(index) >= 14, (len(opts), len(index))
     line = 1.0 if "is one or fewer" in policy else None
 
@@ -95,6 +95,19 @@ def main(target, golden):
                    for g, (mu, sigma, _, _) in curves.items())
 
     counts = {a: count(a) for a, _, _ in opts}
+    limit = int(re.search(r"Each option provides \$([\d,]+) for each occurrence above its attachment", quotes)
+                .group(1).replace(",", ""))
+
+    def lev(mu, sigma, d):
+        z = (math.log(d) - mu) / sigma
+        return (math.exp(mu + sigma * sigma / 2) * 0.5 * special.erfc(-(z - sigma) / math.sqrt(2.0))
+                + d * 0.5 * special.erfc(z / math.sqrt(2.0)))
+
+    def layer(a):
+        return sum(lam[g] * (lev(mu, sigma, a + limit) - lev(mu, sigma, a))
+                   / math.exp(norm_sf_log((math.log(25_000) - mu) / sigma)) for g, (mu, sigma, _, _) in curves.items())
+
+    layers = {a: int(round(layer(a) / 1e5) * 100_000) for a, _, _ in opts}
     call = next(a for a, _, _ in opts if counts[a] <= line)
 
     # the rated exposure: the 2027 members (a withdrawal effective by 31 December 2026 leaves a member out), each
@@ -154,24 +167,21 @@ def main(target, golden):
     rows = [r for r in ws.iter_rows(min_row=6, max_row=12, values_only=True)]
     for r in rows:
         assert abs(r[1] - round(counts[r[0]], 1)) < 1e-9, ("count", r[0], r[1], counts[r[0]])
-        assert r[5] == prem[r[0]], ("premium", r[0], r[5], prem[r[0]])
+        assert r[3] == layers[r[0]], ("layer loss", r[0], r[3], layers[r[0]])
         assert (r[2] == "Yes") == (counts[r[0]] <= line)
     rec_txt = ws["A2"].value
     assert "${:,.0f}".format(call) in rec_txt, rec_txt
     for g, lab in (("LE", "Severity, law enforcement"), ("OT", "Severity, general")):
         txt = [c for c in ws.iter_rows(min_row=13, values_only=True) if c[0] and str(c[0]).startswith(lab)][0][1]
         assert "log mean %.2f" % curves[g][0] in txt and "log standard deviation %.2f" % curves[g][1] in txt, txt
-    ex = gw["Rated exposure"]
-    for r in ex.iter_rows(min_row=5, max_row=11, values_only=True):
-        b = by[r[0].lower()]
-        assert (r[1], r[2], r[3]) == (b[0], round(b[1] / 1000), b[2]), (r, b)
     print("verify: from target/ alone, %d occurrences; law enforcement %d (%d censored) log mean %.4f, log sd %.4f; other "
-          "%d (%d censored) log mean %.4f, log sd %.4f; call $%s (%.2f; runner-up %.2f); premiums %s; operating "
-          "expenditures $%s, %d vehicles; goldens agree" % (
+          "%d (%d censored) log mean %.4f, log sd %.4f; call $%s (%.2f; runner-up %.2f); premiums %s; layer losses %s; "
+          "operating expenditures $%s, %d vehicles; goldens agree" % (
               len(fit), curves["LE"][3], curves["LE"][2], curves["LE"][0], curves["LE"][1], curves["OT"][3],
               curves["OT"][2], curves["OT"][0], curves["OT"][1], "{:,}".format(call), counts[call],
               counts[[a for a, _, _ in opts][[a for a, _, _ in opts].index(call) - 1]],
-              ", ".join("{:,}".format(prem[a]) for a, _, _ in opts), "{:,}".format(T), U))
+              ", ".join("{:,}".format(prem[a]) for a, _, _ in opts), ", ".join("{:,}".format(layers[a]) for a, _, _ in opts),
+              "{:,}".format(T), U))
 
 
 if __name__ == "__main__":

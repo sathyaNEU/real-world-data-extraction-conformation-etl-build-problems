@@ -33,11 +33,11 @@ def write_workbook(path, fig):
                 "its 2027 occurrences to exceed once or less (%.1f)" % ("${:,.0f}".format(rec), fig["counts"][str(rec)]))
     ws["A2"].font = Font(bold=True, size=11)
     ws["A3"] = ("Risk financing policy 4.1 to 5.1; expected occurrences from the actuary's %.1f law enforcement and %.1f "
-                "other occurrences above $25,000, each carried by its own ground-up severity at 2027 cost; premiums from "
-                "the broker's indications of October 2, 2026." % (W.COUNT_LE, W.COUNT_OT))
+                "other occurrences above $25,000, each carried by its own ground-up severity at 2027 cost; layers of "
+                "$10,000,000 above each attachment quoted by the broker on October 2, 2026." % (W.COUNT_LE, W.COUNT_OT))
     ws["A3"].font = Font(italic=True, color="5D646C", size=9)
     heads = ["Attachment per occurrence", "Expected 2027 occurrences above it", "Within the policy (one or fewer)",
-             "Rate per $1,000 of operating expenditures", "Rate per scheduled unit", "2027 premium"]
+             "Expected 2027 losses to the $10,000,000 layer"]
     ws.append([])
     ws.append(heads)
     for c in ws[5]:
@@ -46,16 +46,13 @@ def write_workbook(path, fig):
         c.alignment = Alignment(wrap_text=True, vertical="center", horizontal="center")
     ws.row_dimensions[5].height = 44
     for a in W.OPTIONS:
-        gl, al = W.QUOTES[a]
         cnt = fig["counts"][str(a)]
-        ws.append([a, round(cnt, 1), "Yes" if cnt <= W.BAR else "No", gl, al, fig["premiums"][str(a)]])
+        ws.append([a, round(cnt, 1), "Yes" if cnt <= W.BAR else "No", fig["layer_loss_100k"][str(a)]])
         row = ws[ws.max_row]
         row[0].number_format = "$#,##0"
         row[1].number_format = "0.0"
         row[2].alignment = Alignment(horizontal="center")
-        row[3].number_format = "$0.0000"
-        row[4].number_format = "$#,##0.00"
-        row[5].number_format = "$#,##0"
+        row[3].number_format = "$#,##0"
         if a == rec:
             for c in row:
                 c.fill = PatternFill("solid", fgColor=PALE)
@@ -78,45 +75,14 @@ def write_workbook(path, fig):
          % fig["lr"]["pooled"]),
         ("Runner-up", "%s: %.1f expected occurrences above it, more than the policy's one"
          % ("${:,.0f}".format(fig["call"]["runner_up"]), fig["counts"][str(fig["call"]["runner_up"])])),
-        ("Rated exposure", "2027 operating expenditures of ${:,.0f} as declared; {:,d} units on the vehicle schedules "
-         "at September 30, 2026 (sheet Rated exposure)".format(fig["exposure"]["toe"], fig["exposure"]["units"])),
     ]
     for k, (lab, val) in enumerate(lines):
         ws.cell(row=r0 + k, column=1, value=lab).font = bold
         ws.cell(row=r0 + k, column=2, value=val)
-    for i, wd in enumerate((26, 20, 17, 20, 15, 16), 1):
+    for i, wd in enumerate((26, 20, 17, 24), 1):
         ws.column_dimensions[get_column_letter(i)].width = wd
     ws.freeze_panes = "A6"
     ws.print_title_rows = "5:5"
-
-    ex = wb.create_sheet("Rated exposure")
-    ex["A1"] = "Exposure the 2027 indications are rated on, by member class"
-    ex["A1"].font = Font(bold=True, size=11)
-    ex["A2"] = ("Operating expenditures: each member's 2027 total as declared for the renewal (once per member). "
-                "Vehicles: units on the members' schedules at September 30, 2026, one per vehicle.")
-    ex["A2"].font = Font(italic=True, color="5D646C", size=9)
-    ex.append([])
-    ex.append(["Member class", "Members", "2027 operating expenditures ($000)", "Scheduled vehicles"])
-    for c in ex[4]:
-        c.font = Font(bold=True, color="FFFFFF")
-        c.fill = PatternFill("solid", fgColor=NAVY)
-        c.alignment = Alignment(wrap_text=True, vertical="center", horizontal="center")
-    ex.row_dimensions[4].height = 32
-    for k in CLASS_ORDER:
-        e = fig["by_class"][k]
-        ex.append([k[0].upper() + k[1:], e["members"], e["toe_000"], e["units"]])
-        row = ex[ex.max_row]
-        row[2].number_format = "#,##0"
-        row[3].number_format = "#,##0"
-    tot = fig["exposure"]
-    ex.append(["All members", tot["members"], tot["toe_000"], tot["units"]])
-    for c in ex[ex.max_row]:
-        c.font = bold
-    ex[ex.max_row][2].number_format = "#,##0"
-    ex[ex.max_row][3].number_format = "#,##0"
-    for i, wd in enumerate((30, 10, 20, 12), 1):
-        ex.column_dimensions[get_column_letter(i)].width = wd
-    ex.freeze_panes = "A5"
 
     nt = wb.create_sheet("Notes")
     notes = [
@@ -131,12 +97,9 @@ def write_workbook(path, fig):
         "that severity's probability of a cost above the attachment given a cost above $25,000, plus the same for "
         "the %.1f other occurrences (policy 4.3, Exhibit 6). Shown to one decimal; compared unrounded."
         % (W.COUNT_LE, W.COUNT_OT),
-        "Premiums: the indicated rates applied to the declared 2027 operating expenditures and the scheduled units; "
-        "annual, before the Washington surplus lines tax and stamping fee; rounded to the dollar.",
-        "Vehicles loaded from the fleet consortium's lists on %s carry the consortium's asset numbers; "
-        "a vehicle counts once, under the latest number added for it." % W.CONSORTIUM_LOAD.strftime("%B %-d, %Y"),
-        "Rated exposure: each class's operating expenditures are rounded to the thousand on their own and the total "
-        "from the unrounded sum, so the classes can differ from the total by a thousand dollars.",
+        "Expected losses to a layer: for each coverage group, its expected 2027 occurrences above $25,000 times the "
+        "expected cost above the attachment, up to the $10,000,000 limit, of an occurrence costing more than $25,000 "
+        "on that group's severity; rounded to the nearest hundred thousand dollars.",
     ]
     nt["A1"] = "Notes"
     nt["A1"].font = Font(bold=True, size=11)

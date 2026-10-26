@@ -2,7 +2,9 @@
   "task": "task255",
   "distractor_files": [
     "member_deductible_history.csv",
-    "liability_triangles_2026-09-30.csv"
+    "liability_triangles_2026-09-30.csv",
+    "exposure_declarations_2027.xlsx",
+    "vehicle_schedule_log_2022-2026.csv"
   ],
   "deliverables": [
     "retention_2027.xlsx",
@@ -18,9 +20,10 @@
     "5,000,000",
     "25,000",
     "500,000",
-    "84.7",
-    "364.7",
-    "449.4"
+    "10,000,000",
+    "85.0",
+    "375.0",
+    "460.0"
   ],
   "forward_dated": {
     "vehicle_schedule_log_2022-2026.csv": "deletes and adds keyed before they take effect",

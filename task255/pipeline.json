@@ -7,7 +7,7 @@
   "stage": 4,
   "stage_name": "check",
   "updated": "2026-10-26",
-  "stump": "The default path fits the lognormal by maximum likelihood to every occurrence of 2014 to 2021, each truncated at its deductible and the 25 at the retention censored, both at 2027 cost, and carries the actuary's 449.4 occurrences above $25,000 by that one curve: $2.0 million (0.92 above it); the law enforcement occurrences carry most of the tail and the one curve is shaped by the other parts; fitted for each coverage group and weighted by the actuary's two projections (84.7 and 364.7) the count first clears one at $4.0 million (1.2 above $3.0 million, 0.8 above $4.0 million).",
+  "stump": "The default path fits the lognormal by maximum likelihood to every occurrence of 2014 to 2021, each truncated at its deductible and the 25 at the retention censored, both at 2027 cost, and carries the actuary's 460.0 occurrences above $25,000 by that one curve: $2.0 million (0.94 above it); the law enforcement occurrences carry most of the tail and the one curve is shaped by the other parts; fitted for each coverage group and weighted by the actuary's two projections (85.0 and 375.0) the count first clears one at $4.0 million (1.2 above $3.0 million, 0.8 above $4.0 million).",
   "architecture": 1,
   "loops": 2,
   "precut": {
@@ -16,7 +16,7 @@
   },
   "leak": {
     "leak_py": "REVIEW (no LEAK; anchors and $25,000 declared stated inputs, the roster's withdrawal date and the log's forward dates allow-listed)",
-    "reader": ""
+    "reader": "round 1: two scored readers off the call ($2.0 million), exposure asks solved (75 per cent); round 2 running"
   },
   "duplicate_check": {
     "heart": "WARN (people, Gate G, decision and deliverables answered in the note)",
@@ -24,9 +24,9 @@
     "nearest": "task255 lineage 0.28, task202 0.06"
   },
   "judge": {
-    "verdict": "",
-    "disposition": "",
-    "report": ""
+    "verdict": "DETERMINISTIC (round 1, premium asks)",
+    "disposition": "APPROVE",
+    "report": "/tmp/determinism-check-task255-loop2-56264/verdict.md; round 2 pending"
   },
   "returned": [
     {
@@ -42,7 +42,7 @@
       "commit": "STATUS: task255 FAILED_TO_STUMP"
     }
   ],
-  "resume": "Loop 2 stage 4 running: scored readers r255a (sonnet) and r255b (opus) on fresh copies, determinism judge writing task255/determinism_check_report_loop2.md. Stage 3 green: 281 checks, verify, byte-identical rebuilds, figures_check 93, precut 51, pair.py ceiling 35.4. Next: score both readers (score_reader.py with the hand-picked keys), fix findings in the generator, then RESHIPPED (task255) with target.zip and golden force-added, ledger row, board.",
+  "resume": "Loop 2 stage 4, round 2 on the final pack (layer-loss ask, anchors 85.0 and 375.0, premiums dropped): readers r255c (sonnet) and r255d (opus) running; the judge brief being rebuilt by the determinism-judge agent, then one isolated judge thread. Round 1 (premium and class asks): both readers off the call at $2.0 million, both solved all 21 exposure figures; judge DETERMINISTIC, APPROVE. Stage 3 green: 282 checks, verify, byte-identical rebuilds, figures_check 71, precut 51, leak.py REVIEW, pair.py 56.0. Next: score readers with the hand-picked keys, take the verdict, RESHIPPED commit with target.zip and golden.",
   "approved": null,
   "delivered": "2026-10-13",
   "portal": "FAILED_TO_STUMP",

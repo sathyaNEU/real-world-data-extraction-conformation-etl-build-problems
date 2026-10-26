@@ -89,7 +89,7 @@ def run(target, golden, st, metadata):
     texts = {f: _pdf_text(os.path.join(target, f)) for f in files if f.endswith(".pdf")}
     texts[D.NOTES] = open(os.path.join(target, D.NOTES)).read()
     banned = ["%.2f" % fig["curves"][k][x] for k in ("LE", "OT") for x in ("mu_2dp", "sigma_2dp")]
-    banned += ["%.2f" % fig["counts"][str(a)] for a in (3_000_000, 4_000_000)] + ["4,000,000 is"]
+    banned += ["4,000,000 is", "{:,}".format(fig["layer_loss_100k"]["4000000"])]
     for f, t in texts.items():
         for v in banned:
             ok(v not in t, "R1: %s carries no fitted figure (%s)" % (f, v))
@@ -105,7 +105,7 @@ def run(target, golden, st, metadata):
     ok(lad["G"]["pick"] == fig["call"]["attachment"] == 4_000_000, "golden $4.0 million")
     ok(g[4_000_000] <= 0.83 and g[3_000_000] >= 1.18, "golden margins: 0.82 at $4.0m, 1.19 at $3.0m")
     r3 = lad["R3"]["counts"]
-    ok(r3[2_000_000] <= 0.93 and r3[1_500_000] >= 1.6, "R3, the pooled curve: 0.92 at $2.0m, 1.61 at $1.5m")
+    ok(r3[2_000_000] <= 0.95 and r3[1_500_000] >= 1.6, "R3, the pooled curve: 0.94 at $2.0m, 1.65 at $1.5m")
     ok(lad["shift"]["counts"][2_500_000] <= 0.8 and lad["shift"]["counts"][2_000_000] >= 1.15, "one spread at $2.5m")
     ok(lad["G_closed"]["counts"][2_500_000] <= 0.99 and lad["G_closed"]["counts"][2_000_000] >= 1.3,
        "the groups on the closed files alone at $2.5m")
@@ -122,6 +122,17 @@ def run(target, golden, st, metadata):
     # a curve per coverage part, the other parts weighted by their share above $25,000, converges at one decimal
     ok(all(round(lad["parts5"]["counts"][a], 1) == round(g[a], 1) for a in W.OPTIONS),
        "SF18: a curve per coverage part reproduces every count at one decimal")
+    lay = lad["G"]["layer"]
+    ok(all(int(round(lad["parts5"]["layer"][a] / 1e5)) == int(round(lay[a] / 1e5)) for a in W.OPTIONS),
+       "SF18: a curve per coverage part reproduces every layer loss to the hundred thousand")
+    edge = lambda v, u: u / 2 - abs(v - round(v / u) * u)
+    ok(min(min(edge(lay[a], 1e5), edge(lad["parts5"]["layer"][a], 1e5)) for a in W.OPTIONS) >= 20_000,
+       "every layer loss, golden and five-part, at least $20,000 from its rounding edge")
+    for k in ("R0", "R1", "R2", "R3", "shift", "G_closed", "G_nominal"):
+        ok(all(round(lad[k]["layer"][a] / 1e5) != round(lay[a] / 1e5) for a in W.OPTIONS),
+           "%s's layer losses miss at every attachment" % k)
+    ok(all(round(fig["layer_loss"][str(a)] / 1e5) * 100_000 == fig["layer_loss_100k"][str(a)] for a in W.OPTIONS),
+       "layer losses in figures.json")
     paid = A.group_fits(A.fit_rows(rec, open_at="paid"))
     ok(all(abs(paid[k][0] - curves[k][0]) < 1e-6 and abs(paid[k][1] - curves[k][1]) < 1e-6 for k in A.GROUPS),
        "SF15: an open suit read at its payments or at payments and reserves is the same record (the layer paid)")
@@ -298,7 +309,7 @@ def run(target, golden, st, metadata):
 
     # ------------------------------------------------------------ distractors: nothing reads them
     for f in meta["distractor_files"]:
-        ok(f in (R.DEDHIST, R.TRIANGLES), "distractor %s is one of the two declared" % f)
+        ok(f in (R.DEDHIST, R.TRIANGLES, R.DECL, R.LOG), "distractor %s is one of the four declared" % f)
     tri = list(csv.DictReader(open(os.path.join(target, R.TRIANGLES))))
     last = {int(r["accident_year"]): float(r["paid_to_date"]) for r in tri if r["evaluation_date"] == "2026-09-30"}
     for ay in W.FIT_YEARS:
@@ -330,11 +341,8 @@ def run(target, golden, st, metadata):
     ok([r[0] for r in body] == list(W.OPTIONS), "workbook lists the seven attachments")
     for r in body:
         ok(abs(r[1] - round(fig["counts"][str(r[0])], 1)) < 1e-9, "workbook count at %d" % r[0])
-        ok(r[5] == fig["premiums"][str(r[0])], "workbook premium at %d" % r[0])
-    ex = wb["Rated exposure"]
-    got = {r[0].lower(): r for r in ex.iter_rows(min_row=5, max_row=11, values_only=True)}
-    for k, e in fig["by_class"].items():
-        ok(got[k][2] == e["toe_000"] and got[k][3] == e["units"] and got[k][1] == e["members"], "exposure sheet %s" % k)
+        ok(r[3] == fig["layer_loss_100k"][str(r[0])], "workbook layer loss at %d" % r[0])
+    ok(wb.sheetnames == ["Retention 2027", "Notes"], "the workbook's sheets")
     ok(os.path.getsize(os.path.join(golden, G.CHART)) > 20_000, "the chart rendered")
     print("checks: %d assertions, %d failed" % (N[0], len(FAILED)))
     if FAILED:

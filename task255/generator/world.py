@@ -28,13 +28,11 @@ ANCHOR = 25_000                        # the actuary's frequency is counted abov
 OPTIONS = (1_000_000, 1_500_000, 2_000_000, 2_500_000, 3_000_000, 4_000_000, 5_000_000)   # quoted attachments
 BAR = 1.0                              # the policy: no layer the pool expects to be reached more than once a year
 # the actuary's expected 2027 occurrences costing more than $25,000 ground up: law enforcement liability, the other parts
-COUNT_LE, COUNT_OT = 84.7, 364.7
+COUNT_LE, COUNT_OT = 85.0, 375.0
 COUNT_25K = round(COUNT_LE + COUNT_OT, 1)
 # the broker's indications: per attachment, the rate per $1,000 of the members' 2027 operating expenditures and the
 # rate per unit on the members' vehicle schedules at 30 September 2026, for $10,000,000 per occurrence above it
-QUOTES = {1_000_000: (0.2412, 71.40), 1_500_000: (0.1928, 56.85), 2_000_000: (0.1597, 48.65),
-          2_500_000: (0.1385, 41.20), 3_000_000: (0.1194, 36.30), 4_000_000: (0.0981, 31.75),
-          5_000_000: (0.0815, 31.75)}
+QUOTES = {1000000: (1.7608, 521.22), 1500000: (1.4074, 415.00), 2000000: (1.1658, 355.14), 2500000: (1.0111, 300.76), 3000000: (0.8716, 264.99), 4000000: (0.7161, 231.78), 5000000: (0.5949, 231.78)}
 DED_CUTS = (0.15, 0.42, 0.72)          # members ranked by size: the largest carry the $100,000 deductible
 
 # liability claim cost index (accident year average, 2014 = 100.0), the 2027 value the study's projection
@@ -124,6 +122,7 @@ def occurrences(rng, mem):
     """Every ground-up liability occurrence of accident years 2014 to 2026 (2026 to the evaluation date), with its
     cost at 2027 cost and in its own year's dollars; the pool's record is the subset above each deductible."""
     out = []
+    seen = set()
     total_w = {y: sum(m["w"] for m in mem if active(m, y)) for y in ALL_YEARS}
     w27 = sum(m["w"] for m in mem if active(m, 2026))
     for y in ALL_YEARS:
@@ -142,6 +141,9 @@ def occurrences(rng, mem):
             part = PARTS[int(rng.choice(5, p=mix / mix.sum()))]
             x27 = float(rng.lognormal(*SEV[part]))
             d = dt.date(y, 1, 1) + dt.timedelta(days=int(day[k]))
+            while (m["no"], d) in seen:          # a member's second occurrence of a day is dated the next free day
+                d = d + dt.timedelta(days=1) if d < dt.date(y, 12, 31) else dt.date(y, 1, 1)
+            seen.add((m["no"], d))
             out.append({"ay": y, "date": d, "member": m["no"], "x27": x27, "part": part,
                         "x": x27 / factor(y), "ded": deductible_on(m, d), "ret": RETENTION[y]})
     out.sort(key=lambda o: (o["date"], o["member"], o["x27"]))

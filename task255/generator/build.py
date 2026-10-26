@@ -27,7 +27,7 @@ FILES = {
     "dedhist": R.DEDHIST, "tri": R.TRIANGLES, "policy": D.POLICY, "memo": D.MEMO, "study": D.STUDY,
     "quotes": D.QUOTES, "notes": D.NOTES,
 }
-DISTRACTORS = ("dedhist", "tri")
+DISTRACTORS = ("dedhist", "tri", "decl", "log")
 
 
 def build(out, quiet=False, st=None):
@@ -91,7 +91,7 @@ def cut_zip(root):
 def write_metadata(path):
     meta = {"task": "task255", "distractor_files": [FILES[k] for k in DISTRACTORS],
             "deliverables": ["retention_2027.xlsx", "attachment_test_2027.png"],
-            "stated_inputs": ["{:,}".format(a) for a in W.OPTIONS] + ["25,000", "500,000", "%.1f" % W.COUNT_LE,
+            "stated_inputs": ["{:,}".format(a) for a in W.OPTIONS] + ["25,000", "500,000", "10,000,000", "%.1f" % W.COUNT_LE,
                                                                      "%.1f" % W.COUNT_OT, "%.1f" % W.COUNT_25K],
             "forward_dated": {"vehicle_schedule_log_2022-2026.csv": "deletes and adds keyed before they take effect",
                               "excess_liability_indications_2027.pdf": "the indications' validity to December 15, 2026",
