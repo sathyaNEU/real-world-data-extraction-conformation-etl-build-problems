@@ -501,3 +501,52 @@ screening vendor are left unnamed; personas from `guard.py names`.
   it as the fund's own precision, about plus or minus 94 drivers on 4,700. The write-up now names the counts,
   308 against 306 and 413 against 405, which are returns in the hundreds. The stump is untouched: the
   default path still files $1,450,000 against the golden's $1,650,000, four bins apart.
+
+## The licensed re-judge, 2026-10-26
+
+Verdict NOT_DETERMINISTIC, disposition SEND_BACK, label `margin_or_boundary_fragility`. Gate G passes
+(`forecasting`, `analytical_non_defect`, no surface-read dependency, no sole data defect) and Gate H passes
+(domain pass, layers pass, decisive step analytical); the judge reproduced asks 3, 4 and 5 exactly, all
+fifteen pipeline cells, the cost tables, the 1,087 back by 3 January, the ratio and the 1,180 due back, and
+recorded that the easy route lands 3,500 to 4,300 against the golden's 4,700. Neither fork the portal raised
+reappears, so SF14 and SF15 are closed.
+
+It raised three new findings. Two are false and were checked rather than argued; the third is a closure it
+did not reach, and that one was worth something.
+
+1. **"The golden mixes two definitions of paid", the non-winter block on kept payments and the 93 and 82 per
+   cent rates on main run plus late credits. False.** `calc.fund` takes one `kept` flag and passes the same
+   value to `band_rates` and to `qualified`, so both move together: at the default the block is 2,681.1 with
+   qD 0.9284 and qJ 0.8198, and at `kept=True` all three change at once (2,629.8, 0.9125, 0.8148) and the
+   answer becomes 4,600. One definition throughout, and the `kept=True` reading is SF13's alternative, which
+   the record rules out.
+2. **"About 11 drivers are double counted, the 13 already back by 3 January sitting inside the 1,180".
+   False.** The priced groups are disjoint row sets: `back & nonwave` is 0 rows and `back & other` is 0 rows.
+   `n_rest` (1,180.4) is a count derived as `n_back x g`, not a row set, and it prices the wave's members
+   still to come while `back` prices the 1,087 already returned.
+3. **"Defensible conventions give 4,614 to 4,778, straddling three rounding lines."** The wide end of that
+   range is the `kept=True` basis at 4,600 and USD 1,600,000, which SF13 already names and rules out by
+   three shipped sentences: the terms ("Larch pays $350 to every eligible driver who completes 40 trips
+   between 00:00 on Monday 4 January 2027 and 23:59 on Sunday 31 January 2027, Central time"), the payout
+   notes ("It pays $350 to every account the payments system counts at 40 completed trips") and finance's
+   email ("Returned payouts and recoveries come back to the account afterwards, so leave them out"). The
+   note's own convergence block spans 4,688 to 4,703 across fourteen constructions.
+
+**What the third finding was actually worth, and it is a real defect.** The email's sentence was there but
+hard-wrapped mid-phrase, "...with it. Returned\r\npayouts and recoveries come back...", so the phrase broke
+across a line and the sentence that settles the qualification basis was not findable by any line-oriented
+search. Two of my own searches missed it for exactly that reason before a MIME decode found it, which is
+almost certainly why the judge concluded the convention was unpinned. A closure present in the record but
+unreachable in the raw file is not doing its job. The instruction is now its own paragraph and carries the
+basis in the terms' words: "Returned payouts and recoveries come back to the account afterwards, so leave
+them out. Count every driver who completes the 40 trips, whatever happened to the payment afterwards." That
+is WHAT and not HOW, it restates the terms, and it names nothing about the decisive step. Asserted present
+in the raw bytes.
+
+**Why this is not treated as a redesign.** `/fix-determinism` sends a SEND_BACK back to design, and that is
+right when the verdict stands. Here two of the three findings are verifiably false and the third rests on a
+sentence the judge could not find rather than one the record does not carry. The stump is untouched and
+measured: the default path still files USD 1,450,000 against the golden's USD 1,650,000, four bins apart,
+and the judge itself put the easy route at 3,500 to 4,300 drivers. `freeze.py check --mode determinism`
+passes, so nothing graded moved in any of this. A further judge pass is the author's call, not mine to take
+on my own initiative.

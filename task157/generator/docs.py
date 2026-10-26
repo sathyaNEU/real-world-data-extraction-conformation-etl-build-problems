@@ -143,8 +143,12 @@ EMAIL_BODY = [
     "who aren't driving right now, returning and new, since the terms pay them the same way. Please don't pad it; if "
     "the main run comes in over, we cover the difference in February.",
     "Treasury moves money in $50,000 steps, so round it to the nearest $50,000, and send the number of drivers you "
-    "expect to qualify with it. Returned payouts and recoveries come back to the account afterwards, so leave them "
-    "out.",
+    "expect to qualify with it.",
+    # Its own paragraph: wrapped inside the one above, the phrase broke across a line and the sentence that
+    # settles the qualification basis stopped being findable in the raw file. The second clause restates the
+    # terms' basis, which is WHAT and not HOW, so it pins the convention without naming the decisive step.
+    "Returned payouts and recoveries come back to the account afterwards, so leave them out. Count every driver "
+    "who completes the 40 trips, whatever happened to the payment afterwards.",
     "Any time Sunday is fine.",
     "Kathy",
 ]

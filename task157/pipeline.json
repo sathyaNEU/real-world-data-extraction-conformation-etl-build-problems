@@ -27,7 +27,16 @@
  "judge": {
   "verdict": "DETERMINISTIC",
   "disposition": "APPROVE (one residual Gate C caution on the driver count's lower rounding edge, recorded in the design note ## Residual)",
-  "report": "task157/determinism_check_report.md"
+  "report": "task157/determinism_check_report.md",
+  "rejudge_2026_10_26": {
+   "verdict": "NOT_DETERMINISTIC",
+   "disposition": "SEND_BACK",
+   "label": "margin_or_boundary_fragility",
+   "gate_g": "pass, forecasting, analytical_non_defect, no surface-read dependency, no sole data defect",
+   "gate_h": "pass, domain pass, layers pass, decisive step analytical",
+   "portal_forks": "SF14 and SF15 did not reappear; both closed",
+   "author_disposition": "two of the three new findings verified false (the kept flag feeds band_rates and qualified together, so one definition of paid throughout; the priced groups are disjoint row sets, back & nonwave 0 rows and back & other 0 rows); the third rests on SF13's kept-payments alternative, which three shipped sentences rule out. The finding's real content was that finance's email hard-wrapped the governing phrase across a line so no line-oriented search found it; that instruction is now its own paragraph and asserted present in the raw bytes. Nothing graded moved, freeze.py PASS. A further judge pass is the author's call."
+  }
  },
  "returned": [
   {
