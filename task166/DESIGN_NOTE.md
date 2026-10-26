@@ -569,3 +569,4 @@ Stage 3, 2026-10-25, worktree build on main at 876c00de (pulled with the work au
 - A statement on a loan funded earlier in its month, at stage 3: the generator quoted the loan's exit balance, a balance it
   did not yet have, and one first-mortgage statement failed to tie; the desk now quotes the amount funded for a loan
   funded in the statement's month, and no statement predates its loan's funding.
+- Portal round 1 on architecture 2 (2026-10-26): both responses landed the call, Muskegon and the North at about $40 million with the Lakeshore second, the golden; reading each stack's payoff off its blended first-plus-home-equity rate, chosen over the own-rate and first-only curves on fit and back-test, is a reflex for the portal's models, as stage 4's Opus reader showed, so architecture 2 is spent and the build re-roots off the enumerate-and-back-test chain.

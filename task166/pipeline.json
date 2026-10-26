@@ -1,12 +1,12 @@
 {
  "task": "task166",
  "owner": "sathya8571",
- "status": "SHIPPED",
+ "status": "RETURNED",
  "domain": "banking-credit-financial-risk",
  "objective": "forecasting",
- "stage": 5,
- "stage_name": "ship",
- "updated": "2026-10-25",
+ "stage": 1,
+ "stage_name": "draw",
+ "updated": "2026-10-26",
  "stump": "Fitting the home equity payoffs on each loan's own note rate against the posted home equity rate names Grand Rapids at about $60 million, and reading the lock-in off each first mortgage's own rate names the Lakeshore; the step that lands it there is reading a second lien's payoff off one of the two loans, when a member pays the second off by refinancing the whole debt on the house, which the stack's blended rate at the two balances against the posted 30-year rate decides: Muskegon and the North's large 2024 to 2026 taps sit behind small seasoned first mortgages at 3.5 to 4.75 per cent, so those stacks blend near 6.5 per cent, come into the money as the planning path falls, and pay off about $40 million.",
  "architecture": 2,
  "loops": 0,
@@ -36,13 +36,20 @@
    "portal": "round 1 on the shipped pack (delivered 10-18): call landed by both responses, each designating Fixed-rate commercial real estate at an averaged +200 bp loss of $150 million (the golden), with overlay_designation_2027.xlsx and overlay_designation_alco.pptx built; the decisive step (each balloon's extension conditioned on refinance cover at the planning rate) is a reflex for both portal models",
    "repair": "design (call landed: back to stage 2, the decisive step redesigned or the architecture re-rooted)",
    "commit": ""
+  },
+  {
+   "date": "2026-10-26",
+   "portal": "round 1 on architecture 2 (f022d2a9, delivered 10-25): call landed by both responses, each opening the pilot in Muskegon and the North at about $40 million of 2027 payoffs with the Lakeshore second (the golden), with he_payoff_pilot_2027.xlsx and payoff_quotes_by_center.png built (137 and 163 resources reviewed, 32 minutes each); the whole-stack refinance incentive chosen over the own-rate and first-only curves on fit and back-test is a reflex for the portal's models, as stage 4's Opus reader showed",
+   "repair": "re-root (architecture 3, off the enumerate-and-back-test chain; a call-only Opus probe on a prototype pack before the build)",
+   "commit": ""
   }
  ],
- "resume": "portal return: a landed call re-roots to architecture 3 off the enumerate-and-back-test chain (grain, population or censoring); a determinism return goes to /fix-determinism, a rubric at or over 50 with the call held to /fix-rubric",
+ "resume": "architecture 2 spent on the portal 2026-10-26 (both responses landed the call); re-root at stage 1 to architecture 3: a decisive step off the enumerate-and-back-test chain (the unit, the population or the record's censoring), measured first by a call-only Opus probe on a prototype pack, built only once the probe misses",
  "approved": null,
  "delivered": "2026-10-25",
  "portal": {
-  "round1": "2026-10-25: not stumped, both responses on the call (CRE, $150 million)"
+  "round1": "2026-10-25: not stumped, both responses on the call (CRE, $150 million)",
+  "round1_v2": "2026-10-26: not stumped, both responses on the call (Muskegon and the North, $40 million, the Lakeshore second)"
  },
  "portal_id": "",
  "portal_status": "",
