@@ -1,87 +1,132 @@
 # task137 design note
 
-Architecture 2, drawn 2026-10-25 (wave 2 slot, Forecasting lane, sathya8571), a re-root after portal round 1, decisive step
-re-registered 2026-10-26. Architecture 1 (Kaimai Building Society's maturity calls booked in agent-hours, seed FC08) was
-landed on its golden by a portal response; its identity is in the card's lineage and its dead ends below. Nothing of the
-seed's world is kept, and no banking: this draw is a care home group's 2027 baseline of emergency admissions for adverse
-drug events. The draw's first two decisive steps (the interacting pairs a resident holds; the restarts of the medicines the
-autumn 2026 programme stopped) died before any pack was cut, the second to two isolated Opus probes (`## Tried and
-rejected`); both stay as rungs every careful solver climbs.
+Architecture 3, drawn and registered 2026-10-26 (wave 2 slot, Forecasting lane, sathya8571), the number's third and last
+architecture. Architecture 1 (Kaimai Building Society's maturity campaign booked in agent-hours, banking) was landed on
+the portal; architecture 2 (Calderbrook Care's 2027 adverse-drug-event admissions, the care world) lost every decisive
+step it held to isolated probes before a pack shipped. Both identities are in the card's lineage and their dead ends in
+`## Tried and rejected`; nothing of either world is kept. This draw is Harrowdown Police's forecast of the first-year
+detentions at its new city-centre custody hub.
 
 ## Draw
 
-1. Card: `.claude/skills/fingerprint/cards/task137.json`, architecture v2, re-registered 2026-10-26 (`guard.py check` WARN,
-   `ban.source` only: every pack on file is constructed; `test.same_puzzle_older` and `test.same_driver_older` NOTE,
-   differentiated against task133, task196, task180 and task305).
-2. Pairing: Healthcare Delivery & Health Economics (client domain) / `utilization-access-demand-forecasting` /
-   Forecasting & Predictive Modeling. The deciding quantity is a care provider's 2027 emergency admissions for adverse
-   drug events over every bed it provides, a utilisation forecast whose denominator is two populations.
-3. Niche: Calderbrook Care, a care home group in the north of England (34 homes, about 2,400 long-term beds, six homes
-   joined from Ferncliffe Lodge Homes in April 2025). Its 2027 gain-share agreement with Wethermoor Integrated Care Board
-   pays against a baseline Calderbrook proposes: the emergency admissions for an adverse drug event of every person
-   accommodated in its beds during 2027. Since April 2025 the board has also bought discharge-to-assess step-down beds in
-   six of the homes (40 beds), booked through the board's placement system; the 2027 contract buys 180, across fifteen
-   homes, from 1 January 2027.
-4. Call and shape: the 2027 count (`quantity_figure`, question form how-many), rounding fixed at stage 2 from the family
-   spread; shape `02` (the call with its path by quarter and an ask layer counted in `## Ask sheet`).
-5. Mechanism keys: gap population (the residents register, and the returns drawn on it, are not everyone the baseline
-   counts); pattern none, generators G12 (the register's silence about the guests read as nobody there), G3 (the register
-   records residents, the beds accommodate guests too), G6 (the forward year's beds hold four and a half times as many
-   guests); Gate G `forecasting`; strategy `population_selection`.
-6. Layer 2: `field_method`, pattern `own:utilisation-denominator-covers-the-step-down-beds-off-the-register`.
-7. Furniture: forum `executive_team` (the executive team signs the agreement); forcing event `purchase_order_or_contract`
-   (the 2027 gain-share agreement and step-down contract); organisation family `hospital_or_health_provider`; role family
-   `operations_director` (the director of clinical services prepares the baseline); context artifact `capacity_report`
-   (the homes' 2027 bed plan, kept for staffing and registration); calibration `realised_outcome_roster` (the board's
-   placement returns since April 2025: each step-down placement's dates and how it ended).
-8. Spine: Fellside Pharmacy Services' monthly dispensing for the long-term residents, January 2023 to December 2026.
-   The forcing files are the board's placement returns and the bed plan; other files at stage 3.
-9. Deliverables: `ade_admissions_forecast_2027.xlsx` and `review_impact_note.docx` (checked against the last three builds
-   at stage 2).
-10. People, drawn with `guard.py names --geo "United Kingdom" --seed 137`: Katherine Storey, Hugh Metcalfe, Charlene Dale,
-    Richard Davies, Emma Roberts.
+1. Card: `.claude/skills/fingerprint/cards/task137.json`, architecture v3, registered 2026-10-26T05:10:19Z on main
+   437a0102. `guard.py check` on the filed card: PASS, with NOTEs only (`test.same_puzzle_older` differentiated against
+   task133 and task196, `test.same_driver_older` against task133 and task180, `driver.near` 0.25 against this slot's
+   never-registered architecture 3 candidate 2).
+2. Pairing: Urban & Regional Science (client domain) / `municipal-service-demand-resource-allocation` / Forecasting &
+   Predictive Modeling. The deciding quantity is a public service's demand at a new site, the detentions a custody suite
+   books in its first year, forecast from the service's demand model over the site's catchment and used to size the
+   site's cells and staff.
+3. Niche: Harrowdown Police, a metropolitan county force in England (124 wards in five districts, four custody suites:
+   Northgate and Eastmoor in Harrowdown city, Southfields and Wendle Cross in the county). The Tanner Street custody hub
+   opens on 1 April 2027 and takes the six city centre wards from Northgate and Eastmoor; the fit-out contract signed on
+   9 December 2026 fixes its cells and detention officer posts from its planning figure for 2027-28.
+4. Call and shape: the hub's 2027-28 detentions to the nearest 250 (`quantity_figure`, how-many); shape `other`: the
+   call with its two components (the force's own arrests by the model, British Transport Police's arrests at the hub's
+   two stations) and the note's chart, plus asks on the four existing suites' 2025-26 operations for the custody
+   healthcare tender, counted in `## Ask sheet` at stage 2.
+5. Mechanism keys: gap population (the force's arrest records are not everyone its suites book); pattern none,
+   generators G12 (the records' silence about BTP's arrests read as nobody there), G5 (the railway is policed by another
+   force, whose custody the territorial force provides), G3 (the records count the force's arrests, the suite books every
+   detainee from its wards); strategy `population_selection`; Gate G `forecasting`, not `method_or_model_selection`,
+   because the graded object is a forward projection whose history is read correctly and the step is the new site's
+   intake rather than a choice between fitted models (task305's judges read its origin set as model selection because
+   its call was a site pick).
+6. Layer 2: `field_method`, pattern `own:custody-demand-counts-every-arresting-agency-not-the-force-records-alone`.
+7. Furniture: forum `executive_team` (the chief officer team signs the fit-out contract); forcing event
+   `purchase_order_or_contract`; organisation family `local_government` (a territorial force under a locally elected
+   commissioner; `government_agency` is spent against task121); role family `capacity_planner` (Custody Services
+   Planning); context artifact `filed_model` (the custody demand model note); calibration `existing_book_actuals` (the
+   four suites' arrest records against the model). `committee_or_panel` is spent against task121 as well.
+8. Spine: the force's arrest records, April 2021 to September 2026 (about 135,000 rows), one row per arrest by a
+   Harrowdown officer. The forcing file is data.police.uk's street-level crime for the force area as the community safety
+   partnership downloads it, which carries British Transport Police's crime at the stations; the custody fact sits in
+   the custody service's suite allocation notes (stage 2). The asks' files are fixed at stage 2.
+9. Deliverables: `tanner_street_planning_figure_2027-28.xlsx` and `hub_planning_note.docx`.
+10. People, drawn with `guard.py names --geo GB --seed 137`: Charlene Dale, Hugh Metcalfe, Emma Roberts (Patricia,
+    Rachel, Duncan, Rebecca and Richard repeat older builds' first names). None appears in the prompt.
 
-**Data-native sentence.** A discharge-to-assess guest arrives from a hospital ward for a few weeks of assessment before a
-decision on long-term care, in the first weeks after a stay when a changed regimen is most likely to bring them back, and
-the board books the bed on its own placement system: the guest is never on Calderbrook's residents register, so the
-trusts' returns, drawn on the register's NHS numbers, never carry their admissions, and the record the residents' forecast
-is built and checked on is complete without them.
+**Spent mechanisms on the ground** (`guard.py mechanisms --objective forecasting --strategy population_selection`, seven
+builds): task22 a declining segment masked by inflations of its own base; task132 a wear curve restarted by
+replacements; task136 an intervention enrolling units about to take up anyway; task141 outcomes recorded only for the
+units a decision-maker let through; task150 arrivals from outside at a steady count beside transfers from siblings;
+task168 capped units completed from slow-season builds; task137 v2 short-stay occupants booked through another
+organisation's system. None prices a second agency's caseload booked into the operator's own facility.
+
+**Slot screens.** `guard.py slots` on the driver's words returns task117, task179, task134, task182, task190, task194,
+task198 and task229, none an outside agency's intake; on the setting's words (custody, police, detention, station,
+arrest) it returns task141 (a county detention centre's bed-days, defendants boarded out), task169 (arrests per day out
+of custody under a revocation change), task473 (blood draws under a sheriff's agency number) and task273, none a
+suite's intake from another force's arrests.
+
+**Probes before the draw.** The candidate was probed before registration on a six-file pack (`t137_a3/probe7` in the
+session scratchpad: the planning brief, the model note, the arrest records, the street-level extract, the allocation and
+the LSOA lookup; generator `p7lib.py`, seed 7216), call plus the over-24-hour share, by two isolated Opus probes.
+- p137i filed 4,500 (4,515.7). It ran model v2 ward by ward, reproduced the published validation exactly (5,904, 3,093,
+  7,883 and 7,435), checked pooled growth, a flat level, the last twelve months and a seasonal Poisson, and wrote that the
+  street crime file and the LSOA lookup were not needed: the file includes British Transport Police records, and BTP
+  detainees are not in the force arrest file and are not counted. Ask 14.8.
+- p137j filed 4,500 (4,516). It ran the same model and six alternatives and wrote that the street file has 1,740 of its
+  2,022 BTP crimes in the hub wards around the station, that BTP detainees are not in the force's arrest register, and
+  that if BTP books into Tanner Street the hub will see extra detentions not captured here; it left that as a caveat.
+  Ask 14.8.
+Both saw the outside body and dismissed it, the survivor pattern (task305's out-of-region cardholders, task306's
+imports). The golden on that pack was 4,750 (4,779.0); two of two missed. Their realism notes are fixed at stage 3: a
+possible duplicate pair (two people arrested together, now an ordinary co-arrest pattern); about 750 arrests booked away
+from their ward's suite (overflow, kept); demand flat for five years (year-to-year movement, the 2021-22 COVID tail and
+ward shifts with their causes); custody references running one to N with no gaps, which p137j read as a complete
+booking register (the arrest records are keyed by the force's arrest reference instead); `detention_hours` stopping at
+charge (p137i), which ask A turns on.
+
+**The Gate B fact.** p137j's own words, "if BTP books into Tanner Street", are the judge's question, so the fact that a
+detainee is booked at the suite serving the ward of arrest, whatever force or agency arrested them, is filed in the files
+as the ordinary custody-service fact it is, in the custody service's suite allocation notes among that document's other
+operating notes; never in the brief's estimand sentence, never as a pointer, and tested at stage 2 by the single-use and
+deletion rules. If filing it turns the probes' caveat into a landing, that is a Gate F failure for stage 4 to catch.
+
+**Data-native sentence.** British Transport Police polices Harrowdown and Kingsway stations, inside two of the six
+wards, and with no cells of its own books the people its officers arrest there into the force suite serving the ward;
+their arrests are BTP's, so the force's arrest records, on which the custody demand model is built and validated, hold
+none of them, and their only trace in the pack is BTP's recorded crime at the stations in the partnership's
+data.police.uk extract, about one per cent of the force area's recorded crime and one crime in sixteen in the six wards.
 
 ## Three rules
 
-Task type: utilization-access-demand-forecasting (healthcare delivery), which serves Forecasting in the taxonomy: a care provider's emergency admissions in a coming year over every bed it provides.
-Domain test: the deciding quantity is the 2027 emergency admissions for adverse drug events over every bed-day Calderbrook provides, a utilisation forecast whose denominator is two populations with different exposure: long-term residents, whose risk follows the medicines they hold, and discharge-to-assess guests in their first weeks out of hospital, whose readmission risk the step-down placements' own outcomes measure; a hotel's guests have no discharge-to-assess pathway, no first weeks after a hospital stay and no medicines the risk follows.
-Swap: "the baseline counts the step-down guests the register never holds" with a hotel group's guests and its loyalty members reads as nothing: there is no placement booked by a commissioner, no assessment after a hospital stay, and no adverse drug event whose rate a readmission return measures.
-Layer 1: two pharmacy suppliers' feeds coded differently, the acquired homes' eMAR with its own resident numbers, the trusts' returns in two layouts with the adverse-effect codes in secondary positions, a coding backlog during one trust's system change, residents' NHS numbers in mixed formats, the board's placement return in its own layout; each is what these systems produce, none carries the call.
-Layer 2: field_method: the utilisation forecast's denominator is every occupied bed in 2027, so the residents' model (medicines, the autumn 2026 programme and its restarts) is completed by the step-down guests, sized from the bed plan and priced per occupied bed-month from the board's own placement returns.
-Decisive step: carrying the step-down guests as the second population of the baseline, their 2027 bed-months from the bed plan's 180 beds at the placements' measured occupancy, their adverse-drug-event readmissions per bed-month from the placement returns since April 2025, rather than taking the residents register as everyone the baseline counts.
-Not semantics: every field reads as what it is; the register is complete for residents, the returns for the register's patients and the placement return for the board's placements; no field says the guests are missing from the residents' forecast, and an analyst who reads every field correctly still forecasts the residents alone.
-Not rule application: the agreement files the WHAT (every person accommodated in Calderbrook's beds during 2027, from arrival to departure, emergency admissions with a Y40 to Y59 code, calendar 2027, the rounding) and nothing about how the count is built; executing it needs the guests modelled, which no rule describes.
-Analyst test: a strong analyst who links every file to the residents, fits the residents' admissions on their medicines, frailty and care type, carries the autumn reviews and the medicines' restarts, and back-tests on the 2024 and 2025 year-start cohorts files the residents' 2027 admissions, about a fifth under the golden (measured on the prototype at stage 2).
-Estimand: emergency admissions for an adverse drug event (a Y40 to Y59 code in any diagnosis position) beginning in calendar 2027 of every person accommodated in one of Calderbrook's beds at any time in 2027, each counted while they are accommodated there; filed in the agreement's Schedule 2.
-No decoy: nothing is planted; no memo, draft or figure argues for a count; the placement return is the board's own monitoring of the contract.
-No certified replay: no certified figure is reproduced; the residents' history reconciles and the guests' are measured from their own returns.
-Lesson: a provider's utilisation baseline is only as complete as its population; a commissioner's short-stay beds inside the provider's homes hold people its own register never sees, and their own placement returns are what price them; no build on file prices a care population that lives off the provider's register.
+Task type: municipal-service-demand-resource-allocation (Urban & Regional Science), which serves Forecasting in the taxonomy: a public service's demand at a new site from its demand model over the site's catchment, sized to set the site's cells and staff.
+Domain test: The deciding quantity is the hub's first-year detentions worked the way custody planning works a suite's demand, every detainee the suite books counted by the agency that arrested them and carried forward from the catchment's record; the hub's catchment holds two railway stations policed by British Transport Police, which has no cells of its own and books its arrests into the territorial force's suite for the ward, so the demand is the force's own arrests by its model plus BTP's arrests sized from BTP's recorded crime at the force's own arrests per crime by offence type, which moves the planning figure from 4,500 to 4,750.
+Swap: "the hub books another police force's arrests at the stations in its wards" put into a hospital's admissions or a utility's megawatt-hours loses its mechanism: no second health service admits patients with no beds of its own and hands them to the nearest hospital by ward, no utility's load is metered by another company that books it into the first's substations, and neither converts another body's recorded incidents into its own intake at an incident type's arrest rate.
+Layer 1: the arrest records' UTC clock against UK-time financial years, arrests booked away from their ward's suite when a suite is full or closed, co-arrests booked minutes apart, data.police.uk's anonymised map points and LSOAs rather than wards with two reporting forces in one file, a best-fit LSOA to ward lookup, arrest offence groups against data.police.uk's crime types with a warrant, recall or breach group that has no crime type; each is what these systems produce, and none carries the call.
+Layer 2: field_method: the demand model's population is every detainee booked into the suite, so the force's own arrests, modelled and validated on four suites, are completed by BTP's arrests at the hub's two stations, sized from BTP's recorded crime there at the force's own arrests per recorded crime by offence type.
+Decisive step: carrying British Transport Police's arrests at Harrowdown and Kingsway stations as the second population of the hub's demand, each crime BTP recorded there in 2025-26 at the force's own arrests per recorded crime of its type, rather than taking the force's arrest records as everyone the hub will book.
+Not semantics: every field reads as what it is: the arrest records hold the force's officers' arrests, the street-level file names the force that recorded each crime, and the allocation notes say a detainee goes to the ward's suite whoever arrests them; no field, code or definition says that BTP's arrests are missing from the model or how many there are, and the analyst who reads all of it correctly still counts the force's arrests, as both probes did.
+Not rule application: the model note files the WHAT (a suite's demand is the people arrested in the wards it serves) and the HOW for the force's own records (each ward's latest year carried at its capped three-year change), and no rule says which arrests the records omit or how to size them, so executing every filed rule over the arrest records files 4,500. Family measured on the probe pack: the enumerated own-arrest family (nine constructions: the model with and without its cap, Holt-Winters, the latest year, the three- and two-year means, a five-year trend, the last twelve months, the latest year at the force's change) spreads 4,418 to 4,516, every member printing 4,500; the standing family that carries BTP (twenty constructions: five own-arrest bases by four sizings, per-type rates with and without the warrant share, the force's overall rate and the hub wards' overall rate) spreads 4,688 to 4,806, every member printing 4,750; what rules the frame out is no filed clause but the record, BTP's 1,740 crimes at the two stations in the street-level file read with the allocation notes' routing by ward of arrest, and nothing names it.
+Analyst test: A strong analyst who reads every file correctly runs the custody demand model over the six wards' arrest records, confirms it on the four open suites (each forecast within 3 per cent), cross-checks a trend, Holt-Winters and the latest year and files 4,500, where the golden is 4,750; checks.py runs both on the generator's clean truth and on the pack.
+Estimand: the detentions the Tanner Street hub will book from 1 April 2027 to 31 March 2028 (the brief), a suite's demand being the people arrested in the wards it serves (the model note, 2.1), each detainee booked at the suite serving the ward of arrest whichever force or agency arrests them (the allocation notes).
+No decoy: nothing is planted: the arrest records are the force's own, the street-level file is data.police.uk's, the allocation is the custody service's; no memo, draft or figure argues for a count, no file states a figure for the hub, and no stakeholder figure is set up to be overturned.
+No certified replay: no certified or published figure sits in the pack to be reproduced; the model's validation table is its own back-test on the arrest records, and the sizing of BTP's arrests is recovered from no figure.
+Lesson: a custody suite's demand is every detainee booked into it, while a territorial force's arrest records hold only its own officers' arrests; where another force works inside the catchment with no cells of its own, as the railway police do at a city's stations, its arrests are demand the force's model never sees, and its own recorded crime read at the host force's arrests per crime is what prices it; no build on file prices a second agency's caseload booked into the operator's own facility.
 
 ## Default path
 
-1. Link Fellside's dispensing, the Ferncliffe eMAR and the reviews to the residents register; code each trust return's
-   admissions to an adverse drug event (Y40 to Y59 in any position) and link them to residents by NHS number.
-2. Fit the residents' monthly admission rate on their medicines and the interacting pairs, frailty, care type and time
-   since admission; carry the autumn 2026 programme's stops and the medicines' restarts month by month, the annual
-   reviews in 2027, exits and new residents (the probes' microsimulation).
-3. Back-test on the 2024 and 2025 year-start cohorts (both reconcile) and file the residents' 2027 total.
+1. Read the brief and the allocation: the six city centre wards move to Tanner Street on 1 April 2027.
+2. Count each of the six wards' arrests in the force's records by UK-time financial year, converting `arrested_utc`.
+3. Run the custody demand model as filed: each ward's 2025-26 arrests carried two years at its three-year average
+   change, capped at 10 per cent a year, summed over the six wards.
+4. Re-run the model's validation from 2024-25 and reproduce its table; cross-check Holt-Winters, the latest year, a trend
+   and the last twelve months, all in the same printed cell.
+5. Read the street-level file as context: BTP's rows are BTP's crimes and its detainees are not in the force's records,
+   so they are left out.
 
-Ends on: the long-term residents' 2027 admissions (figure measured on the prototype)
-Golden: the residents' admissions plus the step-down guests' (figure measured on the prototype)
+Ends on: 4,500 (4,515.7 on the probe pack)
+Golden: 4,750 (4,779.0 on the probe pack)
 
 ## Stump sentence
 
-A competent analyst models Calderbrook's long-term residents from the register, the dispensing and the trusts' returns,
-which reconcile month by month, and files the residents' 2027 admissions; the step that lands it there is taking the
-register as everyone the baseline counts, when the step-down guests in the board's discharge-to-assess beds live in the
-same homes, sit in no register and no return drawn on it, fill 180 beds from January 2027 against 40 before, and are
-readmitted for an adverse drug event at about five per cent a month.
+A competent analyst runs the force's validated custody demand model over the six wards' arrest records and files 4,500,
+where the golden is 4,750; the step that lands it there is taking the force's arrest records as everyone the hub will
+book, when British Transport Police officers policing Harrowdown and Kingsway stations, inside the hub's wards, have no
+cells of their own and book their detainees into the force suite serving the ward, about 260 a year from the 1,740
+crimes they record there, which sit in data.police.uk's street-level file and in none of the force's records.
 
 ## Tried and rejected
 
@@ -212,3 +257,34 @@ readmitted for an adverse drug event at about five per cent a month.
   own units, where a thorough modeller joins it and measures it, and the survivors (task305, task306) carry a body the
   frame does not hold; re-registered on the step-down guests.
 
+- The step-down guests as the decisive step (re-registered 2026-10-26, d1f3551d), probed on a six-file pack (probe3):
+  Opus probe p137c took the step, filing 500 (502.4) as 407.4 for the long-term residents plus 95.0 for the step-down
+  guests (37 drug-event readmissions over 23,576 occupied bed-days, 180 beds at 92.1 per cent occupancy), because Annex A
+  split each home's beds into long-term and step-down. No honest rebuild hides them: the golden is determinate only if a
+  file states the 2027 step-down beds (an annex, a bed plan, a purchase order or a registration variation), and the
+  probe cross-matched every file by NHS number (it found the 81 guests who became long-term residents, none on the
+  register); if the trusts' returns carry the guests, they are an unmatched block, and if they do not, the guests' rate
+  has no determinate source (an analogue choice is a fork). Dead in this world.
+- The households other councils placed in Hartmoor's hotels and hostels as the decisive step (architecture 3's first
+  candidate, a borough council's 2027 Part 7 assessments; probe pack probe5, golden 1,400 against the frame's 1,200, never
+  registered): Opus probe p137f landed it exactly, 1,400 (1,383) and both asks. The block bookings showed as 655 s208
+  notices in Q4 2026 against about 20 a quarter, and normalised addresses linked 151 of the 324 earlier placed households
+  to later cases (47 per cent, about 27 per cent within a year), a direct analogue in the same files, carried to the 2027
+  window by a Kaplan-Meier curve. Every landing so far had an anomaly that invites a look plus an analogue a join can
+  measure; the next candidate keeps the outside body steady and quiet, applies a validated model to a situation the
+  record's units never had, ties the body to the quantity by an indirect domain link, and forces its size and rate from
+  ordinary data with other uses.
+- The serving personnel beside a new urgent treatment centre as the decisive step (architecture 3's second candidate,
+  Harrowdown ICB's Wexley UTC, 2027 attendances; probe pack probe6, golden 12,500 against the model's 11,000, never
+  registered): Opus probe p137h landed it, 12,500 (12,456.7) and the ask. It ran the model as filed (10,846), then
+  calibrated the open centres' other attendances as 0.98 per cent of ICB attendances plus 0.99 times the model's demand
+  for the census defence population, a fit that matched all three centres and explained Tolland's higher share by the
+  RAF station; it knew the personnel are registered with Defence Medical Services, and it excluded the prison and the
+  halls students correctly. Defence was the communal establishment table's largest category, and the open centres
+  carried enough of it to calibrate the rate. The next candidate's outside body is small wherever the solver can
+  measure it, absent from the open units, concentrated on the new one, and sized from data the model does not use.
+
+- Re-root to architecture 3 (2026-10-26): architecture 2, the care world, is spent on probes (the pairs, the restarts and
+  the step-down guests above), so the number moves to urban-regional-science / municipal-service-demand-resource-allocation
+  with nothing of Calderbrook kept; architecture 3's first two candidates (above) died at the probe gate before
+  registration, and the third, Harrowdown Police's Tanner Street custody hub, was missed by both probes (`## Draw`).

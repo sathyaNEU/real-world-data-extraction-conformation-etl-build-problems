@@ -2,17 +2,17 @@
   "task": "task137",
   "owner": "sathya8571",
   "status": "DESIGN",
-  "domain": "healthcare-delivery-health-economics",
+  "domain": "urban-regional-science",
   "objective": "forecasting",
   "stage": 2,
   "stage_name": "design",
   "updated": "2026-10-26",
-  "stump": "A competent analyst models Calderbrook's long-term residents from the register, the dispensing and the trusts' returns, which reconcile month by month, and files the residents' 2027 admissions; the step that lands it there is taking the register as everyone the baseline counts, when the step-down guests in the board's discharge-to-assess beds live in the same homes, sit in no register and no return drawn on it, fill 180 beds from January 2027 against 40 before, and are readmitted for an adverse drug event at about five per cent a month.",
-  "architecture": 2,
+  "stump": "A competent analyst runs the force's validated custody demand model over the six wards' arrest records and files 4,500, where the golden is 4,750; the step that lands it there is taking the force's arrest records as everyone the hub will book, when British Transport Police officers policing Harrowdown and Kingsway stations, inside the hub's wards, have no cells of their own and book their detainees into the force suite serving the ward, about 260 a year from the 1,740 crimes they record there, which sit in data.police.uk's street-level file and in none of the force's records.",
+  "architecture": 3,
   "loops": 0,
-  "card_registered": "2026-10-25T22:29:02Z",
-  "guard": "check on the registered card 2026-10-25: WARN three_rules.strategy_risk only (answered in the note's Three rules); structural tests NOTE, differentiated against task142, task148 v1, task173 v2",
-  "resume": "architecture 2, stage 2: decisive step re-registered 2026-10-26 on the step-down guests the baseline counts and the register does not hold (population_selection); probe pack under the session scratchpad t137_a2/probe3/ next, then the coordinator's isolated Opus call-only probe; the world is in task137/generator_new/",
+  "card_registered": "2026-10-26T05:10:19Z",
+  "guard": "check on the registered card 2026-10-26 (main 437a0102): PASS, NOTEs only (same_puzzle_older against task133 and task196, same_driver_older against task133 and task180, driver.near 0.25 against this slot's never-registered v3 candidate 2)",
+  "resume": "architecture 3 drawn and registered 2026-10-26 after the probe gate (p137i and p137j both filed 4,500 against the golden 4,750 on probe7); next: stage 2 design (readability screen, fork table, ladder, closure, the custody fact in the allocation notes with its single-use and deletion tests, the ask layer for the healthcare tender, prompt.txt) to precut exit 0, then stage 3 in task137/generator from p7lib's world with the probes' realism fixes",
   "architecture_1": {
     "status": "RETURNED",
     "domain": "banking-credit-financial-risk",
@@ -112,5 +112,12 @@
       "surface": "exit 0, five pairs promoted on card axes, each differentiated",
       "heart": "WARN (repeat.gate_g)"
     }
+  },
+  "architecture_2": {
+    "status": "SPENT",
+    "domain": "healthcare-delivery-health-economics",
+    "objective": "forecasting",
+    "updated": "2026-10-26",
+    "summary": "Calderbrook Care's 2027 adverse-drug-event admissions (the care world): the interacting pairs were the strong enumerator's pick, Opus probes p137a and p137b landed the restart clock, p137c and p137d took the step-down guests; card v2 registered 2026-10-26T01:09:08Z, moved to lineage at the architecture 3 registration"
   }
 }

@@ -1,154 +1,243 @@
 {
-  "task": "task137",
-  "architecture": "v2",
-  "drawn": "2026-10-26",
-  "slot_note": "wave 2 (new), re-rooted 2026-10-25 to architecture 2 in a new cell (healthcare utilisation forecasting, no banking); the decisive step re-registered 2026-10-26 after probes: the interacting pairs (an enumerator's out-of-sample pick) and the stopped medicines' restart clock (landed by two isolated Opus probes, 350 against 350) are rungs; the step is now the body of short-stay guests the baseline counts and the register does not hold",
-  "domain": "healthcare-delivery-health-economics",
-  "subdomain": "utilization-access-demand-forecasting",
-  "niche": "a care home group's 2027 baseline of emergency admissions for adverse drug events for its gain-share agreement with the integrated care board, counted over everyone accommodated in its beds during 2027, where the long-term residents' register, dispensing and the trusts' returns reconcile month by month while the board's discharge-to-assess step-down guests, booked through the board's placement system, rise from 40 beds to 180 in January 2027",
-  "objective": "forecasting",
-  "shape": "02",
-  "decision_type": "quantity_figure",
-  "answer_unit": "count",
-  "answer": "",
-  "answer_source": "",
-  "gap": [
+ "task": "task137",
+ "architecture": "v3",
+ "drawn": "2026-10-26",
+ "slot_note": "wave 2 (new), re-rooted 2026-10-26 to architecture 3 after the care world (architecture 2) was spent on probes; architecture 3's first two candidates (a borough council's homelessness assessments, households placed by other councils; an ICB's new urgent treatment centre beside a defence establishment) were landed by Opus probes p137f and p137h before registration, and this third candidate was missed by both isolated Opus probes p137i and p137j (4,500 against the golden 4,750) on a six-file probe pack before it was registered",
+ "domain": "urban-regional-science",
+ "subdomain": "municipal-service-demand-resource-allocation",
+ "niche": "a police force's forecast of a new city-centre custody hub's first-year detentions from its ward-based custody demand model, validated on the four suites already open, when the hub's six wards hold the city's main railway station, where British Transport Police officers, with no cells of their own, arrest and book their detainees into the force suite that serves the ward, and the force's arrest records hold none of them",
+ "objective": "forecasting",
+ "shape": "other",
+ "decision_type": "quantity_figure",
+ "answer_unit": "count",
+ "answer": "",
+ "answer_source": "",
+ "gap": [
+  "population"
+ ],
+ "pattern": [
+  "none"
+ ],
+ "generators": [
+  "G12",
+  "G5",
+  "G3"
+ ],
+ "gate_g": "forecasting",
+ "calibration_form": "existing_book_actuals",
+ "stump_strategy": "population_selection",
+ "decisive_rule_filed": false,
+ "official_decoy": false,
+ "validated_decoy": false,
+ "context_artifact": "filed_model",
+ "stump_class": "analytical",
+ "analyst_test": "A strong analyst who reads every file correctly runs the force's custody demand model over the six wards' arrest records, confirms it on the four open suites (0.982 to 1.014), checks it against Holt-Winters, a trend and the latest year (4,418 to 4,516) and files 4,500, because the arrest records hold every arrest Harrowdown officers make, while the British Transport Police officers who police Harrowdown and Kingsway stations, inside two of the six wards, book about 260 detainees a year into the force suite that serves the ward, sized from their 1,740 recorded crimes at the force's own arrests per crime: the golden is 4,750.",
+ "domain_test": "The deciding quantity is a custody suite's demand, the detentions it books, which a custody planner counts by arresting agency, and its population includes the arrests of a second police force that polices the railway with no cells of its own and books into the territorial force's suite for the ward; the size comes from that force's recorded crime on data.police.uk at the territorial force's arrests per crime by offence type. Swapping in a hospital's patients or a utility's meters loses the two forces, the custody arrangement between them and the arrest-per-crime conversion by offence type.",
+ "layer2_family": "field_method",
+ "layer2_pattern": "own:custody-demand-counts-every-arresting-agency-not-the-force-records-alone",
+ "layer1": [
+  "the force's arrest records, April 2021 to September 2026, times in UTC against UK-time financial years",
+  "data.police.uk street-level crime for the force area as the partnership downloads it, two reporting forces in one file, LSOAs not wards",
+  "a 2021 LSOA to ward best-fit lookup",
+  "arrest offence groups against data.police.uk crime types, with a warrant, recall or breach group that has no crime type",
+  "custody references numbered by suite and year, half a per cent of arrests booked away from the ward's suite",
+  "a validation table in the model note against the arrest records"
+ ],
+ "stakeholder_role": "the force's Estates and Custody Programme (the prompt speaks to the hub's fit-out contract)",
+ "role_family": "capacity_planner",
+ "scoring_unit": "per episode",
+ "spine": {
+  "file": "harrowdown_police_arrests_2021-04_2026-09.csv",
+  "rows": 135200,
+  "entity": "one arrest by a Harrowdown officer",
+  "grain": "arrest",
+  "source": "synthetic"
+ },
+ "forum": "executive_team",
+ "forcing_event": "purchase_order_or_contract",
+ "org_family": "local_government",
+ "world": {
+  "geography": "England (a metropolitan county force, Harrowdown and Carvell)",
+  "currency": "GBP",
+  "org_type": "territorial police force custody services",
+  "invented_names": [
+   "Harrowdown Police",
+   "Tanner Street custody hub",
+   "Northgate",
+   "Eastmoor",
+   "Southfields",
+   "Wendle Cross",
+   "Harrowdown station",
+   "Kingsway station",
+   "Harrowdown and Carvell Community Safety Partnership"
+  ],
+  "people": [
+   "Charlene Dale",
+   "Hugh Metcalfe",
+   "Emma Roberts"
+  ]
+ },
+ "deliverables": [
+  "tanner_street_planning_figure_2027-28.xlsx",
+  "hub_planning_note.docx"
+ ],
+ "opening_move": "question-first",
+ "question_form": "how-many",
+ "driver": "A new site's demand is forecast with a model validated on the existing sites over the units in the operator's own records, while part of the new site's intake will come from a second organisation that does the same work in the same territory, keeps no facility of its own and hands its cases to whichever of the operator's sites serves the area; the second organisation is a percent of the territory's recorded activity and absent from the operator's records, so the model reconciles wherever it is small and misses where it concentrates, at the new site.",
+ "driver_concrete": "Tanner Street's 2027-28 detentions are the six wards' arrests by Harrowdown officers (about 4,500 by the model) plus British Transport Police's arrests at Harrowdown and Kingsway stations, booked into the suite serving the ward, about 260 from 1,740 recorded crimes a year at the force's own arrests per crime.",
+ "stump": "A competent analyst runs the force's validated custody demand model over the six wards' arrest records and files 4,500, where the golden is 4,750; the step that lands it there is taking the force's arrest records as everyone the hub will book, when British Transport Police officers policing Harrowdown and Kingsway stations, inside the hub's wards, have no cells of their own and book their detainees into the force suite that serves the ward, about 260 a year from the 1,740 crimes they record there, which sit in data.police.uk and in none of the force's records.",
+ "mechanism_source": "design_note",
+ "differentiation": {
+  "task305": "task305's spend model misses holiday-park guests, a lodging whose occupants the census counts elsewhere, priced per pitch from card spend at park-side stores; here the missing intake is a second police force's arrests booked into the territorial force's cells, sized from its recorded crime at the host force's arrests per crime by offence type, and nothing about it is seasonal or a lodging.",
+  "task137": "v3's earlier candidates were households other councils placed in the borough (a referral body traced by notices) and serving personnel registered with another health service (a census table priced at the model's rates); this candidate's outsiders are another agency's officers working inside the territory, whose cases enter the operator's facility under a custody arrangement and are traced only by that agency's recorded crime.",
+  "task301": "task301 sizes a health burden on a population the pilot did not hold; here the population the model misses is the caseload of a second organisation with no facility of its own, booked into the operator's new site.",
+  "task184": "task184 detects crime hotspots in recorded incidents; here no incident is anomalous, and the station's recorded crime is used only to size the detentions another force will book into the new suite.",
+  "task150": "task150 v2 places classrooms by projecting enrolment over attendance areas whose new housing the district register does not yet hold; here nothing is new or registered late: the second force has policed the station for years and its arrests have never been in the host force's records.",
+  "task196": "task196 v2 recovers how many events two partial capture channels missed; here every arrest the force makes is recorded, and the missing demand is another agency's arrests at a site not yet open.",
+  "task133": "task133 v2's young population's outcome rates are biased low because taken-over units' months before the takeover enter the denominator; here no denominator is mis-timed: the force's arrest records are complete for its own officers, and the miss is a second force's arrests booked into the same cells.",
+  "task180": "task180 v4's small events are masked by a daily noise cycle a forward change removes; here nothing is masked: the open suites' records are complete, and the new hub's wards add another force's detainees that the records never held."
+ },
+ "lineage": [
+  {
+   "architecture": "v1 round 1",
+   "fate": "superseded 2026-10-14 at round 2: the 10/10 audit (COMPLIANT_WEAK) found the repricing drop the strong model's reflex and the field's textbook model, a locked-rate-by-term logit landing the golden bin without the card, the locked-rate rung one bin under, Ask B's migration file announcing its overlap, Ask A's clause signalling its device and the swap test passing only narrowly; never on the portal",
+   "domain": "banking-credit-financial-risk",
+   "objective": "forecasting",
+   "gap": [
+    "time",
     "population"
-  ],
-  "pattern": [
+   ],
+   "pattern": [
+    "E"
+   ],
+   "gate_g": "forecasting",
+   "decision_type": "quantity_figure",
+   "driver": "A unit's chance of needing the long, costly form of a service at a one-off repricing is set by the gap between the price it locked in and the schedule it rolls onto, so the share is stable across past rounds only per unit of that gap; carried pooled, from the latest round, trended, by product group or by the unit's own locked price, it misses the coming round, whose dominant cohort meets a gap no past unit of its own group met, and every such carry understates the forward effort by a tenth to a quarter."
+  },
+  {
+   "architecture": "v1 round 2 (architecture 1, Kaimai Building Society's 2027 maturity campaign)",
+   "fate": "spent 2026-10-25: portal round 1 landed the call (response 1 booked 5,250 agent-hours, 1,250, 2,000 and 2,000 by maturity month, the golden); the class of the money is a reflex for the portal's model; re-rooted the same day as architecture 2 in a new cell",
+   "domain": "banking-credit-financial-risk",
+   "subdomain": "deposit-liquidity-behaviour",
+   "objective": "forecasting",
+   "gap": [
+    "time",
+    "population"
+   ],
+   "pattern": [
+    "E"
+   ],
+   "generators": [
+    "G14",
+    "G6"
+   ],
+   "gate_g": "forecasting",
+   "decision_type": "quantity_figure",
+   "stump_strategy": "composition_mix",
+   "forum": "committee_or_panel",
+   "forcing_event": "purchase_order_or_contract",
+   "org_family": "cooperative_or_member_body",
+   "driver": "A behavioural share at a one-off repricing is a mixture of two kinds of unit, those a temporary price premium brought in, which take the costly path at their first repricing whatever the price change, and long-standing units, which take it in proportion to the change; conditioned on the price change alone, the share is read off a past in which the forward pool's change was met almost only by long-standing units, so it misses a forward pool made mostly of premium-won units, and only the class, rebuilt from each unit's price against the floor of its own entry cohort, makes every past round agree.",
+   "stump": "A competent solver washes the numbers, prices dialling per mix of callable numbers from the seven closed campaigns, conditions the past share of conversations that went to the retention offer on each deposit's drop from its locked rate to the card it reinvests at and books 4,250 agent-hours; the step that lands it there is reading that share off every past conversation at the drop instead of off the conversations of the same class of money: 10,697 of the 18,400 deposits are money the 2023 four-year special won at 5.65 per cent, and money a special won went to the offer at 87 per cent at its first maturity whatever its drop, where past conversations at the special's 1.65-point drop, almost all member money, went at a third: the golden is 5,250."
+  },
+  {
+   "architecture": "v2 pairs and restarts (2026-10-25 to 10-26)",
+   "fate": "superseded before any pack was cut: the interacting pairs were the strong enumerator's out-of-sample pick, and two isolated Opus probes landed the restart clock (350 against 350)",
+   "domain": "healthcare-delivery-health-economics",
+   "objective": "forecasting",
+   "gap": [
+    "population",
+    "time"
+   ],
+   "pattern": [
     "none"
-  ],
-  "generators": [
+   ],
+   "gate_g": "forecasting",
+   "decision_type": "quantity_figure",
+   "driver": "The forward count of harmful events in a population is set by which pairs of exposures each member holds at the same time, and by the exposures a one-off review removed coming back on the clock the record's earlier removals show."
+  },
+  {
+   "architecture": "v2 step-down guests (architecture 2, the care world, 2026-10-25 to 10-26)",
+   "fate": "spent 2026-10-26: architecture 2 (Calderbrook Care's 2027 adverse-drug-event admissions) lost every decisive step its world held to isolated Opus probes before a pack shipped: the interacting pairs were the strong enumerator's out-of-sample pick, p137a and p137b landed the restart clock, and p137c and p137d took the step-down guests because Annex A of the bed plan split the beds, with no honest rebuild hiding them (the golden is determinate only if a file states the 2027 step-down beds); the care world closed and task137 re-rooted as architecture 3 in urban-regional-science",
+   "domain": "healthcare-delivery-health-economics",
+   "subdomain": "utilization-access-demand-forecasting",
+   "objective": "forecasting",
+   "gap": [
+    "population"
+   ],
+   "pattern": [
+    "none"
+   ],
+   "generators": [
     "G12",
     "G3",
     "G6"
-  ],
-  "gate_g": "forecasting",
-  "calibration_form": "realised_outcome_roster",
-  "stump_strategy": "population_selection",
-  "decisive_rule_filed": false,
-  "official_decoy": false,
-  "validated_decoy": false,
-  "context_artifact": "capacity_report",
-  "stump_class": "analytical",
-  "analyst_test": "A strong analyst who links every file to the residents, fits the residents' adverse-drug-event admissions on their medicines, frailty and care type, carries the autumn 2026 reviews and the medicines' later restarts, and back-tests on the 2024 and 2025 year-start cohorts (both reconcile) files the long-term residents' 2027 admissions, about a fifth under the golden, because the baseline counts everyone accommodated in Calderbrook's beds and the step-down guests are on no register.",
-  "domain_test": "The deciding quantity is a care provider's 2027 emergency admissions for adverse drug events over every bed-day it provides, a utilisation forecast whose denominator is the occupied beds of two populations with different exposure: long-term residents, whose risk follows the medicines they hold, and discharge-to-assess guests in their first weeks out of hospital, whose readmission risk the step-down placements' own outcomes measure; swap the nouns for a hotel's guests and there is no discharge-to-assess pathway, no first weeks after a hospital stay and no medicines the risk follows.",
-  "layer2_family": "field_method",
-  "layer2_pattern": "own:utilisation-denominator-covers-the-step-down-beds-off-the-register",
-  "layer1": [
-    "two pharmacy suppliers' dispensing feeds coded differently (dm+d product codes against BNF sections)",
-    "a care group acquired in 2025 whose homes used a different eMAR system with its own resident numbers",
-    "admissions coded in ICD-10 with the adverse-event Y-codes in secondary positions",
-    "as-required medicines dispensed but not taken every day",
-    "hospital stays and deaths interrupting regimens",
-    "NHS numbers present on one feed only"
-  ],
-  "stakeholder_role": "director of clinical services at a care home group",
-  "role_family": "operations_director",
-  "scoring_unit": "per covered member",
-  "spine": {
-    "file": "dispensing_2023-01_2026-12.csv",
-    "rows": 0,
-    "entity": "one medicine supplied to a long-term resident for a monthly cycle",
-    "grain": "resident x medicine x cycle",
-    "source": "constructed"
+   ],
+   "gate_g": "forecasting",
+   "decision_type": "quantity_figure",
+   "stump_strategy": "population_selection",
+   "forum": "executive_team",
+   "forcing_event": "purchase_order_or_contract",
+   "org_family": "hospital_or_health_provider",
+   "driver": "A forward count over everyone a provider's capacity accommodates is read off the register of its long-term members, whose history reconciles with every outcome return drawn on that register, while a second body of short-stay occupants, booked through another organisation's system and absent from the register and from the returns, takes a growing share of the capacity in the forward year and carries several times the members' rate; its size sits in the capacity plan and its rate in the other system's own placement returns.",
+   "stump": "A competent analyst models Calderbrook's long-term residents from the register, the dispensing and the trusts' returns, which reconcile month by month, and files the residents' 2027 admissions; the step that lands it there is taking the register as everyone the baseline counts, when the step-down guests in the board's discharge-to-assess beds live in the same homes, sit in no register and no return drawn on it, fill 180 beds from January 2027 against 40 before, and are readmitted for an adverse drug event at about five per cent a month.",
+   "shape": "02",
+   "calibration_form": "realised_outcome_roster",
+   "context_artifact": "capacity_report",
+   "role_family": "operations_director"
   },
-  "forum": "executive_team",
-  "forcing_event": "purchase_order_or_contract",
-  "org_family": "hospital_or_health_provider",
-  "world": {
-    "geography": "England, United Kingdom",
-    "currency": "GBP",
-    "org_type": "care home group (nursing and residential homes)",
-    "invented_names": [
-      "Calderbrook Care",
-      "Fellside Pharmacy Services"
-    ],
-    "people": [
-      "Katherine Storey",
-      "Hugh Metcalfe",
-      "Charlene Dale"
-    ]
+  {
+   "architecture": "v3 candidate 1 (2026-10-26, never registered)",
+   "fate": "landed by Opus probe p137f before registration: the s208 sheet's Q4 2026 spike and an address join to earlier placements",
+   "domain": "urban-regional-science",
+   "subdomain": "municipal-service-demand-resource-allocation",
+   "objective": "forecasting",
+   "gap": [
+    "population"
+   ],
+   "pattern": [
+    "none"
+   ],
+   "generators": [
+    "G12",
+    "G5",
+    "G6"
+   ],
+   "gate_g": "forecasting",
+   "decision_type": "quantity_figure",
+   "stump_strategy": "population_selection",
+   "forum": "line_manager_or_team",
+   "forcing_event": "purchase_order_or_contract",
+   "org_family": "local_government",
+   "driver": "A forward count of a service's applications is read off the history of the units it has always served and their stock, which reconcile year after year, while a body of units other organisations placed in its area, owed their service elsewhere and listed only on a notice log kept for another purpose, grew several-fold in the last quarter and starts applying only after a lag, at a rate the earlier placements on the same log measure.",
+   "stump": "A competent analyst forecasts Hartmoor's 2027 assessments from its own case history and households, which are stationary and back-test within two per cent, and files 1,200, where the golden is 1,400; the step that lands them there is taking the case history as everyone who will apply, when the households other councils placed in the borough's hotels and hostels from October 2026 start applying to Hartmoor two months into their placements."
   },
-  "deliverables": [
-    "ade_admissions_forecast_2027.xlsx",
-    "review_impact_note.docx"
-  ],
-  "opening_move": "question-first",
-  "question_form": "how-many",
-  "driver": "A forward count over everyone a provider's capacity accommodates is read off the register of its long-term members, whose history reconciles with every outcome return drawn on that register, while a second body of short-stay occupants, booked through another organisation's system and absent from the register and from the returns, takes a growing share of the capacity in the forward year and carries several times the members' rate; its size sits in the capacity plan and its rate in the other system's own placement returns.",
-  "driver_concrete": "Calderbrook's 2027 baseline counts the emergency admissions for an adverse drug event of every person accommodated in its beds during 2027; its residents register, Fellside's dispensing and the two trusts' returns (drawn on the register's NHS numbers) reconcile month by month, but the Wethermoor ICB's discharge-to-assess step-down guests, booked through the board's placement system and on no register, fill 40 beds from April 2025 and 180 from January 2027, and the board's placement returns show them readmitted for an adverse drug event at about five per cent a month against about one and a half for the long-term residents.",
-  "stump": "A competent analyst models Calderbrook's long-term residents from the register, the dispensing and the trusts' returns, which reconcile month by month, and files the residents' 2027 admissions; the step that lands it there is taking the register as everyone the baseline counts, when the step-down guests in the board's discharge-to-assess beds live in the same homes, sit in no register and no return drawn on it, fill 180 beds from January 2027 against 40 before, and are readmitted for an adverse drug event at about five per cent a month.",
-  "mechanism_source": "design_note",
-  "differentiation": {
-    "task142": "task142's upper percentile of a period's total is built from the units that arrive and how long each runs inside the window, a spread question; here the forecast is a mean count, and the decisive unit is the pair of exposures one member holds at the same time, with no durations and no percentile.",
-    "task148": "task148 v1 sums the hazards of every unit behind one shared backer, each at its own age; here nothing is shared between members and nothing turns on age: each member's harm is set by which pairs of its own exposures it holds together.",
-    "task173": "task173 v2 splits one meter that two sources share inside a unit, fitted per unit to its two recorded volumes; here no total is split: the harm is a separate quantity that two exposures carry only when one member holds both, read from the record's members who held each pair.",
-    "task133": "task133 v2's young population's outcome rates are biased low because taken-over units' months before the takeover enter the denominator; here no denominator is mis-timed: the forecast's own frame is complete and correct for the residents, and the miss is a second body of occupants, on another organisation's placement system, that the frame never holds.",
-    "task196": "task196 v2 recovers how many events two partial capture channels missed, the second channel produced by the unit's own follow-up; here no event is uncaptured within the frame and nothing is estimated from an overlap: the uncounted admissions belong to people the frame does not contain, priced from their own placement returns.",
-    "task180": "task180 v4's small events are masked by a daily noise cycle that a forward change removes; here nothing in the record is masked or under-detected: the residents' admissions are complete, and the forward year adds a population (step-down guests in four and a half times as many beds) whose own returns give its rate.",
-    "task305": "task305's demand model misses holiday-park guests because the census counts people where they usually live, priced per pitch from card spend at park-side stores; here the baseline's frame is the provider's own residents register and its returns, the outsiders are short-stay discharge-to-assess guests on the commissioner's placement system, and their size changes in the forward year (40 beds to 180), priced per occupied bed-month from the placements' own readmissions."
-  },
-  "lineage": [
-    {
-      "architecture": "v1 round 1",
-      "fate": "superseded 2026-10-14 at round 2: the 10/10 audit (COMPLIANT_WEAK) found the repricing drop the strong model's reflex and the field's textbook model, a locked-rate-by-term logit landing the golden bin without the card, the locked-rate rung one bin under, Ask B's migration file announcing its overlap, Ask A's clause signalling its device and the swap test passing only narrowly; never on the portal",
-      "domain": "banking-credit-financial-risk",
-      "objective": "forecasting",
-      "gap": [
-        "time",
-        "population"
-      ],
-      "pattern": [
-        "E"
-      ],
-      "gate_g": "forecasting",
-      "decision_type": "quantity_figure",
-      "driver": "A unit's chance of needing the long, costly form of a service at a one-off repricing is set by the gap between the price it locked in and the schedule it rolls onto, so the share is stable across past rounds only per unit of that gap; carried pooled, from the latest round, trended, by product group or by the unit's own locked price, it misses the coming round, whose dominant cohort meets a gap no past unit of its own group met, and every such carry understates the forward effort by a tenth to a quarter."
-    },
-    {
-      "architecture": "v1 round 2 (architecture 1, Kaimai Building Society's 2027 maturity campaign)",
-      "fate": "spent 2026-10-25: portal round 1 landed the call (response 1 booked 5,250 agent-hours, 1,250, 2,000 and 2,000 by maturity month, the golden); the class of the money is a reflex for the portal's model; re-rooted the same day as architecture 2 in a new cell",
-      "domain": "banking-credit-financial-risk",
-      "subdomain": "deposit-liquidity-behaviour",
-      "objective": "forecasting",
-      "gap": [
-        "time",
-        "population"
-      ],
-      "pattern": [
-        "E"
-      ],
-      "generators": [
-        "G14",
-        "G6"
-      ],
-      "gate_g": "forecasting",
-      "decision_type": "quantity_figure",
-      "stump_strategy": "composition_mix",
-      "forum": "committee_or_panel",
-      "forcing_event": "purchase_order_or_contract",
-      "org_family": "cooperative_or_member_body",
-      "driver": "A behavioural share at a one-off repricing is a mixture of two kinds of unit, those a temporary price premium brought in, which take the costly path at their first repricing whatever the price change, and long-standing units, which take it in proportion to the change; conditioned on the price change alone, the share is read off a past in which the forward pool's change was met almost only by long-standing units, so it misses a forward pool made mostly of premium-won units, and only the class, rebuilt from each unit's price against the floor of its own entry cohort, makes every past round agree.",
-      "stump": "A competent solver washes the numbers, prices dialling per mix of callable numbers from the seven closed campaigns, conditions the past share of conversations that went to the retention offer on each deposit's drop from its locked rate to the card it reinvests at and books 4,250 agent-hours; the step that lands it there is reading that share off every past conversation at the drop instead of off the conversations of the same class of money: 10,697 of the 18,400 deposits are money the 2023 four-year special won at 5.65 per cent, and money a special won went to the offer at 87 per cent at its first maturity whatever its drop, where past conversations at the special's 1.65-point drop, almost all member money, went at a third: the golden is 5,250."
-    },
-    {
-      "architecture": "v2 pairs and restarts (2026-10-25 to 10-26)",
-      "fate": "superseded before any pack was cut: the interacting pairs were the strong enumerator's out-of-sample pick, and two isolated Opus probes landed the restart clock (350 against 350)",
-      "domain": "healthcare-delivery-health-economics",
-      "objective": "forecasting",
-      "gap": [
-        "population",
-        "time"
-      ],
-      "pattern": [
-        "none"
-      ],
-      "gate_g": "forecasting",
-      "decision_type": "quantity_figure",
-      "driver": "The forward count of harmful events in a population is set by which pairs of exposures each member holds at the same time, and by the exposures a one-off review removed coming back on the clock the record's earlier removals show."
-    }
-  ],
-  "notes": "Calibration realised_outcome_roster: the board's step-down placement returns since April 2025, each placement's dates and how it ended (home, long-term care, readmitted with the hospital's codes, died), are the analogue that prices the guests. Context artifact capacity_report: the homes' 2027 bed plan, kept for staffing and registration, carries the 180 step-down beds. Gap population: the register is not everyone the baseline counts. Pattern none: G12 (the register's and the returns' silence about the guests is an absence of record, read as nobody there), G3 (the register records residents; the beds accommodate guests too), G6 (in 2027 the beds hold four and a half times as many guests). Rungs: the restart clock and the interacting pairs carry the residents' forecast and are climbed by every careful solver.",
-  "registered": "2026-10-26T01:09:08Z"
+  {
+   "architecture": "v3 candidate 2 (2026-10-26, never registered)",
+   "fate": "landed by Opus probe p137h before registration: it calibrated the open centres' other attendances on the census defence population and knew the personnel are registered with Defence Medical Services",
+   "domain": "healthcare-delivery-health-economics",
+   "subdomain": "utilization-access-demand-forecasting",
+   "objective": "forecasting",
+   "gap": [
+    "population"
+   ],
+   "pattern": [
+    "none"
+   ],
+   "generators": [
+    "G12",
+    "G5",
+    "G3"
+   ],
+   "gate_g": "forecasting",
+   "decision_type": "quantity_figure",
+   "stump_strategy": "population_selection",
+   "forum": "committee_or_panel",
+   "forcing_event": "launch_or_rollout",
+   "org_family": "hospital_or_health_provider",
+   "driver": "A new site's demand is forecast with a model validated on the existing sites over the population on the service's own register, while the new site's catchment holds a large body of people the register never holds, because another organisation gives them their first-line service, who still use this service at the model's own per-person rates; the register-only forecast reconciles wherever the body is small and misses it where the new site sits."
+  }
+ ],
+ "notes": "Calibration existing_book_actuals: the four open suites' arrest records 2021-22 to 2025-26 against the model (0.98 to 1.03 on the probe pack). Context artifact filed_model: the force's Custody Demand Model version 2 note. Gap population: the force's arrest records are not everyone its suites book. Pattern none: G12 (the arrest records' silence about British Transport Police's arrests is an absence of record), G5 (the railway is policed by another force, whose custody the territorial force provides), G3 (the records count the force's arrests; the hub books every detainee from its wards). Gate G forecasting rather than method_or_model_selection: the graded object is a forward projection whose history is read correctly, and the step is the new site's intake, not a choice between fitted models (task305's judges read its origin set as model selection because its call was a site pick). Org family local_government: a territorial police force under a locally elected commissioner (government_agency is spent against task121). Probe packs t137_a3/probe7 (p137i, p137j).",
+ "registered": "2026-10-26T05:10:19Z"
 }
