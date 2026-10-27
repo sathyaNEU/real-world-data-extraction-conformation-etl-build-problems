@@ -3,19 +3,19 @@
   "rise_gap_4_to_5": 4.0,
   "rises_top6": [
    [
-    457.0,
+    458.0,
     "TUL-G12",
     "2026-11-02",
     "P1"
    ],
    [
-    434.0,
+    435.0,
     "TUL-G12",
     "2026-10-19",
     "P1"
    ],
    [
-    426.0,
+    427.0,
     "TUL-G07",
     "2026-10-13",
     "P2"
@@ -33,7 +33,7 @@
     "P1"
    ],
    [
-    403.0,
+    404.0,
     "TUL-G12",
     "2026-12-02",
     "P1"
@@ -241,13 +241,13 @@
     "space": "TUL-F04"
    },
    {
-    "hours_over_indicator": 1.83,
+    "hours_over_indicator": 2.17,
     "month": "October 2026",
     "occupied_hours": 104.17,
     "space": "TUL-F04"
    },
    {
-    "hours_over_indicator": 2.17,
+    "hours_over_indicator": 2.67,
     "month": "November 2026",
     "occupied_hours": 116.58,
     "space": "TUL-F04"
@@ -289,19 +289,19 @@
     "space": "TUL-F15"
    },
    {
-    "hours_over_indicator": 0.5,
+    "hours_over_indicator": 0.67,
     "month": "October 2026",
     "occupied_hours": 98.25,
     "space": "TUL-F15"
    },
    {
-    "hours_over_indicator": 0.5,
+    "hours_over_indicator": 0.58,
     "month": "November 2026",
     "occupied_hours": 122.67,
     "space": "TUL-F15"
    },
    {
-    "hours_over_indicator": 0.5,
+    "hours_over_indicator": 0.67,
     "month": "December 2026",
     "occupied_hours": 42.75,
     "space": "TUL-F15"
@@ -313,13 +313,13 @@
     "space": "TUL-G07"
    },
    {
-    "hours_over_indicator": 0.33,
+    "hours_over_indicator": 0.58,
     "month": "October 2026",
     "occupied_hours": 103.25,
     "space": "TUL-G07"
    },
    {
-    "hours_over_indicator": 0.92,
+    "hours_over_indicator": 1.0,
     "month": "November 2026",
     "occupied_hours": 115.0,
     "space": "TUL-G07"
@@ -331,25 +331,25 @@
     "space": "TUL-G07"
    },
    {
-    "hours_over_indicator": 1.0,
+    "hours_over_indicator": 1.08,
     "month": "September 2026",
     "occupied_hours": 18.5,
     "space": "TUL-G12"
    },
    {
-    "hours_over_indicator": 18.33,
+    "hours_over_indicator": 19.58,
     "month": "October 2026",
     "occupied_hours": 98.5,
     "space": "TUL-G12"
    },
    {
-    "hours_over_indicator": 18.08,
+    "hours_over_indicator": 19.08,
     "month": "November 2026",
     "occupied_hours": 123.08,
     "space": "TUL-G12"
    },
    {
-    "hours_over_indicator": 9.58,
+    "hours_over_indicator": 9.75,
     "month": "December 2026",
     "occupied_hours": 49.17,
     "space": "TUL-G12"
@@ -361,19 +361,19 @@
     "space": "TUL-G18"
    },
    {
-    "hours_over_indicator": 0.33,
+    "hours_over_indicator": 0.5,
     "month": "October 2026",
     "occupied_hours": 98.5,
     "space": "TUL-G18"
    },
    {
-    "hours_over_indicator": 0.92,
+    "hours_over_indicator": 1.08,
     "month": "November 2026",
     "occupied_hours": 123.0,
     "space": "TUL-G18"
    },
    {
-    "hours_over_indicator": 0.5,
+    "hours_over_indicator": 0.75,
     "month": "December 2026",
     "occupied_hours": 43.0,
     "space": "TUL-G18"
@@ -526,16 +526,16 @@
  },
  "call": {
   "block_rate_ls_per_occupant": 5.0,
-  "block_rate_unrounded": 5.0739,
+  "block_rate_unrounded": 5.0274,
   "remedy": "Option A, replace AHU-03 and AHU-04 and the Tulrohan distribution",
-  "shortfall_factor": 1.577,
+  "shortfall_factor": 1.591,
   "verdict": "below the 8 litres per second per person TGD-M4 requires"
  },
  "components": {
   "block_sessions": 1728,
   "occupant_hours_present": 70404.6,
   "period_minutes": 55,
-  "shortest_response_minutes": 189,
+  "shortest_response_minutes": 191,
   "spaces_below_requirement": 6,
   "spaces_in_block": 6
  },
@@ -570,58 +570,58 @@
   "window_start": "2026-09-28"
  },
  "measured": {
-  "bin_edge_call": 0.1761,
+  "bin_edge_call": 0.2226,
   "golden_family": {
-   "10 minute decimation": 5.0358,
-   "15 minute decimation": 5.0308,
-   "Simpson quadrature": 5.0738,
-   "derivative regression": 5.0604,
-   "left rectangle quadrature": 5.1328,
-   "right rectangle quadrature": 5.0181,
-   "trapezoid quadrature": 5.0739
+   "10 minute decimation": 4.9888,
+   "15 minute decimation": 4.9844,
+   "Simpson quadrature": 5.0274,
+   "derivative regression": 5.0142,
+   "left rectangle quadrature": 5.0858,
+   "right rectangle quadrature": 4.9722,
+   "trapezoid quadrature": 5.0274
   },
-  "golden_strict_variant": 5.0784,
+  "golden_strict_variant": 5.032,
   "naive_per_space": {
-   "TUL-F04": 10.8157,
-   "TUL-F09": 12.1,
-   "TUL-F15": 11.0154,
-   "TUL-G07": 11.2142,
-   "TUL-G12": 9.3471,
-   "TUL-G18": 11.8067
+   "TUL-F04": 10.7682,
+   "TUL-F09": 12.0568,
+   "TUL-F15": 10.971,
+   "TUL-G07": 11.1583,
+   "TUL-G12": 9.3012,
+   "TUL-G18": 11.7569
   },
-  "outdoor_air_supplied_m3": 1248822,
+  "outdoor_air_supplied_m3": 1237398,
   "per_space_rate_unrounded": {
-   "TUL-F04": 5.128,
-   "TUL-F09": 4.7608,
-   "TUL-F15": 4.7708,
-   "TUL-G07": 5.9747,
-   "TUL-G12": 4.8831,
-   "TUL-G18": 5.1937
+   "TUL-F04": 5.081,
+   "TUL-F09": 4.7162,
+   "TUL-F15": 4.7253,
+   "TUL-G07": 5.9213,
+   "TUL-G12": 4.839,
+   "TUL-G18": 5.1482
   },
-  "pooled_over_14": 8.2901,
+  "pooled_over_14": 8.2557,
   "response_time_min": {
-   "TUL-F04": 247.0,
-   "TUL-F09": 355.1,
-   "TUL-F15": 288.9,
-   "TUL-G07": 189.4,
-   "TUL-G12": 201.2,
-   "TUL-G18": 280.6
+   "TUL-F04": 249.3,
+   "TUL-F09": 358.4,
+   "TUL-F15": 291.7,
+   "TUL-G07": 191.1,
+   "TUL-G12": 203.0,
+   "TUL-G18": 283.1
   },
   "rivals": {
-   "95th percentile": 9.3132,
-   "final 15 minutes": 9.6754,
-   "last sample": 9.334,
-   "median sample": 10.9245,
-   "peak sample": 9.3132,
-   "session mean": 10.974
+   "95th percentile": 9.2721,
+   "final 15 minutes": 9.6329,
+   "last sample": 9.2925,
+   "median sample": 10.8775,
+   "peak sample": 9.2721,
+   "session mean": 10.9267
   },
   "truth_per_space": {
-   "TUL-F04": 5.128,
-   "TUL-F09": 4.7608,
-   "TUL-F15": 4.7708,
-   "TUL-G07": 5.9747,
-   "TUL-G12": 4.8831,
-   "TUL-G18": 5.1937
+   "TUL-F04": 5.081,
+   "TUL-F09": 4.7162,
+   "TUL-F15": 4.7253,
+   "TUL-G07": 5.9213,
+   "TUL-G12": 4.839,
+   "TUL-G18": 5.1482
   }
  }
 }

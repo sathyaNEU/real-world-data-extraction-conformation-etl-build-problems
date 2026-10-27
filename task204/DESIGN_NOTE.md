@@ -27,8 +27,8 @@ to byte-identical output twice over. Nothing here is owed.
 **Data-native sentence.** The two Tulrohan units run on a timetable-linked schedule, so the longest
 interval in the record with the plant in its occupied state and the room empty is one logging step of five
 minutes, and the field's own decay measurement can never see the rate the standard is about; and the
-Tulrohan spaces are large, so their response time (volume over flow, measured at 189 to 355 minutes here)
-runs 3.4 to 6.5 times a 55-minute timetabled session, which leaves no settled level anywhere in the record
+Tulrohan spaces are large, so their response time (volume over flow, measured at 191 to 358 minutes here)
+runs 3.5 to 6.5 times a 55-minute timetabled session, which leaves no settled level anywhere in the record
 either. The two decay windows the record does hold are the overnight off period and the midday setback,
 and both measure a different plant state: they file 1.09 and 1.96 litres per second per occupant present.
 
@@ -76,22 +76,22 @@ correctly, every filed rule applied and the data clean.
 5. Occupant-weight the session rates over the term for the six Tulrohan spaces and report the block figure
    against the 8 litres per second per person requirement.
 
-- **Ends on:** 11.0 litres per second per occupant present, 10.974 before rounding on the cut pack
-  (10.953 on the generator's clean truth), which clears the 8 litres per second per person requirement by
-  1.372 times, so the block's flag is read as occupant density and January's allocation is spent on the
+- **Ends on:** 11.0 litres per second per occupant present, 10.927 before rounding on the cut pack
+  (10.906 on the generator's clean truth), which clears the 8 litres per second per person requirement by
+  1.366 times, so the block's flag is read as occupant density and January's allocation is spent on the
   timetable change.
-- **Golden:** 5.0 litres per second per occupant present, 5.074 before rounding (5.041 on the clean
-  truth), sitting 0.176 from the nearer edge of its printed cell, which fails the requirement by 1.577
+- **Golden:** 5.0 litres per second per occupant present, 5.027 before rounding (4.996 on the clean
+  truth), sitting 0.223 from the nearer edge of its printed cell, which fails the requirement by 1.591
   times, so the allocation funds the block's air-handling replacement.
 
 ## Stump sentence
 
 A competent solver reads each timetabled session's mean carbon dioxide excess as though the space had
 settled at it, divides the filed per-person generation rate by it, occupant-weights the result across the
-term and files 11.0 litres per second per occupant present for the Tulrohan Block, 10.974 before rounding,
+term and files 11.0 litres per second per occupant present for the Tulrohan Block, 10.927 before rounding,
 clearing the standard
 and sending January's allocation to the timetable; the step that lands them there is treating a
-concentration that is still rising as a settled level, in spaces whose response time runs 3.4 to 6.5
+concentration that is still rising as a settled level, in spaces whose response time runs 3.5 to 6.5
 times the length of the session the timetable files.
 
 ## Three rules
@@ -132,15 +132,15 @@ times the length of the session the timetable files.
   integration; the standard files the requirement (8 litres per second per person) and the generation rate,
   and the procedure note files only the 1,500 ppm screening indicator. What the filed rules leave open is
   the estimator family, and it was measured: the enumerated family of ten readings spreads the block
-  figure 1.09 to 10.97 litres per second per person, while the standing family (the seven constructions
+  figure 1.09 to 10.93 litres per second per person, while the standing family (the seven constructions
   that satisfy the balance the record supports, namely the session-integrated form under four quadratures,
-  two decimations and the regression of the volume-weighted derivative on the excess) spreads 0.229
+  two decimations and the regression of the volume-weighted derivative on the excess) spreads 0.227
   of one printed bin, and files one call; the loudest thing that rules the rest out is the record itself,
   the plant-status file for the two decay routes and the non-zero end-of-session slope for the six settled
   readings, not any clause.
 - **Analyst test:** with the data clean and every rule applied, the easy route is the field's own
   steady-state carbon dioxide estimate taken on each session's mean excess and occupant-weighted over the
-  term, which files 11.0 litres per second per occupant present, 10.974 before rounding, and clears the
+  term, which files 11.0 litres per second per occupant present, 10.927 before rounding, and clears the
   standard, against a golden of 5.0. Asserted on the clean truth and again on the cut pack.
 - **Estimand:** the outdoor air supplied to the six Tulrohan Block teaching spaces across the timetabled
   teaching sessions of 28 September to 11 December 2026, in litres per second per occupant present, as one
@@ -176,22 +176,23 @@ administration, statutory attendance, the as-built record, air quality reporting
 Residual risk, stated rather than argued away: test 5 is the exposure. A solver who plots one session sees
 the series still rising at the bell. The screen's answer is that seeing it and integrating the balance are
 different steps, and the ladder prices the first one: R1 and R2 are exactly what a solver who notices does,
-and both still clear the standard by 1.164 to 1.209 times.
+and both still clear the standard by 1.159 to 1.204 times.
 
 ## Semantic fork table
 
 | id | Term or convention | Reading taken | Alternatives | Ruled out by |
 |---|---|---|---|---|
-| SF1 | per person, and which persons | the persons the attendance register marks present for the session, in whichever role it records them, with a corrected mark read as corrected | enrolled group size; design occupancy; learners only; present plus authorised absent; the whole roll; amended marks dropped | procedure note EST-14 section 4 files who counts, who does not and how an amendment is read, once and at authority, and `prompt.txt` names the unit. Measured on the pack: the enrolled reading files 6.575, design occupancy 5.799, present-plus-authorised 5.613 and the whole roll 6.638, every one a different printed call that section 4 rules out by a quoted sentence; learners only files 4.911 and dropping the amended marks 5.005, which print 5.0 either way, so those two are closed twice over. The golden's own denominator is the one section 4 defines, so filing it moved no figure |
+| SF1 | per person, and which persons | the persons the attendance register marks present for the session, in whichever role it records them, with a corrected mark read as corrected | enrolled group size; design occupancy; learners only; present plus authorised absent; the whole roll; amended marks dropped | procedure note EST-14 section 4 files who counts, who does not and how an amendment is read, once and at authority, and `prompt.txt` names the unit. Measured on the pack: the enrolled reading files 6.529, design occupancy 5.751, present-plus-authorised 5.567 and the whole roll 6.591, every one a different printed call that section 4 rules out by a quoted sentence; learners only files 4.865 and dropping the amended marks 4.959, which print 5.0 either way, so those two are closed twice over. The golden's own denominator is the one section 4 defines, so filing it moved no figure |
 | SF2 | timetabled session | the autumn timetable's session rows for the space | the room-booking window; an occupancy-detected window | `prompt.txt` ("this term's timetabled sessions") and the bid sheet; the booking system is not in the pack as a session source |
 | SF3 | outdoor baseline | the campus outdoor analyser, its two-week gap filled from the Mace Head station | a fixed 400 or 420 ppm; the station throughout | the campus analyser is the site's own record, and the two agree within 7.1 ppm over 1,464 overlapping hours; a baseline wrong by six ppm everywhere still files 5.121 and prints 5.0, asserted in `checks.py`, so same call |
 | SF4 | per-person generation rate | the one value TGD-M4's design data table gives for a teaching or practical space, 0.0072 litres per second | a higher metabolic rate; a per-area rate | the extract's table carries exactly one per-person carbon dioxide figure and no activity band, asserted in `checks.py`, so there is nothing to choose between |
-| SF5 | room volume | gross internal volume from the as-built room data sheet | floor area times a nominal 2.7 metres; the fire strategy's net volume | the as-built sheet is the only file in the pack carrying a room volume in cubic metres, asserted in `checks.py`, and the prompt names the room data sheets; measured, the area-times-2.7 reading files 8.054, a different call, which is why the volume is taken from the sheet and not inferred |
+| SF5 | room volume | gross internal volume from the as-built room data sheet | floor area times a nominal 2.7 metres; the fire strategy's net volume | the as-built sheet is the only file in the pack carrying a room volume in cubic metres, asserted in `checks.py`, and the prompt names the room data sheets; measured, the area-times-2.7 reading files 8.007, a different call, which is why the volume is taken from the sheet and not inferred |
 | SF6 | the monitored period | 28 September to 11 December 2026 | the whole sensor record, which starts at the pilot space in June | `prompt.txt` names the window |
 | SF7 | timestamps | Irish local time as the export writes them, with the October clock change kept | UTC throughout; the repeat hour dropped | the export header states the offset per row; the block's sessions never fall in the repeat hour, which is a Sunday, so same call on the main figure (the asks grade it) |
 | SF8 | rounding | once, at the end, to the nearest 0.5 litres per second per person | per space then averaged; per session then averaged | stated in the asking sentence; asserted in `checks.py` |
 | SF9 | the block | the six room codes the capital bid sheet lists | every space in the building; every monitored space | the bid sheet files the six, and the prompt names the block; measured: the pooled-over-14 reading files 8.36, a different call, which is why the population is filed and not left open |
-| SF10 | a session with nobody present | kept, contributing zero generation and its own excess | dropped | the estimand is over the timetabled sessions, so an empty session is one of them; measured on the cut pack, no block session carries nobody present, so the reading cannot arise and keeping or dropping files 5.074 either way |
+| SF10 | a session with nobody present | kept, contributing zero generation and its own excess | dropped | the estimand is over the timetabled sessions, so an empty session is one of them; measured on the cut pack, no block session carries nobody present, so the reading cannot arise and keeping or dropping files 5.027 either way |
+| SF11 | the integral of the session's excess over the session | a quadrature over the session's own eleven five-minute intervals | five minutes a reading, holding the window or extending it; an unweighted mean of the session rates | C1 first: the seven licensed constructions (trapezoid, Simpson, left and right rectangle, 10 and 15 minute decimation, the derivative regression) spread 0.227 of a bin and all print 5.0, the widest sitting 0.164 from its cell edge. C4 beside it: taking five minutes a reading files 4.649 holding the window and 5.475 extending it, and a reading-by-reading integral of a session's twelve readings covers 60 minutes against the 55 the timetable files, so neither executes the window the estimand names; the unweighted mean of session rates files 5.473 and dies to the standard's reporting clause, which reports the rate over the whole of the period assessed rather than for a single group. Procedure note EST-14 section 3's five-minute rule is scoped in its own words to the counting of hours and of readings and no other quantity |
 
 ## Ladder
 
@@ -200,18 +201,19 @@ in litres per second per occupant present; the decision boundary is 8.0; the pri
 
 | Rung | Analysis | Figure | Distance to the golden | Clears or fails 8.0 | Dies to |
 |---|---|---|---|---|---|
-| R0 | the field's steady-state read on each session's mean excess, occupant-weighted (the default path) | 10.974 | 5.900 | clears by 1.372x | nothing in the pack: it is the reflex, and only the balance moves it |
-| R1 | the same read on the final fifteen minutes of each session | 9.675 | 4.602 | clears by 1.209x | the session's last reading is only about half the equilibrium excess, so the read still overstates by about two times |
-| R2 | the same read on each session's peak sample | 9.313 | 4.239 | clears by 1.164x | the peak sits at the bell rather than at a plateau, the spaces' response time running 189 to 355 minutes against a 55-minute session |
-| R3 | the session-integrated unsteady balance (decisive) | 5.074 | 0 | fails by 1.577x | nothing: it is the golden |
+| R0 | the field's steady-state read on each session's mean excess, occupant-weighted (the default path) | 10.927 | 5.900 | clears by 1.366x | nothing in the pack: it is the reflex, and only the balance moves it |
+| R1 | the same read on the final fifteen minutes of each session | 9.633 | 4.606 | clears by 1.204x | the session's last reading is only about half the equilibrium excess, so the read still overstates by about two times |
+| R2 | the same read on each session's peak sample | 9.272 | 4.245 | clears by 1.159x | the peak sits at the bell rather than at a plateau, the spaces' response time running 191 to 358 minutes against a 55-minute session |
+| R3 | the session-integrated unsteady balance (decisive) | 5.027 | 0 | fails by 1.591x | nothing: it is the golden |
 
-Rung worth in bins of 0.5: R0 to R1 2.60, R1 to R2 0.72, R2 to R3 8.48. The decisive move is the largest
+Rung worth in bins of 0.5: R0 to R1 2.59, R1 to R2 0.72, R2 to R3 8.49. The decisive move is the largest
 gap and is not the smallest, every correction walks the same way, and only the decisive move crosses the
-boundary. Rung clearances against the 1.15x floor: 1.372, 1.209, 1.164 on the clearing side and 1.577 on
+boundary. Rung clearances against the 1.15x floor: 1.366, 1.204, 1.159 on the clearing side and 1.591 on
 the failing side, so no rung sits inside the floor. The floor is what fixed the block's supply rates: a
 first world put the peak-sample rung at 1.140x, inside the floor, and lifting the six spaces' occupancy
 and their supply together, which shortens the response time without moving a concentration anywhere,
-carried it to 1.164x with the golden still printing 5.0.
+carried it to 1.164x with the golden still printing 5.0, and the stage 4 recut that centred the
+quadrature family left it at 1.159x.
 
 Two routes that are not rungs because a shipped fact kills them on sight, kept in the reflex sweep: the
 overnight decay files 1.09 (the plant-status file shows the air handling off outside the unit's occupied
@@ -223,34 +225,35 @@ the rate the standard is about.
 
 | Reading | Measured | Bins |
 |---|---|---|
-| (a) the decisive step's worth, nearest rival reading less the golden | 4.239 | 8.48 |
-| (b) the spread between the defensible populations the estimate could be read off (seven subsets, from all timetabled sessions to mornings only) | 0.155 | 0.31 |
-| (c) the sampling interval of the construction the golden uses (four quadratures, 10 and 15 minute decimation, the regression member) | 0.115 | 0.23 |
+| (a) the decisive step's worth, nearest rival reading less the golden | 4.245 | 8.49 |
+| (b) the spread between the defensible populations the estimate could be read off (seven subsets, from all timetabled sessions to mornings only) | 0.152 | 0.30 |
+| (c) the sampling interval of the construction the golden uses (four quadratures, 10 and 15 minute decimation, the regression member) | 0.114 | 0.23 |
 
-(a) exceeds (b) plus (c) by 15.8 times, and (a) is the largest rung gap rather than the smallest. The three
+(a) exceeds (b) plus (c) by 16.0 times, and (a) is the largest rung gap rather than the smallest. The three
 filed readings: the test is necessary and not sufficient, which is why the floor, geometric-mean, deletion
 and reflex screens were run beside it; (b) does not bind, so no population fork has to be closed to buy
 the step; and (c) is 0.23 of a bin against a reflex precision of the same order, so the test is not bought
-with volume, it is bought by the 8.48-bin lever.
+with volume, it is bought by the 8.49-bin lever.
 
 **Convergence, measured against the rival family and not the golden's own.** The rival family is the
 steady-state read, and it was enumerated at six licensed readings of the same record (session mean, final
 fifteen minutes, last sample, peak sample, median occupied sample, 95th percentile of occupied samples).
-All six file the same call, that the block clears the requirement, while spreading the figure 9.313 to
-10.974 (1.661, or 3.32 bins) and printing 11.0 and 9.5, the lowest member clearing the boundary by 1.164x.
+All six file the same call, that the block clears the requirement, while spreading the figure 9.272 to
+10.927 (1.655, or 3.31 bins) and printing 11.0 and 9.5, the lowest member clearing the boundary by 1.159x.
 So the named wrong answer is
 unanimous in the verdict and loose in the figure, which is why the main call grades the figure and the
 remedy rather than the verdict alone. The golden's own family was measured separately and is not the
-convergence claim: seven constructions, spread 0.229 of a bin, one printed call.
+convergence claim: seven constructions, spread 0.227 of a bin, one printed call, the widest member,
+the left rectangle at 5.086, sitting 0.164 from its cell edge.
 
 **Reflex sweep, run as code on the cut pack.** Ten routes: the six rival readings above, the overnight
 decay (1.09), the midday setback decay (1.96), the balance pooled over all 14 monitored spaces instead of
-the block (8.290), and the commissioning record's design supply (8.5). None lands within one bin of the
-golden; the nearest miss is 6.23 bins away and is a population error that SF9 files.
+the block (8.256), and the commissioning record's design supply (8.5). None lands within one bin of the
+golden; the nearest miss is 6.13 bins away and is a population error that SF9 files.
 
 **Floor and geometric-mean screens.** Measured across the 14 monitored spaces: sd(log correction factor)
-0.2482 against sd(log base) 0.7038, so rho is 0.3526, under the 0.80 the multiplicative floor needs, and
-the realised correlation between the naive figure and the truth is +0.9724. The reading that follows is the
+0.2506 against sd(log base) 0.7077, so rho is 0.3541, under the 0.80 the multiplicative floor needs, and
+the realised correlation between the naive figure and the truth is +0.9723. The reading that follows is the
 one that fixed the decision type: a ranking of spaces on the naive figure is very nearly truth-equivalent,
 so no ranking may be graded here, and none is. The designation is a different matter and is not reachable
 at all: the naive family puts 0 of 14 spaces below the requirement where the truth puts 6. The
@@ -260,7 +263,7 @@ candidate-level multiplier to estimate.
 
 **Deletion tests.** 1, delete every wrong number and misleading claim: the pack carries none, and the
 difficulty is unchanged because the default path is built from correct readings. 2, clean data: the easy
-route on the generator's clean truth still files 10.953 and prints 11.0, which is the assertion
+route on the generator's clean truth still files 10.906 and prints 11.0, which is the assertion
 `checks.py` executes. 3, lens
 swap: reading the call as "is the flag genuine" rather than "what is the rate" changes nothing, because
 both answers come from the same figure. 4, identity: no governing arithmetic closes over shipped
@@ -272,11 +275,11 @@ clause's natural reading, the hygiene battery and the exceedance indicators all 
 
 | Axis | Reading | Closure |
 |---|---|---|
-| 1 | Population: the six Tulrohan spaces' timetabled sessions, 28 September to 11 December 2026 | filed in `prompt.txt` and the bid sheet (SF2, SF6, SF9); C1, the seven-subset spread 0.31 of a bin, every subset printing 5.0 |
+| 1 | Population: the six Tulrohan spaces' timetabled sessions, 28 September to 11 December 2026 | filed in `prompt.txt` and the bid sheet (SF2, SF6, SF9); C1, the seven-subset spread 0.30 of a bin, every subset printing 5.0 |
 | 2 | Unit of account: litres per second per occupant present | named in the asking sentence, and who counts as an occupant present is filed in procedure note EST-14 section 4 (SF1) |
 | 3 | Attribution window: each session's own start and end from the timetable | filed; every session boundary sits five minutes clear of the plant setback edges |
 | 4 | As-of dating: the export and the register as pulled on 15 December 2026 | the export header states the pull; the register ships with it |
-| 5 | Version basis: the attendance register's amended final state | one mark per person per session with an amendment flag, and EST-14 section 4 files that a corrected mark stands as corrected; C1 beside it, dropping the amended marks files 5.005 and prints the same call |
+| 5 | Version basis: the attendance register's amended final state | one mark per person per session with an amendment flag, and EST-14 section 4 files that a corrected mark stands as corrected; C1 beside it, dropping the amended marks files 4.959 and prints the same call |
 | 6 | Denominator: occupant-seconds present over the same sessions | filed in the asking sentence and, for which persons, in EST-14 section 4 (SF1) |
 | 7 | Weighting: total outdoor air supplied over total occupant-seconds, not a mean of session rates | C1, five aggregations (the ratio of totals, the occupant-weighted mean of session rates, the unweighted mean of space rates, the session-weighted mean and the occupant-weighted mean) spread 0.091 of a bin and all print 5.0 |
 | 8 | Window length: the monitored period, no trailing window | filed (SF6) |
@@ -302,19 +305,19 @@ timetabled sessions of 28 September to 11 December 2026 from the autumn timetabl
 from the attendance register, the outdoor baseline from the campus sensor, the volumes from the as-built
 room data sheet and the generation rate from the TGD-M4 extract, and asks for one rate in litres per second
 per occupant present over those sessions to the nearest 0.5. That execution admits the seven constructions
-of the balance the record supports and nothing else, and they print 5.0 together, spread 0.229 of a bin;
+of the balance the record supports and nothing else, and they print 5.0 together, spread 0.227 of a bin;
 the steady-state readings are not admissible executions of the estimand because they assert a settled level
-the same record refutes: the block's spaces have response times of 189 to 355 minutes against a 55-minute
+the same record refutes: the block's spaces have response times of 191 to 358 minutes against a 55-minute
 session, so a session's last reading sits at about half its own equilibrium excess.
 
 ## Oracles
 
 | Control | What it confirms on the wrong path | Ties on every basis |
 |---|---|---|
-| the procedure note's 1,500 ppm screening flags | the flag is computed from the record and never from a rate, so the same spaces are flagged under every reading of it; measured, the block carries 56.49 of the campus's 63.32 occupied hours over the indicator, which is why the block was brought forward | yes |
+| the procedure note's 1,500 ppm screening flags | the flag is computed from the record and never from a rate, so the same spaces are flagged under every reading of it; measured, the block carries 61.16 of the campus's 67.99 occupied hours over the indicator, which is why the block was brought forward | yes |
 | the campus outdoor analyser against the Mace Head station | agree within 7.1 ppm over 1,464 overlapping hours under every reading | yes |
 | the plant-status file | kills the two decay routes under every reading of the series | yes |
-| the commissioning record's design supply, 8.5 litres per second per person at design occupancy | reads as "clears" on the wrong path; it is a design intent, not a measurement, its own outstanding-items section records that proving at the supply terminals was deferred, and TGD-M4 4.3 says volumes proved at a unit do not demonstrate compliance | declared wrong-basis distractor in `metadata.json`, never the stump, and equal to neither 10.974 nor 5.074 |
+| the commissioning record's design supply, 8.5 litres per second per person at design occupancy | reads as "clears" on the wrong path; it is a design intent, not a measurement, its own outstanding-items section records that proving at the supply terminals was deferred, and TGD-M4 4.3 says volumes proved at a unit do not demonstrate compliance | declared wrong-basis distractor in `metadata.json`, never the stump, and equal to neither 10.927 nor 5.027 |
 
 No control ties only under the golden, so there is no oracle to cut. The ask layer's referee never
 arbitrates the call.
@@ -362,9 +365,9 @@ LEAK. The stage 4 leak reader then read the pack cold. One line per finding.
   staff, the amended and unamended marks and the roll. Procedure note EST-14 now carries section 4,
   Occupants present, filing who counts, who does not and that a corrected mark stands as corrected,
   once and at authority. It files the WHAT and says nothing about how a rate is obtained, so the
-  decisive step is untouched. Measured: present-plus-authorised files 5.613 and the whole roll 6.638,
-  both a different printed call and both now dead to a quoted sentence; learners only (4.911) and the
-  amended marks dropped (5.005) print 5.0 anyway. The golden's own denominator was already the one
+  decisive step is untouched. Measured: present-plus-authorised files 5.567 and the whole roll 6.591,
+  both a different printed call and both now dead to a quoted sentence; learners only (4.865) and the
+  amended marks dropped (4.959) print 5.0 anyway. The golden's own denominator was already the one
   section 4 defines, so no graded figure moved.
 - *The note's rounding contradicted the asking sentence.* EST-14 section 5 now reads two decimals for
   hours, whole persons for occupants and one decimal for shares, which is what `prompt.txt` asks.
@@ -447,7 +450,8 @@ LEAK. The stage 4 leak reader then read the pack cold. One line per finding.
 - Stage 3, the staff school column was derived from the group's own programme rather than drawn. Drawn, it
   produced tutors filed to one school whose every session taught another, which is the defect the measured
   task464 read names.
-- Stage 3, the block's response times came out at 189 to 355 minutes rather than the 253 to 543 the stage 2
+- Stage 3, the block's response times came out at 189 to 355 minutes, and 191 to 358 after the stage 4
+  recut, rather than the 253 to 543 the stage 2
   prototype measured. Raising the six spaces' occupancy and their supply together leaves every
   concentration where it is and only shortens the response time, which is what lifted the peak-sample rung
   off the 1.15x floor; the ratio the stump turns on is unchanged and the note's figures are the cut pack's.
@@ -465,3 +469,28 @@ LEAK. The stage 4 leak reader then read the pack cold. One line per finding.
 - Stage 4, the commissioning engineer and two maintenance technicians were redrawn. They had been
   taken from the campus staff list, so the same person signed an outside firm's commissioning record
   and taught in the building; the three organisations now hold disjoint people.
+- Stage 4, the determinism judge returned NOT_DETERMINISTIC on the integration rule, and the close was
+  a recut rather than a pin. Procedure note EST-14 section 3's sentence "each logged reading
+  represents the five minutes beginning at its timestamp" was written for the occupied-hours and
+  monthly returns, and read literally it also licensed two integrations of the session balance, which
+  file 4.649 and 5.475. Filing how the balance is integrated would have filed the HOW, which rule 3
+  bans as the decisive step, so nothing was pinned: the sentence was scoped in its own words to the
+  counting of hours and of readings, and the block's supply rates were scaled by 0.991 to put the
+  seven licensed constructions mid-bin. They now span 4.972 to 5.086, 0.227 of a bin, every one
+  printing 5.0, with the widest 0.164 from its cell edge against 0.117 before. The fork sat inside the
+  decisive step rather than at it: both the trapezoid and the rectangle already carry the stored term,
+  and the default path is still the settled read at 11.0, 8.49 bins away.
+- Stage 4, the unweighted mean of session rates (5.473) was added to the fork table rather than left
+  implicit. It dies to the standard's own reporting clause, which reports the rate over the whole of
+  the period assessed rather than for a single group.
+- Stage 4, the mail thread's two messages were separated by a rule. Without it the first message's
+  sign-off sat directly above the second's From line, and `guard.py surface`'s persona reader took the
+  pair as a name, Aileen From, and exited 1 on an undeclared persona. With the separator the reader
+  finds Aileen Menton, Benjamin Garavan and Conall Murtagh and the screen exits 0. The thread reads
+  better for it, and nothing graded moved.
+- Stage 4, `guard.py surface` promotes three pairs for adjudication, task204 against task254, task193
+  and task249, every one of them promoted on the same ground: the decisive gap, the decisive pattern
+  and the Gate G mechanism collide on the cards. All three are the pairs the card's own
+  `differentiation` block was written against at the draw, and `guard.py heart` reports the same
+  collision as a NOTE with the nearest driver text at 0.06. The adjudicated `/clone-check` is the
+  author's call and is not run here.

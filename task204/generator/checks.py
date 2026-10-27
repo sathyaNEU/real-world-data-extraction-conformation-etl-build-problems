@@ -187,6 +187,42 @@ def ladder():
           len({BU.to_bin(v) for v in gfam.values()}) == 1,
           "%d constructions, all printing %.1f, spread %.3f bins"
           % (len(gfam), BU.to_bin(CALL), bins(max(gfam.values()) - min(gfam.values()))))
+    # the two readings the five-minute counting rule used to license, and the sentence that scopes it
+    def _five_minute(frame, extend):
+        vals = frame["readings"]
+        integral = 300.0 * sum(vals) * 1e-6
+        seconds = 300.0 * len(vals) if extend else frame["seconds"]
+        stored = VOLS[frame["space"]] * (vals[-1] - vals[0]) * 1e-6
+        return (frame["occupants"] * A.G * seconds - stored) / integral
+    five_in = A.aggregate(BF, lambda x: _five_minute(x, False))
+    five_out = A.aggregate(BF, lambda x: _five_minute(x, True))
+    proc_flat2 = TEXT[B.PROCEDURE].replace("\n", " ")
+    check("SF11 the five-minute counting rule is scoped to hours and readings",
+          re.search(r"Hours in the returns made under this note are counted reading by reading",
+                    proc_flat2) and
+          re.search(r"governs the counting of hours and of readings and no other quantity",
+                    proc_flat2),
+          "procedure note %s section 3 says what it counts and says it counts nothing else"
+          % P.PROCEDURE_REF)
+    tt_win = {(s["start"], s["end"]) for s in B.sessions(TARGET) if s["space"] in BLOCK}
+    check("SF11 five minutes a reading is not an execution of the filed window",
+          BU.to_bin(five_in) != 5.0 and BU.to_bin(five_out) != 5.0 and
+          all((int(e[:2]) * 60 + int(e[3:5])) - (int(a[:2]) * 60 + int(a[3:5])) == 55
+              for a, e in tt_win),
+          "taking five minutes a reading files %.4f holding the window and %.4f extending it, both "
+          "a different printed call; the timetable files every block session as 55 minutes and a "
+          "reading-by-reading integral of its 12 readings covers 60, so neither is an execution of "
+          "the window the estimand names" % (five_in, five_out))
+    per_session = [1000.0 * A.q_integrated(x) / x["occupants"] for x in BF if x["occupants"]]
+    unweighted = sum(per_session) / len(per_session)
+    check("SF11 the unweighted mean of session rates dies to the reporting clause",
+          BU.to_bin(unweighted) != 5.0 and
+          re.search(r"the rate is reported over\s+the whole of the period assessed rather than for "
+                    r"a single group", TEXT[B.STANDARD]),
+          "a plain mean of the session rates files %.4f, and the standard's reporting clause says "
+          "the rate is reported over the whole of the period assessed rather than for a single "
+          "group" % unweighted)
+
     # the bin test
     a = min(fam.values()) - CALL
     subsets = {
@@ -209,6 +245,20 @@ def ladder():
     check("every defensible population prints the same call",
           len({BU.to_bin(v) for v in sub.values()}) == 1,
           "seven subsets spread %.3f bins, all printing %.1f" % (bins(b_), BU.to_bin(CALL)))
+    # the remedy is forced: option B cannot comply under any reading
+    import openpyxl as _ox
+    _wb = _ox.load_workbook(os.path.join(TARGET, "enrolment_groups_autumn2026.xlsx"),
+                            data_only=True)
+    _enr = {r[0]: r[3] for r in _wb["Groups"].iter_rows(min_row=2, values_only=True)}
+    _big = sorted({x["group"] for x in BF}, key=lambda g: -_enr[g])[:4]
+    _rest = [x for x in BF if x["group"] not in set(_big)]
+    _b = A.aggregate(_rest, lambda x: A.q_integrated(x))
+    check("the remedy is forced: the timetable change cannot reach the requirement",
+          _b < REQ / 1.3,
+          "moving the four largest cohorts out of the block leaves the remaining %d sessions at "
+          "%.3f against %g, so option B does not comply and option A is the only remedy that can"
+          % (len(_rest), _b, REQ))
+
     # the aggregations the estimand admits (closure axis 7)
     ps_b = A.per_space(BF, lambda x: A.q_integrated(x))
     cnt_b = collections.Counter(x["space"] for x in BF)

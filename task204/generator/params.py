@@ -78,12 +78,12 @@ AHU = {
 # internal volumes and their response times V/Q run 253 to 543 minutes against a 55-minute period.
 SPACES = [
     # code, name, block, ahu, volume_m3, q_occ_m3s, ach_off, ach_sb, floor_area_m2, height_m
-    ("TUL-G07", "Engineering Workshop G07",   "Tulrohan", "AHU-03", 2400, 0.209565, 0.05, 0.09, 445, 5.4),
-    ("TUL-G12", "Construction Skills Hall G12", "Tulrohan", "AHU-03", 2850, 0.234418, 0.05, 0.09, 475, 6.0),
-    ("TUL-G18", "Design Studio G18",          "Tulrohan", "AHU-03", 3200, 0.187767, 0.05, 0.09, 580, 5.5),
-    ("TUL-F04", "Lecture Room F04",           "Tulrohan", "AHU-04", 3750, 0.250216, 0.05, 0.09, 735, 5.1),
-    ("TUL-F09", "Teaching Hall F09",          "Tulrohan", "AHU-04", 4150, 0.190291, 0.05, 0.09, 755, 5.5),
-    ("TUL-F15", "Assembly Room F15",          "Tulrohan", "AHU-04", 4650, 0.267827, 0.05, 0.09, 860, 5.4),
+    ("TUL-G07", "Engineering Workshop G07",   "Tulrohan", "AHU-03", 2400, 0.2076789, 0.05, 0.09, 445, 5.4),
+    ("TUL-G12", "Construction Skills Hall G12", "Tulrohan", "AHU-03", 2850, 0.2323082, 0.05, 0.09, 475, 6.0),
+    ("TUL-G18", "Design Studio G18",          "Tulrohan", "AHU-03", 3200, 0.1860771, 0.05, 0.09, 580, 5.5),
+    ("TUL-F04", "Lecture Room F04",           "Tulrohan", "AHU-04", 3750, 0.2479641, 0.05, 0.09, 735, 5.1),
+    ("TUL-F09", "Teaching Hall F09",          "Tulrohan", "AHU-04", 4150, 0.1885784, 0.05, 0.09, 755, 5.5),
+    ("TUL-F15", "Assembly Room F15",          "Tulrohan", "AHU-04", 4650, 0.2654166, 0.05, 0.09, 860, 5.4),
     ("DRM-104", "Classroom 104",              "Drumlusk", "AHU-01", 260, 0.183517, 0.10, 0.25, 93, 2.8),
     ("DRM-108", "Classroom 108",              "Drumlusk", "AHU-01", 300, 0.260712, 0.10, 0.25, 105, 2.9),
     ("DRM-205", "Classroom 205",              "Drumlusk", "AHU-01", 240, 0.217417, 0.10, 0.25, 86, 2.8),

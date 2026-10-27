@@ -6,13 +6,13 @@
 ## 1. Final Recommendation
 
 **January's minor-works allocation funds option A, replacing AHU-03 and AHU-04 and the Tulrohan supply and extract distribution.**
-The block's six teaching spaces are supplied with **5.0** litres per second per occupant present across the term's timetabled sessions, so the **8** TGD-M4 requires is **1.58** times the rate achieved. Not the timetable change, which leaves the supply where it is. Not the commissioning record's design supply, which its own outstanding-items section records as never proved at the spaces.
+The block's six teaching spaces are supplied with **5.0** litres per second per occupant present across the term's timetabled sessions, so the **8** TGD-M4 requires is **1.59** times the rate achieved. Not the timetable change, which leaves the supply where it is. Not the commissioning record's design supply, which its own outstanding-items section records as never proved at the spaces.
 
 ## 2. Critical Components
 
 1. Timetabled sessions in the six block rooms over 28 September to 11 December 2026: **1,728**
 2. Occupant-hours present across those sessions: **70,404.6**
-3. Shortest response time in the block, gross internal volume over the outdoor air recovered: **189 minutes**, against a teaching period of **55 minutes**
+3. Shortest response time in the block, gross internal volume over the outdoor air recovered: **191 minutes**, against a teaching period of **55 minutes**
 4. Block rooms below the requirement on their own records: **6 of 6**
 
 ## 3. Step-by-Step Solution
@@ -22,7 +22,7 @@ The block's six teaching spaces are supplied with **5.0** litres per second per 
 3. Took the block's sessions from timetable_autumn2026.csv and the occupants present in each from attendance_marks_autumn2026.csv: 1,728 sessions and 70,404.6 occupant-hours.
 4. Integrated each session's carbon dioxide balance across the session, the stored term being the room's volume times the change between the session's first and last reading and the source term the 0.0072 litres per second per person in the TGD-M4 extract's design data table times the occupants present, and solved each session for the outdoor air supplied.
 5. Divided the outdoor air so recovered by the occupant-seconds present over the same sessions: 5.0 litres per second per occupant present, against the 8 TGD-M4 requires.
-6. Checked that no reading in the record is a settled one: the shortest response time in the block, volume over the recovered supply, is 189 minutes against a 55 minute period, and 6 of the 6 rooms sit below the requirement.
+6. Checked that no reading in the record is a settled one: the shortest response time in the block, volume over the recovered supply, is 191 minutes against a 55 minute period, and 6 of the 6 rooms sit below the requirement.
 7. Counted occupied hours, hours over the indicator and readings received on procedure note EST-14's bases, the unit's occupied state from bms_plant_status_autumn2026.csv, five minutes to a reading, and 288 a day on the 48 teaching days in etb_academic_calendar_2026_27.xlsx.
 8. The allocation funds option A in capital_bid_tulrohan_block.xlsx, the air-handling replacement, and not option B.
 
@@ -65,29 +65,29 @@ The block's six teaching spaces are supplied with **5.0** litres per second per 
    - DRM-211, November 2026: 140.67 recorded, 0.42 over
    - DRM-211, December 2026: 52.17 recorded, 0.08 over
    - TUL-F04, September 2026: 18.50 recorded, 0.42 over
-   - TUL-F04, October 2026: 104.17 recorded, 1.83 over
-   - TUL-F04, November 2026: 116.58 recorded, 2.17 over
+   - TUL-F04, October 2026: 104.17 recorded, 2.17 over
+   - TUL-F04, November 2026: 116.58 recorded, 2.67 over
    - TUL-F04, December 2026: 49.33 recorded, 0.00 over
    - TUL-F09, September 2026: 18.33 recorded, 0.00 over
    - TUL-F09, October 2026: 102.67 recorded, 0.00 over
    - TUL-F09, November 2026: 114.00 recorded, 0.00 over
    - TUL-F09, December 2026: 48.50 recorded, 0.00 over
    - TUL-F15, September 2026: 18.42 recorded, 0.58 over
-   - TUL-F15, October 2026: 98.25 recorded, 0.50 over
-   - TUL-F15, November 2026: 122.67 recorded, 0.50 over
-   - TUL-F15, December 2026: 42.75 recorded, 0.50 over
+   - TUL-F15, October 2026: 98.25 recorded, 0.67 over
+   - TUL-F15, November 2026: 122.67 recorded, 0.58 over
+   - TUL-F15, December 2026: 42.75 recorded, 0.67 over
    - TUL-G07, September 2026: 18.08 recorded, 0.00 over
-   - TUL-G07, October 2026: 103.25 recorded, 0.33 over
-   - TUL-G07, November 2026: 115.00 recorded, 0.92 over
+   - TUL-G07, October 2026: 103.25 recorded, 0.58 over
+   - TUL-G07, November 2026: 115.00 recorded, 1.00 over
    - TUL-G07, December 2026: 48.33 recorded, 0.00 over
-   - TUL-G12, September 2026: 18.50 recorded, 1.00 over
-   - TUL-G12, October 2026: 98.50 recorded, 18.33 over
-   - TUL-G12, November 2026: 123.08 recorded, 18.08 over
-   - TUL-G12, December 2026: 49.17 recorded, 9.58 over
+   - TUL-G12, September 2026: 18.50 recorded, 1.08 over
+   - TUL-G12, October 2026: 98.50 recorded, 19.58 over
+   - TUL-G12, November 2026: 123.08 recorded, 19.08 over
+   - TUL-G12, December 2026: 49.17 recorded, 9.75 over
    - TUL-G18, September 2026: 18.42 recorded, 0.00 over
-   - TUL-G18, October 2026: 98.50 recorded, 0.33 over
-   - TUL-G18, November 2026: 123.00 recorded, 0.92 over
-   - TUL-G18, December 2026: 43.00 recorded, 0.50 over
+   - TUL-G18, October 2026: 98.50 recorded, 0.50 over
+   - TUL-G18, November 2026: 123.00 recorded, 1.08 over
+   - TUL-G18, December 2026: 43.00 recorded, 0.75 over
 3. Share of expected readings received over the term, each monitored space, one decimal as a percentage:
    - ANG-012: 96.8
    - ANG-016: 93.7

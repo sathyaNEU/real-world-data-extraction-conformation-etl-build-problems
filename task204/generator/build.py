@@ -531,11 +531,12 @@ def write_pdfs():
                     % "{:,}".format(int(P.SCREENING_PPM)), s["p"]),
           Paragraph("3 &nbsp; Conventions for reporting", s["h"]),
           Paragraph("A space counts as occupied for the hours in which the air handling unit "
-                    "serving it stands in its occupied state. Each logged reading represents the "
-                    "five minutes beginning at its timestamp. A reading counts in the calendar "
-                    "month of its own local timestamp. Data capture is reported as the readings "
-                    "received against the readings expected on the teaching days of the term.",
-                    s["p"]),
+                    "serving it stands in its occupied state. Hours in the returns made under this "
+                    "note are counted reading by reading: a logged reading counts as the five "
+                    "minutes beginning at its own timestamp, and falls in the calendar month of "
+                    "that timestamp. Data capture is reported as the readings received against the "
+                    "readings expected on the teaching days of the term. This section governs the "
+                    "counting of hours and of readings and no other quantity.", s["p"]),
           Paragraph("4 &nbsp; Occupants present", s["h"]),
           Paragraph("The occupants present in a session are the persons the attendance register "
                     "marks present for that session, in whichever role the register records them: "
@@ -624,6 +625,7 @@ with the volumes on them, and confirm the two unit schedules are the current set
 
 Aileen
 
+________________________________________________________________________
 
 From: %s
 To: %s

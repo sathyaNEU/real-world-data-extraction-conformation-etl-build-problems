@@ -1,94 +1,115 @@
 {
-  "task": "task204",
-  "architecture": "v1",
-  "drawn": "2026-10-27",
-  "slot_note": "Wave 5, first fresh draw in the lane. Screened against the two closed families named in the intake brief (records-fixed count nonlinearity; a behavioural rate transported between populations) and against the four screens in order: swap, guard and slots, bin test, floor and geometric-mean with the deletion tests and the reflex sweep beside it.",
-  "domain": "physical-environmental-sciences",
-  "subdomain": "environmental-monitoring-exceedance",
-  "niche": "indoor air quality monitoring of a further-education estate's large teaching spaces against the outdoor-air requirement in the school building standard",
-  "objective": "anomaly-detection",
-  "shape": "07",
-  "decision_type": "quantity_figure",
-  "answer_unit": "rate_or_share",
-  "answer": "DESIGN TARGET, re-measured by the generator at stage 3: the Tulrohan block is supplied with 5.0 litres per second per occupant present of outdoor air across the autumn term's timetabled sessions (prototype 5.01, 5.07, 4.90 over three seeds, all printing 5.0), against the 8 litres per second per person the standard requires, so the January minor-works allocation funds the block's air-handling replacement and not a timetable change.",
-  "answer_source": "generator truth, asserted in generator/checks.py (owed at stage 3)",
-  "gap": [
-    "objective",
-    "population"
+ "task": "task204",
+ "architecture": "v1",
+ "drawn": "2026-10-27",
+ "slot_note": "Wave 5, first fresh draw in the lane. Screened against the two closed families named in the intake brief (records-fixed count nonlinearity; a behavioural rate transported between populations) and against the four screens in order: swap, guard and slots, bin test, floor and geometric-mean with the deletion tests and the reflex sweep beside it.",
+ "domain": "physical-environmental-sciences",
+ "subdomain": "environmental-monitoring-exceedance",
+ "niche": "indoor air quality monitoring of a further-education estate's large teaching spaces against the outdoor-air requirement in the school building standard",
+ "objective": "anomaly-detection",
+ "shape": "07",
+ "decision_type": "quantity_figure",
+ "answer_unit": "rate_or_share",
+ "answer": "DESIGN TARGET, re-measured by the generator at stage 3: the Tulrohan block is supplied with 5.0 litres per second per occupant present of outdoor air across the autumn term's timetabled sessions (prototype 5.01, 5.07, 4.90 over three seeds, all printing 5.0), against the 8 litres per second per person the standard requires, so the January minor-works allocation funds the block's air-handling replacement and not a timetable change.",
+ "answer_source": "generator truth, asserted in generator/checks.py (owed at stage 3)",
+ "gap": [
+  "objective",
+  "population"
+ ],
+ "pattern": [
+  "none"
+ ],
+ "generators": [
+  "G7",
+  "G3"
+ ],
+ "gate_g": "method_or_model_selection",
+ "calibration_form": "none",
+ "stump_strategy": "decomposition_attribution",
+ "decisive_rule_filed": false,
+ "official_decoy": false,
+ "validated_decoy": false,
+ "context_artifact": "filed_standard",
+ "stump_class": "analytical",
+ "analyst_test": "With the record clean and every filed rule applied, the easy route is the field's own steady-state carbon dioxide estimate of outdoor air per person, taken on each timetabled session's mean excess over the outdoor baseline and occupant-weighted across the term, which files 11.0 litres per second per occupant present, 10.95 before rounding, for the Tulrohan block and clears the 8 litres per second per person standard, against a golden of 5.0.",
+ "domain_test": "The deciding quantity is the outdoor-air supply rate per occupant present, which building physics estimates from a space's own carbon dioxide balance (the source from occupancy, the removal by air supply and the stored term from the room's volume), and a noun swap breaks the task because the quantity exists only through a physical volume, a per-occupant generation rate fixed by the standard and a response time equal to volume over flow.",
+ "layer2_family": "estimation_fit",
+ "layer2_pattern": "own:unsteady-balance-across-a-filed-session-window",
+ "layer1": [
+  "a building management system export in Irish local time across the October clock change",
+  "room volumes in a table inside the as-built room-data-sheet PDF",
+  "one sensor replaced mid-term, its span check carrying a 40 ppm offset either side",
+  "enrolment group sizes against the statutory attendance register",
+  "the campus outdoor sensor with a two-week gap filled from the national station",
+  "session windows straddling the lunch unoccupied setback in the plant schedule",
+  "one exported concentration column carrying thousands separators and a ppm suffix"
+ ],
+ "stakeholder_role": "the Education and Training Board's estates and compliance officer",
+ "role_family": "field_unit_lead",
+ "scoring_unit": "other",
+ "spine": {
+  "file": "bms_co2_5min_autumn2026.csv",
+  "rows": 302400,
+  "entity": "one monitored teaching space at one five-minute stamp",
+  "grain": "space x 5 minutes",
+  "source": "synthetic"
+ },
+ "forum": "executive_team",
+ "forcing_event": "budget_or_appropriation",
+ "org_family": "university_or_school",
+ "world": {
+  "geography": "Ireland (west midlands)",
+  "currency": "EUR",
+  "org_type": "Education and Training Board further-education campus",
+  "invented_names": [
+   "Beldarrig ETB",
+   "Kilmoneen Further Education Campus",
+   "Tulrohan Block"
   ],
-  "pattern": [
-    "none"
-  ],
-  "generators": [
-    "G7",
-    "G3"
-  ],
-  "gate_g": "method_or_model_selection",
-  "calibration_form": "none",
-  "stump_strategy": "decomposition_attribution",
-  "decisive_rule_filed": false,
-  "official_decoy": false,
-  "validated_decoy": false,
-  "context_artifact": "filed_standard",
-  "stump_class": "analytical",
-  "analyst_test": "With the record clean and every filed rule applied, the easy route is the field's own steady-state carbon dioxide estimate of outdoor air per person, taken on each timetabled session's mean excess over the outdoor baseline and occupant-weighted across the term, which files 11.0 litres per second per occupant present, 10.95 before rounding, for the Tulrohan block and clears the 8 litres per second per person standard, against a golden of 5.0.",
-  "domain_test": "The deciding quantity is the outdoor-air supply rate per occupant present, which building physics estimates from a space's own carbon dioxide balance (the source from occupancy, the removal by air supply and the stored term from the room's volume), and a noun swap breaks the task because the quantity exists only through a physical volume, a per-occupant generation rate fixed by the standard and a response time equal to volume over flow.",
-  "layer2_family": "estimation_fit",
-  "layer2_pattern": "own:unsteady-balance-across-a-filed-session-window",
-  "layer1": [
-    "a building management system export in Irish local time across the October clock change",
-    "room volumes in a table inside the as-built room-data-sheet PDF",
-    "one sensor replaced mid-term, its span check carrying a 40 ppm offset either side",
-    "enrolment group sizes against the statutory attendance register",
-    "the campus outdoor sensor with a two-week gap filled from the national station",
-    "session windows straddling the lunch unoccupied setback in the plant schedule",
-    "one exported concentration column carrying thousands separators and a ppm suffix"
-  ],
-  "stakeholder_role": "the Education and Training Board's estates and compliance officer",
-  "role_family": "field_unit_lead",
-  "scoring_unit": "other",
-  "spine": {
-    "file": "bms_co2_5min_autumn2026.csv",
-    "rows": 302400,
-    "entity": "one monitored teaching space at one five-minute stamp",
-    "grain": "space x 5 minutes",
-    "source": "synthetic"
-  },
-  "forum": "executive_team",
-  "forcing_event": "budget_or_appropriation",
-  "org_family": "university_or_school",
-  "world": {
-    "geography": "Ireland (west midlands)",
-    "currency": "EUR",
-    "org_type": "Education and Training Board further-education campus",
-    "invented_names": [
-      "Beldarrig ETB",
-      "Kilmoneen Further Education Campus",
-      "Tulrohan Block"
-    ],
-    "people": [
-      "Aileen Menton",
-      "Conall Murtagh"
-    ]
-  },
-  "deliverables": [
-    "tulrohan_ventilation_assessment.xlsx",
-    "tulrohan_session_balance.png"
-  ],
-  "opening_move": "question-first",
-  "question_form": "whether",
-  "driver": "The deciding quantity is a transport rate recovered by solving a unit's own unsteady balance across the windows the organisation's own schedule files, because each unit's response time runs longer than those windows, so every reading of the same record that treats the measured level as settled overstates the rate by a factor set by the unit's volume per occupant, and no settled level anywhere in the record recovers it.",
-  "driver_concrete": "The Tulrohan block's outdoor-air supply per occupant present is recovered by integrating each teaching space's carbon dioxide balance across the timetabled sessions, the stored term from each session's own first and last readings and the source term from the attendance register, because these spaces are large and sparsely occupied and their concentrations are still rising when a 55-minute session ends, so every steady-state read of the same record puts the block's supply above the standard.",
-  "stump": "A competent solver applies the campus procedure note to the validated five-minute record, computes each session's steady-state outdoor air per person from the session's mean carbon dioxide excess and the attendance present, occupant-weights it across the term and files 11.0 litres per second per occupant present for the Tulrohan block, clearing the 8 litres per second per person standard so that the January allocation is spent on re-timetabling; the step that lands them there is reading a concentration that is still rising as though it had settled, in spaces whose response times run two to five times a session's length.",
-  "mechanism_source": "design_note",
-  "differentiation": {
-    "task120": "task120 recovers a flow as the residue of a balance, the stock change being a measured quantity added to a subtraction; here the unknown is the balance's own transport coefficient, recovered because the state never reaches equilibrium inside the window the schedule files, and both of the field's quick reads fail in opposite directions (the settled-level reads high by 1.9 to 2.2 times, the unoccupied decay reads low by 3 to 8 times) rather than one term being forgotten.",
-    "task189": "task189 recovers values known only to lie below instrument-dependent limits; nothing here is censored, every reading is reported and correct, and what is unobserved is a rate no file holds.",
-    "task193": "task193 counts how many units would show one of two orderings under a null, the room for each ordering set by where a unit's exposure starts in the window; nothing physical sets the window there and no quantity is unobserved except the null's own count, where here the deciding quantity is a transport rate no file holds and the window is the organisation's own session against the space's response time.",
-    "task249": "task249's decisive move is a capped budget shared between a unit's parts, so a within-unit comparison of treated against untreated parts misses the units where the cap binds; it is an allocation spillover between parts, not an estimator of one unit's own rate read against the window it is measured over.",
-    "task254": "task254 reads each stage of a fixed sequence at the period the unit enters it, and every stage duration is recorded; here nothing in the record holds the deciding rate, and the error is not which period a recorded duration is read at but that the recorded level has not reached the state the easy estimator assumes."
-  },
-  "lineage": [],
-  "notes": "gate_g read against the vocab: the decisive step is a choice between two estimators of one filed quantity, and the one that stands is pinned by the data's own structure (no interval in the record has the plant in its occupied state with the rooms empty, and no session is long enough for the level to settle) rather than by validation or a standard, which determinism-check section 1 ranks first among closures. stump_strategy decomposition_attribution: the measured concentration is correctly reported and the decisive move attributes it between the source (occupants) and the transport (air supply) over a window too short for a settled reading to separate them.",
-  "registered": "2026-10-27T05:39:32Z"
+  "people": [
+   "Aileen Menton",
+   "Alanna Hilary",
+   "Alastair Crangle",
+   "Antoinette Fee",
+   "Benjamin Garavan",
+   "Caroline Creedon",
+   "Christie Richard",
+   "Cody O'Gara",
+   "Conall Murtagh",
+   "Corrie MacCarville",
+   "Cory Ferris",
+   "Dominic Filbin",
+   "Emilie Mahedy",
+   "Finn Melican",
+   "Grainne Kilkenny",
+   "Jana McCafferky",
+   "Johanna Murnane",
+   "Karl Gorey",
+   "Kelsey Hanbury",
+   "Orlaigh Sinan",
+   "Rhiannon Monk",
+   "Tony Davenport",
+   "Una Nyhan"
+  ]
+ },
+ "deliverables": [
+  "tulrohan_ventilation_assessment.xlsx",
+  "tulrohan_session_balance.png"
+ ],
+ "opening_move": "question-first",
+ "question_form": "whether",
+ "driver": "The deciding quantity is a transport rate recovered by solving a unit's own unsteady balance across the windows the organisation's own schedule files, because each unit's response time runs longer than those windows, so every reading of the same record that treats the measured level as settled overstates the rate by a factor set by the unit's volume per occupant, and no settled level anywhere in the record recovers it.",
+ "driver_concrete": "The Tulrohan block's outdoor-air supply per occupant present is recovered by integrating each teaching space's carbon dioxide balance across the timetabled sessions, the stored term from each session's own first and last readings and the source term from the attendance register, because these spaces are large and sparsely occupied and their concentrations are still rising when a 55-minute session ends, so every steady-state read of the same record puts the block's supply above the standard.",
+ "stump": "A competent solver applies the campus procedure note to the validated five-minute record, computes each session's steady-state outdoor air per person from the session's mean carbon dioxide excess and the attendance present, occupant-weights it across the term and files 11.0 litres per second per occupant present for the Tulrohan block, clearing the 8 litres per second per person standard so that the January allocation is spent on re-timetabling; the step that lands them there is reading a concentration that is still rising as though it had settled, in spaces whose response times run two to five times a session's length.",
+ "mechanism_source": "design_note",
+ "differentiation": {
+  "task120": "task120 recovers a flow as the residue of a balance, the stock change being a measured quantity added to a subtraction; here the unknown is the balance's own transport coefficient, recovered because the state never reaches equilibrium inside the window the schedule files, and both of the field's quick reads fail in opposite directions (the settled-level reads high by 1.9 to 2.2 times, the unoccupied decay reads low by 3 to 8 times) rather than one term being forgotten.",
+  "task189": "task189 recovers values known only to lie below instrument-dependent limits; nothing here is censored, every reading is reported and correct, and what is unobserved is a rate no file holds.",
+  "task193": "task193 counts how many units would show one of two orderings under a null, the room for each ordering set by where a unit's exposure starts in the window; nothing physical sets the window there and no quantity is unobserved except the null's own count, where here the deciding quantity is a transport rate no file holds and the window is the organisation's own session against the space's response time.",
+  "task249": "task249's decisive move is a capped budget shared between a unit's parts, so a within-unit comparison of treated against untreated parts misses the units where the cap binds; it is an allocation spillover between parts, not an estimator of one unit's own rate read against the window it is measured over.",
+  "task254": "task254 reads each stage of a fixed sequence at the period the unit enters it, and every stage duration is recorded; here nothing in the record holds the deciding rate, and the error is not which period a recorded duration is read at but that the recorded level has not reached the state the easy estimator assumes."
+ },
+ "lineage": [],
+ "notes": "gate_g read against the vocab: the decisive step is a choice between two estimators of one filed quantity, and the one that stands is pinned by the data's own structure (no interval in the record has the plant in its occupied state with the rooms empty, and no session is long enough for the level to settle) rather than by validation or a standard, which determinism-check section 1 ranks first among closures. stump_strategy decomposition_attribution: the measured concentration is correctly reported and the decisive move attributes it between the source (occupants) and the transport (air supply) over a window too short for a settled reading to separate them.",
+ "registered": "2026-10-27T05:39:32Z"
 }

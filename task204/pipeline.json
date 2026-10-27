@@ -1,79 +1,81 @@
 {
- "task": "task204",
- "owner": "oviya13ya",
- "wave": 5,
- "architecture": "v1",
- "status": "BUILD",
- "stage": 4,
- "stage_name": "check",
- "drawn": "2026-10-27",
- "updated": "2026-10-27",
- "domain": "physical-environmental-sciences",
- "subdomain": "environmental-monitoring-exceedance",
- "objective": "anomaly-detection",
- "shape": "07",
- "card": "REGISTERED by the author at .claude/skills/fingerprint/cards/task204.json (2026-10-27T05:39:32Z). This session did not write under .claude/ and did not touch the card.",
- "call": "The Tulrohan Block's six teaching spaces are supplied with 5.0 litres per second per occupant present (5.0739 before rounding, 0.1761 from the nearer cell edge) across the autumn term's timetabled sessions, against the 8 litres per second per person TGD-M4 requires, which is 1.58 times the rate achieved, so January's minor-works allocation funds option A, the block's air-handling replacement, and not the timetable change.",
- "stump": "A competent solver reads each timetabled session's mean carbon dioxide excess as a settled level, divides the standard's per-person generation rate by it, occupant-weights the result over the term and files 11.0 litres per second per occupant present (10.974 before rounding), clearing the requirement by 1.372 times and sending the allocation to the timetable.",
- "precut": {
-  "run": "2026-10-27",
-  "result": "52 checks, 0 FAIL, 0 WARN, exit 0 against the registered card",
-  "prompt_gate": "voice-check.py exit 0, 997 characters (the prompt was rewritten at stage 3 so every graded figure has an asking sentence)"
- },
- "measured": {
-  "generator": "generator/params.py, world.py, analysis.py, bundle.py, docs.py, build.py; build.py is the one entry point that writes figures.json",
-  "gates": {
-   "checks.py": "98 checks, 0 failed",
-   "verify.py": "23 claims, 0 failed, bundle only on its own code path",
-   "figures_check.py": "153 figures in blocks 1 to 4, 0 absent, exit 0",
-   "rebuilds": "two consecutive runs byte-identical across target/, golden/, figures.json, submission.md and metadata.json",
-   "leak.py": "verdict REVIEW, 0 LEAK, 27 REVIEW lines over four sweeps, each answered in the design note's Leak review section",
-   "precut.py": "52 checks, 0 FAIL, 0 WARN",
-   "guard.py surface": "exit 0, no promoted pair naming task204",
-   "guard.py heart": "WARN, no BLOCK, exit 0, nearest heart text 0.04, nearest driver 0.06; the two WARNs are the quantity_figure decision type and the png plus xlsx set against task157, both answered in the design note's Draw section",
-   "scrub_producer_metadata.py": "clean, no producer signature and no out-of-band timestamp"
+  "task": "task204",
+  "owner": "oviya13ya",
+  "wave": 5,
+  "architecture": "v1",
+  "status": "BUILD",
+  "stage": 4,
+  "stage_name": "check",
+  "drawn": "2026-10-27",
+  "updated": "2026-10-27",
+  "domain": "physical-environmental-sciences",
+  "subdomain": "environmental-monitoring-exceedance",
+  "objective": "anomaly-detection",
+  "shape": "07",
+  "card": "REGISTERED by the author at .claude/skills/fingerprint/cards/task204.json (2026-10-27T05:39:32Z). This session did not write under .claude/ and did not touch the card.",
+  "call": "The Tulrohan Block's six teaching spaces are supplied with 5.0 litres per second per occupant present (5.0274 before rounding, 0.2226 from the nearer cell edge) across the autumn term's timetabled sessions, against the 8 litres per second per person TGD-M4 requires, which is 1.59 times the rate achieved, so January's minor-works allocation funds option A, the block's air-handling replacement, and not the timetable change.",
+  "stump": "A competent solver reads each timetabled session's mean carbon dioxide excess as a settled level, divides the standard's per-person generation rate by it, occupant-weights the result over the term and files 11.0 litres per second per occupant present (10.927 before rounding), clearing the requirement by 1.366 times and sending the allocation to the timetable.",
+  "precut": {
+    "run": "2026-10-27",
+    "result": "52 checks, 0 FAIL, 0 WARN, exit 0 against the registered card",
+    "prompt_gate": "voice-check.py exit 0, 997 characters (the prompt was rewritten at stage 3 so every graded figure has an asking sentence)"
   },
-  "call_on_the_pack": 5.0739,
-  "call_printed": 5.0,
-  "bin_edge": 0.1761,
-  "default_path_on_the_pack": 10.974,
-  "default_path_printed": 11.0,
-  "ladder": "R0 10.974, R1 9.675, R2 9.313, R3 5.074; rung worth in bins 2.60, 0.72, 8.48",
-  "rung_floor": "nearest clearing rung 1.164x, golden 1.577x on the failing side, floor 1.15x",
-  "rival_family": "six licensed steady-state readings spread 9.313 to 10.974, all filing that the block clears the requirement",
-  "golden_family": "seven constructions, spread 0.229 of a bin, all printing 5.0",
-  "bin_test": "(a) 8.48 bins against (b) 0.31 and (c) 0.23, a factor of 15.8",
-  "pooled_over_14": 8.2901,
-  "floor_screen": "rho 0.3526 against the 0.80 the multiplicative floor needs; corr(log naive, log truth) +0.9724, so no ranking of spaces is graded and none is",
-  "response_time": "189 to 355 minutes against a 55-minute teaching period, 3.4 to 6.5 period lengths",
-  "pair_arithmetic": "generator/ceiling.py on the cut pack: 33.2 per cent with both responses off the call, 49.7 with one on it, 66.2 with both on it; mirror leakage 31.9 per cent; the top two keep 32 and 22 per cent of the ask weight",
-  "input_gates": "19 files, 4 formats (10 csv, 4 xlsx, 4 pdf, 1 txt), bms_co2_5min_autumn2026.csv at 293,559 rows, two distractors plus one declared wrong-basis distractor, every file sourced, dated and licence-recorded in metadata.json",
-  "rebuild_digests": {
-   "target": "b2eecf22a9a8a98e",
-   "golden": "4159a18e72af2b7c"
+  "measured": {
+    "generator": "generator/params.py, world.py, analysis.py, bundle.py, docs.py, build.py; build.py is the one entry point that writes figures.json",
+    "gates": {
+      "checks.py": "112 checks, 0 failed",
+      "verify.py": "23 claims, 0 failed, bundle only on its own code path",
+      "figures_check.py": "153 figures in blocks 1 to 4, 0 absent, exit 0",
+      "rebuilds": "two consecutive runs byte-identical, target 166b822b78b55969, golden 82a5f7bee15da832",
+      "leak.py": "verdict REVIEW, 0 LEAK",
+      "precut.py": "52 checks, 0 FAIL, 0 WARN",
+      "voice-check.py": "exit 0, 997 characters",
+      "guard.py heart": "WARN, no BLOCK, exit 0, nearest heart text 0.04, nearest driver 0.06",
+      "scrub_producer_metadata.py": "clean",
+      "guard.py surface": "exit 0 on the finished pack; three pairs promoted for adjudication (task254, task193, task249), all three on the card-axis collision the card's differentiation block already answers, and the adjudicated clone-check is author-triggered"
+    },
+    "call_on_the_pack": 5.0274,
+    "call_printed": 5.0,
+    "bin_edge": 0.2226,
+    "default_path_on_the_pack": 10.9267,
+    "default_path_printed": 11.0,
+    "ladder": "R0 10.927, R1 9.633, R2 9.272, R3 5.027; rung worth in bins 2.59, 0.72, 8.49",
+    "rung_floor": "nearest clearing rung 1.159x, golden 1.591x on the failing side, floor 1.15x",
+    "rival_family": "six licensed steady-state readings spread 9.272 to 10.927, all filing that the block clears the requirement",
+    "golden_family": "seven licensed constructions spread 4.972 to 5.086, 0.227 of a bin, all printing 5.0, widest member 0.164 from its cell edge",
+    "bin_test": "(a) 8.49 bins against (b) 0.30 and (c) 0.23, a factor of 16.0",
+    "pooled_over_14": 8.2557,
+    "floor_screen": "rho 0.3541 against the 0.80 the multiplicative floor needs; corr(log naive, log truth) +0.9723",
+    "response_time": "191 to 358 minutes against a 55-minute teaching period, 3.5 to 6.5 period lengths",
+    "pair_arithmetic": "generator/ceiling.py on the cut pack: 33.2 per cent with both responses off the call, 49.7 with one on it, 66.2 with both on it; mirror leakage 31.9 per cent; the top two keep 32 and 22 per cent of the ask weight",
+    "input_gates": "19 files, 4 formats (10 csv, 4 xlsx, 4 pdf, 1 txt), bms_co2_5min_autumn2026.csv at 293,559 rows, two distractors plus one declared wrong-basis distractor, every file sourced, dated and licence-recorded",
+    "rebuild_digests": {
+      "target": "b2eecf22a9a8a98e",
+      "golden": "4159a18e72af2b7c"
+    },
+    "remedy_margin": "moving the four largest cohorts out of the block leaves it at 5.696 against the 8 required, so option B cannot comply and the A over B call is forced"
+  },
+  "resume": "Stage 4 in progress. The leak reader's findings and the determinism judge's NOT_DETERMINISTIC on the integration rule are both closed in the generator in one pass, and every free gate is green on the repaired pack.",
+  "resume_step": "One licensed re-judge on the repaired pack, then ship: target.zip from the final rebuild, ledger row, card current.",
+  "notes": "No git command, no agent and no write under .claude/ by this session. Stage 4 closed the determinism judge's integration fork by a recut and a scoping sentence rather than by pinning a method: EST-14 section 3's five-minute rule now says in its own words that it governs the counting of hours and of readings and no other quantity, and the block's supply rates were scaled by 0.991 so the seven licensed constructions sit mid-bin. EST-14 also gained section 4, which files who counts as an occupant present, and its section 5 rounding now matches the prompt. The chart was renamed, four PDFs and five workbooks were given their own filing instants, and the campus, the maintenance contractor and the commissioning contractor were given disjoint people.",
+  "returned": [],
+  "portal": null,
+  "portal_status": "",
+  "approved": null,
+  "judge": {
+    "pass1": {
+      "verdict": "NOT_DETERMINISTIC",
+      "disposition": "SEND_BACK",
+      "taxonomy": "competing_defensible_answer",
+      "finding": "the headline 5.0 is not forced: the trapezoid files 5.05 to 5.08 and prints 5.0, the rectangle files 5.37 to 5.63 and prints 5.5, and the mean of per-session ratios files 5.52; nothing filed fixes the integration. EST-14 section 3 reads literally as the rectangle rule",
+      "gate_g": "method or model selection on honest data, analytical_non_defect, surface_read_dependency no",
+      "gate_h": "passes, decisive step analytical; the stored-term balance carries the stump, the 189-minute response against 55-minute periods defeating a steady-state read",
+      "holds": "the A over B call is forced (option B leaves the block at about 5.75 against 8 under every reading); ask 2 all 56 cells; ask 3; ask 5 unique under both session-end conventions; critical component 1 at 1,728 sessions; the outdoor gap fill moves the rate by 0.01 or less",
+      "closed_by_the_fix_in_flight": "ask 4 population and the one-decimal rounding conflict, both already filed in EST-14 sections 4 and 5"
+    }
+  },
+  "leak": {
+    "leak_py": "REVIEW, no LEAK",
+    "reader": "clean on the ship-stoppers; one urgent (the per-person population, now filed) and four realism defects"
   }
- },
- "resume": "Stage 4 reported 2026-10-27. Judge NOT_DETERMINISTIC SEND_BACK on a quadrature fork INSIDE the decisive step, which is repairable: both readings already carry the storage term and sit one bin apart, while the default path is the settled read 8.48 bins away, so closing the fork costs nothing of the stump. Unlike task464, whose fork WAS the stump. Closure is C1 on the data, re-cutting so the trapezoid, the rectangle and the per-session-ratio reading print one figure; pinning the integration rule is refused because it files the HOW. EST-14 section 3 also needs its scope narrowed, since read literally it is the rectangle rule and so files a sentence whose literal application gives 5.5 rather than the golden. In the same pass: the four realism defects and the three persona findings. Then the stage 3 gates re-run with the ladder, bin test and pair arithmetic RE-MEASURED rather than carried over, and one licensed re-judge.",
- "resume_step": "Open stage 4: spawn the leak reader and the determinism judge together in the background at medium effort, fix every finding in the generator in one pass, then ship (target.zip from the final rebuild, ledger row, card current). No solver, scored reader or probe is run at any point.",
- "notes": "No git command, no agent and no write under .claude/ by this session. Stage 3 moved four things the stage 2 note had assumed: the prompt was rewritten to 997 characters so every graded figure has an asking sentence, ask A gained the recorded occupied hours beside the hours over the indicator and moved to two decimals, ask D gained the period, and the capital bid sheet's volume column was cut so the as-built room data sheets are the only record of a room's volume. Each is recorded in the design note's Tried and rejected section.",
- "returned": [],
- "portal": null,
- "portal_status": "",
- "approved": null,
- "judge": {
-  "pass1": {
-   "verdict": "NOT_DETERMINISTIC",
-   "disposition": "SEND_BACK",
-   "taxonomy": "competing_defensible_answer",
-   "finding": "the headline 5.0 is not forced: the trapezoid files 5.05 to 5.08 and prints 5.0, the rectangle files 5.37 to 5.63 and prints 5.5, and the mean of per-session ratios files 5.52; nothing filed fixes the integration. EST-14 section 3 reads literally as the rectangle rule",
-   "gate_g": "method or model selection on honest data, analytical_non_defect, surface_read_dependency no",
-   "gate_h": "passes, decisive step analytical; the stored-term balance carries the stump, the 189-minute response against 55-minute periods defeating a steady-state read",
-   "holds": "the A over B call is forced (option B leaves the block at about 5.75 against 8 under every reading); ask 2 all 56 cells; ask 3; ask 5 unique under both session-end conventions; critical component 1 at 1,728 sessions; the outdoor gap fill moves the rate by 0.01 or less",
-   "closed_by_the_fix_in_flight": "ask 4 population and the one-decimal rounding conflict, both already filed in EST-14 sections 4 and 5"
-  }
- },
- "leak": {
-  "leak_py": "REVIEW, no LEAK",
-  "reader": "clean on the ship-stoppers; one urgent (the per-person population, now filed) and four realism defects"
- }
 }
