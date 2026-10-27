@@ -1,31 +1,31 @@
 {
   "task": "task141",
   "owner": "oviya1301",
-  "status": "PAUSED",
+  "status": "DESIGN",
   "domain": "criminology-justice",
   "objective": "forecasting",
-  "stage": 1,
-  "stage_name": "draw",
+  "stage": 2,
+  "stage_name": "design",
   "updated": "2026-10-27",
-  "stump": "A competent solver fits revocation by month on supervision with the risk score, carries it over each felony term's months to its end under SB 26-118 and files about 610 admissions (three pods); the step that lands it there is reading every petition on the time-since-start clock, when about a quarter of terms draw one in the last months before their scheduled expiration, those ride each term's end, and under the Act fire at once for the 3,373 terms that end on 31 March 2027, so the plan carries about 1,200 (six pods).",
-  "architecture": 3,
+  "stump": "A competent solver builds the two-clock projection with the record's pooled end-of-term petition rate, caps the extensions under SB 26-118 and files about 940 admissions (five pods); the step that lands it there is reading the end-of-term rate off terms that could mostly still be extended, when the Act leaves no capped term any room and the terms already at their class maximum show the rate such terms file at, so the plan carries about 1,430 (seven pods).",
+  "architecture": 4,
   "loops": 0,
   "precut": {
     "exit": null,
     "date": ""
   },
   "leak": {
-    "leak_py": "REVIEW (no LEAK), zip 7cd8129f",
-    "reader": "architecture 3 round 1: both scored readers landed the call (1,200, six pods); asks 14 and 16 of 16 (score_reader exit 1 twice)"
+    "leak_py": "",
+    "reader": ""
   },
   "duplicate_check": {
-    "heart": "WARN (three_rules.strategy_risk answered; task152 differentiated)",
-    "nearest": "0.09 task134 v2 lineage"
+    "heart": "",
+    "nearest": "0.14 (own architecture 3), 0.11 (task479 v3 lineage) at the draw"
   },
   "judge": {
-    "verdict": "DETERMINISTIC",
-    "disposition": "FIX_NOW (wording only)",
-    "report": "task141/determinism_check_report.md (architecture 3, stage 4)"
+    "verdict": "",
+    "disposition": "",
+    "report": ""
   },
   "returned": [
     {
@@ -35,7 +35,7 @@
       "commit": ""
     }
   ],
-  "resume": "Architecture 3 spent at stage 4 round 1 (both scored readers modelled petitions by days to the expiration in force and landed 1,200 and six pods). Re-root to architecture 4 in criminology-justice / recidivism-risk-assessment, Forecasting, screened on 2026-10-27 in a scratch prototype: at a term's end a matter still open is met by an EXTENSION order when the term sits under its offense class's statutory maximum and by a violation petition otherwise; the Act's 24-month ceiling leaves no capped term any room, so its end-of-term petitions run at the rate of the terms already at their class maximum, not the pooled rate. Prototype (q_open 0.75, a 0.03, b 0.75, s 0.60, intake 226, ordinary hazard 0.026 to 0.006, at-maximum share 18 per cent at sentencing on a class-by-length table flat by length): golden 1,447 (7 pods), standing family 1,434 to 1,461, truth 1,389 (sd 26), the pooled two-clock route 943 (5 pods), proportional reallocation 1,172 (6), full substitution 1,836 (9), one clock 534 (3), persistence 864 (4). Next: carry s to about 0.63 and intake to about 217, integrate the classes, review and room logic into world.py, the class and officer columns into the pack, the Act's class maxima into docs.py, the at-maximum construction into forecast/golden, new asks (Ask A violator bed-days with the commitment beginning at the court's order while the jail reclassifies on receipt; Ask B felony probationers by supervising office and time on supervision with the office column kept at intake), then card, guard check and register, DRAWN.",
+  "resume": "Architecture 4 drawn 2026-10-27 (card registered, WARN only). Stage 2 and 3 next in one pass: integrate the prototype (classes and maxima on a class-by-length table flat at 18 per cent at sentencing, the end-of-term review that extends where the term has room and petitions otherwise, the Act's bar on extension past 24 months) into world.py (done in the working tree), the class column and extension orders into the pack, the State's class maxima into the Act, the at-maximum construction into forecast.py and golden.py, the asks (Ask A violator bed-days by quarter and level with the commitment begun at the court's order while the jail reclassifies on receipt; Ask B felony probationers on supervision at the extract by supervising office and time on supervision, CMS 2's office kept at intake), then the stage 2 sections, prompt.txt, precut.py, the stage 3 gates and stage 4.",
   "approved": null,
   "delivered": "2026-10-15",
   "portal": null,
@@ -67,7 +67,7 @@
     {
       "architecture": 3,
       "fate": "spent at stage 4 round 1 on 2026-10-27: both scored readers landed the call",
-      "last_commit": "this PAUSED commit"
+      "last_commit": "1976a763"
     }
   ]
 }
