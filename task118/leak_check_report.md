@@ -4,15 +4,15 @@
 
 LEAK stops the ship. REVIEW is a reader's call and the /leak-check command's solver's-eye pass reads every REVIEW line. INFO is a sweep that ran and found nothing or was skipped.
 
-Stump terms swept: change, nothing, decisive, archive, platform, shrunk, netting, already, dashboard, source, realised, closed, sentence, vertical, golden, sizing, decision, redesign, graded, holdback, editors, headlines, export, readable, reference
+Stump terms swept: already, change, netting, archive, headlines, platform, nothing, decisive, editors, sizing, inside, dashboard, shrunk, closed, export, surfaces, opportunity, decision, realised, sentence, owners, winners, embedding, reference, incremental
 
 ## 3 answer figures in the pack (REVIEW 1)
 - **REVIEW** `headline_squad_2027_placement_brief.pdf`: carries 6 of 9 distinctive words of the committed call: 'Place the headline squad with Culture·national for 2027, where it adds 1,250,000 extra article clicks.'
 
 ## 4 design-note vocabulary (REVIEW 3)
-- **REVIEW** `audience_warehouse_field_reference.md`: 6 of 25 stump-paragraph terms appear (archive, platform, dashboard, source, vertical, reference); read whether the document names the move
-- **REVIEW** `editorial_standards_s7_corrections.pdf`: 3 of 25 stump-paragraph terms appear (change, editors, headlines); read whether the document names the move
-- **REVIEW** `headline_squad_2027_placement_brief.pdf`: 6 of 25 stump-paragraph terms appear (change, closed, vertical, decision, editors, headlines); read whether the document names the move
+- **REVIEW** `audience_warehouse_field_reference.md`: 5 of 25 stump-paragraph terms appear (archive, platform, inside, dashboard, reference); read whether the document names the move
+- **REVIEW** `editorial_standards_s7_corrections.pdf`: 3 of 25 stump-paragraph terms appear (change, headlines, editors); read whether the document names the move
+- **REVIEW** `headline_squad_2027_placement_brief.pdf`: 7 of 25 stump-paragraph terms appear (change, headlines, editors, closed, decision, embedding); read whether the document names the move
 
 ## 5 announcements (REVIEW 1)
 - **REVIEW** `prompt`: Which desk on the shortlist (Politics·national, Sport·metro, Business·national, Sport·national, Local·metro or Culture·national) should the headline-testing squad join for 2027, and how many extra article clicks would it add there in 2027?

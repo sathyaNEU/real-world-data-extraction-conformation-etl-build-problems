@@ -230,15 +230,15 @@ The mirror (stops at rung 3 on Local·metro) files the same 18 figures, since no
 
 Mirror leakage: 0 per cent of ask weight (0 of 18 figures).
 Measured by: `generator/checks.py`, the `pair_simulation` helper run on the cut pack, asserted by the "cracker sheet" and "pair ceiling" checks.
-Pair ceiling: 27.5 on the planning weights 38 / 7 / 55 (cracker 45.0, mirror 10.0; asserted at or under 30), AS MEASURED BEFORE THIS REPAIR AND NOW STALE. The cracker path is defined in `checks.py` as a response that keeps the July file's rows and reads `publish_at` on the saves' clock, and SF13 has just pinned that clock in the field notes, so a careful solver no longer makes that mistake and the six median figures come back into reach. The re-measured figures are below; this line is kept so the trade is visible rather than quietly overwritten.
+Pair ceiling: 45.8 on the planning weights 38 / 7 / 55, measured after this repair, against a bar of 70 built to 60. It was 27.5 before the repair (on the call 45.0, off it 10.0, asserted at or under 30), and that figure is now stale. The cracker path is defined in `checks.py` as a response that keeps the July file's rows and reads `publish_at` on the saves' clock, and SF13 has just pinned that clock in the field notes, so a careful solver no longer makes that mistake and the six median figures come back into reach. The re-measured figures are below; this line is kept so the trade is visible rather than quietly overwritten.
 
 **The re-measured pair, from the generator's own `pair_simulation` on the cut pack (not an estimate).** The
 simulation already carried every scenario, so the repair's cost is read straight off it:
 
-| The response's reading | Cracker | Mirror | Ask figures taken | Leakage | Pair |
+| The response's reading | On the call | Off the call | Ask figures taken | Leakage | Pair |
 |---|---|---|---|---|---|
-| keeps the July file's rows AND reads the clock wrong (the cracker as filed before this repair) | 45.0 | 10.0 | 0 of 18 | 0.0 | 27.5 |
-| **catches the clock only (the cracker after SF13 pins it)** | **63.3** | **28.3** | **6 of 18** | **0.333** | **45.8** |
+| keeps the July file's rows AND reads the clock wrong (the sheet as filed before this repair) | 45.0 | 10.0 | 0 of 18 | 0.0 | 27.5 |
+| **catches the clock only (the path a careful solver takes once SF13 pins it)** | **63.3** | **28.3** | **6 of 18** | **0.333** | **45.8** |
 | catches the July file only | 81.7 | 46.7 | 12 of 18 | 0.667 | 64.2 |
 | catches both | 100.0 | 65.0 | 18 of 18 | 1.0 | 82.5 |
 
