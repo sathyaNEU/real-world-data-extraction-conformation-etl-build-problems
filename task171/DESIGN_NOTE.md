@@ -1,9 +1,6 @@
 # task171 design note
 
-**Status: PAUSED at stage 1. Architecture 5 is drawn on paper and not yet registered: its card
-(`generator/paper/card_draft.json`) BLOCKs on `ban.strategy` alone, causal_design against task139's architecture 2 in
-the last three builds. Register it once that build leaves the window, answer the two WARNs, commit DRAWN and run stage
-2.**
+**Status: DESIGN (stage 2), architecture 5 registered 2026-10-27 (guard check PASS once task139's architecture 2 was spent and left the window).**
 Architecture 5 is Corvane Therapeutics' dovikizumab phase 3 induction dose, in pharmacology-pharmacoepidemiology-safety
 / population-pharmacokinetics-exposure-response. It was drawn on 2026-10-26 in the task141 rework, which found task141
 already re-rooted by its own session, and the author chose to park it here, the next open Forecasting number.

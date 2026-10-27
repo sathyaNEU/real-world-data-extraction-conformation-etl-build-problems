@@ -1,31 +1,31 @@
 {
  "task": "task171",
- "status": "PAUSED",
- "domain": "economics-econometrics",
+ "status": "DESIGN",
+ "domain": "pharmacology-pharmacoepidemiology-safety",
  "objective": "forecasting",
- "stage": 1,
- "stage_name": "draw",
- "updated": "2026-10-26",
- "stump": "A competent solver matures the overnight toll-by-mail invoices by their age, reads the collected share of those issued a year or more before 31 October 2026 (80 per cent in-state, 60 per cent out-of-state), applies it to the plan's 2027 billed toll and files $12.00 million; the step that lands it there is maturing in-state invoices by age when an invoice unpaid at 60 days is collected only at its plate's next two-year registration renewal.",
- "architecture": 4,
+ "stage": 2,
+ "stage_name": "design",
+ "updated": "2026-10-27",
+ "stump": "A competent solver merges the valid troughs with the week-12 remission flags, takes each patient's steady-state exposure (the week-8 or week-12 trough, the mean of the troughs or a one-compartment fit's average concentration), fits the exposure-response with baseline albumin, weight, CRP and prior biologic, scales exposure in proportion to dose and files 900 mg, with 300 mg 8 to 29 points below 600 mg; the step that lands it there is reading exposure after clearance had already fallen in the patients who remit.",
+ "architecture": 5,
  "loops": 0,
  "card_registered": true,
  "precut": {
-  "exit": 0,
-  "date": "2026-10-23"
+  "exit": null,
+  "date": ""
  },
  "leak": {
-  "leak_py": "REVIEW 2026-10-23 (four REVIEW lines answered in the design note; no LEAK)",
-  "reader": "reader B 2026-10-23 on 9451b6bd: landed the call, 0 of 22 asks"
+  "leak_py": "",
+  "reader": ""
  },
  "duplicate_check": {
-  "heart": "WARN 2026-10-23",
-  "nearest": "task167 v2 0.06"
+  "heart": "",
+  "nearest": "check PASS 2026-10-27 on registration, nearest driver 0.07 (task182 v1, task270 v7, task479 v4, task464 v1)"
  },
  "judge": {
-  "verdict": "not run (stopped)",
-  "disposition": "architecture 4 spent at Gate F",
-  "report": "reader B: call landed, asks 0 of 22"
+  "verdict": "",
+  "disposition": "",
+  "report": ""
  },
  "returned": [],
  "screen": {
@@ -56,7 +56,7 @@
   "rebuild_fifth_cell": "chosen shape first: biomedical-clinical-research / dose-response-pk-pd-modeling on code (phase 3 week-12 target-lesion response read lesion by lesion: lever +1.7 to +18.7 per cent at within-patient correlation 0.23 to 0.50, sigma about 6 per cent on 640 patients; scratch b171s/proto l1.py, l1b.py, l2.py) and physical-environmental-sciences / hydrology-flood-frequency (45-year record: flood-stage days sigma 15 per cent, Q10 9, Q100 22; every break a channel the standard names; h1.py); grey cells on paper, the owner-share contract-expiry structure honestly composition_mix, banned by task179",
   "architecture_5_paper": "drawn 2026-10-26 in the task141 rework and parked here at the author's choice: Corvane Therapeutics' dovikizumab phase 3 induction dose (pharmacology-pharmacoepidemiology-safety / population-pharmacokinetics-exposure-response), clearance falling as the colitis remits so every trough after week 4 carries the response; on sim_er4.py's defaults the week-4 trough family files 300 mg on every member in 24 of 40 worlds and the late family never files 300 (closest gap 11.5 points); scripts and card draft in generator/paper"
  },
- "resume": "stage 1: architecture 5 is drawn on paper in DESIGN_NOTE.md, card draft at generator/paper/card_draft.json; guard.py check BLOCKs only on ban.strategy (causal_design repeats task139 v2 in the last three builds), so register it with guard.py register once task139 v2 leaves the window, answer WARNs repeat.gate_g and repeat.deliverables, set architecture 5 and its stump here, commit DRAWN (task171) and run stage 2 on a sim_er4.py world among fam5_sweep.py's 24 holding seeds",
+ "resume": "stage 2 of architecture 5: choose the build world on sim_er4.py with the week-4 family filing 300 mg on every member with room (worst member at least 2 points inside the 5-point rule) and every late member at 900 mg; fork table, ladder, closure, asks decoupled from the 600 mg arm's exposure, prompt.txt, precut.py exit 0",
  "approved": null,
  "delivered": null,
  "portal": null,
