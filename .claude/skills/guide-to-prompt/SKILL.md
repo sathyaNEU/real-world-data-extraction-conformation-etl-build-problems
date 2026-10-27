@@ -22,6 +22,8 @@ the field's own deciding analysis, and why the swap breaks it, into the card's `
 
 **One objective of eight**, or the task is rejected on the tag ("Comparative analysis" is not one).
 
+**A seed's own header tag is not evidence that its pairing is legal.** A seed can name a domain and an objective that no task type in that domain serves, and the pairing is then undrawable however good the world is: seed AD28 pairs Economics with Anomaly Detection, and the eight task types of `economics-econometrics` serve EC, OS, F, RC and DD and none of them AD. Read the domain's own task-type codes in `references/domains/README.md` before anything else in the draw, because the guard and `precut.py` refuse the pairing at the card and a draw that reaches a measured ladder first has spent a session on a build that could never register. Where the seed's objective is the lane's, the domain moves and the world is redrawn; where the world is the point, the objective its task type does serve is the honest tag, and that moves the number to another lane.
+
 | Objective | The decision turns on | Native shapes |
 |---|---|---|
 | **Forecasting & Predictive Modeling** (most wanted, the tiebreak) | a future value the supplied history pins down | 02, 13; 04, 06 over an open window |
