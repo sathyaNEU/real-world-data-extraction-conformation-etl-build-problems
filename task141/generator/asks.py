@@ -3,9 +3,8 @@
 Ask A: for each quarter from October 2025 to September 2026, the felony and the misdemeanor violator bed-days: one for
 each person in the Detention Center at 00:00 county time on a revocation commitment, felony when the commitment revokes
 a felony term (a person held on commitments revoking a felony and a misdemeanor term counted once, as felony).
-Ask B: the average term imposed at sentencing, in months, of the felony probationers on supervision on 30 September
-2026, by supervising office and by time on supervision (under one year, one to under two, two to under three, three
-or more)."""
+Ask B: the felony probationers on supervision on 30 September 2026 in each supervising office by time on supervision
+(under one year, one to under two, two to under three, three or more)."""
 from __future__ import annotations
 
 import numpy as np
@@ -22,20 +21,25 @@ def quarter_of(d):
     return None
 
 
-def bed_days_truth(B):
-    """from the generator's custody segments, each carrying the level of the commitment it serves"""
-    tab = np.zeros((4, 2), dtype=int)
+def bed_days_truth(W):
+    """from the world's commitments, each from the court's order to its release (a weekend sentence weekend by
+    weekend): a person at 00:00 on any commitment is a violator bed-day, felony if any commitment then running revokes
+    a felony term"""
     stop = K.at(K.EXTRACT + 1, 0)
-    for b in B:
-        if b.cls not in ("PV-FEL", "PV-MIS"):
-            continue
-        end = b.end or stop
-        d = K.day(b.start.date()) + 1
+    days = {}
+    for person, a, b, lvl in W.commit_spans:
+        end = min(b, stop)
+        d = K.day(a.date()) + 1
         while K.at(d, 0) < end:
-            q = quarter_of(d)
-            if q is not None:
-                tab[q, 0 if b.lvl == "F" else 1] += 1
+            k = (person, d)
+            if days.get(k) != "F":
+                days[k] = lvl
             d += 1
+    tab = np.zeros((4, 2), dtype=int)
+    for (person, d), lvl in days.items():
+        q = quarter_of(d)
+        if q is not None:
+            tab[q, 0 if lvl == "F" else 1] += 1
     return tab
 
 
@@ -61,16 +65,12 @@ def sup_band(c):
     return 3
 
 
-def ask_b_truth(W, as_it_stands=False):
-    """average imposed term by office and by time on supervision; as_it_stands takes CMS 2's term_months"""
-    ext = {}
-    for c in W.cases:
-        ext[c['id']] = sum(m[4] for m in W.states[c['id']]['mods'] if m[0] <= K.EXTRACT and m[3] == 'EXTEND')
-    by_off, by_sup = {}, {}
+def ask_b_truth(W, at_intake=False):
+    """felony probationers on supervision at the extract by supervising office (the office of the officer then
+    supervising the term) and time on supervision; at_intake takes the office CMS 2 keeps (the office that took the
+    term in)"""
+    tab = {(o[0], k): 0 for o in K.OFFICES for k in range(4)}
     for c in open_felony(W):
-        t = c['term'] + (ext[c['id']] if as_it_stands else 0)
-        by_off.setdefault(c['office'], []).append(t)
-        by_sup.setdefault(sup_band(c), []).append(t)
-    offs = [np.mean(by_off[o[0]]) for o in K.OFFICES]
-    sups = [np.mean(by_sup[k]) for k in range(4)]
-    return offs, sups, {o[0]: len(by_off[o[0]]) for o in K.OFFICES}, [len(by_sup[k]) for k in range(4)]
+        o = W.sup_office[c['id']] if at_intake else W.officer_hist[c['id']][-1][2]
+        tab[(o, sup_band(c))] += 1
+    return tab

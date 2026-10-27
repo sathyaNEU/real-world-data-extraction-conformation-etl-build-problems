@@ -28,7 +28,9 @@ SOURCES = {
     K.HEADCOUNT: (SO + ", daily 06:00 count by housing unit", "2026-10-01"),
     K.JAIL_CODES: (SO + ", jail management system code list", "2025-02-04"),
     K.COURT_CODES: (CLERK + ", code table", "2025-01-21"),
-    K.OFFICE_CODES: (APD + ", office codes", "2023-06-12"),
+    K.OFFICE_CODES: (APD + ", office codes", "2025-06-02"),
+    K.ROSTER: (APD + ", personnel system export of probation officer assignments in effect from 1 July 2016",
+               "2026-10-02"),
     K.ACT_PDF: ("General Assembly, Senate Bill 26-118 (Felony Probation Term Act), enrolled", "2026-05-14"),
     K.PLAN_PDF: ("State Jail Standards Board, instructions for the 2027 Jail Operations Plans", "2026-07-08"),
     K.REPORT: (APD + ", annual report for fiscal year 2025", "2025-10-15"),
@@ -53,8 +55,7 @@ def main():
                         "fictional, and every record is synthetic.",
                 as_of="2026-10-16", deliverables=[K.GOLD_BOOK, K.GOLD_MEMO, K.GOLD_CHART],
                 distractor_files=DISTRACTORS,
-                stated_inputs=["records to 30 September 2026", "calendar 2027", "nearest 100", "whole days",
-                               "one decimal"], files=files)
+                stated_inputs=["records to 30 September 2026", "calendar 2027", "whole days"], files=files)
     assert set(SOURCES) == set(os.listdir(T)), set(SOURCES) ^ set(os.listdir(T))
     json.dump(meta, open(os.path.join(TASK, "metadata.json"), "w"), indent=1)
 

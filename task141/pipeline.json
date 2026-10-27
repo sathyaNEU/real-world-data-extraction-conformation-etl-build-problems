@@ -1,73 +1,80 @@
 {
-  "task": "task141",
-  "owner": "oviya1301",
-  "status": "DESIGN",
-  "domain": "criminology-justice",
-  "objective": "forecasting",
-  "stage": 2,
-  "stage_name": "design",
-  "updated": "2026-10-27",
-  "stump": "A competent solver builds the two-clock projection with the record's pooled end-of-term petition rate, caps the extensions under SB 26-118 and files about 940 admissions (five pods); the step that lands it there is reading the end-of-term rate off terms that could mostly still be extended, when the Act leaves no capped term any room and the terms already at their class maximum show the rate such terms file at, so the plan carries about 1,430 (seven pods).",
-  "architecture": 4,
-  "loops": 0,
-  "precut": {
-    "exit": null,
-    "date": ""
+ "task": "task141",
+ "owner": "oviya1301",
+ "status": "SHIPPED",
+ "domain": "criminology-justice",
+ "objective": "forecasting",
+ "stage": 5,
+ "stage_name": "ship",
+ "updated": "2026-10-27",
+ "stump": "A competent solver builds the two-clock projection with the record's pooled end-of-term petition rate, caps the extensions under SB 26-118 and files 911 admissions (five pods); the step that lands it there is reading the end-of-term rate off terms that could mostly still be extended, when the Act leaves no capped term any room and the terms already at their class maximum show the rate such terms file at, so the plan staffs seven pods (1,424 projected).",
+ "architecture": 4,
+ "loops": 0,
+ "precut": {
+  "exit": 0,
+  "date": "2026-10-27",
+  "checks": 52
+ },
+ "leak": {
+  "leak_py": "REVIEW (no LEAK), --asof 2026-10-16, every REVIEW line answered by the reader",
+  "reader": "four isolated reads (zips 4066ee80, 2b591366, 9d45538d and the repaired zip): question 1 nothing, question 6 analytical, no planted decoy, no file that ranks or forecasts 2027"
+ },
+ "duplicate_check": {
+  "heart": "WARN (driver.near 0.14 own architecture 3, overuse.gate_g, repeat.deliverables task273)",
+  "nearest": "0.14 (own architecture 3), 0.11 (task479 v3 lineage)"
+ },
+ "judge": {
+  "verdict": "DETERMINISTIC",
+  "disposition": "APPROVE",
+  "report": "determinism_check_report_pass5.md (pass 2 APPROVE, pass 3 FIX_NOW applied, pass 4 SEND_BACK on margin fragility repaired; earlier reports kept)",
+  "gate_g": "forecasting, analytical_non_defect, no surface-read dependency, no sole data defect",
+  "gate_h": "domain pass, layers pass, decisive step analytical"
+ },
+ "returned": [
+  {
+   "date": "2026-10-26",
+   "portal": "both responses landed the call at NCA scores 1 to 3",
+   "repair": "design",
+   "commit": ""
+  }
+ ],
+ "resume": "Shipped. Portal result pending; a determinism or rubric return goes to /fix-determinism or /fix-rubric, a landed call back to stage 2 against this note.",
+ "approved": null,
+ "delivered": "2026-10-27",
+ "portal": null,
+ "portal_id": "",
+ "portal_status": "",
+ "portal_status_date": "",
+ "wave": "wave 2 (new), seed FC12 (world redrawn)",
+ "build": {
+  "checks": "103 assertions, 0 failed",
+  "verify": "28 of 28 (independent path)",
+  "rebuild": "two builds byte-identical (target.zip sha256 2cea32997e4cbfa8)",
+  "figures_check": "79 figures, exit 0",
+  "voice_check": "PASS (852 characters)",
+  "containers": "clean (scrub audit, target and golden)",
+  "precut": "52 checks, exit 0"
+ },
+ "architecture_history": [
+  {
+   "architecture": 1,
+   "fate": "FAILED_TO_STUMP 2026-10-26, both portal responses landed scores 1 to 3",
+   "last_commit": "1ccf689a"
   },
-  "leak": {
-    "leak_py": "",
-    "reader": ""
+  {
+   "architecture": 2,
+   "fate": "superseded at stage 2 on 2026-10-27 at the author's instruction",
+   "last_commit": "31378a11"
   },
-  "duplicate_check": {
-    "heart": "",
-    "nearest": "0.14 (own architecture 3), 0.11 (task479 v3 lineage) at the draw"
+  {
+   "architecture": 3,
+   "fate": "spent at stage 4 round 1 on 2026-10-27: both scored readers landed the call",
+   "last_commit": "1976a763"
   },
-  "judge": {
-    "verdict": "",
-    "disposition": "",
-    "report": ""
-  },
-  "returned": [
-    {
-      "date": "2026-10-26",
-      "portal": "both responses landed the call at NCA scores 1 to 3",
-      "repair": "design",
-      "commit": ""
-    }
-  ],
-  "resume": "Architecture 4 drawn 2026-10-27 (card registered, WARN only). Stage 2 and 3 next in one pass: integrate the prototype (classes and maxima on a class-by-length table flat at 18 per cent at sentencing, the end-of-term review that extends where the term has room and petitions otherwise, the Act's bar on extension past 24 months) into world.py (done in the working tree), the class column and extension orders into the pack, the State's class maxima into the Act, the at-maximum construction into forecast.py and golden.py, the asks (Ask A violator bed-days by quarter and level with the commitment begun at the court's order while the jail reclassifies on receipt; Ask B felony probationers on supervision at the extract by supervising office and time on supervision, CMS 2's office kept at intake), then the stage 2 sections, prompt.txt, precut.py, the stage 3 gates and stage 4.",
-  "approved": null,
-  "delivered": "2026-10-15",
-  "portal": null,
-  "portal_id": "",
-  "portal_status": "",
-  "portal_status_date": "",
-  "wave": "wave 2 (new), seed FC12 (world redrawn)",
-  "build": {
-    "checks": "193 assertions, 0 failed",
-    "verify": "pass (independent path, Word documents' word counts included)",
-    "rebuild": "two builds byte-identical (target.zip sha256 662eb5196dcbc2df)",
-    "figures_check": "61 figures, exit 0",
-    "voice_check": "PASS (992 characters)",
-    "containers": "clean (scrub audit, target and golden; both docx in Word's form)",
-    "precut": "49 checks, exit 0",
-    "freeze": "determinism and rubric exit 0"
-  },
-  "architecture_history": [
-    {
-      "architecture": 1,
-      "fate": "FAILED_TO_STUMP 2026-10-26, both portal responses landed scores 1 to 3",
-      "last_commit": "1ccf689a"
-    },
-    {
-      "architecture": 2,
-      "fate": "superseded at stage 2 on 2026-10-27 at the author's instruction",
-      "last_commit": "31378a11"
-    },
-    {
-      "architecture": 3,
-      "fate": "spent at stage 4 round 1 on 2026-10-27: both scored readers landed the call",
-      "last_commit": "1976a763"
-    }
-  ]
+  {
+   "architecture": 4,
+   "fate": "SHIPPED 2026-10-27, pending review (stage 4 pass 4 SEND_BACK on margin fragility repaired in the generator; pass 5 APPROVE)",
+   "last_commit": "the SHIPPED (task141) commit of 2026-10-27"
+  }
+ ]
 }

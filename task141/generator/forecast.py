@@ -29,7 +29,10 @@ def record_from_world(W):
         if st['closed'] is not None and st['closed'][0] < K.RECORD_START:
             continue
         early_ext = sum(m[4] for m in st['mods'] if m[0] < K.RECORD_START and m[3] == 'EXTEND')
-        R.cases.append(dict(id=c['id'], sup=c['sup'], score=c['score'], term=c['term'] + early_ext))
+        R.cases.append(dict(id=c['id'], sup=c['sup'], score=c['score'], term=c['term'] + early_ext, klass=c['klass'],
+                            max_m=c['max_m'], imposed_term=c['term'] + early_ext,
+                            exts=sorted((m[0], m[4]) for m in st['mods'] if m[3] == 'EXTEND' and
+                                        K.RECORD_START <= m[0] <= K.EXTRACT)))
     R.C = {c['id']: c for c in R.cases}
     R.pet, R.byc, R.close, R.scheds, R.sched_now = [], {}, {}, {}, {}
     for c in R.cases:
@@ -74,7 +77,7 @@ def end_of(R, c):
 
 
 def act_cap(c):
-    return max(c['sup'] + K.months(24), K.TRANS)
+    return max(K.add_months(c['sup'], 24), K.TRANS)
 
 
 def act_end(R, c):
@@ -479,6 +482,179 @@ def to_expiry(R, score_adjust=True):
         s0 = K.EXTRACT + 1 + int(round((k + 0.5) * M))
         if s0 > K.Y1:
             break
-        total += run(s0, s0 + K.months(24), mbar, s0, rate)
+        total += run(s0, K.add_months(s0, 24), mbar, s0, rate)
         k += 1
     return total
+
+
+# ---------------------------------------------------------------------------------------------------- the room to extend
+def term_m_at(c, d):
+    """the term in force on day d, in months: the term imposed and every extension ordered before d"""
+    return c['imposed_term'] + sum(e for dd, e in c['exts'] if dd < d)
+
+
+def window_rates(R, window=120, pending_free=False):
+    """every end-of-term window the record saw open (the last `window` days before a scheduled expiration in force,
+    the term alive and on supervision), split by whether the term then had room under its class maximum: the share
+    with a petition filed in the window and the share extended in it"""
+    key = ('rates', window, pending_free)
+    if key in R.cache:
+        return R.cache[key]
+    rows = []
+    for c in R.cases:
+        ps = R.byc.get(c['id'], [])
+        e = end_of(R, c) if c['id'] in R.close else K.EXTRACT + 1
+        sch = R.scheds[c['id']]
+        for i, (since, s_) in enumerate(sch):
+            until = sch[i + 1][0] if i + 1 < len(sch) else 10 ** 9
+            wo = s_ - window
+            if s_ > K.EXTRACT - 30 or not (since <= wo < until) or wo < K.RECORD_START:
+                continue
+            if e <= wo or c['sup'] > wo:
+                continue
+            if pending_free and any(p['file'] < wo and (p['decided'] is None or p['decided'] >= wo) for p in ps):
+                continue
+            hit = any(wo <= p['file'] < s_ for p in ps)
+            ext = any(wo <= dd < s_ for dd, _ in c['exts'])
+            rows.append((term_m_at(c, wo) >= c['max_m'], hit, ext))
+    A = np.array(rows, dtype=float)
+    n = A[:, 0] == 1
+    out = dict(pool=A[:, 1].mean(), e=A[~n, 1].mean(), n=A[n, 1].mean(), x_pool=A[:, 2].mean(), x_e=A[~n, 2].mean(),
+               x_n=A[n, 2].mean(), n_windows=len(A), n_nonext=int(n.sum()), hits_n=int(A[n, 1].sum()),
+               hits_e=int(A[~n, 1].sum()), hits=int(A[:, 1].sum()))
+    R.cache[key] = out
+    return out
+
+
+MODES = ('pooled', 'golden', 'full', 'iia')
+
+
+def projection(R, mode='golden', window=120, score_adjust=False, clip_act=True, y0=K.Y0, y1=K.Y1, conv_pooled=False,
+               mean_lag=False, pending_free=False, ns_months=12, skip_transition=False, ext_m=K.EXT_MONTHS,
+               act_room=True, second=True):
+    """the 2027 projection on the two clocks with each term's room to extend. A term ending under the Act with no room
+    (under its class maximum, or under the Act's cap) files at the end-of-term rate of `p_non`; one with room at
+    `p_ext_end`, and is extended at `x_end` by `ext_m` months (or to the cap if sooner) to a second end with no room.
+    mode: golden (no room at the rate of the terms the record saw at their class maximum, room at the rate of the terms
+    with room), pooled (every end at the record's pooled rate), full (every would-be extension a petition), iia (the
+    extension share reallocated to petition and lapse in proportion)"""
+    E = estimates(R, window, score_adjust)
+    g0, gmax, beta, offs = E['g0'], E['gmax'], E['beta'], E['offs']
+    conv_w, conv_o, lag_m, ex = E['conv_w'], E['conv_o'], E['lag_m'], E['ex']
+    if conv_pooled:
+        old = decided_old(R)
+        conv_w = conv_o = float(np.mean([p['revoked'] for p in old]))
+    lags = Lags([int(round(E['lags'].L.mean()))]) if mean_lag else E['lags']
+    W_ = window_rates(R, window, pending_free)
+    pe, pn, pp, xe, xp = W_['e'], W_['n'], W_['pool'], W_['x_e'], W_['x_pool']
+    if mode == 'pooled':
+        p_non, p_ext_end, x_end = pp, pp, xp
+    elif mode == 'golden':
+        p_non, p_ext_end, x_end = pn, pe, xe
+    elif mode == 'full':
+        p_non, p_ext_end, x_end = pp + xp, pp, xp
+    elif mode == 'iia':
+        lapse = 1 - pp - xp
+        p_non, p_ext_end, x_end = pp + xp * pp / (pp + lapse), pp, xp
+    else:
+        raise ValueError(mode)
+
+    def gg_at(m, mult):
+        g = g0.get(m, g0[gmax]) * mult
+        return g / (1 + g * (1 - conv_o) * lag_m)
+
+    def ordinary(sup, mult, d, stop, alive):
+        out = 0.0
+        while d < stop and d <= y1:
+            m = int((d - sup) // M)
+            m_end = sup + int(round((m + 1) * M))
+            if m_end <= d:                       # a day on a rounded month boundary belongs to the next month
+                m += 1
+                m_end = sup + int(round((m + 1) * M))
+            nxt = min(m_end, stop)
+            frac = (nxt - d) / M
+            g = gg_at(m, mult) * frac
+            out += alive * g * conv_o * float(lags.land((d + nxt) / 2.0, y0, y1))
+            alive *= (1 - g * conv_o) * (1 - ex.get(m, 0.0) * frac)
+            d = nxt
+        return out, alive
+
+    def window_part(end, alive, rate, moved):
+        wo = end - window
+        if moved and clip_act:
+            wo = max(wo, K.ACT)
+        fil = end - offs
+        share = 1.0
+        if wo <= K.EXTRACT:
+            fil = fil[fil > K.EXTRACT]
+            share = len(fil) / len(offs)
+        if moved and clip_act:
+            fil = np.maximum(fil, K.ACT)
+        if not len(fil):
+            return 0.0
+        return alive * rate * share * conv_w * float(lags.land(fil, y0, y1).mean())
+
+    parts = dict(pending=0.0, ordinary=0.0, window=0.0, new=0.0)
+    info = dict(n_room=0, n_none=0, transition=0.0, n_transition=0, room=0.0, none=0.0)
+    for c in R.active:
+        cap = act_cap(c)
+        end = act_end(R, c)
+        moved = end < R.sched_now[c['id']]
+        mult = np.exp(beta * (c['score'] - 10))
+        ps = R.byc.get(c['id'], [])
+        pend = [p for p in ps if p['decided'] is None]
+        alive = 1.0
+        d = max(K.EXTRACT + 1, c['sup'])
+        if pend:
+            p = pend[-1]
+            s_then = sched_at(R, c, p['file'])
+            cv = conv_w if s_then - window <= p['file'] < s_then else conv_o
+            parts['pending'] += cv * float(lags.land(p['file'], y0, y1, after=K.EXTRACT))
+            alive = 1 - cv
+            Lc = lags.L[lags.L > K.EXTRACT - p['file']]
+            if len(Lc):
+                d = max(d, int(p['file'] + np.median(Lc)))
+        rm = c['max_m'] - term_m_at(c, K.EXTRACT + 1)
+        if act_room:
+            rm = min(rm, (cap - end) / M)
+        wo = end - window
+        if moved and clip_act:
+            wo = max(wo, K.ACT)
+        o, alive = ordinary(c['sup'], mult, d, min(wo, end), alive)
+        parts['ordinary'] += o
+        if skip_transition and moved and end == K.TRANS:
+            continue
+        if end <= K.EXTRACT or wo > y1:
+            continue
+        if wo <= K.EXTRACT and any(wo <= q['file'] <= K.EXTRACT for q in ps):
+            continue
+        if rm >= 1:
+            info['n_room'] += 1
+            v = window_part(end, alive, p_ext_end, moved)
+            new_end = cap if ext_m == 'cap' else min(end + K.months(ext_m), cap)
+            if second and new_end > end and new_end - window <= y1:
+                a2 = alive * x_end
+                o2, a2 = ordinary(c['sup'], mult, end, new_end - window, a2)
+                parts['ordinary'] += o2
+                v += window_part(new_end, a2, p_non, False)
+            parts['window'] += v
+            info['room'] += v
+        else:
+            info['n_none'] += 1
+            v = window_part(end, alive, p_non, moved)
+            parts['window'] += v
+            info['none'] += v
+            if moved and end == K.TRANS:
+                info['transition'] += v
+                info['n_transition'] += 1
+    rate, rec = new_starts(R, ns_months)
+    mbar = float(np.mean([np.exp(beta * (c['score'] - 10)) for c in rec]))
+    k = 0
+    while True:
+        s0 = K.EXTRACT + 1 + int(round((k + 0.5) * M))
+        if s0 > y1:
+            break
+        o, _ = ordinary(s0, mbar, s0, y1 + 1, rate)
+        parts['new'] += o
+        k += 1
+    return sum(parts.values()), parts, dict(W_, **info, est=E)

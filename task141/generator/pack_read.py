@@ -35,9 +35,21 @@ def iso(s):
     return dt.date.fromisoformat(s) if s else None
 
 
+def classes(target):
+    """the Clerk's code table: each offense class and the longest probation term the Criminal Code allows for it"""
+    import openpyxl
+    ws = openpyxl.load_workbook(os.path.join(target, K.COURT_CODES), read_only=True)["Offense classes"]
+    out = {}
+    for r in ws.iter_rows(min_row=4, values_only=True):
+        if r and r[0] and isinstance(r[2], int):
+            out[r[0]] = r[2]
+    return out
+
+
 def read(target=TARGET):
     return dict(cms1=rows(target, K.CMS1), cms2=rows(target, K.CMS2), orders=rows(target, K.ORDERS),
-                pets=rows(target, K.PETITIONS), book=rows(target, K.BOOKINGS), persons=rows(target, K.PERSONS))
+                pets=rows(target, K.PETITIONS), book=rows(target, K.BOOKINGS), persons=rows(target, K.PERSONS),
+                roster=rows(target, K.ROSTER), classes=classes(target))
 
 
 def terms(P):
@@ -45,6 +57,7 @@ def terms(P):
     out = {}
     for r in P["cms1"]:
         out[r["CASE_NO"]] = dict(case=r["CASE_NO"], person=r["APD_PERSON_NO"], lvl=r["LEVEL"],
+                                 klass=r["OFF_CLASS"].replace("-", ""), officer=None,
                                  office={o[2]: o[0] for o in K.OFFICES}[r["OFFICE"]], sup=K.day(mdy(r["SUP_BEGIN"])),
                                  length=round(int(r["TERM_DAYS"]) / M), exp=K.day(mdy(r["EXPIRES"])),
                                  score=int(r["RISK_SCORE"]) // 2, open=False,
@@ -52,17 +65,21 @@ def terms(P):
     for r in P["cms2"]:
         cd = iso(r["closed_date"])
         out[r["case_number"]] = dict(case=r["case_number"], person=r["person_id"], lvl=r["offense_level"][0],
-                                     office=r["office"], sup=K.day(iso(r["supervision_begin"])),
+                                     klass=r["offense_class"], officer=int(r["officer"]),
+                                     office=r["intake_office"], sup=K.day(iso(r["supervision_begin"])),
                                      length=int(r["term_months"]), exp=K.day(iso(r["expiration_date"])),
                                      score=int(r["csrs_score"]), open=r["case_status"] == "OPEN",
                                      closed=(K.day(cd), CLOSE2[r["closure_reason"]]) if cd else None)
-    ext = {}
+    ext, exts = {}, {}
     for o in P["orders"]:
         if o["order_type"] == "EXTENSION":
             ext[o["case_number"]] = ext.get(o["case_number"], 0) + int(o["months_extended"])
+            exts.setdefault(o["case_number"], []).append((K.day(iso(o["order_date"])), int(o["months_extended"])))
     for t in out.values():
         t["extended"] = ext.get(t["case"], 0)
         t["imposed"] = t["length"] - t["extended"]
+        t["exts"] = sorted(exts.get(t["case"], []))
+        t["max_m"] = P["classes"][t["klass"]]
     return out
 
 
@@ -73,7 +90,8 @@ def record(P):
     R.cases = []
     for t in sorted(T.values(), key=lambda t: (t["sup"], t["case"])):
         if t["lvl"] == "F":
-            R.cases.append(dict(id=t["case"], sup=t["sup"], score=t["score"], term=t["imposed"]))
+            R.cases.append(dict(id=t["case"], sup=t["sup"], score=t["score"], term=t["imposed"], klass=t["klass"],
+                                max_m=t["max_m"], imposed_term=t["imposed"], exts=t["exts"]))
     R.C = {c["id"]: c for c in R.cases}
     by = {}
     for o in P["orders"]:
@@ -137,3 +155,25 @@ def sheriff_to_person(P, merged=True):
         if r["sheriff_id_status"] == "CURRENT" or merged:
             m[r["sheriff_id"]] = r["apd_person_id"]
     return m
+
+
+# ---------------------------------------------------------------------------------------------------- officers
+_MON = {m: i + 1 for i, m in enumerate(["JAN", "FEB", "MAR", "APR", "MAY", "JUN", "JUL", "AUG", "SEP", "OCT", "NOV",
+                                        "DEC"])}
+
+
+def dmy(s):
+    if not s:
+        return None
+    d, m, y = s.split("-")
+    return dt.date(int(y), _MON[m], int(d))
+
+
+def officer_office(P, day):
+    """each officer's office on a day, from the assignment rows in effect then"""
+    out = {}
+    for r in P["roster"]:
+        a, z = dmy(r["assigned_from"]), dmy(r["assigned_to"])
+        if a <= day and (z is None or z >= day):
+            out[int(r["badge_no"])] = r["office_code"]
+    return out

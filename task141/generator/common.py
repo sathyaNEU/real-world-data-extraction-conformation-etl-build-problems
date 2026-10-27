@@ -38,6 +38,15 @@ def months(n):
     return int(round(n * M))
 
 
+def add_months(n, k):
+    """the day k calendar months after day n (the same day of the month, or the month's last day)"""
+    import calendar
+    d = date_of(n)
+    m = d.month - 1 + k
+    y, m = d.year + m // 12, m % 12 + 1
+    return day(dt.date(y, m, min(d.day, calendar.monthrange(y, m)[1])))
+
+
 # ---------------------------------------------------------------------------------------------------- calendar
 BURN = day("2008-01-01")               # the world runs from here so the record opens on a settled caseload
 RECORD_START = day("2016-07-01")       # the extracts' first day: terms closed, petitions filed, orders made from here
@@ -51,17 +60,17 @@ ACT = day("2027-01-01")                # SB 26-118 takes effect
 TRANS = day("2027-03-31")              # no felony term in effect on 1 January 2027 ends before this day
 Y0, Y1 = day("2027-01-01"), day("2027-12-31")
 PLAN_DUE = dt.date(2026, 12, 1)
-POD_SIZE = 220                         # the county's filed standard: one violator pod per 220 projected admissions
+POD_SIZE = 210                         # the county's filed standard: one violator pod per 210 projected admissions
 POD_BEDS = 64
 PODS_2026 = 5                          # violator pods the Detention Center staffs in 2026
+EXT_MONTHS = 12                        # the projection's extension of a term with room, before the Act's cap
 
 # ---------------------------------------------------------------------------------------------------- the process
 P = dict(
-    fel_rate=210.0, mis_rate=150.0,
-    terms=(18, 24, 30, 36, 42, 48, 60, 72, 84), term_w=(0.03, 0.10, 0.03, 0.22, 0.04, 0.16, 0.28, 0.10, 0.04),
+    fel_rate=218.0, mis_rate=150.0,
     jail_share=0.85, jail_med=110.0, jail_sig=0.70, jail_term_elast=0.8, jail_lo=8, jail_hi=330,
     intake_lo=3, intake_hi=28,
-    h0=0.032, h_inf=0.0085, h_tau=8.0, score_beta=0.075,
+    h0=0.026, h_inf=0.0060, h_tau=8.0, score_beta=0.075,
     conv_ord=0.48, conv_rev=0.48, conv_abs=0.72,
     p_rev=0.235, rev_window=90, rev_lo=7, rev_mode=30,
     lag_mean=70.0, lag_shape=3.0,
@@ -74,7 +83,22 @@ P = dict(
     m_p_ext=0.25, m_ext_months=(3, 6, 6, 12), m_et_hazard=0.004, m_et_after=6,
     m_on_felony=0.10,                  # misdemeanor terms of people already on felony probation
     m_intermittent=0.07,               # misdemeanor revocations ordered served on weekends
+    # the end-of-term review: a matter still open as the term runs out is met by an extension where the term has
+    # room under its class maximum (and, from 2027, under the Act's cap), otherwise by a petition or not at all
+    q_open=0.75, a_pet=0.03, b_ext=0.75, s_sub=0.63,
+    ext_end_months=(6, 6, 12, 12, 12, 18), ext_lo=7, ext_hi=60,
+    m_q_open=0.40, m_a_pet=0.25, m_b_ext=0.45, m_s_sub=0.45, m_class2=0.45,
+    # the Department's offices and officers (only the asks read them)
+    move_rate=0.05,                    # a probationer's move to another district, a year
+    spec_fel=0.10, spec_mis=0.03, spec_lo=14, spec_hi=60,   # specialized caseloads move to Central after intake
+    tenure_years=8.0, vacancy_lo=14, vacancy_hi=75,
+    # the jail reclassifies a probationer it already holds when the commitment order reaches it
+    order_same_day=0.30, order_next_day=0.45,
 )
+# felony classes and the longest probation term the State's sentencing code lets a court impose or extend to
+CLASSES = (("F2", 96), ("F3", 84), ("F4", 60), ("F5", 48), ("F6", 36), ("DF4", 24))
+MIS_CLASSES = (("M1", 24), ("M2", 12))
+FEL_CELLS = [('DF4', 18, 0.0984), ('DF4', 24, 0.0216), ('F6', 18, 0.0984), ('F6', 24, 0.0984), ('F6', 36, 0.0432), ('F5', 36, 0.1804), ('F5', 48, 0.0396), ('F4', 48, 0.164), ('F4', 60, 0.036), ('F3', 60, 0.082), ('F3', 84, 0.018), ('F2', 60, 0.038), ('F2', 84, 0.082)]                     # (class, imposed months, share of felony terms)
 
 # ---------------------------------------------------------------------------------------------------- people
 PEOPLE = dict(
@@ -88,7 +112,12 @@ COURT = "Okelan County Circuit Court"
 BOARD = "State Jail Standards Board"
 
 OFFICES = (("CEN", "Central", "C"), ("NGT", "Northgate", "N"), ("RVS", "Riverside", "R"), ("EFD", "Eastfield", "E"))
-OFFICE_W = (0.38, 0.22, 0.24, 0.16)
+OFFICE_W = (0.38, 0.22, 0.24, 0.16)    # a term's district; the eastern townships (EFD) from Central or Riverside
+EFD_OPEN = day("2025-06-02")           # Eastfield opens and takes over the eastern townships' open terms
+POOLS = dict(CEN=(58, 45), NGT=(29, 29), RVS=(40, 32), EFD=(0, 23))   # line officers before and after Eastfield
+EFD_FROM = dict(CEN=13, RVS=8)         # officers moved to Eastfield on its opening
+REDISTRICT = day("2026-10-01")         # the Department's caseload redistribution, entered before the export of 2 October
+REDISTRICT_MOVES = (("CEN", "EFD", 3), ("CEN", "NGT", 2), ("RVS", "EFD", 1), ("NGT", "RVS", 1))
 
 # ---------------------------------------------------------------------------------------------------- the pack
 CMS1 = "cms1_supervision_cases_2016_2023.csv"
@@ -100,6 +129,7 @@ PERSONS = "person_id_crosswalk.csv"
 JAIL_CODES = "jms_booking_codes.csv"
 COURT_CODES = "circuit_court_codes.xlsx"
 OFFICE_CODES = "apd_office_codes.csv"
+ROSTER = "apd_officer_assignments_2016_2026.csv"
 ACT_PDF = "sb26_118_felony_probation_term_act.pdf"
 PLAN_PDF = "jail_operations_plan_instructions_2027.pdf"
 REPORT = "apd_annual_report_2025.pdf"
@@ -180,5 +210,5 @@ def round1(x):
 
 
 def pods(admissions):
-    """the county's filed standard: one pod for each 220 projected admissions or part of 220"""
+    """the county's filed standard: one pod for each 210 projected admissions or part of 210"""
     return int(math.ceil(admissions / POD_SIZE - 1e-12))

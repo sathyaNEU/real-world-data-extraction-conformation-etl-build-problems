@@ -11,6 +11,7 @@ import common as K
 import world as WD
 
 M = K.M
+P = K.P
 
 
 # ---------------------------------------------------------------------------------------------------- identifiers
@@ -83,14 +84,16 @@ def register_rows(W):
                 ext_months += m[4]
         if closed is not None and closed[0] < K.CMS2_LIVE:
             rows1.append(dict(CASE_NO=c['case_no'], APD_PERSON_NO=W.apd_id[c['person']], LEVEL=c['lvl'],
-                              OFFICE=leg[c['office']], SUP_BEGIN=_mdY(c['sup']),
+                              OFF_CLASS=_class1(c['klass']), OFFICE=leg[W.sup_office[c['id']]], SUP_BEGIN=_mdY(c['sup']),
                               TERM_DAYS=int(round((c['term'] + ext_months) * M)),
                               EXPIRES=_mdY(exp_now), RISK_SCORE=legacy_score(c['score'], r), STATUS='CLSD',
                               CLOSE_DATE=_mdY(closed[0]), CLOSE_CODE=close1[closed[1]]))
             continue
         migrated = c['sup'] < K.CMS2_LIVE
+        last = WD.officer_at(W, c['id'], closed[0] if closed else K.EXTRACT)
         rows2.append(dict(case_number=c['case_no'], person_id=W.apd_id[c['person']],
-                          offense_level='FELONY' if c['lvl'] == 'F' else 'MISDEMEANOR', office=c['office'],
+                          offense_level='FELONY' if c['lvl'] == 'F' else 'MISDEMEANOR', offense_class=c['klass'],
+                          intake_office=W.sup_office[c['id']], officer=last[1],
                           supervision_begin=K.date_of(c['sup']).isoformat(), term_months=c['term'] + ext_months,
                           expiration_date=K.date_of(exp_now).isoformat(), csrs_score=c['score'],
                           case_status='CLOSED' if closed else 'OPEN',
@@ -99,10 +102,56 @@ def register_rows(W):
     return rows1, rows2
 
 
-CMS1_COLS = ['CASE_NO', 'APD_PERSON_NO', 'LEVEL', 'OFFICE', 'SUP_BEGIN', 'TERM_DAYS', 'EXPIRES', 'RISK_SCORE', 'STATUS',
-             'CLOSE_DATE', 'CLOSE_CODE']
-CMS2_COLS = ['case_number', 'person_id', 'offense_level', 'office', 'supervision_begin', 'term_months', 'expiration_date',
-             'csrs_score', 'case_status', 'closed_date', 'closure_reason', 'moved_from_cms1']
+CMS1_COLS = ['CASE_NO', 'APD_PERSON_NO', 'LEVEL', 'OFF_CLASS', 'OFFICE', 'SUP_BEGIN', 'TERM_DAYS', 'EXPIRES', 'RISK_SCORE',
+             'STATUS', 'CLOSE_DATE', 'CLOSE_CODE']
+CMS2_COLS = ['case_number', 'person_id', 'offense_level', 'offense_class', 'intake_office', 'officer',
+             'supervision_begin', 'term_months', 'expiration_date', 'csrs_score', 'case_status', 'closed_date',
+             'closure_reason', 'moved_from_cms1']
+
+
+def _class1(k):
+    """CMS 1 writes a class with a hyphen after its letters (F-3, DF-4, M-1)"""
+    i = len(k.rstrip('0123456789'))
+    return k[:i] + '-' + k[i:]
+
+
+# ---------------------------------------------------------------------------------------------------- officers
+ROSTER_COLS = ['badge_no', 'position', 'office_code', 'assigned_from', 'assigned_to']
+_MON = ['JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC']
+
+
+def _dmy(n):
+    d = K.date_of(n)
+    return '%02d-%s-%04d' % (d.day, _MON[d.month - 1], d.year)
+
+
+def redistributed(W):
+    """the roster as the personnel system holds it at the export of 2 October 2026: the officers the Department moved
+    with their caseloads from 1 October 2026 close their assignment on 30 September and open one in the new office"""
+    r = K.rng('redistrict')
+    ros = {b: [list(row) for row in rows] for b, rows in W.roster.items()}
+    for frm, to, n in K.REDISTRICT_MOVES:
+        cand = [b for b in sorted(ros) if ros[b][-1][3] is None and ros[b][-1][0] == frm and ros[b][-1][1] != 'PO I'
+                and ros[b][-1][2] < K.REDISTRICT - 365]
+        for b in sorted(int(x) for x in r.choice(cand, size=n, replace=False)):
+            last = ros[b][-1]
+            last[3] = K.REDISTRICT - 1
+            ros[b].append([to, last[1], K.REDISTRICT, None])
+    return ros
+
+
+def roster_rows(W):
+    """the personnel system's officer assignments in effect on or after 1 July 2016, one row per officer, office and
+    position, dated as that system writes dates"""
+    out = []
+    ros = redistributed(W)
+    for b in sorted(ros):
+        for o, pos, a, z in ros[b]:
+            if z is not None and z < K.RECORD_START:
+                continue
+            out.append(dict(badge_no=b, position=pos, office_code=o, assigned_from=_dmy(a),
+                            assigned_to=None if z is None else _dmy(z)))
+    return out
 
 
 # ---------------------------------------------------------------------------------------------------- court
@@ -194,11 +243,27 @@ def _next_friday(n):
     return n + ((4 - d.weekday()) % 7)
 
 
+def _receipt(hear, r):
+    """when the court's commitment order reaches the jail's records unit: the same afternoon, the next business day
+    or a few business days later, in office hours"""
+    u = r.random()
+    if u < P['order_same_day'] and hear.hour < 15:
+        return hear + dt.timedelta(minutes=int(r.integers(60, 240)))
+    k = 1 if u < P['order_same_day'] + P['order_next_day'] else int(r.integers(2, 6))
+    d = hear.date()
+    while k:
+        d += dt.timedelta(days=1)
+        if d.weekday() < 5:
+            k -= 1
+    return dt.datetime.combine(d, dt.time(8, 0)) + dt.timedelta(minutes=int(r.integers(0, 9 * 60)))
+
+
 def bookings(W):
     """the custody the record implies, as local datetimes: jail conditions, holds on a warrant to the hearing,
     commitments on revocation (one per person and hearing day; a felony probationer's commitment carries the felony
-    classification whatever term it revokes), annex moves, weekend sentences, out-of-state holds; then swept into one
-    booking at a time per person (resolve)"""
+    classification whatever term it revokes; a person the jail already holds stays on the hold until the commitment
+    order reaches it), annex moves, weekend sentences, out-of-state holds; then swept into one booking at a time per
+    person (resolve). W.commit_spans keeps each commitment from the court's order to its release, for the truth."""
     B = []
     lo, hi = K.at(K.BOOKINGS_FROM, 0), K.at(K.EXTRACT + 1, 0)
     for c in W.cases:
@@ -214,11 +279,12 @@ def bookings(W):
             r = K.rng('jail', cid, e['seq'])
             hear = K.at(min(e['decided'], 10 ** 6), e['hearing_min'])
             decided = e['decided'] <= K.EXTRACT
+            e['hold_from'] = None
             if e['warrant'] and e['arrest'] is not None:
                 a = K.at(e['arrest'], int(r.integers(0, 24 * 60)))
                 if decided and e.get('revoked'):
                     if a < hear:
-                        B.append(Booking(c['person'], a, hear, 'PV-HOLD', 'MAIN', 'RECLASSIFIED'))
+                        e['hold_from'] = a
                 elif decided:
                     if e['arrest'] < e['decided']:
                         B.append(Booking(c['person'], a, hear + dt.timedelta(minutes=int(r.integers(60, 300))), 'PV-HOLD',
@@ -229,6 +295,7 @@ def bookings(W):
                 key = (c['person'], e['decided'])
                 commits.setdefault(key, []).append((c, e, hear))
     W.commitments = []
+    W.commit_spans = []
     for (person, d), lst in sorted(commits.items()):
         lst.sort(key=lambda t: (t[0]['lvl'] != 'F', t[0]['id']))
         c, e, hear = lst[0]
@@ -236,27 +303,41 @@ def bookings(W):
         lvl = 'F' if felony else 'M'
         cls = 'PV-FEL' if (felony or WD.on_felony(W, person, d)) else 'PV-MIS'
         r = K.rng('commit', person, d)
-        W.commitments.append(dict(person=person, day=d, lvl=lvl, cls=cls))
+        holds = [x[1]['hold_from'] for x in lst if x[1].get('hold_from') is not None and x[1]['hold_from'] < hear]
+        W.commitments.append(dict(person=person, day=d, lvl=lvl, cls=cls, held=bool(holds)))
         if c['lvl'] == 'M' and e['intermittent'] and not felony:
+            for a in holds:
+                B.append(Booking(person, a, hear + dt.timedelta(minutes=int(r.integers(60, 180))), 'PV-HOLD', 'MAIN',
+                                 'RELEASED ON COURT ORDER'))
             f0 = _next_friday(d + 7)
             for k in range(e['jail_days'] // 2):
                 fr = f0 + 7 * k
                 a = K.at(fr, int(r.integers(17 * 60 + 30, 19 * 60 + 30)))
                 b = K.at(fr + 2, int(r.integers(16 * 60 + 30, 18 * 60 + 30)))
                 B.append(Booking(person, a, b, cls, 'MAIN', 'SCHEDULED RELEASE', lvl=lvl))
+                W.commit_spans.append((person, a, b, lvl))
             continue
         days = max(e['jail_days'] for _, e, _ in lst)
         served = max(1, int(round(days * e['served_share'])))
         end = K.at(d + served, int(r.integers(6 * 60, 11 * 60)))
+        W.commit_spans.append((person, hear, end, lvl))
+        start = hear
+        if holds:
+            start = min(_receipt(hear, K.rng('order', person, d)), hear + (end - hear) / 2)
+            start = start.replace(second=0, microsecond=0)
+            for a in holds:
+                B.append(Booking(person, a, start, 'PV-HOLD', 'MAIN', 'RECLASSIFIED'))
         if e['annex'] and served > 20:
             mv = hear + dt.timedelta(days=int(served * e['annex_at']), minutes=int(r.integers(9 * 60, 15 * 60)))
             mv = mv.replace(hour=9, minute=0, second=0, microsecond=0) + dt.timedelta(minutes=int(r.integers(0, 6 * 60)))
+            if mv < start + dt.timedelta(days=1):
+                mv = (start + dt.timedelta(days=1)).replace(hour=9, minute=0) + dt.timedelta(minutes=int(r.integers(0, 6 * 60)))
             arr = mv + dt.timedelta(minutes=int(r.integers(20, 95)))
-            B.append(Booking(person, hear, mv, cls, 'MAIN', 'TRANSFER TO ANNEX', lvl=lvl))
+            B.append(Booking(person, start, mv, cls, 'MAIN', 'TRANSFER TO ANNEX', lvl=lvl))
             B.append(Booking(person, mv, arr, cls, 'TRANSIT', None, lvl=lvl))
             B.append(Booking(person, arr, end, cls, 'ANNEX', 'SENTENCE COMPLETE', lvl=lvl))
         else:
-            B.append(Booking(person, hear, end, cls, 'MAIN', 'SENTENCE COMPLETE', lvl=lvl))
+            B.append(Booking(person, start, end, cls, 'MAIN', 'SENTENCE COMPLETE', lvl=lvl))
     r = K.rng('oos')
     for so in W.oos:
         d0 = int(r.integers(K.BOOKINGS_FROM - 30, K.EXTRACT - 2))

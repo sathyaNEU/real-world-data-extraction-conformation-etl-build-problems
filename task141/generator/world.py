@@ -22,11 +22,14 @@ class World:
     pass
 
 
+_FW = np.array([c[2] for c in K.FEL_CELLS]); _FW = _FW / _FW.sum()
+
+
 def act_cap(c):
     """the latest day SB 26-118 lets a felony term run to"""
     if c['imposed'] >= K.ACT:
-        return c['sup'] + K.months(24)
-    return max(c['sup'] + K.months(24), K.TRANS)
+        return K.add_months(c['sup'], 24)
+    return max(K.add_months(c['sup'], 24), K.TRANS)
 
 
 def hazard(c, m):
@@ -41,15 +44,26 @@ def lvl_par(c):
     if c['lvl'] == 'F':
         return dict(abs=P['abs_hazard'], conv_o=P['conv_ord'], conv_r=P['conv_rev'], conv_a=P['conv_abs'],
                     p_rev=P['p_rev'], p_ext=P['p_ext'], ext=P['ext_months'], p_ext_rev=P['p_ext_rev'],
-                    et=P['et_hazard'], et_after=P['et_after'])
+                    et=P['et_hazard'], et_after=P['et_after'], q=P['q_open'], a=P['a_pet'], b=P['b_ext'],
+                    s=P['s_sub'])
     return dict(abs=P['m_abs'], conv_o=P['m_conv'], conv_r=P['m_conv'], conv_a=min(0.9, P['m_conv'] + 0.25),
                 p_rev=P['m_p_rev'], p_ext=P['m_p_ext'], ext=P['m_ext_months'], p_ext_rev=P['m_p_ext'] * 0.8,
-                et=P['m_et_hazard'], et_after=P['m_et_after'])
+                et=P['m_et_hazard'], et_after=P['m_et_after'], q=P['m_q_open'], a=P['m_a_pet'], b=P['m_b_ext'],
+                s=P['m_s_sub'])
 
 
 def fresh(c):
     return dict(t=c['imposed'], sched=c['orig'], pending=None, pkind=None, pfile=None, reviewed=None, closed=None,
-                had_pet=False, review_at=None, mods=[], act_applied=False)
+                had_pet=False, review_at=None, mods=[], act_applied=False, term_m=c['term'], ext_at=None, ext_m=0)
+
+
+def room(c, st, act):
+    """the months a court may still add to the term: under its class maximum and, once the Act is in force, under
+    the Act's cap"""
+    r = c['max_m'] - st['term_m']
+    if act and c['lvl'] == 'F' and st['t'] >= K.ACT:
+        r = min(r, (act_cap(c) - st['sched']) / M)
+    return r
 
 
 def run(rng, c, st, t_to, lg, act=False):
@@ -68,6 +82,7 @@ def run(rng, c, st, t_to, lg, act=False):
                 st['sched'] = cap
                 st['review_at'] = None
                 st['reviewed'] = None
+                st['ext_at'] = None
         if st['pending'] is not None:
             dec = st['pending']
             if dec >= t_to:
@@ -87,8 +102,9 @@ def run(rng, c, st, t_to, lg, act=False):
             new += toll
             ext = 0
             if rng.random() < (q['p_ext_rev'] if kind == 'REVIEW' else q['p_ext']):
-                ext = int(rng.choice(q['ext']))
+                ext = min(int(rng.choice(q['ext'])), int(max(0.0, room(c, st, act))))
                 new += K.months(ext)
+                st['term_m'] += ext
             if act and c['lvl'] == 'F' and dec >= K.ACT:
                 new = min(new, act_cap(c))
             if new > st['sched']:
@@ -111,9 +127,21 @@ def run(rng, c, st, t_to, lg, act=False):
         if st['reviewed'] != st['sched'] and t >= wo:
             st['reviewed'] = st['sched']
             st['review_at'] = None
-            if rng.random() < q['p_rev']:
-                off = int(rng.triangular(P['rev_lo'], P['rev_mode'], W))
-                st['review_at'] = max(st['sched'] - off, t)
+            st['ext_at'] = None
+            if rng.random() < q['q']:
+                u = rng.random()
+                rm = room(c, st, act)
+                if rm >= 1:
+                    if u < q['b']:
+                        off = int(rng.integers(P['ext_lo'], P['ext_hi'] + 1))
+                        st['ext_at'] = max(st['sched'] - off, t)
+                        st['ext_m'] = min(int(rng.choice(P['ext_end_months'])), int(rm))
+                    elif u < q['b'] + q['a']:
+                        off = int(rng.triangular(P['rev_lo'], P['rev_mode'], W))
+                        st['review_at'] = max(st['sched'] - off, t)
+                elif u < q['a'] + q['s'] * q['b']:
+                    off = int(rng.triangular(P['rev_lo'], P['rev_mode'], W))
+                    st['review_at'] = max(st['sched'] - off, t)
         m = int((t - sup) // M)
         m_end = sup + int(round((m + 1) * M))
         stop = min(max(m_end, t + 1), t_to, st['sched'])
@@ -126,6 +154,13 @@ def run(rng, c, st, t_to, lg, act=False):
         u = rng.random()
         ev = 'ORDINARY' if u < hz else ('ABSCOND' if u < hz + ha else ('EARLY_TERM' if u < hz + ha + he else None))
         f = t + int(rng.integers(0, max(1, stop - t))) if ev else None
+        xa = st['ext_at']
+        if xa is not None and xa < stop and (f is None or xa <= f) and (st['review_at'] is None or xa <= st['review_at']):
+            new = st['sched'] + K.months(st['ext_m'])
+            st['mods'].append((xa, st['sched'], new, 'EXTEND', st['ext_m']))
+            st['term_m'] += st['ext_m']
+            st.update(sched=new, reviewed=None, review_at=None, ext_at=None, t=xa)
+            continue
         ra = st['review_at']
         if ra is not None and ra < stop and (f is None or ra <= f):
             dec = ra + 1 + int(rng.gamma(P['lag_shape'], P['lag_mean'] / P['lag_shape']))
@@ -140,7 +175,7 @@ def run(rng, c, st, t_to, lg, act=False):
             lagm, lags = (P['abs_lag_mean'], P['abs_lag_shape']) if ev == 'ABSCOND' else (P['lag_mean'], P['lag_shape'])
             dec = f + 1 + int(rng.gamma(lags, lagm / lags))
             lg.append(dict(case=c['id'], file=f, kind=ev, decided=dec))
-            st.update(pending=dec, pkind=ev, pfile=f, had_pet=True, t=f, review_at=None)
+            st.update(pending=dec, pkind=ev, pfile=f, had_pet=True, t=f, review_at=None, ext_at=None)
             continue
         st['t'] = stop
 
@@ -148,7 +183,8 @@ def run(rng, c, st, t_to, lg, act=False):
 # ---------------------------------------------------------------------------------------------------- cases
 def _term_jail(r, lvl):
     if lvl == 'F':
-        term = int(r.choice(P['terms'], p=P['term_w']))
+        k = int(r.choice(len(K.FEL_CELLS), p=_FW))
+        term = K.FEL_CELLS[k][1]
         if r.random() < P['jail_share']:
             med = P['jail_med'] * (term / 36.0) ** P['jail_term_elast']
             jail = int(np.clip(np.exp(r.normal(np.log(med), P['jail_sig'])), P['jail_lo'], P['jail_hi']))
@@ -161,6 +197,18 @@ def _term_jail(r, lvl):
         else:
             jail = 0
     return term, jail
+
+
+def _klass(r, lvl, term):
+    """a felony term's class, drawn with its length from the State's sentencing table (FEL_CELLS); a misdemeanor
+    term's class is drawn last from the case's stream (make_cases), so this returns a placeholder"""
+    if lvl != 'F':
+        return None, None
+    mx = dict(K.CLASSES)
+    ks = [i for i, (c, l, _) in enumerate(K.FEL_CELLS) if l == term]
+    w = np.array([K.FEL_CELLS[i][2] for i in ks])
+    k = K.FEL_CELLS[ks[int(r.choice(len(ks), p=w / w.sum()))]][0]
+    return k, mx[k]
 
 
 def make_cases(lvl, d_from, d_to, id0, stream):
@@ -180,11 +228,14 @@ def make_cases(lvl, d_from, d_to, id0, stream):
                 continue
             r = K.rng(stream, 'case', k)
             term, jail = _term_jail(r, lvl)
+            klass, max_m = _klass(r, lvl, term)
             gap = jail + int(r.integers(0, 4)) if jail else int(r.integers(P['intake_lo'], P['intake_hi']))
             sc = int(np.clip(round(r.normal(10.5 if lvl == 'F' else 8.5, 3.6)), 0, 20))
             office = K.OFFICES[int(r.choice(4, p=K.OFFICE_W))][0]
+            if lvl == 'M':
+                klass, max_m = K.MIS_CLASSES[int(r.random() < P['m_class2'])]
             out.append(dict(id=k, lvl=lvl, imposed=s, term=term, jail=jail, sup=s + gap, score=sc,
-                            orig=s + K.months(term), office=office))
+                            orig=s + K.months(term), office=office, klass=klass, max_m=max_m))
             k += 1
     return out
 
@@ -211,7 +262,172 @@ def simulate():
     persons(W)
     joint_hearings(W)
     petition_details(W)
+    supervision(W)
     return W
+
+
+# ---------------------------------------------------------------------------------------------------- offices and officers
+def office_of(district, t, east):
+    """the office supervising a district on day t: the eastern townships from Central or Riverside (east, the case's
+    own) until Eastfield opens; a specialized caseload from Central"""
+    if district == 'EFD' and t < K.EFD_OPEN:
+        return east
+    if district == 'SPEC':
+        return 'CEN'
+    return district
+
+
+def officers(W):
+    """the Department's line officers, one career at a time in each office's posts: a post vacated is filled after a
+    vacancy, an officer is promoted in place (a new assignment row), and on Eastfield's opening the officers then in
+    thirteen Central and eight Riverside posts move there with their posts, beside two new posts. W.roster maps a
+    badge to its rows [office, position, from, to] (to None while the assignment runs)"""
+    r = K.rng('officers')
+    posts = []
+    for o in ('CEN', 'NGT', 'RVS'):
+        n_before, n_after = K.POOLS[o]
+        moved = K.EFD_FROM.get(o, 0)
+        for i in range(n_before):
+            posts.append((o, 'EFD' if i < moved else o, K.BURN - int(r.integers(0, 3650))))
+    for i in range(K.POOLS['EFD'][1] - sum(K.EFD_FROM.values())):
+        posts.append(('EFD', 'EFD', K.EFD_OPEN))
+    roster = {}
+    badge = [0]
+
+    def career(o_before, o_after, start):
+        badge[0] += 1
+        b = badge[0]
+        leave = start + int(r.exponential(P['tenure_years'] * 365.25))
+        cuts = [(start, 'PO I')]
+        if start + 3 * 365 < leave:
+            cuts.append((start + 3 * 365 + int(r.integers(0, 120)), 'PO II'))
+        if start + 8 * 365 < leave and r.random() < 0.4:
+            cuts.append((start + 8 * 365 + int(r.integers(0, 365)), 'SR PO'))
+        rows = []
+        for j, (a, pos) in enumerate(cuts):
+            z = (cuts[j + 1][0] - 1) if j + 1 < len(cuts) else leave
+            rows.append([pos, a, z])
+        out = []
+        for pos, a, z in rows:
+            if o_before != o_after and a < K.EFD_OPEN <= z:
+                out.append([o_before, pos, a, K.EFD_OPEN - 1])
+                out.append([o_after, pos, K.EFD_OPEN, z])
+            else:
+                out.append([o_after if a >= K.EFD_OPEN else o_before, pos, a, z])
+        roster[b] = out
+        return leave
+    for o_before, o_after, start in posts:
+        t = start
+        while t <= K.EXTRACT:
+            leave = career(o_before, o_after, t)
+            t = leave + int(r.integers(P['vacancy_lo'], P['vacancy_hi'] + 1))
+            if o_before != o_after and leave < K.EFD_OPEN <= t:
+                t = max(t, K.EFD_OPEN)
+    for b, rows in roster.items():
+        for row in rows:
+            if row[3] >= K.EXTRACT + 1:
+                row[3] = None
+        roster[b] = [row for row in rows if row[2] <= K.EXTRACT]
+    # badges are issued in order of hire
+    rb = K.rng('badges')
+    nxt, W.roster = 1100, {}
+    for b in sorted((b for b in roster if roster[b]), key=lambda b: (roster[b][0][2], b)):
+        nxt += int(rb.integers(1, 4))
+        W.roster[nxt] = roster[b]
+    idx = {}
+    for b, rows in W.roster.items():
+        for o, pos, a, z in rows:
+            idx.setdefault(o, []).append((a, 10 ** 7 if z is None else z, b))
+    W.post_idx = {o: (np.array([x[0] for x in v]), np.array([x[1] for x in v]), np.array([x[2] for x in v]))
+                  for o, v in idx.items()}
+
+
+def _pick(W, office, t, r):
+    a, z, b = W.post_idx[office]
+    on = b[(a <= t) & (z >= t)]
+    return int(on[int(r.integers(0, len(on)))])
+
+
+def _office_end(W, badge, t):
+    """the last day of the officer's unbroken run at the office the officer holds on day t"""
+    rows = W.roster[badge]
+    i = max(j for j, row in enumerate(rows) if row[2] <= t)
+    o = rows[i][0]
+    z = rows[i][3]
+    while z is not None and i + 1 < len(rows) and rows[i + 1][0] == o and rows[i + 1][2] == z + 1:
+        i += 1
+        z = rows[i][3]
+    return 10 ** 7 if z is None else z
+
+
+def supervision(W):
+    """each term CMS 2 holds, from the day supervision begins to its close or the extract: the office that took it
+    in (kept by CMS 2 as the term's office) and its officers; a move to another district transfers the term to an
+    officer there, an officer's leaving his office reassigns it within the office, Eastfield's opening moves the
+    eastern townships' terms to its officers"""
+    officers(W)
+    W.sup_office = {}
+    W.officer_hist = {}
+    w = np.array(K.OFFICE_W)
+    codes = [o[0] for o in K.OFFICES]
+    for c in W.cases:
+        st = W.states[c['id']]
+        if c['sup'] > K.EXTRACT:
+            continue
+        r = K.rng('staff', c['id'])
+        east = 'CEN' if r.random() < 0.55 else 'RVS'
+        t = c['sup']
+        district = c['office']
+        office = office_of(district, t, east)
+        W.sup_office[c['id']] = office
+        if st['closed'] is not None and st['closed'][0] < K.CMS2_LIVE:
+            continue
+        end = min(st['closed'][0], K.EXTRACT) if st['closed'] is not None else K.EXTRACT
+        officer = _pick(W, office, t, r)
+        hist = [(t, officer, office)]
+        nxt_move = t + int(r.exponential(365.25 / P['move_rate']))
+        spec = r.random() < (P['spec_fel'] if c['lvl'] == 'F' else P['spec_mis'])
+        spec_at = t + int(r.integers(P['spec_lo'], P['spec_hi'] + 1)) if spec and office != 'CEN' else None
+        if spec and office == 'CEN':
+            district = 'SPEC'
+        while True:
+            ev = []
+            if nxt_move <= end and district != 'SPEC':
+                ev.append((nxt_move, 1, 'move'))
+            oe = _office_end(W, officer, t)
+            if oe + 1 <= end:
+                ev.append((oe + 1, 2, 'officer'))
+            if district == 'EFD' and office != 'EFD' and t < K.EFD_OPEN <= end:
+                ev.append((K.EFD_OPEN, 0, 'efd'))
+            if spec_at is not None and spec_at <= end:
+                ev.append((spec_at, 0, 'spec'))
+            if not ev:
+                break
+            t, _, kind = min(ev)
+            if kind == 'move':
+                p = w * np.array([cd != district for cd in codes])
+                district = codes[int(r.choice(4, p=p / p.sum()))]
+                nxt_move = t + int(r.exponential(365.25 / P['move_rate']))
+                new = office_of(district, t, east)
+                if new == office:
+                    continue
+                office = new
+            elif kind == 'efd':
+                office = 'EFD'
+            elif kind == 'spec':
+                # a specialized caseload (sex offense, serious mental illness, domestic violence) is supervised from
+                # Central's specialized unit, whatever the district, once the intake assessment is done
+                spec_at = None
+                district = 'SPEC'
+                office = 'CEN'
+            officer = _pick(W, office, t, r)
+            hist.append((t, officer, office))
+        W.officer_hist[c['id']] = hist
+
+
+def officer_at(W, cid, d):
+    h = W.officer_hist[cid]
+    return [x for x in h if x[0] <= d][-1]
 
 
 # ---------------------------------------------------------------------------------------------------- people

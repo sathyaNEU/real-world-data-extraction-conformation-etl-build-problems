@@ -1,56 +1,51 @@
 ## Tags
 
-**Domain:** Criminology & Justice (recidivism risk assessment: each pretrial risk score's new-offense rate for all the eligible defendants a presumptive release tier would release, estimated past the outcome record's selective labels).
+**Domain:** Criminology & Justice, recidivism risk assessment (a county's 2027 felony probation revocation admissions under a statute capping felony supervision at 24 months and barring extension past it, forecast from its two probation case systems, the Circuit Court's term orders, violation petitions and offense classes, and the jail's bookings).
 **Analytical objective:** Forecasting & Predictive Modeling.
 
 ## 1. Final Recommendation
 
-**The 2027 presumptive release tier should reach Pretrial Assessment Scale new-criminal-activity score 3: scores 1 to 3 meet the 85 per cent safety floor and score 4 does not.**
-With every eligible defendant released, read from the 32 magistrates' release shares, under 80 per cent of score-4 defendants would complete the pretrial period without a new-offense arrest, against about 90 per cent at score 3. Not scores 1 to 4, which takes score 4 at its released defendants' 87.9 per cent and leaves out the 26.0 per cent of eligible score-4 defendants magistrates held, the ones they judged riskiest; not scores 1 and 2, which counts every held defendant as arrested.
+**Okelan County's 2027 Jail Operations Plan should staff 7 violator pods (448 beds) for felony probation revocation admissions.**
+The projection is 1,424 admissions (1,414 to 1,443 across the standing variants of its construction), more than the 1,260 that six pods cover and within the 1,470 of seven under the county's standard of one pod for each 210 admissions or part of 210. A felony term running out with a matter still open is extended where it has room under its class maximum and draws a violation petition where it has none: about two in five of the record's terms reaching their last 120 days at their class maximum drew a petition, in every offense class including drug felony class 4 with its 24-month maximum, against 6 per cent of the terms with room. SB 26-118 leaves no capped term any room, so the 3,114 running terms it ends on 31 March 2027 and every term reaching 24 months end at the at-maximum rate. Not 5 pods, which the two-clock projection at the record's pooled end-of-term rate gives (911): that rate was earned by terms that could mostly still be extended. Not 4, the trailing year's 827 admissions.
 
 ## 2. Critical Components
 
-1. With every eligible defendant released, score 4's safety rate is **under 80 per cent**, below the 85 per cent floor.
-2. Score 3's is **about 90 per cent**, above the floor, and scores 1 and 2 are higher still.
+1. **3,114** of the felony terms open at 30 September 2026 end on 31 March 2027 under section 4 of SB 26-118 (supervision begun by 31 March 2025, scheduled expiration later than 31 March 2027), and section 5 lets no order from 1 January 2027 set a term's expiration past its end under the Act, so none of them has room to be extended.
+2. Of the record's felony terms reaching their last 120 days before the scheduled expiration in force, **about two in five** of those at their class maximum had a violation petition filed in those days, in every offense class including drug felony class 4 with its 24-month maximum, against **6 per cent** of those with room, more than half of which were extended instead.
+3. The 2027 projection is more than **1,260** admissions, the six pods' cover, and no more than **1,470**, the seven pods' cover, under every standing variant of its construction (1,424 as built, 1,414 to 1,443 across the variants) and the standard of one pod for each 210 admissions or part of 210, so **7** pods.
 
 ## 3. Step-by-Step Solution
 
-1. Stacked first_appearances_2021-10-01_2024-03-03.csv (legacy codes through offense_code_crosswalk.xlsx, magistrate initials through magistrate_roster.xlsx) with first_appearances_2024-03-04_2026-09-30.csv and first_appearance_charges_2024-03-04_2026-09-30.csv, and kept the appearances from 1 October 2021 to 30 September 2025 eligible under draft 2.1 with a screen in pas_screens_2021-10-01_2026-09-30.csv (booking number, else the state number within 12 hours): 55,005 appearances, 7,439 at score 4.
-2. Took release at first appearance as leaving the detention center within 24 hours on a releasing type in jail_bookings_2021-10-01_2026-09-30.csv (UTC read in Eastern time), and a new-offense arrest per draft 2.4 from state_arrest_extract_2026-10-02.csv (type NEW, offense after the release day, within 365 days or by the last charge's disposition in court_case_index_2021-10-01_2026-09-30.csv).
-3. Among the released, score 4's safety rate is 87.9 per cent and score 5's 78.0 per cent, a tier of scores 1 to 4 on that rate; but magistrates held 26.0 per cent of eligible score-4 defendants, and their outcomes are not on file.
-4. For each score, fitted each of the 32 magistrates' new-offense arrests per eligible appearance on the magistrate's release share, weighted by caseload, and read the line at a release share of 100 per cent: scores 1 to 6 at 95.1, 93.1, 90.3, 75.8, 63.6 and 61.6 per cent.
-5. Scores 1 to 3 meet the 85 per cent floor of draft 2.3 and score 4 does not, so the tier's top score under draft 2.5 is 3.
+1. Joined the felony terms of cms1_supervision_cases_2016_2023.csv and cms2_supervision_cases_2023_2026.csv (offense class, supervision begin, term), the term orders in circuit_court_term_orders_2016_2026.csv (each scheduled expiration in force and each extension), the longest term for each class in circuit_court_codes.xlsx and the petitions in circuit_court_violation_petitions_2016_2026.csv: 7,841 felony terms open at the extract.
+2. Applied sections 3 to 5 of sb26_118_felony_probation_term_act.pdf: each open term ends at the earlier of its scheduled expiration and the later of the day 24 calendar months after supervision began and 31 March 2027 (3,114 of them on 31 March 2027), and no term may be extended past that end.
+3. Split the end-of-term windows the record saw (the last 120 days before a scheduled expiration then in force, the term alive and on supervision when they opened) by whether the term in force (imposed plus the extensions ordered before the window opened) had reached its class maximum: about two in five of the windows at the maximum had a petition filed in them, against 6 per cent of the windows with room, more than half of which ended in an extension instead.
+4. Projected 2027 under the Act at the record's rates (jail_operations_plan_instructions_2027.pdf, section 4), each term's exposure counted from 1 July 2016, the first day of the extracts: the petition hazard by month on supervision outside the windows, each term leaving as it is revoked or terminated early at the record's rates; each open term's last 120 days before its end under the Act (from 1 January 2027 for the 31 March ends), the window's petition share applied per term on the record's filing days, at the at-maximum share where the Act or the class leaves no room and at the with-room shares otherwise (an extended term running 12 months more, or to the latest end the Act allows if sooner, then ending with no room); pending petitions; new supervision starts at the trailing year's rate; the record's revocation rates and filing-to-decision days: 1,424 admissions.
+5. Checked the standing variants (an end-of-term window of 90, 105 or 150 days, the CSRS score as a covariate, one revocation rate, the mean lag, the 31 March windows opening before 1 January 2027, only the windows of terms with nothing pending, a term with room extended 9 months, or to the latest end the Act allows): 1,414 to 1,443 admissions, seven pods throughout; the pooled end-of-term rate gives 911 (5 pods), the lost extensions shared between petition and lapse in proportion 1,140 (6), every one a petition 1,780 (9), and the trailing year's 827 admissions carried forward 4.
+6. For the bed-days, read the new jail system's UTC times in county time, chained each person's bookings (annex moves, the system replacement, reclassifications), counted each midnight a person was serving a commitment the court had ordered, from the night after the order (a held probationer stays booked PV-HOLD until the order reaches the jail) to the release the bookings record, and each midnight of a weekend sentence's stays, and took the level from the term revoked: a PV-FEL booking of a misdemeanor revocation is misdemeanor, and a night on a felony and a misdemeanor commitment at once is felony.
+7. For the probationers, took each open felony term's officer in cms2_supervision_cases_2023_2026.csv and that officer's office in the assignments in effect on 30 September 2026 (apd_officer_assignments_2016_2026.csv), with time on supervision in completed years at the extract.
+8. Applied the county's standard in the instructions' annex (one 64-bed pod for each 210 admissions or part of 210; six pods cover 1,260, seven 1,470): 7 pods for the projection's 1,424 admissions.
 
 ## 4. Deliverable Answers
 
-### presumptive_release_tier_2027.docx
+### violator_housing_plan_2027.xlsx
 
-1. The tier's top score is new-criminal-activity score 3 (scores 1 to 3); score 4 falls below the 85 per cent floor with every eligible defendant released.
+1. Violator pods for 2027: 7 (448 beds).
+2. The 2027 projection behind them: more than 1,260 felony probation revocation admissions (six pods' cover) and no more than 1,470 (seven pods' cover).
+3. Violator bed-days, whole days:
+   - October to December 2025: felony 24,603, misdemeanor 2,272
+   - January to March 2026: felony 25,141, misdemeanor 2,228
+   - April to June 2026: felony 23,135, misdemeanor 2,043
+   - July to September 2026: felony 23,897, misdemeanor 2,475
+4. Felony probationers on supervision on 30 September 2026, by supervising office (the office of the officer supervising the term that day) and time on supervision in completed years (under one year, one to under two years, two to under three years, three years or more):
+   - Central: 1,029, 926, 672, 769
+   - Northgate: 491, 427, 252, 366
+   - Riverside: 557, 471, 299, 384
+   - Eastfield: 355, 323, 234, 286
 
-### presumptive_release_tier_2027.xlsx
+### violator_housing_memo_2027.docx
 
-2. Bed-days in custody to 30 September 2026 of eligible defendants held after a first appearance from 1 October 2025 to 30 September 2026, by new-criminal-activity score:
-   - Score 1: 2,210
-   - Score 2: 4,660
-   - Score 3: 5,950
-   - Score 4: 8,330
-   - Score 5: 3,440
-   - Score 6: 2,040
-3. Days on electronic monitoring to 30 September 2026 of every defendant released at a first appearance in that year, by new-criminal-activity score:
-   - Score 1: 28,620
-   - Score 2: 26,820
-   - Score 3: 16,250
-   - Score 4: 10,380
-   - Score 5: 4,660
-   - Score 6: 2,220
-4. Releases at a first appearance from 1 October 2025 to 30 June 2026 followed within 90 days by a missed court date on that appearance's charges, by failure-to-appear score:
-   - Score 1: 260 of 6,860 releases, 3.8%
-   - Score 2: 349 of 5,525 releases, 6.3%
-   - Score 3: 340 of 3,364 releases, 10.1%
-   - Score 4: 308 of 1,976 releases, 15.6%
-   - Score 5: 78 of 338 releases, 23.1%
-   - Score 6: 20 of 77 releases, 26.0%
+1. The plan's violator housing section: seven pods, the 3,114 terms ending on 31 March 2027 and the capped terms' end-of-term petitions at the rate of the terms already at their class maximum.
 
-### missed_court_dates_by_fta_score.png
+### felony_revocation_admissions_2019_2027.png
 
-5. Bar chart of the six shares by failure-to-appear score, each bar labelled with its share and its count of releases.
+1. A line chart of monthly felony probation revocation admissions from January 2019 to September 2026 with the 2027 projection by month, peaking in April 2027.

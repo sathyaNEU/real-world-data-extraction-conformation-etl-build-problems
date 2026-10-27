@@ -19,8 +19,13 @@ import postprocess as PP  # noqa: E402
 
 HIST, PROJ, INK, INK2, SURF, GRID = "#2a78d6", "#eb6834", "#0b0b0b", "#52514e", "#fcfcfb", "#dddcd6"
 QLAB = ["October to December 2025", "January to March 2026", "April to June 2026", "July to September 2026"]
-BANDS = ["Under one year", "One year to under two years", "Two years to under three years", "Three years or more"]
+BANDS = ["Under one year", "One to under two years", "Two to under three years", "Three years or more"]
 MEMO_DATE = "16 October 2026"
+
+
+WORD = {1: "one", 2: "two", 3: "three", 4: "four", 5: "five", 6: "six", 7: "seven", 8: "eight", 9: "nine",
+        10: "ten"}
+ORD = {6: "sixth", 7: "seventh", 8: "eighth", 9: "ninth"}
 
 
 def n0(x):
@@ -31,42 +36,45 @@ def figures(C):
     g = C["call"]
     tot = g["total"]
     p = g["parts"]
-    f = {"call.pods": g["pods"], "call.admissions": g["printed"], "call.admissions_unrounded": round(tot, 1),
+    info = g["info"]
+    rt = C["rates"]
+    f = {"call.pods": g["pods"], "call.admissions_unrounded": round(tot, 1),
          "call.pods_ratio": round(tot / K.POD_SIZE, 2), "call.beds": g["pods"] * K.POD_BEDS, "pods_2026": K.PODS_2026,
          "pod_size": K.POD_SIZE, "pod_beds": K.POD_BEDS, "transition_terms": C["transition"],
          "parts.pending": round(p["pending"]), "parts.ordinary": round(p["ordinary"]),
          "parts.end_of_term": round(p["window"]), "parts.new_terms": round(p["new"]),
-         "parts.transition": round(g["est"]["trans"]["window"]),
-         "end_of_term.share_pct": round(100 * C["share"]["near"], 1),
-         "end_of_term.year_before_pct": round(100 * C["share"]["year_before"], 1),
-         "end_of_term.terms": C["share"]["reach"], "end_of_term.with_petition": C["share"]["wpet"],
+         "parts.end_of_term.no_room": round(info["none"]), "parts.end_of_term.room": round(info["room"]),
+         "parts.transition": round(info["transition"]),
+         "capped.transition": C["capped"]["transition"], "capped.cap": C["capped"]["cap"],
+         "capped.class_max": C["capped"]["class_max"], "capped.room": C["capped"]["room"],
+         "rate.at_max_pct": round(100 * rt["n"], 1), "rate.with_room_pct": round(100 * rt["e"], 1),
+         "rate.pooled_pct": round(100 * rt["pool"], 1), "rate.extended_with_room_pct": round(100 * rt["x_e"], 1),
+         "rate.windows": rt["n_windows"], "rate.windows_at_max": rt["n_nonext"],
+         "rate.windows_with_room": rt["n_windows"] - rt["n_nonext"], "rate.petitions_at_max": rt["hits_n"],
+         "rate.petitions_with_room": rt["hits_e"],
          "trailing.felony_admissions": C["trailing"], "felony_terms": len(C["R"].cases),
          "open_felony_terms": len(C["R"].active), "call.admissions_whole": int(round(tot)),
          "param.end_of_term_window_days": 120, "param.window_family_days": [90, 105, 150],
-         "param.plan_rounding": 100}
+         "param.act_cap_months": 24, "param.extension_months": K.EXT_MONTHS, "pods.six_cover": 6 * K.POD_SIZE,
+         "pods.seven_cover": 7 * K.POD_SIZE}
     for k, v in C["rungs"].items():
         f["rung.%s" % k] = round(v)
         f["rung.%s.pods" % k] = K.pods(v)
-        f["rung.%s.printed" % k] = K.round_to(v, 100)
     for k, v in C["family"].items():
         key = k.replace(" ", "_")
         f["family.%s" % key] = round(v)
         f["family.%s.pods" % key] = K.pods(v)
-        f["family.%s.printed" % key] = K.round_to(v, 100)
     fam = list(C["family"].values()) + [tot]
     f["family.low"], f["family.high"] = round(min(fam)), round(max(fam))
     A = C["ask_a"]
     for i in range(4):
         f["ask_a.q%d.felony" % (i + 1)] = int(A[i, 0])
         f["ask_a.q%d.misdemeanor" % (i + 1)] = int(A[i, 1])
-    offs, sups = C["ask_b"]
-    n_off, n_sup = C["ask_b_n"]
-    for (code, _, _), v, n in zip(K.OFFICES, offs, n_off):
-        f["ask_b.office.%s" % code] = K.round1(v)
-        f["ask_b.office.%s.n" % code] = n
-    for i, (v, n) in enumerate(zip(sups, n_sup)):
-        f["ask_b.band%d" % i] = K.round1(v)
-        f["ask_b.band%d.n" % i] = n
+    Bt = C["ask_b"]
+    for code, _, _ in K.OFFICES:
+        for k in range(4):
+            f["ask_b.%s.band%d" % (code, k)] = Bt[(code, k)]
+    f["ask_b.total"] = sum(Bt.values())
     mon = C["monthly"]
     s = sum(mon)
     f["monthly_2027"] = [round(x * tot / s, 1) for x in mon]
@@ -113,6 +121,8 @@ def _total(ws):
 
 def workbook(path, C, f):
     g = C["call"]
+    info = g["info"]
+    rt = C["rates"]
     wb = openpyxl.Workbook()
     ws = wb.active
     ws.title = "Projection 2027"
@@ -127,29 +137,29 @@ def workbook(path, C, f):
         ("Terms supervised at the extract: petitions through the term", g["parts"]["ordinary"],
          "monthly petition hazard by month on supervision over each term's months to its end under the Act, the "
          "record's revocation rate and filing-to-decision days"),
-        ("Terms supervised at the extract: petitions filed as the term lapses", g["parts"]["window"],
-         "%s per cent of terms reaching their last 120 days on supervision carry a petition filed in them; carried "
-         "to each term's end under the Act, the windows of the terms section 4 ends on 31 March 2027 opening on 1 "
-         "January 2027" % f["end_of_term.share_pct"]),
-        ("of which the %s terms section 4 ends on 31 March 2027" % n0(C["transition"]),
-         g["est"]["trans"]["window"], "the same petitions, filed from 1 January to 30 March 2027"),
+        ("Terms supervised at the extract: petitions as the term runs out", g["parts"]["window"],
+         "each term's last 120 days before its end under the Act (from 1 January 2027 for the 31 March ends)"),
+        ("of which terms with no room to extend (the Act or the class maximum)", info["none"],
+         "%s per cent of the record's terms reaching their last 120 days at their class maximum had a petition filed "
+         "in them; the Act leaves every capped term in that position" % f["rate.at_max_pct"]),
+        ("of which terms that can still be extended", info["room"],
+         "%s per cent had a petition, %s per cent were extended (%d months more, or to the latest end the Act "
+         "allows if sooner, then as above)"
+         % (f["rate.with_room_pct"], f["rate.extended_with_room_pct"], K.EXT_MONTHS)),
         ("Terms whose supervision begins after the extract", g["parts"]["new"],
          "supervision starts at the trailing year's monthly rate, each on the supervision clock"),
     ]
     first = ws.max_row + 1
     for lab, v, how in rows:
         ws.append([lab, round(v), how])
-        if lab.startswith("of which"):
-            ws.cell(ws.max_row, 1).alignment = Alignment(indent=2, wrap_text=True, vertical="top")
     ws.append(["Projected admissions, 2027", round(g["total"]), None])
     _total(ws)
-    ws.append(["Plan figure (nearest 100)", g["printed"], None])
-    ws.cell(ws.max_row, 1).font = BOLD
-    ws.cell(ws.max_row, 2).font = BOLD
     ws.append([])
-    ws.append(["Violator pods for 2027 (one 64-bed pod for each 220 projected admissions or part of 220)", g["pods"],
-               "%s admissions over 220 is %.2f pods; %d beds" % (n0(g["total"]), g["total"] / K.POD_SIZE,
-                                                                  g["pods"] * K.POD_BEDS)])
+    ws.append(["Violator pods for 2027 (one 64-bed pod for each %d projected admissions or part of %d)" % (
+        K.POD_SIZE, K.POD_SIZE), g["pods"],
+               "%s admissions over %d is %.2f pods; %d beds. Six pods cover %s admissions, seven %s"
+               % (n0(g["total"]), K.POD_SIZE, g["total"] / K.POD_SIZE, g["pods"] * K.POD_BEDS, n0(6 * K.POD_SIZE),
+                  n0(7 * K.POD_SIZE))])
     ws.cell(ws.max_row, 1).font = BOLD
     ws.cell(ws.max_row, 2).font = BOLD
     ws.append(["Violator pods staffed in 2026", K.PODS_2026, "%d beds" % (K.PODS_2026 * K.POD_BEDS)])
@@ -170,43 +180,85 @@ def workbook(path, C, f):
                "had %s felony probation revocation admissions." % n0(C["trailing"])])
     ws.cell(ws.max_row, 1).font = Font(name="Calibri", italic=True, size=9, color="595959")
     ws.freeze_panes = ws.cell(h + 1, 1)
-    _widths(ws, [58, 14, 92])
+    _widths(ws, [52, 14, 96])
+
+    we = wb.create_sheet("End of term")
+    _title(we, "What the record's terms did as they ran out, by room to extend",
+           "Felony terms in CMS 1 and 2 reaching their last 120 days before the scheduled expiration then in force, "
+           "alive and on supervision, July 2016 to August 2026. Room: the term in force against the longest term the "
+           "Criminal Code allows for its class (Clerk's code table).")
+    he = _head(we, ["Term reaching its last 120 days", "Terms", "With a petition filed in them", "Share with a petition",
+                    "Extended in them", "Share extended"])
+    n_e = rt["n_windows"] - rt["n_nonext"]
+    for lab, n, hp, xs in (("At its class maximum (no room)", rt["n_nonext"], rt["hits_n"], rt["x_n"]),
+                           ("With room under its class maximum", n_e, rt["hits_e"], rt["x_e"]),
+                           ("All terms", rt["n_windows"], rt["hits"], rt["x_pool"])):
+        we.append([lab, n, hp, hp / n, int(round(xs * n)), xs])
+    _total(we)
+    for row in we.iter_rows(min_row=he + 1, max_row=we.max_row):
+        for j in (1, 2, 4):
+            row[j].number_format = "#,##0"
+        for j in (3, 5):
+            row[j].number_format = "0.0%"
+    we.append([])
+    cp = C["capped"]
+    we.append(["Open felony terms at the extract by their end under SB 26-118", None, None, None, None, None])
+    we.cell(we.max_row, 1).font = BOLD
+    for lab, v in (("Ended by section 4 on 31 March 2027 (scheduled expiration later)", cp["transition"]),
+                   ("Ended on the day 24 months after supervision began (scheduled expiration later)", cp["cap"]),
+                   ("Ending on their own expiration with less than a month of room (class maximum or the Act)",
+                    cp["class_max"]),
+                   ("Ending on their own expiration with room to extend", cp["room"])):
+        we.append([lab, v])
+        we.cell(we.max_row, 2).number_format = "#,##0"
+    we.append([])
+    we.append(["No order on or after 1 January 2027 may set a felony term's expiration past the day sections 3 and 4 "
+               "allow (section 5), so a term ending on its cap has no room, whatever its class."])
+    we.cell(we.max_row, 1).font = Font(name="Calibri", italic=True, size=9, color="595959")
+    we.freeze_panes = we.cell(he + 1, 1)
+    _widths(we, [62, 11, 16, 14, 13, 12])
 
     ws2 = wb.create_sheet("Sensitivity")
     _title(ws2, "The projection under other constructions",
            "Each line changes one choice and recomputes the 2027 projection from the same records.")
-    _head(ws2, ["Construction", "Admissions 2027", "Nearest 100", "Pods"])
-    ws2.append(["As projected (end-of-term window 120 days)", round(g["total"]), g["printed"], g["pods"]])
+    _head(ws2, ["Construction", "Admissions 2027", "Pods"])
+    ws2.append(["As projected (end-of-term window 120 days)", round(g["total"]), g["pods"]])
     for k, v in C["family"].items():
-        ws2.append([k[0].upper() + k[1:], round(v), K.round_to(v, 100), K.pods(v)])
+        ws2.append([k[0].upper() + k[1:], round(v), K.pods(v)])
     ws2.append([])
-    ws2.append(["Readings the records rule out", None, None, None])
+    ws2.append(["Readings the records rule out", None, None])
     ws2.cell(ws2.max_row, 1).font = BOLD
-    why = {"persistence": "the trailing year's admissions, before the Act moves any term's end",
-           "rate_on_exposure": "the trailing year's admissions per month on supervision, over the months the Act "
+    why = {"pooled": "Every term's end at the record's end-of-term rates, the extensions the Act forbids treated as "
+                     "lapses",
+           "iia": "The extensions the Act forbids shared between petitions and lapses in the record's proportion",
+           "full": "Every extension the Act forbids filed as a petition",
+           "two_clock_no_extension": "Every term ending once at the record's pooled end-of-term rate",
+           "persistence": "The trailing year's admissions, before the Act moves any term's end",
+           "rate_on_exposure": "The trailing year's admissions per month on supervision, over the months the Act "
                                "leaves in 2027",
-           "one_clock_by_term": "petitions by month on supervision and term length, each term cut at its end under "
-                                "the Act",
-           "one_clock": "petitions by month on supervision and CSRS score, each term cut at its end under the Act",
-           "two_clock_no_transition": "as projected, without the petitions of the terms the Act ends on 31 March 2027"}
-    for k in ("persistence", "rate_on_exposure", "one_clock_by_term", "one_clock", "two_clock_no_transition"):
+           "one_clock": "Petitions by month on supervision and CSRS score, each term cut at its end under the Act",
+           "one_clock_by_term": "Petitions by month on supervision and term length, each term cut at its end under "
+                                "the Act"}
+    for k in ("pooled", "iia", "full", "two_clock_no_extension", "persistence", "rate_on_exposure", "one_clock",
+              "one_clock_by_term"):
         v = C["rungs"][k]
-        ws2.append([why[k][0].upper() + why[k][1:], round(v), K.round_to(v, 100), K.pods(v)])
+        ws2.append([why[k], round(v), K.pods(v)])
     for row in ws2.iter_rows(min_row=5, max_row=ws2.max_row):
         for c in row[1:]:
             c.number_format = "#,##0"
         row[0].alignment = Alignment(wrap_text=True, vertical="top")
     ws2.append([])
-    ws2.append(["The time-on-supervision readings book the end-of-term petitions at the expirations the record's terms "
-                "had; the Act removes those dates, and the petitions follow the new ones."])
+    ws2.append(["The record's own end-of-term rate was earned by terms that could mostly still be extended; the "
+                "terms already at their class maximum show what a term with no room draws."])
     ws2.cell(ws2.max_row, 1).font = Font(name="Calibri", italic=True, size=9, color="595959")
     ws2.freeze_panes = "A5"
-    _widths(ws2, [86, 15, 12, 8])
+    _widths(ws2, [92, 15, 8])
 
     ws3 = wb.create_sheet("Bed-days 2025-26")
     _title(ws3, "Violator bed-days by quarter, October 2025 to September 2026",
-           "Persons in the Detention Center at 00:00 county time on a probation revocation commitment, main building "
-           "and annex; felony when the commitment revokes a felony term (Board instructions, section 5).")
+           "Persons in the Detention Center at 00:00 county time serving a commitment the court has ordered on a "
+           "probation revocation, main building and annex; felony when the commitment revokes a felony term (Board "
+           "instructions, section 5).")
     h3 = _head(ws3, ["Quarter", "Felony", "Misdemeanor", "All violators"])
     A = C["ask_a"]
     for i, q in enumerate(QLAB):
@@ -217,56 +269,62 @@ def workbook(path, C, f):
         for c in row[1:]:
             c.number_format = "#,##0"
     ws3.append([])
-    ws3.append(["A misdemeanor commitment of a person then on felony probation is booked PV-FEL and counted here as "
-                "misdemeanor: the commitment revokes the misdemeanor term."])
+    ws3.append(["A commitment counts from the night after the court orders it; a person the jail already held stays "
+                "booked on the hold until the order reaches the records unit. A misdemeanor commitment of a person "
+                "then on felony probation is booked PV-FEL and counted here as misdemeanor."])
     ws3.cell(ws3.max_row, 1).font = Font(name="Calibri", italic=True, size=9, color="595959")
     ws3.freeze_panes = ws3.cell(h3 + 1, 1)
     _widths(ws3, [30, 12, 13, 13])
 
     ws4 = wb.create_sheet("Felony supervision")
-    _title(ws4, "Felony probationers on supervision at 30 September 2026: term imposed at sentencing",
-           "CMS 2 terms open at the extract; term imposed is the term length less the months the Circuit Court's "
-           "orders extended it (Board instructions, section 6).")
-    h4 = _head(ws4, ["Supervising office", "Probationers", "Average term imposed (months)"])
-    offs, sups = C["ask_b"]
-    n_off, n_sup = C["ask_b_n"]
-    for (code, name, _), v, n in zip(K.OFFICES, offs, n_off):
-        ws4.append(["%s (%s)" % (name, code), n, K.round1(v)])
-    ws4.append([])
-    _head(ws4, ["Time on supervision at the extract", "Probationers", "Average term imposed (months)"])
-    for lab, v, n in zip(BANDS, sups, n_sup):
-        ws4.append([lab, n, K.round1(v)])
-    ws4.append(["All felony probationers", sum(n_off), K.round1(sum(v * n for v, n in zip(offs, n_off)) / sum(n_off))])
+    _title(ws4, "Felony probationers on supervision at 30 September 2026, by supervising office",
+           "CMS 2 terms open at the end of the extract; the supervising office is the office of the officer then "
+           "supervising the term (officer assignments in effect on 30 September 2026). Board instructions, section 6.")
+    h4 = _head(ws4, ["Supervising office"] + BANDS + ["All"])
+    Bt = C["ask_b"]
+    for code, name, _ in K.OFFICES:
+        vals = [Bt[(code, k)] for k in range(4)]
+        ws4.append(["%s (%s)" % (name, code)] + vals + [sum(vals)])
+    tots = [sum(Bt[(o[0], k)] for o in K.OFFICES) for k in range(4)]
+    ws4.append(["All offices"] + tots + [sum(tots)])
     _total(ws4)
     for row in ws4.iter_rows(min_row=h4 + 1, max_row=ws4.max_row):
-        if row[1].value is not None and not isinstance(row[1].value, str):
-            row[1].number_format = "#,##0"
-            row[2].number_format = "0.0"
-    ws4.freeze_panes = ws4.cell(h4 + 1, 1)
-    _widths(ws4, [40, 14, 30])
+        for c in row[1:]:
+            c.number_format = "#,##0"
+    ws4.append([])
+    ws4.append(["CMS 2 keeps the office that took a term in; terms move between offices with their officers, and "
+                "Eastfield took over the eastern townships' terms when it opened on 2 June 2025."])
+    ws4.cell(ws4.max_row, 1).font = Font(name="Calibri", italic=True, size=9, color="595959")
+    ws4.freeze_panes = ws4.cell(h4 + 1, 2)
+    _widths(ws4, [24, 15, 18, 18, 18, 10])
 
     wn = wb.create_sheet("Notes")
     notes = [
         ("Admission", "A person's commitment to the Detention Center on the revocation of a probation term the Adult "
-                      "Probation Department supervises, counted once on the day the commitment begins; felony when a "
+                      "Probation Department supervises, counted once on the day the court orders it; felony when a "
                       "revoked term is a felony term (Board instructions, section 3)."),
         ("Projection basis", "SB 26-118 as enrolled: a running felony term ends on the earlier of its scheduled "
                              "expiration and 24 months after supervision began, not before 31 March 2027; a term "
-                             "imposed from 1 January 2027 runs no more than 24 months from the start of supervision. "
-                             "The courts, the Department and the Sheriff acting as the records to the extract show "
-                             "(Board instructions, section 4)."),
-        ("Petition rates", "From every felony term in CMS 1 and 2 since July 2016 and the Circuit Court's "
-                           "petitions on them: the hazard by month on supervision outside each term's last 120 days, "
-                           "the share of terms reaching their last 120 days with a petition filed in them, revocation "
-                           "rates by kind and filing-to-decision days from petitions decided by the start of the "
-                           "trailing year."),
+                             "imposed from 1 January 2027 runs no more than 24 months from the start of supervision; "
+                             "no order from 1 January 2027 extends a term past those days. The courts, the Department "
+                             "and the Sheriff acting as the records to the extract show (Board instructions, section "
+                             "4)."),
+        ("End-of-term rates", "From every felony term in CMS 1 and 2 since July 2016, the Circuit Court's petitions "
+                              "and term orders: the share of terms reaching their last 120 days with a petition filed "
+                              "in them and the share extended in them, split by whether the term in force (the term "
+                              "imposed and every extension ordered before the 120 days began) had reached the longest "
+                              "term for its class."),
+        ("Petition rates", "The hazard by month on supervision outside each term's last 120 days; revocation rates by "
+                           "kind and filing-to-decision days from petitions decided by the start of the trailing "
+                           "year."),
         ("Scheduled expiration", "As in force on each day, from the term orders: tolling and extensions move it, early "
                                  "termination ends the term."),
         ("Pods", "County standard on file with the State Jail Standards Board (3 March 2021): one 64-bed violator pod "
-                 "for each 220 felony probation revocation admissions projected for the plan year, or part of 220."),
+                 "for each %d felony probation revocation admissions projected for the plan year, or part of %d."
+                 % (K.POD_SIZE, K.POD_SIZE)),
         ("Bed-days", "Booking times in the new jail management system (from 4 February 2025) are UTC and are read in "
-                     "county time; a person under bookings split by an annex move or a reclassification is counted "
-                     "once a night."),
+                     "county time; a person under bookings split by an annex move, the system replacement or a "
+                     "reclassification is counted once a night."),
         ("Not used", "The daily 06:00 headcount and the Department's fiscal 2025 annual report."),
         ("Prepared", "Gina Yoder, jail planning analyst, %s." % MEMO_DATE)]
     wn.append(["Item", "Note"])
@@ -333,33 +391,38 @@ def memo(path, C, f):
         q.add_run(a_ + " ").bold = True
         q.add_run(b_)
     doc.add_paragraph()
+    info = g["info"]
     p = doc.add_paragraph()
-    r = p.add_run("Staff six violator pods for 2027: the Act brings felony revocation admissions up to about %s, not "
-                  "down" % n0(g["printed"]))
+    r = p.add_run("Staff %s violator pods for 2027: the Act takes away the extensions our expiring terms rely on, "
+                  "and capped terms will draw petitions instead" % WORD[g["pods"]])
     r.bold = True
     r.font.size = Pt(13)
     doc.add_paragraph(
-        "The plan should carry %s felony probation revocation admissions for 2027 and staff six violator pods (%d "
-        "beds), one more than this year. The projection is %s admissions, %.2f pods under our standard of one pod for "
-        "each 220 projected admissions or part of 220. In the year to September 2026 the Detention Center admitted "
-        "%s."
-        % (n0(g["printed"]), g["pods"] * K.POD_BEDS, n0(g["total"]), g["total"] / K.POD_SIZE, n0(C["trailing"])))
+        "The plan should staff %s violator pods (%d beds) for 2027, %s more than this year. We project %s felony "
+        "probation revocation admissions, %.2f pods under our standard of one pod for each %d projected admissions "
+        "or part of %d: more than the %s six pods cover and within the %s of seven. In the year to September 2026 "
+        "the Detention Center admitted %s."
+        % (WORD[g["pods"]], g["pods"] * K.POD_BEDS, WORD[g["pods"] - K.PODS_2026], n0(g["total"]),
+           g["total"] / K.POD_SIZE, K.POD_SIZE, K.POD_SIZE, n0(6 * K.POD_SIZE), n0(7 * K.POD_SIZE),
+           n0(C["trailing"])))
     doc.add_paragraph(
-        "SB 26-118 caps felony supervision at 24 months from 1 January 2027 and, under section 4, ends %s of the "
-        "felony terms open at the extract on 31 March 2027. That shortens supervision, but it does not cut "
-        "revocations, because a large part of our violation petitions are filed against the end of a term rather than "
-        "during it. Officers file on matters still open as a term runs out (restitution, unfinished treatment, a "
-        "pending charge) so the court keeps jurisdiction. Of the felony terms that reached their last 120 days on "
-        "supervision with nothing pending, %s per cent had a petition filed in those days (%s of %s), against %s per "
-        "cent in the same days a year earlier."
-        % (n0(C["transition"]), f["end_of_term.share_pct"], n0(C["share"]["wpet"]), n0(C["share"]["reach"]),
-           f["end_of_term.year_before_pct"]))
+        "When a felony term runs out with something still open (restitution owed, treatment unfinished, a pending "
+        "charge) the court extends it if the term has room under the longest term the Criminal Code allows for its "
+        "class, and the officer files a violation petition to keep the court's jurisdiction if it has none. Our "
+        "record shows both. Of the felony terms that reached their last 120 days at their class maximum, about two in "
+        "five had a petition filed in those days (%s of %s, %s per cent); of the terms with room, %s per cent had a "
+        "petition and %s per cent were extended."
+        % (n0(f["rate.petitions_at_max"]), n0(f["rate.windows_at_max"]), f["rate.at_max_pct"], f["rate.with_room_pct"],
+           f["rate.extended_with_room_pct"]))
     doc.add_paragraph(
-        "Those petitions follow each term's scheduled expiration, so when the Act moves the expirations they move "
-        "with them. For the %s terms ending on 31 March 2027 they fall in the first quarter of 2027 and the "
-        "commitments in the spring: %s admissions, the peak coming in %s. Through the rest of the year every term "
-        "reaching 24 months on supervision ends, and its end-of-term petitions come with it."
-        % (n0(C["transition"]), n0(g["est"]["trans"]["window"]), f["peak_month"]))
+        "SB 26-118 caps felony supervision at 24 months and, from 1 January 2027, bars any order setting a term's "
+        "expiration past that cap (section 5). Section 4 ends %s of the felony terms open at the extract on 31 March "
+        "2027, and %s more end on the day 24 months after supervision began; none of them has room left, any more "
+        "than the %s ending on their own expiration at their class maximum or within a month of the Act's limit. They "
+        "will end the way our terms at their class maximum end, not the way the record's terms did on average, and "
+        "their end-of-term petitions bring %s admissions, most in the spring: the peak comes in %s."
+        % (n0(C["capped"]["transition"]), n0(C["capped"]["cap"]), n0(C["capped"]["class_max"]), n0(info["none"]),
+           f["peak_month"]))
     doc.add_paragraph("Projected felony probation revocation admissions, 2027").runs[0].bold = True
     tb = doc.add_table(rows=1, cols=2)
     tb.style = "Table Grid"
@@ -367,7 +430,8 @@ def memo(path, C, f):
     tb.rows[0].cells[1].text = "Admissions"
     for lab, v in (("Petitions pending at 30 September 2026", g["parts"]["pending"]),
                    ("Terms on supervision at the extract, petitions through the term", g["parts"]["ordinary"]),
-                   ("Terms on supervision at the extract, petitions filed as the term lapses", g["parts"]["window"]),
+                   ("Terms on supervision at the extract, petitions as the term runs out", g["parts"]["window"]),
+                   ("   of which terms with no room to extend (the Act or the class maximum)", info["none"]),
                    ("Terms beginning supervision after the extract", g["parts"]["new"]),
                    ("Projected admissions", g["total"])):
         row = tb.add_row().cells
@@ -379,40 +443,42 @@ def memo(path, C, f):
                 for run in para.runs:
                     run.font.size = Pt(9.5)
     q = doc.add_paragraph()
-    r = q.add_run("Source: CMS 1 and 2, the Circuit Court's term orders and violation petitions, extracts of 2 "
-                  "October 2026. Parts are rounded and add to the projection before rounding.")
+    r = q.add_run("Source: CMS 1 and 2, the Circuit Court's term orders and violation petitions, the Clerk's code table, "
+                  "extracts of 2 October 2026. Parts are rounded and add to the projection before rounding.")
     r.italic = True
     r.font.size = Pt(8.5)
     doc.add_paragraph(
-        "The usual survival projection, petitions by month on supervision with the CSRS score carried to each term's "
-        "new end, gives about %s (three pods): it books the end-of-term petitions at expirations the Act removes. "
-        "Keeping this year's %s gives five pods and misses the 31 March ends altogether. Every reasonable variant of "
-        "the projection (an end-of-term window from 90 to 150 days, with or without the CSRS score, one revocation rate "
-        "for both kinds of petition) gives %s to %s admissions and six pods; the workbook's Sensitivity sheet lists "
-        "them."
-        % (n0(K.round_to(C["rungs"]["one_clock"], 10)), n0(C["trailing"]), n0(f["family.low"]), n0(f["family.high"])))
+        "Projecting the capped terms at the record's average end-of-term rate gives about %s admissions and %s "
+        "pods: that rate was earned by terms that could mostly still be extended, which the Act forbids. Sharing the "
+        "lost extensions between petitions and lapses in the record's proportion gives about %s (%s pods), and "
+        "filing every one of them as a petition about %s (%s); neither matches how our terms at their maximum "
+        "actually ended. Every reasonable variant of the projection (an end-of-term window from 90 to 150 days, with "
+        "or without the CSRS score, one revocation rate or two) gives %s to %s admissions and %s pods; the "
+        "workbook's Sensitivity sheet lists them."
+        % (n0(K.round_to(C["rungs"]["pooled"], 10)), WORD[K.pods(C["rungs"]["pooled"])],
+           n0(K.round_to(C["rungs"]["iia"], 10)), WORD[K.pods(C["rungs"]["iia"])],
+           n0(K.round_to(C["rungs"]["full"], 10)), WORD[K.pods(C["rungs"]["full"])], n0(f["family.low"]),
+           n0(f["family.high"]), WORD[g["pods"]]))
     A = C["ask_a"]
     doc.add_paragraph(
-        "Violator housing is close to full now. Felony violator bed-days ran %s, %s, %s and %s in the four quarters to "
-        "September 2026 (misdemeanor %s, %s, %s and %s), an average of %s felony violators a night against the five "
-        "pods' %d beds. The sixth pod should be open by February 2027, ahead of the spring."
+        "Violator housing is near capacity now. Felony violator bed-days ran %s, %s, %s and %s in the four quarters to "
+        "September 2026 (misdemeanor %s, %s, %s and %s), an average of %s felony violators a night against the %s "
+        "pods' %d beds. The %s pods should be open by February 2027, ahead of the spring."
         % (n0(A[0, 0]), n0(A[1, 0]), n0(A[2, 0]), n0(A[3, 0]), n0(A[0, 1]), n0(A[1, 1]), n0(A[2, 1]), n0(A[3, 1]),
-           n0(A[:, 0].sum() / (K.EXTRACT - K.day("2025-10-01") + 1)), K.PODS_2026 * K.POD_BEDS))
-    offs, sups = C["ask_b"]
+           n0(A[:, 0].sum() / (K.EXTRACT - K.day("2025-10-01") + 1)), WORD[K.PODS_2026], K.PODS_2026 * K.POD_BEDS,
+           " and ".join(ORD[k] for k in range(K.PODS_2026 + 1, g["pods"] + 1))))
+    Bt = C["ask_b"]
+    tots = {o[0]: sum(Bt[(o[0], k)] for k in range(4)) for o in K.OFFICES}
     doc.add_paragraph(
-        "For section 6 of the plan, the %s felony probationers on supervision at the extract were sentenced to %s "
-        "months on average (Central %s, Northgate %s, Riverside %s, Eastfield %s); by time on supervision, %s months "
-        "under one year, %s from one to two years, %s from two to three years and %s at three years or more. The "
-        "workbook carries the counts."
-        % (n0(sum(C["ask_b_n"][0])), "%.1f" % K.round1(sum(v * n for v, n in zip(offs, C["ask_b_n"][0])) /
-                                                      sum(C["ask_b_n"][0])),
-           "%.1f" % K.round1(offs[0]), "%.1f" % K.round1(offs[1]), "%.1f" % K.round1(offs[2]),
-           "%.1f" % K.round1(offs[3]), "%.1f" % K.round1(sups[0]), "%.1f" % K.round1(sups[1]),
-           "%.1f" % K.round1(sups[2]), "%.1f" % K.round1(sups[3])))
+        "For section 6 of the plan, the Department supervised %s felony probationers at the extract: Central %s, "
+        "Northgate %s, Riverside %s and Eastfield %s, counted by the office of the officer supervising each term. The "
+        "workbook breaks each office down by time on supervision."
+        % (n0(sum(tots.values())), n0(tots["CEN"]), n0(tots["NGT"]), n0(tots["RVS"]), n0(tots["EFD"])))
     q = doc.add_paragraph()
-    r = q.add_run("Bed-days count each person in the Detention Center at 00:00 county time on a revocation commitment; a "
-                  "misdemeanor commitment of a felony probationer (booked PV-FEL) counts as misdemeanor. Terms imposed "
-                  "exclude extensions ordered since sentencing.")
+    r = q.add_run("Bed-days count each person in the Detention Center at 00:00 county time serving a commitment the "
+                  "court has ordered, from the night after the order; a misdemeanor commitment of a felony probationer "
+                  "(booked PV-FEL) counts as misdemeanor. CMS 2 keeps the office that took a term in, so supervising "
+                  "offices come from the officer assignments.")
     r.font.size = Pt(8.5)
     doc.core_properties.author = K.PEOPLE["analyst"]
     doc.core_properties.title = "2027 Jail Operations Plan, violator housing"
@@ -436,8 +502,8 @@ def chart(path, C, f):
     ax.plot(px, py, color=PROJ, lw=2.0, ls=(0, (4, 2)), marker="o", ms=4.2,
             label="Projected for 2027 under SB 26-118 (%s)" % n0(C["call"]["total"]))
     ax.axvline(dt.date(2027, 3, 31), color=INK2, lw=0.9, ls=":")
-    ax.text(dt.date(2027, 4, 8), max(py) * 1.02, "31 March 2027: %s running\nterms end under section 4" %
-            n0(C["transition"]), fontsize=8.2, color=INK, va="bottom")
+    ax.text(dt.date(2027, 3, 24), max(py) * 1.08, "31 March 2027: %s running\nterms end under section 4" %
+            n0(C["transition"]), fontsize=8.2, color=INK, va="bottom", ha="right")
     top = px[max(range(12), key=lambda i: py[i])]
     ax.annotate("%s in %s" % (n0(max(py)), f["peak_month"]), xy=(top, max(py)), xytext=(dt.date(2025, 9, 1), max(py) * 0.97),
                 fontsize=8.2, color=INK, arrowprops=dict(arrowstyle="-", color=INK2, lw=0.8))
@@ -451,11 +517,12 @@ def chart(path, C, f):
     ax.spines["bottom"].set_color("#a9a8a2")
     ax.tick_params(colors=INK2, labelsize=8.5)
     ax.legend(loc="upper left", frameon=False, fontsize=8.6)
-    ax.set_title("Felony revocation admissions rise in spring 2027 as SB 26-118 ends running terms: six pods for %s"
-                 % n0(C["call"]["printed"]), loc="left", fontsize=11.2, color=INK, fontweight="bold", pad=12)
+    ax.set_title("Felony revocation admissions climb in spring 2027 as SB 26-118 ends terms with no room to extend: "
+                 "%s violator pods" % WORD[C["call"]["pods"]], loc="left", fontsize=11.2, color=INK,
+                 fontweight="bold", pad=12)
     fig.text(0.01, 0.012, "Admissions: one a person and day the Circuit Court revoked a felony term. Source: Circuit "
-                          "Court petitions, CMS 1 and 2, extracts of 2 October 2026. Okelan County Sheriff's "
-                          "Office, jail planning.", fontsize=7.4, color=INK2)
+                          "Court petitions and term orders, CMS 1 and 2, extracts of 2 October 2026. Okelan County "
+                          "Sheriff's Office, jail planning.", fontsize=7.4, color=INK2)
     fig.tight_layout(rect=(0, 0.03, 1, 1))
     fig.savefig(path, facecolor=SURF, metadata={"Software": None})
     plt.close(fig)

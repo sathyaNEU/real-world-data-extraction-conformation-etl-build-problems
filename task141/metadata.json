@@ -1,223 +1,120 @@
 {
-  "task": "task141",
-  "title": "The highest Pretrial Assessment Scale score Dorrance County's 2027 bail policy can release on a written promise at first appearance under its 85 per cent safety floor",
-  "domain": "Criminology & Justice",
-  "client_domain": "Criminology & Justice",
-  "subdomain": "recidivism-risk-assessment (pretrial risk assessment: each score's new-offence rate for every eligible defendant a presumptive release tier would release, estimated past the selective labels of the outcome record)",
-  "objective": "Forecasting & Predictive Modeling",
-  "prompt_shape": "04: setting one dial (the tier's top score, scores 1 to 6 the settings), with three 2025-26 tables (bed-days in custody and monitoring days by new-criminal-activity score, missed court dates by failure-to-appear score) and one chart",
-  "as_of": "2026-10-14",
-  "deliverables": [
-    "presumptive_release_tier_2027.docx",
-    "presumptive_release_tier_2027.xlsx",
-    "missed_court_dates_by_fta_score.png"
-  ],
-  "distractor_files": [
-    "cjac_jail_population_report_2025.pdf",
-    "dorrance_county_reported_crime_2019-2025.xlsx"
-  ],
-  "input_gates": {
-    "files": 20,
-    "formats": [
-      "csv",
-      "docx",
-      "pdf",
-      "txt",
-      "xlsx"
-    ],
-    "largest_file": "state_arrest_extract_2026-10-02.csv",
-    "largest_file_rows": 294770
+ "task": "task141",
+ "title": "Okelan County's 2027 felony probation revocation admissions and violator pods under SB 26-118",
+ "setting": "A fictional county in an unnamed state on Central time, whose Adult Probation Department supervises felony and misdemeanor probationers and whose Detention Center houses felony revocation commitments under the State's 2019 realignment; a statute caps felony supervision at 24 months from 1 January 2027. The county, its bodies, its statute and its people are fictional, and every record is synthetic.",
+ "as_of": "2026-10-16",
+ "deliverables": [
+  "violator_housing_plan_2027.xlsx",
+  "violator_housing_memo_2027.docx",
+  "felony_revocation_admissions_2019_2027.png"
+ ],
+ "distractor_files": [
+  "target/apd_annual_report_2025.pdf",
+  "target/detention_daily_headcount_2025_2026.csv"
+ ],
+ "stated_inputs": [
+  "records to 30 September 2026",
+  "calendar 2027",
+  "whole days"
+ ],
+ "files": [
+  {
+   "file": "apd_annual_report_2025.pdf",
+   "source": "Okelan County Adult Probation Department, annual report for fiscal year 2025 (fictional, synthetic records)",
+   "date": "2025-10-15",
+   "license": "CC0-1.0 (synthetic, generated for this task)",
+   "rows": null
   },
-  "sources": [
-    {
-      "files": "all files under target/",
-      "origin": "constructed for this task by task141/generator/build.py (seeded, deterministic) around a fictional North Carolina county (Dorrance County, county seat Garrison), its courts, magistrates, Pretrial Services, Sheriff's Office and people, and a fictional neighbouring county (Halsey County); no real organisation, person or system is depicted. Offense descriptions and statute citations follow the North Carolina General Statutes in form only.",
-      "date": "2026-10-02",
-      "license": "CC0-1.0 (original work)"
-    }
-  ],
-  "created": "2026-10-15",
-  "generator": "task141/generator/build.py",
-  "files": [
-    {
-      "path": "README_pretrial_extracts.txt",
-      "format": "txt",
-      "bytes": 5653,
-      "rows": null,
-      "source": "Constructed: Pretrial Services' note on the extracts",
-      "date": "2026-10-02",
-      "license": "CC0-1.0 (original work, constructed for this task)"
-    },
-    {
-      "path": "bail_policy_revision_2027_draft.docx",
-      "format": "docx",
-      "bytes": 11468,
-      "rows": null,
-      "source": "Constructed: Local bail policy revision for 2027, draft for consultation of 6 October 2026 (Senior Resident Superior Court Judge)",
-      "date": "2026-10-02",
-      "license": "CC0-1.0 (original work, constructed for this task)"
-    },
-    {
-      "path": "cjac_jail_population_report_2025.pdf",
-      "format": "pdf",
-      "bytes": 35216,
-      "rows": null,
-      "source": "Constructed: Criminal Justice Advisory Council jail population report for 2025",
-      "date": "2026-10-02",
-      "license": "CC0-1.0 (original work, constructed for this task)"
-    },
-    {
-      "path": "court_case_index_2021-10-01_2026-09-30.csv",
-      "format": "csv",
-      "bytes": 17256237,
-      "rows": 200516,
-      "source": "Constructed: Criminal case index with dispositions, cases filed from 1 October 2021",
-      "date": "2026-10-02",
-      "license": "CC0-1.0 (original work, constructed for this task)"
-    },
-    {
-      "path": "court_code_list.csv",
-      "format": "csv",
-      "bytes": 996,
-      "rows": 22,
-      "source": "Constructed: Court codes: conditions, dispositions and events",
-      "date": "2026-10-02",
-      "license": "CC0-1.0 (original work, constructed for this task)"
-    },
-    {
-      "path": "court_events_2025-10-01_2026-09-30.csv",
-      "format": "csv",
-      "bytes": 6872611,
-      "rows": 170592,
-      "source": "Constructed: Court events, 1 October 2025 to 30 September 2026",
-      "date": "2026-10-02",
-      "license": "CC0-1.0 (original work, constructed for this task)"
-    },
-    {
-      "path": "dorrance_county_reported_crime_2019-2025.xlsx",
-      "format": "xlsx",
-      "bytes": 7119,
-      "rows": null,
-      "source": "Constructed: Reported offenses by Dorrance County agencies, 2019 to 2025",
-      "date": "2026-10-02",
-      "license": "CC0-1.0 (original work, constructed for this task)"
-    },
-    {
-      "path": "first_appearance_charges_2024-03-04_2026-09-30.csv",
-      "format": "csv",
-      "bytes": 8104552,
-      "rows": 135818,
-      "source": "Constructed: The charges at those appearances from 4 March 2024, with their case numbers",
-      "date": "2026-10-02",
-      "license": "CC0-1.0 (original work, constructed for this task)"
-    },
-    {
-      "path": "first_appearances_2021-10-01_2024-03-03.csv",
-      "format": "csv",
-      "bytes": 8073765,
-      "rows": 74163,
-      "source": "Constructed: Initial appearances on new charges from the clerk's legacy system, 1 October 2021 to 3 March 2024",
-      "date": "2026-10-02",
-      "license": "CC0-1.0 (original work, constructed for this task)"
-    },
-    {
-      "path": "first_appearances_2024-03-04_2026-09-30.csv",
-      "format": "csv",
-      "bytes": 11580608,
-      "rows": 86923,
-      "source": "Constructed: Initial appearances on new charges from the case management system, 4 March 2024 to 30 September 2026",
-      "date": "2026-10-02",
-      "license": "CC0-1.0 (original work, constructed for this task)"
-    },
-    {
-      "path": "halsey_county_board_bills_2025-11_2026-09.xlsx",
-      "format": "xlsx",
-      "bytes": 193238,
-      "rows": null,
-      "source": "Constructed: Halsey County inmate housing invoices to the Sheriff's Office, November 2025 to September 2026",
-      "date": "2026-10-02",
-      "license": "CC0-1.0 (original work, constructed for this task)"
-    },
-    {
-      "path": "jail_bookings_2021-10-01_2026-09-30.csv",
-      "format": "csv",
-      "bytes": 20577832,
-      "rows": 194461,
-      "source": "Constructed: Detention center bookings from the Sheriff's Office jail system, 1 October 2021 to 30 September 2026",
-      "date": "2026-10-02",
-      "license": "CC0-1.0 (original work, constructed for this task)"
-    },
-    {
-      "path": "jail_code_list.csv",
-      "format": "csv",
-      "bytes": 977,
-      "rows": 16,
-      "source": "Constructed: Jail booking types, release types and facilities",
-      "date": "2026-10-02",
-      "license": "CC0-1.0 (original work, constructed for this task)"
-    },
-    {
-      "path": "local_bail_policy_2024.pdf",
-      "format": "pdf",
-      "bytes": 100134,
-      "rows": null,
-      "source": "Constructed: Local bail policy for pretrial release, effective 1 July 2024",
-      "date": "2026-10-02",
-      "license": "CC0-1.0 (original work, constructed for this task)"
-    },
-    {
-      "path": "magistrate_roster.xlsx",
-      "format": "xlsx",
-      "bytes": 8847,
-      "rows": null,
-      "source": "Constructed: Magistrate roster and duty shifts, 2021 to 2026 (chief magistrate)",
-      "date": "2026-10-02",
-      "license": "CC0-1.0 (original work, constructed for this task)"
-    },
-    {
-      "path": "offense_code_crosswalk.xlsx",
-      "format": "xlsx",
-      "bytes": 8634,
-      "rows": null,
-      "source": "Constructed: Offense code crosswalk, legacy to new system (clerk)",
-      "date": "2026-10-02",
-      "license": "CC0-1.0 (original work, constructed for this task)"
-    },
-    {
-      "path": "pas_scoring_guide_v2.pdf",
-      "format": "pdf",
-      "bytes": 36364,
-      "rows": null,
-      "source": "Constructed: Pretrial Assessment Scale scoring guide, version 2 (Pretrial Services)",
-      "date": "2026-10-02",
-      "license": "CC0-1.0 (original work, constructed for this task)"
-    },
-    {
-      "path": "pas_screens_2021-10-01_2026-09-30.csv",
-      "format": "csv",
-      "bytes": 16301839,
-      "rows": 155649,
-      "source": "Constructed: Pretrial Assessment Scale screens, 1 October 2021 to 30 September 2026",
-      "date": "2026-10-02",
-      "license": "CC0-1.0 (original work, constructed for this task)"
-    },
-    {
-      "path": "sentry_point_invoice_lines_2025-10_2026-09.csv",
-      "format": "csv",
-      "bytes": 516388,
-      "rows": 6154,
-      "source": "Constructed: Electronic monitoring vendor invoice lines, October 2025 to September 2026",
-      "date": "2026-10-02",
-      "license": "CC0-1.0 (original work, constructed for this task)"
-    },
-    {
-      "path": "state_arrest_extract_2026-10-02.csv",
-      "format": "csv",
-      "bytes": 37310692,
-      "rows": 294770,
-      "source": "Constructed: State arrest repository extract for every defendant in the first-appearance exports, run 2 October 2026",
-      "date": "2026-10-02",
-      "license": "CC0-1.0 (original work, constructed for this task)"
-    }
-  ]
+  {
+   "file": "apd_office_codes.csv",
+   "source": "Okelan County Adult Probation Department, office codes (fictional, synthetic records)",
+   "date": "2025-06-02",
+   "license": "CC0-1.0 (synthetic, generated for this task)",
+   "rows": 4
+  },
+  {
+   "file": "apd_officer_assignments_2016_2026.csv",
+   "source": "Okelan County Adult Probation Department, personnel system export of probation officer assignments in effect from 1 July 2016 (fictional, synthetic records)",
+   "date": "2026-10-02",
+   "license": "CC0-1.0 (synthetic, generated for this task)",
+   "rows": 440
+  },
+  {
+   "file": "circuit_court_codes.xlsx",
+   "source": "Clerk of the Okelan County Circuit Court, code table (fictional, synthetic records)",
+   "date": "2025-01-21",
+   "license": "CC0-1.0 (synthetic, generated for this task)",
+   "rows": null
+  },
+  {
+   "file": "circuit_court_term_orders_2016_2026.csv",
+   "source": "Clerk of the Okelan County Circuit Court, case management system, orders from 1 July 2016 changing a probation term's scheduled expiration (fictional, synthetic records)",
+   "date": "2026-10-02",
+   "license": "CC0-1.0 (synthetic, generated for this task)",
+   "rows": 17765
+  },
+  {
+   "file": "circuit_court_violation_petitions_2016_2026.csv",
+   "source": "Clerk of the Okelan County Circuit Court, case management system, probation violation petitions filed from 1 July 2016 and their dispositions (fictional, synthetic records)",
+   "date": "2026-10-02",
+   "license": "CC0-1.0 (synthetic, generated for this task)",
+   "rows": 23243
+  },
+  {
+   "file": "cms1_supervision_cases_2016_2023.csv",
+   "source": "Okelan County Adult Probation Department, CMS 1 export of the supervision terms closed from 1 July 2016 to 11 June 2023 (fictional, synthetic records)",
+   "date": "2026-10-02",
+   "license": "CC0-1.0 (synthetic, generated for this task)",
+   "rows": 30568
+  },
+  {
+   "file": "cms2_supervision_cases_2023_2026.csv",
+   "source": "Okelan County Adult Probation Department, CMS 2 export of supervision terms to 30 September 2026 (fictional, synthetic records)",
+   "date": "2026-10-02",
+   "license": "CC0-1.0 (synthetic, generated for this task)",
+   "rows": 24129
+  },
+  {
+   "file": "detention_daily_headcount_2025_2026.csv",
+   "source": "Okelan County Sheriff's Office, Detention Center, daily 06:00 count by housing unit (fictional, synthetic records)",
+   "date": "2026-10-01",
+   "license": "CC0-1.0 (synthetic, generated for this task)",
+   "rows": 3190
+  },
+  {
+   "file": "detention_probation_bookings_2019_2026.csv",
+   "source": "Okelan County Sheriff's Office, Detention Center, jail management system export of probation bookings from 1 January 2019 (fictional, synthetic records)",
+   "date": "2026-10-02",
+   "license": "CC0-1.0 (synthetic, generated for this task)",
+   "rows": 46347
+  },
+  {
+   "file": "jail_operations_plan_instructions_2027.pdf",
+   "source": "State Jail Standards Board, instructions for the 2027 Jail Operations Plans (fictional, synthetic records)",
+   "date": "2026-07-08",
+   "license": "CC0-1.0 (synthetic, generated for this task)",
+   "rows": null
+  },
+  {
+   "file": "jms_booking_codes.csv",
+   "source": "Okelan County Sheriff's Office, Detention Center, jail management system code list (fictional, synthetic records)",
+   "date": "2025-02-04",
+   "license": "CC0-1.0 (synthetic, generated for this task)",
+   "rows": 15
+  },
+  {
+   "file": "person_id_crosswalk.csv",
+   "source": "Okelan County Sheriff's Office and Adult Probation Department, person number crosswalk (fictional, synthetic records)",
+   "date": "2026-10-02",
+   "license": "CC0-1.0 (synthetic, generated for this task)",
+   "rows": 51297
+  },
+  {
+   "file": "sb26_118_felony_probation_term_act.pdf",
+   "source": "General Assembly, Senate Bill 26-118 (Felony Probation Term Act), enrolled (fictional, synthetic records)",
+   "date": "2026-05-14",
+   "license": "CC0-1.0 (synthetic, generated for this task)",
+   "rows": null
+  }
+ ]
 }

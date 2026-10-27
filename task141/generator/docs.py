@@ -109,7 +109,12 @@ def write_act(path):
 
     def sub(text):
         s.append(Paragraph(text, CLAUSE))
-    sec(1, "Short title", "This Act may be cited as the Felony Probation Term Act.")
+    sec(1, "Short title and legislative declaration", "")
+    sub("(1)&nbsp;&nbsp;This Act may be cited as the Felony Probation Term Act.")
+    sub("(2)&nbsp;&nbsp;The General Assembly finds and declares that a felony probation term should end within a period "
+        "the probationer and the court can foresee at sentencing, that the State's felony probation terms run longer "
+        "than those of its neighboring states, and that a limit of 24 months on supervision serves the purpose of this "
+        "Act.")
     sec(2, "Definitions", "In this Act:")
     sub("(1)&nbsp;&nbsp;\"Felony probation term\" means a term of probation imposed on conviction of a felony, with the "
         "conditions the court orders, including any period of confinement in a county jail the court orders as a "
@@ -123,14 +128,16 @@ def write_act(path):
         "date of this Act may not provide for supervision for more than 24 months, and expires no later than the day 24 "
         "months after supervision on it begins.")
     sec(4, "Terms in effect", "A felony probation term in effect on the effective date of this Act expires on the "
-        "earlier of its scheduled expiration and the day 24 months after supervision on it began; but no term expires "
-        "under this section before 31 March 2027.")
+        "earlier of (a) its scheduled expiration and (b) the later of the day 24 months after supervision on it began and "
+        "31 March 2027.")
     sec(5, "Extension and tolling", "A court may extend or toll a felony probation term as before, but no order made "
         "on or after the effective date of this Act may set the term's expiration later than the day sections 3 and 4 "
         "allow.")
     sec(6, "Pending proceedings", "Proceedings pending on the day a term ends under section 4 continue.")
     sec(7, "Misdemeanor terms", "This Act does not apply to a term of probation imposed on conviction of a misdemeanor.")
     sec(8, "Effective date", "This Act takes effect on 1 January 2027.")
+    sec(9, "Safety clause", "The General Assembly finds, determines and declares that this Act is necessary for the "
+        "preservation of the public peace, health and safety.")
     s.append(Spacer(1, 10))
     s.append(Paragraph("Passed the Senate 21 April 2026; passed the House 6 May 2026. Approved by the Governor 14 May "
                        "2026.", NOTE))
@@ -169,8 +176,8 @@ def write_plan(path):
               "Board (Annex). The Board approves the plan's violator housing staffing on that projection.")
     head("3. Admissions")
     cl("3.1", "An admission is a person's commitment to the county jail on the revocation of a probation term the "
-              "county probation department supervises, counted once, on the day the commitment begins, however many "
-              "of the person's terms the court revoked that day.")
+              "county probation department supervises. It is counted once, on the day the court orders the "
+              "commitment, however many of the person's terms the court revoked that day.")
     cl("3.2", "An admission is a felony probation revocation admission when a term revoked is a felony probation term. "
               "Holds on a violation warrant before the court decides, and holds for another state, are not admissions.")
     head("4. The projection")
@@ -179,21 +186,22 @@ def write_plan(path):
               "extract show them acting.")
     cl("4.2", "The projection counts every admission the plan year will see, including admissions on terms whose "
               "supervision begins after the extract.")
-    cl("4.3", "State the projection to the nearest 100 admissions, with the parts it is built from.")
+    cl("4.3", "State the violator housing units the projection calls for under the county's standard (Annex).")
     head("5. Violator housing in use")
     cl("5.1", "Report the violator bed-days of each of the four quarters to the extract, felony and misdemeanor.")
-    cl("5.2", "A violator bed-day is counted for each person in the jail at 00:00 county time on a commitment on the "
-              "revocation of a probation term, in any of the jail's buildings, and is dated to the day that begins at "
-              "that midnight.")
+    cl("5.2", "A violator bed-day is counted for each person in the jail at 00:00 county time serving a commitment "
+              "the court has ordered on the revocation of a probation term, in any of the jail's buildings, and is "
+              "dated to the day that begins at that midnight. A person serving a commitment on weekends is counted at "
+              "each midnight spent in the jail.")
     cl("5.3", "A bed-day is a felony bed-day when the commitment revokes a felony probation term; a person held at "
               "that midnight on commitments revoking a felony term and a misdemeanor term is counted once, as a "
               "felony bed-day. Every other violator bed-day is a misdemeanor bed-day. Holds on a violation warrant "
               "before the court decides, and holds for another state, are not violator bed-days.")
     head("6. Felony probationers on supervision")
-    cl("6.1", "Report the felony probationers the county probation department supervised at the extract and the "
-              "average term imposed at sentencing, in months, of their terms, by supervising office and by time on "
-              "supervision at the extract: under one year, one year to under two years, two years to under three "
-              "years, and three years or more.")
+    cl("6.1", "Report, for each office supervising them at the extract, the felony probationers the county probation "
+              "department supervised at the extract, by time on supervision at the extract in completed years from the "
+              "day supervision began: under one year, one year to under two years, two years to under three years, "
+              "and three years or more.")
     head("7. Changes in law")
     cl("7.1", "Senate Bill 26-118, the Felony Probation Term Act, takes effect on 1 January 2027.")
     s.append(Paragraph("Annex. Violator housing standards on file with the Board, 1 July 2026", SH2))
@@ -209,6 +217,10 @@ def write_plan(path):
 
 
 # ---------------------------------------------------------------------------------------------------- annual report
+RISK_LEVELS = (("LOW", "Low (CSRS 0 to 7)", 0, 7), ("MOD", "Moderate (CSRS 8 to 13)", 8, 13),
+               ("HIGH", "High (CSRS 14 to 20)", 14, 20))
+
+
 def report_figures(cms1, cms2, pets):
     """the Department's fiscal 2025 tables (1 July 2024 to 30 June 2025), computed from the shipped rows"""
     a, b = dt.date(2024, 7, 1), dt.date(2025, 6, 30)
@@ -218,20 +230,20 @@ def report_figures(cms1, cms2, pets):
         return dt.datetime.strptime(s, "%m/%d/%Y").date() if s else None
     terms = []
     for r in cms1:
-        terms.append(dict(lvl=r["LEVEL"], office=leg[r["OFFICE"]], sup=mdy(r["SUP_BEGIN"]), closed=mdy(r["CLOSE_DATE"]),
+        terms.append(dict(lvl=r["LEVEL"], risk=int(r["RISK_SCORE"]) // 2, sup=mdy(r["SUP_BEGIN"]),
+                          closed=mdy(r["CLOSE_DATE"]),
                           reason={"EXP": "EXPIRED", "REV": "REVOKED", "ETERM": "EARLY TERMINATION"}[r["CLOSE_CODE"]]))
     for r in cms2:
-        terms.append(dict(lvl=r["offense_level"][0], office=r["office"], sup=dt.date.fromisoformat(r["supervision_begin"]),
+        terms.append(dict(lvl=r["offense_level"][0], risk=int(r["csrs_score"]),
+                          sup=dt.date.fromisoformat(r["supervision_begin"]),
                           closed=dt.date.fromisoformat(r["closed_date"]) if r["closed_date"] else None,
                           reason=r["closure_reason"]))
-    cl = {}
-    for (o, _, _) in K.OFFICES:
-        cl[o] = {"F": 0, "M": 0}
+    cl = {k: {"F": 0, "M": 0} for k, _, _, _ in RISK_LEVELS}
     began = {"F": 0, "M": 0}
     closed = {(lv, rs): 0 for lv in "FM" for rs in ("EXPIRED", "REVOKED", "EARLY TERMINATION")}
     for t in terms:
         if t["sup"] <= b and (t["closed"] is None or t["closed"] > b):
-            cl[t["office"]][t["lvl"]] += 1
+            cl[[k for k, _, lo, hi in RISK_LEVELS if lo <= t["risk"] <= hi][0]][t["lvl"]] += 1
         if a <= t["sup"] <= b:
             began[t["lvl"]] += 1
         if t["closed"] is not None and a <= t["closed"] <= b:
@@ -256,16 +268,16 @@ def write_report(path, F):
     cl = F["caseload"]
     totf = sum(v["F"] for v in cl.values())
     totm = sum(v["M"] for v in cl.values())
-    s.append(Paragraph("At the end of the fiscal year the Department supervised %s felony and %s misdemeanor probationers "
-                       "from its four offices. Officers filed %s violation petitions on felony terms and %s on "
-                       "misdemeanor terms, and the Circuit Court revoked %s felony and %s misdemeanor terms."
+    s.append(Paragraph("At the end of the fiscal year the Department supervised %s felony and %s misdemeanor "
+                       "probationers. Officers filed %s violation petitions on felony terms and %s on misdemeanor terms, "
+                       "and the Circuit Court revoked %s felony and %s misdemeanor terms."
                        % (n0(totf), n0(totm), n0(F["filed"]["F"]), n0(F["filed"]["M"]), n0(F["disp"][("F", "REVOKED")]),
                           n0(F["disp"][("M", "REVOKED")])), SB))
-    s.append(Paragraph("Table 1. Probationers on supervision at 30 June 2025, by office", SH2))
-    rows = [["Office", "Felony", "Misdemeanor", "Total"]]
-    for code, name, _ in K.OFFICES:
+    s.append(Paragraph("Table 1. Probationers on supervision at 30 June 2025, by risk level at intake", SH2))
+    rows = [["Risk level", "Felony", "Misdemeanor", "Total"]]
+    for code, name, _, _ in RISK_LEVELS:
         rows.append([name, n0(cl[code]["F"]), n0(cl[code]["M"]), n0(cl[code]["F"] + cl[code]["M"])])
-    rows.append(["All offices", n0(totf), n0(totm), n0(totf + totm)])
+    rows.append(["All levels", n0(totf), n0(totm), n0(totf + totm)])
     s.append(_table(rows, [2.0 * inch, 1.1 * inch, 1.1 * inch, 1.1 * inch], total=True))
     s.append(Paragraph("Table 2. Violation petitions disposed in the year, by disposition", SH2))
     rows = [["Disposition", "Felony terms", "Misdemeanor terms"]]
@@ -288,8 +300,8 @@ def write_report(path, F):
                        "year it was filed and its disposition in the year the court entered it, so the two tables cover "
                        "different petitions. Early termination is granted on the officer's motion after eighteen months "
                        "of compliance on a felony term and six on a misdemeanor term.", SB))
-    s.append(Paragraph("The fiscal 2026 report will move to CMS 2's new reporting module, which counts petitions by "
-                       "the supervising office at filing.", SB))
+    s.append(Paragraph("Risk levels are the Community Supervision Risk Screen score taken at intake; terms opened in "
+                       "CMS 1 are shown on the screen's current scale.", SB))
     doc = _doc(path, "Adult Probation Department annual report, fiscal year 2025", K.PEOPLE["research"])
     f = _footer("APD annual report FY2025", "Okelan County Adult Probation Department")
     doc.build(s, onFirstPage=f, onLaterPages=f)
@@ -309,11 +321,12 @@ JMS_CODES = [
     ("release_reason", "RECLASSIFIED", "Reclassified"),
     ("release_reason", "TRANSFER TO ANNEX", "Transferred to the annex"),
     ("release_reason", "SCHEDULED RELEASE", "Weekend sentence period ended"),
+    ("release_reason", "RELEASED ON COURT ORDER", "Released on the court's order"),
     ("release_reason", "RELEASED TO SENDING STATE", "Released to the sending state"),
     ("release_reason", "CONVERTED TO NEW JMS", "Converted to the new jail management system"),
 ]
 OFFICE_ROWS = [("CEN", "C", "Central", "3 January 1994"), ("NGT", "N", "Northgate", "2 July 2001"),
-               ("RVS", "R", "Riverside", "2 July 2001"), ("EFD", "E", "Eastfield", "6 March 2006")]
+               ("RVS", "R", "Riverside", "2 July 2001"), ("EFD", "", "Eastfield", "2 June 2025")]
 COURT_SHEETS = (
     ("Allegations", ["Code", "Allegation"], [
         ("LAW", "New law violation: arrest on or charge with a new offense"),
@@ -342,7 +355,18 @@ COURT_SHEETS = (
     ("Case numbers", ["Type", "Meaning"], [
         ("CF", "Felony"),
         ("CM", "Misdemeanor")]),
+    ("Offense classes", ["Class", "Meaning", "Longest probation term (months)"], [
+        ("F2", "Class 2 felony", 96),
+        ("F3", "Class 3 felony", 84),
+        ("F4", "Class 4 felony", 60),
+        ("F5", "Class 5 felony", 48),
+        ("F6", "Class 6 felony", 36),
+        ("DF4", "Drug felony, class 4", 24),
+        ("M1", "Class 1 misdemeanor", 24),
+        ("M2", "Class 2 misdemeanor", 12)]),
 )
+CLASS_NOTE = ("Longest probation term: the longest term of probation the Criminal Code allows for the class. No order "
+              "imposing or extending a term may set it longer.")
 
 
 def write_jms_codes(path):
@@ -371,6 +395,11 @@ def write_court_codes(path):
         for r in rows:
             ws.append(list(r))
         ws.column_dimensions["A"].width = 26
-        ws.column_dimensions["B"].width = 84
+        ws.column_dimensions["B"].width = 84 if len(cols) == 2 else 40
+        if len(cols) == 3:
+            ws.column_dimensions["C"].width = 32
+            ws.append([])
+            ws.append([CLASS_NOTE])
+            ws.cell(ws.max_row, 1).font = Font(name="Calibri", italic=True, size=9)
         ws.freeze_panes = "A4"
     wb.save(path)

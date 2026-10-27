@@ -53,12 +53,14 @@ def local_time(s):
 
 def terms():
     c1 = csv(K.CMS1)
-    c1 = pd.DataFrame(dict(case=c1.CASE_NO, person=c1.APD_PERSON_NO, level=c1.LEVEL, office=c1.OFFICE.map(
+    c1 = pd.DataFrame(dict(case=c1.CASE_NO, person=c1.APD_PERSON_NO, level=c1.LEVEL, klass=c1.OFF_CLASS.str.replace(
+        "-", "", regex=False), officer="", office=c1.OFFICE.map(
         {"C": "CEN", "N": "NGT", "R": "RVS", "E": "EFD"}), sup=pd.to_datetime(c1.SUP_BEGIN, format="%m/%d/%Y"),
         months=(c1.TERM_DAYS.astype(int) / 30.4375).round().astype(int), exp=pd.to_datetime(c1.EXPIRES, format="%m/%d/%Y"),
         status="CLOSED", closed=pd.to_datetime(c1.CLOSE_DATE, format="%m/%d/%Y")))
     c2 = csv(K.CMS2)
-    c2 = pd.DataFrame(dict(case=c2.case_number, person=c2.person_id, level=c2.offense_level.str[0], office=c2.office,
+    c2 = pd.DataFrame(dict(case=c2.case_number, person=c2.person_id, level=c2.offense_level.str[0],
+                           klass=c2.offense_class, officer=c2.officer, office=c2.intake_office,
                            sup=pd.to_datetime(c2.supervision_begin), months=c2.term_months.astype(int),
                            exp=pd.to_datetime(c2.expiration_date), status=c2.case_status,
                            closed=pd.to_datetime(c2.closed_date.replace("", None))))
@@ -96,7 +98,16 @@ def main():
     # ------------------------------------------------------------------ the projection through a reader of this file's own
     R = F.Rec()
     fel = T[T.level == "F"].sort_values(["sup", "case"])
-    R.cases = [dict(id=r.case, sup=K.day(r.sup.date()), score=0, term=int(r.imposed)) for r in fel.itertuples()]
+    cls = pd.read_excel(os.path.join(TARGET, K.COURT_CODES), sheet_name="Offense classes", header=2)
+    cls = cls[pd.to_numeric(cls.iloc[:, 2], errors="coerce").notna()]
+    cmax = dict(zip(cls.iloc[:, 0], cls.iloc[:, 2].astype(int)))
+    ex = orders[orders.order_type == "EXTENSION"]
+    exts = {}
+    for r in ex.itertuples():
+        exts.setdefault(r.case_number, []).append((K.day(dt.date.fromisoformat(r.order_date)), int(r.months_extended)))
+    R.cases = [dict(id=r.case, sup=K.day(r.sup.date()), score=0, term=int(r.imposed), klass=r.klass,
+                    max_m=cmax[r.klass], imposed_term=int(r.imposed), exts=sorted(exts.get(r.case, [])))
+               for r in fel.itertuples()]
     score = {}
     for r in csv(K.CMS1).itertuples():
         score[r.CASE_NO] = int(r.RISK_SCORE) // 2
@@ -135,10 +146,41 @@ def main():
         R.pet.append(q)
         R.byc.setdefault(q["case"], []).append(q)
     F.finish(R)
-    tot = F.two_clock(R, **G.GOLD)[0]
+    tot = F.projection(R, **G.GOLD)[0]
     check("the 2027 projection through this reader", abs(tot - figs["call.admissions_unrounded"]) < 0.05, "%.1f" % tot)
-    check("pods by the standard (one per 220 or part)", math.ceil(tot / 220) == figs["call.pods"] == 6)
-    check("the plan figure to the nearest 100", int(math.floor(tot / 100 + 0.5)) * 100 == figs["call.admissions"])
+    check("pods by the standard (one per 210 or part)", math.ceil(tot / 210) == figs["call.pods"] == 7)
+    check("the projection inside seven pods' band (more than 1,260, at most 1,470)", 6 * 210 < tot <= 7 * 210)
+
+    # ------------------------------------------------------------------ the end-of-term split, written afresh
+    pf = {}
+    for r in pets[pets.case_number.isin(R.C)].itertuples():
+        pf.setdefault(r.case_number, []).append(dt.date.fromisoformat(r.filed_date))
+    xo = {}
+    for r in ex.itertuples():
+        xo.setdefault(r.case_number, []).append((dt.date.fromisoformat(r.order_date), int(r.months_extended)))
+    first_day = dt.date(2016, 7, 1)
+    tab = {True: [0, 0, 0], False: [0, 0, 0]}
+    for c in R.cases:
+        sch = R.scheds[c["id"]]
+        end = K.date_of(R.close[c["id"]][0]) if c["id"] in R.close else EXTRACT + dt.timedelta(days=1)
+        for i, (since, s_) in enumerate(sch):
+            until = sch[i + 1][0] if i + 1 < len(sch) else 10 ** 9
+            exp = K.date_of(s_)
+            wo = exp - dt.timedelta(days=120)
+            if exp > EXTRACT - dt.timedelta(days=30) or wo < first_day or not (since <= K.day(wo) < until):
+                continue
+            if end <= wo or K.date_of(c["sup"]) > wo:
+                continue
+            term_then = c["imposed_term"] + sum(m for d, m in xo.get(c["id"], []) if d < wo)
+            at_max = term_then >= c["max_m"]
+            tab[at_max][0] += 1
+            tab[at_max][1] += any(wo <= d < exp for d in pf.get(c["id"], []))
+            tab[at_max][2] += any(wo <= d < exp for d, _ in xo.get(c["id"], []))
+    check("end-of-term windows at the class maximum and their petitions", tab[True][:2] == [
+        figs["rate.windows_at_max"], figs["rate.petitions_at_max"]], str(tab[True]))
+    check("end-of-term windows with room, their petitions and extensions", tab[False][:2] == [
+        figs["rate.windows_with_room"], figs["rate.petitions_with_room"]] and round(
+        100 * tab[False][2] / tab[False][0], 1) == figs["rate.extended_with_room_pct"], str(tab[False]))
 
     # ------------------------------------------------------------------ Ask A, bed-days
     b = csv(K.BOOKINGS)
@@ -150,87 +192,125 @@ def main():
     rv_all = pets[pets.disposition == "REVOKED"].copy()
     rv_all["person"] = rv_all.case_number.map(who)
     rv_all["level"] = rv_all.case_number.map(lvl)
-    rev = {}
+    rv_all["d"] = pd.to_datetime(rv_all.disposition_date).dt.date
+    orders_by = {}
     for r in rv_all.itertuples():
-        rev.setdefault((r.person, r.disposition_date), set()).add(r.level)
-    weekend = {}
-    for r in rv_all[rv_all.served_as == "WEEKENDS"].itertuples():
-        weekend.setdefault(r.person, []).append((r.disposition_date, r.level))
-    tab = np.zeros((4, 2), dtype=int)
+        orders_by.setdefault(r.person, []).append((r.d, r.level, r.served_as))
     stop = dt.datetime(2026, 10, 1)
+    night = {}
+
+    def mark(person, first, end, level):
+        m = dt.datetime.combine(first, dt.time())
+        while m < end:
+            if night.get((person, m.date())) != "F":
+                night[(person, m.date())] = level
+            m += dt.timedelta(days=1)
     for person, g in b[b.classification != "PV-OOS"].groupby(b.person.fillna(b.sheriff_id)):
         g = g.sort_values("start")
-        prev, prev_level = None, None
+        od = orders_by.get(person, [])
+        prev, run = None, None
         for r in g.itertuples():
-            level = None
+            end = stop if pd.isna(r.end) else r.end
             if r.classification in ("PV-FEL", "PV-MIS"):
-                cont = prev is not None and prev.classification == r.classification and not pd.isna(prev.end) and (
+                cont = run is not None and prev.classification == r.classification and not pd.isna(prev.end) and (
                     prev.end == r.start or (prev.release_reason == "TRANSFER TO ANNEX" and
                                             0 < (r.start - prev.end).total_seconds() <= 7200))
                 if cont:
-                    level = prev_level
-                elif r.classification == "PV-MIS":
-                    level = "M"
+                    mark(person, r.start.date() + dt.timedelta(days=1), end, run)
+                    prev = r
+                    continue
+                day0 = r.start.date()
+                held = prev is not None and not pd.isna(prev.end) and prev.end == r.start and \
+                    prev.release_reason == "RECLASSIFIED"
+                same = [o for o in od if o[0] == day0 and o[2] == "CONSECUTIVE"]
+                near = [o[0] for o in od if day0 - dt.timedelta(days=8) <= o[0] < day0 and o[2] == "CONSECUTIVE"]
+                order = day0 if same else (max(near) if held and near else None)
+                if order is not None:
+                    level = "F" if any(o[1] == "F" for o in od if o[0] == order) else "M"
                 else:
-                    day = rev.get((person, r.start.date().isoformat()))
-                    if day:
-                        level = "F" if "F" in day else "M"
-                    else:
-                        wk = [x for x in weekend.get(person, []) if x[0] < r.start.date().isoformat()]
-                        level = max(wk)[1] if wk else "F"
-                end = stop if pd.isna(r.end) else r.end
-                midnight = dt.datetime.combine(r.start.date() + dt.timedelta(days=1), dt.time())
-                while midnight < end:
-                    for qi, (a, z) in enumerate(QUARTERS):
-                        if a <= midnight.date() <= z:
-                            tab[qi, 0 if level == "F" else 1] += 1
-                    midnight += dt.timedelta(days=1)
-            prev, prev_level = r, level
+                    wk = sorted(o for o in od if o[2] == "WEEKENDS" and o[0] < day0)
+                    level = wk[-1][1] if wk else "F"
+                if r.classification == "PV-MIS":
+                    level = "M"
+                first = (order if held and order is not None else day0) + dt.timedelta(days=1)
+                mark(person, first, end, level)
+                run = level
+            else:
+                run = None
+                if r.classification == "PV-HOLD" and pd.isna(r.end):
+                    od2 = sorted(o for o in od if o[0] >= r.start.date() and o[2] == "CONSECUTIVE")
+                    if od2:
+                        level = "F" if any(o[1] == "F" for o in od if o[0] == od2[-1][0]) else "M"
+                        mark(person, od2[-1][0] + dt.timedelta(days=1), stop, level)
+            prev = r
+    tab = np.zeros((4, 2), dtype=int)
+    for (person, d), level in night.items():
+        for qi, (a, z) in enumerate(QUARTERS):
+            if a <= d <= z:
+                tab[qi, 0 if level == "F" else 1] += 1
     ok = all(tab[i, 0] == figs["ask_a.q%d.felony" % (i + 1)] and tab[i, 1] == figs["ask_a.q%d.misdemeanor" % (i + 1)]
              for i in range(4))
     check("Ask A: violator bed-days by quarter", ok, str(tab.tolist()))
 
-    # ------------------------------------------------------------------ Ask B, imposed terms
+    # ------------------------------------------------------------------ Ask B, probationers by supervising office
     def band(sup):
         s = sup.date()
-        years = EXTRACT.year - s.year - ((EXTRACT.month, EXTRACT.day) < (s.month, s.day))
+        years = relativedelta(EXTRACT, s).years
         return min(years, 3)
+    ro = csv(K.ROSTER)
+    ro["a"] = pd.to_datetime(ro.assigned_from, format="%d-%b-%Y")
+    ro["z"] = pd.to_datetime(ro.assigned_to.replace("", None), format="%d-%b-%Y")
+    on = ro[(ro.a <= pd.Timestamp(EXTRACT)) & (ro.z.isna() | (ro.z >= pd.Timestamp(EXTRACT)))]
+    office_of = dict(zip(on.badge_no, on.office_code))
     of = open_f.copy()
-    of["imposed"] = T.loc[of.index, "imposed"]
+    of["sup_office"] = of.officer.map(office_of)
     of["band"] = of.sup.map(band)
-    by_off = of.groupby("office").imposed.mean()
-    by_band = of.groupby("band").imposed.mean()
-    r1 = lambda v: math.floor(v * 10 + 0.5) / 10   # noqa: E731
-    ok = all(r1(by_off[code]) == figs["ask_b.office.%s" % code] for code in ("CEN", "NGT", "RVS", "EFD")) and all(
-        r1(by_band[k]) == figs["ask_b.band%d" % k] for k in range(4))
-    check("Ask B: average term imposed by office and time on supervision", ok, " ".join(
-        "%.3f" % v for v in list(by_off[["CEN", "NGT", "RVS", "EFD"]]) + list(by_band)))
+    grid = of.groupby(["sup_office", "band"]).size()
+    ok = all(int(grid.get((code, k), 0)) == figs["ask_b.%s.band%d" % (code, k)] for code in ("CEN", "NGT", "RVS", "EFD")
+             for k in range(4)) and of.sup_office.notna().all()
+    check("Ask B: felony probationers by supervising office and time on supervision", ok, " ".join(
+        str(int(grid.get((code, k), 0))) for code in ("CEN", "NGT", "RVS", "EFD") for k in range(4)))
 
     # ------------------------------------------------------------------ the deliverables
     import openpyxl
     wb = openpyxl.load_workbook(os.path.join(GOLDEN, K.GOLD_BOOK), data_only=True)
     vals = [c for ws in wb for row in ws.iter_rows(values_only=True) for c in row if c is not None]
-    check("workbook: the plan figure and the pods", figs["call.admissions"] in vals and figs["call.pods"] in vals)
+    check("workbook: the projection and the pods", figs["call.admissions_whole"] in vals and figs["call.pods"] in vals)
     ws = wb["Bed-days 2025-26"]
     rows = [r for r in ws.iter_rows(values_only=True) if r and isinstance(r[1], int)]
     check("workbook: the bed-days sheet carries Ask A", [list(r[1:3]) for r in rows[:4]] == tab.tolist())
     ws = wb["Felony supervision"]
-    got = [float(r[2]) for r in ws.iter_rows(values_only=True) if r and isinstance(r[1], int) and
-           isinstance(r[2], (int, float))]
-    want = [figs["ask_b.office.%s" % c] for c in ("CEN", "NGT", "RVS", "EFD")] + [figs["ask_b.band%d" % k]
-                                                                                  for k in range(4)]
-    check("workbook: the supervision sheet carries Ask B", got[:8] == want, str(got[:8]))
+    got = [list(r[1:5]) for r in ws.iter_rows(values_only=True) if r and isinstance(r[1], int)][:4]
+    want = [[figs["ask_b.%s.band%d" % (c, k)] for k in range(4)] for c in ("CEN", "NGT", "RVS", "EFD")]
+    check("workbook: the supervision sheet carries Ask B", got == want, str(got))
+    ws = wb["End of term"]
+    got = [list(r[1:3]) for r in ws.iter_rows(values_only=True) if r and isinstance(r[1], int) and
+           isinstance(r[2], int)][:2]
+    check("workbook: the end-of-term sheet carries the split", got == [
+        [figs["rate.windows_at_max"], figs["rate.petitions_at_max"]],
+        [figs["rate.windows_with_room"], figs["rate.petitions_with_room"]]], str(got))
     import docx
     memo = "\n".join(p.text for p in docx.Document(os.path.join(GOLDEN, K.GOLD_MEMO)).paragraphs)
-    check("memo: the call and its figures", all(s in memo for s in ("six violator pods", "{:,}".format(
-        figs["call.admissions"]), "{:,}".format(figs["transition_terms"]), "{:,}".format(figs["ask_a.q1.felony"]))))
+    check("memo: the call and its figures", all(s in memo for s in ("seven violator pods", "{:,}".format(
+        figs["call.admissions_whole"]), "{:,}".format(figs["transition_terms"]), "{:,}".format(figs["ask_a.q1.felony"]),
+        "{:,}".format(figs["rate.petitions_at_max"]))))
+    words = {3: "three", 4: "four", 5: "five", 6: "six", 7: "seven", 8: "eight", 9: "nine", 10: "ten"}
+    r10 = lambda x: "{:,}".format(int(round(x / 10.0)) * 10)
+    check("memo: each wrong rung's pods under the standard", all(s in memo for s in (
+        "about %s admissions and %s pods" % (r10(figs["rung.pooled"]), words[figs["rung.pooled.pods"]]),
+        "about %s (%s pods)" % (r10(figs["rung.iia"]), words[figs["rung.iia.pods"]]),
+        "about %s (%s)" % (r10(figs["rung.full"]), words[figs["rung.full.pods"]]))) and all(
+        -(-figs["rung.%s" % k] // figs["pod_size"]) == figs["rung.%s.pods" % k] for k in ("pooled", "iia", "full")))
     check("memo: no em or en dash", not re.search("[–—]", memo))
     check("chart: written", os.path.getsize(os.path.join(GOLDEN, K.GOLD_CHART)) > 50000)
 
     # ------------------------------------------------------------------ the write-up
-    for key in ("transition_terms", "ask_a.q1.felony", "ask_a.q4.misdemeanor", "trailing.felony_admissions"):
+    for key in ("transition_terms", "ask_a.q1.felony", "ask_a.q4.misdemeanor", "trailing.felony_admissions",
+                "ask_b.EFD.band3", "rung.pooled", "family.low", "family.high"):
         check("submission: %s stated as computed" % key, "{:,}".format(figs[key]) in sub)
-    check("submission: the plan figure and pods", "carry 1,200" in sub and "staff 6 violator pods" in sub)
+    check("submission: the pods, with no plan figure rounded from the projection",
+          "staff 7 violator pods" in sub and not re.search(r"(?i)nearest 100", sub))
+    check("submission: the projection stated as the band seven pods cover", "more than 1,260" in sub and "1,470" in sub)
     print("\n%d of %d verified" % (sum(RESULTS), len(RESULTS)))
     return 0 if all(RESULTS) else 1
 

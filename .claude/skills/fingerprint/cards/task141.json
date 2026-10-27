@@ -11,8 +11,8 @@
   "shape": "02",
   "decision_type": "quantity_figure",
   "answer_unit": "count",
-  "answer": "draft at the draw: staff seven violator pods for 2027, the plan carrying about 1,400 felony probation revocation admissions (figures set at stage 3)",
-  "answer_source": "task141/submission.md, block 1 (at ship)",
+  "answer": "Okelan County's 2027 Jail Operations Plan should staff 7 violator pods (448 beds) for felony probation revocation admissions (projection 1,424, 6.78 pods under the county's standard of one pod for each 210 admissions or part of 210)",
+  "answer_source": "task141/submission.md, block 1",
   "gap": [
     "population",
     "time"
@@ -32,7 +32,7 @@
   "validated_decoy": false,
   "context_artifact": "capacity_report",
   "stump_class": "analytical",
-  "analyst_test": "A strong analyst who conforms the two case systems, the Circuit Court's term orders and petitions, applies SB 26-118 to every felony term (each term's new end, no extension past 24 months) and builds the field's projection on two clocks, petitions by month on supervision and petitions in each term's last months before its expiration in force, at the record's own end-of-term rates with the extensions capped, files about 940 admissions (five pods) against the golden's about 1,430 (seven pods); persistence files about 860 (four pods).",
+  "analyst_test": "A strong analyst who conforms the two case systems, the Circuit Court's term orders and petitions, applies SB 26-118 to every felony term (each term's new end, no extension past 24 months) and builds the field's projection on two clocks, petitions by month on supervision and petitions in each term's last months before its expiration in force, at the record's own end-of-term rates with the extensions capped, files 911 admissions (five pods) against the golden's 1,424 (seven pods); persistence files 827 (four pods).",
   "domain_test": "The deciding quantity is the 2027 count of felony probation revocations, forecast from the supervision record the way the field forecasts failure on supervision (hazards by time on supervision and by time to the term's end, conversion of petitions to revocations, the filing-to-commitment lag), and it turns on probation law's two tools for a matter still open as a term runs out: the court may extend the term within its offense class's statutory maximum, and otherwise the officer files a violation petition so the court keeps jurisdiction. The Act's 24-month ceiling takes the extension away from every capped term, so their end-of-term petitions run at the rate of the terms already at their class maximum.",
   "layer2_family": "estimand_identification",
   "layer2_pattern": "own:end-of-term-petitions-where-no-extension-room-remains",
@@ -52,13 +52,13 @@
   "scoring_unit": "per episode",
   "spine": {
     "file": "detention_probation_bookings_2019_2026.csv",
-    "rows": 48178,
+    "rows": 46347,
     "entity": "one probation booking in the Okelan County Detention Center",
     "grain": "booking (an annex move, a reclassification and the 2025 system replacement each write a new row)",
     "source": "synthetic (constructed operating layer)"
   },
   "forum": "council_or_assembly",
-  "forcing_event": "launch_or_rollout",
+  "forcing_event": "statutory_or_regulatory_filing",
   "org_family": "local_government",
   "world": {
     "geography": "United States (a fictional county in an unnamed state)",
@@ -90,8 +90,8 @@
   "opening_move": "question-first",
   "question_form": "how-many",
   "driver": "At a term's end a unit with an open matter is extended where its term still has room under a ceiling and filed against where it has none, so the record's end-of-term failure rate is a mixture over units with and without room; a cap that takes the room from every capped unit moves all of them to the rate the units already at their ceiling show, and the pooled rate understates it by more than half.",
-  "driver_concrete": "Okelan County's officers meet a matter still open at a felony term's end with an extension order when the term sits under its offense class's statutory maximum and with a violation petition when it does not; SB 26-118 bars any extension past 24 months, so every capped term (the 3,373 ending on 31 March 2027 and the rest at 24 months) files at the rate of the terms already at their class maximum, about 37 per cent of terms reaching their last 120 days against the pooled 16.",
-  "stump": "A competent solver builds the two-clock projection with the record's pooled end-of-term petition rate, caps the extensions under SB 26-118 and files about 940 admissions (five pods); the step that lands it there is reading the end-of-term rate off terms that could mostly still be extended, when the Act leaves no capped term any room and the terms already at their class maximum show the rate such terms file at, so the plan carries about 1,430 (seven pods).",
+  "driver_concrete": "Okelan County's officers meet a matter still open at a felony term's end with an extension order when the term sits under its offense class's statutory maximum and with a violation petition when it does not; SB 26-118 bars any extension past 24 months, so every capped term (the 3,114 ending on 31 March 2027 and the rest at 24 months) files at the rate of the terms already at their class maximum, 38.7 per cent of terms reaching their last 120 days against the pooled 17.0 and 6.0 for terms with room.",
+  "stump": "A competent solver builds the two-clock projection with the record's pooled end-of-term petition rate, caps the extensions under SB 26-118 and files 911 admissions (five pods); the step that lands it there is reading the end-of-term rate off terms that could mostly still be extended, when the Act leaves no capped term any room and the terms already at their class maximum show the rate such terms file at, so the plan staffs seven pods (1,424 projected).",
   "mechanism_source": "design_note",
   "differentiation": {
     "task152": "task152 attributes a solar plant's decline at a module replacement to wear the replacement removes against dust it keeps; here nothing is replaced or decomposed: a legal option the statute removes moves every capped term onto the behaviour the terms that already lacked the option show.",
@@ -167,5 +167,5 @@
     }
   ],
   "notes": "Re-rooted 2026-10-27 after architecture 3 was spent at stage 4. The world, records and furniture of architecture 3 are kept (Okelan County, the two case systems, the Circuit Court's files, the Detention Center's bookings); new are the offense classes with the State's statutory maxima, the end-of-term review (extension where the term has room, petition otherwise) and the Act's bar on extension past 24 months. population_selection is the honest family: the end-of-term rate has to be read off the sub-population that already has no extension room (terms at their class maximum), because the plan year's capped terms are all of that kind; composition_mix was BLOCKed by ban.strategy (task304) and the gap-population with G14 signature is spent on six builds, so the decisive pattern is G11, the eligibility precondition (room under the maximum) the extension needs. Nothing in a column marks the room, which is read from each term's class maximum against its term in force. Screened on paper in a prototype: golden 1,447, family 1,434 to 1,461, truth 1,389, pooled two-clock 943, proportional reallocation 1,172, full substitution 1,836, one clock 534, persistence 864. The context artifact is the Detention Center's daily 06:00 headcount by housing unit (a capacity and utilisation report the jail keeps for its own staffing, which answers occupancy correctly and shows the five violator pods in use); filed_standard was redrawn after registration when task204 took it inside the window, the Board's instructions and the Act remaining the governing documents. The forcing event was redrawn after registration: statutory_or_regulatory_filing (task273), budget_or_appropriation (task204) and vote_or_meeting (task157) all sit in the window, and what forces the call now is the Act's commencement on 1 January 2027 with its 31 March transition, a regime rolled out on a fixed date that the pods have to be staffed ahead of (launch_or_rollout); the plan's 1 December filing remains the deliverable's occasion.",
-  "registered": "2026-10-27T06:45:42Z"
+  "registered": "2026-10-27T12:01:57Z"
 }

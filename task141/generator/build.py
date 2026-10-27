@@ -47,16 +47,17 @@ def pack():
     W.B = B
     n[K.BOOKINGS] = K.write_csv(t(K.BOOKINGS), PK.BOOK_COLS, PK.booking_rows(W, B), crlf=True)
     n[K.PERSONS] = K.write_csv(t(K.PERSONS), PK.PERSON_COLS, PK.person_rows(W))
+    n[K.ROSTER] = K.write_csv(t(K.ROSTER), PK.ROSTER_COLS, PK.roster_rows(W), crlf=True)
     n[K.HEADCOUNT] = K.write_csv(t(K.HEADCOUNT), PK.HEAD_COLS, PK.headcount_rows(W, B), crlf=True)
     DOC.write_act(t(K.ACT_PDF))
     DOC.write_plan(t(K.PLAN_PDF))
-    P = PR.read(TARGET)
-    DOC.write_report(t(K.REPORT), DOC.report_figures(P["cms1"], P["cms2"], P["pets"]))
     DOC.write_jms_codes(t(K.JAIL_CODES))
     DOC.write_office_codes(t(K.OFFICE_CODES))
     DOC.write_court_codes(t(K.COURT_CODES))
     PP.normalize_ooxml(t(K.COURT_CODES), "Megan Chambers", "Circuit Court Clerk's Office", "2023-05-30T14:12:00Z",
                        "2025-01-21T16:47:00Z", title="Code table", excel=True, company="Okelan County Circuit Court")
+    P = PR.read(TARGET)
+    DOC.write_report(t(K.REPORT), DOC.report_figures(P["cms1"], P["cms2"], P["pets"]))
     for nm, stamp in STAMPS.items():
         PP.normalize_pdf(t(nm), stamp, stamp)
     return W, n
