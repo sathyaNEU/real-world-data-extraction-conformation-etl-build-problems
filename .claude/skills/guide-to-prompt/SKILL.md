@@ -22,6 +22,22 @@ the field's own deciding analysis, and why the swap breaks it, into the card's `
 
 **One objective of eight**, or the task is rejected on the tag ("Comparative analysis" is not one).
 
+**Data Extraction & Conformation is the most closed objective in the corpus, and the pincer is measured.**
+Only six task types in the taxonomy carry ETL, and 66 cards sit across five live cells (8, 7, 11, 7 and 6),
+the sixth having been enumerated closed. Read across all 68 drivers with lineage and every ETL driver on file
+is one of five moves: complete a record the process could not make; re-grain or re-key onto the decision's
+unit; re-time onto the decision's calendar; recover a per-case input a second file pins; split a total between
+two causes. The pincer is why cells close as enumerations rather than thinning out: a conformation call's
+decisive step reduces to a correction, and a correction's input is either PRESENT in the records (rule
+application, measured at 0.000000 bins and the same graded bin 24 of 24), ABSENT (Gate B, the golden 285.24
+bins from anything computable), or SAMPLED (a model of the measurement, measured at 10.9 to 15.3 times the
+step's worth across a sevenfold dial with 0 of 7 settings passing). The middle case these skills bless, an
+arithmetic-closed per-case input that is neither a filed column nor an exact count of shipped rows, needs the
+forcing file to pin a structure, an order, an opportunity count, an overlap or a condition, and in an
+administrative-record world those are identity resolution, grain and time semantics, which rule 3 bars from
+deciding a call. So an ETL draw names which of those five its forcing file pins and says why reading it
+correctly is not sufficient, before any world is drawn.
+
 **A seed's own header tag is not evidence that its pairing is legal.** A seed can name a domain and an objective that no task type in that domain serves, and the pairing is then undrawable however good the world is: seed AD28 pairs Economics with Anomaly Detection, and the eight task types of `economics-econometrics` serve EC, OS, F, RC and DD and none of them AD. Read the domain's own task-type codes in `references/domains/README.md` before anything else in the draw, because the guard and `precut.py` refuse the pairing at the card and a draw that reaches a measured ladder first has spent a session on a build that could never register. Where the seed's objective is the lane's, the domain moves and the world is redrawn; where the world is the point, the objective its task type does serve is the honest tag, and that moves the number to another lane.
 
 | Objective | The decision turns on | Native shapes |

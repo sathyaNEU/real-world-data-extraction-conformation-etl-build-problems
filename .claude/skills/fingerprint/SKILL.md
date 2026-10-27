@@ -84,6 +84,15 @@ on a card, and `recent`, `mechanisms`, `nearest` and `heart` cannot see it: an o
 was rejected with measurements in two slots (task183's note and task194's, which names it outright) while
 every card screen passed it, and a pass was spent on it anyway. A hit is not a repeat; read the line.
 
+**Run `slots` on the SETTING nouns as well as the mechanism nouns, and run it BEFORE the first harness.**
+One pass that did both recovered six measured deaths living only in other slots' notes, and between them
+they pre-empted most of two whole cells: of the five client rigor cards across those cells, four were
+already shipped or spent in-cell and the fifth had been set aside at another build's draw. Two of the six
+were a rung-2 construction spent at Gate F with both readers landing the call, on the pass's own cell, which
+is the most expensive thing a draw can learn late. The arithmetic is simple: the read costs minutes, the
+harness it saves costs hours, and the card screens will not fire because a draw that never registered left
+no card to fire against.
+
 **`slots` greps design notes, so also read the neighbouring slots' `pipeline.json`.** A slot's `resume`
 line carries the measurements of a dead architecture, including architectures that were reassigned to
 another slot's cell, and no `guard.py` subcommand surfaces it: `recent`, `coverage`, `mechanisms`, `nearest`

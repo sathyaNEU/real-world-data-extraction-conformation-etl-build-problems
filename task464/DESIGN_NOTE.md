@@ -850,6 +850,34 @@ to make a solver notice a structure.
   from its process logs, and its every conformation step ships its own rule because every step must be
   auditable.
 
+- **Architecture 5, cell C (census, register and administrative data quality): the register's over-coverage at a
+  forward reference date, refused on measurement 2026-10-27 over 24 seeds and three arms.** The one variant the
+  cell's four earlier deaths never priced is a correction with no fitted parameter, its per-case input forced by a
+  second register's own rows. Forced for every unit, the correction is an inner join and a count: designed against
+  cheapest licensed route 0.000000 units, 0.000000 bins, same graded bin 24 of 24. Forced for nobody, the golden
+  sits 285.24 bins from the best shipped-column route, so nothing computes it. Forced by a field audit, the bin
+  arithmetic fails in 0 of 7 settings with the audit's own interval 10.9 to 15.3 times the decisive step's worth,
+  and the only parameter that shrinks the interval shrinks the step with it, so at the determinate end the pooled
+  audit rate, one divide, lands the golden's bin 10 of 24. Harness `proto464_arch5_trichotomy.py`.
+- **Architecture 5, cell A (data integration and record linkage): the distinct-entity count under non-transitive
+  pairwise findings, refused on measurement 2026-10-27 over 24 seeds at 7 cutoffs.** No licensed resolution route
+  reaches the truth's bin at any cutoff (0 of 24 at each of 7), the decisive step's worth over the cutoff family's
+  own spread never clears 1.15x (0.20, 0.53, 0.47, 0.90, 1.04 and then 0.00), and at the cutoffs where the family
+  agrees the resolution rule is worth 0.00 bins. The cutoff is a knob, so closing it is mandatory and spends the
+  step. Already dead besides: task486 architecture 2 spent this at stage 4 and `guard.py check` BLOCKs a faithful
+  instance at `driver.text` 0.40 against that lineage entry. Harness `proto464_cellA_entity.py`.
+- **Cell A's other two rigor cards, 2026-10-27, without a harness because each has a record.** Propagating linkage
+  error is shipped in-cell at task449 and task456 and adjacent at task468 and task473. Fellegi-Sunter field
+  weighting was set aside at task486's own draw against task468's linker error, and is dead on its pincer anyway:
+  naming the probabilistic standard is rule application, and estimating the m and u probabilities puts a fitted
+  estimator in the deciding position.
+- **Cell C's twelve deciding quantities, enumerated 2026-10-27 with a record for each** (the table in
+  `## Architecture 5` below): seven shipped in-cell, four spent at stage 4 or on Gate F in lineage (task471
+  architectures 3 and 4, task486 architectures 1 and 2, task455 architecture 1), one killed before registration at
+  task249's draw, and net against gross classification error dead three ways (task244's build, task482's draw,
+  task270's architecture 4 draw). The two the cell might be thought to add are barred before measurement: unit
+  delineation is `grain_or_unit` and register imputation is a model of the measurement.
+
 ## Portal result and the diagnosis, 2026-10-27
 
 **Both responses landed the call.** Each funded the golden six (Kessick, Varlow City, Brenmoor County, Calderidge
@@ -1147,3 +1175,223 @@ catches it and not the score. The decisive step of the author's surviving shape 
 itself, and in this cell a recovery whose output is a point estimate is arithmetic on shipped columns while a
 recovery whose output is an uncertainty is a variance. That is the cell's closure, written in the architecture
 4 refusal above as an enumeration over the four kinds of deciding quantity the task type offers.
+
+
+## Architecture 5: the ETL driver map, and two cells screened and refused, measured 2026-10-27
+
+The author closed education-learning-sciences by measurement (architecture 4, above) and allocated this pass
+two of the four remaining ETL cells: `general-statistics-data-science / data-integration-record-linkage-entity-resolution`
+(cell A, 8 cards) and `survey-research-official-statistics / census-register-administrative-data-quality`
+(cell C, 7 cards). `physical-environmental-sciences / emissions-inventory` and
+`survey-research-official-statistics / seasonal-adjustment-official-time-series-production` went to a parallel
+hunt and are not screened here. Both allocated cells are refused, and the refusal is an enumeration over the
+task type's own deciding quantities with a record for each, not a judgement about four candidates.
+
+### The insight each spent ETL driver already uses, one line per build
+
+`guard.py mechanisms --objective etl` read in full: 66 cards, 68 drivers with lineage.
+
+Cell A, data integration and record linkage (8):
+- task449 a linked attribute is the record's own only one time in k, because the link's target is one of several equally plausible candidates.
+- task454 a paid-against-cost total where cost is observed only for the items a price survey covered, and coverage is lowest for one presentation of each item.
+- task456 prevalence behind three independent records that each miss instances and flag non-instances at different rates.
+- task461 a low quantile seen directly only in a short unrepresentative window, carried through a correlated auxiliary's overlap.
+- task465 units carrying two traits no large source records together, from two marginal sources and a small dual source.
+- task466 a yearly extreme's low quantile fitted to a measuring record and a long record that says only whether the year fell below one level.
+- task469 the share of future tasks needing longer than a shorter allowance, each past task observed only when it ran past its own allowance.
+- task473 a count seen only through tests given where an observer notices the trait, completed by the detection share at each trait level.
+
+Cell C, census, register and administrative data quality (7):
+- task448 a register missing whole producers completed from a second list whose capture depends on the filing route.
+- task455 new administrative identifiers that continue existing units, continuity recorded only where it was filed and marked also by a shared location.
+- task457 the latest period seen only through each unit's own report, which covers only what had happened by the report day.
+- task471 each area's count from a full count and an independent recount, where one large group is missed by both.
+- task483 a group's half point published only as its parts' percentiles, so it is the half point of the parts' pooled rebuilt distributions.
+- task485 the chance of staying past a horizon read from earlier arrivals, where a returning arrival repeats its own earlier short stay.
+- task486 each area's count of multi-site units' members, placed at each site in proportion to size times density.
+
+Cell B, emissions inventory (11): task452 a revised classification's inclusion probabilities; task459 an input-output
+ratio that falls with the operating level and rises above a base capability; task460 what a new zero-rate source
+removes, set by the marginal responders in its own intervals; task462 intermittent sources seen through snapshot
+surveys whose detection rises with size; task470 a sensor that records every event of some units and none of others;
+task474 single-facility sites following an external schedule the reference sites never see; task476 items found at a
+fixed annual inspection after beginning at an unrecorded, seasonal time; task478 an output rate rising steeply with a
+third party's monthly supply-area property; task480 one cumulative total per unit whose yearly increment falls with
+age; task484 a survey of the prior period with a price shock moving heat onto a competing fuel; task487 events at an
+inspection of which a falling share were started by the previous inspection.
+
+Cell D, seasonal adjustment and official series production (6): task123 a reading-interval total split onto calendar
+periods by the rate inside the interval; task453 a measurement change visible only in the months when the newest panel
+units alone received it, against time-in-sample drift; task463 a spending-weighted price average where quantity jumps
+when the price is cut and falls after; task467 a temporary change starting the same day as a permanent one acting on
+some components only; task477 fixed-interval payment schedules on different weekdays with holidays moving the date;
+task481 a count restated by conversion rates whose value differs between two kinds of record no column separates.
+
+Cell E, payment, claims and health plan analytics (7): task447 the share of a unit's outbound flow a change of owner
+redirects; task451 the unobserved part of a period total, completed from a sender's stable delay plus a handler's
+collapsed one; task458 a lasting trait counted from events logged only while each unit is observed, with staying
+observed selected on the trait; task464 architecture 3, a forward capacity whose deliverable positions are fewer than
+the positions each unit reports; task468 a linked outcome count corrected for the linker's own false and missed links;
+task479 a next-period level read from a few periods where small units' spread is mostly chance; task482 a
+period-to-date rate carried forward where a few members sit in episodes recorded only at their end.
+
+Cell F, item response theory and test equating (1): task450 two administrations differing in both instrument and group,
+linked only through the subset both answered.
+
+The older house-domain builds, which inherit the same six client task types (26): task39 a stop rule keyed on event
+reason codes the output contract prunes away; task40 a charge base gated by an eligibility description no document
+operationalises; task41 a cost counted only where its category already carried an approved budget line; task42 a
+temporal join charging each transaction to the programme in force over the period it covers; task45 a per-holder floor
+measured from replenishment history; task49 an unpaid amount floored instrument by instrument before summing; task51
+additionality over a baseline an unfiled standing rule moves inside the window; task56 a population billed on another
+basis and identifiable only by its absence from the event streams; task58 a non-negativity floor that does not commute
+with an entitlement split; task62 a closed-window exclusion limited to the term of the instrument that creates it;
+task63 an unstated per-unit divisor as the as-of count of capable members; task66 activity read from continuity of the
+physical supply connection rather than the account on it; task70 a per-record date with a class-conditional cut; task74
+a standard defined at the parent's grain as the union over its resolved history; task80 a fixed-term status dated from
+the criterion event that conferred it; task82 records filed under one-off keys attributed through a second system's
+credit ledger; task86 a shared pool as it will stand on a future date with a second draw run forward; task87 two owed
+items in one slot that one unit cannot both take; task90 a buyer-side position persisting across the supplier's asset
+substitutions; task92 a capped counterfactual service worth only what it removes on the days each candidate receives;
+task100 a forward period's membership where completion follows an optional interim stage; task109 two unwritten
+compilation rules behind a published control set; task110 enhancements spread over a host record's remaining months;
+task445 a holder class keeping a fixed fraction rather than a fixed amount; task472 a release window outside the job,
+so shortening the work saves time only where it reaches an earlier window; task475 an unpublished subtotal fixed by
+each area's own count and paired amount.
+
+**What the map leaves, read across all 68.** Every driver on this objective is one of five moves: complete a record
+the process could not make (coverage, detection, censoring, lag), re-grain or re-key a record onto the decision's own
+unit, re-time a record onto the decision's own calendar, recover a per-case input a second file pins, or split a total
+between two causes. The two cells allocated here hold the first two of those and nothing else, which is why the
+enumerations below close rather than thin out.
+
+### Cell A refused: three rigor cards, all three with a record
+
+The client library gives `data-integration-record-linkage-entity-resolution` exactly three rigor cards, and rule 1's
+General Statistics provision binds the deciding quantity to the task type's own statistical object, so the card set is
+the candidate set.
+
+1. **Propagate linkage error to the estimate.** Shipped in-cell at task449 (false links) and task456 (three records
+   with their own error rates) and adjacent at task468 (a linked death count corrected for both error directions) and
+   task473 (detection weighting). The one variant none of the four priced is an error forced exactly rather than
+   estimated, and it is measured below: forced exactly, the correction is an inner join and a count.
+2. **Weight field agreement by its informativeness (Fellegi-Sunter).** Already set aside at task486's own draw
+   against task468's linker error (`task482/DESIGN_NOTE.md`, `## Tried and rejected`). Dead on its own pincer as
+   well: name the probabilistic standard and the step is rule application (the card's own pin says the task names
+   the standard or supplies a clerically reviewed sample), leave the m and u probabilities to be estimated and the
+   decisive step is a fitted estimator, which `stumping` 1.1j refuses.
+3. **Resolve pairwise matches into consistent entities.** Spent at task486 architecture 2 at stage 4, and
+   `guard.py check` BLOCKs a faithful instance mechanically at `driver.text` 0.40 against that lineage entry.
+   Priced again here from scratch, below, because it is the one card whose arithmetic had not been measured in this
+   slot.
+
+**Measured, cell A card 3** (`proto464_cellA_entity.py`, 4,000 entities, two deduplicated sources, blocked candidate
+pairs with Fellegi-Sunter-like weights, the graded figure the distinct-entity count to the nearest 10, 24 seeds at
+each of 7 cutoffs, run twice with identical output):
+
+| cutoff | truth | raw pair count | transitive closure | one-to-one | any route on the truth's bin | licensed spread (bins) | decisive worth (bins) |
+|---|---|---|---|---|---|---|---|
+| 2.0 | 3,744 | -12,685 | 105 | 3,327 | 0 of 24 | 1,601.40 | 322.2 |
+| 3.0 | 3,744 | -503 | 1,430 | 3,584 | 0 of 24 | 410.15 | 215.4 |
+| 4.0 | 3,744 | 2,406 | 3,094 | 3,706 | 0 of 24 | 129.70 | 61.2 |
+| 5.0 | 3,744 | 3,582 | 3,608 | 3,852 | 0 of 24 | 27.20 | 24.4 |
+| 6.0 | 3,744 | 4,150 | 4,150 | 4,164 | 0 of 24 | 1.35 | 1.4 |
+| 7.0 | 3,744 | 4,688 | 4,688 | 4,688 | 0 of 24 | 0.00 | 0.00 |
+| 8.0 | 3,744 | 5,398 | 5,398 | 5,398 | 0 of 24 | 0.00 | 0.00 |
+
+The decisive step's worth over the licensed spread never reaches the 1.15x floor: it runs 0.20, 0.53, 0.47, 0.90,
+1.04 and then the three routes are one route. The dial is one-ended for a reason that is arithmetic rather than
+tuning: the cutoff is what decides how many pairs exist to resolve, so the setting that gives the resolution rule
+something to do is the setting at which the cutoff moves the graded count 130 to 1,600 bins, and the setting at which
+the family agrees is the setting at which the resolution rule is worth 0.00 bins. The cutoff is also a knob rather
+than a method (`determinism-check` section 1), so closing it is mandatory and spends the step.
+
+### Cell C refused: twelve deciding quantities, each with a record
+
+| deciding quantity | record |
+|---|---|
+| under-coverage completed from a second incomplete list | shipped, task448 (capture within filing-route strata) |
+| the same by dual-system estimation within post-strata after erroneous enumerations | killed before registration at task249's architecture 3 draw, as task448's own driver |
+| an area total from two overlapping incomplete lists, each unit counted by its selection chance | task471 architecture 3, spent at stage 4 on Gate F, both readers landing the call |
+| the register's count less the units a field audit measures absent | task471 architecture 4, the register over-coverage audit, spent at Gate F when both readers post-stratified the audit on the field's textbook covariates |
+| correlation bias in the dual-system estimate | shipped, task471 architecture 5 |
+| a register count wrong in both directions, each true class's chance from a full review of one period | task455 architecture 1, spent 2026-10-15 at stage 4 |
+| net against gross classification error | task244 is a whole build on it; screened dead again at task482's draw (gross flows corrected for reinterview misclassification) and at task270's architecture 4 draw (a classifier's measured confusion correcting each group's class share) |
+| identifier continuity across a renumbering | shipped, task455 |
+| the reporting lag in a unit's own latest-period report | shipped, task457 |
+| a published summary read at a coarser grain than the decision | shipped, task483 |
+| duration and re-entry in a register spell | shipped, task485 |
+| multi-site units' members allocated from the registered address | shipped, task486 |
+| small-area counts perturbed and benchmarked | task486 architecture 1, NOT_DETERMINISTIC at stage 4 |
+| distinct units across several lists joined by pairwise findings | task486 architecture 2, spent at stage 4 |
+
+Two further quantities the cell might be thought to offer are barred before measurement: statistical-unit delineation
+against the legal unit is `grain_or_unit`, and register imputation is a model of the measurement
+(`stumping` 1.2c). The two the author's laws bar directly are a state re-observed by an obligation record and a
+mandated quality indicator, which on this cell is every production rate a statistics office must publish.
+
+**The one unmeasured variant, priced** (`proto464_arch5_trichotomy.py`, 60,000 register units, 12 areas, the graded
+figure the conformed count of in-scope listed units at the 2027 reference date to the nearest 100 units, 24 seeds,
+run twice with identical output). A statistical business register carries a unit until it is deregistered, so a
+ceased unit is carried on; an employer register carries a row for the reference month only for a unit that is both in
+scope and has employees, so a listed unit the second register does not confirm is either live with no employees or
+dead and still listed. Three arms exhaust what a pack can ship to force the correction:
+
+| arm | what the pack ships | measured |
+|---|---|---|
+| EXACT | the second register confirms every in-scope listed unit | the designed correction and the cheapest licensed route (an inner join and a count) differ by **0.000000 units, 0.000000 bins**, with the same graded bin in **24 of 24** seeds: the step is rule application |
+| NONE | neither confirmation nor audit | the golden sits **43.33 bins** from the register as listed and **285.24 bins** from the best shipped-column route, so no function of the shipped columns reaches it and the golden is not computable (Gate B) |
+| AUDIT | a random field audit of n listed units | the bin arithmetic fails at every n, below |
+
+The audit arm with the dial swept and both ends read:
+
+| audit n | golden | pooled rate | rate per band | rate per band x area | pooled on the golden's bin | stratified on it | (a) bins | (b) bins | (c) bins |
+|---|---|---|---|---|---|---|---|---|---|
+| 300 | 53,367 | 53,505 | 53,444 | 53,624 | 3 of 24 | 0 of 24 | 0.80 | 2.18 | 8.68 |
+| 600 | 53,367 | 53,234 | 53,255 | 53,331 | 0 of 24 | 0 of 24 | 0.52 | 2.29 | 6.26 |
+| 1,200 | 53,367 | 53,414 | 53,380 | 53,313 | 2 of 24 | 0 of 24 | 0.25 | 0.96 | 4.38 |
+| 2,400 | 53,367 | 53,236 | 53,270 | 53,254 | 3 of 24 | 2 of 24 | 0.35 | 0.41 | 3.13 |
+| 4,800 | 53,367 | 53,420 | 53,415 | 53,398 | 5 of 24 | 5 of 24 | 0.16 | 0.32 | 2.18 |
+| 9,600 | 53,367 | 53,412 | 53,398 | 53,403 | 9 of 24 | 8 of 24 | 0.14 | 0.20 | 1.55 |
+| 20,000 | 53,367 | 53,344 | 53,347 | 53,342 | 10 of 24 | 9 of 24 | 0.07 | 0.08 | 1.07 |
+
+(a) is the decisive step's worth, the post-stratified audit estimate against the cheapest licensed member of its own
+family, the pooled audit rate. (b) is the spread across the licensed post-stratifications. (c) is the audit
+estimator's own sampling interval, one standard error. **(a) > (b) + (c) in 0 of 7 settings**, and (c) is 10.9 to
+15.3 times (a) at every one. The dial is one-ended by arithmetic: the only parameter that shrinks (c) is n, and n
+shrinks (a) in the same stroke, from 0.80 bins to 0.07, so the setting where the figure becomes determinate is the
+setting where the pooled rate, one divide, lands the golden's bin 10 of 24 against the stratified route's 9 of 24.
+A realistic pack can carry n at or under about 2,400 of 54,700 listed units, and there (c) is 3.13 to 8.68 bins
+against (a) of 0.25 to 0.80, nine to twenty-five times the decisive step's worth, which is task157's shipped death
+shape read before any data is cut.
+
+The EXACT arm's zero is an identity rather than a contingent measurement, and that is the finding rather than a
+weakness in it: where a second register confirms every unit, the conformed count IS the inner join, so the designed
+correction and the cheapest licensed route are one route and no world parameter separates them. The contingent
+measurements are the other two arms. Taken together they settle the author's screen for this pass directly: the
+call's arithmetic in the forced variant has no input that is not a filed column or an exact count of shipped rows,
+which is architecture 3's own law in this cell's nouns, and the slot's measured law therefore fires here as well.
+
+### The axis window, re-measured at the moment of the draw
+
+It moved twice inside this pass. Read first, the last three live cards were task141, task308 and task307; read again
+after the probe cards were drafted, they were task270, task310 and task311, with task311 registered during the pass
+in this very client domain (`survey-research-official-statistics / sample-design-allocation-weighting`,
+`statistical_office_head`, `research_or_statistics_office`). So at the moment of the draw the cell C probe BLOCKs on
+`ban.role` (statistical_office_head against task311) and `ban.org_family` (research_or_statistics_office against
+task311), both clearable by moving the build into a government agency rather than the statistics office itself, and
+the cell A probe BLOCKs on `ban.org_family` (government_agency against task310). Both probes BLOCK on
+`test.same_driver_older` for the population and G12 and etl_conformance triple against task107 (v3-etl, lineage), and
+cell A on `driver.text` 0.40 against task486 architecture 2. The cell C probe also raises
+`two_layer.pattern_reused` on
+`survey-research-official-statistics/census-register-administrative-data-quality/1` against task448, which is the
+same finding as the enumeration above arriving mechanically. Neither cell is axis-dead; both are mechanism-dead.
+
+### What is not written, and why
+
+The remaining deliverables of a draw are not written because the screens they rest on did not hold: there is no
+numbered default path, no stump sentence, no three-rules block, no ask layer and no pack design for architecture 5.
+Writing them would be a design argued past its own measurements. `precut.py` exits 1 with 53 checks, 1 FAIL and 0
+WARN, and the one FAIL is the card-domain check the author owns (the registered card's domain
+`healthcare-delivery-health-economics` is not in `pipeline.json`'s domain), so every other check is still reading
+architecture 3's note and the exit is not evidence about architecture 5.
