@@ -1,119 +1,119 @@
 {
-  "task": "task157",
-  "architecture": "v2",
-  "drawn": "2026-10-27",
-  "slot_note": "architecture 2 candidate A (draw hunt, not registered): a state elections division projecting a ballot initiative's valid signatures from the statutory random sample",
-  "domain": "political-science-public-policy",
-  "subdomain": "election-polling-forecasting",
-  "client_domain": "political-science-public-policy",
-  "niche": "a state elections division projecting, from the statutory three per cent random sample of a filed initiative petition, how many of its 1,043,000 signatures a full count would find valid, when the sample is the only part of the petition that is ever keyed",
-  "objective": "forecasting",
-  "shape": "03",
-  "decision_type": "quantity_figure",
-  "answer_unit": "count",
-  "answer": "candidate, not measured on a pack: about 651,650 valid signatures (104.6 per cent of the 623,212 threshold), so a full count is ordered; the default path files about 766,110 and certifies",
-  "answer_source": "paper arithmetic at the draw, no generator",
-  "gap": [
-    "population",
-    "rule"
+ "task": "task157",
+ "architecture": "v2",
+ "drawn": "2026-10-27",
+ "slot_note": "architecture 2 candidate A (draw hunt, not registered): a state elections division projecting a ballot initiative's valid signatures from the statutory random sample",
+ "domain": "political-science-public-policy",
+ "subdomain": "election-polling-forecasting",
+ "client_domain": "political-science-public-policy",
+ "niche": "a state elections division projecting, from the statutory five per cent random sample of the signature lines on a filed initiative petition, how many of its 540,000 lines a full count would find valid, when the sampled lines are the only part of the petition that is ever keyed",
+ "objective": "forecasting",
+ "shape": "03",
+ "decision_type": "quantity_figure",
+ "answer_unit": "count",
+ "answer": "candidate from the draw's arithmetic on the generator's clean truth, not yet measured on a cut pack: about 388,460 valid signatures, printing 390,000 to the nearest 5,000, against the 384,924 required and a band at 365,678 to 404,170, so a full count is ordered; the default path files about 431,420, printing 430,000, and the measure reads sufficient",
+ "answer_source": "paper arithmetic at the draw, no generator",
+ "gap": [
+  "population",
+  "rule"
+ ],
+ "pattern": [
+  "none"
+ ],
+ "generators": [
+  "G10",
+  "G2"
+ ],
+ "gate_g": "forecasting",
+ "calibration_form": "prior_period_close_out",
+ "stump_strategy": "other",
+ "decisive_rule_filed": false,
+ "official_decoy": false,
+ "validated_decoy": false,
+ "context_artifact": "register",
+ "stump_class": "analytical",
+ "analyst_test": "A strong analyst who reads every disposition code in the sample verification register correctly, places every sampled signature in its county and sheet, applies the filed threshold and expands the sample by the statutory sampling fraction still scales the duplicate dispositions linearly with every other ground of invalidity and files about 766,110 valid signatures, which certifies the measure outright, because a duplicate is a property of a pair of signatures and the sample sees a pair only when both of its members fall in it.",
+ "domain_test": "The deciding quantity is the number of valid signatures a full count would return, estimated the way election administration estimates it, by design-based expansion of a probability sample in which each ground of invalidity carries its own inclusion probability; swap the nouns and ask how many of 1,043,000 hospital admissions a full count would find valid and the quantity has nothing to stand on, because an admission has no second member that must fall in the same sample for its defect to be visible, so every ground scales linearly and the projection is one multiplication.",
+ "layer2_family": "field_method",
+ "layer2_pattern": "own:pairwise-defect-inclusion-is-the-square-of-the-sampling-fraction",
+ "layer1": [
+  "the sample drawn as signature lines across the filed sheets, so a pair is keyed only when both of its lines are drawn",
+  "two voter registration file vintages either side of the state's list maintenance run",
+  "county verification registers in two layouts, one county still on the old disposition codes",
+  "handwritten dates transcribed as text, some in two formats",
+  "circulator affidavits filed per sheet, a few sheets filed twice",
+  "the statewide registration extract in a fixed-width legacy layout",
+  "petition sheet counts reported by the counties against the office's own receipt log"
+ ],
+ "stakeholder_role": "the elections division's verification manager, who signs the projection the state canvassing board reads when it decides whether to certify the measure, order a full count or reject it",
+ "role_family": "compliance_or_audit",
+ "scoring_unit": "per accepted item",
+ "spine": {
+  "file": "sample_verification_register_2027.csv",
+  "rows": 27000,
+  "entity": "one sampled signature and the disposition the county gave it",
+  "grain": "sampled signature line x county x sheet",
+  "source": "synthetic (constructed in the layout of a state elections division's random-sample verification register)"
+ },
+ "forum": "regulator_or_inspector",
+ "forcing_event": "vote_or_meeting",
+ "org_family": "government_agency",
+ "world": {
+  "geography": "United States, Arizona",
+  "currency": "USD",
+  "org_type": "state elections division",
+  "invented_names": [
+   "Saguaro Water Fairness Committee"
   ],
-  "pattern": [
+  "people": [
+   "Philip James",
+   "Laura Davis",
+   "Tony Lynch"
+  ]
+ },
+ "deliverables": [
+  "signature_projection_2027.xlsx",
+  "petition_disposition_2027.png"
+ ],
+ "opening_move": "question-first",
+ "question_form": "how-many",
+ "driver": "One class of defect in a sampled population is a property of a pair of records rather than of a record, so the sample reveals it only when both members of the pair fall in the sample and its inclusion probability is the square of the sampling fraction while every other class carries the fraction itself; expanding every class alike at the design's own fraction, which is what the record's codes invite, understates that class by the reciprocal of the fraction and files a total far above the one a full enumeration would return.",
+ "driver_concrete": "A duplicate signature is struck only because a second signature by the same signer exists, so a three per cent sample of a 1,043,000 signature petition finds a duplicate pair with probability nine ten-thousandths rather than three hundredths; expanding the 106 duplicate strikes the sample found at the sampling fraction gives 3,540 duplicates and 766,110 valid signatures, which certifies the measure, while expanding them at the square of the fraction gives 118,000 duplicates and 651,650 valid signatures, inside the band that orders a full count.",
+ "stump": "A competent solver reads every disposition code, places every sampled signature through the two voter file vintages, expands the sample at the statutory three per cent and files about 766,110 valid signatures and an outright certification; the step that lands them there is expanding the duplicate dispositions at the sampling fraction alongside every single-signature ground, when a duplicate is a relation between two signatures that the sample sees only when it draws both, so the duplicate burden is the found strikes over the square of the fraction, 118,000 rather than 3,540, and the projection is about 651,650, which orders a full count.",
+ "mechanism_source": "design_note",
+ "differentiation": {
+  "task264": "task264 weights each sampled person by the inverse of an inclusion probability that rises with how many events the person makes, so its correction is a per-respondent design weight on the decision's own unit; here the decision's unit is the signature and the correction attaches to no unit at all, it changes the exponent on the design's fraction for one disposition class while every other class stays linear, and the pair whose detection it governs is a relation between two records rather than a multiplicity of one",
+  "task190": "task190's architecture 3 recovered an unrecorded monetary selection interval and then applied the field's own probability-proportional projection, which its audit manual had to ship for Gate B and which two cold threads then read back; here the sampling fraction is a statutory number already in the world, nothing has to ship to make the projection computable, and what is open is not a constant to recover but which power of that fraction one disposition class carries",
+  "task157_v1": "architecture 1 sized a returning behavioural wave from the part of it already back and graded money to three per cent of itself; here nothing behavioural is forecast, the deciding quantity is a count a full enumeration would return and the decisive step is worth more than eleven of its bins",
+  "task98": "task98 v7 removes a subset twice because two dated schedules held under different keys each list it, so its decisive move is a member-level join between a code-keyed and an address-keyed file and the whole population is enumerated; here nothing is joined and nothing is enumerated outside the sample, the duplication is between two signatures of one signer that no file lists, and what decides the count is the probability the design gave that pair of being seen at all",
+  "task192": "task192 v1 counts the distinct generating processes behind overlapping bursts by the interval each process repeats on, a recovery from the timing of events the record holds in full; here the record holds three per cent of the population and the decisive quantity is not a process behind the observed items but the inclusion probability of a relation between two items, which is the square of the design's fraction and carries no timing"
+ },
+ "lineage": [
+  {
+   "architecture": "v1",
+   "domain": "product-analytics",
+   "subdomain": "retention-cohort-lifetime-value-modeling",
+   "objective": "forecasting",
+   "gap": [
+    "time",
+    "population"
+   ],
+   "pattern": [
     "none"
-  ],
-  "generators": [
-    "G10",
-    "G2"
-  ],
-  "gate_g": "forecasting",
-  "calibration_form": "prior_period_close_out",
-  "stump_strategy": "other",
-  "decisive_rule_filed": false,
-  "official_decoy": false,
-  "validated_decoy": false,
-  "context_artifact": "register",
-  "stump_class": "analytical",
-  "analyst_test": "A strong analyst who reads every disposition code in the sample verification register correctly, places every sampled signature in its county and sheet, applies the filed threshold and expands the sample by the statutory sampling fraction still scales the duplicate dispositions linearly with every other ground of invalidity and files about 766,110 valid signatures, which certifies the measure outright, because a duplicate is a property of a pair of signatures and the sample sees a pair only when both of its members fall in it.",
-  "domain_test": "The deciding quantity is the number of valid signatures a full count would return, estimated the way election administration estimates it, by design-based expansion of a probability sample in which each ground of invalidity carries its own inclusion probability; swap the nouns and ask how many of 1,043,000 hospital admissions a full count would find valid and the quantity has nothing to stand on, because an admission has no second member that must fall in the same sample for its defect to be visible, so every ground scales linearly and the projection is one multiplication.",
-  "layer2_family": "field_method",
-  "layer2_pattern": "own:pairwise-defect-inclusion-is-the-square-of-the-sampling-fraction",
-  "layer1": [
-    "the sample drawn by sheet sections, so the keyed rows are sections rather than signatures",
-    "two voter registration file vintages either side of the state's list maintenance run",
-    "county verification registers in two layouts, one county still on the old disposition codes",
-    "handwritten dates transcribed as text, some in two formats",
-    "circulator affidavits filed per sheet, a few sheets filed twice",
-    "the statewide registration extract in a fixed-width legacy layout",
-    "petition sheet counts reported by the counties against the office's own receipt log"
-  ],
-  "stakeholder_role": "the elections division's verification manager, who signs the projection the state canvassing board reads when it decides whether to certify the measure, order a full count or reject it",
-  "role_family": "compliance_or_audit",
-  "scoring_unit": "per accepted item",
-  "spine": {
-    "file": "sample_verification_register_2027.csv",
-    "rows": 31290,
-    "entity": "one sampled signature and the disposition the county gave it",
-    "grain": "sampled signature x county x sheet section",
-    "source": "synthetic (constructed in the layout of a state elections division's random-sample verification register)"
-  },
-  "forum": "committee_or_panel",
-  "forcing_event": "vote_or_meeting",
-  "org_family": "government_agency",
-  "world": {
-    "geography": "United States, Arizona",
-    "currency": "USD",
-    "org_type": "state elections division",
-    "invented_names": [
-      "Saguaro Water Fairness Committee"
-    ],
-    "people": [
-      "Philip James",
-      "Laura Davis",
-      "Tony Lynch"
-    ]
-  },
-  "deliverables": [
-    "signature_projection_2027.xlsx",
-    "petition_disposition_2027.png"
-  ],
-  "opening_move": "question-first",
-  "question_form": "how-many",
-  "driver": "One class of defect in a sampled population is a property of a pair of records rather than of a record, so the sample reveals it only when both members of the pair fall in the sample and its inclusion probability is the square of the sampling fraction while every other class carries the fraction itself; expanding every class alike at the design's own fraction, which is what the record's codes invite, understates that class by the reciprocal of the fraction and files a total far above the one a full enumeration would return.",
-  "driver_concrete": "A duplicate signature is struck only because a second signature by the same signer exists, so a three per cent sample of a 1,043,000 signature petition finds a duplicate pair with probability nine ten-thousandths rather than three hundredths; expanding the 106 duplicate strikes the sample found at the sampling fraction gives 3,540 duplicates and 766,110 valid signatures, which certifies the measure, while expanding them at the square of the fraction gives 118,000 duplicates and 651,650 valid signatures, inside the band that orders a full count.",
-  "stump": "A competent solver reads every disposition code, places every sampled signature through the two voter file vintages, expands the sample at the statutory three per cent and files about 766,110 valid signatures and an outright certification; the step that lands them there is expanding the duplicate dispositions at the sampling fraction alongside every single-signature ground, when a duplicate is a relation between two signatures that the sample sees only when it draws both, so the duplicate burden is the found strikes over the square of the fraction, 118,000 rather than 3,540, and the projection is about 651,650, which orders a full count.",
-  "mechanism_source": "design_note",
-  "differentiation": {
-    "task264": "task264 weights each sampled person by the inverse of an inclusion probability that rises with how many events the person makes, so its correction is a per-respondent design weight on the decision's own unit; here the decision's unit is the signature and the correction attaches to no unit at all, it changes the exponent on the design's fraction for one disposition class while every other class stays linear, and the pair whose detection it governs is a relation between two records rather than a multiplicity of one",
-    "task190": "task190's architecture 3 recovered an unrecorded monetary selection interval and then applied the field's own probability-proportional projection, which its audit manual had to ship for Gate B and which two cold threads then read back; here the sampling fraction is a statutory number already in the world, nothing has to ship to make the projection computable, and what is open is not a constant to recover but which power of that fraction one disposition class carries",
-    "task157_v1": "architecture 1 sized a returning behavioural wave from the part of it already back and graded money to three per cent of itself; here nothing behavioural is forecast, the deciding quantity is a count a full enumeration would return and the decisive step is worth more than eleven of its bins",
-    "task98": "task98 v7 removes a subset twice because two dated schedules held under different keys each list it, so its decisive move is a member-level join between a code-keyed and an address-keyed file and the whole population is enumerated; here nothing is joined and nothing is enumerated outside the sample, the duplication is between two signatures of one signer that no file lists, and what decides the count is the probability the design gave that pair of being seen at all",
-    "task192": "task192 v1 counts the distinct generating processes behind overlapping bursts by the interval each process repeats on, a recovery from the timing of events the record holds in full; here the record holds three per cent of the population and the decisive quantity is not a process behind the observed items but the inclusion probability of a relation between two items, which is the square of the design's fraction and carries no timing"
-  },
-  "lineage": [
-    {
-      "architecture": "v1",
-      "domain": "product-analytics",
-      "subdomain": "retention-cohort-lifetime-value-modeling",
-      "objective": "forecasting",
-      "gap": [
-        "time",
-        "population"
-      ],
-      "pattern": [
-        "none"
-      ],
-      "generators": [
-        "G12",
-        "G13",
-        "G16"
-      ],
-      "gate_g": "forecasting",
-      "stump_strategy": "maturity_censoring",
-      "decision_type": "quantity_figure",
-      "answer_unit": "currency",
-      "driver": "Members of a group that stopped together come back in a wave that begins before the forecast date and peaks inside the forward window; how many of the group come back is the group's own, while when each comes back follows a calendar every earlier wave kept, so the members still to come are the members already back times the ratio earlier waves showed between the window and the same date, and a rate on the members still away, the group's size at an earlier group's rate, a rate by when each stopped, a propensity fitted on last year's returners, or one ratio over every member who came back after a gap each misstates it.",
-      "fate": "spent 2026-10-27 after two portal returns (both Gates C and D, competing_defensible_answer and underspecified_objective): the graded bin was finer than the estimator, the decisive step worth 0.58 of a USD 50,000 bin and the smallest rung gap, against 0.90 bins for the un-returned remainder's subgroup choice and 0.31 for the golden rate's own 95 per cent interval; three repairs were built and measured and none closed it"
-    }
-  ],
-  "notes": "Draw hunt only, not registered. stump_strategy filed as other: the decisive move is an inclusion probability under the realised design, which no listed strategy names; grain_or_unit would read as a grain reading and the move is not a reading. Calibration prior_period_close_out is the previous initiative that went to a full count; it has to be cut so it ties under every expansion basis or it becomes an oracle for the method.",
-  "registered": "2026-10-27T04:36:05Z"
+   ],
+   "generators": [
+    "G12",
+    "G13",
+    "G16"
+   ],
+   "gate_g": "forecasting",
+   "stump_strategy": "maturity_censoring",
+   "decision_type": "quantity_figure",
+   "answer_unit": "currency",
+   "driver": "Members of a group that stopped together come back in a wave that begins before the forecast date and peaks inside the forward window; how many of the group come back is the group's own, while when each comes back follows a calendar every earlier wave kept, so the members still to come are the members already back times the ratio earlier waves showed between the window and the same date, and a rate on the members still away, the group's size at an earlier group's rate, a rate by when each stopped, a propensity fitted on last year's returners, or one ratio over every member who came back after a gap each misstates it.",
+   "fate": "spent 2026-10-27 after two portal returns (both Gates C and D, competing_defensible_answer and underspecified_objective): the graded bin was finer than the estimator, the decisive step worth 0.58 of a USD 50,000 bin and the smallest rung gap, against 0.90 bins for the un-returned remainder's subgroup choice and 0.31 for the golden rate's own 95 per cent interval; three repairs were built and measured and none closed it"
+  }
+ ],
+ "notes": "Draw hunt only, not registered. stump_strategy filed as other: the decisive move is an inclusion probability under the realised design, which no listed strategy names; grain_or_unit would read as a grain reading and the move is not a reading. Calibration prior_period_close_out is the previous initiative that went to a full count; it has to be cut so it ties under every expansion basis or it becomes an oracle for the method.",
+ "registered": "2026-10-27T04:36:05Z"
 }

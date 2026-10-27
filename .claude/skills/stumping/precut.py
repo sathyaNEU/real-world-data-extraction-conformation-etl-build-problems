@@ -319,8 +319,23 @@ def check_note(task_dir, note_text):
     checks = os.path.join(task_dir, "generator", "checks.py")
     if sf_rows and os.path.exists(checks):
         src = open(checks, encoding="utf-8", errors="replace").read()
-        missing = [r[0].strip("`* ") for r in sf_rows if r[0].strip("`* ") not in src]
-        row("semantic forks asserted", not missing, "every SF id appears in generator/checks.py" if not missing else "not in checks.py: " + ", ".join(missing))
+        want = [r[0].strip("`* ") for r in sf_rows]
+        # Whole-token matching: a bare substring test passes SF1 on a file that only carries SF15.
+        missing = [i for i in want if not re.search(r"\b%s\b" % re.escape(i), src)]
+        # A re-rooted build whose checks.py still belongs to the dead architecture passes every id by
+        # coincidence, because the old file carries a longer SF run for entirely different forks. The
+        # signature is an SF id asserted in checks.py that the note does not carry.
+        asserted = set(re.findall(r"\bSF\d{1,3}\b", src))
+        orphans = sorted(asserted - set(want), key=lambda x: int(x[2:]))
+        if missing:
+            row("semantic forks asserted", False, "not in checks.py: " + ", ".join(missing))
+        elif orphans:
+            row("semantic forks asserted", False,
+                "checks.py asserts %d SF id(s) the fork table does not carry (%s), so it was written for another "
+                "architecture and every id above matched by coincidence; this build's forks owe real assertions"
+                % (len(orphans), ", ".join(orphans)))
+        else:
+            row("semantic forks asserted", True, "every SF id appears in generator/checks.py as its own token")
     elif sf_rows:
         ids = ", ".join(r[0].strip("`* ") for r in sf_rows)
         row("semantic forks asserted", False,

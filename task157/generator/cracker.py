@@ -41,10 +41,12 @@ TRIPLES = 150             # signers who signed it three times
 # lines were gathered by one firm in one week and carry no duplicate strike at all, so the fold is neutral
 # on every route and the single-ground classes it also folds expand at the common factor.
 FOLDED_COUNTY_SHARE = 0.0
-# Sampled lines whose registration was already cancelled when they were signed, which the extract current
-# at FILING shows as cancelled and the extract current at SIGNING does not. A solver reading registration
-# off the earlier extract under-strikes them, which walks the figure AWAY from the golden, so cleaning the
-# vintage walks toward it and only the decisive move reverses (stumping Part 3).
+# Sampled lines whose signer was cancelled in the list-maintenance run that ran during the circulation
+# window and who signed after their own cancellation. The extract current when circulation opened still
+# shows them registered, so a solver re-deriving registration from it does not strike them although they
+# were not registered at signing; the counties, checking live at verification, did strike them. The slip
+# therefore walks the figure AWAY from the golden, so every correction below the decisive one walks one
+# way and only the decisive move reverses (stumping Part 3).
 VINTAGE_SLIP = 400
 COUNTY_STRUCK = 0.62      # share of sampled duplicate strikes the county recorder found inside its own batch
 COUNTIES = 15
@@ -132,7 +134,7 @@ def routes(t):
 
     # R1 the default path: every disposition class expanded at the sample's factor, registration re-derived
     #    from the extract current at FILING rather than at signing.
-    out.append(("R1", "every class at N/n, registration off the extract current at filing",
+    out.append(("R1", "every class at N/n, registration re-derived off the pre-run extract",
                 valid_from(s - VINTAGE_SLIP, d * (FILED / SAMPLE)), "rung 0"))
 
     # R2 the same, vintage fixed. Note the folded county is NEUTRAL here: both classes carry one factor.
@@ -171,6 +173,13 @@ def routes(t):
                 valid_from(s + folded, (d - folded) / (P * P)), "SF closure, C1"))
 
     # R9 the golden: single grounds at N/n, duplicate strikes at the pair's own inclusion probability.
+    # SF5: the filed total read off the counties' reported sheet counts rather than the office receipt log,
+    # which carries the 240 sheets two firms filed twice and the office struck at receipt.
+    f2 = FILED + 240 * LINES
+    p2 = SAMPLE / f2
+    out.append(("R11", "golden on the counties' reported filed total, not the receipt log",
+                f2 - s * (f2 / SAMPLE) - d / (p2 * p2), "SF5"))
+
     out.append(("R9", "pair inclusion P squared, vintage fixed, folded county unfolded",
                 valid_from(s, d / (P * P)), "GOLDEN"))
 
@@ -246,20 +255,20 @@ def bins(t):
 # takes the call's default path also takes this ask's easy route (the cracker). A row is MISS when the
 # ask's own silent device defeats that route.
 ASKS = [
-    ("A", "the disposition bridge, each class sampled and projected to the nearest 100", 22, 0.26, 0.35,
-     "the old county's merged code has to be unfolded before any class is projected, and the office "
-     "strikes on the first ground that applies, so a signature sits in exactly one class", "miss"),
-    ("B", "each county's sampled lines and single-ground rate to one decimal", 30, 0.30, 0.30,
-     "two counties filed their register twice and the correction supersedes row by row rather than "
-     "wholesale, so a wholesale replacement loses the rows the correction does not carry", "miss"),
-    ("C", "each circulator firm's sheets, lines and single-ground rate to one decimal", 12, 0.16, 0.25,
-     "240 sheets were filed twice and struck at receipt, so a firm's filed count is the receipt log's "
-     "and not the counties' reported count", "miss"),
-    ("D", "per month of circulation, sampled lines and those cancelled only by the later extract", 12, 0.16, 0.30,
+    ("A", "sampled and projected figure for each disposition the counties used", 22, 0.26, 0.35,
+     "the pre-2024 merged code has to be unfolded before any class is projected, and the grounds apply in "
+     "order, so a sampled line sits in exactly one class", "miss"),
+    ("B", "each county's sheets, sampled signatures and invalid rate other than duplication", 45, 0.28, 0.30,
+     "two counties filed their register twice and the correction supersedes row by row, so a wholesale "
+     "replacement loses the rows the correction does not carry", "miss"),
+    ("C", "each circulator firm's sheets, sampled signatures and invalid rate other than duplication", 12,
+     0.30, 0.28,
+     "240 sheets were filed twice by two firms and struck at receipt, so a firm's sheets filed is the "
+     "receipt log's count and not the counties' reported count", "miss"),
+    ("D", "per month of circulation, sampled signatures and those the later extract has cancelled", 12, 0.16,
+     0.30,
      "the extract timestamps are UTC against local signing dates, so a month boundary moves 17 hours of "
      "signatures", "miss"),
-    ("E", "the receipt log against each county's reported sheet count, with the difference", 16, 0.12, 0.40,
-     "the receipted total is after the duplicate sheets were struck and the counties report before", "miss"),
 ]
 
 CALL_WEIGHT = 0.40      # recommendation and critical components

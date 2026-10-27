@@ -2,17 +2,21 @@
  "task": "task157",
  "owner": "sathya8571",
  "status": "DESIGN",
- "domain": "political-science-public-policy",
+ "domain": "political-science-public-policy/election-polling-forecasting (architecture 2; world: an Arizona state elections division projecting a filed initiative petition from the statutory five per cent random sample)",
  "objective": "forecasting",
  "stage": 2,
  "stage_name": "design",
  "updated": "2026-10-27",
- "stump": "A competent solver reads every disposition code, places every sampled signature through the two voter file vintages, expands the sample at the statutory three per cent and files about 766,110 valid signatures and an outright certification; the step that lands them there is expanding the duplicate dispositions at the sampling fraction, when a duplicate is a relation between two signatures the sample sees only when it draws both, so the duplicate burden is about 117,780 rather than 3,533 and the projection is about 651,650, which orders a full count.",
+ "stump": "A competent solver who reads every disposition code, validates the counties' registration determinations against the voter extract whose run date precedes the signing window and expands every class at the sample's own factor of 20 files 431,420 valid signatures and a sufficient measure; the step that lands them there is expanding the duplicate dispositions at the sampling fraction alongside the single-signature grounds, when a duplicate is a relation between two signatures the sample sees only when it draws both, so the duplicate burden is 36,800 rather than 1,840 and the projection is 388,460, which orders a full count.",
  "architecture": 2,
  "loops": 0,
  "precut": {
-  "exit": null,
-  "date": ""
+  "exit": 1,
+  "checks": 52,
+  "fail": 1,
+  "warn": 0,
+  "date": "2026-10-27",
+  "blocking": "semantic forks asserted: architecture 2 owes its own generator/checks.py"
  },
  "leak": {
   "leak_py": "",
@@ -44,7 +48,7 @@
    "commit": "5826c528"
   }
  ],
- "resume": "Architecture 2 drawn and registered 2026-10-27, re-checked against the restamped ban window: WARN only, no BLOCK, no person warning, heart WARN. Stage 2 owes the readability screen, the semantic fork table, the ladder, the 22-axis closure table, the literal reader line, the oracles, the ask sheet, the convergence section against a rival's family, and prompt.txt, then precut.py exit 0. Three things are named in the note as the risks to close first: readability test 1, because the duplicate class is visible in the sample and a solver meeting it is sent looking; task190's architecture 3, the measured death in this genus, which this draw answers by shipping nothing to make the projection computable, so the pack carries NO keyed full signer list and the prior-initiative close-out must tie under every expansion basis; and the convergence section, which must compute a rival's family and not the golden's own. Architecture 1's generator, target, target.zip, golden/, submission.md, prompt.txt and metadata.json are all still on disk as it shipped them and are replaced at stage 3.",
+ "resume": "Architecture 2 through stage 2 2026-10-27, and precut exits 1 on ONE check, which is correct and is the stage 3 debt: architecture 2's eight SF rows owe assertions in its own generator/checks.py. The old file is architecture 1's and carries SF1 to SF15 for different forks. I fixed precut.py the same day so that this cannot pass by coincidence again (whole-token matching, and a FAIL when checks.py asserts SF ids the fork table does not carry); the fix catches this build and leaves seven shipped builds passing. The world's figures were rebuilt on Arizona's own statute, which the card's geography names: 540,000 signature lines on 36,000 sheets of 15, a five per cent sample of 27,000 lines, required 384,924, bands 365,678 and 404,170, bin 5,000, golden 388,460 printing 390,000 and ordering a full count against a default path of 431,420 printing 430,000 and reading sufficient. The card's answer, niche, spine.rows and spine.grain are corrected and the layer1 item that contradicted the driver is withdrawn. The forum moved to regulator_or_inspector after task118's re-ship put committee_or_panel inside the three-build ban. Stage 3 owes: architecture 2's checks.py (which closes the precut FAIL), the generator, the pack, the goldens and submission.md; the convergence table re-measured on the cut pack over all six seeds; the campaign parameters pinned so the golden sits within 1,500 of a cell centre with both band clearances at or above 2.5 bins (seed 162 thins the lower clearance to 1.91 against a sampling interval of 1.82); multiplicity drawn near binary with the all-doubles bias asserted under 0.05 bins (a five per cent triple share among multi-signers reaches 0.59 bins and is not identified from the sample, a Gate B failure); and the lander held nearer a third of the ask weight, since response 1 models at 69.2 against a bar of 70.",
  "approved": null,
  "delivered": "2026-10-17",
  "portal": null,
