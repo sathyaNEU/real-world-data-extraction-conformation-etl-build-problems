@@ -285,10 +285,10 @@ def main(target, quick=False):
     for b in P.ORDER[:3]:
         sl, gv = Bst["statement_register_last"][b], gB[b]
         ok(sl["sold"] > gv["sold"] and (sl["at_loss"] != gv["at_loss"] or round(sl["avg_loss"], -2) != round(gv["avg_loss"], -2)),
-           "ask B primary moves the sales and the losses, %s" % b)
+           "SF22, ask B primary moves the sales and the losses, %s" % b)
     rg = S.register(target)
     twin = rg[rg.duplicated("account_number", keep=False)]
-    ok(len(twin) > 0 and (twin.groupby("account_number").date.nunique() == 1).all(), "ask B: a loan part shares its possession date")
+    ok(len(twin) > 0 and (twin.groupby("account_number").date.nunique() == 1).all(), "SF22, ask B: a loan part shares its possession date")
     Hb = pd.read_parquet(os.path.join(target, F["history"]), columns=["account_number", "period", "balance", "arrears_balance"]).drop_duplicates()
     Hb["m"] = Hb.period.str[:4].astype(int) * 12 + Hb.period.str[5:7].astype(int) - 1
     pmonth = rg.groupby("account_number").date.min()
