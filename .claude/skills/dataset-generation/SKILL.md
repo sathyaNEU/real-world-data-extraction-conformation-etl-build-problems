@@ -345,6 +345,28 @@ so every authority clause in them rests on the writer's own string. The judge re
 and is the stronger check, but it runs once, after the pack is cut, and it is not a gate the build can
 re-run on its own.
 
+**Nothing in the pack may be procedurally assigned, and five shapes are measured rather than eyeballed.** A
+generator's own arithmetic is the commonest realism failure a reader finds, and it is pack-wide rather than
+local. Assert each of these in the realism sweep, per column and per document.
+1. **No id, code or number column is an arithmetic sequence.** One build shipped plan site ids whose
+   consecutive differences were exactly one value across every site (10437, 10474, 10511 at a step of 37),
+   with licence numbers at 23 and street numbers at 53. A single sorted difference exposes the generator.
+   Assert that no id-like column has one constant step.
+2. **No ordering follows the alphabet or any other mechanical rule.** The same build's twelve service areas ran
+   Ammerly, Bexhollow, Crannock through Lowenbrook in exact code order, so the names in code order were the
+   names sorted. Assert the two orders differ.
+3. **Entity names take more than two shapes.** Every site in that pack was "<Locality> Dialysis Center" or
+   "<Locality> Infusion Center". Real registers mix a unit, a suite, a clinic, a named building, an operator's
+   own brand on some rows, the odd abbreviation. Assert more than two distinct name shapes.
+4. **No attribute is dealt round-robin.** An operator column cycled eight names in fixed order through forty
+   sites and produced names contradicting what the sites did. Draw per row, give the counts an uneven spread,
+   and assert both no fixed period in the sequence and no name that names one service while its rows deliver
+   another.
+5. **A document never states a position later than its own file date**, and a document's producer is the body
+   that issued it: a regulator's fee schedule carrying the plan's name as Producer is a defect, and so is
+   `Application` "Microsoft Excel" beside the writing library's own `AppVersion`. Assert both per document
+   against its issuer.
+
 **Byte-identical rebuilds:** two consecutive runs give identical `target/` bytes (fixed seeds, one RNG
 stream per period, fixed mtimes, scrubbed metadata). A pack that does not rebuild has a broken generator.
 
