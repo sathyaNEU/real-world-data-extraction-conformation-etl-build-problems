@@ -35,6 +35,17 @@ DOC_EXT = {".md", ".txt", ".docx", ".pdf", ".rtf", ".html", ".htm"}
 DATA_EXT = {".csv", ".tsv", ".json", ".xlsx", ".xls", ".parquet", ".jsonl", ".xml", ".yaml", ".yml"}
 IMG_EXT = {".png", ".jpg", ".jpeg", ".svg"}
 
+# A file or sheet whose job is to tell the analyst what the data is (dataset-generation section 3): a dictionary,
+# field notes, a readme, a manifest, a codebook. task144's first architecture shipped field notes and a manifest, and
+# both portal responses built the decisive step from them.
+DESCRIBE_NAME = re.compile(
+    r"(?<![a-z])(read_?me|data_?dictionar\w*|dictionar(y|ies)|codebook|field_?notes|fields?_(guide|notes|list|descriptions?)|"
+    r"\w*_fields|manifest|extract_contents|file_list|glossary|column_(notes|descriptions?)|data_?notes|how_to_read|about_this)(?![a-z])",
+    re.I,
+)
+DESCRIBE_SHEET = re.compile(r"^(read ?me|notes?|dictionary|data dictionary|definitions|glossary|fields|field notes|"
+                            r"about|about this (file|workbook)|how to (read|use)( this)?|columns?)$", re.I)
+
 # File names an author writes and a solver reads as a map.
 BAD_NAME = re.compile(
     r"(?<![a-z])(trap|decoy|distractor|naive|rung|stump|ladder|golden|answer|truth|hidden|secret|solution|answer_key|"
@@ -126,6 +137,7 @@ def read_xlsx(path):
         wb = openpyxl.load_workbook(path, data_only=True, read_only=False)
     except Exception as e:
         return "", {"error": str(e)}
+    extras["sheet_names"] = [ws.title for ws in wb.worksheets]
     hidden_sheets = [ws.title for ws in wb.worksheets if ws.sheet_state != "visible"]
     if hidden_sheets:
         extras["hidden_sheets"] = hidden_sheets
@@ -321,6 +333,16 @@ def sweep_names(files, rep, field=()):
             rep.add("1 file names", "LEAK", rel, "stray system or dot file")
         if f["ext"] in (".py", ".ipynb", ".r", ".sql", ".sh"):
             rep.add("1 file names", "REVIEW", rel, "code shipped in the input pack, confirm it is in-fiction and carries no construction of the answer")
+        if DESCRIBE_NAME.search(Path(rel.name).stem):
+            rep.add("1 file names", "LEAK", rel, "a file whose name says it describes the data (%s): no dictionary, field notes, "
+                    "readme or manifest ships (dataset-generation section 3)" % DESCRIBE_NAME.search(Path(rel.name).stem).group(0))
+        elif f["ext"] in (".md", ".txt"):
+            rep.add("1 file names", "REVIEW", rel, "a text file in the pack: confirm it is the organisation's own record (a "
+                    "thread, a log, a letter) and does not describe the data")
+        for sheet in f["extras"].get("sheet_names", []):
+            if DESCRIBE_SHEET.match(sheet.strip()):
+                rep.add("1 file names", "REVIEW", rel, "a sheet named %r: confirm it is the organisation's own notes and "
+                        "does not describe the data's columns or files" % sheet)
 
 
 TOOLCHAIN = re.compile(r"python-docx|openpyxl|reportlab|matplotlib|pandas|numpy|faker|pyarrow|seed\s*=|scratchpad|/Users/|claude|anthropic|lorem|placeholder|TODO|FIXME|as an ai", re.I)

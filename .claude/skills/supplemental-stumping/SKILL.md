@@ -275,7 +275,7 @@ The client's rigor cards (`../stumping/references/client/layer2-rigor-patterns.m
 
 Each ask is a ladder of three to five stops, complete competent pipelines at distinct values outside the bin: the natural read, the half-handled device, the over-corrected read, the right rule on the wrong population, the answer. The golden sits mid-bin; a miss inside the bin needs more device mass. The ladder file comes from the golden's code and never ships. Every figure is separately gradable, a quantity, never a treatment or device word.
 
-**The span floor:** eight or more files and ten to fifteen columns on the golden's causal path, each file moving the ask when misread. Split the quantity across sources, route through the resolution chain (fact, correction, register, crosswalk, manifest, dictionary, standard), separate the antidotes: hub and spoke, fixed before the spine is cut. No two asks share primary device and path.
+**The span floor:** eight or more files and ten to fifteen columns on the golden's causal path, each file moving the ask when misread. Split the quantity across sources, route through the resolution chain (fact, correction, register, crosswalk, standard), separate the antidotes: hub and spoke, fixed before the spine is cut. No two asks share primary device and path.
 
 ## Part 5. Determinism and the audit
 
@@ -332,10 +332,10 @@ script that exists in the build, and the gate fails without it. Re-run the scrip
 once at the end: a determinism repair that closes a reading can spend the device that rode on it, which is
 measurable the moment the sentence is filed and invisible in prose.
 
-**A device the dictionary resolves moves the mirror and never the cracker, and both are worth having.**
-The cracker reads the dictionary and runs the battery, so it executes every documented handling and
-finds everything the five sweeps find; a device resolvable from a column description or caught by an
-unmatched join is therefore free to it. task190 built two good devices, a revenue sample sitting on
+**A device a shipped document resolves moves the mirror and never the cracker, and both are worth having.**
+The cracker reads every governing document and runs the battery, so it executes every documented handling
+and finds everything the five sweeps find; a device resolvable from a filed sentence or caught by an
+unmatched join is therefore free to it (and no dictionary ships to document one, `dataset-generation` §3). task190 built two good devices, a revenue sample sitting on
 the capital testing paper under its own prefix and a release date against the paying run's date, and
 measured both: the mirror's leakage fell 51.2 to 26.8 and the cracker kept 41 of 41 either way. Those
 are mirror devices, they are legitimate, and they are what buys the leakage bar. They cannot be the

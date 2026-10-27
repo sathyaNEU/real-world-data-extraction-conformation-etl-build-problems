@@ -110,16 +110,21 @@ Entries: **Defect**, **Cost**, **Line** (where the rule stops), **Check**, **Rep
   file names against the archive, fields against headers. Run after any rename.
 - **Repair.** Grep the old address to zero and re-derive the artifacts rather than editing them in place.
 
-## H9. A file added late that the pack's own registers never learned about
-- **Defect.** The manifest and dictionary are hand lists; a late file (often the newly load-bearing one)
-  ships unregistered.
-- **Cost.** Its conventions are unfiled: a determinism finding where the difficulty lives.
-- **Line.** A register need not list itself; files outside its stated scope are not gaps.
-- **Check.** Set equality, never spot membership: manifest names equal the shipped set minus
-  self-excluding registers; the dictionary names every file in its scope literally. Wire in the generator
-  and the verifier.
-- **Repair.** Register in the register's own voice and detail, never restating a filed rule (that is a
-  signpost); regenerate and diff so only the registers and the file moved.
+## H9. A file in the pack whose job is to describe the pack
+- **Defect.** A data dictionary, field notes, an extract manifest, a readme or a notes sheet ships under
+  `target/`: it tells the solver what each column means and how the files join, beside the very columns
+  the decisive step reads, and as a hand list it also misses the file added late.
+- **Cost.** task144's first architecture came back FAILED_TO_STUMP: its field notes defined the feed
+  surface a few lines from the follower count and its manifest named every file's role, and both portal
+  responses built the decisive cascade from them.
+- **Line.** A code crosswalk, lookup table or governing document the organisation really keeps is data; a
+  file whose job is to explain the pack is not. Provenance lives in `metadata.json` outside `target/`.
+- **Check.** The generator asserts no readme, dictionary, notes or manifest file or sheet under `target/`,
+  by name and by content, and that each convention a solver needs is carried by the file's own form
+  (zones in its timestamps, grain or unit in its column names, codes in a crosswalk without glosses).
+- **Repair.** Delete the file; move each convention into the producing file's own form, or into a
+  governing document where the organisation itself defines it; rebuild and re-run every fork assertion,
+  since a reading the register used to close is now closed only by the data.
 
 ## H10. A rival-killer whose every miss the pack's own rules can excuse
 - **Defect.** A calibration corpus refutes rivals by raw miss count, but the pack files a discretion rule

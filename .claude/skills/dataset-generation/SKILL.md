@@ -57,8 +57,20 @@ changes, revisions), a dimension the decision grain can differ from. Check the v
 | Governing document | 1-2 | §8, the pin |
 | Voices | 0-1 | §8.4 |
 | Lookup tables | 3-6 | small, boring, force joins |
-| Dictionary | 1 | field semantics, grain statements (§6.5) |
-| Provenance record | 1 | §9 |
+
+**No shipped file describes the data.** A data dictionary, field notes, a schema or column description, a
+readme, an extract manifest, a notes sheet or a "how to read this" tab: any file or sheet whose job is to
+tell the analyst what the data is, what a column means or how the files fit together is a leak, because it
+hands over the structure the analyst is paid to find and sets its definitions beside the very columns the
+decisive step joins. task144's first architecture shipped field notes defining the feed surface a few lines
+from the follower count, and an extract manifest giving every file's role; both portal responses built the
+decisive cascade from them and landed the call. Each file carries its own conventions the way the producing
+system writes them: a timestamp with its zone or offset, a column named for its grain or unit (`day_utc`,
+`amount_eur_thousands`), a code crosswalk that maps codes and says nothing about them, a header the export
+really carries. What the organisation itself defines (an estimand, an eligibility rule, a window) goes in a
+governing document (§8) as a filed fact about the world, never as a gloss on a column. Provenance lives in
+`metadata.json` outside `target/` (§9). Assert it in the generator: no readme, dictionary, notes or
+manifest file or sheet under `target/`, by name or by content.
 
 **Input gates, asserted in the generator:** 10 or more files (10 to 19 typical); 3 or more formats (4
 target); a 25,000-row file in any format or a large database whose real tables must be queried (never an
@@ -121,8 +133,10 @@ asserted. When it fails, widen the decisive spread or shrink the carried advanta
 entity, gross against net, cohort against calendar) needs the correlation built per candidate, asserted
 both ways; independent draws make it inert. Add inert instances too, or the field is the giveaway (task60).
 
-**6.5 Grain statements** in the dictionary as flat definitions, never advice: "Recipients are distinct
-within [entity], [program] and [period]"; "[Status] is account-level and survives a lapsed subscription".
+**6.5 Grain statements** live where the producing system or the organisation states them, never in a file
+written to explain the pack: a column named for its grain, a header the export really carries, or a
+governing document's flat definition ("Recipients are distinct within [entity], [program] and [period]";
+"[Status] is account-level and survives a lapsed subscription"), never advice (§3).
 
 ## 7. Authentic mess and the realism gate (Layer 1)
 
@@ -132,10 +146,10 @@ identifiers and partial cuts. A model may trip on it; the stump never rests on i
 defect placed to be caught. Test: would the organisation's export look exactly like this if nobody had
 designed a task? The design note names each mess and the system that produces it.
 
-**A shipped file's column descriptions say what a row is, never what it explains.** That is the line between
-a decisive organ Gate B requires and an announcement the leak reader finds, and it is easy to cross while
-writing a data dictionary, because explaining a column is what dictionaries feel like they are for. A
-movement log's rows may be described as a patient's transfer between cost centres on a date; none may say
+**A governing document's definition says what a row is, never what it explains.** That is the line between
+a decisive organ Gate B requires and an announcement the leak reader finds, and no file ships whose job is
+to describe columns at all (§3), because explaining a column is what such files feel like they are for. A
+policy may define a movement as a patient's transfer between cost centres on a date; nothing may say
 that complications arise at transfers. The grep that settles it runs over every csv, txt and pdf in the
 pack for the decisive relation's vocabulary, and a hit is innocent only where it states a fact about the
 world (a service reconfigured, a unit closed) rather than a relation between the organ and the outcome.
@@ -256,7 +270,7 @@ A failing R assertion is a design failure: back to `stumping`, never patched in 
 
 **8.1 The pin.** One sentence, a filed fact, in the highest-authority document that carries it; never
 repeated, explained or justified. Authority: the prompt (no pin ever) > governing standard > charter,
-SOW, terms > decision memo > dictionary (semantics only) > method notes > thread. Grep for counter-pins
+SOW, terms > decision memo > method notes > thread (no dictionary ships, §3). Grep for counter-pins
 at or above it and for restatements (a repeated pin is a signpost). To keep a rung out of one file, split
 it: the rule in one, the layout fact it operates on in another.
 
@@ -282,24 +296,24 @@ concrete, dates reconciling with the data; never a generator's voice or a task s
 
 ## 9. Provenance and hygiene
 
-- **Provenance record** (`export_manifest.csv`, `provenance.md`, or the organisation's idiom): per derived
-  file what it is, covers, omits and how it was made; source, date and licence per real file. A real
-  coverage caveat is fine, a hint is not.
-- **`metadata.json`** in the task folder, outside `target/`: the distractors and the portal's keys.
+- **Provenance in `metadata.json`** in the task folder, outside `target/`: per file its source, date,
+  licence, what it covers and how it was made, beside the distractors and the portal's keys. Nothing under
+  `target/` describes the pack (§3).
 - **Timestamps:** every mtime normalised to one in-fiction export date after the latest record.
 - **Identifiers** structured (blocks, check digits, prefixes), never `id_001`; **scale** varies naturally.
 - **A forced-implausible parameter** is stated in the design note with its arithmetic and mitigation.
-- **Never ship** an answer-key column (`is_correct`, `should_exclude`), a README explaining the analysis,
-  or a file name broadcasting the stump.
+- **Never ship** an answer-key column (`is_correct`, `should_exclude`), a README, a data dictionary,
+  field notes, an extract manifest or any file or sheet that describes the data (§3), or a file name
+  broadcasting the stump.
 
 ## 10. Build order
 
 1. Read the design note: rungs (candidate, killing fact, carrying file), ask sheet (pool, device, path).
 2. Spine (§2). 3. Calibration corpus if needed (§4), records first, twin pair from the start.
-4. Operating extracts. 5. Lookup tables and dictionary (§6.5).
+4. Operating extracts. 5. Lookup tables, each file's own conventions in its own form (§3, §6.5).
 6. Compute every rung; assert separation, dominance, disagreement (§6).
 7. Context artifact (§5), distractors (§8.3), `metadata.json`. 8. Governing document and voices (§8).
-9. Mess (§7), then step 6 again: nothing moves. 10. Provenance (§9). 11. Verify (§11).
+9. Mess (§7), then step 6 again: nothing moves. 10. Provenance in `metadata.json` (§9). 11. Verify (§11).
 
 After any later data edit, re-run step 6 in full.
 

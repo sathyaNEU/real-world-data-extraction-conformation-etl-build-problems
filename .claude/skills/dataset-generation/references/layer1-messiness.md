@@ -52,7 +52,7 @@ Would a real analyst meet this in the real source? If it exists only so that cat
 
 ## Actuarial Science & Insurance  (`actuarial-science-insurance`)
 
-1. **Claim transactions needing a triangle.** Payments and reserve changes aggregated by accident period and age, reopenings handled; *honest:* transaction data, a clear date dictionary.
+1. **Claim transactions needing a triangle.** Payments and reserve changes aggregated by accident period and age, reopenings handled; *honest:* transaction data, each date column named for the event it dates.
 2. **Endorsements and cancellations.** In-force periods rebuilt for earned premium and exposure; *honest:* real transaction types and effective dates.
 3. **Accident, policy and calendar year bases mixed.** Each basis identified and aligned; *honest:* the basis labelled per report, the question names its basis.
 4. **Published table grids.** Select-and-ultimate grids reshaped long and keyed by issue age and duration; *honest:* native layout and notes, no altered cell.
@@ -74,7 +74,7 @@ Would a real analyst meet this in the real source? If it exists only so that cat
 
 ## Biomedical & Clinical Research  (`biomedical-clinical-research`)
 
-1. **Trial data split across domain tables.** Demographics, exposure, visits, labs and AEs joined to one row per subject; *honest:* key structure and dictionary, every subject traceable.
+1. **Trial data split across domain tables.** Demographics, exposure, visits, labs and AEs joined to one row per subject; *honest:* the key structure in the tables' own keys, every subject traceable.
 2. **Labs in mixed units and ranges.** Units harmonised, flags mapped, the primary lab chosen; *honest:* unit labels and range table, the protocol names the primary lab.
 3. **Unscheduled and out-of-window visits.** Study day computed, records mapped to analysis windows; *honest:* the windowing rule in the plan, realistic drift.
 4. **Partial dates.** The stated imputation applied before durations; *honest:* the convention in the plan, realistic frequency.

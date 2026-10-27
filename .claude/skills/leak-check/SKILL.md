@@ -40,7 +40,7 @@ python3 .claude/skills/leak-check/leak.py task100 --asof 2027-05-14
 
 | Sweep | Hunts |
 |---|---|
-| 1 file names | author nouns (`trap`, `golden`, `clean_`, `_v2`, `answer`), dot and system files, code in the pack |
+| 1 file names | author nouns (`trap`, `golden`, `clean_`, `_v2`, `answer`), dot and system files, code in the pack; a file that describes the data (a dictionary, field notes, a readme, a manifest, a codebook) is LEAK, a text file or a sheet named for notes or definitions REVIEW (`dataset-generation` section 3) |
 | 2 author vocabulary | `rung`, `decoy`, `the solver`, `rubric`, `placeholder`, library names, home paths, `claude`, em dashes (data files: toolchain terms only); a sentence saying the pack was built (`constructed for this exercise`, `are invented`, `are fictional`) is LEAK in any file, the bare words `fictional`, `fictitious`, `this exercise` REVIEW in documents (`reduce-house-fixes` H24) |
 | 3 answer figures | a golden figure (4+ digits) from blocks 1 and 4 in a document is LEAK; a candidate beside decision vocabulary, or a long figure in data, is REVIEW |
 | 4 design-note vocabulary | a document with 3+ of the stump paragraph's distinctive terms, a prompt sentence with 2 |

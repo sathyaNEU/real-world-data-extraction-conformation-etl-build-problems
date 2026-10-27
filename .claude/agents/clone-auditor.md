@@ -77,7 +77,7 @@ current file.
 - A collision landing only on a dead row (retired or failed): report it as history, no redraw.
 - Backups, dated copies, scratch numbers: excluded by the script; one in a finding is the bug to report.
 - `none by design (Gate G v3)` on both sides: the spec being followed.
-- A file role every build fills (dictionary, provenance): corpus idiom, reported once under habits.
+- A file role every build fills (a governing document, a lookup table): corpus idiom, reported once under habits.
 - Proximity with no shared driver the adjudicator can state in a sentence.
 
 ## Severity

@@ -19,7 +19,7 @@ fail, so a long write-up fails determinism even when the answer is right.
   (each is a criterion). A figure that only shows working (a sub-count, a denominator, a rival's
   intermediate) goes.
 - **Reproducible, not low-level.** Steps name the file and rule that produce each result; they do not walk
-  arithmetic, restate the dictionary or narrate cleaning. A convention needing a paragraph belongs pinned
+  arithmetic, restate the files' conventions or narrate cleaning. A convention needing a paragraph belongs pinned
   in a shipped file.
 
 **Not written:** Deliverable Format Rationale, Justification, Golden Solution listing, Key Assumptions,

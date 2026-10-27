@@ -27,14 +27,14 @@ not the fee). A convention placed in the prompt is not closed; it hands over the
 | 9 | Boundary inclusivity | strict or not | C1, nothing on the edge (41, 66) |
 | 10 | Rounding path | once, per line, per group, before a total | filed at authority (65, 7.6(e) rounds each source down); asserted (70) |
 | 11 | Tie-break | two levels for level candidates | filed two-level rule, first level resolves nearly all (60) |
-| 12 | Maturity and censoring | all cohorts or only fully observed | filed in one dictionary sentence or C1 (75, 79) |
+| 12 | Maturity and censoring | all cohorts or only fully observed | filed in one governing sentence or C1 (75, 79) |
 | 13 | Order of operations | non-commuting steps | filed order; C4 (58, wrong order 20.47 per cent) |
 | 14 | Row order | file order changes the result | C1, asserted over permutations (37, six orders) |
 | 15 | Duplicate resolution | first, last, both, collapse | C1 (63, both filings carry one volume) or filed rule (42) |
-| 16 | Identity normalisation | same entity across systems | dictionary semantics, C4 (74, normalised GTIN 347 of 347, raw misses 129) |
+| 16 | Identity normalisation | same entity across systems | the systems' own keys and crosswalks, C4 (74, normalised GTIN 347 of 347, raw misses 129) |
 | 17 | Netting against gross | may two tails offset | filed scope; C4 (49) |
 | 18 | Dimensional units | are the added quantities the same | units in the data; C4 (65, six of 24 materials, 22.4 per cent) |
-| 19 | Code and status semantics | what a code means for the calculation | dictionary semantics (71, 39); never the stump |
+| 19 | Code and status semantics | what a code means for the calculation | the code's own crosswalk or a governing definition (71, 39); never the stump |
 | 20 | Integerisation | floor, round, remainders, order | C1 by construction (64, whole packages, six disciplines one cent) |
 | 21 | Clause scope | year, test or record | filed scope, C1 (37) |
 | 22 | Forward window contents | what the committed window holds | a shipped driver file for the uncovered span (50, 53, 62, 78) |
@@ -136,8 +136,8 @@ forcing it, two methods survive (`underspecified_objective`).
 
 Highest first: **0 the prompt** (states the question, each ask's unit and rounding; no convention, since it
 outranks everything and hands the insight over); 1 governing standard, policy, regulatory terms; 2
-charter, SOW, contract, rate schedule; 3 decision memo; 4 dictionary (field semantics only); 5 method
-notes on an export; 6 thread or notes. A pin sits at or above every sentence that could argue the other
+charter, SOW, contract, rate schedule; 3 decision memo; 4 method notes on an export; 5 thread or notes.
+No dictionary, field notes or manifest ships (`dataset-generation` §3). A pin sits at or above every sentence that could argue the other
 way. Fatal: the **counter-pin** (another file states the opposite) and the **outranked pin** (a level-5
 pin against a level-1 implication). Fix by moving the pin up, relabelling an artifact in-file for the
 question it answers, deleting an outranking endorsement. Sweep the pack for sentences quotable against
@@ -147,7 +147,7 @@ every absolute claim with its grain (task64).
 ### 6.2 The fork grid
 
 List every choice a competent analyst could make differently; the answer wins every cell or the choice is
-pinned. Assert cell by cell, each losing cell named and mapped to the clause, gate or dictionary line it
+pinned. Assert cell by cell, each losing cell named and mapped to the clause, gate or file convention it
 violates; "wins 8 of 12" is a summary, and an unmapped cell is an open fork. Ten-of-ten test per
 assumption. Pin the nuisance axis, never the decisive one. Before claiming N rival readings, test each
 against a careful read of the clause; claiming rivals the wording excludes invites "the difficulty is
