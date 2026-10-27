@@ -5,9 +5,11 @@ and the October nominations.
 How a star comes to exist here: a repository is found from outside (a link forum, a blog, search, the explore page,
 the command line) at a rate that decays from its launch; every first star is shown in the starrer's followers' home
 feeds, where each follower who sees it stars from the card with a probability set by the repository (its rate per
-view); the stars made from a feed card are shown to their own followers in turn. A spotlighted repository also gets
-the newsletter readers' stars, about the same share of the list whatever the repository, and those readers' stars go
-into their followers' feeds like any other."""
+view); the stars made from a feed card are shown to their own followers in turn. While a repository is on an outside
+forum's front page, followers who see it starred in their feed have often seen it on the forum already and star from
+the card more readily, so a launch spike lifts the rate per view for as long as the spike lasts. A spotlighted
+repository also gets the newsletter readers' stars, about the same share of the list whatever the repository, and
+those readers' stars go into their followers' feeds like any other, at the repository's ordinary rate per view."""
 from __future__ import annotations
 
 import datetime as dt
@@ -27,11 +29,17 @@ H = dt.timedelta(hours=1)
 # floors, capped at 25,000.
 FOLLOWERS = {"forum": (1.30, 1.10, 0.55), "regular": (1.55, 1.35, 0.15), "senior": (4.25, 1.20, 0.0),
              "reader": (3.65, 1.25, 0.0), "feed": (1.60, 1.30, 0.10), "member": (3.10, 1.10, 0.0),
-             "community": (2.05, 1.15, 0.12)}
+             "community": (2.05, 1.15, 0.12), "forumdev": (2.90, 1.10, 0.05)}
 FCAP = 25000
 NL_RATE = 0.00722            # newsletter stars on the spotlight per subscriber sent
 NL_DELAY = [(0.40, 2.0), (0.30, 14.0), (0.20, 48.0), (0.10, 120.0)]      # (share, mean hours)
-FEED_DELAY = [(0.55, 4.0), (0.35, 20.0), (0.10, 60.0)]
+FEED_DELAY = [(0.60, 3.0), (0.35, 12.0), (0.05, 36.0)]
+# A launch spike from an outside forum lifts the rate per view while it lasts: by up to BUZZ times (a spike of
+# BUZZ_FULL stars or more), decaying with the spike itself.
+BUZZ, BUZZ_TAU_H, BUZZ_FULL = 7.0, 31.0, 2000.0
+# The lottery's repositories: launch spikes and rates per view.
+LOT_BURSTS = [0, 0, 0, 300, 600, 1200]
+LOT_CMED, LOT_CSIG, LOT_CMAX = 0.0045, 0.75, 0.016
 UNSTAR_P = 0.025
 RESTAR_P = 0.25
 
@@ -64,6 +72,16 @@ FIRST = ["anna", "ben", "chen", "daan", "eva", "femke", "gus", "hana", "ivan", "
 LAST = ["devries", "jansen", "bakker", "visser", "smit", "meijer", "mulder", "bos", "vos", "peters", "hendriks",
         "dekker", "brouwer", "dijkstra", "koster", "prins", "huisman", "kuipers", "vermeulen", "postma", "garcia",
         "silva", "kowalski", "novak", "tanaka", "kim", "nguyen", "okafor", "haddad", "rossi", "muller", "larsen"]
+
+
+def buzz(r, t):
+    """The lift on a repository's rate per view at time t while its launch spike lasts (1 outside a spike)."""
+    if r.burst <= 0:
+        return 1.0
+    h = (t - r.public).total_seconds() / 3600.0 - r.burst_hour
+    if h < 0:
+        return 1.0
+    return 1.0 + BUZZ * min(1.0, r.burst / BUZZ_FULL) * math.exp(-h / BUZZ_TAU_H)
 
 
 def draw_followers(kind, n, g):
@@ -118,6 +136,7 @@ class Repo:
     shipped_events: bool = False
     stars: list = field(default_factory=list)
     horizon: dt.datetime | None = None
+    pub: int = 0           # the platform's repository id, numbered at creation (the generator's id seeds its streams)
 
     @property
     def full(self):
@@ -321,7 +340,7 @@ class StarSim:
             s = Star(t, account, surface)
             out.append(s)
             f = self.A.by_id[account].followers
-            k = int(g.poisson(r.c * f)) if f > 0 else 0
+            k = int(g.poisson(r.c * buzz(r, t) * f)) if f > 0 else 0
             for _ in range(k):
                 self.push(t + dt.timedelta(hours=delay_hours(FEED_DELAY, g)), "feed", "feed")
             if g.random() < UNSTAR_P:
@@ -341,30 +360,23 @@ class StarSim:
 # The October candidates' parameters (rate per view c; launch burst and its audience; organic seeds per day at
 # launch and their decay; the organic audience; members of the owning organisation).
 OCT_PARAMS = {
-    "tracewire": dict(c=0.0010, burst=1200, burst_kind="senior", burst_hour=5, org=295, decay=0.55,
+    "tracewire": dict(c=0.0010, burst=1200, burst_kind="senior", burst_hour=5, org=330, decay=0.55,
                       mix={"senior": 0.8, "regular": 0.2}, n_members=11),
-    "slidewell": dict(c=0.0170, burst=1875, burst_kind="community", burst_hour=14, org=37, decay=0.55,
-                      mix={"community": 0.6, "regular": 0.4}, n_members=0),
-    "shiftgres": dict(c=0.0037, burst=0, burst_kind="regular", burst_hour=0, org=290, decay=0.55,
+    "slidewell": dict(c=0.0058, burst=1600, burst_kind="forumdev", burst_hour=14, org=100, decay=0.55,
+                      mix={"community": 0.42, "regular": 0.43, "senior": 0.15}, n_members=0),
+    "shiftgres": dict(c=0.0045, burst=0, burst_kind="regular", burst_hour=0, org=250, decay=0.55,
                       mix={"regular": 0.9, "senior": 0.1}, n_members=7),
-    "kilnkit": dict(c=0.0062, burst=200, burst_kind="senior", burst_hour=3, org=82, decay=0.55,
-                    mix={"senior": 0.55, "regular": 0.45}, n_members=9),
-    "hullcheck": dict(c=0.0030, burst=900, burst_kind="regular", burst_hour=8, org=155, decay=0.55,
+    "kilnkit": dict(c=0.0182, burst=0, burst_kind="senior", burst_hour=3, org=94, decay=0.35,
+                    mix={"senior": 0.10, "regular": 0.90}, n_members=9),
+    "hullcheck": dict(c=0.0025, burst=900, burst_kind="regular", burst_hour=8, org=155, decay=0.55,
                       mix={"regular": 0.7, "senior": 0.3}, n_members=5),
-    "timeloom": dict(c=0.0022, burst=500, burst_kind="forum", burst_hour=11, org=122, decay=0.55,
-                     mix={"regular": 0.6, "forum": 0.4}, n_members=0),
+    "timeloom": dict(c=0.0022, burst=500, burst_kind="forum", burst_hour=11, org=130, decay=0.55,
+                     mix={"regular": 0.75, "senior": 0.05, "forum": 0.20}, n_members=0),
     "ferrolog": dict(c=0.0045, burst=500, burst_kind="regular", burst_hour=4, org=205, decay=0.55,
                      mix={"regular": 0.85, "senior": 0.15}, n_members=14),
 }
 MIXES = [{"regular": 0.8, "senior": 0.2}, {"regular": 0.5, "senior": 0.5}, {"forum": 0.6, "regular": 0.4},
          {"regular": 0.95, "senior": 0.05}, {"senior": 0.7, "regular": 0.3}, {"forum": 0.85, "regular": 0.15}]
-# The twin pair: two spotlighted repositories of consecutive issues alike on age, pre-issue stars, pace and feed share,
-# about ten-fold apart on the rate per view (one's starrers well followed, the other's not).
-TWINS = {(2026, 3): dict(c=0.0015, burst=850, burst_kind="senior", burst_hour=6, org=91, decay=0.55,
-                         mix={"senior": 0.85, "regular": 0.15}, n_members=6),
-         (2026, 4): dict(c=0.0150, burst=700, burst_kind="regular", burst_hour=6, org=95, decay=0.55,
-                         mix={"regular": 0.95, "senior": 0.05}, n_members=6)}
-TWIN_AGE = {(2026, 3): 38.6, (2026, 4): 38.4}     # days public at the issue's send
 
 
 def _repo_name(g, used):
@@ -396,15 +408,12 @@ def lottery_repos():
             user = g.random() < 0.3
             public = send - dt.timedelta(days=float(g.uniform(29, 44)), hours=float(g.uniform(0, 24)))
             public = public.replace(microsecond=0)
-            p = dict(c=float(min(0.016, max(0.0006, np.exp(g.normal(math.log(0.0042), 0.75))))),
-                     burst=float(g.choice([0, 300, 900, 1800, 2600])),
+            p = dict(c=float(min(LOT_CMAX, max(0.0006, np.exp(g.normal(math.log(LOT_CMED), LOT_CSIG))))),
+                     burst=float(g.choice(LOT_BURSTS)),
                      burst_kind=str(g.choice(["forum", "regular", "senior"], p=[0.5, 0.35, 0.15])),
                      burst_hour=float(g.uniform(2, 20)), org=float(np.exp(g.normal(math.log(85), 0.5))),
                      decay=0.55, mix=MIXES[int(g.integers(len(MIXES)))],
                      n_members=0 if user else int(g.integers(3, 18)))
-            if j == drawn and (y, m) in TWINS:
-                p = dict(TWINS[(y, m)])
-                public = (send - dt.timedelta(days=TWIN_AGE[(y, m)])).replace(microsecond=0)
             name = _repo_name(g, used)
             out.append(Repo(rid, name, _owner(g, user), "user" if user else "organization", public,
                             LANGS[int(g.integers(len(LANGS)))], "", (y, m), drawn=(j == drawn), **p))
@@ -481,6 +490,27 @@ def describe(r):
     return "Tools for %s developers" % r.language
 
 
+def repo_created(r):
+    """When the repository was created, still private: the draws records.repo_records makes from its own stream."""
+    g = K.rng("repo-meta", r.id)
+    return r.public - dt.timedelta(days=float(g.uniform(12, 260)), hours=float(g.uniform(0, 23)))
+
+
+PUB_ANCHOR = (dt.datetime(2024, 12, 1), 418_000_000)   # the platform's repository count on 1 December 2024
+PUB_PER_DAY = 33_000                                   # repositories created a day across the platform
+
+
+def assign_public_ids(repos):
+    """Grachtwerk numbers a repository when it is created, so the ids the exports carry rise with created_at."""
+    g = K.rng("pub-ids")
+    last = 0
+    for r in sorted(repos, key=lambda x: (repo_created(x), x.id)):
+        c = repo_created(r)
+        base = PUB_ANCHOR[1] + int((c - PUB_ANCHOR[0]).total_seconds() / 86400.0 * PUB_PER_DAY)
+        r.pub = max(base + int(g.integers(0, 900)), last + 1 + int(g.integers(0, 40)))
+        last = r.pub
+
+
 def october_repos():
     out = []
     rid = 627_403_118
@@ -512,6 +542,8 @@ def simulate():
     W.october = october_repos()
     W.repos = W.lottery + W.october
     W.by_name = {r.name: r for r in W.repos}
+    assign_public_ids(W.repos)
+    W.pub_of = {r.id: r.pub for r in W.repos}
     W.list = {ym: list_size(ym) for ym in K.LOTTERY_MONTHS}
     W.list[K.OCT] = 433_812
     # the owners' own accounts (organisations and individual developers)

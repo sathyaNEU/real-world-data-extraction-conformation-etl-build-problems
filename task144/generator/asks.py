@@ -11,7 +11,11 @@ third send to the same list under the same name. A [TEST] copy goes to the edito
 before. Postwerk's template carries the spotlight twice (the heading and the screenshot); Relaymark's template, from
 June, carries it as the heading (tag feature) and the button (tag feature_cta), and adds a follow-up link to last
 month's spotlight under the tag spotlight. A few subscribers who had not opened the issue by the Thursday opened the
-first send later and clicked through in both."""
+first send later and clicked through in both. Some subscribers read Sluis at a company whose mail gateway fetches every
+link of a message the moment it is delivered, to check it before the reader sees it: one request per link within a
+second or two, which the platforms record as clicks by that subscriber (the gateway also fetches the images, so the
+message counts as opened and the Thursday send never reaches them); each platform's own click report leaves out the
+gateways it recognises and keeps the rest."""
 from __future__ import annotations
 
 import datetime as dt
@@ -29,8 +33,8 @@ PW_MONTHS = [(2026, 4), (2026, 5)]
 RM_MONTHS = [(2026, 6), (2026, 7), (2026, 8), (2026, 9)]
 DUTCH_MONTH = {4: "april", 5: "mei"}
 
-PW_CAMP_COLS = ["campaign_id", "campaign_name", "list", "send_time", "recipients", "hard_bounces", "soft_bounces",
-                "delivered", "unique_opens", "unique_clicks", "unsubscribes", "spam_complaints"]
+PW_CAMP_COLS = ["campaign_id", "campaign_name", "list", "send_time", "time_zone", "recipients", "hard_bounces",
+                "soft_bounces", "delivered", "unique_opens", "unique_clicks", "unsubscribes", "spam_complaints"]
 PW_LINK_COLS = ["campaign_id", "subscriber_id", "link_label", "url", "clicks"]
 RM_LINK_COLS = ["campaign_id", "subscriber_id", "link_tag", "url", "clicked_at"]
 NOM_COLS = ["response_id", "submitted_at", "signed_in", "account_id", "email_sha256", "repository"]
@@ -56,13 +60,17 @@ class Campaign:
         self.id, self.name, self.list = cid, name, lst
         self.send_local, self.platform, self.ym, self.kind = send_local, platform, ym, kind
         self.recipients = self.hard = self.soft = self.delivered = self.opens = self.unsubs = self.complaints = 0
-        self.clicks = {}          # link label -> {subscriber: clicks}
+        self.clicks = {}          # link label -> {subscriber: clicks}, the readers' own clicks
+        self.scan = {}            # subscriber -> seconds after the send at which a mail gateway fetched every link
+        self.scan_known = set()   # the gateways the platform's click report recognises and leaves out
 
     @property
     def unique_clicks(self):
+        """The platform's own count: subscribers who clicked, less the gateway fetches it recognises."""
         s = set()
         for d in self.clicks.values():
             s.update(d)
+        s.update(x for x in self.scan if x not in self.scan_known)
         return len(s)
 
 
@@ -158,8 +166,40 @@ def build_sends(W):
         group.append(news)
         _clicks(W, g, ym, group, spot, prefix, base_id, pw)
         _clear_of_edges(group, pw)
+        _gateways(ym, group, prefix, base_id, pw)
         camps.extend(group)
     return camps
+
+
+SCAN_SHARE = (0.0036, 0.0048)    # subscribers behind a gateway that fetches every link on delivery, of a batch's delivered
+SCAN_KNOWN = (0.58, 0.70)        # of them, the share a platform's click report recognises
+
+
+def _gateways(ym, group, prefix, base_id, pw):
+    """The Tuesday batches' subscribers behind a link-checking mail gateway, from their own streams (the readers'
+    clicks drawn above are untouched): mostly subscribers who never click, and about as many readers among them as
+    among anyone, whose own clicks come later like everyone's."""
+    g = K.rng("gateways", *ym)
+    used, resend = set(), set()
+    for c in group:
+        for d in c.clicks.values():
+            used.update(d)
+            if c.kind == "resend":
+                resend.update(d)
+    a_lab, b_lab = labels(pw)
+    for c in group:
+        if c.kind != "batch":
+            continue
+        n = int(round(c.delivered * g.uniform(*SCAN_SHARE)))
+        readers = sorted((set(c.clicks.get(a_lab, {})) | set(c.clicks.get(b_lab, {}))) - resend)
+        k = min(len(readers), int(round(n * 0.013)) + 1)
+        both = [readers[int(i)] for i in g.choice(len(readers), size=k, replace=False)]
+        fresh = _ids(g, prefix, base_id, n - k, used)
+        used.update(fresh)
+        who = sorted(fresh + both)
+        c.scan = {s: float(g.uniform(4, 2400)) for s in who}
+        known = g.random(len(who)) < g.uniform(*SCAN_KNOWN)
+        c.scan_known = {s for s, kn in zip(who, known) if kn}
 
 
 def issue_share(group, pw):
@@ -277,8 +317,8 @@ def pw_camp_rows(W, camps):
     for c in camps:
         if c.platform != "postwerk":
             continue
-        rows.append([c.id, c.name, c.list, c.send_local.strftime("%d-%m-%Y %H:%M"), c.recipients, c.hard, c.soft,
-                     c.delivered, c.opens, c.unique_clicks, c.unsubs, c.complaints])
+        rows.append([c.id, c.name, c.list, c.send_local.strftime("%d-%m-%Y %H:%M"), "Europe/Amsterdam", c.recipients,
+                     c.hard, c.soft, c.delivered, c.opens, c.unique_clicks, c.unsubs, c.complaints])
     rows.sort(key=lambda r: (dt.datetime.strptime(r[3], "%d-%m-%Y %H:%M"), r[0]))
     return rows
 
@@ -297,6 +337,11 @@ def pw_link_rows(W, camps):
             tgt = merged[c.id][1].setdefault(lab, {})
             for s, n in d.items():
                 tgt[s] = tgt.get(s, 0) + n
+        for s in c.scan:
+            # the gateway's fetch of every link of the message, one each
+            for lab in c.clicks:
+                tgt = merged[c.id][1][lab]
+                tgt[s] = tgt.get(s, 0) + 1
     rows = []
     for cid in order:
         c, clicks = merged[cid]
@@ -343,6 +388,12 @@ def rm_link_rows(W, camps):
                     h = float(g.exponential(9.0)) if g.random() < 0.8 else float(g.uniform(10, 400))
                     t = t0 + dt.timedelta(minutes=2, hours=h)
                     rows.append([c.id, s, lab, url, K.iso_z(t.replace(microsecond=0))])
+        for s in sorted(c.scan):
+            g = K.rng("gateway-t", c.id, s)
+            at = t0 + dt.timedelta(seconds=c.scan[s])
+            for lab in sorted(c.clicks):
+                t = at + dt.timedelta(seconds=float(g.uniform(0, 0.8)))
+                rows.append([c.id, s, lab, link_url(W, c, lab), K.iso_z(t.replace(microsecond=0))])
     rows.sort(key=lambda r: (r[4], r[0], r[1], r[2]))
     return rows
 
@@ -375,13 +426,47 @@ def _ref(g, owner, name):
     u = g.random()
     if u < 0.58:
         return "%s/%s" % (owner, name)
-    if u < 0.78:
+    if u < 0.75:
         return "https://%s/%s/%s" % (K.HOST, owner, name)
-    if u < 0.86:
+    if u < 0.81:
         return "%s/%s/%s/" % (K.HOST, owner, name)
-    if u < 0.92:
+    if u < 0.85:
+        return "%s/%s" % (owner.capitalize(), name)
+    if u < 0.875:
         return "%s/%s" % (owner.capitalize(), name.capitalize())
-    return "https://www.%s/%s/%s.git" % (K.HOST, owner, name)
+    if u < 0.93:
+        return "https://%s/%s/%s.git" % (K.HOST, owner, name)
+    if u < 0.97:
+        return "www.%s/%s/%s" % (K.HOST, owner, name)
+    return "https://www.%s/%s/%s" % (K.HOST, owner, name)
+
+
+def _via_personal_accounts(W, rows, truth):
+    """The members who nominated from a personal account: the account and the merge of the member account into it
+    after the nomination, which ends that membership, from their own stream (every account above is issued first, so
+    nothing else moves)."""
+    A = W.accounts
+    acc = A.by_id
+    gv = K.rng("via")
+    W.via = []
+    for pid in sorted({x["pid"] for x in rows if x.get("via")}):
+        xs = [x for x in rows if x.get("pid") == pid]
+        r = W.by_name[xs[0]["repo"]]
+        member = xs[0]["account"]
+        last = max(x["t"] for x in xs)
+        b = A._new("regular", dt.datetime(2019, 1, 1) + dt.timedelta(days=float(gv.uniform(0, 1500))),
+                   int(np.floor(np.exp(gv.normal(1.8, 1.1)))))
+        merged = K.from_amsterdam(last + dt.timedelta(days=float(gv.uniform(0.5, 3.0)))).replace(microsecond=0)
+        acc[member].merged_into = b.id
+        acc[member].followers = 0
+        for i, (org, aid, joined, left, role) in enumerate(W.member_rows):
+            if org == r.owner and aid == member and left is None:
+                W.member_rows[i] = (org, aid, joined, merged, role)
+        for x in xs:
+            x["account"] = b.id
+        W.nominator_accounts.add(b.id)
+        truth[pid]["account"] = b.id
+        W.via.append(dict(repo=r.name, member=member, personal=b.id, merged=merged))
 
 
 def build_nominations(W):
@@ -426,6 +511,15 @@ def build_nominations(W):
             else:
                 old.merged_into = new.id
             people.append(dict(kind="merged", account=new.id, old=old.id, hash=None, member=False))
+        if r.owner_type == "organization":
+            # one member nominates from a personal account and, leaving the organisation a few days later, merges the
+            # member account into it: the merge ends the member account's membership, and the personal account was
+            # never a member
+            owners = {aid for org, aid, j, l, role in W.member_rows if org == r.owner and role == "owner"}
+            for p in people:
+                if p["kind"] == "in" and p["member"] and p["account"] not in owners:
+                    p["kind"] = "via"
+                    break
         rest = plan["people"] - len(people)
         pick = [starrers[int(i)] for i in g.choice(len(starrers), size=rest, replace=False)]
         for aid in pick:
@@ -440,7 +534,7 @@ def build_nominations(W):
             pid = "%s-%d" % (key, pi)
             truth[pid] = dict(repo=key, member=p["member"], account=p.get("account"))
             subs = []
-            if p["kind"] == "in":
+            if p["kind"] in ("in", "via"):
                 subs.append((p["account"], None))
             elif p["kind"] == "out":
                 subs.append((None, p["hash"]))
@@ -454,13 +548,13 @@ def build_nominations(W):
                 ts[1] = max(ts[1], ts[0] + dt.timedelta(days=float(g.uniform(2, 6))))
                 ts[1] = min(ts[1], NOM_CLOSE - dt.timedelta(minutes=5))
             for (aid, h), t in zip(subs, ts):
-                rows.append(dict(t=t, account=aid, hash=h, repo=key, pid=pid))
+                rows.append(dict(t=t, account=aid, hash=h, repo=key, pid=pid, via=p["kind"] == "via"))
                 if aid is not None:
                     W.nominator_accounts.add(aid)
             if g.random() < 0.06:
                 aid, h = subs[0]
                 rows.append(dict(t=ts[0] + dt.timedelta(seconds=float(g.uniform(3, 40))), account=aid, hash=h,
-                                 repo=key, pid=pid))
+                                 repo=key, pid=pid, via=p["kind"] == "via"))
     # nominations that name a fork of a shortlisted repository: the nominator copied the address of the fork they
     # had found (another owner, the same name)
     for key, plan in NOM_PLAN.items():
@@ -502,6 +596,7 @@ def build_nominations(W):
             else:
                 rows.append(dict(t=t, account=None, hash=_hash_email("o%d-%d@mail.example" % (i, int(g.integers(1e6)))),
                                  repo=None, ref="https://%s/%s/%s" % (K.HOST, owner, nm), pid=None))
+    _via_personal_accounts(W, rows, truth)
     rows.sort(key=lambda x: (x["t"], x["pid"] or "", x["account"] or 0))
     out = []
     for i, x in enumerate(rows):
@@ -516,7 +611,9 @@ def build_nominations(W):
                 if x["t"] < K.to_amsterdam(when) or g2.random() < 0.05:
                     name = old
             ref = _ref(g2, r.owner, name)
-        out.append([K.hexid("resp", i, n=10), x["t"].replace(microsecond=0).strftime("%Y-%m-%d %H:%M:%S"),
+        t_local = x["t"].replace(microsecond=0)
+        off = K.amsterdam_offset(K.from_amsterdam(t_local))
+        out.append([K.hexid("resp", i, n=10), t_local.strftime("%Y-%m-%dT%H:%M:%S") + "+%02d:00" % off,
                     "yes" if x["account"] is not None else "no", x["account"] if x["account"] is not None else "",
                     x["hash"] or "", ref])
         x["row"] = out[-1]
@@ -530,10 +627,10 @@ def rename_rows(W):
     rows = []
     for key, (old, when) in K.RENAMED.items():
         r = W.by_name[key]
-        rows.append([r.id, "%s/%s" % (r.owner, old), "%s/%s" % (r.owner, r.name), K.iso_z(when)])
+        rows.append([r.pub, "%s/%s" % (r.owner, old), "%s/%s" % (r.owner, r.name), K.iso_z(when)])
     gn = K.rng("rename-owners")
     for i, (old, new, move) in enumerate(NM.RENAMES):
-        rid = 600_000_000 + int(g.integers(0, 60_000_000))
+        rid = 296_000_000 + int(g.integers(0, 138_000_000))   # repositories outside the shortlists, created before 2026
         person = NM.handle(gn)
         if move == "org":
             # moved from the maintainer's own account into the project's organisation
@@ -575,7 +672,7 @@ def traffic_rows(W):
                 uv = int(g.poisson(max(0.5, mix[ref] * g.uniform(6.5, 9.5))))
                 views = uv + int(g.poisson(uv * g.uniform(0.35, 0.8)))
                 if uv or views:
-                    rows.append([r.id, d.isoformat(), ref, views, uv])
+                    rows.append([r.pub, d.isoformat(), ref, views, uv])
             d += dt.timedelta(days=1)
     rows.sort(key=lambda x: (x[1], x[0], REFERRERS.index(x[2])))
     return rows

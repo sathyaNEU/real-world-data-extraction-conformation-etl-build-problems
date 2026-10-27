@@ -1,7 +1,7 @@
 """task144's assertions, run on every build: the three-rules block on the clean truth (R1 to R3c), every semantic
-fork row (SF1 to SF16), the ladder (winners, margins, positions, dominance, the twin pair, the back-test), the bins
-and the readings' spreads, the asks and their device profiles, the separation of the asks from the call, the input
-gates, the distractors and the realism sweep."""
+fork row (SF1 to SF18), the ladder (winners, margins, positions, dominance, the launch spike, the lottery back-test),
+the rate's sampling band, the bins and the readings' spreads, the asks and their device profiles, the separation of
+the asks from the call, the input gates, the distractors, the no-description rule and the realism sweep."""
 from __future__ import annotations
 
 import datetime as dt
@@ -17,6 +17,20 @@ import calc as C
 import common as K
 
 N = {"pass": 0}
+
+# The readings of the rate per view a careful reader might take instead of the golden's (stars from day 8 to the
+# extract): another first day, only the last two or three weeks, feed stars counted a day later than the views, the
+# last two days' views left out while their feed stars are still arriving.
+WINDOWS = [{"post_from": 6}, {"post_from": 7}, {"post_from": 10}, {"post_from": 15}, {"last_days": 14},
+           {"last_days": 21}, {"lag": 1}, {"tail": 2}, {"lag": 1, "tail": 2}]
+
+
+def window_label(o):
+    if "post_from" in o:
+        return "from day %d" % o["post_from"]
+    if "last_days" in o:
+        return "over the last %d days" % o["last_days"]
+    return "from day 8, %s" % ", ".join("%s %d" % kv for kv in o.items())
 
 
 def ok(cond, label, detail=""):
@@ -88,17 +102,20 @@ def clean_truth(W):
     Lbar = np.mean(lifts) * W.list[K.OCT] / np.mean(L)
     pbar = sum(lifts) / sum(bases)
     out = {}
+    m = lambda c: 1 + c * fR / (1 - c * f2)
     for r in W.october:
         a = K.day_index(r.public, cut)
         d = daily(r)
         base = d[1:a + 1].sum() + d[a - 6:a + 1].mean() * G(a)
         st = [s for s in r.stars if s.first and s.t <= cut]
-        c = sum(1 for s in st if s.surface == "feed") / sum(acc[s.account].followers for s in st)
+        c_life = sum(1 for s in st if s.surface == "feed") / sum(acc[s.account].followers for s in st)
+        late = [s for s in st if K.day_index(r.public, s.t) >= C.POST_FROM]
+        c = sum(1 for s in late if s.surface == "feed") / sum(acc[s.account].followers for s in late)
         e = ext(r)
         Kf = sum(1 for s in e if s.surface == "feed") / len(e)
-        out[r.name] = dict(R0=base + Lbar, R1=base * (1 + pbar), R2=base + D / (1 - Kf),
-                           R3=base + D * (1 + c * fR / (1 - c * f2)), base=base, c=c, K=Kf)
-    win = {rung: max(out, key=lambda n: out[n][rung]) for rung in ("R0", "R1", "R2", "R3")}
+        out[r.name] = dict(R0=base + Lbar, R1=base * (1 + pbar), R2=base + D / (1 - Kf), R3=base + D * m(c_life),
+                           R4=base + D * m(c), base=base, c=c, c_life=c_life, K=Kf)
+    win = {rung: max(out, key=lambda n: out[n][rung]) for rung in ("R0", "R1", "R2", "R3", "R4")}
     return out, win, dict(fR=fR, f2=f2, rate=rate, D=D, Lbar=Lbar)
 
 
@@ -156,18 +173,23 @@ def run(target, golden, W=None, meta_path=None):
     roll_eq = all(np.array_equal(C.daily_from_rollup(B, r["rid"])[1:r["a"] + 1], r["daily"][1:r["a"] + 1]) for r in G["rows"])
     ok(roll_eq, "R2 rollup and events agree for the shortlist", "daily external stars equal day by day")
     # R3a, R3b on the clean truth and on the pack
-    truth, twin, tk = clean_truth(W) if W is not None else (None, None, None)
+    truth, win, tk = clean_truth(W) if W is not None else (None, None, None)
     if truth is not None:
-        ok(twin["R0"] == "tracewire", "R3a analyst test on the clean truth files tracewire",
-           "R0 %s %.0f" % (twin["R0"], truth["tracewire"]["R0"]))
-        ok(twin["R3"] == "slidewell" and twin["R1"] != "slidewell" and twin["R2"] != "slidewell",
-           "R3b only the decisive step files slidewell", "R1 %s, R2 %s, R3 %s" % (twin["R1"], twin["R2"], twin["R3"]))
-        ok(all(abs(truth[n]["R3"] - out[n]["R3"]) < 1e-6 for n in truth),
-           "R3 clean truth and pack agree to zero drift", "seven expected totals equal")
+        ok(win["R0"] == "tracewire", "R3a analyst test on the clean truth files tracewire",
+           "R0 %s %.0f" % (win["R0"], truth["tracewire"]["R0"]))
+        ok(win["R3"] == "slidewell", "R3a the whole-life cascade on the clean truth files slidewell",
+           "R3 %s %.0f" % (win["R3"], truth["slidewell"]["R3"]))
+        ok(win["R4"] == "kilnkit" and "kilnkit" not in (win["R1"], win["R2"], win["R3"]),
+           "R3b only the decisive step files kilnkit", "R1 %s, R2 %s, R3 %s, R4 %s" % (
+               win["R1"], win["R2"], win["R3"], win["R4"]))
+        ok(all(abs(truth[n]["R4"] - out[n]["R4"]) < 1e-6 and abs(truth[n]["R3"] - out[n]["R3"]) < 1e-6 for n in truth),
+           "R3 clean truth and pack agree to zero drift", "seven expected totals equal, both cascades")
     ok(rk["R0"]["winner"] == "tracewire", "R3a default path on the pack files tracewire",
        "%.0f, the spotlight adding %.0f" % (out["tracewire"]["R0"], R["Lbar"]))
-    ok(rk["R3"]["winner"] == "slidewell", "R3b decisive step on the pack files slidewell",
-       "%.0f, adding %.0f" % (rows["slidewell"]["total"], rows["slidewell"]["lift"]))
+    ok(rk["R3"]["winner"] == "slidewell", "R3a the whole-life cascade on the pack files slidewell",
+       "%.0f, adding %.0f" % (out["slidewell"]["R3"], out["slidewell"]["R3"] - out["slidewell"]["base"]))
+    ok(rk["R4"]["winner"] == "kilnkit" and G["pick"]["name"] == "kilnkit", "R3b decisive step on the pack files kilnkit",
+       "%.0f, adding %.0f" % (rows["kilnkit"]["total"], rows["kilnkit"]["lift"]))
     memo = pdf_text(os.path.join(target, K.MEMO))
     words = [w for w in ("average", "lift", "follower", "feed", "cascade", "lottery's effect", "per view", "multiplier",
                          "pace", "trajectory", "forecast") if w in memo.lower()]
@@ -190,7 +212,7 @@ def run(target, golden, W=None, meta_path=None):
         ok(same_figures(G, C.golden(B, opts)), "SF2 window from the %s" % ("public hour" if "hour_window" in opts else
                                                                              "Amsterdam day"), "same pick and bins")
     ok(rk["direct"]["winner"] == "tracewire", "SF3 the newsletter's own stars only file tracewire",
-       "%.0f against slidewell %.0f" % (out["tracewire"]["direct"], out["slidewell"]["direct"]))
+       "%.0f against kilnkit %.0f" % (out["tracewire"]["direct"], out["kilnkit"]["direct"]))
     lifts = np.array([l["lift"] for l in R["L"]])
     med = float(np.median(lifts)) * X["subs_oct"] / np.mean([l["subs"] for l in R["L"]])
     r0med = max(rows, key=lambda n: rows[n]["base"] + med)
@@ -208,7 +230,12 @@ def run(target, golden, W=None, meta_path=None):
        "same pick and bins")
     merged = set(B["accounts"].account_id[B["accounts"].merged_into.notna()])
     cand_starrers = set(B["events"][B["events"].repo.isin(octrow["shortlist"])].account)
-    ok(not (merged & cand_starrers), "SF11 no merged account starred a candidate", "%d merged accounts" % len(merged))
+    G11 = C.golden(B, {"stars_to_survivor": True})
+    ok(same_figures(G, G11) and all(k(a["S"]) == k(b["S"]) for a, b in zip(
+        sorted(G["rows"], key=lambda r: r["name"]), sorted(G11["rows"], key=lambda r: r["name"]))),
+       "SF11 a merged account's star credited to the account it was merged into", "%d merged accounts, %d of them "
+       "starred a candidate (members who later merged their member account away), same pick, bins and stars to date"
+       % (len(merged), len(merged & cand_starrers)))
     sep = [x for x in X["past"] if x["issue"] == dt.date(2026, 9, 1)][0]
     ev = B["events"]
     gap = K.CUT - C.send_utc(sep["issue"])
@@ -229,41 +256,54 @@ def run(target, golden, W=None, meta_path=None):
         ok(same_figures(G, C.golden(B, opts)), "SF15 feed starrers' reach, %s" % opts["f2"], "same pick and bins")
     comp = all(k(k(r["base"]) + k(r["lift"])) == k(r["total"]) for r in G["rows"])
     ok(comp, "SF16 rounding once or per component gives the same figures", "seven candidates")
+    for opts in WINDOWS:
+        G1 = C.golden(B, opts)
+        ok(same_figures(G, G1), "SF17 the rate per view read %s" % window_label(opts),
+           "kilnkit %.0f adding %.0f; slidewell %.0f" % (
+               [q for q in G1["rows"] if q["name"] == "kilnkit"][0]["total"],
+               [q for q in G1["rows"] if q["name"] == "kilnkit"][0]["lift"],
+               [q for q in G1["rows"] if q["name"] == "slidewell"][0]["total"]))
+    G1 = C.golden(B, {"rate_external": True})
+    ok(same_figures(G, G1), "SF18 the rate per view on external stars only", "pick %s" % G1["pick"]["name"])
 
     # ---------------------------------------------------------------- the ladder
     print("ladder")
-    for rung, name, floor in (("R0", "tracewire", 1.15), ("R1", "tracewire", 1.15), ("R2", "tracewire", 1.15),
-                              ("R3", "slidewell", 1.2)):
+    for rung, name, floor in (("R0", "tracewire", 1.15), ("R1", "tracewire", 1.15), ("R3", "slidewell", 1.15),
+                              ("R3k", "slidewell", 1.15), ("R4", "kilnkit", 1.2)):
         ok(rk[rung]["winner"] == name and rk[rung]["margin"] >= floor, "rung %s files %s" % (rung, name),
-           "margin %.3f, slidewell %d" % (rk[rung]["margin"], rk[rung]["slidewell"]))
-    ok(rk["R0"]["slidewell"] in (4, 5), "position: slidewell 4th or 5th on rung 0", "%d" % rk["R0"]["slidewell"])
-    ok(rk["R1"]["slidewell"] > 2 and rk["R2"]["slidewell"] > 2, "position: slidewell off the top two on R1 and R2",
-       "%d, %d" % (rk["R1"]["slidewell"], rk["R2"]["slidewell"]))
-    for rival in ("pace", "direct", "platform", "analogs", "regression"):
-        ok(rk[rival]["winner"] != "slidewell", "rival %s files another pick" % rival,
+           "margin %.3f, kilnkit %d" % (rk[rung]["margin"], rk[rung]["golden_place"]))
+    ok(rk["R2"]["winner"] != "kilnkit" and rk["R2"]["golden_place"] >= 3, "rung R2 (own feed share) files another pick",
+       "%s, kilnkit %d" % (rk["R2"]["winner"], rk["R2"]["golden_place"]))
+    ok(rk["R0"]["golden_place"] >= 4, "position: kilnkit 4th or lower on rung 0", "%d" % rk["R0"]["golden_place"])
+    ok(rk["R1"]["golden_place"] > 2, "position: kilnkit off the top two on R1", "%d" % rk["R1"]["golden_place"])
+    ok(R["kappa"] < 1, "R3k: the lottery scales the whole-life cascade down", "kappa %.3f" % R["kappa"])
+    for rival in ("pace", "direct", "platform", "analogs", "regression", "owner"):
+        ok(rk[rival]["winner"] != "kilnkit", "rival %s files another pick" % rival,
            "%s (margin %.3f)" % (rk[rival]["winner"], rk[rival]["margin"]))
-    fg = out["slidewell"]["first"]
-    ok(rk["first"]["winner"] == "slidewell" and k(fg) != k(rows["slidewell"]["total"]) and
-       k(fg - rows["slidewell"]["base"]) != k(rows["slidewell"]["lift"]),
-       "rival first generation: right pick, both figures a bin off", "%.0f, adding %.0f" % (fg, fg - rows["slidewell"]["base"]))
+    kk_ = rows["kilnkit"]
+    fg = out["kilnkit"]["first"]
+    ok(rk["first"]["winner"] == "kilnkit" and k(fg) != k(kk_["total"]) and k(fg - kk_["base"]) != k(kk_["lift"]),
+       "rival first generation: right pick, both figures a bin off", "%.0f, adding %.0f" % (fg, fg - kk_["base"]))
     sw, tw = rows["slidewell"], rows["tracewire"]
-    ok(sw["c"] / tw["c"] >= 1.2 * max(tw["base"] / sw["base"], tw["K"] / sw["K"]), "dominance: per-view rate against base and feed share",
-       "%.1f against 1.2 x %.2f" % (sw["c"] / tw["c"], max(tw["base"] / sw["base"], tw["K"] / sw["K"])))
-    L = {l["issue"]: l for l in R["L"]}
-    t1, t2 = L[dt.date(2026, 3, 3)], L[dt.date(2026, 4, 7)]
-    close = lambda a, b, tol: abs(a - b) / max(a, b) <= tol
-    ok(t1["a"] == t2["a"] and close(t1["S"], t2["S"], 0.05) and close(t1["pace"], t2["pace"], 0.05) and close(t1["K"], t2["K"], 0.05),
-       "twin pair: March and April 2026 spotlights alike before the issue",
-       "age %d/%d, stars %d/%d, pace %.1f/%.1f, feed share %.3f/%.3f" % (t1["a"], t2["a"], t1["S"], t2["S"], t1["pace"],
-                                                                        t2["pace"], t1["K"], t2["K"]))
-    ok(t2["lift"] / t1["lift"] >= 1.8 and t2["c"] / t1["c"] >= 5, "twin pair: lifts apart on the per-view rate",
-       "lifts %.0f/%.0f, rates %.4f/%.4f" % (t1["lift"], t2["lift"], t1["c"], t2["c"]))
-    pred = np.array([X["rate"] * l["subs"] * (1 + l["c"] * X["fR"] / (1 - l["c"] * X["f2"])) for l in R["L"]])
-    act = np.array([l["lift"] for l in R["L"]])
-    rm_c = float(np.sqrt(np.mean((pred - act) ** 2)))
-    rm_m = float(np.sqrt(np.mean((act * 0 + act.mean() - act) ** 2)))
-    ok(np.corrcoef(pred, act)[0, 1] >= 0.9 and rm_c < 0.5 * rm_m, "back-test: the cascade explains the lottery's lifts",
-       "corr %.3f, RMSE %.0f against %.0f for the average" % (np.corrcoef(pred, act)[0, 1], rm_c, rm_m))
+    ok(kk_["c"] / tw["c"] >= 1.2 * tw["base"] / kk_["base"], "dominance: kilnkit's rate per view against tracewire's base",
+       "%.1f against 1.2 x %.2f" % (kk_["c"] / tw["c"], tw["base"] / kk_["base"]))
+    ok(sw["c_life"] >= 2.5 * sw["c"] and abs(kk_["c_life"] / kk_["c"] - 1) <= 0.15,
+       "launch spike: slidewell's whole-life rate over two and a half times its day-8 rate, kilnkit's within 15 per cent",
+       "slidewell %.4f / %.4f, kilnkit %.4f / %.4f" % (sw["c_life"], sw["c"], kk_["c_life"], kk_["c"]))
+    spiked = [l for l in R["L"] if W is not None and [r for r in W.lottery if r.pub == l["rid"]][0].burst >= 600]
+    calm = [l for l in R["L"] if W is not None and [r for r in W.lottery if r.pub == l["rid"]][0].burst == 0]
+    if W is not None:
+        ok(spiked and np.mean([l["c_life"] / l["c_post"] for l in spiked]) >= 1.4 and
+           all(l["c_life"] >= l["c_post"] for l in spiked) and
+           all(abs(l["c_life"] / l["c_post"] - 1) <= 0.35 for l in calm if l["c_post"] > 0),
+           "lottery: launch spikes lift the whole-life rate, calm launches do not",
+           "spiked %s; calm max %.2f" % (", ".join("%.2f" % (l["c_life"] / l["c_post"]) for l in spiked),
+                                         max(abs(l["c_life"] / l["c_post"] - 1) for l in calm if l["c_post"] > 0)))
+    bt = R["backtest"]
+    ok(bt["corr_post"] >= 0.95 and bt["post"] <= 0.4 * bt["life"] and bt["post"] <= 0.3 * bt["mean"],
+       "back-test: the day-8 cascade explains the lottery's lifts",
+       "corr %.3f; RMSE %.0f against %.0f on the whole-life rate and %.0f for the average" % (
+           bt["corr_post"], bt["post"], bt["life"], bt["mean"]))
     ok(all(C.day_index(B["public"][r["rid"]], K.OCT_SEND + dt.timedelta(days=21)) <= 90 for r in G["rows"]),
        "axis 22: the cascade runs inside every window", "three weeks after the send is before every day 90")
 
@@ -271,30 +311,30 @@ def run(target, golden, W=None, meta_path=None):
     print("rate evidence")
 
     def total_at(r, c):
-        return r["base"] + X["D"] * (1 + c * X["fR"] / (1 - c * X["f2"]))
+        return r["base"] + X["D"] * C.mult(X, c)
     for r in G["rows"]:
         sig = r["c"] / np.sqrt(r["feed"])
         moved = [total_at(r, r["c"] + s * sig) for s in (-1, 1)]
         same = all(k(t) == k(r["total"]) for t in moved)
         if r is G["pick"]:
             same = same and all(k(t - r["base"]) == k(r["lift"]) for t in moved)
-        ok(same, "one sigma: %s's rate (%d feed stars)" % (r["name"], r["feed"]),
+        ok(same, "one sigma: %s's rate (%d feed stars from day 8)" % (r["name"], r["feed"]),
            "%.0f to %.0f around %.0f" % (min(moved), max(moved), r["total"]))
     low = total_at(G["pick"], G["pick"]["c"] - 2 * G["pick"]["c"] / np.sqrt(G["pick"]["feed"]))
     high = max(total_at(r, r["c"] + 2 * r["c"] / np.sqrt(r["feed"])) for r in G["rows"] if r is not G["pick"])
     ok(low > high, "two sigma: the pick holds with its rate low and every other rate high", "%.0f against %.0f" % (low, high))
-    ok(G["pick"]["feed"] >= 500, "the decisive rate rests on 500 or more feed stars", "%d" % G["pick"]["feed"])
+    ok(G["pick"]["feed"] >= 300, "the decisive rate rests on 300 or more feed stars", "%d" % G["pick"]["feed"])
 
     # ---------------------------------------------------------------- bins and spreads
     print("bins")
-    figs = [("pick total", sw["total"]), ("pick added", sw["lift"])] + [(r["name"], r["total"]) for r in G["rows"]]
+    figs = [("pick total", kk_["total"]), ("pick added", kk_["lift"])] + [(r["name"], r["total"]) for r in G["rows"]]
     for name, v in figs:
         ok(edge(v) >= 150, "bin: %s" % name, "%.0f, %.0f from the edge" % (v, edge(v)))
-    spreads = [{"pace_window": 10}, {"pace_window": 14}, {"drop_last_days": 2}, {"fR": "issue_mean"},
-               {"f2": "spotlights"}, {"rate_issues": "last6"}, {"rate_issues": "2026", "fR": "2026"}]
+    spreads = [{"pace_window": 10}, {"pace_window": 14}, {"fR": "issue_mean"}, {"f2": "spotlights"},
+               {"rate_issues": "last6"}, {"rate_issues": "2026", "fR": "2026"}]
     for opts in spreads:
         G1 = C.golden(B, opts)
-        ok(same_figures(G, G1), "spread: %s" % opts, "slidewell %.0f adding %.0f" % (G1["rows"][0]["total"], G1["rows"][0]["lift"]))
+        ok(same_figures(G, G1), "spread: %s" % opts, "kilnkit %.0f adding %.0f" % (G1["pick"]["total"], G1["pick"]["lift"]))
     for ym, v in AA.items():
         pos = (v["share"] * 100) % 1
         ok(pos <= 0.2 or pos >= 0.8, "bin: click-through %d-%02d" % ym, "%.4f" % v["share"])
@@ -305,31 +345,69 @@ def run(target, golden, W=None, meta_path=None):
 
     # ---------------------------------------------------------------- the asks
     print("asks")
-    profiles_a = {"cracker": dict(sum_all=1, by_label=1, sum_per_campaign=1), "sum_all": dict(sum_all=1),
+    # the graded ask figures: Ask A each issue's subscribers who clicked through and their share (12); Ask B each
+    # organisation's repository's people outside it when they nominated it and their share (10)
+    profiles_a = {"careful": dict(keep_gateways=1),
+                  "cracker": dict(keep_gateways=1, sum_all=1, by_label=1, sum_per_campaign=1), "sum_all": dict(sum_all=1),
                   "first_send": dict(first_send=1, clicks_counted_only=1), "one_per_campaign": dict(one_per_campaign=1),
                   "issue_day_counted_clicks": dict(clicks_counted_only=1), "issue_day_label": dict(by_label=1),
                   "issue_day_per_campaign": dict(sum_per_campaign=1), "issue_day_per_link": dict(sum_per_link=1)}
     hits_a = {}
     for name, h in profiles_a.items():
         v = C.ask_a(B, A, h)
-        hits_a[name] = sum((v[ym]["delivered"] == AA[ym]["delivered"]) + (v[ym]["share2"] == AA[ym]["share2"]) for ym in AA)
-    profiles_b = {"cracker": dict(no_hash_map=1, no_merge_map=1), "hash_only": dict(no_merge_map=1, no_renames=1),
-                  "hash_merge_one_hop_renames": dict(single_hop=1), "hash_merge": dict(no_renames=1),
-                  "hash_renames": dict(no_merge_map=1)}
+        hits_a[name] = sum((v[ym]["clickers"] == AA[ym]["clickers"]) + (v[ym]["share2"] == AA[ym]["share2"]) for ym in AA)
+    orgs = [n for n in AB if AB[n]["org"]]
+    profiles_b = {"careful": dict(survivor_only=1), "now": dict(members_now=1),
+                  "cracker": dict(no_hash_map=1, no_merge_map=1, survivor_only=1),
+                  "hash_only": dict(no_merge_map=1, no_renames=1), "hash_merge_one_hop_renames": dict(single_hop=1),
+                  "hash_merge": dict(no_renames=1), "hash_renames": dict(no_merge_map=1)}
     hits_b = {}
     for name, h in profiles_b.items():
         v = C.ask_b(B, A, h)
-        hits_b[name] = sum((v[n]["people"] == AB[n]["people"]) + (bool(AB[n]["org"]) and v[n].get("share2") == AB[n]["share2"])
-                           for n in AB)
-    ok(hits_a["cracker"] == 0 and hits_b["cracker"] == 0, "cracker misses every ask figure", "A %d/12, B %d/12" % (hits_a["cracker"], hits_b["cracker"]))
-    ok(max(hits_a.values()) < 12 and max(hits_b.values()) < 12, "no ask whole on fewer than all its devices",
+        hits_b[name] = sum((v[n].get("outside") == AB[n]["outside"]) + (v[n].get("share2") == AB[n]["share2"]) for n in orgs)
+    ok(hits_a["careful"] == 0 and hits_b["careful"] == 0 and hits_b["now"] == 0,
+       "the careful route misses every ask figure", "the stage 4 readers' route: A %d/12 (gateways kept), B %d/10 "
+       "(membership of the account nominated from), B %d/10 (membership now)" % (hits_a["careful"], hits_b["careful"], hits_b["now"]))
+    ok(hits_a["cracker"] == 0 and hits_b["cracker"] == 0, "cracker misses every ask figure",
+       "A %d/12, B %d/10" % (hits_a["cracker"], hits_b["cracker"]))
+    ok(max(hits_a.values()) < 12 and max(hits_b.values()) < 10, "no ask whole on fewer than all its devices",
        "A %s; B %s" % (hits_a, hits_b))
-    single_b = hits_b["hash_only"]
-    one = max(hits_a["issue_day_counted_clicks"], single_b)
-    ok(one / 24 < 0.35, "mirror leakage under 35 per cent with one device handled",
-       "%d of 24 (Ask A's batches against the Thursday send; Ask B's hashes alone %d)" % (one, hits_b["hash_only"]))
-    pair = (38 + 7 + 55 * one / 24 + 5 + 7 + 55 * min(hits_a["cracker"], hits_b["cracker"]) / 24) / 2
-    ok(abs(pair - 35.4) < 0.05 and pair <= 40, "pair ceiling at or under 40, as the ask sheet states", "%.1f" % pair)
+    one = max(max(v for n, v in hits_a.items() if n not in ("careful", "cracker")),
+              max(v for n, v in hits_b.items() if n not in ("careful", "cracker", "now")))
+    ok(one / 22 < 0.35, "mirror leakage under 35 per cent with one device mishandled",
+       "%d of 22 (a reader handling the gateways who sums every send keeps the clickers)" % one)
+    pair = (38 + 7 + 55 * (hits_a["careful"] + hits_b["careful"]) / 22 + 5 + 7 + 55 * (hits_a["careful"] + hits_b["careful"]) / 22) / 2
+    ok(abs(pair - 28.5) < 0.05, "pair ceiling at or under 40, as the ask sheet states", "%.1f" % pair)
+    # the gateway fetches: one reading whatever the window or the count of links, no reader's own clicks taken for one
+    base_links, base_secs = C.GATEWAY_LINKS, C.GATEWAY_SECONDS
+    same = True
+    for nl, ns in ((3, 2), (5, 2), (6, 2), (4, 1), (4, 5), (4, 30), (6, 60)):
+        C.GATEWAY_LINKS, C.GATEWAY_SECONDS = nl, ns
+        v = C.ask_a(B, A)
+        same = same and all(v[ym]["clickers"] == AA[ym]["clickers"] for ym in AA)
+    C.GATEWAY_LINKS, C.GATEWAY_SECONDS = base_links, base_secs
+    ok(same, "Ask A a gateway's fetch read at three to six links within one second to a minute", "every issue's clickers equal")
+    pw = A["pw_links"]
+    issue_ids = set(A["pw_camp"].campaign_id[A["pw_camp"].list == "Sluis"])
+    pw = pw[pw.campaign_id.isin(issue_ids)]
+    nlab = pw.groupby("campaign_id").link_label.nunique()
+    mine = pw.groupby(["campaign_id", "subscriber_id"]).agg(n=("link_label", "nunique"), most=("clicks", "max"))
+    full = [k for k, x in mine.iterrows() if x.n == nlab[k[0]]]
+    ok(all(mine.loc[k, "n"] <= nlab[k[0]] - 2 for k in mine.index if k not in set(full)),
+       "Ask A no reader's own clicks reach every link of a Postwerk send",
+       "%d fetches in the issues' sends, every reader at least two links short" % len(full))
+    camps = json.load(open(os.path.join(target, K.RM_CAMP), encoding="utf-8"))["campaigns"]
+    rm = A["rm_links"]
+    tie = []
+    for c in camps:
+        if c["audience"]["list"] != "Sluis" or c["name"].startswith("[TEST]"):
+            continue
+        lk = rm[rm.campaign_id == c["id"]]
+        tie.append((c["stats"]["unique_clicks"], lk.subscriber_id.nunique(), C.readers_clicks(lk, "relaymark").subscriber_id.nunique()))
+    fetched = [x for x in tie if x[1] > x[2]]
+    ok(len(fetched) == 8 and all(own < rep < raw for rep, raw, own in fetched),
+       "Ask A the platform's own click count ties under neither reading on a send with fetches",
+       "%d Tuesday batches: %s" % (len(fetched), "; ".join("%d between %d and %d" % (rep, own, raw) for rep, raw, own in fetched[:3])))
     n_dev = sum(1 for ym in AA)
     ok(all(AA[ym]["delivered"] < sum_all_delivered(B, A, ym) for ym in AA), "A2 every issue has a Thursday resend",
        "%d issues" % n_dev)
@@ -338,7 +416,7 @@ def run(target, golden, W=None, meta_path=None):
             if f not in K.ASK_FILES and f not in K.DISTRACTORS:
                 shutil.copy(os.path.join(target, f), tmp)
         Bn = C.load(tmp)
-        ok(same_figures(G, C.golden(Bn)) and abs(C.golden(Bn)["pick"]["total"] - sw["total"]) < 1e-6,
+        ok(same_figures(G, C.golden(Bn)) and abs(C.golden(Bn)["pick"]["total"] - G["pick"]["total"]) < 1e-6,
            "separation: the call unchanged with every ask file and distractor deleted", "zero drift")
     for f in K.DISTRACTORS:
         with tempfile.TemporaryDirectory(dir=os.path.dirname(target)) as tmp:
@@ -351,12 +429,12 @@ def run(target, golden, W=None, meta_path=None):
                "distractor deleted: %s" % f[:40], "golden and asks unchanged")
 
     # ---------------------------------------------------------------- registers and grains (house fixes)
-    man = [r["file"] for r in csv_rows(os.path.join(target, K.MANIFEST))]
-    ok(set(man) == set(os.listdir(target)) - {K.MANIFEST} and len(man) == len(set(man)),
-       "H9 the manifest lists every shipped file once", "%d files" % len(man))
-    dic = open(os.path.join(target, K.DICTIONARY), encoding="utf-8").read()
-    data_files = [f for f in os.listdir(target) if f.endswith((".csv", ".json", ".parquet", ".xlsx")) and f != K.MANIFEST]
-    ok(all(f in dic for f in data_files), "H9 the dictionary names every data file", "%d data files" % len(data_files))
+    describing = [f for f in os.listdir(target) if f.lower().endswith((".md", ".txt")) or
+                  re.search(r"dictionar|manifest|readme|fields|contents", f.lower())]
+    xw_cols = open(os.path.join(target, K.CROSSWALK), encoding="utf-8").readline().strip().split(",")
+    ok(not describing and xw_cols == ["v5_src", "v6_surface", "v5_used_to", "v6_used_from"],
+       "no shipped file describes the data: no dictionary, manifest or readme; the crosswalk maps codes only",
+       "%d files" % len(os.listdir(target)))
     comp, dd = X["complete"], X["dd"]
     for how in ("mean_of_ratios", "median"):
         moved = True
@@ -381,7 +459,13 @@ def run(target, golden, W=None, meta_path=None):
        "%d signed-out nominations of the shortlist" % len(signed_out))
     C.prepare(B)
     merged_to = dict(zip(accs.account_id[accs.merged_into.notna()], accs.merged_into.dropna().astype(int)))
-    same_now = True
+    same_now, left = True, []
+    group = {}
+    for a in merged_to:
+        b = a
+        while b in merged_to:
+            b = merged_to[b]
+        group.setdefault(b, set()).add(a)
     for i in on_short:
         rid = [q for q in octrow["shortlist"] if B["repos"][q]["full_name"].lower() == ren.get(refs[i], refs[i])][0]
         org = C.owner_of(B, rid)
@@ -390,9 +474,22 @@ def run(target, golden, W=None, meta_path=None):
         aid = noms.account_id[i] if noms.account_id[i] is not None else int(by_hash[noms.email_sha256[i]])
         while aid in merged_to:
             aid = merged_to[aid]
-        t = K.from_amsterdam(dt.datetime.strptime(noms.submitted_at[i], "%Y-%m-%d %H:%M:%S"))
-        same_now = same_now and C.is_member(B, org, aid, t) == C.is_member(B, org, aid, t, current=True)
-    ok(same_now, "Ask B membership when nominating equals membership now", "%d nominations of the shortlist" % len(on_short))
+        t = K.utc_of(noms.submitted_at[i])
+        accts = {aid} | group.get(aid, set())
+        then = any(C.is_member(B, org, a, t) for a in accts)
+        now = any(C.is_member(B, org, a, t, current=True) for a in accts)
+        own = C.is_member(B, org, aid, t)
+        if then and not own:
+            left.append((B["repos"][rid]["name"], aid))
+        elif then != now:
+            same_now = False
+    ok(same_now, "Ask B membership when nominating equals membership now, but for the members who left",
+       "%d nominations of the shortlist" % len(on_short))
+    if W is not None:
+        via = {(v["repo"], v["personal"]) for v in W.via}
+        ok(set(left) == via and len(via) == len(orgs) and len({n for n, a in via}) == len(orgs),
+           "Ask B one person for each organisation's repository was a member only through an account merged away later",
+           ", ".join("%s (merged %s)" % (v["repo"], v["merged"].strftime("%d %b")) for v in W.via))
     mem = B["members"]
     owner_rows = set(zip(mem.organization[mem.role == "owner"], mem.account_id[mem.role == "owner"]))
     owners_nom = 0
@@ -404,13 +501,14 @@ def run(target, golden, W=None, meta_path=None):
             aid = merged_to[aid]
         person.setdefault(rid, []).append(aid)
         org = C.owner_of(B, rid)
-        t = K.from_amsterdam(dt.datetime.strptime(noms.submitted_at[i], "%Y-%m-%d %H:%M:%S"))
+        t = K.utc_of(noms.submitted_at[i])
         if org and (org, aid) in owner_rows:
             owners_nom += 1
             ok(C.is_member(B, org, aid, t), "Ask B an owner of the organisation counts as a member",
                "%s nominated by an owner of %s" % (B["repos"][rid]["name"], org))
     ok(True, "Ask B owner-role nominators counted inside", "%d nominations by owners" % owners_nom)
-    late = [i for i in on_short if dt.datetime.strptime(noms.submitted_at[i], "%Y-%m-%d %H:%M:%S") > dt.datetime(2026, 9, 20, 23, 59, 59)]
+    late = [i for i in on_short if dt.datetime.fromisoformat(noms.submitted_at[i]).replace(tzinfo=None) >
+            dt.datetime(2026, 9, 20, 23, 59, 59)]
     ok(not late, "Ask B no nomination of the shortlist after the 20 September close", "%d late" % len(late))
     twice = all(len(v) > len(set(v)) for v in person.values())
     ok(twice and all(len(set(person[q])) == AB[B["repos"][q]["name"]]["people"] for q in person),

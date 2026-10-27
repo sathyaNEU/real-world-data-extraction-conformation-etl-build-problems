@@ -1,19 +1,20 @@
 {
   "task": "task144",
-  "architecture": "v1",
-  "drawn": "2026-10-15",
-  "slot_note": "wave 3, new, numbered from seed FC15 (header and Situation only: the world, the decision and the quantity are kept; the seed's mechanism is not)",
+  "architecture": "v2 (redesign of the decisive step after both portal responses landed v1's call)",
+  "drawn": "2026-10-27",
+  "slot_note": "wave 3, new, numbered from seed FC15 (header and Situation only: the world, the decision and the quantity are kept; the seed's mechanism is not); v2 keeps v1's world and moves the decisive step from building the cascade to the regime its rate is read in",
   "domain": "product-analytics",
   "subdomain": "feature-adoption-diffusion-modeling",
   "client_domain": "product-analytics",
-  "niche": "a code-hosting platform's monthly developer newsletter spotlight for October 2026, with a year of sponsored CI, given to one of seven new open-source repositories by its expected external stars in its first 90 days public with the spotlight's effect included, on a platform whose home feed shows every star to the starrer's followers",
+  "niche": "a code-hosting platform's monthly developer newsletter spotlight for October 2026, with a year of sponsored CI, given to one of seven new open-source repositories by its expected external stars in its first 90 days public with the spotlight's effect included, on a platform whose home feed shows every star to the starrer's followers and where a launch carried by an outside link forum converts feed cards at a rate the repository does not keep",
   "objective": "forecasting",
   "shape": "other",
   "decision_type": "pick_one_of_n",
   "answer_unit": "named_option",
-  "answer": "slidewell (pjvdlinden/slidewell) gets the October 2026 Sluis spotlight: about 12,000 external stars in its first 90 days public, about 9,000 of them added by the spotlight; tracewire second at about 9,000",
+  "answer": "kilnkit (kilnworks/kilnkit) gets the October 2026 Sluis spotlight: about 12,000 external stars in its first 90 days public, about 9,000 of them added by the spotlight; slidewell and tracewire next at about 10,000 each",
   "answer_source": "task144/submission.md block 1; golden sluis_spotlight_2026-10.xlsx (Spotlight sheet)",
   "gap": [
+    "time",
     "population"
   ],
   "pattern": [
@@ -21,35 +22,36 @@
   ],
   "generators": [
     "G6",
-    "G2",
+    "G13",
     "G14"
   ],
   "gate_g": "forecasting",
   "calibration_form": "pilot_log",
-  "stump_strategy": "causal_design",
+  "stump_strategy": "forecast_method_backtest",
   "decisive_rule_filed": false,
   "official_decoy": false,
   "validated_decoy": false,
   "stump_class": "analytical",
-  "context_artifact": "monitoring_export",
+  "context_artifact": "filed_standard",
   "stakeholder_role": "the editor of the platform's monthly developer newsletter, who picks the spotlight repository",
   "role_family": "other",
   "scoring_unit": "other",
-  "layer2_family": "estimand_identification",
-  "layer2_pattern": "own:spotlight-cascade-through-follower-feeds",
+  "layer2_family": "forecast_uncertainty",
+  "layer2_pattern": "own:post-launch-feed-conversion-for-a-later-seeded-cascade",
   "layer1": [
     "event export in UTC against the newsletter platform's Amsterdam send times",
-    "two event-schema vintages with different surface codes",
+    "two event-schema vintages with different surface codes and timestamp forms (epoch milliseconds, ISO UTC)",
     "unstar and restar rows (first star per account)",
     "organisation members by dated membership spans (external at the time of the star)",
     "bot and merged accounts",
     "lottery log workbook whose layout changes between years",
     "runners-up held as daily warehouse rollups by surface beside event-level rows for spotlighted and current repositories",
-    "follower counts from an account snapshot"
+    "follower counts from an account snapshot",
+    "each export's own time convention (Postwerk local time with a zone column, Relaymark and the form with UTC offsets)"
   ],
   "spine": {
     "file": "grachtwerk_star_events_2026-03-02_to_2026-09-27.csv",
-    "rows": 63632,
+    "rows": 61929,
     "entity": "one star event on Grachtwerk: an account starring (or unstarring) a repository on the Sluis shortlists, with the surface it was starred from",
     "grain": "account x repository x star event",
     "source": "constructed (the platform events warehouse's star stream, two schema vintages)"
@@ -93,19 +95,49 @@
   ],
   "opening_move": "question-first",
   "question_form": "which",
-  "driver": "An intervention seeds adoptions among people whose follower reach differs from the item's own adopters', and every adoption is shown to the adopter's followers, who adopt at the item's own rate per view, so the intervention's yield is its seeded adoptions times a branching process whose ratio is that per-view rate times the seeds' reach; the measured average yield, a percentage of the forecast, the item's recent pace and its own share of adoptions that came through followers, which carries its own adopters' reach, all misprice it.",
-  "driver_concrete": "A Grachtwerk star shows in the starrer's followers' home feeds and they star from the feed card at the repository's own rate per view; the Sluis readers star whatever is spotlighted at much the same rate but reach far more followers (about 85) than the developers who starred slidewell after a link-forum post (about 11), so slidewell's spotlight sets off a feed cascade several times tracewire's, which a lift carried on the average, on a percentage or on its own feed share misprices.",
-  "stump": "A competent solver forecasts each shortlisted repository's organic 90-day external stars from its trajectory against the lottery's runners-up, adds the spotlight lottery's average lift and spotlights tracewire at about 11,000; the step that lands it there is carrying an average lift when the spotlight's stars are the readers' own plus the cascade they set off through their followers' feeds at each repository's own per-view rate, which puts slidewell first at about 12,000, the spotlight adding about 9,000.",
-  "analyst_test": "A strong analyst who reads every field and the featuring memo correctly forecasts each candidate's organic stars from its trajectory against past shortlisted repositories, adds the lottery's randomised average spotlight lift and spotlights tracewire at about 11,000, while slidewell, whose stars barely travel through feeds, is the pick at about 12,000 once the readers' cascade is built from its per-view rate and the readers' reach.",
-  "domain_test": "The deciding quantity is the stars a spotlight sets off on a social coding platform, the readers' own plus the cascade through their followers' home feeds at the repository's per-view rate, sized the way growth analysts size viral spread from a seed population's reach and a per-exposure conversion; with a hospital or a school there is no follow feed, starrer's reach or per-view rate, so the spotlight's yield and the pick stop making sense.",
+  "driver": "An intervention's yield is a cascade through followers at the item's own conversion per follower exposure, and an item's conversion measured over its whole history is inflated by a launch burst during which the exposed followers had often met the item elsewhere already; the intervention arrives weeks after any burst, so its cascade runs at the conversion measured after the burst, which past randomised interventions confirm out of sample, while the whole-history conversion picks the burst item and an average, percentage, pace or own-share carrier picks the largest organic forecast.",
+  "driver_concrete": "Each Grachtwerk star shows in the starrer's followers' home feeds and they star from the card at a rate the repository sets; while an outside link forum carried slidewell in its first days, followers who saw its feed cards had often seen it there already and starred readily, so its whole-life rate per follower view (about 2.0 per cent) is more than twice its rate from its 8th day public (about 0.7 per cent), while kilnkit, launched without a forum, converts at about 1.8 per cent throughout; the October readers' cascade starts a month after any launch, so on the rate from day 8, which reproduces the lottery's spotlight lifts (RMSE 300 against 1,110 on the whole-life rate), kilnkit is first at about 12,000, the spotlight adding about 9,000.",
+  "stump": "A competent solver builds the spotlight's stars as the readers' newsletter stars plus the cascade through their followers' feeds, measures each repository's rate per follower view over its whole life and spotlights slidewell at about 14,000; the step that lands it there is carrying slidewell's forum-carried launch week into a cascade that starts a month later: from its 8th day public slidewell converts at about 0.7 per cent a view, not 2.0, and on that rate, which reproduces the lottery's lifts, kilnkit is first at about 12,000, the spotlight adding about 9,000.",
+  "analyst_test": "A strong analyst who reads every field and the featuring memo correctly and builds the spotlight's stars as the readers' own plus the cascade through their followers' feeds measures each repository's rate per follower view over its whole life and spotlights slidewell at about 14,000 (one who carries the lottery's average lift spotlights tracewire at about 12,000), while kilnkit is the pick at about 12,000 once the rate is read from the 8th day public, after slidewell's forum-carried launch week, the reading the lottery's own spotlights confirm out of sample.",
+  "domain_test": "The deciding quantity is the conversion of feed cards in the regime a spotlight's cascade will run in, weeks after launch, measured as growth analysts measure a viral conversion outside a launch burst and validated on past randomised spotlights; with a hospital or a school there is no follow feed, no feed-card conversion and no forum-carried launch, so the cascade, its rate and the pick stop making sense.",
   "mechanism_source": "design_note",
   "differentiation": {
     "task228": "task228 v1 composes a false-alarm chance from the nights each monitored run is checked and the surface it runs on; here the yield is a cascade through a follow graph whose ratio is a per-view rate times the seeds' reach, with no run length or calibration mix in it.",
     "task68": "task68 matches continuing units across identity successions so entrant inflow stops masking a like-for-like change; here nothing is matched or linked, and the spotlight's yield is a branching process seeded by readers whose follower reach differs from the repository's own starrers'.",
     "task124": "task124 carries a rate within each kind of physical group to units left unexamined by symptom-driven checks; here no sample is selected, and the decisive quantity is how far seeded adoptions travel through followers' feeds at a per-view rate.",
-    "task132": "task132 restarts a wear-out curve for every replaced item in a spares forecast; here no item fails or renews, and a promotion's seeded adoptions spread through followers' feeds at a per-view rate set by the item."
+    "task132": "task132 restarts a wear-out curve for every replaced item in a spares forecast; here no item fails or renews, and a promotion's seeded adoptions spread through followers' feeds at a per-view rate set by the item.",
+    "task144": "Architecture 1's decisive step was building the cascade at all (the readers' reach against a repository's own starrers'), solved on the portal from each repository's whole-life rate; architecture 2 keeps that cascade as a lower rung, which now files slidewell at 14,000, and decides on the regime the rate is read in: a launch carried by an outside forum inflates the early feed-card conversion and the readers' cascade starts a month later, so the rate from the 8th day public, chosen by its out-of-sample fit on the lottery's spotlights, files kilnkit.",
+    "task268": "task268 v3 carries each patient a registry lost to its death linkage at the survival their class at the move implies; here nothing is lost from a record: a repository's feed-card conversion is inflated in its forum-carried launch days and the spotlight's cascade, a month later, runs at the conversion after them.",
+    "task150": "task150 splits a unit's next count into its own members carried on, steady outside arrivals and sibling transfers; here no count is decomposed by origin: the decisive quantity is a per-view conversion measured outside a launch burst, for a cascade the newsletter's readers seed.",
+    "task179": "task179 reads each forward member's leaving chance at its own count of repeat peers built from group memberships; here no member attribute conditions a rate: the conversion a repository's feed cards will show a month after launch is read from its days after any forum burst, chosen by its fit to past randomised spotlights.",
+    "task501": "task501 rebuilds a who-passes-to-whom matrix from the days under the coming season's regime, a calendar regime shared by the whole population and visible in the record, and decides on its dominant eigenvalue; here each repository's own launch, carried or not by an outside forum, is a decaying transient no file marks, found in the conversion by day public and confirmed on the lottery's randomised spotlights, and it sizes a branching cascade for one pick of seven."
   },
-  "lineage": [],
-  "notes": "forcing_event other: the October issue's editorial close (the pick is locked on 30 September 2026 for the 6 October 2026 send). role_family other: the newsletter editor. scoring_unit other: external stars in the repository's first 90 days public.",
-  "registered": "2026-10-15T08:26:26Z"
+  "lineage": [
+    {
+      "architecture": "v1",
+      "drawn": "2026-10-15",
+      "fate": "spent, FAILED_TO_STUMP on the portal (2026-10-27): both responses landed the call, slidewell at 12,000 with 9,000 added, by building the readers' cascade from each repository's whole-life rate per follower view; the pack announced the cascade (a field-notes file defining the feed surface and the follower count, an extract manifest, and the twin pair of spotlights in adjacent issues)",
+      "driver": "An intervention seeds adoptions among people whose follower reach differs from the item's own adopters', and every adoption is shown to the adopter's followers, who adopt at the item's own rate per view, so the intervention's yield is its seeded adoptions times a branching process whose ratio is that per-view rate times the seeds' reach; the measured average yield, a percentage of the forecast, the item's recent pace and its own share of adoptions that came through followers, which carries its own adopters' reach, all misprice it.",
+      "driver_concrete": "A Grachtwerk star shows in the starrer's followers' home feeds and they star from the feed card at the repository's own rate per view; the Sluis readers star whatever is spotlighted at much the same rate but reach far more followers (about 85) than the developers who starred slidewell after a link-forum post (about 11), so slidewell's spotlight sets off a feed cascade several times tracewire's, which a lift carried on the average, on a percentage or on its own feed share misprices.",
+      "stump": "A competent solver forecasts each shortlisted repository's organic 90-day external stars from its trajectory against the lottery's runners-up, adds the spotlight lottery's average lift and spotlights tracewire at about 11,000; the step that lands it there is carrying an average lift when the spotlight's stars are the readers' own plus the cascade they set off through their followers' feeds at each repository's own per-view rate, which puts slidewell first at about 12,000, the spotlight adding about 9,000.",
+      "gate_g": "forecasting",
+      "gap": [
+        "population"
+      ],
+      "pattern": [
+        "none"
+      ],
+      "generators": [
+        "G6",
+        "G2",
+        "G14"
+      ],
+      "decision_type": "pick_one_of_n",
+      "stump_strategy": "causal_design",
+      "layer2_family": "estimand_identification",
+      "layer2_pattern": "own:spotlight-cascade-through-follower-feeds"
+    }
+  ],
+  "notes": "forcing_event other: the October issue's editorial close (the pick is locked on 30 September 2026 for the 6 October 2026 send). role_family other: the newsletter editor. scoring_unit other: external stars in the repository's first 90 days public. gap time first: the rate is measured on a window whose regime (the launch burst) is not the regime of the forecast window (the readers' cascade a month later). context_artifact filed_standard (redrawn from v1's monitoring_export, BLOCKed by ban.artifact against task304): the featuring memo the editor wrote and the pick runs under is the stakeholder's own file, the campaign exports serve only the asks. generators: G6 decisive, the exposures' make-up shifts once the forum burst decays (pre-exposed followers early, fresh ones later), G13 the rate's window against the cascade's, G14 the lottery's average lift on this candidate. stump_strategy forecast_method_backtest: the regime makes the natural whole-history fit wrong out of sample, and the lottery's randomised spotlights, which no file scores, are the honest history that separates the windows.",
+  "registered": "2026-10-27T01:09:46Z"
 }

@@ -27,8 +27,6 @@ SOURCES = {
     K.RENAMES: "Grachtwerk repository renames in 2026",
     K.TRAFFIC: "Page traffic of the October 2026 shortlist by referrer group",
     K.TRENDING: "Grachtwerk daily trending lists for Go, Python, Rust and TypeScript",
-    K.DICTIONARY: "Field definitions for the extract",
-    K.MANIFEST: "Files in the extract, with source, period and preparation",
 }
 
 
@@ -56,10 +54,9 @@ def write(target, out_path):
                  "expected external stars in its first 90 days public if spotlighted",
         "domain": "Product Analytics",
         "client_domain": "Product Analytics",
-        "subdomain": "feature-adoption-diffusion-modeling (a newsletter spotlight's stars on a code-hosting platform: "
-                     "the readers' own stars and the cascade they set off through their followers' home feeds at "
-                     "each repository's own rate per follower view, added to each repository's organic 90-day "
-                     "forecast)",
+        "subdomain": "feature-adoption-diffusion-modeling (the stars a newsletter spotlight would bring a new "
+                     "repository on a code-hosting platform, forecast with each shortlisted repository's own 90-day "
+                     "stars)",
         "objective": "Forecasting & Predictive Modeling",
         "prompt_shape": "other: one pick of seven with its expected 90-day external stars and the stars the spotlight "
                         "adds, each repository's expected stars if spotlighted, a chart, and two tables (each Sluis "
@@ -78,6 +75,7 @@ def write(target, out_path):
                                "depicted.",
                      "date": "2026-09-28", "license": "CC0-1.0 (original work)"}],
         "created": "2026-10-15",
+        "revised": "2026-10-27",
         "generator": "task144/generator/build.py",
         "files": files,
     }

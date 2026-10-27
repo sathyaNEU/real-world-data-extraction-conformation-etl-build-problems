@@ -14,10 +14,10 @@ import common as K
 
 EV25_COLS = ["event_id", "event_ts_ms", "repo_id", "actor_id", "action", "src", "client"]
 EV26_COLS = ["event_id", "occurred_at", "repository_id", "account_id", "event_type", "surface", "client"]
-ROLL_COLS = ["repository_id", "day", "feed", "newsletter", "repo_page", "search", "explore", "api",
+ROLL_COLS = ["repository_id", "day_utc", "feed", "newsletter", "repo_page", "search", "explore", "api",
              "external_first_stars"]
 MEM_COLS = ["organization", "account_id", "role", "joined_at", "left_at"]
-XW_COLS = ["v5_src", "v6_surface", "meaning", "v5_used_to", "v6_used_from"]
+XW_COLS = ["v5_src", "v6_surface", "v5_used_to", "v6_used_from"]
 
 CROCK = "0123456789ABCDEFGHJKMNPQRSTVWXYZ"
 CLIENTS = {"feed": (("web", 0.61), ("ios", 0.21), ("android", 0.18)),
@@ -79,9 +79,10 @@ def ev_rows(W):
         cl = _client(surface, rid, aid, action, t.isoformat())
         if t < K.SCHEMA_V6:
             seq += 1 + int(K.hexid("seq", rid, aid, action, n=4), 16) % 37
-            v5.append([seq, int(t.replace(tzinfo=K.UTC).timestamp() * 1000), rid, aid, action, K.V5_OF[surface], cl])
+            v5.append([seq, int(t.replace(tzinfo=K.UTC).timestamp() * 1000), W.pub_of[rid], aid, action,
+                       K.V5_OF[surface], cl])
         else:
-            v6.append([ulid(t, rid, aid, action), K.iso_z(t), rid, aid,
+            v6.append([ulid(t, rid, aid, action), K.iso_z(t), W.pub_of[rid], aid,
                        "star.created" if action == "star" else "star.deleted", surface, cl])
     return v5, v6
 
@@ -96,7 +97,7 @@ def external_first(r, W):
 
 def rollup_rows(W):
     rows = []
-    for r in sorted(W.repos, key=lambda x: x.id):
+    for r in sorted(W.repos, key=lambda x: x.pub):
         last = min(100, K.day_index(r.public, K.CUT))
         days = {}
         for s in external_first(r, W):
@@ -106,7 +107,7 @@ def rollup_rows(W):
                 days[k][s.surface] += 1
         for k in range(1, last + 1):
             d = days.get(k, {})
-            row = {"repository_id": r.id, "day": (r.public.date() + dt.timedelta(days=k - 1)).isoformat()}
+            row = {"repository_id": r.pub, "day_utc": (r.public.date() + dt.timedelta(days=k - 1)).isoformat()}
             tot = 0
             for sf in K.SURFACES_V6:
                 row[sf] = d.get(sf, 0)
@@ -118,12 +119,12 @@ def rollup_rows(W):
 
 def crosswalk_rows():
     return [
-        ["dash", "feed", "star button on a card in the home feed", "2026-03-01", "2026-03-02"],
-        ["nl", "newsletter", "repository opened from a link in Sluis", "2026-03-01", "2026-03-02"],
-        ["repo", "repo_page", "star button on the repository page (web and apps)", "2026-03-01", "2026-03-02"],
-        ["srch", "search", "star button in search results", "2026-03-01", "2026-03-02"],
-        ["expl", "explore", "star button on the explore and trending pages", "2026-03-01", "2026-03-02"],
-        ["api", "api", "starred through the REST API or the gw command-line client", "2026-03-01", "2026-03-02"],
+        ["dash", "feed", "2026-03-01", "2026-03-02"],
+        ["nl", "newsletter", "2026-03-01", "2026-03-02"],
+        ["repo", "repo_page", "2026-03-01", "2026-03-02"],
+        ["srch", "search", "2026-03-01", "2026-03-02"],
+        ["expl", "explore", "2026-03-01", "2026-03-02"],
+        ["api", "api", "2026-03-01", "2026-03-02"],
     ]
 
 
@@ -173,8 +174,8 @@ def write_accounts(path, W, ids):
 def member_rows(W):
     out = []
     for org, aid, joined, left, role in sorted(W.member_rows, key=lambda x: (x[0], x[2], x[1])):
-        out.append([org, aid, role, joined.strftime("%Y-%m-%d %H:%M:%S"),
-                    left.strftime("%Y-%m-%d %H:%M:%S") if left else ""])
+        out.append([org, aid, role, joined.strftime("%Y-%m-%dT%H:%M:%SZ"),
+                    left.strftime("%Y-%m-%dT%H:%M:%SZ") if left else ""])
     return out
 
 
@@ -185,13 +186,13 @@ LICENSES = ["MIT", "Apache-2.0", "MIT", "BSD-3-Clause", "MPL-2.0", "MIT", "Apach
 
 def repo_records(W):
     out = []
-    for r in sorted(W.repos, key=lambda x: x.id):
+    for r in sorted(W.repos, key=lambda x: x.pub):
         g = K.rng("repo-meta", r.id)
         created = r.public - dt.timedelta(days=float(g.uniform(12, 260)), hours=float(g.uniform(0, 23)))
         name = r.name
         full = "%s/%s" % (r.owner, name)
         out.append({
-            "id": r.id,
+            "id": r.pub,
             "full_name": full,
             "name": name,
             "owner": {"login": r.owner, "type": "Organization" if r.owner_type == "organization" else "User",

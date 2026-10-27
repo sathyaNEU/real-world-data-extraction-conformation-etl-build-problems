@@ -1,107 +1,127 @@
 {
   "call": {
-    "pick": "slidewell",
-    "pick_full_name": "pjvdlinden/slidewell",
+    "pick": "kilnkit",
+    "pick_full_name": "kilnworks/kilnkit",
     "expected_external_stars_90d": 12000,
     "stars_the_spotlight_adds": 9000,
-    "runner_up": "tracewire",
-    "runner_up_expected_stars": 9000
+    "next": [
+      "slidewell",
+      "tracewire"
+    ],
+    "next_expected_stars": 10000
   },
   "candidates": {
-    "slidewell": {
+    "kilnkit": {
       "expected_external_stars_90d": 12000,
       "expected_without_spotlight": 3000,
       "stars_the_spotlight_adds": 9000,
-      "external_stars_to_2026_09_27": 2766,
-      "external_stars_to_2026_09_27_thousands": 3000,
+      "external_stars_to_2026_09_27": 1523,
+      "external_stars_to_2026_09_27_thousands": 2000,
+      "days_public_at_cut": 30,
+      "feed_card_stars_from_day_8": 356,
+      "followers_reached_from_day_8": 19548,
+      "stars_per_follower_view_from_day_8_pct": 1.82,
+      "stars_per_follower_view_whole_life_pct": 1.79
+    },
+    "slidewell": {
+      "expected_external_stars_90d": 10000,
+      "expected_without_spotlight": 5000,
+      "stars_the_spotlight_adds": 5000,
+      "external_stars_to_2026_09_27": 4175,
+      "external_stars_to_2026_09_27_thousands": 4000,
       "days_public_at_cut": 35,
-      "feed_card_stars": 551,
-      "followers_reached": 30671,
-      "stars_per_follower_view_pct": 1.796
+      "feed_card_stars_from_day_8": 89,
+      "followers_reached_from_day_8": 11949,
+      "stars_per_follower_view_from_day_8_pct": 0.74,
+      "stars_per_follower_view_whole_life_pct": 1.98
     },
     "tracewire": {
-      "expected_external_stars_90d": 9000,
-      "expected_without_spotlight": 6000,
+      "expected_external_stars_90d": 10000,
+      "expected_without_spotlight": 7000,
       "stars_the_spotlight_adds": 3000,
-      "external_stars_to_2026_09_27": 3876,
-      "external_stars_to_2026_09_27_thousands": 4000,
+      "external_stars_to_2026_09_27": 4534,
+      "external_stars_to_2026_09_27_thousands": 5000,
       "days_public_at_cut": 33,
-      "feed_card_stars": 446,
-      "followers_reached": 450226,
-      "stars_per_follower_view_pct": 0.099
-    },
-    "ferrolog": {
-      "expected_external_stars_90d": 8000,
-      "expected_without_spotlight": 4000,
-      "stars_the_spotlight_adds": 4000,
-      "external_stars_to_2026_09_27": 1892,
-      "external_stars_to_2026_09_27_thousands": 2000,
-      "days_public_at_cut": 21,
-      "feed_card_stars": 191,
-      "followers_reached": 40549,
-      "stars_per_follower_view_pct": 0.471
+      "feed_card_stars_from_day_8": 214,
+      "followers_reached_from_day_8": 182308,
+      "stars_per_follower_view_from_day_8_pct": 0.12,
+      "stars_per_follower_view_whole_life_pct": 0.22
     },
     "shiftgres": {
       "expected_external_stars_90d": 8000,
       "expected_without_spotlight": 4000,
       "stars_the_spotlight_adds": 4000,
-      "external_stars_to_2026_09_27": 1826,
+      "external_stars_to_2026_09_27": 1630,
       "external_stars_to_2026_09_27_thousands": 2000,
       "days_public_at_cut": 25,
-      "feed_card_stars": 140,
-      "followers_reached": 39636,
-      "stars_per_follower_view_pct": 0.353
+      "feed_card_stars_from_day_8": 103,
+      "followers_reached_from_day_8": 21033,
+      "stars_per_follower_view_from_day_8_pct": 0.49,
+      "stars_per_follower_view_whole_life_pct": 0.48
     },
-    "kilnkit": {
-      "expected_external_stars_90d": 7000,
-      "expected_without_spotlight": 2000,
-      "stars_the_spotlight_adds": 5000,
-      "external_stars_to_2026_09_27": 1245,
-      "external_stars_to_2026_09_27_thousands": 1000,
-      "days_public_at_cut": 30,
-      "feed_card_stars": 485,
-      "followers_reached": 75098,
-      "stars_per_follower_view_pct": 0.646
+    "ferrolog": {
+      "expected_external_stars_90d": 8000,
+      "expected_without_spotlight": 4000,
+      "stars_the_spotlight_adds": 4000,
+      "external_stars_to_2026_09_27": 1929,
+      "external_stars_to_2026_09_27_thousands": 2000,
+      "days_public_at_cut": 21,
+      "feed_card_stars_from_day_8": 92,
+      "followers_reached_from_day_8": 18540,
+      "stars_per_follower_view_from_day_8_pct": 0.5,
+      "stars_per_follower_view_whole_life_pct": 0.6
     },
     "hullcheck": {
       "expected_external_stars_90d": 7000,
       "expected_without_spotlight": 3000,
       "stars_the_spotlight_adds": 4000,
-      "external_stars_to_2026_09_27": 1912,
+      "external_stars_to_2026_09_27": 1936,
       "external_stars_to_2026_09_27_thousands": 2000,
       "days_public_at_cut": 23,
-      "feed_card_stars": 166,
-      "followers_reached": 58747,
-      "stars_per_follower_view_pct": 0.283
+      "feed_card_stars_from_day_8": 58,
+      "followers_reached_from_day_8": 23196,
+      "stars_per_follower_view_from_day_8_pct": 0.25,
+      "stars_per_follower_view_whole_life_pct": 0.4
     },
     "timeloom": {
       "expected_external_stars_90d": 6000,
       "expected_without_spotlight": 2000,
       "stars_the_spotlight_adds": 4000,
-      "external_stars_to_2026_09_27": 1299,
+      "external_stars_to_2026_09_27": 1396,
       "external_stars_to_2026_09_27_thousands": 1000,
       "days_public_at_cut": 27,
-      "feed_card_stars": 16,
-      "followers_reached": 6586,
-      "stars_per_follower_view_pct": 0.243
+      "feed_card_stars_from_day_8": 9,
+      "followers_reached_from_day_8": 5050,
+      "stars_per_follower_view_from_day_8_pct": 0.18,
+      "stars_per_follower_view_whole_life_pct": 0.32
     }
   },
   "conventions": {
     "window_days": 90,
     "pace_window_days": 7,
-    "lottery_issues": 21
+    "lottery_issues": 21,
+    "rate_from_day": 8
   },
   "inputs": {
-    "newsletter_stars_per_subscriber_pct": 0.7236,
+    "newsletter_stars_per_subscriber_pct": 0.7111,
     "october_subscribers": 433812,
     "october_direct_newsletter_stars": 3000,
-    "newsletter_starrers_mean_followers": 85.0,
-    "feed_starrers_mean_followers": 10.27
+    "newsletter_starrers_mean_followers": 84.9,
+    "feed_starrers_mean_followers": 10.1
+  },
+  "backtest": {
+    "spotlights": 19,
+    "rmse_rate_from_day_8": 300,
+    "rmse_rate_whole_life": 1110
   },
   "default_path": {
     "pick": "tracewire",
-    "expected_external_stars_90d": 11000,
+    "expected_external_stars_90d": 12000,
     "stars_the_spotlight_adds": 5000
+  },
+  "whole_life_rate": {
+    "pick": "slidewell",
+    "expected_external_stars_90d": 14000
   },
   "ask_a": {
     "2026-04": {

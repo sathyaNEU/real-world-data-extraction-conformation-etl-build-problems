@@ -60,7 +60,8 @@ def main(target, golden):
     mem = {}
     for r in rows(p(K.MEMBERS)):
         mem.setdefault((r["organization"], int(r["account_id"])), []).append(
-            (dt.datetime.fromisoformat(r["joined_at"]), dt.datetime.fromisoformat(r["left_at"]) if r["left_at"] else None))
+            (dt.datetime.strptime(r["joined_at"], "%Y-%m-%dT%H:%M:%SZ"),
+             dt.datetime.strptime(r["left_at"], "%Y-%m-%dT%H:%M:%SZ") if r["left_at"] else None))
     code = {r["v5_src"]: r["v6_surface"] for r in rows(p(K.CROSSWALK))}
     first = {}
     for r in rows(p(K.EV25)):
@@ -91,7 +92,7 @@ def main(target, golden):
     roll = {}
     for r in rows(p(K.ROLLUP)):
         rid = int(r["repository_id"])
-        kk = (dt.date.fromisoformat(r["day"]) - public[rid].date()).days + 1
+        kk = (dt.date.fromisoformat(r["day_utc"]) - public[rid].date()).days + 1
         roll.setdefault(rid, np.zeros(102))[kk] = int(r["external_first_stars"])
     runners = [x for row in past for x in row[2] if x != row[3] and public[x].date() + dt.timedelta(days=89) <= CUT.date()]
 
@@ -112,11 +113,15 @@ def main(target, golden):
             if 1 <= kk <= a:
                 d[kk] += 1
         base = d[1:a + 1].sum() + d[a - 6:a + 1].mean() * G(a)
-        mine = [(tt, sf, acc) for (r2, acc), (tt, sf) in first.items() if r2 == rid]
-        c = sum(1 for _, sf, _ in mine if sf == "feed") / sum(foll[acc] for _, _, acc in mine)
+        mine = [(tt, sf, acc) for (r2, acc), (tt, sf) in first.items() if r2 == rid and tt <= CUT]
+        late = [(tt, sf, acc) for tt, sf, acc in mine if (tt.date() - public[rid].date()).days + 1 >= 8]
+        c = sum(1 for _, sf, _ in late if sf == "feed") / sum(foll[acc] for _, _, acc in late)
+        c_life = sum(1 for _, sf, _ in mine if sf == "feed") / sum(foll[acc] for _, _, acc in mine)
         lift = D * (1 + c * fR / (1 - c * f2))
-        res[repos[rid]["name"]] = dict(base=base, lift=lift, total=base + lift)
+        lift_life = D * (1 + c_life * fR / (1 - c_life * f2))
+        res[repos[rid]["name"]] = dict(base=base, lift=lift, total=base + lift, total_life=base + lift_life)
     pick = max(res, key=lambda n: res[n]["total"])
+    life_pick = max(res, key=lambda n: res[n]["total_life"])
     # the default path: the lottery's average lift on each repository's own trajectory
     lifts, subs = [], []
     for x in past:
@@ -138,7 +143,7 @@ def main(target, golden):
     ok_total = ws["C5"].value == K.round_to(res[pick]["total"], 1000) and ws["C6"].value == K.round_to(res[pick]["lift"], 1000)
     table = {}
     for r in ws.iter_rows(min_row=10, max_row=16, values_only=True):
-        table[r[0]] = r[10]
+        table[r[0]] = r[11]
     ok_table = all(table[n] == K.round_to(v["total"], 1000) for n, v in res.items())
     figs = json.load(open(os.path.join(os.path.dirname(os.path.abspath(golden).rstrip("/")), "generator", "figures.json")))
     ok_figs = figs["call"]["pick"] == pick and figs["default_path"]["pick"] == default
@@ -151,11 +156,36 @@ def main(target, golden):
     for c in json.load(open(p(K.RM_CAMP), encoding="utf-8"))["campaigns"]:
         sends.append(dict(id=c["id"], list=c["audience"]["list"], date=dt.date.fromisoformat(c["sent_at"][:10]),
                           delivered=c["stats"]["delivered"], pw=False))
+    # a reader's own clicks: a mail gateway fetches every link of a message as it is delivered, which Postwerk shows as
+    # one click on every link of the send and Relaymark as four or more links within two seconds
     clicks = {}
-    for r in rows(p(K.PW_LINKS), ";"):
-        clicks.setdefault(r["campaign_id"], []).append((r["subscriber_id"], r["url"]))
+    pwl = list(rows(p(K.PW_LINKS), ";"))
+    labs_of = {}
+    for r in pwl:
+        labs_of.setdefault(r["campaign_id"], set()).add(r["link_label"])
+    seen = {}
+    for r in pwl:
+        seen.setdefault((r["campaign_id"], r["subscriber_id"]), set()).add(r["link_label"])
+    for r in pwl:
+        n = int(r["clicks"]) - (1 if seen[(r["campaign_id"], r["subscriber_id"])] == labs_of[r["campaign_id"]] else 0)
+        if n > 0:
+            clicks.setdefault(r["campaign_id"], []).append((r["subscriber_id"], r["url"]))
+    rml = {}
     for r in rows(p(K.RM_LINKS)):
-        clicks.setdefault(r["campaign_id"], []).append((r["subscriber_id"], r["url"]))
+        at = dt.datetime.fromisoformat(r["clicked_at"].replace("Z", "+00:00")).timestamp()
+        rml.setdefault((r["campaign_id"], r["subscriber_id"]), []).append((at, r["link_tag"], r["url"]))
+    for (cid, sub), xs in rml.items():
+        xs.sort()
+        fetched = set()
+        lo = 0
+        for hi in range(len(xs)):
+            while xs[hi][0] - xs[lo][0] > 2:
+                lo += 1
+            if len({x[1] for x in xs[lo:hi + 1]}) >= 4:
+                fetched.update(range(lo, hi + 1))
+        for i, (at, tag, url) in enumerate(xs):
+            if i not in fetched:
+                clicks.setdefault(cid, []).append((sub, url))
     ask_a = {}
     for m in range(4, 10):
         issue = K.first_tuesday(2026, m)
@@ -168,9 +198,9 @@ def main(target, golden):
                 mm = re.match(r"https?://[^/]+/([^/?#]+)/([^/?#]+)", url)
                 if mm and ("%s/%s" % (mm.group(1), mm.group(2))).lower() == path:
                     who.add(sub)
-        ask_a[m] = (delivered, round(100.0 * len(who) / delivered + 1e-12, 2))
+        ask_a[m] = (delivered, len(who), round(100.0 * len(who) / delivered + 1e-12, 2))
     s2 = gb["Sluis issues"]
-    ok_a = all((r[3], r[5]) == ask_a[i + 4] for i, r in enumerate(s2.iter_rows(min_row=5, max_row=10, values_only=True)))
+    ok_a = all((r[3], r[4], r[5]) == ask_a[i + 4] for i, r in enumerate(s2.iter_rows(min_row=5, max_row=10, values_only=True)))
     # Ask B
     hashes = {hsh: a for a, hsh in zip(t["account_id"], t["primary_email_sha256"]) if hsh}
     merged = {a: m for a, m in zip(t["account_id"], t["merged_into"]) if m is not None}
@@ -198,21 +228,30 @@ def main(target, golden):
         while a in merged:
             a = merged[a]
         key = ("a", a) if a is not None else ("h", r["email_sha256"])
-        when = dt.datetime.strptime(r["submitted_at"], "%Y-%m-%d %H:%M:%S")
-        ppl[rid].setdefault(key, []).append(when - dt.timedelta(hours=2))
+        when = dt.datetime.fromisoformat(r["submitted_at"])
+        ppl[rid].setdefault(key, []).append((when - when.utcoffset()).replace(tzinfo=None))
+    # a person is a member while any of their accounts is: the accounts later merged into the one they used count
+    folded = {}
+    for a in merged:
+        b = a
+        while b in merged:
+            b = merged[b]
+        folded.setdefault(b, set()).add(a)
     ask_b = {}
     for rid, pp in ppl.items():
         o = org(rid)
-        inside = sum(1 for key, ts in pp.items() if o and key[0] == "a" and any(member(o, key[1], x) for x in ts))
+        inside = sum(1 for key, ts in pp.items() if o and key[0] == "a"
+                     and any(member(o, a, x) for a in {key[1]} | folded.get(key[1], set()) for x in ts))
         ask_b[repos[rid]["name"]] = (len(pp), round(100.0 * (len(pp) - inside) / len(pp) + 1e-12, 2) if o else None)
     s3 = gb["Nominations"]
     ok_b = all((r[2], r[4] if ask_b[r[0]][1] is not None else None) == ask_b[r[0]]
                for r in s3.iter_rows(min_row=5, max_row=11, values_only=True))
-    print("verify: pick %s at %.0f (adds %.0f); runner-up %s; default path %s; "
+    print("verify: pick %s at %.0f (adds %.0f); runner-up %s; default path %s; whole-life rate %s; "
           "workbook %s, table %s, figures.json %s, Ask A %s, Ask B %s" % (
               pick, res[pick]["total"], res[pick]["lift"], sorted(res, key=lambda n: -res[n]["total"])[1], default,
-              ok_pick and ok_total, ok_table, ok_figs, ok_a, ok_b))
-    if not (ok_pick and ok_total and ok_table and ok_figs and ok_a and ok_b and pick == "slidewell" and default == "tracewire"):
+              life_pick, ok_pick and ok_total, ok_table, ok_figs, ok_a, ok_b))
+    if not (ok_pick and ok_total and ok_table and ok_figs and ok_a and ok_b and pick == "kilnkit" and default == "tracewire"
+            and life_pick == "slidewell"):
         raise SystemExit("verify failed")
     return res
 

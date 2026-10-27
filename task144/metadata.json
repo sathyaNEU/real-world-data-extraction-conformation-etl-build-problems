@@ -3,7 +3,7 @@
   "title": "Which repository on Grachtwerk's October 2026 shortlist gets the Sluis newsletter spotlight, by its expected external stars in its first 90 days public if spotlighted",
   "domain": "Product Analytics",
   "client_domain": "Product Analytics",
-  "subdomain": "feature-adoption-diffusion-modeling (a newsletter spotlight's stars on a code-hosting platform: the readers' own stars and the cascade they set off through their followers' home feeds at each repository's own rate per follower view, added to each repository's organic 90-day forecast)",
+  "subdomain": "feature-adoption-diffusion-modeling (the stars a newsletter spotlight would bring a new repository on a code-hosting platform, forecast with each shortlisted repository's own 90-day stars)",
   "objective": "Forecasting & Predictive Modeling",
   "prompt_shape": "other: one pick of seven with its expected 90-day external stars and the stars the spotlight adds, each repository's expected stars if spotlighted, a chart, and two tables (each Sluis issue's delivered subscribers and spotlight click-through, April to September 2026; each shortlisted repository's nominators and the share outside its organisation)",
   "as_of": "2026-09-30",
@@ -16,17 +16,16 @@
     "trending_daily_2026-08-24_to_2026-09-27.csv"
   ],
   "input_gates": {
-    "files": 19,
+    "files": 17,
     "formats": [
       "csv",
       "json",
-      "md",
       "parquet",
       "pdf",
       "xlsx"
     ],
-    "largest_file": "accounts_snapshot_2026-09-27.parquet",
-    "largest_file_rows": 119157
+    "largest_file": "relaymark_link_clicks_2026-06_to_2026-09.csv",
+    "largest_file_rows": 175153
   },
   "sources": [
     {
@@ -37,31 +36,23 @@
     }
   ],
   "created": "2026-10-15",
+  "revised": "2026-10-27",
   "generator": "task144/generator/build.py",
   "files": [
     {
       "path": "accounts_snapshot_2026-09-27.parquet",
       "format": "parquet",
-      "bytes": 10596862,
-      "rows": 119157,
+      "bytes": 9835912,
+      "rows": 110795,
       "source": "Constructed: Grachtwerk account snapshot at 27 September 2026",
-      "date": "2026-09-28",
-      "license": "CC0-1.0 (original work, constructed for this task)"
-    },
-    {
-      "path": "extract_contents_2026-09-28.csv",
-      "format": "csv",
-      "bytes": 3472,
-      "rows": 18,
-      "source": "Constructed: Files in the extract, with source, period and preparation",
       "date": "2026-09-28",
       "license": "CC0-1.0 (original work, constructed for this task)"
     },
     {
       "path": "grachtwerk_star_events_2024-12-08_to_2026-03-01.csv",
       "format": "csv",
-      "bytes": 5938990,
-      "rows": 104550,
+      "bytes": 5304963,
+      "rows": 93450,
       "source": "Constructed: Grachtwerk events warehouse star stream, schema v5, for the October 2026 Sluis shortlist and each repository the spotlight lottery featured (December 2024 to 1 March 2026)",
       "date": "2026-09-28",
       "license": "CC0-1.0 (original work, constructed for this task)"
@@ -69,8 +60,8 @@
     {
       "path": "grachtwerk_star_events_2026-03-02_to_2026-09-27.csv",
       "format": "csv",
-      "bytes": 5864886,
-      "rows": 63632,
+      "bytes": 5692708,
+      "rows": 61929,
       "source": "Constructed: Grachtwerk events warehouse star stream, schema v6 (2 March to 27 September 2026)",
       "date": "2026-09-28",
       "license": "CC0-1.0 (original work, constructed for this task)"
@@ -78,8 +69,8 @@
     {
       "path": "organization_memberships_2026-09-27.csv",
       "format": "csv",
-      "bytes": 53813,
-      "rows": 1061,
+      "bytes": 55710,
+      "rows": 1073,
       "source": "Constructed: Organisation memberships of the shortlisted repositories' owners",
       "date": "2026-09-28",
       "license": "CC0-1.0 (original work, constructed for this task)"
@@ -87,7 +78,7 @@
     {
       "path": "postwerk_campaigns_2026-04_to_2026-05.csv",
       "format": "csv",
-      "bytes": 1074,
+      "bytes": 1254,
       "rows": 10,
       "source": "Constructed: Postwerk campaign report, April to May 2026",
       "date": "2026-09-28",
@@ -96,8 +87,8 @@
     {
       "path": "postwerk_link_report_2026-04_to_2026-05.csv",
       "format": "csv",
-      "bytes": 4507368,
-      "rows": 39584,
+      "bytes": 7168663,
+      "rows": 64203,
       "source": "Constructed: Postwerk link report by subscriber, April to May 2026",
       "date": "2026-09-28",
       "license": "CC0-1.0 (original work, constructed for this task)"
@@ -114,8 +105,8 @@
     {
       "path": "relaymark_link_clicks_2026-06_to_2026-09.csv",
       "format": "csv",
-      "bytes": 16036405,
-      "rows": 110434,
+      "bytes": 25158140,
+      "rows": 175153,
       "source": "Constructed: Relaymark click log, June to September 2026",
       "date": "2026-09-28",
       "license": "CC0-1.0 (original work, constructed for this task)"
@@ -123,7 +114,7 @@
     {
       "path": "repo_daily_external_stars_2024-11-24_to_2026-09-27.csv",
       "format": "csv",
-      "bytes": 527288,
+      "bytes": 526725,
       "rows": 14583,
       "source": "Constructed: Daily external first stars by surface for every repository shortlisted for Sluis",
       "date": "2026-09-28",
@@ -150,8 +141,8 @@
     {
       "path": "repository_traffic_2026-08-24_to_2026-09-27.csv",
       "format": "csv",
-      "bytes": 44114,
-      "rows": 1162,
+      "bytes": 44280,
+      "rows": 1164,
       "source": "Constructed: Page traffic of the October 2026 shortlist by referrer group",
       "date": "2026-09-28",
       "license": "CC0-1.0 (original work, constructed for this task)"
@@ -168,7 +159,7 @@
     {
       "path": "sluis_nominations_2026-10.csv",
       "format": "csv",
-      "bytes": 46629,
+      "bytes": 49252,
       "rows": 465,
       "source": "Constructed: October 2026 Sluis nomination form responses",
       "date": "2026-09-28",
@@ -177,7 +168,7 @@
     {
       "path": "sluis_spotlight_lottery_2025-2026.xlsx",
       "format": "xlsx",
-      "bytes": 10703,
+      "bytes": 10728,
       "rows": null,
       "source": "Constructed: The growth team's Sluis spotlight lottery log, 2025 and 2026 sheets",
       "date": "2026-09-28",
@@ -186,7 +177,7 @@
     {
       "path": "star_surface_code_crosswalk_2026-03-02.csv",
       "format": "csv",
-      "bytes": 524,
+      "bytes": 253,
       "rows": 6,
       "source": "Constructed: Star surface codes of schema v5 and v6",
       "date": "2026-09-28",
@@ -195,18 +186,9 @@
     {
       "path": "trending_daily_2026-08-24_to_2026-09-27.csv",
       "format": "csv",
-      "bytes": 166316,
+      "bytes": 166293,
       "rows": 3500,
       "source": "Constructed: Grachtwerk daily trending lists for Go, Python, Rust and TypeScript",
-      "date": "2026-09-28",
-      "license": "CC0-1.0 (original work, constructed for this task)"
-    },
-    {
-      "path": "warehouse_extract_fields.md",
-      "format": "md",
-      "bytes": 5579,
-      "rows": null,
-      "source": "Constructed: Field definitions for the extract",
       "date": "2026-09-28",
       "license": "CC0-1.0 (original work, constructed for this task)"
     }

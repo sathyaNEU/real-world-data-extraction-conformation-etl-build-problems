@@ -127,8 +127,6 @@ REPOS = "repositories_2026-09-27.json"
 CROSSWALK = "star_surface_code_crosswalk_2026-03-02.csv"
 LOTTERY = "sluis_spotlight_lottery_2025-2026.xlsx"
 MEMO = "sluis_featuring_memo_2026-09.pdf"
-DICTIONARY = "warehouse_extract_fields.md"
-MANIFEST = "extract_contents_2026-09-28.csv"
 PW_CAMP = "postwerk_campaigns_2026-04_to_2026-05.csv"
 PW_LINKS = "postwerk_link_report_2026-04_to_2026-05.csv"
 RM_CAMP = "relaymark_campaigns_2026-06_to_2026-09.json"
@@ -189,6 +187,12 @@ def round_half_up(x, nd=0):
 
 def iso_z(t):
     return t.strftime("%Y-%m-%dT%H:%M:%SZ")
+
+
+def utc_of(stamp):
+    """A naive UTC datetime from an ISO 8601 stamp written with Z or with an offset (+02:00)."""
+    t = dt.datetime.fromisoformat(stamp.replace("Z", "+00:00"))
+    return t.astimezone(UTC).replace(tzinfo=None)
 
 
 def day_index(public_utc, t_utc):

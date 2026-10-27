@@ -1,59 +1,58 @@
 ## Tags
 
-**Domain:** Product Analytics (feature adoption and diffusion modeling: a newsletter spotlight's stars on a code-hosting platform, built from the readers' own stars and the cascade they set off through their followers' home feeds at each repository's own rate per follower view).
+**Domain:** Product Analytics (feature adoption and diffusion modeling: a newsletter spotlight's stars on a code-hosting platform, built from the readers' own stars and the cascade they set off through their followers' home feeds at the rate each repository's feed cards convert once its launch week has passed).
 **Analytical objective:** Forecasting & Predictive Modeling.
 
 ## 1. Final Recommendation
 
-**Spotlight slidewell (pjvdlinden/slidewell) in the October 2026 issue of Sluis: it would have about 12,000 external stars in its first 90 days public, about 9,000 of them added by the spotlight.**
-About 1.8 per cent of the followers who see a slidewell star in their feed star it too, against 0.1 per cent for tracewire, and each newsletter reader who stars reaches about 85 followers, so slidewell's spotlight sets off far more feed stars than anyone's and leaves tracewire second at about 9,000. Not the lottery's average spotlight lift added to each repository's own trajectory, which spotlights tracewire at about 11,000 with 5,000 added although the lottery's lifts follow each spotlighted repository's rate per follower view; not a lift carried on each repository's own share of stars from feed cards, which carries its own starrers' follower counts instead of the readers'.
+**Spotlight kilnkit (kilnworks/kilnkit) in the October 2026 issue of Sluis: it would have about 12,000 external stars in its first 90 days public, about 9,000 of them added by the spotlight.**
+From its 8th day public on, about 1.8 per cent of the followers who see a kilnkit star in their feed star it too, against about 0.7 per cent for slidewell and 0.1 per cent for tracewire, so the October readers' stars set off far more feed stars for kilnkit, and slidewell and tracewire follow at about 10,000 each. Not slidewell on the rate its feed cards showed over its whole life, about 2.0 per cent, which spotlights it at about 14,000 by carrying its launch week's feed stars into a cascade that starts a month later: on the lottery's closed spotlights the rate from day 8 reproduces the stars each spotlight added to within a few hundred, where the whole-life rate misses by more than a thousand. Not the lottery's average spotlight lift added to each repository's own trajectory, which spotlights tracewire, the largest organic forecast, although the lottery's lifts follow each spotlighted repository's rate per follower view.
 
 ## 2. Critical Components
 
-1. The October issue's own newsletter stars: about **3,000** (**0.7236%** of the **433,812** subscribers).
-2. Stars per follower view, feed-card stars over the followers of every account that starred the repository: slidewell **1.8%**, tracewire **0.1%**.
-3. Mean followers of the accounts that starred a spotlight from the newsletter **85**, and of the accounts that starred from a feed card **10**.
-4. Without the spotlight, by day 90: slidewell **3,000**, tracewire **6,000**; the spotlight adds slidewell **9,000** and tracewire **3,000**.
+1. The October issue's own newsletter stars: about **3,000** (**0.71%** of the **433,812** subscribers on the October list).
+2. Stars per follower view from the 8th day public: kilnkit about **1.8%**, slidewell about **0.7%** (about **2.0%** over its whole life, its launch week included).
+3. Mean followers of the accounts that starred a spotlight from the newsletter about **85**, and of the accounts that starred from a feed card about **10**.
+4. Without the spotlight kilnkit would have about **3,000** external stars by day 90; the spotlight adds about **9,000**.
 
 ## 3. Step-by-Step Solution
 
-1. Read the estimand in section 2 of sluis_featuring_memo_2026-09.pdf: the shortlisted repository with the most expected external stars in its first 90 days public if it is the issue's spotlight, external stars and the window as that section defines them, stars not yet made counted; the seven are the October row of the 2026 sheet of sluis_spotlight_lottery_2025-2026.xlsx.
-2. Counted each repository's external first stars by UTC day from grachtwerk_star_events_2026-03-02_to_2026-09-27.csv, bots excluded by accounts_snapshot_2026-09-27.parquet and members at the time by organization_memberships_2026-09-27.csv: slidewell 2,766 by 27 September, tracewire 3,876.
-3. Forecast each repository's stars without the spotlight to day 90 as its stars to date plus its last seven days' daily pace times the ratio of stars still to come to that pace at the same age among the lottery's runners-up with complete windows (repo_daily_external_stars_2024-11-24_to_2026-09-27.csv): slidewell 3,000, tracewire 6,000.
-4. Took the newsletter stars per subscriber over the 21 lottery issues (newsletter-surface external stars of each drawn repository in both event files, v5 codes mapped through star_surface_code_crosswalk_2026-03-02.csv, over the log's subscribers) times the October list: 0.7236% of 433,812, about 3,000.
-5. Measured each repository's stars per follower view as its feed-card stars over the summed followers of every account that starred it by 27 September: slidewell 1.8%, tracewire 0.1%.
-6. Took the mean followers of newsletter starrers over every spotlight (85) and of feed-card starrers over both event files (10), and built each repository's added stars as newsletter stars x (1 + rate x 85 / (1 - rate x 10)), every star shown to its starrer's followers in turn: slidewell 9,000, tracewire 3,000.
-7. Spotlighted the largest total: slidewell at 12,000 against tracewire at 9,000.
+1. Counted each repository's external first stars by UTC day as section 2 of sluis_featuring_memo_2026-09.pdf defines them, from grachtwerk_star_events_2026-03-02_to_2026-09-27.csv with bots excluded by accounts_snapshot_2026-09-27.parquet and members at the time by organization_memberships_2026-09-27.csv, the seven being the October row of the 2026 sheet of sluis_spotlight_lottery_2025-2026.xlsx: kilnkit 1,523 by 27 September, slidewell 4,175, tracewire 4,534.
+2. Forecast each repository's stars without the spotlight to day 90 as its stars to date plus its last seven days' daily pace times the ratio of stars still to come to that pace at the same age among the lottery's runners-up with complete windows (repo_daily_external_stars_2024-11-24_to_2026-09-27.csv): kilnkit 3,000.
+3. Took the newsletter stars per subscriber over the 21 lottery issues (newsletter-surface external stars of each drawn repository in both event files, v5 codes mapped through star_surface_code_crosswalk_2026-03-02.csv, over the log's subscribers) times the October list: 0.71% of 433,812, about 3,000.
+4. Measured each repository's stars per follower view from its 8th day public, its feed-card first stars from that UTC day over the summed followers of every account whose first star of it fell between that day and 27 September, and built its added stars as newsletter stars x (1 + rate x 85 / (1 - rate x 10)) with the mean followers of newsletter starrers over every spotlight (85) and of feed-card starrers over both event files (10): kilnkit 1.8% (356 feed-card stars over 19,548 followers) adding 9,000, slidewell 0.7% where its whole life gives 2.0%.
+5. Tested the rate on the lottery spotlights whose 90 days had closed, their added stars (stars by day 90 less the step 2 forecast at the send) against step 4 at the issue's newsletter stars and each one's rate before the send: the rate from day 8 reproduces them to within a few hundred stars in root-mean-square terms, the whole-life rate misses by more than a thousand.
+6. Spotlighted the largest total: kilnkit at 12,000 against slidewell and tracewire at 10,000 each.
+7. For each issue counted the distinct subscribers whose own click, in any of its sends to the Sluis list, is on a link to its spotlighted repository, leaving out mail gateways' fetches of every link of a message on delivery (four or more links within two seconds in relaymark_link_clicks_2026-06_to_2026-09.csv, one click on every link of the send in postwerk_link_report_2026-04_to_2026-05.csv), over the subscribers its two Tuesday batches were delivered to: April 5,825 of 391,299, September 6,404 of 429,949.
+8. Took a nominator as outside an organisation when none of their accounts was its member when they nominated, the accounts later merged into the one they nominated from included (merged_into in accounts_snapshot_2026-09-27.parquet, the spans in organization_memberships_2026-09-27.csv): kilnkit 22 of 27, tracewire 43 of 47.
 
 ## 4. Deliverable Answers
 
 ### sluis_spotlight_2026-10.xlsx
 
-1. Spotlight: slidewell (pjvdlinden/slidewell), about 12,000 external stars in its first 90 days public, about 9,000 of them added by the spotlight.
+1. Spotlight: kilnkit (kilnworks/kilnkit), about 12,000 external stars in its first 90 days public, about 9,000 of them added by the spotlight.
 2. Each shortlisted repository's expected external stars in its first 90 days public if spotlighted:
-   - slidewell: 12,000
-   - tracewire: 9,000
-   - ferrolog: 8,000
+   - kilnkit: 12,000
+   - slidewell: 10,000
+   - tracewire: 10,000
    - shiftgres: 8,000
-   - kilnkit: 7,000
+   - ferrolog: 8,000
    - hullcheck: 7,000
    - timeloom: 6,000
-3. Sluis issues, subscribers delivered to and the share of them who clicked through to the issue's spotlighted repository:
-   - April 2026 (calware-cloud/bryis): 391,299 subscribers; 1.49%
-   - May 2026 (paulaha/awesome-home-automation): 399,160 subscribers; 1.52%
-   - June 2026 (otto_kok/zig-toml): 406,891 subscribers; 1.53%
-   - July 2026 (dalora-oss/orvum): 429,444 subscribers; 1.52%
-   - August 2026 (yusufkuipers/minio-exporter): 429,291 subscribers; 1.44%
-   - September 2026 (bruno-murphy29/rust-ratelimit): 429,949 subscribers; 1.49%
-4. People who nominated each shortlisted repository and, for those owned by an organisation, the share of them outside it:
-   - slidewell: 58 people (owned by a user)
-   - tracewire: 47 people; 91.49% outside meridian-observe
-   - ferrolog: 37 people; 81.08% outside ferro-collective
-   - shiftgres: 31 people; 90.32% outside northbeam
-   - kilnkit: 27 people; 81.48% outside kilnworks
-   - hullcheck: 26 people; 88.46% outside dokwerf-labs
-   - timeloom: 19 people (owned by a user)
+3. Sluis issues, subscribers who clicked through to the issue's spotlighted repository and their share of the subscribers it was delivered to:
+   - April 2026 (calware-cloud/bryis): 5,825 subscribers; 1.49%
+   - May 2026 (paulaha/awesome-home-automation): 6,075 subscribers; 1.52%
+   - June 2026 (otto_kok/zig-toml): 6,233 subscribers; 1.53%
+   - July 2026 (dalora-oss/orvum): 6,536 subscribers; 1.52%
+   - August 2026 (yusufkuipers/minio-exporter): 6,190 subscribers; 1.44%
+   - September 2026 (bruno-murphy29/rust-ratelimit): 6,404 subscribers; 1.49%
+4. Shortlisted repositories owned by an organisation, the people who nominated it from outside the organisation when they nominated it and their share of the people who nominated it:
+   - kilnkit (kilnworks): 22 people; 81.48%
+   - tracewire (meridian-observe): 43 people; 91.49%
+   - shiftgres (lindengracht-dev): 28 people; 90.32%
+   - ferrolog (ferro-collective): 30 people; 81.08%
+   - hullcheck (dokwerf-labs): 23 people; 88.46%
 
 ### shortlist_forecast_2026-10.png
 
-5. Horizontal bar chart, one pair of bars per repository: the expected external stars in the first 90 days if spotlighted (slidewell highlighted at 12,000) beside the external stars by 27 September, to the nearest thousand: slidewell 3,000, tracewire 4,000, ferrolog 2,000, shiftgres 2,000, kilnkit 1,000, hullcheck 2,000, timeloom 1,000.
+5. Horizontal bar chart, one pair of bars per repository: the expected external stars in the first 90 days if spotlighted, split into the stars without the spotlight and those it adds (kilnkit highlighted at 12,000), beside the external stars by 27 September, to the nearest thousand: kilnkit 2,000, slidewell 4,000, tracewire 5,000, shiftgres 2,000, ferrolog 2,000, hullcheck 2,000, timeloom 1,000.
