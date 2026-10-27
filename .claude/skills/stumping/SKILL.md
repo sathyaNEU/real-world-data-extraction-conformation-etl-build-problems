@@ -1234,6 +1234,16 @@ which strengthened the kill it was testing rather than reversing it. Run every s
 byte-identical output, compute on the generator's clean truth, and where a verdict turns on a tail or a
 degenerate cell, name the estimator the harness used.
 
+### 1.2b The swap test runs before the harness
+
+Rule 1 is the cheapest screen on file and it is run on the candidate call sentence before a line of prototype
+code. Two task198 candidates were priced over 60 draws a cell across three seeds, and both then failed the swap
+test outright: a point-process trend test reads the same with a ward's incidents for a feeder's faults, and a
+diurnal load weight reads the same with a clinic's hourly attendance. The harness was spent measuring
+mechanisms that rule 1 had already refused. Where a domain's own physics is spent on a cell, what is left to
+draw is general machinery that any field's nouns satisfy, so on a slot with several deaths the swap test is the
+first filter and not the last.
+
 ### 1.3 Couple the pitfall to the domain
 
 The decisive step is the field's own method for the deciding quantity, which an expert applies and a

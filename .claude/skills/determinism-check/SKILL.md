@@ -258,6 +258,25 @@ time). `precut.py` refuses an unresolved row; `checks.py` asserts every row.
   is still measured and still written down, because it sets how much of the bin the ladder may not use, but a
   build is not spent for it. The distinction is tested, never asserted: compute the estimator under every
   grouping the records allow and show the total is identical.
+- **The bin test is necessary and not sufficient, and the screens run beside it rather than after.** It prices
+  the decisive move against the readings and the noise, and says nothing about whether a one-divide route is
+  rank-equivalent to the golden. A task198 candidate passed it at 1.26, 1.43 and 1.27 over three seeds, with the
+  decisive step clear of the smallest rung gap, and died on the multiplicative-correction floor: sd(log factor)
+  0.19 against a dispersion ceiling near 1.4, rho 0.10 against the 0.80 floor, and the easy route naming the
+  same unit in 55 of 60 draws. Run the floor and geometric-mean screens, the deletion tests and the swap test
+  alongside the three measurements, never as a second pass on whatever survives them.
+- **The second quantity is the WHAT screen read as a number.** Where the defensible-subgroup spread is the
+  binding term, the fork lives in the population, the window or the unit, which section 1 requires filed; and
+  filing it leaves the decisive step a division over shipped columns, which is rule application. So a candidate
+  whose spread is closed by filing the population has not been repaired, it has been converted into a banned
+  decisive step. Measured on the same candidate: three defensible populations for a load factor (the event's own
+  half hour, its own day's mean, its own month's mean) spread the figure 4.39 to 6.08 against a decisive worth
+  of 6.58 to 8.03, while the sampling interval was 0.20 to 0.28.
+- **The third quantity and the reflex's own precision can be one number**, and then buying the test with volume
+  is not available. On a repairable-system trend test the same inter-arrival scatter sets the golden's interval
+  and the uncorrected reflex's accuracy, so the setting that lifts the ratio to 1.00 is also the setting where a
+  plain shape estimator reaches the truth more often than the decisive route (31 of 60 against 28). Check
+  whether the dial that raises the first quantity also raises the third before reporting a cell as passing.
 - **Convergence is proved against a rival's family, never the golden's own.** A convergence block that varies
   only the construction the golden already uses (which periods a ratio is read from, which window, which band
   widths) measures the golden's internal stability and says nothing about determinism. Every such block names,

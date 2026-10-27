@@ -3100,3 +3100,146 @@ no-shipped-design-matrix residue, which was this objective's last named opening,
 from two independent directions, one institutional and one arithmetic. With it, anomaly-detection on
 this slot's numbers is closed by enumeration rather than by opinion**, and the honest next move is an
 author decision about the objective or the slot, not another architecture on this one.
+
+### Architecture 16, the author's ruling taken up on the energy cell, two candidates measured (2026-10-27)
+
+The author overruled architecture 15's stop rule on two grounds recorded in the ruling: anomaly-detection
+is not closed as an objective (17 ships against 7 stuck on this lane, the ships clustering on physical or
+instrument grounds and on sampling grounds), and the never-built-cell claim in this note was a house-domain
+label artefact and is withdrawn. Ground as allocated: `energy-systems-utilities`/`grid-reliability-outage-analysis`,
+objective unchanged. Two constraints carried in: the decisive step may not sit in the nonlinearity of a
+records-fixed count (task184 architecture 9 enumerated and closed that cell), and the bin test is measured
+before anything is recommended.
+
+**The guard re-measured today, not copied.** `guard.py check` on the architecture-14 signature restamped to
+2026-10-27 returns `PASS task198 energy-systems-utilities/anomaly-detection shape 01 gap objective pattern
+G4 gate_g decomposition_attribution decision designation_set strategy decomposition_attribution`, exit 0,
+no WARN, nearest drivers 0.06 task190 (v1, lineage), 0.05 task69 (v1), 0.05 task69 (v2), 0.04 task27, 0.04
+task106. The live three have moved again since architecture 15 (task141, task144, task464 by filing time),
+and the signature still clears every axis ban. Probe at `<scratch>/t198a16/probe_ground.json`, not
+registered. **What that PASS does and does not say:** it carries architecture 14's refused driver, so it
+measures that the AXES are free and says nothing about a driver existing. Personas drawn, not typed
+(`guard.py names --geo Ireland --seed 198`): Dennis Padden, Demi-Leigh Clery, Jane Leneghan, Kieran
+Mulligan, Jonathon McHugh, Tiegan Burke, Lara Quinlan, Janine Masterson, Peadar MacVeagh, Naoise Daniels.
+
+**The four drivers already spent on this one cell, read off their cards before anything was drawn.**
+task183, the forward count driven by the current mix of a unit's parts' own failure histories (and its
+`## Three rules` already measures the grouping family here: per feeder 1.648x, per substation 1.366x, per
+feeder shrunk to the pool 1.676x). task187, a capped curved response averaged over a per-unit spread.
+task197, a response to a shared signal confounded by the unit's own scheduled trajectory. task201, an
+exposure total whose opening interval is unrecorded and is measured off a parallel instrumented channel.
+task201 also measured **common-cause concurrency dead on this cell**: corr(netted share, storm share)
++0.8292 and +0.8554 on customer-hours, the storm carrying 72.6 per cent of the recorded total, so
+excluding major event days reaches the golden with no coincidence analysis, and its rule stands (a step
+that nets concurrent unavailability cannot hold where a named recorded episode produces the concurrency).
+task303 separately screened transmission N-1 out on the capacity-credit pincer. So the common-cause,
+redundancy and N-1 family was dead on file before a line of harness was written.
+
+**Harness at `<scratch>/t198a16/screen1.py`, run twice byte-identical (md5 `fbcf2e2fec0d77301c4baa0fd4f0967c`),
+20 draws per cell, three seeds (11, 23, 37), every route scored against the generator's own truth.**
+
+- **M-A, the clustering-corrected trend test on a repairable system. Dead, ladder inverted in 4 of 4 dial
+  cells.** The field's own method is the Laplace centroid test for a rising fault intensity, whose
+  precondition is a Poisson process; faults on a feeder arrive in bursts (one storm, one joint re-failing),
+  which inflates the Laplace statistic with no deterioration, and the recognised correction is the
+  Lewis-Robinson statistic, Laplace over the inter-arrival coefficient of variation. Over 60 draws per cell
+  the decisive route reaches the truth 17 (base), 25 (strong trend), 23 (low clustering) and 28 (high
+  volume) of 60, against the best reflex at 24 (the uncorrected Laplace statistic), 28 (the MIL-HDBK-189
+  statistic), 36 (MIL-HDBK again) and 31 (the plain power-law shape MLE). **The correction is worse than
+  doing nothing in every cell**, which is this skill's own standard-error kill: the coefficient of variation
+  that reorders the feeders is estimated off the same inter-arrival times whose scatter randomises the
+  numerator. Determinacy fails beside it: the golden's own licensed family of four returns **1.30 to 2.10
+  distinct designated names of 4**, unanimous in at best 35 of 60 draws.
+- **M-B, the per-event load weighting of energy not supplied. Dead on the multiplicative-correction floor,
+  measured exactly.** Energy not supplied is the integral of the interrupted load over the interruption, so
+  each event is weighted by the feeder's own load at the event's own half hour rather than by the feeder's
+  mean load, and the world draws faults with a real bias toward the evening and winter peaks so the
+  correction bites at all. Measured: **sd(log factor) 0.1904 to 0.1944** against the dispersion ceiling's
+  requirement of about 1.4, short by a factor of 7.3; **rho 0.1027 to 0.1104** against the floor law's 0.80;
+  realised corr(log observed, log base) **+0.9944, +0.9945, +0.9947**, which sits within 0.0007 of its own
+  floor `sqrt(1 - rho^2)` in all three seeds (differences 8e-06, 6.2e-04 and 3.9e-05); and the easy route names the same feeder in **55 of 60 draws**. The
+  reason is structural and closes the shape on this ground rather than on this candidate: **every physical
+  correcting factor a distribution network offers is a ratio bounded inside about a factor of three** (a
+  load shape, a connectivity estimate error, a restoration-step weight), and the ceiling needs an unbounded
+  magnitude.
+
+**The bin test, measured in the graded figure's own bin, and it is the pass that matters most here.**
+
+| candidate and cell | (a) step's worth | (b) subgroup spread | (c) golden's sampling interval | (a) over (b)+(c) | smallest rung gap |
+|---|---|---|---|---|---|
+| M-A base (faults, bin 1) | 4.83, 3.77, 4.56 | 3.67, 3.10, 2.76 | 3.84, 3.49, 2.94 | **0.64, 0.57, 0.80** | 1.65, 1.13, 1.59 |
+| M-A strong trend | 8.06, 6.19, 7.58 | 5.02, 3.35, 3.56 | 6.81, 6.47, 4.31 | **0.68, 0.63, 0.96** | 3.02, 2.18, 2.77 |
+| M-A low clustering | 5.32, 4.90, 3.88 | 3.13, 2.59, 2.75 | 4.56, 7.18, 2.83 | **0.69, 0.50, 0.70** | 1.92, 1.62, 1.25 |
+| M-A high volume | 11.68, 8.14, 10.52 | 7.44, 4.38, 4.53 | 4.28, 3.63, 3.92 | **1.00, 1.02, 1.24** | 4.48, 2.81, 3.94 |
+| M-B (MWh, bin 1) | 7.65, 6.58, 8.03 | 5.81, 4.39, 6.08 | 0.28, 0.20, 0.26 | **1.26, 1.43, 1.27** | 1.58, 2.03, 2.17 |
+
+**Three findings the table carries, and two of them are new to the corpus.**
+
+1. **M-A fails the bin test at every realistic setting and passes it only where its own ladder inverts.**
+   The one cell that clears the test is nine faults a feeder-year, which is at the very top of what a long
+   rural medium-voltage feeder carries, and it is also the cell where the plain power-law shape MLE reaches
+   31 of 60 against the decisive route's 28. **The (c) term and the reflex's own error are one number**:
+   volume is what makes the golden's estimate precise and it makes the reflex precise in the same stroke.
+   That is this slot's one-ended dial measured in bin units for the first time, and it is the shape of
+   task157's death the ruling named (0.58 against 0.90 plus 0.31).
+2. **The bin test is necessary and not sufficient, measured.** M-B passes it in 3 of 3 seeds at 1.26, 1.43
+   and 1.27, with (a) well clear of the smallest rung gap, and is nonetheless dead on a screen the bin test
+   cannot see, because the test prices the decisive move against the readings and the noise and says
+   nothing about whether a one-divide route is rank-equivalent to the golden. Run the floor and the
+   geometric-mean screens beside it, never after it.
+3. **M-B's binding bin term is (b), not (c), and closing (b) is what makes the step rule application.**
+   The three defensible populations the load factor can be read off (the event's own half hour, its own
+   day's mean, its own month's mean) spread the graded figure 4.39 to 6.08 MWh against a decisive worth of
+   6.58 to 8.03, while the golden's own sampling interval is 0.20 to 0.28 MWh. So the fork lives in the
+   population, which `determinism-check` section 1 requires filed; filing it ("the load at the half hour
+   each interruption began") leaves one divide over two shipped columns. **The bin test's (b) column is the
+   WHAT screen read as a number.**
+
+**And both candidates fail the swap test independently of every measurement, which is the cheaper kill and
+should have been run first.** M-A's call sentence, "the feeder whose fault intensity is the one genuinely
+rising, 14 faults expected next year against the 9 its trailing six-year mean implies", reads identically
+as "the ward whose incident intensity is the one genuinely rising, 14 incidents against 9": a point-process
+trend test carries no electrical content at all, and nothing about conductors, protection reach,
+circuit-kilometres or restoration enters the deciding quantity. M-B's reads identically as "the clinic with
+the most appointments not delivered, weighted by its own hourly attendance at the hour each closure fell":
+a diurnal activity weight is generic exposure. **Rule 1 breach on both, so the domain is a backdrop in
+both.** The reason is worth filing: after task183, task187, task197 and task201, the grid-specific physics
+on this cell (a capped response curve, a scheduled trajectory, a protection reach, an unrecorded opening
+interval, a part's failure state) is spent, and what is left to draw on the cell is general point-process
+and exposure-weighting machinery that any field's nouns satisfy.
+
+### Architecture 16, refused. What the two constraints leave, stated as an empty set.
+
+Put the ruling's two constraints beside 1.2a's dichotomy and the residue closes arithmetically rather than
+by argument, which is the useful output of this pass.
+
+- A graded figure is either **records-fixed** or an **estimator's output**, with no third position (1.2a).
+- If it is an estimator's output, (c) is the estimator's own standard error and is strictly positive.
+  Measured here at 2.83 to 7.18 faults against a decisive worth of 3.77 to 11.68, so the bin test fails at
+  every realistic setting and clears only where volume has already handed the answer to the reflex.
+- If it is records-fixed, (c) is exactly zero and (b) is zero once the population is filed, so the bin test
+  reduces to (a) above zero: the decisive step has to move a figure the records fix. By 1.2a the only two
+  levers that do are **selection** and **nonlinearity**. Nonlinearity is closed by the ruling's own first
+  constraint (task184 architecture 9: a maximum or peak, a running-sum crossing, a Jensen gap, a matching
+  deficiency, an interval union and a component count, each dead or a reading). Selection is closed on this
+  cell by its four spent drivers: reporting and detection selection is task201 and task180, the candidate
+  set's own selection is regression to the mean and so a shrinkage target (task202's law, and task183
+  measured the pool-shrunk route here at 1.676x), the in-service population is task183, and an extract
+  window is case three of 1.2b.
+- So on this cell, under the ruling's own two constraints, **the set of decisive steps that can pass the bin
+  test is empty**, and the two candidates priced above are the two members of the estimator branch that the
+  cell's remaining physics admits.
+
+**What this pass adds to the board.** Three things, none of them an opinion. The bin test is now measured in
+its own units on two unrelated candidates, with the law that **its (c) term and the reflex's own precision
+fall together**, so passing it by adding volume is not available. The bin test is **necessary and not
+sufficient**, measured on a candidate that passes it at 1.26 to 1.43 and dies on the floor law at a realised
+correlation of +0.9945. And the **swap test is the cheapest kill on a cell whose field-specific physics is
+spent**, which is a reason to run rule 1 on the call sentence before any harness rather than after, and it
+is where both of this pass's candidates died first.
+
+**Nothing registered, no card written, no file cut, no git write, no agent spawned.** The ground stays
+registrable on the architecture-14 signature, re-measured PASS with no WARN at exit 0 today. The honest next
+move is still the author's, and the ruling's own first ground points at it: the ships on this objective
+cluster on grounds whose spent drivers leave room for a physical or a sampling process, and this cell's
+four spent drivers have taken both.
