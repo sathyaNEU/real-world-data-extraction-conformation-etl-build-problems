@@ -877,3 +877,33 @@ the ETL objective and takes a fresh world, which is a full stage-1 draw and a ne
   character for all three; rewriting every cell's XML to add the part risks the files for no realism gain. The
   empty `<workbookProtection/>` element the writer emits was stripped instead, because a book with no
   protection set carries no such element.
+
+- Architecture 4 candidate 1, the area's 2027 weekly demand projected off the standing treatment panel
+  (prevalent members times each member's own regimen times projected enrolment) instead of off 2026
+  delivered throughput (2026-10-27, measured on the pack as cut): refused, 0 of 12 verdict cells. The
+  panel route raises the required total 222 slots (8 to 38 per area) and every short area gets shorter
+  while every clear area stays clear (SA-02's gap -23 to -31, SA-05's +63 to +25), so the correction walks
+  one way and never reverses and a response on the filed base lands the whole call. The bin arithmetic
+  fails twice over: the nine defensible panel readings spread the required total 1,686 slots (3,633 to
+  5,319) and the standing-panel readings alone 92, against a decisive worth of 222, which is also under
+  architecture 3's smallest rung gap of 296 slots; the regimen construction (modal, maximum or mean
+  attended week) moves it another 53.
+- Architecture 4 candidate 2, the demand base read as the level the record has reached rather than the
+  contract year's mean, because six of forty sites stepped their panel down in April 2025 (2026-10-27,
+  measured): refused on the fit interval. Every parameter-free level construction moves 0 of 12 verdict
+  cells (tail completion +45 slots, trailing 13 weeks +62, trailing 26 weeks -14), and the only
+  construction that moves the call at all is a four-year extrapolation, which clears SA-02 and SA-07 for a
+  worth of 118 slots while its own prediction standard error on exactly those two cells is 45.6 and 45.8
+  slots against a 23-slot capacity gap, twice the margin it has to clear. It also extrapolates a one-off
+  shift closure as a continuing decline (SA-02 predicted 11,142 against 2026's 13,609), and a fitted base
+  is a model of the measurement, which the skills bar as the decisive step.
+- Architecture 4 candidate 3, each site's staffed sessions a week reconstructed from the record's own
+  treatment rounds instead of read off the roster's `treatment_sessions_week` (2026-10-27, measured):
+  refused, no arithmetic-closed piece exists. The encounter record carries no session, shift or chair key,
+  so a per-position session count needs a round window, and the four defensible widths put the network
+  between 2,408 and 9,380 weekly slots with the short count at 10, 6, 2 and 0 of 12, a spread of 6,972
+  slots against a decisive worth of 222 to 616; the three parameter-free turn readings still spread 873.
+  The second file that might have closed it carries nothing: `clinical_hours_month` takes exactly one
+  distinct value in each of the six (sessions, category) cells across all 40 sites, so it is a function of
+  two columns already inside clause 4.2's own formula. Clause 4.2 also files the roster as the source of
+  the session count, so the reconstruction contradicts a shipped sentence and is an official decoy besides.
