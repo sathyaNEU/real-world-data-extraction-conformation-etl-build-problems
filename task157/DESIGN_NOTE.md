@@ -200,8 +200,11 @@ decisive step and Gate B fails. What test 1 asks is whether a clause names the d
 decisive quantity is the duplicate burden in the whole petition, which no clause names: the statute names the
 sampling fraction once, and that fraction is the right number for every other class. The sweep is the evidence
 and it is the honest kind: a route that meets the class and asks how to expand it lands on rung 1. The limit of
-the measurement is stated plainly: it scores the routes enumerated here, computed as code, and the
-blind-reader evidence is owed at stage 4.
+the measurement is stated plainly: it scores the routes enumerated here, computed as code, and nothing
+beyond it is owed. CLAUDE.md's STOP block of 2026-10-27 retires the solver flow outright, so there is no
+scored or blind reader at stage 4 or anywhere else; stump power is argued on paper here and measured by the
+portal alone. The nine-route sweep IS the paper argument, and the only readers that still run are the
+isolated leak reader, which reads the pack for leaks and never solves it, and the determinism judge.
 
 **task190's architecture 3, asserted rather than argued.** That build died because Gate B forced its audit
 manual and reliability factor table into the pack and shipping them handed the route back. Here nothing has to
@@ -444,6 +447,12 @@ best balanced of the six and meets two of the three.
 Owed at stage 5 for architecture 2.
 
 ## Tried and rejected
+
+- The blind-reader evidence this screen first recorded as owed at stage 4 is withdrawn, not deferred.
+  CLAUDE.md gained a STOP block on 2026-10-27 retiring the solver flow under every name (no scored reader, no
+  cold or blind reader, no call-only or draw probe, no isolated thread that answers the task), leaving stump
+  power to the paper argument and the portal. The nine-route sweep computed on the clean truth stands as that
+  argument. The isolated leak reader and the determinism judge are unaffected and remain stage 4.
 
 - Architecture 1, the January 2027 qualifier forecast from the seasonal return wave (spent 2026-10-27 on its
   second portal return): the graded bin is finer than the estimator. Measured above in `## Architecture 1 is
