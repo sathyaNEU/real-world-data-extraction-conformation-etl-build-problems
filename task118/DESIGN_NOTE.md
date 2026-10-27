@@ -1,72 +1,70 @@
-# task118 · Which desk gets the headline squad, net of the tests each desk already runs (realises analytical_tasks note OS01)
+# task118 · Which desk gets the headline squad, sized on the clicks that are new to Bightline (architecture 2)
 
-Source note: `analytical_tasks/04_opportunity_sizing/OS01_headline-squad-renderable-click-share.md`. The note is the idea and this build is its first realisation. Its decision and world are kept; its decisive rung is kept as rung 3, and a new decisive rung sits above it because the fingerprint guard blocks the note's own (Tried and rejected).
-
-Redesigned in wave 1 (2026-10-12) to the current spec. The main call is frozen across the redesign: every desk's extra clicks, the call and the runner-up equal the reference taken before it (`generator/main_call_ref.json`, asserted in `checks.py`).
+Architecture 1 (the headlines each desk's own editors already test, netted out of the squad's gain) shipped 10-12, was
+reshipped 10-27 after the portal's determinism block, and failed to stump the same day: both portal responses filed
+Culture·national at 1,250,000, the golden, by keeping the clicks from Bightline's own pages and dropping the articles a desk
+had already tested, a filter they read as obvious. Re-rooted 2026-10-27 (card v2, lineage v1). The world, the six desks, the
+people and the CMS ask device are kept; the decisive step, the domain and task type, the ask shape and every file that
+describes the data change.
 
 ## Draw
 
 ```
-DRAW (fingerprint card task118, guard.py check PASS, re-registered 2026-10-12 for the redesign)
-  Domain: Marketing & Consumer Research (marketing-consumer-research) · Subdomain: media-audience-measurement
-  Task type: incremental-lift sizing for a newsroom's headline-testing programme
-  Objective: Opportunity Sizing & Decision Support (opportunity-sizing-decision)
-  Shape: 07, grid of cells (six desks x average monthly readers, average monthly visits, median minutes),
-         with the call, its figure, the runner-up and the gap
-  Gap: objective (decisive); rule (rung 2) and population (rung 1) below it · Gate G: decomposition_attribution
-  Pattern: none at the decisive rung (G5 carries it); C at rung 3, B at rung 2
-  Decision type: pick_one_of_n (named_option), the chosen desk's 2027 extra clicks graded
-  Stump strategy: causal_design · stump_class analytical · decisive rule filed: no · official decoy: no · validated decoy: no
-  Calibration form: realised_outcome_roster (the change log's seven closed embeddings, realised lift over a 5 per cent holdback)
+DRAW (fingerprint card task118 v2, guard.py check WARN repeat.question_form only, registered 2026-10-27T04:25Z)
+  Domain: Product Analytics (product-analytics, client domain) · Task type: churn-propensity-uplift-modeling (serves
+         Opportunity Sizing; v1's media-reach task type served Descriptive and Forecasting only)
+  Objective: Opportunity Sizing & Decision Support: the pool is each desk's 2027 clicks from Bightline's own pages on headlines
+         the desk does not already test, the realisable is the squad's lift on them times the share of each page's views that
+         would otherwise end in no article click, and the largest realisable figure picks the desk
+  Shape: 14, cuts of a distribution (each desk's 25th, 50th and 75th percentile minutes from going live to the first headline
+         correction), with the call, its figure, the runner-up and the gap
+  Gap: objective (decisive); population and rule below it · Gate G: decomposition_attribution (a correctly measured gain
+         split into the clicks new to the site and the clicks taken from the headlines beside it)
+  Pattern: none at the decisive rung (G1, the unit of value: Bightline's clicks, not the article's); C and B below it
+  Generators: G1, G16, G8, G5 · Decision type: pick_one_of_n (named_option), the chosen desk's 2027 extra clicks graded
+  Stump strategy: causal_design (a within-slate comparison measures a share shift, not a total) · stump_class analytical ·
+         decisive rule filed: no · official decoy: no · validated decoy: no
+  Layer 2: estimand_identification, own:fixed-slate-interference-in-headline-test-uplift
+  Calibration form: realised_outcome_roster (the seven closed embeddings' extra clicks against their reader holdbacks)
   Context artifact: filed_model (the 2027 audience plan, each desk held at base-year clicks)
-  Furniture: forum committee_or_panel · forcing event launch_or_rollout · org family media_or_publishing
-  World: Bightline News, a national digital publisher with a Brisbane metro edition (Australia, AUD)
-  People (guard.py names --geo Australia --seed 118, draw order): Corey Cox (managing editor, requester), Kayla Torres
-         (head of audience, the thread's one belief), Nina Franklin (experimentation lead), Lisa Jennings (editor-in-chief),
-         Willie Smith (squad lead, redrawn for a surname clash), Natalie Benjamin (audience data engineer)
-  Spine: pageviews_by_source_age_2025-10_2026-09.parquet, 2,324,291 rows, article x click-source surface x age band
-  Deliverables: squad_placement_2027.docx (the call, its figure, the runner-up and gap, the desk chart)
-                squad_placement_2027.xlsx (a row per shortlisted desk: readers, visits, median minutes)
-  Opening move: question-first · Question form: which
-  Criteria arithmetic: the call, its figure, the runner-up and the gap 4; critical components 4; six desks x three
-         measures 18; files and the row structure 2 to 3; 28 to 29
-  As-of: 2026-10-19
+  Furniture: forum committee_or_panel · forcing event launch_or_rollout · org family media_or_publishing (unchanged)
+  World: Bightline News, a national digital publisher with a Brisbane metro edition (Australia, AUD); people kept from v1
+  Deliverables: squad_placement_2027.docx, squad_placement_2027.xlsx · Opening move question-first · Question form which
+         (the decision is a pick of one desk; the WARN against task144 is answered by the decision's own form)
 ```
 
-**Data-native sentence.** Desk editors run their own headline tests through a self-serve tool that arrived with the October 2025 web CMS migration, and every winner they ship is already inside the clicks the 2027 plan carries forward; the squad's only closed embeddings are app desks that never had the tool, so the record that certifies the squad's lift can never show the netting.
-
-**Sources, one line each.**
-- Note OS01: the decision, the world and the platform-drawn click base, kept as rung 3; this build adds the netting above it.
-- Exemplar *Staff the FY26 pod on County Sheriffs* (measured 0.47): one scarce team placed on the largest serviceable market; this build differs in netting a gain the candidates already bank rather than finding a hidden population.
-- Exemplar *Fund LC-12 Time-Deposit Rescue* (0.50): the quiet audience mis-built after the headline decoy is beaten; here the quiet step is who ran the tests behind each desk's lift.
-- Organ neighbour *Merge the copied prospecting campaigns* (0.58): seven change-log natural experiments price an effect; here the seven embeddings certify only the lift estimator and are blind, by history, to the click base and the netting.
-- Rigor pattern, own version (`own:netting-prior-uptake`): an intervention's increment over units that already take it up themselves, learned from the incrementality patterns in `layer2-rigor-patterns.md`, built on this world's owner-to-team join.
-
-**Guard.** PASS on the redesigned card (shape 07, question-first, which). The surname WARN against task182 was cleared by drawing the next unused seed-118 name (Willie Smith), not by typing one. Nearest driver 0.10 (task69 v3). No build on file places one of N by netting out the gain each candidate already banks through its own use of the same intervention.
-
-**Changes from the source note, kept from the design stage.** Domain moved to Marketing & Consumer Research (ban.pairing against task116); the decisive rung is G5 above the note's pattern-C rung (ban.pattern C; task38 v3's driver); the answer is Culture·national and the note's Local·metro is the stump's wrong answer; every click figure is graded to the nearest 50,000 (admissible prior fits move Culture's figure by up to 12,500); the note's newsletter ask and rung-basis ask retired on H18.
-
-**The wave-1 redesign, what changed and why.**
-1. The change log records each embedding's realised holdback lift, to three decimals of a per cent, where it recorded planned and realised clicks. It still selects the estimator (shrunk lift 7 of 7 within 2 per cent, raw lift 0 of 7, the twins) and now says nothing about the click base or the netting, so no closed record reproduces rung 3's click construction (`validated_decoy: false`).
-2. The brief no longer files the editor-in-chief's dashboard basis; the dashboard export stays as the declared wrong-basis distractor. The brief now states the counting period ("from each article's publication, the hours its headline is under test included"), which the click-level change log used to settle.
-3. The thread keeps one belief (Kayla Torres: it goes where the readers are); the other voices carry logistics only.
-4. The ask layer is rebuilt against the cracker sheet (Ask sheet). The per-desk extra clicks, the chart walk and the back-test count left the prompt (the call's construction); the headline-correction count and rate left too (their devices are filed). Readers and visits now carry a silent version device, the median minutes a silent clock device.
-5. `prompt.txt` replaces `prompt.md`.
+**Data-native sentence.** On Bightline's own pages a headline competes for a fixed set of reader clicks, and the page
+analytics show how often a view already ends in one: about four in five views of Culture·national's section front and
+app tab end in an article click, against about two in five of the home pages and the app feed and about one in eight of
+the related-stories module, so most of what a better Culture·national headline wins it takes from the headlines beside
+it.
 
 ## Default path
 
-The pipeline a competent analyst builds from the prompt's words and the files' grain (ten of ten in-house solves ran it):
-1. Reads the brief: the squad is judged on incremental article clicks in the twelve months after it embeds, counted at the owning desk; six desks are shortlisted.
-2. Takes each test's winning lift from `headline_tests_archive_2019-2026.csv` (the shipped variant's click-through over the control's, minus one, zero when the control is kept) and averages it by desk.
-3. Back-tests on `headline_squad_change_log.xlsx`: raw lift misses every embedding's realised holdback lift (0 of 7), so it shrinks each shipped variant toward one prior fitted by maximum likelihood on every package (7 of 7 within 2 per cent).
-4. Reads `canonical_headline` in `audience_warehouse_field_reference.md`: search, Discover-style cards, partner feeds, social metadata, newsletters and alerts show the headline stored at publication, so a tested headline moves only clicks from Bightline's own surfaces; keeps those rows of the parquet, which ties to the plan.
-5. Multiplies each desk's shrunk lift by its 2027 clicks from Bightline's surfaces (the plan holds the base year) and ranks the six desks.
-Ends on: Local·metro, 2,800,000 extra article clicks in 2027
-Golden: Culture·national, 1,250,000 extra article clicks in 2027
+The strong analyst's route (the portal's two responses ran its first five steps):
+1. Reads the brief: the squad is judged on the article clicks Bightline gets in its year that it would not have got without
+   it; six desks are shortlisted.
+2. Takes each test's winning lift from `headline_tests_archive_2019-2026.csv` and shrinks it towards one prior, as the
+   change log's realised holdback lifts require (raw lift misses every closed embedding).
+3. Keeps the clicks that start on Bightline's own pages (the brief names them), and leaves out the articles a desk's own
+   editors have already put under test.
+4. Multiplies each desk's shrunk lift by those 2027 clicks: Culture·national at about 1,250,000.
+5. Back-tests on the change log: the predicted gain overshoots every closed embedding's extra clicks against its reader
+   holdback, by between about a third and three fifths, so scales every desk by the average shortfall: Culture·national at
+   about 720,000.
+Ends on: Culture·national (about 1,250,000, or about 700,000 after the average scaling).
+Golden: the desk whose own-page clicks arrive through pages that rarely end in a click (Business·national at about
+500,000 in the prototype), once each page type's share of a shipped headline's clicks that is new to the site, one minus
+the page's click-through, is applied page by page.
 
 ## Stump sentence
 
-A competent solver rebuilds each desk's winning lift from the test archive, shrinks it as the seven closed embeddings' realised holdback lifts require, counts only the clicks that start on surfaces that show the tested headline, and names Local·metro at 2,800,000; the step that lands them there is never asking who ran the tests behind each desk's lift, which the archive's test owners joined to the newsroom staff list answer: Local·metro's own editors already test the headlines behind 71.1% of its platform clicks, so most of the gain the squad was sized on is already in the plan.
+A competent solver shrinks each desk's winning lift against the change log, sizes it on the clicks from Bightline's own
+pages, leaves out the articles the desk's editors already test and names Culture·national at about 1,250,000 (scaling
+every desk by the closed embeddings' average shortfall still names Culture·national); the step that lands them there is
+crediting every click a shipped headline wins as new to Bightline, when on a fixed page most come from the headlines beside
+it and only the share of views that would otherwise end in no click is new, and Culture·national's own-page clicks come
+from its section front and app tab where about four in five views already end in a click.
 
 ## Three rules
 
@@ -396,6 +394,12 @@ Isolated judge, two passes (`determinism_check_report.md`).
 - Visits left wherever the draw put them (wave-1 redesign): Culture·national's average sat 67 visits from its rounding edge; the September release, which nothing restates, now absorbs each section's remainder so every average sits at least 150 inside its thousand.
 - The brief's counting phrase "counted at the owning desk on every click an article earns from publication, the hours its headline is under test included" (wave-1 redesign, stage 4): the isolated reader executed "every click" as an all-sources click base for the lift, a main-call fork against the field reference's stored-headline surfaces; the brief now says "counted at the owning desk from each article's publication, the hours its headline is under test included", which pins the period and names no click base.
 - Related links classed as Bightline surfaces only by their absence from the `canonical_headline` list (wave-1 redesign, judge pass 2): read the other way the call figure is 1,050,000 with the same desks; the `related_links` row now says the links show each linked article's current headline.
+- Architecture 1, the headlines each desk's own editors already test netted out of the squad's gain (2026-10-27, portal
+  FAILED_TO_STUMP): both responses kept the clicks from Bightline's own surfaces, dropped the articles a desk had already
+  tested and filed Culture·national at 1,250,000; the netting reads as a filter anyone applies (a tested headline cannot be
+  tested again), and the shrinkage that the change log selects moved the figure, never the desk. The resume line had
+  already measured it: own surfaces plus the drop plus distrust of Sport·metro's small-test mean reaches Culture·national
+  with no shrinkage at all. Re-rooted onto what share of a shipped headline's clicks is new to the site.
 
 ## Gates after the repair, and one assertion of mine the verifier caught
 
@@ -464,4 +468,3 @@ sentence go to the placement brief and the dashboard's own export. task251's rep
 dropping its data dictionary and moving the facts into its filed standard at authority. On this build the field
 reference is also load-bearing for SF7 and SF8, so it is a pack redesign needing a fresh judge rather than a
 determinism repair.
-

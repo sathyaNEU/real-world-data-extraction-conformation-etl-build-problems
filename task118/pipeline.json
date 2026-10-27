@@ -1,11 +1,11 @@
 {
  "task": "task118",
- "domain": "marketing-consumer-research",
+ "domain": "product-analytics / churn-propensity-uplift-modeling",
  "objective": "opportunity-sizing-decision",
- "stage": 5,
- "stage_name": "ship",
+ "stage": 1,
+ "stage_name": "draw",
  "updated": "2026-10-27",
- "stump": "A competent solver rebuilds each desk's winning lift from the test archive, shrinks it as the seven closed embeddings' realised holdback lifts require, counts only the clicks that start on surfaces that show the tested headline, and names Local·metro at 2,800,000; the step that lands them there is never asking who ran the tests behind each desk's lift, which the archive's test owners joined to the newsroom staff list answer: Local·metro's own editors already test the headlines behind 71.1% of its platform clicks, so most of the gain the squad was sized on is already in the plan.",
+ "stump": "A competent solver shrinks each desk's winning lift against the change log, sizes it on the clicks from Bightline's own pages, leaves out the articles the desk's editors already test and names Culture·national at about 1,250,000 (scaling every desk by the closed embeddings' average shortfall still names Culture·national); the step that lands them there is crediting every click a shipped headline wins as new to Bightline, when on a fixed page most come from the headlines beside it and only the share of views that would otherwise end in no click is new, and Culture·national's own-page clicks come from its section front and app tab where about four in five views already end in a click.",
  "harden_loops": 4,
  "solver_rounds": [
   {
@@ -105,11 +105,11 @@
  },
  "approved": "2026-10-09 (checkpoint B waived by the author; heart WARN)",
  "delivered": "2026-10-12",
- "portal": null,
+ "portal": "FAILED_TO_STUMP",
  "source_note": "analytical_tasks/04_opportunity_sizing/OS01_headline-squad-renderable-click-share.md",
- "status": "SHIPPED",
+ "status": "DESIGN",
  "owner": "oviya1301",
- "resume": "Re-shipped 2026-10-27 after the determinism repair. Four pins, all WHAT: SF11 the rate credited during the under-test hours (the brief's success measure), SF12 the going-live event and SF13 the publish_at clock (the CMS field notes), and SF14 what tested covers (the field reference's archive paragraph), the last closing a CALL-FLIPPING fork both portal judges missed and the build's own grid had recorded since the pack was cut: shr/plat/won files Local-metro 1,555,000 against Culture-national 1,321,000. The licensed judge returned DETERMINISTIC and reproduced every graded figure. Waits on the portal. THREE THINGS FOR WHOEVER PICKS THIS UP. (1) Gate F is weak and independently measured so: an analyst who restricts to own surfaces, drops already-tested articles and distrusts Sport-metro's 10.8 per cent raw mean from 150 small tests reaches Culture-national with NO shrinkage, which is why both portal judges' models got the desk; shrinkage buys the exact figure and the gap, not the call. That is a redesign question, not a determinism one. (2) The ask layer now stands on ONE device, not two: pinning the clock moved the pair from 27.5 to 45.8, and the measured cell where a solver also catches the July file is 82.5, over the bar. /fix-rubric is the instrument. (3) The describing-file LEAK is grandfathered, with the migration written out in the design note. Also unresolved and recorded: the task type media-reach-frequency-audience-measurement serves Descriptive and Forecasting in the taxonomy, not the Opportunity Sizing tag this build carries.",
+ "resume": "Architecture 2 drawn 2026-10-27 (card registered, WARN repeat.question_form only). Next: stage 2 on the existing generator: per-desk own-surface splits and page click-throughs (page_performance_monthly), the change log's planned clicks and extra clicks against the reader holdback, the brief's site-wide success measure and the surfaces, the describing files removed (field reference, CMS field notes, Notes, About and Definitions sheets) with their pins moved to the brief and the corrections standard, the asks moved to quartiles of minutes to first headline correction (shape 14); then the fork table, closure, ladder, precut.",
  "leak": {
   "leak_py": "LEAK on cms_revisions_export_fields.txt under the describing-file rule that landed 2026-10-27, fifteen days after delivery; corpus drift, grandfathered by the author, recorded in the design note with the migration written out",
   "reader": "not re-run, no document changed near the decisive step beyond the pins themselves"
@@ -129,7 +129,17 @@
    "portal": "both determinism judges competing_defensible_answer, Gates C and D fail (judge 1 also E), G pass, F plausible and strong. Fork 1, the rate credited during the hours a headline is under test: the brief puts those hours in scope but names no rate, so the mixture reading gives 750,000 to 800,000 against the committed 1,250,000 and a gap of 150,000 against 450,000. Fork 2, the correction clock: going live is undefined (publish_at against the first live save) and publish_at carries no timezone, moving all six median asks 20 to 40 minutes a desk.",
    "repair": "determinism",
    "commit": "RESHIPPED (task118), determinism, 2026-10-27"
+  },
+  {
+   "date": "2026-10-27",
+   "portal": "FAILED_TO_STUMP: both responses filed Culture·national at 1,250,000 (the golden), runner-up named Sport·national (850,000, gap 350,000; and 200,000 behind)",
+   "repair": "re-root",
+   "commit": "DRAWN (task118) architecture 2"
   }
  ],
- "zip_sha256_16": "e23bc761f36a9440"
+ "zip_sha256_16": "e23bc761f36a9440",
+ "architecture": 2,
+ "loops": 0,
+ "portal_status": "FAILED_TO_STUMP",
+ "portal_status_date": "2026-10-27"
 }
