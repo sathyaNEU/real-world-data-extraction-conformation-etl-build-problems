@@ -109,7 +109,6 @@ FILES = {
     "standard": "relief_coverage_standard.pdf",
     "memo": "fy2028_allowance_relief_positions_memo.pdf",
     "agreement": "protective_services_agreement_excerpts.pdf",
-    "dictionary": "data_dictionary.txt",
     "inmates": "doc_average_daily_population_fy2026.csv",
     "cad": "msp_communications_call_volume_fy2026.csv",
     "winter": "sha_winter_operations_log_fy2026.csv",

@@ -277,8 +277,8 @@ class Payroll:
             take_comp = pre if pre is not None else (self.comp[e] > 0 and rng.uniform() < self.comp[e])
             rid = rc.id_on(e, d)
             if take_comp:
-                rows.append([check, end, rid, cc, loc, "CTE", d, st, "", "",
-                             COMP_CREDIT[self.w.people[e]["title"]] * h, "", 0.0])
+                cr = COMP_CREDIT[self.w.people[e]["title"]]
+                rows.append([check, end, rid, cc, loc, "CTE" if cr == 1.5 else "CTS", d, st, "", "", cr * h, "", 0.0])
             else:
                 r = self.rate(e, d)
                 rows.append([check, end, rid, cc, loc, "OT", d, st, "", "", h, r, money(h * r)])
@@ -352,7 +352,7 @@ class Payroll:
             out.append([R.iso(check), R.iso(end), emp, cc, loc, code, R.iso(d) if d else "", st,
                         R.iso(sps) if sps else "", R.iso(spe) if spe else "",
                         ("%.2f" % h), ("%.2f" % rate) if rate != "" else "", "%.2f" % amt])
-        return (["check_date", "pay_period_end", "employee_id", "cost_center", "timekeeping_location", "earn_code",
+        return (["check_date", "pay_period_end", "employee_id", "home_cost_center", "home_timekeeper", "earn_code",
                  "work_date", "start_time", "service_period_start", "service_period_end", "hours", "rate", "amount"],
                 out)
 
@@ -379,6 +379,6 @@ class Payroll:
                 t += dt.timedelta(minutes=int(rng.integers(4, 40)))
             rows.append([t, ev["unit"], d, ev["shift"], ev["start"], ev["hours"], rc.id_on(ev["e"], d), "Accepted"])
         rows.sort(key=lambda r: (r[0], r[1], r[6]))
-        return (["offered_at", "unit_code", "post_date", "shift", "start_time", "hours", "employee_id", "response"],
+        return (["offered_at", "post_unit", "post_date", "shift", "start_time", "hours", "employee_id", "response"],
                 [[r[0].strftime("%Y-%m-%d %H:%M"), r[1], r[2].isoformat(), r[3], "%02d:00" % r[4], "%.2f" % r[5],
                   r[6], r[7]] for r in rows])

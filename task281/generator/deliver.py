@@ -69,7 +69,8 @@ def evidence(res):
             "fill_weeks": [fills[0], fills[-1]],
             "fy2026_vacant_line_hours": int(sum(c["comp"][u]["V26"].sum() for u in K.UNIT_CODES)),
             "july2025_off_post_pct": half_up(100 * (1 - j), 1), "units_off_post_pct": half_up(100 * (1 - allh), 1),
-            "weeks": K.WEEKS, "funded": K.FUNDED, "overtime_threshold_hours": 600, "comp_time_credit": 1.5,
+            "weeks": K.WEEKS, "funded": K.FUNDED, "overtime_threshold_hours": 600, "comp_time_credit": AK.COMP["CTE"],
+            "comp_time_credit_aides": AK.COMP["CTS"],
             "relief_hours_by_title": {t: half_up(K.WEEK_H * c["comp"][[u for u in K.UNIT_CODES
                                                                       if K.UNIT_TITLE[u] == t][0]]["a1"], 1)
                                       for t in K.TITLE_ORDER},
@@ -79,7 +80,7 @@ def evidence(res):
                                           half_up(max(K.WEEK_H * c["comp"][u]["a_title"] for u in K.UNIT_CODES), 1)],
             "default_path_total": sum(c["counts"][A.DEFAULT]),
             "default_path_short_by": sum(c["counts"][A.DEFAULT]) - K.FUNDED,
-            "clauses_cited": [2.1, 2.3, 2.4, 3.1, 3.2, 3.3, 3.4, 14.2]}
+            "clauses_cited": [2.1, 2.3, 2.4, 3.1, 3.2, 3.3, 3.4, 14.2, 14.3]}
 
 
 # ------------------------------------------------------------------------------------------------ chart
@@ -91,9 +92,10 @@ def chart_png(path, fig, res):
     from matplotlib.lines import Line2D
     from matplotlib.patches import Patch
     for f in ("LiberationSans-Regular.ttf", "LiberationSans-Bold.ttf"):
-        p = "/usr/share/fonts/truetype/liberation/" + f
-        if os.path.exists(p):
-            font_manager.fontManager.addfont(p)
+        for d in ("/usr/share/fonts/truetype/liberation/", os.path.expanduser("~/Library/Fonts/"), "/Library/Fonts/"):
+            if os.path.exists(d + f):
+                font_manager.fontManager.addfont(d + f)
+                break
     plt.rcParams.update({"font.family": "Liberation Sans", "font.size": 9})
     ink, muted, grid = "#1d2329", "#5a636b", "#d9dee3"
     bar, over, cover = "#8fb3dd", "#d9622b", "#1f3b57"
@@ -273,10 +275,10 @@ def workbook(path, fig, res):
         w3.append([K.TITLES[t], fig["ask_c_people_over_600_hours"][t]])
     w3.append([])
     for line in ["Hours worked: overtime paid at time and a half, and compensatory time at one hour worked for each "
-                 "1.5 hours credited (MOU 14.2), hour for hour for the Forensic Security Aides, whose unit the MOU "
-                 "does not cover; night differential and retroactive lines carry pay only, and a "
-                 "timesheet Central Payroll paid a second time on a later check is one piece of work. By the unit "
-                 "the piece was posted at in the offer log, else the line's work location (SL-0410 is Thornmere).",
+                 "1.5 hours credited (CTE, MOU 14.2) or each hour credited (CTS, the Forensic Security Aides); "
+                 "night differential and retroactive lines carry pay only, and a timesheet Central Payroll paid a "
+                 "second time on a later check is one piece of work. By the unit whose post the piece was accepted "
+                 "at in the offer log, else the employee's own unit (the home timekeeper; SL-0410 is Thornmere).",
                  "People: everyone with an overtime or compensatory time piece dated in FY2026 at the unit, counted "
                  "once at each unit they worked at; an employee's two records are one person. The all-units line "
                  "is not given for people, since one person can work at more than one unit.",

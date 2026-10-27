@@ -13,11 +13,6 @@
  "domain": "General Statistics & Data Science (exploratory data analysis and distribution assessment)",
  "objective": "Descriptive & Distribution Analysis",
  "provenance": {
-  "data_dictionary.txt": {
-   "date": "2026-10-23",
-   "licence": "CC0 1.0 (constructed for this task)",
-   "source": "constructed by the task generator (seeded); the State of Merrimont, its agencies, units, people and records are fictional; the records follow the forms of US state timekeeping roster exports, HR extracts, position control projections and biweekly payroll earnings lines"
-  },
   "doc_average_daily_population_fy2026.csv": {
    "date": "2026-10-23",
    "licence": "CC0 1.0 (constructed for this task)",
@@ -101,7 +96,7 @@
   "merrimont_shift_rosters_fy2026.csv": 44115,
   "msp_communications_call_volume_fy2026.csv": 730,
   "overtime_offer_log_fy2026.csv": 11567,
-  "payroll_earnings_codes.csv": 4,
+  "payroll_earnings_codes.csv": 5,
   "payroll_overtime_lines_checks_jul2025_jul2026.csv": 14056,
   "position_control_fy2028_round_the_clock_units.csv": 182,
   "sha_winter_operations_log_fy2026.csv": 84,

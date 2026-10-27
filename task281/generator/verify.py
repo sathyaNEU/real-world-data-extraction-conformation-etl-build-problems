@@ -72,23 +72,23 @@ def asks(t):
         pay[c] = pay[c].astype(float)
     pay = pay.reset_index().rename(columns={"index": "n"})
     key = ["employee_id", "work_date", "start_time", "hours", "earn_code"]
-    piece = pay[pay.earn_code.isin(["OT", "OTN", "CTE"])].sort_values(["check_date", "n"])
+    comp = {"CTE": 1.5, "CTS": 1.0}
+    piece = pay[pay.earn_code.isin(["OT", "OTN", "CTE", "CTS"])].sort_values(["check_date", "n"])
     firsts = piece.groupby(key).check_date.transform("min")
     repeat = set(piece.n[piece.check_date != firsts])
     pay["infy"] = (pay.work_date >= "2025-07-01") & (pay.work_date <= "2026-06-30")
     once = pay[~pay.n.isin(repeat)]
-    worked = once[once.infy & once.earn_code.isin(["OT", "CTE"])].copy()
-    worked["cr"] = [1.0 if (c_ == "CTE" and tt(e_, d_) == "FSA") else 1.5
-                    for e_, d_, c_ in zip(worked.employee_id, worked.work_date, worked.earn_code)]
-    worked["w"] = np.where(worked.earn_code == "CTE", worked.hours / worked.cr, worked.hours)
+    worked = once[once.infy & once.earn_code.isin(["OT", "CTE", "CTS"])].copy()
+    worked["cr"] = worked.earn_code.map(comp).fillna(1.0)
+    worked["w"] = worked.hours / worked.cr
     acc = offers[offers.response == "Accepted"].copy()
     acc["wh"] = acc.hours.astype(float).round(2)
-    acc = acc.rename(columns={"post_date": "work_date", "unit_code": "post_unit"})
+    acc = acc.rename(columns={"post_date": "work_date"})
     worked["wh"] = worked.w.round(2)
     worked = worked.merge(acc[["employee_id", "work_date", "start_time", "wh", "post_unit"]],
                           on=["employee_id", "work_date", "start_time", "wh"], how="left")
     worked["unit"] = worked.post_unit.fillna("").where(worked.post_unit.fillna("") != "",
-                                                        worked.timekeeping_location.replace({"SL-0410": "TWC"}))
+                                                        worked.home_timekeeper.replace({"SL-0410": "TWC"}))
     a = worked.groupby("unit").w.sum().round().astype(int).to_dict()
 
     cur = emp.sort_values("title_effective_from").drop_duplicates("employee_id", keep="last")
@@ -102,6 +102,19 @@ def asks(t):
                 canon[m.employee_id.iloc[0]] = r.employee_id
     worked["person"] = worked.employee_id.map(lambda e: canon.get(e, e))
     b = worked.groupby("unit").person.nunique().to_dict()
+
+    # SF16: the literal reading joins a line to its accepted offer by employee, date and start alone (the hours of a
+    # CTE line are credit, not the post's hours), and leaves an unoffered piece at the employee's own unit
+    k3 = acc.drop_duplicates(["employee_id", "work_date", "start_time"])
+    if len(k3) != len(acc):
+        raise SystemExit("verify: FAIL an accepted offer repeats employee, date and start")
+    alt = worked.drop(columns=["post_unit", "unit"]).merge(
+        k3[["employee_id", "work_date", "start_time", "post_unit"]], on=["employee_id", "work_date", "start_time"],
+        how="left")
+    alt["unit"] = alt.post_unit.fillna("").where(alt.post_unit.fillna("") != "",
+                                                  alt.home_timekeeper.replace({"SL-0410": "TWC"}))
+    if (alt.unit.values != worked.unit.values).any():
+        raise SystemExit("verify: FAIL the three-key join places a piece elsewhere than the four-key join")
 
     person = worked.groupby("person").w.sum().to_dict()
     c = {}
@@ -121,6 +134,15 @@ def run(task):
         bad.append("placement %s vs %s" % (p, fig["call"]["positions"]))
     if sum(p.values()) != fig["call"]["total"]:
         bad.append("total")
+    # SF16 and SF17 as the files carry them: the payroll's own headers, the earnings codes, no file describing the data
+    head = open(os.path.join(t, "payroll_overtime_lines_checks_jul2025_jul2026.csv"), encoding="utf-8").readline()
+    if "home_timekeeper" not in head or "home_cost_center" not in head:
+        bad.append("payroll headers")
+    codes = pd.read_csv(os.path.join(t, "payroll_earnings_codes.csv"), dtype=str)
+    if not {"Comp time earned 1.5", "Comp time earned 1.0"} <= set(codes.description):
+        bad.append("earnings codes")
+    if [f for f in os.listdir(t) if any(w in f.lower() for w in ("dictionary", "readme", "manifest", "notes"))]:
+        bad.append("a file describing the data ships")
     a, b, c = asks(t)
     if {u: a.get(u, 0) for u in UNITS} != fig["ask_a_overtime_hours_by_unit"]:
         bad.append("ask A %s" % a)

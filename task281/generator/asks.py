@@ -13,6 +13,8 @@ FY0, FY1 = "2025-07-01", "2026-06-30"
 QUARTERS = (("Q1", "2025-07-01", "2025-09-30"), ("Q2", "2025-10-01", "2025-12-31"),
             ("Q3", "2026-01-01", "2026-03-31"), ("Q4", "2026-04-01", "2026-06-30"))
 LOC = {PY.TWC_SITE: "TWC"}
+HOME = "home_timekeeper"
+COMP = {"CTE": 1.5, "CTS": 1.0}     # compensatory hours credited for an hour worked, as the earnings codes name them
 
 
 def quarter(d):
@@ -35,7 +37,7 @@ def repeats(pk):
     first = {}
     out = set()
     for n, r in sorted(enumerate(pk.payroll), key=lambda x: (x[1]["check_date"], x[0])):
-        if r["earn_code"] not in ("OT", "OTN", "CTE"):
+        if r["earn_code"] not in ("OT", "OTN") + tuple(COMP):
             continue
         k = piece_key(r)
         if k in first and first[k] != r["check_date"]:
@@ -50,21 +52,21 @@ def worked_unit(pk):
     out = {}
     for r in pk.offers:
         if r["response"] == "Accepted":
-            out[(r["employee_id"], r["post_date"], r["start_time"], r["hours"])] = r["unit_code"]
+            out[(r["employee_id"], r["post_date"], r["start_time"], r["hours"])] = r["post_unit"]
     return out
 
 
 def credit(pk, r, flat=False):
-    """compensatory hours credited for an hour worked: one and a half under MOU 14.2; the forensic security aides,
-    whose unit the MOU does not cover, are credited hour for hour (their lines carry whole and half shifts)"""
+    """compensatory hours credited for an hour worked, as the line's earnings code names it: CTE one and a half
+    (MOU 14.2), CTS one (the forensic security aides, whose unit the MOU does not cover); flat reads both at 1.5"""
     if flat:
         return 1.5
-    return 1.0 if pk.title_on(r["employee_id"], r["work_date"]) == "FSA" else 1.5
+    return COMP.get(r["earn_code"], 1.5)
 
 
 def worked_key(pk, r, flat=False):
     """the hours a line's piece took, as the offer log writes them"""
-    return r["hours"] if r["earn_code"] != "CTE" else "%.2f" % (float(r["hours"]) / credit(pk, r, flat))
+    return r["hours"] if r["earn_code"] not in COMP else "%.2f" % (float(r["hours"]) / credit(pk, r, flat))
 
 
 def hours_worked(r, cte=True, otn=False, otr=False, cr=1.5):
@@ -73,7 +75,7 @@ def hours_worked(r, cte=True, otn=False, otr=False, cr=1.5):
     h = float(r["hours"])
     if code == "OT":
         return h
-    if code == "CTE":
+    if code in COMP:
         return h / cr if cte is True else (h if cte == "raw" else 0.0)
     if code == "OTN":
         return h if otn else 0.0
@@ -98,17 +100,17 @@ def ask_a(pk, cte=True, otn=False, otr=False, offers=True, drop_repeats=True, de
             seen.add(k)
         u = where.get((r["employee_id"], r["work_date"], r["start_time"], worked_key(pk, r, flat)))
         if u is None:
-            u = r["timekeeping_location"]
+            u = r[HOME]
             u = LOC.get(u, u) if map_site else u
         out[u] += hours_worked(r, cte, otn, otr, credit(pk, r, flat))
     return {u: int(round(out.get(u, 0.0))) for u in K.UNIT_CODES}
 
 
 def unit_of(pk, r, where, map_site=True, flat=False):
-    """the unit a piece was worked at: the post the offer log names, else the timekeeper that keyed the line"""
+    """the unit a piece was worked at: the post the offer log names, else the employee's own unit (MOU 14.3)"""
     u = where.get((r["employee_id"], r["work_date"], r["start_time"], worked_key(pk, r, flat)))
     if u is None:
-        u = r["timekeeping_location"]
+        u = r[HOME]
         u = LOC.get(u, u) if map_site else u
     return u
 
@@ -120,7 +122,7 @@ def ask_b(pk, offers=True, merge=True, map_site=True):
     canon = {old: new for new, old in chains(pk).items()} if merge else {}
     people = collections.defaultdict(set)
     for r in pk.payroll:
-        if r["earn_code"] not in ("OT", "CTE") or not in_fy(r["work_date"]):
+        if r["earn_code"] not in ("OT",) + tuple(COMP) or not in_fy(r["work_date"]):
             continue
         people[unit_of(pk, r, where, map_site)].add(canon.get(r["employee_id"], r["employee_id"]))
     return {u: len(people.get(u, ())) for u in K.UNIT_CODES}

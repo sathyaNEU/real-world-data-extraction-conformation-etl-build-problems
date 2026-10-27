@@ -29,7 +29,7 @@ import world as Wd         # noqa: E402
 TASK = os.path.dirname(HERE)
 MTIME = calendar.timegm(K.ASSEMBLED.timetuple())
 EARN = [("OT", "Overtime 1.5"), ("OTN", "Shift differential - night"), ("OTR", "Retro pay - overtime"),
-        ("CTE", "Comp time earned")]
+        ("CTE", "Comp time earned 1.5"), ("CTS", "Comp time earned 1.0")]
 
 
 def build(out, seed=K.SEED, keep=False):
@@ -55,7 +55,6 @@ def build(out, seed=K.SEED, keep=False):
     DC.write_standard(p("standard"))
     DC.write_memo(p("memo"))
     DC.write_agreement(p("agreement"))
-    DC.write_dictionary(p("dictionary"))
     return dict(w=w if keep else None, rc=rc if keep else None, py=py if keep else None, counts=n)
 
 

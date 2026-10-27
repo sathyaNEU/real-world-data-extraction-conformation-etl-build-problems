@@ -22,15 +22,16 @@ def score(target):
     fig = json.load(open(os.path.join(HERE, "figures.json")))
     pk = PK.Pack(target)
     # the cracker: runs the hygiene battery (a piece paid again on a later check, same employee, work date, start and
-    # hours, dropped everywhere as a duplicate), executes every filed rule (compensatory time at one hour worked for
-    # 1.5 credited, MOU 14.2, on every compensatory time line), places each line at the timekeeper that keyed it
-    # (SL-0410 mapped to Thornmere) and counts people as employee records (no key joins two). The reader-calibrated
-    # variant also reads the offer log for the unit worked at and the aides' lines for their credit.
-    a = AK.ask_a(pk, offers=False, flat=True)
-    b = AK.ask_b(pk, offers=False, merge=False)
-    c = AK.ask_c(pk, merge=False, flat=True)
+    # hours, dropped everywhere as a duplicate), executes every filed rule (compensatory time credited at 1.5 an hour
+    # worked under MOU 14.2 and hour for hour for the aides; each piece at the unit of its accepted offer, else the
+    # employee's own unit, as the dictionary files them; SL-0410 mapped to Thornmere) and counts people as employee
+    # records (no key joins two). The reader-calibrated variant also joins the rehires by their restored seniority.
+    a = AK.ask_a(pk)
+    b = AK.ask_b(pk, merge=False)
+    c = AK.ask_c(pk, merge=False)
     a_plus = AK.ask_a(pk)
-    b_plus = AK.ask_b(pk, merge=False)
+    b_plus = AK.ask_b(pk)
+    c_plus = AK.ask_c(pk)
     rows = []
     for u in K.UNIT_CODES:
         rows.append(("A hours %s" % u, a[u], fig["ask_a_overtime_hours_by_unit"][u]))
@@ -41,8 +42,8 @@ def score(target):
     rows = [(n, got, want, got == want) for n, got, want in rows]
     plus = sum(a_plus[u] == fig["ask_a_overtime_hours_by_unit"][u] for u in K.UNIT_CODES) + \
         sum(b_plus[u] == fig["ask_b_people_by_unit"][u] for u in K.UNIT_CODES) + \
-        sum(r[3] for r in rows if r[0].startswith("C "))
-    print("reader-calibrated cracker (the offer log read): %d of %d" % (plus, len(rows)))
+        sum(c_plus[t] == fig["ask_c_people_over_600_hours"][t] for t in K.TITLE_ORDER)
+    print("reader-calibrated cracker (the rehires joined): %d of %d" % (plus, len(rows)))
     hits = sum(r[3] for r in rows)
     lc = hits / len(rows)
     ls = lc          # the mirror reads the asks as the cracker does: they consume nothing the call produces

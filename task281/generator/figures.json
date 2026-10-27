@@ -61,9 +61,11 @@
    3.2,
    3.3,
    3.4,
-   14.2
+   14.2,
+   14.3
   ],
   "comp_time_credit": 1.5,
+  "comp_time_credit_aides": 1.0,
   "default_path_short_by": 3,
   "default_path_total": 63,
   "fill_weeks": [
