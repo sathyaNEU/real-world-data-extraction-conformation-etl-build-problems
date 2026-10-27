@@ -478,3 +478,51 @@ the draw is not ready.
   reachable, because the reader had reached it unprompted; the note's conclusion was that the golden has to move off
   the textbook move rather than be better defended. The same holds here: the equating is reachable from the bridge
   file alone.
+
+## The world is exhausted for this decision, measured 2026-10-27
+
+Before drawing architecture 3 I looked for a decisive step in this world that is not the test placement, because the
+placement is the reflex that spent architecture 2. The pack was re-measured from `target.zip` directly, and the
+reconstruction reproduces the golden exactly (sixth 368, seventh 353, gap 15), so the measurements below are against
+the shipped truth and not against a re-derivation.
+
+**What the pack still holds that architecture 2 never used.** The grade in 2026-27 does not determine which
+instrument carries a student's grade 8 result, because students repeat grades:
+
+| Population | Students |
+|---|---|
+| Grade 9 with a new-test grade 8 result (the expected path) | 22,513 |
+| Grade 9 with a retiring-test grade 8 result only, so grade 9 repeaters | 610 |
+| Grade 9 with both, so grade 8 repeaters whose latest result is the newer one | 326 |
+| Grade 10 with a retiring-test result (the expected path) | 22,351 |
+| Grade 9 or 10 with no grade 8 reading result at all | 1,063 |
+
+That is 936 grade 9 students whom a pipeline keyed on grade either drops or places on the wrong instrument, and the
+spent default path's own step 4 ("Grade 9 on the new test") does exactly that.
+
+**And it does not move the call.** Measured per district against the golden: the by-grade pipeline moves every count
+down, by 1 to 22 students, and leaves the slate and the boundary where they were (sixth 1220 at 363 against 368,
+seventh 1240 at 349 against 353, the gap 14 against 15). The ordering is untouched.
+
+**So the only lever in this world that moves the funding boundary is the placement of the retiring test's scores on
+the new scale**, which is the field's named method and the reflex that failed. Everything else is measured flat: the
+count-day roll has no ambiguity at all (88,329 covering spells, zero students with two, zero on two districts'
+rolls), the examinee crosswalk is exactly one to one in both directions (71,949 ids each way, no fan-out), the
+students with no result cannot be counted at Level 1 under any reading, and the ladder already measured the retiring
+test's own performance levels as a rung rather than a lever.
+
+**Conclusion: architecture 3 cannot be drawn in this world.** Any call this pack can ask routes its analytical content
+back through test linking, because linking two scales is what this world is about. The re-root keeps the number and
+the ETL objective and takes a fresh world, which is a full stage-1 draw and a new pack rather than a repair.
+
+
+- A decisive step built on the repeater and off-instrument populations, in this world (2026-10-27, measured before
+  the draw): refused on magnitude. The structure is real, 610 grade 9 students carrying only a retiring-test grade 8
+  result and 326 carrying both, and the spent default path mishandles all 936. But it moves each district's count by
+  only 1 to 22 students and leaves the slate, the sixth and seventh places and the gap intact, so it cannot carry a
+  call. It also sits on the hygiene battery's own unmatched-join check, which the opponent runs.
+- Keeping this world for architecture 3 at all (2026-10-27): refused on the same measurement. The placement of the
+  retiring scores on the new scale is the only lever that moves the funding boundary, and it is the field's named
+  method, so every call this pack can ask routes back through the reflex that spent architecture 2. The count-day
+  roll, the crosswalk and the unresulted students are each measured flat. The re-root takes a fresh world in the same
+  objective and number.
