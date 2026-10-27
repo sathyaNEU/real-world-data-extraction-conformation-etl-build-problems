@@ -1,0 +1,40 @@
+{
+  "task": "task204",
+  "owner": "oviya13ya",
+  "wave": 5,
+  "architecture": "v1",
+  "status": "DESIGN",
+  "stage": 2,
+  "stage_name": "design",
+  "drawn": "2026-10-27",
+  "updated": "2026-10-27",
+  "domain": "physical-environmental-sciences",
+  "subdomain": "environmental-monitoring-exceedance",
+  "objective": "anomaly-detection",
+  "shape": "07",
+  "card": "PENDING REGISTRATION by the author: the filled card sits at <scratch>/task204/task204_card.json and guard.py check returns WARN (two WARNs, both answered in the design note; nearest driver 0.06). This session did not run guard.py register and wrote nothing under .claude/.",
+  "call": "DESIGN TARGET, the generator owes the shipped figure: the Tulrohan Block's teaching spaces are supplied with 5.0 litres per second per occupant present over the autumn term's timetabled sessions (three prototype seeds 5.01, 5.07, 4.90, all printing 5.0), against the 8 litres per second per person TGD-M4 requires, so January's minor-works allocation funds the block's air-handling replacement and not the timetable change.",
+  "stump": "A competent solver reads each timetabled session's mean carbon dioxide excess as a settled level, divides the standard's per-person generation rate by it, occupant-weights the result over the term and files 11.0 litres per second per occupant present (10.95 before rounding), clearing the requirement by 1.37 times and sending the allocation to the timetable.",
+  "precut": {
+    "run": "2026-10-27",
+    "result": "52 checks, 0 FAIL, 0 WARN, exit 0, proven in an isolated copy of the repo with the card in place; in the live tree the one FAIL is `card registered`, which is the author's registration step",
+    "prompt_gate": "voice-check.py exit 0, 999 characters"
+  },
+  "measured": {
+    "harness": "<scratch>/task204/screen_v2.py, three seeds (11, 12, 13), byte-identical over two runs at PYTHONHASHSEED=0",
+    "ladder": "R0 session-mean steady-state read 10.95, R1 final-fifteen-minute read 10.19, R2 peak-sample read 9.56, R3 session-integrated unsteady balance 5.07; truth 4.96",
+    "bin_test": "(a) 4.486 = 8.97 bins, (b) 0.132 = 0.26 bins, (c) 0.261 = 0.52 bins, (a) over (b) plus (c) by 11.4 times, and (a) is the largest rung gap",
+    "rival_family": "six licensed steady-state readings spread 9.56 to 10.95 and all six file the same wrong call, the lowest clearing the 8.0 boundary by 1.195 times and by 1.154 times in the worst seed",
+    "golden_family": "three constructions (session-integrated balance, its quadrature variants, the regression of the volume-weighted derivative on the excess) spread 0.52 of a bin and file one printed call",
+    "reflex_sweep": "ten routes, none within one bin of the golden, nearest miss 8.36 at 6.6 bins and it is the population error SF9 files",
+    "floor": "rho 0.7249 against the 0.80 the multiplicative floor needs, realised corr(log naive, log truth) +0.8988 across the 14 spaces, so no ranking of spaces may be graded and none is; the designation is unreachable from the naive family, 0 of 14 below the requirement against the truth's 6 of 14",
+    "response_time": "the block's six spaces run 253 to 543 minutes of response time against a 55-minute timetabled session, 4.6 to 9.9 session lengths"
+  },
+  "resume": "Stage 2 complete and gated. The design note carries the draw, the default path ending on 11.0, the stump sentence, the thirteen three-rules lines, the readability screen with the decisive rung silent, ten semantic forks asserted in generator/checks.py, the four-rung ladder with its arithmetic over three seeds, the 22-axis closure table, the literal-reader line, the oracles and the ask sheet with its pair arithmetic from generator/ceiling.py. No data has been cut.",
+  "resume_step": "Register the card from <scratch>/task204/task204_card.json with guard.py register (re-run guard.py check first, because the axis bans run against the last three live cards by filing time and the window moves), commit DRAWN (task204) with the card, this file and the design note, then open stage 3 on dataset-generation: the generator owes the cut world (14 monitored spaces, the six block volumes at 2,400 to 4,650 cubic metres), the shipped figures, the four SF rows marked OWED in generator/checks.py, and a re-run of generator/ceiling.py on the cut pack to replace the design-time pair arithmetic.",
+  "notes": "No git command, no agent and no write under .claude/ by this session. The ladder's 1.15x rung floor is what fixed the block's volumes: the first world put the worst seed's peak-sample rung at 1.144x, inside the floor, and raising the six volumes eight per cent lifted it to 1.154x with the golden still printing 5.0 in all three seeds. Two guard WARNs are answered in the design note's Draw section (quantity_figure repeating task157, and the png plus xlsx deliverable set repeating task157).",
+  "returned": [],
+  "portal": null,
+  "portal_status": "",
+  "approved": null
+}
