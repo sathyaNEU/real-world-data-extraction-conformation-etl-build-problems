@@ -1,6 +1,6 @@
 # task171 design note
 
-**Status: DESIGN (stage 2), architecture 5 registered 2026-10-27 (guard check PASS once task139's architecture 2 was spent and left the window).**
+**Status: SHIPPED 2026-10-27 on zip 4a85c214 (architecture 5): judge pass 4 DETERMINISTIC and APPROVE, three leak readers clean, precut.py exit 0 (53 checks), checks 205, verify 46 of 46, byte-identical rebuilds.**
 Architecture 5 is Corvane Therapeutics' dovikizumab phase 3 induction dose, in pharmacology-pharmacoepidemiology-safety
 / population-pharmacokinetics-exposure-response. It was drawn on 2026-10-26 in the task141 rework, which found task141
 already re-rooted by its own session, and the author chose to park it here, the next open Forecasting number.
@@ -12,7 +12,7 @@ screens`. The tracked generator, golden and `target.zip` are architecture 4's un
 
 | Axis | Value |
 |---|---|
-| Card | `generator/paper/card_draft.json`, architecture v5, not yet registered: `guard.py check` BLOCKs only on `ban.strategy` (causal_design repeats task139's architecture 2, one of the last three builds), with WARNs `repeat.gate_g` and `repeat.deliverables` against task141's architecture 2 and two NOTEs (task104 and task168, older builds differentiated on the card); architecture 4 moved into `lineage` with its fate |
+| Card | `.claude/skills/fingerprint/cards/task171.json`, architecture v5, registered 2026-10-27T13:00:10Z once task139's architecture 2 was spent and left the window (`guard.py check` PASS; the earlier draft BLOCKed only on `ban.strategy` against it); architecture 4 moved into `lineage` with its fate |
 | Domain / task type | `pharmacology-pharmacoepidemiology-safety` (client domain), task type `population-pharmacokinetics-exposure-response` (serves Forecasting): the week-12 clinical remission each candidate induction dose would produce in phase 3, forecast from the exposure-response of the one dose phase 2b tested |
 | Objective | Forecasting & Predictive Modeling: the remission rate patients meeting the phase 2b eligibility criteria, which the phase 3 protocol repeats and none of whom is yet enrolled, would show on 300, 600 or 900 mg; forward facing (phase 3 opens in 2027) |
 | Shape | `07` (grid of cells): the asks' arm-by-visit grids carry most of the criteria, the call, its components, the chart's named parts and the three files the rest; the arithmetic goes under `## Ask sheet` at stage 2 |
@@ -70,7 +70,7 @@ forecast and of the call.
 **World.** Corvane Therapeutics (fictional, Cambridge, Massachusetts) develops dovikizumab (CVN-2184), a humanised
 IgG1 monoclonal antibody against the p19 subunit of interleukin-23, for moderately to severely active ulcerative
 colitis. Study CVN2184-UC-201, a randomised, double-blind phase 2b at 71 sites in the United States, Canada, Poland and
-Hungary, randomised 540 patients 2 to 1 to dovikizumab 600 mg or placebo, IV at weeks 0, 4 and 8, stratified by prior
+Hungary, randomised 720 patients 2 to 1 to dovikizumab 600 mg or placebo, IV at weeks 0, 4 and 8, stratified by prior
 biologic or JAK inhibitor failure; the primary endpoint is clinical remission at week 12 on the modified Mayo score.
 Serum dovikizumab was drawn before the infusions at weeks 0, 4 and 8 and at week 12, and in an intensive-sampling
 substudy of 36 patients also through the first dosing interval. Phase 1 (healthy volunteers, 100 to 1,200 mg IV) found
@@ -103,8 +103,10 @@ sets the week-4 trough, which comes before it, and on it week-12 remission is fl
   samples drawn after the infusion started at a few visits, the sample log in site local time and the pump log in UTC;
   interrupted infusions recorded by delivered volume; site-subject numbers against randomisation numbers through the
   randomisation log; the efficacy data in two overlapping releases (topline extract and database lock with adjudicated
-  endoscopy); e-diaries from two device generations, one in UTC and one in local time, with re-synchronised
-  duplicates. Each is what the named system produces; none decides the call.
+  endoscopy). Beside them, on files the call never opens: the eCRF's adverse event log re-entering ongoing events at
+  each review with partial and corrected onsets, the laboratory's aliquot tubes and rejected runs, and e-diary handsets
+  reissued within sites and carried across four site closures. Each is what the named system produces; none decides
+  the call.
 - Layer 2: family `estimand_identification`; the choice that flips the call is reading the dose's effect on exposure
   the dose sets (the week-4 trough, drawn before any patient's clearance moved, or the dose itself through it) rather
   than on steady-state exposure, which the remission itself raises.
@@ -207,6 +209,201 @@ calibration; the run that first measured it was not kept, and its figures were o
 apart). The 600 mg forecast equals the observed rate under every logistic member,
 so the three forecasts differ only at 300 and 900 mg.
 
+## Readability screen
+
+Measured by the generator on the cut pack (`checks.py` restates every figure on each build). The forecast at 300, 600
+and 900 mg, the golden against the default path: 40.7, 40.9, 41.0 on the week-4 trough with the stratum; 29.6, 42.5,
+50.6 on the week-8 trough with the stratum.
+
+| Rung | What the response does | What in the pack points at it | Verdict |
+|---|---|---|---|
+| L0 the tested dose | carries 600 mg, the one dose phase 2b tested, without a forecast at the others | nothing: charter 2 to 5 require a forecast at each candidate and the lowest within 5 points | readable |
+| L1 steady-state trough (default) | the week-8 pre-dose trough, logistic with the stratum (or with weight and modified Mayo), scaled by dose, averaged over its set | the field's standard induction exposure, charter 4's model-informed basis and investigator's brochure 5.2 and 5.3 (linear pharmacokinetics, no time dependence in healthy volunteers) | readable |
+| L1b the week-12 concentration | the same on the week-12 sample, the exposure nearest the outcome | the same documents; the week-12 sample sits on the remission visit | readable |
+| L2 the first trough, missing counted | the week-4 trough with patients without a valid trough counted as non-remitters | charter 4's analysis set read as every dovikizumab patient | readable |
+| G golden (decisive) | the week-4 pre-dose trough, drawn before any patient's clearance moved, logistic with the stratum, scaled by dose and averaged over the exposure-response analysis set | nothing labels which concentration the dose set: the brochure states no time dependence of clearance (in healthy volunteers), the charter names no exposure measure, and the one group-by that rules the later troughs out (remitters' to non-remitters' geometric mean concentration by visit, 1.02, 2.26 and 3.12) is invited by no document | silent |
+
+L1 and L1b under no covariate, the stratum, and the stratum with weight and modified Mayo all file 900 mg, 300 mg
+27.4 to 29.6 per cent and 600 mg 8.0 to 9.6 points under 900 mg. Every week-4 member files 300 mg, 300 mg within 0.43
+points of the highest forecast.
+
+## Semantic fork table
+
+| ID | Term or convention | Golden reading | Alternative | Call under it | Ruled out by |
+|---|---|---|---|---|---|
+| SF1 | the forecast's population | the exposure-response analysis set: the 455 dovikizumab patients with a valid week-4 trough | the 25 without one counted as non-remitters | same call (asserted; 300 mg within 0.25 points) | charter 4 |
+| SF2 | exposure at the other candidates | each patient's exposure scaled in proportion to dose | no scaling | same call (asserted; every forecast equal) | charter 4, investigator's brochure 5.2 |
+| SF3 | the remission flags | the database lock (central adjudicated endoscopy) | the topline extract (local reads) | same call (asserted) | charter 3 and 6 |
+| SF4 | a pre-dose sample | collected before the infusion started, the laboratory's UTC against the site's local start converted to UTC (49 set aside) | every sample labelled pre-dose | same call (asserted) | SAP 6.8 |
+| SF5 | a sample's result | the reportable result | the first result delivered | same call (asserted) | the reportable column |
+| SF6 | units | ng/mL results divided by 1,000 | read as ug/mL | not a fork: the unit column says it, and every ng/mL row sits in range only once converted (asserted) | the unit column |
+| SF7 | a result below the limit | not an exposure value: the patient is outside the analysis set | zero or half the limit kept as the exposure | same call (asserted); the decimals move, so the reading is filed | SAP 6.8 |
+| SF8 | the model | logistic regression on the log exposure with the randomisation stratum | no covariate, the stratum with weight and modified Mayo, or a linear probability model | same call (asserted); the decimals move, so the model is filed | charter 4 |
+| SF10 | the clock of the infusion start | each site's own time zone (the site list's time_zone) | every US site on Eastern time | same call (asserted) | the site list, SAP 6.8 |
+| SF9 | the rule's comparison | unrounded forecasts | forecasts rounded to one decimal | same call (asserted) | charter 5 |
+
+The live rows are asserted as a cross product in `checks.py` (SF1 by SF4 by SF5 by SF7 by SF8, 72 cells): every cell
+files 300 mg.
+
+## Ladder
+
+Measured by the generator on the cut pack; `checks.py` asserts every row on each build.
+
+| Rung | 300 / 600 / 900 mg forecast, per cent | Call | Call kept |
+|---|---|---|---|
+| L0 the tested dose | none at 300 or 900 | 600 mg | no |
+| L1 week-8 trough, stratum (default) | 29.6 / 42.5 / 50.6 | 900 mg | no |
+| L1 week-8 trough, no covariate / full | 29.5 / 42.5 / 50.7, 29.2 / 42.5 / 50.8 | 900 mg | no |
+| L1b week-12 concentration, stratum | 27.7 / 43.1 / 52.5 | 900 mg | no |
+| L1b week-12 concentration, no covariate / full | 27.5 / 43.1 / 52.7, 27.4 / 43.1 / 52.7 | 900 mg | no |
+| L2 week-4 trough, missing counted as non-remitters | 38.6 / 38.8 / 38.8 | 300 mg | yes (same call) |
+| G golden: week-4 trough, stratum | 40.7 / 40.9 / 41.0 | 300 mg | yes |
+
+On the golden 300 mg sits 0.27 points under the highest forecast against a rule of 5; across the six week-4 members the
+widest gap is 0.43. On the default family 600 mg sits at least 8.0 points under 900 mg, so no late member files 600 or
+300. The clean-truth run (`checks.py`, the world's concentrations without assay error) files 900 mg on every late
+member and 300 mg on every week-4 member, and the world's own remission at the three doses (39.2, 40.4 and 40.6 per cent
+across the 480) files 300 mg.
+
+## Closure table
+
+| # | Axis | Reading | Move |
+|---|---|---|---|
+| 1 | Population | patients meeting the phase 2b eligibility criteria, which phase 3 repeats; the model over the exposure-response analysis set | filed (charter 3, 4); SF1 |
+| 2 | Unit of account | the week-12 clinical remission rate, per cent of patients | filed (charter 3) |
+| 3 | Attribution window | induction weeks 0 to 12 | filed (charter 2, 3) |
+| 4 | As-of dating | the database lock of 14 July 2026 and the bioanalytical results reported for it | filed (charter 6) |
+| 5 | Version basis | the lock, not the topline extract | filed (charter 6); SF3 |
+| 6 | Denominator | the exposure-response analysis set | filed (charter 4); SF1 |
+| 7 | Weighting | each patient once | linear (the mean predicted remission) |
+| 8 | Window length | twelve weeks | filed (charter 3) |
+| 9 | Boundary inclusivity | no more than 5 points below the highest | filed (charter 5) |
+| 10 | Rounding path | forecasts compared unrounded, reported to one decimal | filed (charter 5, the prompt); SF9 |
+| 11 | Tie-break | the lowest candidate within the rule | filed (charter 5) |
+| 12 | Maturity and censoring | non-responder imputation for discontinuation and rescue | filed (charter 3) |
+| 13 | Order of operations | valid troughs, model, scale, average, compare | linear |
+| 14 | Row order | none | C1 |
+| 15 | Duplicate resolution | the reportable result of each sample | filed (the reportable column); SF5 |
+| 16 | Identity normalisation | randomisation numbers to site-subject numbers through the randomisation log | filed (the randomisation log) |
+| 17 | Netting against gross | none | not applicable |
+| 18 | Dimensional units | ug/mL, ng/mL divided by 1,000; laboratory UTC against the site's local time in its own zone | filed (the unit and time columns: collected_utc, infusion_start_local); SF4, SF6 |
+| 19 | Code and status semantics | PRE and the reportable flag; below-limit text | filed (SAP 6.8, the timepoint and reportable columns); SF7 |
+| 20 | Integerisation | none on the call | not applicable |
+| 21 | Clause scope | the dovikizumab arm's exposure-response; three candidates | filed (charter 2, 4) |
+| 22 | Forward window contents | phase 3's induction, the exposure each dose would set | the decisive step (the exposure the dose sets is the one read before the response moved clearance) |
+
+## Literal reader
+
+Executing the prompt and every filed sentence word for word: charter 2 fixes the three candidates; charter 3 fixes
+the forecast quantity (week-12 clinical remission on the protocol's definition with non-responder imputation, in
+patients meeting the phase 2b criteria); charter 4 makes the forecast model-informed, a logistic regression of the
+dovikizumab arm's week-12 remission on the log exposure with the randomisation stratum, exposure at 300 and 900 mg by
+proportional scaling, averaged over the patients for whom the exposure measure is available, and leaves the exposure
+measure to the analysis (SAP 6.8: a below-limit result is not an exposure value); charter 5 picks the
+lowest candidate within 5 points of the highest forecast, compared unrounded. The exposure measure is therefore the
+method a standard's general requirement selects, with the data separating the candidates: an exposure carries a
+dose's effect only where the dose, not the outcome, set it, and the records show the troughs after the first moving
+with the remission (remitters' to non-remitters' geometric mean concentration 1.02 before the week-4 infusion, 2.26
+before the week-8 infusion and 3.12 at week 12, with clearance constant in healthy volunteers by brochure 5.3). Every
+licensed construction on the week-4 trough (any covariate set, either population reading, every below-limit
+convention) files 300 mg, 300 mg within 0.43 points of the highest forecast; a literal reader who takes the later
+troughs has not read the records against the requirement. SAP 6.8 sets aside the 49 pre-dose samples drawn after the
+infusion started, and the reportable flag picks each sample's result.
+
+## Oracles
+
+No file ties only under the golden or only on a wrong read. The investigator's brochure reports phase 1's linear,
+time-invariant pharmacokinetics in healthy volunteers and nothing about the phase 2b data; the phase 1 summary
+workbook ships as a distractor (healthy-volunteer exposures, no remission). No shipped file states a forecast, an
+exposure measure, a dose preference or the remitter to non-remitter ratio, and none ranks the candidates. The topline
+extract ships as a distractor (charter 6 names the lock), and the concomitant medication listing ships as a third.
+
+## Ask sheet
+
+The call's declared population is the dovikizumab arm's pre-dose and week-12 serum concentrations, the infusion
+starts, the site list's countries, the randomisation log, the baseline stratum and the locked remission flags. The
+three asks read files the call never opens (the adverse event review log, the visit dates, the antibody results and
+run log, the e-diary entries and handset log) and run over both arms; no ask figure changes with the call, and the
+call is unchanged with every ask device removed (asserted by the call's figures, which `checks.py` recomputes on
+the same pack the asks read).
+
+- **Ask A, safety by arm: patients with at least one treatment-emergent serious infection, patients with at least one
+  infusion-related reaction, serious infections per 100 patient-years (6 figures).** H18 home: the briefing package's
+  safety summary for the dose it proposes, charter 7's SAP-defined tables. Primary device (silent, D8 an anchor on the
+  current record, not the first): the eCRF's adverse event log re-enters every ongoing event at each visit's review,
+  as the form stood then, with nothing on the row identifying the event (the running number counts records). An
+  onset first entered as the visit date, or for an infection that became serious as the hospital admission date, is
+  corrected after source verification from the next review on, and a partial date is completed once the site has the
+  outside records. Keyed by patient, term and onset as entered (the hygiene battery's own key), one event becomes two:
+  a screening-period infection reads as treatment-emergent from its admission date, a skin reaction entered on an
+  infusion day reads as an infusion-related reaction, and a serious infection counts twice. The golden chains a
+  patient's records of one term from review to review while the event is ongoing and takes the form at its latest
+  review. Twin: reactions genuinely starting on infusion days carry the visit date as onset, recurrent infections of
+  one term are separate events, and events ongoing at a discontinued patient's last visit stop without resolving.
+  Hazards: partial dates under SAP 6.2, events turning serious at a later review, events worsening after screening
+  recorded anew (SAP 6.3), the infusion-day timing of SAP 6.5, exposure ending at the visit dates file's last visit.
+  Stops on the cut pack: patient, term and onset as entered (15, 44, 15.6; 9, 19, 18.4); the chain on the first onset
+  entered (15, 43, 13.8; 9, 19, 18.4); every record an event (15, 44, 19.3; 9, 19, 25.8); the reaction preferred term
+  alone (16 and 6 reaction patients); the term list on any day (70 and 34); the golden 12, 32, 11.0 for dovikizumab and
+  7, 13, 14.7 for placebo.
+- **Ask B, immunogenicity by arm: treatment-emergent ADA incidence at weeks 4, 8 and 12 (6 figures).** H18 home: the
+  package's immunogenicity summary (SAP 6.7). Primary device (silent, D1 the same records under two key schemes): the
+  laboratory splits each draw into two aliquot tubes under two accession numbers; screen positives go on to a
+  confirmatory and titer run on aliquot A or, where it was used up, on the backup aliquot B, and backup tubes travel
+  from the site freezer on a manifest that names no visit, so their rows read Unscheduled. Keyed by tube, a draw's
+  screening and confirmatory results never meet; keyed by patient and manifest visit, the backup tube's confirmatory
+  and titer are left out with the unscheduled rows. The golden takes the patient's blood on a collection date as the
+  draw, whichever tube and manifest carried a tier, labelled by the scheduled visit one of its tubes bears, and each
+  tier's latest result in an accepted run. Twin: genuine unscheduled draws (at an infusion reaction or a flare) on
+  days no scheduled draw shares, which belong to no visit. Hazards: rejected screening and confirmatory runs re-tested
+  later, sample-management repeats in a run that failed, treatment-boosted titers against baseline (four times), the
+  baseline itself. Stops: patient and manifest visit with accepted runs (3.0, 5.0, 6.7; 1.3, 1.7, 2.7); per tube with
+  accepted runs (3.2, 4.8, 5.6; 0.8, 1.7, 2.2); per tube, latest result delivered (the same); the golden 2.5, 5.6, 8.7
+  and 0.4, 1.3, 2.2.
+- **Ask C, the e-diary by arm: patients in symptomatic remission at weeks 6, 8 and 10 (6 figures).** H18 home: the
+  package's patient-reported course beside the endoscopic primary (SAP 6.10). Primary device (silent, D7 records under
+  another holder after a transfer): the e-diary keys entries by handset, and handsets are reset and reissued to new
+  patients at the same site; four sites closed during the study (the site list says which and when), and their
+  patients took their handsets to another site in the same country, where the e-diary vendor registered each under
+  that site's next subject number while the trial database kept the original. On the dispensing log's effective
+  dates (the hygiene battery's own as-of join) those patients' later entries belong to registrations the
+  randomisation log does not know, and the battery sets them aside, so the patients drop out of remission after their
+  transfer. The golden traces an unknown registration to the patient who handed the same handset over that day.
+  Twin: handsets reissued within a site after a reset gap of two to nine days, mid-study swaps to a new handset, and
+  same-evening corrections (the last entry for a date is the patient's value). Stops: the as-of join with unknown
+  registrations set aside (131, 191, 202; 15, 30, 33); each handset's current holder (69, 109, 115; 7, 16, 16); the
+  first entry of each date (126, 193, 205; 18, 31, 34); the golden 133, 196, 208 and 17, 32, 35.
+
+| Ask | What the cracker does | Cracker |
+|---|---|---|
+| A | episodes keyed by patient, preferred term and onset as entered, serious if any record is, SAP 6.2, 6.3, 6.5 and 6.6 executed on them | misses |
+| B | rejected runs dropped, results grouped by patient and manifest visit, each tier's latest accepted result, SAP 6.7 executed | misses |
+| C | entries joined to the dispensing log on its effective dates, the last entry per patient and date, registrations the randomisation log does not know set aside, SAP 6.10 executed | misses |
+
+Measured by: `generator/ceiling.py` on the cut pack.
+
+| Ask | Graded figures | Cracker keeps | Mirror keeps | Cracker |
+|---|---|---|---|---|
+| A safety by arm | 6 | 0 | 0 | misses |
+| B TE-ADA incidence by arm and visit | 6 | 0 | 1 | misses |
+| C symptomatic remission by arm and week | 6 | 0 | 0 | misses |
+
+Over the 18 ask figures the cracker keeps none (it scores 45.0 with the call), the mirror one, placebo's week-12 ADA
+incidence (it scores 15.1 off the call).
+
+Pair ceiling: 30.0.
+Mirror leakage: 5.6 per cent of ask weight.
+The construction layer is the chart's two panels and the memo's three forecasts, which the cracker has with the call
+and the mirror misses with it.
+
+## Pre-ship check
+
+- The three rules re-read against the built pack: the decisive step is still the exposure measure (charter 4 files the model and leaves the measure open; nothing names the week-4 trough), the mess is Layer 1 only (time zones, units, reassays, below-limit text, two efficacy releases), and the asks' devices sit in files the call never opens.
+- Call: 300 mg, 300 mg 0.27 points under the highest forecast; every standing member files 300 (widest gap 0.43), every late member 900 (600 mg at least 8.0 points under 900 mg); the clean-truth analyst test files 900 on every late member.
+- Asks: cracker 0 of 18, mirror 1 of 18, pair ceiling 30.0 (`ceiling.py`); every ask golden equals the world truth (`checks.py`).
+- Inputs: 20 files in three formats (16 CSV, 3 PDF, 1 XLSX), the e-diary at 67,252 rows, three distractors named in `metadata.json`, no dictionary or notes file; producer metadata scrubbed (golden clean).
+- Gates: checks 205, verify 46 of 46, two byte-identical builds (4a85c214), figures_check 66 of 66, precut 53 checks 0 FAIL, voice-check PASS (901 characters), leak.py REVIEW with every line ruled, guard surface clean and heart WARN (repeat.gate_g, answered under `## Draw`).
+
 ## Earlier screens (architectures 1 to 4, kept as history)
 
 **Architecture 4 (2026-10-23, spent at Gate F on 9451b6bd).** The Marrowfield Turnpike Authority's first
@@ -278,6 +475,7 @@ population, while every partial alignment (an earlier common point, a ratio of a
 wrong point, a haircut) lands inside the bin the full alignment's own family needs, because the family spreads
 as the target moves away from the attaining population, so the gap that moves the rivals out widens the bin
 with them.
+
 
 ## Tried and rejected
 
@@ -357,6 +555,15 @@ with them.
   paper worlds), which reads as a certified record built to bless the wrong method; no popPK report ships, and the
   investigator's brochure gives phase 1's linearity and covariates only.
 
+- 2026-10-27, architecture 5 ask layer, first cut: each ask's device was one the hygiene battery executes (episodes keyed by patient, term and onset; a sample's latest accepted result; the handset log's effective dates), so `ceiling.py` scored the cracker 18 of 18 and the pair 59.1. Re-devised on identity judgments the battery does not make: the review log's corrected onsets chained review to review, the draw rebuilt from two aliquot tubes and a manifest that names no visit, and handsets carried across four site closures under new registrations. Measured after: cracker 0 of 18, mirror 1 of 18, pair 30.0.
+- 2026-10-27, Ask C at weeks 4, 6 and 8: remission at week 4 is too rare (16 and 1 patients) for any transfer to move it, so the as-of join kept both week-4 figures; the timepoints moved to weeks 6, 8 and 10.
+- 2026-10-27, Ask B per-plate acceptance with sample positions mapped through each plate's count: rejected before code, a fan-out the battery sees and repairs right (the discovery is the remedy).
+- 2026-10-27, Ask B with tiers in separate runs alone: rejected after measurement, the patient-and-visit grouping every careful reader uses lands the golden; the backup tube's manifest without a visit is what separates them.
+
+- 2026-10-27, stage 4 judge pass 1 on zip 5c3c5b81: NOT_DETERMINISTIC on the forecasts' decimals only, the 300 mg call held under every variant and every ask figure reproduced. Three readings moved the decimals: the one patient whose week-4 sample was below the limit (kept as an exposure: 41.2, 41.0, 40.9), every US site read as Eastern time (no zone on the site list), and a linear model (40.3, 40.9, 41.4). Closed by filing the WHAT, never the exposure measure: SAP 6.8 says a below-limit result is not an exposure value, the site list carries each site's time zone, and charter 4 names the model (logistic on the log exposure with the stratum). Re-judged once.
+- 2026-10-27, stage 4 judge pass 2 on zip e3c93a97: the call and the three forecasts reproduced exactly; NOT_DETERMINISTIC on ask A alone. The adverse event log drew each review's severity afresh, so four pre-infusion infections showed a severity rise after the first infusion and a literal SAP 6.3 reader made them new treatment-emergent events (14 and 9 patients against 12 and 7). Fixed in the generator: severity and causality are the event's own, carried from review to review, and SAP 6.3 says sites record a worsening as a new event with its own onset, the recorded onset deciding treatment emergence. The ask's device (onsets corrected between reviews) is untouched.
+- 2026-10-27, stage 4 judge pass 3 on zip 8ef4cd41: DETERMINISTIC, FIX_NOW; every committed figure reproduced, Gates G and H pass. Three findings closed in one pass: the onset a chained adverse event takes was unfiled (the first-entered onset gives 15 and 9, 43 and 19), so SAP 6.3 now says the listing carries one record per event per review, each as the event stood then, its latest record its current form (the corrections themselves stay unannounced, the chain identity still rebuilt from the data); the handset trace is left to the data, which the judge found forces it uniquely; and critical components 1 and 3 now state their scope (ratios over the patients with a valid sample at each visit, samples drawn after the start set aside at every visit; 15 week-4 and 20 week-8 dovikizumab samples set aside, the earlier 49 having counted both arms at every visit). Run IDs renumbered in run-date order (the reader's realism tell). Re-judged once.
+- 2026-10-27, stage 4 judge pass 4 on zip 4a85c214: DETERMINISTIC and APPROVE; every committed figure recomputed (the call, 40.7, 40.9 and 41.0, the ratios, all 18 ask figures). The residual fork risk it lists (the adverse event chain and the handset trace) is the asks' silent devices, kept silent: the chain's current form is filed (SAP 6.3) and the trace is forced by the handset log.
 ## Retired
 
 task171 retired on 2026-10-19 under the author's rule for this round (a number that dies in its second new cell retires);

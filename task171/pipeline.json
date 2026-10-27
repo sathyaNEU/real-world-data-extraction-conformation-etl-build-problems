@@ -1,31 +1,31 @@
 {
  "task": "task171",
- "status": "DESIGN",
+ "status": "SHIPPED",
  "domain": "pharmacology-pharmacoepidemiology-safety",
  "objective": "forecasting",
- "stage": 2,
- "stage_name": "design",
+ "stage": 5,
+ "stage_name": "ship",
  "updated": "2026-10-27",
  "stump": "A competent solver merges the valid troughs with the week-12 remission flags, takes each patient's steady-state exposure (the week-8 or week-12 trough, the mean of the troughs or a one-compartment fit's average concentration), fits the exposure-response with baseline albumin, weight, CRP and prior biologic, scales exposure in proportion to dose and files 900 mg, with 300 mg 8 to 29 points below 600 mg; the step that lands it there is reading exposure after clearance had already fallen in the patients who remit.",
  "architecture": 5,
  "loops": 0,
  "card_registered": true,
  "precut": {
-  "exit": null,
-  "date": ""
+  "exit": 0,
+  "date": "2026-10-27"
  },
  "leak": {
-  "leak_py": "",
-  "reader": ""
+  "leak_py": "REVIEW (no LEAK) on zip 4a85c214",
+  "reader": "three isolated readers clean: no decisive-step sentence, no ranking file, no fork; Q6 analytical"
  },
  "duplicate_check": {
-  "heart": "",
+  "heart": "WARN (repeat.gate_g, answered in the note)",
   "nearest": "check PASS 2026-10-27 on registration, nearest driver 0.07 (task182 v1, task270 v7, task479 v4, task464 v1)"
  },
  "judge": {
-  "verdict": "",
-  "disposition": "",
-  "report": ""
+  "verdict": "DETERMINISTIC",
+  "disposition": "APPROVE",
+  "report": "determinism_check_report.md (pass 4 on zip 4a85c214; passes 1 to 3 fixed in the generator)"
  },
  "returned": [],
  "screen": {
@@ -56,9 +56,9 @@
   "rebuild_fifth_cell": "chosen shape first: biomedical-clinical-research / dose-response-pk-pd-modeling on code (phase 3 week-12 target-lesion response read lesion by lesion: lever +1.7 to +18.7 per cent at within-patient correlation 0.23 to 0.50, sigma about 6 per cent on 640 patients; scratch b171s/proto l1.py, l1b.py, l2.py) and physical-environmental-sciences / hydrology-flood-frequency (45-year record: flood-stage days sigma 15 per cent, Q10 9, Q100 22; every break a channel the standard names; h1.py); grey cells on paper, the owner-share contract-expiry structure honestly composition_mix, banned by task179",
   "architecture_5_paper": "drawn 2026-10-26 in the task141 rework and parked here at the author's choice: Corvane Therapeutics' dovikizumab phase 3 induction dose (pharmacology-pharmacoepidemiology-safety / population-pharmacokinetics-exposure-response), clearance falling as the colitis remits so every trough after week 4 carries the response; on sim_er4.py's defaults the week-4 trough family files 300 mg on every member in 24 of 40 worlds and the late family never files 300 (closest gap 11.5 points); scripts and card draft in generator/paper"
  },
- "resume": "stage 2 of architecture 5: choose the build world on sim_er4.py with the week-4 family filing 300 mg on every member with room (worst member at least 2 points inside the 5-point rule) and every late member at 900 mg; fork table, ladder, closure, asks decoupled from the 600 mg arm's exposure, prompt.txt, precut.py exit 0",
+ "resume": "",
  "approved": null,
- "delivered": null,
+ "delivered": "2026-10-27",
  "portal": null,
  "portal_id": "",
  "portal_status": "",

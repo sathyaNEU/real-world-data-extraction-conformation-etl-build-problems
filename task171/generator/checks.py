@@ -1,205 +1,238 @@
-"""task171 generator checks: input gates, the three-rules block (R1, R2, R3), the golden family and every rival at the
-printed cells, the semantic fork rows (SF1 to SF10), the separation line, the ask devices, the cracker and mirror,
-the realism sweep and the documents' stamps. Exit 1 on any failure."""
+"""task171's generator assertions, run on the cut pack and on the world's clean truth.
+
+    python3 task171/generator/checks.py
+
+The three-rules block (the analyst test executed on the clean truth), every semantic fork of the fork table (SF1 to
+SF9, single and as a cross product), the standing family and the default path's late family, the ladder floors, the
+asks' fairness (each golden equals the world truth exactly) and their rival handlings (every cracker and mirror route
+outside the bin), and figures.json against a fresh computation."""
 from __future__ import annotations
 
+import datetime as dt
+import itertools
 import json
 import os
-import re
 import sys
-import zipfile
 
 import numpy as np
-import pandas as pd
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)
-import common as C   # noqa: E402
-import solve         # noqa: E402
-import cracker       # noqa: E402
 
-T = os.path.join(C.TASK, "target")
-FAIL = []
-N = [0]
+import asks as AK          # noqa: E402
+import common as K         # noqa: E402
+import events as E         # noqa: E402
+import golden as G         # noqa: E402
+import pack as PK          # noqa: E402
+import pack_read as PR     # noqa: E402
+import world as WD         # noqa: E402
+
+TARGET = os.path.join(os.path.dirname(HERE), "target")
+N_OK = [0]
 
 
-def ok(label, cond, detail=""):
-    N[0] += 1
-    print("%-4s %-62s %s" % ("PASS" if cond else "FAIL", label, detail))
+def ok(cond, msg):
     if not cond:
-        FAIL.append(label)
+        raise AssertionError(msg)
+    N_OK[0] += 1
 
 
-def cell(x):
-    return round(x / 250_000)
+def gap300(fc):
+    return max(fc.values()) - fc[300]
 
 
-def edge(x, u):
-    return u / 2 - abs(x - round(x / u) * u)
+# ---- the pack read under each licensed reading of a convention ------------------------------------------------
+def troughs_variant(P, start_check=True, reassay='reportable', blq='zero'):
+    out = {}
+    seen = {}
+    for r in P['conc']:
+        if r['timepoint'] != 'PRE':
+            continue
+        if reassay == 'reportable' and r['reportable'] != 'Y':
+            continue
+        ss = P['rno2ss'][r['randomisation_number']]
+        inf = P['inf'].get((ss, r['visit']))
+        if inf is None:
+            continue
+        if start_check:
+            start = PR.utc_of_local(P['zone'][ss], inf['infusion_start_local'])
+            if dt.datetime.strptime(r['collected_utc'], "%Y-%m-%dT%H:%MZ") >= start:
+                continue
+        v = r['result']
+        if v.startswith('<'):
+            if blq == 'drop':
+                continue
+            x = 0.0 if blq == 'zero' else 0.05
+        else:
+            x = float(v) / (1000.0 if r['unit'] == 'ng/mL' else 1.0)
+        key = (ss, r['visit'])
+        if reassay == 'first' and key in seen:
+            continue
+        seen[key] = True
+        out[key] = x
+    return out
 
 
-fig = json.load(open(os.path.join(HERE, "figures.json")))
-meta = json.load(open(os.path.join(C.TASK, "metadata.json")))
-F = solve.frames(T)
-g = solve.golden(F)
-IV, L, pay, H, A, TT = F["IV"], F["L"], F["pay"], F["H"], F["A"], F["TT"]
-plan = C.PLAN_TOLL
-
-# ---------------------------------------------------------------- input gates
-files = sorted(os.listdir(T))
-ok("INPUT 10 or more files", len(files) >= 10, "%d files" % len(files))
-fmts = {os.path.splitext(f)[1] for f in files}
-ok("INPUT 3 or more formats", len(fmts) >= 3, " ".join(sorted(fmts)))
-ok("INPUT a 25,000-row file", len(L) >= 25000, "%d invoice lines" % len(L))
-ok("INPUT two or more distractors in metadata.json", len(meta["distractor_files"]) >= 2 and all(d in files for d in meta["distractor_files"]))
-ok("INPUT no file name names the stump", not any(re.search(r"distract|stump|trap|decoy|answer|renewal|phantom|split|mature", f, re.I) for f in files))
-
-# ---------------------------------------------------------------- R1: the field's raw material ships
-hdr = set()
-for f in files:
-    if f.endswith(".csv"):
-        hdr |= set(pd.read_csv(os.path.join(T, f), nrows=1).columns)
-hdr |= set(L.columns) | set(TT.columns)
-ok("R1 invoice-level book: lines, invoices, payments, hold returns, placements", all(f in files for f in (C.F_LINES, C.F_INV, C.F_PAY, C.F_MVD, C.F_AGY)))
-ok("R1 no shipped column holds a collected share, a final flag or a forecast",
-   not any(re.search(r"share|rate_collected|final|ultimate|leak|forecast|expected", c, re.I) for c in hdr), ", ".join(sorted(hdr))[:80])
-ok("R1 the hold returns carry each held invoice's registration on file", H[H.response == "HOLD PLACED"].reg_expires.notna().all())
-
-# ---------------------------------------------------------------- the golden and its family
-G = g["collected"]
-ok("GOLDEN figures.json carries the golden", fig["call_collected_toll_2027_usd"] == cell(G) * 250_000 and fig["call_share_in_state_pct"] == round(g["IS"] * 100)
-   and fig["call_share_out_of_state_pct"] == round(g["OS"] * 100), "%.0f, %.2f, %.2f" % (G, g["IS"] * 100, g["OS"] * 100))
-ok("GOLDEN call mid-cell", edge(G, 250_000) >= 60_000, "edge distance $%.0f" % edge(G, 250_000))
-ok("GOLDEN in-state share mid-cell", edge(g["IS"] * 100, 1) >= 0.2, "%.2f" % (g["IS"] * 100))
-ok("GOLDEN out-of-state share mid-cell", edge(g["OS"] * 100, 1) >= 0.2, "%.2f" % (g["OS"] * 100))
+def rows_variant(P, eff=None, **kw):
+    T = troughs_variant(P, **kw)
+    C12 = PR.wk12(P)
+    effs = eff if eff is not None else P['eff']
+    rows = []
+    for ss, arm in P['arm'].items():
+        if arm != 'dovikizumab':
+            continue
+        e = effs.get(ss)
+        b = P['base'][ss]
+        rows.append(dict(ss=ss, rem=1 if (e and e['clinical_remission'] == 'Y') else 0, tr4=T.get((ss, 'Week 4')),
+                         tr8=T.get((ss, 'Week 8')), c12=C12.get(ss),
+                         prior=1 if b['prior_advanced_therapy_failure'] == 'Y' else 0, wt=float(b['weight_kg']),
+                         mayo=int(b['modified_mayo_score'])))
+    return rows
 
 
-def variant(strict=False, os_age=365, nr_age=365, gross=False, cut=None):
-    F2 = dict(F)
-    if gross:
-        F2["pay"] = pay[pay.channel != "REVERSAL"]
-    c = pd.Timestamp(cut) if cut else solve.ASOF
-    tp = solve.toll_paid(F2, c); t60 = solve.toll_paid(F2, c, by_day=60)
-    age = (solve.ASOF - IV.issued_on).dt.days.values
-    tbm = (IV.invoice_type == "TOLL-BY-MAIL").values; home = (IV.plate_state == C.HOME).values
-    hi = H.set_index("invoice_no")
-    hold = IV.invoice_no.map(hi.response).values; exp = IV.invoice_no.map(hi.reg_expires).values
-    ee = np.array([pd.Timestamp("%s-%s-01" % (e[3:], e[:2])) + pd.offsets.MonthEnd(0) if isinstance(e, str) and e else pd.NaT for e in exp])
-    toll = IV.toll_billed.values
-    m = tbm & home & (age >= 61); e = t60[m].sum() / toll[m].sum(); un = m & (t60 < toll - 0.005)
-    wh = toll[un & (hold == "HOLD PLACED")].sum() / toll[un].sum()
-    lim = solve.ASOF - pd.Timedelta(days=1) if strict else solve.ASOF
-    fin = tbm & home & (hold == "HOLD PLACED") & np.array([pd.notna(x) and x <= lim for x in ee])
-    r = tp[fin].sum() / toll[fin].sum()
-    nr = tbm & home & (hold == "NO RECORD") & (age >= nr_age); a = tp[nr].sum() / toll[nr].sum()
-    IS = e + (1 - e) * (wh * r + (1 - wh) * a)
-    mo = tbm & ~home & (age >= os_age); OS = tp[mo].sum() / toll[mo].sum()
-    return IS, OS, plan["IS"] * IS + plan["OS"] * OS
+def main():
+    P = PR.read(TARGET)
+    F = G.compute(TARGET)
+    rows = PR.analysis_set(P)
+
+    # ---- the call and the standing family ----
+    ok(F['call'] == 300, "the golden call is 300 mg")
+    ok(gap300(F['fc']) <= 1.0, "300 mg within a point of the highest forecast: %.2f" % gap300(F['fc']))
+    for k, fc in F['fam'].items():
+        ok(K.call(fc) == 300, "standing member %s files 300" % (k,))
+        ok(gap300(fc) <= 3.0, "standing member %s keeps 300 mg within 3 points (%.2f)" % (k, gap300(fc)))
+    # ---- the default path's late family (Ends on: 900 mg) ----
+    for k, fc in F['late_fam'].items():
+        ok(K.call(fc) == 900, "late member %s files 900" % (k,))
+        ok(fc[900] - fc[300] >= 15.0, "late member %s: 300 mg at least 15 points under 900 mg" % (k,))
+        ok(fc[900] - fc[600] >= 5.5, "late member %s: 600 mg over 5 points under 900 mg" % (k,))
+    # the ruling-out group-by: remitters' to non-remitters' geometric mean concentration by visit
+    ok(0.90 <= F['gmr']['tr4'] <= 1.15, "week-4 ratio flat: %.2f" % F['gmr']['tr4'])
+    ok(F['gmr']['tr8'] >= 1.8 and F['gmr']['c12'] >= 2.5, "later ratios apart: %.2f, %.2f" % (F['gmr']['tr8'], F['gmr']['c12']))
+
+    # ---- the semantic fork table ----
+    # SF1 the forecast's population: the exposure-response analysis set (charter 4) against counting the patients
+    # without a valid week-4 trough as non-remitters; same call
+    alt = G.forecast(rows, 'tr4', 'strat', nonremit_missing=True)[0]
+    ok(K.call(alt) == 300 and gap300(alt) <= 3.0, "SF1 same call")
+    # SF2 dose scaling: in proportion to dose (investigator's brochure 5.2) against no scaling (every forecast equal,
+    # so the lowest dose is within the rule); same call
+    flat = {d: F['fc'][600] for d in K.DOSES}
+    ok(K.call(flat) == 300, "SF2 same call")
+    # SF3 the remission flags: database lock against the topline extract (local endoscopy reads); same call
+    top = {r['site_subject']: r for r in PR.rd(TARGET, K.EFF_TOP)}
+    alt = G.forecast(rows_variant(P, eff=top), 'tr4', 'strat')[0]
+    ok(K.call(alt) == 300, "SF3 same call")
+    # SF4 pre-dose validity: the laboratory's UTC collection against the infusion's local start converted to UTC
+    # (SAP 6.8) against keeping every pre-dose sample as labelled; same call
+    alt = G.forecast(rows_variant(P, start_check=False), 'tr4', 'strat')[0]
+    ok(K.call(alt) == 300, "SF4 same call")
+    # SF5 reassays: the reportable result against the first result delivered; same call
+    alt = G.forecast(rows_variant(P, reassay='first'), 'tr4', 'strat')[0]
+    ok(K.call(alt) == 300, "SF5 same call")
+    # SF6 units: results reported in ng/mL are divided by 1,000 (the unit column); the reading is closed by the column
+    ng = [r for r in P['conc'] if r['unit'] == 'ng/mL' and not r['result'].startswith('<')]
+    ok(ng and all(1.0 <= float(r['result']) / 1000.0 <= 400.0 for r in ng) and
+       all(float(r['result']) > 400.0 for r in ng), "SF6 the ng/mL rows sit in range only once converted")
+    # SF7 below-limit results: zero, half the limit or left out; same call
+    for blq in ('zero', 'half', 'drop'):
+        alt = G.forecast(rows_variant(P, blq=blq), 'tr4', 'strat')[0]
+        ok(K.call(alt) == 300, "SF7 %s same call" % blq)
+    # SF8 the model's covariates: none, the randomisation stratum, the stratum with weight and modified Mayo; same call
+    for cov in ('none', 'strat', 'full'):
+        ok(K.call(G.forecast(rows, 'tr4', cov)[0]) == 300, "SF8 %s same call" % cov)
+    # SF9 the rule compared on forecasts rounded to one decimal against unrounded (charter 5); same call
+    ok(K.call({d: round(v, 1) for d, v in F['fc'].items()}) == 300, "SF9 same call")
+    # SF10 the infusion start's clock: each site's own zone against every US site on Eastern time; same call
+    P2 = dict(P)
+    P2['zone'] = {ss: ('America/New_York' if z.startswith('America/') and P['country'][ss] == 'US' else z)
+                  for ss, z in P['zone'].items()}
+    alt = G.forecast(rows_variant(P2), 'tr4', 'strat')[0]
+    ok(K.call(alt) == 300, "SF10 same call")
+    # the live rows as a cross product
+    for sf1, sf4, sf5, sf7, sf8 in itertools.product((False, True), (True, False), ('reportable', 'first'),
+                                                     ('zero', 'half', 'drop'), ('none', 'strat', 'full')):
+        rr = rows_variant(P, start_check=sf4, reassay=sf5, blq=sf7)
+        fc = G.forecast(rr, 'tr4', sf8, nonremit_missing=sf1)[0]
+        ok(K.call(fc) == 300, "cross product SF1 %s SF4 %s SF5 %s SF7 %s SF8 %s files 300" % (sf1, sf4, sf5, sf7, sf8))
+
+    # ---- the three rules: the analyst test executed on the world's clean truth ----
+    W = WD.simulate()
+    PK.ids(W)
+    clean = []
+    for i in range(W.N):
+        if not W.act[i]:
+            continue
+        clean.append(dict(ss=W.ssid[i], rem=int(W.rem[i]), tr4=WD.conc_at(W, i, 27.75), tr8=WD.conc_at(W, i, 55.75),
+                          c12=WD.conc_at(W, i, 84.0), prior=int(W.biol[i]), wt=float(W.wt[i]), mayo=int(W.mmayo0[i])))
+    for key in ('tr8', 'c12'):
+        for cov in ('none', 'strat', 'full'):
+            fc = G.forecast(clean, key, cov)[0]
+            ok(K.call(fc) == 900, "analyst test on clean truth: %s %s files 900" % (key, cov))
+    for cov in ('none', 'strat', 'full'):
+        fc = G.forecast(clean, 'tr4', cov)[0]
+        ok(K.call(fc) == 300, "golden construction on clean truth: tr4 %s files 300" % cov)
+    # the world's own answer: the true remission at each dose puts 300 mg within the rule
+    true = {300: W.rem300[W.act].mean() * 100, 600: W.rem[W.act].mean() * 100, 900: W.rem900[W.act].mean() * 100}
+    ok(K.call(true) == 300, "the world's true remission files 300 (%s)" % {d: round(v, 1) for d, v in true.items()})
+
+    # ---- the asks: fair (golden equals the world truth) ----
+    eps = E.adverse_events(W)
+    ta = E.truth_ae(W, eps)
+    ga = AK.ask_a(P, TARGET)
+    for arm in ga:
+        for k in ('pts_si', 'pts_irr', 'events_si'):
+            ok(ga[arm][k] == ta[arm][k], "ask A %s %s golden equals the truth" % (arm, k))
+        ok(abs(ga[arm]['py'] - sum(E.exposure_years(W, i) for i in range(W.N)
+                                   if bool(W.act[i]) == (arm == 'dovikizumab'))) < 1e-9, "ask A %s exposure" % arm)
+    A = E.ada(W)
+    tb = E.truth_ada(W, A)
+    gb = AK.ask_b(P, TARGET)
+    for arm in gb:
+        for k, vis in ((1, 'Week 4'), (2, 'Week 8'), (3, 'Week 12')):
+            ok((gb[arm][vis]['te'], gb[arm][vis]['n']) == (tb[arm][k]['te'], tb[arm][k]['n']),
+               "ask B %s %s golden equals the truth" % (arm, vis))
+    D = E.diaries(W)
+    tc = E.truth_symptomatic(W, D)
+    gc = AK.ask_c(P, TARGET)
+    for arm in gc:
+        for w, ref in K.DIARY_WEEKS:
+            ok(gc[arm][w]['rem'] == tc[arm][ref]['rem'], "ask C %s week %d golden equals the truth" % (arm, w))
+
+    # ---- the asks: every rival handling outside the bin ----
+    def figs_a(a):
+        return {(arm, k): (a[arm][k] if k != 'rate_si' else round(a[arm][k], 1)) for arm in a for k in ('pts_si', 'pts_irr', 'rate_si')}
+    def figs_b(b):
+        return {(arm, v): round(b[arm][v]['pct'], 1) for arm in b for v in b[arm]}
+    def figs_c(c):
+        return {(arm, w): c[arm][w]['rem'] for arm in c for w in c[arm]}
+    gold = dict(A=figs_a(ga), B=figs_b(gb), C=figs_c(gc))
+    rivals = dict(A=('onset_key', 'first_onset', 'records', 'by_term'), B=('by_visit', 'per_sample', 'latest'),
+                  C=('drop_unmatched', 'current_holder'))
+    fn = dict(A=(AK.ask_a, figs_a), B=(AK.ask_b, figs_b), C=(AK.ask_c, figs_c))
+    for ask, hows in rivals.items():
+        f, figs = fn[ask]
+        for how in hows:
+            alt = figs(f(P, TARGET, how))
+            for key, g in gold[ask].items():
+                if ask == 'A' and key[1] == 'pts_si' and how == 'records':
+                    continue        # the record count keys episodes the same way for the patient count
+                if ask == 'B' and how in ('latest', 'per_sample') and key == ('placebo', 'Week 12'):
+                    continue        # the per-sample rungs' one kept figure (the mirror's row on the ask sheet)
+                tol = 0.05 if isinstance(g, float) else 0.5
+                ok(abs(alt[key] - g) > tol, "ask %s %s misses %s (%s against %s)" % (ask, how, key, alt[key], g))
+    # the IRR rungs: the reaction term alone and the term list on any day
+    for how in ('irr_term_only', 'irr_list_any_day'):
+        alt = AK.ask_a(P, TARGET, how)
+        for arm in alt:
+            ok(alt[arm]['pts_irr'] != ga[arm]['pts_irr'], "ask A %s misses %s IRR patients" % (how, arm))
+
+    # ---- figures.json is the computation ----
+    stored = json.load(open(os.path.join(HERE, "figures.json")))
+    fresh = G.flat(F)
+    ok(stored == fresh, "figures.json matches a fresh computation")
+    print("checks: %d passed" % N_OK[0])
 
 
-fam = {"golden": (g["IS"], g["OS"], G), "expiry strictly before": variant(strict=True), "agency read at 380 days": variant(os_age=380),
-       "agency read at 400 days": variant(os_age=400), "no-record read at 400 days": variant(nr_age=400),
-       "returned payments not netted": variant(gross=True), "payments to the export run": variant(cut="2026-11-06")}
-for k, (i, o, c) in fam.items():
-    ok("FAMILY %s: one printed cell on all three" % k, cell(c) == cell(G) and round(i * 100) == round(g["IS"] * 100) and round(o * 100) == round(g["OS"] * 100),
-       "IS %.2f OS %.2f $%.0f" % (i * 100, o * 100, c))
-
-# ---------------------------------------------------------------- rivals
-R = solve.rivals(F)
-for k, (i, o, c) in R.items():
-    ok("RIVAL %s misses the call by a full cell" % k, abs(cell(c) - cell(G)) >= 1, "$%.0f (cell %d against %d)" % (c, cell(c), cell(G)))
-dp = R["invoices a year old"]
-note = open(os.path.join(C.TASK, "DESIGN_NOTE.md")).read()
-ends = re.search(r"\*\*Ends on:\*\* \$([\d.]+) million", note)
-ok("R3a the default path (a year-old cohort) files the note's Ends-on figure", ends is not None and abs(cell(dp[2]) * 0.25 - float(ends.group(1))) < 1e-9,
-   "$%.0f, note %s" % (dp[2], ends.group(1) if ends else "none"))
-ok("R3a the default path's out-of-state share equals the golden's", abs(dp[1] - g["OS"]) < 1e-9)
-# R3b: the decisive step alone (renewal maturity on the default path's book) files the golden
-ok("R3b the default path with the renewal maturity alone files the golden", cell(fam["golden"][2]) == cell(G))
-ok("R3b each lower rung's single correction stays wrong", all(abs(cell(R[k][2]) - cell(G)) >= 1 for k in ("invoices 180 days old", "invoices 15 months old", "renewal-matured, violations pooled in")))
-
-# ---------------------------------------------------------------- semantic forks
-ok("SF1 the plan's billed toll is the population", plan["IS"] == fig["plan_toll_in_state_usd"] and plan["OS"] == fig["plan_toll_out_of_state_usd"])
-ok("SF2 collected however long it takes: the golden is an ultimate share", g["IS"] > dp[0])
-ok("SF3 toll only: toll_paid never exceeds toll billed", (solve.toll_paid(F) <= IV.toll_billed.values + 1e-9).all())
-ok("SF4 in-state is HM and only HM", set(IV.plate_state.unique()) - {C.HOME} <= set(C.OUT_STATES))
-ok("SF5 payments to the records date or the export run: same call", cell(fam["payments to the export run"][2]) == cell(G))
-ok("SF6 returned payments netted or not: same call", cell(fam["returned payments not netted"][2]) == cell(G))
-ok("SF7 expiry on or before, or strictly before, the records date: same call", cell(fam["expiry strictly before"][2]) == cell(G))
-ok("SF8 the agency read at 365 to 400 days: same call", cell(fam["agency read at 400 days"][2]) == cell(G))
-ok("SF9 the cash lanes' own book, not every billed-by-mail invoice", abs(cell(R["renewal-matured, violations pooled in"][2]) - cell(G)) >= 1)
-ok("SF10 rounding: nearest $0.25 million, whole per cent", fig["call_collected_toll_2027_usd"] % 250_000 == 0)
-
-# ---------------------------------------------------------------- R2: Layer 1 items, each neutral to the call
-ok("R2 returned payments (REVERSAL rows) neutral", cell(fam["returned payments not netted"][2]) == cell(G), "%d rows" % (pay.channel == "REVERSAL").sum())
-ok("R2 postings after the records date neutral", cell(fam["payments to the export run"][2]) == cell(G), "%d rows" % (pay.posted_on > solve.ASOF).sum())
-ok("R2 the rate change of 1 January 2026 is in the lines' tolls, neutral", L.toll.gt(0).all())
-ok("R2 MM/YYYY registration months parse for every hold", H[H.response == "HOLD PLACED"].reg_expires.str.match(r"^\d{2}/\d{4}$").all())
-ok("R2 invoice issue dates on the eighth or the next weekday", IV.issued_on.dt.day.between(8, 10).all() and (IV.issued_on.dt.dayofweek < 5).all())
-
-# ---------------------------------------------------------------- separation line
-tbm_lines = L[L.invoice_no.str.startswith("T")]
-ok("SEP no express-lane line on a toll-by-mail invoice", not tbm_lines.lane.isin(C.ETC_LANES).any())
-ok("SEP toll-by-mail lines all in the closed hours", ((tbm_lines.crossed_at.dt.hour >= 23) | (tbm_lines.crossed_at.dt.hour < 5)).all())
-bal = pd.Series((IV.toll_billed + IV.invoice_fee + IV.late_fee + IV.collection_fee).values, index=IV.invoice_no.values)
-ag_t = pay[(pay.channel == "AGENCY") & pay.invoice_no.str.startswith("T", na=False)]
-ok("SEP every toll-by-mail agency remittance covers only its own invoice", (ag_t.amount <= ag_t.invoice_no.map(bal) + 0.01).all(), "%d remittances" % len(ag_t))
-ok("SEP the call never reads the commercial postings", "TT" not in solve.call_shares.__code__.co_names)
-
-# ---------------------------------------------------------------- ask devices
-V = solve.straddle_and_phantom(F)
-Aa = solve.ask_A(F, V)
-ok("ASK A figures.json carries the golden", all(fig["a_2026_%02d_crossings" % m] == Aa[m][0] and abs(fig["a_2026_%02d_toll_owed_usd" % m] - Aa[m][1]) < 0.005 for m in range(1, 10)))
-ph = V[V.phantom & (V.crossed_at >= "2026-01-01")]
-ok("ASK A1 classifier-split lines in every month", ph.crossed_at.dt.month.nunique() == 9, "%d lines" % len(ph))
-v26 = V[(V.crossed_at >= "2026-01-01")].reset_index().sort_values("crossed_at")
-t = TT[["plaza", "direction", "lane", "posted_at"]].sort_values("posted_at")
-m = pd.merge_asof(v26, t, left_on="crossed_at", right_on="posted_at", by=["plaza", "direction", "lane"], direction="backward")
-gap = (m.crossed_at - m.posted_at).dt.total_seconds()
-ok("ASK A1 nothing between 0.30 and 0.90 s behind a posting (the referee is crisp)", not ((gap > 0.30) & (gap < 0.90)).any())
-ok("ASK A1 ordinary followers sit 0.9 to 2.5 s behind a posting", ((gap >= 0.9) & (gap <= 2.5)).sum() > 1000, "%d followers" % ((gap >= 0.9) & (gap <= 2.5)).sum())
-st = V[V.straddle]
-ok("ASK A2 straddle second reads all within a second of their first", len(st) > 1000, "%d lines" % len(st))
-vv = V.sort_values(["plate", "plate_state", "crossed_at"])
-dt_same = (vv.crossed_at - vv.crossed_at.shift()).dt.total_seconds()[vv.plate.eq(vv.plate.shift()) & vv.plate_state.eq(vv.plate_state.shift())]
-ok("ASK A2 no plate crosses twice between 1 s and 10 minutes", not ((dt_same > 1) & (dt_same < 600)).any())
-Bb = solve.ask_B(F, V)
-ok("ASK B figures.json carries the golden", all(fig["b_%s_collected_pct" % q.lower()] == round(v * 100) for q, v in Bb.items()))
-ok("ASK B shares mid-cell", all(edge(v * 100, 1) >= 0.1 for v in Bb.values()), ", ".join("%.2f" % (v * 100) for v in Bb.values()))
-B0 = solve.ask_B(F, V, whole_account=False)
-ok("ASK B1 whole-account remittances move every quarter", all(round(B0[q] * 100) != round(Bb[q] * 100) for q in Bb), ", ".join("%.1f" % (B0[q] * 100) for q in Bb))
-ag_v = pay[(pay.channel == "AGENCY") & pay.invoice_no.str.startswith("V", na=False)]
-over = ag_v.amount > ag_v.invoice_no.map(bal) + 0.01
-ok("ASK B1 remittances above their invoice's balance exist and none is a round multiple", over.sum() > 100, "%d remittances" % over.sum())
-
-# ---------------------------------------------------------------- cracker and mirror
-cr = cracker.main(quiet=True)
-ok("CRACKER misses every ask figure", cr["cracker_hits"] == 0, "%d of 22" % cr["cracker_hits"])
-ok("MIRROR leakage under 35 per cent", cr["mirror_leakage_pct"] < 35, "%.1f" % cr["mirror_leakage_pct"])
-ok("PAIR ceiling at or under 40", cr["pair"] <= 40, "%.1f" % cr["pair"])
-
-# ---------------------------------------------------------------- realism sweep
-mon = L.assign(m=L.crossed_at.dt.strftime("%Y-%m")).groupby("m").size()
-ok("REAL no two months carry the same line count", mon.nunique() == len(mon))
-ok("REAL no round monthly toll totals", not any(abs(x - round(x, -2)) < 0.005 for x in L.groupby(L.crossed_at.dt.strftime("%Y-%m")).toll.sum()))
-ok("REAL plan figures not round thousands", plan["IS"] % 1000 != 0 and plan["OS"] % 1000 != 0)
-txt = ""
-for f in files:
-    if f.endswith((".docx", ".xlsx")):
-        with zipfile.ZipFile(os.path.join(T, f)) as z:
-            for n in z.namelist():
-                if n.endswith(".xml"):
-                    txt += z.read(n).decode("utf-8", "ignore")
-pdfraw = open(os.path.join(T, C.F_POLICY), "rb").read()
-ok("REAL no writer signature in the containers", not re.search(r"openpyxl|python-docx|ReportLab", txt + pdfraw.decode("latin-1")))
-ok("REAL container stamps inside 2026", all(y == "2026" for y in re.findall(r"<dcterms:(?:created|modified)[^>]*>(\d{4})", txt)) and b"D:2026" in pdfraw)
-people = set(re.findall(r"\b(Brittany Moon|Zachary Mcneil)\b", txt))
-ok("REAL the plan's people are the card's", people <= {"Brittany Moon", "Zachary Mcneil"} and "Brittany Moon" in txt)
-ok("REAL no record dated after the export run", pay.posted_on.max() <= pd.Timestamp(C.EXPORT) and IV.issued_on.max() <= pd.Timestamp(C.ASOF)
-   and L.crossed_at.max() < pd.Timestamp("2026-10-01") and H.requested_on.max() <= pd.Timestamp(C.ASOF))
-ok("REAL no em dash in the pack's documents", "—" not in txt)
-
-print("\n%d checks, %d failed" % (N[0], len(FAIL)))
-if FAIL:
-    print("FAILED:", "; ".join(FAIL))
-    sys.exit(1)
+if __name__ == "__main__":
+    main()

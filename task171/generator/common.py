@@ -1,55 +1,102 @@
-"""Constants shared by the task171 generator: calendar, plazas and lanes, the toll schedule, the enforcement cycle,
-file names."""
+"""task171 constants and helpers shared by every generator module.
+
+Corvane Therapeutics (fictional, Cambridge, Massachusetts) develops dovikizumab (CVN-2184), a humanised IgG1 antibody
+against the p19 subunit of interleukin-23, for moderately to severely active ulcerative colitis. Study CVN2184-UC-201
+randomised 720 patients 2 to 1 to dovikizumab 600 mg or placebo, IV at weeks 0, 4 and 8, stratified by prior biologic or
+JAK inhibitor failure, at 71 sites in the United States, Canada, Poland and Hungary. The database locked on 14 July 2026;
+the phase 3 dose goes into the end-of-phase-2 briefing package due on 4 December 2026, chosen under the dose-selection
+charter: the lowest of 300, 600 and 900 mg whose forecast week-12 clinical remission rate is no more than 5 points below
+the highest of the three forecasts."""
 from __future__ import annotations
 
+import csv
 import datetime as dt
-import os
+import hashlib
+import io
 
-HERE = os.path.dirname(os.path.abspath(__file__))
-TASK = os.path.dirname(HERE)
-SEED = 1_712_101
+import numpy as np
 
-D = dt.date
-CLOSE_START = D(2025, 3, 3)        # cash booths closed 11 p.m. to 5 a.m. from this night
-LAST_CROSS = D(2026, 9, 30)        # last crossing day in the toll-by-mail extract
-ASOF = D(2026, 10, 31)             # records as of
-EXPORT = D(2026, 11, 9)            # the back office's export run
-CUTOVER = D(2027, 1, 4)            # all-electronic tolling begins
-MONTHS = [(y, m) for y in (2025, 2026) for m in range(1, 13) if D(2025, 3, 1) <= D(y, m, 1) <= D(2026, 9, 1)]
+SEED = 1710527
+WORLD_SEED = 2                  # the paper world sim_er4.py seed the margins were measured on
+NA, NP = 480, 240
+DOSES = (300, 600, 900)
+THR = 5.0                       # charter: within 5 percentage points of the highest forecast
+DIARY_WEEKS = ((6, 42), (8, 56), (10, 70))     # the e-diary timepoints: week, study day of the reference
+STUDY = "CVN2184-UC-201"
+LOCK = dt.date(2026, 7, 14)
+TOPLINE = dt.date(2026, 6, 2)
+DAY0 = dt.date(2024, 11, 4)     # first screening visit
 
-PLAZAS = ["VEL", "BRN", "OST"]
-PLAZA_NAME = {"VEL": "Vellacott", "BRN": "Brannock", "OST": "Ostrey"}
-MILEPOST = {"VEL": 6.2, "BRN": 24.8, "OST": 41.5}
-DIRS = ["NB", "SB"]
-ETC_LANES = ["E1", "E2"]           # open-road express lanes, MarrowPass only
-BOOTH_LANES = ["B1", "B2", "B3", "B4"]
+# file names (the pack)
+CONC = "cvn2184_201_serum_concentrations.csv"
+RAND = "cvn2184_201_randomisation_log.csv"
+BASE = "cvn2184_201_baseline_characteristics.csv"
+DOSE = "cvn2184_201_infusion_records.csv"
+EFF_LOCK = "cvn2184_201_efficacy_database_lock.csv"
+EFF_TOP = "cvn2184_201_efficacy_topline_extract.csv"
+DIARY = "cvn2184_201_ediary_entries.csv"
+LAB = "cvn2184_201_central_laboratory.csv"
+AE = "cvn2184_201_adverse_events.csv"
+ADA = "cvn2184_201_ada_results.csv"
+ADA_RUNS = "brightwater_ada_run_log.csv"
+ENDO = "cvn2184_201_endoscopy_reads.csv"
+CHARTER = "cvn2184_phase3_dose_selection_charter.pdf"
+SAP = "cvn2184_201_sap_definitions_excerpt.pdf"
+IB = "dovikizumab_investigators_brochure_section5.pdf"
+SITES = "cvn2184_201_site_list.csv"
+VISITS = "cvn2184_201_visit_dates.csv"
+DEVICES = "cvn2184_201_ediary_handset_log.csv"
+CONMED = "cvn2184_201_concomitant_medications.csv"
+PHASE1 = "cvn2184_hv101_pk_summary.xlsx"
 
-# cash toll for a two-axle vehicle; MarrowPass pays 80 per cent; axles 3, 4, 5 and 6 or more pay 2, 3, 4 and 5 times
-CASH = {2025: {"VEL": 1.75, "BRN": 2.25, "OST": 1.50}, 2026: {"VEL": 1.90, "BRN": 2.45, "OST": 1.65}}
-MULT = {2: 1, 3: 2, 4: 3, 5: 4, 6: 5}
-INVOICE_FEE = 1.50
-VIOLATION_FEE = 5.00
-LATE_FEE = 5.00
-AGENCY_PCT = 0.20
+# goldens
+MEMO = "induction_dose_memo.docx"
+TABLES = "phase2b_induction_tables.xlsx"
+CHART = "exposure_response_chart.png"
 
-HOME = "HM"   # the pack writes the home state's plates with this code
-OUT_STATES = ["PA", "OH", "NY", "NJ", "MD", "WV", "VA", "IN", "MI", "IL", "NC", "TX", "FL", "ON", "QC"]
-OUT_P = [0.21, 0.19, 0.12, 0.08, 0.07, 0.06, 0.05, 0.04, 0.04, 0.03, 0.03, 0.02, 0.02, 0.03, 0.01]
+COUNTRIES = (("US", 30), ("CA", 8), ("PL", 18), ("HU", 15))
 
-# 2027 plan: toll on the crossings of vehicles without a MarrowPass that pay cash today, 2026 traffic at 2027 rates
-# (unchanged from 2026), after image review, by plate state; written into the cutover plan
-PLAN_TOLL = {"IS": 11_908_500, "OS": 4_292_700}
 
-F_LINES = "tbm_invoice_lines_2025-03_2026-09.parquet"
-F_INV = "tbm_invoices_2025-04_2026-10.csv"
-F_PAY = "tbm_payments_2025-04_2026-11.csv"
-F_MVD = "dmv_registration_holds_2025-2026.csv"
-F_AGY = "agency_placements_2025-2026.csv"
-F_TAG = "marrowpass_commercial_postings_2026-01_2026-09.parquet"
-F_LANES = "plaza_lanes.csv"
-F_POLICY = "toll_schedule_and_toll_by_mail_policy_2026.pdf"
-F_PLAN = "aet_cutover_revenue_plan_2027.docx"
-F_TRAFFIC = "plaza_traffic_by_hour_2025-2026.csv"
-F_IMG = "image_review_summary_2025-2026.csv"
-F_DICT = "data_dictionary.xlsx"
-F_MAN = "export_manifest.csv"
+def rng(*keys):
+    h = hashlib.sha256(("%d|" % SEED + "|".join(str(k) for k in keys)).encode()).digest()
+    return np.random.default_rng(int.from_bytes(h[:8], "little"))
+
+
+def day_date(n):
+    return DAY0 + dt.timedelta(days=int(n))
+
+
+ZONE = {"Boston": "America/New_York", "Cleveland": "America/New_York", "Atlanta": "America/New_York",
+        "Tampa": "America/New_York", "Houston": "America/Chicago", "Chicago": "America/Chicago",
+        "Omaha": "America/Chicago", "Denver": "America/Denver", "Phoenix": "America/Phoenix",
+        "Seattle": "America/Los_Angeles", "Toronto": "America/Toronto", "Montreal": "America/Toronto",
+        "Hamilton": "America/Toronto", "Calgary": "America/Edmonton", "Warszawa": "Europe/Warsaw", "Krakow": "Europe/Warsaw",
+        "Lodz": "Europe/Warsaw", "Wroclaw": "Europe/Warsaw", "Poznan": "Europe/Warsaw", "Gdansk": "Europe/Warsaw",
+        "Budapest": "Europe/Budapest", "Debrecen": "Europe/Budapest", "Szeged": "Europe/Budapest", "Pecs": "Europe/Budapest",
+        "Gyor": "Europe/Budapest"}
+
+
+def local_to_utc(zone, local):
+    """a naive local datetime at a site in time zone `zone` to naive UTC"""
+    from zoneinfo import ZoneInfo
+    return local.replace(tzinfo=ZoneInfo(zone)).astimezone(dt.timezone.utc).replace(tzinfo=None)
+
+
+def write_csv(path, cols, rows, crlf=False):
+    buf = io.StringIO()
+    w = csv.writer(buf, lineterminator="\r\n" if crlf else "\n")
+    w.writerow(cols)
+    for r in rows:
+        w.writerow([("" if r.get(c) is None else r.get(c)) for c in cols])
+    with open(path, "w", encoding="utf-8", newline="") as f:
+        f.write(buf.getvalue())
+    return len(rows)
+
+
+def call(fc, thr=THR):
+    top = max(fc.values())
+    return next(d for d in DOSES if fc[d] >= top - thr)
+
+
+def r1(x):
+    return float("%.1f" % (x + 0.0))

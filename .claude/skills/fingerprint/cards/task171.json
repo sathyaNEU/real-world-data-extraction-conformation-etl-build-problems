@@ -39,18 +39,18 @@
   "layer1": [
     "two central laboratories: the US laboratory reports albumin in g/dL and CRP in mg/dL, the European laboratory albumin in g/L and CRP in mg/L",
     "bioanalytical results with incurred-sample reanalysis repeats beside the reported values and concentrations under the quantification limit reported as text",
-    "pre-dose samples whose collection time falls after the infusion started at a few visits, the sample log in site local time and the infusion pump log in UTC",
+    "pre-dose samples whose collection time falls after the infusion started at a few visits, the laboratory's collection time in UTC and the eCRF's infusion start in site local time",
     "infusions interrupted and restarted, the delivered volume rather than the planned dose on the record, and visits outside the plus or minus three day window",
     "subject identifiers as site-subject numbers in the site-facing systems and as randomisation numbers in the clinical database, mapped through the randomisation log",
     "the efficacy dataset in two overlapping releases, the topline extract and the database-lock release with adjudicated endoscopy reads",
-    "e-diary entries from two device generations, one stamping UTC and one site local time, with re-synchronised duplicates"
+    "e-diary entries keyed by handset, handsets reissued within sites and carried across four site closures under new vendor registrations; an adverse event log re-entering ongoing events at each review with partial and corrected onsets; antibody results by aliquot tube and analytical run"
   ],
   "stakeholder_role": "the head of clinical pharmacology at the sponsor, who owes the phase 3 induction dose to the end-of-phase-2 briefing package",
   "role_family": "research_desk",
   "scoring_unit": "other",
   "spine": {
     "file": "cvn2184_201_serum_concentrations.csv",
-    "rows": 0,
+    "rows": 3037,
     "entity": "one serum sample's dovikizumab result from the bioanalytical laboratory",
     "grain": "patient x sample",
     "source": "synthetic"

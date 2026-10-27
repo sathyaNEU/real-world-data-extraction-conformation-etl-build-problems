@@ -1,39 +1,163 @@
 {
  "task": "task171",
- "title": "Marrowfield Turnpike Authority, first all-electronic tolling year: the toll billed by mail to today's cash-lane users that will be collected",
- "domain": "Economics & Econometrics",
- "client_domain": "Economics & Econometrics",
- "subdomain": "forecasting and forecast evaluation (a public authority's 2027 toll-by-mail revenue, the ultimate collection of mailed tolls read on the record of the overnight booth closures)",
- "objective": "Forecasting & Predictive Modeling",
- "prompt_shape": "one committed figure with its in-state and out-of-state shares; violation crossings and toll owed by month; out-of-state violation collections by quarter",
- "as_of": "2026-10-31",
+ "title": "Dovikizumab's phase 3 induction dose for ulcerative colitis from the CVN2184-UC-201 exposure-response",
+ "setting": "A fictional biopharmaceutical company's phase 2b trial of an anti-IL-23 antibody in ulcerative colitis (600 mg or placebo), whose dose-selection charter picks the phase 3 induction dose from forecast week-12 remission at 300, 600 and 900 mg. The company, its antibody, its vendors and its people are fictional, and every record is synthetic.",
+ "as_of": "2026-10-20",
  "deliverables": [
-  "aet_2027_toll_by_mail_forecast.xlsx"
+  "induction_dose_memo.docx",
+  "phase2b_induction_tables.xlsx",
+  "exposure_response_chart.png"
  ],
  "distractor_files": [
-  "plaza_traffic_by_hour_2025-2026.csv",
-  "image_review_summary_2025-2026.csv"
- ],
- "distractors": [
-  {
-   "file": "plaza_traffic_by_hour_2025-2026.csv",
-   "wrong_basis": false,
-   "why_relevant": "plaza transactions by hour and payment, the traffic behind the 2027 billing",
-   "why_unused": "the 2027 toll billed by mail is Traffic's figure in the plan; no graded figure reads the counts",
-   "ruled_out_by": "PN-14's billed-toll sentence"
-  },
-  {
-   "file": "image_review_summary_2025-2026.csv",
-   "wrong_basis": false,
-   "why_relevant": "captures lost at image review, a leakage before any invoice",
-   "why_unused": "the plan's billed toll is already after image review",
-   "ruled_out_by": "PN-14: after image review, only crossings an invoice can go to"
-  }
+  "target/cvn2184_hv101_pk_summary.xlsx",
+  "target/cvn2184_201_concomitant_medications.csv",
+  "target/cvn2184_201_efficacy_topline_extract.csv"
  ],
  "stated_inputs": [
-  "toll billed by mail in 2027",
-  "31 October 2026",
-  "4 January 2027"
+  "the 14 July 2026 database lock",
+  "300, 600 or 900 mg at weeks 0, 4 and 8",
+  "percentages to one decimal place"
  ],
- "field_terms": []
+ "files": [
+  {
+   "file": "brightwater_ada_run_log.csv",
+   "source": "Brightwater Bioanalytics, immunogenicity assay run log (fictional, synthetic records)",
+   "date": "2026-07-10",
+   "license": "CC0-1.0 (synthetic, generated for this task)",
+   "rows": 67
+  },
+  {
+   "file": "cvn2184_201_ada_results.csv",
+   "source": "Brightwater Bioanalytics, anti-dovikizumab antibody results by analytical run (fictional, synthetic records)",
+   "date": "2026-07-10",
+   "license": "CC0-1.0 (synthetic, generated for this task)",
+   "rows": 3833
+  },
+  {
+   "file": "cvn2184_201_adverse_events.csv",
+   "source": "Corvane Therapeutics, CVN2184-UC-201 clinical database as locked on 14 July 2026, adverse event records (fictional, synthetic records)",
+   "date": "2026-07-14",
+   "license": "CC0-1.0 (synthetic, generated for this task)",
+   "rows": 758
+  },
+  {
+   "file": "cvn2184_201_baseline_characteristics.csv",
+   "source": "Corvane Therapeutics, CVN2184-UC-201 clinical database as locked on 14 July 2026, baseline characteristics (fictional, synthetic records)",
+   "date": "2026-07-14",
+   "license": "CC0-1.0 (synthetic, generated for this task)",
+   "rows": 720
+  },
+  {
+   "file": "cvn2184_201_central_laboratory.csv",
+   "source": "Meridian Central Laboratory, CVN2184-UC-201 albumin and C-reactive protein results (fictional, synthetic records)",
+   "date": "2026-07-08",
+   "license": "CC0-1.0 (synthetic, generated for this task)",
+   "rows": 5588
+  },
+  {
+   "file": "cvn2184_201_concomitant_medications.csv",
+   "source": "Corvane Therapeutics, CVN2184-UC-201 clinical database as locked on 14 July 2026, concomitant medications (fictional, synthetic records)",
+   "date": "2026-07-14",
+   "license": "CC0-1.0 (synthetic, generated for this task)",
+   "rows": 847
+  },
+  {
+   "file": "cvn2184_201_ediary_entries.csv",
+   "source": "Tidepath Clinical Outcomes, e-diary entries for CVN2184-UC-201 (fictional, synthetic records)",
+   "date": "2026-07-13",
+   "license": "CC0-1.0 (synthetic, generated for this task)",
+   "rows": 67252
+  },
+  {
+   "file": "cvn2184_201_ediary_handset_log.csv",
+   "source": "Tidepath Clinical Outcomes, e-diary handset dispensing log for CVN2184-UC-201 (fictional, synthetic records)",
+   "date": "2026-07-13",
+   "license": "CC0-1.0 (synthetic, generated for this task)",
+   "rows": 801
+  },
+  {
+   "file": "cvn2184_201_efficacy_database_lock.csv",
+   "source": "Corvane Therapeutics, CVN2184-UC-201 clinical database as locked on 14 July 2026, week-12 efficacy dataset (fictional, synthetic records)",
+   "date": "2026-07-14",
+   "license": "CC0-1.0 (synthetic, generated for this task)",
+   "rows": 720
+  },
+  {
+   "file": "cvn2184_201_efficacy_topline_extract.csv",
+   "source": "Corvane Therapeutics, topline efficacy extract of 2 June 2026 (site endoscopy reads) (fictional, synthetic records)",
+   "date": "2026-06-02",
+   "license": "CC0-1.0 (synthetic, generated for this task)",
+   "rows": 693
+  },
+  {
+   "file": "cvn2184_201_endoscopy_reads.csv",
+   "source": "Corvane Therapeutics, CVN2184-UC-201 clinical database as locked on 14 July 2026, endoscopy reads with central reading and adjudication (fictional, synthetic records)",
+   "date": "2026-07-14",
+   "license": "CC0-1.0 (synthetic, generated for this task)",
+   "rows": 1393
+  },
+  {
+   "file": "cvn2184_201_infusion_records.csv",
+   "source": "Corvane Therapeutics, CVN2184-UC-201 clinical database as locked on 14 July 2026, study drug infusion records (fictional, synthetic records)",
+   "date": "2026-07-14",
+   "license": "CC0-1.0 (synthetic, generated for this task)",
+   "rows": 2121
+  },
+  {
+   "file": "cvn2184_201_randomisation_log.csv",
+   "source": "Corvane Therapeutics interactive response technology, randomisation log, unblinded at database lock (fictional, synthetic records)",
+   "date": "2026-07-14",
+   "license": "CC0-1.0 (synthetic, generated for this task)",
+   "rows": 720
+  },
+  {
+   "file": "cvn2184_201_sap_definitions_excerpt.pdf",
+   "source": "Corvane Therapeutics, CVN2184-UC-201 statistical analysis plan version 2.0, section 6 (fictional, synthetic records)",
+   "date": "2026-04-02",
+   "license": "CC0-1.0 (synthetic, generated for this task)",
+   "rows": null
+  },
+  {
+   "file": "cvn2184_201_serum_concentrations.csv",
+   "source": "Brightwater Bioanalytics, dovikizumab serum concentration results for CVN2184-UC-201 (fictional, synthetic records)",
+   "date": "2026-07-09",
+   "license": "CC0-1.0 (synthetic, generated for this task)",
+   "rows": 3037
+  },
+  {
+   "file": "cvn2184_201_site_list.csv",
+   "source": "Corvane Therapeutics, CVN2184-UC-201 clinical database as locked on 14 July 2026, site list (fictional, synthetic records)",
+   "date": "2026-07-14",
+   "license": "CC0-1.0 (synthetic, generated for this task)",
+   "rows": 71
+  },
+  {
+   "file": "cvn2184_201_visit_dates.csv",
+   "source": "Corvane Therapeutics, CVN2184-UC-201 clinical database as locked on 14 July 2026, visit dates (fictional, synthetic records)",
+   "date": "2026-07-14",
+   "license": "CC0-1.0 (synthetic, generated for this task)",
+   "rows": 3561
+  },
+  {
+   "file": "cvn2184_hv101_pk_summary.xlsx",
+   "source": "Corvane Therapeutics, CVN2184-HV-101 pharmacokinetic summary tables (fictional, synthetic records)",
+   "date": "2024-03-18",
+   "license": "CC0-1.0 (synthetic, generated for this task)",
+   "rows": null
+  },
+  {
+   "file": "cvn2184_phase3_dose_selection_charter.pdf",
+   "source": "Corvane Therapeutics, phase 3 dose-selection charter CVN-CP-0142 version 1.0 (fictional, synthetic records)",
+   "date": "2026-06-09",
+   "license": "CC0-1.0 (synthetic, generated for this task)",
+   "rows": null
+  },
+  {
+   "file": "dovikizumab_investigators_brochure_section5.pdf",
+   "source": "Corvane Therapeutics, dovikizumab investigator's brochure edition 6, section 5 (fictional, synthetic records)",
+   "date": "2026-01-15",
+   "license": "CC0-1.0 (synthetic, generated for this task)",
+   "rows": null
+  }
+ ]
 }
