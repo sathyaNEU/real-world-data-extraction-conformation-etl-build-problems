@@ -1,47 +1,47 @@
 {
   "task": "task273",
   "owner": "sathay3012",
-  "status": "FAILED_TO_STUMP",
-  "domain": "general-statistics-data-science",
+  "status": "DESIGN",
+  "domain": "urban-regional-science",
   "objective": "descriptive-distribution",
-  "stage": 5,
-  "stage_name": "ship",
+  "stage": 2,
+  "stage_name": "design",
   "updated": "2026-10-27",
-  "stump": "A competent solver who reads every record and rule right takes the vehicles at-fault drivers struck, pooled over the five years, as each use's share of the miles (induced exposure) and covers airport shuttles and paratransit; the struck vehicles are drawn where crashes are frequent, so only each use's share of them within each road class, day type and hour, scaled by the Department's miles for that stratum, measures miles, which covers taxicabs, ride-hail, parcel delivery and app-based delivery.",
-  "architecture": 2,
+  "stump": "A competent solver removes each main's valve-bounded segment as the GIS draws it and counts the properties on it plus those cut off from supply, filing a register of about 93 mains and 15 km; the step that lands it there is taking every valve in the GIS as one the crews can close, when the exercising programme's latest visits found about one valve in six seized or missing, so a burst beside one of them takes out the next segment too and cuts off the estates behind it (golden about 173 mains, 21 km).",
+  "architecture": 3,
   "loops": 0,
   "precut": {
-    "exit": 0,
-    "date": "2026-10-22"
+    "exit": null,
+    "date": ""
   },
   "leak": {
-    "leak_py": "REVIEW, every line harmless (leak_check_report.md)",
-    "reader": "five isolated scored readers, every call off the golden (r273c, r273d, r273e and r273f the pooled pair, r273g road class alone); asks 0 of 14 on every cut but fdf66198's, where a dictionary clause since withdrawn let r273f keep all 14"
+    "leak_py": "",
+    "reader": ""
   },
   "duplicate_check": {
-    "heart": "BLOCK on ban.pattern G14 and ban.artifact filed_standard against task482 v6 (registered ten minutes before this card); the forcing event redrawn in the pack; shipped under the author's override of 2026-10-23, recorded in the card's notes",
-    "nearest": "0.07 task201 v2"
+    "heart": "",
+    "nearest": "0.10 task148 v1 (lineage), a hazard sum over a backer; nothing here is a hazard"
   },
   "judge": {
-    "verdict": "DETERMINISTIC",
-    "disposition": "APPROVE",
-    "report": "determinism_check_report_pass2.md (pass 1 NOT_DETERMINISTIC on the asks only, FIX_NOW: determinism_check_report.md)"
+    "verdict": "",
+    "disposition": "",
+    "report": ""
   },
   "returned": [
     {
       "date": "2026-10-27",
       "portal": "both responses filed the golden: cover four of the seven uses (taxicabs, ride-hail, parcel and courier delivery vans, app-based delivery), each disclosing that it estimated every use's miles because no file holds them; the only construction that files those four is rung R4 (each use's share of the struck vehicles within road class, day type and hour, scaled by the Department's miles for the stratum), so both walked the full decisive step",
-      "repair": "design: re-root owed (architecture 3, the slot's last); not started",
+      "repair": "design: re-rooted to architecture 3 on 2026-10-27 (the slot's last), Carrisford Water's 2027 critical mains register; the coordinator's go-ahead to re-root relayed in session, retirement not taken",
       "commit": "PAUSED (task273) of 2026-10-27"
     }
   ],
-  "resume": "Architecture 2 spent at the portal on 2026-10-27 (both responses landed the golden four by the stratified induced-exposure construction, rung R4). A redesign inside this world is not available: every refinement the crash records support (finer strata, years, the struck vehicle's movement, time on the road against distance) stacks a rung above R4, which a returned build may not do. The rework is a re-root to architecture 3, the slot's last before retirement, in Descriptive & Distribution Analysis. The paper screen of 2026-10-27 found the obvious candidates already dead on file (within-unit variance against task202's driver per task201's candidate 14; dual-frame multiplicity as population_selection in task280; dependence across units in task198's screens; change of support and bunching in task269's and task272's lists), so the re-root is a probe-driven search that needs isolated plan-only readers and call-only probes before any generator is written. Owed: the author's choice between that search and retiring the number; then, if re-rooting, a new draw at stage 1 with this card's identity moved to lineage.",
+  "resume": "Stage 2, architecture 3 (the slot's last): Carrisford Water's 2027 critical mains register, the mains whose burst would leave more than 500 properties without water while it is shut off for repair, each burst's shut-off area composed through the valves the exercising programme's latest visits say will close, plus what that area cuts off from both plants and the reservoir. Card v3 registered 2026-10-27T06:38:27Z and re-checked after registration: WARN only (strategy risk and repeat.gate_g, both answered in ## Draw). Note sections Draw, Default path, Stump sentence and Three rules written; precut passes every Three rules line and the task-type check. Prototype scratchpad t273a3/proto/p3.py, seed 5, at 500 properties: golden 173 mains, 20.6 km; the drawn segments with their unreachable demand 93 mains, 15.1 km; link removal 50 mains, 11.9 km; best one-column cut Jaccard 0.54; seeds 9 and 13 hold the same order. No plan-only or call-only screen: CLAUDE.md's STOP block bans every probe, so stump power is argued on paper. Next: readability screen, semantic fork table asserted as a cross product, the ladder with its cheap-route counts on the clean truth over several seeds, closure table, literal reader, oracles, the asks and their silent devices, the prompt, precut exit 0; the generator in task273/generator after the coordinator's go-ahead, since their brief tied the build to a screen verdict the STOP block has withdrawn. Architecture 2's files stay in the folder until then.",
   "approved": null,
-  "delivered": "2026-10-23",
-  "portal": "FAILED_TO_STUMP",
+  "delivered": null,
+  "portal": null,
   "portal_id": "",
-  "portal_status": "FAILED_TO_STUMP",
-  "portal_status_date": "2026-10-27",
+  "portal_status": "",
+  "portal_status_date": "",
   "architectures": [
     {
       "architecture": 1,
@@ -53,6 +53,13 @@
       "drawn": "2026-10-22",
       "fate": "shipped 2026-10-23 (five in-house readers off the call, judge pass 2 DETERMINISTIC, APPROVE); spent 2026-10-27 at the portal: both responses ran the field's own stratified induced exposure (road class by day type by hour, scaled by the Department's miles) and filed the golden four",
       "driver": "The decisive quantity is each group's rate of causing a two-party event per unit of travel when no record measures any group's travel; the uninvolved parties of those events measure it, but they are drawn where events are frequent, so their share overstates the travel of groups that travel at frequent-event times and places and has to be taken within each such stratum and scaled by the stratum's measured total travel."
+    },
+    {
+      "architecture": 3,
+      "drawn": "2026-10-27",
+      "registered": "2026-10-27T06:38:27Z",
+      "fate": "live",
+      "driver": "The deciding quantity is the demand a unit's failure leaves without any path to supply, where a failure takes out not the unit alone but the whole area bounded by the nearest boundary devices that can actually be operated, and which devices can operate is recorded only in a maintenance history kept for another purpose; removing the unit alone, or the area the as-drawn devices bound, files a smaller and different set."
     }
   ],
   "seed": "DA23 (an open-source security fund's 60 maintainer stipends): set aside at the draw; the world is new (Tried and rejected)"
