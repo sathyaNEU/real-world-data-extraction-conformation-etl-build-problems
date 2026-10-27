@@ -6,13 +6,13 @@
   "domain": "energy-systems-utilities",
   "subdomain": "generation-capacity-planning",
   "client_domain": "energy-systems-utilities",
-  "niche": "a state energy office's home battery programme setting the order of its four annual regional rounds of 2,400 grant-funded retrofit batteries (2027 to 2030), each region valued as the energy a battery would deliver to the monitoring panel's homes there in a year, when the network's zero-export connection rule has the inverters of most of one region's newer homes cutting their solar back to the home's own use",
+  "niche": "a state energy office's home battery programme setting the order of its four annual regional rounds of 2,400 grant-funded retrofit batteries (2027 to 2030), each region valued as the energy a battery would deliver to the monitoring panel's homes there in a year, when the network's 0.5 kW constrained-zone connection rule has the inverters of most of one region's newer estate homes holding their solar to the home's own use plus half a kilowatt",
   "objective": "opportunity-sizing-decision",
   "shape": "06",
   "decision_type": "schedule_or_sequence",
   "answer_unit": "date_or_period",
-  "answer": "",
-  "answer_source": "",
+  "answer": "Yarrandale Valley 2027, Sandhaven Coast 2028, Eastbrook Metro 2029, Tarrock Highlands 2030; the 2027 round about 5,900 MWh a year, 2,450 kWh a battery",
+  "answer_source": "submission.md block 1; figures.json",
   "gap": [
     "population"
   ],
@@ -31,27 +31,27 @@
   "validated_decoy": false,
   "context_artifact": "monitoring_export",
   "stump_class": "analytical",
-  "analyst_test": "A strong analyst who aligns the meter's market-time intervals with the inverters' local clock, converts the one vendor's watt-hours, adds the controlled-load channel and reads every connection code correctly simulates the programme battery hour by hour against each panel home's recorded solar and load and orders the rounds Wennora Coast, Bellmere Metro, Tarrock Highlands and Yarrandale Valley last, because on the recorded flows the Yarrandale homes on zero-export connections show almost no solar beyond their own use and their batteries sit nearly idle, when their inverters were cutting output back to the home's use and a battery would take what they cut.",
+  "analyst_test": "A strong analyst who aligns the meter's market-time intervals with the inverters' local clock, differences the one vendor's lifetime counters, leaves out the controlled-load channel and reads every connection code correctly simulates the programme battery hour by hour against each panel home's recorded solar and use and orders the rounds Sandhaven Coast 2027, Eastbrook Metro 2028, Tarrock Highlands 2029 and Yarrandale Valley 2030, Yarrandale last at about 1,200 kWh a battery, because on the recorded flows the Yarrandale estate homes on 0.5 kW constrained-zone connections show almost no solar beyond their own use and the limit, when their inverters were holding output back and a battery would take what they held back.",
   "domain_test": "The deciding quantity is the energy a home battery would deliver to the home in a year, which distributed-energy planning gets by simulating the battery against the home's interval solar and load, the solar being what the panels can produce rather than what an export-limited inverter let through; export limits, inverter curtailment and a battery's state of charge are network physics, and a noun swap into another field leaves no inverter, connection point or charge to reason about.",
   "layer2_family": "estimation_fit",
   "layer2_pattern": "own:storage-yield-on-the-panels-output-not-the-throttled-record",
   "layer1": [
-    "revenue meter intervals in market time (UTC+10 all year) beside inverter readings on the local clock with daylight saving",
-    "one inverter vendor's feed in watt-hours and as lifetime counters, the other in kilowatt-hours per hour",
+    "revenue meter intervals in market time (UTC+10 all year), stamped at the interval end, beside inverter readings on the local clock with daylight saving",
+    "one inverter vendor's feed as lifetime watt-hour counters at the local hour end with no offset (a repeated 03:00 on 6 April, none on 5 October, a restart from zero on replacement), the other in watt-hours per hour with its UTC offset",
     "a controlled-load (off-peak hot water) register on a second meter channel",
     "meter replacements that start a new meter serial part-way through the year",
     "estimated and substituted meter reads carried with quality flags",
-    "panel home identifiers keyed to network meter identifiers through the panel's recruitment file",
-    "connection agreement codes for the export limit, changed on effective dates"
+    "panel home identifiers keyed to network meter identifiers through the panel register",
+    "connection agreement codes for the export limit, with effective dates"
   ],
   "stakeholder_role": "the energy analyst in the state energy office's home battery programme, preparing the round order the minister approves",
   "role_family": "research_desk",
   "scoring_unit": "other",
   "spine": {
-    "file": "panel_hourly_2025.parquet",
-    "rows": 2100000,
-    "entity": "one hour of one panel home's inverter and meter readings",
-    "grain": "home x hour",
+    "file": "southmark_meter_halfhours_2025.parquet",
+    "rows": 2803200,
+    "entity": "one half hour of one panel home's revenue-meter reads (import, controlled load, export)",
+    "grain": "home x half hour",
     "source": "synthetic (fictional Australian state's home energy monitoring panel)"
   },
   "forum": "minister_or_cabinet",
@@ -62,14 +62,17 @@
     "currency": "AUD",
     "org_type": "a state government energy office running a home battery grant programme",
     "invented_names": [
-      "Kallara Energy Office",
       "Southmark Networks",
-      "Wennora Coast",
-      "Bellmere Metro",
+      "Sandhaven Coast",
+      "Eastbrook Metro",
       "Yarrandale Valley",
       "Tarrock Highlands",
-      "Solvaro",
-      "Heliotek"
+      "Velkora",
+      "Ondrava",
+      "Home Energy Monitoring Panel",
+      "Norvane",
+      "Corvessa",
+      "Halvexa"
     ],
     "people": [
       "Brianna Parrish",
@@ -84,9 +87,9 @@
   ],
   "opening_move": "question-first",
   "question_form": "when",
-  "driver": "An added store's yield is simulated against each site's recorded output, but at sites on a zero send-out limit the recorded output is only what the site's own equipment let through, cut back to the site's use at the time; the store would take what the cut discards, so its yield has to be simulated on the output those sites could produce, rebuilt hour by hour from comparable unlimited sites under the same sky, which moves the group where most sites sit on the limit from last to first.",
-  "driver_concrete": "The programme values each region's round by simulating its 10 kWh battery against every panel home's 2025 hourly solar and load; three in five of Yarrandale Valley's panel homes are on zero-export connections, so their inverters cut solar back to the home's use, their recorded solar never exceeds it and their batteries look idle, while rebuilt from the unlimited Yarrandale homes' output per kilowatt each hour those batteries fill on most days and Yarrandale's round delivers the most energy of the four.",
-  "stump": "A competent analyst simulates the programme battery against each panel home's recorded hourly solar and load and runs the rounds Wennora Coast 2027, Bellmere Metro 2028, Tarrock Highlands 2029 and Yarrandale Valley 2030, Yarrandale last at about 1,000 kWh a battery; the Yarrandale homes on zero-export connections recorded only the solar their own use took because their inverters cut the rest, and with their output rebuilt from the unlimited Yarrandale homes' energy per kilowatt each hour their batteries fill on most days, so Yarrandale goes first.",
+  "driver": "An added store's yield is simulated against each site's recorded output, but at sites on a low send-out limit the recorded output is only what the site's own equipment let through, held to the site's use at the time plus the limit; the store would take what the hold discards, so its yield has to be simulated on the output those sites could produce, rebuilt hour by hour from comparable unlimited sites under the same sky, which moves the group where most sites sit on the limit from last to first.",
+  "driver_concrete": "The programme values each region's round by simulating its 10 kWh battery against every panel home's 2025 hourly solar and use; 28 of Yarrandale Valley's 40 panel homes are estate homes on 0.5 kW constrained-zone connections, so their inverters hold solar to the home's use plus half a kilowatt, their recorded solar barely exceeds it and their batteries look nearly idle (1,210 kWh a battery for the region), while rebuilt from the unlimited Yarrandale homes' output per kWp each hour those batteries fill on most days and Yarrandale's round delivers the most energy of the four (2,458 kWh a battery).",
+  "stump": "A competent analyst simulates the programme battery against each panel home's recorded hourly solar and use and runs the rounds Sandhaven Coast 2027, Eastbrook Metro 2028, Tarrock Highlands 2029 and Yarrandale Valley 2030, Yarrandale last at about 1,200 kWh a battery; the 28 Yarrandale estate homes on 0.5 kW constrained-zone connections recorded only the solar their own use and the limit took because their inverters held the rest back, and with their output rebuilt from the unlimited Yarrandale homes' energy per kWp each hour their batteries fill on most days, so Yarrandale goes first at about 2,450 kWh a battery.",
   "mechanism_source": "design_note",
   "differentiation": {
     "task309": "a retrofit grant round given to one of four counties on a mitigation's effect read by gust class; this draw orders four annual battery rounds on a storage simulation whose input record is throttled at the connection limit: no event set, no effect modifier, a sequence rather than a pick",
@@ -97,6 +100,6 @@
     "task197": "a unit's response to a shared signal confounded by a scheduled trajectory known only at its endpoints; this draw has no shared signal or schedule: the record is held down by each site's own export limit and the battery's yield is simulated on the rebuilt output"
   },
   "lineage": [],
-  "notes": "Architecture 1. Stump strategy other: throttled-output recovery, a record that carries a site's output only after a limit set by the site's own load at that hour (closest families estimation_fit censoring and truncation; not maturity or informative censoring). Gap population: the recorded solar is not the solar the panels produce. Gate G binding_constraint: the network's export limit binds on the recorded output (the inverter cuts solar to the home's use plus the limit), and that binding limit is exactly what puts the naive order wrong: on the recorded flows the limited region comes last, while the battery's charging is not bound by an export limit at all. Generators G3 (record versus operation) and G12 (a near-zero export read as no surplus rather than as a cut the record does not show). Forum: the energy minister approves the round order with the programme's 2027 to 2030 appropriation (budget_or_appropriation). Context artifact: the monitoring panel's 2025 export (monitoring_export).",
+  "notes": "Architecture 1. Stump strategy other: throttled-output recovery, a record that carries a site's output only after a limit set by the site's own load at that hour (closest families estimation_fit censoring and truncation; not maturity or informative censoring). Gap population: the recorded solar is not the solar the panels produce. Gate G binding_constraint: the network's export limit binds on the recorded output (the inverter holds solar to the home's use plus the limit), and that binding limit is exactly what puts the naive order wrong: on the recorded flows the limited region comes last, while the battery's charging is not bound by an export limit at all. Generators G3 (record versus operation) and G12 (an export pinned at the limit read as no surplus rather than as a hold the record does not show). Forum: the energy minister approves the round order with the programme's 2027 to 2030 appropriation (budget_or_appropriation). Context artifact: the monitoring panel's 2025 export (monitoring_export).",
   "registered": "2026-10-27T17:53:18Z"
 }
