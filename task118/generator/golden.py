@@ -361,7 +361,7 @@ for d in SHORTLIST:
     assert len(mins[d]) % 2 == 1, d
     asks[d] = {"extra": r50k(chain[d]["extra"]),
                "corrections": corr[d], "corrected": len(mins[d]), "median": int(statistics.median(mins[d])),
-               "hour": sum(m <= 60 for m in mins[d]), "three": sum(m > 180 for m in mins[d])}
+               "total": sum(mins[d]), "hour": sum(m <= 60 for m in mins[d]), "three": sum(m > 180 for m in mins[d])}
     # no first correction sits on the hour or the three-hour mark, so "within" and "more than" read one way
     assert not any(58 <= m <= 62 or 178 <= m <= 182 for m in mins[d]), (d, sorted(mins[d]))
 
@@ -472,13 +472,13 @@ def write_xlsx(path):
                 "corrected.")
     ws["A2"].font = Font(name="Calibri", italic=True, size=9, color="595959")
     cols = ["Desk", "Code",
-            "Median minutes to first headline correction", "First corrections within an hour",
-            "First corrections after more than three hours"]
-    header(ws, 4, cols, [22, 8, 17, 14, 15])
-    fmts = [None, None, "#,##0", "#,##0", "#,##0"]
+            "Median minutes to first headline correction", "Total minutes to first headline correction",
+            "First corrections within an hour", "First corrections after more than three hours"]
+    header(ws, 4, cols, [22, 8, 17, 17, 14, 15])
+    fmts = [None, None, "#,##0", "#,##0", "#,##0", "#,##0"]
     for i, d in enumerate(SHORTLIST):
         a = asks[d]
-        put(ws, 5 + i, [NAME[d], d, a["median"], a["hour"], a["three"]], fmts,
+        put(ws, 5 + i, [NAME[d], d, a["median"], a["total"], a["hour"], a["three"]], fmts,
             bold_first=(d == CALL), fill=pick_fill if d == CALL else None)
     r = 5 + len(SHORTLIST) + 1
     ws.cell(row=r, column=1, value="Recommended: {}, {:,} extra article clicks in 2027. Runner-up {}, {:,} behind."
@@ -486,8 +486,8 @@ def write_xlsx(path):
                                                                                          bold=True)
     ws.cell(row=r + 1, column=1, value="Extra clicks for every desk are on the Click chain sheet.").font = note_font
     ws.freeze_panes = "B5"
-    ws.auto_filter.ref = "A4:E%d" % (4 + len(SHORTLIST))
-    ws.print_area = "A1:E%d" % (r + 1)
+    ws.auto_filter.ref = "A4:F%d" % (4 + len(SHORTLIST))
+    ws.print_area = "A1:F%d" % (r + 1)
     ws.page_setup.orientation = "landscape"
     ws.page_setup.fitToWidth = 1
     ws.sheet_properties.pageSetUpPr.fitToPage = True
@@ -905,7 +905,8 @@ def write_figures(path):
                      "packages": "{:,}".format(N_PACKAGES)},
         "extra_by_desk": {NAME[d]: "{:,}".format(asks[d]["extra"]) for d in SHORTLIST},
         "rows": {NAME[d]: {
-                           "median_minutes": str(asks[d]["median"]), "within_hour": str(asks[d]["hour"]),
+                           "median_minutes": str(asks[d]["median"]), "total_minutes": "{:,}".format(asks[d]["total"]),
+                           "within_hour": str(asks[d]["hour"]),
                            "over_three_hours": str(asks[d]["three"]), "corrected": str(asks[d]["corrected"])}
                  for d in SHORTLIST},
         "write_up": {"policy_clauses": ["7.3", "7.4", "7.5", "7.8"], "pairing_minutes": "10", "aest_offset_hours": "10",
@@ -950,8 +951,8 @@ def main():
     print("\nworkbook rows")
     for d in SHORTLIST:
         a = asks[d]
-        print("%-18s median %3d min  within an hour %2d  over three hours %d  (of %d)" % (
-            NAME[d], a["median"], a["hour"], a["three"],
+        print("%-18s median %3d min  total %6d min  within an hour %2d  over three hours %d  (of %d)" % (
+            NAME[d], a["median"], a["total"], a["hour"], a["three"],
             a["corrected"]))
 
 

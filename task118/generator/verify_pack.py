@@ -39,6 +39,7 @@ CLAIMS = {
     "median_minutes": {"POL-N": 86, "SPT-M": 55, "BUS-N": 89, "SPT-N": 47, "LOC-M": 102, "CUL-N": 119},
     "within_hour": {"POL-N": 14, "SPT-M": 9, "BUS-N": 10, "SPT-N": 23, "LOC-M": 12, "CUL-N": 1},
     "over_three_hours": {"POL-N": 7, "SPT-M": 2, "BUS-N": 6, "SPT-N": 2, "LOC-M": 6, "CUL-N": 5},
+    "total_minutes": {"POL-N": 5231, "SPT-M": 1342, "BUS-N": 4109, "SPT-N": 2799, "LOC-M": 21693, "CUL-N": 2057},
     "backtest_hits": 7, "click_backtest_hits": 7,
     "bulletin_march": (11, 22),
 }
@@ -262,6 +263,23 @@ def main(target):
     avg_hits = sum(abs(k_ / avg_kept - 1) <= 0.02 for k_ in kept)
     check("back-test, clicks: one share for every embedding (their average) misses most of them", avg_hits <= 2,
           "%d of 7 within 2%%" % avg_hits)
+    # the brief's sign-off: the working run unchanged on each closed embedding within 2 per cent of the lift and the
+    # extra clicks it realised against its holdback (the lift half is the back-test below)
+    signoff = re.search(r"Experimentation signs off that figure only if the working behind it, run unchanged on each "
+                        r"closed embedding in the change log, comes within (\d+) per cent of what the embedding realised "
+                        r"against its holdback: the lift, from the desk's tests in the year of the embedding, and the "
+                        r"extra clicks, from its planned clicks at the lift it realised\.", brief)
+    check("the brief files the sign-off at 2 per cent, its lift and its extra clicks, embedding by embedding",
+          signoff is not None and signoff.group(1) == "2")
+    raw_e = {}
+    for e in emb_:
+        ids_ = [x for x, m in meta.items() if m[0] == "app" and m[1] == e["desk_code"] and int(m[4][:4]) == e["started"].year]
+        raw_e[e["embedding"]] = float(np.mean([win(x, prior, False) for x in ids_]))
+    k_one = sum(e["extra_clicks_vs_holdback"] for e in emb_) / sum(e["planned_clicks"] * raw_e[e["embedding"]] for e in emb_)
+    one_hits = sum(abs(e["planned_clicks"] * raw_e[e["embedding"]] * k_one / e["extra_clicks_vs_holdback"] - 1) <= 0.02
+                   for e in emb_)
+    check("the sign-off refutes each desk's raw winning lift scaled by one factor fitted on the change log (%.4f): "
+          "its extra clicks within 2%% at %d of 7" % (k_one, one_hits), one_hits <= 2)
 
     rungs = [{d: dash[vert[d]] * C[d]["total"] for d in SHORTLIST},
              {d: raw[d] * C[d]["total"] for d in SHORTLIST},
@@ -497,6 +515,8 @@ def main(target):
         check("median minutes to first headline correction %s" % d,
               len(mins[d]) % 2 == 1 and statistics.median(mins[d]) == CLAIMS["median_minutes"][d],
               "%s over %d articles" % (statistics.median(mins[d]), len(mins[d])))
+        check("total minutes to first headline correction %s" % d, sum(mins[d]) == CLAIMS["total_minutes"][d],
+              str(sum(mins[d])))
         check("first corrections within an hour and after more than three hours %s" % d,
               sum(m_ <= 60 for m_ in mins[d]) == CLAIMS["within_hour"][d]
               and sum(m_ > 180 for m_ in mins[d]) == CLAIMS["over_three_hours"][d]

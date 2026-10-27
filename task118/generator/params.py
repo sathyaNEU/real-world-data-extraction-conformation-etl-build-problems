@@ -217,6 +217,12 @@ CANCEL_BASE = 0.05
 RESCHED_BASE = 0.06
 CANCEL_EARLIEST = 300
 CANCEL_SUBSEED = {"POL-N": 0, "BUS-N": 0, "SPT-N": 0, "CUL-N": 0, "POL-M": 0, "SPT-M": 0, "LOC-M": 0}
+# schedules moved to a later time before the first time came, and saved again, still scheduled, after it: the CMS
+# published the article at the later time (aimed on two corrected stories a desk, one first corrected within the hour,
+# one between the hour and three hours, each moved far enough that timing from the first time puts its correction past
+# three hours; and on stories never corrected at a base rate)
+MOVED_BASE = 0.05
+MOVED_SUBSEED = {"POL-N": 0, "BUS-N": 0, "SPT-N": 0, "CUL-N": 0, "POL-M": 0, "SPT-M": 0, "LOC-M": 0}
 # autosaves of a live document: before a headline correction, (A) the new headline only, (B) headline and note
 AUTO_A, AUTO_B = 0.34, 0.20
 AUTO_B_QUIET = 0.25

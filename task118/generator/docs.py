@@ -265,6 +265,10 @@ def charter_blocks():
         ("h", "How the decision is made"),
         ("p", "The planning meeting takes one recommendation from the managing editor: the desk, and the clicks the "
               "squad is expected to add there in 2027."),
+        ("p", "Experimentation signs off that figure only if the working behind it, run unchanged on each closed "
+              "embedding in the change log, comes within 2 per cent of what the embedding realised against its "
+              "holdback: the lift, from the desk's tests in the year of the embedding, and the extra clicks, from its "
+              "planned clicks at the lift it realised."),
         ("p", "Papers: a short paper and its workbook to Corey Cox by Friday 30 October, for circulation with the "
               "agenda on Monday 2 November."),
         ("h", "Moving in January"),

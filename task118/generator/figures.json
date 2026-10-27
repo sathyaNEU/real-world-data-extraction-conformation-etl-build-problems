@@ -40,36 +40,42 @@
    "corrected": "37",
    "median_minutes": "89",
    "over_three_hours": "6",
+   "total_minutes": "4,109",
    "within_hour": "10"
   },
   "Culture·national": {
    "corrected": "13",
    "median_minutes": "119",
    "over_three_hours": "5",
+   "total_minutes": "2,057",
    "within_hour": "1"
   },
   "Local·metro": {
    "corrected": "31",
    "median_minutes": "102",
    "over_three_hours": "6",
+   "total_minutes": "21,693",
    "within_hour": "12"
   },
   "Politics·national": {
    "corrected": "43",
    "median_minutes": "86",
    "over_three_hours": "7",
+   "total_minutes": "5,231",
    "within_hour": "14"
   },
   "Sport·metro": {
    "corrected": "17",
    "median_minutes": "55",
    "over_three_hours": "2",
+   "total_minutes": "1,342",
    "within_hour": "9"
   },
   "Sport·national": {
    "corrected": "39",
    "median_minutes": "47",
    "over_three_hours": "2",
+   "total_minutes": "2,799",
    "within_hour": "23"
   }
  },

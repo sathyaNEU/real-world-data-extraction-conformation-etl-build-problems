@@ -5,7 +5,7 @@
  "stage": 5,
  "stage_name": "ship",
  "updated": "2026-10-27",
- "stump": "A competent solver shrinks each desk's winning lift against the change log, sizes it on the clicks from Bightline's own pages, leaves out the articles the desk's editors already test and names Culture\u00b7national at about 1,250,000 (scaling every desk by the closed embeddings' average shortfall still names Culture\u00b7national); the step that lands them there is crediting every click a shipped headline wins as new to Bightline, when on a fixed page most come from the headlines beside it and only the share of views that would otherwise end in no click is new, and Culture\u00b7national's own-page clicks come from its section front and app tab where about four in five views already end in a click.",
+ "stump": "A competent solver shrinks each desk's winning lift against the change log, sizes it on the clicks from Bightline's own pages, leaves out the articles the desk's editors already test and names Culture·national at about 1,250,000 (scaling every desk by the closed embeddings' average shortfall still names Culture·national); the step that lands them there is crediting every click a shipped headline wins as new to Bightline, when on a fixed page most come from the headlines beside it and only the share of views that would otherwise end in no click is new, and Culture·national's own-page clicks come from its section front and app tab where about four in five views already end in a click.",
  "harden_loops": 4,
  "solver_rounds": [
   {
@@ -90,11 +90,11 @@
   }
  ],
  "judge": {
-  "verdict": "DETERMINISTIC, APPROVE (pass 7, zip 3f9e9efb)",
-  "disposition": "pass 6 (zip e97358e4) NOT_DETERMINISTIC on the workbook asks only, FIX_NOW: autosave undefined in the shipped files; fixed in one generator pass (7.3 files that an autosave publishes nothing, the ask's device moved to schedules set back to draft, decided by the status column); pass 7 reproduced all 18 workbook figures and the main call, Fix none",
-  "gate_g": "method or model selection (winner's-curse shrinkage and the share of won clicks new to Bightline, both validated on the change log), analytical_non_defect, surface_read_dependency no",
+  "verdict": "DETERMINISTIC, APPROVE (pass 8, zip 6f5ee314)",
+  "disposition": "APPROVE; informational note only (its own shrinkage 3 of 7 within 2 per cent against the recipe's 7 of 7), answered by stating the recipe in step 1",
+  "gate_g": "method_or_model_selection, analytical_non_defect, surface_read_dependency no",
   "gate_h": "domain pass, layers pass, decisive step analytical",
-  "report": "task118/determinism_check_report_pass7.md (pass 6 in determinism_check_report_pass6.md; the redesign's earlier passes in determinism_check_report.md and _pass5.md)"
+  "report": "task118/determinism_check_report_pass8.md"
  },
  "approved": null,
  "delivered": "2026-10-27",
@@ -103,18 +103,18 @@
  "status": "SHIPPED",
  "resume": "",
  "leak": {
-  "leak_py": "REVIEW, every line ruled harmless (sweep 3 the brief states the question, sweep 4 subjects' own words, sweep 5 the prompt)",
-  "reader": "read 2 on the final pack: no decisive-step sentence, no ranking file, no answer figure; question 6 analytical; realism notes ruled in leak_check_report.md"
+  "leak_py": "REVIEW, the same sweeps ruled harmless (sweep 3 the brief, sweep 4 subjects' own words and the sign-off's 'working', sweep 5 the prompt)",
+  "reader": "read 2 on 6f5ee314: no decisive-step sentence, no ranking, no answer figure; question 5 executes to the golden; question 6 analytical"
  },
  "asks": {
   "cracker_hits": 0,
-  "of": 18,
+  "of": 24,
   "pair_ceiling": 27.5,
   "mirror_leakage_pct": 0.0,
-  "device": "schedules set back to draft before their time (SF20); autosaves filed as a hazard (SF19)"
+  "device": "schedules set back to draft before their time (SF20); schedules moved to a later time (SF25); autosaves filed (SF19); totals beside the medians (SF23)"
  },
- "assertions": 301,
- "verifier": "78 of 78",
+ "assertions": 318,
+ "verifier": "86 of 86",
  "builds_byte_identical": true,
  "returned": [
   {
@@ -125,12 +125,18 @@
   },
   {
    "date": "2026-10-27",
-   "portal": "FAILED_TO_STUMP: both responses filed Culture\u00b7national at 1,250,000 (the golden), runner-up named Sport\u00b7national (850,000, gap 350,000; and 200,000 behind)",
+   "portal": "FAILED_TO_STUMP: both responses filed Culture·national at 1,250,000 (the golden), runner-up named Sport·national (850,000, gap 350,000; and 200,000 behind)",
    "repair": "re-root",
    "commit": "DRAWN (task118) architecture 2"
+  },
+  {
+   "date": "2026-10-27",
+   "portal": "determinism block: judge 1 APPROVE; judge 2 competing_defensible_answer (Gates C, D, E, G fail): the lift estimator and the share of a won click new to Bightline stated in no file, recoverable only from the change log (REPLAY), and the model response's raw lift with one fitted factor, Sport·metro at 900,000, filed as a competing answer. Rubric 87 and 44, average 65.5.",
+   "repair": "determinism",
+   "commit": ""
   }
  ],
- "zip_sha256_16": "3f9e9efb04d1d7ab",
+ "zip_sha256_16": "6f5ee314bb1ca5c2",
  "architecture": 2,
  "loops": 0,
  "portal_status": "",
@@ -141,7 +147,12 @@
   "checks": "52, 0 FAIL, 0 WARN"
  },
  "duplicate_check": {
-  "heart": "BLOCK on ban.strategy causal_design and ban.pattern G1 against task139 v2 (registered 2026-10-26T22:19Z, six hours before this draw), waived by the author 2026-10-27 at ship; the card keeps its 04:25Z filing time, the waiver in its notes",
+  "heart": "BLOCK on ban.strategy causal_design and ban.pattern G1 against task139 v2 (registered 2026-10-26T22:19Z, six hours before this draw), waived by the author 2026-10-27 at ship; the card keeps its 04:25Z filing time, the waiver in its notes; at the determinism reship (2026-10-27) BLOCKs on ban.role, ban.forum and ban.forcing_event against task304, ban.strategy against task171 v5, test.same_puzzle and test.same_driver against task184 lineage, all from builds drawn since, waived by the author, the card's axes unchanged",
   "surface": "2 pairs promoted (task119 back to back, task116 pairing), each adjudicated clean"
+ },
+ "freeze": {
+  "rubric": "PASS (six ask figures added, main call and stump unchanged)",
+  "determinism": "FAIL on one item: Deliverable Answers for squad_placement_2027.xlsx (the six totals added)",
+  "author_pick": "rubric (2026-10-27)"
  }
 }

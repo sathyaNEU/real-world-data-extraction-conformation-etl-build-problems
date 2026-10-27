@@ -257,7 +257,7 @@ def desk_view(arts):
         corr = [a for a in x if a["heads"]]
         mins = sorted(int((a["heads"][0] - a.get("go_first", a["go"])).total_seconds() // 60) for a in corr)
         out[d] = dict(count=sum(len(a["heads"]) for a in x), articles=len(x), corrected=len(corr),
-                      median=float(np.median(mins)) if mins else float("nan"), mins=mins,
+                      median=float(np.median(mins)) if mins else float("nan"), mins=mins, total=sum(mins),
                       hour=sum(m <= HOUR for m in mins), three=sum(m > THREE for m in mins),
                       texts=sum(len(a["texts"]) for a in x))
     return out
@@ -268,15 +268,15 @@ def ask_corrections(rows, **kw):
 
 
 def cuts(v, d):
-    """The three graded cuts of a desk's first-correction minutes under a reading: median, within the hour, after more
-    than three hours."""
-    return (v[d]["median"], v[d]["hour"], v[d]["three"])
+    """The four graded cuts of a desk's first-correction minutes under a reading: median, total, within the hour, after
+    more than three hours."""
+    return (v[d]["median"], v[d]["total"], v[d]["hour"], v[d]["three"])
 
 
 def cuts_off(v, G, d):
-    """How many of a desk's three graded cuts a reading files away from the golden."""
-    return int(off_median(v[d]["median"], G[d]["median"])) + int(v[d]["hour"] != G[d]["hour"]) + \
-        int(v[d]["three"] != G[d]["three"])
+    """How many of a desk's four graded cuts a reading files away from the golden."""
+    return int(off_median(v[d]["median"], G[d]["median"])) + int(v[d]["total"] != G[d]["total"]) + \
+        int(v[d]["hour"] != G[d]["hour"]) + int(v[d]["three"] != G[d]["three"])
 
 
 def off_median(m, g):
@@ -382,8 +382,12 @@ R5 = ("round-5 path (a headline note paired with the headline fix up to 10 minut
 EF = "both loop-3 devices caught, an entry's fix timed from the entry going live"
 AUTO = "the status column read alone (an autosave of a live article taken as published)"
 SCHED = "a scheduled time read as going live whenever it precedes the first live save, whatever was saved after it"
+MOVED = "a scheduled time read as going live whenever the article still read scheduled at it, the earliest such time"
+MOVED_FIRST = "the first scheduled time read as going live whenever the article still read scheduled at it"
 READ = {
     SCHED: dict(sched_blind=True),
+    MOVED: dict(sched_status=True),
+    MOVED_FIRST: dict(sched_first=True),
     AUTO: dict(autosaves=True),
     R1: dict(published=False, scheduled=False, entries=False, lag=False, readd=False),
     R3: dict(lag=False, entry_tol=0, readd=False),
@@ -919,6 +923,72 @@ def run(W, target, out):
              "click-throughs to the click (asserted above), so no desk's clicks belong to the other edition's home page",
              all(yr[k_] == v for k_, v in tie.items()))
 
+    # ----- SF21 and SF22: the brief's sign-off, executed on every cell of the grid. A working is run unchanged on each
+    # closed embedding: its lift from the desk's tests in the year of the embedding against the lift the embedding
+    # realised, its extra clicks from the planned clicks at that realised lift against the extra clicks it measured
+    # (app desks: every click starts on Bightline's own pages and none of their headlines is tested by the desk)
+    L_.check("SF21/SF22 the brief files the sign-off once: a working run unchanged on each closed embedding comes within "
+             "2 per cent of what the embedding realised against its holdback, the lift from the desk's tests in the year "
+             "of the embedding and the extra clicks from its planned clicks at the lift it realised",
+             brief_.count("comes within 2 per cent of what the embedding realised against its holdback") == 1
+             and "the lift, from the desk's tests in the year of the embedding" in brief_
+             and "the extra clicks, from its planned clicks at the lift it realised" in brief_)
+    L_.check("SF24 the desk's tests in the year of the embedding: those started and those concluded in that calendar "
+             "year are the same tests, and their count is the change log's tests_run, at every embedding (C1)",
+             all(set(tests[(tests["desk_code"] == e["desk"]) & (tests["engine"] == "app")
+                           & (tests["start"].dt.year == e["year"])].index)
+                 == set(tests[(tests["desk_code"] == e["desk"]) & (tests["engine"] == "app")
+                              & (tests["end"].dt.year == e["year"])].index) and len(e["ids"]) == e["n"] for e in emb))
+    app_t = tests[tests["engine"] == "app"]
+    lift_half = {
+        "shr": {e["no"]: app_t[(app_t["desk_code"] == e["desk"]) & (app_t["start"].dt.year == e["year"])]["shr"].mean()
+                for e in emb},
+        "raw": {e["no"]: app_t[(app_t["desk_code"] == e["desk"]) & (app_t["start"].dt.year == e["year"])]["raw"].mean()
+                for e in emb},
+        "pool": {e["no"]: app_t[(app_t["desk_code"].map(vert) == vert[e["desk"]])
+                                & (app_t["start"].dt.year == e["year"])]["shr"].mean() for e in emb},
+        "dash": {e["no"]: app_t[(app_t["desk_code"].map(vert) == vert[e["desk"]])
+                                & (app_t["end"].dt.year == e["year"])]["raw"].mean() for e in emb},
+    }
+    lift_ok = {lb: score(pr_)[0] == 7 for lb, pr_ in lift_half.items()}
+    pass_name = {"none": "no share: every won click new",
+                 "embeddings' average": "one share for every desk, the embeddings' average",
+                 "site click-through": "one click-through for every page, the site's",
+                 "app pages' click-through": "one click-through for every page, the app pages'",
+                 "home feed's click-through": "the home feed's click-through for every page",
+                 "page by page (year)": "each page's own click-through (golden)",
+                 "page by page (monthly mean)": "each page's mean monthly click-through (convergent)",
+                 "page by page (monthly median)": "each page's median monthly click-through (convergent)",
+                 "one factor per kind of page": "one factor per kind of page fitted on the embeddings"}
+    click_ok = {pn: rec["backtest"]["clicks"][nm][0] == 7 for pn, nm in pass_name.items()}
+    signed = [k for k in grid if lift_ok[k[0]] and click_ok[k[2]]]
+    signed_filed = [k for k in signed if k[1] == "click"]
+    rec["signoff"] = dict(lift={lb: score(pr_)[0] for lb, pr_ in lift_half.items()},
+                          clicks={pn: rec["backtest"]["clicks"][nm][0] for pn, nm in pass_name.items()},
+                          signed=sorted("/".join(k) for k in signed))
+    L_.check("SF21 the sign-off's lift half passes the shrunk and the vertical-pooled lifts (7 of 7) and refutes the "
+             "raw desk lift and the dashboard's basis (each desk's or vertical's raw mean winning lift)",
+             lift_ok["shr"] and lift_ok["pool"] and not lift_ok["raw"] and not lift_ok["dash"], str(rec["signoff"]["lift"]))
+    L_.check("SF22 the sign-off's click half passes only the page-by-page share (the year's click-through, or its "
+             "monthly mean or median) and refutes every won click counted, one share for every desk, one click-through "
+             "for every page and the page-kind factors (3 of 7 just outside 2 per cent, a route that still files the "
+             "golden)", {pn for pn, v in click_ok.items() if v} == {"page by page (year)", "page by page (monthly mean)",
+                                                                "page by page (monthly median)"},
+             str(rec["signoff"]["clicks"]))
+    L_.check("SF21/SF22 every working the sign-off passes, on the headlines the brief has the squad take (every "
+             "tested headline netted, SF14), files the call, its figure, the runner-up and the gap",
+             bool(signed_filed) and all(grid[k]["graded"] == gold_graded for k in signed_filed)
+             and ("shr", "click", "page by page (year)") in signed_filed, str(sorted(signed_filed)))
+    k_raw = sum(e["extra"] for e in emb) / sum(e["planned"] * raw_l[e["no"]] for e in emb)
+    r2_hits = score({e["no"]: e["planned"] * raw_l[e["no"]] * k_raw for e in emb}, "extra")[0]
+    r2 = {d: LB["raw"][d] * unt[d] * k_raw for d in SL}
+    o_r2 = rank(r2)
+    rec["signoff"]["raw_with_one_factor"] = dict(factor=round(k_raw, 4), click_hits=r2_hits, lead=o_r2[0],
+                                                 fig=bin_round(r2[o_r2[0]]), run=o_r2[1])
+    L_.check("SF21/SF22 each desk's raw mean winning lift with one factor fitted on the change log's extra clicks "
+             "fails the sign-off on both halves (raw lift 0 of 7; the one factor at most 2 of 7) and names another desk",
+             not lift_ok["raw"] and r2_hits <= 2 and o_r2[0] != BUS, str(rec["signoff"]["raw_with_one_factor"]))
+
     # ----- characters and the dashboard
     sq = st[(st["team_code"] == "AUD-HS") & st["end_date"].isna()]
     L_.check("the brief's squad of six (lead, three headline editors, a producer, a data analyst) is the staff list's "
@@ -958,10 +1028,10 @@ def run(W, target, out):
              all(PR["convention"][d] == PR["golden"][d] for d in P.WEB))
     asks = {}
     for d in SL:
-        asks[d] = dict(median=G[d]["median"], hour=G[d]["hour"],
+        asks[d] = dict(median=G[d]["median"], total=G[d]["total"], hour=G[d]["hour"],
                        three=G[d]["three"], corrected=G[d]["corrected"])
-    rec["asks"] = {d: dict(median=int(asks[d]["median"]), hour=asks[d]["hour"], three=asks[d]["three"],
-                           corrected=asks[d]["corrected"]) for d in SL}
+    rec["asks"] = {d: dict(median=int(asks[d]["median"]), total=asks[d]["total"], hour=asks[d]["hour"],
+                           three=asks[d]["three"], corrected=asks[d]["corrected"]) for d in SL}
     for d in SL:
         x = asks[d]
         L_.check("SF18 %s corrected-article count odd, so the median is one article's whole minutes" % d,
@@ -990,21 +1060,30 @@ def run(W, target, out):
                  all(v[d]["articles"] == c[d]["n_art_win"] for d in P.WEB))
     off_auto = rec["corrections_readings"][AUTO]["off"]
     L_.check("SF19 an autosave publishes nothing, filed in the corrections standard 7.3, and the export types every "
-             "such save autosave; the status column read alone files at least 12 of the 18 cuts away from the golden",
+             "such save autosave; the status column read alone files at least 12 of the 24 figures away from the golden",
              off_auto >= 12 and "An autosave of an editor's working copy publishes nothing" in pol_
              and set(cms["save_type"]) == {"save", "autosave"}, str(off_auto))
     off_sched = rec["corrections_readings"][SCHED]["off"]
     L_.check("SF20 the silent device: a scheduled time read as going live whenever it precedes the first live save, a "
-             "schedule set back to draft before its time taken as fired, files all 18 cuts away from the golden",
-             off_sched == 18, str(rec["corrections_readings"][SCHED]["cuts"]))
+             "schedule set back to draft before its time taken as fired, files all 24 figures away from the golden",
+             off_sched == 24, str(rec["corrections_readings"][SCHED]["cuts"]))
+    off_moved = rec["corrections_readings"][MOVED]["off"]
+    L_.check("SF25 the second silent device: a scheduled time read as going live whenever the article still read "
+             "scheduled at it (a schedule moved to a later time read as fired at the time first set) files at least 22 "
+             "of the 24 figures away from the golden, and the first scheduled time read the same way at least 20",
+             off_moved >= 22 and rec["corrections_readings"][MOVED_FIRST]["off"] >= 20,
+             "%d, %d" % (off_moved, rec["corrections_readings"][MOVED_FIRST]["off"]))
     for name in (R1, R3, R5):
-        L_.check("the earlier rounds' paths each file at least 12 of the 18 cuts away from the golden: %s" % name,
+        L_.check("the earlier rounds' paths each file at least 12 of the 24 figures away from the golden: %s" % name,
                  rec["corrections_readings"][name]["off"] >= 12, str(rec["corrections_readings"][name]["off"]))
     # necessity matrix: each device or hazard alone mishandled, everything else read the golden way
     dev_ = {
         "a schedule set back to draft before its time read as fired (the last scheduled time taken whenever it "
-        "precedes the first live save)": (dict(sched_blind=True), 18),
-        "the earliest scheduled time set taken as going live": (dict(sched_min=True), 18),
+        "precedes the first live save)": (dict(sched_blind=True), 24),
+        "the earliest scheduled time set taken as going live": (dict(sched_min=True), 24),
+        "a schedule moved to a later time read as fired at the time first set (the status at each scheduled time read "
+        "alone)": (dict(sched_status=True), 22),
+        "the first scheduled time taken whenever the article still read scheduled at it": (dict(sched_first=True), 20),
         "any draft saved after scheduling read as a schedule that never fired (the over-repair)": (dict(sched_drafted=True), 3),
         "an autosave of a live article taken as published (status read alone)": (dict(autosaves=True), 12),
         "a note before its headline fix read on its own save": (dict(lead=False), 6),
@@ -1022,7 +1101,7 @@ def run(W, target, out):
         v = ask_corrections(rows, **kw)
         off = sum(cuts_off(v, G, d) for d in SL)
         rec.setdefault("necessity", {})[name] = off
-        L_.check("necessity: %s moves %d or more of the 18 cuts" % (name, need), off >= need, str(off))
+        L_.check("necessity: %s moves %d or more of the 24 figures" % (name, need), off >= need, str(off))
     # the convergences the standards' sentences rely on
     for N in (9, 10, 15, 20, 30, 45, 60):
         v = ask_corrections(rows, lag_struct=N)
@@ -1037,6 +1116,12 @@ def run(W, target, out):
     L_.check("the standards' ten minutes read literally (a new note paired with a headline change on its own save or on "
              "a save up to ten minutes either side, an entry's included, whatever the note says) files the golden cuts",
              all(cuts(v, d) == cuts(G, d) for d in P.WEB))
+    tot_v = [ask_corrections(rows, lag_struct=N) for N in (9, 60)] + [ask_corrections(rows, entry_tol=t_) for t_ in (9, 60)]
+    L_.check("SF23 the total minutes: every first correction's whole minutes added, the same totals at every desk under "
+             "the narrowest and widest note and entry pairing windows (9 and 60 minutes) and the standards' ten minutes "
+             "read literally (C1)", all(x[d]["total"] == G[d]["total"] and x[d]["mins"] == G[d]["mins"]
+                                        for x in tot_v + [v] for d in P.WEB)
+             and all(isinstance(G[d]["total"], int) for d in SL), str({P.SHORT[d]: G[d]["total"] for d in SL}))
     v = ask_corrections(rows, lag_struct=10 ** 6, entry_tol=10, entry_after=10)
     L_.check("the standards' ten minutes are load-bearing: a note paired with a headline change at any distance moves "
              "the cuts at three or more desks", sum(cuts(v, d) != cuts(G, d) for d in SL) >= 3)
@@ -1156,6 +1241,39 @@ def run(W, target, out):
     L_.check("schedules set back to draft and set again (benign twins, one corrected story a desk among them): the "
              "time first set passed while the article was a draft and the CMS published it at the time set second, "
              "before any live save", twin_ok and twin_n >= 100, str(twin_n))
+    went_sched = [k for k, g_ in by_doc.items() if "live" in list(g_.status)
+                  and "scheduled" in list(g_.status)[list(g_.status).index("live"):]]
+    L_.check("no document is saved as scheduled once it has gone live, so a scheduled save after a scheduled time means "
+             "the CMS had not published the article at that time", not went_sched, str(went_sched[:3]))
+    mv_ok, mv_dev, mv_base = True, {}, {}
+    for d in P.WEB:
+        tr = W.cms_truth[d]
+        mv_dev[d] = sum(i in tr["hc_first"] for i in tr["moved"])
+        mv_base[d] = len(tr["moved"]) - mv_dev[d]
+        for i, (p1, s2, s3) in tr["moved"].items():
+            g_ = by_doc[asks_mod.doc_id("doc", d, i)]
+            pre = g_[g_.status != "live"]
+            first_live = g_[g_.status == "live"]["t"].min()
+            sch_ = pre[pre.status == "scheduled"]
+            p1_t = pd.Timestamp(p1)
+            at_p1 = pre[pre["t"] <= p1_t]
+            later = pd.Timestamp(sch_.publish_at_aest.iloc[-1]) - aest_
+            mv_ok &= (len(sch_) == 3 and pd.Timestamp(sch_.publish_at_aest.iloc[0]) - aest_ == p1_t
+                      and (sch_.publish_at_aest.iloc[1:] == sch_.publish_at_aest.iloc[-1]).all()
+                      and sch_["t"].iloc[1] < p1_t < sch_["t"].iloc[2] < later
+                      and at_p1.status.iloc[-1] == "scheduled" and later > p1_t
+                      and list(pre.status)[-1] == "scheduled" and first_live > later)
+    L_.check("schedules moved to a later time: on each, a scheduled save before the time first set moves it later, a "
+             "save after the time first set still reads scheduled with the later time, and the first live save comes "
+             "after the later time; one or two corrected stories a desk carry one and the stories never corrected at "
+             "least ten times as many", mv_ok and all(1 <= mv_dev[d] <= 2 for d in P.WEB)
+             and all(mv_base[d] >= 10 * mv_dev[d] for d in P.WEB),
+             str({P.SHORT[d]: (mv_dev[d], mv_base[d]) for d in P.WEB}))
+    first_go = [a["go"] for a in GA.values() if a["heads"]]
+    L_.check("window clock: every corrected article went live between 1 October 2025 and 30 September 2026 on the UTC "
+             "date as well as the Brisbane one, so reading the twelve months on either clock files the same figures",
+             all(dt.datetime(2025, 10, 1) <= x < dt.datetime(2026, 9, 30, 14) for x in first_go),
+             str((min(first_go), max(first_go))))
     sp_ = D["spine"].drop_duplicates("article_id")
     sp_days = sp_.groupby(["desk_code", "published_date"]).size()
 
@@ -1202,7 +1320,7 @@ def run(W, target, out):
     rec["pair"] = pair
     xc = pair["cracker path (every filed rule executed, a scheduled time read as going live whatever came after it)"]
     L_.check("cracker sheet: the response that lands the call, runs the battery and executes every filed rule keeps at "
-             "most 3 of the 18 ask figures, and the mirror files the same figures", xc["hits"] <= 3, str(xc))
+             "most 3 of the 24 ask figures, and the mirror files the same figures", xc["hits"] <= 3, str(xc))
     L_.check("pair ceiling: cracker and mirror average at or under 40 on the planning weights", xc["pair"] <= 40,
              "%.1f" % xc["pair"])
     full = golden_figures(target)
@@ -1471,15 +1589,15 @@ def without(target, drop):
 
 def pair_simulation(asks, readings, G):
     """Two answer sheets per reading. The cracker lands the call; the mirror stops at rung 5 (Culture·national). The
-    18 ask criteria (the three corrections cuts at six desks) never read a main-path file, so both sheets file the
-    same ask figures under a reading. Planning weights 38 / 7 / 55 over the 18 ask criteria; r = 3 survives a wrong
+    24 ask criteria (the four corrections cuts at six desks) never read a main-path file, so both sheets file the
+    same ask figures under a reading. Planning weights 38 / 7 / 55 over the 24 ask criteria; r = 3 survives a wrong
     call."""
-    w_ask = 55 / 18
+    w_ask = 55 / 24
     k1 = lambda v: int(np.floor(v / 1000 + 0.5))     # noqa: E731
     out = {}
     for label, V in readings.items():
-        hits = sum(3 - cuts_off(V, G, d) for d in SL)
+        hits = sum(4 - cuts_off(V, G, d) for d in SL)
         cr, mi = 38 + 7 + w_ask * hits, 3 + 7 + w_ask * hits
-        out[label] = dict(cracker=round(cr, 1), mirror=round(mi, 1), hits=hits, leakage=round(hits / 18, 3),
+        out[label] = dict(cracker=round(cr, 1), mirror=round(mi, 1), hits=hits, leakage=round(hits / 24, 3),
                           pair=round((cr + mi) / 2, 1))
     return out

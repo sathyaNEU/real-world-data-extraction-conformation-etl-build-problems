@@ -77,7 +77,7 @@
   {
    "path": "headline_squad_2027_placement_brief.pdf",
    "format": "pdf",
-   "bytes": 4084,
+   "bytes": 4944,
    "rows": null,
    "source": "Constructed for this task: fictional publisher Bightline News; no third-party data",
    "date": "2026-10-12",
@@ -104,8 +104,8 @@
   {
    "path": "cms_revisions_web_desks_2025-10_2026-09.csv",
    "format": "csv",
-   "bytes": 20859970,
-   "rows": 271583,
+   "bytes": 20953077,
+   "rows": 272569,
    "source": "Constructed for this task: fictional publisher Bightline News; no third-party data",
    "date": "2026-10-16",
    "license": "CC0-1.0 (original work)"
