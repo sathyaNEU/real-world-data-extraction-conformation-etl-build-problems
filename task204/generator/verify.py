@@ -302,9 +302,13 @@ def main():
           abs(0.25 - abs(rate - to_half(rate))) > 0.10,
           "%.4f from the nearer edge of the printed cell"
           % (0.25 - abs(rate - to_half(rate))))
-    claim("the requirement is the filed multiple of the rate",
-          abs(f["required"] / rate - fig["call"]["shortfall_factor"]) < 0.005,
-          "%.3f times" % (f["required"] / rate))
+    short = fig["call"]["shortfall_ls_per_occupant"]
+    claim("the shortfall against the requirement recomputes",
+          to_half(f["required"] - rate) == short, "%.1f litres per second per occupant" % short)
+    claim("the shortfall is the same from the printed rate as from the unrounded one",
+          to_half(f["required"] - to_half(rate)) == short,
+          "%.1f either way, so the figure carries no rounding fork"
+          % to_half(f["required"] - to_half(rate)))
 
     bsess = [s for s in sessions if s["space"] in f["block"]]
     claim("the block's timetabled sessions recompute",
@@ -400,8 +404,10 @@ def main():
     # the write-up's own figures, read from the file rather than from figures.json
     sub = open(os.path.join(TASK, "submission.md"), encoding="utf-8").read()
     claim("the write-up states the recomputed call",
-          "**%.1f**" % to_half(rate) in sub and "**%.2f**" % (f["required"] / rate) in sub,
-          "the rate and the multiple both appear at the rounding the asking sentence states")
+          "**%.1f**" % to_half(rate) in sub
+          and "**%.1f**" % fig["call"]["shortfall_ls_per_occupant"] in sub,
+          "the rate and the shortfall both appear at the rounding the asking sentence states, and "
+          "every figure in the sentence recomputes from the printed rate alone")
     claim("the write-up prints every ask figure at the stated precision",
           all(re.search(r"%s, %s: %.2f recorded, %.2f over"
                         % (r["space"], re.escape(r["month"]), r["occupied_hours"],

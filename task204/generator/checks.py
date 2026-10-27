@@ -222,6 +222,31 @@ def ladder():
           "a plain mean of the session rates files %.4f, and the standard's reporting clause says "
           "the rate is reported over the whole of the period assessed rather than for a single "
           "group" % unweighted)
+    _ps12 = A.per_space(BF, lambda x: A.q_integrated(x))
+    _ps12 = A.per_space(BF, lambda x: A.q_integrated(x))
+    _lo12, _hi12 = min(_ps12.values()), max(_ps12.values())
+    check("SF12 the worst space's own rate prints the block's call",
+          BU.to_bin(_lo12) == BU.to_bin(CALL),
+          "the six space rates run %.4f to %.4f, printing %s, so the space-level reading that "
+          "printed 4.5 before the recut now prints %.1f, the same as the block's %.1f"
+          % (_lo12, _hi12,
+             ", ".join("%.1f" % BU.to_bin(_ps12[k]) for k in sorted(_ps12, key=lambda k: _ps12[k])),
+             BU.to_bin(_lo12), BU.to_bin(CALL)))
+    check("SF12 every space clears its own printed cell edge",
+          all(abs(0.25 - abs(v - BU.to_bin(v))) > 0.10 for v in _ps12.values()),
+          "the thinnest space sits %.4f from the nearer edge of its printed cell"
+          % min(abs(0.25 - abs(v - BU.to_bin(v))) for v in _ps12.values()))
+    check("SF12 the aggregation is closed by the records and by no filed sentence",
+          not re.search(r"per occupant present across those same sessions|"
+                        r"across all of that block's|is not the block's rate",
+                        re.sub(r"\s+", " ", TEXT[B.PROCEDURE]) + " " +
+                        re.sub(r"\s+", " ", TEXT[B.STANDARD])),
+          "no document files how a block's rate is aggregated, so the convergence is C1 on the "
+          "records and the pack carries no sentence written to close it")
+    check("SF12 every space is below the requirement, so no aggregation moves the remedy",
+          all(v < REQ for v in _ps12.values()),
+          "the highest space rate is %.4f against %g, so option A is the remedy under the pooled "
+          "reading, the mean of the space rates and the worst space alike" % (_hi12, REQ))
 
     # the bin test
     a = min(fam.values()) - CALL

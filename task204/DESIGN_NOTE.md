@@ -193,6 +193,7 @@ and both still clear the standard by 1.159 to 1.204 times.
 | SF9 | the block | the six room codes the capital bid sheet lists | every space in the building; every monitored space | the bid sheet files the six, and the prompt names the block; measured: the pooled-over-14 reading files 8.36, a different call, which is why the population is filed and not left open |
 | SF10 | a session with nobody present | kept, contributing zero generation and its own excess | dropped | the estimand is over the timetabled sessions, so an empty session is one of them; measured on the cut pack, no block session carries nobody present, so the reading cannot arise and keeping or dropping files 5.027 either way |
 | SF11 | the integral of the session's excess over the session | a quadrature over the session's own eleven five-minute intervals | five minutes a reading, holding the window or extending it; an unweighted mean of the session rates | C1 first: the seven licensed constructions (trapezoid, Simpson, left and right rectangle, 10 and 15 minute decimation, the derivative regression) spread 0.227 of a bin and all print 5.0, the widest sitting 0.164 from its cell edge. C4 beside it: taking five minutes a reading files 4.649 holding the window and 5.475 extending it, and a reading-by-reading integral of a session's twelve readings covers 60 minutes against the 55 the timetable files, so neither executes the window the estimand names; the unweighted mean of session rates files 5.473 and dies to the standard's reporting clause, which reports the rate over the whole of the period assessed rather than for a single group. Procedure note EST-14 section 3's five-minute rule is scoped in its own words to the counting of hours and of readings and no other quantity |
+| SF12 | the block's rate as one figure | the outdoor air supplied across all the block's timetabled sessions over the occupants present across those same sessions, the pooled reading | the mean of the six space rates; the mean of the session rates; the session-count weighted mean; the occupant weighted mean; the worst space's own rate | C1, and nothing else: the five aggregations the estimand admits spread 0.082 of a bin and all print 5.0, and the recut lifted the two lowest spaces so that the worst space's own rate prints the same 5.0 as the block's. The six space rates run 4.8590 to 5.9213, printing 5.0, 5.0, 5.0, 5.0, 5.0 and 6.0, the thinnest sitting 0.1018 from its printed cell's edge, and every one of them is below the 8 the requirement sets, so no aggregation moves the remedy either. `checks.py` asserts the convergence and asserts in the negative that no shipped document files how a block's rate is aggregated, because an earlier pass closed this with a filed sentence in the procedure note and the leak reader read that sentence as written for whoever had to answer the prompt |
 
 ## Ladder
 
@@ -406,6 +407,84 @@ LEAK. The stage 4 leak reader then read the pack cold. One line per finding.
   ranks the candidates, nothing reads as the answer except the declared wrong basis, no hidden sheets
   or comments, no date after the as-of, no arithmetic id sequences, and the mess reads as genuine.
 
+## Pre-ship check
+
+- Free gates on the shipped build: generator checks 116 of 116 (SF1 to SF12, the ladder's four rungs,
+  the bin test, the construction family's convergence, the five aggregations, every Layer 1 item asserted
+  neutral, the reflex sweep, the necessity matrix, the separation count, the input gates and the leak
+  words); the verifier 24 of 24 reading only the shipped bundle on its own code path; two rebuilds
+  byte-identical (target 637567bb6447e4b0, golden 983e90549506eba3, both twice); figures_check 153 figures
+  in blocks 1 to 4 with none absent; precut 52 checks, 0 FAIL, 0 WARN; voice-check PASS on a 998-character
+  prompt; leak.py REVIEW with no LEAK.
+- The 10/10 rules re-read against the built pack. The decisive step is still the session integration of
+  the carbon dioxide balance with the stored term, which no shipped sentence states, and `checks.py`
+  asserts that in the negative as well as the positive. The bin test holds at (a) 8.48 bins against (b)
+  0.31 and (c) 0.23, a factor of 15.8. The settled read files 9.3 to 10.9 and prints 9.5 to 11.0 against
+  the golden's 5.0815 printing 5.0. Every Layer 1 item is asserted neutral, so the mess complicates the
+  work and carries nothing.
+- Determinism judge pass 1 (pre-repair pack, target 61bfc61aa80614e5): NOT_DETERMINISTIC, SEND_BACK,
+  competing_defensible_answer on the integration. Read as repairable rather than spent on one measured
+  ground: the fork sat INSIDE the decisive step, between quadratures that already carried the stored term
+  and sat about a quarter of a bin apart, while the default path was 8.5 bins away. Closed by a C1 recut
+  (the seven constructions all printing 5.0) beside EST-14 section 3's scope limit, which holds the
+  five-minute counting rule to the counting of hours and of readings and no other quantity.
+- Determinism judge pass 2 (target 4b33e7a0366c08f2): DETERMINISTIC, FIX_NOW, and it tested the closure
+  rather than taking it: no filed sentence fixes how the rate is obtained, so the scope limit fenced its
+  own sentence off from the rate instead of filing the integration, and the decisive step stayed
+  analytical. Two findings, both fixed in one generator pass.
+  - Gate A: the recommendation said the requirement was 1.59 times the rate, which is 8 over the unrounded
+    5.027, while a judge recomputing from the shipped 5.0 gets 1.60. The ratio is gone. The sentence now
+    states the shortfall, 3.0 litres per second per occupant present, which prints the same from the
+    rounded rate and the unrounded one, so it carries no rounding fork, and the verifier asserts both.
+  - Gate C: nothing quotable closed the block's pooled rate against the worst space's own rate, which
+    printed 4.5 against the block's 5.0. Closed by C1, after one attempt that was taken out again: a filed
+    sentence in EST-14 closing the aggregation was read by the leak reader as written for whoever had to
+    answer the prompt (the only section of the note about a rate, outside the note's own stated scope,
+    duplicating the standard, and closing with a warning against one specific wrong route), so the recut
+    lifted the two lowest spaces instead and the worst space's own rate now prints the same 5.0 as the
+    block's. The six space rates run 4.8590 to 5.9213, the thinnest sitting 0.1018 from its printed cell's
+    edge; the five aggregations the estimand admits spread 0.082 of a bin and all print 5.0; every space
+    is below the 8 the requirement sets, so no aggregation moves the remedy either. `checks.py` asserts
+    the convergence, and asserts in the negative that no shipped document files how a block's rate is
+    aggregated.
+- Leak reader, read 3 (the shipped pack, no solving): question 1 nothing, question 6 an analytical choice,
+  no ranking file, no answer figure, and no section that addresses the solver. Its findings, ruled:
+  - Four fixed in the generator, all of them realism and none near the decisive step: the room register
+    was generating a filler room whose code collided with one of the six block rooms; the maintenance log
+    repeated one fault note verbatim on every outage row; the as-built sheets said twice that the volumes
+    feed the appendix C air volume calculations; the zone assignment sheet and the as-built sheets drew
+    their supply-terminal counts independently and disagreed, which read as a planted discrepancy and is
+    now one draw used by both. A tutor sharing a surname with the consulting practice was renamed, and a
+    filler room's floor area now follows its use, so no learning centre is 17 square metres.
+  - Ruled harmless: TGD-M4 4.3 and 4.4 lean toward an in-use, pooled basis, which is the WHAT and is what
+    a standard is for; two outdoor sources and a volume column point at the quantities the balance needs,
+    but every one of those files is needed by rungs 0 to 2 as well, so nothing in the pack exists only for
+    the decisive rung; `minor_works_thread.txt` is the stakeholder's context artifact; the commissioning
+    record's 8.5 is the declared wrong-basis distractor, ruled out by its own outstanding-items section.
+  - Ruled and kept: EST-14 section 3's closing sentence reads as a fence, and section 4's amendment clause
+    is thorough for a procedure note. Both are kept as they stand, because section 3's scope limit is what
+    closed pass 1's fork and section 4 is what closes SF1; a rewording to answer a realism note is not
+    worth reopening a determinism closure, and the reader found neither of them tells a solver anything
+    about the decisive step.
+- **Gate F risk, recorded rather than argued away.** The pass-2 thread reached the golden by applying the
+  field's tracer-gas balance with no judgment filed in the text, and said so. A determinism judge is
+  tasked to enumerate and recompute every construction, which is not the default path a solver walks, and
+  that thread's brief had been told the stored-term family; pass 3's brief carries no construction and no
+  method hint, so its result is the stronger of the two readings. The ladder's defence is that the reflex
+  for a term of five-minute data is the occupant-weighted session mean, which files 11.0. The portal
+  measures this and nothing here does. If it comes back FAILED_TO_STUMP, the rung to deepen is rung 2, not
+  the decisive one.
+- guard heart WARN, no BLOCK, three WARNs answered: `people.first` Cory is an older build (task457) and no
+  two personas in this build share a first name or surname; `repeat.decision` quantity_figure and
+  `repeat.deliverables` png+xlsx both flag against task157's second architecture, which is at design and
+  not shipped, and the two builds share a deliverable format and a decision shape, not a mechanism
+  (task157 recovers a pairwise inclusion probability from a sample fraction, this build integrates an
+  unsteady mass balance).
+- Containers: 19 files in 4 formats, the spine a five-minute building-management export of 293,559 rows,
+  two declared distractors named only in `metadata.json`, every file carrying its source, date and licence,
+  and one declared wrong-basis distractor. No describing file under `target/`; one submission and one
+  prompt; 23 personas across three pairwise-disjoint organisations.
+
 ## Tried and rejected
 
 - Curtailed or inverse sampling (a measurement programme that stops at a filed count of findings), killed
@@ -494,3 +573,23 @@ LEAK. The stage 4 leak reader then read the pack cold. One line per finding.
   `differentiation` block was written against at the draw, and `guard.py heart` reports the same
   collision as a NOTE with the nearest driver text at 0.06. The adjudicated `/clone-check` is the
   author's call and is not run here.
+- Reporting the requirement as a multiple of the achieved rate (1.59 times). Died at determinism pass 2 on
+  Gate A: the shipped rate is rounded to the nearest half by the asking sentence, so a judge recomputing
+  8 over 5.0 gets 1.60 while the generator wrote 8 over the unrounded 5.027. Replaced with the shortfall in
+  the same unit, 3.0, which prints the same from either, so the write-up's own figure cannot fork on a
+  rounding path.
+- Closing the block-aggregation fork with a filed sentence in the procedure note (EST-14 section 6, filing
+  the quantity a block return reports). Died on the leak read: it was the only section of the note about a
+  rate, it sat outside the note's own stated scope, it duplicated the standard, and its closing sentence
+  warned against one specific wrong route, so the reader read it as written for whoever had to answer the
+  prompt. Taken out and closed by C1 instead, by lifting the two lowest spaces so the worst space's own
+  rate prints the block's figure. The lesson is the one the closure table already prefers: C1 before a pin,
+  because a pin that answers a real fork can still read as authored.
+- Drawing the supply-terminal counts twice, once for the zone assignment sheet and once for the as-built
+  room data sheets. Died on the leak read as a planted discrepancy: two systems holding the same asset
+  count disagreed with no reason in the world. One draw now serves both.
+- Leaving the assessment sheet's third row on the number format the multiple had used. Caught on a read of
+  the shipped workbook after the Gate A repair: the cell held the shortfall, 3.0, and would have displayed
+  as 3.00x under a label reading litres per second per occupant present. The format is now the rate's own.
+  The lesson is that replacing a figure means replacing its presentation too, because a cell format
+  outlives the figure it was written for and no assertion on the value sees it.

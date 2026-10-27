@@ -9,7 +9,7 @@
     "P1"
    ],
    [
-    435.0,
+    434.0,
     "TUL-G12",
     "2026-10-19",
     "P1"
@@ -33,7 +33,7 @@
     "P1"
    ],
    [
-    404.0,
+    403.0,
     "TUL-G12",
     "2026-12-02",
     "P1"
@@ -283,25 +283,25 @@
     "space": "TUL-F09"
    },
    {
-    "hours_over_indicator": 0.58,
+    "hours_over_indicator": 0.33,
     "month": "September 2026",
     "occupied_hours": 18.42,
     "space": "TUL-F15"
    },
    {
-    "hours_over_indicator": 0.67,
+    "hours_over_indicator": 0.08,
     "month": "October 2026",
     "occupied_hours": 98.25,
     "space": "TUL-F15"
    },
    {
-    "hours_over_indicator": 0.58,
+    "hours_over_indicator": 0.08,
     "month": "November 2026",
     "occupied_hours": 122.67,
     "space": "TUL-F15"
    },
    {
-    "hours_over_indicator": 0.67,
+    "hours_over_indicator": 0.42,
     "month": "December 2026",
     "occupied_hours": 42.75,
     "space": "TUL-F15"
@@ -337,19 +337,19 @@
     "space": "TUL-G12"
    },
    {
-    "hours_over_indicator": 19.58,
+    "hours_over_indicator": 18.67,
     "month": "October 2026",
     "occupied_hours": 98.5,
     "space": "TUL-G12"
    },
    {
-    "hours_over_indicator": 19.08,
+    "hours_over_indicator": 18.67,
     "month": "November 2026",
     "occupied_hours": 123.08,
     "space": "TUL-G12"
    },
    {
-    "hours_over_indicator": 9.75,
+    "hours_over_indicator": 9.67,
     "month": "December 2026",
     "occupied_hours": 49.17,
     "space": "TUL-G12"
@@ -526,9 +526,9 @@
  },
  "call": {
   "block_rate_ls_per_occupant": 5.0,
-  "block_rate_unrounded": 5.0274,
+  "block_rate_unrounded": 5.0815,
   "remedy": "Option A, replace AHU-03 and AHU-04 and the Tulrohan distribution",
-  "shortfall_factor": 1.591,
+  "shortfall_ls_per_occupant": 3.0,
   "verdict": "below the 8 litres per second per person TGD-M4 requires"
  },
  "components": {
@@ -570,57 +570,57 @@
   "window_start": "2026-09-28"
  },
  "measured": {
-  "bin_edge_call": 0.2226,
+  "bin_edge_call": 0.1685,
   "golden_family": {
-   "10 minute decimation": 4.9888,
-   "15 minute decimation": 4.9844,
-   "Simpson quadrature": 5.0274,
-   "derivative regression": 5.0142,
-   "left rectangle quadrature": 5.0858,
-   "right rectangle quadrature": 4.9722,
-   "trapezoid quadrature": 5.0274
+   "10 minute decimation": 5.0432,
+   "15 minute decimation": 5.0382,
+   "Simpson quadrature": 5.0815,
+   "derivative regression": 5.0683,
+   "left rectangle quadrature": 5.1406,
+   "right rectangle quadrature": 5.0257,
+   "trapezoid quadrature": 5.0815
   },
-  "golden_strict_variant": 5.032,
+  "golden_strict_variant": 5.0842,
   "naive_per_space": {
    "TUL-F04": 10.7682,
-   "TUL-F09": 12.0568,
-   "TUL-F15": 10.971,
+   "TUL-F09": 12.2023,
+   "TUL-F15": 11.1091,
    "TUL-G07": 11.1583,
-   "TUL-G12": 9.3012,
+   "TUL-G12": 9.3243,
    "TUL-G18": 11.7569
   },
-  "outdoor_air_supplied_m3": 1237398,
+  "outdoor_air_supplied_m3": 1250714,
   "per_space_rate_unrounded": {
    "TUL-F04": 5.081,
-   "TUL-F09": 4.7162,
-   "TUL-F15": 4.7253,
+   "TUL-F09": 4.859,
+   "TUL-F15": 4.8591,
    "TUL-G07": 5.9213,
-   "TUL-G12": 4.839,
+   "TUL-G12": 4.8623,
    "TUL-G18": 5.1482
   },
-  "pooled_over_14": 8.2557,
+  "pooled_over_14": 8.2958,
   "response_time_min": {
    "TUL-F04": 249.3,
-   "TUL-F09": 358.4,
-   "TUL-F15": 291.7,
+   "TUL-F09": 347.9,
+   "TUL-F15": 283.7,
    "TUL-G07": 191.1,
-   "TUL-G12": 203.0,
+   "TUL-G12": 202.0,
    "TUL-G18": 283.1
   },
   "rivals": {
-   "95th percentile": 9.2721,
-   "final 15 minutes": 9.6329,
-   "last sample": 9.2925,
-   "median sample": 10.8775,
-   "peak sample": 9.2721,
-   "session mean": 10.9267
+   "95th percentile": 9.3206,
+   "final 15 minutes": 9.683,
+   "last sample": 9.3414,
+   "median sample": 10.9325,
+   "peak sample": 9.3206,
+   "session mean": 10.9821
   },
   "truth_per_space": {
    "TUL-F04": 5.081,
-   "TUL-F09": 4.7162,
-   "TUL-F15": 4.7253,
+   "TUL-F09": 4.859,
+   "TUL-F15": 4.8591,
    "TUL-G07": 5.9213,
-   "TUL-G12": 4.839,
+   "TUL-G12": 4.8623,
    "TUL-G18": 5.1482
   }
  }

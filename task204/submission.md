@@ -6,7 +6,7 @@
 ## 1. Final Recommendation
 
 **January's minor-works allocation funds option A, replacing AHU-03 and AHU-04 and the Tulrohan supply and extract distribution.**
-The block's six teaching spaces are supplied with **5.0** litres per second per occupant present across the term's timetabled sessions, so the **8** TGD-M4 requires is **1.59** times the rate achieved. Not the timetable change, which leaves the supply where it is. Not the commissioning record's design supply, which its own outstanding-items section records as never proved at the spaces.
+The block's six teaching spaces are supplied with **5.0** litres per second per occupant present across the term's timetabled sessions, **3.0** short of the **8** TGD-M4 requires. Not the timetable change, which leaves the supply where it is. Not the commissioning record's design supply, which its own outstanding-items section records as never proved at the spaces.
 
 ## 2. Critical Components
 
@@ -72,18 +72,18 @@ The block's six teaching spaces are supplied with **5.0** litres per second per 
    - TUL-F09, October 2026: 102.67 recorded, 0.00 over
    - TUL-F09, November 2026: 114.00 recorded, 0.00 over
    - TUL-F09, December 2026: 48.50 recorded, 0.00 over
-   - TUL-F15, September 2026: 18.42 recorded, 0.58 over
-   - TUL-F15, October 2026: 98.25 recorded, 0.67 over
-   - TUL-F15, November 2026: 122.67 recorded, 0.58 over
-   - TUL-F15, December 2026: 42.75 recorded, 0.67 over
+   - TUL-F15, September 2026: 18.42 recorded, 0.33 over
+   - TUL-F15, October 2026: 98.25 recorded, 0.08 over
+   - TUL-F15, November 2026: 122.67 recorded, 0.08 over
+   - TUL-F15, December 2026: 42.75 recorded, 0.42 over
    - TUL-G07, September 2026: 18.08 recorded, 0.00 over
    - TUL-G07, October 2026: 103.25 recorded, 0.58 over
    - TUL-G07, November 2026: 115.00 recorded, 1.00 over
    - TUL-G07, December 2026: 48.33 recorded, 0.00 over
    - TUL-G12, September 2026: 18.50 recorded, 1.08 over
-   - TUL-G12, October 2026: 98.50 recorded, 19.58 over
-   - TUL-G12, November 2026: 123.08 recorded, 19.08 over
-   - TUL-G12, December 2026: 49.17 recorded, 9.75 over
+   - TUL-G12, October 2026: 98.50 recorded, 18.67 over
+   - TUL-G12, November 2026: 123.08 recorded, 18.67 over
+   - TUL-G12, December 2026: 49.17 recorded, 9.67 over
    - TUL-G18, September 2026: 18.42 recorded, 0.00 over
    - TUL-G18, October 2026: 98.50 recorded, 0.50 over
    - TUL-G18, November 2026: 123.00 recorded, 1.08 over

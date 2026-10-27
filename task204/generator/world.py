@@ -281,6 +281,13 @@ def outdoor_series(stamp_list):
 
 # ----------------------------------------------------------------- the carbon dioxide series
 
+def terminals():
+    """Supply terminals per space, drawn once so the zone assignment sheet and the as-built room
+    data sheets agree: two systems holding the same asset count, as they would."""
+    r = rng("terminal-count")
+    return {s[0]: 2 + r.randrange(0, 5) for s in P.SPACES}
+
+
 def supply_m3s(space, state, day_factor):
     """The space's outdoor-air supply for a five-minute step, cubic metres per second."""
     row = dict((s[0], s) for s in P.SPACES)[space]

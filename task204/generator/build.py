@@ -192,7 +192,7 @@ def cut_pack():
     reg = []
     for code, name, block, ahu, vol, q, a_off, a_sb, area, height in P.SPACES:
         reg.append([code, "KMN." + P.ROOM_LABELS[code][0], P.ROOM_LABELS[code][1],
-                    "RDS-%s-%s" % (block[:3].upper(), code.split("-")[1]), block,
+                    "RDS-%s" % code, block,
                     "Ground" if code.split("-")[1][0] in "G0" else "First", name,
                     "Practical teaching" if block == "Tulrohan" and code[4] == "G" else
                     ("General teaching" if block != "Annagloor" else "Specialist teaching"),
@@ -201,7 +201,7 @@ def cut_pack():
              ("Plant", "Plant room"), ("Welfare", "Changing room"), ("Library", "Learning centre")]
     for block, prefix, ahu in (("Tulrohan", "TUL", "AHU-03"), ("Drumlusk", "DRM", "AHU-01"),
                                ("Annagloor", "ANG", "AHU-02")):
-        used = set()
+        used = {sp[0].split("-")[1] for sp in P.SPACES if sp[0].startswith(prefix + "-")}
         for k in range(9):
             while True:
                 num = "%s%02d" % (r_reg.choice("GF0"), r_reg.randrange(1, 40))
@@ -209,9 +209,11 @@ def cut_pack():
                     used.add(num)
                     break
             use, nm = other[r_reg.randrange(len(other))]
+            lo, hi = {"Store": (6, 40), "Office": (12, 48), "Circulation": (24, 140),
+                      "Plant": (18, 90), "Welfare": (20, 85), "Library": (90, 260)}[use]
             reg.append(["%s-%s" % (prefix, num), "", "", "RDS-%s-%s" % (prefix, num), block,
                         "Ground" if num[0] in "G0" else "First", "%s %s" % (nm, num), use,
-                        "%.1f" % (8 + r_reg.randrange(1, 420) / 3.0), ahu])
+                        "%.1f" % (lo + r_reg.randrange(0, int((hi - lo) * 10)) / 10.0), ahu])
     reg.sort(key=lambda r: (r[4], r[0]))
     write_csv(B.REGISTER, ["room_code", "bms_point_ref", "timetable_room_label",
                            "asbuilt_sheet_ref", "block", "floor", "room_name", "use_category",
@@ -240,10 +242,20 @@ def cut_pack():
                 1000, swap["span_after"], techs[0],
                 "Analyser %s fitted and span checked" % swap["new_serial"]])
     outages = sorted((d, code) for code, days in P.DROPOUT_DAYS.items() for d in days)
+    outage_notes = [
+        "Field bus segment down at the riser; terminated and point restored",
+        "No comms to controller; power cycled at the panel and point back",
+        "Point offline, suspected cable damage from ceiling works above",
+        "Controller reset after supply dip; trend restarted",
+        "Bus loop fault traced to a loose terminal at the junction box",
+        "Point dropped out overnight and came back on the morning poll",
+        "Network card replaced in the field panel",
+        "Segment isolated for second fix works and reinstated",
+    ]
     for d, code in outages:
         log.append(["WO%05d" % (13000 + r_wo.randrange(1, 900)), d, d, code,
                     "CO2-%s" % code.replace("-", ""), "Network fault, point offline", "", "",
-                    r_tech.choice(techs), "Field bus segment repaired, point restored next day"])
+                    r_tech.choice(techs), outage_notes[r_wo.randrange(len(outage_notes))]])
     log.sort(key=lambda r: (r[1], r[0]))
     write_csv("maintenance_log_iaq_sensors_2026.csv",
               ["work_order_ref", "raised_date", "completed_date", "room_code", "asset_ref",
@@ -323,9 +335,10 @@ def write_workbooks():
     ws2.append(["ahu_ref", "room_code", "supply_terminal_ref", "terminal_count",
                 "commissioned_date"])
     r = W.rng("terminal")
+    term = W.terminals()
     for code, name, block, ahu, *_ in P.SPACES:
         ws2.append([ahu, code, "VT-%s-%02d" % (code.split("-")[1], 1 + r.randrange(0, 9)),
-                    2 + r.randrange(0, 5), "2021-07-28" if block == "Tulrohan" else "2014-08-14"])
+                    term[code], "2021-07-28" if block == "Tulrohan" else "2014-08-14"])
     finish(ws2, [9, 11, 20, 15, 18])
     path = os.path.join(TARGET, "ahu_timeclock_schedule.xlsx")
     wb.save(path)
@@ -451,18 +464,18 @@ def write_pdfs():
         codes = [c for c in vols if c.startswith(prefix)]
         rowsd = [["Room", "Room name", "Floor area m2", "Clear height m",
                   "Gross internal volume m3", "Supply terminals"]]
-        r = W.rng("rds-" + prefix)
+        term = W.terminals()
         for c in codes:
             rowsd.append([c, names[c], "{:,.1f}".format(areas[c]), "%.1f" % heights[c],
-                          "{:,}".format(vols[c]), str(2 + r.randrange(0, 5))])
+                          "{:,}".format(vols[c]), str(term[c])])
         fl += [Paragraph(block, s["h"]),
                D.table(rowsd, [22 * mm, 46 * mm, 22 * mm, 22 * mm, 32 * mm, 22 * mm],
                        align=[2, 3, 4, 5]),
                Paragraph("Source: record drawing set 19-0442/M series, issue D.", s["src"])]
     fl.append(Paragraph(
         "The Tulrohan spaces were retained in the 2021 works and their volumes are unchanged from "
-        "the 1978 record set; the Drumlusk and Annagloor volumes follow the 2014 reconfiguration. "
-        "Air volumes in appendix C are calculated on these figures.", s["p"]))
+        "the 1978 record set; the Drumlusk and Annagloor volumes follow the 2014 "
+        "reconfiguration.", s["p"]))
     D.write_pdf(os.path.join(TARGET, B.ASBUILT),
                 {"title": "Room data sheets as built, Kilmoneen campus",
                  "author": P.DESIGN_PRACTICE, "subject": "Project 19-0442 record information",
@@ -522,8 +535,8 @@ def write_pdfs():
           Spacer(1, 7 * mm),
           Paragraph("1 &nbsp; Purpose and scope", s["h"]),
           Paragraph("This note sets out how the Board records and reports carbon dioxide "
-                    "monitoring in the teaching spaces listed in schedule 1. It applies to the "
-                    "%s campus for the 2026/27 year." % P.CAMPUS_NAME, s["p"]),
+                    "monitoring in the teaching spaces listed in schedule 1. It applies to %s "
+                    "for the 2026/27 year." % P.CAMPUS_NAME, s["p"]),
           Paragraph("2 &nbsp; Screening", s["h"]),
           Paragraph("A space is brought forward for assessment where its carbon dioxide "
                     "concentration passes %s ppm while the space is occupied. The indicator is a "
@@ -705,7 +718,7 @@ def measure(target):
             "block_rate_ls_per_occupant": to_bin(call),
             "block_rate_unrounded": round(call, 4),
             "verdict": "below the %g litres per second per person TGD-M4 requires" % required,
-            "shortfall_factor": round(required / call, 3),
+            "shortfall_ls_per_occupant": to_bin(required - call),
             "remedy": "Option A, replace AHU-03 and AHU-04 and the Tulrohan distribution",
         },
     }
@@ -839,7 +852,8 @@ def golden_workbook(m):
          c["block_rate_ls_per_occupant"]),
         ("TGD-M4 requirement 4.2, litres per second per person",
          m["constants"]["required_ls_per_person"]),
-        ("Requirement as a multiple of the rate achieved", half_up(c["shortfall_factor"], 2)),
+        ("Shortfall against the requirement, litres per second per occupant present",
+         c["shortfall_ls_per_occupant"]),
         ("Teaching spaces in the block below the requirement",
          "%d of %d" % (comp["spaces_below_requirement"], comp["spaces_in_block"])),
         ("", ""),
@@ -859,7 +873,7 @@ def golden_workbook(m):
         ws.cell(row=r, column=1).font = bold
     ws["B3"].number_format = "0.0"
     ws["B4"].number_format = "0.0"
-    ws["B5"].number_format = '0.00"x"'
+    ws["B5"].number_format = "0.0"
     ws["B9"].number_format = "#,##0.0"
     ws["B13"].alignment = Alignment(wrap_text=True, vertical="top")
     ws.column_dimensions["A"].width = 62
@@ -1152,11 +1166,12 @@ def write_submission(m):
     w("**January's minor-works allocation funds option A, replacing AHU-03 and AHU-04 and the "
       "Tulrohan supply and extract distribution.**")
     w("The block's six teaching spaces are supplied with **%.1f** litres per second per occupant "
-      "present across the term's timetabled sessions, so the **%g** TGD-M4 requires is **%.2f** "
-      "times the rate achieved. Not the timetable change, which leaves the supply where it is. "
+      "present across the term's timetabled sessions, **%.1f** short of the **%g** TGD-M4 "
+      "requires. Not the timetable change, which leaves the supply where it is. "
       "Not the commissioning record's design supply, which its own outstanding-items section "
       "records as never proved at the spaces."
-      % (c["block_rate_ls_per_occupant"], k["required_ls_per_person"], c["shortfall_factor"]))
+      % (c["block_rate_ls_per_occupant"], c["shortfall_ls_per_occupant"],
+         k["required_ls_per_person"]))
     w("")
 
     w("## 2. Critical Components\n")

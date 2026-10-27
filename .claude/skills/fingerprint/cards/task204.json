@@ -10,8 +10,8 @@
  "shape": "07",
  "decision_type": "quantity_figure",
  "answer_unit": "rate_or_share",
- "answer": "DESIGN TARGET, re-measured by the generator at stage 3: the Tulrohan block is supplied with 5.0 litres per second per occupant present of outdoor air across the autumn term's timetabled sessions (prototype 5.01, 5.07, 4.90 over three seeds, all printing 5.0), against the 8 litres per second per person the standard requires, so the January minor-works allocation funds the block's air-handling replacement and not a timetable change.",
- "answer_source": "generator truth, asserted in generator/checks.py (owed at stage 3)",
+ "answer": "The Tulrohan block's six teaching spaces are supplied with 5.0 litres per second per occupant present of outdoor air across the autumn term's timetabled sessions (5.0815 unrounded), 3.0 short of the 8 TGD-M4 requires, so January's minor works fund option A, replacing AHU-03 and AHU-04 and the Tulrohan supply and extract distribution, and not the timetable change. Six of the six spaces are below the requirement on their own records.",
+ "answer_source": "generator truth, asserted in generator/checks.py and recomputed from the shipped bundle alone in generator/verify.py",
  "gap": [
   "objective",
   "population"
@@ -49,7 +49,7 @@
  "scoring_unit": "other",
  "spine": {
   "file": "bms_co2_5min_autumn2026.csv",
-  "rows": 302400,
+  "rows": 293559,
   "entity": "one monitored teaching space at one five-minute stamp",
   "grain": "space x 5 minutes",
   "source": "synthetic"
@@ -85,7 +85,7 @@
    "Jana McCafferky",
    "Johanna Murnane",
    "Karl Gorey",
-   "Kelsey Hanbury",
+   "Abbie Loughran",
    "Orlaigh Sinan",
    "Rhiannon Monk",
    "Tony Davenport",
@@ -94,7 +94,7 @@
  },
  "deliverables": [
   "tulrohan_ventilation_assessment.xlsx",
-  "tulrohan_session_balance.png"
+  "tulrohan_co2_day_profile.png"
  ],
  "opening_move": "question-first",
  "question_form": "whether",
