@@ -1,0 +1,127 @@
+{
+ "task": "task307",
+ "title": "Merrimont Area MPO: the FY2028 TIP congestion-relief slot",
+ "files": [
+  {
+   "file": "MAMPO_v42_subarea_links_2028NB.csv",
+   "source": "synthetic (task307 generator)",
+   "date": "2026-10-23",
+   "license": "generated for this task",
+   "distractor": false
+  },
+  {
+   "file": "MAMPO_v42_subarea_nodes.csv",
+   "source": "synthetic (task307 generator)",
+   "date": "2026-10-23",
+   "license": "generated for this task",
+   "distractor": false
+  },
+  {
+   "file": "MAMPO_v42_subarea_trips_2028.csv",
+   "source": "synthetic (task307 generator)",
+   "date": "2026-10-23",
+   "license": "generated for this task",
+   "distractor": false
+  },
+  {
+   "file": "MAMPO_v42_loaded_network_2028NB.csv",
+   "source": "synthetic (task307 generator)",
+   "date": "2026-10-23",
+   "license": "generated for this task",
+   "distractor": false
+  },
+  {
+   "file": "MAMPO_TDM_v4.2_documentation_ch4-6.pdf",
+   "source": "synthetic (task307 generator)",
+   "date": "2026-10-23",
+   "license": "generated for this task",
+   "distractor": false
+  },
+  {
+   "file": "FY2028_TIP_congestion_relief_candidates.xlsx",
+   "source": "synthetic (task307 generator)",
+   "date": "2026-10-23",
+   "license": "generated for this task",
+   "distractor": false
+  },
+  {
+   "file": "MAMPO_TIP_project_scoring_guidance_2026.pdf",
+   "source": "synthetic (task307 generator)",
+   "date": "2026-10-23",
+   "license": "generated for this task",
+   "distractor": false
+  },
+  {
+   "file": "ATR_hourly_volumes_2025.csv",
+   "source": "synthetic (task307 generator)",
+   "date": "2026-10-23",
+   "license": "generated for this task",
+   "distractor": false
+  },
+  {
+   "file": "ATR_station_inventory_2025.xlsx",
+   "source": "synthetic (task307 generator)",
+   "date": "2026-10-23",
+   "license": "generated for this task",
+   "distractor": false
+  },
+  {
+   "file": "MAMPO_traffic_count_program_manual_2024.pdf",
+   "source": "synthetic (task307 generator)",
+   "date": "2026-10-23",
+   "license": "generated for this task",
+   "distractor": false
+  },
+  {
+   "file": "MAMPO_v42_base2025_station_volumes.csv",
+   "source": "synthetic (task307 generator)",
+   "date": "2026-10-23",
+   "license": "generated for this task",
+   "distractor": false
+  },
+  {
+   "file": "probe_segment_travel_times_2025.parquet",
+   "source": "synthetic (task307 generator)",
+   "date": "2026-10-23",
+   "license": "generated for this task",
+   "distractor": true
+  },
+  {
+   "file": "CMP_probe_segment_reference.csv",
+   "source": "synthetic (task307 generator)",
+   "date": "2026-10-23",
+   "license": "generated for this task",
+   "distractor": true
+  },
+  {
+   "file": "MAMPO_CMP_reliability_measures_2026.pdf",
+   "source": "synthetic (task307 generator)",
+   "date": "2026-10-23",
+   "license": "generated for this task",
+   "distractor": true
+  },
+  {
+   "file": "crash_summary_by_segment_2021_2025.xlsx",
+   "source": "synthetic (task307 generator)",
+   "date": "2026-10-23",
+   "license": "generated for this task",
+   "distractor": true
+  },
+  {
+   "file": "MRTA_route_ridership_FY2025.csv",
+   "source": "synthetic (task307 generator)",
+   "date": "2026-10-23",
+   "license": "generated for this task",
+   "distractor": true
+  }
+ ],
+ "distractors": [
+  "crash_summary_by_segment_2021_2025.xlsx",
+  "MRTA_route_ridership_FY2025.csv",
+  "probe_segment_travel_times_2025.parquet",
+  "CMP_probe_segment_reference.csv",
+  "MAMPO_CMP_reliability_measures_2026.pdf"
+ ],
+ "license": "All files are synthetic, generated for this task by task307/generator; no third-party data.",
+ "source_note": "The Merrimont subarea network, trip tables, count stations, probe travel times and documents are invented; the methods (BPR volume-delay functions, user-equilibrium assignment, the AASHTO AADT method, the planning time index) are standard practice."
+}

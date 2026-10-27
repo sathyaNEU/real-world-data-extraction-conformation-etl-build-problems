@@ -10,8 +10,8 @@
   "shape": "other",
   "decision_type": "pick_one_of_n",
   "answer_unit": "named_option",
-  "answer": "",
-  "answer_source": "",
+  "answer": "Put the Center Street Bridge widening (TIP-28-009) forward: with the 2028 peak-hour trips re-assigned to equilibrium on each build network it saves 323,000 vehicle-hours a year, 8,300 per million dollars; the Route 9 Millbrook auxiliary lane saves 159,000",
+  "answer_source": "submission.md block 1; generator/figures.json",
   "gap": [
     "population",
     "objective"
@@ -31,7 +31,7 @@
   "validated_decoy": false,
   "context_artifact": "filed_model",
   "stump_class": "analytical",
-  "analyst_test": "A strong analyst takes the regional model's 2028 no-build loaded network, applies each project's capacity change to its own links and prices the time saved on those links at the no-build volumes through the documented volume-delay functions, so it funds the freeway widening, whose segment carries the most vehicles at the worst volume to capacity ratio; that holds every trip on its no-build route, and once trips re-route the widened freeway feeds the downstream crossing that binds, so the widening saves a fraction of its link-level figure and another project saves the most.",
+  "analyst_test": "A strong analyst takes the regional model's 2028 no-build loaded network, applies each project's capacity change to its own links and prices the time saved on those links at the no-build volumes through the documented volume-delay functions, so it funds the freeway widening, whose lane-drop segment carries the most vehicles and the largest link-level saving; that holds every trip on its no-build route, and once trips re-route the widened freeway feeds the downstream crossing that binds, so the widening saves a fraction of its link-level figure and another project saves the most.",
   "domain_test": "The deciding quantity is the change in the region's total peak-hour vehicle-hours when a project opens, the transport planner's network appraisal from a user-equilibrium assignment of the trip table over volume-delay functions; swapping hospitals or classrooms in loses route choice, link capacities and the equilibrium in which every trip's route depends on every other trip's, which is what moves the savings.",
   "layer2_family": "allocation_constraints",
   "layer2_pattern": "own:project-benefit-from-the-re-equilibrated-network-not-the-improved-links",
@@ -46,10 +46,10 @@
   "role_family": "policy_adviser",
   "scoring_unit": "other",
   "spine": {
-    "file": "mampo_count_stations_2025_15min.csv",
-    "rows": 0,
-    "entity": "one 15-minute count at one station and direction",
-    "grain": "station-direction-15-minute",
+    "file": "probe_segment_travel_times_2025.parquet",
+    "rows": 900091,
+    "entity": "one 15-minute travel time on one probe segment",
+    "grain": "segment-15-minute",
     "source": "synthetic"
   },
   "forum": "executive_team",
