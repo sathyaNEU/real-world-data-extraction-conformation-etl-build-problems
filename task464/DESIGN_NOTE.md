@@ -795,6 +795,60 @@ to make a solver notice a structure.
   It is anchor drift under another name, which the author banned as the gravest clone finding against task450,
   and the mechanism is already spent in the corpus at task249, whose deciding quantity is each form's
   repeat-examinee exposure gain in a certification examination with resits in any later window.
+- **Architecture 4 instance A, the composite conditional standard error read at each candidate's own
+  component raw marks: refused, measured over 24 seeds at 7 settings of the certified table's compression
+  (168 cells).** This is the one shape the cell screen left standing, instantiated: the conversion is filed
+  and certified in the pack, the conformation sits at rung 0 as a lookup, and the decisive step recovers an
+  exact input to it (the component raw mark, which the extract's scale mark cannot state because the
+  certified table is many-to-one) from the component mark capture. Quantity (c) of the bin arithmetic is
+  **exactly 0.000 bins**, which is what the filed conversion buys and the only thing it buys. It dies on the
+  other two. At the realistic compression (one to two raw marks in each scale mark around the boundary) the
+  cheapest extract-only construction, reading the shipped conditional error column at the midpoint raw mark
+  of the scale mark's own preimage, names the golden's bin in **24 of 24** seeds and its exact count in **19
+  of 24**, so the recovery is a lookup in the only sense that matters: the certified table is formally
+  many-to-one and still fixes the correcting input to within the graded figure. Compressing the table until
+  the two routes separate (preimage 2 to 9 raw marks) moves the easy route 29 to 138 bins off the golden and
+  does not help, because the binding term is the construction spread: eleven defensible readings of "within
+  one standard error of measurement" span **173 to 332 bins** against a decisive worth of **0.000 to 17.9
+  bins**, so **(a) greater than (b) plus (c) holds in 0 of 168 cells**. Dead on paper first and
+  independently: `stumping` 2.1 test 1 (a filed level over a quantity whose records fix every input leaves
+  only a variance, which is a reflex, measured twice in the corpus with both readers landing the call), the
+  variance-only screen, and the abstraction test against task195 (the uncertainty of a records-fixed
+  quantity read off the right variance) and task190 architecture 6 (a filed 95 per cent level over a
+  records-fixed ratio). `guard.py check` on the drafted card returns BLOCK on `test.same_puzzle_older`
+  (14 builds), `test.same_driver_older` (task70 v1, task98 v3), `ban.forum` and `ban.org_family` (both
+  against task308 v3, live), with nearest drivers 0.08 (this slot's own v2), 0.06 (task73 world six) and
+  0.05 (task190 6, task198 v3, task476 v1). Card drafted in the session scratch directory as
+  `task464_card_arch4_instanceA.json` and deliberately not registered.
+- **Architecture 4 instance B, the committee's boundary-sensitivity count recomputed on the shifted
+  certified table: refused, measured over 24 seeds, and refused for the opposite reason.** Graded exactly,
+  the golden (recompute each candidate's award with the component boundary one raw mark lower) is matched by
+  none of the four banding rungs in **0 of 24** seeds, the golden running 75 to 110 against 86 to 117 for
+  the scale-space bands and 59 to 93 for the own-slope band, so the separation is real and the golden is
+  bracketed. It dies on rule 3 and Gate F together: the decisive step is executing the certified table at
+  the boundary the committee proposes, which is rule application however many steps it takes, and it is the
+  opponent's first move rather than a step anybody skips. The pincer is the one the cell screen already
+  recorded in other nouns: the committee's question either names the space the perturbation is applied in,
+  which is rule application, or leaves "one mark" open, which is a semantic fork on the main recommendation.
+- **Architecture 4, the whole cell: refused as closed, with the closure stated as an enumeration rather than
+  as four accidents.** With the conversion filed, the deciding quantity in
+  item-response-theory-test-equating is one of exactly four kinds and each is barred. A property of the
+  instrument or the scale (equating constant, drift, difficulty, exposure, differential functioning) is
+  estimated, so it reopens the estimator family and walks back into the conversion wall, and that ground is
+  barred against task450 or spent at task249. A property of the measurement's precision (conditional error,
+  reliability, classification consistency, decision accuracy) is a variance, killed by the variance-only
+  screen and by readability test 1 as instance A measures. A property of a candidate's reported outcome
+  (raw mark, scale mark, grade, aggregate) is a certified function of recorded marks under published rules,
+  so recomputing it is arithmetic on shipped columns, and a recomputation that disagrees with the certified
+  extract is a planted defect in a certified record. A property of the process or the record (which marker,
+  which paper version, which sitting, which candidate) is a key or a stated rule, so semantics, identity
+  resolution or rule application. There is no fifth kind, because an awarding body's reported outcome is by
+  construction a certified function of recorded marks under published rules: that is what an awarding body
+  is. The institutional half says the same thing from the other side: a regulated awarding body publishes
+  the quality indicators of its own awarding process (reliability, the error of measurement, review and
+  tolerance rates, the technical report itself), so the mandated-indicator law fires on any quantity forced
+  from its process logs, and its every conformation step ships its own rule because every step must be
+  auditable.
 
 ## Portal result and the diagnosis, 2026-10-27
 
@@ -1015,3 +1069,81 @@ or a national assessment agency. Measured, that clears `org_family: university_o
 also moves the world off task450's district. `cooperative_or_member_body`, `committee_or_panel` and
 `vote_or_meeting` all measured free at the moment of this screen, and `filed_standard`,
 `monitoring_export` and `capacity_report` measured BLOCKed on `ban.artifact`, with `register` free.
+
+
+
+## Architecture 4 instance screen: the surviving shape priced and refused, measured 2026-10-27
+
+The screen above left exactly one shape standing and set two prices to pay before prototyping it. Both were
+paid, in order, and the shape is refused. The harnesses are `proto_arch4.py`, `proto_arch4_dial.py` and
+`proto_arch4_binarith.py` in the session scratch directory, each run twice with identical output.
+
+**The instantiation.** A chartered professional institute awarding a licence-to-practise qualification over
+three separately examined components. The conversion is filed and certified in the pack: one raw-to-scale
+table per component per sitting, approved by the Assessment and Qualifications Committee, with the technical
+report's conditional standard error column beside it, one figure per raw point. Conforming a component raw
+mark into a reported scale mark is therefore a lookup at rung 0, no estimator touches the graded figure, and
+the decisive step recovers an exact input to that filed conversion, the component raw mark, from the
+component mark capture file, which the award extract cannot state because the certified table is many-to-one.
+The call is the count of candidates the Committee must place on the January 2027 borderline review schedule
+before results are issued, against the panel capacity it approved.
+
+**Price 1, is the recovery a lookup: yes, measured.** The coarse file states each candidate's component and
+total scale marks and the provisional grade. The fine file pins the component raw mark, which the coarse file
+does not state and cannot state as a matter of arithmetic, because scale to raw is not a function. That
+answers the question as it was asked and the answer is still the wrong one, because what the step needs is
+not the raw mark but the conditional error column read at it, and the column is smooth in the raw mark while
+the preimage of a scale mark is one or two marks wide in the decision region. So reading the shipped column
+at the midpoint of the scale mark's own preimage, which is all an analyst holding the extract can do, lands
+the golden's bin in **24 of 24** seeds and the golden's exact count in **19 of 24**. The information the
+finer file adds is real and is second order in the graded figure.
+
+**Price 2, readability test 7: passed, and it does not matter.** The component mark capture ships for reasons
+the Institute independently has (components are separately examined, separately entered, billed per
+component, carried forward and quoted in appeals), so its presence announces nothing. A test the pack passes
+while the decisive step is reachable without the file is a test about the wrong thing.
+
+**The bin arithmetic, at the realistic setting and across the dial.** Graded to the nearest 10 candidates on
+a golden of 1,302 (11,000 candidates, three components, the qualification boundary at 240 of 300 scale
+marks):
+
+| quantity | measured |
+|---|---|
+| (a) the decisive step's worth, nearest rung | 0.000 bins median, 0.100 maximum over 24 seeds |
+| (a) the decisive step's worth against the extract-only route | 0.000 bins median |
+| (b) the defensible-construction spread, eleven readings of the filed phrase | 292.350 bins median (460 to 3,424 candidates) |
+| (c) the estimator's own interval | **exactly 0.000 bins**, no fitted parameter in any route |
+
+(c) is zero, which is what the filed conversion was supposed to buy and does buy. It is not the binding
+term. (b) is, and (b) is the WHAT screen read as a number: the eleven readings are eleven constructions of
+the comparison the estimand files, so closing them means filing the comparison, which `determinism-check`
+section 1 requires and which turns the step into rule application.
+
+**The dial, counted jointly.** Compressing the certified table around the boundary is the only parameter that
+moves the easy route off the golden, and it buys nothing:
+
+| compression, scale marks per raw mark | mean preimage, raw marks | golden | (a) nearest rung, bins | (a) easy route, bins | (b) spread, bins | cells with (a) over (b) plus (c) |
+|---|---|---|---|---|---|---|
+| 1.00 | 1.00 | 1,092 | 0.000 | 0.000 | 202.350 | 0 of 24 |
+| 0.60 | 1.71 | 1,149 | 0.100 | 0.100 | 185.200 | 0 of 24 |
+| 0.50 | 2.04 | 1,250 | 8.600 | 29.250 | 194.100 | 0 of 24 |
+| 0.40 | 2.49 | 1,227 | 16.900 | 31.200 | 172.850 | 0 of 24 |
+| 0.33 | 2.95 | 1,302 | 3.200 | 104.350 | 203.700 | 0 of 24 |
+| 0.25 | 3.79 | 1,450 | 17.900 | 111.000 | 202.800 | 0 of 24 |
+| 0.15 | 6.51 | 1,788 | 12.450 | 123.950 | 331.700 | 0 of 24 |
+
+**0 of 168 cells.** The extract-only route separates only where the table is compressed past anything a
+certified scale carries, and the construction spread never falls below seventeen times the decisive step's
+worth even there.
+
+**And the shape was dead on paper before the harness, which is the finding worth carrying.** `stumping` 2.1
+test 1: a filed level, significance or tolerance over a quantity whose records fix every input leaves only a
+variance, and the test is what is left rather than whether a level appears. The corpus has measured that
+twice, at task195 (six of twelve textbook routes to the interval file the golden, the reader landing the
+call and every ask figure) and at task190 architecture 6 (a filed 95 per cent level over a ratio of a
+complete administrative numerator to a survey denominator). Instance A is that driver in this cell's nouns,
+which `guard.py check` sees only at 0.05 against task198 v3 and task190 6, so the abstraction test is what
+catches it and not the score. The decisive step of the author's surviving shape has to be the recovery
+itself, and in this cell a recovery whose output is a point estimate is arithmetic on shipped columns while a
+recovery whose output is an uncertainty is a variance. That is the cell's closure, written in the architecture
+4 refusal above as an enumeration over the four kinds of deciding quantity the task type offers.
