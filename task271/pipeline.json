@@ -1,13 +1,13 @@
 {
  "task": "task271",
  "owner": "sathay3012",
- "status": "PAUSED",
- "domain": "actuarial-science-insurance",
+ "status": "DESIGN",
+ "domain": "quantitative-finance",
  "objective": "descriptive-distribution",
- "stage": 1,
- "stage_name": "draw",
- "updated": "2026-10-26",
- "stump": "A competent analyst back-tests frequency models on the homes' recorded attributes (year built, basement, bathrooms, construction, township), keeps the best on 2025 as the mutual's model standard requires, carries it to each township's owner-occupied homes and names Brookmere, whose newer slab-built homes look safest; only the model carrying the water authority's supply zone, which wins the 2025 test outright and finds most of Brookmere's homes in the high-pressure Valley zone, names Ashby Hill.",
+ "stage": 2,
+ "stage_name": "design",
+ "updated": "2026-10-27",
+ "stump": "A competent analyst who builds the 2026 fills correctly and averages each venue's 60-second adverse move over them keeps only Corvel lit and Kestrel SI off the wealth platform's venue list, because the raw averages of Arden dark and Lowther dark sit under 1.5 basis points; the algorithms ping those midpoint books in each parent order's opening seconds and the same order's next fills push the mid the desk's way inside the minute, so on fills with no desk trade in the stock in the following minute, or net of the desk's following volume, the two midpoint books fail the test too.",
  "architecture": 5,
  "loops": 0,
  "precut": {
@@ -20,7 +20,7 @@
   "reader": "pending"
  },
  "duplicate_check": {
-  "check_at_draw": "WARN 2026-10-26 (no BLOCK; task185, task188, task457 and task80 differentiated on the card)",
+  "check_at_draw": "PASS 2026-10-27 before and after registration",
   "heart": "pending",
   "surface": "pending"
  },
@@ -30,7 +30,7 @@
   "report": ""
  },
  "returned": [],
- "resume": "Re-root at the architecture 5 draw in a fresh world; read DESIGN_NOTE.md's Tried and rejected first, every architecture there stays dead, and so do architecture 5's four probed candidates (the port's AIS gap, the radio reach from two interviews, the same reach with selective re-contact, the pole crews skipping easement poles), each landed by both call-only draw probes. The lessons to draw on: a visible gap is filled well by a strong reader; repeat observations announce the textbook model; a subsample is checked against its parent on every variable its own file carries; and a shipped file whose only use is the decisive construction announces it. The organ carrying the bias has to be one the default path already consumes for its own reason, so reading it again for the bias is the step nobody prompts; file only the unobserved outcome, and site every ask device where no column, filed rule or announced date reaches it.",
+ "resume": "Stage 2: write the design sections (readability screen, semantic fork table, ladder, closure table, literal reader, oracles, ask sheet), the prompt and the asks, then precut.py; the draw's screens are scratch t271/mm/proto2.py and proto3.py.",
  "architectures": [
   {
    "architecture": 1,
@@ -53,12 +53,13 @@
   {
    "architecture": 4,
    "drawn": "2026-10-26",
-   "fate": "spent 2026-10-26 at stage 4 round 1: both scored readers searched standard 3's five characteristics and filed Brookmere, the judge NOT_DETERMINISTIC and SEND_BACK on the unfiled candidate set (filing the zone names the step), and both readers took all ten ask figures"
+   "fate": "spent 2026-10-26 at stage 4 round 1: both scored readers searched standard 3's five characteristics and filed Brookmere, the judge NOT_DETERMINISTIC and SEND_BACK on the unfiled candidate set (filing the zone names the step), and both readers took all ten ask figures",
+   "paused": "fa95e929"
   },
   {
    "architecture": 5,
-   "fate": "to draw",
-   "probes": "p271a5-1 and p271a5-2 on 2026-10-26 landed the first candidate (the port's main-engine CO2 across the AIS gap), set aside before a card; p271r1 to p271r6 on 2026-10-26 landed the second, third and fourth candidates (radio reach twice, the pole crews), set aside before a card"
+   "drawn": "2026-10-27",
+   "fate": "live"
   }
  ],
  "approved": null,

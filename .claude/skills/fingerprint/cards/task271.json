@@ -1,198 +1,221 @@
 {
- "task": "task271",
- "architecture": "v4 (Halverstead Mutual's 2027 agency town, which of three Tamswold County townships, on the non-weather water claims each town's homes would bring, carried by the water authority's supply zone each home draws from)",
- "drawn": "2026-10-26",
- "slot_note": "re-rooted in a fresh world on 2026-10-26 after the author's reopen of 2026-10-25; no seed lends anything to architecture 4, whose world, decision and quantity are drawn new",
- "domain": "actuarial-science-insurance",
- "subdomain": "claims-frequency-severity",
- "client_domain": "actuarial-science-insurance",
- "niche": "a county mutual's choice of the township for its 2027 agency on the non-weather water claims the township's homes would bring, carried by the water authority's supply zone each home sits in",
- "objective": "descriptive-distribution",
- "shape": "14",
- "decision_type": "pick_one_of_n",
- "answer_unit": "named_option",
- "answer": "",
- "answer_source": "",
- "gap": [
-  "rule",
-  "population"
- ],
- "pattern": [
-  "none"
- ],
- "generators": [
-  "G16",
-  "G14"
- ],
- "gate_g": "method_or_model_selection",
- "calibration_form": "none",
- "stump_strategy": "forecast_method_backtest",
- "decisive_rule_filed": true,
- "official_decoy": false,
- "validated_decoy": false,
- "context_artifact": "register",
- "stump_class": "analytical",
- "analyst_test": "A strong analyst who reads every policy, claim and assessor record and the mutual's model standard correctly runs its 2025 hold-out test over models on the characteristics the policy terms record (foundation, year built era, full bathrooms, construction, stories), keeps foundation alone, carries it to each township's owner-occupied homes and names Brookmere (18 claims per 1,000 house-years), whose slab-built homes look safest; homes in the water authority's Valley zone claim at 2.31 times the Upper zone and 2,192 of Brookmere's 2,584 homes draw from it, which only placing each home's parcel point in the authority's zone map shows, and every model with the zone wins the 2025 test, so only it names Dorrance Hill (21).",
- "domain_test": "The deciding quantity is the non-weather water claim frequency per earned house-year that the field fits for a rating cell and validates on a held-out policy year, carried here by the peril's physical driver, the static supply pressure of the zone a home draws from, which the rating plan does not carry; with another field's nouns there is no supply zone, no service pressure and no water-damage peril for the zone geometry to place.",
- "layer2_family": "estimation_fit",
- "layer2_pattern": "own:water-claim-frequency-carried-by-the-supply-zone-each-home-draws-from",
- "layer1": [
-  "policy terms with mid-term cancellations, reinstatements and re-rated renewals (earned exposure from dates)",
-  "cause-of-loss codes recoded on 1 January 2024 with a crosswalk",
-  "claims reopened under suffixed numbers",
-  "assessor roll with homestead flags, multi-unit parcels and a separate dwelling-characteristics table",
-  "coordinates from two geocoders (address point and parcel centroid)",
-  "the authority's zone map and hydrant register published as GeoJSON in its own field names"
- ],
- "stakeholder_role": "the mutual's underwriting manager, preparing the expansion paper for the board's 2027 agency decision",
- "role_family": "portfolio_manager",
- "scoring_unit": "per active unit per period",
- "spine": {
-  "file": "policy_terms_2023_2025.csv",
-  "rows": 0,
-  "entity": "one policy term, a home insured for one policy year",
-  "grain": "policy x term",
-  "source": "synthetic"
- },
- "forum": "board_of_directors",
- "forcing_event": "vote_or_meeting",
- "org_family": "cooperative_or_member_body",
- "world": {
-  "geography": "United States (Pennsylvania, a fictional county)",
-  "currency": "USD",
-  "org_type": "county mutual fire insurance company",
-  "invented_names": [
-   "Halverstead Mutual Fire Insurance Company",
-   "Tamswold County",
-   "Tamswold County Water Authority",
-   "Dorrance Hill",
-   "Brookmere",
-   "Sallowmead",
-   "Wyvellton",
-   "Holtmere",
-   "Varnacott",
-   "Merrivane",
-   "Ostrander Ridge Tank",
-   "Corrigan Adjusting Services"
+  "task": "task271",
+  "architecture": "v5 (Fenmarsh Wealth's 2027 venue list: which of the central dealing desk's eight execution venues the wealth platform's dealing orders, each sent whole to one venue from 4 January 2027, must not use under the order execution policy's adverse-move test, each venue's move in the minute after a fill read from the desk's 2026 fills, which sat inside parent orders sliced into child orders)",
+  "drawn": "2026-10-27",
+  "slot_note": "re-rooted in a fresh world on 2026-10-27 at the architecture 5 draw; architecture 4 moved to lineage; no seed lends anything to architecture 5, whose world, decision and quantity are drawn new",
+  "domain": "quantitative-finance",
+  "subdomain": "market-microstructure-execution-cost",
+  "client_domain": "quantitative-finance",
+  "niche": "a UK asset manager's venue list for its wealth platform's in-house dealing orders, each venue's adverse move in the minute after a fill read from a year of the central desk's algorithmic fills",
+  "objective": "descriptive-distribution",
+  "shape": "10",
+  "decision_type": "designation_set",
+  "answer_unit": "set_of_items",
+  "answer": "",
+  "answer_source": "",
+  "gap": [
+    "objective",
+    "population"
   ],
-  "people": [
-   "Dillon Evans",
-   "Luis Thomas",
-   "Robin Fields"
-  ]
- },
- "deliverables": [
-  "agency_town_2027.xlsx",
-  "water_claims_by_town_2027.png"
- ],
- "opening_move": "question-first",
- "question_form": "which",
- "driver": "The decisive quantity is a per-unit event rate carried to new populations of units from the model a filed hold-out test selects, where the model that wins places each unit in a supplier's network zones by geometry, a placement no record of the units holds; the best model the units' recorded attributes can build passes for the winner on the test it is shown and ranks the new populations the other way.",
- "driver_concrete": "Each of three candidate townships' non-weather water claims per 1,000 house-years from the frequency model that best predicts Halverstead Mutual's 2025 claims when fitted on 2023 and 2024 (the mutual's Frequency Model Standard), where homes in the Tamswold County Water Authority's Valley zone (fed straight from the Ostrander Ridge Tank, 96 to 126 psi at the services) claim at 2.31 times the Upper zone: the zone, set for each home by placing its parcel point in the authority's zone map, wins the test, and each township's homes are charged the refitted foundation and zone rates, not the characteristics on the assessor roll or the experience of the book's nearest township.",
- "stump": "A competent analyst back-tests models on the homes' recorded characteristics, keeps foundation alone on 2025, carries it to each township's assessor roll and names Brookmere (18 claims per 1,000 house-years), whose slab-built homes look safest; only a model carrying the water authority's supply zone, which wins the 2025 test outright (3,169.4 against 3,252.4) and finds 2,192 of Brookmere's 2,584 homes in the high-pressure Valley zone, names Dorrance Hill (21).",
- "mechanism_source": "design_note",
- "differentiation": {
-  "task188": "task188 estimates an infection density from grouped mosquito tests and carries one trap type's rate to another's catch; task271 selects, by the mutual's filed hold-out test, the claim frequency model that carries the water authority's supply zone, a placement no policy record holds, to three townships the mutual has never written.",
-  "task185": "task185 converts readings between an old and a new measuring device at the value converted; task271 converts nothing, it selects by a filed hold-out test the claim model that carries a supply zone no policy record holds to townships never written.",
-  "task457": "task457 measures each reporter's error against the events up to its own report date; task271 has no report vintages, it carries a claim frequency to unwritten townships through the supply zone each home draws from, chosen by a filed hold-out test.",
-  "task80": "task80 dates a fixed-term status from its criterion event; task271 dates nothing, it carries a claim frequency to unwritten townships through a supply zone placed by geometry, chosen by a filed hold-out test."
- },
- "lineage": [
-  {
-   "domain": "healthcare-delivery-health-economics",
-   "subdomain": "provider-quality-risk-adjustment",
-   "objective": "descriptive-distribution",
-   "shape": "01",
-   "decision_type": "ranked_slate_under_cap",
-   "answer_unit": "set_of_items",
-   "gap": [
-    "population"
-   ],
-   "pattern": [
+  "pattern": [
     "E"
-   ],
-   "generators": [
+  ],
+  "generators": [
     "G14",
-    "G16"
-   ],
-   "gate_g": "decomposition_attribution",
-   "stump_strategy": "decomposition_attribution",
-   "role_family": "procurement_lead",
-   "forum": "board_of_directors",
-   "forcing_event": "vote_or_meeting",
-   "org_family": "cooperative_or_member_body",
-   "driver": "The decisive quantity is each unit's outcome rate against what its cases' prior state would produce, where a strong risk property of some cases is recorded only in their earlier episodes at other units and concentrates at the units that receive referrals, so a risk model built from the current episode alone charges those units for their cases' history.",
-   "architecture": "v1 (Corrisbrook Health Cooperative's 2027 Pancreatic Surgery Centres, three of eight Wisconsin hospitals by 90-day deaths after pancreatic resection against a pooled risk model, an earlier pancreas or bile duct operation rebuilt from the patients' earlier admissions)",
-   "drawn": "2026-10-19",
-   "fate": "spent 2026-10-19 at stage 4: both isolated scored readers built a prior hepatobiliary or pancreatic operation from the patients' earlier admissions through the documented person key and committed the golden call (Netherfold, Ferncastle, Aldermoor); a history look-back is the field's comorbidity reflex; the judge returned SEND_BACK on the earlier-operation flag's unfiled definition",
-   "driver_concrete": "Each eligible hospital's 90-day deaths after pancreatic resection in 2023 to 2025 against the deaths its patients' pre-operative condition would produce at the eight hospitals together, with an earlier operation on the pancreas or bile ducts, recorded only in the patient's earlier admissions anywhere in the state, as a risk factor; the two referral centres perform most re-operations.",
-   "stump": "A competent solver risk-adjusts on the index admission's own record, finds Aldermoor's ratio at 0.95 and names Netherfold, Ferncastle and Farrowmere; only adding the earlier pancreatic or bile-duct operation, rebuilt from the patients' earlier admissions statewide since 2016, brings Aldermoor's ratio to 0.87 and names Netherfold, Ferncastle and Aldermoor."
+    "G3"
+  ],
+  "gate_g": "decomposition_attribution",
+  "calibration_form": "none",
+  "stump_strategy": "population_selection",
+  "decisive_rule_filed": true,
+  "official_decoy": false,
+  "validated_decoy": false,
+  "context_artifact": "monitoring_export",
+  "stump_class": "analytical",
+  "analyst_test": "A strong analyst who joins both brokers' fills to the transaction cost provider's mids, nets the busted and duplicated fills and averages each venue's 60-second adverse move over its 2026 continuous-trading fills names Corvel lit and Kestrel SI for exclusion, because the raw averages of Arden dark and Lowther dark, the books the algorithms ping in each order's opening seconds, sit under the policy's 1.5 basis points; those fills were followed within the minute by the same order's next child fills, which pushed the mid the desk's way, and the platform's orders, each sent whole, carry no such following trades, so read on fills with no desk trade in the stock in the next minute, or net of the desk's following volume, the two dark books fail the test too.",
+  "domain_test": "The deciding quantity is each venue's adverse selection, the move of the mid against the order in the minute after a fill, which execution analysis measures by markouts and separates from the trader's own price impact with an impact model; replacing it with the raw markout average, or carrying it to another field's nouns (wards for venues), loses the separation of a counterparty's information from the measuring desk's own continuing trading that decides the call.",
+  "layer2_family": "estimand_identification",
+  "layer2_pattern": "own:venue-markouts-net-of-the-desks-own-continuing-trading",
+  "layer1": [
+    "two brokers' fill files in their own layouts (one in pence with UTC times, one in pounds with London local times across the BST change)",
+    "venue codes in one broker's file and venue names in the other, with a venue's code changed mid-year",
+    "busted and corrected executions as reversal rows",
+    "drop-copy duplicates of the same execution in both brokers' files",
+    "the transaction cost provider's reference IDs against the brokers' execution IDs",
+    "closing auction fills with no continuous mid after them",
+    "a share consolidation moving prices and quantities mid-year",
+    "trading days with an early close"
+  ],
+  "stakeholder_role": "head of execution research, preparing the venue review for the wealth board",
+  "role_family": "research_desk",
+  "scoring_unit": "per settled transaction",
+  "spine": {
+    "file": "brokerA_executions_2026.csv",
+    "rows": 0,
+    "entity": "one execution report: a child order filled at one venue",
+    "grain": "execution",
+    "source": "synthetic"
   },
-  {
-   "domain": "survey-research-official-statistics",
-   "subdomain": "nonresponse-calibration-measurement-error-adjustment",
-   "objective": "descriptive-distribution",
-   "shape": "01",
-   "decision_type": "ranked_slate_under_cap",
-   "answer_unit": "set_of_items",
-   "gap": [
-    "population"
-   ],
-   "pattern": [
-    "none"
-   ],
-   "generators": [
-    "G7",
-    "G12",
-    "G14",
-    "G16"
-   ],
-   "gate_g": "method_or_model_selection",
-   "stump_strategy": "population_selection",
-   "role_family": "programme_officer",
-   "forum": "board_of_directors",
-   "forcing_event": "launch_or_rollout",
-   "org_family": "nonprofit_or_charity",
-   "driver": "The decisive quantity is the share of a group's members holding a state that keeps them away at the hours most attempts to reach them are made, measured only on the members who could be reached, with every attempt on every member logged with its hour; weighting the reached members to the group's recorded attributes, or carrying the last-reached members' share to the never reached, leaves the shortfall, and only a model of each state's chance of being reached in each window of the day, fitted to the attempt histories of reached and never-reached members together, gives the share among those never reached.",
-   "driver_concrete": "Each Washington region's share of the plan's expansion members aged 19 to 64 who worked 80 hours or more in March 2026, from the spring member work survey, where members in work rarely answer weekday daytime calls and the regions' calls went out by day in different measure; a callback model of each work class's chance of answering in each calling window, fitted to every sampled member's call history across the two centres' logs, gives the share among the members never reached.",
-   "stump": "A competent solver weights each region's respondents to its sampled members' age and sex, or carries the late-reached respondents' share in work to the members never reached, and names Pierce, North Sound, King and Spokane, North Sound in place of Thurston-Mason; only the callback model on the two centres' call records, each work class's answer rate by calling window, recovers the unreached members' share in work and names Pierce, Spokane, King and Thurston-Mason.",
-   "architecture": "v2 (Trevanna Community Health Plan's 2027 Community Engagement Support track: which four of ten Washington Apple Health regions by the share of expansion members who worked 80 hours in March 2026, a latent class callback model of the member survey's call records)",
-   "drawn": "2026-10-20",
-   "fate": "spent 2026-10-20 at stage 4: both isolated scored readers fitted the latent class callback model on every sampled member's call history and landed the call (one took every graded figure); the judge returned SEND_BACK, a level-of-effort logit extrapolated to the unreached naming North Sound fourth"
+  "forum": "board_of_directors",
+  "forcing_event": "cutover_or_migration",
+  "org_family": "financial_institution",
+  "world": {
+    "geography": "United Kingdom",
+    "currency": "GBP",
+    "org_type": "asset manager with a wealth platform for retail clients",
+    "invented_names": [
+      "Fenmarsh Investment Management",
+      "Fenmarsh Wealth",
+      "Wexcombe Stock Exchange",
+      "Arden MTF",
+      "Corvel MTF",
+      "Lowther MTF",
+      "Bramwell Securities",
+      "Kestrel Markets"
+    ],
+    "people": [
+      "Declan Davies",
+      "Owen Porter",
+      "Oliver Hamilton"
+    ]
   },
-  {
-   "domain": "biomedical-clinical-research",
-   "subdomain": "statistical-genomics",
-   "objective": "descriptive-distribution",
-   "shape": "10",
-   "decision_type": "designation_set",
-   "answer_unit": "set_of_items",
-   "gap": [
-    "population"
-   ],
-   "pattern": [
-    "none"
-   ],
-   "generators": [
-    "G12",
-    "G14",
-    "G16"
-   ],
-   "gate_g": "method_or_model_selection",
-   "stump_strategy": "population_selection",
-   "role_family": "research_desk",
-   "forum": "line_manager_or_team",
-   "forcing_event": "launch_or_rollout",
-   "org_family": "hospital_or_health_provider",
-   "driver": "The decisive quantity is the chance that a member carrying an inherited trait develops an outcome by a fixed age, estimated from clusters that reached the record because one member had the outcome, where the other members are checked for the trait far more often once they have the outcome; leaving out the members who brought each cluster in and taking the members checked and found to carry the trait still credits the trait with the outcomes that prompted the checks, most where unaffected members have seldom been checked, and only every member's history, each carrying the trait with the probability inheritance gives unless a check settles it, recovers the risk.",
-   "architecture": "v3 (a 38-hospital nonprofit health system's 2027 Family Outreach Program, which variant groups' breast cancer risk by 70 reaches the line, penetrance from the referred families' relatives with testing selected on the relative's own cancer)",
-   "drawn": "2026-10-20",
-   "fate": "spent 2026-10-21 at stage 4: both isolated scored readers ran the kin-cohort from criteria 2.3's filed population (every mother, sister and daughter) and landed the call with all 20 ask figures; the judge DETERMINISTIC, APPROVE; a filed measuring population of every relative hands over the one-half prior",
-   "driver_concrete": "Each variant group's breast cancer risk by 70 for a woman who carries a variant in it, estimated from the mothers, sisters and daughters of the probands referred to the health system's Inherited Cancer Risk Service, where relatives with breast cancer are tested in their own care or invited first while unaffected relatives are tested only if they answer a letter, and for the four groups identified late (BARD1 and RAD51D added to the panel in 2023, the PALB2 and ATM missense variants reclassified in 2024) few unaffected relatives have answered; every relative counts, a carrier with probability one half unless a final report settles it (kin-cohort or Mendelian likelihood), not the relatives whose report shows the variant.",
-   "stump": "A competent solver sets the probands aside, runs Kaplan-Meier on the relatives whose final report shows the family's variant and names five groups for the 2027 Family Outreach Program, PALB2 protein-truncating, PALB2 missense, ATM missense, BARD1 and RAD51D, because the late groups' tested relatives are mostly women tested for a cancer of their own; only every mother, sister and daughter with the one-half prior (the kin-cohort or the Mendelian likelihood) puts ATM missense, BARD1 and RAD51D at 18, 16 and 12 percent and names the two PALB2 groups."
-  }
- ],
- "notes": "Architecture 4 drawn 2026-10-26 in a fresh world after the reopen; architectures 1 to 3 are in the lineage with their fates. At stage 2 (2026-10-26) the window moved: task304, registered at 17:06:56Z (before this card), carries launch_or_rollout and financial_institution, so the forcing event was redrawn to vote_or_meeting (the board decides at its November 18, 2026 meeting, which is what forces the paper; the agency's April 2027 opening is the decision's subject) and the organisation family to cooperative_or_member_body (a county mutual is owned by its policyholders, which describes it more exactly than a financial institution). Architecture 4 spent 2026-10-26 at stage 4 round 1: the judge SEND_BACK on the unfiled model candidate set (standard 3 lists five recorded characteristics; filing the pressure zone names the step), both scored readers filed Brookmere on the five, and both took all ten ask figures.",
- "registered": "2026-10-26T17:15:18Z",
- "architecture_spent": true
+  "deliverables": [
+    "venue_list_board_paper_2027.pdf",
+    "venue_review_2027.xlsx"
+  ],
+  "opening_move": "question-first",
+  "question_form": "which",
+  "driver": "The decisive quantity is how far a measured level moves against an actor in a fixed window after each of its events at each channel, for events that will stand alone, read from a record whose events mostly sat inside sequences of the same actor's events, each later event pushing the level the actor's way inside the earlier events' windows; channels used at the start of the sequences look benign on the raw average, and only the events with none of the actor's own events in their window, or each move net of the actor's following volume, carry to the lone events the decision governs.",
+  "driver_concrete": "Each of Fenmarsh's eight execution venues' average adverse move in the 60 seconds after a fill, as the wealth platform's 2027 dealing orders (each sent whole to one venue) would meet it, read from the central dealing desk's 2026 fills, most of which sat inside parent orders sliced into child orders whose later fills pushed the mid the desk's way inside the earlier fills' minute; the dark books the algorithms ping in each order's opening seconds (Arden dark and Lowther dark) look benign on the raw average and exceed the policy's 1.5 basis points only when read on fills with no desk trade in the stock in the next minute, or net of the desk's following volume.",
+  "stump": "A competent analyst averages each venue's 60-second adverse move over its 2026 fills and keeps the exclusion list to Corvel lit and Kestrel SI, because the raw averages of the dark books the algorithms ping first sit under 1.5 basis points; most of those fills were followed within the minute by the same order's next child fills, which pushed the mid the desk's way, and on fills with no desk trade in the following minute, or net of the desk's following volume, Arden dark and Lowther dark fail the test too.",
+  "mechanism_source": "design_note",
+  "differentiation": {},
+  "lineage": [
+    {
+      "domain": "healthcare-delivery-health-economics",
+      "subdomain": "provider-quality-risk-adjustment",
+      "objective": "descriptive-distribution",
+      "shape": "01",
+      "decision_type": "ranked_slate_under_cap",
+      "answer_unit": "set_of_items",
+      "gap": [
+        "population"
+      ],
+      "pattern": [
+        "E"
+      ],
+      "generators": [
+        "G14",
+        "G16"
+      ],
+      "gate_g": "decomposition_attribution",
+      "stump_strategy": "decomposition_attribution",
+      "role_family": "procurement_lead",
+      "forum": "board_of_directors",
+      "forcing_event": "vote_or_meeting",
+      "org_family": "cooperative_or_member_body",
+      "driver": "The decisive quantity is each unit's outcome rate against what its cases' prior state would produce, where a strong risk property of some cases is recorded only in their earlier episodes at other units and concentrates at the units that receive referrals, so a risk model built from the current episode alone charges those units for their cases' history.",
+      "architecture": "v1 (Corrisbrook Health Cooperative's 2027 Pancreatic Surgery Centres, three of eight Wisconsin hospitals by 90-day deaths after pancreatic resection against a pooled risk model, an earlier pancreas or bile duct operation rebuilt from the patients' earlier admissions)",
+      "drawn": "2026-10-19",
+      "fate": "spent 2026-10-19 at stage 4: both isolated scored readers built a prior hepatobiliary or pancreatic operation from the patients' earlier admissions through the documented person key and committed the golden call (Netherfold, Ferncastle, Aldermoor); a history look-back is the field's comorbidity reflex; the judge returned SEND_BACK on the earlier-operation flag's unfiled definition",
+      "driver_concrete": "Each eligible hospital's 90-day deaths after pancreatic resection in 2023 to 2025 against the deaths its patients' pre-operative condition would produce at the eight hospitals together, with an earlier operation on the pancreas or bile ducts, recorded only in the patient's earlier admissions anywhere in the state, as a risk factor; the two referral centres perform most re-operations.",
+      "stump": "A competent solver risk-adjusts on the index admission's own record, finds Aldermoor's ratio at 0.95 and names Netherfold, Ferncastle and Farrowmere; only adding the earlier pancreatic or bile-duct operation, rebuilt from the patients' earlier admissions statewide since 2016, brings Aldermoor's ratio to 0.87 and names Netherfold, Ferncastle and Aldermoor."
+    },
+    {
+      "domain": "survey-research-official-statistics",
+      "subdomain": "nonresponse-calibration-measurement-error-adjustment",
+      "objective": "descriptive-distribution",
+      "shape": "01",
+      "decision_type": "ranked_slate_under_cap",
+      "answer_unit": "set_of_items",
+      "gap": [
+        "population"
+      ],
+      "pattern": [
+        "none"
+      ],
+      "generators": [
+        "G7",
+        "G12",
+        "G14",
+        "G16"
+      ],
+      "gate_g": "method_or_model_selection",
+      "stump_strategy": "population_selection",
+      "role_family": "programme_officer",
+      "forum": "board_of_directors",
+      "forcing_event": "launch_or_rollout",
+      "org_family": "nonprofit_or_charity",
+      "driver": "The decisive quantity is the share of a group's members holding a state that keeps them away at the hours most attempts to reach them are made, measured only on the members who could be reached, with every attempt on every member logged with its hour; weighting the reached members to the group's recorded attributes, or carrying the last-reached members' share to the never reached, leaves the shortfall, and only a model of each state's chance of being reached in each window of the day, fitted to the attempt histories of reached and never-reached members together, gives the share among those never reached.",
+      "driver_concrete": "Each Washington region's share of the plan's expansion members aged 19 to 64 who worked 80 hours or more in March 2026, from the spring member work survey, where members in work rarely answer weekday daytime calls and the regions' calls went out by day in different measure; a callback model of each work class's chance of answering in each calling window, fitted to every sampled member's call history across the two centres' logs, gives the share among the members never reached.",
+      "stump": "A competent solver weights each region's respondents to its sampled members' age and sex, or carries the late-reached respondents' share in work to the members never reached, and names Pierce, North Sound, King and Spokane, North Sound in place of Thurston-Mason; only the callback model on the two centres' call records, each work class's answer rate by calling window, recovers the unreached members' share in work and names Pierce, Spokane, King and Thurston-Mason.",
+      "architecture": "v2 (Trevanna Community Health Plan's 2027 Community Engagement Support track: which four of ten Washington Apple Health regions by the share of expansion members who worked 80 hours in March 2026, a latent class callback model of the member survey's call records)",
+      "drawn": "2026-10-20",
+      "fate": "spent 2026-10-20 at stage 4: both isolated scored readers fitted the latent class callback model on every sampled member's call history and landed the call (one took every graded figure); the judge returned SEND_BACK, a level-of-effort logit extrapolated to the unreached naming North Sound fourth"
+    },
+    {
+      "domain": "biomedical-clinical-research",
+      "subdomain": "statistical-genomics",
+      "objective": "descriptive-distribution",
+      "shape": "10",
+      "decision_type": "designation_set",
+      "answer_unit": "set_of_items",
+      "gap": [
+        "population"
+      ],
+      "pattern": [
+        "none"
+      ],
+      "generators": [
+        "G12",
+        "G14",
+        "G16"
+      ],
+      "gate_g": "method_or_model_selection",
+      "stump_strategy": "population_selection",
+      "role_family": "research_desk",
+      "forum": "line_manager_or_team",
+      "forcing_event": "launch_or_rollout",
+      "org_family": "hospital_or_health_provider",
+      "driver": "The decisive quantity is the chance that a member carrying an inherited trait develops an outcome by a fixed age, estimated from clusters that reached the record because one member had the outcome, where the other members are checked for the trait far more often once they have the outcome; leaving out the members who brought each cluster in and taking the members checked and found to carry the trait still credits the trait with the outcomes that prompted the checks, most where unaffected members have seldom been checked, and only every member's history, each carrying the trait with the probability inheritance gives unless a check settles it, recovers the risk.",
+      "architecture": "v3 (a 38-hospital nonprofit health system's 2027 Family Outreach Program, which variant groups' breast cancer risk by 70 reaches the line, penetrance from the referred families' relatives with testing selected on the relative's own cancer)",
+      "drawn": "2026-10-20",
+      "fate": "spent 2026-10-21 at stage 4: both isolated scored readers ran the kin-cohort from criteria 2.3's filed population (every mother, sister and daughter) and landed the call with all 20 ask figures; the judge DETERMINISTIC, APPROVE; a filed measuring population of every relative hands over the one-half prior",
+      "driver_concrete": "Each variant group's breast cancer risk by 70 for a woman who carries a variant in it, estimated from the mothers, sisters and daughters of the probands referred to the health system's Inherited Cancer Risk Service, where relatives with breast cancer are tested in their own care or invited first while unaffected relatives are tested only if they answer a letter, and for the four groups identified late (BARD1 and RAD51D added to the panel in 2023, the PALB2 and ATM missense variants reclassified in 2024) few unaffected relatives have answered; every relative counts, a carrier with probability one half unless a final report settles it (kin-cohort or Mendelian likelihood), not the relatives whose report shows the variant.",
+      "stump": "A competent solver sets the probands aside, runs Kaplan-Meier on the relatives whose final report shows the family's variant and names five groups for the 2027 Family Outreach Program, PALB2 protein-truncating, PALB2 missense, ATM missense, BARD1 and RAD51D, because the late groups' tested relatives are mostly women tested for a cancer of their own; only every mother, sister and daughter with the one-half prior (the kin-cohort or the Mendelian likelihood) puts ATM missense, BARD1 and RAD51D at 18, 16 and 12 percent and names the two PALB2 groups."
+    },
+    {
+      "domain": "actuarial-science-insurance",
+      "subdomain": "claims-frequency-severity",
+      "objective": "descriptive-distribution",
+      "shape": "14",
+      "decision_type": "pick_one_of_n",
+      "answer_unit": "named_option",
+      "gap": [
+        "rule",
+        "population"
+      ],
+      "pattern": [
+        "none"
+      ],
+      "generators": [
+        "G16",
+        "G14"
+      ],
+      "gate_g": "method_or_model_selection",
+      "stump_strategy": "forecast_method_backtest",
+      "role_family": "portfolio_manager",
+      "forum": "board_of_directors",
+      "forcing_event": "vote_or_meeting",
+      "org_family": "cooperative_or_member_body",
+      "driver": "The decisive quantity is a per-unit event rate carried to new populations of units from the model a filed hold-out test selects, where the model that wins places each unit in a supplier's network zones by geometry, a placement no record of the units holds; the best model the units' recorded attributes can build passes for the winner on the test it is shown and ranks the new populations the other way.",
+      "architecture": "v4 (Halverstead Mutual's 2027 agency town, which of three Tamswold County townships, on the non-weather water claims each town's homes would bring, carried by the water authority's supply zone each home draws from)",
+      "drawn": "2026-10-26",
+      "driver_concrete": "Each of three candidate townships' non-weather water claims per 1,000 house-years from the frequency model that best predicts Halverstead Mutual's 2025 claims when fitted on 2023 and 2024 (the mutual's Frequency Model Standard), where homes in the Tamswold County Water Authority's Valley zone (fed straight from the Ostrander Ridge Tank, 96 to 126 psi at the services) claim at 2.31 times the Upper zone: the zone, set for each home by placing its parcel point in the authority's zone map, wins the test, and each township's homes are charged the refitted foundation and zone rates, not the characteristics on the assessor roll or the experience of the book's nearest township.",
+      "stump": "A competent analyst back-tests models on the homes' recorded characteristics, keeps foundation alone on 2025, carries it to each township's assessor roll and names Brookmere (18 claims per 1,000 house-years), whose slab-built homes look safest; only a model carrying the water authority's supply zone, which wins the 2025 test outright (3,169.4 against 3,252.4) and finds 2,192 of Brookmere's 2,584 homes in the high-pressure Valley zone, names Dorrance Hill (21).",
+      "fate": "spent 2026-10-26 at stage 4 round 1: both scored readers searched standard 3's five characteristics and filed Brookmere, the judge NOT_DETERMINISTIC and SEND_BACK on the unfiled candidate set (filing the zone names the step), and both readers took all ten ask figures"
+    }
+  ],
+  "notes": "Architecture 5 drawn 2026-10-27 in a fresh world; architecture 4 moved to lineage with its fate. Axes redrawn at the draw against the window's last three live cards (task118 v2, task157 v2, task204): forum committee_or_panel to board_of_directors (the wealth subsidiary's board approves its order execution policy and venue list before dealing moves in-house), forcing event launch_or_rollout to cutover_or_migration (the platform's client dealing moves from a third-party broker to the central desk on 4 January 2027, the honest clock), role operations_director to research_desk (the requester runs execution research), context artifact filed_standard to monitoring_export (the stakeholder's working file is the transaction cost provider's export), strategy decomposition_attribution and causal_design (both banned in the window) to population_selection (which 2026 fills stand for the platform's lone orders, the scope of the evidence). Gate G stays decomposition_attribution: the post-fill move is correctly recorded and the decision turns on assigning it to the counterparty or to the desk's own continuing trading.",
+  "registered": "2026-10-27T08:15:19Z"
 }
