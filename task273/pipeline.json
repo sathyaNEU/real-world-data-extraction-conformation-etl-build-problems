@@ -1,12 +1,12 @@
 {
   "task": "task273",
   "owner": "sathay3012",
-  "status": "SHIPPED",
+  "status": "FAILED_TO_STUMP",
   "domain": "general-statistics-data-science",
   "objective": "descriptive-distribution",
   "stage": 5,
   "stage_name": "ship",
-  "updated": "2026-10-23",
+  "updated": "2026-10-27",
   "stump": "A competent solver who reads every record and rule right takes the vehicles at-fault drivers struck, pooled over the five years, as each use's share of the miles (induced exposure) and covers airport shuttles and paratransit; the struck vehicles are drawn where crashes are frequent, so only each use's share of them within each road class, day type and hour, scaled by the Department's miles for that stratum, measures miles, which covers taxicabs, ride-hail, parcel delivery and app-based delivery.",
   "architecture": 2,
   "loops": 0,
@@ -27,14 +27,21 @@
     "disposition": "APPROVE",
     "report": "determinism_check_report_pass2.md (pass 1 NOT_DETERMINISTIC on the asks only, FIX_NOW: determinism_check_report.md)"
   },
-  "returned": [],
-  "resume": "Shipped 2026-10-23 on target.zip 73efe12945f11373da611367702e51a9: cover four uses (taxicabs, ride-hail, parcel delivery, app-based delivery). Checks 113, verify PASS, byte-identical rebuilds, figures_check 44 of 44, precut 51. Next: task274.",
+  "returned": [
+    {
+      "date": "2026-10-27",
+      "portal": "both responses filed the golden: cover four of the seven uses (taxicabs, ride-hail, parcel and courier delivery vans, app-based delivery), each disclosing that it estimated every use's miles because no file holds them; the only construction that files those four is rung R4 (each use's share of the struck vehicles within road class, day type and hour, scaled by the Department's miles for the stratum), so both walked the full decisive step",
+      "repair": "design: re-root owed (architecture 3, the slot's last); not started",
+      "commit": "PAUSED (task273) of 2026-10-27"
+    }
+  ],
+  "resume": "Architecture 2 spent at the portal on 2026-10-27 (both responses landed the golden four by the stratified induced-exposure construction, rung R4). A redesign inside this world is not available: every refinement the crash records support (finer strata, years, the struck vehicle's movement, time on the road against distance) stacks a rung above R4, which a returned build may not do. The rework is a re-root to architecture 3, the slot's last before retirement, in Descriptive & Distribution Analysis. The paper screen of 2026-10-27 found the obvious candidates already dead on file (within-unit variance against task202's driver per task201's candidate 14; dual-frame multiplicity as population_selection in task280; dependence across units in task198's screens; change of support and bunching in task269's and task272's lists), so the re-root is a probe-driven search that needs isolated plan-only readers and call-only probes before any generator is written. Owed: the author's choice between that search and retiring the number; then, if re-rooting, a new draw at stage 1 with this card's identity moved to lineage.",
   "approved": null,
   "delivered": "2026-10-23",
-  "portal": null,
+  "portal": "FAILED_TO_STUMP",
   "portal_id": "",
-  "portal_status": "",
-  "portal_status_date": "",
+  "portal_status": "FAILED_TO_STUMP",
+  "portal_status_date": "2026-10-27",
   "architectures": [
     {
       "architecture": 1,
@@ -44,7 +51,7 @@
     {
       "architecture": 2,
       "drawn": "2026-10-22",
-      "fate": "shipped 2026-10-23: five readers off the call, judge pass 2 DETERMINISTIC, APPROVE",
+      "fate": "shipped 2026-10-23 (five in-house readers off the call, judge pass 2 DETERMINISTIC, APPROVE); spent 2026-10-27 at the portal: both responses ran the field's own stratified induced exposure (road class by day type by hour, scaled by the Department's miles) and filed the golden four",
       "driver": "The decisive quantity is each group's rate of causing a two-party event per unit of travel when no record measures any group's travel; the uninvolved parties of those events measure it, but they are drawn where events are frequent, so their share overstates the travel of groups that travel at frequent-event times and places and has to be taken within each such stratum and scaled by the stratum's measured total travel."
     }
   ],

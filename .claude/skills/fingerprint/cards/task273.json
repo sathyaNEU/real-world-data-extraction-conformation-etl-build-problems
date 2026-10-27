@@ -1,124 +1,125 @@
 {
-  "task": "task273",
-  "architecture": "v2",
-  "drawn": "2026-10-22",
-  "slot_note": "wave 5, sathay3012, Descriptive lane; re-root after architecture 1 (closed-loop load test) was spent at stage 4; seed DA23 set aside at the first draw; the world is new again",
-  "domain": "general-statistics-data-science",
-  "subdomain": "missing-data-censoring-measurement-error",
-  "niche": "a regional transportation commission's 2027 commercial fleet safety programme, each commercial vehicle use's crashes caused per mile driven, the miles read from the vehicles other drivers struck within each road class and hour",
-  "objective": "descriptive-distribution",
-  "shape": "14",
-  "decision_type": "designation_set",
-  "answer_unit": "set_of_items",
-  "answer": "cover four of the seven uses: taxicabs, ride-hail, parcel delivery and app-based delivery (1.7 to 2.1 times private drivers' rate per mile; limousines, airport shuttles and paratransit under 1.3)",
-  "answer_source": "submission.md, Final Recommendation; generator/figures.json call",
-  "gap": [
+ "task": "task273",
+ "architecture": "v2",
+ "drawn": "2026-10-22",
+ "slot_note": "wave 5, sathay3012, Descriptive lane; re-root after architecture 1 (closed-loop load test) was spent at stage 4; seed DA23 set aside at the first draw; the world is new again",
+ "domain": "general-statistics-data-science",
+ "subdomain": "missing-data-censoring-measurement-error",
+ "niche": "a regional transportation commission's 2027 commercial fleet safety programme, each commercial vehicle use's crashes caused per mile driven, the miles read from the vehicles other drivers struck within each road class and hour",
+ "objective": "descriptive-distribution",
+ "shape": "14",
+ "decision_type": "designation_set",
+ "answer_unit": "set_of_items",
+ "answer": "cover four of the seven uses: taxicabs, ride-hail, parcel delivery and app-based delivery (1.7 to 2.1 times private drivers' rate per mile; limousines, airport shuttles and paratransit under 1.3)",
+ "answer_source": "submission.md, Final Recommendation; generator/figures.json call",
+ "gap": [
+  "population"
+ ],
+ "pattern": [
+  "none"
+ ],
+ "generators": [
+  "G14",
+  "G16"
+ ],
+ "gate_g": "method_or_model_selection",
+ "calibration_form": "none",
+ "stump_strategy": "population_selection",
+ "decisive_rule_filed": false,
+ "official_decoy": false,
+ "validated_decoy": false,
+ "context_artifact": "filed_standard",
+ "stump_class": "analytical",
+ "analyst_test": "A strong analyst who reads every field correctly and divides the crashes each use's drivers caused by the vehicles registered or permitted for that use files the default list, because a ride-hail car or a parcel van covers several private cars' mileage a year; one who knows the field's induced exposure and takes each use's share of the not-at-fault vehicles in two-vehicle crashes as its share of the miles files a second wrong list, because that sample is drawn where crashes happen and so over-counts the miles driven at night and on urban streets.",
+ "domain_test": "The deciding quantity is each use's crashes caused per mile driven against private vehicles, a rate whose denominator no record counts, so the missing-data analysis recovers each use's miles from its share of the not-at-fault vehicles within each road class and hour, scaled by that stratum's measured mileage; replacing it with registrations, with the crash-share ratio, or with the pooled not-at-fault share changes which uses the programme covers.",
+ "layer2_family": "estimation_fit",
+ "layer2_pattern": "own:induced exposure re-weighted to miles by each stratum's crash intensity",
+ "layer1": [
+  "crash reports from four enforcement agencies on two editions of the state form, the 2023 edition coding each passenger and delivery use where the 2016 edition has one code for hire and one for delivery and names the operator",
+  "State Patrol crash dates and times in UTC across daylight saving, the other agencies' local times in three formats (24-hour, 12-hour with a meridiem, HHMM without leading zeros)",
+  "2016 crashes located only by legacy route number and milepost, joined through the road inventory for their functional class",
+  "fault recorded per driver on the 2016 form and per crash on the 2023 form, hit-and-run units with no use recorded",
+  "the Department's vehicle-miles tables inside a PDF report, annual VMT in millions and daily VMT in thousands, and the count stations' hourly volumes in a wide file by station, day and direction with missing days",
+  "fleet returns by permit year from 1 July, platform reports by quarter (one platform by quarter end date), registrations in year blocks on one sheet"
+ ],
+ "stakeholder_role": "policy adviser, regional transportation commission",
+ "role_family": "policy_adviser",
+ "scoring_unit": "other",
+ "spine": {
+  "file": "crash_extract_2021_2025_units.csv",
+  "rows": 339100,
+  "entity": "one unit on a police-reported crash report",
+  "grain": "crash x unit",
+  "source": "synthetic"
+ },
+ "forum": "regulator_or_inspector",
+ "forcing_event": "launch_or_rollout",
+ "org_family": "government_agency",
+ "world": {
+  "geography": "United States (the region, commission, operators and people are fictional)",
+  "currency": "USD",
+  "org_type": "regional transportation commission",
+  "invented_names": [
+   "Stonereach Valley Regional Transportation Commission",
+   "Commercial Fleet Safety Programme",
+   "Kelderwick",
+   "Fairhollow"
+  ],
+  "people": [
+   "Thomas Moyer",
+   "Amanda Barrera"
+  ]
+ },
+ "deliverables": [
+  "fleet_safety_programme_2027.xlsx",
+  "fleet_safety_programme_2027.pptx"
+ ],
+ "opening_move": "question-first",
+ "question_form": "how-many",
+ "driver": "The decisive quantity is each group's rate of causing a two-party event per unit of travel when no record measures any group's travel; the uninvolved parties of those events measure it, but they are drawn where events are frequent, so their share overstates the travel of groups that travel at frequent-event times and places and has to be taken within each such stratum and scaled by the stratum's measured total travel.",
+ "driver_concrete": "Each commercial use's crashes caused per mile against private drivers' over 2021 to 2025, its miles recovered as its share of the vehicles struck by the one at-fault driver of a crash between moving vehicles within each road class, day type and hour, times that stratum's miles from the Department's VMT and count-station hours; not crashes per registered or permitted vehicle, and not the pooled struck share, which over-weights the night streets and under-weights the freeways the shuttles drive.",
+ "stump": "A competent solver who reads every record and rule right takes the vehicles at-fault drivers struck, pooled over the five years, as each use's share of the miles (induced exposure) and covers airport shuttles and paratransit (1.78 and 1.71); the struck vehicles are drawn where crashes are frequent, so only each use's share of them within each road class, day type and hour, scaled by the Department's miles for that stratum, measures miles, which covers taxicabs, ride-hail, parcel delivery and app-based delivery. Per registered or permitted vehicle covers six; road class or hour alone leaves ride-hail or both delivery uses under the line.",
+ "mechanism_source": "design_note",
+ "differentiation": {
+  "task273": "architecture 1 rebuilt response times a closed-loop client never sent from each pod's pause record; architecture 2 has no closed loop and no missing events: every crash is recorded, and what is missing is the denominator, each use's miles, recovered from the not-at-fault vehicles and re-weighted by each stratum's crash intensity against the state's mileage tables",
+  "task233": "task233 carries an imputation's departure on the odds scale to every unit; task273 v2 imputes nothing: the missing quantity is each use's miles, recovered from the not-at-fault vehicles within each road class and hour and scaled by that stratum's measured mileage",
+  "task458": "task458 counts a lasting trait from events logged while units are observed, each recorded unit at one over its window's capture share; task273 v2 counts every crash and recovers the denominator, each use's miles, from the vehicles struck by others within each stratum",
+  "task473": "task473 completes a count by the observer's catch share at each case's level; task273 v2's numerator is complete and its correction is to the denominator: the not-at-fault sample is drawn where crashes are frequent, so it is taken within strata and scaled by measured mileage",
+  "task256": "task256 carries a reference group's conditional distribution of body dimensions to a population; task273 v2 carries nothing between populations: one crash file's not-at-fault vehicles measure each use's share of the miles within each road class and hour",
+  "task262": "task262 transports a noise variance, not a reliability ratio, from a subsample to a population; task273 v2 has no measurement noise to transport: its exposure sample is complete but drawn by crash occurrence, and is re-weighted by each stratum's crash intensity",
+  "task267": "task267 weights checked members by the inverse of their group's checking rate; task273 v2 weights no sampled unit: it allocates each stratum's measured mileage by the not-at-fault shares inside that stratum",
+  "task465": "task465 joins two large sources through a small one's within-cell association; task273 v2 has one event file whose two parties play different roles, the at-fault party in the numerator and the struck party as the exposure, joined to mileage tables by stratum",
+  "task54": "task54 multiplies an exposure integral under a recovered rule over a re-sequenced plan; task273 v2 recovers the exposure itself, each use's miles, from the struck vehicles within each stratum"
+ },
+ "lineage": [
+  {
+   "architecture": "v1",
+   "drawn": "2026-10-22",
+   "niche": "a payroll platform's year-end readiness review from closed-loop load tests, the requests the blocked test clients never sent during each pod's garbage-collection pauses",
+   "driver": "The decisive quantity is a tail percentile of response times for requests arriving independently of the server's state, measured by clients that each send the next request only after the last returns, so a pause on one node behind a balancer leaves each blocked client one slow record where independent arrivals would have met the pause many times; each node's pause record rebuilds the missing arrivals, and the textbook back-fill, which credits each blocked client with every request it would have sent to that node, overstates nodes behind a balancer and requests that are slow on their own.",
+   "driver_concrete": "Each endpoint's p99 at the forecast peak as customers arriving independently would see it: the recorded response times outside each pod's garbage-collection pauses, and for the share of time each pod spends paused, the rest of the pause plus a service time, from the pod's GC log; not the recorded p99 (the clients stop sending during a pause), and not HdrHistogram's back-fill at the planned interval (each blocked client credited with every request it would have sent, all to the paused pod).",
+   "stump": "A competent solver takes each endpoint's 99th percentile of the recorded response times in the run of record and files the default list; the step that lands there is reading the closed-loop clients' requests as the requests customers would send, when each client sent nothing while its pod was paused, so a long pause counts once per blocked client instead of once per arrival.",
+   "gap": [
     "population"
-  ],
-  "pattern": [
+   ],
+   "pattern": [
     "none"
-  ],
-  "generators": [
-    "G14",
-    "G16"
-  ],
-  "gate_g": "method_or_model_selection",
-  "calibration_form": "none",
-  "stump_strategy": "population_selection",
-  "decisive_rule_filed": false,
-  "official_decoy": false,
-  "validated_decoy": false,
-  "context_artifact": "filed_standard",
-  "stump_class": "analytical",
-  "analyst_test": "A strong analyst who reads every field correctly and divides the crashes each use's drivers caused by the vehicles registered or permitted for that use files the default list, because a ride-hail car or a parcel van covers several private cars' mileage a year; one who knows the field's induced exposure and takes each use's share of the not-at-fault vehicles in two-vehicle crashes as its share of the miles files a second wrong list, because that sample is drawn where crashes happen and so over-counts the miles driven at night and on urban streets.",
-  "domain_test": "The deciding quantity is each use's crashes caused per mile driven against private vehicles, a rate whose denominator no record counts, so the missing-data analysis recovers each use's miles from its share of the not-at-fault vehicles within each road class and hour, scaled by that stratum's measured mileage; replacing it with registrations, with the crash-share ratio, or with the pooled not-at-fault share changes which uses the programme covers.",
-  "layer2_family": "estimation_fit",
-  "layer2_pattern": "own:induced exposure re-weighted to miles by each stratum's crash intensity",
-  "layer1": [
-    "crash reports from four enforcement agencies on two editions of the state form, the 2023 edition coding each passenger and delivery use where the 2016 edition has one code for hire and one for delivery and names the operator",
-    "State Patrol crash dates and times in UTC across daylight saving, the other agencies' local times in three formats (24-hour, 12-hour with a meridiem, HHMM without leading zeros)",
-    "2016 crashes located only by legacy route number and milepost, joined through the road inventory for their functional class",
-    "fault recorded per driver on the 2016 form and per crash on the 2023 form, hit-and-run units with no use recorded",
-    "the Department's vehicle-miles tables inside a PDF report, annual VMT in millions and daily VMT in thousands, and the count stations' hourly volumes in a wide file by station, day and direction with missing days",
-    "fleet returns by permit year from 1 July, platform reports by quarter (one platform by quarter end date), registrations in year blocks on one sheet"
-  ],
-  "stakeholder_role": "policy adviser, regional transportation commission",
-  "role_family": "policy_adviser",
-  "scoring_unit": "other",
-  "spine": {
-    "file": "crash_extract_2021_2025_units.csv",
-    "rows": 339100,
-    "entity": "one unit on a police-reported crash report",
-    "grain": "crash x unit",
-    "source": "synthetic"
-  },
-  "forum": "regulator_or_inspector",
-  "forcing_event": "launch_or_rollout",
-  "org_family": "government_agency",
-  "world": {
-    "geography": "United States (the region, commission, operators and people are fictional)",
-    "currency": "USD",
-    "org_type": "regional transportation commission",
-    "invented_names": [
-      "Stonereach Valley Regional Transportation Commission",
-      "Commercial Fleet Safety Programme",
-      "Kelderwick",
-      "Fairhollow"
-    ],
-    "people": [
-      "Thomas Moyer",
-      "Amanda Barrera"
-    ]
-  },
-  "deliverables": [
-    "fleet_safety_programme_2027.xlsx",
-    "fleet_safety_programme_2027.pptx"
-  ],
-  "opening_move": "question-first",
-  "question_form": "how-many",
-  "driver": "The decisive quantity is each group's rate of causing a two-party event per unit of travel when no record measures any group's travel; the uninvolved parties of those events measure it, but they are drawn where events are frequent, so their share overstates the travel of groups that travel at frequent-event times and places and has to be taken within each such stratum and scaled by the stratum's measured total travel.",
-  "driver_concrete": "Each commercial use's crashes caused per mile against private drivers' over 2021 to 2025, its miles recovered as its share of the vehicles struck by the one at-fault driver of a crash between moving vehicles within each road class, day type and hour, times that stratum's miles from the Department's VMT and count-station hours; not crashes per registered or permitted vehicle, and not the pooled struck share, which over-weights the night streets and under-weights the freeways the shuttles drive.",
-  "stump": "A competent solver who reads every record and rule right takes the vehicles at-fault drivers struck, pooled over the five years, as each use's share of the miles (induced exposure) and covers airport shuttles and paratransit (1.78 and 1.71); the struck vehicles are drawn where crashes are frequent, so only each use's share of them within each road class, day type and hour, scaled by the Department's miles for that stratum, measures miles, which covers taxicabs, ride-hail, parcel delivery and app-based delivery. Per registered or permitted vehicle covers six; road class or hour alone leaves ride-hail or both delivery uses under the line.",
-  "mechanism_source": "design_note",
-  "differentiation": {
-    "task273": "architecture 1 rebuilt response times a closed-loop client never sent from each pod's pause record; architecture 2 has no closed loop and no missing events: every crash is recorded, and what is missing is the denominator, each use's miles, recovered from the not-at-fault vehicles and re-weighted by each stratum's crash intensity against the state's mileage tables",
-    "task233": "task233 carries an imputation's departure on the odds scale to every unit; task273 v2 imputes nothing: the missing quantity is each use's miles, recovered from the not-at-fault vehicles within each road class and hour and scaled by that stratum's measured mileage",
-    "task458": "task458 counts a lasting trait from events logged while units are observed, each recorded unit at one over its window's capture share; task273 v2 counts every crash and recovers the denominator, each use's miles, from the vehicles struck by others within each stratum",
-    "task473": "task473 completes a count by the observer's catch share at each case's level; task273 v2's numerator is complete and its correction is to the denominator: the not-at-fault sample is drawn where crashes are frequent, so it is taken within strata and scaled by measured mileage",
-    "task256": "task256 carries a reference group's conditional distribution of body dimensions to a population; task273 v2 carries nothing between populations: one crash file's not-at-fault vehicles measure each use's share of the miles within each road class and hour",
-    "task262": "task262 transports a noise variance, not a reliability ratio, from a subsample to a population; task273 v2 has no measurement noise to transport: its exposure sample is complete but drawn by crash occurrence, and is re-weighted by each stratum's crash intensity",
-    "task267": "task267 weights checked members by the inverse of their group's checking rate; task273 v2 weights no sampled unit: it allocates each stratum's measured mileage by the not-at-fault shares inside that stratum",
-    "task465": "task465 joins two large sources through a small one's within-cell association; task273 v2 has one event file whose two parties play different roles, the at-fault party in the numerator and the struck party as the exposure, joined to mileage tables by stratum",
-    "task54": "task54 multiplies an exposure integral under a recovered rule over a re-sequenced plan; task273 v2 recovers the exposure itself, each use's miles, from the struck vehicles within each stratum"
-  },
-  "lineage": [
-    {
-      "architecture": "v1",
-      "drawn": "2026-10-22",
-      "niche": "a payroll platform's year-end readiness review from closed-loop load tests, the requests the blocked test clients never sent during each pod's garbage-collection pauses",
-      "driver": "The decisive quantity is a tail percentile of response times for requests arriving independently of the server's state, measured by clients that each send the next request only after the last returns, so a pause on one node behind a balancer leaves each blocked client one slow record where independent arrivals would have met the pause many times; each node's pause record rebuilds the missing arrivals, and the textbook back-fill, which credits each blocked client with every request it would have sent to that node, overstates nodes behind a balancer and requests that are slow on their own.",
-      "driver_concrete": "Each endpoint's p99 at the forecast peak as customers arriving independently would see it: the recorded response times outside each pod's garbage-collection pauses, and for the share of time each pod spends paused, the rest of the pause plus a service time, from the pod's GC log; not the recorded p99 (the clients stop sending during a pause), and not HdrHistogram's back-fill at the planned interval (each blocked client credited with every request it would have sent, all to the paused pod).",
-      "stump": "A competent solver takes each endpoint's 99th percentile of the recorded response times in the run of record and files the default list; the step that lands there is reading the closed-loop clients' requests as the requests customers would send, when each client sent nothing while its pod was paused, so a long pause counts once per blocked client instead of once per arrival.",
-      "gap": [
-        "population"
-      ],
-      "pattern": [
-        "none"
-      ],
-      "generators": [
-        "G12",
-        "G18",
-        "G17"
-      ],
-      "gate_g": "method_or_model_selection",
-      "decision_type": "designation_set",
-      "stump_strategy": "population_selection",
-      "analyst_test": "A strong analyst who reads every field correctly, keeps each endpoint's run of record without its warm-up and takes the 99th percentile of the recorded response times files the default list; the test clients send each request only after the last returned, so a pod's pause leaves one slow record per blocked client where customers arriving independently would have met it many times, and the endpoints whose pods pause for long stretches pass at their recorded percentile while customers would see them breach.",
-      "domain_test": "The deciding quantity is each endpoint's 99th-percentile response time for requests that arrive independently of the platform's state at the forecast peak, estimated from a closed-loop test whose missing requests (those the blocked clients never sent during each pod's pauses) are missing because of the outcome, so the missing-data analysis rebuilds them from each pod's pause record; replacing it with the recorded percentile, or with the textbook back-fill that credits each blocked client with every request it would have sent to the paused pod, changes which endpoints are fixed.",
-      "layer2_pattern": "own:requests-a-closed-loop-client-never-sent-rebuilt-from-each-pods-pause-record",
-      "fate": "spent 2026-10-22 at stage 4 (Gate F): both isolated scored readers named the closed-loop test's coordinated omission from the standard's population and pause clauses, rebuilt open arrivals per pod from each GC log and landed the five; reader B every ask figure (48 of 48), reader A 36 of 48; judge DETERMINISTIC, APPROVE"
-    }
-  ],
-  "notes": "Shipped under the author's override, authorised in session on 2026-10-23 (AskUserQuestion answer 'Force and ship'), of guard heart's two remaining BLOCKs against task482 v6 (ban.pattern G14, ban.artifact filed_standard): task482 v6 was registered by another session at 2026-10-22T17:38:37Z, ten minutes before this card (17:48:04Z), and was not yet pulled when this card was checked, so its check passed clean. The third BLOCK (ban.forcing_event vote_or_meeting) was redrawn in the pack itself: the rule's section 5 and the prompt now make the programme's start the forcing event (operators told by 15 January 2027 so they can fit their vehicles before coverage starts on 1 July), with no scheduled vote, so launch_or_rollout is the true label. No honest re-key clears the other two: the decisive step is G14's own question (does the pooled struck share apply to each use's miles); G6 and G16, the only other true readings, block inside the batch against task251 and task177's lineage; the coverage rule is a filed standard. task482 is another lane's psychometric ETL build, so a reviewer holding both reads different worlds, data and objectives. Architecture 2 drawn 2026-10-22 after the architecture 2 screens in the design note (Tried and rejected); induced exposure is unspent in the corpus (slots and cards searched for induced exposure, not-at-fault and culpability).",
-  "registered": "2026-10-22T17:48:04Z"
+   ],
+   "generators": [
+    "G12",
+    "G18",
+    "G17"
+   ],
+   "gate_g": "method_or_model_selection",
+   "decision_type": "designation_set",
+   "stump_strategy": "population_selection",
+   "analyst_test": "A strong analyst who reads every field correctly, keeps each endpoint's run of record without its warm-up and takes the 99th percentile of the recorded response times files the default list; the test clients send each request only after the last returned, so a pod's pause leaves one slow record per blocked client where customers arriving independently would have met it many times, and the endpoints whose pods pause for long stretches pass at their recorded percentile while customers would see them breach.",
+   "domain_test": "The deciding quantity is each endpoint's 99th-percentile response time for requests that arrive independently of the platform's state at the forecast peak, estimated from a closed-loop test whose missing requests (those the blocked clients never sent during each pod's pauses) are missing because of the outcome, so the missing-data analysis rebuilds them from each pod's pause record; replacing it with the recorded percentile, or with the textbook back-fill that credits each blocked client with every request it would have sent to the paused pod, changes which endpoints are fixed.",
+   "layer2_pattern": "own:requests-a-closed-loop-client-never-sent-rebuilt-from-each-pods-pause-record",
+   "fate": "spent 2026-10-22 at stage 4 (Gate F): both isolated scored readers named the closed-loop test's coordinated omission from the standard's population and pause clauses, rebuilt open arrivals per pod from each GC log and landed the five; reader B every ask figure (48 of 48), reader A 36 of 48; judge DETERMINISTIC, APPROVE"
+  }
+ ],
+ "notes": "Shipped under the author's override, authorised in session on 2026-10-23 (AskUserQuestion answer 'Force and ship'), of guard heart's two remaining BLOCKs against task482 v6 (ban.pattern G14, ban.artifact filed_standard): task482 v6 was registered by another session at 2026-10-22T17:38:37Z, ten minutes before this card (17:48:04Z), and was not yet pulled when this card was checked, so its check passed clean. The third BLOCK (ban.forcing_event vote_or_meeting) was redrawn in the pack itself: the rule's section 5 and the prompt now make the programme's start the forcing event (operators told by 15 January 2027 so they can fit their vehicles before coverage starts on 1 July), with no scheduled vote, so launch_or_rollout is the true label. No honest re-key clears the other two: the decisive step is G14's own question (does the pooled struck share apply to each use's miles); G6 and G16, the only other true readings, block inside the batch against task251 and task177's lineage; the coverage rule is a filed standard. task482 is another lane's psychometric ETL build, so a reviewer holding both reads different worlds, data and objectives. Architecture 2 drawn 2026-10-22 after the architecture 2 screens in the design note (Tried and rejected); induced exposure is unspent in the corpus (slots and cards searched for induced exposure, not-at-fault and culpability). Architecture 2 spent 2026-10-27 at the portal: both responses filed the golden four by the stratified induced-exposure construction (rung R4); the card holds no axis ban from here, and its driver, stump and lineage are still screened against.",
+ "registered": "2026-10-22T17:48:04Z",
+ "architecture_spent": true
 }
