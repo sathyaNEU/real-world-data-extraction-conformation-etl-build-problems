@@ -220,7 +220,7 @@ def cut_pack():
     # ---------------------------------------------------------------- maintenance log
     r_wo = W.rng("workorder")
     r_tech = W.rng("tech")
-    techs = [P.CONTROLS_TECHNICIAN, "Grainne Kilkenny", "Corrie MacCarville"]
+    techs = list(P.MAINTENANCE_TECHNICIANS)
     log = []
     for code, *_ in P.SPACES:
         wo = "WO%05d" % (12000 + r_wo.randrange(1, 900))

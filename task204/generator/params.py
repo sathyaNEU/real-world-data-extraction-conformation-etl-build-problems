@@ -290,13 +290,17 @@ SEED = 204027
 
 # ----------------------------------------------------------------- people
 
-# Every name is drawn with guard.py names --geo ireland (seeds 204 and 2042), never typed.
-ESTATES_OFFICER = "Aileen Menton"          # Beldarrig ETB, estates and compliance
-FACILITIES_MANAGER = "Conall Murtagh"      # Kilmoneen campus, facilities
+# Every name is drawn with guard.py names --geo ireland and never typed: seed 204 for the estates
+# officer, the facilities manager and the first eight tutors; seed 2042 for the remaining six tutors
+# and the three learning support assistants; seed 20421 for the two outside firms' people. The
+# campus, the maintenance contractor and the commissioning contractor are three organisations and no
+# person holds a role in more than one of them, which checks.py asserts.
+ESTATES_OFFICER = "Aileen Menton"           # Beldarrig ETB, estates and compliance
+FACILITIES_MANAGER = "Conall Murtagh"       # Kilmoneen campus, facilities
 TUTORS = [
     "Caroline Creedon", "Kelsey Hanbury", "Finn Melican", "Emilie Mahedy", "Dominic Filbin",
     "Cody O'Gara", "Orlaigh Sinan", "Antoinette Fee", "Alanna Hilary", "Tony Davenport",
-    "Rhiannon Monk", "Alastair Crangle", "Owen Raftery", "Una Nyhan",
+    "Rhiannon Monk", "Alastair Crangle", "Christie Richard", "Una Nyhan",
 ]
 ASSISTANTS = ["Jana McCafferky", "Grainne Kilkenny", "Corrie MacCarville"]
 # Each tutor belongs to one school, and a group is only ever taught by a tutor of the school its
@@ -325,11 +329,14 @@ TUTOR_SCHOOL = {
     "Tony Davenport": "Health and Social Care",
     "Rhiannon Monk": "Science and Computing",
     "Alastair Crangle": "Science and Computing",
-    "Owen Raftery": "Science and Computing",
+    "Christie Richard": "Science and Computing",
     "Una Nyhan": "Art, Design and Media",
 }
-CONTROLS_TECHNICIAN = "Graeme Cowley"      # Corrandulla Building Controls, maintenance contract
-COMMISSIONING_ENGINEER = "Owen Raftery"    # named on the 2021 commissioning record
+# Corrandulla Building Controls Ltd, the maintenance contractor
+MAINTENANCE_TECHNICIANS = ["Karl Gorey", "Cory Ferris", "Johanna Murnane"]
+CONTROLS_TECHNICIAN = MAINTENANCE_TECHNICIANS[0]
+# Westmeath Commissioning Services, who signed the 2021 commissioning record
+COMMISSIONING_ENGINEER = "Benjamin Garavan"
 MAINTENANCE_FIRM = "Corrandulla Building Controls Ltd"
 DESIGN_PRACTICE = "Hanbury Keane Consulting Engineers"
 COMMISSIONING_FIRM = "Westmeath Commissioning Services"

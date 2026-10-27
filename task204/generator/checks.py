@@ -335,6 +335,55 @@ def forks():
     design_rate = A.aggregate(
         [dict(x, occupants=P.DESIGN_OCCUPANCY[x["space"]]) for x in BF],
         lambda x: A.q_integrated(x))
+    # the population: who counts as an occupant present, filed once at authority
+    proc_flat = TEXT[B.PROCEDURE].replace("\n", " ")
+    check("SF1 the population is filed at authority, once",
+          re.search(r"occupants present in a session are the persons the attendance register\s+"
+                    r"marks present", proc_flat) and
+          re.search(r"marks absent, or absent with authorisation, is\s+not present", proc_flat) and
+          re.search(r"mark corrected after the session stands as corrected", proc_flat) and
+          len(re.findall(r"occupants present in a session are", proc_flat)) == 1,
+          "procedure note %s section 4 names who counts, who does not and how an amended mark is "
+          "read, and says it once" % P.PROCEDURE_REF)
+    pop = {}
+    marks = collections.defaultdict(collections.Counter)
+    with open(os.path.join(TARGET, B.MARKS), newline="", encoding="utf-8") as fh:
+        for r in csv.DictReader(fh):
+            d = marks[r["session_ref"]]
+            if r["mark"] == "present":
+                d["present"] += 1
+                if r["role"] == "learner":
+                    d["learners only"] += 1
+                if r["amended"] == "N":
+                    d["amended marks dropped"] += 1
+            if r["mark"] in ("present", "authorised"):
+                d["present or authorised absent"] += 1
+            d["the whole roll"] += 1
+    for key in ("learners only", "amended marks dropped", "present or authorised absent",
+                "the whole roll"):
+        fr = [dict(x, occupants=marks[x["session_ref"]][key]) for x in BF]
+        fr = [x for x in fr if x["occupants"] > 0]
+        pop[key] = A.aggregate(fr, lambda x: A.q_integrated(x))
+    killed = {k: v for k, v in pop.items() if BU.to_bin(v) != 5.0}
+    conv = {k: v for k, v in pop.items() if BU.to_bin(v) == 5.0}
+    check("SF1 every other population dies to the filed sentence or converges",
+          set(killed) == {"present or authorised absent", "the whole roll"} and
+          set(conv) == {"learners only", "amended marks dropped"},
+          "counting an authorised absence as present files %.3f and printing the whole roll %.3f, "
+          "both a different call and both ruled out by section 4; learners only files %.3f and "
+          "dropping the amended marks %.3f, which print 5.0 either way"
+          % (pop["present or authorised absent"], pop["the whole roll"], pop["learners only"],
+             pop["amended marks dropped"]))
+    check("SF1 the golden's population is the one the note files",
+          abs(A.aggregate(BF, lambda x: A.q_integrated(x)) - CALL) < 1e-9 and
+          all(x["occupants"] == marks[x["session_ref"]]["present"] for x in BF[:400]),
+          "the denominator is the register's present marks in every role, which is what section 4 "
+          "defines, so filing it moved no figure")
+    check("SF1 the note's rounding agrees with the asking sentence",
+          re.search(r"Hours are reported to two decimal places, occupant counts as whole persons",
+                    proc_flat) and "to one decimal place as a percentage" in proc_flat,
+          "two decimals for hours, whole persons for occupants and one decimal for shares, in the "
+          "note and in the prompt alike")
     check("SF1 the two rival denominators are measured and differ",
           BU.to_bin(enrolled_rate) != 5.0 and BU.to_bin(design_rate) != 5.0,
           "enrolled group size files %.3f and design occupancy %.3f against %.3f, so the term is "
@@ -719,8 +768,8 @@ def gates():
 
 def realism():
     # personas
-    allowed = set(P.TUTORS) | set(P.ASSISTANTS) | {P.ESTATES_OFFICER, P.FACILITIES_MANAGER,
-                                                   P.CONTROLS_TECHNICIAN, P.COMMISSIONING_ENGINEER}
+    allowed = (set(P.TUTORS) | set(P.ASSISTANTS) | set(P.MAINTENANCE_TECHNICIANS)
+               | {P.ESTATES_OFFICER, P.FACILITIES_MANAGER, P.COMMISSIONING_ENGINEER})
     found = set()
     for n in FILES:
         for m in re.finditer(r"\b[A-Z][a-z]+(?:'[A-Z][a-z]+)? [A-Z][a-z]{2,}\b", TEXT.get(n, "")):
@@ -749,6 +798,28 @@ def realism():
                          r"Kilmoneen|Beldarrig|Mace|Westmeath|Hanbury|Corrandulla|Keane)", cand):
                 continue
             stray.add(cand)
+    campus = set(P.TUTORS) | set(P.ASSISTANTS) | {P.ESTATES_OFFICER, P.FACILITIES_MANAGER}
+    maintenance = set(P.MAINTENANCE_TECHNICIANS)
+    commissioning = {P.COMMISSIONING_ENGINEER}
+    check("no person holds a role in two organisations",
+          not (campus & maintenance) and not (campus & commissioning)
+          and not (maintenance & commissioning)
+          and len(campus | maintenance | commissioning) == len(campus) + len(maintenance) + 1,
+          "%d campus staff, %d technicians of the maintenance contractor and one commissioning "
+          "engineer, %d distinct people and no name in two of the three"
+          % (len(campus), len(maintenance),
+             len(campus | maintenance | commissioning)))
+    seen_roles = collections.defaultdict(set)
+    for n in FILES:
+        t = TEXT.get(n, "")
+        for who in campus | maintenance | commissioning:
+            if who in t:
+                seen_roles[who].add("campus" if who in campus else
+                                    ("maintenance" if who in maintenance else "commissioning"))
+    check("no name in the pack appears under two organisations' roles",
+          all(len(v) == 1 for v in seen_roles.values()),
+          "%d of the %d drawn names appear in the pack, each under one organisation only"
+          % (len(seen_roles), len(campus | maintenance | commissioning)))
     check("every persona in the pack was drawn with guard.py names",
           not stray, "%d drawn names appear; no undrawn person name found" % len(found))
     # no round headline
@@ -786,6 +857,42 @@ def realism():
                 bad.append(n)
     check("every PDF's producer, creator, author and title match its issuing body", not bad,
           "four PDFs, four different issuing bodies, none carrying another's name")
+    import pypdf as _pp
+    stamps = {}
+    for n in P.PDF_FILED:
+        md = _pp.PdfReader(os.path.join(TARGET, n)).metadata or {}
+        stamps[n] = str(md.get("/CreationDate", ""))[2:16]
+    check("no two PDFs share a filing instant, and none reads midnight",
+          len(set(stamps.values())) == len(stamps) and
+          not any(s.endswith("000000") for s in stamps.values()),
+          "four documents filed at %s" % ", ".join(s[8:10] + ":" + s[10:12] for s in
+                                                   sorted(stamps.values())))
+    pairs = {}
+    for n in FILES + [P.WORKBOOK_NAME]:
+        if not n.endswith(".xlsx"):
+            continue
+        root = TARGET if n in FILES else GOLDEN
+        with zipfile.ZipFile(os.path.join(root, n)) as z:
+            core = z.read("docProps/core.xml").decode()
+        pairs[n] = (re.search(r"<dcterms:created[^>]*>([^<]*)<", core).group(1),
+                    re.search(r"<dcterms:modified[^>]*>([^<]*)<", core).group(1))
+    check("no two workbooks share a created or a modified instant",
+          len({v[0] for v in pairs.values()}) == len(pairs) and
+          len({v[1] for v in pairs.values()}) == len(pairs),
+          "%d workbooks, %d distinct created instants and %d distinct modified instants"
+          % (len(pairs), len({v[0] for v in pairs.values()}),
+             len({v[1] for v in pairs.values()})))
+    check("every workbook was modified after it was created and after any date it states",
+          all(v[0] < v[1] for v in pairs.values()),
+          "five workbooks, each modified after it was created")
+    method_word = re.compile(r"\b(balance|balancing|dynamic|transient|storage|integration|"
+                             r"integrated|integral|unsteady|accumulation)\b", re.I)
+    named = [n for n in FILES + sorted(os.listdir(GOLDEN)) if method_word.search(n)]
+    inside = [n for n in FILES if method_word.search(TEXT.get(n, ""))]
+    check("no file name and no shipped file carries a word from the method",
+          not named and not inside,
+          "%d pack files and %d goldens swept by name and by content for balance, storage, "
+          "integration, unsteady and their kin" % (len(FILES), len(os.listdir(GOLDEN))))
     sigs = []
     for n in FILES:
         raw = open(os.path.join(TARGET, n), "rb").read()
@@ -950,11 +1057,10 @@ def documents():
     # the goldens
     gfiles = sorted(os.listdir(GOLDEN))
     check("one to three goldens, each named by the prompt",
-          gfiles == ["tulrohan_session_balance.png", "tulrohan_ventilation_assessment.xlsx"],
+          gfiles == sorted([P.CHART_NAME, P.WORKBOOK_NAME]),
           ", ".join(gfiles))
     import openpyxl
-    wb = openpyxl.load_workbook(os.path.join(GOLDEN, "tulrohan_ventilation_assessment.xlsx"),
-                                data_only=True)
+    wb = openpyxl.load_workbook(os.path.join(GOLDEN, P.WORKBOOK_NAME), data_only=True)
     vals = [c for ws in wb.worksheets for row in ws.iter_rows(values_only=True) for c in row]
     check("the golden workbook states the call and the components",
           M["call"]["block_rate_ls_per_occupant"] in vals and
@@ -967,7 +1073,7 @@ def documents():
                  for _ in ws.iter_rows(min_row=2))
     check("the golden workbook carries every graded row", rows_a == 56,
           "56 space-month rows, 14 capture rows, 6 occupancy rows and 4 rise rows")
-    png = open(os.path.join(GOLDEN, "tulrohan_session_balance.png"), "rb").read()
+    png = open(os.path.join(GOLDEN, P.CHART_NAME), "rb").read()
     check("the chart is a real file carrying its own metadata",
           png[:8] == b"\x89PNG\r\n\x1a\n" and b"Beldarrig" in png and len(png) > 80000,
           "%s bytes" % "{:,}".format(len(png)))

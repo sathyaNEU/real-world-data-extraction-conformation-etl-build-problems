@@ -25,6 +25,8 @@ TASK = os.path.dirname(HERE)
 TARGET = os.path.join(TASK, "target")
 GOLDEN = os.path.join(TASK, "golden")
 DUBLIN = ZoneInfo("Europe/Dublin")
+WORKBOOK = "tulrohan_ventilation_assessment.xlsx"
+CHART = "tulrohan_co2_day_profile.png"
 
 RESULTS = []
 
@@ -407,16 +409,16 @@ def main():
           "hours to two decimals, shares to one, occupants whole")
 
     # the goldens carry the same figures
-    assess = sheet_of_golden("tulrohan_ventilation_assessment.xlsx", "Assessment")
+    assess = sheet_of_golden(WORKBOOK, "Assessment")
     flat = [c for row in assess for c in row if c is not None]
     claim("the golden workbook carries the recomputed call",
           any(abs(float(c) - to_half(rate)) < 1e-9 for c in flat if _isnum(c)),
           "the assessment sheet states %.1f" % to_half(rate))
-    hours_rows = sheet_of_golden("tulrohan_ventilation_assessment.xlsx",
+    hours_rows = sheet_of_golden(WORKBOOK,
                                  "Occupied hours by month")
     claim("the golden workbook carries every graded row", len(hours_rows) == 57,
           "56 space-month rows under one header")
-    png = open(os.path.join(GOLDEN, "tulrohan_session_balance.png"), "rb").read()
+    png = open(os.path.join(GOLDEN, CHART), "rb").read()
     claim("the chart is a readable PNG", png[:8] == b"\x89PNG\r\n\x1a\n" and len(png) > 50000,
           "%s bytes" % "{:,}".format(len(png)))
 

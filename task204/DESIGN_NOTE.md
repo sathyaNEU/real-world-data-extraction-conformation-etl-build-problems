@@ -19,10 +19,10 @@ to byte-identical output twice over. Nothing here is owed.
 | Strategy / Layer 2 | `decomposition_attribution`; `estimation_fit`, pattern `own:unsteady-balance-across-a-filed-session-window` |
 | Calibration organ | `none`. No corpus, no twin pair, no colleague voice carries the call |
 | Context artifact | `filed_standard`: the campus monitoring procedure note (the 1,500 ppm screening indicator) and the TGD-M4 extract (8 litres per second per person) |
-| World | Ireland, EUR, Beldarrig ETB's Kilmoneen Further Education Campus, Tulrohan Block; personas drawn with `guard.py names --geo ireland --seed 204` (Aileen Menton, Conall Murtagh), never typed |
+| World | Ireland, EUR, Beldarrig ETB's Kilmoneen Further Education Campus, Tulrohan Block; 23 personas, every one drawn with `guard.py names --geo ireland` and never typed: seed 204 for the estates officer, the facilities manager and the first eight tutors, seed 2042 for the other six tutors and the three learning support assistants, seed 20421 for the maintenance contractor's three technicians and the commissioning engineer. Three organisations, and `checks.py` asserts no person holds a role in two of them |
 | Forum / forcing event / org | `executive_team` (the ETB's senior management team settles the minor-works list) / `budget_or_appropriation` (January's minor-works allocation) / `university_or_school` |
 | Spine | `bms_co2_5min_autumn2026.csv`, 293,559 rows, one row per monitored space per five-minute stamp |
-| Deliverables | `tulrohan_ventilation_assessment.xlsx`, `tulrohan_session_balance.png` |
+| Deliverables | `tulrohan_ventilation_assessment.xlsx`, `tulrohan_co2_day_profile.png` |
 
 **Data-native sentence.** The two Tulrohan units run on a timetable-linked schedule, so the longest
 interval in the record with the plant in its occupied state and the room empty is one logging step of five
@@ -182,7 +182,7 @@ and both still clear the standard by 1.164 to 1.209 times.
 
 | id | Term or convention | Reading taken | Alternatives | Ruled out by |
 |---|---|---|---|---|
-| SF1 | per person | per occupant present, from the attendance marks, learners and staff alike | enrolled group size; design occupancy | `prompt.txt` ("per occupant present") and the standard's own reporting clause; measured, the enrolled reading files 6.575 and the design-occupancy reading 5.799 against 5.074, so the term is filed in the asking sentence rather than left to converge |
+| SF1 | per person, and which persons | the persons the attendance register marks present for the session, in whichever role it records them, with a corrected mark read as corrected | enrolled group size; design occupancy; learners only; present plus authorised absent; the whole roll; amended marks dropped | procedure note EST-14 section 4 files who counts, who does not and how an amendment is read, once and at authority, and `prompt.txt` names the unit. Measured on the pack: the enrolled reading files 6.575, design occupancy 5.799, present-plus-authorised 5.613 and the whole roll 6.638, every one a different printed call that section 4 rules out by a quoted sentence; learners only files 4.911 and dropping the amended marks 5.005, which print 5.0 either way, so those two are closed twice over. The golden's own denominator is the one section 4 defines, so filing it moved no figure |
 | SF2 | timetabled session | the autumn timetable's session rows for the space | the room-booking window; an occupancy-detected window | `prompt.txt` ("this term's timetabled sessions") and the bid sheet; the booking system is not in the pack as a session source |
 | SF3 | outdoor baseline | the campus outdoor analyser, its two-week gap filled from the Mace Head station | a fixed 400 or 420 ppm; the station throughout | the campus analyser is the site's own record, and the two agree within 7.1 ppm over 1,464 overlapping hours; a baseline wrong by six ppm everywhere still files 5.121 and prints 5.0, asserted in `checks.py`, so same call |
 | SF4 | per-person generation rate | the one value TGD-M4's design data table gives for a teaching or practical space, 0.0072 litres per second | a higher metabolic rate; a per-area rate | the extract's table carries exactly one per-person carbon dioxide figure and no activity band, asserted in `checks.py`, so there is nothing to choose between |
@@ -273,15 +273,15 @@ clause's natural reading, the hygiene battery and the exceedance indicators all 
 | Axis | Reading | Closure |
 |---|---|---|
 | 1 | Population: the six Tulrohan spaces' timetabled sessions, 28 September to 11 December 2026 | filed in `prompt.txt` and the bid sheet (SF2, SF6, SF9); C1, the seven-subset spread 0.31 of a bin, every subset printing 5.0 |
-| 2 | Unit of account: litres per second per occupant present | named in the asking sentence (SF1) |
+| 2 | Unit of account: litres per second per occupant present | named in the asking sentence, and who counts as an occupant present is filed in procedure note EST-14 section 4 (SF1) |
 | 3 | Attribution window: each session's own start and end from the timetable | filed; every session boundary sits five minutes clear of the plant setback edges |
 | 4 | As-of dating: the export and the register as pulled on 15 December 2026 | the export header states the pull; the register ships with it |
-| 5 | Version basis: the attendance register's amended final state | one version per session with an amendment flag; C1, same call |
-| 6 | Denominator: occupant-seconds present over the same sessions | filed in the asking sentence (SF1) |
+| 5 | Version basis: the attendance register's amended final state | one mark per person per session with an amendment flag, and EST-14 section 4 files that a corrected mark stands as corrected; C1 beside it, dropping the amended marks files 5.005 and prints the same call |
+| 6 | Denominator: occupant-seconds present over the same sessions | filed in the asking sentence and, for which persons, in EST-14 section 4 (SF1) |
 | 7 | Weighting: total outdoor air supplied over total occupant-seconds, not a mean of session rates | C1, five aggregations (the ratio of totals, the occupant-weighted mean of session rates, the unweighted mean of space rates, the session-weighted mean and the occupant-weighted mean) spread 0.091 of a bin and all print 5.0 |
 | 8 | Window length: the monitored period, no trailing window | filed (SF6) |
 | 9 | Boundary inclusivity: a session's first and last recorded reading, both inclusive | C1, the five-minute grid places no sample on a session boundary |
-| 10 | Rounding path: once at the end, to the nearest 0.5 | stated in the asking sentence (SF8); asserted in `checks.py` |
+| 10 | Rounding path: once at the end, to the nearest 0.5 for the rate, two decimals for hours, whole persons for occupants, one decimal for shares | stated in the asking sentence and again, to the same precisions and with the direction, in EST-14 section 5 (SF8); both asserted in `checks.py` |
 | 11 | Tie-break: none, the answer is one figure and no candidate list is ranked | not reachable by construction |
 | 12 | Maturity and censoring: none, every timetabled session in the window has run; readings are missing where the field bus was down | C1, integrating what was recorded against keeping only the sessions whose whole grid was recorded files 5.0739 against 5.0784, 0.009 of a bin apart, and the analyser swap sits outside the block |
 | 13 | Order of operations: integrate, then divide; the stored term carries its own sign | C1, the regression member agrees to 0.02 of a bin |
@@ -353,27 +353,55 @@ path for the ask against the shipped files and counts what that path lands.
 
 ## Leak review
 
-`leak.py --asof 2026-12-15` reads CLEAN on eight of its eleven sweeps and REVIEW on three, with no LEAK.
-One line per REVIEW, the fix being none in every case.
+`leak.py --asof 2026-12-15` reads CLEAN on eight of its eleven sweeps and REVIEW on three, with no
+LEAK. The stage 4 leak reader then read the pack cold. One line per finding.
 
-- Sweep 1, `minor_works_thread.txt`: the estates officer's own mail thread with the facilities manager,
-  which sets the January decision and points at the record set and the maintenance log. It describes no
-  column and names no file's role.
-- Sweep 3, seventeen hits in the as-built sheets, the procedure note and the thread: every one is a room
-  code fragment the write-up also carries (104, 107, 103, 016, 205, 012, 108, 211). No graded figure
-  appears in any shipped document, which `checks.py` asserts separately over the write-up's own answer
-  blocks.
-- Sweep 4, five documents carrying stump-paragraph terms: the terms are the field's ordinary nouns
-  (supply, record, volume, carbon, dioxide, design, measured). `checks.py` sweeps every csv, txt, xlsx and
-  pdf for the vocabulary that would name the move (the balance, the stored term, the integration, a
-  response time, a steady state) and finds none.
-- Sweep 4, the prompt sentence carrying two stump terms: it is the deliverable sentence, naming the asks
-  and their units. It states no method.
-- Sweep 8, `air_temp_c` in the temperature export: a building management system point name carrying its
-  own unit, which is what `dataset-generation` section 3 asks each file to do.
-- Sweep 8, `flag` in the Mace Head file: the station's own data-quality column, published under that name.
-- Sweep 9, four 2027 dates in the academic calendar: the spring term, published before it starts. It is
-  the one forward-looking record in the pack and is on the allow-list `checks.py` keeps.
+**Fixed, from the reader.**
+
+- *The population was not fixed.* The reader could find nothing choosing among learners, learners with
+  staff, the amended and unamended marks and the roll. Procedure note EST-14 now carries section 4,
+  Occupants present, filing who counts, who does not and that a corrected mark stands as corrected,
+  once and at authority. It files the WHAT and says nothing about how a rate is obtained, so the
+  decisive step is untouched. Measured: present-plus-authorised files 5.613 and the whole roll 6.638,
+  both a different printed call and both now dead to a quoted sentence; learners only (4.911) and the
+  amended marks dropped (5.005) print 5.0 anyway. The golden's own denominator was already the one
+  section 4 defines, so no graded figure moved.
+- *The note's rounding contradicted the asking sentence.* EST-14 section 5 now reads two decimals for
+  hours, whole persons for occupants and one decimal for shares, which is what `prompt.txt` asks.
+- *Four workbooks shared one clock time and four PDFs all read midnight.* Each document now carries its
+  own filing instant from `params.PDF_FILED` and `params.XLSX_FILED`, asserted distinct.
+- *The chart's name carried the method.* `tulrohan_session_balance.png` is now
+  `tulrohan_co2_day_profile.png`, and `checks.py` sweeps every pack and golden name, and every shipped
+  file's content, for balance, storage, integration, unsteady and their kin.
+- *Clause 4.3 was aimed at the commissioning record.* It now states the principle generally: the rate
+  is established in the space and over its timetabled periods, and design and plant records are kept
+  with the assessment rather than standing in for it. The commissioning record is still ruled out by
+  its own outstanding-items section, which records that proving at the supply terminals was deferred.
+- *The commissioning engineer was also a campus tutor, and two learning support assistants were also
+  the maintenance contractor's technicians.* The three organisations now hold disjoint people, drawn
+  from seed 20421, and `checks.py` asserts it both on the parameters and on the cut pack.
+
+**Answered, no fix.**
+
+- Sweep 1, `minor_works_thread.txt`: the estates officer's own mail thread. It describes no column and
+  names no file's role.
+- Sweep 3, seventeen hits in the as-built sheets, the procedure note and the thread: every one is a
+  room code fragment the write-up also carries (104, 107, 103, 016, 205, 012, 108, 211). No graded
+  figure appears in any shipped document, asserted separately over the write-up's own answer blocks.
+- Sweep 4, five documents carrying stump-paragraph terms: the terms are the field's ordinary nouns.
+  `checks.py` sweeps every csv, txt, xlsx and pdf for the vocabulary that would name the move and
+  finds none.
+- Sweep 4, the prompt sentence carrying two stump terms: it is the deliverable sentence, naming the
+  asks and their units. It states no method.
+- Sweep 8, `air_temp_c`: a building management system point name carrying its own unit, which is what
+  `dataset-generation` section 3 asks each file to do.
+- Sweep 8, `flag` in the Mace Head file: the station's own data-quality column, published under that
+  name.
+- Sweep 9, four 2027 dates in the academic calendar: the spring term, published before it starts. It
+  is the one forward-looking record in the pack and is on the allow-list `checks.py` keeps.
+- The reader confirmed as sound, and nothing was churned: no sentence states the decisive step, no file
+  ranks the candidates, nothing reads as the answer except the declared wrong basis, no hidden sheets
+  or comments, no date after the as-of, no arithmetic id sequences, and the mess reads as genuine.
 
 ## Tried and rejected
 
@@ -423,3 +451,17 @@ One line per REVIEW, the fix being none in every case.
   prototype measured. Raising the six spaces' occupancy and their supply together leaves every
   concentration where it is and only shortens the response time, which is what lifted the peak-sample rung
   off the 1.15x floor; the ratio the stump turns on is unchanged and the note's figures are the cut pack's.
+- Stage 4, the per-person population was filed. The leak reader found nothing in the pack choosing
+  among the register's roles and marks, which is the shape that spent a sibling build the same day.
+  `determinism-check` section 1 requires the population filed, so EST-14 gained section 4; it names
+  which persons count and says nothing about how a supply rate is obtained, so the decisive step stays
+  an analytical choice. No graded figure moved, because the golden's denominator was already that
+  population.
+- Stage 4, the chart was renamed from `tulrohan_session_balance.png` to `tulrohan_co2_day_profile.png`
+  and the commissioning firm from Westmeath Air Balancing Services to Westmeath Commissioning Services.
+  The reader named the word balance in a deliverable's own name as one of the two most pointed hints in
+  the pack toward the decisive step. The pack is now swept for that word and its kin by name and by
+  content.
+- Stage 4, the commissioning engineer and two maintenance technicians were redrawn. They had been
+  taken from the campus staff list, so the same person signed an outside firm's commissioning record
+  and taught in the building; the three organisations now hold disjoint people.

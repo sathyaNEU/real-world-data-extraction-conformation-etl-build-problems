@@ -116,6 +116,6 @@ The block's six teaching spaces are supplied with **5.0** litres per second per 
    - TUL-G07, period P2 on 2026-10-13
    - TUL-G12, period P1 on 2026-11-09
 
-### tulrohan_session_balance.png
+### tulrohan_co2_day_profile.png
 
 6. One space's timetabled sessions across a day, the five-minute carbon dioxide trace against the campus outdoor analyser, the timetabled periods and the midday setback shaded, the 1,500 ppm screening indicator drawn and labelled, the occupants present marked on each period, and the block's rate against the requirement stated in the title.
