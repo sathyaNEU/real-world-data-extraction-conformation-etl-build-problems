@@ -24,9 +24,16 @@
   "surface": "clean: the only persona in the cut pack is Nicholas Clay, who is on the card"
  },
  "judge": {
-  "verdict": "",
-  "disposition": "",
-  "report": ""
+  "pass3": {
+   "pack": "0b056f9f",
+   "verdict": "NOT_DETERMINISTIC",
+   "disposition": "SEND_BACK",
+   "finding": "competing_defensible_answer (Gate C) on which area comes nearest: Bexhollow holds under 1 of 5 readings (per cent of required, 6.07 against Durnsfield 10.35) while Durnsfield is nearest under the unrounded gap (19.62 against 20.16), under round up and under round down, and the two tie at 20 rounded to nearest",
+   "gate_h": "passes, decisive step analytical",
+   "gate_g": "borderline etl_conformance, leaning no on surface-read dependency",
+   "also": "cc3 and step.5_projected carry 3092 against a recomputed 3093.05; ask 4 halves, ask 5 as-of date and the rounding direction unstated",
+   "reproduced": "40 sites, 274 positions against 327 attested, all 40 site figures, all 12 area totals, the 3,886 network total, every required figure and the 3,556 total, the six short areas, both ladder routes, all 48 out-of-network figures, asks 5 and 6"
+  }
  },
  "returned": [
   {
@@ -42,7 +49,7 @@
    "commit": ""
   }
  ],
- "resume": "Stage 3 closed 2026-10-27 with every free gate verified independently, not taken on the build agent report: checks 625, verify exit 0, two byte-identical rebuilds at 0b056f9f, figures_check 144 figures 0 absent, precut 52 checks 0 FAIL 0 WARN, voice-check on a 996-character prompt, leak.py REVIEW, heart WARN, surface clean. Stage 4 spawned the licensed pair together in the background: the isolated leak reader and the determinism judge. No solver, scored reader or probe runs (CLAUDE.md STOP block). On both reports, fix every finding in the generator in one pass, re-run the stage 3 gates, re-judge only on FIX_NOW and re-read only if a document or the prompt changed, then ship.",
+ "resume": "Stage 4 reported 2026-10-27. Leak reader clean on the ship-stoppers but found four realism defects, all verified by me and sent back. Determinism judge NOT_DETERMINISTIC SEND_BACK on a Gate C fork in the nearest-area ask, verified by me. Both are with the build agent in one pass. The fork is closed not argued: the golden moves to the natural absolute-shortfall reading, one area made uniquely nearest under every rounding by C1 on the data, the rounding direction and the ask-4 half convention filed at authority, ask 5 given an as-of date, and the 3092 figure corrected. Then the stage 3 gates re-run and ONE licensed re-judge. The architecture is sound: Gate H passes with the decisive step analytical and the judge called the 327 against 274 trap high-leverage.",
  "approved": null,
  "delivered": "2026-10-17",
  "portal": "both responses landed the call",
