@@ -1,7 +1,7 @@
 {
   "task": "task273",
   "owner": "sathay3012",
-  "status": "DESIGN",
+  "status": "PAUSED",
   "domain": "urban-regional-science",
   "objective": "descriptive-distribution",
   "stage": 2,
@@ -35,7 +35,7 @@
       "commit": "PAUSED (task273) of 2026-10-27"
     }
   ],
-  "resume": "Stage 2, architecture 3 (the slot's last): Carrisford Water's 2027 critical mains register, the mains whose burst would leave more than 500 properties without water while it is shut off for repair, each burst's shut-off area composed through the valves the exercising programme's latest visits say will close, plus what that area cuts off from both plants and the reservoir. Card v3 registered 2026-10-27T06:38:27Z and re-checked after registration: WARN only (strategy risk and repeat.gate_g, both answered in ## Draw). Note sections Draw, Default path, Stump sentence and Three rules written; precut passes every Three rules line and the task-type check. Prototype scratchpad t273a3/proto/p3.py, seed 5, at 500 properties: golden 173 mains, 20.6 km; the drawn segments with their unreachable demand 93 mains, 15.1 km; link removal 50 mains, 11.9 km; best one-column cut Jaccard 0.54; seeds 9 and 13 hold the same order. No plan-only or call-only screen: CLAUDE.md's STOP block bans every probe, so stump power is argued on paper. Next: readability screen, semantic fork table asserted as a cross product, the ladder with its cheap-route counts on the clean truth over several seeds, closure table, literal reader, oracles, the asks and their silent devices, the prompt, precut exit 0; the generator in task273/generator after the coordinator's go-ahead, since their brief tied the build to a screen verdict the STOP block has withdrawn. Architecture 2's files stay in the folder until then.",
+  "resume": "Paused at stage 2. Architecture 3 (the slot's last) is dead on paper, 2026-10-27, before any data was cut: the readability screen finds the decisive rung readable on tests 1 to 3 and deletion tests 3 and 6 fire (## Readability screen, ## Ladder, ## Deletion tests), so the coordinator's rule to record it and stop rather than build applies. Owed: the author's choice between retiring the number, its third architecture now spent on paper, and a fourth draw beyond the slot's cap; retirement is not taken without asking. The card is marked architecture_spent; architecture 2's shipped files are still in the folder.",
   "approved": null,
   "delivered": null,
   "portal": null,
@@ -58,7 +58,7 @@
       "architecture": 3,
       "drawn": "2026-10-27",
       "registered": "2026-10-27T06:38:27Z",
-      "fate": "live",
+      "fate": "spent on paper 2026-10-27 at stage 2, never cut: the decisive rung readable on tests 1 to 3 (the shut-off clause, the programme's operable flag, unreachable demand as the task type's own pattern), deletion tests 3 and 6 fire",
       "driver": "The deciding quantity is the demand a unit's failure leaves without any path to supply, where a failure takes out not the unit alone but the whole area bounded by the nearest boundary devices that can actually be operated, and which devices can operate is recorded only in a maintenance history kept for another purpose; removing the unit alone, or the area the as-drawn devices bound, files a smaller and different set."
     }
   ],
