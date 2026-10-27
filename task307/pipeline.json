@@ -1,37 +1,38 @@
 {
  "task": "task307",
- "status": "DESIGN",
+ "status": "SHIPPED",
  "domain": "urban-regional-science",
  "objective": "opportunity-sizing-decision",
- "stage": 2,
- "stage_name": "design",
+ "stage": 5,
+ "stage_name": "ship",
  "updated": "2026-10-27",
  "stump": "A competent solver prices each project on its own links at the regional model's no-build volumes and funds the Route 9 widening; the step that lands it there is holding every trip on its no-build route, when trips re-route once a project opens, the widened segment feeds the Route 9 bridge that binds downstream, and the Center Street Bridge lane pulls trips off Route 9.",
  "architecture": 1,
  "loops": 0,
  "precut": {
-  "exit": null,
-  "date": ""
+  "exit": 0,
+  "date": "2026-10-27"
  },
  "leak": {
-  "leak_py": "",
-  "reader": ""
+  "leak_py": "REVIEW (2026-10-27, --asof 2026-10-23)",
+  "reader": "three isolated reads: no decisive-step sentence, no ranking or helper file; question 6 read the call as a stated procedure (judge settles: analytical)"
  },
  "duplicate_check": {
-  "heart": "",
-  "nearest": ""
+  "heart": "WARN (overuse.org_family, repeat.decision and repeat.question_form against task308 v3; answered in the note)",
+  "nearest": "0.08 task267"
  },
  "judge": {
-  "verdict": "",
-  "disposition": "",
-  "report": ""
+  "verdict": "DETERMINISTIC",
+  "disposition": "APPROVE (pass 2; pass 1 FIX_NOW fixed)",
+  "report": "determinism_check_report.md (pass 1), determinism_check_report_pass2.md"
  },
  "returned": [],
- "resume": "Stage 2 design from the registered draw (network equilibrium, MAMPO 2028 TIP slot); prototype in the scratch t307n folder (ue2.py, search3.py): bridge 3600, Millbrook segment 2600, Center Street 2700 gives naive Route 9 widening and equilibrium Center Street Bridge.",
+ "resume": "Shipped; portal result pending. Watch item: Gate H borderline toward rule application (documentation 6.1 files user equilibrium).",
  "approved": null,
- "delivered": null,
+ "delivered": "2026-10-27",
  "portal": null,
  "portal_id": "",
  "portal_status": "",
- "portal_status_date": ""
+ "portal_status_date": "",
+ "zip": "549ae906954d0ec4"
 }
