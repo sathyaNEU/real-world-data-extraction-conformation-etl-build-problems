@@ -1,126 +1,140 @@
 {
- "task": "task118",
- "architecture": "v2",
- "drawn": "2026-10-27",
- "slot_note": "pilot realising analytical_tasks note OS01; the note's decisive rung (pattern C, platform-drawn click share) is kept as rung 3 and a new decisive rung, the gain the desks already bank through their own tests, sits above it",
- "domain": "product-analytics",
- "subdomain": "churn-propensity-uplift-modeling",
- "niche": "a national news publisher choosing which of six shortlisted desks its one headline-testing squad embeds with for 2027, sized by the article clicks the squad's shipped headlines add to the whole site once the clicks they take from the other headlines on the same home page, section front, app feed, app tab or related-stories module are netted off",
- "objective": "opportunity-sizing-decision",
- "shape": "14",
- "decision_type": "pick_one_of_n",
- "answer_unit": "named_option",
- "answer": "Business·national, 500,000 extra article clicks in 2027 (runner-up Local·metro at 400,000, 100,000 behind)",
- "answer_source": "submission.md block 1 and squad_placement_2027.docx",
- "gap": [
-  "objective",
-  "population",
-  "rule"
- ],
- "pattern": [
-  "none",
-  "C",
-  "B"
- ],
- "generators": [
-  "G1",
-  "G16",
-  "G8",
-  "G5"
- ],
- "gate_g": "decomposition_attribution",
- "calibration_form": "realised_outcome_roster",
- "stump_strategy": "causal_design",
- "decisive_rule_filed": false,
- "official_decoy": false,
- "validated_decoy": false,
- "context_artifact": "filed_model",
- "stakeholder_role": "managing editor of a national news publisher, who places the newsroom's one headline-testing squad",
- "role_family": "operations_director",
- "scoring_unit": "other",
- "spine": {
-  "file": "pageviews_by_source_age_2025-10_2026-09.parquet",
-  "rows": 2312406,
-  "entity": "the article pageviews counted for one article, one click-source surface and one band of article age at the click",
-  "grain": "article x click-source surface x age band",
-  "source": "synthetic (fictional publisher's audience export); no third-party data"
- },
- "forum": "committee_or_panel",
- "forcing_event": "launch_or_rollout",
- "org_family": "media_or_publishing",
- "world": {
-  "geography": "Australia (national edition and a Brisbane metro edition)",
-  "currency": "AUD",
-  "org_type": "national digital news publisher with a Brisbane metro edition, funded by subscriptions and advertising",
-  "invented_names": [
-   "Bightline News",
-   "Bightline Brisbane"
+  "task": "task118",
+  "architecture": "v3",
+  "drawn": "2026-10-27",
+  "slot_note": "",
+  "domain": "pharmacology-pharmacoepidemiology-safety",
+  "subdomain": "benefit-risk-assessment",
+  "client_domain": "product-analytics",
+  "niche": "an integrated care board's hypnotic deprescribing team placed in one primary care network, sized by the emergency fall admissions it avoids among older patients on Z-drugs and benzodiazepines",
+  "objective": "opportunity-sizing-decision",
+  "shape": "07",
+  "decision_type": "pick_one_of_n",
+  "answer_unit": "count",
+  "answer": "",
+  "answer_source": "",
+  "gap": [
+    "time"
   ],
-  "people": [
-   "Corey Cox",
-   "Kayla Torres",
-   "Nina Franklin",
-   "Lisa Jennings",
-   "Willie Smith",
-   "Natalie Benjamin"
-  ]
- },
- "deliverables": [
-  "squad_placement_2027.docx",
-  "squad_placement_2027.xlsx"
- ],
- "opening_move": "question-first",
- "driver": "The decisive quantity is the share of an item's measured gain that is new to the whole system rather than taken from the items shown beside it, which is one minus the rate at which a view of the shared display already ends in a choice; a unit whose volume arrives through displays that nearly always convert keeps little of its measured gain, so the unit leading on the measured gain falls behind one whose volume arrives through displays that rarely convert.",
- "driver_concrete": "A shipped headline wins its test on its own click-through, but on Bightline's fixed pages most of the clicks it gains come from the headlines beside it, and only the share of page views that would otherwise end in no article click is new to the site. Culture·national's own-surface clicks come mostly from its section front and its app tab, where about four in five views already end in a click, so little of its tested gain is new, while Business·national's come through the home page and the related-stories module, where most views end without one.",
- "stump": "A competent solver shrinks each desk's winning lift against the change log, sizes it on the clicks from Bightline's own pages, leaves out the articles the desk's editors already test and names Culture·national at about 1,250,000 (scaling every desk by the closed embeddings' average shortfall still names Culture·national); the step that lands them there is crediting every click a shipped headline wins as new to Bightline, when on a fixed page most come from the headlines beside it and only the share of views that would otherwise end in no click is new, and Culture·national's own-page clicks come from its section front and app tab where about four in five views already end in a click.",
- "mechanism_source": "design_note",
- "differentiation": {
-  "task302": "task302 nets the sales a stocked-out product loses against the substitutes shoppers buy instead, measured from the other products' excess while it is out; task118 v2 nets a tested headline's measured gain against the clicks it takes from the other headlines on the same page, read as one minus that page's own click-through and validated on reader holdbacks, with no out-of-stock spell or excess anywhere.",
-  "task120": "Shares the gap, the pattern and Gate G. task120 (v3) recovers a peak draw as inflow less what accumulated inside the system, so the inflow record understates the draw exactly when the internal reserve is drawn down. task118 has no stock, no accumulation and no understatement: its naive route OVERSTATES, by sizing a programme's gain on a base that already contains gains the receiving desk banks for itself, and the netting is identified by who ran each test rather than by a balance.",
-  "task118": "v1 netted a desk's gain against the headlines its own editors already test (an ownership filter, read by both portal responses as obvious); v2 keeps that filter in the default path and decides on what share of a shipped headline's clicks is new to the site at all, one minus each fixed page's own click-through, which no filter, join or ownership record carries.",
-  "task184": "task184 v1 took a shared resource's addition to a site from the gap between the site's own plan and what it does on its own; task118 v2 takes the squad's addition from how much of each shipped headline's measured gain the page it sits on would otherwise have lost to no click at all, read from the page's own click-through, with no plan-versus-actual gap.",
-  "task198": "task198 v4 recovers an entitlement hidden behind a reported lesser-of value in a claims record; task118 v2 nets a correctly measured per-item gain against the share of it taken from neighbouring items on a shared page; neither the lesser-of censoring nor any recoverable entitlement appears.",
-  "task472": "task472 credits a job's cut work only where it brings a release forward to an earlier window a schedule fixes; task118 v2 credits a headline's gain only for the share of a page's views that would otherwise end in no click; the netting is a probability read off each page's click-through, not a discrete window from an external schedule."
- },
- "lineage": [
-  {
-   "architecture": "v1 (loops 0 to 4, shipped 10-12, reshipped 10-27 after the portal's determinism block): the headlines each desk's own editors already test netted out of the squad's sized gain",
-   "fate": "FAILED_TO_STUMP 2026-10-27: both portal responses filed Culture·national at 1,250,000 (the golden), by keeping the clicks from Bightline's own surfaces and dropping the articles a desk had already tested, a filter they read as obvious (a tested headline cannot be tested again); shrinkage against the change log moved only the figure, never the desk",
-   "domain": "marketing-consumer-research",
-   "objective": "opportunity-sizing-decision",
-   "gap": [
-    "objective",
-    "rule",
-    "population"
-   ],
-   "pattern": [
-    "none",
-    "C",
-    "B"
-   ],
-   "gate_g": "decomposition_attribution",
-   "decision_type": "pick_one_of_n",
-   "stump_strategy": "causal_design",
-   "driver": "The gain a specialist team adds to a unit is its effect on the reachable volume the unit does not already treat itself, because the unit's own past trials, which supply the measured effect, have already banked their gains in the volume carried forward; every closed deployment went to units that had never run a trial of their own, so the shrunk effect times reachable volume reproduces all of them, while the unit leading on that basis already treats the items that carry most of its reachable volume and a unit that has treated little of its own overtakes it.",
-   "stump": "A competent solver rebuilds each desk's winning lift from the test archive, shrinks it as the seven closed embeddings' realised holdback lifts require, counts only the clicks that start on surfaces that show the tested headline, and names Local·metro at 2,800,000; the step that lands them there is never asking who ran the tests behind each desk's lift, which the archive's test owners joined to the newsroom staff list answer: Local·metro's own editors already test the headlines behind 71.1% of its platform clicks, so most of the gain the squad was sized on is already in the plan."
-  }
- ],
- "notes": "Re-rooted 2026-10-27 to architecture 2 after the portal's FAILED_TO_STUMP; the pairing moved from marketing-consumer-research/media-reach-frequency-audience-measurement, whose task types serve Descriptive and Forecasting only, to product-analytics/churn-propensity-uplift-modeling, which serves Opportunity Sizing; the world, the six desks, the people and the ask layer are kept. Ban waiver (the author, 2026-10-27, at ship): ban.strategy causal_design and ban.pattern G1 against task139 v2, registered 2026-10-26T22:19Z, six hours before this architecture's draw, whose check read WARN only. The two share labels, not a mechanism: task139 transports a pilot effect measured only among units that had a first contact to units the programme never reached; task118 nets a correctly measured headline lift for the clicks the page's other headlines would have taken anyway. Both labels are honest here, so no axis was relabelled; the author waived the axis bans. The card keeps its draw's filing time (04:25Z): a fresh stamp would move this build behind every card filed since and reorder their windows, which `register --force` did once at ship and was put back. Second ban waiver (the author, 2026-10-27, at the determinism reship): guard heart BLOCKs on ban.role, ban.forum and ban.forcing_event against task304, ban.strategy against task171 v5, and test.same_puzzle and test.same_driver against task184's lineage, all from builds drawn after this architecture; the axes are the draw's own and are not relabelled. Architecture 2 spent 2026-10-27 at the portal (FAILED_TO_STUMP after the determinism reship): both responses landed the call once the brief's sign-off required each closed embedding reproduced, which announced the page-level share.",
- "stump_class": "analytical",
- "client_domain": "product-analytics",
- "analyst_test": "A strong analyst who conforms the click log, the test archive and the plan correctly, shrinks each desk's lift as the change log's holdback lifts require, sizes it on the clicks from Bightline's own pages and nets out the headlines each desk already tests names Culture·national at about 1,250,000, and one who also scales every desk by the closed embeddings' average shortfall still names Culture·national; the easy route never asks how many of a shipped headline's clicks are new to the site, which on a fixed page is one minus the share of views that already end in a click, and that share is highest on the section fronts and app tabs Culture·national depends on.",
- "domain_test": "Uplift sizing for a headline-testing squad: what the squad adds to Bightline is the incremental clicks of its shipped headlines, which on a fixed-slot page is the tested lift times the share of the page's views that would otherwise end without an article click, read surface by surface from the page analytics and validated on the closed embeddings' reader holdbacks; with a hospital's or a utility's nouns there is no page of competing headlines whose views either end in a click or do not, so the quantity that decides the desk has nothing to attach to.",
- "question_form": "which",
- "registered": "2026-10-27T04:25:00Z",
- "layer2_family": "estimand_identification",
- "layer2_pattern": "own:fixed-slate-interference-in-headline-test-uplift",
- "layer1": [
-  "two test engines in one archive (the app engine since 2019, the web self-serve tool from the October 2025 CMS migration)",
-  "test owners resolving through a staff list that keeps leavers",
-  "pageviews at article x click-source surface x age band, with home pages outside the article extract",
-  "page analytics by page and month on the web and app tools' own page names, beside a pageview extract coded by surface",
-  "a planning workbook with a total row and the base year carried forward",
-  "a CMS revision export with drafts, scheduled saves (some set back to draft before their time), autosaves of live articles, live-blog entries, a restored instance and migrated documents, saves in UTC and scheduled times in Brisbane time"
- ],
- "architecture_spent": true
+  "pattern": [
+    "none"
+  ],
+  "generators": [
+    "G14",
+    "G13",
+    "G6"
+  ],
+  "gate_g": "forecasting",
+  "calibration_form": "none",
+  "stump_strategy": "composition_mix",
+  "decisive_rule_filed": false,
+  "official_decoy": false,
+  "validated_decoy": false,
+  "context_artifact": "planning_thread",
+  "stump_class": "analytical",
+  "analyst_test": "A strong analyst who reads every file correctly takes each network's fall-admission rate among its current hypnotic users, applies it to the users the team would take off the drug, and names the network with the most users and admissions, when a hypnotic's fall hazard is highest in the first months of use and that network's users are mostly years into theirs.",
+  "domain_test": "The deciding quantity is the excess fall risk a deprescribing review removes, which pharmacoepidemiology reads by time since starting the drug (the early hazard and the depletion of susceptibles among long-term users), each patient's start taken from the repeat-template record rather than the first dispensing a truncated extract shows; swapped into a school's pupils or a feeder's megawatt-hours there is no exposure clock whose early months carry the harm.",
+  "layer2_family": "field_method",
+  "layer2_pattern": "own:excess-risk-by-time-on-drug-with-the-start-from-the-repeat-template",
+  "layer1": [
+    "practice codes merged and renamed within a network",
+    "a dispensing extract whose first month is April 2023",
+    "dm+d product codes against BNF chapter codes",
+    "admissions in an SUS-style extract with episodes and spells",
+    "dates of birth to age bands",
+    "the financial year against calendar months"
+  ],
+  "stakeholder_role": "the ICB's chief pharmacist, who chairs the medicines optimisation committee",
+  "role_family": "programme_officer",
+  "scoring_unit": "per covered member",
+  "spine": {
+    "file": "dispensing items extract",
+    "rows": 0,
+    "entity": "one dispensed item",
+    "grain": "patient x dispensing date x product",
+    "source": "synthetic"
+  },
+  "forum": "board_of_directors",
+  "forcing_event": "budget_or_appropriation",
+  "org_family": "hospital_or_health_provider",
+  "world": {
+    "geography": "England, an integrated care board area",
+    "currency": "GBP",
+    "org_type": "integrated care board",
+    "invented_names": [],
+    "people": [
+      "Julia Clayton",
+      "Leon Ross",
+      "Glenn Pearce",
+      "Katherine Watts"
+    ]
+  },
+  "deliverables": [
+    "deprescribing_placement_2027.xlsx",
+    "deprescribing_case_2027.docx"
+  ],
+  "opening_move": "question-first",
+  "question_form": "which",
+  "driver": "A harm concentrated in a unit's first months of exposure is priced at the cohort's average rate, when the candidate whose units are mostly long exposed has outlived the early hazard; each unit's exposure start lives in another record than the activity log, whose own start truncates the longest histories.",
+  "driver_concrete": "The board prices the fall admissions a deprescribing team avoids at each network's crude admission rate among current hypnotic users, when the fall hazard is highest in the first months on the drug; each patient's start comes from the GP repeat-template start date, not the first dispensing in an extract that begins in April 2023 and makes long-term users look new, so the network whose users are mostly long-term avoids far fewer admissions than its crude rate implies.",
+  "stump": "A competent analyst applies each network's crude fall-admission rate among current hypnotic users to the users the team would take off the drug and names the network with the most users; the step that lands them there is pricing every user at the cohort's average risk, when the risk falls after the first months on the drug and that network's users started years ago.",
+  "mechanism_source": "design_note",
+  "differentiation": {
+    "task131": "task131 moves load out of a window and prices the synchronised surge when it returns; this build prices an exposure's excess harm by time since the exposure began, nothing moved or returned",
+    "task169": "task169 corrects a forward rate for one of two processing routes a filed change closes; here no route or filed change: the harm falls with time on the drug and the start date sits in another record",
+    "task183": "task183 conditions a part's rate on its own count of past failures; this build conditions the excess risk on time since the exposure started, recovered from a start record the truncated activity log cannot show",
+    "task230": "task230 corrects a category count for a late processing channel's classification bias; nothing here is classified or processed late",
+    "task446": "task446 weights a signal by the component that raised it; here no signal or component: each unit's excess risk follows its own exposure clock"
+  },
+  "lineage": [
+    {
+      "architecture": "v1 (loops 0 to 4, shipped 10-12, reshipped 10-27 after the portal's determinism block): the headlines each desk's own editors already test netted out of the squad's sized gain",
+      "fate": "FAILED_TO_STUMP 2026-10-27: both portal responses filed Culture·national at 1,250,000 (the golden), by keeping the clicks from Bightline's own surfaces and dropping the articles a desk had already tested, a filter they read as obvious (a tested headline cannot be tested again); shrinkage against the change log moved only the figure, never the desk",
+      "domain": "marketing-consumer-research",
+      "objective": "opportunity-sizing-decision",
+      "gap": [
+        "objective",
+        "rule",
+        "population"
+      ],
+      "pattern": [
+        "none",
+        "C",
+        "B"
+      ],
+      "gate_g": "decomposition_attribution",
+      "decision_type": "pick_one_of_n",
+      "stump_strategy": "causal_design",
+      "driver": "The gain a specialist team adds to a unit is its effect on the reachable volume the unit does not already treat itself, because the unit's own past trials, which supply the measured effect, have already banked their gains in the volume carried forward; every closed deployment went to units that had never run a trial of their own, so the shrunk effect times reachable volume reproduces all of them, while the unit leading on that basis already treats the items that carry most of its reachable volume and a unit that has treated little of its own overtakes it.",
+      "stump": "A competent solver rebuilds each desk's winning lift from the test archive, shrinks it as the seven closed embeddings' realised holdback lifts require, counts only the clicks that start on surfaces that show the tested headline, and names Local·metro at 2,800,000; the step that lands them there is never asking who ran the tests behind each desk's lift, which the archive's test owners joined to the newsroom staff list answer: Local·metro's own editors already test the headlines behind 71.1% of its platform clicks, so most of the gain the squad was sized on is already in the plan."
+    },
+    {
+      "architecture": "v2",
+      "fate": "spent 2026-10-27 at the portal (FAILED_TO_STUMP after the determinism reship): both responses landed the call once the brief's sign-off required each closed embedding reproduced",
+      "driver": "The decisive quantity is the share of an item's measured gain that is new to the whole system rather than taken from the items shown beside it, which is one minus the rate at which a view of the shared display already ends in a choice; a unit whose volume arrives through displays that nearly always convert keeps little of its measured gain, so the unit leading on the measured gain falls behind one whose volume arrives through displays that rarely convert.",
+      "gap": [
+        "objective",
+        "population",
+        "rule"
+      ],
+      "pattern": [
+        "none",
+        "C",
+        "B"
+      ],
+      "gate_g": "decomposition_attribution",
+      "stump_strategy": "causal_design",
+      "generators": [
+        "G1",
+        "G16",
+        "G8",
+        "G5"
+      ],
+      "decision_type": "pick_one_of_n",
+      "domain": "product-analytics",
+      "subdomain": "churn-propensity-uplift-modeling"
+    }
+  ],
+  "notes": "Re-rooted 2026-10-27 to architecture 2 after the portal's FAILED_TO_STUMP; the pairing moved from marketing-consumer-research/media-reach-frequency-audience-measurement, whose task types serve Descriptive and Forecasting only, to product-analytics/churn-propensity-uplift-modeling, which serves Opportunity Sizing; the world, the six desks, the people and the ask layer are kept. Ban waiver (the author, 2026-10-27, at ship): ban.strategy causal_design and ban.pattern G1 against task139 v2, registered 2026-10-26T22:19Z, six hours before this architecture's draw, whose check read WARN only. The two share labels, not a mechanism: task139 transports a pilot effect measured only among units that had a first contact to units the programme never reached; task118 nets a correctly measured headline lift for the clicks the page's other headlines would have taken anyway. Both labels are honest here, so no axis was relabelled; the author waived the axis bans. The card keeps its draw's filing time (04:25Z): a fresh stamp would move this build behind every card filed since and reorder their windows, which `register --force` did once at ship and was put back. Second ban waiver (the author, 2026-10-27, at the determinism reship): guard heart BLOCKs on ban.role, ban.forum and ban.forcing_event against task304, ban.strategy against task171 v5, and test.same_puzzle and test.same_driver against task184's lineage, all from builds drawn after this architecture; the axes are the draw's own and are not relabelled. Architecture 2 spent 2026-10-27 at the portal (FAILED_TO_STUMP after the determinism reship): both responses landed the call once the brief's sign-off required each closed embedding reproduced, which announced the page-level share. Architecture 3 (re-rooted 2026-10-27 at the author's direction, in this session): the Bightline world is spent (the netting, the page share, the timing rung blocked at v1's draw), so the number moves to Pharmacology & Pharmacoepidemiology / benefit-risk-assessment for Opportunity Sizing, a never-built pairing. Redrawn at check (2026-10-27): decisive pattern G9 (BLOCK against task464) to G14, the excess risk conditioned on each patient's time since starting, the honester key; context artifact register (BLOCK against task464) to published_series, the board's monthly prescribing series. Context artifact published_series (BLOCK against task311) redrawn to planning_thread, the board's thread placing the team. slots (2026-10-27): task178's note sets aside prevalent against new users as the client library's first card in the sister task type, a reflex; so the decisive step here is the conjunction, the hazard by time on the drug AND each user's start from the repeat-template record rather than the extract's first dispensing, each partial fix landing a different wrong network (client held trap 11, the quiet step behind the loud one).",
+  "registered": "2026-10-27T23:48:07Z"
 }

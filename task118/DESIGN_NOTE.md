@@ -1,294 +1,46 @@
-# task118 · Which desk gets the headline squad, sized on the clicks that are new to Bightline (architecture 2)
+# task118 · Which primary care network gets the hypnotic deprescribing team, sized by the fall admissions it avoids (architecture 3)
 
-Architecture 1 (the headlines each desk's own editors already test, netted out of the squad's gain) shipped 10-12, was
-reshipped 10-27 after the portal's determinism block, and failed to stump the same day: both portal responses filed
-Culture·national at 1,250,000, the golden, by keeping the clicks from Bightline's own pages and dropping the articles a desk
-had already tested, a filter they read as obvious. Re-rooted 2026-10-27 (card v2, lineage v1). The world, the six desks, the
-people and the CMS ask device are kept; the decisive step, the domain and task type, the ask shape and every file that
-describes the data change.
+Architecture 1 (the headlines each desk already tests, netted) failed to stump; architecture 2 (the share of a won click
+new to the site) was landed by both portal responses once its determinism closure filed the per-embedding sign-off.
+The Bightline world is spent (its third mechanism, the test window, was blocked at architecture 1's draw as task105 v1's
+driver), so the number moves to another client domain, world and dataset under the same objective, re-rooted
+2026-10-27 in this session at the author's direction. Card v3, lineage v1 and v2.
 
 ## Draw
 
-```
-DRAW (fingerprint card task118 v2, guard.py check WARN repeat.question_form only, registered 2026-10-27T04:25Z)
-  Domain: Product Analytics (product-analytics, client domain) · Task type: churn-propensity-uplift-modeling (serves
-         Opportunity Sizing; v1's media-reach task type served Descriptive and Forecasting only)
-  Objective: Opportunity Sizing & Decision Support: the pool is each desk's 2027 clicks from Bightline's own pages on headlines
-         the desk does not already test, the realisable is the squad's lift on them times the share of each page's views that
-         would otherwise end in no article click, and the largest realisable figure picks the desk
-  Shape: 14, cuts of a distribution (each desk's median minutes from going live to the first headline correction, how many
-         came within the hour and how many after more than three hours), with the call, its figure, the
-         runner-up and the gap
-  Gap: objective (decisive); population and rule below it · Gate G: decomposition_attribution (a correctly measured gain
-         split into the clicks new to the site and the clicks taken from the headlines beside it)
-  Pattern: none at the decisive rung (G1, the unit of value: Bightline's clicks, not the article's); C and B below it
-  Generators: G1, G16, G8, G5 · Decision type: pick_one_of_n (named_option), the chosen desk's 2027 extra clicks graded
-  Stump strategy: causal_design (a within-slate comparison measures a share shift, not a total) · stump_class analytical ·
-         decisive rule filed: no · official decoy: no · validated decoy: no
-  Layer 2: estimand_identification, own:fixed-slate-interference-in-headline-test-uplift
-  Calibration form: realised_outcome_roster (the seven closed embeddings' extra clicks against their reader holdbacks)
-  Context artifact: filed_model (the 2027 audience plan, each desk held at base-year clicks)
-  Furniture: forum committee_or_panel · forcing event launch_or_rollout · org family media_or_publishing (unchanged)
-  World: Bightline News, a national digital publisher with a Brisbane metro edition (Australia, AUD); people kept from v1
-  Deliverables: squad_placement_2027.docx, squad_placement_2027.xlsx · Opening move question-first · Question form which
-         (the decision is a pick of one desk; the WARN against task144 is answered by the decision's own form)
-```
-
-**Data-native sentence.** On Bightline's own pages a headline competes for a fixed set of reader clicks, and the page
-analytics show how often a view already ends in one: about four in five views of Culture·national's section front and
-app tab end in an article click, against about two in five of the home pages and the app feed and about one in eight of
-the related-stories module, so most of what a better Culture·national headline wins it takes from the headlines beside
-it.
-
-## Default path
-
-The strong analyst's route (the portal's two responses ran its first five steps):
-1. Reads the brief: the squad is judged on the article clicks Bightline gets in its year that it would not have got without
-   it; six desks are shortlisted.
-2. Takes each test's winning lift from `headline_tests_archive_2019-2026.csv` and shrinks it towards one prior, as the
-   change log's realised holdback lifts require (raw lift misses every closed embedding).
-3. Keeps the clicks that start on Bightline's own pages (the brief names them), and leaves out the articles a desk's own
-   editors have already put under test.
-4. Multiplies each desk's shrunk lift by those 2027 clicks: Culture·national at about 1,250,000.
-5. Back-tests on the change log: the predicted gain overshoots every closed embedding's extra clicks against its reader
-   holdback, by between about a third and three fifths, so scales every desk by the average shortfall: Culture·national at
-   about 720,000.
-Ends on: Culture·national (about 1,250,000, or about 700,000 after the average scaling).
-Golden: the desk whose own-page clicks arrive through pages that rarely end in a click (Business·national at about
-500,000 in the prototype), once each page type's share of a shipped headline's clicks that is new to the site, one minus
-the page's click-through, is applied page by page.
-
-## Stump sentence
-
-A competent solver shrinks each desk's winning lift against the change log, sizes it on the clicks from Bightline's own
-pages, leaves out the articles the desk's editors already test and names Culture·national at about 1,250,000 (scaling
-every desk by the closed embeddings' average shortfall still names Culture·national); the step that lands them there is
-crediting every click a shipped headline wins as new to Bightline, when on a fixed page most come from the headlines beside
-it and only the share of views that would otherwise end in no click is new, and Culture·national's own-page clicks come
-from its section front and app tab where about four in five views already end in a click.
-
-## Three rules
-
-Task type: churn-propensity-uplift-modeling in product-analytics, which the taxonomy lists against Opportunity Sizing: the call is the incremental clicks a squad's shipped headlines add to the site at each desk, sized from the desk's own-page clicks down to the share that is new to Bightline.
-Domain test: uplift sizing for a headline-testing squad: what the squad adds is the incremental clicks of its shipped headlines, which on a page of competing headlines is the tested lift times the share of the page's views that would otherwise end with no article click, read page by page from the page analytics and validated on the closed embeddings' reader holdbacks; with another field's nouns there is no page whose views either end in a click or do not, so the quantity that decides the desk has nothing to attach to.
-Swap: "which desk should the headline squad join, and how many extra article clicks will Bightline get from it" becomes "which substation should the crew join, and how many extra megawatt-hours will the grid get from it"; it stops at the netting of a winning headline's clicks against the headlines beside it on one page, which has no analogue on a feeder.
-Layer 1: two test engines in one archive, owners through a staff list with leavers, a parquet at article x source x age band with home pages and fronts outside the article extract, page analytics in the web and app tools' own page names, a plan with a total row; in the declared panel distractor, releases on two content taxonomies, a history rerun, a restatement and a July file repeating the months it replaced; on the ask path, a CMS export with drafts, schedules, autosaves, live-blog entries, a restored instance and migrated documents, saves in UTC and scheduled times in Brisbane time.
-Layer 2: the share of a shipped headline's won clicks that is new to Bightline: on a page of competing headlines a better headline's extra clicks come mostly from the headlines beside it, so the site gains only in the share of the page's views that would otherwise end with no article click, one minus that page's click-through, which runs from about one view in six on the Culture front to nearly nine in ten on the related-story links and is validated on the change log's extra clicks against the reader holdback.
-Decisive step: weight each desk's won clicks by one minus the click-through of the page each click starts on, from the page analytics, because the brief judges the squad on the clicks readers would not have made without it and the change log's holdback comparison measures exactly that, embedding by embedding.
-Not semantics: no field is misread: a solver who reads every column, conforms the click log, keeps the brief's own pages, nets the tested headlines and shrinks the lift still files Culture·national at 1,250,000, because no field says that a won click on a page is taken from the headline beside it; it is a property of how views end on a page, read from the page analytics and the change log together.
-Not rule application: no filed sentence performs it: the brief files the estimand (the clicks readers would not have made without the squad, against a holdback), the pages a shipped headline sits on, the headlines the squad takes, the lift, and Experimentation's sign-off (a working run unchanged on each closed embedding comes within 2 per cent of the lift and the extra clicks it realised), which is a test a working must pass and names no working; nothing says how a won click becomes a new one, so executing every filed rule to the letter files Culture·national at 1,250,000, and the one repair the corpus suggests by reflex, its average shortfall, files about 700,000 and fails the sign-off at five embeddings without saying what passes it.
-Analyst test: a strong analyst who conforms the click log, the archive and the plan, shrinks each lift as the change log requires, keeps the brief's own pages and nets the tested headlines names Culture·national at 1,250,000, and one who scales by the closed embeddings' average shortfall names Culture·national at about 700,000; the easy route never asks how many of a winning headline's clicks were new to the site.
-Estimand: the article clicks Bightline's readers make in 2027 that they would not have made without the squad, at the shortlisted desk it joins, on headlines the desk has not put under test, counted from each article's publication with the test hours at the winning headline's lift, measured the way Experimentation closes an embedding against a reader holdback; filed in the brief, the plan holding every desk at its base-year clicks.
-No decoy: nothing is planted to be caught: every figure is correct at its own grain, no stakeholder number is overturned, the dashboard export is a declared wrong-basis distractor that the brief's measure and the change log rule out and that is never the stump, and the page analytics, the change log, the panel and the CMS export are honest records of their systems.
-No certified replay: the method is not hidden behind the change log's figures: the brief files the test a working must pass (each closed embedding within 2 per cent), and the working that passes it is the analysis, a share of each page's won clicks that is new to the site, which no file states; the change log certifies no route the wrong route also matches: page by page, planned clicks times the realised lift times the desk's share new to Bightline match 7 of 7 embeddings' extra clicks within 2%, while counting every won click misses all seven and one average share misses five, because the four app desks reach readers through tabs, the feed and related links in different mixes.
-Lesson: a programme's measured gain on items shown side by side is not the system's gain: on a fixed display, the share of the gain that is new is one minus the rate at which a view already ends in a choice, so a unit whose volume comes through displays that nearly always convert keeps little of its measured gain.
-
-## Readability screen
-
-| Rung | 1 Filed sentence | 2 Schema | 3 Reflex | 4 Control bench | 5 Hygiene | 6 Linear | Verdict |
-|---|---|---|---|---|---|---|---|
-| 0 dashboard vertical lift x plan (Politics·national) | the dashboard states its basis | `vertical` column | yes, the programme's own figure | the change log refutes raw lift (0 of 7) | no | yes, one product | readable |
-| 1 desk raw lift x plan (Sport·metro) | the brief defines winning lift | `desk_code` on every test | yes, the right grain | the change log refutes it (0 of 7) | no | yes | readable |
-| 2 shrunk lift x plan (Business·national at 6,200,000) | no | no | yes, shrink for the winner's curse | the change log selects it (7 of 7) | no | no | readable |
-| 3 shrunk lift x own-page clicks (Local·metro) | the brief lists the pages a shipped headline sits on | `source_code` | yes, once the brief is read | no | no | no | readable |
-| 4 the desk-tested headlines netted (Culture·national 1,250,000) | the brief: the squad takes the headlines a desk has not put under test | `article_id` in the archive | yes, a tested headline cannot be tested again | no | no | yes, a filter | readable |
-| 5 the change log's average shortfall (Culture·national 700,000) | no | `extra_clicks_vs_holdback` beside `planned_clicks` | yes, scale to the corpus | the change log's mean ratio | no | yes, one scalar | readable |
-| 6 one minus each page's click-through, page by page (decisive) | no sentence says how a won click becomes a new one | no column: the click-through sits in the page analytics, keyed by page names the desk register implies, beside a pageview extract keyed by source code | no: shrinkage, netting and scaling to the corpus all leave it out, and the corpus's own reflex form is one average | only page by page: the change log matches 7 of 7 once each embedding is predicted from its desk's own pages, and its reflex form, one average shortfall, misses five | no: every total ties under rungs 4 and 5 | no: a per-page weighting of every desk's clicks | silent |
-
-## Semantic fork table
-
-| SF | Term or convention | Golden reading | Alternative | Call under it | Ruled out by |
-|---|---|---|---|---|---|
-| SF1 | the shortlist | the six desks the prompt names | any desk in the register | an app desk could lead | the prompt's list and the brief's 2027 shortlist (asserted) |
-| SF2 | "for 2027" | January to December 2027, the squad's year at the desk | twelve months from the planning meeting | same call (the plan holds every month at the base year) | the prompt and the brief ("Each January it moves to one desk for the calendar year") (asserted) |
-| SF3 | "extra article clicks Bightline would get" | clicks readers make that they would not have made without the squad, against a reader holdback | every click a shipped headline wins | Culture·national at 1,250,000 | the brief: "on the article clicks Bightline's readers make in its year that they would not have made without it, measured against a reader holdback" (asserted) |
-| SF4 | the desk a click counts for | the article's one `desk_code` | the desk a click arrives through | same call | C1: one desk code per article (asserted) |
-| SF5 | the period a winning headline's clicks count over | from the article's publication, test hours included | post-test clicks only | Business·national at 280,000, out of its bin | the brief: "Clicks count from each article's publication, the hours its headline is under test included" (asserted) |
-| SF6 | the 2027 click base | the plan's 2027 clicks | the base year's actual clicks | same call | C1: the plan holds every desk at the base year to the click (asserted) |
-| SF7 | the pages a shipped headline reaches | home pages, section fronts, app feed and tabs, related-story links | Discover read as a Bightline page | Business·national at 770,000, out of its bin | the brief names both lists, Discover-style cards among the stored-headline surfaces (asserted) |
-| SF8 | winning lift | shipped click-through over the control's, minus one, nil when the control is kept | absolute click-through points | off the bins | the brief's definition; the change log refutes absolute points (asserted) |
-| SF9 | the runner-up and "how far behind" | Local·metro; the gap between the two figures | the rounded figures subtracted | same call (100,000 either way) | asserted |
-| SF10 | rounding | each click figure rounded once, to 50,000 | lifts or click-throughs rounded first | same call | every graded click figure at least 15,000 inside its bin; lifts to two decimals and click-throughs to a whole per cent land in the same bins (asserted) |
-| SF11 | the rate clicks count at in the test hours | the winning headline's lift | the impression-weighted rate across every package shown | a lower figure | the brief: "Clicks in those hours count at the winning headline's lift" (asserted) |
-| SF12 | when an article goes live (asks) | when it was first published: a live save, or the scheduled time the CMS published it | the first live save only | moves the cuts at every desk | the corrections standard 7.4 (asserted) |
-| SF13 | the clock of the scheduled time (asks) | Brisbane time, the column `publish_at_aest`; saves in UTC (values ending Z) | the saves' clock | moves the cuts at every desk | the column names and the values (asserted) |
-| SF14 | what "tested" covers | every headline the archive shows under test | only those that shipped a variant | another graded call | the brief: the squad takes the headlines a desk has not put under test, every one recorded "whether or not a variant ships" (asserted) |
-| SF15 | a page's click-through | the twelve months summed, clicks over views | the mean or median of the monthly rates | same call, figure, runner-up and gap | C1 (asserted) |
-| SF16 | which home page a desk's home clicks start on | its edition's home page | the other edition's | same call | C1: each home page's article click-throughs equal its edition's desks' home clicks to the click (asserted) |
-| SF17 | "within an hour", "more than three hours" (asks) | 60 minutes or fewer; more than 180 | the mark itself in or out | same counts | C1: no first correction within two minutes of either mark (asserted) |
-| SF18 | the median (asks) | the middle article's minutes | the mean of two middle values | same median | C1: every desk's count of corrected articles is odd (asserted) |
-| SF19 | a save the export types autosave (asks) | not a published version, though the article's status is live | a published version | moves 15 of the 18 cuts | filed in the corrections standard 7.3, "An autosave of an editor's working copy publishes nothing" (determinism pass 6 found it undefined, 2026-10-27; asserted) |
-| SF20 | a schedule set back to draft before its time (asks) | the article went live at its first live save: the CMS publishes at a scheduled time only what is still scheduled then | the scheduled time | moves all 18 cuts | the records: the save at or before that time is a draft with its scheduled time cleared and a draft is saved after it, and no document in the export goes back to draft once live, so the CMS did not publish the article then; 7.4's "when the CMS published it at its scheduled time" (asserted) |
-| SF21 | the lift a desk's 2027 figure carries | the lift whose working, run unchanged on each closed embedding, comes within 2 per cent of the lift it realised against its holdback: the shrunk winning lift (7 of 7) | the dashboard's average winning lift for the vertical (Business 2.34%); each desk's raw mean winning lift | Politics·national at 17,650,000 (rung 0); Sport·metro (rung 1), or Sport·metro at 900,000 with one factor fitted on the change log (the portal's off-call response) | the brief's sign-off (determinism return 2026-10-27, judge 2: the lift estimator stated in no file); raw lift and the dashboard's basis pass 0 of 7, the shrunk and vertical-pooled lifts 7 of 7 (asserted) |
-| SF22 | how a desk's won clicks become extra clicks | the working that, run on each closed embedding from its planned clicks at the lift it realised, comes within 2 per cent of its extra clicks against the holdback: page by page, one minus each page's click-through (7 of 7) | every won click new; one factor for every desk fitted on the change log (pooled); one click-through for every page | Culture·national at 1,250,000; Culture·national at 700,000, or Sport·metro at 900,000 on raw lift; Culture·national | the brief's sign-off: every won click 0 of 7, one pooled share 2 of 7, the raw-lift factor 1 of 7, one click-through 0 of 7; every working the sign-off passes on the filed netting files the golden call, figure, runner-up and gap (asserted, the grid's 144 cells executed against it) |
-| SF23 | the total minutes (asks) | every first headline correction's whole minutes added, one figure a desk | rounded per article first | same totals (every save and scheduled time is to the minute) | C1: whole minutes on both clocks; every pairing window from 9 to 60 minutes files the same totals (asserted with the cuts) |
-| SF24 | the desk's tests in the year of the embedding | the embedding desk's app-engine tests started in that calendar year | those concluded in that year; those inside the embedding's dates | same tests, or not the sentence's words | C1: started and concluded in the year select the same tests, their count the change log's tests_run (asserted); the sentence names the year, not the embedding's dates |
-| SF25 | a schedule moved to a later time (asks) | the article went live at the later time: a save after the time first set still reads scheduled with the later time, and no document is saved scheduled once live | the time first set, read as fired because the article still read scheduled then | moves 23 of the 24 figures (the earliest-such-time reading), 21 (the first scheduled time) | the records: the save after the time first set and the invariant (asserted); 7.4's "when the CMS published it at its scheduled time" |
-
-The decisive step is not a reading of any term: the estimand is filed whole in the brief, and Culture·national comes from an easy method on that same estimand (counting every won click as new, or scaling every desk by one average shortfall). SF21 and SF22 file the test a working must pass (the brief's sign-off, embedding by embedding within 2 per cent), never the working: the shrinkage and the page-by-page share are what passes it, and neither is named in any file.
-
-## Ladder
-
-Seven rungs. Each is a complete pipeline, reproduces from the raw files, names a desk and falls to one shipped fact. Figures as built (asserted in `generator/checks.py`).
-
-| Rung | Construction | Names (margin) | Killed by (one shipped fact) | Why a careful analyst stops here |
-|---|---|---|---|---|
-| 0 | The dashboard's average winning lift for the desk's vertical x 2027 planned clicks | **Politics·national** 17,650,000 (1.71x over Sport·national) | the brief's measure is Bightline's clicks against a holdback; raw lift misses every closed embedding | the programme's own figure on the plan's traffic |
-| 1 | Each desk's own average winning lift x planned clicks | **Sport·metro** 11,320,000 (1.56x) | the change log: raw lift overstates every realised holdback lift, 1.30x to 3.85x | the right grain from the raw tests |
-| 2 | Shrunk winning lift (one prior, maximum likelihood on every package) x planned clicks | **Business·national** 6,180,000 (1.28x) | the brief lists the pages a shipped headline sits on; search, partner apps and the rest keep the stored headline | selection bias removed, certified 7 of 7 |
-| 3 | Shrunk lift x 2027 clicks from Bightline's own pages | **Local·metro** 2,790,000 (1.62x) | the brief: the squad takes the headlines a desk has not put under test; Local·metro's editors test the headlines behind 71% of its own-page clicks | the brief's surfaces honoured |
-| 4 | Shrunk lift x own-page clicks on headlines the desk does not test | **Culture·national** 1,252,298 (1.55x over Local·metro) | the change log: planned clicks x realised lift overshoots every embedding's extra clicks against the holdback | every filed rule executed |
-| 5 | Rung 4 x the change log's average extra clicks over planned clicks x realised lift (0.570) | **Culture·national** 713,931 (1.55x) | the change log: one share for every desk misses five of seven embeddings, by up to 57% | the corpus consulted and the figure scaled to it |
-| 6 | Rung 4 with each page's won clicks weighted by one minus its click-through | **Business·national** 496,091 (1.26x over Local·metro 392,470) | (answer) | |
-
-- **Position.** Business·national is 3rd on rung 0, 2nd on rung 1, 1st on rung 2, 2nd on rung 3 and 3rd on rungs 4 and 5. It leads rung 2, where its figure is 6,180,000, more than ten times the answer's and another runner-up (Politics·national), so a response that sizes every click on the plan files the right desk at the wrong figure, runner-up and gap (asserted); it leads no rung a response that reads the brief's surfaces can stop at. Rung 6 as built: Business·national 496,091, Local·metro 392,470, Culture·national 336,400, Sport·national 324,740, Politics·national 317,629, Sport·metro 47,129; the runner-up 1.167x over the third.
-- **Dominance.** Culture·national carries 1.795x over Business·national into rung 6; Business·national's edge on the decisive axis, the share of its won clicks that is new (71.1% against 26.9%), is 2.647x; ratio 1.475 (floor 1.2). Against Local·metro: carried 1.158x, edge 1.464x (71.1% against 48.6%), ratio 1.264.
-- **Grid.** Lift basis (dashboard vertical, desk raw, desk shrunk, vertical-pooled shrunk) x what is netted (nothing, every tested headline, tested articles by count, only tests that shipped a winner) x the share counted as new (none, the embeddings' average, the site's click-through, the app pages', the home feed's, each page's own over the year, its monthly mean, its monthly median, one factor per kind of page fitted on the embeddings): 144 cells, rebuilt cell by cell. Exactly eight reproduce the call, its figure, the runner-up and the gap: the shrunk or vertical-pooled lift (one desk to a vertical at both leaders), every tested headline netted, and the page-by-page share in any of its four forms (asserted).
-- **Worth on the graded figure** (Business·national's): rung 2 to 3, -72.1%; 3 to 4, -59.6%; 4 to 5, -43.0%; 5 to 6, +24.7% while Culture·national's falls 52.9% and the desk changes.
-- **Survival of rung 6.** Written in no shipped sentence; the corpus confirms it only page by page, and its reflex form (one average) names Culture·national; no arithmetic symptom (every total ties under rungs 4 and 5); not a row predicate (a weighting of every desk's clicks by a rate keyed to page names the register implies); survives deleting every wrong number.
-
-## Closure table
-
-| # | Axis | Reading chosen | Closure |
-|---|---|---|---|
-| 1 | Population | own-page clicks on articles with no archive test; every non-squad test at a shortlisted desk is owned by that desk's staff | filed: the brief's "takes the headlines the desk has not put under test" (SF14); C1: the desk's own staff and any archive test select the same articles (admissible variant, asserted) |
-| 2 | Unit of account | one click is one article pageview with its source; one desk is the owning desk | C1: one desk code per article (SF4, asserted) |
-| 3 | Attribution window | the squad's 2027; clicks count from each article's publication, test hours included | filed (SF5, asserted); C3: own-page clicks at 7 days and older left out land every graded figure in its bin (asserted) |
-| 4 | As-of dating | the tester's team at test time | C1: no tester changed team (asserted) |
-| 5 | Version basis | one vintage of every main-path file | C1: single exports; the page analytics one year by month |
-| 6 | Divisor | a page's click-through is article click-throughs over page views | C1: the twelve months summed, their monthly mean and median land the same call (SF15, asserted) |
-| 7 | Weighting | a desk's share new to Bightline weights each page's rate by the desk's untested clicks starting there | C2: the change log matches this weighting 7 of 7 and refutes one share for every desk (asserted) |
-| 8 | Window length | lifts over every desk-run test in the base year; clicks and page rates over the base year | C1: one window exists |
-| 9 | Boundary inclusivity | "within 2 per cent" in the back-tests | C4: the golden at most 1.5% off, every refuted rival misses at least 4 of 7 by more than 3% (asserted) |
-| 10 | Rounding path | click figures rounded once, at the end, to 50,000 | SF10 (asserted) |
-| 11 | Tie-break | none needed | C4: the call 1.26x over the runner-up, the runner-up 1.167x over the third (asserted) |
-| 12 | Maturity | concluded tests and closed embeddings only | C1: the open 2026 embedding is absent from the change log |
-| 13 | Order of operations | shrink the shipped variant, then average; net, then weight page by page | C1: netting and the page weighting commute on the same article rows |
-| 14 | Row order | none | C1 |
-| 15 | Duplicate resolution | one test per article, one row per package, no duplicate key on any main-path file | C1 (asserted) |
-| 16 | Identity normalisation | page names from the desk register: the edition's home page, `bightline.com.au/<vertical>/` (with `brisbane/` for the metro desks), `Tab: <vertical>` (with `Brisbane`), the home feed, the related links | C1: every page a desk's clicks start on is in the page analytics by that name, and every page there is one of them; each page's clicks tie to the spine to the click (asserted) |
-| 17 | Netting against gross | every desk-tested article netted whatever its result | filed (SF14); count-weighted and won-only netting both miss the graded call (asserted) |
-| 18 | Dimensional units | relative lift applied to clicks; a click-through is a share of page views | C2: absolute points refuted on the change log |
-| 19 | Code semantics | source codes map to the brief's two lists by name | filed: the brief's two sentences (SF7, asserted) |
-| 20 | Integerisation | integer clicks, no allocation | C1 |
-| 21 | Scope of a stated clause | "would not have made without it, measured against a reader holdback" governs the squad's whole year at the chosen desk | C1 |
-| 22 | Forward window contents | 2027 is the plan year, held at base-year clicks with the same pages and rates | filed (the plan); C1 (no trend in coverage, asserted) |
-| + | The share new to Bightline (method) | one minus each page's click-through, page by page | C2 on a filed selection criterion: the brief's sign-off (each closed embedding's extra clicks from its planned clicks at the lift it realised, within 2 per cent) passes only the page-by-page share in its three forms, all on the graded call; one factor per kind of page fitted on the embeddings (4 of 7) also files the graded call; every other form fails the sign-off (asserted, SF22) |
-| + | Prior fit and estimator form | maximum likelihood on every package; lift as the click-through ratio minus one | C1: DerSimonian-Laird converges (asserted); C2 on the brief's sign-off (the lift from the desk's tests in the year of the embedding within 2 per cent of the lift it realised): raw lift and the dashboard's basis 0 of 7, method of moments and per-desk or per-embedding priors refuted (asserted, SF21, SF24) |
-| + | A fix and its note, a note put back, entries, restored copies (asks) | the corrections standard 7.3 to 7.5 and 7.8 | filed; C1: every pairing window from 9 to 60 minutes files the golden cuts (asserted) |
-| + | The scheduled time's clock and going live (asks) | Brisbane time, first publication | filed (SF12, SF13) |
-| + | A schedule set back to draft, an autosave (asks) | going live at the first live save; an autosave publishes nothing | C1 by the records (SF20: the status column decides it, asserted); filed (SF19, 7.3) |
-| + | A schedule moved to a later time (asks) | going live at the later time | C1 by the records (SF25: a save after the time first set still reads scheduled with the later time, and no document is saved scheduled once live, asserted) |
-| + | The total minutes (asks) | each first correction's whole minutes added | C1 (SF23: whole minutes on both clocks; every corrected article inside the twelve months on the UTC date and the Brisbane one; every pairing window from 9 to 60 minutes files the same totals, asserted) |
-
-## Literal reader
-
-Literal reader: executing the prompt and every filed sentence word for word (the brief's success measure, its two surface lists, the squad taking the headlines a desk has not put under test, the winning-lift definition and the test-hours rate, the plan's 2027 clicks, Experimentation's sign-off, the corrections standard and the CMS columns) fixes the estimand whole and leaves only the method open, which the sign-off's test on the change log forces (every working it passes, on the filed netting, files the same call, figure, runner-up and gap): each desk's clicks new to Bightline, page by page, give Business·national at 500,000, runner-up Local·metro 100,000 behind. Every differing reading violates a quoted sentence or converges (Semantic fork table, each row asserted), and no filed rule, basis or formula reads to another answer. The easy answer, Culture·national at 1,250,000 (or about 700,000 scaled), comes from an easy method on the same literal estimand: counting every won click as new to the site.
-
-## Oracles
-
-- **The change log** (seven closed embeddings, realised holdback lift, planned clicks, extra clicks against the holdback), named by the brief's sign-off as the test a working must pass. Selects the shrunk lift 7 of 7 and refutes raw lift; on clicks it matches the page-by-page share 7 of 7 and refutes counting every won click, one average share and the raw lift scaled by one fitted factor. It is the calibration organ that forces the method, never a figure the wrong route also ties.
-- **The page analytics.** Each page's article click-throughs tie to the spine's own-page clicks to the click under every reading; it ties nothing that separates the call.
-- **The 2027 plan.** Ties the spine at every desk on every rung.
-- **The experimentation dashboard export** (declared wrong-basis distractor). Reproduces from the archive to the last digit; its implied pick is rung 0's.
-- **The standards bulletin** (the ask layer's one referee). Its March 2026 headline and text corrections (11 and 22) reproduce under the golden rule and under the round-1, round-3, status-alone and scheduled-time paths; it arbitrates no device and no ask figure.
-- **The panel** (declared distractor). No published total, no control figure; the release log gives each release its months and names what each rerun replaces; no graded figure reads it.
-- None ties only under the golden.
-
-## Ask sheet
-
-One ask in the workbook row for every shortlisted desk, 24 graded figures: the standards exposure a squad's headlines would sit under, how fast a wrong headline comes down at each desk and how long the wrong headlines stood in all, a measure every desk carries that the call does not turn on (H18). It reads no main-path file. The panel's readers are a declared distractor (the head of audience's measure in the thread), unread by every graded figure.
-
-| Measure | Figures, unit, rounding | Primary devices | Hazards | File path | Natural read |
-|---|---|---|---|---|---|
-| First-correction cuts | 24: six desks each, median whole minutes, total whole minutes, a count within the hour, a count after more than three hours | **A schedule set back to draft before its time** (D2, a scheduled revision superseded by a later save before its time): an editor schedules a story, sets it back to draft before the time comes, works on it and publishes it by hand later that day; the scheduled row still carries the time first set, so reading a scheduled time as going live whenever it precedes the first live save times those corrections from a moment the article was a draft, 30 minutes to four hours early. Aimed at two corrected stories a desk (one first corrected within the hour, one between the hour and three hours, each read past three hours) and set on about one story in twenty never corrected, beside twins set back to draft and scheduled again, which the CMS did publish at the time set second. **A schedule moved to a later time** (D2, the record is the schedule in force, not the first one set): an editor schedules a story, moves the time later before it comes, and saves it again, still scheduled, after the time first set; the CMS publishes it at the later time. Reading a scheduled time as going live whenever the article still read scheduled at it, the careful repair of the first device, times those corrections from the time first set, 20 minutes to six hours early. Aimed at one or two corrected stories a desk (one first corrected within the hour where the desk has one, one between the hour and three hours below the desk's middle, each read past three hours; where a desk has no scheduled story first corrected within the hour, one it published by hand is cut this way) and set on one scheduled story in twenty never corrected. The totals take every article's minutes, so any mishandled article moves its desk's total | autosaves (filed, SF19), going live (SF12), the scheduled clock (SF13), the fix and its note on two saves, a note put back, entries, restored copies, migrated documents, the twins (the over-repair, any draft after scheduling read as never fired: 9 figures) | CMS export, the corrections standard, desk register, the bulletin as referee | scheduled time whatever came after it: 24 of the 24 figures off the golden; the status at each scheduled time read alone: 23 of 24 |
-
-**Separation.** The devices and every hazard live in files outside the main call's population (the spine, the page analytics, the archive, the staff list, the plan, the change log, the brief, the desk register): zero device rows there, asserted, and no main-path document carries the devices' vocabulary (asserted). Every ask figure recomputes with every main-path file deleted, and every graded figure with every declared distractor deleted (both asserted). Neither device moves a golden ask figure: each re-cuts only the saves before an article went live, at the time it went live.
-
-| Ask figure group | Golden | Cracker (lands the call, runs the battery, executes every filed rule, takes a scheduled time as going live whenever it precedes the first live save) | Verdict |
-|---|---|---|---|
-| median minutes, six desks | 86; 55; 89; 47; 102; 119 | 95; 70; 93; 51; 121; 184 | miss |
-| total minutes, six desks | 5,231; 1,342; 4,109; 2,799; 21,693; 2,057 | 5,625; 1,664; 4,510; 3,193; 21,988; 2,417 | miss |
-| within the hour, six desks | 14; 9; 10; 23; 12; 1 | 13; 8; 9; 22; 11; 0 | miss |
-| after more than three hours, six desks | 7; 2; 6; 2; 6; 5 | 9; 4; 8; 4; 8; 7 | miss |
-
-The cracker keeps none of the 24 ask figures; the mirror (rung 5, Culture·national) files the same ask figures, since the ask reads no main-path file. The response that repairs the first device by checking that the article still read scheduled when the time came, and takes the earliest such time, keeps 1 of the 24 (Culture·national's count within the hour, whose one story is the first device's); one that takes the first scheduled time that way keeps 3.
-
-Mirror leakage: 0.0 per cent of ask weight (0 of 24 figures).
-Measured by: `generator/checks.py`, the `pair_simulation` helper run on the cut pack, asserted by the "cracker sheet" and "pair ceiling" checks, with the second device's readings in the necessity matrix and SF25.
-Pair ceiling: 27.5 on the planning weights 38 / 7 / 55 (cracker 45.0, mirror 10.0). A response that takes the time on the last scheduled save before the article went live, and checks that save still stood when the time came, keeps every ask figure and sits at 100 with the call or 65.0 without it (recorded, not capped): the layer stands on two silent devices, so the bar rests on the call keeping at least one of the top two off it.
-
-## Gate G
-
-No shipped artifact ranks the six desks on the decision question. The dashboard export reports verticals only and is the declared wrong-basis distractor; the plan carries clicks, not gains; the change log covers app desks only; the page analytics rank pages, not desks; the brief's shortlist is unordered by gain. Deleting every wrong number in the pack leaves the difficulty whole: the stump is a method the files never state.
-
-## Pre-ship check
-
-- Free gates (architecture 2, final build after determinism pass 6): generator checks 301 of 301 (the archive and
-  owners, the click and page ties, the lift and click back-tests and their rivals, the ladder R0 to R6, the 144-cell
-  grid, SF1 to SF20, the panel distractor's Layer 1 as the pack carries it, the corrections cuts and the schedules set
-  back to draft, no document set back to draft once live, the benign twins, the spine's articles by Brisbane date under
-  both readings, the necessity matrix, the bulletin under every reading, the pair simulation, separation, the
-  distractor-deletion gate, leak words, dates and the input gates); the verifier 78 of 78 on the cut pack (the
-  standard's autosave sentence among them); two builds byte-identical (18 files, target mtimes equal; target.zip
-  3f9e9efb); figures_check 39 of 39; precut 52/0/0 with voice-check PASS (pair ceiling 27.5, mirror leakage 0.0 per
-  cent, cracker sheet all missed). Every graded figure is unchanged from the cut pass 6 judged: the device moves only
-  the reading that misses it.
-- leak.py REVIEW, every line ruled harmless in leak_check_report.md: sweep 3 the brief shares the question's own
-  words and names no pick or figure; sweep 4 the corrections standard, the brief and the bulletin carry their own
-  subjects' words and none names the page click-through; sweep 5 the prompt's question itself.
-- Leak reader, read 2 (the final pack, no solving): no decisive-step sentence, no ranking file, no answer figure;
-  question 5's sentences execute to the golden, the method left to the data; question 6 analytical on the call. Its
-  realism notes are ruled in the report: the dashboard's round counts come from the archive's base-year test counts
-  that carry the call's lifts and stay; nothing else needs a change.
-- Determinism judge pass 6 (zip e97358e4): NOT_DETERMINISTIC on the workbook asks only, FIX_NOW: no shipped file said
-  what an autosave is, and the status column on those saves reads live. Fixed in one generator pass: the corrections
-  standard 7.3 now files it ("An autosave of an editor's working copy publishes nothing"), the device moved to the
-  schedules set back to draft (SF20, decided by the status column), and the standard is dated after the restore it
-  cites (effective 1 October 2025, amended 27 November 2025). The main call, the docx figures and Gates G and H passed.
-- Determinism judge pass 7 (zip 3f9e9efb): DETERMINISTIC, APPROVE, Fix none. The main call reproduces (496,091 and
-  392,470, the gap 103,620), unmoved by six method variants; all 18 workbook figures reproduce, the thread reading going
-  live as the scheduled time only "if the article was still scheduled" and stable across note windows of 9 to 20
-  minutes. Gate G method or model selection, analytical_non_defect; Gate H domain, layers and decisive step pass. Its one
-  note, that step 1's "within 2%" holds on each embedding desk's tests started in the embedding's calendar year, is now
-  said in step 1; no figure moved.
-- guard heart BLOCK, waived by the author on 2026-10-27 at ship: ban.strategy (causal_design) and ban.pattern (G1)
-  against task139's architecture 2, drawn and registered on 26 October at 22:19, six hours before this
-  architecture, whose draw check read WARN only. The two share labels, not a mechanism: task139 transports a pilot
-  effect measured only among units that had a first contact to units the programme never reached; this build nets a
-  correctly measured headline lift for the clicks the page's other headlines would have taken anyway. Both labels
-  are honest here, so no axis was relabelled; the waiver sits in the card's notes and the card keeps its draw's
-  filing time. WARN repeat.question_form against task144, answered at the draw.
-- guard surface: 2 pairs promoted, each adjudicated clean, shares components by design. task119 (back to back, the
-  objective gap and pick_one_of_n on both cards) sizes the failed waits a unit could have shortened, its own resource
-  free or held empty for planned work; task118 nets a correctly measured lift for the clicks the page would have given
-  the slate anyway. task116 (the product-analytics and opportunity-sizing pairing) caps group offers on contracts the
-  register keys to one member; no shared mechanism.
-- Containers: the producer audit reports no writer signature; H4 the zip's 17 members equal the declared list, the
-  panel export and its workbook declared distractors beside the dashboard, the agreement and the newsletter; H11 one
-  submission and one prompt; no describing file under target/.
-
-- Determinism repair after the portal's return of 2026-10-27 (judge 2 competing_defensible_answer, REPLAY): the brief
-  files Experimentation's sign-off (SF21, SF22: a working run unchanged on each closed embedding within 2 per cent of the
-  lift and the extra clicks it realised), and the ask layer gained the total minutes (SF23) and a second silent primary,
-  the schedule moved to a later time (SF25); no golden figure moved. Free gates on target.zip 6f5ee314: generator checks
-  318 of 318, verifier 86 of 86, two builds byte-identical (18 files), figures_check 46 of 46, precut 53/0/0,
-  voice-check PASS, leak.py REVIEW (the same sweeps ruled harmless), guard validate clean. freeze.py: --mode rubric PASS
-  (main call, stump and every frozen figure unchanged, six ask figures added); --mode determinism FAIL on one item, the
-  workbook's Deliverable Answers (the six totals added at the author's request): both recorded for the author's pick.
-  guard heart BLOCK on axes against builds drawn since (ban.role, ban.forum and ban.forcing_event against task304,
-  ban.strategy against task171 v5, test.same_puzzle and test.same_driver against task184 lineage); the card is not
-  relabelled, the waiver is the author's.
-- Leak reader, read 2 (6f5ee314): no decisive-step sentence (the sign-off read as "a validation test the chosen method
-  must clear; it never names the method"), no ranking, no answer figure; question 5 executes to the golden; question 6
-  analytical. Realism notes on unchanged files ruled in leak_check_report.md.
-- Determinism judge pass 8 (6f5ee314): DETERMINISTIC, APPROVE; Gate G method_or_model_selection, analytical_non_defect;
-  Gate H domain, layers and decisive step pass; derive-then-open kept. Its cold derivation found neither the lift nor the
-  click working before it opened the graded blocks. Its one note: its own from-scratch shrinkage matched 3 of 7 within 2
-  per cent where the recipe matches 7 of 7, so step 1 now states the recipe in full (the delta-method variance, the prior
-  maximising the normal marginal likelihood of every package, the shrinkage factor, the plain mean over a desk-year's
-  tests); the brief's 2 per cent is left as filed, since every refuted rival misses at least 2 of 7 embeddings by more than
-  3 per cent and the golden's worst is 1.16 per cent.
+- **Card:** `.claude/skills/fingerprint/cards/task118.json`, architecture v3, registered 2026-10-27. Guard verdict WARN
+  after two axis redraws at check: decisive pattern G9 (BLOCK against task464) to G14, the excess risk conditioned on
+  each patient's time since starting, the honester key; context artifact register (BLOCK against task464), then
+  published_series (BLOCK against task311), to planning_thread, the board's thread placing the team. The structural
+  tests against task131, task169, task183, task230 and task446 are answered by differentiation lines on the card; the
+  nearest is task183, a part's rate conditioned on its own count of past failures, where this build conditions on time
+  since the exposure began, the start held in another record than the truncated log. Nearest driver 0.07.
+- **WARNs answered:** `overuse.objective` (the number's objective); `repeat.decision` and `repeat.question_form` (the
+  board picks one network, so the form is which); `repeat.deliverables` (a placement workbook and a paper are what a
+  medicines optimisation team sends).
+- **Pairing:** Pharmacology & Pharmacoepidemiology / `benefit-risk-assessment`, for Opportunity Sizing & Decision
+  Support, a never-built pairing: the board funds one deprescribing pharmacist team for 2027 and sizes it by the
+  emergency fall admissions it avoids among older patients on hypnotics (Z-drugs and benzodiazepines), pool (the
+  network's current users) to realisable (the users the team takes off the drug, at the excess risk each carries).
+- **Strategy:** `composition_mix`, Gate G `forecasting` (the 2027 admissions avoided, which the correctly read past does
+  not pin), generators G14 (the excess risk conditioned on time since starting), G13 (the cohort's crude rate is about
+  a mix of new and long-term users; the decision bets on the current users' next year), G6; gap time; Layer 2
+  `field_method`, pattern `own:excess-risk-by-time-on-drug-with-the-start-from-the-repeat-template`.
+- **The conjunction the stump rests on (screened at the draw):** task178's slot note sets aside prevalent-against-new
+  users as the client library's first card in the sister task type, a reflex, so the loud step (the hazard by time on
+  the drug) is not the stump alone. The quiet step behind it: the dispensing extract begins in April 2023, so every
+  user on the drug before then appears to start in 2023; each patient's real start is the GP repeat-template's start
+  date, in another file. Each partial fix lands a different wrong network: the crude rate the busiest network, the
+  hazard by time since the extract's first dispensing a second, and only the hazard by time since the template's start
+  the golden (client held trap 11, the quiet step behind the loud one, and trap 13).
+- **Forum, event, organisation:** board_of_directors (the integrated care board funds the team), budget_or_appropriation
+  (the 2027-28 allocation), hospital_or_health_provider; role programme_officer (the chief pharmacist, who asks).
+- **People** (`guard.py names --geo GB --seed 118`): Julia Clayton, chief pharmacist, who asks; Leon Ross, medicines
+  optimisation lead; Glenn Pearce, the commissioning support unit's analyst; Katherine Watts, falls prevention lead.
+- **Data-native sentence:** a hypnotic's fall risk is highest in the first months on the drug, and the board's
+  dispensing extract starts in April 2023, so a patient who has taken zopiclone since 2016 enters the extract as a 2023
+  starter; only the practice systems' repeat-template start dates say who is new, and the network with the most users is
+  the one whose users mostly started years ago.
 
 ## Tried and rejected
 

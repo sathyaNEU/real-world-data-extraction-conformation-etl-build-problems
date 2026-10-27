@@ -1,11 +1,11 @@
 {
  "task": "task118",
- "domain": "product-analytics / churn-propensity-uplift-modeling",
+ "domain": "pharmacology-pharmacoepidemiology-safety / benefit-risk-assessment",
  "objective": "opportunity-sizing-decision",
- "stage": 5,
- "stage_name": "ship",
+ "stage": 2,
+ "stage_name": "design",
  "updated": "2026-10-27",
- "stump": "A competent solver shrinks each desk's winning lift against the change log, sizes it on the clicks from Bightline's own pages, leaves out the articles the desk's editors already test and names Culture·national at about 1,250,000 (scaling every desk by the closed embeddings' average shortfall still names Culture·national); the step that lands them there is crediting every click a shipped headline wins as new to Bightline, when on a fixed page most come from the headlines beside it and only the share of views that would otherwise end in no click is new, and Culture·national's own-page clicks come from its section front and app tab where about four in five views already end in a click.",
+ "stump": "A competent analyst applies each network's crude fall-admission rate among current hypnotic users to the users the team would take off the drug and names the network with the most users; the step that lands them there is pricing every user at the cohort's average risk, when the risk falls after the first months on the drug and that network's users started years ago, their starts held in the repeat templates, not the extract that begins in April 2023.",
  "harden_loops": 4,
  "solver_rounds": [
   {
@@ -100,8 +100,8 @@
  "delivered": "2026-10-27",
  "portal": "FAILED_TO_STUMP 2026-10-27 (round after the determinism reship): both responses filed Business·national at 500,000, runner-up Local·metro 100,000 behind, the golden",
  "source_note": "analytical_tasks/04_opportunity_sizing/OS01_headline-squad-renderable-click-share.md",
- "status": "FAILED_TO_STUMP",
- "resume": "re-root at stage 1 (architecture 3): architecture 2 is spent, its decisive step (the share of a won click new to the site, page by page) forced only by the change log, which the portal's second judge read as replay, and announced by the sign-off sentence that closed that fork, after which both responses landed; draw a decisive step the data's own structure forces with no filed selection criterion, in this world or another; the CMS corrections ask (24 figures, two silent primaries) can be kept if the world is",
+ "status": "DESIGN",
+ "resume": "stage 2 (architecture 3): prototype the world on the clean truth (six networks, users with true starts, the falls hazard by time on drug, the extract truncated at April 2023, the repeat templates) and measure the three routes (crude, hazard by extract start, hazard by template start) before writing the generator; then the design note's sections, the prompt (guide-to-prompt), the asks with silent devices, precut",
  "leak": {
   "leak_py": "REVIEW, the same sweeps ruled harmless (sweep 3 the brief, sweep 4 subjects' own words and the sign-off's 'working', sweep 5 the prompt)",
   "reader": "read 2 on 6f5ee314: no decisive-step sentence, no ranking, no answer figure; question 5 executes to the golden; question 6 analytical"
@@ -143,7 +143,7 @@
   }
  ],
  "zip_sha256_16": "6f5ee314bb1ca5c2",
- "architecture": 2,
+ "architecture": 3,
  "loops": 0,
  "portal_status": "",
  "portal_status_date": "",
