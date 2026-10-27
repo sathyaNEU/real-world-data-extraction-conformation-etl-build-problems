@@ -44,7 +44,7 @@
       "commit": ""
     }
   ],
-  "resume": "stage 4 round 5: A6 deepened after round 4's exit 1 (a third to two fifths of each batch's gateways leave the unsubscribe link alone, so a fetch read as covering every link misses them; the golden's figures unchanged, the Postwerk rule now every link or every link but the unsubscribe link). The rebuild with checks was running at this checkpoint; next: confirm checks, verify and the byte-identical rebuild, freeze.py check --mode rubric, figures_check, precut, leak.py; commit the re-cut target.zip; then two scored readers on the new pack and a narrow judge pass on Ask A's fetch rule; ship on at least one reader off the call, neither exit 1, pair at or under 60",
+  "resume": "stage 4 round 5 on 9126d810 (A6 deepened: gateways that leave the unsubscribe link alone): checks 150, verify, byte-identical rebuild, freeze rubric PASS, figures_check 90/0, precut 52/0, leak.py REVIEW; scored readers I (Sonnet, scratchpad read5-task144-a) and J (Opus, read5-task144-b) and the judge's narrow pass r4 running; on their return score both, ship when at least one misses the call, neither exits 1 and the pair is at or under 60",
   "approved": null,
   "delivered": "2026-10-15",
   "portal": null,
@@ -53,7 +53,7 @@
   "portal_status_date": "",
   "wave": "wave 3 (new), seed FC15 (world, decision and quantity kept; pitfall re-found)",
   "gates": {
-    "checks": 149,
+    "checks": 150,
     "verify": "agrees (pick kilnkit at 12,086 adding 8,929; Ask A and Ask B on its own path)",
     "byte_identical": true,
     "figures_check": "90 figures, 0 absent",
@@ -61,7 +61,7 @@
     "voice_check": "PASS",
     "container": "clean (target and golden)",
     "freeze": "freeze.py check --mode rubric PASS: the call, the stump and every frozen figure unchanged; the 12 Ask A figures moved",
-    "target_zip_sha256": "b370e2a4ca35f5fdac5c7319909765c6c4e8109f2855d3fcb33d4055eb057292"
+    "target_zip_sha256": "9126d810289fe16aaa6e2c15c1f364895d38aa4c04883c859526509a57abd901"
   },
   "readers": {
     "round_3": "pack eb36b41e: E (Sonnet) and F (Opus) both missed the call (tracewire 12,000, 5,000 added); E kept Ask A 12/12 (gateways' fetches removed, their readers' later clicks kept) and Ask B 6/10 (one merge hop), score_reader exit 1 on ask share 72.2 per cent; F kept Ask A 0/12 (every fetch kept) and Ask B 10/10, exit 1 only because tracewire's 12,000 equals the golden's call figure (pick and added stars missed)",
