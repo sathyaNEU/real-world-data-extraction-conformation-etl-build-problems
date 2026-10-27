@@ -47,12 +47,18 @@ def _table(rows, widths, size=8.4):
     return t
 
 
+# the times each paper was first saved and last saved on its date, and the UK offset that day
+SAVED = {"2026-10-09": ("101412", "152703", "+01'00'"), "2026-07-14": ("094155", "160238", "+01'00'"),
+         "2026-03-20": ("112007", "115844", "+00'00'"), "2026-02-24": ("140531", "171209", "+00'00'")}
+
+
 def _pdf(path, title, subject, story, foot, stamp):
     doc = SimpleDocTemplate(path, pagesize=A4, leftMargin=18 * mm, rightMargin=18 * mm, topMargin=16 * mm,
                             bottomMargin=18 * mm, title=title, author=P.ORG, creator=P.ORG, subject=subject,
                             invariant=1)
     doc.build(story, onFirstPage=_footer(foot), onLaterPages=_footer(foot))
     postprocess.scrub(path, P.ORG, stamp)
+    postprocess.pdf_clock(path, *SAVED[stamp])
 
 
 def plan(path, rates):
@@ -62,8 +68,11 @@ def plan(path, rates):
                    "Reference CC/2026/41." % P.PEOPLE["head"], small),
          Paragraph("1. Decision", h2),
          Paragraph("The 2027 plan funds a team of eight financial support officers for the whole of 2027, starting on "
-                   "4 January. The team will work one of our four lending books: First-time buyer 2019-21, High LTV "
-                   "2022-24, Shared ownership or Buy to let. The Committee is asked to choose the book.", body),
+                   "4 January, within the collections budget the Board approved in September: \u00a3436,000 for the "
+                   "year, salaries, training and the case system licence included. The team will work one of our four "
+                   "lending books: First-time buyer 2019-21, High LTV 2022-24, Shared ownership or Buy to let. The "
+                   "Committee is asked to choose the book; it will see the team's first results with the half-year "
+                   "arrears report in July 2027.", body),
          Paragraph("2. Who the team works with", h2),
          Paragraph("In the chosen book the team takes on each borrower whose account reaches two monthly payments in "
                    "arrears during 2027, counting from an account with fewer than two, in the first month of the "

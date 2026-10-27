@@ -19,7 +19,7 @@ FILES = {
     "possessions": "possession_register_2019-01_to_2026-09.csv",
     "sales": "possession_sales_completed_2019-2026.csv",
     "receivers": "lpa_receiver_appointments_2019-2026.csv",
-    "litigation": "litigation_actions_2023-01_to_2026-09.csv",
+    "litigation": "litigation_open_claims_2023-01_to_2026-09.csv",
     "ratecard": "product_transfer_rate_card_2026-10.xlsx",
     "hpi": "house_price_index_2010-01_to_2026-09.csv",
     "contacts": "contact_centre_volumes_2025.csv",

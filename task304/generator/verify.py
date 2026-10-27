@@ -68,7 +68,7 @@ def chain(T, use_term=True):
     snap = (m == 2026 * 12 + 8) & live
     bk = pd.read_parquet(os.path.join(T, "mortgage_book_2026-09-30.parquet"))
     keep = set(bk.account_number[bk.recovery_stage == "None"])
-    sel = snap & np.isin(acct, list(keep))
+    sel = snap & pd.Series(acct).isin(keep).to_numpy()     # np.isin on strings compares once per key, hours here
     b0, r0, l0, s0 = book[sel], rb[sel], inc[sel], state[sel]
     p = np.zeros((sel.sum(), 3))
     p[np.arange(sel.sum()), s0] = 1
@@ -151,7 +151,7 @@ def pilot(T):
     h["prev"] = h.groupby("account_number").p.shift().fillna(0)
     e = h[(h.p >= 2) & (h.prev < 2) & (h.account_status == "Live") & (h.m >= 2024 * 12) & (h.m <= 2024 * 12 + 11)]
     e = e.groupby("account_number").m.min()
-    lit = pd.read_csv(os.path.join(T, "litigation_actions_2023-01_to_2026-09.csv"), dtype=str)
+    lit = pd.read_csv(os.path.join(T, "litigation_open_claims_2023-01_to_2026-09.csv"), dtype=str)
     lit = lit[lit.action == "Claim issued"]
     lit["c"] = lit.action_date.str[:7].map(month)
     rv = pd.read_csv(os.path.join(T, "lpa_receiver_appointments_2019-2026.csv"), dtype=str)
@@ -171,7 +171,7 @@ def pilot(T):
 def ask_a(T, books):
     """orders made or varied at hearings dated October 2025 to September 2026 (a repeat of the claim's last order on
     the same terms with no hearing between is the order sent again), how many suspended, and the claims open"""
-    lit = pd.read_csv(os.path.join(T, "litigation_actions_2023-01_to_2026-09.csv"), dtype=str)
+    lit = pd.read_csv(os.path.join(T, "litigation_open_claims_2023-01_to_2026-09.csv"), dtype=str)
     lit = lit[lit.defendant == "1"].sort_values(["claim_number", "action_date"], kind="stable")
     reg = pd.read_csv(os.path.join(T, "possession_register_2019-01_to_2026-09.csv"), dtype=str)
     reg["d"] = pd.to_datetime(reg.possession_date, format="%d/%m/%Y")

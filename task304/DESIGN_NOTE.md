@@ -193,7 +193,7 @@ Interior: a suspended order varied on the same terms at a later hearing is a gen
 every repeated order over-repairs. Second device on the open claims (D4, absence evidenced in a file no habitual join
 reaches): Ridley Varga's reports end at the warrant, so a claim whose property was taken into possession reads open in
 the claim file; only the possession register closes it. Hazards: one line per defendant from one firm, hearings listed
-and adjourned, transfers between hearing centres. Files: litigation_actions, possession_register, mortgage_book,
+and adjourned, transfers between hearing centres. Files: litigation_open_claims, possession_register, mortgage_book,
 mortgage_payment_history, arrears policy. Stops (first-time buyer, high LTV, shared ownership, as
 orders / suspended / open): every re-sealed line an order 38/30/17, 83/65/43, 10/10/2 (the careful path, which also
 closes claims through the register); every line counted, defendants included 39/31/17, 93/72/43, 11/11/2; every
@@ -234,25 +234,46 @@ Measured by: generator/pair.py on the cut pack.
 
 ## Pre-ship check
 
-- Free gates (stage 3): generator checks 158 passed (the golden and its bins, R3a the easy routes filing High LTV, R0
-  and R1, the standing family of twenty-two constructions every one in the 20 bin, SF1 to SF22, the pilot table
-  reproduced, the extension facts invariant to the re-sent rows, both asks' stops, separation, the distractors unread,
-  H9 the dictionary, the input gates); two builds byte-identical (target.zip 04b8d7a9); figures_check 34 of 34; precut
-  51/0/0; voice-check PASS; guard surface exit 0.
+- Free gates (stage 3, final build): generator checks 157 passed (the golden and its bins, R3a the easy routes filing
+  High LTV, R0 and R1, the standing family of constructions, SF1 to SF22, the pilot table reproduced, the extension
+  facts invariant to the re-sent rows, both asks' stops, separation, the distractors unread, the input gates); two
+  builds byte-identical (target.zip 57a875af); the independent verifier 0 mismatches on the cut zip (54 seconds once its
+  account filter used a hashed lookup); figures_check 35 of 35; precut 52/0/0 with voice-check PASS (pair ceiling 37.7,
+  mirror leakage 16.7 per cent, pair.py on the cut pack).
 - leak.py REVIEW, each line ruled harmless: sweep 3, the plan paper carries the call's words because it is the
   Committee's own paper on the choice (the team, the four books, 2027, possessions) and holds no answer figure and no
   ranking (sweep 6 clean); sweep 4, the arrears policy defines payments in arrears, the support options and the court
   route, its one Charter sentence says a borrower who is up to date may extend the term without a fresh affordability
   assessment and nothing on what follows an extension; the risk appetite statement carries the Board's limits only;
   the plan paper files the estimand and names no forecast and no extension; the pilot report gives its eligibility,
-  outcomes and result and names no extension; sweep 8, "None" is the recovery_stage label the book export writes for
-  the 55,393 accounts with no recovery action, a string the dictionary lists, not a null; sweep 9, the future dates
-  are product_end_date, each account's contractual product end (to August 2031), forward by nature (H16 allow-list).
-- guard heart WARN (repeat.gate_g and repeat.decision against task166, repeat.question_form against task270 and
-  task166, answered at the draw); nearest drivers task134 lineage and task306 at 0.07.
-- Containers: the producer audit reports no writer signature; H4 the zip's 14 members equal the declared list; H11
-  one submission and one prompt; H16 every extract ends by 30 September 2026 apart from product_end_date; H24 no
-  generator word under target/.
+  outcomes and result and names no extension; sweep 9, the 54,897 future dates are product_end_date, each account's
+  contractual product end (to August 2031), forward by nature (H16 allow-list).
+- Leak reader (two reads, the second on the final pack, neither solving): no decisive-step sentence, no analyst-only
+  file, no answer figure; question 6 analytical; every rule in leak_check_report.md. The first read's realism tells are
+  fixed in the generator: PDFs saved at working-day times on the UK offset with the writer's /Trapped key blanked
+  (equal-length rewrite), references numbered from their own stream (no fixed steps), sale prices written as whole
+  pounds, the litigation export named for the claims it holds (open at any time from January 2023), and the plan paper
+  given its budget line and the Committee's July review.
+- Determinism judge pass 1 (zip 5194480e): DETERMINISTIC, APPROVE; Gate G forecasting, analytical non-defect; Gate H
+  domain, layers, decisive step analytical. Its three minor notes are closed in the generator: the prompt now asks for
+  the next best book's own figure ("how many would it avoid in the next best book?"), critical component 2 counts "at
+  one of the eight month ends after the month of the increase", and the open claims rest on policy section 5's filed
+  definition (the register closes a claim when the property is taken into possession). Pass 2 on the final zip
+  (57a875af): DETERMINISTIC, APPROVE, every workbook figure, component and planning rate reproduced; First-time
+  buyer 2019-21 first in every variant that carries the term-increase state (8.0 to 9.7 avoided), High LTV 2022-24
+  second (3.2 to 4.9) and first only with the term state dropped.
+- guard heart WARN: overuse.objective (4 of the last 12), repeat.gate_g against task137 and task166, repeat.decision
+  and repeat.question_form against task166, all answered at the draw (a pick among four books is the plan's own
+  question; the forecast is the domain's).
+- guard surface: 3 pairs promoted at surface 0.10 (corpus percentile 99), each adjudicated clean, shares components by
+  design. task169 (the card's same-driver signature: gap time, pattern none, Gate G forecasting) sends events a closed
+  processing route pre-empted through the remaining route's conversion after a filed change; task304 has no closed route
+  and no filed change, and its forward count is each concession's delayed re-entry by months since it. task165 shares
+  the composition-mix strategy only: its gain is conditioned on how much of a unit the old service level already
+  treated. task453 is an ETL dial setting on rotation-group bias, a different objective and driver.
+- Containers: the producer audit reports no writer signature; H4 the zip's 13 members equal the declared list (the
+  data dictionary removed under the no-describing-file rule); H11 one submission and one prompt; H16 every extract
+  ends by 30 September 2026 apart from product_end_date; H24 no generator word under target/.
 
 ## Tried and rejected
 

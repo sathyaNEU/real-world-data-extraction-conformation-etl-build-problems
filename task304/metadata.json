@@ -78,7 +78,7 @@
     {
       "path": "possession_sales_completed_2019-2026.csv",
       "format": "csv",
-      "bytes": 10214,
+      "bytes": 9810,
       "rows": 202,
       "source": "Constructed (seeded generator)",
       "date": "2026-10-09",
@@ -94,7 +94,7 @@
       "license": "CC0-1.0 (original work)"
     },
     {
-      "path": "litigation_actions_2023-01_to_2026-09.csv",
+      "path": "litigation_open_claims_2023-01_to_2026-09.csv",
       "format": "csv",
       "bytes": 175505,
       "rows": 2034,
@@ -132,7 +132,7 @@
     {
       "path": "financial_support_team_2027_plan_paper.pdf",
       "format": "pdf",
-      "bytes": 3591,
+      "bytes": 3736,
       "rows": null,
       "source": "Constructed (seeded generator)",
       "date": "2026-10-09",

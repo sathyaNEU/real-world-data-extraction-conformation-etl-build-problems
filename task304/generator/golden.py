@@ -138,8 +138,8 @@ def paper(path, fig):
                    % (c(ex["ftb_raised_2026"]), c(ex["ftb_on_book"]), ex["years_added_median"],
                       ex["pay_rise_extended"], ex["pay_rise_kept"]), body),
          Paragraph("Our own history says otherwise. Of the %s accounts whose term was raised in 2024, %s two "
-                   "payments or more in arrears at a month end within eight months of the increase, and %d were by 30 "
-                   "September 2026: the longer term keeps a stretched budget current for a while, then the arrears "
+                   "payments or more in arrears at one of the eight month ends after the month of the increase, and %d at a "
+                   "month end after it up to 30 September 2026: the longer term keeps a stretched budget current for a while, then the arrears "
                    "come. The 2026 extensions reach that point during 2027. Carried month by month on the "
                    "chance the earlier extensions show by months since the increase, the first-time buyer book "
                    "produces more borrowers newly two payments behind in 2027 than any other book, and at its "

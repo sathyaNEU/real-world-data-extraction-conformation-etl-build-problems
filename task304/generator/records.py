@@ -138,8 +138,10 @@ def possessions(w, acct, book, rng, dev):
     rr = np.random.default_rng(int(rng.integers(0, 2 ** 31)))
     apps = sorted({(int(s), int(i)) for (i, s, e, o, pay) in w.spells if book[i] == "BTL" and s >= ym(2019, 1)})
     recv = pd.DataFrame({"_i": [i for s, i in apps], "_s": [s for s, i in apps]})
-    recv["receiver_ref"] = ["RCV-%s-%04d" % (["NPR", "ACR"][j % 2], 1000 + j * 7 + int(rr.integers(0, 6)))
-                            for j in range(len(recv))]
+    [rr.integers(0, 6) for j in range(len(recv))]         # the appointment stream keeps its draws
+    ids = np.random.default_rng(P.SEED * 7919 + 141)       # references draw from their own stream
+    recv["receiver_ref"] = ["RCV-%s-%04d" % (["NPR", "ACR"][j % 2], n)
+                            for j, n in enumerate(1000 + np.cumsum(ids.integers(2, 15, len(recv))))]
     recv["receiver_firm"] = [firms[j % 2] for j in range(len(recv))]
     recv["account_number"] = acct[recv._i.to_numpy()] if len(recv) else []
     recv["date_appointed"] = [mdate(np.array([s]), np.array([rr.integers(1, 29)]))[0].strftime("%d/%m/%Y")
@@ -169,9 +171,9 @@ def possessions(w, acct, book, rng, dev):
         for _ in range(nparts):
             rows.append({"sale_ref": "", "account_number": "" if by_receiver else reg.account_number.iloc[j],
                          "receiver_ref": ref if by_receiver else "", "completion_date": sdate.iloc[j],
-                         "sale_price": float(price[j]), "selling_costs": float(costs[j]), "statement": 1})
+                         "sale_price": int(price[j]), "selling_costs": float(costs[j]), "statement": 1})
     sales = pd.DataFrame(rows).sort_values("completion_date", kind="stable").reset_index(drop=True)
-    sales["sale_ref"] = ["SC%05d" % (31000 + k * 3) for k in range(len(sales))]
+    sales["sale_ref"] = ["SC%05d" % n for n in 31000 + np.cumsum(ids.integers(1, 9, len(sales)))]
     # a completion statement corrected after issue is re-sent in full with the corrected figures
     fix = rng.choice(len(sales), max(3, len(sales) // 25), replace=False)
     # a corrected sale is re-sent on every one of its loan parts' statements
@@ -194,11 +196,15 @@ def litigation(w, acct, book, rng, dev):
     code_of = {"Halifax": "HX", "Huddersfield": "HD", "Leeds": "LS", "Bradford": "BD", "Wakefield": "WF", "Oldham": "OL"}
     asof = pd.Timestamp(P.ASOF)
     rows = []
-    seq = [0]
+    ids = np.random.default_rng(P.SEED * 7919 + 201)       # claim numbers draw from their own stream
+    used = set()
 
     def claim_no(court):
-        seq[0] += 1
-        return "K%d%s%04d" % (6 + seq[0] % 3, code_of[court], 1000 + seq[0] * 7 % 9000)
+        while True:
+            n = "K%d%s%04d" % (int(ids.integers(5, 10)), code_of[court], int(ids.integers(1000, 10000)))
+            if n not in used:
+                used.add(n)
+                return n
 
     def day(m):
         return mdate(np.array([m]), np.array([rng.integers(1, 29)]))[0]

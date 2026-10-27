@@ -39,8 +39,9 @@ def write(path, fig):
              % (c(ex["ftb_raised_2026"]), c(ex["ftb_on_book"]), ex["years_added_median"], ex["pay_rise_extended"],
                 ex["pay_rise_kept"]))
     early = "**none** was" if ex["behind_8m"] == 0 else "**%d** were" % ex["behind_8m"]
-    t.append("2. Of the **%s** accounts whose term was raised in 2024, %s two payments or more in arrears at a month "
-             "end within eight months of the increase and **%d** were by 30 September 2026."
+    t.append("2. Of the **%s** accounts whose term was raised in 2024, %s two payments or more in arrears at one of "
+             "the eight month ends after the month of the increase and **%d** at a month end after it up to 30 "
+             "September 2026."
              % (c(ex["raised_2024"]), early, ex["behind_by_asof"]))
     t.append("3. Possessions avoided in 2027 (nearest ten): First-time buyer 2019-21 **%s**; High LTV 2022-24, Shared "
              "ownership and Buy to let **fewer than 5** each, at the planning rates of **%.1f**, **%.1f**, **%.1f** and "
@@ -53,8 +54,8 @@ def write(path, fig):
              "payment, rounded down, %s section 2), with the re-sent month rows dropped." % (F["history"], F["policy"]))
     t.append("2. Marked each rate switch (a new product_code, read with the dashes taken out) and each month the "
              "remaining_term_months rose: %s first-time buyer accounts on the book had their term raised at the 2026 "
-             "switch, and %d of the %s raised in 2024 had been two payments behind at a month end by September 2026, "
-             "%s within eight months of the increase."
+             "switch, and %d of the %s raised in 2024 had been two payments behind at a month end after the month of "
+             "the increase up to September 2026, %s at one of the eight month ends after it."
              % (c(ex["ftb_raised_2026"]), ex["behind_by_asof"], c(ex["raised_2024"]),
                 "none of them" if ex["behind_8m"] == 0 else "%d of them" % ex["behind_8m"]))
     t.append("3. Fitted the monthly chance of each move between nought, one and two or more payments behind on the "

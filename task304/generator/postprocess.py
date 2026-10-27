@@ -229,3 +229,18 @@ def finish_office(path, created, modified, company, person=None, revision=None):
     s = _scrubber()
     names_found, bad = s.audit(path, FLOOR, CEILING)
     assert not names_found and not bad, (path, names_found, bad)
+
+
+def pdf_clock(path, created, modified, offset):
+    """Give a saved PDF the working-day times its author saved it at: the scrubbed CreationDate and ModDate carry the
+    document's date at midnight UTC, rewritten in place to the given HHMMSS on the local offset (byte length kept, so the
+    cross-reference table stands), and the writer's /Trapped key blanked."""
+    b = open(path, "rb").read()
+    for key, hms in ((b"/CreationDate", created), (b"/ModDate", modified)):
+        m = re.search(key + rb" \(D:(\d{8})000000\+00'00'\)", b)
+        assert m, (path, key)
+        new = key + b" (D:" + m.group(1) + hms.encode() + offset.encode() + b")"
+        assert len(new) == len(m.group(0))
+        b = b[:m.start()] + new + b[m.end():]
+    b = b.replace(b"/Trapped /False", b" " * len(b"/Trapped /False"))
+    open(path, "wb").write(b)

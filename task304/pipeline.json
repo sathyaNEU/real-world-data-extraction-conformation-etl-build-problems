@@ -1,36 +1,39 @@
 {
  "task": "task304",
  "owner": "perssathya",
- "status": "PAUSED",
+ "status": "SHIPPED",
  "domain": "banking-credit-financial-risk",
  "objective": "opportunity-sizing-decision",
- "stage": 3,
- "stage_name": "build",
+ "stage": 5,
+ "stage_name": "ship",
  "updated": "2026-10-27",
  "stump": "A competent solver fits the chance of falling two payments behind on book, current arrears and the payment rise at the last rate switch, carries every account on the book through 2027 at the plan's planning rates and files High LTV 2022-24 first (4.5 possessions avoided against the first-time buyer book's 2.9); the step that lands it there is reading the up-to-date first-time buyers' small payment rise as low risk when their remaining term rose at the switch, the Charter extension that kept a budget the new rate broke up to date for a few months.",
  "architecture": 1,
  "loops": 0,
  "precut": {
-  "exit": null,
-  "date": ""
+  "exit": 0,
+  "date": "2026-10-27",
+  "checks": "52 checks, 0 FAIL, 0 WARN"
  },
  "leak": {
-  "leak_py": "",
-  "reader": ""
+  "leak_py": "REVIEW, every line ruled harmless (sweeps 3, 4, 9)",
+  "reader": "two isolated leak reads, neither solving: no decisive-step sentence, no analyst-only file, no answer figure, question 6 analytical; the first read's realism tells fixed in the generator"
  },
  "duplicate_check": {
-  "heart": "",
-  "nearest": ""
+  "heart": "WARN (overuse.objective, repeat.gate_g, repeat.decision, repeat.question_form; answered at the draw)",
+  "surface": "3 pairs promoted at 0.10 (task453, task165, task169), each adjudicated clean"
  },
  "judge": {
-  "verdict": "",
-  "disposition": "",
-  "report": ""
+  "verdict": "DETERMINISTIC",
+  "disposition": "APPROVE",
+  "report": "task304/determinism_check_report.md (pass 1, zip 5194480e) and determinism_check_report_pass2.md (pass 2, final zip 57a875af)",
+  "gate_g": "forecasting, analytical non-defect, not surface-read rejection",
+  "gate_h": "domain pass, layers pass, decisive step analytical"
  },
  "returned": [],
- "resume": "Paused 2026-10-27 mid stage 3. data_dictionary.csv removed (dataset-generation 3: no shipped file describes the data); the rate card's sheet renamed Terms; checks 157 green on the first pass with no graded figure moved; a full make.py run (byte-identical rebuild and verify.py, over 30 minutes) was in flight. Next: confirm that run, rewrite the design note's Pre-ship check, re-run leak.py --asof 2026-09-30, heart and surface, then stage 4 (two scored readers and the judge) and ship. Read task304/RESUME.md.",
+ "resume": "Shipped 2026-10-27 (target.zip 57a875af). Waiting on the portal.",
  "approved": null,
- "delivered": null,
+ "delivered": "2026-10-27",
  "portal": null,
  "portal_id": "",
  "portal_status": "",

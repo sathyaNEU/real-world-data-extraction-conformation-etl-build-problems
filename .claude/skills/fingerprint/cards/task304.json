@@ -51,7 +51,7 @@
  "scoring_unit": "per resolved case",
  "spine": {
   "file": "mortgage_payment_history_2019-01_to_2026-09.parquet",
-  "rows": 4254828,
+  "rows": 4260553,
   "entity": "one mortgage account's position at a month end",
   "grain": "account x month",
   "source": "synthetic"
