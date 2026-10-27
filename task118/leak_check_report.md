@@ -1,29 +1,35 @@
 # leak check, task118
 
-**Verdict: REVIEW.** 19 files read, 18 golden figures and 0 candidate names taken from submission.md, 25 stump terms taken from the design note.
+**Verdict: LEAK.** 19 files read, 18 golden figures and 0 candidate names taken from submission.md, 25 stump terms taken from the design note.
 
 LEAK stops the ship. REVIEW is a reader's call and the /leak-check command's solver's-eye pass reads every REVIEW line. INFO is a sweep that ran and found nothing or was skipped.
 
-Stump terms swept: already, change, netting, archive, headlines, platform, nothing, decisive, editors, sizing, inside, dashboard, shrunk, closed, export, surfaces, opportunity, decision, realised, sentence, owners, winners, embedding, reference, incremental
+Stump terms swept: already, change, netting, archive, headlines, platform, nothing, decisive, editors, sizing, dashboard, shrunk, closed, inside, export, surfaces, opportunity, decision, realised, sentence, owners, embedding, reference, incremental, vertical
+
+## 1 file names (LEAK 1, REVIEW 5)
+- **LEAK** `cms_revisions_export_fields.txt`: a file whose name says it describes the data (cms_revisions_export_fields): no dictionary, field notes, readme or manifest ships (dataset-generation section 3)
+- **REVIEW** `audience_plan_2027.xlsx`: a sheet named 'Notes': confirm it is the organisation's own notes and does not describe the data's columns or files
+- **REVIEW** `audience_warehouse_field_reference.md`: a text file in the pack: confirm it is the organisation's own record (a thread, a log, a letter) and does not describe the data
+- **REVIEW** `headline_squad_change_log.xlsx`: a sheet named 'Notes': confirm it is the organisation's own notes and does not describe the data's columns or files
+- **REVIEW** `newsroom_staff_list_2026-10-12.xlsx`: a sheet named 'About': confirm it is the organisation's own notes and does not describe the data's columns or files
+- **REVIEW** `panel_reference_workbook.xlsx`: a sheet named 'Definitions': confirm it is the organisation's own notes and does not describe the data's columns or files
 
 ## 3 answer figures in the pack (REVIEW 1)
 - **REVIEW** `headline_squad_2027_placement_brief.pdf`: carries 6 of 9 distinctive words of the committed call: 'Place the headline squad with Culture·national for 2027, where it adds 1,250,000 extra article clicks.'
 
 ## 4 design-note vocabulary (REVIEW 3)
-- **REVIEW** `audience_warehouse_field_reference.md`: 5 of 25 stump-paragraph terms appear (archive, platform, inside, dashboard, reference); read whether the document names the move
+- **REVIEW** `audience_warehouse_field_reference.md`: 6 of 25 stump-paragraph terms appear (archive, platform, dashboard, inside, reference, vertical); read whether the document names the move
 - **REVIEW** `editorial_standards_s7_corrections.pdf`: 3 of 25 stump-paragraph terms appear (change, headlines, editors); read whether the document names the move
-- **REVIEW** `headline_squad_2027_placement_brief.pdf`: 7 of 25 stump-paragraph terms appear (change, headlines, editors, closed, decision, embedding); read whether the document names the move
+- **REVIEW** `headline_squad_2027_placement_brief.pdf`: 8 of 25 stump-paragraph terms appear (change, headlines, editors, closed, decision, embedding); read whether the document names the move
 
 ## 5 announcements (REVIEW 1)
 - **REVIEW** `prompt`: Which desk on the shortlist (Politics·national, Sport·metro, Business·national, Sport·national, Local·metro or Culture·national) should the headline-testing squad join for 2027, and how many extra article clicks would it add there in 2027?
 
-## 9 dates after the setting (REVIEW 1)
-- **REVIEW** `audience_data_export_log.csv`: 5 ISO dates after 2026-10-12, e.g. 2026-10-15, 2026-10-16
+## 9 dates after the setting (INFO 1)
+- **INFO** `-`: no --asof given, sweep skipped (pass the fiction's as-of date)
 
 ## 10 container metadata (INFO 1)
 - **INFO** `-`: audit reported no writer signature (1 lines)
-
-## 1 file names (clean)
 
 ## 2 author vocabulary (clean)
 
