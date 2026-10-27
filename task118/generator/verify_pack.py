@@ -452,18 +452,24 @@ def main(target):
     # SF11's data half, independent of the brief's wording: the realised impression-weighted rate across every
     # package of a test is strictly below the shipped variant's, so crediting the under-test hours at the mixture
     # rate is strictly lower than crediting them at the winning lift, and the brief's sentence is load-bearing.
-    mix_below = []
+    # Scoped to the tests that HAVE a winning lift to credit: where the control is kept the shipped package is the
+    # control and the lift is zero by the field reference's own definition, so there is no rate to argue about.
+    mix_below, kept_control = [], 0
     for tid_, pk_ in tests.items():
         shp = [p for p in pk_ if p["shipped"] == "Y"]
         if not shp:
+            continue
+        if shp[0]["variant"] == "control":
+            kept_control += 1
             continue
         imp = sum(int(p["impressions"]) for p in pk_)
         clk = sum(int(p["clicks"]) for p in pk_)
         s_ctr = int(shp[0]["clicks"]) / int(shp[0]["impressions"])
         mix_below.append((clk / imp) < s_ctr)
-    check("SF11 the realised impression-weighted click-through across every package of a test is below the shipped "
-          "variant's at every test (%d tests), so the mixture reading of the under-test hours is strictly lower than "
-          "the winning lift the brief names" % len(mix_below),
+    check("SF11 at every test that shipped a variant (%d of them, the %d control-kept tests carrying no winning lift "
+          "to credit), the realised impression-weighted click-through across every package is below the shipped "
+          "variant's, so the mixture reading of the under-test hours is strictly lower than the winning lift the "
+          "brief names and that sentence is load-bearing" % (len(mix_below), kept_control),
           bool(mix_below) and all(mix_below), "%d of %d below" % (sum(mix_below), len(mix_below)))
     W_ = dt.timedelta(minutes={"five": 5, "ten": 10, "fifteen": 15, "twenty": 20}[pair.group(1)])
     count, arts, mins, march = defaultdict(int), defaultdict(int), defaultdict(list), [0, 0]

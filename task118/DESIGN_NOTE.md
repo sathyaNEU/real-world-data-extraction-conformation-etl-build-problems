@@ -74,6 +74,15 @@ Domain test: incremental-lift sizing for a headline-testing programme: the squad
 Analyst test: a strong analyst who conforms the click log, the archive and the plan correctly, shrinks each lift as the change log requires and sizes it on the platform clicks names Local·metro at about 2,800,000; the easy route never nets out the headlines each desk's own editors already test, whose winners already ship inside the plan's clicks.
 Layer 1: two test engines in one archive (the app engine since 2019, the web self-serve tool from the October 2025 migration), owners resolving through a staff list with leavers, a parquet at article x surface x age band, a plan workbook with a total row; on the ask paths, panel releases on two content taxonomies, a partial history release, a restatement and a July file that repeats the months it replaced, and a CMS export with drafts, schedules, live-blog entries, a restored instance and migrated documents.
 Layer 2: the netting: what the squad adds at a desk is its lift on the platform clicks of headlines the desk does not already test, because the desk's own winners already ship inside the plan's clicks; the change log cannot show it, since every closed embedding was at an app desk with no self-testing.
+Task type: media-reach-frequency-audience-measurement, in marketing-consumer-research. The call itself is a sized opportunity that drives the pick, the clicks a squad can add at a desk built from the addressable pool down to what is realisable, which is why the build carries the Opportunity Sizing & Decision Support tag. But the taxonomy lists this task type against Descriptive & Distribution and Forecasting only, and the one marketing task type it puts against Opportunity Sizing is conjoint-choice-willingness-to-pay-analysis, which this is not. So `precut.py`'s WARN here is real and not a labelling artefact, and it is recorded rather than resolved: /fix-determinism freezes the main call, and the objective tag and the task type are identity axes on a shipped card. The author's options are to retag Forecasting (the committed figure is a 2027 value the supplied history pins) or to re-root onto a task type that serves the sizing; neither is a determinism repair.
+Swap: "which desk should the headline squad join in 2027, and how many extra article clicks will it add there" becomes, with a utility's nouns, "which substation should the crew be posted to, and how many extra megawatt-hours will it add there". It stops making sense at the netting: nothing answers to a desk's own editors already running the tests whose winners are inside the forward plan, because a substation does not test its own headlines, so the quantity that decides the call has no analogue.
+Decisive step: net each desk's sized gain against the headlines its own editors already test through the self-serve tool, because those winners already ship inside the plan's 2027 clicks, which is found only by joining the archive's test owners to the newsroom staff list.
+Not semantics: no field is misread. A solver who conforms the click log, resolves every owner through the staff list's leavers, reads the parquet at article by surface by age band, takes the plan's total row correctly, applies the field reference's own definition of winning lift and keeps only the surfaces that show the stored headline still files Local-metro at about 2,800,000, because no field anywhere says which headlines a desk already tests; that is a property of who ran each archived test, not of any column.
+Not rule application: no filed rule performs it. The brief states who the squad is, what it is judged on and over what window; the field reference defines the lift and the surfaces; the plan holds each desk at the base year. Not one sentence says a desk's own tested headlines are already in the plan, or that the squad's gain must be netted against them. Executing every stated rule to the letter sizes the whole platform base and names the wrong desk.
+Estimand: the incremental article clicks at the owning desk over the twelve months from January 2027, counted from each article's publication with the hours its headline is under test credited at the winning headline's lift, on the plan's 2027 clicks from Bightline's own surfaces for articles whose headlines the desk's own editors do not already test; filed in the brief's success measure, the field reference's surface and lift rows and the 2027 plan.
+No decoy: nothing is planted to be caught. Every figure in the pack is correct at its own grain, no stakeholder number is overturned, and the dashboard export is a declared wrong-basis distractor that a shipped fact rules out and that is never the stump; the change log, the panel releases and the CMS export are all honest records of what their systems hold.
+No certified replay: the method is not recovered by reproducing a certified figure. The change log records lifts, so it ties under every click base and every netting; in the note's own words it nets toward nothing and hands no direction to search in, and its seven closed embeddings were all at app desks with no self-testing, so it cannot show the netting even in principle.
+Lesson: a programme's incremental gain has to be netted against what the receiving unit already banks for itself, and whether it does is a property of who ran each past test rather than of any column, so it is reachable only by joining an activity record to a roster of who owns the activity. No build on file teaches it: the nearest drivers on the corpus net a behavioural substitution inside a group (task302) or a stock drawn down inside a supply system (task120), neither of which is an ownership netting against a forward plan.
 
 ## Readability screen
 
@@ -220,7 +229,32 @@ One ask, the workbook row for every shortlisted desk, carrying three measures ov
 The mirror (stops at rung 3 on Local·metro) files the same 18 figures, since no ask reads a main-path file.
 
 Mirror leakage: 0 per cent of ask weight (0 of 18 figures).
-Pair ceiling: 27.5 on the planning weights 38 / 7 / 55 (cracker 45.0, mirror 10.0; asserted at or under 30). Exposure recorded, not capped: a pair that catches the July file's rows keeps 12 of 18 (64.2), one that catches the clock 6 of 18 (45.8), one that catches both 82.5.
+Measured by: `generator/checks.py`, the `pair_simulation` helper run on the cut pack, asserted by the "cracker sheet" and "pair ceiling" checks.
+Pair ceiling: 27.5 on the planning weights 38 / 7 / 55 (cracker 45.0, mirror 10.0; asserted at or under 30), AS MEASURED BEFORE THIS REPAIR AND NOW STALE. The cracker path is defined in `checks.py` as a response that keeps the July file's rows and reads `publish_at` on the saves' clock, and SF13 has just pinned that clock in the field notes, so a careful solver no longer makes that mistake and the six median figures come back into reach. The re-measured figures are below; this line is kept so the trade is visible rather than quietly overwritten.
+
+**The re-measured pair, from the generator's own `pair_simulation` on the cut pack (not an estimate).** The
+simulation already carried every scenario, so the repair's cost is read straight off it:
+
+| The response's reading | Cracker | Mirror | Ask figures taken | Leakage | Pair |
+|---|---|---|---|---|---|
+| keeps the July file's rows AND reads the clock wrong (the cracker as filed before this repair) | 45.0 | 10.0 | 0 of 18 | 0.0 | 27.5 |
+| **catches the clock only (the cracker after SF13 pins it)** | **63.3** | **28.3** | **6 of 18** | **0.333** | **45.8** |
+| catches the July file only | 81.7 | 46.7 | 12 of 18 | 0.667 | 64.2 |
+| catches both | 100.0 | 65.0 | 18 of 18 | 1.0 | 82.5 |
+
+**What the repair cost, stated plainly.** Pinning the clock hands the six median figures to any careful solver, so
+the pair moves from 27.5 to **45.8**. That is still inside the bar (top two under 70, built to 60), with margin. The
+real cost is structural rather than numeric: the ask layer used to stand on TWO independent devices, the panel
+releases' July file and the `publish_at` clock, and a response had to miss both to score 27.5. It now stands on ONE.
+If a solver catches the July file, the measured pair is **82.5**, over the bar, where before that cell also required
+getting the clock wrong.
+
+So the determinism repair is sound and complete, and it leaves a rubric exposure that a determinism command cannot
+fix: `/fix-rubric` freezes the main side and is the right instrument for restoring a second device on the ask paths.
+This is recorded for the author rather than acted on, because rebuilding an ask device moves ask figures and this
+command freezes them.
+
+ Exposure recorded, not capped: a pair that catches the July file's rows keeps 12 of 18 (64.2), one that catches the clock 6 of 18 (45.8), one that catches both 82.5.
 
 ## Gate G
 
@@ -361,3 +395,39 @@ Isolated judge, two passes (`determinism_check_report.md`).
 - Visits left wherever the draw put them (wave-1 redesign): Culture·national's average sat 67 visits from its rounding edge; the September release, which nothing restates, now absorbs each section's remainder so every average sits at least 150 inside its thousand.
 - The brief's counting phrase "counted at the owning desk on every click an article earns from publication, the hours its headline is under test included" (wave-1 redesign, stage 4): the isolated reader executed "every click" as an all-sources click base for the lift, a main-call fork against the field reference's stored-headline surfaces; the brief now says "counted at the owning desk from each article's publication, the hours its headline is under test included", which pins the period and names no click base.
 - Related links classed as Bightline surfaces only by their absence from the `canonical_headline` list (wave-1 redesign, judge pass 2): read the other way the call figure is 1,050,000 with the same desks; the `related_links` row now says the links show each linked article's current headline.
+
+## Gates after the repair, and one assertion of mine the verifier caught
+
+| Gate | Result |
+|---|---|
+| Two builds, checks on | 441 assertions, 441 passed, 0 failed, both builds; 20 files byte-identical |
+| Independent verifier | 81 checks, 81 passed, 0 failed |
+| `figures_check.py` | 44 figures in blocks 1 to 4, 0 absent from `figures.json` |
+| `precut.py` | 52 checks, 0 FAIL, 0 WARN |
+| `leak.py --asof 2026-10-12` | REVIEW, no LEAK |
+| `guard.py validate` / `heart` | 299 cards 0 invalid; HEART PASS |
+| `freeze.py check --mode determinism` | PASS, the main call, the stump and every frozen figure unchanged |
+| `target.zip` | re-cut from the final build, 19 members, 8,783,145 bytes |
+
+`guard.py heart` was a BLOCK before this pass, against task302 and task120 v3, both cards registered after this
+build shipped, so the corpus grew around it rather than anything in the repair causing it. Cleared with two
+differentiation lines on the card: task302 nets a behavioural substitution inside a group and reads the lost part
+from the other members' contemporaneous excess, while this build nets by ownership against a forward plan and
+identifies it from who ran each past test; task120 v3 recovers a peak draw as inflow less internal accumulation, and
+this build has no stock, no accumulation and an overstatement rather than an understatement.
+
+**The verifier caught my own SF11 assertion over-claiming, which is what an independent verifier is for.** I asserted
+that the impression-weighted rate across every package is below the shipped variant's at every test, and it failed at
+3,699 of 4,020. Measured: **0 of the 1,771 tests that shipped a variant break it, and all 321 exceptions are
+control-kept tests**, where the shipped package IS the control and the winning lift is zero by the field reference's
+own definition, so those tests carry no lift to credit and the claim never applied to them. The assertion is scoped
+to variant-shipped tests and names the control-kept count; the substance was right and the scope was not.
+
+**Nine of the thirteen `## Three rules` labels were missing** and are now written from what this note already
+established. One of them records a finding rather than a pass: the task type is
+`media-reach-frequency-audience-measurement`, which the taxonomy lists against Descriptive & Distribution and
+Forecasting only, while this build is tagged Opportunity Sizing & Decision Support, and the one marketing task type
+the reference puts against Opportunity Sizing is `conjoint-choice-willingness-to-pay-analysis`, which this is not. The
+pairing is off-reference. It is recorded and not resolved, because this command freezes the main call and both the
+objective tag and the task type are identity axes on a shipped card.
+
