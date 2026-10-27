@@ -14,7 +14,6 @@ import parallel as PR
 import world as W
 
 F_EXPORT = "old_tracker_export_20251001_20261217.csv"
-F_FIELDS = "old_tracker_export_fields.txt"
 F_SHARES = "version_share_daily.csv"
 F_INSTALLS = "active_installs_daily.csv"
 F_DASH = "triage_dashboard_weekly.xlsx"
@@ -36,7 +35,10 @@ ARCHIVE = ("Archive", "Parallel run 2026-11")
 
 
 def fmt(t):
-    return t.strftime("%Y-%m-%d %H:%M:%S")
+    """A Helsinki local time the way the old tracker's CSV writer prints it, with its UTC offset (+0300 in summer time,
+    +0200 in winter; the repeated hour of the October change read as summer time, as K.to_utc reads it)."""
+    off = round((t - K.to_utc(t)).total_seconds() / 3600)
+    return t.strftime("%Y-%m-%d %H:%M:%S") + " +%02d00" % off
 
 
 def old_states(T, reps):

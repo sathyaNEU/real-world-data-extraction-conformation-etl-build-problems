@@ -629,7 +629,7 @@ def load_asks(target, D=None):
     wb.close()
     A.opened = {}
     for r in (D.export if D is not None else rd(target, F_EXPORT)):
-        A.opened[int(r["bug_id"])] = dt.datetime.strptime(r["opened"], "%Y-%m-%d %H:%M:%S")
+        A.opened[int(r["bug_id"])] = dt.datetime.strptime(r["opened"][:19], "%Y-%m-%d %H:%M:%S")  # Helsinki, offset after
     return A
 
 

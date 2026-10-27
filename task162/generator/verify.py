@@ -93,8 +93,13 @@ def main(t):
           "A triage action is a change by one of the rota's triagers" in ag and "within 24 hours of its filing" in ag
           and "sits in another team's project" in ag and "Monday to Sunday, Helsinki time" in ag
           and "23:59 on Sunday 29 November" in ag)
-    notes = open(os.path.join(t, "old_tracker_export_fields.txt"), encoding="utf-8").read()
-    check("READ txt: the field notes state opened is Helsinki local time", "Europe/Helsinki local time" in notes)
+    check("READ docx: the agreement counts a group's intake by the component a report comes in with, once",
+          "each report counted once, in the group of the component it comes in with; a component set in triage does "
+          "not change where a report arrived" in ag)
+    check("READ docx: the runbook puts every form report and no other in the old tracker's export",
+          "every report filed through the form there and no other, wherever the report sits now" in rb)
+    check("READ: no shipped file describes the data (no dictionary, field notes, manifest or readme)",
+          not [f for f in os.listdir(t) if re.search(r"read_?me|dictionar|manifest|_fields|field_?notes", f, re.I)])
     # ---- the old export
     ex = read_csv(t, "old_tracker_export_20251001_20261217.csv")
     check("READ csv: the old export has %d rows, every bug id once" % len(ex), len({r["bug_id"] for r in ex}) == len(ex)
@@ -105,13 +110,16 @@ def main(t):
     plats = ("Windows", "macOS", "Linux")
     y = {p: np.zeros(len(days)) for p in plats}
     opened = {}
+    zoned = 0
     for r in ex:
-        o = dt.datetime.strptime(r["opened"], "%Y-%m-%d %H:%M:%S")
+        o = dt.datetime.strptime(r["opened"][:19], "%Y-%m-%d %H:%M:%S")
+        zoned += r["opened"][19:] in (" +0200", " +0300")
         opened[int(r["bug_id"])] = o
         if r["groups"]:
             continue
         p = "Windows" if r["op_sys"].startswith("Win") else ("macOS" if r["op_sys"].startswith("mac") else "Linux")
         y[p][di[o.date()]] += 1
+    check("READ csv: every opened time carries a Helsinki offset (+0200 or +0300)", zoned == len(ex), zoned)
     ytot = sum(y.values())
     inst = {p: np.zeros(len(days)) for p in plats}
     for r in read_csv(t, "active_installs_daily.csv"):

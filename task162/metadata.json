@@ -14,19 +14,19 @@
   ],
   "distractor_files": [
     "public_bug_statistics_monthly.csv",
-    "stability_monthly.csv"
+    "stability_monthly.csv",
+    "triage_dashboard_weekly.xlsx"
   ],
   "field_terms": [],
   "stated_inputs": [],
   "input_gates": {
-    "files": 15,
+    "files": 13,
     "formats": [
       "csv",
       "docx",
       "eml",
       "json",
       "pdf",
-      "txt",
       "xlsx"
     ],
     "largest_file": "old_tracker_export_20251001_20261217.csv",
@@ -62,15 +62,6 @@
       "license": "CC0-1.0 (original work, constructed for this task)"
     },
     {
-      "path": "export_manifest.csv",
-      "format": "csv",
-      "bytes": 1611,
-      "rows": 14,
-      "source": "Constructed: Usva triage team, manifest of the files taken for the first-quarter plan",
-      "date": "2026-12-18",
-      "license": "CC0-1.0 (original work, constructed for this task)"
-    },
-    {
       "path": "newtracker_parallel_run_export.json",
       "format": "json",
       "bytes": 5599085,
@@ -82,18 +73,9 @@
     {
       "path": "old_tracker_export_20251001_20261217.csv",
       "format": "csv",
-      "bytes": 3233435,
+      "bytes": 3584735,
       "rows": 29275,
       "source": "Constructed: Usva bug tracker (old tracker), saved search triage-weekly-export, reports filed 1 October 2025 to 17 December 2026",
-      "date": "2026-12-18",
-      "license": "CC0-1.0 (original work, constructed for this task)"
-    },
-    {
-      "path": "old_tracker_export_fields.txt",
-      "format": "txt",
-      "bytes": 1516,
-      "rows": null,
-      "source": "Constructed: Usva bug tracker, field notes of the saved search",
       "date": "2026-12-18",
       "license": "CC0-1.0 (original work, constructed for this task)"
     },
@@ -136,7 +118,7 @@
     {
       "path": "tracker_cutover_runbook.docx",
       "format": "docx",
-      "bytes": 11667,
+      "bytes": 11739,
       "rows": null,
       "source": "Constructed: Usva tracker migration, cutover runbook version 1.5 (7 December 2026)",
       "date": "2026-12-18",
@@ -163,7 +145,7 @@
     {
       "path": "triage_working_agreement.docx",
       "format": "docx",
-      "bytes": 10543,
+      "bytes": 10628,
       "rows": null,
       "source": "Constructed: Usva triage team, working agreement for the new tracker (28 October 2026)",
       "date": "2026-12-18",

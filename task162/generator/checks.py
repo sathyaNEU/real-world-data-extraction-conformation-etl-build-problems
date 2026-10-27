@@ -90,6 +90,51 @@ def flat_text(target):
     return out
 
 
+def ask_b_readings(A):
+    """Ask B under each reading of where a report arrived, over the golden's items (the old number from the field, its
+    changelog or its label, the filing time from the old tracker, re-sent copies once): the component it came in with
+    (the golden), its components at the run's end, as exported, and every component it ever held to the run's end."""
+    end = dt.datetime(2026, 11, 29, 23, 59, 59)
+    seen, items = set(), []
+    for i in sorted(A.issues, key=lambda i: (i["fields"]["created"], int(i["id"]))):
+        f = i["fields"]
+        if f["issuetype"]["name"] != "Bug" or f["security"] is not None:
+            continue
+        hs = i["changelog"]["histories"]
+        if not (f["project"]["key"] == "BRW" or any(it["field"] == "project" and it["fromString"] == "Browser intake"
+                                                    for h in hs for it in h["items"])):
+            continue
+        lb = C.legacy_id(i, "all")
+        if lb is None or lb in seen or lb not in A.opened:
+            continue
+        seen.add(lb)
+        if C.RUN_FROM <= A.opened[lb] < C.RUN_TO:
+            items.append(i)
+    grp = lambda cs: {A.group.get(c) for c in cs} - {None}
+    out = {k: {g: 0 for g in C.GROUPS} for k in ("arrival", "runend", "now", "entered")}
+    one_each = True
+    for i in items:
+        hs, c0 = C.issue_view(i)
+        one_each &= len(c0) == 1 and len(grp(c0)) == 1
+        cs, ever = set(c0), set(c0)
+        for h in hs:
+            if C.jt(h["created"]) > end:
+                break
+            for it in h["items"]:
+                if it["field"] == "Component":
+                    cs.discard(it["fromString"])
+                    if it["toString"]:
+                        cs.add(it["toString"])
+                        ever.add(it["toString"])
+        for k, s_ in (("arrival", c0), ("runend", cs), ("now", {c["name"] for c in i["fields"]["components"]}),
+                      ("entered", ever)):
+            for g in grp(s_):
+                out[k][g] += 1
+    res = {k: [v[g] for g in C.GROUPS] for k, v in out.items()}
+    res.update(n=len(items), one_each=one_each)
+    return res
+
+
 def rebuild(D, keep=lambda r: True, shift=dt.timedelta(0), use="opened", sec=False):
     """The pack's daily triage items rebuilt under another reading of the export."""
     E = copy.copy(D)
@@ -98,7 +143,7 @@ def rebuild(D, keep=lambda r: True, shift=dt.timedelta(0), use="opened", sec=Fal
     for r in D.export:
         if not keep(r) or (r["groups"] == "core-security" and not sec):
             continue
-        t = dt.datetime.strptime(r[use], "%Y-%m-%d %H:%M:%S") + shift
+        t = dt.datetime.strptime(r[use][:19], "%Y-%m-%d %H:%M:%S") + shift
         i = D.di.get(t.date())
         if i is None:
             continue
@@ -332,15 +377,26 @@ def main():
        "load" % p90, math.ceil(p90 / 120) == 8 and "expected load in the quarter's busiest week" in re.sub(
            r"\s+", " ", re.sub(r"(?m)^>\s?", "", text[DOC.F_THREAD])))
     ok("SF7 the as-of: every file taken by 18 December 2026; the export holds reports filed to 23:59:59 on Thursday "
-       "17 December", max(r["opened"] for r in D.export) <= "2026-12-17 23:59:59" and
-       "2026-12-18 06:40" in text[R.F_FIELDS])
+       "17 December", max(r["opened"][:19] for r in D.export) <= "2026-12-17 23:59:59" and
+       R.F_EXPORT.endswith("_20251001_20261217.csv") and
+       "Date: Thu, 17 Dec 2026" in open(os.path.join(TARGET, DOC.F_THREAD), encoding="utf-8").read())
     fc_ = C.forecast(rebuild(D, use="changeddate"))
-    ok("SF8 a report's week read from changeddate files %d; the runbook counts a report in the week it is filed and the "
-       "field notes give opened as the filing time" % fc_["triagers"], fc_["triagers"] != 8 and
-       "A report is counted in the week it is filed" in text[DOC.F_RUNBOOK] and "when the report was filed" in text[R.F_FIELDS])
+    ok("SF8 a report's week read from changeddate files %d; the runbook counts a report in the week it is filed, and "
+       "opened is the filing time" % fc_["triagers"], fc_["triagers"] != 8 and
+       "A report is counted in the week it is filed" in text[DOC.F_RUNBOOK] and R.EXPORT_COLS[1] == "opened")
+    bad_off = [r["bug_id"] for r in D.export for c in ("opened", "changeddate")
+               if r[c][19:] != " +%02d00" % round((dt.datetime.strptime(r[c][:19], "%Y-%m-%d %H:%M:%S") -
+                                                    K.to_utc(dt.datetime.strptime(r[c][:19], "%Y-%m-%d %H:%M:%S")))
+                                                   .total_seconds() / 3600)]
+    fu8 = C.forecast(rebuild(D, shift=dt.timedelta(hours=2)))
+    ok("SF14 the old export's times carry Helsinki's offset on every row (+0300 in summer time, +0200 in winter), so "
+       "no reader takes them for UTC; read as UTC anyway the call is the same %d" % fu8["triagers"],
+       not bad_off and fu8["triagers"] == 8, bad_off[:5])
     fm = C.forecast(rebuild(D, keep=lambda r: r["product"] != "Web Compatibility"))
-    ok("SF9 reports moved to the web-compatibility team left out file %d; the runbook keeps them as triage items" %
-       fm["triagers"], "stays a triage item" in text[DOC.F_RUNBOOK])
+    ok("SF9 reports moved to the web-compatibility team left out file %d; the runbook keeps them as triage items and "
+       "says the old tracker's export holds every form report wherever it sits now, and no other" %
+       fm["triagers"], "stays a triage item" in text[DOC.F_RUNBOOK] and
+       "every report filed through the form there and no other, wherever the report sits now" in text[DOC.F_RUNBOOK])
     fb = C.forecast(rebuild(D, keep=lambda r: "a" not in r["version"] and "b" not in r["version"]))
     ok("SF10 release-channel reports only file %d: same call; the runbook counts every version" % fb["triagers"],
        fb["triagers"] == 8 and "whatever version the reporter runs" in text[DOC.F_RUNBOOK])
@@ -389,6 +445,17 @@ def main():
        ga == [(gld["no_action"][w], gld["closed"][w]) for w in C.RUN_WEEKS])
     ok("ASK B the golden: %s" % "; ".join("%s %d" % (g_, gld["groups"][g_]) for g_ in C.GROUPS),
        all(figs["answers"]["ask_b"][g_] == gld["groups"][g_] for g_ in C.GROUPS))
+    rb15 = ask_b_readings(A)
+    ok("SF15 a group's arrivals: the agreement counts each report once, in the group of the component it comes in "
+       "with, a component set in triage not moving it; every one of the run's %d items came in with exactly one "
+       "grouped component, so the counts sum to the items; the other readings (the components at the run's end %s, "
+       "as exported %s, every component an item ever held %s) each differ from the golden and are ruled out by that "
+       "sentence" % (rb15["n"], rb15["runend"], rb15["now"], rb15["entered"]),
+       rb15["one_each"] and sum(gld["groups"].values()) == rb15["n"] and
+       [gld["groups"][g_] for g_ in C.GROUPS] == rb15["arrival"] and
+       all(rb15[k] != rb15["arrival"] for k in ("runend", "now", "entered")) and
+       "in the group of the component it comes in with; a component set in triage does not change where a report "
+       "arrived" in re.sub(r"\s+", " ", text[DOC.F_AGREEMENT]))
     for name in C.CRACKER_PATHS:
         kk = rep["kept"][name]
         ok("ASK the cracker's %s path keeps %d of Ask A's 8 and %d of Ask B's 8 figures; pair %.1f" % (
@@ -406,7 +473,7 @@ def main():
        not re.search(r"label|bulk|catch-up|checkpoint|outage|re-sen|stopped", alltext, re.I))
     ok("DEVICE moved reports lose Legacy bug on the move and keep it in the changelog: %d" % len(moved_hist),
        len(moved_hist) > 40)
-    filed = {int(r["bug_id"]): dt.datetime.strptime(r["opened"], "%Y-%m-%d %H:%M:%S") for r in D.export}
+    filed = {int(r["bug_id"]): dt.datetime.strptime(r["opened"][:19], "%Y-%m-%d %H:%M:%S") for r in D.export}
     lag = []
     for i in iss:
         n_ = C.legacy_id(i, "all")
@@ -461,9 +528,10 @@ def main():
     ok("REALISM no round headline: no weekly total of the record is a multiple of 100, and no two neighbouring weeks "
        "are equal", not any(v % 100 == 0 for v in wk.values()) or sum(1 for v in wk.values() if v % 100 == 0) <= 1)
     files = sorted(os.listdir(TARGET))
-    man = [r["file"] for r in C.rd(TARGET, DOC.F_MANIFEST)]
-    ok("REALISM H9 the manifest names every shipped file but itself, once", sorted(man) == sorted(
-        f for f in files if f != DOC.F_MANIFEST) and len(set(man)) == len(man))
+    describe = [f for f in files if re.search(r"read_?me|dictionar|manifest|_fields|field_?notes|codebook|glossary|"
+                                               r"data_?notes|how_to_read", f, re.I)]
+    ok("REALISM no shipped file describes the data (no dictionary, field notes, manifest or readme)", not describe,
+       describe)
     import docx as _docx
     rb_mod = _docx.Document(os.path.join(TARGET, DOC.F_RUNBOOK)).core_properties.modified
     ok("REALISM H16 the runbook, which records the run's export of 4 December, is saved after it (%s) and before the "

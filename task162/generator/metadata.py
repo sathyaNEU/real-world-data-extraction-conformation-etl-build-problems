@@ -9,7 +9,6 @@ import records as R
 SOURCES = {
     R.F_EXPORT: "Usva bug tracker (old tracker), saved search triage-weekly-export, reports filed 1 October 2025 to "
                 "17 December 2026",
-    R.F_FIELDS: "Usva bug tracker, field notes of the saved search",
     R.F_SHARES: "Usva public data portal, daily release-channel version shares by platform",
     R.F_INSTALLS: "Usva public data portal, daily active installs by platform",
     R.F_DASH: "Usva triage dashboard, weekly new defects by product (old tracker)",
@@ -22,9 +21,8 @@ SOURCES = {
     DOC.F_RUNBOOK: "Usva tracker migration, cutover runbook version 1.5 (7 December 2026)",
     DOC.F_AGREEMENT: "Usva triage team, working agreement for the new tracker (28 October 2026)",
     DOC.F_CALENDAR: "Usva release management, release calendar 2025 to 2027 (3 December 2026)",
-    DOC.F_MANIFEST: "Usva triage team, manifest of the files taken for the first-quarter plan",
 }
-DISTRACTORS = [R.F_PUBLIC, R.F_STABILITY]
+DISTRACTORS = [R.F_PUBLIC, R.F_STABILITY, R.F_DASH]
 TITLE = ("How many bug triagers a browser vendor needs for the first quarter of 2027, its first on a new tracker, "
          "when every one of the quarter's releases ships on Patch Tuesday and meets the Windows restart wave in its "
          "own release week")

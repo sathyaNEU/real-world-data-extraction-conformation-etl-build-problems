@@ -156,7 +156,8 @@ Lesson: a model learns that a release's first-week activity is set by how many i
 
 Each item, the system that writes it, its file and its natural mishandling; every R2 line is asserted in checks.py with
 the golden method run on the mishandled reading (the call and the rounded week stay at 8 and 900 in each).
-- Helsinki local times without an offset (the old tracker's CSV writer, the export): read as UTC, 912 items.
+- Helsinki local times with their offset against the new tracker's UTC (the old tracker's CSV writer, the export):
+  read as UTC, 912 items.
 - The security group in its own column (the old tracker's groups): kept in, 942.
 - Beta and nightly builds beside release builds (the report form's version field): dropped, 874.
 - The parallel run's reports closed RESOLVED MOVED and put in the Archive product on 30 November (the migration's
@@ -201,13 +202,15 @@ Every term in the main ask and every convention the main computation needs. Ever
 | SF4 | a week | Monday 00:00 to Sunday 24:00, Helsinki time | UTC weeks | same call (the busiest week moves 0.6 per cent) | the thread |
 | SF5 | "busiest week" | the week with the most expected triage items | the week with the largest rise over the week before | same call (the same release week) | the thread ("size for the expected load in the quarter's busiest week") |
 | SF6 | expected | the forecast's central value, the mean count | a high percentile | 8 (a 90th percentile of the busiest week, 951, also files 8) | the thread ("the expected load in the quarter's busiest week") |
-| SF7 | the as-of | the files taken on 18 December 2026; the export holds reports filed to 23:59:59 on Thursday 17 December | data through the last full week (Sunday 13 December) | same call | the export's run line and the thread's date |
-| SF8 | a report's week | the week of its filing on the old tracker (`opened`, Helsinki time) | the week it was last changed | 6 under changeddate | the runbook ("A report is counted in the week it is filed.") and the field notes (opened, when the report was filed) |
-| SF9 | moved reports | in: a report the team moved to the web-compatibility team was filed through the form (the export holds it under Web Compatibility) | out | 7 with them out | the runbook ("A report the team moves to another team's project during triage stays a triage item.") |
+| SF7 | the as-of | the files taken on 18 December 2026; the export holds reports filed to 23:59:59 on Thursday 17 December | data through the last full week (Sunday 13 December) | same call | the export's file name (to 20261217) and the thread's date |
+| SF8 | a report's week | the week of its filing on the old tracker (`opened`, Helsinki time) | the week it was last changed | 6 under changeddate | the runbook ("A report is counted in the week it is filed."); `opened` is the filing time |
+| SF9 | moved reports | in: a report the team moved to the web-compatibility team was filed through the form (the export holds it under Web Compatibility) | out | 7 with them out | the runbook ("A report the team moves to another team's project during triage stays a triage item."); "Until the cutover the team counts from the old tracker's weekly triage export: every report filed through the form there and no other, wherever the report sits now.") |
 | SF10 | beta and nightly reports | in: every report through the form, whatever version the reporter runs | release channel only | same call (874) | the runbook ("each is a triage item whatever version the reporter runs") |
 | SF11 | the parallel run's reports on the old tracker | reports filed, counted in their filing weeks (closed MOVED in bulk on 30 November and put in Archive) | dropped as closed | same call (896) | the runbook (the bulk close is the parallel run's bookkeeping) |
 | SF12 | reports carried over at the cutover | not first-quarter items: the old tracker's open reports migrate with their state | counted in the first week | the first week would be the busiest (5,725 open at the pull) | the runbook ("Migrated reports keep their state and are not new triage items.") |
 | SF13 | the rounding path | the busiest week's expected items, unrounded, over 120, rounded up | each week rounded first | same call | the thread |
+| SF14 | the old export's clock | Helsinki local time, each `opened` and `changeddate` printed with its offset (+0300 in summer time, +0200 in winter) | UTC | same call (8; the misreading asserted); Ask A's 24-hour clock and weeks would move | the offset on every row (asserted; added at the determinism repair of 2026-10-27, when the field notes that stated the zone were withdrawn) |
+| SF15 | Ask B, "arrived in its components" | each of the run's items once, in the group of the component it came in with (the bridge's write, every later component change undone): 451, 136, 109, 169, 468, 75, 70, 55 (1,533, one grouped component each) | the components at the run's end (337, 208, 112, 152, 458, 77, 74, 56); as exported (323, 218, 113, 152, 458, 78, 75, 56); every component an item held by the run's end (452, 212, 115, 176, 475, 78, 77, 56) | an ask, not the call: Ask B's figures move | the working agreement ("A group's intake is the reports that arrive in its components, each report counted once, in the group of the component it comes in with; a component set in triage does not change where a report arrived."; added at the determinism repair of 2026-10-27); the register's "in each of those groups' queues" gives the same figures, every one of the 1,533 items coming in with exactly one grouped component (C1, asserted) |
 
 ## Ladder
 Built figures (`generator/calc.py` on the cut pack; `checks.py` asserts each row, the OOS record, R3a and R3b).
@@ -352,8 +355,9 @@ components** (8 figures, whole items). Golden: Rendering and Layout 451, Graphic
 and Web APIs 169, Browser Interface 468, Extensions 75, Developer Tools 70, Platform and Updates 55.
 - H18 home: the run's intake by area rota, read beside the call for the area rotas on the new tracker; the call never
   reads it.
-- Basis: the component an issue arrived in is the one the bridge wrote it into (the form area's component); the
-  register maps components to groups; a report with components in more than one group is in each group's queue.
+- Basis: the component an issue arrived in is the one the bridge wrote it into (the form area's component), filed in
+  the working agreement (a group's intake counts each report once, in the group of the component it comes in with; a
+  component set in triage does not change where it arrived; SF15); the register maps components to groups.
 - Primary B1 (D2, an attribute at the wrong vintage; the mirror's): an issue's components now are those the triagers
   set (56 with a second component, the follow-up week's changes included); the arrival component is the current set
   with every later component change undone, removals and additions item by item.
@@ -420,7 +424,7 @@ filing time from the old tracker, 57.5).
 - Determinism: the judge DETERMINISTIC, APPROVE, no fix (its own forecast puts the release weeks at 861, 895 and 907, so
   900 and 8; every ask figure reproduced; Gates F, G and H pass; the readings it tried, the run ending on 30 November,
   the export of 4 December, the bridge's created against the old tracker's opened and who counts as a rota triager,
-  each ruled out by the rota, the working agreement or the old export's definitions); the leak reader clean, Q6
+  each ruled out by the rota, the working agreement or the old export's own columns); the leak reader clean, Q6
   analytical. The realism pass after stage 4 (the rota as the team kept it, the staffing mail in the director's voice,
   the register's footer) moved no graded figure (figures.json and submission.md byte-identical to the judged build), and
   its targeted re-read was clean.
@@ -445,10 +449,11 @@ form, answered on the card; nearest stump text 0.08, task146). For the author, w
 
 ## Leak sweep
 
-`leak.py task162 --asof 2026-12-18` returns REVIEW (no LEAK); every line answered: the field notes, the release calendar
-and the runbook carry design-note words (release, version, update, export, record) as their own subjects, and none names
-a restart, Patch Tuesday, a burst, adoption or reach (asserted in checks.py, HOW); the component register names the
-groups Ask B asks about and ranks nothing.
+`leak.py task162 --asof 2026-12-18` returns REVIEW (no LEAK) since the determinism repair of 2026-10-27, which withdrew
+the export manifest and the old export's field notes (sweep 1 now reads any file that describes the data as a LEAK);
+every line answered: the release calendar and the runbook carry design-note words (release, version, update, export,
+record) as their own subjects, and none names a restart, Patch Tuesday, a burst, adoption or reach (asserted in
+checks.py, HOW); the component register names the groups Ask B asks about and ranks nothing.
 
 ## Build record
 
@@ -464,6 +469,25 @@ four card-level promotions (above); 15 files in 7 formats, the largest the old t
 distractors `public_bug_statistics_monthly.csv` and `stability_monthly.csv` in `metadata.json`. Invented names checked:
 no browser or software firm called Usva turned up in a web search (Finnish firms with usva in their names work in other
 trades); personas from `guard.py names --geo Finland --seed 162`.
+
+Determinism repair of 2026-10-27 (portal round 1: one determinism judge passed every gate, F strong, valid stump; the
+other was unsure on Gate C, Ask B's "arrived in its components" multi-readable, and on the main call's 900, which it
+could not rebuild): the working agreement now counts a group's intake once per report by the component it comes in with
+(SF15); the export manifest and the old export's field notes withdrawn (`leak.py`'s sweep 1 reads a file that describes
+the data as a LEAK), their two facts moved into the files' own forms (the old export's times printed with their Helsinki
+offset, SF14; the runbook's sentence that the old tracker's weekly triage export holds every form report and no other,
+wherever it sits now, SF9); the card's differentiation against task171 v4 and task178 v1, lineage filed after this build
+shipped, for `heart`. `build.py`: checks 72 run, 0 failed; `verify.py` 0 failed; two builds byte-identical; `freeze.py
+check --mode determinism` PASS (the call, the stump and every graded figure unchanged); `figures_check.py` 0 absent;
+`precut.py` 53 checks, 0 FAIL; `leak.py` REVIEW, no LEAK; `guard.py heart` WARN, `surface` the same four card-level
+promotions; the cracker's pair ceiling unchanged at 34.6; 13 files in 6 formats; target.zip 62e91745. Stage 4 on
+62e91745: the leak reader clean (Q1, Q2 and Q4 none, Q6 analytical; its two readings ruled closed in
+`leak_check_report.md`); the re-judge DETERMINISTIC, APPROVE, no fix, its blind derivation filing 6 triagers and about
+700 before it read the answers, then 875 to 910 on the restart model; every ask figure reproduced, Ask B by the arrival
+component. The re-judge's findings ruled: the re-sent copies are the same filed reports by their old bug number (an ask
+hazard, left silent); 900 sits inside its bin on every construction (896.7 to 920.5, the judge's 875 to 910); the old
+dashboard, a wrong-basis file the solution never reads, declared the third distractor in metadata.json (outside
+target.zip, which is unchanged at 62e91745).
 
 ## Tried and rejected
 - 2026-10-18 draw: the seed's own route made analytical, a new-to-old conversion whose duplicate share rises with the
@@ -493,3 +517,8 @@ trades); personas from `guard.py names --geo Finland --seed 162`.
   as a new version moved the call to 6, a messy choice flipping the answer; the portal publishes major versions.
 - 2026-10-18 build: a parallel-run report PDF with the weekly side-by-side of both trackers: its weekly items by filing
   week would tie only under the old tracker's filing times, an oracle for Ask A; not built.
+- 2026-10-27 determinism repair: Ask B's "arrived in its components" read three ways by a portal judge (the component an
+  item came in with, its components at the run's end, every component it held), closed by one agreement sentence on the
+  WHAT (each report once, in the group of the component it comes in with) rather than by rewording the prompt; the
+  judge's optional note that the write-up name the re-sent copies' exclusion declined, since the old bug number already
+  excludes them and the write-up states no figure for them.

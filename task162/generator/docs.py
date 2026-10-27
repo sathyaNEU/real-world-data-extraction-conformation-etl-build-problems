@@ -36,7 +36,6 @@ F_THREAD = "staffing_plan_q1_2027.eml"
 F_RUNBOOK = "tracker_cutover_runbook.docx"
 F_AGREEMENT = "triage_working_agreement.docx"
 F_CALENDAR = "release_calendar_2025_2027.pdf"
-F_MANIFEST = "export_manifest.csv"
 DOMAIN = "usvasoftware.fi"
 
 
@@ -136,6 +135,8 @@ RUNBOOK = [
         "from release, beta and nightly builds, and each is a triage item whatever version the reporter runs.",
         "Reports filed with the Report a site issue tool go to the web-compatibility team's project (WEBC), on the new "
         "tracker since the April pilot, and are not triage items.",
+        "Until the cutover the team counts from the old tracker's weekly triage export: every report filed through the "
+        "form there and no other, wherever the report sits now.",
     ]),
     ("The parallel run, 2 to 29 November 2026", [
         "Reporters kept filing on the old tracker. From 00:00 on Monday 2 November the bridge (service account "
@@ -175,7 +176,9 @@ AGREEMENT = [
         "A report is closed when it is in Resolved or Closed, or sits in another team's project.",
         "Weeks run Monday to Sunday, Helsinki time, and a report belongs to the week it is filed in. The parallel run's "
         "reports are those filed from 00:00 on Monday 2 November to 23:59 on Sunday 29 November.",
-        "Component groups are in the component register.",
+        "Component groups are in the component register. A group's intake is the reports that arrive in its "
+        "components, each report counted once, in the group of the component it comes in with; a component set in "
+        "triage does not change where a report arrived.",
     ]),
 ]
 AGREEMENT_SENTENCES = sentences([p for _, ps in AGREEMENT for p in ps])
@@ -313,73 +316,6 @@ def write_calendar(path):
     doc.build(s, onFirstPage=foot, onLaterPages=foot)
 
 
-# ---------------------------------------------------------------------------------------------------- field notes
-def field_notes(n_rows):
-    L = [
-        "Usva bug tracker (old tracker), saved search triage-weekly-export",
-        "Run: 2026-12-18 06:40 Europe/Helsinki, %s rows" % "{:,}".format(n_rows),
-        "",
-        "Search: every report filed through the in-browser report form, opened from 2025-10-01 00:00:00 to",
-        "2026-12-17 23:59:59, all products, all statuses. Reports filed with the Report a site issue tool and spam",
-        "removed by the form's filter are not in this search.",
-        "",
-        "bug_id        bug number",
-        "opened        when the report was filed (Europe/Helsinki local time)",
-        "changeddate   last change (Europe/Helsinki local time)",
-        "product       product the report is in now (Engine, Shell, Extensions, DevTools, Install and Update;",
-        "              reports moved to the web-compatibility team: Web Compatibility; the parallel run's",
-        "              reports, closed MOVED on 2026-11-30: Archive)",
-        "component     component the report is in now; untriaged reports keep the component of the form area",
-        "              the reporter picked",
-        "version       version the reporter ran, from the report form (release builds x.0 and x.0.n, beta",
-        "              builds x.0bn, nightly builds x.0a1)",
-        "op_sys        reporter's operating system, from the report form",
-        "bug_severity  S1 to S4, -- if not set",
-        "bug_status    UNCONFIRMED, NEW, ASSIGNED, RESOLVED, VERIFIED",
-        "resolution    --- while open; FIXED, INVALID, WONTFIX, DUPLICATE, WORKSFORME, INCOMPLETE, MOVED",
-        "dupe_of       for RESOLVED DUPLICATE, the bug it duplicates",
-        "groups        core-security if the report is restricted to the security team",
-        "keywords      regression, crash",
-    ]
-    return "\r\n".join(L) + "\r\n"
-
-
-# ---------------------------------------------------------------------------------------------------- manifest
-MANIFEST_COLS = ["file", "source", "covers", "taken", "rows", "notes"]
-
-
-def manifest_rows(n):
-    return [
-        {"file": R.F_EXPORT, "source": "old tracker, saved search triage-weekly-export", "covers": "2025-10-01 to 2026-12-17",
-         "taken": "2026-12-18 06:40", "rows": n[R.F_EXPORT], "notes": "field notes in %s" % R.F_FIELDS},
-        {"file": R.F_FIELDS, "source": "old tracker", "covers": "", "taken": "2026-12-18 06:40", "rows": "", "notes": ""},
-        {"file": R.F_DASH, "source": "triage dashboard (old tracker)", "covers": "weeks from 2025-09-29 to 2026-12-07",
-         "taken": "2026-12-18 06:40", "rows": n[R.F_DASH], "notes": "refreshed with the weekly export"},
-        {"file": R.F_SHARES, "source": "public data portal, release channel version shares (Simo Kinnunen, data team)",
-         "covers": "2025-10-01 to 2026-12-17", "taken": "2026-12-18 06:52", "rows": n[R.F_SHARES],
-         "notes": "per cent of each platform's active installs on the day"},
-        {"file": R.F_INSTALLS, "source": "public data portal, daily active installs (Simo Kinnunen, data team)",
-         "covers": "2025-10-01 to 2026-12-17", "taken": "2026-12-18 06:52", "rows": n[R.F_INSTALLS],
-         "notes": "release channel, thousands"},
-        {"file": R.F_PUBLIC, "source": "usva bug statistics page, monthly", "covers": "2025-10 to 2026-11",
-         "taken": "2026-12-18 06:55", "rows": n[R.F_PUBLIC], "notes": "published on the 3rd working day of the month"},
-        {"file": R.F_STABILITY, "source": "crash reporter, monthly stability", "covers": "2025-10 to 2026-11",
-         "taken": "2026-12-18 06:57", "rows": n[R.F_STABILITY], "notes": ""},
-        {"file": F_CALENDAR, "source": "release management", "covers": "versions 31 to 52", "taken": "2026-12-03",
-         "rows": "", "notes": ""},
-        {"file": R.F_NEWEXPORT, "source": "new tracker, projects BRW and WEBC, issues created from 2026-11-02",
-         "covers": "parallel run", "taken": "2026-12-04 10:20", "rows": n[R.F_NEWEXPORT],
-         "notes": "REST search with changelog; times UTC"},
-        {"file": R.F_ROTA, "source": "triage team", "covers": "2026-11-02 to 2026-12-04", "taken": "2026-11-27",
-         "rows": n[R.F_ROTA], "notes": ""},
-        {"file": R.F_GROUPS, "source": "triage team", "covers": "", "taken": "2026-10-26", "rows": n[R.F_GROUPS],
-         "notes": ""},
-        {"file": F_AGREEMENT, "source": "triage team", "covers": "", "taken": "2026-10-28", "rows": "", "notes": ""},
-        {"file": F_RUNBOOK, "source": "tracker migration", "covers": "", "taken": "2026-12-07", "rows": "", "notes": ""},
-        {"file": F_THREAD, "source": "mail", "covers": "", "taken": "2026-12-17", "rows": "", "notes": ""},
-    ]
-
-
 def write_all(out, n):
     p = lambda f: os.path.join(out, f)
     with open(p(F_THREAD), "w", encoding="utf-8", newline="") as fh:
@@ -387,8 +323,6 @@ def write_all(out, n):
     write_runbook(p(F_RUNBOOK))
     write_agreement(p(F_AGREEMENT))
     write_calendar(p(F_CALENDAR))
-    with open(p(R.F_FIELDS), "w", encoding="utf-8", newline="") as fh:
-        fh.write(field_notes(n[R.F_EXPORT]))
     P = K.PEOPLE
     PP.normalize_pdf(p(F_CALENDAR), b"D:20261203141100+02'00'", b"D:20261203141100+02'00'")
     PP.normalize_docx(p(F_RUNBOOK), P["migration"], P["migration"], "2026-10-09T11:20:00Z", "2026-12-07T09:18:00Z",
@@ -397,4 +331,3 @@ def write_all(out, n):
     PP.normalize_docx(p(F_AGREEMENT), P["lead"], P["lead"], "2026-10-27T13:05:00Z", "2026-10-28T08:31:00Z",
                       revision=5, total_time=63, seed="task162/agreement", title="Triage on the new tracker",
                       company=K.VENDOR)
-    K.write_csv(p(F_MANIFEST), MANIFEST_COLS, manifest_rows(n))

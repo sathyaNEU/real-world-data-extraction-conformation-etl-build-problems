@@ -5,31 +5,38 @@
  "objective": "forecasting",
  "stage": 5,
  "stage_name": "ship",
- "updated": "2026-10-18",
+ "updated": "2026-10-27",
  "stump": "Rebuilding the new tracker's weekly triage items from the old export and carrying last year's busiest first-quarter week, scaled for the growth in active installs, onto the quarter files 6 triagers; the step that lands it there is treating each first-quarter release week like the record's, when all three releases ship on Patch Tuesday and the Windows restart burst falls inside each release week, so the busiest week carries about 900 items and needs 8.",
  "architecture": 1,
- "loops": 0,
+ "loops": 1,
  "precut": {
   "exit": 0,
-  "date": "2026-10-18"
+  "date": "2026-10-27"
  },
  "leak": {
-  "leak_py": "REVIEW 2026-10-18 (no LEAK: three design-note vocabulary lines, one ranking INFO)",
-  "reader": "clean, Q6 analytical (stage 4 on 00d073b0); the targeted re-read of the realism pass on fe719dd5 clean (Q1, Q2 and Q4 none, Q6 analytical, nothing planted)"
+  "leak_py": "REVIEW 2026-10-27 (no LEAK; the export manifest and the field notes withdrawn, which sweep 1 now reads as LEAK; two design-note vocabulary lines, one ranking INFO)",
+  "reader": "clean on 62e91745 (Q1, Q2 and Q4 none, Q6 analytical; its two readings, the register's queue sentence and the run's end, ruled closed in leak_check_report.md)"
  },
  "duplicate_check": {
-  "heart": "WARN 2026-10-18 (strategy risk and question form, answered on the card)",
-  "nearest": "stump text 0.08 task146; driver 0.08 task98 v4; surface: task102 and task130 promoted on card mechanism only, differentiated at the draw"
+  "heart": "WARN 2026-10-27 (strategy risk and question form, answered on the card; same_puzzle_older and same_driver_older against task171 v4 and task178 v1, lineage filed after this build shipped, differentiated on the card)",
+  "nearest": "stump text 0.07 task146; driver 0.08 task98 v4; surface: the same four card-level promotions (task160, task161, task130, task102), no hard tell"
  },
  "judge": {
   "verdict": "APPROVE",
-  "disposition": "DETERMINISTIC, no fix (its own forecast 861, 895 and 907 for the release weeks: 900 and 8; every ask figure reproduced; Gates F, G and H pass); rule 3 audit PASS, P(one) about 0.13, P(both) about 0.02 to 0.05",
-  "report": ""
+  "disposition": "DETERMINISTIC, no fix (the repair's one re-judge on 62e91745: its blind derivation filed 6 triagers and about 700 before it read the answers, then 875 to 910 on the restart model, 8 triagers; every ask figure reproduced, Ask B by the arrival component; Gate G analytical_non_defect, Gate H domain pass, layers pass, decisive step analytical)",
+  "report": "task162/determinism_check_report.md (2026-10-27, target.zip 62e91745)"
  },
- "returned": [],
+ "returned": [
+  {
+   "date": "2026-10-27",
+   "portal": "determinism block: one judge passed every gate (A to G pass, F strong, valid stump); the other unsure, Gate C on Ask B's \"arrived in its components\" (the component an item came in with, its components by the run's end, or every component it held: Graphics and Media 136 against 205) and the main call's 900, which it could not rebuild (no fork shown)",
+   "repair": "determinism: the working agreement counts a group's intake once per report, in the group of the component it comes in with (SF15); the export manifest and the old export's field notes withdrawn as data descriptions, their facts moved into the files' own forms (Helsinki offsets on the old export's times, SF14; the runbook's sentence on the old tracker's export, SF9); the old dashboard declared a third distractor; every graded figure frozen (freeze.py PASS)",
+   "commit": "RESHIPPED (task162) of 2026-10-27"
+  }
+ ],
  "resume": "",
  "approved": null,
- "delivered": "2026-10-18",
+ "delivered": "2026-10-27",
  "portal": null,
  "portal_id": "",
  "portal_status": "",
