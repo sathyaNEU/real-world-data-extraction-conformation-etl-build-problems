@@ -1,22 +1,56 @@
 # task305 design note
 
-Architecture 1, drawn 2026-10-24. Seed `analytical_tasks/04_opportunity_sizing/OS07` (the world, the decision and the quantity only: a regional grocer opening one of six shortlisted sites next year, sized by the incremental annual contribution it adds to the chain).
+Architecture 2, re-rooted 2026-10-27 at the author's direction after the portal's determinism return on architecture 1
+(both judges competing_defensible_answer: the filed model's origins were the census households and the guests' spend
+per pitch was pinned nowhere; the decisive step settled the population, so the WHAT screen killed it). The world, the
+people, the shortlist and the three asks' files are kept; the population is now filed, and the decisive step is how a
+holiday park's grocery spend is recovered from the one share of it our stores take.
 
 ## Draw
 
-- **Card:** `.claude/skills/fingerprint/cards/task305.json`, architecture v1, registered 2026-10-24. Guard verdict WARN (`repeat.question_form`, answered below) after three axis redraws at check; `test.same_puzzle_older` and `test.same_driver_older` are cleared by differentiation lines against task199, task268's lineage, task133 and task180. Nearest drivers on file sit at 0.05 (task89 lineage, task98 lineage) and 0.04 (task471 lineage, task53 lineage).
-- **Pairing:** Urban & Regional Science / `accessibility-agglomeration-location-analysis`, drawn for Opportunity Sizing & Decision Support (a never-built pairing). The task type sizes what a location can reach; here a new grocery store's trade from the retail geographer's spatial-interaction (Huff) model, each origin's grocery spend shared among the stores in reach by floor area and distance deterrence, pool (the grocery spend of every origin within reach of a site) to realisable (what the new store wins, net of what it takes from the chain's own stores, less its running costs).
-- **Niche:** Marrable Foodstores (fictional, ten stores in a planning region of twelve towns and sixty-one rural parishes, postcode area LQ) can open one store in 2027. Six sites are shortlisted; the property committee approves one at its November meeting on its addition to the chain's annual contribution: 26 per cent of the new store's sales, less 26 per cent of what it takes from the ten stores, less its running costs, with the store's sales from the property team's spend-share model (area power 1.0, deterrence exp(-0.22 x road km), road km 1.25 times straight-line, 88 per cent of households' grocery spend in store, households as Census 2021 counted them).
-- **The call:** the site and its addition to the chain's annual contribution, in pounds to the nearest 0.1 million: S3 Wrentoft, Mill Lane, GBP 0.8 million (0.804); the resident route approves S1 Bellingtoft, Fenton Road, GBP 0.5 million (0.496), and puts Wrentoft second of six at 0.145, under a third of S1's figure.
-- **Shape:** other. The call is one of six sites with its addition (two criteria and the components behind them), and the asks grade the existing estate and the six sites on measures the call does not turn on (26 figures); grading every site's addition would pay the resident route five of six, since only Wrentoft's figure moves. Shapes 01 and 07 are banned against task279 and task482.
-- **Strategy:** `population_selection`, Gate G `method_or_model_selection`, generators G12 (the census's silence about the park's guests is an absence of record, read as nobody there), G3 (the census records where people live; the store's trade is who shops), G6 (in season Wrentoft's shoppers are mostly guests); gap population; Layer 2 `field_method`, pattern `own:spatial-interaction-demand-carrying-the-visitor-origins-the-census-does-not-hold`. Redrawn at check against the live window: context artifact `filed_model` (banned against task482) to `monitoring_export`, the acquirer's merchant-insight feed; Gate G was first filed as `forecasting` (the correctly read past does not pin the new store's trade) to step off `method_or_model_selection` (a repeat of task482, five of the last twelve), but both stage 4 judge passes read the mechanism as `method_or_model_selection`, since what decides is the demand model's origin set, and where two keys fit the reviewer's stands, so the card carries it with differentiation lines against task196, task255, task271, task273, task456 and task462 (capture overlap, truncated tails, ascertainment, induced exposure, misclassifying records, snapshot detection: none an origin the demand data never counts); the decisive generator stays G12 with differentiation lines rather than a relabel.
-- **Forum, event, organisation:** committee_or_panel (the property committee), vote_or_meeting (its November meeting approves one opening), retailer_or_ecommerce. Role finance_controller (the chain's finance director chairs the committee; `capacity_planner` and `portfolio_manager` are banned against task306 and task482); calibration form `existing_book_actuals` (the card feed at the chain's own stores).
-- **Guard override (author, 2026-10-24):** `guard.py heart` BLOCKs on ban.strategy (population_selection) and ban.forcing_event (vote_or_meeting) against task275, a fisheries discard-share build drawn on 23 October. The draw passed `check` when it was filed. The three-build window reached task275 only after the four builds drawn between them (task279, task482, task484, task486) were marked spent. Both labels are the honest ones, so the author chose to override and continue rather than relabel.
-- **People** (`guard.py names --geo GB --seed 305`): Pauline Sullivan, finance director and committee chair, who asks; Joshua Ingram, head of property and network planning; Hazel Lucas (GIS), Hollie Richardson (workforce planning) and Kathryn Hughes (transport) behind the data folder. None appears in the prompt.
-- **Spent mechanisms on the objective** (`guard.py mechanisms --objective opportunity-sizing-decision`, eight builds): task105 a new outlet's market is the part of its catchment nearer to it than to any sister outlet; task106 candidates drawing on one shared pool; task116 a group offer reachable only through one signatory; task118 the gain on volume a unit does not already treat; task120 a peak draw read through a reserve's drawdown; task127 the step of a wait an intervention removes; task128 a contact's effect read where the queue outran the team; task306 the units a roll does not hold yet. None prices an origin the demand data never counts.
-- **Probes before the draw:** call-only, isolated, medium effort, one pack cut from the prototype (scratch `t305/hp/probe/`, nine files: census output areas, spend estimates, an ONSPD extract, the rating list, the estate, the card feed, the shortlist, the model parameters, a dictionary). Sonnet approved the site that is now S1 Bellingtoft after fitting the model to the card flows (deterrence 0.220, area power 0.94). Opus approved the same site after the same refit, store ratios 0.92 to 1.06; it put cardholders living outside the region at 1.7 per cent of card spend and kept the model, and read the Raddleford store's card spend stepping down about 9 per cent from October as a change in competition. Two of two missed the decisive step.
-- **WARN answered:** `repeat.question_form` (which, against task482 and task484): the decision is a pick of one of six sites, so the form is which. `repeat.gate_g` and `overuse.gate_g` (method_or_model_selection, five of the last twelve): the label is the judges' reading and the honest one; the driver repeats none on file (nearest 0.05).
-- **Earlier draws for this number:** a resort-town design (seaside second homes in the census and the council tax base) was dropped on paper before a probe (`## Tried and rejected`). The holiday park is one hereditament among about 4,200 on the rating list, measured in pitches, and its guests leave their trace only as out-of-region cardholders in the acquirer's feed.
+- **Card:** `.claude/skills/fingerprint/cards/task305.json`, architecture v2 (v1 in `lineage`, spent), registered
+  2026-10-27. Guard verdict WARN after two axis redraws at check: forum `committee_or_panel` (BLOCK against task270)
+  to `executive_team`, the chain's executive approving its one 2027 opening at its November meeting, which is who
+  approves a store opening in a ten-store grocer; context artifact `monitoring_export` (BLOCK against task310) to
+  `filed_model`, the property team's model sheet, which is the stakeholder's own file and now files the share the
+  decisive step turns on. `test.same_puzzle_older` against task128 v3 is answered by a differentiation line (a queue's
+  overflow against a team's capacity there; an origin's unobserved spend recovered from one outlet's modelled share
+  here). Nearest driver on file 0.06 (task16 lineage), then 0.05 (task105 v2, task501 v2 lineage, task171 lineage);
+  this slot's v1 at 0.10.
+- **WARNs answered:** `overuse.objective` (the number's own objective); `repeat.decision` (pick_one_of_n against
+  task311: the committee's decision is a pick of one of six sites); `repeat.deliverables` (docx and xlsx against
+  task311: an appraisal workbook and a paper are what a property team sends).
+- **Pairing:** Urban & Regional Science / `accessibility-agglomeration-location-analysis`, for Opportunity Sizing &
+  Decision Support (kept): a new store's trade from the retail geographer's spatial-interaction model, pool (the
+  grocery spend of every origin within reach) to realisable (what the new store wins net of what it takes from the
+  chain's own stores, less its running costs).
+- **Strategy:** `decomposition_attribution`, Gate G `decomposition_attribution`, generators G5 (provision elsewhere:
+  most of a park's grocery spend goes to the competitor beside it), G3 (the card feed records our stores' take, not
+  the park's spend), G6; gap population (what one row of the card feed is: our share of an origin's spend, not the
+  origin's spend); Layer 2 `field_method`, pattern
+  `own:spatial-interaction-origin-spend-recovered-from-one-outlet's-share`.
+- **The population, filed:** the model sheet's section 1 now says spend starts where people are, a household's at its
+  output area and anyone else's where they stay; it names no kind of place, no count and no rate.
+- **The world change:** a Fairbasket superstore beside each of the two park-side stores, at Raddleford and at
+  Withybeck, so our stores take about a quarter of those parks' guests' grocery spend; measured on the clean truth
+  before any file: recovered through our modelled share, a pitch's season spend is GBP 2,500 and S3 Wrentoft leads at
+  0.785; read directly off our store's take over the park's pitches it is about GBP 570 and S1 Bellingtoft leads at
+  0.446 (the resident route S1 at 0.444).
+- **Forum, event, organisation:** executive_team (redrawn), vote_or_meeting, retailer_or_ecommerce; role
+  finance_controller (the finance director, who asks); calibration form `existing_book_actuals` (the card feed at our
+  own stores).
+- **People** (kept from v1, `guard.py names --geo GB --seed 305`): Pauline Sullivan, finance director, who asks; Joshua
+  Ingram, head of property and network planning; Hazel Lucas (GIS), Hollie Richardson (workforce planning), Kathryn
+  Hughes (transport). None appears in the prompt.
+- **Spent mechanisms on the objective** (`guard.py mechanisms --objective opportunity-sizing-decision`, eighteen
+  builds): none recovers an origin's unobserved total from one outlet's modelled share of it; the nearest in nouns,
+  task105 v2 (a new outlet's market is the part of its catchment nearer to it than to a sister outlet), allocates a
+  catchment among outlets rather than inverting one outlet's take to the origin's total.
+- **Data-native sentence:** beside Raddleford Water and Withybeck Lakes a Fairbasket superstore larger than our store
+  sits between the park and the town, so the out-of-region cardholders our stores see in season are about a quarter
+  of what those parks' guests spend on groceries; the rest goes through tills in no file we hold.
+
+## Tried and rejected`). The holiday park is one hereditament among about 4,200 on the rating list, measured in pitches, and its guests leave their trace only as out-of-region cardholders in the acquirer's feed.
 - **Data-native sentence:** Census 2021 counts people at their usual residence, so the guests on Wrentoft Lakes Holiday Park's 1,750 pitches, whose homes are in the West Midlands, the North and London, appear in no output area of the region; the rating list carries the park as a caravan park measured in pitches, and the acquirer's feed shows what such guests spend: at Raddleford and Withybeck, the stores beside the region's two other large parks, cardholders with homes outside the LQ postcode area spend about 583 and 343 thousand pounds from March to October and about 7 thousand each from November to February.
 
 ## Three rules

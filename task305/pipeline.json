@@ -1,13 +1,13 @@
 {
  "task": "task305",
- "status": "PAUSED",
+ "status": "DESIGN",
  "domain": "urban-regional-science",
  "objective": "opportunity-sizing-decision",
- "stage": 1,
- "stage_name": "draw",
+ "stage": 2,
+ "stage_name": "design",
  "updated": "2026-10-27",
- "stump": "A competent analyst runs the filed spend-share model over the census households' spend, finds it reproduces the estate's sales and approves S1 Bellingtoft at GBP 0.5 million where the golden is S3 Wrentoft at GBP 0.8 million; the step that lands them there is taking the census output areas as every origin of grocery spend, when the guests on Wrentoft Lakes Holiday Park's 1,750 pitches live outside the region.",
- "architecture": 1,
+ "stump": "A competent analyst reads the model sheet, carries the holiday parks as origins, prices a pitch from the out-of-region cardholders' season spend at our stores beside Raddleford Water and Withybeck Lakes over those parks' pitches, and approves S1 Bellingtoft at GBP 0.4 million where the golden is S3 Wrentoft at GBP 0.8 million; the step that lands them there is reading our store's take as the park's spend, when a larger competitor beside each park takes most of it and our store's take is only its modelled share.",
+ "architecture": 2,
  "loops": 0,
  "precut": {
   "exit": 0,
@@ -34,7 +34,7 @@
    "commit": ""
   }
  ],
- "resume": "Re-root (the author's choice, 2026-10-27, in a fresh session: /build task305): architecture 1's decisive step, the holiday parks' guests as origins of spend, settles the population, so the WHAT screen kills it and no pin repairs it (measured on the shipped pack: golden GBP 2,443 a pitch, S3 0.804; S3 passes S1 at about GBP 1,330; the per-pitch reading a solver takes once told non-residents count gives GBP 1,370 to 1,529 and an S1/S3 near-tie near 0.5; over every pitch GBP 469 and S1). Draw a new decisive step that is a method on a fully filed estimand (stumping 1.2, 1.6a, step three), avoiding the last three builds' axes (guard.py recent; the window moved on 10-27); the world, the people and the ask files may be kept. The asks owe closures for the three conventions the portal judges named, each pinned with a silent device kept under the pin (supplemental-stumping Part 5): a night shift's two paid-hours lines, the GTFS Friday-late and joint-route duplicates (one vehicle per block), and a refused load re-sent the next day. Read the design note's last Tried and rejected line first.",
+ "resume": "stage 2 (architecture 2): write the default path, stump sentence, three rules, readability screen, fork table, ladder, closure table, literal reader, oracles and ask sheet; then the generator (model sheet population line, the two competitors, the ask conventions pinned with their silent devices kept), the pack, goldens and submission",
  "approved": null,
  "delivered": "2026-10-24",
  "portal": null,
