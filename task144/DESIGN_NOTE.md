@@ -364,6 +364,12 @@ Re-sited at stage 4 against measured readers, never against the cracker sheet al
   of Ask B): 10 of 22. Both matched the spotlight by its own tags or its owner/name address and took every signed-out
   address to an account through the snapshot alone, so one silent primary was stacked on each ask at that step: the
   editor's paragraph's permanent-address link (A7) and the work address a signed-in response recorded (B9).
+- Round 4 (b370e2a4): both readers missed the call (tracewire at 11,000 and 13,000). Both resolved the permanent
+  addresses, so A7 sat on both routes and held for neither; B9 held against one (addresses through the snapshot alone)
+  and not the other (accounts and addresses linked both ways). The reader who kept Ask A took a fetch only where it
+  covered every link of the send, so A6 was deepened at that step: some companies' scanners leave a message's
+  unsubscribe link alone, and a fetch is read from the burst (four or more links within two seconds; every link or
+  every link but the unsubscribe link), not from a complete set of links. The golden's figures do not move.
 
 **Ask A. The Sluis issue report, April to September 2026** (12 figures: for each issue, the subscribers who clicked
 through to its spotlighted repository, exact, and their share of the subscribers it was delivered to, per cent to two
@@ -373,14 +379,17 @@ decimals).
 - Primary device A6 (which records are one event, from a cardinality and a clock): some subscribers read Sluis behind a
   company mail gateway that fetches every link of a message as it arrives (1.8 to 2.4 per cent of a Tuesday batch's
   delivered). Relaymark logs that as one subscriber's clicks on every link of the message within a second, Postwerk's
-  per-link report as one click on every link of the send. Kept, the gateways put the issues at 14,408 to 16,837
+  per-link report as one click on every link of the send; a third to two fifths of a batch's gateways leave the
+  unsubscribe link alone, so their fetch covers every link but that one. Kept, the gateways put the issues at 14,408 to 16,837
   clickers and 3.52 to 3.92 per cent against 6,699 to 7,395 and 1.65 to 1.76 (0 of 12); dropping a gateway's
   subscriber with their own later clicks loses 104 to 126 readers an issue and every share at two decimals (0 of 12).
-  The remedy is a reconstruction: a reader's own clicks are what is left once each subscriber's fetch (four or more
-  links within two seconds; one click on every link) is taken out. One reading: three to six links, one second to a
-  minute, all give the golden (asserted); no reader's own clicks reach every link of a Postwerk send (asserted, every
-  reader at least two links short); each platform's own unique-click count leaves out only the gateways it recognises,
-  so it ties under neither reading on any of the eight Tuesday batches with fetches (asserted).
+  Taking a fetch only where it covers every link of the send (round 4's reader) keeps the scanners that skip the
+  unsubscribe link and misses every figure (0 of 12). The remedy is a reconstruction: a reader's own clicks are what
+  is left once each subscriber's fetch (four or more links within two seconds; one click on every link, or on every
+  link but the unsubscribe link) is taken out. One reading: three to six links, one second to a minute, all give the
+  golden (asserted); no reader's own clicks reach all but one link of a Postwerk send (asserted, every reader at least
+  two links short); each platform's own unique-click count leaves out only the gateways it recognises, so it ties
+  under neither reading on any of the eight Tuesday batches with fetches (asserted).
 - Primary device A7 (the true key elsewhere: the repository a link reaches, not its tag or its address form): every
   issue opens with the editor's paragraph, whose repository mentions link each repository by the host's permanent
   address (/repositories/ and its id, which follows renames): the spotlighted repository always, and in four of the six
@@ -445,6 +454,7 @@ by deleting every ask file: the call's figures move by zero).
 |---|---|---|
 | round 3's first reader: gateways' fetches out, the spotlight's own tags | 0 | n/a |
 | round 3's second reader: every fetch kept, the spotlight's owner/name address | 0 | n/a |
+| round 4's first reader: every link resolved, a fetch only where it covers every link of the send | 0 | n/a |
 | gateways kept, every link resolved; gateways' subscribers dropped | 0 | n/a |
 | every device but the denominator: every send's delivered summed, or one send per campaign | 6 | n/a |
 | the permanent address only; Thursday clicks left out; by label, per campaign or per link | 0 | n/a |
@@ -529,7 +539,10 @@ On target.zip b370e2a4 (2026-10-27):
   - round 3 (eb36b41e): both missed the call (tracewire at 12,000, 5,000 added) and kept 18 and 10 of the 22 ask
     figures; one exit 1 on ask share, the other exit 1 only because tracewire's 12,000 equals the golden's call figure
     (pick and added stars missed); A7 and B9 stacked;
-  - round 4 (b370e2a4), G (Sonnet): running at the PAUSED checkpoint of 27 October;
+  - round 4 (b370e2a4), G (Sonnet): missed the call (tracewire at 11,000, 5,000 added), all of Ask A (the permanent
+    addresses resolved and a fetch taken out wherever it covered every link of the send), none of Ask B (addresses
+    through the snapshot alone, so B9 held): 22 of 36 scored figures, 61.1 per cent, estimated share 45.6, exit 1 on
+    ask share; A6 deepened at that step (partial fetches);
   - round 4 (b370e2a4), H (Opus): missed the call (tracewire at 13,000, 6,000 added), none of Ask A (the permanent
     addresses resolved, every gateway fetch kept), all of Ask B (accounts and addresses linked both ways, so B9 sat on
     its route and it took it): 18 of 36 scored figures, 50.0 per cent, estimated share 39.5, exit 2.
@@ -654,3 +667,9 @@ On target.zip b370e2a4 (2026-10-27):
   falls after the member's last nomination and last star of the repository.
 - The context artifact `filed_standard`: BLOCKed at ship by `ban.artifact` once task141 v3 (a council's filed planning
   standard) arrived in the pull; redrawn to `planning_thread`, the memo's own genre (above, Draw).
+- A7 alone as the Ask A primary of round 4: both readers resolved every permanent address (one through the
+  repositories file's ids, one by matching any link to the drawn repository's id), so the paragraph's link held for
+  neither; it stays as a device (every label- or name-matching route misses it) and A6 was deepened beside it.
+- Gateways that always fetch every link of the message: a reader who took a fetch only where it covered every link of
+  the send matched the golden exactly (round 4); a third to two fifths of each batch's gateways now leave the
+  unsubscribe link alone, as scanners that guard against opting their reader out do, and that rule misses every figure.

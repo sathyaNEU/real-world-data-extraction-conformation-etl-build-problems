@@ -25,7 +25,7 @@
       "xlsx"
     ],
     "largest_file": "relaymark_link_clicks_2026-06_to_2026-09.csv",
-    "largest_file_rows": 503380
+    "largest_file_rows": 489415
   },
   "sources": [
     {
@@ -87,8 +87,8 @@
     {
       "path": "postwerk_link_report_2026-04_to_2026-05.csv",
       "format": "csv",
-      "bytes": 22495705,
-      "rows": 194973,
+      "bytes": 22054517,
+      "rows": 189011,
       "source": "Constructed: Postwerk link report by subscriber, April to May 2026",
       "date": "2026-09-28",
       "license": "CC0-1.0 (original work, constructed for this task)"
@@ -105,8 +105,8 @@
     {
       "path": "relaymark_link_clicks_2026-06_to_2026-09.csv",
       "format": "csv",
-      "bytes": 74056787,
-      "rows": 503380,
+      "bytes": 72604427,
+      "rows": 489415,
       "source": "Constructed: Relaymark click log, June to September 2026",
       "date": "2026-09-28",
       "license": "CC0-1.0 (original work, constructed for this task)"

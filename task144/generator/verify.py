@@ -156,8 +156,9 @@ def main(target, golden):
     for c in json.load(open(p(K.RM_CAMP), encoding="utf-8"))["campaigns"]:
         sends.append(dict(id=c["id"], list=c["audience"]["list"], date=dt.date.fromisoformat(c["sent_at"][:10]),
                           delivered=c["stats"]["delivered"], pw=False))
-    # a reader's own clicks: a mail gateway fetches every link of a message as it is delivered, which Postwerk shows as
-    # one click on every link of the send and Relaymark as four or more links within two seconds
+    # a reader's own clicks: a mail gateway fetches the links of a message as it is delivered (some leave its
+    # unsubscribe link alone), which Postwerk shows as one click on every link of the send or on every link but the
+    # unsubscribe link, and Relaymark as four or more links within two seconds
     clicks = {}
     pwl = list(rows(p(K.PW_LINKS), ";"))
     labs_of = {}
@@ -167,7 +168,8 @@ def main(target, golden):
     for r in pwl:
         seen.setdefault((r["campaign_id"], r["subscriber_id"]), set()).add(r["link_label"])
     for r in pwl:
-        n = int(r["clicks"]) - (1 if seen[(r["campaign_id"], r["subscriber_id"])] == labs_of[r["campaign_id"]] else 0)
+        n = int(r["clicks"]) - (1 if labs_of[r["campaign_id"]] - {"afmelden"} <= seen[(r["campaign_id"], r["subscriber_id"])]
+                                else 0)
         if n > 0:
             clicks.setdefault(r["campaign_id"], []).append((r["subscriber_id"], r["url"]))
     rml = {}

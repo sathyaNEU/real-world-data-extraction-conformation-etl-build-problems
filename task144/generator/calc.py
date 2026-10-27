@@ -483,18 +483,23 @@ GATEWAY_LINKS = 4        # a gateway's fetch: one subscriber's clicks on this ma
 GATEWAY_SECONDS = 2      # ... within this many seconds
 
 
-def readers_clicks(lk, plat, keep_gateways=False, drop_fetched=False):
-    """The click rows a reader made: a mail gateway's fetch of every link of a message on delivery is not a click
-    through. Relaymark logs each click with its time, so a fetch is a subscriber's clicks on four or more links of
-    one send within two seconds; Postwerk reports each subscriber's clicks per link, so a fetch is one click on every
-    link of the send, taken off that subscriber's count of each."""
+def readers_clicks(lk, plat, keep_gateways=False, drop_fetched=False, all_links_only=False):
+    """The click rows a reader made: a mail gateway's fetch of the links of a message on delivery is not a click
+    through, and some gateways leave the unsubscribe link alone. Relaymark logs each click with its time, so a fetch
+    is a subscriber's clicks on four or more links of one send within two seconds; Postwerk reports each subscriber's
+    clicks per link, so a fetch is one click on every link of the send, or on every link but its unsubscribe link,
+    taken off that subscriber's count of each. all_links_only is the reading that takes a fetch only where it covers
+    every link of the send."""
     if keep_gateways or lk.empty:
         return lk
     if plat == "postwerk":
         lk = lk.copy()
-        links = lk.groupby("campaign_id").link_label.nunique()
-        mine = lk.groupby(["campaign_id", "subscriber_id"]).link_label.nunique()
-        fetched = {k for k, v in mine.items() if v == links[k[0]]}
+        labs = lk.groupby("campaign_id").link_label.agg(lambda x: frozenset(x))
+        mine = lk.groupby(["campaign_id", "subscriber_id"]).link_label.agg(lambda x: frozenset(x))
+        if all_links_only:
+            fetched = {k for k, v in mine.items() if v == labs[k[0]]}
+        else:
+            fetched = {k for k, v in mine.items() if v >= labs[k[0]] - {"afmelden"}}
         hit = [(c, s) in fetched for c, s in zip(lk.campaign_id, lk.subscriber_id)]
         if drop_fetched:
             # the reading that drops a gateway's subscriber outright, their own clicks with the fetch
@@ -506,14 +511,16 @@ def readers_clicks(lk, plat, keep_gateways=False, drop_fetched=False):
     lk["t"] = pd.to_datetime(lk.clicked_at, utc=True)
     keep = np.ones(len(lk), dtype=bool)
     pos = {ix: i for i, ix in enumerate(lk.index)}
+    ntags = lk.groupby("campaign_id").link_tag.nunique()
     for (c, s), grp in lk.groupby(["campaign_id", "subscriber_id"]):
-        if grp.link_tag.nunique() < GATEWAY_LINKS:
+        need = ntags[c] if all_links_only else GATEWAY_LINKS
+        if grp.link_tag.nunique() < need:
             continue
         ts = grp.t.values.astype("datetime64[s]").astype(np.int64)
         tags = grp.link_tag.values
         for i, ix in enumerate(grp.index):
             near = np.abs(ts - ts[i]) <= GATEWAY_SECONDS
-            if len(set(tags[near])) >= GATEWAY_LINKS:
+            if len(set(tags[near])) >= need:
                 keep[pos[ix]] = False
     if drop_fetched:
         who = set(lk.subscriber_id[~keep])
@@ -546,12 +553,13 @@ def ask_a(B, A, handling=None):
         delivered = int(counted.delivered.sum())
         ids = set(counted.campaign_id) if h.get("clicks_counted_only") else set(sends.campaign_id)
         memo = A.setdefault("_readers", {})
-        mkey = (tuple(sorted(ids)), plat, bool(h.get("keep_gateways")), bool(h.get("drop_fetched")), GATEWAY_LINKS,
-                GATEWAY_SECONDS)
+        mkey = (tuple(sorted(ids)), plat, bool(h.get("keep_gateways")), bool(h.get("drop_fetched")),
+                bool(h.get("all_links_only")), GATEWAY_LINKS, GATEWAY_SECONDS)
         if plat == "postwerk":
             lk = A["pw_links"]
             if mkey not in memo:
-                memo[mkey] = readers_clicks(lk[lk.campaign_id.isin(ids)], plat, h.get("keep_gateways"), h.get("drop_fetched"))
+                memo[mkey] = readers_clicks(lk[lk.campaign_id.isin(ids)], plat, h.get("keep_gateways"), h.get("drop_fetched"),
+                                             h.get("all_links_only"))
             lk = memo[mkey]
             if h.get("by_label"):
                 hit = lk[lk.link_label == "spotlight"]
@@ -568,7 +576,8 @@ def ask_a(B, A, handling=None):
         else:
             lk = A["rm_links"]
             if mkey not in memo:
-                memo[mkey] = readers_clicks(lk[lk.campaign_id.isin(ids)], plat, h.get("keep_gateways"), h.get("drop_fetched"))
+                memo[mkey] = readers_clicks(lk[lk.campaign_id.isin(ids)], plat, h.get("keep_gateways"), h.get("drop_fetched"),
+                                             h.get("all_links_only"))
             lk = memo[mkey]
             if h.get("by_label"):
                 hit = lk[lk.link_tag == "spotlight"]

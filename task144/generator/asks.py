@@ -17,7 +17,8 @@ from the same shortlist, the links tagged intro_1 and intro_2 (Postwerk intro-1 
 A few subscribers who had not opened the issue by the Thursday opened the
 first send later and clicked through in both. Some subscribers read Sluis at a company whose mail gateway fetches every
 link of a message the moment it is delivered, to check it before the reader sees it: one request per link within a
-second or two, which the platforms record as clicks by that subscriber (the gateway also fetches the images, so the
+second or two (some companies' scanners leave the unsubscribe link alone), which the platforms record as clicks by
+that subscriber (the gateway also fetches the images, so the
 message counts as opened and the Thursday send never reaches them); each platform's own click report leaves out the
 gateways it recognises and keeps the rest."""
 from __future__ import annotations
@@ -67,6 +68,7 @@ class Campaign:
         self.clicks = {}          # link label -> {subscriber: clicks}, the readers' own clicks
         self.scan = {}            # subscriber -> seconds after the send at which a mail gateway fetched every link
         self.scan_known = set()   # the gateways the platform's click report recognises and leaves out
+        self.scan_partial = set() # the gateways that leave a message's unsubscribe link alone
 
     @property
     def unique_clicks(self):
@@ -229,6 +231,11 @@ def _gateways(W, ym, group, prefix, base_id, pw):
         c.scan = {s: float(g.uniform(4, 2400)) for s in who}
         known = g.random(len(who)) < g.uniform(*SCAN_KNOWN)
         c.scan_known = {s for s, kn in zip(who, known) if kn}
+        # some companies' scanners skip a message's unsubscribe link, so a check never opts their reader out; from
+        # each batch's own stream, so every draw above stands
+        gp = K.rng("gateway-partial", c.id)
+        share = gp.uniform(0.32, 0.42)
+        c.scan_partial = {s for s in who if gp.random() < share}
 
 
 def issue_share(W, group, pw):
@@ -402,8 +409,10 @@ def pw_link_rows(W, camps):
             for s, n in d.items():
                 tgt[s] = tgt.get(s, 0) + n
         for s in c.scan:
-            # the gateway's fetch of every link of the message, one each
+            # the gateway's fetch of every link of the message, one each (the unsubscribe link left alone by some)
             for lab in c.clicks:
+                if s in c.scan_partial and lab == "afmelden":
+                    continue
                 tgt = merged[c.id][1][lab]
                 tgt[s] = tgt.get(s, 0) + 1
     rows = []
@@ -461,6 +470,8 @@ def rm_link_rows(W, camps):
                 # the gateway checks the message when it arrives, before its reader has opened it
                 at = min(at, first[s] - dt.timedelta(minutes=2))
             for lab in sorted(c.clicks):
+                if s in c.scan_partial and lab == "unsubscribe":
+                    continue
                 t = at + dt.timedelta(seconds=float(g.uniform(0, 0.8)))
                 rows.append([c.id, s, lab, link_url(W, c, lab), K.iso_z(t.replace(microsecond=0))])
     rows.sort(key=lambda r: (r[4], r[0], r[1], r[2]))

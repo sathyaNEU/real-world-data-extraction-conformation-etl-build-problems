@@ -353,6 +353,7 @@ def run(target, golden, W=None, meta_path=None):
     profiles_a = {"careful": dict(keep_gateways=1), "gateway_subscribers_dropped": dict(drop_fetched=1),
                   "labels_only": dict(labels_only=1), "name_only": dict(name_only=1),
                   "reader_name_kept": dict(name_only=1, keep_gateways=1), "ids_only": dict(ids_only=1),
+                  "all_links_only": dict(all_links_only=1),
                   "cracker": dict(keep_gateways=1, sum_all=1, by_label=1, sum_per_campaign=1), "sum_all": dict(sum_all=1),
                   "first_send": dict(first_send=1, clicks_counted_only=1), "one_per_campaign": dict(one_per_campaign=1),
                   "issue_day_counted_clicks": dict(clicks_counted_only=1), "issue_day_label": dict(by_label=1),
@@ -372,12 +373,13 @@ def run(target, golden, W=None, meta_path=None):
         v = C.ask_b(B, A, h)
         hits_b[name] = sum((v[n].get("outside") == AB[n]["outside"]) + (v[n].get("share2") == AB[n]["share2"]) for n in orgs)
     ok(all(hits_a[n] == 0 for n in ("careful", "gateway_subscribers_dropped", "labels_only", "name_only",
-                                     "reader_name_kept", "ids_only")),
+                                     "reader_name_kept", "ids_only", "all_links_only")),
        "Ask A the stage 4 readers' routes miss every figure",
        "gateways kept %d/12, gateways' subscribers dropped %d/12, the spotlight's own tags %d/12, its owner/name "
-       "address %d/12 (with every fetch kept %d/12), its permanent address only %d/12" % (
+       "address %d/12 (with every fetch kept %d/12), its permanent address only %d/12, a fetch only where it covers "
+       "every link %d/12" % (
            hits_a["careful"], hits_a["gateway_subscribers_dropped"], hits_a["labels_only"], hits_a["name_only"],
-           hits_a["reader_name_kept"], hits_a["ids_only"]))
+           hits_a["reader_name_kept"], hits_a["ids_only"], hits_a["all_links_only"]))
     ok(all(hits_b[n] == 0 for n in ("careful", "now", "snapshot_only", "snapshot_one_hop")),
        "Ask B the stage 4 readers' routes miss every figure",
        "membership of the account nominated from %d/10, membership now %d/10, addresses from the snapshot only %d/10 "
@@ -391,7 +393,8 @@ def run(target, golden, W=None, meta_path=None):
     ok(one / 22 < 0.35, "mirror leakage under 35 per cent with one device mishandled",
        "%d of 22 (a reader handling every device but summing every send's delivered keeps the clickers)" % one)
     # the measured routes: round 3's two readers, each ask on the route its reader took
-    kept = max(hits_a["labels_only"], hits_a["reader_name_kept"]) + max(hits_b["snapshot_only"], hits_b["snapshot_one_hop"])
+    kept = (max(hits_a["labels_only"], hits_a["reader_name_kept"], hits_a["all_links_only"]) +
+            max(hits_b["snapshot_only"], hits_b["snapshot_one_hop"]))
     pair = (38 + 7 + 55 * kept / 22 + 5 + 7 + 55 * kept / 22) / 2
     ok(abs(pair - 28.5) < 0.05, "pair ceiling at or under 60, as the ask sheet states", "%.1f (%d of 22 kept)" % (pair, kept))
     # the gateway fetches: one reading whatever the window or the count of links, no reader's own clicks taken for one
@@ -406,12 +409,28 @@ def run(target, golden, W=None, meta_path=None):
     pw = A["pw_links"]
     issue_ids = set(A["pw_camp"].campaign_id[A["pw_camp"].list == "Sluis"])
     pw = pw[pw.campaign_id.isin(issue_ids)]
-    nlab = pw.groupby("campaign_id").link_label.nunique()
-    mine = pw.groupby(["campaign_id", "subscriber_id"]).agg(n=("link_label", "nunique"), most=("clicks", "max"))
-    full = [k for k, x in mine.iterrows() if x.n == nlab[k[0]]]
-    ok(all(mine.loc[k, "n"] <= nlab[k[0]] - 2 for k in mine.index if k not in set(full)),
-       "Ask A no reader's own clicks reach every link of a Postwerk send",
-       "%d fetches in the issues' sends, every reader at least two links short" % len(full))
+    labs = pw.groupby("campaign_id").link_label.agg(frozenset)
+    sets = pw.groupby(["campaign_id", "subscriber_id"]).link_label.agg(frozenset)
+    fetch = {k for k, v in sets.items() if v >= labs[k[0]] - {"afmelden"}}
+    part = {k for k in fetch if "afmelden" not in sets[k]}
+    ok(all(len(v) <= len(labs[k[0]]) - 2 for k, v in sets.items() if k not in fetch) and 0 < len(part) < len(fetch),
+       "Ask A no reader's own clicks reach all but one link of a Postwerk send",
+       "%d fetches in the issues' sends, %d of them leaving the unsubscribe link alone; every reader at least two "
+       "links short" % (len(fetch), len(part)))
+    rmk = A["rm_links"]
+    batches = [c["id"] for c in json.load(open(os.path.join(target, K.RM_CAMP), encoding="utf-8"))["campaigns"]
+               if c["audience"]["list"] == "Sluis" and not c["name"].startswith("[TEST]")]
+    partial_each = []
+    for cid in batches:
+        lk = rmk[rmk.campaign_id == cid]
+        tags = set(lk.link_tag)
+        per = lk.groupby("subscriber_id").link_tag.agg(frozenset)
+        n_part = sum(1 for v in per if v == frozenset(tags - {"unsubscribe"}))
+        if lk.subscriber_id.nunique() > C.readers_clicks(lk, "relaymark").subscriber_id.nunique():
+            partial_each.append(n_part)
+    ok(len(partial_each) == 8 and all(n > 0 for n in partial_each),
+       "Ask A on every Relaymark Tuesday batch some fetches leave the unsubscribe link alone",
+       "%s subscribers a batch on every link but the unsubscribe link" % partial_each)
     camps = json.load(open(os.path.join(target, K.RM_CAMP), encoding="utf-8"))["campaigns"]
     rm = A["rm_links"]
     tie = []

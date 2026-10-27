@@ -44,7 +44,7 @@
       "commit": ""
     }
   ],
-  "resume": "stage 4 round 4 on b370e2a4: the judge's pass 3 APPROVE is in, reader H scored (exit 2, call missed); score reader G (scratchpad read4-task144-a/out/figures.json) with score_reader.py and the three call keys; if at least one reader misses the call and neither exits 1, fill G's line in Gates at ship, write the ledger row (and task144 v1 under Earlier architectures), set status SHIPPED and commit RESHIPPED with target.zip and golden/ force-added; if G exits 1, re-site the ask it took and re-measure",
+  "resume": "stage 4 round 5: A6 deepened after round 4's exit 1 (a third to two fifths of each batch's gateways leave the unsubscribe link alone, so a fetch read as covering every link misses them; the golden's figures unchanged, the Postwerk rule now every link or every link but the unsubscribe link). The rebuild with checks was running at this checkpoint; next: confirm checks, verify and the byte-identical rebuild, freeze.py check --mode rubric, figures_check, precut, leak.py; commit the re-cut target.zip; then two scored readers on the new pack and a narrow judge pass on Ask A's fetch rule; ship on at least one reader off the call, neither exit 1, pair at or under 60",
   "approved": null,
   "delivered": "2026-10-15",
   "portal": null,
@@ -65,6 +65,6 @@
   },
   "readers": {
     "round_3": "pack eb36b41e: E (Sonnet) and F (Opus) both missed the call (tracewire 12,000, 5,000 added); E kept Ask A 12/12 (gateways' fetches removed, their readers' later clicks kept) and Ask B 6/10 (one merge hop), score_reader exit 1 on ask share 72.2 per cent; F kept Ask A 0/12 (every fetch kept) and Ask B 10/10, exit 1 only because tracewire's 12,000 equals the golden's call figure (pick and added stars missed)",
-    "round_4": "pack b370e2a4: H (Opus) missed the call (tracewire 13,000, 6,000 added), Ask A 0/12 (ids resolved, every gateway fetch kept), Ask B 10/10 (accounts and addresses linked both ways), 18 of 36 scored figures, score_reader exit 2; G (Sonnet) running"
+    "round_4": "pack b370e2a4: H (Opus) missed the call (tracewire 13,000, 6,000 added), Ask A 0/12, Ask B 10/10, 18 of 36 scored figures, exit 2; G (Sonnet) missed the call (tracewire 11,000, 5,000 added), Ask A 12/12 (ids resolved, a fetch taken out wherever it covered every link), Ask B 0/10, 22 of 36, exit 1"
   }
 }

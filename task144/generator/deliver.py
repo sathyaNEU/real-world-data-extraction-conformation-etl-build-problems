@@ -213,8 +213,9 @@ def write_book(path, B, R, AA, AB):
          "or the editor's opening paragraph's link to it, in any of the three sends; the paragraph links repositories "
          "by their permanent address on the host (/repositories/ and the id), the spotlight and in most months another "
          "repository from the shortlist. Some subscribers' mail gateways open every link of a message the second it is "
-         "delivered: Relaymark logs that as four or more links clicked within two seconds, Postwerk as one click on "
-         "every link of the send, and those fetches are left out (the platforms' own click counts leave out only "
+         "delivered, some of them every link but the unsubscribe link: Relaymark logs that as four or more links "
+         "clicked within two seconds, Postwerk as one click on every link of the send or on every link but the "
+         "unsubscribe link, and those fetches are left out (the platforms' own click counts leave out only "
          "the gateways they recognise). Test sends to the editorial seed addresses and Product News are left out.",
          False),
         ("Nominations: responses to the October form. A signed-out response is matched to the account whose primary "
