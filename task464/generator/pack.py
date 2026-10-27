@@ -1,299 +1,411 @@
-"""Write the pack's data files: the two vendors' student results, the retiring test's test-taker crosswalk, the bridge
-study's paired scores, the October 2026 enrolment spells, the nonpublic schools registry and the two neighbouring
-state files (district spending and graduation rates)."""
+#!/usr/bin/env python3
+"""task464: every file the bundle ships, written in the form the producing system would export it.
+
+No file under target/ describes the pack: each carries its own conventions the way its own system writes
+them, and what the plan itself defines sits in the network agreement's capacity terms.
+"""
+import collections
 import csv
 import datetime as dt
+import json
+import os
+import sqlite3
 
-import numpy as np
+import openpyxl
+from openpyxl.styles import Alignment, Font
+from openpyxl.utils import get_column_letter
 
-import sim as S
-import world as W
+import sim
+import world
+
+ASOF = world.ASOF
+EXTRACT_PULL = dt.date(2027, 1, 5)
+RUNOUT_PULL = dt.date(2027, 2, 16)
+ROSTER_FROM = dt.date(2026, 10, 1)
+FILING_SUBMITTED = dt.date(2026, 3, 31)
+FILING_POSITION = dt.date(2026, 1, 1)
+PROJECTION_PUBLISHED = dt.date(2027, 1, 15)
+AGREEMENT_APPROVED = dt.date(2026, 12, 10)
+CYCLES = [(2024, dt.date(2024, 11, 14)), (2025, dt.date(2025, 11, 12)), (2026, dt.date(2026, 11, 18))]
+MOVED_ADDRESS = 3           # sites that changed address and kept their plan identifier
+GROUP_PRACTICE = 3          # sites billing under one tax identifier
 
 
-def write_csv(path, header, rows, lineterminator="\r\n"):
-    with open(path, "w", newline="", encoding="utf-8") as fh:
-        wr = csv.writer(fh, lineterminator=lineterminator)
+def _w(path, rows, header):
+    with open(path, "w", newline="", encoding="utf-8") as f:
+        wr = csv.writer(f, lineterminator="\n")
         wr.writerow(header)
+        wr.writerows(rows)
+
+
+def _dst(d):
+    """United States central time: standard from the first Sunday of November, daylight from the second
+    Sunday of March."""
+    y = d.year
+    mar = dt.date(y, 3, 8)
+    while mar.weekday() != 6:
+        mar += dt.timedelta(days=1)
+    nov = dt.date(y, 11, 1)
+    while nov.weekday() != 6:
+        nov += dt.timedelta(days=1)
+    return "-05:00" if mar <= d < nov else "-06:00"
+
+
+def _hhmm(minutes):
+    return "%02d:%02d" % (minutes // 60, minutes % 60)
+
+
+# ------------------------------------------------------------------- 1 the provider directory
+def directory(target, sites, extra, rnd):
+    rows = []
+    taxes = {}
+    group = sorted(sites, key=lambda s: s["seq"])[:GROUP_PRACTICE]
+    group_tax = "47-2210388"
+    for s in sites:
+        taxes[s["site"]] = group_tax if s in group else "%02d-%07d" % (20 + s["seq"] % 60,
+                                                                       1100000 + s["seq"] * 1511)
+    movers = sorted(sites, key=lambda s: -s["seq"])[:MOVED_ADDRESS]
+    for cycle, attested_on in CYCLES:
+        for s in sites:
+            stations = s["attested"]
+            if cycle < 2026 and s["gap"] and s["seq"] % 4 == 0:
+                stations = s["attested"] - 1          # a chair added since the earlier cycle
+            addr = s["address"]
+            if s in movers and cycle < 2026:
+                addr = addr.replace(addr.split(",")[0], str(int(addr.split(" ")[0]) + 118) + " " +
+                                    " ".join(addr.split(",")[0].split(" ")[1:]))
+            rows.append([cycle, attested_on.isoformat(), s["site"], s["name"], s["operator"], addr,
+                         s["locality"], s["area"], world.AREA[s["area"]]["name"],
+                         "in-centre haemodialysis" if s["modality"] == "dialysis" else "ambulatory infusion",
+                         stations, taxes[s["site"]],
+                         "contract" if cycle == 2026 else ("contract" if s["in_2026_filing"] else "none")])
+        for e in extra:
+            if e["kind"] != "dropped":
+                continue
+            rows.append([cycle, attested_on.isoformat(), e["site"], e["name"], e["operator"], e["address"],
+                         e["locality"], e["area"], world.AREA[e["area"]]["name"],
+                         "in-centre haemodialysis" if e["modality"] == "dialysis" else "ambulatory infusion",
+                         e["licensed"], "%02d-%07d" % (20 + e["seq"] % 60, 1100000 + e["seq"] * 1511),
+                         "none" if cycle == 2026 else "contract"])
+    _w(os.path.join(target, "provider_directory_2027.csv"), rows,
+       ["attestation_cycle", "attested_on", "plan_site_id", "site_name", "operator", "service_address",
+        "locality", "service_area_code", "service_area_name", "service_category", "attested_stations",
+        "tax_id", "contract_intent_2027"])
+    return rows, taxes
+
+
+# ------------------------------------------------------------------- 2 the state licence register
+def licence_register(target, sites, extra, rnd):
+    facilities, amendments, reissues = [], [], []
+    def num(seq, mod):
+        return "%s-%05d" % ("ESRD" if mod == "dialysis" else "AIT", 21000 + seq * 23)
+    for s in sites:
+        s["licence_no"] = num(s["seq"], s["modality"])
+    for e in extra:
+        e["licence_no"] = num(e["seq"], e["modality"])
+    allf = [(s, s["licensed"], s["modality"], s["area"], s["address"], s["locality"], s["operator"],
+             s["licence_no"]) for s in sites]
+    allf += [(e, e["licensed"], e["modality"], e["area"], e["address"], e["locality"], e["operator"],
+              e["licence_no"]) for e in extra]
+    rows = []
+    for i, (obj, st, mod, area, addr, loc, op, lic) in enumerate(allf):
+        cat = "in-centre haemodialysis" if mod == "dialysis" else "ambulatory infusion"
+        eff = dt.date(2015 + (i % 9), 1 + (i * 5) % 12, 1 + (i * 7) % 27)
+        # a superseded amendment row for about a third of the facilities: the station count before a change
+        if i % 3 == 0:
+            amend_to = dt.date(2024, 1 + (i * 3) % 11, 2 + (i * 11) % 26)
+            rows.append([lic, op, "facility", addr, loc, area, cat, max(2, st - 2),
+                         eff.isoformat(), amend_to.isoformat(), "amended"])
+            eff = amend_to
+            amendments.append(lic)
+        rows.append([lic, op, "facility", addr, loc, area, cat, st, eff.isoformat(), "", "active"])
+    # three licences of sites the plan is not contracting lapse during 2026 and the number is reissued
+    # to a new facility later in the year, so the row covering an earlier position date is not the row
+    # covering the as-of date
+    lapsed = [o for o in allf if o[0].get("kind") == "dropped"][:3]
+    for i, (obj, st, mod, area, addr, loc, op, lic) in enumerate(lapsed):
+        new_op = world.OPERATORS[(i + 2) % len(world.OPERATORS)][0]
+        new_loc = world.LOCALITIES[world.CODES[(i * 4 + 1) % 12]][0]
+        new_addr = "%d %s, %s" % (300 + i * 23, world.STREETS[(i * 9) % len(world.STREETS)], new_loc)
         for r in rows:
-            wr.writerow(r)
-    return len(rows)
+            if r[0] == lic and r[10] == "active":
+                r[9] = dt.date(2026, 5 + i, 27 + i).isoformat()
+                r[10] = "lapsed"
+        rows.append([lic, new_op, "facility", new_addr, new_loc, world.CODES[(i * 4 + 1) % 12],
+                     "in-centre haemodialysis" if i % 2 == 0 else "ambulatory infusion",
+                     5 + i * 2, dt.date(2026, 8 + i, 14).isoformat(), "", "active"])
+        reissues.append(lic)
+        obj["licence_reissued"] = True
+    # five licence numbers reissued to another operator at another address after a lapse
+    for i, (obj, st, mod, area, addr, loc, op, lic) in enumerate(allf):
+        if obj.get("kind") == "off_plan" and len(reissues) < 8:
+            old_op = world.OPERATORS[(i + 4) % len(world.OPERATORS)][0]
+            old_addr = "%d %s, %s" % (200 + i * 17, world.STREETS[(i * 13) % len(world.STREETS)], loc)
+            rows.append([lic, old_op, "facility", old_addr, loc, area,
+                         "in-centre haemodialysis" if mod == "dialysis" else "ambulatory infusion",
+                         max(2, st - 3), dt.date(2012 + i % 5, 3, 14).isoformat(),
+                         dt.date(2019 + i % 4, 6, 30).isoformat(), "lapsed"])
+            reissues.append(lic)
+    # the corporate umbrella rows: one per chain operator per area, carrying the sum of its facilities
+    byop = collections.defaultdict(lambda: collections.defaultdict(int))
+    for obj, st, mod, area, addr, loc, op, lic in allf:
+        if obj.get("operator_kind") == "chain" or op.endswith(("Group", "Care", "Partners", "Services")):
+            byop[op][area] += st
+    for op in sorted(byop):
+        for area in sorted(byop[op]):
+            rows.append(["CORP-%05d" % (9000 + abs(hash(op + area)) % 900), op, "corporate umbrella", "",
+                         "", area, "multi-category", byop[op][area],
+                         dt.date(2016, 4, 1).isoformat(), "", "active"])
+    # eight facilities licensed outside the plan's twelve service areas
+    for i in range(8):
+        rows.append(["ESRD-%05d" % (31000 + i * 19), world.OPERATORS[i % len(world.OPERATORS)][0],
+                     "facility", "%d Marchford Road, Tarnsby" % (40 + i * 13), "Tarnsby", "OUT-OF-AREA",
+                     "in-centre haemodialysis", 6 + i % 7, dt.date(2018 + i % 6, 2, 9).isoformat(), "",
+                     "active"])
+    wb = openpyxl.Workbook()
+    ws = wb.active
+    ws.title = "Licences"
+    head = ["licence_no", "licence_holder", "holder_type", "service_address", "locality", "county_or_area",
+            "service_category", "licensed_stations", "effective_from", "effective_to", "licence_status"]
+    ws.append(head)
+    for r in rows:
+        ws.append(r)
+    ws.freeze_panes = "A2"
+    for i, h in enumerate(head, start=1):
+        ws.column_dimensions[get_column_letter(i)].width = max(12, min(34, len(h) + 6))
+        ws.cell(row=1, column=i).font = Font(bold=True)
+    s2 = wb.create_sheet("Register Summary")
+    s2.append(["Outpatient Facility Licensing Register", ""])
+    s2.append(["position as at", ASOF.isoformat()])
+    s2.append([])
+    s2.append(["service_category", "licence_numbers_on_register"])
+    cnt = collections.Counter(r[6] for r in rows)
+    for k in sorted(cnt):
+        s2.append([k, cnt[k]])
+    s2.append(["all categories", len(set(r[0] for r in rows))])
+    for i, w in enumerate((34, 26), start=1):
+        s2.column_dimensions[get_column_letter(i)].width = w
+    wb.save(os.path.join(target, "state_licence_register.xlsx"))
+    return rows, reissues, amendments
 
 
-def _rng(*key):
-    return np.random.default_rng([S.SEED, 60] + [int(k) for k in key])
-
-
-HOLIDAYS = {dt.date(2026, 5, 25)}  # Memorial Day: no school
-
-
-def _school_days(first, last):
-    """The school days from first to last."""
-    out, d = [], first
-    while d <= last:
-        if d.weekday() < 5 and d not in HOLIDAYS:
-            out.append(d)
-        d += dt.timedelta(days=1)
-    return out
-
-
-def _shift(d, k):
-    """The school day k school days after d (before it when k is negative)."""
-    step = 1 if k > 0 else -1
-    for _ in range(abs(k)):
-        d += dt.timedelta(days=step)
-        while d.weekday() >= 5 or d in HOLIDAYS:
-            d += dt.timedelta(days=step)
-    return d
-
-
-# each year's testing window (its last two school days left for classes tested after the school's day) and make-ups
-WINDOW = {2025: (dt.date(2025, 4, 7), dt.date(2025, 4, 23)), 2026: (dt.date(2026, 4, 13), dt.date(2026, 5, 13))}
-MAKEUP = {2025: (dt.date(2025, 5, 5), dt.date(2025, 5, 16)), 2026: (dt.date(2026, 5, 18), dt.date(2026, 5, 29))}
-
-
-def _school_day(school, year):
-    """The day a school sat a test: one of the window's school days."""
-    days = _school_days(*WINDOW[year])
-    return days[int(_rng(int(school), year).integers(0, len(days)))]
-
-
-def _student_day(base, sid, salt):
-    """A student's own sitting: the school's day or one of the next two school days (a class tested later)."""
-    rng = _rng(int(sid[-6:]), salt)
-    return _shift(base, int(rng.choice([0, 0, 0, 1, 1, 2])))
-
-
-def _makeup_day(sid, year):
-    days = _school_days(*MAKEUP[year])
-    return days[int(_rng(int(sid[-6:]), year, 7).integers(0, len(days)))]
-
-
-def raw_of(scale, grade):
-    """The raw score a retiring-test scale score comes from (the lowest raw score at the floor, the highest at the
-    ceiling)."""
-    t = W.glra_table(grade)
-    if scale == W.OLD["lo"]:
-        return max(r for r, s in enumerate(t) if s == scale and r <= 1) if t[1] == scale else 0
-    if scale == W.OLD["hi"]:
-        return max(r for r, s in enumerate(t) if s == scale)
-    return t.index(scale)
-
-
-def old_level(score, grade):
-    return W.OLD_LEVELS[S_level(score, W.OLD_CUTS[grade])]
-
-
-def S_level(score, cuts):
-    k = 0
-    for c in cuts:
-        if score >= c:
-            k += 1
-    return k
-
-
-def _school_of(s, r):
-    """The school a record was sat in."""
-    if s.get("nonpublic"):
-        return s["school"]
-    if "school8" in s:
-        return s["school8"]
-    if r["year"] == 2025 and "school6" in s:
-        return s["school6"]
-    return s["school"]
-
-
-def _people(x):
-    return x["students"] + x["younger"] + x["np_only"]
-
-
-# ---------------------------------------------------------------- the retiring test's 2025 student file
-GLRA_COLS = ["TEST_TAKER_ID", "STATE_STUDENT_ID", "DISTRICT_CODE", "SCHOOL_CODE", "GRADE", "FORM", "SESSION",
-             "TEST_DATE", "SCORE_STATUS", "RAW_SCORE", "SCALE_SCORE", "PERF_LEVEL"]
-GLRA_STATUS = {"scored": "SCR", "absent": "ABS", "exempt": "EXM", "invalid": "INV"}
-
-
-def glra_records(x):
-    """(person, record, school, district code on the file) for every 2025 retiring-test record."""
-    out = []
-    for s in _people(x):
-        for r in s["records"]:
-            if r["test"] == "old":
-                out.append((s, r, _school_of(s, r), s["tested_in"]))
-    return out
-
-
-def glra_rows(x):
+# ------------------------------------------------------------------- 3 the staffing roster
+def roster(target, sites):
     rows = []
-    for s, r, school, dist in glra_records(x):
-        g = r["grade"]
-        day = _student_day(_school_day(school, 2025), s["sid"], g)
-        sid = s["sid"] if r["sid_on_file"] else ""
-        form = "G%d-25A" % g
-        if r["status"] == "scored":
-            rows.append([r["tt"], sid, dist, school, g, form, "Regular", day.isoformat(), "SCR", raw_of(r["score"], g),
-                         r["score"], old_level(r["score"], g)])
-        else:
-            rows.append([r["tt"], sid, dist, school, g, form, "Regular", day.isoformat(), GLRA_STATUS[r["status"]],
-                         "", "", ""])
-            if r["status"] == "invalid" and r["retake"]:
-                sc = r["retake_score"]
-                rows.append([r["tt"], sid, dist, school, g, form, "Make-up", _makeup_day(s["sid"], 2025).isoformat(),
-                             "SCR", raw_of(sc, g), sc, old_level(sc, g)])
-    rows.sort(key=lambda t: (t[2], t[3], t[4], t[0], t[6] != "Regular"))
+    for s in sites:
+        rows.append([ROSTER_FROM.isoformat(), s["site"], s["name"], s["days"], s["shifts"],
+                     s["sessions"], int(round(s["sessions"] * 4.33 * (6.5 if s["modality"] == "dialysis"
+                                                                       else 5.0)))])
+    _w(os.path.join(target, "staffing_roster_2026q4.csv"), rows,
+       ["effective_from", "plan_site_id", "site_name", "days_open_week", "shifts_per_day",
+        "treatment_sessions_week", "clinical_hours_month"])
     return rows
 
 
-# ---------------------------------------------------------------- the crosswalk of test-taker numbers
-XWALK_COLS = ["TEST_TAKER_ID", "STATE_STUDENT_ID", "MATCH_METHOD", "MATCH_DATE"]
-
-
-def xwalk_rows(x):
-    rows = []
-    for s, r, school, dist in glra_records(x):
-        u = _rng(int(r["tt"][-7:]), 9).random()
-        if r["sid_on_file"]:
-            method, day = "Pre-ID label", dt.date(2025, 5, 30)
-        else:
-            method = "Demographic match" if u < 0.86 else "Manual review"
-            day = dt.date(2025, 6, 9) + dt.timedelta(days=int(u * 20))
-        rows.append([r["tt"], s["sid"], method, day.isoformat()])
-    rows.sort(key=lambda t: t[0])
-    return rows
-
-
-# ---------------------------------------------------------------- the new test's 2026 student file
-SLM_COLS = ["state_student_id", "district_code", "school_code", "grade", "session", "test_date", "status",
-            "scale_score", "performance_level"]
-SLM_STATUS = {"scored": "Scored", "absent": "Absent", "exempt": "Exempt", "invalid": "Invalidated"}
-
-
-def slm_records(x):
-    out = []
-    for s in _people(x):
-        for r in s["records"]:
-            if r["test"] == "new":
-                out.append((s, r, _school_of(s, r), s["tested_in"]))
-    return out
-
-
-def june_level(score, grade):
-    return 1 + S_level(score, W.NEW_CUTS_JUNE[grade])
-
-
-def slm_rows(x):
-    rows = []
-    for s, r, school, dist in slm_records(x):
-        g = r["grade"]
-        day = _student_day(_school_day(school, 2026), s["sid"], g)
-        if r["status"] == "scored":
-            rows.append([s["sid"], dist, school, g, "Main", day.isoformat(), "Scored", r["score"],
-                         june_level(r["score"], g)])
-        else:
-            rows.append([s["sid"], dist, school, g, "Main", day.isoformat(), SLM_STATUS[r["status"]], "", ""])
-            if r["status"] == "invalid" and r["retake"]:
-                sc = r["retake_score"]
-                rows.append([s["sid"], dist, school, g, "Make-up", _makeup_day(s["sid"], 2026).isoformat(), "Scored",
-                             sc, june_level(sc, g)])
-    rows.sort(key=lambda t: (t[1], t[2], t[3], t[0], t[4] != "Main"))
-    return rows
-
-
-# ---------------------------------------------------------------- the bridge study
-BRIDGE_COLS = ["state_student_id", "district_code", "school_code", "order_of_tests", "glra_test_date", "glra_raw_score",
-               "glra_scale_score", "slm_scale_score"]
-
-
-def bridge_rows(x):
-    rows = []
-    for r in x["bridge"]["rows"]:
-        s = r["student"]
-        slm_day = _student_day(_school_day(r["school"], 2026), s["sid"], 8)
-        d = _shift(slm_day, -2 if r["order"] == "GLRA" else 3)
-        rows.append([s["sid"], s["tested_in"], r["school"], "GLRA first" if r["order"] == "GLRA" else "SLM first",
-                     d.isoformat(), raw_of(r["old"], 8), r["old"], r["new"]])
-    rows.sort(key=lambda t: (t[2], t[0]))
-    return rows
-
-
-# ---------------------------------------------------------------- the October 2026 enrolment spells
-ENROL_COLS = ["district_code", "school_code", "state_student_id", "grade", "entry_date", "exit_date", "exit_reason"]
-
-
-def enrol_rows(x):
-    rows = []
-    others = ("Moved out of state", "Moved out of state", "Withdrew", "Transferred to a nonpublic school",
-              "Home instruction")
-    for sp in x["spells"]:
-        reason = ""
-        if sp["exit"]:
-            if sp["who"].get("transfer_from") == sp["district"] or sp.get("moved_to"):
-                reason = "Transferred within state"
+# ------------------------------------------------------------------- 4 the timed encounter extract
+def encounters_db(target, sites, rows, cancels):
+    path = os.path.join(target, "treatment_encounters.db")
+    if os.path.exists(path):
+        os.remove(path)
+    con = sqlite3.connect(path)
+    cur = con.cursor()
+    cur.execute("PRAGMA page_size=4096")
+    cur.execute("""CREATE TABLE encounters_2023_2024 (
+        encounter_id TEXT PRIMARY KEY, service_facility_id TEXT, member_id TEXT, service_date TEXT,
+        service_start TEXT, service_stop TEXT, encounter_status TEXT, service_category TEXT)""")
+    cur.execute("""CREATE TABLE encounters_2025_2026 (
+        encounter_id TEXT PRIMARY KEY, service_facility_id TEXT, member_id TEXT, service_date TEXT,
+        service_start TEXT, service_minutes INTEGER, encounter_status TEXT, service_category TEXT)""")
+    cat = {s["site"]: ("HD" if s["modality"] == "dialysis" else "AIT") for s in sites}
+    a, b, n = [], [], 0
+    allrows = sorted(rows + cancels, key=lambda r: (r["date"], r["site"], r["start"]))
+    for r in allrows:
+        n += 1
+        eid = "E%d%08d" % (r["date"].year, n)
+        st = r.get("status", sim.STATUS_COMPLETED)
+        if r["date"].year <= 2024:
+            start = "%s %s" % (r["date"].isoformat(), _hhmm(r["start"] % 1440))
+            if r["dur"] is None:
+                stop = ""
             else:
-                reason = others[int(sp["sid"][-3:]) % len(others)]
-        rows.append([sp["district"], sp["school"], sp["sid"], sp["grade"], sp["entry"], sp["exit"], reason])
-    rows.sort(key=lambda t: (t[0], t[1], t[3], t[2], t[4]))
-    return rows
-
-
-# ---------------------------------------------------------------- the nonpublic schools registry
-NONPUBLIC_COLS = ["school_code", "school_name", "county", "located_in_district", "grades_served", "affiliation",
-                  "state_test_participation"]
-AFFILIATION = {"Catholic": "Roman Catholic", "Parish": "Roman Catholic", "Hebrew": "Jewish", "Christian": "Christian",
-               "Friends": "Religious Society of Friends", "Lutheran": "Lutheran", "Mennonite": "Mennonite",
-               "Adventist": "Seventh-day Adventist", "Baptist": "Baptist", "Montessori": "Independent",
-               "Country Day": "Independent", "Academy": "Independent"}
-
-
-def nonpublic_rows():
-    county = {c: cty for c, n, cty, *_ in W.DISTRICTS}
-    county.update({"1701": county["1700"], "1702": county["1700"]})
-    rows = []
-    for code, name, where, per, mu in W.NONPUBLIC:
-        aff = next(v for k, v in AFFILIATION.items() if k in name)
-        rows.append([code, name, county[where] + " County", where, "K-8" if per < 30 else "PK-8", aff, "Yes"])
-    for code, name, where, grades, aff in W.NONPUBLIC_OTHER:
-        rows.append([code, name, county[where] + " County", where, grades, aff, "No"])
-    return sorted(rows)
-
-
-# ---------------------------------------------------------------- the two neighbouring state files (distractors)
-FIN_COLS = ["district_code", "district_name", "fiscal_year", "fall_2024_enrollment", "current_expenditure",
-            "expenditure_per_pupil"]
-
-
-def _before_merger():
-    """The districts as they stood before July 1, 2026: the consolidated district's two predecessors in its place."""
-    out = []
-    for code, name, cty, n10, n9, mu10, mu9 in W.DISTRICTS:
-        if code in W.MERGER:
-            for sub, sname, share in W.MERGER[code]:
-                out.append((sub, sname, n10 * share, n9 * share, mu10, mu9))
+                end = r["start"] + r["dur"]
+                stop = "%s %s" % ((r["date"] + dt.timedelta(days=end // 1440)).isoformat(),
+                                  _hhmm(end % 1440))
+            a.append((eid, r["site"], r["member"], r["date"].isoformat(), start, stop, st, cat[r["site"]]))
         else:
-            out.append((code, name, n10, n9, mu10, mu9))
-    return out
+            start = "%sT%s:00%s" % (r["date"].isoformat(), _hhmm(r["start"] % 1440), _dst(r["date"]))
+            b.append((eid, r["site"], r["member"], r["date"].isoformat(), start, r["dur"], st,
+                      cat[r["site"]]))
+    cur.executemany("INSERT INTO encounters_2023_2024 VALUES (?,?,?,?,?,?,?,?)", a)
+    cur.executemany("INSERT INTO encounters_2025_2026 VALUES (?,?,?,?,?,?,?,?)", b)
+    con.commit()
+    cur.execute("VACUUM")
+    con.commit()
+    con.close()
+    return len(a), len(b)
 
 
-def finance_rows(x):
+# ------------------------------------------------------------------- 5 the enrolment projection
+def projection(target, by_area):
     rows = []
-    for code, name, n10, n9, mu10, mu9 in _before_merger():
-        rng = _rng(int(code), 81)
-        enrol = int(round((n10 + n9) / 2 * 13.1 * rng.uniform(0.97, 1.03)))
-        pp = 14200 + 2600 * rng.normal() - 900 * (mu9 + mu10)
-        rows.append([code, name, "FY2025", enrol, int(round(enrol * pp + rng.integers(0, 1000))), int(round(pp))])
+    for c in world.CODES:
+        a = world.AREA[c]
+        base = 1800 + (int(a["growth"] * 1000) % 7) * 310 + len(by_area[c]) * 540
+        rows.append([PROJECTION_PUBLISHED.isoformat(), c, a["name"], base,
+                     int(round(base * a["growth"])), "%.3f" % a["growth"]])
+    _w(os.path.join(target, "enrolment_projection_2027.csv"), rows,
+       ["published_on", "service_area_code", "service_area_name", "members_2026",
+        "projected_members_2027", "projected_growth_factor"])
     return rows
 
 
-GRAD_COLS = ["district_code", "district_name", "class_of", "cohort_size", "graduates_four_year", "graduation_rate"]
-
-
-def grad_rows(x):
+# ------------------------------------------------------------------- 7 the 2026 state filing
+def filing(target, sites, extra, rnd):
     rows = []
-    for code, name, n10, n9, mu10, mu9 in _before_merger():
-        rng = _rng(int(code), 82)
-        base = 0.86 + 0.06 * (mu10 + mu9) / 2
-        for year in (2024, 2025):
-            size = int(round(n10 * rng.uniform(0.95, 1.08)))
-            rate = min(0.97, base + rng.normal(0, 0.02))
-            grads = int(round(size * rate))
-            rows.append([code, name, year, size, grads, "%.1f" % (100.0 * grads / size)])
+    for s in sites:
+        if not s["in_2026_filing"]:
+            continue
+        rows.append([s["licence_no"], s["name"], s["address"], s["locality"], s["area_2026"],
+                     world.AREA[s["area_2026"]]["name"],
+                     "in-centre haemodialysis" if s["modality"] == "dialysis" else "ambulatory infusion",
+                     s["licensed"], "contracted"])
+    for e in extra:
+        if e["kind"] != "dropped":
+            continue
+        rows.append([e["licence_no"], e["name"], e["address"], e["locality"], e["area_2026"],
+                     world.AREA[e["area_2026"]]["name"],
+                     "in-centre haemodialysis" if e["modality"] == "dialysis" else "ambulatory infusion",
+                     e["licensed"], "contracted"])
+    dup = [e for e in extra if e["kind"] == "dropped"][4:6]
+    for e in dup:
+        rows.append(["CORP-%05d" % (9000 + abs(hash(e["operator"] + e["area"])) % 900), e["name"],
+                     e["address"], e["locality"], e["area_2026"], world.AREA[e["area_2026"]]["name"],
+                     "in-centre haemodialysis" if e["modality"] == "dialysis" else "ambulatory infusion",
+                     e["licensed"], "contracted"])
+        e["filed_twice"] = True
+    wb = openpyxl.Workbook()
+    ws = wb.active
+    ws.title = "Contracted Sites"
+    head = ["licence_no", "site_name", "service_address", "locality", "service_area_code",
+            "service_area_name", "service_category", "licensed_stations", "network_status"]
+    ws.append(head)
+    for r in rows:
+        ws.append(r)
+    ws.freeze_panes = "A2"
+    for i, h in enumerate(head, start=1):
+        ws.column_dimensions[get_column_letter(i)].width = max(12, min(36, len(h) + 8))
+        ws.cell(row=1, column=i).font = Font(bold=True)
+    s2 = wb.create_sheet("Area Summary")
+    s2.append(["Annual Network Adequacy Filing, 2026 network year"])
+    s2.append(["position as at", FILING_POSITION.isoformat()])
+    s2.append(["submitted", FILING_SUBMITTED.isoformat()])
+    s2.append([])
+    s2.append(["service_area_code", "service_area_name", "contracted_sites", "licensed_stations",
+               "treatments_delivered_2025"])
+    agg = collections.defaultdict(lambda: [0, 0])
+    for r in rows:
+        agg[r[4]][0] += 1
+        agg[r[4]][1] += r[7]
+    for c in world.CODES:
+        v = agg.get(c, [0, 0])
+        s2.append([c, world.AREA[c]["name"], v[0], v[1],
+                   int(round(v[1] * 46.0 * (1.0 + (ord(c[-1]) % 7) / 40.0)))])
+    for i, w in enumerate((22, 24, 18, 20, 26), start=1):
+        s2.column_dimensions[get_column_letter(i)].width = w
+    wb.save(os.path.join(target, "state_adequacy_filing_2026.xlsx"))
+    return rows
+
+
+# ------------------------------------- 8, 9, 10 the out-of-network register, its run-out and its control
+def out_of_network(target, sites, extra, rows_in, rnd):
+    dropped = [e for e in extra if e["kind"] == "dropped"]
+    areas = world.CODES
+    main, runout, n = [], [], 0
+    for e in dropped:
+        weekly = max(5, e["weekly"] // 7)
+        start = dt.date(2025, 10, 6)
+        while start <= dt.date(2026, 12, 28):
+            for k in range(weekly):
+                n += 1
+                sd = start + dt.timedelta(days=(k * 3) % 6)
+                if sd > dt.date(2026, 12, 31):
+                    continue
+                lag = 24 + (n * 7) % 48
+                adj = sd + dt.timedelta(days=lag)
+                mem = "M%09d" % (500000000 + (n * 3571) % 900000)
+                # the register carries the member's own residence area, not the area of the site treated
+                res = areas[(n * 5) % 12] if n % 8 == 0 else e["area"]
+                amt = 268.0 + (n % 37) * 4.5
+                row = ["C%d%07d" % (sd.year, n), 1, mem, sd.isoformat(), e["name"], e["address"],
+                       e["licence_no"], res, "%.2f" % amt, adj.isoformat(),
+                       "%d-Q%d" % (adj.year, (adj.month - 1) // 3 + 1), 1]
+                if adj.year == 2026:
+                    main.append(row)
+                elif adj.year == 2027 and adj <= RUNOUT_PULL:
+                    runout.append(row)
+            start += dt.timedelta(days=7)
+    head = ["claim_id", "line_no", "member_id", "service_date", "service_facility_name",
+            "service_facility_address", "licence_no", "member_residence_area", "paid_amount",
+            "adjudicated_date", "adjudication_quarter", "treatment_units"]
+    _w(os.path.join(target, "out_of_network_payments_2026.csv"), main, head)
+    _w(os.path.join(target, "out_of_network_payments_runout_2027q1.csv"), runout, head)
+    wb = openpyxl.Workbook()
+    ws = wb.active
+    ws.title = "Adjudicated Quarters"
+    ws.append(["Out-of-network outpatient dialysis and infusion payments"])
+    ws.append(["extract pulled", dt.date(2027, 1, 9).isoformat()])
+    ws.append([])
+    ws.append(["adjudication_quarter", "claim_lines", "treatment_units", "paid_amount"])
+    agg = collections.defaultdict(lambda: [0, 0, 0.0])
+    for r in main:
+        q = agg[r[10]]
+        q[0] += 1
+        q[1] += r[11]
+        q[2] += float(r[8])
+    for q in sorted(agg):
+        ws.append([q, agg[q][0], agg[q][1], round(agg[q][2], 2)])
+    ws.append(["total", sum(v[0] for v in agg.values()), sum(v[1] for v in agg.values()),
+               round(sum(v[2] for v in agg.values()), 2)])
+    for i, w in enumerate((24, 14, 16, 16), start=1):
+        ws.column_dimensions[get_column_letter(i)].width = w
+    for r in ws.iter_rows(min_row=4, max_row=4):
+        for c in r:
+            c.font = Font(bold=True)
+    wb.save(os.path.join(target, "out_of_network_payments_reconciliation_2026.xlsx"))
+    return main, runout
+
+
+# ------------------------------------------------------------------- 11 the extract transmittal
+def transmittal(target, na, nb, rows, cancels):
+    q = collections.Counter()
+    for r in rows + cancels:
+        q["%d-Q%d" % (r["date"].year, (r["date"].month - 1) // 3 + 1)] += 1
+    doc = {
+        "extract": "outpatient treatment encounters",
+        "pulled_on": EXTRACT_PULL.isoformat(),
+        "covers": {"from": world.REC_START.isoformat(), "to": "2026-12-31"},
+        "tables": {"encounters_2023_2024": na, "encounters_2025_2026": nb},
+        "rows_by_service_quarter": {k: q[k] for k in sorted(q)},
+        "timestamp_convention": {
+            "encounters_2023_2024": "service_start and service_stop in site local clock",
+            "encounters_2025_2026": "service_start with offset from coordinated universal time"},
+    }
+    with open(os.path.join(target, "encounter_extract_transmittal.json"), "w", encoding="utf-8") as f:
+        json.dump(doc, f, indent=2, sort_keys=False)
+        f.write("\n")
+    return doc
+
+
+# ------------------------------------------------------------------- 12 the transport file (distractor)
+def nemt(target, by_area, rnd):
+    rows = []
+    modes = ["ambulatory", "wheelchair", "stretcher"]
+    for c in world.CODES:
+        for m in range(1, 13):
+            for i, mode in enumerate(modes):
+                base = 140 + (ord(c[-1]) * 17 + m * 11 + i * 29) % 260
+                rows.append([c, world.AREA[c]["name"], "2026-%02d" % m, mode, base,
+                             "%.2f" % (base * (21.4 + i * 9.3))])
+    _w(os.path.join(target, "nemt_trips_2026.csv"), rows,
+       ["service_area_code", "service_area_name", "service_month", "trip_mode", "trips", "paid_amount"])
     return rows

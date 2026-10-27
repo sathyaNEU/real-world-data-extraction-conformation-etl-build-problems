@@ -394,3 +394,40 @@ if __name__ == "__main__":
                 for s in sites)
     print("  the most treatments a site takes in one day, over its position count: smallest ratio %.2f (%s)"
           % worst)
+
+
+def noshows(rows, sites, rate=0.012, seed=world.SEED + 11):
+    """Scheduled slots nobody attended: a start time, no stop and no duration.
+
+    Placed where the site was running at least two positions short, so a reader who treats them as
+    instantaneous still never sees more than the site's positions running at one time.
+    """
+    rnd = random.Random(seed)
+    by_site = collections.defaultdict(list)
+    for r in rows:
+        by_site[r["site"]].append(r)
+    out = []
+    for site in sites:
+        rs = by_site[site["site"]]
+        K = site["ceiling"]
+        ev = []
+        for r in rs:
+            t0 = (r["date"] - world.REC_START).days * 1440 + r["start"]
+            ev.append((t0, 1, r))
+            ev.append((t0 + r["dur"], -1, r))
+        ev.sort(key=lambda e: (e[0], e[1]))
+        cur, slack = 0, []
+        for t, k, r in ev:
+            cur += k
+            if 0 < cur <= K - 2:
+                slack.append((t, r))
+        if not slack:
+            continue
+        n = max(1, int(round(len(rs) * rate)))
+        for i in range(n):
+            t, r = slack[(i * 7919) % len(slack)]
+            day = world.REC_START + dt.timedelta(days=t // 1440)
+            out.append(dict(site=site["site"], member=r["member"], date=day, start=int(t % 1440) + 1,
+                            dur=None, pos=-1, rnd_ix=-1, week=(day - world.REC_START).days // 7,
+                            status=CANCEL_WORDS[i % 2]))
+    return out
