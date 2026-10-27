@@ -1,29 +1,28 @@
 ## Tags
 
-**Domain:** Product Analytics (retention, cohort and lifetime value modeling: a Q&A platform's volunteer reviewers as a retained-user cohort, each site's pool carried forward on its own lapse hazard with almost no new reviewers arriving, times the activity a retained reviewer delivers, seen only where work outran the pool).
+**Domain:** Product Analytics (retention, cohort and lifetime value modeling: a Q&A platform's volunteer reviewers as a retained-user cohort that has stopped taking in members, carried forward on survival by tenure, times the activity a retained reviewer delivers, seen only where work outran the pool).
 **Analytical objective:** Forecasting & Predictive Modeling.
 
 ## 1. Final Recommendation
 
-**The council should request 35 paid moderator FTE for 2027, 9 above finance's 26-FTE envelope: Frontend & Web 5, Mobile Apps 2, Data & ML 7, Databases 5, Infrastructure & DevOps 5, Game Development 2, Security 4, Embedded & Hardware 3 and Scientific Computing 2.**
-Items reach the paid team only when the volunteers fall short, so each site's 2027 routed items are the inbox beyond what its shrinking reviewer pool can review at about 40 reviews a reviewer a month, which puts Data & ML, Databases, Infrastructure & DevOps and Game Development short of reviewers after routing almost nothing since January 2024. Not the last twelve months' paid hours per question carried onto the plan, which prices only what those sites routed while their pools still covered the inbox; not a trend in each site's routed share or paid hours, which extends the past and misses the months the pools fall below the inbox; and not a reviewer pace read from 2026 throughput, which on the covered sites measures how little work arrived rather than how much reviewers can do.
+**The council should request 32 paid moderator FTE for 2027, 6 above finance's 26-FTE envelope: Frontend & Web 5, Mobile Apps 2, Data & ML 6, Databases 4, Infrastructure & DevOps 4, Game Development 2, Security 4, Embedded & Hardware 3 and Scientific Computing 2.**
+Items reach the paid team only when the volunteers fall short, and since review access became invitation-only on 1 September 2026 each site's pool only shrinks, fastest among its newest reviewers, so the network's 10,607 active reviewers of September 2026 average about 8,800 a month in 2027 and Data & ML, Databases, Infrastructure & DevOps and Game Development fall short of their inbox after routing almost nothing since January 2024. Not the pool's overall lapse rate of the last two years carried forward, which was the rate of a pool still taking in newcomers and overstates how fast a closed pool loses reviewers; not the new reviewers of the last year carried on, which the invitation-only rule ended; not a tenure curve that counts every reviewer from the day access was granted, which reads the roster's survivors as whole cohorts; and not the last twelve months' paid hours per question carried onto the plan, which prices only what those sites routed while their pools covered the inbox.
 
 ## 2. Critical Components
 
 1. A volunteer reviewer completes about **40** reviews a month when the inbox outruns the site's pool, measured in the site-months in which more than 5 per cent of entering items reached the paid team.
-2. Every site's reviewer pool loses about **2** per cent of its active reviewers a month, and almost no new reviewers have arrived since late 2024.
+2. The network's **10,607** reviewers active in September 2026 average about **8,800** active reviewers a month in 2027, each carried on the stop rate of their own tenure with no new reviewers.
 3. Data & ML, Databases, Infrastructure & DevOps and Game Development fall short of their inbox in 2027, joining Security, Embedded & Hardware and Scientific Computing; Frontend & Web and Mobile Apps stay covered.
 
 ## 3. Step-by-Step Solution
 
 1. Stacked review_queues_monthly_2021-2023.xlsx (old site names through site_register.csv) with review_inbox_daily_2024-01-01_2026-09-30.csv and the active reviewers in reviewer_roster_2026-10-08.csv: over the site-months in which more than 5 per cent of entering items were routed to moderation, volunteer reviews over active reviewers give about 40 reviews a month.
-2. In reviewer_roster_2026-10-08.csv, lapses over active reviewer-months from September 2024 to August 2026 give each site's monthly lapse rate, about 2 per cent on every site, and the last twelve months' new reviewers give each site fewer than one a month.
-3. Carried each site's September 2026 active reviewers forward month by month at its lapse rate plus its new reviewers, at about 40 reviews a reviewer a month, against the inbox of each month in 2027 (the questions in question_plan_2027.xlsx times the site's inbox items per question since January 2024), and routed the items beyond that capacity to the paid team (where a pool has room, the 0.6 per cent no volunteer picks up): Data & ML, Databases, Infrastructure & DevOps and Game Development fall short of their inbox.
-4. Priced each site's handled flags per question since January 2024 (modtool_flag_summary_daily_2024-01-01_2026-09-30.csv) times the plan, and its routed items, at handle_time_standards_2027.pdf, and divided by the charter's 1,600 hours, each site to the nearest whole FTE: 35 FTE in all.
+2. In reviewer_roster_2026-10-08.csv, counted each reviewer from the first month the platform shows them active (January 2024 for those granted earlier, at their tenure then) to their last review, and divided stops by reviewer-months at each month of tenure since access was granted, January 2024 to August 2026: about 9 per cent a month in the first year, under one per cent from the fourth.
+3. Carried each of the 10,607 reviewers active in September 2026 on that rate from their own tenure, with no new reviewers since access became invitation-only on 1 September 2026 (moderation_operations_handbook_2026.pdf) and none invited in September: about 8,800 active a month on average in 2027.
+4. At about 40 reviews a reviewer a month against the inbox of each month of 2027 (the questions in question_plan_2027.xlsx times the site's inbox items per question since January 2024), routed the items beyond that capacity to the paid team (where a pool has room, the 0.6 per cent no volunteer picks up), priced them and each site's handled flags per question since January 2024 (modtool_flag_summary_daily_2024-01-01_2026-09-30.csv) at handle_time_standards_2027.pdf, and divided by the charter's 1,600 hours, each site to the nearest whole FTE: 32 FTE, 6 above the 26-FTE envelope in finance_envelope_2027_paid_moderation.pdf.
 5. For the 24-hour flag response, counted each flag once across the two parts of the moderator tool's export, left out the post-deleted closures and took the first action from flag_decision_reviews_2026-07_to_2026-09.csv where a decision was reviewed (flag_service_standard.pdf): the shares in table 4 of the deliverable answers.
-6. For the hours worked, kept the approved lines of wfm_shift_lines_2026-01-01_2026-09-30.csv and put each shift on the site moderator_site_assignments.csv gives for its start day, in the quarter it started on Toronto time (moderation_ops_notes.md): the totals in table 5.
-7. For the questions, restated January to September 2022 on the warehouse's basis (posts_warehouse_notes.md) from review_queues_monthly_2021-2023.xlsx, its March 2023 rerun replacing May to August, and question_moves_2021-2023.csv, with Graphics & Shaders in Game Development: the percentages in table 6.
-8. Against finance_envelope_2027_paid_moderation.pdf the request of 35 FTE is 9 above the 26-FTE envelope, network-wide.
+6. For the hours worked, kept the approved lines of wfm_shift_lines_2026-01-01_2026-09-30.csv and put each shift on the site moderator_site_assignments.csv gives for its start day, in the quarter it started on Toronto time (moderation_operations_handbook_2026.pdf): the totals in table 5.
+7. For the questions, restated January to September 2022 on the warehouse's basis (question_count_standard_2024.pdf) from review_queues_monthly_2021-2023.xlsx, its March 2023 rerun replacing May to August, and question_moves_2021-2023.csv, with Graphics & Shaders in Game Development: the percentages in table 6.
 
 ## 4. Deliverable Answers
 
@@ -32,15 +31,15 @@ Items reach the paid team only when the volunteers fall short, so each site's 20
 1. 2027 need by site, whole FTE:
    - Frontend & Web: 5
    - Mobile Apps: 2
-   - Data & ML: 7
-   - Databases: 5
-   - Infrastructure & DevOps: 5
+   - Data & ML: 6
+   - Databases: 4
+   - Infrastructure & DevOps: 4
    - Game Development: 2
    - Security: 4
    - Embedded & Hardware: 3
    - Scientific Computing: 2
-2. Council request for 2027: 35 FTE.
-3. Above finance's 26-FTE envelope by 9 FTE.
+2. Council request for 2027: 32 FTE.
+3. Above finance's 26-FTE envelope by 6 FTE.
 4. 24-hour flag response by site and month:
    - Frontend & Web: July 2026 97.9%, August 2026 97.0%, September 2026 97.1%
    - Mobile Apps: July 2026 97.2%, August 2026 96.4%, September 2026 96.3%
@@ -74,5 +73,5 @@ Items reach the paid team only when the volunteers fall short, so each site's 20
 
 ### council_pool_request_2027.pptx
 
-7. Slide 1 states the request: 35 paid moderator FTE for 2027, 9 above the 26-FTE envelope, with each site's need.
-8. Slide 2 charts the network's monthly paid review hours, as the operations notes define them, from January 2024 to December 2027, one stacked band per site, the forecast from October 2026 shaded, with finance's envelope drawn across at 3,467 hours a month (26 FTE); the plotted months are on the workbook's Monthly hours sheet.
+7. Slide 1 states the request: 32 paid moderator FTE for 2027, 6 above the 26-FTE envelope, with each site's need.
+8. Slide 2 charts the network's monthly paid review hours, as the operations handbook defines them, from January 2024 to December 2027, one stacked band per site, the forecast from October 2026 shaded, with finance's envelope drawn across at 3,467 hours a month (26 FTE); the plotted months are on the workbook's Monthly hours sheet.

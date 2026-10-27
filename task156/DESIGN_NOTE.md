@@ -52,6 +52,8 @@ must count each member from when the record first sees them. The nearest by mech
   clock and the curve is read from the record, left-truncated.
 - task134 turns a conversion hazard near zero for a member's first months into a forward inflow; here the hazard is
   highest in the first months and the forecast is the survival of a closed pool, not an inflow.
+- task265 (this lane) reads a survival share from a record that began after many units had started: the left edge is
+  its decisive step; here it is the second layer (R3b), under the closed pool's composition.
 - task174's paused screen found that a survival curve by tenure absorbs a subscription book's stationary structure, so a
   stump needs a condition the record has not shown; here the record never showed a closed pool (grants ran at about 320
   a month to August 2026), and the default route (measured on the portal) carried the open pool's rate.
@@ -421,11 +423,40 @@ Measured by: generator/checks.py (every ask stop S1 to S5 run on the cut pack an
 fairness rows)
 ## Leak sweep
 
-LEAK_SWEEP_PENDING
+`leak.py task156 --asof 2026-10-09` on the loop 3 cut (f17b387d): REVIEW, no LEAK; sweep 1 clean (no file describes
+the data: no dictionary, file list, notes, readme or manifest ships; `checks.py` NO DESCRIPTION). Each REVIEW line:
+- Sweep 3, the member survey carries 14 of 20 distinctive words of the call: they are the nine site names, which every
+  file carries; the survey states no need, lapse rate, stop rate or FTE figure (asserted, R3c).
+- Sweep 4, the charter (members, reviewers, reviewer, platform): the domain's nouns in its sections on members and how
+  work reaches the paid team; it names no tenure, stop rate or method.
+- Sweep 4, the operations handbook (roster, members, reviewers, reviewer, handbook, routed): the review-access clause
+  says who may review from 1 September 2026 and that invited reviewers appear on the roster like any other; it states no
+  stop rate, lapse rate, tenure effect or method (asserted, HOW). Single-use test: the handbook also carries the shift
+  patterns, the holidays, the WFM approval and re-send practice and the paid-review-hours definition; deleting the
+  clause opens the 2027 population (the open-pool route files 24), so it is the estimand's population, filed as WHAT.
+- Sweep 6, the question plan and the WFM export name every site beside planned questions and shift lines: no ranking
+  of the sites on their 2027 need.
+- Sweep 8, `flag_id` in the flag exports and the review log: the moderator tool's own record key.
+
+**Leak reader, loop 3** (isolated, on f17b387d after the dictionary and notes were removed): nothing quoted for questions
+1 to 4; question 5 gives the charter's need sentence as the estimand, fixing what is counted and not how 2027's routed
+items are projected; question 6 analytical (the projection against reviewer capacity under invitation-only access); every
+REVIEW line harmless; realism notes mild (the 2021 sheet's missing edit columns read as a schema change, the finance
+letter a little stylised).
 
 ## Surface screen
 
-SURFACE_PENDING
+`guard.py surface task156` on the loop 3 cut: 298 builds screened, no hard tell (no shared file name, schema, same-seed
+table or invented name), personas the drawn three; two pairs promoted on the cards alone, each differentiated on the
+card; the adjudicated `/clone-check` is left to the author:
+- task156 vs task157 (consecutive numbers, drawn by another author on 2026-10-27): the decisive gap (population) and the
+  decision type (`quantity_figure`) match; task157's driver expands a sample in which one defect class is a property of
+  record pairs (inclusion at the square of the sampling fraction), nothing like a closed cohort's survival by tenure;
+  surface 0.077.
+- task156 vs task452: the gap, the decisive generator (G9) and the decision type match; task452 weights reference
+  observations by their design inclusion probabilities after a reclassification; nothing is sampled here; surface 0.084.
+`guard.py heart task156`: WARN (people.first, Natalie also in task281, an older build; the persona was drawn at the
+original draw and is kept), no BLOCK.
 
 ## Gates at ship
 
@@ -433,7 +464,20 @@ GATES_PENDING
 
 ## Pre-ship check
 
-PRESHIP_PENDING
+- The 10/10 rules re-read against the built pack: the decisive step is how the closed pool is carried, survival by
+  tenure read from a left-truncated, censored roster, which product analytics recognises as its own method for a
+  retained cohort and which the open pool's lapse rate gets wrong out of sample; no planted defect, withheld rule, field
+  reading or executed procedure decides it (the invitation-only clause files who may review, never how fast reviewers
+  stop); the mess (the platform change, old site names, UTC against Toronto, the two September pulls, the flag export's
+  overlap, the re-sent WFM week, the pre-platform lapses) is Layer 1 and moves no site (R2a to R2e, SF13); the analyst
+  test holds on the clean truth (R3a 41 FTE five sites off, R3b the golden's nine).
+- No shipped file describes the data (asserted, NO DESCRIPTION): no dictionary, file list, notes, readme or manifest.
+- Gate G: no shipped artifact ranks the sites on their 2027 need; the two distractors (page views, the member survey)
+  rank nothing and are named in metadata.json.
+- The card is current: the answer (32 FTE, the nine site needs, 6 above the envelope), the spine's 23,148 roster rows,
+  the deliverables, the loop 3 identity with the solved one in lineage, task157 and task452 differentiated.
+- target.zip is the final rebuild's cut (f17b387d), equal to the second build's; metadata.json regenerated for the
+  subdomain text only (the pack untouched).
 
 ## Tried and rejected
 

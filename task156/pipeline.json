@@ -1,7 +1,7 @@
 {
   "task": "task156",
   "owner": "sathya8571",
-  "status": "BUILD",
+  "status": "PAUSED",
   "domain": "product-analytics/retention-cohort-lifetime-value-modeling (client domain product-analytics; world: trust and safety at a developer Q&A network)",
   "objective": "forecasting",
   "stage": 4,
@@ -16,13 +16,13 @@
     "checks": "49 checks, 0 FAIL, 0 WARN after round 2 (pair ceiling 31.4, mirror leakage 4.5 per cent, the cracker misses every ask)"
   },
   "leak": {
-    "leak_py": "REVIEW (no LEAK), 2026-10-17 at ship; every REVIEW line answered in the design note ## Leak sweep",
-    "reader": "clean (stage 4); the targeted re-read of the 2022 rerun block clean"
+    "leak_py": "REVIEW (no LEAK) on f17b387d, every line answered in the design note; sweep 1 clean (no file describes the data)",
+    "reader": "loop 3 (isolated, f17b387d): Q1 to Q4 none, Q5 the charter's need sentence as the estimand, Q6 analytical; REVIEW lines harmless"
   },
   "duplicate_check": {
-    "heart": "PASS, 2026-10-17 (nearest driver 0.09, task181 v2)",
-    "nearest": "nearest driver 0.09 (task181 v2)",
-    "surface": "two promotions, no hard tell: task154 (two apart) on the card-level gap, decision type and context artifact, drivers unrelated, keys honest and not relabelled; task103 at surface 0.102 from the flat layout and the same four formats alone; written up in the design note ## Surface screen; adjudicated /clone-check left to the author"
+    "heart": "WARN (people.first: Natalie also in task281), no BLOCK, at the draw's registration stamp",
+    "surface": "no hard tell; task157 and task452 promoted on the cards alone, differentiated on the card; task265 differentiated",
+    "nearest": "driver 0.08 (task243)"
   },
   "judge": {
     "verdict": "DETERMINISTIC",
@@ -37,7 +37,7 @@
       "commit": ""
     }
   ],
-  "resume": "stage 4 on the loop 3 pack: free gates green (checks 110, verify, byte-identical, figures_check 112/0); precut, leak.py, surface, then the leak reader and the determinism judge together; on APPROVE ship RESHIPPED",
+  "resume": "stage 4 on target.zip f17b387d: every free gate green (checks 110, verify, byte-identical, figures_check 112/0, precut 52/0, voice-check, leak.py REVIEW answered, heart WARN, surface no hard tell with task157 and task452 differentiated); the leak reader clean (Q6 analytical); the judge thread r3 running from /tmp/determinism-check-task156-r3/judge_brief.md: on its verdict.md re-invoke the determinism-judge agent for determinism_check_report_pass3.md, fix any FIX_NOW in the generator and re-run the free gates, then write the ledger rows and ship RESHIPPED",
   "approved": null,
   "delivered": "2026-10-17",
   "portal": null,
@@ -58,5 +58,14 @@
     "house_fixes": "H1 clean; H4 archive cut without the enclosing folder; H14 each site's own pace and floor asserted; H16 flag first actions and reviews held before the export run; H21 the network renamed from Quernstone (a real UK firm) to Millrind; H24 no constructed-pack sentence under target",
     "round1_moved_figures": "none graded moved across rounds 1 and 2: the call (35; 5, 2, 7, 5, 5, 2, 4, 3, 2) and Asks A, B and C as built; round 1's three chart totals were taken back out of the graded block in round 2"
   },
-  "rule3_audit": "PASS (P(both) about 0.03 to 0.06); soft points answered in round 1: the January and February 2024 lapses now on the roster, the domain tag kept (no trust-and-safety task type in vocab.json)"
+  "rule3_audit": "PASS (P(both) about 0.03 to 0.06); soft points answered in round 1: the January and February 2024 lapses now on the roster, the domain tag kept (no trust-and-safety task type in vocab.json)",
+  "gates": {
+    "checks": 110,
+    "verify": "agrees (32: 5 2 6 4 4 2 4 3 2; asks 27, 27, 9)",
+    "byte_identical": true,
+    "figures_check": "112 figures, 0 absent",
+    "precut": "52 checks, 0 FAIL, 0 WARN",
+    "voice_check": "PASS",
+    "target_zip_sha256": "f17b387d5711f957f2c7c8b8b98f6b517c71e66964c4530fe2f34824ded88b56"
+  }
 }

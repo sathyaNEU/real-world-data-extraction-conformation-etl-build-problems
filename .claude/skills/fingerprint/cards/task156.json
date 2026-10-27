@@ -92,7 +92,9 @@
     "task170": "task170's failure probability falls with each operator's own count of attempts (learning); here a reviewer's stop chance is constant for life and the fall is selection",
     "task176": "task176 ends units when the youngest dependant reaches a fixed age, a clock other than tenure; here tenure is the clock, read from the record with its left edge",
     "task134": "task134 turns a conversion hazard near zero for a member's first months into a forward inflow; here the hazard is highest in the first months and the forecast is a closed pool's survival",
-    "task452": "task452 weights each reference observation by its own design inclusion probability after a preliminary classification was revised; here nothing is sampled: the forecast is a closed volunteer cohort's survival by tenure read from a left-truncated roster, set against an inbox"
+    "task452": "task452 weights each reference observation by its own design inclusion probability after a preliminary classification was revised; here nothing is sampled: the forecast is a closed volunteer cohort's survival by tenure read from a left-truncated roster, set against an inbox",
+    "task157": "task157 expands a sample in which one defect class is a property of record pairs, so its inclusion probability is the square of the sampling fraction; here nothing is sampled: the forecast is a closed volunteer cohort's survival by tenure, read from a left-truncated roster and set against an inbox",
+    "task265": "task265's decisive step is the record's left edge itself, a survival share read from a record that began after many units had started; here the left edge is the second layer, and the decisive step is carrying a closed pool on the stop rate of each member's own tenure instead of the rate the open pool showed while it was still admitting members"
   },
   "lineage": [
     {
