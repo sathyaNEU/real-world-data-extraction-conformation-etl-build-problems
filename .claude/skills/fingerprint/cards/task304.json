@@ -1,91 +1,118 @@
 {
- "task": "task304",
- "architecture": "v1",
- "drawn": "2026-10-26",
- "slot_note": "",
- "domain": "banking-credit-financial-risk",
- "subdomain": "collections-recovery",
- "client_domain": "banking-credit-financial-risk",
- "niche": "a building society's 2027 financial support team going to the one mortgage book where it avoids the most possessions among the borrowers who fall two payments behind in 2027, when the first-time buyers of the 2021 stamp-duty rush took Mortgage Charter term extensions at their 2026 rate switch that keep them up to date for months before they fall behind",
- "objective": "opportunity-sizing-decision",
- "shape": "other",
- "decision_type": "pick_one_of_n",
- "answer_unit": "count",
- "answer": "Place the Financial Support Team on the First-time buyer 2019-21 book in 2027: it avoids about 10 possessions there, against fewer than 5 in High LTV 2022-24, the next best.",
- "answer_source": "submission.md block 1 and support_team_2027_placement_paper.pdf",
- "gap": [
-  "time",
-  "population"
- ],
- "pattern": [
-  "none"
- ],
- "generators": [
-  "G3",
-  "G6",
-  "G13"
- ],
- "gate_g": "forecasting",
- "calibration_form": "none",
- "stump_strategy": "composition_mix",
- "decisive_rule_filed": false,
- "official_decoy": false,
- "validated_decoy": false,
- "context_artifact": "monitoring_export",
- "stump_class": "analytical",
- "analyst_test": "A strong analyst fits the monthly chance of an account falling two payments behind on book, current arrears and the payment rise at its last rate switch, carries every account on the book through 2027 at the plan's planning rates and files the High LTV 2022-24 book first at 4.5 possessions avoided, while the 2021 first-time buyers who extended their terms at the 2026 switch fall behind eight to fifteen months later and make the first-time-buyer book the largest at about 10 (9.0).",
- "domain_test": "The deciding quantity is each book's 2027 entries into two payments of arrears, the collections forecaster's arrears-entry hazard carried account by account with forbearance as a state: a term extension at the rate switch lowers the payment and keeps the account up to date while the budget the new rate broke stays broken, so the account carries its own hazard by months since the concession; put another field's units in and the rate switch, the Charter concession and the route from arrears to possession stop making sense.",
- "layer2_family": "field_method",
- "layer2_pattern": "own:forbearance-carried-as-a-state-in-the-arrears-entry-forecast",
- "layer1": [
-  "product codes that lost their dashes at the July 2022 platform change",
-  "month rows re-sent in a later extract",
-  "payments in arrears derived from an arrears balance in pounds against the current payment",
-  "a possession register dated day-first that keeps the book each row was written under",
-  "arrears capitalised by collections clearing without a payment",
-  "properties in possession still on the book until they sell",
-  "redeemed accounts absent from the book snapshot"
- ],
- "stakeholder_role": "head of collections and recoveries at a building society",
- "role_family": "operations_director",
- "scoring_unit": "per resolved case",
- "spine": {
-  "file": "mortgage_payment_history_2019-01_to_2026-09.parquet",
-  "rows": 4260553,
-  "entity": "one mortgage account's position at a month end",
-  "grain": "account x month",
-  "source": "synthetic"
- },
- "forum": "committee_or_panel",
- "forcing_event": "launch_or_rollout",
- "org_family": "financial_institution",
- "world": {
-  "geography": "United Kingdom, West Yorkshire and the Pennine towns",
-  "currency": "GBP",
-  "org_type": "building society",
-  "invented_names": [
-   "Calderbrook Building Society"
+  "task": "task304",
+  "architecture": "v2",
+  "drawn": "2026-10-27",
+  "slot_note": "",
+  "domain": "epidemiology-public-health",
+  "subdomain": "screening-diagnostic-policy-evaluation",
+  "client_domain": "epidemiology-public-health",
+  "niche": "a hepatitis C operational delivery network placing its 2027 find-and-treat outreach team in one of four settings it has not worked (approved premises, homeless hostels, drug service entrants, pharmacy needle exchange registrants), sized by the people it starts on treatment, when part of each setting's antibody-positive intake was cured earlier, by the network's own clinics or inside prison by the prison health provider, and stays antibody positive for life",
+  "objective": "opportunity-sizing-decision",
+  "shape": "09",
+  "decision_type": "pick_one_of_n",
+  "answer_unit": "count",
+  "answer": "",
+  "answer_source": "",
+  "gap": [
+    "time",
+    "population"
   ],
-  "people": [
-   "Aimee Atkinson",
-   "Oliver O'Brien",
-   "Elliot Hunt"
-  ]
- },
- "deliverables": [
-  "support_team_2027_placement_paper.pdf",
-  "support_team_2027_workbook.xlsx"
- ],
- "opening_move": "question-first",
- "question_form": "which",
- "driver": "The decisive quantity is next year's entries into a failure state from units whose recorded good standing was produced by the organisation's own concession at a scheduled reset, which lowered what each owes while the condition that prompted it stayed; a forecast keyed on each unit's current state and on the size of the change it absorbed treats them as sound, and only each unit's concession, rebuilt from the changes in an ordinary field over its history, with the delayed re-entry rate the earlier concessions show by time since the concession, carries the forward count.",
- "driver_concrete": "Each book's 2027 borrowers falling two payments behind: the 2021 first-time buyers whose five-year fixes ended in 2026 took term extensions at the switch under the Mortgage Charter, which cut the payment rise and kept them up to date, and they fall behind eight to fifteen months later at the rate the 2024 and 2025 extensions show, so the first-time-buyer book's 2027 entries run far above any model on payment shock and arrears.",
- "stump": "A competent solver fits the chance of falling two payments behind on book, current arrears and the payment rise at the last rate switch, carries every account on the book through 2027 at the plan's planning rates and files High LTV 2022-24 first (4.5 possessions avoided against the first-time buyer book's 2.9); the step that lands it there is reading the up-to-date first-time buyers' small payment rise as low risk when their remaining term rose at the switch, the Charter extension that kept a budget the new rate broke up to date for a few months.",
- "mechanism_source": "design_note",
- "differentiation": {
-  "task169": "task169 sends the events a closed processing route pre-empted through the remaining route's own conversion after a filed change; task304 has no closed route and no filed change: the organisation's own concession produced the up-to-date record, and the forward count comes from each concession's delayed re-entry hazard by months since it, rebuilt from the remaining-term history."
- },
- "lineage": [],
- "notes": "Axes redrawn at the check: context_artifact register to monitoring_export (ban.artifact against task270); decisive generator G6 to G3 with time as the decisive gap after (population, G6) and (population, G3) repeated older and in-batch signatures. WARNs answered in the design note: repeat.gate_g, repeat.decision, repeat.question_form.",
- "registered": "2026-10-26T17:06:56Z"
+  "pattern": [
+    "none"
+  ],
+  "generators": [
+    "G6",
+    "G3",
+    "G13"
+  ],
+  "gate_g": "forecasting",
+  "calibration_form": "pilot_log",
+  "stump_strategy": "informative_censoring",
+  "decisive_rule_filed": false,
+  "official_decoy": false,
+  "validated_decoy": false,
+  "context_artifact": "operations_log",
+  "stump_class": "analytical",
+  "analyst_test": "A strong analyst takes each setting's 2027 intake at its 2025-26 average, the share of that intake the peer programme found antibody positive, removes the positives the network's treatment register shows cured and carries the rest at the three-quarters viraemic share the laboratory's first positives and the 2018-19 pilot validate, and files the approved premises first, while most of the approved premises' positives were cured inside prison by the prison health provider, whose own treatment log holds those cures, so the pharmacy needle exchange registrants, the least treated, lead.",
+  "domain_test": "The deciding quantity is each setting's count of people with active hepatitis C the team would find and start on treatment, the epidemiologist's antibody positives times the share still viraemic, where an antibody persists for life after a cure, the never-treated keep the natural three-quarters chronic share after spontaneous clearance and a person treated in prison is cured in the prison health provider's record and not the network's; put another field's units in and an antibody that outlives the infection, a laboratory that never re-tests a known positive for antibody and a cure recorded by whichever organisation gave it stop meaning anything.",
+  "layer2_family": "field_method",
+  "layer2_pattern": "own:active-infection-among-antibody-positives-after-curative-treatment",
+  "layer1": [
+    "the laboratory's test codes renamed at its 2021 system change",
+    "results written as text (Reactive, Non-reactive, Equivocal, Detected, Not detected, below 15 IU/mL)",
+    "rows the laboratory re-sent in a later extract",
+    "the prison log's day-first dates and prison numbers beside the shared pseudonym",
+    "setting names written several ways in the peer log",
+    "re-admissions in the intake registers"
+  ],
+  "stakeholder_role": "director of services at a hepatitis C charity that runs peer testing and a find-and-treat van with the regional treatment network",
+  "role_family": "operations_director",
+  "scoring_unit": "per resolved case",
+  "spine": {
+    "file": "virology_hcv_tests_2015-01_to_2026-09.csv",
+    "rows": 0,
+    "entity": "one hepatitis C laboratory test result",
+    "grain": "test",
+    "source": "synthetic"
+  },
+  "forum": "trustees_or_governors",
+  "forcing_event": "launch_or_rollout",
+  "org_family": "nonprofit_or_charity",
+  "world": {
+    "geography": "United Kingdom, England",
+    "currency": "GBP",
+    "org_type": "hepatitis C charity working with an NHS operational delivery network",
+    "invented_names": [],
+    "people": [
+      "Katie Reynolds",
+      "Nathan Hewitt",
+      "Clare Stevenson"
+    ]
+  },
+  "deliverables": [
+    "outreach_team_2027_placement_note.pdf",
+    "outreach_team_2027_funnel.xlsx"
+  ],
+  "opening_move": "question-first",
+  "question_form": "where",
+  "driver": "The forward pool is the units still carrying an active condition among those a marker reads positive, estimated as the positives less those a removal programme's record shows cleared, times the active share the validating data shows; every validating case was a unit the condition had never been removed from, because the producing process tests the marker only on units not already known positive and predates the removal push, while the removal was given by two organisations each keeping its own record, so the forward units cleared by the second organisation look uncleared in the first's record and only a unit-by-unit join to the second's record finds them, which drops the group the first record leaves largest and lifts the one neither reached.",
+  "driver_concrete": "Each setting's people with active hepatitis C in its 2027 intake: the laboratory's first antibody positives and the 2018-19 pilot show about three quarters viraemic because nobody in them had been treated, the network's register removes the cures its own clinics gave, and the prison health provider's log holds the cures given inside, which are most of the approved premises' positives, so the needle exchange registrants lead.",
+  "stump": "A competent solver takes each setting's 2027 intake, its antibody positives, removes the cures the network's treatment register shows and carries the rest at the three-quarters viraemic share, and files the approved premises first; the step that lands it there is treating the network's register as the record of every cure when the approved premises' positives were mostly cured inside prison, in the prison health provider's own treatment log.",
+  "mechanism_source": "design_note",
+  "differentiation": {
+    "task144": "task144 discounts a conversion inflated by a launch burst; task304 removes from a marker-positive count the units a second organisation's treatment record shows cleared, unit by unit.",
+    "task268": "task268 carries departed units' survival by their state at departure; task304 has no censoring: cleared units are read from two providers' treatment records and the validated active share applies only to the rest.",
+    "task150": "task150 splits next-period counts into carried members, steady arrivals and transfers; task304 splits a marker-positive count into units still carrying the condition and units a curative programme cleared.",
+    "task179": "task179 reads each member's leaving chance at its own peer co-membership; task304 reads each positive's cure from whichever organisation treated it, which the validating ratio never saw.",
+    "task501": "task501 sets a threshold by a contact matrix's eigenvalue; task304 is a count of active cases among marker positives after curative treatment given by two providers.",
+    "task304": "architecture 1 carried a concession hidden in a remaining-term path through a fitted delayed hazard; architecture 2 has no hazard to fit: cured positives are read from two providers' treatment records and the never-treated carry the validated viraemic share."
+  },
+  "lineage": [
+    {
+      "architecture": "v1",
+      "fate": "spent 2026-10-27 at the portal's determinism return (competing_defensible_answer): the fork is the stump; the first-time-buyer book's 2027 entries rested on the extended accounts' share jumping, which no book-level holdout pinned, and switch-timing chains filed it at 3.7 to 9.0",
+      "domain": "banking-credit-financial-risk",
+      "subdomain": "collections-recovery",
+      "gap": [
+        "time",
+        "population"
+      ],
+      "pattern": [
+        "none"
+      ],
+      "generators": [
+        "G3",
+        "G6",
+        "G13"
+      ],
+      "gate_g": "forecasting",
+      "stump_strategy": "composition_mix",
+      "decision_type": "pick_one_of_n",
+      "driver": "The decisive quantity is next year's entries into a failure state from units whose recorded good standing was produced by the organisation's own concession at a scheduled reset, which lowered what each owes while the condition that prompted it stayed; a forecast keyed on each unit's current state and on the size of the change it absorbed treats them as sound, and only each unit's concession, rebuilt from the changes in an ordinary field over its history, with the delayed re-entry rate the earlier concessions show by time since the concession, carries the forward count.",
+      "stump": "A competent solver fits the chance of falling two payments behind on book, current arrears and the payment rise at the last rate switch, carries every account on the book through 2027 at the plan's planning rates and files High LTV 2022-24 first (4.5 possessions avoided against the first-time buyer book's 2.9); the step that lands it there is reading the up-to-date first-time buyers' small payment rise as low risk when their remaining term rose at the switch, the Charter extension that kept a budget the new rate broke up to date for a few months.",
+      "niche": "a building society's 2027 financial support team going to the one mortgage book where it avoids the most possessions among the borrowers who fall two payments behind in 2027, when the first-time buyers of the 2021 stamp-duty rush took Mortgage Charter term extensions at their 2026 rate switch that keep them up to date for months before they fall behind"
+    }
+  ],
+  "notes": "Axes redrawn at the check (2026-10-27): org hospital_or_health_provider to nonprofit_or_charity, forum board_of_directors to trustees_or_governors, role programme_officer to operations_director (all against task118 v3); artifact register to operations_log (task464); strategy composition_mix to informative_censoring (task118 v3), the honester name for an active share observed only on positives who come forward. WARNs answered in the design note: overuse.objective, repeat.gate_g, repeat.decision.",
+  "registered": "2026-10-27T23:56:35Z"
 }

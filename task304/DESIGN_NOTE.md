@@ -1,279 +1,102 @@
-# task304: which mortgage book the 2027 financial support team works, and the possessions it avoids there
+# task304: where the charity's 2027 find-and-treat van works, and the people it starts on hepatitis C treatment there
 
-Wave 6, Opportunity Sizing & Decision Support, perssathya. Architecture 1, drawn 2026-10-26 off the seed: OS06's
-whole-home retrofit world died six times at call-only probes and a water-meter world once more (Tried and rejected),
-so the number was redrawn in banking. Prototype call-only probes on this world (an isolated sonnet and an isolated opus
-thread at medium effort, prompt and pack only) both missed the call: sonnet filed High LTV 2022-24 at 25 avoided on a
-payment-shock onset model, opus filed High LTV at 29 on a Poisson entry hazard with a book-specific payment-shock effect
-by months since the shock; neither examined the remaining-term history.
+Wave 6, Opportunity Sizing & Decision Support, perssathya. Architecture 2, drawn 2026-10-27 at a stage-1 re-root.
+Architecture 1 (Calderbrook Building Society's 2027 financial support team, the first-time buyers' Charter term
+extensions carried as a forbearance state) shipped 10-27 and came back on the portal's determinism block: the fork is
+the stump (its lineage is on the card, its measurements in `## Tried and rejected`). The world moved from banking to
+epidemiology under the same objective and number: the one in-world shape left was the probes' first move, and a second
+build on a world the portal has seen risks a duplicate finding.
 
 ## Draw
 
 | Axis | Value |
 |---|---|
-| Domain / task type | banking-credit-financial-risk / collections-recovery (serves Opportunity Sizing) |
-| Objective | Opportunity Sizing & Decision Support: the headline is the possessions the team avoids in the chosen book, sized from the pool (the book's borrowers who fall two payments behind in 2027) to the realisable (each taken on, possession chance cut by 15 per cent), and the largest figure picks the book |
-| Decision / answer unit / question form | pick_one_of_n / count / which |
-| Gap / pattern / generators | time, population / none / G3 (record versus operation), G6, G13 |
-| Gate G / strategy | forecasting / composition_mix: the 2027 pool holds far more extended accounts than any period a hazard is fitted on |
-| Layer 2 | field_method, own:forbearance-carried-as-a-state-in-the-arrears-entry-forecast |
-| Forum / forcing event / org family | committee_or_panel (the Society's Credit Committee) / launch_or_rollout (the team starts in January 2027) / financial_institution |
-| Stakeholder | Aimee Atkinson, Head of Collections and Recoveries (operations_director) |
-| People (guard.py names --geo uk --seed 304) | Aimee Atkinson; Oliver O'Brien, Financial Support Team Manager (the pilot report); Elliot Hunt, Chief Risk Officer (the risk appetite statement) |
-| World | Calderbrook Building Society, West Yorkshire and the Pennine towns, GBP; records at 30 September 2026, plan paper October 2026 |
-| Deliverables | support_team_2027_placement_paper.pdf (the Committee paper), support_team_2027_workbook.xlsx |
-| Guard | WARN only: repeat.gate_g and repeat.decision against task166, repeat.question_form against task270 and task166; test.same_driver_older differentiated against task169 v2 |
+| Domain / task type | epidemiology-public-health / screening-diagnostic-policy-evaluation (a case-finding programme placed where it finds the most people to treat; the task type serves Opportunity Sizing) |
+| Objective | Opportunity Sizing & Decision Support: the headline is the people the van starts on treatment in 2027, built from the pool (each setting's 2027 intake) through tested, antibody positive and active infection to started, and the largest figure picks the setting |
+| Decision / answer unit / question form | pick_one_of_n / count / where |
+| Gap / pattern / generators | time, population / none / G6 (the antibody-positive pool's make-up moved from never-treated to cured), G3 (an antibody record that outlives the cure), G13 (a validating ratio from before the treatment push carried to 2027) |
+| Gate G / strategy | forecasting / informative_censoring: the active share is observed only on positives who come forward for an RNA test, and the cured do not come forward, so the share the record shows is the never-treated share; each positive's cure has to be read from whichever organisation gave it |
+| Layer 2 | field_method, own:active-infection-among-antibody-positives-after-curative-treatment |
+| Forum / forcing event / org family | trustees_or_governors (the charity's trustees fund one van) / launch_or_rollout (the van starts in January 2027) / nonprofit_or_charity |
+| Stakeholder | director of services at the charity (operations_director) |
+| People (guard.py names --geo uk --seed 304) | Katie Reynolds, director of services; Nathan Hewitt, outreach team lead (ran the 2018-19 pilot); Clare Stevenson, consultant hepatologist and the network's clinical lead |
+| World | a hepatitis C charity running peer testing and a find-and-treat van with an NHS hepatitis C operational delivery network in an English city and its county; four candidate settings the van has not worked: the probation approved premises (people on licence after prison), the city's homeless hostels, the drug and alcohol service's new entrants to treatment, and the community pharmacy needle exchange's new registrants; records to 30 September 2026 |
+| Deliverables | outreach_van_2027_trustee_paper.docx, outreach_van_2027_funnel.xlsx |
+| Guard | WARN only at the draw: overuse.objective (the lane's objective), repeat.gate_g (forecasting after task118 v3: a forward count the correctly read validating ratio does not pin, the honest key), repeat.decision (pick_one_of_n: the trustees fund one van and size it); test.same_puzzle_older and test.same_driver_older carry differentiation lines (task144, task268, task150, task179, task501) |
 
-The WARNs, answered: the decisive quantity is a forward count, so forecasting is the honest Gate G; the Committee
-chooses one of four books and sizes it, so the decision is a pick with a figure; the Committee's question is which.
-The axes redrawn at the check: `context_artifact` register to monitoring_export (the monthly loan-level extract is the
-honest label; register repeated task270), and the decisive generator from G6 to G3 with time as the decisive gap (the
-record shows an up-to-date account because of the Society's own operation, and the re-entries fall after the window the
-record measures), after (population, G6) and (population, G3) repeated older and in-batch signatures.
+Axes redrawn at the check, each to the honest key the window left: the organisation from the NHS network
+(hospital_or_health_provider, banned against task118 v3) to the charity that runs the van with it, which is who funds
+and places a find-and-treat van in England; the forum from the network board to the charity's trustees, who fund the
+van; the role from programme officer (task118 v3) to the director of services; the context artifact from register
+(task464) to operations_log, the prison health provider's treatment log the call turns on; the strategy from
+composition_mix (task118 v3) to informative_censoring, which names the mechanism more exactly: the RNA result that sets
+the active share exists only for positives who come forward, and the cured do not.
+
+Data-native sentence: the peer programme tests each setting's new arrivals for antibody, which stays positive for life
+after a cure; the laboratory never repeats an antibody test on a known positive and the cured do not come forward for an
+RNA test, so every RNA result the pack holds on an antibody positive is about someone never treated and shows about
+three quarters viraemic; the network's register holds the courses its own clinics gave and the prison health
+provider's log holds the courses given inside, and most of the approved premises' positives were treated inside.
+
+Sources, one line each. `guard.py slots` on the mechanism's nouns (antibody, cured, treatment, register, RNA,
+clearance): task171 (an antibody drug's clearance, pharmacokinetics) and task194 (a clearance register) only, neither
+the insight; on the setting's nouns (hepatitis, HCV, outreach, hostel, needle, prison, drug): no slot. `measured-drivers.md`:
+the held signature "the back-test passes by construction; the forward population differs on an axis the pack shows only
+in another file" is the device, here carried by a second organisation's treatment record rather than by an
+intervention's reach. `layer2-rigor-patterns.md` (screening-diagnostic-policy-evaluation, predictive value depends on
+prevalence) gives the family; the pitfall is re-found from the data: an antibody count after a curative programme.
+Forward facing: the van works calendar 2027 and the call is the people it starts on treatment in that year.
+
+Prototype on clean truth (scratch, 20 seeds, person-level): R0 antibody positives and R1 positives at the validated
+share both file the drug service entrants 20 of 20; R2, positives less the network register's cures, files the
+approved premises 20 of 20; R3, positives less every cure in either record with the validated share on the rest, and
+four standing variants (reinfection read from the laboratory or not counted, a course without a twelve-week result
+counted cured or not, the pilot's ratio for the laboratory's) all file the needle exchange registrants 20 of 20, as
+does truth; minimum clearance 1.21 (R3), 1.20 (R1), 1.17 (R2); the standing family's spread on the graded figure about
+1.3 people on about 95; the RNA-positive share among tested intake positives sits at 0.70 to 0.81 in every setting.
 
 ## Default path
 
-The strong analyst's route, every field read correctly and every filed rule applied (final world, seed 2, the plan's
-printed planning rates: First-time buyer 2019-21 4.5 per cent, High LTV 2022-24 7.4, Shared ownership 1.9, Buy to let
-10.7):
-1. Rebuild payments in arrears at each month end (arrears balance over the current contractual payment, rounded down,
-   policy section 2) and mark each entry, a month the account reaches two or more from fewer than two.
-2. Fit the monthly chance of each move between nought, one and two or more payments behind on the 2024 to 2026
-   history, by book and by the payment rise at the account's last rate switch (the probes added loan age, months since
-   the switch, or the rise since completion).
-3. Carry every account on the book at 30 September 2026 that is not in litigation or with a receiver through 2027,
-   counting each account once, at its first entry, with no allowance for accounts that close (plan section 2).
-4. Take 15 per cent of each book's expected entries times its planning rate: High LTV 2022-24 4.5 possessions avoided,
-   First-time buyer 2019-21 2.9, Shared ownership 0.6, Buy to let 1.2.
-Ends on: High LTV 2022-24, fewer than 5 possessions avoided (4.5), the first-time buyer book at 2.9.
-Golden: First-time buyer 2019-21, about 10 possessions avoided (9.0), with High LTV 2022-24 next at fewer than 5 (4.5),
-once each account whose remaining term rose at its rate switch is carried on the chance the earlier such accounts show
-by months since the increase.
+The strong analyst's route, every field read correctly and every filed rule applied (figures from the prototype; the
+built pack's figures replace them at stage 3):
+1. Take each setting's 2027 intake at the yearly average of its intake in the two years to 30 September 2026, from
+   the settings' intake registers (the plan's pool).
+2. Take the share of each setting's intake the van tests from the 2018-19 pilot's caseload, and the share of each
+   setting's tested intake the peer programme found antibody positive.
+3. Remove from each setting's antibody positives the people the network's treatment register shows cured (a course
+   with a negative twelve-week RNA test), the field's own subtraction.
+4. Carry the rest at the viraemic share the laboratory's first antibody positives show (0.74) and the 2018-19 pilot
+   and the intake positives' own RNA results confirm, then at the pilot's share of viraemic people started on treatment
+   within the year.
+Ends on: the approved premises, about 130 people started on treatment in 2027
+Golden: the needle exchange registrants, about 95 people started on treatment in 2027, the drug service entrants next
+at about 78, once each positive's cure is read from whichever organisation treated it, the prison health provider's log
+for courses given inside as well as the network's register.
 
 ## Stump sentence
 
-A competent solver fits the chance of falling two payments behind on book, current arrears and the payment rise at the
-last rate switch, carries every account on the book through 2027 at the plan's planning rates and files High LTV
-2022-24 first (4.5 possessions avoided against the first-time buyer book's 2.9); the step that lands it there is reading
-the up-to-date first-time buyers' small payment rise as low risk when their remaining term rose at the switch, the
-Charter extension that kept a budget the new rate broke up to date for a few months.
-
-The data-native sentence: in the payment history 7,129 of the 16,455 first-time buyer accounts on the book at 30
-September 2026 had their remaining term raised, by a median of ten years, at the 2026 switch off their 2021 five-year
-fix, so their payment rose by a median 10 per cent where the switchers who kept their term saw 26 per cent, and of the
-347 accounts whose term rose in 2024, 4 were two payments or more behind at a month end within eight months of the
-increase and 81 were by 30 September 2026.
+A competent analyst takes each setting's 2027 intake, the share the peer programme found antibody positive, removes the
+positives the network's treatment register shows cured and carries the rest at the three-quarters viraemic share the
+laboratory and the 2018-19 pilot validate, and files the approved premises first at about 130 people started on
+treatment; the step that lands it there is treating the network's register as the record of every cure, when most of
+the approved premises' antibody positives were cured inside prison by the prison health provider, whose own treatment
+log holds those cures, and an antibody stays positive for life.
 
 ## Three rules
 
-Task type: banking-credit-financial-risk / collections-recovery, which serves Opportunity Sizing: a collections function sizing where a support team avoids the most possessions.
-Domain test: the deciding quantity is each book's 2027 entries into two payments of arrears, the collections forecaster's arrears-entry hazard carried account by account with forbearance as a state: a term extension at the rate switch lowers the payment and keeps the account up to date while the budget the new rate broke stays broken, so the account carries its own hazard by months since the concession.
-Swap: "which hospital ward should the discharge team work, and how many readmissions would it avoid" keeps a pick and an effect size, but the object that decides, an account whose remaining term rose at a rate switch so its payment barely moved while the borrower could not meet the new rate, and the concession's delayed fall into arrears eight to fifteen months later, has no ward equivalent; with the nouns swapped the rate switch, the Charter extension and the arrears-to-possession route stop making sense.
-Layer 1: the Society's own systems produce every mess item: product codes that lost their dashes at the July 2022 platform change, month rows re-sent in a later extract, payments in arrears derived from an arrears balance in pounds against the current payment, a possession register dated day-first that keeps the book each row was written under, arrears capitalised by collections clearing without a payment, properties in possession still on the book until they sell, and redeemed accounts absent from the book snapshot; none decides the call (each asserted not to move it).
-Layer 2: field_method, the arrears-entry forecast with forbearance as a state: the 2027 entries come from each account's hazard given its concession history and the months since the concession, not from its current arrears and the payment change it shows.
-Decisive step: carrying each extended account forward on the delayed re-default chance the 2024 and 2025 extensions show by months since the extension, instead of on the chance its up-to-date status and small payment rise imply.
-Not semantics: every field read correctly (remaining_term_months is the months left to run) still leaves the easy route on High LTV, because no field says an account is forborne: the extension is an event read from the path of the remaining term, and the forecast still has to estimate what that event does to the hazard and when, from the earlier extensions' own outcomes.
-Not rule application: no filed rule forecasts entries; the plan paper files who is counted, the year, the book as it stands at 30 September 2026, the planning rate and the 15 per cent cut, and leaves the entry forecast to the analysis. Measured on the final pack (seed 2): the enumerated family (the stock already two behind, this year's pace, a book-level chain, the payment-rise chain, a rate-rise chain by months since the switch) files High LTV with the first-time-buyer book at 0.6 to 3.7; the standing family (twenty-two constructions that carry the extension as a state, across banding, smoothing, fit window, the switch's rise, the closing month and one curve for every extended account) files the first-time-buyer book at 8.0 to 11.9, every member in the 10 bin and High LTV under 5 in every member; the ruling-out is quiet, since no clause, flag or one-group-by comparison on any shipped column separates the extended accounts.
-Analyst test: a strong analyst fits the monthly chance of an account falling two payments behind on book, current arrears and the payment rise at its last rate switch, carries every account on the book through 2027 at the plan's planning rates and files the High LTV 2022-24 book first at 4.5, while the 2021 first-time buyers who extended their terms at the 2026 switch fall behind eight to fifteen months later and make the first-time-buyer book the largest at about 10 (9.0).
-Estimand: the plan paper (financial_support_team_2027_plan_paper.pdf, sections 2 and 3) files the population (each book's borrowers whose account first reaches two payments in arrears from fewer than two during 2027, the accounts on the book at 30 September 2026, excluding accounts in litigation or with a receiver, each taken on once), the outcome (possession within 18 months of that month, at the book's own printed planning rate), the window (calendar 2027), the unit (possessions avoided, expected) and the comparison (the team cuts the chance by 15 per cent, the pilot report's planning figure), each account on the book counted through 2027 with no allowance for accounts that close.
-No decoy: nothing is planted to be caught: the extensions are the Charter process the arrears policy describes in one line among its support options, no memo, draft or stakeholder figure argues for a book, and no file ranks the books on the decision.
-No certified replay: no published or certified figure in the pack reproduces the method; the pilot report gives the 15 per cent planning cut and its own counts, which the history, the litigation actions and the receiver appointments reproduce.
-Lesson: a borrower's up-to-date status after a concession is the concession's work, not evidence of health, so the concession history is a state the forecast carries with its own clock; no build on file teaches forbearance as a forecast state (task128 sized an early-arrears contact queue, task446 converted watch-list flags by the component that raised them).
-
-## Readability screen
-
-| Rung | What it needs | Verdict |
-|---|---|---|
-| payments in arrears at each month end | policy section 2 (the arrears balance over the current payment, rounded down) | readable |
-| who is taken on, counted once, in 2027 | plan section 2 | readable |
-| the planning rate and the 15 per cent cut | plan section 3, the pilot report | readable |
-| the rate switch and its payment rise | the product code in the history (dashes lost before July 2022) | readable |
-| the term raised at the 2026 switch and the delayed fall into arrears it carries into 2027 (decisive) | no sentence; the path of remaining_term_months in the history and the earlier extensions' outcomes | silent |
-
-## Ladder
-
-| Rung | Construction | First-time buyer | High LTV | Shared ownership | Buy to let | Call |
-|---|---|---|---|---|---|---|
-| R0 | the accounts already two or more behind at 30 September 2026 as the caseload | 0.6 | 0.8 | 0.2 | 0.3 | High LTV |
-| R1 | this year's pace (January to September 2026 entries, annualised) | 2.9 | 4.9 | 0.6 | 1.3 | High LTV |
-| R2 | a book-level chain (book and arrears only) | 2.1 | 4.5 | 0.7 | 1.2 | High LTV |
-| R3 | the default path: the chain by book and the payment rise at the last switch | 2.9 | 4.5 | 0.6 | 1.2 | High LTV |
-| R4 | the rate rise at the switch by months since the switch | 3.7 | 4.6 | 0.7 | 1.3 | High LTV |
-| R5 | the golden: the term increase as a state by months since it, beside the payment rise | 9.0 | 4.5 | 0.6 | 1.2 | First-time buyer |
-
-R3 is the stump and R4 the closest repair that misses (it models the switch's timing, not the concession). Every rung
-is asserted in checks.py. Possessions avoided are expected values; the prompt rounds them to the nearest ten, so the
-golden files the first-time buyer book at 10 and every other book under 5.
-
-## Semantic fork table
-
-| Id | Term or convention | Golden reading | Alternative | Call under it | Ruled out by |
-|---|---|---|---|---|---|
-| SF1 | in 2027 | calendar 2027, January to December | the team's first twelve months from 4 January | same call | plan section 2: during 2027 |
-| SF2 | reaches two payments in arrears | the month-end position reaches two or more from fewer than two | a count of missed payments from the receipts | another count | plan section 2 and policy section 2: the arrears balance over the current payment, rounded down |
-| SF3 | taken on | once per account, at its first entry in 2027 | every entry in the year | same call (asserted) | plan section 2: in the first month of the year it does so |
-| SF4 | the book | the accounts on it at 30 September 2026, none opened later | the book as it will stand in 2027, new lending included | same call (asserted) | plan section 2: the accounts on it at 30 September 2026 |
-| SF5 | left with the recoveries team | recovery_stage Litigation or Receiver appointed at 30 September 2026 left out | kept in | same call (asserted) | plan section 2 |
-| SF6 | the planning rate | the plan's printed rate for each book | a rate recomputed from the history and the register | same rates (asserted) | plan section 3 table; the recomputation reproduces it |
-| SF7 | the team's effect | 15 per cent of the expected borrowers taken on times the planning rate | the pilot's own ratio on four payments behind (0.66, about 35 per cent less often) | same call, another figure | plan section 3: 15 per cent of its expected 2027 borrowers taken on times its planning rate; the pilot report: a 15 per cent cut for planning |
-| SF8 | possessions avoided | an expected number, from expected entries | a whole-number draw | same call | plan section 3 (expected) |
-| SF9 | the next best book | the second-largest possessions avoided on the same measure | the second-largest pool | same book | plan section 3: the book with the most possessions avoided is the one to choose |
-| SF10 | the team's capacity | no cap: about 1,900 cases against at most 1,338 expected in any book | a cap at the capacity | same call | plan section 2: no borrower who qualifies is turned away |
-| SF11 | the rounding | each book's unrounded expected figure to the nearest ten | the pool rounded first | same figures | the prompt |
-| SF12 | ask A, a claim open at 30 September 2026 | not withdrawn, its order not discharged, no eviction, the property not taken into possession (the register, which Ridley Varga's reports never reach) | recovery_stage Litigation in the book; the claim file alone | 24, 61, 2; 52, 79, 7 | policy section 5 (a claim stays open until it is withdrawn, the order is discharged or the property is taken into possession); the register |
-| SF13 | ask A, an order made or varied at a hearing | an order line after a hearing; a line repeating the claim's previous order with no hearing between is the same order sent again | every order line an order | 38, 83, 10 orders | policy section 5: the court makes or varies an order at a hearing |
-| SF14 | ask A, the unit | claims (one panel firm writes a line per defendant) | lines | another count | the asking sentence (claims); the file's defendant column, two lines on one claim and date differing only there |
-| SF15 | ask A, owner-occupied books | First-time buyer 2019-21, High LTV 2022-24, Shared ownership | Buy to let included | none (no buy-to-let claim) | policy sections 5 and 6 |
-| SF16 | ask B, sold from October 2025 to September 2026 | completion date in the window, on the latest statement | statement dates | same rows | the sales file's completion_date |
-| SF17 | ask B, the loss | the debt at possession less the sale price net of fees, nil where the sale covers it | a surplus as a negative loss | another average | policy section 8 |
-| SF18 | ask B, a corrected statement | replaces the earlier one | both counted | same figures (asserted) | the statement column: a corrected statement carries the next number on the same sale reference |
-| SF19 | ask B, the book | the account's lending book among the plan's four, as the payment history carries it for every account | the register's label read as written (its earlier first-time buyer label is not one of the four) | another split | plan section 1 (the four books); the history's book on every account, closed ones included |
-| SF20 | ask B, at a loss | a loss above nil | none | none | policy section 8 |
-| SF21 | the book through 2027 | every account on the book at 30 September 2026 counted for the whole year, none netted off for closing first | each account netted for the chance it redeems before falling behind (8.0 on the golden's construction) | same call (asserted), the same bin | plan section 2: with no allowance for accounts that close during the year |
-| SF22 | ask B, a possession sold | one property: one sale per account and completion date, its debt every register row of the account (one per loan part) | each completion statement a sale, the register's repeated account a re-sent row | 27/5/2,600, 30/18/22,000, 6/0/0 | the asking sentence (possessions sold); the register: the account's rows share one possession date (asserted) |
-
-## Closure table
-
-| # | Axis | Reading | Move |
-|---|---|---|---|
-| 1 | Population | the accounts on the book at 30 September 2026, not in litigation or with a receiver; none not yet observed (the book is fixed at that date), each counted through 2027 with no allowance for accounts that close | filed (plan section 2) |
-| 2 | Unit of account | a borrower taken on at the account's first 2027 entry; expected possessions avoided | filed (plan sections 2 and 3) |
-| 3 | Attribution window | entries in calendar 2027; possession within 18 months of the entry, inside the planning rate | filed (plan sections 2 and 3) |
-| 4 | As-of dating | the book and the history at 30 September 2026; the plan of 9 October 2026 | filed (file names, plan) |
-| 5 | Version basis | the plan's printed planning rates; policy version 7 | filed |
-| 6 | Denominator | the planning rate's own (printed); none on the call's counts | filed |
-| 7 | Weighting | each account once | filed (plan section 2) |
-| 8 | Window length | the fit window is method: from July 2023, January 2024 or January 2025 every construction files the same call in the same bin | C1 (asserted) |
-| 9 | Boundary inclusivity | month-end positions; January to December | C1 (asserted) |
-| 10 | Rounding path | unrounded expected figures, each to the nearest ten | filed (the prompt) |
-| 11 | Tie-break | none: 9.0 against 4.5 | asserted |
-| 12 | Maturity and censoring | the 2026 extensions' fall into arrears comes after the record ends; the construction that carries it is the stump | WHAT filed; the decisive step is analytical |
-| 13 | Order of operations | expected entries, times the planning rate, times 15 per cent | filed (plan section 3) |
-| 14 | Row order | none | C1 |
-| 15 | Duplicate resolution | month rows re-sent in the history dropped (asserted not to move the call); ask A one claim per claim number; ask B the latest statement | asserted |
-| 16 | Identity normalisation | product codes compared with the dashes taken out; one account numbering in the history | asserted |
-| 17 | Netting against gross | ask B net proceeds, nil loss on a surplus | filed (policy section 8) |
-| 18 | Dimensional units | payments in arrears from pounds over the current payment; GBP | filed (policy section 2) |
-| 19 | Code and status semantics | account_status, recovery_stage, the litigation actions as each export writes them; the policy defines arrears, the court route and the loss | filed; never the stump |
-| 20 | Integerisation | none on the call; ask counts are whole claims and sales | filed |
-| 21 | Clause scope | the 15 per cent cut for every borrower the team works with, in any book | filed (pilot report section 3, plan section 3) |
-| 22 | Forward window contents | 2027's entries from the book at 30 September 2026, the extended accounts' fall into arrears inside it | C1 across the standing family (asserted, 8.0 to 11.9, every member in the 10 bin) |
-
-## Literal reader
-
-Executing the prompt and every filed sentence word for word (the plan's sections 1 to 3, the policy's sections 2 and
-5 to 8, the pilot report, the field descriptions) leaves one open move on the call: how each account's chance of first
-reaching two payments in arrears in each month of 2027 is forecast. The estimand is filed literally (who is taken on,
-counted once, in calendar 2027, the book as it stands with no allowance for accounts that close, at the printed
-planning rate, cut by 15 per cent), every construction that carries the extended accounts on the chance the earlier
-extensions show by months since the increase files the first-time buyer book at about 10 (8.0 to 11.9 across the
-standing family, asserted, smoothing weights from none to 100 account-months included), and the constructions that
-carry them on their current arrears and small payment rise file High LTV first at 4.5: an easy method on the same
-literal estimand, never another reading of it.
-
-## Oracles
-
-None on the call: no file forecasts or ranks 2027 entries, and the plan's printed rates are inputs both routes share.
-The pilot report's counts reproduce from the history, the litigation actions and the receiver appointments (asserted in
-checks.py, recomputed in verify.py). On the asks there is no control
-total: the possession register settles which open claims have ended in possession (ask A) and the payment history
-carries each account's book (ask B), and neither ties a published figure.
-
-## Ask sheet
-
-**Ask A: in each owner-occupied book, the possession orders the courts made or varied at hearings from October 2025 to
-September 2026, how many of those were suspended on terms, and the possession claims open at 30 September 2026 (9
-figures, whole orders and claims).** H18: each book's recoveries caseload, the borrowers the team does not take on
-because they are already with the panel solicitors (plan section 2), a measure every candidate carries that the call
-does not turn on; the call reads none of the litigation file (asserted). Use: the recoveries team's own plan beside the
-support team's. Primary device, silent (D2, a re-sent record nothing labels): Pennant Moss's case system writes a
-fresh order line whenever the court re-seals an order and sends it again, with the same terms and no hearing between,
-so a quarter of its orders appear twice; only the run of actions on the claim shows the second line is the same order.
-Interior: a suspended order varied on the same terms at a later hearing is a genuine variation and counts, so dropping
-every repeated order over-repairs. Second device on the open claims (D4, absence evidenced in a file no habitual join
-reaches): Ridley Varga's reports end at the warrant, so a claim whose property was taken into possession reads open in
-the claim file; only the possession register closes it. Hazards: one line per defendant from one firm, hearings listed
-and adjourned, transfers between hearing centres. Files: litigation_open_claims, possession_register, mortgage_book,
-mortgage_payment_history, arrears policy. Stops (first-time buyer, high LTV, shared ownership, as
-orders / suspended / open): every re-sealed line an order 38/30/17, 83/65/43, 10/10/2 (the careful path, which also
-closes claims through the register); every line counted, defendants included 39/31/17, 93/72/43, 11/11/2; every
-repeated order dropped 34/27/17, 69/54/43, 9/9/2; no look at the register (open) 52, 79, 7; the register checked only
-for accounts still on the book (open) 18, 55, 2; the book's Litigation stage as the open claims 24, 61, 2; golden
-34/27/17, 71/56/43, 9/9/2.
-
-**Ask B: in each owner-occupied book, the possessions sold with completion from October 2025 to September 2026, how
-many of them were sold at a loss, and the average loss per possession sold (9 figures; counts, and pounds to the
-nearest hundred).** H18: what a possession costs in each book, a second measure every candidate carries beside the
-possessions the team avoids; the call reads none of the sales, receiver or register files (the planning rates are
-printed; asserted). Use: the loss budget that goes with the plan. Primary device, silent (D2): an account with a
-further advance holds two loan parts, and the Society writes a register row and a completion statement for each, so
-one property sold reads as two sales with two debts; only reading the account and the completion date together shows
-one possession whose debt is both parts'. Interior: the register's rows before the April 2026 re-cut carry its earlier
-first-time buyer book, so each account's book comes from the payment history. Hazards: receivers' sales under their own
-reference (the receivers' file holds the account), corrected statements re-sent in full (the later one replaces), a
-surplus paid to the borrower (nil loss, policy section 8). Files: possession_sales_completed, possession_register,
-lpa_receiver_appointments, mortgage_payment_history, arrears policy. Stops (sold / at a loss /
-average loss): each statement a sale, the register's last row as the debt 27/5/2,600, 30/18/22,000, 6/0/0 (the careful
-path); each statement a sale, the parts' debts summed 27/9/4,100, 30/30/31,400, 6/4/4,400; one sale per account, the
-register's last row 20/5/3,500, 24/18/27,500, 4/0/0; the register's old label read as the 2019-21 book 45/30/18,500,
-3/3/22,800, 0/0/none; golden 20/7/4,500, 24/24/33,300, 4/2/3,300.
-
-Main population zero-counts: the call reads the book, the history, the plan and the policy's measurement section, and
-none of the litigation, sales, receiver or register files; the asks read those four and the history only for each
-account's book (asserted, separation).
-
-| Ask | Cracker (lands the call, runs the battery, executes every filed rule) | Verdict |
-|---|---|---|
-| A orders, suspended, open | 3 of 9 (the open claims in every book) | miss |
-| B sold, at a loss, average loss | 0 of 9 | miss |
-
-Pair ceiling: 37.7 ((54.2 + 21.2) / 2), the cracker keeping 3 of the 18 ask figures on the call and the mirror the same
-on the default path's call.
-Mirror leakage: 16.7 per cent of ask weight.
-Measured by: generator/pair.py on the cut pack.
-
-## Pre-ship check
-
-- Free gates (stage 3, final build): generator checks 157 passed (the golden and its bins, R3a the easy routes filing
-  High LTV, R0 and R1, the standing family of constructions, SF1 to SF22, the pilot table reproduced, the extension
-  facts invariant to the re-sent rows, both asks' stops, separation, the distractors unread, the input gates); two
-  builds byte-identical (target.zip 57a875af); the independent verifier 0 mismatches on the cut zip (54 seconds once its
-  account filter used a hashed lookup); figures_check 35 of 35; precut 52/0/0 with voice-check PASS (pair ceiling 37.7,
-  mirror leakage 16.7 per cent, pair.py on the cut pack).
-- leak.py REVIEW, each line ruled harmless: sweep 3, the plan paper carries the call's words because it is the
-  Committee's own paper on the choice (the team, the four books, 2027, possessions) and holds no answer figure and no
-  ranking (sweep 6 clean); sweep 4, the arrears policy defines payments in arrears, the support options and the court
-  route, its one Charter sentence says a borrower who is up to date may extend the term without a fresh affordability
-  assessment and nothing on what follows an extension; the risk appetite statement carries the Board's limits only;
-  the plan paper files the estimand and names no forecast and no extension; the pilot report gives its eligibility,
-  outcomes and result and names no extension; sweep 9, the 54,897 future dates are product_end_date, each account's
-  contractual product end (to August 2031), forward by nature (H16 allow-list).
-- Leak reader (two reads, the second on the final pack, neither solving): no decisive-step sentence, no analyst-only
-  file, no answer figure; question 6 analytical; every rule in leak_check_report.md. The first read's realism tells are
-  fixed in the generator: PDFs saved at working-day times on the UK offset with the writer's /Trapped key blanked
-  (equal-length rewrite), references numbered from their own stream (no fixed steps), sale prices written as whole
-  pounds, the litigation export named for the claims it holds (open at any time from January 2023), and the plan paper
-  given its budget line and the Committee's July review.
-- Determinism judge pass 1 (zip 5194480e): DETERMINISTIC, APPROVE; Gate G forecasting, analytical non-defect; Gate H
-  domain, layers, decisive step analytical. Its three minor notes are closed in the generator: the prompt now asks for
-  the next best book's own figure ("how many would it avoid in the next best book?"), critical component 2 counts "at
-  one of the eight month ends after the month of the increase", and the open claims rest on policy section 5's filed
-  definition (the register closes a claim when the property is taken into possession). Pass 2 on the final zip
-  (57a875af): DETERMINISTIC, APPROVE, every workbook figure, component and planning rate reproduced; First-time
-  buyer 2019-21 first in every variant that carries the term-increase state (8.0 to 9.7 avoided), High LTV 2022-24
-  second (3.2 to 4.9) and first only with the term state dropped.
-- guard heart WARN: overuse.objective (4 of the last 12), repeat.gate_g against task137 and task166, repeat.decision
-  and repeat.question_form against task166, all answered at the draw (a pick among four books is the plan's own
-  question; the forecast is the domain's).
-- guard surface: 3 pairs promoted at surface 0.10 (corpus percentile 99), each adjudicated clean, shares components by
-  design. task169 (the card's same-driver signature: gap time, pattern none, Gate G forecasting) sends events a closed
-  processing route pre-empted through the remaining route's conversion after a filed change; task304 has no closed route
-  and no filed change, and its forward count is each concession's delayed re-entry by months since it. task165 shares
-  the composition-mix strategy only: its gain is conditioned on how much of a unit the old service level already
-  treated. task453 is an ETL dial setting on rotation-group bias, a different objective and driver.
-- Containers: the producer audit reports no writer signature; H4 the zip's 13 members equal the declared list (the
-  data dictionary removed under the no-describing-file rule); H11 one submission and one prompt; H16 every extract
-  ends by 30 September 2026 apart from product_end_date; H24 no generator word under target/.
+Task type: epidemiology-public-health / screening-diagnostic-policy-evaluation, which serves Opportunity Sizing: a case-finding programme sized and placed by the people with active infection it finds and starts on treatment.
+Domain test: the deciding quantity is each setting's count of people with active hepatitis C the van would find and start on treatment, the epidemiologist's antibody positives times the share still viraemic, where an antibody persists for life after a cure, the never-treated keep the natural three-quarters chronic share after spontaneous clearance, and a person treated in prison is cured in the prison health provider's record and not the network's.
+Swap: "which ward should the falls team work, and how many patients with active fall risk would it treat" keeps a pick and a count, but an antibody that outlives the infection, a laboratory that never re-tests a known positive for antibody, spontaneous clearance setting the never-treated share, a cure confirmed twelve weeks after the course and a cure recorded by whichever organisation gave it have no ward equivalent; with the nouns swapped the active share stops being something to estimate.
+Layer 1: the organisations' own systems produce every mess item: the laboratory's test codes renamed at its 2021 system change, results written as text (Reactive, Non-reactive, Equivocal, Detected, Not detected, below 15 IU/mL), rows the laboratory re-sent in a later extract, the prison log's day-first dates and its prison numbers beside the shared pseudonym, setting names written several ways in the peer log, re-admissions in the intake registers; the network's register and the prison health provider's log are each complete for the courses its own provider gave; none decides the call (each asserted not to move it).
+Layer 2: field_method, the active pool among antibody positives built person by person from each positive's treatment record wherever the course was given, with the validated viraemic share carried only by the never-treated.
+Decisive step: reading each antibody-positive arrival's cure from whichever organisation treated them, the network's register for community courses and the prison health provider's log for courses given inside, before carrying the validated viraemic share to the never-treated.
+Not semantics: every field read correctly (a reactive antibody is a past or present infection, the register holds the network's courses, the prison log holds the prison provider's courses) still leaves the easy route on the approved premises, because no field says a positive was cured elsewhere: the cure is an event in another organisation's record that only a person-by-person join finds, and why it matters is the epidemiology, an antibody that persists after cure and a validated share that describes never-treated positives only.
+Not rule application: no filed rule estimates the active share; the plan files the pool, the year, the outcome and the van's pilot rates, and executing every filed sentence leaves the active share open. Enumerated family (prototype, 20 seeds): antibody positives alone and positives at the validated share file the drug service entrants (20 of 20), positives less the network register's cures file the approved premises (20 of 20), the pilot's ratio for the laboratory's changes no call; standing family (four constructions that read each positive's cure from both records: reinfection from the laboratory or not counted, a course without a twelve-week result counted cured or not, either ratio) files the needle exchange registrants 20 of 20 with a spread of about 1.3 people on about 95, one printed bin; the ruling-out is quiet: no clause, flag or one-group-by on any shipped column separates the people cured in prison, only the join to the prison health provider's log.
+Analyst test: a strong analyst takes each setting's 2027 intake at its 2025-26 average, the share the peer programme found antibody positive, removes the positives the network's register shows cured, carries the rest at the 0.74 viraemic share the laboratory's first positives and the 2018-19 pilot validate, and files the approved premises first at about 130 people started on treatment, while most of the approved premises' positives were cured inside prison and the needle exchange registrants, the least treated, lead at about 95.
+Estimand: the van plan (outreach_van_2027_plan.pdf, sections 2 and 3) files the population (each setting's arrivals in calendar 2027, at the yearly average of its arrivals in the two years to 30 September 2026), the outcome (people the van tests, finds with active infection and starts on treatment in 2027), the window (calendar 2027), the unit (people started, each once) and the comparison (the setting with the most), with the van's contact and start rates from the 2018-19 pilot.
+No decoy: nothing is planted to be caught: the prison health provider's log is its own record kept for its Health and Justice contract returns, no memo, draft or stakeholder figure argues for a setting, and no file ranks the settings on the decision.
+No certified replay: no published or certified figure reproduces the method; the pilot report gives the pilot's own counts, which its caseload reproduces.
+Lesson: after a curative programme an antibody-positive count measures past infection, and the share still infected is built person by person from each positive's treatment record wherever the course was given, the validated viraemic share applying to the never-treated only; no build on file teaches it (nearest drivers 0.07 and below).
 
 ## Tried and rejected
 
@@ -397,3 +220,20 @@ Measured by: generator/pair.py on the cut pack.
   refix priced at product_end_date off the rate card the plan already names, and the prototype probes built a
   payment-shock model by months since the shock first, so it is a reflex: the re-root moves domain under the same
   objective and number unless a decisive step passes this constraint on paper.
+- Architecture 2 draw screens (2026-10-27, no data cut), one clause each. A Help to Buy equity loan's year-six fee
+  as a cost the lender's payment history cannot see passed the re-root constraint on paper but sits in the world the
+  portal has already seen, so a second build there risks a duplicate finding. County input-output commuting leakage
+  is task303's screen (both call-only probes landed on the Type II caveat). Bowel and lung first-round yields depleted
+  by colonoscopies or CT scans done for other reasons are the prevalent-against-incident cut task130 and task135 set
+  aside, and the depleted share is a few per cent in an English population. Regeneration decants carried as new
+  tenancies and timing points that absorb a bus priority saving sit in urban x Opportunity Sizing, banned against
+  task305, and the second is the max-of-two-steps family task127 spent. Public charging demand thinned by driveways
+  needs address-level vehicle records no council holds. A hepatitis C antibody count read against the network's own
+  treatment register alone is the field's own subtraction, so it went onto the default path as R2 rather than being
+  the decisive step. Toll salience by payment channel (economics, elasticity) was kept as the fallback; its risk is
+  Gate C on the elasticity family.
+- A register whose coverage changes on a date (the prison health provider taking over in-prison treatment in April
+  2022, so the network's register stops holding prison cures from then): dropped before the build at the advisor's
+  reading, because a record that changes coverage on a date is a layout change across years and would read as Layer 1
+  carrying the stump; the prison health provider's log is instead the standing arrangement, each record complete for
+  its own provider, and R2 still lands the approved premises because their positives were treated inside.
