@@ -67,7 +67,7 @@
     {
       "path": "named_storm_register_2008-2025.csv",
       "format": "csv",
-      "bytes": 1044,
+      "bytes": 1041,
       "rows": 16,
       "source": "Constructed (seeded generator)",
       "date": "2026-11-06",
@@ -76,7 +76,7 @@
     {
       "path": "storm_peak_gust_footprints_2008-2025.xlsx",
       "format": "xlsx",
-      "bytes": 51762,
+      "bytes": 51752,
       "rows": null,
       "source": "Constructed (seeded generator)",
       "date": "2026-11-06",
@@ -94,7 +94,7 @@
     {
       "path": "corvane_hu27_elt_sandpiper_retrofit_2027.parquet",
       "format": "parquet",
-      "bytes": 602198,
+      "bytes": 733248,
       "rows": 36000,
       "source": "Constructed (seeded generator)",
       "date": "2026-11-06",
@@ -175,7 +175,7 @@
     {
       "path": "storm_closeout_summaries_2012-2025.pdf",
       "format": "pdf",
-      "bytes": 3701,
+      "bytes": 3681,
       "rows": null,
       "source": "Constructed (seeded generator)",
       "date": "2026-11-06",
@@ -193,7 +193,7 @@
     {
       "path": "roofing_contractor_quotes_2027.xlsx",
       "format": "xlsx",
-      "bytes": 6628,
+      "bytes": 6750,
       "rows": null,
       "source": "Constructed (seeded generator)",
       "date": "2026-11-06",

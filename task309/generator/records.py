@@ -437,6 +437,11 @@ def ls(g):
     return _LS[k]
 
 
+def event_ids():
+    """The 9,000 events' numbers in the vendor's catalog, which also holds events that never reach this coast."""
+    return [27000000 + int(x) for x in _ladder("hu27-events", W.VENDOR_EVENTS, 1, 9)]
+
+
 def vendor(w, pf):
     """The vendor's event loss table on each county's modeled portfolio (standard roofs, gross of reinsurance, after
     the 2 percent named-storm deductible) and its hazard summary (each event's peak-gust class at the portfolio)."""
@@ -450,7 +455,7 @@ def vendor(w, pf):
             mean = tiv * ls(gg) * float(V["noise"][j][e])
             if mean < 5000:
                 continue
-            eid = 27000000 + e * 3 + 1
+            eid = event_ids()[e]
             elt.append(dict(event_id=eid, portfolio_id=P.PORTFOLIO_CODE[c], annual_rate=round(float(V["rate"][e]), 9),
                             mean_loss_usd=round(mean, 0), sd_loss_usd=round(mean * float(0.9 + 0.6 * min(1, mean / tiv * 4)), 0),
                             exposed_value_usd=round(tiv, 0)))

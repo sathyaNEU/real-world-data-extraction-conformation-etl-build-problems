@@ -51,7 +51,8 @@ def main(target, w=None):
     for n in names:
         mm = m[m.county == n]
         cc = [k for k, v in P.COUNTY_NAME.items() if v == n][0]
-        gust = V["counties"][cc]["gust"][(mm.event_id.values - 27000001) // 3]
+        pos = {eid: e for e, eid in enumerate(R.event_ids())}
+        gust = V["counties"][cc]["gust"][[pos[x] for x in mm.event_id.values]]
         truth[n] = float((mm.aal.values * W.gross_cut(gust)).sum())
     ok(max(truth, key=truth.get) == r["call"] == f["call"], "the call is the truth's largest loss removed")
     ok(abs(g[r["call"]] / truth[r["call"]] - 1) < 0.06, "golden loss removed within 6 per cent of the truth")
@@ -89,8 +90,8 @@ def main(target, w=None):
     passing = [k for k in r["removed"] if S.passes(bt[k])]
     for k in passing:
         ok(r["removed"][k].idxmax() == r["call"], "passing adjustment %s names the call" % k)
-        ok(round(r["removed"][k][r["call"]] / 1e5) == round(g[r["call"]] / 1e5), "passing %s prints the same 0.1M" % k)
-        ok(edge(r["removed"][k][r["call"]] / 1e6, 0.1) > 0.015, "passing %s is clear of the 0.1M edge" % k)
+        ok(round(r["removed"][k][r["call"]] / 1e6) == round(g[r["call"]] / 1e6), "passing %s prints the same million" % k)
+        ok(edge(r["removed"][k][r["call"]] / 1e6, 1.0) > 0.15, "passing %s is clear of the million's edge" % k)
 
     # ---------------------------------------------------------------- the semantic forks (design note table)
     # SF1 loss removed = AAL standard less AAL FORTIFIED under the vendor set: a percentile or a multi-year sum is not
@@ -122,7 +123,7 @@ def main(target, w=None):
     # SF8 knots: 1.150779 against 1.15 gives the same call and the same printed figure
     alt = _cells_variant(target, kt=1.15)
     a2 = _removed(target, alt)
-    ok(a2.idxmax() == r["call"] and round(a2[r["call"]] / 1e5) == round(g[r["call"]] / 1e5), "SF8 knot factor converges")
+    ok(a2.idxmax() == r["call"] and round(a2[r["call"]] / 1e6) == round(g[r["call"]] / 1e6), "SF8 knot factor converges")
     # SF9 event join: every ELT row finds its hazard row
     ok(m.peak_gust_class.notna().all(), "SF9 every ELT event joins the hazard summary")
     # SF10 pooled against ZIP-matched class cuts: same call, same printed figure (asserted above for all passing)
@@ -131,14 +132,22 @@ def main(target, w=None):
     m2 = m.assign(aal=(1 - np.exp(-m.annual_rate)) * m.mean_loss_usd)
     adj = r["adj"][S.GOLDEN]
     rem2 = (m2.aal * m2.cls_lo.map(lambda lo: adj(lo + 5.0))).groupby(m2.county).sum()
-    ok(rem2.idxmax() == r["call"] and round(rem2[r["call"]] / 1e5) == round(g[r["call"]] / 1e5), "SF11 Poisson forms converge")
+    ok(rem2.idxmax() == r["call"] and round(rem2[r["call"]] / 1e6) == round(g[r["call"]] / 1e6), "SF11 Poisson forms converge")
     # SF12 the MG-04 threshold of USD 10 million: the qualifying storms are the five majors with FORTIFIED paid
     ok(f["mg04_storms"] == ["2016-04", "2018-05", "2020-08", "2022-04", "2024-07"], "SF12 the five MG-04 storms")
     # SF13 a class's gust read at its lower bound or its midpoint: same lookup
     rem3 = (m.aal * m.cls_lo.map(lambda lo: adj(float(lo)))).groupby(m.county).sum()
     ok(abs(rem3[r["call"]] - g[r["call"]]) < 1, "SF13 class lookup at bound or midpoint identical")
     # SF14 rounding: loss removed to USD 0.1 million, annual loss to 0.01 million, both clear of their edges
-    ok(edge(g[r["call"]] / 1e6, 0.1) > 0.015, "SF14 loss removed clear of the 0.1 edge (USD 15,000)")
+    ok(edge(g[r["call"]] / 1e6, 1.0) > 0.15, "SF14 loss removed clear of the whole-million edge")
+    fam = grouping_family(target, c)
+    okf = fam[fam.worst <= P.MG04_TOL]
+    ok(len(fam) == 4 * 2 ** (len(set(c.cls)) - 1), "SF16 every contiguous grouping enumerated (%d)" % len(fam))
+    ok(len(okf) > 8000 and (okf[NAMES4].idxmax(axis=1) == r["call"]).all(), "SF16 every MG-04-passing grouping names the call")
+    ok((okf[NAMES4].apply(lambda x: x.sort_values().index[-2], axis=1) == r["runner"]).all(), "SF16 and the same runner-up")
+    ok((okf[r["call"]].round() == round(g[r["call"]] / 1e6)).all() and okf[r["call"]].min() > 2.53 and okf[r["call"]].max() < 3.47,
+       "SF16 and the same whole million (%.3f to %.3f)" % (okf[r["call"]].min(), okf[r["call"]].max()))
+    ok(((okf[r["call"]] * 10).round() / 10).nunique() > 1, "SF16 one decimal is not determinate across the passing family (why whole millions)")
     for n in names:
         ok(edge(r["aal"][n] / 1e6, 0.01) > 0.001, "SF14 annual loss %s clear of the 0.01 edge" % n)
     # SF15 runner-up is second by loss removed (Marlin Shoals), which is also first by annual loss
@@ -194,6 +203,25 @@ def main(target, w=None):
         for n in names:
             ok(int(cc_.loc[n, "homes"]) != f["ask_c"][n][0] and int(round(cc_.loc[n, "cov"] / 1e3)) != f["ask_c"][n][1],
                "ask C route %s misses %s" % (route, n))
+
+    # ask C's street pairing is a record in the pack: the parcels listed under both names
+    pe_ = pd.read_csv(os.path.join(target, P.FILES["permits"]), dtype={"zip": str})
+    pm_ = pd.read_csv(os.path.join(target, P.FILES["policies"]), dtype=str, keep_default_na=False)
+    ce_ = pd.read_csv(os.path.join(target, P.FILES["certs"]), dtype=str, keep_default_na=False)
+    pairs = S.street_pairs(ce_, pm_)
+    truth_pairs = {(P.COUNTY_NAME[c], old.upper()): W.STREETS[i].upper() for c, (i, old, d) in R.RENAMES.items()}
+    ok(pairs == truth_pairs, "ask C: the parcels pair exactly the four renamed streets (%s)" % sorted(pairs.items()))
+    ok(S.street_map(pe_, pm_, ce_) == S.street_map_by_number(pe_, pm_), "ask C: the house-number pairing agrees street by street")
+    # the reading the write-up rules out: ZIP and house number alone, street ignored, collides across streets
+    rr = pe_[(pe_.work_class == "RE-ROOF") & (pe_.issue_date <= P.ASOF)]
+    t = rr.address.map(S.split_addr)
+    last = pd.Series(rr.issue_date.str[:4].astype(int).values,
+                     index=[z + "|" + a[0] + "|" + str(a[2]) for z, a in zip(rr.zip, t)]).groupby(level=0).max()
+    pfz = pd.read_csv(os.path.join(target, P.FILES["portfolios"]), dtype={"zip_code": str})
+    tp = pfz.site_address.map(S.split_addr)
+    yr = np.maximum(pfz.roof_year_on_record, [last.get(z + "|" + a[0] + "|" + str(a[2]), 0) for z, a in zip(pfz.zip_code, tp)])
+    alt = pfz[yr <= 2012].groupby("county").size()
+    ok(any(int(alt.get(n, 0)) != f["ask_c"][n][0] for n in names), "ask C: ZIP and house number without the street differs")
 
     # ---------------------------------------------------------------- separation: no ask device in the call's rows
     main_cats = set(reg[reg.landfall_date.str[:4].astype(int) >= 2012].claims_catastrophe_code)
@@ -263,7 +291,7 @@ def sweep(target, f, r):
     _, res_bad, _ = S.county_figures(target, c_bad)
     pas = [k for k in adj_bad if S.passes(S.backtest(c_bad, adj_bad[k]))]
     ok(not S.passes(S.backtest(c_bad, adj_bad[S.GOLDEN])) and all(
-        res_bad[k].idxmax() == r["call"] and round(res_bad[k][r["call"]] / 1e5) == round(r["removed"][S.GOLDEN][r["call"]] / 1e5)
+        res_bad[k].idxmax() == r["call"] and round(res_bad[k][r["call"]] / 1e6) == round(r["removed"][S.GOLDEN][r["call"]] / 1e6)
         for k in pas), "R2 thousands read as dollars: MG-04 refuses the pooled cut, and what passes files the same call")
     hz = pd.read_csv(os.path.join(target, P.FILES["hazard"]))
     elt = pd.read_parquet(os.path.join(target, P.FILES["elt"]))
@@ -300,6 +328,23 @@ def sweep(target, f, r):
     ok(all(np.mean([ch[i] == ch[i + k] for i in range(len(ch) - k)]) < 0.9 for k in (2, 3, 4)), "channel not dealt in turn")
     ok(len({round(v, 2) for v in f["aal_musd"].values()}) == 4 and all(v % 1 for v in f["aal_musd"].values()),
        "no round or repeated annual losses")
+    ok(_steps(elt.event_id) < 0.3 and elt.annual_rate.nunique() > 0.9 * elt.event_id.nunique(),
+       "the vendor's event ids carry catalog gaps and each event its own rate")
+    reg = pd.read_csv(os.path.join(target, P.FILES["storms"]), dtype=str).fillna("")
+    nm = reg.sort_values("landfall_date").storm_name.str.split().str[-1].tolist()
+    ok(nm != sorted(nm), "storm names are not alphabetical across seasons")
+    ok(all(n[0] == "ABCDEFGHIJ"[int(c[-2:]) - 1] for n, c in zip(reg.storm_name.str.split().str[-1], reg.storm_id)),
+       "each storm's initial matches its place in the season's order")
+    prods = {PdfReader(os.path.join(target, x)).metadata.get("/Producer") for x in files if x.endswith(".pdf")}
+    ok(len(prods) >= 3, "PDF producers vary by issuer (%s)" % sorted(prods))
+    import openpyxl
+    for x in files:
+        if x.endswith(".xlsx"):
+            pr = openpyxl.load_workbook(os.path.join(target, x), read_only=True).properties
+            ok(pr.creator and pr.lastModifiedBy and pr.creator != pr.lastModifiedBy, "%s created and last saved by different people" % x)
+    qt = pd.read_excel(os.path.join(target, P.FILES["quotes"]), header=2)
+    ok(qt.groupby("County").size().nunique() > 1, "contractor counts differ by county")
+
     # ---------------------------------------------------------------- extracts and documents against their dates
     ok(cl.payment_date.max() <= P.ASOF and pe.issue_date.max() <= P.ASOF and ce.event_date.max() <= P.ASOF,
        "no extract carries a date after its pull")
@@ -333,6 +378,52 @@ def sweep(target, f, r):
         ok(all(int(c_.loc[n, "homes"]) == f["ask_c"][n][0] for n in f["ask_c"]), "distractors deleted: ask C unchanged")
     finally:
         shutil.rmtree(tmp)
+
+
+NAMES4 = ["Marlin Shoals", "Heron Bay", "Calloway Flats", "Cypress Ridge"]
+
+
+def grouping_family(target, c):
+    """Every contiguous grouping of the vendor's 10 mph gust classes, each cut pooled or ZIP-matched, fitted on every
+    storm since 2012 or on MG-04's test storms only: MG-04's worst miss and each county's loss removed (USD million)."""
+    import itertools
+    m = S.vendor(target)
+    ks = sorted(c.cls.unique())
+    cuts = ks[1:]
+    test = [sid for sid, *_ in S.backtest(c, lambda gg: 0.5)]
+    rows = []
+    for sid, d in c.groupby("storm_id"):
+        f = d[d.fort == 1]
+        act = f.paid.sum()
+        if act < P.MG04_MIN_PAID:
+            continue
+        s = d[d.fort == 0].set_index("zip_code")
+        j = f.join(s[["paid", "tiv"]], on="zip_code", rsuffix="_s")
+        j = j[j.tiv_s > 0]
+        rows.append((act, (j.paid_s / j.tiv_s * j.tiv).groupby(j.cls).sum()))
+    aalc = m.groupby(["county", "cls_lo"]).aal.sum().unstack(fill_value=0.0)
+    out = []
+    for pop, cc in (("all", c), ("test", c[c.storm_id.isin(test)])):
+        for fit, fn in (("pooled", S._ratio), ("matched", S._ratio_matched)):
+            cache = {}
+            for n in range(len(cuts) + 1):
+                for br in itertools.combinations(cuts, n):
+                    b = [ks[0]] + list(br) + [ks[-1] + 10]
+                    tab = {}
+                    for i in range(len(b) - 1):
+                        if (b[i], b[i + 1]) not in cache:
+                            cache[(b[i], b[i + 1])] = fn(cc[(cc.cls >= b[i]) & (cc.cls < b[i + 1])])
+                        for k in ks:
+                            if b[i] <= k < b[i + 1]:
+                                tab[k] = cache[(b[i], b[i + 1])]
+                    cut = pd.Series(tab).sort_index()
+                    if cut.isna().all():
+                        continue
+                    cut = cut.bfill().ffill()          # a class with no FORTIFIED exposure takes its neighbour's cut
+                    worst = max(abs((base * (1 - cut.reindex(base.index))).sum() / act - 1) for act, base in rows)
+                    fig = (aalc * cut.reindex(aalc.columns).values).sum(axis=1) / 1e6
+                    out.append(dict(pop=pop, fit=fit, breaks=br, worst=worst, **fig.reindex(NAMES4).to_dict()))
+    return pd.DataFrame(out)
 
 
 def _cells_variant(target, lines=None, fort_token=None, kt=None):
