@@ -1,0 +1,87 @@
+{
+  "task": "task311",
+  "architecture": "v1",
+  "drawn": "2026-10-27",
+  "slot_note": "OS13's world (a public charging coverage figure) set aside: its decoy-era mechanism is a site-unit reading and its government office collides with task310's org family; the number moves to survey research, never built against Opportunity Sizing",
+  "domain": "survey-research-official-statistics",
+  "subdomain": "sample-design-allocation-weighting",
+  "niche": "a university survey research centre placing a foundation-funded boost of 1,200 extra interviews in one of five health regions of a provincial health survey's 2027 wave, sized by how far the boost cuts that region's standard error",
+  "objective": "opportunity-sizing-decision",
+  "shape": "01",
+  "decision_type": "pick_one_of_n",
+  "answer_unit": "named_option",
+  "answer": "",
+  "answer_source": "",
+  "gap": [
+    "objective",
+    "time"
+  ],
+  "pattern": [
+    "none"
+  ],
+  "generators": [
+    "G2",
+    "G17"
+  ],
+  "gate_g": "binding_constraint",
+  "calibration_form": "none",
+  "stump_strategy": "grain_or_unit",
+  "decisive_rule_filed": false,
+  "official_decoy": false,
+  "validated_decoy": false,
+  "context_artifact": "published_series",
+  "stump_class": "analytical",
+  "analyst_test": "A strong analyst who joins both contractors' files, applies the boundary recode and computes each region's 2025 design-based standard error with areas as clusters scales it by the square root of the interviews before and after the boost, and funds the remote region with the widest error, where the extra interviews inside the same few areas buy almost nothing.",
+  "domain_test": "The deciding quantity is the standard error a two-stage clustered sample would give the 2027 regional estimate, which survey sampling projects from the between-area and within-area variance components because interviews added inside fixed areas cut only the within part; put hospitals for regions and the clustered design, its areas and its variance components have no counterpart.",
+  "layer2_family": "estimation_fit",
+  "layer2_pattern": "own:boost-precision-from-variance-components-not-scaled-error",
+  "layer1": [
+    "two fieldwork contractors' interview files with different code frames and date formats",
+    "a 2024 health-region boundary change recoding some sampled areas",
+    "partial interviews and proxy interviews carried with outcome codes",
+    "reissued cases appearing under a new case number",
+    "area codes in the weights file in the pre-2024 format"
+  ],
+  "stakeholder_role": "the survey director of a university survey research centre, placing the 2027 boost the foundation funds",
+  "role_family": "statistical_office_head",
+  "scoring_unit": "other",
+  "spine": {
+    "file": "provincial_health_survey_interviews_2023-2025.csv",
+    "rows": 0,
+    "entity": "one completed or partial interview",
+    "grain": "interview x wave",
+    "source": "synthetic"
+  },
+  "forum": "funder_or_donor",
+  "forcing_event": "purchase_order_or_contract",
+  "org_family": "research_or_statistics_office",
+  "world": {
+    "geography": "Canada (a province)",
+    "currency": "CAD",
+    "org_type": "a university survey research centre running a provincial health survey",
+    "invented_names": [],
+    "people": [
+      "Kristin Schmidt",
+      "Jeremy Morris",
+      "Jason Clarke"
+    ]
+  },
+  "deliverables": [
+    "boost_region_2027.xlsx",
+    "boost_memo_2027.docx"
+  ],
+  "opening_move": "question-first",
+  "question_form": "where",
+  "driver": "The precision added units buy is set by how the existing variance splits between the groups they sit in and the units within them, so units added inside fixed groups cut only the within part, and scaling the present error by the count of units funds the group where the shared group effect leaves almost nothing to buy.",
+  "driver_concrete": "Each region's 2027 standard error is projected from its between-area and within-area variance components with the boost's interviews added inside the region's existing sampled areas; the remote region whose prevalence clusters by area gains little, and a low-clustering region gains most.",
+  "stump": "A competent analyst scales each region's current design-based standard error by the square root of its interviews before and after the boost and funds the remote North region, where the clustered prevalence means the boost barely moves the error; projected from the variance components, the boost belongs to a low-clustering region.",
+  "mechanism_source": "design_note",
+  "differentiation": {
+    "task240": "task240 corrects a published estimate's current error for weights scaled to known counts; this build takes the current clustered error as given and projects the error a changed design will have from its variance components",
+    "task269": "task269 (lineage) projects a test's reliability from examiner variance; this build projects a survey estimate's sampling error under added interviews inside fixed areas"
+  },
+  "lineage": [],
+  "notes": "Drawn 2026-10-27 for task311 (seed OS13's world set aside).",
+  "client_domain": "survey-research-official-statistics",
+  "registered": "2026-10-27T21:39:38Z"
+}
