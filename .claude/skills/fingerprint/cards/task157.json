@@ -11,8 +11,8 @@
  "shape": "03",
  "decision_type": "quantity_figure",
  "answer_unit": "count",
- "answer": "candidate from the draw's arithmetic on the generator's clean truth, not yet measured on a cut pack: about 388,460 valid signatures, printing 390,000 to the nearest 5,000, against the 384,924 required and a band at 365,678 to 404,170, so a full count is ordered; the default path files about 431,420, printing 430,000, and the measure reads sufficient",
- "answer_source": "paper arithmetic at the draw, no generator",
+ "answer": "Order the examination of all 540,000 signature lines filed for initiative serial I-18-2028. The statutory five per cent sample projects 390,000 valid signatures, 101.4 per cent of the 384,924 required and inside the 365,678 to 404,170 band, so the petition goes to a full count rather than qualifying or failing on the sample. The default path files 420,000 and reads sufficient.",
+ "answer_source": "generator truth, asserted in generator/checks.py over all six seeds and recomputed from the shipped bundle alone in generator/verify.py",
  "gap": [
   "population",
   "rule"
@@ -50,7 +50,7 @@
  "scoring_unit": "per accepted item",
  "spine": {
   "file": "sample_verification_register_2027.csv",
-  "rows": 27000,
+  "rows": 38080,
   "entity": "one sampled signature and the disposition the county gave it",
   "grain": "sampled signature line x county x sheet",
   "source": "synthetic (constructed in the layout of a state elections division's random-sample verification register)"
@@ -72,8 +72,8 @@
   ]
  },
  "deliverables": [
-  "signature_projection_2027.xlsx",
-  "petition_disposition_2027.png"
+  "signature_projection_2028.xlsx",
+  "petition_disposition_2028.png"
  ],
  "opening_move": "question-first",
  "question_form": "how-many",

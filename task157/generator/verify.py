@@ -1,14 +1,17 @@
-"""task157 independent verifier: reads only the shipped bundle (target/) on its own code path (pandas), recomputes
-the fund, the drivers expected to qualify, the components the write-up states, the default path and the nearest
-rungs, the back-tests and both asks, and compares them with generator/figures.json and the goldens. No generator
-module is imported.
+"""task157 (architecture 2) independent verifier: reads only the shipped bundle, on its own code path with
+pandas, and recomputes the projection, the statutory outcome, every rung of the ladder, every ask answer and
+the full count's own sizing, then compares them with generator/figures.json and the two goldens. It imports
+no generator module, and it takes the statutory figures out of the filing record's own text rather than from
+a constant typed here.
 
     python3 task157/generator/verify.py <target>"""
 from __future__ import annotations
 
+import datetime as dt
 import json
 import math
 import os
+import re
 import sys
 
 import pandas as pd
@@ -16,225 +19,298 @@ import pandas as pd
 HERE = os.path.dirname(os.path.abspath(__file__))
 TASK = os.path.dirname(HERE)
 FAIL = []
+RUN = []
+
+RETURNS = "county_verification_returns_2028.csv"
+CORR = "county_return_corrections_2028.csv"
+SNAP_LATE = "avid_snapshot_extract_20280710.csv"
+SNAP_EARLY = "avid_snapshot_extract_20271220.csv"
+SHEETS = "petition_sheet_index_2028.csv"
+CIRC = "circulator_registration_extract_i18-2028.csv"
+MANIFEST = "circulator_sheet_submissions_2028.csv"
+RECORD = "sos_filing_and_selection_record_i18-2028.pdf"
+INSTRUCTION = "county_recorder_verification_instruction_2027.pdf"
+OLDCODES = "navajo_recorder_disposition_codes_2019.txt"
+CLOSEOUT = "measure_i2024-04_full_count_closeout.xlsx"
+
+SINGLE = ["NR", "CA", "AD", "SG", "NC", "NQ", "IL", "MD", "WS"]
+CODES = ["V"] + SINGLE[:6] + ["DU"] + SINGLE[6:]
+OLD_ONE_TO_ONE = {"01": "V", "03": "AD", "04": "SG", "05": "NC", "06": "NQ", "07": "DU", "08": "IL",
+                  "09": "MD", "10": "WS"}
+DMY_COUNTY, OLD_COUNTY = "09", "10"
+MONTHS = ["2028-%02d" % m for m in range(1, 7)]
+MONS = ["JAN", "FEB", "MAR", "APR", "MAY", "JUN", "JUL", "AUG", "SEP", "OCT", "NOV", "DEC"]
 
 
 def ok(label, cond, detail=""):
-    print("%s  %s%s" % ("PASS" if cond else "FAIL", label, ("  [%s]" % detail) if detail != "" else ""))
+    print("%s  %-70s %s" % ("PASS" if cond else "FAIL", label, detail))
+    RUN.append(label)
     if not cond:
         FAIL.append(label)
 
 
 def nearest(x, step):
-    return step * math.floor(x / step + 0.5)
+    return int(step * math.floor(x / step + 0.5))
 
 
-def central(ts):
-    """UTC timestamps to Central time (US rules: CDT from the second Sunday of March to the first Sunday of
-    November, 02:00 local)."""
-    t = pd.to_datetime(ts, utc=True)
-    return t.dt.tz_convert("America/Chicago").dt.tz_localize(None)
+def pdf_text(path):
+    import pypdf
+    return re.sub(r"\s+", " ", "\n".join(p.extract_text() or "" for p in pypdf.PdfReader(path).pages))
+
+
+def parse_date(county, text):
+    if text is None or (isinstance(text, float) and text != text):
+        return None
+    t = str(text).strip()
+    if not t or t == "nan":
+        return None
+    if county == DMY_COUNTY:
+        d, m, y = t.split("/")
+        return dt.date(int(y), int(m), int(d))
+    if county == OLD_COUNTY:
+        d, mon, y = t.split("-")
+        return dt.date(2000 + int(y), MONS.index(mon.upper()) + 1, int(d))
+    return dt.date(*(int(x) for x in t.split("-")))
 
 
 def main(target):
     p = lambda f: os.path.join(target, f)
     figs = json.load(open(os.path.join(HERE, "figures.json")))
-    # ---------------------------------------------------------------- trips by driver and month
-    leg = pd.read_csv(p("dispatch_legacy_driver_months_2021-05_2024-07.csv"))
-    xw = pd.read_csv(p("dispatch_migration_driver_crosswalk.csv"))
-    leg = leg.merge(xw, left_on="DRIVER_NO", right_on="legacy_driver_no", how="left")
-    assert leg["driver_id"].notna().all()
-    a = pd.DataFrame({"driver_id": leg["driver_id"], "month": leg["MONTH"], "trips": leg["COMPLETED_TRIPS"]})
-    new = pd.read_csv(p("driver_activity_monthly_2024-07_2027-01.csv"))
-    b = pd.DataFrame({"driver_id": new["driver_id"], "month": new["activity_month"].str[:7],
-                      "trips": new["trips_completed"]})
-    act = pd.concat([a, b]).groupby(["driver_id", "month"], as_index=False)["trips"].sum()
-    act = act[act["trips"] > 0]
-    piv = act.pivot(index="driver_id", columns="month", values="trips").fillna(0)
-    months = sorted(piv.columns)
-    first = act.groupby("driver_id")["month"].min()
 
-    def has(ms):
-        ms = [m for m in ms if m in piv.columns]
-        return (piv[ms] > 0).any(axis=1) if ms else pd.Series(False, index=piv.index)
+    # ---------------------------------------------------------------- the statute, from the record itself
+    rec = pdf_text(p(RECORD))
+    ok("the filing record reads back through this verifier's own extractor", len(rec) > 2000,
+       "%d characters" % len(rec))
+    filed = int(re.search(r"receipted 38,080 sheets, bearing ([\d,]+) signature lines",
+                          rec).group(1).replace(",", ""))
+    sample = int(re.search(r"random sample of five per cent of the signature lines filed, ([\d,]+) of the",
+                           rec).group(1).replace(",", ""))
+    required = int(re.search(r"the number required for serial I-18-2028 is therefore ([\d,]+)",
+                             rec).group(1).replace(",", ""))
+    lo = int(re.search(r"ninety-five per cent of the number required, ([\d,]+) signatures",
+                       rec).group(1).replace(",", ""))
+    hi = int(re.search(r"one hundred and five per cent of the number required, ([\d,]+) signatures",
+                       rec).group(1).replace(",", ""))
+    ok("the statutory figures come out of the record's own text",
+       (filed, sample, required, lo, hi) == (figs["lines_filed"], figs["sample_lines"], figs["required"],
+                                            figs["band_lo"], figs["band_hi"]),
+       "filed %d, sample %d, required %d, band %d to %d" % (filed, sample, required, lo, hi))
+    factor = filed // sample
+    ok("the sample's own factor divides the filed total exactly",
+       factor * sample == filed and factor == figs["sample_factor"], "%d" % factor)
+    instr = pdf_text(p(INSTRUCTION))
+    ok("the verification instruction reads back and carries the order of the grounds",
+       "Work down the table and record the first code that applies" in instr, "quoted")
+    oldtxt = open(p(OLDCODES), encoding="utf-8").read()
+    ok("Navajo's own code list reads back and carries its merged code",
+       "not registered or registration cancelled" in oldtxt, "code 02")
 
-    def wave(y):
-        S = has(["%d-%02d" % (y - 1, m) for m in (1, 2, 3)]) & ~has(["%d-%02d" % (y - 1, m) for m in range(5, 11)])
-        back = S & has(["%d-11" % (y - 1), "%d-12" % (y - 1)])
-        jan = S & ~back & has(["%d-01" % y])
-        return S, back, jan
+    # ---------------------------------------------------------------- conform the returns
+    r = pd.read_csv(p(RETURNS), dtype={"county_code": str, "voter_reg_id": "Int64"})
+    ok("the returns carry one row per sampled signature line", len(r) == sample, "%d rows" % len(r))
+    late = pd.read_csv(p(SNAP_LATE), dtype={"county_code": str, "voter_reg_id": "Int64"})
+    cor = pd.read_csv(p(CORR), dtype={"county_code": str})
+    key = ["circulator_reg_no", "sheet_no", "line_no"]
+    r = r.merge(cor[key + ["corrected_disposition_code"]], on=key, how="left")
+    r["code"] = r["corrected_disposition_code"].fillna(r["disposition_code"])
+    navajo = r["county_code"].eq(OLD_COUNTY)
+    r.loc[navajo, "code"] = r.loc[navajo, "code"].map(
+        lambda c: OLD_ONE_TO_ONE.get(c, c) if c != "02" else "02")
+    split = navajo & r["code"].eq("02")
+    r.loc[split, "code"] = r.loc[split, "voter_reg_id"].notna().map({True: "CA", False: "NR"})
+    ok("the corrections supersede the disposition first returned, and nothing else",
+       int(r["corrected_disposition_code"].notna().sum()) == len(cor),
+       "%d query notices applied" % len(cor))
+    ok("every sampled line carries exactly one code from the current set",
+       set(r["code"].unique()) <= set(CODES) and len(r) == sample,
+       "%d codes over %d lines" % (r["code"].nunique(), len(r)))
 
-    # ---------------------------------------------------------------- last year's qualifiers
-    r25 = pd.read_excel(p("winter_guarantee_2025_payout_run.xlsx"), sheet_name="Payouts")
-    r26 = pd.read_csv(p("winter_guarantee_2026_payout_run.csv"))
-    adj = pd.read_csv(p("guarantee_payout_adjustments_2025-2026.csv"))
-    pay_year = dict(zip(r25["Payout ID"], [2025] * len(r25)))
-    pay_year.update(dict(zip(r26["payout_id"], [2026] * len(r26))))
-    late = adj[adj["adjustment_type"] == "late_credit"]
-    for _, r in late.iterrows():
-        pay_year[r["payout_id"]] = 2025 if r["program_code"] == "WG2025" else 2026
-    paid = {2025: set(r25["Driver ID"]), 2026: set(r26["driver_id"])}
-    for _, r in late.iterrows():
-        paid[pay_year[r["payout_id"]]].add(r["driver_id"])
-    for _, r in adj[adj["adjustment_type"] == "fraud_recovery"].iterrows():
-        paid[pay_year[r["reverses_payout_id"]]].discard(r["driver_id"])
-    q = {y: piv.index.isin(sorted(paid[y])) for y in (2025, 2026)}
-    q = {y: pd.Series(v, index=piv.index) for y, v in q.items()}
+    single = int(r["code"].isin(SINGLE).sum())
+    dup = int(r["code"].eq("DU").sum())
+    ok("the sampled counts match the write-up",
+       (single, dup) == (figs["sampled_single"], figs["sampled_dup"]),
+       "%d on other grounds, %d duplicates" % (single, dup))
 
-    # ---------------------------------------------------------------- the fund
-    S27, back27, jan27 = wave(2027)
-    S26, back26, jan26 = wave(2026)
-    dec26 = has(["2025-12"])
-    dec27 = has(["2026-12"])
-    edges = [0, 9, 19, 29, 39, 59, 10 ** 9]
-    band26 = pd.cut(piv["2025-12"], edges, labels=False)
-    band27 = pd.cut(piv["2026-12"], edges, labels=False)
-    pool26 = dec26 & ~back26
-    rate = q[2026][pool26].groupby(band26[pool26]).mean()
-    nonwave = (dec27 & ~back27).groupby(band27[dec27 & ~back27]).sum()
-    roster_part = float(sum(rate[k] * nonwave.get(k, 0) for k in rate.index))
-    waves = {y: wave(y) for y in (2024, 2025, 2026)}
-    nb = sum(int(waves[y][1].sum()) for y in waves)
-    nj = sum(int(waves[y][2].sum()) for y in waves)
-    g = nj / nb
-    qD = q[2026][back26].mean()
-    qJ = q[2026][jan26].mean()
-    n_back = int(back27.sum())
-    rest = n_back * g
-    # other returners and new drivers
-    apps = pd.read_csv(p("onboarding_applications_2025-06-02_2027-01-03.csv"))
-    apps["dec_c"] = central(apps["decision_at_utc"])
-    apps["ft_c"] = central(apps["first_trip_at_utc"])
-    end26 = pd.Timestamp("2026-01-04 23:59:59")
-    end27 = pd.Timestamp("2027-01-03 23:59:59")
-    ft = apps.dropna(subset=["driver_id"]).groupby("driver_id")["ft_c"].min()
-    new26 = pd.Series(piv.index.map(lambda d: d in ft.index and pd.notna(ft[d]) and ft[d] > end26), index=piv.index)
-    other26 = ~dec26 & ~S26 & ~new26 & (first < "2026-01").reindex(piv.index)
-    other = int((q[2026] & other26).sum())
+    # ---------------------------------------------------------------- the projection
+    single_proj = single * factor
+    dup_proj = dup * factor * factor
+    valid = filed - single_proj - dup_proj
+    band = "insufficient" if valid < lo else ("sufficient" if valid > hi else "full count")
+    ok("the single signature grounds carry at the sample's own factor",
+       single_proj == figs["projected_single"], "%d lines" % single_proj)
+    ok("the duplicate strikes carry at the square of the sampling fraction",
+       dup_proj == figs["projected_dup"] and factor * factor == figs["pair_denominator"],
+       "%d lines, one pair in %d" % (dup_proj, factor * factor))
+    ok("the projection and its printed cell match the write-up",
+       valid == figs["call_valid"] and nearest(valid, figs["bin"]) == figs["call_printed"],
+       "%d prints %d" % (valid, nearest(valid, figs["bin"])))
+    ok("the projection as a share of the number required matches the write-up",
+       abs(round(100.0 * valid / required, 1) - figs["call_pct"]) < 1e-9,
+       "%.1f per cent" % (100.0 * valid / required))
+    ok("the statutory outcome is the examination of all signature lines filed", band == "full count", band)
 
-    def apn(end):
-        ap = apps[apps["status"].isin(["approved", "approval_lapsed"]) & (apps["dec_c"] <= end)]
-        ap = ap[(end.normalize() - ap["dec_c"].dt.normalize()).dt.days <= 90]
-        ap = ap[ap["ft_c"].isna() | (ap["ft_c"] > end)]
-        return set(ap["driver_id"])
-    a26, a27 = apn(end26), apn(end27)
-    ap_dec = apps[apps["status"].isin(["approved", "approval_lapsed"]) & (apps["dec_c"] <= end26)]
-    ap_dec = ap_dec[(end26.normalize() - ap_dec["dec_c"].dt.normalize()).dt.days <= 90]
-    ap_dec = ap_dec[ap_dec["ft_c"].isna() | (ap_dec["ft_c"] >= pd.Timestamp("2026-01-01"))]
-    ok("V4b the 2026 base leaves out the %d accounts that first drove on 1 to 4 January 2026" % (len(ap_dec) - len(a26)),
-       str(len(set(ap_dec["driver_id"])) - len(a26)) == figs["steps"]["first_drove_jan_1_to_4"])
-    new_paid = len(a26 & paid[2026])
-    new_part = len(a27) * new_paid / len(a26)
-    drivers = roster_part + n_back * qD + rest * qJ + other + new_part
-    total = drivers * 350
-    fund = nearest(total, 50000)
-    ok("V1 the fund recomputes on an independent path: %s (expected total $%s)" % (
-        "${:,}".format(int(fund)), "{:,.0f}".format(total)), "${:,}".format(int(fund)) == figs["call"]["fund"])
-    ok("V2 drivers expected to qualify: %s" % "{:,}".format(int(nearest(drivers, 100))),
-       "{:,}".format(int(nearest(drivers, 100))) == figs["call"]["drivers"])
-    ok("V3 components: back by 3 January %d (about %s), ratio %.3f (about %.1f), due back %.0f (about %s), last winter's "
-       "qualifiers about %s" % (n_back, figs["components"]["back_by_asof"], g, nearest(g, 0.1), rest,
-                                 figs["components"]["due_back"], figs["components"]["wave_qualifiers"]),
-       "{:,}".format(int(nearest(n_back, 100))) == figs["components"]["back_by_asof"] and
-       "%.1f" % nearest(g, 0.1) == figs["components"]["ratio"] and
-       "{:,}".format(int(nearest(rest, 100))) == figs["components"]["due_back"] and
-       "{:,}".format(int(nearest(n_back * qD + rest * qJ, 100))) == figs["components"]["wave_qualifiers"] and
-       "{:,}".format(n_back) == figs["steps"]["back_count"] and "%.3f" % g == figs["steps"]["ratio_exact"])
-    ok("V4 the step figures: roster about %s, %d and %d per cent, %d other returners, %d approved without a trip, %d of "
-       "%d paid" % (figs["steps"]["roster_part"], round(100 * qD), round(100 * qJ), other, len(a27), new_paid, len(a26)),
-       "{:,}".format(int(nearest(roster_part, 100))) == figs["steps"]["roster_part"] and
-       str(int(nearest(100 * qD, 1))) == figs["steps"]["qD_pct"] and str(int(nearest(100 * qJ, 1))) ==
-       figs["steps"]["qJ_pct"] and str(other) == figs["steps"]["other_returns"] and
-       str(len(a27)) == figs["steps"]["approved_not_started"] and str(new_paid) == figs["steps"]["new_paid_2026"] and
-       str(len(a26)) == figs["steps"]["approved_not_started_2026"])
-    # ---------------------------------------------------------------- the default path and the nearest rungs
-    rate_all = q[2026][dec26].groupby(band26[dec26]).mean()
-    roster_all = dec27.groupby(band27[dec27]).sum()
-    cont = float(sum(rate_all[k] * roster_all.get(k, 0) for k in rate_all.index))
-    L26 = ~dec26 & has(["2025-%02d" % m for m in range(1, 12)])
-    L27 = ~dec27 & has(["2026-%02d" % m for m in range(1, 12)])
-    r0 = cont + new_part + L27.sum() * (q[2026] & L26).sum() / L26.sum()
-    ok("V5 the default path files $%s (December's roster and the twelve-month lapsed pool at last January's rates)" %
-       "{:,}".format(int(nearest(r0 * 350, 50000))), nearest(r0 * 350, 50000) <= fund - 150000)
-    away26 = S26 & ~back26
-    away27 = S27 & ~back27
-    r1 = cont + new_part + other + away27.sum() * (q[2026] & away26).sum() / away26.sum()
-    ok("V6 last winter's drivers away at last year's rate for the same pool files $%s" % "{:,}".format(
-        int(nearest(r1 * 350, 50000))), nearest(r1 * 350, 50000) <= fund - 100000)
-    hyb = cont + rest * qJ + other + new_part
-    ok("V7 the rest of the wave developed but the drivers already back priced by December trips files $%s" %
-       "{:,}".format(int(nearest(hyb * 350, 50000))), nearest(hyb * 350, 50000) == fund - 50000)
-    # ---------------------------------------------------------------- back-tests
-    for y in (2025, 2026):
-        prev = [k for k in (2024, 2025) if k < y]
-        gp = sum(waves[k][2].sum() for k in prev) / sum(waves[k][1].sum() for k in prev)
-        dev = waves[y][1].sum() * gp
-        prev_away = waves[y - 1][0] & ~waves[y - 1][1]
-        pool = (waves[y][0] & ~waves[y][1]).sum() * waves[y - 1][2].sum() / prev_away.sum()
-        act_ = waves[y][2].sum()
-        ok("V8 back-test at the %d funding date: the ratio method %.0f, the pool rate %.0f, actual %d" % (
-            y, dev, pool, act_), abs(dev / act_ - 1) < 0.03 and abs(pool / act_ - 1) > 0.10)
-    # ---------------------------------------------------------------- Ask A
-    ev = pd.read_csv(p("guarantee_payout_events_2025-2026.csv")).sort_values(["payout_id", "event_at_utc"])
-    last = ev.groupby("payout_id")["event"].last()
-    acc = pd.read_csv(p("driver_accounts_2027-01-03.csv"), keep_default_na=False)
-    merged = {r["driver_id"]: r["merged_into"] for _, r in acc.iterrows() if r["merged_into"]}
-    amount = dict(zip(r25["Payout ID"], r25["Amount (cents)"] / 100.0))
-    amount.update(dict(zip(r26["payout_id"], r26["amount_usd"])))
-    driver = dict(zip(r25["Payout ID"], r25["Driver ID"]))
-    driver.update(dict(zip(r26["payout_id"], r26["driver_id"])))
-    for _, r in late.iterrows():
-        amount[r["payout_id"]] = r["amount_usd"]
-        driver[r["payout_id"]] = r["driver_id"]
-    rec = adj[adj["amount_usd"] < 0]
-    reversed_ids = set(rec["reverses_payout_id"])
-    for y in (2025, 2026):
-        pids = [k for k, v in pay_year.items() if v == y]
-        lost = [k for k in pids if last[k] == "returned"]
-        never = sum(amount[k] for k in lost)
-        main_ = sum(amount[k] for k in pids if k not in set(late["payout_id"]))
-        later = sum(amount[k] for k in pids if k in set(late["payout_id"]))
-        recovered = -rec[rec["reverses_payout_id"].map(pay_year) == y]["amount_usd"].sum()
-        net = main_ + later - never - recovered
-        people = {merged.get(driver[k], driver[k]) for k in pids if k not in set(lost) and k not in reversed_ids}
-        A = figs["answers"]["ask_a"][str(y)]
-        ok("V9 Ask A %d: never reached $%s, net $%s, %s drivers paid" % (y, "{:,.0f}".format(never),
-                                                                          "{:,.0f}".format(net), len(people)),
-           "${:,.0f}".format(never) == A["never_reached"] and "${:,.0f}".format(net) == A["net_cost"] and
-           "{:,}".format(len(people)) == A["drivers_paid"] and "${:,.0f}".format(main_) == A["main_run"] and
-           "${:,.0f}".format(later) == A["later_runs"] and "${:,.0f}".format(recovered) == A["recovered"])
-    # ---------------------------------------------------------------- Ask B
-    orders = pd.read_csv(p("background_check_orders_2025-06_2027-01.csv"))
-    orders["t"] = central(orders["ordered_at"])
-    firstsub = orders.groupby("candidate_id")["t"].min()
-    app_of = apps.set_index("application_id")
-    orders = orders.join(app_of[["status", "driver_id"]], on="client_reference")
-    drove = set(piv.index)
-    for m in range(6, 11):
-        who = firstsub[(firstsub.dt.year == 2026) & (firstsub.dt.month == m)].index
-        sub = orders[orders["candidate_id"].isin(who)]
-        appr = sub[sub["status"].isin(["approved", "approval_lapsed"])]["candidate_id"].nunique()
-        trip = sub[sub["driver_id"].isin(drove)]["candidate_id"].nunique()
-        B = figs["answers"]["ask_b"][["", "", "", "", "", "", "June", "July", "August", "September", "October"][m]]
-        ok("V10 Ask B 2026-%02d: %d applied, %d approved, %d first trip" % (m, len(who), appr, trip),
-           "{:,}".format(len(who)) == B["applied"] and "{:,}".format(appr) == B["approved"] and
-           "{:,}".format(trip) == B["first_trip"])
-    # ---------------------------------------------------------------- the goldens carry the same figures
-    gold = os.path.join(TASK, "golden")
-    if os.path.isdir(gold):
-        import openpyxl
-        wb = openpyxl.load_workbook(os.path.join(gold, "guarantee_fund_jan2027.xlsx"), data_only=True)
-        ws = wb["Fund"]
-        ok("V11 the workbook states the fund and the drivers", ws["D5"].value == fund and
-           ws["D6"].value == nearest(drivers, 100))
-        w3 = wb["Guarantees 2025 and 2026"]
-        vals = {(w3.cell(row=r, column=1).value, c): w3.cell(row=r, column=c).value for r in range(5, 11)
-                for c in (2, 3)}
-        ok("V12 the workbook's guarantee table carries Ask A", all(
-            "${:,.0f}".format(abs(vals[(lab, c)])) == figs["answers"]["ask_a"][str(y)][key]
-            for c, y in ((2, 2025), (3, 2026)) for lab, key in (
-                ("Returned by the bank, never paid out again (never reached a driver)", "never_reached"),
-                ("Net cost", "net_cost"))))
-    print("\nverify: %d failed" % len(FAIL))
+    # ---------------------------------------------------------------- the ladder
+    early = pd.read_csv(p(SNAP_EARLY), dtype={"voter_reg_id": "Int64"})
+    act = set(early.loc[early["registration_status"].eq("ACTIVE"), "voter_reg_id"].dropna().astype(int))
+    slip = int(r.loc[r["code"].eq("CA"), "voter_reg_id"].dropna().astype(int).isin(act).sum())
+    rung0 = filed - (single - slip) * factor - dup * factor
+    rung1 = filed - single * factor - dup * factor
+    county_dup = int((r["code"].eq("DU") & r["determined_by"].eq("RECORDER")).sum())
+    rung2 = filed - single * factor - (county_dup * factor + (dup - county_dup) * factor * factor)
+    ok("rung 0, the default path, reproduces and files a different band",
+       rung0 == figs["default_path_valid"] and nearest(rung0, figs["bin"]) == figs["default_path_printed"]
+       and rung0 > hi, "%d prints %d, sufficient" % (rung0, nearest(rung0, figs["bin"])))
+    ok("rung 1 reproduces and files a different band",
+       rung1 == figs["rung1_valid"] and rung1 > hi, "%d prints %d" % (rung1, nearest(rung1, figs["bin"])))
+    ok("rung 2 reproduces", rung2 == figs["rung2_valid"], "%d prints %d"
+       % (rung2, nearest(rung2, figs["bin"])))
+    ok("the decisive step is the largest step in the ladder",
+       (rung2 - valid) > (rung0 - rung1) and (rung2 - valid) > (rung1 - rung2),
+       "%d against %d and %d" % (rung2 - valid, rung0 - rung1, rung1 - rung2))
+
+    # ---------------------------------------------------------------- the registration state
+    late = late.set_index("voter_reg_id")
+    reg_date = late["registration_date"].to_dict()
+    canc_date = late["cancellation_date"].to_dict()
+    status = late["registration_status"].to_dict()
+
+    def iso(x):
+        if x is None or x != x or str(x).strip() == "":
+            return None
+        return dt.date(*(int(v) for v in str(x).split("-")))
+
+    r["signed"] = [parse_date(c, t) for c, t in zip(r["county_code"], r["signature_date"])]
+
+    def in_force(vid, when):
+        if when is None or vid is None:
+            return False
+        rd, cd = iso(reg_date.get(vid)), iso(canc_date.get(vid))
+        if rd is None or rd > when:
+            return False
+        if cd is None or rd > cd:
+            return True
+        return when < cd
+
+    r["lapsed"] = [bool(pd.notna(v) and in_force(int(v), d) and status.get(int(v)) == "CANCELLED")
+                   for v, d in zip(r["voter_reg_id"], r["signed"])]
+
+    # ---------------------------------------------------------------- ask A, per county
+    det = r[r["determined_by"].eq("RECORDER")]
+    bad = []
+    for cc, g in det.groupby("county_code"):
+        if int(len(g)) != figs["ask_a_%s_determined" % cc] or int(g["lapsed"].sum()) != \
+                figs["ask_a_%s_lapsed" % cc]:
+            bad.append(cc)
+    ok("every county's two figures reproduce", not bad, "15 counties" if not bad else ",".join(bad))
+    ok("the lines the division determined are outside every county's figures",
+       int(len(det)) + int((~r["determined_by"].eq("RECORDER")).sum()) == sample,
+       "%d determined by the division" % int((~r["determined_by"].eq("RECORDER")).sum()))
+
+    # ---------------------------------------------------------------- ask B, per firm and month
+    cr = pd.read_csv(p(CIRC))
+    cr["start"] = cr["registered_on"].map(iso)
+    cr["end"] = cr["withdrawn_on"].map(iso)
+    by_circ = {}
+    for row in cr.itertuples():
+        by_circ.setdefault(row.circulator_reg_no, []).append((row.start, row.end,
+                                                              row.firm_registration_no))
+    for v in by_circ.values():
+        v.sort(key=lambda t: t[0])
+
+    def firm_on(circ, when):
+        for start, end, firm in by_circ.get(circ, []):
+            if start > when or (end is not None and end <= when):
+                continue
+            return firm
+        return None
+
+    inwin = r[r["signed"].map(lambda d: d is not None and dt.date(2028, 1, 3) <= d <= dt.date(2028, 6, 30))]
+    cells = {}
+    for row in inwin.itertuples():
+        f = firm_on(row.circulator_reg_no, row.signed)
+        if f is None:
+            continue
+        k = (f, "%04d-%02d" % (row.signed.year, row.signed.month))
+        c0 = cells.setdefault(k, [0, 0])
+        c0[0] += 1
+        if row.code in SINGLE:
+            c0[1] += 1
+    bad = []
+    for k in sorted({k for k in figs if k.startswith("ask_b_")}):
+        m = re.match(r"ask_b_(C-\d{4}-\d{4})_(\d{4}-\d{2})_(signatures|struck)", k)
+        got = cells.get((m.group(1), m.group(2)), [0, 0])[0 if m.group(3) == "signatures" else 1]
+        if got != figs[k]:
+            bad.append(k)
+    ok("every firm and month cell reproduces on the as-of registration", not bad,
+       "%d cells" % (len(figs) and len([k for k in figs if k.startswith("ask_b_")]) // 2)
+       if not bad else ",".join(bad[:4]))
+    ok("the circulators who registered again under another firm are in the extract",
+       int((cr["registration_status"].eq("WITHDRAWN")).sum()) == figs["circulator_moves"],
+       "%d withdrawn rows" % int((cr["registration_status"].eq("WITHDRAWN")).sum()))
+
+    # ---------------------------------------------------------------- ask C, per month
+    sh = pd.read_csv(p(SHEETS))
+    ser = {(a, b): c for a, b, c in zip(sh["circulator_reg_no"], sh["sheet_no"], sh["sheet_serial"])}
+    bad = []
+    for m in MONTHS:
+        sel = r[r["signed"].map(lambda d, m=m: d is not None and "%04d-%02d" % (d.year, d.month) == m)]
+        serials = {ser[(a, b)] for a, b in zip(sel["circulator_reg_no"], sel["sheet_no"])}
+        if int(len(sel)) != figs["ask_c_%s_signatures" % m] or len(serials) != figs["ask_c_%s_sheets" % m]:
+            bad.append(m)
+    ok("every month's two figures reproduce on the office's own sheet serials", not bad,
+       "6 months" if not bad else ",".join(bad))
+    ok("a sheet number alone does not identify a sheet",
+       sh["sheet_no"].nunique() < len(sh) and len(ser) == len(sh),
+       "%d sheet numbers over %d sheets" % (sh["sheet_no"].nunique(), len(sh)))
+
+    # ---------------------------------------------------------------- the filed total's other reading
+    man = pd.read_csv(p(MANIFEST))
+    claimed = int(man["signatures_claimed"].sum())
+    alt = claimed - single * (claimed / float(sample)) - dup / ((sample / float(claimed)) ** 2)
+    ok("the manifests' own total is ruled out by the record and files the same cell",
+       "struck at receipt; they are not part of the filing" in rec
+       and nearest(alt, figs["bin"]) == figs["call_printed"],
+       "%d claimed, projecting %d" % (claimed, alt))
+
+    # ---------------------------------------------------------------- the full count's own sizing
+    import openpyxl
+    wb = openpyxl.load_workbook(p(CLOSEOUT), data_only=True)
+    ws = wb["Full count"]
+    head = {}
+    for row in ws.iter_rows(values_only=True):
+        if row and isinstance(row[0], str) and len(row) >= 2:
+            head[row[0]] = row[1]
+    rate = head["Signature lines examined"] / float(head["Examination business days"]
+                                                    * head["Examiners assigned"])
+    days = int(math.ceil((filed / rate) / 30.0))
+    ok("the 2024 close-out reads back and sizes the full count inside the deadline",
+       head["Determination"] == "Insufficient" and days <= 20,
+       "%.1f lines an examiner-day, %d business days at 30 examiners" % (rate, days))
+    wb.close()
+
+    # ---------------------------------------------------------------- the goldens
+    gb = os.path.join(TASK, "golden", "signature_projection_2028.xlsx")
+    wb = openpyxl.load_workbook(gb, data_only=True)
+    vals = []
+    for name in wb.sheetnames:
+        for row in wb[name].iter_rows(values_only=True):
+            vals.extend([v for v in row if v is not None])
+    wb.close()
+    ok("the golden workbook carries the projection, the printed cell and the outcome",
+       figs["call_valid"] in vals and figs["call_printed"] in vals
+       and "Examine all signature lines filed" in vals, "the determination sheet")
+    ok("the golden workbook carries every ask figure",
+       all(figs[k] in vals for k in figs if k.startswith("ask_")),
+       "%d ask figures" % len([k for k in figs if k.startswith("ask_")]))
+    png = os.path.join(TASK, "golden", "petition_disposition_2028.png")
+    ok("the golden chart is a png with no writing library in its bytes",
+       open(png, "rb").read(8) == b"\x89PNG\r\n\x1a\n"
+       and b"matplotlib" not in open(png, "rb").read().lower(), "%d bytes" % os.path.getsize(png))
+
+    print()
+    print("verify: %d checks, %d failed" % (len(RUN), len(FAIL)))
+    for f in FAIL:
+        print("  FAILED: %s" % f)
     return 1 if FAIL else 0
 
 

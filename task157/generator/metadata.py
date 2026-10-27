@@ -1,98 +1,94 @@
-"""Write task157/metadata.json from the built pack: the distractors, the portal's keys, the input gates and every
-shipped file's source, date and licence."""
+"""task157 (architecture 2) metadata.json: per file its source, date, licence, what it covers and how it
+was made, beside the declared distractors and the portal's keys. It sits in the task folder, never under
+target/, because nothing under target/ describes the pack."""
+from __future__ import annotations
+
 import json
 import os
+import sys
 
-import docs as DOC
-import records as R
+HERE = os.path.dirname(os.path.abspath(__file__))
+sys.path.insert(0, HERE)
+import common as K      # noqa: E402
+import deliver as DL    # noqa: E402
+import docs as DOC      # noqa: E402
+import records as R     # noqa: E402
 
-SOURCES = {
-    R.F_LEGACY: "Larch Rides, old dispatch platform's monthly driver export by legacy driver number, May 2021 to 14 "
-                "July 2024",
-    R.F_ACTIVITY: "Larch Rides dispatch warehouse, monthly driver activity, 15 July 2024 to the extract run of 3 "
-                  "January 2027",
-    R.F_CROSSWALK: "Larch Rides dispatch migration crosswalk, legacy driver numbers to driver ids (15 July 2024)",
-    R.F_ACCOUNTS: "Larch Rides dispatch warehouse, driver accounts as at 3 January 2027",
-    R.F_RUN25: "Larch Rides payments, old payout report for the 2025 winter guarantee main run (14 February 2025)",
-    R.F_RUN26: "Larch Rides payments system, 2026 winter guarantee main run export (13 February 2026)",
-    R.F_ADJ: "Larch Rides payments system, winter guarantee adjustment run lines, 2025 and 2026",
-    R.F_RETURNS: "Larch Rides payout account, the bank's ACH return report, 2025 and 2026",
-    R.F_EVENTS: "Larch Rides payments system, winter guarantee payout events, 2025 and 2026",
-    R.F_APPS: "Larch Rides onboarding app, applications export, 2 June 2025 to 3 January 2027",
-    R.F_ORDERS: "Larch Rides screening vendor portal, background check order export, June 2025 to January 2027",
-    R.F_REFERRAL: "Larch Rides referral programme, 2026 referral bonus ledger",
-    R.F_DEMAND: "Larch Rides marketplace planning, rider demand plan for Q1 2027 (4 December 2026)",
-    DOC.F_TERMS: "Larch Rides Driver Supply, Winter Guarantee 2027 driver terms (14 December 2026)",
-    DOC.F_EMAIL: "Larch Rides Finance, email on the guarantee account (30 December 2026)",
-    DOC.F_PAYNOTES: "Larch Rides Payments Operations, winter guarantee payout notes (20 March 2026)",
-    DOC.F_ONBNOTES: "Larch Rides Driver Onboarding, pipeline counting notes (5 August 2026)",
-    DOC.F_KPI: "Larch Rides Supply Analytics, driver supply KPIs to November 2026 (11 December 2026)",
-    DOC.F_NOTES: "Larch Rides Supply Analytics, data notes for the 3 January 2027 pull",
-    DOC.F_LOG: "Larch Rides Supply Analytics, log of the 3 January 2027 pull",
-}
-DISTRACTORS = [R.F_DEMAND, R.F_REFERRAL]
-TITLE = ("How much a Twin Cities ride-hail operator's January 2027 winter guarantee will pay ($350 to every driver "
-         "completing 40 trips in four weeks), when last winter's recruits come back in a wave that straddles the "
-         "funding date")
+LIC = "Constructed for this task from Arizona's own statutory scheme; no third-party material. CC0-1.0."
+OFFICE = "%s, %s" % (K.OFFICE, K.DIVISION)
+
+FILES = [
+    (R.F_RETURNS, OFFICE, "2028-08-03", "The fifteen county recorders' verification returns for the "
+     "statutory sample of initiative serial I-18-2028, consolidated by the division's load, one row per "
+     "sampled signature line. Each recorder's own date format and Navajo County's own 2019 disposition "
+     "codes are kept as received."),
+    (R.F_CORR, OFFICE, "2028-08-03", "Query notices the division raised on the returns and the recorders' "
+     "re-determinations, one row per line re-determined."),
+    (R.F_SNAP_EARLY, OFFICE, "2027-12-20", "Registration records for the identifiers the sample transmittal "
+     "cites, taken from the archived statewide voter file snapshot of 20 December 2027, the last snapshot "
+     "before circulation opened."),
+    (R.F_SNAP_LATE, OFFICE, "2028-07-10", "The same registration records taken from the statewide voter "
+     "file snapshot of 10 July 2028."),
+    (R.F_SHEETS, OFFICE, "2028-07-07", "The office's register of the petition sheets it receipted, one row "
+     "per sheet, with the receipt bundle, the circulator's registration number, the firm's own sheet "
+     "number and the signature lines the sheet carries."),
+    (R.F_RECEIPT, OFFICE, "2028-07-07", "The office's receipt log for the filing, one row per bundle "
+     "presented, with the sheets accepted, the sheets struck at receipt and the signature lines accepted."),
+    (R.F_MANIFEST, "Petition circulator firms, filed with the office", "2028-07-07", "Each circulator "
+     "firm's own delivery manifest for the bundles it handed over, carrying the firm's own sheet and "
+     "signature counts and the trading name it filed under."),
+    (R.F_CIRC, OFFICE, "2028-07-11", "The office's extract of the paid circulators registered to gather "
+     "signatures for serial I-18-2028, by registration number, with the firm that registered each and the "
+     "dates each registration ran from and, where the circulator registered again under another firm, to."),
+    (R.F_MAINT, OFFICE, "2028-03-14", "The register of the statewide list-maintenance run of 14 March 2028: "
+     "the registrations it cancelled and the registrations it moved to inactive."),
+    (R.F_CLOSEOUT, OFFICE, "2024-08-29", "The office's close-out of the full count of initiative serial "
+     "I-04-2024, ordered by the Superior Court, with the examination's dates, examiners and per-county "
+     "figures. The only settled measure the office holds of what examining a petition line by line takes."),
+    (DOC.F_RECORD, OFFICE, "2028-07-11", "The office's filing and sample record for serial I-18-2028: the "
+     "filing, the receipt, the number required, the sample drawn and the statutory determination."),
+    (DOC.F_INSTRUCTION, OFFICE, "2027-11-18", "The signature verification instruction the county recorders "
+     "work to, with the current disposition code set and the order the grounds are applied in."),
+    (DOC.F_OLDCODES, "Navajo County Recorder", "2019-04-15", "Navajo County's own disposition code list, "
+     "which that recorder has not reissued and still files on."),
+    (R.F_OTHER, OFFICE, "2028-07-05", "The office's receipt log for initiative serial I-04-2028, a second "
+     "measure filed in the same cycle."),
+    (R.F_REGSTATS, OFFICE, "2028-07-01", "The office's published registration report of 1 July 2028, active "
+     "and inactive registrations by county and party."),
+]
+
+DISTRACTORS = [R.F_OTHER, R.F_REGSTATS]
 
 
-def rows_of(path):
-    if path.endswith(".csv"):
-        with open(path, encoding="utf-8") as fh:
-            return sum(1 for _ in fh) - 1
-    if path.endswith(".xlsx"):
-        import openpyxl
-        wb = openpyxl.load_workbook(path, read_only=True)
-        n = sum(max(ws.max_row - 1, 0) for ws in wb.worksheets)
-        wb.close()
-        return n
-    return None
-
-
-def write(task_dir, n=None):
+def write(task_dir, n):
     target = os.path.join(task_dir, "target")
-    out = []
-    for f in sorted(os.listdir(target)):
-        p = os.path.join(target, f)
-        out.append({"path": f, "format": f.rsplit(".", 1)[1], "bytes": os.path.getsize(p), "rows": rows_of(p),
-                    "source": "Constructed: " + SOURCES[f], "date": "2027-01-03",
-                    "license": "CC0-1.0 (original work, constructed for this task)"})
-    big = max((x for x in out if x["rows"]), key=lambda x: x["rows"])
-    meta = {
+    present = sorted(os.listdir(target))
+    listed = [f for f, _, _, _ in FILES]
+    assert sorted(listed) == present, (sorted(set(listed) ^ set(present)),)
+    doc = {
         "task": "task157",
-        "title": TITLE,
-        "domain": "Product Analytics",
-        "client_domain": "Product Analytics",
-        "house_domain": "product-analytics",
-        "subdomain": "retention-cohort-lifetime-value-modeling (a ride-hail platform's supply-side driver cohorts: last "
-                     "winter's recruits read as a returning cohort whose resurrection is under way at the forecast "
-                     "date, sized from the part already back at the timing earlier cohorts kept)",
+        "world": "The Arizona Secretary of State's elections division projects, from the statutory five per "
+                 "cent random sample, how many of the 540,000 signature lines filed for initiative serial "
+                 "I-18-2028 a full count would find valid, and whether the petition qualifies, goes to a "
+                 "full count or fails.",
+        "as_of": K.iso(K.AS_OF),
+        "domain": "political-science-public-policy / election-polling-forecasting",
         "objective": "Forecasting & Predictive Modeling",
-        "prompt_shape": "a committed fund to the nearest $50,000 with the drivers expected to qualify, a table taking "
-                        "the 2025 and 2026 guarantees to net cost (what never reached a driver, the net cost, the "
-                        "drivers paid), a table of the onboarding pipeline by month of first application from June to "
-                        "October 2026 (people who applied, approved, first trip by the as-of), and a two-slide deck "
-                        "with each guarantee's steps from main run to net cost charted",
-        "as_of": "2027-01-03",
-        "deliverables": ["guarantee_fund_jan2027.xlsx", "guarantee_fund_jan2027.pptx"],
+        "deliverables": [DL.G_BOOK, DL.G_CHART],
         "distractor_files": DISTRACTORS,
-        "field_terms": [],
-        "stated_inputs": [],
-        "input_gates": {"files": len(out), "formats": sorted({x["format"] for x in out}),
-                        "largest_file": big["path"], "largest_file_rows": big["rows"]},
-        "sources": [{"files": "all files under target/",
-                     "origin": "constructed for this task by task157/generator/build.py (seeded, deterministic) around "
-                               "a fictional regional ride-hail operator in the Twin Cities, in the layouts of a "
-                               "dispatch platform's monthly driver export and its successor's warehouse extract, a "
-                               "payments system's payout runs, events and adjustment lines, a bank's ACH return "
-                               "report, an onboarding app's applications export and a screening vendor's order "
-                               "export; no real organisation's records or person is depicted.",
-                     "date": "2027-01-03", "license": "CC0-1.0 (original work)"}],
-        "created": "2026-10-17",
-        "generator": "task157/generator/build.py",
-        "files": out,
+        "stated_inputs": ["365,678", "404,170", "384,924", "540,000", "27,000", "38,080", "38,320",
+                          "2,566,154", "365678", "404170", "384924", "540000"],
+        "field_terms": ["sample", "sampled", "sampling", "signature", "signatures"],
+        "official_decoy": False,
+        "validated_decoy": False,
+        "calibration_corpus": R.F_CLOSEOUT,
+        "files": [
+            {"file": f, "source": src, "date": date, "licence": LIC, "covers": covers,
+             "rows": n.get(f), "made": "Written by task157/generator from the generator's clean truth; no "
+                                       "third-party data."}
+            for f, src, date, covers in FILES
+        ],
     }
-    with open(os.path.join(task_dir, "metadata.json"), "w") as fh:
-        json.dump(meta, fh, indent=2, ensure_ascii=False)
+    with open(os.path.join(task_dir, "metadata.json"), "w", encoding="utf-8") as fh:
+        json.dump(doc, fh, indent=1)
         fh.write("\n")
-    return meta

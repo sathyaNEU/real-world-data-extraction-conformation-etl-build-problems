@@ -1,48 +1,86 @@
 ## Tags
 
-**Domain:** Product Analytics (retention, cohort and lifetime value modeling: a ride-hail platform's supply-side driver cohorts, last winter's recruits read as a returning cohort whose resurrection is under way at the forecast date).
-**Analytical objective:** Forecasting & Predictive Modeling.
+**Domain:** Political science and public policy (election polling and forecasting).
+**Analytical objective:** Forecasting and predictive modelling.
 
 ## 1. Final Recommendation
 
-**Fund the winter guarantee account with $1,650,000 at go-live on Monday 4 January: we expect 4,700 drivers to complete 40 trips by Sunday 31 January.**
-About 1,100 of last winter's drivers, most of them recruits of the winter 2026 campaign who stopped driving in March and April, were back on the road by 3 January, and every earlier winter brought back about 1.1 drivers in January for each one back in November and December, so about 1,200 more are due inside the window and last winter's drivers make up about 2,000 of the 4,700. Not December's roster with the drivers away priced at last January's return rate, which treats last winter's drivers as a pool whose return rate moves with who sits in it: on last winter's drivers alone that rate over-predicted January 2026's returns, because the 2025 rental programme's drivers sat in the pool and never came back. Not one ratio of January to November and December returns over every driver back after a break, which mixes in occasional drivers who keep no seasonal timing. Not the drivers already back priced by their December trips, which under-predicted last year's back-by-December drivers' qualification.
+**Order the examination of all 540,000 signature lines filed for initiative serial I-18-2028.**
+The sample projects 390,000 valid signatures, 101.4 per cent of the 384,924 required and inside the 365,678 to 404,170 band. Not 415,000, which carries the duplicate strikes at the sample's own factor of twenty as if a duplicate were a property of one signature. Not 420,000, which also re-derives the registration grounds from the snapshot taken before circulation opened.
 
 ## 2. Critical Components
 
-1. About **1,100** of last winter's drivers (a trip from January to March 2026, none from May to October 2026) were back on the road by 3 January 2027.
-2. Each of the 2024, 2025 and 2026 winters brought back about **1.1** drivers in January for every one back in November and December.
-3. About **1,200** more of last winter's drivers are due back inside the window.
-4. Last winter's drivers make up about **2,000** of the 4,700 drivers expected to qualify.
+1. Sampled signatures struck on a ground other than duplication: **6,270**
+2. Signature lines those grounds carry in the whole petition: **125,400**
+3. Sampled signatures struck as duplicates: **61**
+4. Duplicate signature lines in the whole petition: **24,400**
+5. Projection as a percentage of the number required: **101.4 per cent**
 
 ## 3. Step-by-Step Solution
 
-1. Stacked dispatch_legacy_driver_months_2021-05_2024-07.csv (legacy driver numbers through dispatch_migration_driver_crosswalk.csv) with driver_activity_monthly_2024-07_2027-01.csv into completed trips by driver and month; last year's qualifiers are the accounts paid in winter_guarantee_2026_payout_run.csv and by the late credits in guarantee_payout_adjustments_2025-2026.csv, less the fraud recoveries.
-2. Took each winter's drivers as those with a trip from January to March and none from May to October: 1,087 of last winter's had a trip in November or December 2026.
-3. Over the 2024, 2025 and 2026 winters, January returns ran 1.086 times the November and December returns; at the 2025 and 2026 funding dates this ratio put each winter's January returns within 2 per cent of the count that came back, 308 against 306 and then 413 against 405, where the previous January's share on the drivers still away missed by 14 and 16 per cent.
-4. Priced December 2026's roster without last winter's drivers at the share of each December-trip band of December 2025's roster that the 2026 guarantee paid (about 2,700 drivers), last winter's drivers back by 3 January at the 93 per cent of 2026's back-by-December drivers it paid, and the 1,180 due back at the 82 per cent of January 2026's returners it paid.
-5. Added the 26 drivers who came back after other breaks and qualified in January 2026, and the 195 accounts approved in the 90 days to 3 January without a first trip (onboarding_applications_2025-06-02_2027-01-03.csv; an approval lapses after 90 days) at the 14 of 174 accounts approved in the 90 days to 4 January 2026 with no first trip by the end of that day that the 2026 guarantee paid (the 9 that first drove on 1 to 4 January are not among them): 4,700 drivers expected to qualify, $1,650,000 at $350 each to the nearest $50,000 (guarantee_account_funding_2026-12-30.eml).
-6. For each guarantee, a returned payout that guarantee_payout_events_2025-2026.csv shows sent again and settled reached its driver; only payouts whose last event is a return never did. Recoveries go to the guarantee of the payout they reverse, the 2025 run read in cents and people through merged_into in driver_accounts_2027-01-03.csv (winter_guarantee_payout_notes.docx).
-7. For the pipeline, counted people by screening candidate in background_check_orders_2025-06_2027-01.csv, each in the month (Central time) of their first order, which is placed at first submission while the app's submitted time is the latest resubmission (onboarding_pipeline_counts.docx).
+1. Reconciled the fifteen recorders' returns in county_verification_returns_2028.csv to the sample the office records in sos_filing_and_selection_record_i18-2028.pdf: 27,000 lines, one disposition each.
+2. Put Navajo County's returns on the current code set using navajo_recorder_disposition_codes_2019.txt, splitting its code 02 by the registration the recorder matched in avid_snapshot_extract_20280710.csv, then applied every query notice in county_return_corrections_2028.csv, which supersedes the disposition first returned for the line it names: 6,270 strikes on grounds other than duplication and 61 duplicate strikes.
+3. Carried the grounds that belong to the one signature in front of the recorder at the sample's own factor of twenty, the 540,000 lines filed over the 27,000 sampled: 125,400 lines.
+4. Carried the duplicate strikes at the chance the sample drew both lines of a pair, one in 400, because only the sampled lines were ever keyed and a duplicate could be found only where both of a signer's lines were drawn: 24,400 lines.
+5. Projected valid signatures: 540,000 less 125,400 less 24,400 is 390,200, which prints 390,000 to the nearest 5,000 and is 101.4 per cent of the 384,924 required.
+6. Took each sampled signature's firm from circulator_registration_extract_i18-2028.csv as the firm that had its circulator registered on the day the signature was given, since 22 circulators registered again under another firm inside the window, and read Mohave County's day-first signature dates as written: 2,350 sampled signatures for Sonoran Petition Services LLC in May 2028.
+7. Rebuilt each signer's registration state on the day they signed from the registration and cancellation dates the July snapshot carries, so a registration re-established after a cancellation stands and one cancelled after the signature does not, and counted it lost only where the snapshot's status is cancelled: 558 of the signatures the recorders determined were registered when signed and are no longer valid, 356 of them in Maricopa.
+8. The projection sits between 365,678 and 404,170, so the office orders the examination of all 540,000 signature lines filed rather than certifying or rejecting the petition.
 
 ## 4. Deliverable Answers
 
-### guarantee_fund_jan2027.xlsx
+### signature_projection_2028.xlsx
 
-1. Fund at go-live, to the nearest $50,000: $1,650,000.
-2. Drivers expected to qualify, to the nearest 100: 4,700.
-3. 2025 guarantee: $12,950 never reached a driver; net cost $889,350; 2,541 drivers paid.
-4. 2026 guarantee: $16,100 never reached a driver; net cost $1,038,450; 2,966 drivers paid.
-5. Onboarding pipeline by month of first application, whole people:
-   - June 2026: 446 applied, 313 approved, 263 with a first trip by 3 January 2027
-   - July 2026: 448 applied, 322 approved, 274 with a first trip by 3 January 2027
-   - August 2026: 500 applied, 350 approved, 294 with a first trip by 3 January 2027
-   - September 2026: 423 applied, 311 approved, 255 with a first trip by 3 January 2027
-   - October 2026: 481 applied, 338 approved, 286 with a first trip by 3 January 2027
+1. Projected valid signatures 390,000 to the nearest 5,000, 101.4 per cent of the number required; statutory outcome: examine all signature lines filed.
+2. Each county, the sampled signatures its recorder returned a determination for and how many of those were registered when they signed and are no longer shown as valid, 15 counties:
+   - Apache: 243 signatures determined, 5 no longer valid
+   - Cochise: 503 signatures determined, 7 no longer valid
+   - Coconino: 544 signatures determined, 6 no longer valid
+   - Gila: 223 signatures determined, 2 no longer valid
+   - Graham: 124 signatures determined, 5 no longer valid
+   - Greenlee: 41 signatures determined, 3 no longer valid
+   - La Paz: 81 signatures determined, 3 no longer valid
+   - Maricopa: 16,714 signatures determined, 356 no longer valid
+   - Mohave: 820 signatures determined, 10 no longer valid
+   - Navajo: 357 signatures determined, 8 no longer valid
+   - Pima: 3,966 signatures determined, 80 no longer valid
+   - Pinal: 1,441 signatures determined, 22 no longer valid
+   - Santa Cruz: 162 signatures determined, 3 no longer valid
+   - Yavapai: 1,070 signatures determined, 30 no longer valid
+   - Yuma: 529 signatures determined, 18 no longer valid
+3. Each circulator firm and month, the sampled signatures gathered by circulators that firm had registered on the day they were given and how many of those were struck on a ground other than duplication, 24 cells:
+   - Sonoran Petition Services LLC, 2028-01: 733 sampled signatures, 157 struck on other grounds
+   - Sonoran Petition Services LLC, 2028-02: 1,519 sampled signatures, 332 struck on other grounds
+   - Sonoran Petition Services LLC, 2028-03: 2,246 sampled signatures, 507 struck on other grounds
+   - Sonoran Petition Services LLC, 2028-04: 2,310 sampled signatures, 514 struck on other grounds
+   - Sonoran Petition Services LLC, 2028-05: 2,350 sampled signatures, 561 struck on other grounds
+   - Sonoran Petition Services LLC, 2028-06: 1,042 sampled signatures, 233 struck on other grounds
+   - Copper State Signature Group LLC, 2028-01: 264 sampled signatures, 61 struck on other grounds
+   - Copper State Signature Group LLC, 2028-02: 830 sampled signatures, 189 struck on other grounds
+   - Copper State Signature Group LLC, 2028-03: 1,544 sampled signatures, 366 struck on other grounds
+   - Copper State Signature Group LLC, 2028-04: 1,789 sampled signatures, 392 struck on other grounds
+   - Copper State Signature Group LLC, 2028-05: 1,715 sampled signatures, 424 struck on other grounds
+   - Copper State Signature Group LLC, 2028-06: 991 sampled signatures, 225 struck on other grounds
+   - Verde Petition Operations Inc, 2028-01: 45 sampled signatures, 8 struck on other grounds
+   - Verde Petition Operations Inc, 2028-02: 474 sampled signatures, 90 struck on other grounds
+   - Verde Petition Operations Inc, 2028-03: 938 sampled signatures, 219 struck on other grounds
+   - Verde Petition Operations Inc, 2028-04: 1,281 sampled signatures, 288 struck on other grounds
+   - Verde Petition Operations Inc, 2028-05: 1,555 sampled signatures, 342 struck on other grounds
+   - Verde Petition Operations Inc, 2028-06: 1,504 sampled signatures, 333 struck on other grounds
+   - Mesquite Civic Outreach LLC, 2028-01: 0 sampled signatures, 0 struck on other grounds
+   - Mesquite Civic Outreach LLC, 2028-02: 79 sampled signatures, 17 struck on other grounds
+   - Mesquite Civic Outreach LLC, 2028-03: 423 sampled signatures, 87 struck on other grounds
+   - Mesquite Civic Outreach LLC, 2028-04: 705 sampled signatures, 169 struck on other grounds
+   - Mesquite Civic Outreach LLC, 2028-05: 933 sampled signatures, 230 struck on other grounds
+   - Mesquite Civic Outreach LLC, 2028-06: 1,571 sampled signatures, 367 struck on other grounds
+4. Each month of the circulation period, the sampled signatures signed in it and the petition sheet serials they sit on, 6 months:
+   - 2028-01: 1,042 sampled signatures on 776 sheet serials
+   - 2028-02: 2,902 sampled signatures on 2,125 sheet serials
+   - 2028-03: 5,151 sampled signatures on 3,841 sheet serials
+   - 2028-04: 6,085 sampled signatures on 4,482 sheet serials
+   - 2028-05: 6,553 sampled signatures on 4,846 sheet serials
+   - 2028-06: 5,108 sampled signatures on 3,737 sheet serials
 
-### guarantee_fund_jan2027.pptx
+### petition_disposition_2028.png
 
-6. Slide 1 states the fund, $1,650,000 at go-live, with the 4,700 drivers expected to qualify.
-7. Slide 2 charts each guarantee from main run to net cost:
-   - 2025: main run $900,900, later runs $5,950, never reached a driver $12,950, recovered $4,550, net cost $889,350
-   - 2026: main run $1,053,500, later runs $7,350, never reached a driver $16,100, recovered $6,300, net cost $1,038,450
+1. Bridge from the signature lines filed to the projection, with the number required and both band lines drawn and labelled, the projection bar distinguished, and the title stating that the petition goes to a full count.

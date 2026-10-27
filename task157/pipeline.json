@@ -1,30 +1,26 @@
 {
  "task": "task157",
  "owner": "sathya8571",
- "status": "DESIGN",
+ "status": "BUILD",
  "domain": "political-science-public-policy/election-polling-forecasting (architecture 2; world: an Arizona state elections division projecting a filed initiative petition from the statutory five per cent random sample)",
  "objective": "forecasting",
- "stage": 2,
- "stage_name": "design",
+ "stage": 3,
+ "stage_name": "build",
  "updated": "2026-10-27",
  "stump": "A competent solver who reads every disposition code, validates the counties' registration determinations against the voter extract whose run date precedes the signing window and expands every class at the sample's own factor of 20 files 431,420 valid signatures and a sufficient measure; the step that lands them there is expanding the duplicate dispositions at the sampling fraction alongside the single-signature grounds, when a duplicate is a relation between two signatures the sample sees only when it draws both, so the duplicate burden is 36,800 rather than 1,840 and the projection is 388,460, which orders a full count.",
  "architecture": 2,
  "loops": 0,
  "precut": {
-  "exit": 1,
-  "checks": 52,
-  "fail": 1,
-  "warn": 0,
-  "date": "2026-10-27",
-  "blocking": "semantic forks asserted: architecture 2 owes its own generator/checks.py"
+  "exit": 0,
+  "date": "2026-10-27"
  },
  "leak": {
-  "leak_py": "",
+  "leak_py": "REVIEW, no LEAK, sweeps 9 and 11 clean at as-of 2028-08-04",
   "reader": ""
  },
  "duplicate_check": {
-  "heart": "WARN, no BLOCK",
-  "nearest": "0.09 task445 (v1)"
+  "heart": "WARN, no BLOCK: overuse.org_family government_agency (39 builds), repeat.deliverables png+xlsx against task144, repeat.question_form how-many against task464",
+  "nearest": "surface exit 0, 9 pairs promoted for adjudication out of 297 in scope, being read"
  },
  "judge": {
   "verdict": "",
@@ -48,7 +44,7 @@
    "commit": "5826c528"
   }
  ],
- "resume": "Architecture 2 through stage 2 2026-10-27, and precut exits 1 on ONE check, which is correct and is the stage 3 debt: architecture 2's eight SF rows owe assertions in its own generator/checks.py. The old file is architecture 1's and carries SF1 to SF15 for different forks. I fixed precut.py the same day so that this cannot pass by coincidence again (whole-token matching, and a FAIL when checks.py asserts SF ids the fork table does not carry); the fix catches this build and leaves seven shipped builds passing. The world's figures were rebuilt on Arizona's own statute, which the card's geography names: 540,000 signature lines on 36,000 sheets of 15, a five per cent sample of 27,000 lines, required 384,924, bands 365,678 and 404,170, bin 5,000, golden 388,460 printing 390,000 and ordering a full count against a default path of 431,420 printing 430,000 and reading sufficient. The card's answer, niche, spine.rows and spine.grain are corrected and the layer1 item that contradicted the driver is withdrawn. The forum moved to regulator_or_inspector after task118's re-ship put committee_or_panel inside the three-build ban. Stage 3 owes: architecture 2's checks.py (which closes the precut FAIL), the generator, the pack, the goldens and submission.md; the convergence table re-measured on the cut pack over all six seeds; the campaign parameters pinned so the golden sits within 1,500 of a cell centre with both band clearances at or above 2.5 bins (seed 162 thins the lower clearance to 1.91 against a sampling interval of 1.82); multiplicity drawn near binary with the all-doubles bias asserted under 0.05 bins (a five per cent triple share among multi-signers reaches 0.59 bins and is not identified from the sample, a Gate B failure); and the lander held nearer a third of the ask weight, since response 1 MODELS at 69.2 against a bar of 70 (a paper model, not a scored read: CLAUDE.md retired the solver flow on 10-27, so the pair is argued on paper and measured by the portal alone).",
+ "resume": "Stage 3 is complete and every free gate is green, measured by the author rather than taken from the build thread: generator checks 138 of 138, verify 29 of 29 reading only the bundle, two byte-identical rebuilds (target 01c8d44b6f0df8d0, golden 56dc76b3851646cc, target.zip b3e74a82ebcc0189), figures_check 112 figures none absent, precut exit 0 on 52 checks with 0 FAIL and 0 WARN (the architecture-1 FAIL is closed, because architecture 2 now has its own checks.py), voice-check PASS at 998 characters, leak.py REVIEW with no LEAK at as-of 2028-08-04, input gates 15 files in 4 formats with a 38,080-row spine, two declared distractors and all 15 files carrying source, date and licence, heart WARN with no BLOCK. The four measured obligations the rework owed are all asserted over all six seeds: the golden sits 200 signatures from its cell's centre, both band clearances are at or above 2.5 bins at every seed (worst 2.79), multiplicity is near binary with the all-doubles bias at worst 0.0234 bins, and the defensible family spread is at worst 1.01 signatures. One number to watch and it is the honest weakness of architecture 2: the decisive gap exceeds the family spread and the estimator's own interval together by a factor of 2.00 at the worst seed, against 15.8 on task204, and the worst-seed decisive gap is 2.51 bins. That clears the law but not comfortably, so a portal return on determinism is likelier here than on task204. NEXT IS STAGE 4: the leak reader and the determinism judge spawned together in the background. The 9 promoted surface pairs are to be adjudicated in the design note before the ship, one of them promoted because gap, pattern and decision family all collide, which the screen calls a clone signature even with no surface overlap.",
  "approved": null,
  "delivered": "2026-10-17",
  "portal": null,
@@ -57,16 +53,15 @@
  "portal_status_date": "",
  "wave": "wave 5 (new), seed FC28 (world, decision and quantity kept; the insurer-roster hiding place and any filed payout method not shipped; pitfall re-found from how last winter's seasonal recruits come back)",
  "build": {
-  "checks": "79 run, 0 failed",
-  "verify": "19 passed, 0 failed (pandas, independent path)",
-  "rebuild": "byte-identical (target, golden, figures.json, submission.md)",
-  "figures_check": "71 figures, 0 absent",
-  "voice_check": "PASS (955 characters)",
-  "h1_audit": "clean (pack and goldens)",
-  "guard_validate": "clean",
-  "input_gates": "20 files, 7 formats, largest 165,826 rows, 2 distractors",
-  "call": "$1,650,000 and 4,700 drivers (expected total $1,644,850); default path $1,450,000",
-  "target_zip_sha256": "335651e8f7085ef6f6bbf2da5846baca96b261cc83bc87ca84fe74e71e04a3e3"
+  "checks": "138 run, 0 failed",
+  "verify": "29 run, 0 failed (pandas, bundle only, no generator import)",
+  "rebuild": "byte-identical over two full builds (target, golden, figures.json, submission.md)",
+  "figures_check": "112 figures in blocks 1 to 4, 0 absent",
+  "voice_check": "PASS (997 characters)",
+  "input_gates": "15 files, 4 formats, largest 38,080 rows, 2 distractors",
+  "call": "390,000 valid signatures to the nearest 5,000 (390,200 unrounded), 101.4 per cent of the 384,924 required, inside the band, so the examination of all 540,000 lines is ordered; default path 420,000 (420,520) and sufficient",
+  "ask_layer": "90 figures; the cracker keeps 16 (0.178 of the ask weight); pair ceiling 44.1 on the worst honest reading, mirror leakage 17.8 per cent",
+  "target_zip_sha256": "b3e74a82ebcc01899825dae53a97d352d249d6dd2b3bbea8f77a7b127774e77c"
  },
  "rule3": "PASS (stage 4 audit): P(one strong solver lands) about 0.10, P(both) about 0.02 to 0.04"
 }

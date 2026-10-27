@@ -1,75 +1,94 @@
-"""task157 documents: the 2027 guarantee's driver terms, finance's funding email, Payments Operations' guarantee
-payout notes, Driver Onboarding's pipeline counting notes, the supply team's November KPI report (computed from the
-shipped extract), the data notes for the pulled files and the pull log. Their text is kept here as data so checks.py
-can quote and execute it."""
+"""task157 (architecture 2) shipped documents: the office's filing and sample record for serial I-18-2028,
+the verification instruction the county recorders work to, Navajo County's own 2019 disposition code list,
+and the 2024 full count's close-out workbook.
+
+Their text is kept here as data so that `checks.py` can quote and execute it, and every absence assertion in
+`checks.py` runs with a positive control through the same extractor."""
 from __future__ import annotations
 
 import datetime as dt
 import os
-import re
+import sys
 
 from reportlab import rl_config
 
 rl_config.invariant = 1
-from reportlab.lib import colors                                                      # noqa: E402
-from reportlab.lib.pagesizes import letter                                            # noqa: E402
-from reportlab.lib.styles import ParagraphStyle                                       # noqa: E402
-from reportlab.lib.units import inch                                                  # noqa: E402
-from reportlab.pdfbase import pdfmetrics                                              # noqa: E402
-from reportlab.pdfbase.ttfonts import TTFont                                          # noqa: E402
-from reportlab.platypus import Paragraph, SimpleDocTemplate, Spacer, Table, TableStyle  # noqa: E402
+from reportlab.lib import colors                                                        # noqa: E402
+from reportlab.lib.pagesizes import letter                                              # noqa: E402
+from reportlab.lib.styles import ParagraphStyle                                         # noqa: E402
+from reportlab.lib.units import inch                                                    # noqa: E402
+from reportlab.pdfbase import pdfmetrics                                                # noqa: E402
+from reportlab.pdfbase.ttfonts import TTFont                                            # noqa: E402
+from reportlab.platypus import Paragraph, SimpleDocTemplate, Spacer, Table, TableStyle   # noqa: E402
 
+HERE = os.path.dirname(os.path.abspath(__file__))
+sys.path.insert(0, HERE)
 import common as K          # noqa: E402
 import postprocess as PP    # noqa: E402
 import records as R         # noqa: E402
 
 FONT_DIR = "/usr/share/fonts/truetype/"
 for _n, _f in (("Carlito", "crosextra/Carlito-Regular.ttf"), ("Carlito-Bold", "crosextra/Carlito-Bold.ttf"),
-               ("LibSans", "liberation/LiberationSans-Regular.ttf"), ("LibSans-Bold", "liberation/LiberationSans-Bold.ttf")):
+               ("LibSans", "liberation/LiberationSans-Regular.ttf"),
+               ("LibSans-Bold", "liberation/LiberationSans-Bold.ttf")):
     pdfmetrics.registerFont(TTFont(_n, FONT_DIR + _f))
-INK = colors.HexColor("#1d2421")
-GREY = colors.HexColor("#5d6763")
-LARCH = colors.HexColor("#2f5d3a")
-RULE = colors.HexColor("#a9b4ad")
-HEAD = colors.HexColor("#e4ebe5")
 
-F_TERMS = "winter_guarantee_terms_2027.pdf"
-F_EMAIL = "guarantee_account_funding_2026-12-30.eml"
-F_PAYNOTES = "winter_guarantee_payout_notes.docx"
-F_ONBNOTES = "onboarding_pipeline_counts.docx"
-F_KPI = "driver_supply_kpis_2026-11.pdf"
-F_NOTES = "supply_pull_data_notes.md"
-F_LOG = "supply_pull_2027-01-03.log"
+INK = colors.HexColor("#1b1f26")
+GREY = colors.HexColor("#5a6270")
+SEAL = colors.HexColor("#1f3b63")
+RULE = colors.HexColor("#aab2bd")
+HEAD = colors.HexColor("#e6eaf0")
+
+F_RECORD = "sos_filing_and_selection_record_i18-2028.pdf"
+F_INSTRUCTION = "county_recorder_verification_instruction_2027.pdf"
+F_OLDCODES = "navajo_recorder_disposition_codes_2019.txt"
 
 
-def styles(font, bold, accent, size=10.2):
+def styles(font="Carlito", bold="Carlito-Bold", accent=SEAL, size=10.1):
     return dict(
-        body=ParagraphStyle("b" + font + str(size), fontName=font, fontSize=size, leading=size * 1.36, textColor=INK,
-                            spaceAfter=6),
-        h1=ParagraphStyle("h1" + font + str(size), fontName=bold, fontSize=15.0, leading=19.0, textColor=accent,
-                          spaceAfter=3),
-        sub=ParagraphStyle("s" + font + str(size), fontName=font, fontSize=8.9, leading=11.8, textColor=GREY,
-                           spaceAfter=10),
-        h2=ParagraphStyle("h2" + font + str(size), fontName=bold, fontSize=10.8, leading=14.0, textColor=accent,
-                          spaceBefore=8, spaceAfter=3),
-        cell=ParagraphStyle("c" + font + str(size), fontName=font, fontSize=8.6, leading=10.6, textColor=INK),
-        cellr=ParagraphStyle("cr" + font + str(size), fontName=font, fontSize=8.6, leading=10.6, textColor=INK,
+        body=ParagraphStyle("b", fontName=font, fontSize=size, leading=size * 1.38, textColor=INK,
+                            spaceAfter=5.0),
+        h1=ParagraphStyle("h1", fontName=bold, fontSize=14.4, leading=18.0, textColor=accent, spaceAfter=3.0),
+        sub=ParagraphStyle("s", fontName=font, fontSize=8.8, leading=11.6, textColor=GREY, spaceAfter=9.0),
+        h2=ParagraphStyle("h2", fontName=bold, fontSize=10.6, leading=13.8, textColor=accent, spaceBefore=7.0,
+                          spaceAfter=2.5),
+        cell=ParagraphStyle("c", fontName=font, fontSize=8.5, leading=10.5, textColor=INK),
+        cellr=ParagraphStyle("cr", fontName=font, fontSize=8.5, leading=10.5, textColor=INK,
                              alignment=2),
-        cellb=ParagraphStyle("cb" + font + str(size), fontName=bold, fontSize=8.6, leading=10.6, textColor=INK),
-        small=ParagraphStyle("sm" + font + str(size), fontName=font, fontSize=8.2, leading=10.6, textColor=GREY,
-                             spaceAfter=4))
+        cellb=ParagraphStyle("cb", fontName=bold, fontSize=8.5, leading=10.5, textColor=INK),
+        small=ParagraphStyle("sm", fontName=font, fontSize=8.1, leading=10.4, textColor=GREY, spaceBefore=4.0),
+    )
+
+
+class _Doc(SimpleDocTemplate):
+    """The office's own documents carry the office as producer and creator: a state record whose producer
+    string names a writing library is a defect (reduce-house-fixes H1)."""
+
+    def __init__(self, path, title, author, **kw):
+        self._meta = (title, author)
+        SimpleDocTemplate.__init__(self, path, pagesize=letter, title=title, author=author, subject="",
+                                   creator=author, leftMargin=1.0 * inch, rightMargin=1.0 * inch,
+                                   topMargin=0.9 * inch, bottomMargin=0.85 * inch, **kw)
+
+    def handle_documentBegin(self):
+        SimpleDocTemplate.handle_documentBegin(self)
+        title, author = self._meta
+        c = self.canv
+        c.setTitle(title)
+        c.setAuthor(author)
+        c.setSubject("")
+        c.setCreator(author)
+        c.setProducer("%s document services" % K.OFFICE)
 
 
 def _doc(path, title, author):
-    return SimpleDocTemplate(path, pagesize=letter, leftMargin=1.0 * inch, rightMargin=1.0 * inch,
-                             topMargin=0.85 * inch, bottomMargin=0.8 * inch, title=title, author=author, subject="",
-                             creator="", producer="")
+    return _Doc(path, title, author)
 
 
-def _footer(left, font="LibSans"):
+def _footer(left, font="Carlito"):
     def draw(canvas, doc):
         canvas.saveState()
-        canvas.setFont(font, 7.6)
+        canvas.setFont(font, 7.5)
         canvas.setFillColor(GREY)
         canvas.drawString(1.0 * inch, 0.5 * inch, left)
         canvas.drawRightString(letter[0] - 1.0 * inch, 0.5 * inch, "Page %d" % doc.page)
@@ -81,412 +100,257 @@ def esc(s):
     return s.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;")
 
 
-def sentences(paras):
-    return [s for p in paras for s in re.split(r"(?<=\.)\s+(?=[A-Z0-9(])", p)]
-
-
-# ---------------------------------------------------------------------------------------------------- the terms
-TERMS = [
-    ("What it pays", [
-        "Larch pays $350 to every eligible driver who completes 40 trips between 00:00 on Monday 4 January 2027 and "
-        "23:59 on Sunday 31 January 2027, Central time. The guarantee is paid on top of trip earnings, tips and any "
-        "other promotion.",
-    ]),
-    ("Who is eligible", [
-        "The guarantee is open to every driver whose Larch account is approved by 23:59 on Sunday 3 January 2027 and "
-        "is in good standing, including drivers returning to Larch after time away and approved drivers who take "
-        "their first trip during the guarantee. There is nothing to opt into.",
-        "Accounts approved from Monday 4 January take part in the next guarantee.",
-    ]),
-    ("What counts as a trip", [
-        "A completed trip is a trip the rider completed and paid for. Trips cancelled by the driver or by the rider do "
-        "not count. Trips later refunded to the rider as fraudulent are taken off the count, and a guarantee paid on "
-        "them is recovered from the driver's earnings.",
-        "Each driver can be paid one guarantee. A driver who drives on more than one account is paid once, and a second "
-        "payment is recovered.",
-    ]),
-    ("Payment", [
-        "Trips are counted at 23:59 on Sunday 7 February 2027 and the guarantee is paid on Friday 12 February 2027 to "
-        "the payout method on file. A trip credited to the account after the count, such as a disputed trip resolved "
-        "in the driver's favour, is added in a later payout run, and a driver it takes to 40 trips is paid then.",
-    ]),
-    ("Earlier guarantees", [
-        "The guarantee has run on these terms each January since 2025: $350 at 40 completed trips in the four weeks "
-        "from the first Monday of the year, for accounts approved by the Sunday before.",
-    ]),
-    ("Questions", [
-        "Ask Driver Support in the app (Account, then Help). Larch can end or change a promotion that is being misused; "
-        "these terms are governed by the laws of Minnesota.",
-    ]),
-]
-
-
-def write_terms(path):
-    st = styles("LibSans", "LibSans-Bold", LARCH, 10.2)
-    s = [Paragraph("Winter Guarantee 2027", st["h1"]),
-         Paragraph("Larch Rides driver terms. Published 14 December 2026 by Driver Supply.", st["sub"])]
-    for head, paras in TERMS:
-        s.append(Paragraph(esc(head), st["h2"]))
-        for p in paras:
-            s.append(Paragraph(esc(p), st["body"]))
-    doc = _doc(path, "Winter Guarantee 2027: driver terms", "Driver Supply")
-    doc.build(s, onFirstPage=_footer("Larch Rides  |  Winter Guarantee 2027 terms"),
-              onLaterPages=_footer("Larch Rides  |  Winter Guarantee 2027 terms"))
-
-
-# ---------------------------------------------------------------------------------------------------- the email
-EMAIL_BODY = [
-    "Gary,",
-    "Treasury funds the winter guarantee account once, at midnight on Monday 4 January when the guarantee goes live "
-    "in the app, and we won't top it up during the window. What I need from you is the expected total the guarantee "
-    "will pay for 4 to 31 January: $350 for every eligible driver we expect to complete 40 trips, including the drivers "
-    "who aren't driving right now, returning and new, since the terms pay them the same way. Please don't pad it; if "
-    "the main run comes in over, we cover the difference in February.",
-    "Treasury moves money in $50,000 steps, so round it to the nearest $50,000, and send the number of drivers you "
-    "expect to qualify with it.",
-    # Its own paragraph: wrapped inside the one above, the phrase broke across a line and the sentence that
-    # settles the qualification basis stopped being findable in the raw file. The second clause restates the
-    # terms' basis, which is WHAT and not HOW, so it pins the convention without naming the decisive step.
-    "Returned payouts and recoveries come back to the account afterwards, so leave them out. Count every driver "
-    "who completes the 40 trips, whatever happened to the payment afterwards.",
-    "Any time Sunday is fine.",
-    "Kathy",
-]
-
-
-def email_text():
-    hdr = [
-        "Return-Path: <ksherman@larchrides.com>",
-        "Message-ID: <CAH2k7Wd8sP3qL0mVx4nR9tY6fBz1eJc@mail.larchrides.com>",
-        "Date: Wed, 30 Dec 2026 16:12:37 -0600",
-        "From: Kathy Sherman <ksherman@larchrides.com>",
-        "To: Gary Mathews <gmathews@larchrides.com>",
-        "Cc: Melvin Harrell <mharrell@larchrides.com>",
-        "Subject: Guarantee account for January",
-        "MIME-Version: 1.0",
-        "Content-Type: text/plain; charset=\"UTF-8\"",
-        "Content-Transfer-Encoding: 7bit",
-    ]
-    body = []
-    for p in EMAIL_BODY:
-        body += _wrap(p, 76) + [""]
-    sig = ["-- ", "Kathy Sherman", "Finance Director, Larch Rides", "612 555 0148"]
-    return "\r\n".join(hdr + [""] + body + sig) + "\r\n"
-
-
-def _wrap(p, width):
-    words, lines, cur = p.split(), [], ""
-    for w in words:
-        if cur and len(cur) + 1 + len(w) > width:
-            lines.append(cur)
-            cur = w
-        else:
-            cur = (cur + " " + w) if cur else w
-    if cur:
-        lines.append(cur)
-    return lines
-
-
-# ---------------------------------------------------------------------------------------------------- payout notes
-PAYNOTES = [
-    ("How a guarantee is paid", [
-        "The main run goes out on the second Friday after the window closes. It pays $350 to every account the payments "
-        "system counts at 40 completed trips at 23:59 on the Sunday after the window; only accounts approved by the "
-        "Sunday before the window take part.",
-        "Trips credited after the count, most of them disputed trips resolved in the driver's favour, are picked up "
-        "by the first adjustment run in March, and an account they take to 40 is paid there.",
-        "When trips in the window are later refunded to the rider as fraudulent and the account falls below 40, its "
-        "payment is recovered from the driver's next earnings payouts. When fraud review finds one driver on two "
-        "accounts, the second account is merged into the first and its payment is recovered. Recoveries go into the "
-        "next adjustment run as negative lines naming the payout they reverse; one found late can land in a run of "
-        "the next year's guarantee.",
-        "The bank returns a payout it cannot credit (a closed account, an account it cannot find, a wrong account "
-        "number), and the driver is asked in the app to update their payout details.",
-    ]),
-    ("What a guarantee cost", [
-        "A guarantee's cost is what its runs paid, less payouts the bank returned that were never paid out again and "
-        "less what was recovered; returns and recoveries are booked to the guarantee of the payout they reverse, "
-        "whatever run they land in.",
-        "The drivers a guarantee paid are the people who kept a payment: one per person however many accounts, none "
-        "for a payout returned and never paid out again or recovered.",
-    ]),
-    ("Exports", [
-        "The 2025 main run came out of the old payout report, which gives amounts in cents. From the 2026 guarantee "
-        "the runs export from the payments system. The bank's returns report covers every payout from the account, "
-        "weekly earnings included; guarantee payouts carry the entry description GUARANTEE.",
-    ]),
-]
-
-
-def _page_field(par):
-    from docx.oxml import OxmlElement
-    from docx.oxml.ns import qn
-    for kind, text in (("begin", None), (None, " PAGE "), ("separate", None), (None, "1"), ("end", None)):
-        r = par.add_run()
-        if kind:
-            fc = OxmlElement("w:fldChar")
-            fc.set(qn("w:fldCharType"), kind)
-            r._r.append(fc)
-        elif text.strip() == "PAGE":
-            it = OxmlElement("w:instrText")
-            it.set(qn("xml:space"), "preserve")
-            it.text = text
-            r._r.append(it)
-        else:
-            r.text = text
-
-
-def _word(path, title, byline, sections, footer):
-    import docx
-    from docx.shared import Cm, Pt, RGBColor
-    doc = docx.Document()
-    st = doc.styles["Normal"]
-    st.font.name = "Calibri"
-    st.font.size = Pt(10.5)
-    st.paragraph_format.space_after = Pt(6)
-    sec = doc.sections[0]
-    sec.page_width, sec.page_height = Cm(21.59), Cm(27.94)
-    sec.left_margin = sec.right_margin = Cm(2.4)
-    sec.top_margin, sec.bottom_margin = Cm(2.2), Cm(2.0)
-    fp = sec.footer.paragraphs[0]
-    fp.text = footer + ", page "
-    _page_field(fp)
-    for r in fp.runs:
-        r.font.size = Pt(8)
-        r.font.color.rgb = RGBColor(0x5D, 0x67, 0x63)
-    green = RGBColor(0x2F, 0x5D, 0x3A)
-    p = doc.add_paragraph()
-    r = p.add_run(title)
-    r.bold = True
-    r.font.size = Pt(15)
-    r.font.color.rgb = green
-    p = doc.add_paragraph()
-    p.paragraph_format.space_after = Pt(12)
-    r = p.add_run(byline)
-    r.font.size = Pt(9)
-    r.font.color.rgb = RGBColor(0x5D, 0x67, 0x63)
-    for head, paras in sections:
-        p = doc.add_paragraph()
-        p.paragraph_format.space_before = Pt(8)
-        p.paragraph_format.space_after = Pt(3)
-        r = p.add_run(head)
-        r.bold = True
-        r.font.size = Pt(11)
-        r.font.color.rgb = green
-        for t in paras:
-            doc.add_paragraph(t)
-    doc.save(path)
-
-
-def write_paynotes(path):
-    _word(path, "Winter guarantee payouts", "Payments Operations. Melvin Harrell, 20 March 2026. For Finance and "
-          "Driver Supply.", PAYNOTES, "Larch Rides Payments Operations, winter guarantee payouts")
-
-
-ONBNOTES = [
-    ("The pipeline", [
-        "Applications come in through the onboarding app, which went live on 2 June 2025; applications made before "
-        "then were handled by email and are not in it. Submitting an application places the background check order "
-        "with our screening vendor, and the check runs while we review the documents.",
-        "When a document is missing or unreadable we send the application back, and the applicant fixes it in the app "
-        "and resubmits.",
-        "An approval opens the driver's account. An approval lapses 90 days after it is given if the driver has not "
-        "taken a trip, and the applicant reapplies.",
-    ]),
-    ("Monthly counts", [
-        "We count people, not applications. Someone who applies again after a rejection has a second application but "
-        "stays one candidate with the screening vendor.",
-        "A person is counted once, in the month (Central time) of their first submission; approved means approved on "
-        "any of their applications; a first trip is any completed trip on their account by the date of the count.",
-    ]),
-]
-
-
-def write_onbnotes(path):
-    _word(path, "Onboarding pipeline counts", "Driver Onboarding, 5 August 2026.", ONBNOTES,
-          "Larch Rides Driver Onboarding, pipeline counts")
-
-
-# ---------------------------------------------------------------------------------------------------- KPI report
-KPI_QUESTION = ("Driver supply on the dispatch platform each month, January 2025 to November 2026. A driver is active "
-                "in a month with a completed trip in it; a new driver's first completed trip on Larch is in the month "
-                "(old-platform history through the migration crosswalk). Counts are accounts. Online hours are time "
-                "online in the driver app.")
-
-
-def kpi_rows(target):
-    """Computed from the shipped extract, the legacy export and the crosswalk."""
-    import calc as C
-    D = C.load(target)
-    online = {}
-    for r in C.rd(target, R.F_ACTIVITY):
-        m = (int(r["activity_month"][:4]), int(r["activity_month"][5:7]))
-        online[m] = online.get(m, 0) + int(r["online_minutes"])
-    rows = []
-    for m in K.months(dt.date(2025, 1, 1), dt.date(2026, 11, 1)):
-        j = D.mi[m]
-        act = int(D.A[:, j].sum())
-        new = int((D.first_m == j).sum())
-        trips = int(D.T[:, j].sum())
-        hrs = online[m] / 60.0
-        rows.append(dict(month=m, active=act, new=new, trips=trips, hours=hrs, per=trips / act))
-    return rows
-
-
-def write_kpi(path, target):
-    rows = kpi_rows(target)
-    st = styles("Carlito", "Carlito-Bold", LARCH, 10.4)
-    s = [Paragraph("Driver supply KPIs: November 2026", st["h1"]),
-         Paragraph("Supply Analytics. Jesse Velasquez. Published 11 December 2026.", st["sub"]),
-         Paragraph(esc(KPI_QUESTION), st["body"]), Spacer(1, 4)]
-    head = ["Month", "Active drivers", "New drivers", "Completed trips", "Online hours", "Trips per active driver"]
+def _table(st, head, rows, widths, align_right=()):
     data = [[Paragraph(esc(h), st["cellb"]) for h in head]]
     for r in rows:
-        y, m = r["month"]
-        data.append([Paragraph(esc("%s %d" % (K.MON3[m], y)), st["cell"]),
-                     Paragraph("{:,}".format(r["active"]), st["cellr"]),
-                     Paragraph("{:,}".format(r["new"]), st["cellr"]),
-                     Paragraph("{:,}".format(r["trips"]), st["cellr"]),
-                     Paragraph("{:,}".format(int(K.round_half_up(r["hours"]))), st["cellr"]),
-                     Paragraph("%.1f" % K.round_half_up(r["per"], 1), st["cellr"])])
-    t = Table(data, colWidths=[w * inch for w in (0.95, 1.05, 0.95, 1.15, 1.05, 1.35)], repeatRows=1)
-    t.setStyle(TableStyle([("GRID", (0, 0), (-1, -1), 0.4, RULE), ("VALIGN", (0, 0), (-1, -1), "TOP"),
-                           ("BACKGROUND", (0, 0), (-1, 0), HEAD), ("TOPPADDING", (0, 0), (-1, -1), 2.4),
-                           ("BOTTOMPADDING", (0, 0), (-1, -1), 2.4)]))
-    s.append(t)
-    s.append(Spacer(1, 8))
-    s.append(Paragraph(esc("Source: dispatch warehouse, driver activity by month, refreshed 7 December 2026. Months "
-                           "are calendar months, Central time."), st["small"]))
-    doc = _doc(path, "Driver supply KPIs: November 2026", K.PEOPLE["analytics"])
-    doc.build(s, onFirstPage=_footer("Larch Rides Supply Analytics  |  Monthly supply KPIs", "Carlito"),
-              onLaterPages=_footer("Larch Rides Supply Analytics  |  Monthly supply KPIs", "Carlito"))
-    return rows
+        data.append([Paragraph(esc(str(v)), st["cellr"] if i in align_right else st["cell"])
+                     for i, v in enumerate(r)])
+    t = Table(data, colWidths=widths, hAlign="LEFT")
+    t.setStyle(TableStyle([
+        ("BACKGROUND", (0, 0), (-1, 0), HEAD),
+        ("LINEBELOW", (0, 0), (-1, 0), 0.6, RULE),
+        ("LINEBELOW", (0, 1), (-1, -2), 0.25, colors.HexColor("#dfe3ea")),
+        ("VALIGN", (0, 0), (-1, -1), "TOP"),
+        ("TOPPADDING", (0, 0), (-1, -1), 3.0),
+        ("BOTTOMPADDING", (0, 0), (-1, -1), 3.0),
+        ("LEFTPADDING", (0, 0), (-1, -1), 4.0),
+    ]))
+    return t
 
 
-# ---------------------------------------------------------------------------------------------------- data notes
-def data_notes():
-    L = []
-    a = L.append
-    a("# Supply pull, 3 January 2027: data notes")
-    a("")
-    a("Supply Analytics (Jesse Velasquez). Field notes for the files pulled on Sunday 3 January 2027; the pull log is "
-      "%s." % F_LOG)
-    a("")
-    a("## Dispatch")
-    a("")
-    a("**%s**. The old dispatch platform's monthly driver export, one row per legacy driver number and month with "
-      "completed trips or online time. Months are calendar months, Central time. ONLINE_HRS is online time in hours, "
-      "to one decimal. The old platform's last day was Sunday 14 July 2024, so July 2024 holds 1 to 14 July." % R.F_LEGACY)
-    a("")
-    a("**%s**. The dispatch warehouse's monthly driver activity, one row per driver_id and month with completed trips "
-      "or online time, from Monday 15 July 2024; July 2024 holds 15 to 31 July. trips_completed counts trips the "
-      "rider completed; trips_cancelled_by_driver are not in it; online_minutes is time online in the driver app. "
-      "Months are calendar months, Central time. January 2027 holds 1 to 3 January, to the extract run." % R.F_ACTIVITY)
-    a("")
-    a("**%s**. Every legacy driver number and the driver_id it became on 15 July 2024. A driver registered twice on "
-      "the old platform has both numbers mapped to one driver_id." % R.F_CROSSWALK)
-    a("")
-    a("**%s**. One row per account as at the extract run." % R.F_ACCOUNTS)
-    a("")
-    a("| Field | Values |")
-    a("|---|---|")
-    a("| account_opened | the day the account was approved, Central time |")
-    a("| signup_channel | app; referral; campaign_winter26 (the winter 2026 recruitment campaign, sign-ups from 12 "
-      "January 2026); rental_partner (drivers of the 2025 rental programme) |")
-    a("| vehicle | own, lease, rental |")
-    a("| account_status | active (a completed trip in the last 30 days); new (approved, no trip yet); inactive; "
-      "deactivated; merged (a driver's second account, merged into merged_into on closed_on) |")
-    a("| last_trip_on | the day of the account's latest completed trip |")
-    a("| closed_on | the day the account was deactivated or merged |")
-    a("")
-    a("## Payments")
-    a("")
-    a("**%s**. The 2025 guarantee's main run of 14 February 2025, from the old payout report." % R.F_RUN25)
-    a("")
-    a("**%s**. The 2026 guarantee's main run of 13 February 2026." % R.F_RUN26)
-    a("")
-    a("**%s**. The guarantee's adjustment runs, 2025 and 2026: a late_credit line pays the payout in payout_id; a "
-      "fraud_recovery or duplicate_account line recovers the payout in reverses_payout_id. program_code is the run's "
-      "program." % R.F_ADJ)
-    a("")
-    a("**%s**. Each guarantee payout's events in the payments system, UTC." % R.F_EVENTS)
-    a("")
-    a("**%s**. The bank's ACH return report for the payout account, 2025 and 2026; individual_id carries the payout "
-      "id." % R.F_RETURNS)
-    a("")
-    a("## Onboarding")
-    a("")
-    a("**%s**. The onboarding app's applications export, one row per application, times UTC. status: in_review, "
-      "approved, approval_lapsed (approved, the approval lapsed 90 days after it was given without a trip), rejected, "
-      "withdrawn, expired. driver_id is the account an approval opened; first_trip_at_utc is that account's first "
-      "completed trip." % R.F_APPS)
-    a("")
-    a("**%s**. The screening vendor's order export for Larch, one row per order, times UTC. candidate_id is the "
-      "vendor's person; client_reference is the application id." % R.F_ORDERS)
-    a("")
-    a("## Also in the pull")
-    a("")
-    a("%s (the November KPI report), %s and %s (the payments and onboarding teams' notes), %s (the 2027 terms), %s "
-      "(finance's email of 30 December), %s (marketplace planning's Q1 plan, issued 4 December), %s (2026 referral "
-      "bonuses)." % (F_KPI, F_PAYNOTES, F_ONBNOTES, F_TERMS, F_EMAIL, R.F_DEMAND, R.F_REFERRAL))
-    return "\n".join(L) + "\n"
-
-
-# ---------------------------------------------------------------------------------------------------- pull log
-def pull_log(n_rows, sizes):
-    t = dt.datetime(2027, 1, 3, 21, 40, 2)
-    lines = []
-
-    def at(sec):
-        return (t + dt.timedelta(seconds=sec)).strftime("%Y-%m-%d %H:%M:%S") + " CST"
-    lines.append("%s  pull supply_guarantee_2027 start user=jvelasquez host=sa-ws-07" % at(0))
-    lines.append("%s  dest \\\\larch-fs01\\supply\\pulls\\2027-01-03" % at(1))
-    steps = [
-        (4, "dw.dispatch_legacy_driver_month", R.F_LEGACY),
-        (61, "dw.driver_activity_monthly", R.F_ACTIVITY),
-        (96, "dw.dispatch_migration_crosswalk", R.F_CROSSWALK),
-        (104, "dw.driver_account", R.F_ACCOUNTS),
-        (141, "payments.report_archive WG25-MAIN-0214", R.F_RUN25),
-        (149, "payments.batch_export WG26-MAIN-0213", R.F_RUN26),
-        (156, "payments.adjustment_lines program in (WG2025, WG2026)", R.F_ADJ),
-        (171, "payments.payout_events program in (WG2025, WG2026)", R.F_EVENTS),
-        (203, "bank portal ACH return report 2025-01-01..2026-12-31", R.F_RETURNS),
-        (229, "onboarding.applications_export 2025-06-02..2027-01-03", R.F_APPS),
-        (262, "screening vendor portal order export 2025-06..2027-01", R.F_ORDERS),
-        (287, "referrals.bonus_ledger 2026", R.F_REFERRAL),
+# ---------------------------------------------------------------------------------- the filing record
+def record_text():
+    """The office's record of the filing and of the sample it drew. Every figure in it is the office's own
+    count or the statute's own number, and it is the highest authority in the pack."""
+    lines = "{:,}".format(K.LINES_FILED)
+    return [
+        ("Measure", [
+            "Serial number %s, a measure proposing an amendment to the Constitution of Arizona, filed by "
+            "the Arizona Water Security Committee, a political committee registered with this office."
+            % K.SERIAL,
+            "Petition sheets for serial %s were issued to the committee on %s. The committee filed the "
+            "petition at this office on %s." % (K.SERIAL, K.long_date(K.SERIAL_ISSUED), K.long_date(K.FILED)),
+        ]),
+        ("Receipt", [
+            "The committee presented 38,320 petition sheets. 240 of those sheets were sheets already filed "
+            "with this office under the same serial number and were struck at receipt; they are not part of "
+            "the filing. The office receipted 38,080 sheets, bearing %s signature lines, and the receipt was "
+            "closed on %s." % (lines, K.long_date(K.RECEIPT_CLOSED)),
+            "Each receipted sheet carries the circulator's registration number and the sheet number printed "
+            "on it by the firm that gathered it. Sheet numbers are each firm's own series.",
+        ]),
+        ("Signatures required", [
+            "A measure proposing a constitutional amendment requires signatures equal to fifteen per cent of "
+            "the total votes cast for Governor at the last general election at which a Governor was elected. "
+            "%s votes were cast for Governor at the general election of %s, and the number required for "
+            "serial %s is therefore %s." % ("{:,}".format(K.GOV_VOTES_2026), K.long_date(K.ELECTION_2026),
+                                            K.SERIAL, "{:,}".format(K.REQUIRED)),
+        ]),
+        ("The random sample", [
+            "The office drew a random sample of five per cent of the signature lines filed, %s of the %s "
+            "lines receipted, on %s. The selection was made by the office's random selection program over "
+            "the receipted sheets and lines." % ("{:,}".format(K.SAMPLE_LINES), lines,
+                                                 K.long_date(K.SAMPLE_DRAWN)),
+            "The office transmitted to each county recorder a copy of every sampled signature line assigned "
+            "to that recorder, with the sheet and the line it was taken from. A line is assigned to the "
+            "recorder of the county shown by the residence address written on it.",
+            "Each recorder shall complete the verification and return its determinations within fifteen "
+            "business days of transmittal, which for this filing closes on %s."
+            % K.long_date(K.RETURNS_CLOSE),
+        ]),
+        ("Determination", [
+            "If the number of valid signatures established for the petition is less than ninety-five per "
+            "cent of the number required, %s signatures, the petition is insufficient. If it is more than "
+            "one hundred and five per cent of the number required, %s signatures, the petition is "
+            "sufficient. If it is neither, the Secretary shall order the examination of all signature lines "
+            "filed." % ("{:,}".format(K.BAND_LO), "{:,}".format(K.BAND_HI)),
+            "The Secretary certifies the measures for the general election of %s no later than %s."
+            % (K.long_date(K.ELECTION_2028), K.long_date(K.CERTIFY_BY)),
+        ]),
     ]
-    for sec, src, f in steps:
-        rows = n_rows.get(f)
-        lines.append("%s  %-55s rows=%s bytes=%d -> %s" % (at(sec), src, "{:,}".format(rows) if rows is not None
-                                                             else "-", sizes[f], f))
-    lines.append("%s  copied %s (marketplace planning share, issued 2026-12-04) bytes=%d" % (at(301), R.F_DEMAND,
-                                                                                        sizes[R.F_DEMAND]))
-    for k, f in enumerate((F_KPI, F_TERMS, F_EMAIL, F_PAYNOTES, F_ONBNOTES)):
-        lines.append("%s  copied %s bytes=%d" % (at(306 + 4 * k), f, sizes[f]))
-    lines.append("%s  copied %s bytes=%d" % (at(331), F_NOTES, sizes[F_NOTES]))
-    lines.append("%s  pull supply_guarantee_2027 done files=%d" % (at(333), len(steps) + 7))
-    return "\n".join(lines) + "\n"
 
 
-def write_all(out, n_rows):
-    p = lambda f: os.path.join(out, f)
-    write_terms(p(F_TERMS))
-    with open(p(F_EMAIL), "w", encoding="utf-8", newline="") as fh:
-        fh.write(email_text())
-    write_paynotes(p(F_PAYNOTES))
-    write_onbnotes(p(F_ONBNOTES))
-    write_kpi(p(F_KPI), out)
-    with open(p(F_NOTES), "w", encoding="utf-8", newline="\n") as fh:
-        fh.write(data_notes())
-    P = K.PEOPLE
-    PP.normalize_pdf(p(F_TERMS), b"D:20261214101800-06'00'", b"D:20261214101800-06'00'")
-    PP.normalize_pdf(p(F_KPI), b"D:20261211083400-06'00'", b"D:20261211083400-06'00'")
-    PP.normalize_docx(p(F_PAYNOTES), P["payments"], P["payments"], "2026-03-18T15:06:00Z", "2026-03-20T19:41:00Z",
-                      revision=7, total_time=96, seed="task157/payout-notes", title="Winter guarantee payouts",
-                      company=K.OPERATOR)
-    PP.normalize_docx(p(F_ONBNOTES), "Driver Onboarding", "Driver Onboarding", "2026-08-04T20:15:00Z",
-                      "2026-08-05T14:52:00Z", revision=4, total_time=41, seed="task157/onboarding-counts",
-                      title="Onboarding pipeline counts", company=K.OPERATOR)
-    sizes = {f: os.path.getsize(p(f)) for f in os.listdir(out)}
-    with open(p(F_LOG), "w", encoding="utf-8", newline="\n") as fh:
-        fh.write(pull_log(n_rows, sizes))
+def write_record(path):
+    st = styles()
+    s = [Paragraph("Filing and sample selection record: initiative serial %s" % K.SERIAL, st["h1"]),
+         Paragraph("%s, %s. Record opened %s. Prepared by %s, State Elections Director."
+                   % (K.OFFICE, K.DIVISION, K.long_date(K.SAMPLE_DRAWN), K.PEOPLE["director"]), st["sub"])]
+    for head, paras in record_text():
+        s.append(Paragraph(esc(head), st["h2"]))
+        for pr in paras:
+            s.append(Paragraph(esc(pr), st["body"]))
+    s.append(Spacer(1, 6))
+    s.append(_table(st, ["Item", "Figure"], [
+        ["Petition sheets presented", "38,320"],
+        ["Petition sheets struck at receipt", "240"],
+        ["Petition sheets receipted", "38,080"],
+        ["Signature lines filed", "{:,}".format(K.LINES_FILED)],
+        ["Signature lines drawn into the sample", "{:,}".format(K.SAMPLE_LINES)],
+        ["Signatures required", "{:,}".format(K.REQUIRED)],
+        ["Ninety-five per cent of the number required", "{:,}".format(K.BAND_LO)],
+        ["One hundred and five per cent of the number required", "{:,}".format(K.BAND_HI)],
+    ], [3.5 * inch, 1.6 * inch], align_right=(1,)))
+    s.append(Paragraph("Filed under A.R.S. 19-121, 19-121.01 and 19-121.04. Record held by the Elections "
+                       "Division, Arizona Secretary of State, 1700 West Washington Street, Phoenix.",
+                       st["small"]))
+    d = _doc(path, "Filing and sample selection record: initiative serial %s" % K.SERIAL, K.OFFICE)
+    d.build(s, onFirstPage=_footer("%s %s" % (K.OFFICE, K.DIVISION)),
+            onLaterPages=_footer("%s %s" % (K.OFFICE, K.DIVISION)))
+    PP.normalize_pdf(path, b"D:20280711084200-07'00'", b"D:20280711084200-07'00'")
+
+
+# ---------------------------------------------------------------------------------- the instruction
+def instruction_text():
+    return [
+        ("What is transmitted to you", [
+            "You will receive a copy of every sampled signature line assigned to your county, with the "
+            "circulator registration number and the sheet number printed on the sheet it was taken from and "
+            "the line number on that sheet. Those three together identify the line, because sheet numbers "
+            "are each firm's own series.",
+        ]),
+        ("Giving a line its disposition", [
+            "Verify each line against your county's registration records as they stood on the date written "
+            "on the line, which is the date the elector signed. Give every line exactly one disposition code "
+            "from the table below. Work down the table and record the first code that applies.",
+            "A signature shall not be counted more than once. Where an elector's signature appears on more "
+            "than one of the lines before you, count the earliest by the date signed and give each later "
+            "line code DU.",
+        ]),
+        ("Returning your determinations", [
+            "Return one row for each line transmitted to you, carrying the line's identification, the "
+            "disposition code, the registration identifier you matched the line to where you matched one, "
+            "and the date of your determination. You may return in more than one transmittal; mark each with "
+            "your return reference.",
+            "The Elections Division runs a consolidation check over the returned lines. Where that check "
+            "finds a line that should have carried code DU, or where a line is returned without a "
+            "disposition, the division records the determination and reports the line as determined by the "
+            "division rather than by the recorder.",
+            "The division may send you a query notice asking you to re-determine a named line. A "
+            "re-determination replaces the disposition you first returned for that line and nothing else.",
+        ]),
+    ]
+
+
+def write_instruction(path):
+    st = styles()
+    s = [Paragraph("Signature verification instruction for county recorders", st["h1"]),
+         Paragraph("%s, %s. Issued %s. Applies to every statewide initiative, referendum and recall "
+                   "petition sample transmitted on or after 1 January 2028. Supersedes the instruction of "
+                   "9 March 2024." % (K.OFFICE, K.DIVISION, K.long_date(K.INSTRUCTION_DATE)), st["sub"])]
+    for head, paras in instruction_text():
+        s.append(Paragraph(esc(head), st["h2"]))
+        for pr in paras:
+            s.append(Paragraph(esc(pr), st["body"]))
+    s.append(Spacer(1, 4))
+    s.append(_table(st, ["Code", "Disposition"], [[c, K.CODE_TEXT[c]] for c in K.CODE_KEYS],
+                    [0.7 * inch, 4.4 * inch]))
+    s.append(Paragraph("Issued by %s, State Elections Director. Questions to the Elections Division, "
+                       "Arizona Secretary of State." % K.PEOPLE["director"], st["small"]))
+    d = _doc(path, "Signature verification instruction for county recorders", K.OFFICE)
+    d.build(s, onFirstPage=_footer("%s %s" % (K.OFFICE, K.DIVISION)),
+            onLaterPages=_footer("%s %s" % (K.OFFICE, K.DIVISION)))
+    PP.normalize_pdf(path, b"D:20271118161500-07'00'", b"D:20271118161500-07'00'")
+
+
+# ---------------------------------------------------------------------------------- Navajo's own code list
+def oldcodes_text():
+    out = [
+        "NAVAJO COUNTY RECORDER",
+        "Petition signature verification: disposition codes",
+        "Issued %s by %s, Navajo County Recorder. Holbrook, Arizona." % (K.us_date(K.OLD_CODES_DATE),
+                                                                         K.PEOPLE["recorder"]),
+        "",
+        "Enter one code per line in the DISPOSITION column of the return sheet.",
+        "",
+    ]
+    for code, text in K.OLD_CODES:
+        out.append("  %s   %s" % (code, text))
+    out += [
+        "",
+        "Where a line is entered under code 02, record in the REGISTRATION column the registration",
+        "identifier the line was matched to if one was matched, and leave that column empty if none",
+        "was.",
+        "",
+        "This list is the recorder's own. It has not been reissued since %d." % K.OLD_CODES_DATE.year,
+    ]
+    return out
+
+
+def write_oldcodes(path):
+    with open(path, "w", encoding="utf-8", newline="\r\n") as fh:
+        fh.write("\n".join(oldcodes_text()) + "\n")
+
+
+# ---------------------------------------------------------------------------------- the 2024 close-out
+def closeout_county_rows(w):
+    r = K.rng("closeout", seed=w.seed)
+    shares = [s for _, _, s in K.COUNTIES]
+    tot = sum(shares)
+    out, left = [], K.PRIOR_LINES
+    for i, (cc, name, share) in enumerate(K.COUNTIES):
+        if i == len(K.COUNTIES) - 1:
+            ex = left
+        else:
+            ex = int(round(K.PRIOR_LINES * share / tot * (1 + 0.06 * (r.random() - 0.5))))
+            ex = min(ex, left - (len(K.COUNTIES) - i - 1) * 60)
+        left -= ex
+        bad = 0.274 + 0.055 * (r.random() - 0.5)
+        notc = int(round(ex * bad))
+        out.append([cc, name, ex, ex - notc, notc])
+    return out
+
+
+def write_closeout(path, w):
+    import openpyxl
+    from openpyxl.styles import Alignment, Font
+    from openpyxl.utils import get_column_letter
+    rows = closeout_county_rows(w)
+    counted = sum(r[3] for r in rows)
+    notc = sum(r[4] for r in rows)
+    wb = openpyxl.Workbook()
+    ws = wb.active
+    ws.title = "Full count"
+    head = [
+        ("Measure serial", K.PRIOR_MEASURE),
+        ("Measure", "Arizona Rural Broadband Access Act"),
+        ("Petition filed", K.iso(dt.date(2024, 7, 3))),
+        ("Signature lines filed", K.PRIOR_LINES),
+        ("Full count ordered", K.iso(K.PRIOR_ORDERED)),
+        ("Order", "Maricopa County Superior Court, cause CV2024-009718"),
+        ("Examination opened", K.iso(K.PRIOR_OPENED)),
+        ("Examination closed", K.iso(K.PRIOR_CLOSEOUT)),
+        ("Examination business days", K.PRIOR_DAYS),
+        ("Examiners assigned", K.PRIOR_STAFF),
+        ("Signature lines examined", K.PRIOR_LINES),
+        ("Signature lines counted", counted),
+        ("Signature lines not counted", notc),
+        ("Signatures required", K.PRIOR_REQUIRED),
+        ("Determination", "Insufficient"),
+        ("Certified", K.iso(K.PRIOR_CERTIFIED)),
+        ("Close-out prepared by", K.PEOPLE["analyst"]),
+    ]
+    for k, v in head:
+        ws.append([k, v])
+    ws.append([])
+    ws.append(["County", "County name", "Lines examined", "Lines counted", "Lines not counted"])
+    for r in rows:
+        ws.append(r)
+    for i, wd in enumerate([30, 20, 16, 15, 18], start=1):
+        ws.column_dimensions[get_column_letter(i)].width = wd
+    for c in ws[1]:
+        c.font = Font(bold=True)
+    for c in ws[len(head) + 2]:
+        c.font = Font(bold=True)
+        c.alignment = Alignment(vertical="top", wrap_text=True)
+    wb.save(path)
+    PP.normalize_ooxml(path, K.PEOPLE["analyst"], K.PEOPLE["analyst"], "2024-08-29T15:41:00Z",
+                       "2024-08-29T16:12:00Z", title="%s full count close-out" % K.PRIOR_MEASURE,
+                       excel=True, company=K.OFFICE)
+    return dict(counted=counted, not_counted=notc, rows=rows)
+
+
+def write_all(out, w, n):
+    write_record(os.path.join(out, F_RECORD))
+    write_instruction(os.path.join(out, F_INSTRUCTION))
+    write_oldcodes(os.path.join(out, F_OLDCODES))
+    return write_closeout(os.path.join(out, R.F_CLOSEOUT), w)

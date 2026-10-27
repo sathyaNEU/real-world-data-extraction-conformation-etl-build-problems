@@ -664,3 +664,28 @@ def normalize_pdf(path, created, modified):
         b = re.sub(re.escape(old) + rb"(?![A-Za-z0-9-])", new, b)
     assert len(b) == n and b"ReportLab" not in b and b"reportlab" not in b and b"AAAAAA+" not in b
     open(path, "wb").write(b)
+
+
+def read_xlsx_rows(path, sheet):
+    """Read a worksheet back as rows of values. Used by the generator's own checks and by calc.py, so a
+    workbook the build writes is also a workbook the build reads."""
+    import openpyxl
+    wb = openpyxl.load_workbook(path, data_only=True)
+    ws = wb[sheet]
+    out = []
+    for row in ws.iter_rows(values_only=True):
+        vals = list(row)
+        while vals and vals[-1] is None:
+            vals.pop()
+        out.append(vals)
+    wb.close()
+    return out
+
+
+def xlsx_sheet_names(path):
+    import openpyxl
+    wb = openpyxl.load_workbook(path, read_only=True)
+    try:
+        return list(wb.sheetnames)
+    finally:
+        wb.close()

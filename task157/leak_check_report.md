@@ -1,32 +1,25 @@
 # leak check, task157
 
-**Verdict: LEAK.** 20 files read, 34 golden figures and 0 candidate names taken from submission.md, 25 stump terms taken from the design note.
+**Verdict: REVIEW.** 15 files read, 73 golden figures and 6 candidate names taken from submission.md, 25 stump terms taken from the design note.
 
 LEAK stops the ship. REVIEW is a reader's call and the /leak-check command's solver's-eye pass reads every REVIEW line. INFO is a sweep that ran and found nothing or was skipped.
 
-Stump terms swept: window, december, return, cohort, campaign, asserted, extract, earlier, returning, payout, timing, accounts, finance, roster, seasonal, expected, already, completed, forecast, forecasting, months, method, platform, funding, recruits
+Stump terms swept: decisive, measured, division, inclusion, record, duplicate, asserted, registration, factor, probability, fraction, reading, architecture, forecasting, arizona, sheets, shipped, recorders, office, sentence, quantity, sampling, filing, instruction, sufficient
 
-## 1 file names (LEAK 1)
-- **LEAK** `supply_pull_data_notes.md`: a file whose name says it describes the data (data_notes): no dictionary, field notes, readme or manifest ships (dataset-generation section 3)
+## 1 file names (REVIEW 1)
+- **REVIEW** `navajo_recorder_disposition_codes_2019.txt`: a text file in the pack: confirm it is the organisation's own record (a thread, a log, a letter) and does not describe the data
 
-## 3 answer figures in the pack (REVIEW 8)
-- **REVIEW** `dispatch_legacy_driver_months_2021-05_2024-07.csv`: golden figure 16,100 appears: ...3,0,49.9 2023-02,12526,11,0,7.2 2023-02,12527,210,16,100.9 2023-02,12528,77,6,44.5 2023-02,12533,19,0,9.7...
-- **REVIEW** `driver_supply_kpis_2026-11.pdf`: golden figure 446 appears: ...160,256 52.6 Apr 2025 5,311 252 209,102 110,446 39.4 May 2025 4,549 236 191,763 101,508 42....
-- **REVIEW** `driver_supply_kpis_2026-11.pdf`: golden figure 500 appears: ...6 7,090 270 275,479 145,214 38.9 May 2026 5,500 245 228,330 120,930 41.5 Jun 2026 5,490 307...
-- **REVIEW** `driver_supply_kpis_2026-11.pdf`: golden figure 100 appears: ...925 107,141 43.3 Sep 2025 4,686 290 189,610 100,511 40.5 Oct 2025 4,749 262 206,052 109,095...
-- **REVIEW** `driver_supply_kpis_2026-11.pdf`: golden figure 311 appears: ...5 5,759 305 302,848 160,256 52.6 Apr 2025 5,311 252 209,102 110,446 39.4 May 2025 4,549 236...
-- **REVIEW** `driver_supply_kpis_2026-11.pdf`: golden figure 274 appears: ...300 259,288 137,404 51.6 Feb 2025 5,549 635 274,789 145,365 49.5 Mar 2025 5,759 305 302,848...
-- **REVIEW** `supply_pull_data_notes.md`: carries 9 of 13 distinctive words of the committed call: 'Fund the winter guarantee account with $1,650,000 at go-live on Monday 4 January: we expect 4,700 drivers to complete 40'
-- **REVIEW** `winter_guarantee_terms_2027.pdf`: carries 9 of 13 distinctive words of the committed call: 'Fund the winter guarantee account with $1,650,000 at go-live on Monday 4 January: we expect 4,700 drivers to complete 40'
+## 3 answer figures in the pack (REVIEW 1)
+- **REVIEW** `sos_filing_and_selection_record_i18-2028.pdf`: carries 7 of 7 distinctive words of the committed call: 'Order the examination of all 540,000 signature lines filed for initiative serial I-18-2028.'
 
-## 4 design-note vocabulary (REVIEW 4)
-- **REVIEW** `driver_supply_kpis_2026-11.pdf`: 5 of 25 stump-paragraph terms appear (december, accounts, completed, months, platform); read whether the document names the move
-- **REVIEW** `supply_pull_data_notes.md`: 9 of 25 stump-paragraph terms appear (december, return, campaign, extract, payout, finance); read whether the document names the move
-- **REVIEW** `winter_guarantee_payout_notes.docx`: 6 of 25 stump-paragraph terms appear (window, return, payout, accounts, finance, completed); read whether the document names the move
-- **REVIEW** `winter_guarantee_terms_2027.pdf`: 8 of 25 stump-paragraph terms appear (december, return, earlier, returning, payout, accounts); read whether the document names the move
+## 4 design-note vocabulary (REVIEW 3)
+- **REVIEW** `county_recorder_verification_instruction_2027.pdf`: 6 of 25 stump-paragraph terms appear (division, record, registration, arizona, recorders, instruction); read whether the document names the move
+- **REVIEW** `navajo_recorder_disposition_codes_2019.txt`: 4 of 25 stump-paragraph terms appear (record, duplicate, registration, arizona); read whether the document names the move
+- **REVIEW** `sos_filing_and_selection_record_i18-2028.pdf`: 8 of 25 stump-paragraph terms appear (division, record, registration, arizona, sheets, office); read whether the document names the move
 
-## 9 dates after the setting (INFO 1)
-- **INFO** `-`: no --asof given, sweep skipped (pass the fiction's as-of date)
+## 6 ranking artifacts (REVIEW 2)
+- **REVIEW** `circulator_registration_extract_i18-2028.csv`: names 4 of 6 answer-set candidates beside numbers; confirm it does not rank them on the decision question
+- **REVIEW** `circulator_sheet_submissions_2028.csv`: names 4 of 6 answer-set candidates beside numbers; confirm it does not rank them on the decision question
 
 ## 10 container metadata (INFO 1)
 - **INFO** `-`: audit reported no writer signature (1 lines)
@@ -35,10 +28,10 @@ Stump terms swept: window, december, return, cohort, campaign, asserted, extract
 
 ## 5 announcements (clean)
 
-## 6 ranking artifacts (clean)
-
 ## 7 hidden content (clean)
 
 ## 8 column names (clean)
+
+## 9 dates after the setting (clean)
 
 ## 11 prompt gate (clean)

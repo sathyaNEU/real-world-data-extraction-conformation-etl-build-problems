@@ -1,425 +1,440 @@
-"""task157 records: the world and the operating layer shaped into the exports Larch Rides' systems write.
+"""task157 (architecture 2) shipped records: the fifteen recorders' consolidated returns, the correction
+notices, the two voter file snapshots, the office's sheet index and receipt log, the firms' own delivery
+manifests, the March list-maintenance run, and the two files the solution never reads.
 
-The old dispatch platform (launch to Sunday 14 July 2024): its monthly driver export by legacy driver number. The new
-dispatch platform's warehouse (from Monday 15 July 2024): the monthly driver activity extract run on Sunday 3 January
-2027, the migration crosswalk and the accounts register. The payments system: the 2025 main run (the old payout
-report, amounts in cents), the 2026 main run, the adjustment runs, and the guarantee payouts' events; the bank's ACH
-returns report for the payout account. The onboarding tool's applications from its go-live on 2 June 2025 and the
-screening vendor's order export. The referral programme's 2026 bonuses and the marketplace team's Q1 2027 demand plan
-(neither is read by the fund or the asks)."""
+Every file carries the conventions the system that writes it carries: the recorders' returns keep each
+county's own date format and Navajo County's own 2019 disposition codes, the snapshots carry UTC status
+stamps against local signing dates, the firms count the sheets they handed over rather than the sheets the
+office receipted, and sheet numbers are each firm's own so a sheet is identified by its circulator's
+registration number and its number together."""
 from __future__ import annotations
 
 import datetime as dt
+import os
+import sys
 
 import numpy as np
-import openpyxl
-from openpyxl.styles import Alignment, Border, Font, PatternFill, Side
 
-import common as K
-import ops as OP
-import world as WD
+HERE = os.path.dirname(os.path.abspath(__file__))
+sys.path.insert(0, HERE)
+import common as K      # noqa: E402
+import world as WD      # noqa: E402
 
-F_LEGACY = "dispatch_legacy_driver_months_2021-05_2024-07.csv"
-F_ACTIVITY = "driver_activity_monthly_2024-07_2027-01.csv"
-F_CROSSWALK = "dispatch_migration_driver_crosswalk.csv"
-F_ACCOUNTS = "driver_accounts_2027-01-03.csv"
-F_RUN25 = "winter_guarantee_2025_payout_run.xlsx"
-F_RUN26 = "winter_guarantee_2026_payout_run.csv"
-F_ADJ = "guarantee_payout_adjustments_2025-2026.csv"
-F_RETURNS = "ach_returns_payout_account_2025-2026.csv"
-F_EVENTS = "guarantee_payout_events_2025-2026.csv"
-F_APPS = "onboarding_applications_2025-06-02_2027-01-03.csv"
-F_ORDERS = "background_check_orders_2025-06_2027-01.csv"
-F_REFERRAL = "driver_referral_bonuses_2026.csv"
-F_DEMAND = "rider_demand_plan_q1_2027.xlsx"
+F_RETURNS = "county_verification_returns_2028.csv"
+F_CORR = "county_return_corrections_2028.csv"
+F_SNAP_EARLY = "avid_snapshot_extract_20271220.csv"
+F_SNAP_LATE = "avid_snapshot_extract_20280710.csv"
+F_SHEETS = "petition_sheet_index_2028.csv"
+F_RECEIPT = "petition_receipt_log_2028.csv"
+F_MANIFEST = "circulator_sheet_submissions_2028.csv"
+F_MAINT = "list_maintenance_run_20280314.csv"
+F_CIRC = "circulator_registration_extract_i18-2028.csv"
+F_CLOSEOUT = "measure_i2024-04_full_count_closeout.xlsx"
+F_OTHER = "measure_i2028-04_receipt_log.csv"            # distractor
+F_REGSTATS = "voter_registration_by_county_20280701.csv"  # distractor
 
-PROGRAM = {2025: "WG2025", 2026: "WG2026"}
-BATCH_MAIN = {2025: "WG25-MAIN-0214", 2026: "WG26-MAIN-0213"}
+RETURNS_COLS = ["county_code", "return_id", "return_received_utc", "circulator_reg_no", "sheet_no",
+                "line_no", "signature_date", "voter_reg_id", "disposition_code", "determined_by",
+                "determination_date"]
+CORR_COLS = ["correction_id", "county_code", "circulator_reg_no", "sheet_no", "line_no",
+             "prior_disposition_code", "corrected_disposition_code", "corrected_on", "query_code"]
+SNAP_COLS = ["snapshot_date", "voter_reg_id", "county_code", "registration_status", "registration_date",
+             "status_changed_utc", "cancellation_date", "cancellation_reason", "precinct_code"]
+SHEET_COLS = ["sheet_serial", "bundle_id", "receipt_date", "circulator_reg_no", "sheet_no",
+              "signature_lines", "county_circulated"]
+RECEIPT_COLS = ["bundle_id", "received_date", "received_utc", "sheets_presented", "sheets_accepted",
+                "sheets_rejected", "signature_lines_accepted", "rejection_code", "receipted_by"]
+CIRC_COLS = ["circulator_reg_no", "circulator_type", "registering_firm", "firm_registration_no",
+             "county_of_residence", "registered_on", "withdrawn_on", "registration_status"]
+MANIFEST_COLS = ["manifest_no", "firm_name", "firm_registration_no", "delivered_date", "sheets_submitted",
+                 "signatures_claimed", "office_bundle_ref"]
+MAINT_COLS = ["run_id", "run_date", "voter_reg_id", "county_code", "action_code", "reason_code",
+              "notice_mailed", "posted_utc"]
+OTHER_COLS = ["bundle_id", "received_date", "firm_code", "sheets_presented", "sheets_accepted",
+              "signature_lines_accepted", "receipted_by"]
+REGSTATS_COLS = ["report_date", "county_code", "county_name", "party_code", "active_registrations",
+                 "inactive_registrations"]
+
+CANCEL_REASON = {0: "", 1: "LM-NOTICE", 2: "MOVED-OUT", 3: "DECEASED", 4: "VOTER-REQUEST"}
+QUERY_CODES = ["ADDR-REREAD", "SIG-REREAD", "CODE-ENTRY", "DOB-REREAD"]
+WITHDRAWN_REASON = "DUP-FILING"
 
 
-def utc(t):
-    """Naive Central time to a UTC timestamp string."""
-    return K.to_utc(t).strftime("%Y-%m-%d %H:%M:%S")
-
-
-def utc_z(t):
-    return K.to_utc(t).strftime("%Y-%m-%dT%H:%M:%SZ")
+def _bus_days(a, b):
+    out, d = [], a
+    while d <= b:
+        if d.weekday() < 5:
+            out.append(d)
+        d += dt.timedelta(days=1)
+    return out
 
 
 class Shaped:
     pass
 
 
-def shape(W, O):
-    """Everything the writers need, decided once: which accounts exist at the extract, statuses and last trips,
-    cancellations, the export cut of the onboarding tool and the vendor's orders."""
+def shape(w):
+    """Everything the shipped files and the deliverables are cut from, at the grain each is written at."""
     S = Shaped()
-    asof_end = dt.datetime.combine(K.AS_OF, dt.time(21, 40))
-    # accounts open at the extract run
-    S.exists = [O.created[k] <= asof_end for k in range(O.n_acc)]
-    # cancellations at each driver's own rate, cell by cell
-    r = K.rng("cancel_cells", "old")
-    S.C_old = r.poisson(O.T_old * O.cancel_rate[:, None]).astype(int)
-    r = K.rng("cancel_cells", "new")
-    S.C_new = r.poisson(O.T_new * O.cancel_rate[:, None]).astype(int)
-    # last trip day on or before the run, inside the last month the extract shows trips for
-    S.last_trip = {}
-    end_w = K.ASOF_W[2027]
-    for k in range(W.n):
-        act = np.nonzero(W.has[k, :end_w + 1])[0]
-        if not len(act):
+    p = w.params
+    r = K.rng("shape", seed=w.seed)
+    samp = w.sample
+    nS = len(samp)
+
+    # ---------------------------------------------------------------- per sampled line
+    sheet = w.line_sheet[samp]
+    S.sheet = sheet
+    S.line_no = w.line_no[samp]
+    S.circ = np.array([w.sheet_circ[i] for i in sheet], dtype=object)
+    S.sheet_no = w.sheet_no[sheet]
+    S.firm = w.sheet_firm[sheet]
+    signer = w.line_signer[samp]
+    S.signer = signer
+    S.county = w.signer_county[signer]
+    S.vid = w.signer_vid[signer]
+    S.code = np.array([K.CODE_KEYS[c] for c in w.sample_code], dtype=object)
+    S.day = w.line_day[samp]
+    S.det_division = w.det_sos
+
+    # the date the line carries. A line struck as MD either carries no date or a date outside the
+    # circulation period, which is the ground the recorder struck it on.
+    md = S.code == "MD"
+    md_ix = np.where(md)[0]
+    blank = md_ix[r.random(len(md_ix)) < 0.40]
+    outside = np.array(sorted(set(md_ix.tolist()) - set(blank.tolist())), dtype=np.int64)
+    sign_date = np.array([K.WINDOW_OPEN + dt.timedelta(days=int(d)) for d in S.day], dtype=object)
+    off = r.integers(-74, -2, size=len(outside))
+    for k, i in enumerate(outside):
+        sign_date[i] = K.WINDOW_OPEN + dt.timedelta(days=int(off[k]))
+    S.sign_date = sign_date
+    S.date_blank = np.zeros(nS, dtype=bool)
+    S.date_blank[blank] = True
+    S.in_window = np.array([(not S.date_blank[i]) and K.WINDOW_OPEN <= sign_date[i] <= K.WINDOW_CLOSE
+                            for i in range(nS)])
+
+    # ---------------------------------------------------------------- the recorders' return batches
+    bus = _bus_days(K.RETURNS_OPEN, K.RETURNS_CLOSE)
+    S.return_id = np.empty(nS, dtype=object)
+    S.return_utc = np.empty(nS, dtype=object)
+    S.det_date = np.empty(nS, dtype=object)
+    batches = []
+    for ci, (cc, name, _) in enumerate(K.COUNTIES):
+        ix = np.where(S.county == ci)[0]
+        if len(ix) == 0:
             continue
-        lw = int(act[-1])
-        d0 = K.wdate(lw)
-        days = [d0 + dt.timedelta(days=j) for j in range(7)]
-        newm = np.nonzero(O.T_new[k] > 0)[0]
-        oldm = np.nonzero(O.T_old[k] > 0)[0]
-        mon = O.ml_new[int(newm[-1])] if len(newm) else O.ml_old[int(oldm[-1])]
-        cand = [j for j in range(7) if K.ym(days[j]) == mon and days[j] <= K.AS_OF]
-        if not cand:
-            cand = [j for j in range(7) if days[j] <= K.AS_OF]
-        rr = K.rng("lasttrip", k)
-        p = WD.WEEKDAY_W[cand] / WD.WEEKDAY_W[cand].sum()
-        S.last_trip[k] = days[cand[int(rr.choice(len(cand), p=p))]]
-    # status at the run
-    app_of = {a["acc"]: a for a in O.apps if a.get("acc") is not None and not a.get("is_prior")}
-    S.status, S.closed = {}, {}
-    rd = K.rng("deactivate")
-    for k in range(O.n_acc):
-        if not S.exists[k]:
-            continue
-        if k in O.merged_into:
-            S.status[k] = "merged"
-            S.closed[k] = O.merged_into[k][1]
-            continue
-        lt = S.last_trip.get(k)
-        u = rd.random()
-        if k < W.n and W.kind[k] in ("R", "N", "I") and lt is not None and (K.AS_OF - lt).days > 200 and u < 0.06:
-            S.status[k] = "deactivated"
-            S.closed[k] = min(lt + dt.timedelta(days=int(rd.integers(150, 420))), K.AS_OF - dt.timedelta(days=3))
-            continue
-        if lt is None:
-            app = app_of.get(k)
-            lapsed = app is not None and app["outcome"] == "approval_lapsed"
-            S.status[k] = "inactive" if lapsed else "new"
-        else:
-            S.status[k] = "active" if (K.AS_OF - lt).days <= 30 else "inactive"
-    # the onboarding tool as exported on the run date
-    S.apps = []
-    for a in O.apps:
-        if a["first_sub"] > asof_end:
-            continue
-        b = dict(a)
-        if a["resubmitted"] is not None and a["resubmitted"] <= asof_end:
-            b["submitted_shown"] = a["resubmitted"]
-        else:
-            b["submitted_shown"] = a["first_sub"]
-        if (a["resubmitted"] is not None and a["resubmitted"] > asof_end) or a["decision"] is None or \
-                a["decision"] > asof_end:
-            b["status"], b["decision_shown"], b["driver"] = "in_review", None, None
-        else:
-            b["status"] = a["outcome"]
-            b["decision_shown"] = a["decision"]
-            b["driver"] = O.driver_id[a["acc"]] if a["outcome"] in ("approved", "approval_lapsed") else None
-        ft = a.get("first_trip_seen")
-        b["first_trip_shown"] = ft if (ft is not None and b["driver"] is not None) else None
-        S.apps.append(b)
-    S.orders = [b for b in S.apps if b["ordered"] <= asof_end]
+        nb = 1 if len(ix) < 60 else (2 if len(ix) < 900 else 3)
+        pace = r.random(len(ix))
+        order = ix[np.argsort(pace, kind="stable")]
+        cuts = np.array_split(order, nb)
+        lo = int(2 + ci % 4)
+        for b, part in enumerate(cuts):
+            dayix = min(lo + b * (3 + ci % 3) + 2, len(bus) - 1)
+            day = bus[dayix]
+            rid = "R%s-%02d" % (cc, b + 1)
+            stamp = K.utc_stamp(dt.datetime.combine(day, dt.time(13 + (ci + b) % 5, 10 + (7 * ci + 3 * b) % 48)))
+            for i in part:
+                S.return_id[i] = rid
+                S.return_utc[i] = stamp
+                back = int(1 + (i % 4))
+                dd = bus[max(0, dayix - back)]
+                S.det_date[i] = dd
+            batches.append((cc, rid, day, len(part)))
+    S.batches = batches
+    # the lines the division determined itself carry the division's own determination date
+    for i in np.where(S.det_division)[0]:
+        S.det_date[i] = K.CORRECTIONS_CLOSE - dt.timedelta(days=1)
+    S.determined_by = np.where(S.det_division, "DIVISION", "RECORDER")
+
+    # ---------------------------------------------------------------- the correction notices
+    # a query notice only ever moves a line between two single-signature grounds, and never touches a
+    # cancellation ground, a counted line or a duplicate, so no reading of the notices moves the call
+    movable = {"AD": "SG", "SG": "AD", "NR": "AD", "NC": "AD", "IL": "MD", "MD": "IL"}
+    cand = np.array([i for i in range(nS) if S.code[i] in movable and not S.det_division[i]])
+    pick = cand[r.permutation(len(cand))[:p["corrections"]]]
+    pick.sort()
+    S.corrected = {}
+    corr = []
+    cdays = _bus_days(K.RETURNS_OPEN + dt.timedelta(days=7), K.CORRECTIONS_CLOSE)
+    for k, i in enumerate(pick):
+        new = movable[S.code[i]]
+        S.corrected[int(i)] = new
+        corr.append(dict(
+            correction_id="Q-%s-%04d" % (K.COUNTY_CODES[S.county[i]], 1 + k),
+            county_code=K.COUNTY_CODES[S.county[i]], circulator_reg_no=S.circ[i],
+            sheet_no=int(S.sheet_no[i]), line_no=int(S.line_no[i]),
+            prior=S.code[i], new=new,
+            corrected_on=cdays[min(len(cdays) - 1, 3 + (k * 7) % (len(cdays) - 3))],
+            query_code=QUERY_CODES[(k + S.county[i]) % len(QUERY_CODES)]))
+    S.corrections = corr
+    S.code_current = np.array([S.corrected.get(i, S.code[i]) for i in range(nS)], dtype=object)
+
+    # ---------------------------------------------------------------- the sheet index and the receipt log
+    S.n_sheets = K.SHEETS
+    rej = _rejected(w, r)
+    S.rejected = rej
     return S
 
 
-# ------------------------------------------------------------------------------------------------- activity
-LEGACY_COLS = ["MONTH", "DRIVER_NO", "COMPLETED_TRIPS", "DRIVER_CANCELS", "ONLINE_HRS"]
-ACTIVITY_COLS = ["activity_month", "driver_id", "trips_completed", "trips_cancelled_by_driver", "online_minutes"]
-
-
-def legacy_rows(W, O, S):
-    switch = {}
-    for k, (w2, n2) in O.legacy_second.items():
-        switch[k] = (K.ym(K.wdate(w2)), n2)
+def _rejected(w, r):
+    """The 240 sheets two firms had already filed, struck at receipt. They never received a serial, so the
+    office's sheet index does not carry them and the firms' own manifests do."""
     out = []
-    idle = O.idle["old"]
-    for j, m in enumerate(O.ml_old):
-        rows = []
-        for k in np.nonzero((O.T_old[:, j] > 0))[0]:
-            k = int(k)
-            if k not in O.legacy_no:
-                continue
-            no = O.legacy_no[k]
-            if k in switch and m >= switch[k][0]:
-                no = switch[k][1]
-            hrs = max(0.1, K.round_half_up(float(O.H_old[k, j]), 1))
-            rows.append([K.ym_str(m), no, int(O.T_old[k, j]), int(S.C_old[k, j]), "%.1f" % hrs])
-        for (k, jj), mins in idle.items():
-            if jj != j or k not in O.legacy_no:
-                continue
-            no = O.legacy_no[k]
-            if k in switch and m >= switch[k][0]:
-                no = switch[k][1]
-            rows.append([K.ym_str(m), no, 0, int(K.rng("idlec", "old", k, j).random() < 0.2),
-                         "%.1f" % max(0.1, K.round_half_up(mins / 60.0, 1))])
-        rows.sort(key=lambda x: x[1])
-        out.extend(rows)
+    for firm_ix, count in ((0, 150), (2, 90)):
+        ix = np.where(w.sheet_firm == firm_ix)[0]
+        pick = ix[r.permutation(len(ix))[:count]]
+        for j, s in enumerate(sorted(pick.tolist())):
+            out.append(dict(firm=firm_ix, bundle=int(w.sheet_bundle[s]),
+                            lines=int(w.sheet_lines[s]), seq=j))
     return out
 
 
-def activity_rows(W, O, S):
+# ---------------------------------------------------------------------------------- row writers
+def _code_written(cc, code):
+    """Navajo County's recorder files on its own 2019 code list; every other county on the current set."""
+    if cc != K.OLD_CODE_COUNTY:
+        return code
+    for old, news in K.OLD_TO_NEW.items():
+        if code in news:
+            return old
+    raise AssertionError(code)
+
+
+def _date_written(cc, d, blank):
+    if blank:
+        return ""
+    if cc == K.DMY_COUNTY:
+        return "%02d/%02d/%d" % (d.day, d.month, d.year)
+    if cc == K.OLD_CODE_COUNTY:
+        return "%02d-%s-%02d" % (d.day, K.UMON3[d.month], d.year % 100)
+    return K.iso(d)
+
+
+def returns_rows(w, S):
+    order = np.lexsort((S.line_no, S.sheet_no, np.array([str(c) for c in S.circ]),
+                        np.array([K.COUNTY_CODES[c] for c in S.county])))
+    for i in order:
+        cc = K.COUNTY_CODES[S.county[i]]
+        yield dict(county_code=cc, return_id=S.return_id[i], return_received_utc=S.return_utc[i],
+                   circulator_reg_no=S.circ[i], sheet_no=int(S.sheet_no[i]), line_no=int(S.line_no[i]),
+                   signature_date=_date_written(cc, S.sign_date[i], S.date_blank[i]),
+                   voter_reg_id=(int(S.vid[i]) if S.vid[i] else ""),
+                   disposition_code=_code_written(cc, S.code[i]),
+                   determined_by=S.determined_by[i], determination_date=K.iso(S.det_date[i]))
+
+
+def corr_rows(w, S):
+    for c in S.corrections:
+        cc = c["county_code"]
+        yield dict(correction_id=c["correction_id"], county_code=cc,
+                   circulator_reg_no=c["circulator_reg_no"], sheet_no=c["sheet_no"], line_no=c["line_no"],
+                   prior_disposition_code=_code_written(cc, c["prior"]),
+                   corrected_disposition_code=_code_written(cc, c["new"]),
+                   corrected_on=K.iso(c["corrected_on"]), query_code=c["query_code"])
+
+
+def _snapshot(w, S, when, late):
+    """The registration records for the identifiers the sample transmittal cites, as they stood in the
+    archived statewide snapshot of that date."""
+    seen = {}
+    for i in range(len(S.vid)):
+        v = int(S.vid[i])
+        if v:
+            seen.setdefault(v, int(S.signer[i]))
+    day_of = lambda k: K.WINDOW_OPEN + dt.timedelta(days=int(k))
     out = []
-    idle = O.idle["new"]
-    for j, m in enumerate(O.ml_new):
-        rows = []
-        for k in np.nonzero(O.T_new[:, j] > 0)[0]:
-            k = int(k)
-            rows.append([K.ym_str(m) + "-01", O.driver_id[k], int(O.T_new[k, j]), int(S.C_new[k, j]),
-                         int(K.round_half_up(float(O.H_new[k, j]) * 60))])
-        for (k, jj), mins in idle.items():
-            if jj != j:
-                continue
-            rows.append([K.ym_str(m) + "-01", O.driver_id[k], 0, int(K.rng("idlec", "new", k, j).random() < 0.2),
-                         int(mins)])
-        rows.sort(key=lambda x: x[1])
-        out.extend(rows)
+    for v in sorted(seen):
+        s = seen[v]
+        cc = K.COUNTY_CODES[w.signer_county[s]]
+        if w.signer_ground[s] == WD.CODE_IX["NC"]:
+            cc = K.COUNTY_CODES[(w.signer_county[s] + 4) % len(K.COUNTIES)]
+        cancel = int(w.signer_cancel[s])
+        restore = int(w.signer_restore[s])
+        reason = int(w.signer_cancel_reason[s])
+        regday = int(w.signer_regday[s])
+        has_cancel = cancel < 10 ** 6
+        cut = (when - K.WINDOW_OPEN).days
+        shown_cancel = has_cancel and cancel <= cut
+        shown_restore = restore < 10 ** 6 and restore <= cut
+        status = "ACTIVE"
+        cdate, creason = "", ""
+        if shown_cancel and not shown_restore:
+            status = "CANCELLED"
+            cdate = K.iso(day_of(cancel))
+            creason = CANCEL_REASON[reason]
+        elif shown_cancel and shown_restore:
+            cdate = K.iso(day_of(cancel))
+            creason = CANCEL_REASON[reason]
+        last = max([regday] + ([cancel] if shown_cancel else []) + ([restore] if shown_restore else []))
+        stamp = dt.datetime.combine(day_of(last), dt.time(8 + (v % 9), (v // 7) % 60))
+        reg = day_of(restore) if shown_restore else day_of(regday)
+        out.append(dict(snapshot_date=K.iso(when), voter_reg_id=v, county_code=cc,
+                        registration_status=status, registration_date=K.iso(reg),
+                        status_changed_utc=K.utc_stamp(stamp), cancellation_date=cdate,
+                        cancellation_reason=creason,
+                        precinct_code="%s-%03d" % (cc, 1 + int(K.token("prec", v, n=3,
+                                                                       alphabet="0123456789"), 10) % 240)))
     return out
 
 
-CROSSWALK_COLS = ["legacy_driver_no", "driver_id", "migrated_on", "migration_note"]
+def snapshot_rows(w, S, late):
+    return _snapshot(w, S, K.LATE_SNAPSHOT if late else K.EARLY_SNAPSHOT, late)
 
 
-def crosswalk_rows(W, O, S):
-    out = []
-    for k, no in O.legacy_no.items():
-        out.append([no, O.driver_id[k], K.MIGRATION.isoformat(), ""])
-    for k, (w2, n2) in O.legacy_second.items():
-        out.append([n2, O.driver_id[k], K.MIGRATION.isoformat(), "second registration, merged at migration"])
-    out.sort(key=lambda x: x[0])
-    return out
+def sheet_rows(w, S):
+    rej = {(d["firm"], d["seq"]) for d in S.rejected}
+    for s in range(K.SHEETS):
+        yield dict(sheet_serial="S%06d" % int(w.sheet_serial[s]), bundle_id="B%04d" % int(w.sheet_bundle[s]),
+                   receipt_date=K.iso(K.FILED if int(w.sheet_bundle[s]) % 2 else K.RECEIPT_CLOSED),
+                   circulator_reg_no=w.sheet_circ[s],
+                   sheet_no=int(w.sheet_no[s]), signature_lines=int(w.sheet_lines[s]),
+                   county_circulated=K.COUNTY_CODES[w.sheet_county[s]])
 
 
-ACCOUNT_COLS = ["driver_id", "account_opened", "signup_channel", "home_city", "vehicle", "account_status",
-                "last_trip_on", "closed_on", "merged_into"]
-
-
-def account_rows(W, O, S):
-    out = []
-    for k in range(O.n_acc):
-        if not S.exists[k]:
+def receipt_rows(w, S):
+    nb = w.n_bundles
+    rej_by_bundle = {}
+    for d in S.rejected:
+        rej_by_bundle.setdefault(d["bundle"], []).append(d)
+    for b in range(1, nb + 1):
+        ix = np.where(w.sheet_bundle == b)[0]
+        if len(ix) == 0:
             continue
-        lt = S.last_trip.get(k)
-        cl = S.closed.get(k)
-        mi = O.driver_id[O.merged_into[k][0]] if k in O.merged_into else ""
-        out.append([O.driver_id[k], O.created[k].date().isoformat(), O.channel[k], O.home[k], O.vehicle[k],
-                    S.status[k], lt.isoformat() if lt else "", cl.isoformat() if cl else "", mi])
-    out.sort(key=lambda x: (x[1], x[0]))
+        acc = len(ix)
+        lines = int(w.sheet_lines[ix].sum())
+        rj = rej_by_bundle.get(b, [])
+        day = K.FILED if b % 2 else K.RECEIPT_CLOSED
+        yield dict(bundle_id="B%04d" % b, received_date=K.iso(day),
+                   received_utc=K.utc_stamp(dt.datetime.combine(day, dt.time(8 + (b % 9), (b * 17) % 60))),
+                   sheets_presented=acc + len(rj), sheets_accepted=acc,
+                   sheets_rejected=len(rj), signature_lines_accepted=lines,
+                   rejection_code=(WITHDRAWN_REASON if rj else ""),
+                   receipted_by="ELEC-%02d" % (1 + b % 6))
+
+
+def manifest_rows(w, S):
+    """Each firm's own delivery manifest. A firm counts what it handed over, so the 240 sheets the office
+    struck at receipt are inside these counts, and the firm that changed its trading name in April filed
+    under both names on one registration number."""
+    rej_by_bundle = {}
+    for d in S.rejected:
+        rej_by_bundle.setdefault(d["bundle"], []).append(d)
+    k = 0
+    for b in range(1, w.n_bundles + 1):
+        ix = np.where(w.sheet_bundle == b)[0]
+        if len(ix) == 0:
+            continue
+        fi = int(w.sheet_firm[ix[0]])
+        code, name, _, regno = K.FIRMS[fi]
+        rj = rej_by_bundle.get(b, [])
+        day = K.FILED if b % 2 else K.RECEIPT_CLOSED
+        sheets = len(ix) + len(rj)
+        lines = int(w.sheet_lines[ix].sum()) + sum(d["lines"] for d in rj)
+        # the firm's deliveries are manifested under the name it traded as when the sheets were gathered
+        med = int(np.median(w.sheet_day[ix]))
+        shown = _firm_name_on(fi, K.WINDOW_OPEN + dt.timedelta(days=med))
+        k += 1
+        yield dict(manifest_no="M-%s-%03d" % (code, k), firm_name=shown, firm_registration_no=regno,
+                   delivered_date=K.iso(day), sheets_submitted=sheets, signatures_claimed=lines,
+                   office_bundle_ref="B%04d" % b)
+
+
+def _firm_name_on(fi, when):
+    """The name a firm traded under on a date: one of the four changed its trading name in April and kept
+    its registration number."""
+    code, name, _, _ = K.FIRMS[fi]
+    if code == K.FIRM_RENAMED and when >= K.FIRM_RENAME_DATE:
+        return K.FIRM_NEW_NAME
+    return name
+
+
+def circ_rows(w, S):
+    """The office's extract of the paid circulators registered to gather signatures for this serial. A
+    circulator who left one firm for another inside the window registered again under the firm it joined,
+    so a registration number carries two rows with their own dates."""
+    r = K.rng("circ_rows", seed=w.seed)
+    out = []
+    for cid in sorted(w.circulators):
+        fi = w.circulator_firm[cid]
+        cc = K.COUNTY_CODES[int(r.choice(len(K.COUNTIES),
+                                         p=np.array([x for _, _, x in K.COUNTIES])
+                                         / sum(x for _, _, x in K.COUNTIES)))]
+        reg = K.SERIAL_ISSUED + dt.timedelta(days=int(r.integers(2, 24)))
+        if cid in w.circulator_moves:
+            was, now, day = w.circulator_moves[cid]
+            moved = K.WINDOW_OPEN + dt.timedelta(days=day)
+            out.append(dict(circulator_reg_no=cid, circulator_type="PAID",
+                            registering_firm=_firm_name_on(was, reg),
+                            firm_registration_no=K.FIRMS[was][3],
+                            county_of_residence=cc, registered_on=K.iso(reg),
+                            withdrawn_on=K.iso(moved), registration_status="WITHDRAWN"))
+            out.append(dict(circulator_reg_no=cid, circulator_type="PAID",
+                            registering_firm=_firm_name_on(now, moved),
+                            firm_registration_no=K.FIRMS[now][3],
+                            county_of_residence=cc, registered_on=K.iso(moved),
+                            withdrawn_on="", registration_status="ACTIVE"))
+        else:
+            out.append(dict(circulator_reg_no=cid, circulator_type="PAID",
+                            registering_firm=_firm_name_on(fi, reg),
+                            firm_registration_no=K.FIRMS[fi][3],
+                            county_of_residence=cc, registered_on=K.iso(reg), withdrawn_on="",
+                            registration_status="ACTIVE"))
+    out.sort(key=lambda d: (d["circulator_reg_no"], d["registered_on"]))
     return out
 
 
-# ------------------------------------------------------------------------------------------------- payments
-RUN26_COLS = ["payout_id", "driver_id", "program_code", "amount_usd", "currency", "created_at_utc", "batch_id"]
-ADJ_COLS = ["batch_id", "run_date", "line_id", "driver_id", "program_code", "adjustment_type", "amount_usd",
-            "payout_id", "reverses_payout_id"]
-RETURN_COLS = ["return_date", "settlement_date", "return_ref", "individual_id", "company_entry_description", "amount",
-               "return_reason_code", "return_reason"]
-EVENT_COLS = ["payout_id", "event_at_utc", "event", "detail"]
-
-
-def _created(P, pid):
-    return next(e[1] for e in P.payouts[pid]["events"] if e[0] == "created")
-
-
-def write_run25(path, W, O):
-    P = O.pay[2025]
-    wb = openpyxl.Workbook()
-    ws = wb.active
-    ws.title = "Payouts"
-    head = ["Payout ID", "Driver ID", "Program", "Amount (cents)", "Currency", "Created (UTC)", "Batch"]
-    for c, h in enumerate(head, start=1):
-        cell = ws.cell(row=1, column=c, value=h)
-        cell.font = Font(name="Calibri", size=11, bold=True)
-    rows = sorted(P.main_ids.items(), key=lambda kv: kv[1])
-    for i, (k, pid) in enumerate(rows, start=2):
-        vals = [pid, O.driver_id[k], PROGRAM[2025], K.AMOUNT * 100, "USD", utc(_created(P, pid)), BATCH_MAIN[2025]]
-        for c, v in enumerate(vals, start=1):
-            ws.cell(row=i, column=c, value=v)
-    widths = [22, 12, 10, 15, 10, 21, 17]
-    for c, w in enumerate(widths, start=1):
-        ws.column_dimensions[openpyxl.utils.get_column_letter(c)].width = w
-    ws.freeze_panes = "A2"
-    ws.auto_filter.ref = "A1:G%d" % (len(rows) + 1)
-    wb.save(path)
-
-
-def run26_rows(W, O):
-    P = O.pay[2026]
-    out = []
-    for k, pid in sorted(P.main_ids.items(), key=lambda kv: kv[1]):
-        out.append([pid, O.driver_id[k], PROGRAM[2026], "%.2f" % K.AMOUNT, "USD", utc(_created(P, pid)),
-                    BATCH_MAIN[2026]])
-    return out
-
-
-def adj_rows(W, O):
-    lines = []
-    for y in (2025, 2026):
-        P = O.pay[y]
-        for k, pid in P.late_ids.items():
-            lines.append(dict(date=P.payouts[pid]["date"], k=k, type="late_credit", amount=K.AMOUNT, pid=pid, rev=""))
-        for rc in P.recoveries:
-            lines.append(dict(date=rc["date"], k=rc["k"], type=rc["reason"], amount=-K.AMOUNT, pid="",
-                              rev=rc["reverses"]))
-    out = []
-    for i, ln in enumerate(sorted(lines, key=lambda x: (x["date"], x["type"] != "late_credit", x["k"]))):
-        prog = PROGRAM[2025] if ln["date"] < dt.date(2025, 12, 1) else PROGRAM[2026]
-        batch = "%s-ADJ-%02d%02d" % (prog.replace("WG20", "WG"), ln["date"].month, ln["date"].day)
-        lid = "adj_" + K.token("adjline", ln["date"].isoformat(), ln["k"], ln["type"], n=12,
-                               alphabet="0123456789abcdefghjkmnpqrstvwxyz")
-        out.append([batch, ln["date"].isoformat(), lid, O.driver_id[ln["k"]], prog, ln["type"],
-                    "%.2f" % ln["amount"], ln["pid"], ln["rev"]])
-    return out
-
-
-def return_rows(W, O):
-    """The bank's returns report for the payout account: the guarantee's returns among the weekly earnings payouts'."""
-    out = []
-    for y in (2025, 2026):
-        P = O.pay[y]
-        for rt in P.returns:
-            out.append(dict(date=rt["date"], settle=rt["settle"], pid=rt["pid"], desc="GUARANTEE",
-                            amount=float(K.AMOUNT), code=rt["code"]))
-    r = K.rng("returns", "earnings")
-    d = dt.date(2025, 1, 2)
-    while d <= dt.date(2026, 12, 31):
-        if d.weekday() < 5 and d not in OP.FED_HOLIDAYS:
-            n = int(r.poisson(2.4 if d.weekday() in (1, 2) else 0.9))
-            for _ in range(n):
-                amt = float(np.round(np.clip(r.lognormal(5.9, 0.62), 18, 2400), 2))
-                pid = "po_" + K.token("earnret", d.isoformat(), _, r.integers(1 << 30), n=14,
-                                      alphabet="0123456789abcdefghjkmnpqrstvwxyz")
-                settle = d
-                for _k in range(int(r.integers(1, 3))):
-                    settle -= dt.timedelta(days=1)
-                    while settle.weekday() >= 5 or settle in OP.FED_HOLIDAYS:
-                        settle -= dt.timedelta(days=1)
-                out.append(dict(date=d, settle=settle, pid=pid, desc="DRIVER PAY", amount=amt,
-                                code=OP._pick(r, OP.RETURN_CODES)))
-        d += dt.timedelta(days=1)
-    out.sort(key=lambda x: (x["date"], x["pid"]))
+def maint_rows(w, S):
+    """The 14 March 2028 statewide list-maintenance run, as the division's own run register wrote it."""
+    r = K.rng("maint", seed=w.seed)
     rows = []
-    for i, x in enumerate(out):
-        ref = "RTN%s%05d" % (x["date"].strftime("%y%m"), 1 + i % 99991)
-        rows.append([x["date"].isoformat(), x["settle"].isoformat(), ref, x["pid"], x["desc"], "%.2f" % x["amount"],
-                     x["code"][0], x["code"][1]])
-    return rows
+    mid = np.where(w.signer_ca_mid)[0]
+    for s in mid.tolist():
+        rows.append((int(w.signer_vid[s]), K.COUNTY_CODES[w.signer_county[s]], 1))
+    extra = w.params["maintenance_other"]
+    ids = r.integers(102_000_000, 499_000_000, size=int(extra * 1.03), dtype=np.int64)
+    ids = np.unique(ids)[:extra]
+    cshare = np.array([x for _, _, x in K.COUNTIES])
+    cc = r.choice(len(K.COUNTIES), size=len(ids), p=cshare / cshare.sum())
+    for j, v in enumerate(ids.tolist()):
+        rows.append((int(v), K.COUNTY_CODES[cc[j]], 0))
+    rows.sort()
+    reasons = ["LM-NOTICE", "LM-NCOA", "LM-JURY", "LM-RETURNED"]
+    act = r.random(len(rows))
+    for j, (v, cc, ours) in enumerate(rows):
+        # the run both cancels registrations and moves others to inactive; only a cancellation takes a
+        # registration out, and only a cancellation before the date signed strikes a signature
+        action = "CANCEL" if (ours or act[j] < 0.60) else "INACTIVATE"
+        notice = K.LIST_MAINTENANCE - dt.timedelta(days=int(28 + (v % 37)))
+        yield dict(run_id="LM-2028-01", run_date=K.iso(K.LIST_MAINTENANCE), voter_reg_id=v, county_code=cc,
+                   action_code=action, reason_code=reasons[0] if ours else reasons[1 + j % 3],
+                   notice_mailed=K.iso(notice),
+                   posted_utc=K.utc_stamp(dt.datetime.combine(K.LIST_MAINTENANCE,
+                                                              dt.time(18 + j % 5, (j * 11) % 60))))
 
 
-def event_rows(W, O):
-    out = []
-    for y in (2025, 2026):
-        P = O.pay[y]
-        for pid, po in P.payouts.items():
-            for ev, t, det in po["events"]:
-                out.append([pid, utc(t), ev, det])
-    out.sort(key=lambda x: (x[1], x[0]))
-    return out
+def other_rows(w, S):
+    """A second initiative measure filed in the same cycle: the office's receipt log for I-04-2028. The
+    solution never reads it."""
+    r = K.rng("other", seed=w.seed)
+    n = 512
+    for b in range(1, n + 1):
+        firm = K.FIRMS[int(r.integers(0, len(K.FIRMS)))][0]
+        acc = int(r.integers(38, 58))
+        lines = int(acc * 15 - r.integers(0, 42))
+        pres = acc + (1 if r.random() < 0.04 else 0)
+        yield dict(bundle_id="C%04d" % b, received_date=K.iso(dt.date(2028, 7, 3) + dt.timedelta(days=b % 3)),
+                   firm_code=firm, sheets_presented=pres, sheets_accepted=acc,
+                   signature_lines_accepted=lines, receipted_by="ELEC-%02d" % (1 + b % 6))
 
 
-# ------------------------------------------------------------------------------------------------- onboarding
-APP_COLS = ["application_id", "submitted_at_utc", "vehicle_source", "status", "decision_at_utc", "driver_id",
-            "first_trip_at_utc"]
-ORDER_COLS = ["order_id", "candidate_id", "client_reference", "package", "ordered_at", "completed_at", "result"]
-
-
-def app_rows(S):
-    out = []
-    for b in S.apps:
-        out.append([b["app_id"], utc(b["submitted_shown"]), b["vehicle"], b["status"],
-                    utc(b["decision_shown"]) if b["decision_shown"] else "", b["driver"] or "",
-                    utc(b["first_trip_shown"]) if b["first_trip_shown"] else ""])
-    out.sort(key=lambda x: (x[1], x[0]))
-    return out
-
-
-def order_rows(S):
-    asof_end = dt.datetime.combine(K.AS_OF, dt.time(21, 40))
-    out = []
-    for b in S.orders:
-        done = b["check_done"] if (b["check_done"] is not None and b["check_done"] <= asof_end) else None
-        res = b["check_result"] if done is not None or b["check_result"] == "canceled" else "pending"
-        out.append([b["order_id"], b["candidate"], b["app_id"], "DRV-STD-MVR", utc_z(b["ordered"]),
-                    utc_z(done) if done else "", res])
-    out.sort(key=lambda x: (x[4], x[0]))
-    return out
-
-
-# ------------------------------------------------------------------------------------------------- distractors
-REFERRAL_COLS = ["referral_id", "referrer_driver_id", "referred_driver_id", "referred_first_trip_on", "qualified_on",
-                 "bonus_usd", "paid_on"]
-
-
-def referral_rows(W, O):
-    out = []
-    for x in sorted(O.referrals, key=lambda x: (x["qualified"], x["referred"])):
-        rid = "REF-" + K.token("refid", x["referred"], n=7, alphabet="0123456789")
-        out.append([rid, O.driver_id[x["referrer"]], O.driver_id[x["referred"]], x["first_trip"].isoformat(),
-                    x["qualified"].isoformat(), "250.00", x["paid"].isoformat()])
-    return out
-
-
-def write_demand(path, W):
-    """The marketplace team's weekly rider demand plan for the first quarter of 2027 (issued 4 December 2026): rider
-    requests from the same weeks of 2026 grown at the plan's assumption, and the driver hours that would serve them."""
-    wb = openpyxl.Workbook()
-    ws = wb.active
-    ws.title = "Q1 2027 weekly"
-    ws["A1"] = "Larch Rides: rider demand plan, Q1 2027"
-    ws["A1"].font = Font(name="Calibri", size=13, bold=True)
-    ws["A2"] = ("Marketplace planning, issued 4 December 2026. Weeks Monday to Sunday, Central time. Requests are rider "
-                "trip requests; hours are the driver online hours that serve the requests at the plan's 1.85 completed "
-                "trips per online hour and 91.5% fill.")
-    ws["A2"].font = Font(name="Calibri", size=9, italic=True, color="5F6670")
-    head = ["Week starting", "Requests, 2026 same week", "Growth assumption", "Requests, plan", "Completed trips, plan",
-            "Driver online hours, plan"]
-    fill = PatternFill("solid", fgColor="DDE7DA")
-    thin = Side(style="thin", color="AEB8AB")
-    for c, h in enumerate(head, start=1):
-        cell = ws.cell(row=4, column=c, value=h)
-        cell.font = Font(name="Calibri", size=10, bold=True)
-        cell.fill = fill
-        cell.alignment = Alignment(wrap_text=True, vertical="top")
-        cell.border = Border(bottom=thin)
-    ws.row_dimensions[4].height = 30
-    r = K.rng("demand")
-    w0 = K.widx(dt.date(2027, 1, 4))
-    # The plan's growth assumption, one figure a month as marketplace planning states it. The autumn ran
-    # about a fifth ahead of the year before and December nearly two fifths ahead, and the plan carries that
-    # through the new year before lapping itself by March. It is set so the hours the plan asks of supply
-    # cover the requests the quarter turns out to bring; the headroom is asserted in checks.py.
-    growth = [0.58, 0.58, 0.58, 0.58, 0.42, 0.42, 0.42, 0.42, 0.10, 0.10, 0.10, 0.10, 0.10]
-    tot = [0, 0, 0]
-    for i in range(13):
-        wk = K.wdate(w0 + i)
-        last = int(W.trips[:, w0 + i - 52].sum())
-        req = int(round(last / 0.917 * float(r.normal(1.0, 0.012))))
-        plan = int(round(req * (1 + growth[i]), -1))
-        comp = int(round(plan * 0.915, -1))
-        hrs = int(round(comp / 1.85, -1))
-        vals = [wk, req, growth[i], plan, comp, hrs]
-        for c, v in enumerate(vals, start=1):
-            cell = ws.cell(row=5 + i, column=c, value=v)
-            cell.font = Font(name="Calibri", size=10)
-            if c == 1:
-                cell.number_format = "d mmm yyyy"
-            elif c == 3:
-                cell.number_format = "0.0%"
-            else:
-                cell.number_format = "#,##0"
-        tot[0] += plan
-        tot[1] += comp
-        tot[2] += hrs
-    ws.cell(row=18, column=1, value="Quarter").font = Font(name="Calibri", size=10, bold=True)
-    for c, v in zip((4, 5, 6), tot):
-        cell = ws.cell(row=18, column=c, value=v)
-        cell.font = Font(name="Calibri", size=10, bold=True)
-        cell.number_format = "#,##0"
-    for c, w in enumerate([14, 16, 12, 14, 14, 16], start=1):
-        ws.column_dimensions[openpyxl.utils.get_column_letter(c)].width = w
-    wb.save(path)
+def regstats_rows(w, S):
+    """The office's published registration report of 1 July 2028. The solution never reads it."""
+    r = K.rng("regstats", seed=w.seed)
+    parties = ["REP", "DEM", "IND", "LBT", "GRN"]
+    base = {"REP": 0.345, "DEM": 0.302, "IND": 0.333, "LBT": 0.013, "GRN": 0.007}
+    for cc, name, share in K.COUNTIES:
+        total = 4_382_000 * share * (1 + 0.04 * (r.random() - 0.5))
+        for pc in parties:
+            act = int(total * base[pc] * (1 + 0.09 * (r.random() - 0.5)))
+            yield dict(report_date=K.iso(dt.date(2028, 7, 1)), county_code=cc, county_name=name,
+                       party_code=pc, active_registrations=act,
+                       inactive_registrations=int(act * (0.07 + 0.05 * r.random())))

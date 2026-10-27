@@ -1,227 +1,176 @@
 {
-  "task": "task157",
-  "title": "How much a Twin Cities ride-hail operator's January 2027 winter guarantee will pay ($350 to every driver completing 40 trips in four weeks), when last winter's recruits come back in a wave that straddles the funding date",
-  "domain": "Product Analytics",
-  "client_domain": "Product Analytics",
-  "house_domain": "product-analytics",
-  "subdomain": "retention-cohort-lifetime-value-modeling (a ride-hail platform's supply-side driver cohorts: last winter's recruits read as a returning cohort whose resurrection is under way at the forecast date, sized from the part already back at the timing earlier cohorts kept)",
-  "objective": "Forecasting & Predictive Modeling",
-  "prompt_shape": "a committed fund to the nearest $50,000 with the drivers expected to qualify, a table taking the 2025 and 2026 guarantees to net cost (what never reached a driver, the net cost, the drivers paid), a table of the onboarding pipeline by month of first application from June to October 2026 (people who applied, approved, first trip by the as-of), and a two-slide deck with each guarantee's steps from main run to net cost charted",
-  "as_of": "2027-01-03",
-  "deliverables": [
-    "guarantee_fund_jan2027.xlsx",
-    "guarantee_fund_jan2027.pptx"
-  ],
-  "distractor_files": [
-    "rider_demand_plan_q1_2027.xlsx",
-    "driver_referral_bonuses_2026.csv"
-  ],
-  "field_terms": [],
-  "stated_inputs": [],
-  "input_gates": {
-    "files": 20,
-    "formats": [
-      "csv",
-      "docx",
-      "eml",
-      "log",
-      "md",
-      "pdf",
-      "xlsx"
-    ],
-    "largest_file": "driver_activity_monthly_2024-07_2027-01.csv",
-    "largest_file_rows": 165826
+ "task": "task157",
+ "world": "The Arizona Secretary of State's elections division projects, from the statutory five per cent random sample, how many of the 540,000 signature lines filed for initiative serial I-18-2028 a full count would find valid, and whether the petition qualifies, goes to a full count or fails.",
+ "as_of": "2028-08-04",
+ "domain": "political-science-public-policy / election-polling-forecasting",
+ "objective": "Forecasting & Predictive Modeling",
+ "deliverables": [
+  "signature_projection_2028.xlsx",
+  "petition_disposition_2028.png"
+ ],
+ "distractor_files": [
+  "measure_i2028-04_receipt_log.csv",
+  "voter_registration_by_county_20280701.csv"
+ ],
+ "stated_inputs": [
+  "365,678",
+  "404,170",
+  "384,924",
+  "540,000",
+  "27,000",
+  "38,080",
+  "38,320",
+  "2,566,154",
+  "365678",
+  "404170",
+  "384924",
+  "540000"
+ ],
+ "field_terms": [
+  "sample",
+  "sampled",
+  "sampling",
+  "signature",
+  "signatures"
+ ],
+ "official_decoy": false,
+ "validated_decoy": false,
+ "calibration_corpus": "measure_i2024-04_full_count_closeout.xlsx",
+ "files": [
+  {
+   "file": "county_verification_returns_2028.csv",
+   "source": "Arizona Secretary of State, Elections Division",
+   "date": "2028-08-03",
+   "licence": "Constructed for this task from Arizona's own statutory scheme; no third-party material. CC0-1.0.",
+   "covers": "The fifteen county recorders' verification returns for the statutory sample of initiative serial I-18-2028, consolidated by the division's load, one row per sampled signature line. Each recorder's own date format and Navajo County's own 2019 disposition codes are kept as received.",
+   "rows": 27000,
+   "made": "Written by task157/generator from the generator's clean truth; no third-party data."
   },
-  "sources": [
-    {
-      "files": "all files under target/",
-      "origin": "constructed for this task by task157/generator/build.py (seeded, deterministic) around a fictional regional ride-hail operator in the Twin Cities, in the layouts of a dispatch platform's monthly driver export and its successor's warehouse extract, a payments system's payout runs, events and adjustment lines, a bank's ACH return report, an onboarding app's applications export and a screening vendor's order export; no real organisation's records or person is depicted.",
-      "date": "2027-01-03",
-      "license": "CC0-1.0 (original work)"
-    }
-  ],
-  "created": "2026-10-17",
-  "generator": "task157/generator/build.py",
-  "files": [
-    {
-      "path": "ach_returns_payout_account_2025-2026.csv",
-      "format": "csv",
-      "bytes": 98102,
-      "rows": 976,
-      "source": "Constructed: Larch Rides payout account, the bank's ACH return report, 2025 and 2026",
-      "date": "2027-01-03",
-      "license": "CC0-1.0 (original work, constructed for this task)"
-    },
-    {
-      "path": "background_check_orders_2025-06_2027-01.csv",
-      "format": "csv",
-      "bytes": 1262023,
-      "rows": 12812,
-      "source": "Constructed: Larch Rides screening vendor portal, background check order export, June 2025 to January 2027",
-      "date": "2027-01-03",
-      "license": "CC0-1.0 (original work, constructed for this task)"
-    },
-    {
-      "path": "dispatch_legacy_driver_months_2021-05_2024-07.csv",
-      "format": "csv",
-      "bytes": 2254459,
-      "rows": 91426,
-      "source": "Constructed: Larch Rides, old dispatch platform's monthly driver export by legacy driver number, May 2021 to 14 July 2024",
-      "date": "2027-01-03",
-      "license": "CC0-1.0 (original work, constructed for this task)"
-    },
-    {
-      "path": "dispatch_migration_driver_crosswalk.csv",
-      "format": "csv",
-      "bytes": 255180,
-      "rows": 9390,
-      "source": "Constructed: Larch Rides dispatch migration crosswalk, legacy driver numbers to driver ids (15 July 2024)",
-      "date": "2027-01-03",
-      "license": "CC0-1.0 (original work, constructed for this task)"
-    },
-    {
-      "path": "driver_accounts_2027-01-03.csv",
-      "format": "csv",
-      "bytes": 1363296,
-      "rows": 21606,
-      "source": "Constructed: Larch Rides dispatch warehouse, driver accounts as at 3 January 2027",
-      "date": "2027-01-03",
-      "license": "CC0-1.0 (original work, constructed for this task)"
-    },
-    {
-      "path": "driver_activity_monthly_2024-07_2027-01.csv",
-      "format": "csv",
-      "bytes": 4879985,
-      "rows": 165826,
-      "source": "Constructed: Larch Rides dispatch warehouse, monthly driver activity, 15 July 2024 to the extract run of 3 January 2027",
-      "date": "2027-01-03",
-      "license": "CC0-1.0 (original work, constructed for this task)"
-    },
-    {
-      "path": "driver_referral_bonuses_2026.csv",
-      "format": "csv",
-      "bytes": 19284,
-      "rows": 274,
-      "source": "Constructed: Larch Rides referral programme, 2026 referral bonus ledger",
-      "date": "2027-01-03",
-      "license": "CC0-1.0 (original work, constructed for this task)"
-    },
-    {
-      "path": "driver_supply_kpis_2026-11.pdf",
-      "format": "pdf",
-      "bytes": 36436,
-      "rows": null,
-      "source": "Constructed: Larch Rides Supply Analytics, driver supply KPIs to November 2026 (11 December 2026)",
-      "date": "2027-01-03",
-      "license": "CC0-1.0 (original work, constructed for this task)"
-    },
-    {
-      "path": "guarantee_account_funding_2026-12-30.eml",
-      "format": "eml",
-      "bytes": 1381,
-      "rows": null,
-      "source": "Constructed: Larch Rides Finance, email on the guarantee account (30 December 2026)",
-      "date": "2027-01-03",
-      "license": "CC0-1.0 (original work, constructed for this task)"
-    },
-    {
-      "path": "guarantee_payout_adjustments_2025-2026.csv",
-      "format": "csv",
-      "bytes": 6883,
-      "rows": 69,
-      "source": "Constructed: Larch Rides payments system, winter guarantee adjustment run lines, 2025 and 2026",
-      "date": "2027-01-03",
-      "license": "CC0-1.0 (original work, constructed for this task)"
-    },
-    {
-      "path": "guarantee_payout_events_2025-2026.csv",
-      "format": "csv",
-      "bytes": 817002,
-      "rows": 17074,
-      "source": "Constructed: Larch Rides payments system, winter guarantee payout events, 2025 and 2026",
-      "date": "2027-01-03",
-      "license": "CC0-1.0 (original work, constructed for this task)"
-    },
-    {
-      "path": "onboarding_applications_2025-06-02_2027-01-03.csv",
-      "format": "csv",
-      "bytes": 1095154,
-      "rows": 12812,
-      "source": "Constructed: Larch Rides onboarding app, applications export, 2 June 2025 to 3 January 2027",
-      "date": "2027-01-03",
-      "license": "CC0-1.0 (original work, constructed for this task)"
-    },
-    {
-      "path": "onboarding_pipeline_counts.docx",
-      "format": "docx",
-      "bytes": 10248,
-      "rows": null,
-      "source": "Constructed: Larch Rides Driver Onboarding, pipeline counting notes (5 August 2026)",
-      "date": "2027-01-03",
-      "license": "CC0-1.0 (original work, constructed for this task)"
-    },
-    {
-      "path": "rider_demand_plan_q1_2027.xlsx",
-      "format": "xlsx",
-      "bytes": 7132,
-      "rows": 17,
-      "source": "Constructed: Larch Rides marketplace planning, rider demand plan for Q1 2027 (4 December 2026)",
-      "date": "2027-01-03",
-      "license": "CC0-1.0 (original work, constructed for this task)"
-    },
-    {
-      "path": "supply_pull_2027-01-03.log",
-      "format": "log",
-      "bytes": 2588,
-      "rows": null,
-      "source": "Constructed: Larch Rides Supply Analytics, log of the 3 January 2027 pull",
-      "date": "2027-01-03",
-      "license": "CC0-1.0 (original work, constructed for this task)"
-    },
-    {
-      "path": "supply_pull_data_notes.md",
-      "format": "md",
-      "bytes": 3763,
-      "rows": null,
-      "source": "Constructed: Larch Rides Supply Analytics, data notes for the 3 January 2027 pull",
-      "date": "2027-01-03",
-      "license": "CC0-1.0 (original work, constructed for this task)"
-    },
-    {
-      "path": "winter_guarantee_2025_payout_run.xlsx",
-      "format": "xlsx",
-      "bytes": 136188,
-      "rows": 2574,
-      "source": "Constructed: Larch Rides payments, old payout report for the 2025 winter guarantee main run (14 February 2025)",
-      "date": "2027-01-03",
-      "license": "CC0-1.0 (original work, constructed for this task)"
-    },
-    {
-      "path": "winter_guarantee_2026_payout_run.csv",
-      "format": "csv",
-      "bytes": 240877,
-      "rows": 3010,
-      "source": "Constructed: Larch Rides payments system, 2026 winter guarantee main run export (13 February 2026)",
-      "date": "2027-01-03",
-      "license": "CC0-1.0 (original work, constructed for this task)"
-    },
-    {
-      "path": "winter_guarantee_payout_notes.docx",
-      "format": "docx",
-      "bytes": 10695,
-      "rows": null,
-      "source": "Constructed: Larch Rides Payments Operations, winter guarantee payout notes (20 March 2026)",
-      "date": "2027-01-03",
-      "license": "CC0-1.0 (original work, constructed for this task)"
-    },
-    {
-      "path": "winter_guarantee_terms_2027.pdf",
-      "format": "pdf",
-      "bytes": 41613,
-      "rows": null,
-      "source": "Constructed: Larch Rides Driver Supply, Winter Guarantee 2027 driver terms (14 December 2026)",
-      "date": "2027-01-03",
-      "license": "CC0-1.0 (original work, constructed for this task)"
-    }
-  ]
+  {
+   "file": "county_return_corrections_2028.csv",
+   "source": "Arizona Secretary of State, Elections Division",
+   "date": "2028-08-03",
+   "licence": "Constructed for this task from Arizona's own statutory scheme; no third-party material. CC0-1.0.",
+   "covers": "Query notices the division raised on the returns and the recorders' re-determinations, one row per line re-determined.",
+   "rows": 380,
+   "made": "Written by task157/generator from the generator's clean truth; no third-party data."
+  },
+  {
+   "file": "avid_snapshot_extract_20271220.csv",
+   "source": "Arizona Secretary of State, Elections Division",
+   "date": "2027-12-20",
+   "licence": "Constructed for this task from Arizona's own statutory scheme; no third-party material. CC0-1.0.",
+   "covers": "Registration records for the identifiers the sample transmittal cites, taken from the archived statewide voter file snapshot of 20 December 2027, the last snapshot before circulation opened.",
+   "rows": 24596,
+   "made": "Written by task157/generator from the generator's clean truth; no third-party data."
+  },
+  {
+   "file": "avid_snapshot_extract_20280710.csv",
+   "source": "Arizona Secretary of State, Elections Division",
+   "date": "2028-07-10",
+   "licence": "Constructed for this task from Arizona's own statutory scheme; no third-party material. CC0-1.0.",
+   "covers": "The same registration records taken from the statewide voter file snapshot of 10 July 2028.",
+   "rows": 24596,
+   "made": "Written by task157/generator from the generator's clean truth; no third-party data."
+  },
+  {
+   "file": "petition_sheet_index_2028.csv",
+   "source": "Arizona Secretary of State, Elections Division",
+   "date": "2028-07-07",
+   "licence": "Constructed for this task from Arizona's own statutory scheme; no third-party material. CC0-1.0.",
+   "covers": "The office's register of the petition sheets it receipted, one row per sheet, with the receipt bundle, the circulator's registration number, the firm's own sheet number and the signature lines the sheet carries.",
+   "rows": 38080,
+   "made": "Written by task157/generator from the generator's clean truth; no third-party data."
+  },
+  {
+   "file": "petition_receipt_log_2028.csv",
+   "source": "Arizona Secretary of State, Elections Division",
+   "date": "2028-07-07",
+   "licence": "Constructed for this task from Arizona's own statutory scheme; no third-party material. CC0-1.0.",
+   "covers": "The office's receipt log for the filing, one row per bundle presented, with the sheets accepted, the sheets struck at receipt and the signature lines accepted.",
+   "rows": 784,
+   "made": "Written by task157/generator from the generator's clean truth; no third-party data."
+  },
+  {
+   "file": "circulator_sheet_submissions_2028.csv",
+   "source": "Petition circulator firms, filed with the office",
+   "date": "2028-07-07",
+   "licence": "Constructed for this task from Arizona's own statutory scheme; no third-party material. CC0-1.0.",
+   "covers": "Each circulator firm's own delivery manifest for the bundles it handed over, carrying the firm's own sheet and signature counts and the trading name it filed under.",
+   "rows": 784,
+   "made": "Written by task157/generator from the generator's clean truth; no third-party data."
+  },
+  {
+   "file": "circulator_registration_extract_i18-2028.csv",
+   "source": "Arizona Secretary of State, Elections Division",
+   "date": "2028-07-11",
+   "licence": "Constructed for this task from Arizona's own statutory scheme; no third-party material. CC0-1.0.",
+   "covers": "The office's extract of the paid circulators registered to gather signatures for serial I-18-2028, by registration number, with the firm that registered each and the dates each registration ran from and, where the circulator registered again under another firm, to.",
+   "rows": 351,
+   "made": "Written by task157/generator from the generator's clean truth; no third-party data."
+  },
+  {
+   "file": "list_maintenance_run_20280314.csv",
+   "source": "Arizona Secretary of State, Elections Division",
+   "date": "2028-03-14",
+   "licence": "Constructed for this task from Arizona's own statutory scheme; no third-party material. CC0-1.0.",
+   "covers": "The register of the statewide list-maintenance run of 14 March 2028: the registrations it cancelled and the registrations it moved to inactive.",
+   "rows": 24746,
+   "made": "Written by task157/generator from the generator's clean truth; no third-party data."
+  },
+  {
+   "file": "measure_i2024-04_full_count_closeout.xlsx",
+   "source": "Arizona Secretary of State, Elections Division",
+   "date": "2024-08-29",
+   "licence": "Constructed for this task from Arizona's own statutory scheme; no third-party material. CC0-1.0.",
+   "covers": "The office's close-out of the full count of initiative serial I-04-2024, ordered by the Superior Court, with the examination's dates, examiners and per-county figures. The only settled measure the office holds of what examining a petition line by line takes.",
+   "rows": null,
+   "made": "Written by task157/generator from the generator's clean truth; no third-party data."
+  },
+  {
+   "file": "sos_filing_and_selection_record_i18-2028.pdf",
+   "source": "Arizona Secretary of State, Elections Division",
+   "date": "2028-07-11",
+   "licence": "Constructed for this task from Arizona's own statutory scheme; no third-party material. CC0-1.0.",
+   "covers": "The office's filing and sample record for serial I-18-2028: the filing, the receipt, the number required, the sample drawn and the statutory determination.",
+   "rows": null,
+   "made": "Written by task157/generator from the generator's clean truth; no third-party data."
+  },
+  {
+   "file": "county_recorder_verification_instruction_2027.pdf",
+   "source": "Arizona Secretary of State, Elections Division",
+   "date": "2027-11-18",
+   "licence": "Constructed for this task from Arizona's own statutory scheme; no third-party material. CC0-1.0.",
+   "covers": "The signature verification instruction the county recorders work to, with the current disposition code set and the order the grounds are applied in.",
+   "rows": null,
+   "made": "Written by task157/generator from the generator's clean truth; no third-party data."
+  },
+  {
+   "file": "navajo_recorder_disposition_codes_2019.txt",
+   "source": "Navajo County Recorder",
+   "date": "2019-04-15",
+   "licence": "Constructed for this task from Arizona's own statutory scheme; no third-party material. CC0-1.0.",
+   "covers": "Navajo County's own disposition code list, which that recorder has not reissued and still files on.",
+   "rows": null,
+   "made": "Written by task157/generator from the generator's clean truth; no third-party data."
+  },
+  {
+   "file": "measure_i2028-04_receipt_log.csv",
+   "source": "Arizona Secretary of State, Elections Division",
+   "date": "2028-07-05",
+   "licence": "Constructed for this task from Arizona's own statutory scheme; no third-party material. CC0-1.0.",
+   "covers": "The office's receipt log for initiative serial I-04-2028, a second measure filed in the same cycle.",
+   "rows": 512,
+   "made": "Written by task157/generator from the generator's clean truth; no third-party data."
+  },
+  {
+   "file": "voter_registration_by_county_20280701.csv",
+   "source": "Arizona Secretary of State, Elections Division",
+   "date": "2028-07-01",
+   "licence": "Constructed for this task from Arizona's own statutory scheme; no third-party material. CC0-1.0.",
+   "covers": "The office's published registration report of 1 July 2028, active and inactive registrations by county and party.",
+   "rows": 75,
+   "made": "Written by task157/generator from the generator's clean truth; no third-party data."
+  }
+ ]
 }

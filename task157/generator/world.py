@@ -1,288 +1,580 @@
-"""The world before any file is written: every Larch driver account's weekly trips and online time from launch to
-the end of March 2027, the guarantee windows' qualifiers, the payments system's runs, returns and recoveries, the
-onboarding pipeline and the screening vendor's orders. Only records the operator's systems would hold are later
-written out; the driver kinds below (regular, seasonal, bonus, tryer, occasional, rental) are the world's latent
-truth and appear in no file.
+"""task157 (architecture 2) clean truth.
 
-Kinds:
-  R regular     drives the year round at its own pace and stops for good at its own hazard (rarely in winter)
-  W seasonal    a worker laid off for the winter: drives from a personal week each winter (relative to the guarantee's
-                first Monday) to early April, then goes back to its trade; comes back the next winter or not
-  B bonus       a 2026 campaign recruit who drove February and March for the installments and stopped in April
-  N tryer       drives a few weeks and stops
-  I occasional  on and off for years, a background of returns in every month
-  F rental      a driver of the 2025 rental programme: February and March 2025 only
-"""
+Builds the petition as the office's own systems would have produced it: 36,000 receipted sheets of fifteen
+lines, the signers behind them, the statutory five per cent random sample of the signature lines and the
+disposition each sampled line was given. Nothing here is shipped; `records.py` and `docs.py` cut the pack
+from it and `checks.py` executes the three rules on it.
+
+The parameters below are the stage 3 pin (the design note's `## Bin measurements`). They are set so that,
+at every one of the six sweep seeds, the projection the sample supports sits inside the statute's 95 to 105
+per cent band with both clearances at or above 2.5 bins of 5,000, and so that at the world seed it prints
+within 1,500 of its cell's centre. They are not tuned on anything the pack does not carry."""
 from __future__ import annotations
 
 import datetime as dt
+import math
+import os
+import sys
 
 import numpy as np
 
-import common as K
+HERE = os.path.dirname(os.path.abspath(__file__))
+sys.path.insert(0, HERE)
+import common as K      # noqa: E402
 
 # ------------------------------------------------------------------------------------------------- parameters
-BASE = {2021: 46, 2022: 52, 2023: 56, 2024: 60, 2025: 62, 2026: 63, 2027: 64}   # organic first-trip drivers a week
-WINTER_UPLIFT = 1.2
-MIX_WINTER = dict(W=0.22, R=0.43, N=0.28, I=0.07)     # first trip from November to February
-MIX_OTHER = dict(R=0.572, N=0.338, I=0.09)
-CAMPAIGN_N = 2215
-CAMPAIGN_MIX = dict(W=0.675, B=0.17, R=0.10, N=0.055)
-CAMPAIGN_WEEKS = [0.24, 0.22, 0.20, 0.19, 0.15]       # first trips over the five weeks from 2 February 2026
-RENTAL_N = 352
-# a seasonal driver's personal return week, relative to the guarantee's first Monday (week 0)
-REL = list(range(-7, 6))
-PROF = [0.07, 0.10, 0.13, 0.12, 0.03, 0.012, 0.006, 0.26, 0.14, 0.075, 0.035, 0.012, 0.0]
-W_RET = ([0.80, 0.92, 0.97], [0.25, 0.45, 0.30])     # chance of coming back each winter, by driver
-W_ACT = 0.88
-R_HAZ = ([0.004, 0.012, 0.03], [0.45, 0.40, 0.15])
-I_ON = 0.15                                           # occasional drivers' weekly chance of coming back on
-R_WINTER = 0.12                                       # regular drivers' stopping hazard in December to February
-TOPUP_LO, TOPUP_P = 34, 0.55                          # drivers within reach of 40 push to it during a window
-WEEKDAY_W = np.array([0.11, 0.12, 0.13, 0.14, 0.18, 0.19, 0.13])
-MONTH_SEAS = {1: 1.04, 2: 1.0, 3: 0.97, 4: 0.95, 5: 0.95, 6: 0.97, 7: 0.98, 8: 0.98, 9: 0.97, 10: 1.0, 11: 1.03, 12: 1.07}
-DUP_PERSONS = {2025: 4, 2026: 7}                      # people who drove the window on two accounts, both paid
-LATE_CREDIT = {2025: 17, 2026: 21}                    # drivers credited trips after the run's review cut
-FRAUD = {2025: 9, 2026: 12}                           # payments recovered for trips refunded as fraudulent
+PARAMS = dict(
+    # signers who signed the petition more than once. The multiplicity is drawn near binary on purpose: the
+    # all-doubles expansion overstates the burden by (1 - p) per registered triple signer, and a world with a
+    # five per cent triple share among multi-signers carries a bias of 0.59 bins that the sample cannot
+    # identify. See checks.py R-bias and the design note's `## Bin measurements`.
+    doubles=34_000,
+    triples=150,
+    # line grounds, drawn per signature line
+    rate_il=0.01150, rate_md=0.00650, rate_ws=0.00150,
+    # registration grounds, drawn per signer and applied to every line the signer signed
+    rate_nr=0.08600, rate_ad=0.05600, rate_sg=0.04200, rate_nc=0.01530, rate_nq=0.00400,
+    rate_ca_pre=0.00740,    # cancelled before the December 2027 snapshot: both snapshots agree
+    rate_ca_mid=0.01810,    # cancelled in the 14 March 2028 list-maintenance run, signed afterwards
+    # the recorder flags a duplicate it meets in its own queue; the division's consolidation check of the
+    # whole returned sample is the backstop and strikes the rest
+    county_found=0.620,
+    # registrations cancelled after the signature was given, so valid at signing and cancelled in the July
+    # snapshot, and registrations cancelled and then restored before signing (status active, cancel date set)
+    rate_post_cancel=0.02500, rate_reinstated=0.00210,
+    # sampled lines the recorder returned without a determination (the transmitted copy was unreadable) and
+    # which the division determined itself
+    division_illegible=160,
+    # the division's query notices: lines a recorder re-determined after the consolidation check, every one
+    # of them a move between two single-signature grounds, so no reading of them moves the call
+    corrections=380,
+    # registrations the 14 March run cancelled that belong to nobody on this petition
+    maintenance_other=17_800,
+    # paid circulators who left one firm for another inside the circulation window and registered again.
+    # A signature belongs to the firm that had its circulator registered on the day it was given, which is
+    # not the firm whose bundle the sheet was delivered in.
+    circulator_moves=22,
+    # registrations cancelled after the signature was given and restored before the July snapshot, so the
+    # snapshot shows an active registration carrying a cancellation date later than the signature
+    rate_late_restored=0.00150,
+)
+
+CODE_IX = {c: i for i, c in enumerate(K.CODE_KEYS)}
 
 
 class World:
     pass
 
 
-def _deal(r, n):
-    """Return weeks for one winter's n returning seasonal drivers: the trades' calendar (PROF) rounded to whole
-    drivers by largest remainder, dealt in a shuffled order."""
-    p = np.array(PROF, dtype=float)
-    p = p / p.sum()
-    raw = p * n
-    cnt = np.floor(raw).astype(int)
-    short = n - int(cnt.sum())
-    if short > 0:
-        order = np.argsort(-(raw - cnt), kind="stable")
-        cnt[order[:short]] += 1
-    deck = np.repeat(REL, cnt)
-    r.shuffle(deck)
-    return [int(x) for x in deck]
+def _sheet_layer(w, p, seed):
+    """36,000 receipted sheets: firm, circulator, the firm's own sheet number, the office's receipt bundle
+    and serial, and the days the sheet was circulated over."""
+    r = K.rng("sheets", seed=seed)
+    n = K.SHEETS
+    shares = np.array([s for _, _, s, _ in K.FIRMS])
+    counts = np.floor(shares * n).astype(np.int64)
+    counts[0] += n - counts.sum()
+    firm = np.repeat(np.arange(len(K.FIRMS)), counts)
+
+    # each firm has its own circulators and numbers its own sheets as it prints them
+    # paid circulators register with the office; the registration number carries no firm marking, so a
+    # sampled line's firm is only reachable through the office's sheet index
+    want = [int(28 + 62 * shares[fi] / shares.max() * 1.4) for fi in range(len(K.FIRMS))]
+    pool = sorted({K.token("circ", j, n=5, alphabet="0123456789", seed=seed) for j in range(sum(want) * 4)})
+    pool = ["PC-%s" % t for t in pool if t[0] != "0"][:sum(want)]
+    assert len(pool) == sum(want)
+    circ_of_firm, circ_id, circ_firm = [], [], []
+    at = 0
+    for fi, (code, _, _, _) in enumerate(K.FIRMS):
+        m = want[fi]
+        ids = pool[at:at + m]
+        at += m
+        circ_of_firm.append(ids)
+        for cid in ids:
+            circ_id.append(cid)
+            circ_firm.append(fi)
+    w.circulators = circ_id
+    w.circulator_firm = {c: f for c, f in zip(circ_id, circ_firm)}
+
+    sheet_circ = np.empty(n, dtype=object)
+    sheet_no = np.zeros(n, dtype=np.int64)
+    # a circulator works a stretch of the window; sheets are numbered by the firm in print order
+    start = 0
+    for fi in range(len(K.FIRMS)):
+        ix = np.where(firm == fi)[0]
+        ids = circ_of_firm[fi]
+        wt = r.gamma(2.6, 1.0, size=len(ids))
+        wt = wt / wt.sum()
+        pick = r.choice(len(ids), size=len(ix), p=wt)
+        sheet_circ[ix] = np.array(ids, dtype=object)[pick]
+        sheet_no[ix] = np.arange(1, len(ix) + 1)
+        start += len(ix)
+
+    # when each sheet was circulated: the campaign accelerates towards the filing deadline
+    day = np.clip(r.beta(2.15, 1.55, size=n) * K.WINDOW_DAYS, 0, K.WINDOW_DAYS - 1).astype(np.int64)
+    # firms join the drive at different points
+    offs = np.array([0, 9, 24, 46])
+    day = np.clip(day + offs[firm] - 12, 0, K.WINDOW_DAYS - 1)
+
+    # the office's receipt bundles: the committee delivered in boxes, numbered on receipt
+    order = np.lexsort((sheet_no, firm, day))
+    bundle = np.zeros(n, dtype=np.int64)
+    serial = np.zeros(n, dtype=np.int64)
+    sizes = r.integers(42, 56, size=n // 40 + 8)
+    ends = np.cumsum(sizes)
+    rank = np.arange(n)
+    bundle[order] = np.searchsorted(ends, rank, side="right") + 1
+    serial[order] = rank + 1
+
+    # the signature lines each sheet carries. A sheet has fifteen lines; the firms filed the sheets they had,
+    # so most are full and a tail are not, and the office's count of the lines filed is the statutory total.
+    shape = np.array([15, 14, 13, 12, 11, 10, 9, 8, 7, 6, 5])
+    wts = np.array([0.700, 0.100, 0.060, 0.040, 0.030, 0.025, 0.015, 0.012, 0.008, 0.005, 0.005])
+    wts = wts / wts.sum()
+    used = r.choice(shape, size=n, p=wts)
+    short = K.LINES_FILED - int(used.sum())
+    step = 1 if short > 0 else -1
+    while short != 0:
+        cand = np.where(used < 15)[0] if step > 0 else np.where(used > 5)[0]
+        take = r.choice(cand, size=min(abs(short), len(cand)), replace=False)
+        used[take] += step
+        short = K.LINES_FILED - int(used.sum())
+    w.sheet_lines = used.astype(np.int64)
+
+    # the county a sheet was circulated in, which is the county most of its signers claim
+    cshare = np.array([s for _, _, s in K.COUNTIES])
+    cshare = cshare / cshare.sum()
+    sheet_county = r.choice(len(K.COUNTIES), size=n, p=cshare)
+
+    w.sheet_firm = firm
+    w.sheet_circ = sheet_circ
+    w.sheet_no = sheet_no
+    w.sheet_day = day
+    w.sheet_bundle = bundle
+    w.sheet_serial = serial
+    w.sheet_county = sheet_county
+    w.n_bundles = int(bundle.max())
+
+    # the circulators who moved firm inside the window: each keeps one registration number and registers
+    # again under the firm it joined
+    rm = K.rng("moves", seed=seed)
+    # the circulators who move are the busiest, which is what the trade looks like: a firm poaches the
+    # gatherers who bring in the sheets, so the move touches every firm and every month of the drive
+    load = {}
+    for j in range(n):
+        load[sheet_circ[j]] = load.get(sheet_circ[j], 0) + 1
+    cand = sorted(circ_id, key=lambda c: (-load.get(c, 0), c))[:int(p["circulator_moves"] * 2.6)]
+    pick = rm.permutation(len(cand))[:p["circulator_moves"]]
+    moves = {}
+    for j in pick.tolist():
+        cid = cand[j]
+        was = w.circulator_firm[cid]
+        now = int(rm.choice([f for f in range(len(K.FIRMS)) if f != was]))
+        day = int(rm.integers(38, K.WINDOW_DAYS - 24))
+        moves[cid] = (was, now, day)
+    w.circulator_moves = moves
 
 
-def _pick(r, mix):
-    keys = list(mix)
-    p = np.array([mix[k] for k in keys], dtype=float)
-    return keys[int(r.choice(len(keys), p=p / p.sum()))]
+def _line_layer(w, p, seed):
+    """540,000 signature lines: the sheet and line they sit on, the day they were signed, the line defect the
+    recorder would find, and the signer behind them."""
+    r = K.rng("lines", seed=seed)
+    n = K.LINES_FILED
+    lu = w.sheet_lines
+    w.line_sheet = np.repeat(np.arange(K.SHEETS), lu)
+    starts = np.concatenate([[0], np.cumsum(lu)[:-1]])
+    w.line_no = (np.arange(n) - np.repeat(starts, lu) + 1).astype(np.int64)
+    spread = r.integers(0, 5, size=n)
+    w.line_day = np.clip(w.sheet_day[w.line_sheet] + spread, 0, K.WINDOW_DAYS - 1)
+
+    u = r.random(n)
+    g = np.zeros(n, dtype=np.int8)
+    a, b, c = p["rate_il"], p["rate_md"], p["rate_ws"]
+    g[u < a] = CODE_IX["IL"]
+    g[(u >= a) & (u < a + b)] = CODE_IX["MD"]
+    g[(u >= a + b) & (u < a + b + c)] = CODE_IX["WS"]
+    w.line_ground = g
+
+    # signers. A signer who signed twice or three times did so on different sheets, at different events.
+    rs = K.rng("signers", seed=seed)
+    d, t = p["doubles"], p["triples"]
+    need = 2 * d + 3 * t
+    pool = rs.permutation(n)[:need + 4000]
+    # pairs first, then triples, then the spare tail that replaces a member sharing a sheet with its own group
+    pairs = pool[:2 * d].reshape(d, 2)
+    trips = pool[2 * d:2 * d + 3 * t].reshape(t, 3)
+    spare = list(pool[2 * d + 3 * t:][::-1])
+    sh = w.line_sheet
+
+    def fix(block):
+        for row in range(block.shape[0]):
+            seen = set()
+            for col in range(block.shape[1]):
+                while int(sh[block[row, col]]) in seen:
+                    block[row, col] = spare.pop()
+                seen.add(int(sh[block[row, col]]))
+        return block
+
+    bad_p = np.where(sh[pairs[:, 0]] == sh[pairs[:, 1]])[0]
+    if len(bad_p):
+        pairs[bad_p] = fix(pairs[bad_p])
+    bad_t = np.where((sh[trips[:, 0]] == sh[trips[:, 1]]) | (sh[trips[:, 0]] == sh[trips[:, 2]])
+                     | (sh[trips[:, 1]] == sh[trips[:, 2]]))[0]
+    if len(bad_t):
+        trips[bad_t] = fix(trips[bad_t])
+
+    signer = np.full(n, -1, dtype=np.int64)
+    signer[pairs.ravel()] = np.repeat(np.arange(d), 2)
+    signer[trips.ravel()] = np.repeat(np.arange(d, d + t), 3)
+    rest = np.where(signer < 0)[0]
+    signer[rest] = np.arange(d + t, d + t + len(rest))
+    w.line_signer = signer
+    w.n_signers = int(signer.max()) + 1
+    w.multi_pairs = pairs
+    w.multi_trips = trips
+    w.multi_k = np.concatenate([np.full(d, 2, dtype=np.int8), np.full(t, 3, dtype=np.int8)])
 
 
-def simulate():
-    W = World()
-    NW = K.NW
-    week_dates = [K.wdate(i) for i in range(NW)]
-    week_month = np.array([d.month for d in week_dates])
-    seas = np.array([MONTH_SEAS[m] for m in week_month])
+def _signer_layer(w, p, seed):
+    """Every signer's registration as the county recorder would find it: the ground that strikes the signer's
+    lines if any, the county the registration sits in, the registration identifier, and the cancellation and
+    restoration dates the two snapshots carry."""
+    r = K.rng("signers_attr", seed=seed)
+    ns = w.n_signers
 
-    # ---------------------------------------------------------------- entrants
-    kinds, entry, src = [], [], []
-    for i in range(K.widx(dt.date(2027, 3, 1))):
-        d = week_dates[i]
-        winter = d.month in (11, 12, 1, 2)
-        lam = BASE[d.year] * (WINTER_UPLIFT if winter else 1.0)
-        r = K.rng("entry", i)
-        n = int(r.poisson(lam))
-        mix = MIX_WINTER if winter else MIX_OTHER
-        for _ in range(n):
-            kinds.append(_pick(r, mix))
-            entry.append(i)
-            src.append("organic")
-    r = K.rng("campaign")
-    w0 = K.widx(K.CAMPAIGN_FIRST)
-    for j in range(CAMPAIGN_N):
-        kinds.append(_pick(r, CAMPAIGN_MIX))
-        entry.append(w0 + int(r.choice(5, p=CAMPAIGN_WEEKS)))
-        src.append("campaign")
-    r = K.rng("rental")
-    w1 = K.widx(K.RENTAL_FIRST)
-    for j in range(RENTAL_N):
-        kinds.append("F")
-        entry.append(w1 + int(r.choice(2, p=[0.62, 0.38])))
-        src.append("rental")
-    kinds = np.array(kinds)
-    entry = np.array(entry)
-    src = np.array(src)
-    n = len(kinds)
+    # the county each signer claims: the county their first sheet was circulated in, with a real spill
+    order = np.lexsort((w.line_no, w.line_sheet, w.line_day))
+    srt = w.line_signer[order]
+    _, idx = np.unique(srt, return_index=True)
+    first = order[idx]
+    county = w.sheet_county[w.line_sheet[first]].astype(np.int64)
+    spill = r.random(ns) < 0.07
+    cshare = np.array([s for _, _, s in K.COUNTIES])
+    cshare = cshare / cshare.sum()
+    county[spill] = r.choice(len(K.COUNTIES), size=int(spill.sum()), p=cshare)
+    w.signer_county = county
+    w.signer_first_day = w.line_day[first]
 
-    trips = np.zeros((n, NW), dtype=np.int16)
-    hours = np.zeros((n, NW), dtype=np.float32)
-    tph = np.zeros(n)
-    personal = np.full(n, -99)
-    w_mean = np.zeros(n)
-    w_pret = np.zeros(n)
-    ret_years = {}                         # seasonal driver -> winters (by guarantee year) it came back for
-    for k in range(n):
-        t, e = kinds[k], int(entry[k])
-        r = K.rng("drv", k)
-        tph[k] = float(np.clip(r.normal(1.92, 0.24), 1.25, 2.75))
-        if t == "R":
-            mean = r.gamma(2.2, 6.6)
-            act = r.beta(6, 2)
-            haz = float(r.choice(R_HAZ[0], p=R_HAZ[1]))
-            span = NW - e
-            hz = np.where(np.isin(week_month[e:], (12, 1, 2)), haz * R_WINTER, haz)
-            u = r.random(span)
-            dead = np.where((u < hz) & (np.arange(span) > 2))[0]
-            end = e + (int(dead[0]) if len(dead) else span)
-            on = r.random(end - e) < act
-            trips[k, e:end] = np.where(on, r.poisson(mean * seas[e:end]), 0)
-        elif t == "W":
-            mean = r.gamma(6.0, 4.0)
-            w_mean[k] = mean
-            w_pret[k] = float(r.choice(W_RET[0], p=W_RET[1]))
-        elif t == "B":
-            mean = r.gamma(4.0, 4.0)
-            stop = K.widx(dt.date(2026, 4, 1)) + int(r.integers(-1, 3))
-            on = r.random(stop - e) < 0.9
-            trips[k, e:stop] = np.where(on, r.poisson(mean * seas[e:stop]), 0)
-        elif t == "F":
-            mean = r.gamma(8.0, 3.4)
-            stop = K.widx(K.RENTAL_END) + 1
-            on = r.random(stop - e) < 0.93
-            trips[k, e:stop] = np.where(on, r.poisson(mean * seas[e:stop]), 0)
-        elif t == "N":
-            mean = r.gamma(2.0, 5.0)
-            dur = 1 + int(r.geometric(0.15))
-            b = min(e + dur, NW)
-            on = r.random(b - e) < 0.75
-            trips[k, e:b] = np.where(on, r.poisson(mean * seas[e:b]), 0)
-        elif t == "I":
-            mean = r.gamma(2.0, 5.0)
-            state = r.random() < 0.5
-            u1, u2, u3, u4 = r.random(NW), r.random(NW), r.random(NW), r.random(NW)
-            pois = r.poisson(mean * seas)
-            for i in range(e, NW):
-                if state:
-                    if u1[i] < 0.08:
-                        state = False
-                elif u1[i] < I_ON:
-                    state = True
-                if state and u2[i] < 0.8:
-                    trips[k, i] = pois[i]
-                if u3[i] < 0.002:
-                    break
-    _seasonal(kinds, entry, trips, seas, week_dates, personal, w_mean, w_pret, ret_years)
-    for k in range(n):
-        r = K.rng("hours", k)
-        act_w = trips[k] > 0
-        if act_w.any():
-            noise = r.normal(1.0, 0.09, act_w.sum()).clip(0.7, 1.35)
-            hours[k, act_w] = (trips[k, act_w] / tph[k]) * noise
-    # a first trip is the first week with a trip; drivers whose spell produced no trip are dropped (never drove)
-    has = trips > 0
-    drove = has.any(1)
-    W.kind = kinds[drove]
-    W.entry = entry[drove]
-    W.src = src[drove]
-    W.trips = trips[drove]
-    W.hours = hours[drove]
-    W.tph = tph[drove]
-    W.personal = personal[drove]
-    old_to_new = np.cumsum(drove) - 1
-    W.ret_years = {int(old_to_new[k]): v for k, v in ret_years.items() if drove[k]}
-    W.n = int(drove.sum())
-    W.has = W.trips > 0
-    W.first_week = W.has.argmax(1)
-    W.week_dates = week_dates
-    W.week_month = week_month
-    _qualify(W)
-    return W
-
-
-def _seasonal(kinds, entry, trips, seas, week_dates, personal, w_mean, w_pret, ret_years):
-    """Each seasonal driver drives its first winter from its first trip to early April. Each later winter, every
-    driver who drove the winter before comes back at its own chance or stops for good, and the winter's returning
-    drivers come back on the trades' calendar (PROF, relative to the guarantee's first Monday): which driver comes
-    back which week changes from winter to winter, the calendar does not."""
-    NW = trips.shape[1]
-    ws = np.where(kinds == "W")[0]
-    gy = {}
-    for k in ws:
-        ed = week_dates[int(entry[k])]
-        gy[k] = ed.year + (1 if ed.month >= 10 else 0)
-        ret_years[k] = []
-    last = {k: gy[k] for k in ws}          # the guarantee year of each driver's latest winter
-    alive = set(int(k) for k in ws)
-    for y in range(min(gy.values()), 2028):
-        firsts = [int(k) for k in ws if gy[k] == y]
-        elig = sorted(k for k in alive if last[k] == y - 1 and gy[k] < y)
-        r = K.rng("returns", y)
-        u = r.random(len(elig))
-        back = [k for k, x in zip(elig, u) if x < w_pret[k]]
-        for k, x in zip(elig, u):
-            if x >= w_pret[k]:
-                alive.discard(k)
-        weeks = _deal(r, len(back))
-        for k, pw in zip(back, weeks):
-            personal[k] = pw
-        for k in firsts + back:
-            rr = K.rng("season", k, y)
-            start = int(entry[k]) if k in firsts else K.widx(K.first_monday(y)) + int(personal[k])
-            if k not in firsts:
-                ret_years[k].append((y, int(personal[k])))
-                last[k] = y
-            stop = K.widx(dt.date(y, 4, 1)) + int(rr.integers(-1, 4))
-            a, b = max(start, 0), min(stop, NW)
-            if b > a:
-                on = rr.random(b - a) < W_ACT
-                trips[k, a:b] = np.where(on, rr.poisson(w_mean[k] * seas[a:b]), 0)
-
-
-def window_trips(W, y):
-    a = K.widx(K.WINDOW[y][0])
-    return W.trips[:, a:a + 4].sum(1).astype(int)
-
-
-def _qualify(W):
-    """The payments system counts a window's completed trips per account; drivers within reach of 40 push to it."""
-    W.wtrips, W.qual = {}, {}
-    for y in K.GUARANTEE_YEARS:
-        T = window_trips(W, y)
-        r = K.rng("topup", y)
-        u = r.random(W.n)
-        near = (T >= TOPUP_LO) & (T < K.THRESHOLD)
-        push = near & (u < TOPUP_P)
-        if push.any():
-            a = K.widx(K.WINDOW[y][0])
-            # the extra trips land in the window's last week
-            add = (K.THRESHOLD - T[push]) + (r.random(push.sum()) < 0.35).astype(int)
-            W.trips[push, a + 3] += add.astype(np.int16)
-            W.hours[push, a + 3] += (add / W.tph[push]).astype(np.float32)
-            T = window_trips(W, y)
-        W.wtrips[y] = T
-        W.qual[y] = T >= K.THRESHOLD
-    W.has = W.trips > 0
-
-
-def monthly(W, values=None, rkey="split"):
-    """Split each week's trips (or online hours) into calendar months by the weekday profile: a week straddling a
-    month end sends each trip to the earlier month with the share of the week's weighted days that fall in it."""
-    V = W.trips if values is None else values
-    NW = V.shape[1]
-    mlist = K.months(K.LAUNCH, K.wdate(NW - 1) + dt.timedelta(days=6))
-    midx = {m: j for j, m in enumerate(mlist)}
-    out = np.zeros((V.shape[0], len(mlist)), dtype=np.float64 if values is not None else np.int32)
-    for i in range(NW):
-        d0 = K.wdate(i)
-        days = [d0 + dt.timedelta(days=j) for j in range(7)]
-        m_a = K.ym(days[0])
-        m_b = K.ym(days[6])
-        col = V[:, i]
-        if m_a == m_b:
-            out[:, midx[m_a]] += col
-            continue
-        p = float(sum(WEEKDAY_W[j] for j in range(7) if K.ym(days[j]) == m_a) / WEEKDAY_W.sum())
-        if values is None:
-            r = K.rng(rkey, i)
-            first = r.binomial(col.astype(np.int64), p)
-            out[:, midx[m_a]] += first
-            out[:, midx[m_b]] += col - first
+    # the registration ground, drawn per signer
+    u = r.random(ns)
+    ground = np.zeros(ns, dtype=np.int8)
+    edges, keys = [], []
+    acc = 0.0
+    for key, rate in (("NR", p["rate_nr"]), ("CA_PRE", p["rate_ca_pre"]), ("CA_MID", p["rate_ca_mid"]),
+                      ("AD", p["rate_ad"]), ("SG", p["rate_sg"]), ("NC", p["rate_nc"]), ("NQ", p["rate_nq"])):
+        acc += rate
+        edges.append(acc)
+        keys.append(key)
+    w.single_signer_rate = acc
+    lo = 0.0
+    ca_mid = np.zeros(ns, dtype=bool)
+    for key, hi in zip(keys, edges):
+        sel = (u >= lo) & (u < hi)
+        if key == "CA_PRE":
+            ground[sel] = CODE_IX["CA"]
+        elif key == "CA_MID":
+            ground[sel] = CODE_IX["CA"]
+            ca_mid |= sel
         else:
-            out[:, midx[m_a]] += col * p
-            out[:, midx[m_b]] += col * (1 - p)
-    return mlist, out
+            ground[sel] = CODE_IX[key]
+        lo = hi
+    # a signer cancelled in the 14 March run can only be struck on that ground if every line they signed
+    # came after the run; the rest were registered when they signed and the recorder counted them
+    md = (K.LIST_MAINTENANCE - K.WINDOW_OPEN).days
+    late_enough = w.signer_first_day > md
+    moved = ca_mid & ~late_enough
+    ground[moved] = 0
+    ca_mid &= late_enough
+    w.signer_ground = ground
+    w.signer_ca_mid = ca_mid
+
+    # registration identifiers. Arizona's statewide identifier is a nine digit number; the office's extract
+    # carries it as written. NR and NQ signers have no record in the voter file at all.
+    has_rec = ~np.isin(ground, [CODE_IX["NR"], CODE_IX["NQ"]])
+    vid = np.zeros(ns, dtype=np.int64)
+    m = int(has_rec.sum())
+    draw = r.integers(102_000_000, 499_000_000, size=int(m * 1.02), dtype=np.int64)
+    draw = np.unique(draw)
+    r.shuffle(draw)
+    assert len(draw) >= m
+    vid[has_rec] = draw[:m]
+    w.signer_vid = vid
+    w.signer_has_record = has_rec
+
+    # registration dates, cancellations and restorations
+    regday = -(r.integers(40, 8600, size=ns).astype(np.int64))
+    cancel = np.full(ns, 10 ** 6, dtype=np.int64)        # day offset from the window open, 10**6 is none
+    cancel_reason = np.zeros(ns, dtype=np.int8)          # 1 list maintenance, 2 moved out, 3 deceased, 4 request
+    cancel[w.signer_ca_mid] = md
+    cancel_reason[w.signer_ca_mid] = 1
+    pre = (ground == CODE_IX["CA"]) & ~w.signer_ca_mid
+    cancel[pre] = -(r.integers(30, 900, size=int(pre.sum())).astype(np.int64))
+    cancel_reason[pre] = r.choice([2, 3, 4], size=int(pre.sum()), p=[0.56, 0.27, 0.17])
+
+    # cancelled after the signature was given: valid at signing, cancelled in the July snapshot
+    clean = (ground == 0) & has_rec
+    pc = clean & (r.random(ns) < p["rate_post_cancel"])
+    span = (K.LATE_SNAPSHOT - K.WINDOW_OPEN).days
+    ix = np.where(pc)[0]
+    lo = w.signer_first_day[ix] + 1
+    drop = lo >= span
+    pc[ix[drop]] = False
+    ix, lo = ix[~drop], lo[~drop]
+    cancel[ix] = lo + (r.random(len(ix)) * (span - lo)).astype(np.int64)
+    cancel_reason[ix] = r.choice([2, 3, 4], size=len(ix), p=[0.52, 0.31, 0.17])
+    w.signer_post_cancel = pc
+
+    # cancelled and restored before signing: the July snapshot shows an active registration with a
+    # cancellation date on it, which is what a count of non-empty cancellation dates gets wrong
+    restore = np.full(ns, 10 ** 6, dtype=np.int64)
+    ri = clean & ~pc & (r.random(ns) < p["rate_reinstated"])
+    ix = np.where(ri)[0]
+    fd = w.signer_first_day[ix]
+    drop = fd < 18
+    ri[ix[drop]] = False
+    ix, fd = ix[~drop], fd[~drop]
+    # cancelled and restored inside the circulation window, so the December 2027 snapshot shows neither
+    cancel[ix] = 1 + (r.random(len(ix)) * (fd - 9)).astype(np.int64)
+    cancel_reason[ix] = 1
+    rlo = cancel[ix] + 4
+    restore[ix] = rlo + (r.random(len(ix)) * ((fd - 2) - rlo)).astype(np.int64)
+    w.signer_restored = ri
+
+    # cancelled after the signature was given and restored before the July snapshot: the snapshot shows an
+    # active registration whose cancellation date is later than the signature's own date
+    lr = clean & ~pc & ~ri & (r.random(ns) < p["rate_late_restored"])
+    ix = np.where(lr)[0]
+    fd = w.signer_first_day[ix]
+    room = span - 14 - fd
+    drop = room < 6
+    lr[ix[drop]] = False
+    ix, fd, room = ix[~drop], fd[~drop], room[~drop]
+    cancel[ix] = fd + 1 + (r.random(len(ix)) * (room - 4)).astype(np.int64)
+    cancel_reason[ix] = 1
+    rlo = cancel[ix] + 3
+    restore[ix] = rlo + (r.random(len(ix)) * (span - 2 - rlo)).astype(np.int64)
+    w.signer_late_restored = lr
+    w.signer_cancel = cancel
+    w.signer_cancel_reason = cancel_reason
+    w.signer_restore = restore
+    w.signer_regday = regday
+
+
+def _sample_layer(w, p, seed):
+    """The statutory five per cent random sample of the signature lines, and the disposition the recorders
+    and the division gave each sampled line."""
+    r = K.rng("sample", seed=seed)
+    draw = r.choice(K.LINES_FILED, size=K.SAMPLE_LINES, replace=False)
+    draw.sort()
+    w.sample = draw
+    w.sample_seq = np.argsort(np.argsort(r.permutation(K.SAMPLE_LINES)))   # the office's draw order
+
+    ground = w.signer_ground[w.line_signer[draw]]
+    lg = w.line_ground[draw]
+    code = np.where(lg > 0, lg, ground).astype(np.int8)
+
+    # the duplicate class. A sampled line is struck as a duplicate only where the same signer's earlier
+    # signature was drawn into the sample as well and is itself countable: the sample is the only part of
+    # the petition anybody keyed.
+    clean = (lg == 0) & (ground == 0)
+    pos = {int(j): i for i, j in enumerate(draw)}
+    by_signer = {}
+    for i in np.where(clean)[0]:
+        s = int(w.line_signer[draw[i]])
+        by_signer.setdefault(s, []).append(i)
+    dup_ix = []
+    for s, ixs in by_signer.items():
+        if len(ixs) < 2:
+            continue
+        ixs.sort(key=lambda i: (int(w.line_day[draw[i]]), int(w.sheet_serial[w.line_sheet[draw[i]]]),
+                                int(w.line_no[draw[i]])))
+        dup_ix.extend(ixs[1:])
+    dup_ix = np.array(sorted(dup_ix), dtype=np.int64)
+    code[dup_ix] = CODE_IX["DU"]
+    w.sample_code = code
+    w.dup_ix = dup_ix
+
+    # who determined each sampled line: its recorder, except the duplicates the recorder did not meet in its
+    # own queue and the lines whose transmitted copy was unreadable, which the division determined
+    rd = K.rng("determined", seed=seed)
+    det_sos = np.zeros(K.SAMPLE_LINES, dtype=bool)
+    det_sos[dup_ix] = rd.random(len(dup_ix)) >= p["county_found"]
+    il = np.where((code == CODE_IX["IL"]) & ~det_sos)[0]
+    pick = rd.choice(il, size=min(p["division_illegible"], len(il)), replace=False)
+    det_sos[pick] = True
+    w.det_sos = det_sos
+
+    # the full count's own duplicate burden, which nothing in the pack carries
+    full = 0
+    for block, k in ((w.multi_pairs, 2), (w.multi_trips, 3)):
+        if block.shape[0] == 0:
+            continue
+        sgn = w.line_signer[block[:, 0]]
+        okreg = w.signer_ground[sgn] == 0
+        m = (w.line_ground[block] == 0).sum(axis=1)
+        full += int(np.maximum(0, m - 1)[okreg].sum())
+    w.dup_full = full
+
+
+def simulate(seed=K.SEED, params=None):
+    p = dict(PARAMS)
+    if params:
+        p.update(params)
+    w = World()
+    w.seed = seed
+    w.params = p
+    _sheet_layer(w, p, seed)
+    _line_layer(w, p, seed)
+    _signer_layer(w, p, seed)
+    _sample_layer(w, p, seed)
+    return w
+
+
+# ------------------------------------------------------------------------------------------------- the figures
+def counts(w):
+    """The sampled counts every route starts from."""
+    code = w.sample_code
+    out = {k: int((code == CODE_IX[k]).sum()) for k in K.CODE_KEYS}
+    out["single"] = sum(out[k] for k in K.SINGLE_CODES)
+    out["dup"] = out["DU"]
+    out["valid_sampled"] = out["V"]
+    # the sampled lines a solver re-deriving registration from the December 2027 snapshot would not strike:
+    # cancelled in the March run, signed afterwards, so active in that snapshot
+    sl = w.signer_ca_mid[w.line_signer[w.sample]] & (code == CODE_IX["CA"])
+    out["vintage_slip"] = int(sl.sum())
+    out["dup_county"] = int((~w.det_sos[w.dup_ix]).sum())
+    out["dup_division"] = int((w.det_sos[w.dup_ix]).sum())
+    out["division_determined"] = int(w.det_sos.sum())
+    # sampled lines whose signer the July 2028 snapshot shows cancelled, and the subset of those the
+    # recorders counted because the cancellation came after the signature
+    sg = w.line_signer[w.sample]
+    canc = (w.signer_cancel[sg] < 10 ** 6) & (w.signer_restore[sg] == 10 ** 6)
+    out["snapshot_cancelled"] = int(canc.sum())
+    out["post_cancel_sampled"] = int((w.signer_post_cancel[sg]).sum())
+    out["restored_sampled"] = int((w.signer_restored[sg]).sum())
+    return out
+
+
+def project(single, dup_estimate):
+    return K.LINES_FILED - single * K.SAMPLE_DIVISOR - dup_estimate
+
+
+def routes(w):
+    """Every route a competent analyst takes on the deciding quantity, computed on the clean truth. The
+    reflex row is enumerated from election administration's and sampling's own vocabulary for a sample
+    projection rather than from the rungs beneath it."""
+    c = counts(w)
+    s, d = c["single"], c["dup"]
+    F, n = float(K.LINES_FILED), float(K.SAMPLE_LINES)
+    f = F / n                      # the sample's own factor, 20
+    pp = K.P_LINE * K.P_LINE
+    out = []
+    out.append(("R0", "every class at the sample's factor, registration re-derived off the December 2027 "
+                "snapshot", project(s - c["vintage_slip"], d * f), "rung 0"))
+    out.append(("R1", "every class at the sample's factor, the recorders' determinations as filed",
+                project(s, d * f), "rung 1"))
+    out.append(("R2", "every class at the sample's factor, both lines of a duplicate pair struck",
+                project(s, 2 * d * f), "reflex"))
+    out.append(("R3", "expanded county by county at each county's own factor and summed",
+                project(s, d * f), "reflex"))
+    signers = F - w.params["doubles"] - 2 * w.params["triples"]
+    out.append(("R4", "duplicates expanded on the signer base rather than the signature base",
+                project(s, d * (signers / (n * (signers / F)))), "reflex"))
+    out.append(("R5", "duplicates at twice the sampling fraction, either line of the pair drawn",
+                project(s, d / (2 * K.P_LINE)), "reflex"))
+    f1, f2 = n - 2 * d, d
+    chao = (f1 * f1) / (2 * f2) if f2 else float("inf")
+    out.append(("R6", "Chao1 unseen pairs off the sample's singletons and doubletons", project(s, chao),
+                "rival family"))
+    cs = c["dup_county"]
+    out.append(("R7", "the pair's inclusion probability on the division's own strikes only, the recorders' "
+                "strikes at the sample's factor", project(s, cs * f + (d - cs) / pp), "rung 2"))
+    out.append(("R8", "the pair's inclusion probability, registration re-derived off the July 2028 snapshot "
+                "so cancellations after the signature strike it", project(s + c["post_cancel_sampled"],
+                                                                         d / pp), "reflex"))
+    out.append(("R9", "the pair's inclusion probability, the square of the sampling fraction",
+                project(s, d / pp), "GOLDEN"))
+    return out
+
+
+def golden(w):
+    c = counts(w)
+    return project(c["single"], c["dup"] / (K.P_LINE * K.P_LINE))
+
+
+def default_path(w):
+    c = counts(w)
+    return project(c["single"] - c["vintage_slip"], c["dup"] * (float(K.LINES_FILED) / K.SAMPLE_LINES))
+
+
+def families(w):
+    """Convergence. The golden's own family first, then the families a competent solver builds instead."""
+    c = counts(w)
+    s, d = c["single"], c["dup"]
+    F, n = float(K.LINES_FILED), float(K.SAMPLE_LINES)
+    pp = K.P_LINE * K.P_LINE
+    own = [("the square of the sampling fraction", project(s, d / pp))]
+    hyper = K.P_LINE * ((n - 1) / (F - 1))
+    own.append(("the hypergeometric pair inclusion, p times (n-1)/(N-1)", project(s, d / hyper)))
+    for name, groups in (("the same estimator per county and summed", len(K.COUNTIES)),
+                         ("the same estimator per circulator firm and summed", len(K.FIRMS))):
+        parts, rem = [], d
+        for i in range(groups):
+            take = rem // (groups - i)
+            parts.append(take)
+            rem -= take
+        own.append((name, project(s, sum(x / pp for x in parts))))
+    own.append(("two steps: the partner seen at the fraction, then expanded at the sample's factor",
+                project(s, (d / K.P_LINE) * (F / n))))
+    rival = [("Chao1 unseen pairs off the sample's singletons and doubletons",
+              project(s, ((n - 2 * d) ** 2) / (2 * d)))]
+    r = K.rng("bootstrap", seed=w.seed)
+    draws = r.binomial(int(n), d / n, size=200) / pp
+    rival.append(("a bootstrap over the sampled lines, 200 draws, mean",
+                  project(s, float(draws.mean()))))
+    rival.append(("the linear expansion of every disposition class", project(s, d * (F / n))))
+    return own, rival
+
+
+def bin_metrics(w):
+    """(a) the decisive step's worth, (b) the defensible family spread, (c) the golden estimator's own 95 per
+    cent sampling interval, each in signatures and in units of the graded figure's bin."""
+    c = counts(w)
+    s, d = c["single"], c["dup"]
+    F, n = float(K.LINES_FILED), float(K.SAMPLE_LINES)
+    pp = K.P_LINE * K.P_LINE
+    gold = project(s, d / pp)
+    r0 = default_path(w)
+    r1 = project(s, d * (F / n))
+    cs = c["dup_county"]
+    r2 = project(s, cs * (F / n) + (d - cs) / pp)
+    own, _ = families(w)
+    spread = max(v for _, v in own) - min(v for _, v in own)
+    sd_dup = math.sqrt(d) / pp
+    sd_single = math.sqrt(w.single_rate_line * (1 - w.single_rate_line) / n) * F
+    cc = 1.96 * math.sqrt(sd_dup ** 2 + sd_single ** 2)
+    # the bias the all-doubles expansion carries because a registered triple signer's pair is seen with
+    # probability 3p^2 - p^3 rather than p^2
+    regt = int((w.signer_ground[w.line_signer[w.multi_trips[:, 0]]] == 0).sum()) if w.multi_trips.shape[0] else 0
+    bias = regt * (1 - K.P_LINE)
+    return {
+        "seed": w.seed, "golden": gold, "rung0": r0, "rung1": r1, "rung2": r2,
+        "a_full": r1 - gold, "a_last": r2 - gold, "b": spread, "c": cc,
+        "gap01": r0 - r1, "gap12": r1 - r2, "gap23": r2 - gold,
+        "clear_hi": K.BAND_HI - gold, "clear_lo": gold - K.BAND_LO,
+        "centre": K.cell_centre_distance(gold), "edge": K.bin_edge(gold),
+        "edge_r0": K.bin_edge(r0), "edge_r1": K.bin_edge(r1), "edge_r2": K.bin_edge(r2),
+        "triple_bias": bias, "dup": d, "single": s, "dup_full": w.dup_full,
+        "band_golden": K.band(gold), "band_default": K.band(r0), "band_rung1": K.band(r1),
+    }
+
+
+def attach_rates(w):
+    """The realised single-ground rate per sampled line, which (c) is read off."""
+    c = counts(w)
+    w.single_rate_line = c["single"] / float(K.SAMPLE_LINES)
+    return w
+
+
+def build(seed=K.SEED, params=None):
+    return attach_rates(simulate(seed, params))
