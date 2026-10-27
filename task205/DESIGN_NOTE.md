@@ -399,3 +399,51 @@ device in the same family as the texture is seen rather than silent.
   reproduces, with no coefficient anywhere in its path. Candidate (ii) is where I would look next, and the
   cycle-count candidate above is the version of it that fails, so the next attempt has to put the join's
   discovery and its remedy in two different places.
+- **Architecture 2 candidate A, criminology-justice / crime-incidence-hotspot-analysis: offences dated on
+  the day a patrol found them, with the owner's statutory inspection register narrowing each occurrence
+  interval exactly** (scratch `c1_screen.py`, `c1_dial.py`, `c1_bins.py`, 20 to 25 seeds a cell, five asset
+  classes, 200 sites, 18 months of daily data; graded to the nearest 5 offences). Refused on measurement at
+  stage 1, nothing cut. **The rung beneath the decisive one is rung 0, no construction at all:** counting
+  the offences whose DISCOVERY date falls in the quarter hits the golden's printed cell **18 of 25** at a
+  clearance of **1.046x** against the 1.15x floor, because discovery trails occurrence by one inspection gap
+  and a quarter's discoveries are therefore a quarter's occurrences. The cheapest licensed member of the
+  golden's own family, the midpoint of the NARROWED interval, hits **23 of 25** at **1.008x**. The field's own
+  aoristic allocation over the stated window (rung 1) and its midpoint (rung 2) are the only routes that
+  miss, 0 of 25 each at 1.879x and 2.017x, so **the ladder is inverted**: the crudest route is nearest the
+  golden and the field's own method is furthest. The dial is one-ended and no tuning repairs it: sweeping the
+  owner's actual inspection gap from 9 to 144 days, rung 0's hit rate falls 18, 16, 13, 7, 4 of 20 while rung
+  3's only falls 19, 16, 15, 13, 10 of 20 and the golden's own placement family opens from 0.41 to 3.49 bins,
+  so **0 of 5 cells** have both cheap routes missing. The bin arithmetic passes at the design cell ((a) 2.042
+  bins, (b) 0.820, (c) 0.467, ratio 1.587) and fails from f=2 outward (0.767, 0.140, 0.172), and (a) is never
+  the smallest rung gap only because the smallest gap is the golden to rung 3 at **0.108 bins**, which is the
+  kill restated. Dead twice over on the guard besides: `guard.py check` returns BLOCK on `test.same_puzzle`
+  (time, G12, quantity_figure) against task157, on `test.same_puzzle_older` against task192 and task482, and
+  on `test.same_driver_older` against task192, task201, task445 and task482, four earlier builds on one
+  signature; and the abstraction test puts the driver on **task487** verbatim in other nouns ("events found at
+  a scheduled inspection began at unrecorded times since the previous one"), which the lexical screen scored
+  at 0.08. `guard.py slots` adds that the aoristic family is declared closed on this cell in task182's note
+  and that the occurrence window is "taken by task184" in task200's.
+- **Architecture 2 candidate B, human-factors-ergonomics / safety-incident-error-analysis: a controlled-drug
+  balance error persists in the running balance until the next pharmacy reconciliation, so the count of errors
+  committed is the count of the level's own increments, read against the administration records' ampoule
+  counts** (scratch `c2_screen.py`, `c2_dial.py`, `c2_bins.py`, 20 to 25 seeds a cell, five make-ready hubs,
+  one quarter of two-person checks; graded to the nearest 5 errors). Refused on measurement at stage 1,
+  nothing cut. The separation is real and large: the level count files **223** errors naming Barlby against a
+  golden of **45** naming Netherwood, the incident count files 9, the page-net count 18, so (a) is **34.3
+  bins** against (b) **0.920** and (c) **1.136**, a ratio of **16.7**, and three of the four cheap routes hit
+  the golden's cell **0 of 25** and name its hub 8, 3 and 4 of 25. **The cheapest licensed neighbour kills it:**
+  counting the DISTINCT non-zero levels a register page shows, one group-by and one distinct count on a
+  shipped column, files 40.1 against the golden's 45.0, a clearance of **1.123x** under the 1.15x floor, and
+  names the golden's hub **19 of 25**. The reason is an identity rather than a tuning accident, since each
+  increment moves the level to a value the page has not shown before, so distinct levels and non-zero
+  increments are the same construction up to a revisited value. The dial confirms it: multiplying the check
+  frequency by 1, 2, 4, 8 and 16, that route names the golden's hub 14, 14, 13, 17 and 13 of 20 at clearances
+  of 1.131, 1.177, 1.134, 1.167 and 1.164x, **0 of 5 cells** passing, while the golden's own bias against the
+  filed estimand (errors committed, not errors observed) runs **12.8 per cent at f=1 and reaches 0.9 per cent
+  only at f=16**, which is the setting where the cheap route is at its best. So the parameter that makes the
+  golden honest is the parameter that hands the route over. `guard.py check` also returns BLOCK on
+  `test.same_puzzle` (population, G2, quantity_figure) against task141, on `test.same_puzzle_older` against
+  task148 and task173, and on `test.same_driver_older` against task120, task239, task264 and task269, with a
+  WARN that `grain_or_unit` often decides on reading a field; no axis ban fired on any of its eight redrawn
+  axes. task229's architecture 2 is the nearest insight on file at 0.06, a state seen only through checks that
+  record it just before setting it right.
