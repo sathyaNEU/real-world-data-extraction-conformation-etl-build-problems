@@ -105,6 +105,16 @@ def mins(x):
     return dt.timedelta(minutes=int(x))
 
 
+def clear(m):
+    """Minutes to a first headline correction, kept off the hour and the three-hour mark: a value within two minutes of
+    60 or 180 moves three minutes to the side it already sits on (the mark itself moves inside), so "within an hour"
+    and "more than three hours" read the same whether the mark itself is in or out."""
+    for mark in (60, 180):
+        if mark - 2 <= m <= mark + 2:
+            return mark - 3 if m <= mark else mark + 3
+    return m
+
+
 def build_cms(W, desks=None):
     """Every saved revision of every web-desk document first live in the base year (and never-live ones)."""
     docs = []
@@ -173,16 +183,17 @@ def build_cms(W, desks=None):
             if i in forced:
                 gap = (restore - go[i]).total_seconds() / 60
                 m = int(min(max(4, rng_m.lognormal(np.log(med), 0.6)), gap - 30))
+                m = clear(m) if clear(m) <= gap - 30 else clear(m) - 6
             else:
                 m = int(max(3, round(rng_m.lognormal(np.log(med), 0.75))))
-            hc_first[i] = m
+            hc_first[i] = clear(m)
         if d == "LOC-M":
             # one restored article whose headline is corrected after the restore, on its new document
             pool = [i for i in np.where(metro_restorable & can)[0] if i not in chosen]
             late = int(rng.choice(pool))
             chosen.append(late)
             gap = (restore - go[late]).total_seconds() / 60
-            hc_first[late] = int(gap + rng.integers(40, 160))
+            hc_first[late] = clear(int(gap + rng.integers(40, 160)))
             drop = [i for i in chosen if i not in forced and i != late][0]
             chosen.remove(drop)
             del hc_first[drop]
@@ -217,8 +228,43 @@ def build_cms(W, desks=None):
         readd_order = {i: r for r, i in enumerate(readd_pool)}
         readd_done = [0]
         truth = dict(chosen=list(chosen), hc_first=dict(hc_first), hc_second=dict(hc_second),
-                     entry=set(), entry_body=set(), sched={}, variants={}, lag={}, entry_lag={}, lead={}, readd={})
+                     entry=set(), entry_body=set(), sched={}, variants={}, lag={}, entry_lag={}, lead={}, readd={},
+                     cancel={}, resched={})
         W.cms_truth[d] = truth
+        # schedules an editor set back to draft before their time, the article published by hand later the same
+        # Brisbane day (aimed on two corrected stories a desk: one first corrected within the hour, one between the
+        # hour and three hours, each old scheduled time far enough back that timing from it puts the correction past
+        # three hours), and on stories never corrected at a base rate; and schedules set back to draft and set again,
+        # which the CMS published at the time set second (one corrected story a desk, and a base rate)
+        rng_c = rng_for(710 + k, P.CANCEL_SUBSEED[d])
+        cancel, resched = {}, set()
+        day_min = [int(((go[i] + P.AEST) - dt.datetime.combine((go[i] + P.AEST).date(), dt.time())).total_seconds() // 60)
+                   for i in range(n)]
+        room = [m_ - P.CANCEL_EARLIEST for m_ in day_min]     # how far back an old scheduled time can sit that day
+        open_ = [not is_lb[i] and not restored_flag[i] and i not in forced and not sched_type[i]
+                 and start_utc + dt.timedelta(days=2) <= go[i] <= end_utc - dt.timedelta(days=2) for i in range(n)]
+        mid = float(np.median(list(hc_first.values())))
+        for lo_, hi_, top in ((3, 55, 260), (64, 176, 330)):
+            pool_ = [i for i in sorted(hc_first) if open_[i] and i not in cancel and lo_ <= hc_first[i] <= hi_
+                     and room[i] >= max(30, 186 - hc_first[i])]
+            if lo_ > 60 and any(hc_first[i] < mid for i in pool_):
+                pool_ = [i for i in pool_ if hc_first[i] < mid]
+            if not pool_:
+                continue
+            i = int(rng_c.choice(pool_))
+            cancel[i] = int(rng_c.integers(max(30, 186 - hc_first[i]), min(room[i], top - hc_first[i]) + 1))
+        for i in range(n):
+            u = rng_c.random()
+            if open_[i] and i not in hc_first and room[i] >= 40 and u < P.CANCEL_BASE:
+                cancel[i] = int(rng_c.integers(20, min(room[i], 240) + 1))
+        twin = [i for i in sorted(hc_first) if sched_type[i] == "sched" and not is_lb[i] and not restored_flag[i]
+                and i not in forced]
+        if twin:
+            resched.add(int(rng_c.choice(twin)))
+        for i in range(n):
+            u = rng_c.random()
+            if sched_type[i] == "sched" and i not in hc_first and not is_lb[i] and u < P.RESCHED_BASE:
+                resched.add(i)
 
         # ------------------------------------------------------------ documents carried across at the migration
         n_mig = int(round(n * P.MIGRATION_LOOKBACK_DAYS / 365))
@@ -310,6 +356,9 @@ def build_cms(W, desks=None):
                         continue
                     p = cands[int(rng.integers(len(cands)))]
                     t_post = p["t"] + mins(rng.integers(8, 91))
+                    if kind == "ec":        # the entry's fix is the blog's first headline correction
+                        dur = int((t_post - g).total_seconds() // 60)
+                        t_post += mins(max(clear(dur) - dur, 0) + (6 if clear(dur) < dur else 0))
                     # the entry is saved first; the blog's note goes on in the same minute or a few minutes later
                     t_note = t_post + (mins(rng_e.integers(P.ENTRY_LAG_MINUTES[0], P.ENTRY_LAG_MINUTES[1] + 1))
                                        if i in lagged_lbs else dt.timedelta(0))
@@ -339,6 +388,33 @@ def build_cms(W, desks=None):
                 ev.sort(key=lambda e: (e.t, ORDER[e.kind]))
             if st:
                 truth["sched"][i] = st
+
+            # a schedule set back to draft before its time: drafted, scheduled, set back to draft, worked on after the
+            # time first set, published by hand at g; the article was a draft when that time came
+            if i in cancel and not st:
+                was = g - mins(cancel[i])
+                s_t = was - mins(rng_c.integers(30, 601))
+                c0 = s_t - mins(rng_c.integers(10, 121))
+                gap = int((was - s_t).total_seconds() // 60)
+                c_t = s_t + mins(rng_c.integers(3, gap - 2))
+                r_t = was + mins(rng_c.integers(3, cancel[i] - 2))
+                pre = [Ev(c0, "draft"), Ev(s_t, "scheduled", publish_at=was), Ev(c_t, "draft"), Ev(r_t, "draft")]
+                if int((g - r_t).total_seconds() // 60) > 8 and rng_c.random() < 0.4:
+                    pre.append(Ev(r_t + mins(rng_c.integers(2, int((g - r_t).total_seconds() // 60) - 3)), "draft"))
+                ev = [e for e in ev if not (e.kind == "draft" and e.t < g)] + pre
+                ev.sort(key=lambda e: (e.t, ORDER[e.kind]))
+                truth["cancel"][i] = (was, c_t, r_t)
+            # a schedule set back to draft and set again: the CMS published the article at the time set second
+            if i in resched and st == "sched":
+                s2 = [e for e in ev if e.kind == "scheduled"][0].t
+                s1 = s2 - mins(rng_c.integers(60, 601))
+                c_t = s1 + mins(rng_c.integers(3, int((s2 - s1).total_seconds() // 120)))
+                was = c_t + mins(rng_c.integers(3, int((s2 - c_t).total_seconds() // 60) - 2))
+                c0 = s1 - mins(rng_c.integers(10, 121))
+                ev = [e for e in ev if not (e.kind == "draft" and e.t < g)] + \
+                    [Ev(c0, "draft"), Ev(s1, "scheduled", publish_at=was), Ev(c_t, "draft")]
+                ev.sort(key=lambda e: (e.t, ORDER[e.kind]))
+                truth["resched"][i] = (was, c_t)
 
             # a story's headline correction saved in two steps: the corrected headline published on one live save
             # and the note, which says the headline was corrected, added on the next save a few minutes later
@@ -495,7 +571,7 @@ def build_cms(W, desks=None):
                     status = "live"
                     note = ""
                 elif e.kind == "auto":
-                    status = "draft"
+                    status = "autosave"     # exported as the live document's status, save type autosave
                     if e.variant == "A":
                         target.revs.append((t, status, hsha(D.id, hv + 1), note, None))
                     elif e.variant == "B":
@@ -570,10 +646,14 @@ def build_cms(W, desks=None):
 
 
 def cms_rows(docs):
+    """One row per saved revision. status is the document's status when the revision was saved; an autosave of a live
+    document's working copy is saved while the document is live, with save type autosave."""
     rows = []
     for D in docs:
         for k, (t, status, hs, note, pub) in enumerate(D.revs, start=1):
-            rows.append((D.id, D.desk, D.type, D.parent, k, fmt(t), status, fmt_local(pub) if pub else "", hs, note,
+            auto = status == "autosave"
+            rows.append((D.id, D.desk, D.type, D.parent, k, fmt(t), "live" if auto else status,
+                         "autosave" if auto else "save", fmt_local(pub) if pub else "", hs, note,
                          D.restored_from, D.migrated_from))
     rows.sort(key=lambda r: (r[5], r[0], r[4]))
     return rows
@@ -582,7 +662,8 @@ def cms_rows(docs):
 def read_corrections(rows, published=True, scheduled=True, entries=True, merge=True, migrated=False, posts=False,
                      never_live=False, blank_start=False, s1=True, s2=True, entry_any=False, entry_tol=None,
                      by_text=None, scheduled_always=False, lag=True, lag_struct=None, entry_from_entry=False,
-                     lead=True, readd=True, readd_desk=False, after_first=False, entry_after=0, clock="AEST"):
+                     lead=True, readd=True, readd_desk=False, after_first=False, entry_after=0, clock="AEST",
+                     autosaves=False, sched_blind=False, sched_min=False, sched_drafted=False):
     """Headline and text corrections per article document from cms_rows tuples.
 
     The golden reading (every flag at its default): a correction is a new note on a revision that publishes the
@@ -611,13 +692,21 @@ def read_corrections(rows, published=True, scheduled=True, entries=True, merge=T
     first); lag_struct pairs the same way. entry_after=N also pairs a blog's note with an entry whose headline changed
     up to N minutes after it (the field notes' pairing line read symmetrically). clock is the zone publish_at is read
     in: AEST (the editor's Brisbane wall clock, the golden), UTC (the saves' clock), or Sydney (AEDT in daylight
-    saving, 5 October 2025 to 5 April 2026)."""
+    saving, 5 October 2025 to 5 April 2026). autosaves=True takes every revision saved while the document was live as a
+    published state, the autosaves of its working copy included (the status column read alone).
+    A scheduled time is when the article went live only if the schedule was still in force when it came: the last save
+    at or before it is that scheduled revision (a schedule set back to draft before its time never fired, and the
+    article went live at its first live save). sched_blind=True takes the last scheduled revision's time whenever it
+    precedes the first live save, whatever came after it; sched_min=True takes the earliest scheduled time set;
+    sched_drafted=True reads any draft save after the first scheduled revision as a schedule that never fired."""
     from collections import defaultdict
     if entry_tol is None:
         entry_tol = P.ENTRY_WINDOW
     by_doc, info = defaultdict(list), {}
     for r in rows:
-        did, desk, typ, parent, rev, saved, status, pub, sha, note, rest, mig = r
+        did, desk, typ, parent, rev, saved, status, stype, pub, sha, note, rest, mig = r
+        if stype == "autosave" and not autosaves:
+            status = "autosave"     # a working copy, never published
         by_doc[did].append((int(rev), saved, status, pub, sha, note))
         info[did] = (desk, typ, parent, rest, mig)
     copy_of = {v[3]: k for k, v in info.items() if v[3]}
@@ -668,9 +757,18 @@ def read_corrections(rows, published=True, scheduled=True, entries=True, merge=T
         states = live
         if scheduled:
             sch = [r for r in chain if r[2] == "scheduled" and r[0] < live[0][0] and r[3]]
-            if sch and (t_set(sch[-1][3]) < go or scheduled_always):
-                go = t_set(sch[-1][3])
-                states = [sch[-1]] + live
+            if sch:
+                pick = min(sch, key=lambda r: t_set(r[3])) if sched_min else sch[-1]
+                p_t = t_set(pick[3])
+                before = [r for r in chain if r[0] < live[0][0] and t(r[1]) <= p_t]
+                fired = bool(before) and before[-1][2] == "scheduled" and before[-1][3] == pick[3]
+                if sched_blind or sched_min:
+                    fired = True
+                elif sched_drafted:
+                    fired = not any(r[2] == "draft" and sch[0][0] < r[0] < live[0][0] for r in chain)
+                if (p_t < go and fired) or scheduled_always:
+                    go = p_t
+                    states = [pick] + live
         seq = states if published else chain
         if blank_start:
             seq = [(0, seq[0][1], "", "", "", "")] + list(seq)

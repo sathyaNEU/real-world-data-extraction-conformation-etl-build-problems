@@ -207,8 +207,7 @@ def build_mixes(A, rng):
     S = dirichlet_rows(rng, 30 * base)
     monthly = np.array(["%s%02d" % (g, m) for g, m in zip(groups, A.month)])
     S = ipf_rows(S, A.w, monthly, {k: tg[k[0]] for k in set(monthly)})
-    inst = P.DESK[desk][5] or "app"
-    plat = dirichlet_rows(rng, np.tile(40 * np.array(P.PLAT_SPLIT[inst]), (n, 1)))
+    plat = dirichlet_rows(rng, np.tile(40 * np.array(P.PLAT_SPLIT[desk]), (n, 1)))
     if desk in P.APP:
         other = np.zeros((n, 5))
     else:

@@ -2,16 +2,18 @@
 
 Reads only the shipped files in target_dir. It imports nothing from the generator, reads no seed, parameter
 or side file, and recomputes every rung, every rival the change log refutes, every calibration outcome and
-every graded figure on its own code path (DuckDB over the parquet with the surfaces that carry the stored headline
-read from the field reference's canonical_headline row, a profile-likelihood prior fit, a walk of each document's
-published states in the CMS revisions that skips a note put back after a save that left it off when the CMS field
-notes say it is the earlier notice, and pairs a note on an unchanged headline with the bare headline change within
-the window the field notes give for a fix and its note (ten minutes) before it, else after it, else with an entry's
-headline change within that window either side, with a scheduled article live at the publish time its editor set
-on the newsroom's Brisbane clock, each panel release read on the earlier section list up to the release before the
-release log's first on the 2026 content taxonomy and on the 2026 list from that release on, a monthly release counted
-for the month its name follows and a rerun for the months its note names, each section's month taken from the latest
-such release).
+every graded figure on its own code path: DuckDB over the parquet with Bightline's own pages read from the brief's
+list of the pages a shipped headline replaces the old one on; a profile-likelihood prior fit; each page's
+click-through from the page analytics, a desk's pages named from the desk register; the change log's extra clicks
+against the holdback back-tested page by page; a walk of each document's published states in the CMS revisions (an
+autosave of a live article's working copy is not one) that skips a note put back after a save that left it off, as
+the corrections standard says, and pairs a note on an unchanged headline with the bare headline change within the
+standard's ten minutes before it, else after it, else with an entry's headline change within that window either
+side, with a scheduled article live at the time its editor set if it was still scheduled then (one set back to draft
+first went live when an editor published it), read on the Brisbane clock its column names; each
+panel release read on the earlier section list up to the release before the release log's first on the 2026 content
+taxonomy and on the 2026 list from that release on, a monthly release counted for the month its name follows and a
+rerun for the months its note names, each section's month taken from the latest such release.
 The CLAIMS block is the answer key it checks.
 """
 import csv
@@ -30,16 +32,14 @@ from openpyxl import load_workbook
 from scipy.optimize import minimize_scalar
 
 CLAIMS = {
-    "call": "CUL-N", "call_figure": 1_250_000, "runner_up": "LOC-M", "gap": 450_000,
-    "rung_leaders": ["POL-N", "SPT-M", "BUS-N", "LOC-M", "CUL-N"],
-    "extra": {"POL-N": 550_000, "SPT-M": 100_000, "BUS-N": 700_000, "SPT-N": 650_000, "LOC-M": 800_000,
-              "CUL-N": 1_250_000},
-    "readers": {"POL-N": 3_180_000, "SPT-M": 470_000, "BUS-N": 1_760_000, "SPT-N": 2_931_000, "LOC-M": 617_000,
-                "CUL-N": 1_412_000},
-    "visits": {"POL-N": 13_041_000, "SPT-M": 1_550_000, "BUS-N": 6_642_000, "SPT-N": 11_626_000, "LOC-M": 2_359_000,
-               "CUL-N": 5_052_000},
+    "call": "BUS-N", "call_figure": 500_000, "runner_up": "LOC-M", "runner_up_figure": 400_000, "gap": 100_000,
+    "rung_leaders": ["POL-N", "SPT-M", "BUS-N", "LOC-M", "CUL-N", "CUL-N", "BUS-N"],
+    "extra": {"POL-N": 300_000, "SPT-M": 50_000, "BUS-N": 500_000, "SPT-N": 300_000, "LOC-M": 400_000,
+              "CUL-N": 350_000},
     "median_minutes": {"POL-N": 86, "SPT-M": 55, "BUS-N": 89, "SPT-N": 47, "LOC-M": 102, "CUL-N": 119},
-    "backtest_hits": 7,
+    "within_hour": {"POL-N": 14, "SPT-M": 9, "BUS-N": 10, "SPT-N": 23, "LOC-M": 12, "CUL-N": 1},
+    "over_three_hours": {"POL-N": 7, "SPT-M": 2, "BUS-N": 6, "SPT-N": 2, "LOC-M": 6, "CUL-N": 5},
+    "backtest_hits": 7, "click_backtest_hits": 7,
     "bulletin_march": (11, 22),
 }
 SHORTLIST = ["POL-N", "SPT-M", "BUS-N", "SPT-N", "LOC-M", "CUL-N"]
@@ -173,56 +173,64 @@ def main(target):
     check("every app-desk test is owned by the headline squad",
           all(team.get(m[3]) == "AUD-HS" for m in meta.values() if desks[m[1]]["distribution"] == "app only"))
 
-    # ------------------------------------------------------------------ the surfaces that carry the stored headline
-    fr = find("audience_warehouse_field_reference").read_text(encoding="utf-8")
-    canon = re.search(r"\| `canonical_headline` \|([^|\n]*)\|", fr)
-    canon = canon.group(1).lower() if canon else ""
-    src_table = fr.split("| Source code | Surface |", 1)[1].split("\n\n", 1)[0]
-    src_codes = re.findall(r"^\| `([a-z_]+)` \|", src_table, re.M)
+    # ------------------------------------------------------------------ the pages a shipped headline sits on
+    from pypdf import PdfReader
+    brief = re.sub(r"\s+", " ", " ".join(pg.extract_text() or "" for pg in PdfReader(str(find("headline_squad_2027"))).pages))
+    own_s = re.search(r"wherever Bightline sets the headline: (.+?)\. (.+?) keep the headline stored at publication", brief)
+    own_txt, stored_txt = (own_s.group(1).lower(), own_s.group(2).lower()) if own_s else ("", "")
+    own_words = {"home_web": "home pages", "section_web": "section fronts", "feed_app": "app home feed",
+                 "section_app": "tabs", "related_links": "related-story links"}
     stored_words = {"search": "search", "discover": "discover", "partner_apps": "partner", "social": "social",
                     "newsletter": "newsletter", "alerts": "alert"}
-    # a source code carries the stored headline when the canonical_headline row names its surface; the rest are
-    # Bightline's own surfaces, where a tested headline shows
-    stored_named = {code for code, word in stored_words.items() if word in canon}
-    plat_codes = sorted(set(src_codes) - stored_named)
-    check("the field reference's canonical_headline row names every surface the verifier reads as carrying the "
-          "stored headline", bool(canon) and stored_named == set(stored_words), canon.strip())
-    check("every other source code in the field reference is a Bightline surface the row does not name",
-          plat_codes == sorted(PLATFORM) and set(stored_words) <= set(src_codes), str(plat_codes))
+    plat_codes = sorted(code for code, word in own_words.items() if word in own_txt)
+    check("the brief names every page a shipped headline replaces the old one on, and every surface that keeps the "
+          "stored headline", plat_codes == sorted(PLATFORM) and all(w_ in stored_txt for w_ in stored_words.values()),
+          own_txt[:120])
+    page_v, page_c = defaultdict(int), defaultdict(int)
+    for r in csv.DictReader(open(find("page_performance_monthly"), encoding="utf-8")):
+        page_v[r["page"]] += int(r["page_views"])
+        page_c[r["page"]] += int(r["article_clickthroughs"])
+    ctr = {k: page_c[k] / page_v[k] for k in page_v}
+
+    def page(d, src):
+        metro = desks[d]["edition"] == "Brisbane"
+        nm = desks[d]["desk_name"] if desks[d]["distribution"] == "app only" else desks[d]["vertical"]
+        return {"home_web": "bightline.com.au/brisbane/" if metro else "bightline.com.au/",
+                "section_web": "bightline.com.au/%s%s/" % ("brisbane/" if metro else "", nm.lower()),
+                "feed_app": "Home feed", "section_app": "Tab: %s%s" % ("Brisbane " if metro else "", nm),
+                "related_links": "Related stories (article pages)"}[src]
 
     # ------------------------------------------------------------------ the spine, through DuckDB
     con = duckdb.connect()
     con.execute("CREATE TABLE pv AS SELECT * FROM read_parquet('%s')" % str(spine).replace("'", "''"))
     tested = {m[2] for m in meta.values()}
-    won = {meta[x][2] for x in meta if any(sh for _, _, sh, _ in per_test[x])}
     con.execute("CREATE TABLE tested AS SELECT unnest(?::BIGINT[]) AS article_id", [sorted(tested)])
-    con.execute("CREATE TABLE won AS SELECT unnest(?::BIGINT[]) AS article_id", [sorted(won)])
-    plat_list = ",".join("'%s'" % s for s in plat_codes)
+    plat_list = ",".join("'%s'" % s_ for s_ in plat_codes)
     q = """
-      SELECT p.desk_code,
-             sum(pageviews) AS total,
+      SELECT p.desk_code, sum(pageviews) AS total,
              sum(pageviews) FILTER (WHERE source_code IN ({pl})) AS plat,
-             sum(pageviews) FILTER (WHERE source_code = 'partner_apps') AS part,
-             sum(pageviews) FILTER (WHERE t.article_id IS NOT NULL) AS t_all,
              sum(pageviews) FILTER (WHERE t.article_id IS NOT NULL AND source_code IN ({pl})) AS t_plat,
-             sum(pageviews) FILTER (WHERE t.article_id IS NOT NULL AND source_code <> 'partner_apps') AS t_np,
-             sum(pageviews) FILTER (WHERE w.article_id IS NOT NULL) AS w_all,
-             sum(pageviews) FILTER (WHERE w.article_id IS NOT NULL AND source_code IN ({pl})) AS w_plat,
-             sum(pageviews) FILTER (WHERE w.article_id IS NOT NULL AND source_code <> 'partner_apps') AS w_np,
-             count(DISTINCT p.article_id) AS n_art,
-             count(DISTINCT p.article_id) FILTER (WHERE t.article_id IS NOT NULL) AS n_tested,
              count(DISTINCT p.article_id) FILTER (WHERE published_date >= DATE '2025-10-01') AS n_win
-      FROM pv p LEFT JOIN tested t USING (article_id) LEFT JOIN won w USING (article_id)
-      GROUP BY p.desk_code""".format(pl=plat_list)
-    C = {r[0]: dict(zip(["total", "plat", "part", "t_all", "t_plat", "t_np", "w_all", "w_plat", "w_np", "n_art",
-                         "n_tested", "n_win"], [x or 0 for x in r[1:]])) for r in con.execute(q).fetchall()}
+      FROM pv p LEFT JOIN tested t USING (article_id) GROUP BY p.desk_code""".format(pl=plat_list)
+    C = {r[0]: dict(zip(["total", "plat", "t_plat", "n_win"], [x or 0 for x in r[1:]])) for r in con.execute(q).fetchall()}
+    by_src_all, by_src_unt = defaultdict(dict), defaultdict(dict)
+    for d, src, n_all, n_unt in con.execute("""
+            SELECT p.desk_code, source_code, sum(pageviews), sum(pageviews) FILTER (WHERE t.article_id IS NULL)
+            FROM pv p LEFT JOIN tested t USING (article_id) WHERE source_code IN ({pl}) GROUP BY 1, 2""".format(pl=plat_list)).fetchall():
+        by_src_all[d][src] = int(n_all)
+        by_src_unt[d][src] = int(n_unt or 0)
     check("spine totals equal the plan's 2027 clicks for every desk", all(C[d]["total"] == planned[d] for d in planned))
+    tie = defaultdict(int)
+    for d in by_src_all:
+        for src, n in by_src_all[d].items():
+            tie[page(d, src)] += n
+    check("every page's twelve months of article click-throughs equal the spine's own-page clicks that start there",
+          dict(tie) == dict(page_c), str({k: (tie[k], page_c.get(k)) for k in tie if tie[k] != page_c.get(k)}))
     dash = {}
     lines = open(dash_f, encoding="utf-8").read().splitlines()
     hdr = lines.index("vertical,tests_concluded,tests_with_variant_shipped,avg_winning_lift_pct")
     for r in csv.reader(lines[hdr + 1:]):
         dash[r[0]] = float(r[3]) / 100
-    # the dashboard against the archive
     lo, hi = dt.datetime(2025, 9, 30, 14), dt.datetime(2026, 9, 30, 14)
     okd = True
     for v, lift in dash.items():
@@ -232,51 +240,52 @@ def main(target):
     check("dashboard reproduces from the archive", okd)
 
     vert = {d: desks[d]["vertical"] for d in desks}
-    nweb = {d: len(web.get(d, [])) for d in desks}
-    shr_all = {d: np.mean([win(x, prior) for x in web[d]]) for d in desks if web.get(d)}
-    pooled = {d: sum(nweb[x] * shr_all[x] for x in shr_all if vert[x] == vert[d]) /
-              sum(nweb[x] for x in shr_all if vert[x] == vert[d]) for d in SHORTLIST}
-    lifts = {"dash": {d: dash[vert[d]] for d in SHORTLIST}, "raw": raw, "shr": shr, "pool": pooled}
+    unt = {d: C[d]["plat"] - C[d]["t_plat"] for d in SHORTLIST}
+    new = {d: sum(n * (1 - ctr[page(d, src)]) for src, n in by_src_unt[d].items()) / unt[d] for d in SHORTLIST}
 
-    def cellv(lb, d, base, net):
-        c = C[d]
-        b = {"all": c["total"], "np": c["total"] - c["part"], "plat": c["plat"]}[base]
-        f = {"none": 1.0,
-             "click": 1 - {"all": c["t_all"], "np": c["t_np"], "plat": c["t_plat"]}[base] / b,
-             "count": 1 - c["n_tested"] / c["n_art"],
-             "won": 1 - {"all": c["w_all"], "np": c["w_np"], "plat": c["w_plat"]}[base] / b}[net]
-        return lifts[lb][d] * b * f
+    # ------------------------------------------------------------------ the change log: the share kept, page by page
+    wb_c = load_workbook(changelog, read_only=True, data_only=True)
+    crow_ = list(wb_c["Embeddings"].iter_rows(values_only=True))
+    emb_ = [dict(zip(crow_[0], r)) for r in crow_[1:] if r[0] is not None]
+    kept = []
+    hits_c = 0
+    for e in emb_:
+        mix = by_src_all[e["desk_code"]]
+        share = sum(n * (1 - ctr[page(e["desk_code"], src)]) for src, n in mix.items()) / sum(mix.values())
+        won_ = e["planned_clicks"] * e["realised_holdback_lift_pct"] / 100
+        kept.append(e["extra_clicks_vs_holdback"] / won_)
+        hits_c += abs(won_ * share / e["extra_clicks_vs_holdback"] - 1) <= 0.02
+    check("back-test, clicks: planned clicks x realised lift x the share of each page's views with no article click "
+          "reproduces %d of 7 embeddings' extra clicks within 2%%" % CLAIMS["click_backtest_hits"],
+          hits_c == CLAIMS["click_backtest_hits"], str(hits_c))
+    avg_kept = float(np.mean(kept))
+    avg_hits = sum(abs(k_ / avg_kept - 1) <= 0.02 for k_ in kept)
+    check("back-test, clicks: one share for every embedding (their average) misses most of them", avg_hits <= 2,
+          "%d of 7 within 2%%" % avg_hits)
 
-    rungs = [("dash", "all", "none"), ("raw", "all", "none"), ("shr", "all", "none"), ("shr", "plat", "none"),
-             ("shr", "plat", "click")]
-    rv = []
-    for k, (lb, b, n) in enumerate(rungs):
-        vals = {d: cellv(lb, d, b, n) for d in SHORTLIST}
+    rungs = [{d: dash[vert[d]] * C[d]["total"] for d in SHORTLIST},
+             {d: raw[d] * C[d]["total"] for d in SHORTLIST},
+             {d: shr[d] * C[d]["total"] for d in SHORTLIST},
+             {d: shr[d] * C[d]["plat"] for d in SHORTLIST},
+             {d: shr[d] * unt[d] for d in SHORTLIST},
+             {d: shr[d] * unt[d] * avg_kept for d in SHORTLIST},
+             {d: shr[d] * unt[d] * new[d] for d in SHORTLIST}]
+    for k, vals in enumerate(rungs):
         o = sorted(vals, key=vals.get, reverse=True)
-        rv.append(vals)
         check("rung %d leader %s, margin at least 1.2" % (k, CLAIMS["rung_leaders"][k]),
               o[0] == CLAIMS["rung_leaders"][k] and vals[o[0]] / vals[o[1]] >= 1.2,
               "%s %.3f" % (o[0], vals[o[0]] / vals[o[1]]))
-    r4 = rv[4]
-    o4 = sorted(r4, key=r4.get, reverse=True)
-    check("call: %s at %s" % (CLAIMS["call"], CLAIMS["call_figure"]), o4[0] == CLAIMS["call"]
-          and r50k(r4[o4[0]]) == CLAIMS["call_figure"], "%.0f" % r4[o4[0]])
-    check("runner-up and gap", o4[1] == CLAIMS["runner_up"] and r50k(r4[o4[0]] - r4[o4[1]]) == CLAIMS["gap"],
-          "%s %.0f" % (o4[1], r4[o4[0]] - r4[o4[1]]))
+    r6 = rungs[6]
+    o6 = sorted(r6, key=r6.get, reverse=True)
+    check("call: %s at %s" % (CLAIMS["call"], CLAIMS["call_figure"]), o6[0] == CLAIMS["call"]
+          and r50k(r6[o6[0]]) == CLAIMS["call_figure"], "%.0f" % r6[o6[0]])
+    check("runner-up, its figure and the gap", o6[1] == CLAIMS["runner_up"] and r50k(r6[o6[1]]) == CLAIMS["runner_up_figure"]
+          and r50k(r6[o6[0]] - r6[o6[1]]) == CLAIMS["gap"], "%s %.0f %.0f" % (o6[1], r6[o6[1]], r6[o6[0]] - r6[o6[1]]))
     for d in SHORTLIST:
-        check("extra clicks %s" % d, r50k(r4[d]) == CLAIMS["extra"][d], "%.0f" % r4[d])
-    grid_cul = []
-    for lb in lifts:
-        for b in ("all", "np", "plat"):
-            for n in ("none", "click", "count", "won"):
-                vals = {d: cellv(lb, d, b, n) for d in SHORTLIST}
-                if max(vals, key=vals.get) == "CUL-N":
-                    grid_cul.append((lb, b, n))
-    check("only the answer cell and its vertical-pooled twin name Culture across the 48-cell grid",
-          sorted(grid_cul) == [("pool", "plat", "click"), ("shr", "plat", "click")], str(grid_cul))
-    unt = {d: 1 - C[d]["t_plat"] / C[d]["plat"] for d in SHORTLIST}
-    check("dominance over Local-metro at least 1.2",
-          (unt["CUL-N"] / unt["LOC-M"]) / (rv[3]["LOC-M"] / rv[3]["CUL-N"]) >= 1.2)
+        check("extra clicks %s" % d, r50k(r6[d]) == CLAIMS["extra"][d], "%.0f" % r6[d])
+    check("dominance over Culture·national and Local·metro at least 1.2 (the share new to Bightline over the lead carried "
+          "into the last step)", all((new["BUS-N"] / new[x]) / (rungs[4][x] / rungs[4]["BUS-N"]) >= 1.2
+                                     for x in ("CUL-N", "LOC-M")))
 
     # ------------------------------------------------------------------ the change log back-test
     wb = load_workbook(changelog, read_only=True, data_only=True)
@@ -354,68 +363,13 @@ def main(target):
           all(t3[k] == t6[k] for k in ("tests_run", "avg_winning_lift_pct", "distribution"))
           and 1.95 <= real[3] / real[6] <= 2.1, "%.3f" % (real[3] / real[6]))
 
-    # ------------------------------------------------------------------ readers and visits: each release on its own list
-    wb = load_workbook(panelwb, read_only=True, data_only=True)
-    hist = list(wb["Section history"].iter_rows(values_only=True))[1:]
-    rlog = [r for r in list(wb["Release log"].iter_rows(values_only=True))[1:] if r[0]]
-    rel = {r[0]: r[1] for r in rlog}
-    first_2026 = [r[1] for r in rlog if (r[2] or "").startswith("First release on the 2026 content taxonomy")][0]
-    later_list = {(h[0], h[1]): (h[2], h[5]) for h in hist if h[4] is None}
-    earlier_list = {(h[0], h[1]): (h[2], h[5]) for h in hist if h[4] is not None}
-    mnames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October",
-              "November", "December"]
-
-    def months_of(name, note):
-        """A monthly release publishes the month before the one its name carries; a rerun publishes the months its
-        note names ("November 2025 to February 2026", "April, May and June 2026")."""
-        note = note or ""
-        m = re.search(r"(%s) (\d{4}) to (%s) (\d{4})" % ("|".join(mnames), "|".join(mnames)), note)
-        if m:
-            y, k = int(m.group(2)), mnames.index(m.group(1)) + 1
-            y2, k2 = int(m.group(4)), mnames.index(m.group(3)) + 1
-            out = set()
-            while (y, k) <= (y2, k2):
-                out.add("%d-%02d" % (y, k))
-                y, k = (y, k + 1) if k < 12 else (y + 1, 1)
-            return out
-        m = re.search(r"Restated ((?:(?:%s)(?:, | and ))+(?:%s)) (\d{4})" % ("|".join(mnames), "|".join(mnames)), note)
-        if m:
-            return {"%s-%02d" % (m.group(2), mnames.index(x) + 1) for x in re.findall("|".join(mnames), m.group(1))}
-        y, k = 2000 + int(name[1:3]), int(name[4:6])
-        y, k = (y, k - 1) if k > 1 else (y - 1, 12)
-        return {"%d-%02d" % (y, k)}
-    pub_months = {r[0]: months_of(r[0], r[2]) for r in rlog}
-    best = {}
-    off_log = 0
-    for r in csv.DictReader(open(panel_f, encoding="utf-8")):
-        if r["period"] not in pub_months[r["release"]]:
-            off_log += 1        # a month the release's file carried but the release did not publish
-            continue
-        lst = later_list if rel[r["release"]] >= first_2026 else earlier_list
-        name, desk = lst[(r["site_code"], int(r["section_code"]))]
-        key = (r["period"], r["site_code"], name)
-        if key not in best or rel[r["release"]] > rel[best[key][0]["release"]]:
-            best[key] = (r, desk)
-    monthly, monthly_v = defaultdict(dict), defaultdict(dict)
-    for (period, site, name), (r, desk) in best.items():
-        if desk:
-            monthly[desk][period] = int(r["unique_audience"])
-            monthly_v[desk][period] = int(r["visits"])
-    readers = {d: statistics.mean(monthly[d].values()) for d in SHORTLIST}
-    visits = {d: statistics.mean(monthly_v[d].values()) for d in SHORTLIST}
-    check("panel rows for months their release did not publish are set aside (the July file's April to June rows)",
-          off_log == 27, str(off_log))
-    for d in SHORTLIST:
-        check("readers %s (12 months)" % d, len(monthly[d]) == 12 and round(readers[d], -3) == CLAIMS["readers"][d],
-              "%.1f" % readers[d])
-        check("visits %s (12 months)" % d, len(monthly_v[d]) == 12 and round(visits[d], -3) == CLAIMS["visits"][d],
-              "%.1f" % visits[d])
-
     # ------------------------------------------------------------------ corrections: a walk of the published states
     docs = defaultdict(list)
     info = {}
     for r in csv.DictReader(open(cms_f, encoding="utf-8")):
-        docs[r["doc_id"]].append((int(r["revision"]), r["saved_at"], r["status"], r["publish_at"], r["headline_sha1"],
+        # an autosave of a live article's working copy is saved while the article is live and publishes nothing
+        status = "autosave" if r["save_type"] == "autosave" else r["status"]
+        docs[r["doc_id"]].append((int(r["revision"]), r["saved_at"], status, r["publish_at_aest"], r["headline_sha1"],
                                   r["correction_note"]))
         info[r["doc_id"]] = (r["desk_code"], r["doc_type"], r["parent_doc"], r["restored_from_doc"], r["migrated_from"])
     copy_of = {v[3]: k for k, v in info.items() if v[3]}
@@ -431,30 +385,25 @@ def main(target):
         for a, b in zip(shown, shown[1:]):
             if b[4] != a[4]:
                 entry_fix[blog].add(ts(b[1]))
-    # the CMS field notes: a fix and its note go on the same save, or on two saves within ten minutes of each other
-    notes_f = find("cms_revisions_export_fields")
-    notes_txt = re.sub(r"\s+", " ", notes_f.read_text())
-    pair = re.search(r"on two saves within (\w+) minutes of each other", notes_txt)
-    check("the CMS field notes state the window a fix and its note are saved within", pair is not None)
-    put_back = "A note put back after a save that left it off is the earlier notice, not a new correction" in notes_txt
-    check("the CMS field notes say a note put back after a save that left it off is not a new correction", put_back)
-
-    # SF12 and SF13, the two conventions the portal's determinism judges found open, recomputed here from the
-    # shipped text alone: the going-live event and the clock publish_at is read on.
-    check("SF12 the CMS field notes say a save recorded live publishes the document, a scheduled revision publishes "
-          "it at its publish_at, and the document first went live when it was first published either way",
-          "A save recorded live publishes the document, and a scheduled revision publishes it at its publish_at; "
-          "the document first went live when it was first published either way." in notes_txt)
-    check("SF13 the CMS field notes put publish_at on Brisbane time and saved_at on UTC, so the two clocks are named "
-          "on the fields themselves",
-          "the time the editor set for the CMS to publish the document, Brisbane time, ten hours ahead of the "
-          "save times above." in notes_txt
-          and "saved_at Time of the save, UTC, to the minute." in notes_txt)
-    fieldref_txt = re.sub(r"\s+", " ", find("audience_warehouse_field_reference").read_text())
-    check("SF14 the field reference says the archive holds one concluded test for every headline put under "
-          "test, whether or not a variant was shipped, which closes the reading that nets only the articles "
-          "that shipped a winner",
-          'one for every headline put under test, whether or not a variant was shipped in the end.' in fieldref_txt)
+    # the corrections standard: a fix and its note on one save or on saves up to ten minutes apart; a note put back is
+    # the original correction; time to correction from when the article was first published
+    std = re.sub(r"\s+", " ", " ".join(pg.extract_text() or "" for pg in PdfReader(str(find("editorial_standards"))).pages))
+    pair = re.search(r"on the same save or on a save no more than (\w+) minutes before or after it", std)
+    check("the corrections standard states the window a fix and its note are saved within", pair is not None)
+    put_back = "that is the original correction, not a new one" in std
+    check("the corrections standard says a note put back after a save that dropped it is the original correction", put_back)
+    check("SF19 the corrections standard says an autosave of an editor's working copy publishes nothing",
+          "An autosave of an editor's working copy publishes nothing" in std)
+    check("SF12 the corrections standard times a correction from the article's first publication, by a live save or at "
+          "the scheduled time the CMS published it",
+          "when it was first published, by a live save or, for a scheduled article, when the CMS published it at its "
+          "scheduled time" in std)
+    hdr_cms = open(cms_f, encoding="utf-8").readline().strip().split(",")
+    check("SF13 the CMS export names Brisbane time on the scheduled time's column, and its save times are UTC",
+          "publish_at_aest" in hdr_cms and "saved_at" in hdr_cms)
+    check("SF14 the brief has the squad take the headlines a desk has not put under test, and every headline put under "
+          "test recorded whether or not a variant ships",
+          "It takes the headlines the desk has not put under test itself" in brief and "whether or not a variant ships" in brief)
     # SF11's data half, independent of the brief's wording: the realised impression-weighted rate across every
     # package of a test is strictly below the shipped variant's, so crediting the under-test hours at the mixture
     # rate is strictly lower than crediting them at the winning lift, and the brief's sentence is load-bearing.
@@ -478,6 +427,7 @@ def main(target):
           "brief names and that sentence is load-bearing" % (len(mix_below), kept_control),
           bool(mix_below) and all(mix_below), "%d of %d below" % (sum(mix_below), len(mix_below)))
     W_ = dt.timedelta(minutes={"five": 5, "ten": 10, "fifteen": 15, "twenty": 20}[pair.group(1)])
+    # (the scheduled time's clock is the one its column names: Brisbane, ten hours ahead of the UTC saves)
     count, arts, mins, march = defaultdict(int), defaultdict(int), defaultdict(list), [0, 0]
     m_lo, m_hi = dt.datetime(2026, 2, 28, 14), dt.datetime(2026, 3, 31, 14)      # March 2026, AEST
     for did, revs in docs.items():
@@ -497,8 +447,12 @@ def main(target):
         # every article the CMS published goes live minutes before its first live save
         set_at = dt.datetime.strptime(sched[-1][3], "%Y-%m-%dT%H:%M") - dt.timedelta(hours=10) if sched and sched[-1][3] \
             else None
+        # the CMS publishes at that time only what is still scheduled then: the last save up to it must be that schedule
+        # (an article set back to draft before its time went live when an editor published it)
         if set_at is not None and set_at < golive:
-            states, golive = [sched[-1]] + live, set_at
+            last = [r for r in chain if r[0] < live[0][0] and ts(r[1]) <= set_at][-1]
+            if last[2] == "scheduled" and last[3] == sched[-1][3]:
+                states, golive = [sched[-1]] + live, set_at
         first, bare = None, None        # bare: a headline change published with no new note
         shown, taken = {states[0][5]}, set()
         for i in range(1, len(states)):
@@ -543,6 +497,11 @@ def main(target):
         check("median minutes to first headline correction %s" % d,
               len(mins[d]) % 2 == 1 and statistics.median(mins[d]) == CLAIMS["median_minutes"][d],
               "%s over %d articles" % (statistics.median(mins[d]), len(mins[d])))
+        check("first corrections within an hour and after more than three hours %s" % d,
+              sum(m_ <= 60 for m_ in mins[d]) == CLAIMS["within_hour"][d]
+              and sum(m_ > 180 for m_ in mins[d]) == CLAIMS["over_three_hours"][d]
+              and not any(58 <= m_ <= 62 or 178 <= m_ <= 182 for m_ in mins[d]),
+              "%d %d" % (sum(m_ <= 60 for m_ in mins[d]), sum(m_ > 180 for m_ in mins[d])))
     bull = find("standards_bulletin")
     with zipfile.ZipFile(bull) as z:
         text = re.sub(r"<[^>]+>", " ", z.read("word/document.xml").decode("utf-8"))
@@ -555,17 +514,6 @@ def main(target):
     aest = dt.timedelta(hours=10)
     handover = dt.datetime(2026, 10, 16, 9, 0)
     mt = {n: dt.datetime(1970, 1, 1) + dt.timedelta(seconds=p.stat().st_mtime) + aest for n, p in files.items()}
-    log = list(csv.DictReader(open(find("audience_data_export_log"), encoding="utf-8")))
-
-    def nrows(n):
-        if n.endswith(".parquet"):
-            return con.execute("SELECT count(*) FROM pv").fetchone()[0]
-        with open(files[n], encoding="utf-8") as fh:
-            return sum(1 for _ in fh) - 1
-    check("every run in the export log names a shipped file, with that file's row count and write time",
-          log and all(r["file"] in files and int(r["rows"]) == nrows(r["file"])
-                      and mt[r["file"]] == dt.datetime.strptime(r["run_at_aest"], "%Y-%m-%d %H:%M") for r in log),
-          str([r["file"] for r in log]))
     last_cms = max(r["saved_at"] for r in csv.DictReader(open(cms_f, encoding="utf-8")))
     last_test = max(m[5] for m in meta.values())
     last_pub = con.execute("SELECT max(published_date) FROM pv").fetchone()[0]

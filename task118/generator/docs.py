@@ -238,9 +238,22 @@ def charter_blocks():
         ("h", "What the squad is for"),
         ("p", "The headline squad is six people: a squad lead, three headline editors, a producer and a data analyst. "
               "Each January it moves to one desk for the calendar year, tests that desk's headlines and ships each "
-              "winning headline. The squad is judged on incremental article clicks in the twelve months after it "
-              "embeds, counted at the owning desk from each article's publication, the hours its headline is under "
-              "test included. Clicks in those hours count at the winning headline's lift."),
+              "winning headline. It takes the headlines the desk has not put under test itself; every headline a desk "
+              "or the squad puts under test is recorded in the test archive when the test concludes, whether or not a "
+              "variant ships."),
+        ("h", "How the squad is judged"),
+        ("p", "The squad is judged the way Experimentation closes each embedding: on the article clicks Bightline's "
+              "readers make in its year that they would not have made without it, measured against a reader holdback "
+              "that keeps every original headline. Clicks count from each article's publication, the hours its "
+              "headline is under test included. Clicks in those hours count at the winning headline's lift. "
+              "Experimentation scores each test by its winning lift: the shipped headline's click-through over the "
+              "control's, minus one, and nil where the control is kept."),
+        ("p", "A shipped headline replaces the old one wherever Bightline sets the headline: the home pages, the section "
+              "fronts, the app home feed and tabs, and the related-story links on article pages. Search results, "
+              "Discover-style cards, partner apps, social link cards, newsletters and alerts keep the headline stored at "
+              "publication."),
+        ("p", "The 2027 audience plan holds every desk at its clicks in the twelve months to September 2026. New "
+              "initiatives for 2027, the squad's year included, are planned on top of those figures."),
         ("h", "Where it has been"),
         ("p", "Since 2019 the squad has worked with the app desks: Games, Wellness, Puzzles and Recipes. Its 2026 "
               "year with Puzzles finishes on Friday 18 December. Experimentation keeps the change log of closed "
@@ -267,79 +280,10 @@ def charter_blocks():
     ]
 
 
-# ---------------------------------------------------------------------------------- the field reference (dictionary)
-
-def field_reference_md():
-    src_rows = "\n".join("| `%s` | %s |" % (k, P.SOURCE_DESC[k]) for k in P.SOURCES)
-    return """# Audience warehouse: field reference
-
-Maintained by Audience data (Natalie Benjamin). Revised 2 October 2026.
-
-This reference covers the warehouse tables the audience team extracts for planning work. Each extract
-in the planning folder carries the fields described here, in the same names.
-
-## Articles
-
-| Field | Meaning |
-|---|---|
-| `article_id` | Bightline article number. One per published article or live blog. Web articles share one sequence across both editions; app items are numbered in their own block. |
-| `desk_code` | The owning desk, recorded at publication. An article has one owning desk. Codes are listed in the desk register. |
-| `published_date` | Date the article was first published, Australian Eastern Standard Time. |
-| `canonical_headline` | The headline stored with the article at publication. It is the headline carried in the article's RSS and partner feeds, its search and social metadata, Discover-style cards, newsletters and alerts. Not included in the pageview extracts. |
-
-## Pageviews by source and age
-
-One row per article, source surface and age band with at least one pageview in the period.
-
-| Field | Meaning |
-|---|---|
-| `article_id`, `desk_code`, `published_date` | As above. |
-| `source_code` | The surface the reader clicked to reach the article (codes below). Every article pageview carries one source code. A typed or bookmarked visit lands on a home page, which is not an article pageview. |
-| `age_band` | The article's age when the pageview happened: `0-2h`, `2-6h`, `6-24h`, `1-3d`, `3-7d`, `7d+`. |
-| `pageviews` | Article pageviews. A click on a link to an article counts when the article page loads; in planning papers clicks and pageviews are the same measure. |
-
-| Source code | Surface |
-|---|---|
-""" + src_rows + """
-
-## Headline tests
-
-One row per package of each concluded test. A package is one headline shown in the test: the control or a
-variant.
-
-| Field | Meaning |
-|---|---|
-| `test_id` | Test reference. |
-| `engine` | `app`: the app testing engine, in use since 2019. `web`: the web CMS testing engine, whose history begins at the CMS migration on 1 October 2025. |
-| `desk_code`, `article_id` | The article the test ran on and its owning desk. |
-| `owner_staff_id` | Staff id of the person who created the test. |
-| `started_at`, `concluded_at` | UTC. |
-| `package_id`, `variant` | `control` is the headline the article was published with; `B` to `E` are the alternatives. |
-| `impressions` | Times the package's headline was shown in a test slot. |
-| `clicks` | Clicks on the package's headline in the test. |
-| `shipped` | `Y` on the one package whose headline stayed live after the test; that is the control when no variant was shipped. |
-
-Winning lift, as reported on the experimentation dashboard, is the shipped package's click-through rate over the
-control's, minus one, and zero when the control is kept. The archive holds concluded tests only, one for every
-headline put under test, whether or not a variant was shipped in the end.
-
-## Desk register
-
-| Field | Meaning |
-|---|---|
-| `desk_code`, `desk_name` | Desk code and name. |
-| `vertical` | The dashboard vertical the desk reports under. |
-| `edition` | `national`, `Brisbane` or `app`. |
-| `distribution` | `web and app`, or `app only`. App-only items have no web URL, feed entry, search listing, alert or newsletter. |
-"""
-
-
-# ---------------------------------------------------------------------------------- standards (ask path)
-
 def policy_blocks():
     return [
         ("title", "Corrections"),
-        ("meta", "Bightline News editorial standards, section 7 | Version 3.2, effective 1 February 2025 | "
+        ("meta", "Bightline News editorial standards, section 7 | Version 3.3, effective 1 October 2025, amended 27 November 2025 | "
                  "Owner: Standards editor"),
         ("space", 3),
         ("h", "7.1 Principle"),
@@ -350,13 +294,19 @@ def policy_blocks():
               "confirmed by the desk editor or the duty editor. Changes of style, spelling of common words or "
               "updates to a developing story are not corrections."),
         ("h", "7.3 How a correction is made"),
-        ("p", "The editor making the correction fixes the error and adds a correction note in the CMS. The note "
-              "appears at the foot of the article. Where a second error is found later, a further note is added "
-              "above the first."),
+        ("p", "The editor making the correction fixes the error and adds a correction note in the CMS, on the same "
+              "save or on a save no more than ten minutes before or after it. An autosave of an editor's working copy "
+              "publishes nothing: readers see the fix and the note once the editor saves them. The note appears at the foot of the "
+              "article and stays on every later version until an editor clears it; where a save drops a note and a "
+              "later save puts the same note back, that is the original correction, not a new one. Where a second "
+              "error is found later, a further note is added above the first."),
         ("h", "7.4 Headlines"),
-        ("p", "A headline correction is logged on the revision that publishes the corrected headline."),
+        ("p", "A headline correction is logged on the version that publishes the corrected headline. Time to "
+              "correction runs from when the article went live: when it was first published, by a live save or, for "
+              "a scheduled article, when the CMS published it at its scheduled time."),
         ("h", "7.5 Live blogs"),
-        ("p", "An error in a live blog entry is fixed in the entry and the correction note is added to the live blog."),
+        ("p", "An error in a live blog entry is fixed in the entry and the correction note is added to the live "
+              "blog. The correction is the live blog's: an entry is part of its live blog, not an article of its own."),
         ("h", "7.6 Speed"),
         ("p", "Headline errors are fixed as soon as they are confirmed. Duty editors aim to confirm a reported "
               "headline error within the hour."),
@@ -365,47 +315,11 @@ def policy_blocks():
               "after a legal settlement or where the note itself was wrong."),
         ("h", "7.8 Reporting"),
         ("p", "The standards desk reports corrections to the editor-in-chief each month in the standards bulletin, "
-              "and to the board each quarter."),
+              "and to the board each quarter. Articles moved across from the previous CMS at the 1 October 2025 "
+              "migration went live in that system, so their correction times are not reported from the new CMS. "
+              "Where the Brisbane instance restore of 14 November 2025 recreated a document, the recreated copy and "
+              "the document it was recreated from are one article."),
     ]
-
-
-def cms_fields_txt():
-    return """Web CMS revision export: field notes
-File: cms_revisions_web_desks_2025-10_2026-09.csv
-Prepared by Audience data at the request of Standards, 16 October 2026
-
-Scope
-One row per saved revision of each web-desk document that first went live between 1 October 2025 and
-30 September 2026 (AEST), and of documents first saved in that period that never went live. Web desks:
-Politics·national, Business·national, Sport·national, Culture·national, Politics·metro,
-Sport·metro and Local·metro. The national and Brisbane CMS instances are combined. Saves after
-30 September 2026 are not included.
-
-Fields
-doc_id             CMS document id.
-desk_code          Owning desk (desk register codes).
-doc_type           story, liveblog or post. A post is an entry in the live blog named in parent_doc,
-                   with a headline of its own.
-parent_doc         For posts, the doc_id of the live blog.
-revision           Revision number within the document, from 1.
-saved_at           Time of the save, UTC, to the minute.
-status             Status recorded with the save: draft, scheduled, live or withdrawn. A save recorded live
-                   publishes the document, and a scheduled revision publishes it at its publish_at; the
-                   document first went live when it was first published either way.
-publish_at         On a scheduled revision, the time the editor set for the CMS to publish the document,
-                   Brisbane time, ten hours ahead of the save times above.
-headline_sha1      First 12 characters of the SHA-1 of the headline text at that revision.
-correction_note    Text of the correction notice shown with the document at that revision. The CMS copies the
-                   note to every later revision until an editor clears it. A note put back after a save that
-                   left it off is the earlier notice, not a new correction. A fix and its note go on the same
-                   save, or on two saves within ten minutes of each other.
-restored_from_doc  Set on documents recreated when the Brisbane instance was restored on 14 November 2025;
-                   holds the doc_id of the document it was recreated from.
-migrated_from      Set on documents moved from the previous CMS at the migration on 1 October 2025; holds the
-                   previous system's document id.
-
-Headline and body text are not part of this export.
-"""
 
 
 def bulletin_paras(h, b):
@@ -491,10 +405,11 @@ Managing editor
 
 On Fri, 16 Oct 2026 at 08:05, Natalie Benjamin <natalie.benjamin@bightline.com.au> wrote:
 > Exports are in the 2027 planning folder: pageviews by source and age band for October to September,
-> the full headline test archive (app engine since 2019, web since the migration), the staff list as at
-> Monday, the 2027 plan, the squad change log, the panel monthly file with its reference workbook, and
-> the CMS revision export for the web desks that Standards asked for last month. The field reference is
-> updated. The pageview extract is article pageviews only, so home pages are not in it.
+> the page analytics monthly export for the same months, the full headline test archive (app engine
+> since 2019, web since the migration), the staff list as at Monday, the 2027 plan, the squad change
+> log, the panel monthly file with its reference workbook, and the CMS revision export for the web desks
+> that Standards asked for last month. The pageview extract is article pageviews only, so home pages
+> and section fronts are not in it.
 >
 > Natalie
 >
@@ -510,7 +425,7 @@ On Fri, 16 Oct 2026 at 08:05, Natalie Benjamin <natalie.benjamin@bightline.com.a
 >>> Nina
 >>>
 >>> On Tue, 13 Oct 2026 at 16:48, Kayla Torres <kayla.torres@bightline.com.au> wrote:
->>>> Same view as last year: it goes where the readers are. The panel numbers are in the folder.
+>>>> Panel numbers for the year are in the folder too.
 >>>>
 >>>> Kayla
 >>>>

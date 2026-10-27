@@ -52,7 +52,7 @@ PLATFORM = ("home_web", "section_web", "feed_app", "section_app", "related_links
 WINDOW_START = dt.date(2025, 10, 1)
 AEST_OFFSET = dt.timedelta(hours=10)     # Brisbane, no daylight saving
 BACKTEST_TOL = 0.02
-FIX_AND_NOTE = 10       # minutes: a fix and its note go on one save or two saves this far apart (CMS field notes)
+FIX_AND_NOTE = 10       # minutes: a fix and its note go on one save or two saves this far apart (standards 7.3)
 
 
 def r50k(x):
@@ -153,6 +153,30 @@ def vertical_lift(v):
 assert all(team[meta[t][3]] == meta[t][1] for d in SHORTLIST for t in by_desk[d])
 assert len({m[2] for m in meta.values()}) == len(meta), "one test per article"
 
+# --------------------------------------------------------------------------- the pages a shipped headline sits on
+# Each page's click-through is the share of its views that end in an article click, over the twelve months (clicks
+# over views). A shipped headline that wins a click on a page where the view would have ended in some other article
+# click has moved that click, not added one: only the views that would otherwise have ended with no article click
+# give Bightline a click it did not have.
+page_views, page_clicks = defaultdict(int), defaultdict(int)
+for r in csv.DictReader(open(find("page_performance_monthly"), encoding="utf-8")):
+    page_views[r["page"]] += int(r["page_views"])
+    page_clicks[r["page"]] += int(r["article_clickthroughs"])
+CTR = {pg: page_clicks[pg] / page_views[pg] for pg in page_views}
+
+
+def page_of(d, src):
+    """The page on which a desk's article is clicked from one of Bightline's own surfaces."""
+    dk = desks[d]
+    metro = dk["edition"] == "Brisbane"
+    name = dk["desk_name"].split("\u00b7")[0] if dk["distribution"] == "app only" else dk["vertical"]
+    return {"home_web": "bightline.com.au/brisbane/" if metro else "bightline.com.au/",
+            "section_web": "bightline.com.au/%s%s/" % ("brisbane/" if metro else "", name.lower()),
+            "feed_app": "Home feed",
+            "section_app": "Tab: %s%s" % ("Brisbane " if metro else "", name),
+            "related_links": "Related stories (article pages)"}[src]
+
+
 # --------------------------------------------------------------------------- 2027 clicks by surface
 con = duckdb.connect()
 con.execute("CREATE TABLE pv AS SELECT * FROM read_parquet(?)", [str(find("pageviews_by_source_age"))])
@@ -165,17 +189,28 @@ for d, total, p, pt, n_win in con.execute(f"""
                sum(pageviews) FILTER (WHERE source_code IN ({plat}) AND t.article_id IS NOT NULL),
                count(DISTINCT v.article_id) FILTER (WHERE published_date >= DATE '{WINDOW_START}')
         FROM pv v LEFT JOIN tested t USING (article_id) GROUP BY v.desk_code""").fetchall():
-    chain[d] = {"planned": int(total), "platform": int(p or 0), "platform_tested": int(pt or 0), "articles": n_win}
+    chain[d] = {"planned": int(total), "platform": int(p or 0), "platform_tested": int(pt or 0), "articles": n_win,
+                "by_source": {}}
+for d, src, n in con.execute(f"""
+        SELECT v.desk_code, source_code, sum(pageviews) FROM pv v LEFT JOIN tested t USING (article_id)
+        WHERE source_code IN ({plat}) AND t.article_id IS NULL GROUP BY 1, 2""").fetchall():
+    chain[d]["by_source"][src] = int(n)
 for d in SHORTLIST:
     c = chain[d]
     assert c["planned"] == planned[d], d  # the plan carries the base year forward to the click
     c["untested"] = c["platform"] - c["platform_tested"]
+    assert sum(c["by_source"].values()) == c["untested"], d
     c["lift"] = shr[d]
-    c["extra"] = shr[d] * c["untested"]
+    c["won"] = shr[d] * c["untested"]       # the clicks the desk's shipped headlines would win, article by article
+    c["new"] = sum(n * (1 - CTR[page_of(d, s)]) for s, n in c["by_source"].items())
+    c["pass"] = c["new"] / c["untested"]    # the share of a won click that is new to Bightline
+    c["extra"] = shr[d] * c["new"]
+    c["new_won"] = c["extra"]
 
 order = sorted(SHORTLIST, key=lambda d: chain[d]["extra"], reverse=True)
 CALL, RUNNER = order[0], order[1]
 GAP = chain[CALL]["extra"] - chain[RUNNER]["extra"]
+MEASURED = sorted(SHORTLIST, key=lambda d: chain[d]["won"], reverse=True)
 
 # --------------------------------------------------------------------------- back-test on the change log
 erows = list(load_workbook(find("headline_squad_change_log"), read_only=True, data_only=True)["Embeddings"]
@@ -185,67 +220,45 @@ app_tests = defaultdict(list)
 for t, m in meta.items():
     if m[0] == "app":
         app_tests[(m[1], int(m[4][:4]))].append(t)
+app_mix = defaultdict(dict)
+for d, src, n in con.execute(f"""
+        SELECT desk_code, source_code, sum(pageviews) FROM pv WHERE source_code IN ({plat}) GROUP BY 1, 2""").fetchall():
+    app_mix[d][src] = int(n)
+
+
+def pass_through(d):
+    mix = app_mix[d]
+    return sum(n * (1 - CTR[page_of(d, s)]) for s, n in mix.items()) / sum(mix.values())
+
+
 backtest = []
 for e in emb:
     ids = app_tests[(e["desk_code"], e["started"].year)]
     assert len(ids) == e["tests_run"]
     lift = float(np.mean([win(t) for t in ids]))
     real = float(e["realised_holdback_lift_pct"]) / 100
-    backtest.append({"n": e["embedding"], "desk": e["desk"], "year": e["started"].year, "tests": e["tests_run"],
-                     "observed": float(e["avg_winning_lift_pct"]), "shrunk": lift, "realised": real,
-                     "diff": lift / real - 1})
+    won = e["planned_clicks"] * real
+    rho = pass_through(e["desk_code"])
+    backtest.append({"n": e["embedding"], "desk": e["desk"], "code": e["desk_code"], "year": e["started"].year,
+                     "tests": e["tests_run"], "observed": float(e["avg_winning_lift_pct"]), "shrunk": lift,
+                     "realised": real, "diff": lift / real - 1, "planned": int(e["planned_clicks"]),
+                     "won": won, "pass": rho, "predicted": won * rho, "extra": int(e["extra_clicks_vs_holdback"]),
+                     "clicks_diff": won * rho / int(e["extra_clicks_vs_holdback"]) - 1,
+                     "kept": int(e["extra_clicks_vs_holdback"]) / won})
 HITS = sum(abs(b["diff"]) <= BACKTEST_TOL for b in backtest)
 RAW_HITS = sum(abs(float(np.mean([win(t, False) for t in app_tests[(e["desk_code"], e["started"].year)]]))
                    / (float(e["realised_holdback_lift_pct"]) / 100) - 1) <= BACKTEST_TOL for e in emb)
-
-# --------------------------------------------------------------------------- readers and visits (panel)
-# Releases before the release log's first release on the 2026 content taxonomy carry the earlier section codes; that
-# release and every release after it, the history release included, carry the 2026 codes. A later release of a
-# section's month replaces the earlier one. A release that says it replaces figures published in named releases makes
-# those figures superseded: a row elsewhere that repeats a superseded figure byte for byte is that figure carried
-# again, not a new publication (the July file repeats April to June as first published).
-pwb = load_workbook(find("panel_reference_workbook"), read_only=True, data_only=True)
-hist = list(pwb["Section history"].iter_rows(values_only=True))[1:]
-rlog = [r for r in list(pwb["Release log"].iter_rows(values_only=True))[1:] if r[0]]
-rel = {r[0]: r[1] for r in rlog}
-issued_2026 = min(r[1] for r in rlog if (r[2] or "").startswith("First release on the 2026 content taxonomy"))
-sections = {"2026": {(h[0], h[1]): (h[2], h[5]) for h in hist if h[4] is None},
-            "2024": {(h[0], h[1]): (h[2], h[5]) for h in hist if h[4] is not None}}
-prows = list(csv.DictReader(open(find("panel_monthly_audience"), encoding="utf-8")))
-fig = lambda r: (r["period"], r["site_code"], r["section_code"], r["unique_audience"], r["visits"])  # noqa: E731
-superseded = set()
-for r0 in rlog:
-    named = re.search(r"replace those published in ([R0-9, and-]+)\.", r0[2] or "")
-    if not named:
-        continue
-    olds = set(re.findall(r"R\d\d-\d\d", named.group(1)))
-    months = {r["period"] for r in prows if r["release"] == r0[0]}
-    superseded |= {fig(r) for r in prows if r["release"] in olds and r["period"] in months}
-ECHO_ROWS = 0
-latest = {}
-for r in prows:
-    if fig(r) in superseded and r["release"] not in {x for r0 in rlog for x in re.findall(r"R\d\d-\d\d", r0[2] or "")}:
-        ECHO_ROWS += 1
-        continue        # a superseded figure carried again in a later file
-    name, desk = sections["2026" if rel[r["release"]] >= issued_2026 else "2024"][(r["site_code"], int(r["section_code"]))]
-    key = (r["period"], r["site_code"], name)
-    if key not in latest or rel[r["release"]] > rel[latest[key][0]["release"]]:
-        latest[key] = (r, desk)  # a later release of the same month replaces the earlier one
-monthly, monthly_v = defaultdict(dict), defaultdict(dict)
-for (period, site, name), (r, desk) in latest.items():
-    if desk:
-        monthly[desk][period] = int(r["unique_audience"])
-        monthly_v[desk][period] = int(r["visits"])
-readers, visits = {}, {}
-for d in SHORTLIST:
-    assert len(monthly[d]) == 12, d
-    readers[d] = statistics.mean(monthly[d].values())
-    visits[d] = statistics.mean(monthly_v[d].values())
+CLICK_HITS = sum(abs(b["clicks_diff"]) <= BACKTEST_TOL for b in backtest)
+AVG_KEPT = float(np.mean([b["kept"] for b in backtest]))     # one share kept for every embedding
+AVG_HITS = sum(abs(b["won"] * AVG_KEPT / b["extra"] - 1) <= BACKTEST_TOL for b in backtest)
+AVG_WORST = max(abs(b["won"] * AVG_KEPT / b["extra"] - 1) for b in backtest)
 
 # --------------------------------------------------------------------------- headline corrections (CMS)
 docs, info = defaultdict(list), {}
 for r in csv.DictReader(open(find("cms_revisions_web_desks"), encoding="utf-8")):
-    docs[r["doc_id"]].append((int(r["revision"]), r["saved_at"], r["status"], r["publish_at"], r["headline_sha1"],
+    # an autosave of a live article's working copy is saved while the article is live but publishes nothing
+    status = "autosave" if r["save_type"] == "autosave" else r["status"]
+    docs[r["doc_id"]].append((int(r["revision"]), r["saved_at"], status, r["publish_at_aest"], r["headline_sha1"],
                               r["correction_note"]))
     info[r["doc_id"]] = (r["desk_code"], r["doc_type"], r["parent_doc"], r["restored_from_doc"], r["migrated_from"])
 restored_copy = {v[3]: k for k, v in info.items() if v[3]}
@@ -278,11 +291,15 @@ for did, revs in docs.items():
     if not live:
         continue
     arts[desk] += 1
-    # what readers saw: each live save, and a scheduled version the CMS published at publish_at
+    # what readers saw: each live save, and a scheduled version the CMS published at publish_at, which it does only if
+    # the article is still scheduled when that time comes (one set back to draft first went live at its first live save)
     published, went_live = live, when(live[0][1])
     scheduled = [r for r in revs if r[2] == "scheduled" and r[0] < live[0][0]]
     if scheduled and scheduled[-1][3] and when_set(scheduled[-1][3]) < went_live:
-        published, went_live = [scheduled[-1]] + live, when_set(scheduled[-1][3])
+        due = when_set(scheduled[-1][3])
+        held = [r for r in revs if r[0] < live[0][0] and when(r[1]) <= due][-1]
+        if held[2] == "scheduled" and held[3] == scheduled[-1][3]:
+            published, went_live = [scheduled[-1]] + live, due
     first, fixed_alone = None, None     # a corrected headline published before its note, since the last note change
     shown, paired_later = {published[0][5]}, set()
     for k in range(1, len(published)):
@@ -342,91 +359,70 @@ asks = {}
 for d in SHORTLIST:
     assert arts[d] == chain[d]["articles"], d
     assert len(mins[d]) % 2 == 1, d
-    asks[d] = {"extra": r50k(chain[d]["extra"]), "readers": r1k(readers[d]), "visits": r1k(visits[d]),
-               "corrections": corr[d], "median": int(statistics.median(mins[d]))}
+    asks[d] = {"extra": r50k(chain[d]["extra"]),
+               "corrections": corr[d], "corrected": len(mins[d]), "median": int(statistics.median(mins[d])),
+               "hour": sum(m <= 60 for m in mins[d]), "three": sum(m > 180 for m in mins[d])}
+    # no first correction sits on the hour or the three-hour mark, so "within" and "more than" read one way
+    assert not any(58 <= m <= 62 or 178 <= m <= 182 for m in mins[d]), (d, sorted(mins[d]))
 
 # ============================================================================ the chart
 INK, INK2, MUTED, GRID, SURF = "#0b0b0b", "#52514e", "#8a8984", "#e4e3df", "#fcfcfb"
-# The plan is the recessive start of each row; the two stages that narrow it are ticks in categorical slots 1 and 2,
-# which stay apart where two stages sit a few per cent apart on the log axis; the squad's clicks are the slot-3 dot,
-# labelled with its value (slot 3 is under 3:1 on the surface, so the label and the paper's table carry it too).
-STAGES = [("planned", "2027 clicks (plan)", "ring", INK2),
-          ("platform", "from Bightline's own surfaces", "tick", "#2a78d6"),
-          ("untested", "on headlines the desk does not test", "tick", "#eb6834"),
-          ("extra", "extra clicks from the squad", "dot", "#1baf7a")]
+WON_C, NEW_C = "#2a78d6", "#1baf7a"
 HILITE = "#f1f0ec"
 
 
 def tick(x, _):
-    if x >= 1e6:
-        return "%gm" % (x / 1e6)
-    return "{:,.0f}".format(x)
+    return "{:,.0f}k".format(x / 1e3) if x else "0"
 
 
 def chart_png():
+    """Each desk's clicks its shipped headlines would win (ring) against the clicks that are new to Bightline (dot),
+    desks in order of the new clicks."""
     plt.rcParams.update({"font.family": "DejaVu Sans", "font.size": 8.5})
-    fig, ax = plt.subplots(figsize=(7.2, 4.4), dpi=200)
+    fig, ax = plt.subplots(figsize=(7.2, 3.9), dpi=200)
     fig.patch.set_facecolor(SURF)
     ax.set_facecolor(SURF)
     ys = {d: len(order) - 1 - i for i, d in enumerate(order)}
     for d in (CALL, RUNNER):
         ax.axhspan(ys[d] - 0.42, ys[d] + 0.42, color=HILITE, zorder=0, lw=0)
     for d in order:
-        xs = [chain[d][k] for k, _, _, _ in STAGES]
-        ax.plot(xs, [ys[d]] * 4, color="#c9c8c2", lw=1.6, zorder=1, solid_capstyle="round")
-        for (k, label, kind, col), x in zip(STAGES, xs):
-            if kind == "ring":
-                ax.scatter([x], [ys[d]], s=52, facecolor=SURF, edgecolor=col, linewidth=1.4, zorder=2)
-            elif kind == "tick":
-                ax.scatter([x], [ys[d]], s=170, marker="|", color=col, linewidth=2.6, zorder=3)
-            else:
-                ax.scatter([x], [ys[d]], s=64, color=col, edgecolor=SURF, linewidth=1.6, zorder=4)
-        ax.text(chain[d]["extra"] / 1.22, ys[d], "{:,}".format(asks[d]["extra"]), ha="right", va="center",
-                fontsize=8.5, color=INK, fontweight="bold" if d == CALL else "normal")
-    labels = []
-    for d in order:
-        tag = "\nrecommended" if d == CALL else "\nrunner-up" if d == RUNNER else ""
-        labels.append(NAME[d] + tag)
+        c = chain[d]
+        ax.plot([c["new_won"], c["won"]], [ys[d]] * 2, color="#c9c8c2", lw=1.6, zorder=1, solid_capstyle="round")
+        ax.scatter([c["won"]], [ys[d]], s=52, facecolor=SURF, edgecolor=WON_C, linewidth=1.4, zorder=2)
+        ax.scatter([c["extra"]], [ys[d]], s=64, color=NEW_C, edgecolor=SURF, linewidth=1.6, zorder=3)
+        ax.text(c["extra"] - 2.2e4, ys[d], "{:,}".format(asks[d]["extra"]), ha="right", va="center", fontsize=8.5,
+                color=INK, fontweight="bold" if d == CALL else "normal")
+        ax.text(c["won"] + 2.2e4, ys[d], "{:,}".format(r50k(c["won"])), ha="left", va="center", fontsize=7.5,
+                color=INK2)
+    labels = [NAME[d] + ("\nrecommended" if d == CALL else "\nrunner-up" if d == RUNNER else "") for d in order]
     ax.set_yticks([ys[d] for d in order])
     ax.set_yticklabels(labels)
     for t, d in zip(ax.get_yticklabels(), order):
         t.set_color(INK if d in (CALL, RUNNER) else INK2)
         if d == CALL:
             t.set_fontweight("bold")
-    # the gap between the recommended desk and the runner-up, on the extra-clicks stage
-    xb = 1.5e5
-    yc, yr = ys[CALL], ys[RUNNER]
-    ax.plot([xb * 1.12, xb, xb, xb * 1.12], [yc, yc, yr, yr], color=INK2, lw=1)
-    ax.text(xb / 1.1, (yc + yr) / 2, "gap\n{:,}".format(r50k(GAP)), ha="right", va="center", fontsize=8, color=INK)
-    ax.set_xscale("log")
-    ax.set_xlim(1.6e4, 8e8)
+    ax.set_xlim(-1.2e5, 1.5e6)
     ax.set_ylim(-0.6, len(order) - 0.4)
     ax.xaxis.set_major_formatter(FuncFormatter(tick))
-    ax.xaxis.set_minor_formatter(NullFormatter())
-    ax.set_xticks([1e5, 1e6, 1e7, 1e8])
-    ax.set_xlabel("Article clicks, 2027 (log scale)", color=INK2)
+    ax.set_xticks([0, 2.5e5, 5e5, 7.5e5, 1e6, 1.25e6])
+    ax.set_xlabel("Article clicks, 2027", color=INK2)
     ax.grid(axis="x", color=GRID, lw=0.6)
     ax.set_axisbelow(True)
-    for s in ("top", "right", "left"):
-        ax.spines[s].set_visible(False)
+    for s_ in ("top", "right", "left"):
+        ax.spines[s_].set_visible(False)
     ax.spines["bottom"].set_color(GRID)
     ax.tick_params(axis="y", length=0)
     ax.tick_params(axis="x", which="both", colors=INK2, length=0)
-    keys = []
-    for k, label, kind, col in STAGES:
-        if kind == "ring":
-            keys.append(Line2D([], [], ls="none", marker="o", ms=6.5, mfc=SURF, mec=col, mew=1.4, label=label))
-        elif kind == "tick":
-            keys.append(Line2D([], [], ls="none", marker="|", ms=10, mec=col, mew=2.6, label=label))
-        else:
-            keys.append(Line2D([], [], ls="none", marker="o", ms=7.5, mfc=col, mec=SURF, mew=1.2, label=label))
+    keys = [Line2D([], [], ls="none", marker="o", ms=6.5, mfc=SURF, mec=WON_C, mew=1.4,
+                   label="clicks the squad's winning headlines would win"),
+            Line2D([], [], ls="none", marker="o", ms=7.5, mfc=NEW_C, mec=SURF, mew=1.2,
+                   label="of which new to Bightline (extra clicks)")]
     ax.legend(handles=keys, loc="lower left", bbox_to_anchor=(-0.02, 1.0), ncol=2, frameon=False, fontsize=7.5,
               handletextpad=0.3, columnspacing=1.2)
-    fig.suptitle("{} gains most from the squad: {:,} extra article clicks in 2027"
-                 .format(NAME[CALL], asks[CALL]["extra"]),
+    fig.suptitle("{} adds the most clicks new to Bightline: {:,} in 2027".format(NAME[CALL], asks[CALL]["extra"]),
                  x=0.02, ha="left", y=0.985, fontsize=10.5, fontweight="bold", color=INK)
-    fig.text(0.02, 0.012, "Desks ordered by extra clicks. Source: 2027 audience plan; pageviews by source, "
-             "Oct 2025 to Sep 2026; headline test archive.", fontsize=7, color=MUTED)
+    fig.text(0.02, 0.012, "Desks ordered by extra clicks. Source: 2027 audience plan; pageviews by source; page "
+             "performance; headline test archive.", fontsize=7, color=MUTED)
     fig.subplots_adjust(left=0.22, right=0.98, top=0.80, bottom=0.17)
     buf = io.BytesIO()
     fig.savefig(buf, format="png", facecolor=SURF, metadata={"Software": None})
@@ -436,12 +432,16 @@ def chart_png():
 
 
 # ============================================================================ the workbook
+PAGE_ORDER = ["bightline.com.au/", "bightline.com.au/brisbane/"]
+
+
 def write_xlsx(path):
     wb = Workbook()
     thin = Side(style="thin", color="BFBFBF")
     head_fill = PatternFill("solid", fgColor="1F3A5F")
     head_font = Font(name="Calibri", bold=True, color="FFFFFF", size=10)
     body = Font(name="Calibri", size=10)
+    note_font = Font(name="Calibri", size=9, color="595959")
     pick_fill = PatternFill("solid", fgColor="FDF0E8")
 
     def header(ws, row, cols, widths):
@@ -452,35 +452,39 @@ def write_xlsx(path):
             ws.column_dimensions[c.column_letter].width = w
         ws.row_dimensions[row].height = 42
 
-    # ---- Desks
-    ws = wb.active
-    ws.title = "Desks"
-    ws["A1"] = "Headline squad 2027: shortlisted desks"
-    ws["A1"].font = Font(name="Calibri", bold=True, size=13)
-    ws["A2"] = "Readers, visits and minutes cover October 2025 to September 2026."
-    ws["A2"].font = Font(name="Calibri", italic=True, size=9, color="595959")
-    cols = ["Desk", "Code", "Average monthly readers", "Average monthly visits",
-            "Median minutes to first headline correction"]
-    header(ws, 4, cols, [22, 8, 14, 14, 17])
-    fmts = [None, None, "#,##0", "#,##0", "#,##0"]
-    for i, d in enumerate(SHORTLIST):
-        a = asks[d]
-        vals = [NAME[d], d, a["readers"], a["visits"], a["median"]]
+    def put(ws, row, vals, fmts, bold_first=False, fill=None):
         for j, (v, f) in enumerate(zip(vals, fmts), 1):
-            c = ws.cell(row=5 + i, column=j, value=v)
-            c.font = Font(name="Calibri", size=10, bold=(d == CALL and j == 1))
+            c = ws.cell(row=row, column=j, value=v)
+            c.font = Font(name="Calibri", size=10, bold=(bold_first and j == 1))
             c.border = Border(bottom=thin)
             if f:
                 c.number_format = f
                 c.alignment = Alignment(horizontal="right")
-            if d == CALL:
-                c.fill = pick_fill
+            if fill:
+                c.fill = fill
+
+    # ---- Desks: the workbook row for every shortlisted desk
+    ws = wb.active
+    ws.title = "Desks"
+    ws["A1"] = "Headline squad 2027: shortlisted desks"
+    ws["A1"].font = Font(name="Calibri", bold=True, size=13)
+    ws["A2"] = ("Corrections: articles first published from October 2025 to September 2026 whose headline was "
+                "corrected.")
+    ws["A2"].font = Font(name="Calibri", italic=True, size=9, color="595959")
+    cols = ["Desk", "Code",
+            "Median minutes to first headline correction", "First corrections within an hour",
+            "First corrections after more than three hours"]
+    header(ws, 4, cols, [22, 8, 17, 14, 15])
+    fmts = [None, None, "#,##0", "#,##0", "#,##0"]
+    for i, d in enumerate(SHORTLIST):
+        a = asks[d]
+        put(ws, 5 + i, [NAME[d], d, a["median"], a["hour"], a["three"]], fmts,
+            bold_first=(d == CALL), fill=pick_fill if d == CALL else None)
     r = 5 + len(SHORTLIST) + 1
     ws.cell(row=r, column=1, value="Recommended: {}, {:,} extra article clicks in 2027. Runner-up {}, {:,} behind."
             .format(NAME[CALL], asks[CALL]["extra"], NAME[RUNNER], r50k(GAP))).font = Font(name="Calibri", size=10,
                                                                                          bold=True)
-    ws.cell(row=r + 1, column=1, value="Extra clicks for every desk are on the Click chain sheet. Readers and visits to "
-            "the nearest thousand; definitions on the Notes sheet.").font = Font(name="Calibri", size=9, color="595959")
+    ws.cell(row=r + 1, column=1, value="Extra clicks for every desk are on the Click chain sheet.").font = note_font
     ws.freeze_panes = "B5"
     ws.auto_filter.ref = "A4:E%d" % (4 + len(SHORTLIST))
     ws.print_area = "A1:E%d" % (r + 1)
@@ -490,33 +494,45 @@ def write_xlsx(path):
 
     # ---- Click chain
     ws = wb.create_sheet("Click chain")
-    ws["A1"] = "From each desk's 2027 clicks to the clicks the squad adds"
+    ws["A1"] = "From each desk's 2027 clicks to the clicks the squad adds to Bightline"
     ws["A1"].font = Font(name="Calibri", bold=True, size=13)
-    cols = ["Desk", "2027 planned clicks", "Clicks from Bightline surfaces", "of which on headlines the desk tests",
-            "On headlines the desk does not test", "Shrunk winning lift", "Extra article clicks 2027"]
-    header(ws, 3, cols, [22, 15, 15, 15, 15, 11, 14])
+    cols = ["Desk", "2027 planned clicks", "From Bightline's own pages", "of which on headlines the desk tests",
+            "On headlines the desk does not test", "Shrunk winning lift", "Clicks the winning headlines win",
+            "Share new to Bightline", "Extra article clicks 2027"]
+    header(ws, 3, cols, [22, 15, 15, 15, 15, 11, 14, 11, 14])
+    fmts = [None, "#,##0", "#,##0", "#,##0", "#,##0", "0.00%", "#,##0", "0.0%", "#,##0"]
     for i, d in enumerate(order):
         c = chain[d]
-        vals = [NAME[d], r50k(c["planned"]), r50k(c["platform"]), r50k(c["platform_tested"]), r50k(c["untested"]),
-                c["lift"], r50k(c["extra"])]
-        for j, v in enumerate(vals, 1):
-            cell = ws.cell(row=4 + i, column=j, value=v)
-            cell.font = Font(name="Calibri", size=10, bold=(d == CALL and j == 1))
-            cell.border = Border(bottom=thin)
-            if j > 1:
-                cell.number_format = "0.00%" if j == 6 else "#,##0"
-                cell.alignment = Alignment(horizontal="right")
-            if d == CALL:
-                cell.fill = pick_fill
+        put(ws, 4 + i, [NAME[d], r50k(c["planned"]), r50k(c["platform"]), r50k(c["platform_tested"]),
+                        r50k(c["untested"]), c["lift"], r50k(c["won"]), c["pass"], r50k(c["extra"])], fmts,
+            bold_first=(d == CALL), fill=pick_fill if d == CALL else None)
     n = 4 + len(order) + 1
-    notes = ["Bightline surfaces: web home, web section fronts, app home feed, app section tabs and related links. "
-             "Search, Discover, partner apps, social, newsletters and alerts show the headline stored at publication.",
-             "A desk's own tests ship their winners inside the clicks the plan carries forward, so the squad's gain is "
-             "counted only on headlines the desk does not already test.",
-             "Extra clicks = shrunk winning lift x clicks on headlines the desk does not test, on unrounded clicks. "
-             "Click columns rounded to the nearest 50,000."]
+    notes = ["Bightline's own pages: the web home pages and section fronts, the app home feed and tabs, and the "
+             "related-story links on article pages. Search, Discover-style cards, partner apps, social cards, "
+             "newsletters and alerts keep the headline stored at publication.",
+             "The squad takes the headlines a desk has not put under test itself; a desk's own winners already ship "
+             "inside the clicks the plan carries forward.",
+             "A winning headline's extra clicks on a page are new to Bightline only in the share of that page's views "
+             "that would otherwise end with no article click (one minus the page's click-through, Pages sheet); the "
+             "rest are clicks the headlines beside it lose.",
+             "Extra clicks = shrunk winning lift x each page's untested clicks x (1 - that page's click-through), on "
+             "unrounded clicks. Click columns rounded to the nearest 50,000."]
     for k, t in enumerate(notes):
-        ws.cell(row=n + k, column=1, value=t).font = Font(name="Calibri", size=9, color="595959")
+        ws.cell(row=n + k, column=1, value=t).font = note_font
+    ws.freeze_panes = "B4"
+
+    # ---- Pages
+    ws = wb.create_sheet("Pages")
+    ws["A1"] = "Page click-through, October 2025 to September 2026"
+    ws["A1"].font = Font(name="Calibri", bold=True, size=13)
+    cols = ["Page", "Page views", "Article click-throughs", "Click-through", "Share of views new clicks can come from"]
+    header(ws, 3, cols, [36, 16, 16, 12, 14])
+    pages = sorted(CTR, key=lambda pg: (pg.startswith("Tab") or pg.startswith("Home") or pg.startswith("Related"), pg))
+    for i, pg in enumerate(pages):
+        put(ws, 4 + i, [pg, page_views[pg], page_clicks[pg], CTR[pg], 1 - CTR[pg]],
+            [None, "#,##0", "#,##0", "0.0%", "0.0%"])
+    ws.cell(row=5 + len(pages), column=1, value="Click-through = article click-throughs over page views, twelve "
+            "months summed (page performance export).").font = note_font
     ws.freeze_panes = "B4"
 
     # ---- Back-test
@@ -524,12 +540,15 @@ def write_xlsx(path):
     ws["A1"] = "The method against the squad's seven finished embeddings"
     ws["A1"].font = Font(name="Calibri", bold=True, size=13)
     cols = ["Embedding", "Desk", "Year", "Tests", "Observed winning lift", "Shrunk winning lift",
-            "Realised holdback lift", "Prediction against realised", "Within 2%"]
-    header(ws, 3, cols, [11, 12, 7, 7, 11, 11, 11, 13, 9])
+            "Realised holdback lift", "Lift: prediction against realised", "Planned clicks",
+            "Share new to Bightline", "Predicted extra clicks", "Extra clicks against holdback",
+            "Clicks: prediction against measured"]
+    header(ws, 3, cols, [11, 12, 7, 7, 11, 11, 11, 13, 14, 11, 14, 14, 13])
     for i, b in enumerate(backtest):
         vals = [b["n"], b["desk"], b["year"], b["tests"], round(b["observed"] / 100, 4), b["shrunk"], b["realised"],
-                b["diff"], "Yes" if abs(b["diff"]) <= BACKTEST_TOL else "No"]
-        f = ["0", None, "0", "0", "0.0%", "0.00%", "0.00%", "+0.0%;-0.0%;0.0%", None]
+                b["diff"], b["planned"], b["pass"], round(b["predicted"]), b["extra"], b["clicks_diff"]]
+        f = ["0", None, "0", "0", "0.0%", "0.00%", "0.00%", "+0.0%;-0.0%;0.0%", "#,##0", "0.0%", "#,##0", "#,##0",
+             "+0.0%;-0.0%;0.0%"]
         for j, (v, fm) in enumerate(zip(vals, f), 1):
             cell = ws.cell(row=4 + i, column=j, value=v)
             cell.font = body
@@ -539,71 +558,27 @@ def write_xlsx(path):
             cell.alignment = Alignment(horizontal="left" if j == 2 else "right")
     n = 4 + len(backtest)
     ws.cell(row=n, column=1, value="Within 2%").font = Font(name="Calibri", size=10, bold=True)
-    ws.cell(row=n, column=9, value="{} of 7".format(HITS)).font = Font(name="Calibri", size=10, bold=True)
-    ws.cell(row=n, column=9).alignment = Alignment(horizontal="right")
-    ws.cell(row=n + 2, column=1, value="Prediction = the shrunk winning lift of the embedding's tests; realised = the "
-            "change log's lift over the 5 per cent holdback for the year.").font = Font(name="Calibri", size=9,
-                                                                                        color="595959")
+    for col, hits in ((8, HITS), (13, CLICK_HITS)):
+        ws.cell(row=n, column=col, value="{} of 7".format(hits)).font = Font(name="Calibri", size=10, bold=True)
+        ws.cell(row=n, column=col).alignment = Alignment(horizontal="right")
+    for k, t in enumerate([
+            "Lift: the shrunk winning lift of the embedding's tests against the change log's realised lift over the "
+            "5 per cent reader holdback. The raw winning lift is within 2% for {} of 7.".format(RAW_HITS or "none"),
+            "Clicks: planned clicks x realised lift x the desk's share new to Bightline (its pages' click-through, "
+            "weighted by where its clicks start) against the extra clicks measured against the holdback. One share "
+            "for every embedding, their average {:.1%}, is within 2% for {} of 7 and misses by up to {:.0%}."
+            .format(AVG_KEPT, AVG_HITS, AVG_WORST)]):
+        ws.cell(row=n + 2 + k, column=1, value=t).font = note_font
     ws.freeze_panes = "A4"
 
-    # ---- Notes
-    ws = wb.create_sheet("Notes")
-    ws.column_dimensions["A"].width = 30
-    ws.column_dimensions["B"].width = 100
-    ws["A1"] = "Definitions and sources"
-    ws["A1"].font = Font(name="Calibri", bold=True, size=13)
-    defs = [
-        ("Prepared", "19 October 2026, for the planning meeting on 4 November 2026"),
-        ("Extra article clicks 2027", "Clicks the squad would add in the twelve months after it embeds, counted at the "
-         "owning desk. 2027 clicks are the audience plan's, which holds each desk at October 2025 to September 2026."),
-        ("Winning lift", "Shipped headline's click-through over the control's, minus one; zero when the control is kept "
-         "(field reference). Shrunk with one normal prior fitted by maximum likelihood on all {:,} variant packages "
-         "in the archive; a desk's lift is the mean over its tests.".format(N_PACKAGES)),
-        ("Average monthly readers", "Panel unique audience for the desk's section, mean of October 2025 to September "
-         "2026. Releases up to R26-03 are read on the earlier section list; R26-04, the release log's first release "
-         "on the 2026 content taxonomy, and every release after it, the R26-04H history release included, are read on "
-         "the 2026 list. A section's figure for a month is the latest release of that month: the history release "
-         "replaces three national sections for November to February, and R26-07B, the restatement, replaces April to "
-         "June on both sites. The July file's April to June rows repeat, figure for figure, the releases R26-07B "
-         "replaced; they are those figures carried again, not a later release of the months."),
-        ("Average monthly visits", "Panel visits for the same section and months, from the same releases."),
-        ("Headline corrections", "A new correction note on a version readers saw, where a corrected headline went up "
-         "with it: on the same version, or, where the fix and the note went on separate saves (at most ten minutes "
-         "apart, CMS export field notes), on a version within those ten minutes before or after it that changed the "
-         "headline with no new note of its own. A live blog's note is matched to the entry whose headline changed "
-         "within the ten minutes (editorial standards 7.4 and 7.5). The correction is counted once, on the version "
-         "that published the headline. Versions readers saw are live saves and a scheduled version the CMS published; "
-         "drafts are not published. Notes carry forward on later saves and are not counted again, nor is a note put "
-         "back after a save that left it off; every other new note is a correction to text."),
-        ("Articles", "Articles first published October 2025 to September 2026 that went live. Live-blog posts, "
-         "copies restored after the 14 November 2025 Brisbane outage and documents carried across at the "
-         "1 October 2025 CMS migration are not separate articles; a restored copy continues its original."),
-        ("Median minutes", "Minutes from an article going live to its first headline correction, over corrected "
-         "articles. An article goes live at its first published version: the time the editor set when the CMS "
-         "published a scheduled article, otherwise its first live save. The CMS keeps that time on the newsroom's "
-         "Brisbane clock (AEST, ten hours ahead of the UTC save times); on that clock it falls before the first live "
-         "save of every article the CMS published. A restored copy keeps its original's time, and an entry's "
-         "correction counts for its live blog."),
-        ("Sources", "2027 audience plan; pageviews by source and age, Oct 2025 to Sep 2026; headline test archive "
-         "2019 to 2026; newsroom staff list; headline squad change log; panel monthly audience and reference "
-         "workbook; CMS revisions for the web desks and their field notes."),
-    ]
-    for i, (k, v) in enumerate(defs):
-        a = ws.cell(row=3 + i, column=1, value=k)
-        a.font = Font(name="Calibri", size=10, bold=True)
-        a.alignment = Alignment(vertical="top")
-        b = ws.cell(row=3 + i, column=2, value=v)
-        b.font = body
-        b.alignment = Alignment(wrap_text=True, vertical="top")
-    head_rows = {"Desks": "4:4", "Click chain": "3:3", "Back-test": "3:3"}
+    head_rows = {"Desks": "4:4", "Click chain": "3:3", "Pages": "3:3", "Back-test": "3:3"}
     for w in wb.worksheets:
         w.page_margins = PageMargins(left=0.5, right=0.5, top=0.6, bottom=0.6)
-        w.sheet_view.showGridLines = w.title == "Notes"
-        if w.title in head_rows:
-            w.print_title_rows = head_rows[w.title]
+        w.sheet_view.showGridLines = False
+        w.print_title_rows = head_rows[w.title]
         if w.title != "Desks":
             w.print_area = "A1:%s%d" % (get_column_letter(w.max_column), w.max_row)
-            w.page_setup.orientation = "portrait" if w.title == "Notes" else "landscape"
+            w.page_setup.orientation = "landscape"
             w.page_setup.fitToWidth = 1
             w.page_setup.fitToHeight = 0
             w.sheet_properties.pageSetUpPr.fitToPage = True
@@ -667,9 +642,10 @@ def runs(p, parts, size=10.5):
 
 def write_docx(path, png):
     c, rn = chain[CALL], chain[RUNNER]
-    pct = lambda x, k=1: ("{:.%df}%%" % k).format(100 * x)  # noqa: E731
+    cul = chain["CUL-N"]
+    pct = lambda x, k=0: ("{:.%df}%%" % k).format(100 * x)  # noqa: E731
     tested_share = {d: chain[d]["platform_tested"] / chain[d]["platform"] for d in SHORTLIST}
-    plat_share = {d: chain[d]["platform"] / chain[d]["planned"] for d in SHORTLIST}
+    src_share = lambda d, src: chain[d]["by_source"].get(src, 0) / chain[d]["untested"]  # noqa: E731
 
     doc = Document()
     st = doc.styles["Normal"]
@@ -692,58 +668,67 @@ def write_docx(path, png):
          "shortlisted desks", size=9, color="595959", space_after=12)
 
     p = para(doc, space_after=8)
-    r = p.add_run("Recommendation. The squad should join {} in January. It would add {:,} extra article "
-                  "clicks there in 2027.".format(NAME[CALL], asks[CALL]["extra"]))
+    r = p.add_run("Recommendation. The squad should join {} in January. It would add {:,} article clicks to "
+                  "Bightline there in 2027.".format(NAME[CALL], asks[CALL]["extra"]))
     r.bold, r.font.size = True, Pt(11)
-    runs(p, [" The runner-up is {}, at {:,}, which sits {:,} behind.".format(NAME[RUNNER], asks[RUNNER]["extra"], r50k(GAP))], size=11)
+    runs(p, [" The runner-up is {}, at {:,}, which sits {:,} behind.".format(NAME[RUNNER], asks[RUNNER]["extra"],
+                                                                         r50k(GAP))], size=11)
 
     doc.add_heading("How the number is built", level=2)
     runs(para(doc), [
-        "The brief judges the squad on incremental article clicks in the twelve months after it embeds, counted at "
-        "the owning desk. Three things stand between a desk's 2027 clicks and what the squad would add to them."])
+        "The brief judges the squad the way Experimentation closes an embedding: on the clicks readers make in its "
+        "year that they would not have made without it. Three steps take a desk's 2027 clicks to that figure."])
     runs(para(doc), [
         "First, the lift. A desk's average winning lift over-reads what a winning headline is worth, because the "
         "variant that wins a small test is usually the one that drew a lucky sample. Each shipped variant is shrunk "
         "toward one prior fitted on every package in the test archive, and the desk's lift is the mean over its "
-        "tests. On that basis {} lifts clicks by {} on the headlines it tests. The same rule comes within 2% of the "
-        "realised holdback lift for {} of the squad's 7 finished embeddings; the raw lift does so for {}."
-        .format(NAME[CALL], pct(c["lift"], 2), HITS, RAW_HITS or "none"), ("1",)])
+        "tests: {} for {}. The same rule comes within 2% of the realised holdback lift for {} of the squad's 7 "
+        "finished embeddings; the raw lift does so for {}."
+        .format(pct(c["lift"], 2), NAME[CALL], HITS, RAW_HITS or "none"), ("1",)])
     runs(para(doc), [
-        "Second, where the click starts. A tested headline only shows on Bightline's own surfaces: the web and app "
-        "home pages, section fronts and related links. Search, Discover, partner apps, social cards, newsletters and "
-        "alerts carry the headline stored at publication, which a test does not change. {} of {}'s 2027 clicks "
-        "start on our own surfaces, against {} for {}."
-        .format(pct(plat_share[CALL]), NAME[CALL], pct(plat_share[RUNNER]), NAME[RUNNER]), ("2",)])
+        "Second, the clicks a shipped headline can reach. It replaces the old headline only on Bightline's own pages: "
+        "the home pages, section fronts, app feed and tabs, and the related-story links. The squad also takes only "
+        "the headlines a desk has not put under test itself. That leaves {:,} of {}'s 2027 clicks; at its lift, its "
+        "winning headlines would win {:,} clicks."
+        .format(r50k(c["untested"]), NAME[CALL], r50k(c["won"]))])
     runs(para(doc), [
-        "Third, the tests each desk already runs. Every test in the archive at a shortlisted desk was set up by that "
-        "desk's own staff, and their winners are already live inside the clicks the plan carries into 2027. The "
-        "squad cannot add that gain a second time. {}'s editors already test the headlines behind {} of its "
-        "platform clicks, so most of its large reachable base is spoken for. {}'s editors ran {} tests in the year, on "
-        "articles carrying {} of its platform clicks, which leaves the squad {:,} clicks on untested headlines. "
-        "At {} that is {:,}."
-        .format(NAME[RUNNER], pct(tested_share[RUNNER]), NAME[CALL], len(by_desk[CALL]), pct(tested_share[CALL]),
-                r50k(c["untested"]), pct(c["lift"], 2), asks[CALL]["extra"])])
+        "Third, how many of those clicks are new to Bightline. A page shows a fixed set of headlines. When a better "
+        "headline wins a click from a reader who would have clicked something else on the page, Bightline has moved "
+        "a click, not gained one. Only views that would otherwise end with no article click can give a new one, and "
+        "the page analytics show how many those are. About four in five views of the Culture front and the Culture "
+        "tab already end in a click ({} and {}), against fewer than one in eight on the related-story links ({}). "
+        "{} of {}'s reachable clicks come through related-story links, so {} of what its headlines win is new. "
+        "Culture·national's come mostly through its own front and tab, so only {} of its are. The change log bears "
+        "this out: planned clicks times the realised lift times each desk's new share comes within 2% of the extra "
+        "clicks measured against the holdback for {} of 7 embeddings. One average share for every desk is within 2% "
+        "for {} and misses by up to {}."
+        .format(pct(CTR["bightline.com.au/culture/"]), pct(CTR["Tab: Culture"]),
+                pct(CTR["Related stories (article pages)"]), pct(src_share(CALL, "related_links")), NAME[CALL],
+                pct(c["pass"]), pct(cul["pass"]), CLICK_HITS, AVG_HITS or "none", pct(AVG_WORST)), ("2",)])
 
     doc.add_picture(png, width=Cm(16.4))
     doc.paragraphs[-1].alignment = WD_ALIGN_PARAGRAPH.CENTER
-    para(doc, "Chart: each desk from its 2027 clicks to the extra clicks the squad would add. Desks ordered by extra "
-         "clicks.", size=8.5, italic=True, color="595959", space_after=10)
+    para(doc, "Chart: for each desk, the clicks its winning headlines would win and the share of them that is new "
+         "to Bightline. Desks ordered by extra clicks.", size=8.5, italic=True, color="595959", space_after=10)
 
     doc.add_heading("Why not the other five", level=2)
     why = {
-        "LOC-M": "the largest reachable base on the list ({} of its clicks start on our surfaces), but its own "
-                 "editors already test the headlines behind {} of them.".format(pct(plat_share["LOC-M"]),
-                                                                          pct(tested_share["LOC-M"])),
-        "BUS-N": "big, steady tests and the strongest shrunk lift on the national list ({}), but {} of its clicks "
-                 "arrive on surfaces that show the stored headline.".format(pct(shr["BUS-N"], 2),
-                                                                           pct(1 - plat_share["BUS-N"])),
-        "SPT-N": "a large audience, but a modest lift ({}) and half its platform clicks already on tested "
-                 "headlines.".format(pct(shr["SPT-N"], 2)),
+        "LOC-M": "the strongest lift on the list ({}), but its readers reach it through the Brisbane home page, where "
+                 "nearly half the views already end in a click, and its own front, where more than two thirds do, and "
+                 "its editors already test the headlines behind {} of its own-page clicks."
+                 .format(pct(shr["LOC-M"], 2), pct(tested_share["LOC-M"])),
+        "CUL-N": "its winning headlines would win the most clicks of any desk ({:,}), because its editors test very "
+                 "few of them. But {} of those would be taken from the stories beside them on the Culture front and "
+                 "tab, so it adds {:,} clicks to Bightline.".format(r50k(cul["won"]), pct(1 - cul["pass"]),
+                                                                 asks["CUL-N"]["extra"]),
+        "SPT-N": "a large audience, but a modest lift ({}) and half its own-page clicks already on headlines its "
+                 "editors test.".format(pct(shr["SPT-N"], 2)),
         "POL-N": "leads on the dashboard's Politics figure ({:.2f}%), but that average is pulled up by Politics·metro's "
-                 "small Brisbane tests; Politics·national's own tests shrink to {}.".format(vertical_lift("Politics"),
-                                                                                          pct(shr["POL-N"], 2)),
+                 "small Brisbane tests; Politics·national's own tests shrink to {}, and most of its clicks arrive "
+                 "through search, partner apps and social cards, which keep the stored headline."
+                 .format(vertical_lift("Politics"), pct(shr["POL-N"], 2)),
         "SPT-M": "the highest raw winning lift in the archive ({}), drawn from very small tests; shrunk, it is "
-                 "{}.".format(pct(raw["SPT-M"]), pct(shr["SPT-M"], 2)),
+                 "{}.".format(pct(raw["SPT-M"], 1), pct(shr["SPT-M"], 2)),
     }
     for d in order[1:]:
         p = doc.add_paragraph(style="List Bullet")
@@ -752,17 +737,17 @@ def write_docx(path, png):
         r.bold, r.font.size = True, Pt(10.5)
         runs(p, [why[d]])
 
-    doc.add_heading("Readers and corrections", level=2)
+    doc.add_heading("Headline corrections", level=2)
     runs(para(doc), [
-        "Kayla's case is that the squad belongs where the readers are. Politics·national has the most, {:,} a "
-        "month over {:,} visits, but readers do not change which headlines the squad can still move. {} reaches "
-        "{:,} readers a month, and when one of its headlines is wrong the first correction comes a median {} "
-        "minutes after the article goes live. The full set is below and in the workbook."
-        .format(asks["POL-N"]["readers"], asks["POL-N"]["visits"], NAME[CALL], asks[CALL]["readers"],
-                asks[CALL]["median"]), ("3",)])
+        "Politics·national has the most readers on the panel, but readers do not change how many new clicks a "
+        "headline can bring. When one of {}'s headlines is wrong, the first correction comes a median {} minutes "
+        "after the article goes live: {} of its {} corrected articles within the hour and {} after more than three "
+        "hours. The full set is below and in the workbook."
+        .format(NAME[CALL], asks[CALL]["median"], asks[CALL]["hour"], asks[CALL]["corrected"], asks[CALL]["three"]),
+        ("3",)])
 
-    cols = ["Desk", "Extra clicks 2027", "Monthly readers", "Monthly visits", "Median minutes to first headline "
-            "correction"]
+    cols = ["Desk", "Extra clicks 2027", "Median minutes to first headline "
+            "correction", "Within an hour", "After more than three hours"]
     t = doc.add_table(rows=1, cols=len(cols))
     t.alignment = WD_TABLE_ALIGNMENT.CENTER
     t.style = "Table Grid"
@@ -770,13 +755,13 @@ def write_docx(path, png):
         cell = t.rows[0].cells[j]
         cell.text = ""
         rr = cell.paragraphs[0].add_run(h)
-        rr.bold, rr.font.size = True, Pt(8.5)
+        rr.bold, rr.font.size = True, Pt(8)
         rr.font.color.rgb = RGBColor(0xFF, 0xFF, 0xFF)
         shade(cell, "1F3A5F")
     for d in order:
         a = asks[d]
-        vals = [NAME[d], "{:,}".format(a["extra"]), "{:,}".format(a["readers"]), "{:,}".format(a["visits"]),
-                str(a["median"])]
+        vals = [NAME[d], "{:,}".format(a["extra"]),
+                str(a["median"]), str(a["hour"]), str(a["three"])]
         cells = t.add_row().cells
         for j, v in enumerate(vals):
             cells[j].text = ""
@@ -789,32 +774,28 @@ def write_docx(path, png):
             if d == CALL:
                 shade(cells[j], "FDF0E8")
     t.autofit = False
-    for j, w in enumerate([Cm(3.9)] + [Cm(2.6)] * (len(cols) - 1)):     # desk names on one line
+    for j, w in enumerate([Cm(4.2), Cm(2.6), Cm(3.2), Cm(2.4), Cm(3.0)]):
         t.columns[j].width = w
         for row in t.rows:
             row.cells[j].width = w
-    para(doc, "Source: 2027 audience plan; pageviews by source; headline test archive; panel monthly audience "
-         "(restated releases); CMS revisions for the web desks. Readers, visits and minutes cover October 2025 to "
-         "September 2026.", size=8, italic=True, color="595959", space_after=10)
+    para(doc, "Source: 2027 audience plan; pageviews by source; page performance; headline test archive; CMS "
+         "revisions for the web desks. Corrections cover October 2025 to September 2026.", size=8, italic=True,
+         color="595959", space_after=10)
 
     doc.add_heading("Notes", level=3)
     notes = [
         "Prior fitted by maximum likelihood on all {:,} variant packages; a control that is kept counts as zero "
-        "lift. Embedding-by-embedding results are on the workbook's Back-test sheet.".format(N_PACKAGES),
-        "Source codes as defined in the audience warehouse field reference. The 2027 plan holds every desk at its "
-        "October 2025 to September 2026 clicks, with no change in where they come from.",
-        "Readers and visits are the panel's for the desk's section: releases up to R26-03 on the earlier section list "
-        "and R26-04, the first on the 2026 content taxonomy, and every later release (the R26-04H history release "
-        "included) on the 2026 list, each section's month taken from its latest release. The R26-07B restatement "
-        "replaces April to June on both sites; the July file repeats those months as first published, and those rows "
-        "are the replaced figures carried again. A headline correction is a new note on a published "
-        "version that went up with a corrected headline, on the same save or on a save within ten minutes either side "
-        "as the CMS export's field notes allow, a live-blog entry's headline included (editorial standards 7.4 and "
-        "7.5); a note carried forward, or put back after a save that left it off, is not a new correction. Articles "
-        "are stories and live blogs first published October 2025 to September 2026; live-blog posts, restored "
-        "copies and documents carried across at the 1 October 2025 migration are not separate articles. An article "
-        "goes live at its first published version, the time the editor set (Brisbane time) if the CMS published it; "
-        "a restored copy keeps its original's.",
+        "lift. The workbook's Back-test sheet has both tests embedding by embedding.".format(N_PACKAGES),
+        "Click-through is each page's article click-throughs over its views across the twelve months. A desk's "
+        "clicks from the home page are on its edition's home page; from the front and the tab, on its own; the "
+        "Pages sheet lists all {} pages. The 2027 plan holds every desk at its October 2025 to September 2026 "
+        "clicks.".format(len(CTR)),
+        "A headline correction is a new note on a published version that went up with a corrected headline, the fix and the note on one save or on saves up to ten minutes apart, a "
+        "live-blog entry's headline included (editorial standards 7.3 to 7.5); a note carried forward, or put back "
+        "after a save that left it off, is not a new correction. Articles are stories and live blogs first published "
+        "October 2025 to September 2026; live-blog entries and restored copies are not separate articles. An "
+        "article goes live when it is first published, at its scheduled time (Brisbane) if the CMS published it "
+        "then; a restored copy keeps its original's.",
     ]
     for i, n in enumerate(notes, 1):
         para(doc, "{}  {}".format(i, n), size=8.5, color="404040", space_after=3)
@@ -899,27 +880,37 @@ def repack(path):
 
 def write_figures(path):
     """Every figure the write-up states, as it states it (figures_check.py reads this)."""
-    c = chain[CALL]
+    c, cul = chain[CALL], chain["CUL-N"]
     pct = lambda x, k=1: ("{:.%df}" % k).format(100 * x)  # noqa: E731
     fig = {
         "call": NAME[CALL], "call_figure": "{:,}".format(asks[CALL]["extra"]), "runner_up": NAME[RUNNER],
         "runner_up_figure": "{:,}".format(asks[RUNNER]["extra"]), "gap": "{:,}".format(r50k(GAP)),
         "components": {
             "call_shrunk_lift_pct": pct(c["lift"], 2),
-            "call_platform_share_pct": pct(c["platform"] / c["planned"]),
-            "call_desk_tested_share_pct": pct(c["platform_tested"] / c["platform"]),
-            "runner_up_desk_tested_share_pct": pct(chain[RUNNER]["platform_tested"] / chain[RUNNER]["platform"]),
-            "call_untested_platform_clicks": "{:,}".format(r50k(c["untested"])),
-            "runner_up_platform_share_pct": pct(chain[RUNNER]["platform"] / chain[RUNNER]["planned"]),
-            "business_stored_headline_share_pct": pct(1 - chain["BUS-N"]["platform"] / chain["BUS-N"]["planned"]),
+            "call_untested_own_page_clicks": "{:,}".format(r50k(c["untested"])),
+            "call_won_clicks": "{:,}".format(r50k(c["won"])),
+            "call_new_share_pct": pct(c["pass"]),
+            "call_related_links_share_pct": pct(c["by_source"].get("related_links", 0) / c["untested"]),
+            "culture_won_clicks": "{:,}".format(r50k(cul["won"])),
+            "culture_new_share_pct": pct(cul["pass"]),
+            "culture_extra": "{:,}".format(asks["CUL-N"]["extra"]),
+            "runner_up_new_share_pct": pct(chain[RUNNER]["pass"]),
+            "ctr_culture_front_pct": pct(CTR["bightline.com.au/culture/"]),
+            "ctr_culture_tab_pct": pct(CTR["Tab: Culture"]),
+            "ctr_related_pct": pct(CTR["Related stories (article pages)"]),
         },
         "backtest": {"hits": str(HITS), "of": "7", "raw_hits": str(RAW_HITS), "tolerance_pct": "2",
+                     "click_hits": str(CLICK_HITS), "average_share_pct": pct(AVG_KEPT),
+                     "average_share_hits": str(AVG_HITS), "average_share_worst_pct": pct(AVG_WORST, 0),
                      "packages": "{:,}".format(N_PACKAGES)},
         "extra_by_desk": {NAME[d]: "{:,}".format(asks[d]["extra"]) for d in SHORTLIST},
-        "rows": {NAME[d]: {"readers": "{:,}".format(asks[d]["readers"]), "visits": "{:,}".format(asks[d]["visits"]),
-                           "median_minutes": str(asks[d]["median"])} for d in SHORTLIST},
-        "write_up": {"policy_clauses": ["7.4", "7.5"], "pairing_minutes": "10", "aest_offset_hours": "10",
-                     "july_rows_set_aside": str(ECHO_ROWS), "rounding": ["50,000", "1,000"]},
+        "rows": {NAME[d]: {
+                           "median_minutes": str(asks[d]["median"]), "within_hour": str(asks[d]["hour"]),
+                           "over_three_hours": str(asks[d]["three"]), "corrected": str(asks[d]["corrected"])}
+                 for d in SHORTLIST},
+        "write_up": {"policy_clauses": ["7.3", "7.4", "7.5", "7.8"], "pairing_minutes": "10", "aest_offset_hours": "10",
+                     "rounding": ["50,000"],
+                     "pages": str(len(CTR))},
     }
     import json
     with open(path, "w", encoding="utf-8") as fh:
@@ -947,27 +938,21 @@ def main():
           % (NAME[CALL], "{:,}".format(asks[CALL]["extra"]), "{:,.0f}".format(chain[CALL]["extra"])))
     print("RUNNER-UP  %s  %s; gap %s (unrounded %s)" % (NAME[RUNNER], "{:,}".format(asks[RUNNER]["extra"]),
           "{:,}".format(r50k(GAP)), "{:,.0f}".format(GAP)))
-    print("RAW LIFT BACK-TEST  %d of 7 within 2%%" % RAW_HITS)
     print("REFEREE  March 2026 headline and text corrections, seven web desks: %d and %d (bulletin %d and %d)"
           % (MARCH, MARCH_TEXT, MARCH_FILED, MARCH_TEXT_FILED))
-    print("BACK-TEST  %d of 7 within 2%%  (worst %.2f%%)" % (HITS, 100 * max(abs(b["diff"]) for b in backtest)))
-    print("\ncritical components")
-    print("%-18s %10s %14s %14s %16s %12s" % ("desk", "shrunk", "platform shr", "desk-tested", "untested clicks",
-                                             "extra"))
+    print("BACK-TEST  lift %d of 7 within 2%% (raw %d); clicks %d of 7 (one average share %.1f%%: %d of 7, worst %.0f%%)"
+          % (HITS, RAW_HITS, CLICK_HITS, 100 * AVG_KEPT, AVG_HITS, 100 * AVG_WORST))
+    print("\n%-18s %8s %13s %12s %8s %10s" % ("desk", "shrunk", "untested", "won", "new", "extra"))
     for d in order:
         c = chain[d]
-        print("%-18s %9.2f%% %13.1f%% %13.1f%% %16s %12s" % (
-            NAME[d], 100 * c["lift"], 100 * c["platform"] / c["planned"], 100 * c["platform_tested"] / c["platform"],
-            "{:,}".format(r50k(c["untested"])), "{:,}".format(asks[d]["extra"])))
-    print("\nworkbook rows (July file rows set aside as the replaced figures carried again: %d)" % ECHO_ROWS)
+        print("%-18s %7.2f%% %13s %12s %7.1f%% %10s" % (NAME[d], 100 * c["lift"], "{:,}".format(r50k(c["untested"])),
+              "{:,}".format(r50k(c["won"])), 100 * c["pass"], "{:,}".format(asks[d]["extra"])))
+    print("\nworkbook rows")
     for d in SHORTLIST:
         a = asks[d]
-        print("%-18s readers %9s  visits %10s  median %d min" % (
-            NAME[d], "{:,}".format(a["readers"]), "{:,}".format(a["visits"]), a["median"]))
-    print("\nback-test")
-    for b in backtest:
-        print("#%d %-9s %d  %d tests  shrunk %.2f%%  %+.2f%%" % (b["n"], b["desk"], b["year"], b["tests"],
-                                                                100 * b["shrunk"], 100 * b["diff"]))
+        print("%-18s median %3d min  within an hour %2d  over three hours %d  (of %d)" % (
+            NAME[d], a["median"], a["hour"], a["three"],
+            a["corrected"]))
 
 
 if __name__ == "__main__":

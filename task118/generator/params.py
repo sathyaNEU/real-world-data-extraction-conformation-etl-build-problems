@@ -92,8 +92,60 @@ SOURCE_DESC = {
     "newsletter": "Bightline email newsletters",
     "alerts": "Push and browser alerts",
 }
-PLAT_SPLIT = {"national": [0.30, 0.15, 0.30, 0.10, 0.15], "brisbane": [0.25, 0.15, 0.35, 0.10, 0.15],
-              "app": [0.0, 0.0, 0.55, 0.35, 0.10]}
+# where each desk's clicks from Bightline's own surfaces come from: home page, section front, app feed, app tab,
+# related-stories module (the shares an article's own-surface clicks are drawn around)
+PLAT_SPLIT = {
+    "POL-N": [0.36, 0.14, 0.30, 0.06, 0.14], "BUS-N": [0.20, 0.07, 0.16, 0.05, 0.52],
+    "SPT-N": [0.33, 0.22, 0.30, 0.10, 0.05], "CUL-N": [0.08, 0.50, 0.08, 0.30, 0.04],
+    "POL-M": [0.36, 0.20, 0.28, 0.08, 0.08], "SPT-M": [0.30, 0.25, 0.30, 0.10, 0.05],
+    "LOC-M": [0.38, 0.27, 0.24, 0.07, 0.04],
+    "GAM-A": [0.0, 0.0, 0.75, 0.20, 0.05], "PZL-A": [0.0, 0.0, 0.33, 0.62, 0.05],
+    "RCP-A": [0.0, 0.0, 0.33, 0.15, 0.52], "WEL-A": [0.0, 0.0, 0.55, 0.27, 0.18],
+}
+# the page analytics: every page that shows article headlines, by platform, with the share of its views that end in an
+# article click-through (the year's level; each month moves a little around it). Pages are named as the web and app
+# analytics tools name them.
+PAGES = [  # key, platform, page, click-through
+    ("home:national", "web", "bightline.com.au/", 0.43),
+    ("home:brisbane", "web", "bightline.com.au/brisbane/", 0.47),
+    ("front:POL-N", "web", "bightline.com.au/politics/", 0.66),
+    ("front:BUS-N", "web", "bightline.com.au/business/", 0.63),
+    ("front:SPT-N", "web", "bightline.com.au/sport/", 0.72),
+    ("front:CUL-N", "web", "bightline.com.au/culture/", 0.83),
+    ("front:POL-M", "web", "bightline.com.au/brisbane/politics/", 0.64),
+    ("front:SPT-M", "web", "bightline.com.au/brisbane/sport/", 0.75),
+    ("front:LOC-M", "web", "bightline.com.au/brisbane/local/", 0.69),
+    ("feed", "app", "Home feed", 0.41),
+    ("tab:POL-N", "app", "Tab: Politics", 0.64),
+    ("tab:BUS-N", "app", "Tab: Business", 0.62),
+    ("tab:SPT-N", "app", "Tab: Sport", 0.70),
+    ("tab:CUL-N", "app", "Tab: Culture", 0.81),
+    ("tab:POL-M", "app", "Tab: Brisbane Politics", 0.62),
+    ("tab:SPT-M", "app", "Tab: Brisbane Sport", 0.73),
+    ("tab:LOC-M", "app", "Tab: Brisbane Local", 0.67),
+    ("tab:GAM-A", "app", "Tab: Games", 0.74),
+    ("tab:PZL-A", "app", "Tab: Puzzles", 0.80),
+    ("tab:RCP-A", "app", "Tab: Recipes", 0.66),
+    ("tab:WEL-A", "app", "Tab: Wellness", 0.71),
+    ("related", "web and app", "Related stories (article pages)", 0.12),
+]
+PAGE_T = {k: t for k, _, _, t in PAGES}
+PAGE_NOISE = 0.015            # each month's click-through within this share of the page's year level
+def page_of(desk, source):
+    """The page a desk's click from one of Bightline's own surfaces starts on."""
+    if source == "home_web":
+        return "home:brisbane" if desk in METRO else "home:national"
+    if source == "section_web":
+        return "front:" + desk
+    if source == "feed_app":
+        return "feed"
+    if source == "section_app":
+        return "tab:" + desk
+    if source == "related_links":
+        return "related"
+    raise KeyError(source)
+HOLDBACK_PCT = 5              # the squad's reader holdback in every embedding
+EXTRA_NOISE = 0.012           # each closed embedding's measured extra clicks within this share of the pass-through value
 OTHER_SPLIT = {  # search, discover, social, newsletter, alerts
     "POL-N": [0.44, 0.21, 0.22, 0.05, 0.08], "BUS-N": [0.52, 0.17, 0.17, 0.08, 0.06],
     "SPT-N": [0.36, 0.26, 0.25, 0.03, 0.10], "CUL-N": [0.48, 0.26, 0.18, 0.06, 0.02],
@@ -158,6 +210,13 @@ QUIET_TO = (2026, 4, 3)
 # scheduling: share of articles saved as scheduled; of those, the share an editor published by hand first
 SCHED_SHARE = 0.36
 EARLY_SHARE = 0.25
+# schedules set back to draft before their time (published by hand later that day) and schedules set back to draft
+# and set again: base rates on stories never corrected, the earliest old scheduled time (minutes after midnight,
+# Brisbane), and each desk's draw
+CANCEL_BASE = 0.05
+RESCHED_BASE = 0.06
+CANCEL_EARLIEST = 300
+CANCEL_SUBSEED = {"POL-N": 0, "BUS-N": 0, "SPT-N": 0, "CUL-N": 0, "POL-M": 0, "SPT-M": 0, "LOC-M": 0}
 # autosaves of a live document: before a headline correction, (A) the new headline only, (B) headline and note
 AUTO_A, AUTO_B = 0.34, 0.20
 AUTO_B_QUIET = 0.25

@@ -1,76 +1,92 @@
 {
  "backtest": {
+  "average_share_hits": "2",
+  "average_share_pct": "57.0",
+  "average_share_worst_pct": "57",
+  "click_hits": "7",
   "hits": "7",
   "of": "7",
   "packages": "10,111",
   "raw_hits": "0",
   "tolerance_pct": "2"
  },
- "call": "Culture·national",
- "call_figure": "1,250,000",
+ "call": "Business·national",
+ "call_figure": "500,000",
  "components": {
-  "business_stored_headline_share_pct": "72.1",
-  "call_desk_tested_share_pct": "8.6",
-  "call_platform_share_pct": "50.2",
-  "call_shrunk_lift_pct": "1.78",
-  "call_untested_platform_clicks": "70,300,000",
-  "runner_up_desk_tested_share_pct": "71.1",
-  "runner_up_platform_share_pct": "94.7"
+  "call_new_share_pct": "71.1",
+  "call_related_links_share_pct": "52.3",
+  "call_shrunk_lift_pct": "2.00",
+  "call_untested_own_page_clicks": "34,900,000",
+  "call_won_clicks": "700,000",
+  "ctr_culture_front_pct": "83.1",
+  "ctr_culture_tab_pct": "81.1",
+  "ctr_related_pct": "12.0",
+  "culture_extra": "350,000",
+  "culture_new_share_pct": "26.9",
+  "culture_won_clicks": "1,250,000",
+  "runner_up_new_share_pct": "48.6"
  },
  "extra_by_desk": {
-  "Business·national": "700,000",
-  "Culture·national": "1,250,000",
-  "Local·metro": "800,000",
-  "Politics·national": "550,000",
-  "Sport·metro": "100,000",
-  "Sport·national": "650,000"
+  "Business·national": "500,000",
+  "Culture·national": "350,000",
+  "Local·metro": "400,000",
+  "Politics·national": "300,000",
+  "Sport·metro": "50,000",
+  "Sport·national": "300,000"
  },
- "gap": "450,000",
+ "gap": "100,000",
  "rows": {
   "Business·national": {
+   "corrected": "37",
    "median_minutes": "89",
-   "readers": "1,760,000",
-   "visits": "6,642,000"
+   "over_three_hours": "6",
+   "within_hour": "10"
   },
   "Culture·national": {
+   "corrected": "13",
    "median_minutes": "119",
-   "readers": "1,412,000",
-   "visits": "5,052,000"
+   "over_three_hours": "5",
+   "within_hour": "1"
   },
   "Local·metro": {
+   "corrected": "31",
    "median_minutes": "102",
-   "readers": "617,000",
-   "visits": "2,359,000"
+   "over_three_hours": "6",
+   "within_hour": "12"
   },
   "Politics·national": {
+   "corrected": "43",
    "median_minutes": "86",
-   "readers": "3,180,000",
-   "visits": "13,041,000"
+   "over_three_hours": "7",
+   "within_hour": "14"
   },
   "Sport·metro": {
+   "corrected": "17",
    "median_minutes": "55",
-   "readers": "470,000",
-   "visits": "1,550,000"
+   "over_three_hours": "2",
+   "within_hour": "9"
   },
   "Sport·national": {
+   "corrected": "39",
    "median_minutes": "47",
-   "readers": "2,931,000",
-   "visits": "11,626,000"
+   "over_three_hours": "2",
+   "within_hour": "23"
   }
  },
  "runner_up": "Local·metro",
- "runner_up_figure": "800,000",
+ "runner_up_figure": "400,000",
  "write_up": {
   "aest_offset_hours": "10",
-  "july_rows_set_aside": "27",
+  "pages": "22",
   "pairing_minutes": "10",
   "policy_clauses": [
+   "7.3",
    "7.4",
-   "7.5"
+   "7.5",
+   "7.8"
   ],
   "rounding": [
-   "50,000",
-   "1,000"
+   "50,000"
   ]
  }
 }

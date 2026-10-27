@@ -1,125 +1,125 @@
 {
-  "task": "task118",
-  "architecture": "v2",
-  "drawn": "2026-10-27",
-  "slot_note": "pilot realising analytical_tasks note OS01; the note's decisive rung (pattern C, platform-drawn click share) is kept as rung 3 and a new decisive rung, the gain the desks already bank through their own tests, sits above it",
-  "domain": "product-analytics",
-  "subdomain": "churn-propensity-uplift-modeling",
-  "niche": "a national news publisher choosing which of six shortlisted desks its one headline-testing squad embeds with for 2027, sized by the article clicks the squad's shipped headlines add to the whole site once the clicks they take from the other headlines on the same home page, section front, app feed, app tab or related-stories module are netted off",
-  "objective": "opportunity-sizing-decision",
-  "shape": "14",
-  "decision_type": "pick_one_of_n",
-  "answer_unit": "named_option",
-  "answer": null,
-  "answer_source": "submission.md block 1 and squad_placement_2027.docx",
-  "gap": [
-    "objective",
-    "population",
-    "rule"
+ "task": "task118",
+ "architecture": "v2",
+ "drawn": "2026-10-27",
+ "slot_note": "pilot realising analytical_tasks note OS01; the note's decisive rung (pattern C, platform-drawn click share) is kept as rung 3 and a new decisive rung, the gain the desks already bank through their own tests, sits above it",
+ "domain": "product-analytics",
+ "subdomain": "churn-propensity-uplift-modeling",
+ "niche": "a national news publisher choosing which of six shortlisted desks its one headline-testing squad embeds with for 2027, sized by the article clicks the squad's shipped headlines add to the whole site once the clicks they take from the other headlines on the same home page, section front, app feed, app tab or related-stories module are netted off",
+ "objective": "opportunity-sizing-decision",
+ "shape": "14",
+ "decision_type": "pick_one_of_n",
+ "answer_unit": "named_option",
+ "answer": "Business·national, 500,000 extra article clicks in 2027 (runner-up Local·metro at 400,000, 100,000 behind)",
+ "answer_source": "submission.md block 1 and squad_placement_2027.docx",
+ "gap": [
+  "objective",
+  "population",
+  "rule"
+ ],
+ "pattern": [
+  "none",
+  "C",
+  "B"
+ ],
+ "generators": [
+  "G1",
+  "G16",
+  "G8",
+  "G5"
+ ],
+ "gate_g": "decomposition_attribution",
+ "calibration_form": "realised_outcome_roster",
+ "stump_strategy": "causal_design",
+ "decisive_rule_filed": false,
+ "official_decoy": false,
+ "validated_decoy": false,
+ "context_artifact": "filed_model",
+ "stakeholder_role": "managing editor of a national news publisher, who places the newsroom's one headline-testing squad",
+ "role_family": "operations_director",
+ "scoring_unit": "other",
+ "spine": {
+  "file": "pageviews_by_source_age_2025-10_2026-09.parquet",
+  "rows": 2312406,
+  "entity": "the article pageviews counted for one article, one click-source surface and one band of article age at the click",
+  "grain": "article x click-source surface x age band",
+  "source": "synthetic (fictional publisher's audience export); no third-party data"
+ },
+ "forum": "committee_or_panel",
+ "forcing_event": "launch_or_rollout",
+ "org_family": "media_or_publishing",
+ "world": {
+  "geography": "Australia (national edition and a Brisbane metro edition)",
+  "currency": "AUD",
+  "org_type": "national digital news publisher with a Brisbane metro edition, funded by subscriptions and advertising",
+  "invented_names": [
+   "Bightline News",
+   "Bightline Brisbane"
   ],
-  "pattern": [
+  "people": [
+   "Corey Cox",
+   "Kayla Torres",
+   "Nina Franklin",
+   "Lisa Jennings",
+   "Willie Smith",
+   "Natalie Benjamin"
+  ]
+ },
+ "deliverables": [
+  "squad_placement_2027.docx",
+  "squad_placement_2027.xlsx"
+ ],
+ "opening_move": "question-first",
+ "driver": "The decisive quantity is the share of an item's measured gain that is new to the whole system rather than taken from the items shown beside it, which is one minus the rate at which a view of the shared display already ends in a choice; a unit whose volume arrives through displays that nearly always convert keeps little of its measured gain, so the unit leading on the measured gain falls behind one whose volume arrives through displays that rarely convert.",
+ "driver_concrete": "A shipped headline wins its test on its own click-through, but on Bightline's fixed pages most of the clicks it gains come from the headlines beside it, and only the share of page views that would otherwise end in no article click is new to the site. Culture·national's own-surface clicks come mostly from its section front and its app tab, where about four in five views already end in a click, so little of its tested gain is new, while Business·national's come through the home page and the related-stories module, where most views end without one.",
+ "stump": "A competent solver shrinks each desk's winning lift against the change log, sizes it on the clicks from Bightline's own pages, leaves out the articles the desk's editors already test and names Culture·national at about 1,250,000 (scaling every desk by the closed embeddings' average shortfall still names Culture·national); the step that lands them there is crediting every click a shipped headline wins as new to Bightline, when on a fixed page most come from the headlines beside it and only the share of views that would otherwise end in no click is new, and Culture·national's own-page clicks come from its section front and app tab where about four in five views already end in a click.",
+ "mechanism_source": "design_note",
+ "differentiation": {
+  "task302": "task302 nets the sales a stocked-out product loses against the substitutes shoppers buy instead, measured from the other products' excess while it is out; task118 v2 nets a tested headline's measured gain against the clicks it takes from the other headlines on the same page, read as one minus that page's own click-through and validated on reader holdbacks, with no out-of-stock spell or excess anywhere.",
+  "task120": "Shares the gap, the pattern and Gate G. task120 (v3) recovers a peak draw as inflow less what accumulated inside the system, so the inflow record understates the draw exactly when the internal reserve is drawn down. task118 has no stock, no accumulation and no understatement: its naive route OVERSTATES, by sizing a programme's gain on a base that already contains gains the receiving desk banks for itself, and the netting is identified by who ran each test rather than by a balance.",
+  "task118": "v1 netted a desk's gain against the headlines its own editors already test (an ownership filter, read by both portal responses as obvious); v2 keeps that filter in the default path and decides on what share of a shipped headline's clicks is new to the site at all, one minus each fixed page's own click-through, which no filter, join or ownership record carries.",
+  "task184": "task184 v1 took a shared resource's addition to a site from the gap between the site's own plan and what it does on its own; task118 v2 takes the squad's addition from how much of each shipped headline's measured gain the page it sits on would otherwise have lost to no click at all, read from the page's own click-through, with no plan-versus-actual gap.",
+  "task198": "task198 v4 recovers an entitlement hidden behind a reported lesser-of value in a claims record; task118 v2 nets a correctly measured per-item gain against the share of it taken from neighbouring items on a shared page; neither the lesser-of censoring nor any recoverable entitlement appears.",
+  "task472": "task472 credits a job's cut work only where it brings a release forward to an earlier window a schedule fixes; task118 v2 credits a headline's gain only for the share of a page's views that would otherwise end in no click; the netting is a probability read off each page's click-through, not a discrete window from an external schedule."
+ },
+ "lineage": [
+  {
+   "architecture": "v1 (loops 0 to 4, shipped 10-12, reshipped 10-27 after the portal's determinism block): the headlines each desk's own editors already test netted out of the squad's sized gain",
+   "fate": "FAILED_TO_STUMP 2026-10-27: both portal responses filed Culture·national at 1,250,000 (the golden), by keeping the clicks from Bightline's own surfaces and dropping the articles a desk had already tested, a filter they read as obvious (a tested headline cannot be tested again); shrinkage against the change log moved only the figure, never the desk",
+   "domain": "marketing-consumer-research",
+   "objective": "opportunity-sizing-decision",
+   "gap": [
+    "objective",
+    "rule",
+    "population"
+   ],
+   "pattern": [
     "none",
     "C",
     "B"
-  ],
-  "generators": [
-    "G1",
-    "G16",
-    "G8",
-    "G5"
-  ],
-  "gate_g": "decomposition_attribution",
-  "calibration_form": "realised_outcome_roster",
-  "stump_strategy": "causal_design",
-  "decisive_rule_filed": false,
-  "official_decoy": false,
-  "validated_decoy": false,
-  "context_artifact": "filed_model",
-  "stakeholder_role": "managing editor of a national news publisher, who places the newsroom's one headline-testing squad",
-  "role_family": "operations_director",
-  "scoring_unit": "other",
-  "spine": {
-    "file": "pageviews_by_source_age_2025-10_2026-09.parquet",
-    "rows": 2324291,
-    "entity": "the article pageviews counted for one article, one click-source surface and one band of article age at the click",
-    "grain": "article x click-source surface x age band",
-    "source": "synthetic (fictional publisher's audience export); no third-party data"
-  },
-  "forum": "committee_or_panel",
-  "forcing_event": "launch_or_rollout",
-  "org_family": "media_or_publishing",
-  "world": {
-    "geography": "Australia (national edition and a Brisbane metro edition)",
-    "currency": "AUD",
-    "org_type": "national digital news publisher with a Brisbane metro edition, funded by subscriptions and advertising",
-    "invented_names": [
-      "Bightline News",
-      "Bightline Brisbane"
-    ],
-    "people": [
-      "Corey Cox",
-      "Kayla Torres",
-      "Nina Franklin",
-      "Lisa Jennings",
-      "Willie Smith",
-      "Natalie Benjamin"
-    ]
-  },
-  "deliverables": [
-    "squad_placement_2027.docx",
-    "squad_placement_2027.xlsx"
-  ],
-  "opening_move": "question-first",
-  "driver": "The decisive quantity is the share of an item's measured gain that is new to the whole system rather than taken from the items shown beside it, which is one minus the rate at which a view of the shared display already ends in a choice; a unit whose volume arrives through displays that nearly always convert keeps little of its measured gain, so the unit leading on the measured gain falls behind one whose volume arrives through displays that rarely convert.",
-  "driver_concrete": "A shipped headline wins its test on its own click-through, but on Bightline's fixed pages most of the clicks it gains come from the headlines beside it, and only the share of page views that would otherwise end in no article click is new to the site. Culture·national's own-surface clicks come mostly from its section front and its app tab, where about four in five views already end in a click, so little of its tested gain is new, while Business·national's come through the home page and the related-stories module, where most views end without one.",
-  "stump": "A competent solver shrinks each desk's winning lift against the change log, sizes it on the clicks from Bightline's own pages, leaves out the articles the desk's editors already test and names Culture·national at about 1,250,000 (scaling every desk by the closed embeddings' average shortfall still names Culture·national); the step that lands them there is crediting every click a shipped headline wins as new to Bightline, when on a fixed page most come from the headlines beside it and only the share of views that would otherwise end in no click is new, and Culture·national's own-page clicks come from its section front and app tab where about four in five views already end in a click.",
-  "mechanism_source": "design_note",
-  "differentiation": {
-    "task302": "task302 nets the sales a stocked-out product loses against the substitutes shoppers buy instead, measured from the other products' excess while it is out; task118 v2 nets a tested headline's measured gain against the clicks it takes from the other headlines on the same page, read as one minus that page's own click-through and validated on reader holdbacks, with no out-of-stock spell or excess anywhere.",
-    "task120": "Shares the gap, the pattern and Gate G. task120 (v3) recovers a peak draw as inflow less what accumulated inside the system, so the inflow record understates the draw exactly when the internal reserve is drawn down. task118 has no stock, no accumulation and no understatement: its naive route OVERSTATES, by sizing a programme's gain on a base that already contains gains the receiving desk banks for itself, and the netting is identified by who ran each test rather than by a balance.",
-    "task118": "v1 netted a desk's gain against the headlines its own editors already test (an ownership filter, read by both portal responses as obvious); v2 keeps that filter in the default path and decides on what share of a shipped headline's clicks is new to the site at all, one minus each fixed page's own click-through, which no filter, join or ownership record carries.",
-    "task184": "task184 v1 took a shared resource's addition to a site from the gap between the site's own plan and what it does on its own; task118 v2 takes the squad's addition from how much of each shipped headline's measured gain the page it sits on would otherwise have lost to no click at all, read from the page's own click-through, with no plan-versus-actual gap.",
-    "task198": "task198 v4 recovers an entitlement hidden behind a reported lesser-of value in a claims record; task118 v2 nets a correctly measured per-item gain against the share of it taken from neighbouring items on a shared page; neither the lesser-of censoring nor any recoverable entitlement appears.",
-    "task472": "task472 credits a job's cut work only where it brings a release forward to an earlier window a schedule fixes; task118 v2 credits a headline's gain only for the share of a page's views that would otherwise end in no click; the netting is a probability read off each page's click-through, not a discrete window from an external schedule."
-  },
-  "lineage": [
-    {
-      "architecture": "v1 (loops 0 to 4, shipped 10-12, reshipped 10-27 after the portal's determinism block): the headlines each desk's own editors already test netted out of the squad's sized gain",
-      "fate": "FAILED_TO_STUMP 2026-10-27: both portal responses filed Culture·national at 1,250,000 (the golden), by keeping the clicks from Bightline's own surfaces and dropping the articles a desk had already tested, a filter they read as obvious (a tested headline cannot be tested again); shrinkage against the change log moved only the figure, never the desk",
-      "domain": "marketing-consumer-research",
-      "objective": "opportunity-sizing-decision",
-      "gap": [
-        "objective",
-        "rule",
-        "population"
-      ],
-      "pattern": [
-        "none",
-        "C",
-        "B"
-      ],
-      "gate_g": "decomposition_attribution",
-      "decision_type": "pick_one_of_n",
-      "stump_strategy": "causal_design",
-      "driver": "The gain a specialist team adds to a unit is its effect on the reachable volume the unit does not already treat itself, because the unit's own past trials, which supply the measured effect, have already banked their gains in the volume carried forward; every closed deployment went to units that had never run a trial of their own, so the shrunk effect times reachable volume reproduces all of them, while the unit leading on that basis already treats the items that carry most of its reachable volume and a unit that has treated little of its own overtakes it.",
-      "stump": "A competent solver rebuilds each desk's winning lift from the test archive, shrinks it as the seven closed embeddings' realised holdback lifts require, counts only the clicks that start on surfaces that show the tested headline, and names Local·metro at 2,800,000; the step that lands them there is never asking who ran the tests behind each desk's lift, which the archive's test owners joined to the newsroom staff list answer: Local·metro's own editors already test the headlines behind 71.1% of its platform clicks, so most of the gain the squad was sized on is already in the plan."
-    }
-  ],
-  "notes": "Re-rooted 2026-10-27 to architecture 2 after the portal's FAILED_TO_STUMP; the pairing moved from marketing-consumer-research/media-reach-frequency-audience-measurement, whose task types serve Descriptive and Forecasting only, to product-analytics/churn-propensity-uplift-modeling, which serves Opportunity Sizing; the world, the six desks, the people and the ask layer are kept.",
-  "stump_class": "analytical",
-  "client_domain": "product-analytics",
-  "analyst_test": "A strong analyst who conforms the click log, the test archive and the plan correctly, shrinks each desk's lift as the change log's holdback lifts require, sizes it on the clicks from Bightline's own pages and nets out the headlines each desk already tests names Culture·national at about 1,250,000, and one who also scales every desk by the closed embeddings' average shortfall still names Culture·national; the easy route never asks how many of a shipped headline's clicks are new to the site, which on a fixed page is one minus the share of views that already end in a click, and that share is highest on the section fronts and app tabs Culture·national depends on.",
-  "domain_test": "Uplift sizing for a headline-testing squad: what the squad adds to Bightline is the incremental clicks of its shipped headlines, which on a fixed-slot page is the tested lift times the share of the page's views that would otherwise end without an article click, read surface by surface from the page analytics and validated on the closed embeddings' reader holdbacks; with a hospital's or a utility's nouns there is no page of competing headlines whose views either end in a click or do not, so the quantity that decides the desk has nothing to attach to.",
-  "question_form": "which",
-  "registered": "2026-10-27T04:25:00Z",
-  "layer2_family": "estimand_identification",
-  "layer2_pattern": "own:fixed-slate-interference-in-headline-test-uplift",
-  "layer1": [
-    "two test engines in one archive (the app engine since 2019, the web self-serve tool from the October 2025 CMS migration)",
-    "test owners resolving through a staff list that keeps leavers",
-    "pageviews at article x click-source surface x age band, with home pages outside the article extract",
-    "page analytics by page and month on the web and app tools' own page names, beside a pageview extract coded by surface",
-    "a planning workbook with a total row and the base year carried forward",
-    "a CMS revision export with drafts, scheduled saves, live-blog entries, a restored instance and migrated documents, saves in UTC and scheduled times in Brisbane time"
-  ]
+   ],
+   "gate_g": "decomposition_attribution",
+   "decision_type": "pick_one_of_n",
+   "stump_strategy": "causal_design",
+   "driver": "The gain a specialist team adds to a unit is its effect on the reachable volume the unit does not already treat itself, because the unit's own past trials, which supply the measured effect, have already banked their gains in the volume carried forward; every closed deployment went to units that had never run a trial of their own, so the shrunk effect times reachable volume reproduces all of them, while the unit leading on that basis already treats the items that carry most of its reachable volume and a unit that has treated little of its own overtakes it.",
+   "stump": "A competent solver rebuilds each desk's winning lift from the test archive, shrinks it as the seven closed embeddings' realised holdback lifts require, counts only the clicks that start on surfaces that show the tested headline, and names Local·metro at 2,800,000; the step that lands them there is never asking who ran the tests behind each desk's lift, which the archive's test owners joined to the newsroom staff list answer: Local·metro's own editors already test the headlines behind 71.1% of its platform clicks, so most of the gain the squad was sized on is already in the plan."
+  }
+ ],
+ "notes": "Re-rooted 2026-10-27 to architecture 2 after the portal's FAILED_TO_STUMP; the pairing moved from marketing-consumer-research/media-reach-frequency-audience-measurement, whose task types serve Descriptive and Forecasting only, to product-analytics/churn-propensity-uplift-modeling, which serves Opportunity Sizing; the world, the six desks, the people and the ask layer are kept.",
+ "stump_class": "analytical",
+ "client_domain": "product-analytics",
+ "analyst_test": "A strong analyst who conforms the click log, the test archive and the plan correctly, shrinks each desk's lift as the change log's holdback lifts require, sizes it on the clicks from Bightline's own pages and nets out the headlines each desk already tests names Culture·national at about 1,250,000, and one who also scales every desk by the closed embeddings' average shortfall still names Culture·national; the easy route never asks how many of a shipped headline's clicks are new to the site, which on a fixed page is one minus the share of views that already end in a click, and that share is highest on the section fronts and app tabs Culture·national depends on.",
+ "domain_test": "Uplift sizing for a headline-testing squad: what the squad adds to Bightline is the incremental clicks of its shipped headlines, which on a fixed-slot page is the tested lift times the share of the page's views that would otherwise end without an article click, read surface by surface from the page analytics and validated on the closed embeddings' reader holdbacks; with a hospital's or a utility's nouns there is no page of competing headlines whose views either end in a click or do not, so the quantity that decides the desk has nothing to attach to.",
+ "question_form": "which",
+ "registered": "2026-10-27T04:25:00Z",
+ "layer2_family": "estimand_identification",
+ "layer2_pattern": "own:fixed-slate-interference-in-headline-test-uplift",
+ "layer1": [
+  "two test engines in one archive (the app engine since 2019, the web self-serve tool from the October 2025 CMS migration)",
+  "test owners resolving through a staff list that keeps leavers",
+  "pageviews at article x click-source surface x age band, with home pages outside the article extract",
+  "page analytics by page and month on the web and app tools' own page names, beside a pageview extract coded by surface",
+  "a planning workbook with a total row and the base year carried forward",
+  "a CMS revision export with drafts, scheduled saves (some set back to draft before their time), autosaves of live articles, live-blog entries, a restored instance and migrated documents, saves in UTC and scheduled times in Brisbane time"
+ ]
 }

@@ -40,12 +40,10 @@ F = dict(
     staff="newsroom_staff_list_2026-10-12.xlsx",
     plan="audience_plan_2027.xlsx",
     changelog="headline_squad_change_log.xlsx",
-    fieldref="audience_warehouse_field_reference.md",
     charter="headline_squad_2027_placement_brief.pdf",
     desks="desk_register.csv",
     dashboard="experimentation_dashboard_export_2026-10-01.csv",
     cms="cms_revisions_web_desks_2025-10_2026-09.csv",
-    cmsnotes="cms_revisions_export_fields.txt",
     policy="editorial_standards_s7_corrections.pdf",
     panel="panel_monthly_audience_2025-10_2026-09.csv",
     panelwb="panel_reference_workbook.xlsx",
@@ -53,40 +51,25 @@ F = dict(
     thread="squad_placement_thread.eml",
     agreement="newsfold_syndication_agreement.pdf",
     newsletter="newsletter_performance_2026-07_2026-09.csv",
-    exportlog="audience_data_export_log.csv",
+    pages="page_performance_monthly_2025-10_2026-09.csv",
 )
-# The dashboard export is the licensed wrong basis's instrument (rung 0): declared as a wrong-basis distractor.
-DISTRACTORS = ["agreement", "newsletter", "dashboard"]
+# The dashboard export is the licensed wrong basis's instrument (rung 0): declared as a wrong-basis distractor. The
+# panel export and its workbook carry the head of audience's readers, which the answer never reads.
+DISTRACTORS = ["agreement", "newsletter", "dashboard", "panel", "panelwb"]
 EXPORT_STAMP = dt.datetime(2026, 10, 16, 9, 0)      # AEST: the folder as handed over; no file is later than this
 # AEST wall clock at which each file was last written: its mtime, a workbook's last save, a document's own date.
 # The six extract runs are the export log's; every other file keeps the date its own owner gave it. The change
 # log's save is computed from its rows (changelog_saved).
 STAMP = dict(
     dashboard=dt.datetime(2026, 10, 1, 9, 14), newsletter=dt.datetime(2026, 10, 2, 10, 38),
-    fieldref=dt.datetime(2026, 10, 2, 16, 52), plan=dt.datetime(2026, 10, 9, 14, 5),
+    plan=dt.datetime(2026, 10, 9, 14, 5), pages=dt.datetime(2026, 10, 14, 15, 26),
     staff=dt.datetime(2026, 10, 12, 8, 46), charter=dt.datetime(2026, 10, 12, 16, 20, 41),
     panel=dt.datetime(2026, 10, 15, 16, 18), panelwb=dt.datetime(2026, 10, 15, 16, 40),
     spine=dt.datetime(2026, 10, 16, 6, 31), archive=dt.datetime(2026, 10, 16, 6, 44),
     desks=dt.datetime(2026, 10, 16, 6, 46), cms=dt.datetime(2026, 10, 16, 7, 19),
-    cmsnotes=dt.datetime(2026, 10, 16, 7, 52), exportlog=dt.datetime(2026, 10, 16, 7, 56),
-    thread=dt.datetime(2026, 10, 16, 8, 41), policy=dt.datetime(2025, 1, 28, 11, 0, 37),
+    thread=dt.datetime(2026, 10, 16, 8, 41), policy=dt.datetime(2025, 11, 27, 11, 0, 37),
     bulletin=dt.datetime(2026, 4, 8, 11, 30), agreement=dt.datetime(2025, 6, 24, 15, 0, 12),
 )
-# Audience data's export log: the extract runs behind the files it produced (run id, source, run by, requested by,
-# coverage). Workbooks and documents from other owners are not extract runs and carry their own provenance.
-EXTRACT_RUNS = [
-    ("newsletter", "EXT-26-1187", "Email platform", "Natalie Benjamin", "Kayla Torres",
-     "Weeks starting 29 Jun to 21 Sep 2026"),
-    ("panel", "EXT-26-1239", "Audience warehouse", "Kayla Torres", "Kayla Torres",
-     "Periods Oct 2025 to Sep 2026, every release"),
-    ("spine", "EXT-26-1244", "Audience warehouse", "Natalie Benjamin", "Corey Cox",
-     "Pageviews 1 Oct 2025 to 30 Sep 2026 (AEST), all desks"),
-    ("archive", "EXT-26-1245", "Audience warehouse", "Natalie Benjamin", "Corey Cox",
-     "App engine from 2019; web CMS engine from 1 Oct 2025; concluded to 30 Sep 2026"),
-    ("desks", "EXT-26-1246", "Audience warehouse", "Natalie Benjamin", "Corey Cox", "Current desks"),
-    ("cms", "EXT-26-1248", "Web CMS (national and Brisbane instances)", "Natalie Benjamin", "Standards",
-     "Documents first live 1 Oct 2025 to 30 Sep 2026, and never-live documents first saved then"),
-]
 # Each input workbook's Excel properties: (creator, last saved by, first created, AEST); the last save is STAMP's.
 WORKBOOK_PROPS = dict(
     staff=("People and Culture", "People and Culture", dt.datetime(2026, 10, 12, 8, 30)),
@@ -220,15 +203,6 @@ def write_staff(W, path):
     ws.set_column(3, 4, 24)
     ws.set_column(5, 7, 12)
     ws.freeze_panes(1, 0)
-    ws2 = wb.add_worksheet("About")
-    lines = ["Newsroom staff list, extracted from the HR system on 12 October 2026 for the audience team.",
-             "Covers the newsroom teams: desks, the headline squad, audience, audience data, experimentation, "
-             "standards and editorial leadership.",
-             "Includes staff who have left since 1 January 2019; end_date is blank for current staff.",
-             "team_code for desk staff is the desk code in the desk register."]
-    for i, l in enumerate(lines):
-        ws2.write_string(i, 0, l)
-    ws2.set_column(0, 0, 110)
     wb.close()
     return len(W.staff)
 
@@ -264,16 +238,6 @@ def write_plan(W, path):
     ws.set_column(2, 2, 10)
     ws.set_column(3, 4, 18)
     ws.freeze_panes(1, 0)
-    ws2 = wb.add_worksheet("Notes")
-    lines = ["Audience plan 2027, version P2, 9 October 2026. Owner: Kayla Torres, Head of audience.",
-             "Clicks are article pageviews from the audience warehouse, counted at the owning desk.",
-             "2027 clicks are held at the twelve months to September 2026 for every desk, with no change assumed in "
-             "where clicks come from.",
-             "New initiatives for 2027, including the headline squad's embedding, are planned on top of these figures.",
-             "Version P1 (18 September) used the twelve months to August and is superseded."]
-    for i, l in enumerate(lines):
-        ws2.write_string(i, 0, l)
-    ws2.set_column(0, 0, 110)
     wb.close()
 
 
@@ -292,8 +256,10 @@ def write_changelog(W, path, rows):
     df = wb.add_format({"num_format": "yyyy-mm-dd"})
     f1 = wb.add_format({"num_format": "0.0"})
     f2 = wb.add_format({"num_format": "0.000"})
+    nf = wb.add_format({"num_format": "#,##0"})
     cols = ["embedding", "desk", "desk_code", "distribution", "started", "ended", "tests_run",
-            "avg_winning_lift_pct", "realised_holdback_lift_pct", "closed_on"]
+            "avg_winning_lift_pct", "holdback_readers_pct", "realised_holdback_lift_pct", "planned_clicks",
+            "extra_clicks_vs_holdback", "closed_on"]
     for j, c in enumerate(cols):
         ws.write(0, j, c, hd)
     for i, r in enumerate(rows, start=1):
@@ -305,25 +271,63 @@ def write_changelog(W, path, rows):
         ws.write_datetime(i, 5, dt.datetime.combine(r["ended"], dt.time()), df)
         ws.write_number(i, 6, r["tests"])
         ws.write_number(i, 7, r["lift_pct"], f1)
-        ws.write_number(i, 8, r["realised_pct"], f2)
-        ws.write_datetime(i, 9, dt.datetime.combine(r["closed"], dt.time()), df)
+        ws.write_number(i, 8, P.HOLDBACK_PCT)
+        ws.write_number(i, 9, r["realised_pct"], f2)
+        ws.write_number(i, 10, r["planned"], nf)
+        ws.write_number(i, 11, r["extra"], nf)
+        ws.write_datetime(i, 12, dt.datetime.combine(r["closed"], dt.time()), df)
     ws.set_column(0, 0, 10)
     ws.set_column(1, 3, 12)
     ws.set_column(4, 5, 11)
-    ws.set_column(6, 8, 16)
-    ws.set_column(9, 9, 11)
+    ws.set_column(6, 11, 16)
+    ws.set_column(12, 12, 11)
     ws.freeze_panes(1, 0)
-    ws2 = wb.add_worksheet("Notes")
-    lines = ["Kept by Experimentation (Nina Franklin). One row per closed embedding of the headline squad.",
-             "realised_holdback_lift_pct: the click-through of the embedded desk's articles over the embedding "
-             "year against the 5 per cent holdback that kept their original headlines, minus one, in per cent, "
-             "signed off on closed_on.",
-             "avg_winning_lift_pct and tests_run: the embedding's concluded tests in the headline test archive.",
-             "The 2026 embedding with Puzzles closes in December 2026 and is added once its year is measured."]
-    for i, l in enumerate(lines):
-        ws2.write_string(i, 0, l)
-    ws2.set_column(0, 0, 110)
     wb.close()
+
+
+BAND_MID_H = [1, 4, 15, 48, 120, 240]     # where in each age band an article's clicks fall, hours after publication
+
+
+def page_clicks(W):
+    """Article click-throughs by page and month (AEST), from the same pageviews the warehouse extract carries."""
+    out = {}
+    lo = SP.minutes(P.WINDOW_START)
+    hi = SP.minutes(P.WINDOW_END) + SP.DAY - 1
+    for d in P.DESK:
+        A = W.art[d]
+        for pv, pub in ((A.pv, A.pub), (A.old_pv, A.old_pub)):
+            if pv.size == 0:
+                continue
+            for j, src in enumerate(P.SOURCES_PLATFORM):
+                page = P.page_of(d, src)
+                for b, h in enumerate(BAND_MID_H):
+                    v = pv[:, j, b]
+                    nz = np.nonzero(v)[0]
+                    if not len(nz):
+                        continue
+                    t = np.clip(pub[nz] + h * 60, lo, hi)
+                    months = np.array([SP.month_index((SP.T0 + dt.timedelta(minutes=int(m))).date()) for m in t])
+                    for m in range(12):
+                        c = int(v[nz][months == m].sum())
+                        if c:
+                            out[(page, m)] = out.get((page, m), 0) + c
+    return out
+
+
+def write_pages(W, path):
+    clicks = page_clicks(W)
+    rows = []
+    for k, (key, platform, name, t) in enumerate(P.PAGES):
+        rng = AR.rng_for(790, k)
+        for m, (y, mo) in enumerate(P.MONTHS):
+            c = clicks.get((key, m), 0)
+            if not c:
+                continue
+            tm = t * (1 + float(rng.uniform(-P.PAGE_NOISE, P.PAGE_NOISE)))
+            rows.append(("%d-%02d" % (y, mo), platform, name, int(round(c / tm)), c))
+    W.page_rows = rows
+    write_csv(path, ["month", "platform", "page", "page_views", "article_clickthroughs"], rows)
+    return len(rows)
 
 
 def write_desks(path):
@@ -347,8 +351,8 @@ def write_dashboard(path, dash):
 
 def write_cms(W, path):
     rows = asks.cms_rows(W.cms_docs)
-    write_csv(path, ["doc_id", "desk_code", "doc_type", "parent_doc", "revision", "saved_at", "status", "publish_at",
-                     "headline_sha1", "correction_note", "restored_from_doc", "migrated_from"], rows)
+    write_csv(path, ["doc_id", "desk_code", "doc_type", "parent_doc", "revision", "saved_at", "status", "save_type",
+                     "publish_at_aest", "headline_sha1", "correction_note", "restored_from_doc", "migrated_from"], rows)
     return len(rows)
 
 
@@ -392,7 +396,7 @@ def write_panelwb(W, path):
         i += 1
     ws.set_column(0, 5, 15)
     ws = wb.add_worksheet("Release log")
-    for j, c in enumerate(["release", "published_on", "note"]):
+    for j, c in enumerate(["release", "published_on", "first_month", "last_month", "note"]):
         ws.write(0, j, c, hd)
     i = 1
     for rel in sorted(W.panel_rel_pub, key=lambda r: (W.panel_rel_pub[r], r)):
@@ -407,25 +411,12 @@ def write_panelwb(W, path):
                     "visits for those months. These figures replace those published in R26-05, R26-06 and R26-07.")
         ws.write_string(i, 0, rel)
         ws.write_datetime(i, 1, dt.datetime.combine(W.panel_rel_pub[rel], dt.time()), df)
-        ws.write_string(i, 2, note)
+        ws.write_string(i, 2, min(W.panel_rel_per[rel]))
+        ws.write_string(i, 3, max(W.panel_rel_per[rel]))
+        ws.write_string(i, 4, note)
         i += 1
-    ws.set_column(0, 1, 12)
-    ws.set_column(2, 2, 100)
-    ws = wb.add_worksheet("Definitions")
-    defs = [("release", "Panel release the row was loaded from."),
-            ("period", "Calendar month measured."),
-            ("site_code", "BLN is bightline.com.au (national edition); BLB is the Brisbane edition site."),
-            ("section_code", "Panel section code."),
-            ("unique_audience", "Estimated number of different people aged 14 and over who visited the section at "
-                                "least once in the month, on any device."),
-            ("visits", "Estimated visits to the section in the month.")]
-    for j, c in enumerate(["field", "definition"]):
-        ws.write(0, j, c, hd)
-    for i, (k, v) in enumerate(defs, start=1):
-        ws.write_string(i, 0, k)
-        ws.write_string(i, 1, v)
-    ws.set_column(0, 0, 16)
-    ws.set_column(1, 1, 100)
+    ws.set_column(0, 3, 12)
+    ws.set_column(4, 4, 100)
     wb.close()
 
 
@@ -449,15 +440,6 @@ def write_newsletter(W, path):
                      "clicks", "unsubscribes"], rows)
 
 
-def write_exportlog(path, counts):
-    rows = []
-    for key, run, source, by, asked, coverage in EXTRACT_RUNS:
-        n = {"newsletter": 78, "desks": len(P.DESKS)}.get(key, counts.get(key))
-        rows.append((run, STAMP[key].strftime("%Y-%m-%d %H:%M"), F[key], source, by, asked, coverage, n))
-    write_csv(path, ["run_id", "run_at_aest", "file", "source_system", "run_by", "requested_by", "coverage", "rows"],
-              rows)
-
-
 # ---------------------------------------------------------------------------------- derived numbers for the files
 
 def dashboard_rows(W):
@@ -471,6 +453,13 @@ def dashboard_rows(W):
         lift = 100 * AR.desk_lift(ts, shrink=False)
         out.append((v, len(ts), sum(1 for t in ts if t["ship"] > 0), round(lift, 2)))
     return out
+
+
+def embedding_pass_through(desk):
+    """The share of an app desk's tested clicks that is new to Bightline: its own-surface mix weighted by one minus each
+    page's click-through (the app desks' clicks are all on Bightline's own surfaces)."""
+    w = P.PLAT_SPLIT[desk]
+    return sum(w[j] * (1 - P.PAGE_T[P.page_of(desk, s)]) for j, s in enumerate(P.SOURCES_PLATFORM) if w[j] > 0)
 
 
 def changelog_rows(W):
@@ -488,10 +477,14 @@ def changelog_rows(W):
         while end.weekday() != 4:
             end -= dt.timedelta(days=1)
         closed = dt.date(y + 1, 2, 2) + dt.timedelta(days=int(AR.rng_for(778, y).integers(0, 14)))
+        realised = round(100 * s * (1 + eps[k]), 3)
+        planned = int(round(e["planned_m"] * 1e6 * (1 + 0.004 * float(AR.rng_for(781, k).uniform(-1, 1)))))
+        rho = embedding_pass_through(e["desk"])
+        noise = float(AR.rng_for(779, k).uniform(-P.EXTRA_NOISE, P.EXTRA_NOISE))
+        extra = int(round(planned * realised / 100 * rho * (1 + noise)))
         rows.append(dict(no=e["no"], desk=e["desk"], started=start, ended=end, tests=len(ts),
-                         lift_pct=round(100 * raw, 1), planned_m=e["planned_m"],
-                         realised_pct=round(100 * s * (1 + eps[k]), 3), closed=closed,
-                         eps=float(eps[k])))
+                         lift_pct=round(100 * raw, 1), planned_m=e["planned_m"], planned=planned,
+                         realised_pct=realised, closed=closed, eps=float(eps[k]), rho=rho, extra=extra))
     return rows
 
 
@@ -544,7 +537,6 @@ def build(out):
     while first.weekday() >= 5:
         first += dt.timedelta(days=1)
     W.wb_created = {k: (v[2] if v[2] else dt.datetime.combine(first, dt.time(9, 40))) for k, v in WORKBOOK_PROPS.items()}
-    (target / F["fieldref"]).write_text(docs.field_reference_md(), encoding="utf-8")
     docs.write_pdf(target / F["charter"], "Headline squad: 2027 placement brief", docs.charter_blocks(),
                    "Bightline News | Internal. Not for circulation outside the newsroom.", STAMP["charter"],
                    author="Corey Cox", app="word2010")
@@ -552,7 +544,6 @@ def build(out):
     W.dashboard = dashboard_rows(W)
     write_dashboard(target / F["dashboard"], W.dashboard)
     counts["cms"] = write_cms(W, target / F["cms"])
-    (target / F["cmsnotes"]).write_text(docs.cms_fields_txt(), encoding="utf-8")
     docs.write_pdf(target / F["policy"], "Editorial standards: corrections", docs.policy_blocks(),
                    "Bightline News editorial standards | Section 7", STAMP["policy"],
                    author="Bightline News Standards", app="word2010")
@@ -568,7 +559,7 @@ def build(out):
                    "Bightline News Pty Ltd and Newsfold Pty Ltd | Commercial in confidence",
                    STAMP["agreement"], author="Bightline News Commercial", app="pdfmaker")
     write_newsletter(W, target / F["newsletter"])
-    write_exportlog(target / F["exportlog"], counts)
+    counts["pages"] = write_pages(W, target / F["pages"])
     W.scrub_audit = normalise(target, W.stamp)
     write_metadata(out, target, counts, W.stamp)
     return W, target
@@ -587,8 +578,8 @@ def write_metadata(out, target, counts, stamps):
                       "date": stamps[key].date().isoformat(), "license": "CC0-1.0 (original work)"})
     meta = {
         "task": "task118",
-        "domain": "Marketing & Consumer Research",
-        "subdomain": "media-audience-measurement",
+        "domain": "Product Analytics",
+        "subdomain": "churn-propensity-uplift-modeling",
         "objective": "Opportunity Sizing & Decision Support",
         "as_of": P.AS_OF.isoformat(),
         "deliverables": ["squad_placement_2027.docx", "squad_placement_2027.xlsx"],

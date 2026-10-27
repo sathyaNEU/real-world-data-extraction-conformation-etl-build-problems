@@ -2,8 +2,8 @@
  "task": "task118",
  "domain": "product-analytics / churn-propensity-uplift-modeling",
  "objective": "opportunity-sizing-decision",
- "stage": 1,
- "stage_name": "draw",
+ "stage": 5,
+ "stage_name": "ship",
  "updated": "2026-10-27",
  "stump": "A competent solver shrinks each desk's winning lift against the change log, sizes it on the clicks from Bightline's own pages, leaves out the articles the desk's editors already test and names Culture·national at about 1,250,000 (scaling every desk by the closed embeddings' average shortfall still names Culture·national); the step that lands them there is crediting every click a shipped headline wins as new to Bightline, when on a fixed page most come from the headlines beside it and only the share of views that would otherwise end in no click is new, and Culture·national's own-page clicks come from its section front and app tab where about four in five views already end in a click.",
  "harden_loops": 4,
@@ -90,37 +90,31 @@
   }
  ],
  "judge": {
-  "verdict": "DETERMINISTIC; passes 1 and 2 of the redesign",
-  "disposition": "FIX_NOW twice, both fixed: step 2 names the embedding test selection and the ratio tolerance (pass 1); the write-up says own-surface clicks and the field reference's related_links row says the links show the current headline (pass 2). No third pass: neither fix moves a figure, a rung or the decisive path.",
-  "report": "task118/determinism_check_report.md (redesign passes 1 and 2; the earlier build's passes 2 to 4 in determinism_check_report_pass2.md to _pass4.md)",
-  "rejudge_2026_10_27": {
-   "verdict": "DETERMINISTIC",
-   "disposition": "FIX_NOW, fixed in this pass",
-   "gate_g": "method or model selection, shrinkage validated against holdbacks, analytical non-defect, not surface-read rejection",
-   "gate_h": "domain pass, layers pass, decisive step analytical",
-   "reproduced": "the call 1,252,299 to 1,250,000; Local-metro 808,110 to 800,000; the gap 444,189 to 450,000; all twelve panel figures; all six medians 119, 102, 89, 86, 55, 47; the March note count 33",
-   "fix_now": "the definition of tested, closed as SF14; the judge raised none of SF11 to SF13, and never raised the clock, the zone or the offset",
-   "still_open": "R26-08 carry-over, the 7.4 correction-time reading, the 11 January pro-rating, R26-04H's three reruns; none flips the call and none is pinned"
-  }
+  "verdict": "DETERMINISTIC, APPROVE (pass 7, zip 3f9e9efb)",
+  "disposition": "pass 6 (zip e97358e4) NOT_DETERMINISTIC on the workbook asks only, FIX_NOW: autosave undefined in the shipped files; fixed in one generator pass (7.3 files that an autosave publishes nothing, the ask's device moved to schedules set back to draft, decided by the status column); pass 7 reproduced all 18 workbook figures and the main call, Fix none",
+  "gate_g": "method or model selection (winner's-curse shrinkage and the share of won clicks new to Bightline, both validated on the change log), analytical_non_defect, surface_read_dependency no",
+  "gate_h": "domain pass, layers pass, decisive step analytical",
+  "report": "task118/determinism_check_report_pass7.md (pass 6 in determinism_check_report_pass6.md; the redesign's earlier passes in determinism_check_report.md and _pass5.md)"
  },
  "approved": "2026-10-09 (checkpoint B waived by the author; heart WARN)",
  "delivered": "2026-10-12",
  "portal": "FAILED_TO_STUMP",
  "source_note": "analytical_tasks/04_opportunity_sizing/OS01_headline-squad-renderable-click-share.md",
- "status": "DESIGN",
+ "status": "PAUSED",
  "owner": "oviya1301",
- "resume": "Architecture 2 drawn 2026-10-27 (card registered, WARN repeat.question_form only). Next: stage 2 on the existing generator: per-desk own-surface splits and page click-throughs (page_performance_monthly), the change log's planned clicks and extra clicks against the reader holdback, the brief's site-wide success measure and the surfaces, the describing files removed (field reference, CMS field notes, Notes, About and Definitions sheets) with their pins moved to the brief and the corrections standard, the asks moved to quartiles of minutes to first headline correction (shape 14); then the fork table, closure, ladder, precut.",
+ "resume": "Architecture 2 complete at stage 5, every gate green but guard heart: generator 301 of 301, verifier 78 of 78, two byte-identical builds, figures_check 39, precut 52/0/0, leak reader clean, determinism pass 7 DETERMINISTIC APPROVE. heart BLOCKs on ban.strategy (causal_design) and ban.pattern (G1) against task139 v2, a ban waiver the author's file reserves to the author. On a waiver: python3 .claude/skills/fingerprint/guard.py register .claude/skills/fingerprint/cards/task118.json --force with the reason in the card's notes, then status SHIPPED and commit RESHIPPED (task118) with target.zip and golden/ (both already current).",
  "leak": {
-  "leak_py": "LEAK on cms_revisions_export_fields.txt under the describing-file rule that landed 2026-10-27, fifteen days after delivery; corpus drift, grandfathered by the author, recorded in the design note with the migration written out",
-  "reader": "not re-run, no document changed near the decisive step beyond the pins themselves"
+  "leak_py": "REVIEW, every line ruled harmless (sweep 3 the brief states the question, sweep 4 subjects' own words, sweep 5 the prompt)",
+  "reader": "read 2 on the final pack: no decisive-step sentence, no ranking file, no answer figure; question 6 analytical; realism notes ruled in leak_check_report.md"
  },
  "asks": {
   "cracker_hits": 0,
   "of": 18,
   "pair_ceiling": 27.5,
-  "mirror_leakage_pct": 0.0
+  "mirror_leakage_pct": 0.0,
+  "device": "schedules set back to draft before their time (SF20); autosaves filed as a hazard (SF19)"
  },
- "assertions": 438,
+ "assertions": 301,
  "verifier": "78 of 78",
  "builds_byte_identical": true,
  "returned": [
@@ -137,9 +131,18 @@
    "commit": "DRAWN (task118) architecture 2"
   }
  ],
- "zip_sha256_16": "e23bc761f36a9440",
+ "zip_sha256_16": "3f9e9efb04d1d7ab",
  "architecture": 2,
  "loops": 0,
  "portal_status": "FAILED_TO_STUMP",
- "portal_status_date": "2026-10-27"
+ "portal_status_date": "2026-10-27",
+ "precut": {
+  "exit": 0,
+  "date": "2026-10-27",
+  "checks": "52, 0 FAIL, 0 WARN"
+ },
+ "duplicate_check": {
+  "heart": "BLOCK: ban.strategy causal_design and ban.pattern G1 against task139 v2 (registered 2026-10-26T22:19Z, six hours before this draw, whose check read WARN only); labels shared, mechanisms not; the author's ban waiver owed",
+  "surface": "2 pairs promoted (task119 back to back, task116 pairing), each adjudicated clean"
+ }
 }
