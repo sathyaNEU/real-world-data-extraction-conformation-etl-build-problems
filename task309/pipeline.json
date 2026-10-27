@@ -1,0 +1,29 @@
+{
+ "task": "task309",
+ "status": "DESIGN",
+ "domain": "actuarial-science-insurance",
+ "objective": "opportunity-sizing-decision",
+ "stage": 2,
+ "stage_name": "design",
+ "updated": "2026-10-27",
+ "stump": "A competent analyst applies one storm-pooled FORTIFIED roof loss ratio to each county's 2027 modelled annual loss and names Marlin Shoals, the largest annual loss; read class by class of local gust (about three fifths under 130 mph, about a seventh above) and carried event by event through the vendor's 2027 set, the round removes most from Cypress Ridge.",
+ "architecture": 1,
+ "loops": 0,
+ "seed": "OS11 (express-lane toll under a cap): spent; decision form kept, world moved to actuarial-science-insurance / catastrophe-exposure-accumulation",
+ "precut": null,
+ "leak": null,
+ "duplicate_check": {
+  "heart": "WARN 2026-10-27 at the draw (repeat.gate_g against task270, repeat.question_form against task139 and task270, people.first)",
+  "nearest": "task184 0.06 (driver)"
+ },
+ "judge": null,
+ "returned": [],
+ "resume": "stage 2: tune the generator world (history covering the event set's gust range, per-storm reproduction tolerance, county mixes mid-bin), then the asks, fork table, closure, prompt and precut",
+ "approved": null,
+ "delivered": null,
+ "portal": null,
+ "portal_id": "",
+ "portal_status": "",
+ "portal_status_date": "",
+ "zip_sha256_16": ""
+}
