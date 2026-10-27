@@ -71,6 +71,20 @@ Appendix Section Chapter Part Item Figure Chart Total Year Quarter Month Week Da
 CALENDAR = set("""January February March April May June July August September October November
 December Monday Tuesday Wednesday Thursday Friday Saturday Sunday""".split())
 NOT_SURNAME |= CALENDAR
+
+# Administrative place names that parse as a first name and a surname. A county, city or province
+# on a real statutory list cannot be renamed out of a pack, so without this the screen blocks a
+# build for a persona it does not have, and blocks it against another build carrying the same place.
+# Extend it when a new one turns up; keep it to places, never to a name a person could hold.
+NOT_PERSON_PAIR = {
+    ("Santa", "Cruz"), ("Santa", "Fe"), ("Santa", "Clara"), ("Santa", "Barbara"),
+    ("Santa", "Rosa"), ("Santa", "Ana"), ("Santa", "Monica"), ("Santa", "Maria"),
+    ("San", "Juan"), ("San", "Luis"), ("San", "Benito"), ("San", "Mateo"),
+    ("San", "Joaquin"), ("San", "Patricio"), ("San", "Miguel"), ("San", "Marcos"),
+    ("Los", "Alamos"), ("Las", "Animas"), ("La", "Paz"), ("La", "Salle"),
+    ("Saint", "Louis"), ("Saint", "Charles"), ("Saint", "Clair"), ("Saint", "Francis"),
+    ("Saint", "Johns"), ("Saint", "Lucie"), ("Saint", "Marys"), ("Port", "Arthur"),
+}
 AMBIGUOUS_FIRST |= CALENDAR | {"Golden", "General", "Council"}
 
 
@@ -285,6 +299,8 @@ def people_in_text(text):
         if nxt and nxt in NOT_SURNAME:
             continue
         if last.lower() in ("and", "the", "of", "for"):
+            continue
+        if (first, last) in NOT_PERSON_PAIR:
             continue
         out.add((first, last))
     return out
