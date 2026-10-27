@@ -26,9 +26,9 @@
     "note": "drawn 2026-10-15 after git pull (task261, task455 v2, task262 on file): guard WARN repeat.decision and repeat.question_form, answered in ## Draw; same-puzzle and same-driver against older builds differentiated on the card"
   },
   "judge": {
-    "verdict": "DETERMINISTIC (round 2, on f0ae1a2f)",
-    "disposition": "APPROVE for the call and the forecast asks; Ask A unjudged on later ask-side data (its four ESP files changed after the judged pack), re-checked by the generator's checks and the verifier on eb36b41e, and owed a narrow ask re-judge on the round 4 pack",
-    "report": "task144/determinism_check_report.md (round 2)"
+    "verdict": "DETERMINISTIC (round 2 on f0ae1a2f, the main call; pass 3 on b370e2a4, both asks)",
+    "disposition": "APPROVE (pass 3: every Ask A and Ask B figure reproduced by an independent implementation, the main call spot-checked; residuals none blocking)",
+    "report": "task144/determinism_check_report.md (round 2), task144/determinism_check_report_pass3.md (pass 3)"
   },
   "returned": [
     {
@@ -44,7 +44,7 @@
       "commit": ""
     }
   ],
-  "resume": "stage 4 round 4: the ask layer re-devised after round 3 (A7, the editor's opening paragraph's link to the spotlight by its permanent address /repositories/<id>, beside another shortlisted repository in four months; B9, signed-in responses record the address the form showed, and one member per organisation nominated signed in and again signed out with a work address the account dropped on leaving); the context artifact redrawn filed_standard to planning_thread after ban.artifact against task141 v3, heart WARN. Next: confirm the full build green (checks, verify, byte-identical rebuild), freeze.py check --mode rubric, rewrite submission steps 7 and 8 and block 4's ask figures from figures.json, figures_check, precut, leak.py; then two scored readers (Sonnet, Opus) on the new pack with the 39 keys and a narrow determinism re-judge of both asks; then the ask sheet, Gates at ship, Pre-ship check, the ledger row and RESHIPPED",
+  "resume": "stage 4 round 4 on b370e2a4: the judge's pass 3 APPROVE is in, reader H scored (exit 2, call missed); score reader G (scratchpad read4-task144-a/out/figures.json) with score_reader.py and the three call keys; if at least one reader misses the call and neither exits 1, fill G's line in Gates at ship, write the ledger row (and task144 v1 under Earlier architectures), set status SHIPPED and commit RESHIPPED with target.zip and golden/ force-added; if G exits 1, re-site the ask it took and re-measure",
   "approved": null,
   "delivered": "2026-10-15",
   "portal": null,
@@ -64,6 +64,7 @@
     "target_zip_sha256": "b370e2a4ca35f5fdac5c7319909765c6c4e8109f2855d3fcb33d4055eb057292"
   },
   "readers": {
-    "round_3": "pack eb36b41e: E (Sonnet) and F (Opus) both missed the call (tracewire 12,000, 5,000 added); E kept Ask A 12/12 (gateways' fetches removed, their readers' later clicks kept) and Ask B 6/10 (one merge hop), score_reader exit 1 on ask share 72.2 per cent; F kept Ask A 0/12 (every fetch kept) and Ask B 10/10, exit 1 only because tracewire's 12,000 equals the golden's call figure (pick and added stars missed)"
+    "round_3": "pack eb36b41e: E (Sonnet) and F (Opus) both missed the call (tracewire 12,000, 5,000 added); E kept Ask A 12/12 (gateways' fetches removed, their readers' later clicks kept) and Ask B 6/10 (one merge hop), score_reader exit 1 on ask share 72.2 per cent; F kept Ask A 0/12 (every fetch kept) and Ask B 10/10, exit 1 only because tracewire's 12,000 equals the golden's call figure (pick and added stars missed)",
+    "round_4": "pack b370e2a4: H (Opus) missed the call (tracewire 13,000, 6,000 added), Ask A 0/12 (ids resolved, every gateway fetch kept), Ask B 10/10 (accounts and addresses linked both ways), 18 of 36 scored figures, score_reader exit 2; G (Sonnet) running"
   }
 }

@@ -504,11 +504,48 @@ the prompt changed, so the leak reader's questions stand (build-pipeline stage 4
 
 ## Gates at ship
 
-Recorded at ship below.
+On target.zip b370e2a4 (2026-10-27):
+- Generator: 149 checks pass (the three-rules block, SF1 to SF18, the ladder, the back-test, the bins and spreads, the
+  ask profiles, the separation, the input gates, the no-description rule, the realism sweep); `verify.py` agrees on its
+  own path (pick kilnkit at 12,086 adding 8,929, runner-up slidewell, default path tracewire, the whole-life rate on
+  slidewell, both asks); two builds byte-identical (target, golden, metadata.json, figures.json and target.zip).
+- `figures_check.py` 90 figures, 0 absent; `precut.py` 52 checks, 0 FAIL, 0 WARN; `voice-check.py` PASS; the
+  container audit clean on target and golden; `leak.py --asof 2026-09-30` REVIEW with every line answered (Leak sweep),
+  no LEAK; `guard.py heart` WARN (people.first, repeat.gate_g, answered in Draw); `surface` no hard tell, task150,
+  task179 and task268 promoted on the cards alone and differentiated on the card; `freeze.py check --mode rubric` PASS
+  (the call, the stump and every frozen figure unchanged; the 12 Ask A figures moved).
+- Judge, three passes: round 1 (aa9589a5) DETERMINISTIC, FIX_NOW (the back-test's RMSE pair restated in words,
+  applied); round 2 (f0ae1a2f) DETERMINISTIC, APPROVE, every main-call figure reproduced, Ask A then unjudged on later
+  ask-side data (`determinism_check_report.md`); pass 3 (b370e2a4) DETERMINISTIC, APPROVE, every Ask A and Ask B
+  figure reproduced by an independent implementation, the main call spot-checked (`determinism_check_report_pass3.md`).
+  Residual notes, none blocking: a multiplicative regression on the day-8 rate validates at RMSE 288 and still files
+  kilnkit at about 11,500 (round 2); the Thursday send's clickers count as clicking through, which the prompt's
+  "subscribers who clicked through" over the issue's sends says and the Tuesday batches' reach of the list leaves the
+  denominator unaffected by; a gateway's reader who also clicked counts once, as a subscriber who clicked; an owner is
+  a member, as the memberships file lists owners (pass 3).
+- Scored readers (`score_reader.py` with the three call keys, against the 39 keys):
+  - round 1 (aa9589a5): both missed the call (tracewire at 14,000 and 13,000) and kept every figure of the first ask
+    layer; the asks were re-sited;
+  - round 3 (eb36b41e): both missed the call (tracewire at 12,000, 5,000 added) and kept 18 and 10 of the 22 ask
+    figures; one exit 1 on ask share, the other exit 1 only because tracewire's 12,000 equals the golden's call figure
+    (pick and added stars missed); A7 and B9 stacked;
+  - round 4 (b370e2a4), G (Sonnet): running at the PAUSED checkpoint of 27 October;
+  - round 4 (b370e2a4), H (Opus): missed the call (tracewire at 13,000, 6,000 added), none of Ask A (the permanent
+    addresses resolved, every gateway fetch kept), all of Ask B (accounts and addresses linked both ways, so B9 sat on
+    its route and it took it): 18 of 36 scored figures, 50.0 per cent, estimated share 39.5, exit 2.
 
 ## Pre-ship check
 
-Recorded at ship below.
+- The 10/10 rules re-read against the built pack: the decisive step is the period each repository's rate per follower
+  view is read over, chosen by its fit to the lottery's closed spotlights, which is the diffusion forecast validated out
+  of sample; no planted defect, withheld rule, field reading or executed procedure decides it; the mess (schema
+  vintages, UTC against Amsterdam, renames, merged accounts, two newsletter platforms' export formats) is Layer 1 and
+  carries no part of the call; the analyst test holds on the clean truth (checks R1 to R3c).
+- No shipped file describes the data (asserted): no dictionary, manifest, field notes or readme.
+- Gate G: no shipped artifact ranks the candidates; the two distractors rank nothing and are named in metadata.json.
+- The card is current: context artifact `planning_thread`, the answer kilnkit at about 12,000 with about 9,000 added,
+  the deliverables and the spine's 61,929 rows.
+- target.zip is the final rebuild's cut (b370e2a4), equal to the second build's.
 
 ## Tried and rejected
 
