@@ -338,7 +338,7 @@ def write_workbooks():
     term = W.terminals()
     for code, name, block, ahu, *_ in P.SPACES:
         ws2.append([ahu, code, "VT-%s-%02d" % (code.split("-")[1], 1 + r.randrange(0, 9)),
-                    term[code], "2021-07-28" if block == "Tulrohan" else "2014-08-14"])
+                    term[code], "2021-07-16" if block == "Tulrohan" else "2014-08-14"])
     finish(ws2, [9, 11, 20, 15, 18])
     path = os.path.join(TARGET, "ahu_timeclock_schedule.xlsx")
     wb.save(path)
@@ -546,8 +546,9 @@ def write_pdfs():
           Paragraph("A space counts as occupied for the hours in which the air handling unit "
                     "serving it stands in its occupied state. Hours in the returns made under this "
                     "note are counted reading by reading: a logged reading counts as the five "
-                    "minutes beginning at its own timestamp, and falls in the calendar month of "
-                    "that timestamp. Data capture is reported as the readings received against the "
+                    "minutes beginning at its own timestamp, whatever quality flag the system "
+                    "records against it, and falls in the calendar month of that timestamp. Data "
+                    "capture is reported as the readings received against the "
                     "readings expected on the teaching days of the term. This section governs the "
                     "counting of hours and of readings and no other quantity.", s["p"]),
           Paragraph("4 &nbsp; Occupants present", s["h"]),
@@ -1201,9 +1202,11 @@ def write_submission(m):
       "the source term the %s litres per second per person in the TGD-M4 extract's design data "
       "table times the occupants present, and solved each session for the outdoor air supplied."
       % k["generation_l_per_s"])
-    w("5. Divided the outdoor air so recovered by the occupant-seconds present over the same "
-      "sessions: %.1f litres per second per occupant present, against the %g TGD-M4 requires."
-      % (c["block_rate_ls_per_occupant"], k["required_ls_per_person"]))
+    w("5. Divided the outdoor air so recovered by the occupant-seconds present over all %s of "
+      "those sessions, the sessions carrying no reading contributing to neither total: %.1f "
+      "litres per second per occupant present, against the %g TGD-M4 requires."
+      % ("{:,}".format(comp["block_sessions"]), c["block_rate_ls_per_occupant"],
+         k["required_ls_per_person"]))
     w("6. Checked that no reading in the record is a settled one: the shortest response time in "
       "the block, volume over the recovered supply, is %d minutes against a %d minute period, and "
       "%d of the %d rooms sit below the requirement."

@@ -192,8 +192,9 @@ and both still clear the standard by 1.159 to 1.204 times.
 | SF8 | rounding | once, at the end, to the nearest 0.5 litres per second per person | per space then averaged; per session then averaged | stated in the asking sentence; asserted in `checks.py` |
 | SF9 | the block | the six room codes the capital bid sheet lists | every space in the building; every monitored space | the bid sheet files the six, and the prompt names the block; measured: the pooled-over-14 reading files 8.36, a different call, which is why the population is filed and not left open |
 | SF10 | a session with nobody present | kept, contributing zero generation and its own excess | dropped | the estimand is over the timetabled sessions, so an empty session is one of them; measured on the cut pack, no block session carries nobody present, so the reading cannot arise and keeping or dropping files 5.027 either way |
-| SF11 | the integral of the session's excess over the session | a quadrature over the session's own eleven five-minute intervals | five minutes a reading, holding the window or extending it; an unweighted mean of the session rates | C1 first: the seven licensed constructions (trapezoid, Simpson, left and right rectangle, 10 and 15 minute decimation, the derivative regression) spread 0.227 of a bin and all print 5.0, the widest sitting 0.164 from its cell edge. C4 beside it: taking five minutes a reading files 4.649 holding the window and 5.475 extending it, and a reading-by-reading integral of a session's twelve readings covers 60 minutes against the 55 the timetable files, so neither executes the window the estimand names; the unweighted mean of session rates files 5.473 and dies to the standard's reporting clause, which reports the rate over the whole of the period assessed rather than for a single group. Procedure note EST-14 section 3's five-minute rule is scoped in its own words to the counting of hours and of readings and no other quantity |
+| SF11 | the integral of the session's excess over the session | a quadrature over the session's own eleven five-minute intervals | five minutes a reading, holding the window or extending it; an unweighted mean of the session rates | C1 first: the seven licensed constructions (trapezoid, Simpson, left and right rectangle, 10 and 15 minute decimation, the derivative regression) spread 0.227 of a bin and all print 5.0, the widest sitting 0.164 from its cell edge. C4 beside it: taking five minutes a reading files 4.649 holding the window and 5.475 extending it, and a reading-by-reading integral of a session's twelve readings covers 60 minutes against the 55 the timetable files, so neither executes the window the estimand names; the unweighted mean of session rates files 5.5267 and prints 5.5, the one reading in the pack that prints a different headline, and it is closed as far as this build can close it rather than fully. It dies to the standard's reporting clause, which reports the rate over the whole of the period assessed rather than for a single group, and an average of the single periods' own rates is not that. The records close it further: the 1,680 session rates run 0.32 to 14.73, a factor of 46, so an analyst who computes them meets the skew before averaging them, and the median of the same 1,680 rates files 4.8894 and prints 5.0, so the divergent reading is the plain mean alone and not the family that averages the sessions. C1 is arithmetically unavailable: the plain mean sits a factor of 1.0876 above the pooled figure while the printed cell is 10 per cent wide, so landing the mean at the cell's top edge would leave the pooled figure 0.0770 from its bottom edge, and `checks.py` asserts that too so nobody retries it. The remedy is option A under this reading as well. Recorded as the build's one stated Gate C exposure. Procedure note EST-14 section 3's five-minute rule is scoped in its own words to the counting of hours and of readings and no other quantity |
 | SF12 | the block's rate as one figure | the outdoor air supplied across all the block's timetabled sessions over the occupants present across those same sessions, the pooled reading | the mean of the six space rates; the mean of the session rates; the session-count weighted mean; the occupant weighted mean; the worst space's own rate | C1, and nothing else: the five aggregations the estimand admits spread 0.082 of a bin and all print 5.0, and the recut lifted the two lowest spaces so that the worst space's own rate prints the same 5.0 as the block's. The six space rates run 4.8590 to 5.9213, printing 5.0, 5.0, 5.0, 5.0, 5.0 and 6.0, the thinnest sitting 0.1018 from its printed cell's edge, and every one of them is below the 8 the requirement sets, so no aggregation moves the remedy either. `checks.py` asserts the convergence and asserts in the negative that no shipped document files how a block's rate is aggregated, because an earlier pass closed this with a filed sentence in the procedure note and the leak reader read that sentence as written for whoever had to answer the prompt |
+| SF13 | a reading the system flags | counted, because it is a logged reading | excluded as not received; excluded only where the flag is `uncertain`; the out-of-tolerance span days excluded too | procedure note EST-14 section 3 files it inside the sentence that already counts the readings, so a logged reading counts as the five minutes beginning at its own timestamp whatever quality flag the system records against it, and no second sentence was added for it. The literal reading already gave the golden, so the closure moved no figure. Measured: 288 readings carry `uncertain`, all of them ANG-016 on the day the replacement analyser went in, and all of them outside the block, so this touches one ask-2 cell and one ask-3 cell and never the call (counted, November reads 127.50 hours and 93.7 per cent; excluded, 120.00 and 91.6). The unflagged out-of-tolerance span of 4 to 10 November is not excluded either, and no filed rule licenses excluding it |
 
 ## Ladder
 
@@ -202,19 +203,22 @@ in litres per second per occupant present; the decision boundary is 8.0; the pri
 
 | Rung | Analysis | Figure | Distance to the golden | Clears or fails 8.0 | Dies to |
 |---|---|---|---|---|---|
-| R0 | the field's steady-state read on each session's mean excess, occupant-weighted (the default path) | 10.927 | 5.900 | clears by 1.366x | nothing in the pack: it is the reflex, and only the balance moves it |
-| R1 | the same read on the final fifteen minutes of each session | 9.633 | 4.606 | clears by 1.204x | the session's last reading is only about half the equilibrium excess, so the read still overstates by about two times |
-| R2 | the same read on each session's peak sample | 9.272 | 4.245 | clears by 1.159x | the peak sits at the bell rather than at a plateau, the spaces' response time running 191 to 358 minutes against a 55-minute session |
-| R3 | the session-integrated unsteady balance (decisive) | 5.027 | 0 | fails by 1.591x | nothing: it is the golden |
-
-Rung worth in bins of 0.5: R0 to R1 2.59, R1 to R2 0.72, R2 to R3 8.49. The decisive move is the largest
+| R0 | the field's steady-state read on each session's mean excess, occupant-weighted (the default path) | 10.982 | 5.900 | clears by 1.373x | nothing in the pack: it is the reflex, and only the balance moves it |
+| R1 | the same read on the final fifteen minutes of each session | 9.683 | 4.602 | clears by 1.210x | the session's last reading is only about half the equilibrium excess, so the read still overstates by about two times |
+| R2 | the same read on each session's peak sample | 9.321 | 4.239 | clears by 1.165x | the peak sits at the bell rather than at a plateau, the spaces' response time running 191 to 358 minutes against a 55-minute session |
+| R3 | the session-integrated unsteady balance (decisive) | 5.0815 | 0 | fails by 1.574x | nothing: it is the golden |
+Rung worth in bins of 0.5: R0 to R1 2.60, R1 to R2 0.72, R2 to R3 8.48. The decisive move is the largest
 gap and is not the smallest, every correction walks the same way, and only the decisive move crosses the
-boundary. Rung clearances against the 1.15x floor: 1.366, 1.204, 1.159 on the clearing side and 1.591 on
+boundary. Rung clearances against the 1.15x floor: 1.373, 1.210, 1.165 on the clearing side and 1.574 on
 the failing side, so no rung sits inside the floor. The floor is what fixed the block's supply rates: a
 first world put the peak-sample rung at 1.140x, inside the floor, and lifting the six spaces' occupancy
 and their supply together, which shortens the response time without moving a concentration anywhere,
-carried it to 1.164x with the golden still printing 5.0, and the stage 4 recut that centred the
-quadrature family left it at 1.159x.
+carried it clear; the stage 4 recut that centred the quadrature family and the later recut that converged
+the space-level reading both held it at 1.165x. The settled family is loose in the figure and unanimous in
+the verdict: the end-of-session read files 9.34, the final-fifteen-minutes read 9.68, the peak sample 9.32
+and the balance with no stored term 10.98, printing 9.5 to 11.0, and every one of them clears the 8 and
+files the wrong remedy. The naive family puts 0 of 14 spaces below the requirement where the balance puts
+6 of 14, so the designation is unreachable from it.
 
 Two routes that are not rungs because a shipped fact kills them on sight, kept in the reflex sweep: the
 overnight decay files 1.09 (the plant-status file shows the air handling off outside the unit's occupied
@@ -409,11 +413,11 @@ LEAK. The stage 4 leak reader then read the pack cold. One line per finding.
 
 ## Pre-ship check
 
-- Free gates on the shipped build: generator checks 116 of 116 (SF1 to SF12, the ladder's four rungs,
+- Free gates on the shipped build: generator checks 122 of 122 (SF1 to SF12, the ladder's four rungs,
   the bin test, the construction family's convergence, the five aggregations, every Layer 1 item asserted
   neutral, the reflex sweep, the necessity matrix, the separation count, the input gates and the leak
   words); the verifier 24 of 24 reading only the shipped bundle on its own code path; two rebuilds
-  byte-identical (target 637567bb6447e4b0, golden 983e90549506eba3, both twice); figures_check 153 figures
+  byte-identical (target fc122e3572464c67, golden 983e90549506eba3, both twice); figures_check 154 figures
   in blocks 1 to 4 with none absent; precut 52 checks, 0 FAIL, 0 WARN; voice-check PASS on a 998-character
   prompt; leak.py REVIEW with no LEAK.
 - The 10/10 rules re-read against the built pack. The decisive step is still the session integration of
@@ -466,6 +470,37 @@ LEAK. The stage 4 leak reader then read the pack cold. One line per finding.
     closed pass 1's fork and section 4 is what closes SF1; a rewording to answer a realism note is not
     worth reopening a determinism closure, and the reader found neither of them tells a solver anything
     about the decisive step.
+- Determinism judge pass 3 (target 637567bb6447e4b0, the pack before the two closures below):
+  DETERMINISTIC, FIX_NOW, the FIX_NOW being two pins rather than a defect, and no graded figure failing to
+  reproduce. The C1 closure held under test: the thread tried ten construction families and every pooled
+  one prints 5.0 (trapezoid, left and right integrals 5.03 to 5.14; six outdoor-series variants 5.00 to
+  5.15; the golden's stated denominator 4.93 to 5.00; the median of session ratios 4.82 to 4.96; the
+  per-room pooled mean about 5.12; a within-session regression 5.08), against the steady-state route at
+  9.34 and the no-stored-term balance at 10.98. EST-14 section 3's scope limit held again from a brief
+  carrying no construction: the five-minute-a-reading reading straddles both rounding points at 4.6 to 5.6
+  and the thread recorded the sentence as closing it rather than as an integration rule. Three items
+  closed from it: the commissioned date on the zone assignment sheet predated its own commissioning
+  record, which is repaired; the solution's step 5 now states its denominator (all 1,728 sessions, the
+  sessions carrying no reading contributing to neither total, 5.08 against 4.93 and printing 5.0 either
+  way, so no figure moved); and the ANG-016 quality flag is pinned inside the EST-14 sentence that already
+  counts the readings, so a logged reading counts whatever flag the system records against it. That pin
+  files the reading the literal text already gave, so it moved no figure, and the leak reader read it as a
+  returns convention rather than as a warning aimed at one row.
+- **The build's one stated Gate C exposure, left open deliberately.** The unweighted mean of the 1,680
+  per-session rates files 5.5267 and prints 5.5, and no shipped sentence literally forbids it. Two
+  attempts to close it with a filed sentence were both read as authored by the leak reader, the second
+  (extending TGD-M4 4.4 to state the reported quantity) sharply enough that the reader answered the
+  decisive-step question with "with 4.4 as written, the aggregation is stated for you", which is a rule 3
+  finding. Both are reverted. C1 is arithmetically unavailable, and that is asserted rather than
+  assumed: the plain mean sits a factor of 1.0876 above the pooled figure while the printed cell is 10 per cent
+  wide, so landing the mean at the cell's top edge would leave the pooled figure 0.0770 from its bottom
+  edge, and compressing the gap means cutting the per-session rate variance by about two thirds, which is
+  the day-to-day mixing and the trace noise. So it rests on the standard's own reporting clause (the rate
+  is reported over the whole of the period assessed rather than for a single group, which an average of
+  the single periods' own rates is not) and on the records: the session rates run 0.32 to 14.73, a factor
+  of 46, so an analyst who computes them meets the skew before averaging them, and the median of the same
+  1,680 rates prints 5.0. The remedy is option A under this reading too, so the exposure is the printed
+  headline and ask 1, never the call. If the portal returns on it, the repair is not another sentence.
 - **Gate F risk, recorded rather than argued away.** The pass-2 thread reached the golden by applying the
   field's tracer-gas balance with no judgment filed in the text, and said so. A determinism judge is
   tasked to enumerate and recompute every construction, which is not the default path a solver walks, and
@@ -593,3 +628,21 @@ LEAK. The stage 4 leak reader then read the pack cold. One line per finding.
   as 3.00x under a label reading litres per second per occupant present. The format is now the rate's own.
   The lesson is that replacing a figure means replacing its presentation too, because a cell format
   outlives the figure it was written for and no assertion on the value sees it.
+- Closing the plain-mean-of-session-rates fork with a sentence in the standard's reporting clause, extending
+  TGD-M4 4.4 to state the reported quantity as the outdoor air supplied across the period against the
+  persons present through it. Died on the leak read for the same reason the EST-14 attempt did, and more
+  sharply: the reader called the clause authored ("a real design guide would not write Where a space serves
+  groups of different size"), said the trailing gloss tells you which aggregation to use, and answered the
+  decisive-step question with "with 4.4 as written, the aggregation is stated for you", which is a rule 3
+  finding. Reverted to the clause's own wording. Two attempts at this fork by a filed sentence have now been
+  read as authored, and the lesson is a rule rather than an incident: a sentence written to close a fork
+  reads as authored whenever it names the situation the task is in, and moving it to a different document
+  does not help. What closes a fork without that cost is the records (C1) or, where C1 is arithmetically
+  unavailable, the existing clause plus a measured argument from the data, with the residual stated.
+- Converging the plain mean with the pooled figure by scaling the supply, the lever that closed the
+  space-level fork. Refused on arithmetic before any rebuild: the plain mean sits a factor of 1.0876 above
+  the pooled figure and the printed cell is 10 per cent wide, so the two cannot both sit inside it with
+  any clearance (landing the mean at 5.2499 puts the pooled figure 0.0770 from the 4.75 edge). Compressing
+  the gap instead means cutting the per-session rate variance by about two thirds, which is the day-to-day
+  mixing and the trace noise, and a block of teaching spaces whose sessions all behave identically is not
+  a record a building produces. Asserted in `checks.py` so the next pass does not retry it.

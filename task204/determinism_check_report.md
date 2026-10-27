@@ -137,3 +137,114 @@ Any pin added to the input files requires a rerun of the judge's reading, and no
 
 ## Next action for the author
 Fix the Final Recommendation's ratio to 1.6 (or print 5.03 beside 5.0), then file one WHAT sentence in EST-14 saying a block's rate is the outdoor air supplied across all its timetabled sessions per occupant present across the same sessions, and rebuild.
+
+---
+
+# Pass 3 (pack target 637567bb6447e4b0, golden 983e90549506eba3), 2026-10-27
+
+One isolated sonnet thread at medium effort, run from /tmp/determinism-check-task204-3/ (fresh copy of the unzipped target/, 19 files; there was no target.zip). Raw verdict: /tmp/determinism-check-task204-3/verdict.md. The hashes are the coordinator's account, not re-measured by me. I had no Agent tool; the coordinator spawned the thread from my brief and returned the verdict.
+
+## Verdict (pass 3)
+DETERMINISTIC
+**Disposition:** FIX_NOW. Two optional pins, no defect. No graded figure failed to reproduce.
+**Stumping type:** mechanism: method_or_model_selection, stumping_family: analytical_non_defect, surface_read_dependency: no, sole_data_defect: no
+
+## What the brief contained (read this before reading Gate F)
+- I wrote the brief with no construction family, no figure, no mention of integration, quadrature, rectangle, trapezoid, stored term or the EST-14 scope limit. I redacted submission.md solution step 4, which states the stored term, the source term and the 0.0072 constant.
+- The coordinator restored step 4 before spawning (disclosed afterwards). The thread was therefore told the method, by the submission's own solution block. Critical component 3 and steps 5 and 6 (volume over recovered supply; outdoor air divided by occupant-seconds) were also in the brief, as the real reviewer sees them.
+- Pass 2's brief carried the stored-term family because the coordinator's framing and my items (1) and (2) put it there.
+
+## Why
+Remedy A is forced and the headline prints 5.0. Pooled trapezoid 5.08 (the thread's unrounded figure), pooled block, 12 readings 08:00 to 08:55, campus analyser with Mace Head fill. Option B (moving CON5A, HSC5A, BUS5A, GEN5A out) leaves the remaining Tulrohan sessions at 5.74, still under 8. The commissioning record's 8.5 design supply is disclaimed by its own section 3 and TGD-M4 4.3.
+
+## Recomputation ledger (from scratch, nothing carried from pass 2)
+| Figure | Claimed | Judge recomputed | Reproduced |
+|---|---|---|---|
+| Sessions in the six block rooms | 1,728 | 1,728 (6 x 288) | yes |
+| Occupant-hours | 70,404.6 | 76,805 present marks x 55/60 = 70,404.58 | yes |
+| Shortest response time | 191 min | TUL-G07 2,400 m3 over about 209 L/s = 191.2; others 202 to 283 | yes |
+| Rooms below 8 | 6 of 6 | pooled F04 5.08, F09 4.86, F15 4.86, G07 5.92, G12 4.86, G18 5.15 | yes |
+| Headline | 5.0 (shortfall 3.0) | 5.08 trapezoid; 8 - 5.08 = 2.92 and 8 - 5.0 = 3.0 both print 3.0 | yes |
+| Ask 2, 56 rows | as filed | 56 of 56 at two decimals | yes |
+| Ask 3, 14 shares | as filed | 14 of 14 | yes |
+| Ask 4 | 35 / 48 / 37 / 49 / 41 / 56 | 35.30 / 48.21 / 36.68 / 49.38 / 40.85 / 56.26 | yes, none near .5 |
+| Ask 5 | G12 11-02, G12 10-19, G07 10-13, G12 11-09 | same four, 458 / 434 / 427 / 416 ppm; fifth is 412 (388 vs 377 under the exclusive window) | yes |
+| Option B residual | n/a | 5.74 | yes |
+
+Ask 5 identity and order are unchanged under last-minus-first, peak-minus-start, range, inclusive or exclusive end reading, and any outdoor series.
+
+## The closure of the block aggregation (C1), tested
+The coordinator closed the pass-2 aggregation fork by C1 with no new sentence, and asked that it be tested rather than trusted. The thread enumerated the constructions on the bundle, unrounded:
+
+| Construction | Result | Prints |
+|---|---|---|
+| Pooled trapezoid / left / right, 12-reading window | 5.08 / 5.14 / 5.03 | 5.0 |
+| Same, 11-reading window | 5.08 / 5.14 / 5.02 | 5.0 |
+| Six outdoor-series variants (Mace Head fill by step, linear, nearest; campus interpolated across the gap; Mace Head only; flat 420; Mace Head plus mean offset) | 5.00 to 5.15 | 5.0 |
+| Golden's stated denominator (numerator over sessions with data, denominator all 1,728) | 4.93 to 5.00 | 5.0 |
+| Median of session ratios | 4.82 to 4.96 | 5.0 |
+| Per-room pooled, then mean of the six | about 5.12 | 5.0 |
+| Single block within-session regression | 5.08 | 5.0 |
+| Unweighted mean of the 1,680 per-session ratios | 5.44 to 5.59 | **5.5** |
+| Steady state at session end | 9.34 pooled, 9.55 mean of ratios | 9.5 |
+| Balance with no stored term | 10.98 | 11.0 |
+
+Every pooled, room-level, median and regression reading prints 5.0, so the lowest-spaces lift did close the space-level and minimum readings. The decisive step sits about eight bins from the right answer; the constructions inside it span a fraction of one bin. I did not rerun checks.py's six space rates and five aggregations myself; the thread's per-room pooled figures above are the independent check, and they agree with the design note's claim. I did not verify the coordinator's claim that checks.py asserts in the negative that no shipped document files a block aggregation.
+
+One reconciliation note: the design note and card name the easy route as the steady-state estimate at about 11.0 (10.93 to 10.95), which matches the thread's no-stored-term balance (10.98). The thread's end-of-session steady-state read (9.34) is a different shortcut. Both clear the 8 and both are wrong, so the ladder's direction holds.
+
+## Scope limit held again
+The thread's construction counting each reading as five minutes inside the integral gives 4.6 to 5.6, straddling both rounding points. It recorded that EST-14 section 3 ("governs the counting of hours and of readings and no other quantity") closes it explicitly, and did not read the sentence as an integration rule. That held from a brief with no word on it. It is the reason pass 1 was a repair rather than a redesign.
+
+## Competing answers that survived
+1. **Unweighted mean of per-session ratios: 5.44 to 5.59, prints 5.5. Touches the main call's printed headline and ask 1, not the remedy (A holds at 5.5).** This is the same fork pass 2 raised and the only licensed reading that changes the print. The thread's words: the text does not literally forbid it; three things steer away (TGD-M4 4.4 reports the rate over the whole of the period assessed; "per person present" is naturally total air over total person-time; session ratios are noisy, 0.3 to 14.8, and biased upward). **Not closed by C1, and not softened here.**
+   - Coordinator's closure after this pass (not tested by any thread): extend TGD-M4 4.4, whose subject is already how a rate is reported over a period, to state the reported quantity positively, as the outdoor air supplied across that period against the persons present through it. That files the WHAT (the unit the ratio is taken over) and nothing on how a session's supply is recovered. An EST-14 section for this was tried and removed because the leak reader read it as authored for the answerer. This closure needs the next reader to confirm it; I judge it on the right side of client rule 3 (WHAT, not HOW) if the clause names no method.
+2. **ANG-016 "uncertain" readings, 13 Nov, 288 readings.** Counting them is the golden and the literal "logged reading": November occupied 127.50, share 93.7. Excluding: 120.00 and 91.6. Ask-only (one ask-2 cell, one ask-3 cell). The literal reading already supported the golden. Coordinator is pinning it inside the EST-14 sentence that governs it, so a logged reading counts whatever quality flag it carries; that files the golden reading rather than moving it. The unflagged out-of-tolerance span 4 to 10 Nov is not excluded by any filed rule.
+3. **"Over 1,500" strictly versus "at or above".** Four cells move: TUL-F04 Nov 2.67 to 2.75; TUL-G12 Oct 18.67 to 19.00, Nov 18.67 to 18.83, Dec 9.67 to 9.75. "Over" in the prompt and "passes" in EST-14 close it. Ask-only, low risk.
+
+Closed by the text: occupants are all roles (EST-14 section 4; learners only would give 34 / 47 / 35 / 48 / 40 / 55); authorised absence is not present; amended marks stand; no duplicate persons per session; the 25 October DST fold falls on a non-teaching day.
+
+## Spec gates (checked by me against the bundle and metadata.json)
+| Gate | Required | Actual | Pass |
+|---|---|---|---|
+| Files | 10 or more | 19 | yes |
+| Formats | 3 or more | 4 (csv 10, xlsx 4, pdf 4, txt 1) | yes |
+| Large file | 25,000 rows or database | bms_co2_5min 293,559 rows | yes |
+| Distractors | 2 or more in metadata, none labelled by file name | campus_energy_halfhourly and bms_temperature_rh_hourly; plus wrong-basis commissioning record | yes |
+| Distractors unused yet weighable | yes | thread agrees: unused by the solution; the commissioning record's 8.5 is ruled out by its own section 3 | yes |
+| Deliverables | 1 to 3, all in the golden | 2 (xlsx, png), both in golden/ | yes |
+| Asks multi-dimensional, unit and rounding stated | yes | 56-row grid, 14 shares, 6 means, 4 rises; rounding in the prompt's last sentence | yes |
+| Prompt shape, 25 or more criteria | yes | grid-of-cells; the design note counts 150 criteria (its figure, not generated by me) | yes on the note |
+| Reads as real work product | yes | thread found nothing beyond tidy synthetic tables | yes |
+
+## Gate A to E (as the thread passed them)
+- **A:** pass. Figures agree across blocks. The 48 outage sessions (8 room-days x 6 periods) are dropped from the numerator and kept in the golden's denominator; this shifts the headline from 5.08 to 4.93 and it still prints 5.0. The pass-2 Gate A finding (a ratio not following from the printed rate) is closed: the shortfall 3.0 prints from both 5.08 and 5.0.
+- **B:** pass. Volumes in the room data sheets PDF table, generation rate in TGD-M4 table 2.3, outdoor reference in the two analyser files, options in the bid sheet. One low-risk gap: no file states that option A delivers 8 at actual occupancy; the case is that B demonstrably cannot reach 8 and A is the only costed option replacing the supply plant.
+- **C and E:** pass on the main call. Forks above are confined to the printed half-litre step and to asks 1, 2 and 3.
+- **D:** pass.
+
+## Gate G reconciliation
+Thread: method_or_model_selection, analytical_non_defect, surface_read_dependency no, sole_data_defect no. Design note and card: stump_class analytical, with the easy route being the steady-state estimate at about 11.0. Match. The declared distractors (energy, temperature/RH) are not read by the thread as carrying the task; the commissioning record's 8.5 reinforces the wrong answer but is ruled out by a shipped fact, so it is not too load-bearing.
+
+## Gate H
+domain pass, layers pass, decisive_step analytical. Swap test breaks the task (no volume, per-occupant generation rate or response time). Layer 1: DST fold, thousands-separator strings, analyser outage and swap, UTC fill file. Layer 2: recovering outdoor air per person from an unsettled transient. Matches the card's domain_test and analyst_test.
+
+## Stump power (Gate F)
+Observation for the portal, not a verdict.
+- **Neither pass is evidence about the stump.** Pass 2's brief carried the stored-term family because the coordinator's framing and my items put it there. Pass 3's brief carried the method because submission step 4 states the stored term, the source term and the 0.0072 constant, and the coordinator restored it before spawning. Both threads were told the method.
+- Pass 3 reproduced the golden from a stated method, which is Gate A's job. It also reported that the end-of-session steady-state read gives about 9.3 and would wrongly clear the block. That is the ladder's own measurement, not an independent arrival at the method by a reader who was not told it.
+- On the pass-2 question (does the thread reach the golden by the field's standard balance with no judgment filed): the same observation holds on this pack, and cannot be sharpened, because no thread has yet seen the pack without the method. The text files WHAT (population, window, unit, comparison), and the decisive step is the field's tracer-gas style balance with a stored term. Per the library, such methods are textbook routes a strong solver may take (stumping 1.3); the thread itself wrote that a strong model could plausibly skip the stored term. The main thread should weigh this against the ladder.
+- The portal is the only stump oracle on this build.
+
+## Findings, ranked
+1. Mean-of-session-ratios fork (5.5), live until the TGD-M4 4.4 extension is read by a fresh reader.
+2. ANG-016 uncertain flag, ask-only, being pinned.
+3. Strict versus inclusive 1,500 ppm, four cells, low risk.
+4. Step 5 did not state its denominator (all 1,728 sessions against the 1,680 carrying data, 5.08 against 4.93, 5.0 either way). Now stated by the coordinator; no figure moved.
+5. Realism: the zone sheet's commissioned date 2021-07-28 postdated its commissioning record's issue date of 22 July 2021. Repaired in the generator.
+6. Gap that A delivers 8 at actual occupancy is inferred rather than filed; low risk.
+
+Closed since the thread ran (the coordinator's account, not re-judged): findings 4 and 5, and the pins in findings 1 and 2.
+
+## Next action for the author
+Rebuild once with the TGD-M4 4.4 extension and the ANG-016 flag pin, confirm the extension names no method for recovering a session's supply (only the quantity over the period), confirm checks.py still asserts that no EST-14 section files an aggregation, then proceed to ship; the portal is the stump measure. No further judge pass is licensed by this one.

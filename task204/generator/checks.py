@@ -215,14 +215,40 @@ def ladder():
           "the window the estimand names" % (five_in, five_out))
     per_session = [1000.0 * A.q_integrated(x) / x["occupants"] for x in BF if x["occupants"]]
     unweighted = sum(per_session) / len(per_session)
+    _std11 = re.sub(r"\s+", " ", TEXT[B.STANDARD])
+    _med11 = sorted(per_session)[len(per_session) // 2]
     check("SF11 the unweighted mean of session rates dies to the reporting clause",
           BU.to_bin(unweighted) != 5.0 and
-          re.search(r"the rate is reported over\s+the whole of the period assessed rather than for "
-                    r"a single group", TEXT[B.STANDARD]),
-          "a plain mean of the session rates files %.4f, and the standard's reporting clause says "
           "the rate is reported over the whole of the period assessed rather than for a single "
-          "group" % unweighted)
-    _ps12 = A.per_space(BF, lambda x: A.q_integrated(x))
+          "group" in _std11,
+          "a plain mean of the session rates files %.4f and prints %.1f, and the standard's "
+          "reporting clause reports the rate over the whole of the period assessed rather than "
+          "for a single group, which an average of the single periods' own rates is not"
+          % (unweighted, BU.to_bin(unweighted)))
+    check("SF11 the reporting clause states the basis and no method",
+          not re.search(r"trapez|quadrat|integrat|storage|stored|rate of change|settled|"
+                        r"first and last reading|supplied across that period", _std11, re.I),
+          "the clause names the basis and nothing about how a period's supply is recovered or how "
+          "the periods are combined, so it files no method and no formula")
+    check("SF11 the median of the session rates converges, so only the plain mean diverges",
+          BU.to_bin(_med11) == BU.to_bin(CALL),
+          "the median of the 1,680 session rates files %.4f and prints %.1f, the same as the "
+          "pooled %.1f, so the divergent reading is the plain mean alone and not the family of "
+          "readings that average the sessions" % (_med11, BU.to_bin(_med11), BU.to_bin(CALL)))
+    check("SF11 the session rates are too skewed for their plain mean to be a reported rate",
+          max(per_session) / min(per_session) > 20.0,
+          "the 1,680 session rates run %.2f to %.2f, a factor of %.0f, so an analyst who computes "
+          "them sees the skew before averaging them: the plain mean sits %.1f per cent above the "
+          "pooled figure and the median below it"
+          % (min(per_session), max(per_session), max(per_session) / min(per_session),
+             100.0 * (unweighted / CALL - 1.0)))
+    check("SF11 no scaling of the supply can converge the plain mean with the pooled figure",
+          abs(CALL * 5.2499 / unweighted - 4.75) < 0.10,
+          "the plain mean sits a factor of %.4f above the pooled figure while the printed cell is "
+          "only 10 per cent wide, so landing the plain mean at the cell's top edge would put the "
+          "pooled figure %.4f from its bottom edge: C1 is arithmetically unavailable here and the "
+          "reading is closed by the clause and the records instead"
+          % (unweighted / CALL, CALL * 5.2499 / unweighted - 4.75))
     _ps12 = A.per_space(BF, lambda x: A.q_integrated(x))
     _lo12, _hi12 = min(_ps12.values()), max(_ps12.values())
     check("SF12 the worst space's own rate prints the block's call",
@@ -644,6 +670,20 @@ def asks():
     occ_nonzero = [x["occupied_hours"] for x in a if x["occupied_hours"] > 0]
     check("ask A has no empty cell on its first figure", len(occ_nonzero) == 56,
           "every one of the 56 cells records occupied hours")
+    # SF13 a flagged reading is still a logged reading, filed in the sentence that counts them
+    _proc13 = re.sub(r"\s+", " ", TEXT[B.PROCEDURE])
+    _flagged = [r for r in B.rows(TARGET, B.SPINE) if r.get("quality") not in ("good", "", None)]
+    _flagval = sorted({r["quality"] for r in _flagged})
+    check("SF13 the counting sentence says a flagged reading still counts",
+          "a logged reading counts as the five minutes beginning at its own timestamp, whatever "
+          "quality flag the system records against it" in _proc13,
+          "procedure note section 3 files it inside the sentence that already counts the readings, "
+          "so no second sentence was added for it")
+    check("SF13 the flag exists in the record and is not a marker for one space alone",
+          len(_flagged) > 0 and len({r["space_code"] for r in _flagged}) >= 1,
+          "%d readings carry a flag other than good (%s) across %d space(s), the analyser "
+          "replacement's own days" % (len(_flagged), ", ".join(_flagval),
+                                      len({r["space_code"] for r in _flagged})))
     b = M["asks"]["B"]
     shares = [x["share_pct"] for x in b]
     check("ask B gives every space its own share", len(set(shares)) == 14,
