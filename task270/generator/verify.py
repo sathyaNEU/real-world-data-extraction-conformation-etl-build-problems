@@ -1,7 +1,11 @@
 """task270 independent verifier: every graded figure recomputed from the cut pack alone with its own readers and its own
-arithmetic (the csv module and openpyxl, no pandas; days covered as a walk over each supply's end; the compliance-aid
-cycle as one weekday at a fixed step of 7 or 28 days, a pack due on a closed day supplied the next opening day), then
-compared with generator/figures.json. Exit 1 on any difference.
+arithmetic (the csv module and openpyxl, no pandas, no generator module), then compared with generator/figures.json.
+The call: each patient's latest 2026 fortnight with at least 56 of its 112 prompts answered, the team on its first
+day, negative affect as the mean of four items on 0 to 10, instability as the root mean square change between same-day
+ratings 2.5 to 3.5 hours apart, a team funded at 30 per cent or more at 2.0. Ask A: the DBT programme standard's 4.2
+with PTD-114 counted as the four-day course before the catalogue gave the code to the refresher. Ask B: the module's
+waiting list on 31 December 2026, each referral dated by the service's acknowledgement letter, the latest for the
+patient on or before the module's received date. Exit 1 on any difference.
 
     python3 task270/generator/verify.py [TARGET]"""
 from __future__ import annotations
@@ -9,19 +13,24 @@ from __future__ import annotations
 import csv
 import datetime as dt
 import json
+import math
 import os
-import re
-import statistics
 import sys
 
 import openpyxl
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 TARGET = sys.argv[1] if len(sys.argv) > 1 else os.path.join(os.path.dirname(HERE), "target")
-Y0, Y1 = dt.date(2026, 1, 1), dt.date(2026, 12, 31)
-HOLIDAYS = {dt.date(2025, 12, 25), dt.date(2025, 12, 26), dt.date(2026, 1, 1), dt.date(2026, 4, 3),
-            dt.date(2026, 4, 6), dt.date(2026, 5, 4), dt.date(2026, 5, 25), dt.date(2026, 8, 31),
-            dt.date(2026, 12, 25), dt.date(2026, 12, 28)}
+CENSUS = dt.date(2026, 12, 31)
+GROUP_START, GROUP_LAST = dt.date(2027, 4, 1), dt.date(2027, 9, 16)
+MERGED = {"BW-CM14": "BW-CM31", "BW-CM15": "BW-CM31"}
+FAIL = []
+
+
+def check(label, ok, detail=""):
+    print("%s  %s%s" % ("ok  " if ok else "FAIL", label, ("  [%s]" % detail) if detail else ""))
+    if not ok:
+        FAIL.append(label)
 
 
 def find(prefix):
@@ -35,192 +44,199 @@ def rows(path):
         return list(csv.DictReader(fh))
 
 
-def per_day(text):
-    t = text.strip().upper()
-    if re.match(r"^(TAKE )?(TWO|2)\b", t):
-        return 2
-    return 1
+def last_sunday(year, month):
+    d = dt.date(year, month + 1, 1) - dt.timedelta(days=1)
+    while d.weekday() != 6:
+        d -= dt.timedelta(days=1)
+    return d
 
 
-def covered(items):
-    """items: (date, days) in 2026; the share of days from the first item to 31 December held, a supply bought
-    before the last ran out starting where it ends."""
-    items = sorted(items)
-    start = items[0][0]
-    end = None
-    held = 0
-    for d, n in items:
-        s = d if end is None or d > end else end
-        e = s + dt.timedelta(days=n)
-        s2, e2 = max(s, start), min(e, Y1 + dt.timedelta(days=1))
-        if e2 > s2:
-            held += (e2 - s2).days
-        end = e
-    return held / ((Y1 - start).days + 1)
+def uk(t):
+    """A UTC time as UK wall time: summer time from 01:00 UTC on the last Sunday of March to 01:00 UTC on the last
+    Sunday of October."""
+    on = dt.datetime.combine(last_sunday(t.year, 3), dt.time(1))
+    off = dt.datetime.combine(last_sunday(t.year, 10), dt.time(1))
+    return t + dt.timedelta(hours=1) if on <= t < off else t
 
 
-def closed(d):
-    return d.weekday() == 6 or d in HOLIDAYS
+def team(code):
+    return MERGED.get(code, code)
 
 
-def set_day(d):
-    """The day a pack was due: back over the closed days just before it, to the last of them that was due."""
-    out = d
-    p = d - dt.timedelta(days=1)
-    while closed(p):
-        out = p
-        p -= dt.timedelta(days=1)
+# ------------------------------------------------------------------------------------------------------ the call
+def ratings():
+    code2pt = {r["participant_code"]: r["patient_number"] for r in rows(find("mood_app_enrolments"))}
+    out = []                       # (patient, sent local, answered local or None, negative affect or None)
+    v3 = rows(find("mood_app_export_v3"))
+    top = max(float(r[k]) for r in v3 if r["responded_local"] for k in ("na_down_vas", "na_anxious_vas"))
+    check("control: version 3's sliders run above 10 (a 0 to 100 scale)", top > 10, "%g" % top)
+    for r in v3:
+        sent = dt.datetime.strptime(r["scheduled_local"], "%d/%m/%Y %H:%M")
+        if r["responded_local"]:
+            ans = dt.datetime.strptime(r["responded_local"], "%d/%m/%Y %H:%M:%S")
+            na = sum(float(r[k]) for k in ("na_down_vas", "na_anxious_vas", "na_irritable_vas", "na_ashamed_vas")) / 40
+        else:
+            ans, na = None, None
+        out.append((code2pt[r["participant_id"]], sent, ans, na))
+    v4 = rows(find("mood_app_export_v4"))
+    seen, dup = set(), 0
+    for r in v4:
+        if r["prompt_id"] in seen:
+            dup += 1
+            continue
+        seen.add(r["prompt_id"])
+        sent = uk(dt.datetime.strptime(r["sent_at_utc"], "%Y-%m-%dT%H:%M:%SZ"))
+        if r["status"] == "answered":
+            ans = uk(dt.datetime.strptime(r["answered_at_utc"], "%Y-%m-%dT%H:%M:%SZ"))
+            na = sum(float(r[k]) for k in ("down", "anxious", "irritable", "ashamed")) / 4
+        else:
+            ans, na = None, None
+        out.append((code2pt[r["participant"]], sent, ans, na))
+    check("control: version 4 resends a prompt's answer (repeated prompt ids)", dup > 0, "%d repeats" % dup)
+    hours = [a.hour for _p, _s, a, _n in out if a is not None]
+    check("control: every answer in UK time falls between 9:00 and 22:00", min(hours) >= 9 and max(hours) <= 21,
+          "%d to %d" % (min(hours), max(hours)))
     return out
 
 
-def on_cycle(dates):
-    ds = sorted(set(dates))
-    if len(ds) < 5:
-        return False
-    for w in range(7):
-        due = []
-        for d in ds:
-            if d.weekday() == w:
-                due.append(d)
-                continue
-            back = [d - dt.timedelta(days=k) for k in range(1, 4)]
-            hit = [b for b in back if b.weekday() == w and all(closed(x) for x in back[:back.index(b) + 1])]
-            if not hit:
-                break
-            due.append(hit[0])
-        else:
-            steps = [(b - a).days for a, b in zip(due, due[1:])]
-            med = statistics.median(steps)
-            if med in (7, 28) and sum(s == med for s in steps) >= 0.9 * len(steps):
-                return True
-    return False
+def episodes():
+    out = {}
+    for r in rows(find("cmht_care_episodes")):
+        e = dt.date.fromisoformat(r["episode_end"]) if r["episode_end"] else None
+        out.setdefault(r["patient_number"], []).append((r["team_code"], dt.date.fromisoformat(r["episode_start"]), e))
+    return out
+
+
+def team_on(eps, pt, day):
+    for t, s, e in eps.get(pt, []):
+        if s <= day and (e is None or e >= day):
+            return team(t)
+    return None
+
+
+def call():
+    R = ratings()
+    by_pt = {}
+    for p, s, a, na in R:
+        by_pt.setdefault(p, []).append((s, a, na))
+    wb = openpyxl.load_workbook(find("assessment_fortnights_register"), read_only=True)
+    reg = list(wb.active.iter_rows(values_only=True))
+    head = list(reg[0])
+    ip, i0, i1 = head.index("Patient number"), head.index("First day"), head.index("Last day")
+    eps = episodes()
+    latest = {}
+    for r in reg[1:]:
+        pt, f, l = str(r[ip]), r[i0].date(), r[i1].date()
+        if not (dt.date(2026, 1, 1) <= f <= dt.date(2026, 12, 31)):
+            continue
+        n = sum(1 for s, a, _na in by_pt.get(pt, []) if a is not None and f <= s.date() <= l)
+        if n >= 56 and (pt not in latest or f > latest[pt][0]):
+            latest[pt] = (f, l)
+    res = {}
+    for pt, (f, l) in latest.items():
+        days = {}
+        for s, a, na in by_pt[pt]:
+            if a is not None and f <= s.date() <= l:
+                days.setdefault(s.date(), []).append((a, na))
+        sq = []
+        for d, xs in days.items():
+            xs.sort()
+            for i in range(len(xs)):
+                for j in range(i + 1, len(xs)):
+                    g = (xs[j][0] - xs[i][0]).total_seconds() / 3600
+                    if 2.5 <= g <= 3.5:
+                        sq.append((xs[j][1] - xs[i][1]) ** 2)
+        res[pt] = (team_on(eps, pt, f), math.sqrt(sum(sq) / len(sq)))
+    teams = sorted({t for t, _v in res.values()})
+    sh = {t: (sum(1 for tt, v in res.values() if tt == t and v >= 2.0), sum(1 for tt, _v in res.values() if tt == t))
+          for t in teams}
+    return res, sh
+
+
+# ------------------------------------------------------------------------------------------------------- Ask A
+def ask_a():
+    wb = openpyxl.load_workbook(find("learning_catalogue"), read_only=True)
+    cat = {r[0]: r for r in list(wb.active.iter_rows(values_only=True))[1:]}
+    cut = cat["PTD-114"][3].date()
+    check("control: the 2026 catalogue gives PTD-114 to a one-day refresher first offered on the rebuild",
+          cat["PTD-114"][2] == 1 and cut == dt.date(2025, 4, 1), str(cut))
+    trained = set()
+    for r in rows(find("learning_records")):
+        d = dt.date.fromisoformat(r["completed_on"])
+        if r["course_code"] in ("PTD-301", "EXT-0412") or (r["course_code"] == "PTD-114" and d < cut):
+            trained.add(r["employee_number"])
+    out = {}
+    for r in rows(find("esr_clinical_assignments")):
+        if r["staff_group"] == "Administrative and Clerical" or float(r["assignment_wte"]) < 0.4:
+            continue
+        s = dt.datetime.strptime(r["assignment_start"], "%d/%m/%Y").date()
+        e = dt.datetime.strptime(r["assignment_end"], "%d/%m/%Y").date() if r["assignment_end"] else None
+        lv = dt.datetime.strptime(r["projected_leaving_date"], "%d/%m/%Y").date() if r["projected_leaving_date"] else None
+        if s > GROUP_START or (e is not None and e < GROUP_START) or (lv is not None and lv <= GROUP_LAST):
+            continue
+        if not r["organisation"].endswith(" CMHT"):
+            continue
+        if {r["employee_number"], r["previous_employee_number"]} & trained:
+            team_ = out.setdefault(r["organisation"][:-5], {})
+            team_[r["employee_number"]] = team_.get(r["employee_number"], 0) + int(r["assignment_wte"].replace(".", ""))
+    return {k: (len(v), sum(v.values())) for k, v in out.items()}
+
+
+# ------------------------------------------------------------------------------------------------------- Ask B
+def ask_b():
+    nhs = {r["patient_number"]: r["nhs_number"] for r in rows(find("patient_index_extract"))}
+    acks = {}
+    for r in rows(find("cen_correspondence_log")):
+        if r["letter_type"] == "Referral acknowledgement":
+            acks.setdefault(r["nhs_number"], []).append(dt.datetime.strptime(r["letter_date"], "%d/%m/%Y").date())
+    eps = episodes()
+    waits = {}
+    moved = 0
+    for r in rows(find("cen_referrals_module_export")):
+        if r["triage_outcome"] != "Accepted - DBT" or not r["dbt_list_added"]:
+            continue
+        if dt.date.fromisoformat(r["dbt_list_added"]) > CENSUS:
+            continue
+        if r["removed_on"] and dt.date.fromisoformat(r["removed_on"]) <= CENSUS:
+            continue
+        mod = dt.date.fromisoformat(r["date_received"])
+        rec = max(d for d in acks[nhs[r["patient_number"]]] if d <= mod)
+        moved += rec != mod
+        waits.setdefault(team_on(eps, r["patient_number"], CENSUS), []).append((CENSUS - rec).days)
+    check("control: some waiting patients' referrals were keyed in from the service's database", moved > 30,
+          "%d" % moved)
+    return {t: (len(v), sum(v) / len(v) / 7) for t, v in waits.items()}
+
+
+def half_up(x):
+    return math.floor(x * 10 + 0.5 + 1e-9) / 10
 
 
 def main():
     F = json.load(open(os.path.join(HERE, "figures.json")))
-    xw = {r["old_pseudonym"]: r["new_pseudonym"] for r in rows(find("pseudonym_crosswalk_"))}
-    items = {}
-    for r in rows(find("community_pharmacy_statin_dispensing_")):
-        d = dt.date.fromisoformat(r["dispensed_date"])
-        if not (Y0 <= d <= Y1):
-            continue
-        k = xw.get(r["patient_pseudonym"], r["patient_pseudonym"])
-        items.setdefault(k, []).append((d, int(r["quantity"]) // per_day(r["dosage_instructions"])))
-    member = {}
-    for r in rows(find("practice_network_membership_")):
-        if not r["member_to"]:
-            member[r["practice_ods"]] = r["network"][:-4]
-    pts = {}
-    for r in rows(find("quarvis_practices_lipid_cohort_")):
-        pts[r["nhs_pseudo"]] = (member[r["practice_ods"]], int(r["yob"]), bool(r["care_home_since"]),
-                                bool(r["mds_since"]))
-    ws = openpyxl.load_workbook(find("synaris_practices_lipid_cohort_"), read_only=True)["Lipid cohort"]
-    for i, r in enumerate(ws.iter_rows(values_only=True)):
-        if i:
-            pts[r[0]] = (member[r[1]], int(r[2]), str(r[4]).startswith("Care home"), False)
-    count = {}
-    base = care = cyc = coded = 0
-    for k, (net, yob, home, aid) in pts.items():
-        it = items.get(k, [])
-        if yob > 1961 or len(it) < 2:
-            continue
-        base += 1
-        if home:
-            care += 1
-            continue
-        if aid or on_cycle([d for d, _ in it]):
-            cyc += 1
-            coded += aid
-            continue
-        c = count.setdefault(net, [0, 0])
-        c[0] += 1
-        c[1] += covered(it) < 0.8
-    share = {n: 100.0 * lo / tot for n, (tot, lo) in count.items()}
-    tier = sorted(n for n, s in share.items() if s >= 30)
-    out = {"tier": tier, "n_base": base, "n_care": care, "n_cycle": cyc, "n_cycle_coded": coded,
-           "n_pop": sum(v[0] for v in count.values())}
-    left = max((n for n in share if n not in tier), key=lambda n: share[n])
-    out["closest_left_out"] = left
-    out["gap_points"] = 30 - share[left]
-    code = {"Briskdale": "BRK", "Corvendale": "COR", "Ellinholt": "ELL", "Feldcote": "FEL", "Grevmoor": "GRV",
-            "Iversford": "IVF", "Krathwold": "KRT", "Lathcombe": "LTH", "Marlwold": "MRL", "Nevgarth": "NVG",
-            "Pellholt": "PLH", "Tarvdale": "TRV"}
-    for n, s in share.items():
-        out["share_" + code[n]] = s
-        out["population_" + code[n]] = count[n][0]
-    out["lowest_in"] = min(share[n] for n in tier)
-    # ------------------------------------------------------------------ the pilot
-    ph = {r["ods_code"]: r for r in rows(find("community_pharmacies_"))}
-    recs = {}
-    for r in rows(find("services_portal_statin_pilot_export_")):
-        recs[r["record_id"]] = (r["pharmacy_ods"], r["patient_ref"], r["consultation_type"],
-                                dt.datetime.strptime(r["consultation_date"], "%d/%m/%Y").date())
-    recovered = set()
-    wb = openpyxl.load_workbook(find("pilot_payment_statements_"), read_only=True)
-    for sh in wb.worksheets:
-        for i, r in enumerate(sh.iter_rows(values_only=True)):
-            if not i:
-                continue
-            if r[6] == "Recovery":
-                recovered.add(r[1])
-            elif r[1] not in recs:
-                recs[r[1]] = (r[0], r[2], r[3], r[4].date() if isinstance(r[4], dt.datetime) else r[4])
-    firsts, follows = {}, {}
-    for rid, (ods, ref, kind, d) in recs.items():
-        k = xw.get(ref, ref)
-        (firsts if kind == "First consultation" else follows).setdefault(k, []).append((d, ods, rid in recovered))
-    start, stop = dt.date(2025, 10, 1), dt.date(2026, 9, 30)
-
-    def network(ods, d):
-        p = ph[ods]
-        if p["relocated_on"] and d < dt.date.fromisoformat(p["relocated_on"]):
-            return p["previous_locality"]
-        return p["locality"]
-
-    def quarter(d):
-        return 1 + ((d.year - 2025) * 12 + d.month - 10) // 3
-
-    for k, fs in firsts.items():
-        keep = [f for f in fs if not f[2]] if any(not f[2] for f in fs) else fs
-        if len(keep) > 1:
-            raise SystemExit("patient %s keeps %d first consultations" % (k, len(keep)))
-        d, ods, _ = keep[0]
-        n = network(ods, d)
-        if not (start <= d <= stop) or n not in ("Krathwold", "Lathcombe"):
-            continue
-        tag = "KRT" if n == "Krathwold" else "LTH"
-        key1 = "pilot_first_%s_q%d" % (tag, quarter(d))
-        out[key1] = out.get(key1, 0) + 1
-        key2 = "pilot_followed_%s_q%d" % (tag, quarter(d))
-        out.setdefault(key2, 0)
-        if any(0 < (f - d).days <= 42 for f, _o, _r in follows.get(k, [])):
-            out[key2] += 1
-    # ------------------------------------------------------------------ compare
-    names = {v: k for k, v in code.items()}
-    bad = []
-    filed = {"tier_line_pct": 30, "fallen_behind_pct": 80, "cycle_steps_days": [7, 28],
-             "specification_sections": ["2.2", "2.3", "3.1"], "follow_up_days": [1, 41]}
-    for key, want in F.items():
-        got = out.get(key)
-        if key == "parameters":
-            ok = want == filed
-        elif key == "tier":
-            ok = [n for n in tier] == want
-        elif key == "closest_left_out":
-            ok = got == want
-        elif key == "tier_count":
-            ok = len(tier) == want
-        elif isinstance(want, str) and "." in want:
-            ok = got is not None and abs(got - float(want)) <= 0.05 + 1e-9 and "%.1f" % (got + 1e-9) == want
-        else:
-            ok = got is not None and int(str(want).replace(",", "")) == got
-        if not ok:
-            bad.append((key, want, got))
-    print("verify: %d figures, %d differ" % (len(F), len(bad)))
-    for b in bad:
-        print("  DIFF %s: figures.json %r, verify %r" % b)
-    print("verify: tier %s, %d patients in the population" % (", ".join(tier), out["n_pop"]))
-    return 1 if bad else 0
+    names = {}
+    for r in rows(find("cmht_care_episodes")):
+        names[team(r["team_code"])] = r["team_name"][:-5] if r["team_code"] not in MERGED else "Haddersley"
+    res, sh = call()
+    check("population: patients counted", len(res) == F["patients_assessed"], "%d" % len(res))
+    funded = sorted(names[t] for t, (h, n) in sh.items() if 100.0 * h / n >= 30)
+    check("call: the funded teams", funded == sorted(F["funded"]), ", ".join(funded))
+    for t, (h, n) in sh.items():
+        check("call: %s assessed patients" % names[t], n == F["assessed_" + t], "%d" % n)
+        check("call: %s group" % names[t], ("Yes" if 100.0 * h / n >= 30 else "No") == F["group_" + t],
+              "%.1f per cent" % (100.0 * h / n))
+    A = ask_a()
+    for t in sh:
+        n, w = A.get(names[t], (0, 0))
+        check("Ask A: %s co-facilitators and their whole-time equivalent" % names[t],
+              n == F["cofacilitators_" + t] and "%d.%02d" % divmod(w, 100) == F["wte_" + t], "%d, %d hundredths" % (n, w))
+    B = ask_b()
+    for t in sh:
+        n, m = B[t]
+        check("Ask B: %s mean weeks" % names[t], "%.1f" % half_up(m) == F["mean_weeks_" + t] and n == F["waiting_" + t],
+              "%d waiting, %.3f weeks" % (n, m))
+    print("verify: %d failed" % len(FAIL))
+    return 1 if FAIL else 0
 
 
 if __name__ == "__main__":

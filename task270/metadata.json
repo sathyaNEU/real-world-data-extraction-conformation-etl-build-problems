@@ -1,37 +1,38 @@
 {
   "task": "task270",
-  "title": "Which primary care networks a GP federation puts in the enhanced tier of its 2027-28 statin adherence service, on each network's 2026 share of its older self-managing statin patients under 80 per cent of days covered",
-  "domain": "Pharmacology, Pharmacoepidemiology & Safety",
-  "client_domain": "Pharmacology, Pharmacoepidemiology & Safety",
-  "subdomain": "medication-adherence-persistence (a GP federation's enhanced tier for its statin adherence service, each primary care network's 2026 share of its older self-managing statin patients under 80 per cent of days covered, read from community pharmacy dispensing)",
+  "title": "Which of an English mental health trust's eleven community mental health teams get a 2027-28 DBT skills group, on each team's share of its 2026 assessed patients whose emotional instability reaches the collaborative's standard as the collaborative's three-hourly app will measure it",
+  "domain": "Psychology & Behavioral Science",
+  "client_domain": "Psychology & Behavioral Science",
+  "subdomain": "experience-sampling-intensive-longitudinal-analysis (an English mental health trust's 2027-28 DBT skills groups, each community team's share of its 2026 assessed patients with high emotional instability as a provider collaborative's three-hourly mood app will measure it, read from the trust's own mood app ratings)",
   "objective": "Descriptive & Distribution Analysis",
-  "prompt_shape": "cuts of a distribution per segment: twelve networks with each network's population and share fallen behind against the 30 per cent line, the closest network left out and its gap, a chart; and a table of the pilot's first consultations (October 2025 to September 2026) and six-week follow-ups by quarter in two networks",
-  "as_of": "2027-01-27",
+  "prompt_shape": "cuts of a distribution per segment: eleven teams, each with whether it gets a group, its clinicians able to co-facilitate on 1 April 2027 and the mean weeks its patients on the DBT waiting list had waited at the year end, and a chart of each team's share against the 30 per cent line",
+  "as_of": "2027-01-21",
   "deliverables": [
-    "statin_service_tiers_2027-28.docx",
-    "statin_adherence_2026_by_network.xlsx"
+    "dbt_skills_groups_2027_28.xlsx",
+    "team_instability_2026.png"
   ],
   "distractor_files": [
-    "community_pharmacy_contractual_framework_summary_2024-26.pdf",
-    "statin_products_dmd_2026-12.csv"
+    "phq9_gad7_at_assessment_2026.csv",
+    "sallowdene_mood_app_pilot_evaluation_2025.pdf"
   ],
   "field_terms": [],
   "stated_inputs": [],
   "input_gates": {
-    "files": 12,
+    "files": 17,
     "formats": [
       "csv",
+      "docx",
       "pdf",
       "xlsx"
     ],
-    "largest_file": "community_pharmacy_statin_dispensing_2025-12-01_to_2026-12-31.csv",
-    "largest_file_rows": 368662
+    "largest_file": "mood_app_export_v4_2026-06-15_to_2026-12-27.csv",
+    "largest_file_rows": 45318
   },
   "sources": [
     {
       "files": "all files under target/",
-      "origin": "constructed for this task by task270/generator/build.py (seeded, deterministic) around a fictional English GP federation, its twelve primary care networks, their practices on two clinical systems, the community pharmacies and the integrated care board whose data service supplies the extracts, in the layouts of a health data service's dispensing extract and practice lists, a services portal export and a commissioner's payment statements; no real organisation's records or person is depicted.",
-      "date": "2027-01-27",
+      "origin": "constructed for this task by task270/generator/build.py (seeded, deterministic) around a fictional English mental health trust, its eleven community mental health teams and its Complex Emotional Needs Service, and a fictional provider collaborative, in the layouts of a mood app's exports, a patient record's episodes, referral module and index, a staff record extract, a learning system and the documents such an organisation files; no real organisation's records or person is depicted.",
+      "date": "2027-01-21",
       "license": "CC0-1.0 (original work)"
     }
   ],
@@ -39,123 +40,173 @@
   "generator": "task270/generator/build.py",
   "files": [
     {
-      "path": "community_pharmacies_2026-12.csv",
-      "format": "csv",
-      "bytes": 6684,
-      "rows": 82,
+      "path": "assessment_fortnights_register_2026.xlsx",
+      "format": "xlsx",
+      "bytes": 38212,
+      "rows": 700,
       "role": "input",
-      "source": "Constructed: NHS Iversford Vale Integrated Care Board primary care team, community pharmacy list (December 2026)",
-      "date": "2027-01-27",
+      "source": "Constructed: Brindholm and Wendholt NHS Foundation Trust psychological therapies team, assessment fortnights register 2026",
+      "date": "2027-01-21",
       "license": "CC0-1.0 (original work, constructed for this task)"
     },
     {
-      "path": "community_pharmacy_contractual_framework_summary_2024-26.pdf",
+      "path": "cen_correspondence_log_2023-04_to_2027-01.csv",
+      "format": "csv",
+      "bytes": 77330,
+      "rows": 1350,
+      "role": "input",
+      "source": "Constructed: Brindholm and Wendholt NHS Foundation Trust electronic patient record, correspondence log for the Complex Emotional Needs Service, April 2023 to January 2027 (8 January 2027)",
+      "date": "2027-01-21",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "cen_referrals_module_export_2027-01-08.csv",
+      "format": "csv",
+      "bytes": 14766,
+      "rows": 168,
+      "role": "input",
+      "source": "Constructed: Brindholm and Wendholt NHS Foundation Trust electronic patient record, referral module export for the Complex Emotional Needs Service (8 January 2027)",
+      "date": "2027-01-21",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "cen_service_dbt_programme_operating_standard_v3.pdf",
       "format": "pdf",
-      "bytes": 41175,
+      "bytes": 42170,
+      "rows": null,
+      "role": "input",
+      "source": "Constructed: Brindholm and Wendholt NHS Foundation Trust Complex Emotional Needs Service, DBT programme operating standard, version 3.1 (6 July 2026)",
+      "date": "2027-01-21",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "cmht_care_episodes_2025-2026.csv",
+      "format": "csv",
+      "bytes": 61198,
+      "rows": 1233,
+      "role": "input",
+      "source": "Constructed: Brindholm and Wendholt NHS Foundation Trust electronic patient record, community mental health team care episodes, 2025 to 2026 (pulled 6 January 2027)",
+      "date": "2027-01-21",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "dbt_skills_groups_2027-28_committee_paper.docx",
+      "format": "docx",
+      "bytes": 12523,
+      "rows": null,
+      "role": "input",
+      "source": "Constructed: Brindholm and Wendholt NHS Foundation Trust, Finance and Performance Committee paper, DBT skills groups in community mental health teams 2027-28 (21 January 2027)",
+      "date": "2027-01-21",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "esr_clinical_assignments_2027-01-04.csv",
+      "format": "csv",
+      "bytes": 36091,
+      "rows": 317,
+      "role": "input",
+      "source": "Constructed: Brindholm and Wendholt NHS Foundation Trust workforce team, staff record extract of clinical assignments (4 January 2027)",
+      "date": "2027-01-21",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "learning_and_development_annual_report_2024-25.pdf",
+      "format": "pdf",
+      "bytes": 42260,
+      "rows": null,
+      "role": "input",
+      "source": "Constructed: Brindholm and Wendholt NHS Foundation Trust learning and development, annual report 2024-25 (27 June 2025)",
+      "date": "2027-01-21",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "learning_catalogue_2026.xlsx",
+      "format": "xlsx",
+      "bytes": 6921,
+      "rows": 13,
+      "role": "input",
+      "source": "Constructed: Brindholm and Wendholt NHS Foundation Trust learning and development, learning catalogue 2026",
+      "date": "2027-01-21",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "learning_records_2022-04_to_2026-12.csv",
+      "format": "csv",
+      "bytes": 186158,
+      "rows": 4725,
+      "role": "input",
+      "source": "Constructed: Brindholm and Wendholt NHS Foundation Trust learning and development, learning records April 2022 to December 2026",
+      "date": "2027-01-21",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "mood_app_enrolments_2025-2026.csv",
+      "format": "csv",
+      "bytes": 40993,
+      "rows": 715,
+      "role": "input",
+      "source": "Constructed: Brindholm and Wendholt NHS Foundation Trust digital services, mood app enrolment log, 2025 to 2026",
+      "date": "2027-01-21",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "mood_app_export_v3_2026-01-05_to_2026-06-14.csv",
+      "format": "csv",
+      "bytes": 2174978,
+      "rows": 33712,
+      "role": "input",
+      "source": "Constructed: Brindholm and Wendholt NHS Foundation Trust digital services, mood app export (app version 3), prompts sent 5 January to 14 June 2026, pulled 6 January 2027",
+      "date": "2027-01-21",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "mood_app_export_v4_2026-06-15_to_2026-12-27.csv",
+      "format": "csv",
+      "bytes": 3875189,
+      "rows": 45318,
+      "role": "input",
+      "source": "Constructed: Brindholm and Wendholt NHS Foundation Trust digital services, mood app export (app version 4), prompts sent 15 June to 27 December 2026, pulled 6 January 2027",
+      "date": "2027-01-21",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "patient_index_extract_2027-01-06.csv",
+      "format": "csv",
+      "bytes": 31878,
+      "rows": 1027,
+      "role": "input",
+      "source": "Constructed: Brindholm and Wendholt NHS Foundation Trust electronic patient record, patient index extract (6 January 2027)",
+      "date": "2027-01-21",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "phq9_gad7_at_assessment_2026.csv",
+      "format": "csv",
+      "bytes": 17338,
+      "rows": 700,
+      "role": "distractor",
+      "source": "Constructed: Brindholm and Wendholt NHS Foundation Trust psychological therapies team, PHQ-9 and GAD-7 scores taken at assessment, 2026",
+      "date": "2027-01-21",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "sallowdene_mood_app_pilot_evaluation_2025.pdf",
+      "format": "pdf",
+      "bytes": 41880,
       "rows": null,
       "role": "distractor",
-      "source": "Constructed: NHS Iversford Vale Integrated Care Board primary care contracting, a summary of the community pharmacy contractual framework 2024-26 (30 September 2024)",
-      "date": "2027-01-27",
+      "source": "Constructed: Sallowdene Provider Collaborative digital mental health programme, mood app pilot evaluation (3 December 2025)",
+      "date": "2027-01-21",
       "license": "CC0-1.0 (original work, constructed for this task)"
     },
     {
-      "path": "community_pharmacy_statin_dispensing_2025-12-01_to_2026-12-31.csv",
-      "format": "csv",
-      "bytes": 41670989,
-      "rows": 368662,
-      "role": "input",
-      "source": "Constructed: Iversford Vale Health Data Service, community pharmacy statin dispensing for the patients registered with Iversford Vale GP Federation's member practices, 1 December 2025 to 31 December 2026 (pulled 11 January 2027), pseudonymised",
-      "date": "2027-01-27",
-      "license": "CC0-1.0 (original work, constructed for this task)"
-    },
-    {
-      "path": "compliance_aids_prescribing_and_supply_guidance_2025.pdf",
+      "path": "sallowdene_mood_monitoring_standard_v1-1.pdf",
       "format": "pdf",
-      "bytes": 41711,
+      "bytes": 41990,
       "rows": null,
       "role": "input",
-      "source": "Constructed: NHS Iversford Vale Integrated Care Board, compliance aids prescribing and supply guidance (2 June 2025)",
-      "date": "2027-01-27",
-      "license": "CC0-1.0 (original work, constructed for this task)"
-    },
-    {
-      "path": "pilot_payment_statements_2025-11_to_2027-01.xlsx",
-      "format": "xlsx",
-      "bytes": 76832,
-      "rows": 1403,
-      "role": "input",
-      "source": "Constructed: Iversford Vale GP Federation finance, pilot payment statements, November 2025 to January 2027",
-      "date": "2027-01-27",
-      "license": "CC0-1.0 (original work, constructed for this task)"
-    },
-    {
-      "path": "practice_network_membership_2026.csv",
-      "format": "csv",
-      "bytes": 3728,
-      "rows": 56,
-      "role": "input",
-      "source": "Constructed: NHS Iversford Vale Integrated Care Board primary care team, practice membership of the primary care networks, 2026",
-      "date": "2027-01-27",
-      "license": "CC0-1.0 (original work, constructed for this task)"
-    },
-    {
-      "path": "pseudonym_crosswalk_2026-07-01.csv",
-      "format": "csv",
-      "bytes": 775270,
-      "rows": 29817,
-      "role": "input",
-      "source": "Constructed: Iversford Vale Health Data Service, pseudonym crosswalk at the re-keying of 1 July 2026",
-      "date": "2027-01-27",
-      "license": "CC0-1.0 (original work, constructed for this task)"
-    },
-    {
-      "path": "quarvis_practices_lipid_cohort_2026-12-31.csv",
-      "format": "csv",
-      "bytes": 432677,
-      "rows": 14551,
-      "role": "input",
-      "source": "Constructed: Iversford Vale Health Data Service, lipid cohort list from the Quarvis practices at 31 December 2026",
-      "date": "2027-01-27",
-      "license": "CC0-1.0 (original work, constructed for this task)"
-    },
-    {
-      "path": "services_portal_statin_pilot_export_pulled_2026-10-02.csv",
-      "format": "csv",
-      "bytes": 138736,
-      "rows": 1291,
-      "role": "input",
-      "source": "Constructed: Iversford Vale GP Federation services portal, statin adherence pilot export (pulled 2 October 2026)",
-      "date": "2027-01-27",
-      "license": "CC0-1.0 (original work, constructed for this task)"
-    },
-    {
-      "path": "statin_adherence_support_service_specification_2027-28.pdf",
-      "format": "pdf",
-      "bytes": 43928,
-      "rows": null,
-      "role": "input",
-      "source": "Constructed: Iversford Vale GP Federation, Statin Adherence Support Service specification 2027-28 (16 November 2026)",
-      "date": "2027-01-27",
-      "license": "CC0-1.0 (original work, constructed for this task)"
-    },
-    {
-      "path": "statin_products_dmd_2026-12.csv",
-      "format": "csv",
-      "bytes": 1590,
-      "rows": 17,
-      "role": "distractor",
-      "source": "Constructed: NHS Iversford Vale Integrated Care Board medicines optimisation team, statin products in use (December 2026)",
-      "date": "2027-01-27",
-      "license": "CC0-1.0 (original work, constructed for this task)"
-    },
-    {
-      "path": "synaris_practices_lipid_cohort_2026-12-31.xlsx",
-      "format": "xlsx",
-      "bytes": 525702,
-      "rows": 14381,
-      "role": "input",
-      "source": "Constructed: Iversford Vale Health Data Service, lipid cohort list from the Synaris practices at 31 December 2026",
-      "date": "2027-01-27",
+      "source": "Constructed: Sallowdene Provider Collaborative, mood monitoring standard: emotional instability, version 1.1 (12 October 2026)",
+      "date": "2027-01-21",
       "license": "CC0-1.0 (original work, constructed for this task)"
     }
   ]
