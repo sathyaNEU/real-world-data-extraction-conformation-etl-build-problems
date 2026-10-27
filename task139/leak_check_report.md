@@ -4,7 +4,7 @@
 
 LEAK stops the ship. REVIEW is a reader's call and the /leak-check command's solver's-eye pass reads every REVIEW line. INFO is a sweep that ran and found nothing or was skipped.
 
-Stump terms swept: odometer, contract, months, claims, exposure, reading, mileage, decisive, contract-month, repair, frequency, family, readings, nothing, loading, intake, forecasting, driven, covered, population, golden, window, readable, indemnity, verified
+Stump terms swept: odometer, contract, months, claims, exposure, reading, mileage, decisive, contract-month, family, readings, repair, golden, frequency, nothing, loading, readable, forecasting, driven, covered, population, checks, window, indemnity, verified
 
 ## 3 answer figures in the pack (REVIEW 2)
 - **REVIEW** `drive_plus_rate_manual_2026.pdf`: carries 6 of 8 distinctive words of the committed call: 'Copperline should renew the Fareline channel on 1 January 2027 with the maximum high-use surcharge.'
@@ -33,6 +33,7 @@ Stump terms swept: odometer, contract, months, claims, exposure, reading, mileag
 ## 9 dates after the setting (clean)
 
 ## 11 prompt gate (clean)
+
 
 ## Solver's-eye read
 

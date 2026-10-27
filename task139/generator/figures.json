@@ -61,6 +61,7 @@
  "route.own_age_linear_trend.lr_pct": 55.2,
  "route.own_month_x_60.lr_pct": 48.2,
  "route.own_month_x_cover.lr_pct": 16.9,
+ "route.per_mile_by_sale_band.lr_pct": 33.0,
  "route.per_mile_odometer_in_force_to_term.lr_pct": 58.2,
  "route.pooled_per_mile.lr_pct": 21.6,
  "route.retail_age_accelerated.lr_pct": 38.3,

@@ -82,6 +82,7 @@ measured by `golden.routes` on the cut pack and asserted in `checks.py`:
 | the retail book's cost by contract age on a clock sped up by the mileage ratio | 38.3 | renew at current rates |
 | the book's pooled cost per mile, over the 75,000 covered miles | 21.6 | renew at current rates |
 | claim frequency per mile by odometer band, at the book's average claim | 51.6 | renew at current rates |
+| cost per mile by the rate manual's odometer-at-sale band (the 50,000 to 99,999 band), times 75,000 | 33.0 | renew at current rates |
 | cost per mile at the odometer, every contract's miles run on at its own rate to its 60 months or 30 September (no cover ended early) | 58.2 | renew at current rates |
 | the channel's own cost per contract-month over the full 60 months (the mileage limit dropped) | 48.2 | renew at current rates |
 | golden: cost per mile at each odometer from the whole book, along each contract's mileage path to its limit | 75.0 | renew with the surcharge (53.6 surcharged) |
@@ -179,6 +180,7 @@ at the current price, the golden against the default path's routes.
 | L1 the channel's age trend | the channel's cost per contract-month by month of contract age, a linear trend carried over each cover (55.2) | the same six months, read as a development pattern | readable |
 | L2 the retail clock | the retail book's cost per contract-month by contract age over 60 months, with the 20 per cent loading (29.6), or on a clock sped up by the mileage ratio (38.3) | the agreement's commercial-use loading; the retail book's seven years | readable |
 | L3 per mile, pooled | the book's claims cost over its miles under cover, times 75,000 (21.6), or frequency per mile by odometer band at the book's average claim (51.6) | the terms' 75,000 miles; the readings' odometers | readable |
+| L3b per mile by the price table's band | the retail book's cost per mile for contracts sold in the rate manual's 50,000 to 99,999 band (every Fareline car's band), over their miles, times 75,000 (33.0) | rate manual 2: the price is set by the odometer at sale in those bands | readable |
 | L4 per mile at the odometer, every cover in force to term | the golden's cost per mile at each odometer, but each contract's miles under cover run on at its own rate to its 60 months or 30 September, the cars sold and the covers cancelled kept on cover (58.2) | the terms 4 and 6: a cancelled contract's CarLink reporter is removed and sends a closing reading on the day the contract ends; the cancellation requests for 2025 and 2026 | readable |
 | G golden (decisive) | the claims cost per mile in each odometer band from the whole book, each 2026 Fareline contract run from its odometer at sale at its own mileage to the earlier of 75,000 miles and 60 months (75.0) | nothing names the odometer as the cover's clock: the rate manual files the estimand and no exposure base, and the one cross-section that rules the other rungs out (the book's cost per 1,000 miles by odometer band, about 4 dollars to 70,000 miles and over 20 times that by 130,000) is invited by no document | silent |
 
@@ -219,6 +221,8 @@ Measured by the generator on the cut pack; `checks.py` asserts every row on each
 | L2 the retail clock sped up by the mileage ratio | 38.3 | renew at current rates | no |
 | L3 the pooled cost per mile | 21.6 | renew at current rates | no |
 | L3 frequency by band at the book's average claim | 51.6 | renew at current rates | no |
+| L3b per mile by the rate manual's odometer-at-sale band (retail contracts sold at 50,000 to 99,999 miles, over their own miles, times 75,000) | 33.0 | renew at current rates | no |
+| L1b the channel's own trend in every common form (linear weighted 55.2, unweighted 62.0; quadratic 215 to 240; exponential 287 to 548) | 55.2 to 548 | renew at current rates or lapse, never the surcharge | no |
 | L4 per mile at the odometer, every cover in force to term | 58.2 | renew at current rates | no |
 | G golden: cost per mile at the odometer along each contract's path | 75.0 (53.6 surcharged) | renew with the maximum high-use surcharge | yes |
 
@@ -334,10 +338,10 @@ payment has to be rebuilt from its lines and told from its re-sent copy by the s
 ## Pre-ship check
 
 - The three rules re-read against the built pack: the decisive step is still the exposure base (rate manual 5 files the estimand and no clock; nothing names the odometer as the cover's clock), the mess is Layer 1 only (the 2024 crosswalk, three reading sources, line-grain claims with reversals and goodwill, three bordereau layouts), and the asks' devices sit in files the call never opens.
-- Call: renew with the maximum high-use surcharge, 75.0 per cent at the current price and 53.6 surcharged; the standing family 74.4 to 75.4 (75 and 55 at the nearest 5 on every member, 48 plus 18 cross-product cells); every route on the default path and below files renew at current rates, the nearest the per-mile reader who keeps every cover in force (58.2); the clean-truth analyst test files renew on every route; the world's own loss ratio 75.8.
+- Call: renew with the maximum high-use surcharge, 75.0 per cent at the current price and 53.6 surcharged; the standing family 74.4 to 75.4 (75 and 55 at the nearest 5 on every member, 48 plus 18 cross-product cells); every route on the default path and below files renew at current rates, the nearest the per-mile reader who keeps every cover in force (58.2), the rate manual's odometer-at-sale band at 33.0, and the channel's own trend files renew or lapse in every common form, never the surcharge; the clean-truth analyst test files renew on every route; the world's own loss ratio 75.8.
 - Asks: cracker 0 of 17, mirror 0 of 17, pair ceiling 28.5 (`ceiling.py`); every ask golden equals the world truth (`checks.py`).
 - Inputs: 13 files in three formats (9 CSV, 4 PDF, 1 XLSX), the odometer readings at 612,712 rows, two distractors named in `metadata.json`, no dictionary or notes file; golden metadata clean.
-- Gates: checks 246, verify 27 of 27, two byte-identical builds (3019a830, goldens included), figures_check 50 of 50, precut 53 checks 0 FAIL, voice-check PASS (930 characters), leak.py REVIEW with every line ruled, two leak readers clean with Q6 analytical, judge pass 1 DETERMINISTIC and APPROVE (its two optional pins applied), guard heart WARN after the stage 3 axis redraw.
+- Gates: checks 254, verify 27 of 27, two byte-identical builds (3019a830, goldens included), figures_check 50 of 50, precut 53 checks 0 FAIL, voice-check PASS (930 characters), leak.py REVIEW with every line ruled, two leak readers clean with Q6 analytical, judge pass 1 DETERMINISTIC and APPROVE (its two optional pins applied), guard heart WARN after the stage 3 axis redraw.
 
 ## Architecture 2 record (spent 2026-10-27)
 
@@ -498,4 +502,13 @@ filed. Architecture 2 finds what the two arms share that the counterfactual lack
 - 2026-10-27, stage 3: the crosswalk unused, claims dropped while their exposure is kept (55.0, renew at current rates):
   37.8 per cent of the claims carry a pre-2024 number, an unmatched join the hygiene battery flags, so it is a broken
   join rather than a reading; the R2 assertion leaves the unmapped contracts out whole (78.2, the surcharge).
-
+- 2026-10-27, after ship: the Fareline count moved off the round 6,000 a leak reader flagged. Measured on the clean world
+  at 6,013, 6,029, 6,037, 6,043, 6,051, 6,061 and 6,079 contracts, the channel's own linear age trend runs 60.8 to 72.8
+  (72.8 at 6,043 files the surcharge by luck), against 55.2 at 6,000; the shipped world keeps 6,000, the clearest of the
+  draws, and `checks.py` now asserts that no trend form (linear, quadratic or exponential, weighted or not) files the
+  golden on it.
+- 2026-10-27, after ship: ask B's returned-payment organ screened for a replacement, so that no ask device repeats architecture 1's. The
+  replacements screened (the independents' deal date a day or two before the sale date, joined on VIN and the nearest
+  sale; dealer pay-plan instalments read as duplicates; a dealer group's catch-up remittance after an acquisition) were
+  each found and fixed in one act, or left "received" without a payment record; all weaker than the dealer-month
+  reconstruction, which stays.

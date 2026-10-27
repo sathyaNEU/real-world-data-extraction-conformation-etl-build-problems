@@ -202,6 +202,23 @@ def routes(P):
         m2 += np.clip(np.minimum(edges[1:], b) - np.maximum(edges[:-1], o0), 0, None)
     c2 = np.divide(cost, m2, out=np.zeros_like(m2), where=m2 > 0)
     out['per_mile_odometer_in_force_to_term'] = float(np.mean([lifetime(c2, edges, f['o0'], f['rate']) for f in fl]))
+    # the rate manual's own odometer-at-sale bands: the retail book's cost per mile for contracts sold at 50,000 to
+    # 99,999 miles (the band every Fareline car was sold in), over their miles under cover, times 75,000
+    cl = {}
+    for c in P['claims']:
+        cl[c['contract']] = cl.get(c['contract'], 0.0) + c['net']
+    mm = cc2 = 0.0
+    for k, r in ret.items():
+        o0 = int(r['odometer_at_sale'])
+        if not 50000 <= o0 < 100000:
+            continue
+        s = D(r['sale_date'])
+        last = min(cover_end_date(r), K.VALUATION)
+        p = [o for d, o in P['pts'].get(k, []) if s <= d <= last]
+        if p:
+            mm += min(p[-1], o0 + K.LIMIT) - o0
+        cc2 += cl.get(k, 0.0)
+    out['per_mile_by_sale_band'] = cc2 / mm * K.LIMIT
     # the book's pooled cost per mile over 75,000 miles
     edges, miles, cost, count = band_costs(P)
     out['pooled_per_mile'] = cost.sum() / miles.sum() * K.LIMIT

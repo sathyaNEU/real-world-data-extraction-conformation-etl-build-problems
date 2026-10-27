@@ -190,6 +190,35 @@ def main():
     for k, v in R.items():
         ok(v <= K.STANDARD - 10, "route %s files renew at current rates, 10 points clear (%.1f)" % (k, v))
 
+    # the channel's own cost per contract-month by age, extrapolated over each cover in every common form (linear
+    # weighted or not, quadratic, exponential): none lands in the window that files the surcharge
+    fl_ = [f for f in G.fareline(P) if f['rate']]
+    pr_ = float(np.mean([f['price'] for f in fl_]))
+    fk_ = {f['k']: f for f in fl_}
+    cov_ = [min(K.LIMIT / f['rate'] * 12, K.TERM_MONTHS) for f in fl_]
+    den_, num_ = np.zeros(60), np.zeros(60)
+    for f in fl_:
+        for a in range(int((K.VALUATION - f['sale']).days // 30.4375)):
+            den_[a] += 1
+    for c in P['claims']:
+        f = fk_.get(c['contract'])
+        if f:
+            a = int((c['date'] - f['sale']).days // 30.4375)
+            if a < 60 and den_[a] > 0:
+                num_[a] += c['net']
+    okm = den_ > 0
+    ages_, y_ = np.arange(60)[okm], num_[okm] / den_[okm]
+    for form, w in itertools.product(('linear', 'quadratic', 'exponential'), (None, np.sqrt(den_[okm]))):
+        if form == 'exponential':
+            b = np.polyfit(ages_, np.log(np.maximum(y_, 1e-6)), 1, w=w)
+            f_ = lambda a: np.exp(np.polyval(b, a))
+        else:
+            b = np.polyfit(ages_, y_, 1 if form == 'linear' else 2, w=w)
+            f_ = lambda a: max(np.polyval(b, a), 0.0)
+        lr_ = 100 * np.mean([sum(f_(a) for a in range(int(round(m)))) for m in cov_]) / pr_
+        ok(call_of(lr_) != GOLD_CALL, "the channel's own %s trend (%s) does not file the golden (%.1f)" %
+           (form, 'weighted' if w is not None else 'unweighted', lr_))
+
     # ---- R1: the field's raw material ships, the deciding quantity does not ----
     heads = set()
     for nm in os.listdir(TARGET):
