@@ -150,7 +150,7 @@ members of a capped set, task137 censors demand at a capacity bound).
 ## Readability screen
 Seven tests per rung (`stumping` 2.1), verdict last. The decisive rung is the concurrency ceiling and it
 comes out `silent`. Measured on the stage-2 prototype
-(`scratchpad/t464proto/proto7.py`, eight seeds 464 to 7464).
+(`generator/ladder_prototype.py`, eight seeds 464 to 7464).
 
 | Rung | 1 filed sentence | 2 schema | 3 reflex | 4 control bench | 5 hygiene | 6 linear | 7 dedicated organ | Verdict |
 |---|---|---|---|---|---|---|---|---|
@@ -217,7 +217,7 @@ decisive step rule application, which the client's rule 3 bans.
 
 ## Ladder
 Four rungs, measured on the stage-2 prototype over eight seeds (464, 1464, 2464, 3464, 4464, 5464, 6464,
-7464); `scratchpad/t464proto/proto7.py` builds every rung by construction and lets the seed decide texture
+7464); `generator/ladder_prototype.py` builds every rung by construction and lets the seed decide texture
 only. The area codes below are the prototype's; the cut pack names them.
 
 | Rung | What it does | Network total over the golden | Areas short of 12 | Its own short set (prototype seed 464) | Worth on the graded quantity |
@@ -241,7 +241,7 @@ clear of the 6 per cent floor. Every rung names its own total and its own short 
 | R2 | 2 (A02 A07) | 4 (A01 A03 A06 A10) | 6 |
 | R3 | - | - | 0 |
 
-This is the defect proto3 carried and the repair. There, the volume ceiling sat uniformly below the
+This is the defect the first prototype of the arithmetic carried, and the repair. There the volume ceiling sat uniformly below the
 concurrency ceiling, so R2 named exactly the golden's six short areas and a solver stopped at R2 got the
 whole area grid right and only the network total wrong. Here the busiest week over four years can sit above
 the current roster's product as well as below it, because six to nine sites of forty closed a third shift or
@@ -519,8 +519,8 @@ adequacy contract at authority.
   true utilisation is above 1 over 1.15g, about 0.80, and clears on attested stations when its apparent
   utilisation is below that line, which is what the flip set of three areas is built from.
 
-- The volume ceiling filled as a fixed fraction of each site's concurrency ceiling (the first prototype,
-  `proto3.py`, 2026-10-27): R2 then sat uniformly below R3 at every site, so R2's short set was exactly the
+- The volume ceiling filled as a fixed fraction of each site's concurrency ceiling (the first prototype of the
+  arithmetic, 2026-10-27): R2 then sat uniformly below R3 at every site, so R2's short set was exactly the
   golden's six areas and a solver stopped at R2 got all twelve area verdicts right and only the network
   total wrong, which cost the area grid its whole discrimination. R2 is now the site's busiest week over the
   four-year record, which sits above the current roster's product at the six to nine sites of forty that

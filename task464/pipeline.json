@@ -1,18 +1,20 @@
 {
  "task": "task464",
  "owner": "oviya1301",
- "status": "DESIGN",
+ "status": "BUILD",
  "domain": "healthcare-delivery-health-economics",
  "objective": "etl",
- "stage": 2,
- "stage_name": "design",
+ "stage": 3,
+ "stage_name": "build",
  "updated": "2026-10-27",
- "stump": "The default path multiplies each site's attested stations by its rostered sessions, ties the product to realised volume and the adequacy standard, and files a 2027 network capacity about a sixth high with three of the twelve areas wrongly above the standard, because the stations a site attests are the positions it has, not the positions it can work at one time.",
+ "stump": "The default path multiplies each site's attested stations by its rostered sessions, ties the product to realised volume and the adequacy standard, and files a 2027 network capacity 1.15 times the golden with three of the twelve service areas wrongly above the standard, because the stations a site attests are the positions it has, not the positions it can work at one time.",
  "architecture": 3,
  "loops": 0,
  "precut": {
-  "exit": null,
-  "date": ""
+  "exit": 0,
+  "checks": 52,
+  "warn": 0,
+  "date": "2026-10-27"
  },
  "leak": {
   "leak_py": "",
@@ -41,7 +43,7 @@
    "commit": ""
   }
  ],
- "resume": "Architecture 3 drawn and registered 2026-10-27 (card PASS with one answered WARN on question_form). Stage 2 owes the readability screen, the semantic fork table, the ladder arithmetic, the 22-axis closure table, the literal reader line, the oracles and the ask sheet, then precut.py exit 0. The design risk to close first is the ceiling statistic: every reasonable reading must land on the same integer per site, by C1 on a hard plateau in each site's concurrency distribution and asserted, never by a filed sentence saying how to compute it.",
+ "resume": "Stage 2 closed 2026-10-27: precut.py exit 0, 52 checks, 0 FAIL, 0 WARN, voice-check exit 0 on a 988 character prompt. Stage 3 owes the whole pack. NOTE the generator is deliberately inconsistent right now: generator/checks.py is architecture 3's assertion module (SF1 to SF17 plus the ladder, partial-application, analyst-test, separation, hygiene and oracle blocks) while every other file under generator/, plus target.zip, golden/ and submission.md, is still architecture 2's and is rewritten at stage 3. Five things are owed against the cut pack and must not be taken from the design note as measured: the per-ask hazard deltas and column counts, the pair ceiling and mirror leakage (36.5 and 29.2 are a model, not a reader measurement; the sensitivity is 39.3 to 47.5 if the cracker keeps a tenth to two fifths of the ask weight), the counter-pin sweep on the adequacy contract's wording, the encounter file's row count and format (about 1.1 million reconstructed intervals, intended as a database file), and the realism sweep.",
  "approved": null,
  "delivered": "2026-10-17",
  "portal": "both responses landed the call",
