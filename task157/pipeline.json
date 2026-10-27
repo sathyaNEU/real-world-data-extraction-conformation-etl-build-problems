@@ -7,7 +7,7 @@
  "stage": 3,
  "stage_name": "build",
  "updated": "2026-10-27",
- "stump": "A competent solver who reads every disposition code, validates the counties' registration determinations against the voter extract whose run date precedes the signing window and expands every class at the sample's own factor of 20 files 431,420 valid signatures and a sufficient measure; the step that lands them there is expanding the duplicate dispositions at the sampling fraction alongside the single-signature grounds, when a duplicate is a relation between two signatures the sample sees only when it draws both, so the duplicate burden is 36,800 rather than 1,840 and the projection is 388,460, which orders a full count.",
+ "stump": "A competent solver projects the statutory five per cent sample by multiplying its valid lines by twenty, files 420,520 printing 420,000 at 109.3 per cent of the 384,924 required, reads the petition sufficient and puts the measure on the ballot; the step that lands them there is scaling a duplicate strike at the sample's own factor of twenty, when a duplicate is a property of a PAIR of lines and a five per cent sample catches a pair only with probability one in four hundred, so the golden projects 390,200, prints 390,000, and orders the examination of all 540,000 lines filed.",
  "architecture": 2,
  "loops": 0,
  "precut": {
@@ -19,13 +19,14 @@
   "reader": ""
  },
  "duplicate_check": {
-  "heart": "WARN, no BLOCK: overuse.org_family government_agency (39 builds), repeat.deliverables png+xlsx against task144, repeat.question_form how-many against task464",
-  "nearest": "surface exit 0, 9 pairs promoted for adjudication out of 297 in scope, being read"
+  "heart": "WARN, no BLOCK, nearest driver 0.09 (task445 v1): overuse.org_family government_agency, repeat.deliverables png+xlsx against task144, repeat.question_form how-many against task464",
+  "surface": "exit 1 at the stage 3 gate, corrected: it BLOCKed people.full and people.last on Santa Cruz, which is one of Arizona's fifteen counties and not a persona. My DRAWN (task157) commit message claimed exit 0, which was wrong: I had read the exit status of a grep pipeline rather than of guard. Fixed in the screen itself (SKILLS commit e08d58c2, NOT_PERSON_PAIR), after which surface exits 0 with no BLOCK and the names it still reads are an office and a firm.",
+  "nearest": "9 pairs promoted of 297 in scope, all at surface 0.100 to 0.104 against a corpus 99th percentile of 0.100, and all promoted on card axes rather than mechanism: same decisive gap, same decision type or same context-artifact type against task134, task448, task179, task150 and others. To be adjudicated a line each in the design note before the ship. The screen reads this build as delivered 10-17, which is architecture 1's record, so its severities read one level high."
  },
  "judge": {
-  "verdict": "",
-  "disposition": "",
-  "report": ""
+  "verdict": "DETERMINISTIC on the main call",
+  "disposition": "FIX_NOW on the supplementary block",
+  "report": "verdict at /tmp/determinism-check-task157-20261027T103828/verdict.md, report owed at task157/determinism_check_report_pass2.md"
  },
  "returned": [
   {
@@ -44,9 +45,9 @@
    "commit": "5826c528"
   }
  ],
- "resume": "Stage 3 is complete and every free gate is green, measured by the author rather than taken from the build thread: generator checks 138 of 138, verify 29 of 29 reading only the bundle, two byte-identical rebuilds (target 01c8d44b6f0df8d0, golden 56dc76b3851646cc, target.zip b3e74a82ebcc0189), figures_check 112 figures none absent, precut exit 0 on 52 checks with 0 FAIL and 0 WARN (the architecture-1 FAIL is closed, because architecture 2 now has its own checks.py), voice-check PASS at 998 characters, leak.py REVIEW with no LEAK at as-of 2028-08-04, input gates 15 files in 4 formats with a 38,080-row spine, two declared distractors and all 15 files carrying source, date and licence, heart WARN with no BLOCK. The four measured obligations the rework owed are all asserted over all six seeds: the golden sits 200 signatures from its cell's centre, both band clearances are at or above 2.5 bins at every seed (worst 2.79), multiplicity is near binary with the all-doubles bias at worst 0.0234 bins, and the defensible family spread is at worst 1.01 signatures. One number to watch and it is the honest weakness of architecture 2: the decisive gap exceeds the family spread and the estimator's own interval together by a factor of 2.00 at the worst seed, against 15.8 on task204, and the worst-seed decisive gap is 2.51 bins. That clears the law but not comfortably, so a portal return on determinism is likelier here than on task204. NEXT IS STAGE 4: the leak reader and the determinism judge spawned together in the background. The 9 promoted surface pairs are to be adjudicated in the design note before the ship, one of them promoted because gap, pattern and decision family all collide, which the screen calls a clone signature even with no surface overlap.",
+ "resume": "Stage 4 is read and the fix pass is dispatched to the build thread in one pass. The judge returned DETERMINISTIC on the main call: it recomputed 390,200 printing 390,000, 101.4 per cent of 384,924, inside the band, full count, and tested nine licensed constructions of the projection. Every reading that keeps the 1-in-400 duplicate factor prints 390,000, the cell moving only if the duplicate count reaches 68 or falls to 55 against a widest reading of 67; the easy route files 413,380 printing 415,000 and qualifies, so the trap is measured. Gate G estimator_choice, Gate H all pass. The FIX_NOW is entirely supplementary and the main call, the projection and the data are frozen: the per-disposition-code ask is missing from the answers and the workbook, the per-month ask gives sheet serials where the prompt asks for the registered-when-signed-and-no-longer-valid counts (25, 65, 115, 117, 136, 98 and 2 in December 2027, 558 in all), the month range is unpinned against 2027-10 to 2027-12 rows in the bundle, and four ask-side forks need closing (nine CANCELLED rows re-registered, 558 against 549; 'no longer valid' read as disposition rather than snapshot status, 558 against 3,232; 24 switch-day circulator lines; and a firm-name variant sharing a registration number, 141 lines). Beyond the judge: I found sheet_no is a single global sequence 1 to 15,044 dealt in row order across all 329 firms, contradicting the filed sentence that sheet numbers are each firm's own series, with the checks.py assertion passing by coincidence; 27,858 of 38,080 sheets carry exactly 15 lines; and the leak read listed consecutive bundle ids, round-robin receiver ids, both snapshots at exactly 24,596 rows with monotonic ids, status_changed_utc equal to registration_date, and an identical PDF CreationDate and ModDate. Two rulings given: the 2024 close-out stays but must carry its own subject rather than read as a sample-against-full-count pointer, and the Navajo code list's disambiguation sentence is legal because an ask may turn on rule application. One number to settle: the cracker keeps 0.178 of the ask weight and a single response scores 66.4, which clears the bar of 70 and misses the build target of 60, with a pair ceiling of 44.1 on the worst honest reading against 38.3 filed for the gate; both numbers go in the ask sheet and the build thread is to say whether 60 is reachable without touching the main call.",
  "approved": null,
- "delivered": "2026-10-17",
+ "delivered": null,
  "portal": null,
  "portal_id": "",
  "portal_status": "",
