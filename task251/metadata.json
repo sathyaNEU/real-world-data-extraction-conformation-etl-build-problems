@@ -22,11 +22,10 @@
   ],
   "field_terms": [],
   "input_gates": {
-    "files": 12,
+    "files": 11,
     "formats": [
       "csv",
       "eml",
-      "md",
       "pdf",
       "xlsx"
     ],
@@ -47,7 +46,7 @@
     {
       "path": "TDP-03_permanent_count_stations_rev4.pdf",
       "format": "pdf",
-      "bytes": 5281,
+      "bytes": 6006,
       "rows": null,
       "source": "Constructed (seeded generator)",
       "date": "2028-01-07",
@@ -93,15 +92,6 @@
       "path": "Carrick_spring_recalibration_round_2028.eml",
       "format": "eml",
       "bytes": 642,
-      "rows": null,
-      "source": "Constructed (seeded generator)",
-      "date": "2028-01-07",
-      "license": "CC0-1.0 (original work)"
-    },
-    {
-      "path": "traffic_data_dictionary.md",
-      "format": "md",
-      "bytes": 3479,
       "rows": null,
       "source": "Constructed (seeded generator)",
       "date": "2028-01-07",

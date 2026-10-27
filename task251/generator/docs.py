@@ -1,5 +1,5 @@
 """task251 documents: the region's counting standard TDP-03 (pdf), the maintenance contractor's mail fixing the spring
-round (eml), the data dictionary (md)."""
+round (eml)."""
 import datetime as dt
 
 from reportlab.lib import colors
@@ -71,9 +71,15 @@ def standard(path, F):
          Paragraph("3. The hourly record", h2),
          Paragraph("Each controller reports to %s, the Region's count management system, which keeps for each station "
                    "and direction the vehicles counted in every hour and the hour's occupancy, all lanes of the "
-                   "direction together. Hours are kept in local time and the export carries each hour's offset from "
+                   "direction together, under the station number in force for the hour. Occupancy is the share of the "
+                   "hour the loops were occupied, in per cent, at the precision the controller reports it. Hours are "
+                   "kept in local time and the export carries each hour's offset from "
                    "UTC. Under a station's new number the record continues from the date of the change." % P.SYSTEM,
                    body),
+         Paragraph("A controller that is not counting reports nothing for the hour, and a part hour is discarded. A "
+                   "TCX-2 has no standby supply: when its supply is interrupted it stops, discards the hour it is in "
+                   "and reports no event of its own, so an interruption at a TCX-2 station shows only as hours absent "
+                   "from the export. A TCX-4 carries a battery and counts through a short interruption on it.", body),
          Paragraph("4. Summer validation programme", h2),
          Paragraph("Every July and August the validation contractor films each station for 24 hours on a weekday "
                    "and counts every vehicle that passes in each direction, in 15-minute intervals from midnight to "
@@ -95,6 +101,13 @@ def standard(path, F):
                    "station's annual average daily traffic and its flag and the maintenance figures of section 7, and "
                    "files it with the Ministry's municipal traffic data exchange.", body),
          Paragraph("7. Maintenance of the stations", h2),
+         Paragraph("%s polls every station every fifteen minutes. It raises COMMS_LOST when a poll goes unanswered "
+                   "and COMMS_OK at the first poll answered after it, and sets a controller's clock (CLOCK_SET) when "
+                   "it finds it unset. A controller reports MAINS_FAIL and MAINS_OK when its supply is lost and "
+                   "restored, RESET when it is reset, COLD_START when it starts without a set clock, and logs the "
+                   "cabinet door switch (DOOR_OPEN, DOOR_CLOSE) on every opening and closing of the cabinet. The "
+                   "station event log keeps what each controller reported and what %s raised itself, by the clock of "
+                   "whichever raised it, in the order %s received them." % (P.SYSTEM, P.SYSTEM, P.SYSTEM), body),
          Paragraph("The maintenance contractor inspects every station each spring and autumn, attends faults, and "
                    "books its work against work orders. A maintenance visit is a day one of the maintenance "
                    "contractor's technicians is at a station; two technicians at one station on one day are one "
@@ -132,82 +145,3 @@ def mail(path, F):
     with open(path, "w", encoding="utf-8", newline="") as fh:
         fh.write(text)
     return sent
-
-
-def dictionary(path, F):
-    lines = [
-        "# Traffic Data Program: data dictionary",
-        "",
-        "%s, %s. Updated 6 January 2028." % (P.ORG, P.DEPT),
-        "",
-        "## %s" % F["hourly"],
-        "",
-        "Hourly export from %s for 1 January to 31 December 2027, one row per station, direction and hour. "
-        "Comma separated." % P.SYSTEM,
-        "",
-        "| field | content |",
-        "|---|---|",
-        "| station | station number in force for the hour (see the register's code history) |",
-        "| direction | NB, SB, EB or WB |",
-        "| local_start | start of the hour, local time |",
-        "| utc_offset | the hour's offset from UTC (-05:00 standard time, -04:00 daylight time) |",
-        "| vehicles | vehicles counted in the hour, all lanes of the direction |",
-        "| occupancy | per cent of the hour the loops were occupied, averaged over the lanes (two decimals from the "
-        "TCX-4 controllers, one from the TCX-2) |",
-        "",
-        "A TCX-2 controller has no standby supply: when its supply is interrupted it stops, discards the hour it is "
-        "in and reports no event of its own, so an interruption at a TCX-2 station shows only as hours absent from "
-        "the export. A TCX-4 carries a battery and counts on it.",
-        "",
-        "## %s" % F["validation"],
-        "",
-        "The validation contractor's 2027 workbook, sheet Counts: one row per site, direction and 15-minute "
-        "interval of the filmed day.",
-        "",
-        "| field | content |",
-        "|---|---|",
-        "| site | the contractor's site code (the register's validation_site) |",
-        "| date | the filmed day |",
-        "| direction | NB, SB, EB or WB |",
-        "| start | start of the 15-minute interval, local time |",
-        "| video | vehicles counted on the video |",
-        "| loops | vehicles the station's loops counted in the interval |",
-        "",
-        "## %s" % F["register"],
-        "",
-        "Sheet Stations: station number, Regional Road, kilometre point, location, district, lanes each way, "
-        "controller model, year in service, validation site code. Sheet Code history: stations renumbered when "
-        "their controller was replaced, with the date the new number took effect.",
-        "",
-        "## %s" % F["network"],
-        "",
-        "Sheet Junctions: each junction on the Regional Roads with a count station, by road and kilometre point, "
-        "the crossing road and the junction's control. Sheet Structures: bridges and culverts by road and "
-        "kilometre points.",
-        "",
-        "## %s" % F["events"],
-        "",
-        "%s's station event log for 2027: the events the stations' controllers reported and the events %s raised "
-        "itself, one row per event, station by station in the order %s received them. %s polls every station every "
-        "15 minutes. Comma separated." % (P.SYSTEM, P.SYSTEM, P.SYSTEM, P.SYSTEM),
-        "",
-        "| field | content |",
-        "|---|---|",
-        "| station | station number in force when the event was received |",
-        "| logged_utc | time the event was logged, UTC, by the clock of whatever raised it |",
-        "| raised_by | controller or %s |" % P.SYSTEM,
-        "| event | MAINS_FAIL, MAINS_OK: mains power lost, restored at the controller; DOOR_OPEN, DOOR_CLOSE: the "
-        "cabinet door switch, logged on every opening and closing of the cabinet; RESET: controller reset; "
-        "COLD_START: controller started without a set clock; COMMS_LOST, COMMS_OK: a "
-        "poll of the station failed, a poll succeeded again; CLOCK_SET: %s set the controller's clock |" % P.SYSTEM,
-        "",
-        "## %s" % F["orders"],
-        "",
-        "%s's work orders at the count stations in 2027. Sheet Orders: one row per work order, with the dates it "
-        "was opened and closed, its category, the stations it covers (station numbers in force when it was opened), "
-        "the fault or job as reported and the resolution. Sheet Labour: one row per technician and day booked to an "
-        "order, with the hours." % P.CONTRACTOR_MAINT,
-        "",
-    ]
-    with open(path, "w", encoding="utf-8") as fh:
-        fh.write("\n".join(lines))

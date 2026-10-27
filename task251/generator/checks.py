@@ -2,6 +2,7 @@
 method files it, the ladder's rungs file their named wrong lists, the semantic forks are closed (SF1 to SF26), the asks
 equal their truth and every device sits where the design puts it, the separation line holds, and the input gates."""
 import os
+import re
 import sys
 
 import numpy as np
@@ -493,6 +494,19 @@ def main(target):
        "SF20 the cold starts' events carry the unset clock; no MAINS_FAIL does", sorted(set(y2k["event"])))
     ok(raw_ev.duplicated().sum() > 0 and (raw_ev[raw_ev.duplicated()]["event"] == "MAINS_FAIL").any(),
        "SF21 the log repeats some events after a lost poll, a MAINS_FAIL among them", int(raw_ev.duplicated().sum()))
+
+    # no shipped file or sheet describes the data (dataset-generation section 3)
+    describe = re.compile(r"(?i)(read ?me|dictionary|definitions?|glossary|field|manifest|schema|codebook|notes|"
+                          r"how_?to_?read|about)")
+    bad_names = [f for f in sorted(os.listdir(target)) if describe.search(os.path.splitext(f)[0])]
+    bad_sheets = []
+    for f in sorted(os.listdir(target)):
+        if f.endswith(".xlsx"):
+            for sh in pd.ExcelFile(os.path.join(target, f)).sheet_names:
+                if describe.search(sh):
+                    bad_sheets.append((f, sh))
+    ok(not bad_names and not bad_sheets, "no file or sheet under target/ describes the data: no dictionary, field "
+                                         "notes, readme, glossary or manifest", (bad_names, bad_sheets))
 
     # input gates
     files = sorted(os.listdir(target))

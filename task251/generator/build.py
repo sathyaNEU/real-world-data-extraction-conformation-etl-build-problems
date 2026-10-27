@@ -23,7 +23,6 @@ FILES = dict(
     register="count_station_register.xlsx",
     network="regional_road_network_2027.xlsx",
     mail="Carrick_spring_recalibration_round_2028.eml",
-    dictionary="traffic_data_dictionary.md",
     events="trafficvault_station_events_2027.csv",
     orders="Carrick_work_orders_2027.xlsx",
     weather="weather_daily_2027.csv",
@@ -157,7 +156,6 @@ def run(target, seed=P.SEED, W=None):
     st, hist = R.register(W, jn)
     docs.standard(F["standard"], FILES)
     docs.mail(F["mail"], FILES)
-    docs.dictionary(F["dictionary"], FILES)
     R.hourly(W, O).to_csv(F["hourly"], index=False)
     R.events(W, O).to_csv(F["events"], index=False)
     orders, labour = R.work_orders(W, O)

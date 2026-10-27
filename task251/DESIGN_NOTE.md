@@ -129,14 +129,14 @@ Lesson: a validation that never samples the conditions in which an instrument er
 | SF5 | beyond 5 per cent | strictly | at or beyond | same call | no station within 1.5 points of the line (asserted at 1.0) |
 | SF6 | the hours | the hours each station counted | every hour, the lost ones estimated | same call | TDP-03 section 5; asserted on the world's full record |
 | SF7 | the sensitivity | per station and direction | per station | same list | asserted |
-| SF8 | occupancy | per cent at the precision each controller reports | every hour at one decimal | same list | the dictionary; asserted |
+| SF8 | occupancy | per cent at the precision each controller reports | every hour at one decimal | same list | TDP-03 section 3; asserted |
 | SF9 | a renumbered station's hours | joined under the current number | the old number's hours dropped | same list | the register's Code history; asserted |
 | SF10 | the validation sites | the register's validation_site | none | same call | asserted, one station per site |
 | SF11 | the bridge pairs | each bridge's nearest stations either side, no junction between | none | same call | the network file; asserted |
 | SF12 | the validation day | the filmed day, midnight to midnight, both directions | none | same call | TDP-03 section 4; asserted (96 quarter hours each direction) |
 | SF13 | an error's rounding | no station's error is graded | a printed error | not graded | the prompt asks for the list; asserted |
-| SF14 | a maintenance visit (asks) | a day a maintenance contractor's technician is at a station | each labour line, each order, each door day, every reset order dropped | the asks only | TDP-03 section 7 (two technicians are one visit); a TCX-2 has no remote reset and its communications faults name the cabinet work done (asserted); the office resets read as a RESET with the cabinet shut give the same counts (asserted) |
-| SF15 | a power failure (asks) | each loss of mains power at a controller, a feeder's re-trip a second loss | each outage once, each break once | the asks only | section 7 (a loss counted once however long it lasts); the TCX-4s log two MAINS_FAIL for a re-trip and TrafficVault's polls two losses at a TCX-2 (asserted) |
+| SF14 | a maintenance visit (asks) | a local day a maintenance contractor's technician attended the station, so an attendance the cabinet door log shows running past midnight is a day either side of it | each labour line; each order at each of its stations; each door day; the labour day alone for an attendance that ran past midnight; every reset order dropped | the asks only | TDP-03 section 7 (two technicians on one day are one visit, and work the contractor carries out from its own premises is not a visit); the TCX-4 logs the cabinet door switch on every opening and closing (section 7), so the office days read off the labour with the cabinet shut and read off a RESET the door log does not answer are the same days (asserted); a TCX-2 has no remote reset and its communications faults name the cabinet work done (asserted) |
+| SF15 | a power failure (asks) | each loss of mains power at a controller: the MAINS_FAIL a controller that survived the loss reported, and a break in the station's hourly record where it did not, with one more for each time the station answered a poll inside the break and failed again | each MAINS_FAIL only; each break once; the breaks at the TCX-2 stations only; a restore inside a break with no further loss counted as a second failure | the asks only | section 7 (a loss counted once however long it lasts, and a supply restored and lost again a second failure, so a restore with nothing after it is not one); section 3 (a TCX-2 has no standby supply and reports no event of its own; a part hour is discarded); the losses in a break read as the polls that failed inside it give the same figures (asserted); a TCX-4 that stopped reports no MAINS_FAIL for the loss that stopped it and its cold start carries the unset clock (asserted) |
 | SF16 | a quarter (asks) | calendar quarter by local date | by UTC date | the asks only | TDP-03 sections 3 and 7 |
 | SF17 | a district (asks) | the register's district | none | same figures | one district per station (asserted) |
 | SF18 | the validation crew (asks) | not a maintenance visit | a visit | the asks only | TDP-03 sections 4 and 7 (the maintenance contractor's technicians) |
@@ -144,10 +144,14 @@ Lesson: a validation that never samples the conditions in which an instrument er
 | SF20 | the year-2000 stamps (asks) | a cold start's unset clock | events of 2000 | same figures | no MAINS_FAIL carries one (asserted) |
 | SF21 | the log's repeats (asks) | one event | two | the asks only | exact repeats after a lost poll (asserted) |
 | SF22 | a visit's or failure's day (asks) | local date | UTC date | the asks only | TDP-03 section 3; asserted (aimed) |
-| SF23 | the generation that misses vehicles in the cold | the TCX-2 | the TCX-4 counting more | another list (R10-03, R23-01 and R25-01; with the queue loss R04-03, R14-01 and R25-01) | the data: occupancy, the time the loops are covered (the dictionary), climbs per counted vehicle on the TCX-2s by 10 per cent from July to January while the TCX-4s' holds within 1 per cent, so the TCX-2 counts fewer, not the TCX-4 more (asserted) |
+| SF23 | the generation that misses vehicles in the cold | the TCX-2 | the TCX-4 counting more | another list (R10-03, R23-01 and R25-01; with the queue loss R04-03, R14-01 and R25-01) | the data: occupancy, the share of the hour the loops were occupied (TDP-03 sections 2 and 3), climbs per counted vehicle on the TCX-2s by 10 per cent from July to January while the TCX-4s' holds within 1 per cent, so the TCX-2 counts fewer, not the TCX-4 more (asserted) |
 | SF24 | the day's temperature | the airport's daily mean | the maximum, the minimum, a curve or bins, the occupancy channel day by day | same list | asserted (every reading in the family) |
 | SF25 | a day with no temperature | the mean of the days either side | no miss that day; the day's hours dropped | same list | the weather file's M flag; asserted |
 | SF26 | the controller in force | the register's controller, a TCX-2 before a replacement date | the register's current controller all year | same list | the register's Code history ("controller replaced, TCX-2 to TCX-4"); asserted |
+| SF27 | the filmed day's sensitivity against the rest of its year | the filmed day's loops over video is the station's sensitivity for every hour of the controller's time in service | the counting changed inside the year, so the filmed ratio holds for part of it only | another list at 10 per cent or more (R08-05 out) | no work order of the year replaces anything on the counting path, the spring and autumn inspections test the loops at every station, and the stations that ran one controller all year read 1.0000 to 1.0083 (sd 0.0028) on their own occupancy per counted vehicle at matched free-flowing flow between July and the winter, so nothing in the counting moved by more than 0.9 per cent (asserted) |
+| SF28 | the two curves carried to a station that is not on a bridge | one function of occupancy and one of temperature, the loops cut to one detail at every station (TDP-03 section 2) | a loss or a miss of its own at each station | another list once a station's loss is 1.4 times the pooled curve or 0.4 of it | the loss fitted at each of the five bridges on its own gives 0.1774 to 0.1864 at 40 per cent occupancy (sd 2.0 per cent of the mean) and the list is invariant over a per-station scale of 0.5 to 1.35, twelve times that spread; the cold miss read at every station from its own occupancy channel, with no bridge pair, no register and no temperature, files the golden list, and the list is invariant over a cold scale of 0.7 to 1.3 (asserted) |
+| SF29 | a drift the two controller generations share | none: the winter moves the TCX-2 cards' counting only | a count drift at every station in the cold, which a bridge pair cannot see because it cancels in the ratio | another list at 0.006 per degree (R18-01 in) or at minus 0.012 (four out) | a shared drift moves occupancy per counted vehicle one for one, and the thirteen stations that ran a TCX-4 all year hold within 0.83 per cent over December to February, so the record allows at most 0.00094 per degree against the 0.006 the list needs, 6.3 times as much (asserted) |
+| SF30 | the regime no filmed day covers at the two renumbered stations | each station's own hours carry its own counting, which its occupancy channel measures | the unfilmed regime counted differently, the filmed ratio assumed for it | another list at 1.10 of the unfilmed regime's sensitivity (R08-05 out) | R08-05 before its replacement reads 1.0686 against the all-year TCX-2 stations' 1.0617 (sd 0.0039) and R19-03 after its replacement 1.0026 against the all-year TCX-4 stations' 1.0059 (sd 0.0033), so each matches its own generation to 0.6 per cent, while the list is invariant from 0.90 to 1.05 and needs 1.10 to move (asserted) |
 
 ## Ladder
 
@@ -182,27 +186,46 @@ clean world the validation day, the loss alone and the cold miss alone each file
 | 9 | Boundary inclusivity | beyond 5 per cent | C1 (1.5 points clear, asserted) |
 | 10 | Rounding path | no error graded; visits and failures whole counts | C1 |
 | 11 | Tie-break | none open | asserted |
-| 12 | Maturity and censoring | every hour of 2027 delivered by 7 January 2028; the airport's daily data complete but one day, flagged M | filed (dictionary, export, the weather file's flag) |
+| 12 | Maturity and censoring | every hour of 2027 delivered by 7 January 2028; the airport's daily data complete but one day, flagged M | filed (TDP-03 section 3, the export, the weather file's flag) |
 | 13 | Order of operations | sensitivity, the cold miss, the loss, then the year's ratio | C1 (the loss fitted first files the same list, asserted) |
 | 14 | Row order | none | C1 |
 | 15 | Duplicate resolution | the autumn hour twice by offset; the event log's exact repeats once | filed (offsets); asserted |
 | 16 | Identity normalisation | current station numbers, site codes through the register | filed (register) |
 | 17 | Netting against gross | none | not applicable |
-| 18 | Dimensional units | vehicles, per cent occupancy, degrees Celsius | filed (dictionary, the weather file's headers) |
-| 19 | Code and status semantics | event codes, work order categories, the weather service's flags | filed (dictionary, the weather file); never the stump |
+| 18 | Dimensional units | vehicles, per cent occupancy, degrees Celsius | filed (TDP-03 sections 2 and 3, the weather file's headers) |
+| 19 | Code and status semantics | event codes, work order categories, the weather service's flags | filed (TDP-03 section 7, the weather file); never the stump |
 | 20 | Integerisation | whole counts on the asks | filed (the asks count) |
 | 21 | Clause scope | section 5 for every station; section 7 for every district and quarter | filed |
 | 22 | Forward window contents | the spring 2028 round recalibrates the flagged stations | filed (section 5, the mail) |
 
 ## Literal reader
 
-Executing the prompt and every filed sentence word for word (TDP-03 sections 2 to 7, the dictionary, the register, the
+Executing the prompt and every filed sentence word for word (TDP-03 sections 2 to 7, the register, the
 network file) leaves one open move, how the vehicles that passed each station are estimated; the data's structure
 forces it: the filmed days hold no hour above 8.2 per cent occupancy and no day's mean below 13 degrees, while the
 year's queued hours run to 49 per cent and its days to minus 17; only the bridges' paired approaches count one stream
 twice, three of them with one controller of each generation; and occupancy per counted vehicle says which generation
 errs. Every licensed estimate of that one quantity files the same seven (asserted, 50 in the family, listed beyond 6.5
 per cent, others within 4.5).
+
+Leaving the correction out altogether is not a reading of the estimand but a wrong estimate of it, and the record
+refuses it in one subtraction: with each approach on its own filmed sensitivity, a bridge's upstream station counts
+20.07 per cent fewer vehicles than its downstream station in the hours above 30 per cent occupancy (se 0.075, t 267)
+against 0.69 per cent in free flow, with a one-lane deck between them and nothing joining or leaving.
+
+The four free parameters a literal reader is left with are each measured rather than assumed, and each corridor the
+list survives is several times the range the record allows (SF27 to SF30, asserted in `checks.py` and recomputed in
+`verify.py` from the shipped files alone). The instrument under all four is the occupancy a station reports per
+vehicle it counts: a vehicle covers the loop whether the controller counts it or not, so read between two sets of
+months at the same counted flow, that ratio moves one for one with a change in the station's counting and not at all
+with the traffic.
+
+| Free parameter | What the record allows | What the list needs to move | Margin |
+|---|---|---|---|
+| a change in a station's counting inside the year | 0.9 per cent (the all-year TCX-4 stations, max 1.0083, sd 0.0028) | a regime of its own at 10 per cent | 11 times |
+| the loss carried to a station that is on no bridge | 2.0 per cent between the five bridges' own fits | a per-station scale of 1.40 or 0.40 | 20 times |
+| a drift the two generations share | 0.00094 per degree below 2 degrees | 0.006 per degree | 6.3 times |
+| the regime no filmed day covers at R08-05 and R19-03 | 0.6 per cent (each matches its own generation's cohort) | 1.10 | 17 times |
 
 ## Oracles
 
@@ -219,53 +242,81 @@ Ask A: for each district and quarter of 2027, the maintenance visits to the coun
 each district and quarter, the power failures the stations had (12 figures). Both read the maintenance contractor's
 work orders and TrafficVault's event log, which the call never reads, and ask B the breaks in the hourly record, which
 the call's estimand leaves out (the hours counted); the call on the full world record files the same list, every error
-within 0.3 points (separation asserted).
+within 0.3 points (separation asserted). Both definitions sit in TDP-03 section 7 and are executed, not inferred: an
+ask may turn on rule application (supplemental-stumping 2.1), and what each pin leaves is a reconstruction with one
+right answer and a silent primary underneath it.
 
-Devices, silent (no filed sentence points at any of them):
-- Ask A: at TCX-4 stations the contractor clears some communications faults by resetting the controller from its
-  office and books the half hour against the work order like any visit, with the same description and resolution as
-  the resets done at the cabinet's keypad; two or more office resets and at least one keypad reset in every district
-  and quarter, so neither counting every reset order nor dropping every one holds. Only the cabinet door log's silence
-  that day shows the technician was not there. A TCX-2 has no remote reset, so its communications faults are cleared
-  at the cabinet and the order says what was done there. Moves every figure of ask A.
-- Ask B: a TCX-2 has no battery and reports nothing, so its power failures exist only as breaks in its hourly record,
-  at least one in every district and quarter. A recloser's momentary interruption (under five minutes) drops the hour
-  a TCX-2 is in while TrafficVault's 15-minute poll usually misses it, so a break with no failed poll is still a
-  failure (one in every cell, some others caught by a poll, so the poll log marks nothing); and where a feeder recloses
-  and trips again within the hour the TCX-2 discards both partial hours and its record shows one break, while
-  TrafficVault's polls inside it failed, succeeded and failed again (re-trips at TCX-2 stations in eight cells).
-  Counting the failed-poll episodes inside the breaks, the path both architecture 5 stage 4 readers took, misses the
-  first; counting each break once misses the second.
+Devices, silent (no filed sentence points at any of them, and each is found only by an inconsistency between two
+grains of the record):
+- Ask A, the primary: the contractor's after-hours call-out reaches the cabinet before midnight and leaves after it,
+  so one labour line, booked to the day the technician was called out, covers two local days at the station. Only the
+  cabinet door log, whose DOOR_CLOSE falls on the next local date, carries the second day; one such attendance in
+  every district and quarter, and the labour sheet alone, the door-open dates alone and the door rule all miss it.
+  Moves every figure of ask A.
+- Ask A, the second: at TCX-4 stations the contractor clears some communications faults by resetting the controller
+  over the link and books the half hour against the work order like any visit, with the same description and
+  resolution as the resets done at the cabinet's keypad; two or three in every district and quarter, so the two
+  devices never cancel in a cell (measured: the labour days alone are one or two too high in all twelve). Section 7
+  excludes work done from the contractor's own premises, and the cabinet door log's silence that day is the only
+  record of where the technician was. A TCX-2 has no remote reset, so its communications faults are cleared at the
+  cabinet and the order says what was done there.
+- Ask B, the primary: an interruption that outlasts a TCX-4's battery stops the controller, and what it had logged
+  while its modem was down with it goes with the supply, so the loss that stopped it has no MAINS_FAIL at all. It is
+  in the station's own record instead, as absent hours, with the cold start it raises on the way back under an unset
+  clock. One in every district and quarter (measured: one to three), and the path both round 1 readers and the portal
+  response took, MAINS_FAIL plus the breaks at the TCX-2 stations, misses every one of them. TDP-03 section 3 states
+  the TCX-2's behaviour and the TCX-4's battery and says nothing about what happens when the battery runs out.
+- Ask B, the second: a recloser's momentary interruption (under five minutes) drops the hour a TCX-2 is in while
+  TrafficVault's 15-minute poll usually misses it, so a break with no failed poll is still a failure (one in every
+  cell, some others caught by a poll, so the poll log marks nothing); and where a feeder recloses and trips again
+  inside the hour the TCX-2 discards both part hours and its record shows one break, while TrafficVault's polls inside
+  it failed, succeeded and failed again (a re-trip at a TCX-2 in every cell).
+
 Hazards: route orders covering four stations on one labour line, two-technician lines, multi-day orders, the
 validation crew's and the Region's own cabinet openings (the door log read as a roster), the replacement controllers'
 DOOR_OPEN under the unset clock, the register's current controller for the two renumbered stations' TCX-2 months, an
-evening call-out on 30 June; the spring hour of the local clock, the drained TCX-4 batteries' breaks beside their
-MAINS_FAIL, the controller replacements' breaks, the event log's exact repeats, COMMS_LOST from communications faults
-and single failed polls, the 30 September evening outage on UTC dates.
+evening call-out on 30 June; the spring hour of the local clock, the controller replacements' breaks, the event log's
+exact repeats, COMMS_LOST from communications faults and single failed polls, the 30 September evening outage on UTC
+dates.
 
 | Path | Ask A visits | Ask B failures | Keeps |
 | --- | --- | --- | --- |
-| labour days, one per station and day; the failed-poll episodes inside the TCX-2 breaks plus MAINS_FAIL (both architecture 5 stage 4 readers, round 1) | 0 of 12 | 0 of 12 | 0 of 24 |
-| labour days; MAINS_FAIL, repeats removed | 0 | 0 | 0 |
-| labour lines, each a visit; MAINS_FAIL rows | 0 | 0 | 0 |
-| each order at each of its stations; COMMS_LOST | 1 | 0 | 1 |
-| labour days less every reset order's labour; every break plus MAINS_FAIL | 0 | 4 | 4 |
-| door days at TCX-4 and labour days at TCX-2; TCX-2 breaks plus MAINS_FAIL, one per break | 0 | 4 | 4 |
-| the door rule with the register's controller all year; TCX-2 breaks with the replacements kept | 7 | 5 | 12 |
-| the door rule on DOOR_OPEN only; breaks on the local clock at TCX-2 | 10 | 2 | 12 |
-| the door rule on UTC dates; the golden on UTC quarters | 11 | 10 | 21 |
+| labour days, one per station and day | 0 of 12 | | 0 |
+| labour lines, each a visit | 0 | | 0 |
+| each order at each of its stations | 2 | | 2 |
+| door days at TCX-4, labour days at TCX-2 | 0 | | 0 |
+| the door rule with the register's controller all year | 0 | | 0 |
+| the door rule on DOOR_OPEN only | 0 | | 0 |
+| the door rule on UTC dates | 0 | | 0 |
+| labour days less every controller reset order's labour | 0 | | 0 |
+| labour days where the cabinet opened at a TCX-4, the office resets out and the night work's second day missed (round 1 readers and the portal response) | 0 | | 0 |
+| the same with the second day taken on UTC dates | 0 | | 0 |
+| MAINS_FAIL rows | | 0 of 12 | 0 |
+| MAINS_FAIL, repeats removed (the determinism judge's model response, 56 failures) | | 0 | 0 |
+| COMMS_LOST | | 0 | 0 |
+| every break of any controller once, plus MAINS_FAIL | | 1 | 1 |
+| the TCX-2 breaks plus MAINS_FAIL, one per break | | 0 | 0 |
+| the TCX-2 breaks plus MAINS_FAIL, the replacements kept | | 0 | 0 |
+| the breaks on the local clock at TCX-2, plus MAINS_FAIL | | 0 | 0 |
+| the episodes inside the TCX-2 breaks plus MAINS_FAIL (round 1 readers and the portal response) | | 0 | 0 |
+| the golden with the episodes at TCX-2 only | | 0 | 0 |
+| the golden on UTC quarters | | 10 | 10 |
 
-| Ask | Cracker (the call landed, the stage 4 readers' ask paths) | Verdict |
+| Ask | Cracker (the call landed, the round 1 readers' and the portal response's ask paths, every filed rule executed) | Verdict |
 | --- | --- | --- |
 | A maintenance visits by district and quarter | 0 of 12 | miss |
 | B power failures by district and quarter | 0 of 12 | miss |
 
 Pair ceiling: 28.5 ((45.0 + 12.0) / 2), the cracker keeping none of the 24 ask figures on the call and the mirror the same.
-Mirror leakage: 0 per cent of ask weight.
-Measured by: generator/pair.py on the cut pack. Round 1 of stage 4 (target.zip 41198eaa): both readers kept 12 of 24
-(all of ask B, by the failed-poll episodes inside the TCX-2 breaks), so ask B's device was re-sited onto that path
-(momentary interruptions no poll caught) and the cracker now carries the readers' measured path; round 2 readers on
-the re-cut pack are the measurement.
+Mirror leakage: 0 per cent of ask weight. The two rows agree by construction rather than by measurement: the asks
+consume nothing the call's construction produces (the separation assertions), so the mirror's ask score is the
+cracker's and only its recommendation weight differs.
+Measured by: generator/pair.py on the cut pack (target.zip fce168cf, 21 complete pipelines). Round 1 of stage 4
+(target.zip 41198eaa): both readers kept 12 of 24 (all of ask B, by the failed-poll episodes inside the TCX-2 breaks),
+so ask B's device was re-sited onto that path; round 2 readers kept 0 of 24. The portal then returned the build with
+one response at 95 per cent, which is the measurement that both devices as shipped were inside a strong reader's
+path, so both asks were re-devised onto a second grain of the same records (the attendance that crosses midnight, the
+loss the controller could not report) and each pinned in section 7, with every earlier path above measured at 0.
 
 ## Pre-ship check
 
@@ -378,3 +429,52 @@ the re-cut pack are the measurement.
   validation that visibly misses a condition invites a reader to look for an independent reference, and the network's
   own pairs were one.
 - 2026-10-21, architecture 5 draw: the four candidates written for it (analyzers' imprecision under a repeat-until-accepted practice, polled analyzers aliasing a blower cycle, a service desk's resolution time by Little's law, a network intercompared against its own median) were set aside: each carried one decisive move on a second rung, the shape one reader of architecture 4 and both of task249's architecture 5 landed, while a conjunction in architecture 4's own world (the queue loss and a cold miss confined to one controller generation, either alone filing another list) could be probed with readers before any build.
+- 2026-10-27, the portal's determinism block (two judges, both `competing_defensible_answer`, `fix_location
+  input_files`) and one portal response at 95 per cent. The stump test first (`/fix-determinism` step 3): closing any
+  of the four free parameters in either direction leaves the default path on R14-01 and R25-01 and the golden on the
+  seven, measured over every value the record allows and past it (SF27 to SF30), so the fork was not the stump and
+  this is a repair. Both judges offered a governing document prescribing the full-year estimation method; filing the
+  method is rule application and `CLAUDE.md` rule 3 bans it as the decisive step, so their second option was taken
+  instead and every parameter is measured on the record.
+- The second instrument the repair rests on was already in the pack and unused: the occupancy a station reports per
+  vehicle it counts, read between two sets of months at the same counted free-flowing flow. A vehicle covers the loop
+  whether the controller counts it or not, so that ratio moves one for one with a change in the station's counting and
+  not at all with the traffic, and it closes three of the four parameters at once (a drift inside a regime, a drift the
+  two generations share, the regime no filmed day covers) and gives the cold miss a second, pair-free measurement at
+  every station. A coarse version of it (occupancy per vehicle binned by flow) was tried first and refused: a 40
+  vehicle bin left a 4.6 per cent seasonal residual at the TCX-4 stations, too loose to bound anything, and fitting
+  occupancy against the counted vehicles inside the free-flowing range and reading the fit where the two periods
+  overlap took the residual to 0.4 per cent.
+- The detector-card replacements (seven surge orders and the 30 June call-out) were removed from the counting path:
+  surge damage now takes the surge protector and the modem. Five of the eight preceded their station's filmed day,
+  three of them at a flagged station, so a literal reader had no ground for carrying the filmed ratio back over the
+  months before the card changed. Nothing else in the year's work touches a loop or a detector, and the spring and
+  autumn inspections test the loops at every station.
+- An extra validation film in the thirty days before each controller replacement was drafted as the anchor for the
+  unfilmed regime and refused: the filming season is July and August by section 4, an April or October film at a
+  congested station would hold queued hours and colder days, and the two facts the recommendation rests on (no filmed
+  hour above 8.2 per cent occupancy, no filmed day below 13 degrees) would have stopped being true. The station's own
+  occupancy channel measures the same thing with no new file.
+- Moving the two controller replacements into the first week of January was also refused: it re-rolls the sensitivity
+  draw and with it the four rung lists, which a determinism repair may not move.
+- `traffic_data_dictionary.md` was dropped from the pack and the facts it carried that anything depends on moved into
+  TDP-03 at authority (section 3: the station number in force for the hour, occupancy in per cent at the controller's
+  precision, a part hour discarded, the TCX-2 with no standby supply and the TCX-4's battery; section 7: what
+  TrafficVault polls and raises and what a controller reports). A shipped file whose job is to describe the data is a
+  leak (`dataset-generation` section 3) and `leak.py` sweep 1 now reads the file name as one; the pack is 11 files and
+  4 formats without it, and a generator assertion refuses any file or sheet that describes the data.
+- The ask layer was re-devised onto a second grain of the same records after the portal measured both shipped devices
+  inside a strong reader's path. Ask A first took the office-reset exclusion as its primary; it is now pinned in
+  section 7 and the primary is the after-hours attendance that crosses midnight, where the labour line carries one date
+  and the cabinet door log carries two. Ask B first took the TCX-2 breaks as its primary; the TCX-2's behaviour is now
+  filed in section 3 and the primary is the loss that stopped a TCX-4, which has no MAINS_FAIL at all because the
+  controller lost what it had buffered. Both of judge 2's ask findings are closed with it: section 7 excludes work done
+  from the contractor's own premises, and it counts a supply restored and lost again as a second failure, which the
+  two licensed readings of a break then agree on (asserted).
+- The office resets were forced to two or three a cell rather than exactly two after the first measurement: with one
+  night attendance a cell, exactly two resets made the labour-day route right in eight cells of twelve, the two
+  devices cancelling. Two or three against one leaves the labour days one or two too high in every cell.
+- The battery endurance was shortened from six hours to three so that an interruption outlasting it occurs in every
+  district and quarter rather than once in the year, and the automatic battery-replacement order was held to the one
+  December outage over six hours: an order reading "controller restarted cold after power failure" at every drained
+  station would have handed the device to anyone reading the work orders for ask A.

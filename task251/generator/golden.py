@@ -111,10 +111,13 @@ def workbook(path, fig):
         "past the deck, and on the three bridges with a TCX-2 on one side and a TCX-4 on the other the TCX-2 side "
         "falls behind as the days get colder. The validation days were summer weekdays with no queued hour and no "
         "cold.",
-        "Maintenance visits: days one of %s's technicians was at a station, from the contractor's work orders; "
-        "controller resets done from the contractor's office are not visits. Power failures: losses of mains power at "
-        "a station's controller, from the TCX-4 controllers' events and from the breaks in the TCX-2 stations' hourly "
-        "record; the two controller replacements are not power failures." % P.CONTRACTOR_MAINT,
+        "Maintenance visits: station-days a technician of %s attended, from the labour booked to the contractor's "
+        "work orders; a controller reset sent from the contractor's own premises is not a visit (TDP-03 section 7) "
+        "and the cabinet door log shows which days the technician was there, including the day either side of an "
+        "evening call-out that ran past midnight. Power failures: losses of mains power at a station's controller, "
+        "from the MAINS_FAIL a controller reported and, where the loss stopped the controller, from the break it "
+        "left in the station's hourly record, with a second loss where the station answered a poll inside the break "
+        "and failed again; the two controller replacements are not power failures." % P.CONTRACTOR_MAINT,
         "Stations under their current numbers: R08-01 became R08-05 on 12 May 2027 and R19-01 became R19-03 on "
         "21 September 2027.",
         "Data as of 7 January 2028: %s, %s, %s, %s, %s, %s, %s." % (
