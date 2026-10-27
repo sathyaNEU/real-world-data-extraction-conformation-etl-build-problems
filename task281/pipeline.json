@@ -1,10 +1,10 @@
 {
  "task": "task281",
- "status": "SHIPPED",
+ "status": "PAUSED",
  "domain": "general-statistics-data-science",
  "objective": "descriptive-distribution",
- "stage": 5,
- "stage_name": "ship",
+ "stage": 1,
+ "stage_name": "draw",
  "updated": "2026-10-27",
  "stump": "A competent analyst replays FY2026's weekly backfill need as it stood, its own vacant lines included, against relief hours at each unit's average availability, and files other counts for most units; the FY2028 need replaces FY2026's vacant lines with the position control's, closed as each academy class graduates, and the relief positions work at the July 2025 class's first-year availability.",
  "architecture": 1,
@@ -32,10 +32,16 @@
    "date": "2026-10-27",
    "portal": "rubric 27 and 42 (34.5, held); determinism one judge PASS, one FAIL on Gate C, D and E (underspecified_objective): asks 2 and 3, the unit an overtime piece was worked at (offer-log post against the payroll's timekeeping_location and cost_center), HRC 7,984 against 8,088 hours and 66 against 25 people; non-blocking, the aides' hour-for-hour compensatory credit inferred",
    "repair": "determinism",
+   "commit": "e285b274"
+  },
+  {
+   "date": "2026-10-27",
+   "portal": "both top responses landed the call, 59 of 60, one returned: each executed Budget Instruction 2024-07 and rated the relief positions at the July 2025 entry classes' first-year off-post share because the Director's memo names the July 2027 entry classes",
+   "repair": "design",
    "commit": ""
   }
  ],
- "resume": "RESHIPPED 2026-10-27 on target.zip 4770974b after the determinism repair: SF16 to SF18 closed in the files' own forms (payroll home_timekeeper and home_cost_center, offer log post_unit, the aides' compensatory time on code CTS 'Comp time earned 1.0', MOU 14.3), the data dictionary removed; freeze.py determinism PASS; re-judge DETERMINISTIC APPROVE. Portal result pending.",
+ "resume": "PAUSED 2026-10-27 at the redesign after the portal landed architecture 1 (both top responses on 59 of 60, one returned); architecture 1 is spent and its card carries architecture_spent. Two paths of equal standing; read DESIGN_NOTE.md ## Tried and rejected first. Path A, this world (the brief's keep-the-world branch): the per-shift feasibility step, harnessed on world.py seed 699 at 74 positions (HRC 9, ACF 10, TWC 10, PCN 8, PCS 9, FFH 9, OXG 11, KPG 8) against 66 for each shift's week divided by five and 52 for the unit's week; it needs guard.py check to clear the window or the author's waiver (today the window, task311, task310 and task270, bans this world's honest government_agency, budget_or_appropriation, research_desk and filed_standard; check, do not assume). It touches docs.py (standard 1.1, 2.5, 3.1 to 3.4, filing the obligation through the definitions of a post and of a relief holder rather than an every-day clause), analysis.py's routes, checks.py, deliver.py's workbook and chart, writeup.py, submission.md and prompt.txt; the rosters, HR extract, position control, payroll, offer log, the asks and SF16 to SF18 stay byte-identical. Path B, a fresh stage-1 draw in another client domain under descriptive-distribution: the window also bans shapes 01 and 06, the forums funder_or_donor, minister_or_cabinet and committee_or_panel, and the strategies grain_or_unit and decomposition_attribution; the transit timing-point hold (harnessed, dead: the hold-detecting reflex lands the golden within 0.6 points) and six directions dead on paper are listed in the note.",
  "approved": null,
  "delivered": "2026-10-24",
  "portal": null,
