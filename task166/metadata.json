@@ -1,20 +1,20 @@
 {
   "task": "task166",
-  "title": "Which of a West Michigan credit union's four regional lending centers opens its 2027 payoff-retention pilot, by the fixed-rate home equity principal each region's members will pay off in 2027, when the largest new home equity loans sit behind small seasoned first mortgages",
-  "domain": "Banking, Credit & Financial Risk",
-  "client_domain": "Banking, Credit & Financial Risk",
-  "house_domain": "banking-credit-financial-risk",
-  "subdomain": "deposit-liquidity-behaviour (home equity prepayment: each region's 2027 payoffs of fixed-rate closed-end seconds under the planning cycle's base case)",
+  "title": "Which of a construction software company's six regional sales teams adds the most new paying customers in 2027, when two in five new customers are founded by project staff who left existing customers and one region's customers released a surge of them in 2026",
+  "domain": "Product Analytics",
+  "client_domain": "Product Analytics",
+  "house_domain": "product-analytics",
+  "subdomain": "feature-adoption-diffusion-modeling (each region's 2027 new paying customers: organic acquisition plus the customers founded by users who left paying customers)",
   "objective": "Forecasting & Predictive Modeling",
-  "prompt_shape": "a committed pick of one of four regional lending centers with its 2027 principal paid ahead of schedule to the nearest $10 million and the center second, a table of loans quoted a payoff and of those paid in full by center and quarter (32 counts), and a stacked bar chart of the quotes",
-  "as_of": "2026-12-03",
+  "prompt_shape": "a committed pick of one of six regional sales teams with its 2027 new paying customers to the nearest 200 and the region second, specialist hours by onboarding pod, quarter of 2025 and session kind (24), the 2025 new customers by region and starting plan (18) and the annual contract value they signed on each plan on the terms in force on the first paid invoice date (18)",
+  "as_of": "2026-10-01",
   "deliverables": [
-    "he_payoff_pilot_2027.xlsx",
-    "payoff_quotes_by_center.png"
+    "onboarding_pod_2027.docx",
+    "onboarding_staffing_2025.xlsx"
   ],
   "distractor_files": [
-    "heloc_lines_2026-11.csv",
-    "county_house_price_index_2019q1_2026q3.csv"
+    "board_deck_2023-03_customer_growth.pdf",
+    "onboarding_csat_responses_2024-2026.csv"
   ],
   "field_terms": [],
   "stated_inputs": [],
@@ -22,166 +22,166 @@
     "files": 16,
     "formats": [
       "csv",
+      "docx",
       "pdf",
-      "txt",
       "xlsx"
     ],
-    "largest_file": "core_he_trial_balance_2024-09_2026-11.csv",
-    "largest_file_rows": 197078
+    "largest_file": "product_user_directory_2026-10-01.csv",
+    "largest_file_rows": 256204
   },
   "sources": [
     {
       "files": "all files under target/",
-      "origin": "constructed for this task by task166/generator/build.py (seeded, deterministic) around a fictional West Michigan credit union, in the layouts of a credit union's legacy and new core systems, a lending system, a mortgage servicing system, a payoff statement system, a pricing desk's rate sheets, office workbooks and PDF documents; the members, loans, addresses and creditors are constructed, and no real organisation's records or person is depicted.",
-      "date": "2026-12-03",
+      "origin": "constructed for this task by task166/generator/build.py (seeded, deterministic) around a fictional construction project-management software company, in the layouts of a legacy billing system, a subscription register, a CRM, a product user directory, an onboarding tool, a scheduling tool, a survey tool, office workbooks and PDF documents; the companies, people, phone numbers and partners are constructed, and no real organisation's records or person is depicted.",
+      "date": "2026-10-01",
       "license": "CC0-1.0 (original work)"
     }
   ],
-  "created": "2026-10-25",
+  "created": "2026-10-26",
   "generator": "task166/generator/build.py",
   "files": [
     {
-      "path": "alm_report_2026_q3.pdf",
+      "path": "billing_legacy_subscriptions_2015-2023.csv",
+      "format": "csv",
+      "bytes": 922955,
+      "rows": 8246,
+      "source": "Constructed: Plinthwise legacy billing system, every subscription with a first invoice from January 2015 to February 2023",
+      "date": "2026-10-01",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "billing_subscription_register_2022-12_2026-09.xlsx",
+      "format": "xlsx",
+      "bytes": 1668779,
+      "rows": 26904,
+      "source": "Constructed: Plinthwise subscription register, subscriptions with a service period from 1 December 2022 and the amendments recorded from that date",
+      "date": "2026-10-01",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "board_deck_2023-03_customer_growth.pdf",
       "format": "pdf",
-      "bytes": 42271,
+      "bytes": 41455,
       "rows": null,
-      "source": "Constructed: Hollowell Community Credit Union ALM report for the third quarter of 2026 (16 October 2026)",
-      "date": "2026-12-03",
+      "source": "Constructed: Plinthwise board materials, FY2023 board deck customer growth pages (14 March 2023)",
+      "date": "2023-03-14",
       "license": "CC0-1.0 (original work, constructed for this task)"
     },
     {
-      "path": "core_conversion_xref.csv",
+      "path": "crm_accounts_2026-10-01.csv",
       "format": "csv",
-      "bytes": 281183,
-      "rows": 5406,
-      "source": "Constructed: Hollowell Community Credit Union core conversion, legacy loan and member numbers to new (September 2024)",
-      "date": "2026-12-03",
+      "bytes": 1776368,
+      "rows": 14107,
+      "source": "Constructed: Plinthwise CRM, customer, former customer and partner accounts at 1 October 2026",
+      "date": "2026-10-01",
       "license": "CC0-1.0 (original work, constructed for this task)"
     },
     {
-      "path": "core_he_trial_balance_2024-09_2026-11.csv",
-      "format": "csv",
-      "bytes": 23602901,
-      "rows": 197078,
-      "source": "Constructed: Hollowell Community Credit Union core system, monthly trial balance of fixed-rate home equity loans, September 2024 to November 2026",
-      "date": "2026-12-03",
-      "license": "CC0-1.0 (original work, constructed for this task)"
-    },
-    {
-      "path": "county_house_price_index_2019q1_2026q3.csv",
-      "format": "csv",
-      "bytes": 9958,
-      "rows": 403,
-      "source": "Constructed: Hollowell Community Credit Union ALM market data, county house price index (constructed, not an agency release)",
-      "date": "2026-12-03",
-      "license": "CC0-1.0 (original work, constructed for this task)"
-    },
-    {
-      "path": "county_region_map.csv",
-      "format": "csv",
-      "bytes": 680,
-      "rows": 15,
-      "source": "Constructed: Hollowell Community Credit Union lending administration, counties of the regional lending centers",
-      "date": "2026-12-03",
-      "license": "CC0-1.0 (original work, constructed for this task)"
-    },
-    {
-      "path": "data_dictionary.txt",
-      "format": "txt",
-      "bytes": 10450,
+      "path": "data_dictionary.pdf",
+      "format": "pdf",
+      "bytes": 47557,
       "rows": null,
-      "source": "Constructed: Hollowell Community Credit Union lending analytics, data dictionary of the files pulled 3 December 2026",
-      "date": "2026-12-03",
+      "source": "Constructed: Plinthwise Revenue Analytics, field definitions of the files pulled 1 October 2026",
+      "date": "2026-10-01",
       "license": "CC0-1.0 (original work, constructed for this task)"
     },
     {
       "path": "export_manifest.csv",
       "format": "csv",
-      "bytes": 1594,
+      "bytes": 2256,
       "rows": 16,
-      "source": "Constructed: Hollowell Community Credit Union lending analytics, list of the files pulled 3 December 2026",
-      "date": "2026-12-03",
+      "source": "Constructed: Plinthwise Revenue Analytics, list of the files pulled 1 October 2026",
+      "date": "2026-10-01",
       "license": "CC0-1.0 (original work, constructed for this task)"
     },
     {
-      "path": "first_mortgage_servicing_2026-11.csv",
-      "format": "csv",
-      "bytes": 429104,
-      "rows": 3713,
-      "source": "Constructed: Hollowell Community Credit Union mortgage servicing system, first mortgages active at 30 November 2026 or paid in full since January 2025",
-      "date": "2026-12-03",
-      "license": "CC0-1.0 (original work, constructed for this task)"
-    },
-    {
-      "path": "he_lending_file_2009-2026.csv",
-      "format": "csv",
-      "bytes": 2992175,
-      "rows": 16490,
-      "source": "Constructed: Hollowell Community Credit Union lending system, funded fixed-rate home equity loans since 2009 with the senior lien as underwritten",
-      "date": "2026-12-03",
-      "license": "CC0-1.0 (original work, constructed for this task)"
-    },
-    {
-      "path": "heloc_lines_2026-11.csv",
-      "format": "csv",
-      "bytes": 248157,
-      "rows": 2650,
-      "source": "Constructed: Hollowell Community Credit Union core system, home equity lines of credit at 30 November 2026",
-      "date": "2026-12-03",
-      "license": "CC0-1.0 (original work, constructed for this task)"
-    },
-    {
-      "path": "legacy_he_loans_2019-01_2024-08.csv",
-      "format": "csv",
-      "bytes": 885391,
-      "rows": 8823,
-      "source": "Constructed: Hollowell Community Credit Union legacy core, home equity loan master archived at the 1 September 2024 conversion (loans on the books at any month-end from December 2018 to August 2024)",
-      "date": "2026-12-03",
-      "license": "CC0-1.0 (original work, constructed for this task)"
-    },
-    {
-      "path": "lending_policy_7-4_he_payoff_forecast.pdf",
+      "path": "fy2028_planning_basis.pdf",
       "format": "pdf",
-      "bytes": 42086,
+      "bytes": 41899,
       "rows": null,
-      "source": "Constructed: Hollowell Community Credit Union Lending Policy section 7.4, version 1.0 (21 October 2026)",
-      "date": "2026-12-03",
+      "source": "Constructed: Plinthwise FP&A, FY2028 planning basis v1.0 (2 October 2026)",
+      "date": "2026-10-02",
       "license": "CC0-1.0 (original work, constructed for this task)"
     },
     {
-      "path": "payoff_statement_log_2025-10_2026-11.csv",
-      "format": "csv",
-      "bytes": 331997,
-      "rows": 3172,
-      "source": "Constructed: Hollowell Community Credit Union payoff statement system, requests October 2025 to November 2026",
-      "date": "2026-12-03",
-      "license": "CC0-1.0 (original work, constructed for this task)"
-    },
-    {
-      "path": "payoff_statements_manual_2026-03.xlsx",
+      "path": "marketing_spend_FY2020-FY2028.xlsx",
       "format": "xlsx",
-      "bytes": 11911,
-      "rows": 92,
-      "source": "Constructed: Hollowell Community Credit Union payoff desk, statements prepared by hand during the March 2026 upgrade",
-      "date": "2026-12-03",
+      "bytes": 73374,
+      "rows": 2854,
+      "source": "Constructed: Plinthwise Marketing Operations, programme spend actuals February 2019 to September 2026 and the plan October 2026 to January 2028",
+      "date": "2026-10-01",
       "license": "CC0-1.0 (original work, constructed for this task)"
     },
     {
-      "path": "planning_cycle_2027_rates.xlsx",
-      "format": "xlsx",
-      "bytes": 10328,
-      "rows": 42,
-      "source": "Constructed: Hollowell Community Credit Union ALM, 2027 planning cycle rates (22 September 2026)",
-      "date": "2026-12-03",
+      "path": "memo_2027_onboarding_pod.docx",
+      "format": "docx",
+      "bytes": 10017,
+      "rows": null,
+      "source": "Constructed: Plinthwise Customer Onboarding, the VP's request of 20 October 2026",
+      "date": "2026-10-20",
       "license": "CC0-1.0 (original work, constructed for this task)"
     },
     {
-      "path": "posted_rate_sheets_2018-12_2026-11.csv",
+      "path": "onboarding_cases_2024-01_2026-09.csv",
       "format": "csv",
-      "bytes": 113397,
-      "rows": 2475,
-      "source": "Constructed: Hollowell Community Credit Union pricing desk, posted rate sheet archive, December 2018 to November 2026",
-      "date": "2026-12-03",
+      "bytes": 680907,
+      "rows": 5504,
+      "source": "Constructed: Plinthwise onboarding tool, onboarding cases opened January 2024 to September 2026",
+      "date": "2026-10-01",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "onboarding_csat_responses_2024-2026.csv",
+      "format": "csv",
+      "bytes": 136298,
+      "rows": 3143,
+      "source": "Constructed: Plinthwise survey tool, post-onboarding survey responses 2024 to 2026",
+      "date": "2026-10-01",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "onboarding_sessions_2024-01_2026-09.csv",
+      "format": "csv",
+      "bytes": 2465754,
+      "rows": 24292,
+      "source": "Constructed: Plinthwise scheduling tool, onboarding session bookings January 2024 to September 2026",
+      "date": "2026-10-01",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "onboarding_team_roster_2026-10-01.csv",
+      "format": "csv",
+      "bytes": 1350,
+      "rows": 15,
+      "source": "Constructed: Plinthwise People Operations, the onboarding team roster at 1 October 2026: each specialist's pod assignments with their first and last days, and the specialists who left it since 2024",
+      "date": "2026-10-01",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "product_catalog_2026-07-01.csv",
+      "format": "csv",
+      "bytes": 207,
+      "rows": 3,
+      "source": "Constructed: Plinthwise billing platform, the product catalog in force from 1 July 2026",
+      "date": "2026-10-01",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "product_user_directory_2026-10-01.csv",
+      "format": "csv",
+      "bytes": 43302397,
+      "rows": 256204,
+      "source": "Constructed: Plinthwise product user directory, every user account on every workspace to 30 September 2026",
+      "date": "2026-10-01",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "sales_territories_2024-03.csv",
+      "format": "csv",
+      "bytes": 1013,
+      "rows": 30,
+      "source": "Constructed: Plinthwise Sales Operations, the sales territory map from 1 March 2024 and the map before it",
+      "date": "2026-10-01",
       "license": "CC0-1.0 (original work, constructed for this task)"
     }
   ]

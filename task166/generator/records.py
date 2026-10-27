@@ -1,551 +1,849 @@
-"""task166's data files, written from the clean truth (world.py) in the layouts of the systems that hold them: the legacy
-core's home equity loan master, the new core's monthly trial balance, the conversion cross-reference, the lending
-system's funded-loan file with each application's senior lien, the credit union's own first-mortgage servicing file, the
-county map, the posted rate sheet archive, the HELOC line extract and the county house price index."""
+"""The operating systems' exports: the legacy billing system to February 2023, the subscription register from the
+December 2022 to February 2023 dual run, the CRM's customer accounts, the product's user directory, Sales Operations'
+territory map and Marketing Operations' spend workbook.
+
+build(W) turns the world into the organisation's records (companies with names, states, billing accounts and
+workspaces; people with names, mobiles and emails; subscriptions, voids, divisions, reactivations, returns and plan
+changes); write_all(out, B) writes the files. Every draw comes from a stream keyed by its component, so the world's
+own draws never move."""
 from __future__ import annotations
 
 import datetime as dt
 import math
 import os
+import re
+import string
 
 import numpy as np
 
 import common as K
 import world as WD
 
-mo, ym = K.mo, K.ym
+F_LEGACY = "billing_legacy_subscriptions_2015-2023.csv"
+F_REG = "billing_subscription_register_2022-12_2026-09.xlsx"
+F_CRM = "crm_accounts_2026-10-01.csv"
+F_DIR = "product_user_directory_2026-10-01.csv"
+F_TERR = "sales_territories_2024-03.csv"
+F_SPEND = "marketing_spend_FY2020-FY2028.xlsx"
 
-F_LEGACY = "legacy_he_loans_2019-01_2024-08.csv"
-F_CORE = "core_he_trial_balance_2024-09_2026-11.csv"
-F_XREF = "core_conversion_xref.csv"
-F_LOS = "he_lending_file_2009-2026.csv"
-F_SERV = "first_mortgage_servicing_2026-11.csv"
-F_MAP = "county_region_map.csv"
-F_RATES = "posted_rate_sheets_2018-12_2026-11.csv"
-F_HELOC = "heloc_lines_2026-11.csv"
-F_HPI = "county_house_price_index_2019q1_2026q3.csv"
-
-SERVICERS = [("GREATBEND MORTGAGE", 0.13, False), ("NATL HOMELOAN SVCG", 0.12, False), ("FERNWICK MTG", 0.11, False),
-             ("MARLSTONE HOME LOANS", 0.10, False), ("VELLACOTT MTG SVCS", 0.09, False), ("TOLLMERE HL SERVICING", 0.09, False),
-             ("CORRAVEN TRUST MTG", 0.08, False), ("DUNMERE FIRST MTG", 0.08, False), ("BLUESTEM HOME FIN", 0.07, False),
-             ("KEELBOAT FED SAVINGS", 0.07, False), ("ELDERMOOR MORTGAGE CO", 0.06, True)]
-STREETS = ["Maple", "Oak", "Cherry", "Walnut", "Hickory", "Birch", "Elm", "Cedar", "Pine", "Spruce", "Willow", "Aspen",
-           "Ridge", "Meadow", "Orchard", "Prairie", "Fairway", "Lincoln", "Washington", "Jefferson", "Madison", "Monroe",
-           "Riverside", "Hillcrest", "Sunset", "Lakeview", "Park", "Grove", "Brookside", "Woodland", "Highland",
-           "Kingsley", "Thornwood", "Ashford", "Wilshire", "Briarwood", "Stonegate", "Fox Run", "Deer Path", "Heritage"]
-SUFFIX = ["St", "Ave", "Dr", "Ct", "Ln", "Rd", "Way", "Blvd", "Trl", "Cir"]
-ZIPS = {"Grand Rapids": ["49503", "49504", "49505", "49506", "49507", "49508", "49525", "49546"],
-        "Wyoming": ["49509", "49519"], "Kentwood": ["49508", "49512"], "Walker": ["49534", "49544"],
-        "Grandville": ["49418"], "Rockford": ["49341"], "Cedar Springs": ["49319"], "Lowell": ["49331"],
-        "Byron Center": ["49315"], "Comstock Park": ["49321"], "Ada": ["49301"], "Caledonia": ["49316"],
-        "Sparta": ["49345"], "Ionia": ["48846"], "Belding": ["48809"], "Portland": ["48875"], "Saranac": ["48881"],
-        "Hastings": ["49058"], "Middleville": ["49333"], "Nashville": ["49073"], "Delton": ["49046"],
-        "Greenville": ["48838"], "Stanton": ["48888"], "Howard City": ["49329"], "Carson City": ["48811"],
-        "Holland": ["49423", "49424"], "Grand Haven": ["49417"], "Zeeland": ["49464"], "Hudsonville": ["49426"],
-        "Allendale": ["49401"], "Jenison": ["49428"], "Spring Lake": ["49456"], "Coopersville": ["49404"],
-        "Allegan": ["49010"], "Otsego": ["49078"], "Plainwell": ["49080"], "Wayland": ["49348"], "Saugatuck": ["49453"],
-        "Fennville": ["49408"], "Hamilton": ["49419"], "Kalamazoo": ["49001", "49006", "49007", "49008", "49009"],
-        "Portage": ["49002", "49024"], "Vicksburg": ["49097"], "Schoolcraft": ["49087"], "Richland": ["49083"],
-        "Galesburg": ["49053"], "Oshtemo": ["49009"], "Battle Creek": ["49014", "49015", "49017"],
-        "Marshall": ["49068"], "Albion": ["49224"], "Springfield": ["49037"], "Homer": ["49245"],
-        "South Haven": ["49090"], "Paw Paw": ["49079"], "Lawton": ["49065"], "Bangor": ["49013"], "Hartford": ["49057"],
-        "Muskegon": ["49441", "49442", "49444"], "Norton Shores": ["49441", "49444"], "Muskegon Heights": ["49444"],
-        "North Muskegon": ["49445"], "Whitehall": ["49461"], "Montague": ["49437"], "Fruitport": ["49415"],
-        "Ravenna": ["49451"], "Fremont": ["49412"], "Newaygo": ["49337"], "White Cloud": ["49349"], "Grant": ["49327"],
-        "Hart": ["49420"], "Shelby": ["49455"], "Pentwater": ["49449"], "New Era": ["49446"], "Ludington": ["49431"],
-        "Scottville": ["49454"], "Custer": ["49405"]}
-NE_CITIES = {"Grand Rapids", "Walker", "Comstock Park"}
+DUAL0 = dt.date(2022, 12, 1)        # the subscription register's first day (dual run with the legacy system)
+MIGR = dt.date(2023, 3, 1)          # the legacy system's last subscriptions migrated; the register alone from here
+INCLUDED = {"Core": 5, "Pro": 15, "Enterprise": 40}
+PER_SEAT = {"Core": 38.0, "Pro": 48.0, "Enterprise": 44.0}
+TIER = ["Core", "Pro", "Enterprise"]
+# rate plan SKUs: numbered in launch order until the billing platform's new catalog of 1 July 2026 renumbered them in
+# price order; a subscription keeps the SKU its plan was sold or last changed under
+CUTOVER = dt.date(2026, 7, 1)
+SKU_OLD = {"Pro": "PLW-100", "Enterprise": "PLW-200", "Core": "PLW-300"}
+SKU_NEW = {"Core": "PLW-100", "Pro": "PLW-200", "Enterprise": "PLW-300"}
+F_CATALOG = "product_catalog_2026-07-01.csv"
 
 
-# ------------------------------------------------------------------------------------------------- identities
-class Ids:
-    """member numbers, loan numbers, addresses and the first's servicer for every stack, all keyed per stack"""
+def sku(plan, set_on):
+    return (SKU_NEW if set_on >= CUTOVER else SKU_OLD)[plan]
 
-    def __init__(self, W):
-        n = W.n
-        g = K.rng(30)
-        perm = g.permutation(np.arange(100000, 100000 + 3 * n))[:n]
-        self.legacy_member = [int(x) for x in perm]
-        self.new_member = []
-        for m in self.legacy_member:
-            base = "%09d" % (m * 7 % 999999937)
-            self.new_member.append(base + str(_luhn_digit(base)))
-        self.legacy_loan = []
-        used = {}
-        for i in range(n):
-            gi = K.rng(31, i)
-            sfx = int(gi.integers(40, 80))
-            key = (self.legacy_member[i], sfx)
-            while key in used:
-                sfx = 40 + (sfx - 39) % 40
-                key = (self.legacy_member[i], sfx)
-            used[key] = 1
-            self.legacy_loan.append("%d-%02d" % (self.legacy_member[i], sfx))
-        perm2 = K.rng(32).permutation(np.arange(n)) + 1
-        self.new_loan = ["77%010d" % (int(p) * 8191 % 9999999967) for p in perm2]
-        assert len(set(self.new_loan)) == n
-        self.street, self.zip, self.servicer, self.escrowed = [], [], [], []
-        for i in range(n):
-            gi = K.rng(33, i)
-            city = W.city[i]
-            num = int(gi.integers(100, 9900))
-            st = STREETS[int(gi.integers(0, len(STREETS)))]
-            sf = SUFFIX[int(gi.integers(0, len(SUFFIX)))]
-            quad = (" " + ["NE", "NW", "SE", "SW"][int(gi.integers(0, 4))]) if city in NE_CITIES else ""
-            self.street.append("%d %s %s%s" % (num, st, sf, quad))
-            zs = ZIPS[city]
-            self.zip.append(zs[int(gi.integers(0, len(zs)))])
-            if W.cu_first[i]:
-                self.servicer.append(K.CU_BUREAU)
-                self.escrowed.append(False)
+
+def plan_set_on(c, d):
+    """the date the plan in force on d was sold or last changed"""
+    on = c["first_inv"]
+    for h in c.get("amend", []):
+        if h["date"] <= d and h["change"] in ("Upgrade", "Downgrade"):
+            on = h["date"]
+    return on
+B62 = string.digits + string.ascii_uppercase + string.ascii_lowercase
+# implementation partners whose consultants run onboarding for some customers: name, billing state, created in the CRM
+PARTNERS = [("Brackenridge Field Technology LLC", "TX", dt.date(2019, 4, 15), 0.35),
+            ("Sandoval & Kerr Implementation Group", "CO", dt.date(2020, 2, 3), 0.25),
+            ("Whitcomb Jobsite Systems", "NJ", dt.date(2021, 6, 21), 0.20),
+            ("Larkin Ruiz Project Controls", "TN", dt.date(2022, 9, 12), 0.20)]
+
+
+def _day(r, t):
+    y, m = K.ym(t)
+    return dt.date(y, m, int(r.integers(1, K.days_in(y, m) + 1)))
+
+
+def acv_of(plan, seats, disc):
+    extra = max(0, seats - INCLUDED[plan])
+    return round((K.PLANS[plan] + extra * PER_SEAT[plan]) * 12 * (1 - disc), 2)
+
+
+def anniversary(d):
+    try:
+        return d.replace(year=d.year + 1)
+    except ValueError:
+        return d.replace(year=d.year + 1, day=28)
+
+
+def price_of(c, plan, seats, d):
+    """the contract value of a plan and seats on date d: the first year's price where the subscription was sold on one,
+    then the company's own terms"""
+    fy = c.get("first_year")
+    if fy and d < fy["end"]:
+        return acv_of("Core", seats, 0.0) if fy["kind"] == "offer" else acv_of(plan, seats, fy["disc"])
+    return acv_of(plan, seats, c["disc"])
+
+
+# a 2025 sales offer sold Pro at Core's list price for its first year, on Pro's own rate plan; other new subscriptions
+# were sold at an introductory discount for their first year; either price steps up on the first anniversary
+OFFER = (dt.date(2025, 3, 1), dt.date(2025, 6, 30))
+
+
+def first_year_pricing(B, cases, rate_offer=0.2, rate_intro=0.06, floor=3, intro_stream=54):
+    ro, ri = K.rng(41), K.rng(intro_stream)          # own streams, so no other draw moves
+
+    def eligible(c):
+        end = anniversary(c["first_inv"])
+        return (c["kind"] != "gc" and not c.get("booked") and c["first_inv"] <= K.DATA_END
+                and not any(h["date"] < end and h["change"] in ("Upgrade", "Downgrade") for h in c.get("amend", []))
+                and not any(h["date"] == end for h in c.get("amend", [])))
+    offer, spare = [], []
+    for c in B["comps"]:
+        u, v = ro.random(), ri.random()
+        if not eligible(c) or c["first_inv"] < MIGR:
+            continue
+        if OFFER[0] <= c["first_inv"] <= OFFER[1] and c["plan0"] == "Pro":
+            (offer if u < rate_offer else spare).append(c)
+        elif v < rate_intro and c["disc"] <= 0.10:
+            c["first_year"] = dict(kind="intro", disc=round(c["disc"] + 0.05, 2), end=anniversary(c["first_inv"]))
+    for reg in range(6):
+        have = sum(1 for c in offer if c["region"] == reg)
+        for c in sorted((c for c in spare if c["region"] == reg), key=lambda c: (c["first_inv"], c["crm"]))[:max(0, floor - have)]:
+            offer.append(c)
+    for c in offer:
+        c["first_year"] = dict(kind="offer", end=anniversary(c["first_inv"]))
+    acv_case = {}
+    for c in B["comps"]:
+        fy = c.get("first_year")
+        if not fy:
+            continue
+        c["acv0"] = price_of(c, c["plan0"], c["seats0"], c["first_inv"])
+        for h in c.get("amend", []):
+            h["acv"] = price_of(c, h["plan"], h["seats"], h["date"])
+        if (c["cancel"] is None or c["cancel"] > fy["end"]) and fy["end"] <= K.DATA_END:
+            plan, seats = c["plan0"], c["seats0"]
+            for h in c.get("amend", []):
+                if h["date"] < fy["end"]:
+                    plan, seats = h["plan"], h["seats"]
+            c["amend"].append(dict(date=fy["end"], plan=plan, seats=seats, acv=acv_of(plan, seats, c["disc"]),
+                                   change="Price change", k=0))
+            c["amend"].sort(key=lambda h: h["date"])
+        acv_case[id(c)] = c["acv0"]
+    for cs in cases:
+        if cs["kind"] == "new" and id(cs["comp"]) in acv_case:
+            cs["acv"] = acv_case[id(cs["comp"])]
+    return offer
+
+
+def build(W):
+    """Companies, people and every record the exports carry, from the world W."""
+    acc = W["accounts"]
+    champ = {e["acct"] for e in W["seed_events"]}
+    rc = K.rng(10)                                   # company identities
+    used_names, used_ws, used_crm, used_reg = set(), set(), set(), set()
+
+    def company_name():
+        while True:
+            v = rc.random()
+            L1, L2 = K.LAST[int(rc.integers(len(K.LAST)))], K.LAST[int(rc.integers(len(K.LAST)))]
+            A, B = K.CO_A[int(rc.integers(len(K.CO_A)))], K.CO_B[int(rc.integers(len(K.CO_B)))]
+            if v < 0.34:
+                nm = f"{L1} {B}"
+            elif v < 0.62:
+                nm = f"{A} {B}"
+            elif v < 0.80:
+                nm = f"{L1} & {L2} {B}"
+            elif v < 0.90:
+                nm = f"{L1} Brothers {B}"
             else:
-                p = np.array([w for _, w, _ in SERVICERS])
-                k = int(gi.choice(len(SERVICERS), p=p / p.sum()))
-                self.servicer.append(SERVICERS[k][0])
-                self.escrowed.append(SERVICERS[k][2])
-        # the credit union's own first mortgages: one loan number each
-        self.mtg_loan = {}
-        perm3 = K.rng(34).permutation(np.arange(200000)) + 300000
-        k = 0
-        for i in range(n):
-            if W.cu_first[i]:
-                self.mtg_loan[i] = "M%07d" % int(perm3[k])
-                k += 1
-        self.surname = [SURNAMES[int(K.rng(35, i).integers(0, len(SURNAMES)))] for i in range(n)]
+                nm = f"{A} {L1} {B}"
+            if nm not in used_names:
+                used_names.add(nm)
+                return nm
 
+    def uid_ws():
+        while True:
+            w = "ws_" + "".join(rc.choice(list("abcdefghjkmnpqrstuvwxyz23456789"), 10))
+            if w not in used_ws:
+                used_ws.add(w)
+                return w
 
-def _luhn_digit(s):
-    tot = 0
-    for k, ch in enumerate(reversed(s)):
-        d = int(ch)
-        if k % 2 == 0:
-            d *= 2
-            if d > 9:
-                d -= 9
-        tot += d
-    return (10 - tot % 10) % 10
+    def uid_crm():
+        while True:
+            c = "0018c0000" + "".join(B62[int(i)] for i in rc.integers(0, 62, 6))
+            if c not in used_crm:
+                used_crm.add(c)
+                return c
 
+    def uid_reg():
+        while True:
+            a = "A-%06d" % int(rc.integers(100000, 999999))
+            if a not in used_reg:
+                used_reg.add(a)
+                return a
 
-SURNAMES = ["Vander Molen", "DeVries", "Smith", "Johnson", "Brower", "Miller", "Kuipers", "Anderson", "Boersma",
-            "Nelson", "Hoekstra", "Visser", "Martin", "Thompson", "Bakker", "Garcia", "Mulder", "Jansen", "Wilson",
-            "Taylor", "Moore", "Jackson", "Lee", "Harris", "Clark", "Lewis", "Walker", "Hall", "Allen", "Young",
-            "King", "Wright", "Scott", "Green", "Baker", "Adams", "Hill", "Campbell", "Mitchell", "Roberts", "Carter",
-            "Phillips", "Evans", "Turner", "Torres", "Parker", "Collins", "Edwards", "Stewart", "Morris", "Murphy",
-            "Cook", "Rogers", "Morgan", "Peterson", "Cooper", "Reed", "Bailey", "Bell", "Kowalski", "Nowak", "Schaap",
-            "Postma", "Dykstra", "Van Dyke", "Haveman", "Zuidema", "Brinks", "Kamphuis", "Lamberts", "Ritsema",
-            "Huizenga", "Grant", "Ortiz", "Nguyen", "Patel", "Hernandez", "Lopez", "Gonzalez", "Rivera", "Ward",
-            "Brooks", "Kelly", "Sanders", "Price", "Bennett", "Wood", "Barnes", "Ross", "Henderson", "Coleman",
-            "Jenkins", "Perry", "Powell", "Long", "Patterson", "Hughes", "Flores", "Washington", "Butler", "Simmons"]
+    def new_company(region, kind):
+        st = K.pick(rc, K.STATES[K.REGIONS[region]])
+        nm = company_name()
+        suffix = " LLC" if rc.random() < 0.35 else (" Inc." if rc.random() < 0.3 else "")
+        dom = re.sub(r"[^a-z]", "", nm.lower().replace("&", "and"))[:22] + str(rc.choice([".com", ".com", ".com", ".net", ".us", "co.com"]))
+        return dict(region=region, state=st, name=nm + suffix, domain=dom, ws=uid_ws(), crm=uid_crm(), kind=kind,
+                    legacy_code=None, reg_acct=None, subs=[], divisions=[], parent=None)
 
+    # ---------------------------------------------------------------- one company per world account
+    # the team a company signs up with (its users in the first three months, the first nine for a large contractor)
+    # decides the plan it buys and the seats on its order
+    team0 = {}
+    for u in W["users"]:
+        a = acc[u["acct"] - 1]
+        if u["created_t"] <= a["start_t"] + (8 if a["gc"] else 2):
+            team0[u["acct"]] = team0.get(u["acct"], 0) + 1
 
-def fmt_date(d, style):
-    if d is None:
-        return ""
-    if style == "us":
-        return "%02d/%02d/%04d" % (d.month, d.day, d.year)
-    if style == "iso":
-        return d.isoformat()
-    raise ValueError(style)
+    def plan_mix(n):
+        if n <= 4:
+            return [("Core", 80), ("Pro", 18), ("Enterprise", 2)]
+        if n <= 8:
+            return [("Core", 52), ("Pro", 40), ("Enterprise", 8)]
+        if n <= 14:
+            return [("Core", 20), ("Pro", 60), ("Enterprise", 20)]
+        return [("Core", 5), ("Pro", 45), ("Enterprise", 50)]
 
+    comps = []
+    by_acct = {}
+    for a in acc:
+        c = new_company(a["region"], "champion" if a["id"] in champ else ("gc" if a["gc"] else a["kind"]))
+        c["acct"] = a["id"]
+        c["start_t"], c["close_t"] = a["start_t"], a["close_t"]
+        c["first_inv"] = _day(rc, a["start_t"])
+        c["trial_days"] = int(rc.integers(10, 46))
+        c["cancel"] = _day(rc, a["close_t"]) if a["close_t"] is not None else None
+        if c["cancel"] is not None and c["cancel"] <= c["first_inv"]:
+            c["cancel"] = c["first_inv"] + dt.timedelta(days=int(rc.integers(20, 40)))
+        n0 = team0.get(a["id"], 1)
+        p = K.pick(rc, plan_mix(n0)) if not a["gc"] else "Enterprise"
+        seats = (max(INCLUDED[p], n0 + int(rc.integers(0, 12)) // 4) if not a["gc"]
+                 else max(INCLUDED[p], n0 + (int(rc.integers(150, 420)) - 150) // 6))
+        disc = float(rc.choice([0.0, 0.0, 0.05, 0.10, 0.15]))
+        c["plan0"], c["seats0"], c["disc"] = p, seats, disc
+        c["acv0"] = acv_of(p, seats, disc)
+        c["lead"] = K.pick(rc, K.LEAD_CH if a["id"] in champ else K.LEAD_ORG)
+        if a["gc"]:
+            c["lead"] = K.pick(rc, [("Outbound - SDR", 60), ("Trade show", 25), ("Partner - association", 15)])
+        comps.append(c)
+        by_acct[a["id"]] = c
 
-def funded_month_of(W, i):
-    return int(W.o2[i])
-
-
-def bal_at(W, i, t):
-    """month-end principal balance of loan i (truth), or None when not on the books at that month-end"""
-    return W.bal.get((int(i), int(t)))
-
-
-def legacy_rows(W, ids):
-    """one row per loan on the legacy core's books at any month-end from December 2018 to August 2024"""
-    rows = []
-    last = K.CONV_M - 1
-    for i in range(W.n):
-        o2 = int(W.o2[i])
-        ex = int(W.exit_m[i])
-        if o2 > last:
+    # ---------------------------------------------------------------- returns after more than 12 months (new customers)
+    rr = K.rng(11)
+    closed = sorted([c for c in comps if c["close_t"] is not None], key=lambda c: c["close_t"])
+    taken = set()
+    for c in comps:
+        if c["kind"] != "organic" or c["start_t"] < -24 or c["start_t"] > K.T_OBS or rr.random() > 0.025:
             continue
-        if ex >= 0 and ex < K.REC0:
+        cands = [o for o in closed if o["region"] == c["region"] and o["acct"] not in taken and o is not c
+                 and o["close_t"] is not None and 13 <= c["start_t"] - o["close_t"] <= 40]
+        if not cands:
             continue
-        opened = W.d2[i]
-        mat = _add_months(opened, int(W.n2[i]))
-        bal18 = bal_at(W, i, K.REC0 - 1)
-        if o2 <= K.REC0 - 1 and bal18 is None:
+        o = cands[int(rr.integers(len(cands)))]
+        taken.add(o["acct"])
+        c["returning_of"] = o["acct"]
+        c["name"], c["state"], c["domain"], c["crm"] = o["name"], o["state"], o["domain"], o["crm"]
+        o["returned_as"] = c["acct"]
+
+    # ---------------------------------------------------------------- voided first invoices
+    rv = K.rng(12)
+    for c in comps:
+        if c["start_t"] >= -40 and rv.random() < 0.045:
+            gap = int(rv.integers(15, 76))
+            c["void"] = dict(date=c["first_inv"] - dt.timedelta(days=gap),
+                             note=K.pick(rv, [("refunded inside 14 days", 55), ("card declined, reissued", 25), ("duplicate checkout", 20)]),
+                             plan=K.pick(rv, [("Core", 55), ("Pro", 35), ("Enterprise", 10)]))
+    phantom = []
+    for t in range(-40, K.T_OBS + 1):
+        for r in range(6):
+            lam = 0.02 * float(W["new"][r, W["ix"][t]])
+            for _ in range(rv.poisson(lam)):
+                p = new_company(r, "void_only")
+                p["first_inv"] = _day(rv, t)
+                p["trial_days"] = int(rv.integers(10, 46))
+                p["void"] = dict(date=p["first_inv"], note=K.pick(rv, [("refunded inside 14 days", 60), ("card declined", 25), ("duplicate checkout", 15)]),
+                                 plan=K.pick(rv, [("Core", 60), ("Pro", 32), ("Enterprise", 8)]))
+                p["start_t"], p["close_t"], p["cancel"], p["acct"] = None, None, None, None
+                phantom.append(p)
+
+    # ---------------------------------------------------------------- divisions and reactivations
+    rd = K.rng(13)
+    divisions = []
+    for c in comps:
+        end_t = c["close_t"] if c["close_t"] is not None else K.T_OBS
+        if c["start_t"] + 3 >= min(end_t, K.T_OBS) or rd.random() > (0.07 if c["kind"] != "gc" else 0.35):
             continue
-        status, close_dt, close_cd, ret = "", None, "", ""
-        if 0 <= ex <= last:
-            close_dt = W.exit_day[i]
-            close_cd = {"SALE": "PIF", "REFI": "PIF", "PAYOFF": "PIF", "MATURED": "MAT", "CHARGEOFF": "CO"}[W.exit_kind[i]]
-            ret = "%.2f" % W.exit_bal[i]
-            status = "CLOSED"
-        else:
-            status = "CNV"
-        conv_bal = bal_at(W, i, last) if status == "CNV" else None
-        rows.append([ids.legacy_loan[i], ids.legacy_member[i], "HEF%d" % (int(W.n2[i]) // 12), fmt_date(opened, "us"),
-                     "{:,.2f}".format(W.H0[i]), "%.3f" % W.r2[i], int(W.n2[i]), "%.2f" % W.pmt2[i], fmt_date(mat, "us"),
-                     ("%.2f" % bal18) if (bal18 is not None and o2 <= K.REC0 - 1) else "",
-                     status, fmt_date(close_dt, "us"), close_cd, ret,
-                     ("%.2f" % conv_bal) if conv_bal is not None else ""])
-    rows.sort(key=lambda r: (r[1], r[0]))
-    return rows
+        t = int(rd.integers(c["start_t"] + 3, min(end_t, K.T_OBS) + 1))
+        d = dict(parent=c, start_t=t, first_inv=_day(rd, t), crm=uid_crm(), legacy_code=None, reg_acct=None,
+                 name=re.sub(r" (LLC|Inc\.)$", "", c["name"]) + " - " + str(rd.choice(["Service Division", "Civil Division", "Special Projects",
+                                                                                    "Residential", "North", "Commercial", "Industrial"])),
+                 plan=K.pick(rd, [("Core", 60), ("Pro", 35), ("Enterprise", 5)]))
+        d["seats"] = INCLUDED[d["plan"]] + int(rd.integers(0, 8))
+        d["acv"] = acv_of(d["plan"], d["seats"], float(rd.choice([0.0, 0.05, 0.10])))
+        d["cancel"] = c["cancel"] if c["cancel"] is not None else None
+        divisions.append(d)
+        c["divisions"].append(d)
+    reacts = []
+    for c in comps:
+        if c["cancel"] is None or c["cancel"] > dt.date(2026, 6, 1) or c.get("returned_as") or rd.random() > 0.10:
+            continue
+        back = c["cancel"] + dt.timedelta(days=int(rd.integers(55, 335)))
+        if back > K.DATA_END:
+            continue
+        c["react"] = dict(date=back, plan=c["plan0"], seats=c["seats0"], acv=c["acv0"])
+        reacts.append(c)
 
-
-LEGACY_COLS = ["LOAN_NO", "MBR_NO", "PROD_CD", "OPEN_DT", "ORIG_AMT", "NOTE_RT", "TERM_MOS", "PMT_AMT", "MAT_DT",
-               "BAL_12_31_2018", "STATUS", "CLOSE_DT", "CLOSE_CD", "PRIN_AT_CLOSE", "BAL_AT_CONV"]
-
-
-def _add_months(d, k):
-    y, m = d.year, d.month + k
-    y += (m - 1) // 12
-    m = (m - 1) % 12 + 1
-    day = min(d.day, [31, 29 if y % 4 == 0 else 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31][m - 1])
-    return dt.date(y, m, day)
-
-
-def core_rows(W, ids):
-    """the new core's monthly trial balance: one row per home equity loan per month-end it was on the books, from
-    September 2024 to November 2026, the closing month included"""
-    rows = []
-    for t in range(K.CONV_M, K.ASOF_M + 1):
-        me = K.month_end(t)
-        for i in range(W.n):
-            o2 = int(W.o2[i])
-            ex = int(W.exit_m[i])
-            if o2 > t or (0 <= ex < t):
-                continue
-            b = bal_at(W, i, t)
-            prev = bal_at(W, i, t - 1)
-            if o2 == t:
-                prev = None
-            r = W.r2[i]
-            if ex == t:
-                kind = W.exit_kind[i]
-                code = {"SALE": "PIF", "REFI": "PIF", "PAYOFF": "PIF", "MATURED": "MAT", "CHARGEOFF": "CHGOFF"}[kind]
-                p0 = W.exit_bal[i]
-                interest = 0.0 if kind == "CHARGEOFF" else p0 * r / 1200.0
-                paid = 0.0 if kind == "CHARGEOFF" else p0
-                sched = W.sched.get((int(i), t), min(p0, max(W.pmt2[i] - interest, 0.0)))
-                if kind != "MATURED":
-                    sched = min(p0, max(W.pmt2[i] - interest, 0.0))
-                rows.append([ids.new_loan[i], ids.new_member[i], "FHE%d" % int(W.n2[i]), me.isoformat(),
-                             W.d2[i].isoformat(), "%.2f" % W.H0[i], "%.4f" % (r / 100.0), int(W.n2[i]),
-                             "%.2f" % W.pmt2[i], "0.00", "%.2f" % sched, "%.2f" % paid, "%.2f" % interest, code,
-                             W.exit_day[i].isoformat(), 0])
-                continue
-            if b is None:
-                continue
-            if prev is None:
-                sched = 0.0
-                paid = 0.0
-                interest = 0.0
+    # ---------------------------------------------------------------- plan and seat changes after the first invoice
+    ra = K.rng(14)
+    rs2 = K.rng(25)          # seats added in the same change as a plan move (own stream, so the history above never moves)
+    for c in comps:
+        plan, seats, acv = c["plan0"], c["seats0"], c["acv0"]
+        hist = []
+        end_t = c["close_t"] if c["close_t"] is not None else K.T_OBS
+        for t in range(c["start_t"] + 1, min(end_t, K.T_OBS) + 1):
+            u = ra.random()
+            if u < 0.008 and plan != "Enterprise":
+                plan = TIER[TIER.index(plan) + 1]
+                seats = max(seats, INCLUDED[plan])
+                change, k = "Upgrade", 0
+            elif u < 0.011 and plan != "Core" and c["kind"] != "gc":
+                plan = TIER[TIER.index(plan) - 1]
+                seats = max(INCLUDED[plan], min(seats, INCLUDED[plan] + 6))
+                change, k = "Downgrade", 0
+            elif u < 0.021:
+                k = int(ra.integers(3, 16)) if c["kind"] != "gc" else int(ra.integers(10, 60))
+                seats += k
+                change = "Add seats"
             else:
-                interest = prev * r / 1200.0
-                sched = W.sched.get((int(i), t), 0.0)
-                paid = prev - b
-            rows.append([ids.new_loan[i], ids.new_member[i], "FHE%d" % int(W.n2[i]), me.isoformat(),
-                         W.d2[i].isoformat(), "%.2f" % W.H0[i], "%.4f" % (r / 100.0), int(W.n2[i]), "%.2f" % W.pmt2[i],
-                         "%.2f" % b, "%.2f" % sched, "%.2f" % paid, "%.2f" % interest, "ACTIVE", "",
-                         _dpd(i, t)])
-    return rows
-
-
-CORE_COLS = ["LoanNumber", "MemberNumber", "ProductCode", "AsOfDate", "OpenDate", "OriginalAmount", "InterestRate",
-             "TermMonths", "PaymentAmount", "PrincipalBalance", "ScheduledPrincipal", "PrincipalPaid", "InterestPaid",
-             "LoanStatus", "CloseDate", "DaysPastDue"]
-
-
-def _dpd(i, t):
-    g = K.rng(40, i, t)
-    u = g.random()
-    if u < 0.955:
-        return 0
-    if u < 0.985:
-        return int(g.integers(1, 30))
-    if u < 0.996:
-        return int(g.integers(30, 60))
-    return int(g.integers(60, 120))
-
-
-def xref_rows(W, ids):
-    rows = []
-    for i in range(W.n):
-        o2 = int(W.o2[i])
-        ex = int(W.exit_m[i])
-        if o2 <= K.CONV_M - 1 and (ex < 0 or ex >= K.CONV_M):
-            rows.append([ids.legacy_loan[i], ids.new_loan[i], ids.legacy_member[i], ids.new_member[i], "2024-09-01"])
-    rows.sort(key=lambda r: r[0])
-    return rows
-
-
-XREF_COLS = ["legacy_loan_no", "loan_number", "legacy_member_no", "member_number", "converted_on"]
-
-
-def los_rows(W, ids):
-    """the lending system's funded home equity loans since 2009, with the senior lien the underwriter took from the
-    applicant's credit report"""
-    rows = []
-    for i in range(W.n):
-        g = K.rng(41, i)
-        funded = W.d2[i]
-        app = funded - dt.timedelta(days=int(g.integers(24, 52)))
-        pi = WD.payment(W.F0[i], W.r1[i], W.n1[i])
-        if W.kind[i] == "purchase":
-            # a second funded with the purchase: the first's terms come from the purchase file, not a tradeline
-            rep_m = int(W.o1[i])
-            fb = float(W.F0[i])
-            pay = int(round(pi))
-            term = str(int(W.n1[i]))
-            rate1 = "%.3f" % W.r1[i]
-        else:
-            rep_m = mo(app.year, app.month) - 1                  # the tradeline's last reported month
-            k = rep_m - int(W.o1[i])
-            fb = float(WD.sched_balance(W.F0[i], W.r1[i], W.n1[i], k))
-            escrow = 0.0
-            if ids.escrowed[i]:
-                escrow = round(W.value[i] * float(g.uniform(0.016, 0.024)) / 12.0 + float(g.uniform(70, 140)), 0)
-            pay = int(round(pi + escrow))
-            term = "" if g.random() < 0.07 else str(int(W.n1[i]))
-            rate1 = ""
-        y1, m1 = ym(int(W.o1[i]))
-        loan_no = ids.legacy_loan[i] if int(W.o2[i]) < K.CONV_M else ids.new_loan[i]
-        dti = round(float(np.clip(g.normal(0.33, 0.07), 0.12, 0.47)), 3)
-        rows.append(["", funded.isoformat(), loan_no,
-                     ids.legacy_member[i] if int(W.o2[i]) < K.CONV_M else ids.new_member[i],
-                     ids.street[i], W.city[i], W.county[i], "MI", ids.zip[i], int(W.value[i]),
-                     "%.1f" % (100 * W.cltv[i]), int(W.score[i]), "%.1f" % (100 * dti), "%.2f" % W.H0[i],
-                     "%.2f" % W.r2[i], int(W.n2[i]), ids.servicer[i], "%02d%04d" % (m1, y1), int(round(W.F0[i])), term,
-                     int(round(fb)), "%02d%04d" % (ym(rep_m)[1], ym(rep_m)[0]), pay, rate1])
-    rows.sort(key=lambda r: (r[1], r[2]))
-    # application numbers run in funding order within each year, with the gaps withdrawn and declined applications leave
-    g = K.rng(39)
-    seq = {}
-    for r in rows:
-        y = int(r[1][:4])
-        seq[y] = seq.get(y, 0) + 1 + int(g.integers(0, 4))
-        r[0] = "HE%02d-%05d" % (y % 100, seq[y])
-    return rows
-
-
-LOS_COLS = ["application_id", "funded_date", "loan_number", "member_number", "property_street", "property_city",
-            "property_county", "property_state", "property_zip", "appraised_value", "cltv_pct", "credit_score",
-            "dti_pct", "loan_amount", "note_rate_pct", "term_months", "senior_lien_creditor", "senior_lien_opened",
-            "senior_lien_original_amount", "senior_lien_term_months", "senior_lien_balance", "senior_lien_balance_as_of",
-            "senior_lien_monthly_payment", "senior_lien_note_rate_pct"]
-
-
-def servicing_rows(W, ids):
-    """the credit union's own first mortgages behind its members' home equity loans, and its other first mortgages,
-    as the servicing system lists them at 30 November 2026 (loans paid off since 1 January 2025 included)"""
-    rows = []
-    for i, mln in ids.mtg_loan.items():
-        o1 = int(W.o1[i])
-        y1, m1 = ym(o1)
-        opened = K.business_day(dt.date(y1, m1, 1 + int(K.rng(42, i).integers(0, 26))))
-        if opened.month != m1:
-            opened = K.business_day(dt.date(y1, m1, 1))
-        ex = int(W.exit_m[i])
-        stack_gone = ex >= 0 and W.exit_kind[i] in ("SALE", "REFI")
-        mat = _add_months(opened, int(W.n1[i]))
-        sched_end = o1 + int(W.n1[i])
-        if stack_gone:
-            if ex < mo(2025, 1):
                 continue
-            fb = float(WD.sched_balance(W.F0[i], W.r1[i], W.n1[i], ex - o1))
-            rows.append([mln, ids.new_member[i], ids.street[i], W.city[i], ids.zip[i], opened.isoformat(),
-                         "%.2f" % W.F0[i], "%.3f" % W.r1[i], int(W.n1[i]), mat.isoformat(), "PAID IN FULL",
-                         W.exit_day[i].isoformat(), "%.2f" % fb, "0.00"])
-        else:
-            if sched_end <= K.ASOF_M:
-                continue
-            fb = float(WD.sched_balance(W.F0[i], W.r1[i], W.n1[i], K.ASOF_M - o1))
-            rows.append([mln, ids.new_member[i], ids.street[i], W.city[i], ids.zip[i], opened.isoformat(),
-                         "%.2f" % W.F0[i], "%.3f" % W.r1[i], int(W.n1[i]), mat.isoformat(), "ACTIVE", "", "",
-                         "%.2f" % fb])
-    # the credit union's first mortgages with no home equity loan behind them
-    g = K.rng(43)
-    nmtg = 2400
-    perm = K.rng(44).permutation(np.arange(200000)) + 520000
-    for k in range(nmtg):
-        o1 = int(g.integers(mo(2010, 1), mo(2026, 10)))
-        y1, m1 = ym(o1)
-        opened = K.business_day(dt.date(y1, m1, int(g.integers(1, 27))))
-        n1 = 180 if g.random() < 0.18 else 360
-        r1 = round(WD.M30[o1] - (WD.M15_SPREAD if n1 == 180 else 0.0) + g.normal(0, 0.17), 3)
-        F0 = round(float(g.uniform(120e3, 420e3)), -2)
-        city_key = list(K.CITIES)[int(g.integers(0, len(K.CITIES)))]
-        city = K.CITIES[city_key][int(g.integers(0, len(K.CITIES[city_key])))]
-        street = "%d %s %s" % (int(g.integers(100, 9900)), STREETS[int(g.integers(0, len(STREETS)))],
-                               SUFFIX[int(g.integers(0, len(SUFFIX)))])
-        member = "%09d" % int(g.integers(10 ** 8, 10 ** 9 - 1))
-        member = member + str(_luhn_digit(member))
-        mat = _add_months(opened, n1)
-        gone = g.random() < 0.12 and o1 < mo(2026, 6)
-        if gone:
-            pm = int(g.integers(max(o1 + 3, mo(2025, 1)), K.ASOF_M + 1))
-            pd = K.business_day(dt.date(*ym(pm), int(g.integers(1, 27))))
-            fb = float(WD.sched_balance(F0, r1, n1, pm - o1))
-            rows.append(["M%07d" % int(perm[k]), member, street, city, ZIPS[city][0], opened.isoformat(), "%.2f" % F0,
-                         "%.3f" % r1, n1, mat.isoformat(), "PAID IN FULL", pd.isoformat(), "%.2f" % fb, "0.00"])
-        else:
-            if o1 + n1 <= K.ASOF_M:
-                continue
-            fb = float(WD.sched_balance(F0, r1, n1, K.ASOF_M - o1))
-            rows.append(["M%07d" % int(perm[k]), member, street, city, ZIPS[city][0], opened.isoformat(), "%.2f" % F0,
-                         "%.3f" % r1, n1, mat.isoformat(), "ACTIVE", "", "", "%.2f" % fb])
-    rows.sort(key=lambda r: r[0])
-    return rows
+            acv = acv_of(plan, seats, c["disc"])
+            hist.append(dict(date=_day(ra, t), plan=plan, seats=seats, acv=acv, change=change, k=k))
+            u2, k2 = rs2.random(), int(rs2.integers(2, 9)) if c["kind"] != "gc" else int(rs2.integers(10, 40))
+            if change != "Add seats" and u2 < 0.65:
+                # the customer took seats in the same change: the platform applies the plan, then the seats
+                seats += k2
+                acv = acv_of(plan, seats, c["disc"])
+                hist.append(dict(date=hist[-1]["date"], plan=plan, seats=seats, acv=acv, change="Add seats", k=k2))
+        c["amend"] = hist
 
-
-SERV_COLS = ["mortgage_loan_number", "member_number", "property_street", "property_city", "property_zip", "note_date",
-             "original_amount", "note_rate_pct", "term_months", "maturity_date", "status", "paid_in_full_date",
-             "principal_paid_at_payoff", "principal_balance_2026_11_30"]
-
-
-def map_rows():
-    rows = []
-    for rc, cs in K.COUNTIES.items():
-        reg = [k for k, v in K.RCODE.items() if v == rc][0]
-        for c, _ in cs:
-            rows.append([c, "MI", reg, "2016-01-01"])
-    # counties in the field of membership with no regional lending center of their own
-    rows.append(["Lake", "MI", "Muskegon and the North", "2016-01-01"])
-    rows.append(["St. Joseph", "MI", "Kalamazoo and Battle Creek", "2019-07-01"])
-    return sorted(rows)
-
-
-MAP_COLS = ["county", "state", "regional_lending_center", "effective_date"]
-
-
-def rate_rows():
-    """the credit union's posted rate sheets, every Monday from 3 December 2018 to 30 November 2026, with mid-week
-    reprices in moving weeks; the rates in effect over a month average to the month's posted level"""
-    rows = []
-    d = dt.date(2018, 12, 3)
-    end = dt.date(2026, 11, 30)
-    sheets = []
-    g = K.rng(45)
-    while d <= end:
-        o = mo(d.year, d.month)
-        lvl = WD.M30[o]
-        wob = float(g.normal(0, 0.035))
-        sheets.append((d, round(lvl + wob, 3)))
-        if g.random() < 0.18:
-            d2 = d + dt.timedelta(days=int(g.integers(2, 4)))
-            sheets.append((d2, round(lvl + wob + float(g.choice([-1, 1])) * float(g.uniform(0.04, 0.10)), 3)))
-        d += dt.timedelta(days=7)
-    # re-centre each month so the day-weighted average of the rate in effect equals the posted monthly level
-    sheets.sort()
-    by_month = {}
-    for k, (d0, r) in enumerate(sheets):
-        nxt = sheets[k + 1][0] if k + 1 < len(sheets) else dt.date(2026, 12, 7)
-        day = d0
-        while day < nxt:
-            by_month.setdefault(mo(day.year, day.month), []).append(k)
-            day += dt.timedelta(days=1)
-    adj = {}
-    for o, ks in by_month.items():
-        if o < mo(2018, 12) or o > K.ASOF_M:
+    # ---------------------------------------------------------------- administrative amendments and same-day booking
+    # corrections (their own streams, so the plan and seat history above never moves)
+    rm = K.rng(21)
+    for c in comps:
+        adm = []
+        end_t = c["close_t"] if c["close_t"] is not None else K.T_OBS
+        for t in range(c["start_t"] + 1, min(end_t, K.T_OBS) + 1):
+            if rm.random() < 0.006:
+                adm.append(dict(date=_day(rm, t), change=K.pick(rm, [("Bill-to contact", 55), ("PO number", 30),
+                                                                     ("Payment terms", 15)])))
+        c["amend_admin"] = adm
+    rk = K.rng(22)
+    for c in comps:
+        u = rk.random()
+        if u >= 0.11:
             continue
-        avg = sum(sheets[k][1] for k in ks) / len(ks)
-        adj[o] = WD.M30[o] - avg
+        p0, s0 = c["plan0"], c["seats0"]
+        v = rk.random()
+        if v < 0.50 and p0 != "Core":
+            pb = TIER[TIER.index(p0) - 1]                    # booked a tier low, upgraded on the first invoice date
+            sb, change = max(INCLUDED[pb], min(s0, INCLUDED[pb] + int(rk.integers(0, 8)))), "Upgrade"
+        elif v < 0.72 and p0 != "Enterprise":
+            pb = TIER[TIER.index(p0) + 1]
+            sb, change = max(s0, INCLUDED[pb]), "Downgrade"
+        else:
+            pb = p0
+            k = int(rk.integers(2, 11)) if c["kind"] != "gc" else int(rk.integers(10, 40))
+            sb, change = s0 - k, "Add seats"
+            if sb < INCLUDED[pb]:
+                continue
+        c["booked"] = dict(plan=pb, seats=sb, acv=acv_of(pb, sb, c["disc"]), change=change)
+
+    rq = K.rng(23)
+    used = {c["crm"] for c in comps} | {d["crm"] for d in divisions} | {p["crm"] for p in phantom}
+    partners = []
+    for name, st, created, share in PARTNERS:
+        while True:
+            cid = "0018c0000" + "".join(B62[int(i)] for i in rq.integers(0, 62, 6))
+            if cid not in used:
+                used.add(cid)
+                break
+        partners.append(dict(crm=cid, name=name, state=st, created=created, share=share))
+    B = dict(W=W, comps=comps, by_acct=by_acct, phantom=phantom, divisions=divisions, reacts=reacts,
+             uid_reg=uid_reg, rc=rc, partners=partners)
+    _billing(B)
+    _people(B)
+    return B
+
+
+def rechain(c):
+    """Recompute the terms after each plan and seat amendment in date order (after a later system adds one)."""
+    plan, seats = c["plan0"], c["seats0"]
     out = []
-    for d0, r in sheets:
-        o = mo(d0.year, d0.month)
-        r30 = round(r + adj.get(o, 0.0), 3)
-        r15 = round(r30 - WD.M15_SPREAD + float(K.rng(46, d0.toordinal()).normal(0, 0.02)), 3)
-        he = {t: round(r30 + WD.HE_SPREAD[t] + float(K.rng(47, d0.toordinal(), t).normal(0, 0.02)), 3)
-              for t in (120, 180, 240)}
-        out.append((d0, r30, r15, he))
-    for d0, r30, r15, he in out:
-        for prod, rate, term, fees in (("30 YR FIXED MORTGAGE", r30, 360, 0.0105), ("15 YR FIXED MORTGAGE", r15, 180, 0.0105),
-                                       ("HOME EQUITY FIXED 10 YR", he[120], 120, 0.0035),
-                                       ("HOME EQUITY FIXED 15 YR", he[180], 180, 0.0035),
-                                       ("HOME EQUITY FIXED 20 YR", he[240], 240, 0.0035)):
-            rows.append([d0.isoformat(), prod, "%.3f" % rate, "%.3f" % _apr(rate, term, fees)])
-    return rows
-
-
-RATE_COLS = ["effective_date", "product", "rate_pct", "apr_pct"]
-
-
-def _apr(rate, term, fees):
-    """the annual percentage rate of a $200,000 loan at the posted rate with the product's finance charges (a share of
-    the amount), the rate whose payment on the net amount equals the note's payment"""
-    pmt = WD.payment(200000.0, rate, term)
-    net = 200000.0 * (1.0 - fees)
-    lo, hi = rate, rate + 2.0
-    for _ in range(50):
-        mid = (lo + hi) / 2
-        if WD.payment(net, mid, term) < pmt:
-            lo = mid
+    for h in sorted(c.get("amend", []), key=lambda h: h["date"]):
+        if h["change"] == "Upgrade":
+            if plan == "Enterprise":
+                continue
+            plan = TIER[TIER.index(plan) + 1]
+            seats = max(seats, INCLUDED[plan])
+        elif h["change"] == "Downgrade":
+            if plan == "Core":
+                continue
+            plan = TIER[TIER.index(plan) - 1]
+            seats = max(INCLUDED[plan], min(seats, INCLUDED[plan] + 6))
         else:
-            hi = mid
-    return (lo + hi) / 2
+            seats += h["k"]
+        out.append(dict(h, plan=plan, seats=seats, acv=price_of(c, plan, seats, h["date"])))
+    c["amend"] = out
 
 
-def heloc_rows(W, ids):
-    """the credit union's home equity lines of credit at 30 November 2026 (a separate product)"""
-    g = K.rng(48)
+def _state_at(c, d):
+    """plan, seats and ACV in force on date d"""
+    plan, seats, acv, last = c["plan0"], c["seats0"], c["acv0"], None
+    for h in c.get("amend", []):
+        if h["date"] <= d:
+            plan, seats, acv, last = h["plan"], h["seats"], h["acv"], h["date"]
+    return plan, seats, acv, last
+
+
+def _billing(B):
+    """Legacy and register subscriptions, with the dual run and the migration."""
+    rb = K.rng(15)
+    leg, reg = [], []
+    n_leg = [0]
+    n_sub = [0]
+
+    def leg_code(c):
+        if c.get("legacy_code") is None:
+            n_leg[0] += 1
+            c["legacy_code"] = "PLW-%s-%05d" % (c["state"], 10000 + n_leg[0] * 3 + int(rb.integers(0, 3)))
+        return c["legacy_code"]
+
+    def reg_acct(c):
+        if c.get("reg_acct") is None:
+            c["reg_acct"] = B["uid_reg"]()
+        return c["reg_acct"]
+
+    def sub_no():
+        n_sub[0] += 1
+        return "SUB-%07d" % (1040000 + n_sub[0] * 7 + int(rb.integers(0, 7)))
+
+    def add_sub(c, first, status, cancel, plan, seats, acv, note="", parent=None, kind="main", last_amend=None, cur=None):
+        """One subscription, written to the system(s) its dates reach."""
+        in_leg = first < MIGR
+        in_reg = first >= DUAL0 or (cancel is None or cancel >= MIGR)
+        legacy_sid = None
+        if in_leg:
+            legacy_sid = "S%06d" % (200000 + len(leg) * 3 + int(rb.integers(0, 3)))
+            mig = in_reg and status == "paid"
+            leg.append(dict(code=leg_code(c), sid=legacy_sid, company=c["name"], state=c["state"], plan=plan,
+                            mrr_cents=int(round(acv / 12 * 100)), created=first - dt.timedelta(days=c.get("trial_days", 14)),
+                            first=first, status=status, cancelled=cancel if (cancel is not None and cancel < MIGR) else None,
+                            note=note if note else ("migrated 2023-03-01" if mig else ""), kind=kind, comp=c))
+        if in_reg and not (status == "voided" and first < DUAL0):
+            cp, cs, ca = (cur if cur is not None else (plan, seats, acv))
+            reg.append(dict(acct=reg_acct(c), sub=sub_no(), parent=parent, name=c["name"], state=c["state"], plan=cp, seats=cs,
+                            acv=ca, first=first, inv_status="Paid" if status == "paid" else "Voided",
+                            svc_start=(max(first, MIGR) if first < DUAL0 else first),
+                            status="Cancelled" if (cancel is not None and cancel <= K.DATA_END) else "Active",
+                            cancel=cancel if (cancel is not None and cancel <= K.DATA_END) else None,
+                            last_amend=last_amend, migrated=legacy_sid if first < MIGR else "", kind=kind, comp=c))
+
+    for c in B["comps"] + B["phantom"]:
+        if c.get("void") and c["void"]["date"] <= K.DATA_END:     # nothing invoiced after the pull's data end
+            v = c["void"]
+            p = v["plan"]
+            add_sub(c, v["date"], "voided", v["date"] + dt.timedelta(days=int(rb.integers(2, 14))), p, INCLUDED[p],
+                    acv_of(p, INCLUDED[p], 0.0), note=v["note"], kind="void")
+        if c["kind"] == "void_only":
+            continue
+        if c["first_inv"] > K.DATA_END:
+            continue
+        if c.get("returning_of"):
+            o = B["by_acct"][c["returning_of"]]
+            c["legacy_code"] = c.get("legacy_code") or o.get("legacy_code")
+            c["reg_acct"] = c.get("reg_acct") or o.get("reg_acct")
+        cancel = c["cancel"] if (c["cancel"] is not None and c["cancel"] <= K.DATA_END) else None
+        plan, seats, acv, last = _state_at(c, K.DATA_END if cancel is None else cancel)
+        add_sub(c, c["first_inv"], "paid", cancel, c["plan0"], c["seats0"], c["acv0"], kind="main", last_amend=last,
+                cur=(plan, seats, acv))
+        if c.get("react"):
+            r = c["react"]
+            add_sub(c, r["date"], "paid", None, r["plan"], r["seats"], r["acv"], kind="react")
+        for d in c["divisions"]:
+            if d["first_inv"] > K.DATA_END:
+                continue
+            dc = dict(name=d["name"], state=c["state"], legacy_code=None, reg_acct=None, trial_days=10)
+            d["bill"] = dc
+            parent_acct = None
+            if d["first_inv"] >= DUAL0 or (d["cancel"] is None or d["cancel"] >= MIGR):
+                parent_acct = reg_acct(c)
+            dcancel = d["cancel"] if (d["cancel"] is not None and d["cancel"] <= K.DATA_END) else None
+            add_sub(dc, d["first_inv"], "paid", dcancel, d["plan"], d["seats"], d["acv"], parent=parent_acct, kind="division")
+            d["legacy_code"], d["reg_acct"] = dc.get("legacy_code"), dc.get("reg_acct")
+    B["legacy"], B["register"] = leg, reg
+
+
+def _people(B):
+    """Names, mobiles and emails of everyone on a workspace, and the directory rows."""
+    W = B["W"]
+    rp = K.rng(16)
+    persons = {}
+    users = W["users"]
+    comp_of = B["by_acct"]
+    seen = {}
     rows = []
-    regs = list(K.COUNTIES)
-    perm = K.rng(49).permutation(np.arange(100000)) + 410000
-    for k in range(2650):
-        rc = regs[int(g.choice(4, p=[0.42, 0.24, 0.17, 0.17]))]
-        cty = WD._pick(g, K.COUNTIES[rc])
-        city = K.CITIES[cty][int(g.integers(0, len(K.CITIES[cty])))]
-        opened = K.business_day(dt.date(int(g.integers(2012, 2027)), int(g.integers(1, 13)), int(g.integers(1, 27))))
-        if opened > K.AS_OF:
-            opened = K.business_day(dt.date(2026, int(g.integers(1, 11)), 12))
-        limit = round(float(g.choice([25e3, 30e3, 40e3, 50e3, 60e3, 75e3, 100e3, 125e3, 150e3])), 0)
-        util = float(np.clip(g.beta(1.6, 2.4), 0, 1)) if g.random() < 0.78 else 0.0
-        bal = round(limit * util, 2)
-        margin = round(float(g.choice([-0.25, 0.0, 0.25, 0.50, 0.75, 1.00])), 2)
-        draw_end = _add_months(opened, 120)
-        status = "OPEN" if g.random() < 0.95 else "FROZEN"
-        member = "%09d" % int(g.integers(10 ** 8, 10 ** 9 - 1))
-        rows.append(["L%07d" % int(perm[k]), member + str(_luhn_digit(member)), opened.isoformat(), "%.2f" % limit,
-                     "%.2f" % bal, "PRIME", "%.2f" % margin, "%.2f" % (7.00 + margin), draw_end.isoformat(), status,
-                     cty, ZIPS[city][0]])
-    rows.sort(key=lambda r: r[0])
-    return rows
+    emails = {}
+    for u in users:
+        c = comp_of[u["acct"]]
+        pid = u["pid"]
+        if pid not in persons:
+            st = c["state"]
+            digits = "%d%03d%04d" % (K.AREA[st][int(rp.integers(len(K.AREA[st])))], int(rp.integers(200, 1000)), int(rp.integers(0, 10000)))
+            persons[pid] = dict(first=K.FIRST[int(rp.integers(len(K.FIRST)))], last=K.LAST[int(rp.integers(len(K.LAST)))],
+                                digits=digits if rp.random() > 0.12 else None, style=int(rp.choice(6, p=[0.40, 0.20, 0.15, 0.05, 0.12, 0.08])),
+                                mid="ABCDEFGHJKLMRSTW"[int(rp.integers(16))], mobile=digits)
+        p = persons[pid]
+        k = seen.get(pid, 0)
+        seen[pid] = k + 1
+        first = p["first"]
+        if k > 0 and rp.random() < 0.25 and first in K.NICK:
+            first = K.NICK[first]
+        name = f"{first} {p['mid']}. {p['last']}" if (k > 0 and rp.random() < 0.15) else f"{first} {p['last']}"
+        if rp.random() < 0.65:
+            local = f"{first}.{p['last']}".lower()
+        else:
+            local = f"{first[0]}{p['last']}".lower()
+        local = re.sub(r"[^a-z.]", "", local)
+        key = (c["domain"], local)
+        if key in emails and emails[key] != pid:
+            local = local + str(int(rp.integers(2, 9)))
+        emails[(c["domain"], local)] = pid
+        if p["digits"] and not (k > 0 and rp.random() < 0.06):
+            style = p["style"] if (k == 0 or rp.random() > 0.15) else int(rp.integers(0, 6))
+            phone = K.fmt_phone(p["digits"], style)
+        else:
+            phone = K.fmt_phone(p["mobile"], p["style"])     # the field app signs every user in by mobile number
+        u["name"], u["email"], u["phone"] = name, f"{local}@{c['domain']}", phone
+        u["title"] = K.TITLES[u["role"]][int(rp.integers(len(K.TITLES[u["role"]])))]
+    B["persons"] = persons
+    # timestamps (UTC) and reasons
+    for u in users:
+        c = comp_of[u["acct"]]
+        st = c["state"]
+        trial0 = (c["void"]["date"] if c.get("void") else c["first_inv"]) - dt.timedelta(days=c["trial_days"])
+        if u["uid"] == B["W"]["accounts"][u["acct"] - 1]["founder_uid"]:
+            d = trial0
+            ca = K.local_to_utc(st, d, int(rp.integers(7, 18)), int(rp.integers(0, 60)))
+        else:
+            y, m = K.ym(u["created_t"])
+            d = dt.date(y, m, int(rp.integers(1, K.days_in(y, m) + 1)))
+            ca = K.local_to_utc(st, d, int(rp.integers(6, 19)), int(rp.integers(0, 60)))
+            floor = K.local_to_utc(st, trial0, 7, 0) + dt.timedelta(days=int(rp.integers(1, 4)), hours=float(rp.uniform(0, 9)))
+            if ca < floor:
+                ca = floor
+        u["created_at"] = ca.replace(microsecond=0)
+        if u["deact_t"] is not None:
+            if u["reason"] == "Account closed" and c["cancel"] is not None:
+                da = dt.datetime.combine(c["cancel"], dt.time(0)) + dt.timedelta(hours=float(rp.uniform(5, 30)))
+            else:
+                y, m = K.ym(u["deact_t"])
+                d = dt.date(y, m, int(rp.integers(1, K.days_in(y, m) + 1)))
+                da = K.local_to_utc(st, d, int(rp.integers(6, 20)), int(rp.integers(0, 60)))
+            da = max(da, ca + dt.timedelta(days=1)).replace(microsecond=0)
+            u["deact_at"] = da
+            if u["reason"] == "Left company":
+                u["reason_txt"] = K.pick(rp, [("Removed by admin", 52), ("Left company", 27), ("SSO deprovisioned", 21)])
+            else:
+                u["reason_txt"] = K.pick(rp, [("Account closed", 1)])
+        else:
+            u["deact_at"], u["reason_txt"] = None, ""
+        last = u["deact_at"] or dt.datetime(2026, 9, 30, 23, 0)
+        la = last - dt.timedelta(hours=float(rp.uniform(1, 420)))
+        u["last_active"] = min(max(la, u["created_at"] + dt.timedelta(hours=2)), dt.datetime(2026, 9, 30, 23, 0)).replace(microsecond=0)
+    # reactivated companies: their workspace is reopened and a few of the old team re-invited
+    extra = []
+    by_acct_users = {}
+    for u in users:
+        by_acct_users.setdefault(u["acct"], []).append(u)
+    for c in B["reacts"]:
+        team = by_acct_users.get(c["acct"], [])[:int(rp.integers(2, 6))]
+        for j, u0 in enumerate(team):
+            when = K.local_to_utc(c["state"], c["react"]["date"] + dt.timedelta(days=j), int(rp.integers(7, 17)), int(rp.integers(0, 60)))
+            extra.append(dict(uid=None, pid=u0["pid"], acct=c["acct"], role=u0["role"], name=u0["name"], email=u0["email"],
+                              phone=u0["phone"], title=u0["title"], created_at=when, deact_at=None, reason_txt="",
+                              last_active=min(when + dt.timedelta(days=float(rp.uniform(3, 200))), dt.datetime(2026, 9, 30, 22, 0)),
+                              admin=(j == 0)))
+    B["react_users"] = extra
+    _trials(B)
 
 
-HELOC_COLS = ["line_number", "member_number", "open_date", "credit_limit", "balance_2026_11_30", "index", "margin_pct",
-              "rate_pct", "draw_period_end", "line_status", "property_county", "property_zip"]
-
-
-def hpi_rows():
-    """a quarterly all-transactions house price index by county (1995 Q1 = 100), constructed"""
-    g = K.rng(50)
-    rows = []
-    for rc, cs in K.COUNTIES.items():
-        for c, _ in cs:
-            lvl = float(g.uniform(260, 330))
-            for y in range(2019, 2027):
-                for q in range(1, 5):
-                    if y == 2026 and q == 4:
+def _trials(B):
+    """Workspaces of trials: open trials of companies that pay after the export, and trials that never converted."""
+    W = B["W"]
+    rt = K.rng(17)
+    out = []
+    used = set(c["ws"] for c in B["comps"])
+    # open trials: world companies whose first paid invoice falls after the export but whose trial began by then
+    for c in B["comps"]:
+        trial0 = (c["void"]["date"] if c.get("void") else c["first_inv"]) - dt.timedelta(days=c["trial_days"])
+        c["trial0"] = trial0
+    # trials that never converted, about four in five of all trials
+    for t in range(-30, K.T_OBS + 1):
+        for r in range(6):
+            lam = 0.8 * float(W["new"][r, W["ix"][t]])
+            for _ in range(rt.poisson(lam)):
+                st = K.pick(rt, K.STATES[K.REGIONS[r]])
+                y, m = K.ym(t)
+                d = dt.date(y, m, int(rt.integers(1, K.days_in(y, m) + 1)))
+                if d > K.DATA_END:
+                    continue
+                while True:
+                    w = "ws_" + "".join(rt.choice(list("abcdefghjkmnpqrstuvwxyz23456789"), 10))
+                    if w not in used:
+                        used.add(w)
                         break
-                    gr = {2019: 0.016, 2020: 0.022, 2021: 0.040, 2022: 0.028, 2023: 0.012, 2024: 0.014, 2025: 0.010,
-                          2026: 0.008}[y]
-                    lvl *= 1.0 + gr + float(g.normal(0, 0.006))
-                    rows.append([c, "MI", "%dQ%d" % (y, q), "%.2f" % lvl])
-    return rows
+                dom = re.sub(r"[^a-z]", "", (K.LAST[int(rt.integers(len(K.LAST)))] + K.CO_B[int(rt.integers(len(K.CO_B)))]).lower())[:20] + ".com"
+                n = 1 + int(rt.random() < 0.35) + int(rt.random() < 0.12)
+                for j in range(n):
+                    first, last = K.FIRST[int(rt.integers(len(K.FIRST)))], K.LAST[int(rt.integers(len(K.LAST)))]
+                    digits = "%d%03d%04d" % (K.AREA[st][int(rt.integers(len(K.AREA[st])))], int(rt.integers(200, 1000)), int(rt.integers(0, 10000)))
+                    ca = K.local_to_utc(st, d + dt.timedelta(days=j * int(rt.integers(0, 5))), int(rt.integers(7, 19)), int(rt.integers(0, 60)))
+                    if ca.date() > K.DATA_END:
+                        continue
+                    role = "OWNER" if (j == 0 and rt.random() < 0.5) else str(rt.choice(["PM", "SUPER", "PE", "OFFICE"]))
+                    local = re.sub(r"[^a-z.]", "", (f"{first}.{last}" if rt.random() < 0.6 else f"{first[0]}{last}").lower())
+                    out.append(dict(ws=w, name=f"{first} {last}", email=f"{local}@{dom}",
+                                    phone=K.fmt_phone(digits, int(rt.choice(6))) if rt.random() > 0.15 else K.fmt_phone(digits, 0),
+                                    title=K.TITLES[role][int(rt.integers(len(K.TITLES[role])))], created_at=ca.replace(microsecond=0),
+                                    last_active=min(ca + dt.timedelta(days=float(rt.uniform(0.2, 40))), dt.datetime(2026, 9, 30, 22, 0)).replace(microsecond=0),
+                                    admin=(j == 0)))
+    B["trial_users"] = out
 
 
-HPI_COLS = ["county", "state", "quarter", "index_1995q1_100"]
-
-
-def write_all(out, W):
-    ids = Ids(W)
+# ==================================================================================================== writers
+def write_all(out, B):
+    import openpyxl
     n = {}
-    n[F_LEGACY] = K.write_csv(os.path.join(out, F_LEGACY), LEGACY_COLS, legacy_rows(W, ids), crlf=True)
-    n[F_CORE] = K.write_csv(os.path.join(out, F_CORE), CORE_COLS, core_rows(W, ids))
-    n[F_XREF] = K.write_csv(os.path.join(out, F_XREF), XREF_COLS, xref_rows(W, ids))
-    n[F_LOS] = K.write_csv(os.path.join(out, F_LOS), LOS_COLS, los_rows(W, ids))
-    n[F_SERV] = K.write_csv(os.path.join(out, F_SERV), SERV_COLS, servicing_rows(W, ids))
-    n[F_MAP] = K.write_csv(os.path.join(out, F_MAP), MAP_COLS, map_rows())
-    n[F_RATES] = K.write_csv(os.path.join(out, F_RATES), RATE_COLS, rate_rows())
-    n[F_HELOC] = K.write_csv(os.path.join(out, F_HELOC), HELOC_COLS, heloc_rows(W, ids))
-    n[F_HPI] = K.write_csv(os.path.join(out, F_HPI), HPI_COLS, hpi_rows())
-    return ids, n
+    W = B["W"]
+    comps = B["comps"]
+    # ---------------------------------------------------------------- territory map
+    rows = []
+    for reg, sts in K.STATES.items():
+        for st, _ in sts:
+            rows.append([st, K.STATE_NAMES[st], reg, K.region_of_state(st, dt.date(2024, 2, 1))])
+    rows.sort(key=lambda r: r[0])
+    n[F_TERR] = K.write_csv(os.path.join(out, F_TERR), ["state", "state_name", "sales_region", "sales_region_before_2024_03_01"], rows)
+    # ---------------------------------------------------------------- legacy billing
+    leg = sorted(B["legacy"], key=lambda r: (r["first"], r["sid"]))
+    n[F_LEGACY] = K.write_csv(os.path.join(out, F_LEGACY),
+        ["customer_code", "subscription_id", "company", "billing_state", "plan", "currency", "mrr_cents", "subscription_created",
+         "first_invoice_date", "first_invoice_status", "cancelled_on", "notes"],
+        [[r["code"], r["sid"], r["company"], r["state"], r["plan"], "USD", r["mrr_cents"], r["created"].isoformat(),
+          r["first"].isoformat(), r["status"], r["cancelled"].isoformat() if r["cancelled"] else "", r["note"]] for r in leg])
+    # ---------------------------------------------------------------- subscription register
+    reg = sorted(B["register"], key=lambda r: (r["first"], r["sub"]))
+    amend_rows = []
+    for r in reg:
+        if r["kind"] != "main":
+            r["plan"] = sku(r["plan"], r["first"])
+            continue
+        c = r["comp"]
+        end = r["cancel"] if r["cancel"] is not None else K.DATA_END
+        plan, seats, acv, last = _state_at(c, end)
+        dates = [last] if last else []
+        dates += [a["date"] for a in c.get("amend_admin", []) if a["date"] <= end]
+        bk = c.get("booked") if (c.get("booked") and c["first_inv"] >= DUAL0) else None
+        if bk:
+            dates.append(c["first_inv"])
+        r["plan"], r["seats"], r["acv"], r["last_amend"] = (sku(plan, plan_set_on(c, end)), seats, acv,
+                                                            (max(dates) if dates else None))
+        if bk:
+            amend_rows.append([c["first_inv"], 0, r["sub"], bk["change"], sku(bk["plan"], c["first_inv"]),
+                               sku(c["plan0"], c["first_inv"]), bk["seats"], c["seats0"], bk["acv"], c["acv0"]])
+        prev = (c["plan0"], c["seats0"], c["acv0"], c["first_inv"])
+        for h in c.get("amend", []):
+            set_on = h["date"] if h["change"] in ("Upgrade", "Downgrade") else prev[3]
+            if h["date"] <= end and h["date"] >= DUAL0:
+                amend_rows.append([h["date"], 1, r["sub"], h["change"], sku(prev[0], prev[3]), sku(h["plan"], set_on),
+                                   prev[1], h["seats"], prev[2], h["acv"]])
+            prev = (h["plan"], h["seats"], h["acv"], set_on)
+        for a in c.get("amend_admin", []):
+            if DUAL0 <= a["date"] <= end:
+                p_, s_, v_, _ = _state_at(c, a["date"])
+                k_ = sku(p_, plan_set_on(c, a["date"]))
+                amend_rows.append([a["date"], 2, r["sub"], a["change"], k_, k_, s_, s_, v_, v_])
+    for x in amend_rows:
+        # the billing platform records a change of rate plan as a plan change, whichever way it goes
+        x[3] = {"Upgrade": "Plan change", "Downgrade": "Plan change"}.get(x[3], x[3])
+    amend_rows.sort(key=lambda x: (x[0], x[2], x[1]))
+    # billing staff key a day's changes to one subscription in either order; the platform applies a plan move before the
+    # seats taken with it, and each line's terms either side are as applied, while the reference follows the keying
+    rkey = K.rng(26)
+    i = 0
+    while i < len(amend_rows):
+        j = i
+        while j + 1 < len(amend_rows) and amend_rows[j + 1][0] == amend_rows[i][0] and amend_rows[j + 1][2] == amend_rows[i][2]:
+            j += 1
+        grp = [x for x in amend_rows[i:j + 1] if x[1] == 1]
+        if len(grp) > 1:
+            order = [int(v) for v in rkey.permutation(len(grp))]
+            rest = [x for x in amend_rows[i:j + 1] if x[1] != 1]
+            amend_rows[i:j + 1] = [x for x in amend_rows[i:j + 1] if x[1] == 0] + [grp[o] for o in order] + \
+                                  [x for x in rest if x[1] == 2]
+        i = j + 1
+    ram = K.rng(24)
+    k = 0
+    for x in amend_rows:
+        k += 1 + int(ram.integers(0, 3))
+        x[1] = "AMD-%07d" % (3100000 + k)
+    wb = openpyxl.Workbook()
+    ws = wb.active
+    ws.title = "Subscriptions"
+    ws.append(["Plinthwise subscription register: every subscription with a service period on or after 1 Dec 2022. Extracted 1 Oct 2026 07:15 MT."])
+    ws.append(["Account Number", "Subscription Number", "Parent Account Number", "Account Name", "Bill To State", "Rate Plan SKU", "Seats",
+               "ACV (USD)", "First Invoice Date", "First Invoice Status", "Service Start", "Subscription Status", "Cancellation Date",
+               "Last Amended", "Migrated From (legacy subscription)"])
+    for r in reg:
+        ws.append([r["acct"], r["sub"], r["parent"] or None, r["name"], r["state"], r["plan"], r["seats"], r["acv"], r["first"],
+                   r["inv_status"], r["svc_start"], r["status"], r["cancel"], r["last_amend"], r["migrated"] or None])
+    for col, w in zip("ABCDEFGHIJKLMNO", [13, 16, 14, 40, 8, 12, 7, 12, 14, 12, 12, 12, 14, 12, 18]):
+        ws.column_dimensions[col].width = w
+    for row in ws.iter_rows(min_row=3):
+        for cell in row:
+            if isinstance(cell.value, dt.date):
+                cell.number_format = "yyyy-mm-dd"
+            elif cell.column_letter == "H":
+                cell.number_format = "#,##0.00"
+    ws.freeze_panes = "A3"
+    wa = wb.create_sheet("Amendments")
+    wa.append(["Plinthwise subscription register: amendments recorded from 1 Dec 2022. Extracted 1 Oct 2026 07:15 MT."])
+    wa.append(["Effective Date", "Amendment Number", "Subscription Number", "Change", "SKU Before", "SKU After", "Seats Before",
+               "Seats After", "ACV Before (USD)", "ACV After (USD)"])
+    for x in amend_rows:
+        wa.append(x)
+    for col, w in zip("ABCDEFGHIJ", [14, 16, 18, 16, 12, 12, 12, 12, 16, 16]):
+        wa.column_dimensions[col].width = w
+    for row in wa.iter_rows(min_row=3):
+        for cell in row:
+            if isinstance(cell.value, dt.date):
+                cell.number_format = "yyyy-mm-dd"
+            elif cell.column_letter in "IJ":
+                cell.number_format = "#,##0.00"
+    wa.freeze_panes = "A3"
+    wb.save(os.path.join(out, F_REG))
+    n[F_REG] = len(reg) + len(amend_rows)
+    # ---------------------------------------------------------------- the product catalog (the new platform's)
+    n[F_CATALOG] = K.write_csv(os.path.join(out, F_CATALOG),
+        ["sku", "plan", "list_price_month_usd", "seats_included", "extra_seat_month_usd", "in_catalog_from"],
+        [[SKU_NEW[p_], p_, "%.2f" % K.PLANS[p_], INCLUDED[p_], "%.2f" % PER_SEAT[p_], CUTOVER.isoformat()] for p_ in TIER])
+    # ---------------------------------------------------------------- CRM accounts
+    rc = K.rng(18)
+    crm = []
+    seen_crm = set()
+    for c in comps:
+        if c["first_inv"] > K.DATA_END or c["crm"] in seen_crm:
+            continue
+        if c.get("returned_as"):
+            continue                                   # the returning company's row carries the account
+        seen_crm.add(c["crm"])
+        orig = B["by_acct"].get(c.get("returning_of")) if c.get("returning_of") else None
+        first_c = orig if orig else c
+        created = first_c["trial0"] - dt.timedelta(days=int(rc.integers(0, 21)))
+        region = K.region_of_state(c["state"], created)
+        active = c["cancel"] is None or c["cancel"] > K.DATA_END or bool(c.get("react"))
+        crm.append([c["crm"], c["name"], "", c["state"], region, "Customer" if active else "Former Customer", first_c["lead"],
+                    created.isoformat(), c.get("reg_acct") or first_c.get("reg_acct") or "", first_c.get("legacy_code") or c.get("legacy_code") or "", c["ws"]])
+        for d in c["divisions"]:
+            if d["first_inv"] > K.DATA_END:
+                continue
+            dcreated = d["first_inv"] - dt.timedelta(days=int(rc.integers(3, 20)))
+            dactive = d["cancel"] is None or d["cancel"] > K.DATA_END
+            crm.append([d["crm"], d["name"], c["crm"], c["state"], K.region_of_state(c["state"], dcreated),
+                        "Customer" if dactive else "Former Customer", "Expansion", dcreated.isoformat(), d.get("reg_acct") or "",
+                        d.get("legacy_code") or "", c["ws"]])
+    for p_ in B["partners"]:
+        crm.append([p_["crm"], p_["name"], "", p_["state"], K.region_of_state(p_["state"], p_["created"]), "Partner", "",
+                    p_["created"].isoformat(), "", "", ""])
+    crm.sort(key=lambda r: (r[7], r[0]))
+    n[F_CRM] = K.write_csv(os.path.join(out, F_CRM),
+        ["Account ID", "Account Name", "Parent Account ID", "Billing State", "Sales Region", "Type", "Lead Source", "Created Date",
+         "Billing Account Number", "Legacy Customer Code", "Product Workspace ID"], crm)
+    # ---------------------------------------------------------------- product user directory
+    ru = K.rng(19)
+    drows = []
+    cut = dt.datetime(2026, 9, 30, 23, 59, 59)
+    for u in W["users"]:
+        c = B["by_acct"][u["acct"]]
+        if u["created_at"] > cut:
+            continue
+        deact = u["deact_at"] if (u["deact_at"] is not None and u["deact_at"] <= cut) else None
+        la = u["last_active"] if (deact is None or u["last_active"] < deact) else deact - dt.timedelta(hours=3)
+        founder = u["uid"] == W["accounts"][u["acct"] - 1]["founder_uid"]
+        drows.append([u["created_at"], c["ws"], u["name"], u["email"], u["phone"], u["title"],
+                      "Admin" if founder or ru.random() < 0.06 else "Member", la, deact, u["reason_txt"] if deact else ""])
+    for x in B["react_users"]:
+        if x["created_at"] > cut:
+            continue
+        c = B["by_acct"][x["acct"]]
+        drows.append([x["created_at"], c["ws"], x["name"], x["email"], x["phone"], x["title"], "Admin" if x["admin"] else "Member",
+                      x["last_active"], None, ""])
+    for x in B["trial_users"]:
+        drows.append([x["created_at"], x["ws"], x["name"], x["email"], x["phone"], x["title"], "Admin" if x["admin"] else "Member",
+                      x["last_active"], None, ""])
+    drows.sort(key=lambda r: (r[0], r[1], r[3]))
+    fmt = lambda d: d.strftime("%Y-%m-%dT%H:%M:%SZ") if d else ""
+    out_rows = []
+    for i, r in enumerate(drows):
+        out_rows.append(["u%07d" % (1100000 + i * 3 + (K.skey(r[3]) % 3)), r[1], r[2], r[3], r[4], r[5], r[6], fmt(r[0]), fmt(r[7]),
+                         fmt(r[8]), r[9]])
+    n[F_DIR] = K.write_csv(os.path.join(out, F_DIR),
+        ["user_id", "workspace_id", "full_name", "email", "mobile", "job_title", "workspace_role", "created_at", "last_active_at",
+         "deactivated_at", "deactivation_reason"], out_rows)
+    # ---------------------------------------------------------------- marketing spend
+    _spend(out, W)
+    n[F_SPEND] = None
+    return n
+
+
+def _spend(out, W):
+    import openpyxl
+    rs = K.rng(20)
+    ts, spend = W["ts"], W["spend"]
+    CH = [("Paid search", 0.38), ("Paid social", 0.17), ("Events and trade shows", 0.21), ("Associations and partners", 0.12),
+          ("Content and webinars", 0.12)]
+    wb = openpyxl.Workbook()
+    ws = wb.active
+    ws.title = "Actuals"
+    ws.append(["Fiscal Year", "Period", "Month", "Sales Region", "Channel", "Spend ($K)"])
+    for i, t in enumerate(ts):
+        if t < 1 or t > K.T_OBS:
+            continue
+        fy, p = K.fiscal_label(int(t))
+        y, m = K.ym(int(t))
+        for r in range(6):
+            tot = float(spend[r, i])
+            w = np.array([c[1] for c in CH]) * np.exp(rs.normal(0, 0.12, len(CH)))
+            parts = np.round(tot * w / w.sum(), 1)
+            parts[-1] = round(tot - parts[:-1].sum(), 1)
+            for (ch, _), v in zip(CH, parts):
+                ws.append(["FY%d" % fy, "P%02d" % p, "%d-%02d" % (y, m), K.REGIONS[r], ch, float(v)])
+    ws.freeze_panes = "A2"
+    for col, wdt in zip("ABCDEF", [11, 8, 9, 14, 26, 11]):
+        ws.column_dimensions[col].width = wdt
+    ws2 = wb.create_sheet("Plan Oct-2026 to Jan-2028")
+    ws2.append(["Fiscal Year", "Period", "Month", "Sales Region", "Planned Spend ($K)"])
+    for i, t in enumerate(ts):
+        if t <= K.T_OBS or t > 108:
+            continue
+        fy, p = K.fiscal_label(int(t))
+        y, m = K.ym(int(t))
+        for r in range(6):
+            ws2.append(["FY%d" % fy, "P%02d" % p, "%d-%02d" % (y, m), K.REGIONS[r], float(spend[r, i])])
+    ws2.freeze_panes = "A2"
+    for col, wdt in zip("ABCDE", [11, 8, 9, 14, 18]):
+        ws2.column_dimensions[col].width = wdt
+    wb.save(os.path.join(out, F_SPEND))

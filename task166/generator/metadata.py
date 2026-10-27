@@ -3,37 +3,34 @@ and licence. Every file is constructed; none is labelled as a real organisation'
 import json
 import os
 
-import asks as A
 import docs as DOC
+import onboarding as OB
 import records as R
 
 SOURCES = {
-    R.F_LEGACY: "Hollowell Community Credit Union legacy core, home equity loan master archived at the 1 September 2024 "
-                "conversion (loans on the books at any month-end from December 2018 to August 2024)",
-    R.F_CORE: "Hollowell Community Credit Union core system, monthly trial balance of fixed-rate home equity loans, "
-              "September 2024 to November 2026",
-    R.F_XREF: "Hollowell Community Credit Union core conversion, legacy loan and member numbers to new (September 2024)",
-    R.F_LOS: "Hollowell Community Credit Union lending system, funded fixed-rate home equity loans since 2009 with the "
-             "senior lien as underwritten",
-    R.F_SERV: "Hollowell Community Credit Union mortgage servicing system, first mortgages active at 30 November 2026 or "
-              "paid in full since January 2025",
-    R.F_MAP: "Hollowell Community Credit Union lending administration, counties of the regional lending centers",
-    R.F_RATES: "Hollowell Community Credit Union pricing desk, posted rate sheet archive, December 2018 to November 2026",
-    R.F_HELOC: "Hollowell Community Credit Union core system, home equity lines of credit at 30 November 2026",
-    R.F_HPI: "Hollowell Community Credit Union ALM market data, county house price index (constructed, not an agency "
-             "release)",
-    A.F_LOG: "Hollowell Community Credit Union payoff statement system, requests October 2025 to November 2026",
-    A.F_MANUAL: "Hollowell Community Credit Union payoff desk, statements prepared by hand during the March 2026 upgrade",
-    DOC.F_PLAN: "Hollowell Community Credit Union ALM, 2027 planning cycle rates (22 September 2026)",
-    DOC.F_POLICY: "Hollowell Community Credit Union Lending Policy section 7.4, version 1.0 (21 October 2026)",
-    DOC.F_ALM: "Hollowell Community Credit Union ALM report for the third quarter of 2026 (16 October 2026)",
-    DOC.F_DICT: "Hollowell Community Credit Union lending analytics, data dictionary of the files pulled 3 December 2026",
-    DOC.F_MANIFEST: "Hollowell Community Credit Union lending analytics, list of the files pulled 3 December 2026",
+    R.F_LEGACY: "Plinthwise legacy billing system, every subscription with a first invoice from January 2015 to February 2023",
+    R.F_REG: "Plinthwise subscription register, subscriptions with a service period from 1 December 2022 and the amendments "
+             "recorded from that date",
+    R.F_CRM: "Plinthwise CRM, customer, former customer and partner accounts at 1 October 2026",
+    R.F_DIR: "Plinthwise product user directory, every user account on every workspace to 30 September 2026",
+    R.F_TERR: "Plinthwise Sales Operations, the sales territory map from 1 March 2024 and the map before it",
+    R.F_SPEND: "Plinthwise Marketing Operations, programme spend actuals February 2019 to September 2026 and the plan "
+               "October 2026 to January 2028",
+    OB.F_CASES: "Plinthwise onboarding tool, onboarding cases opened January 2024 to September 2026",
+    OB.F_SESSIONS: "Plinthwise scheduling tool, onboarding session bookings January 2024 to September 2026",
+    OB.F_CSAT: "Plinthwise survey tool, post-onboarding survey responses 2024 to 2026",
+    OB.F_ROSTER: "Plinthwise People Operations, the onboarding team roster at 1 October 2026: each specialist's pod assignments with their first and last days, and the specialists who left it since 2024",
+    R.F_CATALOG: "Plinthwise billing platform, the product catalog in force from 1 July 2026",
+    DOC.F_MEMO: "Plinthwise Customer Onboarding, the VP's request of 20 October 2026",
+    DOC.F_BASIS: "Plinthwise FP&A, FY2028 planning basis v1.0 (2 October 2026)",
+    DOC.F_DECK: "Plinthwise board materials, FY2023 board deck customer growth pages (14 March 2023)",
+    DOC.F_DICT: "Plinthwise Revenue Analytics, field definitions of the files pulled 1 October 2026",
+    DOC.F_MANIFEST: "Plinthwise Revenue Analytics, list of the files pulled 1 October 2026",
 }
-DISTRACTORS = [R.F_HELOC, R.F_HPI]
-TITLE = ("Which of a West Michigan credit union's four regional lending centers opens its 2027 payoff-retention pilot, by "
-         "the fixed-rate home equity principal each region's members will pay off in 2027, when the largest new home "
-         "equity loans sit behind small seasoned first mortgages")
+DISTRACTORS = [DOC.F_DECK, OB.F_CSAT]
+TITLE = ("Which of a construction software company's six regional sales teams adds the most new paying customers in 2027, "
+         "when two in five new customers are founded by project staff who left existing customers and one region's "
+         "customers released a surge of them in 2026")
 
 
 def rows_of(path):
@@ -43,7 +40,7 @@ def rows_of(path):
     if path.endswith(".xlsx"):
         import openpyxl
         wb = openpyxl.load_workbook(path, read_only=True)
-        n = sum(max(ws.max_row - 1, 0) for ws in wb.worksheets)
+        n = sum(max(ws.max_row - 2, 0) for ws in wb.worksheets if ws.title != "Notes")
         wb.close()
         return n
     return None
@@ -55,23 +52,25 @@ def write(task_dir, n=None):
     for f in sorted(os.listdir(target)):
         p = os.path.join(target, f)
         out.append({"path": f, "format": f.rsplit(".", 1)[1], "bytes": os.path.getsize(p), "rows": rows_of(p),
-                    "source": "Constructed: " + SOURCES[f], "date": "2026-12-03",
+                    "source": "Constructed: " + SOURCES[f], "date": "2026-10-01" if f not in (DOC.F_MEMO, DOC.F_DECK, DOC.F_BASIS) else
+                    {DOC.F_MEMO: "2026-10-20", DOC.F_DECK: "2023-03-14", DOC.F_BASIS: "2026-10-02"}[f],
                     "license": "CC0-1.0 (original work, constructed for this task)"})
     big = max((x for x in out if x["rows"]), key=lambda x: x["rows"])
     meta = {
         "task": "task166",
         "title": TITLE,
-        "domain": "Banking, Credit & Financial Risk",
-        "client_domain": "Banking, Credit & Financial Risk",
-        "house_domain": "banking-credit-financial-risk",
-        "subdomain": "deposit-liquidity-behaviour (home equity prepayment: each region's 2027 payoffs of fixed-rate "
-                     "closed-end seconds under the planning cycle's base case)",
+        "domain": "Product Analytics",
+        "client_domain": "Product Analytics",
+        "house_domain": "product-analytics",
+        "subdomain": "feature-adoption-diffusion-modeling (each region's 2027 new paying customers: organic acquisition plus "
+                     "the customers founded by users who left paying customers)",
         "objective": "Forecasting & Predictive Modeling",
-        "prompt_shape": "a committed pick of one of four regional lending centers with its 2027 principal paid ahead of "
-                        "schedule to the nearest $10 million and the center second, a table of loans quoted a payoff and "
-                        "of those paid in full by center and quarter (32 counts), and a stacked bar chart of the quotes",
-        "as_of": "2026-12-03",
-        "deliverables": ["he_payoff_pilot_2027.xlsx", "payoff_quotes_by_center.png"],
+        "prompt_shape": "a committed pick of one of six regional sales teams with its 2027 new paying customers to the nearest "
+                        "200 and the region second, specialist hours by onboarding pod, quarter of 2025 and session kind "
+                        "(24), the 2025 new customers by region and starting plan (18) and the annual contract value they "
+                        "signed on each plan on the terms in force on the first paid invoice date (18)",
+        "as_of": "2026-10-01",
+        "deliverables": ["onboarding_pod_2027.docx", "onboarding_staffing_2025.xlsx"],
         "distractor_files": DISTRACTORS,
         "field_terms": [],
         "stated_inputs": [],
@@ -79,13 +78,13 @@ def write(task_dir, n=None):
                         "largest_file": big["path"], "largest_file_rows": big["rows"]},
         "sources": [{"files": "all files under target/",
                      "origin": "constructed for this task by task166/generator/build.py (seeded, deterministic) around a "
-                               "fictional West Michigan credit union, in the layouts of a credit union's legacy and new "
-                               "core systems, a lending system, a mortgage servicing system, a payoff statement system, a "
-                               "pricing desk's rate sheets, office workbooks and PDF documents; the members, loans, "
-                               "addresses and creditors are constructed, and no real organisation's records or person is "
-                               "depicted.",
-                     "date": "2026-12-03", "license": "CC0-1.0 (original work)"}],
-        "created": "2026-10-25",
+                               "fictional construction project-management software company, in the layouts of a legacy "
+                               "billing system, a subscription register, a CRM, a product user directory, an onboarding "
+                               "tool, a scheduling tool, a survey tool, office workbooks and PDF documents; the companies, "
+                               "people, phone numbers and partners are constructed, and no real organisation's records or "
+                               "person is depicted.",
+                     "date": "2026-10-01", "license": "CC0-1.0 (original work)"}],
+        "created": "2026-10-26",
         "generator": "task166/generator/build.py",
         "files": out,
     }

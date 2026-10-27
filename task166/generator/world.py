@@ -1,378 +1,328 @@
-"""The clean truth of task166's world: the credit union's posted rates, its members' home equity loans and the first
-mortgages ahead of them, and every behaviour that generates their records. Nothing here ships as is; records.py writes
-the pack from it in the systems' own layouts. Behaviour parameters live only here; calc.py estimates everything from
-the shipped files.
+"""The world behind the pack, before any record is written: Plinthwise's customer companies, the people on their
+workspaces, the job moves that end a person's seat at one customer, and the new customers those people found.
 
-A member pays a closed-end second off when the house is sold or when the member refinances the debt on it. The
-refinance is driven by the whole stack: the first mortgage and the second at their balances, their blended rate against
-a new first mortgage at the posted 30-year rate (a cash-out refinance prices a quarter point above it)."""
+A share of new paying customers each month is founded by a project manager, superintendent or project engineer who
+left a paying customer for a contractor not yet on the software, carrying the tool with them; the lag from leaving to
+the new company's first paid invoice runs four to twenty months. Between April and September 2026 the Southwest's
+large general contractors released most of the project staff of a finished programme of large builds, and the region's
+other customers trimmed theirs: those people found new customers through 2027.
+
+simulate() returns the accounts, users, founder events, the monthly arrays and the truths the checks need: the expected
+2027 new paying customers by region under FP&A's planning basis (organic intensity at the plan's spend, founders from
+the departures already made and from users leaving at each region's 2025 monthly pace from October 2026)."""
 from __future__ import annotations
 
-import datetime as dt
 import math
-from dataclasses import dataclass, field
 
 import numpy as np
 
 import common as K
 
-mo, ym = K.mo, K.ym
-
-# ------------------------------------------------------------------------------------------------- posted rates
-ANNUAL_30 = {2002: 6.62, 2003: 5.93, 2004: 5.94, 2005: 5.97, 2006: 6.51, 2007: 6.44, 2008: 6.13, 2009: 5.14,
-             2010: 4.79, 2011: 4.55, 2012: 3.76, 2013: 4.08, 2014: 4.27, 2015: 3.95, 2016: 3.75, 2017: 4.09,
-             2018: 4.64}
-MONTHLY_30 = {
-    2019: [4.55, 4.47, 4.37, 4.24, 4.17, 3.90, 3.87, 3.72, 3.71, 3.79, 3.80, 3.82],
-    2020: [3.72, 3.57, 3.55, 3.41, 3.33, 3.26, 3.12, 3.04, 2.99, 2.93, 2.87, 2.78],
-    2021: [2.84, 2.91, 3.18, 3.16, 3.06, 3.08, 2.97, 2.94, 3.00, 3.17, 3.17, 3.20],
-    2022: [3.55, 3.86, 4.27, 5.08, 5.33, 5.62, 5.51, 5.32, 6.21, 7.00, 6.91, 6.46],
-    2023: [6.37, 6.36, 6.64, 6.44, 6.53, 6.81, 6.94, 7.17, 7.30, 7.72, 7.54, 6.92],
-    2024: [6.84, 6.98, 7.02, 7.20, 7.26, 7.12, 7.05, 6.80, 6.58, 6.70, 7.01, 6.92],
-    2025: [7.16, 7.04, 6.85, 6.93, 7.02, 7.02, 6.92, 6.85, 6.66, 6.58, 6.56, 6.59],
-    2026: [6.64, 6.68, 6.75, 6.82, 6.86, 6.80, 6.72, 6.66, 6.62, 6.68, 6.74, 6.71],
-}
-# the planning cycle's base case, December 2026 then each month of 2027 (the 30-year fixed, monthly average)
-PLAN_30 = [6.62, 6.45, 6.10, 5.85, 5.65, 5.55, 5.48, 5.42, 5.37, 5.32, 5.28, 5.24, 5.20]
-HE_SPREAD = {120: 1.70, 180: 1.95, 240: 2.20}     # posted fixed home equity rate over the 30-year, by term
-M15_SPREAD = 0.62                                  # the 15-year fixed below the 30-year
-CASH_OUT = 0.25                                    # a cash-out refinance prices this far above the posted 30-year
-
-START = mo(2002, 1)
-END = mo(2027, 12)
-
-
-def _rate_path():
-    M = np.zeros(END + 1)
-    g = K.rng(1)
-    # annual levels interpolated through mid-year knots, with a small within-year wander
-    xs = [mo(y, 7) for y in sorted(ANNUAL_30)] + [mo(2019, 1)]
-    ys = [ANNUAL_30[y] for y in sorted(ANNUAL_30)] + [MONTHLY_30[2019][0]]
-    for o in range(START, mo(2019, 1)):
-        M[o] = float(np.interp(o, xs, ys)) + g.normal(0, 0.07)
-    for y, vs in MONTHLY_30.items():
-        for k, v in enumerate(vs):
-            M[mo(y, k + 1)] = v
-    for k, v in enumerate(PLAN_30):
-        M[mo(2026, 12) + k] = v
-    return np.round(M, 2)
+SEASON = np.array([0.82, 0.88, 1.05, 1.12, 1.10, 1.06, 1.02, 1.00, 1.04, 1.05, 0.95, 0.91])
+SEED_ROLES = ("PM", "SUPER", "PE")
+OTHER_ROLES = ("OWNER", "OFFICE", "FIELD")
+PRM = dict(
+    base=[8.6, 9.0, 11.5, 8.0, 6.6, 7.9],             # organic new paying customers a month in January 2019, before season
+    growth=[0.075, 0.08, 0.075, 0.06, 0.05, 0.065],    # organic growth a year
+    acc0=[55, 60, 70, 60, 48, 55],                     # paying customers in January 2015
+    churn=0.013, churn_mid=0.55, churn_big=0.28,       # monthly cancellation of an account of four users or fewer,
+    gc_churn=0.15,                                     # and the share of that rate for 5 to 10 users, more, and large GCs
+    hazard=0.0145,                                     # monthly job-move hazard of project staff
+    other_hazard=0.010,
+    p_seed=0.073,                                      # chance a leaver founds a new paying customer
+    p_join=0.22,                                       # chance a leaver joins an existing customer
+    lag_k=4.0, lag_theta=1.5, lag_offset=5,            # months from leaving to the new customer's first paid invoice
+    same_region=0.88,
+    spend_elast=0.25,
+    gc_n=[16, 6, 9, 6, 5, 6],                          # large general contractors among the 2015 to 2019 customers
+    gc_users=(170, 330),
+    wave_from=87, wave_to=92,                          # April to September 2026
+    wave_gc=14, wave_gc_mult=12.0, wave_gc_replace=0.10,
+    wave_rest_mult=2.5, wave_rest_replace=0.45,
+    plan_lift=[1.14, 1.12, 1.15, 1.11, 1.10, 1.12],
+)
 
 
-M30 = _rate_path()
+def lag_pmf(P, n=40):
+    """pmf over lags of 1..n months (index 0 is one month): the offset with nothing, then a gamma."""
+    from scipy.stats import gamma
+    edges = np.arange(n + 1) - P["lag_offset"]
+    c = gamma.cdf(np.maximum(edges, 0), P["lag_k"], scale=P["lag_theta"])
+    p = np.diff(c)
+    return p / p.sum()
 
 
-def m15(o):
-    return round(M30[o] - M15_SPREAD, 2)
+class Pool:
+    """A set with O(1) add, remove and uniform sampling."""
+
+    def __init__(self):
+        self.items, self.pos = [], {}
+
+    def add(self, x):
+        if x not in self.pos:
+            self.pos[x] = len(self.items)
+            self.items.append(x)
+
+    def remove(self, x):
+        i = self.pos.pop(x, None)
+        if i is None:
+            return
+        last = self.items.pop()
+        if i < len(self.items):
+            self.items[i] = last
+            self.pos[last] = i
+
+    def __len__(self):
+        return len(self.items)
+
+    def sample(self, r, k):
+        idx = r.choice(len(self.items), size=k, replace=False)
+        return [self.items[i] for i in idx]
 
 
-def he_posted(o, term):
-    return round(M30[o] + HE_SPREAD[term], 2)
-
-
-# ------------------------------------------------------------------------------------------------- behaviour (truth)
-TH, TS, RMAX = 0.40, 0.15, 0.050      # the refinance response to the stack's incentive: threshold, scale, peak monthly
-TURN = 0.0042                          # monthly sale rate of a settled household
-TURN_YOUNG = 0.45                      # its multiple in the first two years after a purchase
-CURT_P, CURT_LO, CURT_HI = 0.030, 0.005, 0.060
-BIG_CURT_P = 0.0018                    # a large curtailment (a bonus, an inheritance), 20 to 50 per cent
-CHARGE_OFF = 0.00008
-
-
-def refi_h(I):
-    return RMAX / (1.0 + np.exp(-(I - TH) / TS))
-
-
-def turn_h(cal_month, months_since_purchase):
-    seas = 1.0 + 0.35 * np.sin(2 * np.pi * (cal_month - 3) / 12.0)
-    return TURN * seas * np.where(months_since_purchase < 24, TURN_YOUNG, 1.0)
-
-
-def payment(P, rate, n):
-    i = rate / 1200.0
-    return P * i / (1.0 - (1.0 + i) ** (-n))
-
-
-def sched_balance(P, rate, n, k):
-    """scheduled balance after k payments of a level-payment loan (vectorised)"""
-    i = np.asarray(rate, float) / 1200.0
-    k = np.clip(np.asarray(k, float), 0, None)
-    g = (1.0 + i) ** np.asarray(n, float)
-    b = np.asarray(P, float) * (g - (1.0 + i) ** k) / (g - 1.0)
-    return np.where(k >= n, 0.0, b)
-
-
-# ------------------------------------------------------------------------------------------------- the stacks
-# (region, kind, count, HE funded from, to, boom start or None, first opened from, to, share of 15-year firsts,
-#  first original amount range, HE amount range, share of firsts the credit union holds)
-STREAMS = [
-    ("GR", "tap", 1300, mo(2023, 1), mo(2026, 11), mo(2024, 1), mo(2020, 3), mo(2021, 12), 0.10, (200e3, 340e3), (40e3, 110e3), 0.10),
-    ("GR", "tap", 1100, mo(2023, 1), mo(2026, 11), mo(2024, 1), mo(2012, 1), mo(2016, 12), 0.05, (300e3, 450e3), (40e3, 110e3), 0.10),
-    ("GR", "purchase", 1150, mo(2014, 1), mo(2026, 11), None, None, None, 0.0, (180e3, 360e3), (20e3, 55e3), 0.18),
-    ("GR", "tap", 1200, mo(2014, 1), mo(2022, 6), None, mo(2009, 1), mo(2019, 12), 0.15, (150e3, 280e3), (30e3, 80e3), 0.10),
-    ("GR", "seasoned", 300, mo(2016, 1), mo(2026, 11), None, mo(2003, 1), mo(2013, 12), 0.10, (90e3, 170e3), (50e3, 140e3), 0.12),
-    ("GR", "tap", 380, mo(2009, 1), mo(2013, 12), None, mo(2002, 1), mo(2012, 12), 0.15, (130e3, 240e3), (25e3, 70e3), 0.10),
-    ("LS", "purchase", 1800, mo(2024, 9), mo(2026, 11), None, None, None, 0.0, (260e3, 420e3), (20e3, 45e3), 0.15),
-    ("LS", "purchase", 750, mo(2014, 1), mo(2024, 8), None, None, None, 0.0, (200e3, 360e3), (20e3, 55e3), 0.18),
-    ("LS", "tap", 400, mo(2022, 7), mo(2026, 11), None, mo(2020, 3), mo(2021, 12), 0.10, (220e3, 340e3), (35e3, 90e3), 0.10),
-    ("LS", "tap", 600, mo(2014, 1), mo(2022, 6), None, mo(2009, 1), mo(2019, 12), 0.15, (150e3, 280e3), (30e3, 80e3), 0.10),
-    ("LS", "seasoned", 150, mo(2016, 1), mo(2026, 11), None, mo(2003, 1), mo(2013, 12), 0.10, (90e3, 170e3), (50e3, 140e3), 0.12),
-    ("LS", "tap", 240, mo(2009, 1), mo(2013, 12), None, mo(2002, 1), mo(2012, 12), 0.15, (140e3, 250e3), (25e3, 70e3), 0.10),
-    ("KB", "purchase", 1700, mo(2023, 8), mo(2023, 11), None, None, None, 0.0, (180e3, 300e3), (30e3, 60e3), 0.15),
-    ("KB", "purchase", 600, mo(2014, 1), mo(2026, 11), None, None, None, 0.0, (160e3, 280e3), (20e3, 45e3), 0.18),
-    ("KB", "tap", 600, mo(2014, 1), mo(2022, 6), None, mo(2009, 1), mo(2019, 12), 0.15, (120e3, 240e3), (30e3, 80e3), 0.10),
-    ("KB", "tap", 200, mo(2022, 7), mo(2026, 11), None, mo(2020, 3), mo(2021, 12), 0.10, (150e3, 260e3), (30e3, 80e3), 0.10),
-    ("KB", "seasoned", 150, mo(2016, 1), mo(2026, 11), None, mo(2003, 1), mo(2013, 12), 0.10, (90e3, 170e3), (50e3, 140e3), 0.12),
-    ("KB", "tap", 300, mo(2009, 1), mo(2013, 12), None, mo(2002, 1), mo(2012, 12), 0.15, (110e3, 210e3), (25e3, 65e3), 0.10),
-    ("MN", "seasoned", 1460, mo(2023, 1), mo(2026, 11), mo(2024, 6), mo(2010, 1), mo(2015, 12), 0.0, (110e3, 170e3), (70e3, 112e3), 0.12),
-    ("MN", "seasoned", 120, mo(2014, 1), mo(2022, 12), None, mo(2003, 1), mo(2012, 12), 0.10, (90e3, 170e3), (50e3, 130e3), 0.12),
-    ("MN", "purchase", 900, mo(2014, 1), mo(2026, 11), None, None, None, 0.0, (140e3, 260e3), (20e3, 45e3), 0.18),
-    ("MN", "tap", 300, mo(2022, 7), mo(2026, 11), None, mo(2020, 3), mo(2021, 12), 0.10, (150e3, 260e3), (30e3, 80e3), 0.10),
-    ("MN", "tap", 550, mo(2014, 1), mo(2022, 6), None, mo(2009, 1), mo(2019, 12), 0.15, (110e3, 220e3), (30e3, 75e3), 0.10),
-    ("MN", "tap", 240, mo(2009, 1), mo(2013, 12), None, mo(2002, 1), mo(2012, 12), 0.15, (100e3, 190e3), (25e3, 65e3), 0.10),
-]
-
-
-@dataclass
-class World:
-    n: int = 0
-    reg: np.ndarray = None          # region code
-    kind: np.ndarray = None
-    stream: np.ndarray = None
-    o1: np.ndarray = None           # first mortgage opened (month)
-    n1: np.ndarray = None
-    r1: np.ndarray = None
-    F0: np.ndarray = None
-    cu_first: np.ndarray = None
-    o2: np.ndarray = None           # home equity loan funded (month)
-    d2: list = None                 # funded date
-    n2: np.ndarray = None
-    r2: np.ndarray = None
-    H0: np.ndarray = None
-    pmt2: np.ndarray = None
-    score: np.ndarray = None
-    tier: np.ndarray = None
-    cltv: np.ndarray = None
-    value: np.ndarray = None
-    county: list = None
-    city: list = None
-    # outcomes
-    exit_m: np.ndarray = None       # month of exit (payoff, charge-off or maturity), -1 if on the books at the as-of
-    exit_kind: list = None          # "PAYOFF", "SALE", "REFI", "CHARGEOFF", "MATURED"
-    exit_day: list = None
-    exit_bal: np.ndarray = None     # principal retired at exit (the balance before the exit)
-    bal: dict = field(default_factory=dict)       # (i, month) -> month-end balance, from 2019 on (and the funding month)
-    curt: dict = field(default_factory=dict)      # (i, month) -> curtailment that month
-    sched: dict = field(default_factory=dict)     # (i, month) -> scheduled principal that month
-
-
-def _months_weights(lo, hi, boom):
-    w = np.ones(hi - lo + 1)
-    if boom is not None:
-        w = np.where(np.arange(lo, hi + 1) >= boom, 1.0, 0.5)
-    return w / w.sum()
-
-
-def build_stacks():
-    rows = []
-    for si, (reg, kind, cnt, lo, hi, boom, flo, fhi, f15, Fr, Hr, cus) in enumerate(STREAMS):
-        g = K.rng(10, si)
-        w = _months_weights(lo, hi, boom)
-        for j in range(cnt):
-            o2 = int(g.choice(np.arange(lo, hi + 1), p=w))
-            if kind == "purchase":
-                o1 = o2 - int(g.integers(0, 3))
-                n1 = 360
-            else:
-                top = min(fhi, o2 - 9)
-                o1 = int(g.integers(flo, max(flo, top) + 1))
-                n1 = 180 if g.random() < f15 else 360
-            base1 = M30[o1] - (M15_SPREAD if n1 == 180 else 0.0)
-            r1 = round(base1 + g.normal(0.0, 0.17), 3)
-            F0 = round(float(g.uniform(*Fr)), -2)
-            H0 = round(float(g.uniform(*Hr)), -2)
-            n2 = int(g.choice([120, 180, 240], p=[0.30, 0.45, 0.25]))
-            sc = int(np.clip(g.normal(752, 42), 620, 840))
-            tier = "A" if sc >= 740 else ("B" if sc >= 680 else "C")
-            adj = {"A": 0.0, "B": 0.50, "C": 1.25}[tier]
-            r2 = round((he_posted(o2, n2) + adj + g.normal(0, 0.06)) / 0.05) * 0.05
-            cu = bool(g.random() < cus)
-            cltv = float(g.uniform(0.50, 0.89))
-            cty = _pick(g, K.COUNTIES[reg])
-            city = K.CITIES[cty][int(g.integers(0, len(K.CITIES[cty])))]
-            rows.append((reg, kind, si, o1, n1, r1, F0, cu, o2, n2, round(r2, 2), H0, sc, tier, cltv, cty, city))
-    W = World()
-    W.n = len(rows)
-    cols = list(zip(*rows))
-    W.reg = np.array(cols[0])
-    W.kind = np.array(cols[1])
-    W.stream = np.array(cols[2])
-    W.o1 = np.array(cols[3])
-    W.n1 = np.array(cols[4])
-    W.r1 = np.array(cols[5], float)
-    W.F0 = np.array(cols[6], float)
-    W.cu_first = np.array(cols[7])
-    W.o2 = np.array(cols[8])
-    W.n2 = np.array(cols[9])
-    W.r2 = np.array(cols[10], float)
-    W.H0 = np.array(cols[11], float)
-    W.score = np.array(cols[12])
-    W.tier = np.array(cols[13])
-    W.cltv = np.array(cols[14], float)
-    W.county = list(cols[15])
-    W.city = list(cols[16])
-    W.pmt2 = np.round(payment(W.H0, W.r2, W.n2), 2)
-    # the first's balance when the home equity loan was funded, and the property value behind the stack
-    Fapp = sched_balance(W.F0, W.r1, W.n1, W.o2 - W.o1)
-    W.value = np.round((Fapp + W.H0) / W.cltv, -3)
-    # funded dates: a business day in the funding month
-    W.d2 = []
-    for i in range(W.n):
-        g = K.rng(11, i)
-        y, m = ym(int(W.o2[i]))
-        d = K.business_day(dt.date(y, m, int(g.integers(1, 26))))
-        if d.month != m:
-            d = K.business_day(dt.date(y, m, 1))
-        W.d2.append(d)
-    return W
-
-
-def _pick(g, pairs):
-    names = [a for a, _ in pairs]
-    p = np.array([b for _, b in pairs], float)
-    return names[int(g.choice(len(names), p=p / p.sum()))]
-
-
-def first_balance(W, idx, t):
-    return sched_balance(W.F0[idx], W.r1[idx], W.n1[idx], t - W.o1[idx])
-
-
-def simulate(W):
-    """month by month from the first funding to the as-of: scheduled amortisation, curtailments, sales, refinances,
-    charge-offs and maturities. Each loan draws from its own keyed stream."""
-    n = W.n
-    B = np.zeros(n)                 # balance after the month
-    alive = np.zeros(n, bool)
-    W.exit_m = np.full(n, -1)
-    W.exit_kind = [""] * n
-    W.exit_day = [None] * n
-    W.exit_bal = np.zeros(n)
-    gens = [K.rng(20, i) for i in range(n)]
-    t0 = int(W.o2.min())
-    for t in range(t0, K.ASOF_M + 1):
-        new = np.where(W.o2 == t)[0]
-        B[new] = W.H0[new]
-        alive[new] = True
-        if t >= K.REC0 - 1:
-            for i in new:
-                W.bal[(int(i), t)] = float(B[i])
-        idx = np.where(alive & (W.o2 < t))[0]
-        if not len(idx):
+def spend_and_intensity(P):
+    """Marketing spend ($K a month by region, February 2019 to January 2028, the plan from October 2026) and the
+    organic intensity of new paying customers."""
+    r_ = K.rng(1)
+    R = 6
+    base, growth = np.array(P["base"]), np.array(P["growth"])
+    ts = np.arange(K.T0, 109)
+    spend = np.full((R, len(ts)), np.nan)
+    s0 = base * 6.0
+    for i, t in enumerate(ts):
+        if t < 1:
             continue
-        r = W.r2[idx]
-        interest = B[idx] * r / 1200.0
-        sched = np.minimum(W.pmt2[idx] - interest, B[idx])
-        F = first_balance(W, idx, t)
-        H = B[idx]
-        blend = np.where(F + H > 0, (F * W.r1[idx] + H * r) / np.maximum(F + H, 1.0), r)
-        I = blend - (M30[t - 1] + CASH_OUT)
-        cal = t % 12 + 1
-        since_purchase = t - W.o1[idx]
-        h_sale = turn_h(cal, since_purchase)
-        h_refi = refi_h(I)
-        for k, i in enumerate(idx):
-            g = gens[i]
-            u = g.random(4)
-            bal0 = B[i]
-            if bal0 - sched[k] <= 0.5:              # the final scheduled payment
-                W.exit_m[i], W.exit_kind[i], W.exit_bal[i] = t, "MATURED", bal0
-                W.exit_day[i] = _day(g, t)
-                alive[i] = False
-                if t >= K.REC0 - 1:
-                    W.sched[(int(i), t)] = float(bal0)
-                    W.bal[(int(i), t)] = 0.0
+        for r in range(R):
+            trend = s0[r] * 1.06 ** (t / 12) * SEASON[t % 12]
+            if t <= K.T_OBS:
+                spend[r, i] = round(trend * math.exp(r_.normal(0, 0.16)), 1)
+            else:
+                spend[r, i] = round(trend * P["plan_lift"][r], 0)
+    obs = (ts >= 1) & (ts <= K.T_OBS)
+    sbar = np.nanmean(spend[:, obs], axis=1)
+    lam = np.zeros((R, len(ts)))
+    for i, t in enumerate(ts):
+        for r in range(R):
+            f = (spend[r, i] / sbar[r]) ** P["spend_elast"] if t >= 1 else 1.0
+            lam[r, i] = base[r] * math.exp(growth[r] * t / 12) * SEASON[t % 12] * f
+    return ts, spend, lam
+
+
+def simulate(P=None):
+    P = dict(PRM, **(P or {}))
+    R = 6
+    ts, spend, lam = spend_and_intensity(P)
+    ix = {t: i for i, t in enumerate(ts)}
+    pmf = lag_pmf(P)
+    r_ = K.rng(2)
+    accounts, users = [], []
+    acct_users = {}
+    seed_pool = [Pool() for _ in range(R)]
+    other_pool = [Pool() for _ in range(R)]
+    open_accts = [Pool() for _ in range(R)]
+    persons = [0]
+    seed_queue, pending_hires, pending_joins, seed_events = {}, {}, {}, []
+
+    def new_person():
+        persons[0] += 1
+        return persons[0]
+
+    def add_user(acct, role, t, pid=None):
+        if pid is None:
+            pid = new_person()
+        u = dict(uid=len(users) + 1, pid=pid, acct=acct, role=role, created_t=t, deact_t=None, reason="")
+        users.append(u)
+        acct_users.setdefault(acct, []).append(u["uid"])
+        reg = accounts[acct - 1]["region"]
+        (seed_pool if role in SEED_ROLES else other_pool)[reg].add(u["uid"])
+        return u
+
+    def drop_user(uid, t, reason):
+        u = users[uid - 1]
+        u["deact_t"] = t
+        u["reason"] = reason
+        reg = accounts[u["acct"] - 1]["region"]
+        (seed_pool if u["role"] in SEED_ROLES else other_pool)[reg].remove(uid)
+        acct_users[u["acct"]].remove(uid)
+
+    def open_account(region, t, kind, founder_pid=None, founder_role="PM", gc=False):
+        a = dict(id=len(accounts) + 1, region=region, start_t=t, close_t=None, kind=kind, gc=gc, wave=False)
+        accounts.append(a)
+        open_accts[region].add(a["id"])
+        frole = founder_role if kind == "champion" else ("OWNER" if r_.random() < 0.45 else "PM")
+        f = add_user(a["id"], frole, t, founder_pid)
+        a["founder_uid"] = f["uid"]
+        if gc:
+            n_seed = int(r_.integers(P["gc_users"][0], P["gc_users"][1] + 1))
+            n_other = int(n_seed * r_.uniform(0.25, 0.4))
+            spread = 8
+        else:
+            n_seed = max(1, int(round(r_.lognormal(math.log(4.5), 0.75))))
+            n_other = max(1, int(round(r_.lognormal(math.log(2.5), 0.6))))
+            spread = 3
+        for _ in range(n_seed - (1 if frole in SEED_ROLES else 0)):
+            add_user(a["id"], str(r_.choice(SEED_ROLES, p=[0.45, 0.35, 0.20])), t + int(r_.integers(0, spread)))
+        for _ in range(n_other - (0 if frole in SEED_ROLES else 1)):
+            add_user(a["id"], str(r_.choice(OTHER_ROLES, p=[0.25, 0.45, 0.30])), t + int(r_.integers(0, spread)))
+        return a
+
+    # the 2015 book and the large general contractors (opened 2015 to 2019)
+    for r in range(R):
+        for _ in range(int(P["acc0"][r])):
+            open_account(r, K.T0 - int(r_.integers(1, 30)), "legacy")
+    gc_start = {}
+    for r in range(R):
+        for k in range(int(P["gc_n"][r])):
+            gc_start.setdefault(int(r_.integers(K.T0, 6)), []).append(r)
+    haz = np.full((R, len(ts)), P["hazard"])
+    for t in ts:
+        i = ix[t]
+        for r in gc_start.get(int(t), []):
+            open_account(r, int(t), "organic", gc=True)
+        if t == P["wave_from"]:
+            # the Southwest's large general contractors on the finished programme of large builds
+            gcs = [a for a in accounts if a["gc"] and a["region"] == K.SW and a["close_t"] is None]
+            gcs.sort(key=lambda a: -len(acct_users.get(a["id"], [])))
+            for a in gcs[:int(P["wave_gc"])]:
+                a["wave"] = True
+        # cancellations, likelier the smaller the account: every user goes with the account
+        for r in range(R):
+            n_close = r_.binomial(len(open_accts[r]), P["churn"])
+            for aid in (open_accts[r].sample(r_, n_close) if n_close else []):
+                a = accounts[aid - 1]
+                nu = len(acct_users.get(aid, []))
+                keep = P["gc_churn"] if a["gc"] else (1.0 if nu <= 4 else (P["churn_mid"] if nu <= 10 else P["churn_big"]))
+                if a["start_t"] >= t or r_.random() > keep:
+                    continue
+                a["close_t"] = int(t)
+                open_accts[r].remove(aid)
+                for uid in list(acct_users.get(aid, [])):
+                    drop_user(uid, int(t), "Account closed")
+        # new paying customers this month: organic, then founded by leavers
+        for r in range(R):
+            for _ in range(r_.poisson(lam[r, i])):
+                open_account(r, int(t), "organic")
+        for (dest, pid, oacct, dep_t, role) in seed_queue.pop(int(t), []):
+            a = open_account(dest, int(t), "champion", founder_pid=pid, founder_role=role)
+            seed_events.append(dict(acct=a["id"], dest=dest, pid=pid, origin_acct=oacct, dep_t=dep_t, land_t=int(t)))
+        for (acct, role) in pending_hires.pop(int(t), []):
+            if accounts[acct - 1]["close_t"] is None:
+                add_user(acct, role, int(t))
+        for (pid, dest, role) in pending_joins.pop(int(t), []):
+            if len(open_accts[dest]):
+                add_user(open_accts[dest].sample(r_, 1)[0], role, int(t), pid)
+        in_wave = P["wave_from"] <= t <= P["wave_to"]
+        # job moves of project staff from customers that stay open
+        for r in range(R):
+            n = len(seed_pool[r])
+            if not n:
                 continue
-            if t - W.o2[i] >= 6 and u[0] < CHARGE_OFF:
-                W.exit_m[i], W.exit_kind[i], W.exit_bal[i] = t, "CHARGEOFF", bal0
-                W.exit_day[i] = _day(g, t)
-                alive[i] = False
+            cand = []
+            if in_wave and r == K.SW:
+                # the wave: the programme's general contractors and the rest of the region's customers separately
+                gc_u = [uid for uid in seed_pool[r].items if accounts[users[uid - 1]["acct"] - 1]["wave"]]
+                rest = n - len(gc_u)
+                k_gc = min(len(gc_u), r_.poisson(len(gc_u) * P["hazard"] * P["wave_gc_mult"]))
+                if k_gc:
+                    cand += [(uid, P["wave_gc_replace"]) for uid in r_.choice(gc_u, size=k_gc, replace=False)]
+                gset = set(gc_u)
+                k_rest = min(rest, r_.poisson(rest * P["hazard"] * P["wave_rest_mult"]))
+                if k_rest:
+                    pool = [uid for uid in seed_pool[r].items if uid not in gset]
+                    cand += [(uid, P["wave_rest_replace"]) for uid in r_.choice(pool, size=k_rest, replace=False)]
+            else:
+                k = min(n, r_.poisson(n * P["hazard"]))
+                cand = [(uid, 1.0) for uid in (seed_pool[r].sample(r_, k) if k else [])]
+            for uid, p_replace in cand:
+                uid = int(uid)
+                u = users[uid - 1]
+                if u["created_t"] >= t:
+                    continue
+                drop_user(uid, int(t), "Left company")
+                dest = r if r_.random() < P["same_region"] else int(r_.choice([x for x in range(R) if x != r]))
+                v = r_.random()
+                if v < P["p_seed"]:
+                    lag = 1 + int(r_.choice(len(pmf), p=pmf))
+                    seed_queue.setdefault(int(t) + lag, []).append((dest, u["pid"], u["acct"], int(t), u["role"]))
+                elif v < P["p_seed"] + P["p_join"]:
+                    pending_joins.setdefault(int(t) + 1 + int(r_.integers(0, 4)), []).append((u["pid"], dest, u["role"]))
+                if r_.random() < p_replace:
+                    pending_hires.setdefault(int(t) + 1 + int(r_.integers(0, 3)), []).append((u["acct"], u["role"]))
+            # the other roles turn over too (with the same wave), and found nothing
+            n = len(other_pool[r])
+            if not n:
                 continue
-            hs, hr = h_sale[k], h_refi[k]
-            if u[1] < hs + hr:
-                kind = "SALE" if u[1] < hs else "REFI"
-                W.exit_m[i], W.exit_kind[i], W.exit_bal[i] = t, kind, bal0
-                W.exit_day[i] = _day(g, t)
-                alive[i] = False
-                continue
-            c = 0.0
-            if u[2] < CURT_P:
-                c = round(bal0 * g.uniform(CURT_LO, CURT_HI), -1)
-            if u[3] < BIG_CURT_P:
-                c += round(bal0 * g.uniform(0.20, 0.50), -2)
-            b1 = bal0 - sched[k] - c
-            if b1 <= 50.0:                          # a curtailment that clears the loan is a payoff
-                W.exit_m[i], W.exit_kind[i], W.exit_bal[i] = t, "PAYOFF", bal0
-                W.exit_day[i] = _day(g, t)
-                alive[i] = False
-                continue
-            B[i] = round(b1, 2)
-            if t >= K.REC0 - 1:
-                W.bal[(int(i), t)] = float(B[i])
-                W.sched[(int(i), t)] = float(round(sched[k], 2))
-                if c:
-                    W.curt[(int(i), t)] = float(c)
-    W.book = np.where(alive)[0]
-    W.book_bal = {int(i): float(B[i]) for i in W.book}
+            if in_wave and r == K.SW:
+                gc_o = [uid for uid in other_pool[r].items if accounts[users[uid - 1]["acct"] - 1]["wave"]]
+                gset = set(gc_o)
+                rest_o = [uid for uid in other_pool[r].items if uid not in gset]
+                ko = []
+                k1 = min(len(gc_o), r_.poisson(len(gc_o) * P["other_hazard"] * P["wave_gc_mult"]))
+                if k1:
+                    ko += [(int(u_), P["wave_gc_replace"]) for u_ in r_.choice(gc_o, size=k1, replace=False)]
+                k2 = min(len(rest_o), r_.poisson(len(rest_o) * P["other_hazard"] * P["wave_rest_mult"]))
+                if k2:
+                    ko += [(int(u_), P["wave_rest_replace"]) for u_ in r_.choice(rest_o, size=k2, replace=False)]
+            else:
+                k = min(n, r_.poisson(n * P["other_hazard"]))
+                ko = [(uid, 1.0) for uid in (other_pool[r].sample(r_, k) if k else [])]
+            for uid, p_replace in ko:
+                u = users[uid - 1]
+                if u["created_t"] >= t:
+                    continue
+                drop_user(uid, int(t), "Left company")
+                if r_.random() < p_replace:
+                    pending_hires.setdefault(int(t) + 1 + int(r_.integers(0, 3)), []).append((u["acct"], u["role"]))
+    # monthly arrays over the world's months
+    n_t = len(ts)
+    new = np.zeros((R, n_t), int)
+    seeds = np.zeros((R, n_t), int)
+    dep = np.zeros((R, n_t), int)            # project staff leaving paying customers that stay open
+    dep_all = np.zeros((R, n_t), int)        # every job move off an open customer, any role
+    champ_ids = {e["acct"] for e in seed_events}
+    for a in accounts:
+        if K.T0 <= a["start_t"] <= ts[-1]:
+            new[a["region"], ix[a["start_t"]]] += 1
+            if a["id"] in champ_ids:
+                seeds[a["region"], ix[a["start_t"]]] += 1
+    for u in users:
+        if u["reason"] == "Left company" and u["deact_t"] is not None and u["deact_t"] in ix:
+            reg = accounts[u["acct"] - 1]["region"]
+            dep_all[reg, ix[u["deact_t"]]] += 1
+            if u["role"] in SEED_ROLES:
+                dep[reg, ix[u["deact_t"]]] += 1
+    W = dict(P=P, ts=ts, ix=ix, spend=spend, lam=lam, pmf=pmf, accounts=accounts, users=users, seed_events=seed_events,
+             new=new, seeds=seeds, dep=dep, dep_all=dep_all, persons=persons[0])
+    W["truth"] = truth(W)
     return W
 
 
-def _day(g, t):
-    y, m = ym(int(t))
-    d = K.business_day(dt.date(y, m, int(g.integers(1, 28))))
-    if d.month != m:
-        d = K.business_day(dt.date(y, m, 1))
-    return d
+def window_weight(pmf, t):
+    """The share of a month-t leaver's founding that lands in calendar 2027."""
+    return float(sum(pmf[L] for L in range(len(pmf)) if 96 <= t + 1 + L <= 107))
 
 
-# ------------------------------------------------------------------------------------------------- the truth's 2027
-def truth_2027(W):
-    """expected 2027 principal paid ahead of schedule by region under the true behaviour on the planning path:
-    payoffs at the scheduled balance plus curtailments on the surviving balance (reference only; never shipped)"""
-    idx = W.book
-    S = np.ones(len(idx))
-    H = np.array([W.book_bal[int(i)] for i in idx])
-    out = {r: 0.0 for r in K.RCODE.values()}
-    curt_rate = CURT_P * (CURT_LO + CURT_HI) / 2 + BIG_CURT_P * 0.35
-    for t in K.FORE:
-        F = first_balance(W, idx, t)
-        r = W.r2[idx]
-        interest = H * r / 1200.0
-        sched = np.minimum(W.pmt2[idx] - interest, H)
-        blend = (F * W.r1[idx] + H * r) / np.maximum(F + H, 1.0)
-        I = blend - (M30[t - 1] + CASH_OUT)
-        h = turn_h(t % 12 + 1, t - W.o1[idx]) + refi_h(I)
-        pay = S * h * H
-        cur = S * (1 - h) * curt_rate * H
-        if t in K.YEAR:
-            for rc in out:
-                m = W.reg[idx] == rc
-                out[rc] += float(pay[m].sum() + cur[m].sum())
-        S = S * (1 - h)
-        H = np.maximum(H - sched - curt_rate * H, 0.0)
-    return {k: v / 1e6 for k, v in out.items()}
+def founder_landings_2027(dep, ix, pmf, p, same, future):
+    """Expected 2027 founder-led customers by region: realised leavers to September 2026 and planned leavers after."""
+    R = dep.shape[0]
+    S = np.full((R, R), (1 - same) / (R - 1))
+    np.fill_diagonal(S, same)
+    out = np.zeros(R)
+    for t in range(K.T0, 108):
+        w = window_weight(pmf, t)
+        if w <= 0:
+            continue
+        d = dep[:, ix[t]] if t <= K.T_OBS else future
+        out += (d * p * w) @ S
+    return out
 
 
-def simulate_world():
-    W = build_stacks()
-    simulate(W)
-    return W
-
-
-if __name__ == "__main__":
-    import time
-    t = time.time()
-    W = simulate_world()
-    print("stacks", W.n, "on book", len(W.book), "seconds", round(time.time() - t, 1))
-    for rc in ["GR", "LS", "KB", "MN"]:
-        m = [int(i) for i in W.book if W.reg[i] == rc]
-        print(rc, len(m), round(sum(W.book_bal[i] for i in m) / 1e6, 1))
-    print({k: round(v, 1) for k, v in truth_2027(W).items()})
+def truth(W):
+    """Expected 2027 new paying customers by region under the planning basis, in the world's own terms: organic
+    intensity at the plan's spend, plus founders from leavers to September 2026 and from leavers at each region's 2025
+    monthly pace from October 2026 (all job moves of project staff, as the founder yield is defined per such move)."""
+    P, ix = W["P"], W["ix"]
+    org = W["lam"][:, [ix[t] for t in K.Y27]].sum(1)
+    fut = W["dep"][:, [ix[t] for t in range(72, 84)]].mean(1)
+    ch = founder_landings_2027(W["dep"], ix, W["pmf"], P["p_seed"], P["same_region"], fut)
+    return dict(org27=org, champ27=ch, total=org + ch)

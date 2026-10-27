@@ -6,12 +6,12 @@
   "domain": "product-analytics",
   "subdomain": "feature-adoption-diffusion-modeling",
   "client_domain": "product-analytics",
-  "niche": "a construction project-management SaaS placing its 2027 onboarding pod with the regional sales team expected to add the most new paying customers in calendar 2027, when about three in ten new customers are founded by project managers, superintendents and engineers who left a paying customer for a contractor not yet on the software",
+  "niche": "a construction project-management SaaS placing its 2027 onboarding pod with the regional sales team expected to add the most new paying customers in calendar 2027, when about two in five new customers are founded by people who left a paying customer for a contractor not yet on the software",
   "objective": "forecasting",
   "shape": "other",
   "decision_type": "pick_one_of_n",
   "answer_unit": "named_option",
-  "answer": "Place the 2027 onboarding pod with the Southwest team: it is expected to add about 500 new paying customers in calendar 2027, the most of the six regions, and Texas & Gulf comes second.",
+  "answer": "Place the 2027 onboarding pod with the Southwest team: it is expected to add about 600 new paying customers in calendar 2027 (to the nearest 200), the most of the six regions, and Texas & Gulf comes second.",
   "answer_source": "task166/submission.md block 1; task166/generator/figures.json call",
   "gap": [
     "population",
@@ -32,7 +32,7 @@
   "validated_decoy": false,
   "context_artifact": "none",
   "stump_class": "analytical",
-  "analyst_test": "With both billing systems stitched, divisions, reactivations and voided first invoices removed and the March 2024 territory map applied, the easy route fits each region's monthly new paying customers on its own trend, season and marketing spend, picks the form by back-test, finds the customer-referral lead source small and flat, and names Texas & Gulf at about 410 to 450; it never links a new workspace's founding admin to the people who left paying customers, so the Southwest's April to September 2026 surge of departing project staff, who found new customers through 2027, never enters it.",
+  "analyst_test": "With both billing systems stitched, divisions, reactivations and voided first invoices removed and the March 2024 territory map applied, the easy route fits each region's monthly new paying customers on its own trend, season and marketing spend, picks the form by back-test, finds the customer-referral lead source small and flat, and names Texas & Gulf at about 500 with the Southwest second; it never links a new workspace's first user to the people who left paying customers, so the Southwest's April to September 2026 surge of departing project staff, who found new customers through 2027, never enters it.",
   "domain_test": "The deciding quantity is each region's 2027 new paying customers, which product-adoption analysis forecasts as organic acquisition plus the adoption users carry to a new organisation when they change jobs, measured by linking each new workspace's founding admin to departures from paying workspaces and projected as a lagged yield on departures; with a hospital's or a utility's nouns there is no workspace founded by a former user and no adoption carried by a job move, so the task stops making sense.",
   "layer2_family": "estimand_identification",
   "layer2_pattern": "own:peer-pipeline-through-departing-users",
@@ -44,18 +44,18 @@
     "the March 2024 territory realignment (Tennessee from Southeast to Midwest) with the CRM's sales region stamped at creation",
     "the marketing spend workbook in fiscal months (February to January) and thousands of dollars, the plan to January 2028",
     "the user directory's UTC timestamps, deactivations at account closure beside job-change removals, and four deactivation reasons for one event",
-    "mobile numbers in six formats, missing on about one person in eight and on some later records, names with nicknames and middle initials",
+    "mobile numbers in six formats on every user (the field app signs users in by mobile), names with nicknames and middle initials",
     "open trial workspaces with no CRM account yet",
     "the board deck's fiscal-year counts on the old territory map (a distractor)",
-    "the onboarding session log in UTC with group webinar bookings one per attending customer, shadowing specialists and no-shows (ask devices)",
-    "the subscription register's current plan and contract value beside the onboarding case export's order-form values at handoff (ask device)"
+    "the onboarding session log in UTC with one booking row per customer on group training and office hours, shadowing specialists on a colleague's booking, implementation partners booking their clients' sessions under their own CRM accounts, specialists covering another pod's sessions, a specialist still listed on a colleague's booking that falls wholly inside a session of their own (office hours run half an hour into the pod partner's webinar), and an HR roster of each specialist's pod assignments with their dates (ask devices)",
+    "the subscription register's rate plan SKUs, numbered in launch order until the July 2026 product catalog renumbered them in price order, beside its Amendments sheet, same-day booking corrections on the first invoice date, a day's plan move and the seats taken with it referenced in the order they were keyed rather than the order applied, first-year prices (introductory discounts, and a spring 2025 offer selling Pro at Core's list price on Pro's own SKU) stepping up at the first anniversary, and onboarding cases whose terms follow the subscription until go-live (ask devices)"
   ],
   "stakeholder_role": "VP Customer Onboarding",
   "role_family": "other",
   "scoring_unit": "other",
   "spine": {
     "file": "product_user_directory_2026-10-01.csv",
-    "rows": 150000,
+    "rows": 256204,
     "entity": "one user on one customer workspace",
     "grain": "user x workspace",
     "source": "synthetic (constructed in the layout of a SaaS product's user directory export)"
@@ -76,12 +76,15 @@
       "Guy Morrison"
     ]
   },
-  "deliverables": [],
+  "deliverables": [
+    "onboarding_pod_2027.docx",
+    "onboarding_staffing_2025.xlsx"
+  ],
   "opening_move": "question-first",
   "question_form": "which",
   "driver": "Next period's new members include organisations founded by people who left an existing member for one not yet served, at a yield and a lag that linking the records shows; a forecast from each group's own arrival history, trend, season and spend misses a recent surge of departures from one group's members, which arrives as new members through the following year.",
-  "driver_concrete": "About three in ten of Plinthwise's new paying customers are founded by a project manager, superintendent or project engineer who left a paying customer for a contractor not yet on the software, about ten months later on average and nearly nine times in ten in the same region; between April and September 2026 the Southwest's customers lost nearly four times their usual number of such users, mostly not replaced, so the Southwest, second to Texas & Gulf on its own history, adds the most new paying customers in 2027, about 500.",
-  "stump": "The default path stitches the two billing systems, counts new paying customers by the memo's rules on the 2024 map, fits each region's own trend, season and marketing spend by back-test, finds the referral lead source small and flat, and names Texas & Gulf at about 410; the step that lands it there is forecasting the Southwest from its own arrivals, when about three in ten new customers are founded by people who left paying customers about ten months earlier, and the Southwest's customers lost nearly four times their usual number of project staff between April and September 2026, who found new customers through 2027.",
+  "driver_concrete": "About two in five of Plinthwise's new paying customers are founded by someone who left a paying customer for a contractor not yet on the software, a median of 11 months later and close to nine times in ten in the same region; between April and September 2026 the Southwest's customers removed about four times their usual number of users, so the Southwest adds about 600 new paying customers in 2027 (to the nearest 200) against about 480 for Texas & Gulf, which leads every forecast on the regions' own history.",
+  "stump": "The default path stitches the two billing systems, counts new paying customers by the memo's rules on the 2024 map, fits each region's own trend, season and marketing spend by back-test, finds the referral lead source small and flat, and names Texas & Gulf at about 500 with the Southwest second; the step that lands it there is forecasting the Southwest from its own arrivals, when about two in five new customers are founded by people who left paying customers a median of 11 months earlier, and the Southwest's customers removed about four times their usual number of users between April and September 2026, who found new customers through 2027 and put the Southwest first at about 600.",
   "mechanism_source": "design_note",
   "differentiation": {
     "task306": "task306 forecasts failures in an asset base still taking in old units its roll does not yet hold; here no unit is missing from a roll: next year's new members are organisations founded by people who left existing members, at a yield and a lag the linked record shows, so a surge of departures, not an arriving cohort's age, carries the forward count",
@@ -149,6 +152,6 @@
       "stump": "A strong solver fits the home equity payoffs on each loan's own note rate against the posted home equity rate, a curve the 2019 to 2026 payoffs support, and names Grand Rapids at about $60 million, or reads the lock-in off each first mortgage's own rate and names the Lakeshore; the step that lands it there is reading a second lien's payoff off one of the two loans, when a member pays the second off by refinancing the whole debt on the house, which the stack's blended rate at the two balances against the posted 30-year rate decides: Muskegon and the north's large 2024 to 2026 taps sit behind small seasoned firsts at 3.5 to 4.75 per cent, so its stacks blend near 6.5 per cent and come into the money as the planning path falls, and it pays off about $40 million."
     }
   ],
-  "notes": "stump_strategy other: a peer pipeline, next period's arrivals founded by the people who leave the existing members, at a yield and a lag the linked record shows. forum other: the VP Customer Onboarding places the pod herself inside the approved FY2028 plan. role_family other: VP Customer Onboarding. generators: G13 for the lag that lands the 2026 departures in the 2027 window, G14 for the yield per departing user that the region's own arrival rate does not carry. gap population first: the arrivals history is two processes, and the one founded by former users is driven by departures rather than by the region's own past arrivals.",
+  "notes": "stump_strategy other: a peer pipeline, next period's arrivals founded by the people who leave the existing members, at a yield and a lag the linked record shows. forum other: the VP Customer Onboarding places the pod inside the approved FY2028 plan. role_family other: VP Customer Onboarding. generators: G13 for the lag that lands the 2026 departures in the 2027 window, G14 for the yield per departing user that the region's own arrival rate does not carry. gap population first: the arrivals history is two processes, and the one founded by former users is driven by departures rather than by the region's own past arrivals.",
   "registered": "2026-10-26T15:04:58Z"
 }

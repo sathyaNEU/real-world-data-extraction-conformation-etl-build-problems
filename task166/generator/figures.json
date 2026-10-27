@@ -1,123 +1,153 @@
 {
  "call": {
-  "center": "Muskegon and the North",
-  "principal_2027_musd": 40,
-  "principal_2027_musd_unrounded": 39.19,
-  "second": "The Lakeshore",
-  "second_principal_musd_unrounded": 23.9,
-  "margin": 1.64
+  "region": "Southwest",
+  "second": "Texas & Gulf",
+  "figure": 607.5,
+  "figure_rounded": 600
  },
  "components": {
-  "book_loans": 8813,
-  "book_musd": 436.9,
-  "book_musd_pick": 132.5,
-  "payoffs_2019_2026": 5264
+  "removals_apr_sep_2026": 6483,
+  "removals_apr_sep_2026_rounded": 6500,
+  "removals_2025_monthly": 267.0,
+  "removals_ratio": 4.05,
+  "removals_ratio_rounded": 4,
+  "founder_led_2027": 403.7,
+  "founder_led_2027_rounded": 400,
+  "organic_2027": 203.8,
+  "organic_2027_rounded": 200,
+  "organic_2027_low": 150,
+  "organic_2027_high": 200,
+  "lag_median_months": 11,
+  "lag_median_months_by_days": 10.9,
+  "lag_median_whole_months": 10,
+  "lag_median_days": 333,
+  "founder_share_2025_pct": 43
  },
- "steps": {
-  "curtailment_pct_month": 0.165,
-  "deviance": {
-   "blend": 48888.4,
-   "own": 52394.5,
-   "first": 49475.5,
-   "walt": 49294.9,
-   "own_first": 49431.4
+ "forecast": {
+  "Southwest": {
+   "organic": 203.8,
+   "founder_led": 403.7,
+   "total": 607.5
   },
-  "forecast_musd": {
-   "Grand Rapids": 18.5,
-   "The Lakeshore": 23.9,
-   "Kalamazoo and Battle Creek": 13.5,
-   "Muskegon and the North": 39.2
+  "Southeast": {
+   "organic": 209.9,
+   "founder_led": 153.1,
+   "total": 363.0
   },
-  "own_rate_pick": "Grand Rapids",
-  "own_rate_pick_musd": 58.7,
-  "own_rate_pick_musd_rounded": 60,
-  "first_alone_pick": "The Lakeshore",
-  "trailing_pick": "Kalamazoo and Battle Creek"
- },
- "asks": {
-  "Grand Rapids|2025Q4": {
-   "quoted": 47,
-   "paid_in_full": 39
+  "Texas & Gulf": {
+   "organic": 293.1,
+   "founder_led": 191.2,
+   "total": 484.3
   },
-  "Grand Rapids|2026Q1": {
-   "quoted": 59,
-   "paid_in_full": 49
+  "Midwest": {
+   "organic": 168.7,
+   "founder_led": 149.6,
+   "total": 318.3
   },
-  "Grand Rapids|2026Q2": {
-   "quoted": 63,
-   "paid_in_full": 57
+  "Northeast": {
+   "organic": 135.8,
+   "founder_led": 130.7,
+   "total": 266.5
   },
-  "Grand Rapids|2026Q3": {
-   "quoted": 65,
-   "paid_in_full": 49
-  },
-  "The Lakeshore|2025Q4": {
-   "quoted": 76,
-   "paid_in_full": 71
-  },
-  "The Lakeshore|2026Q1": {
-   "quoted": 72,
-   "paid_in_full": 61
-  },
-  "The Lakeshore|2026Q2": {
-   "quoted": 51,
-   "paid_in_full": 45
-  },
-  "The Lakeshore|2026Q3": {
-   "quoted": 78,
-   "paid_in_full": 67
-  },
-  "Kalamazoo and Battle Creek|2025Q4": {
-   "quoted": 140,
-   "paid_in_full": 139
-  },
-  "Kalamazoo and Battle Creek|2026Q1": {
-   "quoted": 109,
-   "paid_in_full": 103
-  },
-  "Kalamazoo and Battle Creek|2026Q2": {
-   "quoted": 92,
-   "paid_in_full": 84
-  },
-  "Kalamazoo and Battle Creek|2026Q3": {
-   "quoted": 101,
-   "paid_in_full": 97
-  },
-  "Muskegon and the North|2025Q4": {
-   "quoted": 48,
-   "paid_in_full": 41
-  },
-  "Muskegon and the North|2026Q1": {
-   "quoted": 46,
-   "paid_in_full": 36
-  },
-  "Muskegon and the North|2026Q2": {
-   "quoted": 48,
-   "paid_in_full": 40
-  },
-  "Muskegon and the North|2026Q3": {
-   "quoted": 55,
-   "paid_in_full": 41
+  "Pacific": {
+   "organic": 181.7,
+   "founder_led": 136.2,
+   "total": 318.0
   }
  },
- "conventions": {
-  "posted_rate_term_years": 30,
-  "senior_lien_terms_months": [
-   360,
-   180
-  ],
-  "knots": [
-   -1.0,
-   0.0,
-   0.5,
-   1.0,
-   1.5,
-   2.0
-  ],
-  "marker_months": 24,
-  "policy_section": "7.4",
-  "as_of_year": 2026,
-  "forecast_year": 2027,
-  "rounding_musd": 10
+ "hours": {
+  "West Q1 one-to-one": 316.25,
+  "West Q1 group": 58.0,
+  "West Q2 one-to-one": 379.5,
+  "West Q2 group": 56.0,
+  "West Q3 one-to-one": 461.25,
+  "West Q3 group": 61.5,
+  "West Q4 one-to-one": 405.75,
+  "West Q4 group": 61.5,
+  "Central Q1 one-to-one": 418.5,
+  "Central Q1 group": 60.0,
+  "Central Q2 one-to-one": 438.25,
+  "Central Q2 group": 59.5,
+  "Central Q3 one-to-one": 378.25,
+  "Central Q3 group": 60.5,
+  "Central Q4 one-to-one": 403.0,
+  "Central Q4 group": 45.5,
+  "East Q1 one-to-one": 290.0,
+  "East Q1 group": 54.0,
+  "East Q2 one-to-one": 325.75,
+  "East Q2 group": 57.0,
+  "East Q3 one-to-one": 396.0,
+  "East Q3 group": 59.5,
+  "East Q4 one-to-one": 302.5,
+  "East Q4 group": 52.0
+ },
+ "cohort_counts": {
+  "Southwest Core": 114,
+  "Southwest Pro": 138,
+  "Southwest Enterprise": 51,
+  "Southeast Core": 114,
+  "Southeast Pro": 133,
+  "Southeast Enterprise": 41,
+  "Texas & Gulf Core": 154,
+  "Texas & Gulf Pro": 162,
+  "Texas & Gulf Enterprise": 72,
+  "Midwest Core": 111,
+  "Midwest Pro": 109,
+  "Midwest Enterprise": 44,
+  "Northeast Core": 88,
+  "Northeast Pro": 86,
+  "Northeast Enterprise": 48,
+  "Pacific Core": 110,
+  "Pacific Pro": 120,
+  "Pacific Enterprise": 49
+ },
+ "cohort_acv_k": {
+  "Southwest Core": 569.8,
+  "Southwest Pro": 1449.7,
+  "Southwest Enterprise": 1379.5,
+  "Southeast Core": 578.9,
+  "Southeast Pro": 1380.1,
+  "Southeast Enterprise": 1117.9,
+  "Texas & Gulf Core": 802.5,
+  "Texas & Gulf Pro": 1693.1,
+  "Texas & Gulf Enterprise": 1970.3,
+  "Midwest Core": 570.9,
+  "Midwest Pro": 1105.6,
+  "Midwest Enterprise": 1185.2,
+  "Northeast Core": 428.8,
+  "Northeast Pro": 873.4,
+  "Northeast Enterprise": 1283.4,
+  "Pacific Core": 566.1,
+  "Pacific Pro": 1280.1,
+  "Pacific Enterprise": 1306.4
+ },
+ "cohort_acv_usd": {
+  "Southwest Core": 569816.4,
+  "Southwest Pro": 1449696.6,
+  "Southwest Enterprise": 1379508.0,
+  "Southeast Core": 578913.0,
+  "Southeast Pro": 1380061.8,
+  "Southeast Enterprise": 1117897.2,
+  "Texas & Gulf Core": 802524.6,
+  "Texas & Gulf Pro": 1693087.2,
+  "Texas & Gulf Enterprise": 1970316.0,
+  "Midwest Core": 570889.8,
+  "Midwest Pro": 1105590.6,
+  "Midwest Enterprise": 1185198.0,
+  "Northeast Core": 428803.2,
+  "Northeast Pro": 873397.2,
+  "Northeast Enterprise": 1283430.0,
+  "Pacific Core": 566109.6,
+  "Pacific Pro": 1280071.8,
+  "Pacific Enterprise": 1306374.0
+ },
+ "cohort_n": 1744,
+ "steps": {
+  "new_2025": 1744,
+  "links": 4451,
+  "yield_per_100_removals": 5.7,
+  "same_region_pct": 88,
+  "partner_bookings": 2003,
+  "offer_starts": 36
  }
 }
