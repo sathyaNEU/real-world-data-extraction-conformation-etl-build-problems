@@ -1,0 +1,35 @@
+{
+ "task": "task397",
+ "status": "DRAWING",
+ "domain": "education-learning-sciences",
+ "subdomain": "multilevel-classroom-school-research",
+ "objective": "root-cause",
+ "stage": 1,
+ "stage_name": "draw",
+ "updated": "2026-10-27",
+ "architecture": 1,
+ "card": "drafted in the session scratch directory only, never registered (registration is the author's)",
+ "guard_check": "exit 1: BLOCK test.same_puzzle_older and BLOCK test.same_driver_older against task121 lineage v5 (both clearable by differentiation); WARN people.first David/Victor/Natasha, WARN repeat.question_form which against task308 and task307; nearest driver 0.06 task271 v2. No axis ban fired: university_or_school, trustees_or_governors, vote_or_meeting, composition_mix, shape 18, programme_officer and monitoring_export are all free in the live window (task307, task308, task141).",
+ "paper_screen": "Cell verified unspent: the task type's objective code is RC only (domains README line 249), guard.py coverage prints it under subdomains never drawn, guard.py mechanisms --objective root-cause returns 10 builds and no card on this task type. All three of the task type's library rigor patterns are closed: /1 spent at task253 and barred by the variance-only screen, /2 measured dead here, /3 rule application when the dosage rule is filed and a weighting fork when it is not, with its driver duplicating task121 v6 inside the ban window.",
+ "measurement": {
+  "prototype": "30 worlds a cell, 14 academies x 6 teaching groups x 24 pupils x 2 years; scripts in the session scratch directory (proto/c3_contextual.py, c3_family.py, c3_ends.py, c3_robust.py)",
+  "bin": "0.01 progress points, the measure's printed precision",
+  "cheap_routes_landing_the_call": "pooled 0 of 30, academy aggregate regression 0 of 30, academy-by-year fixed effect 0 of 30, crude two-period group-by 0 of 30; designed route 30 of 30",
+  "rung_clearances": "designed 5.286x over the decision line, nearest cheap rung 0.056x, floor 1.15x met",
+  "a_separation_bins": 22.75,
+  "b_licensed_variant_spread_bins": 179.89,
+  "c_estimator_own_interval_bins": 3.59,
+  "a_over_b_plus_c": 0.124,
+  "dial_swept": "concavity 0.00 to 1.00 in 8 settings: (a) 1.52 to 87.49 bins, (b) 177.98 to 229.68 bins, 0 of 8 settings pass (a) > (b) + (c)",
+  "narrowest_family": "the two forms the library pattern itself names: (b) 22.72 against (a) 22.75 at concavity 0.26, and 52.28 against 52.50 at 0.60, ratio 0.999 at both ends",
+  "why_one_ended": "the decisive step is a specification extension, so the cheap rungs and the weakest licensed member of the designed family both file the composition figure as zero, which makes (a) and (b) the same quantity; at the one setting where the shape is not free (a linear peer term) the composition contribution is 0.0059 points against the scheme's 0.0446 and the golden becomes the scheme",
+  "swap_test": "fails on the deciding mechanism and holds only on the measure: the call sentence reads identically with a hospital's wards and case severity in it"
+ },
+ "precut": {
+  "exit": 1,
+  "note": "expected and correct: the note is a screen record, not a live design, so the Part 5 headings that describe a live ladder, closure table, fork table and ask sheet carry the refusal rather than content"
+ },
+ "resume": "Architecture 1 refused at stage 1 on determinacy, not on reach, and the cell is closed behind it. The cheap neighbours did NOT land the call (0 of 30 each across the pooled estimate, the academy aggregate regression, the academy-by-year fixed effect and a crude two-period group-by), so this is not the failure the previous four refusals hit. What failed is the bin arithmetic: at the design's own setting (a) 22.75 bins against (b) 179.89 and (c) 3.59, so (a) is 0.124 of (b) plus (c), and 0 of 8 dial settings pass. The reason is an IDENTITY and it is now filed as a law in determinism-check: the decisive step was adding a contextual term to a fitted specification, so the cheap rungs file the graded figure with the term absent and the weakest licensed member of the designed family files it with the term absent too, which makes (a) and (b) the same quantity. Narrowed to the two forms the rigor pattern names, (b) 22.72 against (a) 22.75 at one end and 52.28 against 52.50 at the other, a ratio of 0.999. The one setting that closes the family is the setting where the term carries nothing (0.0059 against a rival's 0.0446), so the golden becomes the rival and there is no stump. Two of the thirteen three-rules lines also fail and are written out in the note: the Swap line fails on the mechanism half, because a group-mean contextual effect is general machinery any nested record satisfies (a hospital's acuity-segregated wards read the sentence identically), with only the MEASURE half holding, since a progress score against each pupil's own earlier assessment is education's and not a hospital's; and Not rule application fails, because what is left once every filed rule is read is the SHAPE of the peer term, which is a free method choice. THE CELL IS CLOSED, structurally: education-learning-sciences has exactly one task type serving root-cause, and all three of its rigor patterns are now closed with measurements. Pattern 1 (model the classroom level, variance shares at three levels) is spent at task253 in the same client domain and is barred besides by the variance-only screen. Pattern 2 (centre within cluster to split effects) is the measurement above, dead twice over. Pattern 3 (multiple membership by enrolled time) is rule application when the dosage rule is filed and a forked call when it is not, and its driver duplicates task121 v6, shipped on this objective on 2026-10-26 and inside the window. Two further candidates died on paper and are in the note: a composite basket pass-through (published slot rules, so rule application, and its construction is one group-by over shipped grades) and a tiered-entry grade ceiling (a limit does not measure itself, and binding_constraint is barred against task307). SO A REDRAW KEEPING BOTH THE DOMAIN AND THE OBJECTIVE HAS NO UNCLOSED MECHANISM LEFT. Keeping the domain costs the objective and keeping the objective costs the domain: education's never-drawn task types are randomized-quasi-experimental-program-evaluation (experiment-causal), psychometrics (descriptive) and text-analysis (descriptive), and root-cause is drawable and unspent at ten other domains. One window fact measured at the draw and worth carrying: university_or_school is NO LONGER barred, because task204 has left the three-build window; committee_or_panel and cooperative_or_member_body are still barred, now via task308. No axis ban fired on this draw at all, so the window was open and the mechanism was what was missing.",
+ "brief_deviation": "The brief asked for status DESIGN. It is recorded as DRAWING because no design passed stage 1: the architecture was refused on the measured bin arithmetic, and DESIGN would assert a design the measurements refuse. One line changes it if the author decides otherwise.",
+ "verdict": "REFUSED_ON_MEASUREMENT"
+}
