@@ -1,40 +1,39 @@
 {
-  "task": "task461",
-  "owner": "oviya1301",
-  "status": "SHIPPED",
-  "domain": "general-statistics-data-science",
-  "objective": "etl",
-  "stage": 5,
-  "stage_name": "ship",
-  "updated": "2026-10-15",
-  "stump": "The default path sets the threshold from the node's own day-ahead spreads since MPI first priced it (eleven windy months whose average looks ordinary but a third of whose days were flat) and picks $15; the hub's eight years alone pick $10 and the hub plus the node's average spread premium $30; carrying the hub's eight weather years to the node through the proportional relationship their overlap shows picks $20.",
-  "architecture": 1,
-  "loops": 0,
-  "precut": {
-    "exit": 0,
-    "date": "2026-10-15"
-  },
-  "leak": {
-    "leak_py": "REVIEW, no LEAK (2026-10-15, --asof 2026-11-06)",
-    "reader": "two passes CLEAN, Q6 analytical; the record question left to the hub's years (leak section of the design note)"
-  },
-  "duplicate_check": {
-    "heart": "PASS",
-    "nearest": "0.05 task229 lineage",
-    "surface": "promotes task460 (back to back, shared vocabulary; the identical register column sets fixed) and task501 (same gap, pattern and Gate G, differentiated on the card): the author's call on /clone-check"
-  },
-  "judge": {
-    "verdict": "DETERMINISTIC",
-    "disposition": "APPROVE",
-    "report": "determinism_check_report_pass2.md (pass 1 DETERMINISTIC FIX_NOW, determinism_check_report.md)",
-    "gate_h": "domain pass, layers pass, decisive_step analytical"
-  },
-  "returned": [],
-  "resume": "",
-  "approved": null,
-  "delivered": "2026-10-15",
-  "portal": null,
-  "source_note": "seed ET18 (analytical_tasks/07_data_extraction_conformation): the storage owner's yearly cycling threshold kept; the seed's clock trap (UTC grouping, hour ending 24:00, 25-hour days) is Layer 1 only; the pitfall re-found in the data: the node's direct record is one short, unrepresentative year",
-  "call": "Load a 2027 cycling threshold of $20 per MWh into Redrock Draw's trading system (275 expected cycling days; $15 gives 323)",
-  "target_zip_sha256_16": "6f9be07297f8fc22"
+ "task": "task461",
+ "status": "SHIPPED",
+ "domain": "general-statistics-data-science",
+ "objective": "etl",
+ "stage": 5,
+ "stage_name": "ship",
+ "updated": "2026-10-15",
+ "stump": "The default path sets the threshold from the node's own day-ahead spreads since MPI first priced it (eleven windy months whose average looks ordinary but a third of whose days were flat) and picks $15; the hub's eight years alone pick $10 and the hub plus the node's average spread premium $30; carrying the hub's eight weather years to the node through the proportional relationship their overlap shows picks $20.",
+ "architecture": 1,
+ "loops": 0,
+ "precut": {
+  "exit": 0,
+  "date": "2026-10-15"
+ },
+ "leak": {
+  "leak_py": "REVIEW, no LEAK (2026-10-15, --asof 2026-11-06)",
+  "reader": "two passes CLEAN, Q6 analytical; the record question left to the hub's years (leak section of the design note)"
+ },
+ "duplicate_check": {
+  "heart": "PASS",
+  "nearest": "0.05 task229 lineage",
+  "surface": "promotes task460 (back to back, shared vocabulary; the identical register column sets fixed) and task501 (same gap, pattern and Gate G, differentiated on the card): the author's call on /clone-check"
+ },
+ "judge": {
+  "verdict": "DETERMINISTIC",
+  "disposition": "APPROVE",
+  "report": "determinism_check_report_pass2.md (pass 1 DETERMINISTIC FIX_NOW, determinism_check_report.md)",
+  "gate_h": "domain pass, layers pass, decisive_step analytical"
+ },
+ "returned": [],
+ "resume": "",
+ "approved": null,
+ "delivered": "2026-10-15",
+ "portal": null,
+ "source_note": "seed ET18 (analytical_tasks/07_data_extraction_conformation): the storage owner's yearly cycling threshold kept; the seed's clock trap (UTC grouping, hour ending 24:00, 25-hour days) is Layer 1 only; the pitfall re-found in the data: the node's direct record is one short, unrepresentative year",
+ "call": "Load a 2027 cycling threshold of $20 per MWh into Redrock Draw's trading system (275 expected cycling days; $15 gives 323)",
+ "target_zip_sha256_16": "6f9be07297f8fc22"
 }

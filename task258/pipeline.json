@@ -1,47 +1,46 @@
 {
-  "task": "task258",
-  "owner": "sathay3012",
-  "status": "SHIPPED",
-  "domain": "product-analytics / metric-definition-measurement-science",
-  "objective": "descriptive-distribution",
-  "stage": 5,
-  "stage_name": "ship",
-  "updated": "2026-10-14",
-  "stump": "Carrying the past engagements onto each slow own-image load as after-over-before ratios of medians files Ledger (7.4 million page loads a month); on every engagement the image's load delay settled at 240 ms whatever it began at, which with the render delay held puts Pantry first (6.8 million), and the paint cannot come before the page's own first contentful paint, which the playbook leaves alone: most of Pantry's slow loads are on pages that first paint about three seconds after their first byte, so it moves 2.9 million and Matchday leads at 4.6 million.",
-  "architecture": 1,
-  "loops": 1,
-  "precut": {
-    "exit": 0,
-    "date": "2026-10-14",
-    "checks": 49
-  },
-  "leak": {
-    "leak_py": "REVIEW (no LEAK) on the loop-1 cut, 2026-10-14",
-    "reader": "loop 1: one read on the new cut; no decisive-step sentence, no ranking or helper file, every literal sentence executes to the golden and none fixes the paint's model, question 6 an analytical choice; the first contentful paint never raised; the realism tells loop 0's"
-  },
-  "duplicate_check": {
-    "heart": "BLOCK ban.forum against task231 only, a same-day ordering artifact (both cards filed before registration stamps, ordered by task number; task231 drawn 17:18 UTC, this build 04:52 UTC); similarity rules pass with loop 0 differentiated as own lineage; WARNs loop 0's, answered in the Draw",
-    "surface": "task256 and task259 promoted, as at loop 0 (author-triggered, not run)",
-    "nearest": "task258 v1 lineage 0.54, differentiated; task55 0.07"
-  },
-  "judge": {
-    "verdict": "DETERMINISTIC (loop 1)",
-    "disposition": "APPROVE",
-    "report": "task258/determinism_check_report_loop1.md (loop 0: determinism_check_report.md)",
-    "gate_g": "method_or_model_selection, analytical_non_defect, surface_read_dependency no, sole_data_defect no",
-    "gate_h": "domain pass, layers pass, decisive_step analytical"
-  },
-  "returned": [
-    {
-      "date": "2026-10-14",
-      "portal": "none: hardened at the author's request for a second stumping layer before any portal result",
-      "repair": "design",
-      "commit": "the RESHIPPED (task258) commit of 2026-10-14"
-    }
-  ],
-  "resume": "shipped; next event is the author's portal result",
-  "approved": null,
-  "delivered": "2026-10-13",
-  "portal": null,
-  "seed": "DA08 (START_HERE): world, decision and quantity kept"
+ "task": "task258",
+ "status": "SHIPPED",
+ "domain": "product-analytics / metric-definition-measurement-science",
+ "objective": "descriptive-distribution",
+ "stage": 5,
+ "stage_name": "ship",
+ "updated": "2026-10-14",
+ "stump": "Carrying the past engagements onto each slow own-image load as after-over-before ratios of medians files Ledger (7.4 million page loads a month); on every engagement the image's load delay settled at 240 ms whatever it began at, which with the render delay held puts Pantry first (6.8 million), and the paint cannot come before the page's own first contentful paint, which the playbook leaves alone: most of Pantry's slow loads are on pages that first paint about three seconds after their first byte, so it moves 2.9 million and Matchday leads at 4.6 million.",
+ "architecture": 1,
+ "loops": 1,
+ "precut": {
+  "exit": 0,
+  "date": "2026-10-14",
+  "checks": 49
+ },
+ "leak": {
+  "leak_py": "REVIEW (no LEAK) on the loop-1 cut, 2026-10-14",
+  "reader": "loop 1: one read on the new cut; no decisive-step sentence, no ranking or helper file, every literal sentence executes to the golden and none fixes the paint's model, question 6 an analytical choice; the first contentful paint never raised; the realism tells loop 0's"
+ },
+ "duplicate_check": {
+  "heart": "BLOCK ban.forum against task231 only, a same-day ordering artifact (both cards filed before registration stamps, ordered by task number; task231 drawn 17:18 UTC, this build 04:52 UTC); similarity rules pass with loop 0 differentiated as own lineage; WARNs loop 0's, answered in the Draw",
+  "surface": "task256 and task259 promoted, as at loop 0 (author-triggered, not run)",
+  "nearest": "task258 v1 lineage 0.54, differentiated; task55 0.07"
+ },
+ "judge": {
+  "verdict": "DETERMINISTIC (loop 1)",
+  "disposition": "APPROVE",
+  "report": "task258/determinism_check_report_loop1.md (loop 0: determinism_check_report.md)",
+  "gate_g": "method_or_model_selection, analytical_non_defect, surface_read_dependency no, sole_data_defect no",
+  "gate_h": "domain pass, layers pass, decisive_step analytical"
+ },
+ "returned": [
+  {
+   "date": "2026-10-14",
+   "portal": "none: hardened at the author's request for a second stumping layer before any portal result",
+   "repair": "design",
+   "commit": "the RESHIPPED (task258) commit of 2026-10-14"
+  }
+ ],
+ "resume": "shipped; next event is the author's portal result",
+ "approved": null,
+ "delivered": "2026-10-13",
+ "portal": null,
+ "seed": "DA08 (START_HERE): world, decision and quantity kept"
 }

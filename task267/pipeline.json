@@ -1,39 +1,38 @@
 {
-  "task": "task267",
-  "owner": "sathay3012",
-  "status": "SHIPPED",
-  "domain": "biomedical-clinical-research",
-  "objective": "descriptive-distribution",
-  "stage": 5,
-  "stage_name": "ship",
-  "updated": "2026-10-17",
-  "stump": "The default path reads each referral rule's sensitivity among the participants with an OGTT result and recommends the 2026 rule plus an HbA1c of 6.0 per cent or more (94 per cent there, 24.9 per cent of those screened referred), because the OGTT went to everyone the 2026 rule referred and to only a random fifth of everyone else, so any rule that contains the 2026 rule finds nearly every tested case; weighting each tested participant by the inverse of their group's OGTT rate puts that rule at 79 per cent and makes an HbA1c of 5.7 per cent or more or a random glucose of 120 mg/dL or more (90 per cent, 36.3 per cent referred) the rule with the fewest referrals that meets the 85 per cent target.",
-  "architecture": 1,
-  "loops": 0,
-  "precut": {
-    "exit": 0,
-    "date": "2026-10-17"
-  },
-  "leak": {
-    "leak_py": "REVIEW (sweep 3: 120 in the column GLU_120MIN_MGDL; sweep 4: the program's own words), every line harmless",
-    "reader": "rounds 1 and 2 clean on the call: Q1 none, Q6 an analytical choice; neither ask device seen"
-  },
-  "duplicate_check": {
-    "heart": "WARN (repeat.gate_g, overuse.gate_g, repeat.question_form, answered at the draw)",
-    "nearest": "task257 0.07; task57 (v20, lineage) 0.07"
-  },
-  "judge": {
-    "verdict": "DETERMINISTIC",
-    "disposition": "APPROVE",
-    "report": "determinism_check_report_pass3.md (pass 1 FIX_NOW, pass 2 FIX_NOW on the billing ask's credit grain, both fixed)"
-  },
-  "returned": [],
-  "resume": "",
-  "approved": null,
-  "delivered": "2026-10-17",
-  "portal": null,
-  "portal_id": "",
-  "portal_status": "",
-  "portal_status_date": "",
-  "seed": "DA17 worked at the draw and set aside (an annuity insurer's world serves Descriptive only through sociology-demography's life-table task type, a third sociology-demography Descriptive build in six; its grain is identity resolution; its analytical stump, late-notified deaths, files an estimate of the not-yet-observed for a second consecutive build); the slot draws a new world, a health system's community diabetes screening"
+ "task": "task267",
+ "status": "SHIPPED",
+ "domain": "biomedical-clinical-research",
+ "objective": "descriptive-distribution",
+ "stage": 5,
+ "stage_name": "ship",
+ "updated": "2026-10-17",
+ "stump": "The default path reads each referral rule's sensitivity among the participants with an OGTT result and recommends the 2026 rule plus an HbA1c of 6.0 per cent or more (94 per cent there, 24.9 per cent of those screened referred), because the OGTT went to everyone the 2026 rule referred and to only a random fifth of everyone else, so any rule that contains the 2026 rule finds nearly every tested case; weighting each tested participant by the inverse of their group's OGTT rate puts that rule at 79 per cent and makes an HbA1c of 5.7 per cent or more or a random glucose of 120 mg/dL or more (90 per cent, 36.3 per cent referred) the rule with the fewest referrals that meets the 85 per cent target.",
+ "architecture": 1,
+ "loops": 0,
+ "precut": {
+  "exit": 0,
+  "date": "2026-10-17"
+ },
+ "leak": {
+  "leak_py": "REVIEW (sweep 3: 120 in the column GLU_120MIN_MGDL; sweep 4: the program's own words), every line harmless",
+  "reader": "rounds 1 and 2 clean on the call: Q1 none, Q6 an analytical choice; neither ask device seen"
+ },
+ "duplicate_check": {
+  "heart": "WARN (repeat.gate_g, overuse.gate_g, repeat.question_form, answered at the draw)",
+  "nearest": "task257 0.07; task57 (v20, lineage) 0.07"
+ },
+ "judge": {
+  "verdict": "DETERMINISTIC",
+  "disposition": "APPROVE",
+  "report": "determinism_check_report_pass3.md (pass 1 FIX_NOW, pass 2 FIX_NOW on the billing ask's credit grain, both fixed)"
+ },
+ "returned": [],
+ "resume": "",
+ "approved": null,
+ "delivered": "2026-10-17",
+ "portal": null,
+ "portal_id": "",
+ "portal_status": "",
+ "portal_status_date": "",
+ "seed": "DA17 worked at the draw and set aside (an annuity insurer's world serves Descriptive only through sociology-demography's life-table task type, a third sociology-demography Descriptive build in six; its grain is identity resolution; its analytical stump, late-notified deaths, files an estimate of the not-yet-observed for a second consecutive build); the slot draws a new world, a health system's community diabetes screening"
 }

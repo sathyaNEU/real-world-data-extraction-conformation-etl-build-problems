@@ -1,8 +1,8 @@
 # Author: perssathya
 
-Account email pers.sathya@gmail.com. A session for anyone else ignores this file.
+Account email pers.sathya@gmail.com. A backlog list, not a territory: no task belongs to anybody, and any build in here can be worked by whoever the user asks.
 
-- **Lane:** Data Quality Monitoring & Alerting, task228 to task252, fully shipped 2026-10-23. From wave 6 on, at the
+- **Backlog range:** Data Quality Monitoring & Alerting, task228 to task252, fully shipped 2026-10-23. From wave 6 on, at the
   author's instruction (2026-10-24, "work on next task items whatever is available"), the open numbers of the unassigned
   Opportunity Sizing & Decision Support block, lowest first (task301 up). Two builds in flight; the author allowed a third on
   2026-10-25 (task304 and task307 paused at the draw, task308 opened); `status.py next perssathya`.

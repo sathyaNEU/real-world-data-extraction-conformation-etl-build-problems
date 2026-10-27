@@ -1,44 +1,43 @@
 {
-  "task": "task483",
-  "owner": "oviya1301",
-  "status": "SHIPPED",
-  "domain": "survey-research-official-statistics/census-register-administrative-data-quality",
-  "objective": "etl",
-  "stage": 5,
-  "stage_name": "ship",
-  "updated": "2026-10-23",
-  "stump": "The default path averages each credit program's campus-by-cohort medians by completers and counts a short-term completer as working on day 180 whenever any employer paid them in the quarter holding that day, keeping the designation at 84 per cent; Medical Assisting's pooled median (33 thousand dollars) and the CDL program's jobs dated from their own pay (63 per cent) put the share at 71 per cent, and either correction alone leaves it at 77 or 78.",
-  "architecture": 1,
-  "loops": 0,
-  "precut": {
-    "exit": 0,
-    "date": "2026-10-23"
-  },
-  "leak": {
-    "leak_py": "REVIEW, no LEAK (2026-10-23, --asof 2026-10-16, round 4 pack 7d3d1845): loan amounts matching figures, the standard's 180th day and the call's wording, the technical notes' vocabulary, the extracts and inventory naming programs; every line harmless to eight readers",
-    "reader": "eight isolated scored readers in four rounds all missed the call (77 per cent, renews: the pooled medians with any pay in the quarter), none dating a job from its own pay; round 1 asks 23 and 12 of 23, round 2 11 and 11 of 23, round 3 11 and 23 of 23, each round's devices re-sited; round 4 on the shipped cut (zip 7d3d1845) 0 and 11 of 35 ask figures, score_reader exit 0 and 2"
-  },
-  "duplicate_check": {
-    "heart": "WARN, rerun at ship (strategy risk answered at the draw; government_agency overused; task39 differentiated)",
-    "nearest": "task266 card stump 0.07, task477 ledger row 0.05; task229 v3 driver 0.07",
-    "surface": "people clean (Kathryn Petersen, Rodney Randall); task481 pairing promoted for adjudication only (author-triggered)"
-  },
-  "judge": {
-    "verdict": "DETERMINISTIC",
-    "disposition": "APPROVE (pass 4 on the shipped cut, after pass 1 FIX_NOW, all fixed)",
-    "report": "determinism_check_report.md",
-    "pass1": "DETERMINISTIC, FIX_NOW (2026-10-23): ask A's fee counting not literally filed, ask B's window unpinned, the credit programs' 30-credit year undefined; the CDL figure moved under two further dating references",
-    "pass2": "DETERMINISTIC, APPROVE (2026-10-23, brief /tmp/determinism-check-task483-1792766250): Gate G method_or_model_selection and analytical_non_defect, Gate H domain pass, layers pass, decisive step analytical; residual any-pay proxy judged not defensible against 'on the 180th day'",
-    "pass3": "DETERMINISTIC, APPROVE (2026-10-23, brief /tmp/determinism-check-task483-150426): Gate G method_or_model_selection and analytical_non_defect, Gate H analytical; residual: parametric fits per cell move some whole-thousand figures (Business Administration 40, 38 or 37) while every interpolation through the percentiles files one",
-    "pass4": "DETERMINISTIC, APPROVE (2026-10-23, brief /tmp/determinism-check-task483-r41792769182, zip 7d3d1845): no competing answer survived; minor: the attendance export's hours unlabelled (the data forces hours and minutes, SF17), the dating step near data semantics (a unit-of-analysis choice)"
-  },
-  "returned": [],
-  "resume": "",
-  "approved": null,
-  "delivered": "2026-10-23",
-  "portal": null,
-  "portal_id": "",
-  "portal_status": "",
-  "portal_status_date": "",
-  "source_note": "new number from seed ET40 (world, decision and quantity kept); the earnings test alone and the placement test alone screened at the draw and rejected as single steps (Tried and rejected)"
+ "task": "task483",
+ "status": "SHIPPED",
+ "domain": "survey-research-official-statistics/census-register-administrative-data-quality",
+ "objective": "etl",
+ "stage": 5,
+ "stage_name": "ship",
+ "updated": "2026-10-23",
+ "stump": "The default path averages each credit program's campus-by-cohort medians by completers and counts a short-term completer as working on day 180 whenever any employer paid them in the quarter holding that day, keeping the designation at 84 per cent; Medical Assisting's pooled median (33 thousand dollars) and the CDL program's jobs dated from their own pay (63 per cent) put the share at 71 per cent, and either correction alone leaves it at 77 or 78.",
+ "architecture": 1,
+ "loops": 0,
+ "precut": {
+  "exit": 0,
+  "date": "2026-10-23"
+ },
+ "leak": {
+  "leak_py": "REVIEW, no LEAK (2026-10-23, --asof 2026-10-16, round 4 pack 7d3d1845): loan amounts matching figures, the standard's 180th day and the call's wording, the technical notes' vocabulary, the extracts and inventory naming programs; every line harmless to eight readers",
+  "reader": "eight isolated scored readers in four rounds all missed the call (77 per cent, renews: the pooled medians with any pay in the quarter), none dating a job from its own pay; round 1 asks 23 and 12 of 23, round 2 11 and 11 of 23, round 3 11 and 23 of 23, each round's devices re-sited; round 4 on the shipped cut (zip 7d3d1845) 0 and 11 of 35 ask figures, score_reader exit 0 and 2"
+ },
+ "duplicate_check": {
+  "heart": "WARN, rerun at ship (strategy risk answered at the draw; government_agency overused; task39 differentiated)",
+  "nearest": "task266 card stump 0.07, task477 ledger row 0.05; task229 v3 driver 0.07",
+  "surface": "people clean (Kathryn Petersen, Rodney Randall); task481 pairing promoted for adjudication only (author-triggered)"
+ },
+ "judge": {
+  "verdict": "DETERMINISTIC",
+  "disposition": "APPROVE (pass 4 on the shipped cut, after pass 1 FIX_NOW, all fixed)",
+  "report": "determinism_check_report.md",
+  "pass1": "DETERMINISTIC, FIX_NOW (2026-10-23): ask A's fee counting not literally filed, ask B's window unpinned, the credit programs' 30-credit year undefined; the CDL figure moved under two further dating references",
+  "pass2": "DETERMINISTIC, APPROVE (2026-10-23, brief /tmp/determinism-check-task483-1792766250): Gate G method_or_model_selection and analytical_non_defect, Gate H domain pass, layers pass, decisive step analytical; residual any-pay proxy judged not defensible against 'on the 180th day'",
+  "pass3": "DETERMINISTIC, APPROVE (2026-10-23, brief /tmp/determinism-check-task483-150426): Gate G method_or_model_selection and analytical_non_defect, Gate H analytical; residual: parametric fits per cell move some whole-thousand figures (Business Administration 40, 38 or 37) while every interpolation through the percentiles files one",
+  "pass4": "DETERMINISTIC, APPROVE (2026-10-23, brief /tmp/determinism-check-task483-r41792769182, zip 7d3d1845): no competing answer survived; minor: the attendance export's hours unlabelled (the data forces hours and minutes, SF17), the dating step near data semantics (a unit-of-analysis choice)"
+ },
+ "returned": [],
+ "resume": "",
+ "approved": null,
+ "delivered": "2026-10-23",
+ "portal": null,
+ "portal_id": "",
+ "portal_status": "",
+ "portal_status_date": "",
+ "source_note": "new number from seed ET40 (world, decision and quantity kept); the earnings test alone and the placement test alone screened at the draw and rejected as single steps (Tried and rejected)"
 }

@@ -1,85 +1,84 @@
 {
-  "task": "task128",
-  "owner": "oviya1301",
-  "status": "SHIPPED",
-  "domain": "banking-credit-financial-risk",
-  "objective": "opportunity-sizing-decision",
-  "stage": 5,
-  "stage_name": "shipped (architecture 3)",
-  "updated": "2026-10-12",
-  "stump": "The default path compares the called with the uncalled 30-day entries, adjusted for the behaviour score and pooled over the year, and funds London at about 2,315 rolls prevented a year; the cleaner same-day comparison on the over-capacity lists with the skipped records set aside still funds London at 981; kept on the reached side, scaled to a dial and sized on the new team's 400 dials a day, London's team prevents about 495 against the policy's 700, so no centre gets the team.",
-  "architecture": 3,
-  "loops": 0,
-  "precut": {
-    "exit": 0,
-    "date": "2026-10-12"
-  },
-  "leak": {
-    "leak_py": "REVIEW 2026-10-12 (the 694 line, document vocabulary, forward first-instalment dates; each answered in the design note)",
-    "reader": "two reads 2026-10-12: nothing names the move or ranks the centres; realism fixes applied (field reference column, register spans, exact 700 quotient)"
-  },
-  "duplicate_check": {
-    "heart": "PASS 2026-10-12 (surface 0 promoted)",
-    "nearest": "0.07 (task103 v1 lineage)",
-    "note": "architecture 3 draw checked 2026-10-12: guard PASS, no WARN; window task127, task125, task124 before, task130, task180, task181 after"
-  },
-  "judge": {
-    "verdict": "DETERMINISTIC",
-    "disposition": "APPROVE",
-    "report": "determinism_check_report.md",
-    "note": "judged the 700-line build; post-verdict fixes moved no rounded figure"
-  },
-  "returned": [],
-  "resume": "shipped; wait for the author's portal result (APPROVED, PENDING_REVIEW, or left off the list).",
-  "approved": null,
-  "delivered": "2026-10-12",
-  "portal": null,
-  "source_note": "seed DS04 (analytical_tasks/05_decision_support), the world and the overflow insight only",
-  "history": {
-    "architecture_1": "v1 whole-host rebuild valuation in patch tickets (DS02): solved by the in-house plain solver in round 1, 2026-10-10",
-    "architecture_2": "v2 the ticket's reach (one change request per drain window): round 2 missed (55.3), judge FIX_NOW fixed, FAILED_TO_STUMP; spent at the wave-1 re-root 2026-10-12 (rule application as the decisive step; no client-domain task type)",
-    "v2_pipeline": {
-      "stage": 3,
-      "stage_name": "built",
-      "stump": "A competent solver recovers the cut-day scoring rule, builds 96 and 120 drains from the window-hours headroom, finds that a drained host comes back on the current image and files one glibc ticket per colocated estate naming the 96 and 120 most exposed hosts, 1 / 1 / 74 / 77 / 79 / 68 for about 13,360; the step that lands it there is spending a whole month's drains under one ticket, when a ticket is one change request and a request is for one window, so the split is 4 / 5 / 72 / 75 / 77 / 67 for 13,300.",
-      "harden_loops": 1,
-      "solver_rounds": [
-        {
-          "label": "round 1, plain",
-          "date": "2026-10-10",
-          "score": 93.4,
-          "landed": true,
-          "cracked": 6,
-          "items": 8
-        },
-        {
-          "label": "round 2, plain",
-          "date": "2026-10-10",
-          "score": 55.3,
-          "landed": false,
-          "cracked": 5,
-          "items": 8
-        }
-      ],
-      "judge": {
-        "verdict": "NOT_DETERMINISTIC",
-        "disposition": "FIX_NOW",
-        "report": "determinism_check_report.md",
-        "pass": 1,
-        "fix_cycles": 1,
-        "fix_cycle_1": "all FIX_NOW findings closed in the generator, filed documents, prompt and submission; 413 assertions, verifier and double build green; answer unchanged; re-judge as pass 2"
-      },
-      "approved": "2026-10-10 (no author checkpoint in the flow; heart WARN)",
-      "status": "FAILED_TO_STUMP",
-      "source_note": "analytical_tasks/05_decision_support/DS02_patch-tickets-window-drain-headroom.md"
+ "task": "task128",
+ "status": "SHIPPED",
+ "domain": "banking-credit-financial-risk",
+ "objective": "opportunity-sizing-decision",
+ "stage": 5,
+ "stage_name": "shipped (architecture 3)",
+ "updated": "2026-10-12",
+ "stump": "The default path compares the called with the uncalled 30-day entries, adjusted for the behaviour score and pooled over the year, and funds London at about 2,315 rolls prevented a year; the cleaner same-day comparison on the over-capacity lists with the skipped records set aside still funds London at 981; kept on the reached side, scaled to a dial and sized on the new team's 400 dials a day, London's team prevents about 495 against the policy's 700, so no centre gets the team.",
+ "architecture": 3,
+ "loops": 0,
+ "precut": {
+  "exit": 0,
+  "date": "2026-10-12"
+ },
+ "leak": {
+  "leak_py": "REVIEW 2026-10-12 (the 694 line, document vocabulary, forward first-instalment dates; each answered in the design note)",
+  "reader": "two reads 2026-10-12: nothing names the move or ranks the centres; realism fixes applied (field reference column, register spans, exact 700 quotient)"
+ },
+ "duplicate_check": {
+  "heart": "PASS 2026-10-12 (surface 0 promoted)",
+  "nearest": "0.07 (task103 v1 lineage)",
+  "note": "architecture 3 draw checked 2026-10-12: guard PASS, no WARN; window task127, task125, task124 before, task130, task180, task181 after"
+ },
+ "judge": {
+  "verdict": "DETERMINISTIC",
+  "disposition": "APPROVE",
+  "report": "determinism_check_report.md",
+  "note": "judged the 700-line build; post-verdict fixes moved no rounded figure"
+ },
+ "returned": [],
+ "resume": "shipped; wait for the author's portal result (APPROVED, PENDING_REVIEW, or left off the list).",
+ "approved": null,
+ "delivered": "2026-10-12",
+ "portal": null,
+ "source_note": "seed DS04 (analytical_tasks/05_decision_support), the world and the overflow insight only",
+ "history": {
+  "architecture_1": "v1 whole-host rebuild valuation in patch tickets (DS02): solved by the in-house plain solver in round 1, 2026-10-10",
+  "architecture_2": "v2 the ticket's reach (one change request per drain window): round 2 missed (55.3), judge FIX_NOW fixed, FAILED_TO_STUMP; spent at the wave-1 re-root 2026-10-12 (rule application as the decisive step; no client-domain task type)",
+  "v2_pipeline": {
+   "stage": 3,
+   "stage_name": "built",
+   "stump": "A competent solver recovers the cut-day scoring rule, builds 96 and 120 drains from the window-hours headroom, finds that a drained host comes back on the current image and files one glibc ticket per colocated estate naming the 96 and 120 most exposed hosts, 1 / 1 / 74 / 77 / 79 / 68 for about 13,360; the step that lands it there is spending a whole month's drains under one ticket, when a ticket is one change request and a request is for one window, so the split is 4 / 5 / 72 / 75 / 77 / 67 for 13,300.",
+   "harden_loops": 1,
+   "solver_rounds": [
+    {
+     "label": "round 1, plain",
+     "date": "2026-10-10",
+     "score": 93.4,
+     "landed": true,
+     "cracked": 6,
+     "items": 8
     },
-    "architecture_3_withdrawn": "first architecture-3 draw (pet insurer's older-dog renewal increases, composition_mix) withdrawn 2026-10-12 on the guard against task125 v2"
+    {
+     "label": "round 2, plain",
+     "date": "2026-10-10",
+     "score": 55.3,
+     "landed": false,
+     "cracked": 5,
+     "items": 8
+    }
+   ],
+   "judge": {
+    "verdict": "NOT_DETERMINISTIC",
+    "disposition": "FIX_NOW",
+    "report": "determinism_check_report.md",
+    "pass": 1,
+    "fix_cycles": 1,
+    "fix_cycle_1": "all FIX_NOW findings closed in the generator, filed documents, prompt and submission; 413 assertions, verifier and double build green; answer unchanged; re-judge as pass 2"
+   },
+   "approved": "2026-10-10 (no author checkpoint in the flow; heart WARN)",
+   "status": "FAILED_TO_STUMP",
+   "source_note": "analytical_tasks/05_decision_support/DS02_patch-tickets-window-drain-headroom.md"
   },
-  "build": {
-    "checks": 132,
-    "verify": "green",
-    "byte_identical": true,
-    "figures_check": "PASS",
-    "zip_mb": 20.1
-  }
+  "architecture_3_withdrawn": "first architecture-3 draw (pet insurer's older-dog renewal increases, composition_mix) withdrawn 2026-10-12 on the guard against task125 v2"
+ },
+ "build": {
+  "checks": 132,
+  "verify": "green",
+  "byte_identical": true,
+  "figures_check": "PASS",
+  "zip_mb": 20.1
+ }
 }

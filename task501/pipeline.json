@@ -1,64 +1,63 @@
 {
-  "task": "task501",
-  "owner": "sathya8571",
-  "status": "SHIPPED",
-  "domain": "epidemiology-public-health",
-  "objective": "forecasting",
-  "stage": 5,
-  "stage_name": "ship",
-  "updated": "2026-10-14",
-  "stump": "A competent solver builds the next-generation matrix from every diary in the National Social Contact Survey's public use file, scales it to R0 15 and puts measles' reproduction number at 0.9 without a catch-up, so files that no catch-up is needed; the step that lands it there is pooling the 5,040 diaries kept from 3 July to 18 August 2023, in the school summer holidays, with the 2,520 kept in May term time, when the winter's transmission runs on term-time contacts: built from the term-time diaries the reproduction number is 1.3 and only the catch-up for those born 2008-2012 brings it below one (0.9).",
-  "architecture": 4,
-  "round": 2,
-  "loops": 0,
-  "precut": {
-    "exit": 0,
-    "date": "2026-10-14"
+ "task": "task501",
+ "status": "SHIPPED",
+ "domain": "epidemiology-public-health",
+ "objective": "forecasting",
+ "stage": 5,
+ "stage_name": "ship",
+ "updated": "2026-10-14",
+ "stump": "A competent solver builds the next-generation matrix from every diary in the National Social Contact Survey's public use file, scales it to R0 15 and puts measles' reproduction number at 0.9 without a catch-up, so files that no catch-up is needed; the step that lands it there is pooling the 5,040 diaries kept from 3 July to 18 August 2023, in the school summer holidays, with the 2,520 kept in May term time, when the winter's transmission runs on term-time contacts: built from the term-time diaries the reproduction number is 1.3 and only the catch-up for those born 2008-2012 brings it below one (0.9).",
+ "architecture": 4,
+ "round": 2,
+ "loops": 0,
+ "precut": {
+  "exit": 0,
+  "date": "2026-10-14"
+ },
+ "leak": {
+  "leak_py": "REVIEW 2026-10-14 on the final round 2 rebuild after the stage 4 fix pass (--asof 2027-07-12), no LEAK, sweep 11 clean; the five lines (sweeps 3, 4 and 9) answered in the design note's Build record",
+  "reader": "round 2 read 2026-10-14 on the round 2 pack: no decisive-step sentence, no ranking, helping file or answer-like figure; Q5 read literally gives 0.72 (rung 0), Q6 an analytical choice; realism tells fixed in the generator (the extract notes' thumbnail and customXml parts, the stock return's batch numbers), the options paper's budget sentence left with its reason; appended to leak_check_report.md; no second read, since no document's text or the prompt changed"
+ },
+ "duplicate_check": {
+  "heart": "WARN 2026-10-14 on the final round 2 rebuild, no BLOCK (nearest driver off the slot 0.06, task32; this slot's round 1 driver differentiated on the card)",
+  "nearest": "surface 0 promoted pairs (nearest task132 at 0.100); validate 169 cards, 0 invalid"
+ },
+ "judge": {
+  "verdict": "DETERMINISTIC (round 2, one isolated thread on the round 2 pack, 2026-10-14), every figure reproduced",
+  "disposition": "APPROVE; its four residual forks closed in one generator pass with no graded figure moved (freeze.py PASS): SF20 and SF26 by the literal reading, SF25 closed in the data and not pinned, SF27 the 2024 twins a boy and a girl so every person key converges, SF23 the meaning of living in the region; both optional pins declined; no re-judge",
+  "report": "task501/determinism_check_report_round2.md (round 1: determinism_check_report.md and determinism_check_report_pass2.md, kept as history)",
+  "gate_g": "method_or_model_selection on honest data, analytical_non_defect, surface_read_dependency no, sole_data_defect no",
+  "gate_h": "domain pass, layers pass, decisive step analytical"
+ },
+ "returned": [
+  {
+   "date": "2026-10-11",
+   "portal": "v2: landed by 2 of 2 (filed walk-forward executed)",
+   "repair": "design",
+   "commit": ""
   },
-  "leak": {
-    "leak_py": "REVIEW 2026-10-14 on the final round 2 rebuild after the stage 4 fix pass (--asof 2027-07-12), no LEAK, sweep 11 clean; the five lines (sweeps 3, 4 and 9) answered in the design note's Build record",
-    "reader": "round 2 read 2026-10-14 on the round 2 pack: no decisive-step sentence, no ranking, helping file or answer-like figure; Q5 read literally gives 0.72 (rung 0), Q6 an analytical choice; realism tells fixed in the generator (the extract notes' thumbnail and customXml parts, the stock return's batch numbers), the options paper's budget sentence left with its reason; appended to leak_check_report.md; no second read, since no document's text or the prompt changed"
-  },
-  "duplicate_check": {
-    "heart": "WARN 2026-10-14 on the final round 2 rebuild, no BLOCK (nearest driver off the slot 0.06, task32; this slot's round 1 driver differentiated on the card)",
-    "nearest": "surface 0 promoted pairs (nearest task132 at 0.100); validate 169 cards, 0 invalid"
-  },
-  "judge": {
-    "verdict": "DETERMINISTIC (round 2, one isolated thread on the round 2 pack, 2026-10-14), every figure reproduced",
-    "disposition": "APPROVE; its four residual forks closed in one generator pass with no graded figure moved (freeze.py PASS): SF20 and SF26 by the literal reading, SF25 closed in the data and not pinned, SF27 the 2024 twins a boy and a girl so every person key converges, SF23 the meaning of living in the region; both optional pins declined; no re-judge",
-    "report": "task501/determinism_check_report_round2.md (round 1: determinism_check_report.md and determinism_check_report_pass2.md, kept as history)",
-    "gate_g": "method_or_model_selection on honest data, analytical_non_defect, surface_read_dependency no, sole_data_defect no",
-    "gate_h": "domain pass, layers pass, decisive step analytical"
-  },
-  "returned": [
-    {
-      "date": "2026-10-11",
-      "portal": "v2: landed by 2 of 2 (filed walk-forward executed)",
-      "repair": "design",
-      "commit": ""
-    },
-    {
-      "date": "2026-10-13",
-      "portal": "10/10 audit 2026-10-13 COMPLIANT_WEAK (round 2): the next-generation matrix eigenvalue a textbook reflex, the contact survey a single-purpose signpost, Ask 1 cracked by the circular's table alone",
-      "repair": "design",
-      "commit": "the RESHIPPED (task501) commit of 2026-10-14"
-    }
-  ],
-  "resume": "shipped (round 2); next event is the author's portal result",
-  "approved": null,
-  "delivered": "2026-10-14",
-  "portal": [
-    {
-      "version": "v2",
-      "date": "2026-10-11",
-      "landed": 2,
-      "of": 2,
-      "note": "filed walk-forward executed by both responses"
-    }
-  ],
-  "portal_id": "",
-  "portal_status": "",
-  "portal_status_date": "",
-  "harden_loops": 0,
-  "solver_rounds": []
+  {
+   "date": "2026-10-13",
+   "portal": "10/10 audit 2026-10-13 COMPLIANT_WEAK (round 2): the next-generation matrix eigenvalue a textbook reflex, the contact survey a single-purpose signpost, Ask 1 cracked by the circular's table alone",
+   "repair": "design",
+   "commit": "the RESHIPPED (task501) commit of 2026-10-14"
+  }
+ ],
+ "resume": "shipped (round 2); next event is the author's portal result",
+ "approved": null,
+ "delivered": "2026-10-14",
+ "portal": [
+  {
+   "version": "v2",
+   "date": "2026-10-11",
+   "landed": 2,
+   "of": 2,
+   "note": "filed walk-forward executed by both responses"
+  }
+ ],
+ "portal_id": "",
+ "portal_status": "",
+ "portal_status_date": "",
+ "harden_loops": 0,
+ "solver_rounds": []
 }

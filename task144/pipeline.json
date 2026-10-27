@@ -1,66 +1,65 @@
 {
-  "task": "task144",
-  "owner": "sathya8571",
-  "status": "SHIPPED",
-  "domain": "product-analytics",
-  "objective": "forecasting",
-  "stage": 5,
-  "stage_name": "ship",
-  "updated": "2026-10-27",
-  "stump": "A competent solver builds the spotlight's stars as the readers' newsletter stars plus the cascade through their followers' home feeds, measures each repository's stars per follower view over its whole life and spotlights slidewell at about 14,000; the step that lands it there is carrying slidewell's forum-carried launch week into a cascade that starts a month later: from its 8th day public slidewell converts at about 0.7 per cent a view, not the 2.0 of its whole life, and on the rate from day 8, which reproduces the lottery's spotlight lifts, kilnkit is first at about 12,000, the spotlight adding about 9,000.",
-  "architecture": 2,
-  "loops": 0,
-  "precut": {
-    "exit": 0,
-    "date": "2026-10-15",
-    "checks": 49
+ "task": "task144",
+ "status": "SHIPPED",
+ "domain": "product-analytics",
+ "objective": "forecasting",
+ "stage": 5,
+ "stage_name": "ship",
+ "updated": "2026-10-27",
+ "stump": "A competent solver builds the spotlight's stars as the readers' newsletter stars plus the cascade through their followers' home feeds, measures each repository's stars per follower view over its whole life and spotlights slidewell at about 14,000; the step that lands it there is carrying slidewell's forum-carried launch week into a cascade that starts a month later: from its 8th day public slidewell converts at about 0.7 per cent a view, not the 2.0 of its whole life, and on the rate from day 8, which reproduces the lottery's spotlight lifts, kilnkit is first at about 12,000, the spotlight adding about 9,000.",
+ "architecture": 2,
+ "loops": 0,
+ "precut": {
+  "exit": 0,
+  "date": "2026-10-15",
+  "checks": 49
+ },
+ "leak": {
+  "leak_py": "REVIEW, every line answered in the design note, no LEAK (2026-10-27, b370e2a4)",
+  "reader": "round 1 (aa9589a5): Q1 to Q5 clean, Q6 analytical, id and URL-form tells fixed; round 2 (f0ae1a2f, prompt changed): Q1, Q2, Q4 clean, Q3 names the organisation's own records, Q6 analytical"
+ },
+ "duplicate_check": {
+  "heart": "WARN (people.first, repeat.gate_g), after the context artifact was redrawn filed_standard to planning_thread on a ban.artifact BLOCK against task141 v3",
+  "nearest": "driver 0.05 (task132, task255 v1, task446 v2)",
+  "surface": "no hard tell; task150, task179 (gap, G6, Gate G) and task268 (gap, G6, pick) promoted on the cards alone, differentiated on the card (2026-10-27)",
+  "note": "drawn 2026-10-15 after git pull (task261, task455 v2, task262 on file): guard WARN repeat.decision and repeat.question_form, answered in ## Draw; same-puzzle and same-driver against older builds differentiated on the card"
+ },
+ "judge": {
+  "verdict": "DETERMINISTIC (round 2 on f0ae1a2f, the main call; pass 3 on b370e2a4, both asks; pass 4 on 9126d810, Ask A's partial-gateway burst)",
+  "disposition": "APPROVE (pass 4: every Ask A figure reproduced, the fetch reading forced by the data; residual surplus-click reading recorded in the design note, no fix required)",
+  "report": "task144/determinism_check_report.md (round 2), task144/determinism_check_report_pass3.md (pass 3), task144/determinism_check_report_pass4.md (pass 4)"
+ },
+ "returned": [
+  {
+   "date": "2026-10-26",
+   "portal": "prompt check P6 FAIL: the prompt asks for forecasts (the pick's 90-day external stars and the stars the spotlight adds) without a model, baseline or method, lists no input files, and cites the featuring memo without listing it",
+   "repair": "the question now carries the featuring memo's section 2.1 criterion, the shortlisted repository with the most expected external stars in its first 90 days public if spotlighted, and asks the spotlight's stars as how many more than without the spotlight; the method stays open (a filed model would make the decisive step rule application, and the archive pointer the check suggested is the default path, the lottery's average lift, which spotlights tracewire); the memo ships in the pack as sluis_featuring_memo_2026-09.pdf; every ask, file name, unit and rounding, the pack (target.zip unchanged) and every graded figure stay as shipped",
+   "gates": "voice-check PASS (997 characters); no 5-gram of the new wording appears in another prompt; leak.py --asof 2026-09-30 REVIEW with no LEAK, the shipped report's lines but for one term in sweep 4's vocabulary list on warehouse_extract_fields.md (leak.py's own term pick, the prompt gate clean); precut 51 checks with 1 FAIL that predates the fix (the 'Measured by:' line a gate added on 10-18 asks of the ask sheet's cracker); no generator check reads the prompt"
   },
-  "leak": {
-    "leak_py": "REVIEW, every line answered in the design note, no LEAK (2026-10-27, b370e2a4)",
-    "reader": "round 1 (aa9589a5): Q1 to Q5 clean, Q6 analytical, id and URL-form tells fixed; round 2 (f0ae1a2f, prompt changed): Q1, Q2, Q4 clean, Q3 names the organisation's own records, Q6 analytical"
-  },
-  "duplicate_check": {
-    "heart": "WARN (people.first, repeat.gate_g), after the context artifact was redrawn filed_standard to planning_thread on a ban.artifact BLOCK against task141 v3",
-    "nearest": "driver 0.05 (task132, task255 v1, task446 v2)",
-    "surface": "no hard tell; task150, task179 (gap, G6, Gate G) and task268 (gap, G6, pick) promoted on the cards alone, differentiated on the card (2026-10-27)",
-    "note": "drawn 2026-10-15 after git pull (task261, task455 v2, task262 on file): guard WARN repeat.decision and repeat.question_form, answered in ## Draw; same-puzzle and same-driver against older builds differentiated on the card"
-  },
-  "judge": {
-    "verdict": "DETERMINISTIC (round 2 on f0ae1a2f, the main call; pass 3 on b370e2a4, both asks; pass 4 on 9126d810, Ask A's partial-gateway burst)",
-    "disposition": "APPROVE (pass 4: every Ask A figure reproduced, the fetch reading forced by the data; residual surplus-click reading recorded in the design note, no fix required)",
-    "report": "task144/determinism_check_report.md (round 2), task144/determinism_check_report_pass3.md (pass 3), task144/determinism_check_report_pass4.md (pass 4)"
-  },
-  "returned": [
-    {
-      "date": "2026-10-26",
-      "portal": "prompt check P6 FAIL: the prompt asks for forecasts (the pick's 90-day external stars and the stars the spotlight adds) without a model, baseline or method, lists no input files, and cites the featuring memo without listing it",
-      "repair": "the question now carries the featuring memo's section 2.1 criterion, the shortlisted repository with the most expected external stars in its first 90 days public if spotlighted, and asks the spotlight's stars as how many more than without the spotlight; the method stays open (a filed model would make the decisive step rule application, and the archive pointer the check suggested is the default path, the lottery's average lift, which spotlights tracewire); the memo ships in the pack as sluis_featuring_memo_2026-09.pdf; every ask, file name, unit and rounding, the pack (target.zip unchanged) and every graded figure stay as shipped",
-      "gates": "voice-check PASS (997 characters); no 5-gram of the new wording appears in another prompt; leak.py --asof 2026-09-30 REVIEW with no LEAK, the shipped report's lines but for one term in sweep 4's vocabulary list on warehouse_extract_fields.md (leak.py's own term pick, the prompt gate clean); precut 51 checks with 1 FAIL that predates the fix (the 'Measured by:' line a gate added on 10-18 asks of the ask sheet's cracker); no generator check reads the prompt"
-    },
-    {
-      "date": "2026-10-27",
-      "portal": "FAILED_TO_STUMP: both responses landed the call (slidewell, 12,000 external stars by day 90, 9,000 added), building the readers' cascade from each repository's whole-life rate per follower view; the field notes, the extract manifest and the twin pair announced the cascade",
-      "repair": "design (architecture 2): the cascade kept as rung R3, the decisive step moved to the period the rate per follower view is read over (from the 8th day public, after a forum-carried launch week, chosen by its fit to the lottery's spotlights); the field notes and manifest deleted and every file made self-describing; the twin pair removed; golden kilnkit at 12,000 with 9,000 added",
-      "commit": "RESHIPPED (task144) on 2026-10-27, target.zip 9126d810"
-    }
-  ],
-  "resume": "",
-  "approved": null,
-  "delivered": "2026-10-15",
-  "portal": null,
-  "portal_id": "",
-  "portal_status": "",
-  "portal_status_date": "",
-  "wave": "wave 3 (new), seed FC15 (world, decision and quantity kept; pitfall re-found)",
-  "gates": {
-    "checks": 150,
-    "verify": "agrees (pick kilnkit at 12,086 adding 8,929; Ask A and Ask B on its own path)",
-    "byte_identical": true,
-    "figures_check": "90 figures, 0 absent",
-    "precut": "52 checks, 0 FAIL, 0 WARN",
-    "voice_check": "PASS",
-    "container": "clean (target and golden)",
-    "freeze": "freeze.py check --mode rubric PASS: the call, the stump and every frozen figure unchanged; the 12 Ask A figures moved",
-    "target_zip_sha256": "9126d810289fe16aaa6e2c15c1f364895d38aa4c04883c859526509a57abd901"
+  {
+   "date": "2026-10-27",
+   "portal": "FAILED_TO_STUMP: both responses landed the call (slidewell, 12,000 external stars by day 90, 9,000 added), building the readers' cascade from each repository's whole-life rate per follower view; the field notes, the extract manifest and the twin pair announced the cascade",
+   "repair": "design (architecture 2): the cascade kept as rung R3, the decisive step moved to the period the rate per follower view is read over (from the 8th day public, after a forum-carried launch week, chosen by its fit to the lottery's spotlights); the field notes and manifest deleted and every file made self-describing; the twin pair removed; golden kilnkit at 12,000 with 9,000 added",
+   "commit": "RESHIPPED (task144) on 2026-10-27, target.zip 9126d810"
   }
+ ],
+ "resume": "",
+ "approved": null,
+ "delivered": "2026-10-15",
+ "portal": null,
+ "portal_id": "",
+ "portal_status": "",
+ "portal_status_date": "",
+ "wave": "wave 3 (new), seed FC15 (world, decision and quantity kept; pitfall re-found)",
+ "gates": {
+  "checks": 150,
+  "verify": "agrees (pick kilnkit at 12,086 adding 8,929; Ask A and Ask B on its own path)",
+  "byte_identical": true,
+  "figures_check": "90 figures, 0 absent",
+  "precut": "52 checks, 0 FAIL, 0 WARN",
+  "voice_check": "PASS",
+  "container": "clean (target and golden)",
+  "freeze": "freeze.py check --mode rubric PASS: the call, the stump and every frozen figure unchanged; the 12 Ask A figures moved",
+  "target_zip_sha256": "9126d810289fe16aaa6e2c15c1f364895d38aa4c04883c859526509a57abd901"
+ }
 }

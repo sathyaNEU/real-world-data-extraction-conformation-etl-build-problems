@@ -1,38 +1,37 @@
 {
-  "task": "task243",
-  "owner": "perssathya",
-  "status": "SHIPPED",
-  "domain": "survey-research-official-statistics/census-register-administrative-data-quality",
-  "objective": "data-quality-monitoring",
-  "stage": 5,
-  "stage_name": "ship",
-  "updated": "2026-10-18",
-  "stump": "A competent demographer fits the general growth balance to each LGU's 2015 and 2020 census age counts and its registered adult deaths with the population taken as closed (over 15+ to 65+ or trimmed for the young adults' labour moves), sees straight lines and flags eight LGUs, Esperanza, Magsaysay and Mabini among them at 72 to 78 per cent; only the balance carrying the 2020 census's count of who moved above each age, the former residents enumerated elsewhere in the country included, gives the five.",
-  "architecture": 1,
-  "loops": 0,
-  "precut": {
-    "exit": 0,
-    "date": "2026-10-18"
-  },
-  "leak": {
-    "leak_py": "REVIEW (no LEAK), answered in the design note",
-    "reader": "two reads: question 1 none, question 6 analytical; the special tabulation renamed by its purpose and the request reworded"
-  },
-  "duplicate_check": {
-    "heart": "WARN (repeat.gate_g, repeat.decision against task470, repeat.question_form against task194, answered under Draw)",
-    "nearest": "task181 v2 at 0.07; surface WARN only (Santa Cruz read as a person)"
-  },
-  "judge": {
-    "verdict": "DETERMINISTIC",
-    "disposition": "pass 1 FIX_NOW (birthday-rate mean unstated in the write-up, 5+ fits, blank-birth-date duplicates), fixed in one pass; pass 2 APPROVE",
-    "report": "determinism_check_report.md, determinism_check_report_pass2.md"
-  },
-  "returned": [],
-  "resume": "",
-  "approved": null,
-  "delivered": "2026-10-18",
-  "portal": null,
-  "portal_id": "",
-  "portal_status": "",
-  "portal_status_date": ""
+ "task": "task243",
+ "status": "SHIPPED",
+ "domain": "survey-research-official-statistics/census-register-administrative-data-quality",
+ "objective": "data-quality-monitoring",
+ "stage": 5,
+ "stage_name": "ship",
+ "updated": "2026-10-18",
+ "stump": "A competent demographer fits the general growth balance to each LGU's 2015 and 2020 census age counts and its registered adult deaths with the population taken as closed (over 15+ to 65+ or trimmed for the young adults' labour moves), sees straight lines and flags eight LGUs, Esperanza, Magsaysay and Mabini among them at 72 to 78 per cent; only the balance carrying the 2020 census's count of who moved above each age, the former residents enumerated elsewhere in the country included, gives the five.",
+ "architecture": 1,
+ "loops": 0,
+ "precut": {
+  "exit": 0,
+  "date": "2026-10-18"
+ },
+ "leak": {
+  "leak_py": "REVIEW (no LEAK), answered in the design note",
+  "reader": "two reads: question 1 none, question 6 analytical; the special tabulation renamed by its purpose and the request reworded"
+ },
+ "duplicate_check": {
+  "heart": "WARN (repeat.gate_g, repeat.decision against task470, repeat.question_form against task194, answered under Draw)",
+  "nearest": "task181 v2 at 0.07; surface WARN only (Santa Cruz read as a person)"
+ },
+ "judge": {
+  "verdict": "DETERMINISTIC",
+  "disposition": "pass 1 FIX_NOW (birthday-rate mean unstated in the write-up, 5+ fits, blank-birth-date duplicates), fixed in one pass; pass 2 APPROVE",
+  "report": "determinism_check_report.md, determinism_check_report_pass2.md"
+ },
+ "returned": [],
+ "resume": "",
+ "approved": null,
+ "delivered": "2026-10-18",
+ "portal": null,
+ "portal_id": "",
+ "portal_status": "",
+ "portal_status_date": ""
 }

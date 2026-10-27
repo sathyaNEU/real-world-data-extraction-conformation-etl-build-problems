@@ -149,7 +149,7 @@ No isolated thread runs on the model's own initiative; the commands above licens
 5 SHIP      target.zip from the final rebuild, ledger row, card current       COMMIT "SHIPPED (taskNN): <call>"
             then the next open number at once
 6 PORTAL    the author's list: APPROVED is SHIPPED_APPROVED, PENDING_REVIEW stays SHIPPED, a shipped build
-            left off it is FAILED_TO_STUMP and joins its lane owner's backlog wave; a determinism finding goes
+            left off it is FAILED_TO_STUMP and joins the backlog; a determinism finding goes
             to /fix-determinism, a rubric at or over 70 with the call held to /fix-rubric
 ```
 
@@ -186,14 +186,19 @@ There is one branch, `main`. No build, skill or status branch is created, and no
   `RETURNED`, `FAILED_TO_STUMP`, `PAUSED`, `RETIRED`) and `status.py` prints the board. The author's portal list
   goes into the ledger's portal record in one `STATUS: portal results` commit.
 
-## Lanes, authors and handoffs
+## Task numbers, backlogs and handoffs
 
-Task numbers come from the root `START_HERE.md`, numbered by objective; each lane has one owner. At session
-start read `.claude/authors/<handle>.md` for the session user's email and ignore the others: it holds the lane,
-the status board link and the **backlog**, waves of six tasks to ship worked in order (reworks first). `status.py
-next <handle>` names the next task, `status.py` shows every wave; at most two builds in flight per author.
-A paused build is resumed before any new number: read `handoffs/<handle>.md` if it names the task, then
-`pipeline.json` and the design note's `## Tried and rejected`.
+**No task belongs to anybody.** There are no lanes with owners and no per-person slots: any build can be
+worked by whoever the user asks, at any stage, and a number carries no claim. The files under
+`.claude/authors/` are backlog lists, not territories, and `pipeline.json` records where a build is and never
+who holds it.
+
+Task numbers come from the root `START_HERE.md`, numbered by objective, which fixes which objective a number
+belongs to and nothing else. The backlog files hold waves of six tasks to ship, worked in order with reworks
+first. `status.py next` names the next task from every wave merged, `status.py next <name>` reads one file,
+`status.py` shows every wave, and `status.py wave "<objective>"` cuts the next six open numbers in that
+objective's range. A paused build is resumed before any new number: read `handoffs/<name>.md` if it names
+the task, then `pipeline.json` and the design note's `## Tried and rejected`.
 
 ## How a build is worked
 

@@ -1,8 +1,8 @@
 # Author: oviya13ya
 
-Account email ovi13ya@gmail.com. A session for anyone else ignores this file.
+Account email ovi13ya@gmail.com. A backlog list, not a territory: no task belongs to anybody, and any build in here can be worked by whoever the user asks.
 
-- **Lane:** Anomaly Detection & Diagnostics, task180 to task227. Two builds in flight; `status.py next oviya13ya`.
+- **Backlog range:** Anomaly Detection & Diagnostics, task180 to task227. `status.py next` names the next task across every backlog; how many run at once is the user's call.
 - **Status board:** https://claude.ai/code/artifact/eb99af75-757b-4101-b895-e17665c02495 (one row per task: the task and its call, status, links to the prompt, submission and `target.zip` on `main`, a short note, the date), updated at every commit point.
 - **No retiring.** This author's builds are never retired: past the architecture cap, a SEND_BACK or a clone
   finding, a build is repaired or re-rooted until it ships. A determinism finding is fixed as the portal

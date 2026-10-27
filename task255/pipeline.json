@@ -1,52 +1,51 @@
 {
-  "task": "task255",
-  "owner": "sathay3012",
-  "status": "SHIPPED",
-  "domain": "actuarial-science-insurance / claims-frequency-severity",
-  "objective": "descriptive-distribution",
-  "stage": 5,
-  "stage_name": "ship",
-  "updated": "2026-10-26",
-  "stump": "The default path fits the lognormal by maximum likelihood to every occurrence of 2014 to 2021, each truncated at its deductible and the 25 at the retention censored, both at 2027 cost, and carries the actuary's 432.7 occurrences above $25,000 by that one curve: $2.0 million (0.89 above it); the law enforcement occurrences carry most of the tail and the one curve is shaped by the other parts; fitted for each coverage group and weighted by the actuary's two projections (85.1 and 347.6) the count first clears one at $4.0 million (1.2 above $3.0 million, 0.8 above $4.0 million).",
-  "architecture": 1,
-  "loops": 2,
-  "precut": {
-    "exit": 0,
-    "date": "2026-10-26"
+ "task": "task255",
+ "status": "SHIPPED",
+ "domain": "actuarial-science-insurance / claims-frequency-severity",
+ "objective": "descriptive-distribution",
+ "stage": 5,
+ "stage_name": "ship",
+ "updated": "2026-10-26",
+ "stump": "The default path fits the lognormal by maximum likelihood to every occurrence of 2014 to 2021, each truncated at its deductible and the 25 at the retention censored, both at 2027 cost, and carries the actuary's 432.7 occurrences above $25,000 by that one curve: $2.0 million (0.89 above it); the law enforcement occurrences carry most of the tail and the one curve is shaped by the other parts; fitted for each coverage group and weighted by the actuary's two projections (85.1 and 347.6) the count first clears one at $4.0 million (1.2 above $3.0 million, 0.8 above $4.0 million).",
+ "architecture": 1,
+ "loops": 2,
+ "precut": {
+  "exit": 0,
+  "date": "2026-10-26"
+ },
+ "leak": {
+  "leak_py": "REVIEW (no LEAK) on the final rebuild, anchors 85.1 and 347.6",
+  "reader": "round 1: two scored readers off the call ($2.0 million), exposure asks solved (75 per cent, asks replaced); round 2 on the final pack: both readers off the call at $2.0 million, 0 of 14 ask figures"
+ },
+ "duplicate_check": {
+  "heart": "WARN (people, Gate G, decision and deliverables answered in the note)",
+  "surface": "PASS (first-name WARNs)",
+  "nearest": "task255 lineage 0.28, task202 0.06"
+ },
+ "judge": {
+  "verdict": "DETERMINISTIC (round 2, layer-loss asks)",
+  "disposition": "APPROVE",
+  "report": "task255/determinism_check_report.md"
+ },
+ "returned": [
+  {
+   "date": "2026-10-14",
+   "portal": "none: hardened at the author's request for a second stumping layer before any portal result",
+   "repair": "design",
+   "commit": "the RESHIPPED (task255) commit of 2026-10-14"
   },
-  "leak": {
-    "leak_py": "REVIEW (no LEAK) on the final rebuild, anchors 85.1 and 347.6",
-    "reader": "round 1: two scored readers off the call ($2.0 million), exposure asks solved (75 per cent, asks replaced); round 2 on the final pack: both readers off the call at $2.0 million, 0 of 14 ask figures"
-  },
-  "duplicate_check": {
-    "heart": "WARN (people, Gate G, decision and deliverables answered in the note)",
-    "surface": "PASS (first-name WARNs)",
-    "nearest": "task255 lineage 0.28, task202 0.06"
-  },
-  "judge": {
-    "verdict": "DETERMINISTIC (round 2, layer-loss asks)",
-    "disposition": "APPROVE",
-    "report": "task255/determinism_check_report.md"
-  },
-  "returned": [
-    {
-      "date": "2026-10-14",
-      "portal": "none: hardened at the author's request for a second stumping layer before any portal result",
-      "repair": "design",
-      "commit": "the RESHIPPED (task255) commit of 2026-10-14"
-    },
-    {
-      "date": "2026-10-26",
-      "portal": "both responses landed the call: USD 4,000,000 per occurrence from the first dollar, 0.74 expected occurrences above it, premium 735,429 (the golden to the dollar)",
-      "repair": "design",
-      "commit": "RESHIPPED (task255) of 2026-10-26, loop 2"
-    }
-  ],
-  "resume": "",
-  "approved": null,
-  "delivered": "2026-10-26",
-  "portal": null,
-  "seed": "DA05 number (START_HERE); the seed's world is not used",
-  "portal_status": "PENDING_REVIEW",
-  "portal_status_date": ""
+  {
+   "date": "2026-10-26",
+   "portal": "both responses landed the call: USD 4,000,000 per occurrence from the first dollar, 0.74 expected occurrences above it, premium 735,429 (the golden to the dollar)",
+   "repair": "design",
+   "commit": "RESHIPPED (task255) of 2026-10-26, loop 2"
+  }
+ ],
+ "resume": "",
+ "approved": null,
+ "delivered": "2026-10-26",
+ "portal": null,
+ "seed": "DA05 number (START_HERE); the seed's world is not used",
+ "portal_status": "PENDING_REVIEW",
+ "portal_status_date": ""
 }

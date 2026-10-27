@@ -1,71 +1,70 @@
 {
-  "task": "task151",
-  "owner": "sathya8571",
-  "status": "SHIPPED",
-  "domain": "general-statistics-data-science/resampling-simulation-monte-carlo-methods",
-  "objective": "forecasting",
-  "stage": 5,
-  "stage_name": "ship",
-  "updated": "2026-10-17",
-  "stump": "Running FIN-14 4.4's look-back on the bases at hand (the vendor's projection with a band from its past misses, the players' own seasons, the depth charts' starting nines' seasons taken whole) keeps the starting nines' seasons and accrues $4,500,000; the step that lands it there is reading each signing off seasons that keep the catchers in and ignore where each hitter bats, when his 2027 total is his new lineup slot's plate appearances per start times the starts a winter-planned non-catcher regular makes, the basis that scores lowest and accrues $4,250,000.",
-  "architecture": 1,
-  "loops": 2,
-  "precut": {
-    "exit": 0,
-    "date": "2026-10-17",
-    "checks": 49
+ "task": "task151",
+ "status": "SHIPPED",
+ "domain": "general-statistics-data-science/resampling-simulation-monte-carlo-methods",
+ "objective": "forecasting",
+ "stage": 5,
+ "stage_name": "ship",
+ "updated": "2026-10-17",
+ "stump": "Running FIN-14 4.4's look-back on the bases at hand (the vendor's projection with a band from its past misses, the players' own seasons, the depth charts' starting nines' seasons taken whole) keeps the starting nines' seasons and accrues $4,500,000; the step that lands it there is reading each signing off seasons that keep the catchers in and ignore where each hitter bats, when his 2027 total is his new lineup slot's plate appearances per start times the starts a winter-planned non-catcher regular makes, the basis that scores lowest and accrues $4,250,000.",
+ "architecture": 1,
+ "loops": 2,
+ "precut": {
+  "exit": 0,
+  "date": "2026-10-17",
+  "checks": 49
+ },
+ "leak": {
+  "leak_py": "REVIEW, no LEAK (2026-10-17, final rebuild, --asof 2026-12-11; every REVIEW line answered in the design note's Build record)",
+  "reader": "round 2 clean; targeted re-read of FIN-14 4.4 and CF-14.4 clean (an ordinary estimate review; the names read as a realistic league), coordinator relay"
+ },
+ "duplicate_check": {
+  "heart": "WARN (overuse.objective, repeat.gate_g, people.first and people.last on one veteran's name; answered under Draw)",
+  "nearest": "heart 0.05 (task132; task105 v1 lineage), surface 0 promoted (nearest task38, task147, task32 at 0.100)"
+ },
+ "judge": {
+  "verdict": "DETERMINISTIC",
+  "disposition": "APPROVE (round 3; every figure reproduced; the optional step 4 wording taken)",
+  "report": "determinism_check_report.md",
+  "earlier": "round 1 NOT_DETERMINISTIC, SEND_BACK, repaired inside architecture 1 (determinism_check_report_round1.md); round 2 DETERMINISTIC, APPROVE (determinism_check_report_round2.md)",
+  "gate_g": "PASS: method_or_model_selection, analytical_non_defect, surface_read_dependency no",
+  "gate_h": "domain pass, layers pass, decisive_step analytical"
+ },
+ "returned": [
+  {
+   "date": "2026-10-16",
+   "by": "determinism judge round 1 and the rule 3 audit (coordinator)",
+   "finding": "no filed preference among the bases (vendor band, vendor residuals, own seasons defensible); the starting nines' raw seasons landing the call; 4.3's health reading; Ask B population and attribution; rounding path; Ask A effective date; the manifest's name",
+   "repair": "FIN-14 4.4 filed look-back (selection criterion, no method named), lineup fifth to ninth with terms re-searched, world redrawn (seed 1539), 4.3 restated, register notes, FIN-14 6 rounding, rules 22.1 backdating, close-file index; golden re-derived $4,250,000"
   },
-  "leak": {
-    "leak_py": "REVIEW, no LEAK (2026-10-17, final rebuild, --asof 2026-12-11; every REVIEW line answered in the design note's Build record)",
-    "reader": "round 2 clean; targeted re-read of FIN-14 4.4 and CF-14.4 clean (an ordinary estimate review; the names read as a realistic league), coordinator relay"
+  {
+   "date": "2026-10-17",
+   "by": "re-judge round 2 (DETERMINISTIC, APPROVE) and the rule 3 re-audit (AT_RISK), coordinator loop 2",
+   "finding": "realism: the record carries no persistence (vendor projection 0.005, last season -0.04) and the seed search is noise-picking; the look-back's catcher pricing fork in step 4; Ask B's 2026 'paid' fork; the league's names (the signings' surnames recurring, near-duplicates); 4.4 over-specified in the policy",
+   "repair": "honest persistence tried under a seed rule written first (seed 1601): the look-back's credibility blends tie at $5,250,000 and $5,500,000, total not determinate, stopped and reverted under the coordinator's rule; the 5a71a64 world kept (seed 1539); step 4 prices catchers from catchers' seasons; prompt 'paid to date' (SF15); league renamed from wider pools; FIN-14 4.4 cut to the principle with working paper CF-14.4 holding the test; the 2027 pitching staff carried over from 2026"
   },
-  "duplicate_check": {
-    "heart": "WARN (overuse.objective, repeat.gate_g, people.first and people.last on one veteran's name; answered under Draw)",
-    "nearest": "heart 0.05 (task132; task105 v1 lineage), surface 0 promoted (nearest task38, task147, task32 at 0.100)"
-  },
-  "judge": {
-    "verdict": "DETERMINISTIC",
-    "disposition": "APPROVE (round 3; every figure reproduced; the optional step 4 wording taken)",
-    "report": "determinism_check_report.md",
-    "earlier": "round 1 NOT_DETERMINISTIC, SEND_BACK, repaired inside architecture 1 (determinism_check_report_round1.md); round 2 DETERMINISTIC, APPROVE (determinism_check_report_round2.md)",
-    "gate_g": "PASS: method_or_model_selection, analytical_non_defect, surface_read_dependency no",
-    "gate_h": "domain pass, layers pass, decisive_step analytical"
-  },
-  "returned": [
-    {
-      "date": "2026-10-16",
-      "by": "determinism judge round 1 and the rule 3 audit (coordinator)",
-      "finding": "no filed preference among the bases (vendor band, vendor residuals, own seasons defensible); the starting nines' raw seasons landing the call; 4.3's health reading; Ask B population and attribution; rounding path; Ask A effective date; the manifest's name",
-      "repair": "FIN-14 4.4 filed look-back (selection criterion, no method named), lineup fifth to ninth with terms re-searched, world redrawn (seed 1539), 4.3 restated, register notes, FIN-14 6 rounding, rules 22.1 backdating, close-file index; golden re-derived $4,250,000"
-    },
-    {
-      "date": "2026-10-17",
-      "by": "re-judge round 2 (DETERMINISTIC, APPROVE) and the rule 3 re-audit (AT_RISK), coordinator loop 2",
-      "finding": "realism: the record carries no persistence (vendor projection 0.005, last season -0.04) and the seed search is noise-picking; the look-back's catcher pricing fork in step 4; Ask B's 2026 'paid' fork; the league's names (the signings' surnames recurring, near-duplicates); 4.4 over-specified in the policy",
-      "repair": "honest persistence tried under a seed rule written first (seed 1601): the look-back's credibility blends tie at $5,250,000 and $5,500,000, total not determinate, stopped and reverted under the coordinator's rule; the 5a71a64 world kept (seed 1539); step 4 prices catchers from catchers' seasons; prompt 'paid to date' (SF15); league renamed from wider pools; FIN-14 4.4 cut to the principle with working paper CF-14.4 holding the test; the 2027 pitching staff carried over from 2026"
-    },
-    {
-      "date": "2026-10-17",
-      "by": "re-judge round 3 (DETERMINISTIC, APPROVE), coordinator",
-      "finding": "step 4's grouping parenthetical wrong for the nines-whole rival (0.2182 needs catchers pooled); rival scores built on constructions the files do not fix (0.2254, 0.2698); the thin rival (slot plate appearances with substitutes per start, 0.17359 against 0.17301, $4.50M); the CF-14.4 window reading 2022 to 2025",
-      "repair": "write-up and record only: step 4 states the golden's grouping and drops rival scores, block 1 and the memo drop rival figures; LB9 asserts the near rival losing on every reading (checks and verify); SF11 asserts 2022 to 2025; the design note's Residual and Pre-ship check; pack unchanged (target.zip 83bf068f)"
-    }
-  ],
-  "resume": "",
-  "approved": null,
-  "delivered": "2026-10-17",
-  "portal": null,
-  "portal_id": "",
-  "portal_status": "",
-  "portal_status_date": "",
-  "wave": "wave 4 (new), seed FC22 (world, decision and quantity kept; the filed projection method and the shared-slot driver dropped; pitfall re-found)",
-  "build": {
-    "checks": 282,
-    "verify": "agreeing",
-    "byte_identical": true,
-    "figures_check": "82 of 82",
-    "target_zip_sha256": "83bf068ff78b0077586aab20b9fd924c67131c6ba720ef45aae7951ca36d483b",
-    "world_seed": 1539,
-    "files": 21
+  {
+   "date": "2026-10-17",
+   "by": "re-judge round 3 (DETERMINISTIC, APPROVE), coordinator",
+   "finding": "step 4's grouping parenthetical wrong for the nines-whole rival (0.2182 needs catchers pooled); rival scores built on constructions the files do not fix (0.2254, 0.2698); the thin rival (slot plate appearances with substitutes per start, 0.17359 against 0.17301, $4.50M); the CF-14.4 window reading 2022 to 2025",
+   "repair": "write-up and record only: step 4 states the golden's grouping and drops rival scores, block 1 and the memo drop rival figures; LB9 asserts the near rival losing on every reading (checks and verify); SF11 asserts 2022 to 2025; the design note's Residual and Pre-ship check; pack unchanged (target.zip 83bf068f)"
   }
+ ],
+ "resume": "",
+ "approved": null,
+ "delivered": "2026-10-17",
+ "portal": null,
+ "portal_id": "",
+ "portal_status": "",
+ "portal_status_date": "",
+ "wave": "wave 4 (new), seed FC22 (world, decision and quantity kept; the filed projection method and the shared-slot driver dropped; pitfall re-found)",
+ "build": {
+  "checks": 282,
+  "verify": "agreeing",
+  "byte_identical": true,
+  "figures_check": "82 of 82",
+  "target_zip_sha256": "83bf068ff78b0077586aab20b9fd924c67131c6ba720ef45aae7951ca36d483b",
+  "world_seed": 1539,
+  "files": 21
+ }
 }

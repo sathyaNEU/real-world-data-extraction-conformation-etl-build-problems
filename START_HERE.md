@@ -8,15 +8,15 @@ Seeds already built (not renumbered): AD01 as task119, AD02 as task125, DA01 as 
 
 Regenerate with `python3 analytical_tasks/make_index.py`; numbers never move.
 
-| Objective | Tasks | Count | Lane owner |
-|---|---|---|---|
-| Forecasting & Predictive Modeling | task132 to task179 | 48 | sathya8571 |
-| Anomaly Detection & Diagnostics | task180 to task227 | 48 | oviya13ya |
-| Data Quality Monitoring & Alerting | task228 to task252 | 25 | perssathya |
-| Descriptive & Distribution Analysis | task253 to task300 | 48 | sathay3012 |
-| Opportunity Sizing & Decision Support | task301 to task396 | 96 | unassigned |
-| Root-Cause Analysis | task397 to task444 | 48 | unassigned |
-| Data Extraction & Conformation (ETL) | task445 to task493 | 49 | oviya1301 |
+| Objective | Tasks | Count |
+|---|---|---|
+| Forecasting & Predictive Modeling | task132 to task179 | 48 |
+| Anomaly Detection & Diagnostics | task180 to task227 | 48 |
+| Data Quality Monitoring & Alerting | task228 to task252 | 25 |
+| Descriptive & Distribution Analysis | task253 to task300 | 48 |
+| Opportunity Sizing & Decision Support | task301 to task396 | 96 |
+| Root-Cause Analysis | task397 to task444 | 48 |
+| Data Extraction & Conformation (ETL) | task445 to task493 | 49 |
 
 ## Forecasting & Predictive Modeling (task132 to task179)
 

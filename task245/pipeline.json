@@ -1,38 +1,37 @@
 {
-  "task": "task245",
-  "owner": "perssathya",
-  "status": "SHIPPED",
-  "domain": "physical-environmental-sciences",
-  "objective": "data-quality-monitoring",
-  "stage": 5,
-  "stage_name": "ship",
-  "updated": "2026-10-18",
-  "stump": "Scaling each station's count over its valid days by its data capture, or reading the 90.4th percentile of its valid days, treats a station's lost days as ordinary for it and notes Market Street and Westholme Avenue, whose long outages fell in quiet spells; interpolating in time or filling from the rest of the network notes nobody; only rebuilding each lost hour from the network's background and the station's own response to the wind gives North Gate, Harbour Walk and South Yard, whose analysers stopped on the days the bulk terminal's plume blew onto them.",
-  "architecture": 1,
-  "loops": 0,
-  "precut": {
-    "exit": 0,
-    "date": "2026-10-18"
-  },
-  "leak": {
-    "leak_py": "REVIEW (no LEAK), every line answered in the design note",
-    "reader": "three reads: read 1 found section 5.1's lost-day wording ambiguous and Market Street's NO2 capture fork (fixed in one generator pass with the realism notes); reads 2 and 3 question 1 none, question 6 analytical"
-  },
-  "duplicate_check": {
-    "heart": "PASS (test.same_puzzle_older NOTE, differentiated against task265)",
-    "nearest": "task182 v1 (lineage) at 0.08"
-  },
-  "judge": {
-    "verdict": "DETERMINISTIC",
-    "disposition": "pass 1 APPROVE (its notes taken with the reader's findings in one pass); pass 2 on the shipped bundle APPROVE",
-    "report": "determinism_check_report.md, determinism_check_report_pass2.md"
-  },
-  "returned": [],
-  "resume": "",
-  "approved": null,
-  "delivered": "2026-10-18",
-  "portal": null,
-  "portal_id": "",
-  "portal_status": "",
-  "portal_status_date": ""
+ "task": "task245",
+ "status": "SHIPPED",
+ "domain": "physical-environmental-sciences",
+ "objective": "data-quality-monitoring",
+ "stage": 5,
+ "stage_name": "ship",
+ "updated": "2026-10-18",
+ "stump": "Scaling each station's count over its valid days by its data capture, or reading the 90.4th percentile of its valid days, treats a station's lost days as ordinary for it and notes Market Street and Westholme Avenue, whose long outages fell in quiet spells; interpolating in time or filling from the rest of the network notes nobody; only rebuilding each lost hour from the network's background and the station's own response to the wind gives North Gate, Harbour Walk and South Yard, whose analysers stopped on the days the bulk terminal's plume blew onto them.",
+ "architecture": 1,
+ "loops": 0,
+ "precut": {
+  "exit": 0,
+  "date": "2026-10-18"
+ },
+ "leak": {
+  "leak_py": "REVIEW (no LEAK), every line answered in the design note",
+  "reader": "three reads: read 1 found section 5.1's lost-day wording ambiguous and Market Street's NO2 capture fork (fixed in one generator pass with the realism notes); reads 2 and 3 question 1 none, question 6 analytical"
+ },
+ "duplicate_check": {
+  "heart": "PASS (test.same_puzzle_older NOTE, differentiated against task265)",
+  "nearest": "task182 v1 (lineage) at 0.08"
+ },
+ "judge": {
+  "verdict": "DETERMINISTIC",
+  "disposition": "pass 1 APPROVE (its notes taken with the reader's findings in one pass); pass 2 on the shipped bundle APPROVE",
+  "report": "determinism_check_report.md, determinism_check_report_pass2.md"
+ },
+ "returned": [],
+ "resume": "",
+ "approved": null,
+ "delivered": "2026-10-18",
+ "portal": null,
+ "portal_id": "",
+ "portal_status": "",
+ "portal_status_date": ""
 }

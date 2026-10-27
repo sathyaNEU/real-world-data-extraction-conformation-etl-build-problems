@@ -1,38 +1,37 @@
 {
-  "task": "task462",
-  "owner": "oviya1301",
-  "status": "SHIPPED",
-  "domain": "physical-environmental-sciences",
-  "objective": "etl",
-  "stage": 5,
-  "stage_name": "ship",
-  "updated": "2026-10-15",
-  "stump": "The default path averages each producer's plume rates over its passes and campaigns, counting every imaged site without a plume as zero, and rates eight producers low-methane, among them Anchell, Pinyon Draw, Pellisto and Ashmund (0.150, 0.155, 0.179 and 0.181 per cent), whose methane leaks from many 5 to 15 kg/h sources a pass catches less than half the time; carrying each detected source through the year instead rates none; only weighting each plume by one over the detection probability at its rate, fitted to the provider's blind controlled releases, rates the golden four.",
-  "architecture": 1,
-  "loops": 0,
-  "precut": {
-    "exit": 0,
-    "date": "2026-10-15"
-  },
-  "leak": {
-    "leak_py": "REVIEW (no LEAK; the 150 m radius, a coincidental 350,917 in the production rows, shared vocabulary, the register's producer names)",
-    "reader": "REVIEW (2026-10-15): no decisive-step sentence, no ranking or helping file, the decisive step an analytical choice; raised the FR flaring code (Ask B's device, the basin summary its referee), the plant's prior-period adjustments and March re-issue on Ask A, and the methods note's 4.2 on the curve's form as close to the step"
-  },
-  "duplicate_check": {
-    "heart": "WARN (overuse.shape, repeat.gate_g, repeat.deliverables, repeat.question_form; answered in the note)",
-    "nearest": "0.07 task107 lineage",
-    "surface": "4 promoted: task460 (two apart, pairing), task456, task255, task180 (card axes, differentiated)"
-  },
-  "judge": {
-    "verdict": "DETERMINISTIC",
-    "disposition": "APPROVE",
-    "report": "determinism_check_report.md",
-    "gate_h": "domain pass, layers pass, decisive_step analytical"
-  },
-  "returned": [],
-  "resume": "portal: pending review; nothing open on the build",
-  "approved": null,
-  "delivered": "2026-10-15",
-  "portal": null,
-  "source_note": "seed ET19 (analytical_tasks/07_data_extraction_conformation): the decision (what an emissions data company publishes for each emitter) and the quantity (an emissions intensity across EPA greenhouse gas reporting, production statistics and a measurement record joining many-to-many) kept; the seed's own world (CAMD and GHGRP to EIA through the EPA-EIA crosswalk) is task459's pack, so the intensity is a gas producer's methane intensity from aerial surveys; the crosswalk-key trap is Layer 1 only"
+ "task": "task462",
+ "status": "SHIPPED",
+ "domain": "physical-environmental-sciences",
+ "objective": "etl",
+ "stage": 5,
+ "stage_name": "ship",
+ "updated": "2026-10-15",
+ "stump": "The default path averages each producer's plume rates over its passes and campaigns, counting every imaged site without a plume as zero, and rates eight producers low-methane, among them Anchell, Pinyon Draw, Pellisto and Ashmund (0.150, 0.155, 0.179 and 0.181 per cent), whose methane leaks from many 5 to 15 kg/h sources a pass catches less than half the time; carrying each detected source through the year instead rates none; only weighting each plume by one over the detection probability at its rate, fitted to the provider's blind controlled releases, rates the golden four.",
+ "architecture": 1,
+ "loops": 0,
+ "precut": {
+  "exit": 0,
+  "date": "2026-10-15"
+ },
+ "leak": {
+  "leak_py": "REVIEW (no LEAK; the 150 m radius, a coincidental 350,917 in the production rows, shared vocabulary, the register's producer names)",
+  "reader": "REVIEW (2026-10-15): no decisive-step sentence, no ranking or helping file, the decisive step an analytical choice; raised the FR flaring code (Ask B's device, the basin summary its referee), the plant's prior-period adjustments and March re-issue on Ask A, and the methods note's 4.2 on the curve's form as close to the step"
+ },
+ "duplicate_check": {
+  "heart": "WARN (overuse.shape, repeat.gate_g, repeat.deliverables, repeat.question_form; answered in the note)",
+  "nearest": "0.07 task107 lineage",
+  "surface": "4 promoted: task460 (two apart, pairing), task456, task255, task180 (card axes, differentiated)"
+ },
+ "judge": {
+  "verdict": "DETERMINISTIC",
+  "disposition": "APPROVE",
+  "report": "determinism_check_report.md",
+  "gate_h": "domain pass, layers pass, decisive_step analytical"
+ },
+ "returned": [],
+ "resume": "portal: pending review; nothing open on the build",
+ "approved": null,
+ "delivered": "2026-10-15",
+ "portal": null,
+ "source_note": "seed ET19 (analytical_tasks/07_data_extraction_conformation): the decision (what an emissions data company publishes for each emitter) and the quantity (an emissions intensity across EPA greenhouse gas reporting, production statistics and a measurement record joining many-to-many) kept; the seed's own world (CAMD and GHGRP to EIA through the EPA-EIA crosswalk) is task459's pack, so the intensity is a gas producer's methane intensity from aerial surveys; the crosswalk-key trap is Layer 1 only"
 }

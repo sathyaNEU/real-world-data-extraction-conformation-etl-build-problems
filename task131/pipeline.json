@@ -1,47 +1,46 @@
 {
-  "task": "task131",
-  "owner": "perssathya",
-  "status": "SHIPPED",
-  "domain": "energy-systems-utilities",
-  "objective": "experiment-causal",
-  "stage": 5,
-  "stage_name": "ship",
-  "updated": "2026-10-13",
-  "stump": "A competent solver takes each design's treatment-minus-control drop in household demand over its peak window across the trial's workdays, scales it to the 2027-28 flat-rate residential customers and files Design B as lowering the 50% POE maximum demand by about 15 MW; the step that lands it there is reading a design's effect as its cut inside the window on an average trial day, when the cooling put off past the peak price comes back as one pull-down when the price falls and on the design day's heat outgrows the cut, so B's maximum moves to the half-hour from 8 p.m. and rises, A's to the half-hour from 9 p.m., and only the stepped design C lowers it.",
-  "architecture": 2,
-  "loops": 0,
-  "precut": {
-    "exit": 0,
-    "date": "2026-10-13"
-  },
-  "leak": {
-    "leak_py": "REVIEW (sweep 4 only: control, effect, corporation in the trial plan; answered in the note), 2026-10-13, --asof 2026-10-09",
-    "reader": "three reads 2026-10-13: none names the decisive step or ranks the designs, the deciding step analytical; read 1's realism tells and ask forks and read 2's file-list line and date anchoring fixed in the generator; read 3 clean"
-  },
-  "duplicate_check": {
-    "heart": "WARN (repeat.decision against task501)",
-    "nearest": "surface: task183 promoted on card axes only (0.080, pct 61), different driver; task83 0.07 driver"
-  },
-  "judge": {
-    "verdict": "DETERMINISTIC",
-    "disposition": "APPROVE (pass 3)",
-    "report": "determinism_check_report.md (pass 1 NOT_DETERMINISTIC on one survey share, fixed by convergence), determinism_check_report_pass2.md (DETERMINISTIC, FIX_NOW prompt pins applied), determinism_check_report_pass3.md (DETERMINISTIC, APPROVE)"
-  },
-  "returned": [
-    {
-      "date": "2026-10-13",
-      "portal": "FAILED_TO_STUMP (architecture 1 left off the approved list)",
-      "repair": "design (re-root to architecture 2)",
-      "commit": ""
-    }
-  ],
-  "resume": "",
-  "approved": null,
-  "delivered": "2026-10-13",
-  "portal": null,
-  "portal_id": "",
-  "portal_status": "",
-  "portal_status_date": "",
-  "replaces": "task130",
-  "history": "architecture 1 (marketing-consumer-research, card-randomised member offers) shipped 2026-10-10, FAILED_TO_STUMP; re-rooted 2026-10-13"
+ "task": "task131",
+ "status": "SHIPPED",
+ "domain": "energy-systems-utilities",
+ "objective": "experiment-causal",
+ "stage": 5,
+ "stage_name": "ship",
+ "updated": "2026-10-13",
+ "stump": "A competent solver takes each design's treatment-minus-control drop in household demand over its peak window across the trial's workdays, scales it to the 2027-28 flat-rate residential customers and files Design B as lowering the 50% POE maximum demand by about 15 MW; the step that lands it there is reading a design's effect as its cut inside the window on an average trial day, when the cooling put off past the peak price comes back as one pull-down when the price falls and on the design day's heat outgrows the cut, so B's maximum moves to the half-hour from 8 p.m. and rises, A's to the half-hour from 9 p.m., and only the stepped design C lowers it.",
+ "architecture": 2,
+ "loops": 0,
+ "precut": {
+  "exit": 0,
+  "date": "2026-10-13"
+ },
+ "leak": {
+  "leak_py": "REVIEW (sweep 4 only: control, effect, corporation in the trial plan; answered in the note), 2026-10-13, --asof 2026-10-09",
+  "reader": "three reads 2026-10-13: none names the decisive step or ranks the designs, the deciding step analytical; read 1's realism tells and ask forks and read 2's file-list line and date anchoring fixed in the generator; read 3 clean"
+ },
+ "duplicate_check": {
+  "heart": "WARN (repeat.decision against task501)",
+  "nearest": "surface: task183 promoted on card axes only (0.080, pct 61), different driver; task83 0.07 driver"
+ },
+ "judge": {
+  "verdict": "DETERMINISTIC",
+  "disposition": "APPROVE (pass 3)",
+  "report": "determinism_check_report.md (pass 1 NOT_DETERMINISTIC on one survey share, fixed by convergence), determinism_check_report_pass2.md (DETERMINISTIC, FIX_NOW prompt pins applied), determinism_check_report_pass3.md (DETERMINISTIC, APPROVE)"
+ },
+ "returned": [
+  {
+   "date": "2026-10-13",
+   "portal": "FAILED_TO_STUMP (architecture 1 left off the approved list)",
+   "repair": "design (re-root to architecture 2)",
+   "commit": ""
+  }
+ ],
+ "resume": "",
+ "approved": null,
+ "delivered": "2026-10-13",
+ "portal": null,
+ "portal_id": "",
+ "portal_status": "",
+ "portal_status_date": "",
+ "replaces": "task130",
+ "history": "architecture 1 (marketing-consumer-research, card-randomised member offers) shipped 2026-10-10, FAILED_TO_STUMP; re-rooted 2026-10-13"
 }

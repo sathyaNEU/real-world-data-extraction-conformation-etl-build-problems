@@ -1,66 +1,65 @@
 {
-  "task": "task273",
-  "owner": "sathay3012",
-  "status": "PAUSED",
-  "domain": "urban-regional-science",
-  "objective": "descriptive-distribution",
-  "stage": 2,
-  "stage_name": "design",
-  "updated": "2026-10-27",
-  "stump": "A competent solver removes each main's valve-bounded segment as the GIS draws it and counts the properties on it plus those cut off from supply, filing a register of about 93 mains and 15 km; the step that lands it there is taking every valve in the GIS as one the crews can close, when the exercising programme's latest visits found about one valve in six seized or missing, so a burst beside one of them takes out the next segment too and cuts off the estates behind it (golden about 173 mains, 21 km).",
-  "architecture": 3,
-  "loops": 0,
-  "precut": {
-    "exit": null,
-    "date": ""
+ "task": "task273",
+ "status": "PAUSED",
+ "domain": "urban-regional-science",
+ "objective": "descriptive-distribution",
+ "stage": 2,
+ "stage_name": "design",
+ "updated": "2026-10-27",
+ "stump": "A competent solver removes each main's valve-bounded segment as the GIS draws it and counts the properties on it plus those cut off from supply, filing a register of about 93 mains and 15 km; the step that lands it there is taking every valve in the GIS as one the crews can close, when the exercising programme's latest visits found about one valve in six seized or missing, so a burst beside one of them takes out the next segment too and cuts off the estates behind it (golden about 173 mains, 21 km).",
+ "architecture": 3,
+ "loops": 0,
+ "precut": {
+  "exit": null,
+  "date": ""
+ },
+ "leak": {
+  "leak_py": "",
+  "reader": ""
+ },
+ "duplicate_check": {
+  "heart": "",
+  "nearest": "0.10 task148 v1 (lineage), a hazard sum over a backer; nothing here is a hazard"
+ },
+ "judge": {
+  "verdict": "",
+  "disposition": "",
+  "report": ""
+ },
+ "returned": [
+  {
+   "date": "2026-10-27",
+   "portal": "both responses filed the golden: cover four of the seven uses (taxicabs, ride-hail, parcel and courier delivery vans, app-based delivery), each disclosing that it estimated every use's miles because no file holds them; the only construction that files those four is rung R4 (each use's share of the struck vehicles within road class, day type and hour, scaled by the Department's miles for the stratum), so both walked the full decisive step",
+   "repair": "design: re-rooted to architecture 3 on 2026-10-27 (the slot's last), Carrisford Water's 2027 critical mains register; the coordinator's go-ahead to re-root relayed in session, retirement not taken",
+   "commit": "PAUSED (task273) of 2026-10-27"
+  }
+ ],
+ "resume": "Paused at stage 2. Architecture 3 (the slot's last) is dead on paper, 2026-10-27, before any data was cut: the readability screen finds the decisive rung readable on tests 1 to 3 and deletion tests 3 and 6 fire (## Readability screen, ## Ladder, ## Deletion tests), so the coordinator's rule to record it and stop rather than build applies. Owed: the author's choice between retiring the number, its third architecture now spent on paper, and a fourth draw beyond the slot's cap; retirement is not taken without asking. The card is marked architecture_spent; architecture 2's shipped files are still in the folder.",
+ "approved": null,
+ "delivered": null,
+ "portal": null,
+ "portal_id": "",
+ "portal_status": "",
+ "portal_status_date": "",
+ "architectures": [
+  {
+   "architecture": 1,
+   "drawn": "2026-10-22",
+   "fate": "spent 2026-10-22 at stage 4: both isolated scored readers named coordinated omission and rebuilt open arrivals per pod from standard 1.2, 2.2 and the plan's closed workload, landing the five; r273b every ask figure; judge DETERMINISTIC, APPROVE"
   },
-  "leak": {
-    "leak_py": "",
-    "reader": ""
+  {
+   "architecture": 2,
+   "drawn": "2026-10-22",
+   "fate": "shipped 2026-10-23 (five in-house readers off the call, judge pass 2 DETERMINISTIC, APPROVE); spent 2026-10-27 at the portal: both responses ran the field's own stratified induced exposure (road class by day type by hour, scaled by the Department's miles) and filed the golden four",
+   "driver": "The decisive quantity is each group's rate of causing a two-party event per unit of travel when no record measures any group's travel; the uninvolved parties of those events measure it, but they are drawn where events are frequent, so their share overstates the travel of groups that travel at frequent-event times and places and has to be taken within each such stratum and scaled by the stratum's measured total travel."
   },
-  "duplicate_check": {
-    "heart": "",
-    "nearest": "0.10 task148 v1 (lineage), a hazard sum over a backer; nothing here is a hazard"
-  },
-  "judge": {
-    "verdict": "",
-    "disposition": "",
-    "report": ""
-  },
-  "returned": [
-    {
-      "date": "2026-10-27",
-      "portal": "both responses filed the golden: cover four of the seven uses (taxicabs, ride-hail, parcel and courier delivery vans, app-based delivery), each disclosing that it estimated every use's miles because no file holds them; the only construction that files those four is rung R4 (each use's share of the struck vehicles within road class, day type and hour, scaled by the Department's miles for the stratum), so both walked the full decisive step",
-      "repair": "design: re-rooted to architecture 3 on 2026-10-27 (the slot's last), Carrisford Water's 2027 critical mains register; the coordinator's go-ahead to re-root relayed in session, retirement not taken",
-      "commit": "PAUSED (task273) of 2026-10-27"
-    }
-  ],
-  "resume": "Paused at stage 2. Architecture 3 (the slot's last) is dead on paper, 2026-10-27, before any data was cut: the readability screen finds the decisive rung readable on tests 1 to 3 and deletion tests 3 and 6 fire (## Readability screen, ## Ladder, ## Deletion tests), so the coordinator's rule to record it and stop rather than build applies. Owed: the author's choice between retiring the number, its third architecture now spent on paper, and a fourth draw beyond the slot's cap; retirement is not taken without asking. The card is marked architecture_spent; architecture 2's shipped files are still in the folder.",
-  "approved": null,
-  "delivered": null,
-  "portal": null,
-  "portal_id": "",
-  "portal_status": "",
-  "portal_status_date": "",
-  "architectures": [
-    {
-      "architecture": 1,
-      "drawn": "2026-10-22",
-      "fate": "spent 2026-10-22 at stage 4: both isolated scored readers named coordinated omission and rebuilt open arrivals per pod from standard 1.2, 2.2 and the plan's closed workload, landing the five; r273b every ask figure; judge DETERMINISTIC, APPROVE"
-    },
-    {
-      "architecture": 2,
-      "drawn": "2026-10-22",
-      "fate": "shipped 2026-10-23 (five in-house readers off the call, judge pass 2 DETERMINISTIC, APPROVE); spent 2026-10-27 at the portal: both responses ran the field's own stratified induced exposure (road class by day type by hour, scaled by the Department's miles) and filed the golden four",
-      "driver": "The decisive quantity is each group's rate of causing a two-party event per unit of travel when no record measures any group's travel; the uninvolved parties of those events measure it, but they are drawn where events are frequent, so their share overstates the travel of groups that travel at frequent-event times and places and has to be taken within each such stratum and scaled by the stratum's measured total travel."
-    },
-    {
-      "architecture": 3,
-      "drawn": "2026-10-27",
-      "registered": "2026-10-27T06:38:27Z",
-      "fate": "spent on paper 2026-10-27 at stage 2, never cut: the decisive rung readable on tests 1 to 3 (the shut-off clause, the programme's operable flag, unreachable demand as the task type's own pattern), deletion tests 3 and 6 fire",
-      "driver": "The deciding quantity is the demand a unit's failure leaves without any path to supply, where a failure takes out not the unit alone but the whole area bounded by the nearest boundary devices that can actually be operated, and which devices can operate is recorded only in a maintenance history kept for another purpose; removing the unit alone, or the area the as-drawn devices bound, files a smaller and different set."
-    }
-  ],
-  "seed": "DA23 (an open-source security fund's 60 maintainer stipends): set aside at the draw; the world is new (Tried and rejected)"
+  {
+   "architecture": 3,
+   "drawn": "2026-10-27",
+   "registered": "2026-10-27T06:38:27Z",
+   "fate": "spent on paper 2026-10-27 at stage 2, never cut: the decisive rung readable on tests 1 to 3 (the shut-off clause, the programme's operable flag, unreachable demand as the task type's own pattern), deletion tests 3 and 6 fire",
+   "driver": "The deciding quantity is the demand a unit's failure leaves without any path to supply, where a failure takes out not the unit alone but the whole area bounded by the nearest boundary devices that can actually be operated, and which devices can operate is recorded only in a maintenance history kept for another purpose; removing the unit alone, or the area the as-drawn devices bound, files a smaller and different set."
+  }
+ ],
+ "seed": "DA23 (an open-source security fund's 60 maintainer stipends): set aside at the draw; the world is new (Tried and rejected)"
 }

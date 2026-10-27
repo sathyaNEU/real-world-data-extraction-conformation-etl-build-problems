@@ -1,41 +1,40 @@
 {
-  "task": "task262",
-  "owner": "sathay3012",
-  "status": "SHIPPED",
-  "domain": "sociology-demography",
-  "objective": "descriptive-distribution",
-  "stage": 5,
-  "stage_name": "ship",
-  "updated": "2026-10-15",
-  "stump": "The default path names Halverston because it measures each region's elasticity only on the families with a complete five-year tax history, a narrower and better-off slice in most regions; across every child, with the census year's transitory part taken out by the variance the tax history shows within each region's families, Selvane Valley stands highest.",
-  "architecture": 1,
-  "loops": 0,
-  "precut": {
-    "exit": 0,
-    "date": "2026-10-15"
-  },
-  "leak": {
-    "leak_py": "REVIEW (no LEAK: the program's name in the brief, data terms in the guide, a distractor naming regions)",
-    "reader": "three loops: no decisive-step sentence, no ranking or helper file, no answer figure, the deciding step analytical; realism tells from loops 1 and 2 fixed, loop 3 clean"
-  },
-  "duplicate_check": {
-    "heart": "WARN (question form which; nearest driver 0.06); surface clean",
-    "nearest": "0.06 (task459, task253 v3, task34 lineage); structural repeats of task256 v1 and task54 differentiated"
-  },
-  "judge": {
-    "verdict": "DETERMINISTIC",
-    "disposition": "APPROVE",
-    "report": "task262/determinism_check_report.md",
-    "gate_g": "method_or_model_selection, analytical_non_defect",
-    "gate_h": "domain pass, layers pass, decisive step analytical"
-  },
-  "returned": [],
-  "resume": "",
-  "approved": null,
-  "delivered": "2026-10-15",
-  "portal": null,
-  "draw": {
-    "card": "cards/task262.json registered 2026-10-15T08:18:34Z",
-    "guard": "WARN (question form which); nearest driver 0.06"
-  }
+ "task": "task262",
+ "status": "SHIPPED",
+ "domain": "sociology-demography",
+ "objective": "descriptive-distribution",
+ "stage": 5,
+ "stage_name": "ship",
+ "updated": "2026-10-15",
+ "stump": "The default path names Halverston because it measures each region's elasticity only on the families with a complete five-year tax history, a narrower and better-off slice in most regions; across every child, with the census year's transitory part taken out by the variance the tax history shows within each region's families, Selvane Valley stands highest.",
+ "architecture": 1,
+ "loops": 0,
+ "precut": {
+  "exit": 0,
+  "date": "2026-10-15"
+ },
+ "leak": {
+  "leak_py": "REVIEW (no LEAK: the program's name in the brief, data terms in the guide, a distractor naming regions)",
+  "reader": "three loops: no decisive-step sentence, no ranking or helper file, no answer figure, the deciding step analytical; realism tells from loops 1 and 2 fixed, loop 3 clean"
+ },
+ "duplicate_check": {
+  "heart": "WARN (question form which; nearest driver 0.06); surface clean",
+  "nearest": "0.06 (task459, task253 v3, task34 lineage); structural repeats of task256 v1 and task54 differentiated"
+ },
+ "judge": {
+  "verdict": "DETERMINISTIC",
+  "disposition": "APPROVE",
+  "report": "task262/determinism_check_report.md",
+  "gate_g": "method_or_model_selection, analytical_non_defect",
+  "gate_h": "domain pass, layers pass, decisive step analytical"
+ },
+ "returned": [],
+ "resume": "",
+ "approved": null,
+ "delivered": "2026-10-15",
+ "portal": null,
+ "draw": {
+  "card": "cards/task262.json registered 2026-10-15T08:18:34Z",
+  "guard": "WARN (question form which); nearest driver 0.06"
+ }
 }

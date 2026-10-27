@@ -1,45 +1,44 @@
 {
-  "task": "task259",
-  "owner": "sathay3012",
-  "status": "SHIPPED",
-  "domain": "survey-research-official-statistics / nonresponse-calibration-measurement-error-adjustment",
-  "objective": "descriptive-distribution",
-  "stage": 5,
-  "stage_name": "ship",
-  "updated": "2026-10-13",
-  "stump": "Matched respondents' base pay taken as reported files the Data Engineer III midpoint at $164,000; ageing each report by the re-reporters' own pay growth (4.7 per cent a year) files $175,000; ageing by the level's movement read across the pooled reports (1.1 per cent a year) files $166,000; ageing by the level's movement read within employers (2.7 per cent a year) files the golden $170,000.",
-  "architecture": 1,
-  "loops": 1,
-  "precut": {
-    "exit": 0,
-    "date": "2026-10-13"
-  },
-  "leak": {
-    "leak_py": "REVIEW (no LEAK) on the loop-1 cut",
-    "reader": "loop 1: no decisive-step sentence, no ranking or helper file, nothing names the employers' arrival; 4.3 read as vague on restating (ruled as in loop 0)"
-  },
-  "duplicate_check": {
-    "heart": "WARN (answered)",
-    "nearest": "task445 0.08; surface promotes task258 and task87, author-triggered adjudication not run"
-  },
-  "judge": {
-    "verdict": "DETERMINISTIC (loop 1, one isolated thread)",
-    "disposition": "APPROVE",
-    "report": "task259/determinism_check_report_loop1.md (loop 0: determinism_check_report.md)",
-    "gate_g": "method_or_model_selection, analytical_non_defect, surface_read_dependency no, sole_data_defect no",
-    "gate_h": "domain pass, layers pass, decisive_step analytical"
-  },
-  "returned": [
-    {
-      "date": "2026-10-13",
-      "portal": "none: hardened at the author's request for a second stumping layer before any portal result",
-      "repair": "design",
-      "commit": "the RESHIPPED (task259) commit of 2026-10-13"
-    }
-  ],
-  "resume": "shipped; next event is the author's portal result",
-  "approved": null,
-  "delivered": "2026-10-13",
-  "portal": null,
-  "seed": "DA09 (START_HERE): world, decision and quantity kept"
+ "task": "task259",
+ "status": "SHIPPED",
+ "domain": "survey-research-official-statistics / nonresponse-calibration-measurement-error-adjustment",
+ "objective": "descriptive-distribution",
+ "stage": 5,
+ "stage_name": "ship",
+ "updated": "2026-10-13",
+ "stump": "Matched respondents' base pay taken as reported files the Data Engineer III midpoint at $164,000; ageing each report by the re-reporters' own pay growth (4.7 per cent a year) files $175,000; ageing by the level's movement read across the pooled reports (1.1 per cent a year) files $166,000; ageing by the level's movement read within employers (2.7 per cent a year) files the golden $170,000.",
+ "architecture": 1,
+ "loops": 1,
+ "precut": {
+  "exit": 0,
+  "date": "2026-10-13"
+ },
+ "leak": {
+  "leak_py": "REVIEW (no LEAK) on the loop-1 cut",
+  "reader": "loop 1: no decisive-step sentence, no ranking or helper file, nothing names the employers' arrival; 4.3 read as vague on restating (ruled as in loop 0)"
+ },
+ "duplicate_check": {
+  "heart": "WARN (answered)",
+  "nearest": "task445 0.08; surface promotes task258 and task87, author-triggered adjudication not run"
+ },
+ "judge": {
+  "verdict": "DETERMINISTIC (loop 1, one isolated thread)",
+  "disposition": "APPROVE",
+  "report": "task259/determinism_check_report_loop1.md (loop 0: determinism_check_report.md)",
+  "gate_g": "method_or_model_selection, analytical_non_defect, surface_read_dependency no, sole_data_defect no",
+  "gate_h": "domain pass, layers pass, decisive_step analytical"
+ },
+ "returned": [
+  {
+   "date": "2026-10-13",
+   "portal": "none: hardened at the author's request for a second stumping layer before any portal result",
+   "repair": "design",
+   "commit": "the RESHIPPED (task259) commit of 2026-10-13"
+  }
+ ],
+ "resume": "shipped; next event is the author's portal result",
+ "approved": null,
+ "delivered": "2026-10-13",
+ "portal": null,
+ "seed": "DA09 (START_HERE): world, decision and quantity kept"
 }

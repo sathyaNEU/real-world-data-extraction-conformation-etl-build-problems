@@ -1,55 +1,54 @@
 {
-  "task": "task168",
-  "owner": "sathya8571",
-  "status": "SHIPPED",
-  "domain": "supply-chain-logistics",
-  "objective": "forecasting",
-  "stage": 5,
-  "stage_name": "ship",
-  "updated": "2026-10-18",
-  "stump": "A strong solver who sees the routes are full carries the 2025 gauge changes' 0.80 extra passengers per extra seat onto the 620,224 added seats and files 500,000 against the golden of 175,000, when each sold-out departure's demand has to be completed from the booking build of the departures of its own month that never sold out.",
-  "architecture": 1,
-  "loops": 2,
-  "precut": {
-    "exit": 0,
-    "date": "2026-10-18",
-    "checks": 51
-  },
-  "leak": {
-    "leak_py": "REVIEW 2026-10-18 --asof 2025-12-12, no LEAK (232 seats and the estimand's wording in the planning basis; field definitions in the dictionary; planned dates in the fleet register, on the H16 allow-list; answered in the note's Leak sweep)",
-    "reader": "rounds 1 to 3: no leak; round 3 on 02b3b6bb Q1 none, Q6 analytical, the unit read as essentially unambiguous, missed both ask devices (LIN-CTA 5,353); its one residual, a lap infant in a request's pax, forced and recorded under Residual"
-  },
-  "duplicate_check": {
-    "heart": "WARN 2026-10-18, no BLOCK (overuse.objective, repeat.deliverables against task166, same-puzzle NOTE against task70 differentiated on the card)",
-    "nearest": "surface: task70 (0.079) and task167 back to back (0.087, the same decisive gap and decision type on the cards; different pattern, domain, Layer 2 family and strategy; task167 registered after this card), both left to the author's optional clone-check, each with a differentiation line on the card"
-  },
-  "judge": {
-    "verdict": "DETERMINISTIC, APPROVE, no fix (round 3 on 02b3b6bb); round 2 NOT_DETERMINISTIC, SEND_BACK on the 18 turn-away counts; round 1 DETERMINISTIC, APPROVE",
-    "disposition": "round 1's rule 3 audit AT_RISK repaired in one rebuild, recheck PASS; round 2's SEND_BACK repaired by filing the turn-away unit in the ask's sentence with the golden its literal execution and every main-side figure frozen, the recheck's optional fixes folded in; round 3 clean, its optional note taken (block 1 states the 0.80 on its basis, golden only, target.zip byte-identical); rule 3 recheck round 2 PASS, P(one) about 0.14, P(both) about 0.02 independent and 0.04 to 0.06 correlated",
-    "report": "judge-task168c/verdict.md and leak-task168c/reader_answers.md, relayed by the coordinator"
-  },
-  "returned": [],
-  "resume": "",
-  "approved": null,
-  "delivered": "2026-10-18",
-  "portal": null,
-  "portal_id": "",
-  "portal_status": "",
-  "portal_status_date": "",
-  "wave": "wave 7 (new), seed FC39 (world, decision and quantity kept; the seed's planning standard of carried plus denied bookings not shipped)",
-  "guard": "WARN, no BLOCK, against the registered card (2026-10-18T06:47:15Z): overuse.objective (the lane), repeat.deliverables (pptx+xlsx against task166), same-puzzle NOTE against task70 v2 differentiated; context_artifact and forcing_event redrawn before registration after task198 v4 and task199 entered the window",
-  "stage3": {
-    "generator_checks": "107 assertions, 0 failed",
-    "verify": "32 checks, 0 failed",
-    "rebuild": "byte-identical",
-    "figures_check": "exit 0 (47 figures)",
-    "voice_check": "exit 0",
-    "ceiling": "pair 28.5, mirror leakage 0.0, both on the call 45.0 (generator/ceiling.py on a fresh unzip of target.zip); single cracks 0 of 18 each",
-    "call": "175,000 additional passengers (nearest 25,000; 174,865)",
-    "default_path": "500,000 (495,838)",
-    "precut": "exit 0 (51 checks)",
-    "h1_audit": "target/ and golden/ clean inside 2024-01-01 to 2025-12-12",
-    "target_zip_sha256": "02b3b6bb13eb117d836cf10bbe7c0a85878f3523192b5f3594289deab8b0236a",
-    "ask": "unit filed in prompt.txt's ask sentence; turned away 50,632 (LIN-CTA 4,760); cracker 47,484 and 60,404, 0 of 18 each"
-  }
+ "task": "task168",
+ "status": "SHIPPED",
+ "domain": "supply-chain-logistics",
+ "objective": "forecasting",
+ "stage": 5,
+ "stage_name": "ship",
+ "updated": "2026-10-18",
+ "stump": "A strong solver who sees the routes are full carries the 2025 gauge changes' 0.80 extra passengers per extra seat onto the 620,224 added seats and files 500,000 against the golden of 175,000, when each sold-out departure's demand has to be completed from the booking build of the departures of its own month that never sold out.",
+ "architecture": 1,
+ "loops": 2,
+ "precut": {
+  "exit": 0,
+  "date": "2026-10-18",
+  "checks": 51
+ },
+ "leak": {
+  "leak_py": "REVIEW 2026-10-18 --asof 2025-12-12, no LEAK (232 seats and the estimand's wording in the planning basis; field definitions in the dictionary; planned dates in the fleet register, on the H16 allow-list; answered in the note's Leak sweep)",
+  "reader": "rounds 1 to 3: no leak; round 3 on 02b3b6bb Q1 none, Q6 analytical, the unit read as essentially unambiguous, missed both ask devices (LIN-CTA 5,353); its one residual, a lap infant in a request's pax, forced and recorded under Residual"
+ },
+ "duplicate_check": {
+  "heart": "WARN 2026-10-18, no BLOCK (overuse.objective, repeat.deliverables against task166, same-puzzle NOTE against task70 differentiated on the card)",
+  "nearest": "surface: task70 (0.079) and task167 back to back (0.087, the same decisive gap and decision type on the cards; different pattern, domain, Layer 2 family and strategy; task167 registered after this card), both left to the author's optional clone-check, each with a differentiation line on the card"
+ },
+ "judge": {
+  "verdict": "DETERMINISTIC, APPROVE, no fix (round 3 on 02b3b6bb); round 2 NOT_DETERMINISTIC, SEND_BACK on the 18 turn-away counts; round 1 DETERMINISTIC, APPROVE",
+  "disposition": "round 1's rule 3 audit AT_RISK repaired in one rebuild, recheck PASS; round 2's SEND_BACK repaired by filing the turn-away unit in the ask's sentence with the golden its literal execution and every main-side figure frozen, the recheck's optional fixes folded in; round 3 clean, its optional note taken (block 1 states the 0.80 on its basis, golden only, target.zip byte-identical); rule 3 recheck round 2 PASS, P(one) about 0.14, P(both) about 0.02 independent and 0.04 to 0.06 correlated",
+  "report": "judge-task168c/verdict.md and leak-task168c/reader_answers.md, relayed by the coordinator"
+ },
+ "returned": [],
+ "resume": "",
+ "approved": null,
+ "delivered": "2026-10-18",
+ "portal": null,
+ "portal_id": "",
+ "portal_status": "",
+ "portal_status_date": "",
+ "wave": "wave 7 (new), seed FC39 (world, decision and quantity kept; the seed's planning standard of carried plus denied bookings not shipped)",
+ "guard": "WARN, no BLOCK, against the registered card (2026-10-18T06:47:15Z): overuse.objective (the lane), repeat.deliverables (pptx+xlsx against task166), same-puzzle NOTE against task70 v2 differentiated; context_artifact and forcing_event redrawn before registration after task198 v4 and task199 entered the window",
+ "stage3": {
+  "generator_checks": "107 assertions, 0 failed",
+  "verify": "32 checks, 0 failed",
+  "rebuild": "byte-identical",
+  "figures_check": "exit 0 (47 figures)",
+  "voice_check": "exit 0",
+  "ceiling": "pair 28.5, mirror leakage 0.0, both on the call 45.0 (generator/ceiling.py on a fresh unzip of target.zip); single cracks 0 of 18 each",
+  "call": "175,000 additional passengers (nearest 25,000; 174,865)",
+  "default_path": "500,000 (495,838)",
+  "precut": "exit 0 (51 checks)",
+  "h1_audit": "target/ and golden/ clean inside 2024-01-01 to 2025-12-12",
+  "target_zip_sha256": "02b3b6bb13eb117d836cf10bbe7c0a85878f3523192b5f3594289deab8b0236a",
+  "ask": "unit filed in prompt.txt's ask sentence; turned away 50,632 (LIN-CTA 4,760); cracker 47,484 and 60,404, 0 of 18 each"
+ }
 }

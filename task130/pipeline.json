@@ -1,184 +1,183 @@
 {
-  "task": "task130",
-  "owner": "sathya8571",
-  "status": "SHIPPED",
-  "domain": "actuarial-science-insurance",
-  "objective": "forecasting",
-  "stage": 5,
-  "stage_name": "ship",
-  "updated": "2026-10-16",
-  "stump": "A strong solver who reads the claims-made window correctly counts the Claims the 2016 to 2024 experience would make by 31 December 2027 from each entity's Transition Date and prices them at each specialty class's average trended Claim cost, filing $2,500,000; the step that lands it there is pricing the window's Claims at the cost of all Claims, when the Claims a first claims-made year catches are the disclosed-harm settlements made within weeks and the program requests made months later, while the average carries the demands and suits made a year or more later; costing each experience Claim at its own delay against each entity's days in the trust gives $1,250,000.",
-  "architecture": 4,
-  "loops": 0,
-  "precut": {
-    "exit": 0,
-    "date": "2026-10-16",
-    "checks": 49
-  },
-  "leak": {
-    "leak_py": "REVIEW 2026-10-16 on the shipped pack (--asof 2026-10-12), no LEAK, sweep 11 clean: sweep 3 (the call's words in the documents that define the trust), sweep 4 (stump nouns in the funding policy and the dictionary, their own terms), sweep 6 (entity names beside numbers; none ranks the entities on the contribution), sweep 9 (the 2026 policy terms' 2027 end dates); each answered in the design note's Build record and the report's Solver's-eye read",
-    "reader": "2026-10-16 round 3a, hardened asks (cut 410a3ff6): clean on Q1 to Q4, Q6 analytical; every REVIEW line harmless, funding policy 3.6 echoing the prompt's rounding harmless; its ask readings (the latest loss run as the latest valuation, the claim-key join, OPEN or REOPENED counted per Claim, paid FTE as hours/173.33) each governed by the shipped files per the judge"
-  },
-  "duplicate_check": {
-    "heart": "WARN 2026-10-16 (people.first: Lori against task129, an older build); this slot's lineage drivers (round 1, round 3b, round 3c) differentiated",
-    "nearest": "task85 0.07 (other slots)",
-    "surface": "2026-10-16: one promoted pair, task102, on the card axes only (answered by the card's differentiation line); people Derek White, Lori Williams, Walter Butler, all on the card",
-    "validate": "186 cards, 0 invalid"
-  },
-  "judge": {
-    "verdict": "DETERMINISTIC 2026-10-16 (judge-task130r3d, cut 410a3ff6): APPROVE, no fix, Gate H analytical; every figure reproduced ($1,263,838 to $1,250,000; missing claims Alderwick 4 / $839,000, the medical group 5 / $16,000, Tolliver Falls and Brennick none; all twelve FTE cells)",
-    "disposition": "APPROVE, shipped as judged with nothing under target/ moved; its two thin spots accepted (design note Accepted risks): month-start exposure gives $1,387,788, rounding to $1,500,000, closed by the staffing plan's 'held through the month'; Ask B's hours/173.33 against the position fte field",
-    "report": "determinism_check_report.md (earlier rounds: determinism_check_report_round1.md, _round2.md, _round3a.md on cut fac4903f, _round3b.md)",
-    "gate_g": "forecasting, analytical_non_defect, surface_read_dependency no, sole_data_defect no",
-    "gate_h": "domain pass, layers pass, decisive_step analytical",
-    "previous": "round 3a (cut fac4903f) DETERMINISTIC, APPROVE, Gate H analytical; round 3b (cut 710fb603) DETERMINISTIC, APPROVE, weakest point Gate C, then rejected on the rule 3 read; round 2 NOT_DETERMINISTIC, SEND_BACK; round 1 DETERMINISTIC, APPROVE"
-  },
-  "returned": [
-    {
-      "date": "2026-10-15",
-      "portal": "rule 3 audit AT_RISK (round 1, shipped 10-12 at $784,000): funding policy 3.4 filed the estimator by elimination, 3.2 read as a recipe, the headline wrong answer a contract misreading",
-      "repair": "design (rule 3 rework of the decisive step: each window Claim costed at its own report lag; round 3a restored with harder asks)",
-      "round": 3,
-      "commit": "RESHIPPED (task130): rule 3 rework, each window claim costed at its own report lag; $1,250,000"
-    }
-  ],
-  "resume": "",
-  "approved": null,
-  "delivered": "2026-10-16",
-  "portal": null,
-  "portal_id": "",
-  "portal_status": "",
-  "portal_status_date": "",
-  "lineage": [
-    {
-      "architecture": "v1",
-      "portal": {
-        "date": "2026-10-10",
-        "result": "failed",
-        "note": "both top models filed the golden seven-section designation"
-      }
-    },
-    {
-      "architecture": "v2",
-      "portal": {
-        "date": "2026-10-11",
-        "result": "failed",
-        "note": "the reported model filed the golden: 46 units (0 / 7 / 20 / 19) at GBP 21,615 a week, with the month-end run-off"
-      },
-      "duplicate_check": {
-        "heart": "PASS (NOTE vs task102, differentiated)",
-        "nearest": "task119 0.08",
-        "surface": "",
-        "clone_check": "loop 1: TEMPLATE (Track B, reject tier) against task73 world ten; task86 v2 first cut carried the same move and was solved on the portal; clone_check_report_task130_loop1.md"
-      },
-      "leak": {
-        "leak_py": "REVIEW, no LEAK",
-        "reader": "loop 1: no leak (method filed as council rules); realism list not repaired (device spent)"
-      },
-      "fate": "spent: failed on the portal; hardening loop 1 rejected at the clone pre-flight as a template of task73 world ten"
-    },
-    {
-      "architecture": "v3",
-      "portal": null,
-      "fate": "spent 2026-10-11: landed by the in-house solver in round 1 (the analog cohort's tier PMPM, trended and count-weighted, proxy 100); hardening loop 1 found no forced, fork-free deeper rung; the number was retired with three architectures spent",
-      "duplicate_check": {
-        "heart": "guard.py heart task130 after repair 4: WARN (people.first: Phillip against task101, Michelle against task104; heart text peaks at 0.06, task102's stump)",
-        "nearest": "task64 (v1, lineage) 0.06 on the driver; guard.py check after repair 4: WARN only (first names Phillip and Michelle in older builds)",
-        "surface": "guard.py surface after repair 2: task132 (0.152) and task83 (0.140) promoted on percentile only, both on format mix and deliverable species alone (no file name, prompt, schema or entity overlap); nothing to rename. People: WARN Phillip (older build); Ellery Benefit and Johnson Phillip are an administrator's name and a reversed persona, not new personas",
-        "clone_check": ""
-      },
-      "leak": {
-        "leak_py": "REVIEW, no LEAK after repair 4 (the same 4 REVIEW lines, answered in the design note's Leak review)",
-        "reader": "round 3 (Sonnet, after repair 2): no sentence names the decisive step, no file ranks or states the answer, none exists only to help; REVIEW lines harmless. Its two main-call forks are closed in repair 3 (RCV8692544 off the final list, the model scoring only members the run's eligibility file carries on the list's date; Schedule C.1(e) defines a Risk Tier as the tier the model places a member in when it draws a list). Repair 3 changed two documents under target/ (the agreement's C.1(e); the renewal letter's exhibits, by re-centring), so a fresh read is due before the solver round. Repair 4 changed one document under target/ (the renewal letter again, by re-centring off round values: two HDHP rates by a cent, four exhibit cells by $3 to $38) and the claims data on the centred claims only; the fresh read is still due."
-      },
-      "retired": {
-        "date": "2026-10-11",
-        "reason": "v3 landed by the in-house solver in round 1 (proxy 100); hardening loop 1 found no forced, fork-free rung beyond the analog; v1 and v2 failed on the portal",
-        "decided_by": "author"
-      },
-      "target_zip_sha256": "149049c424d397052c999f5d42997215d15c93fd0bd2397ed12703c0eba9af7a"
-    },
-    {
-      "architecture": "v4 round 1",
-      "portal": null,
-      "fate": "shipped 2026-10-12 at $784,000 (round 1, judge DETERMINISTIC, APPROVE); the rule 3 audit of 2026-10-15 read it AT_RISK: funding policy 3.4 filed the estimator by eliminating every rival, 3.2 read as a cost-per-FTE-year recipe, and the headline wrong answer ($4,854,000) was a contract misreading; reworked in place (same world, trust, entities, transitions and Plan Year)",
-      "build": {
-        "claims_seed": 3671,
-        "checks": "130 of 130 (SF1 to SF20, the ask stops and convergences, house fixes H5, H9, H16)",
-        "verify": "match (own code path from the bundle: call, default, 4 entities, 7 classes, ask A, ask B)",
-        "rebuild": "byte-identical (target/, golden/, metadata.json, figures.json, target.zip)",
-        "figures_check": "exit 0 (49 figures)",
-        "call": "$784,000",
-        "default": "$4,854,000",
-        "date": "2026-10-12",
-        "precut": "exit 0 (38 checks)",
-        "freeze": "freeze.py check --mode determinism PASS (snapshot taken before the stage 4 fix pass)",
-        "house_fixes": "pass (H1 golden container clean, H4 and H7 zip members equal the pack, H8 citations resolve)",
-        "final_rebuild": "target/ byte-identical to the cut the reader and the judge read (16 files); golden workbook changed in its Notes line only; pptx, metadata.json and figures.json unchanged",
-        "target_zip": "16 members, 1405167 bytes, sha256 b1240baa6b1ca96e44209eca9a9a56d22d0199672338b11006ef0793ef4787c2"
-      },
-      "target_zip_sha256": "b1240baa6b1ca96e44209eca9a9a56d22d0199672338b11006ef0793ef4787c2"
-    }
-  ],
-  "wave": "wave 1 (re-root: retired), the author's fourth root",
-  "build": {
-    "claims_seed": 2077,
-    "checks": "204 of 204 (the three-rules block R1 to R3c; 20 natural routes a full bin off, 10 converging constructions in the bin, one sigma, dominance, the population-truth oracle; SF1 to SF32; the asks' stops including S6 for each new device, the no-reference suits unique, never a gap and with closed twins, the TRM payouts on every ended position, the graduates trained to June; fairness and convergences; separation, distractor deletion; realism and hygiene; H5, H9, H16)",
-    "verify": "match (own code path from the bundle: call, default, ask A with the no-reference match, ask B with the month trainee test)",
-    "rebuild": "byte-identical (target/, golden/, metadata.json, figures.json, target.zip)",
-    "figures_check": "exit 0 (32 figures)",
-    "call": "$1,250,000 ($1,263,838 unrounded; Poisson SE $75,623), round 3a's to the cent",
-    "default": "$2,500,000 ($2,605,268, the window's count at each class's average cost)",
-    "date": "2026-10-16",
-    "precut": "exit 0 (49 checks, 0 WARN)",
-    "voice_check": "PASS (881 characters, the prompt round 3a's)",
-    "house_fixes": "pass (H1 pack and golden containers clean on the scrub audit; H4 and H7 archive members equal the pack by content; H11 one submission.md and one prompt.txt; H9, H16, H5 asserted in checks.py)",
-    "target_zip": "17 members, sha256 410a3ff6b4593066e58f58bc84a39785185ee84e476f503c9a74e7254fc462eb (the ship rebuild into scratch matched target/ file for file)"
-  },
-  "target_zip_sha256": "410a3ff6b4593066e58f58bc84a39785185ee84e476f503c9a74e7254fc462eb",
-  "round_2": {
-    "date": "2026-10-14",
-    "commit": "f44902f",
-    "decisive_step": "the claims-made window costed on the Early Resolution Program hospitals' class experience, $587,000",
-    "judge": "NOT_DETERMINISTIC, SEND_BACK: funding policy 3.2's \"the System's own claims experience\" read literally gives the pooled $312,000 (a main-call fork); the entity split and the September 2026 FTE attribution left open",
-    "fate": "sent back; the author kept round 1 as shipped and every task130 file was restored to 9bf3cbc"
-  },
-  "audit_10_10": {
-    "date": "2026-10-14",
-    "verdict": "COMPLIANT_WEAK",
-    "lines_added": "nine ## Three rules lines added to the design note, true to round 1"
-  },
-  "rule3_rework": {
-    "date": "2026-10-15",
-    "audit": "rule 3 audit AT_RISK (scratchpad rule3/task130.md) with the 10/10 audit COMPLIANT_WEAK (scratchpad audit/task130.md)",
-    "policy": "funding policy cut to the WHAT: 3.1 estimand, 3.2 the two exposure bases, 3.3 experience 2016 to 2024 pooled within each class, 3.4 valuation and trend; agreement 5.2 cut",
-    "decisive_step": "each window Claim costed at its own report lag (the experience's cost is non-monotone in the lag and class-specific); the lag truncation is the default path's own construction",
-    "default_and_rivals": "$2,500,000 (count at the class average); $750,000 (within-a-year average); $1,000,000 (log-linear curve, gamma GLMs, half-year bands, same-year average); $1,500,000 (lognormal mean, gamma log-lag); $1,750,000 to $13,000,000 (calendar shortcuts, mature year)",
-    "asks": "A: open claims under each expiring carrier's policies missing from its latest run (device: the coverage line holds the current programme on claims former carriers insure); B: paid covered FTE July to September 2026 (device: residents' moonlighting positions under attending profiles); pair ceiling 37.1",
-    "world_changes": "establishment doubled; experience from 2016; claims routes disclosed / program request / direct; escalation 2.2 per cent; per-diem clinicians; residents' moonlighting in HCM; carrier histories (Halberd, Corrigan Lane, Westerholm, Tallis) with Quillan from 2021 and 2019, Stoneleigh from 2019 and 2022; invoices distractor; premium history now read by Ask A",
-    "round_3b": {
-      "date": "2026-10-15",
-      "commit": "a8c46d9",
-      "design": "a second layer: the disclosure settlements began at each entity between January and July 2019, the window costed on each entity's experience from its first settlement; claims seed 3006; $1,250,000 ($1,281,536), default $1,000,000 ($961,261)",
-      "judge": "DETERMINISTIC, APPROVE, weakest point Gate C (policy 3.3 read literally as whole-experience pooling)",
-      "fate": "rejected 2026-10-16: any recent-years trim lands, and 3.3 reads as whole-experience pooling (Gate C), per the rule 3 read (scratchpad rule3/task130_r3b.md)"
-    },
-    "round_3c": {
-      "date": "2026-10-16",
-      "design": "the disclosure starts spread entity by entity so every common trim misses, and Gate C closed by a WHAT in 3.1",
-      "fate": "rejected on the prototype, never built: with the starts at 2017, 2019, 2021 and 2023 the trims after the last start land (2023+ and 2024+ in the bin); only the largest entity starting in the fourth quarter of 2024 makes every calendar trim miss by a bin, and then the own-start constructions scatter or are biased by a bin and the prorated in-year share still lands; the WHAT in 3.1 sends a solver to each entity's lag table, where the onset is a step from none",
-      "evidence": "scratchpad r3_130c (ev2.py to ev5.py the expected-value search, proto.py, proto2.py and record.py the simulations)"
-    },
-    "fallback": {
-      "date": "2026-10-16",
-      "design": "round 3a restored from 265e1ed (cut fac4903f reproduced); Ask A's second device a suit the clinician sent straight to the carrier, on the run with no insured reference (S6: TFH 1 $436,000, AMC 5 $954,000, CMG 6 $140,000, BCH 1 $132,000); Ask B's second device nine June 2026 graduates in attending vacancies, their ended GME positions paid a TRM payout with no hours (S6 moves 9 of 12 cells); every golden figure unchanged",
-      "pair": "37.1 with the cracker and the mirror; 37.1 or 40.2 when the strongest cracks one device; 53.1 with both on the call (49.1 if each whether is folded into its count); the floor with both on the call is 45, so at or under 40 with both on the call is out of the asks' reach"
-    }
-  },
-  "accepted_risk": {
-    "date": "2026-10-16",
-    "decided_by": "author",
-    "risk": "the rule 3 re-audits rated stump strength moderate: the dollar-weighted claims-made step factor lands the golden; if both top responses land the call the pair is about 53 (53.1), or 49 (49.1) if the rubric folds each whether into its count; the 3b and 3c strengthenings failed (Tried and rejected); the author chose to ship 3a with the harder asks",
-    "judge_thin_spots": "month-start exposure $1,387,788 rounds to $1,500,000, closed by the staffing plan's 'held through the month'; Ask B hours/173.33 against the position fte field"
+ "task": "task130",
+ "status": "SHIPPED",
+ "domain": "actuarial-science-insurance",
+ "objective": "forecasting",
+ "stage": 5,
+ "stage_name": "ship",
+ "updated": "2026-10-16",
+ "stump": "A strong solver who reads the claims-made window correctly counts the Claims the 2016 to 2024 experience would make by 31 December 2027 from each entity's Transition Date and prices them at each specialty class's average trended Claim cost, filing $2,500,000; the step that lands it there is pricing the window's Claims at the cost of all Claims, when the Claims a first claims-made year catches are the disclosed-harm settlements made within weeks and the program requests made months later, while the average carries the demands and suits made a year or more later; costing each experience Claim at its own delay against each entity's days in the trust gives $1,250,000.",
+ "architecture": 4,
+ "loops": 0,
+ "precut": {
+  "exit": 0,
+  "date": "2026-10-16",
+  "checks": 49
+ },
+ "leak": {
+  "leak_py": "REVIEW 2026-10-16 on the shipped pack (--asof 2026-10-12), no LEAK, sweep 11 clean: sweep 3 (the call's words in the documents that define the trust), sweep 4 (stump nouns in the funding policy and the dictionary, their own terms), sweep 6 (entity names beside numbers; none ranks the entities on the contribution), sweep 9 (the 2026 policy terms' 2027 end dates); each answered in the design note's Build record and the report's Solver's-eye read",
+  "reader": "2026-10-16 round 3a, hardened asks (cut 410a3ff6): clean on Q1 to Q4, Q6 analytical; every REVIEW line harmless, funding policy 3.6 echoing the prompt's rounding harmless; its ask readings (the latest loss run as the latest valuation, the claim-key join, OPEN or REOPENED counted per Claim, paid FTE as hours/173.33) each governed by the shipped files per the judge"
+ },
+ "duplicate_check": {
+  "heart": "WARN 2026-10-16 (people.first: Lori against task129, an older build); this slot's lineage drivers (round 1, round 3b, round 3c) differentiated",
+  "nearest": "task85 0.07 (other slots)",
+  "surface": "2026-10-16: one promoted pair, task102, on the card axes only (answered by the card's differentiation line); people Derek White, Lori Williams, Walter Butler, all on the card",
+  "validate": "186 cards, 0 invalid"
+ },
+ "judge": {
+  "verdict": "DETERMINISTIC 2026-10-16 (judge-task130r3d, cut 410a3ff6): APPROVE, no fix, Gate H analytical; every figure reproduced ($1,263,838 to $1,250,000; missing claims Alderwick 4 / $839,000, the medical group 5 / $16,000, Tolliver Falls and Brennick none; all twelve FTE cells)",
+  "disposition": "APPROVE, shipped as judged with nothing under target/ moved; its two thin spots accepted (design note Accepted risks): month-start exposure gives $1,387,788, rounding to $1,500,000, closed by the staffing plan's 'held through the month'; Ask B's hours/173.33 against the position fte field",
+  "report": "determinism_check_report.md (earlier rounds: determinism_check_report_round1.md, _round2.md, _round3a.md on cut fac4903f, _round3b.md)",
+  "gate_g": "forecasting, analytical_non_defect, surface_read_dependency no, sole_data_defect no",
+  "gate_h": "domain pass, layers pass, decisive_step analytical",
+  "previous": "round 3a (cut fac4903f) DETERMINISTIC, APPROVE, Gate H analytical; round 3b (cut 710fb603) DETERMINISTIC, APPROVE, weakest point Gate C, then rejected on the rule 3 read; round 2 NOT_DETERMINISTIC, SEND_BACK; round 1 DETERMINISTIC, APPROVE"
+ },
+ "returned": [
+  {
+   "date": "2026-10-15",
+   "portal": "rule 3 audit AT_RISK (round 1, shipped 10-12 at $784,000): funding policy 3.4 filed the estimator by elimination, 3.2 read as a recipe, the headline wrong answer a contract misreading",
+   "repair": "design (rule 3 rework of the decisive step: each window Claim costed at its own report lag; round 3a restored with harder asks)",
+   "round": 3,
+   "commit": "RESHIPPED (task130): rule 3 rework, each window claim costed at its own report lag; $1,250,000"
   }
+ ],
+ "resume": "",
+ "approved": null,
+ "delivered": "2026-10-16",
+ "portal": null,
+ "portal_id": "",
+ "portal_status": "",
+ "portal_status_date": "",
+ "lineage": [
+  {
+   "architecture": "v1",
+   "portal": {
+    "date": "2026-10-10",
+    "result": "failed",
+    "note": "both top models filed the golden seven-section designation"
+   }
+  },
+  {
+   "architecture": "v2",
+   "portal": {
+    "date": "2026-10-11",
+    "result": "failed",
+    "note": "the reported model filed the golden: 46 units (0 / 7 / 20 / 19) at GBP 21,615 a week, with the month-end run-off"
+   },
+   "duplicate_check": {
+    "heart": "PASS (NOTE vs task102, differentiated)",
+    "nearest": "task119 0.08",
+    "surface": "",
+    "clone_check": "loop 1: TEMPLATE (Track B, reject tier) against task73 world ten; task86 v2 first cut carried the same move and was solved on the portal; clone_check_report_task130_loop1.md"
+   },
+   "leak": {
+    "leak_py": "REVIEW, no LEAK",
+    "reader": "loop 1: no leak (method filed as council rules); realism list not repaired (device spent)"
+   },
+   "fate": "spent: failed on the portal; hardening loop 1 rejected at the clone pre-flight as a template of task73 world ten"
+  },
+  {
+   "architecture": "v3",
+   "portal": null,
+   "fate": "spent 2026-10-11: landed by the in-house solver in round 1 (the analog cohort's tier PMPM, trended and count-weighted, proxy 100); hardening loop 1 found no forced, fork-free deeper rung; the number was retired with three architectures spent",
+   "duplicate_check": {
+    "heart": "guard.py heart task130 after repair 4: WARN (people.first: Phillip against task101, Michelle against task104; heart text peaks at 0.06, task102's stump)",
+    "nearest": "task64 (v1, lineage) 0.06 on the driver; guard.py check after repair 4: WARN only (first names Phillip and Michelle in older builds)",
+    "surface": "guard.py surface after repair 2: task132 (0.152) and task83 (0.140) promoted on percentile only, both on format mix and deliverable species alone (no file name, prompt, schema or entity overlap); nothing to rename. People: WARN Phillip (older build); Ellery Benefit and Johnson Phillip are an administrator's name and a reversed persona, not new personas",
+    "clone_check": ""
+   },
+   "leak": {
+    "leak_py": "REVIEW, no LEAK after repair 4 (the same 4 REVIEW lines, answered in the design note's Leak review)",
+    "reader": "round 3 (Sonnet, after repair 2): no sentence names the decisive step, no file ranks or states the answer, none exists only to help; REVIEW lines harmless. Its two main-call forks are closed in repair 3 (RCV8692544 off the final list, the model scoring only members the run's eligibility file carries on the list's date; Schedule C.1(e) defines a Risk Tier as the tier the model places a member in when it draws a list). Repair 3 changed two documents under target/ (the agreement's C.1(e); the renewal letter's exhibits, by re-centring), so a fresh read is due before the solver round. Repair 4 changed one document under target/ (the renewal letter again, by re-centring off round values: two HDHP rates by a cent, four exhibit cells by $3 to $38) and the claims data on the centred claims only; the fresh read is still due."
+   },
+   "retired": {
+    "date": "2026-10-11",
+    "reason": "v3 landed by the in-house solver in round 1 (proxy 100); hardening loop 1 found no forced, fork-free rung beyond the analog; v1 and v2 failed on the portal",
+    "decided_by": "author"
+   },
+   "target_zip_sha256": "149049c424d397052c999f5d42997215d15c93fd0bd2397ed12703c0eba9af7a"
+  },
+  {
+   "architecture": "v4 round 1",
+   "portal": null,
+   "fate": "shipped 2026-10-12 at $784,000 (round 1, judge DETERMINISTIC, APPROVE); the rule 3 audit of 2026-10-15 read it AT_RISK: funding policy 3.4 filed the estimator by eliminating every rival, 3.2 read as a cost-per-FTE-year recipe, and the headline wrong answer ($4,854,000) was a contract misreading; reworked in place (same world, trust, entities, transitions and Plan Year)",
+   "build": {
+    "claims_seed": 3671,
+    "checks": "130 of 130 (SF1 to SF20, the ask stops and convergences, house fixes H5, H9, H16)",
+    "verify": "match (own code path from the bundle: call, default, 4 entities, 7 classes, ask A, ask B)",
+    "rebuild": "byte-identical (target/, golden/, metadata.json, figures.json, target.zip)",
+    "figures_check": "exit 0 (49 figures)",
+    "call": "$784,000",
+    "default": "$4,854,000",
+    "date": "2026-10-12",
+    "precut": "exit 0 (38 checks)",
+    "freeze": "freeze.py check --mode determinism PASS (snapshot taken before the stage 4 fix pass)",
+    "house_fixes": "pass (H1 golden container clean, H4 and H7 zip members equal the pack, H8 citations resolve)",
+    "final_rebuild": "target/ byte-identical to the cut the reader and the judge read (16 files); golden workbook changed in its Notes line only; pptx, metadata.json and figures.json unchanged",
+    "target_zip": "16 members, 1405167 bytes, sha256 b1240baa6b1ca96e44209eca9a9a56d22d0199672338b11006ef0793ef4787c2"
+   },
+   "target_zip_sha256": "b1240baa6b1ca96e44209eca9a9a56d22d0199672338b11006ef0793ef4787c2"
+  }
+ ],
+ "wave": "wave 1 (re-root: retired), the author's fourth root",
+ "build": {
+  "claims_seed": 2077,
+  "checks": "204 of 204 (the three-rules block R1 to R3c; 20 natural routes a full bin off, 10 converging constructions in the bin, one sigma, dominance, the population-truth oracle; SF1 to SF32; the asks' stops including S6 for each new device, the no-reference suits unique, never a gap and with closed twins, the TRM payouts on every ended position, the graduates trained to June; fairness and convergences; separation, distractor deletion; realism and hygiene; H5, H9, H16)",
+  "verify": "match (own code path from the bundle: call, default, ask A with the no-reference match, ask B with the month trainee test)",
+  "rebuild": "byte-identical (target/, golden/, metadata.json, figures.json, target.zip)",
+  "figures_check": "exit 0 (32 figures)",
+  "call": "$1,250,000 ($1,263,838 unrounded; Poisson SE $75,623), round 3a's to the cent",
+  "default": "$2,500,000 ($2,605,268, the window's count at each class's average cost)",
+  "date": "2026-10-16",
+  "precut": "exit 0 (49 checks, 0 WARN)",
+  "voice_check": "PASS (881 characters, the prompt round 3a's)",
+  "house_fixes": "pass (H1 pack and golden containers clean on the scrub audit; H4 and H7 archive members equal the pack by content; H11 one submission.md and one prompt.txt; H9, H16, H5 asserted in checks.py)",
+  "target_zip": "17 members, sha256 410a3ff6b4593066e58f58bc84a39785185ee84e476f503c9a74e7254fc462eb (the ship rebuild into scratch matched target/ file for file)"
+ },
+ "target_zip_sha256": "410a3ff6b4593066e58f58bc84a39785185ee84e476f503c9a74e7254fc462eb",
+ "round_2": {
+  "date": "2026-10-14",
+  "commit": "f44902f",
+  "decisive_step": "the claims-made window costed on the Early Resolution Program hospitals' class experience, $587,000",
+  "judge": "NOT_DETERMINISTIC, SEND_BACK: funding policy 3.2's \"the System's own claims experience\" read literally gives the pooled $312,000 (a main-call fork); the entity split and the September 2026 FTE attribution left open",
+  "fate": "sent back; the author kept round 1 as shipped and every task130 file was restored to 9bf3cbc"
+ },
+ "audit_10_10": {
+  "date": "2026-10-14",
+  "verdict": "COMPLIANT_WEAK",
+  "lines_added": "nine ## Three rules lines added to the design note, true to round 1"
+ },
+ "rule3_rework": {
+  "date": "2026-10-15",
+  "audit": "rule 3 audit AT_RISK (scratchpad rule3/task130.md) with the 10/10 audit COMPLIANT_WEAK (scratchpad audit/task130.md)",
+  "policy": "funding policy cut to the WHAT: 3.1 estimand, 3.2 the two exposure bases, 3.3 experience 2016 to 2024 pooled within each class, 3.4 valuation and trend; agreement 5.2 cut",
+  "decisive_step": "each window Claim costed at its own report lag (the experience's cost is non-monotone in the lag and class-specific); the lag truncation is the default path's own construction",
+  "default_and_rivals": "$2,500,000 (count at the class average); $750,000 (within-a-year average); $1,000,000 (log-linear curve, gamma GLMs, half-year bands, same-year average); $1,500,000 (lognormal mean, gamma log-lag); $1,750,000 to $13,000,000 (calendar shortcuts, mature year)",
+  "asks": "A: open claims under each expiring carrier's policies missing from its latest run (device: the coverage line holds the current programme on claims former carriers insure); B: paid covered FTE July to September 2026 (device: residents' moonlighting positions under attending profiles); pair ceiling 37.1",
+  "world_changes": "establishment doubled; experience from 2016; claims routes disclosed / program request / direct; escalation 2.2 per cent; per-diem clinicians; residents' moonlighting in HCM; carrier histories (Halberd, Corrigan Lane, Westerholm, Tallis) with Quillan from 2021 and 2019, Stoneleigh from 2019 and 2022; invoices distractor; premium history now read by Ask A",
+  "round_3b": {
+   "date": "2026-10-15",
+   "commit": "a8c46d9",
+   "design": "a second layer: the disclosure settlements began at each entity between January and July 2019, the window costed on each entity's experience from its first settlement; claims seed 3006; $1,250,000 ($1,281,536), default $1,000,000 ($961,261)",
+   "judge": "DETERMINISTIC, APPROVE, weakest point Gate C (policy 3.3 read literally as whole-experience pooling)",
+   "fate": "rejected 2026-10-16: any recent-years trim lands, and 3.3 reads as whole-experience pooling (Gate C), per the rule 3 read (scratchpad rule3/task130_r3b.md)"
+  },
+  "round_3c": {
+   "date": "2026-10-16",
+   "design": "the disclosure starts spread entity by entity so every common trim misses, and Gate C closed by a WHAT in 3.1",
+   "fate": "rejected on the prototype, never built: with the starts at 2017, 2019, 2021 and 2023 the trims after the last start land (2023+ and 2024+ in the bin); only the largest entity starting in the fourth quarter of 2024 makes every calendar trim miss by a bin, and then the own-start constructions scatter or are biased by a bin and the prorated in-year share still lands; the WHAT in 3.1 sends a solver to each entity's lag table, where the onset is a step from none",
+   "evidence": "scratchpad r3_130c (ev2.py to ev5.py the expected-value search, proto.py, proto2.py and record.py the simulations)"
+  },
+  "fallback": {
+   "date": "2026-10-16",
+   "design": "round 3a restored from 265e1ed (cut fac4903f reproduced); Ask A's second device a suit the clinician sent straight to the carrier, on the run with no insured reference (S6: TFH 1 $436,000, AMC 5 $954,000, CMG 6 $140,000, BCH 1 $132,000); Ask B's second device nine June 2026 graduates in attending vacancies, their ended GME positions paid a TRM payout with no hours (S6 moves 9 of 12 cells); every golden figure unchanged",
+   "pair": "37.1 with the cracker and the mirror; 37.1 or 40.2 when the strongest cracks one device; 53.1 with both on the call (49.1 if each whether is folded into its count); the floor with both on the call is 45, so at or under 40 with both on the call is out of the asks' reach"
+  }
+ },
+ "accepted_risk": {
+  "date": "2026-10-16",
+  "decided_by": "author",
+  "risk": "the rule 3 re-audits rated stump strength moderate: the dollar-weighted claims-made step factor lands the golden; if both top responses land the call the pair is about 53 (53.1), or 49 (49.1) if the rubric folds each whether into its count; the 3b and 3c strengthenings failed (Tried and rejected); the author chose to ship 3a with the harder asks",
+  "judge_thin_spots": "month-start exposure $1,387,788 rounds to $1,500,000, closed by the staffing plan's 'held through the month'; Ask B hours/173.33 against the position fte field"
+ }
 }

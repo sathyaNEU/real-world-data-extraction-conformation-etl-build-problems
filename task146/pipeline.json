@@ -1,86 +1,85 @@
 {
-  "task": "task146",
-  "owner": "sathya8571",
-  "status": "SHIPPED",
-  "domain": "survey-research-official-statistics/seasonal-adjustment-official-time-series-production",
-  "objective": "forecasting",
-  "stage": 5,
-  "stage_name": "ship",
-  "updated": "2026-10-16",
-  "stump": "Sizing the claims filed again in the first claims week of the fourth quarter region by region, each region's third-quarter ineligible determinations taken whole at the share its own past quarter turns show, calls about 15,000 initial claims for the week ended 10 October 2026; the step that lands it there is weighing every refusal of the quarter alike, when past turns show that in Western, Coastal and Island between two thirds and nine tenths of those refused in a quarter's last month file again in the first week against under one in five of those refused in its first two months, and this quarter's refusals there came 55.3 per cent in September against about a third in a quarter's last month at a usual turn, so the week is about 17,000; the national determinations at the national rate and the seasonal step call about 13,000.",
-  "architecture": 1,
-  "loops": 0,
-  "precut": {
-    "exit": 0,
-    "date": "2026-10-16"
+ "task": "task146",
+ "status": "SHIPPED",
+ "domain": "survey-research-official-statistics/seasonal-adjustment-official-time-series-production",
+ "objective": "forecasting",
+ "stage": 5,
+ "stage_name": "ship",
+ "updated": "2026-10-16",
+ "stump": "Sizing the claims filed again in the first claims week of the fourth quarter region by region, each region's third-quarter ineligible determinations taken whole at the share its own past quarter turns show, calls about 15,000 initial claims for the week ended 10 October 2026; the step that lands it there is weighing every refusal of the quarter alike, when past turns show that in Western, Coastal and Island between two thirds and nine tenths of those refused in a quarter's last month file again in the first week against under one in five of those refused in its first two months, and this quarter's refusals there came 55.3 per cent in September against about a third in a quarter's last month at a usual turn, so the week is about 17,000; the national determinations at the national rate and the seasonal step call about 13,000.",
+ "architecture": 1,
+ "loops": 0,
+ "precut": {
+  "exit": 0,
+  "date": "2026-10-16"
+ },
+ "leak": {
+  "leak_py": "REVIEW, no LEAK (2026-10-16, the shipped cut e5e9d268): the same eight lines, each answered in the design note's ## Leak review",
+  "reader": "five rounds in task146/leak_check_report.md (## Solver's-eye read): round 1 (the stage 3 cut 22f06ed9), round 2 (the repaired cut a040f6c1) and round 3 (the strengthened cut f0b43f3f) each Q1 to Q4 none and Q6 an analytical choice, round 3 never surfacing the month of the refusal; targeted re-read 1 (a502ea69) no leak, Q6 analytical, its realism tells in the case notes and the desk data log fixed in the realism pass; targeted re-read 2 (the shipped cut e5e9d268) no leak, nothing ranks or states a figure, Q6 analytical",
+  "rulings": [
+   "the VR notes and the 'amendment form emailed' notes do not change any count: technical notes section 5 counts a change only through an amended notice, and the judge reproduced all 24 Ask A cells on that reading",
+   "the chart's revised-or-first-reported question for past weeks is ungraded and low risk",
+   "the technical notes' completeness is the board's own methodology document, so it is not steering",
+   "the remaining regularity in the case notes is accepted as a residual realism risk"
+  ]
+ },
+ "duplicate_check": {
+  "heart": "WARN 2026-10-16 on the strengthened card (repeat.gate_g, overuse.gate_g, answered at the draw)",
+  "nearest": "driver 0.07 (task446 v2); surface exit 0, task134 and task54 promoted on the card signature for the author's clone-check"
+ },
+ "judge": {
+  "verdict": "DETERMINISTIC (round 3, on the strengthened cut f0b43f3f), Gate H analytical",
+  "disposition": "APPROVE; its optional CN051136 fix made; the later cuts (a502ea69, e5e9d268) changed only the case notes and the desk data log, no graded figure moved, freeze determinism PASS with nothing allowed",
+  "report": "task146/determinism_check_report.md (round 3: the call reproduced at 16,895, bootstrap 16,656 to 17,137, all 24 Ask A cells and 14 Ask B changes); history: determinism_check_report_round1.md (22f06ed9) and determinism_check_report_round2.md (a040f6c1), both DETERMINISTIC / APPROVE on the designs before the strengthening",
+  "stump_power": "moderate; its partial landing route (July 2026's refiling ratio applied to September's refusals gives about 17,000) recorded as an accepted risk"
+ },
+ "returned": [],
+ "resume": "",
+ "approved": null,
+ "delivered": "2026-10-16",
+ "portal": null,
+ "portal_id": "",
+ "portal_status": "",
+ "portal_status_date": "",
+ "wave": "wave 3 (new), seed FC17 (world, decision and quantity kept; pitfall re-found)",
+ "gates": {
+  "checks": "187, 0 failed",
+  "verify": "agrees (call 16,895, se 83, timing-blind 14,849, national 13,340, seasonal 13,241)",
+  "rebuilds": "two byte-identical; the final rebuild cut the shipped target.zip again (e5e9d268)",
+  "figures_check": "69 figures, 0 absent",
+  "precut": "49 checks, 0 FAIL, 0 WARN",
+  "voice_check": "exit 0",
+  "scrub": "target and golden clean",
+  "guard": "validate clean, heart WARN, surface exit 0",
+  "freeze": "determinism mode PASS with nothing allowed through the case-note cuts",
+  "leak_py": "REVIEW, no LEAK, the same eight lines answered"
+ },
+ "rule3_audits": [
+  {
+   "file": "scratchpad rule3/task146.md",
+   "commit": "f71f5a0",
+   "cut": "22f06ed9",
+   "verdict": "AT_RISK on data semantics",
+   "outcome": "fixed: the rule 3 repair filed the refiling in technical notes 2.3 (no size, timing or region) and moved the decisive step to its regional sizing"
   },
-  "leak": {
-    "leak_py": "REVIEW, no LEAK (2026-10-16, the shipped cut e5e9d268): the same eight lines, each answered in the design note's ## Leak review",
-    "reader": "five rounds in task146/leak_check_report.md (## Solver's-eye read): round 1 (the stage 3 cut 22f06ed9), round 2 (the repaired cut a040f6c1) and round 3 (the strengthened cut f0b43f3f) each Q1 to Q4 none and Q6 an analytical choice, round 3 never surfacing the month of the refusal; targeted re-read 1 (a502ea69) no leak, Q6 analytical, its realism tells in the case notes and the desk data log fixed in the realism pass; targeted re-read 2 (the shipped cut e5e9d268) no leak, nothing ranks or states a figure, Q6 analytical",
-    "rulings": [
-      "the VR notes and the 'amendment form emailed' notes do not change any count: technical notes section 5 counts a change only through an amended notice, and the judge reproduced all 24 Ask A cells on that reading",
-      "the chart's revised-or-first-reported question for past weeks is ungraded and low risk",
-      "the technical notes' completeness is the board's own methodology document, so it is not steering",
-      "the remaining regularity in the case notes is accepted as a residual realism risk"
-    ]
+  {
+   "file": "scratchpad rule3/task146_r2.md",
+   "commit": "67e305d",
+   "cut": "a040f6c1",
+   "verdict": "PASS, but the stump too weak",
+   "outcome": "strengthened: the refiling share by month of refusal (both top responses had landed regional sizing about half to three quarters of the time)"
   },
-  "duplicate_check": {
-    "heart": "WARN 2026-10-16 on the strengthened card (repeat.gate_g, overuse.gate_g, answered at the draw)",
-    "nearest": "driver 0.07 (task446 v2); surface exit 0, task134 and task54 promoted on the card signature for the author's clone-check"
-  },
-  "judge": {
-    "verdict": "DETERMINISTIC (round 3, on the strengthened cut f0b43f3f), Gate H analytical",
-    "disposition": "APPROVE; its optional CN051136 fix made; the later cuts (a502ea69, e5e9d268) changed only the case notes and the desk data log, no graded figure moved, freeze determinism PASS with nothing allowed",
-    "report": "task146/determinism_check_report.md (round 3: the call reproduced at 16,895, bootstrap 16,656 to 17,137, all 24 Ask A cells and 14 Ask B changes); history: determinism_check_report_round1.md (22f06ed9) and determinism_check_report_round2.md (a040f6c1), both DETERMINISTIC / APPROVE on the designs before the strengthening",
-    "stump_power": "moderate; its partial landing route (July 2026's refiling ratio applied to September's refusals gives about 17,000) recorded as an accepted risk"
-  },
-  "returned": [],
-  "resume": "",
-  "approved": null,
-  "delivered": "2026-10-16",
-  "portal": null,
-  "portal_id": "",
-  "portal_status": "",
-  "portal_status_date": "",
-  "wave": "wave 3 (new), seed FC17 (world, decision and quantity kept; pitfall re-found)",
-  "gates": {
-    "checks": "187, 0 failed",
-    "verify": "agrees (call 16,895, se 83, timing-blind 14,849, national 13,340, seasonal 13,241)",
-    "rebuilds": "two byte-identical; the final rebuild cut the shipped target.zip again (e5e9d268)",
-    "figures_check": "69 figures, 0 absent",
-    "precut": "49 checks, 0 FAIL, 0 WARN",
-    "voice_check": "exit 0",
-    "scrub": "target and golden clean",
-    "guard": "validate clean, heart WARN, surface exit 0",
-    "freeze": "determinism mode PASS with nothing allowed through the case-note cuts",
-    "leak_py": "REVIEW, no LEAK, the same eight lines answered"
-  },
-  "rule3_audits": [
-    {
-      "file": "scratchpad rule3/task146.md",
-      "commit": "f71f5a0",
-      "cut": "22f06ed9",
-      "verdict": "AT_RISK on data semantics",
-      "outcome": "fixed: the rule 3 repair filed the refiling in technical notes 2.3 (no size, timing or region) and moved the decisive step to its regional sizing"
-    },
-    {
-      "file": "scratchpad rule3/task146_r2.md",
-      "commit": "67e305d",
-      "cut": "a040f6c1",
-      "verdict": "PASS, but the stump too weak",
-      "outcome": "strengthened: the refiling share by month of refusal (both top responses had landed regional sizing about half to three quarters of the time)"
-    },
-    {
-      "file": "scratchpad rule3/task146_r3.md",
-      "commit": "0f4de4d",
-      "cut": "f0b43f3f",
-      "verdict": "PASS and strong",
-      "outcome": "shipped as built (0.5 to 0.9 landers expected in the top two; eleven constructions outside the asserted 24 all land 17,000)"
-    }
-  ],
-  "accepted_risks": [
-    "the judge's partial landing route: applying July 2026's refiling ratio to September's refusals in Western, Coastal and Island gives about 17,000 without the region-by-month build",
-    "the remaining regularity in the case notes (residual realism risk, from the final re-read)"
-  ],
-  "shipped_cut": "commit 0a888d3, target.zip sha256 e5e9d268b7bd6c16d6a5cddd8940d004dbd9ac8645dd1ed80daf05e942720a54"
+  {
+   "file": "scratchpad rule3/task146_r3.md",
+   "commit": "0f4de4d",
+   "cut": "f0b43f3f",
+   "verdict": "PASS and strong",
+   "outcome": "shipped as built (0.5 to 0.9 landers expected in the top two; eleven constructions outside the asserted 24 all land 17,000)"
+  }
+ ],
+ "accepted_risks": [
+  "the judge's partial landing route: applying July 2026's refiling ratio to September's refusals in Western, Coastal and Island gives about 17,000 without the region-by-month build",
+  "the remaining regularity in the case notes (residual realism risk, from the final re-read)"
+ ],
+ "shipped_cut": "commit 0a888d3, target.zip sha256 e5e9d268b7bd6c16d6a5cddd8940d004dbd9ac8645dd1ed80daf05e942720a54"
 }

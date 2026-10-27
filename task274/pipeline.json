@@ -1,67 +1,66 @@
 {
-  "task": "task274",
-  "owner": "sathay3012",
-  "status": "OPEN",
-  "domain": "survey-research-official-statistics",
-  "objective": "descriptive-distribution",
-  "stage": 1,
-  "stage_name": "draw",
-  "updated": "2026-10-25",
-  "stump": "A competent analyst pools the December re-assays of stored duplicates by the reagent lot and analyzer each original result carries, adds the October accuracy check's bias for the lot and analyzer it measured, weights each county and names the wrong counties, or divides every result by the check's bias and names fewer; the immunoassay's bias is set at each calibration, the calibrator lot changed on its own dates and every recalibration moved it, so only each result's own calibration's shift, read from the re-assays of results measured under it and anchored at the check's own calibration, names the golden set.",
-  "architecture": 3,
-  "loops": 0,
-  "precut": {
-    "exit": 0,
-    "date": "2026-10-23",
-    "checks": 51,
-    "fail": 0,
-    "warn": 0
+ "task": "task274",
+ "status": "OPEN",
+ "domain": "survey-research-official-statistics",
+ "objective": "descriptive-distribution",
+ "stage": 1,
+ "stage_name": "draw",
+ "updated": "2026-10-25",
+ "stump": "A competent analyst pools the December re-assays of stored duplicates by the reagent lot and analyzer each original result carries, adds the October accuracy check's bias for the lot and analyzer it measured, weights each county and names the wrong counties, or divides every result by the check's bias and names fewer; the immunoassay's bias is set at each calibration, the calibrator lot changed on its own dates and every recalibration moved it, so only each result's own calibration's shift, read from the re-assays of results measured under it and anchored at the check's own calibration, names the golden set.",
+ "architecture": 3,
+ "loops": 0,
+ "precut": {
+  "exit": 0,
+  "date": "2026-10-23",
+  "checks": 51,
+  "fail": 0,
+  "warn": 0
+ },
+ "leak": {
+  "leak_py": "REVIEW (6 lines: county names in the plan; world vocabulary in five documents; none names the move)",
+  "reader": "a2r1 and a2r2 (architecture 2) both landed the call: each result under its own calibration's ratio from the December re-assays, anchored at the October check's calibration; asks held (0 of 32 figures each)"
+ },
+ "duplicate_check": {
+  "heart": "WARN (no BLOCK)",
+  "nearest": "task478 v5 0.10"
+ },
+ "judge": {
+  "verdict": null,
+  "disposition": null,
+  "report": "none: the judge thread (run a2r1) was stopped once both scored readers had landed the call, which spends the architecture whatever the verdict"
+ },
+ "returned": [],
+ "resume": "Reopened 2026-10-25 at the author's direction: no number in this lane is retired. Re-root at the draw in a fresh world, architecture 3; read DESIGN_NOTE.md's Tried and rejected first, every dead architecture and screen there stays dead. Before the reopen: RETIRED 2026-10-23: architectures 1 and 2 spent at stage 4 on Gate F, and the third dead at its draw (every candidate screened was spent in the corpus, landed by a filed sentence or a reflex, or left open across the field's estimators; the note's last Tried and rejected line). The number is not reused; wave 5 continues with task275.",
+ "approved": null,
+ "delivered": null,
+ "portal": null,
+ "portal_id": "",
+ "portal_status": "",
+ "portal_status_date": "",
+ "seed": "DA24 (quantity only: a count on a distribution read against a fixed limit; world redrawn twice)",
+ "build": {
+  "seed": 893,
+  "checks_failed": 0,
+  "verify": "PASS",
+  "byte_identical": true,
+  "figures_check": "50 of 50",
+  "cracker": "0 of 32, pair ceiling 28.5"
+ },
+ "architectures": [
+  {
+   "architecture": 1,
+   "drawn": "2026-10-23",
+   "fate": "spent 2026-10-23 at stage 4: Gate F failed, the scored reader fitted a survivor curve to the plant ledger and committed the golden 33,000"
   },
-  "leak": {
-    "leak_py": "REVIEW (6 lines: county names in the plan; world vocabulary in five documents; none names the move)",
-    "reader": "a2r1 and a2r2 (architecture 2) both landed the call: each result under its own calibration's ratio from the December re-assays, anchored at the October check's calibration; asks held (0 of 32 figures each)"
+  {
+   "architecture": 2,
+   "drawn": "2026-10-23",
+   "fate": "spent 2026-10-23 at stage 4: Gate F failed, both scored readers built the per-calibration bridge anchored at the check and committed the golden four counties"
   },
-  "duplicate_check": {
-    "heart": "WARN (no BLOCK)",
-    "nearest": "task478 v5 0.10"
-  },
-  "judge": {
-    "verdict": null,
-    "disposition": null,
-    "report": "none: the judge thread (run a2r1) was stopped once both scored readers had landed the call, which spends the architecture whatever the verdict"
-  },
-  "returned": [],
-  "resume": "Reopened 2026-10-25 at the author's direction: no number in this lane is retired. Re-root at the draw in a fresh world, architecture 3; read DESIGN_NOTE.md's Tried and rejected first, every dead architecture and screen there stays dead. Before the reopen: RETIRED 2026-10-23: architectures 1 and 2 spent at stage 4 on Gate F, and the third dead at its draw (every candidate screened was spent in the corpus, landed by a filed sentence or a reflex, or left open across the field's estimators; the note's last Tried and rejected line). The number is not reused; wave 5 continues with task275.",
-  "approved": null,
-  "delivered": null,
-  "portal": null,
-  "portal_id": "",
-  "portal_status": "",
-  "portal_status_date": "",
-  "seed": "DA24 (quantity only: a count on a distribution read against a fixed limit; world redrawn twice)",
-  "build": {
-    "seed": 893,
-    "checks_failed": 0,
-    "verify": "PASS",
-    "byte_identical": true,
-    "figures_check": "50 of 50",
-    "cracker": "0 of 32, pair ceiling 28.5"
-  },
-  "architectures": [
-    {
-      "architecture": 1,
-      "drawn": "2026-10-23",
-      "fate": "spent 2026-10-23 at stage 4: Gate F failed, the scored reader fitted a survivor curve to the plant ledger and committed the golden 33,000"
-    },
-    {
-      "architecture": 2,
-      "drawn": "2026-10-23",
-      "fate": "spent 2026-10-23 at stage 4: Gate F failed, both scored readers built the per-calibration bridge anchored at the check and committed the golden four counties"
-    },
-    {
-      "architecture": 3,
-      "drawn": null,
-      "fate": "not drawn 2026-10-23: no candidate cleared the re-root screens (the note's last Tried and rejected line), so the number retires"
-    }
-  ]
+  {
+   "architecture": 3,
+   "drawn": null,
+   "fate": "not drawn 2026-10-23: no candidate cleared the re-root screens (the note's last Tried and rejected line), so the number retires"
+  }
+ ]
 }

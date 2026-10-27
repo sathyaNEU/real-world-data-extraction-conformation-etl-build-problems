@@ -1,36 +1,35 @@
 {
-  "task": "task465",
-  "owner": "oviya1301",
-  "status": "SHIPPED",
-  "domain": "general-statistics-data-science",
-  "objective": "etl",
-  "stage": 5,
-  "stage_name": "ship",
-  "updated": "2026-10-17",
-  "stump": "The default path aligns the two surveys and multiplies each division-and-band cell's burden share by its equipment share, treating the two traits as independent inside the cell, so it counts 8,200 eligible households where the fused table holds 13,300 and staffs 26 caseworkers where the programme needs 38; carrying the screening pilot's within-band association into each cell, with both surveys' shares kept, counts them.",
-  "architecture": 2,
-  "loops": 0,
-  "precut": {
-    "exit": 0,
-    "date": "2026-10-17"
-  },
-  "leak": {
-    "leak_py": "REVIEW (no LEAK), 2026-10-17",
-    "reader": "three rounds: rounds 1 and 2 filed the default path (26) and read the annex as a recipe (ruled the stump at work; annex reworded); round 3 after the estimation-domain pin"
-  },
-  "duplicate_check": {
-    "heart": "WARN (answered in the draw)",
-    "nearest": "surface: nine card-level pairs promoted for the author's read"
-  },
-  "judge": {
-    "verdict": "DETERMINISTIC",
-    "disposition": "APPROVE (re-judge after pass 1 FIX_NOW)",
-    "report": "determinism_check_report_pass2.md (FIX_NOW), determinism_check_report_pass3.md (APPROVE)"
-  },
-  "returned": [],
-  "resume": "",
-  "approved": null,
-  "delivered": "2026-10-17",
-  "portal": null,
-  "source_note": "architecture 2 drawn afresh in the ETL objective after architecture 1's SEND_BACK (seed ET22's drought-cover world spent): statistical matching of two state surveys with a utility's screening pilot"
+ "task": "task465",
+ "status": "SHIPPED",
+ "domain": "general-statistics-data-science",
+ "objective": "etl",
+ "stage": 5,
+ "stage_name": "ship",
+ "updated": "2026-10-17",
+ "stump": "The default path aligns the two surveys and multiplies each division-and-band cell's burden share by its equipment share, treating the two traits as independent inside the cell, so it counts 8,200 eligible households where the fused table holds 13,300 and staffs 26 caseworkers where the programme needs 38; carrying the screening pilot's within-band association into each cell, with both surveys' shares kept, counts them.",
+ "architecture": 2,
+ "loops": 0,
+ "precut": {
+  "exit": 0,
+  "date": "2026-10-17"
+ },
+ "leak": {
+  "leak_py": "REVIEW (no LEAK), 2026-10-17",
+  "reader": "three rounds: rounds 1 and 2 filed the default path (26) and read the annex as a recipe (ruled the stump at work; annex reworded); round 3 after the estimation-domain pin"
+ },
+ "duplicate_check": {
+  "heart": "WARN (answered in the draw)",
+  "nearest": "surface: nine card-level pairs promoted for the author's read"
+ },
+ "judge": {
+  "verdict": "DETERMINISTIC",
+  "disposition": "APPROVE (re-judge after pass 1 FIX_NOW)",
+  "report": "determinism_check_report_pass2.md (FIX_NOW), determinism_check_report_pass3.md (APPROVE)"
+ },
+ "returned": [],
+ "resume": "",
+ "approved": null,
+ "delivered": "2026-10-17",
+ "portal": null,
+ "source_note": "architecture 2 drawn afresh in the ETL objective after architecture 1's SEND_BACK (seed ET22's drought-cover world spent): statistical matching of two state surveys with a utility's screening pilot"
 }

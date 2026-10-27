@@ -1,47 +1,46 @@
 {
-  "task": "task140",
-  "owner": "sathya8571",
-  "status": "SHIPPED",
-  "domain": "supply-chain-logistics",
-  "objective": "forecasting",
-  "stage": 5,
-  "stage_name": "ship",
-  "updated": "2026-10-16",
-  "stump": "A competent solver approves the firm requests under their frozen budgets at the Q1 rate card, forecasts each platform service's busiest hour as the line through its last four quarters and files 122,000 cores (Ends on); the step that lands it there is carrying the storage service forward on its own history, when its busiest hour is set by the machines in service and the batch cores running (2.9404 and 0.20804 cores each), so the guarantee has to be solved together with the storage it brings: the golden is 109,000.",
-  "architecture": 1,
-  "loops": 0,
-  "precut": {
-    "exit": 0,
-    "date": "2026-10-15"
-  },
-  "leak": {
-    "leak_py": "REVIEW 2026-10-16 on the shipped cut, target.zip 5823a2b7 (no LEAK; every REVIEW line answered in ## Leak review)",
-    "reader": "stage 4 2026-10-12: no leak, Q1 to Q4 none, every Q5 sentence executes to the golden's inputs, Q6 the platform forecast as the analytical choice; its realism tells and ask readings fixed or closed at stage 4 (SF19 to SF38); targeted re-read of the seven changed documents 2026-10-15: nothing quoted for Q1 to Q4, Q6 the platform forecast analytical, realism notes recorded and left; re-read after the realism repair 2026-10-15: the dictionary's late-sample sentence and the operations log's restart reminder read as signposts, and the Q3 report's hours-held clause and twice-told 19 August account flagged; all four trimmed in the generator, no figure moved; round 3 2026-10-16 on target.zip 5823a2b7: Q1 to Q4 none, the trimmed notes no longer steer, Q6 the platform forecast analytical (its own route about 120,000 to 122,000 against 109,000); the 2026-12-11 refresh-racks log line ruled harmless (the plan revision's own log entry)"
-  },
-  "duplicate_check": {
-    "heart": "WARN (overuse.objective), no BLOCK (2026-10-15)",
-    "nearest": "driver 0.05 (task32 v3 lineage); surface 0 promoted pairs (2026-10-15)"
-  },
-  "judge": {
-    "verdict": "DETERMINISTIC (2026-10-16, re-judge on target.zip 5823a2b7), APPROVE, Gate H domain pass, layers pass, decisive step analytical; every figure and ask reproduced, no fix",
-    "disposition": "APPROVE, shipped as built; residual forks recorded as low risk and declined: batch at its guarantee at the busiest hour (SF14: closed by the files, 99.9 to 100 per cent held in every quarter on file and the eight-quarter back-test; the optional memo pin declined, it would point at the coupling) and the preemption share's denominator (SF34: clipped to July to September, the table's period); the stage 4 judge (2026-10-12, DETERMINISTIC, APPROVE, both risks closed in the record) kept as history",
-    "report": "task140/determinism_check_report.md (stage 4, 2026-10-12: determinism_check_report_round1.md)"
-  },
-  "returned": [
-    {
-      "date": "2026-10-15",
-      "portal": "realism audit: regressing cell-store on machines in service and batch cores gave 2.946 and 0.208 with a residual s.d. of 13 cores on a 25,000-core service, which reads as generator output",
-      "repair": "generator: cell-store's hourly load now carries what neither driver does (the small tenants' daily cycle, an AR(1) drift, the Tuesday 03:00 to 05:00 UTC rolling restart and hours with late daemon samples, each uncorrelated with the drivers within every quarter, draw 13 of 40 scanned); residual s.d. 62.0 cores; the dictionary and operations log carry the restart and the late samples; every graded figure unchanged (109,000; 726,624; 577,000; 38,000; 2,000; 2.94; 0.208; 1.208; every ask); the write-up's residual s.d. 13.0 to 62.0; rung R-1 119,000 to 118,000 (not graded); four more fits asserted to share the precision (restart hours left out, low hours left out, Huber, hour-of-week terms); after the reader's re-read the two explanatory notes were cut (the dictionary's cores_in_use to a terse definition, the restart reminder to one on-call line) and the Q3 report's hours-held clause and 19 August account trimmed, no figure moved (target.zip 5823a2b7)",
-      "commit": "RESHIPPED (task140): realism repair, cell-store telemetry noise and trimmed notes; guarantee 109,000 unchanged",
-      "shipped": "2026-10-16, target.zip 5823a2b7"
-    }
-  ],
-  "resume": "",
-  "approved": null,
-  "delivered": "2026-10-16",
-  "portal": null,
-  "portal_id": "",
-  "portal_status": "",
-  "portal_status_date": "",
-  "wave": "wave 2 (new), seed FC11"
+ "task": "task140",
+ "status": "SHIPPED",
+ "domain": "supply-chain-logistics",
+ "objective": "forecasting",
+ "stage": 5,
+ "stage_name": "ship",
+ "updated": "2026-10-16",
+ "stump": "A competent solver approves the firm requests under their frozen budgets at the Q1 rate card, forecasts each platform service's busiest hour as the line through its last four quarters and files 122,000 cores (Ends on); the step that lands it there is carrying the storage service forward on its own history, when its busiest hour is set by the machines in service and the batch cores running (2.9404 and 0.20804 cores each), so the guarantee has to be solved together with the storage it brings: the golden is 109,000.",
+ "architecture": 1,
+ "loops": 0,
+ "precut": {
+  "exit": 0,
+  "date": "2026-10-15"
+ },
+ "leak": {
+  "leak_py": "REVIEW 2026-10-16 on the shipped cut, target.zip 5823a2b7 (no LEAK; every REVIEW line answered in ## Leak review)",
+  "reader": "stage 4 2026-10-12: no leak, Q1 to Q4 none, every Q5 sentence executes to the golden's inputs, Q6 the platform forecast as the analytical choice; its realism tells and ask readings fixed or closed at stage 4 (SF19 to SF38); targeted re-read of the seven changed documents 2026-10-15: nothing quoted for Q1 to Q4, Q6 the platform forecast analytical, realism notes recorded and left; re-read after the realism repair 2026-10-15: the dictionary's late-sample sentence and the operations log's restart reminder read as signposts, and the Q3 report's hours-held clause and twice-told 19 August account flagged; all four trimmed in the generator, no figure moved; round 3 2026-10-16 on target.zip 5823a2b7: Q1 to Q4 none, the trimmed notes no longer steer, Q6 the platform forecast analytical (its own route about 120,000 to 122,000 against 109,000); the 2026-12-11 refresh-racks log line ruled harmless (the plan revision's own log entry)"
+ },
+ "duplicate_check": {
+  "heart": "WARN (overuse.objective), no BLOCK (2026-10-15)",
+  "nearest": "driver 0.05 (task32 v3 lineage); surface 0 promoted pairs (2026-10-15)"
+ },
+ "judge": {
+  "verdict": "DETERMINISTIC (2026-10-16, re-judge on target.zip 5823a2b7), APPROVE, Gate H domain pass, layers pass, decisive step analytical; every figure and ask reproduced, no fix",
+  "disposition": "APPROVE, shipped as built; residual forks recorded as low risk and declined: batch at its guarantee at the busiest hour (SF14: closed by the files, 99.9 to 100 per cent held in every quarter on file and the eight-quarter back-test; the optional memo pin declined, it would point at the coupling) and the preemption share's denominator (SF34: clipped to July to September, the table's period); the stage 4 judge (2026-10-12, DETERMINISTIC, APPROVE, both risks closed in the record) kept as history",
+  "report": "task140/determinism_check_report.md (stage 4, 2026-10-12: determinism_check_report_round1.md)"
+ },
+ "returned": [
+  {
+   "date": "2026-10-15",
+   "portal": "realism audit: regressing cell-store on machines in service and batch cores gave 2.946 and 0.208 with a residual s.d. of 13 cores on a 25,000-core service, which reads as generator output",
+   "repair": "generator: cell-store's hourly load now carries what neither driver does (the small tenants' daily cycle, an AR(1) drift, the Tuesday 03:00 to 05:00 UTC rolling restart and hours with late daemon samples, each uncorrelated with the drivers within every quarter, draw 13 of 40 scanned); residual s.d. 62.0 cores; the dictionary and operations log carry the restart and the late samples; every graded figure unchanged (109,000; 726,624; 577,000; 38,000; 2,000; 2.94; 0.208; 1.208; every ask); the write-up's residual s.d. 13.0 to 62.0; rung R-1 119,000 to 118,000 (not graded); four more fits asserted to share the precision (restart hours left out, low hours left out, Huber, hour-of-week terms); after the reader's re-read the two explanatory notes were cut (the dictionary's cores_in_use to a terse definition, the restart reminder to one on-call line) and the Q3 report's hours-held clause and 19 August account trimmed, no figure moved (target.zip 5823a2b7)",
+   "commit": "RESHIPPED (task140): realism repair, cell-store telemetry noise and trimmed notes; guarantee 109,000 unchanged",
+   "shipped": "2026-10-16, target.zip 5823a2b7"
+  }
+ ],
+ "resume": "",
+ "approved": null,
+ "delivered": "2026-10-16",
+ "portal": null,
+ "portal_id": "",
+ "portal_status": "",
+ "portal_status_date": "",
+ "wave": "wave 2 (new), seed FC11"
 }

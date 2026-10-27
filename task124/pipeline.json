@@ -1,168 +1,167 @@
 {
-  "task": "task124",
-  "owner": "sathya8571",
-  "status": "SHIPPED",
-  "domain": "energy-systems-utilities",
-  "objective": "forecasting",
-  "stage": 5,
-  "stage_name": "ship",
-  "updated": "2026-10-16",
-  "stump": "A competent solver joins the verification log to the inventory through the migration crosswalk, keeps the verified lines with no tap card and prices each zone's unknown lines at the share found lead or GRR in each construction era, filing the last zone in 2039; the step that lands it there is carrying an era-wide rate to lines that sit on other streets, and the careful solver who takes the 316 mains verified whole (2041, with or without the lead already found taken out), the share of tap cards that read lead or galvanized (2040) or the verified lines on each unknown line's own main (2039) still misses the deadline, because every one of those samples sits on lead or galvanized mains far more often than the unknown lines; within each kind of main, read from the cards on the other services of a line's main, the share differs by era (99.2, 95.0 and 60.6 per cent on lead or galvanized mains, a few in a thousand and then none on copper ones), and carried kind by kind and era by era to the unknown lines' own mix it finishes the last zone in 2037; one rate per kind across the eras keeps the year but changes nine zones' lines.",
-  "architecture": 2,
-  "loops": 2,
-  "precut": {
-    "exit": 0,
-    "date": "2026-10-16",
-    "checks": "49 checks, 0 FAIL, 0 WARN (19 fork rows)"
-  },
-  "three_rules": {
-    "domain": "pass (a water utility's estimate of the lead or GRR share among its Lead Status Unknown service lines, made the way inventory practice infers an unknown service from the cards of the services laid with it on the same main and the era it was laid in, transported from verification samples drawn street by street toward lead to the unknown lines' own mix of mains)",
-    "layers": "pass (Layer 1: the migration crosswalk and its padding, route-specific result codes, re-verifications and two date formats, assessor zero years, and the ask paths' exports; Layer 2: estimand identification under a shifted mix of mains, the share stable only within the kind of main and the era, one rate per kind across eras refuted by the record)",
-    "decisive_step": "analytical (each unknown line's kind of main read from the tap cards on the other services of its main, the share within each kind and era carried to the unknown lines' own mix; every era-wide rate misses the deadline (every verification 2039, the mains verified whole 2041, the tap cards 2040, the own main's verified lines 2039, the nearest 1.95 programme years past); the plan's HOW sentences executed word for word on the clean truth file 2039; asserted R1 to R3c in checks.py)"
-  },
-  "lineage": [
+ "task": "task124",
+ "status": "SHIPPED",
+ "domain": "energy-systems-utilities",
+ "objective": "forecasting",
+ "stage": 5,
+ "stage_name": "ship",
+ "updated": "2026-10-16",
+ "stump": "A competent solver joins the verification log to the inventory through the migration crosswalk, keeps the verified lines with no tap card and prices each zone's unknown lines at the share found lead or GRR in each construction era, filing the last zone in 2039; the step that lands it there is carrying an era-wide rate to lines that sit on other streets, and the careful solver who takes the 316 mains verified whole (2041, with or without the lead already found taken out), the share of tap cards that read lead or galvanized (2040) or the verified lines on each unknown line's own main (2039) still misses the deadline, because every one of those samples sits on lead or galvanized mains far more often than the unknown lines; within each kind of main, read from the cards on the other services of a line's main, the share differs by era (99.2, 95.0 and 60.6 per cent on lead or galvanized mains, a few in a thousand and then none on copper ones), and carried kind by kind and era by era to the unknown lines' own mix it finishes the last zone in 2037; one rate per kind across the eras keeps the year but changes nine zones' lines.",
+ "architecture": 2,
+ "loops": 2,
+ "precut": {
+  "exit": 0,
+  "date": "2026-10-16",
+  "checks": "49 checks, 0 FAIL, 0 WARN (19 fork rows)"
+ },
+ "three_rules": {
+  "domain": "pass (a water utility's estimate of the lead or GRR share among its Lead Status Unknown service lines, made the way inventory practice infers an unknown service from the cards of the services laid with it on the same main and the era it was laid in, transported from verification samples drawn street by street toward lead to the unknown lines' own mix of mains)",
+  "layers": "pass (Layer 1: the migration crosswalk and its padding, route-specific result codes, re-verifications and two date formats, assessor zero years, and the ask paths' exports; Layer 2: estimand identification under a shifted mix of mains, the share stable only within the kind of main and the era, one rate per kind across eras refuted by the record)",
+  "decisive_step": "analytical (each unknown line's kind of main read from the tap cards on the other services of its main, the share within each kind and era carried to the unknown lines' own mix; every era-wide rate misses the deadline (every verification 2039, the mains verified whole 2041, the tap cards 2040, the own main's verified lines 2039, the nearest 1.95 programme years past); the plan's HOW sentences executed word for word on the clean truth file 2039; asserted R1 to R3c in checks.py)"
+ },
+ "lineage": [
+  {
+   "architecture": 1,
+   "world": "Sabine Crest Energy, the Texas retail electricity provider's 400 MW summer firm-capacity block split across eight weather-zone books (business-operations-analytics, forecasting)",
+   "loops": 2,
+   "rounds": [
     {
-      "architecture": 1,
-      "world": "Sabine Crest Energy, the Texas retail electricity provider's 400 MW summer firm-capacity block split across eight weather-zone books (business-operations-analytics, forecasting)",
-      "loops": 2,
-      "rounds": [
-        {
-          "label": "round 1, plain",
-          "date": "2026-10-10",
-          "score": 89.7,
-          "landed": true,
-          "cracked": 5,
-          "items": 8
-        },
-        {
-          "label": "round 2, plain",
-          "date": "2026-10-10",
-          "score": 96.6,
-          "landed": true,
-          "cracked": 7,
-          "items": 8
-        }
-      ],
-      "harden_log": [
-        {
-          "loop": 1,
-          "date": "2026-10-10",
-          "change": "rung 5 added: a member's uncalled draw follows its zone's heat (full load on design-day afternoons); the programme baseline becomes rung 4; temperatures on the main path, day-ahead forecast file as the new distractor",
-          "gates": "generator 101 green, verifier 39/0, two builds byte-identical, task build matches, scrub clean, leak REVIEW (answered), heart PASS"
-        },
-        {
-          "loop": 2,
-          "date": "2026-10-10",
-          "change": "rung 5 added: on a called day the members pre-cool and recover around the window at their own maximum demand (0.973 over hours ending 11-14 and 19-20 on the peak days), uncalled full load lowered to 0.85, so the peak days' same-day read files North Central at 230; the heat-matched uncalled weekdays (0.850) are the answer",
-          "gates": "generator 109 green, verifier 40/0, two builds byte-identical, task build matches, goldens byte-identical, scrub clean, leak REVIEW (answered), surface unchanged, heart PASS, validate 126/0"
-        }
-      ],
-      "fate": "spent 2026-10-12 at the wave-1 resume: validated_decoy true on the card (blocked outright by guard.py since 2026-10-11); the default path reached the golden twice in-house (round 1, round 2); loops 1 and 2 stacked rungs above solved decisive steps; precut.py failed 23 of 33 checks on the loop-2 note",
-      "files": "generator, pack, goldens, submission.md, metadata.json and prompt.md removed at the re-root (in history at 64079f2); solver_rounds/ kept as evidence; its leak_check_report.md is in history at d8664dd, replaced by architecture 2's leak.py report at stage 3",
-      "portal": "never on the portal list (FAILED_TO_STUMP, backlog sathya8571 wave 1)"
-    }
-  ],
-  "reroot": "done 2026-10-12: architecture 2 drawn in Forecasting & Predictive Modeling (energy-systems-utilities, asset-condition-maintenance: Hollins Ford Regional Water District's lead service line replacement schedule)",
-  "leak": {
-    "leak_py": "REVIEW 2026-10-16 on the round-3 cut (--asof 2027-01-11), re-run after the block 1 edit, no LEAK: sweeps 3, 4 and 6 answered in the design note's leak review",
-    "reader": "round 3 2026-10-16 on the cut 8ef783ab336726f5: no leak, Q1 to Q4 none, Q6 analytical (the selection of the verified sample); the plan's 9 of 13 call words ruled harmless; ask readings governed by shipped files (leak_check_report.md, Solver's-eye read (round 3))",
-    "previous": "round 2 reader 2026-10-14: no leak, question 6 an analytical choice"
-  },
-  "duplicate_check": {
-    "heart": "WARN 2026-10-16 (overuse.strategy composition_mix 3 of 12; driver.near 0.15 against this slot's own v5 lineage; test.same_driver_older differentiated against task132 and task144, the task144 line added at round 3), no BLOCK",
-    "nearest": "this slot's v5 0.15, v4 0.07; task458 v1 0.06, task107 v1 0.06, task229 v2 0.05",
-    "surface": "exit 0, personas as drawn",
-    "validate": "186 cards, 0 invalid (re-run at ship)"
-  },
-  "judge": {
-    "verdict": "DETERMINISTIC",
-    "disposition": "APPROVE 2026-10-16 on the cut 8ef783ab336726f5: every figure reproduced (the call, 36 zone figures, 12 payments, 12 agreement counts); (a) block 1's rival years cut (whole mains 2041 against the judge's 2043), write-up only; (b) ask rounding margins an accepted risk in the design note",
-    "report": "determinism_check_report.md (earlier rounds: determinism_check_report_loop0.md, _pass2.md, _loop1.md, _round2.md)",
-    "previous": "round 2: DETERMINISTIC, APPROVE (determinism_check_report_round2.md), superseded by the round-3 pack"
-  },
-  "returned": [
-    {
-      "date": "2026-10-13",
-      "portal": "call landed: the top response filed 2037 (the whole-segment shares, announced by the field notes and separated by coverage)",
-      "repair": "design",
-      "commit": "the RESHIPPED (task124) commit of 2026-10-13"
+     "label": "round 1, plain",
+     "date": "2026-10-10",
+     "score": 89.7,
+     "landed": true,
+     "cracked": 5,
+     "items": 8
     },
     {
-      "date": "2026-10-14",
-      "portal": "10/10 audit: COMPLIANT_WEAK (round 2 brief)",
-      "repair": "design",
-      "commit": "RESHIPPED (task124): round 2",
-      "round": 2,
-      "paused_commit": "PAUSED (task124): round 2 redesign, stage 3 green, waiting on the reader and judge",
-      "result": "reader no leak; judge DETERMINISTIC, APPROVE; delivered 2026-10-14, pending review"
+     "label": "round 2, plain",
+     "date": "2026-10-10",
+     "score": 96.6,
+     "landed": true,
+     "cracked": 7,
+     "items": 8
+    }
+   ],
+   "harden_log": [
+    {
+     "loop": 1,
+     "date": "2026-10-10",
+     "change": "rung 5 added: a member's uncalled draw follows its zone's heat (full load on design-day afternoons); the programme baseline becomes rung 4; temperatures on the main path, day-ahead forecast file as the new distractor",
+     "gates": "generator 101 green, verifier 39/0, two builds byte-identical, task build matches, scrub clean, leak REVIEW (answered), heart PASS"
     },
     {
-      "date": "2026-10-16",
-      "portal": "realism review after the rule 3 audit PASS: within-kind shares exactly 13 in 14 and 1 in 19 in every era, zone, crew and method",
-      "repair": "design (round 3: the era effect made real, the verification sample enlarged, the decisive step kept)",
-      "round": 3,
-      "commit": "RESHIPPED (task124): realism rework, a real era effect in the lead share; RZ-06 in 2037",
-      "paused_commit": "PAUSED (task124): realism rework, stage 3 green, waiting on the reader and judge",
-      "result": "reader round 3 no leak, Q6 analytical; judge DETERMINISTIC, APPROVE; delivered 2026-10-16, pending review"
+     "loop": 2,
+     "date": "2026-10-10",
+     "change": "rung 5 added: on a called day the members pre-cool and recover around the window at their own maximum demand (0.973 over hours ending 11-14 and 19-20 on the peak days), uncalled full load lowered to 0.85, so the peak days' same-day read files North Central at 230; the heat-matched uncalled weekdays (0.850) are the answer",
+     "gates": "generator 109 green, verifier 40/0, two builds byte-identical, task build matches, goldens byte-identical, scrub clean, leak REVIEW (answered), surface unchanged, heart PASS, validate 126/0"
     }
-  ],
-  "resume": "",
-  "approved": null,
-  "delivered": "2026-10-16",
-  "portal": null,
-  "portal_id": "",
-  "portal_status": "",
-  "portal_status_date": "",
-  "build": {
-    "date": "2026-10-16",
-    "checks": "138 assertions, 0 failed (G1 to G9, RS1 to RS9, S1 to S6, M1, M1b, M2 to M26, SF1 to SF19, W1 to W4, R1 to R3c, C1 to C3, A1 to A11, B1 to B10, H1 to H6, D1, F1 to F4): the three-rules block, ten by-era constructions on the same figures, one-sigma robustness, the pooled construction refuted, every rival route the audit measured",
-    "verify": "green (own parsers; shares by kind and era; call 2037, tap cards 2040, mains verified whole 2041, default 2039; one rate per kind moves nine zones' lines; 12 zones, 12 payments, 12 agreement counts)",
-    "byte_identical": true,
-    "input_gates": "17 files, 5 formats, 90,652-row spine, 2 distractors (deletion moves nothing)",
-    "figures_check": "exit 0 (99 figures after the stage 4 block 1 edit; 100 at stage 3)",
-    "house_fixes": "pass, recorded in the design note's build record",
-    "answer": "last zone RZ-06 Wexley finished 2037 (every verification 2039, tap cards 2040, mains verified whole 2041); $267 million over 10.5 programme years at $25.4 million a year"
-  },
-  "target_zip": "17 members, 2,895,290 bytes, sha256 8ef783ab336726f5, each byte-identical to target/ on the final rebuild",
-  "rounds": [
-    {
-      "round": 2,
-      "date": "2026-10-14",
-      "trigger": "10/10 audit COMPLIANT_WEAK: loop 1 stacked a rung above the solved whole-segment step; the field notes' 'two ways' paragraph handed over the whole-segment rung; the call rested on one 0.2-year step; plan 4.3 and 6.1 sat close to the remainder estimator; the swap held only on the estimation sample; Ask B's form zone fell to an inventory join",
-      "redesign": "decisive step replaced from scratch in the same world: the kind of main an unknown line taps, read from the tap cards on the other services of its main; the whole-segment shares and the remainder accounting are now wrong rivals (2040), not rungs; field notes' verification account cut; Ask B's new primary device: portal forms the agreement system's import refused, visible only in the programme office's outreach tracker (new file)",
-      "answer": "RZ-06 Wexley last, finished 2037; $268.3 million over 10.56 programme years; shares 0.389, 0.268, 0.074",
-      "rivals": "every verification 2042 (+4.65 years), logistic and reweighting 2042, mains verified whole 2040 (+3.30), tap cards 2039 (+2.27), tap cards less what was found 2039 (+1.99, the nearest)",
-      "pair_ceiling": 33.5
-    },
-    {
-      "round": 3,
-      "date": "2026-10-16",
-      "trigger": "realism review (rule 3 audit PASS): exact 13 in 14 and 1 in 19 in every cell",
-      "redesign": "the era effect real and well sampled; the pooled construction refuted; every by-era construction on the same rounded figures; one-sigma robust",
-      "answer": "RZ-06 Wexley last, finished 2037; $267 million over 10.5 programme years; shares 0.47, 0.26, 0.01",
-      "rivals": "every verification 2039 (+2.38), own main's lines 2039 (+1.95), tap cards 2040 (+2.83), mains verified whole 2041 (+3.67)",
-      "pair_ceiling": 33.5
-    }
-  ],
-  "round": 3,
-  "round3": {
-    "date": "2026-10-16",
-    "trigger": "realism review after a rule 3 audit PASS: the share within each kind of main was exactly 13 in 14 and 1 in 19 in every era, zone, crew and method (cells trimmed to multiples of 14 and 19), read as generator output; the pooled, by-era, replaced-mains and expectation-less-found constructions agreed only because every cell sat on the constant, and binomial noise on the copper-main cells moved zone costs past their bins",
-    "redesign": "the era effect made real: who laid the services changed with the decades, so on lead or galvanized mains the share falls by era (99.2, 95.0, 60.6 per cent) and on copper mains it is a few in a thousand before 1950 and none after; every line without a card an independent draw; one rate per kind across eras refuted (chi-square 746.5) and moving nine zones' lines; the verification sample enlarged the programme's way (316 mains renewed whole from 2021, more single-line work on lead streets, checks on post-1950 copper streets after the lead letters; 8,255 verified lines without a card); zones resized, ids in blocks by zone, 2027 unit costs $14,400 and $2,600, renewal cards re-read and never-built lots set so every zone figure sits 1.32 or more sigma inside its bin and every defensible by-era construction files the same figures; summary figures at the precision every construction shares; the decisive step, prompt, plan, call, finish years and both asks' devices kept",
-    "call": "RZ-06 Wexley last, finished 2037, inside the deadline; plan cost $267 million over 10.5 programme years; era shares 0.47, 0.26, 0.01",
-    "default_path": "every verification by era 0.735, 0.524, 0.061: 2039 ($327.6 million, 12.90 years)",
-    "rivals": "logistic on era, year and zone and the reweighting 2039; the own main's verified lines 2039 (+1.95, the nearest); the mains verified whole 2041 (+3.67); the tap cards 2040 (+2.83) and less what was found 2040 (+2.92); one rate per kind across eras 2037 with nine zones' lines and ten zones' costs wrong; kind read as material 2037 with all twelve zones' lines wrong",
-    "pair_ceiling": 33.5
-  },
-  "gates": {
-    "checks": "138 assertions, 0 failed",
-    "verify": "green from the bundle alone",
-    "rebuild": "two builds byte-identical; target.zip sha256 8ef783ab336726f52610e386fafd7fe5b35c55d88ee8787a1b4f4153c7520662",
-    "figures_check": "99 figures, 0 absent",
-    "precut": "49 checks, 0 FAIL, 0 WARN",
-    "voice_check": "PASS (prompt unchanged)",
-    "leak_py": "REVIEW, no LEAK, sweep 11 clean (re-run at stage 4)",
-    "container": "target and golden clean (G8); archive members equal the pack (17)",
-    "guard": "validate 0 invalid, heart WARN (no BLOCK), surface exit 0"
+   ],
+   "fate": "spent 2026-10-12 at the wave-1 resume: validated_decoy true on the card (blocked outright by guard.py since 2026-10-11); the default path reached the golden twice in-house (round 1, round 2); loops 1 and 2 stacked rungs above solved decisive steps; precut.py failed 23 of 33 checks on the loop-2 note",
+   "files": "generator, pack, goldens, submission.md, metadata.json and prompt.md removed at the re-root (in history at 64079f2); solver_rounds/ kept as evidence; its leak_check_report.md is in history at d8664dd, replaced by architecture 2's leak.py report at stage 3",
+   "portal": "never on the portal list (FAILED_TO_STUMP, backlog sathya8571 wave 1)"
   }
+ ],
+ "reroot": "done 2026-10-12: architecture 2 drawn in Forecasting & Predictive Modeling (energy-systems-utilities, asset-condition-maintenance: Hollins Ford Regional Water District's lead service line replacement schedule)",
+ "leak": {
+  "leak_py": "REVIEW 2026-10-16 on the round-3 cut (--asof 2027-01-11), re-run after the block 1 edit, no LEAK: sweeps 3, 4 and 6 answered in the design note's leak review",
+  "reader": "round 3 2026-10-16 on the cut 8ef783ab336726f5: no leak, Q1 to Q4 none, Q6 analytical (the selection of the verified sample); the plan's 9 of 13 call words ruled harmless; ask readings governed by shipped files (leak_check_report.md, Solver's-eye read (round 3))",
+  "previous": "round 2 reader 2026-10-14: no leak, question 6 an analytical choice"
+ },
+ "duplicate_check": {
+  "heart": "WARN 2026-10-16 (overuse.strategy composition_mix 3 of 12; driver.near 0.15 against this slot's own v5 lineage; test.same_driver_older differentiated against task132 and task144, the task144 line added at round 3), no BLOCK",
+  "nearest": "this slot's v5 0.15, v4 0.07; task458 v1 0.06, task107 v1 0.06, task229 v2 0.05",
+  "surface": "exit 0, personas as drawn",
+  "validate": "186 cards, 0 invalid (re-run at ship)"
+ },
+ "judge": {
+  "verdict": "DETERMINISTIC",
+  "disposition": "APPROVE 2026-10-16 on the cut 8ef783ab336726f5: every figure reproduced (the call, 36 zone figures, 12 payments, 12 agreement counts); (a) block 1's rival years cut (whole mains 2041 against the judge's 2043), write-up only; (b) ask rounding margins an accepted risk in the design note",
+  "report": "determinism_check_report.md (earlier rounds: determinism_check_report_loop0.md, _pass2.md, _loop1.md, _round2.md)",
+  "previous": "round 2: DETERMINISTIC, APPROVE (determinism_check_report_round2.md), superseded by the round-3 pack"
+ },
+ "returned": [
+  {
+   "date": "2026-10-13",
+   "portal": "call landed: the top response filed 2037 (the whole-segment shares, announced by the field notes and separated by coverage)",
+   "repair": "design",
+   "commit": "the RESHIPPED (task124) commit of 2026-10-13"
+  },
+  {
+   "date": "2026-10-14",
+   "portal": "10/10 audit: COMPLIANT_WEAK (round 2 brief)",
+   "repair": "design",
+   "commit": "RESHIPPED (task124): round 2",
+   "round": 2,
+   "paused_commit": "PAUSED (task124): round 2 redesign, stage 3 green, waiting on the reader and judge",
+   "result": "reader no leak; judge DETERMINISTIC, APPROVE; delivered 2026-10-14, pending review"
+  },
+  {
+   "date": "2026-10-16",
+   "portal": "realism review after the rule 3 audit PASS: within-kind shares exactly 13 in 14 and 1 in 19 in every era, zone, crew and method",
+   "repair": "design (round 3: the era effect made real, the verification sample enlarged, the decisive step kept)",
+   "round": 3,
+   "commit": "RESHIPPED (task124): realism rework, a real era effect in the lead share; RZ-06 in 2037",
+   "paused_commit": "PAUSED (task124): realism rework, stage 3 green, waiting on the reader and judge",
+   "result": "reader round 3 no leak, Q6 analytical; judge DETERMINISTIC, APPROVE; delivered 2026-10-16, pending review"
+  }
+ ],
+ "resume": "",
+ "approved": null,
+ "delivered": "2026-10-16",
+ "portal": null,
+ "portal_id": "",
+ "portal_status": "",
+ "portal_status_date": "",
+ "build": {
+  "date": "2026-10-16",
+  "checks": "138 assertions, 0 failed (G1 to G9, RS1 to RS9, S1 to S6, M1, M1b, M2 to M26, SF1 to SF19, W1 to W4, R1 to R3c, C1 to C3, A1 to A11, B1 to B10, H1 to H6, D1, F1 to F4): the three-rules block, ten by-era constructions on the same figures, one-sigma robustness, the pooled construction refuted, every rival route the audit measured",
+  "verify": "green (own parsers; shares by kind and era; call 2037, tap cards 2040, mains verified whole 2041, default 2039; one rate per kind moves nine zones' lines; 12 zones, 12 payments, 12 agreement counts)",
+  "byte_identical": true,
+  "input_gates": "17 files, 5 formats, 90,652-row spine, 2 distractors (deletion moves nothing)",
+  "figures_check": "exit 0 (99 figures after the stage 4 block 1 edit; 100 at stage 3)",
+  "house_fixes": "pass, recorded in the design note's build record",
+  "answer": "last zone RZ-06 Wexley finished 2037 (every verification 2039, tap cards 2040, mains verified whole 2041); $267 million over 10.5 programme years at $25.4 million a year"
+ },
+ "target_zip": "17 members, 2,895,290 bytes, sha256 8ef783ab336726f5, each byte-identical to target/ on the final rebuild",
+ "rounds": [
+  {
+   "round": 2,
+   "date": "2026-10-14",
+   "trigger": "10/10 audit COMPLIANT_WEAK: loop 1 stacked a rung above the solved whole-segment step; the field notes' 'two ways' paragraph handed over the whole-segment rung; the call rested on one 0.2-year step; plan 4.3 and 6.1 sat close to the remainder estimator; the swap held only on the estimation sample; Ask B's form zone fell to an inventory join",
+   "redesign": "decisive step replaced from scratch in the same world: the kind of main an unknown line taps, read from the tap cards on the other services of its main; the whole-segment shares and the remainder accounting are now wrong rivals (2040), not rungs; field notes' verification account cut; Ask B's new primary device: portal forms the agreement system's import refused, visible only in the programme office's outreach tracker (new file)",
+   "answer": "RZ-06 Wexley last, finished 2037; $268.3 million over 10.56 programme years; shares 0.389, 0.268, 0.074",
+   "rivals": "every verification 2042 (+4.65 years), logistic and reweighting 2042, mains verified whole 2040 (+3.30), tap cards 2039 (+2.27), tap cards less what was found 2039 (+1.99, the nearest)",
+   "pair_ceiling": 33.5
+  },
+  {
+   "round": 3,
+   "date": "2026-10-16",
+   "trigger": "realism review (rule 3 audit PASS): exact 13 in 14 and 1 in 19 in every cell",
+   "redesign": "the era effect real and well sampled; the pooled construction refuted; every by-era construction on the same rounded figures; one-sigma robust",
+   "answer": "RZ-06 Wexley last, finished 2037; $267 million over 10.5 programme years; shares 0.47, 0.26, 0.01",
+   "rivals": "every verification 2039 (+2.38), own main's lines 2039 (+1.95), tap cards 2040 (+2.83), mains verified whole 2041 (+3.67)",
+   "pair_ceiling": 33.5
+  }
+ ],
+ "round": 3,
+ "round3": {
+  "date": "2026-10-16",
+  "trigger": "realism review after a rule 3 audit PASS: the share within each kind of main was exactly 13 in 14 and 1 in 19 in every era, zone, crew and method (cells trimmed to multiples of 14 and 19), read as generator output; the pooled, by-era, replaced-mains and expectation-less-found constructions agreed only because every cell sat on the constant, and binomial noise on the copper-main cells moved zone costs past their bins",
+  "redesign": "the era effect made real: who laid the services changed with the decades, so on lead or galvanized mains the share falls by era (99.2, 95.0, 60.6 per cent) and on copper mains it is a few in a thousand before 1950 and none after; every line without a card an independent draw; one rate per kind across eras refuted (chi-square 746.5) and moving nine zones' lines; the verification sample enlarged the programme's way (316 mains renewed whole from 2021, more single-line work on lead streets, checks on post-1950 copper streets after the lead letters; 8,255 verified lines without a card); zones resized, ids in blocks by zone, 2027 unit costs $14,400 and $2,600, renewal cards re-read and never-built lots set so every zone figure sits 1.32 or more sigma inside its bin and every defensible by-era construction files the same figures; summary figures at the precision every construction shares; the decisive step, prompt, plan, call, finish years and both asks' devices kept",
+  "call": "RZ-06 Wexley last, finished 2037, inside the deadline; plan cost $267 million over 10.5 programme years; era shares 0.47, 0.26, 0.01",
+  "default_path": "every verification by era 0.735, 0.524, 0.061: 2039 ($327.6 million, 12.90 years)",
+  "rivals": "logistic on era, year and zone and the reweighting 2039; the own main's verified lines 2039 (+1.95, the nearest); the mains verified whole 2041 (+3.67); the tap cards 2040 (+2.83) and less what was found 2040 (+2.92); one rate per kind across eras 2037 with nine zones' lines and ten zones' costs wrong; kind read as material 2037 with all twelve zones' lines wrong",
+  "pair_ceiling": 33.5
+ },
+ "gates": {
+  "checks": "138 assertions, 0 failed",
+  "verify": "green from the bundle alone",
+  "rebuild": "two builds byte-identical; target.zip sha256 8ef783ab336726f52610e386fafd7fe5b35c55d88ee8787a1b4f4153c7520662",
+  "figures_check": "99 figures, 0 absent",
+  "precut": "49 checks, 0 FAIL, 0 WARN",
+  "voice_check": "PASS (prompt unchanged)",
+  "leak_py": "REVIEW, no LEAK, sweep 11 clean (re-run at stage 4)",
+  "container": "target and golden clean (G8); archive members equal the pack (17)",
+  "guard": "validate 0 invalid, heart WARN (no BLOCK), surface exit 0"
+ }
 }

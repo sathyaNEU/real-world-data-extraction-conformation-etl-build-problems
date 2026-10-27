@@ -1,8 +1,8 @@
 # Author: sathya8571
 
-Account email sathya8571@gmail.com. A session for anyone else ignores this file.
+Account email sathya8571@gmail.com. A backlog list, not a territory: no task belongs to anybody, and any build in here can be worked by whoever the user asks.
 
-- **Lane:** Forecasting & Predictive Modeling, task132 to task179. Two builds in flight; `status.py next sathya8571`.
+- **Backlog range:** Forecasting & Predictive Modeling, task132 to task179. `status.py next` names the next task across every backlog; how many run at once is the user's call.
 - **Status board:** https://claude.ai/artifact/1nSdDVZwd9p449nYQ9V3o9 (one row per task: the task and its call, status, links to the prompt, submission and `target.zip` on `main`, a short note, the date), updated at every commit point.
 - **Resume:** `handoffs/sathya8571.md` (task134, task135).
 

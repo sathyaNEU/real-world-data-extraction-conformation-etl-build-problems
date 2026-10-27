@@ -1,37 +1,36 @@
 {
-  "task": "task458",
-  "owner": "oviya1301",
-  "status": "SHIPPED",
-  "domain": "healthcare-delivery-health-economics",
-  "objective": "etl",
-  "stage": 5,
-  "stage_name": "ship",
-  "updated": "2026-10-15",
-  "stump": "The default path carries the prevalence the members enrolled all year show, eligibility group by group, to every member and files Adams, Douglas, Franklin, Grant, Okanogan and Yakima, because the farmworkers in Yakima's short seasonal spells have the conditions about half as often as the members who stay; counted for the months each identified member was enrolled (1 over the share of full-year members identified within the same number of months), Yakima meets all three standards and the five are designated.",
-  "architecture": 1,
-  "loops": 1,
-  "precut": {
-    "exit": 0,
-    "date": "2026-10-15"
-  },
-  "leak": {
-    "leak_py": "REVIEW (no LEAK), 2026-10-15 on the shipped pack",
-    "reader": "pass 1 (first design) filed the five by standardizing the full-year prevalence by eligibility group; stump re-centred; passes 2 and 3 (re-centred) filed six, Yakima added, question 1 none, question 6 analytical"
-  },
-  "duplicate_check": {
-    "heart": "WARN (overuse.objective; the slot's first design differentiated)",
-    "nearest": "0.08 task73 lineage, 0.07 task180 lineage",
-    "note": "surface promotes task457 and task456, both differentiated on the card"
-  },
-  "judge": {
-    "verdict": "r1 DETERMINISTIC (first design); r2 DETERMINISTIC; r3 DETERMINISTIC",
-    "disposition": "r1 APPROVE; r2 FIX_NOW (Okanogan reach on a rounding edge, an untruncated hazard moving counts), fixed; r3 APPROVE",
-    "report": "task458/determinism_check_report.md"
-  },
-  "returned": [],
-  "resume": "",
-  "approved": null,
-  "delivered": "2026-10-15",
-  "portal": null,
-  "source_note": "seed ET15 (analytical_tasks/07_data_extraction_conformation): the world, decision and quantity kept (a Medicaid program's behavioral-health prescriber pilot designating counties on workforce ratios, the provider master rebuilt from NPPES monthly and weekly files); the decoy-era traps are not used; pairing in Healthcare Delivery & Health Economics, payment-claims-health-plan-analytics (see ## Draw)"
+ "task": "task458",
+ "status": "SHIPPED",
+ "domain": "healthcare-delivery-health-economics",
+ "objective": "etl",
+ "stage": 5,
+ "stage_name": "ship",
+ "updated": "2026-10-15",
+ "stump": "The default path carries the prevalence the members enrolled all year show, eligibility group by group, to every member and files Adams, Douglas, Franklin, Grant, Okanogan and Yakima, because the farmworkers in Yakima's short seasonal spells have the conditions about half as often as the members who stay; counted for the months each identified member was enrolled (1 over the share of full-year members identified within the same number of months), Yakima meets all three standards and the five are designated.",
+ "architecture": 1,
+ "loops": 1,
+ "precut": {
+  "exit": 0,
+  "date": "2026-10-15"
+ },
+ "leak": {
+  "leak_py": "REVIEW (no LEAK), 2026-10-15 on the shipped pack",
+  "reader": "pass 1 (first design) filed the five by standardizing the full-year prevalence by eligibility group; stump re-centred; passes 2 and 3 (re-centred) filed six, Yakima added, question 1 none, question 6 analytical"
+ },
+ "duplicate_check": {
+  "heart": "WARN (overuse.objective; the slot's first design differentiated)",
+  "nearest": "0.08 task73 lineage, 0.07 task180 lineage",
+  "note": "surface promotes task457 and task456, both differentiated on the card"
+ },
+ "judge": {
+  "verdict": "r1 DETERMINISTIC (first design); r2 DETERMINISTIC; r3 DETERMINISTIC",
+  "disposition": "r1 APPROVE; r2 FIX_NOW (Okanogan reach on a rounding edge, an untruncated hazard moving counts), fixed; r3 APPROVE",
+  "report": "task458/determinism_check_report.md"
+ },
+ "returned": [],
+ "resume": "",
+ "approved": null,
+ "delivered": "2026-10-15",
+ "portal": null,
+ "source_note": "seed ET15 (analytical_tasks/07_data_extraction_conformation): the world, decision and quantity kept (a Medicaid program's behavioral-health prescriber pilot designating counties on workforce ratios, the provider master rebuilt from NPPES monthly and weekly files); the decoy-era traps are not used; pairing in Healthcare Delivery & Health Economics, payment-claims-health-plan-analytics (see ## Draw)"
 }

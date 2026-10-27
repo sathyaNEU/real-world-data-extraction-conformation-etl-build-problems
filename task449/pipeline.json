@@ -1,39 +1,38 @@
 {
-  "task": "task449",
-  "owner": "oviya1301",
-  "status": "SHIPPED",
-  "domain": "general-statistics-data-science",
-  "objective": "etl",
-  "stage": 5,
-  "stage_name": "ship",
-  "updated": "2026-10-12",
-  "stump": "The default path files 40 dedicated analysts because it reads each social-care matter's incident status off the account the social care desk attached, the first of the k cardholders whose name and city match the poster's display name, which is the poster's own account only one time in k and otherwise an unrelated cardholder's, affected at the portfolio's 4 per cent; estimated from the searches that returned one cardholder, about four in five of the name-and-city matters under Schedule 7's codes arise from the failure, the sustained base is about 950 new matters a week and the team is 35 (figures fixed at build).",
-  "architecture": 1,
-  "loops": 0,
-  "precut": {
-    "exit": 0,
-    "date": "2026-10-12"
-  },
-  "leak": {
-    "leak_py": "REVIEW (no LEAK) 2026-10-12; the planning rate in WPS-3, contract vocabulary",
-    "reader": "two isolated reads: questions 1, 2 and 4 none both times; question 3 the 18 May log entry (reworded) and realism tells (fixed) on the first, none on the second; question 5 the estimand executed, the 7.4 reading closed by SF1; question 6 analytical (the name-and-city share is estimated); the second read's one tell, a log entry out of date order, fixed by sorting the log"
-  },
-  "duplicate_check": {
-    "heart": "WARN (three_rules.strategy_risk, repeat.gate_g; answered) 2026-10-12",
-    "nearest": "0.06 (task500 v2 lineage)",
-    "note": "draw checked 2026-10-12: guard WARN three_rules.strategy_risk and repeat.gate_g answered in the design note; task101 and task126 v1 differentiated on the card; at build the decisive generator ordered G17 first (statistical rigor), clearing the task101 and task126 card collisions; surface: no promoted pair"
-  },
-  "judge": {
-    "verdict": "pass 1 DETERMINISTIC with a hygiene FIX_NOW (Marlowby final export date), fixed; pass 2 DETERMINISTIC",
-    "disposition": "APPROVE",
-    "report": "determinism_check_report.md (pass 1), determinism_check_report_pass2.md (pass 2)",
-    "gate_g": "PASS: statistical_rigor, analytical_non_defect, sole_data_defect no",
-    "gate_h": "domain pass, layers pass, decisive step analytical"
-  },
-  "returned": [],
-  "resume": "shipped 2026-10-12; waiting for the portal",
-  "approved": null,
-  "delivered": "2026-10-12",
-  "portal": null,
-  "source_note": "seed ET06 (analytical_tasks/07_data_extraction_conformation), the complaint-operations world and the permanent-staff-against-overtime decision only"
+ "task": "task449",
+ "status": "SHIPPED",
+ "domain": "general-statistics-data-science",
+ "objective": "etl",
+ "stage": 5,
+ "stage_name": "ship",
+ "updated": "2026-10-12",
+ "stump": "The default path files 40 dedicated analysts because it reads each social-care matter's incident status off the account the social care desk attached, the first of the k cardholders whose name and city match the poster's display name, which is the poster's own account only one time in k and otherwise an unrelated cardholder's, affected at the portfolio's 4 per cent; estimated from the searches that returned one cardholder, about four in five of the name-and-city matters under Schedule 7's codes arise from the failure, the sustained base is about 950 new matters a week and the team is 35 (figures fixed at build).",
+ "architecture": 1,
+ "loops": 0,
+ "precut": {
+  "exit": 0,
+  "date": "2026-10-12"
+ },
+ "leak": {
+  "leak_py": "REVIEW (no LEAK) 2026-10-12; the planning rate in WPS-3, contract vocabulary",
+  "reader": "two isolated reads: questions 1, 2 and 4 none both times; question 3 the 18 May log entry (reworded) and realism tells (fixed) on the first, none on the second; question 5 the estimand executed, the 7.4 reading closed by SF1; question 6 analytical (the name-and-city share is estimated); the second read's one tell, a log entry out of date order, fixed by sorting the log"
+ },
+ "duplicate_check": {
+  "heart": "WARN (three_rules.strategy_risk, repeat.gate_g; answered) 2026-10-12",
+  "nearest": "0.06 (task500 v2 lineage)",
+  "note": "draw checked 2026-10-12: guard WARN three_rules.strategy_risk and repeat.gate_g answered in the design note; task101 and task126 v1 differentiated on the card; at build the decisive generator ordered G17 first (statistical rigor), clearing the task101 and task126 card collisions; surface: no promoted pair"
+ },
+ "judge": {
+  "verdict": "pass 1 DETERMINISTIC with a hygiene FIX_NOW (Marlowby final export date), fixed; pass 2 DETERMINISTIC",
+  "disposition": "APPROVE",
+  "report": "determinism_check_report.md (pass 1), determinism_check_report_pass2.md (pass 2)",
+  "gate_g": "PASS: statistical_rigor, analytical_non_defect, sole_data_defect no",
+  "gate_h": "domain pass, layers pass, decisive step analytical"
+ },
+ "returned": [],
+ "resume": "shipped 2026-10-12; waiting for the portal",
+ "approved": null,
+ "delivered": "2026-10-12",
+ "portal": null,
+ "source_note": "seed ET06 (analytical_tasks/07_data_extraction_conformation), the complaint-operations world and the permanent-staff-against-overtime decision only"
 }

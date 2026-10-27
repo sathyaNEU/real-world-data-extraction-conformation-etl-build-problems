@@ -1,61 +1,60 @@
 {
-  "task": "task161",
-  "owner": "sathya8571",
-  "status": "SHIPPED",
-  "domain": "supply-chain-logistics",
-  "objective": "forecasting",
-  "stage": 5,
-  "stage_name": "ship",
-  "updated": "2026-10-18",
-  "stump": "A strong solver who stacks the two WMS exports, projects December from the booking notices and fades the book's excess at the 0.87-month half-life the 2019 and 2025 rushes showed leaves overflow only in January and takes no block (zero); the excess is stock each account burns at a steady share of its own shipments, five seasonal accounts hold most of it and ship at their first-half low through June, so the first two blocks stay full through June (two blocks).",
-  "architecture": 1,
-  "loops": 2,
-  "precut": {
-    "exit": 0,
-    "date": "2026-10-18",
-    "checks": 50
-  },
-  "leak": {
-    "leak_py": "REVIEW 2026-10-18 (no LEAK): the offer carries the call's words; the policy (eight stump terms with 3.4) and the advisories carry stump terms but name no method; dates after the as-of only in forward-looking records; each answered in ## Leak sweep",
-    "reader": "round 1 on 594bac98: no leak (Q1 nothing quoted, no ranking file, Q6 an analytical choice); forks found on the asks (ports unnamed, the TEU numerator's source and month, outside the racks), closed in round 1 fixes; round 2 on 302b69d3: no leak; the targeted re-read of 7eb676e6 clean (Q1 none: 3.4 gives only the level of normal stock; Q6 analytical; its one moderate tell, 3.4 reading as written for the analysis, left)"
-  },
-  "duplicate_check": {
-    "heart": "WARN 2026-10-18 (overuse.gate_g, repeat.decision, repeat.question_form against task160, answered in the Draw); the people.first BLOCK on Nicole (task243) cleared at round 1 by drawing Frederick James",
-    "surface": "eleven pairs promoted, no hard tell: four on surface 0.102 sharing only export_manifest.csv; five on the card signature differentiated at registration; task160 and task162 back to back on gap and decision type, their strategy, Gate G, domain and world differing (for the author's clone-check)",
-    "nearest": "driver 0.06 (task120 v3)"
-  },
-  "judge": {
-    "verdict": "DETERMINISTIC (round 1 on 594bac98, round 2 on 302b69d3)",
-    "disposition": "FIX_NOW twice, closed: round 1 (J1 to J4) in one generator pass, round 2's pins (normal stock in space policy 3.4, the split-receipt month in the dictionary, the book-burn clause dropped) on 7eb676e6 with every graded figure byte-identical, the targeted re-read clean; rule 3 recheck PASS, P(both) about 0.045, separation PASS",
-    "report": "relayed by the main session (round 1: write-up figures on episode-fit conventions, the off-rack ask's two readings, hygiene, the 2019 back-test; round 2: the cover convention, the split-receipt month, the book-burn clause)"
-  },
-  "returned": [],
-  "resume": "",
-  "approved": null,
-  "delivered": "2026-10-18",
-  "portal": null,
-  "portal_id": "",
-  "portal_status": "",
-  "portal_status_date": "",
-  "build": {
-    "checks_py": "86 run, 0 failed (R1a to R3c, L1 to L10, B1 to B4, SF1 to SF13, A2a to A8, G1 to G3.3, S1 to S17, P1 to P3, F1 to F3)",
-    "verify_py": "green on its own code path (pandas and pdftotext): the call and block uses, the overflow by month, the default path (0.87 months, 0 blocks), each account's own monthly fall (1 block), the flat holds (3), the leave-one-out back-test (burn 2,421 against fade 4,536, ahead on 3 of 3), the shipments bound, A2",
-    "rebuilds": "two builds byte-identical (18 target files, 2 goldens, metadata.json, figures.json, submission.md, target.zip)",
-    "target_zip_sha256": "7eb676e6afa1b773b5d51fd6264127eec604e9a719bf573cf0363d3cba80c5b8",
-    "figures_check": "exit 0, 42 figures",
-    "input_gates": "18 files, 4 formats (csv, pdf, txt, xlsx), largest 93,160 rows, 3 distractors in metadata.json",
-    "golden_realism": "pass done: finding titles, notes sheet, rounding note, front-loading months marked; off-rack sheet removed with the ask",
-    "house_fixes": "container audit clean (target and golden); manifest set equality; forward dates on the allow-list; per-file in-world dates; client names near real firms renamed (H21)",
-    "cracker": "pair ceiling 35.1 (C1 or C2 with the mirror), mirror leakage 12.0 per cent"
-  },
-  "wave": "wave 6 (new), seed FC32 (world, decision and quantity kept; the seed's error band, option date and booking notices for the half-year not used)",
-  "answer": "take 2 of the 6 blocks (B-1 and B-2), $2,200,000; default path 0 blocks",
-  "round1": {
-    "audit": "rule 3 PASS; P(one) 0.20, P(both) 0.07; separation AT_RISK (the fade defensible); bypasses: flat hold 2, scaled carries 2, hedge",
-    "fixes": "bought-ahead arrivals spread evenly over each build window (flat holds now 3); the five seasonal accounts' April 2025 pull-forward through July (3.8 months) and stock from an earlier rush burning through a later build (back-test: burn 47 per cent under the fade, ahead on all three rushes); the three milder seasonal categories at about twice their first-half pace in the holiday quarter (each account's own monthly fall now 1 at its median, mean or latest rate); the off-rack ask retired and the pallet extract kept as a distractor with its coverage filed; the ports named in the dictionary and on Avila's manifest; the write-up reduced to figures every construction shares; the sublease emptied over its last ten days; each file dated in-world; the policy and offer given document furniture; the CS persona redrawn"
-  },
-  "round2": {
-    "audit": "rule 3 PASS; P(both) about 0.045; separation PASS; realism notes low, left (they would move graded figures)",
-    "fixes": "space policy 3.4 files an account's normal stock as its cover times the mean of its shipments in the month and the month after (SF13: the same month's shipments 1, a centred three months 1, the next month 3, a flat median stock 1); the dictionary counts a container received in several pieces once, in the month of its first receipt (WMS) or delivery (Avila), as the golden dates each visit (A8: dated at the last piece, 7 of 10 months' TEU move); the book-burn clause dropped from the recommendation, the critical components and step 2 cite the policy's normal stock; figures.json, block 4 of submission.md and both goldens byte-identical to ff395fb; target files changed: space_planning_policy_rev4.pdf, wms_export_dictionary_v3.pdf (metadata.json carries their new sizes)"
-  }
+ "task": "task161",
+ "status": "SHIPPED",
+ "domain": "supply-chain-logistics",
+ "objective": "forecasting",
+ "stage": 5,
+ "stage_name": "ship",
+ "updated": "2026-10-18",
+ "stump": "A strong solver who stacks the two WMS exports, projects December from the booking notices and fades the book's excess at the 0.87-month half-life the 2019 and 2025 rushes showed leaves overflow only in January and takes no block (zero); the excess is stock each account burns at a steady share of its own shipments, five seasonal accounts hold most of it and ship at their first-half low through June, so the first two blocks stay full through June (two blocks).",
+ "architecture": 1,
+ "loops": 2,
+ "precut": {
+  "exit": 0,
+  "date": "2026-10-18",
+  "checks": 50
+ },
+ "leak": {
+  "leak_py": "REVIEW 2026-10-18 (no LEAK): the offer carries the call's words; the policy (eight stump terms with 3.4) and the advisories carry stump terms but name no method; dates after the as-of only in forward-looking records; each answered in ## Leak sweep",
+  "reader": "round 1 on 594bac98: no leak (Q1 nothing quoted, no ranking file, Q6 an analytical choice); forks found on the asks (ports unnamed, the TEU numerator's source and month, outside the racks), closed in round 1 fixes; round 2 on 302b69d3: no leak; the targeted re-read of 7eb676e6 clean (Q1 none: 3.4 gives only the level of normal stock; Q6 analytical; its one moderate tell, 3.4 reading as written for the analysis, left)"
+ },
+ "duplicate_check": {
+  "heart": "WARN 2026-10-18 (overuse.gate_g, repeat.decision, repeat.question_form against task160, answered in the Draw); the people.first BLOCK on Nicole (task243) cleared at round 1 by drawing Frederick James",
+  "surface": "eleven pairs promoted, no hard tell: four on surface 0.102 sharing only export_manifest.csv; five on the card signature differentiated at registration; task160 and task162 back to back on gap and decision type, their strategy, Gate G, domain and world differing (for the author's clone-check)",
+  "nearest": "driver 0.06 (task120 v3)"
+ },
+ "judge": {
+  "verdict": "DETERMINISTIC (round 1 on 594bac98, round 2 on 302b69d3)",
+  "disposition": "FIX_NOW twice, closed: round 1 (J1 to J4) in one generator pass, round 2's pins (normal stock in space policy 3.4, the split-receipt month in the dictionary, the book-burn clause dropped) on 7eb676e6 with every graded figure byte-identical, the targeted re-read clean; rule 3 recheck PASS, P(both) about 0.045, separation PASS",
+  "report": "relayed by the main session (round 1: write-up figures on episode-fit conventions, the off-rack ask's two readings, hygiene, the 2019 back-test; round 2: the cover convention, the split-receipt month, the book-burn clause)"
+ },
+ "returned": [],
+ "resume": "",
+ "approved": null,
+ "delivered": "2026-10-18",
+ "portal": null,
+ "portal_id": "",
+ "portal_status": "",
+ "portal_status_date": "",
+ "build": {
+  "checks_py": "86 run, 0 failed (R1a to R3c, L1 to L10, B1 to B4, SF1 to SF13, A2a to A8, G1 to G3.3, S1 to S17, P1 to P3, F1 to F3)",
+  "verify_py": "green on its own code path (pandas and pdftotext): the call and block uses, the overflow by month, the default path (0.87 months, 0 blocks), each account's own monthly fall (1 block), the flat holds (3), the leave-one-out back-test (burn 2,421 against fade 4,536, ahead on 3 of 3), the shipments bound, A2",
+  "rebuilds": "two builds byte-identical (18 target files, 2 goldens, metadata.json, figures.json, submission.md, target.zip)",
+  "target_zip_sha256": "7eb676e6afa1b773b5d51fd6264127eec604e9a719bf573cf0363d3cba80c5b8",
+  "figures_check": "exit 0, 42 figures",
+  "input_gates": "18 files, 4 formats (csv, pdf, txt, xlsx), largest 93,160 rows, 3 distractors in metadata.json",
+  "golden_realism": "pass done: finding titles, notes sheet, rounding note, front-loading months marked; off-rack sheet removed with the ask",
+  "house_fixes": "container audit clean (target and golden); manifest set equality; forward dates on the allow-list; per-file in-world dates; client names near real firms renamed (H21)",
+  "cracker": "pair ceiling 35.1 (C1 or C2 with the mirror), mirror leakage 12.0 per cent"
+ },
+ "wave": "wave 6 (new), seed FC32 (world, decision and quantity kept; the seed's error band, option date and booking notices for the half-year not used)",
+ "answer": "take 2 of the 6 blocks (B-1 and B-2), $2,200,000; default path 0 blocks",
+ "round1": {
+  "audit": "rule 3 PASS; P(one) 0.20, P(both) 0.07; separation AT_RISK (the fade defensible); bypasses: flat hold 2, scaled carries 2, hedge",
+  "fixes": "bought-ahead arrivals spread evenly over each build window (flat holds now 3); the five seasonal accounts' April 2025 pull-forward through July (3.8 months) and stock from an earlier rush burning through a later build (back-test: burn 47 per cent under the fade, ahead on all three rushes); the three milder seasonal categories at about twice their first-half pace in the holiday quarter (each account's own monthly fall now 1 at its median, mean or latest rate); the off-rack ask retired and the pallet extract kept as a distractor with its coverage filed; the ports named in the dictionary and on Avila's manifest; the write-up reduced to figures every construction shares; the sublease emptied over its last ten days; each file dated in-world; the policy and offer given document furniture; the CS persona redrawn"
+ },
+ "round2": {
+  "audit": "rule 3 PASS; P(both) about 0.045; separation PASS; realism notes low, left (they would move graded figures)",
+  "fixes": "space policy 3.4 files an account's normal stock as its cover times the mean of its shipments in the month and the month after (SF13: the same month's shipments 1, a centred three months 1, the next month 3, a flat median stock 1); the dictionary counts a container received in several pieces once, in the month of its first receipt (WMS) or delivery (Avila), as the golden dates each visit (A8: dated at the last piece, 7 of 10 months' TEU move); the book-burn clause dropped from the recommendation, the critical components and step 2 cite the policy's normal stock; figures.json, block 4 of submission.md and both goldens byte-identical to ff395fb; target files changed: space_planning_policy_rev4.pdf, wms_export_dictionary_v3.pdf (metadata.json carries their new sizes)"
+ }
 }

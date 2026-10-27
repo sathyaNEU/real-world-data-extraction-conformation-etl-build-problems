@@ -91,7 +91,6 @@
  "judge": "architecture 1: NOT_DETERMINISTIC, SEND_BACK, 2026-10-18",
  "loops": 0,
  "objective": "anomaly-detection",
- "owner": "oviya13ya",
  "portal": null,
  "portal_id": "",
  "portal_status": "",

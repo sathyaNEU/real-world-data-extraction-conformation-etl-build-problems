@@ -1,68 +1,67 @@
 {
-  "task": "task270",
-  "owner": "sathay3012",
-  "status": "PAUSED",
-  "domain": "pharmacology-pharmacoepidemiology-safety",
-  "objective": "descriptive-distribution",
-  "stage": 1,
-  "stage_name": "draw",
-  "updated": "2026-10-27",
-  "stump": "The default path takes out care home residents and the patients Quillon's extract codes as using a compliance aid and names four networks; the uncoded aid patients, dispensed on the pharmacy's own 7- or 28-day cycle, read as fully covered and pull Briskdale under the 30 per cent line; only the dispensing's own regularity finds them (prototype).",
-  "architecture": 8,
-  "loops": 0,
-  "precut": null,
-  "leak": {
-    "leak_py": "",
-    "readers": ""
+ "task": "task270",
+ "status": "PAUSED",
+ "domain": "pharmacology-pharmacoepidemiology-safety",
+ "objective": "descriptive-distribution",
+ "stage": 1,
+ "stage_name": "draw",
+ "updated": "2026-10-27",
+ "stump": "The default path takes out care home residents and the patients Quillon's extract codes as using a compliance aid and names four networks; the uncoded aid patients, dispensed on the pharmacy's own 7- or 28-day cycle, read as fully covered and pull Briskdale under the 30 per cent line; only the dispensing's own regularity finds them (prototype).",
+ "architecture": 8,
+ "loops": 0,
+ "precut": null,
+ "leak": {
+  "leak_py": "",
+  "readers": ""
+ },
+ "duplicate_check": {},
+ "judge": {
+  "verdict": "",
+  "disposition": "",
+  "report": ""
+ },
+ "returned": [],
+ "resume": "Architecture 8 drawn on paper 2026-10-27 (DESIGN_NOTE.md ## Draw to ## Three rules, prototype world_proto.py in the session scratch): the card's only BLOCK is ban.strategy, population_selection held by task141 in the window. File the card the moment task141 leaves the window (guard.py check, then register), commit DRAWN (task270), then stage 2: tune the twelve networks so every share sits a point clear of the line and the analyst's route misses at least two networks, then the readability screen, fork table, ladder, closure, asks and prompt.",
+ "architectures": [
+  {
+   "architecture": 1,
+   "fate": "spent 2026-10-19 at stage 4: both isolated scored readers landed the call (the multivariate correction for selection on the appointment composite), reader 2 all 14 ask figures, reader 1 Ask A; judge DETERMINISTIC, APPROVE; last commit 9507d43f"
   },
-  "duplicate_check": {},
-  "judge": {
-    "verdict": "",
-    "disposition": "",
-    "report": ""
+  {
+   "architecture": 2,
+   "fate": "spent 2026-10-19 at stage 4 (Gate F): reader 6 of six isolated scored readers landed the call and the first region below by taking the claims above 2,500 pounds as fully reported and scaling them by the protected policies' share above that size, with Ask A's sixteen figures; reader 5 missed the call and took all 32 ask figures; judge pass 3 DETERMINISTIC, FIX_NOW on Ask A; recorded in the PAUSED commit of 2026-10-19"
   },
-  "returned": [],
-  "resume": "Architecture 8 drawn on paper 2026-10-27 (DESIGN_NOTE.md ## Draw to ## Three rules, prototype world_proto.py in the session scratch): the card's only BLOCK is ban.strategy, population_selection held by task141 in the window. File the card the moment task141 leaves the window (guard.py check, then register), commit DRAWN (task270), then stage 2: tune the twelve networks so every share sits a point clear of the line and the analyst's route misses at least two networks, then the readability screen, fork table, ladder, closure, asks and prompt.",
-  "architectures": [
-    {
-      "architecture": 1,
-      "fate": "spent 2026-10-19 at stage 4: both isolated scored readers landed the call (the multivariate correction for selection on the appointment composite), reader 2 all 14 ask figures, reader 1 Ask A; judge DETERMINISTIC, APPROVE; last commit 9507d43f"
-    },
-    {
-      "architecture": 2,
-      "fate": "spent 2026-10-19 at stage 4 (Gate F): reader 6 of six isolated scored readers landed the call and the first region below by taking the claims above 2,500 pounds as fully reported and scaling them by the protected policies' share above that size, with Ask A's sixteen figures; reader 5 missed the call and took all 32 ask figures; judge pass 3 DETERMINISTIC, FIX_NOW on Ask A; recorded in the PAUSED commit of 2026-10-19"
-    },
-    {
-      "architecture": 3,
-      "fate": "spent 2026-10-19 at stage 4 round 2 (Gate F): both isolated scored readers landed the call after the round 1 repair filed 3.1's exclusion of the change the test itself produces; each estimated the one-time gain of a second completed sitting within patients over the whole CIS and EPR record (about 2.5) and named Quarndale and Thurlwick; reader 4 took every ask figure, reader 3 Ask B whole; round 1's readers had missed the call with the outcome unfiled; task270 retired"
-    },
-    {
-      "architecture": 4,
-      "fate": "spent 2026-10-26 at the draw probes: p270a and p270b, call-only Sonnet readers on prototypes, computed Haberman's PRMSE with the part-whole correction and printed the golden three; committed as DRAWN in 5e4daa81"
-    },
-    {
-      "architecture": 5,
-      "fate": "spent 2026-10-26 at stage 4 round 2: round 1's readers both missed on the raw correlation but the judge held the raw correlation open as the literal estimand (SEND_BACK); with standard 2.3 filing the correlation between the effects themselves the judge approved and both round 2 readers took out the shared sampling covariance and landed first purchase"
-    },
-    {
-      "architecture": 6,
-      "fate": "spent 2026-10-26 at stage 4 round 2 (Gate F): round 1's readers both missed (B at 31.8 by the clock window), the judge DETERMINISTIC, FIX_NOW on two sub-figure forks; after the repair pass (3.3 summed statements, same-day traffic, Ask R re-sited onto the donor record read on the extraction day) both round 2 readers landed the call (A 26.6, B 20.9) through the bookings' janela field joined on id_reserva, so one join and a field read reach the golden; the judge DETERMINISTIC, SEND_BACK (Gate G planted_defect_flip, Gate H decisive_step planted); the re-sited asks held, both readers 0 of 7 ask keys at the per-row repair"
-    },
-    {
-      "architecture": 7,
-      "fate": "spent 2026-10-26 at stage 4 round 1 (target.zip aec69c19d254e18c5490f12c66c33516): both isolated scored readers netted each pack's 2026 charges against the change in its receiver stock, fitting kilograms per level point from each pack's own arrival and departure readings, and landed Lancashire (reader 1 8 of 16 ask figures, Ask B whole; reader 2 16 of 16); judge DETERMINISTIC, APPROVE, reading stump power as strong"
-    },
-    {
-      "architecture": 8,
-      "fate": "drawn 2026-10-27 (statin adherence tiers, Iversford Vale ICB); card BLOCK on ban.strategy alone (population_selection, task141 in the window)",
-      "drawn": "2026-10-27"
-    }
-  ],
-  "approved": null,
-  "delivered": null,
-  "portal": null,
-  "portal_id": "",
-  "portal_status": "",
-  "portal_status_date": "",
-  "seed": "none: a fresh world drawn 2026-10-26 (Hallowmere Foodstores' 2027 HFC pack replacement programme)"
+  {
+   "architecture": 3,
+   "fate": "spent 2026-10-19 at stage 4 round 2 (Gate F): both isolated scored readers landed the call after the round 1 repair filed 3.1's exclusion of the change the test itself produces; each estimated the one-time gain of a second completed sitting within patients over the whole CIS and EPR record (about 2.5) and named Quarndale and Thurlwick; reader 4 took every ask figure, reader 3 Ask B whole; round 1's readers had missed the call with the outcome unfiled; task270 retired"
+  },
+  {
+   "architecture": 4,
+   "fate": "spent 2026-10-26 at the draw probes: p270a and p270b, call-only Sonnet readers on prototypes, computed Haberman's PRMSE with the part-whole correction and printed the golden three; committed as DRAWN in 5e4daa81"
+  },
+  {
+   "architecture": 5,
+   "fate": "spent 2026-10-26 at stage 4 round 2: round 1's readers both missed on the raw correlation but the judge held the raw correlation open as the literal estimand (SEND_BACK); with standard 2.3 filing the correlation between the effects themselves the judge approved and both round 2 readers took out the shared sampling covariance and landed first purchase"
+  },
+  {
+   "architecture": 6,
+   "fate": "spent 2026-10-26 at stage 4 round 2 (Gate F): round 1's readers both missed (B at 31.8 by the clock window), the judge DETERMINISTIC, FIX_NOW on two sub-figure forks; after the repair pass (3.3 summed statements, same-day traffic, Ask R re-sited onto the donor record read on the extraction day) both round 2 readers landed the call (A 26.6, B 20.9) through the bookings' janela field joined on id_reserva, so one join and a field read reach the golden; the judge DETERMINISTIC, SEND_BACK (Gate G planted_defect_flip, Gate H decisive_step planted); the re-sited asks held, both readers 0 of 7 ask keys at the per-row repair"
+  },
+  {
+   "architecture": 7,
+   "fate": "spent 2026-10-26 at stage 4 round 1 (target.zip aec69c19d254e18c5490f12c66c33516): both isolated scored readers netted each pack's 2026 charges against the change in its receiver stock, fitting kilograms per level point from each pack's own arrival and departure readings, and landed Lancashire (reader 1 8 of 16 ask figures, Ask B whole; reader 2 16 of 16); judge DETERMINISTIC, APPROVE, reading stump power as strong"
+  },
+  {
+   "architecture": 8,
+   "fate": "drawn 2026-10-27 (statin adherence tiers, Iversford Vale ICB); card BLOCK on ban.strategy alone (population_selection, task141 in the window)",
+   "drawn": "2026-10-27"
+  }
+ ],
+ "approved": null,
+ "delivered": null,
+ "portal": null,
+ "portal_id": "",
+ "portal_status": "",
+ "portal_status_date": "",
+ "seed": "none: a fresh world drawn 2026-10-26 (Hallowmere Foodstores' 2027 HFC pack replacement programme)"
 }

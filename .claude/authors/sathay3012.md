@@ -1,9 +1,8 @@
 # Author: sathay3012
 
-Account email: not yet recorded; until it is, the author names the handle at the start of the session. A
-session for anyone else ignores this file.
+Account email: not yet recorded; until it is, the author names the handle at the start of the session. A backlog list, not a territory: no task belongs to anybody, and any build in here can be worked by whoever the user asks.
 
-- **Lane:** Descriptive & Distribution Analysis, task253 to task300. Two builds in flight; `status.py next sathay3012`.
+- **Backlog range:** Descriptive & Distribution Analysis, task253 to task300. `status.py next` names the next task across every backlog; how many run at once is the user's call.
 - **Status board:** https://claude.ai/artifact/Ht1rZ4FAUWxn91Ma75XRzC (one row per task: the task and its call, status, links to the prompt, submission and `target.zip` on `main`, a short note, the date), updated at every commit point.
 - **No retirement.** No number in this lane is retired: an architecture that dies at the draw or at stage 4 is re-rooted in a fresh world, and the number stays in its wave until it ships (the author, 2026-10-25). The twelve numbers retired before that date (task121, task269 to task272, task274, task276 to task280, task282) were reopened the same day.
 - **Resume:** `handoffs/sathay3012/HANDOFF.md` (task253, task254).

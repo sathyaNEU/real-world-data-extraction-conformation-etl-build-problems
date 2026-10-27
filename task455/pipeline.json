@@ -1,40 +1,39 @@
 {
-  "task": "task455",
-  "owner": "oviya1301",
-  "status": "SHIPPED",
-  "domain": "survey-research-official-statistics",
-  "objective": "etl",
-  "stage": 5,
-  "stage_name": "ship",
-  "updated": "2026-10-15",
-  "stump": "The default path counts each county's new employer accounts first employing in 2026 net of the register's predecessors and designates Caldmere, Eskwell and Tolbeck (Caldmere at 11.1 per 100); linking accounts through the wage records by where each new account's first-quarter workers came from still designates Caldmere, Dunrath and Eskwell, because the converted stores and the park arrivals kept their whole staff and hired as many again while Quarrin's start-ups were staffed from a closed warehouse; read from the old account's side the designation is Dunrath, Eskwell and Quarrin.",
-  "architecture": 2,
-  "loops": 0,
-  "precut": {
-    "exit": 0,
-    "date": "2026-10-15"
-  },
-  "leak": {
-    "leak_py": "REVIEW (no LEAK): county names in the guideline, golden digits inside wage amounts",
-    "reader": "second read on the recut: no decisive-step sentence, no helping file beyond the dictionary, quoted sentences execute to the golden, no main-call fork, decisive step analytical; it landed the call reading continuity from the closed account's side; its realism tells fixed in the data"
-  },
-  "duplicate_check": {
-    "heart": "WARN (three_rules.strategy_risk, overuse.org_family, overuse.objective; task82 differentiated)",
-    "nearest": "0.06 task87 lineage, 0.06 task98 lineage",
-    "note": "architecture 2 registered 2026-10-15: guard WARN three_rules.strategy_risk, overuse.org_family, overuse.objective; task82 v2 differentiated",
-    "surface": "task457 and task453 promoted on the card pairing alone and task82 on the same-driver signature, each differentiated on the card"
-  },
-  "judge": {
-    "verdict": "DETERMINISTIC",
-    "disposition": "APPROVE",
-    "report": "task455/determinism_check_report_pass2.md (pass 1: task455/determinism_check_report.md, FIX_NOW)",
-    "brief": "re-judge on the recut 47902d038ac4a919; the shipped cut changes data only (store numbers, shared FEINs on some filed transfers, movers held a quarter longer), every graded figure unchanged"
-  },
-  "returned": [],
-  "resume": "",
-  "approved": null,
-  "delivered": "2026-10-15",
-  "portal": null,
-  "source_note": "re-root of ET12's slot: architecture 1 kept the seed's world (a health department certifying a fall in a cause of death) and was spent on the re-judge's SEND_BACK; architecture 2 draws a new world (business demography from the UI employer register)",
-  "target_zip_sha256": "e52e2e9412ad7e38cb175b4a6d04f3cf8b507a97d9a50673a53a597be5fded5d"
+ "task": "task455",
+ "status": "SHIPPED",
+ "domain": "survey-research-official-statistics",
+ "objective": "etl",
+ "stage": 5,
+ "stage_name": "ship",
+ "updated": "2026-10-15",
+ "stump": "The default path counts each county's new employer accounts first employing in 2026 net of the register's predecessors and designates Caldmere, Eskwell and Tolbeck (Caldmere at 11.1 per 100); linking accounts through the wage records by where each new account's first-quarter workers came from still designates Caldmere, Dunrath and Eskwell, because the converted stores and the park arrivals kept their whole staff and hired as many again while Quarrin's start-ups were staffed from a closed warehouse; read from the old account's side the designation is Dunrath, Eskwell and Quarrin.",
+ "architecture": 2,
+ "loops": 0,
+ "precut": {
+  "exit": 0,
+  "date": "2026-10-15"
+ },
+ "leak": {
+  "leak_py": "REVIEW (no LEAK): county names in the guideline, golden digits inside wage amounts",
+  "reader": "second read on the recut: no decisive-step sentence, no helping file beyond the dictionary, quoted sentences execute to the golden, no main-call fork, decisive step analytical; it landed the call reading continuity from the closed account's side; its realism tells fixed in the data"
+ },
+ "duplicate_check": {
+  "heart": "WARN (three_rules.strategy_risk, overuse.org_family, overuse.objective; task82 differentiated)",
+  "nearest": "0.06 task87 lineage, 0.06 task98 lineage",
+  "note": "architecture 2 registered 2026-10-15: guard WARN three_rules.strategy_risk, overuse.org_family, overuse.objective; task82 v2 differentiated",
+  "surface": "task457 and task453 promoted on the card pairing alone and task82 on the same-driver signature, each differentiated on the card"
+ },
+ "judge": {
+  "verdict": "DETERMINISTIC",
+  "disposition": "APPROVE",
+  "report": "task455/determinism_check_report_pass2.md (pass 1: task455/determinism_check_report.md, FIX_NOW)",
+  "brief": "re-judge on the recut 47902d038ac4a919; the shipped cut changes data only (store numbers, shared FEINs on some filed transfers, movers held a quarter longer), every graded figure unchanged"
+ },
+ "returned": [],
+ "resume": "",
+ "approved": null,
+ "delivered": "2026-10-15",
+ "portal": null,
+ "source_note": "re-root of ET12's slot: architecture 1 kept the seed's world (a health department certifying a fall in a cause of death) and was spent on the re-judge's SEND_BACK; architecture 2 draws a new world (business demography from the UI employer register)",
+ "target_zip_sha256": "e52e2e9412ad7e38cb175b4a6d04f3cf8b507a97d9a50673a53a597be5fded5d"
 }

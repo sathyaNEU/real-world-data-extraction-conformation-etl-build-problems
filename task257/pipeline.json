@@ -1,39 +1,38 @@
 {
-  "task": "task257",
-  "owner": "sathay3012",
-  "status": "SHIPPED",
-  "domain": "psychology-behavioral-science",
-  "objective": "descriptive-distribution",
-  "stage": 5,
-  "stage_name": "ship",
-  "updated": "2026-10-15",
-  "stump": "The default path correlates the 30 answers as numbers and keeps five dimensions, five sub-scales (workload, tools, manager, growth, and belonging with recognition) with the six tools questions and the six growth questions each split from the dimension they measure; the step that lands it there is correlating yes or no answers that nearly everyone gives one way (yes to tools, no to growth) as scores, whose correlations are capped by their lopsided splits, so the shared split stands as a dimension of its own, and only correlating every answer as an ordered category of an underlying view (tetrachoric and polychoric correlations) shows the three dimensions the items measure.",
-  "architecture": 1,
-  "loops": 0,
-  "precut": {
-    "exit": 0,
-    "date": "2026-10-15"
-  },
-  "leak": {
-    "leak_py": "REVIEW, no LEAK (the standard holds the estimand words; a prompt sentence; no rounding words for whole counts), each line harmless",
-    "reader": "nothing names the move (q1 none); no ranking or helper file; the count left to the analysis; deciding step analytical; three realism tells fixed"
-  },
-  "duplicate_check": {
-    "heart": "WARN",
-    "nearest": "0.05 task17 (revision 3, lineage); guard surface clean"
-  },
-  "judge": {
-    "verdict": "DETERMINISTIC",
-    "disposition": "APPROVE",
-    "report": "task257/determinism_check_report.md"
-  },
-  "returned": [],
-  "resume": "shipped; next: the portal result",
-  "approved": null,
-  "delivered": "2026-10-15",
-  "portal": null,
-  "draw": {
-    "card": "cards/task257.json registered 2026-10-15",
-    "guard": "WARN (three_rules.strategy_risk, repeat.gate_g, overuse.gate_g), each answered in the design note's Draw; nearest driver 0.05"
-  }
+ "task": "task257",
+ "status": "SHIPPED",
+ "domain": "psychology-behavioral-science",
+ "objective": "descriptive-distribution",
+ "stage": 5,
+ "stage_name": "ship",
+ "updated": "2026-10-15",
+ "stump": "The default path correlates the 30 answers as numbers and keeps five dimensions, five sub-scales (workload, tools, manager, growth, and belonging with recognition) with the six tools questions and the six growth questions each split from the dimension they measure; the step that lands it there is correlating yes or no answers that nearly everyone gives one way (yes to tools, no to growth) as scores, whose correlations are capped by their lopsided splits, so the shared split stands as a dimension of its own, and only correlating every answer as an ordered category of an underlying view (tetrachoric and polychoric correlations) shows the three dimensions the items measure.",
+ "architecture": 1,
+ "loops": 0,
+ "precut": {
+  "exit": 0,
+  "date": "2026-10-15"
+ },
+ "leak": {
+  "leak_py": "REVIEW, no LEAK (the standard holds the estimand words; a prompt sentence; no rounding words for whole counts), each line harmless",
+  "reader": "nothing names the move (q1 none); no ranking or helper file; the count left to the analysis; deciding step analytical; three realism tells fixed"
+ },
+ "duplicate_check": {
+  "heart": "WARN",
+  "nearest": "0.05 task17 (revision 3, lineage); guard surface clean"
+ },
+ "judge": {
+  "verdict": "DETERMINISTIC",
+  "disposition": "APPROVE",
+  "report": "task257/determinism_check_report.md"
+ },
+ "returned": [],
+ "resume": "shipped; next: the portal result",
+ "approved": null,
+ "delivered": "2026-10-15",
+ "portal": null,
+ "draw": {
+  "card": "cards/task257.json registered 2026-10-15",
+  "guard": "WARN (three_rules.strategy_risk, repeat.gate_g, overuse.gate_g), each answered in the design note's Draw; nearest driver 0.05"
+ }
 }

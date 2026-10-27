@@ -1,120 +1,119 @@
 {
-  "task": "task123",
-  "owner": "oviya1301",
-  "status": "SHIPPED",
-  "domain": "survey-research-official-statistics",
-  "objective": "etl",
-  "stage": 5,
-  "stage_name": "shipped",
-  "updated": "2026-10-12",
-  "stump": "The default path prorates every straddling bill's therms across calendar months by days of service and files the day-prorated split (Ottercreek $1,135,000, Brennock $2,465,000; the region's January 11,190,000 therms) against the split by the AMI meters' measured daily use (Ottercreek $1,230,000, Brennock $2,380,000; 10,260,000 therms), because the first eighteen days of January were milder than the December and February days billed with them and the 19 to 31 January cold snap used 2.4 times the gas a day.",
-  "architecture": 2,
-  "loops": 0,
-  "precut": {
-    "exit": 0,
-    "date": "2026-10-12",
-    "fails": "",
-    "pair_ceiling": 27.5,
-    "mirror_leakage": 0.0
-  },
-  "leak": {
-    "leak_py": "REVIEW (0 LEAK) at --asof 2026-04-20, six lines answered in the design note",
-    "reader": "three isolated reads: no sentence names the decisive step, nothing ranks or answers, nothing exists only to help; the literal reading of the standard executes to the golden estimand and leaves the split to the analysis (the readers' own execution, day-proration, is the stump); narration of two ask devices and realism tells fixed after the first and second reads"
-  },
-  "duplicate_check": {
-    "heart": "WARN only (three_rules.strategy_risk, overuse.gate_g, repeat.question_form; answered in the design note)",
-    "surface": "0 promoted pairs; personas Regina Fowler, Douglas Tyler, Alison Pacheco, all on the card",
-    "nearest": "0.09 (task94 v2 lineage)",
-    "clone_check": ""
-  },
-  "judge": {
-    "verdict": "DETERMINISTIC",
-    "disposition": "FIX_NOW on the write-up only, fixed (shipped without a fourth judge: the same fork closed further)",
-    "report": "determinism_check_report.md (pass 1), determinism_check_report_pass2.md (pass 2), determinism_check_report_pass3.md (pass 3)",
-    "pass": 3,
-    "gate_g": "method_or_model_selection, analytical_non_defect, surface_read_dependency no, sole_data_defect no",
-    "gate_h": "domain pass, layers pass, decisive_step analytical",
-    "fix_cycles": 2,
-    "notes": "pass 1 FIX_NOW: Northbank's HHAP file named premises only (a residual fork on four counts); fixed by naming the enrolling account; pass 2 APPROVE, optional pin taken (the contractor report lists completed jobs); pass 3 after the portal repair: DETERMINISTIC, every graded figure reproduces, even split by days judged not defensible; FIX_NOW on step 3's Northbank move-out figures, because the step did not say the pairs lie inside the AMI reads' span (read without it, a pair's gas days before 7 October have no shape); fixed by stating the span, and every zero-therm handling then gives 536 reads, 0.27 and 3.32 points"
-  },
-  "returned": [
-    {
-      "date": "2026-10-12",
-      "portal": "determinism block failed (C, D, E: competing_defensible_answer, fix_location input_files): the estimator of a straddling bill's January share unforced outside Pine Harbor's territory; Northbank's HHAP count read on premises (821) or enrolled accounts (798)",
-      "repair": "determinism",
-      "moves": "(1) SF12: the utilities' own move-out reads (Kestrel Valley 567, Northbank 536) place each split where the AMI shape does (0.34 and 0.27 points) and refute an even split by days (5.28 and 3.32), shown in the write-up's step 3 and asserted; no input file changed on the main path. (2) SF13: Northbank's account history carries each account's HHAP enrollment with its end date, so Appendix B's end-date sentence executes to the golden; golden counts unchanged. freeze.py determination PASS.",
-      "commit": "",
-      "requested_by": "perssathya (author's request in session)",
-      "judge": "pass 3 DETERMINISTIC; FIX_NOW on the write-up (the AMI reads' span stated in step 3), fixed"
-    }
-  ],
-  "resume": "reshipped after the portal determinism repair; waiting for the portal",
-  "approved": null,
-  "delivered": "2026-10-12",
-  "portal": null,
-  "source_note": "own draw (no seed note; the ET01 slot's world is not carried)",
-  "history": {
-    "architecture_1": "v1 Steady Ground stabilisation screen (ET01): solved in-house in rounds 1 to 4 (93.8, 80.2, 86.0, 91.7), three hardening loops, retired 2026-10-11 (FAILED_TO_STUMP); re-rooted in wave 1 on 2026-10-12",
-    "v1_pipeline": {
-      "stage": "retired",
-      "stage_name": "retired under the author's standing rule; ET11 takes the slot",
-      "harden_loops": 3,
-      "solver_rounds": [
-        {
-          "label": "round 1, plain",
-          "date": "2026-10-09",
-          "score": 93.8,
-          "landed": true,
-          "cracked": 8,
-          "items": 9,
-          "decision": "harden",
-          "report": "solver_rounds/round-1-plain.md"
-        },
-        {
-          "label": "round 2, plain",
-          "date": "2026-10-09",
-          "score": 80.2,
-          "landed": true,
-          "cracked": 5,
-          "items": 9,
-          "decision": "harden",
-          "report": "solver_rounds/round-2-plain.md",
-          "note": "token match read missed (4 of 7, the sentence lacks Strike and Steady Ground); main thread re-graded --landed yes: 42.55 cents, nine offers, $559,969 of $560,000 is block 1"
-        },
-        {
-          "label": "round 3, plain",
-          "date": "2026-10-09",
-          "score": 86.0,
-          "landed": true,
-          "cracked": 6,
-          "items": 9,
-          "decision": "harden",
-          "report": "solver_rounds/round-3-plain.md",
-          "note": "token match read landed (7 of 7) and the main thread confirms: 42.55 cents, nine offers, $559,969 of $560,000 is block 1. Path reached R6 at step 3 (each LTM term taken from its own return, short years for the three movers), R4 at step 4, R5 at step 6. K1 government parts cracked on all nine (co-funding via Variations and the payment run); K2 own money held on all nine (Steady Ground instalments missing)."
-        },
-        {
-          "label": "round 4, plain",
-          "date": "2026-10-09",
-          "score": 91.7,
-          "landed": true,
-          "cracked": 7,
-          "items": 9,
-          "decision": "reroot",
-          "report": "solver_rounds/round-4-plain.md",
-          "note": "token match read landed (7 of 7) and the main thread confirms: 42.55 cents, nine offers, $559,969 of $560,000 is block 1. Path executed R4, R5 and R6 inside the replay at steps 3 and 4 and R7 (scope from the register dates plus the Term ended/Renewal variations) at step 4 as part of the same replay, then reproduced 821 of 821 rows. K2 own money held on all nine (Steady Ground instalments missing); K1 government parts cracked. Three hardening loops spent on this architecture, so the decision is re-root, not a fourth patch."
-        }
-      ],
-      "stump": "A competent solver rebuilds the screen as held at the 30 September census, collapses the dual-grant returns, builds each grantee's twelve months from the identity on the register as held with every quarter in the year its own return runs within, gives back all 821 published rows, every offer and every rate, reads rule 4.1 against rule 2's census list and drops the 17 grantees whose year to 31 March 2026 has no annual return on the register, and strikes the offers at 34.79 cents on 10 names, because it takes scope from the grants register's start and end dates (start of the grant, end of its current term), which keep Ilam After School Care Society in, so it scores its true 13.62 per cent fall over the twelve months to June 2026 and offers it, when the Variations sheet shows that its term ended on 31 July 2026 and its renewal runs from 1 November 2026, nothing paid for August to October, so it held no operating grant in force at the census (rule 3.1), and the answer scores 132 grantees and strikes 42.55 cents on nine.",
-      "judge": {
-        "verdict": "",
-        "disposition": "",
-        "report": ""
-      },
-      "approved": "2026-10-09 (checkpoint B waived by the author; heart WARN)",
-      "status": "FAILED_TO_STUMP",
-      "source_note": "analytical_tasks/07_data_extraction_conformation/ET01_sec-fsds-point-in-time-revenue-screen.md",
-      "domain": "nonprofit-grant-making",
-      "updated": "2026-10-11"
-    }
+ "task": "task123",
+ "status": "SHIPPED",
+ "domain": "survey-research-official-statistics",
+ "objective": "etl",
+ "stage": 5,
+ "stage_name": "shipped",
+ "updated": "2026-10-12",
+ "stump": "The default path prorates every straddling bill's therms across calendar months by days of service and files the day-prorated split (Ottercreek $1,135,000, Brennock $2,465,000; the region's January 11,190,000 therms) against the split by the AMI meters' measured daily use (Ottercreek $1,230,000, Brennock $2,380,000; 10,260,000 therms), because the first eighteen days of January were milder than the December and February days billed with them and the 19 to 31 January cold snap used 2.4 times the gas a day.",
+ "architecture": 2,
+ "loops": 0,
+ "precut": {
+  "exit": 0,
+  "date": "2026-10-12",
+  "fails": "",
+  "pair_ceiling": 27.5,
+  "mirror_leakage": 0.0
+ },
+ "leak": {
+  "leak_py": "REVIEW (0 LEAK) at --asof 2026-04-20, six lines answered in the design note",
+  "reader": "three isolated reads: no sentence names the decisive step, nothing ranks or answers, nothing exists only to help; the literal reading of the standard executes to the golden estimand and leaves the split to the analysis (the readers' own execution, day-proration, is the stump); narration of two ask devices and realism tells fixed after the first and second reads"
+ },
+ "duplicate_check": {
+  "heart": "WARN only (three_rules.strategy_risk, overuse.gate_g, repeat.question_form; answered in the design note)",
+  "surface": "0 promoted pairs; personas Regina Fowler, Douglas Tyler, Alison Pacheco, all on the card",
+  "nearest": "0.09 (task94 v2 lineage)",
+  "clone_check": ""
+ },
+ "judge": {
+  "verdict": "DETERMINISTIC",
+  "disposition": "FIX_NOW on the write-up only, fixed (shipped without a fourth judge: the same fork closed further)",
+  "report": "determinism_check_report.md (pass 1), determinism_check_report_pass2.md (pass 2), determinism_check_report_pass3.md (pass 3)",
+  "pass": 3,
+  "gate_g": "method_or_model_selection, analytical_non_defect, surface_read_dependency no, sole_data_defect no",
+  "gate_h": "domain pass, layers pass, decisive_step analytical",
+  "fix_cycles": 2,
+  "notes": "pass 1 FIX_NOW: Northbank's HHAP file named premises only (a residual fork on four counts); fixed by naming the enrolling account; pass 2 APPROVE, optional pin taken (the contractor report lists completed jobs); pass 3 after the portal repair: DETERMINISTIC, every graded figure reproduces, even split by days judged not defensible; FIX_NOW on step 3's Northbank move-out figures, because the step did not say the pairs lie inside the AMI reads' span (read without it, a pair's gas days before 7 October have no shape); fixed by stating the span, and every zero-therm handling then gives 536 reads, 0.27 and 3.32 points"
+ },
+ "returned": [
+  {
+   "date": "2026-10-12",
+   "portal": "determinism block failed (C, D, E: competing_defensible_answer, fix_location input_files): the estimator of a straddling bill's January share unforced outside Pine Harbor's territory; Northbank's HHAP count read on premises (821) or enrolled accounts (798)",
+   "repair": "determinism",
+   "moves": "(1) SF12: the utilities' own move-out reads (Kestrel Valley 567, Northbank 536) place each split where the AMI shape does (0.34 and 0.27 points) and refute an even split by days (5.28 and 3.32), shown in the write-up's step 3 and asserted; no input file changed on the main path. (2) SF13: Northbank's account history carries each account's HHAP enrollment with its end date, so Appendix B's end-date sentence executes to the golden; golden counts unchanged. freeze.py determination PASS.",
+   "commit": "",
+   "requested_by": "perssathya (author's request in session)",
+   "judge": "pass 3 DETERMINISTIC; FIX_NOW on the write-up (the AMI reads' span stated in step 3), fixed"
   }
+ ],
+ "resume": "reshipped after the portal determinism repair; waiting for the portal",
+ "approved": null,
+ "delivered": "2026-10-12",
+ "portal": null,
+ "source_note": "own draw (no seed note; the ET01 slot's world is not carried)",
+ "history": {
+  "architecture_1": "v1 Steady Ground stabilisation screen (ET01): solved in-house in rounds 1 to 4 (93.8, 80.2, 86.0, 91.7), three hardening loops, retired 2026-10-11 (FAILED_TO_STUMP); re-rooted in wave 1 on 2026-10-12",
+  "v1_pipeline": {
+   "stage": "retired",
+   "stage_name": "retired under the author's standing rule; ET11 takes the slot",
+   "harden_loops": 3,
+   "solver_rounds": [
+    {
+     "label": "round 1, plain",
+     "date": "2026-10-09",
+     "score": 93.8,
+     "landed": true,
+     "cracked": 8,
+     "items": 9,
+     "decision": "harden",
+     "report": "solver_rounds/round-1-plain.md"
+    },
+    {
+     "label": "round 2, plain",
+     "date": "2026-10-09",
+     "score": 80.2,
+     "landed": true,
+     "cracked": 5,
+     "items": 9,
+     "decision": "harden",
+     "report": "solver_rounds/round-2-plain.md",
+     "note": "token match read missed (4 of 7, the sentence lacks Strike and Steady Ground); main thread re-graded --landed yes: 42.55 cents, nine offers, $559,969 of $560,000 is block 1"
+    },
+    {
+     "label": "round 3, plain",
+     "date": "2026-10-09",
+     "score": 86.0,
+     "landed": true,
+     "cracked": 6,
+     "items": 9,
+     "decision": "harden",
+     "report": "solver_rounds/round-3-plain.md",
+     "note": "token match read landed (7 of 7) and the main thread confirms: 42.55 cents, nine offers, $559,969 of $560,000 is block 1. Path reached R6 at step 3 (each LTM term taken from its own return, short years for the three movers), R4 at step 4, R5 at step 6. K1 government parts cracked on all nine (co-funding via Variations and the payment run); K2 own money held on all nine (Steady Ground instalments missing)."
+    },
+    {
+     "label": "round 4, plain",
+     "date": "2026-10-09",
+     "score": 91.7,
+     "landed": true,
+     "cracked": 7,
+     "items": 9,
+     "decision": "reroot",
+     "report": "solver_rounds/round-4-plain.md",
+     "note": "token match read landed (7 of 7) and the main thread confirms: 42.55 cents, nine offers, $559,969 of $560,000 is block 1. Path executed R4, R5 and R6 inside the replay at steps 3 and 4 and R7 (scope from the register dates plus the Term ended/Renewal variations) at step 4 as part of the same replay, then reproduced 821 of 821 rows. K2 own money held on all nine (Steady Ground instalments missing); K1 government parts cracked. Three hardening loops spent on this architecture, so the decision is re-root, not a fourth patch."
+    }
+   ],
+   "stump": "A competent solver rebuilds the screen as held at the 30 September census, collapses the dual-grant returns, builds each grantee's twelve months from the identity on the register as held with every quarter in the year its own return runs within, gives back all 821 published rows, every offer and every rate, reads rule 4.1 against rule 2's census list and drops the 17 grantees whose year to 31 March 2026 has no annual return on the register, and strikes the offers at 34.79 cents on 10 names, because it takes scope from the grants register's start and end dates (start of the grant, end of its current term), which keep Ilam After School Care Society in, so it scores its true 13.62 per cent fall over the twelve months to June 2026 and offers it, when the Variations sheet shows that its term ended on 31 July 2026 and its renewal runs from 1 November 2026, nothing paid for August to October, so it held no operating grant in force at the census (rule 3.1), and the answer scores 132 grantees and strikes 42.55 cents on nine.",
+   "judge": {
+    "verdict": "",
+    "disposition": "",
+    "report": ""
+   },
+   "approved": "2026-10-09 (checkpoint B waived by the author; heart WARN)",
+   "status": "FAILED_TO_STUMP",
+   "source_note": "analytical_tasks/07_data_extraction_conformation/ET01_sec-fsds-point-in-time-revenue-screen.md",
+   "domain": "nonprofit-grant-making",
+   "updated": "2026-10-11"
+  }
+ }
 }

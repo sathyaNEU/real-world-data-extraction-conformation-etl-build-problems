@@ -1,39 +1,38 @@
 {
-  "task": "task254",
-  "owner": "sathay3012",
-  "status": "SHIPPED",
-  "domain": "urban-regional-science",
-  "objective": "descriptive-distribution",
-  "stage": 5,
-  "stage_name": "ship (architecture 3)",
-  "updated": "2026-10-12",
-  "stump": "A competent analyst adds the fixed legs to the sum of the route's sixteen segments' travel times for the five-minute period the shuttle leaves in and files 7:15 a.m. (241 of 252 working weekdays) where composing each day's trip segment by segment at the period the shuttle reaches each one gives 7:05 (238; 7:10 on 190)",
-  "architecture": 3,
-  "loops": 0,
-  "precut": {
-    "exit": 0,
-    "date": "2026-10-12"
-  },
-  "leak": {
-    "leak_py": "REVIEW (no LEAK), every line harmless (design note ## Stage 4)",
-    "reader": "pass 1: nothing for questions 1 to 4, question 5 executes to the golden, realism tells fixed; pass 2 on the final pack: clean"
-  },
-  "duplicate_check": {
-    "heart": "WARN (no BLOCK), nearest driver 0.08 task77 v1; surface clean",
-    "nearest": "task500 ledger 0.07, task109 ledger 0.06, task77 v1 0.05"
-  },
-  "judge": {
-    "verdict": "DETERMINISTIC",
-    "disposition": "APPROVE",
-    "report": "task254/determinism_check_report.md"
-  },
-  "returned": [],
-  "resume": "shipped; next event is the author's portal result",
-  "approved": null,
-  "delivered": "2026-10-12",
-  "portal": null,
-  "history": {
-    "architecture_1": "fire planning bands, spent at stage 2",
-    "architecture_2": "Lyrevo RMP windows, spent at stage 2 (precut FAIL under literal determinism; pair ceiling 70.1)"
-  }
+ "task": "task254",
+ "status": "SHIPPED",
+ "domain": "urban-regional-science",
+ "objective": "descriptive-distribution",
+ "stage": 5,
+ "stage_name": "ship (architecture 3)",
+ "updated": "2026-10-12",
+ "stump": "A competent analyst adds the fixed legs to the sum of the route's sixteen segments' travel times for the five-minute period the shuttle leaves in and files 7:15 a.m. (241 of 252 working weekdays) where composing each day's trip segment by segment at the period the shuttle reaches each one gives 7:05 (238; 7:10 on 190)",
+ "architecture": 3,
+ "loops": 0,
+ "precut": {
+  "exit": 0,
+  "date": "2026-10-12"
+ },
+ "leak": {
+  "leak_py": "REVIEW (no LEAK), every line harmless (design note ## Stage 4)",
+  "reader": "pass 1: nothing for questions 1 to 4, question 5 executes to the golden, realism tells fixed; pass 2 on the final pack: clean"
+ },
+ "duplicate_check": {
+  "heart": "WARN (no BLOCK), nearest driver 0.08 task77 v1; surface clean",
+  "nearest": "task500 ledger 0.07, task109 ledger 0.06, task77 v1 0.05"
+ },
+ "judge": {
+  "verdict": "DETERMINISTIC",
+  "disposition": "APPROVE",
+  "report": "task254/determinism_check_report.md"
+ },
+ "returned": [],
+ "resume": "shipped; next event is the author's portal result",
+ "approved": null,
+ "delivered": "2026-10-12",
+ "portal": null,
+ "history": {
+  "architecture_1": "fire planning bands, spent at stage 2",
+  "architecture_2": "Lyrevo RMP windows, spent at stage 2 (precut FAIL under literal determinism; pair ceiling 70.1)"
+ }
 }

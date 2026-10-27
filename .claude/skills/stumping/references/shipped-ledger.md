@@ -9,8 +9,8 @@ protect a stump is in `strategies.md`. This file holds status and what the porta
 re-rooted, retired), and add the portal result with its date the day the author reports it. The
 portal record below is the author's list from the portal: an APPROVED build is `SHIPPED & APPROVED
 MM-DD`, a PENDING_REVIEW build is `SHIPPED, delivered MM-DD, pending review`, and a build missing
-from the list is `FAILED_TO_STUMP: backlog <handle>`, back in its lane owner's backlog wave
-(`.claude/authors/`). The parser ranks the three as approved, delivered and failed. When
+from the list is `FAILED_TO_STUMP: backlog`, back in a backlog wave
+(`.claude/authors/`, which are lists of numbers and not claims on them). The parser ranks the three as approved, delivered and failed. When
 an architecture dies, move it to Earlier architectures in the same edit: a row describing a dead
 version misleads the clone screen. task1 to task24 predate the ledger and have cards only.
 
@@ -37,8 +37,8 @@ physical and environmental sciences, GSD general statistics, HFE human factors, 
 and clinical research.
 Gap and pattern are the card's, decisive first; calibration and artifact are on the card (`-`).
 "Listed" means on the author's refresh lists of 10-02 or 10-07, which state no status. Rows 41 to
-43 follow the folders and cards. Author is the lane owner in the root `START_HERE.md`; builds
-before the lanes record none (`-`).
+43 follow the folders and cards. The last column records which backlog file a build was listed in
+when it shipped, as history and not as a claim: no task belongs to anybody.
 
 ## Portal record
 

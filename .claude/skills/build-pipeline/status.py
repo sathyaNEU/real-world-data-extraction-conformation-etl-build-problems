@@ -2,11 +2,11 @@
 """status.py: the board, read from every build's pipeline.json, the backlog waves in each author file and the
 portal record in the shipped ledger. Nothing here writes a file.
 
-    python3 .claude/skills/build-pipeline/status.py                every developer's waves, each task with its status
-    python3 .claude/skills/build-pipeline/status.py --owner HANDLE one developer's waves, one task per line
+    python3 .claude/skills/build-pipeline/status.py                every backlog wave, each task with its status
+    python3 .claude/skills/build-pipeline/status.py --handle NAME  one backlog file's waves, one task per line
     python3 .claude/skills/build-pipeline/status.py --all          every task folder with its status, then the portal record
-    python3 .claude/skills/build-pipeline/status.py next HANDLE    the next task to start, from the earliest wave
-    python3 .claude/skills/build-pipeline/status.py wave HANDLE    the next six open numbers in the lane, as a wave row
+    python3 .claude/skills/build-pipeline/status.py next [NAME]    the next task to start, from the earliest wave
+    python3 .claude/skills/build-pipeline/status.py wave [NAME]    the next six open numbers, as a wave row
     python3 .claude/skills/build-pipeline/status.py taskNN         the seed for a number: header and Situation only
 
 Status (pipeline.json `status`, exact strings): DRAWING, DESIGN, BUILD, SHIPPED (submitted, pending review),
@@ -36,17 +36,17 @@ LEGACY = {"drawing": "DRAWING", "design": "DESIGN", "build": "BUILD", "shipped":
 def lanes():
     out = []
     for line in open(START, encoding="utf-8"):
-        m = re.match(r"\| ([^|]+) \| task(\d+) to task(\d+) \| \d+ \| ([^|]+) \|", line)
+        m = re.match(r"\| ([^|]+) \| task(\d+) to task(\d+) \| \d+ \|", line)
         if m:
-            out.append((m.group(1).strip(), int(m.group(2)), int(m.group(3)), m.group(4).strip()))
+            out.append((m.group(1).strip(), int(m.group(2)), int(m.group(3))))
     return out
 
 
 def lane_of(n, ls):
-    for obj, lo, hi, owner in ls:
+    for obj, lo, hi in ls:
         if lo <= n <= hi:
-            return obj, owner
-    return "", ""
+            return obj
+    return ""
 
 
 def portal_record():
@@ -112,8 +112,18 @@ def authors():
     return out
 
 
-def waves(handle):
-    """[(wave number, [(task, note)])] from the author file's `## Backlog` table."""
+def waves(handle=None):
+    """[(wave number, [(task, note)])] from a backlog file's `## Backlog` table.
+
+    With no handle, every backlog file is merged in wave order, because no task belongs to anybody:
+    the files are lists of numbers to work, not claims on them.
+    """
+    if handle is None:
+        merged = {}
+        for h in authors():
+            for n, items in waves(h):
+                merged.setdefault(n, []).extend(items)
+        return [(n, merged[n]) for n in sorted(merged)]
     path = authors().get(handle)
     out, on = [], False
     if not path:
@@ -133,21 +143,20 @@ def show(st):
     return SHOW.get(st, st)
 
 
-def board(owner=None):
+def board(handle=None):
     rec = portal_record()
     ls = lanes()
     for h in authors():
-        if owner and h != owner:
+        if handle and h != handle:
             continue
-        lane = next(((obj, lo, hi) for obj, lo, hi, o in ls if o == h), None)
-        print("%s%s" % (h, ("  " + "%s, task%d to task%d" % lane) if lane else ""))
+        print("%s  (backlog file; a task in it belongs to nobody)" % h)
         ws = waves(h)
         if not ws:
             print("  no backlog waves")
         for n, items in ws:
             sts = [status_of(t, rec) for t, _ in items]
             done = sum(1 for s in sts if s in DONE)
-            if owner:
+            if handle:
                 print("  wave %d (%d of %d shipped)" % (n, done, len(items)))
                 for (t, note), s in zip(items, sts):
                     print("    %-8s %-19s %s" % (t, show(s), note))
@@ -155,7 +164,7 @@ def board(owner=None):
                 print("  wave %d (%d of %d shipped): %s" % (n, done, len(items),
                       " · ".join("%s %s" % (t, show(s)) for (t, _), s in zip(items, sts))))
         print()
-    if not owner:
+    if not handle:
         a = sum(1 for v in rec.values() if v[1] == "APPROVED")
         print("portal record: %d approved, %d pending review" % (a, len(rec) - a))
 
@@ -169,7 +178,7 @@ def board_all():
         if m and os.path.isdir(os.path.join(REPO, d)):
             n = int(m.group(1))
             p = pipeline(d) or {}
-            rows.append((n, d, status_of(d, rec), str(p.get("stage_name", ""))[:60], p.get("owner", "") or lane_of(n, ls)[1]))
+            rows.append((n, d, status_of(d, rec), str(p.get("stage_name", ""))[:60], lane_of(n, ls)))
     for n, t, st, name, own in sorted(rows):
         print("  %-8s %-19s %-11s %s" % (t, show(st), own or "-", name))
     print("\nportal record (no folder needed):")
@@ -256,15 +265,25 @@ def next_task(handle):
     return 1
 
 
-def next_wave(handle):
-    lane = next(((lo, hi) for obj, lo, hi, o in lanes() if o == handle), None)
-    if not lane:
-        print("no lane for %s in START_HERE.md" % handle)
-        return 1
+def next_wave(handle=None, objective=None):
+    """The next six open numbers as a wave row.
+
+    A range is chosen by OBJECTIVE, never by who is working: pass the objective's name as it appears
+    in START_HERE.md, or pass nothing and every number in the file is in scope.
+    """
+    ls = lanes()
+    if objective:
+        rng = next(((lo, hi) for obj, lo, hi in ls if obj.lower().startswith(objective.lower())), None)
+        if not rng:
+            print("no objective in START_HERE.md starting %r" % objective)
+            return 1
+        span = range(rng[0], rng[1] + 1)
+    else:
+        span = range(min(lo for _, lo, _ in ls), max(hi for _, _, hi in ls) + 1)
     used = taken()
-    free = [n for n in range(lane[0], lane[1] + 1) if n not in used][:6]
+    free = [n for n in span if n not in used][:6]
     if not free:
-        print("the lane is fully taken")
+        print("every number in scope is taken")
         return 1
     k = max([n for n, _ in waves(handle)] or [0]) + 1
     print("| %d | %s |" % (k, " · ".join("task%d (new)" % n for n in free)))
@@ -305,14 +324,18 @@ def seed(t):
 def main(argv):
     if len(argv) > 1 and re.fullmatch(r"task\d+", argv[1]):
         return seed(argv[1])
-    if len(argv) > 2 and argv[1] == "next":
-        return next_task(argv[2])
-    if len(argv) > 2 and argv[1] == "wave":
-        return next_wave(argv[2])
+    if len(argv) > 1 and argv[1] == "next":
+        return next_task(argv[2] if len(argv) > 2 else None)
+    if len(argv) > 1 and argv[1] == "wave":
+        arg = argv[2] if len(argv) > 2 else None
+        if arg and arg in authors():
+            return next_wave(arg)
+        return next_wave(None, arg)
     if "--all" in argv:
         board_all()
         return 0
-    board(argv[argv.index("--owner") + 1] if "--owner" in argv else None)
+    flag = "--handle" if "--handle" in argv else ("--owner" if "--owner" in argv else None)
+    board(argv[argv.index(flag) + 1] if flag else None)
     return 0
 
 

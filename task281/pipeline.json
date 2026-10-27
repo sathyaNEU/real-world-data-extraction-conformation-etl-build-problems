@@ -1,39 +1,38 @@
 {
-  "task": "task281",
-  "owner": "sathay3012",
-  "status": "SHIPPED",
-  "domain": "general-statistics-data-science",
-  "objective": "descriptive-distribution",
-  "stage": 5,
-  "stage_name": "ship",
-  "updated": "2026-10-24",
-  "stump": "A competent analyst replays FY2026's weekly backfill need as it stood, its own vacant lines included, against relief hours at each unit's average availability, and files other counts for most units; the FY2028 need replaces FY2026's vacant lines with the position control's, closed as each academy class graduates, and the relief positions work at the July 2025 class's first-year availability.",
-  "architecture": 1,
-  "loops": 2,
-  "precut": {
-    "exit": 0,
-    "date": "2026-10-24"
-  },
-  "leak": {
-    "leak_py": "REVIEW (answered in the note's Build record)",
-    "reader": "round 3 (7c914942): readers E and F off the call at 63 each, asks 1 of 20 each (5.0 per cent)"
-  },
-  "duplicate_check": {
-    "heart": "WARN (people.first, overuse, png and xlsx pair)",
-    "nearest": "task468 0.09 by text; same gap, pattern and Gate G as seven older forecasting builds, differentiated on the card"
-  },
-  "judge": {
-    "verdict": "DETERMINISTIC (round 3, 7c914942)",
-    "disposition": "APPROVE",
-    "report": "determinism_check_report.md"
-  },
-  "returned": [],
-  "resume": "SHIPPED 2026-10-24 on target.zip 7c914942 after three stage 4 rounds: six readers off the call (63, 63, 63, 62, 63, 63 against the golden 59); the asks re-sited twice (round 1 announced devices 28 of 28; round 2's pay ask 16 of 16) and held at 1 of 20 in round 3; the judge DETERMINISTIC, APPROVE in rounds 1 and 3 and FIX_NOW in round 2 (3.3's grain sentence and payroll's work_location, both closed without filing the decisive step). Portal result pending.",
-  "approved": null,
-  "delivered": "2026-10-24",
-  "portal": null,
-  "portal_id": "",
-  "portal_status": "",
-  "portal_status_date": "",
-  "seed": "DA31 (world kept: relief positions for round-the-clock units of four titles, sized on the overtime they remove; re-set from a city to a state; the seed's mechanism rows set aside)"
+ "task": "task281",
+ "status": "SHIPPED",
+ "domain": "general-statistics-data-science",
+ "objective": "descriptive-distribution",
+ "stage": 5,
+ "stage_name": "ship",
+ "updated": "2026-10-24",
+ "stump": "A competent analyst replays FY2026's weekly backfill need as it stood, its own vacant lines included, against relief hours at each unit's average availability, and files other counts for most units; the FY2028 need replaces FY2026's vacant lines with the position control's, closed as each academy class graduates, and the relief positions work at the July 2025 class's first-year availability.",
+ "architecture": 1,
+ "loops": 2,
+ "precut": {
+  "exit": 0,
+  "date": "2026-10-24"
+ },
+ "leak": {
+  "leak_py": "REVIEW (answered in the note's Build record)",
+  "reader": "round 3 (7c914942): readers E and F off the call at 63 each, asks 1 of 20 each (5.0 per cent)"
+ },
+ "duplicate_check": {
+  "heart": "WARN (people.first, overuse, png and xlsx pair)",
+  "nearest": "task468 0.09 by text; same gap, pattern and Gate G as seven older forecasting builds, differentiated on the card"
+ },
+ "judge": {
+  "verdict": "DETERMINISTIC (round 3, 7c914942)",
+  "disposition": "APPROVE",
+  "report": "determinism_check_report.md"
+ },
+ "returned": [],
+ "resume": "SHIPPED 2026-10-24 on target.zip 7c914942 after three stage 4 rounds: six readers off the call (63, 63, 63, 62, 63, 63 against the golden 59); the asks re-sited twice (round 1 announced devices 28 of 28; round 2's pay ask 16 of 16) and held at 1 of 20 in round 3; the judge DETERMINISTIC, APPROVE in rounds 1 and 3 and FIX_NOW in round 2 (3.3's grain sentence and payroll's work_location, both closed without filing the decisive step). Portal result pending.",
+ "approved": null,
+ "delivered": "2026-10-24",
+ "portal": null,
+ "portal_id": "",
+ "portal_status": "",
+ "portal_status_date": "",
+ "seed": "DA31 (world kept: relief positions for round-the-clock units of four titles, sized on the overtime they remove; re-set from a city to a state; the seed's mechanism rows set aside)"
 }

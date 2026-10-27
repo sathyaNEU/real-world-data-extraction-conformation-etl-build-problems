@@ -1,71 +1,70 @@
 {
-  "task": "task139",
-  "owner": "sathya8571",
-  "status": "DESIGN",
-  "domain": "actuarial-science-insurance",
-  "objective": "forecasting",
-  "stage": 2,
-  "stage_name": "design",
-  "updated": "2026-10-26",
-  "stump": "A competent solver reads the pilot per assigned intake, values each unit's teams at usual handling's indemnity per intake less ERN's over the place-days an ERN intake held, and files two teams in healthcare strains, three in manufacturing strains, none in retail or construction strains and three in each other-injury unit with a credit of about 2,700,000 dollars; the step that lands it there is taking the usual-handling arm as a unit with no team, when every drawn intake had the opening call before its pair was split and a unit with no team has no calls: read against the intakes the screen never drew, the call keeps about a fifth of the strain intakes from ever paying indemnity and reaches every intake of a unit once one team works there, so each strain unit takes a team for its calls, manufacturing strains a second for its files, the other-injury units three each, and the credit is about 5,600,000 dollars.",
-  "architecture": 2,
-  "loops": 0,
+ "task": "task139",
+ "status": "DESIGN",
+ "domain": "actuarial-science-insurance",
+ "objective": "forecasting",
+ "stage": 2,
+ "stage_name": "design",
+ "updated": "2026-10-26",
+ "stump": "A competent solver reads the pilot per assigned intake, values each unit's teams at usual handling's indemnity per intake less ERN's over the place-days an ERN intake held, and files two teams in healthcare strains, three in manufacturing strains, none in retail or construction strains and three in each other-injury unit with a credit of about 2,700,000 dollars; the step that lands it there is taking the usual-handling arm as a unit with no team, when every drawn intake had the opening call before its pair was split and a unit with no team has no calls: read against the intakes the screen never drew, the call keeps about a fifth of the strain intakes from ever paying indemnity and reaches every intake of a unit once one team works there, so each strain unit takes a team for its calls, manufacturing strains a second for its files, the other-injury units three each, and the credit is about 5,600,000 dollars.",
+ "architecture": 2,
+ "loops": 0,
+ "precut": {
+  "exit": null,
+  "date": ""
+ },
+ "leak": {
+  "leak_py": "",
+  "reader": ""
+ },
+ "duplicate_check": {
+  "heart": "",
+  "nearest": "",
+  "note": "drawn 2026-10-26: guard check WARN only (people.first Stephanie, Alicia, Margaret; repeat.deliverables), answered in ## Draw; nearest driver 0.09 (task128 v3)"
+ },
+ "judge": {
+  "verdict": "",
+  "disposition": "",
+  "report": ""
+ },
+ "returned": [
+  {
+   "date": "2026-10-26",
+   "portal": "both responses landed the call: three teams each in HC-SS, MF-SS, MF-OT, CN-OT and HC-OT, two in RW-SS, none in RW-OT or CN-SS, and the 4.1 million credit",
+   "repair": "design",
+   "commit": ""
+  }
+ ],
+ "resume": "stage 2 of architecture 2 (the opening call): rework the generator's courses so the call keeps most of architecture 1's kept-at-work share in both pilot arms and the file adds the rest, the undrawn intakes uncalled; add the review's claim-audit stratum (100 indemnity claims a unit from outside the pilot over the pilot's two years); redraw the world's organisation as the trust in docs; widen the golden's cut past 1.15 (MF-SS's second team against HC-SS's second, 1.11 on paper) and set every unit's saving mid-bin; measure the standing family on the pack; then the readability screen, fork table, ladder, closure table, literal reader, oracles, the asks and prompt.txt to precut.py exit 0",
+ "approved": null,
+ "delivered": null,
+ "portal": null,
+ "portal_id": "",
+ "portal_status": "",
+ "portal_status_date": "",
+ "wave": "wave 2 (new), seed FC10",
+ "lineage_v1": {
+  "stump": "A competent solver joins Kellerman Pryce's verified ultimates to the pilot register, takes usual handling's mean indemnity claim less ERN's in each segment, values each segment's teams at that saving over the place-days an ERN indemnity claim held, and files teams weighted to the other-injury and construction segments with none in healthcare or retail strains and a credit of 2,000,000 dollars; the step that lands it there is reading the saving per verified indemnity claim when the nurses kept a fifth to a quarter of the strain intakes from ever paying indemnity, so ERN's indemnity claims there are the costlier remainder: read per assigned intake, as the pilot was randomised, the teams go to the strain segments, retail strains takes the two teams its intakes keep in use, and the credit is 4,100,000 dollars.",
   "precut": {
-    "exit": null,
-    "date": ""
+   "exit": 0,
+   "date": "2026-10-15"
   },
   "leak": {
-    "leak_py": "",
-    "reader": ""
+   "leak_py": "REVIEW 2026-10-15 on the final rebuild (no LEAK; the same seven REVIEW lines answered in the build record)",
+   "reader": "stage 4 2026-10-15: no leak, Q1 to Q4 none, Q6 analytical, its realism tells fixed in the FIX_NOW pass; targeted re-read 2026-10-15 of the dictionary, the pick memo, the review workbook, the manifest and the merge file: no leak, Q6 analytical, the briefing tone of the two filed dictionary lines recorded and left"
   },
   "duplicate_check": {
-    "heart": "",
-    "nearest": "",
-    "note": "drawn 2026-10-26: guard check WARN only (people.first Stephanie, Alicia, Margaret; repeat.deliverables), answered in ## Draw; nearest driver 0.09 (task128 v3)"
+   "heart": "PASS 2026-10-15 on the final rebuild, nearest 0.06 (task128 ledger row)",
+   "nearest": "driver 0.07 (task73); surface exit 0, task229 and task452 promoted for an adjudicated read"
   },
   "judge": {
-    "verdict": "",
-    "disposition": "",
-    "report": ""
+   "verdict": "stage 4: NOT_DETERMINISTIC on supplementary 3 only (FIX_NOW applied); re-judge 2026-10-15: DETERMINISTIC, every figure reproduced, Gate H analytical, stump power moderate",
+   "disposition": "APPROVE, no fix; the merged-claim reading a mild fork, asserted both ways (SF28); the optional metadata dates left; no further judge owed",
+   "report": "task139/determinism_check_report.md, task139/determinism_check_report_pass2.md"
   },
-  "returned": [
-    {
-      "date": "2026-10-26",
-      "portal": "both responses landed the call: three teams each in HC-SS, MF-SS, MF-OT, CN-OT and HC-OT, two in RW-SS, none in RW-OT or CN-SS, and the 4.1 million credit",
-      "repair": "design",
-      "commit": ""
-    }
-  ],
-  "resume": "stage 2 of architecture 2 (the opening call): rework the generator's courses so the call keeps most of architecture 1's kept-at-work share in both pilot arms and the file adds the rest, the undrawn intakes uncalled; add the review's claim-audit stratum (100 indemnity claims a unit from outside the pilot over the pilot's two years); redraw the world's organisation as the trust in docs; widen the golden's cut past 1.15 (MF-SS's second team against HC-SS's second, 1.11 on paper) and set every unit's saving mid-bin; measure the standing family on the pack; then the readability screen, fork table, ladder, closure table, literal reader, oracles, the asks and prompt.txt to precut.py exit 0",
-  "approved": null,
-  "delivered": null,
-  "portal": null,
-  "portal_id": "",
-  "portal_status": "",
-  "portal_status_date": "",
+  "delivered": "2026-10-15",
   "wave": "wave 2 (new), seed FC10",
-  "lineage_v1": {
-    "stump": "A competent solver joins Kellerman Pryce's verified ultimates to the pilot register, takes usual handling's mean indemnity claim less ERN's in each segment, values each segment's teams at that saving over the place-days an ERN indemnity claim held, and files teams weighted to the other-injury and construction segments with none in healthcare or retail strains and a credit of 2,000,000 dollars; the step that lands it there is reading the saving per verified indemnity claim when the nurses kept a fifth to a quarter of the strain intakes from ever paying indemnity, so ERN's indemnity claims there are the costlier remainder: read per assigned intake, as the pilot was randomised, the teams go to the strain segments, retail strains takes the two teams its intakes keep in use, and the credit is 4,100,000 dollars.",
-    "precut": {
-      "exit": 0,
-      "date": "2026-10-15"
-    },
-    "leak": {
-      "leak_py": "REVIEW 2026-10-15 on the final rebuild (no LEAK; the same seven REVIEW lines answered in the build record)",
-      "reader": "stage 4 2026-10-15: no leak, Q1 to Q4 none, Q6 analytical, its realism tells fixed in the FIX_NOW pass; targeted re-read 2026-10-15 of the dictionary, the pick memo, the review workbook, the manifest and the merge file: no leak, Q6 analytical, the briefing tone of the two filed dictionary lines recorded and left"
-    },
-    "duplicate_check": {
-      "heart": "PASS 2026-10-15 on the final rebuild, nearest 0.06 (task128 ledger row)",
-      "nearest": "driver 0.07 (task73); surface exit 0, task229 and task452 promoted for an adjudicated read"
-    },
-    "judge": {
-      "verdict": "stage 4: NOT_DETERMINISTIC on supplementary 3 only (FIX_NOW applied); re-judge 2026-10-15: DETERMINISTIC, every figure reproduced, Gate H analytical, stump power moderate",
-      "disposition": "APPROVE, no fix; the merged-claim reading a mild fork, asserted both ways (SF28); the optional metadata dates left; no further judge owed",
-      "report": "task139/determinism_check_report.md, task139/determinism_check_report_pass2.md"
-    },
-    "delivered": "2026-10-15",
-    "wave": "wave 2 (new), seed FC10",
-    "zip": "da3c19bf42dff8ef (sha256 prefix), commit 1384f0e9",
-    "portal": "both responses landed the call: three teams each in HC-SS, MF-SS, MF-OT, CN-OT and HC-OT, two in RW-SS, none in RW-OT or CN-SS, and the 4.1 million credit"
-  }
+  "zip": "da3c19bf42dff8ef (sha256 prefix), commit 1384f0e9",
+  "portal": "both responses landed the call: three teams each in HC-SS, MF-SS, MF-OT, CN-OT and HC-OT, two in RW-SS, none in RW-OT or CN-SS, and the 4.1 million credit"
+ }
 }

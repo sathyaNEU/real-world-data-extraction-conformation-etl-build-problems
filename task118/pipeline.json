@@ -5,7 +5,7 @@
  "stage": 5,
  "stage_name": "ship",
  "updated": "2026-10-27",
- "stump": "A competent solver shrinks each desk's winning lift against the change log, sizes it on the clicks from Bightline's own pages, leaves out the articles the desk's editors already test and names Culture·national at about 1,250,000 (scaling every desk by the closed embeddings' average shortfall still names Culture·national); the step that lands them there is crediting every click a shipped headline wins as new to Bightline, when on a fixed page most come from the headlines beside it and only the share of views that would otherwise end in no click is new, and Culture·national's own-page clicks come from its section front and app tab where about four in five views already end in a click.",
+ "stump": "A competent solver shrinks each desk's winning lift against the change log, sizes it on the clicks from Bightline's own pages, leaves out the articles the desk's editors already test and names Culture\u00b7national at about 1,250,000 (scaling every desk by the closed embeddings' average shortfall still names Culture\u00b7national); the step that lands them there is crediting every click a shipped headline wins as new to Bightline, when on a fixed page most come from the headlines beside it and only the share of views that would otherwise end in no click is new, and Culture\u00b7national's own-page clicks come from its section front and app tab where about four in five views already end in a click.",
  "harden_loops": 4,
  "solver_rounds": [
   {
@@ -101,7 +101,6 @@
  "portal": null,
  "source_note": "analytical_tasks/04_opportunity_sizing/OS01_headline-squad-renderable-click-share.md",
  "status": "SHIPPED",
- "owner": "oviya1301",
  "resume": "",
  "leak": {
   "leak_py": "REVIEW, every line ruled harmless (sweep 3 the brief states the question, sweep 4 subjects' own words, sweep 5 the prompt)",
@@ -126,7 +125,7 @@
   },
   {
    "date": "2026-10-27",
-   "portal": "FAILED_TO_STUMP: both responses filed Culture·national at 1,250,000 (the golden), runner-up named Sport·national (850,000, gap 350,000; and 200,000 behind)",
+   "portal": "FAILED_TO_STUMP: both responses filed Culture\u00b7national at 1,250,000 (the golden), runner-up named Sport\u00b7national (850,000, gap 350,000; and 200,000 behind)",
    "repair": "re-root",
    "commit": "DRAWN (task118) architecture 2"
   }

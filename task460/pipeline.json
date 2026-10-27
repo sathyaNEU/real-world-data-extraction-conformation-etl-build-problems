@@ -1,36 +1,35 @@
 {
-  "task": "task460",
-  "owner": "oviya1301",
-  "status": "SHIPPED",
-  "domain": "physical-environmental-sciences",
-  "objective": "etl",
-  "stage": 5,
-  "stage_name": "ship",
-  "updated": "2026-10-15",
-  "stump": "The default path takes each store's balancing-area average output emission rate as the carbon dioxide its array avoids and pilots at Brackwell (0.85 t/MWh); the published non-baseload rate pilots at Quillbury and one marginal rate fitted over all hours at Tennaford; the margin by season and hour, weighted by each array's output, pilots at Gorsefield (0.89), Halvane first left out at 0.58.",
-  "architecture": 1,
-  "loops": 0,
-  "precut": {
-    "exit": 0,
-    "date": "2026-10-15"
-  },
-  "leak": {
-    "leak_py": "REVIEW (no LEAK): label's 'generator', dictionary's row count, charter's pilot vocabulary",
-    "reader": "two passes: no decisive-step sentence, no ranking file, decisive step (a) analytical; realism tells fixed in the generator"
-  },
-  "duplicate_check": {
-    "heart": "WARN (overuse.shape, repeat.question_form)",
-    "nearest": "0.06 task459; surface promoted task458, task459, task135, task451 (author's call on /clone-check)"
-  },
-  "judge": {
-    "verdict": "pass 1 DETERMINISTIC (FIX_NOW, dictionary pins on the asks); re-judge DETERMINISTIC",
-    "disposition": "APPROVE",
-    "report": "task460/determinism_check_report.md, task460/determinism_check_report_pass2.md"
-  },
-  "returned": [],
-  "resume": "",
-  "approved": null,
-  "delivered": "2026-10-15",
-  "portal": null,
-  "source_note": "seed ET17 (analytical_tasks/07_data_extraction_conformation): a national retailer siting one on-site solar pilot kept; the quantity moved from the price a kWh saves to the grid CO2 a MWh avoids, since emissions accounting is the ETL-serving task type for this world"
+ "task": "task460",
+ "status": "SHIPPED",
+ "domain": "physical-environmental-sciences",
+ "objective": "etl",
+ "stage": 5,
+ "stage_name": "ship",
+ "updated": "2026-10-15",
+ "stump": "The default path takes each store's balancing-area average output emission rate as the carbon dioxide its array avoids and pilots at Brackwell (0.85 t/MWh); the published non-baseload rate pilots at Quillbury and one marginal rate fitted over all hours at Tennaford; the margin by season and hour, weighted by each array's output, pilots at Gorsefield (0.89), Halvane first left out at 0.58.",
+ "architecture": 1,
+ "loops": 0,
+ "precut": {
+  "exit": 0,
+  "date": "2026-10-15"
+ },
+ "leak": {
+  "leak_py": "REVIEW (no LEAK): label's 'generator', dictionary's row count, charter's pilot vocabulary",
+  "reader": "two passes: no decisive-step sentence, no ranking file, decisive step (a) analytical; realism tells fixed in the generator"
+ },
+ "duplicate_check": {
+  "heart": "WARN (overuse.shape, repeat.question_form)",
+  "nearest": "0.06 task459; surface promoted task458, task459, task135, task451 (author's call on /clone-check)"
+ },
+ "judge": {
+  "verdict": "pass 1 DETERMINISTIC (FIX_NOW, dictionary pins on the asks); re-judge DETERMINISTIC",
+  "disposition": "APPROVE",
+  "report": "task460/determinism_check_report.md, task460/determinism_check_report_pass2.md"
+ },
+ "returned": [],
+ "resume": "",
+ "approved": null,
+ "delivered": "2026-10-15",
+ "portal": null,
+ "source_note": "seed ET17 (analytical_tasks/07_data_extraction_conformation): a national retailer siting one on-site solar pilot kept; the quantity moved from the price a kWh saves to the grid CO2 a MWh avoids, since emissions accounting is the ETL-serving task type for this world"
 }

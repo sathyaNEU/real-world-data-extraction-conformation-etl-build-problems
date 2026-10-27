@@ -1,67 +1,66 @@
 {
-  "task": "task272",
-  "owner": "sathay3012",
-  "status": "OPEN",
-  "domain": "demographic-social-science",
-  "objective": "descriptive-distribution",
-  "stage": 1,
-  "stage_name": "draw",
-  "updated": "2026-10-25",
-  "stump": "A competent analyst who conforms the three hubs and takes the 2025 policy's yearly figure (the three months before the application times four) as each household's income over the twelve months before it applied files 5 grants (H11, H15, H17, H23, H26); one calendar for every seasonal kind of work files 6, one per kind of work across regions or per region or hospital across kinds of work 10; only each region's calendar for each kind of work names the 16.",
-  "architecture": 3,
-  "loops": 0,
-  "precut": {
-    "exit": 0,
-    "date": "2026-10-21",
-    "checks": 51
+ "task": "task272",
+ "status": "OPEN",
+ "domain": "demographic-social-science",
+ "objective": "descriptive-distribution",
+ "stage": 1,
+ "stage_name": "draw",
+ "updated": "2026-10-25",
+ "stump": "A competent analyst who conforms the three hubs and takes the 2025 policy's yearly figure (the three months before the application times four) as each household's income over the twelve months before it applied files 5 grants (H11, H15, H17, H23, H26); one calendar for every seasonal kind of work files 6, one per kind of work across regions or per region or hospital across kinds of work 10; only each region's calendar for each kind of work names the 16.",
+ "architecture": 3,
+ "loops": 0,
+ "precut": {
+  "exit": 0,
+  "date": "2026-10-21",
+  "checks": 51
+ },
+ "leak": {
+  "leak_py": "REVIEW 2026-10-21 (no LEAK): program name, estimand words, column vocabulary, hospitals beside beds and filings; each answered in the note's Leak check",
+  "reader": "r272c and r272d (architecture 2) both landed the call: a seasonal calendar per hospital or region and kind of work; asks held (Ask A 0 of 31 each, Ask B 1 of 31 each, the H20 tie)"
+ },
+ "duplicate_check": {
+  "heart": "WARN 2026-10-21 (three_rules.strategy_risk, repeat.gate_g against task482 v4, overuse.gate_g; answered in the note's Draw item 9)",
+  "nearest": "0.07 task111 v2 (driver); task17 v3 lineage 0.05 differentiated on the card",
+  "surface": "clean 2026-10-21 (persona Kristin Robertson)"
+ },
+ "judge": {
+  "verdict": "DETERMINISTIC",
+  "disposition": "APPROVE",
+  "report": "determinism_check_report.md (architecture 2)"
+ },
+ "returned": [],
+ "resume": "Reopened 2026-10-25 at the author's direction: no number in this lane is retired. Re-root at the draw in a fresh world, architecture 3; read DESIGN_NOTE.md's Tried and rejected first, every dead architecture and screen there stays dead. Before the reopen: RETIRED 2026-10-21: architectures 1 and 2 spent at stage 4 on Gate F, and the third dead at its draw (every candidate screened was spent in the corpus, landed by a filter or reflex route, or left open across the field's estimators; the note's last Tried and rejected line). The number is not reused; wave 4 is closed and wave 5 (task273 to task278) is cut.",
+ "approved": null,
+ "delivered": null,
+ "portal": null,
+ "portal_id": "",
+ "portal_status": "",
+ "portal_status_date": "",
+ "architectures": [
+  {
+   "architecture": 1,
+   "drawn": "2026-10-21",
+   "fate": "spent 2026-10-21 at stage 4: Gate F failed, both scored readers corrected the within-day contrast for the short-queue bias and landed the 11"
   },
-  "leak": {
-    "leak_py": "REVIEW 2026-10-21 (no LEAK): program name, estimand words, column vocabulary, hospitals beside beds and filings; each answered in the note's Leak check",
-    "reader": "r272c and r272d (architecture 2) both landed the call: a seasonal calendar per hospital or region and kind of work; asks held (Ask A 0 of 31 each, Ask B 1 of 31 each, the H20 tie)"
+  {
+   "architecture": 2,
+   "drawn": "2026-10-21",
+   "fate": "spent 2026-10-21 at stage 4: Gate F failed, both scored readers fitted a seasonal calendar per hospital or region and kind of work and landed the 16"
   },
-  "duplicate_check": {
-    "heart": "WARN 2026-10-21 (three_rules.strategy_risk, repeat.gate_g against task482 v4, overuse.gate_g; answered in the note's Draw item 9)",
-    "nearest": "0.07 task111 v2 (driver); task17 v3 lineage 0.05 differentiated on the card",
-    "surface": "clean 2026-10-21 (persona Kristin Robertson)"
-  },
-  "judge": {
-    "verdict": "DETERMINISTIC",
-    "disposition": "APPROVE",
-    "report": "determinism_check_report.md (architecture 2)"
-  },
-  "returned": [],
-  "resume": "Reopened 2026-10-25 at the author's direction: no number in this lane is retired. Re-root at the draw in a fresh world, architecture 3; read DESIGN_NOTE.md's Tried and rejected first, every dead architecture and screen there stays dead. Before the reopen: RETIRED 2026-10-21: architectures 1 and 2 spent at stage 4 on Gate F, and the third dead at its draw (every candidate screened was spent in the corpus, landed by a filter or reflex route, or left open across the field's estimators; the note's last Tried and rejected line). The number is not reused; wave 4 is closed and wave 5 (task273 to task278) is cut.",
-  "approved": null,
-  "delivered": null,
-  "portal": null,
-  "portal_id": "",
-  "portal_status": "",
-  "portal_status_date": "",
-  "architectures": [
-    {
-      "architecture": 1,
-      "drawn": "2026-10-21",
-      "fate": "spent 2026-10-21 at stage 4: Gate F failed, both scored readers corrected the within-day contrast for the short-queue bias and landed the 11"
-    },
-    {
-      "architecture": 2,
-      "drawn": "2026-10-21",
-      "fate": "spent 2026-10-21 at stage 4: Gate F failed, both scored readers fitted a seasonal calendar per hospital or region and kind of work and landed the 16"
-    },
-    {
-      "architecture": 3,
-      "drawn": null,
-      "fate": "not drawn 2026-10-21: no candidate cleared the re-root screens (the note's last Tried and rejected line), so the number retires"
-    }
-  ],
-  "gates": {
-    "checks": "0 failed",
-    "verify": "PASS",
-    "byte_identical": true,
-    "figures_check": "85 figures, 0 absent",
-    "target_zip_md5": "66ca10c770c9de7091ae11a117f6ee9f",
-    "target_mb": 10.6,
-    "pair_ceiling": 29.4,
-    "family_margin_floor": 0.882
+  {
+   "architecture": 3,
+   "drawn": null,
+   "fate": "not drawn 2026-10-21: no candidate cleared the re-root screens (the note's last Tried and rejected line), so the number retires"
   }
+ ],
+ "gates": {
+  "checks": "0 failed",
+  "verify": "PASS",
+  "byte_identical": true,
+  "figures_check": "85 figures, 0 absent",
+  "target_zip_md5": "66ca10c770c9de7091ae11a117f6ee9f",
+  "target_mb": 10.6,
+  "pair_ceiling": 29.4,
+  "family_margin_floor": 0.882
+ }
 }

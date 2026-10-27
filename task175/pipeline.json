@@ -1,99 +1,98 @@
 {
-  "task": "task175",
-  "owner": "sathya8571",
-  "status": "SHIPPED",
-  "domain": "urban-regional-science/land-use-spatial-development-modeling",
-  "objective": "forecasting",
-  "stage": 5,
-  "stage_name": "ship",
-  "updated": "2026-10-23",
-  "stump": "A competent solver applies the first-year permits per vacant lot of the earlier extension areas to the 2027 areas' vacant lots and files 500 permits for 2027 against 300, because it never reads each vacant lot's chance at the homes standing on the street it faces",
-  "architecture": 1,
-  "loops": 4,
-  "precut": {
-    "exit": 0,
-    "date": "2026-10-23"
+ "task": "task175",
+ "status": "SHIPPED",
+ "domain": "urban-regional-science/land-use-spatial-development-modeling",
+ "objective": "forecasting",
+ "stage": 5,
+ "stage_name": "ship",
+ "updated": "2026-10-23",
+ "stump": "A competent solver applies the first-year permits per vacant lot of the earlier extension areas to the 2027 areas' vacant lots and files 500 permits for 2027 against 300, because it never reads each vacant lot's chance at the homes standing on the street it faces",
+ "architecture": 1,
+ "loops": 4,
+ "precut": {
+  "exit": 0,
+  "date": "2026-10-23"
+ },
+ "leak": {
+  "leak_py": "REVIEW (3 lines, harmless, design note ## Stage 3 gates)",
+  "reader": "round 1: A 430, B 550, both kept 24 of 24 ask figures; round 2: C 500 (8 of 24), D 500 (20 of 24, every connection cell by a premise's first install); round 3: E 550 (missed all 20 connection cells), F 550 (kept the 20 by one connection per normalised address); round 4: H 550 (0 of 24 asks), G about 535 reported 550 (kept the 20 connection cells by lot placement); fees held in 8 of 8; round 5 on e478f14b: I 550 (4 of 24 asks, the connection totals), J 500 (4 of 24), both PASS; the call held in 10 of 10 blind reads, no fee cell hit"
+ },
+ "duplicate_check": {
+  "heart": "WARN (repeat.gate_g)",
+  "nearest": "task147 0.08"
+ },
+ "judge": {
+  "verdict": "DETERMINISTIC",
+  "disposition": "APPROVE (pass 5 on e478f14b, no fix; call 291 to 322 across the right model class; Gate G analytical_non_defect; Gate H pass)",
+  "report": "scratchpad/judge-task175e/verdict.md (pass 5, zip e478f14b)"
+ },
+ "returned": [
+  {
+   "date": "2026-10-23",
+   "portal": "stage 4 round 1 (in-house)",
+   "repair": "determinism and rubric: estimand filed, call to the three areas' total at the nearest 50, asks re-sited",
+   "commit": "12a93f27"
   },
-  "leak": {
-    "leak_py": "REVIEW (3 lines, harmless, design note ## Stage 3 gates)",
-    "reader": "round 1: A 430, B 550, both kept 24 of 24 ask figures; round 2: C 500 (8 of 24), D 500 (20 of 24, every connection cell by a premise's first install); round 3: E 550 (missed all 20 connection cells), F 550 (kept the 20 by one connection per normalised address); round 4: H 550 (0 of 24 asks), G about 535 reported 550 (kept the 20 connection cells by lot placement); fees held in 8 of 8; round 5 on e478f14b: I 550 (4 of 24 asks, the connection totals), J 500 (4 of 24), both PASS; the call held in 10 of 10 blind reads, no fee cell hit"
+  {
+   "date": "2026-10-23",
+   "portal": "stage 4 round 2 (in-house)",
+   "repair": "rubric: ask A's primary re-sited to one lot under two premises; call, fees and every other figure frozen (Z1, Z2)",
+   "commit": "82a47b55"
   },
-  "duplicate_check": {
-    "heart": "WARN (repeat.gate_g)",
-    "nearest": "task147 0.08"
+  {
+   "date": "2026-10-23",
+   "portal": "stage 4 round 3 (in-house)",
+   "repair": "rubric: ask A's identity moved from the address string to the lot (stale stub house numbers on the 2006 renumbered units); judge step 4 wording; call, fees and every figure frozen",
+   "commit": "747cccf3"
   },
-  "judge": {
-    "verdict": "DETERMINISTIC",
-    "disposition": "APPROVE (pass 5 on e478f14b, no fix; call 291 to 322 across the right model class; Gate G analytical_non_defect; Gate H pass)",
-    "report": "scratchpad/judge-task175e/verdict.md (pass 5, zip e478f14b)"
-  },
-  "returned": [
-    {
-      "date": "2026-10-23",
-      "portal": "stage 4 round 1 (in-house)",
-      "repair": "determinism and rubric: estimand filed, call to the three areas' total at the nearest 50, asks re-sited",
-      "commit": "12a93f27"
-    },
-    {
-      "date": "2026-10-23",
-      "portal": "stage 4 round 2 (in-house)",
-      "repair": "rubric: ask A's primary re-sited to one lot under two premises; call, fees and every other figure frozen (Z1, Z2)",
-      "commit": "82a47b55"
-    },
-    {
-      "date": "2026-10-23",
-      "portal": "stage 4 round 3 (in-house)",
-      "repair": "rubric: ask A's identity moved from the address string to the lot (stale stub house numbers on the 2006 renumbered units); judge step 4 wording; call, fees and every figure frozen",
-      "commit": "747cccf3"
-    },
-    {
-      "date": "2026-10-23",
-      "portal": "stage 4 round 4 (in-house)",
-      "repair": "rubric: ask layer restructured, connections to four phase totals, fees to twenty phase and quarter cells, chart to the fees, prompt and CONN_PIN changed; call frozen",
-      "commit": "7455fbe5"
-    }
+  {
+   "date": "2026-10-23",
+   "portal": "stage 4 round 4 (in-house)",
+   "repair": "rubric: ask layer restructured, connections to four phase totals, fees to twenty phase and quarter cells, chart to the fees, prompt and CONN_PIN changed; call frozen",
+   "commit": "7455fbe5"
+  }
+ ],
+ "grounds_closed": [
+  "product-analytics/retention-cohort-lifetime-value-modeling: a member-level forecast of a per-member capped benefit (FC46's quantity), any decisive step that refines the member's predictive year",
+  "human-factors-ergonomics/human-reliability-assessment under the round's G14 and composition_mix bans: a time-reliability race read at each demand's own window (rare trips, sigma 4 to 9 per cent, the window-band filter and divide inside the golden's seed range) and a factor slope flattened by a noisy record (lever exp(-b(1-lam)D), 7 to 9 per cent at realistic settings, the audited rows beating the correction)",
+  "quantitative-finance/strategy-backtesting-evaluation under the round's bans: a capacity call's cost of the strategy's own flow (per-trade square-root is the default; impact carried across days splits into model classes 2.2 to 4.4 times apart on the strategy's runs and reversals, untestable from one-way executions; a no-trade band isolates the trades and the lever vanishes; own borrow demand is a minor line whose attaining band lands)"
+ ],
+ "resume": "",
+ "screens": {
+  "harness": "scratchpad/b175/proto/ (proto2.py candidate 1, proto3.py candidate 2, pilot52.py subset arithmetic, proto1.py and sweep1.py the first sweep); session-scoped, rebuild from DESIGN_NOTE.md's harness section",
+  "candidates_measured": 2,
+  "seeds": [
+   1,
+   2,
+   3
   ],
-  "grounds_closed": [
-    "product-analytics/retention-cohort-lifetime-value-modeling: a member-level forecast of a per-member capped benefit (FC46's quantity), any decisive step that refines the member's predictive year",
-    "human-factors-ergonomics/human-reliability-assessment under the round's G14 and composition_mix bans: a time-reliability race read at each demand's own window (rare trips, sigma 4 to 9 per cent, the window-band filter and divide inside the golden's seed range) and a factor slope flattened by a noisy record (lever exp(-b(1-lam)D), 7 to 9 per cent at realistic settings, the audited rows beating the correction)",
-    "quantitative-finance/strategy-backtesting-evaluation under the round's bans: a capacity call's cost of the strategy's own flow (per-trade square-root is the default; impact carried across days splits into model classes 2.2 to 4.4 times apart on the strategy's runs and reversals, untestable from one-way executions; a no-trade band isolates the trades and the lever vanishes; own borrow demand is a minor line whose attaining band lands)"
-  ],
-  "resume": "",
-  "screens": {
-    "harness": "scratchpad/b175/proto/ (proto2.py candidate 1, proto3.py candidate 2, pilot52.py subset arithmetic, proto1.py and sweep1.py the first sweep); session-scoped, rebuild from DESIGN_NOTE.md's harness section",
-    "candidates_measured": 2,
-    "seeds": [
-      1,
-      2,
-      3
-    ],
-    "paper_rejections_at_draw": 10,
-    "redraw_2026_10_19": {
-      "cell": "human-factors-ergonomics/human-reliability-assessment (Forecasting)",
-      "harness": "scratchpad/r175/proto/c11.py (race, five seeds, vol multiplier) and c10.py (flattened slope, three seeds); session-scoped, each run twice byte-identical; rebuild from DESIGN_NOTE.md's Tried and rejected lines",
-      "candidates_measured": 2,
-      "paper_rejections": 9,
-      "c11_time_reliability_race": "large terminal: golden -2.6 to +8.7 per cent (sigma about 4), window-band filter and divide -12.3 to +5.7, rate-scaled stream route -13.1 to -30.7, persistence -18.9 to -41.3, textbook lognormal TRC at the nominal window -77.3 to -85.3; typical terminal sigma about 9",
-      "c10_flattened_slope": "realistic (b 0.15, lam 0.6): naive +7.0 to +9.3, golden -1.6 to +1.3, SIMEX +3.3 to +4.0, audited rows -5.7 to +2.2; strong (b 0.30, lam 0.4): naive +27.5 to +31.1, golden -7.1 to +7.0, SIMEX +15.0 to +21.9, audited rows -0.6 to +2.4",
-      "slots": "both driver sentences: lexical overlaps only, no screen of either mechanism on file"
-    },
-    "redraw_2026_10_19_quant": {
-      "cell": "quantitative-finance/strategy-backtesting-evaluation (Forecasting)",
-      "harness": "scratchpad/r175/proto/qf_runs.py, qf_family.py, qf1c.py, qf6.py; session-scoped, deterministic per seed",
-      "candidates_measured": 3,
-      "paper_rejections": 13,
-      "qf1_impact_memory": "at $1bn: per-trade 92 bps of capital/yr; concave-in-decayed-flow 249-309 (T 5-40; flat 282-309 for T 8-40, T pinned 13-34 by 20,000 orders); per-run fresh 500; superposed exp 543-1,228; power-law 543-793",
-      "qf1c_banded": "mean run 1.00 d, median idle gap 4 d; per-trade/truth 0.99, 0.94, 0.81, 0.63 at half-lives 0.6, 1.0, 1.9, 4.3 d; superposed/truth 1.00-1.30",
-      "qf6_borrow_demand": "at $2bn: truth 57.5-72.0 bps of capital vs today's fees 33.2-40.7; attaining-band medians 0.976-1.003; fitted curves explode near full utilisation",
-      "window": "task249 spent and skipped; live three task268, task269, task468"
-    }
+  "paper_rejections_at_draw": 10,
+  "redraw_2026_10_19": {
+   "cell": "human-factors-ergonomics/human-reliability-assessment (Forecasting)",
+   "harness": "scratchpad/r175/proto/c11.py (race, five seeds, vol multiplier) and c10.py (flattened slope, three seeds); session-scoped, each run twice byte-identical; rebuild from DESIGN_NOTE.md's Tried and rejected lines",
+   "candidates_measured": 2,
+   "paper_rejections": 9,
+   "c11_time_reliability_race": "large terminal: golden -2.6 to +8.7 per cent (sigma about 4), window-band filter and divide -12.3 to +5.7, rate-scaled stream route -13.1 to -30.7, persistence -18.9 to -41.3, textbook lognormal TRC at the nominal window -77.3 to -85.3; typical terminal sigma about 9",
+   "c10_flattened_slope": "realistic (b 0.15, lam 0.6): naive +7.0 to +9.3, golden -1.6 to +1.3, SIMEX +3.3 to +4.0, audited rows -5.7 to +2.2; strong (b 0.30, lam 0.4): naive +27.5 to +31.1, golden -7.1 to +7.0, SIMEX +15.0 to +21.9, audited rows -0.6 to +2.4",
+   "slots": "both driver sentences: lexical overlaps only, no screen of either mechanism on file"
   },
-  "approved": null,
-  "delivered": "2026-10-23",
-  "portal": null,
-  "portal_id": "",
-  "portal_status": "",
-  "portal_status_date": "",
-  "reopened": "2026-10-23: the author's rule that no number stays retired; rebuilt from scratch as architecture 1",
-  "target_zip_md5": "e478f14b087f32cbfe5d2297a8af7515"
+  "redraw_2026_10_19_quant": {
+   "cell": "quantitative-finance/strategy-backtesting-evaluation (Forecasting)",
+   "harness": "scratchpad/r175/proto/qf_runs.py, qf_family.py, qf1c.py, qf6.py; session-scoped, deterministic per seed",
+   "candidates_measured": 3,
+   "paper_rejections": 13,
+   "qf1_impact_memory": "at $1bn: per-trade 92 bps of capital/yr; concave-in-decayed-flow 249-309 (T 5-40; flat 282-309 for T 8-40, T pinned 13-34 by 20,000 orders); per-run fresh 500; superposed exp 543-1,228; power-law 543-793",
+   "qf1c_banded": "mean run 1.00 d, median idle gap 4 d; per-trade/truth 0.99, 0.94, 0.81, 0.63 at half-lives 0.6, 1.0, 1.9, 4.3 d; superposed/truth 1.00-1.30",
+   "qf6_borrow_demand": "at $2bn: truth 57.5-72.0 bps of capital vs today's fees 33.2-40.7; attaining-band medians 0.976-1.003; fitted curves explode near full utilisation",
+   "window": "task249 spent and skipped; live three task268, task269, task468"
+  }
+ },
+ "approved": null,
+ "delivered": "2026-10-23",
+ "portal": null,
+ "portal_id": "",
+ "portal_status": "",
+ "portal_status_date": "",
+ "reopened": "2026-10-23: the author's rule that no number stays retired; rebuilt from scratch as architecture 1",
+ "target_zip_md5": "e478f14b087f32cbfe5d2297a8af7515"
 }

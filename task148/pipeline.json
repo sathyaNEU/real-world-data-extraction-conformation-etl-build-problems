@@ -1,49 +1,48 @@
 {
-  "task": "task148",
-  "owner": "sathya8571",
-  "status": "SHIPPED",
-  "domain": "urban-regional-science/municipal-service-demand-resource-allocation",
-  "objective": "forecasting",
-  "stage": 5,
-  "stage_name": "ship",
-  "updated": "2026-10-16",
-  "stump": "Running the standard Erlang C staffing model on the board's FY2028 late-shift forecast with the measured busy time and four call-takers puts five months, May to September, below the 90 per cent standard (July 2027 83 per cent) and asks for a fifth call-taker from May to September; the step that lands it there is treating every caller as waiting until answered, when the late shift's own callers hang up after about two minutes and those who hang up shorten the wait for those who stay, so only June, July and August fall short (July 88 per cent); the patience has to be the late shift's own, measured over every one of its calls' waits, because one patience for the whole week (577 seconds) puts May to September short again and the hang-ups' own waits (38 seconds) leave no month short.",
-  "architecture": 2,
-  "loops": 2,
-  "precut": {
-    "exit": 0,
-    "date": "2026-10-16"
-  },
-  "leak": {
-    "leak_py": "REVIEW 2026-10-16 on the shipped cut (3 lines answered in the note's Build record and Leak review; no LEAK)",
-    "reader": "round 1 on the first pack 027f6ff: clean; round 2 on the hardened pack eb89e4a: clean, decisive step analytical, nothing planted; round 3, targeted, on 1eb79d0: clean, April read at 51.5 on the task's stamp (the B2 device working, closed by the filed sentence)"
-  },
-  "duplicate_check": {
-    "heart": "WARN 2026-10-16 (repeat.gate_g, overuse.gate_g, repeat.question_form; answered in the note)",
-    "nearest": "0.07 task500 v1 lineage, 0.07 task119 v2",
-    "note": "architecture 2 registered 2026-10-16: guard WARN repeat.gate_g, repeat.decision, repeat.question_form, answered in the note; task254 v2 and task501 v2 differentiated (same-driver older signature)",
-    "surface": "exit 0, 0 promoted pairs (2026-10-16, hardened pack)"
-  },
-  "judge": {
-    "verdict": "DETERMINISTIC",
-    "disposition": "APPROVE",
-    "report": "task148/determinism_check_report.md (the hardened pack, commit eb89e4a); round 1 in task148/determinism_check_report_round1.md",
-    "brief": "findings closed in the record: the April 2026 callback linkage (README sentence, stamp-only reading asserted at 51.5) and the moment-matched patience's figure exposure (asserted, noted)"
-  },
-  "returned": [],
-  "resume": "",
-  "approved": null,
-  "delivered": "2026-10-16",
-  "portal": null,
-  "portal_id": "",
-  "portal_status": "",
-  "portal_status_date": "",
-  "wave": "wave 4 (new), seed FC19 number only (architecture 2 redrawn outside the seed's world)",
-  "source_note": "re-root of FC19's slot: architecture 1 kept the seed's world (an SBA lender's CECL allowance) and was spent at stage 4 (judge NOT_DETERMINISTIC, SEND_BACK; rule 3 AT_RISK; a task133-like shell); architecture 2 draws a new world (a county 911 center's late-shift answer-time forecast)",
-  "rule3_audit": "PASS on the hardened pack (2026-10-16), ship the data as is and correct the record: corrections of Erlang C fitted on a per-hour back-test, and crude four-call-taker lookups, land the set; one strong solver lands about 0.25, both of two about 0.07; the residual is recorded in the design note and asserted in checks.py",
-  "shipped": {
-    "commit_cut": "1eb79d0",
-    "target_zip_sha256": "f7c143a8a5abe478f7fa14abfc8c68bbb9ddca128dc22f1affd6b3e21eff1661",
-    "call": "July 2027, August 2027 and June 2028 for a seasonal fifth call-taker (88, 89 and 89 per cent with four)"
-  }
+ "task": "task148",
+ "status": "SHIPPED",
+ "domain": "urban-regional-science/municipal-service-demand-resource-allocation",
+ "objective": "forecasting",
+ "stage": 5,
+ "stage_name": "ship",
+ "updated": "2026-10-16",
+ "stump": "Running the standard Erlang C staffing model on the board's FY2028 late-shift forecast with the measured busy time and four call-takers puts five months, May to September, below the 90 per cent standard (July 2027 83 per cent) and asks for a fifth call-taker from May to September; the step that lands it there is treating every caller as waiting until answered, when the late shift's own callers hang up after about two minutes and those who hang up shorten the wait for those who stay, so only June, July and August fall short (July 88 per cent); the patience has to be the late shift's own, measured over every one of its calls' waits, because one patience for the whole week (577 seconds) puts May to September short again and the hang-ups' own waits (38 seconds) leave no month short.",
+ "architecture": 2,
+ "loops": 2,
+ "precut": {
+  "exit": 0,
+  "date": "2026-10-16"
+ },
+ "leak": {
+  "leak_py": "REVIEW 2026-10-16 on the shipped cut (3 lines answered in the note's Build record and Leak review; no LEAK)",
+  "reader": "round 1 on the first pack 027f6ff: clean; round 2 on the hardened pack eb89e4a: clean, decisive step analytical, nothing planted; round 3, targeted, on 1eb79d0: clean, April read at 51.5 on the task's stamp (the B2 device working, closed by the filed sentence)"
+ },
+ "duplicate_check": {
+  "heart": "WARN 2026-10-16 (repeat.gate_g, overuse.gate_g, repeat.question_form; answered in the note)",
+  "nearest": "0.07 task500 v1 lineage, 0.07 task119 v2",
+  "note": "architecture 2 registered 2026-10-16: guard WARN repeat.gate_g, repeat.decision, repeat.question_form, answered in the note; task254 v2 and task501 v2 differentiated (same-driver older signature)",
+  "surface": "exit 0, 0 promoted pairs (2026-10-16, hardened pack)"
+ },
+ "judge": {
+  "verdict": "DETERMINISTIC",
+  "disposition": "APPROVE",
+  "report": "task148/determinism_check_report.md (the hardened pack, commit eb89e4a); round 1 in task148/determinism_check_report_round1.md",
+  "brief": "findings closed in the record: the April 2026 callback linkage (README sentence, stamp-only reading asserted at 51.5) and the moment-matched patience's figure exposure (asserted, noted)"
+ },
+ "returned": [],
+ "resume": "",
+ "approved": null,
+ "delivered": "2026-10-16",
+ "portal": null,
+ "portal_id": "",
+ "portal_status": "",
+ "portal_status_date": "",
+ "wave": "wave 4 (new), seed FC19 number only (architecture 2 redrawn outside the seed's world)",
+ "source_note": "re-root of FC19's slot: architecture 1 kept the seed's world (an SBA lender's CECL allowance) and was spent at stage 4 (judge NOT_DETERMINISTIC, SEND_BACK; rule 3 AT_RISK; a task133-like shell); architecture 2 draws a new world (a county 911 center's late-shift answer-time forecast)",
+ "rule3_audit": "PASS on the hardened pack (2026-10-16), ship the data as is and correct the record: corrections of Erlang C fitted on a per-hour back-test, and crude four-call-taker lookups, land the set; one strong solver lands about 0.25, both of two about 0.07; the residual is recorded in the design note and asserted in checks.py",
+ "shipped": {
+  "commit_cut": "1eb79d0",
+  "target_zip_sha256": "f7c143a8a5abe478f7fa14abfc8c68bbb9ddca128dc22f1affd6b3e21eff1661",
+  "call": "July 2027, August 2027 and June 2028 for a seasonal fifth call-taker (88, 89 and 89 per cent with four)"
+ }
 }

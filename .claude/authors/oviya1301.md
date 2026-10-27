@@ -1,9 +1,8 @@
 # Author: oviya1301
 
-Account email: not yet recorded; until it is, the author names the handle at the start of the session. A
-session for anyone else ignores this file.
+Account email: not yet recorded; until it is, the author names the handle at the start of the session. A backlog list, not a territory: no task belongs to anybody, and any build in here can be worked by whoever the user asks.
 
-- **Lane:** Data Extraction & Conformation (ETL), task445 to task493. When a build ships, its session starts its
+- **Backlog range:** Data Extraction & Conformation (ETL), task445 to task493. When a build ships, its session starts its
   next assigned number at once.
 - **No retirement (the author's rule, 2026-10-20).** No task number is ever retired: a spent architecture is re-rooted
   with a fresh design, however many architectures it takes, until one ships. This replaces the build-pipeline cap for

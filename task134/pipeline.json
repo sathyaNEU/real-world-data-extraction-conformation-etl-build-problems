@@ -1,131 +1,130 @@
 {
-  "task": "task134",
-  "owner": "sathya8571",
-  "status": "SHIPPED",
-  "domain": "urban-regional-science",
-  "objective": "forecasting",
-  "stage": 5,
-  "stage_name": "ship",
-  "updated": "2026-10-14",
-  "stump": "A strong solver takes each transit-area lot's capacity under the order (lot area times its band's FAR, at 85 per cent net over 820 square feet a home, less the homes on it) and the share of capacity the corridors have delivered each year since their 2013 rezoning, and files about 4,100 net new homes a year, 20,400 over 2027 to 2031, against 13,000 falling from 2,800 to 2,400; the step that lands it there is reading capacity as yield, when a lot is rebuilt only once the building that pays best is worth more than what stands on it, at the rate its kind of lot has shown once that held, and at these stations that building is the six-storey wood frame at 3.0 FAR, never the 4.0 and 5.0 FAR towers the order allows.",
-  "architecture": 3,
-  "loops": 0,
-  "round": 0,
-  "reroot": "done 2026-10-14: architecture 3 drawn in Forecasting & Predictive Modeling (urban-regional-science, land-use-spatial-development-modeling: the City of Calderbrook's net new homes from the 2027 transit-oriented area order), the slot's last architecture; architecture 2's generator, pack, goldens, write-up, prompt, metadata and reports removed (in history at 4c25a0f)",
-  "precut": {
-    "exit": 0,
-    "date": "2026-10-14"
+ "task": "task134",
+ "status": "SHIPPED",
+ "domain": "urban-regional-science",
+ "objective": "forecasting",
+ "stage": 5,
+ "stage_name": "ship",
+ "updated": "2026-10-14",
+ "stump": "A strong solver takes each transit-area lot's capacity under the order (lot area times its band's FAR, at 85 per cent net over 820 square feet a home, less the homes on it) and the share of capacity the corridors have delivered each year since their 2013 rezoning, and files about 4,100 net new homes a year, 20,400 over 2027 to 2031, against 13,000 falling from 2,800 to 2,400; the step that lands it there is reading capacity as yield, when a lot is rebuilt only once the building that pays best is worth more than what stands on it, at the rate its kind of lot has shown once that held, and at these stations that building is the six-storey wood frame at 3.0 FAR, never the 4.0 and 5.0 FAR towers the order allows.",
+ "architecture": 3,
+ "loops": 0,
+ "round": 0,
+ "reroot": "done 2026-10-14: architecture 3 drawn in Forecasting & Predictive Modeling (urban-regional-science, land-use-spatial-development-modeling: the City of Calderbrook's net new homes from the 2027 transit-oriented area order), the slot's last architecture; architecture 2's generator, pack, goldens, write-up, prompt, metadata and reports removed (in history at 4c25a0f)",
+ "precut": {
+  "exit": 0,
+  "date": "2026-10-14"
+ },
+ "three_rules": {
+  "domain": "pass (a rezoning's housing yield from development feasibility and the redevelopment rate of feasible sites)",
+  "layers": "pass (Layer 1 the roll, permit and order mess; Layer 2 feasibility at the best-paying building and the rate by kind)",
+  "decisive_step": "analytical (feasibility lot by lot at the building that pays best, and the record's rate for feasible lots of each kind)",
+  "lines": "## Three rules carries all 13 labelled lines"
+ },
+ "lineage": [
+  {
+   "architecture": 1,
+   "rounds": [
+    1
+   ],
+   "loops": 1,
+   "fate": "spent 2026-10-11 at hardening loop 1 of 3: round 1 landed the call exactly (proxy 82.3) on the default construction (Kaplan-Meier with the cut as the only censoring, deaths as non-returners), which is the golden; the stump (censoring removals and deaths) sat off that path, and loop 1 found on paper no rung on it that is analytical, forced, fork-free and outside the bin",
+   "card": "the task134 card still carries architecture 1 (driver: exits that are not censoring); its identity moves into the card's lineage at the re-root draw"
   },
-  "three_rules": {
-    "domain": "pass (a rezoning's housing yield from development feasibility and the redevelopment rate of feasible sites)",
-    "layers": "pass (Layer 1 the roll, permit and order mess; Layer 2 feasibility at the best-paying building and the rate by kind)",
-    "decisive_step": "analytical (feasibility lot by lot at the building that pays best, and the record's rate for feasible lots of each kind)",
-    "lines": "## Three rules carries all 13 labelled lines"
-  },
-  "lineage": [
+  {
+   "architecture": 2,
+   "rounds": [
+    1,
+    2
+   ],
+   "loops": 0,
+   "fate": "spent 2026-10-14: round 1 shipped 2026-10-12 and the 10/10 audit judged it COMPLIANT_WEAK (the conversion hazard by months since admission reachable from the surface, built by the judge unprompted); round 2 moved the decisive step to the 5 April 2027 capital-limit step and was sent back by the determinism judge the same day (NOT_DETERMINISTIC, margin_or_boundary_fragility: sized from one past event with 8 conversions, the golden 2.7 to 4.0 residents from its rounding edges, the pull-forward construction one bespoke choice among several)",
+   "round2_judge": "determinism judge 2026-10-14: NOT_DETERMINISTIC (margin_or_boundary_fragility), SEND_BACK",
+   "rounds_record": [
     {
-      "architecture": 1,
-      "rounds": [
-        1
-      ],
-      "loops": 1,
-      "fate": "spent 2026-10-11 at hardening loop 1 of 3: round 1 landed the call exactly (proxy 82.3) on the default construction (Kaplan-Meier with the cut as the only censoring, deaths as non-returners), which is the golden; the stump (censoring removals and deaths) sat off that path, and loop 1 found on paper no rung on it that is analytical, forced, fork-free and outside the bin",
-      "card": "the task134 card still carries architecture 1 (driver: exits that are not censoring); its identity moves into the card's lineage at the re-root draw"
-    },
-    {
-      "architecture": 2,
-      "rounds": [
-        1,
-        2
-      ],
-      "loops": 0,
-      "fate": "spent 2026-10-14: round 1 shipped 2026-10-12 and the 10/10 audit judged it COMPLIANT_WEAK (the conversion hazard by months since admission reachable from the surface, built by the judge unprompted); round 2 moved the decisive step to the 5 April 2027 capital-limit step and was sent back by the determinism judge the same day (NOT_DETERMINISTIC, margin_or_boundary_fragility: sized from one past event with 8 conversions, the golden 2.7 to 4.0 residents from its rounding edges, the pull-forward construction one bespoke choice among several)",
-      "round2_judge": "determinism judge 2026-10-14: NOT_DETERMINISTIC (margin_or_boundary_fragility), SEND_BACK",
-      "rounds_record": [
-        {
-          "round": 1,
-          "shipped": "2026-10-12",
-          "stump": "A competent solver projects the council-funded caseload from the placements register, current residents by survival plus direct admissions and conversions from self-funding at their 2024 to 2026 run rate, and files about 740 residents at 31 March 2028 (740.3, and 740 at every quarter end of 2027-28) against 760 rising to 790; the step that lands it there is treating conversions as a steady route when they are generated by the self-funding pool by months since admission, and that pool, 599 against 415 at the end of 2024, is now mostly 2025-26 admissions (505 of the 599 admitted from 1 January 2025) about to enter the one to three years in which savings run down to the upper capital limit.",
-          "judge": {
-            "verdict": "DETERMINISTIC",
-            "disposition": "APPROVE; the optional ask-2 locality pin declined (the placement's locality is the ask's designed device)",
-            "report": "task134/determinism_check_report.md"
-          },
-          "leak": {
-            "leak_py": "REVIEW 2026-10-12 after the stage 4 fix pass, no LEAK; sweeps 3, 4 and 9 as at stage 3, answered in the design note's As built",
-            "reader": "stage 3 read clean on the main call; targeted re-read after the fix pass clean"
-          },
-          "duplicate_check": {
-            "heart": "WARN 2026-10-12, rerun after the stage 4 fix pass (repeat.decision against task133, answered in ## Draw)",
-            "nearest": "driver task86 0.07; text task89 ledger row 0.09",
-            "surface": "exit 0 2026-10-12, rerun after the stage 4 fix pass, no hard tell; task133 promoted at history severity on the decisive gap and decision type (answered in ## Draw)",
-            "clone_check": ""
-          },
-          "audit": "10/10 audit 2026-10-14: COMPLIANT_WEAK (the conversion hazard by months since admission reachable from the surface and built by the judge unprompted, 760.0, 771.0, 781.2 and 790.3; all 23 ask criteria on one telegraphed device, the placement's locality, filed nowhere; 4 of 13 labelled three-rules lines)"
-        }
-      ],
-      "round2": {
-        "date": "2026-10-14",
-        "trigger": "10/10 audit COMPLIANT_WEAK (round2-brief): the decisive step (the conversion hazard by months since admission) visible on the surface and rebuilt by the judge unprompted; all 23 ask criteria on one device the prompt's words and an idle postcode lookup pointed at, its meaning filed nowhere; ## Three rules with 4 of 13 labelled lines",
-        "redesign": "the hazard by months since admission is the default path (R5); the decisive step moves to the 5 April 2027 rise in the upper capital limit (33,750 to 40,750), sized from the 6 April 2026 rise (8 conversions that day against 1.615 a week, 4.81 weeks) and applied as a jump in every self-funder's clock (6.73 weeks), the 2026 pool 4.81 weeks on; asks re-cut to the average weekly fee and the net cost by the home's locality, primary device the case system's interim 2026-27 fee (the rate agreed on 6 November 2026 not yet run through it), the locality column filed as the team holding the case; the chart's order and title cut; prompt's ask wording changed, the call sentence kept",
-        "call": "790, 800, 810 and 810 residents (default R5: 770, 780, 790 and 790)"
-      },
-      "card": "the task134 card's lineage carries 'v2 round 2' and 'v2 round 1' with their drivers and fates"
+     "round": 1,
+     "shipped": "2026-10-12",
+     "stump": "A competent solver projects the council-funded caseload from the placements register, current residents by survival plus direct admissions and conversions from self-funding at their 2024 to 2026 run rate, and files about 740 residents at 31 March 2028 (740.3, and 740 at every quarter end of 2027-28) against 760 rising to 790; the step that lands it there is treating conversions as a steady route when they are generated by the self-funding pool by months since admission, and that pool, 599 against 415 at the end of 2024, is now mostly 2025-26 admissions (505 of the 599 admitted from 1 January 2025) about to enter the one to three years in which savings run down to the upper capital limit.",
+     "judge": {
+      "verdict": "DETERMINISTIC",
+      "disposition": "APPROVE; the optional ask-2 locality pin declined (the placement's locality is the ask's designed device)",
+      "report": "task134/determinism_check_report.md"
+     },
+     "leak": {
+      "leak_py": "REVIEW 2026-10-12 after the stage 4 fix pass, no LEAK; sweeps 3, 4 and 9 as at stage 3, answered in the design note's As built",
+      "reader": "stage 3 read clean on the main call; targeted re-read after the fix pass clean"
+     },
+     "duplicate_check": {
+      "heart": "WARN 2026-10-12, rerun after the stage 4 fix pass (repeat.decision against task133, answered in ## Draw)",
+      "nearest": "driver task86 0.07; text task89 ledger row 0.09",
+      "surface": "exit 0 2026-10-12, rerun after the stage 4 fix pass, no hard tell; task133 promoted at history severity on the decisive gap and decision type (answered in ## Draw)",
+      "clone_check": ""
+     },
+     "audit": "10/10 audit 2026-10-14: COMPLIANT_WEAK (the conversion hazard by months since admission reachable from the surface and built by the judge unprompted, 760.0, 771.0, 781.2 and 790.3; all 23 ask criteria on one telegraphed device, the placement's locality, filed nowhere; 4 of 13 labelled three-rules lines)"
     }
-  ],
-  "leak": {
-    "leak_py": "REVIEW 2026-10-14 on the final rebuild (no LEAK; every REVIEW line answered in ## Leak review)",
-    "reader": "stage 4 2026-10-14: nothing quoted for Q1 to Q5; Q6 analytical, no decoy; its three readings recorded as SF19 to SF21 and asserted; realism: mixed file times (minor, harmless)"
+   ],
+   "round2": {
+    "date": "2026-10-14",
+    "trigger": "10/10 audit COMPLIANT_WEAK (round2-brief): the decisive step (the conversion hazard by months since admission) visible on the surface and rebuilt by the judge unprompted; all 23 ask criteria on one device the prompt's words and an idle postcode lookup pointed at, its meaning filed nowhere; ## Three rules with 4 of 13 labelled lines",
+    "redesign": "the hazard by months since admission is the default path (R5); the decisive step moves to the 5 April 2027 rise in the upper capital limit (33,750 to 40,750), sized from the 6 April 2026 rise (8 conversions that day against 1.615 a week, 4.81 weeks) and applied as a jump in every self-funder's clock (6.73 weeks), the 2026 pool 4.81 weeks on; asks re-cut to the average weekly fee and the net cost by the home's locality, primary device the case system's interim 2026-27 fee (the rate agreed on 6 November 2026 not yet run through it), the locality column filed as the team holding the case; the chart's order and title cut; prompt's ask wording changed, the call sentence kept",
+    "call": "790, 800, 810 and 810 residents (default R5: 770, 780, 790 and 790)"
+   },
+   "card": "the task134 card's lineage carries 'v2 round 2' and 'v2 round 1' with their drivers and fates"
+  }
+ ],
+ "leak": {
+  "leak_py": "REVIEW 2026-10-14 on the final rebuild (no LEAK; every REVIEW line answered in ## Leak review)",
+  "reader": "stage 4 2026-10-14: nothing quoted for Q1 to Q5; Q6 analytical, no decoy; its three readings recorded as SF19 to SF21 and asserted; realism: mixed file times (minor, harmless)"
+ },
+ "duplicate_check": {
+  "heart": "WARN (overuse.org_family, repeat.gate_g and repeat.decision against task127; test.same_puzzle_older differentiated against task54)",
+  "nearest": "driver 0.06 (task103 v3, task447, task137 v1); surface exit 0, three pairs promoted for adjudication (task133, task448, task54), none BLOCK"
+ },
+ "judge": {
+  "verdict": "DETERMINISTIC",
+  "disposition": "APPROVE; soft spots recorded as SF22 and SF23 and asserted; both optional wording notes declined (each would change a document under target/ and remove an ask device)",
+  "report": "task134/determinism_check_report_arch3.md"
+ },
+ "solver_rounds": [
+  {
+   "label": "loop 0 round 1",
+   "date": "2026-10-11",
+   "score": 82.3,
+   "landed": true,
+   "cracked": 3,
+   "items": 4
   },
-  "duplicate_check": {
-    "heart": "WARN (overuse.org_family, repeat.gate_g and repeat.decision against task127; test.same_puzzle_older differentiated against task54)",
-    "nearest": "driver 0.06 (task103 v3, task447, task137 v1); surface exit 0, three pairs promoted for adjudication (task133, task448, task54), none BLOCK"
-  },
-  "judge": {
-    "verdict": "DETERMINISTIC",
-    "disposition": "APPROVE; soft spots recorded as SF22 and SF23 and asserted; both optional wording notes declined (each would change a document under target/ and remove an ask device)",
-    "report": "task134/determinism_check_report_arch3.md"
-  },
-  "solver_rounds": [
-    {
-      "label": "loop 0 round 1",
-      "date": "2026-10-11",
-      "score": 82.3,
-      "landed": true,
-      "cracked": 3,
-      "items": 4
-    },
-    {
-      "round": 1,
-      "architecture": 1,
-      "date": "2026-10-11",
-      "rule": "one sandboxed solver (Explore, opus, medium effort)",
-      "solver": {
-        "landed": true,
-        "proxy": 82.3,
-        "answer": "33 navigators, Puerto 8, Centro 8, Norte 4, Poniente 6, Oriente 4, Sur 3; 7,441 projected returns (the golden exactly)"
-      },
-      "decision": "reroot",
-      "brief": "Hardening loop 1 on paper found no rung on the default construction (pooled Kaplan-Meier with the cut as the only censoring and deaths as non-returners, which is the golden) that is analytical, forced, fork-free and outside the bin; architecture 1 is spent and task134 re-roots (reroot)."
-    }
-  ],
-  "approved": null,
-  "delivered": "2026-10-14",
-  "portal": null,
-  "builder": "",
-  "resume": "",
-  "gates": {
-    "checks_py": "135 of 135",
-    "verify_py": "PASS from target.zip",
-    "rebuilds": "byte-identical (target.zip sha256 cffb3ab8)",
-    "figures_check": "exit 0",
-    "precut": "exit 0",
-    "voice_check": "PASS",
-    "leak_py": "REVIEW, no LEAK (--asof 2026-12-31)",
-    "guard_surface": "exit 0",
-    "guard_heart": "WARN, no BLOCK",
-    "guard_validate": "0 invalid",
-    "freeze": "check --mode determinism PASS"
-  },
-  "call": "13,000 net new homes over 2027 to 2031: 2,800, 2,700, 2,600, 2,500 and 2,400"
+  {
+   "round": 1,
+   "architecture": 1,
+   "date": "2026-10-11",
+   "rule": "one sandboxed solver (Explore, opus, medium effort)",
+   "solver": {
+    "landed": true,
+    "proxy": 82.3,
+    "answer": "33 navigators, Puerto 8, Centro 8, Norte 4, Poniente 6, Oriente 4, Sur 3; 7,441 projected returns (the golden exactly)"
+   },
+   "decision": "reroot",
+   "brief": "Hardening loop 1 on paper found no rung on the default construction (pooled Kaplan-Meier with the cut as the only censoring and deaths as non-returners, which is the golden) that is analytical, forced, fork-free and outside the bin; architecture 1 is spent and task134 re-roots (reroot)."
+  }
+ ],
+ "approved": null,
+ "delivered": "2026-10-14",
+ "portal": null,
+ "builder": "",
+ "resume": "",
+ "gates": {
+  "checks_py": "135 of 135",
+  "verify_py": "PASS from target.zip",
+  "rebuilds": "byte-identical (target.zip sha256 cffb3ab8)",
+  "figures_check": "exit 0",
+  "precut": "exit 0",
+  "voice_check": "PASS",
+  "leak_py": "REVIEW, no LEAK (--asof 2026-12-31)",
+  "guard_surface": "exit 0",
+  "guard_heart": "WARN, no BLOCK",
+  "guard_validate": "0 invalid",
+  "freeze": "check --mode determinism PASS"
+ },
+ "call": "13,000 net new homes over 2027 to 2031: 2,800, 2,700, 2,600, 2,500 and 2,400"
 }

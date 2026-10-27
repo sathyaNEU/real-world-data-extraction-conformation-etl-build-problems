@@ -1,79 +1,78 @@
 {
-  "task": "task155",
-  "owner": "sathya8571",
-  "status": "SHIPPED",
-  "domain": "economics-econometrics",
-  "objective": "forecasting",
-  "stage": 5,
-  "stage_name": "ship",
-  "updated": "2026-10-18",
-  "stump": "Taking each store's call-in fill rate from the register, by posting or by shift, or fitting each offer's acceptance on shift time, length, notice, sister-store travel, weekly hours, the December season and whether the casual is rostered that day, and applying it to the open shifts in the published Christmas rosters sends the crew to Werribee, its 3,250 open hours the crew hours; the step that lands it there is pricing every offer as a separate trip to work, when a casual whose own rostered shift at that store ends as the open shift starts, or starts as it ends, takes it many times as often (32 against 4 per cent), and Werribee's uplift is listed against its own casuals' rostered shifts, so Camberwell, whose weekday 9-to-3 uplift no casual's shift abuts, is the store, with 1,090 crew hours.",
-  "architecture": 1,
-  "loops": 3,
-  "precut": {
-    "exit": 0,
-    "date": "2026-10-17",
-    "checks": "50 checks, 0 FAIL, 0 WARN (pair ceiling 35.4 on the 07:00 re-raise chain and 32.6 on the shift-identity fold; 39.5 on the round-2 judge's own route, run for the record; all measured on the cut pack by generator/cracker.py and written in the design note ## Ask sheet; mirror leakage 12.5, 7.5 and 20.0 per cent; six ask rows, all missed)"
-  },
-  "leak": {
-    "leak_py": "REVIEW (no LEAK), 2026-10-18, on the final rebuild, the same REVIEW lines as before, each answered in the design note ## Leak sweep",
-    "reader": "clean on every read: round 1 (no leak, main call analytical), round 2 targeted re-read clean, round 3 with the final judge clean (nothing points at the decisive step; the legacy duplicates read as ordinary system mess); its one steer, the trading plan's hours notes filled only for Camberwell and Werribee, fixed at ship with ordinary trading notes for four more stores, none on staffing or call-ins (D2); no further reader pass needed for ordinary trading notes"
-  },
-  "duplicate_check": {
-    "heart": "WARN, 2026-10-17, on a persona's first name only (Kristina, which task240 drew at 18:42 on 17 October, after this build's draw at 09:07); nearest text 0.05 (task254 and task149), nearest driver 0.09 (task469)",
-    "nearest": "nearest driver 0.09 (task469, unrelated: a share of future tasks outrunning a shorter allowance)",
-    "surface": "six promotions, no hard tell: task154 (back to back) on the card pairing economics-econometrics with forecasting, gap time and the format mix, drivers unrelated; task37, task44, task137, task117 and task97 on the differentiated same-driver card signature; task151 no longer promoted; written up in the design note ## Surface screen; adjudicated /clone-check left to the author"
-  },
-  "judge": {
-    "verdict": "round 3 (final): DETERMINISTIC, APPROVE; its own 12-run simulation with a logit fitted on the offer history puts Camberwell first in 12 of 12 (about 605 against 391 at Sunshine), the carry-on coefficient 2.73 (SE 0.06), both of last year's tables reproduced exactly",
-    "disposition": "APPROVE; the two optional notes taken at ship: the OPN duplicate fills recorded in the design note's residual (601 FILLED rows with no accepted offer duplicate another fill, 223 ABS documented, 378 OPN resolving from the 2025 export's vacant lines and the accepted offers), the roster workbook's stamps put by its 10:00 publication (RZ12)",
-    "report": "task155/determinism_check_report.md (final), beside task155/determinism_check_report_round1.md and task155/determinism_check_report_round2.md"
-  },
-  "returned": [],
-  "resume": "",
-  "approved": null,
-  "delivered": "2026-10-18",
-  "portal": null,
-  "portal_id": "",
-  "portal_status": "",
-  "portal_status_date": "",
-  "stage3": {
-    "checks": "88 assertions, 0 failed",
-    "verify": "0 failed",
-    "rebuild": "byte-identical (15 files)",
-    "figures_check": "62 figures, 0 absent",
-    "voice_check": "PASS (895 characters)",
-    "container_audit": "clean (target and golden)",
-    "cracker": "measured on the cut pack: the 07:00 re-raise chain 5 of 40 figures, pair 35.4; the shift-identity fold 3 of 40, pair 32.6; the round-2 judge's route, for the record, 8 of 40, pair 39.5; blind responses at most a quarter (all-nil 3 of 16)",
-    "zip": "target.zip sha256 b64e9b0f, 15 files at its root, cut from the final rebuild and force-added in the SHIPPED commit",
-    "robustness": "seeds 156 and 160 on the round-3 world: truth Camberwell (1.40, 1.46, 8 runs), golden Camberwell (1.20 over Werribee, 1.47), every trip-cost route Camberwell, every no-trip-cost route another store (Werribee, once Box Hill; every pool measure Ballarat); cracker pairs at or under 40 on both (fold 31.2 and 29.9, chain 35.4 and 36.8)"
-  },
-  "rule3_audit": "PASS, P(one) about 0.15 and P(both) about 0.03 to 0.04 after round 3 (before it a pool count of the casuals free for each open shift reached Camberwell without the trip-cost term, about 0.25); realism: the second-shift cell at 0.23 per cent (50 of 21,315), the trade-off in the design note's residual and Tried and rejected",
-  "fix_round1": [
-    "Table 1: re-raises as new call-ins, UTC, the give-back rule and the open lines' status filed in the module notes and the standard; alternatives S1, S1b, S3, S3c, S4, S6 asserted off; silent devices A1 (identical open lines, the over-cleaning half) and A3 (an absence reported twice) kept",
-    "the judge's 4.0-hour gap: a casual who gave back a call-in could take another that day; KWS now offers them nothing more that day, and day voiding equals re-raise voiding on all 40 figures (asserted)",
-    "Table 2: home store as the payroll cost centre on the shift date filed in the transmittal; current-store reading asserted off (15 of 16); verify.py rebuilds both tables on its own line-walking path",
-    "realism: the KWS travel skip rule (no offer within an hour of a shift at another store) replaces the empty cross-store cell; the second-shift cell kept low to hold the pooled same-day route (x1.21 on the shipped draw)",
-    "the trading plan's Camberwell note left as it is"
-  ],
-  "fix_round2": [
-    "Table 2: silent device B2 in the payroll register. Before its April 2026 transfer screen payroll recorded a move between stores as a resignation and a re-engagement under a new employee number, the new cost centre dated from the day it was keyed (20 November 2025 for the roster review's moves, 15 December 2025 for the Ballarat school leavers'); read from the number KWS holds on the rows' own dates, 23 movers take their new store weeks early and 10 of the 16 figures move; the golden bounds each cost-centre period by its engagement, as the transmittal files a row as a period a cost centre applied to an engagement; the call holds under the natural read (R2.8, x2.19)",
-    "Table 1 covered column: device A3 now closes the second call-in of an absence reported twice FILLED with the casual booked (12 per cent of absences), so the 07:00 chain counts it as more cover and keeps 1 of the 8 covered figures",
-    "both cracker paths measured on the cut pack by generator/cracker.py, run by checks.py and asserted at or under 40: the 07:00 chain 39.5, the shift-identity fold 31.2; both written in the design note ## Ask sheet",
-    "the KWS skip rule reworded as the plain offer filter it is: a shift at another store counts as overlapping from an hour before its start to an hour after its finish, inside the who-is-offered paragraph and in no sentence about responses",
-    "the second-shift cell kept at 0.32 per cent (55 of 17,201), the trade-off recorded in the residual"
-  ],
-  "fix_round3": [
-    "Forks S1 and S2: filed in the module notes in Workforce Systems' voice as facts and a definition (an absence reported both in the app and by phone raises one ABS call-in for each report; a shift is covered by the casual who works it, and a casual who gives a shift back has not covered it); the prompt's Table 2 sentence reads \"call-in shifts\" (895 characters, voice-check PASS); the per-call-in reading (S3) and the FILLED-as-written reading (B S3) asserted off (14 of 24, 11 of 16)",
-    "device A4 (detection, non-uniform): the 2025 Christmas rosters came into KWS through the legacy import, which raised 12 to 32 per cent of the open lines twice at the seven stores whose uplift was put out, booking either copy closing the other FILLED with the casual booked; the golden counts open lines from the 2025 roster export; the 07:00 chain, with the duplicate reports merged as filed, misses 21 of 24 and keeps 5 of 40 (pair 35.4); the fold 3 of 40 (32.6); verify.py rebuilds both tables on its own line count",
-    "the Sunshine 5.5 hours: a give-back of a call-in raised for an absence (9 December 2025, 4 to 10 pm), carried by the filed give-back rule; the round-2 judge looked for give-backs only on open-line fills; asserted as reading S3d (4 of 24 off; three such give-backs in the window)",
-    "the pool-size bypass: Camberwell's Christmas picking uplift runs 9 to 3 (no 4 pm shift abuts it) and the East stores' university students and flex casuals opt in at 75 per cent; every pool measure (per open shift-hour, hours-weighted, median) files Williamstown, every one-rate route Werribee, Camberwell third to fifth thinnest; the call holds (golden 1.45, world 1.38, L4 1.80 and 1.84) and the narrowest easy route is 1.59",
-    "step 4 and the brief's opening state the ranking and the margin in words, no unworked-hours magnitude",
-    "the golden's Werribee note corrected (its uplift, not every open line, went to the 2025 crew)"
-  ],
-  "fix_ship": [
-    "the trading plan's hours-note column: ordinary trading notes for Ballarat and Box Hill (Boxing Day stocktake from 6:00 26/12), Altona (car park line-marking 2/12 to 4/12) and Ringwood (centre car park works from 1/12), beside Werribee's midnight trading and Camberwell's Christmas picking hours; none on staffing or call-ins (D2); no graded figure moved (figures.json byte-identical)",
-    "the published roster workbook's stamps: created 09:52 and saved 10:00 on 12 November, by its stated 10:00 publication (RZ12)",
-    "the final judge's finding recorded in the design note's residual (the 601 FILLED rows with no accepted offer)"
-  ]
+ "task": "task155",
+ "status": "SHIPPED",
+ "domain": "economics-econometrics",
+ "objective": "forecasting",
+ "stage": 5,
+ "stage_name": "ship",
+ "updated": "2026-10-18",
+ "stump": "Taking each store's call-in fill rate from the register, by posting or by shift, or fitting each offer's acceptance on shift time, length, notice, sister-store travel, weekly hours, the December season and whether the casual is rostered that day, and applying it to the open shifts in the published Christmas rosters sends the crew to Werribee, its 3,250 open hours the crew hours; the step that lands it there is pricing every offer as a separate trip to work, when a casual whose own rostered shift at that store ends as the open shift starts, or starts as it ends, takes it many times as often (32 against 4 per cent), and Werribee's uplift is listed against its own casuals' rostered shifts, so Camberwell, whose weekday 9-to-3 uplift no casual's shift abuts, is the store, with 1,090 crew hours.",
+ "architecture": 1,
+ "loops": 3,
+ "precut": {
+  "exit": 0,
+  "date": "2026-10-17",
+  "checks": "50 checks, 0 FAIL, 0 WARN (pair ceiling 35.4 on the 07:00 re-raise chain and 32.6 on the shift-identity fold; 39.5 on the round-2 judge's own route, run for the record; all measured on the cut pack by generator/cracker.py and written in the design note ## Ask sheet; mirror leakage 12.5, 7.5 and 20.0 per cent; six ask rows, all missed)"
+ },
+ "leak": {
+  "leak_py": "REVIEW (no LEAK), 2026-10-18, on the final rebuild, the same REVIEW lines as before, each answered in the design note ## Leak sweep",
+  "reader": "clean on every read: round 1 (no leak, main call analytical), round 2 targeted re-read clean, round 3 with the final judge clean (nothing points at the decisive step; the legacy duplicates read as ordinary system mess); its one steer, the trading plan's hours notes filled only for Camberwell and Werribee, fixed at ship with ordinary trading notes for four more stores, none on staffing or call-ins (D2); no further reader pass needed for ordinary trading notes"
+ },
+ "duplicate_check": {
+  "heart": "WARN, 2026-10-17, on a persona's first name only (Kristina, which task240 drew at 18:42 on 17 October, after this build's draw at 09:07); nearest text 0.05 (task254 and task149), nearest driver 0.09 (task469)",
+  "nearest": "nearest driver 0.09 (task469, unrelated: a share of future tasks outrunning a shorter allowance)",
+  "surface": "six promotions, no hard tell: task154 (back to back) on the card pairing economics-econometrics with forecasting, gap time and the format mix, drivers unrelated; task37, task44, task137, task117 and task97 on the differentiated same-driver card signature; task151 no longer promoted; written up in the design note ## Surface screen; adjudicated /clone-check left to the author"
+ },
+ "judge": {
+  "verdict": "round 3 (final): DETERMINISTIC, APPROVE; its own 12-run simulation with a logit fitted on the offer history puts Camberwell first in 12 of 12 (about 605 against 391 at Sunshine), the carry-on coefficient 2.73 (SE 0.06), both of last year's tables reproduced exactly",
+  "disposition": "APPROVE; the two optional notes taken at ship: the OPN duplicate fills recorded in the design note's residual (601 FILLED rows with no accepted offer duplicate another fill, 223 ABS documented, 378 OPN resolving from the 2025 export's vacant lines and the accepted offers), the roster workbook's stamps put by its 10:00 publication (RZ12)",
+  "report": "task155/determinism_check_report.md (final), beside task155/determinism_check_report_round1.md and task155/determinism_check_report_round2.md"
+ },
+ "returned": [],
+ "resume": "",
+ "approved": null,
+ "delivered": "2026-10-18",
+ "portal": null,
+ "portal_id": "",
+ "portal_status": "",
+ "portal_status_date": "",
+ "stage3": {
+  "checks": "88 assertions, 0 failed",
+  "verify": "0 failed",
+  "rebuild": "byte-identical (15 files)",
+  "figures_check": "62 figures, 0 absent",
+  "voice_check": "PASS (895 characters)",
+  "container_audit": "clean (target and golden)",
+  "cracker": "measured on the cut pack: the 07:00 re-raise chain 5 of 40 figures, pair 35.4; the shift-identity fold 3 of 40, pair 32.6; the round-2 judge's route, for the record, 8 of 40, pair 39.5; blind responses at most a quarter (all-nil 3 of 16)",
+  "zip": "target.zip sha256 b64e9b0f, 15 files at its root, cut from the final rebuild and force-added in the SHIPPED commit",
+  "robustness": "seeds 156 and 160 on the round-3 world: truth Camberwell (1.40, 1.46, 8 runs), golden Camberwell (1.20 over Werribee, 1.47), every trip-cost route Camberwell, every no-trip-cost route another store (Werribee, once Box Hill; every pool measure Ballarat); cracker pairs at or under 40 on both (fold 31.2 and 29.9, chain 35.4 and 36.8)"
+ },
+ "rule3_audit": "PASS, P(one) about 0.15 and P(both) about 0.03 to 0.04 after round 3 (before it a pool count of the casuals free for each open shift reached Camberwell without the trip-cost term, about 0.25); realism: the second-shift cell at 0.23 per cent (50 of 21,315), the trade-off in the design note's residual and Tried and rejected",
+ "fix_round1": [
+  "Table 1: re-raises as new call-ins, UTC, the give-back rule and the open lines' status filed in the module notes and the standard; alternatives S1, S1b, S3, S3c, S4, S6 asserted off; silent devices A1 (identical open lines, the over-cleaning half) and A3 (an absence reported twice) kept",
+  "the judge's 4.0-hour gap: a casual who gave back a call-in could take another that day; KWS now offers them nothing more that day, and day voiding equals re-raise voiding on all 40 figures (asserted)",
+  "Table 2: home store as the payroll cost centre on the shift date filed in the transmittal; current-store reading asserted off (15 of 16); verify.py rebuilds both tables on its own line-walking path",
+  "realism: the KWS travel skip rule (no offer within an hour of a shift at another store) replaces the empty cross-store cell; the second-shift cell kept low to hold the pooled same-day route (x1.21 on the shipped draw)",
+  "the trading plan's Camberwell note left as it is"
+ ],
+ "fix_round2": [
+  "Table 2: silent device B2 in the payroll register. Before its April 2026 transfer screen payroll recorded a move between stores as a resignation and a re-engagement under a new employee number, the new cost centre dated from the day it was keyed (20 November 2025 for the roster review's moves, 15 December 2025 for the Ballarat school leavers'); read from the number KWS holds on the rows' own dates, 23 movers take their new store weeks early and 10 of the 16 figures move; the golden bounds each cost-centre period by its engagement, as the transmittal files a row as a period a cost centre applied to an engagement; the call holds under the natural read (R2.8, x2.19)",
+  "Table 1 covered column: device A3 now closes the second call-in of an absence reported twice FILLED with the casual booked (12 per cent of absences), so the 07:00 chain counts it as more cover and keeps 1 of the 8 covered figures",
+  "both cracker paths measured on the cut pack by generator/cracker.py, run by checks.py and asserted at or under 40: the 07:00 chain 39.5, the shift-identity fold 31.2; both written in the design note ## Ask sheet",
+  "the KWS skip rule reworded as the plain offer filter it is: a shift at another store counts as overlapping from an hour before its start to an hour after its finish, inside the who-is-offered paragraph and in no sentence about responses",
+  "the second-shift cell kept at 0.32 per cent (55 of 17,201), the trade-off recorded in the residual"
+ ],
+ "fix_round3": [
+  "Forks S1 and S2: filed in the module notes in Workforce Systems' voice as facts and a definition (an absence reported both in the app and by phone raises one ABS call-in for each report; a shift is covered by the casual who works it, and a casual who gives a shift back has not covered it); the prompt's Table 2 sentence reads \"call-in shifts\" (895 characters, voice-check PASS); the per-call-in reading (S3) and the FILLED-as-written reading (B S3) asserted off (14 of 24, 11 of 16)",
+  "device A4 (detection, non-uniform): the 2025 Christmas rosters came into KWS through the legacy import, which raised 12 to 32 per cent of the open lines twice at the seven stores whose uplift was put out, booking either copy closing the other FILLED with the casual booked; the golden counts open lines from the 2025 roster export; the 07:00 chain, with the duplicate reports merged as filed, misses 21 of 24 and keeps 5 of 40 (pair 35.4); the fold 3 of 40 (32.6); verify.py rebuilds both tables on its own line count",
+  "the Sunshine 5.5 hours: a give-back of a call-in raised for an absence (9 December 2025, 4 to 10 pm), carried by the filed give-back rule; the round-2 judge looked for give-backs only on open-line fills; asserted as reading S3d (4 of 24 off; three such give-backs in the window)",
+  "the pool-size bypass: Camberwell's Christmas picking uplift runs 9 to 3 (no 4 pm shift abuts it) and the East stores' university students and flex casuals opt in at 75 per cent; every pool measure (per open shift-hour, hours-weighted, median) files Williamstown, every one-rate route Werribee, Camberwell third to fifth thinnest; the call holds (golden 1.45, world 1.38, L4 1.80 and 1.84) and the narrowest easy route is 1.59",
+  "step 4 and the brief's opening state the ranking and the margin in words, no unworked-hours magnitude",
+  "the golden's Werribee note corrected (its uplift, not every open line, went to the 2025 crew)"
+ ],
+ "fix_ship": [
+  "the trading plan's hours-note column: ordinary trading notes for Ballarat and Box Hill (Boxing Day stocktake from 6:00 26/12), Altona (car park line-marking 2/12 to 4/12) and Ringwood (centre car park works from 1/12), beside Werribee's midnight trading and Camberwell's Christmas picking hours; none on staffing or call-ins (D2); no graded figure moved (figures.json byte-identical)",
+  "the published roster workbook's stamps: created 09:52 and saved 10:00 on 12 November, by its stated 10:00 publication (RZ12)",
+  "the final judge's finding recorded in the design note's residual (the 601 FILLED rows with no accepted offer)"
+ ]
 }

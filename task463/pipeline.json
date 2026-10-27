@@ -1,37 +1,36 @@
 {
-  "task": "task463",
-  "owner": "oviya1301",
-  "status": "SHIPPED",
-  "domain": "survey-research-official-statistics",
-  "objective": "etl",
-  "stage": 5,
-  "stage_name": "ship",
-  "updated": "2026-10-16",
-  "stump": "The default path links the twelve month-on-month Tornqvist comparisons per item and moves five RPI items in January 2027 (Bread, Pasta and rice, Yoghurt, Butter and spreads, Fruit juice), the nine items whose goods keep ending 4.7 to 8.4 points under their published rates through offer-month stockpiling; a direct September-to-September (or multilateral) comparison moves thirteen.",
-  "architecture": 1,
-  "loops": 0,
-  "precut": {
-    "exit": 0,
-    "date": "2026-10-16"
-  },
-  "leak": {
-    "leak_py": "REVIEW (every line answered in the design note)",
-    "reader": "round 1: no decisive-step sentence, Q6 rule application (plan 3.5/3.6 named September to September; reworded); round 2: no decisive-step sentence, the open index construction named as the analytical element"
-  },
-  "duplicate_check": {
-    "heart": "WARN (answered in the draw)",
-    "nearest": "task95 0.09; surface promotions task462 (back to back), task70, task104 for the author's clone-check"
-  },
-  "judge": {
-    "verdict": "DETERMINISTIC",
-    "disposition": "APPROVE (pass 2; pass 1 FIX_NOW on two ask pins)",
-    "report": "task463/determinism_check_report.md"
-  },
-  "returned": [],
-  "resume": "",
-  "approved": null,
-  "delivered": "2026-10-16",
-  "portal": null,
-  "source_note": "seed ET20 (analytical_tasks/07_data_extraction_conformation): a manufacturer choosing a county for a new plant needs to know whether the county's PM2.5 design value violates the annual standard (9.0 ug/m3), from AQS daily values across monitors, quarterly means, collocated monitors and event flags; the seed's own trap (averaging every daily value) is rule application and is not used",
-  "zip_sha256": "8a4d9d0531e642c9200ab3bdb5f2706d6dbd55c3f70f8975239a923dae9393b7"
+ "task": "task463",
+ "status": "SHIPPED",
+ "domain": "survey-research-official-statistics",
+ "objective": "etl",
+ "stage": 5,
+ "stage_name": "ship",
+ "updated": "2026-10-16",
+ "stump": "The default path links the twelve month-on-month Tornqvist comparisons per item and moves five RPI items in January 2027 (Bread, Pasta and rice, Yoghurt, Butter and spreads, Fruit juice), the nine items whose goods keep ending 4.7 to 8.4 points under their published rates through offer-month stockpiling; a direct September-to-September (or multilateral) comparison moves thirteen.",
+ "architecture": 1,
+ "loops": 0,
+ "precut": {
+  "exit": 0,
+  "date": "2026-10-16"
+ },
+ "leak": {
+  "leak_py": "REVIEW (every line answered in the design note)",
+  "reader": "round 1: no decisive-step sentence, Q6 rule application (plan 3.5/3.6 named September to September; reworded); round 2: no decisive-step sentence, the open index construction named as the analytical element"
+ },
+ "duplicate_check": {
+  "heart": "WARN (answered in the draw)",
+  "nearest": "task95 0.09; surface promotions task462 (back to back), task70, task104 for the author's clone-check"
+ },
+ "judge": {
+  "verdict": "DETERMINISTIC",
+  "disposition": "APPROVE (pass 2; pass 1 FIX_NOW on two ask pins)",
+  "report": "task463/determinism_check_report.md"
+ },
+ "returned": [],
+ "resume": "",
+ "approved": null,
+ "delivered": "2026-10-16",
+ "portal": null,
+ "source_note": "seed ET20 (analytical_tasks/07_data_extraction_conformation): a manufacturer choosing a county for a new plant needs to know whether the county's PM2.5 design value violates the annual standard (9.0 ug/m3), from AQS daily values across monitors, quarterly means, collocated monitors and event flags; the seed's own trap (averaging every daily value) is rule application and is not used",
+ "zip_sha256": "8a4d9d0531e642c9200ab3bdb5f2706d6dbd55c3f70f8975239a923dae9393b7"
 }

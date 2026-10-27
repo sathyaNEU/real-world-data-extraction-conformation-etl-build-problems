@@ -200,7 +200,6 @@
  "loops": 0,
  "notes": "Every file in this folder is architecture 3's. prompt.txt, submission.md, metadata.json, target/, target.zip, golden/ and generator/ were all rebuilt in this pass; figures.json is emitted by generator/figures.py and carries the avoidable counts at the one decimal the asking sentence states. The only stale file is determinism_check_report.md, architecture 1's.",
  "objective": "anomaly-detection",
- "owner": "oviya13ya",
  "paused": {
   "at": "stage 1, the draw, with no card registered and no architecture adopted",
   "resume_condition": "a decisive step that is records-exact in its graded figure and not reachable by any group-by, on this ground or another; the estimator-output half of the pincer is now measured shut here",
