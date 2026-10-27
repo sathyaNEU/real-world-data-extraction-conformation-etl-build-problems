@@ -33,6 +33,11 @@ STANDARD_REF = "TGD-M4"
 STANDARD_TITLE = "Ventilation and Indoor Air Quality in Education Buildings"
 STANDARD_ISSUER = "Department of Education, Planning and Building Unit"
 STANDARD_EDITION = "2019 edition, revision 3 (March 2024)"
+STANDARD_CLAUSE_REQUIREMENT = "4.2"
+STANDARD_CLAUSE_COMPLIANCE = "4.3"
+STANDARD_CLAUSE_REPORTING = "4.4"
+STANDARD_TABLE = "2.3"
+PROCEDURE_REF = "EST-14"
 REQUIRED_LS_PER_PERSON = 8.0            # litres per second per person, the requirement under test
 GENERATION_L_PER_S = 0.0072             # per-person carbon dioxide generation, seated classroom (1.2 met)
 GENERATION_M3_PER_S = GENERATION_L_PER_S / 1000.0
@@ -257,18 +262,25 @@ SENSOR_SWAP = {"space": "ANG-016", "removed": "2026-11-10", "fitted": "2026-11-1
                "old_serial": "VX-2211-0734", "new_serial": "VX-3410-1182"}
 
 # Scattered communications losses per space, as whole days plus a share of scattered stamps.
+# Whole days on which a space's analyser point was offline to a field bus fault, each one raised as
+# a work order in the maintenance log.
 DROPOUT_DAYS = {
-    "TUL-G07": ["2026-11-19"], "TUL-G12": [], "TUL-G18": ["2026-10-07", "2026-12-03"],
-    "TUL-F04": [], "TUL-F09": ["2026-11-25"], "TUL-F15": ["2026-10-20", "2026-10-21"],
-    "DRM-104": ["2026-12-08"], "DRM-108": [], "DRM-205": ["2026-10-14", "2026-11-17", "2026-12-04"],
-    "DRM-211": ["2026-11-03"], "ANG-012": ["2026-10-09"], "ANG-016": [],
-    "ANG-103": ["2026-11-27", "2026-12-07"], "ANG-107": ["2026-10-16"],
+    "TUL-G07": ["2026-11-19"], "TUL-G12": ["2026-10-13"],
+    "TUL-G18": ["2026-10-07", "2026-12-03"], "TUL-F04": ["2026-11-10"],
+    "TUL-F09": ["2026-11-25"], "TUL-F15": ["2026-10-20", "2026-12-08"],
+    "DRM-104": ["2026-10-02"], "DRM-108": ["2026-11-16"],
+    "DRM-205": ["2026-10-14", "2026-11-17"], "DRM-211": ["2026-11-03", "2026-12-04"],
+    "ANG-012": ["2026-10-09"], "ANG-016": [],
+    "ANG-103": ["2026-10-21", "2026-11-27"], "ANG-107": ["2026-10-16"],
 }
-DROPOUT_RATE = {
-    "TUL-G07": 0.0011, "TUL-G12": 0.0004, "TUL-G18": 0.0026, "TUL-F04": 0.0000,
-    "TUL-F09": 0.0014, "TUL-F15": 0.0031, "DRM-104": 0.0008, "DRM-108": 0.0002,
-    "DRM-205": 0.0041, "DRM-211": 0.0019, "ANG-012": 0.0007, "ANG-016": 0.0000,
-    "ANG-103": 0.0023, "ANG-107": 0.0013,
+# Scattered five-minute samples lost to the same field bus, as a count of teaching-day samples per
+# space. Counts rather than a rate, so the capture share each space reports is a known figure and no
+# two spaces land on the same one. A proportional number of samples is also lost outside the term's
+# teaching days.
+SCATTERED_LOSSES = {
+    "TUL-G07": 251, "TUL-G12": 16, "TUL-G18": 32, "TUL-F04": 58, "TUL-F09": 279,
+    "TUL-F15": 88, "DRM-104": 99, "DRM-108": 127, "DRM-205": 129, "DRM-211": 184,
+    "ANG-012": 154, "ANG-016": 7, "ANG-103": 240, "ANG-107": 210,
 }
 
 SENSOR_NOISE_PPM = 7.5          # analyser repeatability, one standard deviation
@@ -287,10 +299,63 @@ TUTORS = [
     "Rhiannon Monk", "Alastair Crangle", "Owen Raftery", "Una Nyhan",
 ]
 ASSISTANTS = ["Jana McCafferky", "Grainne Kilkenny", "Corrie MacCarville"]
+# Each tutor belongs to one school, and a group is only ever taught by a tutor of the school its
+# programme sits in, so no staff record names one school while its sessions teach another. The
+# counts are deliberately uneven.
+SCHOOL_OF_SUBJECT = {
+    "ENG": "Engineering and Construction", "CON": "Engineering and Construction",
+    "NET": "Science and Computing", "DAT": "Science and Computing",
+    "LAB": "Science and Computing",
+    "DES": "Art, Design and Media",
+    "BUS": "Business and Services", "ADM": "Business and Services",
+    "ACC": "Business and Services",
+    "HSC": "Health and Social Care", "CAR": "Health and Social Care",
+    "GEN": "Health and Social Care",
+}
+TUTOR_SCHOOL = {
+    "Caroline Creedon": "Engineering and Construction",
+    "Kelsey Hanbury": "Engineering and Construction",
+    "Finn Melican": "Engineering and Construction",
+    "Emilie Mahedy": "Engineering and Construction",
+    "Dominic Filbin": "Business and Services",
+    "Cody O'Gara": "Business and Services",
+    "Orlaigh Sinan": "Business and Services",
+    "Antoinette Fee": "Health and Social Care",
+    "Alanna Hilary": "Health and Social Care",
+    "Tony Davenport": "Health and Social Care",
+    "Rhiannon Monk": "Science and Computing",
+    "Alastair Crangle": "Science and Computing",
+    "Owen Raftery": "Science and Computing",
+    "Una Nyhan": "Art, Design and Media",
+}
 CONTROLS_TECHNICIAN = "Graeme Cowley"      # Corrandulla Building Controls, maintenance contract
 COMMISSIONING_ENGINEER = "Owen Raftery"    # named on the 2021 commissioning record
 MAINTENANCE_FIRM = "Corrandulla Building Controls Ltd"
 DESIGN_PRACTICE = "Hanbury Keane Consulting Engineers"
-COMMISSIONING_FIRM = "Westmeath Air Balancing Services"
+COMMISSIONING_FIRM = "Westmeath Commissioning Services"
 ETB_NAME = "Beldarrig Education and Training Board"
 CAMPUS_NAME = "Kilmoneen Further Education Campus"
+
+# The two golden deliverables. The chart is named for what the campus would call it, a day's carbon
+# dioxide profile for one space; no deliverable name carries a word from the method.
+WORKBOOK_NAME = "tulrohan_ventilation_assessment.xlsx"
+CHART_NAME = "tulrohan_co2_day_profile.png"
+
+# ----------------------------------------------------------------- document filing instants
+
+# Each document is filed at its own time of day by its own body. Four creation stamps all reading
+# midnight, or four workbooks sharing one clock time to the second, is the tell that one hand wrote
+# them; checks.py asserts the instants differ.
+PDF_FILED = {
+    "asbuilt_room_data_sheets_kilmoneen.pdf": "2021-09-09 11:42:07",
+    "tgd_m4_ventilation_extract.pdf": "2024-03-18 09:08:44",
+    "iaq_monitoring_procedure_note.pdf": "2026-09-04 16:21:33",
+    "commissioning_record_tulrohan_ahu.pdf": "2021-07-22 15:54:19",
+}
+XLSX_FILED = {
+    "ahu_timeclock_schedule.xlsx": ("2026-09-04T08:26:41", "2026-12-15T10:11:08"),
+    "enrolment_groups_autumn2026.xlsx": ("2026-09-25T14:03:52", "2026-12-15T09:47:26"),
+    "etb_academic_calendar_2026_27.xlsx": ("2026-06-11T11:35:17", "2026-12-02T15:18:04"),
+    "capital_bid_tulrohan_block.xlsx": ("2026-11-26T16:49:30", "2026-12-14T13:02:55"),
+    "tulrohan_ventilation_assessment.xlsx": ("2026-12-16T10:22:13", "2026-12-18T17:35:49"),
+}

@@ -140,10 +140,16 @@ def group_attendance_rates():
 
 
 def group_tutors():
-    """Each group's own tutor, drawn rather than cycled, so the tutor column has no fixed period and
-    the counts per tutor are uneven (one tutor may hold three groups and another one)."""
+    """Each group's own tutor, drawn from the tutors of the school the group's programme sits in,
+    rather than cycled, so the tutor column has no fixed period, the counts per tutor are uneven and
+    no staff record names a school its own sessions contradict."""
     r = rng("tutor-assign")
-    return {g[0]: r.choice(P.TUTORS) for g in P.GROUPS}
+    by_school = {}
+    for name, school in P.TUTOR_SCHOOL.items():
+        by_school.setdefault(school, []).append(name)
+    for v in by_school.values():
+        v.sort()
+    return {g[0]: r.choice(by_school[P.SCHOOL_OF_SUBJECT[g[3]]]) for g in P.GROUPS}
 
 
 def sessions():
@@ -176,7 +182,9 @@ def sessions():
                 present = max(0, min(n_at_risk, present))
                 tutor = tutors[g]
                 if r_cover.random() < 0.035:
-                    tutor = r_cover.choice(P.TUTORS)
+                    same = sorted(n for n, sc in P.TUTOR_SCHOOL.items()
+                                  if sc == P.SCHOOL_OF_SUBJECT[groups[g]["subject"]])
+                    tutor = r_cover.choice(same)
                 assistant = r_assist.choice(P.ASSISTANTS) if r_assist.random() < P.ASSISTANT_SHARE else None
                 staff = 1 + (1 if assistant else 0)
                 out.append({

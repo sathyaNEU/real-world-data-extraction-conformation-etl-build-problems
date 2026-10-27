@@ -210,3 +210,18 @@ def bin_edge_distance(v, bin_=None):
     b = bin_ or P.RATE_BIN
     centre = round(v / b) * b
     return b / 2.0 - abs(v - centre)
+
+
+def q_integrated_space(frames, space):
+    """The one supply rate the space's own sessions imply, cubic metres per second: total outdoor air
+    over total session seconds."""
+    air = sec = 0.0
+    for f in frames:
+        if f["space"] != space:
+            continue
+        q = q_integrated(f)
+        if q is None:
+            continue
+        air += q * f["seconds"]
+        sec += f["seconds"]
+    return air / sec if sec else None

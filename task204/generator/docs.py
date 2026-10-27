@@ -103,7 +103,12 @@ class _Doc(BaseDocTemplate):
 
 
 def write_pdf(path, meta, running, flowables, stamp):
-    """Write a PDF and give it the issuing body's own container metadata and file date."""
+    """Write a PDF and give it the issuing body's own container metadata and file date.
+
+    stamp is the document's own filing instant, "YYYY-MM-DD HH:MM:SS". Four issuing bodies file four
+    documents at four different times of day; a set of creation dates all reading midnight to the
+    second is a tell, and checks.py asserts the four differ.
+    """
     doc = _Doc(path, meta, running)
     doc.build(list(flowables))
     _finalise_pdf(path, stamp, meta["producer"])
@@ -112,7 +117,8 @@ def write_pdf(path, meta, running, flowables, stamp):
 def _finalise_pdf(path, stamp, producer):
     b = open(path, "rb").read()
     n0 = len(b)
-    want = ("D:%s000000" % stamp.replace("-", "")).encode()
+    want = ("D:%s" % re.sub(r"[^0-9]", "", stamp)).encode()
+    assert len(want) == len(INVARIANT_DATE), "%s: stamp %r is not a full instant" % (path, stamp)
     assert len(want) == len(INVARIANT_DATE)
     b = b.replace(INVARIANT_DATE, want)
     # the writer's own comment lines: substitute the text after the comment marker, equal length,
@@ -150,8 +156,8 @@ xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:dcterms="http://purl.org/dc/te
 xmlns:dcmitype="http://purl.org/dc/dcmitype/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">\
 <dc:title>{title}</dc:title><dc:creator>{creator}</dc:creator>\
 <cp:lastModifiedBy>{modified_by}</cp:lastModifiedBy>\
-<dcterms:created xsi:type="dcterms:W3CDTF">{created}T09:14:00Z</dcterms:created>\
-<dcterms:modified xsi:type="dcterms:W3CDTF">{modified}T16:42:00Z</dcterms:modified>\
+<dcterms:created xsi:type="dcterms:W3CDTF">{created}Z</dcterms:created>\
+<dcterms:modified xsi:type="dcterms:W3CDTF">{modified}Z</dcterms:modified>\
 </cp:coreProperties>"""
 
 _XML_ESC = {"&": "&amp;", "<": "&lt;", ">": "&gt;"}
@@ -164,7 +170,13 @@ def _esc(s):
 
 
 def finalise_xlsx(path, title, creator, modified_by, company, created, modified):
-    """Re-serialise the workbook's parts so the file reads as one Excel saved."""
+    """Re-serialise the workbook's parts so the file reads as one Excel saved.
+
+    created and modified are full instants, "YYYY-MM-DDTHH:MM:SS". Each workbook in the pack has its
+    own pair, because four workbooks from four offices sharing one clock time to the second is the
+    tell that says one hand wrote them all; checks.py asserts the pairs differ.
+    """
+    assert "T" in created and "T" in modified, "%s: workbook stamps are not instants" % path
     with zipfile.ZipFile(path) as z:
         names = z.namelist()
         data = {n: z.read(n) for n in names}
@@ -238,7 +250,7 @@ def finalise_xlsx(path, title, creator, modified_by, company, created, modified)
         for n in order_out:
             if n not in data:
                 continue
-            zi = zipfile.ZipInfo(n, date_time=(2026, 12, 15, 16, 42, 0))
+            zi = zipfile.ZipInfo(n, date_time=_entry_time(modified))
             zi.compress_type = zipfile.ZIP_DEFLATED
             zi.external_attr = 0o600 << 16
             z.writestr(zi, data[n])
@@ -254,6 +266,11 @@ def finalise_xlsx(path, title, creator, modified_by, company, created, modified)
     for s in SIGNATURES:
         assert s.encode() not in blob, "%s: %s survived in docProps" % (path, s)
     return wb
+
+
+def _entry_time(instant):
+    d, t = instant.split("T")
+    return tuple(int(x) for x in d.split("-")) + tuple(int(x) for x in t.split(":"))
 
 
 def _sub_shim(m, shared, order):

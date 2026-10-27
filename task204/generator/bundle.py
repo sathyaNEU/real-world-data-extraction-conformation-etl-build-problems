@@ -182,16 +182,20 @@ def sessions(target):
     return out
 
 
-def frames(target):
-    """One session frame per timetabled session: the excess over the outdoor baseline at every
-    five-minute stamp from the session's first reading to its last."""
+def frames(target, strict=False):
+    """One session frame per timetabled session: the carbon dioxide excess over the outdoor baseline
+    at every five-minute stamp recorded between the session's first and last reading.
+
+    strict=True keeps only the sessions whose whole five-minute grid was recorded; the two readings
+    are asserted to converge in checks.py and verify.py.
+    """
     ser = series(target)
     base = outdoor_baseline(target)
     out = []
     for s in sessions(target):
         a = int(s["start"][:2]) * 60 + int(s["start"][3:5])
         b = int(s["end"][:2]) * 60 + int(s["end"][3:5])
-        vals, missing = [], 0
+        vals, mins, missing = [], [], 0
         for k in range(a, b + 1, 5):
             hh, mm = divmod(k, 60)
             ts = "%s %02d:%02d:00" % (s["date"], hh, mm)
@@ -204,9 +208,11 @@ def frames(target):
                 missing += 1
                 continue
             vals.append(got[0] - got[1])
-        if missing or len(vals) < 3:
+            mins.append(k)
+        if len(vals) < 3 or (strict and missing):
             continue
         out.append({"session_ref": s["session_ref"], "space": s["space"], "date": s["date"],
                     "period": s["period"], "group": s["group"], "occupants": s["occupants"],
-                    "seconds": (b - a) * 60, "readings": vals})
+                    "seconds": (mins[-1] - mins[0]) * 60, "readings": vals,
+                    "complete": missing == 0})
     return out

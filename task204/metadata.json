@@ -1,0 +1,143 @@
+{
+ "answer": null,
+ "as_of": "2026-12-15",
+ "bundle": "target/",
+ "distractor_files": [
+  "campus_energy_halfhourly_2026.csv",
+  "bms_temperature_rh_hourly_autumn2026.csv"
+ ],
+ "field_terms": [],
+ "files": {
+  "ahu_timeclock_schedule.xlsx": {
+   "date": "2026-12-15",
+   "licence": "Synthetic record, no third party rights",
+   "rows": "",
+   "source": "Building management system time clock settings export"
+  },
+  "asbuilt_room_data_sheets_kilmoneen.pdf": {
+   "date": "2026-12-15",
+   "licence": "Synthetic record, no third party rights",
+   "rows": "",
+   "source": "As-built room data sheets, consulting engineer's record set 19-0442 issue D"
+  },
+  "attendance_marks_autumn2026.csv": {
+   "date": "2026-12-15",
+   "licence": "Synthetic record, no third party rights",
+   "rows": 137494,
+   "source": "Statutory attendance register export, autumn term 2026"
+  },
+  "bms_co2_5min_autumn2026.csv": {
+   "date": "2026-12-15",
+   "licence": "Synthetic record, no third party rights",
+   "rows": 293559,
+   "source": "Building management system trend export, Kilmoneen campus, pulled 2026-12-15"
+  },
+  "bms_plant_status_autumn2026.csv": {
+   "date": "2026-12-15",
+   "licence": "Synthetic record, no third party rights",
+   "rows": 1068,
+   "source": "Building management system plant status log, pulled 2026-12-15"
+  },
+  "bms_temperature_rh_hourly_autumn2026.csv": {
+   "date": "2026-12-15",
+   "licence": "Synthetic record, no third party rights",
+   "rows": 25214,
+   "source": "Building management system hourly air temperature and relative humidity export"
+  },
+  "campus_energy_halfhourly_2026.csv": {
+   "date": "2026-12-15",
+   "licence": "Synthetic record, no third party rights",
+   "rows": 7204,
+   "source": "Half-hourly metered electricity import, two meter points"
+  },
+  "campus_outdoor_co2_hourly_2026.csv": {
+   "date": "2026-12-15",
+   "licence": "Synthetic record, no third party rights",
+   "rows": 2112,
+   "source": "Campus outdoor analyser hourly means, 1 September to 11 December 2026"
+  },
+  "campus_room_register.csv": {
+   "date": "2026-12-15",
+   "licence": "Synthetic record, no third party rights",
+   "rows": 41,
+   "source": "Campus room register, estates asset system"
+  },
+  "capital_bid_tulrohan_block.xlsx": {
+   "date": "2026-12-15",
+   "licence": "Synthetic record, no third party rights",
+   "rows": "",
+   "source": "Minor works capital bid sheet for the Tulrohan Block, 2027 programme"
+  },
+  "commissioning_record_tulrohan_ahu.pdf": {
+   "date": "2026-12-15",
+   "licence": "Synthetic record, no third party rights",
+   "rows": "",
+   "source": "Commissioning contractor's static completion record for AHU-03 and AHU-04, July 2021"
+  },
+  "enrolment_groups_autumn2026.xlsx": {
+   "date": "2026-12-15",
+   "licence": "Synthetic record, no third party rights",
+   "rows": "",
+   "source": "Learner records system enrolment and staff export"
+  },
+  "etb_academic_calendar_2026_27.xlsx": {
+   "date": "2026-12-15",
+   "licence": "Synthetic record, no third party rights",
+   "rows": "",
+   "source": "Education and Training Board academic calendar 2026/27"
+  },
+  "iaq_monitoring_procedure_note.pdf": {
+   "date": "2026-12-15",
+   "licence": "Synthetic record, no third party rights",
+   "rows": "",
+   "source": "Education and Training Board procedure note EST-14 revision 2"
+  },
+  "macehead_gaw_co2_hourly_2026.csv": {
+   "date": "2026-12-15",
+   "licence": "Synthetic record, no third party rights",
+   "rows": 1801,
+   "source": "Hourly background carbon dioxide, Mace Head Atmospheric Research Station, in the layout that station publishes"
+  },
+  "maintenance_log_iaq_sensors_2026.csv": {
+   "date": "2026-12-15",
+   "licence": "Synthetic record, no third party rights",
+   "rows": 34,
+   "source": "Maintenance contractor's work order log for the carbon dioxide analysers"
+  },
+  "minor_works_thread.txt": {
+   "date": "2026-12-15",
+   "licence": "Synthetic record, no third party rights",
+   "rows": "",
+   "source": "Internal electronic mail thread, estates and facilities"
+  },
+  "tgd_m4_ventilation_extract.pdf": {
+   "date": "2026-12-15",
+   "licence": "Synthetic record, no third party rights",
+   "rows": "",
+   "source": "Extract of the Department of Education technical guidance TGD-M4"
+  },
+  "timetable_autumn2026.csv": {
+   "date": "2026-12-15",
+   "licence": "Synthetic record, no third party rights",
+   "rows": 3208,
+   "source": "Learner records system timetable export, autumn term 2026"
+  }
+ },
+ "notes": "Synthetic pack describing a fictional Education and Training Board campus in the Irish west midlands. Building physics, Irish local time and its October change, school building ventilation practice and the Mace Head station's publishing layout are real; every board, campus, block, room, group, learner, staff member and work order is invented. Built by generator/build.py from generator/params.py.",
+ "stated_inputs": [
+  "1,500",
+  "1500",
+  "8",
+  "0.5",
+  "2026",
+  "28",
+  "11"
+ ],
+ "task": "task204",
+ "wrong_basis_distractor": {
+  "basis": "design supply of 8.5 litres per second per person at design occupancy, carried from the consulting engineer's appendix C",
+  "file": "commissioning_record_tulrohan_ahu.pdf",
+  "ruled_out_by": "its own section 3, which records that proving of air volumes at the supply terminals was deferred and remains outstanding, and TGD-M4 4.3, which says design intent and volumes proved at a unit do not demonstrate compliance",
+  "value": 8.5
+ }
+}

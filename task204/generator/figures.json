@@ -1,0 +1,627 @@
+{
+ "ask_detail": {
+  "rise_gap_4_to_5": 4.0,
+  "rises_top6": [
+   [
+    457.0,
+    "TUL-G12",
+    "2026-11-02",
+    "P1"
+   ],
+   [
+    434.0,
+    "TUL-G12",
+    "2026-10-19",
+    "P1"
+   ],
+   [
+    426.0,
+    "TUL-G07",
+    "2026-10-13",
+    "P2"
+   ],
+   [
+    416.0,
+    "TUL-G12",
+    "2026-11-09",
+    "P1"
+   ],
+   [
+    412.0,
+    "TUL-G12",
+    "2026-09-28",
+    "P1"
+   ],
+   [
+    403.0,
+    "TUL-G12",
+    "2026-12-02",
+    "P1"
+   ]
+  ]
+ },
+ "asks": {
+  "A": [
+   {
+    "hours_over_indicator": 0.0,
+    "month": "September 2026",
+    "occupied_hours": 22.42,
+    "space": "ANG-012"
+   },
+   {
+    "hours_over_indicator": 0.0,
+    "month": "October 2026",
+    "occupied_hours": 118.33,
+    "space": "ANG-012"
+   },
+   {
+    "hours_over_indicator": 0.0,
+    "month": "November 2026",
+    "occupied_hours": 148.17,
+    "space": "ANG-012"
+   },
+   {
+    "hours_over_indicator": 0.0,
+    "month": "December 2026",
+    "occupied_hours": 59.67,
+    "space": "ANG-012"
+   },
+   {
+    "hours_over_indicator": 0.0,
+    "month": "September 2026",
+    "occupied_hours": 22.5,
+    "space": "ANG-016"
+   },
+   {
+    "hours_over_indicator": 0.0,
+    "month": "October 2026",
+    "occupied_hours": 127.5,
+    "space": "ANG-016"
+   },
+   {
+    "hours_over_indicator": 0.0,
+    "month": "November 2026",
+    "occupied_hours": 127.5,
+    "space": "ANG-016"
+   },
+   {
+    "hours_over_indicator": 0.0,
+    "month": "December 2026",
+    "occupied_hours": 59.92,
+    "space": "ANG-016"
+   },
+   {
+    "hours_over_indicator": 0.0,
+    "month": "September 2026",
+    "occupied_hours": 21.58,
+    "space": "ANG-103"
+   },
+   {
+    "hours_over_indicator": 0.08,
+    "month": "October 2026",
+    "occupied_hours": 117.83,
+    "space": "ANG-103"
+   },
+   {
+    "hours_over_indicator": 0.08,
+    "month": "November 2026",
+    "occupied_hours": 140.0,
+    "space": "ANG-103"
+   },
+   {
+    "hours_over_indicator": 0.0,
+    "month": "December 2026",
+    "occupied_hours": 59.0,
+    "space": "ANG-103"
+   },
+   {
+    "hours_over_indicator": 0.0,
+    "month": "September 2026",
+    "occupied_hours": 21.67,
+    "space": "ANG-107"
+   },
+   {
+    "hours_over_indicator": 0.0,
+    "month": "October 2026",
+    "occupied_hours": 117.58,
+    "space": "ANG-107"
+   },
+   {
+    "hours_over_indicator": 0.0,
+    "month": "November 2026",
+    "occupied_hours": 147.92,
+    "space": "ANG-107"
+   },
+   {
+    "hours_over_indicator": 0.0,
+    "month": "December 2026",
+    "occupied_hours": 59.42,
+    "space": "ANG-107"
+   },
+   {
+    "hours_over_indicator": 0.17,
+    "month": "September 2026",
+    "occupied_hours": 22.17,
+    "space": "DRM-104"
+   },
+   {
+    "hours_over_indicator": 1.0,
+    "month": "October 2026",
+    "occupied_hours": 119.25,
+    "space": "DRM-104"
+   },
+   {
+    "hours_over_indicator": 1.08,
+    "month": "November 2026",
+    "occupied_hours": 148.67,
+    "space": "DRM-104"
+   },
+   {
+    "hours_over_indicator": 0.5,
+    "month": "December 2026",
+    "occupied_hours": 59.42,
+    "space": "DRM-104"
+   },
+   {
+    "hours_over_indicator": 0.0,
+    "month": "September 2026",
+    "occupied_hours": 22.5,
+    "space": "DRM-108"
+   },
+   {
+    "hours_over_indicator": 0.75,
+    "month": "October 2026",
+    "occupied_hours": 126.33,
+    "space": "DRM-108"
+   },
+   {
+    "hours_over_indicator": 0.5,
+    "month": "November 2026",
+    "occupied_hours": 141.58,
+    "space": "DRM-108"
+   },
+   {
+    "hours_over_indicator": 0.5,
+    "month": "December 2026",
+    "occupied_hours": 59.17,
+    "space": "DRM-108"
+   },
+   {
+    "hours_over_indicator": 0.0,
+    "month": "September 2026",
+    "occupied_hours": 22.33,
+    "space": "DRM-205"
+   },
+   {
+    "hours_over_indicator": 0.58,
+    "month": "October 2026",
+    "occupied_hours": 118.83,
+    "space": "DRM-205"
+   },
+   {
+    "hours_over_indicator": 0.5,
+    "month": "November 2026",
+    "occupied_hours": 140.67,
+    "space": "DRM-205"
+   },
+   {
+    "hours_over_indicator": 0.17,
+    "month": "December 2026",
+    "occupied_hours": 59.5,
+    "space": "DRM-205"
+   },
+   {
+    "hours_over_indicator": 0.0,
+    "month": "September 2026",
+    "occupied_hours": 21.75,
+    "space": "DRM-211"
+   },
+   {
+    "hours_over_indicator": 0.42,
+    "month": "October 2026",
+    "occupied_hours": 125.67,
+    "space": "DRM-211"
+   },
+   {
+    "hours_over_indicator": 0.42,
+    "month": "November 2026",
+    "occupied_hours": 140.67,
+    "space": "DRM-211"
+   },
+   {
+    "hours_over_indicator": 0.08,
+    "month": "December 2026",
+    "occupied_hours": 52.17,
+    "space": "DRM-211"
+   },
+   {
+    "hours_over_indicator": 0.42,
+    "month": "September 2026",
+    "occupied_hours": 18.5,
+    "space": "TUL-F04"
+   },
+   {
+    "hours_over_indicator": 1.83,
+    "month": "October 2026",
+    "occupied_hours": 104.17,
+    "space": "TUL-F04"
+   },
+   {
+    "hours_over_indicator": 2.17,
+    "month": "November 2026",
+    "occupied_hours": 116.58,
+    "space": "TUL-F04"
+   },
+   {
+    "hours_over_indicator": 0.0,
+    "month": "December 2026",
+    "occupied_hours": 49.33,
+    "space": "TUL-F04"
+   },
+   {
+    "hours_over_indicator": 0.0,
+    "month": "September 2026",
+    "occupied_hours": 18.33,
+    "space": "TUL-F09"
+   },
+   {
+    "hours_over_indicator": 0.0,
+    "month": "October 2026",
+    "occupied_hours": 102.67,
+    "space": "TUL-F09"
+   },
+   {
+    "hours_over_indicator": 0.0,
+    "month": "November 2026",
+    "occupied_hours": 114.0,
+    "space": "TUL-F09"
+   },
+   {
+    "hours_over_indicator": 0.0,
+    "month": "December 2026",
+    "occupied_hours": 48.5,
+    "space": "TUL-F09"
+   },
+   {
+    "hours_over_indicator": 0.58,
+    "month": "September 2026",
+    "occupied_hours": 18.42,
+    "space": "TUL-F15"
+   },
+   {
+    "hours_over_indicator": 0.5,
+    "month": "October 2026",
+    "occupied_hours": 98.25,
+    "space": "TUL-F15"
+   },
+   {
+    "hours_over_indicator": 0.5,
+    "month": "November 2026",
+    "occupied_hours": 122.67,
+    "space": "TUL-F15"
+   },
+   {
+    "hours_over_indicator": 0.5,
+    "month": "December 2026",
+    "occupied_hours": 42.75,
+    "space": "TUL-F15"
+   },
+   {
+    "hours_over_indicator": 0.0,
+    "month": "September 2026",
+    "occupied_hours": 18.08,
+    "space": "TUL-G07"
+   },
+   {
+    "hours_over_indicator": 0.33,
+    "month": "October 2026",
+    "occupied_hours": 103.25,
+    "space": "TUL-G07"
+   },
+   {
+    "hours_over_indicator": 0.92,
+    "month": "November 2026",
+    "occupied_hours": 115.0,
+    "space": "TUL-G07"
+   },
+   {
+    "hours_over_indicator": 0.0,
+    "month": "December 2026",
+    "occupied_hours": 48.33,
+    "space": "TUL-G07"
+   },
+   {
+    "hours_over_indicator": 1.0,
+    "month": "September 2026",
+    "occupied_hours": 18.5,
+    "space": "TUL-G12"
+   },
+   {
+    "hours_over_indicator": 18.33,
+    "month": "October 2026",
+    "occupied_hours": 98.5,
+    "space": "TUL-G12"
+   },
+   {
+    "hours_over_indicator": 18.08,
+    "month": "November 2026",
+    "occupied_hours": 123.08,
+    "space": "TUL-G12"
+   },
+   {
+    "hours_over_indicator": 9.58,
+    "month": "December 2026",
+    "occupied_hours": 49.17,
+    "space": "TUL-G12"
+   },
+   {
+    "hours_over_indicator": 0.0,
+    "month": "September 2026",
+    "occupied_hours": 18.42,
+    "space": "TUL-G18"
+   },
+   {
+    "hours_over_indicator": 0.33,
+    "month": "October 2026",
+    "occupied_hours": 98.5,
+    "space": "TUL-G18"
+   },
+   {
+    "hours_over_indicator": 0.92,
+    "month": "November 2026",
+    "occupied_hours": 123.0,
+    "space": "TUL-G18"
+   },
+   {
+    "hours_over_indicator": 0.5,
+    "month": "December 2026",
+    "occupied_hours": 43.0,
+    "space": "TUL-G18"
+   }
+  ],
+  "B": [
+   {
+    "expected": 13824,
+    "received": 13382,
+    "share_pct": 96.8,
+    "space": "ANG-012"
+   },
+   {
+    "expected": 13824,
+    "received": 12953,
+    "share_pct": 93.7,
+    "space": "ANG-016"
+   },
+   {
+    "expected": 13824,
+    "received": 13008,
+    "share_pct": 94.1,
+    "space": "ANG-103"
+   },
+   {
+    "expected": 13824,
+    "received": 13326,
+    "share_pct": 96.4,
+    "space": "ANG-107"
+   },
+   {
+    "expected": 13824,
+    "received": 13437,
+    "share_pct": 97.2,
+    "space": "DRM-104"
+   },
+   {
+    "expected": 13824,
+    "received": 13409,
+    "share_pct": 97.0,
+    "space": "DRM-108"
+   },
+   {
+    "expected": 13824,
+    "received": 13119,
+    "share_pct": 94.9,
+    "space": "DRM-205"
+   },
+   {
+    "expected": 13824,
+    "received": 13064,
+    "share_pct": 94.5,
+    "space": "DRM-211"
+   },
+   {
+    "expected": 13824,
+    "received": 13478,
+    "share_pct": 97.5,
+    "space": "TUL-F04"
+   },
+   {
+    "expected": 13824,
+    "received": 13257,
+    "share_pct": 95.9,
+    "space": "TUL-F09"
+   },
+   {
+    "expected": 13824,
+    "received": 13160,
+    "share_pct": 95.2,
+    "space": "TUL-F15"
+   },
+   {
+    "expected": 13824,
+    "received": 13285,
+    "share_pct": 96.1,
+    "space": "TUL-G07"
+   },
+   {
+    "expected": 13824,
+    "received": 13520,
+    "share_pct": 97.8,
+    "space": "TUL-G12"
+   },
+   {
+    "expected": 13824,
+    "received": 13216,
+    "share_pct": 95.6,
+    "space": "TUL-G18"
+   }
+  ],
+  "C": [
+   {
+    "mean_occupants": 35,
+    "sessions": 288,
+    "space": "TUL-G07"
+   },
+   {
+    "mean_occupants": 48,
+    "sessions": 288,
+    "space": "TUL-G12"
+   },
+   {
+    "mean_occupants": 37,
+    "sessions": 288,
+    "space": "TUL-G18"
+   },
+   {
+    "mean_occupants": 49,
+    "sessions": 288,
+    "space": "TUL-F04"
+   },
+   {
+    "mean_occupants": 41,
+    "sessions": 288,
+    "space": "TUL-F09"
+   },
+   {
+    "mean_occupants": 56,
+    "sessions": 288,
+    "space": "TUL-F15"
+   }
+  ],
+  "D": [
+   {
+    "date": "2026-11-02",
+    "period": "P1",
+    "rank": 1,
+    "space": "TUL-G12"
+   },
+   {
+    "date": "2026-10-19",
+    "period": "P1",
+    "rank": 2,
+    "space": "TUL-G12"
+   },
+   {
+    "date": "2026-10-13",
+    "period": "P2",
+    "rank": 3,
+    "space": "TUL-G07"
+   },
+   {
+    "date": "2026-11-09",
+    "period": "P1",
+    "rank": 4,
+    "space": "TUL-G12"
+   }
+  ]
+ },
+ "call": {
+  "block_rate_ls_per_occupant": 5.0,
+  "block_rate_unrounded": 5.0739,
+  "remedy": "Option A, replace AHU-03 and AHU-04 and the Tulrohan distribution",
+  "shortfall_factor": 1.577,
+  "verdict": "below the 8 litres per second per person TGD-M4 requires"
+ },
+ "components": {
+  "block_sessions": 1728,
+  "occupant_hours_present": 70404.6,
+  "period_minutes": 55,
+  "shortest_response_minutes": 189,
+  "spaces_below_requirement": 6,
+  "spaces_in_block": 6
+ },
+ "constants": {
+  "block_rooms": [
+   "TUL-G07",
+   "TUL-G12",
+   "TUL-G18",
+   "TUL-F04",
+   "TUL-F09",
+   "TUL-F15"
+  ],
+  "block_volumes_m3": {
+   "TUL-F04": 3750.0,
+   "TUL-F09": 4150.0,
+   "TUL-F15": 4650.0,
+   "TUL-G07": 2400.0,
+   "TUL-G12": 2850.0,
+   "TUL-G18": 3200.0
+  },
+  "generation_l_per_s": 0.0072,
+  "procedure_ref": "EST-14",
+  "rate_bin": 0.5,
+  "readings_per_day": 288,
+  "required_ls_per_person": 8.0,
+  "screening_ppm": 1500.0,
+  "standard_clause_compliance": "4.3",
+  "standard_clause_requirement": "4.2",
+  "standard_table": "2.3",
+  "teaching_days": 48,
+  "window_end": "2026-12-11",
+  "window_start": "2026-09-28"
+ },
+ "measured": {
+  "bin_edge_call": 0.1761,
+  "golden_family": {
+   "10 minute decimation": 5.0358,
+   "15 minute decimation": 5.0308,
+   "Simpson quadrature": 5.0738,
+   "derivative regression": 5.0604,
+   "left rectangle quadrature": 5.1328,
+   "right rectangle quadrature": 5.0181,
+   "trapezoid quadrature": 5.0739
+  },
+  "golden_strict_variant": 5.0784,
+  "naive_per_space": {
+   "TUL-F04": 10.8157,
+   "TUL-F09": 12.1,
+   "TUL-F15": 11.0154,
+   "TUL-G07": 11.2142,
+   "TUL-G12": 9.3471,
+   "TUL-G18": 11.8067
+  },
+  "outdoor_air_supplied_m3": 1248822,
+  "per_space_rate_unrounded": {
+   "TUL-F04": 5.128,
+   "TUL-F09": 4.7608,
+   "TUL-F15": 4.7708,
+   "TUL-G07": 5.9747,
+   "TUL-G12": 4.8831,
+   "TUL-G18": 5.1937
+  },
+  "pooled_over_14": 8.2901,
+  "response_time_min": {
+   "TUL-F04": 247.0,
+   "TUL-F09": 355.1,
+   "TUL-F15": 288.9,
+   "TUL-G07": 189.4,
+   "TUL-G12": 201.2,
+   "TUL-G18": 280.6
+  },
+  "rivals": {
+   "95th percentile": 9.3132,
+   "final 15 minutes": 9.6754,
+   "last sample": 9.334,
+   "median sample": 10.9245,
+   "peak sample": 9.3132,
+   "session mean": 10.974
+  },
+  "truth_per_space": {
+   "TUL-F04": 5.128,
+   "TUL-F09": 4.7608,
+   "TUL-F15": 4.7708,
+   "TUL-G07": 5.9747,
+   "TUL-G12": 4.8831,
+   "TUL-G18": 5.1937
+  }
+ }
+}

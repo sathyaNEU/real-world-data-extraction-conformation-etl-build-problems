@@ -1,0 +1,26 @@
+{
+ "cracker": {
+  "A": [
+   28,
+   112
+  ],
+  "B": [
+   0,
+   14
+  ],
+  "C": [
+   0,
+   6
+  ],
+  "D": [
+   4,
+   12
+  ]
+ },
+ "figures": 144,
+ "mirror_leakage_pct": 31.9,
+ "pair_off_call": 33.2,
+ "pair_on_call": 66.2,
+ "pair_split": 49.7,
+ "per_figure": 0.3958
+}
