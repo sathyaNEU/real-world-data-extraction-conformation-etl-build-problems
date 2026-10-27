@@ -108,7 +108,13 @@ def realism(target, ok):
     lit = pd.read_csv(os.path.join(target, F["litigation"]), dtype=str)
     blocks = lit.groupby("claim_number").action.apply(tuple)
     ok(blocks.value_counts().iloc[0] < 0.5 * len(blocks), "realism: no one action sequence makes up half the claims")
-    names = set(open(os.path.join(target, F["dictionary"])).read().split(","))
+    import pyarrow.parquet as pq
+    names = set()
+    for f in os.listdir(target):
+        if f.endswith(".parquet"):
+            names |= set(pq.read_schema(os.path.join(target, f)).names)
+        elif f.endswith(".csv"):
+            names |= set(pd.read_csv(os.path.join(target, f), nrows=1).columns)
     ok(not any(w in " ".join(names).lower() for w in ("extension", "extended", "forborne", "concession", "charter")),
        "R1: no field names the term increase")
     cols = set()
@@ -250,17 +256,14 @@ def main(target, quick=False):
     bk_of = S.account_books(target)
     ok(not (lit.account_number.map(bk_of) == BTL).any(), "SF15: no buy-to-let claim in the litigation file")
     ok("any surplus" not in policy and "the surplus is paid to the borrower and the loss is nil" in policy, "SF17 filed")
-    dic = pd.read_csv(os.path.join(target, F["dictionary"]))
-    ok(dic.description.str.contains("a corrected statement is re-sent in full with the next number").any(), "SF18 filed")
-    import pyarrow.parquet as pq
-    for f in sorted(os.listdir(target)):
-        if f.endswith(".parquet"):
-            cols = pq.read_schema(os.path.join(target, f)).names
-        elif f.endswith(".csv") and f != F["dictionary"]:
-            cols = pd.read_csv(os.path.join(target, f), nrows=1).columns.tolist()
-        else:
-            continue
-        ok(dic[dic.file == f].field.tolist() == cols, "H9: the dictionary lists every field of %s in order" % f)
+    sr = pd.read_csv(os.path.join(target, F["sales"]))
+    ok((sr.groupby("sale_ref").statement.max() > 1).any(), "SF18: corrected statements carry the next number")
+    import openpyxl
+    ok(not any(re.search(r"dictionary|readme|manifest|field.?notes|schema", f, re.I) for f in os.listdir(target)),
+       "dataset-generation 3: no file describes the data, by name")
+    sheets = [n for f in os.listdir(target) if f.endswith(".xlsx") for n in openpyxl.load_workbook(os.path.join(target, f), read_only=True).sheetnames]
+    ok(not any(re.search(r"notes|readme|dictionary|fields|about", n, re.I) for n in sheets),
+       "dataset-generation 3: no sheet describes the data (%s)" % ", ".join(sheets))
     ok("one of our four lending books" in plan, "SF19: the four books named")
     for b in P.ORDER[:3]:
         gv = gB[b]

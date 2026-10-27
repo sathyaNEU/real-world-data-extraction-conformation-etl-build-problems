@@ -274,20 +274,9 @@ def main(zp=None):
         if line not in sub:
             bad.append(("submission askB", line))
     for b, word in (("First-time buyer 2019-21", "about %d" % (int(round(av["First-time buyer 2019-21"] / 10.0)) * 10)),
-                    ("High LTV 2022-24", "about %d" % (int(round(av["High LTV 2022-24"] / 10.0)) * 10))):
+                    ("High LTV 2022-24", "fewer than 5" if av["High LTV 2022-24"] < 5 else "about %d" % (int(round(av["High LTV 2022-24"] / 10.0)) * 10))):
         if word not in sub:
             bad.append(("submission call", word))
-    # the data dictionary lists every field of every data file, in the file's own order
-    dic = pd.read_csv(os.path.join(T, "data_dictionary.csv"))
-    for f in sorted(os.listdir(T)):
-        if f.endswith(".parquet"):
-            cols = pq.read_schema(os.path.join(T, f)).names
-        elif f.endswith(".csv") and f != "data_dictionary.csv":
-            cols = pd.read_csv(os.path.join(T, f), nrows=1).columns.tolist()
-        else:
-            continue
-        if dic[dic.file == f].field.tolist() != cols:
-            bad.append(("dictionary", f))
     print("verify: %d mismatches" % len(bad))
     for x in bad:
         print("  ", x)

@@ -97,7 +97,6 @@ def build(target, seed=P.SEED):
     docs.policy(os.path.join(target, F["policy"]))
     docs.appetite(os.path.join(target, F["appetite"]))
     docs.ratecard(os.path.join(target, F["ratecard"]))
-    docs.dictionary(os.path.join(target, F["dictionary"]))
     hp = []
     for k in range(6):
         for m in range(W.ym(2010, 1), W.SNAP + 1):

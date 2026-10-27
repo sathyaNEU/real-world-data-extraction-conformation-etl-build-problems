@@ -122,11 +122,11 @@ golden files the first-time buyer book at 10 and every other book under 5.
 | SF11 | the rounding | each book's unrounded expected figure to the nearest ten | the pool rounded first | same figures | the prompt |
 | SF12 | ask A, a claim open at 30 September 2026 | not withdrawn, its order not discharged, no eviction, the property not taken into possession (the register, which Ridley Varga's reports never reach) | recovery_stage Litigation in the book; the claim file alone | 24, 61, 2; 52, 79, 7 | policy section 5 (a claim stays open until it is withdrawn, the order is discharged or the property is taken into possession); the register |
 | SF13 | ask A, an order made or varied at a hearing | an order line after a hearing; a line repeating the claim's previous order with no hearing between is the same order sent again | every order line an order | 38, 83, 10 orders | policy section 5: the court makes or varies an order at a hearing |
-| SF14 | ask A, the unit | claims (one panel firm writes a line per defendant) | lines | another count | the asking sentence (claims); the dictionary (the defendant the line relates to) |
+| SF14 | ask A, the unit | claims (one panel firm writes a line per defendant) | lines | another count | the asking sentence (claims); the file's defendant column, two lines on one claim and date differing only there |
 | SF15 | ask A, owner-occupied books | First-time buyer 2019-21, High LTV 2022-24, Shared ownership | Buy to let included | none (no buy-to-let claim) | policy sections 5 and 6 |
 | SF16 | ask B, sold from October 2025 to September 2026 | completion date in the window, on the latest statement | statement dates | same rows | the sales file's completion_date |
 | SF17 | ask B, the loss | the debt at possession less the sale price net of fees, nil where the sale covers it | a surplus as a negative loss | another average | policy section 8 |
-| SF18 | ask B, a corrected statement | replaces the earlier one | both counted | same figures (asserted) | the dictionary: re-sent in full with the next number |
+| SF18 | ask B, a corrected statement | replaces the earlier one | both counted | same figures (asserted) | the statement column: a corrected statement carries the next number on the same sale reference |
 | SF19 | ask B, the book | the account's lending book among the plan's four, as the payment history carries it for every account | the register's label read as written (its earlier first-time buyer label is not one of the four) | another split | plan section 1 (the four books); the history's book on every account, closed ones included |
 | SF20 | ask B, at a loss | a loss above nil | none | none | policy section 8 |
 | SF21 | the book through 2027 | every account on the book at 30 September 2026 counted for the whole year, none netted off for closing first | each account netted for the chance it redeems before falling behind (8.0 on the golden's construction) | same call (asserted), the same bin | plan section 2: with no allowance for accounts that close during the year |
@@ -154,7 +154,7 @@ golden files the first-time buyer book at 10 and every other book under 5.
 | 16 | Identity normalisation | product codes compared with the dashes taken out; one account numbering in the history | asserted |
 | 17 | Netting against gross | ask B net proceeds, nil loss on a surplus | filed (policy section 8) |
 | 18 | Dimensional units | payments in arrears from pounds over the current payment; GBP | filed (policy section 2) |
-| 19 | Code and status semantics | account_status, recovery_stage, the litigation actions as the dictionary gives them | filed; never the stump |
+| 19 | Code and status semantics | account_status, recovery_stage, the litigation actions as each export writes them; the policy defines arrears, the court route and the loss | filed; never the stump |
 | 20 | Integerisation | none on the call; ask counts are whole claims and sales | filed |
 | 21 | Clause scope | the 15 per cent cut for every borrower the team works with, in any book | filed (pilot report section 3, plan section 3) |
 | 22 | Forward window contents | 2027's entries from the book at 30 September 2026, the extended accounts' fall into arrears inside it | C1 across the standing family (asserted, 8.0 to 11.9, every member in the 10 bin) |
@@ -194,7 +194,7 @@ every repeated order over-repairs. Second device on the open claims (D4, absence
 reaches): Ridley Varga's reports end at the warrant, so a claim whose property was taken into possession reads open in
 the claim file; only the possession register closes it. Hazards: one line per defendant from one firm, hearings listed
 and adjourned, transfers between hearing centres. Files: litigation_actions, possession_register, mortgage_book,
-mortgage_payment_history, data_dictionary, arrears policy. Stops (first-time buyer, high LTV, shared ownership, as
+mortgage_payment_history, arrears policy. Stops (first-time buyer, high LTV, shared ownership, as
 orders / suspended / open): every re-sealed line an order 38/30/17, 83/65/43, 10/10/2 (the careful path, which also
 closes claims through the register); every line counted, defendants included 39/31/17, 93/72/43, 11/11/2; every
 repeated order dropped 34/27/17, 69/54/43, 9/9/2; no look at the register (open) 52, 79, 7; the register checked only
@@ -212,7 +212,7 @@ one possession whose debt is both parts'. Interior: the register's rows before t
 first-time buyer book, so each account's book comes from the payment history. Hazards: receivers' sales under their own
 reference (the receivers' file holds the account), corrected statements re-sent in full (the later one replaces), a
 surplus paid to the borrower (nil loss, policy section 8). Files: possession_sales_completed, possession_register,
-lpa_receiver_appointments, mortgage_payment_history, data_dictionary, arrears policy. Stops (sold / at a loss /
+lpa_receiver_appointments, mortgage_payment_history, arrears policy. Stops (sold / at a loss /
 average loss): each statement a sale, the register's last row as the debt 27/5/2,600, 30/18/22,000, 6/0/0 (the careful
 path); each statement a sale, the parts' debts summed 27/9/4,100, 30/30/31,400, 6/4/4,400; one sale per account, the
 register's last row 20/5/3,500, 24/18/27,500, 4/0/0; the register's old label read as the 2019-21 book 45/30/18,500,
@@ -347,3 +347,7 @@ Measured by: generator/pair.py on the cut pack.
   of its rounding edge or let a re-sealed order fail to move the Shared ownership orders; 83 holds every check.
 - The pilot's "half the cut in arrears, a 15 per cent cut" (2026-10-27): on seed 2 the stated arrears cut is about 35 per
   cent, whose half is not 15; the sentence now reads a 15 per cent cut, under half the cut in arrears, asserted.
+- A data dictionary in the pack (2026-10-27, stage 3): the rule that no shipped file describes the data came in after
+  the draw (leak.py LEAK on data_dictionary.csv); the dictionary is gone, the policy and the plan keep everything the
+  Society defines (arrears, the court route, the loss, the four books), each export's own columns carry the rest, and
+  the rate card's sheet of pricing terms is named Terms.

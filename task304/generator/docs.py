@@ -1,5 +1,5 @@
 """task304 documents: the 2027 plan paper, the 2024 pilot report, the arrears and possessions policy and the board's
-risk appetite statement (pdf), the product transfer rate card (xlsx) and the data dictionary (csv)."""
+risk appetite statement (pdf), the product transfer rate card (xlsx)."""
 import os
 
 import pandas as pd
@@ -232,7 +232,7 @@ def ratecard(path):
         for col in "CD":
             ws["%s%d" % (col, r)].number_format = '0.00"%"'
     ws.freeze_panes = "A2"
-    ws2 = wb.create_sheet("Notes")
+    ws2 = wb.create_sheet("Terms")
     ws2.append(["Rates effective 1 October 2026 for existing borrowers switching at the end of a fixed rate. Loan to "
                 "value is the current balance over the latest valuation. Rates are reviewed monthly."])
     ws2.column_dimensions["A"].width = 110
@@ -242,70 +242,3 @@ def ratecard(path):
     postprocess.finish_office(path, "2026-09-28T08:12:00Z", "2026-09-28T16:47:00Z", P.ORG, person="Mortgage Pricing")
 
 
-DICTIONARY = [
-    ("book", "account_number", "Mortgage account number (renumbered at the July 2022 platform change; the history uses the new numbers throughout)"),
-    ("book", "book", "Lending book the account belongs to"),
-    ("book", "completion_date", "Date the mortgage completed"),
-    ("book", "original_valuation", "Valuation at completion, GBP (shared ownership: the share bought)"),
-    ("book", "original_loan", "Amount advanced at completion, GBP"),
-    ("book", "current_balance", "Balance outstanding at 30 September 2026, GBP"),
-    ("book", "postcode_district", "Postcode district of the mortgaged property"),
-    ("book", "property_type", "Semi-detached house, Terraced house or Flat"),
-    ("book", "repayment_type", "Capital and interest or Interest only"),
-    ("book", "borrowers", "Number of borrowers named on the mortgage"),
-    ("book", "product_code", "Current product (F2 or F5 fixed rate, PT a product transfer, then the month the product started and its rate)"),
-    ("book", "product_end_date", "Last day of the current product's fixed rate"),
-    ("book", "interest_rate", "Interest rate charged at 30 September 2026, per cent a year"),
-    ("book", "remaining_term_months", "Months remaining to the end of the mortgage term"),
-    ("book", "monthly_payment", "Contractual monthly payment, GBP"),
-    ("book", "arrears_balance", "Contractual payments due and not received, GBP"),
-    ("book", "recovery_stage", "None, Litigation (the account is with the panel solicitors) or Receiver appointed"),
-    ("history", "account_number", "Mortgage account number"),
-    ("history", "book", "Lending book the account belongs to"),
-    ("history", "period", "Month (position at the month end)"),
-    ("history", "product_code", "Product held at the month end; codes lost their dashes before July 2022"),
-    ("history", "interest_rate", "Interest rate charged in the month, per cent a year"),
-    ("history", "remaining_term_months", "Months remaining to the end of the mortgage term at the month end"),
-    ("history", "contractual_payment", "Contractual monthly payment due in the month, GBP"),
-    ("history", "payment_received", "Money received in the month, GBP"),
-    ("history", "arrears_balance", "Arrears balance at the month end, GBP"),
-    ("history", "balance", "Balance outstanding at the month end, GBP"),
-    ("history", "account_status", "Live; Redeemed (closed by repayment, including a sale by the borrower or a landlord buy-back); Possession (closed when the property taken into possession is sold; the sale is settled on its completion statement)"),
-    ("possessions", "account_number", "Mortgage account number"),
-    ("possessions", "book", "Lending book, as recorded when the possession was entered"),
-    ("possessions", "possession_date", "Date the Society took possession, or the receiver took control"),
-    ("possessions", "route", "Court order or LPA receiver"),
-    ("possessions", "debt_at_possession", "Debt at possession (balance, arrears and legal costs), GBP"),
-    ("sales", "sale_ref", "Completion statement reference"),
-    ("sales", "account_number", "Account sold, where the Society sold the property"),
-    ("sales", "receiver_ref", "Receiver's reference, where an LPA receiver sold the property"),
-    ("sales", "completion_date", "Date the sale completed"),
-    ("sales", "sale_price", "Sale price, GBP"),
-    ("sales", "selling_costs", "Agent's and conveyancing fees deducted on completion, GBP"),
-    ("sales", "statement", "Statement number; a corrected statement is re-sent in full with the next number"),
-    ("receivers", "receiver_ref", "Receiver's reference for the appointment"),
-    ("receivers", "receiver_firm", "Receivership firm appointed"),
-    ("receivers", "account_number", "Mortgage account number"),
-    ("receivers", "date_appointed", "Date the receiver was appointed"),
-    ("litigation", "claim_number", "County court claim number; the file holds every action on each claim live at any time from January 2023"),
-    ("litigation", "account_number", "Mortgage account number"),
-    ("litigation", "panel_firm", "Panel solicitors acting on the claim"),
-    ("litigation", "hearing_centre", "County court hearing centre holding the claim"),
-    ("litigation", "action_date", "Date of the action"),
-    ("litigation", "action", "Claim issued, Hearing listed, Hearing adjourned, Possession order made, Possession order varied, Order discharged, Claim withdrawn, Warrant applied, Warrant issued, Eviction carried out, Transferred"),
-    ("litigation", "detail", "The order's terms, the reason, or the hearing centre a claim was transferred to"),
-    ("litigation", "defendant", "Defendant the line relates to"),
-    ("hpi", "month", "Month"),
-    ("hpi", "area", "Local authority area"),
-    ("hpi", "postcode_districts", "Postcode districts the Society maps to the area"),
-    ("hpi", "index_jan2010_100", "House price index for the area, January 2010 = 100"),
-    ("contacts", "month", "Month"),
-    ("contacts", "contact_reason", "Reason the call was logged under"),
-    ("contacts", "calls_answered", "Calls answered by the mortgage contact centre"),
-    ("contacts", "average_handle_minutes", "Average handling time per call, minutes"),
-]
-
-
-def dictionary(path):
-    rows = [(P.FILES[k], f, d) for k, f, d in DICTIONARY]
-    pd.DataFrame(rows, columns=["file", "field", "description"]).to_csv(path, index=False, lineterminator="\n")

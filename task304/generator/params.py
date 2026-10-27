@@ -23,7 +23,6 @@ FILES = {
     "ratecard": "product_transfer_rate_card_2026-10.xlsx",
     "hpi": "house_price_index_2010-01_to_2026-09.csv",
     "contacts": "contact_centre_volumes_2025.csv",
-    "dictionary": "data_dictionary.csv",
     "plan": "financial_support_team_2027_plan_paper.pdf",
     "pilot": "financial_support_team_pilot_2024_report.pdf",
     "policy": "arrears_and_possessions_policy_2026.pdf",

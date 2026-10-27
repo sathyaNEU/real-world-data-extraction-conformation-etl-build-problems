@@ -28,7 +28,7 @@
   "report": ""
  },
  "returned": [],
- "resume": "Paused 2026-10-27 mid stage 3. World retuned (seed 2, High LTV litigation 0.75, REC_OFFSET 83, pilot sentence 'under half the cut in arrears'): checks 163 green on --once, golden First-time buyer 9.0 (family 8.0 to 11.9) against High LTV 4.5, easy routes file High LTV, pair 37.7. Next: confirm a full make.py run (two byte-identical builds, verify.py, which takes over ten minutes), finish the design note's Pre-ship check, figures_check, precut, leak.py --asof 2026-09-30, guard heart and surface, then stage 4 (two scored readers and the judge) and ship. Read task304/RESUME.md.",
+ "resume": "Paused 2026-10-27 mid stage 3. data_dictionary.csv removed (dataset-generation 3: no shipped file describes the data); the rate card's sheet renamed Terms; checks 157 green on the first pass with no graded figure moved; a full make.py run (byte-identical rebuild and verify.py, over 30 minutes) was in flight. Next: confirm that run, rewrite the design note's Pre-ship check, re-run leak.py --asof 2026-09-30, heart and surface, then stage 4 (two scored readers and the judge) and ship. Read task304/RESUME.md.",
  "approved": null,
  "delivered": null,
  "portal": null,

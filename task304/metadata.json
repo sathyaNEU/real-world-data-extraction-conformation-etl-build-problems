@@ -27,7 +27,7 @@
   ],
   "field_terms": [],
   "input_gates": {
-    "files": 14,
+    "files": 13,
     "formats": [
       "csv",
       "parquet",
@@ -125,15 +125,6 @@
       "format": "csv",
       "bytes": 2342,
       "rows": 72,
-      "source": "Constructed (seeded generator)",
-      "date": "2026-10-09",
-      "license": "CC0-1.0 (original work)"
-    },
-    {
-      "path": "data_dictionary.csv",
-      "format": "csv",
-      "bytes": 6355,
-      "rows": 60,
       "source": "Constructed (seeded generator)",
       "date": "2026-10-09",
       "license": "CC0-1.0 (original work)"
