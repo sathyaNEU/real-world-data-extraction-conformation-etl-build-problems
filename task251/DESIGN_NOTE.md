@@ -320,34 +320,52 @@ loss the controller could not report) and each pinned in section 7, with every e
 
 ## Pre-ship check
 
-- Free gates (stage 3, re-run on the final pack): generator checks 78 passed (the golden list against the world's truth over the hours counted,
-  50 licensed estimates filing the seven with listed beyond 6.5 and others within 4.5, the loss on each direction and
-  each bridge subset, the cold pairs' thresholds and the fit order, SF1 to SF26 with the occupancy channel placing the
-  cold miss on the TCX-2 (January over July 1.098 against 0.993), the TCX-4-overcount routes filing the probes' lists,
-  the missing temperature day and the current-controller reading, the four rungs on the pack and on the clean world, R1
-  to R3, the separation line, the asks against the truth with both devices in every cell, the input gates); verify.py
-  0 failures (the cold miss in temperature bins and the loss in occupancy classes); two builds byte-identical
-  (target.zip 41198eaa at stage 3; the final pack, after ask B's re-cut at stage 4 and the standard's revision table
-  wrapped, is 6283c112); figures_check 14 of 14; precut 51 of 51; voice-check PASS.
-- leak.py REVIEW, no LEAK: TDP-03 carries the call's words (its own estimand and the spring round), and TDP-03 and the
-  dictionary carry the field's terms (validation, occupancy, controller); neither names a queue, a temperature or a
-  generation's error, and the bridges and the weather sit in files that state no relation to counting.
-- guard heart WARN after the in-place relabel (population_selection, G6 leading); surface promotes task243 (surface
-  wording, no shared mechanism) and task68 (gap, pattern and Gate G), both differentiated on the card; people Miranda
-  Harris and Yvonne Larson only, as drawn.
+- Free gates, re-run on the repaired pack (target.zip a81cadb1): generator checks 94 passed, 0 failed (the golden list
+  against the world's truth over the hours counted, 50 licensed estimates filing the seven with listed beyond 6.5 and
+  others within 4.5, the loss on each direction and each bridge subset, the cold pairs' thresholds and the fit order,
+  SF1 to SF30, the four free parameters with the record's bound and the list's corridor side by side, the pairs'
+  imbalance refusing no correction at all, the TCX-4-overcount routes filing the probes' lists, the four rungs on the
+  pack and on the clean world, R1 to R3, the separation line, both asks against the truth with both devices in every
+  cell, no file or sheet describing the data, the input gates); verify.py 0 failures, recomputing the list, the
+  margin, the components, the matched-flow instrument, the per-station cold route, the three corridors and both asks
+  from the shipped files alone; two builds byte-identical; figures_check 15 of 15; precut 52 of 52, 0 WARN;
+  voice-check PASS.
+- leak.py REVIEW, no LEAK: one line, TDP-03 carrying the field's own terms (validation, occupancy, controller,
+  contractor, traffic) and its own estimand and spring round. It names no queue, no temperature and no generation's
+  error. `traffic_data_dictionary.md` was dropped (sweep 1 reads a dictionary's file name as a leak,
+  `dataset-generation` section 3) and what it carried sits in TDP-03 at authority.
+- freeze.py, both modes recorded, because the author asked for a determinism repair and an ask-layer repair in one
+  pass and neither mode's contract covers both (`build-pipeline`, freeze.py and status.py): `--mode rubric` with four
+  keys allowed is the control and PASSES, so the Final Recommendation and Critical Components numbers, every
+  main-call figures.json value, the stump sentence, the card's stump and driver, the ladder, the default path and the
+  prompt's call sentence are all unchanged while 18 ask figures moved. `--mode determinism` fails on those 18 ask
+  figures and on the Deliverable Answers block, which is the ask repair the author ordered and not a finding. The
+  four `--allow` keys (`asks.visits.Ashby.1`, `asks.visits.Kessel.3`, `asks.failures.Marlow.2`,
+  `asks.failures.Marlow.3`) are ask figures whose old values (2, 6, 7, 7) happened to equal a number the
+  recommendation blocks also state (2 degrees, 6 per cent, 7 stations), so freeze.py classes them as main-call
+  figures; no figure the recommendation rests on moved.
+- guard validate 1 card, 0 invalid. guard heart BLOCK, from the corpus and not from this repair: task269's fifth
+  architecture was registered 2026-10-26, five days after this build shipped, with the same gap (population),
+  pattern and Gate G mechanism, and task255 (v1) the same three, so `test.same_puzzle_older` and
+  `test.same_driver_older` now fire where the shipped build read WARN. No card axis moved in this repair. The fix is
+  two differentiation lines on `cards/task251.json` (against task269 and task255), which this pass was not permitted
+  to write; the author owns it before the re-ship.
 - Containers scrubbed (the organisation's producer and the fiction's dates) in target/ and golden/.
 - Golden realism: the workbook leads with the finding as its title, lists the seven with road, location, district,
   controller (R08-05's swap date beside its TCX-4) and validation site, carries the maintenance sheet by district and
-  quarter with totals, and a notes sheet stating the estimand, both error terms and where each is measured; the chart
-  shows every station's error against the band by district with the controller in each label, the seven marked, and
-  the two swaps noted under the source line.
-- The 10/10 rules re-read against the built pack: the decisive step is the two error terms estimated from the network's
-  own pairs and carried through each station's hours, which no filed sentence performs; every Layer 1 item mishandled
-  leaves the call unchanged (asserted: the clock offset, the renumbered hours, the occupancy precision, the missing
-  temperature day, the current controller all year).
-- Open risk, stated: a reader who fits the queue loss on the bridge pairs and also places the cold miss on the TCX-2 by
-  occupancy per counted vehicle lands the call; the three probes each made one of the two moves or misplaced the cold
-  effect. The stage 4 readers are the measurement.
+  quarter with totals, and a notes sheet stating the estimand, both error terms, where each is measured and how a
+  visit and a failure were counted; the chart shows every station's error against the band by district with the
+  controller in each label, the seven marked, and the two swaps noted under the source line.
+- The 10/10 rules re-read against the repaired pack: the decisive step is still the two error terms estimated from
+  the network's own pairs and carried through each station's hours, which no filed sentence performs, and no sentence
+  added in this repair names a queue, a temperature, a generation's counting or the bridges. Every Layer 1 item
+  mishandled leaves the call unchanged (asserted: the clock offset, the renumbered hours, the occupancy precision,
+  the missing temperature day, the current controller all year). The four closures file facts about the world and the
+  equipment (one loop detail at every station, what the record holds and what the system raises), never a method.
+- Open risk, stated: a reader who fits the queue loss on the bridge pairs and also places the cold miss on the TCX-2
+  by occupancy per counted vehicle lands the call, and one portal response did. The ladder is unchanged, so that
+  response lands it again and banks 45 of the rubric; what changed is that it now keeps none of the 24 ask figures,
+  which puts the pair at 28.5 against the build target of 60.
 
 ## Tried and rejected
 

@@ -6,10 +6,10 @@
  "objective": "data-quality-monitoring",
  "stage": 5,
  "stage_name": "ship",
- "updated": "2026-10-21",
+ "updated": "2026-10-27",
  "stump": "A competent solver takes each station's 2027 error from its summer validation count and flags R14-01 and R25-01; one who also reads the queue loss from the river bridges' paired approaches flags R02-01, R04-03, R08-05, R14-01 and R25-01; the older TCX-2 cards also miss vehicles on cold days, which the summer filming never saw and which the bridges whose two approaches run different controllers show against the airport's temperatures, so the list is R02-01, R04-03, R06-01, R08-05, R14-01, R25-01 and R29-03.",
  "architecture": 5,
- "loops": 0,
+ "loops": 1,
  "precut": {
   "exit": 0,
   "checks": 51
@@ -37,8 +37,17 @@
    "notes": "every figure reproduced (listed -7.0 to -9.3 per cent, largest unflagged -3.5); residual forks on asks 2 and 3 only (the office resets inferred from door-log silence, two trips inside one TCX-2 break, local quarters); Gate G method_or_model_selection, analytical_non_defect; Gate H domain pass, layers pass, decisive_step analytical; one hygiene note (TDP-03's revision table cell clipped), fixed by wrapping the cells, text unchanged"
   }
  },
- "returned": [],
- "resume": "Shipped 2026-10-21; waiting on the portal. The prompt's precision for the chart's per-cent errors was left open on purpose (no station's error is a graded figure).",
+ "returned": [
+  {
+   "date": "2026-10-27",
+   "portal": "determinism block failed (two judges, competing_defensible_answer, fix_location input_files) and one of the two responses at 95 per cent on the rubric, not stumped",
+   "repair": "determinism and rubric in one pass, at the author's request",
+   "what_moved": "the four free parameters the judges found are now measured on the record rather than assumed (SF27 to SF30: no work order touches the counting path, the loss is one function at five separate sites with the list invariant over a per-station scale of 0.5 to 1.35, a drift the two generations share is bounded at 0.00094 per degree against the 0.006 the list needs, and the unfilmed regime at R08-05 and R19-03 is measured by each station's own occupancy channel to 0.6 per cent against the 10 per cent the list needs); the data dictionary was dropped and its facts moved into TDP-03 at authority; both asks were pinned in TDP-03 section 7 and re-devised onto a second grain (the attendance that crosses midnight, the loss a stopped controller could not report), taking the cracker from an estimated 22 of 24 ask figures to a measured 0 of 24",
+   "frozen": "the listed seven, the default and single-correction lists, every main-call figure, the margins, the stump sentence, the ladder, the default path and the prompt's call sentence",
+   "commit": ""
+  }
+ ],
+ "resume": "Repaired 2026-10-27 (determinism and asks). Before the re-ship the author owes two differentiation lines on cards/task251.json (against task269 and task255) to clear guard heart, and the one re-judge /fix-determinism licenses; this pass spawned nothing.",
  "approved": null,
  "delivered": "2026-10-21",
  "portal": null,
@@ -155,14 +164,17 @@
   "C": "R04-03, R06-01, R14-01, R25-01 (cold miss on the TCX-2 cards from occupancy per counted vehicle; congestion seen and not used): miss"
  },
  "gates": {
-  "checks": 78,
+  "checks": 94,
   "verify": 0,
   "byte_identical": true,
-  "target_zip": "6283c112",
+  "target_zip": "a81cadb1",
   "figures_check": 0,
-  "precut": "51 of 51",
-  "leak_py": "REVIEW (carried lines, harmless)",
-  "heart": "WARN",
-  "surface": "task243 and task68 promoted, differentiated"
+  "precut": "52 of 52, 0 WARN",
+  "leak_py": "REVIEW (one carried line: TDP-03's own vocabulary)",
+  "heart": "BLOCK from the corpus, not from the repair: task269 (v5) was registered 2026-10-26 with the same gap, pattern and Gate G mechanism and task255 (v1) the same three; no card axis moved. Needs two differentiation lines on cards/task251.json, which this pass was not permitted to write",
+  "validate": "1 card, 0 invalid",
+  "surface": "task243 and task68 promoted, differentiated",
+  "freeze_rubric": "PASS with --allow asks.visits.Ashby.1,asks.visits.Kessel.3,asks.failures.Marlow.2,asks.failures.Marlow.3 (ask figures whose old values equalled a recommendation number, so freeze.py classed them as main-call)",
+  "freeze_determinism": "FAIL on 18 ask figures and the Deliverable Answers block, which is the ask repair the author ordered; nothing on the main side moved"
  }
 }

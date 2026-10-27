@@ -56,7 +56,8 @@ def standard(path, F):
                    "Transportation Services. Supersedes revision 3 (2022).", small),
          Paragraph("1. Purpose and scope", h2),
          Paragraph("This standard governs the Region's permanent count stations on Regional Roads: the hourly record "
-                   "each station keeps, the summer validation programme, the accuracy a station's count for a year must "
+                   "each station keeps, what the count management system records of each station, the summer "
+                   "validation programme, the accuracy a station's count for a year must "
                    "meet, and the annual count report the Region publishes and files with the Province.", body),
          Paragraph("2. Stations", h2),
          Paragraph("A permanent count station has an inductive loop in every lane in both directions, wired to a "
@@ -100,7 +101,7 @@ def standard(path, F):
          Paragraph("By 31 March the Region publishes the annual count report for the previous year, with each "
                    "station's annual average daily traffic and its flag and the maintenance figures of section 7, and "
                    "files it with the Ministry's municipal traffic data exchange.", body),
-         Paragraph("7. Maintenance of the stations", h2),
+         Paragraph("7. Monitoring and maintenance of the stations", h2),
          Paragraph("%s polls every station every fifteen minutes. It raises COMMS_LOST when a poll goes unanswered "
                    "and COMMS_OK at the first poll answered after it, and sets a controller's clock (CLOCK_SET) when "
                    "it finds it unset. A controller reports MAINS_FAIL and MAINS_OK when its supply is lost and "
