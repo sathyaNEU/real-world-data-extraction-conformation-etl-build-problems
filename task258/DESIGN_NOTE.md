@@ -186,7 +186,7 @@ million.
 
 | Id | Term or convention in the main ask or the main computation | Golden reading | Alternative reading | Call under the alternative | Ruled out by |
 |---|---|---|---|---|---|
-| SF1 | "page load" | a navigation that reports LCP, prerendered loads timed from activation included | every beacon row, back-forward cache restores and prerendered loads in or out | Trailhead | same call and the same rounded counts: restores carry no LCP and no prerendered load is slower than 2,500 ms (asserted) |
+| SF1 | "page load" | a navigation that reports LCP, prerendered loads timed from activation included | every beacon row, back-forward cache restores and prerendered loads in or out | Trailhead | charter 2.2: a navigation of any type that reports LCP, a reload or a prerendered page included; restores carry no LCP and no prerendered load is slower than 2,500 ms (asserted) |
 | SF2 | "a month" | November 2026 in Sydney time | November in UTC | Trailhead | same call (asserted); charter 2.2 counts the latest complete calendar month in Sydney time |
 | SF3 | "the good LCP band" | 2,500 ms or less | under 2,500 ms | Trailhead | same call and the same rounded counts (asserted); charter 2.3 |
 | SF4 | page loads a month | each beacon weighted by the sampling rate in force for its origin when its page load started | one rate per property (the month's first or last); no weights | Matchday under one rate; never Trailhead on a wrong rung without weights | same call under one rate (asserted); the field notes: a beacon stands for 1 / the rate in force when its page load started |
@@ -480,6 +480,29 @@ Measured by: generator/cracker.py on the cut pack.
   the golden paper's 24 figures; two builds byte-identical; target.zip cut from the final build (15 files: the beacon
   extract 169,482 rows, the crawl 139,196 rows). The field notes and the extract log removed; the steering group
   assigns the squad (charter 5.1).
+
+- Stage 3 gates on the loop-2 pack: checks 204 green, verify on its own parsing path (the crawl joined), two builds
+  byte-identical, figures_check 72 of 72, precut 53/0/0, voice-check PASS, guard heart WARN (people.first,
+  overuse.forum, repeat.gate_g, overuse.gate_g, answered in the Draw), surface clean, leak.py REVIEW with no LEAK:
+  domains_runbook.md is the team's own operations record (origins, hosts, aliases, changes), describing no column;
+  the charter's clause number 3.2 matches Hearth's 3.2 million by coincidence; the charter carries the estimand's
+  wording, which the call repeats; the stump-paragraph terms in the runbook (the property names and the old media
+  server) and in the charter (the engagements, the property names, the playbook's preload) are the documents' own
+  subject, and neither names an app, a shell, client rendering or which pages the preload reaches.
+
+- Stage 4, loop 2 (2026-10-27): leak reader (one isolated read): no decisive-step sentence (it quoted only charter
+  2.1's estimand and said no sentence states how the counterfactual is estimated), no ranking or helper file, no
+  answer figure; question 6 an analytical choice (the counterfactual model's transfer); the crawl never named. Its
+  two points were fixed in one pass: the review sheet's "so each beacon in it counts once and no sampling rate
+  applies" removed (the small sites carry no sampling rate in the pack, so no other reading exists), and charter 2.2
+  now files "a navigation of any type that reports LCP, a reload or a prerendered page included" (the golden's
+  reading already; figures.json and the golden byte-identical after the rebuild). The blank PDF producer fields it
+  noted are kept: the info dictionary has no slack for an equal-length value. Determinism judge
+  (determinism_check_report_loop2.md): DETERMINISTIC, APPROVE, every figure reproduced; Gate F strong, the thread's
+  own derivation before it read the answers landing on Pantry across five variants (no floor, no reach); Gate G
+  method_or_model_selection, analytical_non_defect, no surface read, no sole data defect; Gate H domain, layers and
+  decisive step pass. The approval stands on the reworded pack: no graded figure moved and both sentences file the
+  readings the judge executed.
 
 ## Pre-ship check
 

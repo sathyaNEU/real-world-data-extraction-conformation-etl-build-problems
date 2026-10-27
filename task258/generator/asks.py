@@ -36,11 +36,13 @@ def image_host_logs() -> pd.DataFrame:
             for host, share, cdn in ((p["img"], 1.0 - a_share - c_share, False), (K.CDN_HOST, c_share, True)):
                 if share <= 0:
                     continue
+                size = K.AVIF_BYTES[code][slot] * K.SOURCE_BYTES_FACTOR[code]
                 for status, f in ((200, 1.0 - reval), (304, reval)):
                     n = r.poisson(base * share * f)
                     for t, k in zip(hours, n):
-                        rows.append((t, host, _prefix(code, slot, cdn), status, int(k)))
-    df = pd.DataFrame(rows, columns=["hour_utc", "host", "path_prefix", "status", "requests"])
+                        rows.append((t, host, _prefix(code, slot, cdn), status, int(k),
+                                     int(round(k * size)) if status == 200 else 0))
+    df = pd.DataFrame(rows, columns=["hour_utc", "host", "path_prefix", "status", "requests", "bytes_sent"])
     return df.sort_values(["hour_utc", "host", "path_prefix", "status"], kind="mergesort").reset_index(drop=True)
 
 
@@ -60,11 +62,13 @@ def legacy_log() -> pd.DataFrame:
         reval = K.REVALIDATED[code]
         for slot in SLOTS:
             base = loads * K.REQUESTS_PER_LOAD[code][slot] * share
+            size = K.AVIF_BYTES[code][slot] * K.SOURCE_BYTES_FACTOR[code]
             for status, f in ((200, 1.0 - reval), (304, reval)):
                 n = r.poisson(base * f)
                 for t, k in zip(local, n):
-                    rows.append((t, host, _prefix(code, slot), status, int(k)))
-    df = pd.DataFrame(rows, columns=["log_hour", "vhost", "uri_dir", "code", "hits"])
+                    rows.append((t, host, _prefix(code, slot), status, int(k),
+                                 int(round(k * size)) if status == 200 else 0))
+    df = pd.DataFrame(rows, columns=["log_hour", "vhost", "uri_dir", "code", "hits", "bytes"])
     return df.sort_values(["log_hour", "vhost", "uri_dir", "code"], kind="mergesort").reset_index(drop=True)
 
 
@@ -148,9 +152,9 @@ def dam_export():
             for aid, leg in recs:
                 for rend, rw, rh in rends:
                     rows.append((aid, leg, a["label"], rend, a["name"], rw, rh, a["up"], a["last"], a["used"]))
-    df = pd.DataFrame(rows, columns=["asset_id", "legacy_id", "property", "rendition", "file_name", "width_px",
+    df = pd.DataFrame(rows, columns=["asset_id", "legacy_id", "collection", "rendition", "file_name", "width_px",
                                      "height_px", "uploaded_utc", "last_used_on", "last_used_page"])
-    df = df.sort_values(["property", "uploaded_utc", "asset_id", "rendition"], kind="mergesort").reset_index(drop=True)
+    df = df.sort_values(["collection", "uploaded_utc", "asset_id", "rendition"], kind="mergesort").reset_index(drop=True)
     return df, live_n
 
 

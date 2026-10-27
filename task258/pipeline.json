@@ -1,10 +1,10 @@
 {
  "task": "task258",
- "status": "BUILD",
+ "status": "SHIPPED",
  "domain": "product-analytics / metric-definition-measurement-science",
  "objective": "descriptive-distribution",
- "stage": 3,
- "stage_name": "build",
+ "stage": 5,
+ "stage_name": "ship",
  "updated": "2026-10-27",
  "stump": "A competent analyst rebuilds each slow own-image page load the way the squad's engagements show the playbook lands (the delay at 240 ms, the load time at 0.48, each paint no sooner than its own first contentful paint) and files Matchday, 6.3 million page loads a month; the preload sits in the page's server-rendered head and can only name a hero that HTML carries, and on the app sections (Matchday's and Tideline's /live/, Ledger's /markets/, Pantry's /planner/) the crawl shows a shell with no hero, so those loads keep their delay, Matchday moves 3.4 million and Trailhead leads at 4.9 million.",
  "architecture": 1,
@@ -15,18 +15,18 @@
   "checks": 53
  },
  "leak": {
-  "leak_py": "REVIEW (no LEAK) on the loop-1 cut, 2026-10-14",
-  "reader": "loop 1: one read on the new cut; no decisive-step sentence, no ranking or helper file, every literal sentence executes to the golden and none fixes the paint's model, question 6 an analytical choice; the first contentful paint never raised; the realism tells loop 0's"
+  "leak_py": "REVIEW (no LEAK) on target.zip 8643a77b, 2026-10-27",
+  "reader": "loop 2: one read and one re-read after two wording fixes; no decisive-step sentence, no ranking or helper file, question 6 an analytical choice, the crawl never named"
  },
  "duplicate_check": {
-  "heart": "BLOCK ban.forum against task231 only, a same-day ordering artifact (both cards filed before registration stamps, ordered by task number; task231 drawn 17:18 UTC, this build 04:52 UTC); similarity rules pass with loop 0 differentiated as own lineage; WARNs loop 0's, answered in the Draw",
-  "surface": "task256 and task259 promoted, as at loop 0 (author-triggered, not run)",
-  "nearest": "task258 v1 lineage 0.54, differentiated; task55 0.07"
+  "heart": "WARN (people.first, overuse.forum, repeat.gate_g, overuse.gate_g), card re-registered 2026-10-27 at WARN after the pattern, artifact and forum were redrawn",
+  "surface": "clean",
+  "nearest": "task258 v1 lineage 0.14, differentiated; task57 0.07"
  },
  "judge": {
-  "verdict": "DETERMINISTIC (loop 1)",
+  "verdict": "DETERMINISTIC (loop 2)",
   "disposition": "APPROVE",
-  "report": "task258/determinism_check_report_loop1.md (loop 0: determinism_check_report.md)",
+  "report": "task258/determinism_check_report_loop2.md",
   "gate_g": "method_or_model_selection, analytical_non_defect, surface_read_dependency no, sole_data_defect no",
   "gate_h": "domain pass, layers pass, decisive_step analytical"
  },
@@ -44,9 +44,9 @@
    "commit": ""
   }
  ],
- "resume": "loop 2 drawn and built (204 checks, verify, byte-identical, precut 53/0/0): next, stage 3's remaining gates (submission.md rewritten from figures.json, figures_check, leak.py, guard surface and heart), then stage 4's leak reader and determinism judge",
+ "resume": "shipped loop 2 on target.zip 8643a77b; next event is the author's portal result",
  "approved": null,
- "delivered": "2026-10-13",
+ "delivered": "2026-10-27",
  "portal": null,
  "seed": "DA08 (START_HERE): world, decision and quantity kept"
 }

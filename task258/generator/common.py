@@ -38,11 +38,11 @@ VIDEO_HOST = "poster.clipferry.net"
 # other loads' paint (median ms, log sd), device mix (mobile, desktop, tablet), hero slot (w, h)
 PROPERTIES = [
     dict(code="tideline", name="Tideline", kind="news", origin="tideline.brolga.au",
-         img="images.tideline.brolga.au", alias=None, cdn_share=0.04, loads=61.69, own=0.20,
+         img="images.tideline.brolga.au", alias=None, cdn_share=0.04, loads=62.5, own=0.20,
          parts=((700, .50), (500, .70), (700, .60), (450, .60)), other=(2350, .45),
          devices=(0.71, 0.25, 0.04), hero=(1200, 675)),
     dict(code="matchday", name="Matchday", kind="sport", origin="matchday.brolga.au",
-         img="images.matchday.brolga.au", alias=None, cdn_share=0.06, loads=36.5, own=0.31,
+         img="images.matchday.brolga.au", alias=None, cdn_share=0.06, loads=36.8, own=0.31,
          parts=((1000, .45), (1300, .70), (650, .60), (600, .60)), other=(1800, .45),
          devices=(0.78, 0.18, 0.04), hero=(1200, 675)),
     dict(code="hearth", name="Hearth", kind="home", origin="hearth.brolga.au",
@@ -55,10 +55,10 @@ PROPERTIES = [
          devices=(0.58, 0.38, 0.04), hero=(1200, 675)),
     dict(code="trailhead", name="Trailhead", kind="travel", origin="trailhead.brolga.au",
          img="images.trailhead.brolga.au", alias=("media.trailhead.brolga.au", dt.date(2026, 8, 14), 0.09),
-         cdn_share=0.0, loads=8.0, own=0.72, parts=((1300, .40), (700, .60), (1300, .50), (350, .50)),
+         cdn_share=0.0, loads=15.11, own=0.72, parts=((950, .35), (700, .60), (1300, .50), (350, .50)),
          other=(2700, .45), devices=(0.69, 0.27, 0.04), hero=(1600, 900)),
     dict(code="pantry", name="Pantry", kind="food", origin="pantry.brolga.au",
-         img="images.pantry.brolga.au", alias=None, cdn_share=0.25, loads=10.2, own=0.70,
+         img="images.pantry.brolga.au", alias=None, cdn_share=0.25, loads=12.0, own=0.70,
          parts=((400, .45), (3200, .50), (900, .50), (220, .50)), other=(2200, .40),
          devices=(0.81, 0.15, 0.04), hero=(1080, 1080)),
 ]
@@ -71,7 +71,7 @@ SAMPLING = {
     "matchday": [(dt.datetime(2026, 6, 1, 0, 0), 0.0008)],
     "hearth": [(dt.datetime(2026, 6, 1, 0, 0), 0.0010)],
     "ledger": [(dt.datetime(2026, 6, 1, 0, 0), 0.0010), (dt.datetime(2026, 11, 16, 3, 0), 0.0006)],
-    "trailhead": [(dt.datetime(2026, 6, 1, 0, 0), 0.0012)],
+    "trailhead": [(dt.datetime(2026, 6, 1, 0, 0), 0.0008)],
     "pantry": [(dt.datetime(2026, 6, 1, 0, 0), 0.0010)],
 }
 
@@ -86,6 +86,18 @@ LOAD_TIME_RATIO = 0.48  # AVIF at the slot size against the source JPEG or PNG, 
 GATED_SECTIONS = {"tideline": ("news", "politics"), "matchday": ("tennis",), "hearth": ("interiors",),
                   "trailhead": ("deals",), "pantry": ("recipes", "dinner", "quick-meals", "healthy")}
 GATED_ENGAGEMENTS = ("E06", "E10")
+# Sections served by a client-rendered app rather than the article templates: the server sends one shell for every
+# page of the section and the app picks the page's hero from its live feed once its script has run, so no server
+# HTML names the hero and the playbook's preload (written into the template's head) cannot reach it. No engaged
+# site had such a section. Per property: the section, the share of its own-image loads that land on it, and the
+# app's paint parts (median ms, log sd): the shell's first byte, the hero's load delay (the script's floor in ms,
+# then the feed's median and log sd), the hero's load time and render delay (never shipped as figures)
+APP_SECTIONS = {
+    "tideline": ("live", 0.12, ((280, .30), (2250, 700, .35), (560, .45), (150, .40))),
+    "matchday": ("live", 0.28, ((260, .30), (2250, 800, .35), (600, .45), (140, .40))),
+    "ledger": ("markets", 0.08, ((240, .30), (2250, 650, .35), (380, .40), (160, .40))),
+    "pantry": ("planner", 0.08, ((250, .30), (2250, 700, .35), (700, .45), (150, .40))),
+}
 GATE_TIMEOUT_MS = 3000
 
 # Past engagements on the group's smaller sites: site, origin, (start of the before window, change shipped),
@@ -129,13 +141,17 @@ REQUESTS_PER_LOAD = {
 REVALIDATED = {"tideline": 0.24, "matchday": 0.19, "hearth": 0.11, "ledger": 0.27, "trailhead": 0.14, "pantry": 0.13}
 AVIF_BYTES = {
     "tideline": {"hero": 58_380, "inline": 21_300, "thumbnail": 7_900},
-    "matchday": {"hero": 61_900, "inline": 22_800, "thumbnail": 8_300},
+    "matchday": {"hero": 61_830, "inline": 22_800, "thumbnail": 8_300},
     "hearth": {"hero": 96_690, "inline": 33_100, "thumbnail": 11_200},
     "ledger": {"hero": 47_300, "inline": 17_600, "thumbnail": 6_400},
     "trailhead": {"hero": 112_600, "inline": 38_400, "thumbnail": 12_900},
-    "pantry": {"hero": 83_600, "inline": 41_700, "thumbnail": 13_800},
+    "pantry": {"hero": 83_750, "inline": 41_700, "thumbnail": 13_800},
 }
 CDN_RATE_AUD_PER_GB = 0.071
+# the bytes a 200 sends today, per slot: the source JPEG or PNG at the slot size, against the AVIF the squad's
+# encoder would make (a multiple of AVIF_BYTES per property)
+SOURCE_BYTES_FACTOR = {"tideline": 2.31, "matchday": 2.18, "hearth": 2.64, "ledger": 2.05, "trailhead": 2.47,
+                       "pantry": 2.39}
 # Ask B: the DAM. The image library moved into the group DAM on this date; each migrated asset kept its library
 # record (old id) beside its DAM record, which carries the old id as legacy_id. The nightly crawl before the export.
 DAM_CUTOVER = dt.date(2025, 3, 24)
@@ -150,7 +166,6 @@ ENG_LOG = "squad_change_log_2024-2026.xlsx"
 ENG_BEACONS = "squad_engagement_beacons_2024-2026.csv"
 RUNBOOK = "domains_runbook.md"
 CDN_HOSTS = "cdn_host_list.csv"
-NOTES = "rum_extract_field_notes.md"
 CRUX = "crux_lcp_origins_2026-11.csv"
 ANALYTICS = "analytics_pageviews_2026-11.csv"
 IMG_LOGS = "image_host_logs_2026-11.csv"
@@ -158,7 +173,7 @@ LEGACY_LOGS = "legacy_media_server_log_2026-11.csv"
 AVIF_TABLE = "squad_avif_size_table.xlsx"
 CONTRACT = "image_cdn_contract_schedule_2026.pdf"
 DAM = "dam_image_export_2026-11.csv"
-EXTRACT_LOG = "extract_log_2026-12-03.csv"
+CRAWL = "site_crawl_2026-12-02.csv"
 DISTRACTORS = (CRUX, ANALYTICS)
 DELIVERABLES = ("performance_squad_q1_2027.md", "lcp_reach_q1_2027.png")
 

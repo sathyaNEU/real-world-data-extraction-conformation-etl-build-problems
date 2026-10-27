@@ -108,3 +108,7 @@ def cdn_rate(target):
 
 def dam(target):
     return _csv(target, K.DAM, dtype={"asset_id": str, "legacy_id": str})
+
+
+def crawl(target):
+    return _csv(target, K.CRAWL)

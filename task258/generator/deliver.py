@@ -44,6 +44,10 @@ def compute(target):
         "rung_ratio_whole": [AN.winner(R.R2_whole)[0], m(R.R2_whole.max())],
         "rung_zero_delay": [AN.winner(R.R3_zero)[0], m(R.R3_zero.max())],
         "rung_level_held": [AN.winner(R.R4_held)[0], m(R.R4_held.max())],
+        "rung_field": [AN.winner(R.field)[0], m(R.field.max())],
+        "field_loads_moved_m": {n: m(AN.round_to(R.loc[n, "field"], 1e5)) for n in NAMES},
+        "unreached_slow_m": {n: m(AN.round_to(R.loc[n, "unreached_slow"], 1e5)) for n in NAMES},
+        "app_sections": {K.BY_CODE[c]["name"]: v[0] for c, v in K.APP_SECTIONS.items()},
         "gated_engagements": list(K.GATED_ENGAGEMENTS),
         "gated_render_before_ms": [int(round(eff["by"][k]["before"]["render_delay_ms"])) for k in K.GATED_ENGAGEMENTS],
         "gated_render_after_ms": [int(round(eff["by"][k]["after"]["render_delay_ms"])) for k in K.GATED_ENGAGEMENTS],
@@ -72,7 +76,7 @@ def write_note(path, res):
     L.append("")
     L.append("To: %s, Head of Web Platform  " % K.PEOPLE["head"])
     L.append("From: %s, performance squad lead  " % K.PEOPLE["lead"])
-    L.append("For the December planning, 8 December 2026")
+    L.append("For the web platform steering group's December planning, 8 December 2026")
     L.append("")
     L.append("**Send the squad to %s.** The hero-image playbook would move %s of %s's page loads a month into the "
              "good LCP band (2,500 ms or less), the most of our six properties; %s is next at %s."
@@ -90,47 +94,57 @@ def write_note(path, res):
     L.append("")
     L.append("Page loads are November 2026's in Sydney time on our RUM, each beacon standing for 1 / the sampling "
              "rate in force when its page load started. Egress is costed on November's hero-image requests; the "
-             "hero images are those live on the 2 December crawl. The chart is lcp_reach_q1_2027.png.")
+             "hero images are those the DAM shows in use on 2 December. The chart is lcp_reach_q1_2027.png.")
     L.append("")
     L.append("## How the counts were built")
     L.append("")
     L.append("The playbook can only move a page load slower than 2,500 ms whose LCP element is the property's own "
-             "hero image (charter 2.4). Each of those loads was rebuilt part by part the way the squad's %d past "
+             "hero image (charter 2.4). Each of those loads was rebuilt part by part the way the squad's %s past "
              "engagements landed. Time to first byte stays as it is. The image's load time falls to %.2f of what it "
-             "was (AVIF at the slot size). The image's load delay goes to %d ms, whatever it was before: on every "
-             "engagement the after-window median sat between %d and %d ms, from before-window medians of a little "
-             "over 100 ms to nearly 3,000 ms, because a preloaded hero waits only on the connection to the image CDN."
-             % (f["engagements"], f["load_time_ratio"], f["level_ms"], f["engagement_after_delay_min_ms"],
-                f["engagement_after_delay_max_ms"]))
+             "was (AVIF at the slot size). Where the hero is preloaded, its load delay goes to %d ms whatever it "
+             "was before: on every engagement the after-window median sat between %d and %d ms, from before-window "
+             "medians of a little over 100 ms to nearly 3,000 ms, because a preloaded hero waits only on the "
+             "connection to the image CDN."
+             % ({11: "eleven"}.get(f["engagements"], str(f["engagements"])), f["load_time_ratio"], f["level_ms"],
+                f["engagement_after_delay_min_ms"], f["engagement_after_delay_max_ms"]))
+    L.append("")
+    apps = f["app_sections"]
+    L.append("The preload is written into the page's document head (step 3 on the Playbook sheet), so it can only "
+             "name a hero the page's own HTML carries. Every engaged site served its hero in the article's HTML. "
+             "Ours do not everywhere: on the 2 December crawl, the pages of %s carry no hero at all, only the site "
+             "logo, because those sections are apps that put their hero on the page after the app's own code has "
+             "run. The squad does no work on scripts or the render path (charter 3.2), so on those pages the "
+             "hero's request starts when it starts today, and their first byte and load delay alone already run "
+             "past 2,500 ms: AVIF or not, none of those loads moves. That is %s of %s's slow page loads on its own "
+             "heroes. Preloaded everywhere, %s would come first (%s); it moves %s."
+             % (", ".join("%s's /%s/" % (n, sec) for n, sec in list(apps.items())[:-1]) + " and %s's /%s/" %
+                list(apps.items())[-1], _m(f["unreached_slow_m"]["Matchday"]),
+                "Matchday", f["rung_field"][0], _m(f["rung_field"][1]), _m(f["loads_moved_m"]["Matchday"])))
     L.append("")
     site = {e[0]: e[1] for e in K.ENGAGEMENTS}
     g0, g1 = f["gated_engagements"]
-    L.append("The rebuilt paint then comes no sooner than the page's own first contentful paint, which the playbook "
-             "leaves where it is: the squad does no work on scripts, fonts or the render path (charter 3.2). At %s "
-             "(%s) and %s (%s) the render delay's median went from %s and %s ms to %s and %s ms once the hero arrived "
-             "early, and the paint landed on the page's first paint, about three seconds after its first byte. On "
-             "the other %s engagements the pages first painted soon after their first byte and the render delay held."
+    L.append("The rebuilt paint also comes no sooner than the page's own first contentful paint, which the playbook "
+             "leaves where it is. At %s (%s) and %s (%s) the render delay's median went from %s and %s ms to %s and "
+             "%s ms once the hero arrived early, and the paint landed on the page's first paint, about three seconds "
+             "after its first byte. On the other %s engagements the pages first painted soon after their first byte "
+             "and the render delay held. With the render delay held as it is today, Pantry would come first (%s), "
+             "because its hero images wait longest to start loading; most of its slow loads are on pages that first "
+             "paint about three seconds after their first byte, and it moves %s."
              % (site[g0], g0, site[g1], g1, "{:,}".format(f["gated_render_before_ms"][0]),
                 "{:,}".format(f["gated_render_before_ms"][1]), "{:,}".format(f["gated_render_after_ms"][0]),
                 "{:,}".format(f["gated_render_after_ms"][1]),
                 {9: "nine"}.get(f["engagements"] - len(f["gated_engagements"]),
-                                str(f["engagements"] - len(f["gated_engagements"])))))
+                                str(f["engagements"] - len(f["gated_engagements"]))),
+                _m(f["rung_level_held"][1]), _m(f["loads_moved_m"]["Pantry"])))
     L.append("")
-    L.append("That floor decides the quarter. With the render delay held as it is today, Pantry comes first (%s), "
-             "because its hero images wait longest of all to start loading. But most of Pantry's slow loads are on "
-             "its recipes, dinner, quick-meals and healthy pages, which first paint about three seconds after their "
-             "first byte, and no faster image brings those under the line: Pantry moves %s. Most of %s's pages "
-             "first paint soon after their first byte, so most of its gain stands."
-             % (_m(f["rung_level_held"][1]), _m(f["loads_moved_m"]["Pantry"]), call))
-    L.append("")
-    L.append("Carried as a ratio of medians, or as a preload that removes the delay, the engagements put Ledger first "
-             "(%s and %s), because they shrink Ledger's already short delays further. On the image CDN those delays "
-             "rise to the connection time, and Ledger moves %s."
-             % (_m(f["rung_ratios_parts"][1]), _m(f["rung_zero_delay"][1]), _m(f["loads_moved_m"]["Ledger"])))
-    L.append("")
-    L.append("Hearth has the most slow page loads on its own images (%s), but its paint is held by time to first "
-             "byte, which is the Hearth team's work, not the squad's."
-             % _m(f["rung_own_slow"][1]))
+    L.append("%s has none of those app sections and few pages held from painting, so nearly all of its gain stands. "
+             "Carried as a ratio of medians, or as a preload that removes the delay, the engagements would put "
+             "Ledger first (%s and %s) by shrinking its already short delays further; on the image CDN those delays "
+             "rise to the connection time, and Ledger moves %s. Hearth has the most slow page loads on its own "
+             "images (%s), but its paint is held by time to first byte, which is the Hearth team's work, not the "
+             "squad's."
+             % (call, _m(f["rung_ratios_parts"][1]), _m(f["rung_zero_delay"][1]), _m(f["loads_moved_m"]["Ledger"]),
+                _m(f["rung_own_slow"][1])))
     L.append("")
     L.append("## Notes")
     L.append("")
@@ -138,7 +152,7 @@ def write_note(path, res):
              "carry none) on each property's image host and image CDN path, and on the legacy aliases from the old "
              "media server's own log, at the mean AVIF size of the property's hero slot and AUD %.3f per GB."
              % K.CDN_RATE_AUD_PER_GB)
-    L.append("- Hero images are the DAM's hero assets on the 2 December crawl, counted once each (renditions "
+    L.append("- Hero images are the DAM's hero assets in use on 2 December, counted once each (renditions "
              "together, and a migrated asset's library record together with its DAM record) under the property "
              "whose page carried it: the heroes of the three sections moved in March 2025 are their new "
              "property's own, though the DAM still files them under the collection they were uploaded to.")

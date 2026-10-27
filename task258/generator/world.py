@@ -50,12 +50,12 @@ def expected_loads(p, hours) -> np.ndarray:
     return np.array([per_day * HOUR_W[K.sydney(t).hour] * day_factor(p["kind"], t) for t in hours])
 
 
-SECTIONS = {"news": ("news", "politics", "business", "world", "national", "opinion"),
-            "sport": ("afl", "nrl", "cricket", "football", "tennis", "racing"),
+SECTIONS = {"news": ("news", "politics", "business", "world", "national", "opinion", "live"),
+            "sport": ("afl", "nrl", "cricket", "football", "tennis", "racing", "live"),
             "home": ("renovate", "interiors", "garden", "cleaning"),
-            "personal finance": ("super", "tax", "banking", "investing", "property", "budgeting"),
+            "personal finance": ("super", "tax", "banking", "investing", "property", "budgeting", "markets"),
             "travel": ("destinations", "guides", "deals", "flights", "cruises", "getaways"),
-            "food": ("recipes", "dinner", "quick-meals", "healthy", "baking", "game-day")}
+            "food": ("recipes", "dinner", "quick-meals", "healthy", "baking", "game-day", "planner")}
 # sections the group moved between properties on 10 March 2025, pages and images to the receiving property's origin
 # and image host: receiving property -> (its section, the property the pages came from, their old section)
 MOVED = {"ledger": ("property", "hearth", "real-estate"), "trailhead": ("getaways", "tideline", "travel"),
@@ -93,12 +93,17 @@ def catalogue(p):
         age = r.integers(0, 3200, n)
     pub = np.array([end - dt.timedelta(days=int(a)) for a in age])
     hero = np.array(["own", "agency", "video"])[r.choice(3, n, p=(0.70, 0.22, 0.08))]
+    app = K.APP_SECTIONS.get(p["code"])
+    if app:
+        hero[sec == app[0]] = "own"
     pop = 1.0 / (r.permutation(n) + 12.0) ** 1.05
     host = np.full(n, "own", dtype=object)
     if p["code"] in ALIAS_BEFORE:
         host[pub < ALIAS_BEFORE[p["code"]]] = "alias"
     if p["code"] in CDN_SECTION:
         host[sec == CDN_SECTION[p["code"]]] = "cdn"
+    if app:
+        host[sec == app[0]] = "own"
     hx = np.char.mod("%08x", r.integers(0, 2**32, n))
     ext = np.array(["jpg", "jpg", "jpg", "png"])[r.integers(0, 4, n)]
     ym = np.array([d.strftime("%Y/%m") for d in pub])
@@ -150,6 +155,17 @@ def _property_beacons(p, hours, key):
     u = r.random(m)
     a_share = p["alias"][2] if p["alias"] else 0.0
     how = np.where(u < a_share, "alias", np.where(u < a_share + p["cdn_share"], "cdn", "own"))
+    # own-image loads on a client-rendered app section: the shell's first byte, then the script and the feed
+    app = K.APP_SECTIONS.get(p["code"])
+    on_app = np.zeros(m, bool)
+    if app:
+        ra = K.stream(key, "app", p["code"])
+        on_app = own & (how == "own") & (ra.random(m) < app[1])
+        (at0, ast), (af0, ad0, asd), (au0, asu), (aq0, asq) = app[2]
+        za = ra.normal(0.0, 1.0, (4, m))
+        # the hero's request waits for the app's script and then its feed: a floor no load beats, and the rest
+        a_ttfb, a_delay = at0 * net * np.exp(ast * za[0]), af0 + ad0 * net * np.exp(asd * za[1])
+        a_load, a_render = au0 * net * np.exp(asu * za[2]), aq0 * np.exp(asq * za[3])
     # loads whose largest element is something else: text, an agency or ad image, a video poster
     which = r.choice(4, m, p=OTHER_KIND[p["kind"]])
     total = p["other"][0] * (0.9 + 0.1 * net) * np.exp(p["other"][1] * r.normal(0.0, 1.0, m))
@@ -162,6 +178,9 @@ def _property_beacons(p, hours, key):
     delay = np.where(own, d0 * np.exp(sd * z[1]), o_delay)
     load = np.where(own, u0 * net * np.exp(su * z[2]), o_load)
     render = np.where(own, q0 * np.exp(sq * z[3]), o_render)
+    if app:
+        ttfb, delay = np.where(on_app, a_ttfb, ttfb), np.where(on_app, a_delay, delay)
+        load, render = np.where(on_app, a_load, load), np.where(on_app, a_render, render)
     # a prerendered page is timed from its activation: the page and its image were fetched beforehand
     pre = (nav == "prerender") & ~restore
     rp = K.stream(key, "prerender", p["code"])
@@ -176,10 +195,13 @@ def _property_beacons(p, hours, key):
     rq = K.stream(key, "pick", p["code"])
     page = np.zeros(m, dtype=np.int64)
     own_hero = cat["hero"] == "own"
+    app_page = np.isin(cat["sec"], (app[0],)) if app else np.zeros(len(cat["sec"]), bool)
     for h in ("own", "alias", "cdn"):
-        sel = own & (how == h)
+        sel = own & (how == h) & ~on_app
         if sel.any():
-            page[sel] = _pick(rq, cat, own_hero & (cat["host"] == h), int(sel.sum()))
+            page[sel] = _pick(rq, cat, own_hero & (cat["host"] == h) & ~app_page, int(sel.sum()))
+    if on_app.any():
+        page[on_app] = _pick(rq, cat, own_hero & app_page, int(on_app.sum()))
     for k, kind in ((1, "agency"), (3, "video")):
         sel = ~own & (which == k)
         if sel.any():
@@ -387,3 +409,53 @@ def analytics() -> pd.DataFrame:
 
 def build():
     return dict(nov=november_beacons(), eng=engagement_beacons())
+
+
+LAZY_HEROES = ("matchday", "pantry")      # properties whose article templates lazy-load the hero today
+
+
+def crawl() -> pd.DataFrame:
+    """The group's nightly site crawl of 2 December 2026 (Sydney): every page of the six properties as its server
+    sent it, one row per <img> in the HTML, in document order. An app section's pages are one shell whose only image
+    is the site logo; the hero its app shows arrives later from the app's feed, so the crawl never sees it."""
+    rows = []
+    start = dt.datetime(2026, 12, 1, 15, 0)
+    for p in K.PROPERTIES:
+        code = p["code"]
+        cat = catalogue(p)
+        r = K.stream("crawl", code)
+        app = K.APP_SECTIONS.get(code)
+        own_idx = np.flatnonzero(cat["hero"] == "own")
+        sz = K.SLOT_SIZES[code]
+        n = len(cat["path"])
+        t = np.datetime64(start, "s") + np.cumsum(r.integers(1, 4, n)).astype("timedelta64[s]")
+        n_inline = r.integers(0, 3, n)
+        rel = r.choice(own_idx, (n, 2))
+        for k in range(n):
+            url = "https://%s%s" % (p["origin"], cat["path"][k])
+            when = pd.Timestamp(t[k]).strftime("%Y-%m-%dT%H:%M:%SZ")
+            rows.append((when, url, "https://%s/static/%s-logo.svg" % (p["origin"], code), 180, 40, "", ""))
+            if app and cat["sec"][k] == app[0]:
+                continue
+            on_cdn = cat["host"][k] == "cdn"
+            base = ("https://%s/%s" % (K.CDN_HOST, code)) if on_cdn else ("https://%s" % p["img"])
+            if cat["hero"][k] == "own":
+                w, h = sz["hero"]
+                rows.append((when, url, cat["hero_url"][k], w, h, "lazy" if code in LAZY_HEROES else "", ""))
+            else:
+                rows.append((when, url, cat["hero_url"][k], 1200, 675, "", ""))
+            ym = cat["pub"][k].strftime("%Y/%m")
+            for j in range(int(n_inline[k])):
+                w, h = sz["inline"]
+                hx = W_hex(code, k, j)
+                rows.append((when, url, "%s/i/%dx%d/%s/%s.jpg" % (base, w, h, ym, hx), w, h, "lazy", ""))
+            for q in rel[k]:
+                w, h = sz["thumbnail"]
+                rows.append((when, url, "%s/i/%dx%d/%s/%s.%s" % (base, w, h, cat["pub"][q].strftime("%Y/%m"),
+                                                                 cat["hx"][q], cat["ext"][q]), w, h, "lazy", ""))
+    return pd.DataFrame(rows, columns=["crawled_at_utc", "page_url", "img_src", "width", "height", "loading",
+                                       "fetchpriority"])
+
+
+def W_hex(code, k, j) -> str:
+    return _hexid("inline", code, k, j)[:8]

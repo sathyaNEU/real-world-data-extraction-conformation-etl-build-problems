@@ -26,11 +26,11 @@ import world as W          # noqa: E402
 
 TASK = os.path.dirname(HERE)
 NAMES = {"charter": K.CHARTER, "beacons": K.BEACONS, "sampling": K.SAMPLING_CFG, "log": K.ENG_LOG,
-         "eng": K.ENG_BEACONS, "runbook": K.RUNBOOK, "hosts": K.CDN_HOSTS, "notes": K.NOTES, "crux": K.CRUX,
+         "eng": K.ENG_BEACONS, "runbook": K.RUNBOOK, "hosts": K.CDN_HOSTS, "crawl": K.CRAWL, "crux": K.CRUX,
          "analytics": K.ANALYTICS, "img": K.IMG_LOGS, "legacy": K.LEGACY_LOGS, "avif": K.AVIF_TABLE,
-         "contract": K.CONTRACT, "dam": K.DAM, "extract": K.EXTRACT_LOG}
+         "contract": K.CONTRACT, "dam": K.DAM}
 DISTRACTORS = ("crux", "analytics")
-CALL_FILES = ("charter", "beacons", "sampling", "log", "eng", "runbook", "hosts", "notes")
+CALL_FILES = ("charter", "beacons", "sampling", "log", "eng", "runbook", "hosts", "crawl")
 ASK_FILES = ("img", "legacy", "avif", "contract", "dam")
 
 
@@ -47,6 +47,7 @@ def build(out, quiet=False):
     counts[NAMES["sampling"]] = R.write_sampling(p("sampling"))
     counts[NAMES["eng"]] = R.write_engagement_beacons(p("eng"), eng)
     counts[NAMES["hosts"]] = R.write_cdn_hosts(p("hosts"))
+    counts[NAMES["crawl"]] = R.write_crawl(p("crawl"), W.crawl())
     counts[NAMES["crux"]] = R.write_crux(p("crux"), W.crux(nov))
     counts[NAMES["analytics"]] = R.write_analytics(p("analytics"), W.analytics())
     counts[NAMES["img"]] = R.write_image_logs(p("img"), ask["img"])
@@ -54,11 +55,9 @@ def build(out, quiet=False):
     counts[NAMES["dam"]] = R.write_dam(p("dam"), ask["dam"])
     R.write_change_log(p("log"))
     R.write_avif_table(p("avif"))
-    R.write_extract_log(p("extract"), counts, NAMES)
     D.write_charter(p("charter"))
     D.write_contract(p("contract"))
     D.write_runbook(p("runbook"))
-    D.write_notes(p("notes"), NAMES)
     PP.normalize_ooxml(p("log"), K.PEOPLE["lead"], K.PEOPLE["lead"], "2024-02-05T03:12:44Z", "2026-08-31T05:41:09Z",
                        excel=True)
     PP.normalize_ooxml(p("avif"), K.PEOPLE["lead"], K.PEOPLE["lead"], "2024-01-29T22:08:13Z", "2026-11-18T04:27:52Z",

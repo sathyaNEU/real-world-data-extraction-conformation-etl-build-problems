@@ -30,7 +30,19 @@ def page_loads(target, month=MONTH, dedupe=True, weights=None):
     df["prop"] = df.origin.map(L.origins(target))
     df["weight"] = L.weights(df, L.sampling(target)) if weights is None else weights(df)
     df["own"] = own_image(df, L.hosts(target))
+    df["in_html"] = in_server_html(df, L.crawl(target))
     return df
+
+
+def in_server_html(df, crawl, by_page=True) -> np.ndarray:
+    """Whether the load's LCP image is an <img> the nightly crawl found in the page's server HTML (by_page=False:
+    anywhere in the crawl)."""
+    url = df.lcp_url.fillna("").astype(str)
+    if by_page:
+        pairs = set(zip(crawl.page_url, crawl.img_src))
+        page = "https://" + df.origin.astype(str) + df.page_path.astype(str)
+        return np.array([(a, b) in pairs for a, b in zip(page, url)])
+    return url.isin(set(crawl.img_src)).to_numpy()
 
 
 def own_image(df, hosts) -> np.ndarray:
@@ -83,8 +95,10 @@ def effect(e: pd.DataFrame) -> dict:
                 shift=pooled["before"]["load_delay_ms"] - pooled["after"]["load_delay_ms"])
 
 
-def rungs(nov: pd.DataFrame, eff: dict, level=None, r_load=None) -> pd.DataFrame:
-    """Page loads a month per property under every rung."""
+def rungs(nov: pd.DataFrame, eff: dict, level=None, r_load=None, app_load=None, in_html=None) -> pd.DataFrame:
+    """Page loads a month per property under every rung. app_load: the load time's multiplier on a load whose hero
+    no preload can reach (default: the engagements' ratio, the AVIF step still applying); in_html: which loads the
+    preload reaches (default: the crawl by page)."""
     lv = eff["level"] if level is None else level
     ru = eff["r_load"] if r_load is None else r_load
     t, d, u, q, f = nov.ttfb_ms, nov.load_delay_ms, nov.load_time_ms, nov.render_delay_ms, nov.fcp_ms
@@ -94,6 +108,10 @@ def rungs(nov: pd.DataFrame, eff: dict, level=None, r_load=None) -> pd.DataFrame
     zero = t + ru * u + q
     shift = t + np.maximum(d - eff["shift"], 0) + ru * u + q
     held = t + lv + ru * u + q
+    reached = (nov.in_html if in_html is None else in_html).astype(bool)
+    au = ru if app_load is None else app_load
+    unreached = t + d + au * u + q                  # no preload: the image's request starts when it does today
+    built = np.where(reached, held, unreached)
     cols = {
         "slow_all": slow,
         "R1_reach": reach,
@@ -102,11 +120,17 @@ def rungs(nov: pd.DataFrame, eff: dict, level=None, r_load=None) -> pd.DataFrame
         "R3_zero": reach & (zero <= GOOD),
         "shift": reach & (shift <= GOOD),
         "R4_held": reach & (held <= GOOD),
-        "golden": reach & (np.maximum(held, f) <= GOOD),
+        "field": reach & (np.maximum(held, f) <= GOOD),
+        "golden": reach & (np.maximum(built, f) <= GOOD),
+        "reach_no_floor": reach & (built <= GOOD),
+        "reach_ratio_floor": reach & (np.maximum(np.where(reached, ratio, unreached), f) <= GOOD),
+        "reach_zero_floor": reach & (np.maximum(np.where(reached, zero, unreached), f) <= GOOD),
+        "reach_shift_floor": reach & (np.maximum(np.where(reached, shift, unreached), f) <= GOOD),
+        "unreached_slow": reach & ~reached,
         "R2_floor": reach & (np.maximum(ratio, f) <= GOOD),
         "R3_floor": reach & (np.maximum(zero, f) <= GOOD),
         "shift_floor": reach & (np.maximum(shift, f) <= GOOD),
-        "pushed_out": nov.own & ~slow & (np.maximum(held, f) > GOOD),
+        "pushed_out": nov.own & ~slow & (np.maximum(built, f) > GOOD),
         "good_now": ~slow,
         "loads": pd.Series(True, index=nov.index),
         "own_loads": nov.own,
@@ -166,7 +190,7 @@ def hero_images(target, how="legacy"):
     d = L.dam(target)
     org = L.origins(target)
     d["on"] = d.last_used_page.str.split("/").str[2].map(org)
-    key = "property" if how == "property" else "on"
+    key = "collection" if how == "property" else "on"
     if how != "all":
         d = d[d.last_used_on == d.last_used_on.max()]
     if how == "rows":

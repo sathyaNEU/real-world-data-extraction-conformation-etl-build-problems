@@ -1,6 +1,8 @@
 """The pack's documents: the performance squad's charter, the image CDN contract's schedule of charges, the domains
-runbook and the RUM extracts' field notes."""
+runbook."""
 from __future__ import annotations
+
+import os
 
 from reportlab import rl_config
 
@@ -16,7 +18,9 @@ from reportlab.platypus import Paragraph, SimpleDocTemplate, Spacer, Table, Tabl
 import common as K   # noqa: E402
 import world as W    # noqa: E402
 
-FONT_DIR = "/usr/share/fonts/truetype/liberation/"
+FONT_DIR = next((d for d in ("/usr/share/fonts/truetype/liberation/", os.path.expanduser("~/Library/Fonts/"),
+                              "/Library/Fonts/") if os.path.exists(d + "LiberationSerif-Regular.ttf")),
+                "/usr/share/fonts/truetype/liberation/")
 for nm, f in (("Sans", "LiberationSans-Regular"), ("Sans-B", "LiberationSans-Bold"), ("Sans-I", "LiberationSans-Italic")):
     pdfmetrics.registerFont(TTFont(nm, FONT_DIR + f + ".ttf"))
 INK, GREY, RULE, TEAL = (colors.HexColor("#1d2226"), colors.HexColor("#5b6268"), colors.HexColor("#a3abb2"),
@@ -62,7 +66,10 @@ def write_charter(path):
             "2.1 The squad goes, each quarter, to the property where its playbook will move the most page loads a "
             "month into the good Largest Contentful Paint (LCP) band.",
             "2.2 Page loads are counted on the group's own RUM for the latest complete calendar month, in Sydney "
-            "time, before the quarter's planning. A page load is a navigation that reports LCP.",
+            "time, before the quarter's planning. A page load is a navigation of any type that reports LCP, a reload or "
+            "a prerendered page included. The RUM samples "
+            "each origin's page loads at the rate its collector is set to when the load starts, and a sampled "
+            "load's beacon stands for the page loads that rate represents.",
             "2.3 The good band is an LCP of 2,500 ms or less. A page load moved into the good band is one that was "
             "slower than 2,500 ms in that month and would have been 2,500 ms or less with the playbook in place.",
             "2.4 The playbook works on a property's own hero images: the images the property serves itself, from "
@@ -79,8 +86,9 @@ def write_charter(path):
             "4.1 Every engagement is logged in the squad's change log with its windows and reviewed on the group "
             "RUM. The squad keeps each engagement's review extract."]),
         ("5. The quarterly assignment", [
-            "5.1 The head of web platform assigns the squad at the planning meeting in the last month of each "
-            "quarter, from the RUM and image extracts taken for it. The assignment for the quarter starting "
+            "5.1 The web platform steering group assigns the squad at its planning meeting in the last month of "
+            "each quarter, on a paper from the head of web platform, from the RUM and image extracts and the latest "
+            "nightly site crawl taken for it. The assignment for the quarter starting "
             "5 January 2027 is made on 8 December 2026 from the extracts of 3 December.",
             "5.2 The assignment paper gives, for each property, the page loads a month the playbook would move into "
             "the good band. Beside them it carries two figures the squad lead plans the quarter with: the hero-image "
@@ -171,41 +179,5 @@ def write_runbook(path):
               "(`/game-day/`); the old URLs answer with a 301 (WEBPLAT-1544)",
               "- 5 February 2024: image CDN paths for the small sites, with the squad's first engagement",
               ""]
-    with open(path, "w", encoding="utf-8") as fh:
-        fh.write("\n".join(lines))
-
-
-def write_notes(path, names):
-    lines = [
-        "# RUM extracts: field notes", "",
-        "For the December 2026 planning. %s, site reliability, 3 December 2026." % K.PEOPLE["sre"], "",
-        "## %s" % names["beacons"], "",
-        "- One row per beacon the collector received from the six www origins on the whole UTC days 31 October to "
-        "30 November 2026.",
-        "- Each origin samples page loads at the rate in force when the page load started (%s, effective from the "
-        "UTC instant given). A sampled page load sends one beacon when the page is hidden, so a beacon stands for "
-        "1 / that rate page loads." % names["sampling"],
-        "- `beacon_id`: the page load's beacon.",
-        "- `origin`, `page_path`: where the page load went.",
-        "- `form_factor`: mobile, desktop or tablet, from the user agent.",
-        "- `navigation_type`: `navigate`; `reload`; `prerender` (the page was prerendered and then shown, and its "
-        "timings run from the moment it was shown); `back_forward` (restored from the back-forward cache, which "
-        "reports no LCP, so its timing columns are blank).",
-        "- `fired_at_utc`: when the page load started, UTC.",
-        "- `fcp_ms`: First Contentful Paint.",
-        "- `lcp_ms`: Largest Contentful Paint.",
-        "- `lcp_element`: the tag of the LCP element (`IMG`, `H1`, `P`, `DIV`, `VIDEO`).",
-        "- `lcp_url`: the URL of the LCP element's image or poster; blank for text.",
-        "- `ttfb_ms`, `load_delay_ms`, `load_time_ms`, `render_delay_ms`: the four parts of LCP from the web-vitals "
-        "attribution build: time to first byte; resource load delay, from the first byte to the start of the LCP "
-        "image's request; resource load duration; element render delay, from the end of the image's load to the "
-        "paint. They add up to `lcp_ms`; for a text element the two resource parts are 0.", "",
-        "## %s" % names["eng"], "",
-        "- The squad's review extract: about 3,000 beacons drawn at random from each review window of each "
-        "engagement in the change log, from the engaged pages' loads whose LCP element was the hero image.",
-        "- The same columns as the November extract, and `engagement`, the change log's Ref. Sampling rates do not "
-        "apply to it: within a window every beacon counts once.", "",
-        "## %s" % names["sampling"], "",
-        "- One row per change: a rate applies from `effective_from_utc` until the origin's next row.", ""]
     with open(path, "w", encoding="utf-8") as fh:
         fh.write("\n".join(lines))

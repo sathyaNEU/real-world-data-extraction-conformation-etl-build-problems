@@ -1,5 +1,5 @@
 """task258's generator checks: the input gates, the ladder (winners, margins, position), the three rules executed on
-the clean truth (R1 to R3c), every semantic fork row (SF1 to SF16), the estimator corridor behind every graded
+the clean truth (R1 to R3c), every semantic fork row (SF1 to SF18), the estimator corridor behind every graded
 count, both asks' ladders and the separation line, the goldens against figures.json, and the realism sweep."""
 from __future__ import annotations
 
@@ -55,6 +55,9 @@ def clean_truth():
         cat = W.catalogue(p)
         own_urls |= set(cat["hero_url"][cat["hero"] == "own"])
     nov["own"] = nov.lcp_url.isin(own_urls).to_numpy() & (nov.lcp_element == "IMG").to_numpy()
+    sec = nov.page_path.str.split("/").str[1]
+    app = code.map({c: v[0] for c, v in K.APP_SECTIONS.items()})
+    nov["in_html"] = (sec != app).to_numpy()
     eng = W.engagement_beacons()
     win = {w[0]: w[1:] for w in W.engagement_windows()}
     day = AN.sydney_dates(eng.fired_at_utc)
@@ -81,14 +84,8 @@ def run(target, golden, st, meta_path):
        all(f in files for f in meta["distractor_files"]))
     ck("gate: no file named as a distractor", not any("distract" in f.lower() for f in files))
     ck("gate: deliverables present", sorted(os.listdir(golden)) == sorted(K.DELIVERABLES), os.listdir(golden))
-    logged = {r["file"] for r in csv.DictReader(open(os.path.join(target, K.EXTRACT_LOG), encoding="utf-8"))}
-    ck("H9: the extract log lists every data extract", logged == {f for f in files if f.endswith(".csv")} -
-       {K.EXTRACT_LOG}, logged)
-    rows = {r["file"]: int(r["rows"]) for r in csv.DictReader(open(os.path.join(target, K.EXTRACT_LOG),
-                                                                  encoding="utf-8"))}
-    for f, n in rows.items():
-        ck("H9: extract log row count for %s" % f,
-           n == sum(1 for _ in open(os.path.join(target, f), encoding="utf-8")) - 1)
+    ck("H9: no file describes the data (dictionary, field notes, readme, manifest, extract log)",
+       not [f for f in files if re.search(r"dictionar|notes|readme|manifest|codebook|extract_log", f, re.I)], files)
 
     # ---------------------------------------------------------------- the ladder on the pack
     nov = AN.page_loads(target)
@@ -96,28 +93,28 @@ def run(target, golden, st, meta_path):
     eff = AN.effect(e)
     R = AN.rungs(nov, eff)
     want = {"slow_all": "Tideline", "R1_reach": "Hearth", "R2_parts": "Ledger", "R2_whole": "Ledger",
-            "R3_zero": "Ledger", "shift": "Ledger", "R4_held": "Pantry", "golden": "Matchday"}
+            "R3_zero": "Ledger", "shift": "Ledger", "R4_held": "Pantry", "field": "Matchday", "golden": "Trailhead"}
     for col, who in want.items():
         w, v, second, margin = AN.winner(R[col])
         ck("ladder: %s files %s" % (col, who), w == who, (w, v))
         ck("ladder: %s margin 1.15x or more" % col, margin >= 1.15, margin)
     ck("ladder: the golden's margin 1.2x or more", AN.winner(R.golden)[3] >= 1.2)
-    for col in ("R2_floor", "R3_floor", "shift_floor"):
-        ck("grid: the floor without the level (%s) files Ledger" % col, AN.winner(R[col])[0] == "Ledger",
-           AN.winner(R[col]))
-    rank = {c: list(R[c].sort_values(ascending=False).index).index("Matchday") + 1 for c in want}
-    ck("position: Matchday 4th or 5th on every slow load and on the default path",
-       rank["slow_all"] in (4, 5) and rank["R2_parts"] in (4, 5), rank)
-    ck("position: Matchday never 1st on an intermediate rung, 2nd on at most one, and there 1.20x behind",
-       all(rank[c] > 1 for c in want if c != "golden") and sum(rank[c] == 2 for c in want if c != "golden") <= 1
-       and all(AN.winner(R[c])[3] >= 1.2 for c in want if c != "golden" and rank[c] == 2), rank)
+    grid = {"R2_floor": "Ledger", "R3_floor": "Ledger", "shift_floor": "Ledger", "reach_no_floor": "Pantry",
+            "reach_ratio_floor": "Ledger", "reach_zero_floor": "Ledger", "reach_shift_floor": "Ledger"}
+    for col, who in grid.items():
+        ck("grid: %s files %s" % (col, who), AN.winner(R[col])[0] == who, AN.winner(R[col]))
+    rank = {c: list(R[c].sort_values(ascending=False).index).index("Trailhead") + 1 for c in list(want) + list(grid)}
+    ck("position: Trailhead never 1st on a wrong rung or grid cell, and every rung or cell it is 2nd on clears it "
+       "by 1.15x", all(rank[c] > 1 for c in rank if c != "golden") and
+       all(AN.winner(R[c])[3] >= 1.15 for c in rank if c != "golden" and rank[c] == 2), rank)
+    ck("position: Trailhead 5th on every slow load", rank["slow_all"] == 5, rank)
     coincide = {c: [n for n in AN.NAMES if AN.round_to(R.loc[n, c], 1e5) == AN.round_to(R.loc[n, "golden"], 1e5)]
-                for c in want if c != "golden"}
-    ck("mirror: no wrong rung shares more than two of the six rounded counts with the golden (the held rung only "
-       "Hearth's and Ledger's)", all(len(v) <= 2 for v in coincide.values()) and
-       set(coincide["R4_held"]) == {"Hearth", "Ledger"}, coincide)
-    ck("figures: the call", fig["call_property"] == "Matchday" and fig["call_loads_moved_m"] ==
-       round(AN.round_to(R.loc["Matchday", "golden"], 1e5) / 1e6, 1))
+                for c in list(want) + list(grid) if c != "golden"}
+    ck("mirror: no wrong rung shares more than two of the six rounded counts with the golden (the field method only "
+       "Hearth's and Trailhead's, which no app section moves)", all(len(v) <= 2 for v in coincide.values()) and
+       set(coincide["field"]) <= {"Hearth", "Trailhead"}, coincide)
+    ck("figures: the call", fig["call_property"] == "Trailhead" and fig["call_loads_moved_m"] ==
+       round(AN.round_to(R.loc["Trailhead", "golden"], 1e5) / 1e6, 1))
     ck("engagements: the level the delay settled at is 240 ms", eff["level"] == 240.0, eff["level"])
     afters = [v["after"]["load_delay_ms"] for v in eff["by"].values()]
     befores = [v["before"]["load_delay_ms"] for v in eff["by"].values()]
@@ -170,8 +167,13 @@ def run(target, golden, st, meta_path):
     ck("R3a: the preload rule of thumb (no delay) on the clean truth files Ledger", AN.winner(TR.R3_zero)[0] == "Ledger")
     ck("R3a: the delay at the engagements' level with the render delay held files Pantry on the clean truth",
        AN.winner(TR.R4_held)[0] == "Pantry", AN.winner(TR.R4_held))
-    ck("R3b: the decisive step (the level, each paint floored at the load's own first paint) files Matchday on the "
-       "clean truth", AN.winner(TR.golden)[0] == "Matchday", AN.winner(TR.golden))
+    ck("R3a: the field method (the level, each paint floored at the load's own first paint, on every slow own-image "
+       "load) files Matchday on the clean truth", AN.winner(TR.field)[0] == "Matchday", AN.winner(TR.field))
+    ck("R3b: the decisive step (the preload reaches only heroes the page's server HTML carries) files Trailhead on "
+       "the clean truth", AN.winner(TR.golden)[0] == "Trailhead", AN.winner(TR.golden))
+    ck("R3b: the reach without the floor files Pantry, the reach on a ratio, no delay or a fixed cut files Ledger",
+       AN.winner(TR.reach_no_floor)[0] == "Pantry" and
+       all(AN.winner(TR[c])[0] == "Ledger" for c in ("reach_ratio_floor", "reach_zero_floor", "reach_shift_floor")))
     ck("R3b: the floor without the level (a ratio, no delay or a fixed cut) files Ledger on the clean truth",
        all(AN.winner(TR[c])[0] == "Ledger" for c in ("R2_floor", "R3_floor", "shift_floor")))
     ck("R3b: the reach correction alone (every slow own-image load) files Hearth", AN.winner(TR.R1_reach)[0] == "Hearth")
@@ -185,7 +187,7 @@ def run(target, golden, st, meta_path):
            rounded(AN.rungs(nov, ce)) == rounded(R))
     utc = AN.page_loads(target, month=(np.datetime64("2026-11-01"), np.datetime64("2026-12-01")))
     RU = AN.rungs(utc, eff)
-    ck("R2 SF2: November in UTC: the same call", AN.winner(RU.golden)[0] == "Matchday")
+    ck("R2 SF2: November in UTC: the same call", AN.winner(RU.golden)[0] == "Trailhead")
     rates = L.sampling(target)
 
     def rate_at(origin, t):
@@ -198,12 +200,13 @@ def run(target, golden, st, meta_path):
         pick = {o: rate_at(o, t) for o in rates}
         R1r = AN.rungs(AN.page_loads(target, weights=lambda df, pick=pick: 1.0 / df.origin.map(pick).to_numpy()), eff)
         ck("R2 SF4: one sampling rate a property (the month's %s): the same call" % which,
-           AN.winner(R1r.golden)[0] == "Matchday")
+           AN.winner(R1r.golden)[0] == "Trailhead")
         ck("R2 SF4: one rate (the %s) moves a count" % which, rounded(R1r) != rounded(R))
     unw = AN.rungs(AN.page_loads(target, weights=lambda df: np.ones(len(df))), eff)
-    for col in ("slow_all", "R1_reach", "R2_parts", "R2_whole", "R3_zero", "shift", "R4_held", "R2_floor", "R3_floor",
-                "shift_floor"):
-        ck("R2: sampling weights ignored: %s still files a wrong property" % col, AN.winner(unw[col])[0] != "Matchday",
+    for col in ("slow_all", "R1_reach", "R2_parts", "R2_whole", "R3_zero", "shift", "R4_held", "field", "R2_floor",
+                "R3_floor", "shift_floor", "reach_no_floor", "reach_ratio_floor", "reach_zero_floor",
+                "reach_shift_floor"):
+        ck("R2: sampling weights ignored: %s still files a wrong property" % col, AN.winner(unw[col])[0] != "Trailhead",
            AN.winner(unw[col]))
     no_pre = nov[nov.navigation_type != "prerender"]
     ck("R2 SF1: prerendered loads left out: the same rounded counts", rounded(AN.rungs(no_pre, eff)) == rounded(R))
@@ -217,7 +220,7 @@ def run(target, golden, st, meta_path):
     own_only["own"] = AN.own_image(nov, {n: ({h for h in hs if h.startswith("images.")}, "/nowhere/")
                                          for n, (hs, _) in hosts.items()})
     RO = AN.rungs(own_only, eff)
-    ck("R2 SF6: own image host only: the same call", AN.winner(RO.golden)[0] == "Matchday")
+    ck("R2 SF6: own image host only: the same call", AN.winner(RO.golden)[0] == "Trailhead")
     ck("R2 SF6: the alias and CDN paths move counts (the runbook decides)", rounded(RO) != rounded(R))
     ck("R2: the distractors and the ask files are never read by the call",
        not {K.CRUX, K.ANALYTICS, K.IMG_LOGS, K.LEGACY_LOGS, K.AVIF_TABLE, K.CONTRACT, K.DAM} &
@@ -232,14 +235,18 @@ def run(target, golden, st, meta_path):
                              for p in __import__("pypdf").PdfReader(os.path.join(target, f)).pages)
     ck("R3c: no shipped document names the experimentation tool, its snippet, consent or a page held from showing",
        not re.search(r"flicker|experiment|consent|snippet|held from|first paint", shipped_text, re.I))
-    for doc in (K.RUNBOOK, K.NOTES):
+    ck("R3c: no shipped document names an app section, client rendering, a shell, a feed or a hero set by script",
+       not re.search(r"client.?rendered|client side|app shell|\bshell\b|single.page|\bfeed\b|hydrat|\bSPA\b",
+                     shipped_text, re.I))
+    for doc in (K.RUNBOOK,):
         txt = open(os.path.join(target, doc), encoding="utf-8").read()
         ck("R3c: %s states no load delay, level, ratio or moved count" % doc,
            not re.search(r"\b240\b|\b0\.48\b|\blevel\b|settle|moved into|loads moved", txt))
 
     # ---------------------------------------------------------------- semantic forks
     ck("SF3: no load on 2,500 ms now", float((nov.lcp_ms == GOOD).sum()) == 0)
-    cf = nov.ttfb_ms + eff["level"] + eff["r_load"] * nov.load_time_ms + nov.render_delay_ms
+    lvl = np.where(nov.in_html, eff["level"], nov.load_delay_ms)
+    cf = nov.ttfb_ms + lvl + eff["r_load"] * nov.load_time_ms + nov.render_delay_ms
     strict = (nov.lcp_ms > GOOD) & nov.own & (np.maximum(cf, nov.fcp_ms) < GOOD)
     RS = (strict * nov.weight).groupby(nov.prop).sum().reindex(AN.NAMES)
     ck("SF3: under 2,500 ms in place of 2,500 ms or less after the playbook: the same rounded counts",
@@ -271,20 +278,22 @@ def run(target, golden, st, meta_path):
               for d in ("mobile", "desktop", "tablet")}
     t, u, q, dv = nov.ttfb_ms, nov.load_time_ms, nov.render_delay_ms, nov.device
     reach = (nov.lcp_ms > GOOD) & nov.own
-    by_dev = reach & (np.maximum(t + dv.map(dev_lv) + dv.map(dev_rl) * u + q, nov.fcp_ms) <= GOOD)
+    dl = np.where(nov.in_html, dv.map(dev_lv), nov.load_delay_ms)
+    by_dev = reach & (np.maximum(t + dl + dv.map(dev_rl) * u + q, nov.fcp_ms) <= GOOD)
     RDV = (by_dev * nov.weight).groupby(nov.prop).sum().reindex(AN.NAMES)
     ck("SF8/SF9: level and ratio by device: the same rounded counts",
        {n: AN.round_to(RDV[n], 1e5) for n in AN.NAMES} == rounded(R))
     ecdf = np.sort(A.load_delay_ms.to_numpy())
     slack = GOOD - (t + eff["r_load"] * u + q)
     pr = np.searchsorted(ecdf, slack.to_numpy(), side="right") / len(ecdf)
+    pr = np.where(nov.in_html, pr, (nov.load_delay_ms <= slack).to_numpy().astype(float))
     REC = pd.Series(reach.to_numpy() * (nov.fcp_ms <= GOOD).to_numpy() * pr * nov.weight.to_numpy(),
                     index=nov.index).groupby(nov.prop).sum()
     ck("SF8: the after-delay's whole distribution in place of its median: the same rounded counts",
        {n: AN.round_to(REC[n], 1e5) for n in AN.NAMES} == rounded(R))
     # SF16: the render work after the first paint counted after the later of the image and the first paint
     ready0 = t + nov.load_delay_ms + u
-    ready1 = t + eff["level"] + eff["r_load"] * u
+    ready1 = t + np.where(nov.in_html, eff["level"], nov.load_delay_ms) + eff["r_load"] * u
     alt = np.maximum(ready1, nov.fcp_ms) + (nov.lcp_ms - np.maximum(ready0, nov.fcp_ms))
     RA = ((reach & (alt <= GOOD)) * nov.weight).groupby(nov.prop).sum().reindex(AN.NAMES)
     ck("SF16: the paint's own work counted after the later of the image and the first paint: the same rounded counts",
@@ -292,10 +301,33 @@ def run(target, golden, st, meta_path):
     worst = min(worst, min(edge_m(RA[n]) for n in AN.NAMES))
     # a partial floor, only where the hero painted in the first paint, keeps the held render delay on the held pages
     # whose hero arrived after the page showed: it files Pantry, and the two held engagements refute it
-    held_now = t + eff["level"] + eff["r_load"] * u + q
+    held_now = t + np.where(nov.in_html, eff["level"], nov.load_delay_ms) + eff["r_load"] * u + q
     partial = np.where(nov.lcp_ms == nov.fcp_ms, np.maximum(held_now, nov.fcp_ms), held_now)
     RP = ((reach & (partial <= GOOD)) * nov.weight).groupby(nov.prop).sum().reindex(AN.NAMES)
     ck("SF15: the floor only where LCP equals the first paint files Pantry", AN.winner(RP)[0] == "Pantry", AN.winner(RP))
+    # SF17: which heroes the preload reaches; SF18: an unreached hero's load time
+    crawl = L.crawl(target)
+    pages = set(crawl.page_url)
+    nov_pages = set("https://" + nov.origin + nov.page_path)
+    ck("SF17: the crawl holds every page a November load opened", nov_pages <= pages, len(nov_pages - pages))
+    anywhere = AN.in_server_html(nov, crawl, by_page=False)
+    ck("SF17: the hero found anywhere in the crawl in place of in its own page: the same loads reached",
+       bool((anywhere == nov.in_html.to_numpy())[(nov.own & (nov.lcp_ms > GOOD)).to_numpy()].all()))
+    RF = AN.rungs(nov, eff, in_html=pd.Series(True, index=nov.index))
+    ck("SF17: every own hero reached (the field method) files Matchday", AN.winner(RF.golden)[0] == "Matchday")
+    by_page = crawl.groupby("page_url").img_src.agg(list)
+    with_hero = set(crawl[crawl.width >= 1080].page_url)
+    shell = [u for u in by_page.index if u not in with_hero]
+    ck("SF17: a page whose server HTML carries no hero carries the site logo alone",
+       all(len(by_page[u]) == 1 and by_page[u][0].endswith("-logo.svg") for u in shell), len(shell))
+    un = nov[(nov.lcp_ms > GOOD) & nov.own & ~nov.in_html]
+    ck("SF18: every unreached slow load's first byte and load delay already pass 2,500 ms, so it moves under no "
+       "reading of its load time", bool((un.ttfb_ms + un.load_delay_ms > GOOD).all()) and len(un) > 0, len(un))
+    for au in (1.0, 0.0):
+        ck("SF18: the unreached heroes' load time at %.0f times today: the same rounded counts" % au,
+           rounded(AN.rungs(nov, eff, app_load=au)) == rounded(R))
+    ck("SF18: the golden moves no unreached load", float(R.loc[:, "unreached_slow"].sum()) > 0 and
+       rounded(AN.rungs(nov[nov.in_html], eff)) == rounded(R))
     for eid in K.GATED_ENGAGEMENTS:
         b, a = e[(e.engagement == eid) & (e.window == "before")], e[(e.engagement == eid) & (e.window == "after")]
         hb = b.ttfb_ms + eff["level"] + eff["r_load"] * b.load_time_ms + b.render_delay_ms
@@ -345,7 +377,7 @@ def run(target, golden, st, meta_path):
        set(d.last_used_on[d.last_used_on > "2026-09-30"]) == {K.LATEST_CRAWL.isoformat()})
 
     # ---------------------------------------------------------------- separation and documents
-    call_text = " ".join(open(os.path.join(target, f), encoding="utf-8").read() for f in (K.RUNBOOK, K.NOTES))
+    call_text = " ".join(open(os.path.join(target, f), encoding="utf-8").read() for f in (K.RUNBOOK,))
     ck("separation: the call's documents carry no ask device (304, rendition, legacy_id, its own log)",
        not re.search(r"304|rendition|legacy_id|own logs?\b", call_text))
     from pypdf import PdfReader

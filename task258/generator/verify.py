@@ -93,7 +93,12 @@ def main(target=None, golden=None):
     r_delay = statistics.median(seen["after"]["load_delay_ms"]) / statistics.median(seen["before"]["load_delay_ms"])
     after_meds = [statistics.median(v["load_delay_ms"]) for k, v in by.items() if k[1] == "after"]
 
-    moved, held_path, ratio_path, zero_path = (defaultdict(float) for _ in range(4))
+    # the nightly crawl: each page's <img> sources as its server sent them
+    in_html = set()
+    for r in rows(target, find(target, r"site_crawl_.*\.csv")):
+        in_html.add((r["page_url"], r["img_src"]))
+
+    moved, held_path, ratio_path, zero_path, field = (defaultdict(float) for _ in range(5))
     ids = set()
     for r in rows(target, find(target, r"rum_lcp_beacons_.*\.csv")):
         if r["beacon_id"] in ids:
@@ -110,9 +115,15 @@ def main(target=None, golden=None):
             continue
         w = 1.0 / rate(r["origin"], t)
         tt, dd, uu, qq = (float(r[c]) for c in parts)
-        # the image's paint rebuilt at the engagements' level and load time, never before the page's own first paint
-        if max(tt + level + r_load * uu + qq, float(r["fcp_ms"])) <= 2500:
+        fcp = float(r["fcp_ms"])
+        # a preload in the document head can only name a hero the page's server HTML carries; where it does not,
+        # the image's request still starts when it starts today
+        reach = ("https://" + r["origin"] + r["page_path"], url) in in_html
+        delay = level if reach else dd
+        if max(tt + delay + r_load * uu + qq, fcp) <= 2500:
             moved[name] += w
+        if max(tt + level + r_load * uu + qq, fcp) <= 2500:
+            field[name] += w
         if tt + level + r_load * uu + qq <= 2500:
             held_path[name] += w
         if tt + r_delay * dd + r_load * uu + qq <= 2500:
@@ -125,9 +136,10 @@ def main(target=None, golden=None):
     print("verify: level %.1f ms (engagement after-delay medians %d to %d ms), load time ratio %.4f; loads moved %s"
           % (level, min(after_meds), max(after_meds), r_load, ", ".join("%s %.1fM" % (n, gold[n] / 1e6) for n in ranked)))
     print("verify: call %s (%.3fM, %.2fx the runner-up); ratios of medians file %s, a zero delay files %s, the level "
-          "with the render delay held files %s"
+          "with the render delay held files %s, the level with the first-paint floor on every load files %s"
           % (call, moved[call] / 1e6, moved[ranked[0]] / moved[ranked[1]], max(six, key=lambda n: ratio_path[n]),
-             max(six, key=lambda n: zero_path[n]), max(six, key=lambda n: held_path[n])))
+             max(six, key=lambda n: zero_path[n]), max(six, key=lambda n: held_path[n]),
+             max(six, key=lambda n: field[n])))
 
     # Ask A
     import openpyxl as ox

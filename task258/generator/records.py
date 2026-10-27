@@ -1,7 +1,7 @@
 """The pack's data files, each as its source system exports it: the RUM warehouse's beacon extract and sampling
 configuration, the squad's review extract, change log and AVIF size table, the CDN host list, the image hosts' and
-the old media server's request rollups, the DAM's hero-collection export, the public CrUX rows, the analytics suite's
-page views, and the extract log."""
+the old media server's request rollups, the DAM's hero-collection export, the nightly site crawl, the public CrUX
+rows and the analytics suite's page views."""
 from __future__ import annotations
 
 import csv
@@ -70,7 +70,7 @@ SAMPLING_HISTORY = [
      "WEBPLAT-1571", "drhodes", "per-origin rates"),
     ("2025-10-06T01:00:00Z", {"matchday": 0.0009, "hearth": 0.0011}, "WEBPLAT-1877", "drhodes", "quota review"),
     ("2026-06-01T00:00:00Z", {"tideline": 0.0005, "matchday": 0.0008, "hearth": 0.0010, "ledger": 0.0010,
-                              "trailhead": 0.0012, "pantry": 0.0010}, "WEBPLAT-2240", "drhodes",
+                              "trailhead": 0.0008, "pantry": 0.0010}, "WEBPLAT-2240", "drhodes",
      "quota review"),
 ]
 SAMPLING_CHANGES = {
@@ -142,13 +142,19 @@ def write_analytics(path, frame):
 
 
 def write_image_logs(path, frame):
-    rows = [[t.strftime("%Y-%m-%d %H:00"), h, pp, s, n] for t, h, pp, s, n in frame.itertuples(index=False, name=None)]
-    return _write(path, ["hour_utc", "host", "path_prefix", "status", "requests"], rows)
+    rows = [[t.strftime("%Y-%m-%d %H:00"), h, pp, s, n, b]
+            for t, h, pp, s, n, b in frame.itertuples(index=False, name=None)]
+    return _write(path, ["hour_utc", "host", "path_prefix", "status", "requests", "bytes_sent"], rows)
 
 
 def write_legacy_log(path, frame):
-    rows = [[t.strftime("%d/%b/%Y:%H +1100"), h, u, c, n] for t, h, u, c, n in frame.itertuples(index=False, name=None)]
-    return _write(path, ["log_hour", "vhost", "uri_dir", "code", "hits"], rows)
+    rows = [[t.strftime("%d/%b/%Y:%H +1100"), h, u, c, n, b]
+            for t, h, u, c, n, b in frame.itertuples(index=False, name=None)]
+    return _write(path, ["log_hour", "vhost", "uri_dir", "code", "hits", "bytes"], rows)
+
+
+def write_crawl(path, frame):
+    return _write(path, list(frame.columns), [list(r) for r in frame.itertuples(index=False, name=None)])
 
 
 def write_dam(path, frame):
@@ -222,7 +228,8 @@ def write_change_log(path):
                  "After window: the 28 days starting 7 days after the change ships (the first week lets browser "
                  "caches and the CDN fill).",
                  "Both windows are read on the group RUM, Sydney dates, the engaged pages' loads whose LCP element "
-                 "is the hero image (squad_engagement_beacons_2024-2026.csv)."]:
+                 "is the hero image. The review extract (squad_engagement_beacons_2024-2026.csv) keeps about 3,000 "
+                 "of those loads from each window, drawn at random."]:
         rw.append([line])
         rw.cell(rw.max_row, 1).alignment = Alignment(wrap_text=True, vertical="top")
     _sheet(rw, [110])
@@ -254,31 +261,3 @@ def write_avif_table(path):
     _sheet(ws, [12, 11, 11, 11, 22, 15], "A5")
     wb.save(path)
     return n
-
-
-def write_extract_log(path, counts, names):
-    """counts: file -> data rows."""
-    E = K.EXTRACT_DATE.isoformat()
-    rows = [
-        [names["beacons"], "RUM warehouse", E + "T01:12:40Z", "UTC days 2026-10-31 to 2026-11-30", "UTC",
-         counts[names["beacons"]], "drhodes", "every beacon received for the six www origins"],
-        [names["sampling"], "RUM collector config", E + "T01:14:05Z", "full history", "UTC",
-         counts[names["sampling"]], "drhodes", "effective-dated"],
-        [names["eng"], "RUM warehouse (squad review extract)", E + "T01:31:22Z", "each engagement's review windows",
-         "UTC", counts[names["eng"]], "tmurillo", "about 3,000 beacons sampled at random from each window"],
-        [names["img"], "image host log rollup", E + "T02:02:51Z", "UTC days 2026-10-31 to 2026-11-30", "UTC",
-         counts[names["img"]], "drhodes", "the group's image hosts and the image CDN, hourly; status 200 sends the "
-         "image, 304 tells the browser its cached copy is current and sends none"],
-        [names["legacy"], "old media server", E + "T02:05:17Z", "local days 2026-11-01 to 2026-11-30",
-         "Sydney (+1100)", counts[names["legacy"]], "drhodes", "the server's own hourly rollup; codes as in the "
-         "image host logs"],
-        [names["dam"], "DAM", E + "T02:10:44Z", "hero collections, all assets", "UTC", counts[names["dam"]],
-         "tmurillo", "one row per rendition; property is the hero collection the asset was uploaded to; "
-         "last_used_on and last_used_page come from the nightly crawl of live pages, the latest on 2026-12-02"],
-        [names["crux"], "Chrome UX Report (public)", E + "T02:20:09Z", "2026-11", "", counts[names["crux"]],
-         "tmurillo", "origin-level, all of Chrome"],
-        [names["analytics"], "analytics suite", E + "T02:24:36Z", "Sydney dates 2026-11-01 to 2026-11-30",
-         "Sydney", counts[names["analytics"]], "mgood", "page views by section"],
-        [names["hosts"], "CDN host list", E + "T02:26:58Z", "current", "", counts[names["hosts"]], "drhodes", ""],
-    ]
-    return _write(path, ["file", "source", "extracted_utc", "covers", "clock", "rows", "extracted_by", "note"], rows)
