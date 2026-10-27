@@ -1,12 +1,12 @@
 {
  "task": "task270",
- "status": "DRAWING",
- "domain": "pharmacology-pharmacoepidemiology-safety",
+ "status": "DESIGN",
+ "domain": "psychology-behavioral-science",
  "objective": "descriptive-distribution",
- "stage": 1,
- "stage_name": "draw",
+ "stage": 2,
+ "stage_name": "design",
  "updated": "2026-10-27",
- "stump": "",
+ "stump": "A competent analyst computes each patient's root mean square change in negative affect between adjacent answered prompts of the 2026 fortnight and funds DBT skills groups in Dunnerby and Marrowcombe alone, reading the trust app's ratings about 90 minutes apart as the collaborative's three-hourly app would; read at three hours, Drystow, Haddersley and Cressbeck reach 30 per cent too.",
  "architecture": 9,
  "loops": 0,
  "precut": null,
@@ -21,7 +21,7 @@
   "report": ""
  },
  "returned": [],
- "resume": "Architecture 9 at the draw (stage 1), re-rooted in another domain: read DESIGN_NOTE.md's Tried and rejected first. The decisive step must be an estimand or method choice on fine numbers that a strong analyst who has cleaned the data still gets wrong (the architecture 8 lesson), the objective Descriptive & Distribution Analysis.",
+ "resume": "Architecture 9 drawn and registered (stage 2, design next): the ladder, fork table, closure, readability screen, the asks and prompt.txt to precut.py exit 0, then a new generator in task270/generator (the architecture 8 files are its predecessor's and are replaced). Read DESIGN_NOTE.md's Draw and Tried and rejected first.",
  "architectures": [
   {
    "architecture": 1,
@@ -58,7 +58,7 @@
   },
   {
    "architecture": 9,
-   "fate": "at the draw 2026-10-27, in another domain",
+   "fate": "drawn 2026-10-27 in another domain: psychology, experience sampling (Brindholm and Wendholt NHS Foundation Trust's 2027-28 DBT skills groups, each team's share of its 2026 assessed patients whose emotional instability reaches the Sallowdene Provider Collaborative's standard as its three-hourly app will measure it)",
    "drawn": "2026-10-27"
   }
  ],
@@ -68,5 +68,5 @@
  "portal_id": "",
  "portal_status": "",
  "portal_status_date": "",
- "seed": "none: a fresh world drawn 2026-10-26 (Hallowmere Foodstores' 2027 HFC pack replacement programme)"
+ "seed": "none: a fresh world drawn 2026-10-27 (Brindholm and Wendholt NHS Foundation Trust's 2027-28 DBT skills groups)"
 }
