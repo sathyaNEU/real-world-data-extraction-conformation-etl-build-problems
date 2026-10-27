@@ -62,8 +62,8 @@ A competent analyst builds this without hesitating, from the prompt's words and 
    knows are growing.
 7. Roll the sites up to the twelve service areas and compare each area against the standard.
 
-Ends on: a 2027 network capacity about a sixth above the golden, with three of the twelve areas filed above the
-adequacy standard that are below it (target magnitudes, measured at stage 2 against the cut data).
+Ends on: a 2027 network capacity 1.15 times the golden (1.129 to 1.150 over the eight stage-2 prototype seeds),
+with three of the twelve service areas filed above the adequacy standard that are below it.
 
 Golden: the same conformation with each site's deliverable positions set to the greatest number of its own
 treatments that have ever run at one time, which at about a third of the sites is several short of the stations
@@ -72,16 +72,16 @@ it attests and the licence lists.
 ## Stump sentence
 
 The default path multiplies each site's attested stations by its rostered sessions, ties the product to realised
-volume and the adequacy standard, and files a 2027 network capacity about a sixth high with three of the twelve
-areas wrongly above the standard, because the stations a site attests are the positions it has, not the positions
+volume and the adequacy standard, and files a 2027 network capacity 1.15 times the golden with three of the
+twelve service areas wrongly above the standard, because the stations a site attests are the positions it has, not the positions
 it can work at one time, and at about a third of the sites no hour in four years of its own timed encounters has
 ever had more than a fixed number of treatments running together.
 
 ## Three rules
 
-Task type: provider-network-capacity-and-adequacy-analytics: conforming one capacity dataset for a contract year
-out of a provider directory, a licence file, staffing rosters and a timed encounter extract, a task type serving
-Data Extraction & Conformation (ETL).
+Task type: payment-claims-health-plan-analytics, in its provider network capacity and adequacy form: conforming
+one capacity dataset for a contract year out of a provider directory, a state licence register, staffing rosters
+and a timed encounter extract, which is the card's subdomain and serves Data Extraction & Conformation (ETL).
 
 Domain test: the deciding quantity is each contracted site's deliverable treatment capacity for the 2027 network
 year, which health plan analytics builds as the positions a site can work times its staffed sessions and tests
@@ -124,8 +124,8 @@ positions.
 Analyst test: a strong analyst who resolves the directory's attestation cycles, reconciles the licence file's two
 grains, conforms both encounter layouts and counts the rostered sessions correctly takes attested stations times
 rostered sessions, reconciles it against realised volume and the utilisation standard, and files a network
-capacity about a sixth high with three of the twelve areas wrongly above the standard. Executed in `checks.py` on
-the generator's clean truth at stage 3.
+capacity 1.15 times the golden (1.129 to 1.150 over the eight stage-2 prototype seeds) with three of the twelve
+service areas wrongly above the standard. Executed in `checks.py` on the generator's clean truth at stage 3.
 
 Estimand: the adequacy contract's capacity section, filed in the contract document at authority: for each site
 the plan intends to contract for the 2027 network year, the treatment slots a week the site can deliver, counted
@@ -148,52 +148,273 @@ file teaches a ceiling recovered from a unit's own overlaps (task69 overlaps the
 members of a capped set, task137 censors demand at a capacity bound).
 
 ## Readability screen
+Seven tests per rung (`stumping` 2.1), verdict last. The decisive rung is the concurrency ceiling and it
+comes out `silent`. Measured on the stage-2 prototype
+(`scratchpad/t464proto/proto7.py`, eight seeds 464 to 7464).
 
-Owed at stage 2 for architecture 3. The decisive row is the concurrency ceiling and must come out `silent`; the
-test to watch is test 3 (reflex), because a capacity planner handed timed service intervals may sweep them for
-occupancy without being sent. The two encounter layouts (one with start and stop, one with start and a duration)
-keep the sweep from being a single column's maximum.
+| Rung | 1 filed sentence | 2 schema | 3 reflex | 4 control bench | 5 hygiene | 6 linear | 7 dedicated organ | Verdict |
+|---|---|---|---|---|---|---|---|---|
+| R0 attested stations | yes, the directory's attestation names the station count | yes, one column | yes, the first construction anyone builds | no control scores it | no sweep refutes it | yes, one product | no | readable |
+| R1 the state licence's station count | yes, the licence names the licensed stations | yes, one column after one join | yes, the reflex of an analyst who distrusts a self-attestation | the 2026 state filing's station column ties to it | the licence's two grains are a battery finding | yes, one product | no | readable |
+| R2 the revealed volume ceiling | no sentence names it | no, it is built from the encounter record | yes, revealed throughput is a capacity planner's second move | no control scores it | the battery's volume-against-capacity reconciliation points at it | close to it, one maximum over a group-by on site and week | no | readable |
+| R3 the concurrency ceiling **(decisive)** | no: nothing in the pack names deliverable positions, effective capacity, a ceiling or an overlap, and the contract files the unit without saying how positions are found | no: the encounter record carries no session, chair, shift or position key, so there is no row predicate and no header-found join, and the plant reason ships nowhere | no (argued below) | no control, corpus or published figure scores any basis; the 2026 state filing constructs no capacity figure at all | no: the battery's five sweeps find the attestation cycles, the licence grains and the two layouts, and its volume-against-capacity tie passes on every basis, apparent utilisation on attested stations running 0.389 to 0.964 with no site over 1 | no: a maximum over about 1.1 million reconstructed intervals, and corr(the correction an area takes, the area's own size) is -0.34 to -0.56 so no rescaling of a shipped column reaches it | no: the timed encounter extract is the same file the standard's demand side needs | silent |
+
+**Test 3, the one to watch, argued.** A capacity planner handed timed service intervals may sweep them for
+occupancy unsent, so this row is where the screen can be wrong. Three things keep it silent and all three are
+properties of the pack rather than of the wording.
+
+1. **There is no column whose maximum is the answer and no group-by on a shipped key that returns it.** The
+   encounters arrive in two layouts across the clearinghouse change, 2023 and 2024 carrying a start and a stop
+   and 2025 and 2026 carrying a start and a duration in minutes, and neither layout carries a session, chair,
+   shift or position identifier. The intervals have to be reconstructed from both layouts before anything can
+   be swept, and a count of treatments per site and day returns the site's daily throughput, which is two to
+   three times its positions.
+2. **The easy route's own output does not ask for a second measurement of positions.** The default path's
+   step 6 ties the attested product to realised volume against the utilisation standard and reports a
+   plausible band everywhere: apparent utilisation on attested stations is 0.389 to 0.964 across the forty
+   sites with the plant-constrained sites at 0.41 to 0.74, so nothing reads as impossible and nothing points
+   at a site whose stations cannot all run.
+3. **The field's own method for this quantity sits at rung 0, not at the top** (`stumping` 1.1b). Health plan
+   network analytics builds deliverable capacity as stations times staffed sessions; the decisive step is the
+   recognition that this network violates that method's precondition at a third of its sites. The note's
+   `Domain test:` and `Decisive step:` lines name no method in common, which is the gate `precut.py` runs on
+   the same point.
+
+**Test 7, answered by naming the other use.** Delete the decisive step from the design and the pack still
+carries four years of timed treatment encounters, because the adequacy standard's demand side is the area's
+2026 treatments a week and that is the only file that holds them, and because infusion and dialysis are
+billed in timed units so a plan's encounter extract carries the service start and its stop or its duration
+whatever anyone intends to do with them. The organ is multi-purpose: the same rows supply the 2026 realised
+volume, the growth test's base and the out-of-network comparison in ask A. Its presence carries no
+information about the decisive step.
 
 ## Semantic fork table
+One row per term of the main ask and per convention the main computation needs. `Ruled out by` quotes a
+shipped sentence, or names the construction that makes the readings converge (C1) with the assertion that
+carries it. Every id is asserted in `generator/checks.py`. The critical row is SF1 and it is closed on the
+data, never by a filed sentence saying how to compute a ceiling: a sentence filing the method would make the
+decisive step rule application, which the client's rule 3 bans.
 
-Owed at stage 2 for architecture 3. The rows already known to be needed: the reading of a site's ceiling (record
-maximum against each year's, each month's and a high quantile over treating hours, converged by C1 on a hard
-plateau and asserted, never pinned by a sentence saying how to compute it); the interval convention (half-open
-against closed, converged by giving every site a strictly positive turnover between a position's successive
-treatments, so no two of a site's intervals share an endpoint); cancelled and no-show encounters (carried with no
-stop time, so no interval is constructible under any reading, with the ceiling asserted unchanged if a reader
-treats them as instantaneous); the local clock with no offset on one feed (a site-level offset cancels inside a
-site, asserted, including across the autumn fall-back hour); a treatment session and a week; the attestation
-cycle that is current at the as-of date; and the rounding of the area totals.
+| id | Term or convention | Golden reading | Alternatives, and the call under each | Ruled out by |
+|---|---|---|---|---|
+| SF1 | a site's deliverable positions | the greatest number of the site's own treatments running at one time over the record | the record maximum; each year's maximum; each month's maximum; a high percentile (90th, 95th, 99th) of concurrency over treating hours. Same call under all four | C1 on the data, a hard plateau: at 40 of 40 sites the record maximum, all 4 yearly maxima and all 48 monthly maxima equal the same integer, and one more than that integer never runs. The site's treating hours sit at exactly that integer for 0.155 to 0.324 of their length, so the smallest quantile returning it is at most 0.845 and the 90th, 95th and 99th percentiles all return it. A full session holds every position occupied for at least 94 minutes. Asserted per site as `SF1`: the four readings equal, and zero time above |
+| SF2 | the interval convention | half-open, start inclusive and stop exclusive | closed, or stop inclusive and start exclusive. Same call | C1: every position carries a strictly positive turnover between its successive treatments and no start time at a site coincides with any stop time at that site, so the overlap count is identical under every endpoint convention. Asserted as `SF2`: the minimum turnover in minutes is above zero and the count of coincident endpoints per site is zero |
+| SF3 | cancelled and no-show encounters | no interval, because the record carries no stop time and no duration for them | treat them as instantaneous, or drop them. Same call | C1: no interval is constructible under any reading, and `SF3` asserts the ceiling and all twelve area verdicts unchanged whether they are dropped or read as instantaneous |
+| SF4 | the local clock with no offset on one feed | the site's own local clock | a site-level offset applied, or the feed read as coordinated time | C1: an offset cancels inside a site because concurrency is a within-site overlap count, and `SF4` asserts the ceiling unchanged under any site-level offset and across the autumn fall-back hour, no site holding an interval that spans the repeated hour |
+| SF5 | a treatment session | the contract's capacity section: a scheduled block in which each staffed position runs its treatments for that block | a shift, a day, a chair-day | the contract's sentence, and the roster reports sessions staffed a week as an integer per site, so no derivation of the count is needed. Asserted as `SF5`: the roster's weekly session count is one value per site at the as-of date |
+| SF6 | a week | the contract: one 52nd of the contract year | 52.143 weeks, or the weeks in which the site treated | the contract's sentence; `SF6` asserts the twelve area verdicts identical under 52 and under 52.143, the 0.3 per cent difference sitting inside every margin (worst 6.04 per cent) |
+| SF7 | the attestation cycle current at the as-of date | the site's latest cycle row at or before the as-of date | the latest row in the file, the latest row of the current calendar year | C1: every site's latest cycle row precedes the as-of date by 30 days or more and no site carries two rows in one cycle, so every reading selects the same row. Asserted as `SF7` on the row counts and the figure |
+| SF8 | the licence file's two grains | the service-address rows | the corporate-entity rows | C1: a corporate row's station count equals the sum of its service-address rows, so either grain returns the same count per site. Asserted as `SF8` by equality and by row counts |
+| SF9 | the population | the sites the plan intends to contract for the 2027 network year, from the directory's recorded intent | every site in the directory, every licensed site in the twelve areas, the 2026 contracted set | the contract's capacity section files the population; C1, the intent is recorded once per site and no site changes it inside the window. Asserted as `SF9` on the site count |
+| SF10 | the treatments a position runs in a session | the contract's per-modality figure | a site-level figure read off the encounters | the contract's sentence; `SF10` asserts no site carries both modalities, so the figure is unambiguous per site |
+| SF11 | projected 2027 demand | the area's 2026 contract-year treatments a week grown by the area's enrolment growth factor | the 2026 calendar year, the last four quarters, a four-year trend | the contract files the base, the window and the factor's source; `SF11` asserts the 2026 contract year and calendar 2026 select the same encounters |
+| SF12 | the standard's direction and inclusivity | capacity at or above the required figure | strictly above | C1: no area's capacity lies within 6 per cent of its required figure on any of the four bases (worst measured 6.04 per cent of required over eight seeds), so strict and non-strict readings agree. Asserted as `SF12` |
+| SF13 | the rounding path | the required figure to a whole treatment slot, once, at the end | per site then summed, or to the nearest ten | the asking sentence states whole numbers; `SF13` asserts no required figure lies within 0.05 of a half treatment (measured 0.010 to 0.133, the generator redrawing under 0.05) and that capacities are counts |
+| SF14 | a site's service area | the directory's recorded area for the site at the as-of date | the area of the address the site held earlier | C1: no site crosses an area boundary inside the window, including the sites that moved address and kept their identifier. Asserted as `SF14` |
+| SF15 | the look-back for the ceiling | the whole four-year record | the most recent 24 months, the most recent 12 months | C1 through SF1's plateau: every month's maximum equals the site's positions, so any sub-window returns the same integer. Asserted as `SF15` |
+| SF16 | the key that identifies a site | the directory's own site identifier, carried on every encounter as the service facility | the tax identifier, which three sites of one group practice share; the service address | the contract files the unit as the site, and the tax-identifier reading merges those three sites into one and lifts their joint ceiling, a named wrong cell. Asserted as `SF16`: the tax-identifier reading changes the network total, and the directory's site identifier is one to one with a site |
+| SF17 | weekly treatment slots | deliverable positions times sessions staffed a week times the treatments a position runs in a session | realised treatments a week; the slots the 2027 roster offers | the contract's capacity section files the unit and its inputs and says nothing about how positions are found, which is the WHAT and not the HOW (`determinism-check` section 1). Asserted as `SF17` |
 
 ## Ladder
+Four rungs, measured on the stage-2 prototype over eight seeds (464, 1464, 2464, 3464, 4464, 5464, 6464,
+7464); `scratchpad/t464proto/proto7.py` builds every rung by construction and lets the seed decide texture
+only. The area codes below are the prototype's; the cut pack names them.
 
-Owed at stage 2 for architecture 3. The rungs drawn on paper, to be measured against the cut data: rung 0 attested
-stations times rostered sessions; rung 1 the state licence's station count in place of the directory's attestation,
-for an analyst who distrusts a self-attestation; rung 2 a volume ceiling, each site capped at the treatments of its
-busiest week over its sessions, which is defensible and lands on its own wrong total because a session can be
-short-staffed and a position can turn over more than once; rung 3 the concurrency ceiling. Each rung names its own
-total and its own set of areas above the standard, and the arithmetic of `dataset-generation` section 6 is written
-here before any row is cut.
+| Rung | What it does | Network total over the golden | Areas short of 12 | Its own short set (prototype seed 464) | Worth on the graded quantity |
+|---|---|---|---|---|---|
+| R0 | the default path: attested stations times sessions staffed a week times the modality figure | 1.1286 to 1.1500 | 3 | A04 A09 A12 | 0.000, by definition |
+| R1 | the state licence's station count in place of the directory's attestation, for an analyst who distrusts a self-attestation | 1.2098 to 1.2286 | 2 | A04 A09 | -0.49 to -0.69, it walks away from the golden |
+| R2 | the revealed volume ceiling: each site's positions taken as its busiest week's treatments over its sessions staffed a week, which carries through to the busiest week's treatments as the site's weekly slots | 0.8855 to 0.9209 | 8 | A01 A03 A04 A06 A09 A10 A11 A12 | +1.55 to +1.89, it overshoots the correction |
+| R3 | the concurrency ceiling, the golden: positions set to the greatest number of the site's own treatments ever running at one time | 1.0000 | 6 | A02 A04 A07 A09 A11 A12 | +1.000 |
+
+**Position and dominance.** The golden is bracketed, which is the shape `stumping` Part 3 asks for: R1 and R0
+overshoot it, R2 undershoots it, and the decisive move reverses R2 upward. The four totals are strictly
+ordered R1 > R0 > R3 > R2 on every seed and the closest pair sits 7.34 to 8.92 per cent of the golden apart,
+clear of the 6 per cent floor. Every rung names its own total and its own short set on every seed.
+
+**Each rung's own grid of wrong area cells**, against the golden's twelve verdicts:
+
+| Rung | Golden-short areas it clears | Golden-clear areas it calls short | Area cells wrong of 12 |
+|---|---|---|---|
+| R0 | 3 (A02 A07 A11, the flip set) | 0 | 3 |
+| R1 | 4 (A02 A07 A11 A12) | 0 | 4 |
+| R2 | 2 (A02 A07) | 4 (A01 A03 A06 A10) | 6 |
+| R3 | - | - | 0 |
+
+This is the defect proto3 carried and the repair. There, the volume ceiling sat uniformly below the
+concurrency ceiling, so R2 named exactly the golden's six short areas and a solver stopped at R2 got the
+whole area grid right and only the network total wrong. Here the busiest week over four years can sit above
+the current roster's product as well as below it, because six to nine sites of forty closed a third shift or
+a sixth day between 2023 and 2026 and their busiest week came from the larger roster, so R2 now misses two of
+the golden's short areas and calls four of its clear areas short: six of twelve cells wrong on every seed,
+and the same six-of-twelve headline count as the golden under a different set, so stopping at R2 is
+satisfying and wrong.
+
+**Margins.** All 48 area-rung cells clear 6 per cent of their area's required figure on every seed, the worst
+measured at 6.04 to 6.13 per cent (the flip areas on the golden reading, which is where the floor is meant to
+bind). The flip set is three of twelve on every seed.
+
+**The grid of partial applications.** The decisive step applies site by site, so the grid is the power set of
+the plant-constrained sites inside each area: 39 to 47 cells across the twelve areas. Two properties are
+measured on every seed. No partial application reproduces a golden-short area's verdict, because each
+constrained site inside a flip area is sized to carry at least a seventh of its area's positions, so leaving
+any one of them on attested stations puts the area back above the standard. And the nearest partial cell to
+its area's line sits 6.03 to 6.11 per cent away, so every cell of the grid is a named wrong answer outside
+the floor rather than a near miss. The network total falls strictly as more sites take the ceiling, so no
+proper subset reproduces the golden's total either.
+
+**The arithmetic of `dataset-generation` section 6, on paper.** One live degree of freedom would hold no
+ladder, so the graded quantity carries three: which station count a site's positions come from, whether the
+demand side is realised or projected, and which of the twelve areas the comparison is made in. The fork grid
+is the cross product of the four station bases and the two demand bases, eight cells; the realised-demand
+column cannot fail any area at all (realised volume is bounded by true capacity, so 1.15 times realised is
+always under the ceiling capacity) and is the first death recorded in `## Tried and rejected`. Each of the
+remaining cells is mapped in `## Closure table` and in `generator/checks.py` to the shipped sentence it
+violates. Three further partial-path cells are named rather than swept: sweeping only the start-and-stop
+layout returns a ceiling below the site's positions at the sites whose later years sit in the duration
+layout, so it files a total below the golden and extra short areas; reading the duration column as hours
+makes every one of a site's intervals overlap and files a ceiling above the site's attested stations, which
+the file itself refutes; and ignoring the modality figure scales the infusion sites by a half.
+
+**Stacking.** Three mechanisms from different gaps sit under this call: the population gap carries the
+decisive rung (which positions a site can work), the time gap carries rung 1 and the demand side (a licence
+cycle and an enrolment projection against a contract year), and the objective gap carries rung 2 (a revealed
+throughput read as a capacity). The decisive gap is not rung 1's.
 
 ## Closure table
+The 22 axes of `determinism-check/references/forcing-the-answer.md` Part 1, one row per axis number, axes
+that cannot move the answer today included.
 
-Owed at stage 2 for architecture 3: the 22 axes with the reading and the closure move, one row per axis number.
+| # | Axis | The reading this build takes | Closure move |
+|---|---|---|---|
+| 1 | Population | the sites with a recorded 2027 contract intent at the as-of date, the 2027 network year not yet contracted | filed in the contract's capacity section, which states that the set is the sites the plan intends to contract and not the sites it contracted for 2026; C1 through SF9 and SF7 |
+| 2 | Unit of account | the site, not the corporate entity and not the tax identifier | filed by the contract's "for each site"; C4, the tax-identifier reading merges the group practice's three sites and files a named wrong total (SF16) |
+| 3 | Attribution window | the 2026 contract year for demand, the four-year record for the ceiling | the contract files the demand window; C1 for the ceiling through SF1's plateau and SF15, every sub-window returning the same integer |
+| 4 | As-of dating | one filed as-of date; the roster current at it, static across the window | filed as-of date in the contract; SF7 puts every latest attestation row 30 days or more before it |
+| 5 | Version basis | the latest accepted licence amendment per site | filed in the licence register's own status column as plain words; C1, no site carries two amendments inside the window |
+| 6 | Denominator | capacity against 1.15 times projected demand, demand being the area's 2026 treatments a week | filed in the contract in the standard's own words (SF11, SF17) |
+| 7 | Weighting | none: an area's figure is the sum over its sites | cannot move the answer; no weighting choice exists, asserted as a sum identity per area |
+| 8 | Window length | the ceiling's four-year look-back | C1, measured: 12, 24 and 48 months return the same integer at all 40 sites (SF15) |
+| 9 | Boundary inclusivity | at or above the required figure | C1, no area within 6 per cent of its line on any of the four bases, worst 6.04 per cent (SF12) |
+| 10 | Rounding path | the required figure to a whole treatment slot, once, at the end | the asking sentence; SF13 keeps every required figure 0.05 or more from a half treatment, the generator redrawing otherwise |
+| 11 | Tie-break | none: the call is a count and a grid, not a ranking | cannot move the answer; asserted that no two areas share a required figure and no area's capacity equals its required figure |
+| 12 | Maturity and censoring | the 2026 contract year complete at the as-of date, the extract pulled after the filing run-out | filed run-out in the contract's reporting section; asserted that no 2026 encounter carries a receipt date after the extract date |
+| 13 | Order of operations | positions, then sessions, then the modality figure, then the area sum, then the standard | the steps commute (multiplication and summation), asserted; the only non-commuting step is rounding, closed at axis 10 |
+| 14 | Row order | the ceiling is a maximum over a set and the totals are sums | C1, asserted invariant over permutations of the encounter tables |
+| 15 | Duplicate resolution | the latest accepted claim per encounter, the superseded line carrying its replacement reference | C1 on the main path: asserted zero resubmission pairs inside the 2027 contract-intent sites' own encounters, the pairs sitting on non-contract sites where ask A reads them |
+| 16 | Identity normalisation | the directory's site identifier, joined to the licence register on the service address and to the encounters on the service facility | C4, the raw tax-identifier join merges three sites and is mapped to the contract's unit sentence (SF16); the crosswalk is the directory's own |
+| 17 | Netting against gross | none: capacity and demand are gross counts | cannot move the answer; nothing nets, asserted |
+| 18 | Dimensional units | treatments, positions, sessions, minutes; the duration layout is minutes | C4, reading the duration as hours makes every one of a site's intervals overlap and files a ceiling above its attested stations, which the file refutes; asserted as a named wrong cell |
+| 19 | Code and status semantics | the encounter status (completed, cancelled, no show) and the directory's contract intent, both plain words, no dictionary shipping | the governing contract defines the intent; SF3 makes the status unable to move the ceiling under any reading; never the stump |
+| 20 | Integerisation | positions are whole by construction, a count of concurrent treatments; slots are counts | C1 by construction: no floor, round or remainder choice exists on the graded quantity, and the one rounded figure is closed at axis 10 |
+| 21 | Clause scope | the contract's capacity section governs the 2027 network year and the 2027 contract-intent sites | filed scope in the section's own first sentence; the 2026 state filing states its own year and site set, differing by six sites or more |
+| 22 | Forward window contents | the 2027 network year is not yet contracted | the plan's 2027 enrolment projection by service area ships as the driver file for the uncovered span; nothing else about 2027 is needed, and no 2027 treatment is in the pack |
 
 ## Literal reader
-
-Owed at stage 2 for architecture 3.
+A reader who executes `prompt.txt`, the adequacy contract's capacity section and the licence register's own
+status words word for word, inferring nothing the files do not say, reaches the golden: the contract fixes the
+population, the unit, the window and the standard and says nothing about how a site's deliverable positions
+are found, so the only step left open is the measurement of those positions, and every reading of a site's
+own record returns the same integer (SF1's plateau, 40 of 40 sites). Where the text is silent the options were
+enumerated in `## Semantic fork table`, all 17 rows, and each either returns the golden or violates a quotable
+shipped sentence; no row is closed by this note or by the write-up, and the easy answer comes from an easy
+method on the same literal estimand (attested stations in place of a measurement) rather than from another
+reading.
 
 ## Oracles
+Every control, published figure, reconciliation column and corpus, with what it confirms on the wrong path.
+Nothing ties only under the golden, and nothing ranks the twelve areas against the standard.
 
-Owed at stage 2 for architecture 3. The prior year's capacity report is the context artifact and is the one control
-to screen hardest: it must tie under every rung's basis or be out of window, never only under the golden.
+| Control | What it confirms | Its wrong-path reading | Screen |
+|---|---|---|---|
+| the 2026 state network adequacy filing (the context artifact, ask C's source) | per area, the 2026 contracted sites, their licensed stations and the treatments delivered in 2026 | a solver reconciling its station column against the licence register for the 2026 cycle ties exactly, on R1's input, and learns nothing about any basis | it constructs no capacity figure, states no method, carries no utilisation figure and no adequacy verdict, and its site set differs from the 2027 contract-intent set by six sites or more, so it is out of window for the call. Asserted on all five points |
+| the plan's 2027 enrolment projection by service area | the growth factor the standard's demand side uses | identical under all four rungs, because it multiplies the demand side and every rung shares it | ties on every basis; cannot score a station basis |
+| the adequacy contract's capacity section | the population, the unit, the window, the standard and the as-of date | quotable against no station basis, because it names none | the pin sits at authority level 2 and once only; the counter-pin sweep is owed at stage 3 |
+| the encounter extract's transmittal (control totals by quarter) | the extract's row count and treatment count per quarter | ties on every basis, because it counts encounters and not capacity | asserted to tie under all four rungs; it carries no capacity or position figure |
+| the 2026 out-of-network payment register and its 2027 run-out supplement (ask A) | the treatments paid for at sites under no contract | the register's own reconciliation tab ties on its adjudication basis and not on the service-date basis the ask needs, which is ask A's primary device | it reads no contracted site's capacity and reaches no station basis; asserted zero device rows in the main population |
+| the non-emergency transport trip file by area (distractor, named in `metadata.json`) | 2026 trips by area, which looks relevant to access | a solver ranking areas by trips ranks them by volume | asserted that its area ordering does not reproduce the golden's short set, so no shipped artifact ranks the candidates on the decision question (Gate G) |
+| the state facility licence fee schedule by station count (distractor, named in `metadata.json`) | the fee a station attracts | a solver could read the fee schedule as a capacity authority | it states fees only and no station count for any site; never read by the solution |
+
+**No calibration corpus and no confirming back-test ships.** The method is forced by the design (the data's
+own structure), which is `determinism-check` Part 5 case 1 and the case it ranks first, so no filed selection
+criterion and no closed-data confirmation is needed, and none is built. **No voice argues a method:** no memo,
+briefing, draft or stakeholder figure in the pack carries a capacity number or a method for one.
 
 ## Ask sheet
+Three asks, each a reconciliation or an audit trail of an input the call consumes (H18), each computed on rows
+the call never reads. The main call's declared row population is the 2027 contract-intent sites' own
+treatment encounters, and every device and hazard row sits outside it.
 
-Owed at stage 2 for architecture 3, with the pair arithmetic, the cracker and mirror sheets and the separation
-counts. The main call's declared row population is the 2027 contract-intent sites' own encounters; every ask device
-sits outside it.
+**Ask A, out-of-network treatment volume.** By area and half of 2026, the treatments the plan paid for at
+sites it holds no contract with, and their share of the area's 2026 treatments. 24 counts and 24 shares, 48
+graded figures, whole treatments and shares to one decimal, both stated in the asking sentence.
+- H18 home: the audit trail of the demand side, from the payment register through rows the call never reads to the area's own 2026 total.
+- Use: the network unit sizes the leakage it is contracting to pull back in.
+- Primary device (D5 scope with D2 vintage, silent): the register's own quarterly reconciliation tab is true on the adjudication basis while the ask needs the service-date basis, and the 2026 service-date population needs the lines adjudicated in 2027, which arrive in a separate run-out supplement. A solver that ties to the tab files half-year counts that cannot be reproduced from the service dates. The inconsistency is internal and arithmetic: the register's service dates spill outside its adjudication quarters, so the tab's totals and the service-date totals differ by a figure the generator asserts. Nothing narrates it, the tab says only "adjudicated", and the battery's count-tie check passes against the tab, which is the tie that passes wrong.
+- Remedy: a reconstruction, the half-year counts rebuilt on service date from the register and its supplement, with one correct answer.
+- Hazards: the member-residence against site-service area assignment in the register (h3), and the run-out supplement's own vintage (h1).
+- Files on the path: the payment register, the run-out supplement, the register's reconciliation tab, the provider directory, the licence register, the encounter database, the extract transmittal and the 2026 state filing. Column count on the golden's path is confirmed at stage 3 against the cut pack.
+- Realism: a plan's out-of-network register is extracted on the adjudication cycle and supplemented after run-out, because that is when the money moves.
+
+**Ask B, the licensed supply by area.** By area, the licensed outpatient dialysis and infusion sites the state
+register holds at the as-of date and their licensed stations, counting a site once. 24 graded figures, whole
+sites and whole stations.
+- H18 home: a component of the call's case, the supply the plan could contract against the supply it does.
+- Use: the network unit states the supply it has left to approach in a short area.
+- Primary device (D7 keys with D2 version, silent): the register carries the amendment history as well as the current state, and licence numbers lapse and are reissued to other operators at other addresses, so grouping on the licence number merges two distinct sites and the current state has to be rebuilt per number from its amendment chain. The inconsistency is a licence number carrying two service addresses, some with non-overlapping spans and some overlapping because an amendment row and a current row both sit in the file.
+- Remedy: a reconstruction, the state of each licence number rebuilt over its own chain at the as-of date, with one correct answer; noticing the duplicate addresses does not settle which rows are current.
+- Hazards: the licence register's two grains on non-contract rows (h2), and the reissued numbers (h2).
+- Files on the path: the licence register, its amendment rows, the provider directory, the 2026 state filing, the licence fee schedule's area list, the payment register (for the operators it names), the encounter database and the transmittal.
+- Realism: a state licensing file is an event log with a current view, because licences are amended rather than reissued.
+
+**Ask C, the sites the 2026 filing counted that carry no 2027 contract intent.** By area, how many and the
+stations they were licensed for then. 24 graded figures, whole sites and whole stations.
+- H18 home: a reconciliation of the context artifact to the population the call declares.
+- Use: the network unit explains to the state what moved between the two filings.
+- Primary device (D9 self-validation, silent): the plan redrew two service-area boundaries for 2027, so the 2026 filing's per-area totals are true only under the 2026 boundaries while the ask is by the 2027 areas, and both files are internally consistent and tie area by area on their own basis. The sites have to be re-assigned to the 2027 areas from the directory's own recorded area before the two are compared. The battery's unmatched-join check passes, every site matching.
+- Remedy: a reconstruction, each 2026 site placed in its 2027 area, with one correct answer.
+- Hazards: the run-out supplement's vintage (h1) and the licence register's two grains (h2).
+- Files on the path: the 2026 state filing, the provider directory, the licence register, the enrolment projection's area list, the transmittal, the payment register, the fee schedule's area list and the encounter database.
+- Realism: a plan redraws service areas with its own network, and files against the areas in force in the filing year.
+
+**The main population's zero counts.** Asserted by count in `generator/checks.py`: zero device rows, zero
+hazard rows and zero resubmission pairs inside the 2027 contract-intent sites' own treatment encounters; no
+document the call reads carries an ask's organ; deleting every device leaves the call's figures and all twelve
+area verdicts byte-identical.
+
+| Hazard | Asks it moves | Per-ask delta |
+|---|---|---|
+| h1 the run-out supplement's vintage | A, C | owed at stage 3 against the cut pack |
+| h2 the licence register's two grains and its reissued numbers, on non-contract rows | B, C | owed at stage 3 against the cut pack |
+| h3 the register's member-residence against site-service area assignment | A | owed at stage 3 against the cut pack |
+
+**The referee.** One byte-clean referee arbitrates the designed disagreement in ask A without handing over a
+level: the extract transmittal's treatment count by quarter, which ties under both the adjudication and the
+service-date readings for the contracted sites and so settles nothing about the non-contract rows. Every other
+control ties under every handling.
+
+| Ask | Cracker's path (lands the call, runs the hygiene battery, executes every filed rule, matches every control) | Figures it reaches | Verdict |
+|---|---|---|---|
+| A out-of-network volume by area and half | ties the half-year counts to the register's own reconciliation tab, which passes its count-tie check, and never cross-tabs service date against adjudication quarter, so every half-year count and every share is on the adjudication basis | 0 of 48 | miss |
+| B licensed supply by area | groups the register on the licence number, which is unique in the current view, so the reissued numbers merge two sites and the amendment rows are read as current | 0 of 24 | miss |
+| C the dropped sites by area | compares the 2026 filing's per-area totals against the directory on the filing's own area labels, which tie area by area, and never re-assigns the sites to the 2027 areas | 0 of 24 | miss |
+
+**Mirror leakage:** 29.2 per cent of the ask weight, the best response off the call keeping no ask whole
+(it reaches 18 of ask A's 48 figures through the run-out supplement and 10 of ask B's 24 through the
+amendment chain, and misses ask C's boundary redraw entirely).
+
+**Pair ceiling:** 36.5, on Part 0's weights of 38 for the recommendation and critical components, 7 for
+instruction following and 55 for the asks: the response that lands the call keeps 45.0 and the best response
+off it keeps 28.0, both under the build target of 60 and under the brief's 40.
+
+**Measured by:** generator/ceiling.py, which prints one row per response with the two scored from different
+readings; at stage 2 it runs on this sheet's own figure counts and stop model, and it is re-run on the cut
+pack at stage 3 before the pair is believed (`supplemental-stumping` Part 1.1d), the gated fields taking the
+worst honest measurement.
+
+**Sensitivity**, printed by the same script. If the cut pack lets the cracker keep a tenth, a fifth, three
+tenths or two fifths of the ask weight rather than nothing, the pair reads 39.3, 42.0, 44.8 or 47.5, all under
+60; the ladder, not the asks, is what keeps one of the top two off the call.
 
 ## Layer 1 inventory
 
@@ -286,6 +507,48 @@ adequacy contract at authority.
   the move could not be read from the folder without a filed sentence, a fork; dropped.
 - Asks on the students the count leaves out (no grade 8 result) or on the movers: the complement or a split of the main
   population, so a device on them moves the call's rows; dropped.
+
+- The adequacy standard written as a cushion over REALISED demand (2026-10-27, measured on the stage-2
+  prototype): the true ceiling can never fail it. Realised volume is bounded by the true capacity, so 1.15
+  times realised volume always sits under the concurrency-ceiling capacity and no area ever flips, which
+  would have left the decisive step moving the network total and not one of the twelve area verdicts, with
+  the grid the prompt shape supplies graded on a constant column. The standard is now the growth test the
+  2027 contract actually turns on: projected 2027 demand is the area's 2026 contract-year treatments a week
+  grown by its enrolment growth factor (1.040 to 1.120 across the twelve areas), and an area meets the
+  standard when its capacity is at or above 1.15 times that. An area then fails on the golden when its 2026
+  true utilisation is above 1 over 1.15g, about 0.80, and clears on attested stations when its apparent
+  utilisation is below that line, which is what the flip set of three areas is built from.
+
+- The volume ceiling filled as a fixed fraction of each site's concurrency ceiling (the first prototype,
+  `proto3.py`, 2026-10-27): R2 then sat uniformly below R3 at every site, so R2's short set was exactly the
+  golden's six areas and a solver stopped at R2 got all twelve area verdicts right and only the network
+  total wrong, which cost the area grid its whole discrimination. R2 is now the site's busiest week over the
+  four-year record, which sits above the current roster's product at the six to nine sites of forty that
+  closed a third shift or a sixth day between 2023 and 2026 and well below it where the site's own demand
+  never approached its slots: measured over eight seeds R2 misses two of the golden's six short areas and
+  calls four of its clear areas short, six of twelve cells wrong, with the same six-of-twelve headline count
+  as the golden under a different set.
+
+- Placing the extra dropped shifts (the ones outside the two flip areas, which keep that structure from
+  being a marker) as a closed third shift (2026-10-27): at an unconstrained site that lifts the busiest week
+  to 1.27 to 1.49 times the site's current attested weekly capacity, a visible impossibility that a solver's
+  own capacity check flags at exactly the sites the ladder leans on. Those sites now lost a sixth day
+  instead, and the busiest week over the current attested capacity is asserted at or under 1.05 (measured
+  maximum 0.992 to 1.032 over eight seeds, which reads as the roster having shrunk and argues the attested
+  count is too low, away from the golden).
+
+- Giving every flip area three plant-constrained sites of unequal size (2026-10-27): the partial
+  applications of the ceiling then filled the interval between the attested and the concurrency readings
+  densely enough that one cell sat 3.6 to 5.6 per cent from the area's line, under the floor. Each flip
+  area's shortfall vector is now searched so every one of its constrained sites carries at least a seventh
+  of the area's positions, and the nearest partial cell is measured at 6.03 to 6.11 per cent on every seed.
+
+- A staffing roster carrying clinical headcount per session (2026-10-27): a nurse ratio across the extra
+  chairs is one of the three physical reasons a site's stations cannot all run, and a per-session headcount
+  would let a solver compute positions straight off the roster, which is readability test 2 and hands the
+  decisive quantity over. The roster ships the sessions it staffs a week and the clinical hours it staffs a
+  month, from which no position count is derivable, and every plant constraint in the pack is a shared water
+  treatment loop or a shared compounding hood.
 
 ## Portal result and the diagnosis, 2026-10-27
 
