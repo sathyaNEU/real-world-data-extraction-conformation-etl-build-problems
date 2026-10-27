@@ -1,16 +1,19 @@
 # leak check, task251
 
-**Verdict: REVIEW.** 12 files read, 2 golden figures and 0 candidate names taken from submission.md, 25 stump terms taken from the design note.
+**Verdict: LEAK.** 12 files read, 2 golden figures and 0 candidate names taken from submission.md, 25 stump terms taken from the design note.
 
 LEAK stops the ship. REVIEW is a reader's call and the /leak-check command's solver's-eye pass reads every REVIEW line. INFO is a sweep that ran and found nothing or was skipped.
 
 Stump terms swept: validation, occupancy, architecture, counted, reader, controller, contractor, traffic, bridges, generation, section, nothing, selection, weather, approaches, landed, carried, temperature, second, measured, vehicle, fitted, register, bridge, summer
 
+## 1 file names (LEAK 1)
+- **LEAK** `traffic_data_dictionary.md`: a file whose name says it describes the data (data_dictionary): no dictionary, field notes, readme or manifest ships (dataset-generation section 3)
+
 ## 3 answer figures in the pack (REVIEW 1)
 - **REVIEW** `TDP-03_permanent_count_stations_rev4.pdf`: carries 6 of 8 distinctive words of the committed call: 'Flag 7 of the 30 stations in the 2027 report and send them to the spring 2028 recalibration: R02-01, R04-03, R06-01, R08'
 
 ## 4 design-note vocabulary (REVIEW 2)
-- **REVIEW** `TDP-03_permanent_count_stations_rev4.pdf`: 10 of 25 stump-paragraph terms appear (validation, occupancy, counted, controller, contractor, traffic); read whether the document names the move
+- **REVIEW** `TDP-03_permanent_count_stations_rev4.pdf`: 11 of 25 stump-paragraph terms appear (validation, occupancy, counted, controller, contractor, traffic); read whether the document names the move
 - **REVIEW** `traffic_data_dictionary.md`: 10 of 25 stump-paragraph terms appear (validation, occupancy, counted, controller, contractor, traffic); read whether the document names the move
 
 ## 9 dates after the setting (INFO 1)
@@ -18,8 +21,6 @@ Stump terms swept: validation, occupancy, architecture, counted, reader, control
 
 ## 10 container metadata (INFO 1)
 - **INFO** `-`: audit reported no writer signature (1 lines)
-
-## 1 file names (clean)
 
 ## 2 author vocabulary (clean)
 

@@ -31,7 +31,7 @@
       "xlsx"
     ],
     "largest_file": "trafficvault_hourly_counts_2027.csv",
-    "largest_file_rows": 525172
+    "largest_file_rows": 525084
   },
   "sources": [
     {
@@ -56,8 +56,8 @@
     {
       "path": "trafficvault_hourly_counts_2027.csv",
       "format": "csv",
-      "bytes": 22374311,
-      "rows": 525172,
+      "bytes": 22370654,
+      "rows": 525084,
       "source": "Constructed (seeded generator)",
       "date": "2028-01-07",
       "license": "CC0-1.0 (original work)"
@@ -110,8 +110,8 @@
     {
       "path": "trafficvault_station_events_2027.csv",
       "format": "csv",
-      "bytes": 99510,
-      "rows": 1973,
+      "bytes": 107656,
+      "rows": 2135,
       "source": "Constructed (seeded generator)",
       "date": "2028-01-07",
       "license": "CC0-1.0 (original work)"
@@ -119,7 +119,7 @@
     {
       "path": "Carrick_work_orders_2027.xlsx",
       "format": "xlsx",
-      "bytes": 14649,
+      "bytes": 14208,
       "rows": null,
       "source": "Constructed (seeded generator)",
       "date": "2028-01-07",
@@ -128,7 +128,7 @@
     {
       "path": "weather_daily_2027.csv",
       "format": "csv",
-      "bytes": 39711,
+      "bytes": 39722,
       "rows": 365,
       "source": "Constructed (seeded generator)",
       "date": "2028-01-07",
@@ -137,7 +137,7 @@
     {
       "path": "collisions_regional_roads_2027.xlsx",
       "format": "xlsx",
-      "bytes": 15732,
+      "bytes": 15596,
       "rows": null,
       "source": "Constructed (seeded generator)",
       "date": "2028-01-07",
@@ -146,7 +146,7 @@
     {
       "path": "regional_roads_pavement_condition_2026.xlsx",
       "format": "xlsx",
-      "bytes": 24416,
+      "bytes": 24203,
       "rows": null,
       "source": "Constructed (seeded generator)",
       "date": "2028-01-07",

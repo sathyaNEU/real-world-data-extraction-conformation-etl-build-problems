@@ -390,7 +390,8 @@ def main(target):
     ok(all(t2.get(c, 0) >= 1 for c in cells), "ask B device: a TCX-2 failure in every cell", [t2.get(c, 0) for c in cells])
     retrip = [(o["district"], ops.quarter(o["start"].date())) for o in O["outs"] if len(o["parts"]) == 2 and
               any(ops.controller(sx[c], o["start"].date()) == "TCX-2" for c in o["stations"])]
-    ok(len(set(retrip)) >= 7, "ask B device: re-trips at TCX-2 stations in seven or more cells", sorted(set(retrip)))
+    ok(len(set(retrip)) == 12, "ask B device: a feeder that recloses and trips again at a TCX-2 in every cell",
+       len(set(retrip)))
     silent = set()
     for r in O["power"]:
         o = r["outage"]
@@ -419,15 +420,45 @@ def main(target):
         if o and k != (len(o[0]["parts"]) if len(o[0]["parts"]) == 2 else min(k, 1)):
             good = False
     ok(good, "SF15 a break holds one COMMS_LOST per loss a poll fell in, two for every re-trip")
-    # alternative exact handlings agree
-    alt = {}
+    # alternative exact handlings agree, and each ask's two devices move every cell on their own
     lab = S._labour_days(D)
     resets = ev[ev["event"] == "RESET"]
     doors = ev[ev["event"].isin(["DOOR_OPEN", "DOOR_CLOSE"])]
-    rs = set(zip(resets["station"], resets["day"])) - set(zip(doors["station"], doors["day"]))
-    pairs = [(s, d) for s, d in zip(lab["station"], lab["day"]) if (s, d) not in rs]
-    alt = S._cells(pairs, D)
-    ok(alt == vis, "SF14 the office resets read as a RESET with the cabinet shut give the same visits")
+    dset = set(zip(doors["station"], doors["day"]))
+    office = {(s, d) for s, d in zip(lab["station"], lab["day"]) if S.tcx4_on(D, s, d) and (s, d) not in dset}
+    reset_shut = set(zip(resets["station"], resets["day"])) - dset
+    ok(office == reset_shut and len(office) >= 24,
+       "SF14 the days the contractor worked from its office read off the labour with the cabinet shut and read off a "
+       "RESET the door log does not answer are the same days", len(office))
+    nospan = S.visits(D, span=False)
+    ok(all(vis[c] - nospan[c] >= 1 for c in cells),
+       "ask A device: an attendance the door log shows running past midnight in every cell, so the day either side "
+       "of it is a visit", [vis[c] - nospan[c] for c in cells])
+    raw = S._cells(list(zip(lab["station"], lab["day"])), D)
+    ok(all(raw[c] != vis[c] for c in cells) and len({raw[c] - vis[c] for c in cells}) > 1,
+       "ask A: the labour days alone miss every cell, and the two devices do not cancel in any of them",
+       [raw[c] - vis[c] for c in cells])
+    ok(S.failures_polls(D) == fail, "SF15 the losses in a break read as the polls that failed inside it give the same "
+                                    "figures as the station answering and failing again")
+    t2only = S.failures(D, tcx2_only=True)
+    ok(all(fail[c] - t2only[c] >= 1 for c in cells),
+       "ask B device: an interruption that outlasted a TCX-4's battery in every cell, in the station's record and not "
+       "in the event log", [fail[c] - t2only[c] for c in cells])
+    mf_all = ev[ev["event"] == "MAINS_FAIL"]
+    drained_runs = []
+    for s_, t0, n in S._missing_runs(D):
+        d0 = t0.tz_convert(S.TZ).date()
+        if S.tcx4_on(D, s_, d0) and (s_, d0) not in {(r["new_station"], pd.Timestamp(r["from_date"]).date())
+                                                     for _, r in D["hist"].iterrows()}:
+            drained_runs.append((s_, d0, int(((mf_all["station"] == s_) & (mf_all["t"] >= t0) &
+                                              (mf_all["t"] < t0 + pd.Timedelta(hours=n))).sum())))
+    ok(len(drained_runs) >= 12 and all(k == 0 for s_, d_, k in drained_runs),
+       "ask B device: a TCX-4 that stopped reports no MAINS_FAIL for the loss that stopped it (what it had logged "
+       "went with the supply), only the cold start under the unset clock", len(drained_runs))
+    cs_ev = pd.read_csv(os.path.join(target, B.FILES["events"]))
+    cs_ev = cs_ev[(cs_ev["event"] == "COLD_START") & cs_ev["logged_utc"].str.startswith("2000")]
+    ok(len(cs_ev) >= 12 + 2, "ask B device: every stopped controller's cold start is in the log, under the unset "
+                             "clock the controller comes back with", len(cs_ev))
     ok(S.visits(D, door_days="utc") != vis, "SF22 the door log read on UTC dates moves a visit (device aimed)")
     ok(S.failures(D, quarter_clock="utc") != fail, "SF16 quarters on UTC dates move a failure (device aimed)")
     # no fault, outage or region check within a day of a validation day; no work on a replacement day but the swap

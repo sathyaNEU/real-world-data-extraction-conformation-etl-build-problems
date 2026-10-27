@@ -644,7 +644,33 @@ def failures(D, quarter_clock="local", tcx2_only=False):
         if (s, day0) in swap or (tcx2_only and tcx4_on(D, s, day0)):
             continue
         t1 = t0 + pd.Timedelta(hours=n)
-        k = int(((lost["station"] == s) & (lost["t"] >= t0) & (lost["t"] < t1)).sum())
+        inside = e[(e["station"] == s) & (e["t"] >= t0) & (e["t"] < t1) &
+                   e["event"].isin(["COMMS_LOST", "COMMS_OK"])].sort_values("t")
+        again, answered = 0, False
+        for ev in inside["event"]:
+            if ev == "COMMS_OK":
+                answered = True
+            elif answered:
+                again += 1
+                answered = False
         day = day0 if quarter_clock == "local" else t0.date()
-        pairs.extend([(s, day)] * max(1, k))
+        pairs.extend([(s, day)] * (1 + again))
+    return _cells(pairs, D)
+
+
+def failures_polls(D, quarter_clock="local"):
+    """the same count read the other licensed way: as many losses in a break as polls failed inside it, at least one"""
+    e = _events(D)
+    key = "day" if quarter_clock == "local" else "uday"
+    mf = e[e["event"] == "MAINS_FAIL"]
+    pairs = list(zip(mf["station"], mf[key]))
+    lost = e[e["event"] == "COMMS_LOST"]
+    swap = {(r["new_station"], pd.Timestamp(r["from_date"]).date()) for _, r in D["hist"].iterrows()}
+    for s, t0, n in _missing_runs(D):
+        day0 = t0.tz_convert(TZ).date()
+        if (s, day0) in swap:
+            continue
+        t1 = t0 + pd.Timedelta(hours=n)
+        k = int(((lost["station"] == s) & (lost["t"] >= t0) & (lost["t"] < t1)).sum())
+        pairs.extend([(s, day0 if quarter_clock == "local" else t0.date())] * max(1, k))
     return _cells(pairs, D)

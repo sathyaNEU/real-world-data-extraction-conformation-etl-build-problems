@@ -159,14 +159,19 @@ def submission(fig):
              "5): %d stations beyond 5 per cent, the same %d under the pooled bridge fit, under each station's own "
              "occupancy channel, and with the loss carried to the stations that are on no bridge at any scale from a "
              "half to a third again." % (c["count"], c["count"]))
-    L.append("6. Counted the maintenance visits as the days labour was booked to each station in %s (Labour joined to "
-             "Orders' stations, one per station and day), less the days at a station then on a TCX-4 whose cabinet "
-             "door logged nothing that local day in %s: the controller was reset from the contractor's office; the "
-             "counts are item 2 below." % (F["orders"], F["events"]))
-    L.append("7. Counted the power failures as each MAINS_FAIL a TCX-4 logged, once (the log repeats some after a lost "
-             "poll), and at each TCX-2, which logs nothing and stops, each break in its hourly record, as many as the "
-             "COMMS_LOST TrafficVault raised inside the break (a feeder that tripped twice) and at least one, leaving "
-             "out the two controller replacements, quarters by local date; the counts are item 3 below.")
+    L.append("6. Counted the maintenance visits as the station-days a technician attended (TDP-03 section 7): the "
+             "days labour was booked to each station in %s (Labour joined to Orders' stations, one per station and "
+             "day), less the days at a station then on a TCX-4 whose cabinet door logged nothing that local day in "
+             "%s, where the controller was reset over the link from the contractor's own premises, plus the local day "
+             "after an attendance the door log shows running past midnight; the counts are item 2 below."
+             % (F["orders"], F["events"]))
+    L.append("7. Counted the power failures as each loss of mains power at a controller (section 7): each MAINS_FAIL a "
+             "controller reported, once (the log repeats some after a lost poll), and each break in a station's "
+             "hourly record, which is a loss the controller did not report (a TCX-2 has no standby supply and stops; "
+             "a TCX-4 whose battery runs out stops as well and loses what it had logged, leaving the cold start it "
+             "raises under an unset clock), with one more for each time the station answered a poll inside the break "
+             "and failed again, leaving out the two controller replacements, quarters by local date; the counts are "
+             "item 3 below.")
     L.append("8. Flag the %d stations and send the list for the spring round; the other %d stay.\n"
              % (c["count"], c["stay"]))
     L.append("## 4. Deliverable Answers\n")

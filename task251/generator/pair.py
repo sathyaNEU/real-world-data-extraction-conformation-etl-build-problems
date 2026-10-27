@@ -39,6 +39,9 @@ def routes(D):
     out["A door rule on DOOR_OPEN only"] = S._cells(
         [(s, d) for s, d in zip(lab["station"], lab["day"]) if not S.tcx4_on(D, s, d) or (s, d) in ddo], D)
     out["A door rule on UTC dates"] = S.visits(D, door_days="utc")
+    out["A labour days where the cabinet opened at TCX-4 (the office resets out, the night out)"] = \
+        S.visits(D, span=False)
+    out["A the same with the night work's second day on UTC dates"] = S.visits(D, door_days="utc", span=True)
     ro = set(o.loc[o["resolution"].astype(str).str.startswith("Controller reset"), "order"])
     lr = S._labour_days(D, dedup=False)
     keep = {(s, d) for s, d, k in zip(lr["station"], lr["day"], lr["order"]) if k not in ro}
@@ -79,7 +82,10 @@ def routes(D):
             continue
         k = int(((cl["station"] == s_) & (cl["t"] >= t0) & (cl["t"] < t0 + pd.Timedelta(hours=n))).sum())
         ep.extend([(s_, d0)] * k)
-    out["B COMMS_LOST episodes in TCX-2 breaks plus MAINS_FAIL (stage 4 readers)"] = S._cells(ep + mfp, D)
+    out["B COMMS_LOST episodes in TCX-2 breaks plus MAINS_FAIL (round 1 readers, the portal's path)"] = \
+        S.failures(D, tcx2_only=True)
+    out["B every break of any controller, one per break, plus MAINS_FAIL"] = S._cells(allr + mfp, D)
+    out["B the golden with the episodes at TCX-2 only"] = S._cells(ep + mfp, D)
     return out
 
 
@@ -98,8 +104,8 @@ def main(target, quiet=False):
         rows.append((k, score(r, g)))
         if not quiet:
             print("%-72s %2d of 12" % (k, score(r, g)))
-    crack = score(R["A labour days, one per station and day"], gv) + \
-        score(R["B COMMS_LOST episodes in TCX-2 breaks plus MAINS_FAIL (stage 4 readers)"], gf)
+    crack = score(R["A labour days where the cabinet opened at TCX-4 (the office resets out, the night out)"], gv) + \
+        score(R["B COMMS_LOST episodes in TCX-2 breaks plus MAINS_FAIL (round 1 readers, the portal's path)"], gf)
     Lc = crack / 24.0
     Ls = Lc
     C = 38 + 7 + 55 * Lc

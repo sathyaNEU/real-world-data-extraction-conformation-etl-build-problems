@@ -135,10 +135,15 @@ def outages(W, rng, polls=None):
             # outage is in its record as absent hours rather than in the event log
             drained = lambda o: (len(o["parts"]) == 1 and (o["end"] - o["start"]).total_seconds() > BATTERY_H * 3600
                                  and any(controller(sx[c], o["start"].date()) == "TCX-4" for c in o["stations"]))
-            have_drain = any(o["district"] == dist and quarter(o["start"].date()) == qtr and drained(o) for o in out)
+            # and one feeder that recloses and trips again at a TCX-2, two losses inside one break in its record
+            twice = lambda o: (len(o["parts"]) == 2 and
+                               any(controller(sx[c], o["start"].date()) == "TCX-2" for c in o["stations"]))
+            incell = lambda o: o["district"] == dist and quarter(o["start"].date()) == qtr
+            have_drain = any(incell(o) and drained(o) for o in out)
+            have_twice = any(incell(o) and twice(o) for o in out)
             n = int(rng.integers(1, 3))
             made = tries = 0
-            while (made < n or not have_drain) and tries < 1500:
+            while (made < n or not have_drain or not have_twice) and tries < 3000:
                 tries += 1
                 day = qdays[int(rng.integers(len(qdays)))]
                 k = int(rng.integers(1, 5))
@@ -147,11 +152,14 @@ def outages(W, rng, polls=None):
                 if not have_t2 and not any(controller(x, day) == "TCX-2" for x in hit):
                     continue
                 long_one = not have_drain
+                need_twice = have_drain and not have_twice
                 if long_one and not any(controller(x, day) == "TCX-4" for x in hit):
+                    continue
+                if need_twice and not any(controller(x, day) == "TCX-2" for x in hit):
                     continue
                 start = dt.datetime.combine(day, dt.time(int(rng.integers(0, 24)), int(rng.integers(0, 60)),
                                                          int(rng.integers(0, 60))))
-                parts = None if long_one else (retrip(start) if rng.random() < 0.55 else None)
+                parts = None if long_one else (retrip(start) if (need_twice or rng.random() < 0.55) else None)
                 if long_one:
                     hours = float(rng.uniform(BATTERY_H + 0.6, 5.6))
                 else:
@@ -163,6 +171,7 @@ def outages(W, rng, polls=None):
                 made += 1
                 have_t2 = have_t2 or any(controller(x, day) == "TCX-2" for x in hit)
                 have_drain = have_drain or drained(out[-1])
+                have_twice = have_twice or twice(out[-1])
     # momentary interruptions: a recloser opens for under five minutes; a TCX-4 rides through on its battery and logs
     # MAINS_FAIL and MAINS_OK, a TCX-2 drops the hour it is in, and TrafficVault notices only if a poll falls inside
     silent_cells = set()
@@ -345,8 +354,9 @@ def maintenance(W, outs, sw, polls, rng):
         for qtr in (1, 2, 3, 4):
             have = sum(1 for w in work if w["resets"] and w["resets"][0][2] == "REMOTE" and
                        sx[w["stations"][0]]["district"] == dist and quarter(w["labour"][0][0]) == qtr)
-            for _ in range(2000 if have < 2 else 0):
-                if have >= 2:
+            want = int(rng.integers(2, 4))
+            for _ in range(2000 if have < want else 0):
+                if have >= want:
                     break
                 x = st[int(rng.integers(len(st)))]
                 day = wdays[int(rng.integers(len(wdays)))]
@@ -386,7 +396,7 @@ def maintenance(W, outs, sw, polls, rng):
         for qtr in (1, 2, 3, 4):
             have = sum(1 for w in work if w.get("night") and sx[w["stations"][0]]["district"] == dist and
                        quarter(w["labour"][0][0]) == qtr)
-            want = int(rng.integers(1, 3))
+            want = 1      # one, so that the night work and the office resets never cancel in a cell
             for _ in range(4000):
                 if have >= want:
                     break

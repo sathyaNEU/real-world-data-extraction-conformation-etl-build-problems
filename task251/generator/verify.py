@@ -210,7 +210,17 @@ def main(target):
     lab = labour.merge(st, on="order")
     lab["day"] = pd.to_datetime(lab["date"]).dt.date
     door = set(map(tuple, ev.loc[ev["event"].str.startswith("DOOR"), ["station", "day"]].to_numpy()))
+    labd = {(s, d) for s, d in zip(lab["station"], lab["day"])}
     seen = {(s, d) for s, d in zip(lab["station"], lab["day"]) if not tcx4(s, d) or (s, d) in door}
+    dr = ev[ev["event"].str.startswith("DOOR")].sort_values("t")
+    held = {}
+    for s, e2, d in zip(dr["station"], dr["event"], dr["day"]):
+        if e2 == "DOOR_OPEN":
+            held[s] = d
+        else:
+            o = held.pop(s, None)
+            if o is not None and (d - o).days == 1 and (s, o) in labd:
+                seen.add((s, d))
     vis = {}
     for s, d in seen:
         k = (dist[s], str((d.month - 1) // 3 + 1))
@@ -226,7 +236,7 @@ def main(target):
         fail[k] = fail.get(k, 0) + 1
     hours = pd.date_range(pd.Timestamp("2027-01-01", tz=TZ), pd.Timestamp("2028-01-01", tz=TZ), freq="h",
                           inclusive="left").tz_convert("UTC")
-    lost_ev = ev[ev["event"] == "COMMS_LOST"]
+    comms = ev[ev["event"].isin(["COMMS_LOST", "COMMS_OK"])].sort_values("t")
     for s, g in h.groupby("station"):
         have = pd.DatetimeIndex(g["t"].unique())
         miss = hours.difference(have)
@@ -236,11 +246,18 @@ def main(target):
         for _, grp in pd.Series(miss).groupby(run_id.to_numpy()):
             t0, t1 = grp.iloc[0], grp.iloc[-1] + pd.Timedelta(hours=1)
             d0 = t0.tz_convert(TZ).date()
-            if tcx4(s, d0) or (s in swap and swap[s] == d0):
+            if s in swap and swap[s] == d0:
                 continue
-            n = int(((lost_ev["station"] == s) & (lost_ev["t"] >= t0) & (lost_ev["t"] < t1)).sum())
+            ins = comms[(comms["station"] == s) & (comms["t"] >= t0) & (comms["t"] < t1)]
+            again, answered = 0, False
+            for e2 in ins["event"]:
+                if e2 == "COMMS_OK":
+                    answered = True
+                elif answered:
+                    again += 1
+                    answered = False
             k = (dist[s], str((d0.month - 1) // 3 + 1))
-            fail[k] = fail.get(k, 0) + max(1, n)
+            fail[k] = fail.get(k, 0) + 1 + again
     for dd, q in fig["asks"]["failures"].items():
         for qq, n in q.items():
             if fail.get((dd, qq), 0) != n:
