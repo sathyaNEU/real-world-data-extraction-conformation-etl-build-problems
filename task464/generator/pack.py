@@ -35,7 +35,7 @@ ORG = "Wrenlow Community Health Plan"
 STAMP = dt.datetime(2027, 2, 16, 10, 30, 0)
 
 
-def repack(path, stamp=None):
+def repack(path, stamp=None, company=None):
     """Rewrite a workbook's own archive with one fixed entry date, members in the order the writer put
     them, so two builds of the same pack are byte-identical (reduce-house-fixes H1 and H7)."""
     import zipfile
@@ -49,9 +49,19 @@ def repack(path, stamp=None):
                 # the writer stamps its own clock into the modified date; the fiction's date ships
                 data = re.sub(rb"\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z", iso, data)
             if i.filename == "docProps/app.xml":
-                # and its own name into the application; the organisation's system ships instead
+                # and its own name and version into the application; a spreadsheet's own pair ships
                 data = re.sub(rb"<Application>[^<]*</Application>",
                               b"<Application>Microsoft Excel</Application>", data)
+                if b"<AppVersion>" in data:
+                    data = re.sub(rb"<AppVersion>[^<]*</AppVersion>",
+                                  b"<AppVersion>16.0300</AppVersion>", data)
+                else:
+                    data = data.replace(b"</Properties>",
+                                        b"<AppVersion>16.0300</AppVersion></Properties>")
+                if company and b"<Company>" not in data:
+                    data = data.replace(b"</Properties>",
+                                        b"<Company>" + company.encode("utf-8") +
+                                        b"</Company></Properties>")
             members.append((i, data))
     with zipfile.ZipFile(path, "w", zipfile.ZIP_DEFLATED, compresslevel=9) as z:
         for info, data in members:
@@ -63,13 +73,13 @@ def repack(path, stamp=None):
     return path
 
 
-def save_book(wb, path, creator=None):
-    finalise(wb, creator)
+def save_book(wb, path, creator=None, title=None):
+    finalise(wb, creator, title)
     wb.save(path)
-    return repack(path)
+    return repack(path, company=creator or ORG)
 
 
-def finalise(wb, creator=None):
+def finalise(wb, creator=None, title=None):
     """One stamp for every workbook: the producer and the dates are the fiction's, so two builds of the
     same pack are byte-identical and no writer name ships (reduce-house-fixes H1)."""
     p = wb.properties
@@ -77,7 +87,7 @@ def finalise(wb, creator=None):
     p.lastModifiedBy = creator or ORG
     p.created = STAMP
     p.modified = STAMP
-    p.title = None
+    p.title = title
     p.subject = None
     p.description = None
     p.keywords = None
@@ -155,6 +165,7 @@ def directory(target, sites, extra, rnd):
 
 # ------------------------------------------------------------------- 2 the state licence register
 def licence_register(target, sites, extra, rnd):
+    oprnd = __import__("random").Random(5519)     # the operator market, off every other stream
     facilities, amendments, reissues = [], [], []
     def num(seq, mod):
         return "%s-%05d" % ("ESRD" if mod == "dialysis" else "AIT", 21000 + seq * 23)
@@ -183,7 +194,7 @@ def licence_register(target, sites, extra, rnd):
     # covering the as-of date
     lapsed = [o for o in allf if o[0].get("kind") == "dropped"][:3]
     for i, (obj, st, mod, area, addr, loc, op, lic) in enumerate(lapsed):
-        new_op = world.OPERATORS[(i + 2) % len(world.OPERATORS)][0]
+        new_op = world.draw_operator("dialysis" if i % 2 == 0 else "infusion", oprnd)
         new_loc = world.LOCALITIES[world.CODES[(i * 4 + 1) % 12]][0]
         new_addr = "%d %s, %s" % (300 + i * 23, world.STREETS[(i * 9) % len(world.STREETS)], new_loc)
         for r in rows:
@@ -198,7 +209,7 @@ def licence_register(target, sites, extra, rnd):
     # five licence numbers reissued to another operator at another address after a lapse
     for i, (obj, st, mod, area, addr, loc, op, lic) in enumerate(allf):
         if obj.get("kind") == "off_plan" and len(reissues) < 8:
-            old_op = world.OPERATORS[(i + 4) % len(world.OPERATORS)][0]
+            old_op = world.draw_operator(mod, oprnd)
             old_addr = "%d %s, %s" % (200 + i * 17, world.STREETS[(i * 13) % len(world.STREETS)], loc)
             rows.append([lic, old_op, "facility", old_addr, loc, area,
                          "in-centre haemodialysis" if mod == "dialysis" else "ambulatory infusion",
@@ -208,7 +219,7 @@ def licence_register(target, sites, extra, rnd):
     # the corporate umbrella rows: one per chain operator per area, carrying the sum of its facilities
     byop = collections.defaultdict(lambda: collections.defaultdict(int))
     for obj, st, mod, area, addr, loc, op, lic in allf:
-        if obj.get("operator_kind") == "chain" or op.endswith(("Group", "Care", "Partners", "Services")):
+        if world.OPERATOR_KIND.get(op) == "chain":
             byop[op][area] += st
     for op in sorted(byop):
         for area in sorted(byop[op]):
@@ -217,7 +228,7 @@ def licence_register(target, sites, extra, rnd):
                          dt.date(2016, 4, 1).isoformat(), "", "active"])
     # eight facilities licensed outside the plan's twelve service areas
     for i in range(8):
-        rows.append(["ESRD-%05d" % (31000 + i * 19), world.OPERATORS[i % len(world.OPERATORS)][0],
+        rows.append(["ESRD-%05d" % (31000 + i * 19), world.draw_operator("dialysis", oprnd),
                      "facility", "%d Marchford Road, Tarnsby" % (40 + i * 13), "Tarnsby", "OUT-OF-AREA",
                      "in-centre haemodialysis", 6 + i % 7, dt.date(2018 + i % 6, 2, 9).isoformat(), "",
                      "active"])
@@ -244,7 +255,8 @@ def licence_register(target, sites, extra, rnd):
     s2.append(["all categories", len(set(r[0] for r in rows))])
     for i, w in enumerate((34, 26), start=1):
         s2.column_dimensions[get_column_letter(i)].width = w
-    save_book(wb, os.path.join(target, "state_licence_register.xlsx"), "State licensing authority")
+    save_book(wb, os.path.join(target, "state_licence_register.xlsx"),
+              "State licensing authority", "Outpatient Facility Licensing Register")
     return rows, reissues, amendments
 
 
@@ -371,7 +383,8 @@ def filing(target, sites, extra, rnd):
                    int(round(v[1] * 46.0 * (1.0 + (ord(c[-1]) % 7) / 40.0)))])
     for i, w in enumerate((22, 24, 18, 20, 26), start=1):
         s2.column_dimensions[get_column_letter(i)].width = w
-    save_book(wb, os.path.join(target, "state_adequacy_filing_2026.xlsx"))
+    save_book(wb, os.path.join(target, "state_adequacy_filing_2026.xlsx"), None,
+              "Annual Network Adequacy Filing, 2026 network year")
     return rows
 
 
@@ -430,7 +443,8 @@ def out_of_network(target, sites, extra, rows_in, rnd):
     for r in ws.iter_rows(min_row=4, max_row=4):
         for c in r:
             c.font = Font(bold=True)
-    save_book(wb, os.path.join(target, "out_of_network_payments_reconciliation_2026.xlsx"))
+    save_book(wb, os.path.join(target, "out_of_network_payments_reconciliation_2026.xlsx"), None,
+              "Out-of-network outpatient dialysis and infusion payments, adjudicated quarters")
     return main, runout
 
 

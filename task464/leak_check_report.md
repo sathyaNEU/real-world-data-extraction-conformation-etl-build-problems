@@ -4,15 +4,16 @@
 
 LEAK stops the ship. REVIEW is a reader's call and the /leak-check command's solver's-eye pass reads every REVIEW line. INFO is a sweep that ran and found nothing or was skipped.
 
-Stump terms swept: decisive, positions, carries, attested, licence, sentence, method, ceiling, encounter, demand, architecture, scores, objective, deliverable, intervals, nothing, spends, control, builds, nonprofit, directory, encounters, attestation, overlap, inside
+Stump terms swept: decisive, positions, demand, ceiling, attested, sentence, inside, station, reading, carries, verdict, control, position, asserted, architecture, scores, intervals, nothing, spends, golden, method, objective, nonprofit, directory, licence
 
 ## 3 answer figures in the pack (REVIEW 3)
 - **REVIEW** `licence_fee_schedule_2026.pdf`: golden figure 105 appears: ...l surcharge 1 to 4 USD 1,340 USD 185 5 to 8 USD 2,105 USD 240 9 to 12 USD 3,460 USD 310 13 to 18 USD 4,...
 - **REVIEW** `network_agreement_2027_capacity_terms.pdf`: golden figure 4.5 appears: ...e required figure rounded once at the area level. 4.5 Corrective action Where an area does not meet the...
 - **REVIEW** `network_agreement_2027_capacity_terms.pdf`: carries 12 of 13 distinctive words of the committed call: 'The 2027 outpatient dialysis and infusion network holds 3,886 weekly treatment slots, and six of the twelve service area'
 
-## 4 design-note vocabulary (REVIEW 1)
-- **REVIEW** `network_agreement_2027_capacity_terms.pdf`: 8 of 25 stump-paragraph terms appear (positions, licence, encounter, demand, deliverable, directory); read whether the document names the move
+## 4 design-note vocabulary (REVIEW 2)
+- **REVIEW** `licence_fee_schedule_2026.pdf`: 3 of 25 stump-paragraph terms appear (station, carries, licence); read whether the document names the move
+- **REVIEW** `network_agreement_2027_capacity_terms.pdf`: 6 of 25 stump-paragraph terms appear (positions, demand, station, position, directory, licence); read whether the document names the move
 
 ## 10 container metadata (INFO 1)
 - **INFO** `-`: audit reported no writer signature (1 lines)

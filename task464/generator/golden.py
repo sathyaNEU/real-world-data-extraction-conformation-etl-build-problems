@@ -119,5 +119,6 @@ def write(out_dir, sites, by_area, extra, rows, lic_rows, filing_rows, dir_rows,
                 c.number_format = "#,##0"
     ws.print_area = "A1:F17"
     ws.page_setup.orientation = "landscape"
-    pack.save_book(wb, os.path.join(out_dir, XLSX_NAME))
+    pack.save_book(wb, os.path.join(out_dir, XLSX_NAME), None,
+                   "Outpatient dialysis and infusion capacity, 2027 network year")
     return dict(call=C, sites=S, ask_a=A, ask_b=B, ask_c=D)

@@ -27,6 +27,7 @@ import world
 
 reportlab.rl_config.invariant = 1
 ORG = "Wrenlow Community Health Plan"
+REGULATOR = "State licensing authority"
 APPROVER = "Katherine Dalton"
 SECOND = "Nicholas Clay"
 FICTION_STAMP = dt.datetime(2027, 1, 5, 9, 14, 0)
@@ -49,7 +50,7 @@ def _styles():
     return body, h1, small, title
 
 
-def _doc(path, story, footer):
+def _doc(path, story, footer, issuer=ORG, title="", author=""):
     buf = io.BytesIO()
     d = BaseDocTemplate(buf, pagesize=LETTER, leftMargin=0.95 * inch, rightMargin=0.95 * inch,
                         topMargin=0.85 * inch, bottomMargin=0.85 * inch, title="", author="",
@@ -65,16 +66,16 @@ def _doc(path, story, footer):
 
     d.addPageTemplates([PageTemplate(id="p", frames=[frame], onPage=paint)])
     d.build(story)
-    _reserialise(buf.getvalue(), path)
+    _reserialise(buf.getvalue(), path, issuer, title, author)
 
 
-def _reserialise(raw, path):
+def _reserialise(raw, path, issuer=ORG, title="", author=""):
     r = pypdf.PdfReader(io.BytesIO(raw))
     w = pypdf.PdfWriter()
     for p in r.pages:
         w.add_page(p)
-    w.add_metadata({"/Title": "", "/Author": "", "/Subject": "", "/Keywords": "",
-                    "/Creator": ORG, "/Producer": ORG,
+    w.add_metadata({"/Title": title, "/Author": author, "/Subject": title, "/Keywords": "",
+                    "/Creator": issuer, "/Producer": issuer,
                     "/CreationDate": FICTION_STAMP.strftime("D:%Y%m%d%H%M%S-06'00'"),
                     "/ModDate": FICTION_STAMP.strftime("D:%Y%m%d%H%M%S-06'00'")})
     fixed = pypdf.generic.ByteStringObject(b"\x14\x64\x27\x03\x11\x05\x09\x02" * 2)
@@ -169,7 +170,11 @@ def agreement(target):
         "Countersigned for the Plan: %s, provider network operations. Schedule 4 supersedes Schedule 4 of "
         "the 2026 agreement in respect of the 2027 network year only." % SECOND, small))
     _doc(os.path.join(target, AGREEMENT), st,
-         "%s  |  Provider Network Agreement 2027, Schedule 4  |  PNA-2027-S4" % ORG)
+         "%s  |  Provider Network Agreement 2027, Schedule 4  |  PNA-2027-S4" % ORG,
+         issuer=ORG,
+         title="Provider Network Agreement 2027, Schedule 4: Outpatient Dialysis and Infusion Capacity"
+               " and Service Area Adequacy",
+         author="%s, network contracting" % ORG)
 
 
 def fee_schedule(target):
@@ -200,7 +205,10 @@ def fee_schedule(target):
         "set from the station count entered at reissue.", body))
     st.append(Paragraph("Fees do not apply to corporate holder registrations.", small))
     _doc(os.path.join(target, FEES), st,
-         "State licensing authority  |  Outpatient facility fee schedule  |  FS-2026-07")
+         "State licensing authority  |  Outpatient facility fee schedule  |  FS-2026-07",
+         issuer=REGULATOR,
+         title="Outpatient Facility Licensing Fee Schedule, effective 1 July 2026",
+         author=REGULATOR)
 
 
 def write(target):

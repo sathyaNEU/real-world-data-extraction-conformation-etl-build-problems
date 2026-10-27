@@ -53,12 +53,40 @@ AREA = {a[0]: dict(code=a[0], name=a[1], role=a[2], growth=a[3], util=a[4], mode
 CLOSED_SHIFT_AREAS = ("SA-02", "SA-07")      # every site in the area closed its third shift
 EXTRA_CLOSED_MAX = 3      # further closures elsewhere, so the closed shift is no marker
 
+# The operator market: a few groups with many sites, several with two or three, a handful of single-site
+# independents. An operator named for one service category runs only that category; two groups carry a
+# neutral name and run both. Sites are drawn from the operators that serve their own category, with these
+# weights, so the column carries no order and no two operators hold the same number of sites.
 OPERATORS = [
-    ("Marrowdale Renal Group", "chain"), ("Pelbrook Kidney Care", "chain"),
-    ("Hainswell Dialysis Partners", "chain"), ("Corrindale Infusion Services", "chain"),
-    ("Westmarch Community Dialysis", "independent"), ("Tolbury Renal Associates", "independent"),
-    ("Kestrel Flats Infusion Suite", "independent"), ("Quilby Point Kidney Center", "independent"),
+    ("Marrowdale Renal Group", "chain", ("dialysis",), 9),
+    ("Pelbrook Kidney Care", "chain", ("dialysis",), 6),
+    ("Hainswell Dialysis Partners", "chain", ("dialysis",), 4),
+    ("Westmarch Community Dialysis", "independent", ("dialysis",), 2),
+    ("Tolbury Renal Associates", "independent", ("dialysis",), 2),
+    ("Quilby Point Kidney Center", "independent", ("dialysis",), 1),
+    ("Corrindale Infusion Services", "chain", ("infusion",), 8),
+    ("Alderwick Infusion Partners", "chain", ("infusion",), 5),
+    ("Kestrel Flats Infusion Suite", "independent", ("infusion",), 2),
+    ("Brinscote Infusion Care", "independent", ("infusion",), 2),
+    ("Lenhardt Health Services", "chain", ("dialysis", "infusion"), 5),
+    ("Varrowmere Clinical Group", "independent", ("dialysis", "infusion"), 2),
 ]
+OPERATOR_KIND = {o[0]: o[1] for o in OPERATORS}
+DIALYSIS_WORDS = ("renal", "kidney", "dialysis")
+INFUSION_WORDS = ("infusion",)
+
+
+def draw_operator(modality, rnd):
+    pool = [(n, wt) for n, kind, cats, wt in OPERATORS if modality in cats]
+    tot = sum(wt for _, wt in pool)
+    x = rnd.random() * tot
+    for n, wt in pool:
+        x -= wt
+        if x <= 0:
+            return n
+    return pool[-1][0]
+
+
 LOCALITIES = {
     "SA-01": ["Ammerly", "North Ammerly", "Pendrick", "Ammerly Heights"],
     "SA-02": ["Bexhollow", "Lower Bexhollow", "Stanmer Cross"],
@@ -85,6 +113,7 @@ def _weeks():
 
 def build(seed=SEED):
     rnd = random.Random(seed)
+    oprnd = random.Random(seed + 991)      # the operator market, drawn off the world's own stream
     sites, sid = [], 0
     for code in CODES:
         a = AREA[code]
@@ -102,11 +131,11 @@ def build(seed=SEED):
                 shifts = rnd.choice([2, 3]) if mod == "dialysis" else rnd.choice([1, 2])
                 ceiling = rnd.choice([7, 8, 8, 10]) if mod == "dialysis" else rnd.choice([4, 4, 5, 6])
             loc = locs[k % len(locs)]
-            op = OPERATORS[(sid * 3) % len(OPERATORS)]
+            op = draw_operator(mod, oprnd)
             name = "%s %s" % (loc, "Dialysis Center" if mod == "dialysis" else "Infusion Center")
             sites.append(dict(
                 site="PS-%05d" % (10400 + sid * 37), seq=sid, area=code, modality=mod, locality=loc,
-                operator=op[0], operator_kind=op[1], name=name,
+                operator=op, operator_kind=OPERATOR_KIND[op], name=name,
                 address="%d %s, %s" % (100 + (sid * 53) % 900, STREETS[(sid * 7) % len(STREETS)], loc),
                 days=days, shifts=shifts, sessions=days * shifts, turns=turns, rounds=days * shifts * turns,
                 ceiling=ceiling, gap=0, role=a["role"], closed_shift=False))
@@ -322,6 +351,7 @@ REDRAWN = (("SA-03", "SA-06"), ("SA-09", "SA-10"), ("SA-01", "SA-12"),
 def extras(sites, seed=SEED + 3):
     """The non-contract sites, the register-only facilities and the 2026 area labels."""
     rnd = random.Random(seed)
+    oprnd = random.Random(seed + 991)
     out = []
     sid = 1000
     for kind, n in (("dropped", DROPPED_N), ("off_plan", OFF_PLAN_N)):
@@ -331,10 +361,11 @@ def extras(sites, seed=SEED + 3):
             locs = LOCALITIES[code]
             loc = locs[(i * 3) % len(locs)]
             mod = "dialysis" if rnd.random() < 0.5 else "infusion"
-            op = OPERATORS[(sid * 5) % len(OPERATORS)]
+            op = draw_operator(mod, oprnd)
             out.append(dict(
                 site="PS-%05d" % (10400 + sid * 37) if kind == "dropped" else "",
-                seq=sid, kind=kind, area=code, modality=mod, locality=loc, operator=op[0],
+                seq=sid, kind=kind, area=code, modality=mod, locality=loc, operator=op,
+                operator_kind=OPERATOR_KIND[op],
                 name="%s %s" % (loc, "Dialysis Center" if mod == "dialysis" else "Infusion Center"),
                 address="%d %s, %s" % (100 + (sid * 71) % 900, STREETS[(sid * 11) % len(STREETS)], loc),
                 licensed=rnd.choice([6, 8, 8, 10, 12]) if mod == "dialysis" else rnd.choice([4, 5, 6, 8]),

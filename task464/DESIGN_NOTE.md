@@ -172,6 +172,18 @@ build's largest Gate F risk and it is named here rather than argued away:** a re
 against the column finds the gap, and the design rests on the claim that a competent analyst maps the clause
 onto the column without testing it.
 
+**The stage-4 leak reader measured that exposure in the pack's own words, and both answers are on the
+record.** Asked whether anything makes it obvious that a station count is not the runnable positions, it
+answered "yes, it is fairly obvious", citing clause 4.2 and the "where used" hedge on the licensed count in
+the same clause. Asked whether a solver would reach the concurrency sweep, it answered "yes, by data shape
+and by the word simultaneously in 4.2". The build ships with that risk recorded rather than redesigned, on
+the author's ruling of 2026-10-27: section 1 requires the unit filed, leaving it open is the fork that
+killed task157's first architecture twice, and this is the Gate C against Gate F dial this lane keeps
+hitting. What makes it tolerable is measured above and not argued: no window width returns the ceiling
+everywhere, the cheap statistics return at least 1.38 times the positions, and the two readings a solver
+might actually take file 3,013 and 3,825 weekly slots against the golden's 3,886 and are named cells in the
+fork grid.
+
 **Test 3, the one the brief asked to be guarded hardest.** A capacity planner handed timed service intervals
 may sweep them for occupancy unsent. Four properties of the cut pack bear on it and all four are measured.
 
@@ -427,12 +439,14 @@ own.
 three tenths or two fifths of the ask weight, the pair would read 29.6, 32.4, 35.1, 37.9 or
 40.6. The ladder, not the asks, is what keeps a response off the call.
 
-**The span floor is not met and is recorded rather than padded.** `supplemental-stumping` Part 4 asks for
-eight or more files on each ask's own path; the measured spans are 6, 1 and 3 files with
-13, 8 and 10 columns. The evidence these three reconciliations need genuinely sits in those
-files, and routing an ask through files it does not read would be the idle complication
-`dataset-generation` section 12 sends back. The column counts are inside the floor's ten to fifteen for asks
-A and C and one short of it for ask B.
+**The span floor, a stated exception.** `supplemental-stumping` Part 4 asks for eight or more files on each
+ask's own path and ten to fifteen columns; the measured spans are 6 files and 13 columns for ask A, 1 file
+and 8 columns for ask B, and 3 files and 10 columns for ask C. The exception is taken deliberately and
+ruled on 2026-10-27: the evidence these three reconciliations need genuinely sits in those files, and
+routing an ask through files it does not read is the idle complication `dataset-generation` section 12 sends
+back. The floor is a proxy for device strength, and the thing it proxies for is measured directly here and
+came out strong: the cracker reaches 0 of ask A's 48 figures, 0 of ask B's 24 and 4 of ask C's 24, the pair
+ceiling is 30.8 and the mirror leakage 4.2 per cent of the ask weight.
 
 ## Layer 1 inventory
 
@@ -649,6 +663,22 @@ to make a solver notice a structure.
   block retires the solver flow, so the pair ceiling and the mirror leakage are the paper measurement made
   exact in `generator/ceiling.py` on the cut pack, plus the portal. Where stage 2's ask sheet said the
   isolated reader is the measurement, that sentence described the retired practice and is corrected.
+
+- Stage 3 containers and naming, four defects the stage-4 leak reader found and the author verified
+  (2026-10-27), each fixed in the generator with no graded figure moving (`figures.json` byte-identical
+  before and after): the three workbooks read `<Application>Microsoft Excel</Application>` beside
+  `<AppVersion>3.1</AppVersion>`, which is openpyxl's own version and an impossible pair, now 16.0300 with
+  the issuing body as the Company; `licence_fee_schedule_2026.pdf` carried the health plan as its Producer
+  and Creator although it is the state licensing authority's own fee schedule, so each document now carries
+  the body that issued it and the register's workbook already did; both PDFs shipped an empty Title and
+  Author, now filled from each document's own masthead; and the operator column cycled eight names in fixed
+  order through all 40 sites, which anyone sorting by site identifier sees, and produced systematic
+  mismatches such as an infusion-named operator running a haemodialysis centre. Operators are now drawn per
+  site from the operators that serve the site's own category, on weights that give one group 8 sites and
+  three operators 1 each, and the realism sweep asserts all four: a consistent application and version pair
+  with a title and an author on every container, no fixed-order period of 1 to 12 in the operator column,
+  uneven site counts, and no operator whose name names one service category while its sites deliver
+  another.
 
 ## Portal result and the diagnosis, 2026-10-27
 

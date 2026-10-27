@@ -521,7 +521,30 @@ def realism(st):
     ok("realism no placeholder identity ships",
        not re.search(r"\b(John Doe|Jane Doe|Acme|Company A|Test |Sample |Lorem)\b",
                      st["agreement_text"] + " ".join(r[3] for r in st["lic_rows"])))
-    ok("realism every container stamp is the fiction's", st["pdf_meta_clean"])
+    ok("realism every document's producer, title and author are the issuing body's",
+       st["pdf_meta_clean"], "; ".join(st["pdf_meta_detail"]))
+    for name, (app, core) in st["books"].items():
+        ok("realism %s states a spreadsheet application and a version that go together" % name,
+           "<Application>Microsoft Excel</Application>" in app and "16.0300" in app
+           and "openpyxl" not in app.lower() and "3.1</AppVersion>" not in app, app[:160])
+        ok("realism %s carries a title and a named author" % name,
+           "<dc:title" in core and "<dc:creator" in core, core[:120])
+    # the operator market: drawn per site, uneven, and named for what its sites actually do
+    ops = [(s["site"], s["operator"], s["modality"]) for s in
+           sorted(st["sites"], key=lambda x: x["site"])]
+    seq = [o for _, o, _ in ops]
+    periodic = [p for p in range(1, 13)
+                if len(seq) > p and all(seq[i] == seq[i + p] for i in range(len(seq) - p))]
+    ok("realism the operator column runs in no fixed order", not periodic, str(periodic))
+    cnt = collections.Counter(seq)
+    ok("realism the operators hold an uneven number of sites",
+       len(set(cnt.values())) > 1 and max(cnt.values()) >= 3 * min(cnt.values()),
+       str(sorted(cnt.values())))
+    mism = [(o, m) for _, o, m in ops + [(e["site"], e["operator"], e["modality"]) for e in st["extra"]]
+            if (any(w in o.lower() for w in world.INFUSION_WORDS) and m != "infusion")
+            or (any(w in o.lower() for w in world.DIALYSIS_WORDS) and m != "dialysis")]
+    ok("realism no operator's name names one service category while its sites deliver another",
+       not mism, str(sorted(set(mism))[:4]))
     ok("realism no document's stated date precedes an event it describes", st["dates_coherent"])
     ok("realism no extract carries a date after its own pull", st["pull_dates_coherent"])
     ok("realism no em dash anywhere in the bundle", st["no_em_dash"])
@@ -928,11 +951,22 @@ def documents_text(st):
     fs = os.path.join(st["target"], "licence_fee_schedule_2026.pdf")
     lenient, strict, fees = pdf_text(ag), pdf_text_strict(ag), pdf_text(fs)
     import pypdf
-    meta_clean = True
-    for p in (ag, fs):
+    import docs
+    meta_clean, meta_detail = True, []
+    for p, issuer in ((ag, docs.ORG), (fs, docs.REGULATOR)):
         m = pypdf.PdfReader(p).metadata or {}
-        if "Wrenlow" not in str(m.get("/Producer", "")) or "2027" not in str(m.get("/CreationDate", "")):
+        for key, want in (("/Producer", issuer), ("/Creator", issuer)):
+            if str(m.get(key, "")) != want:
+                meta_clean = False
+                meta_detail.append("%s %s is %r, not the issuing body" % (os.path.basename(p), key,
+                                                                          str(m.get(key, ""))))
+        if "2027" not in str(m.get("/CreationDate", "")):
             meta_clean = False
+            meta_detail.append("%s carries no in-fiction creation date" % os.path.basename(p))
+        for key in ("/Title", "/Author"):
+            if len(str(m.get(key, "")).strip()) < 8:
+                meta_clean = False
+                meta_detail.append("%s %s is empty" % (os.path.basename(p), key))
     texts = {}
     for p in sorted(glob.glob(os.path.join(st["target"], "*"))):
         if p.endswith(".pdf"):
@@ -952,8 +986,15 @@ def documents_text(st):
              and max(dt.date.fromisoformat(r[9]) for r in st["oon_runout"]) <= pack.RUNOUT_PULL
              and max(dt.date.fromisoformat(r[3]) for r in st["oon_main"] + st["oon_runout"])
              <= dt.date(2026, 12, 31))
+    books = {}
+    for f in sorted(glob.glob(os.path.join(st["target"], "*.xlsx"))):
+        import zipfile
+        z = zipfile.ZipFile(f)
+        app = z.read("docProps/app.xml").decode("utf-8") if "docProps/app.xml" in z.namelist() else ""
+        core = z.read("docProps/core.xml").decode("utf-8")
+        books[os.path.basename(f)] = (app, core)
     return dict(agreement_text=lenient, agreement_text_strict=strict, fee_text=fees,
-                pdf_meta_clean=meta_clean, no_em_dash=no_em, no_capacity_figure=cap,
+                pdf_meta_clean=meta_clean, pdf_meta_detail=meta_detail, books=books, no_em_dash=no_em, no_capacity_figure=cap,
                 dates_coherent=dates, pull_dates_coherent=pulls)
 
 
