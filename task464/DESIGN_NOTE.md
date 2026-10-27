@@ -1,533 +1,182 @@
-# task464 design note: the 2027 outpatient capacity register (architecture 3, spent)
+# task464 design note: the 2027 adult skills place slate (architecture 6)
 
-Status lives in `pipeline.json`; this note holds the design. **Read `## Architecture 4: the cell screened and
-refused, measured 2026-10-27` at the foot of this file before anything else, then `## Tried and rejected`.**
-Architecture 1 (the Wendlemere building emissions slate) was sent back by the determinism judge, architecture 2
-(placing the retiring reading test's scores on the new scale) was solved on the portal because its decisive step
-was psychometrics' own named method for the deciding quantity, architecture 3 (below) was sent back at the stage
-4 re-judge on Gate C and its world then measured closed, and architecture 4's screen of the author's fixed
-education and ETL pairing refused all four candidate decisive steps on measured arithmetic. The body of this
-note from `## Draw` to `## Leak check` describes architecture 3 and is kept as the record of a spent design.
+Status lives in `pipeline.json`; this note holds the design. Read `## Tried and rejected` and the measured
+screens at the foot of this file before resuming. Architecture 1 (the Wendlemere building emissions slate) was
+sent back by the determinism judge. Architecture 2 (placing the retiring reading test's scores on the new scale)
+was solved on the portal, because its decisive step was psychometrics' own named method for the deciding
+quantity. Architecture 3 (the 2027 outpatient capacity register) was sent back at the stage 4 re-judge on Gate C
+and its world then measured closed; its body is not kept, and its measured record is in `## Tried and rejected`
+and `## Portal result and the diagnosis, 2026-10-27`. Architecture 4 screened the author's fixed education and
+ETL pairing and refused all four candidate decisive steps on measured arithmetic. Architecture 5 screened all six
+ETL cells in the taxonomy and refused or barred every one, which closed the ETL objective for this number.
 
 ## Draw
 
-- **Card:** `.claude/skills/fingerprint/cards/task464.json` (architecture 3, architectures 1 and 2 in `lineage`),
-  registered 2026-10-27, guard WARN only, 299 cards validated. The one WARN is `repeat.question_form`: how-many
-  also opens task141's prompt, two builds back. Answered: the decision is a count of weekly treatment slots, so
-  how-many is the form the decision gives (the guard's own fix line), and task141 counted re-arrests at a horizon.
-- **Pairing:** healthcare-delivery-health-economics / payment-claims-health-plan-analytics, objective Data
-  Extraction & Conformation (ETL), prompt shape 07 (grid of cells: each area cell).
-- **Shape 07 against the two the taxonomy calls native for ETL.** Shapes 03 and 15 both announce the decisive
-  step: a bridge between totals makes its own line items name the step from attested stations to deliverable
-  positions, and fields-to-one-schema makes each field's transform a filed instruction. A grid of twelve area
-  cells grades the same conformation without naming how any field is built.
-- **Niche:** a nonprofit Medicaid managed care plan's network unit conforming one capacity dataset for its 2027
-  outpatient dialysis and infusion contracts, out of the provider directory, the state licence file, the staffing
-  rosters and four years of timed treatment encounters.
-- **Strategy:** `binding_constraint`, gap `population`, Gate G `binding_constraint`, generators `G8`, decisive
-  rule filed `false`, official decoy `false`, validated decoy `false`, `stump_class: analytical`.
-- **Data-native sentence.** A treatment encounter is recorded with the clock time the chair was occupied, because
-  infusion and dialysis are billed in timed units, so this pack carries four years of a site's own service
-  intervals; the greatest number of them that have ever run together at a site is a measurement of how many of
-  its positions can be worked at one time, and nothing else in the pack measures that, because a directory
-  attestation and a licence both count the positions that exist rather than the positions that can run.
-- **Sources, one line each.** `guard.py mechanisms --objective etl` was read before drawing. task487 (emissions
-  inventory ETL) spends the insight that a reported total is assembled from sources at different vintages, which
-  this build does not use. task485 (census register ETL) spends coverage of a register against an independent
-  enumeration, which is a completeness question rather than a capacity one. task137, the nearest build in this
-  client domain, spends demand censored by refusals at a capacity-bound service, which is the mirror of this
-  build and is about demand, not about how much a site can deliver. task69 spends overlap between the
-  contributions of a capped set's members, between units; this build's overlap is inside one unit, between its
-  own positions. Nearest driver on file is 0.08 (task479, lineage).
-- **Fiction.** An unnamed state of the United States, USD, a nonprofit Medicaid managed care plan contracting
-  outpatient dialysis and infusion capacity, forum `operations_desk`, forcing event a purchase order or contract,
-  org family `nonprofit_or_charity`. People drawn with `guard.py names`: Katherine Dalton, Nicholas Clay.
-- **Deliverables:** `outpatient_capacity_2027.csv` (one row per contracted site) and `area_capacity_2027.xlsx`
-  (the twelve service areas against the adequacy standard, with the chart).
-- **The call faces forward:** the 2027 network year is not yet contracted at the as-of date.
+- **Card:** `.claude/skills/fingerprint/cards/task464.json` (architecture 6; architectures 1, 2 and 3 in
+  `lineage`), registered 2026-10-27, guard WARN only, nearest driver on file 0.05.
+- **The one WARN answered.** `repeat.question_form`: which also opens task304's prompt. The decision is a pick of
+  one delivery partner from six, so which is the form the decision gives (the guard's own fix line), and the
+  alternatives each describe a different decision: how many would ask for a number of places, how much for a
+  budget, whether for a go or stop on one partner.
+- **Pairing:** education-learning-sciences / randomized-quasi-experimental-program-evaluation, objective
+  Experiment & Causal Analysis, prompt shape 11 (before and after with a control, each unit's effects). The
+  pairing has never been built and the cell has never been drawn; in the taxonomy
+  `randomized-quasi-experimental-program-evaluation` serves EC and no other objective.
+- **Why this objective, measured.** experiment-causal carries 9 cards with 30 of its 32 cells never drawn, the
+  least spent of the eight objectives. ETL carries 66 cards across 6 cells and is the only objective in the
+  corpus with no never-drawn cell, which is what architecture 5 established when it closed ETL for this number.
+- **Why shape 11 over 07 and 13.** The criteria come from each partner's own effects, three figures per partner
+  across six partners, which is the structure of the answer here. A grid of cells (07) would grade partner by
+  intake cells that the call never separates, and scenarios with a flip point (13) would make the dial the
+  object when the decision is a pick.
+- **Niche:** a combined authority's adult skills team choosing which of six delivery partners' models to scale
+  for the 2027 funded place allocation, from two intakes of ballot-rationed place offers, waitlist re-offers that
+  lapse at the enrolment census date, and qualification achievement records.
+- **Strategy:** `population_selection`, gap `population` then `objective`, Gate G `binding_constraint`,
+  generators `G9` (downstream survival against upstream acquisition) then `G1` (unit of value), decisive rule
+  filed `false`, official decoy `false`, validated decoy `false`, `stump_class: analytical`.
+- **Data-native sentence.** A place is funded before the learner decides, and a refused place can be passed down
+  the ballot only until the enrolment census date closes the intake, so each partner's funded places convert to
+  enrolments at a rate set by how much of its waitlist it works before that date. This pack carries two intakes
+  of ballot ranks and dated offers for 55,362 applications, and the converting share runs from 0.455 to 0.963
+  across the six partners. Nothing in the pack states it; it is only in the allocation records.
+- **Sources, one line each.** `guard.py mechanisms --objective experiment-causal` was read before drawing, and
+  the whole corpus was screened for the family. task266 spends the cumulative incidence against a product-limit
+  estimate, a survival estimator choice, in a community college; this build's outcome is observed for everyone
+  and carries no censoring. task268 spends informative censoring by clinical state; nothing here is lost to
+  follow-up. task44 and task83 spend carrying a pooled effect onto a population with a different mix; this call
+  is among the same partners that were balloted. task12 and task15 spend recovering a population the records
+  hide; every offer, ballot rank and funded place is shipped here. task270 v6 spends one join over a coverage gap
+  and was read as a planted flip; nothing here is mis-recorded.
+- **Fiction.** An unnamed combined authority area in England, GBP, a combined authority commissioning adult
+  education places from six delivery partners, forum `council_or_assembly`, forcing event `period_close`, org
+  family `local_government`. People drawn with `guard.py names --geo england --seed 464`: Glenn Taylor, Gail
+  Dobson.
+- **Deliverables:** `partner_place_yield_2027.csv` (one row per partner) and `commissioning_slate_2027.xlsx`
+  (the six partners against the yield, with the chart).
+- **The call faces forward:** the 2027 funded place allocation is not committed at the as-of date.
+- **Measured at the draw,** closed form and then on individual-level data, six partners, 55,362 applications:
+
+  | route | what it computes | names | golden's rank |
+  |---|---|---|---|
+  | rung 0 | participants against non-participants | Brenlow | 4 of 6 |
+  | rung 1 | ballot winners who enrolled against ballot losers | Calderwick | 4 of 6 |
+  | rung 2 | the first-round ballot ITT | Calderwick | 5 of 6 |
+  | rung 2b | that ITT grossed per funded place | Brenlow | 4 of 6 |
+  | rung 3 | the clean offer contrast, per learner offered | Brenlow, 13.7 | 4 of 6 |
+  | golden | per 100 funded places | Dunthorpe, 19.4 | 1, margin 1.207 |
+
+  Bin test at a bin of 1.0 per 100 places: (a) 7.98, (b) 0.000, (c) 3.18, ratio 2.51, and (a) is not the smallest
+  rung gap (0.41). (b) is zero because the golden reduces to 100 times offers ever made over places funded times
+  the clean contrast, which carries no free parameter: there is no estimator family to spread. Call stability 287
+  of 300 draws. Fill rates by partner 0.455, 0.637, 0.501, 0.959, 0.963, 0.646.
 
 ## Default path
 
 A competent analyst builds this without hesitating, from the prompt's words and the files' grain.
 
-1. Read `provider_directory_*.csv` and keep the outpatient dialysis and infusion sites with a 2027 contract
-   intent, resolving each site's identifier through the directory's own attestation cycles (a site appears once
-   per cycle, the latest row current).
-2. Join the state licence file on the service address to confirm each site is licensed and to carry its licensed
-   station count, reconciling the corporate-entity rows against the service-address rows.
-3. Read the staffing rosters and count each site's rostered treatment sessions a week by position.
-4. Conform the two encounter layouts across the clearinghouse change and aggregate four years of encounters to
-   each site's treatments a week, to measure realised volume.
-5. Take each site's capacity as its attested stations times its rostered sessions a week, times the treatments a
-   position runs in a session.
-6. Reconcile the product against realised volume and against the adequacy contract's utilisation standard: the
-   ratio sits in a plausible band at most sites, and the sites where it does not are the ones the plan already
-   knows are growing.
-7. Roll the sites up to the twelve service areas and compare each area against the standard.
+1. Stack the two intakes' enrolment extracts across the intake-system change and conform the learner records,
+   resolving identifiers across the provider merger that renamed two partners mid-period.
+2. Read the place ballot records and keep, per partner and intake, each application with its ballot rank.
+3. Join the achievement release to the learners, taking the revised release where it supersedes the preliminary
+   one, and define the outcome as the qualification achieved by the award date.
+4. Reject an attendance-based comparison, because enrolment is the learner's choice: use the ballot instead, so
+   the contrast is randomised.
+5. Count every offer the records hold rather than first-round offers alone, so the treated group is every
+   applicant ever offered a place and the comparison group is the applicants never offered one.
+6. Compute each partner's contrast as the achievement rate among applicants ever offered a place less the rate
+   among those never offered, and express it per 100 learners offered a place.
+7. Rank the partners on that figure and recommend the top one.
 
-Ends on: a 2027 network capacity 1.2012 times the golden (4,668 weekly treatment slots against 3,886 on the cut
-pack), with three of the twelve service areas filed above the adequacy standard that are below it.
-
-Golden: the same conformation with each site's deliverable positions set to the greatest number of its own
-treatments that have ever run at one time, which at about a third of the sites is several short of the stations
-it attests and the licence lists.
+`Ends on:` Brenlow, 13.7 additional achievements per 100 learners offered a place, with Dunthorpe fourth of six.
+`Golden:` Dunthorpe, 19.4 additional achievements per 100 funded places, Brenlow second at 16.1, margin 1.207.
 
 ## Stump sentence
 
-The default path multiplies each site's attested stations by its rostered sessions, ties the product to realised
-volume and the adequacy standard, and files a 2027 network capacity 1.2012 times the golden with three of
-the twelve service areas wrongly above the standard, because the stations a site attests are the positions it has, not the positions
-it can work at one time, and at about a third of the sites no hour in four years of its own timed encounters has
-ever had more than a fixed number of treatments running together.
+A competent analyst who uses the ballot rather than attendance, counts every offer the records hold and builds a
+clean randomised contrast expresses each partner's effect per learner offered a place and commits to Brenlow at
+13.7 per 100, placing Dunthorpe fourth of six, because that figure prices the effect on a learner who takes a
+place rather than the return on a place the authority funds; Dunthorpe's waitlist fills 96 per cent of its funded
+places against Brenlow's 64, so per 100 funded places Dunthorpe returns 19.4 against Brenlow's 16.1.
 
 ## Three rules
 
-Task type: payment-claims-health-plan-analytics, in its provider network capacity and adequacy form: conforming
-one capacity dataset for a contract year out of a provider directory, a state licence register, staffing rosters
-and a timed encounter extract, which is the card's subdomain and serves Data Extraction & Conformation (ETL).
+`Task type:` randomized-quasi-experimental-program-evaluation, which serves Experiment & Causal Analysis in the
+client taxonomy and no other objective.
 
-Domain test: the deciding quantity is each contracted site's deliverable treatment capacity for the 2027 network
-year, which health plan analytics builds as the positions a site can work times its staffed sessions and tests
-against the utilisation standard the adequacy contract sets; put a warehouse's nouns in and there is no staffed
-session, no treatment interval and no position a patient occupies for a fixed span, so the quantity disappears.
+`Domain test:` the deciding quantity is what one funded place delivers in additional qualification achievements,
+estimated the way programme evaluation estimates a rationed offer, as a within-partner contrast on the place
+ballot carried to the unit the commissioner buys.
 
-Swap: "how many pallet positions the 2027 network holds, from the yard directory, the operating permit, the shift
-rosters and four years of timed putaway records" keeps the sentence and loses the move: a pallet position is
-occupied by a pallet and nothing stops every position being full at once, so there is no ceiling below the count
-of positions and the conformation is a join.
+`Swap:` put hospital beds or megawatt-hours in the call sentence and it stops making sense, because no census
+date strands a bought unit unused: a bed or a megawatt-hour is consumed when it is supplied, while a funded place
+is committed before the learner decides and lapses if the intake closes before the waitlist reaches a taker.
 
-Layer 1: a directory refreshed on each site's own attestation cycle; licence rows at both the corporate entity
-and the service address; two encounter layouts across a clearinghouse change (one carries start and stop, the
-other start and a duration in minutes); treatment start and stop times in local clock with no offset on one feed;
-rosters by position rather than by named staff; sites that moved address and kept their identifier; a group
-practice billing three sites under one tax identifier; cancelled and no-show encounters carried with no stop time.
-Each is written by the system that produces it, none is placed to be caught, and each is asserted neutral on the
-call.
+`Layer 1:` two enrolment-extract layouts across an intake-system change, a provider merger renaming two partners
+mid-period, academic year against funding year, a preliminary and a revised achievement release overlapping,
+learner identifiers re-issued across providers, thousands against units in the funding schedule. Each is produced
+by the authority's own systems and none carries the stump.
 
-Layer 2: allocation under a constraint (`own:the ceiling the overlaps fix`): the call flips on reading each site's
-deliverable positions off the overlaps of its own service intervals rather than off the station count the
-directory and the licence carry.
+`Layer 2:` family `estimand_identification`. The decisive choice is the unit the effect is expressed in, which
+forces the fill rate to be measured from the allocation records.
 
-Decisive step: setting each site's deliverable positions to the greatest number of its own treatments ever running
-concurrently, recovered by sweeping four years of its service intervals, rather than to the stations it attests or
-is licensed for; in the field's words, measuring the site's effective chair capacity instead of taking its
-attested chair count.
+`Decisive step:` express each partner's randomised offer effect per funded place rather than per learner offered
+or per learner enrolled, which requires measuring what share of each partner's funded places ever reached a
+taker before the census date.
 
-Not semantics: every field, code, unit and definition read correctly leaves the easy route on the wrong answer.
-The attested station count is read correctly as the stations the site attests and is true of the site; the licence
-count is read correctly as the stations the state licensed; no field, label, dictionary entry or definition in the
-pack names deliverable positions, effective capacity or a ceiling, so there is no field whose correct reading
-supplies the figure. The figure has to be constructed from the encounters' overlaps.
+`Not semantics:` every field is read correctly on the easy route. The offer records, ballot ranks, census date
+and achievement release are all read as they are, and the route still files Brenlow, because the error is the
+denominator the figure is expressed over, not any field's meaning. Measured: per enrolled learner names Brenlow,
+per learner offered names Brenlow, per funded place names Dunthorpe.
 
-Not rule application: the adequacy contract files the population, the window, the unit and the standard, and no
-rule or procedure in the pack says how a site's deliverable positions are determined; executing every filed rule
-with the attested station count files the wrong total, so the step no rule performs is the reconstruction of the
-positions.
+`Not rule application:` no shipped rule converts an offer contrast to a per-place yield, and no shipped document
+publishes any partner's fill rate or its places funded against places filled; the two sit in different systems
+and the ratio has to be constructed.
 
-Analyst test: a strong analyst who resolves the directory's attestation cycles, reconciles the licence file's two
-grains, conforms both encounter layouts and counts the rostered sessions correctly takes attested stations times
-rostered sessions, reconciles it against realised volume and the utilisation standard, and files a network
-capacity 1.2012 times the golden (4,668 weekly treatment slots against 3,886) with three of the twelve service areas
-wrongly above the standard. Executed in `generator/checks.py` on the clean truth as the R3a assertion.
+`Analyst test:` the easy route is step 6 of the default path, the clean randomised contrast expressed per learner
+offered a place, and it files Brenlow at 13.7 per 100 with Dunthorpe fourth of six. Changing the decisive step
+alone, to per funded place, files Dunthorpe at 19.4.
 
-Estimand: the adequacy contract's capacity section, filed in the contract document at authority: for each site
-the plan intends to contract for the 2027 network year, the treatment slots a week the site can deliver, counted
-as its deliverable treatment positions times the treatment sessions its roster staffs in a week times the
-treatments a position runs in a session; and for each of the twelve service areas the sum over its sites against
-the standard. It fixes the population, the window, the unit and the comparison, and says nothing about how a
-site's deliverable positions are found.
+`Estimand:` the additional learners achieving the qualification per 100 places the authority funds at a partner
+for the intake, counting a funded place that no learner took up, filed in the commissioning schedule.
 
-No decoy: nothing is planted to be caught. The directory's attestation is a true attestation of the stations the
-site has, the licence file is a true licence, no memo, briefing, draft or stakeholder figure argues for a method
-or for a capacity number, and no file counts or ranks the areas against the standard.
+`No decoy:` nothing is planted to be caught. There is no copied block, no hidden rule, no memo arguing a partner,
+and no stakeholder figure written to carry the wrong answer; the allocation records are an honest account of a
+ballot with a waitlist.
 
-No certified replay: no certified or published figure reproduces a method. The capacity report that ships as the
-context artifact is the prior year's, states its own basis and is ruled out by the contract's window, and no table
-of site capacities or area totals ships.
+`No certified replay:` the method is not hidden and recovered by reproducing certified figures. No corpus of past
+commissioning decisions ships, and no published figure is reproduced only by the golden's route.
 
-Lesson: capacity assembled from the positions a unit reports is an upper bound, not a measurement, and where the
-unit's own service record is timed, the positions it can work at one time is measurable and smaller; no build on
-file teaches a ceiling recovered from a unit's own overlaps (task69 overlaps the contributions of different
-members of a capped set, task137 censors demand at a capacity bound).
-
-## Readability screen
-Seven tests per rung (`stumping` 2.1), verdict last. The decisive rung is the concurrency ceiling and it
-comes out `silent`. Every figure below is measured on the cut pack and written from
-`generator/measurements.json`.
-
-| Rung | 1 filed sentence | 2 schema | 3 reflex | 4 control bench | 5 hygiene | 6 linear | 7 dedicated organ | Verdict |
-|---|---|---|---|---|---|---|---|---|
-| R0 attested stations | yes, the directory's `attested_stations` names the count | yes, one column | yes, the first construction anyone builds | no control scores it | no sweep refutes it | yes, one product | no | readable |
-| R1 the state licence's station count | yes, the register names the licensed stations | yes, one column after one join | yes, the reflex of an analyst who distrusts a self-attestation | the 2026 filing's station column ties to it | the register's two grains are a battery finding | yes, one product | no | readable |
-| R2 the revealed volume ceiling | no sentence names it | no, it is built from the encounter record | yes, revealed throughput is a capacity planner's second move | no control scores it | the battery's volume-against-capacity reconciliation points at it | close to it, one maximum over a group-by on site and week | no | readable |
-| R3 the concurrency ceiling **(decisive)** | the agreement defines the unit's term and nothing else (argued below) | no: the encounter record carries no session, chair, shift or position key, so there is no row predicate and no header-found join, asserted over every shipped column name | no (argued below) | no control, corpus or published figure scores any station basis; the 2026 filing constructs no capacity figure at all, asserted | no: the five sweeps find the attestation cycles, the register's grains and the two layouts, and the volume-against-capacity tie passes on every basis, apparent utilisation on attested stations running 0.419 to 0.951 with no site at or over 1 | no: a maximum over 639,009 reconstructed intervals, and corr(the correction an area takes, the area's own size) is far from one | no: the timed extract is the file the standard's own demand side needs | silent |
-
-**Test 1, answered as it stands rather than as stage 2 wrote it.** Stage 2's cell said nothing in the pack
-names deliverable positions. That is not true of the cut pack and could not be: `determinism-check` section 1
-requires the estimand's unit filed literally, so Schedule 4 clause 4.2 carries one sentence, "Deliverable
-treatment positions means the treatment positions a Site is able to operate simultaneously". What the clause
-does not carry is a route: it names no file, no column, no statistic and no window, and the obvious
-operationalisation of it is the directory's own `attested_stations` column, which is what the default path
-takes. The sweep for the words a route would need is asserted: the agreement does not contain `concurrent`,
-`overlap`, `greatest number`, `at one time`, `effective capacity`, `water loop`, `compounding hood` or
-`busiest week`, each checked through the same extractor the positive controls run through. **This is the
-build's largest Gate F risk and it is named here rather than argued away:** a reader who tests the clause
-against the column finds the gap, and the design rests on the claim that a competent analyst maps the clause
-onto the column without testing it.
-
-**The stage-4 leak reader measured that exposure in the pack's own words, and both answers are on the
-record.** Asked whether anything makes it obvious that a station count is not the runnable positions, it
-answered "yes, it is fairly obvious", citing clause 4.2 and the "where used" hedge on the licensed count in
-the same clause. Asked whether a solver would reach the concurrency sweep, it answered "yes, by data shape
-and by the word simultaneously in 4.2". The build ships with that risk recorded rather than redesigned, on
-the author's ruling of 2026-10-27: section 1 requires the unit filed, leaving it open is the fork that
-killed task157's first architecture twice, and this is the Gate C against Gate F dial this lane keeps
-hitting. What makes it tolerable is measured above and not argued: no window width returns the ceiling
-everywhere, the cheap statistics return at least 1.38 times the positions, and the two readings a solver
-might actually take file 3,013 and 3,825 weekly slots against the golden's 3,886 and are named cells in the
-fork grid.
-
-**Test 3, the one the brief asked to be guarded hardest.** A capacity planner handed timed service intervals
-may sweep them for occupancy unsent. Four properties of the cut pack bear on it and all four are measured.
-
-1. **The plateau is in the month without being the day's signature.** The ceiling is reached in every one of
-   the 48 months at all 40 sites, and the hour of the day at which a site runs fullest sits at that site's
-   own modal hour on a median of 0.29 of its site-days (worst 0.48) across a median of 10
-   distinct hours. The round that saturates is drawn per day, so there is no fixed clock window at which a
-   site is always full.
-2. **The statistics a solver runs for another reason do not return the position count.** The most treatments
-   a site takes in one day is at least 1.38 times its positions, and the most distinct members in one
-   day at least 1.38 times, so neither a per-day count nor a per-member count lands on it.
-3. **The statistics that do return it are the decisive step in other clothes, and none works at a width a
-   solver could validate.** The most treatments starting inside a sliding window equals the position count
-   at 18 of 40 sites at one hour, 36 at two and 25 at three; on a fixed clock block the
-   counts are 15, 30, 24 and 16 of 40 at one, two, three and four hours. No width
-   returns it everywhere, the count is a lower bound that is slack at the rest, and arriving at the right
-   width means already knowing the quantity is positions and that the width is a treatment's own length,
-   which is the stop or the length column. Read as a basis rather than as a check, the clock-hour reading
-   files 3,013 weekly slots and the two-hour reading 3,825, neither the golden's 3,886, so each is a
-   named wrong cell in `## Ladder`'s grid rather than a route to the answer.
-4. **A solver who does sweep occupancy finds the ceiling at once, and that is determinism rather than a
-   leak.** SF1 is closed on a hard plateau, so every maximum-based reading returns the same integer at all
-   40 sites. **Verdict: the plateau is legible to the sweep and to nothing else, and the sweep is the
-   decisive step.** Nothing in the pack gives a reason to sweep occupancy: the demand side needs weekly
-   counts, the hygiene battery compares volumes against capacity and passes, and no shipped column, filed
-   sentence or control compares a site's concurrent treatments with its station count.
-
-**Test 7, answered by naming the other use.** Delete the decisive step and the pack still carries four
-contract years of timed encounters, because the standard's own demand side is the area's 2026 treatments a
-week and this is the only file that holds them, and because dialysis and infusion are billed in timed units.
-The same rows supply the demand base, the growth test and ask A's denominator, so the organ's presence
-carries no information about the decisive step.
-
-## Semantic fork table
-One row per term of the main ask and per convention the main computation needs. Every id is asserted in
-`generator/checks.py` and recomputed from the bundle by `generator/verify.py`. SF1 is closed on the data,
-never by a sentence saying how to compute a ceiling: a filed method would make the decisive step rule
-application, which the client's rule 3 bans.
-
-| id | Term or convention | Golden reading | Alternatives, and the call under each | Ruled out by |
-|---|---|---|---|---|
-| SF1 | a site's deliverable positions | the greatest number of the site's own treatments running at one time | the record maximum; each of the 4 yearly maxima; each of the 48 monthly maxima; the 12 and 24 month look-backs; a high percentile of concurrency over treating time | C1 on the data, a hard plateau, measured at 40 of 40 sites: the record maximum, all 4 yearly maxima, all 48 monthly maxima and the 12 and 24 month look-backs are one integer, and one more than it never runs. A site holds every position occupied for 0.062 to 0.213 of its treating minutes, so the 95th and 99th percentiles return the same integer at 40 and 40 of 40 sites. The 90th returns it at 27 of 40, and where it does not it returns a number the record itself refutes, since the record shows that many treatments running together; a percentile under 1 is not a reading of a maximum. Asserted per site as `SF1` |
-| SF2 | the interval convention | half-open, start inclusive and stop exclusive | closed, or stop inclusive and start exclusive. Same call | C1: no treatment at a site starts on the minute another stops, measured at 0 coincident endpoints over all 40 sites, and every position's turnover is strictly positive. Asserted as `SF2` |
-| SF3 | cancelled and no-show encounters | no interval: the record carries no stop time and no length for them | read as instantaneous, or dropped. Same call | C1: 7,576 such rows ship, each placed where the site was running at least two positions short, so the ceiling and all twelve verdicts are unchanged under either reading. Asserted as `SF3` |
-| SF4 | the local clock with no offset on the 2023 and 2024 feed | the site's own local clock | a site-level offset applied, or the feed read as coordinated time | C1: an overlap count inside a site is invariant under any site-level offset, asserted by recomputing every site's maximum under a shifted clock, and no interval spans the repeated hour of the autumn fall-back (0 of 639,009). Asserted as `SF4` |
-| SF5 | a treatment session | Schedule 4 clause 4.2: a staffed block in which each position delivers its treatments for that block | a shift, a day, a chair-day | the clause, and the roster reports `treatment_sessions_week` as one integer per site current at the position date, asserted one row per site |
-| SF6 | a week | clause 4.3: one fifty-second of the contract year | 52.143 weeks, or the weeks in which the site treated | the clause; `SF6` asserts the twelve verdicts identical under 52 and under 52.143 |
-| SF7 | the attestation cycle current at the position date | the site's latest cycle row at or before it | the latest row in the file, the latest of the current calendar year | C1: every site's latest cycle row precedes the position date by 30 days or more and no site carries two rows in a cycle. Asserted as `SF7` |
-| SF8 | the register's two grains | the facility row at the service address | the corporate umbrella row | clause 4.2 files the facility row as the basis, and a corporate row equals the sum of its own facility rows in its area. Asserted as `SF8` |
-| SF9 | the population | the sites carrying a 2027 contract intent on the current cycle | every site in the directory, every licensed site in the twelve areas, the 2026 contracted set | clause 4.1 files it, and the intent is recorded once per site and only on the current cycle, asserted at 40 sites |
-| SF10 | the treatments a position delivers in a session | clause 4.2's per-category figure, one and two | a site-level figure read off the encounters | the clause; `SF10` asserts no site carries both service categories |
-| SF11 | projected 2027 demand | clause 4.3: the area's 2026 contract year treatments a week grown by its projected factor | the 2026 calendar year, the last four quarters, a four-year trend | the clause files the base, the window and the factor's source, and the contract year is the calendar year, asserted by selecting the same encounters both ways |
-| SF12 | the standard's direction and inclusivity | at or above the required figure | strictly above | C1: no area sits within 6 per cent of its line on any of the four bases, worst measured 6.02 per cent of required. Asserted as `SF12` |
-| SF13 | the rounding path, and which area comes nearest the standard | clause 4.4: the required figure is rounded once, at the area level, up to the next whole treatment slot, because it is a minimum; the area nearest the standard is the one with the smallest shortfall in slots | round to nearest, round down, or the unrounded figure; nearest read as the smallest shortfall as a share of required | the direction is filed at authority, asserted present in the shipped document. No area's verdict depends on the rounding, asserted per area against the unrounded figure, the floor and the ceiling, and no required figure sits within 0.06 of a whole slot or of a half. C1 on the data for the nearest: Hesper Vale's shortfall is 19.62 unrounded, 20 to nearest, 20 up and 19 down, and the runner-up Lowenbrook's is 22.07, 22, 23 and 22, so one area is nearest under every rounding with 2 slots of daylight on the tightest reading, asserted. The per cent reading is not a reading of nearest the standard, which is a figure in slots |
-| SF14 | a site's service area | the area recorded against the site on the current cycle | the area of the address the site held earlier | clause 4.6 files it, and no site sits in two areas inside the window, asserted; the three sites that changed address kept one area |
-| SF15 | the look-back for the ceiling | the whole four-year record | the most recent 24 or 12 months | C1 through SF1's plateau, asserted per site at 12, 24 and 48 months |
-| SF16 | the key that identifies a site | the plan site identifier, carried on every encounter as the service facility | the tax identifier, which three sites of one group practice share; the service address | clause 4.1 files the unit as the Site and says that sites sharing a tax identifier remain separate Sites. The tax-identifier reading merges those three and files 4,512 weekly slots against the golden's 3,886, a named wrong cell; the plan site identifier is one to one with a site, asserted |
-| SF17 | weekly treatment slots | clause 4.2: positions times sessions a week times the category figure | realised treatments a week; the slots the 2027 roster offers | the clause files the unit and its inputs and says nothing about how positions are found, which is the WHAT and not the HOW. Asserted per site and against the shipped deliverable |
-
-## Ladder
-Four rungs, measured on the cut pack and written from `generator/measurements.json`. Stage 2's figures were
-a prototype's and are replaced here.
-
-| Rung | What it does | Network slots | Over the golden | Areas short of 12 | Its own short set | Worth on the graded quantity |
-|---|---|---|---|---|---|---|
-| R0 | the default path: attested stations times sessions a week times the category figure | 4,668 | 1.2012 | 3 | Hesper Vale, Eastmoor Reach, Fallowbray | 0.000, by definition |
-| R1 | the state licence's station count in place of the directory's attestation | 5,006 | 1.2882 | 2 | Hesper Vale, Eastmoor Reach | -0.432, it walks away from the golden |
-| R2 | the revealed volume ceiling: each site's busiest week in the record | 3,590 | 0.9238 | 8 | Granleigh, Ammerly, Hesper Vale, Innsmere, Eastmoor Reach, Durnsfield, Jarrowmead, Fallowbray | +1.379, it overshoots the correction |
-| R3 | the concurrency ceiling, the golden | 3,886 | 1.0000 | 6 | Lowenbrook, Hesper Vale, Bexhollow, Eastmoor Reach, Jarrowmead, Fallowbray | +1.000 |
-
-**Position and dominance.** The golden is bracketed: R1 and R0 overshoot it, R2 undershoots it, and the
-decisive move reverses R2 upward. The four totals are strictly ordered R1 > R0 > R3 > R2 and the closest
-pair sits 7.62 per cent of the golden apart, clear of the 6 per cent floor. Each rung names its own total
-and its own short set.
-
-**Each rung's own grid of wrong area cells**, against the golden's twelve verdicts:
-
-| Rung | Golden-short areas it clears | Golden-clear areas it calls short | Area cells wrong of 12 |
-|---|---|---|---|
-| R0 | 3 (Lowenbrook, Bexhollow, Jarrowmead, the flip set) | 0 | 3 |
-| R1 | 4 (Lowenbrook, Bexhollow, Jarrowmead, Fallowbray) | 0 | 4 |
-| R2 | 2 (Lowenbrook, Bexhollow) | 4 (Granleigh, Ammerly, Innsmere, Durnsfield) | 6 |
-| R3 | none | none | 0 |
-
-This is the defect the first prototype of the arithmetic carried, and the repair. There the volume ceiling
-sat uniformly below the concurrency ceiling, so R2's short set was exactly the golden's and a solver stopped
-at R2 got the whole grid right and only the total wrong. Here the busiest week can sit above the current
-roster's product as well as below it, because 6 sites of 40 closed a shift between 2023 and 2026
-and their busiest week came from the larger roster, so R2 now misses two of the golden's short areas and
-calls four of its clear areas short: six of twelve cells wrong, under a short count of 8 against the
-golden's 6.
-
-**Margins.** All 48 area-rung cells clear 6 per cent of their area's required figure, the worst measured
-6.02 per cent, which is where the floor is meant to bind (the flip areas on the golden reading). The flip
-set is three of twelve.
-
-**The grid of partial applications.** The decisive step applies site by site, so the grid is the power set of
-the plant-constrained sites inside each area: 41 cells over the twelve areas, with 16 constrained
-sites. No partial application reproduces a golden-short area's verdict, because each constrained site inside
-a flip area carries at least a seventh of its area's positions, so leaving any one of them on attested
-stations puts the area back above the standard. The nearest partial cell sits 6.02 per cent from its
-area's line, so every cell is a named wrong answer outside the floor. The network total falls strictly as
-more sites take the ceiling, so no proper subset reproduces it either.
-
-**The fork grid's own cells, each measured and mapped.** The station basis crossed with the demand basis is
-eight cells. The realised-demand column is the first death in `## Tried and rejected` and is asserted inert:
-on 1.15 times realised 2026 volume, 3 areas are short and the decisive step changes **no** area's
-verdict, which is why the standard turns on projected demand. The four station bases are the four rungs
-above. Four further cells are named rather than swept, each asserted against the fact that refutes it:
-reading the 2025 and 2026 length column as hours makes every one of a site's intervals overlap and files a
-ceiling above the site's attested stations at 40 of 40 sites, which the file itself refutes; taking the
-most treatments starting inside a clock hour as the position count files 3,013 slots; taking the most
-inside two hours files 3,825; and the 75th percentile of occupancy files 2,911. None is the golden's
-3,886.
-
-**Stacking.** Three mechanisms from different gaps: the population gap carries the decisive rung (which
-positions a site can work), the time gap carries rung 1 and the demand side (a licence cycle and an enrolment
-projection against a contract year), and the objective gap carries rung 2 (a revealed throughput read as a
-capacity). The decisive gap is not rung 1's.
-
-## Closure table
-The 22 axes of `determinism-check/references/forcing-the-answer.md` Part 1, one row per axis number, axes
-that cannot move the answer today included.
-
-| # | Axis | The reading this build takes | Closure move |
-|---|---|---|---|
-| 1 | Population | the 40 sites with a recorded 2027 contract intent on the current attestation cycle, the 2027 network year not yet contracted | clause 4.1 files it and states that sites contracted for an earlier network year are not in scope unless they carry that intent; C1 through SF9 and SF7 |
-| 2 | Unit of account | the site, not the corporate holder and not the tax identifier | filed by clause 4.1, which adds that sites sharing a tax identifier or a licence holder remain separate Sites; C4, the tax-identifier reading merges the group practice's three sites and files a named wrong total (SF16) |
-| 3 | Attribution window | the 2026 contract year for demand, the four-year record for the ceiling | the contract files the demand window; C1 for the ceiling through SF1's plateau and SF15, every sub-window returning the same integer |
-| 4 | As-of dating | one filed as-of date; the roster current at it, static across the window | filed as-of date in the contract; SF7 puts every latest attestation row 30 days or more before it |
-| 5 | Version basis | the licence row covering the date in question, per licence number | the register ships the amendment history beside the current state with its own effective span; C1, exactly one facility row per licence number covers the position date, asserted. The golden never reads the register; ask B does |
-| 6 | Denominator | capacity against 1.15 times projected 2027 weekly demand, the base being the area's 2026 contract year treatments a week | filed in clause 4.3 in the standard's own words, asserted present in the shipped document (SF11, SF17) |
-| 7 | Weighting | none: an area's figure is the sum over its sites | cannot move the answer; no weighting choice exists, asserted as a sum identity per area |
-| 8 | Window length | the ceiling's four-year look-back | C1, measured: 12, 24 and 48 months return the same integer at all 40 sites (SF15) |
-| 9 | Boundary inclusivity | at or above the required figure | C1, no area within 6 per cent of its line on any of the four bases, worst 6.02 per cent of required (SF12) |
-| 10 | Rounding path | the required figure rounded once, at the area level, **up** to the next whole treatment slot | clause 4.4 files the direction and the asking sentence states whole numbers; SF13 asserts the direction present in the shipped document, every area's verdict identical under the unrounded figure, the floor and the ceiling, and every required figure 0.06 or more from a whole slot and from a half |
-| 11 | Tie-break | which of the short areas comes nearest the standard | C1 on the data: the nearest area is nearest under the unrounded figure and under all three roundings, with 2 slots of daylight to the runner-up on the tightest reading, asserted; no area's capacity equals its required figure |
-| 12 | Maturity and censoring | the 2026 contract year complete at the as-of date, the extract pulled after the filing run-out | clause 4.4 files the ninety day run-out and the transmittal carries the pull date; asserted that no encounter in the pack carries a service date after 31 December 2026, so the contract year is complete on the extract |
-| 13 | Order of operations | positions, then sessions a week, then the category figure, then the area sum, then the standard | the steps commute (multiplication and summation), asserted; the only non-commuting step is rounding, closed at axis 10 |
-| 14 | Row order | the ceiling is a maximum over a set and the totals are sums | C1, asserted invariant over permutations of the encounter tables |
-| 15 | Duplicate resolution | one row per distinct facility where a file holds two | C1 on the main path: no claim line in the register names a contracted site and no claim line repeats, asserted; the duplicates that exist are the 2026 filing's five rows under a corporate licence number and the register's amendment rows, both outside the main population, where asks C and B read them |
-| 16 | Identity normalisation | the directory's site identifier, joined to the licence register on the service address and to the encounters on the service facility | C4, the raw tax-identifier join merges three sites and is mapped to the contract's unit sentence (SF16); the crosswalk is the directory's own |
-| 17 | Netting against gross | none: capacity and demand are gross counts | cannot move the answer; nothing nets, asserted |
-| 18 | Dimensional units | treatments, positions, sessions, minutes; `service_minutes` is minutes | C4, reading `service_minutes` as hours makes every one of a site's intervals overlap and files a ceiling above the site's attested stations at 40 of 40 sites, which the file itself refutes; asserted as a named wrong cell |
-| 19 | Code and status semantics | the encounter status (completed, cancelled, no show) and the directory's contract intent, both plain words, no dictionary shipping | the governing contract defines the intent; SF3 makes the status unable to move the ceiling under any reading; never the stump |
-| 20 | Integerisation | positions are whole by construction, a count of concurrent treatments; slots are counts | C1 by construction: no floor, round or remainder choice exists on the graded quantity, and the one rounded figure is closed at axis 10 |
-| 21 | Clause scope | Schedule 4 governs the 2027 network year and the sites in scope for it | filed in clause 4.1's own first sentence, asserted present; the 2026 filing states its own network year and position date, and its site set differs from the 2027 population by six sites or more |
-| 22 | Forward window contents | the 2027 network year is not yet contracted | the plan's 2027 enrolment projection by service area ships as the driver file for the uncovered span; nothing else about 2027 is needed, and no 2027 treatment is in the pack |
-
-## Literal reader
-A reader who executes `prompt.txt`, Schedule 4 of the network agreement and the licence register's own
-status words word for word, inferring nothing the files do not say, reaches the golden: clause 4.1 fixes the
-population at the 40 sites carrying a 2027 contract intent on the current attestation cycle, 4.2 fixes
-the unit and defines deliverable treatment positions as the positions a site can operate simultaneously
-without naming a route to them, 4.3 fixes the comparison and the standard, and 4.4 fixes the rounding. The
-only step the text leaves open is the measurement of those positions, and every reading of a site's own
-record returns the same integer: 40 of 40 sites on the record maximum, all 4 yearly maxima, all 48 monthly
-maxima and the 12 and 24 month look-backs, with one more than that integer never running. The 17 rows of
-`## Semantic fork table` enumerate every other silence and each returns the golden or violates a quotable
-shipped sentence; no row is closed by this note or by the write-up. The easy answer comes from an easy method
-on the same literal estimand, the directory's own attested station count in place of a measurement, which
-files 4,668 weekly slots against the golden's 3,886.
-
-## Oracles
-Every control, published figure, reconciliation column and corpus, with what it confirms on the wrong path.
-Nothing ties only under the golden and nothing ranks the twelve areas against the standard. Each line is
-asserted in `generator/checks.py`.
-
-| Control | What it confirms | Its wrong-path reading | Screen |
-|---|---|---|---|
-| `state_adequacy_filing_2026.xlsx` (the context artifact, ask C's source) | per area, the 2026 contracted sites, their licensed stations then and the treatments delivered in 2025 | a solver reconciling its station column against the licence register ties on every facility-numbered row, on R1's input, and learns nothing about any station basis | asserted: it carries no weekly-slot figure, no utilisation figure and no adequacy verdict; its position date is 1 January 2026 and its site set differs from the 2027 population by six sites or more; it also carries rows under a corporate licence number, which is ask C's own device |
-| `enrolment_projection_2027.csv` | the growth factor the standard's demand side uses | identical under all four rungs, because every rung shares the demand side | ties on every basis; cannot score a station basis |
-| `network_agreement_2027_capacity_terms.pdf`, Schedule 4 | the population, the unit, the window, the comparison, the standard and the rounding | quotable against no station basis, because it names none | the pin sits once, at authority level 2; the counter-pin sweep over both documents for the constraint's nouns beside a licensing verb returns nothing |
-| `encounter_extract_transmittal.json` | the extract's pull date, its two tables and its row counts by service quarter | ties under every rung, because it counts encounters and not capacity | asserted: its quarter counts sum to the shipped rows, 639,009, and it carries no capacity or position figure |
-| `out_of_network_payments_reconciliation_2026.xlsx` | the register's own control totals by adjudication quarter | it ties exactly to the rows the register holds, claim header lines included, so a count-tie check passes on a unit total that counts a sixth of the claims twice, which is ask A's primary device | it reads no contracted site and reaches no station basis; asserted zero device rows in the main population |
-| `nemt_trips_2026.csv` (distractor) | 2026 transport trips by area and month | a solver ranking areas by trips ranks them by volume | asserted: the six areas with the most trips are not the golden's six short areas, so no shipped artifact ranks the candidates on the decision question |
-| `licence_fee_schedule_2026.pdf` (distractor) | the annual fee a station band attracts | a solver could read the fee bands as a capacity authority | asserted: it carries no station count for any named site and no plan or licence identifier |
-
-**No calibration corpus and no confirming back-test ships.** The method is forced by the design, which is
-`determinism-check` Part 5 case 1, so no filed selection criterion and no closed-data confirmation is needed
-and none is built. **No voice argues a method:** no memo, briefing, draft or stakeholder figure carries a
-capacity number or a method for one, asserted over every document in the pack.
-
-## Ask sheet
-Three asks, each a reconciliation or an audit trail of an input the call consumes (H18), each computed on
-rows the call never reads. The main call's declared row population is the 2027 contract-intent sites' own
-treatment encounters, and the encounter database holds those sites and no others, asserted. Every figure
-below is measured on the cut pack.
-
-**Ask A, out-of-network treatment volume.** By half of 2026 and the area of the site treated, the
-treatments the plan paid for at sites it holds no contract with, and their share of all the area's
-treatments that half. 24 counts and 24 shares, 48 graded figures, whole treatments and shares to one
-decimal, both in the asking sentence.
-- H18 home: the audit trail of the demand side, from the payment register through rows the call never reads to the area's own total.
-- Use: the network unit sizes the leakage it is contracting to pull back in.
-- Two bases are closed rather than left open, because the determinism judge named both: clause 4.4 files that a treatment is counted in the period of the contract year in which it was delivered, and the asking sentence names the area of the site treated. Both are conventions, and neither names a method.
-- Primary device (D1 duplication with D9 self-validation, silent): the register writes a claim header line, `line_no` 0, for about a sixth of its claims, carrying that claim's own treatment count beside the service lines that make it up, as a claims extract does. Summing `treatment_units` over every row counts those claims twice, and the file's own reconciliation workbook reports the same doubled unit total by adjudication quarter, so the count-tie check passes on a figure the ask cannot use. Nothing names a header line and the key `claim_id` with `line_no` is unique, so key uniqueness and the unmatched-join sweep both pass.
-- Remedy: a reconstruction, one treatment count per claim, the header line where the register writes one and the service lines where it does not, one correct answer.
-- Measured: summing every unit row moves **24 of the 48** figures; leaving the run-out supplement out moves **12**; grouping on the register's own `member_residence_area` instead of the area of the site treated moves **24**.
-- Path: 6 files and 13 columns.
-
-**Ask B, the licensed supply by area.** By area, the licensed dialysis and infusion sites the state register
-holds at the position date and their stations. 24 graded figures, whole sites and stations.
-- H18 home: a component of the call's case, the supply the plan could contract against the supply it does.
-- Use: the network unit states the supply left to approach in a short area.
-- Primary device (D2 version with D7 keys, silent): the register ships the amendment history beside the current state, so a row whose `effective_to` has passed still reads `active` in its own words, and a licence number that lapsed in 2026 was reissued to another facility at another address. The current state has to be rebuilt per licence number from its own span. The register's summary sheet counts licence numbers, so it ties on its own basis and not on the ask's.
-- Remedy: a reconstruction, the row covering the position date per licence number, corporate umbrella rows excluded, one correct answer; spotting the duplicate addresses does not settle which rows are current.
-- Measured: filtering on `licence_status` alone moves 12 of the 24 figures; counting corporate umbrella rows as sites moves 24.
-- Path: 1 file and 8 columns.
-
-**Ask C, the sites the 2026 filing counted that carry no 2027 contract intent.** By current service area,
-how many and the stations they were licensed for then. 24 graded figures.
-- H18 home: a reconciliation of the context artifact to the population the call declares.
-- Use: the network unit explains to the state what moved between the two filings.
-- Primary device (D9 self-validation with D1 duplication, silent): the filing's per-area totals are true only under the service areas in force for the 2026 network year, four of which the plan redrew for 2027, and five of its site rows are filed twice, once under the operator's corporate licence number, so the filing's own area summary ties to its own rows while the ask's answer does not. The battery's unmatched-join and key-uniqueness checks both pass, because the duplicate rows carry a different licence number.
-- Remedy: a reconstruction, one row per distinct facility resolved through the register row covering the filing's own position date, then placed in the area the directory records now, one correct answer.
-- Measured: counting filing rows on the filing's own area labels moves 20 of the 24 figures; resolving the licence numbers at the position date of the as-of extract instead of the filing moves 6.
-- Path: 3 files and 10 columns.
-
-**The main population's zero counts.** Asserted by count in `generator/checks.py`: no out-of-network claim
-line names a contracted site; the encounter database holds the 40 contract-intent sites and no others; no
-duplicate claim line in the main population; and the call's network total is unchanged with every ask device
-in place.
-
-| Hazard | Asks it moves | Figures it moves |
-|---|---|---|
-| the claim header line summed beside its own service lines (ask A's primary) | A | 24 of 48 |
-| h1 the run-out supplement's vintage | A | 12 of 48 |
-| h2 the register's two grains and its reissued numbers | B, C | 24 of 24 and 6 of 24 |
-| h3 the register's member-residence area against the area of the site treated, now a stated basis | A | 24 of 48 |
-
-**The referee.** The extract transmittal's treatment count by quarter arbitrates ask A's designed
-disagreement without handing over a level: it ties under both the adjudication and the service-date readings
-for the contracted sites and so settles nothing about the non-contract rows.
-
-| Ask | Cracker's path (lands the call, runs the hygiene battery, executes every filed rule, matches every control) | Figures it reaches | Verdict |
-|---|---|---|---|
-| A out-of-network volume | takes the filed service-date basis and the asked area of the site treated, then ties its totals to the reconciliation workbook, so it sums every unit row and reads the main file alone | 0 of 48 | miss |
-| B licensed supply | filters on `licence_status` and counts every active row in the area, corporate rows included | 0 of 24 | miss |
-| C the dropped sites | counts filing rows on the filing's own area labels | 4 of 24 | miss |
-
-**Mirror leakage:** 4.2 per cent of the ask weight, measured on the cut pack: the response off the call
-reaches 4 of the 96 ask figures, all of them in ask C, and keeps no ask whole.
-
-**Pair ceiling:** 30.8, on Part 0's weights of 38 for the recommendation and critical components, 7 for
-instruction following and 55 for the asks: the response that lands the call keeps 47.3 and the best
-response off it 14.3.
-
-**Measured by:** generator/ceiling.py, which walks the cracker's path and the mirror's path over the shipped
-bundle in code and scores every ask figure each produces against the golden at the golden's own rounding.
-Stump power is argued on paper and measured by the portal alone (`CLAUDE.md`, the STOP block of 2026-10-27);
-no reader measurement is run, waited on or owed, and the sensitivity band below is the paper measurement's
-own.
-
-**Sensitivity**, printed by the same script: if the cut pack let the cracker keep nothing, a tenth, a fifth,
-three tenths or two fifths of the ask weight, the pair would read 29.6, 32.4, 35.1, 37.9 or
-40.6. The ladder, not the asks, is what keeps a response off the call.
-
-**The span floor, a stated exception.** `supplemental-stumping` Part 4 asks for eight or more files on each
-ask's own path and ten to fifteen columns; the measured spans are 6 files and 13 columns for ask A, 1 file
-and 8 columns for ask B, and 3 files and 10 columns for ask C. The exception is taken deliberately and
-ruled on 2026-10-27: the evidence these three reconciliations need genuinely sits in those files, and
-routing an ask through files it does not read is the idle complication `dataset-generation` section 12 sends
-back. The floor is a proxy for device strength, and the thing it proxies for is measured directly here and
-came out strong: the cracker reaches 0 of ask A's 48 figures, 0 of ask B's 24 and 4 of ask C's 24, the pair
-ceiling is 30.8 and the mirror leakage 4.2 per cent of the ask weight.
-
-## Layer 1 inventory
-
-One row per item in `## Three rules`'s `Layer 1:` line, with the system that writes it, the file it sits in
-and its asserted neutrality on the call. Each is the R2 block of `generator/checks.py`.
-
-| Item | The system that writes it | Where it sits | Asserted neutral because |
-|---|---|---|---|
-| a directory refreshed on each site's own attestation cycle | provider data management, one cycle a year | `provider_directory_2027.csv`, three cycles | every cycle agrees on every site's service area, and the 2027 contract intent is recorded on the current cycle only, so the cycle choice moves the attested station count (rung 0's input) and nothing the golden reads |
-| licence rows at both the corporate entity and the service address | the state licensing authority's register | `state_licence_register.xlsx`, `holder_type` | the golden never reads the register; a corporate row equals the sum of its own facility rows in its area (SF8) |
-| two encounter layouts across a clearinghouse change | the encounter data warehouse, 2025 cutover | `treatment_encounters.db`, two tables | either layout alone returns every site's positions, asserted at 40 of 40 sites on each |
-| treatment start and stop in local clock with no offset on the 2023 and 2024 feed | the same warehouse before the cutover | `encounters_2023_2024.service_start` | an overlap count inside a site is invariant under any site-level offset, and no interval spans the autumn fall-back hour (SF4) |
-| rosters by position rather than by named staff | clinical operations | `staffing_roster_2026q4.csv` | the roster carries sessions a week and clinical hours a month, from which no position count is derivable; one row per site at the position date (SF5) |
-| sites that moved address and kept their identifier | provider data management | `provider_directory_2027.csv`, three sites | the golden joins on `plan_site_id`, which is one to one with a site; an address join would lose those three, a named wrong cell |
-| a group practice billing three sites under one tax identifier | claims operations | `provider_directory_2027.csv`, `tax_id` | clause 4.1 files the unit as the Site; the tax-identifier reading merges the three and files 4,512 slots, a named wrong cell (SF16) |
-| cancelled and no-show encounters carried with no stop time | the warehouse, scheduled slots nobody attended | both encounter tables, 7,576 rows | no interval is constructible under any reading, and each sits where the site was running at least two positions short, so the ceiling and all twelve verdicts hold either way (SF3) |
-
-## Pre-ship check
-
-The build stage's gates, each re-run on the pack as it now stands, after the second leak read's four
-procedural fingerprints were fixed. The pre-ship block proper is stage 5's. The main call itself does not
-ship: the re-judge's Gate C finding sent architecture 3 back and the entry under "## Tried and rejected"
-and `determinism_check_report_pass4.md` carry the ruling.
-
-| Gate | Result |
-|---|---|
-| `generator/checks.py` | 682 assertions passed: the three-rules block (R1, R2 per mess item, R3a, R3b, R3c), SF1 to SF17, the ladder, the named wrong cells, the legibility block, the ask separation line, the oracles, the input gates, the realism sweep, the 22 closure axes, the documents, the write-up, the five owed figures and the five procedural shapes (no id column stepping by a constant and each by at least six distinct amounts, the area names in code order not in alphabetical order, more than two site-name shapes, no two sites sharing a name or an address, no workbook stating a position or pull later than its own file date) |
-| `generator/verify.py` | PASS, reading only the bundle on its own code path: 40 sites, 12 areas, 96 ask figures, every graded figure recomputed, the rounding direction and the delivery-period convention read out of the agreement's own text |
-| two consecutive rebuilds | byte-identical `target/` across all 13 files and byte-identical `target.zip`, md5 `c0e0dfcfcc8ecf0bc864f9e4b9eb8d7a` |
-| `figures_check.py` | PASS, 146 figures in blocks 1 to 4, 0 absent from `generator/figures.json` |
-| the realism sweep | in `checks.py`: no round headline, the required figures not all alike, no repeated yearly count, personas from the card, every container's application and version pair consistent with a title and an author, each document's producer the body that issued it, the operator column in no fixed order with uneven site counts and no name against its own service category, dates coherent per document with each PDF carrying its own issue date, no em dash in the bundle |
-| `golden-realism` | run after the figures froze: named sheets, frozen header, per-column number formats and alignment, a chart whose title states the finding, a basis and position line, print area set |
-| `reduce-house-fixes` | H1 containers scrubbed and asserted, H2 every figure emitted, H4 the archive's 13 members equal the declared list, H7 the archive cut last from the final tree, H8 every citation resolves, H9 no describing file, H16 dates coherent, H21 invented names clear of real ones, H29 the bound figures read against the quantity they bound, H33 one entry point writes `figures.json` |
-| `leak.py --asof 2027-02-19` | REVIEW, no LEAK, every REVIEW line answered in `## Leak check` |
-| `guard.py surface` and `heart` | surface clean with only the card's own personas, heart WARN at a nearest driver of 0.05 (task181, lineage), no BLOCK |
-| `precut.py` | exit 0, 52 checks, 0 FAIL, 0 WARN |
-| `voice-check.py` | PASS, 998 characters |
-## Leak check
-
-`leak.py --asof 2027-02-19`: **REVIEW**, no LEAK, 13 files read. The pack ships no file whose job is to
-describe the data, asserted by name and by content over every file and every workbook sheet, so every
-convention the call leans on sits in Schedule 4 at authority. Architecture 2's solver's-eye read was removed
-from `leak_check_report.md`: it was taken on a pack that no longer exists. The isolated leak reader is stage
-4's and the author's to spawn; no scored or solving reader is run on any build (`CLAUDE.md`, the STOP block
-of 2026-10-27).
-
-The five REVIEW lines, answered:
-
-- **sweep 3, `licence_fee_schedule_2026.pdf`, "golden figure 105 appears".** 105 is ask C's station total for
-  one area and the sweep found it inside the fee `USD 2,105`. A substring of a currency amount in a fee band;
-  the fee schedule carries no station count for any named site, asserted.
-- **sweep 3, the agreement, "golden figure 4.5 appears".** The clause number of 4.5 Corrective action. It is
-  filed in `figures.json` as a constant read from `docs.py`, so the write-up's citation and the document
-  cannot drift apart (H2).
-- **sweep 3, the agreement, "carries 12 of 13 distinctive words of the committed call".** The call's own
-  nouns are network, weekly treatment slots and service areas, which Schedule 4 must use because it files
-  the unit and the standard. It carries none of the call's figures, asserted: no weekly-slot figure, no
-  utilisation figure and no adequacy verdict anywhere in the pack.
-- **sweep 4, `licence_fee_schedule_2026.pdf`, "3 of 25 stump-paragraph terms appear".** The terms are
-  station, carries and licence, which is what a facility licensing fee schedule is about. It carries no
-  station count for any named site, asserted.
-- **sweep 4, the agreement, "6 of 25 stump-paragraph terms appear".** The terms are positions, deliverable,
-  directory, licence, encounter and demand. Five of the six are the estimand's own parts, which section 1
-  requires filed; the sixth, deliverable, is the unit's term. The route words are swept for and absent:
-  `concurrent`, `overlap`, `greatest number`, `at one time`, `effective capacity`, `water loop`,
-  `compounding hood`, `busiest week`, each asserted through the same extractor as a positive control that
-  finds a sentence known to be there.
-
-**The single-use test, run by hand on every file.** The encounter database is the standard's own demand
-source as well as the ceiling's evidence; the licence register is ask B's population and rung 1's input; the
-2026 filing is ask C's source and the state's own record; the reconciliation workbook is the register's own
-control total; the transmittal is the extract's own receipt. No file has one use, and no sentence exists only
-to make a solver notice a structure.
+`Lesson:` a model learns that an effect has to be expressed in the unit the decision commits, and that a unit
+bought before the recipient chooses is not the unit the records measure the effect on. No build on file teaches
+it: per-offer against per-attender measures zero hits across 304 cards, and effect per funded unit measures zero.
 
 ## Tried and rejected
+
+- **The ETL objective is closed for this number and the re-root goes to education and Experiment & Causal
+  Analysis, measured 2026-10-27.** Architecture 5 screened all six ETL cells in the taxonomy and refused or
+  barred each one; ETL carries 66 cards across those six cells and is the only objective in the corpus with no
+  never-drawn cell. Measured against the eight objectives, experiment-causal carries 9 cards with 30 of 32 cells
+  never drawn, and education-learning-sciences by experiment-causal has never been built. Accepted and recorded
+  so nobody repairs it later: task464 sits in `START_HERE.md`'s ETL number range, so this number no longer
+  matches its range's objective. The range fixes which objective a number belongs to and nothing else, and the
+  card and the ledger carry the real objective.
+
+- **Five candidate decisive steps for architecture 6 were refused before the sixth was measured, 2026-10-27.**
+  A specification extension (adding a control, level, interaction or random effect) is closed as a class, because
+  the cheap rungs and the weakest licensed family member both file the figure with the term absent, so (a) and
+  (b) are the same quantity. Competing risks and the cumulative incidence against a product-limit estimate is
+  task266's shipped design, in a community college, with transfers out as the competing ending. Informative
+  censoring is task268. Effect heterogeneity split by a moderator in no column is task44. Any decisive step that
+  splits or conditions on an attribute the pack carries as a column is readable, because decomposing the pilot is
+  on the opponent's reflex list, and any step that needs the splitting attribute recovered is task12's and
+  task15's population recovery; that pair of constraints is what sent this draw to an estimand choice no
+  decomposition reveals.
+
+- **Architecture 6's first parameterisation died on its own arithmetic, 2026-10-27.** With the waitlist cascade
+  filling every refused place, a funded place is one participant, so the per-place yield collapses to the effect
+  among participants and the golden ranking came out identical to rungs 0 and 1. The design only has a stump when
+  the cascade is partial and its depth differs by partner, which is what the enrolment census date supplies.
 
 - **Architecture 3's decisive step is spent: the stump lived in the fork, measured 2026-10-27.** The stage 4
   re-judge returned NOT_DETERMINISTIC, `competing_defensible_answer` on the MAIN CALL via
