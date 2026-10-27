@@ -1,13 +1,13 @@
 {
   "task": "task141",
   "owner": "sathya8571",
-  "status": "DESIGN",
+  "status": "PAUSED",
   "domain": "criminology-justice",
   "objective": "forecasting",
-  "stage": 2,
-  "stage_name": "design",
+  "stage": 3,
+  "stage_name": "build",
   "updated": "2026-10-27",
-  "stump": "A competent solver fits revocation by month on supervision with the risk score, carries it over each felony case's 2027 months to its new end under SB 26-118 and files about 450 admissions (three pods); the step that lands it there is reading every petition on the time-since-start clock, when about a fifth are filed in the last weeks before a term lapses, ride each term's scheduled end, and under the Act fire at once for the terms that end on 31 March 2027, so the plan carries about 950 (six pods).",
+  "stump": "A competent solver fits revocation by month on supervision with the risk score, carries it over each felony term's months to its end under SB 26-118 and files about 610 admissions (three pods); the step that lands it there is reading every petition on the time-since-start clock, when about a quarter of terms draw one in the last months before their scheduled expiration, those ride each term's end, and under the Act fire at once for the 3,373 terms that end on 31 March 2027, so the plan carries about 1,200 (six pods).",
   "architecture": 3,
   "loops": 0,
   "precut": {
@@ -35,7 +35,7 @@
       "commit": ""
     }
   ],
-  "resume": "Architecture 3 drawn and registered 2026-10-27 at the author's instruction (oviya1301): Okelan County's 2027 felony probation revocation admissions under SB 26-118 (felony terms capped at 24 months, running terms ended on 31 March 2027), the stump being the tolling petitions filed in the last weeks before each term lapses, which ride the scheduled end. Paper world in generator/paper (sim_rev.py, routes.py, fam.py). Next, stage 2: set the pod standard and tune the world so the golden and every wrong route sit mid-bin, write the readability screen, fork table, ladder, closure table, literal reader, oracles and ask sheet, draft prompt.txt, then precut.py exit 0.",
+  "resume": "Stage 3 of architecture 3 (v3b), checkpointed 2026-10-27 while the session waits on the author (the author wants the build continued, not parked). World: felony intake 210 a month, end-of-term filings on 23.5 per cent of terms, 7 to 90 days before the scheduled expiration (mode 30), burned in from 2008 with the extracts from 1 July 2016 (delayed entry). Measured on the cut pack: golden (two clocks, no score adjustment) 1,185 admissions, 1,200 for the plan, six pods; standing variants 1,169 to 1,203 and all 96 combinations of the six standing choices 1,164 to 1,233 (all 1,200 and six pods); default path 607 (three pods), persistence 912 (five), two clocks without delayed entry about 1,085 (five); 3,373 terms end on 31 March 2027; end-of-term share 26.4 against 4.5 per cent. Asks: violator bed-days by quarter (Ask A, 8) and the average imposed term by office and four time-on-supervision bands (Ask B, 8); the cracker keeps 0 of 16, pair ceiling 28.5. prompt.txt is architecture 3's (927 characters, gate PASS). Next: apply the office-code opening dates (docs.OFFICE_ROWS to 3 January 1994, 2 July 2001, 2 July 2001, 6 March 2006), rebuild, rerun checks.py (the last full run failed 4 real and 1 false positive, all since fixed in the generator), write verify.py, the design note's stage-2 sections (readability screen, fork table SF1 to SF12 as in checks.py, ladder, closure table, literal reader, oracles, ask sheet measured by ceiling.py) and refresh Draw, Three rules, Default path and the paper world to these numbers, then precut.py, figures_check, leak.py, guard surface and heart, scrub, golden-realism, house fixes, stage 4 and ship. target.zip, golden/, submission.md and metadata.json are still architecture 1's shipped record until the SHIPPED commit replaces them.",
   "approved": null,
   "delivered": "2026-10-15",
   "portal": null,

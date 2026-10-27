@@ -1,10 +1,13 @@
 """task141 constants and helpers shared by every generator module.
 
-Dorrance County, North Carolina (fictional; county seat Garrison) is one judicial district. Arrestees go before the
-magistrate on duty at the detention center's intake for their initial appearance, where the magistrate sets the
-conditions of pretrial release under the district's local bail policy. Dorrance County Pretrial Services screens
-arrestees at intake with the Pretrial Assessment Scale. The draft revision of the local bail policy for 2027 adds a
-presumptive release tier on the scale's new-criminal-activity score, under an 85 per cent safety floor."""
+Okelan County (fictional, in an unnamed state on Central time) supervises its felony and misdemeanor probationers
+through the Okelan County Adult Probation Department. Under the State's 2019 realignment a felony probation term
+begins with the county jail time the court orders as its condition, supervision begins on release, and a revocation
+term is served in the county of supervision, so every felony revocation is a commitment to the Okelan County
+Detention Center. Senate Bill 26-118, the Felony Probation Term Act, takes effect on 1 January 2027: a felony
+probationer may not be supervised for more than 24 months, and a felony term in effect on that day ends on the
+earlier of its scheduled expiration and the day 24 months after supervision began, but not before 31 March 2027.
+The Sheriff's Office files the 2027 Jail Operations Plan with the State Jail Standards Board by 1 December 2026."""
 from __future__ import annotations
 
 import csv
@@ -15,31 +18,107 @@ import math
 
 import numpy as np
 
-SEED = 1410417
+SEED = 1410327
+M = 30.4375                                   # days in an average month
+DAY0 = dt.date(2016, 1, 1)
+
+
+def day(d):
+    """date or 'YYYY-MM-DD' to an integer day count from DAY0"""
+    if isinstance(d, str):
+        d = dt.date.fromisoformat(d)
+    return (d - DAY0).days
+
+
+def date_of(n):
+    return DAY0 + dt.timedelta(days=int(n))
+
+
+def months(n):
+    return int(round(n * M))
+
 
 # ---------------------------------------------------------------------------------------------------- calendar
-HIST_START = dt.date(2021, 10, 1)        # first first appearance in the legacy export
-CMS_CHANGE = dt.date(2024, 3, 4)         # the clerk's new case management system from this day
-HIST_LAST = dt.date(2025, 9, 30)         # the last first appearance whose 365-day window closes inside the extract
-FY26_START = dt.date(2025, 10, 1)        # the asks' year
-EXTRACT_END = dt.date(2026, 9, 30)       # every export runs to the end of this day (Eastern)
-PULL = dt.date(2026, 10, 2)              # the exports were pulled
-DRAFT_DATE = dt.date(2026, 10, 6)        # the draft revision
-FILING_DATE = dt.date(2026, 12, 1)       # the revised policy is filed with the clerk by this day
-EFFECTIVE = dt.date(2027, 1, 1)
-BOARDING_START = dt.date(2025, 11, 3)    # the west housing unit closed; boarding at Halsey County from this day
-ASKB_LAST = dt.date(2026, 6, 30)         # Ask B: releases to this day, each with 90 days inside the extract
-POLICY_2024 = dt.date(2024, 7, 1)        # the current local bail policy took effect
+BURN = day("2008-01-01")               # the world runs from here so the record opens on a settled caseload
+RECORD_START = day("2016-07-01")       # the extracts' first day: terms closed, petitions filed, orders made from here
+CMS2_LIVE = day("2023-06-12")          # the Department's CaseTrak 2 from this day; open cases moved across
+JMS_LIVE = day("2025-02-04")           # the Sheriff's new jail management system from this day (times in UTC)
+BOOKINGS_FROM = day("2019-01-01")      # the bookings extract: every probation booking in custody on or after this day
+EXTRACT = day("2026-09-30")            # every record to the end of this day
+PULL = dt.date(2026, 10, 2)            # the extracts were pulled
+ACT_SIGNED = dt.date(2026, 5, 14)
+ACT = day("2027-01-01")                # SB 26-118 takes effect
+TRANS = day("2027-03-31")              # no felony term in effect on 1 January 2027 ends before this day
+Y0, Y1 = day("2027-01-01"), day("2027-12-31")
+PLAN_DUE = dt.date(2026, 12, 1)
+POD_SIZE = 220                         # the county's filed standard: one violator pod per 220 projected admissions
+POD_BEDS = 64
+PODS_2026 = 5                          # violator pods the Detention Center staffs in 2026
 
-WINDOW_DAYS = 365
-FLOOR = 0.85
+# ---------------------------------------------------------------------------------------------------- the process
+P = dict(
+    fel_rate=210.0, mis_rate=150.0,
+    terms=(18, 24, 30, 36, 42, 48, 60, 72, 84), term_w=(0.03, 0.10, 0.03, 0.22, 0.04, 0.16, 0.28, 0.10, 0.04),
+    jail_share=0.85, jail_med=110.0, jail_sig=0.70, jail_term_elast=0.8, jail_lo=8, jail_hi=330,
+    intake_lo=3, intake_hi=28,
+    h0=0.032, h_inf=0.0085, h_tau=8.0, score_beta=0.075,
+    conv_ord=0.48, conv_rev=0.48, conv_abs=0.72,
+    p_rev=0.235, rev_window=90, rev_lo=7, rev_mode=30,
+    lag_mean=70.0, lag_shape=3.0,
+    abs_hazard=0.0022, abs_lag_mean=150.0, abs_lag_shape=2.0,
+    p_ext=0.35, ext_months=(6, 12, 12, 12, 18, 24), p_ext_rev=0.30,
+    et_hazard=0.006, et_after=18,
+    # misdemeanor terms: twelve months, a lighter jail condition, the same two clocks
+    m_term=12, m_jail_share=0.30, m_jail_med=20.0, m_jail_sig=0.6, m_jail_lo=2, m_jail_hi=60,
+    m_h0=0.030, m_h_inf=0.013, m_h_tau=5.0, m_conv=0.42, m_p_rev=0.15, m_abs=0.0020,
+    m_p_ext=0.25, m_ext_months=(3, 6, 6, 12), m_et_hazard=0.004, m_et_after=6,
+    m_on_felony=0.10,                  # misdemeanor terms of people already on felony probation
+    m_intermittent=0.07,               # misdemeanor revocations ordered served on weekends
+)
+
+# ---------------------------------------------------------------------------------------------------- people
+PEOPLE = dict(
+    analyst="Gina Yoder", cpo="Larry Pugh", commander="Colleen Cameron", research="Donald Russo",
+    clerk="Megan Chambers", budget="Gloria Lynch",
+)
+COUNTY = "Okelan County"
+DEPT = "Okelan County Adult Probation Department"
+JAIL = "Okelan County Detention Center"
+COURT = "Okelan County Circuit Court"
+BOARD = "State Jail Standards Board"
+
+OFFICES = (("CEN", "Central", "C"), ("NGT", "Northgate", "N"), ("RVS", "Riverside", "R"), ("EFD", "Eastfield", "E"))
+OFFICE_W = (0.38, 0.22, 0.24, 0.16)
+
+# ---------------------------------------------------------------------------------------------------- the pack
+CMS1 = "casetrak1_supervision_cases_2016_2023.csv"
+CMS2 = "casetrak2_supervision_cases_2023_2026.csv"
+ORDERS = "circuit_court_term_orders_2016_2026.csv"
+PETITIONS = "circuit_court_violation_petitions_2016_2026.csv"
+BOOKINGS = "detention_probation_bookings_2019_2026.csv"
+PERSONS = "person_id_crosswalk.csv"
+JAIL_CODES = "jms_booking_codes.csv"
+COURT_CODES = "circuit_court_codes.xlsx"
+OFFICE_CODES = "apd_office_codes.csv"
+ACT_PDF = "sb26_118_felony_probation_term_act.pdf"
+PLAN_PDF = "jail_operations_plan_instructions_2027.pdf"
+CSRS = "csrs_2023_rescaling_note.txt"
+README = "README_extracts.txt"
+REPORT = "apd_annual_report_2025.pdf"
+HEADCOUNT = "detention_daily_headcount_2025_2026.csv"
+DISTRACTORS = [REPORT, HEADCOUNT]
+
+GOLD_BOOK = "violator_housing_plan_2027.xlsx"
+GOLD_MEMO = "violator_housing_memo_2027.docx"
+GOLD_CHART = "felony_revocation_admissions_2019_2027.png"
+
+QUARTERS = (("2025-10-01", "2025-12-31", "October to December 2025"), ("2026-01-01", "2026-03-31", "January to March 2026"),
+            ("2026-04-01", "2026-06-30", "April to June 2026"), ("2026-07-01", "2026-09-30", "July to September 2026"))
+TERM_BANDS = (("up to 24 months", 0, 24), ("25 to 36 months", 25, 36), ("37 to 60 months", 37, 60), ("over 60 months", 61, 999))
+SUP_BANDS = (("under 12 months", 0, 12), ("12 to 24 months", 12, 24), ("over 24 months", 24, 9999))
 
 
-def d2dt(d, h=0, m=0):
-    return dt.datetime(d.year, d.month, d.day, h, m)
-
-
-# ---------------------------------------------------------------------------------------------------- Eastern time
+# ---------------------------------------------------------------------------------------------------- Central time
 def _nth_sunday(y, month, n):
     d = dt.date(y, month, 1)
     while d.weekday() != 6:
@@ -47,92 +126,34 @@ def _nth_sunday(y, month, n):
     return d + dt.timedelta(days=7 * (n - 1))
 
 
-def eastern_offset_utc(t_utc):
-    """Hours to add to UTC for Eastern wall time: EDT (-4) from the second Sunday of March 07:00 UTC to the first Sunday
-    of November 06:00 UTC, EST (-5) otherwise."""
-    y = t_utc.year
-    start = d2dt(_nth_sunday(y, 3, 2), 7)
-    end = d2dt(_nth_sunday(y, 11, 1), 6)
-    return -4 if start <= t_utc < end else -5
-
-
-def eastern_to_utc(t_local):
-    """Eastern wall time (naive) to UTC (naive). The repeated hour in November takes its first (EDT) instance."""
+def central_offset(t_local):
+    """hours from local (naive) Central wall time to UTC: CDT from the second Sunday of March 02:00 to the first Sunday
+    of November 02:00 (the repeated hour taken as its first, daylight, instance), CST otherwise"""
     y = t_local.year
-    start_local = d2dt(_nth_sunday(y, 3, 2), 2)       # 02:00 EST becomes 03:00 EDT
-    end_local = d2dt(_nth_sunday(y, 11, 1), 1)        # 02:00 EDT becomes 01:00 EST; 01:00 to 02:00 happens twice
-    off = -4 if start_local <= t_local < end_local + dt.timedelta(hours=1) else -5
-    return t_local - dt.timedelta(hours=off)
+    start = dt.datetime.combine(_nth_sunday(y, 3, 2), dt.time(2, 0))
+    end = dt.datetime.combine(_nth_sunday(y, 11, 1), dt.time(1, 0)) + dt.timedelta(hours=1)
+    return 5 if start <= t_local < end else 6
 
 
-def utc_to_eastern(t_utc):
-    return t_utc + dt.timedelta(hours=eastern_offset_utc(t_utc))
+def to_utc(t_local):
+    return t_local + dt.timedelta(hours=central_offset(t_local))
 
 
-def midnights(a, b):
-    """Midnight counts (Eastern) at which a person held from a to b (naive Eastern datetimes) is in custody, each dated
-    with the day it begins: the counts at 00:00 on every day after a's date up to b's date (a count at b exactly is
-    taken only if b is after it). Returns the list of count dates."""
-    out = []
-    d = a.date() + dt.timedelta(days=1)
-    while d2dt(d) < b:
-        out.append(d)
-        d += dt.timedelta(days=1)
-    return out
+def from_utc(t_utc):
+    y = t_utc.year
+    start = dt.datetime.combine(_nth_sunday(y, 3, 2), dt.time(8, 0))       # 02:00 CST = 08:00 UTC
+    end = dt.datetime.combine(_nth_sunday(y, 11, 1), dt.time(7, 0))        # 02:00 CDT = 07:00 UTC
+    return t_utc - dt.timedelta(hours=5 if start <= t_utc < end else 6)
 
 
-# ---------------------------------------------------------------------------------------------------- the county
-COUNTY = "Dorrance County"
-SEAT = "Garrison"
-STATE = "North Carolina"
-HOST = "Halsey County"
-AGENCY_PTS = "Dorrance County Pretrial Services"
-SHERIFF = "Dorrance County Sheriff's Office"
-DETENTION = "Dorrance County Detention Center"
-COURT = "Dorrance County District Court"
-SCALE = "Pretrial Assessment Scale"
-EM_VENDOR = "Sentry Point Monitoring"
-
-PEOPLE = {
-    "analyst": "Lauren Mullins",          # research analyst, Pretrial Services (the requester; not in the prompt)
-    "director": "Teresa Diaz",            # director, Dorrance County Pretrial Services
-    "srj": "Zachary Henson",              # senior resident superior court judge (issues the local bail policy)
-    "cdj": "Kristen Thompson",            # chief district court judge
-    "chiefmag": "Jeffrey Francis",        # chief magistrate
-    "jail": "Gina Yoder",                 # jail administrator, Sheriff's Office
-    "clerk": "Colleen Cameron",           # clerk of superior court
-}
-
-# ---------------------------------------------------------------------------------------------------- the pack
-FA_LEGACY = "first_appearances_2021-10-01_2024-03-03.csv"
-FA_NEW = "first_appearances_2024-03-04_2026-09-30.csv"
-FA_CHARGES = "first_appearance_charges_2024-03-04_2026-09-30.csv"
-SCREENS = "pas_screens_2021-10-01_2026-09-30.csv"
-JAIL = "jail_bookings_2021-10-01_2026-09-30.csv"
-ARRESTS = "state_arrest_extract_2026-10-02.csv"
-CASES = "court_case_index_2021-10-01_2026-09-30.csv"
-EVENTS = "court_events_2025-10-01_2026-09-30.csv"
-EM = "sentry_point_invoice_lines_2025-10_2026-09.csv"
-HALSEY = "halsey_county_board_bills_2025-11_2026-09.xlsx"
-CROSSWALK = "offense_code_crosswalk.xlsx"
-ROSTER = "magistrate_roster.xlsx"
-JAIL_CODES = "jail_code_list.csv"
-COURT_CODES = "court_code_list.csv"
-POLICY24 = "local_bail_policy_2024.pdf"
-DRAFT = "bail_policy_revision_2027_draft.docx"
-GUIDE = "pas_scoring_guide_v2.pdf"
-README = "README_pretrial_extracts.txt"
-CJAC = "cjac_jail_population_report_2025.pdf"
-CRIME = "dorrance_county_reported_crime_2019-2025.xlsx"
-DISTRACTORS = [CJAC, CRIME]
-
-GOLD_MEMO = "presumptive_release_tier_2027.docx"
-GOLD_BOOK = "presumptive_release_tier_2027.xlsx"
-GOLD_CHART = "missed_court_dates_by_fta_score.png"
+def at(n, minutes):
+    """an integer day and minutes past local midnight to a naive local datetime"""
+    return dt.datetime.combine(date_of(n), dt.time(0, 0)) + dt.timedelta(minutes=int(minutes))
 
 
+# ---------------------------------------------------------------------------------------------------- helpers
 def rng(*keys):
-    """An independent numpy stream per name: blake2b of the seed and the keys (hash() is salted per process)."""
+    """an independent numpy stream per name: blake2b of the seed and the keys (hash() is salted per process)"""
     h = hashlib.blake2b(("%d|" % SEED + "|".join(str(k) for k in keys)).encode(), digest_size=8).digest()
     return np.random.default_rng(int.from_bytes(h, "big"))
 
@@ -151,11 +172,15 @@ def write_csv(path, cols, rows, crlf=False):
 
 
 def round_to(x, step):
-    """Round half away from zero to a multiple of step (the deliverables' convention)."""
+    """half away from zero to a multiple of step (the deliverables' convention)"""
     q = x / step
     return int(math.floor(q + 0.5)) * step if q >= 0 else -int(math.floor(-q + 0.5)) * step
 
 
 def round1(x):
-    """Half away from zero to one decimal."""
     return math.floor(x * 10 + 0.5) / 10 if x >= 0 else -math.floor(-x * 10 + 0.5) / 10
+
+
+def pods(admissions):
+    """the county's filed standard: one pod for each 220 projected admissions or part of 220"""
+    return int(math.ceil(admissions / POD_SIZE - 1e-12))

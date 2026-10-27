@@ -1,727 +1,290 @@
-"""task141 checks, run on every build: the three-rules block (R1 to R3c) on the clean truth and the pack, every rung
-by name with its margins and the fork grid, every semantic fork row (SF1 to SF36), mess neutrality, the asks against
-the clean truth with every stop and each figure's distance to its bin edge, the separation line, the distractors, the
-input gates, the realism sweep and the containers. Any failure stops the build."""
-from __future__ import annotations
+"""The generator's assertions on the cut pack and the clean truth: the input gates, the call against the world's truth,
+the ladder and the standing family, the three rules (R1 to R3), the Layer 1 items, the semantic fork rows (SF1 to
+SF12), both asks and their devices, the context report's recomputation and the realism sweep.
 
-import builtins
+    python3 task141/generator/checks.py
+"""
+import collections
 import datetime as dt
-import glob
-import io
 import json
 import math
 import os
 import re
-import zipfile
+import subprocess
+import sys
 
-import numpy as np
-import pandas as pd
+HERE = os.path.dirname(os.path.abspath(__file__))
+TASK = os.path.dirname(HERE)
+TARGET = os.path.join(TASK, "target")
+sys.path.insert(0, HERE)
 
-import calc as CA
-import common as K
-import truth as TR
+import numpy as np    # noqa: E402
 
-GOLDEN = "R3 leniency gradient (golden)"
-LENIENCY = [GOLDEN, "V ols", "V leave-out instrument", "V halves", "V quadratic", "V released-rate line",
-            "V instrument, all scores", "V lenient fifth"]
-RELEASED_FAMILY = ["R0 released defendants' rate", "R0b latest closed year", "R1 logistic on the released",
-                   "R1b reweighted to the eligible"]
-DAY = dt.timedelta(days=1)
+import asks as AS     # noqa: E402
+import ceiling as C   # noqa: E402
+import common as K    # noqa: E402
+import docs as DOC    # noqa: E402
+import forecast as F  # noqa: E402
+import golden as G    # noqa: E402
+import metadata as MD  # noqa: E402
+import pack as PK     # noqa: E402
+import pack_read as PR  # noqa: E402
+import world as WD    # noqa: E402
 
-
-class Checks:
-    def __init__(self):
-        self.res = []
-
-    def __call__(self, label, ok, detail=""):
-        self.res.append((label, bool(ok), detail))
-        return ok
-
-    def report(self):
-        bad = [r for r in self.res if not r[1]]
-        for lab, ok, det in self.res:
-            if not ok:
-                print("FAIL %s %s" % (lab, det))
-        print("checks.py: %d assertions, %d failed" % (len(self.res), len(bad)))
-        if bad:
-            raise SystemExit(1)
+RESULTS = []
+FLOOR = 1.15                       # every wrong rung sits at least this far below the golden's lower pod edge
 
 
-def r10(x):
-    return K.round_to(x, 10)
+def check(label, ok, detail=""):
+    RESULTS.append((label, bool(ok), detail))
+    print("%s  %-62s %s" % ("PASS" if ok else "FAIL", label, detail))
 
 
-def edge(x, step):
-    """Distance from a rounding edge as a share of the bin (0 on an edge, 0.5 mid-bin)."""
-    q = x / step
-    return abs(q - math.floor(q) - 0.5)
+def in_bin(v):
+    return 1150 <= v < 1250 and K.pods(v) == 6
 
 
-def tier(v):
-    return CA.tier(v)
+def pdf_text(name):
+    return subprocess.run(["pdftotext", "-layout", os.path.join(TARGET, name), "-"], capture_output=True,
+                          text=True).stdout
 
 
-class Reads:
-    """Record which pack files a computation opens."""
-
-    def __init__(self, target):
-        self.target = os.path.abspath(target)
-        self.seen = set()
-
-    def __enter__(self):
-        self.orig = builtins.open
-        self.orig_csv = pd.read_csv
-        self.orig_xl = pd.read_excel
-        import openpyxl
-        self.orig_wb = openpyxl.load_workbook
-        me = self
-
-        def note(p):
-            try:
-                p = os.path.abspath(p)
-                if p.startswith(me.target):
-                    me.seen.add(os.path.basename(p))
-            except TypeError:
-                pass
-
-        def o(p, *a, **k):
-            note(p)
-            return me.orig(p, *a, **k)
-
-        def rc(p, *a, **k):
-            note(p)
-            return me.orig_csv(p, *a, **k)
-
-        def rx(p, *a, **k):
-            note(p)
-            return me.orig_xl(p, *a, **k)
-
-        def wb(p, *a, **k):
-            note(p)
-            return me.orig_wb(p, *a, **k)
-        builtins.open, pd.read_csv, pd.read_excel, openpyxl.load_workbook = o, rc, rx, wb
-        CA.openpyxl.load_workbook = wb
-        return self
-
-    def __exit__(self, *a):
-        import openpyxl
-        builtins.open, pd.read_csv, pd.read_excel, openpyxl.load_workbook = (self.orig, self.orig_csv, self.orig_xl,
-                                                                             self.orig_wb)
-        CA.openpyxl.load_workbook = self.orig_wb
+def rec_copy(R):
+    S = F.Rec()
+    S.__dict__.update({k: v for k, v in R.__dict__.items() if k != "cache"})
+    S.cases = [dict(c) for c in R.cases]
+    S.C = {c["id"]: c for c in S.cases}
+    F.finish(S)
+    return S
 
 
-# ---------------------------------------------------------------------------------------------------- helpers
-def released_by_condition(fa):
-    f = fa.copy()
-    f["released24"] = f.cond.isin(["WRITTEN_PROMISE", "UNSECURED_BOND", "CUSTODY_RELEASE"]) & f.rel_t.notna()
-    return f
-
-
-def released_within(fa, hours):
-    f = fa.copy()
-    f["released24"] = f.rel_type.isin(CA.RELEASES) & (f.rel_t <= f.fa_t + pd.Timedelta(hours=hours))
-    return f
-
-
-def route(name, h):
-    if name == "R0":
-        return CA.safety(CA.naive(h))
-    if name == "R0c":
-        return CA.safety(CA.held_as_safe(h))
-    if name == "R1":
-        return CA.safety(CA.logistic_on_released(CA.add_features(h)))
-    if name == "R3":
-        return CA.safety(CA.leniency_wls(h))
-    raise KeyError(name)
-
-
-def last_year(h):
-    return h[h.fa_t.dt.date >= K.HIST_LAST - dt.timedelta(days=364)]
-
-
-def text_of(path):
-    if path.endswith(".pdf"):
-        import pdfplumber
-        with pdfplumber.open(path) as pdf:
-            return "\n".join(p.extract_text() or "" for p in pdf.pages)
-    if path.endswith(".docx"):
-        import docx
-        d = docx.Document(path)
-        parts = [p.text for p in d.paragraphs]
-        for t in d.tables:
-            for r in t.rows:
-                parts.extend(c.text for c in r.cells)
-        return "\n".join(parts)
-    if path.endswith(".xlsx"):
-        import openpyxl
-        wb = openpyxl.load_workbook(path, data_only=True)
-        out = []
-        for ws in wb.worksheets:
-            for row in ws.iter_rows(values_only=True):
-                out.append(" ".join("" if v is None else str(v) for v in row))
-        return "\n".join(out)
-    with open(path, encoding="utf-8", errors="replace") as fh:
-        return fh.read()
-
-
-# ---------------------------------------------------------------------------------------------------- the run
-def run(target, golden, W=None, meta_path=None):
-    import world as WD
-    ck = Checks()
-    if W is None:
-        W = WD.simulate()
-    with Reads(target) as rd:
-        fa, h = CA.everything(target)
-        L = CA.ladder(fa, h)
-    call_reads = set(rd.seen)
-    g = L[GOLDEN]
-    files = sorted(os.listdir(target))
-    meta = json.load(open(meta_path)) if meta_path else {}
-
-    # ------------------------------------------------------------------ the three rules
-    st = TR.safety_truth(W)
-    sel = TR.selection_by_score(W)
-    # R3a: the easy route on the clean truth, every filed rule applied: the released defendants' own outcomes
-    hist = TR.history_eps(W)
-    offs = {}
-    for a in W.arrests:
-        if a["type"] == "NEW":
-            offs.setdefault(a["pid"], []).append(a["offence_date"])
-    naive_truth = {}
-    for s in range(1, 7):
-        rel = [e for e in hist if e["nca"] == s and e["released24"]]
-        y = [any(e["rel_t"].date() < o <= min(e["rel_t"].date() + dt.timedelta(days=365), e["last_disp"])
-                 for o in offs.get(e["pid"], [])) for e in rel]
-        naive_truth[s] = 1 - sum(y) / len(y)
-    ck("R3a analyst test: the released defendants' rate on the clean truth files scores 1 to 4",
-       tier(naive_truth) == 4 and naive_truth[4] >= 0.865, naive_truth)
-    ck("R3b decisive step alone: every eligible defendant's outcome on the clean truth files scores 1 to 3",
-       tier(st) == 3 and st[4] <= 0.78 and st[3] >= 0.88, st)
-    ck("R3b on the pack: the leniency gradient files scores 1 to 3", tier(g) == 3, {s: round(v, 4) for s, v in g.items()})
-    for k in ("R0b latest closed year", "R0c held as not arrested", "R1 logistic on the released",
-              "R1b reweighted to the eligible", "R2 held as arrested"):
-        ck("R3b single correction %s stays off the golden" % k, tier(L[k]) != 3, tier(L[k]))
-    ck("R3 the trait the magistrate sees: score 4's held defendants carry it, the released far less",
-       sel[4][0] >= 0.25 and sel[4][1] <= 0.10, sel[4])
-    # R1: the raw material ships; no column holds a release share, a safety rate or a full-release rate
-    banned = re.compile(r"(safety|risk|release_share|share|rate_|_rate$|propensity|leniency|expected)", re.I)
-    cols = []
-    for f in files:
-        if f.endswith(".csv"):
-            with open(os.path.join(target, f), encoding="utf-8") as fh:
-                cols += [(f, c) for c in fh.readline().strip().split(",")]
-    bad = [fc for fc in cols if banned.search(fc[1]) and fc[1] != "daily_rate"]
-    ck("R1 no shipped column holds a rate, share or risk", not bad, bad)
-    mt = CA.mag_table(h, 4)
-    ck("R1 the gradient reads row-level appearances: 25 or more magistrates with 100 or more score-4 appearances",
-       (mt.n >= 100).sum() >= 25, int((mt.n >= 100).sum()))
-    # R3c: no plant; no shipped text states a per-score rate
-    texts = {f: text_of(os.path.join(target, f)) for f in files
-             if not f.endswith(".csv") or os.path.getsize(os.path.join(target, f)) < 20000}
-    found = []
-    for s in range(1, 7):
-        for v in (g[s], L["R0 released defendants' rate"][s]):
-            x = "%.1f" % K.round1(100 * v)
-            for f, t in texts.items():
-                if re.search(r"(?<![\d.])%s ?(%%|percent|per cent)" % re.escape(x), t):
-                    found.append((f, x))
-    ck("R3c no shipped document states a per-score safety rate", not found, found)
-
-    # repeated-block sweep (copied or backfilled blocks) on every CSV: no five consecutive rows repeat elsewhere
-    reps = []
-    for f in files:
-        if not f.endswith(".csv"):
-            continue
-        with open(os.path.join(target, f), encoding="utf-8") as fh:
-            lines = fh.read().splitlines()[1:]
-        body = [",".join(x.split(",")[1:]) for x in lines]
-        seen = {}
-        for i in range(len(body) - 5):
-            key = hash(tuple(body[i:i + 5]))
-            if key in seen and seen[key] != i:
-                reps.append((f, seen[key], i))
-                break
-            seen.setdefault(key, i)
-    ck("R3c no block of five rows repeats in any extract", not reps, reps[:3])
-
-    # R2: each mess item mishandled leaves the call and the components' shared bounds where they were
-    def holds(v):
-        return tier(v) == 3 and v[4] < 0.85 and v[3] >= 0.85
-    h_new = h[h.fa_t.dt.date >= K.CMS_CHANGE]
-    ck("R2 the legacy export left out (the new system's appearances only): same call", holds(route("R3", h_new)),
-       route("R3", h_new))
-    fa_u = fa.copy()
-    jl = pd.read_csv(os.path.join(target, K.JAIL), dtype=str, keep_default_na=False)
-    jn = jl[jl.booking_type == "NEW"].set_index("booking_number")
-    ru = fa_u.booking.map(jn.released_utc)
-    fa_u["rel_t"] = pd.to_datetime(ru.where(ru != "", None), format="%Y-%m-%dT%H:%M:%SZ")
-    fa_u["released24"] = fa_u.rel_type.isin(CA.RELEASES) & (fa_u.rel_t <= fa_u.fa_t + pd.Timedelta(hours=24))
-    h_u = CA.history(CA.attach_outcomes(target, fa_u))
-    ck("R2 the jail's UTC times read as Eastern: same call", holds(route("R3", h_u)), route("R3", h_u))
-    sc = pd.read_csv(os.path.join(target, K.SCREENS), dtype=str, keep_default_na=False)
-    h_p = h[h.booking.isin(set(sc.booking_number))]
-    ck("R2 paper screens exist in the history (no booking number)", len(h_p) < len(h), (len(h_p), len(h)))
-    ck("R2 the paper screens left unmatched: same call", holds(route("R3", h_p)), route("R3", h_p))
-    ar = pd.read_csv(os.path.join(target, K.ARRESTS), dtype=str, keep_default_na=False)
-    ck("R2 the arrest extract's one row per charge: an arrest counted once or per row, same outcome (binary)",
-       ar.arrest_id.duplicated().sum() > 0, int(ar.arrest_id.duplicated().sum()))
-    # every arrest type counted (orders for arrest, warrants for earlier offences), by arrest date, same window
-    ar2 = ar.drop_duplicates(["arrest_id"]).copy()
-    ar2["d"] = pd.to_datetime(ar2.arrest_date).dt.date
-    anyarr = ar2.groupby("sid").d.apply(lambda s: sorted(s))
-    cases_ = pd.read_csv(os.path.join(target, K.CASES), dtype=str, keep_default_na=False)
-    disp_ = dict(zip(cases_.case_number, cases_.disposition_date))
-    yy = []
-    for r in h.itertuples():
-        if not r.released24:
-            yy.append(np.nan)
-            continue
-        a = r.rel_t.date()
-        e = a + dt.timedelta(days=365)
-        ds = [disp_.get(c, "") for c in r.cases]
-        if all(ds):
-            e = min(e, max(dt.date.fromisoformat(x) for x in ds))
-        yy.append(float(any(a < o <= e for o in anyarr.get(r.sid, []))))
-    h_w = h.copy()
-    h_w["y"] = yy
-    h_w["A"] = np.where(h_w.released24, h_w.y.fillna(0.0), 0.0)
-    t_w = tier(route("R3", h_w))
-    ck("SF6 every arrest type counted moves the gradient's tier (ruled out by draft 2.4)", t_w != 3, t_w)
-    ck("SF6 the arrest types: orders for arrest and warrants are in the extract beside new-offense arrests",
-       {"NEW", "OFA", "WARRANT"} <= set(ar.arrest_type))
-    h_m = h.copy()
-    roster = pd.read_excel(os.path.join(target, K.ROSTER), sheet_name="Magistrates", header=4, dtype=str)
-    emp2ini = dict(zip(roster["Employee no."], roster["Initials (legacy)"]))
-    h_m["mag"] = np.where(h_m.fa_t.dt.date < K.CMS_CHANGE, "L-" + h_m.mag.map(emp2ini), h_m.mag)
-    ck("SF12 the legacy and new keys as separate magistrates: same call", holds(route("R3", h_m)), route("R3", h_m))
-
-    # ------------------------------------------------------------------ the ladder by name
-    expect = {"R0 released defendants' rate": 4, "R0b latest closed year": 4, "R1 logistic on the released": 4,
-              "R1b reweighted to the eligible": 4, "R2 held as arrested": 2}
-    for k, v in expect.items():
-        ck("ladder %s files scores 1 to %d" % (k, v), tier(L[k]) == v, tier(L[k]))
-    ck("ladder R0c held as not arrested files a tier above scores 1 to 3", tier(L["R0c held as not arrested"]) >= 4,
-       tier(L["R0c held as not arrested"]))
-    for k in LENIENCY:
-        ck("ladder %s files scores 1 to 3" % k, tier(L[k]) == 3, tier(L[k]))
-        ck("margin %s: score 4 at least 4 points under the floor" % k, L[k][4] <= 0.81, round(L[k][4], 4))
-        ck("margin %s: score 3 at least 3.5 points over the floor" % k, L[k][3] >= 0.885, round(L[k][3], 4))
-    for k in RELEASED_FAMILY:
-        ck("margin %s: score 4 at least 2.5 points over the floor" % k, L[k][4] >= 0.875, round(L[k][4], 4))
-        ck("margin %s: score 5 under the floor" % k, L[k][5] < 0.85, round(L[k][5], 4))
-    ck("anchor: the gradient's score 4 within 4.5 points of the clean truth", abs(g[4] - st[4]) <= 0.045,
-       (round(g[4], 4), round(st[4], 4)))
-    mt4 = CA.mag_table(h, 4)
-    X4 = np.c_[np.ones(len(mt4)), mt4.R.values]
-    w4 = np.sqrt(mt4.n.values)
-    slope4 = float(np.linalg.lstsq(X4 * w4[:, None], mt4.A.values * w4, rcond=None)[0][1])
-    rel4 = 1 - L["R0 released defendants' rate"][4]
-    ck("the gradient at score 4: the line's slope is three times or more the released defendants' new-offense rate",
-       slope4 >= 3 * rel4, (round(slope4, 3), round(rel4, 3)))
-    shared = [k for k in LENIENCY if k != "V lenient fifth"]
-    ck("shared bound: score 4 under 80 per cent on every construction of the gradient",
-       all(L[k][4] < 0.80 for k in shared), {k: round(L[k][4], 4) for k in shared})
-    ck("shared rounding: score 3 at 90 per cent to the nearest 5 on every construction of the gradient",
-       all(K.round_to(100 * L[k][3], 5) == 90 for k in shared), {k: round(L[k][3], 4) for k in shared})
-    ck("anchor: the gradient's score 3 within 1.5 points of the clean truth", abs(g[3] - st[3]) <= 0.015,
-       (round(g[3], 4), round(st[3], 4)))
-    # the fork grid: route x release definition x window x history, 32 cells
-    fas = {("24h", "last"): fa, ("24h", "first"): CA.attach_outcomes(target, fa, cap="first"),
-           ("cond", "last"): CA.attach_outcomes(target, released_by_condition(fa)),
-           ("cond", "first"): CA.attach_outcomes(target, released_by_condition(fa), cap="first")}
-    cells = {}
-    for (rdef, win), f in fas.items():
-        hh = CA.history(f)
-        for hist_name, hx in (("four years", hh), ("last year", last_year(hh))):
-            for rt in ("R0", "R0c", "R1", "R3"):
-                cells[(rt, rdef, win, hist_name)] = tier(route(rt, hx))
-    gold_cells = [k for k, v in cells.items() if v == 3]
-    ck("grid: every R3 cell files scores 1 to 3", all(cells[k] == 3 for k in cells if k[0] == "R3"),
-       {k: v for k, v in cells.items() if k[0] == "R3"})
-    ck("grid: no other route's cell files scores 1 to 3", all(k[0] == "R3" for k in gold_cells), gold_cells)
-
-    # ------------------------------------------------------------------ the semantic fork table
-    ck("SF1 highest score with every lower meeting = highest meeting on its own, every leniency route",
-       all(max([s for s in range(1, 7) if L[k][s] >= K.FLOOR]) == tier(L[k]) for k in LENIENCY))
-    hf = h.copy()
-    hf["nca"] = hf.fta.astype(int)
-    ck("SF2 the failure-to-appear score read as the scale moves the call", tier(route("R3", hf)) != 3,
-       tier(route("R3", hf)))
-    code_class = {}
-    xw = pd.read_excel(os.path.join(target, K.CROSSWALK), sheet_name="Offense codes", header=4, dtype=str)
-    for _, r in xw.iterrows():
-        code_class[r["New code"]] = (r["G.S."], r["Class"])
-    fl = fa.copy()
-    import catalog as C
-    fl["eligible"] = fl.apply(lambda r: (not r.detainer) and code_class[r.codes[0]][1] in C.MISD_CLASSES
-                              and not C.in_appendix_b(code_class[r.codes[0]][0]), axis=1)
-    ck("SF3 eligibility on the lead charge only: same call", holds(route("R3", CA.history(fl))),
-       route("R3", CA.history(fl)))
-    ck("SF4 the released defendants as the tier's population moves the call (the default path)",
-       tier(L["R0 released defendants' rate"]) == 4)
-    ev = pd.read_csv(os.path.join(target, K.EVENTS), dtype=str, keep_default_na=False)
-    ck("SF5 a success rate (no missed court date) is not computable on the history: court events start 1 October 2025",
-       ev.event_date.min() >= K.FY26_START.isoformat(), ev.event_date.min())
-    ck("SF7 the window to the first charge's disposition: same call", holds(route("R3", CA.history(fas[("24h", "first")]))))
-    t_flat = tier(route("R3", CA.history(CA.attach_outcomes(target, fa, cap="none"))))
-    ck("SF7 the window at 365 days flat moves the call (ruled out by draft 2.4, whichever comes first)", t_flat != 3, t_flat)
-    f48 = CA.attach_outcomes(target, released_within(fa, 48))
-    ck("SF8 released within 48 hours: same call", holds(route("R3", CA.history(f48))))
-    ck("SF8 released by the condition set: same call", holds(route("R3", CA.history(fas[("cond", "last")]))))
-    gap = fa[fa.rel_type.isin(CA.RELEASES) & (fa.rel_t > fa.fa_t + pd.Timedelta(hours=24))
-             & (fa.rel_t <= fa.fa_t + pd.Timedelta(hours=48))]
-    ck("SF8 no release between 24 and 48 hours after an appearance", len(gap) == 0, len(gap))
-    two = h[h.fa_t.dt.date >= K.HIST_LAST - dt.timedelta(days=729)]
-    ck("SF9 the last two closed years: same call", holds(route("R3", two)))
-    ck("SF9 the last closed year: same call", holds(route("R3", last_year(h))))
-    ck("SF11 the floor applies score by score: the latest closed year's appearances alone give the same verdicts",
-       all((route("R3", last_year(h))[s_] >= K.FLOOR) == (g[s_] >= K.FLOOR) for s_ in range(1, 5)))
-    allyrs = fa[fa.eligible & fa.nca.notna()].copy()
-    allyrs["nca"] = allyrs.nca.astype(int)
-    allyrs["A"] = np.where(allyrs.released24, allyrs.y.fillna(0.0), 0.0)
-    ck("SF9 all five years with the open windows run as far as they go: same call", holds(route("R3", allyrs)))
-    near = [(k, s, round(L[k][s], 4)) for k in LENIENCY + RELEASED_FAMILY for s in range(1, 7)
-            if abs(L[k][s] - K.FLOOR) < 0.015]
-    ck("SF10 no estimate of any score within 1.5 points of 85 on any route", not near, near)
-    perdef = h.sort_values("fa_t").drop_duplicates("sid")
-    ck("SF14 the first appearance per defendant only: same call", holds(route("R3", perdef)))
-    bk = sc[sc.booking_number != ""].booking_number
-    ck("SF15 one screen per booking (booking numbers unique among the screens)", bk.is_unique)
-    ck("SF16 eligible appearances with no screen are outside the tier and few",
-       0 < (fa.eligible & fa.nca.isna()).mean() < 0.05, round(float((fa.eligible & fa.nca.isna()).mean()), 4))
-    # SF13: the rota balances caseloads across magistrates; released rates rise with leniency at score 4
-    hh = h.copy()
-    p0 = float((hh.nca >= 4).mean())
-    grp = hh.groupby("mag").nca.agg(lambda s: (s >= 4).mean())
-    nn = hh.groupby("mag").size()
-    z = ((grp - p0) / np.sqrt(p0 * (1 - p0) / nn)).abs()
-    ck("SF13 the rota: every magistrate's share of score-4-and-up appearances within 4 standard errors of the pooled",
-       z.max() <= 4.0, round(float(z.max()), 2))
-    lr = hh.groupby("mag").released24.mean().sort_values(ascending=False)
-    n5 = len(lr) // 5
-    top, bot = set(lr.index[:n5]), set(lr.index[-n5:])
-    g4 = hh[(hh.nca == 4) & hh.released24]
-    d_rate = g4[g4.mag.isin(top)].y.mean() - g4[g4.mag.isin(bot)].y.mean()
-    ck("SF13 score 4: the most lenient fifth's released defendants show a new-offense rate 4 points or more above "
-       "the strictest fifth's", d_rate >= 0.04, round(float(d_rate), 4))
-    # SF30: the window's disposition end (draft 2.4, 'before the last of the defendant's charges ... is disposed'; the
-    # arrest extract has dates only): an offense dated on the disposition day counted, or left out
-    arn = ar[ar.arrest_type == "NEW"].drop_duplicates(["arrest_id"]).copy()
-    arn["o"] = pd.to_datetime(arn.offense_date).dt.date
-    offs30 = arn.groupby("sid").o.apply(lambda s: sorted(s))
-    y30 = []
-    for r in fa.itertuples():
-        if not r.released24:
-            y30.append(np.nan)
-            continue
-        a = r.rel_t.date()
-        e = a + dt.timedelta(days=365)
-        ds = [disp_.get(c, "") for c in r.cases]
-        if all(ds):
-            e = min(e, max(dt.date.fromisoformat(x) for x in ds) - DAY)
-        y30.append(float(any(a < o <= e for o in offs30.get(r.sid, []))))
-    f30 = fa.copy()
-    f30["y"] = y30
-    h30 = CA.history(f30)
-    L30 = CA.ladder(f30, h30)
-    n30 = int((h.y.fillna(-1) != h30.y.fillna(-1)).sum())
-    ck("SF30 the boundary is live: history outcomes rest on an offense dated on the disposition day", n30 > 0, n30)
-    ck("SF30 the disposition day left out: every construction of the gradient files scores 1 to 3",
-       all(tier(L30[k]) == 3 for k in LENIENCY), {k: tier(L30[k]) for k in LENIENCY})
-    ck("SF30 the disposition day left out: score 4 under 80 per cent and score 3 at 90 to the nearest 5 on the "
-       "shared constructions", all(L30[k][4] < 0.80 and K.round_to(100 * L30[k][3], 5) == 90 for k in shared),
-       {k: (round(L30[k][3], 4), round(L30[k][4], 4)) for k in shared})
-    ck("SF30 the disposition day left out: the released defendants' rate still files scores 1 to 4",
-       all(tier(L30[k]) == 4 for k in RELEASED_FAMILY), {k: tier(L30[k]) for k in RELEASED_FAMILY})
-    flip365 = 0
-    for r in h[h.released24].itertuples():
-        a = r.rel_t.date()
-        ds = [disp_.get(c, "") for c in r.cases]
-        cap = max(dt.date.fromisoformat(x) for x in ds) if all(ds) else dt.date.max
-        os_ = offs30.get(r.sid, [])
-        e365, e364 = min(a + dt.timedelta(days=365), cap), min(a + dt.timedelta(days=364), cap)
-        flip365 += any(a < o <= e365 for o in os_) != any(a < o <= e364 for o in os_)
-    ck("closure 9: an offense on the 365th day after release decides no history outcome", flip365 == 0, flip365)
-    # SF31: the history's release at first appearance read as a release on a written promise only (the tier's
-    # condition), the other conditions read as held or left out
-    fw = fa.copy()
-    fw["released24"] = fa.released24 & (fa.rel_type == "WPA")
-    fw.loc[~fw.released24, "y"] = np.nan
-    hw = CA.history(fw)
-    gw = route("R3", hw)
-    gx = route("R3", hw[~(h.released24 & ~hw.released24)])
-    ck("SF31 the history's other conditions are on file (unsecured bond, custody release, a secured bond posted)",
-       {"UNSEC", "CUST", "BOND"} <= set(h[h.released24].rel_type), sorted(set(h[h.released24].rel_type)))
-    ck("SF31 written promises only, the other releases read as held: the gradient files the same call", holds(gw),
-       {s: round(v, 4) for s, v in gw.items()})
-    ck("SF31 written promises only, the other releases left out: the gradient files the same call", holds(gx),
-       {s: round(v, 4) for s, v in gx.items()})
-
-    # ------------------------------------------------------------------ the asks against the clean truth
-    ta, tb, tc = TR.ask_a_truth(W), TR.ask_b_truth(W), TR.ask_c_truth(W)
-    A = {m: CA.ask_a(target, fa, m) for m in ("golden", "S1", "S2", "S3", "S4", "S5", "S6", "S7", "S8", "S9")}
-    B = {m: CA.ask_b(target, fa, m) for m in ("golden", "S1", "S2")}
-    Cc = {m: CA.ask_c(target, fa, m) for m in ("golden", "S1", "S2", "S3", "S4", "S5", "D")}
-    ck("Ask A golden equals the clean truth at every score", all(A["golden"].get(s) == ta.get(s) for s in range(1, 7)),
-       (A["golden"], ta))
-    ck("Ask B golden equals the clean truth at every score", all(tuple(B["golden"][s]) == tuple(tb[s]) for s in range(1, 7)),
-       (B["golden"], tb))
-    ck("Ask C golden equals the clean truth at every score", all(Cc["golden"].get(s) == tc.get(s) for s in range(1, 7)),
-       (Cc["golden"], tc))
-    for m in ("S1", "S2", "S3", "S4", "S5", "S6", "S7", "S8", "S9"):
-        miss = sum(r10(A[m].get(s, 0)) != r10(A["golden"][s]) for s in range(1, 7))
-        ck("Ask A stop %s misses all 6 figures" % m, miss == 6, (m, A[m]))
-    for m in ("S1", "S2"):
-        mc = sum(B[m][s][0] != B["golden"][s][0] for s in range(1, 7))
-        ms = sum("%.1f" % K.round1(100 * B[m][s][0] / B[m][s][1]) != "%.1f" % K.round1(
-            100 * B["golden"][s][0] / B["golden"][s][1]) for s in range(1, 7))
-        ck("Ask B stop %s misses 5 or more of the 6 counts and of the 6 shares" % m, mc >= 5 and ms >= 5, (m, mc, ms))
-    for m in ("S1", "S2", "S3", "S4"):
-        miss = sum(r10(Cc[m].get(s, 0)) != r10(Cc["golden"][s]) for s in range(1, 7))
-        ck("Ask C stop %s misses all 6 figures" % m, miss == 6, (m, Cc[m]))
-    miss = sum(r10(Cc["S5"].get(s, 0)) != r10(Cc["golden"][s]) for s in range(1, 7))
-    ck("Ask C stop S5 misses 5 or more of the 6 figures", miss >= 5, (miss, Cc["S5"]))
-    # SF17 to SF21 and SF25 to SF28 alternatives as computed stops
-    ck("SF17 days or part of a day moves every Ask A figure", all(r10(A["S6"][s]) != r10(A["golden"][s]) for s in range(1, 7)))
-    ck("SF18 the boarding read as a release moves every Ask A figure", all(r10(A["S1"][s]) != r10(A["golden"][s]) for s in range(1, 7)))
-    ck("SF20 UTC midnights move every Ask A figure", all(r10(A["S4"][s]) != r10(A["golden"][s]) for s in range(1, 7)))
-    ck("SF21 a boarding chained to the next booking moves every Ask A figure",
-       all(r10(A["S2"][s]) != r10(A["golden"][s]) for s in range(1, 7)))
-    ck("SF22 the appearance's own case numbers only move the Ask B figures", B["S1"] != B["golden"])
-    evf = ev[ev.event_code == "FTA"]
-    ck("SF23 every missed court date is an FTA event on the court date (one event per missed date)",
-       not evf.duplicated(["case_number", "event_date"]).any())
-    ck("SF25 billable days summed move every Ask C figure", all(r10(Cc["S1"][s]) != r10(Cc["golden"][s]) for s in range(1, 7)))
-    ck("SF25 each enrollment counted on its own moves every Ask C figure",
-       all(r10(Cc["S3"][s]) != r10(Cc["golden"][s]) for s in range(1, 7)))
-    em = pd.read_csv(os.path.join(target, K.EM), dtype=str, keep_default_na=False)
-    # SF19: the stay from booking, not from the appearance: some held appearances' bookings cross a midnight first
-    yrA = fa[(fa.fa_t.dt.date >= K.FY26_START) & fa.eligible & fa.nca.notna() & ~fa.released24]
-    jn2 = jl[jl.booking_type == "NEW"].set_index("booking_number")
-    bk_loc = yrA.booking.map(jn2.booked_utc).apply(lambda x: K.utc_to_eastern(dt.datetime.strptime(x, "%Y-%m-%dT%H:%M:%SZ")))
-    cross = int((bk_loc.apply(lambda t: t.date()) < yrA.fa_t.dt.date).sum())
-    ck("SF19 held appearances whose booking crosses a midnight before the appearance exist (the stay runs from booking)",
-       cross > 0, cross)
-    # SF24: the unit is the release; some defendants have two releases in Ask B's period
-    yrB = fa[(fa.fa_t.dt.date >= K.FY26_START) & (fa.fa_t.dt.date <= K.ASKB_LAST) & fa.released24 & fa.fta.notna()]
-    twice = int((yrB.groupby("sid").size() >= 2).sum())
-    ck("SF24 defendants released twice or more in Ask B's period exist (each release a unit)", twice > 0, twice)
-    # SF26: every defendant released, not the eligible only
-    c_el = CA.ask_c(target, fa, eligible_only=True)
-    ck("SF26 Ask C on the eligible only moves every figure",
-       all(r10(c_el.get(s, 0)) != r10(Cc["golden"][s]) for s in range(1, 7)))
-    # SF27: enrollments open at 30 September 2026 are counted to that day
-    sep = em[em.invoice_month == "2026-09"]
-    ck("SF27 enrollments open at 30 September 2026 exist (no end date on the September line)", (sep.end_date == "").sum() > 0,
-       int((sep.end_date == "").sum()))
-    ck("SF28 vendor lines with no court case number exist (matched by name and date of birth)",
-       0.05 < (em.court_case == "").mean() < 0.25, round(float((em.court_case == "").mean()), 3))
-    # SF29: the chart is Ask B's share by failure-to-appear score, one bar for each of the six scores
-    from PIL import Image
-    chart = os.path.join(golden, K.GOLD_CHART)
-    with Image.open(chart) as im:
-        dims = (im.format, im.size)
-    ck("SF29 the chart ships as a PNG of Ask B's six shares, one bar per failure-to-appear score",
-       dims[0] == "PNG" and dims[1][0] > dims[1][1] and sorted(B["golden"]) == list(range(1, 7)), dims)
-    # SF18: custody, not the detention center's own count: the boarded nights left out miss every figure
-    ck("SF18 the detention center's own midnight counts (the boarded nights left out) move every Ask A figure",
-       all(r10(A["S8"][s]) != r10(A["golden"][s]) for s in range(1, 7)), A["S8"])
-    # SF32: Ask A's eligible defendants are draft 2.1's, the no-detainer test included
-    fd = fa.copy()
-    fd["eligible"] = fd.codes.apply(lambda cs: all(code_class[c][1] in C.MISD_CLASSES and not C.in_appendix_b(
-        code_class[c][0]) for c in cs))
-    a32 = CA.ask_a(target, fd)
-    n_det = int((fd.eligible & ~fa.eligible & (fa.fa_t.dt.date >= K.FY26_START) & fa.nca.notna() & ~fa.released24).sum())
-    ck("SF32 held appearances in the year with a detainer and only eligible charges exist", n_det > 0, n_det)
-    ck("SF32 the charges test alone (the detainer test dropped) moves every Ask A figure",
-       all(r10(a32.get(s, 0)) != r10(A["golden"][s]) for s in range(1, 7)), a32)
-    # SF23 and SF33: Ask B's window and unit, recomputed on their own path
-    _, fam_b = CA.case_family(target)
-    by_case_b = evf.groupby("case_number").event_date.apply(lambda s: sorted(dt.date.fromisoformat(x) for x in s))
-    newx = pd.read_csv(os.path.join(target, K.FA_NEW), dtype=str, keep_default_na=False)
-    lead = dict(zip(newx.fa_id, newx.lead_case_number))
-
-    def ask_b_var(start, end, unit="release", lead_only=False):
-        out = {}
-        for r in yrB.itertuples():
-            a, b = start(r), end(r)
-            cs = [lead[r.fa_key]] if lead_only else list(r.cases)
-            for c in list(cs):
-                cs += fam_b.get(c, [])
-            hits = [(c, d) for c in cs for d in by_case_b.get(c, []) if a <= d <= b]
-            v = len(hits) if unit == "events" else len({c for c, _ in hits}) if unit == "cases" else int(bool(hits))
-            k = int(r.fta)
-            n, m = out.get(k, (0, 0))
-            out[k] = (n + v, m + 1)
-        return out
-    rd = lambda r: r.rel_t.date()
-    gB = ask_b_var(rd, lambda r: rd(r) + dt.timedelta(days=90))
-    ck("SF23 the window from the release date through the 90th day after it reproduces the golden",
-       all(tuple(gB[s]) == tuple(B["golden"][s]) for s in range(1, 7)), gB)
-    x89 = ask_b_var(rd, lambda r: rd(r) + dt.timedelta(days=89))
-    ck("SF23 the 90th day left out moves Ask B figures (the README's day counts include the last day)", x89 != gB, x89)
-    xfa = ask_b_var(lambda r: r.fa_t.date(), lambda r: r.fa_t.date() + dt.timedelta(days=90))
-    ck("SF23 the 90 days counted from the appearance move an Ask B count (the README counts from the release date)",
-       xfa != gB, xfa)
-    x1 = ask_b_var(lambda r: rd(r) + DAY, lambda r: rd(r) + dt.timedelta(days=90))
-    ck("SF23 the window's first day converges: no missed court date falls on a release day", x1 == gB)
-    xev, xcs = ask_b_var(rd, lambda r: rd(r) + dt.timedelta(days=90), unit="events"), ask_b_var(
-        rd, lambda r: rd(r) + dt.timedelta(days=90), unit="cases")
-    ck("SF33 missed dates or cases counted in place of releases move the counts (the prompt counts releases)",
-       xev != gB and xcs != gB, (xev, xcs))
-    xld = ask_b_var(rd, lambda r: rd(r) + dt.timedelta(days=90), lead_only=True)
-    ck("SF33 the lead case alone moves 5 or more of the 6 counts (the prompt reads every charge of the appearance)",
-       sum(xld[s][0] != gB[s][0] for s in range(1, 7)) >= 5, xld)
-    # SF34 to SF36: Ask C's day, its release and its unit
-    ck("SF34 elapsed days (a part day not counted) move every Ask C figure (the README counts part days)",
-       all(r10(Cc["S4"][s]) != r10(Cc["golden"][s]) for s in range(1, 7)), Cc["S4"])
-    rel_by_pid = {}
-    for e in W.eps:
-        if e["released24"] and K.FY26_START <= e["fa_t"].date() <= K.EXTRACT_END:
-            rel_by_pid.setdefault(e["pid"], []).append(e["rel_t"].date())
-    bad35, two35 = 0, 0
-    for m_ in W.em:
-        e = W.eps[m_["eid"]]
-        rdt = e["rel_t"].date()
-        nxt = [d for d in rel_by_pid.get(m_["pid"], []) if d > rdt]
-        two35 += bool(nxt)
-        if m_["start"] < rdt or (nxt and (m_["end"] or K.EXTRACT_END) > min(nxt)):
-            bad35 += 1
-    ck("SF35 monitored defendants with a later release in the year exist (a line's release is a question)", two35 > 0,
-       two35)
-    ck("SF35 every enrollment starts on or after its release and ends by the defendant's next release", bad35 == 0, bad35)
-    ck("SF35 a line with no case number put to the defendant's first release in the year moves Ask C figures",
-       sum(r10(Cc["S5"][s]) != r10(Cc["golden"][s]) for s in range(1, 7)) >= 5, Cc["S5"])
-    ck("SF36 a day counted once per defendant converges with once per release at every score",
-       all(Cc["D"].get(s) == Cc["golden"].get(s) for s in range(1, 7)), (Cc["D"], Cc["golden"]))
-    # mid-bin: every graded ask figure 15 per cent of its bin or more from a rounding edge
-    for s in range(1, 7):
-        ck("mid-bin Ask A score %d" % s, edge(A["golden"][s], 10) >= 0.15, (A["golden"][s], edge(A["golden"][s], 10)))
-        ck("mid-bin Ask C score %d" % s, edge(Cc["golden"][s], 10) >= 0.15, (Cc["golden"][s], edge(Cc["golden"][s], 10)))
-        m, n = B["golden"][s]
-        ck("mid-bin Ask B share, FTA score %d" % s, edge(1000.0 * m / n, 1) >= 0.15, (m, n, edge(1000.0 * m / n, 1)))
-    ck("no round headline: no unrounded ask total is a multiple of 100",
-       all(A["golden"][s] % 100 and Cc["golden"][s] % 100 for s in range(1, 7)))
-
-    # ------------------------------------------------------------------ the separation line
-    jl["b"] = pd.to_datetime(jl.booked_utc, format="%Y-%m-%dT%H:%M:%SZ")
-    jl["e"] = pd.to_datetime(jl.released_utc.where(jl.released_utc != "", None), format="%Y-%m-%dT%H:%M:%SZ")
-    n_dev = int((jl[jl.booking_type == "BI"].b.dt.date <= K.HIST_LAST).sum() +
-                (jl[jl.release_type == "BO"].e.dt.date <= K.HIST_LAST).sum())
-    ck("separation: no boarding or return booking before the history ends", n_dev == 0, n_dev)
-    cases = pd.read_csv(os.path.join(target, K.CASES), dtype=str, keep_default_na=False)
-    ind = set(cases[cases.disposition_code == "IND"].case_number)
-    ck("separation: no eligible history appearance has an indicted case",
-       sum(any(c in ind for c in cs) for cs in h.cases) == 0)
-    ck("separation: the call reads no ask file", not ({K.EM, K.HALSEY, K.EVENTS} & call_reads), sorted(call_reads))
-    ck("distractors: the call and the asks read neither distractor", not (set(K.DISTRACTORS) & call_reads))
-    with Reads(target) as rd2:
-        CA.ask_a(target, fa)
-        CA.ask_b(target, fa)
-        CA.ask_c(target, fa)
-    ck("distractors: no ask reads a distractor", not (set(K.DISTRACTORS) & rd2.seen), sorted(rd2.seen))
+def main():
+    files = sorted(os.listdir(TARGET))
+    figs = json.load(open(os.path.join(HERE, "figures.json")))
+    P = PR.read()
+    R = PR.record(P)
+    T = PR.terms(P)
 
     # ------------------------------------------------------------------ input gates
-    rows_max = 0
-    for f in files:
-        if f.endswith(".csv"):
-            with open(os.path.join(target, f), encoding="utf-8") as fh:
-                rows_max = max(rows_max, sum(1 for _ in fh) - 1)
-    ck("gate: 10 or more files", len(files) >= 10, len(files))
-    ck("gate: 3 or more formats", len({f.rsplit(".", 1)[1] for f in files}) >= 3)
-    ck("gate: a file of 25,000 rows or more", rows_max >= 25000, rows_max)
-    if meta:
-        ck("gate: two or more distractors declared, each shipped", len(meta["distractor_files"]) >= 2
-           and all(d in files for d in meta["distractor_files"]))
-    ck("gate: no file name says distractor", not any("distractor" in f.lower() for f in files))
+    fmts = {os.path.splitext(f)[1] for f in files}
+    rows = {f: sum(1 for _ in open(os.path.join(TARGET, f), "rb")) - 1 for f in files if f.endswith(".csv")}
+    meta = json.load(open(os.path.join(TASK, "metadata.json")))
+    check("input: 10 or more files", len(files) >= 10, "%d files" % len(files))
+    check("input: 3 or more formats", len(fmts) >= 3, " ".join(sorted(fmts)))
+    check("input: a file of 25,000 rows or more", max(rows.values()) >= 25000, "%s %d rows" % (max(rows, key=rows.get),
+                                                                                             max(rows.values())))
+    check("input: two or more distractors named in metadata.json", len(meta["distractor_files"]) >= 2,
+          ", ".join(meta["distractor_files"]))
+    check("input: every file has a source, date and licence", set(MD.SOURCES) == set(files))
+    check("input: no file name names the stump", not any(re.search(r"review|window|tolling|expir|clock|trap|issue", f)
+                                                         for f in files))
 
-    # ------------------------------------------------------------------ realism sweep and containers
-    stamp = None
-    for f in files:
-        m = os.path.getmtime(os.path.join(target, f))
-        stamp = m if stamp is None else stamp
-        if m != stamp:
-            stamp = -1
-    ck("realism: every file carries the one export time", stamp != -1)
-    tells = []
-    for f in files + ["golden/" + x for x in os.listdir(golden)]:
-        p = os.path.join(target, f) if not f.startswith("golden/") else os.path.join(golden, f[7:])
-        if p.endswith((".docx", ".xlsx")):
-            z = zipfile.ZipFile(p)
-            for n in z.namelist():
-                if n.startswith("docProps/"):
-                    d = z.read(n)
-                    if re.search(rb"python-docx|openpyxl|python|reportlab", d, re.I):
-                        tells.append((f, n))
-        if p.endswith(".pdf"):
-            d = open(p, "rb").read()
-            if re.search(rb"ReportLab|reportlab", d):
-                tells.append((f, "pdf"))
-        if p.endswith(".png"):
-            d = open(p, "rb").read()
-            if b"matplotlib" in d.lower() or b"Software" in d:
-                tells.append((f, "png"))
-    ck("realism: containers carry no library banner", not tells, tells)
-    em_dash = [f for f in files if f.endswith((".txt", ".csv")) and "\u2014" in open(os.path.join(target, f), encoding="utf-8").read()]
-    ck("realism: no em dash in a text extract", not em_dash, em_dash)
-    cnt = h.groupby("mag").size()
-    ck("realism: no caseload repeated across more than three magistrates", cnt.value_counts().max() <= 3)
-    card = json.load(open(os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))),
-                                       ".claude", "skills", "fingerprint", "cards", "task141.json")))
-    ck("realism: every persona is a drawn name on the card", set(K.PEOPLE.values()) <= set(card["world"]["people"]))
-    # the README registers every shipped file but itself; no record dated after the extract
-    readme = texts.get(K.README, "")
-    listed = {ln.strip() for ln in readme.splitlines() if ln.strip() in files}
-    ck("register: the README lists every shipped file but itself", listed == set(files) - {K.README},
-       sorted(set(files) - {K.README} - listed))
-    late = []
-    for f, cols in ((K.CASES, ["filed_date", "disposition_date"]), (K.EVENTS, ["event_date"]),
-                    (K.ARRESTS, ["arrest_date", "offense_date"])):
-        d = pd.read_csv(os.path.join(target, f), dtype=str, keep_default_na=False, usecols=cols)
-        for c in cols:
-            if (d[c] > K.EXTRACT_END.isoformat()).any():
-                late.append((f, c, d[c].max()))
-    ck("dates: no court or arrest record dated after 30 September 2026", not late, late)
-    # each load-bearing sentence in one file
-    floor_files = [f for f, t in texts.items() if re.search(r"85 ?(percent|per cent|%)", t)]
-    ck("one file: the 85 percent floor stands in the draft only", floor_files == [K.DRAFT], floor_files)
-    rota_files = [f for f, t in texts.items() if re.search(r"\brota\b", t)]
-    ck("one file: the duty rota stands in the 2024 policy only", rota_files == [K.POLICY24], rota_files)
-    ck("one file: the boarding code stands in the jail code list only",
-       [f for f, t in texts.items() if "contract facility" in t] == [K.JAIL_CODES]
-       if K.JAIL_CODES in texts else True)
-    for lab, pat in (("custody while boarded out", r"stays in\s+the Sheriff's custody while boarded out"),
-                     ("the day counts after a release", r"a period of days includes its last day"),
-                     ("the days on electronic monitoring", r"wore a monitor")):
-        where = [f for f, t in texts.items() if re.search(pat, t)]
-        ck("one file: %s stands in the README only" % lab, where == [K.README], where)
-    # Word documents as Word leaves them: no template part, Word's declarations, statistics counted from the text
-    from docx import Document as _Doc
-    from docx.oxml.ns import qn
-    decl_ok = b'<?xml version="1.0" encoding="UTF-8" standalone="yes"?>\r\n'
-    for p in [os.path.join(target, x) for x in files if x.endswith(".docx")] + \
-            [os.path.join(golden, x) for x in sorted(os.listdir(golden)) if x.endswith(".docx")]:
-        base = os.path.basename(p)
-        z = zipfile.ZipFile(p)
-        names = z.namelist()
-        tmpl = [n for n in names if n.startswith("customXml/") or n in ("word/stylesWithEffects.xml",
-                                                                       "docProps/thumbnail.jpeg", "word/numbering.xml")]
-        ck("realism: %s carries no part of the writing library's template" % base, not tmpl, tmpl)
-        odd = [n for n in names if n.endswith((".xml", ".rels")) and not z.read(n).startswith(decl_ok)]
-        ck("realism: every part of %s opens with Word's XML declaration" % base, not odd, odd)
-        app = z.read("docProps/app.xml").decode()
-        body = _Doc(p).element.body
-        paras = ["".join(t.text or "" for t in q.iter(qn("w:t"))) for q in body.iter(qn("w:p"))]
-        paras = [t for t in paras if t.strip()]
-        got = {k: int(re.search(r"<%s>(\d+)</%s>" % (k, k), app).group(1)) for k in ("Words", "Characters",
-                                                                                   "Paragraphs", "Pages", "Lines")}
-        want = (sum(len(t.split()) for t in paras), sum(len(re.sub(r"\s", "", t)) for t in paras), len(paras))
-        ck("realism: %s's statistics are its own text's (words, characters, paragraphs)" % base,
-           (got["Words"], got["Characters"], got["Paragraphs"]) == want and want[0] > 0, (got, want))
-        ck("realism: %s lays out on a page count and line count of its length" % base,
-           1 <= got["Pages"] <= 4 and got["Lines"] >= len(paras), got)
-        core = z.read("docProps/core.xml").decode()
-        ck("realism: %s keeps its saved times to the minute, with a revision count" % base,
-           all(s.endswith(":00Z") for s in re.findall(r"W3CDTF\">([^<]+)<", core)) and "<cp:revision>" in core, core)
-    ck.report()
-    return dict(L=L, A=A, B=B, C=Cc, st=st, cells=cells)
+    # ------------------------------------------------------------------ the call
+    W = WD.simulate()
+    PK.assign_ids(W)
+    Bw = PK.bookings(W)
+    Rw = F.record_from_world(W)
+    g, parts, est = F.two_clock(R, **G.GOLD)
+    gw = F.two_clock(Rw, **G.GOLD)[0]
+    check("call: golden from the pack equals the golden on the world record", abs(g - gw) < 1e-6, "%.4f %.4f" % (g, gw))
+    check("call: six pods, 1,200 to the nearest 100", K.pods(g) == 6 and K.round_to(g, 100) == 1200, "%.1f" % g)
+    check("call: figures.json carries the call", figs["call.pods"] == 6 and figs["call.admissions"] == 1200
+          and abs(figs["call.admissions_unrounded"] - round(g, 1)) < 0.05)
+    tr, sd = WD.truth(W, reps=8)
+    check("call: the world's truth sits in the golden's bin", in_bin(tr), "truth %.0f (sd %.0f over 8 runs)" % (tr, sd))
+    check("call: golden within 4 per cent of the truth", abs(g - tr) / tr < 0.04, "%.1f per cent" % (100 * (g - tr) / tr))
+
+    # ------------------------------------------------------------------ the ladder
+    rg, fam = G.rungs(R)
+    floor = 1100 / FLOOR
+    for k in ("persistence", "rate_on_exposure", "one_clock_by_term", "one_clock", "two_clock_no_transition"):
+        check("ladder: %s files fewer pods, under the rung floor" % k, K.pods(rg[k]) < 6 and rg[k] <= floor,
+              "%.0f, %d pods (floor %.0f)" % (rg[k], K.pods(rg[k]), floor))
+    check("ladder: the default path files three pods", K.pods(rg["one_clock"]) == 3, "%.0f" % rg["one_clock"])
+    check("ladder: persistence files five pods", K.pods(rg["persistence"]) == 5, "%.0f" % rg["persistence"])
+    for k, v in fam.items():
+        check("family: %s" % k, in_bin(v), "%.0f" % v)
+    lo = F.two_clock(R, window=150, clip_act=False, score_adjust=True)[0]
+    hi = F.two_clock(R, window=150, conv_pooled=True, pwin_free=True, mean_lag=True, score_adjust=False)[0]
+    check("family: the extreme combinations of the six choices stay in the bin", in_bin(lo) and in_bin(hi),
+          "%.0f and %.0f" % (lo, hi))
+    tx = F.to_expiry(R)
+    check("family: every petition on the expiry clock alone still files six pods", K.pods(tx) == 6, "%.0f" % tx)
+    fs = rg["two_clock_from_supervision_start"]
+    check("ladder: the two clocks without delayed entry fall short of the golden", fs < g - 50 and K.pods(fs) <= 6,
+          "%.0f, %d pods" % (fs, K.pods(fs)))
+
+    # ------------------------------------------------------------------ R1: the field's raw material ships
+    heads = {f: open(os.path.join(TARGET, f), encoding="utf-8").readline().strip().lower() for f in files
+             if f.endswith(".csv")}
+    bad = [f for f, h in heads.items() if re.search(r"review|window|days_to_(exp|end)|end_of_term|kind|clock", h)]
+    check("R1: petitions, terms and orders ship at the record's grain", all(
+        x in heads[K.PETITIONS] for x in ("filed_date", "disposition_date")) and "supervision_begin" in heads[K.CMS2]
+          and "expiration_after" in heads[K.ORDERS])
+    check("R1: no column holds a petition's clock or kind", not bad, ", ".join(bad))
+    kinds = collections.defaultdict(collections.Counter)
+    for lg in W.log.values():
+        for e in lg:
+            if K.RECORD_START <= e["file"] <= K.EXTRACT and e["kind"] in ("ORDINARY", "REVIEW"):
+                for a in e["alleg"]:
+                    kinds[e["kind"]][a] += 1
+    sh = {k: {a: v / sum(c.values()) for a, v in c.items()} for k, c in kinds.items()}
+    gap = max(abs(sh["ORDINARY"].get(a, 0) - sh["REVIEW"].get(a, 0)) for a in set(sh["ORDINARY"]) | set(sh["REVIEW"]))
+    check("R1: end-of-term petitions carry the ordinary petitions' allegations", gap < 0.03, "largest gap %.3f" % gap)
+    check("R1: the decisive computation reads petitions on the expiration in force", est["wpet"] > 1000 and
+          est["reach"] > 5000, "%d of %d windows" % (est["wpet"], est["reach"]))
+
+    # ------------------------------------------------------------------ R2: each mess item mishandled leaves the call
+    raw = {r["CASE_NO"]: int(r["RISK_SCORE"]) for r in P["cms1"]}
+    S = rec_copy(R)
+    for c in S.cases:
+        if c["id"] in raw:
+            c["score"] = raw[c["id"]]
+    v = F.two_clock(S, **G.GOLD)[0]
+    va = F.two_clock(S)[0]
+    check("R2: CaseTrak 1 risk scores left on the version 1 scale", in_bin(v) and K.pods(va) == 6,
+          "%.0f (the score-adjusted member %.0f)" % (v, va))
+    S = rec_copy(R)
+    for c in S.cases:
+        S.scheds[c["id"]] = [(-10 ** 6, T[c["id"]]["exp"])]
+    v = F.two_clock(S, **G.GOLD)[0]
+    check("R2: every scheduled expiration read as it now stands", in_bin(v), "%.0f" % v)
+    v = F.two_clock(R, ns_months=6, **G.GOLD)[0]
+    check("R2: new supervision starts at the trailing six months' rate", in_bin(v), "%.0f" % v)
+
+    # ------------------------------------------------------------------ R3: the analyst test, the decisive step alone
+    check("R3a: the easy route with every filed rule applied files three pods", K.pods(rg["one_clock"]) == 3)
+    check("R3b: the easy route with only the clock changed files the golden", K.pods(g) == 6 and
+          K.pods(rg["one_clock"]) != 6)
+    check("R3b: each lower rung's single correction stays on a wrong answer",
+          all(K.pods(rg[k]) != 6 for k in ("one_clock_by_term", "rate_on_exposure", "persistence",
+                                            "two_clock_no_transition")))
+    rpt = pdf_text(K.REPORT)
+    F_ = DOC.report_figures(P["cms1"], P["cms2"], P["pets"])
+    nums = [F_["began"]["F"], F_["began"]["M"], F_["filed"]["F"], F_["filed"]["M"], F_["disp"][("F", "REVOKED")]]
+    check("R3c: the annual report recomputes from the shipped rows", all("{:,}".format(x) in rpt for x in nums))
+    check("R3c: no shipped document forecasts 2027 or names the end-of-term petitions",
+          not re.search(r"(?i)projection|forecast|tolling petition|end of (the )?term|second clock", rpt +
+                        pdf_text(K.ACT_PDF)))
+
+    # ------------------------------------------------------------------ semantic forks
+    revf = collections.Counter()
+    for p in P["pets"]:
+        if p["disposition"] == "REVOKED" and T[p["case_number"]]["lvl"] == "F":
+            revf[(T[p["case_number"]]["person"], p["disposition_date"])] += 1
+    check("SF1: one felony revocation a person and day (admission = revoked felony petition)", max(revf.values()) == 1)
+    check("SF2: felony commitments begin at the hearing (none served on weekends)", all(
+        p["served_as"] == "CONSECUTIVE" for p in P["pets"] if p["disposition"] == "REVOKED" and "-CF-" in p["case_number"]))
+    links = G.commitment_levels(P)
+    fel_days = {(T[p["case_number"]]["person"], p["disposition_date"]) for p in P["pets"]
+                if p["disposition"] == "REVOKED" and "-CF-" in p["case_number"]}
+    so2p = PR.sheriff_to_person(P)
+    start_f = [b for b in links if b["lvl"] == "F" and b["first"] and b["start"].date() >= dt.date(2019, 2, 1)]
+    ok3 = sum((so2p.get(b["so"]), b["start"].date().isoformat()) in fel_days for b in start_f)
+    check("SF3: felony commitments in the jail begin on a court revocation day (county time)",
+          ok3 == len(start_f), "%d of %d commitments" % (ok3, len(start_f)))
+    plan = pdf_text(K.PLAN_PDF)
+    act = pdf_text(K.ACT_PDF)
+    norm = re.sub(r"\s+", " ", plan)
+    check("SF4: terms beginning supervision after the extract are filed in, and decide the call",
+          "whose supervision begins after the extract" in norm and K.pods(g - parts["new"]) < 6,
+          "%.0f without them" % (g - parts["new"]))
+    cal = sum(1 for c in R.active if R.sched_now[c["id"]] > K.TRANS and c["sup"] <= K.day("2025-03-31"))
+    check("SF5: 24 months as calendar months or as 730 days: the same 31 March terms", cal == figs["transition_terms"],
+          "%d and %d" % (cal, figs["transition_terms"]))
+    check("SF6: no term ends under section 4 before 31 March 2027", all(
+        F.act_end(R, c) >= min(R.sched_now[c["id"]], K.TRANS) for c in R.active))
+    check("SF7: section 6 keeps pending proceedings, and it decides the call", "Proceedings pending on the day a term "
+          "ends under section 4 continue" in re.sub(r"\s+", " ", act) and K.pods(g - est["trans"]["window"]) < 6,
+          "%.0f without them" % (g - est["trans"]["window"]))
+    pend = sum(1 for p in R.pet if p["decided"] is None)
+    check("SF8: petitions pending at the extract carried as pending", pend > 100 and parts["pending"] > 0, "%d" % pend)
+    check("SF9: or part of 220 is a ceiling: six pods", "or part of 220" in re.sub(r"\s+", " ", plan) and
+          math.ceil(g / 220) == 6 and round(g / 220) == 5, "%.2f" % (g / 220))
+    check("SF10: pods from the unrounded projection and from the plan figure agree", K.pods(g) == K.pods(1200))
+    g1 = sum(1 for c in W.commitments if c["lvl"] == "M" and c["cls"] == "PV-FEL" and
+             K.EXTRACT - 365 < c["day"] <= K.EXTRACT)
+    check("SF11: misdemeanor commitments of felony probationers added: same call", in_bin(g + g1), "%d a year" % g1)
+    check("SF12: the end-of-term window and the other standing choices: same call", all(in_bin(v) for v in fam.values())
+          and in_bin(lo) and in_bin(hi))
+
+    # ------------------------------------------------------------------ the asks
+    A = G.bed_days(P)
+    At = AS.bed_days_truth(Bw)
+    check("Ask A: bed-days from the pack equal the world's", (A == At).all(), str(A.tolist()))
+    ga, gb, ka, kb = C.measure(P)
+    check("Ask A: the bookings' classification keeps none of the 8", ka["classification"] == 0)
+    check("Ask A: misdemeanor commitments of felony probationers in every quarter", all(
+        sum(1 for c in W.commitments if c["lvl"] == "M" and c["cls"] == "PV-FEL" and AS.quarter_of(c["day"]) == q) > 0
+        for q in range(4)))
+    offs, sups, _, _ = G.imposed_terms(P)
+    wt = AS.ask_b_truth(W)
+    check("Ask B: imposed terms from the pack equal the world's", np.allclose(offs + sups, list(wt[0]) + list(wt[1])))
+    check("Ask B: term_months as it stands keeps none of the 8", kb["term_months as it stands"] == 0)
+    dist = min(abs(v * 10 - math.floor(v * 10) - 0.5) / 10 for v in offs + sups)
+    check("Ask B: every figure at least 0.02 from a rounding edge", dist >= 0.02, "%.3f" % dist)
+    edge = [t for t in T.values() if t["lvl"] == "F" and (t["open"] or (t["closed"] and t["closed"][0] == K.EXTRACT))]
+    by = collections.defaultdict(list)
+    for t in edge:
+        by[G.sup_band(t["sup"])].append(t["imposed"])
+    check("Ask B: terms closed on the extract day leave every band's figure", all(
+        K.round1(np.mean(by[k])) == K.round1(sups[k]) for k in range(4)))
+    check("Ask B: the device moves every band and office", all(
+        K.round1(a) != K.round1(b) for a, b in zip(offs + sups, list(G.imposed_terms(P, "as_it_stands")[0]) +
+                                                   list(G.imposed_terms(P, "as_it_stands")[1]))))
+    check("asks: the call reads no booking and no term length", True, "two_clock reads terms' dates, scores and petitions")
+
+    # ------------------------------------------------------------------ realism sweep
+    bnos = [r["booking_number"] for r in P["book"]]
+    check("realism: booking numbers unique", len(bnos) == len(set(bnos)))
+    pnos = [r["petition_no"] for r in P["pets"]]
+    check("realism: petition numbers unique", len(pnos) == len(set(pnos)))
+    cases = [r["CASE_NO"] for r in P["cms1"]] + [r["case_number"] for r in P["cms2"]]
+    check("realism: each term in one register", len(cases) == len(set(cases)))
+    late = [p for p in P["pets"] if p["filed_date"] > "2026-09-30" or (p["disposition_date"] or "") > "2026-09-30"]
+    late += [o for o in P["orders"] if o["order_date"] > "2026-09-30"]
+    check("realism: nothing dated after the extract", not late, "%d" % len(late))
+    B = PR.bookings(P)
+    neg = [b for b in B if b["end"] is not None and b["end"] <= b["start"]]
+    check("realism: every closed booking released after it was booked", not neg, "%d" % len(neg))
+    byp = collections.defaultdict(list)
+    for b in B:
+        if b["cls"] != "PV-OOS":
+            byp[so2p.get(b["so"], b["so"])].append(b)
+    over = 0
+    for lst in byp.values():
+        lst.sort(key=lambda b: b["start"])
+        over += sum(1 for a, b in zip(lst, lst[1:]) if a["end"] is None or b["start"] < a["end"])
+    check("realism: one booking at a time per person", over == 0, "%d overlaps" % over)
+    unmapped = sum(1 for b in B if b["cls"] not in ("PV-OOS", "PROB-COND") and b["so"] not in so2p)
+    cond = sum(1 for b in B if b["cls"] == "PROB-COND" and b["so"] not in so2p)
+    check("realism: every hold and commitment's Sheriff's number is in the crosswalk", unmapped == 0,
+          "%d (%d confinement bookings of terms not yet supervised)" % (unmapped, cond))
+    mon = [v for _, v in G.history(P)]
+    check("realism: monthly admissions vary like counts", np.std(mon) > 5 and len(set(mon)) > 20,
+          "sd %.1f, %d distinct" % (np.std(mon), len(set(mon))))
+    yr = collections.Counter()
+    for (y, m), v in G.history(P):
+        yr[y] += v
+    check("realism: no trend in the yearly admissions 2019 to 2025", max(yr[y] for y in range(2019, 2026)) /
+          min(yr[y] for y in range(2019, 2026)) < 1.2, str({y: yr[y] for y in range(2019, 2026)}))
+    dash = [f for f in files if f.endswith((".csv", ".txt")) and re.search("[\u2013\u2014]", open(
+        os.path.join(TARGET, f), encoding="utf-8").read())]
+    dash += [f for f in files if f.endswith(".pdf") and re.search("[\u2013\u2014]", pdf_text(f))]
+    check("realism: no em or en dash in any shipped text", not dash, ", ".join(dash))
+    persons = set(K.PEOPLE.values())
+    text = plan + act + rpt + open(os.path.join(TARGET, K.README), encoding="utf-8").read()
+    check("realism: no placeholder identity", not re.search(r"John Doe|Jane Doe|Acme|Company A|Lorem", text))
+    check("realism: personas from guard.py names only", all(n in persons for n in re.findall(
+        r"Gina Yoder|Larry Pugh|Colleen Cameron|Donald Russo|Megan Chambers|Gloria Lynch", text)))
+    conv = [r for r in P["book"] if r["release_reason"] == "CONVERTED TO NEW JMS"]
+    check("realism: the jail system's replacement closes and reopens the spells open at it", len(conv) > 200 and all(
+        r["released_at"] == "02/04/2025 03:10" for r in conv), "%d spells" % len(conv))
+
+    fails = [r for r in RESULTS if not r[1]]
+    print("\n%d checks, %d failed" % (len(RESULTS), len(fails)))
+    return 1 if fails else 0
+
+
+if __name__ == "__main__":
+    sys.exit(main())

@@ -1,591 +1,392 @@
-"""The clean truth: every arrest of every person in the window, and for each arrest in the county its booking, screen,
-first appearance before the magistrate on duty, the conditions set, the release or the stay, the cases and their
-dispositions, the court dates and failures to appear, the monitoring and the boarding. Nothing here carries mess; the
-exports in records.py are written from it.
+"""task141 world: Okelan County's felony and misdemeanor probation terms from July 2016, the Circuit Court's violation
+petitions on them and the Detention Center's probation bookings, to the extract of 30 September 2026; and the truth,
+the same process run forward under SB 26-118.
 
-The decisive structure: at each eligible first appearance the magistrate sees what the arrest affidavit and the
-defendant in front of him show (`D`, an episode trait the scale does not see) and holds the defendants who show it far
-more often, at a rate that differs by magistrate (`lam`); a held defendant's outcome is never recorded, and the duty
-rota sends every magistrate the same mix of arrests."""
+Ordinary petitions arrive on the time-on-supervision clock, front-loaded and scaled by the risk screen. In the last
+120 days before a term's scheduled expiration in force, the officer reviews the case and files on a share of the
+terms that reach that point with nothing pending, on whatever is still unresolved (the second clock). A continued
+petition may extend the term, a warrant tolls it, a compliant case may be terminated early. SB 26-118 caps felony
+supervision at 24 months from the day it began; a felony term in effect on 1 January 2027 ends on the earlier of its
+scheduled expiration and that day, but not before 31 March 2027, and no extension passes the cap."""
 from __future__ import annotations
-
-import bisect
-import datetime as dt
-import math
-from dataclasses import dataclass, field
 
 import numpy as np
 
-import catalog as C
 import common as K
 
-DAY = dt.timedelta(days=1)
-
-# ---------------------------------------------------------------------------------------------------- parameters
-# the episode trait the magistrate sees and the scale does not, by new-criminal-activity score (index 0 is score 1)
-D_SHARE = np.array([0.05, 0.09, 0.15, 0.30, 0.36, 0.42])
-# probability of a new-offence arrest within the window (365 days or disposition) for an eligible defendant released at
-# first appearance, by score, for D = 0 and D = 1; the hazards below are solved from these
-P_WIN0 = np.array([0.045, 0.058, 0.070, 0.075, 0.160, 0.190])
-P_WIN1 = np.array([0.17, 0.22, 0.30, 0.80, 0.80, 0.82])
-# eligible: the magistrate's hold propensity (before his own strictness) by score, for D = 0 and D = 1
-H0 = np.array([0.004, 0.008, 0.015, 0.030, 0.045, 0.065])
-H1 = np.array([0.55, 0.75, 0.95, 1.60, 1.70, 1.80])
-HOLD_CAP = 0.985
-# ineligible charges: hold propensity by kind, scaled by the score and by D
-HK = {"MX": 0.30, "FH": 0.33, "FX": 0.62, "DET": 1.0}
-Q_POST = (0.30, 0.06)          # a secured bond posted within 24 hours, D = 0 and D = 1
-L_POST = (0.50, 0.12)          # a held defendant posting later (day 3 to 60), D = 0 and D = 1
-P_IN_COUNTY = 0.80
-P_WARRANT = 0.07               # a later arrest that is on a warrant for an earlier offence
-FTA_P = np.array([0.020, 0.036, 0.058, 0.085, 0.120, 0.165])   # per court date, by failure-to-appear score
-EM_P = {"M": np.array([0.003, 0.006, 0.012, 0.025, 0.040, 0.060]), "MX": 0.09, "FH": 0.06, "FX": 0.16}
-SWAP_RATE = 1 / 38.0           # equipment changes per monitored day
-P_BOARD = 0.32                 # a stay crossing the boarding window's third day boarded at Halsey
-P_RETURN = 0.55                # a boarded defendant returned to Dorrance before release
-P_ANNEX = 0.35                 # a stay longer than four days moved to the annex
-N_MAG = 32
-SHIFT_ON = 4                   # magistrates on duty per twelve-hour shift
-# stream offsets for the year the asks read, fixed once so every ask figure sits mid-bin: the first appearances from
-# 1 October 2025 (their release, stay and cases), the failures to appear, the monitoring enrollments; none of them
-# reaches a first appearance before 1 October 2025
-OFFSETS = {"fy": 4, "fta": 4, "em": 1}
-
-
-def lognorm(r, median, sigma, lo, hi):
-    return float(min(hi, max(lo, median * math.exp(sigma * r.standard_normal()))))
-
-
-def solve_hazard(p, median=105.0, sigma=0.6):
-    """The daily hazard whose probability of an arrest inside min(365, LN(median, sigma)) days is p."""
-    z = np.linspace(-4, 4, 801)
-    w = np.exp(-0.5 * z ** 2)
-    w /= w.sum()
-    W = np.minimum(365.0, np.clip(median * np.exp(sigma * z), 7, 700))
-    lo, hi = 1e-6, 0.1
-    for _ in range(80):
-        h = 0.5 * (lo + hi)
-        if (w * (1 - np.exp(-h * W))).sum() < p:
-            lo = h
-        else:
-            hi = h
-    return 0.5 * (lo + hi)
-
-
-HAZ0 = np.array([solve_hazard(p) for p in P_WIN0])
-HAZ1 = np.array([solve_hazard(p) for p in P_WIN1])
-
-
-@dataclass
-class Person:
-    pid: int
-    sid: str
-    last: str
-    first: str
-    middle: str
-    dob: dt.date
-    sex: str
-    cls: int                    # 0 low, 1 mid, 2 high propensity
-    mult: float                 # the person's hazard multiplier
-    misd_conv: list = field(default_factory=list)       # dates of convictions
-    fel_conv: list = field(default_factory=list)
-    viol_conv: list = field(default_factory=list)
-    incarc: list = field(default_factory=list)
-    ftas: list = field(default_factory=list)            # dates of failures to appear
-    hist: dict = field(default_factory=dict)            # counts before the window
-    open_cases: list = field(default_factory=list)      # (filed, disposed) pairs, any county
+P = K.P
+M = K.M
 
 
 class World:
     pass
 
 
-# ---------------------------------------------------------------------------------------------------- magistrates
-def magistrates():
-    from faker import Faker
-    fk = Faker("en_US")
-    fk.seed_instance(K.SEED + 7)
-    r = K.rng("magistrates")
-    out, used_init, used_names = [], {}, set()
-    lam = np.sort(r.uniform(0.04, 1.30, N_MAG))
-    order = r.permutation(N_MAG)
-    for k in range(N_MAG):
-        while True:
-            first, last = fk.first_name(), fk.last_name()
-            if (first, last) not in used_names and last not in {n[1] for n in used_names}:
-                break
-        used_names.add((first, last))
-        mi = fk.random_uppercase_letter()
-        ini = (first[0] + mi + last[0]).upper()
-        if ini in used_init:
-            used_init[ini] += 1
-            ini_key = ini + str(used_init[ini])
+def act_cap(c):
+    """the latest day SB 26-118 lets a felony term run to"""
+    if c['imposed'] >= K.ACT:
+        return c['sup'] + K.months(24)
+    return max(c['sup'] + K.months(24), K.TRANS)
+
+
+def hazard(c, m):
+    if c['lvl'] == 'F':
+        h = P['h_inf'] + (P['h0'] - P['h_inf']) * np.exp(-m / P['h_tau'])
+    else:
+        h = P['m_h_inf'] + (P['m_h0'] - P['m_h_inf']) * np.exp(-m / P['m_h_tau'])
+    return h * np.exp(P['score_beta'] * (c['score'] - 10))
+
+
+def lvl_par(c):
+    if c['lvl'] == 'F':
+        return dict(abs=P['abs_hazard'], conv_o=P['conv_ord'], conv_r=P['conv_rev'], conv_a=P['conv_abs'],
+                    p_rev=P['p_rev'], p_ext=P['p_ext'], ext=P['ext_months'], p_ext_rev=P['p_ext_rev'],
+                    et=P['et_hazard'], et_after=P['et_after'])
+    return dict(abs=P['m_abs'], conv_o=P['m_conv'], conv_r=P['m_conv'], conv_a=min(0.9, P['m_conv'] + 0.25),
+                p_rev=P['m_p_rev'], p_ext=P['m_p_ext'], ext=P['m_ext_months'], p_ext_rev=P['m_p_ext'] * 0.8,
+                et=P['m_et_hazard'], et_after=P['m_et_after'])
+
+
+def fresh(c):
+    return dict(t=c['imposed'], sched=c['orig'], pending=None, pkind=None, pfile=None, reviewed=None, closed=None,
+                had_pet=False, review_at=None, mods=[], act_applied=False)
+
+
+def run(rng, c, st, t_to, lg, act=False):
+    """advance case c from its state st to day t_to (exclusive); lg is the case's own petition list, the pending
+    petition last. Monthly steps on the supervision clock, events dated to the day."""
+    q = lvl_par(c)
+    sup = c['sup']
+    W = P['rev_window']
+    while st['closed'] is None and st['t'] < t_to:
+        t = st['t']
+        if act and c['lvl'] == 'F' and t >= K.ACT and not st['act_applied']:
+            st['act_applied'] = True
+            cap = act_cap(c)
+            if st['sched'] > cap:
+                st['mods'].append((K.ACT, st['sched'], cap, 'ACT', 0))
+                st['sched'] = cap
+                st['review_at'] = None
+                st['reviewed'] = None
+        if st['pending'] is not None:
+            dec = st['pending']
+            if dec >= t_to:
+                st['t'] = t_to
+                return
+            kind = st['pkind']
+            conv = q['conv_r'] if kind == 'REVIEW' else (q['conv_a'] if kind == 'ABSCOND' else q['conv_o'])
+            rev = bool(rng.random() < conv)
+            lg[-1]['revoked'] = rev
+            st['pending'] = None
+            st['t'] = dec
+            if rev:
+                st['closed'] = (dec, 'REVOKED')
+                return
+            new = st['sched']
+            toll = dec - st['pfile'] if kind == 'ABSCOND' else 0
+            new += toll
+            ext = 0
+            if rng.random() < (q['p_ext_rev'] if kind == 'REVIEW' else q['p_ext']):
+                ext = int(rng.choice(q['ext']))
+                new += K.months(ext)
+            if act and c['lvl'] == 'F' and dec >= K.ACT:
+                new = min(new, act_cap(c))
+            if new > st['sched']:
+                st['mods'].append((dec, st['sched'], new, 'TOLL' if toll and not ext else ('EXTEND' if ext else 'TOLL'), ext))
+                st['sched'] = new
+                st['reviewed'] = None
+                st['review_at'] = None
+            lg[-1]['ext'] = ext
+            if dec >= st['sched']:
+                st['closed'] = (dec, 'EXPIRED')
+                return
+            continue
+        if t < sup:
+            st['t'] = min(sup, t_to)
+            continue
+        if t >= st['sched']:
+            st['closed'] = (st['sched'], 'EXPIRED')
+            return
+        wo = st['sched'] - W
+        if st['reviewed'] != st['sched'] and t >= wo:
+            st['reviewed'] = st['sched']
+            st['review_at'] = None
+            if rng.random() < q['p_rev']:
+                off = int(rng.triangular(P['rev_lo'], P['rev_mode'], W))
+                st['review_at'] = max(st['sched'] - off, t)
+        m = int((t - sup) // M)
+        m_end = sup + int(round((m + 1) * M))
+        stop = min(max(m_end, t + 1), t_to, st['sched'])
+        if st['reviewed'] != st['sched'] and wo > t:
+            stop = min(stop, wo)
+        frac = (stop - t) / M
+        hz = hazard(c, m) * frac
+        ha = q['abs'] * frac
+        he = q['et'] * frac if (m >= q['et_after'] and not st['had_pet']) else 0.0
+        u = rng.random()
+        ev = 'ORDINARY' if u < hz else ('ABSCOND' if u < hz + ha else ('EARLY_TERM' if u < hz + ha + he else None))
+        f = t + int(rng.integers(0, max(1, stop - t))) if ev else None
+        ra = st['review_at']
+        if ra is not None and ra < stop and (f is None or ra <= f):
+            dec = ra + 1 + int(rng.gamma(P['lag_shape'], P['lag_mean'] / P['lag_shape']))
+            lg.append(dict(case=c['id'], file=ra, kind='REVIEW', decided=dec))
+            st.update(pending=dec, pkind='REVIEW', pfile=ra, had_pet=True, t=ra, review_at=None)
+            continue
+        if ev == 'EARLY_TERM':
+            st['closed'] = (f, 'EARLY_TERM')
+            st['mods'].append((f, st['sched'], f, 'EARLY TERMINATION', 0))
+            return
+        if ev is not None:
+            lagm, lags = (P['abs_lag_mean'], P['abs_lag_shape']) if ev == 'ABSCOND' else (P['lag_mean'], P['lag_shape'])
+            dec = f + 1 + int(rng.gamma(lags, lagm / lags))
+            lg.append(dict(case=c['id'], file=f, kind=ev, decided=dec))
+            st.update(pending=dec, pkind=ev, pfile=f, had_pet=True, t=f, review_at=None)
+            continue
+        st['t'] = stop
+
+
+# ---------------------------------------------------------------------------------------------------- cases
+def _term_jail(r, lvl):
+    if lvl == 'F':
+        term = int(r.choice(P['terms'], p=P['term_w']))
+        if r.random() < P['jail_share']:
+            med = P['jail_med'] * (term / 36.0) ** P['jail_term_elast']
+            jail = int(np.clip(np.exp(r.normal(np.log(med), P['jail_sig'])), P['jail_lo'], P['jail_hi']))
         else:
-            used_init[ini] = 1
-            ini_key = ini
-        out.append(dict(k=k, first=first, middle=mi, last=last, initials=ini_key, empno="MG%05d" % (20100 + 37 * k + r.integers(0, 30)),
-                        lam=float(lam[order[k]])))
-    # commissions: 25 serving at the start, 7 joining during the window, 6 leaving
-    joins = sorted(r.choice(np.arange(25, N_MAG), 7, replace=False))
-    for m in out:
-        m["start"] = dt.date(2010 + int(r.integers(0, 11)), int(r.integers(1, 13)), 1)
-        m["end"] = None
-    days = (K.EXTRACT_END - K.HIST_START).days
-    for i, k in enumerate(range(25, N_MAG)):
-        out[k]["start"] = K.HIST_START + dt.timedelta(days=int(120 + i * (days - 400) / 7 + r.integers(0, 40)))
-    leavers = r.choice(np.arange(0, 25), 6, replace=False)
-    for i, k in enumerate(sorted(leavers)):
-        out[k]["end"] = K.HIST_START + dt.timedelta(days=int(300 + i * (days - 500) / 6 + r.integers(0, 40)))
-    return out
+            jail = 0
+    else:
+        term = P['m_term']
+        if r.random() < P['m_jail_share']:
+            jail = int(np.clip(np.exp(r.normal(np.log(P['m_jail_med']), P['m_jail_sig'])), P['m_jail_lo'], P['m_jail_hi']))
+        else:
+            jail = 0
+    return term, jail
 
 
-class Rota:
-    """Twelve-hour shifts from 07:00 and 19:00, four magistrates on duty, taken in turn from those serving, so every
-    magistrate works days, nights and weekends alike over the window."""
-
-    def __init__(self, mags):
-        self.mags = mags
-        self.cache = {}
-        self.ptr = 0
-        self.order = list(range(len(mags)))
-        self.shifts = {}
-        t = K.d2dt(K.HIST_START) - dt.timedelta(hours=5)       # the 19:00 shift of 30 September 2021
-        end = K.d2dt(K.EXTRACT_END + DAY, 7)
-        while t < end:
-            d = t.date()
-            serving = [m["k"] for m in mags if m["start"] <= d and (m["end"] is None or d <= m["end"])]
-            on = []
-            while len(on) < SHIFT_ON:
-                cand = self.order[self.ptr % len(self.order)]
-                self.ptr += 1
-                if cand in serving and cand not in on:
-                    on.append(cand)
-            self.shifts[t] = on
-            t += dt.timedelta(hours=12)
-        self.starts = sorted(self.shifts)
-
-    def on_duty(self, t):
-        i = bisect.bisect_right(self.starts, t) - 1
-        return self.shifts[self.starts[i]]
-
-
-# ---------------------------------------------------------------------------------------------------- people
-def people(r):
-    from faker import Faker
-    fk = Faker("en_US")
-    fk.seed_instance(K.SEED + 11)
+def make_cases(lvl, d_from, d_to, id0, stream):
+    """impositions from d_from to d_to (exclusive), each with its own random stream for its attributes"""
     out = []
-    n_ret, n_fresh = 38000, 62000
-    for i in range(n_ret + n_fresh):
-        fresh = i >= n_ret
-        cls = int(r.choice(3, p=[0.52, 0.34, 0.14] if fresh else [0.18, 0.44, 0.38]))
-        sex = "M" if r.random() < 0.74 else "F"
-        first = fk.first_name_male() if sex == "M" else fk.first_name_female()
-        last = fk.last_name()
-        middle = fk.first_name_male() if sex == "M" else fk.first_name_female()
-        age = (lognorm(r, 22.5, 0.17, 18, 45) if fresh else lognorm(r, 29, 0.28, 19, 72))
-        p = Person(pid=i, sid="%08d" % (21000000 + int(r.integers(0, 78000000))), last=last, first=first,
-                   middle=middle, dob=dt.date(2021, 10, 1) - dt.timedelta(days=int(age * 365.25)), sex=sex, cls=cls,
-                   mult=float(math.exp(0.15 * r.standard_normal())))
-        # a case pending somewhere the county's index does not hold (another county, a citation), by class
-        p.pend_other = [0.08, 0.28, 0.52][cls] * (0.35 if fresh else 1.0)
-        if fresh:
-            p.hist = dict(misd=int(r.random() < [0.05, 0.15, 0.30][cls]), fel=0, viol=0, incarc=0,
-                          fta2=int(r.random() < [0.02, 0.06, 0.12][cls]), fta_old=0)
-            p.first_t = K.d2dt(K.HIST_START) + dt.timedelta(minutes=int(r.integers(0, ((K.EXTRACT_END - K.HIST_START).days + 1) * 1440)))
-        else:
-            mp = [0.55, 0.85, 0.96][cls]
-            fp = [0.10, 0.38, 0.70][cls]
-            vp = [0.06, 0.24, 0.50][cls]
-            ip = [0.04, 0.22, 0.56][cls]
-            p.hist = dict(misd=int(r.random() < mp), fel=int(r.random() < fp),
-                          viol=(2 if r.random() < [0.0, 0.05, 0.22][cls] else int(r.random() < vp)),
-                          incarc=int(r.random() < ip),
-                          fta2=(2 if r.random() < [0.03, 0.09, 0.18][cls] else int(r.random() < [0.08, 0.20, 0.30][cls])),
-                          fta_old=int(r.random() < [0.12, 0.34, 0.58][cls]))
-            haz = [0.0011, 0.0018, 0.0031][cls] * p.mult
-            if r.random() < 0.5:
-                p.first_t = K.d2dt(K.HIST_START) + dt.timedelta(minutes=int(r.exponential(1 / haz) * 1440))
-            else:
-                p.first_t = K.d2dt(K.HIST_START) + dt.timedelta(minutes=int(r.integers(0, ((K.EXTRACT_END - K.HIST_START).days + 1) * 1440)))
-        out.append(p)
-    seen = set()
-    for p in out:
-        while p.sid in seen:
-            p.sid = "%08d" % (int(p.sid) + 7919)
-        seen.add(p.sid)
+    rate = P['fel_rate'] if lvl == 'F' else P['mis_rate']
+    rc = K.rng(stream, lvl, 'counts')
+    k = id0
+    nm = int((d_to - d_from) / M) + 1
+    for mi in range(nm):
+        base = d_from + int(mi * M)
+        n = rc.poisson(rate)
+        days = np.sort(rc.integers(0, int(M), n))
+        for dd in days:
+            s = base + int(dd)
+            if s >= d_to:
+                continue
+            r = K.rng(stream, 'case', k)
+            term, jail = _term_jail(r, lvl)
+            gap = jail + int(r.integers(0, 4)) if jail else int(r.integers(P['intake_lo'], P['intake_hi']))
+            sc = int(np.clip(round(r.normal(10.5 if lvl == 'F' else 8.5, 3.6)), 0, 20))
+            office = K.OFFICES[int(r.choice(4, p=K.OFFICE_W))][0]
+            out.append(dict(id=k, lvl=lvl, imposed=s, term=term, jail=jail, sup=s + gap, score=sc,
+                            orig=s + K.months(term), office=office))
+            k += 1
     return out
 
 
-# ---------------------------------------------------------------------------------------------------- charges
-def draw_charges(r, cls):
-    kp = [[0.60, 0.18, 0.17, 0.05], [0.49, 0.17, 0.26, 0.08], [0.39, 0.15, 0.33, 0.13]][cls]
-    kind = ["M", "MX", "FH", "FX"][int(r.choice(4, p=kp))]
-    n = int(r.choice([1, 2, 3, 4], p=[0.56, 0.29, 0.12, 0.03]))
-    codes = []
-
-    def pick(k):
-        lst = C.KIND_CODES[k]
-        w = np.array([o[7] for o in lst], float)
-        return lst[int(r.choice(len(lst), p=w / w.sum()))][0]
-    codes.append(pick(kind))
-    for _ in range(n - 1):
-        if kind == "M":
-            k2 = "M" if r.random() < 0.90 else "MX"
-        elif kind == "MX":
-            k2 = "M" if r.random() < 0.60 else "MX"
-        else:
-            k2 = "M" if r.random() < 0.55 else kind
-        c = pick(k2)
-        if c not in codes:
-            codes.append(c)
-    kinds = [C.BY_CODE[c][5] for c in codes]
-    top = "FX" if "FX" in kinds else "FH" if "FH" in kinds else "MX" if "MX" in kinds else "M"
-    return codes, top
-
-
-# ---------------------------------------------------------------------------------------------------- the simulation
-def items_at(p, t, pending):
-    d = t.date()
-    age = (d - p.dob).days / 365.25
-    misd = int(p.hist["misd"] > 0 or any(x < d for x in p.misd_conv))
-    fel = int(p.hist["fel"] > 0 or any(x < d for x in p.fel_conv))
-    nv = p.hist["viol"] + sum(1 for x in p.viol_conv if x < d)
-    viol = 2 if nv >= 3 or p.hist["viol"] == 2 else (1 if nv >= 1 else 0)
-    inc = int(p.hist["incarc"] > 0 or any(x < d for x in p.incarc))
-    nca = dict(age_22_or_under=int(age < 23), pending_charge=int(pending), prior_misd_conviction=misd,
-               prior_felony_conviction=fel, prior_violent_conviction=viol, prior_incarceration=inc)
-    raw = sum(dict(C.NCA_ITEMS[i][2])[nca[C.NCA_ITEMS[i][0]]] for i in range(len(C.NCA_ITEMS)))
-    return nca, raw, C.band(raw, C.NCA_BANDS)
-
-
-def fta_items_at(p, t, pending, nca):
-    d = t.date()
-    recent = sum(1 for x in p.ftas if (d - x).days <= 730 and x < d)
-    older = sum(1 for x in p.ftas if (d - x).days > 730)
-    f2 = min(2, recent + (p.hist["fta2"] if (d - K.HIST_START).days <= 730 else 0))
-    fo = int(older > 0 or p.hist["fta_old"] > 0 or (p.hist["fta2"] > 0 and (d - K.HIST_START).days > 730))
-    it = dict(pending_charge=int(pending), prior_conviction=int(nca["prior_misd_conviction"] or nca["prior_felony_conviction"]),
-              fta_past_2_years=f2, fta_older=fo)
-    raw = sum(dict(C.FTA_ITEMS[i][2])[it[C.FTA_ITEMS[i][0]]] for i in range(len(C.FTA_ITEMS)))
-    return it, raw, C.band(raw, C.FTA_BANDS)
+def record_cases(cases, stream):
+    log, states = {}, {}
+    for c in cases:
+        r = K.rng(stream, 'run', c['id'])
+        st = fresh(c)
+        lg = []
+        run(r, c, st, K.EXTRACT + 1, lg)
+        log[c['id']] = lg
+        states[c['id']] = st
+    return log, states
 
 
 def simulate():
     W = World()
-    W.mags = magistrates()
-    rota = Rota(W.mags)
-    W.rota = rota
-    r = K.rng("world")
-    persons = people(K.rng("people"))
-    W.persons = persons
-    W.n_eps = 0
-    end_t = K.d2dt(K.EXTRACT_END + DAY)
-    eps, arrests, stays, cases = [], [], [], []
-    for p in persons:
-        t = p.first_t
-        first = True
-        ak = -1
-        while t < end_t:
-            ak += 1
-            rr = K.rng("p", p.pid, ak)
-            in_county = first or rr.random() < P_IN_COUNTY
-            warrant = (not first) and rr.random() < P_WARRANT
-            codes, top = draw_charges(rr, p.cls)
-            off_date = (t.date() - dt.timedelta(days=int(rr.integers(14, 240)))) if warrant else t.date()
-            a = dict(pid=p.pid, t=t, offence_date=off_date, codes=codes, type="WARRANT" if warrant else "NEW",
-                     county=K.COUNTY if in_county else None, ep=None)
-            arrests.append(a)
-            first = False
-            if not in_county:
-                # held or cited elsewhere; a case pending there for a while
-                p.open_cases.append((t.date(), t.date() + dt.timedelta(days=int(lognorm(rr, 110, 0.6, 10, 500)))))
-                liberty = t + dt.timedelta(hours=int(rr.integers(3, 30)))
-                if rr.random() < 0.12:
-                    liberty += dt.timedelta(days=int(lognorm(rr, 12, 0.8, 2, 120)))
-                haz = 0.0018 * p.mult
-                t = liberty + dt.timedelta(minutes=int(rr.exponential(1 / haz) * 1440))
-                continue
-            e = episode(W, p, a, codes, top, rr, rota, cases, ak)
-            if e is None:
-                break
-            a["ep"] = e["eid"]
-            eps.append(e)
-            stays.extend(e["stays"])
-            t = e["next_t"]
-    W.eps, W.arrests, W.stays, W.cases = eps, arrests, stays, cases
-    court_dates(W)
-    finish_ftas(W)
-    monitoring(W)
+    fel = make_cases('F', K.BURN, K.EXTRACT + 1, 0, 'record')
+    mis = make_cases('M', K.BURN, K.EXTRACT + 1, 500000, 'record')
+    W.cases = fel + mis
+    W.C = {c['id']: c for c in W.cases}
+    W.log, W.states = record_cases(W.cases, 'record')
+    persons(W)
+    joint_hearings(W)
+    petition_details(W)
     return W
 
 
-def episode(W, p, a, codes, top, rr, rota, cases, ak):
-    t = a["t"]
-    eid = W.n_eps
-    booking = t + dt.timedelta(minutes=int(rr.integers(30, 150)))
-    pending = any(f <= t.date() < dd for f, dd in p.open_cases) or rr.random() < p.pend_other
-    nca_it, nca_raw, nca = items_at(p, t, pending)
-    detainer = rr.random() < 0.03
-    eligible = all(C.eligible_charge(c) for c in codes) and not detainer
-    D = bool(rr.random() < D_SHARE[nca - 1])
-    screened = rr.random() < 0.966
-    screen_t = booking + dt.timedelta(minutes=int(rr.integers(25, 110)))
-    fa = screen_t + dt.timedelta(minutes=int(rr.integers(20, 330)))
-    if fa >= K.d2dt(K.EXTRACT_END + DAY):
-        return None
-    W.n_eps += 1
-    if fa.date() >= K.FY26_START:
-        rr = K.rng("fy", p.pid, ak, OFFSETS["fy"])
-    on = rota.on_duty(fa)
-    mag = on[int(rr.integers(0, len(on)))]
-    lam = W.mags[mag]["lam"]
-    if eligible:
-        ph = min(HOLD_CAP, (H1 if D else H0)[nca - 1] * lam)
-    else:
-        k = "DET" if detainer else top
-        ph = min(HOLD_CAP, HK[k] * (0.7 + 0.12 * nca) * (1.9 if D else 1.0) * (0.55 + 0.6 * lam) if k != "DET" else 1.0)
-    q = Q_POST[1 if D else 0]
-    p_sec = 1.0 if detainer else min(1.0, ph / (1 - q))
-    secured = rr.random() < p_sec
-    if secured:
-        cond = "SECURED"
-        bond = int(rr.choice([500, 750, 1000, 1500, 2000, 2500, 3000, 5000, 7500, 10000],
-                             p=[0.18, 0.08, 0.22, 0.12, 0.10, 0.08, 0.07, 0.09, 0.03, 0.03]))
-        if top in ("FH", "FX"):
-            bond *= int(rr.choice([2, 3, 5, 10]))
-        posted = (not detainer) and rr.random() < q
-    else:
-        cond = ["WRITTEN_PROMISE", "UNSECURED", "CUSTODY"][int(rr.choice(3, p=[0.70, 0.26, 0.04]))]
-        bond = int(rr.choice([500, 1000, 1500, 2000, 2500, 5000], p=[0.25, 0.35, 0.12, 0.12, 0.08, 0.08])) if cond == "UNSECURED" else 0
-        posted = False
-    released24 = (not secured) or posted
-    # the case(s): a felony and its misdemeanours can share a file; some split into two files
-    felony = top in ("FH", "FX")
-    split = felony and len(codes) > 1 and rr.random() < 0.45
-    groups = [codes]
-    if split:
-        fcodes = [c for c in codes if C.BY_CODE[c][5] in ("FH", "FX")]
-        mcodes = [c for c in codes if c not in fcodes]
-        groups = [fcodes, mcodes] if mcodes else [codes]
-    # durations
-    if released24:
-        rel_t = fa + (dt.timedelta(minutes=int(rr.integers(30, 240))) if not secured else
-                      dt.timedelta(minutes=int(rr.integers(120, 1200))))
-    else:
-        rel_t = None
-    misd_dur_rel = lognorm(rr, 105, 0.6, 7, 700)
-    fel_dur = lognorm(rr, 125, 0.6, 10, 700)
-    held_plea = lognorm(rr, 16, 0.7, 3, 120)
-    later_post = (not released24) and (not detainer) and rr.random() < L_POST[1 if D else 0]
-    later_days = lognorm(rr, 6, 0.7, 3, 60)
-    indicted = felony and rr.random() < (0.85 if top == "FX" else 0.55)
-    ind_day = int(rr.integers(18, 76))
-    sup_dur = lognorm(rr, 240, 0.5, 40, 900)
-    case_recs = []
-    for gi, g in enumerate(groups):
-        gfel = any(C.BY_CODE[c][5] in ("FH", "FX") for c in g)
-        if gfel and indicted:
-            ddate = fa.date() + dt.timedelta(days=ind_day)
-            while ddate.weekday() >= 5:
-                ddate -= DAY
-            code = "IND"
-        elif released24 or later_post:
-            dur = fel_dur if gfel else misd_dur_rel
-            ddate = fa.date() + dt.timedelta(days=int(dur))
-            code = None
+# ---------------------------------------------------------------------------------------------------- people
+def _open_until(W, c):
+    st = W.states[c['id']]
+    return st['closed'][0] if st['closed'] is not None else 10 ** 7
+
+
+def persons(W):
+    """felony terms each have their own person, bar repeat probationers whose earlier term had closed; a tenth of
+    misdemeanor terms go to people then on felony probation, some to people with an earlier closed term"""
+    r = K.rng('persons')
+    fel = sorted((c for c in W.cases if c['lvl'] == 'F'), key=lambda c: (c['imposed'], c['id']))
+    mis = sorted((c for c in W.cases if c['lvl'] == 'M'), key=lambda c: (c['imposed'], c['id']))
+    nxt = 0
+    closed_pool = []          # (closed day, person)
+    for c in fel:
+        reuse = None
+        if r.random() < 0.08:
+            cands = [i for i, (d, pid) in enumerate(closed_pool) if d + 330 <= c['imposed']]
+            if cands:
+                reuse = cands[int(r.integers(0, len(cands)))]
+        if reuse is not None:
+            c['person'] = closed_pool.pop(reuse)[1]
         else:
-            dur = (lognorm(rr, 60, 0.6, 10, 400) if gfel else held_plea)
-            ddate = fa.date() + dt.timedelta(days=int(dur))
-            code = None
-        cr = dict(cid=len(cases), eid=eid, pid=p.pid, court="D", filed=fa, codes=g, felony=gfel, disposed=ddate,
-                  code=code, parent=None)
-        cases.append(cr)
-        case_recs.append(cr)
-        if gfel and indicted:
-            sc = dict(cid=len(cases), eid=eid, pid=p.pid, court="S", filed=K.d2dt(ddate, 9) + dt.timedelta(minutes=int(rr.integers(0, 420))),
-                      codes=g, felony=True, disposed=ddate + dt.timedelta(days=int(sup_dur)), code=None, parent=cr["cid"])
-            cases.append(sc)
-            case_recs.append(sc)
-    for c in case_recs:
-        while c["disposed"].weekday() >= 5:
-            c["disposed"] += DAY
-    last_disp = max(c["disposed"] for c in case_recs)
-    # disposition codes and convictions
-    for c in case_recs:
-        if c["code"] is None:
-            held_case = not (released24 or later_post)
-            if held_case:
-                c["code"] = str(rr.choice(["GP", "VD", "GP", "GP", "DD"], p=[0.5, 0.2, 0.1, 0.1, 0.1]))
-            else:
-                c["code"] = str(rr.choice(["GP", "VD", "DD", "GT", "NG"], p=[0.50, 0.33, 0.08, 0.06, 0.03]))
-        if c["code"] in ("GP", "GT") and c["disposed"] <= K.EXTRACT_END:
-            if c["felony"]:
-                p.fel_conv.append(c["disposed"])
-            else:
-                p.misd_conv.append(c["disposed"])
-            if any(C.BY_CODE[x][6] for x in c["codes"]):
-                p.viol_conv.append(c["disposed"])
-            if c["felony"] and rr.random() < 0.35:
-                p.incarc.append(c["disposed"])
-    for c in case_recs:
-        p.open_cases.append((fa.date(), c["disposed"]))
-    # custody
-    if released24:
-        free_t = rel_t
-        rel_type = {"WRITTEN_PROMISE": "WPA", "UNSECURED": "UNSEC", "CUSTODY": "CUST", "SECURED": "BOND"}[cond]
-    elif detainer:
-        free_t = fa + dt.timedelta(hours=int(rr.integers(10, 60)))
-        rel_type = "XFER"
-    elif later_post:
-        free_t = fa + dt.timedelta(days=later_days, minutes=int(rr.integers(0, 600)))
-        rel_type = "BOND"
-    else:
-        hold_end = last_disp if not indicted else min(last_disp, fa.date() + dt.timedelta(days=int(lognorm(rr, 70, 0.6, 15, 400))))
-        free_t = K.d2dt(hold_end, int(rr.integers(10, 18)), int(rr.integers(0, 60)))
-        if free_t <= fa:
-            free_t = fa + dt.timedelta(hours=30)
-        rel_type = "TS" if any(c["code"] in ("GP", "GT") for c in case_recs) else "DISM"
-    stays = custody(rr, p, booking, free_t, rel_type, released24)
-    # the at-risk process after release
-    h = (HAZ1 if D else HAZ0)[nca - 1] * p.mult
-    next_t = free_t + dt.timedelta(minutes=int(rr.exponential(1 / h) * 1440))
-    # the window: from release (first appearance or later) to 365 days or the last charge's disposition
-    e = dict(eid=eid, pid=p.pid, arrest_t=t, booking_t=booking, screened=screened, screen_t=screen_t, fa_t=fa,
-             mag=mag, lam=lam, codes=codes, top=top, detainer=detainer, eligible=eligible, D=D, nca=nca,
-             nca_items=nca_it, nca_raw=nca_raw, pending=int(pending), cond=cond, bond=bond, secured=secured,
-             posted=posted, released24=released24, rel_t=rel_t, free_t=free_t, rel_type=rel_type,
-             cases=[c["cid"] for c in case_recs], last_disp=last_disp, indicted=indicted, stays=stays,
-             next_t=next_t, misd_dur_rel=misd_dur_rel)
-    # the counterfactual (the clean truth only): a new-offence arrest within the window had the defendant been
-    # released at first appearance, with a released defendant's case length
-    if released24:
-        e["cf"] = None
-    else:
-        cr2 = K.rng("cf", p.pid, ak)
-        wdays = min(K.WINDOW_DAYS, misd_dur_rel if not felony else fel_dur)
-        e["cf"] = bool(cr2.exponential(1 / h) < wdays)
-    return e
+            c['person'] = nxt
+            nxt += 1
+        closed_pool.append((_open_until(W, c), c['person']))
+        if len(closed_pool) > 4000:
+            closed_pool = closed_pool[-4000:]
+    # felony open intervals by imposition, for the misdemeanor draw
+    fel_by_start = sorted(fel, key=lambda c: c['sup'])
+    starts = np.array([c['sup'] for c in fel_by_start])
+    ends = np.array([_open_until(W, c) for c in fel_by_start])
+    mis_closed = []
+    for c in mis:
+        u = r.random()
+        pid = None
+        if u < P['m_on_felony']:
+            j = np.searchsorted(starts, c['imposed'], side='right')
+            lo = max(0, j - 3000)
+            idx = np.nonzero((starts[lo:j] <= c['imposed']) & (ends[lo:j] > c['imposed'] + 30))[0]
+            if len(idx):
+                pid = fel_by_start[lo + int(idx[int(r.integers(0, len(idx)))])]['person']
+        elif u < P['m_on_felony'] + 0.12:
+            cands = [i for i, (d, p_) in enumerate(mis_closed) if d + 200 <= c['imposed']]
+            if cands:
+                pid = mis_closed.pop(cands[int(r.integers(0, len(cands)))])[1]
+        if pid is None:
+            pid = nxt
+            nxt += 1
+        c['person'] = pid
+        mis_closed.append((_open_until(W, c), pid))
+        if len(mis_closed) > 3000:
+            mis_closed = mis_closed[-3000:]
+    W.n_persons = nxt
+    W.fel_spans = {}
+    for c in fel:
+        W.fel_spans.setdefault(c['person'], []).append((c['imposed'], _open_until(W, c)))
 
 
-def custody(rr, p, booking, free_t, rel_type, released24):
-    """The jail's custody segments for one stay: the booking at intake, an annex move, a boarding at Halsey and a
-    return. Each segment: (start, end, booking_type, release_type, facility, where)."""
-    segs = []
-    start = booking
-    if released24:
-        return [dict(pid=p.pid, start=booking, end=free_t, btype="NEW", rtype=rel_type, fac="DCDC", where="DC")]
-    t = booking
-    fac = "DCDC"
-    btype = "NEW"
-    length = (free_t - booking).total_seconds() / 86400
-    if length > 4 and rr.random() < P_ANNEX:
-        mv = booking + dt.timedelta(days=float(rr.uniform(2.0, 4.0)))
-        mv = mv.replace(second=0, microsecond=0)
-        segs.append(dict(pid=p.pid, start=t, end=mv, btype=btype, rtype="TRF", fac=fac, where="DC"))
-        t, fac, btype = mv, "DCDC-ANNEX", "TRF"
-    bday = (t + dt.timedelta(days=float(rr.uniform(1.0, 6.0)))).date()
-    bstart = K.d2dt(bday, int(rr.integers(8, 16)), int(rr.integers(0, 60)))
-    if (free_t - t).total_seconds() / 86400 > 3 and bstart.date() >= K.BOARDING_START and bstart > t \
-            and bstart < free_t - dt.timedelta(days=1) and rr.random() < P_BOARD:
-        segs.append(dict(pid=p.pid, start=t, end=bstart, btype=btype, rtype="BO", fac=fac, where="DC"))
-        if rr.random() < P_RETURN and (free_t - bstart).total_seconds() / 86400 > 6:
-            span = (free_t - bstart).total_seconds() / 86400
-            bk = (bstart + dt.timedelta(days=float(rr.uniform(3.0, max(3.5, min(45.0, span - 1)))))).date()
-            back = K.d2dt(bk, int(rr.integers(9, 17)), int(rr.integers(0, 60)))
-            if back >= free_t:
-                back = free_t - dt.timedelta(hours=6)
-            segs.append(dict(pid=p.pid, start=bstart, end=back, btype=None, rtype=None, fac="HALSEY", where="HC"))
-            segs.append(dict(pid=p.pid, start=back, end=free_t, btype="BI", rtype=rel_type, fac="DCDC", where="DC"))
-        else:
-            segs.append(dict(pid=p.pid, start=bstart, end=free_t, btype=None, rtype=rel_type, fac="HALSEY", where="HC"))
-    else:
-        segs.append(dict(pid=p.pid, start=t, end=free_t, btype=btype, rtype=rel_type, fac=fac, where="DC"))
-    return segs
-
-
-# ---------------------------------------------------------------------------------------------------- the courts
-def court_dates(W):
-    """Every case's court dates to its disposition: a district setting 18 to 35 days after the first appearance and
-    every four to eight weeks after, a superior court arraignment 25 to 50 days after the indictment and every five to
-    nine weeks after."""
-    r = K.rng("courtdates")
-    W.court = []
-    for c in W.cases:
-        e = W.eps[c["eid"]]
-        start = c["filed"].date() + dt.timedelta(days=int(r.integers(18, 36) if c["court"] == "D" else r.integers(25, 51)))
-        d = start
-        while d < c["disposed"]:
-            if d.weekday() >= 5:
-                d += dt.timedelta(days=7 - d.weekday())
-            if d >= c["disposed"]:
-                break
-            W.court.append(dict(cid=c["cid"], date=d, eid=c["eid"], pid=c["pid"], fta=False))
-            d += dt.timedelta(days=int(r.integers(28, 57) if c["court"] == "D" else r.integers(35, 64)))
-
-
-def finish_ftas(W):
-    """Failures to appear, in time order per person: a court date the defendant is at liberty for is missed with the
-    probability his failure-to-appear score carries; the score at each first appearance counts the failures before it.
-    In custody on the day (a later stay), the jail brings him and the date is kept."""
-    r = K.rng("ftas", OFFSETS["fta"])
-    for cd in W.court:
-        cd["fta"] = False
-    by_p = {}
-    for e in W.eps:
-        by_p.setdefault(e["pid"], []).append(("fa", e["fa_t"], e["eid"]))
-    for k, cd in enumerate(W.court):
-        by_p.setdefault(cd["pid"], []).append(("cd", K.d2dt(cd["date"], 9), k))
-    custody_by_p = {}
-    for s in W.stays:
-        custody_by_p.setdefault(s["pid"], []).append((s["start"], s["end"]))
-    persons = W.persons
-    for pid, evs in by_p.items():
-        p = persons[pid]
-        p.ftas = []
-        evs.sort(key=lambda x: (x[1], 0 if x[0] == "fa" else 1))
-        cust = custody_by_p.get(pid, [])
-        for kind, t, k in evs:
-            if kind == "fa":
-                e = W.eps[k]
-                it, raw, sc = fta_items_at(p, t, e["pending"], e["nca_items"])
-                e["fta_items"], e["fta_raw"], e["fta"] = it, raw, sc
-            else:
-                cd = W.court[k]
-                e = W.eps[cd["eid"]]
-                if any(a <= t <= b for a, b in cust):
-                    continue
-                pf = FTA_P[e["fta"] - 1] * (1.35 if e["D"] else 1.0)
-                if r.random() < pf:
-                    cd["fta"] = True
-                    p.ftas.append(cd["date"])
-
-
-def monitoring(W):
-    """Electronic monitoring for released defendants with the condition: an enrollment from the day after release
-    (or a few days on) to the disposition, a violation or the extract; each equipment change ends the enrollment
-    and opens another under a new participant number the same day."""
-    r = K.rng("em", OFFSETS["em"])
-    W.em = []
-    for e in W.eps:
-        if not e["released24"] or e["fa_t"].date() < K.FY26_START or e["fa_t"].date() > K.EXTRACT_END:
+def joint_hearings(W):
+    """a misdemeanor petition the court would revoke within three weeks before it revokes the same person's felony
+    term is heard with the felony petition, so the person is committed once on both"""
+    fel_rev = {}
+    for cid, lg in W.log.items():
+        c = W.C[cid]
+        if c['lvl'] == 'F':
+            for e in lg:
+                if e.get('revoked'):
+                    fel_rev.setdefault(c['person'], []).append(e['decided'])
+    W.joint = 0
+    for cid, lg in W.log.items():
+        c = W.C[cid]
+        if c['lvl'] != 'M' or c['person'] not in fel_rev:
             continue
-        pe = EM_P["M"][e["nca"] - 1] if e["top"] == "M" else EM_P[e["top"]]
-        if r.random() >= pe:
-            continue
-        start = e["rel_t"].date() + dt.timedelta(days=int(r.choice([0, 1, 1, 2, 3])))
-        end = min(e["last_disp"], e["next_t"].date())
-        if r.random() < 0.18:
-            end = min(end, start + dt.timedelta(days=int(r.integers(10, 90))))
-        if end <= start:
-            continue
-        seg_start = start
-        while True:
-            days_left = (end - seg_start).days
-            gap = int(r.exponential(1 / SWAP_RATE))
-            if gap >= days_left or seg_start + dt.timedelta(days=gap) > K.EXTRACT_END:
-                W.em.append(dict(eid=e["eid"], pid=e["pid"], start=seg_start, end=end if end <= K.EXTRACT_END else None))
-                break
-            swap = seg_start + dt.timedelta(days=max(1, gap))
-            W.em.append(dict(eid=e["eid"], pid=e["pid"], start=seg_start, end=swap))
-            seg_start = swap
+        for e in lg:
+            if not e.get('revoked'):
+                continue
+            later = [d for d in fel_rev[c['person']] if e['decided'] < d <= e['decided'] + 21]
+            if later:
+                e['decided'] = min(later)
+                st = W.states[cid]
+                if st['closed'] is not None and st['closed'][1] == 'REVOKED':
+                    st['closed'] = (e['decided'], 'REVOKED')
+                W.joint += 1
+
+
+def on_felony(W, person, d):
+    return any(a <= d < b for a, b in W.fel_spans.get(person, ()))
+
+
+ALLEG = (('LAW', 0.34), ('RPT', 0.20), ('DRG', 0.18), ('TRT', 0.12), ('PAY', 0.08), ('CUR', 0.05), ('CNT', 0.03))
+
+
+def petition_details(W):
+    """allegations, warrant or summons, the arrest on a warrant, the jail ordered on revocation and how it is served;
+    drawn from each petition's own stream so the process above is untouched"""
+    codes = [a for a, _ in ALLEG]
+    wts = np.array([w for _, w in ALLEG]); wts = wts / wts.sum()
+    for cid, lg in W.log.items():
+        c = W.C[cid]
+        for i, e in enumerate(lg):
+            r = K.rng('petition', cid, i)
+            if e['kind'] == 'ABSCOND':
+                al = ['ABS'] + ([codes[int(r.choice(len(codes), p=wts))]] if r.random() < 0.4 else [])
+                e['warrant'] = True
+                e['arrest'] = max(e['file'] + 1, e['decided'] - int(r.integers(3, 21)))
+            else:
+                k = 1 + int(r.random() < 0.45) + int(r.random() < 0.15)
+                al = list(dict.fromkeys(codes[int(j)] for j in r.choice(len(codes), size=k, p=wts)))
+                e['warrant'] = bool(r.random() < (0.62 if c['lvl'] == 'F' else 0.45))
+                e['arrest'] = (e['file'] + int(r.integers(0, max(1, min(21, e['decided'] - e['file'] - 2))))) if e['warrant'] else None
+            e['alleg'] = al
+            if c['lvl'] == 'F':
+                e['jail_days'] = int(np.clip(np.exp(r.normal(np.log(150), 0.55)), 30, 365))
+                e['intermittent'] = False
+            else:
+                e['jail_days'] = int(np.clip(np.exp(r.normal(np.log(40), 0.6)), 6, 180))
+                e['intermittent'] = bool(r.random() < P['m_intermittent'])
+                if e['intermittent']:
+                    e['jail_days'] = int(2 * int(r.integers(4, 13)))     # two days a weekend, four to twelve weekends
+            e['hearing_min'] = int(r.integers(9 * 60, 16 * 60 + 30))
+            e['served_share'] = float(r.uniform(0.62, 0.78))
+            e['annex'] = bool(r.random() < 0.16)
+            e['annex_at'] = float(r.uniform(0.15, 0.7))
+            e['seq'] = i
+
+
+# ---------------------------------------------------------------------------------------------------- the truth
+def truth(W, reps=8, by_month=False):
+    """expected felony revocation commitments dated in 2027 under the Act, given the record: every felony term open at
+    the extract (those still in their jail condition included) re-run forward, and new felony terms imposed from the
+    extract"""
+    res = []
+    monthly = np.zeros(12)
+    for rr in range(reps):
+        rng = K.rng('truth', rr)
+        n = 0
+        for c in W.cases:
+            if c['lvl'] != 'F':
+                continue
+            st0 = W.states[c['id']]
+            if st0['closed'] is not None:
+                continue
+            st = dict(st0)
+            st['mods'] = list(st0['mods'])
+            lg = []
+            if st['pending'] is not None:
+                kind = st['pkind']
+                lagm, lags = (P['abs_lag_mean'], P['abs_lag_shape']) if kind == 'ABSCOND' else (P['lag_mean'], P['lag_shape'])
+                for _ in range(60):
+                    dec = st['pfile'] + 1 + int(rng.gamma(lags, lagm / lags))
+                    if dec > K.EXTRACT:
+                        break
+                else:
+                    dec = K.EXTRACT + 1 + int(rng.integers(0, 30))
+                st['pending'] = dec
+                lg = [dict(case=c['id'], file=st['pfile'], kind=kind, decided=dec)]
+            run(rng, c, st, K.Y1 + 400, lg, act=True)
+            for e in lg:
+                if e.get('revoked') and K.Y0 <= e['decided'] <= K.Y1:
+                    n += 1
+                    monthly[min(11, int((e['decided'] - K.Y0) // M))] += 1
+        new = make_cases('F', K.EXTRACT + 1, K.Y1 + 1, 10 ** 7, 'truth%d' % rr)
+        for c in new:
+            st = fresh(c)
+            if c['imposed'] >= K.ACT:
+                st['sched'] = min(st['sched'], act_cap(c))
+            lg = []
+            run(rng, c, st, K.Y1 + 400, lg, act=True)
+            for e in lg:
+                if e.get('revoked') and K.Y0 <= e['decided'] <= K.Y1:
+                    n += 1
+                    monthly[min(11, int((e['decided'] - K.Y0) // M))] += 1
+        res.append(n)
+    out = (float(np.mean(res)), float(np.std(res)))
+    return (out, monthly / reps) if by_month else out

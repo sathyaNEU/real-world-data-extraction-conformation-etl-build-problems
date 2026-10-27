@@ -304,3 +304,33 @@ architecture 3 leaves the pretrial world for a record whose outcomes are held wh
   partial month, both biased the truth, and the golden counted reviews for terms whose window had opened before the
   extract; fixed (termination needs no petition on the case, a partial month carries its share of the hazard, the
   review's remaining share read off the record's own filing offsets).
+- 2026-10-27, architecture 3's first build world (v3): the end-of-term petitions read 5 to 13 times the pooled
+  hazard by time on supervision, so the default path's own curve showed them; reworked as v3b with a jail condition
+  between sentencing and supervision (85 per cent of felony terms, median about 110 days), the Act's cap counted from
+  the start of supervision, extensions and tolling moving the scheduled expiration, and no sentencing date in the
+  registers. The supervision clock now peaks at 1.5 times its neighbours pooled and 1.1 to 2.1 times by term length,
+  while the alignment on the expiration in force shows 26 per cent against 5.
+- 2026-10-27, an ask on violator admissions by quarter, felony and misdemeanor: the Circuit Court's petitions give the
+  felony column exactly (a REVOKED petition on a CF case is a felony admission, one felony term a person at a time),
+  so the ask had no device on the route a careful solver takes. Replaced by violator bed-days by quarter, which only
+  the jail's bookings carry and where a misdemeanor commitment of a person then on felony probation is booked PV-FEL:
+  the classification route keeps 0 of 8, and the new system's UTC read as local 4 of 8.
+- 2026-10-27, end-of-term filings spread over 7 to 120 days before the scheduled expiration (mode 40): a 90-day
+  window filed 1,140 (1,100 to the nearest 100) and a 60-day window five pods. The filings now fall 7 to 90 days
+  before it (mode 30): every window from 75 days prints 1,200, every window from 60 days files six pods, and the
+  aligned histogram stops at about 90 days.
+- 2026-10-27, a world that opens empty on 1 July 2016: the caseload took years to fill, so felony revocation
+  admissions rose from about 45 a month in 2019 to 85 in 2025, a trend a solver could carry into 2027 in place of
+  reading the record. The world now runs from January 2008 and the extracts begin on 1 July 2016 (terms closed,
+  petitions filed and orders made from that day); the history runs flat at 920 to 1,020 a year, and every estimate
+  takes delayed entry at the extracts' first day.
+- 2026-10-27, the world at a felony intake of 218 a month with end-of-term filings on 23 per cent of terms: the
+  golden sat at the low end of its own family, and 10 of the 96 combinations of the six standing choices printed
+  1,300; intake 210 and 23.5 per cent centre the family, all 96 between 1,164 and 1,233 and every one six pods.
+- 2026-10-27, Ask B's three time-on-supervision bands (under one year, one to two, two or more): the band of two
+  years or more averaged 58.850 months, within a thousandth of a rounding edge, so one term more or less moved the
+  graded figure; four bands (under one, one to two, two to three, three or more) leave every figure at least 0.021
+  from an edge, under the extract-day closures and a 365.25-day year alike.
+- 2026-10-27, the golden adjusted for the CSRS score: a solver who leaves CaseTrak 1's version 1 totals unhalved files
+  1,115 with it (six pods, 1,100 to the nearest 100), so a Layer 1 slip moved a graded figure; the golden is now the
+  unadjusted construction (the score-adjusted one is a standing member, within 5 of it), and the slip moves nothing.

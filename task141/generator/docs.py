@@ -1,12 +1,10 @@
-"""The pack's documents: the draft revision of the local bail policy (the presumptive tier), the 2024 local bail policy,
-the Pretrial Assessment Scale's scoring guide, the extracts note, the jail and court code lists, the clerk's offence
-code crosswalk, the magistrate roster, Halsey County's board bills, and two papers from the county's Criminal Justice
-Advisory Council (the 2025 jail population report and the reported-crime series)."""
+"""The pack's documents: SB 26-118 as enrolled, the State Jail Standards Board's instructions for the 2027 plans, the
+extracts note, the CSRS rescaling note, the jail, court and office code lists, and the Department's annual report for
+fiscal 2025 (its tables computed from the shipped registers and petitions)."""
 from __future__ import annotations
 
 import datetime as dt
 
-import numpy as np
 import openpyxl
 from openpyxl.styles import Alignment, Font, PatternFill
 from openpyxl.utils import get_column_letter
@@ -21,7 +19,6 @@ from reportlab.pdfbase import pdfmetrics                                        
 from reportlab.pdfbase.ttfonts import TTFont                                          # noqa: E402
 from reportlab.platypus import Paragraph, SimpleDocTemplate, Spacer, Table, TableStyle  # noqa: E402
 
-import catalog as C   # noqa: E402
 import common as K    # noqa: E402
 
 FONT_DIR = "/usr/share/fonts/truetype/"
@@ -38,18 +35,21 @@ GREY = colors.HexColor("#555b66")
 RULE = colors.HexColor("#9aa3ad")
 PALE = colors.HexColor("#eceff3")
 
-BODY = ParagraphStyle("body", fontName=SERIF, fontSize=10.6, leading=14.0, textColor=INK, spaceAfter=5)
-CLAUSE = ParagraphStyle("clause", parent=BODY, leftIndent=28, firstLineIndent=-28)
-H1 = ParagraphStyle("h1", fontName=SERIF_B, fontSize=13.5, leading=17, textColor=INK, spaceAfter=2, alignment=1)
-H1S = ParagraphStyle("h1s", fontName=SERIF, fontSize=10.2, leading=13, textColor=INK, spaceAfter=10, alignment=1)
+BODY = ParagraphStyle("body", fontName=SERIF, fontSize=10.8, leading=14.4, textColor=INK, spaceAfter=6)
+CLAUSE = ParagraphStyle("clause", parent=BODY, leftIndent=26, firstLineIndent=-26)
+H1 = ParagraphStyle("h1", fontName=SERIF_B, fontSize=13.5, leading=17, textColor=INK, spaceAfter=3, alignment=1)
+H1S = ParagraphStyle("h1s", fontName=SERIF, fontSize=10.4, leading=13.2, textColor=INK, spaceAfter=10, alignment=1)
 H2 = ParagraphStyle("h2", fontName=SERIF_B, fontSize=11, leading=14, textColor=INK, spaceBefore=8, spaceAfter=3)
-NOTE = ParagraphStyle("note", fontName=SERIF_I, fontSize=9, leading=11.5, textColor=GREY, spaceBefore=4)
-SB = ParagraphStyle("sb", fontName=SANS, fontSize=10.2, leading=13.2, textColor=INK, spaceAfter=5)
-SH1 = ParagraphStyle("sh1", fontName=SANS_B, fontSize=15, leading=18.5, textColor=colors.HexColor("#22405f"), spaceAfter=2)
-SH1S = ParagraphStyle("sh1s", fontName=SANS, fontSize=9.6, leading=12.4, textColor=GREY, spaceAfter=9)
-SH2 = ParagraphStyle("sh2", fontName=SANS_B, fontSize=11.2, leading=14, textColor=INK, spaceBefore=8, spaceAfter=3)
-CELL = ParagraphStyle("cell", fontName=SANS, fontSize=8.8, leading=10.8, textColor=INK)
-CELLB = ParagraphStyle("cellb", fontName=SANS_B, fontSize=8.8, leading=10.8, textColor=INK)
+NOTE = ParagraphStyle("note", fontName=SERIF_I, fontSize=9.2, leading=11.8, textColor=GREY, spaceBefore=6)
+SB = ParagraphStyle("sb", fontName=SANS, fontSize=10.4, leading=13.6, textColor=INK, spaceAfter=6)
+SBC = ParagraphStyle("sbc", parent=SB, leftIndent=24, firstLineIndent=-24)
+SH1 = ParagraphStyle("sh1", fontName=SANS_B, fontSize=15.5, leading=19, textColor=colors.HexColor("#1f3a5a"), spaceAfter=2)
+SH1S = ParagraphStyle("sh1s", fontName=SANS, fontSize=9.8, leading=12.6, textColor=GREY, spaceAfter=10)
+SH2 = ParagraphStyle("sh2", fontName=SANS_B, fontSize=11.4, leading=14.2, textColor=INK, spaceBefore=9, spaceAfter=3)
+CELL = ParagraphStyle("cell", fontName=SANS, fontSize=9, leading=11, textColor=INK)
+CELLR = ParagraphStyle("cellr", parent=CELL, alignment=2)
+CELLB = ParagraphStyle("cellb", fontName=SANS_B, fontSize=9, leading=11, textColor=INK)
+CELLBR = ParagraphStyle("cellbr", parent=CELLB, alignment=2)
 
 
 def n0(x):
@@ -72,452 +72,414 @@ def _doc(path, title, author):
                              bottomMargin=0.9 * inch, title=title, author=author, subject="", creator="", producer="")
 
 
-def _table(rows, widths, head=True):
-    data = [[Paragraph(str(c), CELLB if (head and i == 0) else CELL) for c in r] for i, r in enumerate(rows)]
+def _table(rows, widths, head=True, right_from=1, total=False):
+    data = []
+    for i, r in enumerate(rows):
+        hd = head and i == 0
+        tl = total and i == len(rows) - 1
+        out = []
+        for j, c in enumerate(r):
+            num = j >= right_from and i > 0
+            st = (CELLBR if num else CELLB) if (hd or tl) else (CELLR if num else CELL)
+            if hd and j >= right_from:
+                st = CELLBR
+            out.append(Paragraph(str(c), st))
+        data.append(out)
     t = Table(data, colWidths=widths, hAlign="LEFT")
-    st = [("GRID", (0, 0), (-1, -1), 0.4, RULE), ("VALIGN", (0, 0), (-1, -1), "TOP"),
-          ("TOPPADDING", (0, 0), (-1, -1), 2.2), ("BOTTOMPADDING", (0, 0), (-1, -1), 2.2)]
+    st = [("LINEABOVE", (0, 0), (-1, 0), 0.6, RULE), ("LINEBELOW", (0, 0), (-1, 0), 0.6, RULE),
+          ("LINEBELOW", (0, -1), (-1, -1), 0.6, RULE), ("VALIGN", (0, 0), (-1, -1), "TOP"),
+          ("TOPPADDING", (0, 0), (-1, -1), 2.4), ("BOTTOMPADDING", (0, 0), (-1, -1), 2.4)]
     if head:
         st.append(("BACKGROUND", (0, 0), (-1, 0), PALE))
+    if total:
+        st.append(("LINEABOVE", (0, -1), (-1, -1), 0.6, RULE))
     t.setStyle(TableStyle(st))
     return t
 
 
-# ---------------------------------------------------------------------------------------------------- the 2024 policy
+# ---------------------------------------------------------------------------------------------------- SB 26-118
+def write_act(path):
+    s = [Paragraph("SENATE BILL 26-118", H1),
+         Paragraph("ENROLLED", H1S),
+         Paragraph("AN ACT concerning the length of felony probation terms.", H1S),
+         Paragraph("<i>Be it enacted by the General Assembly of the State:</i>", BODY)]
 
-def write_policy24(path):
-    s = [Paragraph("STATE OF NORTH CAROLINA, DORRANCE COUNTY", H1S),
-         Paragraph("In the General Court of Justice", H1S),
-         Paragraph("LOCAL BAIL POLICY FOR PRETRIAL RELEASE", H1),
-         Paragraph("Issued under G.S. 15A-535 by the Senior Resident Superior Court Judge after consultation with the "
-                   "Chief District Court Judge. Effective 1 July 2024; replaces the policy of 1 March 2019.", H1S)]
+    def sec(n, title, text):
+        s.append(Paragraph("<b>SECTION %d. %s.</b> %s" % (n, title, text), BODY))
 
-    def part(title, clauses):
-        s.append(Paragraph(title, H2))
-        for n, t in clauses:
-            s.append(Paragraph("<b>%s</b>&nbsp;&nbsp;%s" % (n, t), CLAUSE))
-
-    part("Part 1. Definitions", [
-        ("1.1", "Judicial official: a magistrate, district court judge or superior court judge setting conditions of "
-                "pretrial release."),
-        ("1.2", "Initial appearance: the defendant's first appearance before a judicial official after an arrest on new "
-                "charges, at which the conditions of pretrial release are set."),
-        ("1.3", "Conditions of pretrial release: a written promise to appear; an unsecured appearance bond; release to "
-                "the custody of a designated person or organization; a secured appearance bond; and, added to any of "
-                "these, house arrest with electronic monitoring or pretrial supervision by Pretrial Services."),
-        ("1.4", "Failure to appear: a scheduled court date at which the defendant did not appear and for which the "
-                "court issued an order for arrest."),
-        ("1.5", "Pretrial Assessment Scale: the records-based screen Dorrance County Pretrial Services completes at "
-                "intake (version 2 from 1 July 2021), giving a new-criminal-activity score and a failure-to-appear "
-                "score, each from 1 to 6."),
-    ])
-    part("Part 2. Initial appearance", [
-        ("2.1", "An arrested person shall be taken before a judicial official without unnecessary delay. At the "
-                "detention center the initial appearance is ordinarily held within six hours of booking."),
-        ("2.2", "Pretrial Services gives the magistrate the defendant's screen before the initial appearance where the "
-                "screen has been completed. The screen informs the conditions and does not decide them."),
-        ("2.3", "Initial appearances at the detention center are heard by the magistrate on duty. The Chief "
-                "Magistrate assigns magistrates to the twelve-hour duty shifts by rota."),
-        ("2.4", "The magistrate records the conditions set and the first court date on the release order."),
-    ])
-    part("Part 3. Conditions", [
-        ("3.1", "The judicial official shall impose a written promise to appear, an unsecured bond or custody release "
-                "unless the official determines that such a release will not reasonably assure the defendant's "
-                "appearance, will pose a danger of injury to any person or is likely to result in the destruction of "
-                "evidence, the subornation of perjury or the intimidation of witnesses (G.S. 15A-534(b))."),
-        ("3.2", "Where a secured bond is required, the amounts below are guidelines for the most serious charge. The "
-                "official may depart from them and shall state the reason on the release order."),
-    ])
-    rows = [["Most serious charge", "Guideline secured bond"],
-            ["Misdemeanor, Class 3", "$500"], ["Misdemeanor, Class 2", "$1,000"], ["Misdemeanor, Class 1", "$1,500"],
-            ["Misdemeanor, Class A1", "$2,500"], ["Felony, Class I", "$5,000"], ["Felony, Class H", "$7,500"],
-            ["Felony, Class G or F", "$15,000 to $25,000"], ["Felony, Class E or higher", "$50,000 or more"]]
-    s.append(_table(rows, [2.6 * inch, 2.0 * inch]))
-    s.append(Spacer(1, 6))
-    part("Part 4. Monitoring and supervision", [
-        ("4.1", "House arrest with electronic monitoring may be added as a condition where the official finds it "
-                "necessary. Monitoring is provided under the county's contract with the monitoring vendor and ends at "
-                "the disposition of the charges or on the court's order."),
-        ("4.2", "Pretrial supervision may be added for a defendant released on a written promise or an unsecured bond."),
-    ])
-    part("Part 5. Review", [
-        ("5.1", "A defendant who remains in custody after the initial appearance shall be brought before a district "
-                "court judge at the next session of court for a review of the conditions set."),
-    ])
-    s.append(Paragraph("Zachary Henson, Senior Resident Superior Court Judge. Kristen Thompson, Chief District Court "
-                       "Judge.", NOTE))
-    doc = _doc(path, "Local Bail Policy, Dorrance County, 1 July 2024", K.PEOPLE["srj"])
-    doc.build(s, onFirstPage=_footer("Dorrance County local bail policy, 1 July 2024", "Superior Court"),
-              onLaterPages=_footer("Dorrance County local bail policy, 1 July 2024", "Superior Court"))
+    def sub(text):
+        s.append(Paragraph(text, CLAUSE))
+    sec(1, "Short title", "This Act may be cited as the Felony Probation Term Act.")
+    sec(2, "Definitions", "In this Act:")
+    sub("(1)&nbsp;&nbsp;\"Felony probation term\" means a term of probation imposed on conviction of a felony, with the "
+        "conditions the court orders, including any period of confinement in a county jail the court orders as a "
+        "condition of the term.")
+    sub("(2)&nbsp;&nbsp;\"Supervision\" on a term means supervision by a county probation department. Supervision on a "
+        "term begins on the day the probationer is placed under the department's supervision on that term, which for a "
+        "term with a confinement condition is the day of release from the confinement.")
+    sub("(3)&nbsp;&nbsp;\"Scheduled expiration\" means the day on which a term is to expire under the order imposing it "
+        "as amended by any later order of the court.")
+    sec(3, "Terms imposed on or after the effective date", "A felony probation term imposed on or after the effective "
+        "date of this Act may not provide for supervision for more than 24 months, and expires no later than the day 24 "
+        "months after supervision on it begins.")
+    sec(4, "Terms in effect", "A felony probation term in effect on the effective date of this Act expires on the "
+        "earlier of its scheduled expiration and the day 24 months after supervision on it began; but no term expires "
+        "under this section before 31 March 2027.")
+    sec(5, "Extension and tolling", "A court may extend or toll a felony probation term as before, but no order made "
+        "on or after the effective date of this Act may set the term's expiration later than the day sections 3 and 4 "
+        "allow.")
+    sec(6, "Pending proceedings", "Proceedings pending on the day a term ends under section 4 continue.")
+    sec(7, "Misdemeanor terms", "This Act does not apply to a term of probation imposed on conviction of a misdemeanor.")
+    sec(8, "Effective date", "This Act takes effect on 1 January 2027.")
+    s.append(Spacer(1, 10))
+    s.append(Paragraph("Passed the Senate 21 April 2026; passed the House 6 May 2026. Approved by the Governor 14 May "
+                       "2026.", NOTE))
+    doc = _doc(path, "SB 26-118, Felony Probation Term Act (enrolled)", "Legislative Services")
+    f = _footer("SB 26-118, enrolled", "Felony Probation Term Act")
+    doc.build(s, onFirstPage=f, onLaterPages=f)
 
 
-# ---------------------------------------------------------------------------------------------------- the draft
+# ---------------------------------------------------------------------------------------------------- the Board
+STANDARDS = (("Bexley County", 48, 160, "12 May 2020"), ("Carrow County", 56, 190, "2 February 2022"),
+             ("Okelan County", K.POD_BEDS, K.POD_SIZE, "3 March 2021"), ("Pruitt County", 64, 200, "9 June 2021"),
+             ("Tamsin County", 40, 150, "17 November 2023"))
 
-def write_draft(path):
-    import docx
-    from docx.enum.text import WD_ALIGN_PARAGRAPH
-    from docx.shared import Pt
-    d = docx.Document()
-    st = d.styles["Normal"]
-    st.font.name = "Times New Roman"
-    st.font.size = Pt(11.5)
-    for t, b in (("STATE OF NORTH CAROLINA, DORRANCE COUNTY", False), ("In the General Court of Justice", False),
-                 ("LOCAL BAIL POLICY FOR PRETRIAL RELEASE: REVISION FOR 2027", True),
-                 ("Draft for consultation, 6 October 2026", False)):
-        p = d.add_paragraph()
-        p.alignment = WD_ALIGN_PARAGRAPH.CENTER
-        r = p.add_run(t)
-        if b:
-            r.bold = True
-    d.add_paragraph("Circulated to the Chief District Court Judge, the District Attorney, the Public Defender, the Chief "
-                    "Magistrate, the Sheriff and the Director of Pretrial Services. Comments to the Senior Resident "
-                    "Superior Court Judge's office by 6 November 2026. The revision is to be issued and filed with the "
-                    "Clerk of Superior Court by 1 December 2026.")
 
-    def clause(n, text):
-        p = d.add_paragraph()
-        r = p.add_run(n + "  ")
-        r.bold = True
-        p.add_run(text)
+def write_plan(path):
+    s = [Paragraph("State Jail Standards Board", SH1S), Paragraph("2027 Jail Operations Plans: instructions to counties",
+                                                                  SH1),
+         Paragraph("Issued 8 July 2026 under the Board's rule 12 (county jail operations plans). Replaces the "
+                   "instructions for the 2026 plans.", SH1S)]
 
     def head(t):
-        p = d.add_paragraph()
-        r = p.add_run(t)
-        r.bold = True
-    head("1. Purpose")
-    clause("1.1", "This revision amends the local bail policy of 1 July 2024 from 1 January 2027 by adding a presumptive "
-                  "release tier for defendants charged only with eligible misdemeanors. Parts 1, 2, 3, 4 and 5 of the "
-                  "2024 policy continue for every other defendant, and their definitions apply to this revision.")
-    head("2. Presumptive release tier")
-    clause("2.1", "Eligible defendant. A defendant is eligible when each charge at the initial appearance is a "
-                  "misdemeanor, none of the charges is an offense listed in Appendix B, and no other jurisdiction has "
-                  "lodged a hold or detainer for the defendant at intake.")
-    clause("2.2", "The tier. Every eligible defendant whose Pretrial Assessment Scale screen shows a new-criminal-activity "
-                  "score at or below the tier's top score shall be released on a written promise to appear at the "
-                  "initial appearance. The magistrate sets the first court date and adds no other condition.")
-    clause("2.3", "Safety floor. A score is in the tier only if at least 85 percent of the eligible defendants the tier "
-                  "releases at that score are expected to complete the pretrial period without a new-offense arrest.")
-    clause("2.4", "New-offense arrest. An arrest anywhere in North Carolina for an offense committed after the day of "
-                  "release and within 365 days of release, or before the last of the defendant's charges from the "
-                  "initial appearance is disposed, whichever comes first. An arrest on an order for arrest, on a warrant "
-                  "for an offense committed before release, or for a probation violation is not a new-offense arrest.")
-    clause("2.5", "The tier's top score. The highest score at which that score and every lower score meet the safety "
-                  "floor.")
-    clause("2.6", "Setting the top score. Pretrial Services will propose the top score for the filed revision from the "
-                  "county's records of eligible defendants' initial appearances.")
-    head("3. Defendants above the tier")
-    clause("3.1", "For a defendant who is not eligible, or whose score is above the tier's top score, the magistrate sets "
-                  "conditions under Part 3 of the 2024 policy.")
-    head("4. Review")
-    clause("4.1", "The Chief District Court Judge and the Director of Pretrial Services will review the tier after its "
-                  "first twelve months in operation.")
-    head("5. Effective date")
-    clause("5.1", "This revision takes effect on 1 January 2027.")
-    head("Appendix B. Offenses that take a defendant out of the tier")
-    t = d.add_table(rows=1, cols=2)
-    t.style = "Table Grid"
-    t.rows[0].cells[0].text = "G.S."
-    t.rows[0].cells[1].text = "Offense"
-    for stt, desc, _ in C.APPENDIX_B:
-        row = t.add_row().cells
-        row[0].text = stt
-        row[1].text = desc
-    d.add_paragraph("")
-    d.add_paragraph("Zachary Henson, Senior Resident Superior Court Judge")
-    d.core_properties.author = K.PEOPLE["srj"]
-    d.core_properties.title = "Local bail policy revision for 2027, draft"
-    d.save(path)
+        s.append(Paragraph(t, SH2))
+
+    def cl(n, t):
+        s.append(Paragraph("<b>%s</b>&nbsp;&nbsp;%s" % (n, t), SBC))
+    head("1. Filing")
+    cl("1.1", "Each county files a Jail Operations Plan for calendar 2027 (the plan year), adopted by its board of "
+              "supervisors, with the Board by 1 December 2026.")
+    cl("1.2", "The plan is built on the county's records to the end of 30 September 2026 (the extract).")
+    head("2. Violator housing")
+    cl("2.1", "Under the Public Safety Realignment Act of 2019 a person committed on the revocation of a felony "
+              "probation term serves the commitment in the jail of the county that supervised the term.")
+    cl("2.2", "The plan states the felony probation revocation admissions the county projects for the plan year and "
+              "the violator housing it will staff for them under the housing standard the county has on file with the "
+              "Board (Annex). The Board approves the plan's violator housing staffing on that projection.")
+    head("3. Admissions")
+    cl("3.1", "An admission is a person's commitment to the county jail on the revocation of a probation term the "
+              "county probation department supervises, counted once, on the day the commitment begins, however many "
+              "of the person's terms the court revoked that day.")
+    cl("3.2", "An admission is a felony probation revocation admission when a term revoked is a felony probation term. "
+              "Holds on a violation warrant before the court decides, and holds for another state, are not admissions.")
+    head("4. The projection")
+    cl("4.1", "Project the plan year's felony probation revocation admissions under the law in force in the plan year, "
+              "with the courts, the probation department and the sheriff acting as the county's records to the "
+              "extract show them acting.")
+    cl("4.2", "The projection counts every admission the plan year will see, including admissions on terms whose "
+              "supervision begins after the extract.")
+    cl("4.3", "State the projection to the nearest 100 admissions, with the parts it is built from.")
+    head("5. Violator housing in use")
+    cl("5.1", "Report the violator bed-days of each of the four quarters to the extract, felony and misdemeanor.")
+    cl("5.2", "A violator bed-day is counted for each person in the jail at 00:00 county time on a commitment on the "
+              "revocation of a probation term, in any of the jail's buildings, and is dated to the day that begins at "
+              "that midnight.")
+    cl("5.3", "A bed-day is a felony bed-day when the commitment revokes a felony probation term; a person held at "
+              "that midnight on commitments revoking a felony term and a misdemeanor term is counted once, as a "
+              "felony bed-day. Every other violator bed-day is a misdemeanor bed-day. Holds on a violation warrant "
+              "before the court decides, and holds for another state, are not violator bed-days.")
+    head("6. Felony probationers on supervision")
+    cl("6.1", "Report the felony probationers the county probation department supervised at the extract and the "
+              "average term imposed at sentencing, in months, of their terms, by supervising office and by time on "
+              "supervision at the extract: under one year, one year to under two years, two years to under three "
+              "years, and three years or more.")
+    head("7. Changes in law")
+    cl("7.1", "Senate Bill 26-118, the Felony Probation Term Act, takes effect on 1 January 2027.")
+    s.append(Paragraph("Annex. Violator housing standards on file with the Board, 1 July 2026", SH2))
+    rows = [["County", "Violator housing unit", "Standard", "Filed"]]
+    for cty, beds, adm, filed in STANDARDS:
+        rows.append([cty, "pod of %d beds" % beds, "one unit for each %d felony probation revocation admissions "
+                     "projected for the plan year, or part of %d" % (adm, adm), filed])
+    s.append(_table(rows, [1.15 * inch, 1.25 * inch, 3.0 * inch, 1.1 * inch], right_from=9))
+    s.append(Paragraph("A county changing its standard files the new standard with its plan.", NOTE))
+    doc = _doc(path, "2027 Jail Operations Plans: instructions to counties", K.BOARD)
+    f = _footer("SJSB instructions for the 2027 Jail Operations Plans", "State Jail Standards Board")
+    doc.build(s, onFirstPage=f, onLaterPages=f)
 
 
-# ---------------------------------------------------------------------------------------------------- the scoring guide
+# ---------------------------------------------------------------------------------------------------- annual report
+def report_figures(cms1, cms2, pets):
+    """the Department's fiscal 2025 tables (1 July 2024 to 30 June 2025), computed from the shipped rows"""
+    a, b = dt.date(2024, 7, 1), dt.date(2025, 6, 30)
+    leg = {o[2]: o[0] for o in K.OFFICES}
 
-def write_guide(path):
-    s = [Paragraph("Dorrance County Pretrial Services", SH1S), Paragraph("Pretrial Assessment Scale: scoring guide",
-                                                                          SH1),
-         Paragraph("Version 2, in use from 1 July 2021. Revised July 2021; reissued March 2024 with the clerk's new "
-                   "system's field names. Owner: Director of Pretrial Services.", SH1S),
-         Paragraph("What the screen is", SH2),
-         Paragraph("The Pretrial Assessment Scale is a records-based screen. A screener completes it at intake from the "
-                   "statewide criminal record and the court's records, before the initial appearance; there is no "
-                   "interview. One screen is completed for each booking on new charges. A screen completed on paper "
-                   "during a system outage is entered afterwards and carries no booking number.", SB),
-         Paragraph("The screen gives two scores, each from 1 to 6: a new-criminal-activity score and a failure-to-appear "
-                   "score. Points are added for each item and the total is converted to the score with the tables below.",
-                   SB),
-         Paragraph("New-criminal-activity items", SH2)]
-    rows = [["Item", "Points"]]
-    for _, label, pts in C.NCA_ITEMS:
-        rows.append([label, ", ".join("%s" % v for k, v in sorted(pts.items()) if k > 0)])
-    s.append(_table(rows, [4.6 * inch, 1.2 * inch]))
-    s.append(Spacer(1, 6))
-    rows = [["Points", "New-criminal-activity score"]] + [["%d" % lo if lo == hi else "%d to %d" % (lo, hi), str(sc)]
-                                                          for lo, hi, sc in C.NCA_BANDS]
-    s.append(_table(rows, [1.4 * inch, 2.4 * inch]))
-    s.append(Paragraph("Failure-to-appear items", SH2))
-    rows = [["Item", "Points"]]
-    for _, label, pts in C.FTA_ITEMS:
-        rows.append([label, ", ".join("%s" % v for k, v in sorted(pts.items()) if k > 0)])
-    s.append(_table(rows, [4.6 * inch, 1.2 * inch]))
-    s.append(Spacer(1, 6))
-    rows = [["Points", "Failure-to-appear score"]] + [["%d" % lo if lo == hi else "%d to %d" % (lo, hi), str(sc)]
-                                                      for lo, hi, sc in C.FTA_BANDS]
-    s.append(_table(rows, [1.4 * inch, 2.4 * inch]))
-    s.append(Paragraph("Definitions", SH2))
-    for t in ("Pending charge: a charge pending in any North Carolina court on the day of the current arrest.",
-              "Prior conviction: a conviction entered before the day of the current arrest, in any court.",
-              "Violent conviction: a conviction for an offense the scale's offense list marks violent (assaults, robbery, "
-              "and offenses with a weapon).",
-              "Failure to appear: a court date for which an order for arrest for failure to appear was issued; the "
-              "two-year count runs back from the day of the current arrest."):
-        s.append(Paragraph(t, SB))
-    doc = _doc(path, "Pretrial Assessment Scale scoring guide, version 2", K.PEOPLE["director"])
-    doc.build(s, onFirstPage=_footer("Pretrial Assessment Scale v2 scoring guide", "Pretrial Services"),
-              onLaterPages=_footer("Pretrial Assessment Scale v2 scoring guide", "Pretrial Services"))
+    def mdy(s):
+        return dt.datetime.strptime(s, "%m/%d/%Y").date() if s else None
+    terms = []
+    for r in cms1:
+        terms.append(dict(lvl=r["LEVEL"], office=leg[r["OFFICE"]], sup=mdy(r["SUP_BEGIN"]), closed=mdy(r["CLOSE_DATE"]),
+                          reason={"EXP": "EXPIRED", "REV": "REVOKED", "ETERM": "EARLY TERMINATION"}[r["CLOSE_CODE"]]))
+    for r in cms2:
+        terms.append(dict(lvl=r["offense_level"][0], office=r["office"], sup=dt.date.fromisoformat(r["supervision_begin"]),
+                          closed=dt.date.fromisoformat(r["closed_date"]) if r["closed_date"] else None,
+                          reason=r["closure_reason"]))
+    cl = {}
+    for (o, _, _) in K.OFFICES:
+        cl[o] = {"F": 0, "M": 0}
+    began = {"F": 0, "M": 0}
+    closed = {(lv, rs): 0 for lv in "FM" for rs in ("EXPIRED", "REVOKED", "EARLY TERMINATION")}
+    for t in terms:
+        if t["sup"] <= b and (t["closed"] is None or t["closed"] > b):
+            cl[t["office"]][t["lvl"]] += 1
+        if a <= t["sup"] <= b:
+            began[t["lvl"]] += 1
+        if t["closed"] is not None and a <= t["closed"] <= b:
+            closed[(t["lvl"], t["reason"])] += 1
+    filed = {"F": 0, "M": 0}
+    disp = {(lv, d): 0 for lv in "FM" for d in ("REVOKED", "CONTINUED", "CONTINUED AND EXTENDED", "DISMISSED")}
+    for p in pets:
+        lv = "F" if "-CF-" in p["case_number"] else "M"
+        if a <= dt.date.fromisoformat(p["filed_date"]) <= b:
+            filed[lv] += 1
+        if p["disposition_date"] and a <= dt.date.fromisoformat(p["disposition_date"]) <= b:
+            disp[(lv, p["disposition"])] += 1
+    return dict(caseload=cl, began=began, closed=closed, filed=filed, disp=disp)
+
+
+def write_report(path, F):
+    s = [Paragraph("Okelan County Adult Probation Department", SH1S), Paragraph("Annual report, fiscal year 2025", SH1),
+         Paragraph("1 July 2024 to 30 June 2025. Prepared by the Research and Data Unit for the Chief Probation "
+                   "Officer's report to the County Board of Supervisors. Counts are from CaseTrak 2 and the Clerk of the "
+                   "Circuit Court's case management system as at 31 August 2025.", SH1S),
+         Paragraph("The year", SH2)]
+    cl = F["caseload"]
+    totf = sum(v["F"] for v in cl.values())
+    totm = sum(v["M"] for v in cl.values())
+    s.append(Paragraph("At the end of the fiscal year the Department supervised %s felony and %s misdemeanor probationers "
+                       "from its four offices. Supervision began on %s felony and %s misdemeanor terms during the year. "
+                       "Officers filed %s violation petitions on felony terms and %s on misdemeanor terms, and the "
+                       "Circuit Court revoked %s felony and %s misdemeanor terms."
+                       % (n0(totf), n0(totm), n0(F["began"]["F"]), n0(F["began"]["M"]), n0(F["filed"]["F"]),
+                          n0(F["filed"]["M"]), n0(F["disp"][("F", "REVOKED")]), n0(F["disp"][("M", "REVOKED")])), SB))
+    s.append(Paragraph("Table 1. Probationers on supervision at 30 June 2025, by office", SH2))
+    rows = [["Office", "Felony", "Misdemeanor", "Total"]]
+    for code, name, _ in K.OFFICES:
+        rows.append([name, n0(cl[code]["F"]), n0(cl[code]["M"]), n0(cl[code]["F"] + cl[code]["M"])])
+    rows.append(["All offices", n0(totf), n0(totm), n0(totf + totm)])
+    s.append(_table(rows, [2.0 * inch, 1.1 * inch, 1.1 * inch, 1.1 * inch], total=True))
+    s.append(Paragraph("Table 2. Violation petitions disposed in the year, by disposition", SH2))
+    rows = [["Disposition", "Felony terms", "Misdemeanor terms"]]
+    for d, lab in (("REVOKED", "Revoked"), ("CONTINUED", "Continued"), ("CONTINUED AND EXTENDED", "Continued and extended"),
+                   ("DISMISSED", "Dismissed")):
+        rows.append([lab, n0(F["disp"][("F", d)]), n0(F["disp"][("M", d)])])
+    rows.append(["All dispositions", n0(sum(F["disp"][("F", d)] for d in ("REVOKED", "CONTINUED", "CONTINUED AND EXTENDED",
+                                                                          "DISMISSED"))),
+                 n0(sum(F["disp"][("M", d)] for d in ("REVOKED", "CONTINUED", "CONTINUED AND EXTENDED", "DISMISSED")))])
+    s.append(_table(rows, [2.4 * inch, 1.3 * inch, 1.5 * inch], total=True))
+    s.append(Paragraph("Table 3. Terms closed in the year, by reason", SH2))
+    rows = [["Reason", "Felony", "Misdemeanor"]]
+    for rs, lab in (("EXPIRED", "Expired"), ("REVOKED", "Revoked"), ("EARLY TERMINATION", "Early termination")):
+        rows.append([lab, n0(F["closed"][("F", rs)]), n0(F["closed"][("M", rs)])])
+    rows.append(["All closures", n0(sum(F["closed"][("F", rs)] for rs in ("EXPIRED", "REVOKED", "EARLY TERMINATION"))),
+                 n0(sum(F["closed"][("M", rs)] for rs in ("EXPIRED", "REVOKED", "EARLY TERMINATION")))])
+    s.append(_table(rows, [2.4 * inch, 1.3 * inch, 1.5 * inch], total=True))
+    s.append(Paragraph("Notes", SH2))
+    s.append(Paragraph("A probationer on supervision is counted once for each open term. A petition is counted in the "
+                       "year it was filed and its disposition in the year the court entered it, so the two tables cover "
+                       "different petitions. Early termination is granted on the officer's motion after eighteen months "
+                       "of compliance on a felony term and six on a misdemeanor term.", SB))
+    s.append(Paragraph("The fiscal 2026 report will move to CaseTrak 2's new reporting module, which counts petitions by "
+                       "the supervising office at filing.", SB))
+    doc = _doc(path, "Adult Probation Department annual report, fiscal year 2025", K.PEOPLE["research"])
+    f = _footer("APD annual report FY2025", "Okelan County Adult Probation Department")
+    doc.build(s, onFirstPage=f, onLaterPages=f)
 
 
 # ---------------------------------------------------------------------------------------------------- code lists
-
-JAIL_CODES = [
-    ("booking_type", "NEW", "Booked on an arrest on new charges"),
-    ("booking_type", "TRF", "Moved in from another housing site of the detention center"),
-    ("booking_type", "BI", "Returned from a contract facility"),
-    ("booking_type", "OFA", "Booked on an order for arrest"),
-    ("release_type", "WPA", "Released on a written promise to appear"),
-    ("release_type", "UNSEC", "Released on an unsecured bond"),
-    ("release_type", "CUST", "Released to the custody of a designated person"),
-    ("release_type", "BOND", "Released on a secured bond posted"),
-    ("release_type", "TS", "Released, time served or sentence complete"),
-    ("release_type", "DISM", "Released, charges dismissed"),
-    ("release_type", "CRTO", "Released on a court order"),
-    ("release_type", "XFER", "Released to another agency on its hold or detainer"),
-    ("release_type", "TRF", "Moved to another housing site of the detention center"),
-    ("release_type", "BO", "Boarded out to a contract facility"),
-    ("facility", "DCDC", "Dorrance County Detention Center, 410 Court Street, Garrison"),
-    ("facility", "DCDC-ANNEX", "Detention Center annex, Mill Street, Garrison"),
+JMS_CODES = [
+    ("classification", "PROB-COND", "Confinement ordered as a condition of a probation term"),
+    ("classification", "PV-HOLD", "Held on a probation violation warrant until the court decides the petition"),
+    ("classification", "PV-FEL", "Probation violation commitment, felony probationer"),
+    ("classification", "PV-MIS", "Probation violation commitment, misdemeanor probationer"),
+    ("classification", "PV-OOS", "Held for another state under the Interstate Compact for Adult Offender Supervision"),
+    ("facility", "MAIN", "Detention Center, main building"),
+    ("facility", "ANNEX", "Detention Center, Harlan Road annex"),
+    ("release_reason", "SENTENCE COMPLETE", "Confinement completed"),
+    ("release_reason", "RETURNED TO SUPERVISION", "Released on the court's order continuing probation"),
+    ("release_reason", "RECLASSIFIED", "Booking closed on a change of classification; booked again at the same time"),
+    ("release_reason", "TRANSFER TO ANNEX", "Moved between the main building and the annex; booked again on arrival"),
+    ("release_reason", "SCHEDULED RELEASE", "Released at the end of a weekend period of an intermittent sentence"),
+    ("release_reason", "RELEASED TO SENDING STATE", "Released to the sending state's authorities"),
+    ("release_reason", "CONVERTED TO NEW JMS", "Closed in the old jail management system at its replacement on 4 "
+                                               "February 2025; booked again in the new system"),
 ]
-
-COURT_CODES = [
-    ("court", "DISTRICT", "District Court"),
-    ("court", "SUPERIOR", "Superior Court"),
-    ("condition_legacy", "WPA", "Written promise to appear"),
-    ("condition_legacy", "UNSEC", "Unsecured bond"),
-    ("condition_legacy", "CUST", "Custody release"),
-    ("condition_legacy", "SEC", "Secured bond"),
-    ("release_condition", "WRITTEN_PROMISE", "Written promise to appear"),
-    ("release_condition", "UNSECURED_BOND", "Unsecured bond"),
-    ("release_condition", "CUSTODY_RELEASE", "Custody release"),
-    ("release_condition", "SECURED_BOND", "Secured bond"),
-    ("disposition_code", "GP", "Guilty plea"),
-    ("disposition_code", "GT", "Guilty at trial"),
-    ("disposition_code", "VD", "Voluntary dismissal by the State"),
-    ("disposition_code", "DD", "Dismissed after deferred prosecution"),
-    ("disposition_code", "NG", "Not guilty"),
-    ("disposition_code", "IND", "Indictment returned in superior court"),
-    ("event_code", "SET", "Court date held or continued"),
-    ("event_code", "FTA", "Called and failed; order for arrest issued"),
-    ("event_code", "OFAR", "Order for arrest recalled"),
-    ("event_code", "OFARI", "Order for arrest reissued"),
-    ("event_code", "OFAS", "Order for arrest served"),
-    ("event_code", "DISP", "Disposition entered"),
-]
-
-
-def write_code_lists(jail_path, court_path):
-    K.write_csv(jail_path, ["field", "code", "description"], [list(x) for x in JAIL_CODES], crlf=True)
-    K.write_csv(court_path, ["field", "code", "description"], [list(x) for x in COURT_CODES], crlf=True)
-
-
-# ---------------------------------------------------------------------------------------------------- workbooks
-
-def _title_rows(ws, title, sub, note=None):
-    ws.append([title])
-    ws["A1"].font = Font(name="Calibri", bold=True, size=12)
-    ws.append([sub])
-    ws["A2"].font = Font(name="Calibri", italic=True, size=10, color="595959")
-    if note:
-        ws.append([note])
-        ws.cell(row=ws.max_row, column=1).font = Font(name="Calibri", size=9, color="595959")
-    ws.append([])
+OFFICE_ROWS = [("CEN", "C", "Central", "3 January 1994"), ("NGT", "N", "Northgate", "2 July 2001"),
+               ("RVS", "R", "Riverside", "2 July 2001"), ("EFD", "E", "Eastfield", "6 March 2006")]
+COURT_SHEETS = (
+    ("Allegations", ["Code", "Allegation"], [
+        ("LAW", "New law violation: arrest on or charge with a new offense"),
+        ("RPT", "Failure to report to the supervising officer"),
+        ("DRG", "Positive, adulterated or missed drug or alcohol test"),
+        ("TRT", "Failure to attend or complete ordered treatment"),
+        ("PAY", "Failure to pay ordered restitution, fines or fees"),
+        ("CUR", "Curfew or electronic monitoring violation"),
+        ("CNT", "Contact with a person the court ordered no contact with"),
+        ("ABS", "Absconding: whereabouts unknown to the supervising officer")]),
+    ("Dispositions", ["Disposition", "Meaning"], [
+        ("REVOKED", "Probation revoked; commitment ordered for the days stated"),
+        ("CONTINUED", "Probation continued on its existing terms"),
+        ("CONTINUED AND EXTENDED", "Probation continued and the term extended (see the term order)"),
+        ("DISMISSED", "Petition dismissed")]),
+    ("Process", ["Process", "Meaning"], [
+        ("WARRANT", "Violation warrant issued with the petition"),
+        ("SUMMONS", "Summons to appear issued with the petition")]),
+    ("Term orders", ["Order type", "Meaning"], [
+        ("TOLLING", "Term tolled for the days a violation warrant was outstanding after the probationer absconded"),
+        ("EXTENSION", "Term extended by the months stated"),
+        ("EARLY TERMINATION", "Term terminated before its scheduled expiration")]),
+    ("Served as", ["Value", "Meaning"], [
+        ("CONSECUTIVE", "Commitment served in one period from the day ordered"),
+        ("WEEKENDS", "Commitment served on consecutive weekends, Friday evening to Sunday evening")]),
+    ("Case numbers", ["Type", "Meaning"], [
+        ("CF", "Felony case: year of filing of the charge, CF and a six-digit number"),
+        ("CM", "Misdemeanor case: year of filing of the charge, CM and a six-digit number")]),
+)
 
 
-def _head(ws, cols, widths=None, fill="DCE6F0"):
-    ws.append(cols)
-    row = ws.max_row
-    for c in range(1, len(cols) + 1):
-        cell = ws.cell(row=row, column=c)
-        cell.font = Font(name="Calibri", bold=True)
-        cell.fill = PatternFill("solid", fgColor=fill)
-        cell.alignment = Alignment(wrap_text=True, vertical="top")
-    if widths:
-        for i, w in enumerate(widths, 1):
-            ws.column_dimensions[get_column_letter(i)].width = w
-    return row
+def write_jms_codes(path):
+    K.write_csv(path, ["field", "code", "description"], [list(x) for x in JMS_CODES], crlf=True)
 
 
-def write_crosswalk(path):
+def write_office_codes(path):
+    K.write_csv(path, ["office_code", "casetrak1_code", "office_name", "in_use_from"], [list(x) for x in OFFICE_ROWS],
+                crlf=True)
+
+
+def write_court_codes(path):
     wb = openpyxl.Workbook()
-    ws = wb.active
-    ws.title = "Offense codes"
-    _title_rows(ws, "Offense code crosswalk, legacy system to the new case management system",
-                "Office of the Clerk of Superior Court, Dorrance County. Prepared for the conversion of 4 March 2024.",
-                "One row per legacy code. Charges entered from 4 March 2024 carry the new code only.")
-    hr = _head(ws, ["Legacy code", "New code", "G.S.", "Description", "Class"], [12, 11, 14, 42, 8])
-    for o in sorted(C.OFFENCES, key=lambda o: o[1][0]):
-        for lc in o[1]:
-            ws.append([lc, o[0], o[2], o[3], o[4]])
-    ws.freeze_panes = ws.cell(row=hr + 1, column=1)
-    wb.save(path)
-
-
-def write_roster(path, W):
-    wb = openpyxl.Workbook()
-    ws = wb.active
-    ws.title = "Magistrates"
-    _title_rows(ws, "Dorrance County magistrates, 2021 to 2026", "Office of the Chief Magistrate. Updated 28 September "
-                "2026.", "Initials are the magistrate's key in the clerk's legacy system; the employee number is the key "
-                "in the new system from 4 March 2024.")
-    hr = _head(ws, ["Magistrate", "Initials (legacy)", "Employee no.", "Sworn in", "Left office"], [28, 15, 13, 12, 12])
-    for m in sorted(W.mags, key=lambda m: (m["last"], m["first"])):
-        ws.append(["%s, %s %s." % (m["last"], m["first"], m["middle"]), m["initials"], m["empno"], m["start"],
-                   m["end"] if m["end"] else None])
-        ws.cell(row=ws.max_row, column=4).number_format = "mm/dd/yyyy"
-        if m["end"]:
-            ws.cell(row=ws.max_row, column=5).number_format = "mm/dd/yyyy"
-    ws.freeze_panes = ws.cell(row=hr + 1, column=1)
-    ws2 = wb.create_sheet("Duty shifts")
-    _title_rows(ws2, "Detention center duty shifts", "Office of the Chief Magistrate.")
-    for t in ("Day shift 07:00 to 19:00, night shift 19:00 to 07:00, every day of the year.",
-              "Four magistrates on duty at the detention center on each shift.",
-              "Shift assignments are posted each quarter; each magistrate works day, night and weekend shifts.",
-              "Initial appearances are taken in turn by the magistrates on duty."):
-        ws2.append([t])
-    ws2.column_dimensions["A"].width = 96
-    wb.save(path)
-
-
-def write_halsey(path, W, stays):
-    """One sheet a month: every Dorrance defendant held at Halsey in the month, the stay's own dates in and out (out
-    left blank while the stay runs on), and the days billed in the month, each day or part of a day."""
-    wb = openpyxl.Workbook()
-    months = []
-    m = dt.date(2025, 11, 1)
-    while m <= K.EXTRACT_END:
-        months.append(m)
-        m = dt.date(m.year + (m.month == 12), 1 if m.month == 12 else m.month + 1, 1)
-    P = W.persons
-    end_t = K.d2dt(K.EXTRACT_END + dt.timedelta(days=1))
-    for i, m in enumerate(months):
-        m_end = dt.date(m.year + (m.month == 12), 1 if m.month == 12 else m.month + 1, 1) - dt.timedelta(days=1)
+    for i, (title, cols, rows) in enumerate(COURT_SHEETS):
         ws = wb.active if i == 0 else wb.create_sheet()
-        ws.title = m.strftime("%b %Y")
-        _title_rows(ws, "Halsey County Sheriff's Office, Detention Division", "Inmate housing invoice to Dorrance County "
-                    "Sheriff's Office for %s. Rate $68.00 per inmate per day or part of a day." % m.strftime("%B %Y"))
-        hr = _head(ws, ["Halsey booking", "Inmate", "DOB", "Agency ref.", "Date in", "Date out", "Days", "Amount"],
-                   [15, 30, 12, 14, 12, 12, 8, 11])
-        tot_d, tot_a = 0, 0.0
-        for h in stays:
-            s, e = h["s"], h["e"]
-            din = s["start"].date()
-            out = s["end"].date() if s["end"] < end_t else None
-            last = out if out else K.EXTRACT_END
-            if din > m_end or last < m:
-                continue
-            a, b = max(din, m), min(last, m_end)
-            days = (b - a).days + 1
-            p = P[e["pid"]]
-            ws.append([h["hbk"], "%s, %s" % (p.last.upper(), p.first.upper()), p.dob,
-                       None if h["ref_blank"] else e["booking_no"], din, out if (out and out <= m_end) else None, days,
-                       round(days * 68.0, 2)])
-            for c, f in ((3, "mm/dd/yyyy"), (5, "mm/dd/yyyy"), (6, "mm/dd/yyyy"), (8, "#,##0.00")):
-                ws.cell(row=ws.max_row, column=c).number_format = f
-            tot_d += days
-            tot_a += days * 68.0
+        ws.title = title
+        ws.append(["Clerk of the Circuit Court, Okelan County: code table, %s" % title.lower()])
+        ws["A1"].font = Font(name="Calibri", bold=True, size=11)
         ws.append([])
-        ws.append(["Total", None, None, None, None, None, tot_d, round(tot_a, 2)])
-        ws.cell(row=ws.max_row, column=1).font = Font(name="Calibri", bold=True)
-        ws.cell(row=ws.max_row, column=8).number_format = "#,##0.00"
-        ws.freeze_panes = ws.cell(row=hr + 1, column=1)
+        ws.append(cols)
+        for c in range(1, len(cols) + 1):
+            cell = ws.cell(row=3, column=c)
+            cell.font = Font(name="Calibri", bold=True)
+            cell.fill = PatternFill("solid", fgColor="DDE4EC")
+            cell.alignment = Alignment(vertical="top")
+        for r in rows:
+            ws.append(list(r))
+        ws.column_dimensions["A"].width = 26
+        ws.column_dimensions["B"].width = 84
+        ws.freeze_panes = "A4"
     wb.save(path)
 
 
-# ---------------------------------------------------------------------------------------------------- the README
-
-def write_readme(path, files):
-    lines = ["Dorrance County Pretrial Services: extracts for the 2027 bail policy revision",
-             "Pulled 2 October 2026 by Pretrial Services from the systems named below. Every extract runs to the end of",
-             "30 September 2026.", ""]
-    for f, desc, src in files:
-        lines.append(f)
-        lines.append("    " + desc)
-        lines.append("    Source: " + src)
-        lines.append("")
-    lines += [
-        "Notes",
-        "- Times: the court exports and the screens are Eastern local time. The jail export is UTC (ISO 8601, ending Z).",
-        "  The state arrest extract has dates only.",
-        "- The clerk's legacy system ran to 3 March 2024 and the new case management system from 4 March 2024. The legacy",
-        "  export writes case numbers with a space (21CR 004512), booking numbers without the B and the hyphen, the",
-        "  magistrate's initials and the legacy offense codes; the new export writes the new codes on its charge rows.",
-        "  The offense code crosswalk maps one to the other. The case index lists every case in the new system's format.",
-        "- A first appearance is the defendant's initial appearance before a magistrate after an arrest on new charges.",
-        "  Appearances on orders for arrest are not in the first-appearance exports.",
-        "- Detention: a stay runs from booking to release from the Sheriff's custody; a defendant boarded out stays in",
-        "  the Sheriff's custody while boarded out. Custody is counted at midnight, each count dated with the day it",
-        "  begins; one bed-day is counted for each midnight count at which the person is held.",
-        "- Release at first appearance, as Pretrial Services reports it: leaving the detention center within 24 hours of",
-        "  the first appearance on the conditions set at it, a secured bond posted in that time included. A defendant",
-        "  still in custody 24 hours after the appearance is held after it.",
-        "- Days after a release are counted from the release date, and a period of days includes its last day: the 365",
-        "  days after a release on 1 March 2024 run to 1 March 2025, that day included.",
-        "- Days on electronic monitoring are counted for each release: every day on which the defendant wore a monitor",
-        "  under that release's conditions, for all or part of the day.",
-        "- The state arrest extract lists every arrest in North Carolina of anyone with a first appearance in either",
-        "  export, from 1 October 2021, one row for each charge of an arrest.",
-        "- Sentry Point bills each enrollment by the month, each day or part of a day the enrollment is active.",
-        "- Code lists: jail_code_list.csv and court_code_list.csv.",
+# ---------------------------------------------------------------------------------------------------- notes
+def write_csrs(path):
+    lines = [
+        "OKELAN COUNTY ADULT PROBATION DEPARTMENT",
+        "Research and Data Unit",
+        "",
+        "Community Supervision Risk Screen (CSRS): scores from 12 June 2023",
+        "",
+        "From the move to CaseTrak 2 on 12 June 2023 the Department records the CSRS on its version 2 scale, 0 to 20.",
+        "CaseTrak 1 recorded version 1 totals, 0 to 40: version 1 scored each of the eleven items at twice its version 2",
+        "points and added one point for a revocation in the three years before intake. A version 1 total converts to",
+        "version 2 by halving it and dropping any half point. Terms moved to CaseTrak 2 carry the converted score.",
+        "",
+        "The screen is completed by the supervising officer at intake and is not rescored during the term.",
+        "",
+        "5 June 2023",
     ]
     with open(path, "w", encoding="utf-8", newline="\r\n") as fh:
         fh.write("\n".join(lines) + "\n")
 
 
-# ---------------------------------------------------------------------------------------------------- distractors
-
-def write_cjac_jail(path, W, monthly):
-    """The Criminal Justice Advisory Council's 2025 jail population report: average daily population, bookings and
-    releases by month for calendar 2025, from the jail system (computed from the shipped export)."""
-    s = [Paragraph("Dorrance County Criminal Justice Advisory Council", SH1S),
-         Paragraph("Jail population report, 2025", SH1),
-         Paragraph("Prepared by the Sheriff's Office for the Council's February 2026 meeting. Calendar 2025, from the jail "
-                   "management system. Average daily population is the mean of the midnight counts in the month, every "
-                   "housing site of the detention center, contract beds not included.", SH1S)]
-    rows = [["Month", "Bookings", "Releases", "Average daily population", "Highest count"]]
-    for mth, b, r_, adp, hi in monthly:
-        rows.append([mth, n0(b), n0(r_), "%.1f" % adp, n0(hi)])
-    s.append(_table(rows, [1.4 * inch, 1.0 * inch, 1.0 * inch, 1.8 * inch, 1.2 * inch]))
-    s.append(Spacer(1, 8))
-    s.append(Paragraph("The detention center's rated capacity is 1,020 beds across the main building and the Mill Street "
-                       "annex. The Council asked for the 2026 report to add length of stay by charge level.", SB))
-    doc = _doc(path, "Jail population report 2025", K.PEOPLE["jail"])
-    doc.build(s, onFirstPage=_footer("CJAC jail population report 2025", "Dorrance County Sheriff's Office"),
-              onLaterPages=_footer("CJAC jail population report 2025", "Dorrance County Sheriff's Office"))
-
-
-def write_crime(path):
-    r = K.rng("crime")
-    wb = openpyxl.Workbook()
-    ws = wb.active
-    ws.title = "Reported offenses"
-    _title_rows(ws, "Reported offenses, Dorrance County law enforcement agencies, 2019 to 2025",
-                "Compiled for the Criminal Justice Advisory Council from the agencies' annual submissions. Counts of "
-                "offenses known to law enforcement.")
-    years = list(range(2019, 2026))
-    _head(ws, ["Offense"] + [str(y) for y in years], [34] + [9] * len(years))
-    base = [("Murder and nonnegligent manslaughter", 31), ("Rape", 212), ("Robbery", 655), ("Aggravated assault", 2410),
-            ("Burglary", 3870), ("Larceny-theft", 17950), ("Motor vehicle theft", 2240), ("Simple assault", 7640),
-            ("Vandalism", 4310), ("Drug and narcotic violations", 5120), ("Driving while impaired", 2985),
-            ("Trespass of real property", 1870)]
-    trend = [1.0, 0.93, 0.98, 1.03, 1.01, 0.97, 0.95]
-    for name, b in base:
-        vals = [int(round(b * trend[i] * (1 + 0.035 * r.standard_normal()))) for i in range(len(years))]
-        ws.append([name] + vals)
-    wb.save(path)
+def write_readme(path):
+    L = [
+        "OKELAN COUNTY: EXTRACTS FOR THE 2027 JAIL OPERATIONS PLAN",
+        "Pulled 2 October 2026 for the Sheriff's Office jail planning desk. Every extract runs to the end of",
+        "30 September 2026 unless stated. County time is Central time.",
+        "",
+        K.CMS1,
+        "    Adult Probation Department, CaseTrak 1 (in use to 11 June 2023). One row per supervision term closed in",
+        "    CaseTrak 1 from 1 July 2016 to 11 June 2023.",
+        "    CASE_NO        court case number (circuit_court_codes.xlsx, Case numbers)",
+        "    APD_PERSON_NO  Department person number",
+        "    LEVEL          F felony, M misdemeanor",
+        "    OFFICE         supervising office, CaseTrak 1 code (apd_office_codes.csv)",
+        "    SUP_BEGIN      day supervision on the term began, MM/DD/YYYY",
+        "    TERM_DAYS      term length in days",
+        "    EXPIRES        scheduled expiration, MM/DD/YYYY",
+        "    RISK_SCORE     CSRS version 1 total, 0 to 40 (" + K.CSRS + ")",
+        "    STATUS         CLSD",
+        "    CLOSE_DATE     MM/DD/YYYY",
+        "    CLOSE_CODE     EXP expired, REV revoked, ETERM early termination",
+        "",
+        K.CMS2,
+        "    Adult Probation Department, CaseTrak 2 (from 12 June 2023). One row per supervision term: every term open",
+        "    on 11 June 2023, moved across from CaseTrak 1, and every term on which supervision began since.",
+        "    case_number        court case number",
+        "    person_id          Department person number",
+        "    offense_level      FELONY or MISDEMEANOR",
+        "    office             supervising office (apd_office_codes.csv)",
+        "    supervision_begin  day supervision on the term began",
+        "    term_months        term length in months",
+        "    expiration_date    scheduled expiration",
+        "    csrs_score         CSRS version 2, 0 to 20",
+        "    case_status        OPEN or CLOSED",
+        "    closed_date",
+        "    closure_reason     EXPIRED, REVOKED or EARLY TERMINATION",
+        "    moved_from_ct1     Y for a term moved from CaseTrak 1 on 12 June 2023",
+        "    A term enters CaseTrak on the day supervision on it begins, so a term whose confinement condition is",
+        "    still being served is in neither system.",
+        "",
+        K.ORDERS,
+        "    Clerk of the Circuit Court, case management system. One row per order made from 1 July 2016 changing",
+        "    the scheduled expiration of a probation term in either CaseTrak system.",
+        "    case_number, order_date, order_type (TOLLING, EXTENSION, EARLY TERMINATION), months_extended (EXTENSION),",
+        "    days_tolled (TOLLING), term_months_after (term length after the order), expiration_before,",
+        "    expiration_after",
+        "",
+        K.PETITIONS,
+        "    Clerk of the Circuit Court. One row per probation violation petition filed from 1 July 2016 on a term in",
+        "    either CaseTrak system, with its disposition where one was entered by 30 September 2026.",
+        "    petition_no (VP, year filed, sequence), case_number, filed_date, allegations (codes separated by ;),",
+        "    process (WARRANT or SUMMONS), disposition_date, disposition (blank while pending), jail_days_ordered and",
+        "    served_as (on REVOKED)",
+        "",
+        K.BOOKINGS,
+        "    Okelan County Detention Center, jail management system. One row per booking under a probation",
+        "    classification (" + K.JAIL_CODES + ") in custody at any time from 1 January 2019. A person is under",
+        "    one booking at a time: a change of classification closes the booking RECLASSIFIED and opens the next",
+        "    at the same time, and a move between the main building and the annex closes it TRANSFER TO ANNEX and",
+        "    opens the next on arrival. released_at is blank while the person is in custody.",
+        "    booking_number, sheriff_id, booked_at, classification, facility, released_at, release_reason",
+        "    The jail management system was replaced on 4 February 2025. The old system's bookings (B, two-digit",
+        "    year, six digits) carry local times as MM/DD/YYYY HH:MM; the new system's (OK, year, six digits) carry",
+        "    UTC as YYYY-MM-DDTHH:MM:00Z. A person in custody at the replacement was released in the old system",
+        "    CONVERTED TO NEW JMS at 03:10 on 4 February 2025 and booked in the new system at the same moment.",
+        "",
+        K.PERSONS,
+        "    Sheriff's Office and Adult Probation Department. One row per Sheriff's number of each person in either",
+        "    CaseTrak system: the current number (CURRENT), and any number merged into it when the Sheriff's Office",
+        "    found one person booked under two (MERGED, with merged_into and merged_on). Bookings before the merge",
+        "    carry the merged number.",
+        "    apd_person_id, sheriff_id, sheriff_id_status, merged_into, merged_on",
+        "",
+        K.HEADCOUNT,
+        "    Detention Center 06:00 count, persons in each housing unit, 1 January 2025 to 30 September 2026.",
+        "    count_date, housing_unit (V PODS 1-5, ANNEX, INTAKE AND HOLDING, SENTENCED, GENERAL POPULATION),",
+        "    persons_at_0600",
+        "",
+        "Documents and code lists",
+        "    " + K.ACT_PDF + "   the Act as enrolled",
+        "    " + K.PLAN_PDF + "   State Jail Standards Board",
+        "    " + K.REPORT + "   the Department's fiscal 2025 report",
+        "    " + K.CSRS + ", " + K.JAIL_CODES + ", " + K.COURT_CODES + ", " + K.OFFICE_CODES,
+    ]
+    with open(path, "w", encoding="utf-8", newline="\r\n") as fh:
+        fh.write("\n".join(L) + "\n")
