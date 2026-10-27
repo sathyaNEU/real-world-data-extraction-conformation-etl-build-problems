@@ -1,18 +1,18 @@
 {
  "task": "task258",
- "status": "SHIPPED",
+ "status": "BUILD",
  "domain": "product-analytics / metric-definition-measurement-science",
  "objective": "descriptive-distribution",
- "stage": 5,
- "stage_name": "ship",
- "updated": "2026-10-14",
- "stump": "Carrying the past engagements onto each slow own-image load as after-over-before ratios of medians files Ledger (7.4 million page loads a month); on every engagement the image's load delay settled at 240 ms whatever it began at, which with the render delay held puts Pantry first (6.8 million), and the paint cannot come before the page's own first contentful paint, which the playbook leaves alone: most of Pantry's slow loads are on pages that first paint about three seconds after their first byte, so it moves 2.9 million and Matchday leads at 4.6 million.",
+ "stage": 3,
+ "stage_name": "build",
+ "updated": "2026-10-27",
+ "stump": "A competent analyst rebuilds each slow own-image page load the way the squad's engagements show the playbook lands (the delay at 240 ms, the load time at 0.48, each paint no sooner than its own first contentful paint) and files Matchday, 6.3 million page loads a month; the preload sits in the page's server-rendered head and can only name a hero that HTML carries, and on the app sections (Matchday's and Tideline's /live/, Ledger's /markets/, Pantry's /planner/) the crawl shows a shell with no hero, so those loads keep their delay, Matchday moves 3.4 million and Trailhead leads at 4.9 million.",
  "architecture": 1,
- "loops": 1,
+ "loops": 2,
  "precut": {
   "exit": 0,
-  "date": "2026-10-14",
-  "checks": 49
+  "date": "2026-10-27",
+  "checks": 53
  },
  "leak": {
   "leak_py": "REVIEW (no LEAK) on the loop-1 cut, 2026-10-14",
@@ -36,9 +36,15 @@
    "portal": "none: hardened at the author's request for a second stumping layer before any portal result",
    "repair": "design",
    "commit": "the RESHIPPED (task258) commit of 2026-10-14"
+  },
+  {
+   "date": "2026-10-27",
+   "portal": "both top responses landed the call (Matchday, 4.6 million page loads a month); FAILED_TO_STUMP",
+   "repair": "design",
+   "commit": ""
   }
  ],
- "resume": "shipped; next event is the author's portal result",
+ "resume": "loop 2 drawn and built (204 checks, verify, byte-identical, precut 53/0/0): next, stage 3's remaining gates (submission.md rewritten from figures.json, figures_check, leak.py, guard surface and heart), then stage 4's leak reader and determinism judge",
  "approved": null,
  "delivered": "2026-10-13",
  "portal": null,

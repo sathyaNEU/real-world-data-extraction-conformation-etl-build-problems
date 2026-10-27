@@ -1,135 +1,71 @@
-"""The ask sheet's cracker and mirror, run on the cut pack: the pilot's first consultations and six-week follow-ups
-by quarter in Krathwold and Lathcombe (16 figures) as a careful solver computes them by each route it could take,
-scored against the golden (asks.py). An integer figure is a hit only when it is exact.
+"""task270 cracker: the asks as a careful solver who landed the call reads them, on the cut pack. It runs the hygiene
+battery (exact duplicates, key uniqueness, unmatched joins) and executes every filed rule the asks point at (the DBT
+programme operating standard's 3.1, 3.2 and 4.2): Ask A from the learning records joined to the 2026 catalogue,
+counting the courses its titles call four-day DBT skills group facilitation, with their assignments' whole-time
+equivalent; Ask B from the referral module's received
+dates as they stand, each patient in the team holding their care on 31 December. Every ask figure it gives is scored
+against the golden, a hit within half a unit of the stated rounding, beside each other wrong route.
 
     python3 task270/generator/cracker.py [TARGET]"""
 from __future__ import annotations
 
-import datetime as dt
 import os
 import sys
-
-import pandas as pd
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)
 import asks as A        # noqa: E402
 import common as K      # noqa: E402
-import pilot as PL      # noqa: E402
 
-NETS = {"Krathwold": "KRT", "Lathcombe": "LTH"}
-
-
-def records(target, statements=True):
-    """The export, and with statements the payment records the export lacks; each patient through the crosswalk."""
-    E, S, P, xmap = A.load_pilot(target)
-    rows = E[["record_id", "pharmacy_ods", "network", "patient_ref", "consultation_type", "date", "recorded_on"]].copy()
-    rows["rec"] = pd.to_datetime(rows["recorded_on"], dayfirst=True).dt.date
-    if statements:
-        pay = S[S["line"] == "Payment"]
-        late = pay[~pay["record_id"].isin(set(E["record_id"]))].rename(columns={"ods": "pharmacy_ods"})
-        late = late.assign(network="", rec=late["statement"].map(lambda m: dt.datetime.strptime(m, "%b %Y").date()))
-        rows = pd.concat([rows, late[["record_id", "pharmacy_ods", "network", "patient_ref", "consultation_type",
-                                      "date", "rec"]]], ignore_index=True)
-    rows["pat"] = rows["patient_ref"].map(lambda k: xmap.get(k, k))
-    rows["recovered"] = rows["record_id"].isin(set(S.loc[S["line"] == "Recovery", "record_id"]))
-    loc = {r.ods_code: (r.locality, r.relocated_on, r.previous_locality) for r in P.itertuples()}
-    label = dict(zip(E["pharmacy_ods"], E["network"]))
-
-    def on_day(ods, d):
-        l, when, prev = loc[ods]
-        if when and d < dt.date.fromisoformat(when):
-            l = prev
-        return NETS.get(l)
-
-    rows["net_day"] = [on_day(o, d) for o, d in zip(rows["pharmacy_ods"], rows["date"])]
-    rows["net_label"] = rows["pharmacy_ods"].map(lambda o: NETS.get(label.get(o, "")))
-    return rows
+ROUTES_A = [("catalogue", "the cracker: the 2026 catalogue's four-day DBT facilitation titles"),
+            ("every114", "every PTD-114 and PTD-301 completion counted"),
+            ("no_chain", "training under a previous employee number left out")]
+ROUTES_B = [("module", "the cracker: the module's received dates as they stand"),
+            ("drop", "the referrals moved over from the service's database left out"),
+            ("earliest", "the patient's earliest acknowledgement letter"),
+            ("referring", "the module's referring team instead of the team on 31 December")]
 
 
-def count(rows, net="net_day", drop="none", keep="earliest"):
-    """C1 and C2 by network and quarter. drop: none, recovered (every recovered record), second (the golden: a
-    recovered first consultation whose patient has another first consultation not recovered). keep: which of a
-    patient's remaining first consultations is the patient's first (earliest by date, first recorded, or all)."""
-    R = rows.copy()
-    first = R["consultation_type"] == "First consultation"
-    if drop == "recovered":
-        R = R[~R["recovered"]]
-    elif drop == "second":
-        kept = set(R.loc[first & ~R["recovered"], "pat"])
-        R = R[~(first & R["recovered"] & R["pat"].isin(kept))]
-    F = R[(R["consultation_type"] == "First consultation") & (R["date"] >= PL.PILOT_START)
-          & (R["date"] <= PL.PILOT_END)].copy()
-    if keep == "earliest":
-        F = F.sort_values(["date", "rec", "record_id"]).drop_duplicates("pat", keep="first")
-    elif keep == "recorded":
-        F = F.sort_values(["rec", "date", "record_id"]).drop_duplicates("pat", keep="first")
-    F["n"] = F[net]
-    F = F[F["n"].notna()]
-    fu = R[R["consultation_type"] == "Follow-up"].groupby("pat")["date"].apply(list).to_dict()
-    C1 = {(n, q): 0 for n in ("KRT", "LTH") for q in (1, 2, 3, 4)}
-    C2 = dict(C1)
-    for r in F.itertuples():
-        k = (r.n, PL.quarter(r.date))
-        C1[k] += 1
-        if any(0 < (d - r.date).days <= 42 for d in fu.get(r.pat, [])):
-            C2[k] += 1
-    return C1, C2
-
-
-ROUTES = [
-    # the cracker: the call landed, the hygiene battery run, the export reconciled to the statements
-    ("cracker", "export and statements; every recovered record out; network on the day from the pharmacy list; "
-                "each patient's earliest first consultation", dict(statements=True, net="net_day", drop="recovered")),
-    ("K1", "export and statements; recovered out; the portal's network label",
-     dict(statements=True, net="net_label", drop="recovered")),
-    ("K2", "export and statements; recoveries ignored; each patient's earliest",
-     dict(statements=True, net="net_day", drop="none")),
-    ("K3", "export and statements; recoveries ignored; each patient's first recorded",
-     dict(statements=True, net="net_day", drop="none", keep="recorded")),
-    ("K4", "the export alone; network on the day; each patient's earliest",
-     dict(statements=False, net="net_day", drop="none")),
-    ("K5", "the export alone; the portal's network label; each patient's earliest",
-     dict(statements=False, net="net_label", drop="none")),
-    ("K6", "the export alone; the portal's network label; every first consultation record",
-     dict(statements=False, net="net_label", drop="none", keep="all")),
-    ("K7", "the golden's handling on the export alone (no late records)",
-     dict(statements=False, net="net_day", drop="second")),
-    ("K8", "the golden's handling with the portal's network label",
-     dict(statements=True, net="net_label", drop="second")),
-]
-
-
-def run(target=K.TARGET):
-    gold1, gold2 = A.pilot_figures(target)
-    cache = {}
+def run(target=None):
+    target = target or K.TARGET
+    gold_a = A.ask_a(target)
+    gold_b = {c: K.round_half_up(v[1], 1) for c, v in A.ask_b(target).items()}
     out = []
-    for name, desc, kw in ROUTES:
-        st = kw.pop("statements")
-        if st not in cache:
-            cache[st] = records(target, statements=st)
-        c1, c2 = count(cache[st], **kw)
-        kw["statements"] = st
-        h1 = [k for k in c1 if c1[k] == gold1[k]]
-        h2 = [k for k in c2 if c2[k] == gold2[k]]
-        out.append((name, desc, c1, c2, h1, h2))
-    return gold1, gold2, out
+    for rule, desc in ROUTES_A:
+        got = A.ask_a(target, rule=rule)
+        hits = [(c, k) for c in gold_a for k in (0, 1) if abs(got[c][k] - gold_a[c][k]) < 0.005]
+        out.append(("A", rule, desc, got, hits))
+    for rule, desc in ROUTES_B:
+        got = {c: K.round_half_up(v[1], 1) for c, v in A.ask_b(target, rule=rule).items()}
+        hits = [c for c in gold_b if abs(got[c] - gold_b[c]) < 0.05]
+        out.append(("B", rule, desc, got, hits))
+    return gold_a, gold_b, out
 
 
-def main():
-    target = sys.argv[1] if len(sys.argv) > 1 else K.TARGET
-    gold1, gold2, out = run(target)
-    fmt = lambda c: " ".join("%s%d %3d" % (n[0], q, c[(n, q)]) for n in ("KRT", "LTH") for q in (1, 2, 3, 4))
-    print("golden first consultations  %s" % fmt(gold1))
-    print("golden followed up          %s" % fmt(gold2))
-    for name, desc, c1, c2, h1, h2 in out:
-        print("%-8s keeps %2d of 16  (%s)" % (name, len(h1) + len(h2), desc))
-        print("         first  %s" % fmt(c1))
-        print("         follow %s" % fmt(c2))
-    crack = out[0]
-    print("CRACKER keeps %d of 16 ask figures" % (len(crack[4]) + len(crack[5])))
-    return 0 if not (crack[4] or crack[5]) else 1
+def main(target=None):
+    gold_a, gold_b, out = run(target)
+    teams = [c for c, _ in K.TEAMS]
+    print("%-10s %s" % ("team", " ".join("%7s" % K.TEAM_NAME[c][:7] for c in teams)))
+    print("%-10s %s" % ("A golden", " ".join("%2d %4.2f" % gold_a[c] for c in teams)))
+    for ask, rule, desc, got, hits in out:
+        if ask == "A":
+            print("%-10s %s  | keeps %d of 22 (%s)" % (rule, " ".join("%2d %4.2f" % got[c] for c in teams), len(hits),
+                                                      desc))
+    print("%-10s %s" % ("B golden", " ".join("%7.1f" % gold_b[c] for c in teams)))
+    for ask, rule, desc, got, hits in out:
+        if ask == "B":
+            print("%-10s %s  | keeps %d of 11 (%s)" % (rule, " ".join("%7.1f" % got[c] for c in teams), len(hits), desc))
+    crack = [o for o in out if o[1] in ("catalogue", "module")]
+    kept = sum(len(o[4]) for o in crack)
+    # the pair ceiling: the cracker lands the call (38 recommendation and critical components, 7 instruction
+    # following) and keeps `kept` of the 33 ask figures of 55; the mirror misses the call (about 5) and reads the asks
+    # the same way, since they consume nothing the call's construction produces
+    lc = kept / 33.0
+    pair = ((38 + 7 + 55 * lc) + (5 + 7 + 55 * lc)) / 2
+    print("cracker keeps %d of 33 ask figures; mirror leakage %.0f per cent; pair ceiling %.1f"
+          % (kept, 100 * lc, pair))
+    return 0 if kept == 0 else 1
 
 
 if __name__ == "__main__":
-    sys.exit(main())
+    sys.exit(main(sys.argv[1] if len(sys.argv) > 1 else None))

@@ -1,9 +1,9 @@
 {
  "aal_musd": {
-  "Calloway Flats": 0.51,
-  "Cypress Ridge": 4.38,
-  "Heron Bay": 5.65,
-  "Marlin Shoals": 10.12
+  "Calloway Flats": 0.53,
+  "Cypress Ridge": 4.42,
+  "Heron Bay": 5.89,
+  "Marlin Shoals": 10.08
  },
  "ask_a": {
   "Calloway Flats": [
@@ -28,11 +28,11 @@
    47101,
    902
   ],
-  "Hurricane Evander": [
+  "Hurricane Delmar": [
    19875,
    9273
   ],
-  "Tropical Storm Della": [
+  "Tropical Storm Bettina": [
    10486,
    265
   ]
@@ -56,7 +56,7 @@
   ]
  },
  "call": "Cypress Ridge",
- "call_removed_musd": 2.8,
+ "call_removed_musd": 3,
  "class_cut": {
   "100": 0.626,
   "110": 0.639,
@@ -88,9 +88,9 @@
  "cut_under_130": 0.589,
  "default_call": "Marlin Shoals",
  "default_removed_musd": {
-  "Calloway Flats": 0.05,
-  "Cypress Ridge": 0.46,
-  "Heron Bay": 0.6,
+  "Calloway Flats": 0.06,
+  "Cypress Ridge": 0.47,
+  "Heron Bay": 0.62,
   "Marlin Shoals": 1.07
  },
  "mg04_default_pct": {
@@ -123,16 +123,22 @@
  ],
  "one_ratio_pooled": 0.106,
  "removed_musd_2dp": {
-  "Calloway Flats": 0.34,
-  "Cypress Ridge": 2.8,
-  "Heron Bay": 1.66,
+  "Calloway Flats": 0.35,
+  "Cypress Ridge": 2.84,
+  "Heron Bay": 1.71,
   "Marlin Shoals": 2.08
+ },
+ "removed_musd_whole": {
+  "Calloway Flats": 0,
+  "Cypress Ridge": 3,
+  "Heron Bay": 2,
+  "Marlin Shoals": 2
  },
  "runner_up": "Marlin Shoals",
  "share_130_up": {
   "Calloway Flats": 0,
   "Cypress Ridge": 1,
-  "Heron Bay": 65,
+  "Heron Bay": 66,
   "Marlin Shoals": 81
  }
 }

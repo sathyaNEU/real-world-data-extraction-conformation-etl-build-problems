@@ -5,29 +5,37 @@
  "objective": "descriptive-distribution",
  "stage": 5,
  "stage_name": "ship",
- "updated": "2026-10-24",
+ "updated": "2026-10-27",
  "stump": "A competent analyst replays FY2026's weekly backfill need as it stood, its own vacant lines included, against relief hours at each unit's average availability, and files other counts for most units; the FY2028 need replaces FY2026's vacant lines with the position control's, closed as each academy class graduates, and the relief positions work at the July 2025 class's first-year availability.",
  "architecture": 1,
- "loops": 2,
+ "loops": 3,
  "precut": {
-  "exit": 0,
-  "date": "2026-10-24"
+  "exit": 1,
+  "date": "2026-10-27",
+  "note": "51 of 52: the cracker row fails because the SF16 closure filed Ask A's silent primary (cracker 9 of 20, pair ceiling 53.2); waived by the author 2026-10-27"
  },
  "leak": {
-  "leak_py": "REVIEW (answered in the note's Build record)",
-  "reader": "round 3 (7c914942): readers E and F off the call at 63 each, asks 1 of 20 each (5.0 per cent)"
+  "leak_py": "REVIEW (the same lines as at ship; the dictionary removed under the no-dictionary rule)",
+  "reader": "round 3 (7c914942): readers E and F off the call at 63 each, asks 1 of 20 each (5.0 per cent); not re-run at the determinism repair (no document near the decisive step changed)"
  },
  "duplicate_check": {
-  "heart": "WARN (people.first, overuse, png and xlsx pair)",
+  "heart": "BLOCK ban.forum against task306, waived by the author 2026-10-27 (task306 drew first and entered the window at its 10-26 reship); otherwise WARN",
   "nearest": "task468 0.09 by text; same gap, pattern and Gate G as seven older forecasting builds, differentiated on the card"
  },
  "judge": {
-  "verdict": "DETERMINISTIC (round 3, 7c914942)",
+  "verdict": "DETERMINISTIC (re-judge pass 2, target.zip 4770974b, order kept)",
   "disposition": "APPROVE",
-  "report": "determinism_check_report.md"
+  "report": "determinism_check_report_pass2.md"
  },
- "returned": [],
- "resume": "SHIPPED 2026-10-24 on target.zip 7c914942 after three stage 4 rounds: six readers off the call (63, 63, 63, 62, 63, 63 against the golden 59); the asks re-sited twice (round 1 announced devices 28 of 28; round 2's pay ask 16 of 16) and held at 1 of 20 in round 3; the judge DETERMINISTIC, APPROVE in rounds 1 and 3 and FIX_NOW in round 2 (3.3's grain sentence and payroll's work_location, both closed without filing the decisive step). Portal result pending.",
+ "returned": [
+  {
+   "date": "2026-10-27",
+   "portal": "rubric 27 and 42 (34.5, held); determinism one judge PASS, one FAIL on Gate C, D and E (underspecified_objective): asks 2 and 3, the unit an overtime piece was worked at (offer-log post against the payroll's timekeeping_location and cost_center), HRC 7,984 against 8,088 hours and 66 against 25 people; non-blocking, the aides' hour-for-hour compensatory credit inferred",
+   "repair": "determinism",
+   "commit": ""
+  }
+ ],
+ "resume": "RESHIPPED 2026-10-27 on target.zip 4770974b after the determinism repair: SF16 to SF18 closed in the files' own forms (payroll home_timekeeper and home_cost_center, offer log post_unit, the aides' compensatory time on code CTS 'Comp time earned 1.0', MOU 14.3), the data dictionary removed; freeze.py determinism PASS; re-judge DETERMINISTIC APPROVE. Portal result pending.",
  "approved": null,
  "delivered": "2026-10-24",
  "portal": null,

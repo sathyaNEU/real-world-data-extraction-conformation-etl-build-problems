@@ -62,12 +62,13 @@ def main():
            "4. Rated a relief position at 40 hours less the off-post share of the July 2025 classes over FY2026 "
            "(academy_class in hr_employee_extract_2026-10-01.csv), by title: %.1f per cent off post overall."
            % ev["july2025_off_post_pct"],
-           "5. For overtime worked, summed the OT lines' hours and the CTE lines' credited hours over their credit (1.5 "
-           "under MOU 14.2; hour for hour for the Forensic Security Aides, outside its unit) for FY2026 work dates, "
-           "each piece once (a later check paying the same employee, work date, start_time and hours again is a second "
-           "payment), at the unit overtime_offer_log_fy2026.csv posted it at, else the line's timekeeping_location "
-           "(SL-0410 is Thornmere); OTN and OTR lines carry pay only.",
-           "6. For people at each unit, counted once everyone with an OT or CTE piece dated in FY2026 placed at the unit "
+           "5. For overtime worked, summed the OT lines' hours and the CTE and CTS lines' credited hours over their credit "
+           "(1.5 and 1.0, payroll_earnings_codes.csv; MOU 14.2) for FY2026 work dates, each piece once (a later check "
+           "paying the same employee, work date, start_time and hours again is a second payment), at the post_unit of "
+           "the accepted offer in overtime_offer_log_fy2026.csv with the same employee_id, post_date and start_time, "
+           "else the employee's own unit (MOU 14.3), the line's home_timekeeper (SL-0410 is Thornmere); OTN and OTR "
+           "lines carry pay only.",
+           "6. For people at each unit, counted once everyone with an OT, CTE or CTS piece dated in FY2026 placed at the unit "
            "as in step 5, joining each employee whose seniority_date precedes the hire_date to the separated record "
            "with the same seniority_date and title.",
            "7. For people over 600 hours, summed overtime worked as in step 5 over each joined person and counted those "

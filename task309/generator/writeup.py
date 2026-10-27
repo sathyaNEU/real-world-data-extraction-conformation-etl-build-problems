@@ -4,7 +4,7 @@ import golden as GD
 
 NAMES = GD.NAMES
 STORMS = GD.STORMS
-STORM_NAME = {"2016-04": "Ines", "2018-05": "Kendra", "2020-08": "Marisol", "2022-04": "Odile", "2024-07": "Quenby"}
+STORM_NAME = {"2016-04": "Darcy", "2018-05": "Elspeth", "2020-08": "Halsey", "2022-04": "Dunstan", "2024-07": "Greer"}
 
 
 def text(f):
@@ -16,7 +16,7 @@ def text(f):
           "**Domain:** Actuarial science and insurance (catastrophe exposure and accumulation).",
           "**Analytical objective:** Opportunity sizing and decision support.", ""]
     L += ["## 1. Final Recommendation", "",
-          "**Award the 2027 FORTIFIED Roof grant round to %s: re-roofing its portfolio removes about USD %.1f million "
+          "**Award the 2027 FORTIFIED Roof grant round to %s: re-roofing its portfolio removes about USD %d million "
           "a year of expected hurricane loss, the most of the four counties.**" % (f["call"], f["call_removed_musd"]),
           "Not %s, the runner-up, which carries the largest annual expected loss (USD %.2f million) almost all in "
           "events gusting 130 mph or more, where the roof cuts little. Not Heron Bay or Calloway Flats, which remove "
@@ -27,7 +27,7 @@ def text(f):
           "2. The FORTIFIED Roof cut read class by class of peak gust reproduces the paid loss on FORTIFIED homes "
           "within **10 percent** in all **5** storms MG-04 tests (%s); one cut for all storms misses in %s." % (
               ", ".join(STORM_NAME[s] for s in f["mg04_storms"]), ", ".join(fails)),
-          "3. Expected annual loss removed: %s **USD %.1f million**, ahead of %s." % (
+          "3. Expected annual loss removed: %s **USD %d million**, ahead of %s." % (
               f["call"], f["call_removed_musd"], run), ""]
     L += ["## 3. Step-by-Step Solution", "",
           "1. For each named storm since 2012 (named_storm_register_2008-2025.csv), summed every payment line coded to "
@@ -55,13 +55,15 @@ def text(f):
           "lines.",
           "7. For roof ages, raised each portfolio home's roof year on record in "
           "retrofit_2027_modeled_portfolios.csv to the year of its latest RE-ROOF permit by September 30, 2026 in "
-          "county_building_permits_roofing_2013-2026.csv (BLDG 2 the cottage, ROOF REPAIR not a new roof, a permit "
-          "on a street the county later renamed matched by ZIP code and house number to the street's new name) and "
-          "counted roof years 2012 or earlier.",
+          "county_building_permits_roofing_2013-2026.csv, matched on ZIP code, house number, street and building (BLDG 2 "
+          "the cottage; ROOF REPAIR not a new roof), a permit on a renamed street read under its new name, the old and "
+          "new names paired by the parcels fortified_certificate_register_2012-2026.csv lists under the old name and "
+          "policy_master_2006-2026.csv under the new (Tram as Gulf Breeze, Boggy Creek as Marsh Hen, Sawmill as Laurel "
+          "Hill, Pinebarren as Fort Dale), and counted roof years 2012 or earlier.",
           "8. Recommended %s, the largest expected annual loss removed." % f["call"], ""]
     L += ["## 4. Deliverable Answers", "", "### retrofit_round_2027.xlsx", "",
           "1. County for the 2027 round: %s." % f["call"],
-          "2. Expected annual hurricane loss the round removes there: USD %.1f million." % f["call_removed_musd"],
+          "2. Expected annual hurricane loss the round removes there: USD %d million." % f["call_removed_musd"],
           "3. Runner-up: %s." % run,
           "4. 2027 annual expected loss on each county's portfolio (USD million):"]
     L += ["   - %s: %.2f" % (n, aal[n]) for n in NAMES]
@@ -76,6 +78,6 @@ def text(f):
           "1. Bar chart of each county's 2027 annual expected loss beside the loss the round removes, %s's bar the "
           "tallest of the loss removed." % f["call"], "",
           "### board_note_retrofit_2027.docx", "",
-          "1. One-page note to the board recommending %s at about USD %.1f million a year removed, %s next, with the "
+          "1. One-page note to the board recommending %s at about USD %d million a year removed, %s next, with the "
           "chart." % (f["call"], f["call_removed_musd"], run), ""]
     return "\n".join(L)

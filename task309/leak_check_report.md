@@ -1,23 +1,23 @@
 # leak check, task309
 
-**Verdict: REVIEW.** 17 files read, 24 golden figures and 8 candidate names taken from submission.md, 25 stump terms taken from the design note.
+**Verdict: REVIEW.** 17 files read, 23 golden figures and 8 candidate names taken from submission.md, 25 stump terms taken from the design note.
 
 LEAK stops the ship. REVIEW is a reader's call and the /leak-check command's solver's-eye pass reads every REVIEW line. INFO is a sweep that ran and found nothing or was skipped.
 
-Stump terms swept: claims, vendor, section, storms, asserted, decisive, dropped, mitigation, million, window, company, default, classes, adjustment, population, effect, readable, criterion, standard, estimand, pooled, carried, recoveries, sizing, architecture
+Stump terms swept: claims, vendor, storms, section, asserted, million, decisive, pooled, dropped, classes, mitigation, zip-matched, passing, window, company, default, adjustment, population, effect, readable, criterion, inside, standard, estimand, carried
 
 ## 2 author vocabulary (REVIEW 1)
 - **REVIEW** `corvane_hu27_release_note_sandpiper.pdf`: \bthe model\b x1: ...-storm deductible (2 percent of Coverage A), before reinsurance, with the model's standard loss amplification. Rates are annual Poisson rates; a port...
 
 ## 3 answer figures in the pack (REVIEW 2)
-- **REVIEW** `storm_closeout_summaries_2012-2025.pdf`: golden figure 265 appears: ...ricane Odile 2022-09-28 2023-02-20 5,465 5,223 265,879,528 Hurricane Pryor 2023-08-24 2023-12-28 3,...
-- **REVIEW** `retrofit_grant_round_2027_board_brief.pdf`: carries 15 of 17 distinctive words of the committed call: 'Award the 2027 FORTIFIED Roof grant round to Cypress Ridge: re-roofing its portfolio removes about USD 2.8 million a yea'
+- **REVIEW** `storm_closeout_summaries_2012-2025.pdf`: golden figure 265 appears: ...cane Dunstan 2022-09-28 2023-02-13 5,465 5,223 265,115,439 Hurricane Esme 2023-08-24 2024-01-03 3,5...
+- **REVIEW** `retrofit_grant_round_2027_board_brief.pdf`: carries 15 of 17 distinctive words of the committed call: 'Award the 2027 FORTIFIED Roof grant round to Cypress Ridge: re-roofing its portfolio removes about USD 3 million a year '
 
 ## 4 design-note vocabulary (REVIEW 4)
-- **REVIEW** `MG-04_vendor_model_adjustment_standard.pdf`: 9 of 25 stump-paragraph terms appear (claims, vendor, storms, mitigation, million, company); read whether the document names the move
-- **REVIEW** `catastrophe_reinsurance_program_2026-27.pdf`: 4 of 25 stump-paragraph terms appear (vendor, mitigation, million, company); read whether the document names the move
-- **REVIEW** `corvane_hu27_release_note_sandpiper.pdf`: 3 of 25 stump-paragraph terms appear (mitigation, classes, standard); read whether the document names the move
-- **REVIEW** `retrofit_grant_round_2027_board_brief.pdf`: 8 of 25 stump-paragraph terms appear (claims, vendor, mitigation, million, company, adjustment); read whether the document names the move
+- **REVIEW** `MG-04_vendor_model_adjustment_standard.pdf`: 8 of 25 stump-paragraph terms appear (claims, vendor, storms, million, mitigation, company); read whether the document names the move
+- **REVIEW** `catastrophe_reinsurance_program_2026-27.pdf`: 4 of 25 stump-paragraph terms appear (vendor, million, mitigation, company); read whether the document names the move
+- **REVIEW** `corvane_hu27_release_note_sandpiper.pdf`: 3 of 25 stump-paragraph terms appear (classes, mitigation, standard); read whether the document names the move
+- **REVIEW** `retrofit_grant_round_2027_board_brief.pdf`: 8 of 25 stump-paragraph terms appear (claims, vendor, million, mitigation, company, adjustment); read whether the document names the move
 
 ## 6 ranking artifacts (REVIEW 7, INFO 1)
 - **REVIEW** `corvane_hu27_event_hazard_summary.csv`: names 4 of 8 answer-set candidates beside numbers; confirm it does not rank them on the decision question
@@ -44,3 +44,15 @@ Stump terms swept: claims, vendor, section, storms, asserted, decisive, dropped,
 ## 8 column names (clean)
 
 ## 11 prompt gate (clean)
+
+## Solver's-eye read
+
+Pass 2, isolated reader on the repaired pack (sonnet, medium), read and never solved:
+- Decisive step: no sentence announces the county; the brief files the comparison and MG-04 section 3 discards a
+  failing adjustment without saying which passes.
+- No ranking file, no helper or worked example, no figure that reads as the answer (the brief's Coverage A is
+  exposure; the close-out summaries are a declared distractor, ruled out by MG-04 section 4).
+- Question 6: mainly analytical (how the roof's effect is built from claims, selected by MG-04's filed test); the
+  FORT-R;SHUT reading is settled by the judge on MG-04 section 4.
+- Realism tells noted (title rows in the quotes workbook, two footprint layouts, a flat-gust storm, sorted portfolio
+  lists): the layout changes are Layer 1 by design and none is a leak.

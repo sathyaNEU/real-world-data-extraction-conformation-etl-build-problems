@@ -11,8 +11,8 @@
   "shape": "14",
   "decision_type": "designation_set",
   "answer_unit": "set_of_items",
-  "answer": "",
-  "answer_source": "",
+  "answer": "Fund a DBT skills group in 2027-28 in Dunnerby, Marrowcombe, Drystow, Haddersley and Cressbeck, and in none of the other six teams",
+  "answer_source": "task270/submission.md",
   "gap": [
     "objective"
   ],
@@ -31,7 +31,7 @@
   "validated_decoy": false,
   "context_artifact": "filed_standard",
   "stump_class": "analytical",
-  "analyst_test": "A strong analyst who reads the collaborative's standard and both app exports correctly computes each patient's root mean square change in negative affect between adjacent answered prompts of the 2026 fortnight, applies the standard's 2.0 and funds groups in Dunnerby and Marrowcombe alone, the two teams with personality disorder hubs, because the trust app's adjacent prompts sat about 90 minutes apart while the collaborative's sit three hours apart and negative affect moves further in three hours, so read at three hours Drystow, Haddersley and Cressbeck reach 30 per cent too.",
+  "analyst_test": "A strong analyst who reads the collaborative's standard and both app exports correctly computes each patient's root mean square change in negative affect between adjacent answered prompts of the 2026 fortnight, applies the standard's 2.0 and funds groups in Dunnerby and Marrowcombe alone, because the trust app's adjacent prompts sat about 90 minutes apart while the collaborative's sit three hours apart and negative affect moves further in three hours, so read at three hours Drystow, Haddersley and Cressbeck reach 30 per cent too.",
   "domain_test": "Emotional instability is experience sampling's own estimand, the root mean square of the change in momentary negative affect between adjacent prompts, and it measures change over the interval the prompt schedule sets, so the field reads an instability threshold only at the spacing it was set on; a swap to a building's temperature log breaks because no prompt schedule, answering window or clinical cut point fixes the interval a drift is read over.",
   "layer2_family": "estimation_fit",
   "layer2_pattern": "own:a successive-difference instability index read at the interval its threshold was set on",
@@ -41,14 +41,16 @@
     "community team episodes from the patient record, with two Haddersley teams merged into one on 1 October 2026",
     "the assessment register's clinician-entered fortnight status, which marks some fortnights completed that the trust's own half-answered rule does not",
     "version 4's offline sync resending some answers, the same prompt arriving twice",
-    "the British Summer Time change inside fortnights"
+    "the British Summer Time change inside fortnights",
+    "the Complex Emotional Needs Service's referrals keyed into the patient record's referral module over the three weeks from its 22 June 2026 go-live, each stamped with the day it was keyed (an ask device, outside the call's population)",
+    "PTD-114 passing from the four-day DBT skills group facilitation course to the one-day refresher at the learning catalogue's rebuild of 1 April 2025 (an ask device, outside the call's population)"
   ],
   "stakeholder_role": "director of psychological therapies",
   "role_family": "programme_officer",
   "scoring_unit": "per covered member",
   "spine": {
-    "file": "mood_app_prompts_v4_2026-06-15_to_2026-12-31.csv",
-    "rows": 0,
+    "file": "mood_app_export_v4_2026-06-15_to_2026-12-27.csv",
+    "rows": 45318,
     "entity": "one prompt the trust's mood app sent a patient during a 2026 assessment fortnight",
     "grain": "prompt",
     "source": "synthetic"
@@ -73,10 +75,13 @@
       "Cressbeck",
       "Rennicombe",
       "Ashwardine",
-      "Bramwick",
+      "Hawkslow",
       "Garthby",
-      "Heskeby",
-      "Torrinsby"
+      "Sedgeholm",
+      "Torrinsby",
+      "Wynmoor",
+      "Fordwyke",
+      "Wraybeck"
     ],
     "people": [
       "Hilary O'Donnell",
@@ -345,6 +350,6 @@
       "fate": "spent 2026-10-27 at stage 4 (target.zip dc5e15f6): the leak reader read the decisive step as field reading and stated rules; the judge reproduced every main figure and returned NOT_DETERMINISTIC, SEND_BACK, Gate G planted_defect_flip (surface_read_rejection: the uncoded compliance-aid patients behind a partly recorded flag), Gate H decisive_step data_semantics"
     }
   ],
-  "notes": "Architecture 6 re-root in a fresh world after architecture 5 was spent at stage 4. Filed after the build because G9 as the decisive pattern was banned while task485 sat in the window; redrawn at filing: forum to executive_team (task308 held the board), context artifact to register (task487 holds the operations log), forcing event to vote_or_meeting (task137 v4 holds purchase_order_or_contract; the Comissão Executiva decides on 2 December, the channels' April bookings close on 11 December). Architecture 7 drawn 2026-10-26 in a fresh world after architecture 6 was spent at stage 4. Architecture 7 spent 2026-10-26 at stage 4 round 1: both isolated scored readers ran the stock-and-flow balance with each pack's own kilograms per level point and landed Lancashire. Architecture 8 drawn 2026-10-27 in a fresh world after architecture 7 was spent at stage 4; the decisive step is the refill measure's population (patients whose supply is not dispensed on a pharmacy's compliance-aid cycle), labelled population_selection, the honest family (scope). Filed 2026-10-27 at stage 3: the forum, forcing event and organisation family were redrawn when task308 and task307 registered (committee_or_panel and purchase_order_or_contract held by task308, government_agency by task307): the decision moved to Iversford Vale GP Federation, the provider company its member practices own, whose board sets the tier schedule before the service launches on 1 April 2027 (board_of_directors, launch_or_rollout, hospital_or_health_provider), the integrated care board kept as the source of the data and the guidance; the context artifact went back to filed_standard (the service specification, the honest label, free once task204 left the window) when task139 took register. Architecture 8 spent 2026-10-27 at stage 4: the judge's SEND_BACK (Gate G planted_defect_flip, surface_read_rejection; Gate H decisive_step data_semantics): a population hidden behind a partly recorded flag is a surface read rejected; re-rooted to architecture 9 in another domain. Architecture 8 spent 2026-10-27 at stage 4 (the judge's SEND_BACK, a population behind a partly recorded flag). Architecture 9 drawn 2026-10-27 in another domain (psychology, experience sampling): stump_strategy other, the interval dependence of a successive-difference index (no strategy label names it: not time_semantics, since no calendar or as-of reading decides, and not grain_or_unit, since the unit is the patient throughout). Redrawn 2026-10-27 after registration: task309 registered at 14:29Z with board_of_directors, which BLOCKed ban.forum on the registered card; the decision moves to the trust board's Finance and Performance Committee, which approves investment plans under the board's delegated limit (committee_or_panel, free once task308 left the window), the honester label for an allocation of eleven skills groups that sits below the board's reserved decisions. repeat.gate_g against task309 answered: method_or_model_selection is the honest mechanism for an estimator read at the standard's interval, and task309's decisive step (catastrophe exposure accumulation) shares no mechanism with it.",
+  "notes": "Architecture 6 re-root in a fresh world after architecture 5 was spent at stage 4. Filed after the build because G9 as the decisive pattern was banned while task485 sat in the window; redrawn at filing: forum to executive_team (task308 held the board), context artifact to register (task487 holds the operations log), forcing event to vote_or_meeting (task137 v4 holds purchase_order_or_contract; the Comissão Executiva decides on 2 December, the channels' April bookings close on 11 December). Architecture 7 drawn 2026-10-26 in a fresh world after architecture 6 was spent at stage 4. Architecture 7 spent 2026-10-26 at stage 4 round 1: both isolated scored readers ran the stock-and-flow balance with each pack's own kilograms per level point and landed Lancashire. Architecture 8 drawn 2026-10-27 in a fresh world after architecture 7 was spent at stage 4; the decisive step is the refill measure's population (patients whose supply is not dispensed on a pharmacy's compliance-aid cycle), labelled population_selection, the honest family (scope). Filed 2026-10-27 at stage 3: the forum, forcing event and organisation family were redrawn when task308 and task307 registered (committee_or_panel and purchase_order_or_contract held by task308, government_agency by task307): the decision moved to Iversford Vale GP Federation, the provider company its member practices own, whose board sets the tier schedule before the service launches on 1 April 2027 (board_of_directors, launch_or_rollout, hospital_or_health_provider), the integrated care board kept as the source of the data and the guidance; the context artifact went back to filed_standard (the service specification, the honest label, free once task204 left the window) when task139 took register. Architecture 8 spent 2026-10-27 at stage 4: the judge's SEND_BACK (Gate G planted_defect_flip, surface_read_rejection; Gate H decisive_step data_semantics): a population hidden behind a partly recorded flag is a surface read rejected; re-rooted to architecture 9 in another domain. Architecture 8 spent 2026-10-27 at stage 4 (the judge's SEND_BACK, a population behind a partly recorded flag). Architecture 9 drawn 2026-10-27 in another domain (psychology, experience sampling): stump_strategy other, the interval dependence of a successive-difference index (no strategy label names it: not time_semantics, since no calendar or as-of reading decides, and not grain_or_unit, since the unit is the patient throughout). Redrawn 2026-10-27 after registration: task309 registered at 14:29Z with board_of_directors, which BLOCKed ban.forum on the registered card; the decision moves to the trust board's Finance and Performance Committee, which approves investment plans under the board's delegated limit (committee_or_panel, free once task308 left the window), the honester label for an allocation of eleven skills groups that sits below the board's reserved decisions. repeat.gate_g against task309 answered: method_or_model_selection is the honest mechanism for an estimator read at the standard's interval, and task309's decisive step (catastrophe exposure accumulation) shares no mechanism with it. Architecture 9 spent 2026-10-27 at the ship gate on ban.pattern G13 (task139 v3 moved G13 first at its ship); re-root to architecture 10.",
   "registered": "2026-10-27T14:59:41Z"
 }

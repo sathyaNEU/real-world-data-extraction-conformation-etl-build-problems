@@ -41,7 +41,9 @@ def _core(parts, created, modified, person=None, revision=None):
     last = re.search(rb"<cp:lastModifiedBy[^>]*>([^<]*)</cp:lastModifiedBy>", core)
     title = re.search(rb"<dc:title[^>]*>([^<]*)</dc:title>", core)
     rev = re.search(rb"<cp:revision[^>]*>([^<]*)</cp:revision>", core)
-    if person:
+    if isinstance(person, tuple):          # created by one person, last saved by another
+        who, last = person[0].encode(), re.search(rb"(.*)", person[1].encode())
+    elif person:
         who, last = person.encode(), None
     if revision:
         rev = re.search(rb"(.*)", str(revision).encode())

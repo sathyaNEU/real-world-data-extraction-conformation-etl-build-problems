@@ -1,78 +1,58 @@
-# Determinism check, task270 (architecture 8)
+# determinism-check report, task270, 2026-10-27
 
-Run 2026-10-27, stage 4 of /build: the determinism-judge agent prepared the brief (/tmp/determinism-check-task270-133558/judge_brief.md, the system prompt inlined verbatim, KEY_ASSUMPTIONS empty) and the main session spawned the one isolated thread (general-purpose, sonnet, medium) on a fresh unzip of target.zip dc5e15f6ea0ab486. The thread's verdict.md follows verbatim. Outcome: NOT_DETERMINISTIC, SEND_BACK; Gate G planted_defect_flip (surface_read_rejection), Gate H decisive_step data_semantics. Architecture 8 is spent; the build re-roots at the draw (architecture 9).
+## Verdict
+DETERMINISTIC
+**Disposition:** APPROVE
+**Stumping type:** mechanism: other (measurement-interval correction of a successive-difference statistic), stumping_family: analytical_non_defect, surface_read_dependency: no, sole_data_defect: no
 
----
-
-# Determinism verdict: task270 (Statin Adherence Support Service tiers)
-
-**Verdict:** NOT_DETERMINISTIC. The main call and the tier table are forced and reproduce. Supplementary asks 5 and 6 (the pilot workbook) are not forced, so Gate C/E fails. Failure type: competing_defensible_answer (underspecified duplicate-record rule).
-
-**Disposition:** SEND_BACK. The fork needs a prompt pin (which of two first-consultation records for one patient is the patient's first consultation). Gate H3 and Gate G also fail, and the fix for those rebuilds the decisive step. Prior runs are invalidated, so a rerun is required.
+Process note: the runtime had no Agent tool, so the brief (/tmp/determinism-check-task270-164411/judge_brief.md) was spawned by the main session as one sonnet/medium thread. Its verdict is /tmp/determinism-check-task270-164411/verdict.md. One pass, no retry.
 
 ## Why
-- Asks 5 and 6: 17 patients have two first-consultation records straddling a quarter boundary, one of them carrying a Recovery line in pilot_payment_statements_2025-11_to_2027-01.xlsx. The golden keeps the record the federation did not recover and calls the other a "hand-keyed second record". No shipped file says that. The prompt says "each patient once" and "counting every consultation held whether or not the federation paid for it". Read literally, both records are held consultations and the patient's first consultation is the earlier one.
-- That literal reading moves 7 of the 16 pilot cells by 1 (list below).
-- Main call: decisive step is excluding patients whose statins a pharmacy packs into a compliance aid when the lists record only part of them. That is data semantics / a partially recorded flag, not analysis (Gate H3, Gate G).
+The funded set (Dunnerby, Marrowcombe, Drystow, Haddersley, Cressbeck) is forced by the committee paper's 30 per cent rule read with "as the collaborative's app will measure it", and the standard's 3-hourly schedule (2.1). The trust app's prompts sit about 90 minutes apart; the literal adjacent-prompt reading gives only two teams (the intended wrong route). The judge found the five teams stable under every three-hour emulation tried (pair windows 2 to 4, 2.75 to 3.25, 2.9 to 3.1, 1.5 to 4.5 h, skip-one, nearest-to-slot, root-2 scaling; Cressbeck lowest at .327, all other six at or below .21). All ask-2 figures reproduced.
 
-## Evidence (recomputed from target/)
-| Item | Result |
-|---|---|
-| Step 1 population (born 1961 or earlier, 2 or more 2026 items, crosswalk-merged, network at 31 Dec 2026) | 24,893. Reproduced. |
-| Care home removed (quarvis care_home_since plus synaris Residence Care home) | 697. Reproduced. |
-| Compliance-aid exclusion | 2,136 reproduced: 682 coded (all quarvis mds_since) plus 1,454 uncoded. Uncoded ones have every 2026 item on one weekday (with only bank-holiday next-day shifts) at gaps of 7 or 28 days, 13 or more items. Synaris has no compliance-aid field at all. |
-| Remaining population | 22,060. Reproduced. |
-| Shares (to one decimal) | Corvendale 2,500 / 35.1; Feldcote 1,686 / 33.6; Nevgarth 2,086 / 33.4; Krathwold 1,978 / 32.9; Grevmoor 2,094 / 32.2; Briskdale 1,905 / 32.1; Iversford 1,555 / 27.0; Marlwold 26.3; Pellholt 26.0; Lathcombe 24.9; Tarvdale 24.1; Ellinholt 23.9. All match the golden exactly. |
-| Gap | Iversford 27.01, so 3.0 points under the line. Reproduced. |
-| Codes-only answer | Corvendale 34.2, Nevgarth 32.4, Feldcote 31.5, Krathwold 30.9; Grevmoor 28.1 and Briskdale 27.2 fall under the line. The four-network claim in the recommendation reproduces. |
+## Recomputation ledger
+| Figure | Claimed | Judge recomputed | Reproduced |
+|---|---|---|---|
+| Cohort | 578 | 578 (enrolments, register, episodes, v3/v4; 630 resent v4 rows dropped, UTC to London, v3 /10) | yes |
+| Share at 2.0+, 2.5 to 3.5 h pairs | five teams at 30%+ | .492 .473 .472 .449 .446; others .04 to .12 | yes |
+| Adjacent-prompt reading | wrong route, two teams | Dunnerby .492, Marrowcombe .436; Drystow .208, Haddersley .143, Cressbeck .102 | yes |
+| Clinicians / WTE, 11 teams | 1/0.60 ... 6/4.92 ... | all 11 match | yes |
+| Mean weeks, 11 teams | 31.4 ... 43.2 ... 30.0 | all 11 match; 87 on list, ack letter found for all 87 | yes |
+| PTD-114 / EXT-0412 / PTD-301 mapping | DBT facilitation codes | derivable from annual report counts (6/10/11; 1/2/2) and learning records | yes |
+| Chart (ask 3) | shares vs 30% line, five blue | determined by main call | yes |
 
-**Main call forks.**
-- PDC variants:
-  - A union-of-days PDC with no carry-forward gives the same six networks (Briskdale 32.2, Iversford 27.2).
-  - A capped total-days/period PDC gives the same six (Grevmoor 30.3).
-  - The tier set is therefore robust; the 2.2 definition governs the figures.
-- Compliance-aid detection rule:
-  - A looser "single weekday, multiples of 7" rule (no 7-or-28 step, no minimum items) catches 60 more ordinary low-item patients. The shares move: Briskdale 31.9, Corvendale 35.0, Ellinholt 23.7. The tier set holds.
-  - The natural "weekday plus gaps of 6 to 8 or 27 to 29" rule gives 2,138, not 2,136, so Tarvdale reads 1,638 against the golden 1,640.
-  - The graded patient counts therefore rest on an unfiled cut: 13 or more items, or full-year coverage, to exclude two or three coincidental two-item patients. Minor, but exact-figure.
-- Bank holidays: no holiday list is shipped. The shifts must be inferred from the data. It is derivable, so not a Gate B failure.
+## Competing answers that survived
+No fork on the main call. Mild supplementary forks, each closed by a shipped rule and judged defensible:
+- Referral date: module date_received (migrated referrals keyed later) gives 15.5 to 25.2 weeks; standard 2.2 makes the acknowledgement letter the receipt day. Closed by the standard and the prompt's "since the service received their referral".
+- Latest acknowledgement for 13 patients with an earlier prior-referral letter: latest on or before the module date.
+- Two removals effective 26 and 28 Dec but recorded 5 and 6 Jan: excluded under standard 3.1 (a record-as-of-31-Dec reading would include them).
+- Estimator window (2.5 to 3.5 h) is not in a shipped file; the funded set does not move with it, so it is a method pin only.
+- The v3 0 to 100 scale is inferred from "_vas" columns and the maximum of 100, not stated (soft, not a finding).
 
-**Pilot workbook (asks 5 and 6).**
-- The golden reproduces exactly under its rule. Krathwold counts are 124 / 88 / 97 / 72, followed up 57 / 49 / 50 / 33. Lathcombe counts are 78 / 76 / 83 / 74, followed up 46 / 34 / 46 / 34.
-- Of the 45 duplicate pairs, the recovered record is the earlier of the two in 23 and the later in 22, so no consistent "keep earliest" or "keep latest" rule gives the golden.
-- Alternative: each patient counted once at their earliest first-consultation record, recovery ignored.
+## Spec gates
+| Gate | Required | Actual | Pass |
+|---|---|---|---|
+| Files / formats / large file | 10+ / 3+ / 25,000+ rows | 17 / 4 (csv, xlsx, pdf, docx) / v4 export 45,318 rows | yes |
+| Distractors | 2+ named in metadata.json, none labelled by file name | phq9_gad7_at_assessment_2026.csv, sallowdene_mood_app_pilot_evaluation_2025.pdf; names carry no label | yes |
+| Distractor unused yet weighable; wrong-answer reproduction ruled out by a shipped fact | yes | judge: unused by the answer (pilot response rate and 6-minute lag do not feed it); I did not separately test whether PHQ-9/GAD-7 reproduces a graded quantity | yes (PHQ-9/GAD-7 arithmetic not independently tested) |
+| Deliverables | 1 to 3, all in golden, no format family required | 2 (xlsx, png), both in golden/ | yes |
+| Asks multi-dimensional, unit and rounding stated | yes | ask 2 is 11 teams x 4 fields, one decimal and two decimals stated in the prompt | yes |
+| Prompt shape, rubric 25+ criteria | shape identifiable, 25+ | shape 14 (cuts of a distribution per segment); 11 teams x 4 fields plus the set and chart comfortably support 25+; the rubric itself is generated downstream and was not inspected | yes (inferred) |
+| Not LLM-looking; goldens read as work products | yes | judge found no authoring language or temporal contradictions; golden realism not re-read by me | yes (judge hygiene) |
 
-| Cell | Golden | Alternative |
-|---|---|---|
-| Krathwold Q4 / follow-up | 124 / 57 | 125 / 58 |
-| Krathwold Q1 / follow-up | 88 / 49 | 89 / 50 |
-| Krathwold Q3 / follow-up | 72 / 33 | 71 / 32 |
-| Lathcombe Q4 / follow-up | 78 / 46 | 79 / 47 |
-| Lathcombe Q1 / follow-up | 76 / 34 | 77 / 35 |
-| Lathcombe Q2 / follow-up | 83 / 46 | 82 / 45 |
-| Lathcombe Q3 / follow-up | 74 / 34 | 73 / 33 |
+## Gate G reconciliation
+Judge: mechanism other, stumping_family analytical_non_defect, surface_read_dependency no, sole_data_defect no. Design note and card: strategy `other` (interval dependence of a successive-difference index), Gate G `method_or_model_selection`, stump_class analytical, default path ends on Dunnerby and Marrowcombe, golden five. Match. No shipped artifact ranks the teams wrongly (no decoy memo); the declared distractors are not named by the judge as the surface read carrying the task. Gate G classification: method_or_model_selection / analytical_non_defect, no mismatch. The judge flags it as borderline against single_conceptual_flip (a lens change); it leaned pass because the adjustment comes from the data's structure.
 
-  Only Krathwold Q2 is unchanged.
-- Dropping every recovered record gives yet another grid, but the prompt's "whether or not the federation paid" excludes that reading.
-- Follow-up window of 41 versus 42 days makes no difference. The relocation of FY975 (Krathwold to Marlwold on 1 June 2026) is handled by community_pharmacies_2026-12.csv. The export's `network` column is stale for it, which is fair Layer 1.
-
-## Files/Hygiene
-PASS. 12 files in 3 formats (csv, xlsx, pdf), including one file of 368,662 rows. Distractors: community_pharmacy_contractual_framework_summary_2024-26.pdf and statin_products_dmd_2026-12.csv (unused; every item is in tablets). Mixed date formats and old/new pseudonyms are realistic mess. Names come from a visibly generated pool (Sorrfield, Sorrwick, Ellinwold and so on), a mild tell only. No authoring or benchmark disclosure found. Temporal note: the specification is issued 16 Nov 2026 yet defines the population as of 31 Dec 2026; acceptable as a forward definition. Nothing exclusion-level.
+Gate H: domain: pass, layers: pass, decisive_step: analytical. Matches the card's analyst_test and domain_test and the note's Three rules (Layer 1: version change, UTC, resent rows, previous employee numbers, course recode, team merger; Layer 2: reading instability at the collaborative's three-hour interval).
 
 ## Stump power (Gate F)
-The trap is the uncoded compliance-aid population. A solver using only the recorded flags and the care-home codes will file the four-network answer. The guidance PDF describes same-weekday weekly packs, so a careful reader can connect it. Plausible stump on the main call; the asks are very hard on exact cells. The reasons it works are invalid under Gates G and H (below).
+The easy route (apply 3.2 to the trust's adjacent prompts) gives two teams; cleaning everything correctly does not rescue it. Reaching the five requires noticing the schedule gap and that the successive-difference RMS grows with interval, then emulating three hours. Main-thread weighing points: (1) the "as the collaborative's app will measure it" wording in the paper is the only shipped pointer, so a strong solver who reads that line closely may land the call; (2) the estimator family is wide but all members agree, so the call is not a method lottery (design note ladder R3/R4); (3) supplementary asks add cost (PTD-114 recode, ack-letter dating, preceding employee numbers, late-recorded removals). Not a textbook route with no judgment: the data must settle the interval dependence.
 
-## Stumping type (Gate G)
-mechanism: planted_defect_flip, stumping_family: surface_read_rejection, surface_read_dependency: yes, sole_data_defect: yes.
+## Findings, ranked
+1. None blocking.
+2. Optional pin: the 2.5 to 3.5 h pairing window or "ratings about three hours apart" is stated nowhere; the call is invariant to it. Note the repo rule files WHAT not HOW, so pinning the window would turn the decisive step toward rule application; recommend leaving it.
+3. Borderline classification against single_conceptual_flip (see Gate G); the main thread weighs it against the note's ladder.
+4. Mild supplementary forks above (late-recorded removals, latest-acknowledgement choice) are defensible and closed by the standard.
 
-Banned scaffold: the decisive step is catching that the recorded compliance-aid flag (682 patients) is incomplete (2,136 actual) and flipping away from the lists' codes. Clean-data test: with every flag coded, six networks come out by simply applying the spec, so there is no stump left. Rebuild around a FINE-numbers shape. The surface read being wrong is not, by itself, a sufficient trap, and adding more corrections does not fix it; rebuild the difficulty where the reported numbers are FINE.
-
-## Three rules (Gate H)
-domain: pass (PDC adherence is the field's own estimand), layers: pass (Layer 1: pseudonym rotation, two list systems, a PCN membership change, a relocated pharmacy, preliminary and later statements. Layer 2: none that decides the call), decisive_step: data_semantics.
-
-The easy route is the recorded flags plus care-home codes, which gives four networks. A strong analyst who read the spec and found the weekday pattern then simply executes spec 2.2 and 3.1: rule application after identification, with nothing a careful analyst could still get wrong the easy way. H3 fails. Rebuild so the deciding quantity needs an estimand or method choice (for example, an adherence estimate for patients whose supply is censored or imputed, validated out of sample) rather than recovering a hidden population.
-
-## Fix
-- prompt (asks 5 and 6): file the WHAT. For example, "a patient who has two first-consultation records within a week counts once, for the record the federation did not recover", or an equivalent that fixes which record is the patient's first consultation and its quarter.
-- Task design: replace the decisive step (Gate G and H3) with an analytical, FINE-numbers one.
-- If the main call is kept: file the compliance-aid identification criterion explicitly, such as the weekday and 7-or-28 step rule with a minimum item count, so the graded counts reproduce exactly.
+## Next action for the author
+None required to pass this gate: proceed to the pre-ship check once the leak reader returns. Fixed nothing.

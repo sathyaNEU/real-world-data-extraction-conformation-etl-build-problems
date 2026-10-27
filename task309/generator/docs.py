@@ -110,7 +110,8 @@ def brief(path, pf):
                    "the four portfolios. The claims department's close-out summaries and the 2026-27 reinsurance "
                    "program are attached for reference.", body)]
     _pdf(path, "2027 FORTIFIED Roof grant round: choosing the county", "Board brief BRD-2026-118", s,
-         "%s  |  Board brief BRD-2026-118  |  Confidential" % P.ORG, "2026-11-06")
+         "%s  |  Board brief BRD-2026-118  |  Confidential" % P.ORG, "2026-11-06",
+         producer="Microsoft Word for Microsoft 365")
 
 
 def mg04(path):
@@ -147,7 +148,7 @@ def mg04(path):
          Paragraph("The test's storm-by-storm table is kept with the analysis it supports and is reviewed by Model "
                    "Risk before the result goes to a committee or the board.", body)]
     _pdf(path, "MG-04 Adjustments to vendor catastrophe model losses", "Model governance standard MG-04 v2.0", s,
-         "%s  |  MG-04 v2.0  |  Internal" % P.ORG, "2025-03-18")
+         "%s  |  MG-04 v2.0  |  Internal" % P.ORG, "2025-03-18", producer="Microsoft Word 2019")
 
 
 def vendor_note(path, elt):
@@ -206,7 +207,8 @@ def closeout(path, claims_df, reg):
                    "close-out memo; payments made after the close-out are not in them.", body),
          _table(rows, [36, 22, 24, 24, 20, 32], right=(3, 4, 5))]
     _pdf(path, "Named-storm close-out summaries 2012-2025", "Claims Department close-out summaries", s,
-         "%s  |  Claims Department  |  Internal" % P.ORG, "2026-02-09")
+         "%s  |  Claims Department  |  Internal" % P.ORG, "2026-02-09",
+         producer="SPM Claims Reporting 4.3")
 
 
 def reinsurance(path):
@@ -226,7 +228,8 @@ def reinsurance(path):
          Paragraph("The 2027 renewal will be priced on the vendor's near-term view of the whole book. The reinsurers "
                    "have asked for our mitigation counts by county at the February submission.", body)]
     _pdf(path, "Catastrophe reinsurance program 2026-27", "Risk Committee summary", s,
-         "%s  |  Reinsurance  |  Confidential" % P.ORG, "2026-05-28")
+         "%s  |  Reinsurance  |  Confidential" % P.ORG, "2026-05-28",
+         producer="Microsoft Word for Microsoft 365")
 
 
 def quotes(path, rng):
@@ -242,13 +245,15 @@ def quotes(path, rng):
         c.font = Font(bold=True)
         c.fill = PatternFill("solid", fgColor="DDE5EC")
     names = ["Gulfline Roofing", "Bayside Exteriors", "Tri-County Roof Co.", "Coastal Shield Roofing", "Pinewood Builders",
-             "Delta Roof Systems", "Harbor Point Roofing", "Southern Ridge Contracting"]
+             "Delta Roof Systems", "Harbor Point Roofing", "Southern Ridge Contracting", "J. Ocampo & Sons Roofing",
+             "Magnolia State Roofing LLC"]
     r = 4
     base = {"MRS": 16800, "HRB": 15400, "CLF": 14100, "CYR": 15900}
+    panel = {"MRS": 5, "HRB": 3, "CLF": 6, "CYR": 4}     # the contractors who quoted in each county
     for c in P.CANDIDATES:
-        for k in range(4):
+        for nm in sorted(rng.choice(names, size=panel[c], replace=False)):
             ws.cell(r, 1, P.COUNTY_NAME[c])
-            ws.cell(r, 2, names[(k * 3 + P.CANDIDATES.index(c)) % len(names)])
+            ws.cell(r, 2, str(nm))
             ws.cell(r, 3, int(rng.integers(20, 34)))
             ws.cell(r, 4, int(round(base[c] * float(rng.uniform(0.9, 1.12)), -2)))
             ws.cell(r, 5, "included" if rng.random() < 0.7 else "USD %d extra" % int(round(float(rng.uniform(600, 1400)), -1)))
@@ -259,7 +264,8 @@ def quotes(path, rng):
         ws.column_dimensions[col].width = wdt
     wb.save(path)
     postprocess.scrub(path, PRODUCER, "2026-10-14")
-    postprocess.finish_office(path, "2026-09-22T14:02:00Z", "2026-10-14T16:48:00Z", P.ORG, "Sherry Lang")
+    postprocess.finish_office(path, "2026-09-22T14:02:00Z", "2026-10-14T16:48:00Z", P.ORG,
+                              (P.PEOPLE["procurement"], P.PEOPLE["cat"]))
 
 
 def build(target, w):

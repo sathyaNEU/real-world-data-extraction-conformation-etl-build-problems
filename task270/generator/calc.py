@@ -1,162 +1,247 @@
-"""The golden computation, read from the pack as a solver reads it: every pre-July pseudonym carried through the
-crosswalk, the year-end lists for the population, each patient's 2026 proportion of days covered as the
-specification defines it, and each network's share under 80 per cent over the population the specification files,
-with every route the ladder names."""
+"""task270 the call, computed from the cut pack: each team's assessed patients (their latest completed 2026 fortnight,
+the team holding their care on its first day), each patient's negative affect at every answered prompt, and the
+patient's emotional instability under each route a solver could take, then each team's share at 2.0 or more.
+
+The golden reads each patient's change over the collaborative's three hours from the same-day ratings 2.5 to 3.5 hours
+apart (route W). The standing family reads the same quantity other ways (W2, K2, E, ET); the wrong rungs read the trust
+app's own spacing (R1 adjacent prompts, R2 successive answered prompts, R0 across the fortnight) or stretch the
+adjacent change to three hours in proportion to the time between the ratings (R3)."""
 from __future__ import annotations
 
 import datetime as dt
+import math
 import os
-import re
 
 import numpy as np
-import openpyxl
 import pandas as pd
 
-from common import BANK_HOLIDAYS, BORN_BY, NETWORK_NAME, PDC_LINE, TARGET, TIER_LINE, YEAR_END, YEAR_START
-import records as R
+import common as K
 
-DAY0 = YEAR_START.toordinal()
-NDAYS = (YEAR_END - YEAR_START).days + 1
-
-
-def tablets_a_day(text):
-    t = text.upper()
-    if t.startswith("TWO") or re.match(r"^(TAKE )?2\b", t) or "TAKE TWO" in t:
-        return 2.0
-    return 1.0
+ROUTES = ("R0", "R1", "R2", "R3", "W", "W2", "K2", "E", "ET")
+FAMILY = ("W", "W2", "K2", "E", "ET")
+TAUS = np.linspace(0.5, 15.0, 59)
 
 
-def load(target=TARGET):
-    D = pd.read_csv(os.path.join(target, R.F_DISP), dtype=str)
-    D["quantity"] = D["quantity"].astype(int)
-    X = pd.read_csv(os.path.join(target, R.F_XWALK), dtype=str)
-    xmap = dict(zip(X["old_pseudonym"], X["new_pseudonym"]))
-    D["patient"] = D["patient_pseudonym"].map(lambda k: xmap.get(k, k))
-    D["date"] = pd.to_datetime(D["dispensed_date"]).dt.date
-    D["tpd"] = D["dosage_instructions"].map(tablets_a_day)
-    D["days"] = (D["quantity"] / D["tpd"]).round().astype(int)
-    Q = pd.read_csv(os.path.join(target, R.F_QUARVIS), dtype=str).fillna("")
-    wb = openpyxl.load_workbook(os.path.join(target, R.F_SYNARIS), read_only=True)
-    ws = wb["Lipid cohort"]
-    rows = list(ws.iter_rows(values_only=True))
-    T = pd.DataFrame(rows[1:], columns=rows[0])
-    P = pd.read_csv(os.path.join(target, R.F_PRACTICES), dtype=str).fillna("")
-    net = {r.practice_ods: r.network.replace(" PCN", "") for r in P.itertuples() if r.member_to == ""}
-    pop = []
-    for r in Q.itertuples():
-        pop.append(dict(patient=r.nhs_pseudo, practice=r.practice_ods, yob=int(r.yob), system="Q",
-                        care_home=r.care_home_since != "", coded_aid=r.mds_since != ""))
-    for r in T.itertuples(index=False):
-        pop.append(dict(patient=r[0], practice=r[1], yob=int(r[2]), system="T",
-                        care_home=str(r[4]).startswith("Care home"), coded_aid=False))
-    pop = pd.DataFrame(pop)
-    name_to_code = {v: k for k, v in NETWORK_NAME.items()}
-    pop["network"] = pop["practice"].map(lambda p: name_to_code[net[p]])
-    return D, pop
+def load(target=None, scale_v3=10.0, keep_resends=False, scheduled_clock=False, drop_second_codes=False):
+    """Every answered prompt as (patient, local date, block, local answer time, negative affect), plus every sent
+    prompt for the completion count."""
+    target = target or K.TARGET
+    v3 = pd.read_csv(os.path.join(target, K.F_V3), dtype=str, keep_default_na=False)
+    v4 = pd.read_csv(os.path.join(target, K.F_V4), dtype=str, keep_default_na=False)
+    en = pd.read_csv(os.path.join(target, K.F_ENROL), dtype=str, keep_default_na=False)
+    code2pt = dict(zip(en.participant_code, en.patient_number))
+    if drop_second_codes:
+        reg = pd.read_excel(os.path.join(target, K.F_REGISTER), dtype=str)
+        keep = set(reg["App code"])
+        code2pt = {c: p for c, p in code2pt.items() if c in keep}
+    a3 = v3.copy()
+    a3["patient"] = a3.participant_id.map(code2pt)
+    a3["sent"] = pd.to_datetime(a3.scheduled_local, format="%d/%m/%Y %H:%M")
+    a3["answered"] = pd.to_datetime(a3.responded_local.replace("", None), format="%d/%m/%Y %H:%M:%S")
+    a3["block"] = a3.beep.astype(int)
+    items3 = ["na_down_vas", "na_anxious_vas", "na_irritable_vas", "na_ashamed_vas"]
+    a3["na"] = a3[items3].replace("", np.nan).astype(float).mean(axis=1) / scale_v3
+    if not keep_resends:
+        v4 = v4.drop_duplicates()
+    a4 = v4.copy()
+    a4["patient"] = a4.participant.map(code2pt)
+    su = pd.to_datetime(a4.sent_at_utc, format="%Y-%m-%dT%H:%M:%SZ")
+    au = pd.to_datetime(a4.answered_at_utc.replace("", None), format="%Y-%m-%dT%H:%M:%SZ")
+    bst_on = (su >= pd.Timestamp(K.BST_START)) & (su < pd.Timestamp(K.BST_END))
+    a4["sent"] = su + pd.to_timedelta(bst_on.astype(int), unit="h")
+    bst_a = (au >= pd.Timestamp(K.BST_START)) & (au < pd.Timestamp(K.BST_END))
+    a4["answered"] = au + pd.to_timedelta(bst_a.fillna(False).astype(int), unit="h")
+    a4["block"] = a4.block.astype(int)
+    a4["na"] = a4[["down", "anxious", "irritable", "ashamed"]].replace("", np.nan).astype(float).mean(axis=1)
+    cols = ["patient", "sent", "answered", "block", "na"]
+    allp = pd.concat([a3[cols], a4[cols]], ignore_index=True)
+    allp = allp[allp.patient.notna()]
+    if scheduled_clock:
+        allp["answered"] = allp["answered"].where(allp["answered"].isna(), allp["sent"])
+    allp["day"] = allp.sent.dt.date
+    return allp
 
 
-def pdc_of(items):
-    """Specification 2.2: from the first 2026 item to 31 December, each item's days from its quantity and dosage,
-    an overlap moved to start when the earlier supply ends, any statin."""
-    items = sorted(items)
-    first = items[0][0]
-    cov = np.zeros(NDAYS + 800, bool)
-    nxt = 0
-    for d, n in items:
-        st = max(d, nxt)
-        cov[st:st + n] = True
-        nxt = st + n
-    return cov[first:NDAYS].sum() / (NDAYS - first)
-
-
-def periodic(dates, tol=1, need=0.9):
-    """A fixed cycle: the steps between items equal one period (7, 14 or 28 days) to within tol on need of them."""
-    ds = sorted(set(dates))
-    if len(ds) < 5:
-        return False
-    g = np.diff(ds)
-    med = float(np.median(g))
-    step = min((7, 14, 28), key=lambda s: abs(s - med))
-    return float(np.mean(np.abs(g - step) <= tol)) >= need
-
-
-def _closed(d):
-    return d.weekday() == 6 or d in BANK_HOLIDAYS
-
-
-def same_weekday(dates):
-    """Every item on one weekday, an item due on a Sunday or bank holiday supplied on the next day the pharmacy opens
-    (the compliance-aid guidance's supply)."""
-    ds = sorted(set(dates))
-    for w in range(7):
-        ok = True
-        for d in ds:
-            k = (d.weekday() - w) % 7
-            if k and not (k <= 3 and all(_closed(d - dt.timedelta(days=j)) for j in range(1, k + 1))):
-                ok = False
-                break
-        if ok:
-            return True
-    return False
-
-
-def patient_table(target=TARGET):
-    D, pop = load(target)
-    y = D[(D["date"] >= YEAR_START) & (D["date"] <= YEAR_END)].copy()
-    y["d"] = y["date"].map(lambda x: x.toordinal() - DAY0)
-    grp = {k: list(zip(g["d"], g["days"])) for k, g in y.groupby("patient")}
-    weekly = set(y.loc[y["days"] == 7, "patient"])
-    out = pop.copy()
-    out["n_items"] = out["patient"].map(lambda k: len(grp.get(k, [])))
-    out["pdc"] = out["patient"].map(lambda k: pdc_of(grp[k]) if len(grp.get(k, [])) >= 2 else np.nan)
-    out["weekly_items"] = out["patient"].isin(weekly)
-    for tol, need, col in ((0, 0.9, "cyc0"), (1, 0.9, "cyc1"), (2, 0.9, "cyc2"), (3, 0.8, "cyc3")):
-        out[col] = out["patient"].map(lambda k, t=tol, n=need: periodic([d for d, _ in grp.get(k, [])], t, n))
-    dates = {k: list(g["date"]) for k, g in y.groupby("patient")}
-    out["weekday"] = out["patient"].map(lambda k: len(set(dates.get(k, []))) >= 5 and same_weekday(dates[k]))
-    for col in ("cyc2", "cyc3"):
-        out[col + "w"] = out[col] & out["weekday"]
-    out["aged65"] = out["yob"] <= BORN_BY
-    out["eligible_base"] = out["aged65"] & (out["n_items"] >= 2)
-    return out
-
-
-ROUTES = {
-    "R0": "every patient aged 65 and over with two or more 2026 items",
-    "R1": "care home residents out",
-    "R2": "care home residents and coded compliance-aid patients out",
-    "R3": "care home residents and patients with weekly 7-day items out",
-    "R4": "care home residents and full cover (99 per cent or more) out",
-    "G": "care home residents and every fixed-cycle patient out, coded or not",
-}
-
-
-def route_mask(T, route, cyc="cyc1"):
-    m = T["eligible_base"].copy()
-    if route == "R0":
-        return m
-    m &= ~T["care_home"]
-    if route == "R1":
-        return m
-    if route == "R2":
-        return m & ~T["coded_aid"]
-    if route == "R3":
-        return m & ~T["weekly_items"]
-    if route == "R4":
-        return m & ~(T["pdc"] >= 0.99)
-    if route == "G":
-        return m & ~T[cyc] & ~T["coded_aid"]
-    raise KeyError(route)
-
-
-def shares(T, mask):
+def episodes(target=None):
+    ep = pd.read_csv(os.path.join(target or K.TARGET, K.F_EPISODES), dtype=str, keep_default_na=False)
     out = {}
-    for code in NETWORK_NAME:
-        s = T[mask & (T["network"] == code)]
-        out[code] = dict(n=int(len(s)), low=int((s["pdc"] < PDC_LINE).sum()),
-                         share=float((s["pdc"] < PDC_LINE).mean()) if len(s) else float("nan"))
+    for r in ep.itertuples(index=False):
+        out.setdefault(r.patient_number, []).append(
+            (r.team_code, dt.date.fromisoformat(r.episode_start),
+             dt.date.fromisoformat(r.episode_end) if r.episode_end else None))
     return out
 
 
-def tier(sh):
-    return sorted(c for c, v in sh.items() if v["share"] >= TIER_LINE)
+def team_on(eps, patient, day):
+    for team, s, e in eps.get(patient, []):
+        if s <= day and (e is None or e >= day):
+            return team
+    return None
+
+
+def register(target=None):
+    reg = pd.read_excel(os.path.join(target or K.TARGET, K.F_REGISTER), dtype={"Patient number": str, "App code": str})
+    reg["First day"] = pd.to_datetime(reg["First day"]).dt.date
+    reg["Last day"] = pd.to_datetime(reg["Last day"]).dt.date
+    return reg
+
+
+def population(allp, reg, eps, rule="latest", completion="answered", team_day="first"):
+    """The assessed patients: (patient, first day, last day, team) for each counted fortnight."""
+    ans = allp[allp.answered.notna()]
+    grp = {}
+    for pt, day in zip(ans.patient, ans.day):
+        grp.setdefault(pt, []).append(day)
+    rows = []
+    for r in reg.itertuples(index=False):
+        pt, code_, f, l, status = r[1], r[2], r[3], r[4], r[6]
+        if not (K.YEAR0 <= f <= K.YEAR1):
+            continue
+        n_ans = sum(1 for d in grp.get(pt, []) if f <= d <= l)
+        done = (n_ans >= K.COMPLETE) if completion == "answered" else (status == "Completed")
+        if done:
+            rows.append((pt, f, l))
+    by = {}
+    for pt, f, l in rows:
+        by.setdefault(pt, []).append((f, l))
+    out = []
+    for pt, fs in by.items():
+        fs.sort()
+        chosen = fs if rule == "every" else ([fs[-1]] if rule == "latest" else [fs[0]])
+        for f, l in chosen:
+            day = {"first": f, "enrolled": f - dt.timedelta(days=3), "census": K.CENSUS}[team_day]
+            team = team_on(eps, pt, day)
+            if team is None:
+                team = team_on(eps, pt, f)
+            out.append((pt, f, l, K.CURRENT[team]))
+    return out
+
+
+def fit_exp(g, q, taus=TAUS):
+    best = None
+    for t in taus:
+        X = np.c_[1 - np.exp(-g / t), np.ones_like(g)]
+        c = np.linalg.lstsq(X, q, rcond=None)[0]
+        r = ((X @ c - q) ** 2).sum()
+        if best is None or r < best[0]:
+            best = (r, t, c)
+    return best
+
+
+def pairs_of(df):
+    """Same-day pairs of a patient fortnight's answered prompts: (block i, block j, gap hours, squared change,
+    adjacent in answered order)."""
+    out = []
+    for day, g in df.groupby("day", sort=True):
+        g = g.sort_values("answered")
+        b = g.block.to_numpy()
+        t = g.answered.to_numpy()
+        y = g.na.to_numpy()
+        n = len(g)
+        for i in range(n):
+            for j in range(i + 1, n):
+                gap = (t[j] - t[i]) / np.timedelta64(1, "h")
+                out.append((b[i], b[j], gap, (y[j] - y[i]) ** 2, j == i + 1))
+    return out
+
+
+def rmssd(vals):
+    return math.sqrt(sum(vals) / len(vals)) if len(vals) else float("nan")
+
+
+def instability(allp, pop, fits=True):
+    """Each counted patient fortnight's instability under every route (fits=False: the curve fits E and ET left out)."""
+    ans = allp[allp.answered.notna()]
+    by_pt = {pt: g for pt, g in ans.groupby("patient")}
+    res = []
+    for pt, f, l, team in pop:
+        g = by_pt[pt]
+        g = g[(g.day >= f) & (g.day <= l)]
+        P = pairs_of(g)
+        o = {"patient": pt, "first": f, "team": team, "answered": len(g)}
+        o["R1"] = rmssd([p[3] for p in P if p[1] == p[0] + 1])
+        o["R2"] = rmssd([p[3] for p in P if p[4]])
+        o["R3"] = rmssd([p[3] * 3.0 / p[2] for p in P if p[1] == p[0] + 1])
+        o["W"] = rmssd([p[3] for p in P if 2.5 <= p[2] <= 3.5])
+        o["W2"] = rmssd([p[3] for p in P if 2.75 <= p[2] <= 3.25])
+        o["K2"] = rmssd([p[3] for p in P if p[1] == p[0] + 2])
+        gg = g.sort_values("answered")
+        y = gg.na.to_numpy()
+        o["R0"] = rmssd(list(np.diff(y) ** 2))
+        gap = np.array([p[2] for p in P])
+        sq = np.array([p[3] for p in P])
+        if fits:
+            _r, t, c = fit_exp(gap, sq)
+            o["E"] = math.sqrt(max(c[0] * (1 - math.exp(-3 / t)) + c[1], 0.0))
+        o["_gap"], o["_sq"] = gap, sq
+        res.append(o)
+    if not fits:
+        for o in res:
+            del o["_gap"], o["_sq"]
+        return res
+    # one time constant per team, each patient's own level and noise
+    for team in {o["team"] for o in res}:
+        mine = [o for o in res if o["team"] == team]
+        best = None
+        for t in TAUS:
+            tot = 0.0
+            for o in mine:
+                X = np.c_[1 - np.exp(-o["_gap"] / t), np.ones_like(o["_gap"])]
+                c = np.linalg.lstsq(X, o["_sq"], rcond=None)[0]
+                tot += ((X @ c - o["_sq"]) ** 2).sum()
+            if best is None or tot < best[0]:
+                best = (tot, t)
+        t = best[1]
+        for o in mine:
+            X = np.c_[1 - np.exp(-o["_gap"] / t), np.ones_like(o["_gap"])]
+            c = np.linalg.lstsq(X, o["_sq"], rcond=None)[0]
+            o["ET"] = math.sqrt(max(c[0] * (1 - math.exp(-3 / t)) + c[1], 0.0))
+    for o in res:
+        del o["_gap"], o["_sq"]
+    return res
+
+
+def shares(res, route):
+    out = {}
+    for c, _n in K.TEAMS:
+        mine = [o[route] for o in res if o["team"] == c]
+        hi = sum(1 for v in mine if v >= K.HIGH)
+        out[c] = {"n": len(mine), "high": hi, "share": hi / len(mine)}
+    return out
+
+
+def funded(sh):
+    return sorted(c for c, v in sh.items() if 100 * v["share"] >= K.LINE)
+
+
+def pooled_change(allp, pop, lo, hi):
+    """The mean squared change in negative affect over every counted patient's same-day pairs lo to hi hours
+    apart, and the number of pairs."""
+    ans = allp[allp.answered.notna()]
+    by_pt = {pt: g for pt, g in ans.groupby("patient")}
+    vals = []
+    for pt, f, l, team in pop:
+        g = by_pt[pt]
+        g = g[(g.day >= f) & (g.day <= l)]
+        vals.extend(p[3] for p in pairs_of(g) if lo <= p[2] <= hi)
+    return float(np.mean(vals)), len(vals)
+
+
+def adjacent_gap_median(allp, pop):
+    ans = allp[allp.answered.notna()]
+    by_pt = {pt: g for pt, g in ans.groupby("patient")}
+    gaps = []
+    for pt, f, l, team in pop:
+        g = by_pt[pt]
+        g = g[(g.day >= f) & (g.day <= l)]
+        gaps.extend(p[2] for p in pairs_of(g) if p[1] == p[0] + 1)
+    return float(np.median(gaps)) * 60.0
+
+
+def main_call(target=None):
+    allp = load(target)
+    reg = register(target)
+    eps = episodes(target)
+    pop = population(allp, reg, eps)
+    res = instability(allp, pop)
+    return allp, reg, eps, pop, res

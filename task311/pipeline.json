@@ -1,0 +1,29 @@
+{
+ "task": "task311",
+ "status": "DESIGN",
+ "domain": "survey-research-official-statistics",
+ "objective": "opportunity-sizing-decision",
+ "stage": 2,
+ "stage_name": "design",
+ "updated": "2026-10-27",
+ "stump": "A competent analyst scales each region's correct 2025 clustered standard error by the square root of its interviews before and after the boost and funds the North, where the boost's interviews inside the same few areas barely move the error; projected from the variance components the boost belongs to a low-clustering region.",
+ "architecture": 1,
+ "loops": 0,
+ "seed": "OS13 (charger coverage) read for its world only; the number moved to survey-research-official-statistics x Opportunity Sizing",
+ "precut": null,
+ "leak": null,
+ "duplicate_check": {
+  "heart": "",
+  "nearest": "task486 0.08 (lineage driver)"
+ },
+ "judge": null,
+ "returned": [],
+ "resume": "stage 2: build the survey world (five regions, areas, ICC by region, three waves), measure the ladder and the component family on the clean truth, then fork table, closure, asks, prompt, precut",
+ "approved": null,
+ "delivered": null,
+ "portal": null,
+ "portal_id": "",
+ "portal_status": "",
+ "portal_status_date": "",
+ "zip_sha256_16": ""
+}

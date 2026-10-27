@@ -1,0 +1,97 @@
+{
+ "ask_a": {
+  "Eastbrook Metro": 8535,
+  "Sandhaven Coast": 6591,
+  "Tarrock Highlands": 4539,
+  "Yarrandale Valley": 4381
+ },
+ "ask_b": {
+  "Q1 2025": 324.6,
+  "Q2 2025": 287.8,
+  "Q3 2025": 271.3,
+  "Q4 2025": 309.9
+ },
+ "ask_b_raw": [
+  324.6164,
+  287.8197,
+  271.3128,
+  309.8984
+ ],
+ "ask_c": {
+  "Eastbrook Metro": 456,
+  "Sandhaven Coast": 410,
+  "Tarrock Highlands": 161,
+  "Yarrandale Valley": 292
+ },
+ "call": "Yarrandale Valley",
+ "constants": {
+  "census": "2026-09-30",
+  "charge_eff": 0.95,
+  "discharge_eff": 0.95,
+  "efficiency_pct": 95,
+  "export_limit_kw": {
+   "MEG-CZ05": 0.5,
+   "MEG-L15": 1.5
+  },
+  "homes_per_region": 40,
+  "power_kw": 5.0,
+  "round_batteries": 2400,
+  "round_kwh_to": 50,
+  "round_mwh_to": 100,
+  "solar_by": "2025-09-30",
+  "straddling_postcodes": [
+   2716,
+   2905
+  ],
+  "usable_kwh": 10.0
+ },
+ "default_kwh_per_battery": {
+  "Eastbrook Metro": 1450,
+  "Sandhaven Coast": 1900,
+  "Tarrock Highlands": 1300,
+  "Yarrandale Valley": 1200
+ },
+ "default_round_mwh": {
+  "Eastbrook Metro": 3500,
+  "Sandhaven Coast": 4600,
+  "Tarrock Highlands": 3100,
+  "Yarrandale Valley": 2900
+ },
+ "default_schedule": {
+  "Eastbrook Metro": 2028,
+  "Sandhaven Coast": 2027,
+  "Tarrock Highlands": 2029,
+  "Yarrandale Valley": 2030
+ },
+ "kwh_per_battery": {
+  "Eastbrook Metro": 1500,
+  "Sandhaven Coast": 1900,
+  "Tarrock Highlands": 1300,
+  "Yarrandale Valley": 2450
+ },
+ "kwh_raw": {
+  "Eastbrook Metro": 1502.3,
+  "Sandhaven Coast": 1907.8,
+  "Tarrock Highlands": 1293.8,
+  "Yarrandale Valley": 2457.7
+ },
+ "limited_homes": {
+  "Eastbrook Metro": 8,
+  "Sandhaven Coast": 0,
+  "Tarrock Highlands": 0,
+  "Yarrandale Valley": 28
+ },
+ "round_mwh": {
+  "Eastbrook Metro": 3600,
+  "Sandhaven Coast": 4600,
+  "Tarrock Highlands": 3100,
+  "Yarrandale Valley": 5900
+ },
+ "runner_up": "Sandhaven Coast",
+ "schedule": {
+  "Eastbrook Metro": 2029,
+  "Sandhaven Coast": 2028,
+  "Tarrock Highlands": 2030,
+  "Yarrandale Valley": 2027
+ }
+}

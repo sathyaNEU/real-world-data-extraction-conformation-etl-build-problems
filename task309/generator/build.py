@@ -54,7 +54,8 @@ def footprint_book(path, sheets):
         ws.column_dimensions["C"].width = 26
     wb.save(path)
     postprocess.scrub(path, PRODUCER, "2025-11-03")
-    postprocess.finish_office(path, "2013-03-04T15:20:00Z", "2025-11-03T10:41:00Z", P.ORG, "Sherry Lang")
+    postprocess.finish_office(path, "2013-03-04T15:20:00Z", "2025-11-03T10:41:00Z", P.ORG,
+                              (P.PEOPLE["gis"], P.PEOPLE["cat"]))
 
 
 def build(target):

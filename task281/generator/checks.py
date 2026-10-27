@@ -3,6 +3,7 @@ the three rules (R1 to R3), each Layer 1 item mishandled, the semantic fork rows
 from the call, the asks' devices against their stops, the input gates and the realism sweep."""
 from __future__ import annotations
 
+import collections
 import csv
 import datetime as dt
 import math
@@ -197,8 +198,76 @@ def run(task, b, fig, res):
     ok("SEP the officers who changed title hold no July 2025 class record",
        all(not pk.emp[e]["academy_class"].endswith("2025-1") for e in movers), str(len(movers)))
 
-    # ------------------------------------------------------------------ the asks' devices
+    # ------------------------------------------------------------------ the asks' filed readings (SF16 to SF18)
     g = res["asks"]
+    agr = re.sub(r"\s+", " ", pdf_text(os.path.join(target, K.FILES["agreement"])))
+    pay_head = open(os.path.join(target, K.FILES["payroll"]), encoding="utf-8").readline().strip().split(",")
+    off_head = open(os.path.join(target, K.FILES["offers"]), encoding="utf-8").readline().strip().split(",")
+    ok("SF16 the payroll's own headers key every line to the employee's home timekeeper and cost center, the offer "
+       "log names the post's unit, and MOU 14.3 holds over and calls in the unit's own employees",
+       "home_timekeeper" in pay_head and "home_cost_center" in pay_head and "post_unit" in off_head and
+       "employees of the same title at the State's other units may also join" in agr and
+       "the unit holds over its junior employee on duty or calls in its junior employee off duty" in agr)
+    def home_on(e, d):
+        for x in pk.emp_hist.get(e, []):
+            if x["title_effective_from"] <= d and (not x["title_effective_to"] or d <= x["title_effective_to"]):
+                return x["home_unit"]
+        return pk.emp[e]["home_unit"]
+    hu = {}
+    for r in pk.payroll:
+        if r[AK.HOME] and r["work_date"]:
+            hu.setdefault(r[AK.HOME], set()).add(home_on(r["employee_id"], r["work_date"]))
+    ok("SF16 every line's home timekeeper is its employee's home unit in HR (SL-0410 Thornmere's employees only)",
+       all(v == {AK.LOC.get(k, k)} for k, v in hu.items()), str({k: sorted(v) for k, v in hu.items()}))
+    home = {e: p["unit"] for e, p in enumerate(w.people)}
+    fy_ev = [ev for ev in py.events if K.FY26_START <= ev["date"] <= dt.date(2026, 6, 30)]
+    ok("SF16 every piece not offered was worked at the employee's own unit, and every piece worked at another unit "
+       "was offered", all(ev["vol"] or ev["unit"] == home[ev["e"]] for ev in fy_ev) and
+       all(ev["vol"] for ev in fy_ev if ev["unit"] != home[ev["e"]]), str(len(fy_ev)))
+    acc = [r for r in pk.offers if r["response"] == "Accepted"]
+    key3 = {(r["employee_id"], r["post_date"], r["start_time"]): r["post_unit"] for r in acc}
+    ok("SF16 an accepted offer is one piece: employee, date and start repeat in no two acceptances",
+       len(key3) == len(acc), "%d acceptances" % len(acc))
+    rep = AK.repeats(pk)
+    canon = {old: new for new, old in AK.chains(pk).items()}
+    lit_a, lit_b = collections.defaultdict(float), collections.defaultdict(set)
+    for n, r in enumerate(pk.payroll):
+        if r["earn_code"] not in ("OT",) + tuple(AK.COMP) or not AK.in_fy(r["work_date"]):
+            continue
+        u = key3.get((r["employee_id"], r["work_date"], r["start_time"]))
+        u = u or AK.LOC.get(r[AK.HOME], r[AK.HOME])
+        lit_b[u].add(canon.get(r["employee_id"], r["employee_id"]))
+        if n not in rep:
+            lit_a[u] += AK.hours_worked(r, True, False, False, AK.credit(pk, r))
+    ok("SF16 the literal reading (the accepted offer's unit by employee, date and start, else the own unit) gives "
+       "the golden hours and people", {u: int(round(lit_a[u])) for u in U} == g["a"] and
+       {u: len(lit_b[u]) for u in U} == g["b"])
+    wt = collections.defaultdict(float)
+    for ev in fy_ev:
+        wt[ev["unit"]] += ev["hours"]
+    ok("SF16 the golden hours are the hours the world worked at each unit", {u: int(round(wt[u])) for u in U} == g["a"],
+       str({u: int(round(wt[u])) for u in U}))
+    ok("SF16 a join on a compensatory line's credited hours as if worked leaves its piece at the own unit, ruled out "
+       "by MOU 14.2 and the codes", AK.ask_a(pk, cte="raw") != g["a"])
+    earn = {r["earn_code"]: r["description"] for r in pk.earn}
+    cts = [r for r in pk.payroll if r["earn_code"] == "CTS"]
+    ok("SF17 the aides' compensatory time carries its own code, credited hour for hour; at 1.5 the forensic hospital "
+       "moves", earn.get("CTS") == "Comp time earned 1.0" and earn.get("CTE") == "Comp time earned 1.5" and
+       cts and all(pk.title_on(r["employee_id"], r["work_date"]) == "FSA" for r in cts) and
+       not [r for r in pk.payroll if r["earn_code"] == "CTE" and pk.title_on(r["employee_id"], r["work_date"]) == "FSA"]
+       and AK.ask_a(pk, flat=True)["FFH"] != g["a"]["FFH"], "%d CTS lines" % len(cts))
+    no_cte = collections.defaultdict(set)
+    for r in pk.payroll:
+        if r["earn_code"] == "OT" and AK.in_fy(r["work_date"]):
+            u = key3.get((r["employee_id"], r["work_date"], r["start_time"]))
+            no_cte[u or AK.LOC.get(r[AK.HOME], r[AK.HOME])].add(canon.get(r["employee_id"], r["employee_id"]))
+    ok("SF18 compensatory time is elected instead of overtime pay (MOU 14.2), so its holder worked overtime; counting "
+       "OT lines only moves the people", "elect compensatory time instead of overtime pay" in agr and
+       {u: len(no_cte[u]) for u in U} != g["b"])
+    ok("GATE no file under target/ describes the data (dictionary, readme, notes, manifest)",
+       not [f for f in os.listdir(target) if re.search(r"dictionar|readme|notes|manifest|codebook", f, re.I)])
+
+    # ------------------------------------------------------------------ the asks' devices
     for name, kw, need in (("A by the keying timekeeper, the offer log unread", dict(offers=False), 6),
                            ("A a timesheet paid twice counted twice", dict(drop_repeats=False), 8),
                            ("A compensatory time read as worked hours", dict(cte="raw"), 7),
@@ -270,7 +339,7 @@ def run(task, b, fig, res):
             pays.setdefault(AK.piece_key(r), []).append(r["check_date"])
     first = {}
     for n_, r in enumerate(pk.payroll):
-        if n_ not in rep and r["earn_code"] in ("OT", "OTN", "CTE"):
+        if n_ not in rep and r["earn_code"] in ("OT", "OTN") + tuple(AK.COMP):
             first.setdefault(AK.piece_key(r), []).append(r["check_date"])
     ok("FAIR every second payment repeats a piece paid once before on an earlier check",
        all(len(first.get(k, [])) == 1 and min(v) > first[k][0] for k, v in pays.items()), str(len(rep)))
@@ -278,12 +347,12 @@ def run(task, b, fig, res):
     keys = [(r["employee_id"], r["post_date"], r["start_time"], r["hours"]) for r in pk.offers if r["response"] == "Accepted"]
     ok("FAIR every accepted offer names one piece", len(keys) == len(set(keys)), str(len(keys)))
     pieces = {(r["employee_id"], r["work_date"], r["start_time"], AK.worked_key(pk, r)) for n_, r in enumerate(pk.payroll)
-              if r["earn_code"] in ("OT", "CTE") and n_ not in rep and AK.in_fy(r["work_date"])}
+              if r["earn_code"] in ("OT",) + tuple(AK.COMP) and n_ not in rep and AK.in_fy(r["work_date"])}
     ok("FAIR every accepted offer is paid as one piece", all(k in pieces for k in acc), str(len(acc)))
     day = {}
     for n_, r in enumerate(pk.payroll):
-        if r["earn_code"] in ("OT", "CTE") and n_ not in rep:
-            h = float(r["hours"]) / (1.5 if r["earn_code"] == "CTE" else 1.0)
+        if r["earn_code"] in ("OT",) + tuple(AK.COMP) and n_ not in rep:
+            h = float(r["hours"]) / AK.COMP.get(r["earn_code"], 1.0)
             day[(r["employee_id"], r["work_date"])] = day.get((r["employee_id"], r["work_date"]), 0) + h
     ok("REAL no employee worked more than 12 hours of overtime on a day", max(day.values()) <= 12,
        str(max(day.values())))

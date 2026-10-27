@@ -270,9 +270,40 @@ def ask_b(target, route="golden"):
     return out
 
 
-def street_map(pe, pm):
-    """Old street names in the permits: a street the policy master does not know in that county, whose house numbers
-    in each ZIP sit on one street the policy master does know. Returns {(county, old street): new street}."""
+def _name(street):
+    """A street's name without its type (TRAM AVE -> TRAM)."""
+    t = street.split()
+    return " ".join(t[:-1]) if len(t) > 1 and t[-1] in ABBR.values() else street
+
+
+def street_pairs(ce, pm):
+    """Old and new street names, paired by the parcels the certificate register lists under one name and the policy
+    master under another at the same house number. Returns {(county, old name): new name}."""
+    iss = ce[ce.event == "ISSUED"]
+    ca = iss.property_address.map(split_addr)
+    a = pd.DataFrame({"parcel": iss.parcel_ref.str.replace("-", "", regex=False), "num": ca.str[0],
+                      "old": ca.str[1].map(_name)})
+    pa = pm.site_address.map(split_addr)
+    b = pd.DataFrame({"parcel": pm.parcel_id, "county": pm.county, "num": pa.str[0], "new": pa.str[1].map(_name)})
+    j = a.merge(b.drop_duplicates(), on=["parcel", "num"])
+    j = j[j.old != j.new]
+    return {(c, o): n for (c, o, n), _ in j.groupby(["county", "old", "new"])}
+
+
+def street_map(pe, pm, ce):
+    """Each permit street carrying an old name, read under the new name with its own street type."""
+    pairs = street_pairs(ce, pm)
+    out = {}
+    for c, st in set(zip(pe.county, pe.address.map(lambda a: split_addr(a)[1]))):
+        nm = _name(st)
+        if (c, nm) in pairs:
+            out[(c, st)] = pairs[(c, nm)] + st[len(nm):]
+    return out
+
+
+def street_map_by_number(pe, pm):
+    """The same pairing found another way: a street the policy master does not know in that county, whose house
+    numbers in each ZIP sit on one street the policy master does know (a check on street_pairs, not the golden)."""
     pmp = pm.site_address.map(split_addr)
     known = pd.DataFrame({"county": pm.county, "zip": pm.zip_code, "num": pmp.str[0], "street": pmp.str[1]})
     pp = pe.address.map(split_addr)
@@ -282,8 +313,7 @@ def street_map(pe, pm):
     for (cty, st), d in per[[(c, s) not in ks for c, s in zip(per.county, per.street)]].groupby(["county", "street"]):
         m = d.merge(known[known.county == cty], on=["zip", "num"], suffixes=("", "_now"))
         if len(m):
-            best = m.street_now.value_counts()
-            out[(cty, st)] = best.index[0]
+            out[(cty, st)] = m.street_now.value_counts().index[0]
     return out
 
 
@@ -296,7 +326,8 @@ def ask_c(target, route="golden"):
     pe = pe[pe.issue_date <= P.ASOF].copy()
     if route == "golden" or route == "any_roof_permit":
         pm = pd.read_csv(_p(target, "policies"), dtype=str, keep_default_na=False)
-        mp = street_map(pe, pm)
+        ce = pd.read_csv(_p(target, "certs"), dtype=str, keep_default_na=False)
+        mp = street_map(pe, pm, ce)
         pp = pe.address.map(split_addr)
         pe["address"] = [("%s %s%s" % (t[0], mp.get((c, t[1]), t[1]), " COTTAGE" if t[2] else ""))
                          for c, t in zip(pe.county, pp)]

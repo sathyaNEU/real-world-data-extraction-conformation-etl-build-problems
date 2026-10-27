@@ -87,21 +87,21 @@ def footprint(peak, x0, xs, ys, rmw=28.0, heading=0.0):
 # Historical storms: (code, name, landfall date, landfall x km, peak gust mph, heading)
 STORMS = [
     ("2008-03", "Hurricane Corwin", "2008-09-12", 160, 118, 0.10),
-    ("2009-02", "Tropical Storm Della", "2009-08-27", 40, 86, -0.05),
-    ("2011-04", "Hurricane Evander", "2011-09-03", 110, 104, 0.05),
-    ("2012-05", "Hurricane Faye", "2012-08-29", 70, 126, 0.00),
-    ("2013-03", "Tropical Storm Gideon", "2013-09-14", 180, 92, 0.08),
-    ("2014-06", "Hurricane Halsey", "2014-10-02", 125, 108, -0.06),
-    ("2016-04", "Hurricane Ines", "2016-09-07", 30, 154, 0.04),
-    ("2017-07", "Hurricane Jessup", "2017-09-20", 150, 114, 0.02),
-    ("2018-05", "Hurricane Kendra", "2018-10-10", 95, 145, -0.03),
-    ("2019-03", "Tropical Storm Laszlo", "2019-08-19", 60, 94, 0.00),
-    ("2020-08", "Hurricane Marisol", "2020-09-16", 120, 172, 0.06),
-    ("2021-06", "Hurricane Nolan", "2021-08-30", 15, 110, -0.02),
-    ("2022-04", "Hurricane Odile", "2022-09-28", 175, 136, 0.05),
-    ("2023-05", "Hurricane Pryor", "2023-08-24", 85, 120, 0.00),
-    ("2024-07", "Hurricane Quenby", "2024-10-09", 28, 168, 0.03),
-    ("2025-03", "Hurricane Rosalind", "2025-09-02", 140, 116, -0.04),
+    ("2009-02", "Tropical Storm Bettina", "2009-08-27", 40, 86, -0.05),
+    ("2011-04", "Hurricane Delmar", "2011-09-03", 110, 104, 0.05),
+    ("2012-05", "Hurricane Edda", "2012-08-29", 70, 126, 0.00),
+    ("2013-03", "Tropical Storm Calla", "2013-09-14", 180, 92, 0.08),
+    ("2014-06", "Hurricane Fenwick", "2014-10-02", 125, 108, -0.06),
+    ("2016-04", "Hurricane Darcy", "2016-09-07", 30, 154, 0.04),
+    ("2017-07", "Hurricane Gideon", "2017-09-20", 150, 114, 0.02),
+    ("2018-05", "Hurricane Elspeth", "2018-10-10", 95, 145, -0.03),
+    ("2019-03", "Tropical Storm Cyril", "2019-08-19", 60, 94, 0.00),
+    ("2020-08", "Hurricane Halsey", "2020-09-16", 120, 172, 0.06),
+    ("2021-06", "Hurricane Fenna", "2021-08-30", 15, 110, -0.02),
+    ("2022-04", "Hurricane Dunstan", "2022-09-28", 175, 136, 0.05),
+    ("2023-05", "Hurricane Esme", "2023-08-24", 85, 120, 0.00),
+    ("2024-07", "Hurricane Greer", "2024-10-09", 28, 168, 0.03),
+    ("2025-03", "Hurricane Clio", "2025-09-02", 140, 116, -0.04),
 ]
 KT = 1.150779          # mph per knot
 KNOT_UNTIL = 2019      # footprints before the 2019 season came from the analysis service in knots
@@ -348,7 +348,7 @@ def build_world(seed=SEED):
 ELIGIBLE = {"MRS": (1480, 262000, (22, 4)), "HRB": (1530, 248000, (72, 15)),
             "CYR": (1510, 318000, (196, 16)), "CLF": (1460, 236000, (125, 45))}
 VENDOR_EVENTS = 9000
-VENDOR_RATE = 0.616      # landfalls a year on the 350 km of coast the set covers
+VENDOR_RATE = 0.6155     # landfalls a year on the 350 km of coast the set covers
 MAJOR_X, MAJOR_SD = 35.0, 45.0
 EAST_SHARE, EAST_X, EAST_SD = 0.85, 200.0, 35.0
 P_TS, P_MOD = 0.40, 0.48
@@ -375,7 +375,9 @@ def vendor_set(seed=SEED + 1):
                     np.where(u < P_TS + P_MOD, rng.uniform(94, 128, N), 128 + rng.gamma(2.2, 11.0, N)))
     peak = np.minimum(peak, 172)
     hd = rng.normal(0, 0.05, N)
-    rate = np.full(N, VENDOR_RATE / N)
+    # each event's own annual rate in the catalog, drawn apart from the hazard so the set's total stays VENDOR_RATE
+    wr = np.random.default_rng(seed + 7).lognormal(0.0, 0.35, N)
+    rate = VENDOR_RATE / N * wr / wr.mean()
     out = {}
     for c, (n, val, (cx, cy)) in ELIGIBLE.items():
         g = footprint(peak, x0, np.full(N, cx), np.full(N, cy), heading=hd)

@@ -209,7 +209,7 @@ def main(bundle, sub):
     if "county for the 2027 round: %s." % call.lower() not in block4.lower():
         bad.append("call %s" % call)
     m = re.search(r"removes there: USD ([\d.]+) million", block4)
-    if not m or abs(float(m.group(1)) - round(rem[call] / 1e6, 1)) > 1e-9 or len(m.group(1).split(".")[1]) != 1:
+    if not m or "." in m.group(1) or int(m.group(1)) != round(rem[call] / 1e6):
         bad.append("loss removed %.3f" % (rem[call] / 1e6))
     if "Runner-up: %s." % rem.sort_values().index[-2] not in block4:
         bad.append("runner-up")
@@ -239,7 +239,7 @@ def main(bundle, sub):
         if v[0] != a.loc[county, "n"] or v[1] != round(a.loc[county, "cov"] / 1e3):
             bad.append("ask A %s" % county)
     b = ask_b(d)
-    lcode = {"Hurricane Corwin": "L0803", "Tropical Storm Della": "L0902", "Hurricane Evander": "L1104"}
+    lcode = {"Hurricane Corwin": "L0803", "Tropical Storm Bettina": "L0902", "Hurricane Delmar": "L1104"}
     for storm, v in sect[6].items():
         t = b.loc[lcode[storm]]
         if v[0] != round(t.tot / 1e3) or v[1] != round(t.after / 1e3):
@@ -251,7 +251,7 @@ def main(bundle, sub):
     if bad:
         print("verify: FAIL", bad)
         return 1
-    print("verify: PASS (call %s, %.1f; MG-04 worst %.3f on %d storms; %d ask figures)" %
+    print("verify: PASS (call %s, %.2f; MG-04 worst %.3f on %d storms; %d ask figures)" %
           (call, rem[call] / 1e6, worst, nstorm, 2 * (len(sect[5]) + len(sect[6]) + len(sect[7]))))
     return 0
 

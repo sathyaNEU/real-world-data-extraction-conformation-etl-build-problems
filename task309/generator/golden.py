@@ -18,8 +18,8 @@ PNG = "avoided_loss_by_county.png"
 DOCX = "board_note_retrofit_2027.docx"
 HEAD = PatternFill("solid", fgColor="DCE4EA")
 NAMES = [P.COUNTY_NAME[c] for c in P.CANDIDATES]
-STORMS = ["Hurricane Corwin", "Tropical Storm Della", "Hurricane Evander"]
-STORM_YEAR = {"Hurricane Corwin": 2008, "Tropical Storm Della": 2009, "Hurricane Evander": 2011}
+STORMS = ["Hurricane Corwin", "Tropical Storm Bettina", "Hurricane Delmar"]
+STORM_YEAR = {"Hurricane Corwin": 2008, "Tropical Storm Bettina": 2009, "Hurricane Delmar": 2011}
 
 
 def _hdr(ws, row, cols):
@@ -42,7 +42,7 @@ def workbook(path, f):
     ws["B4"].font = Font(bold=True)
     ws["A5"] = "Expected annual loss removed, USD million"
     ws["B5"] = f["call_removed_musd"]
-    ws["B5"].number_format = "0.0"
+    ws["B5"].number_format = "0"
     ws["A6"] = "Runner-up"
     ws["B6"] = f["runner_up"]
     _hdr(ws, 8, ["County", "2027 annual expected loss, standard roofs (USD m)",
@@ -51,10 +51,12 @@ def workbook(path, f):
         r = 9 + i
         ws.cell(r, 1, n)
         ws.cell(r, 2, f["aal_musd"][n]).number_format = "0.00"
-        ws.cell(r, 3, f["removed_musd_2dp"][n]).number_format = "0.00"
+        ws.cell(r, 3, f["removed_musd_whole"][n]).number_format = "0"
         ws.cell(r, 4, f["share_130_up"][n] / 100.0).number_format = "0%"
     ws["A14"] = ("Loss removed: each event's vendor loss times the FORTIFIED Roof cut for the event's peak-gust class, "
-                 "from our named-storm claims since 2012 (sheet Cut by gust class), summed at the event's annual rate.")
+                 "from our named-storm claims since 2012 (sheet Cut by gust class), summed at the event's annual rate. Stated to "
+                 "the whole million: every gust-class cut that passes MG-04 gives the same whole million in each county and "
+                 "the same order.")
     ws["A14"].alignment = Alignment(wrap_text=True)
     ws.merge_cells("A14:D15")
     for col, wdt in zip("ABCD", (34, 24, 24, 22)):
@@ -128,13 +130,13 @@ def chart(path, f):
     cols = [BLUE if n == f["call"] else "#9dbfe0" for n in NAMES]
     ax.bar([x + 0.19 for x in xs], rem, width=0.38, color=cols, label="Expected annual loss the round removes")
     for x, v, n in zip(xs, rem, NAMES):
-        ax.text(x + 0.19, v + 0.15, "%.2f" % v, ha="center", va="bottom", fontsize=8.5, color=INK,
-                fontweight="bold" if n == f["call"] else "normal")
+        if n == f["call"]:
+            ax.text(x + 0.19, v + 0.15, "about %d" % f["call_removed_musd"], ha="center", va="bottom", fontsize=8.5,
+                    color=INK, fontweight="bold")
     ax.set_xticks(list(xs))
     ax.set_xticklabels(NAMES)
     ax.set_ylabel("USD million a year")
-    ax.set_title("The round removes the most expected loss in %s, not in the county with the largest annual loss"
-                 % f["call"], fontsize=9.5, loc="left")
+    ax.set_title("The round removes the most expected loss in %s" % f["call"], fontsize=10, loc="left")
     fig.text(0.01, 0.01, "Corvane HU 27.1 event losses, gross of reinsurance; FORTIFIED Roof cut by 10 mph gust class "
              "from Sandpiper claims since 2012.", fontsize=7, color="#555555")
     ax.spines[["top", "right"]].set_visible(False)
@@ -154,9 +156,9 @@ def note(path, f, png):
     rem = f["removed_musd_2dp"]
     p = d.add_paragraph()
     p.add_run("Recommendation: award the 2027 round to %s. " % f["call"]).bold = True
-    p.add_run("Re-roofing its 1,500 portfolio homes to the FORTIFIED Roof standard removes about USD %.1f million of "
-              "expected annual hurricane loss, against USD %.2f million in %s, the runner-up, for the same USD 18.0 "
-              "million." % (f["call_removed_musd"], rem[f["runner_up"]], f["runner_up"]))
+    p.add_run("Re-roofing its 1,500 portfolio homes to the FORTIFIED Roof standard removes about USD %d million of "
+              "expected annual hurricane loss, against about USD %d million in %s, the runner-up, for the same USD 18.0 "
+              "million." % (f["call_removed_musd"], f["removed_musd_whole"][f["runner_up"]], f["runner_up"]))
     d.add_paragraph("%s carries the largest annual expected loss (USD %.2f million) but %d percent of it comes from "
                     "events gusting 130 mph or more at the portfolio. Our claims since 2012 show the FORTIFIED Roof cuts "
                     "paid loss per dollar insured by about %d percent in storms gusting under 130 mph and by about %d "

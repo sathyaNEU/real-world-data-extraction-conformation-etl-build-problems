@@ -1,0 +1,39 @@
+{
+ "task": "task310",
+ "status": "SHIPPED",
+ "domain": "energy-systems-utilities",
+ "objective": "opportunity-sizing-decision",
+ "stage": 5,
+ "stage_name": "ship",
+ "updated": "2026-10-27",
+ "stump": "A competent analyst simulates the programme battery against each panel home's recorded hourly solar and use and runs the rounds Sandhaven Coast 2027, Eastbrook Metro 2028, Tarrock Highlands 2029 and Yarrandale Valley 2030 at about 1,200 kWh a battery for Yarrandale, because the 28 Yarrandale estate homes on the 0.5 kW constrained-zone agreement recorded only the solar their own use and the limit took; with their output rebuilt hour by hour from the unlimited Yarrandale homes' energy per kilowatt, Yarrandale Valley goes first at about 2,450 kWh a battery.",
+ "architecture": 1,
+ "loops": 0,
+ "seed": "OS12 (solar installer's 2,400 retrofit batteries across four regions): world and quantity kept; the successor-channel mechanism dropped (data semantics); the split and a pick both echo shipped builds, so the decision is the order of four annual rounds, client domain energy-systems-utilities / generation-capacity-planning",
+ "precut": "53 checks, 0 FAIL, 0 WARN (2026-10-27)",
+ "leak": {
+  "leak_py": "REVIEW 2026-10-27, no LEAK (sweeps 3, 4, 6, 9; sweep 4 ruled in the note)",
+  "reader": "2026-10-27 isolated sonnet medium: no decisive-step sentence, no ranking or helper file, question 6 analytical, every REVIEW line harmless; realism notes minor"
+ },
+ "duplicate_check": {
+  "heart": "WARN 2026-10-27 (overuse.org_family, overuse.objective)",
+  "nearest": "task114 0.06 (driver)",
+  "surface": "4 pairs at 0.10 (task308 same pairing two back, other decision and driver; task309, task165, task453 surface only), adjudicated clean"
+ },
+ "judge": {
+  "verdict": "DETERMINISTIC",
+  "disposition": "APPROVE (pass 1)",
+  "report": "task310/determinism_check_report.md",
+  "gate_g": "binding_constraint analytical, borderline surface read",
+  "gate_h": "domain pass, layers pass, decisive step analytical"
+ },
+ "returned": [],
+ "resume": "shipped 2026-10-27; awaiting the portal",
+ "approved": null,
+ "delivered": "2026-10-27",
+ "portal": null,
+ "portal_id": "",
+ "portal_status": "",
+ "portal_status_date": "",
+ "zip_sha256_16": "6990902f5cfbcf85"
+}

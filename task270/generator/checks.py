@@ -1,6 +1,6 @@
-"""task270 checks: the analyst test on the generator's clean truth, the call on the cut pack, the licensed family of
-cycle readings and the ladder's wrong rungs, every semantic fork, the Layer 1 mess on the call's path, the pilot ask's
-devices, stops and fairness, the separation of the ask from the call, the invented names and the pack's gates.
+"""task270 checks: the three rules on the generator's clean truth, the call on the cut pack, the standing family and
+the ladder's wrong rungs, every semantic fork, the Layer 1 mess on the call's path, the asks' fairness, devices and
+stops, the separation of the asks from the call, the invented names, the realism sweep and the pack's gates.
 Exit 1 on any failure.
 
     python3 task270/generator/checks.py [TARGET]"""
@@ -8,9 +8,11 @@ from __future__ import annotations
 
 import datetime as dt
 import json
+import math
 import os
 import re
 import sys
+import zipfile
 
 import numpy as np
 import openpyxl
@@ -23,363 +25,81 @@ import calc as C        # noqa: E402
 import common as K      # noqa: E402
 import cracker as CR    # noqa: E402
 import docs as D        # noqa: E402
-import pilot as PL      # noqa: E402
-import records as R     # noqa: E402
+import hub as H         # noqa: E402
+import staff as S       # noqa: E402
 import world as W       # noqa: E402
 
 ROWS = []
-DAY0 = K.YEAR_START.toordinal()
-NDAYS = (K.YEAR_END - K.YEAR_START).days + 1
 # real places a screen of the reference list misses, read from a gazetteer by hand: each sits within two edits of a
 # name this build once used, or of a distinctive word it uses now
-EXTRA_PLACES = ["grasmere", "kirstead", "corrany", "corran", "tarvin", "eskdale", "wembley", "halstead", "holme",
-                "dillon", "thessaly", "corwen"]
+EXTRA_PLACES = ["quenby", "rushmere", "overgate", "pendle", "hollinsmere", "fennacre", "skelton", "lowfield",
+                "brindle", "wendover", "dunnerdale", "drayton", "cressage", "rennington", "ashwater", "bramwith",
+                "garthorpe", "hesketh", "torrington", "wynford", "fordwich", "wrabness", "hartwick", "sedgefield",
+                "skelwith", "borrowdale"]
 
 
 def row(label, ok, detail=""):
     ROWS.append((label, bool(ok), detail))
 
 
-def pct(sh):
-    return {c: K.round_half_up(100 * v["share"], 1) for c, v in sh.items()}
+def names(codes):
+    return ", ".join(K.TEAM_NAME[c] for c, _n in K.TEAMS if c in codes)
 
 
-def same_figures(a, b):
-    return all(a[c]["n"] == b[c]["n"] and a[c]["low"] == b[c]["low"] for c in K.NETWORK_NAME)
+def na_of(vals, version):
+    items = np.clip(np.round(vals * 10), 0, 100) / 10.0 if version == 3 else np.clip(np.round(vals), 0, 10)
+    return float(items.mean())
 
 
-def pdc_variant(items, start=None, union=False):
-    """Specification 2.2 on (day, days) items; start overrides the first item's day; union counts each covered day
-    once without moving an overlap forward."""
-    items = sorted(items)
-    first = items[0][0] if start is None else start
-    cov = np.zeros(NDAYS + 900, bool)
-    nxt = -400
-    for d, n in items:
-        st = d if union else max(d, nxt)
-        if st < 0:
-            n, st = n + st, 0
-        if n > 0:
-            cov[st:st + n] = True
-        nxt = st + n
-    return cov[first:NDAYS].sum() / (NDAYS - first)
-
-
-def tier_of(T, mask, pdc_col="pdc"):
-    out = {}
-    for c in K.NETWORK_NAME:
-        s = T[mask & (T["network"] == c)]
-        out[c] = dict(n=int(len(s)), low=int((s[pdc_col] < K.PDC_LINE).sum()),
-                      share=float((s[pdc_col] < K.PDC_LINE).mean()) if len(s) else float("nan"))
+def clean_truth(patients):
+    """Each patient's latest completed fortnight read straight from the world (no export, no join, no clock): the
+    easy route's change between adjacent prompts and the three-hour change, and the world's own long-run three-hour
+    instability."""
+    out = []
+    for p in patients:
+        kind, first, c, swap, c2, rows = [z for z in p.fortnight_rows if z[0] == "latest"][0]
+        ans = [(k, b, a, na_of(v, 3 if a.date() < K.V4_FROM else 4)) for k, b, s, a, v in rows if a is not None]
+        by = {}
+        for k, b, a, y in ans:
+            by.setdefault(k, []).append((b, a, y))
+        adj, w = [], []
+        for xs in by.values():
+            xs.sort()
+            for i in range(len(xs)):
+                for j in range(i + 1, len(xs)):
+                    g = (xs[j][1] - xs[i][1]).total_seconds() / 3600
+                    if xs[j][0] == xs[i][0] + 1:
+                        adj.append((xs[j][2] - xs[i][2]) ** 2)
+                    if 2.5 <= g <= 3.5:
+                        w.append((xs[j][2] - xs[i][2]) ** 2)
+        out.append(dict(team=p.team, R1=math.sqrt(np.mean(adj)), W=math.sqrt(np.mean(w)), T=W.truth_rmssd(p)))
     return out
 
 
-def clean_truth(pts, pracs):
-    """Every patient on the year-end lists, aged 65 or over, two or more 2026 items, each 2026 proportion of days
-    covered from the world's own items; the analyst's population (care home residents and coded aid patients out)
-    and the specification's (the patients who collect and take their own statins)."""
-    net = {p["code"]: p["network"] for p in pracs}
-    rows = []
-    for pt in pts:
-        if pt["left"] or pt["yob"] > K.BORN_BY:
-            continue
-        it = [((d - K.YEAR_START).days, int(round(q / pt["tpd"]))) for d, _o, _p, q, _t in pt["items"]
-              if K.YEAR_START <= d <= K.YEAR_END]
-        if len(it) < 2:
-            continue
-        rows.append(dict(network=net[pt["practice"]], kind=pt["kind"], coded=pt["coded_aid"], pdc=C.pdc_of(it)))
-    T = pd.DataFrame(rows)
-    analyst = tier_of(T, (T["kind"] != "ch") & ~T["coded"])
-    decisive = tier_of(T, T["kind"] == "sm")
-    return analyst, decisive
+def set_of(res, route):
+    teams = [c for c, _ in K.TEAMS]
+    sh = {c: [o[route] >= K.HIGH for o in res if o["team"] == c] for c in teams}
+    return sorted(c for c in teams if 100 * np.mean(sh[c]) >= K.LINE)
 
 
-def main(target=K.TARGET):
-    pracs, pharms, pts = W.build()
-    analyst, truth = clean_truth(pts, pracs)
-    tset = C.tier(truth)
-    # ------------------------------------------------------------------ the three rules on the clean truth
-    row("R3a ANALYST the easy route on the clean truth (care home residents and coded aid patients out) names "
-        "another set", C.tier(analyst) != tset, "%s against %s" % (C.tier(analyst), tset))
-    row("R3a ANALYST the easy route leaves out exactly Briskdale and Grevmoor, the two Synaris networks with the most "
-        "aid patients",
-        set(tset) - set(C.tier(analyst)) == {"BRK", "GRV"} and set(C.tier(analyst)) <= set(tset),
-        str(sorted(set(tset) - set(C.tier(analyst)))))
-    row("R3b DECISIVE the self-managing patients alone, on the clean truth, name six networks", len(tset) == 6, str(tset))
-    # ------------------------------------------------------------------ the call on the pack
-    T = C.patient_table(target)
-    gold = C.shares(T, C.route_mask(T, "G", "cyc1"))
-    gset = C.tier(gold)
-    row("CALL the golden on the pack names the clean truth's set", gset == tset, str(gset))
-    row("CALL every network's population and fallen-behind count on the pack equal the clean truth's",
-        same_figures(gold, truth), "")
-    gap = min(abs(v["share"] - K.TIER_LINE) for v in gold.values())
-    row("CALL every network's share sits 1.5 points or more from 30 per cent", gap >= 0.015, "%.3f points" % (100 * gap))
-    below = max((c for c in K.NETWORK_NAME if c not in gset), key=lambda c: gold[c]["share"])
-    low_in = min(gset, key=lambda c: gold[c]["share"])
-    row("CALL the first network below the line and the lowest one over it", True,
-        "%s %.2f, %s %.2f" % (below, 100 * gold[below]["share"], low_in, 100 * gold[low_in]["share"]))
-    clear = min(K.bin_clearance(100 * v["share"], 0.1) for v in gold.values())
-    row("CALL no share sits on a rounding edge of its one-decimal bin", clear > 0.001, "%.4f of a step" % clear)
-    # ------------------------------------------------------------------ the family of cycle readings
-    elig = T[T["eligible_base"]]
-    coded = elig[elig["coded_aid"]]
-    kind = {pt["new_key"]: pt["kind"] for pt in pts}
-    T["kind"] = T["patient"].map(kind)
-    for col, label in (("cyc1", "steps within a day of 7 or 28 on nine in ten (the golden)"),
-                       ("cyc2w", "steps within two days on nine in ten, on one weekday"),
-                       ("cyc3w", "steps within three days on four in five, on one weekday")):
-        sh = C.shares(T, C.route_mask(T, "G", col))
-        row("FAMILY %s flags every coded aid patient" % label, bool(coded[col].all()),
-            "%d of %d" % (int(coded[col].sum()), len(coded)))
-        row("FAMILY %s names the golden set with every population and share the golden's" % label,
-            C.tier(sh) == gset and same_figures(sh, gold), "")
-        row("FAMILY %s flags no self-managing patient and misses no aid patient (the world's own kinds)" % label,
-            int((T[col] & (T["kind"] == "sm")).sum()) == 0 and int((~T[col] & (T["kind"] == "aid")).sum()) == 0, "")
-    T["wkstep"] = T["weekday"] & T["patient"].isin(set(T.loc[T["cyc1"] | T["cyc2"] | T["cyc3"], "patient"]))
-    sh = C.shares(T, C.route_mask(T, "G", "wkstep"))
-    row("FAMILY one weekday with any of the step readings names the golden set and figures",
-        C.tier(sh) == gset and same_figures(sh, gold), "")
-    for col, label in (("cyc2", "steps within two days, any weekday"), ("cyc3", "steps within three days, any weekday")):
-        sh = C.shares(T, C.route_mask(T, "G", col))
-        diff = [c for c in K.NETWORK_NAME if sh[c]["n"] != gold[c]["n"] or pct(sh)[c] != pct(gold)[c]]
-        row("RECORD %s names the golden set (figures differ in %d networks; it flags %d self-managing patients whose "
-            "items fall on several weekdays, against the guidance's same-day supply)"
-            % (label, len(diff), int((T[col] & (T["kind"] == "sm")).sum())), C.tier(sh) == gset, ", ".join(diff))
-    sh0 = C.shares(T, C.route_mask(T, "G", "cyc0"))
-    row("RECORD exact steps only miss coded aid patients whose packs moved round a bank holiday (refuted by the coded "
-        "patients), and name the golden set", int((~coded["cyc0"]).sum()) > 50 and C.tier(sh0) == gset,
-        "%d of %d coded aid patients missed" % (int((~coded["cyc0"]).sum()), len(coded)))
-    # ------------------------------------------------------------------ the ladder's rungs and Gate F
-    routes = {r: C.shares(T, C.route_mask(T, r)) for r in ("R0", "R1", "R2", "R3", "R4")}
-    for r, sh in routes.items():
-        row("RUNG %s (%s) names another set" % (r, C.ROUTES[r]), C.tier(sh) != gset, str(C.tier(sh)))
-    row("RUNG R2, the analyst's route, names four networks, leaving out Briskdale and Grevmoor",
-        C.tier(routes["R2"]) == ["COR", "FEL", "KRT", "NVG"], str(C.tier(routes["R2"])))
-    base = T["eligible_base"] & ~T["care_home"]
-    cheap = {
-        "coded or weekly items out": base & ~T["coded_aid"] & ~T["weekly_items"],
-        "full cover 95 per cent or more out": base & ~(T["pdc"] >= 0.95),
-        "full cover 97 per cent or more out": base & ~(T["pdc"] >= 0.97),
-        "full cover 100 per cent out": base & ~(T["pdc"] >= 1.0),
-        "coded out and full cover out": base & ~T["coded_aid"] & ~(T["pdc"] >= 0.99),
-        "thirteen or more 2026 items out": base & ~(T["n_items"] >= 13),
-        "coded out and thirteen or more items out": base & ~T["coded_aid"] & ~(T["n_items"] >= 13),
-    }
-    land = 0
-    for name, m in cheap.items():
-        st = C.tier(C.shares(T, m))
-        land += st == gset
-        row("RUNG cheap route (%s) names another set" % name, st != gset, str(st))
-    row("GATE F cheap routes landing the call on the pack", land == 0 and all(C.tier(s) != gset for s in routes.values()),
-        "%d of %d" % (land, len(cheap) + len(routes)))
-    # ------------------------------------------------------------------ semantic forks
-    Dp, pop = C.load(target)
-    y = Dp[(Dp["date"] >= K.YEAR_START) & (Dp["date"] <= K.YEAR_END)].copy()
-    y["d"] = y["date"].map(lambda x: x.toordinal() - DAY0)
-    grp = {k: list(zip(g["d"], g["days"])) for k, g in y.groupby("patient")}
-    mask_g = C.route_mask(T, "G", "cyc1")
-    spec = " ".join(p for _, ps in D.SPEC for p in ps)
+def pct(sh):
+    return {c: 100 * v["share"] for c, v in sh.items()}
 
-    def variant(pdc_map, mask=mask_g, col="pdc_v"):
-        T[col] = T["patient"].map(pdc_map)
-        return tier_of(T, mask & T[col].notna(), col)
 
-    T1 = T.copy()
-    m1 = T1["eligible_base"] & ~T1["care_home"] & ~T1["cyc1"] & ~T1["coded_aid"] & (T1["yob"] <= 1960)
-    row("SF1 aged 65 or over on 31 December 2026 (filed 2.1); born 1960 or earlier instead, same call",
-        "born in 1961 or earlier" in spec and C.tier(tier_of(T1, m1)) == gset, C.tier(tier_of(T1, m1)))
-    left = set(y["patient"]) - set(pop["patient"])
-    row("SF2 registered on 31 December 2026 (filed 2.1): the year-end lists hold no patient who left during 2026, "
-        "whose items stay in the dispensing", len(left) > 300, "%d dispensed-to patients not on the lists" % len(left))
-    P = pd.read_csv(os.path.join(target, R.F_PRACTICES), dtype=str).fillna("")
-    early = {r.practice_ods: r.network.replace(" PCN", "") for r in P.itertuples() if r.member_to}
-    name_to = {v: k for k, v in K.NETWORK_NAME.items()}
-    first_day = y.groupby("patient")["date"].min()
-    T2 = T.copy()
-    T2["network"] = [name_to[early[p]] if p in early and first_day.get(k, K.YEAR_END) < K.NETWORK_MOVE else n
-                     for k, p, n in zip(T2["patient"], T2["practice"], T2["network"])]
-    row("SF3 each network as its practices stood on 31 December 2026 (filed 3.1); a moved practice's patients in its "
-        "old network when their first 2026 item came before the move, same call",
-        "as its practices stood on 31 December 2026" in spec and C.tier(tier_of(T2, mask_g)) == gset,
-        str(C.tier(tier_of(T2, mask_g))))
-    main_prod = y.groupby("patient")["product_description"].agg(lambda s: s.value_counts().index[0])
-    per_prod = {}
-    for k, g in y.groupby("patient"):
-        g2 = g[g["product_description"] == main_prod[k]]
-        if len(g2) >= 1:
-            per_prod[k] = pdc_variant(list(zip(g2["d"], g2["days"])), start=int(g["d"].min()))
-    row("SF4 every statin counts and a change of statin continues the supply (filed 2.2, in those words); the patient's "
-        "main product alone would read a switch as a stop", "Every statin counts, so a change of statin continues the "
-        "supply" in spec, "main product alone: %s" % C.tier(variant(per_prod)))
-    asdir = set(y.loc[y["dosage_instructions"].str.upper().str.contains("AS DIRECTED"), "patient"])
-    row("SF5 an item's days from its quantity and the dosage's tablets a day, AS DIRECTED one a day (filed 2.2); the "
-        "AS DIRECTED patients left out instead, same call",
-        "or one tablet a day where they give none" in spec
-        and C.tier(tier_of(T, mask_g & ~T["patient"].isin(asdir))) == gset, "%d AS DIRECTED patients" % len(asdir))
-    uni = {k: pdc_variant(v, union=True) for k, v in grp.items() if len(v) >= 2}
-    row("SF6 an overlap moves to follow the earlier supply (filed 2.2); covered days counted once instead, same call",
-        "starts when that supply ends" in spec and C.tier(variant(uni)) == gset, str(C.tier(variant(uni))))
-    pre = Dp[(Dp["date"] < K.YEAR_START)].copy()
-    pre["d"] = pre["date"].map(lambda x: x.toordinal() - DAY0)
-    carry = {}
-    pre_g = {k: list(zip(g["d"], g["days"])) for k, g in pre.groupby("patient")}
-    for k, v in grp.items():
-        if len(v) >= 2:
-            carry[k] = pdc_variant(pre_g.get(k, []) + v, start=min(d for d, _ in v))
-    cal = {k: pdc_variant(v, start=0) for k, v in grp.items() if len(v) >= 2}
-    row("SF7 from the first 2026 item, 2025 items not counted (filed 2.2); December 2025 supply carried in instead, "
-        "same call", "Items dispensed before 1 January 2026 are not counted" in spec and C.tier(variant(carry)) == gset,
-        str(C.tier(variant(carry))))
-    row("SF7 the days counted run from the patient's first 2026 item (filed 2.2, in those words), not from 1 January",
-        "the days from the date of the patient's first statin item dispensed in 2026 to 31 December 2026" in spec,
-        "from 1 January without carry-in: %s" % C.tier(variant(cal)))
-    one = {k: C.pdc_of(v) for k, v in grp.items() if len(v) == 1}
-    T["pdc1"] = T["patient"].map(lambda k: one.get(k, np.nan))
-    T["pdc_any"] = T["pdc"].fillna(T["pdc1"])
-    m8 = (T["aged65"] & (T["n_items"] >= 1)) & ~T["care_home"] & ~T["cyc1"] & ~T["coded_aid"]
-    row("SF8 two or more 2026 items (filed 2.1); one or more instead, same call",
-        "two or more statin items" in spec and C.tier(tier_of(T, m8, "pdc_any")) == gset,
-        "%d one-item patients" % int((T["n_items"] == 1).sum()))
-    at80 = int(((T["pdc"] - 0.8).abs() < 1e-12).sum())
-    T["pdc_le"] = np.where((T["pdc"] - 0.8).abs() < 1e-12, 0.79, T["pdc"])
-    row("SF9 under 80 per cent is strict (filed 2.3); at 80 per cent counted as fallen behind too, same call",
-        "is under 80 per cent has fallen behind" in spec and C.tier(tier_of(T, mask_g, "pdc_le")) == gset,
-        "%d patients at exactly 80 per cent" % at80)
-    row("SF10 30 per cent or more is inclusive (filed 3.1), and no network sits within 1.5 points of it",
-        "30 per cent or more" in spec and gap >= 0.015, "%.2f points" % (100 * gap))
-    aid_mid = [pt for pt in pts if pt["kind"] == "aid" and pt["aid_from"]]
-    row("SF11 the compliance-aid patients at the year end or at any time in 2026: no patient moved onto an aid during "
-        "the year, so both readings take the same patients", not aid_mid, "%d" % len(aid_mid))
-    Q = pd.read_csv(os.path.join(target, R.F_QUARVIS), dtype=str).fillna("")
-    qd = pd.to_datetime(Q.loc[Q["care_home_since"] != "", "care_home_since"], dayfirst=True)
-    wb = openpyxl.load_workbook(os.path.join(target, R.F_SYNARIS), read_only=True)
-    trows = list(wb["Lipid cohort"].iter_rows(values_only=True))[1:]
-    td = [r[5] for r in trows if str(r[4]).startswith("Care home")]
-    row("SF12 care home residence at the year end or at any time in 2026: every resident's record dates from before "
-        "2026 on both lists", qd.max() < pd.Timestamp(K.YEAR_START) and max(td) < dt.datetime(2026, 1, 1),
-        "%s, %s" % (qd.max().date(), max(td).date()))
-    Xw = pd.read_csv(os.path.join(target, R.F_XWALK), dtype=str)
-    raw = Dp.copy()
-    raw["patient"] = raw["patient_pseudonym"]
-    nox = {}
-    yr = raw[(raw["date"] >= K.YEAR_START) & (raw["date"] <= K.YEAR_END)].copy()
-    yr["d"] = yr["date"].map(lambda x: x.toordinal() - DAY0)
-    for k, g in yr.groupby("patient"):
-        if len(g) >= 2:
-            nox[k] = C.pdc_of(list(zip(g["d"], g["days"])))
-    shx = variant(nox)
-    moved = [c for c in K.NETWORK_NAME if shx[c]["n"] != gold[c]["n"] or pct(shx)[c] != pct(gold)[c]]
-    row("SF13 the pre-July pseudonyms carried through the crosswalk; read apart, every network's figures move "
-        "(a Layer 1 stop)", len(moved) == 12 and len(Xw) > 20000, "%d networks move, %d crosswalk rows" % (len(moved), len(Xw)))
-    row("SF14 the reading that marks a cycle: every standing reading names the golden set with its figures (FAMILY rows)",
-        True, "")
-    row("SF15 shares to one decimal of a per cent: the standing readings print the same share in every network "
-        "(FAMILY rows) and none sits on a rounding edge", clear > 0.001, "")
-    ph = pd.read_csv(os.path.join(target, PL.F_PHARMACIES), dtype=str).fillna("")
-    dsp = set(ph.loc[ph["contract_type"] == "Distance selling", "ods_code"])
-    nd = y[~y["dispenser_ods"].isin(dsp)]
-    gnd = {k: list(zip(g["d"], g["days"])) for k, g in nd.groupby("patient")}
-    T["n_nd"] = T["patient"].map(lambda k: len(gnd.get(k, [])))
-    T["pdc_nd"] = T["patient"].map(lambda k: C.pdc_of(gnd[k]) if len(gnd.get(k, [])) >= 2 else np.nan)
-    m16 = T["aged65"] & (T["n_nd"] >= 2) & ~T["care_home"] & ~T["cyc1"] & ~T["coded_aid"]
-    row("SF16 a distance-selling pharmacy's items count (filed 2.1); left out instead, same call",
-        "distance-selling pharmacies included" in spec and C.tier(tier_of(T, m16, "pdc_nd")) == gset,
-        "%d items from %s" % (int(y["dispenser_ods"].isin(dsp).sum()), ", ".join(sorted(dsp))))
-    # ------------------------------------------------------------------ Layer 1 on the call's path
-    old = Dp["patient_pseudonym"].str.fullmatch(r"\d{12}")
-    row("L1 the data service's re-keying: items before 1 July carry the old twelve-digit pseudonym",
-        bool(old.any()) and (Dp.loc[old, "date"].max() < K.REKEY) and (Dp.loc[~old, "date"].min() >= K.REKEY),
-        "%d old-key rows" % int(old.sum()))
-    row("L1 two practices moved network on 1 April 2026 and carry a row for each network", len(early) == 2, str(early))
-    texts = set(Dp["dosage_instructions"])
-    row("L1 dosage instructions as prescribers typed them, two-a-day and AS DIRECTED among them",
-        len(texts) >= 12 and any("TWO" in t or t.startswith("2") for t in texts) and "AS DIRECTED" in texts,
-        "%d distinct" % len(texts))
-    row("L1 branded and generic statins, and a change of statin in the year",
-        Dp["product_description"].str.contains(r"\(").any() and int((y.groupby("patient")["product_description"]
-                                                                       .nunique() > 1).sum()) > 100, "")
-    row("L1 the dispensing extract runs from 1 December 2025, as its name says", Dp["date"].min() >= K.EXTRACT_START
-        and Dp["date"].min() < dt.date(2025, 12, 8) and Dp["date"].max() <= K.YEAR_END, str(Dp["date"].min()))
-    labels = {str(r[4]) for r in trows}
-    row("L1 Synaris's residence labels include sheltered housing and not recorded, neither a care home",
-        {"Sheltered housing", "Not recorded"} <= labels, ", ".join(sorted(labels)))
-    # ------------------------------------------------------------------ the pilot ask
-    pr2, ph2, pts2 = pracs, pharms, pts
-    pilots, mvd, ev = PL.build(ph2, pts2)
-    C1t, C2t = PL.truth(ev, pilots, mvd)
-    C1, C2 = A.pilot_figures(target)
-    row("ASK fair: the golden's handling of the pack reproduces the pilot's truth in all 16 figures",
-        C1 == C1t and C2 == C2t, "")
-    copies = [e for e in ev if e["dup_of"] is not None]
-    late = [e for e in ev if e.get("late")]
-    row("ASK every hand-keyed copy is recovered, and its system record is not",
-        all(not e["dup_of"].get("late") for e in copies) and len(copies) >= 30, "%d copies" % len(copies))
-    row("ASK copies reach the portal both before and after their system record (first-recorded is no rule)",
-        sum(e["rec"] < e["dup_of"]["rec"] for e in copies) >= 5 and sum(e["rec"] > e["dup_of"]["rec"] for e in copies) >= 5,
-        "%d before, %d after" % (sum(e["rec"] < e["dup_of"]["rec"] for e in copies),
-                                 sum(e["rec"] > e["dup_of"]["rec"] for e in copies)))
-    twins = {e["pt"]["pid"] for e in copies}
-    row("ASK every late claim is a consultation held: no late-claimed record belongs to a patient recorded twice, and "
-        "each was recorded after its fifth working day", all(e["pt"]["pid"] not in twins and e["rec"] > PL.deadline(e["date"])
-                                                             for e in late), "%d late claims" % len(late))
-    on_time = [e for e in ev if not e.get("late") and e["dup_of"] is None]
-    row("ASK every other record was claimed by its fifth working day", all(e["rec"] <= PL.deadline(e["date"]) for e in on_time), "")
-    E, S, Pp, xmap = A.load_pilot(target)
-    rec_ids = set(S.loc[S["line"] == "Recovery", "record_id"])
-    ids_late = {e["id"] for e in late}
-    ids_copy = {e["id"] for e in copies}
-    row("ASK the statements recover exactly the copies and the late claims", rec_ids == ids_late | ids_copy,
-        "%d recoveries" % len(rec_ids))
-    gold1, gold2, out = CR.run(target)
-    crack = out[0]
-    row("ASK the cracker keeps none of the 16 figures", not crack[4] and not crack[5],
-        "%d kept" % (len(crack[4]) + len(crack[5])))
-    for name, desc, c1, c2, h1, h2 in out[1:]:
-        row("ASK route %s (%s) keeps %d of 16" % (name, desc, len(h1) + len(h2)), len(h1) + len(h2) <= 13, "")
-    row("ASK no route but the golden's keeps more than 13 of 16", max(len(o[4]) + len(o[5]) for o in out) <= 13, "")
-    for cell in gold1:
-        row("ASK stop %s quarter %d: the cracker's first consultations and follow-ups both miss" % cell,
-            crack[2][cell] != gold1[cell] and crack[3][cell] != gold2[cell],
-            "%d/%d against %d/%d" % (crack[2][cell], crack[3][cell], gold1[cell], gold2[cell]))
-    # ------------------------------------------------------------------ separation
-    src = open(os.path.join(HERE, "calc.py"), encoding="utf-8").read()
-    row("SEP the call reads none of the pilot's files (the export, the statements, the pharmacy list)",
-        not re.search(r"F_PORTAL|F_STATEMENTS|F_PHARMACIES|pilot", src), "")
-    row("SEP no ask device sits in a file the call reads: copies, late claims and the relocation live in the pilot's "
-        "files, and the dispensing carries no pilot record", "record_id" not in Dp.columns, "")
-    # ------------------------------------------------------------------ names, dashes, gates
-    places = [x.strip().lower() for x in open(os.path.join(HERE, "h21_reference_places.txt")) if x.strip()]
-    places += EXTRA_PLACES
-    names = sorted({n for _c, n, *_ in K.NETWORKS} | set(W.EXTRA_PLACES) | {"Quarvis", "Synaris", "Iversford",
-                                                                             "Vellmarsh", "Pellhope", "Ravensholt",
-                                                                             "Drevanholm"})
-    near = ["%s (%s)" % (nm, p) for nm in names for p in places
-            if _ed(nm.lower(), p) <= 2 or (len(p) >= 5 and (p in nm.lower() or nm.lower() in p))]
-    row("H21 every invented place, system and owner name (%d) is three or more edits from every reference place"
-        % len(names), not near, ", ".join(near[:6]))
-    text = " ".join(p for _, ps in D.SPEC + D.GUIDE + D.CPCF for p in ps)
-    row("no em or en dash in the documents", "—" not in text and "–" not in text, "")
-    files = sorted(os.listdir(target))
-    row("GATE files", len(files) >= 10, str(len(files)))
-    row("GATE formats", len({f.rsplit(".", 1)[1] for f in files}) >= 3, str(sorted({f.rsplit('.', 1)[1] for f in files})))
-    row("GATE a file of 25,000 rows or more", len(Dp) >= 25000, str(len(Dp)))
-    row("H16 no dispensing after 31 December 2026 and nothing in the export after its pull",
-        Dp["date"].max() <= K.YEAR_END and pd.to_datetime(E["recorded_on"], dayfirst=True).max().date() <= PL.PORTAL_PULL, "")
-    meta = os.path.join(os.path.dirname(HERE), "metadata.json")
-    if os.path.exists(meta):
-        M = json.load(open(meta))
-        dis = M.get("distractor_files", [])
-        row("GATE two or more distractors named in metadata.json, each shipped and none in a graded computation",
-            len(dis) >= 2 and all(f in files for f in dis) and not any(
-                re.search(re.escape(f), open(os.path.join(HERE, m), encoding="utf-8").read())
-                for f in dis for m in ("calc.py", "asks.py")), ", ".join(dis))
-        row("GATE metadata.json lists every shipped file", sorted(f["path"] for f in M.get("files", [])) == files, "")
-    bad = [r for r in ROWS if not r[1]]
-    for label, ok, detail in ROWS:
-        print("%s  %s%s" % ("PASS" if ok else "FAIL", label, ("  [%s]" % detail) if detail else ""))
-    print("checks: %d run, %d failed" % (len(ROWS), len(bad)))
-    return 1 if bad else 0
+def slot_rmssd(g, mode, w):
+    """The collaborative's schedule laid over one patient fortnight's ratings: for each day and each of its times
+    (9:00 to 21:00), the trust rating nearest the time within w minutes (mode near) or answered in the w minutes
+    after it (mode after), and the root mean square change between adjacent times both filled."""
+    sq = []
+    for _day, d in g.groupby("day"):
+        t = (d.answered.dt.hour + d.answered.dt.minute / 60 + d.answered.dt.second / 3600).to_numpy()
+        y = d.na.to_numpy()
+        vals = []
+        for T in K.COLLAB_TIMES:
+            m = ((t >= T) & (t <= T + w / 60)) if mode == "after" else (np.abs(t - T) <= w / 60)
+            vals.append(y[np.where(m)[0][np.argmin(np.abs(t[m] - T))]] if m.any() else None)
+        sq.extend((b - a) ** 2 for a, b in zip(vals, vals[1:]) if a is not None and b is not None)
+    return (math.sqrt(np.mean(sq)) if sq else float("nan")), len(sq)
 
 
 def _ed(a, b):
@@ -392,6 +112,339 @@ def _ed(a, b):
             cur[j] = min(prev[j] + 1, cur[j - 1] + 1, prev[j - 1] + (ca != cb))
         prev = cur
     return prev[-1]
+
+
+def main(target=K.TARGET):
+    patients, extra = W.build()
+    # ---------------------------------------------------------------------------------- the three rules, clean truth
+    ct = clean_truth(patients)
+    truth = set_of(ct, "T")
+    easy, dec = set_of(ct, "R1"), set_of(ct, "W")
+    row("R3a ANALYST the easy route on the clean truth (the change between adjacent prompts) names another set",
+        easy != truth, "%s against %s" % (names(easy), names(truth)))
+    row("R3a ANALYST the easy route funds the two hub teams alone and every team it funds is in the golden set",
+        easy == ["BW-CM02", "BW-CM05"] and set(easy) <= set(truth), names(easy))
+    row("R3b DECISIVE the three-hour change on the clean truth names the world's own set", dec == truth, names(dec))
+    row("R3b DECISIVE the world's own three-hour instability funds five teams", len(truth) == 5, names(truth))
+    row("R2 LAYER the decisive step flips the call with every file clean (no export, join, clock or scale to read)",
+        easy != dec, "")
+    heads = []
+    for f in os.listdir(target):
+        if f.endswith(".csv"):
+            with open(os.path.join(target, f), encoding="utf-8") as fh:
+                heads.append(fh.readline().lower())
+    row("R1 RAW the pack ships the momentary ratings at the prompt grain and no instability figure for any patient",
+        not any(re.search(r"instab|rmssd|mssd|variab", h) for h in heads), "")
+    # ------------------------------------------------------------------------------------------------ the call
+    allp, reg, eps, pop, res = C.main_call(target)
+    row("R1 RAW the exports carry 25,000 or more prompts with their send and answer times",
+        len(allp) >= 25000, "%d prompts" % len(allp))
+    sh = {r: C.shares(res, r) for r in C.ROUTES}
+    gold = C.funded(sh["W"])
+    row("CALL the golden route on the pack names the clean truth's set", gold == truth, names(gold))
+    n_pack = {c: v["n"] for c, v in sh["W"].items()}
+    n_world = {c: sum(1 for p in patients if p.team == c) for c, _ in K.TEAMS}
+    row("CALL every team's assessed patients on the pack equal the world's", n_pack == n_world,
+        ", ".join("%s %d" % (K.TEAM_NAME[c], n_pack[c]) for c, _ in K.TEAMS))
+    fam = ("W", "W2", "K2", "E", "ET")
+    lo_in = min(pct(sh[r])[c] for r in fam for c in gold)
+    hi_out = max(pct(sh[r])[c] for r in fam for c, _ in K.TEAMS if c not in gold)
+    row("CALL every funded team at 38 per cent or more and every other at 20 or less under every standing member",
+        lo_in >= 38 and hi_out <= 20, "lowest funded %.1f, highest left out %.1f" % (lo_in, hi_out))
+    for r in fam:
+        row("FAMILY %s names the golden set" % r, C.funded(sh[r]) == gold,
+            " ".join("%.1f" % pct(sh[r])[c] for c, _ in K.TEAMS))
+    tw = {c: 100 * np.mean([o["T"] >= K.HIGH for o in ct if o["team"] == c]) for c, _ in K.TEAMS}
+    row("FAMILY the world's own three-hour instability names the golden set, every share 10 points or more from 30",
+        min(abs(v - K.LINE) for v in tw.values()) >= 10, " ".join("%.1f" % tw[c] for c, _ in K.TEAMS))
+    by_pt = {pt: g for pt, g in allp[allp.answered.notna()].groupby("patient")}
+    for mode, w in (("near", 45), ("near", 60), ("near", 90), ("after", 45)):
+        got, none = {c: [] for c, _ in K.TEAMS}, 0
+        npairs = []
+        for pt, f, l, team in pop:
+            g = by_pt[pt]
+            v, n = slot_rmssd(g[(g.day >= f) & (g.day <= l)], mode, w)
+            npairs.append(n)
+            if n:
+                got[team].append(v >= K.HIGH)
+            else:
+                none += 1
+        shs = {c: 100 * np.mean(v) for c, v in got.items()}
+        fs = sorted(c for c, v in shs.items() if v >= K.LINE)
+        detail = "%s; a median of %d pairs a patient, %d patients with none" % (
+            " ".join("%.1f" % shs[c] for c, _ in K.TEAMS), int(np.median(npairs)), none)
+        if mode == "near":
+            row("FAMILY the trust rating nearest each of the collaborative's times, within %d minutes, names the golden "
+                "set" % w, fs == gold, detail)
+        else:
+            row("RECORD only the ratings answered in the 45 minutes after each of the collaborative's times cannot "
+                "measure every counted patient (the trust app sends nothing after 21:00), so it is no standing member; "
+                "it names %s" % names(fs), none > 0 and fs != gold, detail)
+    added = [c for c in gold if c not in ("BW-CM02", "BW-CM05")]
+    spread = {c: max(pct(sh[r])[c] for r in fam) - min(pct(sh[r])[c] for r in fam) for c in added}
+    row("FAMILY the standing family's spread on the three teams the step adds (points of share)", True,
+        ", ".join("%s %.1f" % (K.TEAM_NAME[c], v) for c, v in spread.items()))
+    shw = sh["W"]
+    row("CALL no team's golden share is a round figure", all(abs(100 * v["share"] - round(100 * v["share"])) > 0.04
+                                                             or round(100 * v["share"]) % 5 for v in shw.values()), "")
+    # ------------------------------------------------------------------------------------------- the rungs, Gate F
+    for r in ("R0", "R1", "R2"):
+        row("RUNG %s names another set (%s)" % (r, names(C.funded(sh[r]))), C.funded(sh[r]) != gold,
+            " ".join("%.1f" % pct(sh[r])[c] for c, _ in K.TEAMS))
+    row("RUNG R1 and R2 fund the two hub teams alone", C.funded(sh["R1"]) == C.funded(sh["R2"]) == ["BW-CM02", "BW-CM05"],
+        "")
+    row("RUNG R1, the default path, leaves every added team at 25 per cent or less",
+        max(pct(sh["R1"])[c] for c in added) <= 25, " ".join("%.1f" % pct(sh["R1"])[c] for c in added))
+    rounded = {}
+    for r in ("R1", "R2", "R0"):
+        res_r = [dict(o, **{r: K.round_half_up(o[r], 1)}) for o in res]
+        rounded[r] = C.funded(C.shares(res_r, r))
+        row("RUNG %s with each patient's figure first rounded to one decimal (standard 4.1) names another set" % r,
+            rounded[r] != gold, names(rounded[r]))
+    land = sum(C.funded(sh[r]) == gold for r in ("R0", "R1", "R2")) + sum(v == gold for v in rounded.values())
+    row("GATE F cheap routes landing the call on the pack (adjacent, successive, across the fortnight, each rounded)",
+        land == 0, "%d of 6" % land)
+    row("RECORD R3 (each adjacent change stretched to three hours in proportion) takes the decisive step crudely and "
+        "names the golden set", C.funded(sh["R3"]) == gold, " ".join("%.1f" % pct(sh["R3"])[c] for c, _ in K.TEAMS))
+    m1, n1 = C.pooled_change(allp, pop, 1.0, 1.75)
+    m3, n3 = C.pooled_change(allp, pop, 2.5, 3.5)
+    row("RECORD the mean squared change grows with the time between same-day ratings", m3 > 1.5 * m1,
+        "%.2f at 1 to 1.75 hours (%d pairs), %.2f at 2.5 to 3.5 hours (%d pairs)" % (m1, n1, m3, n3))
+    row("RECORD the trust app's adjacent prompts sat about 90 minutes apart (median, both answered)",
+        80 <= C.adjacent_gap_median(allp, pop) <= 95, "%.1f minutes" % C.adjacent_gap_median(allp, pop))
+    # ------------------------------------------------------------------------------------------- semantic forks
+    paper = D.text_of_sections(D.PAPER)
+    std = D.text_of_sections(D.STANDARD)
+    dbt = D.text_of_sections(D.DBT_STANDARD)
+
+    def funded_with(rule="latest", completion="answered", team_day="first", **load):
+        ap = C.load(target, **load) if load else allp
+        pp = C.population(ap, reg, eps, rule, completion, team_day)
+        return C.funded(C.shares(C.instability(ap, pp, fits=False), "W")), len(pp)
+
+    raw = {}
+    for pt, f, l, t in pop:
+        raw.setdefault(C.team_on(eps, pt, f), []).append(pt)
+    row("SF1 teams as they stand from 1 October 2026, the two Haddersley teams as one (paper, section 2)",
+        "Haddersley North and Haddersley South as one team" in paper and {"BW-CM14", "BW-CM15"} <= set(raw),
+        "%d and %d patients on a first day before the merger" % (len(raw["BW-CM14"]), len(raw["BW-CM15"])))
+    for rule in ("every", "earliest"):
+        f2, n2 = funded_with(rule=rule)
+        row("SF2 each patient once on their latest completed fortnight (paper, section 2); %s instead, same call" % rule,
+            "latest assessment fortnight of 2026 that was completed" in paper and f2 == gold, "%d fortnights" % n2)
+    f3, n3_ = funded_with(completion="status")
+    row("SF3 completed as half or more of the 112 prompts answered (paper, section 2); the register's status instead, "
+        "same call", "answered at least half of its 112 prompts" in paper and f3 == gold, "%d patients" % n3_)
+    regd = reg[(reg["First day"] >= K.YEAR0) & (reg["First day"] <= K.YEAR1)]
+    row("SF4 every 2026 fortnight begins and ends inside the year", (regd["Last day"] <= K.YEAR1).all(), "")
+    for td in ("enrolled", "census"):
+        f5, _n5 = funded_with(team_day=td)
+        row("SF5 the team holding the patient's care on the fortnight's first day (paper, section 2); on the %s day "
+            "instead, same call" % td, "that held their care on the fortnight's first day" in paper and f5 == gold,
+            names(f5))
+    f6, _n6 = funded_with(scale_v3=1.0)
+    row("SF6 every item on 0 to 10 (standard 2.2), version 3's sliders read divided by ten; unscaled, every team "
+        "is funded (refuted by the scale)", "scored from 0 (not at all) to 10" in std and f6 != gold, names(f6))
+    row("SF7 adjacent prompts on the same day where both were answered (standard 3.2)",
+        "between adjacent prompts on the same day where both were answered" in std, "")
+    ans = allp[allp.answered.notna()]
+    lt = ans.answered.dt.hour + ans.answered.dt.minute / 60.0
+    row("SF8 the same day in UK or UTC time: no answer within an hour of midnight in either", lt.min() >= 9 and
+        lt.max() < 22.5, "%.2f to %.2f local" % (lt.min(), lt.max()))
+    row("SF9 as the collaborative's app will measure it: every standing reading names the golden set (FAMILY rows)",
+        all(C.funded(sh[r]) == gold for r in fam), "")
+    res1 = [dict(o, W=K.round_half_up(o["W"], 1)) for o in res]
+    row("SF10 2.0 or more (standard 3.3) on the unrounded figure; rounded to one decimal first, or more than 2.0, "
+        "same call", C.funded(C.shares(res1, "W")) == gold and
+        C.funded(C.shares([dict(o, W=o["W"] - 1e-9) for o in res], "W")) == gold,
+        "%d patients between 1.95 and 2.0" % sum(1 for o in res if 1.95 <= o["W"] < 2.0))
+    row("SF11 30 per cent or more (paper, section 2): no team within 8 points of 30 under any standing reading",
+        min(abs(pct(sh[r])[c] - K.LINE) for r in fam for c, _ in K.TEAMS) >= 8, "")
+    f12, _n12 = funded_with(drop_second_codes=True)
+    en = pd.read_csv(os.path.join(target, K.F_ENROL), dtype=str)
+    two = en.groupby("patient_number").participant_code.nunique()
+    row("SF12 a patient re-enrolled on a new phone is one patient across both codes (the enrolment log); the second "
+        "code's ratings dropped instead, same call", f12 == gold, "%d patients with two codes in a fortnight"
+        % int((en.end_reason == "replaced phone").sum()))
+    f13, _n13 = funded_with(keep_resends=True)
+    row("SF13 an answer version 4 sent twice is one rating; kept twice, same call", f13 == gold, "")
+    f14, _n14 = funded_with(scheduled_clock=True)
+    row("SF14 a rating at its answer time; at its prompt's send time instead, same call", f14 == gold, names(f14))
+    # ------------------------------------------------------------------------------------------- Layer 1, the call
+    v3 = pd.read_csv(os.path.join(target, K.F_V3), dtype=str, keep_default_na=False)
+    v4 = pd.read_csv(os.path.join(target, K.F_V4), dtype=str, keep_default_na=False)
+    row("L1 the app's version 4 export changed layout, scale and clock on 15 June 2026",
+        "na_down_vas" in v3.columns and "down" in v4.columns and v4.sent_at_utc.str.endswith("Z").all()
+        and v3.scheduled_local.str.contains("/").all(), "")
+    split = 0
+    for r in regd.itertuples(index=False):
+        if r[3] < K.V4_FROM <= r[4]:
+            split += 1
+    row("L1 fortnights split across the two exports", split >= 5, "%d fortnights" % split)
+    bst = sum(1 for r in regd.itertuples(index=False) if r[3] <= K.BST_END.date() <= r[4]
+              or r[3] <= K.BST_START.date() <= r[4])
+    row("L1 fortnights across a clock change", bst >= 5, "%d fortnights" % bst)
+    row("L1 version 4 resent some answers (exact repeated rows)", int(v4.duplicated().sum()) >= 100,
+        "%d repeated rows" % int(v4.duplicated().sum()))
+    E_ = pd.read_csv(os.path.join(target, K.F_EPISODES), dtype=str, keep_default_na=False)
+    row("L1 Haddersley North and South episodes close on 30 September 2026 at the merger",
+        ((E_.team_code.isin(["BW-CM14", "BW-CM15"])) & (E_.end_reason == "Team merger")
+         & (E_.episode_end == "2026-09-30")).sum() >= 20, "")
+    allp_st = C.load(target)
+    stat = C.register(target)
+    cnt = allp_st[allp_st.answered.notna()].groupby("patient").day.apply(list).to_dict()
+    bad = 0
+    for r in stat.itertuples(index=False):
+        n = sum(1 for d in cnt.get(r[1], []) if r[3] <= d <= r[4])
+        bad += (r[6] == "Completed") and n < K.COMPLETE
+    row("L1 the register marks some fortnights Completed that fall short of half the prompts answered", bad >= 10,
+        "%d fortnights" % bad)
+    # ------------------------------------------------------------------------------------------- the asks
+    people = S.build()
+    truth_a = {c: [0, 0] for c, _ in K.TEAMS}
+    four = {"old114", "old114_rehired", "leaver_old114", "hub_trained", "new301", "split_new301", "ext", "starter_ext",
+            "late_starter_ext"}
+    for e, prev, an, org, pos, grp, wte, s, en_, lv in S.assignments(people):
+        p = [q for q in people if q.emp == e][0]
+        code = [c for c, n in S.ORG.items() if n == org][0]
+        if code not in truth_a or p.kind not in four or grp == "Administrative and Clerical" or wte < 0.4:
+            continue
+        if s <= K.GROUP_START and (en_ is None or en_ >= K.GROUP_START) and (lv is None or lv > K.GROUP_LAST):
+            truth_a[code][0] += 1
+            truth_a[code][1] += round(wte * 100)
+    gold_a = A.ask_a(target)
+    row("ASK A fair: the golden's reading of the pack equals the world's own count and whole-time equivalent in every "
+        "team", all(gold_a[c][0] == truth_a[c][0] and abs(gold_a[c][1] - truth_a[c][1] / 100.0) < 1e-9
+                    for c, _ in K.TEAMS), " ".join("%d/%.2f" % gold_a[c] for c, _ in K.TEAMS))
+    acs = A.ask_a(target)
+    row("SF15 Ask A, the DBT programme standard's 4.2 is filed; Additional Clinical Services hold no trained clinician",
+        "completed DBT skills group facilitation training of four days or more" in dbt and acs == gold_a, "")
+    two_teams = {}
+    for e, prev, an, org, pos, grp, wte, s, en_, lv in S.assignments(people):
+        if org.endswith(" CMHT") and wte >= 0.4 and (en_ is None or en_ >= K.GROUP_START) and s <= K.GROUP_START:
+            two_teams.setdefault(e, set()).add(org)
+    row("SF16 Ask A, nobody holds a 0.4 WTE assignment in two teams on 1 April 2027, so a clinician counts once",
+        all(len(v) == 1 for v in two_teams.values()), "")
+    hub_pts, refs = H.build({p.number for p in patients + extra})
+    cen_t = H.census(refs, True)
+    gold_b = A.ask_b(target)
+    row("ASK B fair: the golden's reading of the pack equals the service's own waiting list and waits in every team",
+        all(gold_b[c][0] == len(cen_t[c]) and abs(gold_b[c][1] - np.mean(cen_t[c])) < 1e-9 for c, _ in K.TEAMS), "")
+    edge = min(abs((gold_b[c][1] * 10) % 1 - 0.5) for c, _ in K.TEAMS)
+    row("ASK B no team's mean sits within 0.12 of a step of a rounding edge", edge >= 0.12, "%.2f" % edge)
+    row("SF17 Ask B, the waiting list is filed (DBT standard 3.1)", "is on the waiting list from the day they are "
+        "added until the day they are removed" in dbt, "")
+    row("SF18 Ask B, a wait counts the days since the day received, none on that day (DBT standard 3.2)",
+        "so a referral received that day has waited none" in dbt, "")
+    for rule, label in (("referring", "SF19 Ask B, the team holding the patient's care on 31 December (the prompt); "
+                                      "the referring team instead moves"),
+                        ("recorded", "SF20 Ask B, a removal off the list on its removed date (3.1); counted only once "
+                                     "recorded instead moves")):
+        alt = A.ask_b(target, rule=rule)
+        moved = [c for c, _ in K.TEAMS if K.round_half_up(alt[c][1], 1) != K.round_half_up(gold_b[c][1], 1)]
+        row("%s %d teams" % (label, len(moved)), len(moved) >= 2, names(moved))
+    gold_a2, gold_b2, out = CR.run(target)
+    for ask, rule, desc, got, hits in out:
+        of = 22 if ask == "A" else 11
+        if rule in ("catalogue", "module"):
+            row("ASK %s the cracker (%s) keeps none of the %d figures" % (ask, desc, of), not hits, "%d kept" % len(hits))
+        else:
+            row("ASK %s route %s (%s) keeps %d of %d" % (ask, rule, desc, len(hits), of), len(hits) <= 0.75 * of, "")
+    M = pd.read_csv(os.path.join(target, K.F_MODULE), dtype=str, keep_default_na=False)
+    win = M[(M.date_received >= "2026-06-22") & (M.date_received <= "2026-07-10")]
+    row("ASK B device: the module's receipts in its first three weeks run several times its usual rate, with no single "
+        "day holding more than a dozen", len(win) / 15 > 3 * len(M[M.date_received > "2026-07-10"]) / 120
+        and win.date_received.value_counts().max() <= 12, "%d in the window, top day %d"
+        % (len(win), win.date_received.value_counts().max()))
+    row("ASK B every patient has at most one module referral", M.patient_number.value_counts().max() == 1, "")
+    same = M[(M.date_received == M.triage_date) & (M.triage_date == M.dbt_list_added)]
+    row("ASK B device: the referrals keyed in were stamped received, triaged and listed on one day; no referral the "
+        "module received was triaged the day it arrived", len(same) >= 30 and all(
+            M.loc[M.date_received == M.triage_date, "date_received"].between("2026-06-22", "2026-07-10")),
+        "%d stamped" % len(same))
+    LT = pd.read_csv(os.path.join(target, K.F_LETTERS), dtype=str, keep_default_na=False)
+    ack = LT[LT.letter_type == "Referral acknowledgement"]
+    twice = int((ack.nhs_number.value_counts() >= 2).sum())
+    row("ASK B hazard: patients the service acknowledged twice (an earlier referral)", twice >= 20, "%d" % twice)
+    row("ASK B fair: every referral the service received has its acknowledgement letter on that day",
+        len(ack) == len(refs) and not ack.duplicated(["nhs_number", "letter_date"]).any(), "%d letters" % len(ack))
+    cat = openpyxl.load_workbook(os.path.join(target, K.F_CATALOGUE), read_only=True)
+    crow = {r[0]: r for r in list(cat.active.iter_rows(values_only=True))[1:]}
+    lr = pd.read_csv(os.path.join(target, K.F_LEARN), dtype=str)
+    old114 = lr[(lr.course_code == "PTD-114") & (lr.completed_on < "2025-04-01")]
+    row("ASK A device: PTD-114 completions before the catalogue's first-offered date, the four-day course the "
+        "annual report lists by title", crow["PTD-114"][1] == "DBT skills refresher" and len(old114) >= 25
+        and "DBT skills group facilitation" in " ".join(" ".join(r) for r in D.ld_course_table(people)), "%d" % len(old114))
+    yrs = D.ld_course_table(people)
+    fac = [r for r in yrs if r[0] == "DBT skills group facilitation"][0]
+    by_year = [int(fac[k].split()[0]) for k in (2, 3, 4)]
+    rec_year = [int(((lr.course_code == "PTD-114") & (lr.completed_on >= "%d-04-01" % y)
+                     & (lr.completed_on <= "%d-03-31" % (y + 1))).sum()) for y in (2022, 2023, 2024)]
+    row("ASK A fair: the report's yearly facilitation completions equal the records' PTD-114 completions",
+        by_year == rec_year, "%s" % by_year)
+    # ------------------------------------------------------------------------------------------- separation
+    src = open(os.path.join(HERE, "calc.py"), encoding="utf-8").read()
+    row("SEP the call reads none of the asks' files", not re.search(r"F_ESR|F_LEARN|F_CATALOGUE|F_LDREPORT|F_DBTSTD|"
+                                                                     r"F_MODULE|F_LETTERS|F_INDEX", src), "")
+    hubn = {p.number for p in hub_pts}
+    row("SEP no patient on the service's referrals is in the mood app's population", not (hubn & set(en.patient_number)),
+        "")
+    # ------------------------------------------------------------------------------------------- names, dashes, gates
+    places = [x.strip().lower() for x in open(os.path.join(HERE, "h21_reference_places.txt")) if x.strip()]
+    places += EXTRA_PLACES
+    invented = sorted({n for _c, n in K.TEAMS} | {"Wynmoor", "Fordwyke", "Wraybeck", "Brindholm", "Wendholt",
+                                                    "Sallowdene"})
+    near = ["%s (%s)" % (nm, p) for nm in invented for p in places
+            if _ed(nm.lower(), p) <= 2 or (len(p) >= 5 and (p in nm.lower() or nm.lower() in p))]
+    row("H21 every invented place and organisation name (%d) is three or more edits from every reference place"
+        % len(invented), not near, ", ".join(near[:8]))
+    text = " ".join(D.text_of_sections(s) for s in (D.STANDARD, D.DBT_STANDARD, D.PILOT, D.PAPER))
+    row("no em or en dash in the documents", "\u2014" not in text and "\u2013" not in text, "")
+    files = sorted(os.listdir(target))
+    row("GATE files", len(files) >= 10, str(len(files)))
+    row("GATE formats", len({f.rsplit(".", 1)[1] for f in files}) >= 3, str(sorted({f.rsplit('.', 1)[1] for f in files})))
+    row("GATE a file of 25,000 rows or more", max(len(v3), len(v4)) >= 25000, "%d" % len(v4))
+    row("GATE no file or sheet describes the data (readme, dictionary, notes, manifest)",
+        not any(re.search(r"readme|dictionar|notes|manifest|schema|codebook", f.lower()) for f in files) and not any(
+            re.search(r"readme|dictionar|notes|manifest|schema", ws.lower())
+            for f in files if f.endswith(".xlsx")
+            for ws in openpyxl.load_workbook(os.path.join(target, f), read_only=True).sheetnames), "")
+    row("H16 nothing in an export after its pull", v4.answered_at_utc.replace("", np.nan).dropna().max() < "2026-12-28"
+        and M.removal_recorded_on.replace("", np.nan).dropna().max() <= K.PULL_HUB.isoformat()
+        and E_.episode_start.max() <= K.PULL_EPR.isoformat(), "")
+    for f in files:
+        if f.endswith(".pdf"):
+            b = open(os.path.join(target, f), "rb").read()
+            row("H1 %s carries no generator signature" % f, b"ReportLab" not in b and b"reportlab" not in b, "")
+            import warnings
+            from pypdf import PdfReader
+            with warnings.catch_warnings(record=True) as warned:
+                warnings.simplefilter("always")
+                strict = " ".join(pg.extract_text() for pg in PdfReader(os.path.join(target, f), strict=True).pages)
+            lenient = " ".join(pg.extract_text() for pg in PdfReader(os.path.join(target, f), strict=False).pages)
+            row("H25 %s reads the same under a strict and a lenient reader, with no parser warning" % f,
+                re.sub(r"\s+", " ", strict) == re.sub(r"\s+", " ", lenient) and not warned and len(strict) > 1500, "")
+        if f.endswith((".docx", ".xlsx")):
+            z = zipfile.ZipFile(os.path.join(target, f))
+            app = z.read("docProps/app.xml").decode()
+            row("H1 %s is stamped by Microsoft Office" % f, "Microsoft" in app and "openpyxl" not in app
+                and "python-docx" not in z.read("docProps/core.xml").decode(), "")
+    counts = list(n_pack.values())
+    row("REALISM no assessed-patient count shared by three or more teams", max(counts.count(x) for x in counts) <= 2, "")
+    meta = os.path.join(os.path.dirname(HERE), "metadata.json")
+    if os.path.exists(meta):
+        Mj = json.load(open(meta))
+        dis = Mj.get("distractor_files", [])
+        row("GATE two or more distractors named in metadata.json, each shipped and none in a graded computation",
+            len(dis) >= 2 and all(f in files for f in dis) and not any(
+                re.search(r"F_PHQ|F_PILOT", open(os.path.join(HERE, m), encoding="utf-8").read())
+                for m in ("calc.py", "asks.py")), ", ".join(dis))
+        row("GATE metadata.json lists every shipped file", sorted(f["path"] for f in Mj.get("files", [])) == files, "")
+    bad_rows = [r for r in ROWS if not r[1]]
+    for label, ok, detail in ROWS:
+        print("%s  %s%s" % ("PASS" if ok else "FAIL", label, ("  [%s]" % detail) if detail else ""))
+    print("checks: %d run, %d failed" % (len(ROWS), len(bad_rows)))
+    return 1 if bad_rows else 0
 
 
 if __name__ == "__main__":

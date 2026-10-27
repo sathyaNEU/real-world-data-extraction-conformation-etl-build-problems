@@ -30,10 +30,11 @@ def compute(target):
     btd = r["bt"][S.DEFAULT]
     f = {
         "call": r["call"],
-        "call_removed_musd": m1(g[r["call"]]),
+        "call_removed_musd": int(round(g[r["call"]] / 1e6)),
         "runner_up": r["runner"],
         "aal_musd": {n: m2(r["aal"][n]) for n in names},
         "removed_musd_2dp": {n: m2(g[n]) for n in names},
+        "removed_musd_whole": {n: int(round(g[n] / 1e6)) for n in names},
         "default_removed_musd": {n: m2(d[n]) for n in names},
         "default_call": d.idxmax(),
         "one_ratio_pooled": round(float(S.adjustments(r["cells"])[S.DEFAULT](100.0)), 3),

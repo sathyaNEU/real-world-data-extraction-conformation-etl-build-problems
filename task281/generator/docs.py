@@ -1,6 +1,8 @@
 """The pack's documents: the Relief Coverage Standard, the Director's allowance memo and the protective services
-agreement excerpts (PDF); the data dictionary (TXT); and the Comptroller's overtime expenditure table (XLSX)."""
+agreement excerpts (PDF); and the Comptroller's overtime expenditure table (XLSX)."""
 from __future__ import annotations
+
+import os
 
 from reportlab import rl_config
 
@@ -15,7 +17,9 @@ from reportlab.platypus import Paragraph, SimpleDocTemplate, Spacer, Table, Tabl
 
 import common as K   # noqa: E402
 
-FONT_DIR = "/usr/share/fonts/truetype/liberation/"
+FONT_DIR = next((d for d in ("/usr/share/fonts/truetype/liberation/", os.path.expanduser("~/Library/Fonts/"),
+                              "/Library/Fonts/") if os.path.exists(d + "LiberationSerif-Regular.ttf")),
+                "/usr/share/fonts/truetype/liberation/")
 for nm, f in (("Sans", "LiberationSans-Regular"), ("Sans-B", "LiberationSans-Bold"), ("Sans-I", "LiberationSans-Italic"),
               ("Serif", "LiberationSerif-Regular"), ("Serif-B", "LiberationSerif-Bold"),
               ("Serif-I", "LiberationSerif-Italic")):
@@ -185,9 +189,10 @@ def write_agreement(path):
           _clause(S, "14.2", "An employee may elect compensatory time instead of overtime pay. Compensatory time "
                              "is credited at one and one-half hours for each hour of overtime worked, to a balance "
                              "of no more than 480 hours."),
-          _clause(S, "14.3", "Overtime is offered by seniority from the unit's voluntary list. When the list is "
-                             "exhausted, the junior employee on duty is held over or the junior employee off duty "
-                             "is called in, for a full shift or for four hours."),
+          _clause(S, "14.3", "Overtime at a unit is offered by seniority from the unit's voluntary list, which "
+                             "employees of the same title at the State's other units may also join. When the list "
+                             "is exhausted, the unit holds over its junior employee on duty or calls in its junior "
+                             "employee off duty, for a full shift or for four hours."),
           Paragraph("Article 15. Shift differential", S["h2"]),
           _clause(S, "15.1", "An employee who works between 11:00 p.m. and 7:00 a.m. receives a night "
                              "differential of $1.25 for each hour so worked, overtime hours included."),
@@ -208,85 +213,6 @@ def write_agreement(path):
           Paragraph("For the State: %s, chief negotiator, Office of Personnel Services. For the Association: %s, "
                     "president." % (K.PEOPLE["negotiator"], K.PEOPLE["union"]), S["note"])]
     doc.build(st, onFirstPage=fr, onLaterPages=fr)
-
-
-# ------------------------------------------------------------------------------------------------ dictionary
-DICTIONARY = [
-    (K.FILES["rosters"], "One row a scheduled line-shift in FY2026 (1 July 2025 to 30 June 2026), as the "
-                         "timekeeping systems exported it each night. RosterPro serves every unit, except Thornmere "
-                         "from 5 January 2026, which ShiftLink serves.", [
-        ("shift_date", "the date the shift starts"),
-        ("unit_code", "HRC, ACF, TWC, PCN, PCS, FFH, OXG, KPG"),
-        ("line_id", "the line's number on the unit's rota"),
-        ("shift, shift_start", "D day, E evening, N night; eight hours from the start time"),
-        ("scheduled_hours", "hours scheduled on the line that day"),
-        ("employee_id", "the line's holder that day; blank where the line had no holder"),
-        ("status_code", "the system's status for the line on the shift (" + K.FILES["codes"] + ")"),
-        ("source_system", "RosterPro or ShiftLink"),
-        ("exported_at", "when the nightly export ran")]),
-    (K.FILES["codes"], "One row a roster status code of either timekeeping system, with the State's category.", []),
-    (K.FILES["employees"], "One row an employee record and title held, for the records in the four titles at the "
-                           "eight units at any time from 1 July 2025, as HR's system held them on 1 October 2026.", [
-        ("employee_id", "the record's number"),
-        ("title_code, title", "the title held: CO, PCO, FSA, HMW"),
-        ("title_effective_from, title_effective_to", "when the title was held; blank to, still held"),
-        ("home_unit", "the unit the employee was assigned to while holding the title"),
-        ("hire_date", "the date the record began; for an entry class, the first day of the academy"),
-        ("seniority_date", "the date seniority runs from"),
-        ("academy_class", "the entry class the employee graduated with"),
-        ("separation_date, separation_reason", "where the record has ended")]),
-    (K.FILES["position"], "One row a line authorized for FY2028 at the eight units, as DBM's position control "
-                          "projected it on 1 October 2026.", [
-        ("line_id, unit_code, title_code, shift, days_off", "the line"),
-        ("authorized_from", "the fiscal year the line was first funded"),
-        ("status_fy2028_start", "Filled or Vacant on 1 July 2027"),
-        ("incumbent_employee_id", "the line's holder on 1 October 2026"),
-        ("filled_by_class, first_shift_on_post", "for a vacant line, the entry class it is to be filled from "
-                                                 "and that class's first shift on post")]),
-    (K.FILES["classes"], "One row an entry class of the four titles, FY2025 to FY2028, from the agencies' "
-                         "academy schedules.", []),
-    (K.FILES["payroll"], "One row an overtime earnings line paid on the checks dated 3 July 2025 to 31 July "
-                         "2026, from Central Payroll. Pay periods are biweekly and end on Saturdays.", [
-        ("check_date, pay_period_end", "the check the line was paid on and the period it was paid in"),
-        ("employee_id", "as in the HR extract"),
-        ("cost_center", "the cost center the line was charged to"),
-        ("timekeeping_location", "the timekeeper the line was keyed by: a unit code, or for Thornmere from 5 January 2026 "
-                          "its ShiftLink site number, SL-0410"),
-        ("earn_code", "the earnings code (" + K.FILES["earn"] + ")"),
-        ("work_date, start_time", "the date and start of the overtime the line was paid for"),
-        ("service_period_start, service_period_end", "for a retroactive line, the pay period it was paid for"),
-        ("hours, rate, amount", "as on the check; amount is in dollars")]),
-    (K.FILES["earn"], "One row an earnings code that appears in the overtime lines.", []),
-    (K.FILES["offers"], "One row an overtime offer made from the units' voluntary lists for a post from 1 July 2025 "
-                        "to 30 June 2026.", [
-        ("offered_at", "when the offer was made"),
-        ("unit_code, post_date, shift, start_time, hours", "the post offered"),
-        ("employee_id", "the employee offered it"),
-        ("response", "Accepted, Declined or No answer")]),
-    (K.FILES["inmates"], "Division of Correction: average daily population and rated capacity by facility and "
-                         "month, FY2026.", []),
-    (K.FILES["cad"], "State Police communications centers: daily call and radio volume, FY2026.", []),
-    (K.FILES["winter"], "State Highway Administration: winter operations events by garage, FY2026.", []),
-    (K.FILES["otprog"], "Comptroller of Merrimont: overtime expenditure by agency and program, FY2026 (checks "
-                        "dated in the fiscal year).", []),
-]
-
-
-def write_dictionary(path):
-    out = ["%s, %s" % (K.STATE, K.DBM),
-           "Extracts held for the FY2028 relief placement: field definitions",
-           "Workforce analysis desk, 23 October 2026", ""]
-    for name, grain, cols in DICTIONARY:
-        out.append(name)
-        out.append("  " + grain)
-        for c, m in cols:
-            out.append("    %-40s %s" % (c, m))
-        out.append("")
-    out += ["Other documents", "  " + K.FILES["standard"] + "  Budget Instruction 2024-07",
-            "  " + K.FILES["memo"] + "  the Director's memo of 9 October 2026",
-            "  " + K.FILES["agreement"] + "  the Protective Services MOU 2025-2028, excerpts", ""]
-    with open(path, "w", encoding="utf-8", newline="\r\n") as f:
-        f.write("\n".join(out))
 
 
 # ------------------------------------------------------------------------------------------------ OT by program

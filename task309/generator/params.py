@@ -7,7 +7,8 @@ MODEL = "Corvane HU 27.1"
 ASOF = "2026-09-30"
 BRIEF_DATE = "2026-11-06"
 SEASON_START = "2027-06-01"
-PEOPLE = {"cat": "Sherry Lang", "claims": "Andrew Mack", "cro": "Eric Brown"}
+PEOPLE = {"cat": "Sherry Lang", "claims": "Andrew Mack", "cro": "Eric Brown", "gis": "Seth Erickson",
+          "procurement": "Donna Parker"}
 TITLES = {"cat": "Catastrophe Risk Manager", "claims": "Claims Director", "cro": "Chief Risk Officer"}
 
 COUNTY_NAME = {"MRS": "Marlin Shoals", "HRB": "Heron Bay", "CLF": "Calloway Flats", "CYR": "Cypress Ridge",
