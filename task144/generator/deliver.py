@@ -155,8 +155,8 @@ def write_book(path, B, R, AA, AB):
     _c(ws2, 1, 1, "Sluis issues, April to September 2026: delivery and spotlight click-through", bold=True, size=13)
     _c(ws2, 2, 1, "Delivered: subscribers the issue was delivered to (the Thursday send to non-openers reaches "
                   "subscribers already counted). Clicked through: subscribers who clicked a link to the issue's "
-                  "spotlighted repository themselves, in any of the issue's sends; a mail gateway's check of every "
-                  "link of a message on delivery is not a click.", color=GREY)
+                  "spotlighted repository themselves, by its address or its permanent address, in any of the issue's "
+                  "sends; a mail gateway's check of every link of a message on delivery is not a click.", color=GREY)
     _header(ws2, 4, ["Issue", "Spotlighted repository", "Sent through", "Subscribers delivered to",
                      "Subscribers who clicked through to the spotlight", "Share who clicked through (%)"],
             [16, 30, 13, 15, 17, 15])
@@ -174,9 +174,10 @@ def write_book(path, B, R, AA, AB):
     ws3 = wb.create_sheet("Nominations")
     _c(ws3, 1, 1, "October 2026 shortlist: who nominated each repository", bold=True, size=13)
     _c(ws3, 2, 1, "People, not form responses: a signed-out response is matched to the account whose primary email "
-                  "it is, a merged account to the account it was merged into, and a renamed repository's old name to "
-                  "the repository. Outside: not a member of the owning organisation when nominating, through any of "
-                  "their accounts, those later merged into the one they nominated from included.", color=GREY)
+                  "it was when it was made, a merged account to the account it was merged into, and a renamed "
+                  "repository's old name to the repository. Outside: not a member of the owning organisation when "
+                  "nominating, through any of their accounts, those later merged into the one they nominated from "
+                  "included.", color=GREY)
     _header(ws3, 4, ["Repository", "Owner", "People who nominated it", "Of them outside its organisation",
                      "Share outside its organisation (%)"], [14, 20, 14, 15, 15])
     r = 5
@@ -208,17 +209,22 @@ def write_book(path, B, R, AA, AB):
          False),
         ("Sluis issues: Postwerk to the May issue, Relaymark from June. Each issue went to the Sluis list in two batches "
          "on its Tuesday and again on the Thursday to subscribers who had not opened it; delivered counts the "
-         "Tuesday batches, click-through counts subscribers clicking the spotlight's heading, screenshot or button in "
-         "any of the three sends. Some subscribers' mail gateways open every link of a message the second it is "
+         "Tuesday batches, click-through counts subscribers clicking the spotlight's heading, screenshot or button, "
+         "or the editor's opening paragraph's link to it, in any of the three sends; the paragraph links repositories "
+         "by their permanent address on the host (/repositories/ and the id), the spotlight and in most months another "
+         "repository from the shortlist. Some subscribers' mail gateways open every link of a message the second it is "
          "delivered: Relaymark logs that as four or more links clicked within two seconds, Postwerk as one click on "
          "every link of the send, and those fetches are left out (the platforms' own click counts leave out only "
          "the gateways they recognise). Test sends to the editorial seed addresses and Product News are left out.",
          False),
         ("Nominations: responses to the October form. A signed-out response is matched to the account whose primary "
-         "email it is, a merged account to the account it was merged into, kiln-ui to kilnkit and imagelint to "
-         "hullcheck; addresses of forks under other owners are not nominations of the shortlisted repository. Five "
-         "nominators used a personal account while still members through a work account that they merged into it "
-         "when they left, a few days later: they nominated from inside.", False),
+         "email it was when it was made, as the account snapshot or a signed-in response of that account records it, "
+         "a merged account to the account it was merged into, kiln-ui to kilnkit and imagelint to hullcheck; "
+         "addresses of forks under other owners are not nominations of the shortlisted repository. Five nominators "
+         "used a personal account while still members through a work account that they merged into it when they left, "
+         "a few days later: they nominated from inside. Five more nominated their organisation's repository signed in "
+         "and again signed out with their work address, which their account no longer carries since they left: one "
+         "person each, inside.", False),
     ]
     for i, (text, bold) in enumerate(notes, 1):
         _c(ws4, i, 1, text, bold=bold, align=Alignment(wrap_text=True, vertical="top"))

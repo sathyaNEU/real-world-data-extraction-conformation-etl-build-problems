@@ -195,14 +195,21 @@ def main(target, golden):
         who = set()
         for cid in {s["id"] for s in mine}:
             for sub, url in clicks.get(cid, []):
+                # a link reaches the repository by its owner/name or by the host's permanent address for its id
+                byid = re.match(r"https?://[^/]+/repositories/(\d+)", url)
                 mm = re.match(r"https?://[^/]+/([^/?#]+)/([^/?#]+)", url)
-                if mm and ("%s/%s" % (mm.group(1), mm.group(2))).lower() == path:
+                if (byid and int(byid.group(1)) == lot[issue][3]) or \
+                        (mm and ("%s/%s" % (mm.group(1), mm.group(2))).lower() == path):
                     who.add(sub)
         ask_a[m] = (delivered, len(who), round(100.0 * len(who) / delivered + 1e-12, 2))
     s2 = gb["Sluis issues"]
     ok_a = all((r[3], r[4], r[5]) == ask_a[i + 4] for i, r in enumerate(s2.iter_rows(min_row=5, max_row=10, values_only=True)))
     # Ask B
     hashes = {hsh: a for a, hsh in zip(t["account_id"], t["primary_email_sha256"]) if hsh}
+    # a signed-in response records the address the account had then, which the snapshot may no longer show
+    for r in rows(p(K.NOMS)):
+        if r["account_id"] and r["email_sha256"]:
+            hashes.setdefault(r["email_sha256"], int(r["account_id"]))
     merged = {a: m for a, m in zip(t["account_id"], t["merged_into"]) if m is not None}
     ren = {r["old_full_name"].lower(): r["new_full_name"].lower() for r in rows(p(K.RENAMES))}
     short = {repos[i]["full_name"].lower(): i for i in oct_row[2]}

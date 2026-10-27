@@ -19,25 +19,30 @@ repository does not keep, and the readers' cascade runs a month after any launch
 
 | Axis | Value |
 |---|---|
-| Card | `.claude/skills/fingerprint/cards/task144.json`, architecture v2, registered 2026-10-27 after `git pull`; architecture 1 in `lineage` with its portal fate; `guard.py check` on the registered card WARN (people.first, repeat.gate_g, answered below), no BLOCK; same-puzzle and same-driver matches against older builds (task268 v3; task150, task179 v3, task501 v3 lineage) differentiated on the card, and its own architecture 1 differentiated under `task144`; `guard.py validate` clean |
+| Card | `.claude/skills/fingerprint/cards/task144.json`, architecture v2, registered 2026-10-27 after `git pull`; architecture 1 in `lineage` with its portal fate; `guard.py check` on the registered card WARN (people.first, repeat.gate_g, answered below), no BLOCK; at ship `heart` BLOCKed on `ban.artifact` once task141 v3's card arrived in the pull, the context artifact was redrawn (below) and `heart` is WARN on the same two; same-puzzle and same-driver matches against older builds (task268 v3; task150, task179 v3, task501 v3 lineage) differentiated on the card, and its own architecture 1 differentiated under `task144`; `guard.py validate` clean |
 | Domain / task type | `product-analytics` (client domain), task type `feature-adoption-diffusion-modeling` (forecasting): the call rests on how far a repository's stars will spread through the platform's follow graph once the newsletter seeds them, at the feed-card conversion the repository will show when the cascade runs |
 | Objective | Forecasting & Predictive Modeling: each shortlisted repository's external stars in its first 90 days public if it is spotlighted, a window that runs to late November and early December 2026 and is open at the decision (the pick is locked on Wednesday 30 September 2026 for the issue of Tuesday 6 October 2026) |
-| Shape | `other`: one pick of seven; criteria from the pick, its expected 90-day external stars and the stars the spotlight adds (3), each repository's expected 90-day external stars if spotlighted (7), the chart's parts (5), the two ask tables (24 figures) and the files (2), about 41, arithmetic in the ask sheet |
+| Shape | `other`: one pick of seven; criteria from the pick, its expected 90-day external stars and the stars the spotlight adds (3), each repository's expected 90-day external stars if spotlighted (7), the chart's parts (5), the two ask tables (22 figures) and the files (2), about 39, arithmetic in the ask sheet |
 | Decision | `pick_one_of_n`, answer unit `named_option` (the spotlighted repository, with its expected external stars in its first 90 days public and the stars the spotlight adds) |
 | Mechanism | gap time (decisive: the rate is measured over a window whose regime, a forum-carried launch, is not the regime of the forecast window, the readers' cascade a month later), then population; pattern none; generators G6 (the make-up of the exposed followers shifts once the forum burst decays: followers who had already seen the repository early, fresh ones later), G13 (the rate's window against the cascade's), G14 (the lottery's average lift does not fit this candidate); Gate G `forecasting`; strategy `forecast_method_backtest` (the regime makes the natural whole-history fit wrong out of sample, and the lottery's randomised spotlights, which no file scores, are the honest history that separates the windows) |
 | Layer 2 family / pattern | `forecast_uncertainty` (model choice on out-of-sample error: the rate's window chosen by how well the cascade it drives reproduces the lottery's spotlight lifts); `own:post-launch-feed-conversion-for-a-later-seeded-cascade` (nearest library lines: product-analytics/feature-adoption-diffusion-modeling/2, adoption rates over the eligible denominator at risk; the forecasting family's backtest without leakage) |
-| Furniture | forum `line_manager_or_team` (the Sluis editorial team acts on the pick), forcing event `other` (the October issue's editorial close), organisation family `software_or_platform`, role family `other` (the newsletter's editor), context artifact `filed_standard` (the featuring memo the editor wrote, redrawn from v1's `monitoring_export`, which `ban.artifact` blocks against task304; the campaign exports serve only the asks), calibration `pilot_log` (the spotlight lottery of January 2025 to September 2026), opening `question-first`, question form `which` |
+| Furniture | forum `line_manager_or_team` (the Sluis editorial team acts on the pick), forcing event `other` (the October issue's editorial close), organisation family `software_or_platform`, role family `other` (the newsletter's editor), context artifact `planning_thread` (the featuring memo, a one-page memo from the editor to the editorial team with its From, To, Copy and Subject lines; drawn `filed_standard` at this draw, after v1's `monitoring_export` was blocked against task304, and redrawn at ship when task141 v3, a council's filed planning standard, entered the window; the campaign exports serve only the asks), calibration `pilot_log` (the spotlight lottery of January 2025 to September 2026), opening `question-first`, question form `which` |
 | Spine | `grachtwerk_star_events_2026-03-02_to_2026-09-27.csv` (61,929 rows), the events warehouse's star stream from 2 March 2026 (schema v6) for the October shortlist and the lottery's spotlighted repositories: one row per star or unstar, with the account, the repository, the time (UTC, `Z`) and the surface it was starred from; beside it the stream to 1 March 2026 (schema v5, epoch milliseconds, 93,450 rows) and the account snapshot (followers, type, created, merged, email hash; 110,790 accounts) that the decisive step joins; constructed. The pack is 17 files in five formats (csv, json, parquet, pdf, xlsx), none of them a dictionary, manifest or readme |
 | Deliverables | `sluis_spotlight_2026-10.xlsx` (the pick, each candidate's expected 90-day external stars if spotlighted, and the two ask sheets), `shortlist_forecast_2026-10.png` (each candidate's expected 90-day external stars if spotlighted beside its stars to 27 September) |
 | People | drawn with `guard.py names --geo "Netherlands" --seed 144` at architecture 1 and kept with the world: Sylvie Kramer (editor of Sluis, the featuring memo's author), Twan Evers (developer relations), Vigo Hulshouts (data engineering), Laura Rijntjes (growth, ran the lottery); none appears in the prompt |
 
 **Guard.** `guard.py check` on the registered card: WARN `people.first` (Laura, beside task255) and WARN
-`repeat.gate_g` (forecasting, beside task141 v2), no BLOCK. Answered: the personas are architecture 1's, drawn by the
+`repeat.gate_g` (forecasting, beside task141 v3), no BLOCK. Answered: the personas are architecture 1's, drawn by the
 guard for this world and named in the shipped memo, and a rework keeps its world; the objective is forecasting and the
 quantity that decides is a forecast, so Gate G `forecasting` is the honest key. Two axes were redrawn at this draw: the
 context artifact (v1's `monitoring_export` blocked against task304; the featuring memo is the file the editor works
 from) and the decisive generator (G16 with gap time repeats task270 inside the batch and G13 is spent in seven older
-builds; G6 names what moves, the make-up of the followers a repository's feed cards reach).
+builds; G6 names what moves, the make-up of the followers a repository's feed cards reach). At ship the context
+artifact was redrawn a second time, `filed_standard` to `planning_thread`: task141 v3's card (a council's filed planning
+standard, registered 00:31 on 27 October) arrived in the pull before the ship and `ban.artifact` blocked. The memo is
+an editor's one-page memo to her own team, the genre the vocabulary files under `planning_thread` (a memo from a
+colleague); only its numbered clauses read as a standard, and a reviewer holding task141 beside it sees a rule book and
+a memo.
 
 **Same-puzzle and same-driver tests.** Gap time, decisive G6, decision `pick_one_of_n`, Gate G `forecasting`: no
 build in the last twelve carries them together. Older matches, each differentiated on the card in one line: task268 v3
@@ -345,15 +350,20 @@ week files the golden's figures (SF17), and the whole-life rate is refuted by it
 Two asks on records the call never reads: the newsletter platforms' exports (Postwerk to 1 June 2026, Relaymark from 2
 June) and the nomination form's export, with the repository renames, the account snapshot's email hashes and merges,
 and the organisation members file. The call is unchanged with every ask file and both distractors deleted (asserted,
-zero drift); no campaign, click, nomination or rename row sits in a file the call reads.
+zero drift); no campaign, click, nomination or rename row sits in a file the call reads, and `freeze.py check --mode
+rubric` passes on the last re-site (the call, the stump and every frozen figure unchanged, the 12 Ask A figures moved).
 
-Re-sited at stage 4 on 2026-10-27 (target.zip aa9589a5, the first architecture 2 cut): two isolated scored readers
-(Sonnet and Opus) both missed the call and both took all 24 ask figures of the old layer (subscribers delivered to and
-click-through share; people and share outside), every device on their own route (the Thursday resend left out of
-delivered, links matched by address, hashes, merges and renames resolved, forks dropped, membership at the time). The
-asks now grade quantities whose primary device sits beyond that route, and the prompt names them (each issue's
-subscribers who clicked through and their share; each organisation's repository's people outside it when they
-nominated it and their share).
+Re-sited at stage 4 against measured readers, never against the cracker sheet alone:
+- Round 1 (aa9589a5, the first architecture 2 cut): two scored readers (Sonnet and Opus) both missed the call and both
+  took all 24 figures of the first layer (subscribers delivered to and click-through share; people and share outside),
+  every device on their own route. The asks moved to quantities whose primary sits beyond that route (each issue's
+  clickers and their share; each organisation's repository's people outside it when they nominated it and their share).
+- Round 3 (eb36b41e): both readers missed the call (tracewire at 12,000, 5,000 added). One removed the gateways'
+  fetches, kept their readers' later clicks and took all of Ask A, and resolved one merge hop for six of Ask B: 18 of
+  22. The other kept every fetch (none of Ask A) and resolved people across merges with membership at the time (all ten
+  of Ask B): 10 of 22. Both matched the spotlight by its own tags or its owner/name address and took every signed-out
+  address to an account through the snapshot alone, so one silent primary was stacked on each ask at that step: the
+  editor's paragraph's permanent-address link (A7) and the work address a signed-in response recorded (B9).
 
 **Ask A. The Sluis issue report, April to September 2026** (12 figures: for each issue, the subscribers who clicked
 through to its spotlighted repository, exact, and their share of the subscribers it was delivered to, per cent to two
@@ -361,25 +371,31 @@ decimals).
 - H18 home: the reach of the channel the call's spotlight runs through (what the last six spotlights delivered).
 - Use: the editor reports each issue's spotlight click-through to developer relations.
 - Primary device A6 (which records are one event, from a cardinality and a clock): some subscribers read Sluis behind a
-  company mail gateway that fetches every link of a message the second it is delivered (0.36 to 0.48 per cent of a
-  Tuesday batch's delivered). Relaymark logs that as one subscriber's clicks on all nine links within a second;
-  Postwerk's per-link report as one click on every one of the eight links. The careful route (the stage 4 readers':
-  distinct subscribers with a click on a link whose address is the spotlight, in any send) counts every gateway as a
-  reader and lands every figure off: shares of 1.83 to 1.97 per cent against 1.44 to 1.53, clickers 1,500 to 1,900 too
-  many (asserted, 0 of 12). The remedy is a reconstruction: a reader's own clicks are what is left once each
-  subscriber's fetch (four or more links within two seconds; one click on every link) is taken out, and a gateway's
-  reader who also clicked through later stays in (about one in a hundred of them). One reading: three to six links,
-  one second to a minute, all give the golden (asserted); no reader's own clicks reach more than six of Postwerk's
-  eight links (asserted). Realism: corporate link scanners (safe-links gateways) are a standing problem in email
-  click reporting; each platform's own unique-click count leaves out only the gateways it recognises, so it ties
-  under neither reading on any Tuesday batch (asserted: between the readers' count and the raw count).
+  company mail gateway that fetches every link of a message as it arrives (1.8 to 2.4 per cent of a Tuesday batch's
+  delivered). Relaymark logs that as one subscriber's clicks on every link of the message within a second, Postwerk's
+  per-link report as one click on every link of the send. Kept, the gateways put the issues at 14,408 to 16,837
+  clickers and 3.52 to 3.92 per cent against 6,699 to 7,395 and 1.65 to 1.76 (0 of 12); dropping a gateway's
+  subscriber with their own later clicks loses 104 to 126 readers an issue and every share at two decimals (0 of 12).
+  The remedy is a reconstruction: a reader's own clicks are what is left once each subscriber's fetch (four or more
+  links within two seconds; one click on every link) is taken out. One reading: three to six links, one second to a
+  minute, all give the golden (asserted); no reader's own clicks reach every link of a Postwerk send (asserted, every
+  reader at least two links short); each platform's own unique-click count leaves out only the gateways it recognises,
+  so it ties under neither reading on any of the eight Tuesday batches with fetches (asserted).
+- Primary device A7 (the true key elsewhere: the repository a link reaches, not its tag or its address form): every
+  issue opens with the editor's paragraph, whose repository mentions link each repository by the host's permanent
+  address (/repositories/ and its id, which follows renames): the spotlighted repository always, and in four of the six
+  months another repository from the same shortlist, the spotlight first in two of them and second in the other two
+  (intro_1 and intro_2, Postwerk intro-1 and intro-2). The spotlight's own tags or its owner/name address leave out the
+  paragraph's clickers who never touched the heading or the button: 5,825 to 6,546 clickers and 1.44 to 1.54 per cent
+  (0 of 12, both round 3 routes); the permanent address alone gives 1,340 to 1,515 (0 of 12). The remedy is a
+  reconstruction: every link of the issue resolved to the repository it reaches, ids through the repositories file.
 - Second device A2 (one issue over three sends to one list): every issue went to the Sluis list in two batches on its
   Tuesday and again on the Thursday to the subscribers who had not opened it; delivered counts the two batches, the
   click-through counts the Thursday clickers. Summing every send moves every share.
 - Third device A1 (a label stored before a silent switch): Relaymark's `spotlight` tag is last month's spotlight; only
-  the address of the issue's spotlighted repository is right.
-- Hazards: A3 the spotlight carried by two links (counted once); A4 a few Thursday clickers who had also clicked on the
-  Tuesday (counted once); A5 the [TEST] sends and Product News (texture).
+  a link reaching the issue's spotlighted repository counts.
+- Hazards: A3 the spotlight carried by up to three links (counted once); A4 a few Thursday clickers who had also clicked
+  on the Tuesday (counted once); A5 the [TEST] sends and Product News (texture).
 - Path: Postwerk campaigns and link report, Relaymark campaigns and click log, the lottery log, the repositories file.
 
 **Ask B. The October shortlist's nominations from outside** (10 figures: for each of the five repositories owned by an
@@ -390,22 +406,30 @@ of the people who nominated it, per cent to two decimals).
 - Use: the editors check each candidate's support came from outside its own team.
 - Primary device B8 (an identity across a merge, from the person rather than the account): for each of the five, one
   member nominated from a personal account that was never a member and, leaving the organisation a few days later
-  (11 to 20 September), merged the member account into it, which ended that membership. The careful route resolves
-  the nominating account through its merges and reads that account's membership when nominating: outside. The person
-  was a member through the account merged into it afterwards: inside. Every one of the ten figures moves (asserted,
-  0 of 10 on that route and 0 of 10 on membership now, where the person has left). The remedy is a reconstruction:
-  the person's accounts are the one nominated from and every account later merged into it, and membership when
-  nominating is any of theirs.
+  (11 to 20 September), merged the member account into it, which ended that membership. Reading the nominating
+  account's own membership counts the person outside (0 of 10), as does membership now (0 of 10). The remedy is a
+  reconstruction: the person's accounts are the one nominated from and every account later merged into it, and
+  membership when nominating is any of theirs.
+- Primary device B9 (an attribute at the wrong vintage, the address in a later snapshot): the form records the address
+  it showed a signed-in nominator, the account's primary address then. For each of the five, one member nominated
+  their organisation's repository signed in and again signed out with that work address, and a few days later (17 to
+  21 September), leaving the organisation, made a personal address the account's primary one, so the 27 September
+  snapshot no longer carries the work address. Taking signed-out addresses through the snapshot alone counts each as a
+  second person, from outside: 48, 27, 28, 32 and 38 people for tracewire, hullcheck, kilnkit, shiftgres and ferrolog
+  against 47, 26, 27, 31 and 37, every share off (0 of 10, both round 3 routes). The remedy is a reconstruction: the
+  address map is the snapshot's addresses and every address a signed-in response recorded, one account to an address
+  (asserted).
 - Second devices: B1 (a signed-out response's email hash taken to the account whose primary address it is), B7 (a
-  prior-id chain, two merges for tracewire and ferrolog), B2 (kilnkit and hullcheck renamed inside the window). Each
-  moves the people counted and so every share.
+  prior-id chain, two merges for tracewire and ferrolog; one hop keeps 6 of 10), B2 (kilnkit and hullcheck renamed
+  inside the window; unmapped keeps 6 of 10). Each moves the people counted and so every share.
 - Hazards: B3 members of the owning organisation; B4 double submissions and references in several forms; B5
   nominations of repositories not on the shortlist; B6 addresses of forks under other owners. Every reference names
-  its owner and every signed-out nominator of the shortlist typed an account's primary address (both asserted).
+  its owner and every signed-out nominator of the shortlist resolves to an account (both asserted).
 - Readings closed: "when they nominated it" is in the prompt; for every other nominator membership when nominating
-  equals membership now (asserted), so only the five who left differ, and they differ by design.
+  equals membership now (asserted), so only the ten who left differ, and they differ by design.
 - Separation: SF11 holds with the five member accounts' own stars on their repositories credited either to the
-  account that starred or to the account it was later merged into (asserted: same pick, bins and stars to date).
+  account that starred or to the account it was later merged into (asserted: same pick, bins and stars to date); the
+  five B9 members' stars of their repositories all fall before they left, so the leaving moves no external star.
 - Path: the nominations export, the account snapshot (email hashes, merges), the organisation members, the renames,
   the repositories file, the lottery log's October row.
 
@@ -419,25 +443,27 @@ by deleting every ask file: the call's figures move by zero).
 
 | Handling | Ask A (12) | Ask B (10) |
 |---|---|---|
-| the stage 4 readers' route: every older device handled, gateways kept | 0 | n/a |
-| gateways handled, every send's delivered summed | 6 | n/a |
-| gateways handled, one send per campaign id or name | 6 | n/a |
-| gateways handled, Thursday clicks left out, by label, per campaign or per link | 0 | n/a |
-| the stage 4 readers' route: hashes, merges and renames resolved, membership of the account nominated from | n/a | 0 |
-| membership now | n/a | 0 |
-| hashes and merges, renames unmapped; hashes, one merge hop, renames (person-level membership) | n/a | 6 |
-| hashes only; hashes and renames | n/a | 0 |
+| round 3's first reader: gateways' fetches out, the spotlight's own tags | 0 | n/a |
+| round 3's second reader: every fetch kept, the spotlight's owner/name address | 0 | n/a |
+| gateways kept, every link resolved; gateways' subscribers dropped | 0 | n/a |
+| every device but the denominator: every send's delivered summed, or one send per campaign | 6 | n/a |
+| the permanent address only; Thursday clicks left out; by label, per campaign or per link | 0 | n/a |
+| round 3's second reader: addresses from the snapshot only, people across merges, membership then | n/a | 0 |
+| round 3's first reader: addresses from the snapshot only, one merge hop | n/a | 0 |
+| the account nominated from; membership now | n/a | 0 |
+| one merge hop; renames unmapped | n/a | 6 |
+| hashes only; no merge map | n/a | 0 |
 | every device | 12 | 10 |
 
-| Cracker (landed the call, ran the battery, executed every filed rule, the stage 4 readers' route) | Ask A (12) | Ask B (10) | Verdict |
+| Cracker (landed the call, ran the battery, executed every filed rule, the round 3 readers' routes) | Ask A (12) | Ask B (10) | Verdict |
 |---|---|---|---|
-| batches against the Thursday send, links by address, every click a reader's | 0 | n/a | miss |
-| hashes, merges and renames resolved, membership of the account nominated from when nominating | n/a | 0 | miss |
+| batches against the Thursday send, links by tag, every click a reader's | 0 | n/a | miss |
+| addresses from the snapshot, no merge map, the account nominated from | n/a | 0 | miss |
 
-Pair ceiling: 28.5 (the strongest response on the call at the stage 4 readers' route: 38 + 7 + 0 = 45.0; the best
-response off the call at the same route: 5 + 7 + 0 = 12.0)
-Mirror leakage: 27 per cent of ask weight with one device mishandled (6 of 22, a reader handling the gateways who sums
-every send keeps the clickers); no ask whole on fewer than all its devices
+Pair ceiling: 28.5 (the strongest response on the call at the round 3 readers' routes: 38 + 7 + 0 = 45.0; the best
+response off the call at the same routes: 5 + 7 + 0 = 12.0); a paper figure until round 4's readers measure it
+Mirror leakage: 27 per cent of ask weight with one device mishandled (6 of 22, a reader handling every device but
+summing every send's delivered keeps the clickers); no ask whole on fewer than all its devices
 Measured by: generator/checks.py (the asks block runs every handling profile above on the cut pack and asserts the
 ceiling and the leakage)
 
@@ -446,9 +472,11 @@ ceiling and the leakage)
 `leak.py --asof 2026-09-30` on the shipped cut: REVIEW, no LEAK; one line per REVIEW:
 - `accounts_snapshot_2026-09-27.parquet` carries 14,000 as a substring of a rendered row (a follower count of 14
   beside a hash beginning 000): no figure is stated.
-- The featuring memo carries the call's words (spotlight, Sluis, October, external stars, repository) and four
-  stump-paragraph terms (lottery, account, extract, surface) in its scope, rule and records clauses; its "whichever
-  surface" is the estimand's own sentence. It names no feed, follower, launch, forum, rate, window or method.
+- The featuring memo carries the call's words (spotlight, Sluis, October, external stars, repository) and four of the
+  stump terms leak.py takes from this note (lottery, account, surface, events; the set it samples moves as the note is
+  edited, and "extract" stood in it earlier) in its scope, rule and records clauses; its "whichever surface" is the
+  estimand's own sentence and "events" names the warehouse its records clause keeps. It names no feed, follower, launch,
+  forum, rate, window or method.
 - The lottery log's 2026-10-06 is the October issue's own date in its row, a scheduled date the memo also states.
 - Sweep 1 (no file describes the data): clean. The pack ships no dictionary, field notes, readme or manifest; the
   lottery log's sheets are 2025 and 2026.
@@ -467,6 +495,10 @@ question 5 as round 1, question 6 analytical. Question 3 names the lottery log, 
 files that help: each is the organisation's own record with uses on file (the growth team's draws, which the memo's
 records clause keeps; the warehouse's schema change; the platform's renames export). Its realism notes are mild and
 none decisive (a list growing smoothly, draws in office hours, a steady send pattern, name-and-number logins).
+
+**Reader not re-run after round 2:** the packs since f0ae1a2f changed only the ask exports (the four campaign and
+click files, the nominations, the memberships and the snapshot's addresses for the moved members); no document and not
+the prompt changed, so the leak reader's questions stand (build-pipeline stage 4).
 
 **Judge:** see Gates at ship.
 
@@ -568,3 +600,20 @@ Recorded at ship below.
 - G16 and G13 as the decisive generator on the card: G16 with gap time repeats task270 inside the batch (`test.same_puzzle`),
   G13 is spent in seven older builds; G6 names what moves (the make-up of the followers the cards reach once the burst
   decays) and is the honester key, differentiated against its four older matches.
+- Gateways at 0.36 to 0.48 per cent of a batch's delivered (the round 2 cut): too few of their readers clicked through
+  on their own for the route that drops a gateway's subscriber with them to move every figure; at 1.8 to 2.4 per cent
+  it moves all twelve (asserted, 0 of 12).
+- A gateway's fetch timed apart from its reader's own clicks: in August a reader clicked within five seconds of a
+  fetch and the one-minute reading split that subscriber's clicks; the gateway now checks a message as it arrives, at
+  least two minutes before its reader's first click, and every reading from one second to a minute gives the golden.
+- The second architecture 2 ask layer on its own (gateways for Ask A, the member who merged accounts on leaving for Ask
+  B), measured on eb36b41e (round 3): both readers missed the call, and kept 18 and 10 of the 22 ask figures, one
+  removing the fetches while keeping their readers' later clicks, the other resolving people across merges. Both
+  matched the spotlight by its tags or its owner/name address and took signed-out addresses through the snapshot
+  alone: A7 and B9 stacked at that step, each moving every figure of its ask on both routes.
+- The member who changes address chosen among signed-in nominators only, with no star after the nominations opened:
+  shiftgres's only signed-in member is an owner and every member had starred in September, so no candidate held; the
+  device now also takes members who nominated signed out only (their signed-in response comes first), and the leaving
+  falls after the member's last nomination and last star of the repository.
+- The context artifact `filed_standard`: BLOCKed at ship by `ban.artifact` once task141 v3 (a council's filed planning
+  standard) arrived in the pull; redrawn to `planning_thread`, the memo's own genre (above, Draw).

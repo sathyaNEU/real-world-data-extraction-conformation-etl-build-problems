@@ -448,6 +448,22 @@ def _path_of(url):
     return ("%s/%s" % (m.group(1), m.group(2))).lower() if m else None
 
 
+def _id_of(url):
+    """The repository a permanent address names (/repositories/<id> on the host follows renames), or None."""
+    m = re.match(r"https?://[^/]+/repositories/(\d+)(?:[/?#]|$)", url)
+    return int(m.group(1)) if m else None
+
+
+def reaches(url, path, rid, h):
+    """Whether a link reaches the repository: by its owner/name address or by its permanent address. The handlings
+    name the readings that match only one of the two forms."""
+    if h.get("ids_only"):
+        return _id_of(url) == rid
+    if h.get("name_only"):
+        return _path_of(url) == path
+    return _path_of(url) == path or _id_of(url) == rid
+
+
 def issue_sends(A, ym):
     """The issue's sends to the Sluis list (tests and other newsletters left out), one row per send, with its
     Amsterdam send date: a Postwerk campaign sent in batches is one row per batch."""
@@ -467,7 +483,7 @@ GATEWAY_LINKS = 4        # a gateway's fetch: one subscriber's clicks on this ma
 GATEWAY_SECONDS = 2      # ... within this many seconds
 
 
-def readers_clicks(lk, plat, keep_gateways=False):
+def readers_clicks(lk, plat, keep_gateways=False, drop_fetched=False):
     """The click rows a reader made: a mail gateway's fetch of every link of a message on delivery is not a click
     through. Relaymark logs each click with its time, so a fetch is a subscriber's clicks on four or more links of
     one send within two seconds; Postwerk reports each subscriber's clicks per link, so a fetch is one click on every
@@ -480,6 +496,10 @@ def readers_clicks(lk, plat, keep_gateways=False):
         mine = lk.groupby(["campaign_id", "subscriber_id"]).link_label.nunique()
         fetched = {k for k, v in mine.items() if v == links[k[0]]}
         hit = [(c, s) in fetched for c, s in zip(lk.campaign_id, lk.subscriber_id)]
+        if drop_fetched:
+            # the reading that drops a gateway's subscriber outright, their own clicks with the fetch
+            who = {s for c, s in fetched}
+            return lk[[s not in who for s in lk.subscriber_id]]
         lk["clicks"] = lk["clicks"] - np.array(hit, dtype=int)
         return lk[lk.clicks > 0]
     lk = lk.copy()
@@ -495,6 +515,9 @@ def readers_clicks(lk, plat, keep_gateways=False):
             near = np.abs(ts - ts[i]) <= GATEWAY_SECONDS
             if len(set(tags[near])) >= GATEWAY_LINKS:
                 keep[pos[ix]] = False
+    if drop_fetched:
+        who = set(lk.subscriber_id[~keep])
+        return lk[[s not in who for s in lk.subscriber_id]]
     return lk[keep]
 
 
@@ -502,8 +525,8 @@ def ask_a(B, A, handling=None):
     """Per issue: the subscribers it was delivered to (the sends of the issue's Tuesday, in batches; the Thursday send
     to the same list goes to subscribers the issue was already delivered to), the subscribers who clicked through to
     the issue's spotlighted repository (distinct subscribers whose own click, not a mail gateway's fetch, is on a link
-    whose address is that repository, in any of the issue's sends) and their share of the delivered. handling switches
-    the readings the cracker sheet lists."""
+    that reaches that repository, by its owner/name address or its permanent address by id, in any of the issue's
+    sends) and their share of the delivered. handling switches the readings the cracker sheet lists."""
     h = handling or {}
     lot = {x["issue"]: x for x in B["lottery"]}
     out = {}
@@ -523,16 +546,19 @@ def ask_a(B, A, handling=None):
         delivered = int(counted.delivered.sum())
         ids = set(counted.campaign_id) if h.get("clicks_counted_only") else set(sends.campaign_id)
         memo = A.setdefault("_readers", {})
-        mkey = (tuple(sorted(ids)), plat, bool(h.get("keep_gateways")), GATEWAY_LINKS, GATEWAY_SECONDS)
+        mkey = (tuple(sorted(ids)), plat, bool(h.get("keep_gateways")), bool(h.get("drop_fetched")), GATEWAY_LINKS,
+                GATEWAY_SECONDS)
         if plat == "postwerk":
             lk = A["pw_links"]
             if mkey not in memo:
-                memo[mkey] = readers_clicks(lk[lk.campaign_id.isin(ids)], plat, h.get("keep_gateways"))
+                memo[mkey] = readers_clicks(lk[lk.campaign_id.isin(ids)], plat, h.get("keep_gateways"), h.get("drop_fetched"))
             lk = memo[mkey]
             if h.get("by_label"):
                 hit = lk[lk.link_label == "spotlight"]
+            elif h.get("labels_only"):
+                hit = lk[lk.link_label.isin(["spotlight", "spotlight-beeld"])]
             else:
-                hit = lk[[_path_of(u) == path for u in lk.url]]
+                hit = lk[[reaches(u, path, rid, h) for u in lk.url]]
             if h.get("sum_per_link"):
                 clickers = int(hit.groupby("link_label").subscriber_id.nunique().sum())
             elif h.get("sum_per_campaign"):
@@ -542,14 +568,16 @@ def ask_a(B, A, handling=None):
         else:
             lk = A["rm_links"]
             if mkey not in memo:
-                memo[mkey] = readers_clicks(lk[lk.campaign_id.isin(ids)], plat, h.get("keep_gateways"))
+                memo[mkey] = readers_clicks(lk[lk.campaign_id.isin(ids)], plat, h.get("keep_gateways"), h.get("drop_fetched"))
             lk = memo[mkey]
             if h.get("by_label"):
                 hit = lk[lk.link_tag == "spotlight"]
             elif h.get("feature_only"):
                 hit = lk[lk.link_tag == "feature"]
+            elif h.get("labels_only"):
+                hit = lk[lk.link_tag.isin(["feature", "feature_cta"])]
             else:
-                hit = lk[[_path_of(u) == path for u in lk.url]]
+                hit = lk[[reaches(u, path, rid, h) for u in lk.url]]
             if h.get("count_rows"):
                 clickers = int(len(hit))
             elif h.get("sum_per_link"):
@@ -566,6 +594,20 @@ def ask_a(B, A, handling=None):
 
 # ---------------------------------------------------------------------------------------------------- Ask B
 
+def address_map(B, A, snapshot_only=False):
+    """Email hash to account: each account's primary address in the snapshot, and the address a signed-in response
+    recorded for its account (the primary address when the response was made, which the account may have changed
+    since)."""
+    accs = B["accounts"]
+    out = dict(zip(accs.primary_email_sha256.dropna(), accs.account_id[accs.primary_email_sha256.notna()]))
+    if not snapshot_only:
+        noms = A["noms"]
+        for aid, hsh in zip(noms.account_id, noms.email_sha256):
+            if aid is not None and not pd.isna(aid) and hsh:
+                out.setdefault(hsh, int(aid))
+    return out
+
+
 def norm_ref(text):
     t = text.strip()
     t = re.sub(r"^https?://", "", t, flags=re.I)
@@ -577,10 +619,10 @@ def norm_ref(text):
 
 def ask_b(B, A, handling=None):
     """Per shortlisted repository: the people who nominated it (a signed-out response's email hash taken to the
-    account whose primary address it is, a merged account to the account it was merged into, a renamed repository's
-    old name to its current one) and, for an organisation's repository, the share of them who were not its members
-    when they nominated it: a person is a member while any of their accounts is, the accounts later merged into the
-    one they nominated from included."""
+    account whose primary address it was when the response was made, as the snapshot or a signed-in response records
+    it, a merged account to the account it was merged into, a renamed repository's old name to its current one) and,
+    for an organisation's repository, the share of them who were not its members when they nominated it: a person is a
+    member while any of their accounts is, the accounts later merged into the one they nominated from included."""
     h = handling or {}
     prepare(B)
     X = [x for x in B["lottery"] if x["issue"] == OCT_ISSUE][0]
@@ -591,7 +633,7 @@ def ask_b(B, A, handling=None):
         if n in cands:
             bare.setdefault(o.split("/")[1], cands[n])
     accs = B["accounts"]
-    by_hash = {} if h.get("no_hash_map") else dict(zip(accs.primary_email_sha256.dropna(), accs.account_id[accs.primary_email_sha256.notna()]))
+    by_hash = {} if h.get("no_hash_map") else address_map(B, A, snapshot_only=bool(h.get("snapshot_hashes_only")))
     merged = {} if h.get("no_merge_map") else dict(zip(accs.account_id[accs.merged_into.notna()], accs.merged_into.dropna().astype(int)))
 
     def resolve(aid):

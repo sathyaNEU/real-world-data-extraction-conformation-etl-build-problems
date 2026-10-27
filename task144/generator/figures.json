@@ -126,33 +126,33 @@
   "ask_a": {
     "2026-04": {
       "delivered": 391299,
-      "clicked_through": 5825,
-      "share_pct": 1.49
+      "clicked_through": 6699,
+      "share_pct": 1.71
     },
     "2026-05": {
       "delivered": 399160,
-      "clicked_through": 6075,
-      "share_pct": 1.52
+      "clicked_through": 7031,
+      "share_pct": 1.76
     },
     "2026-06": {
       "delivered": 406891,
-      "clicked_through": 6233,
-      "share_pct": 1.53
+      "clicked_through": 7169,
+      "share_pct": 1.76
     },
     "2026-07": {
       "delivered": 429444,
-      "clicked_through": 6536,
-      "share_pct": 1.52
+      "clicked_through": 7395,
+      "share_pct": 1.72
     },
     "2026-08": {
       "delivered": 429291,
-      "clicked_through": 6190,
-      "share_pct": 1.44
+      "clicked_through": 7090,
+      "share_pct": 1.65
     },
     "2026-09": {
       "delivered": 429949,
-      "clicked_through": 6404,
-      "share_pct": 1.49
+      "clicked_through": 7317,
+      "share_pct": 1.7
     }
   },
   "ask_b": {

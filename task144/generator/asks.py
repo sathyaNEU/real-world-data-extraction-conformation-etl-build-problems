@@ -10,7 +10,11 @@ the same name. On the Thursday after, the editors send the issue again to the su
 third send to the same list under the same name. A [TEST] copy goes to the editorial seed addresses the afternoon
 before. Postwerk's template carries the spotlight twice (the heading and the screenshot); Relaymark's template, from
 June, carries it as the heading (tag feature) and the button (tag feature_cta), and adds a follow-up link to last
-month's spotlight under the tag spotlight. A few subscribers who had not opened the issue by the Thursday opened the
+month's spotlight under the tag spotlight. Every issue opens with the editor's paragraph, whose repository mentions
+the newsletter's editor inserts from a picker that links each repository by its permanent address on the host
+(/repositories/<id>, which follows renames): the spotlighted repository always, and in most months one more repository
+from the same shortlist, the links tagged intro_1 and intro_2 (Postwerk intro-1 and intro-2) in the order they appear.
+A few subscribers who had not opened the issue by the Thursday opened the
 first send later and clicked through in both. Some subscribers read Sluis at a company whose mail gateway fetches every
 link of a message the moment it is delivered, to check it before the reader sees it: one request per link within a
 second or two, which the platforms record as clicks by that subscriber (the gateway also fetches the images, so the
@@ -102,6 +106,30 @@ def labels(pw):
     return ("spotlight", "spotlight-beeld") if pw else ("feature", "feature_cta")
 
 
+def intro_links(W, ym):
+    """The editor's paragraph's repository links in order: [(tag, repository)], the spotlighted repository among
+    them, from their own stream (cached on the world, since every link row asks for its address)."""
+    cache = W.__dict__.setdefault("_intro", {})
+    if ym not in cache:
+        g = K.rng("intro-plan", *ym)
+        spot = spotlight_of(W)[ym]
+        mates = sorted((r for r in W.lottery if r.issue == ym and not r.drawn), key=lambda r: r.pub)
+        order = [spot]
+        if g.random() < 0.7:
+            other = mates[int(g.integers(len(mates)))]
+            order = [spot, other] if g.random() < 0.5 else [other, spot]
+        sep = "-" if ym in PW_MONTHS else "_"
+        cache[ym] = [("intro%s%d" % (sep, i), r) for i, r in enumerate(order, 1)]
+    return cache[ym]
+
+
+def spot_labels(W, ym, pw):
+    """Every tag whose link reaches the issue's spotlighted repository: the heading and the button or screenshot,
+    and the editor's paragraph's link to it."""
+    spot = spotlight_of(W)[ym]
+    return labels(pw) + tuple(lab for lab, r in intro_links(W, ym) if r is spot)
+
+
 def build_sends(W):
     """Every send of April to September 2026 on both platforms, with each subscriber's clicks by link."""
     spot = spotlight_of(W)
@@ -165,17 +193,18 @@ def build_sends(W):
         news.complaints = int(g.integers(5, 20))
         group.append(news)
         _clicks(W, g, ym, group, spot, prefix, base_id, pw)
-        _clear_of_edges(group, pw)
-        _gateways(ym, group, prefix, base_id, pw)
+        _intro_clicks(W, ym, group, prefix, base_id, pw)
+        _clear_of_edges(W, group, pw)
+        _gateways(W, ym, group, prefix, base_id, pw)
         camps.extend(group)
     return camps
 
 
-SCAN_SHARE = (0.0036, 0.0048)    # subscribers behind a gateway that fetches every link on delivery, of a batch's delivered
+SCAN_SHARE = (0.018, 0.024)      # subscribers behind a gateway that fetches every link on delivery, of a batch's delivered
 SCAN_KNOWN = (0.58, 0.70)        # of them, the share a platform's click report recognises
 
 
-def _gateways(ym, group, prefix, base_id, pw):
+def _gateways(W, ym, group, prefix, base_id, pw):
     """The Tuesday batches' subscribers behind a link-checking mail gateway, from their own streams (the readers'
     clicks drawn above are untouched): mostly subscribers who never click, and about as many readers among them as
     among anyone, whose own clicks come later like everyone's."""
@@ -186,12 +215,12 @@ def _gateways(ym, group, prefix, base_id, pw):
             used.update(d)
             if c.kind == "resend":
                 resend.update(d)
-    a_lab, b_lab = labels(pw)
+    labs = spot_labels(W, ym, pw)
     for c in group:
         if c.kind != "batch":
             continue
         n = int(round(c.delivered * g.uniform(*SCAN_SHARE)))
-        readers = sorted((set(c.clicks.get(a_lab, {})) | set(c.clicks.get(b_lab, {}))) - resend)
+        readers = sorted(set().union(*(set(c.clicks.get(lab, {})) for lab in labs)) - resend)
         k = min(len(readers), int(round(n * 0.013)) + 1)
         both = [readers[int(i)] for i in g.choice(len(readers), size=k, replace=False)]
         fresh = _ids(g, prefix, base_id, n - k, used)
@@ -202,9 +231,9 @@ def _gateways(ym, group, prefix, base_id, pw):
         c.scan_known = {s for s, kn in zip(who, known) if kn}
 
 
-def issue_share(group, pw):
+def issue_share(W, group, pw):
     """The issue's delivered subscribers and spotlight click-through, as the golden counts them."""
-    labs = labels(pw)
+    labs = spot_labels(W, group[0].ym, pw)
     delivered = sum(c.delivered for c in group if c.kind == "batch")
     who = set()
     for c in group:
@@ -214,20 +243,52 @@ def issue_share(group, pw):
     return delivered, len(who), 100.0 * len(who) / delivered
 
 
-def _clear_of_edges(group, pw):
+def _clear_of_edges(W, group, pw):
     """Keep the click-through share at least 0.003 points from a two-decimal rounding edge: subscribers who clicked
     only the spotlight heading in the first batch are taken out of it, one at a time, the last first."""
-    a_lab, b_lab = labels(pw)
+    labs = spot_labels(W, group[0].ym, pw)
+    a_lab = labs[0]
     first = group[0]
     while True:
-        d, n, share = issue_share(group, pw)
+        d, n, share = issue_share(W, group, pw)
         pos = (share * 100) % 1
         if pos <= 0.2 or pos >= 0.8:
             return
-        only = sorted(s for s in first.clicks[a_lab] if s not in first.clicks[b_lab]
-                      and all(s not in c.clicks.get(a_lab, {}) and s not in c.clicks.get(b_lab, {})
-                              for c in group[1:]))
+        only = sorted(s for s in first.clicks[a_lab]
+                      if all(s not in first.clicks.get(lab, {}) for lab in labs[1:])
+                      and all(s not in c.clicks.get(lab, {}) for c in group[1:] for lab in labs))
         del first.clicks[a_lab][only[-1]]
+
+
+def _intro_clicks(W, ym, group, prefix, base_id, pw):
+    """Clicks on the editor's paragraph's links, from their own stream (every click drawn above is untouched): the
+    spotlighted repository's link draws about a quarter as many clickers as its heading, a little over a third of them
+    subscribers who also clicked the heading or the button, the rest reaching it only from the paragraph."""
+    g = K.rng("intro-clicks", *ym)
+    spot = spotlight_of(W)[ym]
+    a_lab, b_lab = labels(pw)
+    used = set()
+    for c in group:
+        for d in c.clicks.values():
+            used.update(d)
+    for c in group:
+        if c.kind not in ("batch", "resend"):
+            continue
+        scale = 1.0 if c.kind == "batch" else 0.31
+        spotters = sorted(set(c.clicks.get(a_lab, {})) | set(c.clicks.get(b_lab, {})))
+        anyone = sorted(set().union(*(set(d) for d in c.clicks.values())))
+        for lab, r in intro_links(W, ym):
+            if r is spot:
+                n = int(round(c.delivered * g.uniform(0.0024, 0.0036) * scale))
+                pool, back_share = spotters, g.uniform(0.33, 0.42)
+            else:
+                n = int(round(c.delivered * g.uniform(0.0009, 0.0017) * scale))
+                pool, back_share = anyone, 0.28
+            k = min(len(pool), int(round(n * back_share)))
+            back = [pool[int(i)] for i in g.choice(len(pool), size=k, replace=False)]
+            fresh = _ids(g, prefix, base_id, n - k, used)
+            used.update(fresh)
+            c.clicks[lab] = {s: 1 + int(g.poisson(0.2)) for s in back + fresh}
 
 
 def _clicks(W, g, ym, group, spot, prefix, base_id, pw):
@@ -293,6 +354,9 @@ def link_url(W, c, lab):
         return utm(repo_url(spot[ym]), ym, "feature_button")
     if lab == "spotlight":
         return utm(repo_url(spot[(ym[0], ym[1] - 1)]), ym, "last_spotlight")
+    if lab.startswith("intro"):
+        r = dict(intro_links(W, ym))[lab]
+        return utm("https://%s/repositories/%d" % (K.HOST, r.pub), ym, "intro")
     if lab.startswith("artikel") or lab.startswith("article"):
         i = int(lab[-1])
         return "https://%s/blog/%d/%02d/%s" % (K.HOST, ym[0], ym[1], ARTICLES[(ym[1] * 4 + i) % len(ARTICLES)])
@@ -380,6 +444,7 @@ def rm_link_rows(W, camps):
         if c.platform != "relaymark":
             continue
         t0 = K.from_amsterdam(c.send_local)
+        first = {}
         for lab in sorted(c.clicks):
             url = link_url(W, c, lab)
             for s in sorted(c.clicks[lab]):
@@ -388,9 +453,13 @@ def rm_link_rows(W, camps):
                     h = float(g.exponential(9.0)) if g.random() < 0.8 else float(g.uniform(10, 400))
                     t = t0 + dt.timedelta(minutes=2, hours=h)
                     rows.append([c.id, s, lab, url, K.iso_z(t.replace(microsecond=0))])
+                    first[s] = min(first.get(s, t), t)
         for s in sorted(c.scan):
             g = K.rng("gateway-t", c.id, s)
             at = t0 + dt.timedelta(seconds=c.scan[s])
+            if s in first:
+                # the gateway checks the message when it arrives, before its reader has opened it
+                at = min(at, first[s] - dt.timedelta(minutes=2))
             for lab in sorted(c.clicks):
                 t = at + dt.timedelta(seconds=float(g.uniform(0, 0.8)))
                 rows.append([c.id, s, lab, link_url(W, c, lab), K.iso_z(t.replace(microsecond=0))])
@@ -469,6 +538,59 @@ def _via_personal_accounts(W, rows, truth):
         W.via.append(dict(repo=r.name, member=member, personal=b.id, merged=merged))
 
 
+def _moved_addresses(W, rows, truth):
+    """The members who nominated their organisation's repository both signed in and signed out, the signed-out
+    response with the work address the form had shown them, and who, leaving the organisation a few days after their
+    last nomination and their last star of it, made a personal address the account's primary one: the account stays,
+    its membership ends, and the snapshot carries the new address. From their own stream (every account above is issued
+    first), on members who are not owners."""
+    acc = W.accounts.by_id
+    gm = K.rng("moved")
+    W.moved = []
+    for key in NOM_PLAN:
+        r = W.by_name[key]
+        if r.owner_type != "organization":
+            continue
+        owners = {aid for org, aid, j, l, role in W.member_rows if org == r.owner and role == "owner"}
+        last_star = {}
+        for s in r.stars:
+            last_star[s.account] = max(last_star.get(s.account, s.t), s.t)
+        opts = sorted(pid for pid, tr in truth.items() if tr["repo"] == key and tr["member"]
+                      and tr["kind"] in ("in", "out") and tr["account"] not in owners)
+        start = max(NOM_OPEN, K.to_amsterdam(r.public) + dt.timedelta(hours=3))
+        for i in gm.permutation(len(opts)):
+            pid = opts[int(i)]
+            xs = [x for x in rows if x.get("pid") == pid]
+            member = truth[pid]["account"]
+            work = acc[member].email_key
+            if truth[pid]["kind"] == "in":
+                t = min(max(x["t"] for x in xs) + dt.timedelta(days=float(gm.uniform(0.3, 3.0))),
+                        NOM_CLOSE - dt.timedelta(minutes=5))
+                extra = dict(t=t, account=None, hash=work, repo=key, pid=pid, via=False)
+            else:
+                t = max(min(x["t"] for x in xs) - dt.timedelta(days=float(gm.uniform(0.3, 3.0))), start)
+                extra = dict(t=t, account=member, hash=work, repo=key, pid=pid, via=False)
+            end = max([x["t"] for x in xs] + [t])
+            if member in last_star:
+                end = max(end, K.to_amsterdam(last_star[member]))
+            left = K.from_amsterdam(end + dt.timedelta(days=float(gm.uniform(1.0, 3.0)))).replace(microsecond=0)
+            if left > K.CUT - dt.timedelta(hours=12):
+                continue
+            for x in xs:
+                x["hash"] = work
+            rows.append(extra)
+            for j, (org, aid, joined, lft, role) in enumerate(W.member_rows):
+                if org == r.owner and aid == member and lft is None:
+                    W.member_rows[j] = (org, aid, joined, left, role)
+            acc[member].email_key = hashlib.sha256(("%s@%s" % (K.hexid("mailbox-own", member, n=12),
+                                                               "mail.example")).encode()).hexdigest()
+            truth[pid]["kind"] = "moved"
+            W.moved.append(dict(repo=r.name, member=member, work=work, left=left))
+            break
+        else:
+            raise SystemExit("no member of %s can carry the moved address" % key)
+
+
 def build_nominations(W):
     """The form's rows and the truth behind them (each row's person)."""
     A = W.accounts
@@ -532,7 +654,7 @@ def build_nominations(W):
                 people.append(dict(kind="out", account=aid, hash=acc[aid].email_key, member=False))
         for pi, p in enumerate(people):
             pid = "%s-%d" % (key, pi)
-            truth[pid] = dict(repo=key, member=p["member"], account=p.get("account"))
+            truth[pid] = dict(repo=key, member=p["member"], account=p.get("account"), kind=p["kind"])
             subs = []
             if p["kind"] in ("in", "via"):
                 subs.append((p["account"], None))
@@ -597,6 +719,7 @@ def build_nominations(W):
                 rows.append(dict(t=t, account=None, hash=_hash_email("o%d-%d@mail.example" % (i, int(g.integers(1e6)))),
                                  repo=None, ref="https://%s/%s/%s" % (K.HOST, owner, nm), pid=None))
     _via_personal_accounts(W, rows, truth)
+    _moved_addresses(W, rows, truth)
     rows.sort(key=lambda x: (x["t"], x["pid"] or "", x["account"] or 0))
     out = []
     for i, x in enumerate(rows):
@@ -613,9 +736,11 @@ def build_nominations(W):
             ref = _ref(g2, r.owner, name)
         t_local = x["t"].replace(microsecond=0)
         off = K.amsterdam_offset(K.from_amsterdam(t_local))
+        # a signed-in response keeps the address the form showed: the account's primary address when it was made
+        email = x["hash"] or (W.accounts.by_id[x["account"]].email_key if x["account"] is not None else "")
         out.append([K.hexid("resp", i, n=10), t_local.strftime("%Y-%m-%dT%H:%M:%S") + "+%02d:00" % off,
                     "yes" if x["account"] is not None else "no", x["account"] if x["account"] is not None else "",
-                    x["hash"] or "", ref])
+                    email, ref])
         x["row"] = out[-1]
     W.nomination_truth = truth
     W.nomination_rows = rows

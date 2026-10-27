@@ -23,8 +23,8 @@ From its 8th day public on, about 1.8 per cent of the followers who see a kilnki
 4. Measured each repository's stars per follower view from its 8th day public, its feed-card first stars from that UTC day over the summed followers of every account whose first star of it fell between that day and 27 September, and built its added stars as newsletter stars x (1 + rate x 85 / (1 - rate x 10)) with the mean followers of newsletter starrers over every spotlight (85) and of feed-card starrers over both event files (10): kilnkit 1.8% (356 feed-card stars over 19,548 followers) adding 9,000, slidewell 0.7% where its whole life gives 2.0%.
 5. Tested the rate on the lottery spotlights whose 90 days had closed, their added stars (stars by day 90 less the step 2 forecast at the send) against step 4 at the issue's newsletter stars and each one's rate before the send: the rate from day 8 reproduces them to within a few hundred stars in root-mean-square terms, the whole-life rate misses by more than a thousand.
 6. Spotlighted the largest total: kilnkit at 12,000 against slidewell and tracewire at 10,000 each.
-7. For each issue counted the distinct subscribers whose own click, in any of its sends to the Sluis list, is on a link to its spotlighted repository, leaving out mail gateways' fetches of every link of a message on delivery (four or more links within two seconds in relaymark_link_clicks_2026-06_to_2026-09.csv, one click on every link of the send in postwerk_link_report_2026-04_to_2026-05.csv), over the subscribers its two Tuesday batches were delivered to: April 5,825 of 391,299, September 6,404 of 429,949.
-8. Took a nominator as outside an organisation when none of their accounts was its member when they nominated, the accounts later merged into the one they nominated from included (merged_into in accounts_snapshot_2026-09-27.parquet, the spans in organization_memberships_2026-09-27.csv): kilnkit 22 of 27, tracewire 43 of 47.
+7. For each issue counted the distinct subscribers whose own click, in any of its sends to the Sluis list, is on a link that reaches its spotlighted repository, by its owner/name address or by the permanent address /repositories/ with its id in repositories_2026-09-27.json that the opening paragraph's links use, leaving out mail gateways' fetches of every link of a message on delivery (four or more links within two seconds in relaymark_link_clicks_2026-06_to_2026-09.csv, one click on every link of the send in postwerk_link_report_2026-04_to_2026-05.csv), over the subscribers its two Tuesday batches were delivered to: April 6,699 of 391,299, September 7,317 of 429,949.
+8. Matched each signed-out response in sluis_nominations_2026-10.csv to the account whose primary address it was when made, as accounts_snapshot_2026-09-27.parquet or a signed-in response of that account records it, and took a nominator as outside an organisation when none of their accounts was its member when they nominated, the accounts later merged into the one they nominated from included (merged_into, the spans in organization_memberships_2026-09-27.csv): kilnkit 22 of 27, tracewire 43 of 47.
 
 ## 4. Deliverable Answers
 
@@ -40,12 +40,12 @@ From its 8th day public on, about 1.8 per cent of the followers who see a kilnki
    - hullcheck: 7,000
    - timeloom: 6,000
 3. Sluis issues, subscribers who clicked through to the issue's spotlighted repository and their share of the subscribers it was delivered to:
-   - April 2026 (calware-cloud/bryis): 5,825 subscribers; 1.49%
-   - May 2026 (paulaha/awesome-home-automation): 6,075 subscribers; 1.52%
-   - June 2026 (otto_kok/zig-toml): 6,233 subscribers; 1.53%
-   - July 2026 (dalora-oss/orvum): 6,536 subscribers; 1.52%
-   - August 2026 (yusufkuipers/minio-exporter): 6,190 subscribers; 1.44%
-   - September 2026 (bruno-murphy29/rust-ratelimit): 6,404 subscribers; 1.49%
+   - April 2026 (calware-cloud/bryis): 6,699 subscribers; 1.71%
+   - May 2026 (paulaha/awesome-home-automation): 7,031 subscribers; 1.76%
+   - June 2026 (otto_kok/zig-toml): 7,169 subscribers; 1.76%
+   - July 2026 (dalora-oss/orvum): 7,395 subscribers; 1.72%
+   - August 2026 (yusufkuipers/minio-exporter): 7,090 subscribers; 1.65%
+   - September 2026 (bruno-murphy29/rust-ratelimit): 7,317 subscribers; 1.70%
 4. Shortlisted repositories owned by an organisation, the people who nominated it from outside the organisation when they nominated it and their share of the people who nominated it:
    - kilnkit (kilnworks): 22 people; 81.48%
    - tracewire (meridian-observe): 43 people; 91.49%

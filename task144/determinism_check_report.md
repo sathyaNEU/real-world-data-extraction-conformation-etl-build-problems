@@ -1,58 +1,61 @@
-# determinism-check report, task144, 2026-10-27 (architecture 2, /build stage 4)
+# determinism-check report, task144, 2026-10-27 (re-judge after FIX_NOW, scratch run r2)
 
 ## Verdict
-DETERMINISTIC, plus SOLUTION_WRONG on one stated statistic only (the back-test RMSE pair in section 1 and step 7 of submission.md; the call and every graded figure reproduce).
-**Disposition:** FIX_NOW
-**Stumping type:** mechanism: method_or_model_selection (forecast validated out of sample), stumping_family: analytical_non_defect, surface_read_dependency: no, sole_data_defect: no
+DETERMINISTIC (no SOLUTION_WRONG)
+**Disposition:** APPROVE for the main call and the forecast asks. The click-through ask (Ask A) was judged on the previous pack (f0ae1a2f) and has not been re-judged on the shipped pack (eb36b41e), see Findings 1.
+**Stumping type:** mechanism: forecasting + method_or_model_selection, stumping_family: analytical_non_defect, surface_read_dependency: no, sole_data_defect: no
 
 ## Why
-Executed literally, the memo (external star = first star by a non-bot, non-member account, UTC day, day 1 = made-public day, 90-day window, unseen stars counted) supports one model on the shipped lottery: a no-spotlight baseline from the runners-up plus newsletter stars times a follower-view cascade at the rate after the launch week. Kilnkit leads (about 12,100 against 9,900 to 10,000 for slidewell and tracewire), and the lead holds for every exposure-window start of day 5 or later and for linear and fitted-cascade variants (11.5k to 11.7k). The two wrong routes (whole-life rate gives slidewell about 14,300; mean lift gives tracewire) are separated by the shipped back-test. The filed RMSE pair "300 / 1,110" does not reproduce.
+The call is forced by the shipped files. The back-test on 19 closed lottery spotlights separates the rate definitions: day-8 rate RMSE 324 stars, whole-life rate 1,129. kilnkit totals about 12.1k against about 10.0k for slidewell and tracewire. The lead held under every variant the thread ran: baseline mean, median or pooled ratio (3.16k to 3.18k), rate cutoffs from day 6 to day 10, numerator and denominator choices. The two wrong answers are refuted by the pack's own back-test. Slidewell at about 14k comes from the whole-life rate. Tracewire comes from adding the lottery's mean lift to each trajectory (10.7k against kilnkit 7.3k).
 
 ## Recomputation ledger
+The main-call, chart and nomination rows were run on the previous pack. Those files are byte-identical in the shipped pack. Rows marked "stale" sit on files that differ in the shipped pack.
 | Figure | Claimed | Judge recomputed | Reproduced |
 |---|---|---|---|
-| External stars by 27 Sep (kilnkit, slidewell, tracewire) | 1,523; 4,175; 4,534 | same; all 7 and all 21 drawn repos equal the daily file | yes |
-| Newsletter stars per subscriber x October list | 0.71% x 433,812, about 3,000 | 0.711% -> 3,085 | yes |
-| Mean followers, newsletter / feed starrers | 85 / 10 | 84.9 / 10.1 | yes |
-| Day-8 feed rate kilnkit / slidewell / tracewire | 1.8% / 0.7% / 0.1% | 1.82% (356/19,548) / 0.74% / 0.117% | yes |
-| Whole-life slidewell rate | 2.0% | 1.98% | yes |
-| No-spotlight day 90 | 3,000 / 5,000 / 7,000 | 3,158 / 4,756 / 6,527 (median-ratio tracewire 6,495) | yes at the filed rounding, tracewire pooled-ratio only |
-| Totals if spotlighted, all seven | 12k, 10k, 10k, 8k, 8k, 7k, 6k | 12,083; 9,950; 9,923; 8,187; 8,070; 6,923; 5,874 | yes |
-| Kilnkit added | 9,000 | 8,925 (8.4k to 8.6k under linear or fitted lift) | yes under the filed cascade |
-| Back-test RMSE day-8 rate | 300 | 317 | NO (about 320) |
-| Back-test RMSE whole-life rate | 1,110 | 1,241 (design note says 1,115) | NO |
-| Mean-lift RMSE (design note) | 1,321 | about 1,320 | yes |
-| Ask 3 delivered / click share, Apr to Sep | 391,299 ... 429,949; 1.49, 1.52, 1.53, 1.52, 1.44, 1.49% | identical | yes |
-| Ask 4 nominators and outside shares | 27/58/47/31/37/26/19; 81.48, 91.49, 90.32, 81.08, 88.46% | identical | yes |
-| Chart stars to date | 2k/4k/5k/2k/2k/2k/1k | reproduce (PNG not in the thread's bundle, not reviewed) | yes |
+| External stars by 27 Sep (kilnkit / slidewell / tracewire) | 1,523 / 4,175 / 4,534 | same; the other four also match the chart's 2/2/2/1k | yes |
+| Newsletter stars per subscriber | 0.71% of 433,812, about 3,000 | 0.711%, 3,085 | yes |
+| Mean followers of starrers | 85 / 10 | 84.9 / 10.08 | yes |
+| Feed rate from day 8 | kilnkit 1.8% (356/19,548), slidewell 0.7% (whole life 2.0%) | 1.82%, 0.74%, 1.98% | yes |
+| No-spotlight kilnkit by day 90 | 3,000 | 3,158 to 3,178 | yes |
+| Totals if spotlighted | 12/10/10/8/8/7/6 thousand | 12.1/9.97/9.97/8.2/8.1/6.95/5.88; none within 0.25k of a rounding boundary | yes |
+| Back-test RMSE | day-8 rate reproduces within a few hundred; whole-life misses by more than 1,000 | 324 against 1,129 | yes |
+| Nominators outside the organisation | kilnkit 22/27, tracewire 43/47, shiftgres 28/31, ferrolog 30/37, hullcheck 23/26 | identical (needs URL normalisation, two renames, email-hash matching, the full merged_into chain) | yes |
+| Click-through, April / May (Postwerk) | 5,825/391,299 and 6,075/399,160 | same on the earlier pack | stale |
+| Click-through, June to September (Relaymark) | 6,233, 6,536, 6,190, 6,404 subscribers | same on the earlier pack | stale |
 
 ## Competing answers that survived
-None on the call. Slidewell (whole-life rate, or exposure start day 1 to 3) and tracewire (mean lift) both fail the shipped back-test, which falls from RMSE 1,241 at day 1 to 495 at day 4 and 382 at day 5, so the data select a start of day 5 or later. Residual non-pick forks: (a) kilnkit "added" 9k vs 8k under other lift models (total 12k stable); (b) tracewire baseline 7k only under the pooled ratio (median-ratio gives 6k), which moves only the chart split; (c) the ask 3 denominator rests on the Thursday send being a resend (supported by the files: sum of sends exceeds the log list size, 0 hard bounces on Thursday, small clicker overlap).
+No fork changes the main call or any committed figure. Residual notes:
+1. The click-through denominator, "delivered to", is not defined in the files. The golden sums the two Tuesday batches. A union with the Thursday resend is not derivable. This is a minor ask-level risk.
+2. The gateway-fetch rule is unstated. In the earlier pack it was forced by bimodal data: 9-link bursts within about 2 seconds, and "each link once" rows. The counts were identical for windows of 1 to 3 seconds and thresholds of 3 to 5.
 
 ## Spec gates
+Checked by me against the shipped bundle and metadata.json. I did not count rubric criteria; there is no rubric file in the task folder.
 | Gate | Required | Actual | Pass |
 |---|---|---|---|
 | Files | 10 or more | 17 | yes |
 | Formats | 3 or more | 5 (csv, json, parquet, pdf, xlsx) | yes |
-| Large file | 25,000 rows or database | events 61,929 and 93,450 rows, accounts 110,790, relaymark about 110k | yes |
-| Distractors | 2 or more in metadata.json, none labelled by file name | repository_traffic, trending_daily named; neither answers a graded quantity (judge: present and unused) | yes |
-| Distractors weigh and are ruled out by a shipped fact | required | judge found them present and unused; the ruling-out fact was not separately probed | partly unverified |
-| Deliverables | 1 to 3, all in golden | 2 (xlsx, png), both in golden/ | yes |
-| Asks | multi-dimensional, unit and rounding stated | seven totals; six issues x two measures; seven nominators; units and rounding in the prompt | yes |
-| Rubric | prompt shape identifiable, 25 or more criteria | shape "other" (pick, seven totals, chart, two tables); about 5 + 7 + 12 + 14 + 7 gradable figures; count not generated at this stage | yes (by figure count) |
-| Not LLM generated / goldens realistic | required | judge: no authoring disclosures, coherent dates; golden-realism passed upstream | yes |
+| Large file | one of 25,000 or more rows | relaymark_link_clicks has 431,644 rows | yes |
+| Distractors | 2 or more named in metadata.json, none labelled in a file name | repository_traffic, trending_daily; unused by the solution, relevant to weigh, neither ranks the candidates | yes |
+| Deliverables | 1 to 3, all in the golden | 2 (xlsx, png), both present | yes |
+| Asks | multi-dimensional, unit and rounding stated | 6 issues by 2 measures, 5 repositories by 2 measures; the prompt states the unit and rounding | yes |
+| Prompt shape and 25 criteria | identifiable, rubric of 25 or more | shape is "other", and the criteria count was not verifiable here | not verified |
+| Reads as a real work product | | judge saw nothing that reads as LLM generated | yes |
 
 ## Gate G reconciliation
-Thread: mechanism method_or_model_selection, family analytical_non_defect, surface_read_dependency no, sole_data_defect no. Design note: the stump is the forecast_uncertainty rate window, whole-life vs day-8 rate, validated on the lottery's 19 closed spotlights. Match. The declared distractors (traffic, trending) are not named by the thread as carrying the task, so they are not too load-bearing.
-Gate H line from the thread: domain pass, layers pass, decisive_step analytical. Matches the note's Three rules. One caution: the memo files no feed or window sentence, which is what keeps the decisive step out of rule application, and the thread agrees no sentence closes it. The "RMSE 300 vs 1,110" in the filed answer (design note says 1,115) is the only claim that disagrees with the thread's recompute.
+The thread's mechanism is forecasting with method selection, family analytical_non_defect, surface_read_dependency no, sole_data_defect no. The design note declares forecasting, strategy forecast_method_backtest, and the decisive step as the rate window against the cascade regime. These match. The thread did not name either declared distractor (trending, traffic) as the surface read. It used trending only as corroboration of the slidewell launch burst. No shipped artifact ranks the candidates.
+
+Gate H line: domain pass, layers pass, decisive_step analytical. The deciding quantity is a validated cascade forecast, so the domain is not a backdrop. Layer 1 is the schema v5/v6 codes, UTC against local time, renames, URL variants, merged accounts and ESP export formats. The easy routes are the whole-life rate (slidewell) and the mean lift (tracewire).
 
 ## Stump power (Gate F)
-Moderate. The whole-life rate (slidewell about 14k) and the flat mean lift (tracewire) are the two easy wrong routes. A solver who excludes the launch burst, or regresses lift on exposure rate, reaches kilnkit by several routes, so many strong solvers may still land the call; the graded decimals, the "added" 9,000 and asks 3 and 4 carry the rest. The main thread should weigh this with the scored readers' result.
+Good. Both easy routes land on a wrong repository that the pack's back-test refutes. The weak spot is that a multiplicative regression of added stars per newsletter star on the day-8 rate reaches kilnkit (11.5k) without the full cascade model. That regression validates best (RMSE 288), so the cascade is not the only road to the right call. The same regression on the whole-life rate gives slidewell 12.1k (RMSE 706). The main thread should weigh this against the scored readers' result.
 
 ## Findings, ranked
-1. FIX_NOW, solution text: back-test RMSE "300 / 1,110" (submission.md section 1, step 7; design note 300 / 1,115 / 1,321) reproduces as about 317 / 1,241 / 1,320. Same ordering, ratio about 4. Restate as "about 320 against about 1,240" or regenerate from the final script, and align the design note and any checks.py assertion.
-2. Optional, prompt: pin ask 3 with "counting each subscriber once". It changes what solvers read, so weigh it against the rest; the denominator already resolves to one computable value.
-3. Note: "added 9,000" and tracewire's 7,000 baseline depend on the pooled-ratio, filed-cascade choice; neither moves the pick or any of the seven totals.
+1. **Ask A pack is newer than the judged pack.** The coordinator states that since f0ae1a2f the only change is ask-side data: more subscribers behind link-checking gateways, with each gateway fetch kept at least two minutes before its reader's own first click. My diff of the shipped target.zip (eb36b41e) against the judged unzip confirms four files differ: postwerk_campaigns, postwerk_link_report, relaymark_campaigns and relaymark_link_clicks. All other files are identical. The claimed click-through figures are unchanged. They have not been recomputed on the new files, and I did not spawn a second thread. Two things need checking:
+   - The counts still reproduce.
+   - The gateway rule still separates cleanly. With the fetch two or more minutes before the reader's click, a rule keyed to 'four or more links within two seconds' may now miss or mis-split some, and the step 7 wording in submission.md may no longer describe the data.
+   Both are unverified.
+2. Optional hardening with no effect on the call: say in the click-through ask that "delivered to" means the people the Tuesday batches reached.
+3. The golden's rounding to the nearest thousand leaves no figure near a boundary. No action.
 
 ## Next action for the author
-Correct the RMSE pair in submission.md (section 1 and step 7) and the design note to the recomputed values, rerun checks.py, then proceed. No change to target/ or the goldens is needed for that fix, so no rebuild or re-judge of the data is required.
+Re-run the generator's own check of the six click-through counts (and the step 7 gateway rule) against eb36b41e. If they hold, ship. If the gateway rule no longer separates, fix only the ask-side data or its filed definition, then re-invoke me for one narrow ask-A re-judge.

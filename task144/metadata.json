@@ -25,7 +25,7 @@
       "xlsx"
     ],
     "largest_file": "relaymark_link_clicks_2026-06_to_2026-09.csv",
-    "largest_file_rows": 175153
+    "largest_file_rows": 503380
   },
   "sources": [
     {
@@ -42,7 +42,7 @@
     {
       "path": "accounts_snapshot_2026-09-27.parquet",
       "format": "parquet",
-      "bytes": 9835912,
+      "bytes": 9835905,
       "rows": 110795,
       "source": "Constructed: Grachtwerk account snapshot at 27 September 2026",
       "date": "2026-09-28",
@@ -69,7 +69,7 @@
     {
       "path": "organization_memberships_2026-09-27.csv",
       "format": "csv",
-      "bytes": 55710,
+      "bytes": 55810,
       "rows": 1073,
       "source": "Constructed: Organisation memberships of the shortlisted repositories' owners",
       "date": "2026-09-28",
@@ -87,8 +87,8 @@
     {
       "path": "postwerk_link_report_2026-04_to_2026-05.csv",
       "format": "csv",
-      "bytes": 7168663,
-      "rows": 64203,
+      "bytes": 22495705,
+      "rows": 194973,
       "source": "Constructed: Postwerk link report by subscriber, April to May 2026",
       "date": "2026-09-28",
       "license": "CC0-1.0 (original work, constructed for this task)"
@@ -105,8 +105,8 @@
     {
       "path": "relaymark_link_clicks_2026-06_to_2026-09.csv",
       "format": "csv",
-      "bytes": 25158140,
-      "rows": 175153,
+      "bytes": 74056787,
+      "rows": 503380,
       "source": "Constructed: Relaymark click log, June to September 2026",
       "date": "2026-09-28",
       "license": "CC0-1.0 (original work, constructed for this task)"
@@ -159,8 +159,8 @@
     {
       "path": "sluis_nominations_2026-10.csv",
       "format": "csv",
-      "bytes": 49252,
-      "rows": 465,
+      "bytes": 67414,
+      "rows": 470,
       "source": "Constructed: October 2026 Sluis nomination form responses",
       "date": "2026-09-28",
       "license": "CC0-1.0 (original work, constructed for this task)"

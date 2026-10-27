@@ -32,7 +32,7 @@
   "official_decoy": false,
   "validated_decoy": false,
   "stump_class": "analytical",
-  "context_artifact": "filed_standard",
+  "context_artifact": "planning_thread",
   "stakeholder_role": "the editor of the platform's monthly developer newsletter, who picks the spotlight repository",
   "role_family": "other",
   "scoring_unit": "other",
@@ -138,6 +138,6 @@
       "layer2_pattern": "own:spotlight-cascade-through-follower-feeds"
     }
   ],
-  "notes": "forcing_event other: the October issue's editorial close (the pick is locked on 30 September 2026 for the 6 October 2026 send). role_family other: the newsletter editor. scoring_unit other: external stars in the repository's first 90 days public. gap time first: the rate is measured on a window whose regime (the launch burst) is not the regime of the forecast window (the readers' cascade a month later). context_artifact filed_standard (redrawn from v1's monitoring_export, BLOCKed by ban.artifact against task304): the featuring memo the editor wrote and the pick runs under is the stakeholder's own file, the campaign exports serve only the asks. generators: G6 decisive, the exposures' make-up shifts once the forum burst decays (pre-exposed followers early, fresh ones later), G13 the rate's window against the cascade's, G14 the lottery's average lift on this candidate. stump_strategy forecast_method_backtest: the regime makes the natural whole-history fit wrong out of sample, and the lottery's randomised spotlights, which no file scores, are the honest history that separates the windows.",
+  "notes": "forcing_event other: the October issue's editorial close (the pick is locked on 30 September 2026 for the 6 October 2026 send). role_family other: the newsletter editor. scoring_unit other: external stars in the repository's first 90 days public. gap time first: the rate is measured on a window whose regime (the launch burst) is not the regime of the forecast window (the readers' cascade a month later). context_artifact planning_thread: the featuring memo is a one-page memo from the editor to the editorial team (From, To, Copy, Subject, dated 15 September 2026), the vocabulary's memo from a colleague, and the pick runs under it; the campaign exports serve only the asks. Drawn as filed_standard at architecture 2 (v1's monitoring_export BLOCKed by ban.artifact against task304), then BLOCKed by ban.artifact against task141 v3 when that card arrived in the pull before the ship; task141's artifact is a council's filed planning standard, a rule book, where this is an editor's memo to her team, so planning_thread names the genre a reviewer holds and filed_standard only its clause-numbered function. generators: G6 decisive, the exposures' make-up shifts once the forum burst decays (pre-exposed followers early, fresh ones later), G13 the rate's window against the cascade's, G14 the lottery's average lift on this candidate. stump_strategy forecast_method_backtest: the regime makes the natural whole-history fit wrong out of sample, and the lottery's randomised spotlights, which no file scores, are the honest history that separates the windows.",
   "registered": "2026-10-27T01:09:46Z"
 }

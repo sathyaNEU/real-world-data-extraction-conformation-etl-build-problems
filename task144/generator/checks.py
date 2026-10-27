@@ -347,7 +347,12 @@ def run(target, golden, W=None, meta_path=None):
     print("asks")
     # the graded ask figures: Ask A each issue's subscribers who clicked through and their share (12); Ask B each
     # organisation's repository's people outside it when they nominated it and their share (10)
-    profiles_a = {"careful": dict(keep_gateways=1),
+    # the stage 4 readers' routes, measured on the pack before the editor's paragraph links and the recorded addresses:
+    # round 3's first reader took the spotlight's own tags with the gateways' fetches taken out (labels_only), its
+    # second the spotlight's owner/name address with every fetch kept (reader_name_kept)
+    profiles_a = {"careful": dict(keep_gateways=1), "gateway_subscribers_dropped": dict(drop_fetched=1),
+                  "labels_only": dict(labels_only=1), "name_only": dict(name_only=1),
+                  "reader_name_kept": dict(name_only=1, keep_gateways=1), "ids_only": dict(ids_only=1),
                   "cracker": dict(keep_gateways=1, sum_all=1, by_label=1, sum_per_campaign=1), "sum_all": dict(sum_all=1),
                   "first_send": dict(first_send=1, clicks_counted_only=1), "one_per_campaign": dict(one_per_campaign=1),
                   "issue_day_counted_clicks": dict(clicks_counted_only=1), "issue_day_label": dict(by_label=1),
@@ -358,6 +363,7 @@ def run(target, golden, W=None, meta_path=None):
         hits_a[name] = sum((v[ym]["clickers"] == AA[ym]["clickers"]) + (v[ym]["share2"] == AA[ym]["share2"]) for ym in AA)
     orgs = [n for n in AB if AB[n]["org"]]
     profiles_b = {"careful": dict(survivor_only=1), "now": dict(members_now=1),
+                  "snapshot_only": dict(snapshot_hashes_only=1), "snapshot_one_hop": dict(snapshot_hashes_only=1, single_hop=1),
                   "cracker": dict(no_hash_map=1, no_merge_map=1, survivor_only=1),
                   "hash_only": dict(no_merge_map=1, no_renames=1), "hash_merge_one_hop_renames": dict(single_hop=1),
                   "hash_merge": dict(no_renames=1), "hash_renames": dict(no_merge_map=1)}
@@ -365,19 +371,29 @@ def run(target, golden, W=None, meta_path=None):
     for name, h in profiles_b.items():
         v = C.ask_b(B, A, h)
         hits_b[name] = sum((v[n].get("outside") == AB[n]["outside"]) + (v[n].get("share2") == AB[n]["share2"]) for n in orgs)
-    ok(hits_a["careful"] == 0 and hits_b["careful"] == 0 and hits_b["now"] == 0,
-       "the careful route misses every ask figure", "the stage 4 readers' route: A %d/12 (gateways kept), B %d/10 "
-       "(membership of the account nominated from), B %d/10 (membership now)" % (hits_a["careful"], hits_b["careful"], hits_b["now"]))
+    ok(all(hits_a[n] == 0 for n in ("careful", "gateway_subscribers_dropped", "labels_only", "name_only",
+                                     "reader_name_kept", "ids_only")),
+       "Ask A the stage 4 readers' routes miss every figure",
+       "gateways kept %d/12, gateways' subscribers dropped %d/12, the spotlight's own tags %d/12, its owner/name "
+       "address %d/12 (with every fetch kept %d/12), its permanent address only %d/12" % (
+           hits_a["careful"], hits_a["gateway_subscribers_dropped"], hits_a["labels_only"], hits_a["name_only"],
+           hits_a["reader_name_kept"], hits_a["ids_only"]))
+    ok(all(hits_b[n] == 0 for n in ("careful", "now", "snapshot_only", "snapshot_one_hop")),
+       "Ask B the stage 4 readers' routes miss every figure",
+       "membership of the account nominated from %d/10, membership now %d/10, addresses from the snapshot only %d/10 "
+       "(with one merge hop %d/10)" % (hits_b["careful"], hits_b["now"], hits_b["snapshot_only"],
+                                       hits_b["snapshot_one_hop"]))
     ok(hits_a["cracker"] == 0 and hits_b["cracker"] == 0, "cracker misses every ask figure",
        "A %d/12, B %d/10" % (hits_a["cracker"], hits_b["cracker"]))
     ok(max(hits_a.values()) < 12 and max(hits_b.values()) < 10, "no ask whole on fewer than all its devices",
        "A %s; B %s" % (hits_a, hits_b))
-    one = max(max(v for n, v in hits_a.items() if n not in ("careful", "cracker")),
-              max(v for n, v in hits_b.items() if n not in ("careful", "cracker", "now")))
+    one = max(max(hits_a.values()), max(hits_b.values()))
     ok(one / 22 < 0.35, "mirror leakage under 35 per cent with one device mishandled",
-       "%d of 22 (a reader handling the gateways who sums every send keeps the clickers)" % one)
-    pair = (38 + 7 + 55 * (hits_a["careful"] + hits_b["careful"]) / 22 + 5 + 7 + 55 * (hits_a["careful"] + hits_b["careful"]) / 22) / 2
-    ok(abs(pair - 28.5) < 0.05, "pair ceiling at or under 40, as the ask sheet states", "%.1f" % pair)
+       "%d of 22 (a reader handling every device but summing every send's delivered keeps the clickers)" % one)
+    # the measured routes: round 3's two readers, each ask on the route its reader took
+    kept = max(hits_a["labels_only"], hits_a["reader_name_kept"]) + max(hits_b["snapshot_only"], hits_b["snapshot_one_hop"])
+    pair = (38 + 7 + 55 * kept / 22 + 5 + 7 + 55 * kept / 22) / 2
+    ok(abs(pair - 28.5) < 0.05, "pair ceiling at or under 60, as the ask sheet states", "%.1f (%d of 22 kept)" % (pair, kept))
     # the gateway fetches: one reading whatever the window or the count of links, no reader's own clicks taken for one
     base_links, base_secs = C.GATEWAY_LINKS, C.GATEWAY_SECONDS
     same = True
@@ -450,16 +466,34 @@ def run(target, golden, W=None, meta_path=None):
     refs = [C.norm_ref(x) for x in noms.repository]
     ok(all("/" in x for x in refs), "Ask B every reference names an owner", "%d references" % len(refs))
     accs = B["accounts"]
-    by_hash = dict(zip(accs.primary_email_sha256.dropna(), accs.account_id[accs.primary_email_sha256.notna()]))
+    snap = dict(zip(accs.primary_email_sha256.dropna(), accs.account_id[accs.primary_email_sha256.notna()]))
+    by_hash = C.address_map(B, A)
     short_full = {B["repos"][rid]["full_name"].lower() for rid in octrow["shortlist"]}
     ren = {o.lower(): n.lower() for o, n in zip(A["renames"].old_full_name, A["renames"].new_full_name)}
     on_short = [i for i, x in enumerate(refs) if ren.get(x, x) in short_full]
     signed_out = [i for i in on_short if noms.account_id[i] is None]
     ok(all(noms.email_sha256[i] in by_hash for i in signed_out), "Ask B every signed-out nominator resolves to an account",
        "%d signed-out nominations of the shortlist" % len(signed_out))
+    signed_in = [i for i in range(len(noms)) if noms.account_id[i] is not None]
+    ok(all(noms.email_sha256[i] and snap.get(noms.email_sha256[i], noms.account_id[i]) == noms.account_id[i]
+           for i in signed_in) and
+       len({noms.email_sha256[i] for i in signed_in}) == len({(noms.email_sha256[i], noms.account_id[i]) for i in signed_in}),
+       "Ask B one account to an address: every signed-in response records an address, no address names two accounts",
+       "%d signed-in responses" % len(signed_in))
+    stale = [i for i in signed_out if noms.email_sha256[i] not in snap]
+    if W is not None:
+        moved = {(v["repo"], v["work"]) for v in W.moved}
+        stale_set = {([B["repos"][q]["name"] for q in octrow["shortlist"]
+                       if B["repos"][q]["full_name"].lower() == ren.get(refs[i], refs[i])][0], noms.email_sha256[i])
+                     for i in stale}
+        ok(stale_set == moved and len(moved) == len(orgs) and len({n for n, w in moved}) == len(orgs) and
+           all(snap.get(w) is None and by_hash.get(w) == v["member"] for v in W.moved for w in [v["work"]]),
+           "Ask B one member of each organisation's repository nominated it signed in and again signed out with the "
+           "work address, and the account's address changed when they left",
+           ", ".join("%s (left %s)" % (v["repo"], v["left"].strftime("%d %b")) for v in W.moved))
     C.prepare(B)
     merged_to = dict(zip(accs.account_id[accs.merged_into.notna()], accs.merged_into.dropna().astype(int)))
-    same_now, left = True, []
+    same_now, left, gone = True, [], set()
     group = {}
     for a in merged_to:
         b = a
@@ -481,10 +515,13 @@ def run(target, golden, W=None, meta_path=None):
         own = C.is_member(B, org, aid, t)
         if then and not own:
             left.append((B["repos"][rid]["name"], aid))
+        elif then and not now:
+            gone.add((B["repos"][rid]["name"], aid))
         elif then != now:
             same_now = False
-    ok(same_now, "Ask B membership when nominating equals membership now, but for the members who left",
-       "%d nominations of the shortlist" % len(on_short))
+    ok(same_now and (W is None or gone == {(v["repo"], v["member"]) for v in W.moved}),
+       "Ask B membership when nominating equals membership now, but for the members who left",
+       "%d nominations of the shortlist; %d left with their own account" % (len(on_short), len(gone)))
     if W is not None:
         via = {(v["repo"], v["personal"]) for v in W.via}
         ok(set(left) == via and len(via) == len(orgs) and len({n for n, a in via}) == len(orgs),

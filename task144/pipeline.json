@@ -16,19 +16,19 @@
     "checks": 49
   },
   "leak": {
-    "leak_py": "REVIEW, four lines answered in the design note, no LEAK (2026-10-27, f0ae1a2f)",
+    "leak_py": "REVIEW, every line answered in the design note, no LEAK (2026-10-27, b370e2a4)",
     "reader": "round 1 (aa9589a5): Q1 to Q5 clean, Q6 analytical, id and URL-form tells fixed; round 2 (f0ae1a2f, prompt changed): Q1, Q2, Q4 clean, Q3 names the organisation's own records, Q6 analytical"
   },
   "duplicate_check": {
-    "heart": "WARN (repeat.decision, repeat.question_form), nearest driver 0.05 (task132, task255 v1)",
+    "heart": "WARN (people.first, repeat.gate_g), after the context artifact was redrawn filed_standard to planning_thread on a ban.artifact BLOCK against task141 v3",
     "nearest": "driver 0.05 (task132, task255 v1, task446 v2)",
-    "surface": "no hard tell; task124, task132 (gap, G6, Gate G) and task68 (gap, G6, pick) promoted on the cards alone, differentiated on the card, for the author's /clone-check (2026-10-15)",
+    "surface": "no hard tell; task150, task179 (gap, G6, Gate G) and task268 (gap, G6, pick) promoted on the cards alone, differentiated on the card (2026-10-27)",
     "note": "drawn 2026-10-15 after git pull (task261, task455 v2, task262 on file): guard WARN repeat.decision and repeat.question_form, answered in ## Draw; same-puzzle and same-driver against older builds differentiated on the card"
   },
   "judge": {
-    "verdict": "DETERMINISTIC (round 1, aa9589a5)",
-    "disposition": "FIX_NOW (the back-test RMSE pair restated in words; applied)",
-    "report": "task144/determinism_check_report.md (round 1); the re-judge on f0ae1a2f running"
+    "verdict": "DETERMINISTIC (round 2, on f0ae1a2f)",
+    "disposition": "APPROVE for the call and the forecast asks; Ask A unjudged on later ask-side data (its four ESP files changed after the judged pack), re-checked by the generator's checks and the verifier on eb36b41e, and owed a narrow ask re-judge on the round 4 pack",
+    "report": "task144/determinism_check_report.md (round 2)"
   },
   "returned": [
     {
@@ -44,7 +44,7 @@
       "commit": ""
     }
   ],
-  "resume": "stage 4 round 2 on target.zip f0ae1a2f (asks re-sited onto mail gateways' link fetches and a member merging accounts on leaving; prompt updated): scored readers C (Sonnet) and D (Opus) and the determinism re-judge thread (/tmp/determinism-check-task144-r2) running; on their return score both readers with score_reader.py against the 39 keys (call, candidates, chart, ask_a clicked_through and share_pct, ask_b outside and share_outside_pct), hand the verdict to the determinism-judge agent for the report, fix any finding in one generator pass, then the gates at ship, the ledger row and RESHIPPED. Round 1 on aa9589a5: both scored readers missed the call (tracewire 14,000 and 13,000) and took all 24 old ask figures; the judge DETERMINISTIC, FIX_NOW on the RMSE pair (applied)",
+  "resume": "stage 4 round 4: the ask layer re-devised after round 3 (A7, the editor's opening paragraph's link to the spotlight by its permanent address /repositories/<id>, beside another shortlisted repository in four months; B9, signed-in responses record the address the form showed, and one member per organisation nominated signed in and again signed out with a work address the account dropped on leaving); the context artifact redrawn filed_standard to planning_thread after ban.artifact against task141 v3, heart WARN. Next: confirm the full build green (checks, verify, byte-identical rebuild), freeze.py check --mode rubric, rewrite submission steps 7 and 8 and block 4's ask figures from figures.json, figures_check, precut, leak.py; then two scored readers (Sonnet, Opus) on the new pack with the 39 keys and a narrow determinism re-judge of both asks; then the ask sheet, Gates at ship, Pre-ship check, the ledger row and RESHIPPED",
   "approved": null,
   "delivered": "2026-10-15",
   "portal": null,
@@ -53,14 +53,17 @@
   "portal_status_date": "",
   "wave": "wave 3 (new), seed FC15 (world, decision and quantity kept; pitfall re-found)",
   "gates": {
-    "checks": 127,
-    "verify": "agrees",
+    "checks": 149,
+    "verify": "agrees (pick kilnkit at 12,086 adding 8,929; Ask A and Ask B on its own path)",
     "byte_identical": true,
-    "figures_check": "81 figures, 0 absent",
-    "precut": "49 checks, 0 FAIL",
+    "figures_check": "90 figures, 0 absent",
+    "precut": "52 checks, 0 FAIL, 0 WARN",
     "voice_check": "PASS",
-    "container": "clean",
-    "freeze": "blocks 1, 2 and 4 unchanged; slidewell's evidence figures and the ladder's unrounded values moved as the stage 4 repair requires",
-    "target_zip_sha256": "bf27b981487176ca9f1f22d87fb7518f7acd7bc89dcf77657dbfcb94bc5be71f"
+    "container": "clean (target and golden)",
+    "freeze": "freeze.py check --mode rubric PASS: the call, the stump and every frozen figure unchanged; the 12 Ask A figures moved",
+    "target_zip_sha256": "b370e2a4ca35f5fdac5c7319909765c6c4e8109f2855d3fcb33d4055eb057292"
+  },
+  "readers": {
+    "round_3": "pack eb36b41e: E (Sonnet) and F (Opus) both missed the call (tracewire 12,000, 5,000 added); E kept Ask A 12/12 (gateways' fetches removed, their readers' later clicks kept) and Ask B 6/10 (one merge hop), score_reader exit 1 on ask share 72.2 per cent; F kept Ask A 0/12 (every fetch kept) and Ask B 10/10, exit 1 only because tracewire's 12,000 equals the golden's call figure (pick and added stars missed)"
   }
 }
