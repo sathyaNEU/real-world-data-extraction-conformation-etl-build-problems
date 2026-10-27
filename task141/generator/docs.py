@@ -1,6 +1,6 @@
 """The pack's documents: SB 26-118 as enrolled, the State Jail Standards Board's instructions for the 2027 plans, the
-extracts note, the CSRS rescaling note, the jail, court and office code lists, and the Department's annual report for
-fiscal 2025 (its tables computed from the shipped registers and petitions)."""
+jail, court and office code lists, and the Department's annual report for fiscal 2025 (its tables computed from the
+shipped registers and petitions)."""
 from __future__ import annotations
 
 import datetime as dt
@@ -140,9 +140,9 @@ def write_act(path):
 
 
 # ---------------------------------------------------------------------------------------------------- the Board
-STANDARDS = (("Bexley County", 48, 160, "12 May 2020"), ("Carrow County", 56, 190, "2 February 2022"),
-             ("Okelan County", K.POD_BEDS, K.POD_SIZE, "3 March 2021"), ("Pruitt County", 64, 200, "9 June 2021"),
-             ("Tamsin County", 40, 150, "17 November 2023"))
+STANDARDS = (("Vessey County", 48, 160, "12 May 2020"), ("Brannock County", 56, 190, "2 February 2022"),
+             ("Okelan County", K.POD_BEDS, K.POD_SIZE, "3 March 2021"), ("Ostby County", 64, 200, "9 June 2021"),
+             ("Quillan County", 40, 150, "17 November 2023"))
 
 
 def write_plan(path):
@@ -160,8 +160,9 @@ def write_plan(path):
     cl("1.1", "Each county files a Jail Operations Plan for calendar 2027 (the plan year), adopted by its board of "
               "supervisors, with the Board by 1 December 2026.")
     cl("1.2", "The plan is built on the county's records to the end of 30 September 2026 (the extract).")
+    cl("1.3", "Dates and times in a plan, and county time in these instructions, are Central time.")
     head("2. Violator housing")
-    cl("2.1", "Under the Public Safety Realignment Act of 2019 a person committed on the revocation of a felony "
+    cl("2.1", "Under the State's 2019 realignment of revocation terms a person committed on the revocation of a felony "
               "probation term serves the commitment in the jail of the county that supervised the term.")
     cl("2.2", "The plan states the felony probation revocation admissions the county projects for the plan year and "
               "the violator housing it will staff for them under the housing standard the county has on file with the "
@@ -249,18 +250,17 @@ def report_figures(cms1, cms2, pets):
 def write_report(path, F):
     s = [Paragraph("Okelan County Adult Probation Department", SH1S), Paragraph("Annual report, fiscal year 2025", SH1),
          Paragraph("1 July 2024 to 30 June 2025. Prepared by the Research and Data Unit for the Chief Probation "
-                   "Officer's report to the County Board of Supervisors. Counts are from CaseTrak 2 and the Clerk of the "
+                   "Officer's report to the County Board of Supervisors. Counts are from CMS 2 and the Clerk of the "
                    "Circuit Court's case management system as at 31 August 2025.", SH1S),
          Paragraph("The year", SH2)]
     cl = F["caseload"]
     totf = sum(v["F"] for v in cl.values())
     totm = sum(v["M"] for v in cl.values())
     s.append(Paragraph("At the end of the fiscal year the Department supervised %s felony and %s misdemeanor probationers "
-                       "from its four offices. Supervision began on %s felony and %s misdemeanor terms during the year. "
-                       "Officers filed %s violation petitions on felony terms and %s on misdemeanor terms, and the "
-                       "Circuit Court revoked %s felony and %s misdemeanor terms."
-                       % (n0(totf), n0(totm), n0(F["began"]["F"]), n0(F["began"]["M"]), n0(F["filed"]["F"]),
-                          n0(F["filed"]["M"]), n0(F["disp"][("F", "REVOKED")]), n0(F["disp"][("M", "REVOKED")])), SB))
+                       "from its four offices. Officers filed %s violation petitions on felony terms and %s on "
+                       "misdemeanor terms, and the Circuit Court revoked %s felony and %s misdemeanor terms."
+                       % (n0(totf), n0(totm), n0(F["filed"]["F"]), n0(F["filed"]["M"]), n0(F["disp"][("F", "REVOKED")]),
+                          n0(F["disp"][("M", "REVOKED")])), SB))
     s.append(Paragraph("Table 1. Probationers on supervision at 30 June 2025, by office", SH2))
     rows = [["Office", "Felony", "Misdemeanor", "Total"]]
     for code, name, _ in K.OFFICES:
@@ -288,7 +288,7 @@ def write_report(path, F):
                        "year it was filed and its disposition in the year the court entered it, so the two tables cover "
                        "different petitions. Early termination is granted on the officer's motion after eighteen months "
                        "of compliance on a felony term and six on a misdemeanor term.", SB))
-    s.append(Paragraph("The fiscal 2026 report will move to CaseTrak 2's new reporting module, which counts petitions by "
+    s.append(Paragraph("The fiscal 2026 report will move to CMS 2's new reporting module, which counts petitions by "
                        "the supervising office at filing.", SB))
     doc = _doc(path, "Adult Probation Department annual report, fiscal year 2025", K.PEOPLE["research"])
     f = _footer("APD annual report FY2025", "Okelan County Adult Probation Department")
@@ -297,21 +297,20 @@ def write_report(path, F):
 
 # ---------------------------------------------------------------------------------------------------- code lists
 JMS_CODES = [
-    ("classification", "PROB-COND", "Confinement ordered as a condition of a probation term"),
-    ("classification", "PV-HOLD", "Held on a probation violation warrant until the court decides the petition"),
+    ("classification", "PROB-COND", "Probation condition confinement"),
+    ("classification", "PV-HOLD", "Probation violation warrant hold"),
     ("classification", "PV-FEL", "Probation violation commitment, felony probationer"),
     ("classification", "PV-MIS", "Probation violation commitment, misdemeanor probationer"),
-    ("classification", "PV-OOS", "Held for another state under the Interstate Compact for Adult Offender Supervision"),
-    ("facility", "MAIN", "Detention Center, main building"),
-    ("facility", "ANNEX", "Detention Center, Harlan Road annex"),
-    ("release_reason", "SENTENCE COMPLETE", "Confinement completed"),
-    ("release_reason", "RETURNED TO SUPERVISION", "Released on the court's order continuing probation"),
-    ("release_reason", "RECLASSIFIED", "Booking closed on a change of classification; booked again at the same time"),
-    ("release_reason", "TRANSFER TO ANNEX", "Moved between the main building and the annex; booked again on arrival"),
-    ("release_reason", "SCHEDULED RELEASE", "Released at the end of a weekend period of an intermittent sentence"),
-    ("release_reason", "RELEASED TO SENDING STATE", "Released to the sending state's authorities"),
-    ("release_reason", "CONVERTED TO NEW JMS", "Closed in the old jail management system at its replacement on 4 "
-                                               "February 2025; booked again in the new system"),
+    ("classification", "PV-OOS", "Interstate Compact hold for another state"),
+    ("facility", "MAIN", "Main building"),
+    ("facility", "ANNEX", "Harlan Road annex"),
+    ("release_reason", "SENTENCE COMPLETE", "Sentence complete"),
+    ("release_reason", "RETURNED TO SUPERVISION", "Returned to probation supervision"),
+    ("release_reason", "RECLASSIFIED", "Reclassified"),
+    ("release_reason", "TRANSFER TO ANNEX", "Transferred to the annex"),
+    ("release_reason", "SCHEDULED RELEASE", "Weekend sentence period ended"),
+    ("release_reason", "RELEASED TO SENDING STATE", "Released to the sending state"),
+    ("release_reason", "CONVERTED TO NEW JMS", "Converted to the new jail management system"),
 ]
 OFFICE_ROWS = [("CEN", "C", "Central", "3 January 1994"), ("NGT", "N", "Northgate", "2 July 2001"),
                ("RVS", "R", "Riverside", "2 July 2001"), ("EFD", "E", "Eastfield", "6 March 2006")]
@@ -326,23 +325,23 @@ COURT_SHEETS = (
         ("CNT", "Contact with a person the court ordered no contact with"),
         ("ABS", "Absconding: whereabouts unknown to the supervising officer")]),
     ("Dispositions", ["Disposition", "Meaning"], [
-        ("REVOKED", "Probation revoked; commitment ordered for the days stated"),
-        ("CONTINUED", "Probation continued on its existing terms"),
-        ("CONTINUED AND EXTENDED", "Probation continued and the term extended (see the term order)"),
+        ("REVOKED", "Probation revoked, commitment ordered"),
+        ("CONTINUED", "Probation continued"),
+        ("CONTINUED AND EXTENDED", "Probation continued, term extended"),
         ("DISMISSED", "Petition dismissed")]),
     ("Process", ["Process", "Meaning"], [
-        ("WARRANT", "Violation warrant issued with the petition"),
-        ("SUMMONS", "Summons to appear issued with the petition")]),
+        ("WARRANT", "Violation warrant issued"),
+        ("SUMMONS", "Summons issued")]),
     ("Term orders", ["Order type", "Meaning"], [
-        ("TOLLING", "Term tolled for the days a violation warrant was outstanding after the probationer absconded"),
-        ("EXTENSION", "Term extended by the months stated"),
-        ("EARLY TERMINATION", "Term terminated before its scheduled expiration")]),
+        ("TOLLING", "Term tolled while the probationer absconded"),
+        ("EXTENSION", "Term extended"),
+        ("EARLY TERMINATION", "Term terminated early")]),
     ("Served as", ["Value", "Meaning"], [
-        ("CONSECUTIVE", "Commitment served in one period from the day ordered"),
-        ("WEEKENDS", "Commitment served on consecutive weekends, Friday evening to Sunday evening")]),
+        ("CONSECUTIVE", "Served consecutively"),
+        ("WEEKENDS", "Served on weekends")]),
     ("Case numbers", ["Type", "Meaning"], [
-        ("CF", "Felony case: year of filing of the charge, CF and a six-digit number"),
-        ("CM", "Misdemeanor case: year of filing of the charge, CM and a six-digit number")]),
+        ("CF", "Felony"),
+        ("CM", "Misdemeanor")]),
 )
 
 
@@ -351,7 +350,7 @@ def write_jms_codes(path):
 
 
 def write_office_codes(path):
-    K.write_csv(path, ["office_code", "casetrak1_code", "office_name", "in_use_from"], [list(x) for x in OFFICE_ROWS],
+    K.write_csv(path, ["office_code", "cms1_code", "office_name", "in_use_from"], [list(x) for x in OFFICE_ROWS],
                 crlf=True)
 
 
@@ -375,111 +374,3 @@ def write_court_codes(path):
         ws.column_dimensions["B"].width = 84
         ws.freeze_panes = "A4"
     wb.save(path)
-
-
-# ---------------------------------------------------------------------------------------------------- notes
-def write_csrs(path):
-    lines = [
-        "OKELAN COUNTY ADULT PROBATION DEPARTMENT",
-        "Research and Data Unit",
-        "",
-        "Community Supervision Risk Screen (CSRS): scores from 12 June 2023",
-        "",
-        "From the move to CaseTrak 2 on 12 June 2023 the Department records the CSRS on its version 2 scale, 0 to 20.",
-        "CaseTrak 1 recorded version 1 totals, 0 to 40: version 1 scored each of the eleven items at twice its version 2",
-        "points and added one point for a revocation in the three years before intake. A version 1 total converts to",
-        "version 2 by halving it and dropping any half point. Terms moved to CaseTrak 2 carry the converted score.",
-        "",
-        "The screen is completed by the supervising officer at intake and is not rescored during the term.",
-        "",
-        "5 June 2023",
-    ]
-    with open(path, "w", encoding="utf-8", newline="\r\n") as fh:
-        fh.write("\n".join(lines) + "\n")
-
-
-def write_readme(path):
-    L = [
-        "OKELAN COUNTY: EXTRACTS FOR THE 2027 JAIL OPERATIONS PLAN",
-        "Pulled 2 October 2026 for the Sheriff's Office jail planning desk. Every extract runs to the end of",
-        "30 September 2026 unless stated. County time is Central time.",
-        "",
-        K.CMS1,
-        "    Adult Probation Department, CaseTrak 1 (in use to 11 June 2023). One row per supervision term closed in",
-        "    CaseTrak 1 from 1 July 2016 to 11 June 2023.",
-        "    CASE_NO        court case number (circuit_court_codes.xlsx, Case numbers)",
-        "    APD_PERSON_NO  Department person number",
-        "    LEVEL          F felony, M misdemeanor",
-        "    OFFICE         supervising office, CaseTrak 1 code (apd_office_codes.csv)",
-        "    SUP_BEGIN      day supervision on the term began, MM/DD/YYYY",
-        "    TERM_DAYS      term length in days",
-        "    EXPIRES        scheduled expiration, MM/DD/YYYY",
-        "    RISK_SCORE     CSRS version 1 total, 0 to 40 (" + K.CSRS + ")",
-        "    STATUS         CLSD",
-        "    CLOSE_DATE     MM/DD/YYYY",
-        "    CLOSE_CODE     EXP expired, REV revoked, ETERM early termination",
-        "",
-        K.CMS2,
-        "    Adult Probation Department, CaseTrak 2 (from 12 June 2023). One row per supervision term: every term open",
-        "    on 11 June 2023, moved across from CaseTrak 1, and every term on which supervision began since.",
-        "    case_number        court case number",
-        "    person_id          Department person number",
-        "    offense_level      FELONY or MISDEMEANOR",
-        "    office             supervising office (apd_office_codes.csv)",
-        "    supervision_begin  day supervision on the term began",
-        "    term_months        term length in months",
-        "    expiration_date    scheduled expiration",
-        "    csrs_score         CSRS version 2, 0 to 20",
-        "    case_status        OPEN or CLOSED",
-        "    closed_date",
-        "    closure_reason     EXPIRED, REVOKED or EARLY TERMINATION",
-        "    moved_from_ct1     Y for a term moved from CaseTrak 1 on 12 June 2023",
-        "    A term enters CaseTrak on the day supervision on it begins, so a term whose confinement condition is",
-        "    still being served is in neither system.",
-        "",
-        K.ORDERS,
-        "    Clerk of the Circuit Court, case management system. One row per order made from 1 July 2016 changing",
-        "    the scheduled expiration of a probation term in either CaseTrak system.",
-        "    case_number, order_date, order_type (TOLLING, EXTENSION, EARLY TERMINATION), months_extended (EXTENSION),",
-        "    days_tolled (TOLLING), term_months_after (term length after the order), expiration_before,",
-        "    expiration_after",
-        "",
-        K.PETITIONS,
-        "    Clerk of the Circuit Court. One row per probation violation petition filed from 1 July 2016 on a term in",
-        "    either CaseTrak system, with its disposition where one was entered by 30 September 2026.",
-        "    petition_no (VP, year filed, sequence), case_number, filed_date, allegations (codes separated by ;),",
-        "    process (WARRANT or SUMMONS), disposition_date, disposition (blank while pending), jail_days_ordered and",
-        "    served_as (on REVOKED)",
-        "",
-        K.BOOKINGS,
-        "    Okelan County Detention Center, jail management system. One row per booking under a probation",
-        "    classification (" + K.JAIL_CODES + ") in custody at any time from 1 January 2019. A person is under",
-        "    one booking at a time: a change of classification closes the booking RECLASSIFIED and opens the next",
-        "    at the same time, and a move between the main building and the annex closes it TRANSFER TO ANNEX and",
-        "    opens the next on arrival. released_at is blank while the person is in custody.",
-        "    booking_number, sheriff_id, booked_at, classification, facility, released_at, release_reason",
-        "    The jail management system was replaced on 4 February 2025. The old system's bookings (B, two-digit",
-        "    year, six digits) carry local times as MM/DD/YYYY HH:MM; the new system's (OK, year, six digits) carry",
-        "    UTC as YYYY-MM-DDTHH:MM:00Z. A person in custody at the replacement was released in the old system",
-        "    CONVERTED TO NEW JMS at 03:10 on 4 February 2025 and booked in the new system at the same moment.",
-        "",
-        K.PERSONS,
-        "    Sheriff's Office and Adult Probation Department. One row per Sheriff's number of each person in either",
-        "    CaseTrak system: the current number (CURRENT), and any number merged into it when the Sheriff's Office",
-        "    found one person booked under two (MERGED, with merged_into and merged_on). Bookings before the merge",
-        "    carry the merged number.",
-        "    apd_person_id, sheriff_id, sheriff_id_status, merged_into, merged_on",
-        "",
-        K.HEADCOUNT,
-        "    Detention Center 06:00 count, persons in each housing unit, 1 January 2025 to 30 September 2026.",
-        "    count_date, housing_unit (V PODS 1-5, ANNEX, INTAKE AND HOLDING, SENTENCED, GENERAL POPULATION),",
-        "    persons_at_0600",
-        "",
-        "Documents and code lists",
-        "    " + K.ACT_PDF + "   the Act as enrolled",
-        "    " + K.PLAN_PDF + "   State Jail Standards Board",
-        "    " + K.REPORT + "   the Department's fiscal 2025 report",
-        "    " + K.CSRS + ", " + K.JAIL_CODES + ", " + K.COURT_CODES + ", " + K.OFFICE_CODES,
-    ]
-    with open(path, "w", encoding="utf-8", newline="\r\n") as fh:
-        fh.write("\n".join(L) + "\n")

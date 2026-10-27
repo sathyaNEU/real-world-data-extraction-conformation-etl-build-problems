@@ -16,8 +16,8 @@ APD = "Okelan County Adult Probation Department"
 CLERK = "Clerk of the Okelan County Circuit Court"
 SO = "Okelan County Sheriff's Office, Detention Center"
 SOURCES = {
-    K.CMS1: (APD + ", CaseTrak 1 export of the supervision terms closed from 1 July 2016 to 11 June 2023", "2026-10-02"),
-    K.CMS2: (APD + ", CaseTrak 2 export of supervision terms to 30 September 2026", "2026-10-02"),
+    K.CMS1: (APD + ", CMS 1 export of the supervision terms closed from 1 July 2016 to 11 June 2023", "2026-10-02"),
+    K.CMS2: (APD + ", CMS 2 export of supervision terms to 30 September 2026", "2026-10-02"),
     K.ORDERS: (CLERK + ", case management system, orders from 1 July 2016 changing a probation term's scheduled "
                        "expiration", "2026-10-02"),
     K.PETITIONS: (CLERK + ", case management system, probation violation petitions filed from 1 July 2016 and their "
@@ -32,8 +32,6 @@ SOURCES = {
     K.ACT_PDF: ("General Assembly, Senate Bill 26-118 (Felony Probation Term Act), enrolled", "2026-05-14"),
     K.PLAN_PDF: ("State Jail Standards Board, instructions for the 2027 Jail Operations Plans", "2026-07-08"),
     K.REPORT: (APD + ", annual report for fiscal year 2025", "2025-10-15"),
-    K.CSRS: (APD + ", Research and Data Unit, CSRS rescaling note", "2023-06-05"),
-    K.README: ("Okelan County Sheriff's Office, jail planning, note on the extracts", "2026-10-02"),
 }
 DISTRACTORS = ["target/" + K.REPORT, "target/" + K.HEADCOUNT]
 

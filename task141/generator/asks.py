@@ -62,7 +62,7 @@ def sup_band(c):
 
 
 def ask_b_truth(W, as_it_stands=False):
-    """average imposed term by office and by time on supervision; as_it_stands takes CaseTrak 2's term_months"""
+    """average imposed term by office and by time on supervision; as_it_stands takes CMS 2's term_months"""
     ext = {}
     for c in W.cases:
         ext[c['id']] = sum(m[4] for m in W.states[c['id']]['mods'] if m[0] <= K.EXTRACT and m[3] == 'EXTEND')

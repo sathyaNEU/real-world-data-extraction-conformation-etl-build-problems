@@ -1,19 +1,22 @@
 # leak check, task141
 
-**Verdict: REVIEW.** 20 files read, 25 golden figures and 1 candidate names taken from submission.md, 25 stump terms taken from the design note.
+**Verdict: REVIEW.** 13 files read, 27 golden figures and 2 candidate names taken from submission.md, 25 stump terms taken from the design note.
 
 LEAK stops the ship. REVIEW is a reader's call and the /leak-check command's solver's-eye pass reads every REVIEW line. INFO is a sweep that ran and found nothing or was skipped.
 
-Stump terms swept: population, magistrates, outcome, magistrate, selection, record, new-offence, scores, window, decisive, disposition, arrests, method, readable, setting, decision-maker, export, gradient, nothing, readme, forecasting, appearances, extract, outcomes, analyst
+Stump terms swept: petitions, decisive, window, record, petition, exposure, expiration, forecast, detention, family, clocks, forecasting, extracts, booking, nothing, architecture, revocations, center, extract, transition, analyst, scheduled, length, readable, release
 
-## 3 answer figures in the pack (REVIEW 2)
-- **REVIEW** `bail_policy_revision_2027_draft.docx`: candidate 'Pretrial Assessment Scale' sits beside decision vocabulary: ...er for the defendant at intake. 2.2 The tier. Every eligible defendant whose Pretrial Assessment Scale screen shows a new-criminal-activity score at or below the tier's top score shall be rele...
-- **REVIEW** `bail_policy_revision_2027_draft.docx`: carries 13 of 16 distinctive words of the committed call: 'The 2027 presumptive release tier should reach Pretrial Assessment Scale new-criminal-activity score 3: scores 1 to 3 me'
+## 3 answer figures in the pack (REVIEW 3)
+- **REVIEW** `jail_operations_plan_instructions_2027.pdf`: golden figure 220 appears: ...22 Okelan County pod of 64 beds one unit for each 220 felony probation revocation admissions projected...
+- **REVIEW** `jail_operations_plan_instructions_2027.pdf`: golden figure 100 appears: ...extract. 4.3 State the projection to the nearest 100 admissions, with the parts it is built from. 5....
+- **REVIEW** `jail_operations_plan_instructions_2027.pdf`: carries 11 of 13 distinctive words of the committed call: "Okelan County's 2027 Jail Operations Plan should carry 1,200 felony probation revocation admissions and staff 6 violator"
 
-## 4 design-note vocabulary (REVIEW 3)
-- **REVIEW** `README_pretrial_extracts.txt`: 8 of 25 stump-paragraph terms appear (population, magistrates, magistrate, disposition, arrests, export); read whether the document names the move
-- **REVIEW** `bail_policy_revision_2027_draft.docx`: 4 of 25 stump-paragraph terms appear (magistrate, record, setting, appearances); read whether the document names the move
-- **REVIEW** `local_bail_policy_2024.pdf`: 6 of 25 stump-paragraph terms appear (magistrates, magistrate, record, disposition, setting, appearances); read whether the document names the move
+## 4 design-note vocabulary (REVIEW 1)
+- **REVIEW** `sb26_118_felony_probation_term_act.pdf`: 4 of 25 stump-paragraph terms appear (expiration, scheduled, length, release); read whether the document names the move
+
+## 9 dates after the setting (REVIEW 2)
+- **REVIEW** `circuit_court_term_orders_2016_2026.csv`: 2238 ISO dates after 2026-10-02, e.g. 2026-10-03, 2026-10-04, 2026-10-05, 2026-10-06, 2026-10-07
+- **REVIEW** `cms2_supervision_cases_2023_2026.csv`: 11152 ISO dates after 2026-10-02, e.g. 2026-10-03, 2026-10-04, 2026-10-05, 2026-10-06, 2026-10-07
 
 ## 10 container metadata (INFO 1)
 - **INFO** `-`: audit reported no writer signature (1 lines)
@@ -30,18 +33,38 @@ Stump terms swept: population, magistrates, outcome, magistrate, selection, reco
 
 ## 8 column names (clean)
 
-## 9 dates after the setting (clean)
-
 ## 11 prompt gate (clean)
 
-## Solver's-eye read
+## Solver's-eye read (architecture 3, stage 4 round 1, zip 7cd8129f)
 
-Q1 to Q4: none (the draft policy 2.3 and 2.4 set the estimand, the 85 per cent floor on eligible defendants the tier releases, and the outcome window; the scoring guide maps points only; the README is an extract manifest; no file states a per-score rate or an asked figure; the committed call's sentence is not in the shipped docx, the sweep's match is vocabulary). Q5: 2.1, 2.4 and 2.5 fix population, outcome and the top-score rule; the method not filed. Q6: analytical; the reader located the difficulty in follow-up censoring at the 30 September 2026 extract (a lower rung), not in the selection of who magistrates released, the decisive step. REVIEW lines: harmless. Realism: the draft docx carries a python-docx default template (stylesWithEffects, a thumbnail, an empty customXml part, zero word counts): scrub. Readings: censoring of recent releases (the estimand says expected; the design's rung); the safety-rate population as released on a written promise (the prompt) against released within 24 hours on any conditions (the README); eligibility for the bed-days ask with the no-detainer test; missed court dates across multi-case appearances; part days of electronic monitoring.
+Two isolated scored readers (general-purpose, sonnet, medium), each on its own fresh copy of `prompt.txt` and
+`target/`, briefed with the prompt's own figures only (`call.admissions`, `call.pods`, the 16 ask figures).
 
-Ruled at the stage 4 fix pass in the design note's `## Leak review` (the realism line fixed, the five readings closed by SF31 to SF34 and closure axis 12); the README and both Word documents changed after this read.
+**Reader A** (score_reader exit 1: the call landed, asks 14 of 16, estimated share 93.1). Simulated the 7,620 open
+felony terms with petition rates by tenure and by days to the scheduled expiration in force ("filings spike 15 to 90
+days before expiry, at about 90 per 1,000 term-months against about 16 otherwise, and this is stable every year"),
+the Act's ends with the 31 March floor, section 6's pending proceedings and new starts; back-tested at September 2023,
+2024 and 2025; about 1,146, calibrated about 1,165, 1,200 and six pods (it called the projection close to the 1,150
+edge). Q1 to Q4: none. Q5: instructions 3.1 fixes the unit, the Annex the pods; no method filed. Q6: an analytical
+choice, "a filing-rate model with a pre-expiry petition spike" ("the data, not a sentence, shows the spike"). Ask A:
+linked each PV-FEL booking to the revoked term (203 relabelled), Q3 off by 14 felony and misdemeanor days on its
+chaining; Ask B: term_months less the summed EXTENSION months, every figure.
 
-## Solver's-eye read (targeted, after the stage 4 fix pass)
+**Reader B** (score_reader exit 1: the call landed, asks 16 of 16, estimated share 100.0). "A petition-filing model by
+tenure and months to expiry, with the cap applied (31 March 2027 floor, 24 months), pending petitions continuing, and
+new starts added": about 1,150 to 1,185, 1,200 and six pods. Q1 to Q4: none. Q5: the Annex fixes the pods; "No filed
+sentence fixes how the projection is computed". Q6: an analytical choice ("Petition filings surge in the last 3
+months before expiry"). Ask A: "About 196 misdemeanor-only commitments are booked PV-FEL because the person has an
+active felony term", linked to the revoked term; Ask B: term_months less the summed extensions.
 
-On the README's notes and the draft docx. Q1 to Q4: none (draft 2.3, 2.4 and 2.6 narrow the estimand, the eligible defendants the tier releases, expected; no file names a tier, a rate or an asked figure). Q5: draft 2.1 to 2.5 and the README's release and day-count conventions; the estimator not filed. Q6: analytical (the reader named selection, the held differing from the released, and censoring at disposition as what the easy observed rate ignores). Realism: the README's notes read like a specification after the pins (the worked date example, the custody and boarding note), the draft's 2.4 exclusions are exhaustive and 2.5 reads as an algorithm, 2.6 reads author-placed; the docx container now reads as Word's. Readings: written promise against the README's release convention (SF31, same call); unscreened appearances; bed-days from booking or appearance, boarded-out nights (README note); monitoring per release; missed court date against the FTA definition; the share's denominator.
+REVIEW lines (both readers): the instructions' 220 and 100 are the standard and the rounding, harmless; the call's
+words in the instructions are the plan's own vocabulary, harmless; the dates after the setting are scheduled
+expirations only (order, petition, closure and booking dates end on 30 September 2026), harmless. The stump-vocabulary
+line (the Act's expiration, scheduled, length, release) ruled in the main thread: the statute's own subject, it names
+no petition, clock or rate. Realism: both called the pack organic; reader A found the year-to-year stationarity tight
+and the office codes tidy, reader B the term lengths all multiples of six months.
 
-Disposition (ship): nothing quoted for questions 1 to 4; the realism notes are the cost of the judge's pins and are left (each further edit reopens a closed fork for no graded figure).
+**Disposition: architecture 3 spent.** Both readers landed the call, so no ask repair reaches it (`leak-check`, the
+pack that ships is read twice). The decisive alignment, petitions by days to the expiration in force, was the first
+model both readers built once the Act was read: the statute points at the expiry clock, and the clock is one
+subtraction and a histogram away. Both ask devices were also found by both readers.

@@ -49,7 +49,7 @@ def sheriff_for(W, person, d):
 
 # ---------------------------------------------------------------------------------------------------- registers
 def legacy_score(score, r):
-    """CaseTrak 1 scored the risk screen on its 0 to 40 scale; the 2023 rescaling halved it"""
+    """CMS 1 scored the risk screen on its 0 to 40 scale; the 2023 rescaling halved it"""
     return int(np.clip(2 * score + int(r.integers(0, 2)), 0, 40))
 
 
@@ -59,7 +59,7 @@ def _mdY(n):
 
 
 def register_rows(W):
-    """CaseTrak 1 holds the terms closed before the 12 June 2023 move; CaseTrak 2 the terms open that day, which moved
+    """CMS 1 holds the terms closed before the 12 June 2023 move; CMS 2 the terms open that day, which moved
     across with their history, and every term opened since. A term enters the Department's register the day
     supervision begins, so a term still in its jail condition at the extract is in neither."""
     rows1, rows2 = [], []
@@ -95,14 +95,14 @@ def register_rows(W):
                           expiration_date=K.date_of(exp_now).isoformat(), csrs_score=c['score'],
                           case_status='CLOSED' if closed else 'OPEN',
                           closed_date=K.date_of(closed[0]).isoformat() if closed else None,
-                          closure_reason=close2[closed[1]] if closed else None, moved_from_ct1='Y' if migrated else 'N'))
+                          closure_reason=close2[closed[1]] if closed else None, moved_from_cms1='Y' if migrated else 'N'))
     return rows1, rows2
 
 
 CMS1_COLS = ['CASE_NO', 'APD_PERSON_NO', 'LEVEL', 'OFFICE', 'SUP_BEGIN', 'TERM_DAYS', 'EXPIRES', 'RISK_SCORE', 'STATUS',
              'CLOSE_DATE', 'CLOSE_CODE']
 CMS2_COLS = ['case_number', 'person_id', 'offense_level', 'office', 'supervision_begin', 'term_months', 'expiration_date',
-             'csrs_score', 'case_status', 'closed_date', 'closure_reason', 'moved_from_ct1']
+             'csrs_score', 'case_status', 'closed_date', 'closure_reason', 'moved_from_cms1']
 
 
 # ---------------------------------------------------------------------------------------------------- court

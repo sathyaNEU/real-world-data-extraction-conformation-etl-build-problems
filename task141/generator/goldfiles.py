@@ -41,7 +41,9 @@ def figures(C):
          "end_of_term.year_before_pct": round(100 * C["share"]["year_before"], 1),
          "end_of_term.terms": C["share"]["reach"], "end_of_term.with_petition": C["share"]["wpet"],
          "trailing.felony_admissions": C["trailing"], "felony_terms": len(C["R"].cases),
-         "open_felony_terms": len(C["R"].active)}
+         "open_felony_terms": len(C["R"].active), "call.admissions_whole": int(round(tot)),
+         "param.end_of_term_window_days": 120, "param.window_family_days": [90, 105, 150],
+         "param.plan_rounding": 100}
     for k, v in C["rungs"].items():
         f["rung.%s" % k] = round(v)
         f["rung.%s.pods" % k] = K.pods(v)
@@ -223,7 +225,7 @@ def workbook(path, C, f):
 
     ws4 = wb.create_sheet("Felony supervision")
     _title(ws4, "Felony probationers on supervision at 30 September 2026: term imposed at sentencing",
-           "CaseTrak 2 terms open at the extract; term imposed is the term length less the months the Circuit Court's "
+           "CMS 2 terms open at the extract; term imposed is the term length less the months the Circuit Court's "
            "orders extended it (Board instructions, section 6).")
     h4 = _head(ws4, ["Supervising office", "Probationers", "Average term imposed (months)"])
     offs, sups = C["ask_b"]
@@ -253,7 +255,7 @@ def workbook(path, C, f):
                              "imposed from 1 January 2027 runs no more than 24 months from the start of supervision. "
                              "The courts, the Department and the Sheriff acting as the records to the extract show "
                              "(Board instructions, section 4)."),
-        ("Petition rates", "From every felony term in CaseTrak 1 and 2 since July 2016 and the Circuit Court's "
+        ("Petition rates", "From every felony term in CMS 1 and 2 since July 2016 and the Circuit Court's "
                            "petitions on them: the hazard by month on supervision outside each term's last 120 days, "
                            "the share of terms reaching their last 120 days with a petition filed in them, revocation "
                            "rates by kind and filing-to-decision days from petitions decided by the start of the "
@@ -377,7 +379,7 @@ def memo(path, C, f):
                 for run in para.runs:
                     run.font.size = Pt(9.5)
     q = doc.add_paragraph()
-    r = q.add_run("Source: CaseTrak 1 and 2, the Circuit Court's term orders and violation petitions, extracts of 2 "
+    r = q.add_run("Source: CMS 1 and 2, the Circuit Court's term orders and violation petitions, extracts of 2 "
                   "October 2026. Parts are rounded and add to the projection before rounding.")
     r.italic = True
     r.font.size = Pt(8.5)
@@ -452,7 +454,7 @@ def chart(path, C, f):
     ax.set_title("Felony revocation admissions rise in spring 2027 as SB 26-118 ends running terms: six pods for %s"
                  % n0(C["call"]["printed"]), loc="left", fontsize=11.2, color=INK, fontweight="bold", pad=12)
     fig.text(0.01, 0.012, "Admissions: one a person and day the Circuit Court revoked a felony term. Source: Circuit "
-                          "Court petitions, CaseTrak 1 and 2, extracts of 2 October 2026. Okelan County Sheriff's "
+                          "Court petitions, CMS 1 and 2, extracts of 2 October 2026. Okelan County Sheriff's "
                           "Office, jail planning.", fontsize=7.4, color=INK2)
     fig.tight_layout(rect=(0, 0.03, 1, 1))
     fig.savefig(path, facecolor=SURF, metadata={"Software": None})

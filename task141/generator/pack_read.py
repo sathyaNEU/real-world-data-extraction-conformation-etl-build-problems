@@ -1,6 +1,6 @@
 """Read the cut pack back: golden.py, ceiling.py and checks.py compute from the pack as shipped, never from the world.
 
-record(P) builds the forecast record forecast.py runs on (the felony terms of both CaseTrak systems with their
+record(P) builds the forecast record forecast.py runs on (the felony terms of both CMS systems with their
 supervision begin day, risk score on version 2, imposed term, scheduled expiration in force at each date and closure,
 and the Circuit Court's petitions on them); the rest are the asks' inputs."""
 from __future__ import annotations

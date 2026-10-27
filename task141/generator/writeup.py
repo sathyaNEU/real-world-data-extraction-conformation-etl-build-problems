@@ -14,7 +14,7 @@ BANDS = ["under one year", "one year to under two years", "two years to under th
 
 
 def t(x):
-    return "{:,}".format(int(x))
+    return "{:,}".format(int(round(x)))
 
 
 def main():
@@ -34,7 +34,7 @@ def main():
            "2027. Not %d pods, which the survival projection by month on supervision with the risk score gives (%s): "
            "it books the end-of-term petitions at expirations the Act removes. Not %d, the trailing year's %s "
            "admissions: the Act moves every term's end." % (
-               t(f["call.admissions_unrounded"]), t(f["family.low"]), t(f["family.high"]), t(5 * f["pod_size"]),
+               t(f["call.admissions_whole"]), t(f["family.low"]), t(f["family.high"]), t(5 * f["pod_size"]),
                f["pod_size"], f["pod_size"], t(f["transition_terms"]), f["rung.one_clock.pods"], t(f["rung.one_clock"]),
                f["rung.persistence.pods"], t(f["trailing.felony_admissions"])), "",
            "## 2. Critical Components", "",
@@ -46,7 +46,7 @@ def main():
            "against **%.1f per cent** in the same days a year earlier." % (f["end_of_term.share_pct"],
                                                                           f["end_of_term.year_before_pct"]),
            "3. The 2027 projection is **%s** admissions, **%.2f** pods under the standard, so **%d** pods."
-           % (t(f["call.admissions_unrounded"]), f["call.pods_ratio"], f["call.pods"]), "",
+           % (t(f["call.admissions_whole"]), f["call.pods_ratio"], f["call.pods"]), "",
            "## 3. Step-by-Step Solution", "",
            "1. Joined the felony terms of %s and %s, each term's scheduled expiration in force on each day from %s and "
            "the petitions in %s: %s felony terms open at the extract." % (
@@ -62,7 +62,7 @@ def main():
            "windows, the end-of-term rate on each open term's last 120 days before its end under the Act (from 1 "
            "January 2027 for the 31 March ends), pending petitions, new supervision starts at the trailing year's "
            "rate, the record's revocation rates and filing-to-decision days: %s admissions." % (
-               K.PLAN_PDF, t(f["call.admissions_unrounded"])),
+               K.PLAN_PDF, t(f["call.admissions_whole"])),
            "5. Checked the construction's variants (an end-of-term window of 90 to 150 days, the CSRS score as a "
            "covariate, one revocation rate, the mean lag): %s to %s admissions, six pods throughout." % (
                t(f["family.low"]), t(f["family.high"])),
@@ -85,8 +85,8 @@ def main():
     for i, q in enumerate(QLAB):
         out.append("   - %s: felony %s, misdemeanor %s" % (q, t(f["ask_a.q%d.felony" % (i + 1)]),
                                                          t(f["ask_a.q%d.misdemeanor" % (i + 1)])))
-    out.append("5. Average term imposed at sentencing of the felony probationers on supervision on 30 September 2026, "
-               "months, one decimal:")
+    out.append("5. Average term imposed at sentencing, in months to one decimal, of the felony probationers on "
+               "supervision on 30 September 2026:")
     for code, name, _ in K.OFFICES:
         out.append("   - %s: %.1f" % (name, f["ask_b.office.%s" % code]))
     for i, b in enumerate(BANDS):

@@ -41,7 +41,7 @@ def months(n):
 # ---------------------------------------------------------------------------------------------------- calendar
 BURN = day("2008-01-01")               # the world runs from here so the record opens on a settled caseload
 RECORD_START = day("2016-07-01")       # the extracts' first day: terms closed, petitions filed, orders made from here
-CMS2_LIVE = day("2023-06-12")          # the Department's CaseTrak 2 from this day; open cases moved across
+CMS2_LIVE = day("2023-06-12")          # the Department's CMS 2 from this day; open cases moved across
 JMS_LIVE = day("2025-02-04")           # the Sheriff's new jail management system from this day (times in UTC)
 BOOKINGS_FROM = day("2019-01-01")      # the bookings extract: every probation booking in custody on or after this day
 EXTRACT = day("2026-09-30")            # every record to the end of this day
@@ -91,8 +91,8 @@ OFFICES = (("CEN", "Central", "C"), ("NGT", "Northgate", "N"), ("RVS", "Riversid
 OFFICE_W = (0.38, 0.22, 0.24, 0.16)
 
 # ---------------------------------------------------------------------------------------------------- the pack
-CMS1 = "casetrak1_supervision_cases_2016_2023.csv"
-CMS2 = "casetrak2_supervision_cases_2023_2026.csv"
+CMS1 = "cms1_supervision_cases_2016_2023.csv"
+CMS2 = "cms2_supervision_cases_2023_2026.csv"
 ORDERS = "circuit_court_term_orders_2016_2026.csv"
 PETITIONS = "circuit_court_violation_petitions_2016_2026.csv"
 BOOKINGS = "detention_probation_bookings_2019_2026.csv"
@@ -102,8 +102,6 @@ COURT_CODES = "circuit_court_codes.xlsx"
 OFFICE_CODES = "apd_office_codes.csv"
 ACT_PDF = "sb26_118_felony_probation_term_act.pdf"
 PLAN_PDF = "jail_operations_plan_instructions_2027.pdf"
-CSRS = "csrs_2023_rescaling_note.txt"
-README = "README_extracts.txt"
 REPORT = "apd_annual_report_2025.pdf"
 HEADCOUNT = "detention_daily_headcount_2025_2026.csv"
 DISTRACTORS = [REPORT, HEADCOUNT]

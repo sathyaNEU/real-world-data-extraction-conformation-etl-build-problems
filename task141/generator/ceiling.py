@@ -6,7 +6,7 @@ ceiling those keeps imply.
     python3 task141/generator/ceiling.py
 
 The cracker reads the bookings' classification as the level (PV-FEL felony, PV-MIS misdemeanor), with the new jail
-system's UTC times in county time and annex moves and reclassifications chained, and takes CaseTrak 2's term_months as
+system's UTC times in county time and annex moves and reclassifications chained, and takes CMS 2's term_months as
 the term imposed. The mirror, off the call, handles the asks the same way."""
 import os
 import sys

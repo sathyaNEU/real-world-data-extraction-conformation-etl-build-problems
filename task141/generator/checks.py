@@ -142,7 +142,7 @@ def main():
             c["score"] = raw[c["id"]]
     v = F.two_clock(S, **G.GOLD)[0]
     va = F.two_clock(S)[0]
-    check("R2: CaseTrak 1 risk scores left on the version 1 scale", in_bin(v) and K.pods(va) == 6,
+    check("R2: CMS 1 risk scores left on the version 1 scale", in_bin(v) and K.pods(va) == 6,
           "%.0f (the score-adjusted member %.0f)" % (v, va))
     S = rec_copy(R)
     for c in S.cases:
@@ -161,7 +161,8 @@ def main():
                                             "two_clock_no_transition")))
     rpt = pdf_text(K.REPORT)
     F_ = DOC.report_figures(P["cms1"], P["cms2"], P["pets"])
-    nums = [F_["began"]["F"], F_["began"]["M"], F_["filed"]["F"], F_["filed"]["M"], F_["disp"][("F", "REVOKED")]]
+    nums = [F_["filed"]["F"], F_["filed"]["M"], F_["disp"][("F", "REVOKED")], F_["disp"][("M", "REVOKED")],
+            sum(v["F"] for v in F_["caseload"].values())]
     check("R3c: the annual report recomputes from the shipped rows", all("{:,}".format(x) in rpt for x in nums))
     check("R3c: no shipped document forecasts 2027 or names the end-of-term petitions",
           not re.search(r"(?i)projection|forecast|tolling petition|end of (the )?term|second clock", rpt +
@@ -273,7 +274,9 @@ def main():
     dash += [f for f in files if f.endswith(".pdf") and re.search("[\u2013\u2014]", pdf_text(f))]
     check("realism: no em or en dash in any shipped text", not dash, ", ".join(dash))
     persons = set(K.PEOPLE.values())
-    text = plan + act + rpt + open(os.path.join(TARGET, K.README), encoding="utf-8").read()
+    text = plan + act + rpt
+    check("realism: no file describes the data (no readme, dictionary, notes or manifest)", not any(
+        re.search(r"(?i)read ?me|dictionary|manifest|field_notes|data_notes", f) for f in files))
     check("realism: no placeholder identity", not re.search(r"John Doe|Jane Doe|Acme|Company A|Lorem", text))
     check("realism: personas from guard.py names only", all(n in persons for n in re.findall(
         r"Gina Yoder|Larry Pugh|Colleen Cameron|Donald Russo|Megan Chambers|Gloria Lynch", text)))

@@ -52,8 +52,6 @@ def pack():
     DOC.write_plan(t(K.PLAN_PDF))
     P = PR.read(TARGET)
     DOC.write_report(t(K.REPORT), DOC.report_figures(P["cms1"], P["cms2"], P["pets"]))
-    DOC.write_readme(t(K.README))
-    DOC.write_csrs(t(K.CSRS))
     DOC.write_jms_codes(t(K.JAIL_CODES))
     DOC.write_office_codes(t(K.OFFICE_CODES))
     DOC.write_court_codes(t(K.COURT_CODES))

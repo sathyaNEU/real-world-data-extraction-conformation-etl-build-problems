@@ -13,15 +13,15 @@ and the client domain are kept; the world, the records and the decision are new.
 |---|---|
 | Card | `.claude/skills/fingerprint/cards/task141.json`, architecture v3; `guard.py check` WARN only (`three_rules.strategy_risk`, answered below) with one NOTE (task152, differentiated on the card); architectures 1 and 2 in `lineage` with their fates |
 | Domain / task type | `criminology-justice` (client domain), task type `recidivism-risk-assessment`, the only one in the domain that serves Forecasting: the 2027 count of felony probation revocations, forecast from the county's own supervision record |
-| Objective | Forecasting & Predictive Modeling: the felony probation revocation commitments the Detention Center will admit in calendar 2027, a window not yet open at the extract (30 September 2026), under a statute that takes effect on 1 January 2027 |
-| Shape | `02` (forecast across periods): the plan's quarterly admissions and their two parts carry the call's criteria, the asks the rest; the arithmetic goes under `## Ask sheet` at stage 2 |
-| Decision | `quantity_figure` (the plan's 2027 admissions, from which the filed planning standard sets the violator pods), answer unit `count` |
-| Mechanism | gap time (decisive: the record's petitions were made under terms that ended where they were set; the Act moves every end and ends some 2,900 running terms on one day) then population (the terms past 24 months are a block no new term will form); pattern none, generators G4 (attribution at the transition: which clock each petition rides) then G13 (the forecast horizon holds a transition the window never exercised); Gate G `forecasting`; strategy `time_semantics` |
-| Layer 2 family / pattern | `estimation_fit` (the data's real structure: which clock an event rides); `own:violation-petitions-filed-before-each-term-lapses-ride-the-scheduled-end`. The client library's recidivism cards (calibration, fixed follow-up and time at risk, the fairness criterion, later release cohorts, selective labels, local base rates) are the default path's own careful moves here: the survival projection by time on supervision with the risk score is card 2 and card 4 done well, and it files three pods |
-| Furniture | forum `council_or_assembly` (the County Board of Supervisors adopts the plan), forcing event `statutory_or_regulatory_filing` (the 2027 Jail Operations Plan is due to the State Jail Standards Board on 1 December 2026), organisation family `local_government`, role family `research_desk` (the Sheriff's Office jail planning analyst), context artifact `filed_standard` (the Board's planning instructions with the county's pod standard, and the Act), calibration `none`, opening `question-first`, question form `how-many`. The live window at the draw (task139 v2, task304, task166) carries none of the forum, forcing event, organisation family or role |
-| Spine | `detention_bookings_2019_2026.csv`, the Detention Center's bookings (every booking, a transfer to the annex writing a new row), with the booking reason that marks a revocation commitment; rows set at stage 3; synthetic |
-| Deliverables | `violator_housing_plan_2027.xlsx` (the forecast by quarter and part, the pods), `violator_housing_memo_2027.docx` (the plan's violator housing section), `felony_revocation_admissions_2019_2027.png` (monthly admissions and the forecast) |
-| People | drawn with `guard.py names --geo us --seed 141 --n 30`, skipping every first name the guard warns on: Gina Yoder (Sheriff's Office jail planning analyst, the requester), Larry Pugh (Chief Probation Officer), Colleen Cameron (Detention Center commander), Donald Russo (Probation research and data manager), Megan Chambers (Clerk of the Circuit Court), Gloria Lynch (County Budget Director); none appears in the prompt |
+| Objective | Forecasting & Predictive Modeling: the felony probation revocation admissions the Detention Center will see in calendar 2027, a window not yet open at the extract (30 September 2026), under a statute that takes effect on 1 January 2027 |
+| Shape | `02` (forecast across periods): the call (pods and the plan figure), its parts and its 2027 profile by month in the chart, and the asks' 16 figures (violator bed-days by quarter and level, the imposed term by office and time on supervision); the arithmetic is under `## Ask sheet` |
+| Decision | `quantity_figure` (the plan's 2027 admissions, from which the filed standard sets the violator pods), answer unit `count` |
+| Mechanism | gap time (decisive: the record's petitions were made under terms that ended where they were set; the Act moves every end and ends 3,373 running terms on one day) then population (the terms past 24 months are a block no new term will form); pattern none, generators G4 (attribution at the transition: which clock each petition rides) then G13 (the forecast horizon holds a transition the window never exercised); Gate G `forecasting`; strategy `time_semantics` |
+| Layer 2 family / pattern | `estimation_fit` (the data's real structure: which clock an event rides, and exposure that begins with the extracts); `own:violation-petitions-filed-before-each-term-lapses-ride-the-scheduled-end`. The client library's recidivism cards (calibration, fixed follow-up and time at risk, the fairness criterion, later release cohorts, selective labels, local base rates) are the default path's own careful moves here: the survival projection by time on supervision with the risk score is card 2 and card 4 done well, and it files three pods |
+| Furniture | forum `council_or_assembly` (the County Board of Supervisors adopts the plan), forcing event `statutory_or_regulatory_filing` (the 2027 Jail Operations Plan is due to the State Jail Standards Board on 1 December 2026), organisation family `local_government`, role family `research_desk` (the Sheriff's Office jail planning analyst), context artifact `filed_standard` (the Board's instructions with the county's pod standard, and the Act), calibration `none`, opening `question-first`, question form `how-many` |
+| Spine | `detention_probation_bookings_2019_2026.csv` (48,178 rows), the Detention Center's probation bookings, one booking at a time per person, an annex move, a reclassification and the 2025 system replacement each writing a new row; synthetic |
+| Deliverables | `violator_housing_plan_2027.xlsx` (the projection and how it is built, the pods, the asks), `violator_housing_memo_2027.docx` (the plan's violator housing section), `felony_revocation_admissions_2019_2027.png` (monthly admissions and the 2027 projection) |
+| People | drawn with `guard.py names --geo us --seed 141 --n 30`, skipping every first name the guard warns on: Gina Yoder (Sheriff's Office jail planning analyst), Larry Pugh (Chief Probation Officer), Colleen Cameron (Detention Center commander), Donald Russo (Probation research and data manager), Megan Chambers (Clerk of the Circuit Court), Gloria Lynch (County Budget Director); none appears in the prompt |
 
 **Guard.** The first probe (decisive G7, role `capacity_planner`, forcing `purchase_order_or_contract`) BLOCKed on
 `ban.role` and `ban.forcing_event` against task137 v4 and on `test.same_puzzle_older` and `test.same_driver_older`
@@ -61,25 +61,25 @@ population whose outcomes the record holds whole: the supervision record is comp
 `layer2-rigor-patterns.md`, recidivism-risk-assessment: cards 2 and 4 are the default path's careful moves; card 5's
 selective labels cannot arise (no decision-maker chooses who is supervised).
 
-**World.** Okelan County (fictional, an unnamed state) supervises about 8,300 felony probationers through its Adult
-Probation Department. Under the State's 2019 realignment a felony probation revocation term is served in the county
-of supervision, so every felony revocation is a commitment to the Okelan County Detention Center, booked under its
-own reason code. Felony terms are set by the sentencing judge, 18 to 72 months; a misdemeanor term is 12 months.
-Officers file violation petitions with the Circuit Court: on new arrests, missed reporting, failed drug tests and
-treatment failures through the term, and, in the weeks before a term expires, on matters still unresolved (unpaid
-restitution, a pending charge, unfinished treatment, a probationer who cannot be found), because a petition filed
-before expiration keeps the court's jurisdiction. Senate Bill 26-118, the Felony Probation Term Act, takes effect on 1
-January 2027: a felony term imposed on or after that day may not exceed 24 months, and a running term ends on the
-earlier of its original expiration and 24 months from its start, but not before 31 March 2027. The Sheriff's Office
-writes the 2027 Jail Operations Plan, which the County Board of Supervisors adopts and files with the State Jail
-Standards Board by 1 December 2026; the plan states the felony probation revocation admissions it expects in 2027 and
-staffs violator pods by the county's filed standard. Records to the extract of 30 September 2026.
+**World.** Okelan County (fictional, an unnamed state on Central time) supervises about 7,600 felony probationers
+through its Adult Probation Department. Under the State's 2019 realignment a felony probation revocation is served in
+the county of supervision, so every felony revocation is a commitment to the Okelan County Detention Center. Felony
+terms run 18 to 84 months; most carry jail time as a condition, served before supervision begins. Officers file
+violation petitions with the Circuit Court on new arrests, missed reporting, failed tests and treatment failures
+through the term, and in the last weeks before a term's scheduled expiration on matters still open (restitution,
+unfinished treatment, a pending charge), because a petition filed before expiration keeps the court's jurisdiction.
+Senate Bill 26-118 takes effect on 1 January 2027: a felony term imposed from that day runs no more than 24 months
+from the start of supervision, and a term in effect ends on the earlier of its scheduled expiration and 24 months
+after supervision began, but not before 31 March 2027; proceedings pending on that day continue. The Sheriff's Office
+writes the 2027 Jail Operations Plan, which states the felony probation revocation admissions it projects and staffs
+violator pods by the county's filed standard (one 64-bed pod for each 220 projected admissions or part of 220).
+Records to the extract of 30 September 2026; the extracts begin on 1 July 2016.
 
-**Data-native sentence.** In Okelan County's record about a fifth of felony violation petitions are filed in the last
-75 days before a term's scheduled expiration, on matters left unresolved as the term lapses, so that the court keeps
-jurisdiction: 23 to 24 per cent of terms that reach their last 90 days on supervision carry one, against 3 per cent in
-the same stretch a year earlier. SB 26-118 moves every scheduled expiration and puts some 2,900 of them on 31 March
-2027.
+**Data-native sentence.** In Okelan County's record about a quarter of felony violation petitions (24.5 per cent)
+are filed in the last 120 days before the scheduled expiration then in force, on matters left open as the term lapses:
+26.4 per cent of the terms that reach their last 120 days on supervision with nothing pending carry one, against 4.5
+per cent in the same days a year earlier. SB 26-118 moves every felony term's expiration and puts 3,373 of the terms
+open at the extract on 31 March 2027.
 
 ## Three rules
 
@@ -87,109 +87,293 @@ the same stretch a year earlier. SB 26-118 moves every scheduled expiration and 
   revocations the Okelan County Detention Center will admit under SB 26-118, forecast from the county's supervision
   record.
 - Domain test: the deciding quantity is the forecast count of revocations, which the field projects from failure on
-  supervision (the hazard of a violation by time on supervision and risk, the share of petitions that end in a
-  revocation, the time from petition to commitment); it turns on probation law's tolling: a petition filed before a
-  term expires keeps the court's jurisdiction, so officers file on unresolved matters in the weeks before each
-  scheduled expiration, a second clock that carries about a fifth of the county's felony petitions.
+  supervision (the hazard of a violation petition by time on supervision, the share of petitions that end in a
+  revocation, the time from petition to commitment, with exposure counted while the record can see it); it turns on
+  probation law's tolling: a petition filed before a term expires keeps the court's jurisdiction, so officers file on
+  open matters in the weeks before each scheduled expiration, a second clock that carries a quarter of the county's
+  felony petitions.
 - Swap: "a gym chain forecasting 2027 cancellations after a cap on contract length" keeps a term and a cap, but
   nothing in it is filed to keep an authority over a member before the term lapses, a cancellation at the end is the
   term's own end rather than a filing that extends it, and no transition ends thousands of running contracts on one
   day, so the reasoning that decides (which clock the petitions ride and where the Act moves it) has no counterpart.
-- Layer 1: the two case-management systems' layouts (the legacy one to June 2023 with terms in days and its own status
-  and office codes, the new one in months), amended petitions under the original number with a suffix, the Detention
-  Center's bookings with annex transfers as new rows and UTC times after its 2025 migration, the person crosswalk
-  across Probation, Sheriff and State identifiers with merged identities, misdemeanor and interstate-compact cases in
-  the same register, and the risk screen's 2023 rescaling; each is what the named system produces, and none decides
-  the call.
+- Layer 1: the two case systems' layouts (CMS 1 with MM/DD/YYYY dates, one-letter offices, terms in days and CSRS
+  version 1 totals of 0 to 40; CMS 2 in months and 0 to 20), the registers' expiration as it now stands beside
+  the Clerk's orders that moved it, the Detention Center's one booking at a time (annex moves and reclassifications
+  write new rows, the 2025 replacement closes and reopens every open spell, the new system writes UTC), the Sheriff's
+  merged numbers in the crosswalk, misdemeanor terms and interstate holds in the same records, and the terms still in
+  their confinement condition, in neither register; each is what the named system produces, and none decides the call
+  (`## Layer 1 inventory`).
 - Layer 2: family `estimation_fit`; the choice that flips the call is reading the record's petitions on two clocks,
-  months on supervision for the ordinary ones and days to scheduled expiration for those filed as a term lapses, and
-  moving the second clock to the end the Act sets.
-- Decisive step: in the field's words, a revocation forecast built on the hazard by time on supervision has to
-  separate the petitions filed against the expiring term (the tolling petitions in the last weeks before scheduled
-  expiration) from the time-on-supervision violations, because the Act moves every scheduled expiration and ends some
-  2,900 running terms on one day, and the tolling petitions follow the end.
-- Not semantics: every field, code and date read correctly (allegation codes, dispositions, booking reasons, the
-  Act's sections) still leaves the time-on-supervision forecast at about 450; no column, code or status marks a
-  petition as filed against the expiring term (its allegations are the codes the ordinary petitions carry), and the
-  clock appears only when filing dates are aligned on each term's scheduled expiration.
-- Not rule application: SB 26-118 sets every term's new end and the planning standard turns admissions into pods, and
+  months on supervision for the ordinary ones and days to the expiration in force for those filed as a term lapses,
+  and moving the second clock to the end the Act sets; exposure counted from the extracts' first day is the survival
+  method's own care and sits on the ladder below it.
+- Decisive step: in the field's words, a revocation forecast built on time on supervision has to separate the
+  petitions filed against the expiring term (the tolling petitions in its last months) from the violations through
+  the term, because the Act moves every scheduled expiration and ends 3,373 running terms on one day, and the tolling
+  petitions follow the end.
+- Not semantics: every field, code and date read correctly (allegation codes, dispositions, order types, booking
+  classes, the Act's sections) still leaves the time-on-supervision forecast at about 610 (three pods); no column,
+  code or status marks a petition as filed against the expiring term (its allegations are the codes the ordinary
+  petitions carry, the largest share gap 0.009), and the clock appears only when filing dates are aligned on each
+  term's expiration in force.
+- Not rule application: SB 26-118 sets every term's new end and the standard turns admissions into pods, and
   executing both on the time-on-supervision projection files three pods; no rule or document names a petition clock,
-  a window or a rate. Measured on three paper worlds (`generator/paper/fam.py` on `sim_rev.py`): the enumerated family
-  (persistence, the time-on-supervision hazard pooled or by term length with the score, the two-clock forecast without
-  the transition terms, the two-clock forecast, and the end window counted twice) spreads from 0.44 to 1.12 times the
-  truth, 413 to 1,067 admissions; the standing family (two clocks, the window 60, 90 or 120 days, the score on or off)
-  spreads by under 1 per cent of the figure on each world (968 to 1,008 across the three); the ruling-out is one
-  group-by nothing invites, petitions by days to the term's scheduled expiration, where 23 to 24 per cent of terms
-  that reach their last 90 days on supervision carry one against 3 per cent in the same stretch a year earlier.
-- Analyst test: a strong analyst who conforms the two layouts, the petitions and the commitments, applies the Act to
-  every term and fits revocation by month on supervision with the risk score (the field's survival projection),
-  carrying each case to its new end and adding new starts on 24-month terms, files about 450 admissions (Ends on; a
-  fall of a third from the trailing year's about 700), against the golden's about 950; persistence files about 700.
-- Estimand: felony probation revocation commitments admitted to the Okelan County Detention Center with an admission
-  date in calendar 2027, for felony cases Okelan County supervises, under SB 26-118 as enacted, with the courts, the
-  Department and the Sheriff acting at the rates the record shows (the planning instructions' projection convention);
-  filed in `jail_planning_standard_2026.pdf`.
+  a window or a rate. Measured on the cut pack (`generator/golden.py`, `checks.py`): the enumerated family
+  (persistence 912, the trailing year's rate over the Act's exposure 663, the time-on-supervision projection pooled
+  607 or by term length 591, the two clocks without the 31 March terms 766, the two clocks with exposure from
+  supervision start 1,085, the expiry clock alone 1,127, the two clocks 1,186) spreads from 591 to 1,186, three to six
+  pods; the standing family (the end-of-term window from 90 to 150 days, the CSRS score as a covariate or not, one
+  revocation rate or two, the mean lag or the record's lags, the 31 March terms' windows opening on 1 January 2027 or
+  before it, windows of terms with nothing pending) spreads 1,169 to 1,203 one choice at a time and 1,164 to 1,233
+  over all 96 combinations, every one 1,200 to the nearest 100 and six pods; the ruling-out is one alignment nothing
+  invites, petitions by days to the expiration in force, where 26.4 per cent of terms reaching their last 120 days
+  carry one against 4.5 per cent a year earlier.
+- Analyst test: a strong analyst who conforms the two layouts, the orders, the petitions and the commitments, applies
+  the Act to every term and fits revocation by month on supervision with the risk score (the field's survival
+  projection), each term counted from the extracts' first day, carrying each case to its new end and adding new
+  starts, files about 610 admissions (three pods), against the golden's about 1,200 (six pods); persistence files 912
+  (five pods).
+- Estimand: felony probation revocation admissions to the Okelan County Detention Center in calendar 2027 (a person's
+  commitment on the revocation of a felony term the Department supervises, counted once on the day it begins),
+  including admissions on terms whose supervision begins after the extract, under SB 26-118 as enacted, with the
+  courts, the Department and the Sheriff acting as the records to the extract show; filed in
+  `jail_operations_plan_instructions_2027.pdf` sections 3 and 4.
 - No decoy: nothing is planted; the petitions filed before a term lapses are what tolling makes officers do,
-  generated by one process for every term; no memo, briefing, draft or stakeholder figure forecasts revocations, and
-  the Department's annual report counts last year's admissions only.
+  generated by one process for every term; no memo, briefing, draft or stakeholder figure forecasts revocations, the
+  Department's annual report counts fiscal 2025's petitions, revocations and closures only, and the headcount counts
+  the jail at 06:00.
 - No certified replay: no certified, published or prior-period figure is reproduced to recover a method; nothing in
   the pack forecasts 2027 or scores a method.
 - Lesson: an event filed against a term's scheduled end rides that end, not the time since the term began; a reform
   that moves every end moves those events, and a transition that ends thousands of terms on one day fires them
   together. No build on file reads a second clock tied to each unit's scheduled end, or a transition that fires it.
 
+## Layer 1 inventory
+
+| Item | The system that writes it | File | Natural mishandling | Measured on the call |
+|---|---|---|---|---|
+| CMS 1's layout: MM/DD/YYYY, one-letter offices, terms in days, CSRS version 1 totals 0 to 40 | the legacy case system | `cms1_supervision_cases_2016_2023.csv` | version 1 totals read as version 2 | the golden reads no score: unchanged; the score-adjusted member 1,115, six pods |
+| Expiration as it now stands in the registers, its history in the orders | CMS and the Clerk's system | `cms2_supervision_cases_2023_2026.csv`, `circuit_court_term_orders_2016_2026.csv` | every expiration read as it now stands | 1,200, six pods |
+| Terms still in their confinement condition are in neither register | CMS enters a term when supervision begins | both registers | new supervision starts from the trailing six months | in the bin, six pods |
+| One booking at a time: annex moves, reclassifications, the 2025 replacement, UTC from 2025 | the jail management system | `detention_probation_bookings_2019_2026.csv` | the call reads no booking | none (Ask A's ground) |
+| Merged Sheriff's numbers | the Sheriff's records unit | `person_id_crosswalk.csv` | the call reads none | none |
+| Misdemeanor terms and interstate holds in the same records | CMS, the jail | registers, bookings | a felony filter by level | none |
+
 ## Default path
 
-1. Read SB 26-118's sections and the planning instructions: the plan carries the felony probation revocation
-   commitments admitted in 2027 and staffs violator pods by the county's standard.
-2. Conform the probation register (the legacy and new layouts), the petitions (amendments collapsed) and the Detention
-   Center's bookings (annex transfers joined into stays, times to local), linked through the crosswalk; keep felony
-   cases Okelan County supervises.
-3. Set each case's end of supervision under the Act: new terms 24 months; a running term at the earlier of its
-   original expiration and 24 months from start, not before 31 March 2027.
-4. Fit the field's survival model of revocation by month on supervision with the risk score (a discrete-time hazard,
+1. Read SB 26-118 and the Board's instructions: the plan carries the felony probation revocation admissions of 2027
+   and staffs violator pods by the county's standard (one 64-bed pod for each 220 admissions or part of 220).
+2. Conform CMS 1 and 2 (layouts, codes, CSRS scales), the term orders and the petitions by case number; keep
+   the felony terms and count each term's exposure from 1 July 2016, the extracts' first day.
+3. Set each term's end under the Act: a running term at the earlier of its scheduled expiration and 24 months after
+   supervision began, not before 31 March 2027; a new term 24 months.
+4. Fit the field's survival model, revocation by month on supervision with the risk score (a discrete-time hazard,
    censored at closure and the extract); stratifying by term length leaves it where it is.
-5. Carry each active case month by month to its new end, add new starts at the trailing year's rate on 24-month terms
-   and the petitions pending at the extract at their conversion rate.
-6. Sum the commitments dated in 2027: about 450 (459, 449 and 456 on the three paper worlds), a fall of a third, three
-   pods.
+5. Carry each open term month by month to its end under the Act, the pending petitions at their conversion and new
+   starts at the trailing year's rate.
+6. Sum the commitments dated in 2027: about 610 (607), a third below the trailing year's 912, three pods.
 
-Ends on: about 450 felony probation revocation admissions in 2027 (three pods; the trailing year carried about 700).
-Golden: about 950 (six pods): about a fifth of the record's felony petitions are filed in the last 75 days before a
-term's scheduled expiration and ride that end, and under the Act the ends of some 2,900 running terms fall on 31 March
-2027, so their petitions and about 300 commitments come in the first half of 2027, on top of the terms reaching 24
-months through the year.
+Ends on: about 610 felony probation revocation admissions in 2027 (three pods; the trailing year carried 912).
+Golden: about 1,200 (1,186; six pods): a quarter of the record's felony petitions are filed in the last months before
+a term's scheduled expiration and ride that end, and under the Act 3,373 running terms end on 31 March 2027, so their
+petitions come in the first quarter of 2027 and their commitments in the spring (419 admissions), on top of the terms
+reaching 24 months through the year.
 
 ## Stump sentence
 
-A competent solver fits revocation by month on supervision with the risk score, carries it over each felony case's
-2027 months to its new end under SB 26-118 and files about 450 admissions (Ends on; three pods); the step that lands
-it there is reading every petition on the time-since-start clock, when about a fifth are filed in the last weeks
-before a term lapses, ride each term's scheduled end, and under the Act fire at once for the terms that end on 31
-March 2027, so the plan carries about 950 (six pods).
+A competent solver fits revocation by month on supervision with the risk score, carries it over each felony term's
+2027 months to its end under SB 26-118 and files about 610 admissions (three pods); the step that lands it there is
+reading every petition on the time-since-start clock, when a quarter are filed in the last months before a term
+lapses, ride each term's scheduled end, and under the Act fire at once for the 3,373 terms that end on 31 March 2027,
+so the plan carries about 1,200 (six pods).
 
-## Paper world
+## Build world
 
-`generator/paper/sim_rev.py`: a county's felony and misdemeanor probation cases from January 2017 to the extract
-(about 210 felony and 150 misdemeanor starts a month, felony terms 18 to 72 months), ordinary petitions on a monthly
-hazard that falls from 3.0 to 0.75 per cent over the first year and a half and scales with the risk score, a petition
-filed between 6 and 75 days before a term's scheduled expiration on 22 per cent of terms that reach their last 90 days
-with none pending, 48 and 50 per cent of the two kinds ending in a commitment some 72 days after filing on average,
-early termination for compliant cases after 18 months and a small absconding hazard. The truth is the generator re-run
-from every case's state at the extract under the Act, eight times. `generator/paper/routes.py` computes each route
-from the record alone and `fam.py` runs them.
+`generator/world.py`: felony and misdemeanor terms imposed from January 2008 (210 and 150 a month), so the record
+opens on a settled caseload; felony terms 18 to 84 months over nine lengths, 85 per cent with a confinement condition
+(median about 110 days, longer for longer terms) served before supervision begins; ordinary petitions on a monthly
+hazard that falls from 3.2 to 0.85 per cent over the first year and a half on supervision and scales with the risk
+screen; on 23.5 per cent of terms that reach the last 90 days before the expiration in force with nothing pending, a
+petition 7 to 90 days before it (mode 30); 48 per cent of each kind ending in a revocation some 70 days after filing;
+extensions on continued petitions, tolling for absconders, early termination for compliant cases after 18 months. The
+extracts begin on 1 July 2016 (terms closed, petitions filed and orders made from that day). The truth is the
+generator re-run from every term's state at the extract under the Act, eight times: 1,197 (sd 33). `golden.py`
+computes every route from the cut pack alone and `checks.py` asserts the table.
 
-| World (seed) | Truth | Persistence | Time on supervision | By term length | Two clocks without the 31 March terms | Two clocks (golden) | End window counted twice |
-|---|---|---|---|---|---|---|---|
-| 1 | 949 | 694 (0.73) | 459 (0.48) | 423 (0.45) | 667 (0.70) | 1,008 (1.06) | 1,067 (1.12) |
-| 2 | 917 | 715 (0.78) | 449 (0.49) | 420 (0.46) | 644 (0.70) | 969 (1.06) | 1,025 (1.12) |
-| 3 | 948 | 692 (0.73) | 456 (0.48) | 413 (0.44) | 660 (0.70) | 982 (1.04) | 1,037 (1.09) |
+| Route | Admissions 2027 | Pods |
+|---|---|---|
+| Persistence (the trailing year) | 912 | 5 |
+| The trailing year's rate over the Act's exposure | 663 | 4 |
+| Time on supervision by term length | 591 | 3 |
+| Time on supervision with the risk score (default) | 607 | 3 |
+| Two clocks, exposure from supervision start | 1,085 | 5 |
+| Two clocks without the 31 March terms | 766 | 4 |
+| The expiry clock alone | 1,127 | 6 |
+| Two clocks (golden) | 1,186 | 6 |
 
-The golden's members (the window 60, 90 or 120 days, the score on or off) run 1,000 to 1,008, 968 to 973 and 978 to
-983. Its 4 to 6 per cent above the truth is the projection's monthly discretisation (the same formula with the
-generator's own parameters sits 5 per cent above a Monte Carlo of new starts), and the time-on-supervision route's
-error is ten times that. Stage 2 tunes the world so that the golden and every wrong route sit mid-bin under the pod
-standard and measures the family again on the built pack.
+## Readability screen
+
+Measured on the cut pack (`checks.py` restates the figures on each build).
+
+| Rung | What the response does | What in the pack points at it | Verdict |
+|---|---|---|---|
+| L0 persistence (912, five pods) | carries the trailing year's 912 admissions into 2027 | the petitions' revocations by month, the annual report's counts | readable |
+| L1 rate over the Act's exposure (663, four pods) | the trailing year's admissions per month on supervision, over the months the Act leaves in 2027 | the registers' supervision months | readable |
+| L2 time on supervision by term length (591, three pods) | the projection by month on supervision and imposed term, each term cut at its new end | the term length columns | readable |
+| L3 time on supervision with the risk score (default; 607, three pods) | the field's survival projection, each term to its new end | the registers, the petitions, the Act | readable |
+| L3b two clocks from supervision start (1,085, five pods) | the two clocks with each term's exposure from the start of its supervision, before the extracts begin | the extracts' own first dates (petitions filed and orders made from 1 July 2016) against supervision dates from 2008 | readable |
+| L4 two clocks without the 31 March terms (766, four pods) | the end-of-term petitions only for terms ending on their own expirations | section 4's 31 March floor | readable |
+| G two clocks (decisive; 1,186, six pods) | ordinary petitions by month on supervision, end-of-term petitions in each term's last 120 days before its end under the Act | nothing labels a petition by its clock: no column holds the days to expiration, the end-of-term petitions carry the others' allegations (largest share gap 0.009), and the clock shows only on petitions aligned on the expiration in force (15-day bins from day 1: 230, 1,049, 1,271, 996, 670, 260, then about 110 a bin); on the supervision clock it peaks at 1.59 times its neighbours pooled and 1.1 to 2.3 times by term length | silent |
+
+## Semantic fork table
+
+| ID | Term or convention | Golden reading | Alternative | Call under it | Ruled out by |
+|---|---|---|---|---|---|
+| SF1 | an admission | a person's commitment on a day a felony term was revoked | each revoked petition | same call (one felony revocation a person and day; asserted) | instructions 3.1 |
+| SF2 | the day an admission is dated | the day the commitment begins, the hearing | the disposition date | same call (no felony commitment is served on weekends; asserted) | instructions 3.1, the petitions' served_as |
+| SF3 | county time | court dates, bookings in county time | UTC dates | same call (every felony commitment begins on a revocation day in county time; asserted) | instructions 1.3; the call reads court dates |
+| SF4 | terms whose supervision begins after the extract | counted | left out | another call (973, five pods) | instructions 4.2 |
+| SF5 | 24 months after supervision began | calendar months | 730 days | same call (3,373 terms either way; asserted) | the Act, section 4 |
+| SF6 | not before 31 March 2027 | a running term past its 24 months ends on 31 March 2027 | it ends on 1 January 2027 | same call (1,193, six pods; measured) | the Act, section 4 |
+| SF7 | proceedings pending on the day a term ends under section 4 | continue | end with the term | another call (766, four pods) | the Act, section 6 |
+| SF8 | the extract | petitions pending at 30 September 2026 carried as pending | none | same call (asserted) | instructions 1.2 |
+| SF9 | or part of 220 | a ceiling: 5.39 pods is six | rounding to five | another call (five pods) | instructions, Annex |
+| SF10 | pods from the projection or the plan figure | the unrounded projection | the figure to the nearest 100 | same call (six either way; asserted) | instructions 2.2, 4.3 |
+| SF11 | a felony admission | a revoked term is a felony term | a felony probationer's commitment (PV-FEL) | same call (24 a year more; asserted) | instructions 3.2 |
+| SF12 | the end-of-term window and the estimator's other choices | 120 days, no score, a rate per kind, the record's lags | 90 to 150 days, the score, one rate, the mean lag, windows from before 1 January 2027, terms with nothing pending | same call (96 combinations 1,164 to 1,233; asserted) | the record: the aligned petitions stop at 90 days |
+
+## Ladder
+
+Measured on the cut pack; `checks.py` asserts every row on each build.
+
+| Rung | Admissions 2027 | Pods | Call kept |
+|---|---|---|---|
+| L0 persistence | 912 | 5 | no |
+| L1 the trailing year's rate over the Act's exposure | 663 | 4 | no |
+| L2 time on supervision by term length | 591 | 3 | no |
+| L3 time on supervision with the risk score (default) | 607 | 3 | no |
+| L3b two clocks, exposure from supervision start | 1,085 | 5 | no |
+| L4 two clocks without the 31 March terms | 766 | 4 | no |
+| G two clocks | 1,186 | 6 | yes |
+
+Every rung that skips the decisive step sits under the rung floor (1,100 over 1.15 is 957), persistence the closest
+at 912. L3b takes the decisive step without delayed entry and sits 15 below the six-pod edge. The standing family runs
+1,169 to 1,203 one choice at a time and 1,164 to 1,233 over all 96 combinations; the expiry clock alone, a cheaper
+route that also needs the alignment, files 1,127 and six pods. The truth is 1,197 (sd 33 over eight runs).
+
+## Closure table
+
+| # | Axis | Reading | Move |
+|---|---|---|---|
+| 1 | Population | felony revocation admissions on terms the Department supervises, terms beginning supervision after the extract included | filed (instructions 3.1, 3.2, 4.2); SF4, SF11 |
+| 2 | Unit of account | a person's commitment, counted once on the day it begins | filed (3.1); SF1 |
+| 3 | Attribution window | calendar 2027, by the day the commitment begins | filed (1.1, 3.1); SF2 |
+| 4 | As-of dating | records to the end of 30 September 2026 | filed (1.2); SF8 |
+| 5 | Version basis | the one set of extracts pulled 2 October 2026 | C1 |
+| 6 | Denominator | exposure while the extracts can see it, from 1 July 2016 | the survival method (delayed entry); rung L3b |
+| 7 | Weighting | none | not applicable |
+| 8 | Window length | the plan year; the end-of-term window 120 days | filed (1.1); SF12 |
+| 9 | Boundary inclusivity | one pod for each 220 or part of 220 | filed (Annex); SF9 |
+| 10 | Rounding path | pods from the unrounded projection; the plan figure to the nearest 100 | filed (4.3, Annex); SF10 |
+| 11 | Tie-break | none needed | asserted: every standing construction 1,164 to 1,233 |
+| 12 | Maturity and censoring | open terms and pending petitions at the extract | the decisive step; SF8 |
+| 13 | Order of operations | apply the Act, project, sum, apply the standard | linear |
+| 14 | Row order | none | C1 |
+| 15 | Duplicate resolution | one row per term, petition and booking | asserted (unique numbers) |
+| 16 | Identity normalisation | case numbers across both systems; Sheriff's numbers through the crosswalk, merged numbers included | asserted |
+| 17 | Netting against gross | none | not applicable |
+| 18 | Dimensional units | admissions, months and days, county (Central) time | filed (instructions 1.3; the new system marks UTC) |
+| 19 | Code and status semantics | dispositions, order types, closure codes, booking classes | filed (code lists); SF11 |
+| 20 | Integerisation | pods as whole units | filed (Annex) |
+| 21 | Clause scope | felony terms; the Act leaves misdemeanor terms | filed (the Act, section 7) |
+| 22 | Forward window contents | the Act's ends, terms beginning supervision later, pending petitions, proceedings pending at an end | filed (the Act 3 to 6, instructions 4.2); SF4, SF7 |
+
+## Literal reader
+
+Executing the prompt and every filed sentence word for word: the Board's instructions define the admission (3.1,
+3.2) and the projection (4.1: under the law in force in the plan year, with the courts, the Department and the
+Sheriff acting as the records to the extract show them acting; 4.2: terms whose supervision begins after the extract
+included), the Act sets every felony term's end (sections 3 to 6) and the Annex the pods. Acting as the records show
+includes when officers file: 26.4 per cent of the terms reaching their last 120 days carry a petition, against 4.5
+per cent a year earlier, and the aligned petitions stop at 90 days, so a projection that books those petitions at the
+expirations the Act removes acts as the old law, not as the records show. Every standing construction files 1,164 to
+1,233 admissions, 1,200 to the nearest 100 and six pods; the construction that reads every petition on one clock
+files three. Section 6 keeps the 31 March terms' pending petitions revocable (without it 766) and section 4.2 counts
+the terms beginning supervision after the extract (without them 973), so both are filed rather than left to a
+reading.
+
+## Oracles
+
+No file ties only under the golden or only on a wrong read. The Department's fiscal 2025 report counts petitions,
+revocations and closures from the shipped rows (asserted) and forecasts nothing; the headcount is the jail's own 06:00
+count by housing unit and answers occupancy, not the projection. Nothing in the pack forecasts 2027, ranks a method or
+names a petition clock. The referee for Ask A is the court's revocation on the day a commitment begins (a PV-FEL
+commitment begun on a day only a misdemeanor term of the person was revoked is a misdemeanor commitment), the device's
+evidence and never an answer; for Ask B, the EXTENSION orders' months.
+
+## Ask sheet
+
+The call's declared population is the felony terms of CMS 1 and 2 with their term orders and petitions; the
+bookings, the crosswalk, the misdemeanor terms and the headcount are outside it (asserted: the call reads no booking
+and no term length). The annual report and the headcount ship as distractors: the plan counts admissions by the
+instructions' definitions, not the report's fiscal-year counts or the 06:00 occupancy, and no golden figure opens
+them.
+
+- **Ask A, violator bed-days by quarter, October 2025 to September 2026, felony and misdemeanor, whole days (8
+  figures).** H18 home: the instructions' section 5, the violator housing in use that the pods add to. User: the
+  Detention Center commander. Primary device (silent): the jail books a commitment by the person's status (PV-FEL is
+  a felony probationer's commitment) while section 5.3 counts a bed-day by the term the commitment revokes, so a
+  person on felony probation committed on a misdemeanor revocation is booked PV-FEL and is a misdemeanor bed-day (24
+  such commitments a year, some in every quarter). Secondary: the new system writes UTC, and a weekend period booked
+  on a Friday evening loses a night read as local. Hazards: one booking at a time (annex moves, reclassifications, the
+  2025 replacement), merged Sheriff's numbers, holds and interstate holds left out. Stops measured on the cut pack:
+  the classification as the level 0 of 8, with UTC read as local 0 of 8, with holds counted 0 of 8; linked to the
+  court but UTC read as local 5 of 8; linked through current Sheriff's numbers only 8 of 8 (no merged number touches
+  a commitment in the four quarters).
+- **Ask B, the average term imposed at sentencing of the felony probationers on supervision at the extract, months to
+  one decimal, by office (4) and time on supervision (4) (8 figures).** H18 home: the instructions' section 6, the
+  population the Act shortens. User: the Chief Probation Officer. Primary device (silent): CMS 2's term_months
+  is the term as it now stands, extensions included; the term imposed is term_months less the months the EXTENSION
+  orders added (the orders carry term_months_after). Every figure sits at least 0.021 from a rounding edge, under the
+  extract-day closures and a 365.25-day year alike. Stops: term_months as it stands 0 of 8; the expiration less the
+  supervision begin 1 of 8; open terms past their expiration left out 4 of 8.
+
+| Ask | What the cracker does | Cracker |
+|---|---|---|
+| A | reads the bookings' classification as the level (PV-FEL felony, PV-MIS misdemeanor), county time from UTC, annex moves and reclassifications chained | misses |
+| B | averages CMS 2's term_months over the open felony terms | misses |
+
+Measured by: `generator/ceiling.py` on the cut pack.
+
+| Ask | Graded figures | Cracker keeps | Mirror keeps | Naive handling keeps | Cracker |
+|---|---|---|---|---|---|
+| A violator bed-days by quarter and level | 8 | 0 | 0 | 0 | misses |
+| B the average imposed term by office and time on supervision | 8 | 0 | 0 | 0 | misses |
+
+Over the 16 figures the cracker keeps 0.0 per cent of ask weight (45.0 with the call) and the mirror the same off it
+(12.0); the best half-handled stops keep 5 of 8 (Ask A, linked with UTC read as local) and 4 of 8 (Ask B, open terms
+past their expiration left out).
+
+Pair ceiling: 28.5.
+Mirror leakage: 0.0 per cent of ask weight.
+The rubric's criteria: the call and the plan figure, the transition terms, the end-of-term concentration and the
+default construction ruled out (5), the 16 ask figures, the workbook's parts, the memo's section and the chart (3)
+and the rounding (1), 25 in all.
+
+## Stage 4 round 1 (architecture 3, zip 7cd8129f, 2026-10-27)
+
+Both scored readers (sonnet, medium, fresh copies, briefed with the prompt's own figures) landed the call, 1,200
+admissions and six pods. Reader A simulated the open felony terms with petition rates by tenure and by days to the
+scheduled expiration in force ("filings spike 15 to 90 days before expiry ... stable every year"), the Act's ends with
+the 31 March floor and section 6, back-tested at three earlier extracts and filed about 1,165; reader B built "a
+petition-filing model by tenure and months to expiry, with the cap applied" and filed 1,150 to 1,185. Both kept the
+asks almost whole: A 14 of 16 and B 16 of 16 (score_reader exit 1 twice), each linking the PV-FEL bookings to the
+revoked terms and taking the EXTENSION orders' months off term_months. The judge thread returned DETERMINISTIC and
+FIX_NOW on wording (state the end-of-term variants as a per-term share, show the cluster inside the last 90 days,
+drop the 607 survival figure it could not reproduce); Gate G forecasting and analytical_non_defect, Gate H analytical.
+The architecture is spent: the statute that moves every expiration points at the expiry clock, and the clock is one
+subtraction and a histogram away for any reader who asks what the Act does to a term's end. Both ask devices were
+found as well. Reports: `leak_check_report.md` (the two reads) and `determinism_check_report.md` (the judge).
 
 ## Earlier architectures (kept as history)
 
@@ -331,6 +515,10 @@ architecture 3 leaves the pretrial world for a record whose outcomes are held wh
   years or more averaged 58.850 months, within a thousandth of a rounding edge, so one term more or less moved the
   graded figure; four bands (under one, one to two, two to three, three or more) leave every figure at least 0.021
   from an edge, under the extract-day closures and a 365.25-day year alike.
-- 2026-10-27, the golden adjusted for the CSRS score: a solver who leaves CaseTrak 1's version 1 totals unhalved files
+- 2026-10-27, the golden adjusted for the CSRS score: a solver who leaves CMS 1's version 1 totals unhalved files
   1,115 with it (six pods, 1,100 to the nearest 100), so a Layer 1 slip moved a graded figure; the golden is now the
   unadjusted construction (the score-adjusted one is a standing member, within 5 of it), and the slip moves nothing.
+- 2026-10-27, architecture 3 at stage 4 round 1 (zip 7cd8129f): both scored readers landed 1,200 admissions and six
+  pods by modelling petitions on tenure and days to the scheduled expiration in force once the Act was read, and kept
+  14 and 16 of the 16 ask figures; a step the forcing statute points at (it moves every expiration) is the reader's
+  first model, not a silent rung. Re-rooted to architecture 4 the same day.

@@ -11,8 +11,8 @@
   "shape": "02",
   "decision_type": "quantity_figure",
   "answer_unit": "count",
-  "answer": "draft at the draw: staff six violator pods for 2027, the plan carrying about 950 felony probation revocation admissions (figures set at stage 3)",
-  "answer_source": "task141/submission.md, block 1 (at ship)",
+  "answer": "Okelan County's 2027 Jail Operations Plan should carry 1,200 felony probation revocation admissions and staff 6 violator pods, one more than in 2026.",
+  "answer_source": "task141/submission.md, block 1",
   "gap": [
     "time",
     "population"
@@ -32,28 +32,28 @@
   "validated_decoy": false,
   "context_artifact": "filed_standard",
   "stump_class": "analytical",
-  "analyst_test": "A strong analyst who conforms the two case-management layouts, the petitions and the Detention Center's revocation commitments, applies SB 26-118 to every felony term and fits the field's survival model of revocation by month on supervision with the risk score, then carries it over each case's 2027 months to its new end and adds new starts on 24-month terms, files about 450 admissions (three pods, a fall of a third) against the golden's about 950 (six pods); persistence files about 700 (four pods).",
-  "domain_test": "The deciding quantity is the 2027 count of felony probation revocations, forecast from the supervision record the way the field forecasts failure on supervision (a hazard by time on supervision and risk, conversion of violations to revocations, the filing-to-commitment lag), and it turns on a fact of probation law and practice: a violation petition filed before a term expires keeps the court's jurisdiction, so officers file on unresolved matters in the weeks before each scheduled expiration and that clock, not the time since start, carries a fifth of all petitions.",
+  "analyst_test": "A strong analyst who conforms the two case-management layouts, the Circuit Court's term orders and petitions, applies SB 26-118 to every felony term and fits the field's survival model of revocation by month on supervision with the risk score, each term counted from the extracts' first day, then carries each case month by month to its new end and adds new starts, files about 610 admissions (607, three pods, a third below the trailing year's 912) against the golden's about 1,200 (1,186, six pods); persistence files 912 (five pods).",
+  "domain_test": "The deciding quantity is the 2027 count of felony probation revocations, forecast from the supervision record the way the field forecasts failure on supervision (a hazard by time on supervision and risk, conversion of petitions to revocations, the filing-to-commitment lag, exposure counted while the record can see it), and it turns on a fact of probation law and practice: a violation petition filed before a term expires keeps the court's jurisdiction, so officers file on open matters in the last months before each scheduled expiration in force, and that clock, not the time since start, carries a quarter of the county's felony petitions (24.5 per cent filed in a term's last 120 days).",
   "layer2_family": "estimation_fit",
   "layer2_pattern": "own:violation-petitions-filed-before-each-term-lapses-ride-the-scheduled-end",
   "layer1": [
-    "two case-management systems, the legacy one to June 2023 writing terms in days and its own status and office codes, the new one in months",
-    "amended petitions carrying the original number with a suffix",
-    "the Detention Center's bookings with transfers to the annex as new rows and UTC times after its 2025 migration",
-    "a person crosswalk between Probation, Sheriff and State identifiers with merged identities",
-    "misdemeanor and interstate-compact cases in the same register",
-    "the risk screen's 2023 version change from a 0-30 to a 0-20 scale",
-    "the Act's sections and the jail planning standard as PDFs"
+    "two case-management systems: CMS 1 (terms closed to June 2023) with MM/DD/YYYY dates, one-letter offices, terms in days and risk screen version 1 totals of 0 to 40; CMS 2 in months, ISO dates and totals of 0 to 20",
+    "each register's expiration as it now stands, its history in the Circuit Court's term orders (extensions, tolling, early terminations)",
+    "terms still serving their confinement condition are in neither register",
+    "the Detention Center's one booking at a time: annex moves and reclassifications write new rows, the 2025 system replacement closes and reopens every open spell, and the new system writes UTC",
+    "a person crosswalk between Probation and Sheriff's numbers with merged Sheriff's numbers",
+    "misdemeanor terms and Interstate Compact holds in the same records",
+    "the Act and the Board's planning instructions as PDFs"
   ],
   "stakeholder_role": "the Sheriff's Office jail planning analyst who writes the 2027 Jail Operations Plan the County Board of Supervisors adopts and files with the State Jail Standards Board",
   "role_family": "research_desk",
   "scoring_unit": "per episode",
   "spine": {
-    "file": "detention_bookings_2019_2026.csv",
-    "rows": 0,
-    "entity": "one booking into the Okelan County Detention Center",
-    "grain": "booking (a transfer to the annex writes a new row)",
-    "source": "synthetic (constructed operating layer; rows set at stage 3)"
+    "file": "detention_probation_bookings_2019_2026.csv",
+    "rows": 48178,
+    "entity": "one probation booking in the Okelan County Detention Center",
+    "grain": "booking (an annex move, a reclassification and the 2025 system replacement each write a new row)",
+    "source": "synthetic (constructed operating layer)"
   },
   "forum": "council_or_assembly",
   "forcing_event": "statutory_or_regulatory_filing",
@@ -64,11 +64,12 @@
     "org_type": "county sheriff's office and adult probation department",
     "invented_names": [
       "Okelan County",
-      "Okelan County Detention Center",
+      "Okelan County Detention Center and its Harlan Road annex",
       "Okelan County Adult Probation Department",
+      "Okelan County Circuit Court",
       "Senate Bill 26-118, the Felony Probation Term Act",
       "State Jail Standards Board",
-      "Community Supervision Risk Screen"
+      "Vessey, Brannock, Ostby and Quillan counties (the annex of planning standards)"
     ],
     "people": [
       "Gina Yoder",
@@ -87,8 +88,8 @@
   "opening_move": "question-first",
   "question_form": "how-many",
   "driver": "Failures are filed at two moments of each unit's term, early on and at a review held as the term lapses, so the failure rate by time since entry carries a spike at each term's own end; a cap that moves every term's end earlier moves the review with it and fires it at once for every unit already past the cap, while a forecast that truncates the time-since-entry curve at the cap drops the spike and files a fall.",
-  "driver_concrete": "Okelan County's probation officers file a violation petition in the last weeks before a felony term lapses on cases with an unresolved matter, so the court keeps jurisdiction; SB 26-118 ends every running term already past 24 months on 31 March 2027 and caps the rest at 24 months, so those petitions fire for some 3,000 terms in the first quarter and at 24 months for the rest, while a revocation hazard by month on supervision, truncated at the new ends, files a fall.",
-  "stump": "A competent solver fits revocation by month on supervision with the risk score, carries it over each felony case's 2027 months to its new end under SB 26-118 and files about 450 admissions (three pods); the step that lands it there is reading every petition on the time-since-start clock, when about a fifth are filed in the last weeks before a term lapses, ride each term's scheduled end, and under the Act fire at once for the terms that end on 31 March 2027, so the plan carries about 950 (six pods).",
+  "driver_concrete": "Okelan County's probation officers file a violation petition in the last months before a felony term lapses on cases with an open matter, so the court keeps jurisdiction; SB 26-118 ends 3,373 running terms already past 24 months on 31 March 2027 and caps the rest at 24 months, so those petitions fire in the first quarter of 2027 and at 24 months for the rest, while a revocation hazard by month on supervision, truncated at the new ends, files a fall (607 against the trailing year's 912).",
+  "stump": "A competent solver fits revocation by month on supervision with the risk score, carries it over each felony term's 2027 months to its end under SB 26-118 and files about 610 admissions (three pods); the step that lands it there is reading every petition on the time-since-start clock, when a quarter are filed in the last months before a term lapses, ride each term's scheduled end, and under the Act fire at once for the 3,373 terms that end on 31 March 2027, so the plan carries about 1,200 (six pods).",
   "mechanism_source": "design_note",
   "differentiation": {
     "task152": "task152 attributes a solar plant's decline at a module replacement to wear the replacement removes against dust it keeps; here nothing is replaced or decomposed: events tied to each term's scheduled end move with the end a statute sets, and fire together for the terms the statute ends on one day."
@@ -135,6 +136,7 @@
       "subdomain": "recidivism-risk-assessment"
     }
   ],
-  "notes": "Drawn 2026-10-27 at the author's instruction to give task141 a stronger architecture; causal_design (task139 v2) and composition_mix (task304) were barred by the window, so the supervision-intensity design was set aside (task169 had also screened its cut-off discontinuity as a reflex). time_semantics is the honest family: a clock in the record (days to scheduled expiration) estimated by the field's hazard method from every term that reached it. The decision type stays quantity_figure (a dial collided with task269 v1 on same_puzzle); the pods follow from the forecast by the filed planning standard.",
-  "registered": "2026-10-27T00:31:56Z"
+  "notes": "Drawn 2026-10-27 at the author's instruction to give task141 a stronger architecture; causal_design (task139 v2) and composition_mix (task304) were barred by the window, so the supervision-intensity design was set aside (task169 had also screened its cut-off discontinuity as a reflex). time_semantics is the honest family: a clock in the record (days to scheduled expiration) estimated by the field's hazard method from every term that reached it. The decision type stays quantity_figure (a dial collided with task269 v1 on same_puzzle); the pods follow from the forecast by the filed planning standard. Built 2026-10-27 (v3b): the record burned in from 2008 with the extracts opening on 1 July 2016, so exposure from supervision start is a ladder rung (1,085, five pods); the golden is the two-clock projection, 1,186 (1,200, six pods), the standing family 1,164 to 1,233 over 96 combinations, the generator's truth 1,197 (sd 33).",
+  "registered": "2026-10-27T00:31:56Z",
+  "architecture_spent": true
 }
