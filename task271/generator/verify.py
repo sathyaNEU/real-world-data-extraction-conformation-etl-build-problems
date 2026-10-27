@@ -1,194 +1,195 @@
-"""The independent verifier: reads only the shipped bundle (target/ and figures.json) and recomputes the call, the
-critical components and every ask figure with its own code (vectorised house-years, an even-odd ray test for the
-zone polygons, statsmodels' formula interface for the chosen model, pandas joins for the asks), then compares with
-figures.json."""
+"""task271 independent verifier: recomputes every graded figure from target/ with the standard library and openpyxl
+only (no pandas, none of calc.py), then compares with generator/figures.json.
+
+    python3 task271/generator/verify.py task271/target"""
+from __future__ import annotations
+
+import bisect
+import collections
+import csv
 import datetime as dt
 import json
+import math
 import os
 import sys
-import warnings
+from zoneinfo import ZoneInfo
 
-import numpy as np
-import pandas as pd
+import openpyxl
 
-warnings.filterwarnings("ignore")
-HERE = os.path.dirname(os.path.abspath(__file__))
-sys.path.insert(0, HERE)
-import common as K    # noqa: E402
-
-TOWNS = ["DOR", "BRK", "SAL"]
+LON = ZoneInfo("Europe/London")
+UTC = dt.timezone.utc
+NAMES = {"XWEX": "Wexcombe Stock Exchange", "AWKL": "Ardenwick MTF lit book", "DLVL": "Delvenne MTF lit book",
+         "AWKM": "Ardenwick MTF midpoint book", "DLVM": "Delvenne Midpoint", "THGD": "Thursgate MTF midpoint book",
+         "BDSI": "Brindock Securities SI", "QTSI": "Quintrell Markets SI"}
 
 
-def half_up(x, n=0):
-    from decimal import Decimal, ROUND_HALF_UP
-    return float(Decimal(repr(float(x))).quantize(Decimal(1).scaleb(-n), rounding=ROUND_HALF_UP))
+def half_up(x, nd=0):
+    q = x * 10 ** nd
+    return math.floor(q + 0.5) / 10 ** nd
 
 
-def inside(px, py, ring):
-    ring = np.asarray(ring)
-    x1, y1 = ring[:-1, 0], ring[:-1, 1]
-    x2, y2 = ring[1:, 0], ring[1:, 1]
-    res = np.zeros(len(px), bool)
-    for a, b, c, e in zip(x1, y1, x2, y2):
-        crosses = ((b > py) != (e > py))
-        xint = a + (py - b) * (c - a) / np.where(e != b, e - b, 1e-12)
-        res ^= crosses & (px < xint)
-    return res
-
-
-def run(task):
-    T = os.path.join(task, "target")
-    fig = json.load(open(os.path.join(HERE, "figures.json")))
-    out = []
-
-    def ok(label, a, b):
-        out.append((label, a == b, "%s | %s" % (a, b)))
-
-    rd = lambda k: pd.read_csv(os.path.join(T, K.FILES[k]), dtype=str, keep_default_na=False)   # noqa: E731
-    terms, claims, parcels, dw = rd("terms"), rd("claims"), rd("parcels"), rd("dwellings")
-    # house-years, vectorised per term and year
-    s = pd.to_datetime(terms["term_effective"])
-    e = pd.to_datetime(terms["term_expiration"])
-    cx = pd.to_datetime(terms["cancellation_effective"].where(terms["reinstatement_effective"] == ""), errors="coerce")
-    e = e.where(cx.isna() | (cx > e), cx)
+def call(t):
+    busted = set()
+    with open(os.path.join(t, "ashlowe_execution_report_2026.csv"), encoding="utf-8") as fh:
+        for r in csv.DictReader(fh):
+            if r["exec_type"] == "BUST":
+                busted.add(r["ref_exec_id"])
+    wb = openpyxl.load_workbook(os.path.join(t, "pemberwick_execution_report_2026.xlsx"), read_only=True)
+    for ws in wb.worksheets:
+        it = ws.iter_rows(values_only=True)
+        head = list(next(it))
+        si, oi = head.index("Status"), head.index("Orig Exec Ref")
+        for r in it:
+            if r[si] == "Busted":
+                busted.add(r[oi])
+    seen = set()
     rows = []
-    for y in (2023, 2024, 2025):
-        lo = s.clip(lower=pd.Timestamp(y, 1, 1))
-        hi = e.clip(upper=pd.Timestamp(y + 1, 1, 1))
-        days = (hi - lo).dt.days.clip(lower=0)
-        rows.append(pd.DataFrame({"parcel_id": terms["parcel_id"], "year": y, "expo": days / (366.0 if y == 2024 else 365.0)}))
-    ex = pd.concat(rows).groupby(["parcel_id", "year"], as_index=False)["expo"].sum()
-    ex = ex[ex["expo"] > 0]
-    wc = claims[claims["cause_code"].isin(["WTR-P", "WTR-A", "3110", "3120", "3130"]) &
-                ~claims["claim_number"].str.contains(r"-R\d+$", regex=True)].copy()
-    wc["year"] = wc["date_of_loss"].str[:4].astype(int)
-    n = wc.groupby(["parcel_id", "year"]).size().rename("n").reset_index()
-    d = ex.merge(n, on=["parcel_id", "year"], how="left").fillna({"n": 0})
-    lastterm = terms.assign(tn=terms["term_number"].astype(int)).sort_values(["parcel_id", "tn"]).groupby("parcel_id").tail(1)
-    found = lastterm.set_index("parcel_id")["foundation"]
-    xy = parcels.set_index("parcel_id")[["x_coord_ft", "y_coord_ft"]].astype(float)
-    g = json.load(open(os.path.join(T, K.FILES["zones"])))
+    with open(os.path.join(t, "hessenby_tca_executions_2026-01-02_to_2026-10-30.csv"), encoding="utf-8") as fh:
+        for r in csv.DictReader(fh):
+            if r["broker_exec_id"] in seen:
+                continue
+            seen.add(r["broker_exec_id"])
+            ts = dt.datetime.strptime(r["exec_time_utc"], "%Y-%m-%dT%H:%M:%S.%fZ").replace(tzinfo=UTC).timestamp()
+            rows.append((r["isin"], ts, r))
+    by = collections.defaultdict(list)
+    for isin, ts, r in rows:
+        by[isin].append(ts)
+    for k in by:
+        by[k].sort()
+    sums = collections.defaultdict(float)
+    cnt = collections.Counter()
+    n_read = 0
+    for isin, ts, r in rows:
+        if r["session"] != "CONT" or not r["mid_plus_60s"] or r["broker_exec_id"] in busted:
+            continue
+        n_read += 1
+        L = by[isin]
+        j = bisect.bisect_right(L, ts)
+        if j < len(L) and L[j] <= ts + 60:
+            continue
+        m0, m1 = float(r["mid_at_exec"]), float(r["mid_plus_60s"])
+        s = 1.0 if r["side"] == "BUY" else -1.0
+        v = "THGD" if r["last_mkt"] in ("THGD", "THGM") else r["last_mkt"]
+        sums[v] += -s * (m1 - m0) / m0 * 1e4
+        cnt[v] += 1
+    est = {v: sums[v] / cnt[v] for v in NAMES}
+    return est, cnt, n_read
 
-    def zone(px, py):
-        z = np.array([""] * len(px), dtype=object)
-        for f in g["features"]:
-            geom = f["geometry"]
-            polys = [geom["coordinates"]] if geom["type"] == "Polygon" else geom["coordinates"]
-            for p in polys:
-                z[inside(px, py, p[0])] = f["properties"]["ZONE_ID"]
-        return z
-    bk = pd.DataFrame({"parcel_id": found.index})
-    bk["found"] = found.values
-    pxy = xy.loc[bk["parcel_id"]].values
-    bk["zone"] = zone(pxy[:, 0], pxy[:, 1])
-    d = d.merge(bk, on="parcel_id")
-    # the townships' homes
-    h = parcels[parcels["municipality_code"].isin(TOWNS) & (parcels["land_use_code"] == "R-SFD") &
-                (parcels["homestead_farmstead"] == "H")]
-    c1 = dw[dw["card_number"] == "1"].set_index("parcel_id")
-    fmap = {"BSMT FULL": "B", "BSMT PART": "B", "SLAB": "S", "CRAWL": "C", "PIERS": "C"}
-    hm = pd.DataFrame({"parcel_id": h["parcel_id"].values, "town": h["municipality_code"].values,
-                       "found": [fmap[c1.loc[p, "foundation"]] for p in h["parcel_id"]]})
-    hxy = h[["x_coord_ft", "y_coord_ft"]].astype(float).values
-    hm["zone"] = zone(hxy[:, 0], hxy[:, 1])
-    import statsmodels.api as sm
-    import statsmodels.formula.api as smf
 
-    def fitdev(formula, train, test):
-        m = smf.glm(formula, data=train, family=sm.families.Poisson(), offset=np.log(train["expo"])).fit()
-        mu = m.predict(test, offset=np.log(test["expo"]))
-        y = test["n"].values
-        t = np.where(y > 0, y * np.log(np.where(y > 0, y, 1) / mu), 0)
-        return m, float(2 * np.sum(t - (y - mu)))
-    tr, te = d[d["year"] < 2025], d[d["year"] == 2025]
-    _, dev_z = fitdev("n ~ C(found) + C(zone)", tr, te)
-    _, dev_f = fitdev("n ~ C(found)", tr, te)
-    ok("deviance 2025 foundation and zone", half_up(dev_z, 1), fig["components"]["deviance_2025_chosen"])
-    ok("deviance 2025 foundation alone", half_up(dev_f, 1), fig["components"]["deviance_2025_best_recorded_only"])
-    m = smf.glm("n ~ C(found) + C(zone)", data=d, family=sm.families.Poisson(), offset=np.log(d["expo"])).fit()
-    p = m.predict(hm, offset=np.zeros(len(hm))) * 1000
-    town = p.groupby(hm["town"]).mean()
-    for t in TOWNS:
-        ok("frequency %s" % t, int(half_up(town[t])), fig["components"]["frequency_per_1000"][t])
-        ok("Valley-zone homes %s" % t, int((hm[hm["town"] == t]["zone"] == "PZ-3").sum()),
-           fig["components"]["valley_zone_homes"][t])
-    best = min(TOWNS, key=lambda t: town[t])
-    ok("call", best, fig["call"]["township"])
-    ok("book frequency", int(half_up(1000 * d["n"].sum() / d["expo"].sum())), fig["context"]["book_frequency_per_1000"])
-    # protection
-    H = pd.DataFrame([dict(f["properties"], x=f["geometry"]["coordinates"][0], y=f["geometry"]["coordinates"][1])
-                      for f in json.load(open(os.path.join(T, K.FILES["hydrants"])))["features"]])
-    ft = rd("flowtests")
-    ft["date"] = pd.to_datetime(ft["test_date"])
-    old = ft[ft["date"] < pd.Timestamp(2024, 4, 1)].merge(H[H["FORMER_ID"] != ""][["FORMER_ID", "HYDRANT_ID"]],
-                                                           left_on="hydrant_id", right_on="FORMER_ID")
-    new = ft[ft["date"] >= pd.Timestamp(2024, 4, 1)].merge(H[["HYDRANT_ID"]], left_on="hydrant_id",
-                                                            right_on="HYDRANT_ID")
-    allt = pd.concat([old, new]).sort_values("date").groupby("HYDRANT_ID").tail(1)
-    sp, rp, fl = allt["static_psi"].astype(float), allt["residual_psi"].astype(float), allt["flow_gpm"].astype(float)
-    allt["q"] = fl * ((sp - 20) / (sp - rp)) ** 0.54
-    good = H.merge(allt[["HYDRANT_ID", "q"]], on="HYDRANT_ID")
-    good = good[(good["STATUS"] == "IN SERVICE") & (good["OWNER"] == "TCWA") & (good["q"] >= 500)]
-    gx, gy = good["x"].values, good["y"].values
+def notes(t):
+    out = []
+    with open(os.path.join(t, "gresmere_contract_notes_settling_2026-01-02_to_2026-11-03.csv"), encoding="utf-8") as fh:
+        rows = [r for r in csv.DictReader(fh) if r["note_status"] != "CANCELLED"]
+    key = collections.Counter((r["client_order_ref"], r["trade_date"], r["trade_time"], r["shares"], r["side"])
+                              for r in rows)
+    for r in rows:
+        d = dt.datetime.strptime(r["trade_date"], "%d/%m/%Y").date()
+        k = (r["client_order_ref"], r["trade_date"], r["trade_time"], r["shares"], r["side"])
+        if key[k] > 1 and r["note_ref"].startswith("CN26-") and d < dt.date(2026, 7, 1):
+            continue
+        out.append((d, r))
+    return out
 
-    def prot(px, py):
-        res = np.zeros(len(px), bool)
-        for i in range(0, len(px), 400):
-            dx = px[i:i + 400, None] - gx[None, :]
-            dy = py[i:i + 400, None] - gy[None, :]
-            res[i:i + 400] = (dx * dx + dy * dy).min(1) <= 1000.0 ** 2
-        return res
-    hp = prot(hxy[:, 0], hxy[:, 1])
-    for t in TOWNS:
-        ok("protected %s" % t, int(hp[hm["town"].values == t].sum()), fig["asks"]["protected_homes"][t])
-    # market value
-    ap = rd("appeals")
-    ap = ap[(ap["tax_year"] == "2026") & ap["decision"].isin(["REDUCED", "INCREASED", "SUSTAINED"])]
-    val = h.set_index("parcel_id")["assessed_total"].astype(float)
-    val.update(ap.set_index("parcel_id")["assessed_total_after"].astype(float))
-    clr = rd("clr")
-    c = float(clr[(clr["effective_from"] <= "2026-01-01") & (clr["effective_to"] >= "2026-01-01")]["common_level_ratio"].iloc[0])
-    mv = (val / c).groupby(h.set_index("parcel_id")["municipality_code"]).sum()
-    for t in TOWNS:
-        ok("market %s" % t, half_up(mv[t] / 1e6, 1), fig["asks"]["market_value_musd"][t])
-    # payments
-    pm = rd("payments")
-    pm["amount"] = pm["amount"].astype(float)
-    pm["claim"] = pm["claim_number"].str.replace(r"-R\d+$", "", regex=True)
-    base = wc.set_index("claim_number")
-    pm = pm[pm["claim"].isin(base.index)]
-    ind = pm[pm["transaction_type"].isin(["INDEMNITY", "VOID"])].groupby("claim")["amount"].sum()
-    rec = pm[pm["transaction_type"] == "RECOVERY"].groupby("claim")["amount"].sum()
-    import openpyxl
-    wb = openpyxl.load_workbook(os.path.join(T, K.FILES["bordereau"]), read_only=True)
-    bl = {}
-    for sh in wb.sheetnames:
-        for r in wb[sh].iter_rows(min_row=3, values_only=True):
-            if r[0]:
-                bl[r[0]] = (r[5], r[6])
-    bdf = pd.DataFrame([(k, v[0], v[1]) for k, v in bl.items() if k in base.index], columns=["claim", "paid", "rec"])
-    ind = ind.add(bdf.set_index("claim")["paid"], fill_value=0)
-    rec = rec.add(-bdf.set_index("claim")["rec"], fill_value=0)
-    net = ind.add(rec, fill_value=0)
-    paid = ind[ind > 0.005]
-    for y in (2023, 2024, 2025):
-        ids = [k for k in paid.index if base.loc[k, "year"] == y]
-        ok("payment %d" % y, int(half_up(net.loc[ids].mean())), fig["asks"]["water_payment_by_accident_year"][str(y)])
-    # fire
-    fc = claims[claims["cause_code"].isin(["FIR", "5110", "5120"]) & ~claims["claim_number"].str.contains(r"-R\d+$")]
-    fc = fc[fc["date_of_loss"].str[:4].isin(["2023", "2024", "2025"])]
-    bxy = xy.loc[bk["parcel_id"]].values
-    bp = pd.Series(prot(bxy[:, 0], bxy[:, 1]), index=bk["parcel_id"].values)
-    exh = d.groupby("parcel_id")["expo"].sum()
-    nf = fc.groupby("parcel_id").size().reindex(exh.index).fillna(0)
-    idx = bp[~bp].index.intersection(exh.index)
-    ok("fire unprotected", half_up(1000 * nf.loc[idx].sum() / exh.loc[idx].sum(), 1), fig["asks"]["fire_per_1000"]["unprotected"])
-    bad = [o for o in out if not o[1]]
-    for label, good_, detail in out:
-        print("%s  verify %s  [%s]" % ("PASS" if good_ else "FAIL", label, detail))
-    print("verify: %d figures, %d differ" % (len(out), len(bad)))
-    return 1 if bad else 0
+
+def ask_b(t):
+    tot = collections.defaultdict(int)          # pence, exact
+    for d, r in notes(t):
+        if dt.date(2026, 1, 1) <= d <= dt.date(2026, 10, 30):
+            gross = round(int(r["shares"]) * float(r["price_gbx"]))   # pence to the penny
+            tot[(d.month, r["side"])] += gross
+    return {k: v / 100.0 / 1e6 for k, v in tot.items()}
+
+
+def ask_a(t):
+    closed = set()
+    with open(os.path.join(t, "uk_trading_calendar_2025-12-01_to_2027-01-31.csv"), encoding="utf-8") as fh:
+        for r in csv.DictReader(fh):
+            if r["uk_market"] == "CLOSED":
+                closed.add(dt.date.fromisoformat(r["date"]))
+    sh = collections.defaultdict(int)
+    in_2026 = set()
+    for d, r in notes(t):
+        sh[r["client_order_ref"]] += int(r["shares"])
+        if dt.date(2026, 1, 1) <= d <= dt.date(2026, 10, 30):
+            in_2026.add(r["client_order_ref"])
+    adv = {}
+    with open(os.path.join(t, "securities_master_2026-10-30.csv"), encoding="utf-8") as fh:
+        for r in csv.DictReader(fh):
+            adv[r["isin"]] = float(r["adv_shares_2026"])
+    ca = json.load(open(os.path.join(t, "corporate_actions_2026.json")))
+    cons = [(e["new_isin"], dt.date.fromisoformat(e["ex_date"])) for e in ca["events"] if e["event_type"] == "CONSOLIDATION"]
+    net = collections.defaultdict(int)
+    cuts = [9 * 60 + 15, 11 * 60 + 45, 14 * 60 + 15]
+    with open(os.path.join(t, "wealth_platform_client_orders_2025-12-29_to_2026-10-30.csv"), encoding="utf-8") as fh:
+        for r in csv.DictReader(fh):
+            if r["client_order_ref"] not in in_2026:
+                continue
+            loc = dt.datetime.strptime(r["placed_at"], "%Y-%m-%d %H:%M:%S").replace(tzinfo=UTC).astimezone(LON)
+            d, mins = loc.date(), loc.hour * 60 + loc.minute + loc.second / 60.0
+            point = None
+            if d not in closed:
+                for i, c in enumerate(cuts):
+                    if mins < c:
+                        point = i
+                        break
+            if point is None:
+                d += dt.timedelta(days=1)
+                while d in closed:
+                    d += dt.timedelta(days=1)
+                point = 0
+            q = sh[r["client_order_ref"]]
+            net[(d, point, r["isin"])] += q if r["side"] == "BUY" else -q
+    counts = collections.Counter()
+    sizes = collections.defaultdict(list)
+    for (d, p, isin), q in net.items():
+        if q == 0:
+            continue
+        counts[p] += 1
+        pct = abs(q) / adv[isin] * 100.0
+        for ni, eff in cons:
+            if isin == ni and d < eff:
+                pct /= 10.0
+        sizes[p].append(pct)
+    return counts, {k: sum(v) / len(v) for k, v in sizes.items()}
+
+
+def main(t):
+    fig = json.load(open(os.path.join(os.path.dirname(os.path.abspath(__file__)), "figures.json")))
+    ans = fig["answers"]
+    diffs = []
+    est, cnt, n_read = call(t)
+    for v, nm in NAMES.items():
+        w = int(half_up(est[v]))
+        if ans["adverse_move_bp"][nm] != w:
+            diffs.append(("adverse move %s" % nm, ans["adverse_move_bp"][nm], w))
+        if ans["fills_read_by_venue"][nm] != format(cnt[v], ","):
+            diffs.append(("fills read %s" % nm, ans["fills_read_by_venue"][nm], cnt[v]))
+    off = [NAMES[v] for v in NAMES if est[v] > 1.5]
+    if sorted(off) != sorted(fig["call"]["kept_off"]):
+        diffs.append(("kept off", fig["call"]["kept_off"], off))
+    if fig["steps"]["fills_read"] != format(n_read, ","):
+        diffs.append(("fills read", fig["steps"]["fills_read"], n_read))
+    counts, sizes = ask_a(t)
+    pts = ["09:30", "12:00", "14:30"]
+    for i, pn in enumerate(pts):
+        if ans["market_orders"][pn] != format(counts[i], ","):
+            diffs.append(("market orders %s" % pn, ans["market_orders"][pn], counts[i]))
+        got = "%.3f" % half_up(sizes[i], 3)
+        if ans["mean_size_pct_adv"][pn] != got:
+            diffs.append(("size %s" % pn, ans["mean_size_pct_adv"][pn], got))
+    b = ask_b(t)
+    months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October"]
+    for m in range(1, 11):
+        got = "%.2f" % half_up((b.get((m, "BUY"), 0) - b.get((m, "SELL"), 0)), 2)
+        if ans["net_bought_gbp_m"][months[m - 1]] != got:
+            diffs.append(("net %s" % months[m - 1], ans["net_bought_gbp_m"][months[m - 1]], got))
+    n = 8 * 2 + 2 + 3 + 3 + 10
+    print("verify: %d figures, %d differ" % (n, len(diffs)))
+    for d in diffs:
+        print("  DIFF", d)
+    print("PASS" if not diffs else "FAIL")
+    return 1 if diffs else 0
 
 
 if __name__ == "__main__":
-    sys.exit(run(sys.argv[1] if len(sys.argv) > 1 else os.path.dirname(HERE)))
+    sys.exit(main(sys.argv[1] if len(sys.argv) > 1 else os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "target")))

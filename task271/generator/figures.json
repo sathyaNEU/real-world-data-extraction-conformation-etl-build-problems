@@ -1,94 +1,74 @@
 {
- "asks": {
-  "fire_per_1000": {
-   "unprotected": 5.3
+  "call": {
+    "kept_off": [
+      "Delvenne MTF lit book",
+      "Ardenwick MTF midpoint book",
+      "Thursgate MTF midpoint book",
+      "Quintrell Markets SI"
+    ],
+    "on_list": [
+      "Wexcombe Stock Exchange",
+      "Ardenwick MTF lit book",
+      "Delvenne Midpoint",
+      "Brindock Securities SI"
+    ],
+    "line_bp": 1.5
   },
-  "market_value_musd": {
-   "BRK": 768.0,
-   "DOR": 804.6,
-   "SAL": 906.7
+  "components": {
+    "Delvenne MTF lit book": 2,
+    "Ardenwick MTF midpoint book": 3,
+    "Thursgate MTF midpoint book": 2,
+    "Quintrell Markets SI": 2
   },
-  "protected_homes": {
-   "BRK": 1994,
-   "DOR": 2182,
-   "SAL": 2686
+  "steps": {
+    "fills_read": "171,750",
+    "lone_fills": "69,118",
+    "horizon_s": 60,
+    "cutoff_min": 15,
+    "consolidation_ratio": 10
   },
-  "water_payment_by_accident_year": {
-   "2023": 10769,
-   "2024": 11056,
-   "2025": 11670
+  "answers": {
+    "adverse_move_bp": {
+      "Wexcombe Stock Exchange": 0,
+      "Ardenwick MTF lit book": 1,
+      "Delvenne MTF lit book": 2,
+      "Ardenwick MTF midpoint book": 3,
+      "Delvenne Midpoint": 1,
+      "Thursgate MTF midpoint book": 2,
+      "Brindock Securities SI": 0,
+      "Quintrell Markets SI": 2
+    },
+    "fills_read_by_venue": {
+      "Wexcombe Stock Exchange": "13,861",
+      "Ardenwick MTF lit book": "10,524",
+      "Delvenne MTF lit book": "9,704",
+      "Ardenwick MTF midpoint book": "4,877",
+      "Delvenne Midpoint": "5,365",
+      "Thursgate MTF midpoint book": "4,903",
+      "Brindock Securities SI": "9,098",
+      "Quintrell Markets SI": "10,786"
+    },
+    "market_orders": {
+      "09:30": "18,138",
+      "12:00": "9,949",
+      "14:30": "8,926"
+    },
+    "mean_size_pct_adv": {
+      "09:30": "0.169",
+      "12:00": "0.119",
+      "14:30": "0.112"
+    },
+    "net_bought_gbp_m": {
+      "January": "4.72",
+      "February": "4.40",
+      "March": "5.05",
+      "April": "3.71",
+      "May": "4.31",
+      "June": "3.13",
+      "July": "4.65",
+      "August": "4.23",
+      "September": "3.18",
+      "October": "3.87"
+    }
   }
- },
- "call": {
-  "gap_per_1000": 4,
-  "name": "Dorrance Hill",
-  "runner_up": "SAL",
-  "runner_up_name": "Sallowmead",
-  "township": "DOR"
- },
- "components": {
-  "best_recorded_only_model": [
-   "found"
-  ],
-  "chosen_model": [
-   "found",
-   "zone"
-  ],
-  "deviance_2025_best_recorded_only": 3252.4,
-  "deviance_2025_chosen": 3169.4,
-  "frequency_per_1000": {
-   "BRK": 28,
-   "DOR": 21,
-   "SAL": 25
-  },
-  "homes": {
-   "BRK": 2584,
-   "DOR": 2769,
-   "SAL": 3096
-  },
-  "valley_zone_homes": {
-   "BRK": 2192,
-   "DOR": 217,
-   "SAL": 1238
-  }
- },
- "context": {
-  "book_frequency_per_1000": 23,
-  "book_house_years": 54233.4,
-  "book_water_claims": 1258,
-  "common_level_ratio": 0.451,
-  "recorded_only_frequency_per_1000": {
-   "BRK": 18.1,
-   "DOR": 26.0,
-   "SAL": 22.4
-  },
-  "relativities": {
-   "found=C vs B": 0.62,
-   "found=S vs B": 0.6,
-   "zone=PZ-3 vs PZ-2": 2.31
-  }
- },
- "references": {
-  "cause_codes": [
-   3110,
-   3120,
-   3130,
-   5110,
-   5120
-  ],
-  "dates": [
-   2023,
-   2024,
-   2025,
-   2026,
-   2027
-  ],
-  "nfpa_exponent": 0.54,
-  "nfpa_standard": 291,
-  "rounding": "frequencies whole per 1,000 house-years; market values to 0.1 million dollars; payments whole dollars; the fire frequency to 0.1 per 1,000 house-years",
-  "standard_sections": [
-   2.1,
-   2.4
-  ]
- }
 }

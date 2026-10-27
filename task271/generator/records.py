@@ -1,428 +1,436 @@
-"""The exports as the systems that hold them write them: the mutual's policy administration and claim systems,
-the county assessor's roll and appeals, the State Tax Equalization Board's ratios as the county reprints them, and
-the water authority's GIS layers and flow-test log. The mess is the systems' own (a claim code set replaced on
-1 January 2024, reopened claims under suffixed numbers, voided checks, a hydrant renumbering in April 2024, base-year
-assessed values); nothing is placed to be caught."""
-import csv
+"""task271 records: each system's own export of the world. The cost provider's per-fill export, the two brokers'
+execution reports, the OMS orders, the venue register, the securities master, the corporate actions and trading
+calendar, the wealth platform's client orders and Gresmere's contract notes, and the exchange's closing auction
+statistics (unused by the solution)."""
+from __future__ import annotations
+
 import datetime as dt
 import json
 import math
 
 import numpy as np
+from openpyxl import Workbook
+from openpyxl.styles import Alignment, Font
 
 import common as K
+import world as W
+import wealth as WL
 
-RENUMBER = dt.date(2024, 4, 1)          # the authority's hydrant renumbering
-OLD_CODES = {"PLUMB": "WTR-P", "APPL": "WTR-A", "FREEZE": "WTR-F", "BACKUP": "WTR-O", "SEEPAGE": "WTR-O",
-             "THEFT": "THF", "LIAB": "LIA", "OTHER": "OTH", "FIRE": "FIR", "WIND": "WND", "HAIL": "HAL"}
-NEW_CODES = {"PLUMB": ("3110", "3130"), "APPL": ("3120",), "FREEZE": ("3210",), "BACKUP": ("3310",),
-             "SEEPAGE": ("3320",), "THEFT": ("6100",), "LIAB": ("7100",), "OTHER": ("8100",), "FIRE": ("5110", "5120"),
-             "WIND": ("4110",), "HAIL": ("4210",)}
-CODE_TABLE = [
-    ("LEGACY", "WTR-P", "Water discharge from plumbing or heating system", "3110; 3130"),
-    ("LEGACY", "WTR-A", "Water discharge from household appliance", "3120"),
-    ("LEGACY", "WTR-F", "Freezing of plumbing, heating or appliance", "3210"),
-    ("LEGACY", "WTR-O", "Water, other (backup, seepage, surface)", "3310; 3320; 3410"),
-    ("LEGACY", "FIR", "Fire, smoke and lightning", "5110; 5120"),
-    ("LEGACY", "WND", "Windstorm", "4110"),
-    ("LEGACY", "HAL", "Hail", "4210"),
-    ("LEGACY", "THF", "Theft and vandalism", "6100"),
-    ("LEGACY", "LIA", "Liability", "7100"),
-    ("LEGACY", "OTH", "All other", "8100"),
-    ("2024", "3110", "Sudden discharge, plumbing system", ""),
-    ("2024", "3120", "Sudden discharge, household appliance", ""),
-    ("2024", "3130", "Sudden discharge, heating or air-conditioning system", ""),
-    ("2024", "3210", "Freezing", ""),
-    ("2024", "3310", "Backup of sewer or drain (endorsement)", ""),
-    ("2024", "3320", "Seepage or leakage over time", ""),
-    ("2024", "3410", "Surface or ground water", ""),
-    ("2024", "4110", "Windstorm", ""),
-    ("2024", "4210", "Hail", ""),
-    ("2024", "5110", "Fire and smoke", ""),
-    ("2024", "5120", "Lightning", ""),
-    ("2024", "6100", "Theft and vandalism", ""),
-    ("2024", "7100", "Liability", ""),
-    ("2024", "8100", "All other", ""),
-]
-CAT_CODES = {dt.date(2023, 6, 27): "PCS 23-41", dt.date(2024, 5, 9): "PCS 24-17", dt.date(2025, 7, 30): "PCS 25-38"}
-WALL = {"FRAME": "F", "BRICK VENEER": "MV", "MASONRY": "M", "STONE": "M"}
-FOUND = {"BSMT FULL": "B", "BSMT PART": "B", "SLAB": "S", "CRAWL": "C", "PIERS": "C"}
+F_HESS = "hessenby_tca_executions_2026-01-02_to_2026-10-30.csv"
+F_ASHL = "ashlowe_execution_report_2026.csv"
+F_PEMB = "pemberwick_execution_report_2026.xlsx"
+F_OMS = "oms_orders_2026.csv"
+F_VENUES = "venue_register_2026.xlsx"
+F_MASTER = "securities_master_2026-10-30.csv"
+F_CA = "corporate_actions_2026.json"
+F_CAL = "uk_trading_calendar_2025-12-01_to_2027-01-31.csv"
+F_ORDERS = "wealth_platform_client_orders_2025-12-29_to_2026-10-30.csv"
+F_NOTES = "gresmere_contract_notes_settling_2026-01-02_to_2026-11-03.csv"
+F_AUCT = "wexcombe_closing_auction_statistics_2026.csv"
+
+FUNDS = ["FIM UK Equity Income", "FIM UK Opportunities", "FIM UK Smaller Companies", "FIM Multi-Asset Balanced",
+         "FIM Responsible UK Equity", "Fenmarsh Growth Trust plc"]
 
 
-def iso(d):
-    return d.isoformat() if d else ""
+def cons_view(stock, day):
+    """True when a row about the consolidated stock carries the old line's units (before 18 May)."""
+    return stock["i"] == W.CONSOLIDATED_INDEX and day < W.CONSOLIDATION_DATE
 
 
-def write_csv(path, header, rows):
-    with open(path, "w", newline="", encoding="utf-8") as f:
-        wr = csv.writer(f, lineterminator="\r\n")
-        wr.writerow(header)
-        for r in rows:
-            wr.writerow(r)
-    return len(rows)
+def isin_of(stock, day):
+    return stock["old_isin"] if cons_view(stock, day) else stock["isin"]
 
 
-class Exports:
-    def __init__(self, w):
-        self.w = w
-        self.rng = np.random.default_rng(w.seed + 271)
-        self.claim_no = {}
-        self.reopens = {}
-        self.payments = []
-        self.tpa = []           # (claim, transactions) handled by the adjusting firm
+def sedol_of(stock, day):
+    return stock["old_sedol"] if cons_view(stock, day) else stock["sedol"]
 
-    # ---- the mutual's policy administration system
-    def terms(self, path):
-        rng = self.rng
-        rows = []
-        for t in self.w.terms:
-            h = t["home"]
-            reason = ""
-            canc = t["cancel"]
-            rein = None
-            if canc is not None:
-                reason = rng.choice(["SOLD", "INSURED REQUEST", "NONPAY"], p=[0.62, 0.30, 0.08])
-            elif rng.random() < 0.016:
-                # a cancellation for non-payment, reinstated without a lapse when the premium arrived
-                span = (t["end"] - t["start"]).days
-                canc = t["start"] + dt.timedelta(int(rng.integers(40, max(41, span - 30))))
-                rein = canc + dt.timedelta(int(rng.integers(6, 26)))
-                if rein >= t["end"]:
-                    canc, rein = None, None
-                else:
-                    reason = "NONPAY"
-            form = "HO-5" if t["coverage_a"] > 520000 and rng.random() < 0.6 else "HO-3"
-            prem = round(t["coverage_a"] / 1000.0 * (2.95 if form == "HO-3" else 3.35) *
-                         {500: 1.08, 1000: 1.0, 2500: 0.86}[t["deductible"]] * rng.normal(1.0, 0.03), 0)
-            rows.append([t["policy_no"], t["term"], iso(t["start"]), iso(t["end"]), iso(canc), reason, iso(rein),
-                         h["parcel_id"], h["town"], form, h["year_built"], WALL[h["wall"]], FOUND[h["foundation"]],
-                         h["full"], h["half"], ("%.1f" % h["stories"]).replace(".0", ""), t["coverage_a"],
-                         t["deductible"], "%.0f" % prem])
-        rows.sort(key=lambda r: (r[0], r[1]))
-        return write_csv(path, ["policy_number", "term_number", "term_effective", "term_expiration",
-                                "cancellation_effective", "cancellation_reason", "reinstatement_effective", "parcel_id",
-                                "municipality_code", "policy_form", "year_built", "construction", "foundation",
-                                "full_baths", "half_baths", "stories", "coverage_a", "deductible", "annual_premium"], rows)
 
-    # ---- the claim system and its payments
-    def claims(self, path):
-        rng = self.rng
-        rows = []
-        seq = {}
-        for c in sorted(self.w.claims, key=lambda c: (c["reported"], c["policy_no"])):
-            yr = c["reported"].year
-            seq[yr] = seq.get(yr, 0) + int(rng.integers(1, 4))
-            no = "C%02d-%05d" % (yr % 100, seq[yr])
-            c["claim_no"] = no
-            legacy = c["reported"] < K.CODE_CHANGE
-            if legacy:
-                code = OLD_CODES[c["kind"]]
+def px_view(stock, day, p):
+    if p is None:
+        return None
+    return round(p / WL.CONS_RATIO, 4) if cons_view(stock, day) else round(p, 4)
+
+
+def qty_view(stock, day, q):
+    return q * WL.CONS_RATIO if cons_view(stock, day) else q
+
+
+def venue_code(v, day):
+    if v == "THGD" and day >= K.THURSGATE_SWITCH:
+        return K.THURSGATE_NEW
+    return v
+
+
+def london_hms(day, sec):
+    s = int(math.floor(sec))
+    ms = int(round((sec - s) * 1000))
+    if ms == 1000:
+        s, ms = s + 1, 0
+    return "%02d:%02d:%02d.%03d" % (s // 3600, (s // 60) % 60, s % 60, ms)
+
+
+def prepare(X):
+    """Broker, execution ids, busts and the cost provider's duplicate deliveries, all fixed once per build."""
+    rg = K.rng("ids")
+    stocks = X["stocks"]
+    by_pid = {p.pid: p for p in X["parents"]}
+    for e in X["execs"]:
+        p = by_pid[e["pid"]]
+        e["broker"] = "ASHL" if (p.algo == "DMA" or K.ALGO[p.algo]["broker"] == "ASHL") else "PEMB"
+        e["utc"] = K.utc_of(e["day"], e["t"])
+    X["execs"].sort(key=lambda e: (e["utc"], e["pid"], e["t"]))
+    na = nb = 0
+    for e in X["execs"]:
+        if e["broker"] == "ASHL":
+            na += 1
+            e["exec_id"] = "ASL%09d" % (310000000 + na * 7 + int(rg.integers(0, 7)))
+        else:
+            nb += 1
+            e["exec_id"] = "PMB-%s" % K.token("pemb", nb, n=10).upper()
+    cont = [e for e in X["execs"] if e["session"] == "CONT"]
+    pick = rg.random(len(cont))
+    for e, r in zip(cont, pick):
+        e["busted"] = bool(r < 0.0025)
+    for e in X["execs"]:
+        e.setdefault("busted", False)
+    dup = rg.random(len(X["execs"]))
+    for e, r in zip(X["execs"], dup):
+        e["dup"] = bool(r < 0.003 and e["session"] == "CONT")
+    for p in X["parents"]:
+        p.order_id = "FIM-%s-%05d" % (p.day.strftime("%y%m%d"), p.pid % 100000)
+        p.fund = FUNDS[int(K.rng("fund", p.pid).integers(0, len(FUNDS)))]
+    return X
+
+
+HESS_COLS = ["hessenby_ref", "client_order_id", "broker", "broker_exec_id", "isin", "side", "shares", "price_gbx",
+             "last_mkt", "exec_time_utc", "session", "mid_at_exec", "mid_plus_1s", "mid_plus_5s", "mid_plus_30s",
+             "mid_plus_60s", "mid_plus_300s"]
+
+
+def hess_rows(X):
+    stocks = X["stocks"]
+    by_pid = {p.pid: p for p in X["parents"]}
+    rows, n = [], 0
+    for e in X["execs"]:
+        s = stocks[e["stock"]]
+        d = e["day"]
+        m = e["marks"]
+        n += 1
+        r = dict(hessenby_ref="HX26%07d" % n, client_order_id=by_pid[e["pid"]].order_id, broker=e["broker"],
+                 broker_exec_id=e["exec_id"], isin=isin_of(s, d), side="BUY" if e["side"] == "B" else "SELL",
+                 shares=qty_view(s, d, e["qty"]), price_gbx="%.4f" % px_view(s, d, e["price"]),
+                 last_mkt=venue_code(e["venue"], d), exec_time_utc=K.iso_ms(e["utc"]),
+                 session="CONT" if e["session"] == "CONT" else "CLOSE_AUCTION")
+        for col, h in (("mid_at_exec", 0), ("mid_plus_1s", 1), ("mid_plus_5s", 5), ("mid_plus_30s", 30),
+                       ("mid_plus_60s", 60), ("mid_plus_300s", 300)):
+            v = e["mid0"] if h == 0 else m.get(h)
+            r[col] = "" if v is None else "%.4f" % px_view(s, d, v)
+        rows.append(r)
+        if e["dup"]:
+            n += 1
+            r2 = dict(r)
+            r2["hessenby_ref"] = "HX26%07d" % n
+            r2["exec_time_utc"] = e["utc"].strftime("%Y-%m-%dT%H:%M:%S.000Z")
+            rows.append(r2)
+    return rows
+
+
+ASHL_COLS = ["exec_id", "order_id", "isin", "side", "last_qty", "last_px", "last_mkt", "transact_time", "exec_type",
+             "ref_exec_id", "trading_session"]
+
+
+def ashl_rows(X):
+    stocks = X["stocks"]
+    by_pid = {p.pid: p for p in X["parents"]}
+    rows = []
+    busts = []
+    for e in X["execs"]:
+        if e["broker"] != "ASHL":
+            continue
+        s = stocks[e["stock"]]
+        d = e["day"]
+        rows.append(dict(exec_id=e["exec_id"], order_id=by_pid[e["pid"]].order_id, isin=isin_of(s, d),
+                         side=e["side"], last_qty=qty_view(s, d, e["qty"]), last_px="%.4f" % px_view(s, d, e["price"]),
+                         last_mkt=venue_code(e["venue"], d), transact_time=K.iso_ms(e["utc"]), exec_type="FILL",
+                         ref_exec_id="", trading_session="CONT" if e["session"] == "CONT" else "AUCT"))
+        if e["busted"]:
+            bt = e["utc"] + dt.timedelta(minutes=int(K.rng("bust", e["exec_id"]).integers(12, 95)))
+            busts.append(dict(exec_id=e["exec_id"] + "X", order_id=by_pid[e["pid"]].order_id, isin=isin_of(s, d),
+                              side=e["side"], last_qty=qty_view(s, d, e["qty"]),
+                              last_px="%.4f" % px_view(s, d, e["price"]), last_mkt=venue_code(e["venue"], d),
+                              transact_time=K.iso_ms(bt), exec_type="BUST", ref_exec_id=e["exec_id"],
+                              trading_session="CONT", _t=bt))
+    for b in busts:
+        rows.append(b)
+    rows.sort(key=lambda r: (r["transact_time"], r["exec_id"]))
+    for r in rows:
+        r.pop("_t", None)
+    return rows
+
+
+PEMB_HEAD = ["Trade Date", "Exec Time", "Client Order", "Exec Ref", "SEDOL", "B/S", "Shares", "Price (GBP)", "Venue",
+             "Status", "Orig Exec Ref"]
+
+
+def pemb_sheets(X):
+    stocks = X["stocks"]
+    by_pid = {p.pid: p for p in X["parents"]}
+    sheets = {}
+    for e in X["execs"]:
+        if e["broker"] != "PEMB":
+            continue
+        s = stocks[e["stock"]]
+        d = e["day"]
+        off = K.london_offset(e["utc"])
+        loc = e["utc"] + dt.timedelta(hours=off)
+        key = (d.year, d.month)
+        px = px_view(s, d, e["price"]) / 100.0
+        row = [d.strftime("%d/%m/%Y"), loc.strftime("%H:%M:%S.") + "%03d" % (loc.microsecond // 1000),
+               by_pid[e["pid"]].order_id, e["exec_id"], sedol_of(s, d), "B" if e["side"] == "B" else "S",
+               qty_view(s, d, e["qty"]), round(px, 6), K.PEMBERWICK_VENUE[e["venue"]] if e["session"] == "CONT"
+               else "WEXCOMBE CLOSE", "Executed", ""]
+        sheets.setdefault(key, []).append((loc, row))
+        if e["busted"]:
+            bt = loc + dt.timedelta(minutes=int(K.rng("bust", e["exec_id"]).integers(12, 95)))
+            row2 = [d.strftime("%d/%m/%Y"), bt.strftime("%H:%M:%S.") + "%03d" % (bt.microsecond // 1000),
+                    by_pid[e["pid"]].order_id, e["exec_id"] + "-B", sedol_of(s, d), row[5], row[6], row[7], row[8],
+                    "Busted", e["exec_id"]]
+            sheets[key].append((bt, row2))
+    return sheets
+
+
+def write_pemb(path, X):
+    wb = Workbook(write_only=True)
+    for (y, m), items in sorted(pemb_sheets(X).items()):
+        ws = wb.create_sheet("%s %d" % (K.MON3[m], y))
+        ws.append(PEMB_HEAD)
+        for _, r in sorted(items, key=lambda x: (x[0], x[1][3])):
+            ws.append(r)
+    wb.save(path)
+
+
+OMS_COLS = ["order_id", "fund", "isin", "side", "quantity", "released_utc", "broker", "strategy", "arrival_mid_gbx",
+            "status", "completed_utc"]
+
+
+def oms_rows(X):
+    stocks = X["stocks"]
+    rows = []
+    for p in X["parents"]:
+        s = p.stock
+        d = p.day
+        rel = K.utc_of(d, p.t0)
+        last = max(c[0] for c in p.children)
+        done_t = K.UNCROSS_S if p.auction else last
+        rows.append(dict(order_id=p.order_id, fund=p.fund, isin=isin_of(s, d), side="BUY" if p.side == "B" else "SELL",
+                         quantity=qty_view(s, d, p.qty), released_utc=K.iso_ms(rel),
+                         broker="ASHL" if (p.algo == "DMA" or K.ALGO[p.algo]["broker"] == "ASHL") else "PEMB",
+                         strategy="DMA" if p.algo == "DMA" else K.ALGO[p.algo]["name"],
+                         arrival_mid_gbx="%.4f" % px_view(s, d, p.arrival_mid), status="FILLED",
+                         completed_utc=K.iso_ms(K.utc_of(d, done_t))))
+    rows.sort(key=lambda r: (r["released_utc"], r["order_id"]))
+    return rows
+
+
+def write_venues(path):
+    wb = Workbook()
+    ws = wb.active
+    ws.title = "Venues"
+    head = ["MIC", "Venue", "Operator", "Type", "Minimum order", "Pemberwick name", "Valid from", "Valid to", "Notes"]
+    ws.append(head)
+    for v in K.VENUES:
+        info = K.VENUE[v]
+        if v == "THGD":
+            ws.append([v, info["name"], info["operator"], info["kind"], "none", K.PEMBERWICK_VENUE[v], "2023-03-01",
+                       "2026-05-29", "Segment code withdrawn when the operator moved the book to its new matching "
+                       "platform"])
+            ws.append([K.THURSGATE_NEW, info["name"], info["operator"], info["kind"], "none", K.PEMBERWICK_VENUE[v],
+                       "2026-06-01", "", "Replaces THGD"])
+        else:
+            ws.append([v, info["name"], info["operator"], info["kind"], "none", K.PEMBERWICK_VENUE[v],
+                       "2021-01-04" if v in ("XWEX", "AWKL", "DLVL") else "2022-06-06", "",
+                       "Closing auction on this book" if v == "XWEX" else ""])
+    for c, w in zip("ABCDEFGHI", (8, 30, 30, 24, 14, 18, 12, 12, 70)):
+        ws.column_dimensions[c].width = w
+    for cell in ws[1]:
+        cell.font = Font(bold=True)
+    ws.freeze_panes = "A2"
+    wb.save(path)
+
+
+MASTER_COLS = ["isin", "sedol", "ticker", "name", "sector", "index_band", "currency", "adv_shares_2026", "tick_gbx"]
+
+
+def master_rows(X):
+    rows = []
+    for s in X["stocks"]:
+        rows.append(dict(isin=s["isin"], sedol=s["sedol"], ticker=s["ticker"], name=s["name"], sector=s["sector"],
+                         index_band=s["band"], currency="GBX", adv_shares_2026=int(round(s["adv"])),
+                         tick_gbx="%g" % W.tick(s["price"])))
+    rows.sort(key=lambda r: r["ticker"])
+    return rows
+
+
+def write_ca(path, X):
+    c = X["stocks"][W.CONSOLIDATED_INDEX]
+    other = X["stocks"][12]
+    other2 = X["stocks"][88]
+    events = [
+        dict(event_id="CA-2026-0141", event_type="SPECIAL_DIVIDEND", isin=other["isin"], name=other["name"],
+             ex_date="2026-03-12", pay_date="2026-04-17", amount_gbx="21.5000", ratio=None, new_isin=None,
+             new_sedol=None, new_name=None),
+        dict(event_id="CA-2026-0217", event_type="CONSOLIDATION", isin=c["old_isin"], name=c["name"],
+             ex_date=W.CONSOLIDATION_DATE.isoformat(), pay_date=None, amount_gbx=None, ratio="1:10",
+             new_isin=c["isin"], new_sedol=c["sedol"], new_name=None),
+        dict(event_id="CA-2026-0388", event_type="NAME_CHANGE", isin=other2["isin"], name=W.FORMER_NAME[88],
+             ex_date="2026-08-03", pay_date=None, amount_gbx=None, ratio=None, new_isin=None, new_sedol=None,
+             new_name=other2["name"]),
+    ]
+    doc = dict(source="Fenmarsh Investment Management, securities reference team", extracted="2026-10-30",
+               market="UK", events=events)
+    with open(path, "w", encoding="utf-8", newline="\n") as fh:
+        json.dump(doc, fh, indent=2)
+        fh.write("\n")
+
+
+CAL_COLS = ["date", "weekday", "uk_market", "note"]
+HOLIDAY_NAMES = {dt.date(2025, 12, 25): "Christmas Day", dt.date(2025, 12, 26): "Boxing Day",
+                 dt.date(2026, 1, 1): "New Year's Day", dt.date(2026, 4, 3): "Good Friday",
+                 dt.date(2026, 4, 6): "Easter Monday", dt.date(2026, 5, 4): "Early May bank holiday",
+                 dt.date(2026, 5, 25): "Spring bank holiday", dt.date(2026, 8, 31): "Summer bank holiday",
+                 dt.date(2026, 12, 25): "Christmas Day", dt.date(2026, 12, 28): "Boxing Day (substitute day)",
+                 dt.date(2027, 1, 1): "New Year's Day"}
+
+
+def cal_rows():
+    rows = []
+    d = dt.date(2025, 12, 1)
+    while d <= dt.date(2027, 1, 31):
+        closed = d.weekday() >= 5 or d in K.BANK_HOLIDAYS
+        note = HOLIDAY_NAMES.get(d, "")
+        if d in (dt.date(2025, 12, 24), dt.date(2025, 12, 31), dt.date(2026, 12, 24), dt.date(2026, 12, 31)):
+            note = "Early close 12:30"
+        rows.append(dict(date=d.isoformat(), weekday=d.strftime("%a"), uk_market="CLOSED" if closed else "OPEN",
+                         note=note))
+        d += dt.timedelta(days=1)
+    return rows
+
+
+ORDER_COLS = ["client_order_ref", "account_ref", "wrapper", "isin", "side", "basis", "shares", "value_gbp",
+              "placed_at", "status"]
+
+
+def order_rows(X):
+    stocks = X["stocks"]
+    rows = []
+    for o in X["orders"]:
+        s = stocks[o["stock"]]
+        pday = o["point_day"]
+        status = o["status"]
+        if o["g_day"] > K.DATA_END and status == "DEALT":
+            status = "PENDING"
+        shares = o["shares_req"] if o["basis"] == "SHARES" else ""
+        rows.append(dict(client_order_ref=o["ref"], account_ref=o["account"], wrapper=o["wrapper"],
+                         isin=s["isin"], side=o["side"], basis=o["basis"], shares=shares,
+                         value_gbp=("%.2f" % o["value"]) if o["basis"] == "VALUE" else "",
+                         placed_at=o["t_utc"].strftime("%Y-%m-%d %H:%M:%S"), status=status))
+    return rows
+
+
+NOTE_COLS = ["note_ref", "client_order_ref", "trade_date", "trade_time", "isin", "side", "shares", "price_gbx",
+             "consideration_gbp", "commission_gbp", "ptm_levy_gbp", "stamp_duty_gbp", "settlement_date",
+             "note_status"]
+
+
+def old_amount(side, gross, stamp):
+    """The old contract note system's amount: the market settlement of the trade, stamp duty in on a purchase."""
+    return round(gross + stamp, 2) if side == "BUY" else round(gross, 2)
+
+
+def net_amount(side, gross, comm, ptm, stamp):
+    """The new contract note system's amount: what the client paid on a buy, what the client received on a sell."""
+    return round(gross + comm + ptm + stamp, 2) if side == "BUY" else round(gross - comm - ptm, 2)
+
+
+def settle(day):
+    d = day
+    for _ in range(2):
+        d = K.next_business_day(d)
+    return d
+
+
+def note_rows(X):
+    """Gresmere's notes as its back office extracts them: by settlement date, the old system's references before
+    the 1 July migration and the new system's after, with the end-of-June trades issued by both."""
+    stocks = X["stocks"]
+    rg = K.rng("notes")
+    rows = []
+    n_old = n_new = 0
+    for nt in sorted(X["notes"], key=lambda x: (x["day"], x["tmin"], x["seq"])):
+        s = stocks[nt["stock"]]
+        sd = settle(nt["day"])
+        if sd < dt.date(2026, 1, 2) or sd > dt.date(2026, 11, 3):
+            continue
+        base = dict(client_order_ref=nt["order"], trade_date=nt["day"].strftime("%d/%m/%Y"),
+                    trade_time="%02d:%02d" % (nt["tmin"] // 60, nt["tmin"] % 60), isin=isin_of(s, nt["day"]),
+                    side=nt["side"], shares=nt["shares"], price_gbx="%.4f" % nt["price"],
+                    consideration_gbp="%.2f" % old_amount(nt["side"], nt["consideration"], nt["stamp"]),
+                    commission_gbp="%.2f" % nt["commission"],
+                    ptm_levy_gbp="%.2f" % nt["ptm"], stamp_duty_gbp="%.2f" % nt["stamp"],
+                    settlement_date=sd.strftime("%d/%m/%Y"), note_status="ISSUED")
+        if nt["day"] < K.GRESMERE_MIGRATION:
+            n_old += 1
+            ref = "GSL%07d" % (4100000 + n_old)
+        else:
+            n_new += 1
+            ref = "CN26-%08d" % (10000000 + n_new * 3)
+            base["consideration_gbp"] = "%.2f" % net_amount(nt["side"], nt["consideration"], nt["commission"],
+                                                             nt["ptm"], nt["stamp"])
+        r = dict(base, note_ref=ref)
+        reissue = rg.random() < 0.005
+        if reissue:
+            r["note_status"] = "CANCELLED"
+        rows.append(r)
+        if reissue:
+            px2 = round(nt["price"] * (1 + rg.normal(0, 0.0015)), 4)
+            cons2 = round(nt["shares"] * px2 / 100.0, 2)
+            if nt["day"] < K.GRESMERE_MIGRATION:
+                n_old += 1
+                ref2 = "GSL%07d" % (4100000 + n_old)
             else:
-                opts = NEW_CODES[c["kind"]]
-                if c["kind"] == "PLUMB":
-                    code = "3130" if rng.random() < 0.16 else "3110"
-                elif c["kind"] == "FIRE":
-                    code = "5120" if rng.random() < 0.12 else "5110"
-                else:
-                    code = opts[0]
-            cat = CAT_CODES.get(c["loss"], "") if c["kind"] == "HAIL" else ""
-            paid = max(0.0, c["amount"] - c["deductible"])
-            denied = c["kind"] == "SEEPAGE" and rng.random() < 0.7
-            if denied:
-                paid = 0.0
-            closes = c["reported"] + dt.timedelta(int(rng.integers(12, 160)))
-            status = "CLOSED" if paid > 0 else "CLOSED WITHOUT PAYMENT"
-            if closes > K.EXTRACT:
-                status, closes = "OPEN", None
-            c["paid"] = paid if status != "OPEN" or rng.random() < 0.5 else 0.0
-            c["status"] = status
-            c["tpa"] = (dt.date(2023, 3, 1) <= c["reported"] <= dt.date(2023, 8, 31) and c["kind"] != "LIAB") or \
-                (c["kind"] in ("PLUMB", "APPL") and c["amount"] > 25000)
-            rows.append([no, c["policy_no"], c["term"], c["parcel_id"], iso(c["loss"]), iso(c["reported"]), code, cat,
-                         status, iso(closes), ""])
-            self._pay(c, no, closes)
-            # a closed claim reopened for a supplement: a new line under the suffixed number
-            if status == "CLOSED" and not c.get("tpa") and rng.random() < 0.012:
-                ro = closes + dt.timedelta(int(rng.integers(20, 200)))
-                if ro < K.EXTRACT:
-                    rno = no + "-R1"
-                    rcode = code if ro < K.CODE_CHANGE or not legacy else NEW_CODES[c["kind"]][0]
-                    rclose = ro + dt.timedelta(int(rng.integers(10, 70)))
-                    rstatus = "CLOSED" if rclose <= K.EXTRACT else "OPEN"
-                    rows.append([rno, c["policy_no"], c["term"], c["parcel_id"], iso(c["loss"]), iso(ro), rcode, cat,
-                                 rstatus, iso(rclose) if rstatus == "CLOSED" else "", no])
-                    extra = round(float(c["amount"] * rng.uniform(0.08, 0.35)), 2)
-                    self._add_pay(rno, ro + dt.timedelta(int(rng.integers(5, 40))), "INDEMNITY", extra)
-                    c["paid"] += extra
-        rows.sort(key=lambda r: (r[5], r[0]))
-        return write_csv(path, ["claim_number", "policy_number", "term_number", "parcel_id", "date_of_loss",
-                                "date_reported", "cause_code", "catastrophe_code", "claim_status", "date_closed",
-                                "reopened_from"], rows)
+                n_new += 1
+                ref2 = "CN26-%08d" % (10000000 + n_new * 3)
+            sd2 = round(cons2 * 0.005, 2) if nt["side"] == "BUY" else 0.0
+            shown = old_amount(nt["side"], cons2, sd2) if nt["day"] < K.GRESMERE_MIGRATION else \
+                net_amount(nt["side"], cons2, nt["commission"], nt["ptm"], sd2)
+            rows.append(dict(base, note_ref=ref2, price_gbx="%.4f" % px2, consideration_gbp="%.2f" % shown,
+                             stamp_duty_gbp="%.2f" % sd2, note_status="REISSUED"))
+            nt["reissued_cons"] = cons2
+        # the new system issued its own note for every trade settling on or after the migration date that the old
+        # system had already issued (29 and 30 June), at its two-decimal price
+        if nt["day"] < K.GRESMERE_MIGRATION <= sd and not reissue:
+            n_new += 1
+            p2 = round(nt["price"], 2)
+            c2 = round(nt["shares"] * p2 / 100.0, 2)
+            sd3 = round(c2 * 0.005, 2) if nt["side"] == "BUY" else 0.0
+            rows.append(dict(base, note_ref="CN26-%08d" % (10000000 + n_new * 3), price_gbx="%.4f" % p2,
+                             consideration_gbp="%.2f" % net_amount(nt["side"], c2, nt["commission"], nt["ptm"], sd3),
+                             stamp_duty_gbp="%.2f" % sd3))
+    return rows
 
-    def _add_pay(self, no, d, kind, amt, check=None):
-        self.payments.append([no, d, kind, amt, check])
 
-    def _pay(self, c, no, closes):
-        rng = self.rng
-        if c.get("tpa"):
-            return self._tpa_pay(c, no, closes)
-        if c["paid"] <= 0:
-            if rng.random() < 0.6:
-                self._add_pay(no, c["reported"] + dt.timedelta(int(rng.integers(3, 30))), "EXPENSE",
-                              round(float(rng.uniform(120, 480)), 2))
-            return
-        n = int(rng.choice([1, 2, 3], p=[0.62, 0.30, 0.08]))
-        last = closes or (K.EXTRACT - dt.timedelta(5))
-        span = max(1, (last - c["reported"]).days)
-        shares = rng.dirichlet(np.ones(n)) if n > 1 else [1.0]
-        left = round(c["paid"], 2)
-        for i, s in enumerate(shares):
-            amt = round(c["paid"] * s, 2) if i < n - 1 else round(left, 2)
-            left -= amt
-            d = c["reported"] + dt.timedelta(int(span * (i + 1) / (n + 0.4)))
-            self._add_pay(no, d, "INDEMNITY", amt)
-            if rng.random() < 0.015:          # a check voided and reissued
-                self._add_pay(no, d + dt.timedelta(int(rng.integers(5, 25))), "VOID", -amt)
-                self._add_pay(no, d + dt.timedelta(int(rng.integers(26, 50))), "INDEMNITY", amt)
-        if rng.random() < 0.55:
-            self._add_pay(no, c["reported"] + dt.timedelta(int(rng.integers(3, 40))), "EXPENSE",
-                          round(float(rng.uniform(140, 900)), 2))
-        if c["kind"] in ("PLUMB", "APPL") and rng.random() < 0.06:   # subrogation against a plumber or maker
-            rec = round(float(c["paid"] * rng.uniform(0.25, 0.9)), 2)
-            self._add_pay(no, last + dt.timedelta(int(rng.integers(30, 260))), "RECOVERY", -rec)
-            c["recovered"] = rec
+AUCT_COLS = ["date", "isin", "uncrossing_price_gbx", "auction_volume_shares", "auction_value_gbp"]
 
-    def _tpa_pay(self, c, no, closes):
-        """the adjusting firm pays the claim from its own account and reports it on its monthly bordereau"""
-        rng = self.rng
-        tx = []
-        if c["paid"] > 0:
-            n = int(rng.choice([1, 2, 3], p=[0.5, 0.35, 0.15]))
-            last = closes or (K.EXTRACT - dt.timedelta(5))
-            span = max(1, (last - c["reported"]).days)
-            shares = rng.dirichlet(np.ones(n)) if n > 1 else [1.0]
-            left = round(c["paid"], 2)
-            for i, sh in enumerate(shares):
-                amt = round(c["paid"] * sh, 2) if i < n - 1 else round(left, 2)
-                left -= amt
-                tx.append((c["reported"] + dt.timedelta(int(span * (i + 1) / (n + 0.4))), "PAID", amt))
-            if c["kind"] in ("PLUMB", "APPL") and rng.random() < 0.10:
-                rec = round(float(c["paid"] * rng.uniform(0.25, 0.9)), 2)
-                tx.append((last + dt.timedelta(int(rng.integers(30, 200))), "RECOVERED", rec))
-                c["recovered"] = rec
-        self.tpa.append((c, no, closes, tx))
 
-    def bordereau(self, path):
-        """the adjusting firm's monthly bordereau, one sheet a month: every claim it held that month, paid this month
-        and to date (indemnity), recovered to date and the outstanding reserve"""
-        import openpyxl
-        from openpyxl.styles import Font
-        rng = self.rng
-        months = []
-        m = dt.date(2023, 3, 1)
-        while m <= dt.date(2026, 8, 1):
-            months.append(m)
-            m = dt.date(m.year + (m.month == 12), 1 if m.month == 12 else m.month + 1, 1)
-        wb = openpyxl.Workbook()
-        wb.remove(wb.active)
-        refs = {}
-        nrow = 0
-        for mo in months:
-            nxt = dt.date(mo.year + (mo.month == 12), 1 if mo.month == 12 else mo.month + 1, 1)
-            ws = wb.create_sheet(mo.strftime("%Y-%m"))
-            ws.append(["Corrigan Adjusting Services LLC: claims bordereau for Halverstead Mutual Fire Insurance "
-                       "Company, %s" % mo.strftime("%B %Y")])
-            ws["A1"].font = Font(bold=True)
-            ws.append(["Insurer claim no.", "CAS reference", "Date of loss", "Peril", "Paid this month",
-                       "Paid to date", "Recovered to date", "Outstanding reserve", "Status at month end"])
-            for c, no, closes, tx in sorted(self.tpa, key=lambda t: t[1]):
-                if c["reported"] >= nxt or (closes is not None and closes < mo):
-                    continue
-                if no not in refs:
-                    refs[no] = "CAS-%d-%04d" % (c["reported"].year, 1000 + len(refs) * 3 % 9000)
-                paid_m = round(sum(a for d, k, a in tx if k == "PAID" and mo <= d < nxt), 2)
-                paid_td = round(sum(a for d, k, a in tx if k == "PAID" and d < nxt), 2)
-                rec_td = round(sum(a for d, k, a in tx if k == "RECOVERED" and d < nxt), 2)
-                closed = closes is not None and closes < nxt
-                reserve = 0.0 if closed else round(max(0.0, c["paid"] - paid_td) * float(rng.uniform(0.9, 1.4)), 2)
-                ws.append([no, refs[no], c["loss"], {"PLUMB": "Water - plumbing", "APPL": "Water - appliance"}.get(
-                    c["kind"], c["kind"].title()), paid_m, paid_td, rec_td, reserve, "Closed" if closed else "Open"])
-                nrow += 1
-            for col, wdt in zip("ABCDEFGHI", (16, 15, 12, 18, 14, 13, 16, 18, 18)):
-                ws.column_dimensions[col].width = wdt
-            for row in ws.iter_rows(min_row=3):
-                row[2].number_format = "mm/dd/yyyy"
-                for cell in row[4:8]:
-                    cell.number_format = "#,##0.00"
-        wb.save(path)
-        return nrow
-
-    def payments_file(self, path):
-        rng = self.rng
-        rows = []
-        chk = 504100
-        for no, d, kind, amt, _ in sorted(self.payments, key=lambda p: (p[1], p[0])):
-            if d > K.EXTRACT:
-                continue
-            chk += int(rng.integers(1, 3)) if kind in ("INDEMNITY", "EXPENSE") else 0
-            rows.append([no, iso(d), kind, "%.2f" % amt, str(chk) if kind in ("INDEMNITY", "EXPENSE") else "",
-                         {"INDEMNITY": "INSURED", "EXPENSE": "VENDOR", "VOID": "INSURED", "RECOVERY": "THIRD PARTY"}[kind]])
-        for i, r in enumerate(rows):
-            r.insert(0, "P%07d" % (3104000 + i * 3))
-        return write_csv(path, ["transaction_id", "claim_number", "transaction_date", "transaction_type", "amount",
-                                "check_number", "payee_type"], rows)
-
-    def codes(self, path):
-        return write_csv(path, ["code_set", "cause_code", "description", "maps_to_2024"], CODE_TABLE)
-
-    # ---- the county assessor
-    def parcels(self, path):
-        rng = self.rng
-        rows = []
-        lu_desc = {"R-SFD": "Residential, single-family detached", "R-TWN": "Residential, townhouse",
-                   "R-DUP": "Residential, two-family", "R-MH": "Residential, manufactured home",
-                   "R-APT": "Residential, apartments", "C-RET": "Commercial, retail", "C-OFF": "Commercial, office",
-                   "I-LGT": "Industrial, light", "V-RES": "Vacant land, residential", "F-AG": "Farm, agricultural",
-                   "E-EX": "Exempt"}
-        for p in self.w.parcels:
-            mkt = (p["land"] + p["bldg"]) * 1.0
-            assessed = mkt * K.CLR_2025 * float(rng.lognormal(0, 0.11))
-            land = int(round(assessed * p["land"] / mkt / 10.0)) * 10
-            imp = int(round(assessed / 10.0)) * 10 - land
-            p["assessed_land"], p["assessed_imp"] = land, imp
-            hs = "H" if p["homestead"] == "Y" else ""
-            sale = self._sale(p)
-            rows.append([p["parcel_id"], p["town"], K.TOWN_NAME[p["town"]].upper(), p["land_use"], lu_desc[p["land_use"]],
-                         hs, "%.1f" % p["x"], "%.1f" % p["y"], "%.3f" % float(rng.uniform(0.12, 1.4)), land, imp,
-                         land + imp, sale[0], sale[1]])
-        # the roll's other parcels: commercial, industrial, vacant, farm and exempt land
-        for town, _, _ in K.TOWNS:
-            homes = [p for p in self.w.parcels if p["town"] == town]
-            for i in range(int(len(homes) * 0.21)):
-                q = homes[int(rng.integers(0, len(homes)))]
-                lu = rng.choice(["C-RET", "C-OFF", "I-LGT", "V-RES", "F-AG", "E-EX"], p=[0.18, 0.1, 0.06, 0.38, 0.18, 0.1])
-                x, y = q["x"] + rng.normal(0, 700), q["y"] + rng.normal(0, 700)
-                pid = q["parcel_id"][:6] + "%04d" % (int(q["parcel_id"][-4:]) + 5000 + i) if False else \
-                    "%s-%03d-%04d" % (q["parcel_id"][:2], 900 + (i // 9000), (i * 7 + 13) % 10000)
-                land = int(rng.lognormal(math.log(14000), 0.7)) // 10 * 10
-                imp = 0 if lu in ("V-RES", "F-AG") and rng.random() < 0.7 else int(rng.lognormal(math.log(60000), 0.9)) // 10 * 10
-                rows.append([pid, town, K.TOWN_NAME[town].upper(), lu, lu_desc[lu], "F" if lu == "F-AG" and rng.random()
-                             < 0.4 else "", "%.1f" % x, "%.1f" % y, "%.3f" % float(rng.lognormal(0.5, 1.0)), land, imp,
-                             land + imp, "", ""])
-        ids = [r[0] for r in rows]
-        assert len(set(ids)) == len(ids), "parcel ids collide"
-        rows.sort(key=lambda r: r[0])
-        return write_csv(path, ["parcel_id", "municipality_code", "municipality", "land_use_code", "land_use",
-                                "homestead_farmstead", "x_coord_ft", "y_coord_ft", "acres", "assessed_land",
-                                "assessed_improvement", "assessed_total", "last_sale_date", "last_sale_price"], rows)
-
-    def _sale(self, p):
-        rng = self.rng
-        if rng.random() < 0.55:
-            return "", ""
-        d = dt.date(int(rng.integers(1999, 2026)), int(rng.integers(1, 13)), int(rng.integers(1, 29)))
-        price = (p["land"] + p["bldg"]) * (0.45 + 0.55 * (d.year - 1998) / 28.0) * float(rng.lognormal(0, 0.12))
-        return iso(d), int(round(price / 100.0)) * 100
-
-    def dwellings(self, path):
-        rng = self.rng
-        rows = []
-        for p in self.w.parcels:
-            rows.append([p["parcel_id"], 1, p["year_built"], p["foundation"], p["full"], p["half"],
-                         ("%.1f" % p["stories"]).replace(".0", ""), p["wall"], p["area"],
-                         rng.choice(["GAS", "OIL", "HEAT PUMP", "ELECTRIC"], p=[0.46, 0.22, 0.2, 0.12]),
-                         rng.choice(["A", "B", "C", "D"], p=[0.08, 0.32, 0.48, 0.12])])
-            if p["land_use"] == "R-SFD" and rng.random() < 0.011:
-                # a second card: a detached in-law cottage or a garage apartment on the same parcel
-                rows.append([p["parcel_id"], 2, int(min(2025, p["year_built"] + rng.integers(5, 60))),
-                             rng.choice(["SLAB", "CRAWL"]), 1, 0, "1", "FRAME", int(rng.integers(380, 900)),
-                             "ELECTRIC", "C"])
-        rows.sort(key=lambda r: (r[0], r[1]))
-        return write_csv(path, ["parcel_id", "card_number", "year_built", "foundation", "full_baths", "half_baths",
-                                "stories", "exterior_wall", "living_area_sqft", "heating", "grade"], rows)
-
-    def appeals(self, path):
-        rng = self.rng
-        rows = []
-        seq = 0
-        for p in self.w.parcels:
-            if p["land_use"] != "R-SFD" or rng.random() > 0.022:
-                continue
-            seq += int(rng.integers(1, 4))
-            before = p["assessed_land"] + p["assessed_imp"]
-            filed = dt.date(2025, 8, 1) + dt.timedelta(int(rng.integers(0, 30)))
-            hearing = dt.date(2025, 10, 1) + dt.timedelta(int(rng.integers(0, 70)))
-            dec = rng.choice(["REDUCED", "SUSTAINED", "WITHDRAWN", "INCREASED"], p=[0.52, 0.30, 0.12, 0.06])
-            after = before
-            if dec == "REDUCED":
-                after = int(round(before * rng.uniform(0.72, 0.95) / 10.0)) * 10
-            elif dec == "INCREASED":
-                after = int(round(before * rng.uniform(1.04, 1.18) / 10.0)) * 10
-            p["appeal_after"] = after
-            rows.append(["A26-%04d" % seq, p["parcel_id"], iso(filed), iso(hearing), dec, before,
-                         after if dec in ("REDUCED", "INCREASED", "SUSTAINED") else "", "2026"])
-        return write_csv(path, ["appeal_number", "parcel_id", "date_filed", "hearing_date", "decision",
-                                "assessed_total_before", "assessed_total_after", "tax_year"], rows)
-
-    def clr(self, path):
-        rows = []
-        hist = [(2016, 0.562), (2017, 0.549), (2018, 0.533), (2019, 0.518), (2020, 0.507), (2021, 0.496),
-                (2022, 0.478), (2023, 0.466), (2024, 0.459), (2025, K.CLR_2025), (2026, K.CLR_2026)]
-        for y, v in hist:
-            rows.append([K.COUNTY.replace(" County", "").upper(), y, "%.3f" % v, "%.2f" % (1 / v),
-                         "%d-07-01" % y, "%d-06-30" % (y + 1), "%d sales" % (y - 1)])
-        return write_csv(path, ["county", "ratio_year", "common_level_ratio", "factor", "effective_from",
-                                "effective_to", "based_on"], rows)
-
-    # ---- the water authority's GIS layers and flow-test log
-    def zones_geojson(self, path, zoner):
-        feats = []
-        edits = {"PZ-1": "2023-05-11", "PZ-2": "2025-11-14", "PZ-3": "2025-11-14", "PZ-4": "2021-09-02"}
-        types = {"PZ-1": "GRAVITY", "PZ-2": "BOOSTED", "PZ-3": "GRAVITY", "PZ-4": "GRAVITY"}
-        for z in K.ZONES:
-            rings = zoner.polys[z[0]]
-            if len(rings) == 1:
-                geom = {"type": "Polygon", "coordinates": [[list(v) for v in rings[0]]]}
-            else:
-                geom = {"type": "MultiPolygon", "coordinates": [[[list(v) for v in r]] for r in rings]}
-            feats.append({"type": "Feature", "properties": {"ZONE_ID": z[0], "ZONE_NAME": z[1].upper(),
-                                                            "SUPPLY": z[2], "HGL_FT": z[3], "ZONE_TYPE": types[z[0]],
-                                                            "LAST_EDIT": edits[z[0]]}, "geometry": geom})
-        doc = {"type": "FeatureCollection", "name": "TCWA_PRESSURE_ZONES",
-               "crs": {"type": "name", "properties": {"name": "urn:ogc:def:crs:EPSG::2272"}}, "features": feats}
-        with open(path, "w", encoding="utf-8") as f:
-            json.dump(doc, f, separators=(",", ":"))
-        return len(feats)
-
-    def hydrants_geojson(self, path, tests_path):
-        """the register as of 30 June 2026 and the flow-test log; the April 2024 renumbering reused the old range, so
-        most numbers before it belong to another hydrant after it"""
-        rng = self.rng
-        hs = self.w.hydrants
-        n = len(hs)
-        old = rng.permutation(n)
-        new = rng.permutation(n)
-        for i, h in enumerate(hs):
-            h["old_id"] = "H-%05d" % (10001 + old[i]) if h["installed"] < RENUMBER.year else ""
-            h["new_id"] = "H-%05d" % (10001 + new[i])
-        feats = []
-        for h in sorted(hs, key=lambda h: h["new_id"]):
-            feats.append({"type": "Feature", "properties": {
-                "HYDRANT_ID": h["new_id"], "FORMER_ID": h["old_id"], "STATUS": h["status"], "OWNER": h["owner"],
-                "ZONE_ID": h["zone"], "MAIN_DIAM_IN": h["main"], "INSTALL_YEAR": h["installed"],
-                "MUNI_CODE": h["town"]}, "geometry": {"type": "Point", "coordinates": [h["x"], h["y"]]}})
-        doc = {"type": "FeatureCollection", "name": "TCWA_HYDRANTS",
-               "crs": {"type": "name", "properties": {"name": "urn:ogc:def:crs:EPSG::2272"}}, "features": feats}
-        with open(path, "w", encoding="utf-8") as f:
-            json.dump(doc, f, separators=(",", ":"))
-        rows = []
-        tid = 61000
-        for h in hs:
-            for t in h["tests"]:
-                tid += int(rng.integers(1, 3))
-                hid = h["old_id"] if (t["date"] < RENUMBER and h["old_id"]) else h["new_id"]
-                rows.append(["FT%06d" % tid, hid, iso(t["date"]), t["static"], t["resid"], t["flow"], t["crew"]])
-        rows.sort(key=lambda r: (r[2], r[0]))
-        write_csv(tests_path, ["test_id", "hydrant_id", "test_date", "static_psi", "residual_psi", "flow_gpm",
-                               "tested_by"], rows)
-        return len(feats), len(rows)
+def auction_rows(X):
+    rg = K.rng("auction")
+    rows = []
+    for d in X["days"]:
+        for s in X["stocks"]:
+            close = X["closes"][s["i"]][d]
+            vol = int(s["adv"] * float(rg.uniform(0.06, 0.14)))
+            px = px_view(s, d, close)
+            q = qty_view(s, d, vol)
+            rows.append(dict(date=d.isoformat(), isin=isin_of(s, d), uncrossing_price_gbx="%.4f" % px,
+                             auction_volume_shares=q, auction_value_gbp="%.2f" % (q * px / 100.0)))
+    return rows

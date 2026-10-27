@@ -1,36 +1,36 @@
 {
  "task": "task271",
  "owner": "sathay3012",
- "status": "DESIGN",
+ "status": "SHIPPED",
  "domain": "quantitative-finance",
  "objective": "descriptive-distribution",
- "stage": 2,
- "stage_name": "design",
+ "stage": 5,
+ "stage_name": "ship",
  "updated": "2026-10-27",
- "stump": "A competent analyst who builds the 2026 fills correctly and averages each venue's 60-second adverse move over them keeps only Corvel lit and Kestrel SI off the wealth platform's venue list, because the raw averages of Arden dark and Lowther dark sit under 1.5 basis points; the algorithms ping those midpoint books in each parent order's opening seconds and the same order's next fills push the mid the desk's way inside the minute, so on fills with no desk trade in the stock in the following minute, or net of the desk's following volume, the two midpoint books fail the test too.",
+ "stump": "A competent analyst averages each venue's 60-second adverse move over every 2026 fill and keeps only Delvenne lit and Quintrell SI off the platform's list (1.67 and 1.73 basis points), passing Ardenwick mid and Thursgate mid (0.48 and -0.44), because the algorithms ping those midpoint books in each order's opening seconds and the same order's next fills push the mid the desk's way inside the minute; on the fills no desk execution in the share followed within the minute, the platform's lone-order case, the two midpoint books meet 3.01 and 1.89 and fail the test too.",
  "architecture": 5,
  "loops": 0,
  "precut": {
-  "exit": null,
-  "date": null,
-  "checks": null
+  "exit": 0,
+  "date": "2026-10-27",
+  "checks": 52
  },
  "leak": {
-  "leak_py": "pending",
-  "reader": "pending"
+  "leak_py": "REVIEW (6 lines, ruled harmless in the note's build record)",
+  "reader": "three rounds (93bbb64c, d6135883, 7718f1c7): no decisive-step sentence, no ranking or helping file, the deciding step analytical; the realism tells fixed (share names, 1 January 2027, the plan's table)"
  },
  "duplicate_check": {
   "check_at_draw": "PASS 2026-10-27 before and after registration",
-  "heart": "pending",
-  "surface": "pending"
+  "heart": "WARN (repeat.question_form against task273 v3, answered at the draw)",
+  "surface": "clean"
  },
  "judge": {
-  "verdict": "pending",
-  "disposition": "pending",
-  "report": ""
+  "verdict": "DETERMINISTIC",
+  "disposition": "APPROVE (pass 2; pass 1 FIX_NOW on the workbook's trade date, pinned)",
+  "report": "determinism_check_report.md, determinism_check_report_pass2.md"
  },
  "returned": [],
- "resume": "Stage 2: write the design sections (readability screen, semantic fork table, ladder, closure table, literal reader, oracles, ask sheet), the prompt and the asks, then precut.py; the draw's screens are scratch t271/mm/proto2.py and proto3.py.",
+ "resume": "Shipped 2026-10-27; awaiting the portal. A send-back is fixed in the generator and reshipped on the regular checks (CLAUDE.md, the STOP block).",
  "architectures": [
   {
    "architecture": 1,
@@ -59,14 +59,15 @@
   {
    "architecture": 5,
    "drawn": "2026-10-27",
-   "fate": "live"
+   "fate": "shipped 2026-10-27"
   }
  ],
  "approved": null,
- "delivered": null,
+ "delivered": "2026-10-27",
  "portal": null,
  "portal_id": "",
  "portal_status": "",
  "portal_status_date": "",
- "seed": "DA21 (world and decision shape only: a nonprofit health plan's 2027 programme for part of its book; its design set aside, Tried and rejected)"
+ "seed": "DA21 (world and decision shape only: a nonprofit health plan's 2027 programme for part of its book; its design set aside, Tried and rejected)",
+ "target_zip": "7718f1c7 (sha256)"
 }

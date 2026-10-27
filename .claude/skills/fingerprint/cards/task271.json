@@ -11,8 +11,8 @@
   "shape": "10",
   "decision_type": "designation_set",
   "answer_unit": "set_of_items",
-  "answer": "",
-  "answer_source": "",
+  "answer": "Keep Ardenwick mid, Delvenne lit, Thursgate mid and Quintrell SI off the platform's venue list (3, 2, 2 and 2 basis points); Wexcombe, Ardenwick lit, Delvenne Midpoint and Brindock SI stay on (0, 1, 1 and 0)",
+  "answer_source": "task271/submission.md",
   "gap": [
     "objective",
     "population"
@@ -32,7 +32,7 @@
   "validated_decoy": false,
   "context_artifact": "monitoring_export",
   "stump_class": "analytical",
-  "analyst_test": "A strong analyst who joins both brokers' fills to the transaction cost provider's mids, nets the busted and duplicated fills and averages each venue's 60-second adverse move over its 2026 continuous-trading fills names Corvel lit and Kestrel SI for exclusion, because the raw averages of Arden dark and Lowther dark, the books the algorithms ping in each order's opening seconds, sit under the policy's 1.5 basis points; those fills were followed within the minute by the same order's next child fills, which pushed the mid the desk's way, and the platform's orders, each sent whole, carry no such following trades, so read on fills with no desk trade in the stock in the next minute, or net of the desk's following volume, the two dark books fail the test too.",
+  "analyst_test": "A strong analyst who builds the 2026 fills from the cost provider's export correctly (one row per execution, the brokers' busts out, the closing auction out, Thursgate's two segment codes joined) and averages each venue's 60-second adverse move over every fill keeps off Delvenne lit and Quintrell SI, because the averages of Ardenwick mid and Thursgate mid, the midpoint books the algorithms ping in each order's opening seconds, sit at 0.48 and -0.44 basis points against the policy's 1.5; those fills were followed within the minute by the same order's next fills, which pushed the mid the desk's way, and the platform's orders, each sent whole and filled in one execution, carry no such following trades, so read on the fills no desk execution in the share followed within the minute the two midpoint books meet 3.01 and 1.89 and fail the test too.",
   "domain_test": "The deciding quantity is each venue's adverse selection, the move of the mid against the order in the minute after a fill, which execution analysis measures by markouts and separates from the trader's own price impact with an impact model; replacing it with the raw markout average, or carrying it to another field's nouns (wards for venues), loses the separation of a counterparty's information from the measuring desk's own continuing trading that decides the call.",
   "layer2_family": "estimand_identification",
   "layer2_pattern": "own:venue-markouts-net-of-the-desks-own-continuing-trading",
@@ -50,9 +50,9 @@
   "role_family": "operations_director",
   "scoring_unit": "per settled transaction",
   "spine": {
-    "file": "brokerA_executions_2026.csv",
-    "rows": 0,
-    "entity": "one execution report: a child order filled at one venue",
+    "file": "hessenby_tca_executions_2026-01-02_to_2026-10-30.csv",
+    "rows": 172960,
+    "entity": "one execution as the transaction cost provider recorded it, with the consolidated mid at the execution and 1, 5, 30, 60 and 300 seconds after",
     "grain": "execution",
     "source": "synthetic"
   },
@@ -67,15 +67,19 @@
       "Fenmarsh Investment Management",
       "Fenmarsh Wealth",
       "Wexcombe Stock Exchange",
-      "Arden MTF",
-      "Corvel MTF",
-      "Lowther MTF",
-      "Bramwell Securities",
-      "Kestrel Markets"
+      "Ardenwick MTF",
+      "Delvenne MTF",
+      "Thursgate MTF",
+      "Brindock Securities",
+      "Quintrell Markets",
+      "Ashlowe Securities",
+      "Pemberwick & Co",
+      "Hessenby Analytics",
+      "Gresmere Stockbrokers"
     ],
     "people": [
-      "Declan Davies",
       "Owen Porter",
+      "Declan Davies",
       "Oliver Hamilton"
     ]
   },
@@ -86,8 +90,8 @@
   "opening_move": "question-first",
   "question_form": "which",
   "driver": "The decisive quantity is how far a measured level moves against an actor in a fixed window after each of its events at each channel, for events that will stand alone, read from a record whose events mostly sat inside sequences of the same actor's events, each later event pushing the level the actor's way inside the earlier events' windows; channels used at the start of the sequences look benign on the raw average, and only the events with none of the actor's own events in their window, or each move net of the actor's following volume, carry to the lone events the decision governs.",
-  "driver_concrete": "Each of Fenmarsh's eight execution venues' average adverse move in the 60 seconds after a fill, as the wealth platform's 2027 dealing orders (each sent whole to one venue) would meet it, read from the central dealing desk's 2026 fills, most of which sat inside parent orders sliced into child orders whose later fills pushed the mid the desk's way inside the earlier fills' minute; the dark books the algorithms ping in each order's opening seconds (Arden dark and Lowther dark) look benign on the raw average and exceed the policy's 1.5 basis points only when read on fills with no desk trade in the stock in the next minute, or net of the desk's following volume.",
-  "stump": "A competent analyst averages each venue's 60-second adverse move over its 2026 fills and keeps the exclusion list to Corvel lit and Kestrel SI, because the raw averages of the dark books the algorithms ping first sit under 1.5 basis points; most of those fills were followed within the minute by the same order's next child fills, which pushed the mid the desk's way, and on fills with no desk trade in the following minute, or net of the desk's following volume, Arden dark and Lowther dark fail the test too.",
+  "driver_concrete": "Each of Fenmarsh's eight execution venues' average adverse move in the 60 seconds after a fill, as the wealth platform's 2027 dealing orders (each sent whole to one venue and filled in one execution) would meet it, read from the central dealing desk's 2026 fills, most of which sat inside parent orders sliced into child orders whose later fills pushed the mid the desk's way inside the earlier fills' minute; the midpoint books the algorithms ping in each order's opening seconds (Ardenwick mid and Thursgate mid) look benign on the every-fill average and exceed the policy's 1.5 basis points only when read on fills no desk execution in the share followed within the minute, or net of the desk's following volume.",
+  "stump": "A competent analyst averages each venue's 60-second adverse move over every 2026 fill and keeps only Delvenne lit and Quintrell SI off the platform's list (1.67 and 1.73 basis points), passing Ardenwick mid and Thursgate mid (0.48 and -0.44), because the algorithms ping those midpoint books in each order's opening seconds and the same order's next fills push the mid the desk's way inside the minute; on the fills no desk execution in the share followed within the minute, the platform's lone-order case, the two midpoint books meet 3.01 and 1.89 and fail the test too.",
   "mechanism_source": "design_note",
   "differentiation": {},
   "lineage": [
@@ -217,5 +221,5 @@
     }
   ],
   "notes": "Architecture 5 drawn 2026-10-27 in a fresh world; architecture 4 moved to lineage with its fate. Axes redrawn at the draw against the window's last three live cards (task118 v2, task157 v2, task204): forum committee_or_panel to board_of_directors (the wealth subsidiary's board approves its order execution policy and venue list before dealing moves in-house), forcing event launch_or_rollout to cutover_or_migration (the platform's client dealing moves from a third-party broker to the central desk on 4 January 2027, the honest clock), role operations_director to research_desk (the requester runs execution research), context artifact filed_standard to monitoring_export (the stakeholder's working file is the transaction cost provider's export), strategy decomposition_attribution and causal_design (both banned in the window) to population_selection (which 2026 fills stand for the platform's lone orders, the scope of the evidence). Gate G stays decomposition_attribution: the post-fill move is correctly recorded and the decision turns on assigning it to the counterparty or to the desk's own continuing trading. Re-checked after the pull on 2026-10-27: task273 v3 and task141 v4, registered earlier the same morning by other sessions and pushed after this card's first check, entered the window, and task141 v4 carries research_desk and population_selection (ban.role, ban.strategy). Both redrawn to the honester remaining labels: the requester is the head of dealing, who owns the router's venue lists (operations_director), with the head of execution research doing the analysis; and the strategy is causal_design (interference: the desk's own following trades in the same stock move the measured outcome of each earlier fill, so the venue's effect on a lone order is read on a comparison that holds them out). The question form 'which' repeats task273 v3 (WARN): the board names a set of venues.",
-  "registered": "2026-10-27T08:18:46Z"
+  "registered": "2026-10-27T09:11:28Z"
 }

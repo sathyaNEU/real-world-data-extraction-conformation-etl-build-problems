@@ -1,134 +1,178 @@
 {
- "answer": "Dorrance Hill Borough (21 non-weather water claims per 1,000 house-years, against Sallowmead 25)",
- "deliverables": [
-  "agency_township_2027.xlsx",
-  "water_claims_by_township_2027.png"
- ],
- "distractor_files": [
-  "target/noaa_daily_weather_2023_2025.csv",
-  "target/tamswold_building_permits_2023_2025.csv"
- ],
- "domain": "Actuarial Science & Insurance (claims frequency and severity)",
- "objective": "Descriptive & Distribution Analysis",
- "provenance": {
-  "assessment_appeals_2026.csv": {
-   "date": "2026-10-21",
-   "licence": "CC0 1.0 (constructed for this task)",
-   "source": "constructed by the task generator (seeded); Halverstead Mutual Fire Insurance Company, Tamswold County, its townships, Tamswold County Water Authority, Corrigan Adjusting Services and every home, policy, claim, hydrant and person are fictional; the records follow the forms of a Pennsylvania county mutual's policy and claim extracts, a county assessment roll, the State Tax Equalization Board's common level ratio table, a water authority's open GIS layers and an adjusting firm's bordereau"
+  "task": "task271",
+  "title": "Which execution venues an asset manager's wealth board keeps off its platform's venue list when the group's central dealing desk starts dealing for the platform, on each venue's adverse move in the minute after a fill",
+  "domain": "Quantitative Finance",
+  "client_domain": "Quantitative Finance",
+  "subdomain": "market-microstructure-execution-cost (an asset manager's venue list for its wealth platform's in-house dealing orders, each venue's adverse move in the minute after a fill read from a year of the central desk's algorithmic fills)",
+  "objective": "Descriptive & Distribution Analysis",
+  "prompt_shape": "a scorecard of eight venues against the policy's 1.5 basis point line with each venue's adverse move in whole basis points and a chart, and two tables (the mean size against average daily volume of the platform's 2026 dealt orders as 2027 market orders at each dealing point; the value bought less the value sold through Gresmere in each month to October)",
+  "as_of": "2026-11-04",
+  "deliverables": [
+    "venue_list_board_paper_2027.pdf",
+    "venue_review_2027.xlsx"
+  ],
+  "distractor_files": [
+    "wexcombe_closing_auction_statistics_2026.csv",
+    "venue_volume_report_2025.pdf"
+  ],
+  "field_terms": [],
+  "stated_inputs": [],
+  "input_gates": {
+    "files": 15,
+    "formats": [
+      "csv",
+      "json",
+      "pdf",
+      "xlsx"
+    ],
+    "largest_file": "hessenby_tca_executions_2026-01-02_to_2026-10-30.csv",
+    "largest_file_rows": 172960
   },
-  "board_expansion_brief_2027.pdf": {
-   "date": "2026-10-21",
-   "licence": "CC0 1.0 (constructed for this task)",
-   "source": "constructed by the task generator (seeded); Halverstead Mutual Fire Insurance Company, Tamswold County, its townships, Tamswold County Water Authority, Corrigan Adjusting Services and every home, policy, claim, hydrant and person are fictional; the records follow the forms of a Pennsylvania county mutual's policy and claim extracts, a county assessment roll, the State Tax Equalization Board's common level ratio table, a water authority's open GIS layers and an adjusting firm's bordereau"
-  },
-  "cas_bordereau_halverstead_2023_2026.xlsx": {
-   "date": "2026-10-21",
-   "licence": "CC0 1.0 (constructed for this task)",
-   "source": "constructed by the task generator (seeded); Halverstead Mutual Fire Insurance Company, Tamswold County, its townships, Tamswold County Water Authority, Corrigan Adjusting Services and every home, policy, claim, hydrant and person are fictional; the records follow the forms of a Pennsylvania county mutual's policy and claim extracts, a county assessment roll, the State Tax Equalization Board's common level ratio table, a water authority's open GIS layers and an adjusting firm's bordereau"
-  },
-  "cause_of_loss_codes.csv": {
-   "date": "2026-10-21",
-   "licence": "CC0 1.0 (constructed for this task)",
-   "source": "constructed by the task generator (seeded); Halverstead Mutual Fire Insurance Company, Tamswold County, its townships, Tamswold County Water Authority, Corrigan Adjusting Services and every home, policy, claim, hydrant and person are fictional; the records follow the forms of a Pennsylvania county mutual's policy and claim extracts, a county assessment roll, the State Tax Equalization Board's common level ratio table, a water authority's open GIS layers and an adjusting firm's bordereau"
-  },
-  "claim_payments_2023_2026.csv": {
-   "date": "2026-10-21",
-   "licence": "CC0 1.0 (constructed for this task)",
-   "source": "constructed by the task generator (seeded); Halverstead Mutual Fire Insurance Company, Tamswold County, its townships, Tamswold County Water Authority, Corrigan Adjusting Services and every home, policy, claim, hydrant and person are fictional; the records follow the forms of a Pennsylvania county mutual's policy and claim extracts, a county assessment roll, the State Tax Equalization Board's common level ratio table, a water authority's open GIS layers and an adjusting firm's bordereau"
-  },
-  "claims_register_2023_2025.csv": {
-   "date": "2026-10-21",
-   "licence": "CC0 1.0 (constructed for this task)",
-   "source": "constructed by the task generator (seeded); Halverstead Mutual Fire Insurance Company, Tamswold County, its townships, Tamswold County Water Authority, Corrigan Adjusting Services and every home, policy, claim, hydrant and person are fictional; the records follow the forms of a Pennsylvania county mutual's policy and claim extracts, a county assessment roll, the State Tax Equalization Board's common level ratio table, a water authority's open GIS layers and an adjusting firm's bordereau"
-  },
-  "data_dictionary.csv": {
-   "date": "2026-10-21",
-   "licence": "CC0 1.0 (constructed for this task)",
-   "source": "constructed by the task generator (seeded); Halverstead Mutual Fire Insurance Company, Tamswold County, its townships, Tamswold County Water Authority, Corrigan Adjusting Services and every home, policy, claim, hydrant and person are fictional; the records follow the forms of a Pennsylvania county mutual's policy and claim extracts, a county assessment roll, the State Tax Equalization Board's common level ratio table, a water authority's open GIS layers and an adjusting firm's bordereau"
-  },
-  "frequency_model_standard_rev2.pdf": {
-   "date": "2026-10-21",
-   "licence": "CC0 1.0 (constructed for this task)",
-   "source": "constructed by the task generator (seeded); Halverstead Mutual Fire Insurance Company, Tamswold County, its townships, Tamswold County Water Authority, Corrigan Adjusting Services and every home, policy, claim, hydrant and person are fictional; the records follow the forms of a Pennsylvania county mutual's policy and claim extracts, a county assessment roll, the State Tax Equalization Board's common level ratio table, a water authority's open GIS layers and an adjusting firm's bordereau"
-  },
-  "noaa_daily_weather_2023_2025.csv": {
-   "date": "2026-10-21",
-   "licence": "CC0 1.0 (constructed for this task)",
-   "source": "constructed by the task generator (seeded); Halverstead Mutual Fire Insurance Company, Tamswold County, its townships, Tamswold County Water Authority, Corrigan Adjusting Services and every home, policy, claim, hydrant and person are fictional; the records follow the forms of a Pennsylvania county mutual's policy and claim extracts, a county assessment roll, the State Tax Equalization Board's common level ratio table, a water authority's open GIS layers and an adjusting firm's bordereau"
-  },
-  "pack_contents.txt": {
-   "date": "2026-10-21",
-   "licence": "CC0 1.0 (constructed for this task)",
-   "source": "constructed by the task generator (seeded); Halverstead Mutual Fire Insurance Company, Tamswold County, its townships, Tamswold County Water Authority, Corrigan Adjusting Services and every home, policy, claim, hydrant and person are fictional; the records follow the forms of a Pennsylvania county mutual's policy and claim extracts, a county assessment roll, the State Tax Equalization Board's common level ratio table, a water authority's open GIS layers and an adjusting firm's bordereau"
-  },
-  "policy_terms_2023_2025.csv": {
-   "date": "2026-10-21",
-   "licence": "CC0 1.0 (constructed for this task)",
-   "source": "constructed by the task generator (seeded); Halverstead Mutual Fire Insurance Company, Tamswold County, its townships, Tamswold County Water Authority, Corrigan Adjusting Services and every home, policy, claim, hydrant and person are fictional; the records follow the forms of a Pennsylvania county mutual's policy and claim extracts, a county assessment roll, the State Tax Equalization Board's common level ratio table, a water authority's open GIS layers and an adjusting firm's bordereau"
-  },
-  "steb_common_level_ratios.csv": {
-   "date": "2026-10-21",
-   "licence": "CC0 1.0 (constructed for this task)",
-   "source": "constructed by the task generator (seeded); Halverstead Mutual Fire Insurance Company, Tamswold County, its townships, Tamswold County Water Authority, Corrigan Adjusting Services and every home, policy, claim, hydrant and person are fictional; the records follow the forms of a Pennsylvania county mutual's policy and claim extracts, a county assessment roll, the State Tax Equalization Board's common level ratio table, a water authority's open GIS layers and an adjusting firm's bordereau"
-  },
-  "tamswold_building_permits_2023_2025.csv": {
-   "date": "2026-10-21",
-   "licence": "CC0 1.0 (constructed for this task)",
-   "source": "constructed by the task generator (seeded); Halverstead Mutual Fire Insurance Company, Tamswold County, its townships, Tamswold County Water Authority, Corrigan Adjusting Services and every home, policy, claim, hydrant and person are fictional; the records follow the forms of a Pennsylvania county mutual's policy and claim extracts, a county assessment roll, the State Tax Equalization Board's common level ratio table, a water authority's open GIS layers and an adjusting firm's bordereau"
-  },
-  "tamswold_dwellings_2026.csv": {
-   "date": "2026-10-21",
-   "licence": "CC0 1.0 (constructed for this task)",
-   "source": "constructed by the task generator (seeded); Halverstead Mutual Fire Insurance Company, Tamswold County, its townships, Tamswold County Water Authority, Corrigan Adjusting Services and every home, policy, claim, hydrant and person are fictional; the records follow the forms of a Pennsylvania county mutual's policy and claim extracts, a county assessment roll, the State Tax Equalization Board's common level ratio table, a water authority's open GIS layers and an adjusting firm's bordereau"
-  },
-  "tamswold_parcels_2026.csv": {
-   "date": "2026-10-21",
-   "licence": "CC0 1.0 (constructed for this task)",
-   "source": "constructed by the task generator (seeded); Halverstead Mutual Fire Insurance Company, Tamswold County, its townships, Tamswold County Water Authority, Corrigan Adjusting Services and every home, policy, claim, hydrant and person are fictional; the records follow the forms of a Pennsylvania county mutual's policy and claim extracts, a county assessment roll, the State Tax Equalization Board's common level ratio table, a water authority's open GIS layers and an adjusting firm's bordereau"
-  },
-  "tcwa_hydrant_flow_tests.csv": {
-   "date": "2026-10-21",
-   "licence": "CC0 1.0 (constructed for this task)",
-   "source": "constructed by the task generator (seeded); Halverstead Mutual Fire Insurance Company, Tamswold County, its townships, Tamswold County Water Authority, Corrigan Adjusting Services and every home, policy, claim, hydrant and person are fictional; the records follow the forms of a Pennsylvania county mutual's policy and claim extracts, a county assessment roll, the State Tax Equalization Board's common level ratio table, a water authority's open GIS layers and an adjusting firm's bordereau"
-  },
-  "tcwa_hydrants.geojson": {
-   "date": "2026-10-21",
-   "licence": "CC0 1.0 (constructed for this task)",
-   "source": "constructed by the task generator (seeded); Halverstead Mutual Fire Insurance Company, Tamswold County, its townships, Tamswold County Water Authority, Corrigan Adjusting Services and every home, policy, claim, hydrant and person are fictional; the records follow the forms of a Pennsylvania county mutual's policy and claim extracts, a county assessment roll, the State Tax Equalization Board's common level ratio table, a water authority's open GIS layers and an adjusting firm's bordereau"
-  },
-  "tcwa_master_plan_2019_excerpt.pdf": {
-   "date": "2026-10-21",
-   "licence": "CC0 1.0 (constructed for this task)",
-   "source": "constructed by the task generator (seeded); Halverstead Mutual Fire Insurance Company, Tamswold County, its townships, Tamswold County Water Authority, Corrigan Adjusting Services and every home, policy, claim, hydrant and person are fictional; the records follow the forms of a Pennsylvania county mutual's policy and claim extracts, a county assessment roll, the State Tax Equalization Board's common level ratio table, a water authority's open GIS layers and an adjusting firm's bordereau"
-  },
-  "tcwa_pressure_zones.geojson": {
-   "date": "2026-10-21",
-   "licence": "CC0 1.0 (constructed for this task)",
-   "source": "constructed by the task generator (seeded); Halverstead Mutual Fire Insurance Company, Tamswold County, its townships, Tamswold County Water Authority, Corrigan Adjusting Services and every home, policy, claim, hydrant and person are fictional; the records follow the forms of a Pennsylvania county mutual's policy and claim extracts, a county assessment roll, the State Tax Equalization Board's common level ratio table, a water authority's open GIS layers and an adjusting firm's bordereau"
-  },
-  "underwriting_guide_homeowners_2025.pdf": {
-   "date": "2026-10-21",
-   "licence": "CC0 1.0 (constructed for this task)",
-   "source": "constructed by the task generator (seeded); Halverstead Mutual Fire Insurance Company, Tamswold County, its townships, Tamswold County Water Authority, Corrigan Adjusting Services and every home, policy, claim, hydrant and person are fictional; the records follow the forms of a Pennsylvania county mutual's policy and claim extracts, a county assessment roll, the State Tax Equalization Board's common level ratio table, a water authority's open GIS layers and an adjusting firm's bordereau"
-  }
- },
- "rows": {
-  "assessment_appeals_2026.csv": 1042,
-  "cas_bordereau_halverstead_2023_2026.xlsx": 3201,
-  "cause_of_loss_codes.csv": 24,
-  "claim_payments_2023_2026.csv": 5328,
-  "claims_register_2023_2025.csv": 3582,
-  "data_dictionary.csv": 42,
-  "noaa_daily_weather_2023_2025.csv": 1096,
-  "policy_terms_2023_2025.csv": 73007,
-  "steb_common_level_ratios.csv": 11,
-  "tamswold_building_permits_2023_2025.csv": 8758,
-  "tamswold_dwellings_2026.csv": 58516,
-  "tamswold_parcels_2026.csv": 70180,
-  "tcwa_hydrant_flow_tests.csv": 5860,
-  "tcwa_hydrants.geojson": 3410,
-  "tcwa_pressure_zones.geojson": 4
- },
- "task": "task271",
- "title": "Halverstead Mutual Fire Insurance Company: the township for the 2027 agency"
+  "sources": [
+    {
+      "files": "all files under target/",
+      "origin": "constructed for this task by task271/generator/build.py (seeded, deterministic) around a fictional London asset manager, its wealth platform and its two brokers, in the layouts of a transaction cost provider's per-execution export, brokers' execution reports, an order management system's export, a platform's client order book and a stockbroker's contract notes; no real organisation's records or person is depicted.",
+      "date": "2026-11-04",
+      "license": "CC0-1.0 (original work)"
+    }
+  ],
+  "created": "2026-10-27",
+  "generator": "task271/generator/build.py",
+  "files": [
+    {
+      "path": "ashlowe_execution_report_2026.csv",
+      "format": "csv",
+      "bytes": 8228427,
+      "rows": 82846,
+      "source": "Constructed: Ashlowe Securities, execution report for Fenmarsh Investment Management, 2026",
+      "date": "2026-11-04",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "corporate_actions_2026.json",
+      "format": "json",
+      "bytes": 1167,
+      "rows": null,
+      "source": "Constructed: Fenmarsh Investment Management securities reference team, 2026 corporate actions",
+      "date": "2026-11-04",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "gresmere_contract_notes_settling_2026-01-02_to_2026-11-03.csv",
+      "format": "csv",
+      "bytes": 11855581,
+      "rows": 104523,
+      "source": "Constructed: Gresmere Stockbrokers, contract notes for Fenmarsh Wealth's clients, settling 2 January to 3 November 2026",
+      "date": "2026-11-04",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "hessenby_tca_executions_2026-01-02_to_2026-10-30.csv",
+      "format": "csv",
+      "bytes": 29037132,
+      "rows": 172960,
+      "source": "Constructed: Hessenby Analytics, per-execution export for Fenmarsh Investment Management's central dealing desk, with the consolidated mid at the execution and 1, 5, 30, 60 and 300 seconds after (pulled 2 November 2026)",
+      "date": "2026-11-04",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "oms_orders_2026.csv",
+      "format": "csv",
+      "bytes": 717917,
+      "rows": 4900,
+      "source": "Constructed: Fenmarsh Investment Management order management system, parent orders, 2026",
+      "date": "2026-11-04",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "order_execution_policy_2025.pdf",
+      "format": "pdf",
+      "bytes": 47491,
+      "rows": null,
+      "source": "Constructed: Fenmarsh Investment Management, Order Execution Policy 2025.2 (15 September 2025)",
+      "date": "2026-11-04",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "pemberwick_execution_report_2026.xlsx",
+      "format": "xlsx",
+      "bytes": 5120124,
+      "rows": 90015,
+      "source": "Constructed: Pemberwick & Co, monthly execution reports for Fenmarsh Investment Management, 2026",
+      "date": "2026-11-04",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "router_configuration_2026.pdf",
+      "format": "pdf",
+      "bytes": 41394,
+      "rows": null,
+      "source": "Constructed: Fenmarsh Investment Management central dealing desk, router configuration 2026 (5 January 2026)",
+      "date": "2026-11-04",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "securities_master_2026-10-30.csv",
+      "format": "csv",
+      "bytes": 9622,
+      "rows": 120,
+      "source": "Constructed: Fenmarsh Investment Management securities reference team, UK equities master (30 October 2026)",
+      "date": "2026-11-04",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "uk_trading_calendar_2025-12-01_to_2027-01-31.csv",
+      "format": "csv",
+      "bytes": 9504,
+      "rows": 427,
+      "source": "Constructed: Fenmarsh Investment Management operations, UK trading calendar",
+      "date": "2026-11-04",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "venue_register_2026.xlsx",
+      "format": "xlsx",
+      "bytes": 6976,
+      "rows": 9,
+      "source": "Constructed: Fenmarsh Investment Management central dealing desk, venue register",
+      "date": "2026-11-04",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "venue_volume_report_2025.pdf",
+      "format": "pdf",
+      "bytes": 41553,
+      "rows": null,
+      "source": "Constructed: Fenmarsh Investment Management, top five execution venues for 2025 (28 April 2026)",
+      "date": "2026-11-04",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "wealth_dealing_plan_2027.pdf",
+      "format": "pdf",
+      "bytes": 35492,
+      "rows": null,
+      "source": "Constructed: Fenmarsh Wealth, client dealing from 4 January 2027, paper for the board (12 October 2026)",
+      "date": "2026-11-04",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "wealth_platform_client_orders_2025-12-29_to_2026-10-30.csv",
+      "format": "csv",
+      "bytes": 8690139,
+      "rows": 106299,
+      "source": "Constructed: Fenmarsh Wealth platform, client order book export (orders placed 29 December 2025 to 30 October 2026)",
+      "date": "2026-11-04",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "wexcombe_closing_auction_statistics_2026.csv",
+      "format": "csv",
+      "bytes": 1267752,
+      "rows": 25320,
+      "source": "Constructed: Wexcombe Stock Exchange, daily closing auction statistics for the desk's universe, 2026",
+      "date": "2026-11-04",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    }
+  ]
 }

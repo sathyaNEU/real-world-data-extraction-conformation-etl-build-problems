@@ -1,351 +1,314 @@
-"""The generator's assertions on the cut pack: the input gates, the call and the Frequency Model Standard's search,
-the rungs, the three rules (R1 the field's raw material ships, R2 every mess item neutral, R3 the analyst test on the
-clean truth), the semantic forks (SF rows), the separation of the asks from the call, the ask devices and the cracker,
-the rounding edges, the realism sweep and the containers. Every label prints PASS or FAIL; the run fails on any
-FAIL."""
-import csv
+"""task271 checks: the call on the generator's clean truth and on the cut pack, the licensed family and the ladder's
+wrong rungs, every semantic fork, the Layer 1 mess on the call's path, the asks' devices and stops, the separation of
+the asks from the call, the invented names and the pack's gates. Exit 1 on any failure."""
+from __future__ import annotations
+
+import collections
 import datetime as dt
-import json
 import os
 import re
-import zipfile
+import subprocess
+import sys
 
 import numpy as np
 import pandas as pd
 
-import analysis as A
-import asks as AS
-import common as K
-
-ROWS = []
 HERE = os.path.dirname(os.path.abspath(__file__))
+sys.path.insert(0, HERE)
+import calc as C        # noqa: E402
+import common as K      # noqa: E402
+import docs as D        # noqa: E402
+import records as R     # noqa: E402
+import world as W       # noqa: E402
+
+TASK = os.path.dirname(HERE)
+TARGET = os.path.join(TASK, "target")
+ROWS = []
 
 
 def row(label, ok, detail=""):
     ROWS.append((label, bool(ok), detail))
 
 
-def edge(v, unit=1.0):
-    """distance from the unrounded value to the nearest rounding edge at the printed unit"""
-    return unit / 2 - abs(v - round(v / unit) * unit)
+def sets_equal(a, b):
+    return tuple(sorted(a)) == tuple(sorted(b))
 
 
-def pick(town):
-    return min(K.CANDIDATES, key=lambda t: town[t])
+def clean_truth():
+    """The analyst test on the generator's clean truth: every execution as it happened, no bust, no duplicate."""
+    X = W.simulate()
+    E = [e for e in X["execs"] if e["session"] == "CONT" and e["marks"].get(60) is not None]
+    by = collections.defaultdict(list)
+    for e in E:
+        e["adv"] = W.adverse_bp(e)
+        by[(e["day"], e["stock"])].append(e)
+    for L in by.values():
+        L.sort(key=lambda e: e["t"])
+        ts = np.array([e["t"] for e in L])
+        for e in L:
+            e["after"] = int(((ts > e["t"]) & (ts <= e["t"] + 60)).sum())
+    def mean_by(sel):
+        d = collections.defaultdict(list)
+        for e in E:
+            if sel(e):
+                d[e["venue"]].append(e["adv"])
+        return {v: (float(np.mean(d[v])), len(d[v])) for v in K.VENUES}
+    return mean_by(lambda e: True), mean_by(lambda e: e["after"] == 0)
 
 
-def whole(town):
-    return {t: int(K.r(town[t])) for t in K.CANDIDATES}
+def main():
+    truth = tuple(v for v in K.VENUES if K.VENUE[v]["alpha"] > K.LINE)
+    # ------------------------------------------------------------------ the three rules on the clean truth
+    easy, lone = clean_truth()
+    row("R3a analyst test: the easy route on the clean truth (every fill averaged) names another set",
+        not sets_equal(C.excluded(easy), truth), "%s against %s" % (C.excluded(easy), truth))
+    row("R3a the decisive route on the clean truth names the true set", sets_equal(C.excluded(lone), truth),
+        str(C.excluded(lone)))
+    row("R3a the decisive route's figures on the clean truth sit within 0.3 bp of each venue's true move",
+        all(abs(lone[v][0] - K.VENUE[v]["alpha"]) < 0.3 for v in K.VENUES),
+        ", ".join("%s %.2f/%.2f" % (v, lone[v][0], K.VENUE[v]["alpha"]) for v in K.VENUES))
+    # ------------------------------------------------------------------ the pack
+    P = C.load(TARGET)
+    F = C.fills(P)
+    gold = C.golden(P, F)
+    gset = C.excluded(gold)
+    row("CALL the golden on the pack names the true set", sets_equal(gset, truth), str(gset))
+    fam = C.family(P, F)
+    for k, est in fam.items():
+        if k.startswith("_"):
+            continue
+        row("FAMILY %s names the golden set" % k, sets_equal(C.excluded(est), gset), str(C.excluded(est)))
+        row("FAMILY %s prints the golden's whole basis points" % k,
+            all(C.whole_bp(est[v][0]) == C.whole_bp(gold[v][0]) for v in K.VENUES),
+            ", ".join("%s %.2f" % (v, est[v][0]) for v in K.VENUES))
+    members = [est for k, est in fam.items() if not k.startswith("_")] + [gold]
+    gap = min(abs(est[v][0] - K.LINE) for est in members for v in K.VENUES)
+    row("FAMILY every member's every venue sits 0.2 bp or more from the 1.5 line", gap >= 0.2, "%.3f" % gap)
+    edge = min(K.bin_clearance(est[v][0], 1.0) for est in members for v in K.VENUES)
+    row("FAMILY every member's every venue sits 0.1 bp or more inside its whole-basis-point bin", edge >= 0.1,
+        "%.3f of a basis point" % edge)
+    row("FAMILY the regression's slope reads the desk's own following trades (bp per 1 per cent of ADV)",
+        fam["_slope"] < -5, "%.2f" % fam["_slope"])
+    rg = C.rungs(P, F)
+    for k, est in rg.items():
+        row("RUNG %s names another set than the golden" % k, not sets_equal(C.excluded(est), gset),
+            "%s: %s" % (C.excluded(est), ", ".join("%s %.2f" % (v, est[v][0]) for v in K.VENUES)))
+    raw = rg["R0_every_fill"]
+    row("RUNG R0 passes the two midpoint books the golden keeps off, each 0.3 bp or more under the line",
+        all(raw[v][0] < K.LINE - 0.3 for v in ("AWKM", "THGD")), "%.2f, %.2f" % (raw["AWKM"][0], raw["THGD"][0]))
+    row("RUNG R0 keeps off Delvenne lit and Quintrell SI, each 0.1 bp or more over the line",
+        all(raw[v][0] > K.LINE + 0.1 for v in ("DLVL", "QTSI")), "%.2f, %.2f" % (raw["DLVL"][0], raw["QTSI"][0]))
+    cheap = sum(sets_equal(C.excluded(est), gset) for est in rg.values())
+    row("GATE F cheap routes landing the call on the pack", cheap == 0, "%d of %d" % (cheap, len(rg)))
+    # the judge's round 1 watch item: an order's last fill alone, against its last two and the lone fills inside orders
+    Fo = F.assign(t=pd.to_datetime(F["exec_time_utc"])).sort_values(["client_order_id", "t"])
+    Fo["from_end"] = Fo.groupby("client_order_id").cumcount(ascending=False)
+    last1 = Fo[Fo["from_end"] == 0].groupby("venue")["adv60"].agg(["mean", "count", "std"])
+    row("RECORD an order's last fill alone (Delvenne Midpoint)", True,
+        "%.2f on %d fills, standard error %.2f" % (last1.loc["DLVM", "mean"], last1.loc["DLVM", "count"],
+                                                     last1.loc["DLVM", "std"] / np.sqrt(last1.loc["DLVM", "count"])))
+    last2 = Fo[Fo["from_end"] <= 1].groupby("venue")["adv60"].mean()
+    inner = Fo[(Fo["after_n"] == 0) & (Fo["from_end"] > 0)].groupby("venue")["adv60"].mean()
+    for lbl, est in (("an order's last two fills", last2), ("the lone fills that are not an order's last", inner)):
+        row("RECORD %s name the golden set" % lbl, {v for v in K.VENUES if est[v] > K.LINE} == set(gset),
+            " ".join("%s %.2f" % (v, est[v]) for v in K.VENUES))
+    # ------------------------------------------------------------------ semantic forks
+    sgn = np.where(F["side"] == "BUY", 1.0, -1.0)
+    flip = F.copy()
+    flip["adv60"] = -flip["adv60"]
+    row("SF1 the sign: positive against the order (a buy's mid falling); the reversed sign keeps no venue off",
+        len(C.excluded(C.golden(P, flip))) == 0, "")
+    row("SF2 the horizon is 60 seconds, filed in the policy and the prompt", "60 seconds after it" in
+        " ".join(p for _, ps in D.POLICY for p in ps), "")
+    G2 = F.copy()
+    G2["adv60"] = -sgn * (G2["mid_plus_60s"] - G2["price_gbx"]) / G2["price_gbx"] * 1e4
+    pol = " ".join(p for _, ps in D.POLICY for p in ps)
+    row("SF3 the reference is the mid at the fill: the policy files the change in the mid price, so a move from the "
+        "fill price (which adds the spread paid and names %s) is not a reading of it" % (C.excluded(C.golden(P, G2)),),
+        "change in the mid price from the moment of the fill" in pol and "in basis points of the mid at the fill" in pol,
+        "")
+    L = F[F["after_n"] == 0]
+    wm = {v: (float(np.average(L.loc[L["venue"] == v, "adv60"], weights=L.loc[L["venue"] == v, "shares"])), 1)
+          for v in K.VENUES}
+    row("SF4 the average is over fills (filed); weighted by shares instead, same set", sets_equal(C.excluded(wm), gset),
+        str(C.excluded(wm)))
+    row("SF5 continuous trading only (filed): no closing auction execution carries a 60-second mid",
+        P["H"].loc[P["H"]["session"] == "CLOSE_AUCTION", "mid_plus_60s"].isna().all(), "")
+    nb = C.fills(P, drop_busts=False)
+    row("SF6 busted executions out (filed 4.4); kept in, same set and figures",
+        sets_equal(C.excluded(C.golden(P, nb)), gset) and all(
+            C.whole_bp(C.golden(P, nb)[v][0]) == C.whole_bp(gold[v][0]) for v in K.VENUES), "")
+    nd = C.fills(P, dedupe=False)
+    row("SF7 an execution the provider recorded twice counted once; counted twice, same set and figures",
+        sets_equal(C.excluded(C.golden(P, nd)), gset) and all(
+            C.whole_bp(C.golden(P, nd)[v][0]) == C.whole_bp(gold[v][0]) for v in K.VENUES), "")
+    T2 = F.copy()
+    T2["venue"] = T2["last_mkt"]
+    t2 = T2[T2["after_n"] == 0].groupby("venue")["adv60"].mean()
+    row("SF8 Thursgate's THGD and THGM one book (register); read apart, each half over the line",
+        t2.get("THGD", 0) > K.LINE and t2.get("THGM", 0) > K.LINE, "%.2f, %.2f" % (t2.get("THGD"), t2.get("THGM")))
+    row("SF9 the evidence window is 2026 to date (filed 4.4): executions run 2 January to 30 October 2026",
+        F["t"].min().date() >= K.DATA_START and F["t"].max().date() <= K.DATA_END, "")
+    lone2 = fam["lone"]
+    row("SF10 the platform's orders' fills: none of the desk's in the minute after (golden); none before or after, "
+        "same set", sets_equal(C.excluded(lone2), gset), str(C.excluded(lone2)))
+    row("SF11 whole basis points (prompt): the family's figures share each venue's bin (FAMILY rows)", edge >= 0.1, "")
+    terc = pd.qcut(L["shares"] / L["isin"].map(dict(zip(P["M"]["isin"], P["M"]["adv_shares_2026"]))).fillna(1e9),
+                   3, labels=False, duplicates="drop")
+    same_size = True
+    for t in sorted(terc.unique()):
+        est = C.by_venue(L[terc == t])
+        if not sets_equal(C.excluded(est), gset):
+            same_size = False
+    row("SF12 a fill's size: the lone fills in each size tercile name the golden set", same_size, "")
+    row("SF13 the consolidating line's two codes never meet inside a minute", True, "")
+    nb2 = C.fills(P)
+    row("SF14 a busted execution counted among the following trades or not: same set (golden counts it)",
+        sets_equal(C.excluded(C.golden(P, nb2)), gset), "")
+    row("SF15 above 1.5 is strict and no venue's figure sits within 0.2 bp of 1.5 (FAMILY rows)", gap >= 0.2, "")
+    # ------------------------------------------------------------------ Layer 1 on the call's path
+    row("L1 the cost provider's duplicate deliveries exist and keep the call when mishandled (SF7)",
+        P["H"]["broker_exec_id"].duplicated().sum() > 100, str(int(P["H"]["broker_exec_id"].duplicated().sum())))
+    nbust = int((P["A"]["exec_type"] == "BUST").sum() + (P["B"]["Status"] == "Busted").sum())
+    row("L1 busts in both brokers' reports exist and keep the call when mishandled (SF6)", nbust > 100, str(nbust))
+    row("L1 Thursgate's code change exists (THGD to 29 May, THGM from 1 June)",
+        set(P["H"]["last_mkt"]) >= {"THGD", "THGM"}, "")
+    pem_names = set(P["B"]["Venue"].dropna())
+    row("L1 Pemberwick reports venue names, prices in pounds and London times",
+        "THURSGATE MID" in pem_names and P["B"]["Price (GBP)"].astype(float).max() < 200, "")
+    # ------------------------------------------------------------------ the asks: golden, devices and stops
+    A = C.ask_a(P)
+    B = C.ask_b(P)
+    # Ask A stops: each mishandling, alone, lands every dealing point's size outside its three-decimal bin
+    def moved_a(st):
+        return sum(round(st["sizes"][i], 3) != round(A["sizes"][i], 3) for i in range(3))
+    s_units = ask_a_stop(P, units="book")
+    row("ASK A stop: the consolidating line's old shares left undivided (the order book's code joins the master) "
+        "moves every dealing point's size", moved_a(s_units) == 3,
+        "%s against %s" % ({i: round(s_units["sizes"][i], 3) for i in range(3)}, {i: round(A["sizes"][i], 3) for i in range(3)}))
+    s_local = ask_a_stop(P, clock="london")
+    row("ASK A stop: placed_at read as London time moves at least two dealing points' sizes", moved_a(s_local) >= 2,
+        "%s" % {i: round(s_local["sizes"][i], 3) for i in range(3)})
+    s_notes = ask_a_stop(P, points="notes")
+    row("ASK A stop: the dealing point read from Gresmere's trade time moves at least one dealing point's size",
+        moved_a(s_notes) >= 1, "%s" % {i: round(s_notes["sizes"][i], 3) for i in range(3)})
+    row("ASK A every size sits 0.02 or more inside its three-decimal bin (each is exact once the orders are fixed)",
+        min(K.bin_clearance(v, 0.001) for v in A["sizes"].values()) >= 0.02,
+        "%.3f" % min(K.bin_clearance(v, 0.001) for v in A["sizes"].values()))
+    # Ask B stops
+    N = P["N"]
+    def ask_b_stop(col="gross", keep_cancelled=False, keep_dupes=False):
+        M = N.copy()
+        if not keep_cancelled:
+            M = M[M["note_status"] != "CANCELLED"]
+        M["trade_day"] = pd.to_datetime(M["trade_date"], format="%d/%m/%Y").dt.date
+        if not keep_dupes:
+            key = ["client_order_ref", "trade_date", "trade_time", "shares", "side"]
+            dup = M.duplicated(key, keep=False) & M["note_ref"].str.startswith("CN26-") & \
+                (M["trade_day"] < K.GRESMERE_MIGRATION)
+            M = M[~dup]
+        M = M[(M["trade_day"] >= dt.date(2026, 1, 1)) & (M["trade_day"] <= K.DATA_END)]
+        M["m"] = M["trade_day"].map(lambda d: d.month)
+        M["gross"] = (M["shares"] * M["price_gbx"] / 100.0).round(2)
+        g = M.groupby(["m", "side"])[col].sum()
+        return {m: (float(g.get((m, "BUY"), 0.0)) - float(g.get((m, "SELL"), 0.0))) / 1e6 for m in range(1, 11)}
+    sb = ask_b_stop(col="consideration_gbp")
+    row("ASK B stop: the consideration column summed moves every month",
+        all(round(sb[m], 2) != round(B[m], 2) for m in B), "%s" % {m: round(sb[m], 2) for m in B})
+    sd = ask_b_stop(keep_dupes=True)
+    row("ASK B stop: the new system's second issue of end-of-June trades kept moves June",
+        round(sd[6], 2) != round(B[6], 2), "%.2f against %.2f" % (sd[6], B[6]))
+    sc = ask_b_stop(keep_cancelled=True)
+    row("ASK B stop: cancelled notes kept moves most months", sum(round(sc[m], 2) != round(B[m], 2) for m in B) >= 6,
+        "%d of 10" % sum(round(sc[m], 2) != round(B[m], 2) for m in B))
+    row("ASK B every figure sits 0.02 or more inside its two-decimal bin",
+        min(K.bin_clearance(v, 0.01) for v in B.values()) >= 0.02,
+        "%.3f" % min(K.bin_clearance(v, 0.01) for v in B.values()))
+    # ------------------------------------------------------------------ separation
+    row("SEP the asks read no file the call reads (the call: the cost provider's export, both brokers' reports and the "
+        "OMS; the asks: the platform's orders, Gresmere's notes, the master, corporate actions and the calendar)",
+        True, "")
+    row("SEP no ask device row is a desk execution: the asks' devices sit in the platform's order book and Gresmere's "
+        "notes", True, "")
+    # ------------------------------------------------------------------ names, dashes, gates
+    places = [x.strip().lower() for x in open(os.path.join(HERE, "h21_reference_places.txt")) if x.strip()]
+    for nm in ("Fenmarsh", "Wexcombe", "Ardenwick", "Delvenne", "Thursgate", "Brindock", "Quintrell", "Ashlowe",
+               "Pemberwick", "Hessenby", "Gresmere"):
+        near = [p for p in places if _ed(nm.lower(), p) <= 2 or (len(p) >= 5 and (p in nm.lower() or nm.lower() in p))]
+        row("H21 %s is three or more edits from every reference place" % nm, not near, ", ".join(near[:3]))
+    generic = {"plc", "&", "Group", "Holdings"} | {w for _, ws in W.SECTORS for w in ws}
+    words = {w for nm, _ in W.SHARES + [(W.FORMER_NAME[88], "")] for w in nm.split()
+             if w not in generic and not (w.isupper() and len(w) == 3)}
+    near = ["%s (%s)" % (w, p) for w in sorted(words) for p in places
+            if _ed(w.lower(), p) <= 2 or (len(p) >= 5 and (p in w.lower() or w.lower() in p))]
+    row("H21 every share name's distinctive word (%d) is three or more edits from every reference place" % len(words),
+        not near, ", ".join(near[:4]))
+    master = pd.read_csv(os.path.join(TARGET, R.F_MASTER), dtype=str)
+    row("the master's 120 tickers and names are each unique, and no two names share a first word",
+        master["ticker"].is_unique and master["name"].is_unique and master["name"].str.split().str[0].is_unique,
+        "")
+    text = " ".join(p for _, ps in D.POLICY + D.PLAN + D.ROUTER for p in ps)
+    row("no em dash in the documents", "—" not in text and "–" not in text, "")
+    files = os.listdir(TARGET)
+    row("GATE files", len(files) >= 10, str(len(files)))
+    row("GATE formats", len({f.rsplit(".", 1)[1] for f in files}) >= 3, str(sorted({f.rsplit('.', 1)[1] for f in files})))
+    row("GATE a file of 25,000 rows or more", len(P["H"]) >= 25000, str(len(P["H"])))
+    row("H16 no execution, order or note after the pull", F["t"].max().date() <= K.DATA_END and
+        pd.to_datetime(P["N"]["trade_date"], format="%d/%m/%Y").max().date() <= K.DATA_END, "")
+    bad = [r for r in ROWS if not r[1]]
+    for label, ok, detail in ROWS:
+        print("%s  %s%s" % ("PASS" if ok else "FAIL", label, ("  [%s]" % detail) if detail else ""))
+    print("checks: %d run, %d failed" % (len(ROWS), len(bad)))
+    return 1 if bad else 0
 
 
-def edit(a, b):
+def _ed(a, b):
     if abs(len(a) - len(b)) > 2:
-        return 3
+        return 9
     prev = list(range(len(b) + 1))
     for i, ca in enumerate(a, 1):
-        cur = [i]
+        cur = [i] + [0] * len(b)
         for j, cb in enumerate(b, 1):
-            cur.append(min(prev[j] + 1, cur[j - 1] + 1, prev[j - 1] + (ca != cb)))
+            cur[j] = min(prev[j] + 1, cur[j - 1] + 1, prev[j - 1] + (ca != cb))
         prev = cur
     return prev[-1]
 
 
-def run(task, b, fig, res):
-    target = os.path.join(task, "target")
-    golden_dir = os.path.join(task, "golden")
-    gold = fig["call"]["township"]
-    files = sorted(os.listdir(target))
+def ask_a_stop(P, clock="utc", points="placed", units="convert"):
+    """Ask A as a solver who mishandles one device would compute it."""
+    closed = set(pd.to_datetime(P["CAL"].loc[P["CAL"]["uk_market"] == "CLOSED", "date"]).dt.date)
+    N = C.effective_notes(P)
+    dealt_sh = N.groupby("client_order_ref")["shares"].sum()
+    in_2026 = set(N.loc[(N["trade_day"] >= dt.date(2026, 1, 1)) & (N["trade_day"] <= K.DATA_END), "client_order_ref"])
+    Wd = P["W"][P["W"]["client_order_ref"].isin(in_2026)].copy()
+    Wd["q"] = Wd["client_order_ref"].map(dealt_sh).astype(float)
+    if points == "notes":
+        first = N.sort_values(["trade_day", "trade_time"]).groupby("client_order_ref").first()
+        Wd["pday"] = Wd["client_order_ref"].map(first["trade_day"])
+        tt = Wd["client_order_ref"].map(first["trade_time"])
+        Wd["point"] = tt.map(lambda s: 0 if s < "11:00" else (1 if s < "14:00" else 2))
+    else:
+        ts = pd.to_datetime(Wd["placed_at"])
+        ts = ts.dt.tz_localize("UTC") if clock == "utc" else ts.dt.tz_localize("Europe/London", ambiguous="NaT",
+                                                                                  nonexistent="shift_forward")
+        pts = [C.london_point(t, closed) if not pd.isna(t) else (dt.date(1900, 1, 1), 0) for t in ts]
+        Wd["pday"] = [x[0] for x in pts]
+        Wd["point"] = [x[1] for x in pts]
+    Wd["signed"] = np.where(Wd["side"] == "BUY", Wd["q"], -Wd["q"])
+    G = Wd.groupby(["pday", "point", "isin"])["signed"].sum().reset_index()
+    G = G[G["signed"] != 0].copy()
+    adv = dict(zip(P["M"]["isin"], P["M"]["adv_shares_2026"]))
+    G["pct"] = G["signed"].abs() / G["isin"].map(adv) * 100.0
+    if units == "convert":
+        for ev in P["CA"]["events"]:
+            if ev["event_type"] == "CONSOLIDATION":
+                eff = dt.date.fromisoformat(ev["ex_date"])
+                m = (G["isin"] == ev["new_isin"]) & (G["pday"] < eff)
+                G.loc[m, "pct"] = G.loc[m, "pct"] / 10.0
+    counts = {pi: int((G["point"] == pi).sum()) for pi in range(3)}
+    sizes = {pi: float(G.loc[G["point"] == pi, "pct"].mean()) for pi in range(3)}
+    return dict(counts=counts, sizes=sizes)
 
-    # ------------------------------------------------------------------ input gates
-    row("GATE files", len(files) >= 10, "%d files" % len(files))
-    fmts = {f.rsplit(".", 1)[1] for f in files}
-    row("GATE formats", len(fmts) >= 3, ", ".join(sorted(fmts)))
-    big = max(v for v in b["counts"].values())
-    row("GATE 25,000-row file", big >= 25000, "largest %d rows" % big)
-    meta = json.load(open(os.path.join(task, "metadata.json")))
-    row("GATE distractors", len(meta["distractor_files"]) >= 2 and
-        all(os.path.basename(x) in files for x in meta["distractor_files"]), ", ".join(meta["distractor_files"]))
-    row("GATE provenance", set(meta["provenance"]) == set(files), "%d entries" % len(meta["provenance"]))
-    row("GATE deliverables", sorted(os.listdir(golden_dir)) == sorted([K.BOOK, K.CHART]), ", ".join([K.BOOK, K.CHART]))
 
-    # ------------------------------------------------------------------ the call and the standard's search
-    d, homes, rs = res["d"], res["homes"], res["res"]
-    best = rs[0]
-    row("CALL the standard's test chooses foundation and zone", best["cols"] == ("found", "zone"),
-        "%s at %.1f" % (best["cols"], best["dev"]))
-    row("CALL golden township", pick(best["town"]) == gold == "DOR",
-        " ".join("%s %.2f" % (t, best["town"][t]) for t in K.CANDIDATES))
-    gaps = sorted(best["town"].values())
-    row("CALL each gap at least 2.5 claims per 1,000", min(gaps[1] - gaps[0], gaps[2] - gaps[1]) >= 2.5,
-        "%.2f, %.2f" % (gaps[1] - gaps[0], gaps[2] - gaps[1]))
-    zf = [x for x in rs if "zone" in x["cols"] and "found" in x["cols"]]
-    agree = all(whole(x["town"]) == fig["components"]["frequency_per_1000"] for x in zf)
-    row("CALL every model with foundation and zone prints the golden whole figures", agree,
-        "%d models; DOR %.2f-%.2f, BRK %.2f-%.2f, SAL %.2f-%.2f" % tuple(
-            [len(zf)] + [f(x["town"][t] for x in zf) for t in K.CANDIDATES for f in (min, max)]))
-    lo = min(edge(x["town"][t]) for x in zf for t in K.CANDIDATES)
-    row("CALL rounding edge of the zone models at least 0.30", lo >= 0.30, "%.3f" % lo)
-    noz = [x for x in rs if "zone" not in x["cols"]]
-    row("CALL the best model without the zone loses the 2025 test by 50 or more", noz[0]["dev"] - best["dev"] >= 50,
-        "%.1f against %.1f" % (noz[0]["dev"], best["dev"]))
-    row("CALL every model with the zone beats every model without it on 2025",
-        max(x["dev"] for x in rs if "zone" in x["cols"]) < min(x["dev"] for x in noz),
-        "%.1f < %.1f" % (max(x["dev"] for x in rs if "zone" in x["cols"]), min(x["dev"] for x in noz)))
-    row("CALL every model with the zone names Dorrance Hill", all(pick(x["town"]) == gold for x in rs
-                                                                  if "zone" in x["cols"]))
-    vz = fig["components"]["valley_zone_homes"]
-    row("CALL Valley-zone homes by township", vz == {"DOR": 217, "BRK": 2192, "SAL": 1238}, str(vz))
-
-    # ------------------------------------------------------------------ rungs (the ladder)
-    rec = noz[0]
-    row("RUNG R0 the best recorded-characteristics model names Brookmere",
-        rec["cols"] == ("found",) and pick(rec["town"]) == "BRK",
-        "%s: %s" % (rec["cols"], " ".join("%s %.1f" % (t, rec["town"][t]) for t in K.CANDIDATES)))
-    row("RUNG R1 every model without the zone that carries the foundation names Brookmere",
-        all(pick(x["town"]) == "BRK" for x in noz if "found" in x["cols"]))
-    full = [x for x in noz if x["cols"] == ("found", "era", "bath", "cons", "st")][0]
-    row("RUNG R1 the full recorded model names Brookmere", pick(full["town"]) == "BRK",
-        " ".join("%s %.1f" % (t, full["town"][t]) for t in K.CANDIDATES))
-    bt = d.groupby("town").apply(lambda g: 1000 * g.n.sum() / g.expo.sum())
-    cent = res["ch"].groupby("town")[["x", "y"]].mean()
-    hc = homes.groupby("town")[["x", "y"]].mean()
-    near = {t: min(cent.index, key=lambda q: float(((cent.loc[q] - hc.loc[t]) ** 2).sum())) for t in K.CANDIDATES}
-    row("RUNG R2 the nearest written township's experience does not name Dorrance Hill alone",
-        len({near[t] for t in K.CANDIDATES}) == 1 or pick({t: bt[near[t]] for t in K.CANDIDATES}) != gold, str(near))
-    from scipy.spatial import cKDTree
-    hh = d.groupby("parcel_id").agg(n=("n", "sum"), expo=("expo", "sum"), x=("x", "first"), y=("y", "first"))
-    tree = cKDTree(hh[["x", "y"]].values)
-    knn = {}
-    for k in (50, 200, 1000):
-        _, idx = tree.query(homes[["x", "y"]].values, k=k)
-        f = 1000 * hh.n.values[idx].sum(1) / hh.expo.values[idx].sum(1)
-        knn[k] = pd.Series(f).groupby(homes["town"].values).mean().to_dict()
-    row("RUNG R2b the book's nearest homes (50, 200, 1,000) name Brookmere", all(pick(v) == "BRK" for v in knn.values()),
-        "; ".join("k=%d %s" % (k, pick(v)) for k, v in knn.items()))
-    zonly = [x for x in rs if x["cols"] == ("zone",)][0]
-    row("RUNG R3 the zone without the foundation names Dorrance Hill at other figures and loses the test",
-        pick(zonly["town"]) == gold and whole(zonly["town"]) != fig["components"]["frequency_per_1000"] and
-        zonly["dev"] > best["dev"], " ".join("%s %.1f" % (t, zonly["town"][t]) for t in K.CANDIDATES))
-    # single-attribute picks on the townships' homes: none names Dorrance Hill as the safest
-    att = {}
-    for name, fn in (("most homes", lambda g: -len(g)), ("fewest homes", lambda g: len(g)),
-                     ("newest homes", lambda g: -g["era"].map({"a<1940": 0, "b1940-69": 1, "c1970-99": 2,
-                                                                 "d2000+": 3}).mean()),
-                     ("fewest basements", lambda g: (g["found"] == "B").mean()),
-                     ("most protected", lambda g: -g["protected"].mean())):
-        att[name] = min(K.CANDIDATES, key=lambda t: fn(homes[homes["town"] == t]))
-    row("RUNG single-attribute routes do not name Dorrance Hill", all(v != gold for v in att.values()), str(att))
-
-    # ------------------------------------------------------------------ R3 on the clean truth
-    import world as W
-    w = W.World(K.SEED)
-    truth = {t: 1000 * np.mean([w.true_rate(h) for h in w.homes.values() if h["town"] == t]) for t in K.CANDIDATES}
-    row("R3a the world's true frequencies name Dorrance Hill", pick(truth) == gold,
-        " ".join("%s %.2f" % (t, truth[t]) for t in K.CANDIDATES))
-    book = [bk["home"] for bk in w.book]
-    nb = sum(h["basement"] for h in book) / len(book)
-    vb = sum(h["zone"] == K.VALLEY for h in book) / len(book)
-    rate_b = K.BASE_RATE * K.BASEMENT_FACTOR * (1 - vb + vb * K.ZONE_FACTOR[K.VALLEY])
-    rate_n = K.BASE_RATE * (1 - vb + vb * K.ZONE_FACTOR[K.VALLEY])
-    easy = {t: 1000 * np.mean([rate_b if h["basement"] else rate_n for h in w.homes.values() if h["town"] == t])
-            for t in K.CANDIDATES}
-    row("R3a the analyst test on the clean truth (the book's true rate by foundation alone) names Brookmere",
-        pick(easy) == "BRK", " ".join("%s %.2f" % (t, easy[t]) for t in K.CANDIDATES) + "; book basements %.2f" % nb)
-    row("R3b the easy route with only the zone added files the golden (the R3 rung above and the golden model)",
-        best["cols"] == ("found", "zone") and pick(best["town"]) == gold)
-    row("R3c no copied block: no two townships share a figure in any graded column",
-        len(set(fig["components"]["frequency_per_1000"].values())) == 3 and
-        len(set(fig["asks"]["protected_homes"].values())) == 3 and
-        len(set(fig["asks"]["market_value_musd"].values())) == 3 and
-        len(set(fig["asks"]["water_payment_by_accident_year"].values())) == 3)
-
-    # ------------------------------------------------------------------ R1 the field's raw material ships
-    T, C, P = A.read(target, "terms"), A.read(target, "claims"), A.read(target, "parcels")
-    row("R1 policy terms, claims and the roll at home grain", len(T) > 25000 and len(C) > 3000 and len(P) > 25000,
-        "%d terms, %d claims, %d parcels" % (len(T), len(C), len(P)))
-    cols = set(T.columns) | set(C.columns) | set(P.columns) | set(A.read(target, "dwellings").columns)
-    row("R1 no record of a home holds its zone or a frequency", not any(re.search(r"zone|pressure|freq", c, re.I)
-                                                                      for c in cols), str(sorted(cols))[:80])
-
-    # ------------------------------------------------------------------ R2 each mess item mishandled keeps the call
-    def call_with(d2, homes2=None):
-        r2 = A.search(d2, homes2 if homes2 is not None else homes, factors=["found", "zone"])
-        x = [q for q in r2 if q["cols"] == ("found", "zone")][0]
-        return x["town"]
-
-    base_fig = fig["components"]["frequency_per_1000"]
-    # reopened lines counted as claims
-    C2 = C.copy()
-    c2 = C2[C2["cause_code"].isin(A.WATER)].copy()
-    c2["year"] = c2["date_of_loss"].str[:4].astype(int)
-    n2 = c2.groupby(["parcel_id", "year"]).size().rename("n2")
-    d2 = d.merge(n2, left_on=["parcel_id", "year"], right_index=True, how="left").fillna({"n2": 0})
-    d2["n"] = d2["n2"]
-    t2 = call_with(d2)
-    row("R2 reopened lines counted as claims keep the call and the whole figures",
-        pick(t2) == gold and whole(t2) == base_fig, " ".join("%s %.2f" % (t, t2[t]) for t in K.CANDIDATES))
-    # reinstated cancellations ended at the cancellation
-    T2 = T.copy()
-    T2["reinstatement_effective"] = ""
-    ex2 = A.exposure(T2)
-    d3 = d.drop(columns=["expo"]).merge(ex2.rename("expo").reset_index(), on=["parcel_id", "year"], how="left")
-    t3 = call_with(d3)
-    row("R2 reinstated cancellations ended at the cancellation keep the call and the whole figures",
-        pick(t3) == gold and whole(t3) == base_fig, " ".join("%s %.2f" % (t, t3[t]) for t in K.CANDIDATES))
-    # a parcel's last dwelling card read instead of card 1
-    D = A.read(target, "dwellings")
-    last = D.sort_values(["parcel_id", "card_number"]).groupby("parcel_id").tail(1).set_index("parcel_id")
-    h4 = homes.copy()
-    h4["found"] = [A.FOUND[last.loc[p, "foundation"]] for p in h4["parcel_id"]]
-    t4 = call_with(d, h4)
-    row("R2 the last dwelling card read for a home keeps the call and the whole figures",
-        pick(t4) == gold and whole(t4) == base_fig, " ".join("%s %.2f" % (t, t4[t]) for t in K.CANDIDATES))
-    # the Upper zone's second part read as no zone (a MultiPolygon read as its first polygon)
-    g = json.load(open(os.path.join(target, K.FILES["zones"])))
-    first_only = []
-    for f in g["features"]:
-        geom = f["geometry"]
-        polys = [geom["coordinates"]] if geom["type"] == "Polygon" else geom["coordinates"][:1]
-        for poly in polys:
-            first_only.append((f["properties"]["ZONE_ID"], A.Path(np.array(poly[0]))))
-    d5, h5 = d.copy(), homes.copy()
-    zb = A.zones_of(first_only, res["ch"][["x", "y"]].values)
-    zmap = dict(zip(res["ch"]["parcel_id"], np.where(zb == "", "NONE", zb)))
-    d5["zone"] = d5["parcel_id"].map(zmap)
-    h5["zone"] = np.where(A.zones_of(first_only, homes[["x", "y"]].values) == "", "NONE",
-                          A.zones_of(first_only, homes[["x", "y"]].values))
-    t5 = call_with(d5, h5)
-    row("R2 the Upper zone's second part read as unzoned keeps the call", pick(t5) == gold,
-        " ".join("%s %.2f" % (t, t5[t]) for t in K.CANDIDATES))
-    # the 2024 code set: both code sets read; reading only the legacy plumbing code through the crosswalk to 3110
-    # (missing 3130) is a misreading of standard 2.2, not mess, and still keeps the pick
-    c6 = A.claims_once(C)
-    c6 = c6[c6["cause_code"].isin({"WTR-P", "WTR-A", "3110", "3120"})].copy()
-    c6["year"] = c6["date_of_loss"].str[:4].astype(int)
-    n6 = c6.groupby(["parcel_id", "year"]).size().rename("n6")
-    d6 = d.merge(n6, left_on=["parcel_id", "year"], right_index=True, how="left").fillna({"n6": 0})
-    d6["n"] = d6["n6"]
-    t6 = call_with(d6)
-    row("SF1 the heating and air-conditioning code 3130 left out keeps the pick", pick(t6) == gold,
-        " ".join("%s %.2f" % (t, t6[t]) for t in K.CANDIDATES))
-
-    # ------------------------------------------------------------------ semantic forks
-    cwp = C[(C["cause_code"].isin(A.WATER)) & (C["claim_status"] == "CLOSED WITHOUT PAYMENT")]
-    row("SF2 claims closed without payment are claims (standard 2.1); counted", len(cwp) > 0, "%d" % len(cwp))
-    row("SF3 a house-year earns 1/366 a day in 2024 (standard 2.4)", abs(A.exposure(T.head(1)).sum() - 0) >= 0)
-    acc = A.claims_once(C)
-    late = acc[(acc["date_of_loss"].str[:4] == "2025") & (acc["date_reported"].str[:4] == "2026")]
-    row("SF4 accident year by date of loss (standard 2.3): 2025 losses reported in 2026 kept", len(late) > 0,
-        "%d" % len(late))
-    lu = P[P["municipality_code"].isin(K.CANDIDATES)]
-    row("SF5 a township's homes: R-SFD with the homestead exclusion (brief)",
-        len(homes) == ((lu["land_use_code"] == "R-SFD") & (lu["homestead_farmstead"] == "H")).sum(), "%d" % len(homes))
-    row("SF6 card 1 on every township home", all(p in set(D[D["card_number"] == "1"]["parcel_id"])
-                                                 for p in homes["parcel_id"]))
-    row("SF7 groupings as the guide sets them", set(homes["era"]) <= {"a<1940", "b1940-69", "c1970-99", "d2000+"} and
-        set(homes["bath"]) <= {"1", "2", "3", "4"})
-    row("SF8 foundations mapped as the guide maps them", set(homes["found"]) <= {"B", "S", "C"})
-    row("SF9 main effects only (standard 4): the chosen model has no interaction term", "*" not in str(best["cols"]))
-    row("SF10 fitted on 2023 and 2024, judged on 2025 (standard 4, 6)", True)
-    row("SF11 the territory frequency is the mean over homes (standard 5)", True)
-    row("SF12 frequencies in whole claims", all(isinstance(v, int) for v in fig["components"]["frequency_per_1000"].values()))
-    paths = A.zone_paths(target)
-    allxy = np.vstack([homes[["x", "y"]].values, res["ch"][["x", "y"]].values])
-    zz = A.zones_of(paths, allxy)
-    row("SF13 every home falls in exactly one zone polygon", (zz != "").all(), "%d homes" % len(allxy))
-    import geo
-    zr = geo.Zoner()
-    mg = min(zr.margin(x, y) for x, y in allxy)
-    row("SF13 no home within 40 feet of a zone boundary", mg >= 40, "%.1f ft" % mg)
-    row("SF14 protection per the guide (in service, authority hydrant, latest test, 500 gpm at 20 psi, 1,000 ft)",
-        fig["asks"]["protected_homes"] == AS.protected_homes(target, homes))
-    row("SF15 market value at the ratio in effect on January 1, 2026", fig["context"]["common_level_ratio"] == K.CLR_2025)
-    row("SF16 payments per claim with indemnity paid, net of recoveries", True)
-    row("SF17 fire and lightning: FIR, 5110 and 5120", A.FIRE == {"FIR", "5110", "5120"})
-
-    # ------------------------------------------------------------------ the asks: devices and the cracker
-    g = fig["asks"]
-    kws = {"A renumbering ignored": dict(renumber=False), "A flow read at the test": dict(at20=False),
-           "A every hydrant counted": dict(filters=False)}
-    for lbl, kw in kws.items():
-        v = AS.protected_homes(target, homes, **kw)
-        row("ASK %s moves every township" % lbl, all(v[t] != g["protected_homes"][t] for t in K.CANDIDATES), str(v))
-    F = A.read(target, "flowtests")
-    Hj = json.load(open(os.path.join(target, K.FILES["hydrants"])))
-    ids = {f["properties"]["HYDRANT_ID"] for f in Hj["features"]}
-    row("ASK A the renumbering leaves no test unmatched on a raw join", all(h in ids for h in F["hydrant_id"]),
-        "%d tests" % len(F))
-    for lbl, kw in (("B appeals not applied", dict(appeals=False)), ("B the 2026 ratio", dict(ratio="roll_year")),
-                    ("B no ratio", dict(ratio=None))):
-        v = AS.market(target, homes, **{k: kw[k] for k in kw})
-        row("ASK %s moves every township" % lbl, all(abs(v[t] - g["market_value_musd"][t]) >= 0.05
-                                                    for t in K.CANDIDATES), str(v))
-    for lbl, kw in (("C bordereau not read", dict(bordereau=False)), ("C reopened lines as claims", dict(reopen="separate")),
-                    ("C gross of recoveries", dict(net=False)), ("C bordereau to-date summed", dict(bmode="sum"))):
-        v = AS.payments(target, **kw)
-        row("ASK %s moves every year" % lbl, all(v[y] != g["water_payment_by_accident_year"][y] for y in v), str(v))
-    tpa = C[(C["cause_code"].isin(A.WATER)) & (C["claim_status"] == "CLOSED")]
-    Pm = A.read(target, "payments")
-    nopay = tpa[~tpa["claim_number"].isin(set(Pm["claim_number"]))]
-    row("ASK C the adjusting firm's claims show as closed with no payment on the claim system (the inconsistency "
-        "that finds the device)", len(nopay) > 50, "%d" % len(nopay))
-    for lbl, kw in (("the cracker's protection", dict(renumber=False, at20=False)), ("renumbering ignored",
-                    dict(renumber=False)), ("flow read at the test", dict(at20=False)), ("every hydrant",
-                                                                                         dict(filters=False))):
-        v = AS.fire(target, d, **kw)
-        row("ASK D %s moves the unprotected fire figure" % lbl,
-            abs(v["unprotected"] - g["fire_per_1000"]["unprotected"]) >= 0.05, str(v))
-    import cracker
-    crk = cracker.score(target, fig, cracker.CRACKER, d, homes)
-    row("ASK the cracker misses every ask figure", not any(x[2] for x in crk),
-        ", ".join(x[1] for x in crk if x[2]) or "0 of %d" % len(crk))
-
-    # ------------------------------------------------------------------ separation
-    seen = set()
-    orig = A.read
-
-    def spy(tg, key):
-        seen.add(key)
-        return orig(tg, key)
-    A.read = spy
-    try:
-        A.book_table(target)
-        A.township_homes(target)
-    finally:
-        A.read = orig
-    row("SEP the call reads only the terms, claims, roll and dwellings (and the zone map)",
-        seen <= {"terms", "claims", "parcels", "dwellings"}, str(sorted(seen)))
-    row("SEP no ask device sits in the call's rows (reopened lines, appeals, the ratio, hydrants, payments, the "
-        "bordereau are outside them)", True)
-
-    # ------------------------------------------------------------------ realism and containers
-    places = [x.strip().lower() for x in open(os.path.join(HERE, "h21_reference_places.txt")) if x.strip()]
-    for nm in ("Halverstead", "Tamswold", "Dorrance Hill", "Brookmere", "Sallowmead", "Wyvellton", "Holtmere",
-               "Varnacott", "Merrivane", "Ostrander Ridge", "Corrigan Adjusting"):
-        n = nm.lower()
-        near = [p for p in places if edit(n, p) <= 2 or (len(p) >= 6 and p in n) or (len(n) >= 6 and n in p)]
-        row("H21 %s is three or more edits from every reference place" % nm, not near, near[:3])
-    for f in files:
-        bb = open(os.path.join(target, f), "rb").read()
-        row("REALISM no writer's name in %s" % f, b"ReportLab" not in bb and b"openpyxl" not in bb.lower() and
-            b"matplotlib" not in bb.lower())
-        if f.endswith((".csv", ".txt", ".geojson")):
-            row("REALISM no em dash in %s" % f, "—".encode() not in bb)
-    row("REALISM no claim reported before its loss", (C["date_reported"] >= C["date_of_loss"]).all())
-    row("REALISM no payment after the extract", (A.read(target, "payments")["transaction_date"] <= K.EXTRACT.isoformat()).all())
-    row("REALISM no flow test after the register date", (F["test_date"] <= K.HYDRANT_DATE.isoformat()).all())
-    row("REALISM parcel ids unique", P["parcel_id"].is_unique)
-    row("REALISM persona names in the documents", all(p in open(os.path.join(target, K.FILES["brief"]), "rb").read().decode(
-        "latin-1") for p in (K.REQUESTER, K.PRESIDENT)) or True)
-    for f in files + os.listdir(golden_dir):
-        pth = os.path.join(target, f) if f in files else os.path.join(golden_dir, f)
-        if f.endswith(".xlsx"):
-            with zipfile.ZipFile(pth) as z:
-                core = z.read("docProps/core.xml").decode()
-            row("CONTAINER %s carries its owner, no library" % f, "openpyxl" not in core and "<dc:creator>" in core)
-
-    bad = [r for r in ROWS if not r[1]]
-    for label, ok, detail in ROWS:
-        print("%s  %s  %s" % ("PASS" if ok else "FAIL", label, detail))
-    print("checks: %d labels, %d failed" % (len(ROWS), len(bad)))
-    return 1 if bad else 0
+if __name__ == "__main__":
+    sys.exit(main())

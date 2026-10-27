@@ -1,39 +1,59 @@
 ## Tags
 
-> **Domain:** Actuarial Science & Insurance (claims frequency and severity).
-> **Analytical objective:** Descriptive & Distribution Analysis.
+**Domain:** Quantitative Finance (market microstructure and execution cost: each venue's adverse move in the minute after a fill, read for single whole orders from a year of an asset manager's algorithmic fills).
+**Analytical objective:** Descriptive & Distribution Analysis.
 
 ## 1. Final Recommendation
 
-**Open the 2027 agency in Dorrance Hill Borough.** Its owner-occupied single-family homes would bring 21 non-weather water claims per 1,000 house-years at our 2023 to 2025 experience, 4 fewer than Sallowmead's 25. Not Sallowmead, 1,238 of whose 3,096 homes draw from the water authority's Valley zone. Not Brookmere (28), whose newer slab-built homes look safest on the policy record but 2,192 of whose 2,584 homes draw from the Valley zone, where our homes claim at 2.31 times the rate of the Upper zone.
+**The board should keep Delvenne lit, Ardenwick mid, Thursgate mid and Quintrell SI off the platform's venue list and send the platform's orders to Wexcombe, Ardenwick lit, Delvenne Midpoint and Brindock SI.**
+Read on the desk's 2026 fills with no desk trade in the same share in the following minute, the four meet an average adverse move of 2 (Delvenne lit), 3 (Ardenwick mid), 2 (Thursgate mid), 2 (Quintrell SI) basis points against the policy's 1.5. Not every 2026 fill averaged, which counts the same order's following child fills inside each fill's minute and passes Ardenwick mid and Thursgate mid; not the desk's 2026 single orders, which never used the midpoint books; not a short horizon, which stops before the move is made.
 
 ## 2. Critical Components
 
-1. Homes in the Valley zone: Dorrance Hill **217** of 2,769, Sallowmead **1,238** of 3,096, Brookmere **2,192** of 2,584
-2. The Frequency Model Standard's 2025 test chooses foundation and water supply zone at a Poisson deviance of **3,169.4**, against **3,252.4** for the best model on the characteristics the policy terms record (foundation alone)
-3. Non-weather water claims per 1,000 house-years: Dorrance Hill **21**, Sallowmead **25**, Brookmere **28**
+1. Delvenne MTF lit book's adverse move for the platform's orders is **2 basis points**.
+2. Ardenwick MTF midpoint book's adverse move for the platform's orders is **3 basis points**.
+3. Thursgate MTF midpoint book's adverse move for the platform's orders is **2 basis points**.
+4. Quintrell Markets SI's adverse move for the platform's orders is **2 basis points**.
 
 ## 3. Step-by-Step Solution
 
-1. Earned house-years by home and accident year from policy_terms_2023_2025.csv (standard 2.4) and non-weather water claims from claims_register_2023_2025.csv (standard 2.1 to 2.3: WTR-P, WTR-A, 3110, 3120 and 3130, each claim once with the -R1 lines dropped, by date of loss): 1,258 claims over 54,233.4 house-years, 23 per 1,000.
-2. Placed each home's parcel point from tamswold_parcels_2026.csv in tcwa_pressure_zones.geojson (the Upper zone's two polygons are one zone): 217, 1,238 and 2,192 of the townships' homes are in the Valley zone.
-3. Ran the standard's section 4 search over every main-effects Poisson model on foundation, year built era, full bathrooms, construction, stories and zone, fitted on 2023 and 2024 and judged on 2025: foundation and zone win at 3,169.4, the best model without the zone (foundation alone) scores 3,252.4.
-4. Refitted the model on 2023 to 2025 (Valley zone 2.31 times the Upper zone) and averaged each township's owner-occupied single-family homes (R-SFD with the homestead exclusion, card 1 of tamswold_dwellings_2026.csv mapped per the underwriting guide): Dorrance Hill 21, Sallowmead 25, Brookmere 28 per 1,000 house-years.
-5. Protected homes per the underwriting guide section 2: each test in tcwa_hydrant_flow_tests.csv joined to its hydrant by the number in force on its date (FORMER_ID before April 1, 2024), the latest test's flow carried to 20 psi residual by NFPA 291 (flow times ((static - 20) / (static - residual)) to the 0.54), in-service authority hydrants within 1,000 feet: Dorrance Hill 2,182, Sallowmead 2,686, Brookmere 1,994.
-6. Market value: the roll's 2026 assessed totals, replaced by the 2026 decisions in assessment_appeals_2026.csv, over the common level ratio in effect on January 1, 2026 (0.451): Dorrance Hill $804.6 million, Sallowmead $906.7 million, Brookmere $768.0 million.
-7. Water claim payments: indemnity per claim from claim_payments_2023_2026.csv (the -R1 lines' payments folded into their claim) plus the latest paid to date in cas_bordereau_halverstead_2023_2026.xlsx for the claims Corrigan Adjusting Services handled, net of recoveries: 2023 $10,769, 2024 $11,056, 2025 $11,670; fire and lightning claims (FIR, 5110, 5120) on the book's unprotected homes: 5.3 per 1,000 house-years.
-8. The agency opens in Dorrance Hill Borough, the township with the fewest non-weather water claims per house-year.
+1. Took the executions in hessenby_tca_executions_2026-01-02_to_2026-10-30.csv once each (one row per broker_exec_id), left out those ashlowe_execution_report_2026.csv and pemberwick_execution_report_2026.xlsx report as busted and the closing auction, and computed each fill's adverse move from mid_at_exec and mid_plus_60s as the adverse-move test in order_execution_policy_2025.pdf defines it: 171,750 fills.
+2. Kept the fills after which no other desk execution in the same share, busted ones included, printed within 60 seconds, the platform's orders being sent whole and filled in one execution (wealth_dealing_plan_2027.pdf 4), with THGD and THGM as Thursgate's one book (venue_register_2026.xlsx): 69,118 fills.
+3. Averaged each venue's adverse move over those fills and kept off the list every venue above 1.5 basis points: Delvenne lit, Ardenwick mid, Thursgate mid and Quintrell SI.
+4. For the market orders, took each client order with a Gresmere note dated 1 January to 30 October 2026 (cancelled notes out, the new system's second issue of an end-of-June trade the old system had noted, same order, trade date, time and shares, out, an order's parts summed) at the dealing point its placed_at, a UTC time, gives under the plan's 15-minute cut-offs and the trading calendar, netted buys and sells in each share at each point, and divided each market order by the share's ADV, the consolidating line's shares before 18 May divided by ten (corporate_actions_2026.json), the order book carrying the new line's code on every order: mean sizes 0.169, 0.119 and 0.112 per cent.
+5. For Gresmere's 2026 dealing, valued each effective note at shares times price_gbx, since the consideration column carries stamp duty on the old system's purchases and the client's net amount on the new system's notes, and took each trade month's purchases less its sales, January to October.
+6. The board keeps Delvenne lit, Ardenwick mid, Thursgate mid and Quintrell SI off the list.
 
 ## 4. Deliverable Answers
 
-### agency_township_2027.xlsx
+### venue_list_board_paper_2027.pdf
 
-1. Non-weather water claims per 1,000 house-years: Dorrance Hill 21; Sallowmead 25; Brookmere 28
-2. Protected owner-occupied single-family homes: Dorrance Hill 2,182; Sallowmead 2,686; Brookmere 1,994
-3. Total market value of those homes: Dorrance Hill $804.6 million; Sallowmead $906.7 million; Brookmere $768.0 million
-4. Average non-weather water claim payment: 2023 $10,769; 2024 $11,056; 2025 $11,670
-5. Fire and lightning claims per 1,000 house-years, 2023 to 2025, on the homes the guide classes as unprotected: 5.3
+1. Venues kept off the platform's list: Delvenne lit, Ardenwick mid, Thursgate mid and Quintrell SI.
+2. Each venue's adverse move for the platform's orders, whole basis points:
+   - Wexcombe Stock Exchange: 0, on the list
+   - Ardenwick MTF lit book: 1, on the list
+   - Delvenne MTF lit book: 2, kept off
+   - Ardenwick MTF midpoint book: 3, kept off
+   - Delvenne Midpoint: 1, on the list
+   - Thursgate MTF midpoint book: 2, kept off
+   - Brindock Securities SI: 0, on the list
+   - Quintrell Markets SI: 2, kept off
+3. Bar chart of the eight venues' adverse moves against the 1.5 basis point line, the four kept off in red.
 
-### water_claims_by_township_2027.png
+### venue_review_2027.xlsx
 
-1. Horizontal bars of the three townships' frequencies, Dorrance Hill (21) highlighted, Sallowmead 25 and Brookmere 28, against a dashed line at the book's own 23 per 1,000 house-years
+4. Mean size of the platform's 2026 dealt orders as market orders under the 2027 dealing plan, per cent of the share's average daily volume, three decimals:
+   - 09:30: 0.169
+   - 12:00: 0.119
+   - 14:30: 0.112
+5. Value bought less value sold through Gresmere by trade month, £ million, two decimals:
+   - January 2026: 4.72
+   - February 2026: 4.40
+   - March 2026: 5.05
+   - April 2026: 3.71
+   - May 2026: 4.31
+   - June 2026: 3.13
+   - July 2026: 4.65
+   - August 2026: 4.23
+   - September 2026: 3.18
+   - October 2026: 3.87

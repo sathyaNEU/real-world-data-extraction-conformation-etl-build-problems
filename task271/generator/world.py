@@ -1,256 +1,348 @@
-"""The world before any export is written: every residential parcel in the seven townships with its dwelling and
-water zone, the homes Halverstead Mutual insured over 2023 to 2025 with their policy terms, every claim by peril
-with its payments, and the authority's hydrants with their flow tests. Nothing here is mess; records.py writes the
-exports the systems produce."""
+"""task271 world: the stock universe, the central desk's 2026 parent orders and their executions with the mid path
+around each, the desk's single orders, and the closing auction executions. Every number here is the generator's
+clean truth; records.py writes the systems' own views of it."""
+from __future__ import annotations
+
 import datetime as dt
 import math
 
 import numpy as np
 
 import common as K
-import geo
 
-D0 = dt.date(2022, 1, 1)
+SYL_A = ["Bal", "Cal", "Dar", "Fen", "Gal", "Hal", "Kel", "Lan", "Mar", "Nor", "Pel", "Quen", "Ros", "Sel", "Tal",
+         "Ven", "Wel", "Yar", "Bran", "Cor", "Dun", "Esk", "Grav", "Hest", "Ister", "Jor", "Kest", "Lor", "Mel", "Orm",
+         "Pran", "Rav", "Stor", "Trel", "Ul", "Vos", "Wint", "Zel"]
+SYL_B = ["drake", "worth", "mere", "brook", "vane", "holt", "garth", "stow", "wick", "combe", "lowe", "dene", "fold",
+         "ridge", "moor", "thorne", "haven", "bury", "lock", "stead"]
+SECTORS = [("Industrials", ["Engineering", "Industries", "Group", "Holdings"]),
+           ("Consumer", ["Foods", "Brands", "Retail", "Group"]),
+           ("Financials", ["Capital", "Holdings", "Insurance", "Group"]),
+           ("Real estate", ["Estates", "Property", "Land"]),
+           ("Technology", ["Systems", "Software", "Technologies"]),
+           ("Energy", ["Energy", "Resources", "Power"]),
+           ("Health care", ["Healthcare", "Pharma", "Medical"]),
+           ("Materials", ["Minerals", "Materials", "Chemicals"])]
+N_STOCKS = 120
+# The master's names and tickers, drawn once from a wider pool and screened against the reference places (H21,
+# asserted in checks.py); the universe's random stream is consumed as before, so every price, volume and fill stands.
+SHARES = [("Quorent plc", "QRN"), ("WNP Group plc", "WNP"), ("Cleveside Insurance plc", "CLVS"),
+          ("Cransroyd Property plc", "CPR"), ("Quorana Group plc", "QRG"), ("Pyrira plc", "PYR"),
+          ("Langcote Pharma plc", "LNGC"), ("Trentgate Chemicals plc", "TRN"), ("Sandshaw Industries plc", "SDW"),
+          ("Gorsecote Retail plc", "GRSC"), ("Ockside Capital plc", "OCKS"), ("Renello plc", "RNL"),
+          ("Hathercote Technologies plc", "HTH"), ("Hazelness Energy plc", "HZL"), ("Birkmead Healthcare plc", "BHR"),
+          ("Ostant plc", "OST"), ("Clevegate Industries plc", "CLV"), ("Osberthwaite Brands plc", "OBS"),
+          ("Tessova plc", "TSV"), ("Westermead Land plc", "WTRM"), ("Ixura plc", "IXR"), ("Aldshaw Power plc", "ALDS"),
+          ("Rainvale Healthcare plc", "RHN"), ("Gorselands Minerals plc", "GRSL"), ("Hambness Holdings plc", "HMBN"),
+          ("RPL Group plc", "RPL"), ("Pentgate Group plc", "PNTG"), ("LNH Holdings plc", "LNH"),
+          ("PJH Group plc", "PJH"), ("Novura plc", "NVR"), ("Ockshaw Pharma plc", "OPC"),
+          ("Pentcote Materials plc", "PNT"), ("Ackroyd Ormerod plc", "ACK"), ("Quardale Group plc", "QRDL"),
+          ("Ostira plc", "OTR"), ("Kennside Land plc", "KLN"), ("Inglecote Technologies plc", "IGC"),
+          ("Carrcote Resources plc", "CRR"), ("Synaro plc", "SYNR"), ("BJM plc", "BJM"), ("Saxlands Group plc", "SXL"),
+          ("Bramness Brands plc", "BRM"), ("FVS plc", "FVS"), ("Hatherling Land plc", "HHR"),
+          ("Stanmead Systems plc", "SST"), ("Elstgate Resources plc", "ELS"), ("Fyrex Group plc", "FYRX"),
+          ("Sturrmead Chemicals plc", "SCT"), ("Kennling Holdings plc", "KNL"), ("Rookmore Foods plc", "RKM"),
+          ("WDR Holdings plc", "WDR"), ("Thornvale Property plc", "TPH"), ("Thornmore Software plc", "TSH"),
+          ("Quarshaw Energy plc", "QER"), ("TSD Holdings plc", "TSD"), ("WRN plc", "WRN"),
+          ("Draydale Group plc", "DDL"), ("Sturrside Foods plc", "STRS"), ("Pampwood Group plc", "PMP"),
+          ("Liddwick Land plc", "LDWC"), ("Voraro Group plc", "VRG"), ("Birkwick Resources plc", "BKW"),
+          ("Liddside Pharma plc", "LDSD"), ("Woldvale Minerals plc", "WLDV"), ("Fyrova plc", "FYR"),
+          ("Tessica plc", "TSC"), ("Cormwick Holdings plc", "CRMW"), ("Rookgate Property plc", "RKGT"),
+          ("Jessop Halliwell plc", "JSP"), ("Merura Group plc", "MRG"), ("Kirtroyd Pharma plc", "KPR"),
+          ("Draygate Minerals plc", "DYG"), ("Vantmore Group plc", "VNTM"), ("Vorica Group plc", "VRC"),
+          ("Hazelcote Capital plc", "HCZ"), ("Paxica plc", "PXC"), ("Cormdale Software plc", "CMD"),
+          ("Fairclough Priestley plc", "FPR"), ("Synum plc", "SYN"), ("Cransling Minerals plc", "CMR"),
+          ("Xanura plc", "XNR"), ("Osberdale Retail plc", "ORS"), ("Sheldale Group plc", "SHL"),
+          ("Trentmead Land plc", "TRNT"), ("Quarmby & Thewlis plc", "QRM"), ("LCG Holdings plc", "LCG"),
+          ("Farnling Medical plc", "FRNL"), ("Pyryx Group plc", "PYRY"), ("Evura Group plc", "EVR"),
+          ("Malroyd Group plc", "MLRY"), ("Holroyd & Nuttall plc", "HLR"), ("Paxura plc", "PXR"),
+          ("Woldfield Technologies plc", "WTL"), ("RLM Group plc", "RLM"), ("Lumola plc", "LML"),
+          ("Wyckwood Materials plc", "WMY"), ("Gillwick Industries plc", "GLW"), ("Yeoroyd Group plc", "YRYD"),
+          ("Glenroyd Capital plc", "GLR"), ("Ridroyd Land plc", "RDRY"), ("Hambmore Systems plc", "HSM"),
+          ("Bellthwaite Energy plc", "BEL"), ("MBK plc", "MBK"), ("Stanshaw Minerals plc", "SNW"),
+          ("Ingleness Engineering plc", "IEN"), ("Bramlands Foods plc", "BML"), ("Shelthwaite Insurance plc", "SHLT"),
+          ("Lumera plc", "LMR"), ("Tamthwaite Technologies plc", "TTM"), ("Collness Energy plc", "CLNS"),
+          ("Zenant Group plc", "ZNT"), ("Wycklands Chemicals plc", "WYC"), ("Tynvale Industries plc", "TYNV"),
+          ("Ibbotson & Oddie plc", "IOB"), ("Vantlow Holdings plc", "VNT"), ("Uppvale Property plc", "UPP"),
+          ("Lyndby Technologies plc", "LYN"), ("Myrlands Resources plc", "MYR"), ("Rainlow Pharma plc", "RPN"),
+          ("Pampmore Minerals plc", "PPM")]
+FORMER_NAME = {88: "Kirtgate Group plc"}    # the name the share traded under until 3 August 2026
+CONSOLIDATED_INDEX = 57                  # the FTSE 250 stock that consolidated ten old shares into one on 18 May
+CONSOLIDATION_DATE = dt.date(2026, 5, 18)
 
 
-def day(d):
-    return (d - D0).days
+def _sedol(rg):
+    chars = "0123456789BCDFGHJKLMNPQRSTVWXYZ"
+    body = "B" + "".join(chars[int(rg.integers(0, len(chars)))] for _ in range(5))
+    w = [1, 3, 1, 7, 3, 9]
+    s = sum((int(c) if c.isdigit() else ord(c) - 55) * wi for c, wi in zip(body, w))
+    return body + str((10 - s % 10) % 10)
 
 
-def date(n):
-    return D0 + dt.timedelta(int(n))
+def _isin(sedol):
+    base = "GB00" + sedol
+    digits = "".join(str(int(c)) if c.isdigit() else str(ord(c) - 55) for c in base)
+    tot = 0
+    for i, ch in enumerate(reversed(digits)):
+        d = int(ch)
+        if i % 2 == 0:
+            d *= 2
+            d = d - 9 if d > 9 else d
+        tot += d
+    return base + str((10 - tot % 10) % 10)
 
 
-# per township: residential parcels, owner-occupied single-family share, Valley share of homes, year-built
-# profile (low, high, skew), basement share, the mutual's share of owner-occupied single-family homes
-PROFILE = {
-    "WYV": dict(n=13800, sfd_oo=0.68, valley=0.44, yb=(1895, 2024, 0.75), bsmt=0.63, insured=0.62),
-    "HLT": dict(n=12600, sfd_oo=0.71, valley=0.28, yb=(1895, 2024, 0.85), bsmt=0.62, insured=0.60),
-    "VRN": dict(n=10400, sfd_oo=0.73, valley=0.05, yb=(1895, 2024, 0.90), bsmt=0.61, insured=0.61),
-    "MRV": dict(n=9600, sfd_oo=0.70, valley=0.25, yb=(1895, 2024, 0.85), bsmt=0.63, insured=0.60),
-    "DOR": dict(n=3900, sfd_oo=0.71, valley=0.06, yb=(1895, 2024, 0.80), bsmt=0.90, insured=0.0),
-    "BRK": dict(n=3400, sfd_oo=0.76, valley=0.86, yb=(1895, 2024, 0.90), bsmt=0.16, insured=0.0),
-    "SAL": dict(n=4300, sfd_oo=0.72, valley=0.40, yb=(1895, 2024, 0.85), bsmt=0.55, insured=0.0),
-}
-LAND_USE_OTHER = [("R-TWN", 0.34), ("R-DUP", 0.18), ("R-MH", 0.10), ("R-APT", 0.06), ("R-SFD", 0.32)]
+def tick(price):
+    return 0.05 if price < 100 else (0.2 if price < 500 else (0.5 if price < 1000 else (1.0 if price < 5000 else 2.0)))
 
 
-class World:
-    def __init__(self, seed=K.SEED):
-        self.seed = seed
-        self.rng = np.random.default_rng(seed)
-        self.zoner = geo.Zoner()
-        self.parcels = []      # dicts
-        self.homes = {}        # parcel_id -> home dict (owner-occupied single-family detached)
-        self._parcels()
-        self.hydrants = []
-        self._hydrants(np.random.default_rng(seed + 101))
-        self._protection()
-        self.book = []         # insured homes: dict with parcel_id, policy_no, terms
-        self.terms = []
-        self._book()
-        self.claims = []
-        self._claims(np.random.default_rng(seed + 202), np.random.default_rng(seed + 303))
+def universe():
+    """120 UK equities: names, codes, price, ADV, volatility, spread, index band."""
+    rg = K.rng("universe")
+    names, seen = [], set()
+    while len(names) < N_STOCKS:
+        stem = SYL_A[int(rg.integers(0, len(SYL_A)))] + SYL_B[int(rg.integers(0, len(SYL_B)))]
+        if stem in seen:
+            continue
+        seen.add(stem)
+        names.append(stem)
+    out = []
+    for i, stem in enumerate(names):
+        sec, words = SECTORS[i % len(SECTORS)]
+        rg.integers(0, len(words))           # the draw that once chose a sector word, kept so the stream is unchanged
+        nm, tk = SHARES[i]
+        sedol = _sedol(rg)
+        band = "FTSE 100" if i < 40 else ("FTSE 250" if i < 100 else "Small cap")
+        adv = float(np.exp(rg.normal({"FTSE 100": 15.6, "FTSE 250": 14.1, "Small cap": 12.7}[band], 0.45)))
+        price = float(np.exp(rg.normal(5.9, 0.75)))
+        price = max(40.0, min(price, 9000.0))
+        vol = float({"FTSE 100": 95, "FTSE 250": 135, "Small cap": 175}[band] * np.exp(rg.normal(0, 0.18)))
+        spread = float({"FTSE 100": 4.0, "FTSE 250": 9.0, "Small cap": 22.0}[band] * np.exp(rg.normal(0, 0.25)))
+        out.append(dict(i=i, name=nm, sector=sec, ticker=tk, sedol=sedol, isin=_isin(sedol), band=band,
+                        adv=adv, price=price, vol=vol, spread=spread))
+    c = out[CONSOLIDATED_INDEX]
+    c["price"] = 286.0                   # new shares; the old line traded near 29p
+    c["adv"] = c["adv"] * 0.6
+    c["old_sedol"] = _sedol(rg)
+    c["old_isin"] = _isin(c["old_sedol"])
+    return out
 
-    # ---- parcels and dwellings
-    def _parcels(self):
-        rng = self.rng
-        seq = 0
-        for town, _, _ in K.TOWNS:
-            p = PROFILE[town]
-            n_sfd = int(round(p["n"] * p["sfd_oo"]))
-            pts = geo.place(rng, self.zoner, town, p["n"], p["valley"] * 0.96 + 0.02,
-                            other_zones=["PZ-2"])
-            for i, (x, y, z) in enumerate(pts):
-                seq += 1
-                lo, hi, sk = p["yb"]
-                yb = int(lo + (hi - lo) * rng.beta(1.4 * sk, 1.4))
-                oo_sfd = i < n_sfd
-                if oo_sfd:
-                    lu, homestead = "R-SFD", "Y"
+
+def day_prices(stocks, days):
+    """Each stock's closing mid on each trading day: a random walk at its daily volatility."""
+    rg = K.rng("closes")
+    P = {}
+    for s in stocks:
+        steps = rg.normal(0, s["vol"] / 1e4, len(days))
+        lvl = s["price"] * np.exp(np.cumsum(steps) - 0.5 * np.arange(1, len(days) + 1) * (s["vol"] / 1e4) ** 2)
+        P[s["i"]] = {d: float(v) for d, v in zip(days, lvl)}
+    return P
+
+
+def g_build(h, tau):
+    """Share of a fill's 60-second adverse move built h seconds after it."""
+    h = np.minimum(np.maximum(h, 0.0), float(K.HORIZON))
+    return (1 - np.exp(-h / tau)) / (1 - math.exp(-K.HORIZON / tau))
+
+
+class Parent:
+    __slots__ = ("pid", "day", "stock", "side", "algo", "style", "qty", "pct", "t0", "t_end", "children", "arrival_mid",
+                 "kind", "auction", "order_id", "fund")
+
+
+def _schedule(style, rg, q_pct, t0):
+    """Child times (seconds after the parent's release), shares of the parent, and routing phase per child."""
+    times, shares, phase = [], [], []
+    if style == "IS":
+        nb = int(max(9, round(q_pct * 0.35 / 0.022)))
+        tb = np.sort(rg.uniform(0.5, 90.0, nb))
+        dur = float(rg.uniform(15, 60) * 60)
+        nw = int(max(6, round(q_pct * 0.65 / 0.05)))
+        gaps = rg.exponential(dur / nw, nw)
+        tw = 90.0 + np.cumsum(gaps)
+        times = list(tb) + list(tw)
+        shares = [0.35 / nb] * nb + [0.65 / nw] * nw
+        phase = ["burst"] * nb + ["work"] * nw
+    elif style in ("VWAP", "POV"):
+        nb = 4
+        tb = np.sort(rg.uniform(0.5, 20.0, nb))
+        dur = float(rg.uniform(60, 200) * 60) if style == "VWAP" else float(rg.uniform(20, 80) * 60)
+        mean_gap = 95.0 if style == "VWAP" else 70.0
+        nw = int(max(6, round(dur / mean_gap)))
+        tw = 20.0 + np.cumsum(rg.exponential(dur / nw, nw))
+        times = list(tb) + list(tw)
+        shares = [0.06 / nb] * nb + [0.94 / nw] * nw
+        phase = ["burst"] * nb + ["vwap"] * nw
+    elif style == "CLOSE":
+        dur = K.CLOSE_S - 60 - t0
+        nw = int(max(6, round(dur / 55.0)))
+        tw = np.cumsum(rg.exponential(dur / (nw + 1), nw))
+        tw = tw[tw < dur]
+        times = list(tw)
+        shares = [0.65 / max(1, len(tw))] * len(tw)
+        phase = ["work"] * len(tw)
+    jit = rg.uniform(0.7, 1.3, len(shares))
+    shares = list(np.array(shares) * jit / (np.array(shares) * jit).sum() * (0.65 if style == "CLOSE" else 1.0))
+    return times, shares, phase
+
+
+def desk_orders(stocks, days, P):
+    """The desk's 2026 algorithmic parents and single orders, with no two of the desk's orders in one stock at once."""
+    rg = K.rng("parents")
+    busy = {s["i"]: {} for s in stocks}
+    weights = np.array([{"FTSE 100": 3.0, "FTSE 250": 1.6, "Small cap": 0.8}[s["band"]] for s in stocks])
+    weights = weights / weights.sum()
+    algos = K.ALGOS
+    ashare = np.array([K.ALGO[a]["share"] for a in algos])
+    ashare = ashare / ashare.sum()
+    parents = []
+    n_par = 2800
+    n_single = 2100
+    pid = 0
+    for kind, n in (("algo", n_par), ("single", n_single)):
+        made = 0
+        while made < n:
+            day = days[int(rg.integers(0, len(days)))]
+            s = stocks[int(rg.choice(len(stocks), p=weights))]
+            side = "B" if rg.random() < 0.5 else "S"
+            p = Parent()
+            p.kind = kind
+            p.day, p.stock, p.side = day, s, side
+            p.auction = None
+            if kind == "algo":
+                a = algos[int(rg.choice(len(algos), p=ashare))]
+                p.algo, p.style = a, K.ALGO[a]["style"]
+                pct = float(np.exp(rg.normal(math.log(1.4), 0.55)))
+                pct = min(max(pct, 0.25), 7.0)
+                if p.style == "CLOSE":
+                    t0 = float(rg.uniform(15 * 3600 + 20 * 60, 15 * 3600 + 55 * 60))
                 else:
-                    lu = rng.choice([a for a, _ in LAND_USE_OTHER], p=[b for _, b in LAND_USE_OTHER])
-                    homestead = "N" if lu == "R-SFD" else rng.choice(["Y", "N"], p=[0.45, 0.55])
-                bsmt = rng.random() < p["bsmt"]
-                if bsmt:
-                    found = "BSMT FULL" if rng.random() < 0.78 else "BSMT PART"
-                else:
-                    found = "SLAB" if (town == "BRK" or rng.random() < 0.55) else rng.choice(["CRAWL", "PIERS"],
-                                                                                          p=[0.85, 0.15])
-                area = int(np.clip(rng.lognormal(math.log(1750 if yb < 1990 else 2250), 0.28), 760, 6200))
-                full = int(np.clip(round(area / 900 + rng.normal(0, 0.55)), 1, 5))
-                half = int(rng.random() < (0.55 if area > 1800 else 0.25))
-                stories = rng.choice([1.0, 1.5, 2.0], p=[0.38, 0.17, 0.45])
-                wall = rng.choice(["FRAME", "BRICK VENEER", "MASONRY", "STONE"], p=[0.58, 0.24, 0.13, 0.05])
-                land = int(rng.lognormal(math.log(48000), 0.35))
-                bldg = int(area * rng.lognormal(math.log(118.0 if yb < 1990 else 146.0), 0.18))
-                pid = "%02d-%03d-%04d" % (K.CANDIDATES.index(town) + 31 if town in K.CANDIDATES else
-                                          K.BOOK_TOWNS.index(town) + 11, (seq // 1000) % 1000, seq % 10000)
-                rec = dict(parcel_id=pid, town=town, x=x, y=y, zone=z, land_use=lu, homestead=homestead,
-                           year_built=yb, foundation=found, basement=bsmt, area=area, full=full, half=half,
-                           stories=float(stories), wall=wall, land=land, bldg=bldg)
-                self.parcels.append(rec)
-                if oo_sfd:
-                    self.homes[pid] = rec
-
-    # ---- the mutual's book
-    def true_rate(self, h):
-        return K.BASE_RATE * (K.BASEMENT_FACTOR if h["basement"] else 1.0) * K.ZONE_FACTOR[h["zone"]]
-
-    def _book(self):
-        rng = self.rng
-        pno = 410000
-        for town in K.BOOK_TOWNS:
-            homes = [h for h in self.homes.values() if h["town"] == town]
-            k = int(round(len(homes) * PROFILE[town]["insured"]))
-            pick = rng.choice(len(homes), size=k, replace=False)
-            for j in sorted(pick):
-                h = homes[j]
-                pno += int(rng.integers(1, 4))
-                anniv = int(rng.integers(0, 365))            # day of 2022 the policy renews on
-                first = date(anniv)
-                kind = rng.random()
-                start, end = first, None
-                if kind < 0.10:                                # new business during 2023 to 2025
-                    start = date(int(rng.integers(365, 365 * 4 - 30)))
-                    anniv = (start - dt.date(start.year, 1, 1)).days
-                lo = max(day(start) + 40, 365)
-                if rng.random() < 0.085 and lo < 365 * 4 - 1:   # sold or cancelled during 2023 to 2025
-                    end = date(int(rng.integers(lo, 365 * 4)))
-                ded = int(rng.choice([500, 1000, 2500], p=[0.22, 0.58, 0.20]))
-                cov = int(round(h["area"] * rng.normal(214, 14) / 1000.0)) * 1000
-                b = dict(parcel_id=h["parcel_id"], policy_no="HM%d" % pno, start=start, end=end, deductible=ded,
-                         coverage_a=cov, home=h)
-                self.book.append(b)
-                t0 = start
-                n = 0
-                while t0 <= K.EXPERIENCE[1]:
-                    t1 = dt.date(t0.year + 1, t0.month, min(t0.day, 28)) if (t0.month, t0.day) == (2, 29) else \
-                        dt.date(t0.year + 1, t0.month, t0.day)
-                    n += 1
-                    stop = end if (end is not None and t0 <= end < t1) else None
-                    if t1 > K.EXPERIENCE[0]:
-                        cov = int(round(cov * rng.normal(1.045, 0.006) / 1000.0)) * 1000 if n > 1 else cov
-                        self.terms.append(dict(policy_no=b["policy_no"], term=n, start=t0, end=t1, cancel=stop,
-                                               deductible=ded, coverage_a=cov, home=h))
-                    if stop is not None:
-                        break
-                    t0 = t1
-
-    def exposure(self, term, year):
-        """house-years the term earned in the calendar year"""
-        a = max(term["start"], dt.date(year, 1, 1))
-        b = min(term["cancel"] or term["end"], dt.date(year + 1, 1, 1))
-        return max(0, (b - a).days) / (366.0 if year == 2024 else 365.0)
-
-    # ---- claims, every peril
-    def _claims(self, rw, ro):
-        """non-weather water claims from their own stream (rw), every other peril from another (ro), so the water
-        record does not move when another peril's process is changed"""
-        cats = [(dt.date(2023, 6, 27), 0.020), (dt.date(2024, 5, 9), 0.016), (dt.date(2025, 7, 30), 0.012)]
-        cold = sorted({dt.date(2023, 2, 3), dt.date(2023, 2, 4), dt.date(2024, 1, 16), dt.date(2024, 1, 17),
-                       dt.date(2024, 1, 21), dt.date(2025, 1, 21), dt.date(2025, 1, 22), dt.date(2025, 2, 19)})
-        for t in self.terms:
-            h = t["home"]
-            a = max(t["start"], K.EXPERIENCE[0])
-            b = min(t["cancel"] or t["end"], dt.date(2026, 1, 1))
-            span = (b - a).days
-            if span <= 0:
+                    t0 = float(rg.uniform(K.OPEN_S + 5 * 60, K.OPEN_S + 6.2 * 3600))
+                times, shares, phase = _schedule(p.style, rg, pct, t0)
+                t_end = t0 + (max(times) if times else 0.0) + 1.0
+                if t_end > K.CLOSE_S - 62:
+                    keep = [k for k, t in enumerate(times) if t0 + t <= K.CLOSE_S - 62]
+                    if len(keep) < 5:
+                        continue
+                    times = [times[k] for k in keep]
+                    shares = [shares[k] for k in keep]
+                    phase = [phase[k] for k in keep]
+                    t_end = t0 + max(times) + 1.0
+            else:
+                p.algo, p.style = "DMA", "SINGLE"
+                pct = float(rg.uniform(0.012, 0.06))
+                t0 = float(rg.uniform(K.OPEN_S + 10 * 60, K.CLOSE_S - 15 * 60))
+                times, shares, phase = [0.0], [1.0], ["single"]
+                t_end = t0 + 1.0
+            # the desk works one order in a stock at a time, and leaves a gap of five minutes between them
+            lo, hi = t0 - 300, t_end + 300 + (K.UNCROSS_S - t_end if p.style == "CLOSE" else 0)
+            iv = busy[s["i"]].setdefault(day, [])
+            if any(not (hi <= a0 or lo >= b0) for a0, b0 in iv):
                 continue
-            yrs = span / 365.25
-            # non-weather water: the zone's supply pressure and the basement
-            for _ in range(rw.poisson(self.true_rate(h) * yrs)):
-                self._claim(rw, t, a + dt.timedelta(int(rw.integers(0, span))),
-                            str(rw.choice(["PLUMB", "APPL"], p=[0.64, 0.36])))
-            # freezing: cold snaps, no zone effect
-            for c in cold:
-                if a <= c < b and ro.random() < (0.0022 if h["basement"] else 0.0012):
-                    self._claim(ro, t, c + dt.timedelta(int(ro.integers(0, 3))), "FREEZE")
-            for kind, rate in (("BACKUP", 0.0026), ("SEEPAGE", 0.0019), ("THEFT", 0.0021), ("LIAB", 0.0012),
-                               ("OTHER", 0.0030)):
-                for _ in range(ro.poisson(rate * yrs)):
-                    self._claim(ro, t, a + dt.timedelta(int(ro.integers(0, span))), kind)
-            fire = 0.0019 * (1.0 if h["protected"] else 2.4)
-            for _ in range(ro.poisson(fire * yrs)):
-                self._claim(ro, t, a + dt.timedelta(int(ro.integers(0, span))), "FIRE")
-            for _ in range(ro.poisson(0.0052 * yrs)):
-                self._claim(ro, t, a + dt.timedelta(int(ro.integers(0, span))), "WIND")
-            for d, p in cats:
-                if a <= d < b and ro.random() < p * (1.4 if h["town"] in ("WYV", "MRV") else 1.0):
-                    self._claim(ro, t, d, "HAIL")
+            iv.append((lo, hi))
+            p.pid = pid
+            pid += 1
+            p.pct, p.t0, p.t_end = pct, t0, t_end
+            # no two of an order's children print in the same millisecond
+            tt = sorted(times)
+            for k in range(1, len(tt)):
+                if tt[k] - tt[k - 1] < 0.004:
+                    tt[k] = tt[k - 1] + 0.004
+            order_k = np.argsort(times, kind="stable")
+            times = [tt[int(np.where(order_k == k)[0][0])] for k in range(len(times))]
+            adv = s["adv"]
+            qty_total = max(1, int(round(adv * pct / 100.0)))
+            ch = []
+            for t, sh, ph in zip(times, shares, phase):
+                q = max(1, int(round(qty_total * sh)))
+                ch.append([t0 + t, q, ph])
+            if p.style == "CLOSE":
+                done = sum(c[1] for c in ch)
+                p.auction = max(1, int(round(qty_total * 0.35)))
+                qty_total = done + p.auction
+            p.qty = sum(c[1] for c in ch) + (p.auction or 0)
+            p.children = ch
+            parents.append(p)
+            made += 1
+    parents.sort(key=lambda p: (p.day, p.t0, p.pid))
+    return parents
 
-    def _claim(self, rng, t, loss, kind):
-        if loss > K.EXPERIENCE[1]:
-            return
-        lag = int(rng.choice([rng.integers(0, 6), rng.integers(6, 45), rng.integers(45, 240)], p=[0.70, 0.25, 0.05]))
-        rep = loss + dt.timedelta(lag)
-        sev = {"PLUMB": (9.05, 0.95), "APPL": (8.75, 0.85), "FREEZE": (9.25, 0.9), "BACKUP": (8.6, 0.8),
-               "SEEPAGE": (8.4, 0.7), "THEFT": (8.1, 0.9), "LIAB": (9.4, 1.1), "OTHER": (7.9, 0.9),
-               "FIRE": (10.4, 1.2), "WIND": (8.6, 0.8), "HAIL": (9.3, 0.6)}[kind]
-        loss_amt = float(np.exp(rng.normal(*sev)))
-        self.claims.append(dict(policy_no=t["policy_no"], term=t["term"], parcel_id=t["home"]["parcel_id"], kind=kind,
-                                loss=loss, reported=rep, amount=round(loss_amt, 2), deductible=t["deductible"],
-                                home=t["home"]))
 
-    # ---- the authority's hydrants, their flow tests and the guide's protection test
-    def _hydrants(self, rng):
-        """hydrants stand on the mains of the hydranted neighbourhoods (cells of about 2,400 feet); outlying lanes are
-        served by small mains without hydrants"""
-        cells = {}
-        for p in self.parcels:
-            cells.setdefault((int(p["x"] // 2400), int(p["y"] // 2400)), []).append(p)
-        sel = []
-        for key in sorted(cells):
-            ps = cells[key]
-            if rng.random() < (0.80 if len(ps) > 25 else 0.45):
-                k = max(1, int(round(len(ps) / rng.uniform(11, 16))))
-                sel += [ps[i] for i in rng.choice(len(ps), size=min(k, len(ps)), replace=False)]
-        for p in sel:
-            x, y = p["x"] + rng.normal(0, 220), p["y"] + rng.normal(0, 220)
-            z = self.zoner.zone(x, y)
-            if z is None:
-                continue
-            lo, hi = K.psi_range([q for q in K.ZONES if q[0] == z][0])
-            h = dict(n=len(self.hydrants), x=round(x, 1), y=round(y, 1), zone=z,
-                     static=float(rng.uniform(lo + 2, hi - 2)), main=int(rng.choice([4, 6, 8, 12],
-                                                                                    p=[0.22, 0.50, 0.21, 0.07])),
-                     installed=int(rng.integers(1958, 2026)), town=p["town"],
-                     status=str(rng.choice(["IN SERVICE", "OUT OF SERVICE", "ABANDONED"], p=[0.952, 0.033, 0.015])),
-                     owner="PRIVATE" if rng.random() < 0.04 else "TCWA")
-            # flow tests on a five-year cycle, some retested after a main replacement or a complaint
-            first = int(rng.integers(2018, 2023))
-            years = [first] + ([first + 5] if first + 5 <= 2026 else [])
-            if rng.random() < 0.18:
-                years.append(int(rng.integers(2024, 2027)))
-            boost, tests = 1.0, []
-            for k, yv in enumerate(sorted(set(v for v in years if v >= max(2018, h["installed"])))):
-                d = dt.date(yv, int(rng.integers(4, 11)), int(rng.integers(1, 29)))
-                if d > K.HYDRANT_DATE:
-                    continue
-                if k > 0 and rng.random() < 0.35:
-                    boost *= rng.uniform(1.15, 1.6)
-                static = int(round(h["static"] + rng.normal(0, 2)))
-                cap = {4: 430, 6: 760, 8: 1500, 12: 2700}[h["main"]] * boost * rng.lognormal(0, 0.25)
-                resid = int(round(static * rng.uniform(0.45, 0.82)))
-                flow = int(round(cap * ((static - resid) / max(static - 20.0, 5.0)) ** 0.54))
-                tests.append(dict(date=d, static=static, resid=resid, flow=flow,
-                                  crew=str(rng.choice(["TCWA CREW 2", "TCWA CREW 4", "ALDERSON FIRE PROTECTION"],
-                                                      p=[0.45, 0.4, 0.15]))))
-            h["tests"] = tests
-            self.hydrants.append(h)
+def simulate(stocks=None):
+    """Executions with their mids: every child order of every desk order filled once at one venue."""
+    stocks = stocks or universe()
+    days = K.trading_days()
+    P = day_prices(stocks, days)
+    parents = desk_orders(stocks, days, P)
+    rg_v = K.rng("venues")
+    rg_n = K.rng("noise")
+    rg_p = K.rng("prices")
+    execs = []
+    for p in parents:
+        s = p.stock
+        prev = P[s["i"]][p.day]
+        sig_d = s["vol"]
+        frac = (p.t0 - K.OPEN_S) / (K.CLOSE_S - K.OPEN_S)
+        m0 = prev * math.exp(rg_p.normal(0, sig_d / 1e4 * math.sqrt(max(frac, 0.02))))
+        side = 1.0 if p.side == "B" else -1.0
+        T = int(p.t_end - p.t0 + 302 + (K.UNCROSS_S - p.t_end if p.auction else 0))
+        sig_s = sig_d / math.sqrt(8.5 * 3600)
+        noise = np.concatenate([[0.0], np.cumsum(rg_n.normal(0, sig_s, T))])
+        own_steps = np.zeros(T + 2)
+        venues = []
+        for t, q, ph in p.children:
+            pv = np.array([K.ROUTE[ph][v] for v in K.VENUES])
+            v = K.VENUES[int(rg_v.choice(len(K.VENUES), p=pv / pv.sum()))]
+            venues.append(v)
+            k0 = int(math.floor(t - p.t0))
+            if k0 <= T:
+                # the desk's own trade moves the market at once, so the mid printed with the fill already carries it
+                own_steps[k0] += side * K.LAMBDA * (q / s["adv"] * 100.0)
+        path_bp = noise[:T + 1] + np.cumsum(own_steps)[:T + 1]
+        tk = tick(m0)
 
-    @staticmethod
-    def q20(t):
-        """flow available at 20 psi residual from a flow test (NFPA 291)"""
-        return t["flow"] * ((t["static"] - 20.0) / (t["static"] - t["resid"])) ** 0.54
+        def mid_at(rel_s, extra_bp=0.0):
+            k = int(math.floor(rel_s))
+            if k < 0 or k > T:
+                return None
+            m = m0 * (1 + (path_bp[k] + extra_bp) / 1e4)
+            return round(round(m / (tk / 2)) * (tk / 2), 4)
 
-    def _protection(self):
-        """the guide's test: an in-service authority hydrant within 1,000 feet whose latest test shows 500 gpm
-        available at 20 psi"""
-        from scipy.spatial import cKDTree
-        good = [h for h in self.hydrants if h["status"] == "IN SERVICE" and h["owner"] == "TCWA" and h["tests"]
-                and self.q20(max(h["tests"], key=lambda t: t["date"])) >= 500]
-        tree = cKDTree(np.array([[h["x"], h["y"]] for h in good]))
-        for p in self.parcels:
-            dd, _ = tree.query([p["x"], p["y"]])
-            p["protected"] = bool(dd <= 1000.0)
+        p.arrival_mid = mid_at(0.0)
+        for (t, q, ph), v in zip(p.children, venues):
+            rel = t - p.t0
+            m_exec = mid_at(rel)
+            kind = K.VENUE[v]["kind"]
+            half = m_exec * s["spread"] / 2e4
+            if kind == "midpoint book":
+                px = m_exec
+            elif kind == "lit order book":
+                aggressive = rg_v.random() < 0.72
+                px = m_exec + side * half if aggressive else m_exec - side * half
+                px = round(px / tk) * tk
+            else:
+                px = m_exec + side * half * float(rg_v.uniform(0.1, 0.6))
+            marks = {}
+            a, tau = K.VENUE[v]["alpha"], K.VENUE[v]["tau"]
+            for h in (1, 5, 30, 60, 300):
+                tt = t + h
+                # the counterparty's information: the move against the order that follows a fill at this venue
+                marks[h] = mid_at(rel + h, -side * a * float(g_build(h, tau))) if tt <= K.CLOSE_S else None
+            execs.append(dict(pid=p.pid, day=p.day, t=t, stock=s["i"], side=p.side, qty=q, venue=v, price=round(px, 4),
+                              mid0=m_exec, marks=marks, phase=ph, session="CONT", algo=p.algo, style=p.style))
+        if p.auction:
+            m_close = mid_at(K.CLOSE_S - p.t0 - 1) or m0
+            px = round(m_close * (1 + rg_p.normal(0, 4.0) / 1e4), 4)
+            execs.append(dict(pid=p.pid, day=p.day, t=float(K.UNCROSS_S), stock=s["i"], side=p.side, qty=p.auction,
+                              venue="XWEX", price=px, mid0=None, marks={1: None, 5: None, 30: None, 60: None, 300: None},
+                              phase="auction", session="AUCT", algo=p.algo, style=p.style))
+    return dict(stocks=stocks, days=days, closes=P, parents=parents, execs=execs)
+
+
+def adverse_bp(e, h=60):
+    """The adverse move of an execution at h seconds, positive when the mid moved against the order."""
+    m1 = e["marks"].get(h)
+    if m1 is None or e["mid0"] is None:
+        return None
+    sgn = 1.0 if e["side"] == "B" else -1.0
+    return -sgn * (m1 - e["mid0"]) / e["mid0"] * 1e4

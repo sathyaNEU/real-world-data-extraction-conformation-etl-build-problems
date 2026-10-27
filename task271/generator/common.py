@@ -1,100 +1,186 @@
-"""Constants for task271 architecture 4: Halverstead Mutual Fire Insurance Company's 2027 agency township, the
-book's 2023 to 2025 experience, the county's 2026 assessor roll, the water authority's pressure zones and
-hydrants, the people, the dates and the pack's files."""
+"""task271 constants and helpers shared by every generator module.
+
+Fenmarsh Investment Management runs a central dealing desk in London that works its funds' UK equity orders through
+two brokers' algorithms (Ashlowe Securities and Pemberwick & Co) on eight execution venues. Its wealth arm, Fenmarsh
+Wealth Limited, runs a platform for retail clients whose dealing in UK shares Gresmere Stockbrokers has executed; from
+Monday 4 January 2027 the central desk deals for the platform. The platform nets its clients' orders at three dealing
+points a day and sends one order per stock, whole, to one venue on its venue list. The order execution policy keeps a
+venue off a client flow's list when the fills that flow's orders would receive there meet an average adverse move
+above 1.5 basis points in the 60 seconds after the fill. The wealth board approves the list on 9 December 2026.
+
+The seed was fixed by rule before any data was generated: the task number, then the pull's month and day."""
+from __future__ import annotations
+
+import csv
 import datetime as dt
-from decimal import Decimal, ROUND_HALF_UP
+import hashlib
+import io
+import math
 
-SEED = 6
+import numpy as np
 
-ORG = "Halverstead Mutual Fire Insurance Company"
-ORG_SHORT = "Halverstead Mutual"
-COUNTY = "Tamswold County"
-AUTHORITY = "Tamswold County Water Authority"
-AUTH_SHORT = "TCWA"
-TANK = "Ostrander Ridge Tank"
-STEB = "State Tax Equalization Board"
-REQUESTER = "Dillon Evans"        # the mutual's underwriting manager
-PRESIDENT = "Luis Thomas"         # the mutual's president, signs the expansion brief
-ENGINEER = "Robin Fields"         # the authority's engineer of record
+SEED = 2711102
 
-# township code, name, kind; the book writes the first four, the agency goes to one of the last three
-TOWNS = [("WYV", "Wyvellton", "Borough"), ("HLT", "Holtmere", "Township"), ("VRN", "Varnacott", "Township"),
-         ("MRV", "Merrivane", "Township"), ("DOR", "Dorrance Hill", "Borough"), ("BRK", "Brookmere", "Township"),
-         ("SAL", "Sallowmead", "Township")]
-BOOK_TOWNS = ["WYV", "HLT", "VRN", "MRV"]
-CANDIDATES = ["DOR", "BRK", "SAL"]
-TOWN_NAME = {c: n for c, n, k in TOWNS}
-TOWN_FULL = {c: "%s %s" % (n, k) for c, n, k in TOWNS}
+FIRM = "Fenmarsh Investment Management"
+WEALTH = "Fenmarsh Wealth"
+WEALTH_LTD = "Fenmarsh Wealth Limited"
+TCA = "Hessenby Analytics"
+BROKER_A = "Ashlowe Securities"
+BROKER_B = "Pemberwick & Co"
+GRESMERE = "Gresmere Stockbrokers"
 
-# the authority's pressure zones: id, name, supply, hydraulic grade line (ft), service elevation range (ft)
-ZONES = [("PZ-1", "Ridge", "Ostrander Ridge Tank", 1412, (1240, 1320)),
-         ("PZ-2", "Upper", "Kilns Road booster station and Upper Tank", 1338, (1170, 1245)),
-         ("PZ-3", "Valley", "Ostrander Ridge Tank, direct main", 1412, (1120, 1190)),
-         ("PZ-4", "Southside", "Southside Tank", 1335, (1165, 1240))]
-PSI_PER_FT = 0.433
+PEOPLE = {
+    "dealing": "Owen Porter",        # head of dealing: the requester, signs the router configuration and the venue list paper
+    "research": "Declan Davies",     # head of execution research: the review's analysis
+    "coo": "Oliver Hamilton",        # Fenmarsh Wealth's chief operating officer: the dealing plan
+}
+
+UTC = dt.timezone.utc
+
+# ------------------------------------------------------------------------------------------------- calendar
+DATA_START = dt.date(2026, 1, 2)
+DATA_END = dt.date(2026, 10, 30)
+PULL = dt.date(2026, 11, 2)              # the cost provider's export and the brokers' files were pulled
+PAPER_DATE = dt.date(2026, 11, 20)
+BOARD_DATE = dt.date(2026, 12, 9)
+CUTOVER = dt.date(2027, 1, 4)
+POLICY_DATE = dt.date(2025, 9, 15)
+PLAN_DATE = dt.date(2026, 10, 12)
+ROUTER_DATE = dt.date(2026, 1, 5)
+THURSGATE_SWITCH = dt.date(2026, 6, 1)   # Thursgate's midpoint book moved to a new segment code
+GRESMERE_MIGRATION = dt.date(2026, 7, 1) # Gresmere's back office moved to a new contract note system
+BANK_HOLIDAYS = {dt.date(2026, 1, 1), dt.date(2026, 4, 3), dt.date(2026, 4, 6), dt.date(2026, 5, 4),
+                 dt.date(2026, 5, 25), dt.date(2026, 8, 31), dt.date(2026, 12, 25), dt.date(2026, 12, 28),
+                 dt.date(2025, 12, 25), dt.date(2025, 12, 26), dt.date(2027, 1, 1)}
+BST_START = dt.datetime(2026, 3, 29, 1, 0, tzinfo=UTC)
+BST_END = dt.datetime(2026, 10, 25, 1, 0, tzinfo=UTC)
+OPEN_S = 8 * 3600                        # continuous trading 08:00 to 16:30 London time
+CLOSE_S = 16 * 3600 + 30 * 60
+UNCROSS_S = 16 * 3600 + 35 * 60          # the closing auction's uncrossing
+
+MONTH_NAMES = ["", "January", "February", "March", "April", "May", "June", "July", "August", "September", "October",
+               "November", "December"]
+MON3 = ["", "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
+
+# ------------------------------------------------------------------------------------------------- venues
+# code: name, operator, kind, adverse move a lone fill meets at 60 seconds (bp), seconds over which it builds
+VENUES = ["XWEX", "AWKL", "DLVL", "AWKM", "DLVM", "THGD", "BDSI", "QTSI"]
+VENUE = {
+    "XWEX": dict(name="Wexcombe Stock Exchange", short="Wexcombe", operator="Wexcombe Stock Exchange plc",
+                 kind="lit order book", alpha=0.10, tau=4.0),
+    "AWKL": dict(name="Ardenwick MTF lit book", short="Ardenwick lit", operator="Ardenwick Markets Ltd",
+                 kind="lit order book", alpha=0.90, tau=4.0),
+    "DLVL": dict(name="Delvenne MTF lit book", short="Delvenne lit", operator="Delvenne Exchange Ltd",
+                 kind="lit order book", alpha=2.20, tau=3.0),
+    "AWKM": dict(name="Ardenwick MTF midpoint book", short="Ardenwick mid", operator="Ardenwick Markets Ltd",
+                 kind="midpoint book", alpha=3.00, tau=35.0),
+    "DLVM": dict(name="Delvenne Midpoint", short="Delvenne Midpoint", operator="Delvenne Exchange Ltd",
+                 kind="midpoint book", alpha=1.00, tau=30.0),
+    "THGD": dict(name="Thursgate MTF midpoint book", short="Thursgate mid", operator="Thursgate Trading Ltd",
+                 kind="midpoint book", alpha=2.00, tau=40.0),
+    "BDSI": dict(name="Brindock Securities SI", short="Brindock SI", operator="Brindock Securities Ltd",
+                 kind="systematic internaliser", alpha=0.10, tau=9.0),
+    "QTSI": dict(name="Quintrell Markets SI", short="Quintrell SI", operator="Quintrell Markets Ltd",
+                 kind="systematic internaliser", alpha=2.20, tau=8.0),
+}
+THURSGATE_NEW = "THGM"
+LINE = 1.5                              # the policy's line, basis points
+HORIZON = 60                            # seconds
+DARK = ["AWKM", "DLVM", "THGD"]
+LIT = ["XWEX", "AWKL", "DLVL"]
+SI = ["BDSI", "QTSI"]
+
+# broker B's own names for the venues in its execution reports
+PEMBERWICK_VENUE = {"XWEX": "WEXCOMBE", "AWKL": "ARDENWICK LIT", "DLVL": "DELVENNE LIT", "AWKM": "ARDENWICK MID",
+                    "DLVM": "DELVENNE MID", "THGD": "THURSGATE MID", "BDSI": "BRINDOCK SI", "QTSI": "QUINTRELL SI"}
+
+# ------------------------------------------------------------------------------------------------- algorithms
+ALGOS = ["ASL-ARR", "ASL-VOL", "ASL-CLS", "PEM-SF", "PEM-VW", "PEM-IN"]
+ALGO = {
+    "ASL-ARR": dict(broker="ASHL", name="Ashlowe Arrival", style="IS", share=0.22),
+    "ASL-VOL": dict(broker="ASHL", name="Ashlowe Volume", style="VWAP", share=0.16),
+    "ASL-CLS": dict(broker="ASHL", name="Ashlowe Close", style="CLOSE", share=0.08),
+    "PEM-SF": dict(broker="PEMB", name="Pemberwick Shortfall", style="IS", share=0.24),
+    "PEM-VW": dict(broker="PEMB", name="Pemberwick VWAP", style="VWAP", share=0.18),
+    "PEM-IN": dict(broker="PEMB", name="Pemberwick Inline", style="POV", share=0.12),
+}
+# routing tables: the share of child orders each style sends to each venue in each phase
+ROUTE = {
+    "burst": dict(XWEX=.04, AWKL=.03, DLVL=.03, AWKM=.31, DLVM=.24, THGD=.29, BDSI=.03, QTSI=.03),
+    "work":  dict(XWEX=.20, AWKL=.16, DLVL=.15, AWKM=.06, DLVM=.07, THGD=.06, BDSI=.14, QTSI=.16),
+    "vwap":  dict(XWEX=.20, AWKL=.15, DLVL=.14, AWKM=.07, DLVM=.08, THGD=.07, BDSI=.13, QTSI=.16),
+    "single": dict(XWEX=.30, AWKL=.25, DLVL=.20, AWKM=0., DLVM=0., THGD=0., BDSI=.12, QTSI=.13),
+}
+LAMBDA = 14.0                           # permanent impact of the desk's own trades, bp per 1 per cent of ADV
 
 
-def psi_range(z):
-    """static pressure at the zone's highest and lowest services, psi"""
-    hgl, (lo, hi) = z[3], z[4]
-    return (int(r((hgl - hi) * PSI_PER_FT)), int(r((hgl - lo) * PSI_PER_FT)))
+# ------------------------------------------------------------------------------------------------- helpers
+def rng(*keys):
+    """An independent numpy stream per name: blake2b of the seed and the keys (hash() is salted per process)."""
+    h = hashlib.blake2b(("%d|" % SEED + "|".join(str(k) for k in keys)).encode(), digest_size=8).digest()
+    return np.random.default_rng(int.from_bytes(h, "big"))
 
 
-ZONE_IDS = [z[0] for z in ZONES]
-VALLEY = "PZ-3"
-
-# the world's true non-weather water claim frequency per house-year: base, foundation and zone factors
-BASE_RATE = 0.0128
-BASEMENT_FACTOR = 1.6
-ZONE_FACTOR = {"PZ-1": 1.0, "PZ-2": 1.0, "PZ-3": 2.25, "PZ-4": 1.0}
-
-# dates
-EXPERIENCE = (dt.date(2023, 1, 1), dt.date(2025, 12, 31))
-YEARS = [2023, 2024, 2025]
-EXTRACT = dt.date(2026, 8, 31)            # policy, claim and payment extracts
-CODE_CHANGE = dt.date(2024, 1, 1)         # the claim system's new cause-of-loss codes
-ROLL_DATE = dt.date(2026, 1, 1)           # the certified 2026 assessment roll
-ROLL_EXTRACT = dt.date(2026, 7, 15)
-BASE_YEAR = 1998                          # the county's base year for assessed values
-CLR_2026 = 0.428                          # STEB common level ratio for the county, used from 1 July 2026
-CLR_2025 = 0.451
-ZONE_MAP_DATE = dt.date(2025, 11, 14)
-HYDRANT_DATE = dt.date(2026, 6, 30)
-MASTER_PLAN = dt.date(2019, 6, 20)
-STANDARD_DATE = dt.date(2024, 3, 12)      # Frequency Model Standard, revision 2
-GUIDE_DATE = dt.date(2025, 2, 3)          # underwriting guide, homeowners
-BRIEF_DATE = dt.date(2026, 10, 5)
-ASSEMBLED = dt.datetime(2026, 10, 21, 16, 40)
-BOARD_DATE = dt.date(2026, 11, 18)
-AGENCY_OPENS = dt.date(2027, 4, 1)
-
-FILES = dict(
-    terms="policy_terms_2023_2025.csv",
-    claims="claims_register_2023_2025.csv",
-    payments="claim_payments_2023_2026.csv",
-    codes="cause_of_loss_codes.csv",
-    parcels="tamswold_parcels_2026.csv",
-    dwellings="tamswold_dwellings_2026.csv",
-    appeals="assessment_appeals_2026.csv",
-    clr="steb_common_level_ratios.csv",
-    zones="tcwa_pressure_zones.geojson",
-    hydrants="tcwa_hydrants.geojson",
-    flowtests="tcwa_hydrant_flow_tests.csv",
-    plan="tcwa_master_plan_2019_excerpt.pdf",
-    bordereau="cas_bordereau_halverstead_2023_2026.xlsx",
-    standard="frequency_model_standard_rev2.pdf",
-    guide="underwriting_guide_homeowners_2025.pdf",
-    brief="board_expansion_brief_2027.pdf",
-    weather="noaa_daily_weather_2023_2025.csv",
-    permits="tamswold_building_permits_2023_2025.csv",
-    dictionary="data_dictionary.csv",
-    readme="pack_contents.txt",
-)
-DISTRACTORS = ["weather", "permits"]
-BOOK = "agency_township_2027.xlsx"
-CHART = "water_claims_by_township_2027.png"
+def token(*keys, n=12):
+    return hashlib.blake2b(("%d|" % SEED + "|".join(str(k) for k in keys)).encode(), digest_size=16).hexdigest()[:n]
 
 
-def r(x, n=0):
-    """half-up rounding at n decimals"""
-    return float(Decimal(repr(float(x))).quantize(Decimal(1).scaleb(-n), rounding=ROUND_HALF_UP))
+def trading_days(a=DATA_START, b=DATA_END):
+    out, d = [], a
+    while d <= b:
+        if d.weekday() < 5 and d not in BANK_HOLIDAYS:
+            out.append(d)
+        d += dt.timedelta(days=1)
+    return out
+
+
+def next_business_day(d):
+    d += dt.timedelta(days=1)
+    while d.weekday() >= 5 or d in BANK_HOLIDAYS:
+        d += dt.timedelta(days=1)
+    return d
+
+
+def london_offset(t_utc):
+    """Hours London is ahead of UTC at a UTC instant."""
+    return 1 if BST_START <= t_utc < BST_END else 0
+
+
+def utc_of(day, sec_london):
+    """The UTC instant of a London wall-clock second of the day."""
+    naive = dt.datetime(day.year, day.month, day.day) + dt.timedelta(seconds=float(sec_london))
+    probe = naive.replace(tzinfo=UTC)
+    off = london_offset(probe - dt.timedelta(hours=1))
+    return probe - dt.timedelta(hours=off)
+
+
+def iso_ms(t):
+    return t.strftime("%Y-%m-%dT%H:%M:%S.") + "%03dZ" % (t.microsecond // 1000)
+
+
+def write_csv(path, cols, rows, crlf=False):
+    buf = io.StringIO()
+    w = csv.writer(buf, lineterminator="\r\n" if crlf else "\n")
+    w.writerow(cols)
+    n = 0
+    for r in rows:
+        w.writerow(["" if r.get(c) is None else r.get(c) for c in cols] if isinstance(r, dict) else r)
+        n += 1
+    with open(path, "w", encoding="utf-8", newline="") as fh:
+        fh.write(buf.getvalue())
+    return n
+
+
+def round_half_up(x, nd=0):
+    q = x * 10 ** nd
+    return math.floor(q + 0.5) / 10 ** nd
+
+
+def bin_clearance(x, step):
+    """Distance from x to the nearest rounding edge of its step-wide bin, as a share of the step (0.5 is mid-bin)."""
+    q = x / step
+    return 0.5 - abs(q - math.floor(q + 0.5))
+
+
+def uk_date(d):
+    return "%d %s %d" % (d.day, MONTH_NAMES[d.month], d.year)

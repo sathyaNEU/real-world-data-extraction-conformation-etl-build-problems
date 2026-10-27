@@ -1,154 +1,141 @@
 """Build task271: the evidence pack into <task>/target, the goldens into <task>/golden, metadata.json and
-generator/figures.json, then the checks and the independent verifier, then a second build into a scratch folder inside
-the task (removed after) compared byte for byte, then target.zip cut from the final build.
+generator/figures.json, then the checks and the independent verifier, then a second full build into a scratch folder
+compared byte for byte, then target.zip cut from the pack.
 
     python3 task271/generator/build.py              everything
-    python3 task271/generator/build.py --out DIR    the pack only, into DIR
-    python3 task271/generator/build.py --golden     the pack and the goldens, no checks"""
-import os
-for _v in ("OPENBLAS_NUM_THREADS", "OMP_NUM_THREADS", "MKL_NUM_THREADS"):
-    os.environ.setdefault(_v, "1")
-import argparse      # noqa: E402
-import calendar      # noqa: E402
-import hashlib       # noqa: E402
-import json          # noqa: E402
-import shutil        # noqa: E402
-import sys           # noqa: E402
-import warnings      # noqa: E402
+    python3 task271/generator/build.py --out DIR    the pack only, into DIR"""
+from __future__ import annotations
 
-warnings.filterwarnings("ignore")
+import argparse
+import hashlib
+import os
+import shutil
+import sys
+import tempfile
+import time
+import zipfile
+
 HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)
-import common as K         # noqa: E402
-import pack as PK          # noqa: E402
+import common as K          # noqa: E402
+import docs as D            # noqa: E402
+import postprocess as PP    # noqa: E402
+import records as R         # noqa: E402
+import wealth as WL         # noqa: E402
+import world as W           # noqa: E402
 
 TASK = os.path.dirname(HERE)
-MTIME = calendar.timegm(K.ASSEMBLED.timetuple())
-GOLDEN_MTIME = calendar.timegm((2026, 11, 10, 17, 25, 0))
-PDF_DATES = {"standard": ("D:20240312101500-05'00'", "D:20240314154000-04'00'"),
-             "guide": ("D:20250203091000-05'00'", "D:20250205162500-05'00'"),
-             "brief": ("D:20261005101200-04'00'", "D:20261005102000-04'00'"),
-             "plan": ("D:20190620140000-04'00'", "D:20190624110500-04'00'")}
-OOXML = {"bordereau": ("Corrigan Adjusting Services", "Corrigan Adjusting Services", "2023-04-03T14:10:00Z",
-                       "2026-09-04T15:32:00Z", "Claims bordereau, Halverstead Mutual", True)}
+MTIME = time.mktime((2026, 11, 4, 9, 20, 0, 0, 0, -1))   # the file list's morning, London
 
 
-def build(out, seed=K.SEED):
-    if os.path.exists(out):
-        shutil.rmtree(out)
-    w, ex, n = PK.build_pack(out, seed)
-    return dict(counts=n)
+def world():
+    X = W.simulate()
+    X["orders"] = WL.simulate(X["stocks"], X["closes"])
+    X["notes"] = WL.deal(X["orders"], X["stocks"], X["closes"])
+    R.prepare(X)
+    return X
 
 
-def finish(out):
-    """the containers as their writers save them, then every file's modified time set to the pack's assembly"""
-    import postprocess as PP
-    for k, (c, m) in PDF_DATES.items():
-        PP.normalize_pdf(os.path.join(out, K.FILES[k]), c.encode(), m.encode())
-    PP.COMPANY = "Corrigan Adjusting Services LLC"
-    for k, (cr, lb, c, m, title, excel) in OOXML.items():
-        PP.normalize_ooxml(os.path.join(out, K.FILES[k]), cr, lb, c, m, title=title, excel=excel)
+def build_data(out, X):
+    p = lambda f: os.path.join(out, f)
+    n = {}
+    n[R.F_HESS] = K.write_csv(p(R.F_HESS), R.HESS_COLS, R.hess_rows(X))
+    n[R.F_ASHL] = K.write_csv(p(R.F_ASHL), R.ASHL_COLS, R.ashl_rows(X))
+    R.write_pemb(p(R.F_PEMB), X)
+    n[R.F_OMS] = K.write_csv(p(R.F_OMS), R.OMS_COLS, R.oms_rows(X))
+    R.write_venues(p(R.F_VENUES))
+    n[R.F_MASTER] = K.write_csv(p(R.F_MASTER), R.MASTER_COLS, R.master_rows(X))
+    R.write_ca(p(R.F_CA), X)
+    n[R.F_CAL] = K.write_csv(p(R.F_CAL), R.CAL_COLS, R.cal_rows())
+    n[R.F_ORDERS] = K.write_csv(p(R.F_ORDERS), R.ORDER_COLS, R.order_rows(X))
+    n[R.F_NOTES] = K.write_csv(p(R.F_NOTES), R.NOTE_COLS, R.note_rows(X), crlf=True)
+    n[R.F_AUCT] = K.write_csv(p(R.F_AUCT), R.AUCT_COLS, R.auction_rows(X))
+    return n
+
+
+def normalize(out):
+    p = lambda f: os.path.join(out, f)
+    PP.normalize_ooxml(p(R.F_PEMB), "Pemberwick Client Reporting", "Pemberwick Client Reporting",
+                       "2026-11-02T07:41:00Z", "2026-11-02T07:44:00Z", excel=True, company="Pemberwick & Co")
+    PP.normalize_ooxml(p(R.F_VENUES), "Owen Porter", "Declan Davies", "2023-02-20T10:12:00Z",
+                       "2026-06-02T08:05:00Z", excel=True, company="Fenmarsh Investment Management")
+
+
+def build(out, quiet=False, X=None, docs=True):
+    os.makedirs(out, exist_ok=True)
+    X = X or world()
+    n = build_data(out, X)
+    normalize(out)
+    if docs:
+        D.write_all(out)
     for f in os.listdir(out):
         os.utime(os.path.join(out, f), (MTIME, MTIME))
-
-
-def finish_golden(golden):
-    import postprocess as PP
-    PP.COMPANY = K.ORG
-    PP.normalize_ooxml(os.path.join(golden, K.BOOK), K.REQUESTER, K.REQUESTER, "2026-10-27T13:40:00Z",
-                       "2026-11-10T17:25:00Z", title="2027 agency: the township", excel=True)
-    for f in os.listdir(golden):
-        os.utime(os.path.join(golden, f), (GOLDEN_MTIME, GOLDEN_MTIME))
-
-
-def metadata(fig, counts):
-    src = ("constructed by the task generator (seeded); %s, %s, its townships, %s, Corrigan Adjusting Services and "
-           "every home, policy, claim, hydrant and person are fictional; the records follow the forms of a "
-           "Pennsylvania county mutual's policy and claim extracts, a county assessment roll, the State Tax "
-           "Equalization Board's common level ratio table, a water authority's open GIS layers and an adjusting "
-           "firm's bordereau" % (K.ORG, K.COUNTY, K.AUTHORITY))
-    c = fig["call"]
-    f = fig["components"]["frequency_per_1000"]
-    return {
-        "task": "task271",
-        "title": "%s: the township for the 2027 agency" % K.ORG,
-        "domain": "Actuarial Science & Insurance (claims frequency and severity)",
-        "objective": "Descriptive & Distribution Analysis",
-        "distractor_files": ["target/" + K.FILES[k] for k in K.DISTRACTORS],
-        "deliverables": [K.BOOK, K.CHART],
-        "provenance": {name: {"source": src, "date": "2026-10-21", "licence": "CC0 1.0 (constructed for this task)"}
-                       for name in sorted(K.FILES.values())},
-        "rows": {K.FILES[k]: v for k, v in sorted(counts.items())},
-        "answer": "%s %s (%d non-weather water claims per 1,000 house-years, against %s %d)" % (
-            c["name"], dict((a, k) for a, n, k in K.TOWNS)[c["township"]], f[c["township"]], c["runner_up_name"],
-            f[c["runner_up"]]),
-    }
-
-
-def main_build(target, golden, seed=K.SEED):
-    import deliver as DV
-    b = build(target, seed)
-    finish(target)
-    if os.path.exists(golden):
-        shutil.rmtree(golden)
-    fig, res = DV.write(target, golden)
-    finish_golden(golden)
-    DV.write_figures(os.path.join(HERE, "figures.json"), fig)
-    with open(os.path.join(TASK, "metadata.json"), "w") as f:
-        json.dump(metadata(fig, b["counts"]), f, indent=1, sort_keys=True, ensure_ascii=False)
-        f.write("\n")
-    return b, fig, res
+    if not quiet:
+        for f in sorted(os.listdir(out)):
+            print("  %-62s %10d bytes %s" % (f, os.path.getsize(os.path.join(out, f)), ("%d rows" % n[f]) if f in n else ""))
+    return X, n
 
 
 def digest(folder):
-    return {f: hashlib.sha256(open(os.path.join(folder, f), "rb").read()).hexdigest() for f in sorted(os.listdir(folder))}
+    h = {}
+    for root, _, files in os.walk(folder):
+        for f in sorted(files):
+            fp = os.path.join(root, f)
+            h[os.path.relpath(fp, folder)] = hashlib.sha256(open(fp, "rb").read()).hexdigest()
+    return h
 
 
-def cut_zip(target, path):
-    import zipfile
-    with zipfile.ZipFile(path, "w", zipfile.ZIP_DEFLATED) as z:
+def cut_zip(root):
+    target = os.path.join(root, "target")
+    zpath = os.path.join(root, "target.zip")
+    with zipfile.ZipFile(zpath, "w", zipfile.ZIP_DEFLATED) as z:
         for f in sorted(os.listdir(target)):
-            zi = zipfile.ZipInfo(f, date_time=K.ASSEMBLED.timetuple()[:6])
+            zi = zipfile.ZipInfo(f, date_time=(2026, 11, 4, 9, 20, 0))
             zi.compress_type = zipfile.ZIP_DEFLATED
             zi.external_attr = 0o644 << 16
             z.writestr(zi, open(os.path.join(target, f), "rb").read())
+    return zpath
+
+
+def main():
+    ap = argparse.ArgumentParser()
+    ap.add_argument("--out")
+    ap.add_argument("--pack-only", action="store_true")
+    a = ap.parse_args()
+    if a.out:
+        build(a.out)
+        return
+    import subprocess
+    target = os.path.join(TASK, "target")
+    if os.path.isdir(target):
+        shutil.rmtree(target)
+    X, n = build(target)
+    if a.pack_only:
+        return
+    import deliver
+    deliver.main(target, os.path.join(TASK, "golden"), os.path.join(HERE, "figures.json"),
+                 os.path.join(TASK, "submission.md"))
+    import metadata
+    metadata.write(TASK, n)
+    r1 = subprocess.run([sys.executable, os.path.join(HERE, "checks.py")])
+    r2 = subprocess.run([sys.executable, os.path.join(HERE, "verify.py"), target])
+    tmp = tempfile.mkdtemp(prefix="b271_", dir=TASK)
+    try:
+        build(os.path.join(tmp, "target"), quiet=True)
+        deliver.main(os.path.join(tmp, "target"), os.path.join(tmp, "golden"), os.path.join(tmp, "figures.json"),
+                     os.path.join(tmp, "submission.md"))
+        same = digest(target) == digest(os.path.join(tmp, "target"))
+        same_g = digest(os.path.join(TASK, "golden")) == digest(os.path.join(tmp, "golden"))
+        same_f = open(os.path.join(HERE, "figures.json"), "rb").read() == open(os.path.join(tmp, "figures.json"), "rb").read()
+        same_s = open(os.path.join(TASK, "submission.md"), "rb").read() == open(os.path.join(tmp, "submission.md"), "rb").read()
+        print("rebuild byte-identical: target %s, golden %s, figures %s, submission %s" % (same, same_g, same_f, same_s))
+    finally:
+        shutil.rmtree(tmp)
+    z = cut_zip(TASK)
+    print("zip", z, hashlib.sha256(open(z, "rb").read()).hexdigest())
+    if r1.returncode or r2.returncode or not (same and same_g and same_f and same_s):
+        sys.exit(1)
 
 
 if __name__ == "__main__":
-    ap = argparse.ArgumentParser()
-    ap.add_argument("--out")
-    ap.add_argument("--golden", action="store_true")
-    ap.add_argument("--seed", type=int, default=K.SEED)
-    a = ap.parse_args()
-    if a.out:
-        b = build(a.out, a.seed)
-        finish(a.out)
-        print(b["counts"])
-        sys.exit(0)
-    target, golden = os.path.join(TASK, "target"), os.path.join(TASK, "golden")
-    b, fig, res = main_build(target, golden, a.seed)
-    print("pack:", b["counts"])
-    print("call:", fig["call"])
-    if a.golden:
-        sys.exit(0)
-    import checks
-    import verify
-    rc = checks.run(TASK, b, fig, res)
-    rv = verify.run(TASK)
-    scratch = os.path.join(TASK, "_rebuild_check")
-    build(os.path.join(scratch, "target"), a.seed)
-    finish(os.path.join(scratch, "target"))
-    import deliver as DV
-    DV.write(os.path.join(scratch, "target"), os.path.join(scratch, "golden"))
-    finish_golden(os.path.join(scratch, "golden"))
-    d1, d2 = digest(target), digest(os.path.join(scratch, "target"))
-    g1, g2 = digest(golden), digest(os.path.join(scratch, "golden"))
-    same = d1 == d2 and g1 == g2
-    for f in sorted(set(d1) | set(g1)):
-        if d1.get(f, g1.get(f)) != d2.get(f, g2.get(f)):
-            print("  differs on rebuild:", f)
-    shutil.rmtree(scratch)
-    print("second build byte-identical:", same)
-    cut_zip(target, os.path.join(TASK, "target.zip"))
-    print("target.zip:", hashlib.md5(open(os.path.join(TASK, "target.zip"), "rb").read()).hexdigest())
-    sys.exit(0 if (rc == 0 and rv == 0 and same) else 1)
+    main()
