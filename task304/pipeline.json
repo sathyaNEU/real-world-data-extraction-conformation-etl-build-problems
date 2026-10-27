@@ -1,10 +1,10 @@
 {
  "task": "task304",
- "status": "SHIPPED",
+ "status": "PAUSED",
  "domain": "banking-credit-financial-risk",
  "objective": "opportunity-sizing-decision",
- "stage": 5,
- "stage_name": "ship",
+ "stage": 1,
+ "stage_name": "re-root draw (architecture 1 spent at the portal's determinism return)",
  "updated": "2026-10-27",
  "stump": "A competent solver fits the chance of falling two payments behind on book, current arrears and the payment rise at the last rate switch, carries every account on the book through 2027 at the plan's planning rates and files High LTV 2022-24 first (4.5 possessions avoided against the first-time buyer book's 2.9); the step that lands it there is reading the up-to-date first-time buyers' small payment rise as low risk when their remaining term rose at the switch, the Charter extension that kept a budget the new rate broke up to date for a few months.",
  "architecture": 1,
@@ -29,8 +29,15 @@
   "gate_g": "forecasting, analytical non-defect, not surface-read rejection",
   "gate_h": "domain pass, layers pass, decisive step analytical"
  },
- "returned": [],
- "resume": "Shipped 2026-10-27 (target.zip 57a875af). Waiting on the portal.",
+ "returned": [
+  {
+   "date": "2026-10-27",
+   "portal": "rubric and stump held; determinism one judge unsure (C and D unsure), one failed (A, C and D), competing_defensible_answer: a held-out-validated arrears chain with no term-increase state (first-time buyer 316 against 325 observed) files High LTV, and the 2024 term increases (81 of 347) read as small and possibly selected; no shipped file pins whether the 2026 term increases carry a delayed hazard",
+   "repair": "design",
+   "commit": ""
+  }
+ ],
+ "resume": "Architecture 1 spent 10-27 at the portal's determinism return: the fork is the stump (DESIGN_NOTE.md, the last three Tried and rejected lines: the September 2025 holdout at the first-time buyer book's own level does not separate the chains, the graded figure forks 3.7 to 9.0 across switch-timing chains, and FTB's own earlier term increases enlarged to 1,500 to 1,800 hand those chains the answer or leave one validated on High LTV). Next: a stage-1 re-root as architecture 2 under the re-root constraint in the note, moving domain under the same objective and number unless a decisive step in this world passes it on paper; the old card's lineage (spent at the portal's determinism return, the fork is the stump) is written at the new draw. Nothing under target/, golden/, submission.md or the generator changed; target.zip 57a875af is architecture 1 as shipped.",
  "approved": null,
  "delivered": "2026-10-27",
  "portal": null,

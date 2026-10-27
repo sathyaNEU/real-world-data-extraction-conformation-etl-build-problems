@@ -372,3 +372,28 @@ Measured by: generator/pair.py on the cut pack.
   the draw (leak.py LEAK on data_dictionary.csv); the dictionary is gone, the policy and the plan keep everything the
   Society defines (arrears, the court route, the loss, the four books), each export's own columns carry the rest, and
   the rate card's sheet of pricing terms is named Terms.
+- Determinism closed by the data, after the portal's determinism return (2026-10-27; rubric and stump held; one judge
+  unsure, one failed, competing_defensible_answer: a held-out-validated chain with no term-increase state, first-time
+  buyer 316 against 325 observed, files High LTV, and the 2024 extensions read as small and possibly selected): on the
+  shipped pack the September 2025 holdout at the first-time buyer book's own level does not separate the families (the
+  payment-rise chain 396 and the term-state chain 409 against 389 observed), the separation lives only on the extended
+  accounts (16 and 41 against 54), and the graded figure already forks among chains that carry the months since the
+  switch (rate rise 3.7, months since the switch alone 3.7, payment rise 7.4, the term state 9.0; to the nearest ten 0,
+  0, 10, 10). Enlarging the book's own earlier extensions to 1,500 to 1,800 unselected accounts (budgets tight from July
+  2020, prior arrears 0.14 to 0.17 against the 2026 cohort's 0.16; twelve seeds over two origination profiles) took the
+  time-static chain to z 2.4 to 6.3 in that holdout, but the rate-rise chain by months since the switch fitted it about
+  as well as the term-state chain and filed High LTV in five seeds and the first-time buyer book in seven, and the
+  default itself flipped in two (3.8 against 3.6 and 3.5). The fork is the stump: the 2027 figure rests on the extended
+  accounts' share jumping, which no book-level holdout of a history where that share was small can pin, and any replica
+  large enough to show at book level hands the switch-timing chains the answer. Architecture 1 spent.
+- The ladder never enumerated the chain by the payment rise and the months since the switch: with no term state it
+  files the first-time buyer book at 7.4 on the shipped pack (High LTV 4.6), so the write-up's step 5 clause (the same
+  chain without the term-increase state puts High LTV first) held for one chain and not the family; a re-root enumerates
+  switch-timing chains as a family of their own. Every model also under-predicts High LTV in that holdout (445 observed
+  against 397 or 398, the young book's seasoning ramp), a bias any High LTV-side design in this world inherits.
+- Re-root constraint (2026-10-27): the decisive 2027 quantity must be pinned by dynamics that played out at the
+  contender book's own level in the history, the easy route failing because it lacks a covariate the data carries with
+  known timing, not because a subgroup was rare before the forecast year. The one such shape seen in this world is a
+  refix priced at product_end_date off the rate card the plan already names, and the prototype probes built a
+  payment-shock model by months since the shock first, so it is a reflex: the re-root moves domain under the same
+  objective and number unless a decisive step passes this constraint on paper.
