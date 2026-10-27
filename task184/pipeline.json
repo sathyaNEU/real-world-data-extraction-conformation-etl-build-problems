@@ -1,14 +1,14 @@
 {
  "task": "task184",
  "owner": "oviya13ya",
- "status": "DESIGN",
+ "status": "PAUSED",
  "domain": "accounting-audit-forensic",
  "objective": "anomaly-detection",
  "stage": 1,
  "stage_name": "draw",
  "updated": "2026-10-27",
  "stump": "The analyst reports the monitoring platform's 10,587 flagged entries as the number of postings that tripped the ruleset for the year to date (or 31,282 from the entry flag rate grossed up by the group's postings); the step that lands there is treating the entry verdict as one observation of one posting, when it is an indicator that fires once however many of the voucher's postings trip the rule, so the count has to be recovered by inverting one minus the complement raised to the postings on the entry, entry by entry, with the rate estimated on each trading unit's own population.",
- "architecture": 9,
+ "architecture": 10,
  "loops": 0,
  "precut": {
   "exit": 0,
@@ -41,7 +41,7 @@
    "commit": ""
   }
  ],
- "resume": "Architecture 9 refused on measurement 2026-10-27: three candidates drawn and gated, all three killed with numbers, recorded in the design note. The finding is the cell, not the draws: in accounting-audit-forensic the only live inherited anomaly-detection task type is forensic-investigation mapped to fraud-aml-detection, and on it the deciding quantity keeps coming out as a combinatorial or weighting property of two record streams, which reads identically with any field's nouns, so the swap test failed or nearly failed on all three. Architecture 10 leaves accounting-audit-forensic. It is NOT restricted to a never-built pairing: ban.pairing reaches only the last three builds, so any pairing clearing those and the structural tests is drawable, and the corpus says where to look. Across this lane 17 anomaly-detection builds have shipped and 7 are stuck, and the split is by what supplies the deciding quantity: the shipped ones sit in domains where it is a physical, instrument or measurement process (energy-systems-utilities 3, physical-environmental-sciences 2, epidemiology, pharmacology, biomedical, human-factors) or a sampling and estimation process (survey-research-official-statistics 2, general-statistics-data-science 2), while both accounting-audit-forensic slots are stuck. Architecture 10 draws a deciding quantity of that first kind. Two constraints the nine deaths earn: the decisive step is not another nonlinearity of a records-fixed count, and the bin test now filed in determinism-check is measured on every candidate before it is recommended.",
+ "resume": "Architecture 10 refused on measurement 2026-10-27, as architecture 9 was. Two candidates priced over five seeds each and both died on the same cause, now filed as stumping 1.2c: the decisive step may not be priced by a model of the measurement. A transformer hot-spot model's own tabulated rows put the figure between 474 and 1,577 unit-hours on a step worth 5 per cent, the bin test failing 5 of 5 by 10 to 20 times with the decisive step also the smallest rung gap; a river-load rating's retransformation family spanned 544.6 to 602.1 tonnes, failing 3 of 5, with a cheaper licensed estimator nearer the truth than the golden at 2 of 5. A third direction was already dead on file in task182's own note. Five more were killed on the abstraction test against named drivers. THIS SLOT IS NOT WORKED FURTHER ON DEMAND. It stays in the backlog and is not retired, and it is picked up when a draw exists that can name its arithmetic-closed piece: an unobserved quantity whose reconstruction is closed on a piece the records supply exactly, at a grain no grouping of the decision file reproduces, with the difficulty in which rows or what structure rather than in any parameter, and hard to SEE rather than hard to compute. Wave 5 was cut on 10-27 and fresh numbers are worked ahead of an eleventh architecture here.",
  "approved": null,
  "delivered": null,
  "portal": null,

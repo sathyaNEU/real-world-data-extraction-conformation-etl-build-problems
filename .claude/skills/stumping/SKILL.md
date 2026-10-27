@@ -1234,6 +1234,26 @@ which strengthened the kill it was testing rather than reversing it. Run every s
 byte-identical output, compute on the generator's clean truth, and where a verdict turns on a tail or a
 degenerate cell, name the estimator the harness used.
 
+### 1.2c The decisive step may not be priced by a model of the measurement
+
+Where the deciding quantity is unobserved and the reconstruction runs through a model of how it was measured,
+that model's own parameter family spreads the graded figure by 2 to 20 times the decisive step's worth, so
+Gate C dies exactly where Gate F lives. It makes no difference where the parameters come from. Measured on one
+hunt: a standard's tabulated rows (a transformer hot-spot model's hot-spot factor, cooling exponents and oil
+time constant put the figure between 474 and 1,577 unit-hours on a step worth 5 per cent, the bin test failing
+5 of 5 seeds by 10 to 20 times); a retransformation family (smearing against the lognormal correction against
+none, over three rating forms, spanning 544.6 to 602.1 tonnes, the bin test failing 3 of 5 and a cheaper
+licensed estimator nearer the truth than the golden at 2 of 5); and a regression on a residual (a decibel
+residual's functional family moving every printed figure by 1.4 to 5 dB against levels printed to the tenth).
+
+With 1.1j already forbidding a fitted estimator and 1.2a forbidding a records-fixed quantity to carry a
+correction, what is left is a reconstruction **arithmetic-closed on a piece the records supply exactly**, at a
+grain no grouping of the decision file reproduces, with the difficulty in WHICH rows or WHAT structure rather
+than in any parameter. **A draw that cannot name its arithmetic-closed piece is not a candidate**, and that
+question is answered before a world is chosen. The horn to watch on the other side: once the arithmetic is
+closed, a competent analyst who sees the structure executes it, so the step must be hard to see rather than
+hard to compute.
+
 ### 1.2b The swap test runs before the harness
 
 Rule 1 is the cheapest screen on file and it is run on the candidate call sentence before a line of prototype

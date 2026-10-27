@@ -868,3 +868,115 @@ exactly, rather than a quantity fitted over a population the analyst chooses. Th
   announcing the step; and split-commitment testing is the field's own named procurement-audit procedure, so
   the decisive step is one a competent analyst performs by reflex and a filed sentence would name. Not
   re-proposable.
+
+- 2026-10-27, the architecture 10 draw hunt. Two candidates drawn, gated and killed on measurement,
+  one killed before any harness by a sibling slot's own measurements, and five killed on the abstraction
+  test against a driver already on file. Harness at
+  `/tmp/claude-0/-home-user/5ec7cb86-793f-5895-a00b-808e36976e12/scratchpad/t184a10hunt/`
+  (`c1_thermal.py`, `c2_load.py`), every route scored against the world's own truth, every magnitude over
+  five seeds. The hunt left `accounting-audit-forensic` as the resume line said and drew a deciding
+  quantity of the first kind, a quantity a field measures with an instrument or a protocol where the
+  recording differs from the event. Nothing is cut and no card is registered.
+
+- 2026-10-27, candidate C10-1, the thermal lag behind the load archive (`energy-systems-utilities` /
+  `grid-reliability-outage-analysis`, anomaly-detection): the summer's true overload exposure as the
+  unit-hours at which each ground-mounted transformer's winding hot-spot temperature exceeded 98 C,
+  reconstructed by driving the IEC 60076-7 clause 8.2 difference equations with the half-hourly load
+  archive, the unit's own factory-test time constants, loss ratio and rated rises, and the measured
+  ambient, against counting the half-hours whose archived load exceeded the nameplate rating. The swap
+  test passes outright (there is no oil to heat and no time constant once the nouns are another field's).
+  **DEAD ON THE BIN TEST AT FIVE OF FIVE SEEDS, by an order of magnitude.** Graded to the nearest 10
+  unit-hours: the decisive step is worth (a) 10.33, 13.33, 11.66, 14.54 and 12.56 bins, while the licensed
+  variants of the standard's own method span (b) 230.33, 211.63, 110.32, 236.40 and 199.86 bins, and the
+  archive's half-hourly grain costs only (c) 2.00, 2.53, 1.44, 2.24 and 2.08 bins. The variants are not
+  exotic: the hot-spot factor at 1.1 against 1.3, the oil and winding exponents from another cooling-class
+  row, the standard's default oil time constant against the certificate's, and the clause 8.1 exponential
+  form without the winding overshoot terms, which between them put the figure anywhere from 474 to 1,577
+  unit-hours at one seed, a factor of 3.3 on a step worth 5 per cent. Two further independent refusals
+  measured on the way. The decisive step is also the SMALLEST rung gap at every seed, which the bin test
+  forbids on its own. And the ladder has architecture 7's shape: the crudest route (nameplate crossings,
+  1,190 against the golden 1,908) is 37 per cent low, but the first refinement any competent analyst makes,
+  derating the nameplate for the day's ambient, reaches 1,804.5, closing 86 per cent of that gap and landing
+  5.4 per cent from the golden. A third fact worth keeping: the difference equations cannot be stepped at the
+  archive's own 30-minute grain at all, because the winding time constant is 5 to 9 minutes, so the step
+  diverges and returns NaN; the sub-step is therefore another open HOW on top of (b). Guard: BLOCK, two
+  clearable (`ban.artifact` on both `monitoring_export` against task304 and `register` against task139, and
+  `test.same_puzzle_older` against task120 v3 wanting a differentiation line), nearest driver **0.07 against
+  task245**, whose driver is "a count of periods above a level over a whole cycle, read from records whose
+  gaps are not random" in this very subdomain, so the graded object is a near-twin as well. Not
+  re-proposable. **The general form, which is the hunt's main finding: a decisive step that rests on a
+  measurement MODEL, whether its parameters come from a standard's tabulated rows or from a fit, is priced
+  by that model's own licensed family, and in both candidates measured here that family is worth 2 to 20
+  times the step.** The bin test reads it straight off, and it reads it at the draw.
+
+- 2026-10-27, candidate C10-2, the load over the flow record the round never samples
+  (`physical-environmental-sciences` / `environmental-monitoring-exceedance`, anomaly-detection): a river
+  basin district's annual determinand load, recovered by fitting each point's concentration-discharge
+  relation on its twenty-six fortnightly grabs and integrating it over the fifteen-minute discharge record,
+  against the discharge-weighted mean grab concentration multiplied by the year's logged flow. The swap test
+  passes (a point source diluted by rising flow, mobilisation on the rising limb). **DEAD ON MEASUREMENT,
+  three ways.** First the bin test, graded to the nearest tonne on a district figure near 500 to 800 t:
+  (a) 6.35, 116.15, 83.70, 67.95 and 21.48 bins against (b) 57.52, 47.50, 22.19, 72.98 and 84.38, so it
+  fails at three of five seeds, and the step's own worth swings eighteenfold across seeds while the variant
+  spread holds steady, which makes the separation the draw's and not the design's. (c) is negligible at
+  0.03 to 0.07 bins, so the fine-grain forcing file was never the problem. Second, the accuracy condition
+  of 1.1f: at seed 21 the Beale ratio estimator lands 1.061 of the truth and the golden 0.920, and at seed
+  25 Beale lands 0.997 against the golden's 0.947, so at two of five seeds a cheaper licensed field
+  estimator is NEARER the truth than the golden. Third, the variants that produce (b) are the
+  retransformation family nobody can close: the smearing estimate against Ferguson's `exp(s2/2)` against no
+  correction at all, a rating linear in discharge, a load-discharge rating, and a seasonal rating, spanning
+  544.6 to 602.1 t at seed 21. Guard: BLOCK on three structural tests, `test.same_puzzle` against task487
+  inside the batch, `test.same_driver` against task271 v2 and task308 v1 lineage and `test.same_driver_older`
+  against task471 v1 lineage; and the kill that needed no measurement at all, nearest driver **0.06 against
+  task452's lineage v1**, whose driver is this candidate word for word with other nouns, "a period total of
+  the product of two series, one recorded at every interval and one sampled on a few intervals that mostly
+  catch the quiet state; the sampled factor rises with the recorded one, so carrying the sampled values
+  across the unsampled intervals, by averaging or interpolating" and it is a spent architecture in this very
+  domain. Not re-proposable. The residue: the whole bite is the covariance of two series, the mean of a
+  product against the product of means, which is the averaging cell task229's convex-conversion driver
+  already spends and which the architecture 9 constraint closes.
+
+- 2026-10-27, the specific sound level corrected for the residual: killed before any harness by
+  `guard.py slots`, on another slot's measurements. The candidate was the count of night periods at which a
+  plant's own specific level exceeds the consent limit at a receptor, recovered by energy subtraction of the
+  residual the plant's recorded shutdown windows measure, against reading the monitor's total level against
+  the limit. `slots` returns task182's architecture 3 feasibility block, which screened exactly this and
+  measured both halves: the decisive step separates (the shutdown-window residual against the residual that
+  describes the assessment period swaps one position of a slate, the error running about 7 dB one way at the
+  roadside positions and 4.5 dB the other at the hedgerow positions), and the residual's own functional
+  family moves every printed level, the decibel-linear form sitting 1.4 to 1.6 dB below the energy-linear
+  form at all fourteen positions and the lowest-decile form 2 to 5 dB below the truth, against figures
+  printed to the tenth. That is this hunt's finding measured a second time in a third world, and it is the
+  same shape as C10-1's: the model family outprices the step. Not re-proposable.
+
+- 2026-10-27, five candidates killed on the abstraction test before any harness, each naming the build whose
+  driver it repeats once the nouns are stripped. (1) Informative instrument downtime, the periods a monitor
+  loses being exactly the periods the measurand is extreme, recovered from the fault log and a paired
+  station: task180's driver (the record omits exactly the events it was least able to record) and task245's
+  outright, same subdomain. (2) The meter error curve inverted per interval to recover true throughput: this
+  slot's own architecture 8 (invert a known nonlinear observation map per record to recover a latent total,
+  the easy route applying the map's average), and the architecture 9 constraint. (3) A per-record inverse
+  detection or claim probability read off a shipped record: candidate C9-2's ground, which the guard blocks
+  in four earlier builds. (4) The diffusion-tube bias adjusted at the concentration being converted:
+  task185's driver exactly (a device agreeing at ordinary values and departing at high ones). (5) Run-order
+  carryover between consecutive analyses, recovered from the blanks that follow high samples: refused on the
+  client's rule 3 first bullet, because the decisive step is the discovery of an unreported defect planted in
+  the data, which is a planted defect however physical the mechanism. A detection limit (task189) or a
+  detection threshold (task180) is a reported property of the instrument and is not the same thing.
+
+- 2026-10-27, what the architecture 10 hunt closes, stated as the filter the next draw has to pass. The two
+  measured kills and the one screened kill fail for one reason, and it is sharper than the architecture 9
+  constraint: **the decisive step may not be priced by a model of the measurement.** Whether the model's
+  parameters come from a standard's tabulated rows (C10-1: the hot-spot factor and the exponents), from a
+  retransformation family (C10-2: smearing against Ferguson against none), or from a regression on a
+  residual (task182's architecture 3), the family's spread on the graded figure runs 2 to 20 times the
+  step's own worth, Gate C dies where Gate F lives, and no bin, world parameter or pin repairs it, because a
+  coarser bin brings the first refinement into the golden's bucket. With 1.1j already forbidding a fitted
+  estimator and 1.2a already forbidding a records-fixed quantity to carry a correction, the live cell for
+  architecture 11 is narrow and can be written down: the quantity has to be unobserved, the reconstruction
+  has to be arithmetic-closed on a piece the records supply exactly at a grain no grouping of the decision
+  file reproduces, and the difficulty has to sit in WHICH rows or WHAT structure rather than in any
+  parameter. Every instrument-process instance this hunt could name for that cell reduced either to
+  rule application (the arithmetic is closed, so a competent analyst who sees the structure executes it) or
+  to one of the twenty-two drivers already on file for this objective; the enumeration is in this entry's
+  predecessors. A draw that cannot name its arithmetic-closed piece is not a candidate.
