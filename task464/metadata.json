@@ -1,45 +1,143 @@
 {
- "task": "task464",
- "architecture": 2,
- "title": "Which six of the fourteen districts that applied for the 2027 Adolescent Literacy Partnership grants the State Board should fund, counted on the grade 9 and 10 students at Level 1 of the new state reading test, the grade 10 students' retiring-test scores placed on the new scale through the spring 2026 bridge study; with each applicant's grade 7 students at Level 1 in spring 2026 and their share",
- "domain": "Education & Learning Sciences",
- "subdomain": "item-response-theory-test-equating (a retiring state reading test's 2025 grade 8 scores placed on the new test's scale through a single-group bridge study, into one conformed file of grade 8 reading levels)",
- "objective": "Data Extraction & Conformation (ETL)",
- "prompt_shape": "01: a ranked list under a cap: the six of fourteen applicants funded, every applicant's students at Level 1, the first district left out and its gap, a chart, two figures per applicant beside the call and the conformed file",
- "as_of": "2026-11-20",
- "deliverables": [
-  "alp_grants_2027.xlsx",
-  "alp_conformed_grade8_reading_2026.csv"
- ],
- "distractor_files": [
-  "district_expenditure_per_pupil_2025.csv",
-  "four_year_graduation_rates_2025.csv"
- ],
- "stated_inputs": [
-  "2027",
-  "2026",
-  "2025",
-  "six",
-  "fourteen",
-  "Level 1",
-  "October 1"
- ],
- "input_gates": {
-  "files": 16,
-  "formats": [
-   "csv",
-   "pdf",
-   "xlsx"
+  "task": "task464",
+  "domain": "healthcare-delivery-health-economics",
+  "subdomain": "payment-claims-health-plan-analytics",
+  "objective": "etl",
+  "prompt_shape": "07",
+  "as_of": "2027-02-19",
+  "currency": "USD",
+  "compiled_by": "Harrowgate Community Health Plan, network contracting",
+  "compiled_on": "2027-02-16",
+  "licence": "Compiled by Harrowgate Community Health Plan network contracting for the 2027 network year. Plan records are the plan's own and are released for contracting use; the state licensing register and the fee schedule are public records of the state licensing authority, reproduced as published.",
+  "files": [
+    {
+      "path": "target/provider_directory_2027.csv",
+      "role": "spine",
+      "covers": "The plan's own provider directory, one row per site per annual attestation cycle.",
+      "source": "Harrowgate Community Health Plan, provider data management",
+      "date": "2026-11-18",
+      "licence": "plan record, released for contracting use"
+    },
+    {
+      "path": "target/state_licence_register.xlsx",
+      "role": "spine",
+      "covers": "The state licensing authority's outpatient facility register, facility and corporate rows with the amendment history.",
+      "source": "State licensing authority, public register extract",
+      "date": "2027-02-19",
+      "licence": "public record of the state licensing authority"
+    },
+    {
+      "path": "target/staffing_roster_2026q4.csv",
+      "role": "operating extract",
+      "covers": "The roster of staffed treatment sessions a week by site, effective 1 October 2026.",
+      "source": "Harrowgate Community Health Plan, clinical operations",
+      "date": "2026-10-01",
+      "licence": "plan record, released for contracting use"
+    },
+    {
+      "path": "target/treatment_encounters.db",
+      "role": "spine",
+      "covers": "Four contract years of outpatient dialysis and infusion treatment encounters, in the two layouts the clearinghouse change left behind.",
+      "source": "Harrowgate Community Health Plan, encounter data warehouse",
+      "date": "2027-01-05",
+      "licence": "plan record, released for contracting use"
+    },
+    {
+      "path": "target/enrolment_projection_2027.csv",
+      "role": "operating extract",
+      "covers": "The plan's enrolment projection by service area for 2027.",
+      "source": "Harrowgate Community Health Plan, actuarial services",
+      "date": "2027-01-15",
+      "licence": "plan record, released for contracting use"
+    },
+    {
+      "path": "target/network_agreement_2027_capacity_terms.pdf",
+      "role": "governing document",
+      "covers": "Schedule 4 of the 2027 provider network agreement: capacity and service area adequacy.",
+      "source": "Harrowgate Community Health Plan, network contracting",
+      "date": "2026-12-10",
+      "licence": "plan record, released for contracting use"
+    },
+    {
+      "path": "target/state_adequacy_filing_2026.xlsx",
+      "role": "context artifact",
+      "covers": "The plan's annual network adequacy filing for the 2026 network year, position as at 1 January 2026.",
+      "source": "Harrowgate Community Health Plan, regulatory reporting",
+      "date": "2026-03-31",
+      "licence": "plan record, released for contracting use"
+    },
+    {
+      "path": "target/out_of_network_payments_2026.csv",
+      "role": "operating extract",
+      "covers": "Out-of-network outpatient dialysis and infusion claim lines adjudicated in 2026.",
+      "source": "Harrowgate Community Health Plan, claims operations",
+      "date": "2027-01-09",
+      "licence": "plan record, released for contracting use"
+    },
+    {
+      "path": "target/out_of_network_payments_runout_2027q1.csv",
+      "role": "operating extract",
+      "covers": "2026 services adjudicated after the 2026 close, to the run-out pull.",
+      "source": "Harrowgate Community Health Plan, claims operations",
+      "date": "2027-02-16",
+      "licence": "plan record, released for contracting use"
+    },
+    {
+      "path": "target/out_of_network_payments_reconciliation_2026.xlsx",
+      "role": "control",
+      "covers": "The out-of-network register's own control totals by adjudication quarter.",
+      "source": "Harrowgate Community Health Plan, claims operations",
+      "date": "2027-01-09",
+      "licence": "plan record, released for contracting use"
+    },
+    {
+      "path": "target/encounter_extract_transmittal.json",
+      "role": "control",
+      "covers": "The encounter extract's transmittal: pull date, tables and row counts by service quarter.",
+      "source": "Harrowgate Community Health Plan, encounter data warehouse",
+      "date": "2027-01-05",
+      "licence": "plan record, released for contracting use"
+    },
+    {
+      "path": "target/nemt_trips_2026.csv",
+      "role": "distractor",
+      "covers": "Non-emergency medical transport trips by service area and month, 2026.",
+      "source": "Harrowgate Community Health Plan, transportation benefit",
+      "date": "2027-01-07",
+      "licence": "plan record, released for contracting use"
+    },
+    {
+      "path": "target/licence_fee_schedule_2026.pdf",
+      "role": "distractor",
+      "covers": "The state licensing authority's annual outpatient facility fee schedule, effective 1 July 2026.",
+      "source": "State licensing authority",
+      "date": "2026-07-01",
+      "licence": "public record of the state licensing authority"
+    }
   ],
-  "largest_file": "enrollment_october_2026_grades_9_12.csv",
-  "largest_file_rows": 91075
- },
- "sources": [
-  {
-   "files": "all files under target/",
-   "origin": "constructed for this task by task464/generator/build.py (seeded, deterministic) in the layouts of a state department of education's records: two assessment vendors' student result files and guides, a test-taker crosswalk, a bridge study's paired scores and memorandum, an October enrolment collection, a district and school directory, a nonpublic schools registry, a state board resolution, grant rules and two neighbouring state files; the state is unnamed and its districts, schools, vendors and people are fictional",
-   "date": "2026-11-20",
-   "license": "original work for this task; no third-party data"
+  "distractor_files": [
+    "target/nemt_trips_2026.csv",
+    "target/licence_fee_schedule_2026.pdf"
+  ],
+  "stated_inputs": {
+    "service_areas": 12,
+    "contract_year_for_demand": 2026,
+    "network_year": "2027"
+  },
+  "field_terms": [
+    "station",
+    "chair",
+    "session",
+    "position",
+    "slot"
+  ],
+  "deliverables": [
+    "outpatient_capacity_2027.csv",
+    "area_capacity_2027.xlsx"
+  ],
+  "portal": {
+    "call": "the 2027 network's weekly treatment slots and the twelve service areas against the adequacy standard",
+    "network_weekly_slots": 3886,
+    "areas_short": 6
   }
- ]
 }

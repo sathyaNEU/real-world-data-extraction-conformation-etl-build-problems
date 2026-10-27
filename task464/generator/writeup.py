@@ -1,101 +1,158 @@
-"""Write task464/submission.md from generator/figures.json."""
+#!/usr/bin/env python3
+"""task464: generator/figures.json and submission.md, both emitted, never typed."""
 import json
 import os
-import sys
 
-HERE = os.path.dirname(os.path.abspath(__file__))
-sys.path.insert(0, HERE)
-import world as W   # noqa: E402
+import answers
+import docs
+import world
 
-
-def _and(names):
-    return ", ".join(names[:-1]) + " and " + names[-1] if len(names) > 1 else names[0]
+TAGS = ("**Domain:** Healthcare delivery and health economics (payment, claims and health plan "
+        "analytics).\n**Analytical objective:** Data extraction and conformation (ETL).\n")
 
 
-def n(v):
-    return "{:,}".format(int(v))
+def figures(st):
+    t = st["truth"]
+    C, S, A, B, D = t["call"], t["sites"], t["ask_a"], t["ask_b"], t["ask_c"]
+    comp = answers.components(st["sites"], st["by_area"], st["rows"])
+    f = {
+        "call": {
+            "network_weekly_slots": C["network"],
+            "areas_short": len(C["short"]),
+            "nearest_short_area": world.AREA[C["nearest"]]["name"],
+            "nearest_short_shortfall": C["nearest_shortfall"],
+            "required_weekly_slots_network": comp["required_weekly_slots_network"],
+        },
+        "cc1": comp["deliverable_positions"],
+        "cc2": comp["attested_stations"],
+        "cc3": comp["projected_weekly_demand_2027"],
+        "cc4": comp["required_weekly_slots_network"],
+        "area": {a["code"]: {"slots": a["slots"], "required": a["required"],
+                             "meets": "yes" if a["meets"] else "no",
+                             "shortfall": a["shortfall"]} for a in C["areas"]},
+        "site": {r["site"]: {"slots": r["slots"]} for r in S},
+        "ask_a": {},
+        "ask_b": {b["code"]: {"sites": b["sites"], "stations": b["stations"]} for b in B},
+        "ask_c": {d["code"]: {"sites": d["sites"], "stations": d["stations"]} for d in D},
+        "constants": {
+            "sites_in_scope": len(st["sites"]),
+            "service_areas": len(world.CODES),
+            "cushion": world.CUSHION,
+            "weeks_in_contract_year": world.WEEKS_IN_CONTRACT_YEAR,
+            "record_months": 48,
+            "encounter_rows": st["na"] + st["nb"],
+            "agreement_capacity_clause": docs.CLAUSE_CAPACITY,
+            "agreement_adequacy_clause": docs.CLAUSE_ADEQUACY,
+        },
+        "step": {
+            "3_positions": comp["deliverable_positions"],
+            "3_attested": comp["attested_stations"],
+            "4_slots": C["network"],
+            "5_projected": comp["projected_weekly_demand_2027"],
+            "5_required": comp["required_weekly_slots_network"],
+            "6_ask_a_figures": len(A),
+            "7_ask_b_figures": len(B) * 2,
+            "7_ask_c_figures": len(D) * 2,
+            "8_areas_short": len(C["short"]),
+        },
+    }
+    for a in A:
+        f["ask_a"].setdefault(a["code"], {})[a["half"]] = {"treatments": a["treatments"],
+                                                           "share": a["share"]}
+    with open(os.path.join(st["task"], "generator", "figures.json"), "w", encoding="utf-8") as fh:
+        json.dump(f, fh, indent=2, sort_keys=True)
+        fh.write("\n")
+    return f
 
 
-def write(fig_path, out_path):
-    F = json.load(open(fig_path))
-    c = F["call"]
-    nm = F["names"]
-    sh = {d: W.short_name(d) for d in W.APPLICANTS}
-    lv = F["level1"]
-    br = F["bridge"]
-    reg = F["regression"]
-    k1 = F["boundaries"][0]
-    F_ = W.FILES
-    cut = F["cuts"]["grade8"][0]
+def submission(st, f):
+    t = st["truth"]
+    C, S, A, B, D = t["call"], t["sites"], t["ask_a"], t["ask_b"], t["ask_c"]
+    n = "{:,}".format
     L = []
     L.append("## Tags\n")
-    L.append("**Domain:** Education & Learning Sciences (test equating and linking: a retiring state reading test's "
-             "grade 8 scores placed on the new test's scale through a single-group bridge study).")
-    L.append("**Analytical objective:** Data Extraction & Conformation (ETL).\n")
-    L.append("## 1. Final Recommendation\n")
-    L.append("**Fund %s.**" % _and(["%s (%s)" % (nm[d], n(lv[d])) for d in c["funded"]]))
-    L.append("Each count is the applicant's grade 9 and 10 students on the October 1, 2026 roll whose latest grade 8 "
-             "result is at Level 1, with the 2025 retiring-test scores placed on the new scale by a concordance that "
-             "matches the two tests' score distributions in the bridge study (retiring scores of %d and below at Level "
-             "1). %s, the first left out at %s, trails %s by %d. Not the slate that places each 2025 score at its "
-             "regression prediction (%d and below), which funds %s in %s's place: the regression line is flatter than "
-             "the line linking the scales, so it puts %.1f per cent of the bridge students at Level 1 against %.1f per "
-             "cent on the new test itself.\n" % (
-                 k1, sh[c["first_out"]], n(lv[c["first_out"]]), sh[c["sixth"]], c["gap"], reg["boundary"],
-                 sh[[d for d in reg["funded"] if d not in c["funded"]][0]], sh[[d for d in c["funded"]
-                                                                              if d not in reg["funded"]][0]],
-                 br["share_reg_l1"], br["share_new_l1"]))
-    L.append("## 2. Critical Components\n")
-    L.append("1. Retiring-test grade 8 scores placed at Level 1 on the new scale: **%d and below** (the new test's "
-             "Level 2 begins at %d)." % (k1, cut))
-    L.append("2. Students at Level 1 in %s, the sixth: **%s**; in %s, the first left out: **%s**; the gap: **%d**." % (
-        sh[c["sixth"]], n(lv[c["sixth"]]), sh[c["first_out"]], n(lv[c["first_out"]]), c["gap"]))
-    L.append("3. Bridge students at Level 1 on the new test: **%.1f** per cent; placed by the regression: **%.1f** per "
-             "cent." % (br["share_new_l1"], br["share_reg_l1"]))
-    L.append("")
-    L.append("## 3. Step-by-Step Solution\n")
-    L.append("1. Took the spells in %s covering October 1, 2026 (entry on or before it, exit blank or on or after "
-             "it) in grades 9 and 10 of the fourteen applicants in %s." % (F_["enrollment"], F_["rules"]))
-    L.append("2. Took every grade 8 session with a score from %s (SCR rows, make-ups included, blank state "
-             "identifiers filled from %s) and %s (Scored rows), and kept each student's latest." % (
-                 F_["glra"], F_["crosswalk"], F_["slm"]))
-    L.append("3. Linked the two scales with the %s pairs of %s by equipercentile matching of the two score "
-             "distributions; linear linking and every percentile convention give the same placement: retiring scores "
-             "of %d and below at Level 1 (new-test scores below %d)." % (n(br["n"]), F_["bridge"], k1, cut))
-    L.append("4. Counted each applicant's students at Level 1 and ranked them; %s is sixth with %s and %s first left "
-             "out with %s." % (sh[c["sixth"]], n(lv[c["sixth"]]), sh[c["first_out"]], n(lv[c["first_out"]])))
-    L.append("5. Rejected the regression of the new score on the retiring score: placed by it only %.1f per cent of the "
-             "bridge students reach Level 1 against %.1f per cent on the new test, and it funds %s." % (
-                 br["share_reg_l1"], br["share_new_l1"], sh[[d for d in reg["funded"] if d not in c["funded"]][0]]))
-    L.append("6. For grade 7, took each applicant's own middle schools from %s (rows from nonpublic schools in %s left "
-             "out), the Scored grade 7 rows of %s, and Level 1 below the grade 7 cut of %d adopted in %s, not the "
-             "file's performance level, reported before the Board set the grade 7 cuts." % (F_["directory"], F_["nonpublic"], F_["slm"], F["cuts"]["grade7_level2"],
-                                         F_["resolution"]))
-    L.append("")
-    L.append("## 4. Deliverable Answers\n")
-    L.append("### %s\n" % W.GOLDEN["workbook"])
-    L.append("1. The six districts funded: %s." % _and([nm[d] for d in c["funded"]]))
-    L.append("2. Each applicant's grade 9 and 10 students on the October 1, 2026 roll at Level 1:")
-    for d in sorted(W.APPLICANTS, key=lambda d: (-lv[d], d)):
-        L.append("   - %s: %s" % (nm[d], n(lv[d])))
-    L.append("3. The first district left out: %s, %s students, %d below %s." % (
-        nm[c["first_out"]], n(lv[c["first_out"]]), c["gap"], nm[c["sixth"]]))
-    L.append("4. Each applicant's grade 7 students at Level 1 in spring 2026 and their share of its grade 7 students "
-             "with a score:")
-    for d in sorted(W.APPLICANTS, key=lambda d: (-lv[d], d)):
-        L.append("   - %s: %s students, %.1f per cent" % (nm[d], n(F["grade7_level1"][d]), F["grade7_share"][d]))
-    L.append("5. A horizontal bar chart of the fourteen applicants' students at Level 1 on the Chart sheet, the six "
-             "funded in dark green and the rest in grey, a dashed line under %s labelled with the sixth's %s and the "
-             "first left out's %s." % (sh[c["sixth"]], n(lv[c["sixth"]]), n(lv[c["first_out"]])))
-    L.append("")
-    L.append("### %s\n" % W.GOLDEN["table"])
-    L.append("1. One row for each of the %s counted students (grade 9 or 10 on an applicant's October 1, 2026 roll with "
-             "a grade 8 result): the state identifier, district, school, grade, the test and year of the latest grade 8 "
-             "result, its scale score and its level on the new scale." % n(F["conformed_rows"]))
-    L.append("2. Students at each level: Level 1 %s, Level 2 %s, Level 3 %s, Level 4 %s." % tuple(
-        n(F["conformed_levels"][str(k)]) for k in (1, 2, 3, 4)))
-    txt = "\n".join(L) + "\n"
-    assert "—" not in txt and "–" not in txt
-    with open(out_path, "w", encoding="utf-8") as fh:
-        fh.write(txt)
-    return txt
+    L.append(TAGS)
+    L.append("\n## 1. Final Recommendation\n")
+    L.append("**The 2027 outpatient dialysis and infusion network holds %s weekly treatment slots, and "
+             "six of the twelve service areas sit below the adequacy standard.**\n"
+             % n(C["network"]))
+    L.append("Network slots are %s against %s required across the twelve areas, and %s is the nearest of "
+             "the six to the standard, %s slots short. Not the stations the directory attests, which are "
+             "%s positions against %s and put three of those six areas above the standard. Not the "
+             "stations the state licence lists, which are higher again. Not each site's busiest week in "
+             "the record, which measures demand and leaves %d of the twelve areas short.\n"
+             % (n(C["network"]), n(f["cc4"]), f["call"]["nearest_short_area"],
+                n(C["nearest_shortfall"]), n(f["cc2"]), n(f["cc1"]),
+                len(st["truth"]["call"]["ladder"]["short"]["R2"])))
+    L.append("\n## 2. Critical Components\n")
+    L.append("1. Deliverable treatment positions across the forty sites in scope are **%s**, against "
+             "**%s** attested stations\n" % (n(f["cc1"]), n(f["cc2"])))
+    L.append("2. Projected 2027 weekly treatment demand across the twelve areas is **%s** treatments\n"
+             % n(f["cc3"]))
+    L.append("3. The weekly treatment slots the standard requires across the twelve areas are **%s**\n"
+             % n(f["cc4"]))
+    L.append("\n## 3. Step-by-Step Solution\n")
+    steps = [
+        "Took the sites carrying a 2027 contract intent on the attestation cycle current at the network "
+        "position date in provider_directory_2027.csv: forty sites in twelve service areas.",
+        "Counted the treatment sessions each site's roster staffs in a week from "
+        "staffing_roster_2026q4.csv, and the treatments a position delivers in a session from Schedule 4 "
+        "clause %s." % docs.CLAUSE_CAPACITY,
+        "Rebuilt each treatment's service interval from both tables of treatment_encounters.db, the 2023 "
+        "and 2024 table carrying a stop time and the 2025 and 2026 table a length in minutes, and took "
+        "each site's deliverable treatment positions as the greatest number of its own treatments running "
+        "at one time over the four-year record: %s positions against %s attested stations."
+        % (n(f["cc1"]), n(f["cc2"])),
+        "Multiplied each site's positions by its sessions a week and by its category figure, as Schedule 4 "
+        "clause %s sets the unit: %s weekly treatment slots for the network."
+        % (docs.CLAUSE_CAPACITY, n(C["network"])),
+        "Took each area's 2026 contract year treatments a week from the same extract and grew them by the "
+        "area's factor in enrolment_projection_2027.csv: %s treatments a week projected and %s weekly "
+        "slots required." % (n(f["cc3"]), n(f["cc4"])),
+        "Rebuilt the out-of-network half-year counts on service date from "
+        "out_of_network_payments_2026.csv with out_of_network_payments_runout_2027q1.csv, placing each "
+        "claim in the area of the site that treated rather than the member's residence area: %d figures "
+        "on the Out of Network 2026 sheet." % len(A),
+        "Took the state_licence_register.xlsx facility row covering the position date for each licence "
+        "number, corporate rows excluded, for the licensed supply, and the row covering the 2026 filing's "
+        "own position date to resolve each distinct site in state_adequacy_filing_2026.xlsx: %d and %d "
+        "figures." % (len(B) * 2, len(D) * 2),
+        "Compared each area's slots with its required figure: %d of the twelve areas sit below the "
+        "standard and the network holds %s weekly treatment slots." % (len(C["short"]), n(C["network"])),
+    ]
+    for i, s in enumerate(steps, start=1):
+        L.append("%d. %s\n" % (i, s))
+    L.append("\n## 4. Deliverable Answers\n")
+    L.append("\n### outpatient_capacity_2027.csv\n")
+    L.append("1. Weekly treatment slots, forty rows in the file's order, whole slots:\n")
+    for r in S:
+        L.append("   - %s, %s: %s\n" % (r["site"], r["area_name"], n(r["slots"])))
+    L.append("\n### area_capacity_2027.xlsx\n")
+    L.append("2. Area Capacity, the twelve areas in the sheet's order, whole slots:\n")
+    for a in C["areas"]:
+        L.append("   - %s: %s slots, %s required, meets the standard %s%s\n"
+                 % (a["name"], n(a["slots"]), n(a["required"]), "yes" if a["meets"] else "no",
+                    "" if a["meets"] else ", %s slots short" % n(a["shortfall"])))
+    L.append("3. Nearest the standard without meeting it: %s, %s slots short.\n"
+             % (f["call"]["nearest_short_area"], n(C["nearest_shortfall"])))
+    L.append("4. Out of Network 2026, twelve areas by half, whole treatments and shares to one decimal:\n")
+    for a in A:
+        L.append("   - %s, %s: %s treatments, %.1f per cent\n"
+                 % (a["name"], a["half"], n(a["treatments"]), a["share"]))
+    L.append("5. Licensed Supply, twelve areas, whole sites and stations:\n")
+    for b in B:
+        L.append("   - %s: %s sites, %s stations\n" % (b["name"], n(b["sites"]), n(b["stations"])))
+    L.append("6. Sites Dropped, twelve areas, whole sites and stations:\n")
+    for d in D:
+        L.append("   - %s: %s sites, %s stations\n" % (d["name"], n(d["sites"]), n(d["stations"])))
+    L.append("7. Bar chart of weekly treatment slots against the required figure on the Area Capacity "
+             "sheet, the six areas below the standard carrying their shortfall in the sheet's own "
+             "shortfall column.\n")
+    with open(os.path.join(st["task"], "submission.md"), "w", encoding="utf-8") as fh:
+        fh.write("".join(L))
+
+
+def write(task_dir, st):
+    f = figures(st)
+    submission(st, f)
+    return f

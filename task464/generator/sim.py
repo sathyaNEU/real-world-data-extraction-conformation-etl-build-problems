@@ -99,8 +99,14 @@ def build(sites, seed=world.SEED + 7):
         K = site["ceiling"]
         durs, turn, openrange, steprange = MIX[site["modality"]]
         site["ramp_span"] = srnd.randint(*steprange)
-        panel_n = max(12, int(round(site["R3"] * site["u"] / (3.0 if site["modality"] == "dialysis" else 1.6))))
+        # A haemodialysis patient attends three days a week, so the panel splits into two cohorts, one
+        # on the odd weekdays and one on the even; an infusion patient attends one weekday every few
+        # weeks. Nobody takes two treatments at a site on one day.
+        daily_cap = K * (site["rounds_hist"] // site["days"])
+        cohorts = 2 if site["modality"] == "dialysis" else site["days"]
+        panel_n = cohorts * max(9, int(daily_cap * 1.06) + 2)
         panel = ["M%09d" % (400000000 + site["seq"] * 7919 + i * 13) for i in range(panel_n)]
+        groups = [panel[i::cohorts] for i in range(cohorts)]
         panels[site["site"]] = panel
         days_open = open_days(site)
 
@@ -160,18 +166,49 @@ def build(sites, seed=world.SEED + 7):
                 diff += 1
         assert diff == 0, "%s could not reach its 2026 target, %d left" % (site["site"], diff)
 
-        rows = []
-        for date in sorted(dayt):
-            n = dayt[date]
-            if n <= 0:
-                continue
-            w = (date - world.REC_START).days // 7
-            rpd = rounds_by_week[min(w, world.REC_WEEKS - 1)] // site["days"]
-            rows += _day(site, date, n, K, rpd, durs, turn, openrange,
-                         (site["ramp_span"], site["ramp_span"] + 28), srnd, panel, w, date.weekday())
-        _separate_endpoints(rows)
+        def chains(span, rs=random.Random(seed * 977 + site["seq"])):
+            got = []
+            for date in sorted(dayt):
+                n = dayt[date]
+                if n <= 0:
+                    continue
+                w = (date - world.REC_START).days // 7
+                rpd = rounds_by_week[min(w, world.REC_WEEKS - 1)] // site["days"]
+                got += _day(site, date, n, K, rpd, durs, turn, openrange, (span, span + 28), rs,
+                            groups[date.weekday() % len(groups)], w, date.weekday())
+            _separate_endpoints(got)
+            assert max(r["start"] + r["dur"] for r in got) <= 1470, \
+                "%s runs a treatment past half past midnight" % site["site"]
+            return got
+
+        # The ramp is as wide as the site's own plateau can carry: wide enough that no count of
+        # treatments starting inside a clock window returns the position count, narrow enough that the
+        # site holds every position occupied for a measurable share of its treating hours.
+        span = site["ramp_span"]
+        rows = chains(span)
+        while span > steprange[0] and _share_at_max(rows, K) < 0.062:
+            span -= 10
+            rows = chains(span)
+        site["ramp_span"] = span
         out += rows
     return out, panels
+
+
+def _share_at_max(rows, K):
+    ev = []
+    for r in rows:
+        t0 = (r["date"] - world.REC_START).days * 1440 + r["start"]
+        ev.append((t0, 1))
+        ev.append((t0 + r["dur"], -1))
+    ev.sort()
+    hist, cur, prev = collections.Counter(), 0, None
+    for t, k in ev:
+        if prev is not None and cur > 0:
+            hist[cur] += t - prev
+        cur += k
+        prev = t
+    tot = sum(hist.values())
+    return hist[K] / float(tot) if tot else 0.0
 
 
 def _separate_endpoints(rows):
@@ -211,11 +248,18 @@ def _day(site, date, n, K, rpd, durs, turn, openrange, steprange, rnd, panel, w,
             left -= 1
     span = rnd.randint(*steprange)
     step = span / float(max(1, K - 1))
-    open_min = rnd.randint(*openrange)
+    # a unit running more rounds in a day opens earlier, so its last run still ends inside the day
+    if site["modality"] == "dialysis":
+        lo, hi = (300, 360) if rpd >= 3 else (330, 420)
+    else:
+        lo, hi = (450, 490) if rpd >= 4 else (465, 530)
+    open_min = rnd.randint(lo, hi)
     offs = [int(round(i * step)) for i in range(K)]
     rnd.shuffle(offs)
     block = (sum(v * wt for v, wt in durs) / sum(wt for _, wt in durs)) + (turn[0] + turn[1]) / 2.0
     rows = []
+    # the same patients hold their slots for about half a year and then the panel turns over
+    seat = (site["seq"] * 11 + (w // 26) * 7) % max(1, len(panel))
     for j in range(K):
         q = quota[j]
         if q <= 0:
@@ -231,7 +275,7 @@ def _day(site, date, n, K, rpd, durs, turn, openrange, steprange, rnd, panel, w,
             start = t if prev_end is None else max(t, prev_end + rnd.randint(*turn))
             start = int(round(start)) + (j % 3)            # no two positions share a minute
             end = start + dur
-            mem = panel[(site["seq"] * 17 + j * 29 + (a + r) * 7 + d * 11) % len(panel)]
+            mem = panel[(seat + len(rows)) % len(panel)]
             rows.append(dict(site=site["site"], member=mem, date=date, start=start, dur=dur,
                              pos=j, rnd_ix=a + r, week=w))
             prev_end = end

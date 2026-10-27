@@ -78,7 +78,7 @@ def directory(target, sites, extra, rnd):
                          s["locality"], s["area"], world.AREA[s["area"]]["name"],
                          "in-centre haemodialysis" if s["modality"] == "dialysis" else "ambulatory infusion",
                          stations, taxes[s["site"]],
-                         "contract" if cycle == 2026 else ("contract" if s["in_2026_filing"] else "none")])
+                         "contract" if cycle == 2026 else ""])
         for e in extra:
             if e["kind"] != "dropped":
                 continue
@@ -86,7 +86,7 @@ def directory(target, sites, extra, rnd):
                          e["locality"], e["area"], world.AREA[e["area"]]["name"],
                          "in-centre haemodialysis" if e["modality"] == "dialysis" else "ambulatory infusion",
                          e["licensed"], "%02d-%07d" % (20 + e["seq"] % 60, 1100000 + e["seq"] * 1511),
-                         "none" if cycle == 2026 else "contract"])
+                         "none" if cycle == 2026 else ""])
     _w(os.path.join(target, "provider_directory_2027.csv"), rows,
        ["attestation_cycle", "attested_on", "plan_site_id", "site_name", "operator", "service_address",
         "locality", "service_area_code", "service_area_name", "service_category", "attested_stations",

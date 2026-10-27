@@ -32,6 +32,8 @@ SECOND = "Nicholas Clay"
 FICTION_STAMP = dt.datetime(2027, 1, 5, 9, 14, 0)
 
 AGREEMENT = "network_agreement_2027_capacity_terms.pdf"
+CLAUSE_CAPACITY = "4.2"
+CLAUSE_ADEQUACY = "4.3"
 FEES = "licence_fee_schedule_2026.pdf"
 
 

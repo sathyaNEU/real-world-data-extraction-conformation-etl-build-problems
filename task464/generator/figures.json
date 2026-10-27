@@ -1,195 +1,452 @@
 {
- "boundaries": [
-  241,
-  300,
-  342
- ],
- "bridge": {
-  "n": 3968,
-  "r": 0.86,
-  "share_conc_l1": 14.6,
-  "share_new_l1": 15.7,
-  "share_reg_l1": 11.1,
-  "slope": 1.39
- },
- "call": {
-  "first_out": "1240",
-  "first_out_name": "Harlenbrook County Schools",
-  "funded": [
-   "1010",
-   "1020",
-   "1110",
-   "1120",
-   "1230",
-   "1220"
-  ],
-  "funded_names": [
-   "Kessick Public Schools",
-   "Varlow City Schools",
-   "Brenmoor County Schools",
-   "Calderidge Unified School District",
-   "Garnet Hills School District",
-   "Elmorrow Public Schools"
-  ],
-  "gap": 15,
-  "sixth": "1220",
-  "sixth_name": "Elmorrow Public Schools"
- },
- "conformed_levels": {
-  "1": 5764,
-  "2": 12448,
-  "3": 8700,
-  "4": 4984
- },
- "conformed_rows": 31896,
- "counted": 31896,
- "counted_retiring": 15986,
- "cuts": {
-  "grade7_level2": 2390,
-  "grade8": [
-   2415,
-   2508,
-   2579
-  ]
- },
- "grade7_level1": {
-  "1010": 532,
-  "1020": 371,
-  "1110": 230,
-  "1120": 225,
-  "1210": 139,
-  "1220": 131,
-  "1230": 168,
-  "1240": 185,
-  "1310": 137,
-  "1320": 149,
-  "1410": 136,
-  "1440": 89,
-  "1520": 73,
-  "1700": 69
- },
- "grade7_scored": {
-  "1010": 2683,
-  "1020": 2150,
-  "1110": 1417,
-  "1120": 1350,
-  "1210": 898,
-  "1220": 1835,
-  "1230": 1027,
-  "1240": 787,
-  "1310": 949,
-  "1320": 897,
-  "1410": 740,
-  "1440": 617,
-  "1520": 515,
-  "1700": 425
- },
- "grade7_share": {
-  "1010": 19.8,
-  "1020": 17.3,
-  "1110": 16.2,
-  "1120": 16.7,
-  "1210": 15.5,
-  "1220": 7.1,
-  "1230": 16.4,
-  "1240": 23.5,
-  "1310": 14.4,
-  "1320": 16.6,
-  "1410": 18.4,
-  "1440": 14.4,
-  "1520": 14.2,
-  "1700": 16.2
- },
- "level1": {
-  "1010": 1113,
-  "1020": 870,
-  "1110": 503,
-  "1120": 472,
-  "1210": 320,
-  "1220": 368,
-  "1230": 372,
-  "1240": 353,
-  "1310": 283,
-  "1320": 280,
-  "1410": 264,
-  "1440": 262,
-  "1520": 182,
-  "1700": 122
- },
- "level1_grade10": {
-  "1010": 593,
-  "1020": 472,
-  "1110": 268,
-  "1120": 261,
-  "1210": 176,
-  "1220": 230,
-  "1230": 195,
-  "1240": 124,
-  "1310": 144,
-  "1320": 129,
-  "1410": 132,
-  "1440": 130,
-  "1520": 104,
-  "1700": 64
- },
- "level1_grade9": {
-  "1010": 520,
-  "1020": 398,
-  "1110": 235,
-  "1120": 211,
-  "1210": 144,
-  "1220": 138,
-  "1230": 177,
-  "1240": 229,
-  "1310": 139,
-  "1320": 151,
-  "1410": 132,
-  "1440": 132,
-  "1520": 78,
-  "1700": 58
- },
- "names": {
-  "1010": "Kessick Public Schools",
-  "1020": "Varlow City Schools",
-  "1110": "Brenmoor County Schools",
-  "1120": "Calderidge Unified School District",
-  "1210": "Dunstree Area Schools",
-  "1220": "Elmorrow Public Schools",
-  "1230": "Garnet Hills School District",
-  "1240": "Harlenbrook County Schools",
-  "1310": "Ivelstone Public Schools",
-  "1320": "Jasperton Unified School District",
-  "1410": "Marrowby School District",
-  "1440": "Pemberwick County Schools",
-  "1520": "Saltmarrow Public Schools",
-  "1700": "Ashgrove-Fenley Consolidated Schools"
- },
- "regression": {
-  "boundary": 231,
-  "first_out": "1220",
-  "funded": [
-   "1010",
-   "1020",
-   "1110",
-   "1120",
-   "1230",
-   "1240"
-  ],
-  "level1": {
-   "1010": 971,
-   "1020": 766,
-   "1110": 436,
-   "1120": 401,
-   "1210": 277,
-   "1220": 315,
-   "1230": 327,
-   "1240": 323,
-   "1310": 252,
-   "1320": 244,
-   "1410": 229,
-   "1440": 241,
-   "1520": 154,
-   "1700": 111
+  "area": {
+    "SA-01": {
+      "meets": "yes",
+      "required": 244,
+      "shortfall": 0,
+      "slots": 326
+    },
+    "SA-02": {
+      "meets": "no",
+      "required": 332,
+      "shortfall": 20,
+      "slots": 312
+    },
+    "SA-03": {
+      "meets": "yes",
+      "required": 270,
+      "shortfall": 0,
+      "slots": 366
+    },
+    "SA-04": {
+      "meets": "no",
+      "required": 190,
+      "shortfall": 20,
+      "slots": 170
+    },
+    "SA-05": {
+      "meets": "yes",
+      "required": 238,
+      "shortfall": 0,
+      "slots": 302
+    },
+    "SA-06": {
+      "meets": "yes",
+      "required": 259,
+      "shortfall": 0,
+      "slots": 360
+    },
+    "SA-07": {
+      "meets": "no",
+      "required": 334,
+      "shortfall": 22,
+      "slots": 312
+    },
+    "SA-08": {
+      "meets": "yes",
+      "required": 207,
+      "shortfall": 0,
+      "slots": 265
+    },
+    "SA-09": {
+      "meets": "no",
+      "required": 433,
+      "shortfall": 47,
+      "slots": 386
+    },
+    "SA-10": {
+      "meets": "yes",
+      "required": 301,
+      "shortfall": 0,
+      "slots": 396
+    },
+    "SA-11": {
+      "meets": "no",
+      "required": 520,
+      "shortfall": 34,
+      "slots": 486
+    },
+    "SA-12": {
+      "meets": "no",
+      "required": 228,
+      "shortfall": 23,
+      "slots": 205
+    }
+  },
+  "ask_a": {
+    "SA-01": {
+      "H1": {
+        "share": 9.7,
+        "treatments": 572
+      },
+      "H2": {
+        "share": 9.8,
+        "treatments": 559
+      }
+    },
+    "SA-02": {
+      "H1": {
+        "share": 3.3,
+        "treatments": 234
+      },
+      "H2": {
+        "share": 3.3,
+        "treatments": 229
+      }
+    },
+    "SA-03": {
+      "H1": {
+        "share": 10.1,
+        "treatments": 650
+      },
+      "H2": {
+        "share": 10.2,
+        "treatments": 638
+      }
+    },
+    "SA-04": {
+      "H1": {
+        "share": 5.4,
+        "treatments": 234
+      },
+      "H2": {
+        "share": 5.4,
+        "treatments": 228
+      }
+    },
+    "SA-05": {
+      "H1": {
+        "share": 9.4,
+        "treatments": 546
+      },
+      "H2": {
+        "share": 9.5,
+        "treatments": 535
+      }
+    },
+    "SA-06": {
+      "H1": {
+        "share": 12.8,
+        "treatments": 806
+      },
+      "H2": {
+        "share": 12.9,
+        "treatments": 790
+      }
+    },
+    "SA-07": {
+      "H1": {
+        "share": 6.3,
+        "treatments": 468
+      },
+      "H2": {
+        "share": 6.3,
+        "treatments": 457
+      }
+    },
+    "SA-08": {
+      "H1": {
+        "share": 9.9,
+        "treatments": 494
+      },
+      "H2": {
+        "share": 10.1,
+        "treatments": 484
+      }
+    },
+    "SA-09": {
+      "H1": {
+        "share": 3.6,
+        "treatments": 338
+      },
+      "H2": {
+        "share": 3.6,
+        "treatments": 329
+      }
+    },
+    "SA-10": {
+      "H1": {
+        "share": 5.2,
+        "treatments": 364
+      },
+      "H2": {
+        "share": 5.3,
+        "treatments": 357
+      }
+    },
+    "SA-11": {
+      "H1": {
+        "share": 4.5,
+        "treatments": 520
+      },
+      "H2": {
+        "share": 4.5,
+        "treatments": 510
+      }
+    },
+    "SA-12": {
+      "H1": {
+        "share": 12.1,
+        "treatments": 676
+      },
+      "H2": {
+        "share": 12.3,
+        "treatments": 664
+      }
+    }
+  },
+  "ask_b": {
+    "SA-01": {
+      "sites": 7,
+      "stations": 43
+    },
+    "SA-02": {
+      "sites": 6,
+      "stations": 62
+    },
+    "SA-03": {
+      "sites": 7,
+      "stations": 54
+    },
+    "SA-04": {
+      "sites": 6,
+      "stations": 39
+    },
+    "SA-05": {
+      "sites": 5,
+      "stations": 51
+    },
+    "SA-06": {
+      "sites": 8,
+      "stations": 66
+    },
+    "SA-07": {
+      "sites": 5,
+      "stations": 50
+    },
+    "SA-08": {
+      "sites": 6,
+      "stations": 38
+    },
+    "SA-09": {
+      "sites": 6,
+      "stations": 36
+    },
+    "SA-10": {
+      "sites": 6,
+      "stations": 59
+    },
+    "SA-11": {
+      "sites": 5,
+      "stations": 55
+    },
+    "SA-12": {
+      "sites": 5,
+      "stations": 38
+    }
+  },
+  "ask_c": {
+    "SA-01": {
+      "sites": 2,
+      "stations": 15
+    },
+    "SA-02": {
+      "sites": 1,
+      "stations": 8
+    },
+    "SA-03": {
+      "sites": 1,
+      "stations": 10
+    },
+    "SA-04": {
+      "sites": 1,
+      "stations": 5
+    },
+    "SA-05": {
+      "sites": 1,
+      "stations": 12
+    },
+    "SA-06": {
+      "sites": 2,
+      "stations": 16
+    },
+    "SA-07": {
+      "sites": 1,
+      "stations": 6
+    },
+    "SA-08": {
+      "sites": 1,
+      "stations": 5
+    },
+    "SA-09": {
+      "sites": 1,
+      "stations": 6
+    },
+    "SA-10": {
+      "sites": 1,
+      "stations": 8
+    },
+    "SA-11": {
+      "sites": 1,
+      "stations": 6
+    },
+    "SA-12": {
+      "sites": 1,
+      "stations": 8
+    }
+  },
+  "call": {
+    "areas_short": 6,
+    "nearest_short_area": "Bexhollow",
+    "nearest_short_shortfall": 20,
+    "network_weekly_slots": 3886,
+    "required_weekly_slots_network": 3556
+  },
+  "cc1": 274,
+  "cc2": 327,
+  "cc3": 3092,
+  "cc4": 3556,
+  "constants": {
+    "agreement_adequacy_clause": "4.3",
+    "agreement_capacity_clause": "4.2",
+    "cushion": 1.15,
+    "encounter_rows": 639009,
+    "record_months": 48,
+    "service_areas": 12,
+    "sites_in_scope": 40,
+    "weeks_in_contract_year": 52
+  },
+  "site": {
+    "PS-10437": {
+      "slots": 80
+    },
+    "PS-10474": {
+      "slots": 80
+    },
+    "PS-10511": {
+      "slots": 126
+    },
+    "PS-10548": {
+      "slots": 40
+    },
+    "PS-10585": {
+      "slots": 96
+    },
+    "PS-10622": {
+      "slots": 120
+    },
+    "PS-10659": {
+      "slots": 96
+    },
+    "PS-10696": {
+      "slots": 40
+    },
+    "PS-10733": {
+      "slots": 150
+    },
+    "PS-10770": {
+      "slots": 96
+    },
+    "PS-10807": {
+      "slots": 80
+    },
+    "PS-10844": {
+      "slots": 40
+    },
+    "PS-10881": {
+      "slots": 50
+    },
+    "PS-10918": {
+      "slots": 80
+    },
+    "PS-10955": {
+      "slots": 126
+    },
+    "PS-10992": {
+      "slots": 96
+    },
+    "PS-11029": {
+      "slots": 80
+    },
+    "PS-11066": {
+      "slots": 80
+    },
+    "PS-11103": {
+      "slots": 144
+    },
+    "PS-11140": {
+      "slots": 40
+    },
+    "PS-11177": {
+      "slots": 96
+    },
+    "PS-11214": {
+      "slots": 108
+    },
+    "PS-11251": {
+      "slots": 96
+    },
+    "PS-11288": {
+      "slots": 108
+    },
+    "PS-11325": {
+      "slots": 80
+    },
+    "PS-11362": {
+      "slots": 80
+    },
+    "PS-11399": {
+      "slots": 105
+    },
+    "PS-11436": {
+      "slots": 120
+    },
+    "PS-11473": {
+      "slots": 120
+    },
+    "PS-11510": {
+      "slots": 50
+    },
+    "PS-11547": {
+      "slots": 96
+    },
+    "PS-11584": {
+      "slots": 120
+    },
+    "PS-11621": {
+      "slots": 126
+    },
+    "PS-11658": {
+      "slots": 150
+    },
+    "PS-11695": {
+      "slots": 162
+    },
+    "PS-11732": {
+      "slots": 180
+    },
+    "PS-11769": {
+      "slots": 144
+    },
+    "PS-11806": {
+      "slots": 105
+    },
+    "PS-11843": {
+      "slots": 40
+    },
+    "PS-11880": {
+      "slots": 60
+    }
+  },
+  "step": {
+    "3_attested": 327,
+    "3_positions": 274,
+    "4_slots": 3886,
+    "5_projected": 3092,
+    "5_required": 3556,
+    "6_ask_a_figures": 24,
+    "7_ask_b_figures": 24,
+    "7_ask_c_figures": 24,
+    "8_areas_short": 6
   }
- }
 }

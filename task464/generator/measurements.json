@@ -1,0 +1,151 @@
+{
+  "apparent_util": [
+    0.419,
+    0.951
+  ],
+  "ask_deltas": {
+    "ask_a_adjudication_basis": 24,
+    "ask_b_status_only": 12,
+    "ask_c_row_count": 5
+  },
+  "closed_shift_sites": 6,
+  "closest_pair_pct": 7.62,
+  "constrained_sites": 16,
+  "crossover_worst": 0.938,
+  "encounter_rows": 639009,
+  "figure_count": 210,
+  "files": [
+    "encounter_extract_transmittal.json",
+    "enrolment_projection_2027.csv",
+    "licence_fee_schedule_2026.pdf",
+    "nemt_trips_2026.csv",
+    "network_agreement_2027_capacity_terms.pdf",
+    "out_of_network_payments_2026.csv",
+    "out_of_network_payments_reconciliation_2026.xlsx",
+    "out_of_network_payments_runout_2027q1.csv",
+    "provider_directory_2027.csv",
+    "staffing_roster_2026q4.csv",
+    "state_adequacy_filing_2026.xlsx",
+    "state_licence_register.xlsx",
+    "treatment_encounters.db"
+  ],
+  "flip_set": [
+    "SA-02",
+    "SA-07",
+    "SA-11"
+  ],
+  "formats": [
+    ".csv",
+    ".db",
+    ".json",
+    ".pdf",
+    ".xlsx"
+  ],
+  "largest_file_bytes": 76713984,
+  "legibility": {
+    "argmax_hour_modal_share_median": 0.29,
+    "argmax_hour_modal_share_worst": 0.48,
+    "clock_block_hits": {
+      "60": 15,
+      "120": 30,
+      "180": 24,
+      "240": 16
+    },
+    "day_count_over_positions_min": 1.38,
+    "distinct_argmax_hours_median": 10,
+    "members_a_day_over_positions_min": 1.38,
+    "sites_where_a_window_start_count_equals_positions": {
+      "60": 18,
+      "120": 36,
+      "180": 25
+    }
+  },
+  "named_wrong_cells": {
+    "clock_hour_start_count": 3013,
+    "percentile_75_occupancy": 2911,
+    "realised_demand_basis_areas_flipped": 0,
+    "realised_demand_basis_areas_short": 3,
+    "sites_where_hours_misread_exceeds_attested": 40,
+    "two_hour_start_count": 3825
+  },
+  "partial_cells": 41,
+  "partial_worst_pct": 6.02,
+  "peak_over_attested": 0.988,
+  "peak_over_mean": 1.65,
+  "quantile_hits": {
+    "0.90": 27,
+    "0.95": 40,
+    "0.99": 40
+  },
+  "r0_over_golden": 1.2012,
+  "r2_adds": [
+    "SA-01",
+    "SA-03",
+    "SA-06",
+    "SA-10"
+  ],
+  "r2_misses": [
+    "SA-02",
+    "SA-07"
+  ],
+  "required_bin_distance": 0.071,
+  "rung_ratios": {
+    "R0": 1.2012,
+    "R1": 1.2882,
+    "R2": 0.9238,
+    "R3": 1.0
+  },
+  "rung_short": {
+    "R0": [
+      "SA-04",
+      "SA-09",
+      "SA-12"
+    ],
+    "R1": [
+      "SA-04",
+      "SA-09"
+    ],
+    "R2": [
+      "SA-01",
+      "SA-03",
+      "SA-04",
+      "SA-06",
+      "SA-09",
+      "SA-10",
+      "SA-11",
+      "SA-12"
+    ],
+    "R3": [
+      "SA-02",
+      "SA-04",
+      "SA-07",
+      "SA-09",
+      "SA-11",
+      "SA-12"
+    ]
+  },
+  "rung_totals": {
+    "R0": 4668,
+    "R1": 5006,
+    "R2": 3590,
+    "R3": 3886
+  },
+  "share_at_ceiling": [
+    0.062,
+    0.213
+  ],
+  "sheets": [
+    "Adjudicated Quarters",
+    "Contracted Sites",
+    "Area Summary",
+    "Licences",
+    "Register Summary"
+  ],
+  "worst_area_margin": 6.02,
+  "worth": {
+    "R0": -0.0,
+    "R1": -0.432,
+    "R2": 1.379,
+    "R3": 1.0
+  }
+}

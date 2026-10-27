@@ -99,7 +99,7 @@ def build(seed=SEED):
                 mod = "dialysis" if rnd.random() < 0.55 else "infusion"
                 turns = 1 if mod == "dialysis" else 2
                 days = rnd.choice([5, 6]) if mod == "dialysis" else 5
-                shifts = rnd.choice([2, 3])
+                shifts = rnd.choice([2, 3]) if mod == "dialysis" else rnd.choice([1, 2])
                 ceiling = rnd.choice([7, 8, 8, 10]) if mod == "dialysis" else rnd.choice([4, 4, 5, 6])
             loc = locs[k % len(locs)]
             op = OPERATORS[(sid * 3) % len(OPERATORS)]
@@ -209,7 +209,8 @@ def build(seed=SEED):
     # Further closures, searched rather than placed: a plant-constrained site in a clear area, accepted only
     # while every ladder condition still holds. Constrained, because at a site whose stations all run the
     # busiest week would then exceed the current roster's own capacity, which a solver's capacity check sees.
-    cands = sorted((s for s in sites if s["gap"] and s["role"] == "clear" and not s["closed_shift"]),
+    cands = sorted((s for s in sites if s["gap"] and s["role"] == "clear" and not s["closed_shift"]
+                    and (s["shifts"] + 1) * s["turns"] <= (3 if s["modality"] == "dialysis" else 4)),
                    key=lambda s: -s["R3"])
     taken = []
     for s in cands:
