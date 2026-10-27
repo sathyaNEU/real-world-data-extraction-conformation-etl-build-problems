@@ -483,11 +483,10 @@ def write_pdfs():
                     "The requirement applies to each teaching space separately."
                     % P.REQUIRED_LS_PER_PERSON, s["p"]),
           Paragraph("%s &nbsp; Demonstrating compliance" % P.STANDARD_CLAUSE_COMPLIANCE, s["h"]),
-          Paragraph("Compliance is demonstrated by the outdoor-air supply rate achieved in use. "
-                    "For an existing building the rate is established from measurement in the "
-                    "space itself over the periods for which the space is timetabled. Design "
-                    "intent recorded at handover, and air volumes proved at a unit rather than at "
-                    "the space, do not of themselves demonstrate compliance.", s["p"]),
+          Paragraph("Compliance is demonstrated by the outdoor-air supply rate a space achieves "
+                    "in use, established in that space and over the periods for which it is "
+                    "timetabled. Records of design information and of plant performance are kept "
+                    "with the assessment and are not a substitute for it.", s["p"]),
           Paragraph("%s &nbsp; Reporting" % P.STANDARD_CLAUSE_REPORTING, s["h"]),
           Paragraph("Rates are reported per person present. Where a space serves groups of "
                     "different size the rate is reported over the whole of the period assessed "
@@ -537,12 +536,21 @@ def write_pdfs():
                     "month of its own local timestamp. Data capture is reported as the readings "
                     "received against the readings expected on the teaching days of the term.",
                     s["p"]),
-          Paragraph("4 &nbsp; Rounding", s["h"]),
+          Paragraph("4 &nbsp; Occupants present", s["h"]),
+          Paragraph("The occupants present in a session are the persons the attendance register "
+                    "marks present for that session, in whichever role the register records them: "
+                    "learners, the tutor taking the session and any learning support assistant "
+                    "alike. A person the register marks absent, or absent with authorisation, is "
+                    "not present. The register holds one mark for each person for each session, "
+                    "and a mark corrected after the session stands as corrected, so the amendment "
+                    "flag records that a correction was made and does not set a second mark "
+                    "aside.", s["p"]),
+          Paragraph("5 &nbsp; Rounding", s["h"]),
           Paragraph("Supply rates are reported to the nearest half litre per second per person. "
-                    "Hours and occupant counts are reported to one decimal place and shares to "
-                    "one decimal place as a percentage. A figure falling exactly on the rounding "
-                    "point is reported upward. Figures are rounded once, at the point of "
-                    "reporting, and not at any intermediate step.", s["p"]),
+                    "Hours are reported to two decimal places, occupant counts as whole persons "
+                    "and shares to one decimal place as a percentage. A figure falling exactly on "
+                    "the rounding point is reported upward. Figures are rounded once, at the point "
+                    "of reporting, and not at any intermediate step.", s["p"]),
           Paragraph("Schedule 1 &nbsp; Spaces monitored in 2026/27", s["h"]),
           D.table([["Room", "Block", "Analyser asset"]] +
                   [[c, dict((x[0], x[2]) for x in P.SPACES)[c], "CO2-%s" % c.replace("-", "")]
@@ -581,7 +589,7 @@ def write_pdfs():
                     "the client's request so that the block could be handed back for the autumn "
                     "term, and remains outstanding at the date of this record. The figures in "
                     "section 2 are therefore design volumes at design occupancy and not volumes "
-                    "measured in the spaces. Balancing dampers were left at their "
+                    "measured in the spaces. Regulating dampers were left at their "
                     "commissioning-set positions.", s["p"]),
           Paragraph("4 &nbsp; Witnessed at the units", s["h"]),
           Paragraph("Fan total pressure and speed were witnessed within tolerance at both units "
@@ -591,7 +599,7 @@ def write_pdfs():
                 {"title": "Commissioning record, contract 2021/KMN/M3",
                  "author": P.COMMISSIONING_FIRM, "subject": "Static completion, AHU-03 and AHU-04",
                  "creator": "%s, commissioning" % P.COMMISSIONING_FIRM,
-                 "producer": "Westmeath Air Balancing document issue"},
+                 "producer": "Westmeath Commissioning Services document issue"},
                 "Contract 2021/KMN/M3, commissioning record", fl, P.PDF_FILED["commissioning_record_tulrohan_ahu.pdf"])
 
 
@@ -896,14 +904,16 @@ def golden_workbook(m):
         ("Assessed period", "28 September to 11 December 2026, the autumn term's "
                             "timetabled sessions"),
         ("Population", "the six Tulrohan Block rooms in the minor works bid scope"),
-        ("Denominator", "occupants present from the attendance marks, learners and staff"),
+        ("Denominator", "the persons the attendance register marks present, in whichever role, "
+                        "procedure note %s section 4" % P.PROCEDURE_REF),
         ("Occupied hours", "the hours the serving air handling unit stands in its occupied "
                            "state, procedure note %s section 3" % P.PROCEDURE_REF),
         ("Readings expected", "288 a day on the 48 teaching days of the term, "
                               "procedure note %s section 3" % P.PROCEDURE_REF),
         ("Outdoor baseline", "the campus analyser, and the Mace Head station for 12 to 25 "
                              "October while the campus analyser was away"),
-        ("Rounding", "once at the point of reporting, procedure note %s section 4" % P.PROCEDURE_REF),
+        ("Rounding", "once at the point of reporting, procedure note %s section 5"
+                     % P.PROCEDURE_REF),
         ("Source of volumes", "as-built room data sheets, project 19-0442 issue D"),
         ("Extract pulled", P.EXPORT_DATE),
     ]:
@@ -932,7 +942,7 @@ def golden_workbook(m):
     ws2.print_area = "A1:E57"
     ws2.print_title_rows = "1:1"
 
-    path = os.path.join(GOLDEN, "tulrohan_ventilation_assessment.xlsx")
+    path = os.path.join(GOLDEN, P.WORKBOOK_NAME)
     wb.save(path)
     D.finalise_xlsx(path, "Tulrohan Block ventilation assessment, autumn term 2026",
                     P.ESTATES_OFFICER, P.ESTATES_OFFICER, P.ETB_NAME,
@@ -1029,11 +1039,11 @@ def golden_chart(m, target):
                            "extract of %s." % P.EXPORT_DATE,
              fontsize=8.2, color=PALETTE["ink2"])
     fig.tight_layout(rect=(0, 0.035, 1, 1))
-    path = os.path.join(GOLDEN, "tulrohan_session_balance.png")
+    path = os.path.join(GOLDEN, P.CHART_NAME)
     fig.savefig(path, facecolor=PALETTE["surface"],
                 metadata={"Software": "%s, estates and compliance" % P.ETB_NAME,
                           "Author": P.ESTATES_OFFICER,
-                          "Title": "Tulrohan Block session carbon dioxide balance",
+                          "Title": "Tulrohan Block carbon dioxide day profile",
                           "Creation Time": "2026-12-18T11:05:00"})
     plt.close(fig)
     raw = open(path, "rb").read()
@@ -1192,7 +1202,7 @@ def write_submission(m):
     w("")
 
     w("## 4. Deliverable Answers\n")
-    w("### tulrohan_ventilation_assessment.xlsx\n")
+    w("### %s\n" % P.WORKBOOK_NAME)
     w("1. Outdoor air supplied to the Tulrohan Block across the term's timetabled sessions: "
       "**%.1f** litres per second per occupant present; remedy: option A, replace AHU-03 and "
       "AHU-04 and the Tulrohan supply and extract distribution."
@@ -1214,7 +1224,7 @@ def write_submission(m):
     for x in m["asks"]["D"]:
         w("   - %s, period %s on %s" % (x["space"], x["period"], x["date"]))
     w("")
-    w("### tulrohan_session_balance.png\n")
+    w("### %s\n" % P.CHART_NAME)
     w("6. One space's timetabled sessions across a day, the five-minute carbon dioxide trace "
       "against the campus outdoor analyser, the timetabled periods and the midday setback shaded, "
       "the 1,500 ppm screening indicator drawn and labelled, the occupants present marked on each "
