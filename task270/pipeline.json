@@ -1,35 +1,27 @@
 {
  "task": "task270",
- "status": "BUILD",
+ "status": "DRAWING",
  "domain": "pharmacology-pharmacoepidemiology-safety",
  "objective": "descriptive-distribution",
- "stage": 3,
- "stage_name": "build",
+ "stage": 1,
+ "stage_name": "draw",
  "updated": "2026-10-27",
- "stump": "The default path takes out care home residents and the patients Quarvis's list records as using a compliance aid, takes each network's share of the rest under 80 per cent of days covered and names four networks, Corvendale, Feldcote, Krathwold and Nevgarth; the 1,454 unrecorded aid patients, dispensed on the pharmacy's own 7- or 28-day weekday cycle, read as covered all year and hold Briskdale (27.2) and Grevmoor (28.1) under the 30 per cent line; only the dispensing's own regularity finds them, which puts Briskdale (32.1) and Grevmoor (32.2) in with the four.",
- "architecture": 8,
+ "stump": "",
+ "architecture": 9,
  "loops": 0,
- "precut": {
-  "exit": 0,
-  "date": "2026-10-27",
-  "checks": 52,
-  "note": "52 of 52 against the v8 card (run on a scratch copy before registration; the filed card is v8 from 13:33Z)"
- },
+ "precut": null,
  "leak": {
-  "leak_py": "REVIEW (one line: the compliance-aid guidance shares record, clinic and supply with the stump paragraph, a true account of supply that names no move)",
+  "leak_py": "",
   "readers": ""
  },
- "duplicate_check": {
-  "check": "WARN only at registration (repeat.deliverables against task308, repeat.question_form against task307 and task139), card filed 2026-10-27T13:33:10Z",
-  "surface": "no persona in the pack; no hard tell promoted"
- },
+ "duplicate_check": {},
  "judge": {
   "verdict": "",
   "disposition": "",
   "report": ""
  },
  "returned": [],
- "resume": "Stage 3 green on the federation world (build.py: checks 92/92, verify 51/0, byte-identical, cracker 0/16, figures_check 64/64, precut 52/0 on the v8 card). Next: stage 4, the leak reader and the determinism judge spawned together at medium effort, every finding fixed in the generator in one pass, then ship.",
+ "resume": "Architecture 9 at the draw (stage 1), re-rooted in another domain: read DESIGN_NOTE.md's Tried and rejected first. The decisive step must be an estimand or method choice on fine numbers that a strong analyst who has cleaned the data still gets wrong (the architecture 8 lesson), the objective Descriptive & Distribution Analysis.",
  "architectures": [
   {
    "architecture": 1,
@@ -61,7 +53,12 @@
   },
   {
    "architecture": 8,
-   "fate": "live: drawn 2026-10-27, filed 13:33Z after the window moved (population_selection freed by task139's registration) with the forum, forcing event and organisation family redrawn to Iversford Vale GP Federation's board and the service launch, and the context artifact back to filed_standard",
+   "fate": "spent 2026-10-27 at stage 4 (target.zip dc5e15f6): the leak reader read the decisive step as field reading and stated rules; the judge reproduced every main figure and returned NOT_DETERMINISTIC, SEND_BACK, Gate G planted_defect_flip (surface_read_rejection: the unrecorded compliance-aid patients behind a partly recorded flag), Gate H decisive_step data_semantics, and the pilot asks' duplicate-record rule unfiled; built state at the STATUS commit recording the spend",
+   "drawn": "2026-10-27"
+  },
+  {
+   "architecture": 9,
+   "fate": "at the draw 2026-10-27, in another domain",
    "drawn": "2026-10-27"
   }
  ],
@@ -71,13 +68,5 @@
  "portal_id": "",
  "portal_status": "",
  "portal_status_date": "",
- "seed": "none: a fresh world drawn 2026-10-26 (Hallowmere Foodstores' 2027 HFC pack replacement programme)",
- "gates": {
-  "checks": "92 of 92",
-  "verify": "51 figures, 0 differ",
-  "byte_identical": true,
-  "figures_check": "64 of 64",
-  "cracker": "0 of 16 ask figures",
-  "voice_check": "PASS (979 characters)"
- }
+ "seed": "none: a fresh world drawn 2026-10-26 (Hallowmere Foodstores' 2027 HFC pack replacement programme)"
 }

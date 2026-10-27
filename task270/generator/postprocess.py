@@ -4,12 +4,21 @@ banner. Every substitution keeps byte lengths where the format needs it."""
 import re
 import zipfile
 
-COMPANY = "Ardley Valley Hospital Foundation"
+COMPANY = "NHS Iversford Vale ICB"
 
 APP = {".xlsx": ("Microsoft Excel", "16.0300"), ".docx": ("Microsoft Office Word", "16.0000"),
        ".pptx": ("Microsoft Office PowerPoint", "16.0000")}
 XML_DECL = b'<?xml version="1.0" encoding="UTF-8" standalone="yes"?>\r\n'
-INLINE = re.compile(rb'<c((?: [a-zA-Z:]+="[^"]*")*?) t="inlineStr"((?: [a-zA-Z:]+="[^"]*")*)><is><t>(.*?)</t></is></c>')
+
+
+
+
+def _attr(v):
+    return v.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;").replace('"', "&quot;")
+
+
+INLINE = re.compile(rb'<c((?: [a-zA-Z:]+="[^"]*")*?) t="inlineStr"((?: [a-zA-Z:]+="[^"]*")*)><is><t(?: xml:space="preserve")?>(.*?)</t></is></c>')
+EMPTY = re.compile(rb'<c((?: [a-zA-Z:]+="[^"]*")*?) t="inlineStr"((?: [a-zA-Z:]+="[^"]*")*)>(?:<is><t/></is>|<is><t></t></is>)?</c>')
 # the part order Excel writes when it saves a workbook
 EXCEL_ORDER = ("[Content_Types].xml", "_rels/.rels", "xl/workbook.xml", "xl/_rels/workbook.xml.rels", "xl/worksheets/",
                "xl/theme/", "xl/styles.xml", "xl/sharedStrings.xml", "docProps/core.xml", "docProps/app.xml")
@@ -17,11 +26,6 @@ EXCEL_ORDER = ("[Content_Types].xml", "_rels/.rels", "xl/workbook.xml", "xl/_rel
 
 def _sheet_no(name):
     return int(re.search(r"sheet(\d+)\.xml$", name).group(1))
-
-
-def xml_attr(v):
-    """A value as Excel writes it inside a double-quoted attribute (a currency format's quotes become &quot;)."""
-    return v.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;").replace('"', "&quot;")
 
 
 def share_strings(items):
@@ -39,8 +43,12 @@ def share_strings(items):
         refs[0] += 1
         return b'<c%s t="s"%s><v>%d</v></c>' % (m.group(1), m.group(2), index[text])
 
+    def blank(m):
+        attrs = m.group(1) + m.group(2)
+        return b'<c%s/>' % attrs if b' s="' in attrs else b""
+
     for name in sorted((n for n in parts if n.startswith("xl/worksheets/sheet")), key=_sheet_no):
-        parts[name] = INLINE.sub(to_shared, parts[name])
+        parts[name] = EMPTY.sub(blank, INLINE.sub(to_shared, parts[name]))
         assert b'inlineStr' not in parts[name], name
     si = b"".join(b'<si><t xml:space="preserve">%s</t></si>' % t if t[:1].isspace() or t[-1:].isspace()
                   else b"<si><t>%s</t></si>" % t for t in table)
@@ -114,7 +122,7 @@ def _excel_styles(data):
            'xmlns:xr="http://schemas.microsoft.com/office/spreadsheetml/2014/revision">' % (MAIN, X14AC)]
     if used:
         out.append('<numFmts count="%d">%s</numFmts>' % (len(used), "".join(
-            '<numFmt numFmtId="%d" formatCode="%s"/>' % (renum[o], xml_attr(fmts[o])) for o in used)))
+            '<numFmt numFmtId="%d" formatCode="%s"/>' % (renum[o], _attr(fmts[o])) for o in used)))
     fonts = []
     for f in root.findall("m:fonts/m:font", ns):
         get = lambda tag: f.find("m:" + tag, ns)
@@ -177,9 +185,8 @@ def _excel_sheet(data, key, first):
                   'xmlns:xr2="http://schemas.microsoft.com/office/spreadsheetml/2015/revision2" '
                   'xmlns:xr3="http://schemas.microsoft.com/office/spreadsheetml/2016/revision3" xr:uid="%s">'
                   % (MAIN, REL, X14AC, _guid(key, "sheet")), 1)
-    s = re.sub(r"<sheetPr>(.*?)</sheetPr>",
-               lambda m: '<sheetPr><pageSetUpPr fitToPage="1"/></sheetPr>' if 'fitToPage="1"' in m.group(1) else "",
-               s, count=1)
+    s = re.sub(r"<sheetPr>(.*?)</sheetPr>", lambda m: '<sheetPr><pageSetUpPr fitToPage="1"/></sheetPr>'
+               if 'fitToPage="1"' in m.group(1) else "", s, count=1)
     pane = re.search(r'<pane xSplit="(\d+)" ySplit="(\d+)" topLeftCell="([A-Z]+\d+)"', s)
     if pane:
         tl = pane.group(3)
@@ -218,7 +225,7 @@ def _excel_sheet(data, key, first):
     return XML_DECL + s.encode()
 
 
-def excel_dialect(items, key, app_version="16.0300"):
+def excel_dialect(items, key, app_version="16.0300", company=None):
     """Rewrite a workbook's parts in the dialect Excel saves (not the writing library's): content types and
     relationships in Excel's order with relative targets, the workbook with its file version, window and current
     calculation id, the extended properties with the sheet titles, styles, worksheets and theme as above. Cell
@@ -275,7 +282,7 @@ def excel_dialect(items, key, app_version="16.0300"):
         '</vt:variant></vt:vector></HeadingPairs><TitlesOfParts><vt:vector size="%d" baseType="lpstr">%s</vt:vector>'
         '</TitlesOfParts><Company>%s</Company><LinksUpToDate>false</LinksUpToDate><SharedDoc>false'
         '</SharedDoc><HyperlinksChanged>false</HyperlinksChanged><AppVersion>%s</AppVersion></Properties>' % (
-            n, n, "".join("<vt:lpstr>%s</vt:lpstr>" % nm for nm in names), COMPANY, app_version)).encode()
+            n, n, "".join("<vt:lpstr>%s</vt:lpstr>" % nm for nm in names), company or COMPANY, app_version)).encode()
     parts["xl/styles.xml"], _ = _excel_styles(parts["xl/styles.xml"])
     for k in range(1, n + 1):
         name = "xl/worksheets/sheet%d.xml" % k
@@ -289,51 +296,10 @@ def excel_dialect(items, key, app_version="16.0300"):
     return [(nm, parts[nm]) for nm in order]
 
 
-DOCX_TEMPLATE_PARTS = ("docProps/thumbnail.jpeg", "word/stylesWithEffects.xml", "customXml/item1.xml",
-                       "customXml/_rels/item1.xml.rels", "customXml/itemProps1.xml")
-
-
-def word_app(document_xml, company, minutes):
-    """docProps/app.xml as Word writes it, with the counts Word keeps for the document's text."""
-    paras = [re.sub(rb"<[^>]+>", b"", p).decode("utf-8") for p in re.findall(rb"<w:p[ >].*?</w:p>", document_xml, re.S)]
-    paras = [p for p in paras if p.strip()]
-    text = " ".join(paras)
-    words = len(text.split())
-    chars = len(re.sub(r"\s", "", text))
-    lines = sum(max(1, -(-len(p) // 95)) for p in paras)
-    pages = max(1, -(-lines // 46))
-    body = ("<Template>Normal.dotm</Template><TotalTime>%d</TotalTime><Pages>%d</Pages><Words>%d</Words>"
-            "<Characters>%d</Characters><Application>Microsoft Office Word</Application><DocSecurity>0</DocSecurity>"
-            "<Lines>%d</Lines><Paragraphs>%d</Paragraphs><ScaleCrop>false</ScaleCrop><Company>%s</Company>"
-            "<LinksUpToDate>false</LinksUpToDate><CharactersWithSpaces>%d</CharactersWithSpaces><SharedDoc>false</SharedDoc>"
-            "<HyperlinksChanged>false</HyperlinksChanged><AppVersion>16.0000</AppVersion>" % (
-                minutes, pages, words, chars, lines, len(paras), company, len(text)))
-    return (XML_DECL.decode() + '<Properties xmlns="http://schemas.openxmlformats.org/officeDocument/2006/extended-properties" '
-            'xmlns:vt="http://schemas.openxmlformats.org/officeDocument/2006/docPropsVTypes">' + body + "</Properties>").encode()
-
-
-def word_parts(items, minutes=38):
-    """A document as Word saves it: no template thumbnail, no Word 2010 effects stylesheet, no SharePoint custom XML
-    the writing library's template carries, their relationships and content types taken out with them, and Word's
-    own XML declaration on every part."""
-    out = []
-    for name, data in items:
-        if name in DOCX_TEMPLATE_PARTS:
-            continue
-        if name.endswith(".rels"):
-            data = re.sub(rb'<Relationship [^>]*Target="(?:docProps/thumbnail\.jpeg|stylesWithEffects\.xml|'
-                          rb'\.\./customXml/item1\.xml)"/>', b"", data)
-        if name == "[Content_Types].xml":
-            data = re.sub(rb'<Override PartName="/(?:customXml/itemProps1|word/stylesWithEffects)\.xml"[^>]*/>', b"", data)
-            data = data.replace(b'<Default Extension="jpeg" ContentType="image/jpeg"/>', b"")
-        if name.endswith((".xml", ".rels")):
-            data = re.sub(rb"^<\?xml version='1\.0' encoding='UTF-8' standalone='yes'\?>\r?\n?", XML_DECL, data)
-        out.append((name, data))
-    doc = dict(out)["word/document.xml"]
-    return [(n, word_app(doc, COMPANY, minutes) if n == "docProps/app.xml" else d) for n, d in out]
-
-
-def normalize_ooxml(path, creator, last_by, created, modified, title=None, excel=False):
+def normalize_ooxml(path, creator, last_by, created, modified, title=None, excel=False, company=None):
+    from xml.sax.saxutils import escape as _esc
+    creator, last_by = _esc(creator), _esc(last_by)
+    title = _esc(title) if title else title
     """created and modified as ISO stamps (UTC, ending Z). Entries keep their names and order (a workbook's
     take Excel's, with its strings shared and an XML declaration on every part); every entry gets the 1980
     stamp Office writes, so two builds of the same content are byte-identical. excel=True also rewrites a
@@ -358,14 +324,12 @@ def normalize_ooxml(path, creator, last_by, created, modified, title=None, excel
             data = re.sub(rb"<Application>[^<]*</Application>", b"<Application>" + app_name.encode() + b"</Application>", data)
             data = re.sub(rb"<AppVersion>[^<]*</AppVersion>", b"<AppVersion>" + app_ver.encode() + b"</AppVersion>", data)
             if b"<Company>" not in data:
-                data = data.replace(b"</Properties>", b"<Company>" + COMPANY.encode() + b"</Company></Properties>")
+                data = data.replace(b"</Properties>", b"<Company>" + (company or COMPANY).encode() + b"</Company></Properties>")
         out.append((name, data))
-    if ext == ".docx":
-        out = word_parts(out)
     if ext == ".xlsx":
         out = [(n, d if d.startswith(b"<?xml") else XML_DECL + d) for n, d in share_strings(out)]
         if excel:
-            out = excel_dialect(out, key=path.replace("\\", "/").rsplit("/", 1)[-1])
+            out = excel_dialect(out, key=path.replace("\\", "/").rsplit("/", 1)[-1], company=company)
     with zipfile.ZipFile(path, "w") as z:
         for name, data in out:
             zi = zipfile.ZipInfo(name, date_time=(1980, 1, 1, 0, 0, 0))
@@ -373,6 +337,308 @@ def normalize_ooxml(path, creator, last_by, created, modified, title=None, excel
             if excel:
                 zi.create_system = 0
             z.writestr(zi, data)
+
+
+# ---------------------------------------------------------------------------------------------------- Word documents
+W_NS = "http://schemas.openxmlformats.org/wordprocessingml/2006/main"
+WP_CT = "application/vnd.openxmlformats-officedocument.wordprocessingml"
+DOCX_DEFAULT_STYLES = ("Normal", "DefaultParagraphFont", "TableNormal", "NoList")
+DOCX_DROP = ("word/stylesWithEffects.xml", "docProps/thumbnail.jpeg", "word/numbering.xml")
+DOCX_STORY = re.compile(r"word/(?:document|header\d+|footer\d+|footnotes|endnotes)\.xml$")
+# the order Word writes a document's parts in, and its relationships and content types
+DOCX_ORDER = ("[Content_Types].xml", "_rels/.rels", "word/document.xml", "word/_rels/document.xml.rels",
+              "word/footnotes.xml", "word/endnotes.xml", "word/header", "word/footer", "word/theme/theme1.xml",
+              "word/settings.xml", "word/styles.xml", "word/webSettings.xml", "word/fontTable.xml", "docProps/core.xml",
+              "docProps/app.xml")
+DOCX_REL_ORDER = ("styles", "settings", "webSettings", "footnotes", "endnotes", "image", "header", "footer", "fontTable",
+                  "theme")
+DOCX_CT_ORDER = ("word/document.xml", "word/styles.xml", "word/settings.xml", "word/webSettings.xml",
+                 "word/footnotes.xml", "word/endnotes.xml", "word/header", "word/footer", "word/fontTable.xml",
+                 "word/theme/theme1.xml", "docProps/core.xml", "docProps/app.xml")
+# a paragraph with content, or an empty one (either may carry attributes)
+P_RE = r"<w:p(?: [^>]*[^/])?>.*?</w:p>|<w:p(?: [^>]*)?/>"
+DOCX_CT = {"word/document.xml": WP_CT + ".document.main+xml", "word/styles.xml": WP_CT + ".styles+xml",
+           "word/settings.xml": WP_CT + ".settings+xml", "word/webSettings.xml": WP_CT + ".webSettings+xml",
+           "word/footnotes.xml": WP_CT + ".footnotes+xml", "word/endnotes.xml": WP_CT + ".endnotes+xml",
+           "word/fontTable.xml": WP_CT + ".fontTable+xml",
+           "word/theme/theme1.xml": "application/vnd.openxmlformats-officedocument.theme+xml",
+           "docProps/core.xml": "application/vnd.openxmlformats-package.core-properties+xml",
+           "docProps/app.xml": "application/vnd.openxmlformats-officedocument.extended-properties+xml"}
+# the faces Word sets the document in, by the metric-compatible faces on this system (file, single-line height in ems)
+FACES = {"Times New Roman": ("liberation/LiberationSerif-%s.ttf", 1.1074),
+         "Calibri": ("crosextra/Carlito-%s.ttf", 1.2207)}
+FONT_ROOT = "/usr/share/fonts/truetype/"
+
+
+def _rank_docx(name):
+    for i, p in enumerate(DOCX_ORDER):
+        if name == p or (p in ("word/header", "word/footer") and name.startswith(p)):
+            return (i, name)
+    return (len(DOCX_ORDER), name)
+
+
+def _word_text(p_xml):
+    """A paragraph's text as Word counts it: its text runs, a tab as one character."""
+    s = re.sub(r"<w:tab/>", "<w:t>\t</w:t>", p_xml)
+    return "".join(re.findall(r"<w:t(?: [^>]*)?>([^<]*)</w:t>", s)).replace("&amp;", "&").replace("&lt;", "<") \
+        .replace("&gt;", ">").replace("&quot;", '"').replace("&apos;", "'")
+
+
+class _Layout:
+    """Lines and pages as Word lays the body out: each paragraph's runs broken into lines at the text width (the
+    page's, or the cell's less its margins) with the face's own advance widths, each line the face's single-line
+    height times the paragraph's line spacing, the spacing after each paragraph, rows as tall as their tallest cell."""
+
+    def __init__(self, styles, doc):
+        from PIL import ImageFont
+        self.ImageFont = ImageFont
+        self.fonts = {}
+        dd = re.search(r"<w:docDefaults>(.*?)</w:docDefaults>", styles, re.S).group(1)
+        normal = re.search(r'<w:style [^>]*w:styleId="Normal".*?</w:style>', styles, re.S).group(0)
+        self.size = float(self._attr(normal, "w:sz") or self._attr(dd, "w:sz") or 22) / 2
+        face = re.search(r'<w:rFonts [^>]*w:ascii="([^"]+)"', normal)
+        self.face = face.group(1) if face else "Calibri"
+        sp = re.search(r"<w:spacing [^>]*/>", dd)
+        self.after = float(self._attr(sp.group(0), "w:after") or 0) / 20 if sp else 0.0
+        self.line = float(self._attr(sp.group(0), "w:line") or 240) / 240 if sp else 1.0
+        grid = re.search(r'<w:style [^>]*w:styleId="TableGrid".*?</w:style>', styles, re.S)
+        gsp = re.search(r"<w:spacing [^>]*/>", grid.group(0)) if grid else None
+        self.cell_after = float(self._attr(gsp.group(0), "w:after") or 0) / 20 if gsp else self.after
+        self.cell_line = float(self._attr(gsp.group(0), "w:line") or 240) / 240 if gsp else self.line
+        sect = re.search(r"<w:sectPr[ >].*?</w:sectPr>", doc, re.S).group(0)
+        pw, ph = float(self._attr(sect, "w:w")), float(self._attr(sect, "w:h"))
+        mar = re.search(r"<w:pgMar [^>]*/>", sect).group(0)
+        self.width = (pw - float(self._attr(mar, "w:left")) - float(self._attr(mar, "w:right"))) / 20
+        self.height = (ph - float(self._attr(mar, "w:top")) - float(self._attr(mar, "w:bottom"))) / 20
+
+    @staticmethod
+    def _attr(xml, name):
+        m = re.search(r'<%s w:val="([^"]+)"' % name, xml) if name == "w:sz" else re.search(r'%s="([^"]+)"' % name, xml)
+        return m.group(1) if m else None
+
+    def font(self, face, size, bold):
+        key = (face, size, bold)
+        if key not in self.fonts:
+            f, _ = FACES.get(face, FACES["Calibri"])
+            self.fonts[key] = self.ImageFont.truetype(FONT_ROOT + f % ("Bold" if bold else "Regular"), size=size)
+        return self.fonts[key]
+
+    def paragraph(self, p_xml, width, after, line):
+        """(lines, height in points) of one paragraph."""
+        ppr = re.search(r"<w:pPr>.*?</w:pPr>", p_xml, re.S)
+        if ppr:
+            sp = re.search(r"<w:spacing [^>]*/>", ppr.group(0))
+            if sp and self._attr(sp.group(0), "w:after") is not None:
+                after = float(self._attr(sp.group(0), "w:after")) / 20
+            if sp and self._attr(sp.group(0), "w:line") is not None:
+                line = float(self._attr(sp.group(0), "w:line")) / 240
+            ind = re.search(r"<w:ind [^>]*/>", ppr.group(0))
+            if ind:
+                width -= float(self._attr(ind.group(0), "w:left") or 0) / 20
+        words, big = [], self.size
+        for r in re.findall(r"<w:r[ >].*?</w:r>", p_xml, re.S):
+            rpr = re.search(r"<w:rPr>.*?</w:rPr>", r, re.S)
+            rpr = rpr.group(0) if rpr else ""
+            size = float(self._attr(rpr, "w:sz")) / 2 if self._attr(rpr, "w:sz") else self.size
+            bold = bool(re.search(r'<w:b/>|<w:b w:val="(?:1|true)"/>', rpr))
+            big = max(big, size)
+            text = _word_text(r)
+            for k, piece in enumerate(re.split(r"( +)", text)):
+                if piece:
+                    words.append((piece, self.font(self.face, size, bold)))
+        n, cur = 1, 0.0
+        for piece, f in words:
+            w = f.getlength(piece)
+            if piece.strip() and cur + w > width and cur > 0:
+                n += 1
+                cur = w
+            else:
+                cur += w
+        _, em = FACES.get(self.face, FACES["Calibri"])
+        return n, n * em * big * line + after
+
+    def measure(self, doc):
+        body = re.search(r"<w:body>(.*)</w:body>", doc, re.S).group(1)
+        lines, height = 0, 0.0
+        for m in re.finditer(r"<w:tbl>.*?</w:tbl>|" + P_RE, body, re.S):
+            el = m.group(0)
+            if el.startswith("<w:tbl>"):
+                for tr in re.findall(r"<w:tr[ >].*?</w:tr>", el, re.S):
+                    tallest = 0.0
+                    for tc in re.findall(r"<w:tc>.*?</w:tc>", tr, re.S):
+                        cw = float(re.search(r'<w:tcW [^>]*w:w="(\d+)"', tc).group(1)) / 20 - 2 * 5.4
+                        h = 0.0
+                        for p in re.findall(P_RE, tc, re.S):
+                            n, ph = self.paragraph(p, cw, self.cell_after, self.cell_line)
+                            lines += n if _word_text(p).strip() else 0
+                            h += ph
+                        tallest = max(tallest, h)
+                    height += tallest
+            else:
+                n, ph = self.paragraph(el, self.width, self.after, self.line)
+                lines += n if _word_text(el).strip() else 0
+                height += ph
+        return lines, max(1, int(-(-height // self.height)))
+
+
+def normalize_docx(path, creator, last_by, created, modified, revision, total_time, seed, title=None, company=None):
+    """A document as Word saves it, not as the writing library's template leaves it: the template's bibliography part,
+    its 2010 copy of the styles with effects, its preview picture and its unused list definitions go; the styles are
+    cut to those the document's stories use (with their bases, links and successors); the editing-session ids and
+    the document id are the document's own, on its paragraphs and rows too; the Mac namespaces go; relationships are
+    numbered and the parts ordered as Word writes them, each with Word's XML declaration; the extended properties
+    are counted from the document's text and laid out (_Layout). created and modified are minute stamps (UTC, ending
+    Z), as Word keeps them. Returns the counts written."""
+    import hashlib
+    with zipfile.ZipFile(path) as z:
+        items = [(i.filename, z.read(i.filename)) for i in z.infolist()]
+    data = {n: d.decode("utf-8") if n.endswith((".xml", ".rels")) else d for n, d in items
+            if not (n.startswith("customXml/") or n in DOCX_DROP)}
+    decl = XML_DECL.decode()
+    for n in list(data):
+        if n.endswith((".xml", ".rels")):
+            data[n] = decl + re.sub(r"^<\?xml[^>]*\?>\s*", "", data[n])
+    h = lambda k: hashlib.blake2b(("%s|%s" % (seed, k)).encode(), digest_size=4).hexdigest().upper()
+    # editing sessions: the template's ids replaced one for one, so every part keeps pointing at listed sessions
+    st = data["word/settings.xml"]
+    old = re.findall(r'<w:rsid(?:Root)? w:val="([0-9A-F]{8})"/>', st)
+    old = list(dict.fromkeys(old))
+    new_ids = []
+    for k in range(max(len(old), revision)):
+        v = "00" + h("rsid%d" % k)[:6]
+        while v in new_ids:
+            v = "00" + h("rsid%d+" % k)[:6]
+        new_ids.append(v)
+    rs = dict(zip(old, new_ids))
+    sessions = sorted(new_ids)
+    for n in list(data):
+        if n.startswith("word/") and isinstance(data[n], str):
+            data[n] = re.sub(r'(w:rsid\w*=")([0-9A-F]{8})(")', lambda m: m.group(1) + rs.get(m.group(2), m.group(2)) +
+                             m.group(3), data[n])
+            data[n] = re.sub(r'(<w:rsid w:val=")([0-9A-F]{8})("/>)', lambda m: m.group(1) + rs.get(m.group(2), m.group(2))
+                             + m.group(3), data[n])
+    st = data["word/settings.xml"].replace("<w:savePreviewPicture/>", "")
+    st = re.sub(r"<w:rsids>.*?</w:rsids>", '<w:rsids><w:rsidRoot w:val="%s"/>%s</w:rsids>' % (
+        rs.get(old[0], sessions[0]) if old else sessions[0], "".join('<w:rsid w:val="%s"/>' % r for r in sessions)),
+        st, flags=re.S)
+    st = re.sub(r'<w14:docId w14:val="[0-9A-F]+"/>', '<w14:docId w14:val="%s"/>' % ("%08X" % (int(h("docid"), 16)
+                                                                                         & 0x7FFFFFFF)), st)
+    data["word/settings.xml"] = st
+    data["word/webSettings.xml"] = decl + re.sub(r">\s+<", "><", data["word/webSettings.xml"][len(decl):]).strip()
+    # stories: no Mac namespaces; every paragraph and row with its ids, as Word writes them
+    k = [0]
+
+    def ids(m):
+        k[0] += 1
+        para = "%08X" % (int(h("para%d" % k[0]), 16) & 0x7FFFFFFF)
+        text = "%08X" % (int(h("text%d" % k[0]), 16) & 0x7FFFFFFF)
+        sess = sessions[int(h("sess%d" % k[0]), 16) % len(sessions)]
+        tag, rest = m.group(1), m.group(2)
+        extra = ' w:rsidTr="%s"' % sess if tag == "w:tr" else ' w:rsidRDefault="%s"' % sess
+        return '<%s w14:paraId="%s" w14:textId="%s" w:rsidR="%s"%s%s' % (tag, para, text, sess, extra, rest)
+    for n in sorted(x for x in data if DOCX_STORY.match(x)):
+        s = re.sub(r' xmlns:(?:mo|mv)="[^"]*"', "", data[n])
+        data[n] = re.sub(r"<(w:p|w:tr)(>|/>)", ids, s)
+    # styles cut to those the stories use
+    used = set()
+    for n in data:
+        if DOCX_STORY.match(n):
+            used |= set(re.findall(r'w:(?:pStyle|rStyle|tblStyle) w:val="([^"]+)"', data[n]))
+    styles = data["word/styles.xml"]
+    blocks = re.findall(r"<w:style [^>]*>.*?</w:style>", styles, re.S)
+    by_id = {re.search(r'w:styleId="([^"]+)"', b).group(1): b for b in blocks}
+    keep, todo = set(), [x for x in list(used) + list(DOCX_DEFAULT_STYLES) if x in by_id]
+    while todo:
+        x = todo.pop()
+        if x in keep:
+            continue
+        keep.add(x)
+        todo += [r for r in re.findall(r'<w:(?:basedOn|link|next) w:val="([^"]+)"/>', by_id[x]) if r in by_id]
+    head = styles[:styles.index("<w:style ")]
+    data["word/styles.xml"] = head + "".join(b for b in blocks if re.search(r'w:styleId="([^"]+)"', b).group(1)
+                                             in keep) + "</w:styles>"
+    assert "numPr" not in data["word/styles.xml"] and not any("numPr" in data[n] for n in data if DOCX_STORY.match(n))
+    # relationships numbered as Word numbers them; the stories' references follow
+    rels = re.findall(r"<Relationship [^>]*/>", data["word/_rels/document.xml.rels"])
+    rels = [r for r in rels if not re.search(r'Target="(?:\.\./customXml/[^"]*|stylesWithEffects\.xml|numbering\.xml)"', r)]
+    kind = lambda r: re.search(r'Type="[^"]*/([A-Za-z]+)"', r).group(1)
+    rels.sort(key=lambda r: (DOCX_REL_ORDER.index(kind(r)), re.search(r'Target="([^"]+)"', r).group(1)))
+    remap, out_rels = {}, []
+    for i, r in enumerate(rels, 1):
+        remap[re.search(r'Id="(rId\d+)"', r).group(1)] = "rId%d" % i
+        out_rels.append('<Relationship Id="rId%d" Type="%s" Target="%s"/>' % (
+            i, re.search(r'Type="([^"]+)"', r).group(1), re.search(r'Target="([^"]+)"', r).group(1)))
+    data["word/_rels/document.xml.rels"] = decl + ('<Relationships xmlns="http://schemas.openxmlformats.org/package/'
+                                                   '2006/relationships">%s</Relationships>' % "".join(out_rels))
+    for n in data:
+        if DOCX_STORY.match(n):
+            data[n] = re.sub(r'r:(id|embed)="(rId\d+)"', lambda m: 'r:%s="%s"' % (m.group(1), remap[m.group(2)]),
+                             data[n])
+    data["_rels/.rels"] = decl + (
+        '<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId3" '
+        'Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/extended-properties" '
+        'Target="docProps/app.xml"/><Relationship Id="rId2" Type="http://schemas.openxmlformats.org/package/2006/'
+        'relationships/metadata/core-properties" Target="docProps/core.xml"/><Relationship Id="rId1" '
+        'Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" '
+        'Target="word/document.xml"/></Relationships>')
+    parts = sorted(data, key=_rank_docx)
+
+    def ct_rank(n):
+        for i, p in enumerate(DOCX_CT_ORDER):
+            if n == p or (p in ("word/header", "word/footer") and n.startswith(p)):
+                return (i, n)
+        return (len(DOCX_CT_ORDER), n)
+    ov = []
+    for n in sorted(parts, key=ct_rank):
+        ct = DOCX_CT.get(n) or (WP_CT + ".header+xml" if n.startswith("word/header") else
+                                WP_CT + ".footer+xml" if n.startswith("word/footer") else None)
+        if ct:
+            ov.append('<Override PartName="/%s" ContentType="%s"/>' % (n, ct))
+    media = "".join('<Default Extension="%s" ContentType="image/%s"/>' % (e, t) for e, t in (("jpeg", "jpeg"),
+                    ("png", "png")) if any(n.endswith("." + e) for n in parts))
+    data["[Content_Types].xml"] = decl + (
+        '<Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types">%s<Default Extension="rels" '
+        'ContentType="application/vnd.openxmlformats-package.relationships+xml"/><Default Extension="xml" '
+        'ContentType="application/xml"/>%s</Types>' % (media, "".join(ov)))
+    # the statistics Word writes: the body's words and characters, its paragraphs with text, lines and pages
+    doc = data["word/document.xml"]
+    body = re.search(r"<w:body>(.*)</w:body>", doc, re.S).group(1)
+    texts = [t for t in (_word_text(p) for p in re.findall(P_RE, body, re.S)) if t.strip()]
+    words = sum(len(t.split()) for t in texts)
+    chars = sum(len(re.sub(r"\s", "", t)) for t in texts)
+    chars_sp = sum(len(t) for t in texts)
+    lines, pages = _Layout(data["word/styles.xml"], doc).measure(doc)
+    tp = ('<HeadingPairs><vt:vector size="2" baseType="variant"><vt:variant><vt:lpstr>Title</vt:lpstr></vt:variant>'
+          '<vt:variant><vt:i4>1</vt:i4></vt:variant></vt:vector></HeadingPairs><TitlesOfParts><vt:vector size="1" '
+          'baseType="lpstr"><vt:lpstr>%s</vt:lpstr></vt:vector></TitlesOfParts>' % (title or ""))
+    data["docProps/app.xml"] = decl + (
+        '<Properties xmlns="http://schemas.openxmlformats.org/officeDocument/2006/extended-properties" '
+        'xmlns:vt="http://schemas.openxmlformats.org/officeDocument/2006/docPropsVTypes"><Template>Normal.dotm</Template>'
+        '<TotalTime>%d</TotalTime><Pages>%d</Pages><Words>%d</Words><Characters>%d</Characters>'
+        '<Application>Microsoft Office Word</Application><DocSecurity>0</DocSecurity><Lines>%d</Lines>'
+        '<Paragraphs>%d</Paragraphs><ScaleCrop>false</ScaleCrop>%s<Company>%s</Company><LinksUpToDate>false'
+        '</LinksUpToDate><CharactersWithSpaces>%d</CharactersWithSpaces><SharedDoc>false</SharedDoc>'
+        '<HyperlinksChanged>false</HyperlinksChanged><AppVersion>16.0000</AppVersion></Properties>'
+        % (total_time, pages, words, chars, lines, len(texts), tp, company or COMPANY, chars_sp))
+    t = ("<dc:title>%s</dc:title>" % title) if title else ""
+    data["docProps/core.xml"] = decl + (
+        '<cp:coreProperties xmlns:cp="http://schemas.openxmlformats.org/package/2006/metadata/core-properties" '
+        'xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:dcterms="http://purl.org/dc/terms/" '
+        'xmlns:dcmitype="http://purl.org/dc/dcmitype/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">'
+        '%s<dc:subject></dc:subject><dc:creator>%s</dc:creator><cp:keywords></cp:keywords><dc:description>'
+        '</dc:description><cp:lastModifiedBy>%s</cp:lastModifiedBy><cp:revision>%d</cp:revision>'
+        '<dcterms:created xsi:type="dcterms:W3CDTF">%s</dcterms:created>'
+        '<dcterms:modified xsi:type="dcterms:W3CDTF">%s</dcterms:modified></cp:coreProperties>'
+        % (t, creator, last_by, revision, created, modified))
+    assert created.endswith(":00Z") and modified.endswith(":00Z"), (created, modified)
+    with zipfile.ZipFile(path, "w") as z:
+        for name in parts:
+            zi = zipfile.ZipInfo(name, date_time=(1980, 1, 1, 0, 0, 0))
+            zi.compress_type = zipfile.ZIP_DEFLATED
+            zi.create_system = 0
+            z.writestr(zi, data[name].encode("utf-8") if isinstance(data[name], str) else data[name])
+    return dict(words=words, chars=chars, chars_sp=chars_sp, lines=lines, paras=len(texts), pages=pages,
+                styles=sorted(keep), parts=parts)
 
 
 def normalize_pdf(path, created, modified):
@@ -398,14 +664,3 @@ def normalize_pdf(path, created, modified):
         b = re.sub(re.escape(old) + rb"(?![A-Za-z0-9-])", new, b)
     assert len(b) == n and b"ReportLab" not in b and b"reportlab" not in b and b"AAAAAA+" not in b
     open(path, "wb").write(b)
-
-
-def normalize_svg(path):
-    """The chart as a plain SVG: no generator comment, no metadata block naming the plotting library, ids that come
-    from the content (svg.hashsalt) so two builds are byte-identical."""
-    s = open(path, encoding="utf-8").read()
-    s = re.sub(r"<!-- Created with [^>]*-->\n?", "", s)
-    s = re.sub(r" *<metadata>.*?</metadata>\n?", "", s, flags=re.S)
-    s = s.replace('id="matplotlib.axis_', 'id="axis_')
-    assert "matplotlib" not in s.lower() and "Matplotlib" not in s, "plotting library named in the SVG"
-    open(path, "w", encoding="utf-8").write(s)

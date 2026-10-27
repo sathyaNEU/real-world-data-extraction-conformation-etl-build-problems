@@ -1,55 +1,135 @@
-"""The cracker's path on the cut pack (supplemental-stumping 1.1): a response that lands the call, runs the hygiene
-battery (key uniqueness, exact and near-exact duplicates, unmatched joins, fan-out) and executes every filed rule it
-points at. On the asks it reads each file as the battery leaves it: each pack's refrigerant from the F-gas register,
-the record of what each pack holds, at the strategy's GWP table; the job sheet's kilograms on each cabinet and cold
-room line added up, every line a distinct asset and no two lines duplicates. The mirror (the response on the top-up
-count, the North East) reads the asks the same way. Every ask figure is scored against figures.json: a hit is within
-half a unit of the stated rounding. Prints the sheet and the pair ceiling."""
-import json
+"""The ask sheet's cracker and mirror, run on the cut pack: the pilot's first consultations and six-week follow-ups
+by quarter in Krathwold and Lathcombe (16 figures) as a careful solver computes them by each route it could take,
+scored against the golden (asks.py). An integer figure is a hit only when it is exact.
+
+    python3 task270/generator/cracker.py [TARGET]"""
+from __future__ import annotations
+
+import datetime as dt
 import os
 import sys
-import warnings
 
-warnings.filterwarnings("ignore")
+import pandas as pd
+
 HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)
-import analysis as A    # noqa: E402
-import asks as AS       # noqa: E402
+import asks as A        # noqa: E402
 import common as K      # noqa: E402
+import pilot as PL      # noqa: E402
 
-CRACKER = dict(gas_source="register", eq_mode="lines")
+NETS = {"Krathwold": "KRT", "Lathcombe": "LTH"}
 
 
-def score(target, fig, kw, P, J):
-    a = AS.all_asks(target, P=P, J=J, **kw)
-    g = fig["asks"]
-    rows = []
-    for t in K.REGIONS:
-        rows.append(("A", "full charge CO2e %s" % t, a["charge_co2e_t"][t] == g["charge_co2e_t"][t]))
-    for t in K.REGIONS:
-        rows.append(("A", "R404A CO2e %s" % t, a["r404a_co2e_t"][t] == g["r404a_co2e_t"][t]))
-    for t in K.REGIONS:
-        rows.append(("B", "cabinets and cold rooms %s" % t, abs(a["equipment_kg"][t] - g["equipment_kg"][t]) < 0.05))
+def records(target, statements=True):
+    """The export, and with statements the payment records the export lacks; each patient through the crosswalk."""
+    E, S, P, xmap = A.load_pilot(target)
+    rows = E[["record_id", "pharmacy_ods", "network", "patient_ref", "consultation_type", "date", "recorded_on"]].copy()
+    rows["rec"] = pd.to_datetime(rows["recorded_on"], dayfirst=True).dt.date
+    if statements:
+        pay = S[S["line"] == "Payment"]
+        late = pay[~pay["record_id"].isin(set(E["record_id"]))].rename(columns={"ods": "pharmacy_ods"})
+        late = late.assign(network="", rec=late["statement"].map(lambda m: dt.datetime.strptime(m, "%b %Y").date()))
+        rows = pd.concat([rows, late[["record_id", "pharmacy_ods", "network", "patient_ref", "consultation_type",
+                                      "date", "rec"]]], ignore_index=True)
+    rows["pat"] = rows["patient_ref"].map(lambda k: xmap.get(k, k))
+    rows["recovered"] = rows["record_id"].isin(set(S.loc[S["line"] == "Recovery", "record_id"]))
+    loc = {r.ods_code: (r.locality, r.relocated_on, r.previous_locality) for r in P.itertuples()}
+    label = dict(zip(E["pharmacy_ods"], E["network"]))
+
+    def on_day(ods, d):
+        l, when, prev = loc[ods]
+        if when and d < dt.date.fromisoformat(when):
+            l = prev
+        return NETS.get(l)
+
+    rows["net_day"] = [on_day(o, d) for o, d in zip(rows["pharmacy_ods"], rows["date"])]
+    rows["net_label"] = rows["pharmacy_ods"].map(lambda o: NETS.get(label.get(o, "")))
     return rows
 
 
+def count(rows, net="net_day", drop="none", keep="earliest"):
+    """C1 and C2 by network and quarter. drop: none, recovered (every recovered record), second (the golden: a
+    recovered first consultation whose patient has another first consultation not recovered). keep: which of a
+    patient's remaining first consultations is the patient's first (earliest by date, first recorded, or all)."""
+    R = rows.copy()
+    first = R["consultation_type"] == "First consultation"
+    if drop == "recovered":
+        R = R[~R["recovered"]]
+    elif drop == "second":
+        kept = set(R.loc[first & ~R["recovered"], "pat"])
+        R = R[~(first & R["recovered"] & R["pat"].isin(kept))]
+    F = R[(R["consultation_type"] == "First consultation") & (R["date"] >= PL.PILOT_START)
+          & (R["date"] <= PL.PILOT_END)].copy()
+    if keep == "earliest":
+        F = F.sort_values(["date", "rec", "record_id"]).drop_duplicates("pat", keep="first")
+    elif keep == "recorded":
+        F = F.sort_values(["rec", "date", "record_id"]).drop_duplicates("pat", keep="first")
+    F["n"] = F[net]
+    F = F[F["n"].notna()]
+    fu = R[R["consultation_type"] == "Follow-up"].groupby("pat")["date"].apply(list).to_dict()
+    C1 = {(n, q): 0 for n in ("KRT", "LTH") for q in (1, 2, 3, 4)}
+    C2 = dict(C1)
+    for r in F.itertuples():
+        k = (r.n, PL.quarter(r.date))
+        C1[k] += 1
+        if any(0 < (d - r.date).days <= 42 for d in fu.get(r.pat, [])):
+            C2[k] += 1
+    return C1, C2
+
+
+ROUTES = [
+    # the cracker: the call landed, the hygiene battery run, the export reconciled to the statements
+    ("cracker", "export and statements; every recovered record out; network on the day from the pharmacy list; "
+                "each patient's earliest first consultation", dict(statements=True, net="net_day", drop="recovered")),
+    ("K1", "export and statements; recovered out; the portal's network label",
+     dict(statements=True, net="net_label", drop="recovered")),
+    ("K2", "export and statements; recoveries ignored; each patient's earliest",
+     dict(statements=True, net="net_day", drop="none")),
+    ("K3", "export and statements; recoveries ignored; each patient's first recorded",
+     dict(statements=True, net="net_day", drop="none", keep="recorded")),
+    ("K4", "the export alone; network on the day; each patient's earliest",
+     dict(statements=False, net="net_day", drop="none")),
+    ("K5", "the export alone; the portal's network label; each patient's earliest",
+     dict(statements=False, net="net_label", drop="none")),
+    ("K6", "the export alone; the portal's network label; every first consultation record",
+     dict(statements=False, net="net_label", drop="none", keep="all")),
+    ("K7", "the golden's handling on the export alone (no late records)",
+     dict(statements=False, net="net_day", drop="second")),
+    ("K8", "the golden's handling with the portal's network label",
+     dict(statements=True, net="net_label", drop="second")),
+]
+
+
+def run(target=K.TARGET):
+    gold1, gold2 = A.pilot_figures(target)
+    cache = {}
+    out = []
+    for name, desc, kw in ROUTES:
+        st = kw.pop("statements")
+        if st not in cache:
+            cache[st] = records(target, statements=st)
+        c1, c2 = count(cache[st], **kw)
+        kw["statements"] = st
+        h1 = [k for k in c1 if c1[k] == gold1[k]]
+        h2 = [k for k in c2 if c2[k] == gold2[k]]
+        out.append((name, desc, c1, c2, h1, h2))
+    return gold1, gold2, out
+
+
+def main():
+    target = sys.argv[1] if len(sys.argv) > 1 else K.TARGET
+    gold1, gold2, out = run(target)
+    fmt = lambda c: " ".join("%s%d %3d" % (n[0], q, c[(n, q)]) for n in ("KRT", "LTH") for q in (1, 2, 3, 4))
+    print("golden first consultations  %s" % fmt(gold1))
+    print("golden followed up          %s" % fmt(gold2))
+    for name, desc, c1, c2, h1, h2 in out:
+        print("%-8s keeps %2d of 16  (%s)" % (name, len(h1) + len(h2), desc))
+        print("         first  %s" % fmt(c1))
+        print("         follow %s" % fmt(c2))
+    crack = out[0]
+    print("CRACKER keeps %d of 16 ask figures" % (len(crack[4]) + len(crack[5])))
+    return 0 if not (crack[4] or crack[5]) else 1
+
+
 if __name__ == "__main__":
-    task = sys.argv[1] if len(sys.argv) > 1 else os.path.dirname(HERE)
-    target = os.path.join(task, "target")
-    fig = json.load(open(os.path.join(HERE, "figures.json")))
-    P = A.packs(target)
-    J = A.pack_jobs(target, P)
-    crk = score(target, fig, CRACKER, P, J)
-    mir = crk                     # the mirror reads the asks as the cracker does; no ask reads the call
-    for name, rows in (("cracker", crk), ("mirror", mir)):
-        for ask in "AB":
-            r = [x for x in rows if x[0] == ask]
-            print("%s Ask %s: keeps %d of %d%s" % (name, ask, sum(x[2] for x in r), len(r),
-                                                   "" if not any(x[2] for x in r) else
-                                                   " (" + ", ".join(x[1] for x in r if x[2]) + ")"))
-    n = len(crk)
-    lc, lm = sum(x[2] for x in crk) / n, sum(x[2] for x in mir) / n
-    pair = ((38 + 7 + 55 * lc) + (5 + 7 + 55 * lm)) / 2
-    print("cracker %d of %d ask figures; mirror %d of %d; mirror leakage %.1f per cent; pair ceiling %.1f" % (
-        sum(x[2] for x in crk), n, sum(x[2] for x in mir), n, 100 * lm, pair))
-    sys.exit(0 if pair <= 40 else 1)
+    sys.exit(main())
