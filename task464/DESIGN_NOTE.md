@@ -524,6 +524,46 @@ to make a solver notice a structure.
 
 ## Tried and rejected
 
+- **Architecture 3's decisive step is spent: the stump lived in the fork, measured 2026-10-27.** The stage 4
+  re-judge returned NOT_DETERMINISTIC, `competing_defensible_answer` on the MAIN CALL via
+  `underspecified_objective`, and the finding is not repairable. Schedule 4 clause 4.2 defines deliverable
+  positions as "the treatment positions a Site is able to operate simultaneously" and nothing files what
+  evidence fixes that, so three readings are reachable and each changes the call: the golden's concurrency
+  sweep gives 274 positions, 3,886 slots and 6 areas below the standard; the directory's attested stations
+  give 327, 4,668 slots and 3 areas below; the register's licensed stations give 351, 5,006 slots and 2 areas
+  below. Only inference, or the write-up's own "Not the stations the directory attests", picks the golden.
+  Every golden figure reproduces, so there is no `solution_incorrect`: the defect is that the estimand's unit
+  is not forced.
+  The judge's own suggested fix is the thing rule 3 bans. It asks for a sentence in 4.2 filing that positions
+  are evidenced by "the site's own treatments running at the same time in the encounter extract", and
+  "running at the same time" IS the concurrency sweep, so taking it would make the decisive step rule
+  application whatever the determinism verdict (`CLAUDE.md` first section, `/fix-determinism` step 3).
+  Then the stump test, and it fires. The default path's entire error is taking the attested 327. Any closure
+  that forces the golden reading tells the analyst not to take it, and the construction is then the only
+  route left, so closing the fork in either direction makes the default path land on the golden. That is the
+  stop condition verbatim and eight builds have died on it. Leaving it open to keep the stump is explicitly
+  banned.
+  Two escapes were weighed and both fail. A selection criterion naming the evidence source in general terms
+  (the Site's own delivered service record, and not a count it attests or is licensed for) is section 1's
+  named escape and files WHAT rather than HOW, but its second half is the stump itself: "not the attested
+  count" is the whole insight. And deleting the attested and licensed counts from the pack closes Gate C and
+  kills Gate F at once, because the construction becomes the only available route and nothing is skipped.
+  So Gate C and Gate F ride one dial here with no middle, which is the finding task184 and task188 each
+  recorded from their own slots.
+  This supersedes my ruling earlier the same day that the build ships with the Gate F risk recorded. That
+  ruling answered the leak reader's observation that clause 4.2 makes the exposure visible, which is a Gate F
+  weakness. The judge has since shown a Gate C failure on the main call, which is a different and worse
+  thing, and the evidence beats the ruling.
+  **What survives for the redesign.** The world, the pack and the ask layer are sound and measured: 652
+  generator assertions, verify recomputing every graded figure on its own code path, two byte-identical
+  rebuilds, 146 figures with none absent, precut at 52 checks with 0 FAIL and 0 WARN, cracker 0 of 48, 0 of
+  24 and 4 of 24 with a pair ceiling of 30.8 and mirror leakage 4.2 per cent, and the nearest-area ask now
+  forced under all four roundings (Durnsfield 19.625, 20, 20, 19 against a runner-up pair at 22, 22, 23, 22),
+  which the judge confirmed independently. The ceiling's own convergence also holds: the record, yearly and
+  monthly maxima, the 99th and 99.9th percentiles, either table alone, a UTC clock and both interval
+  conventions all give the same 274. The next architecture keeps this world and moves the decisive step off
+  the unit of the estimand.
+
 - Architecture 2, placing the 2025 retiring reading test's scores on the new scale by a concordance from the
   single-group bridge study (2026-10-27): solved on the portal. Both responses landed the call and one filed the
   runner-up and the gap exactly. The diagnosis is in `## Portal result and the diagnosis, 2026-10-27` below, and
