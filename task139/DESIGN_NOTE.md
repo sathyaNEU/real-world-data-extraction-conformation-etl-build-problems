@@ -3,7 +3,7 @@
 Private, never ships. Re-rooted on 2026-10-27 for the second time. Architecture 1 (where Haverline's nurse teams work, read
 per claim against per intake) was solved by both portal responses; architecture 2 (the same world, the opening call both
 pilot arms received) was spent at stage 2 before any pack was cut (`## Architecture 2 record`). At the author's
-instruction nothing is kept: a new world, a new task type, a new decision and a new mechanism.
+instruction nothing is kept: a new world, a new task type, a new decision and a new mechanism. Shipped 2026-10-27.
 
 ## Draw
 
@@ -14,11 +14,11 @@ instruction nothing is kept: a new world, a new task type, a new decision and a 
 | Objective | Forecasting & Predictive Modeling: the lifetime loss ratio of the contracts the rideshare channel will sell in 2027, none of which exists yet, forecast from the channel's six months and the retail book's seven years |
 | Shape | 04 (setting one dial: each allowed setting): the three renewal settings each carry a forecast loss ratio, with the asks' grids supplying most of the criteria (arithmetic under `## Ask sheet` at stage 2) |
 | Decision | `renew_replace_lapse`, answer unit `named_option` (renew at current rates, renew with the maximum high-use surcharge, or let the channel lapse) |
-| Mechanism | gap objective (the channel's cost per month of cover is correct and is not what the cover costs) then time (its six months have seen only the start of a cover that runs twenty); pattern none, generators G1 (the unit of exposure: a mile at the odometer, not a contract-month) then G13 (the horizon the channel's history covers against the horizon the cover runs); Gate G `forecasting`; strategy `grain_or_unit` |
+| Mechanism | gap objective (the channel's cost per month of cover is correct and is not what the cover costs) then time (its six months have seen only the start of a cover that runs twenty); pattern none, generators G13 (the horizon the channel's six months cover against the roughly 21 months a cover runs) then G1 (the unit of exposure: a mile at the odometer, not a contract-month); Gate G `forecasting`; strategy `grain_or_unit` |
 | Layer 2 family / pattern | `field_method` (the exposure base done right); `own:exposure-on-the-odometer-not-the-contract-clock` |
-| Furniture | forum `executive_team` (Copperline's executive product committee elects the renewal), forcing event `purchase_order_or_contract` (the Fareline agreement's election notice is due by 1 December 2026 for the 1 January 2027 renewal), organisation family `professional_services` (a service-contract obligor and administrator, its contracts backed by Tarrant Mutual Casualty's contractual liability policy), role family `product_manager` (the head of the rideshare and fleet programme), context artifact `register` (the contract register), calibration `existing_book_actuals` (the retail book's seven years of contracts, readings and claims), opening `question-first`, question form `which` |
+| Furniture | forum `customer_or_counterparty` (the election is Copperline's written notice to Fareline, due by 1 December 2026 for the 1 January 2027 renewal), forcing event `vote_or_meeting` (the product committee's November meeting the request is made for), organisation family `professional_services` (a service-contract obligor and administrator, its contracts backed by Tarrant Mutual Casualty's contractual liability policy), role family `product_manager` (the head of the rideshare and fleet programme), context artifact `register` (the contract register), calibration `existing_book_actuals` (the retail book's seven years of contracts, readings and claims), opening `question-first`, question form `which` |
 | Spine | `odometer_readings_2019-01_to_2026-09.csv`, the administrator's odometer history: one reading on one contracted vehicle from a repair order, a maintenance-proof upload or the platform's weekly mileage feed; constructed |
-| Deliverables | `fareline_channel_renewal_2027.pptx` (the committee deck: the election, the forecast and the chart it rests on), `rideshare_contract_experience_2027.xlsx` (the forecast's working and the asks) |
+| Deliverables | `fareline_channel_renewal_2027.pptx` (the committee deck: the election, the forecast and the chart it rests on), `drive_plus_channel_review_2027.xlsx` (the forecast's working and the asks) |
 | People | drawn with `guard.py names --geo us --seed 1393` and `--seed 1397`: Nicholas Reed (head of the rideshare and fleet programme, the requester), Emily Willis (pricing actuary), Jason Livingston (claims director), Kirsten Weaver (administration systems), Philip Butler (Fareline's driver-benefits lead), Nicole Monroe (Tarrant Mutual's programme underwriter); none in the prompt |
 
 **Guard.** `guard.py check` on the draft BLOCKed `ban.forum` (committee_or_panel) and `ban.org_family`
@@ -29,6 +29,12 @@ financial institution. Registered at WARN: `three_rules.strategy_risk` (grain_or
 (the unit is an exposure basis the analysis chooses, no field or rule names it); `people.first` on Kirsten (task457) and
 Nicole (task243), older builds; `repeat.gate_g` (forecasting, beside task171 v5), the lane's own mechanism;
 `repeat.question_form` (which, beside task270), the decision is a pick of one of three settings.
+
+**Axes redrawn at stage 3 (2026-10-27).** `guard.py heart` BLOCKed `ban.pattern` (G1) and `ban.forum` (executive_team)
+against task307 and `ban.forcing_event` (purchase_order_or_contract) against task308, both registered after this draw. The
+election is a written notice to Fareline, so the counterparty is the honest recipient; the request is made for the
+committee's November meeting; and the horizon the channel's six months cover against a cover of about 21 months is what
+makes the per-mile reading necessary, so G13 leads G1. `check` then WARN only.
 
 **Same-puzzle and same-driver tests.** Gap objective, decisive G1, `renew_replace_lapse`, Gate G `forecasting`: no
 structural block in the last twelve or older.
@@ -62,23 +68,27 @@ per cent or less, with the surcharge if the surcharged loss ratio is 70 per cent
 records run to 30 September 2026; the request is made in October 2026 by the head of the rideshare and fleet programme
 for the committee's November meeting.
 
-**On paper, before any data** (`generator/paper/` prototypes, 14,000 retail and 2,500 rideshare contracts a world; repair
-claims per mile and their cost flat to 70,000 miles and climbing past it, rideshare sales from April 2026 at 50,000 to
-100,000 miles and 44,000 miles a year), every route scaled to the golden at 84 per cent of the price:
+**On paper, then on the pack** (`generator/paper/` prototypes; the built world is 14,000 retail and 6,000 Fareline
+contracts, retail mostly sold at 15,000 to 55,000 miles with a fifth at 60,000 to 115,000 and driven about 12,500 miles
+a year, Fareline sold from April 2026 at 50,000 to 100,000 miles and driven about 44,000; repair claims per mile and
+their cost flat to 70,000 miles and climbing past it; prices by vehicle class and odometer band at sale), every route
+measured by `golden.routes` on the cut pack and asserted in `checks.py`:
 
-| Route | Lifetime loss ratio | Election |
+| Route | Lifetime loss ratio, current price | Election |
 |---|---|---|
-| the channel's own cost per contract-month over the months its drivers take to use the cover | 39 | renew |
-| the same, with the cost per month's trend in contract age carried forward | 50 | renew |
-| the retail book's cost by contract age, with the 20 per cent loading | 47 | renew |
-| the retail book's cost by contract age on a clock sped up by the mileage ratio | 52 | renew |
-| the book's pooled cost per mile, over the 75,000 covered miles | 42 | renew |
-| claim frequency per mile by odometer band, at the book's average claim | 56 | renew |
-| the channel's own cost per contract-month over the full 60 months (the mileage limit dropped) | 110 | lapse |
-| golden: cost per mile at each odometer from the whole book, along each contract's mileage path to its limit | 84 | renew with the surcharge (60 surcharged) |
+| the channel's own cost per contract-month over the months its drivers take to use the cover | 16.9 | renew at current rates |
+| the channel's own cost per contract-month by contract age, a linear trend carried over the cover | 55.2 | renew at current rates |
+| the retail book's cost by contract age over 60 months, with the 20 per cent loading | 29.6 | renew at current rates |
+| the retail book's cost by contract age on a clock sped up by the mileage ratio | 38.3 | renew at current rates |
+| the book's pooled cost per mile, over the 75,000 covered miles | 21.6 | renew at current rates |
+| claim frequency per mile by odometer band, at the book's average claim | 51.6 | renew at current rates |
+| cost per mile at the odometer, every contract's miles run on at its own rate to its 60 months or 30 September (no cover ended early) | 58.2 | renew at current rates |
+| the channel's own cost per contract-month over the full 60 months (the mileage limit dropped) | 48.2 | renew at current rates |
+| golden: cost per mile at each odometer from the whole book, along each contract's mileage path to its limit | 75.0 | renew with the surcharge (53.6 surcharged) |
 
-The nearest route sits 14 points under the renewal line and the golden 14 points inside each edge of its band; the build
-measures both on the pack before stage 3.
+The nearest route sits 11.8 points under the 70 per cent line (the per-mile reader who keeps every cover in force); the standing family (band width, the last reading's
+tail, frequency and severity apart, interpolation) runs 74.4 to 75.4 at the current price and 53.2 to 53.9 surcharged,
+so the call and both nearest-5 figures hold on every member. The world's own loss ratio is 75.8.
 
 ## Three rules
 
@@ -108,17 +118,11 @@ measures both on the pack before stage 3.
   deductible, the loading) still leaves the easy route on the channel's own cost per contract-month: nothing in the pack
   marks the odometer as the clock, the channel's months are real, correctly priced experience, and the step is an
   exposure choice the analyst makes.
-- **Not rule application:** the terms file the cover (60 months or 75,000 miles) and the standard files the 70 per cent
-  line and the population (next year's sales, like this year's); no rule names an exposure base, a band or a curve.
-  Enumerated family on paper: eight constructions spread the lifetime loss ratio from 39 to 110 per cent (71 points,
-  three elections); the standing family (cost per mile at the odometer from the whole book, by 5,000-, 10,000- or
-  20,000-mile bands or a fitted curve, frequency and severity separately or together) is measured on the pack at stage 2
-  and must file one election; what rules the per-month routes out is one cross-section nothing invites: the retail
-  book's cost per mile by odometer band, flat to 70,000 miles and nearly ten times as high by 160,000.
+- **Not rule application:** the terms file the cover (60 months or 75,000 miles) and the standard files the 70 per cent line and the population (next year's sales, like this year's); no rule names an exposure base, a band or a curve. Enumerated family on the pack: eight constructions spread the lifetime loss ratio from 16.9 to 75.0 per cent (58 points, two elections); the standing family (cost per mile at the odometer from the whole book, 5,000-, 10,000- or 20,000-mile bands, interpolated or not, frequency and severity apart or together, with or without the last reading's tail) spreads 1.0 point (74.4 to 75.4) and files one election; what rules the per-month routes out is one cross-section nothing invites, the book's cost per mile by odometer band, flat at about 4 dollars a thousand miles to 70,000 and over twenty times that by 130,000.
 - **Analyst test:** a strong analyst who reads the terms, the readings, the claims and the standard correctly takes the
   channel's own cost per contract-month over the months its drivers need to use 75,000 miles (or the retail book's cost
-  by contract age with the loading, or a pooled cost per mile), forecasts a lifetime loss ratio between 39 and 56 per
-  cent and renews the channel unchanged; only the cost per mile at the odometer files the golden (asserted in
+  by contract age with the loading, or a pooled cost per mile), forecasts a lifetime loss ratio between 17 and 58 per
+  cent and renews the channel at current rates; only the cost per mile at the odometer files the golden (asserted in
   `checks.py` on the generator's clean truth).
 - **Estimand:** the rate manual's channel review section (`drive_plus_rate_manual_2026.pdf`): the lifetime loss ratio of
   the contracts the channel will sell in its next year, the claims Copperline pays over each contract's cover (covered
@@ -148,20 +152,192 @@ measures both on the pack before stage 3.
 5. A 2027 contract's lifetime cost is step 3 times step 4; over the average 2026 price, the lifetime loss ratio.
 6. Apply the standard.
 
-Ends on: renew the channel at current rates (a lifetime loss ratio of about 39 per cent on paper).
-Golden: renew with the maximum high-use surcharge (about 84 per cent at current rates and 60 per cent surcharged).
+Ends on: renew the channel at current rates (a lifetime loss ratio of about 17 per cent on the pack).
+Golden: renew with the maximum high-use surcharge (about 75 per cent at current rates and 55 per cent surcharged).
 
 ## Stump sentence
 
 A competent solver costs a 2027 rideshare contract by its months of cover, the channel's own claims cost per
 contract-month run over the months a rideshare driver takes to use the 75,000 covered miles (or the retail book's cost by
-contract age with the loading, or the book's pooled cost per mile), forecasts a lifetime loss ratio between 39 and 56 per
+contract age with the loading, the book's pooled cost per mile, or its cost per mile at the odometer with every cover kept
+in force to its term), forecasts a lifetime loss ratio between 17 and 58 per
 cent and files renew the channel at current rates (Ends on); the step that lands it there is costing the cover by its
 months, when repair claims accrue per mile and both their frequency and their cost climb with the odometer past 70,000
 miles, and a rideshare cover runs from 50,000 to 100,000 miles at sale through 75,000 miles more in under two years, past
 anything the channel's six months have reached: read per mile at each odometer from the retail book and stopped at each
-contract's limit, the cover costs about 84 per cent of the price, so the channel renews only with the maximum high-use
-surcharge, at about 60 per cent.
+contract's limit, the cover costs about 75 per cent of the price, so the channel renews only with the maximum high-use
+surcharge, at about 55 per cent.
+
+## Readability screen
+
+Measured by the generator on the cut pack (`checks.py` restates every figure on each build): the lifetime loss ratio
+at the current price, the golden against the default path's routes.
+
+| Rung | What the response does | What in the pack points at it | Verdict |
+|---|---|---|---|
+| L0 the channel's months | the channel's own claims cost per contract-month to 30 September, run over the months a driver takes to use 75,000 miles (16.9), or over 60 months (48.2) | the terms' 60 months or 75,000 miles; the channel's own six months are the only Fareline experience | readable |
+| L1 the channel's age trend | the channel's cost per contract-month by month of contract age, a linear trend carried over each cover (55.2) | the same six months, read as a development pattern | readable |
+| L2 the retail clock | the retail book's cost per contract-month by contract age over 60 months, with the 20 per cent loading (29.6), or on a clock sped up by the mileage ratio (38.3) | the agreement's commercial-use loading; the retail book's seven years | readable |
+| L3 per mile, pooled | the book's claims cost over its miles under cover, times 75,000 (21.6), or frequency per mile by odometer band at the book's average claim (51.6) | the terms' 75,000 miles; the readings' odometers | readable |
+| L4 per mile at the odometer, every cover in force to term | the golden's cost per mile at each odometer, but each contract's miles under cover run on at its own rate to its 60 months or 30 September, the cars sold and the covers cancelled kept on cover (58.2) | the terms 4 and 6: a cancelled contract's CarLink reporter is removed and sends a closing reading on the day the contract ends; the cancellation requests for 2025 and 2026 | readable |
+| G golden (decisive) | the claims cost per mile in each odometer band from the whole book, each 2026 Fareline contract run from its odometer at sale at its own mileage to the earlier of 75,000 miles and 60 months (75.0) | nothing names the odometer as the cover's clock: the rate manual files the estimand and no exposure base, and the one cross-section that rules the other rungs out (the book's cost per 1,000 miles by odometer band, about 4 dollars to 70,000 miles and over 20 times that by 130,000) is invited by no document | silent |
+
+Every route below the golden files renew at current rates, at least 11.8 points under the 70 per cent line (L4, the
+per-mile reader who keeps every cover in force to term, is the nearest); every
+standing member files the surcharge, the current-price figure 74.4 to 75.4.
+
+## Semantic fork table
+
+| ID | Term or convention | Golden reading | Alternative | Call under it | Ruled out by |
+|---|---|---|---|---|---|
+| SF1 | the odometer band | 10,000-mile bands | 5,000- or 20,000-mile bands | same call (asserted; 74.6 to 75.2, 75 and 55 at the nearest 5) | same call |
+| SF2 | the last reading | miles under cover to each contract's last reading in cover | on to the cover's end or 30 September at the contract's own rate | same call (asserted) | same call |
+| SF3 | the cost per mile's form | cost per mile in the band | frequency per mile times the band's own average claim, or interpolated between band midpoints | same call (asserted) | same call |
+| SF4 | the contracts standing for 2027 | the 2026 Fareline contracts with a feed reading after sale | all 2026 contracts, the rest at the channel's mean mileage | same call (asserted) | the rate manual 5 (contracts like those sold) |
+| SF5 | the book the cost is read from | the whole book | the retail contracts only | same call (asserted) | same call |
+| SF6 | the loss ratio's form | total claims cost over total price (the mean cost over the mean price) | the mean of each contract's own ratio | same call (asserted; 75.0 and 75.9) | same call |
+| SF7 | a contract's annual mileage | its last feed reading since sale | a straight line fitted to its feed | same call (asserted) | same call |
+| SF8 | goodwill payments | not claims cost | counted | same call (asserted) | the rate manual 4 |
+| SF9 | reversed lines | netted | the positive lines only | same call (asserted) | the rate manual 4 |
+| SF10 | the deductible line | netted | not netted | same call (asserted) | the rate manual 4 |
+| SF11 | claims and readings under pre-2024 numbers | joined through the crosswalk | dropped | same call (asserted) | the crosswalk |
+| SF12 | the 60 months | calendar months from the sale | 1,826 days | not a fork: under 2 per cent of the contracts run near the time limit (asserted) | the terms 2 |
+
+The live rows are asserted as cross products in `checks.py`: SF1 by SF2 by SF3 (18 cells) and SF4 by SF5 by SF6 by SF7
+by SF1 (48 cells), every cell filing the surcharge with 75 and 55 at the nearest 5 per cent.
+
+## Ladder
+
+Measured by the generator on the cut pack; `checks.py` asserts every row on each build.
+
+| Rung | Lifetime loss ratio at the current price, per cent | Call | Call kept |
+|---|---|---|---|
+| L0 the channel's months over the months of cover | 16.9 | renew at current rates | no |
+| L0 the channel's months over 60 months | 48.2 | renew at current rates | no |
+| L1 the channel's age trend | 55.2 | renew at current rates | no |
+| L2 the retail clock with the loading | 29.6 | renew at current rates | no |
+| L2 the retail clock sped up by the mileage ratio | 38.3 | renew at current rates | no |
+| L3 the pooled cost per mile | 21.6 | renew at current rates | no |
+| L3 frequency by band at the book's average claim | 51.6 | renew at current rates | no |
+| L4 per mile at the odometer, every cover in force to term | 58.2 | renew at current rates | no |
+| G golden: cost per mile at the odometer along each contract's path | 75.0 (53.6 surcharged) | renew with the maximum high-use surcharge | yes |
+
+The clean-truth run (`checks.py`, the world's exact claims and odometers without the pack's mess) files renew at
+current rates on every route and the surcharge on the golden; the world's own loss ratio is 75.8.
+
+## Closure table
+
+| # | Axis | Reading | Move |
+|---|---|---|---|
+| 1 | Population | the contracts the channel will sell in 2027, like the 2026 sales (vehicle, odometer at sale, driving) | filed (rate manual 5); SF4 |
+| 2 | Unit of account | the lifetime loss ratio, per cent of the contract price | filed (rate manual 5) |
+| 3 | Attribution window | each contract's whole cover | filed (terms 2, rate manual 5) |
+| 4 | As-of dating | records to 30 September 2026 | filed (the prompt, the file names) |
+| 5 | Version basis | the 2026 rate manual and its prices | filed (rate manual 1, 2) |
+| 6 | Denominator | the contract price at current rates, and the surcharged price | filed (rate manual 3, 5) |
+| 7 | Weighting | each contract once | linear (SF6 asserted) |
+| 8 | Window length | 60 months or 75,000 miles, whichever first | filed (terms 2); SF12 |
+| 9 | Boundary inclusivity | 70 per cent or less | filed (rate manual 5) |
+| 10 | Rounding path | the forecast compared unrounded, reported to the nearest 5 per cent | filed (the prompt) |
+| 11 | Tie-break | current rates before the surcharge before a lapse | filed (rate manual 5) |
+| 12 | Maturity and censoring | covers still running at 30 September counted to their last reading | the decisive step's exposure (SF2 asserted) |
+| 13 | Order of operations | claims cost, miles by band, cost per mile, each contract's path, average, ratio | linear |
+| 14 | Row order | none | C1 |
+| 15 | Duplicate resolution | a repeated maintenance upload is one reading | linear (a repeated reading adds no miles, asserted) |
+| 16 | Identity normalisation | pre-2024 contract numbers through the crosswalk; the Fareline feed by VIN | filed (the crosswalk, the agreement 3); SF11 |
+| 17 | Netting against gross | net of the deductible and reversed lines, goodwill out | filed (rate manual 4); SF8 to SF10 |
+| 18 | Dimensional units | miles, dollars | not applicable |
+| 19 | Code and status semantics | line types PARTS, LABOR, DEDUCTIBLE, GOODWILL | filed (rate manual 4) |
+| 20 | Integerisation | none on the call | not applicable |
+| 21 | Clause scope | the Fareline channel's next agreement year | filed (rate manual 5, the agreement 1 and 4) |
+| 22 | Forward window contents | the odometers a 2027 cover runs through, 50,000 to 175,000 miles | the decisive step (the cover is costed per mile at each odometer from the book that has driven it) |
+
+## Literal reader
+
+Executing the prompt and every filed sentence word for word: rate manual 5 fixes the forecast quantity (the claims
+cost Copperline will pay over each 2027 contract's cover, at current repair costs and with no trend, over the contract
+price), the population (contracts like those the channel sold in its current year: the same vehicles, odometers at
+sale and driving) and the rule (renew at current rates at 70 per cent or less, otherwise with the maximum surcharge if
+that brings it to 70, otherwise lapse); rate manual 4 fixes claims cost (net of the deductible and reversed lines,
+goodwill out); the terms fix the cover (60 months or 75,000 miles from the sale date and odometer). How the cover's
+claims cost is forecast is left to the analysis, and the records select it: the claims accrue per mile and climb with
+the odometer (cost per 1,000 miles about 4 dollars to 70,000 miles and over 20 times that by 130,000, with the retail
+book's odometers at every band), so a forecast on any other clock reads the cover's first months as its whole. Every
+licensed construction on the odometer (any band width, the tail or not, frequency and severity apart, interpolation,
+either book, either population, either ratio form) files the surcharge at 75 and 55 to the nearest 5 per cent.
+
+## Oracles
+
+No file ties only under the golden or only on a wrong read. No shipped file states a loss ratio, a cost per mile, a
+prior channel review or an election, and none ranks the three settings. The agreement summary states the 20 per cent
+loading as the price charged, never as adequate. Tarrant Mutual's policy summary and the repair facility directory ship
+as distractors.
+
+## Ask sheet
+
+The call's declared population is the Fareline contracts sold in 2026 and the whole book's claims and odometer
+readings. The two asks read files the call never opens (the cancellation requests, the dealer bordereaux, the bank's
+returns report, the dealer directory) and run over retail contracts only; the Fareline contracts carry no lienholder
+and no bordereau, so no ask device row sits in the call's population, and the call is unchanged with every ask device
+removed (asserted: `golden.py` reads none of the ask files).
+
+- **Ask A, cancellations in 2026: retail contracts cancelled, refunds owed and of which to lienholders, by quarter
+  (9 figures).** H18 home: the channel review's cancellation experience beside the forecast, the refunds the book owes
+  this year. Primary device (silent, an identity judgment): a lienholder's payoff request names a VIN and the
+  lienholder, never a contract, and when a car is sold its next owner often buys a contract of their own on the same
+  VIN through a dealer within weeks, so the payoff request often arrives after the next owner's contract is written.
+  Joined on its VIN as of the date received (the hygiene battery's own as-of join), the request lands on the next
+  owner's contract and cancels it, or double-cancels nothing and drops the old one; the golden takes the contract on
+  that VIN that shows the requesting lienholder. Twin: VINs sold once, requests by contract number, cars traded with
+  the dealer's request first. Hazards: the first request received decides (terms 5), the free look within 30 days with
+  no claim made, the odometer from the request or the latest record, the refund to the lienholder. Stops on the cut
+  pack: the as-of join (208, 294,574, 146,162; 213, 261,454, 157,824; 206, 316,318, 160,135); the requests with a
+  contract number only (174, 202,349; 186, 204,722; 177, 242,869); every request a cancellation (281, 303, 278); the
+  golden 191, 225,091, 120,674; 202, 222,805, 136,837; 193, 264,816, 145,907.
+- **Ask B, 2025 dealer premium: received to 30 September 2026 and outstanding, by quarter of sale (8 figures).** H18
+  home: the channel review's dealer remittance control beside the channel's own price. Primary device (silent, a
+  reconstruction): each dealer remits a month's contracts on one ACH payment under one reference; the bank's returns
+  report names the originator by its account name in capitals, its own trace number, the payment's total and its
+  settlement date, never the bordereau reference, and about half of the returned payments are re-sent on a later
+  month's bordereau with the same lines. The golden rebuilds each dealer-month payment from its lines, matches each
+  return on the dealer (name to code through the directory), the settlement month and the payment's total, and keeps
+  the re-sent payment as received. Matched on the dealer and the amount alone, the re-sent payment is taken off too;
+  with a contract's second line dropped as a duplicate first (the battery's own key), the re-sent payment is lost and
+  the returned one taken off. Twin: dealer-months never returned, payments in the same amount in other months.
+  Hazards: three layouts (Brazos in cents with its own deal number; the independents by VIN and day-first sale date,
+  a VIN resold carrying two contracts), the remittance lag of one or two months. Stops: duplicates first (1,224,227
+  and 57,273 in 2025Q1), dealer and amount only (1,223,077 and 58,423), returns ignored (outstanding negative), VIN
+  alone (1,245,718 and 35,782), cents read as dollars; the golden 1,252,537 and 28,963; 1,322,803 and 4,174;
+  1,341,549 and 25,274; 1,276,743 and 41,758.
+
+| Ask | What the cracker does | Cracker |
+|---|---|---|
+| A | the first request received per contract (terms 5), a lienholder's payoff request joined on its VIN as of the date received, the refund formula executed | misses |
+| B | the three layouts read, cents to dollars, the independents on VIN and sale date, a contract remitted twice kept once, then the returned payments taken off | misses |
+
+Measured by: `generator/ceiling.py` on the cut pack.
+
+| Ask | Graded figures | Cracker keeps | Mirror keeps | Cracker |
+|---|---|---|---|---|
+| A cancellations and refunds by quarter | 9 | 0 | 0 | misses |
+| B dealer premium received and outstanding by quarter | 8 | 0 | 0 | misses |
+
+Over the 17 ask figures the cracker keeps none (it scores 45.0 with the call), the mirror none (12.0 off the call).
+
+Pair ceiling: 28.5.
+Mirror leakage: 0.0 per cent of ask weight.
+The construction layer is the deck's chart and the workbook's cost per mile by band, which the cracker has with the
+call and the mirror misses with it. Ask B's returned-payment organ differs from architecture 1's (bank returns there
+carried the payment's own reference on an indemnity payment; here the bank's keys never meet the bordereau and the
+payment has to be rebuilt from its lines and told from its re-sent copy by the settlement month).
+
+## Pre-ship check
+
+- The three rules re-read against the built pack: the decisive step is still the exposure base (rate manual 5 files the estimand and no clock; nothing names the odometer as the cover's clock), the mess is Layer 1 only (the 2024 crosswalk, three reading sources, line-grain claims with reversals and goodwill, three bordereau layouts), and the asks' devices sit in files the call never opens.
+- Call: renew with the maximum high-use surcharge, 75.0 per cent at the current price and 53.6 surcharged; the standing family 74.4 to 75.4 (75 and 55 at the nearest 5 on every member, 48 plus 18 cross-product cells); every route on the default path and below files renew at current rates, the nearest the per-mile reader who keeps every cover in force (58.2); the clean-truth analyst test files renew on every route; the world's own loss ratio 75.8.
+- Asks: cracker 0 of 17, mirror 0 of 17, pair ceiling 28.5 (`ceiling.py`); every ask golden equals the world truth (`checks.py`).
+- Inputs: 13 files in three formats (9 CSV, 4 PDF, 1 XLSX), the odometer readings at 612,712 rows, two distractors named in `metadata.json`, no dictionary or notes file; golden metadata clean.
+- Gates: checks 246, verify 27 of 27, two byte-identical builds (3019a830, goldens included), figures_check 50 of 50, precut 53 checks 0 FAIL, voice-check PASS (930 characters), leak.py REVIEW with every line ruled, two leak readers clean with Q6 analytical, judge pass 1 DETERMINISTIC and APPROVE (its two optional pins applied), guard heart WARN after the stage 3 axis redraw.
 
 ## Architecture 2 record (spent 2026-10-27)
 
@@ -204,6 +380,15 @@ read the arms per intake, nothing in the pack was left to find.
 further step there is a stratification of it (the triage tier, the office), the opponent's first group-by, or a
 transport of its average onto the intakes the 2027 teams reach, which is task177 v2's driver and needs that population
 filed. Architecture 2 finds what the two arms share that the counterfactual lacks: the opening call.
+
+## Stump-vocabulary sweep, ruled
+
+- `drive_plus_contract_terms.pdf` (odometer, contract, months, reading, repair, covered): the cover's dual limit, the
+  refund formula and the CarLink records clause; none names an exposure base or a cost per mile. Harmless.
+- `drive_plus_rate_manual_2026.pdf` (odometer, contract, claims, repair, loading, agreement): the price table by
+  odometer at sale and the channel review's estimand; it files what is forecast and never how. Harmless.
+- `fareline_channel_agreement_summary.pdf` (odometer, contract, mileage, loading, agreement): the weekly mileage feed
+  and the loading as the price charged. Harmless.
 
 ## Tried and rejected
 
@@ -296,3 +481,21 @@ filed. Architecture 2 finds what the two arms share that the counterfactual lack
   115,000, which drives every odometer band the rideshare cover reaches.
 - 2026-10-27, cost per mile rising as a power of the odometer from zero: the channel's own six months saw the rise and
   its trend landed; claims are flat to 70,000 miles and climb past it, as major components start to fail.
+- 2026-10-27, stage 3: ask B's re-sent payments matched to the bank's returns on the dealer and the amount alone: the
+  re-sent bordereau carries the same lines and total, so it was taken off as well; the golden matches on the settlement
+  month too, and the dealer-and-amount match is kept as a rival (`match_any_month`) that misses every figure.
+- 2026-10-27, stage 3: ask B kept as the returned-payment reconstruction although architecture 1's ask carried bank
+  returns: a replacement keyed on the independents' deal dates (VIN and nearest sale date) was screened and refused,
+  because noticing the unmatched lines and choosing the nearest sale date are one act (supplemental-stumping 1.0); the
+  organ differs from architecture 1's (there the return carried the payment's own reference).
+- 2026-10-27, stage 3: the full refund within 30 days read on a claim "paid": the claims file's paid dates trail the
+  repair order by up to three weeks, so "paid" and "made" could part on a contract cancelled in its first month; terms 5
+  now say no claim made by then (a repair order dated on or before the cancellation date).
+- 2026-10-27, stage 3: miles under cover for a car whose readings stop before its 60 months left unexplained: a reader
+  could run every cover on to its term at its own rate (58.2, renew at current rates); the terms' records clause now
+  states the CarLink reporter's closing reading and its removal on cancellation, a fact of the source, and the
+  in-force reading is a lower rung (L4), not a fork.
+- 2026-10-27, stage 3: the crosswalk unused, claims dropped while their exposure is kept (55.0, renew at current rates):
+  37.8 per cent of the claims carry a pre-2024 number, an unmatched join the hygiene battery flags, so it is a broken
+  join rather than a reading; the R2 assertion leaves the unmapped contracts out whole (78.2, the surcharge).
+

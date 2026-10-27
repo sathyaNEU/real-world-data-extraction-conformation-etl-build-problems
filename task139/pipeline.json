@@ -1,30 +1,30 @@
 {
  "task": "task139",
- "status": "DESIGN",
+ "status": "SHIPPED",
  "domain": "actuarial-science-insurance",
  "objective": "forecasting",
- "stage": 2,
- "stage_name": "design",
+ "stage": 5,
+ "stage_name": "ship",
  "updated": "2026-10-27",
- "stump": "A competent solver costs a 2027 rideshare contract by its months of cover: the channel's own claims cost per contract-month run over the months a rideshare driver takes to use the 75,000 covered miles, or the retail book's cost by contract age with the commercial loading or on a clock sped up by the mileage ratio, or the book's cost per mile at the odometer times its average claim, and forecasts a lifetime loss ratio between 39 and 56 per cent at the current price, so it renews the channel unchanged (a reader who keeps the cover for its full 60 months files about 110 per cent and lets it lapse); the step that lands it there is costing the cover by its months, when repair claims accrue per mile and both their frequency and their cost climb with the odometer past 70,000 miles, and a rideshare cover runs from 50,000 to 100,000 miles at sale to 75,000 miles more in under two years, past anything the channel's six months have reached: read per mile at each odometer from the retail book, which has driven every band, and stopped at each contract's mileage limit, the cover costs about 84 per cent of the price, so the channel renews only at the maximum high-use surcharge, where it costs about 60 per cent.",
+ "stump": "A competent solver costs a 2027 rideshare contract by its months of cover, the channel's own claims cost per contract-month run over the months a rideshare driver takes to use the 75,000 covered miles (or the retail book's cost by contract age with the loading, the book's pooled cost per mile, or its cost per mile at the odometer with every cover kept in force to its term), forecasts a lifetime loss ratio between 17 and 58 per cent and files renew the channel at current rates (Ends on); the step that lands it there is costing the cover by its months, when repair claims accrue per mile and both their frequency and their cost climb with the odometer past 70,000 miles, and a rideshare cover runs from 50,000 to 100,000 miles at sale through 75,000 miles more in under two years, past anything the channel's six months have reached: read per mile at each odometer from the retail book and stopped at each contract's limit, the cover costs about 75 per cent of the price, so the channel renews only with the maximum high-use surcharge, at about 55 per cent.",
  "architecture": 3,
  "loops": 0,
  "precut": {
-  "exit": null,
-  "date": ""
+  "exit": 0,
+  "date": "2026-10-27"
  },
  "leak": {
-  "leak_py": "",
-  "reader": ""
+  "leak_py": "REVIEW 2026-10-27 on the final rebuild (no LEAK; every REVIEW line ruled)",
+  "reader": "two isolated readers 2026-10-27: Q1 to Q4 none, Q6 analytical; the surcharge base pinned and two realism tells fixed"
  },
  "duplicate_check": {
-  "heart": "",
+  "heart": "WARN 2026-10-27 after the stage 3 axis redraw (forum, forcing event, generator order)",
   "nearest": "check WARN only 2026-10-27 on registration (strategy risk, two older first names, repeat.gate_g, repeat.question_form), nearest driver 0.06 (task170 v5, task161)"
  },
  "judge": {
-  "verdict": "",
-  "disposition": "",
-  "report": ""
+  "verdict": "DETERMINISTIC, pass 1 2026-10-27, every figure reproduced; Gate G forecasting, analytical_non_defect; Gate H pass",
+  "disposition": "APPROVE (two optional pins applied: the surcharge on the loaded price, dollar totals rounded once)",
+  "report": "task139/determinism_check_report.md"
  },
  "returned": [
   {
@@ -34,9 +34,9 @@
    "commit": ""
   }
  ],
- "resume": "stage 2 of architecture 3: build world.py on the paper world (retail mostly 15,000 to 55,000 miles at sale with a fifth at 60,000 to 115,000; rideshare from April 2026 at 50,000 to 100,000 and 44,000 miles a year; cost flat to 70,000 miles and climbing), measure the standing family on the clean truth, readability screen, fork table, ladder, closure, asks, prompt.txt, precut.py exit 0",
+ "resume": "",
  "approved": null,
- "delivered": null,
+ "delivered": "2026-10-27",
  "portal": null,
  "portal_id": "",
  "portal_status": "",
@@ -69,5 +69,6 @@
  "lineage_v2": {
   "stump": "A competent solver reads the pilot per assigned intake, values each unit's teams at usual handling's indemnity per intake less ERN's over the place-days an ERN intake held, and files two teams in healthcare strains, three in manufacturing strains, none in retail or construction strains and three in each other-injury unit with a credit of about 2,700,000 dollars; the step that lands it there is taking the usual-handling arm as a unit with no team, when every drawn intake had the opening call before its pair was split and a unit with no team has no calls: read against the intakes the screen never drew, the call keeps about a fifth of the strain intakes from ever paying indemnity and reaches every intake of a unit once one team works there, so each strain unit takes a team for its calls, manufacturing strains a second for its files, the other-injury units three each, and the credit is about 5,600,000 dollars.",
   "fate": "spent 2026-10-27 at stage 2, before any pack was cut: the decisive step rests on one protocol sentence (both arms had the opening call) in the world the portal already solved; re-rooted at the author's instruction"
- }
+ },
+ "zip": "3019a830 (sha256 prefix)"
 }

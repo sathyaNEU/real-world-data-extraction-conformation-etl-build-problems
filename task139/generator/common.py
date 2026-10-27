@@ -1,5 +1,13 @@
-"""Constants and helpers shared by the task139 generator: the world's calendar, the segments and their codes, file
-names, the people, one independent random stream per name, CSV writing and the rounding conventions."""
+"""task139 constants and helpers shared by every generator module.
+
+Copperline Vehicle Protection (fictional, Fort Worth, Texas) has sold Copperline Drive Plus vehicle service contracts
+through franchised and independent dealers in Texas and Oklahoma since 2019 and administers its own claims; Tarrant
+Mutual Casualty's contractual liability policy insures its obligations. Drive Plus covers a used car's powertrain and
+major systems for 60 months or 75,000 miles from the sale date and odometer, whichever comes first, with a 100 dollar
+deductible a repair visit. Since April 2026 Copperline has sold Drive Plus to Fareline rideshare drivers at the class
+price with a 20 per cent commercial-use loading; the agreement renews on 1 January 2027 and Copperline elects by
+1 December 2026 to renew at current rates, to renew with the rate manual's maximum high-use surcharge of 40 per cent,
+or to let the channel lapse. The records run to 30 September 2026."""
 from __future__ import annotations
 
 import csv
@@ -9,188 +17,103 @@ import io
 
 import numpy as np
 
-SEED = 139
+SEED = 1390327
+WORLD_SALT = 1                   # the keyed draws the built world was chosen on
 
-# ---- the calendar -------------------------------------------------------------------------------------------
-EXTRACT_START = dt.date(2021, 1, 1)
-EXTRACT_END = dt.date(2026, 9, 30)          # the claims system and the payments register pulled on 30 September
-PULL_DATE = dt.date(2026, 9, 30)
-PILOT_START = dt.date(2023, 3, 1)           # triage dates of the pilot, both inclusive
-PILOT_END = dt.date(2025, 2, 28)
-UPGRADE = dt.date(2025, 6, 2)               # first day on the new claims system
-EDI_FIX = dt.date(2025, 9, 15)              # the new system's duplicate check on first reports switched back on
-PARALLEL = (dt.date(2025, 5, 29), dt.date(2025, 6, 1))   # first reports keyed in both systems
-VALUATION = dt.date(2026, 6, 30)            # the review's valuation date
-REVIEW_DATE = dt.date(2026, 8, 14)
-CHARTER_DRAFT = dt.date(2026, 9, 18)
-CHARTER_SIGNED = dt.date(2026, 10, 19)
-MEMO_DATE = dt.date(2026, 10, 28)
-PLAN_DATE = dt.date(2026, 10, 2)
-GO_LIVE = dt.date(2027, 1, 4)
-PAY_START = dt.date(2026, 1, 1)
-PAY_END = dt.date(2026, 9, 30)
+# the calendar
+RETAIL_START = dt.date(2019, 1, 2)
+MIGRATION = dt.date(2024, 3, 4)  # first day on the new administration system (contract numbers re-keyed)
+RS_START = dt.date(2026, 4, 1)   # the Fareline channel's first sale
+VALUATION = dt.date(2026, 9, 30)
+REQUEST = dt.date(2026, 10, 19)
 
-TEAMS = 17
-PLACES = 20
-MAX_TEAMS = 3
-YEAR_DAYS = 365                              # 2027
-TEAM_PLACE_DAYS = PLACES * YEAR_DAYS         # 7,300
+# the cover
+TERM_MONTHS = 60
+TERM_DAYS = 1826
+LIMIT = 75000
+DEDUCTIBLE = 100.0
+LOADING = 0.20
+SURCHARGE = 0.40
+STANDARD = 70.0                  # per cent, the channel review standard
+FEE = 50.0                       # the cancellation fee
+FREE_LOOK = 30                   # days
 
-# ---- segments -----------------------------------------------------------------------------------------------
-# new code (from the 2 June 2025 upgrade), legacy code, name, industry key, injury class
-SEGMENTS = [
-    ("HC-SS", "H1", "Healthcare and social assistance, strains and sprains", "HC", "SS"),
-    ("HC-OT", "H2", "Healthcare and social assistance, other injuries", "HC", "OT"),
-    ("RW-SS", "R1", "Retail and warehousing, strains and sprains", "RW", "SS"),
-    ("RW-OT", "R2", "Retail and warehousing, other injuries", "RW", "OT"),
-    ("MF-SS", "M1", "Manufacturing, strains and sprains", "MF", "SS"),
-    ("MF-OT", "M2", "Manufacturing, other injuries", "MF", "OT"),
-    ("CN-SS", "C1", "Construction, strains and sprains", "CN", "SS"),
-    ("CN-OT", "C2", "Construction, other injuries", "CN", "OT"),
-]
-OTHER_SEGMENTS = [
-    ("TR-SS", "T1", "Transportation, strains and sprains", "TR", "SS"),
-    ("TR-OT", "T2", "Transportation, other injuries", "TR", "OT"),
-    ("GN-AL", "G0", "All other industries", "GN", "AL"),
-]
-PROG = [s[0] for s in SEGMENTS]
-ALL_SEGMENTS = SEGMENTS + OTHER_SEGMENTS
-NEW_OF_LEGACY = {s[1]: s[0] for s in ALL_SEGMENTS}
-LEGACY_OF_NEW = {s[0]: s[1] for s in ALL_SEGMENTS}
-NAME = {s[0]: s[2] for s in ALL_SEGMENTS}
-SHORT = {"HC-SS": "Healthcare strains", "HC-OT": "Healthcare other", "RW-SS": "Retail strains",
-         "RW-OT": "Retail other", "MF-SS": "Manufacturing strains", "MF-OT": "Manufacturing other",
-         "CN-SS": "Construction strains", "CN-OT": "Construction other"}
-# claim units: one per segment; the unit names the claims department uses
-UNIT = {"HC-SS": "Healthcare 1", "HC-OT": "Healthcare 2", "RW-SS": "Retail and Distribution 1",
-        "RW-OT": "Retail and Distribution 2", "MF-SS": "Manufacturing 1", "MF-OT": "Manufacturing 2",
-        "CN-SS": "Construction 1", "CN-OT": "Construction 2", "TR-SS": "Transportation", "TR-OT": "Transportation",
-        "GN-AL": "General"}
+CLASSES = ("A", "B", "C")
+CLASS_PRICE = {"A": 1180.0, "B": 1390.0, "C": 1645.0}      # the rate manual's base price, odometer at sale under 50,000
+ODO_BANDS = ((0, 50000, 1.00), (50000, 100000, 3.08), (100000, 125001, 4.45))   # the odometer-at-sale relativities
 
-# NCCI classification codes by industry, with weights (Missouri manual)
-CLASS_CODES = {
-    "HC": [("8833", 0.30), ("8829", 0.26), ("8835", 0.16), ("9043", 0.12), ("8864", 0.10), ("8832", 0.06)],
-    "RW": [("8017", 0.22), ("8018", 0.18), ("8006", 0.17), ("8292", 0.19), ("8291", 0.10), ("8044", 0.14)],
-    "MF": [("3632", 0.16), ("2003", 0.12), ("4299", 0.10), ("3076", 0.17), ("3179", 0.13), ("2070", 0.09),
-           ("4130", 0.11), ("3830", 0.12)],
-    "CN": [("5403", 0.20), ("5183", 0.14), ("5190", 0.15), ("5645", 0.13), ("5221", 0.12), ("6217", 0.10),
-           ("5474", 0.08), ("5022", 0.08)],
-    "TR": [("7219", 0.48), ("7380", 0.30), ("7228", 0.14), ("7370", 0.08)],
-    "GN": [("8810", 0.26), ("9015", 0.18), ("8742", 0.15), ("9101", 0.12), ("9082", 0.17), ("8380", 0.12)],
-}
+# the world's claims process (per mile at the odometer)
+P = dict(a=0.012, hk=0.5, k=2.0, knee=70000.0, sk=0.6, sev=350.0, tcomp=0.0, ret_rate=12500.0, rs_rate=44000.0,
+         n_ret=14000, n_rs=6000, o_ret=(15000, 55000), ret_hi_share=0.2, ret_hi=(60000, 115000), o_rs=(50000, 100000),
+         sev_sd=0.7, cancel_rate=0.09, recontract=0.25, financed=0.55)
 
-# ---- files ----------------------------------------------------------------------------------------------------
-REGISTER = "ern_pilot_assignments_2023-25.xlsx"
-NURSE_LOG = "ern_case_log_2023-25.csv"
-REVIEW_BOOK = "kpa_ern_indemnity_verification_2026-06-30.xlsx"
-REVIEW_PDF = "kpa_ern_pilot_review_2026-08.pdf"
-CHARTER = "ern_programme_charter_2027_signed.pdf"
-CHARTER_DRAFT_DOC = "ern_programme_charter_2027_draft_v3.docx"
-PICK_MEMO = "ay2027_indemnity_pick_ern_credit.pdf"
-EXTRACT = "claims_extract_2021-01_to_2026-09.csv"
-CROSSWALK = "segment_code_crosswalk_2025.csv"
-PAYMENTS = "indemnity_payments_2026-01_to_09.csv"
-ACH_RETURNS = "ach_returns_2026-01_to_09.csv"
-MERGES = "claim_merges_2025.csv"
-DICTIONARY = "claims_data_dictionary.xlsx"
-MANIFEST = "export_manifest.csv"
-SURVEY = "ern_pilot_worker_survey_2023-25.csv"
-STAFFING = "medical_management_staffing_plan_2027.xlsx"
-DISTRACTORS = [CHARTER_DRAFT_DOC, SURVEY, STAFFING]
+# file names (the pack)
+REGISTER = "drive_plus_contract_register.csv"
+CROSSWALK = "contract_number_crosswalk_2024.csv"
+CLAIMS = "claim_lines_2019-01_to_2026-09.csv"
+READINGS = "odometer_readings_2019-01_to_2026-09.csv"
+CANCELS = "cancellation_requests_2025-2026.csv"
+BORDEREAUX = "dealer_remittance_bordereaux_2025.xlsx"
+RETURNS = "ach_returns_report_2025-2026.csv"
+FACILITIES = "repair_facility_directory.csv"
+DEALERS = "dealer_directory.csv"
+RATE_MANUAL = "drive_plus_rate_manual_2026.pdf"
+TERMS = "drive_plus_contract_terms.pdf"
+AGREEMENT = "fareline_channel_agreement_summary.pdf"
+CLIP = "tarrant_mutual_clip_summary.pdf"
 
-GOLD_BOOK = "ern_placement_ay2027.xlsx"
-GOLD_NOTE = "ern_placement_note_ay2027.pdf"
+# goldens
+DECK = "fareline_channel_renewal_2027.pptx"
+BOOK = "drive_plus_channel_review_2027.xlsx"
 
-# ---- people (drawn with guard.py names --geo "United States" --seed 139; on the card) --------------------------
-PEOPLE = {
-    "director": "Julie Winters",        # director of medical case management, the requester (in no file as author of a figure)
-    "kpa": "Joanna Sullivan",           # consulting actuary, Kellerman Pryce Actuarial, signs the review
-    "pricing": "Kathleen Reilly",       # chief pricing actuary, owns the AY2027 indemnity pick
-    "clinical": "Joel Kelly",           # ERN clinical lead
-    "claimsops": "Kristen Hansen",      # claims operations, the triage screen and the assignment register
-    "data": "Juan Castillo",            # data engineering, the claims-system upgrade
-    "ceo": "Gregory Friedman",          # president and chief executive officer, signs the charter
-}
-COMPANY = "Haverline Casualty Company"
-KPA = "Kellerman Pryce Actuarial"
-
-# ---- US federal holidays (the triage screen runs on working days) ---------------------------------------------
-_HOL = {
-    2021: ["01-01", "01-18", "02-15", "05-31", "06-18", "07-05", "09-06", "10-11", "11-11", "11-25", "12-24", "12-31"],
-    2022: ["01-17", "02-21", "05-30", "06-20", "07-04", "09-05", "10-10", "11-11", "11-24", "12-26"],
-    2023: ["01-02", "01-16", "02-20", "05-29", "06-19", "07-04", "09-04", "10-09", "11-10", "11-23", "12-25"],
-    2024: ["01-01", "01-15", "02-19", "05-27", "06-19", "07-04", "09-02", "10-14", "11-11", "11-28", "12-25"],
-    2025: ["01-01", "01-20", "02-17", "05-26", "06-19", "07-04", "09-01", "10-13", "11-11", "11-27", "12-25"],
-    2026: ["01-01", "01-19", "02-16", "05-25", "06-19", "07-03", "09-07", "10-12", "11-11", "11-26", "12-25"],
-}
-HOLIDAYS = {dt.date(y, int(md[:2]), int(md[3:])) for y, mds in _HOL.items() for md in mds}
-
-
-def is_working(d):
-    return d.weekday() < 5 and d not in HOLIDAYS
-
-
-def next_working(d):
-    """The triage screen sorts each working morning the intakes reported since the last run."""
-    d = d + dt.timedelta(days=1)
-    while not is_working(d):
-        d += dt.timedelta(days=1)
-    return d
-
-
-def add_working(d, n):
-    for _ in range(n):
-        d = next_working(d)
-    return d
+BANKS = ("Brazos Federal Credit Union", "Trinity Valley Bank", "Red River Auto Finance", "Lone Star Lending Group",
+         "Cross Timbers Credit Union", "Panhandle Motor Credit")
 
 
 def rng(*keys):
-    """An independent numpy stream per name: blake2b of the seed and the keys (hash() is salted per process)."""
-    h = hashlib.blake2b(("%d|" % SEED + "|".join(str(k) for k in keys)).encode(), digest_size=8).digest()
-    return np.random.default_rng(int.from_bytes(h, "big"))
+    h = hashlib.sha256(("%d|%d|" % (SEED, WORLD_SALT) + "|".join(str(k) for k in keys)).encode()).digest()
+    return np.random.default_rng(int.from_bytes(h[:8], "little"))
 
 
-def daterange(a, b):
-    d = a
-    while d <= b:
-        yield d
-        d += dt.timedelta(days=1)
+def haz(o):
+    """expected claims per mile at odometer o"""
+    return P['a'] / 1000.0 * (1 + P['hk'] * (np.maximum(o - P['knee'], 0) / 20000.0) ** P['k'])
+
+
+def sev(o):
+    """expected payment per claim (net of the deductible) at odometer o"""
+    return P['sev'] * (1 + P['sk'] * np.maximum(o - P['knee'], 0) / 20000.0)
+
+
+def base_price(cls, o0):
+    rel = next(f for lo, hi, f in ODO_BANDS if lo <= o0 < hi)
+    return round(CLASS_PRICE[cls] * rel, 0)
 
 
 def write_csv(path, cols, rows, crlf=False):
     buf = io.StringIO()
     w = csv.writer(buf, lineterminator="\r\n" if crlf else "\n")
     w.writerow(cols)
-    n = 0
     for r in rows:
-        w.writerow(["" if r.get(c) is None else r.get(c) for c in cols] if isinstance(r, dict) else r)
-        n += 1
-    with open(path, "w", encoding="utf-8", newline="") as fh:
-        fh.write(buf.getvalue())
-    return n
+        w.writerow([("" if r.get(c) is None else r.get(c)) for c in cols])
+    with open(path, "w", encoding="utf-8", newline="") as f:
+        f.write(buf.getvalue())
+    return len(rows)
 
 
-def round_to(x, step):
-    """Round half away from zero to a multiple of step (the deliverables' convention)."""
-    import math
-    q = x / step
-    return int(math.floor(q + 0.5)) * step if q >= 0 else -int(math.floor(-q + 0.5)) * step
+def add_months(d, m):
+    y, mo = d.year + (d.month - 1 + m) // 12, (d.month - 1 + m) % 12 + 1
+    last = (dt.date(y + (mo == 12), mo % 12 + 1, 1) - dt.timedelta(days=1)).day
+    return dt.date(y, mo, min(d.day, last))
 
 
-def edge_distance(x, step):
-    """How far x sits from the nearest rounding edge of a step-wide bin (the edges at odd multiples of step/2)."""
-    import math
-    r = (x / step) - math.floor(x / step)
-    return abs(r - 0.5) * step
+def quarter(d):
+    return "%dQ%d" % (d.year, (d.month - 1) // 3 + 1)
 
 
-def cents(x):
-    return float("%.2f" % (x + 1e-9))
-
-
-def check_digit(s):
-    """Kellerman Pryce's control digit on a claim number's digits: weights 2,3,4,5,6,7 from the right, mod 11, 10 as 0."""
-    digits = [int(ch) for ch in s if ch.isdigit()]
-    tot = sum(dg * (2 + (k % 6)) for k, dg in enumerate(reversed(digits)))
-    c = (11 - tot % 11) % 11
-    return str(0 if c == 10 else c)
+def election(lr_current):
+    if lr_current <= STANDARD:
+        return "renew at current rates"
+    if lr_current / (1 + SURCHARGE) <= STANDARD:
+        return "renew with the maximum high-use surcharge"
+    return "lapse"

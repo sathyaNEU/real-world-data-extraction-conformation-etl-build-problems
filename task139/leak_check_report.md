@@ -1,23 +1,19 @@
 # leak check, task139
 
-**Verdict: REVIEW.** 16 files read, 24 golden figures and 1 candidate names taken from submission.md, 25 stump terms taken from the design note.
+**Verdict: REVIEW.** 13 files read, 22 golden figures and 0 candidate names taken from submission.md, 25 stump terms taken from the design note.
 
 LEAK stops the ship. REVIEW is a reader's call and the /leak-check command's solver's-eye pass reads every REVIEW line. INFO is a sweep that ran and found nothing or was skipped.
 
-Stump terms swept: intake, review, verified, charter, credit, extract, register, randomised, place-day, assigned, place-days, sample, asserted, places, default, dictionary, strains, comparison, per-claim, golden, severity, decisive, per-intake, population, nothing
+Stump terms swept: odometer, contract, months, claims, exposure, reading, mileage, decisive, contract-month, repair, frequency, family, readings, nothing, loading, intake, forecasting, driven, covered, population, golden, window, readable, indemnity, verified
 
 ## 3 answer figures in the pack (REVIEW 2)
-- **REVIEW** `ay2027_indemnity_pick_ern_credit.pdf`: candidate 'Early Return Nursing' sits beside decision vocabulary: ...rector, Medical Case Management Date: 28 October 2026 Subject: AY2027 indemnity pick: the Early Return Nursing credit 1. The AY2027 plan carries an indemnity pick for each segment. For the eight segme...
-- **REVIEW** `ern_programme_charter_2027_signed.pdf`: carries 23 of 27 distinctive words of the committed call: 'Haverline should place the seventeen Early Return Nursing teams three each in healthcare strains and sprains (HC-SS), ma'
+- **REVIEW** `drive_plus_rate_manual_2026.pdf`: carries 6 of 8 distinctive words of the committed call: 'Copperline should renew the Fareline channel on 1 January 2027 with the maximum high-use surcharge.'
+- **REVIEW** `fareline_channel_agreement_summary.pdf`: carries 7 of 8 distinctive words of the committed call: 'Copperline should renew the Fareline channel on 1 January 2027 with the maximum high-use surcharge.'
 
-## 4 design-note vocabulary (REVIEW 4)
-- **REVIEW** `ay2027_indemnity_pick_ern_credit.pdf`: 5 of 25 stump-paragraph terms appear (intake, verified, credit, places, severity); read whether the document names the move
-- **REVIEW** `ern_programme_charter_2027_draft_v3.docx`: 3 of 25 stump-paragraph terms appear (intake, review, charter); read whether the document names the move
-- **REVIEW** `ern_programme_charter_2027_signed.pdf`: 6 of 25 stump-paragraph terms appear (intake, charter, place-day, place-days, places, strains); read whether the document names the move
-- **REVIEW** `kpa_ern_pilot_review_2026-08.pdf`: 6 of 25 stump-paragraph terms appear (intake, review, verified, register, assigned, sample); read whether the document names the move
-
-## 9 dates after the setting (REVIEW 1)
-- **REVIEW** `medical_management_staffing_plan_2027.xlsx`: 27 ISO dates after 2026-11-09, e.g. 2027-01-04
+## 4 design-note vocabulary (REVIEW 3)
+- **REVIEW** `drive_plus_contract_terms.pdf`: 6 of 25 stump-paragraph terms appear (odometer, contract, months, reading, repair, covered); read whether the document names the move
+- **REVIEW** `drive_plus_rate_manual_2026.pdf`: 7 of 25 stump-paragraph terms appear (odometer, contract, claims, repair, loading, driven); read whether the document names the move
+- **REVIEW** `fareline_channel_agreement_summary.pdf`: 4 of 25 stump-paragraph terms appear (odometer, contract, mileage, loading); read whether the document names the move
 
 ## 10 container metadata (INFO 1)
 - **INFO** `-`: audit reported no writer signature (1 lines)
@@ -34,14 +30,32 @@ Stump terms swept: intake, review, verified, charter, credit, extract, register,
 
 ## 8 column names (clean)
 
+## 9 dates after the setting (clean)
+
 ## 11 prompt gate (clean)
 
 ## Solver's-eye read
 
-Q1 to Q4: none (memo paragraph 2 states the estimand, the credit as what the 2027 team intakes will not pay; charter 3.3 states the fill rule; no per-segment saving, team count, 2025 intake count or 2026 paid figure appears; the crosswalk, dictionary and manifest are ordinary; "three each" is the charter's cap; the draft's note names the open placement basis, no answer). Q5: memo 3 to 5 and charter 5.1 to 5.3 fix the run rate (7,300 place-days a team), the verified ultimate measure and the per-segment crediting; no sentence fixes the estimator. Q6: analytical; the reader itself described the rigorous route (reweight the 100-per-stratum sample to the 4,339-claim frame, put the no-indemnity pilot intakes back as zeros, difference per intake) and named the easy wrong routes (unweighted averages, frame claims only, the raw per-claim difference): the step is findable by a careful reader, so stump power rests on the default per-claim reading being natural. REVIEW lines: all harmless (the KPA review's sampling disclosure is context and does not say to reweight; future staffing start dates). Realism: uniform KPA reference and control-digit patterns, formulaic review notes, one stilted memo header. Readings: segments with no teams shown as zero; run rate (memo 3); 2025 intakes by report date through the crosswalk; 2026 indemnity paid with VOID cheques and ACH returns netted or not (an ask basis to confirm closed); payments' segment through claim_no.
+Two isolated readers (general-purpose, sonnet, medium), each holding only `prompt.txt` and a fresh unzip of
+`target.zip`, on 2026-10-27: the first on f287a7bd, the second on the final pack after the realism pass and the prompt's
+rounding pin.
 
-Read on the pack before the stage 4 FIX_NOW pass (judge, supplementary 3) and the Ask 1 redraw; the documents those passes changed or added (the data dictionary, the pick memo, the Kellerman Pryce workbook, the claim merge file, the export manifest) go to a targeted re-read.
+1. Decisive step announced: none (both). The nearest sentence both quote is rate manual 5, the estimand and the 70 per
+   cent rule; terms 6 and agreement 3 describe the odometer sources "with no hint about the pitfall".
+2. A file ranking the three settings: none (both).
+3. A file that exists only to help: none (both).
+4. A figure or name reading as the answer: none (both); 20, 40 and 70 per cent are rule inputs.
+5. Sentences fixing the computation: rate manual 3, 4 and 5, terms 2 and 5. The first reader raised whether the 40 per
+   cent surcharge applies to the loaded price; rate manual 3 now says it does (the judge measured the other reading at
+   56.3, also 55 and the same election). Both leave the forecast method open and say the data separate the candidates.
+6. What decides: an analytical choice (both): projecting the lifetime cost of a young, censored, high-mileage cohort from
+   other contracts' claims against miles; not a field reading and not a stated rule.
 
-## Solver's-eye read (targeted, after the FIX_NOW pass and the Ask 1 device)
+Sweep items: the rate manual and the agreement summary carry the call's words because they file the three-way election
+and its rule; harmless (both readers).
 
-On the dictionary, the pick memo, the KPA workbook, the manifest and claim_merges_2025.csv. Q1 to Q4: none (memo 2 and 5 name the estimand; the KPA notes that verification was blind to group and that the effect was not estimated; no per-segment saving, placement, intake or paid figure appears; the merge file reads as realistic system output). Q5: memo 3 (7,300 place-days a team) and memo 4 (the verified ultimate basis); the estimator not filed. Q6: analytical (the per-intake difference with the sample expanded and zeros counted, under the fill rule and the cap); the asks' semantics sit in Layer 1. Realism: the dictionary's parallel-run double-listing rule and the converted-claims flag note read as briefing (filed at the judge's request to make the ask literal); the memo's "will not pay because the teams took them" is precise (the estimand). Readings: merged-away claims as separate intakes (the Ask 1 device, resolvable from the merge file); line sums against payments (dictionary amount line); claimant and attorney payments; the total rounded once against summed rounded team savings; the 2027 intake forecast for the fill rule.
+Realism, fixed in the generator: dealer states drawn apart from their city (now taken from the city), VINs with no valid
+pattern (now well-formed with a check digit, from the same random draws). Left as true of the business: 6,000 Fareline
+contracts (the round count stays; changing it moves the judged world), three class prices on the channel (a rate table),
+the register's channel column carrying the selling dealer's code, regular CarLink month-end reports (a telematics feed),
+sequential contract and claim numbers.

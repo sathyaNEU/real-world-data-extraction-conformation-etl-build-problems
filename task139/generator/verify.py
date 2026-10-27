@@ -1,152 +1,197 @@
-"""The independent verifier: reads only the bundle (target/ and golden/), on its own code path (the csv module and
-openpyxl, no pandas, nothing from calc.py or the world), and recomputes the placement, every team saving, the credit,
-the default path, and both asks; then checks them against the golden workbook."""
-from __future__ import annotations
+"""An independent recomputation of every graded figure from target/ alone, written apart from golden.py and asks.py
+(pandas, its own joins and its own refund and remittance logic), compared with generator/figures.json.
 
-import csv
+    python3 task139/generator/verify.py
+"""
 import datetime as dt
-import math
+import json
 import os
-import re
 import sys
-from collections import defaultdict
 
-import openpyxl
+import numpy as np
+import pandas as pd
 
-SEGS = ["HC-SS", "HC-OT", "RW-SS", "RW-OT", "MF-SS", "MF-OT", "CN-SS", "CN-OT"]
-
-
-def canon(ref):
-    t = re.sub(r"[\s-]", "", ref.strip().upper())
-    m = re.fullmatch(r"([SK])(\d\d)(\d+)", t)
-    return "%s%s-%06d" % (m.group(1), m.group(2), int(m.group(3)))
+HERE = os.path.dirname(os.path.abspath(__file__))
+T = os.path.join(os.path.dirname(HERE), "target")
+VAL = pd.Timestamp("2026-09-30")
+RESULTS = []
 
 
-def rnd(x, step):
-    q = x / step
-    return int(math.floor(q + 0.5)) * step
+def check(name, mine, theirs, tol=0.5):
+    good = (mine == theirs) if isinstance(theirs, str) else abs(float(mine) - float(theirs)) <= tol
+    RESULTS.append(good)
+    print("%-4s %-58s %s %s" % ("OK" if good else "DIFF", name, mine, "" if good else "(figures.json %s)" % theirs))
 
 
-def read_csv(path):
-    with open(path, newline="", encoding="utf-8") as fh:
-        return list(csv.DictReader(fh))
+def months_later(ts, m):
+    y, mo = ts.year + (ts.month - 1 + m) // 12, (ts.month - 1 + m) % 12 + 1
+    last = pd.Timestamp(y, mo, 1).days_in_month
+    return pd.Timestamp(y, mo, min(ts.day, last))
 
 
-def main(target, golden):
-    f = lambda n: os.path.join(target, n)
-    names = os.listdir(target)
-    pick = lambda pat: [n for n in names if re.search(pat, n)][0]
-    cross = {r["legacy_code"]: r["new_code"] for r in read_csv(f(pick(r"crosswalk")))}
-    wb = openpyxl.load_workbook(f(pick(r"pilot_assignments")), read_only=True, data_only=True)
-    reg = {}
-    started = False
-    for r in wb["Pilot intakes"].iter_rows(values_only=True):
-        if r and r[0] == "Pilot ref":
-            started = True
-            continue
-        if started and r and r[0]:
-            reg[canon(r[1])] = dict(seg=cross[r[3]], arm=r[6], office=r[2])
-    ext = read_csv(f(pick(r"claims_extract")))
-    ctype = {r["legacy_claim_no"]: r["claim_type"] for r in ext if r["legacy_claim_no"]}
-    wb = openpyxl.load_workbook(f(pick(r"verification")), read_only=True, data_only=True)
-    sev = defaultdict(list)
-    for seg in SEGS:
-        on = False
-        for r in wb[seg].iter_rows(values_only=True):
-            if r and r[0] == "KPA ref":
-                on = True
+def main():
+    fj = json.load(open(os.path.join(HERE, "figures.json")))
+    reg = pd.read_csv(os.path.join(T, "drive_plus_contract_register.csv"), dtype=str).fillna("")
+    reg["sale"] = pd.to_datetime(reg["sale_date"])
+    reg["o0"] = reg["odometer_at_sale"].astype(int)
+    reg["price"] = reg["contract_price"].astype(float)
+    xw = pd.read_csv(os.path.join(T, "contract_number_crosswalk_2024.csv"), dtype=str)
+    old2new = dict(zip(xw.old_contract_number, xw.new_contract_number))
+    vin2fl = dict(zip(reg.loc[reg.channel == "FARELINE", "vin"], reg.loc[reg.channel == "FARELINE", "contract_number"]))
+
+    def resolve(s):
+        return s.map(lambda x: old2new.get(x) if x.startswith("DP-") else (x if x.startswith("CV") else vin2fl.get(x)))
+
+    cl = pd.read_csv(os.path.join(T, "claim_lines_2019-01_to_2026-09.csv"), dtype=str)
+    cl["amt"] = cl.amount.astype(float)
+    cl = cl[cl.line_type != "GOODWILL"]
+    cl["k"] = resolve(cl.contract_number)
+    claims = cl.groupby("claim_number").agg(k=("k", "first"), odo=("repair_odometer", "first"), net=("amt", "sum"))
+    claims["odo"] = claims.odo.astype(int)
+    rd = pd.read_csv(os.path.join(T, "odometer_readings_2019-01_to_2026-09.csv"), dtype=str)
+    rd["k"] = resolve(rd.reference)
+    rd = rd.dropna(subset=["k"])
+    rd["d"] = pd.to_datetime(rd.reading_date)
+    rd["o"] = rd.odometer.astype(int)
+    rd = rd.drop_duplicates(["k", "d", "o"]).sort_values(["k", "d", "o"])
+    by_k = {k: g for k, g in rd.groupby("k")}
+
+    # miles under cover by 10,000-mile odometer band
+    W = 10000
+    nb = 21
+    miles = np.zeros(nb)
+    for r in reg.itertuples():
+        end = min(months_later(r.sale, 60), VAL)
+        lim = r.o0 + 75000
+        g = by_k.get(r.contract_number)
+        xs = [r.o0]
+        if g is not None:
+            gg = g[(g.d >= r.sale) & (g.d <= end)]
+            xs += list(gg.o)
+        xs = np.minimum(np.array(xs, float), lim)
+        for a, b in zip(xs[:-1], xs[1:]):
+            if b <= a:
                 continue
-            if not on or not r or not r[0]:
-                continue
-            if str(r[0]).startswith("Sheet total"):
-                break
-            leg = canon(str(r[1]).rsplit("-", 1)[0])
-            sev[(seg, reg[leg]["arm"])].append(float(r[3]) + float(r[4]) + float(r[5]))
-    assert all(len(v) == 100 for v in sev.values()) and len(sev) == 16, {k: len(v) for k, v in sev.items()}
-    pdays = defaultdict(int)
-    for r in read_csv(f(pick(r"case_log"))):
-        o = dt.datetime.strptime(r["opened"], "%m/%d/%Y").date()
-        c = dt.datetime.strptime(r["closed"], "%m/%d/%Y").date()
-        pdays[canon(r["claim_ref"])] += (c - o).days + 1
-    stat = {}
-    for seg in SEGS:
-        x = {}
-        for arm in ("ERN", "Usual handling"):
-            ids = [k for k, v in reg.items() if v["seg"] == seg and v["arm"] == arm]
-            p = sum(1 for k in ids if ctype[k] == "IND") / len(ids)
-            m = sum(sev[(seg, arm)]) / len(sev[(seg, arm)])
-            x[arm] = (ids, p, m)
-        e_ids = x["ERN"][0]
-        L_all = sum(pdays[k] for k in e_ids) / len(e_ids)
-        e_ind = [k for k in e_ids if ctype[k] == "IND"]
-        L_cl = sum(pdays[k] for k in e_ind) / len(e_ind)
-        delta = x["Usual handling"][1] * x["Usual handling"][2] - x["ERN"][1] * x["ERN"][2]
-        d = x["Usual handling"][2] - x["ERN"][2]
-        stat[seg] = dict(V=7300 * delta / L_all, Vd=7300 * d / L_cl, L_all=L_all, L_cl=L_cl)
-    vol = defaultdict(int)
-    for r in ext:
-        if "2025-10-01" <= r["report_date"] <= "2026-09-30" and r["time_off_at_report"] == "Y" and r["segment"] in SEGS:
-            assert not r["legacy_claim_no"]
-            vol[r["segment"]] += 1
+            for j in range(int(a // W), min(int(np.ceil(b / W)), nb)):
+                lo, hi = j * W, (j + 1) * W
+                miles[j] += max(0.0, min(hi, b) - max(lo, a))
+    cost = np.zeros(nb)
+    for o, n in zip(claims.odo, claims.net):
+        cost[min(o // W, nb - 1)] += n
+    cpm = np.divide(cost, miles, out=np.zeros(nb), where=miles > 0)
+    check("cost per 1,000 miles under 70,000 (USD)", round(cost[:7].sum() / miles[:7].sum() * 1000, 1),
+          fj["cpm_per_1000.under_70000_usd"], 0.05)
 
-    def place(key, Lkey):
-        teams, left = {}, 17
-        for s in sorted(SEGS, key=lambda s: (-stat[s][key], s)):
-            cap = min(3, int(math.floor(vol[s] * stat[s][Lkey] / 7300 + 1e-12)))
-            teams[s] = min(3, cap, left)
-            left -= teams[s]
-        return teams, sum(teams[s] * stat[s][key] for s in SEGS)
-    teams, credit = place("V", "L_all")
-    dteams, dcredit = place("Vd", "L_cl")
-    assert rnd(credit, 100000) == 4100000, credit
-    assert rnd(dcredit, 100000) == 2000000 and dteams["HC-SS"] == 0 and dteams["RW-SS"] == 0, (dteams, dcredit)
-    # ask 1: intakes reported in 2025, the converted rows read from their dates, the parallel-run copies once, a claim
-    # merged into another claim counted with that claim
-    key = lambda r: (r["office"], r["segment"], r["class_code"], r["injury_date"], r["report_date"], r["disability_began"])
-    natives = set(key(r) for r in ext if not r["legacy_claim_no"])
-    merged = {r["claim_no"]: r["merged_into"] for r in read_csv(f(pick(r"claim_merges")))}
-    on_file = {r["claim_no"] for r in ext}
-    assert all(m in on_file for m in merged.values()), "a merge into a claim not on the extract"
-    a1 = defaultdict(int)
-    for r in ext:
-        if r["segment"] not in SEGS or not ("2025-01-01" <= r["report_date"] <= "2025-12-31"):
+    # each 2026 Fareline contract: odometer at sale, annual mileage from its feed, cover to 75,000 miles or 60 months
+    fl = reg[reg.channel == "FARELINE"]
+    lifes, prices, rates, o0s = [], [], [], []
+    for r in fl.itertuples():
+        g = by_k.get(r.contract_number)
+        if g is None:
             continue
-        if r["claim_no"] in merged:
+        g = g[g.d > r.sale]
+        if g.empty:
             continue
-        if r["legacy_claim_no"]:
-            took = r["disability_began"] != "" and r["disability_began"] <= r["report_date"]
-            if "2025-05-29" <= r["report_date"] <= "2025-06-01" and key(r) in natives:
-                continue
+        last = g.iloc[-1]
+        rate = (last.o - r.o0) / (last.d - r.sale).days * 365.25
+        top = r.o0 + min(75000, rate * 5)
+        life = 0.0
+        for j in range(nb):
+            seg = max(0.0, min((j + 1) * W, top) - max(j * W, r.o0))
+            life += seg * cpm[j]
+        lifes.append(life)
+        prices.append(r.price)
+        rates.append(rate)
+        o0s.append(r.o0)
+    lr = 100 * np.mean(lifes) / np.mean(prices)
+    r5 = lambda x: int(5 * round(x / 5.0))
+    check("2026 Fareline contracts with a feed reading", len(lifes), fj["fareline.contracts_2026"], 0)
+    check("lifetime loss ratio at current price, nearest 5", r5(lr), fj["lr.current_price_pct_nearest_5"], 0)
+    check("lifetime loss ratio surcharged, nearest 5", r5(lr / 1.4), fj["lr.surcharged_price_pct_nearest_5"], 0)
+    check("lifetime loss ratio at current price (one decimal)", round(lr, 1), fj["lr.current_price_pct"], 0.05)
+    check("claims cost over the cover, nearest 100", int(round(np.mean(lifes), -2)), fj["lifetime.claims_cost_usd_nearest_100"], 0)
+    check("average price, nearest 10", int(round(np.mean(prices), -1)), fj["lifetime.average_price_usd_nearest_10"], 0)
+    check("annual mileage, nearest 1,000", int(round(np.mean(rates), -3)), fj["fareline.annual_miles_nearest_1000"], 0)
+    check("odometer at sale, nearest 1,000", int(round(np.mean(o0s), -3)), fj["fareline.odometer_at_sale_nearest_1000"], 0)
+    elect = ("renew at current rates" if lr <= 70 else
+             "renew with the maximum high-use surcharge" if lr / 1.4 <= 70 else "lapse")
+    check("election", elect, fj["call.election"])
+
+    # ask A: the first request received cancels; a lienholder's request is the contract on that VIN showing it
+    cr = pd.read_csv(os.path.join(T, "cancellation_requests_2025-2026.csv"), dtype=str).fillna("")
+    cr["d"] = pd.to_datetime(cr.received_date)
+    cr = cr.sort_values(["d", "request_id"])
+    rv = reg.set_index("contract_number")
+    vl = {(v, l): k for k, v, l in zip(reg.contract_number, reg.vin, reg.lienholder) if l}
+    cr["k"] = [c if c else vl.get((v, l), "") for c, v, l in zip(cr.contract_number, cr.vin, cr.lienholder)]
+    cr = cr[cr.k != ""]
+    first = cr.drop_duplicates("k", keep="first")
+    paid = claims.reset_index().merge(cl.groupby("claim_number").repair_order_date.first().reset_index(), on="claim_number")
+    paid["d"] = pd.to_datetime(paid.repair_order_date)
+    claim_dates = paid.groupby("k").d.min()
+    out = {}
+    for r in first.itertuples():
+        q = "%dQ%d" % (r.d.year, (r.d.month - 1) // 3 + 1)
+        c = rv.loc[r.k]
+        if c.channel == "FARELINE":
+            continue
+        if r.odometer_stated:
+            odo = int(r.odometer_stated)
         else:
-            took = r["time_off_at_report"] == "Y"
-        a1[r["segment"]] += took
-    # ask 2: each payment once, issued, not returned by the bank
-    seg_of = {r["claim_no"]: r["segment"] for r in ext}
-    returned = {r["trace_number"] for r in read_csv(f(pick(r"ach_returns")))}
-    seen, a2 = set(), defaultdict(float)
-    for r in read_csv(f(pick(r"indemnity_payments"))):
-        if r["payment_no"] in seen:
-            continue
-        seen.add(r["payment_no"])
-        if r["status"] != "ISSUED" or r["check_or_trace"] in returned or seg_of[r["claim_no"]] not in SEGS:
-            continue
-        a2[seg_of[r["claim_no"]]] += float(r["amount"])
-    gb = openpyxl.load_workbook(os.path.join(golden, [n for n in os.listdir(golden) if n.endswith(".xlsx")][0]),
-                                data_only=True)
-    pl = {r[0]: (r[3], r[4]) for r in gb["Placement"].iter_rows(values_only=True) if r and r[0] in SEGS}
-    for s in SEGS:
-        assert pl[s] == (teams[s], rnd(stat[s]["V"], 10000)), (s, pl[s], teams[s], stat[s]["V"])
-    tot = [r for r in gb["Placement"].iter_rows(values_only=True) if r and r[0] and str(r[0]).startswith("AY2027")][0][4]
-    assert tot == rnd(credit, 100000), (tot, credit)
-    g1 = {r[0]: r[1] for r in gb["2025 intakes"].iter_rows(values_only=True) if r and r[0] in SEGS}
-    g2 = {r[0]: r[1] for r in gb["Indemnity paid 2026"].iter_rows(values_only=True) if r and r[0] in SEGS}
-    assert all(g1[s] == a1[s] for s in SEGS), (g1, dict(a1))
-    assert all(g2[s] == rnd(a2[s], 1000) for s in SEGS), (g2, dict(a2))
-    print("verify.py: placement %s, credit %d (unrounded %.0f); default path %d; asks reproduce" %
-          (" ".join("%s:%d" % (s, teams[s]) for s in SEGS), rnd(credit, 100000), credit, rnd(dcredit, 100000)))
-    return 0
+            g = by_k.get(r.k)
+            g = g[g.d <= r.d] if g is not None else None
+            odo = int(g.o.max()) if g is not None and not g.empty else c.o0
+        days = (r.d - c.sale).days
+        claimed = r.k in claim_dates.index and claim_dates[r.k] <= r.d
+        if days <= 30 and not claimed:
+            amt = c.price
+        else:
+            amt = max(0.0, c.price * (1 - max(days / 1826, max(odo - c.o0, 0) / 75000)) - 50)
+        o = out.setdefault(q, [0, 0.0, 0.0])
+        o[0] += 1
+        o[1] += amt
+        o[2] += amt if c.lienholder else 0.0
+    for q in ("2026Q1", "2026Q2", "2026Q3"):
+        check("ask A %s contracts cancelled" % q, out[q][0], fj["askA.%s.contracts_cancelled" % q], 0)
+        check("ask A %s refunds owed (USD)" % q, round(out[q][1]), fj["askA.%s.refunds_usd" % q], 0.5)
+        check("ask A %s refunds to lienholders (USD)" % q, round(out[q][2]), fj["askA.%s.refunds_to_lienholders_usd" % q], 0.5)
+
+    # ask B: premium remitted on the bordereaux, less dealer-month payments the bank returned
+    xl = pd.ExcelFile(os.path.join(T, "dealer_remittance_bordereaux_2025.xlsx"))
+    tr = xl.parse("Trinity Motor Group", dtype=str)
+    tr = pd.DataFrame(dict(dealer=tr["Dealer"], k=tr["Contract No"], amt=tr["Remitted (USD)"].astype(float),
+                           ref=tr["Payment ref"], month=pd.to_datetime(tr["Bordereau month"], format="%Y-%m")))
+    bz = xl.parse("Brazos Auto Partners", dtype=str)
+    bz = pd.DataFrame(dict(dealer=bz["Dealer code"], k=bz["Copperline contract"], amt=bz["Remit (cents)"].astype(int) / 100,
+                           ref=bz["ACH reference"], month=pd.to_datetime(bz["Period"], format="%b %Y")))
+    ind = xl.parse("Independent dealers", dtype=str)
+    vs = {(v, s.strftime("%d/%m/%Y")): k for k, v, s in zip(reg.contract_number, reg.vin, reg.sale)}
+    ind = pd.DataFrame(dict(dealer=ind["Dealer"], k=[vs.get((v, s)) for v, s in zip(ind["VIN"], ind["Date of sale"])],
+                            amt=ind["Amount"].astype(float), ref=ind["Payment reference"],
+                            month=pd.to_datetime(ind["Remittance month"], format="%m/%Y")))
+    bx = pd.concat([tr, bz, ind], ignore_index=True)
+    tot = bx.groupby(["dealer", "ref", "month"], as_index=False).amt.sum()
+    dd = pd.read_csv(os.path.join(T, "dealer_directory.csv"), dtype=str)
+    name2code = dict(zip(dd.dealer_name.str.upper(), dd.dealer_code))
+    ret = pd.read_csv(os.path.join(T, "ach_returns_report_2025-2026.csv"), dtype=str)
+    returned = set()
+    for r in ret.itertuples():
+        s = pd.Timestamp(r.settlement_date)
+        m = tot[(tot.dealer == name2code[r.originator_name]) & (tot.month.dt.year == s.year) &
+                (tot.month.dt.month == s.month) & ((tot.amt - float(r.amount)).abs() < 0.005)]
+        returned |= set(m.ref)
+    recv = bx[~bx.ref.isin(returned)].groupby("k").amt.sum()
+    rt = reg[reg.channel != "FARELINE"].copy()
+    rt["q"] = ["%dQ%d" % (s.year, (s.month - 1) // 3 + 1) for s in rt.sale]
+    rt["recv"] = rt.contract_number.map(recv).fillna(0.0)
+    for q in ("2025Q1", "2025Q2", "2025Q3", "2025Q4"):
+        x = rt[rt.q == q]
+        check("ask B %s premium received (USD)" % q, round(x.recv.sum()), fj["askB.%s.premium_received_usd" % q], 0.5)
+        check("ask B %s premium outstanding (USD)" % q, round(x.price.sum() - x.recv.sum()),
+              fj["askB.%s.premium_outstanding_usd" % q], 0.5)
+    print("verify: %d of %d" % (sum(RESULTS), len(RESULTS)))
+    sys.exit(0 if all(RESULTS) else 1)
 
 
 if __name__ == "__main__":
-    here = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-    sys.exit(main(os.path.join(here, "target"), os.path.join(here, "golden")))
+    main()

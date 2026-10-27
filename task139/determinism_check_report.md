@@ -1,97 +1,102 @@
-# Verdict, task139 (Haverline ERN placement, AY2027 credit)
+# Determinism check, task139 (architecture 3)
 
-**Verdict:** NOT_DETERMINISTIC on one committed answer only (supplementary 3, "intakes reported in 2025"); the main recommendation and supplementary 1, 2 and 4 are DETERMINISTIC and reproduce. Taxonomy for the failing item: solution_incorrect (golden not reproducible from the files; nearest literal readings differ), with an underspecified intake count rule behind it.
+Pass 1, 2026-10-27, on target.zip f287a7bd (the pack before the stage 4 realism pass; that pass moved no figure: the VINs and dealer states are rebuilt from the same random draws, the surcharge base and the dollar rounding are pinned in words). One isolated judge thread (general-purpose, sonnet, medium) read only the brief and a fresh unzip of target.zip.
 
-**Disposition:** FIX_NOW. The main call, stump, and every figure in the placement stay frozen. The author must identify the filter behind 1,537/822/939/708/1,356/770/1,109/666 and either pin it in claims_data_dictionary.xlsx (a definition of "intake" that fixes the count) or regenerate the block to the literal count. If the pin changes what solvers see in the claims extract, rerun. No model rerun is needed if only the dictionary line and golden block change.
+**Verdict: DETERMINISTIC. Disposition: APPROVE.** Gate G: mechanism forecasting, analytical_non_defect, surface_read_dependency no, sole_data_defect no. Gate H: domain pass, layers pass, decisive_step analytical.
 
-## Why
-The decision is forced: the memo (pick memo item 2, 4, 5) defines the credit per intake taken, the charter fixes team size, 7,300 place-days, the place-day count rule, the cap of 3 per unit and the fill rule, so the 17 teams land 3/3/3/3/3 in HC-SS, MF-SS, MF-OT, CN-OT, HC-OT, 2 in RW-SS, 0 in RW-OT and CN-SS, total about $4.1M, on every reasonable reading I tried. The one committed answer that fails is supplementary 3: the literal count (charter 4.1 and dictionary `time_off_at_report = Y`, report_date in 2025) gives 1,621/856/991/734/1,442/812/1,178/700, a second defensible rule (also requiring disability_began on or before report_date, which every pilot intake satisfies) gives 1,546/827/947/710/1,362/773/1,118/669, and the golden 1,537/822/939/708/1,356/770/1,109/666 matches neither.
+Optional pins the judge listed, both applied: the 40 per cent surcharge is filed on the price with any channel loading (rate manual 3; base times 1.6 gives 56.3, also 55 and the same call), and the prompt asks for each dollar total rounded once (per-contract rounding moved ask A's refunds by up to 9 dollars).
 
-## Evidence (recomputed from the shipped files)
-| Item | Result | Source |
-|---|---|---|
-| Pilot intakes 5,227 (2,613 ERN, 2,614 usual), all matched to claims extract on legacy number, segments via crosswalk agree 100% | reproduced | assignments xlsx, claims extract, crosswalk |
-| Paid indemnity (claim_type IND) 4,339 | reproduced | claims extract |
-| Share paid ERN/UH: HC-SS 64.9/86.6, RW-SS 57.5/83.9, MF-SS 68.1/86.7 | reproduced | same |
-| KPA workbook: 1,600 claims, 100 per stratum, total $9,747,283.11, claim number matches register once the control digit is dropped (100%) | reproduced | KPA xlsx, PDF 5.1 |
-| Saving per assigned intake: HC-SS 857, RW-SS 741, MF-SS 889 (HC-OT 1,006; RW-OT 853; MF-OT 1,163; CN-SS 426; CN-OT 1,618) | reproduced | KPA means x paid shares |
-| Place-days per ERN intake after normalising nurse-typed claim refs (all 2,647 rows map to ERN register), both days counted, reopenings added: HC-SS 21.40, RW-SS 18.85, MF-SS 23.03, HC-OT 38.31, RW-OT 47.64, MF-OT 40.05, CN-SS 26.12, CN-OT 59.31 | reproduced | case log, charter 5.3, 5.2 |
-| Team-year savings (7,300 x saving / place-days): 292,364; 286,892; 281,996; 191,656; 130,715; 212,070; 118,890; 199,174, rounding to the golden 290/290/280/190/130/210/120/200 thousand | reproduced | |
-| RW-SS fill: 944 intakes (Oct 2025 to Sep 2026) x 18.85 / 7,300 = 2.44 | reproduced (944 is the literal `Y` count) | claims extract |
-| Placement and total: 4,105,564 unrounded, 4,090,000 from rounded team values, both round to $4.1M | reproduced | |
-| Supp 4 payments: amount counted once per payment (it repeats on each weekly line), excluding VOID lines and EFT payments returned in the ACH file (they were reissued by check): 3,724,903; 4,652,050; 1,805,107; 3,992,890; 4,276,854; 5,232,875; 4,999,081; 7,281,913, all match the golden at $1,000 | reproduced exactly | payments csv, ACH returns, dictionary |
-| Supp 3 intakes reported 2025 | NOT reproduced (see Why) | claims extract |
+## The judge's verdict, verbatim
 
-**Robustness of the main call.** RW-SS needs 1,162 intakes a year for a third team; every window I tried (calendar 2025 literal 991, golden 939, Oct-Sep 944, annualised 2026 about 907, historical max 1,028) fills 2.3 to 2.56 teams, so 2 is forced. All other units clear three teams by a wide margin (fill 4.1 to 5.7). Greedy order by team-year saving with the cap and fill rule gives the stated 17. Without the plus-one-day rule team values shift (HC-SS about $307k), but the charter 5.3 fixes it, so not a fork. The superseded draft v3 charter (16 to 18 teams, two nurses a team, 1 February start) is overruled by the signed charter and is a declared-style distractor, not a fork.
+# Verdict, task139 (pass 1)
 
-**Remaining forks (non-fatal).**
-- Supp 4: summing lines (6.73M HC-SS) against payment amount (3.72M). The dictionary calls `amount` the "Payment amount", and the ACH return amounts equal the single repeated amount, so the payment-level reading is supported by two shipped facts, but a solver who treats each line as a week's benefit gets a different, unflagged answer. Accept, with the dictionary line for `amount` worth tightening ("amount repeats on each line of a payment").
-- Supp 3 internal inconsistency: the main call uses the plain `Y` count for Oct 2025 to Sep 2026 (944), the supplement uses some stricter, undocumented filter for 2025. The extra filter (disability_began after report_date on `Y` rows) bites only on pre-upgrade rows, which looks like a legacy-flag mess but nothing in the files says to drop those rows.
-- The golden-to-literal gap of about 45 intakes beyond the dates rule I could not explain with any filter I tested (weekends, holidays, lag caps, status, office/legacy letter, injury year).
+**Cross-batch check:** no earlier packages are readable from the allowed scope, so no near-duplicate could be tested. None observed.
 
-## Files/Hygiene
-PASS, no exclusion-level finding. 15 files, formats csv, xlsx, pdf, docx. Two files above 25,000 rows (claims extract 59,789; payments 63,135). Distractors available: draft charter v3 (docx), staffing plan, worker survey, ACH returns, KPA PDF restatements. Provenance and dates are coherent (extract 30 Sep 2026, charter signed 19 Oct 2026, memo 28 Oct 2026, staffing plan 30 Oct 2026; pilot files as of 2025). Real mess is authentic Layer 1: legacy against 2025 segment codes, control digit on KPA claim numbers, nurse-typed claim refs (case, spacing, missing zeros), MM/DD/YYYY dates, void and reissued checks, returned EFTs. Minor: memo cites plan Exhibits 3 and 4 that are not shipped (not decisive). Cross-batch fingerprint: I cannot compare to other tasks (isolated); no near-duplicate observed internally.
+- **Verdict:** DETERMINISTIC
+- **Disposition:** APPROVE. No repair needed and no model rerun. Two optional wording pins are listed under Fix.
+- **Why:** I rebuilt the whole chain from target/ and every committed answer reproduced exactly. The main call is forced. Read literally, rate manual 5 gives a current-price forecast of 75.0%, which is over 70%. At 1.4 times the price it is 53.6%, which is at or under 70%. The manual's rule therefore selects "renew with the maximum surcharge". The answer is robust to banding, to the surcharge arithmetic and to the treatment of the last reading.
+
+## Evidence (all recomputed from target/)
+
+**Join keys**
+- contract_number_crosswalk_2024.csv maps all 9,166 old DP- numbers to register CV numbers.
+- Every claim line and every non-feed odometer reference maps to the register.
+- The Fareline feed maps by VIN to a unique Fareline contract (no Fareline VIN is resold).
+- Odometer readings are monotone per contract. No reading falls before the sale date or below the odometer at sale.
+- Readings stop at the cover end (closing reading), so the miles under cover are unambiguous: no contract's last reading is past sale odometer + 75,000.
+
+**Claims cost per 1,000 miles by 10,000-mile odometer band (net of deductible and reversals, goodwill excluded)**
+
+| Band start (miles) | Cost per 1,000 miles (USD) |
+|---|---|
+| 10,000 | 3.38 |
+| 20,000 | 4.44 |
+| 30,000 | 3.82 |
+| 40,000 | 4.24 |
+| 50,000 | 4.09 |
+| 60,000 | 4.15 |
+| 70,000 | 5.02 |
+| 80,000 | 7.62 |
+| 90,000 | 13.55 |
+| 100,000 | 21.99 |
+| 110,000 | 34.59 |
+| 120,000 | 52.73 |
+
+- Pooled below 70,000 miles the cost is about 4.1, flat, then climbing. This reproduces critical component 1 and the pptx chart.
+- Fareline's own cost per mile by band agrees with the book (4.3, 4.0, 5.5, 7.1, 13.9, 20.8, 38.4).
+
+**Forecast for the 6,000 contracts sold in 2026**
+- Average price is 4,788.57 and mean claims cost over cover is USD 3,594 (all 6,000 contracts: 3,591). Cover is the earlier of 75,000 miles and 60 months at the contract's own annual mileage.
+- Loss ratio at current price: 75.04% (all 6,000: 74.99%). At 1.4 times the price: 53.6%.
+- Banding sensitivity: 5,000-mile bands give 75.15%, 10,000 gives 75.00%, 20,000 gives 74.5%. Without annual-mileage capping it is the same, because the 75,000-mile limit always binds (minimum annual mileage is 15,850).
+- 5,933 contracts have a feed reading after sale. This reproduces critical component 3. Mean annual mileage is 45,707 and mean time to reach 75,000 miles is 21.0 months. Median odometer at sale is 74,927. All reproduce.
+- Cost per claim within an odometer band shows no upward trend across 2019 to 2026, so "current repair costs, no trend" is not a fork.
+
+**Competing answers (stress-tested)**
+- Lapse: no. Surcharged forecast 53.6% is at or under 70%.
+- Renew at current price: this is the easy route. Fareline's own claims to date are USD 700,171 against USD 28.73M of price (2.4%). Applying the whole-book average cost per mile to 75,000 miles gives 21.6%, and Fareline's own average cost per mile gives 16.1%. All sit far under 70% and would file "renew at current rates". Only the odometer-banded cost curve gives 75%.
+- Surcharge arithmetic: price times 1.4 gives 53.6%. Base times (1.2 + 0.4) instead gives 56.3%. Both round to 55% and both are under 70%, so the call is unchanged. Nearest 5%: 75.0 gives 75 and 53.6 gives 55.
+- Rounding closeness: 53.1 to 53.7% (the 74.4 to 75.2% range divided by 1.4) stays above the 52.5% boundary. A solver who rounds to 50 would need a current forecast below 73.5%, which no valid method gives.
+
+**Cancellations (supplementary xlsx 1)**
+- Method: first request per contract. Dealer and customer requests join by contract number. A lienholder request joins by VIN plus lienholder name, which gives exactly one contract for each of 697 requests. Refund by contract terms 5.
+- Counts by quarter: 191, 202, 193.
+- Refunds (USD): Q1 225,090.62 (lienholders 120,673.59); Q2 222,804.62 (136,837.33); Q3 264,815.97 (145,907.47). All reproduce.
+- Same-day requests (8 contracts, 3 in 2026) change no refund, because the day share dominates the mile share.
+- No request falls exactly on day 30; day-31 sensitivity moves only one 2026Q1 contract by USD 77, and 23 requests fall within 30 days with no claim.
+- Minor fork: rounding each contract first gives USD 225,100 / 222,801 / 264,817, against 225,091 / 222,805 / 264,816 when the sum is rounded once. The prompt says "every dollar figure to the nearest dollar", so rounding the reported total is the literal reading.
+
+**Dealer premium (supplementary xlsx 2)**
+- Parsing: Trinity (USD), Brazos (cents, Period text), and independents (VIN plus day-first sale date). Independents map to contracts by VIN plus sale date with 0 unmatched. Bordereau amounts equal the register price on every row.
+- Returns: all 53 ACH returns match exactly one dealer-month payment on dealer name (via dealer_directory), settlement month equal to bordereau month, and amount equal to the payment total. 3 of the 53 fall in dealer-months with two payments and need the payment-level total, which is unambiguous. 227 returned contract rows are re-sent later and count as received.
+- Received and outstanding (USD): 2025Q1 1,252,537 / 28,963; 2025Q2 1,322,803 / 4,174; 2025Q3 1,341,549 / 25,274; 2025Q4 1,276,743 / 41,758. All reproduce.
+
+**Decisive facts are all in shipped files:** rate manual 2, 3, 5 and 6; contract terms 2, 5 and 6; agreement summary 2 and 4; and the register, claims, odometer, cancellation, bordereau and ACH files. The 70% threshold and the 40% surcharge cap are both in the rate manual. No external fact is needed.
+
+## Files/Hygiene: PASS
+- 13 files. Formats: csv (9), pdf (4), xlsx (1), so 3 formats.
+- Odometer file has 612,712 rows (over the 25,000 floor).
+- Distractors: Tarrant Mutual policy summary, repair_facility_directory.csv, and the ACH report to a degree. None is used by the main call.
+- No authoring or benchmark disclosures found in the PDFs or CSV headers.
+- Temporal: claims paid_date runs to 2026-10-17 against records to 30 September 2026. Repair orders end 2026-09-29, so every claim is in. Minor oddities: dealer_directory lists "Fort Worth, OK" and "Oklahoma City, TX", and VINs have invalid check digits. These are non-decisive realism nits and not exclusion-level.
 
 ## Stump power (Gate F)
-Moderate to good. The trap that does the work is the estimand: the KPA sample is drawn only from claims that paid indemnity, so differencing the sampled group means (the per-verified-claim saving) discards the nurses' effect on whether an intake pays at all, shrinking HC-SS, RW-SS and MF-SS savings (means differ only 133, 109, 229 dollars) and dropping them down the ranking. A second layer is capacity (place-days per intake, fill cap on RW-SS). Risk of being too easy: pick memo item 2 states the estimand nearly literally ("what those intakes would pay"), so a solver who reads it closely lands on the per-intake route; the rubric weight rests on the asks (payment-level amount, ACH reissue, intake rule), which are semantics-heavy.
+- The trap is immaturity and censoring. Fareline's own claims to date are 2.4% of price. A strong analyst who cleans the data and reads every rule correctly can still file about 2% to 22% and renew at current rates.
+- Doing it right needs a whole-book cost-per-mile-by-odometer curve, exposure built from the readings, and a projection through bands the channel has not yet reached.
+- The asks add heavy multi-row work: the lienholder join on a resold VIN, the refund formula, and three bordereau layouts with ACH matching.
+- Margin is clean: 75.0 against 70 on a method-robust figure.
 
 ## Stumping type (Gate G)
-`mechanism: binding_constraint` (with estimand/unit-of-analysis choice), `stumping_family: analytical_non_defect`, `surface_read_dependency: no`, `sole_data_defect: no`. The KPA workbook and register numbers are fine; the difficulty is choosing the intention-to-treat per-intake estimand over the post-selection per-claim difference and then applying the unit fill cap. On clean data the task would still stump.
+`mechanism: forecasting`, `stumping_family: analytical_non_defect`, `surface_read_dependency: no`, `sole_data_defect: no`.
+The reported numbers are all fine. The difficulty is a forward projection of lifetime cost that the channel's immature trailing experience does not pin, fixed by exposure-based development from the whole book. On clean data it would still stump.
 
 ## Three rules (Gate H)
-`domain: pass`, `layers: pass`, `decisive_step: analytical` (borderline toward rule_application because memo item 2 states the estimand).
-Layer 1 is the legacy/2025 coding, control-digit and typed-reference joins, void/returned payments. Layer 2 is the actuarial estimate of the programme credit from a randomised pilot with a stratified-on-outcome verification sample (post-treatment selection) and capacity-constrained placement. Swap test: replacing indemnity and claims with another field's nouns breaks it (the credit is an ultimate-loss estimate from a randomised trial), so it passes. Easy route a strong analyst who cleaned everything would take: rank segments on the difference of KPA mean verified indemnity per sampled claim (ERN against usual), giving HC-SS, RW-SS and MF-SS much smaller team values and a different placement (not recomputed in full here); the golden, placing three teams in the strain units, defeats it.
+`domain: pass`, `layers: pass`, `decisive_step: analytical`.
+- Domain: this is vehicle-service-contract pricing and actuarial loss-ratio forecasting from claim cost against exposure miles. The swap test fails to port: the odometer-band cost curve and per-contract cover limits are field-native.
+- Layer 1: contract renumbering crosswalk, three bordereau layouts and units, returned ACH payments, resold VINs.
+- Layer 2: exposure-based cost development with censoring, applied to the cover path through unobserved odometers.
+- Easy route: the channel's own claims over premium or its own cost per mile gives 2% to 22%, which files "renew at current rates". The correct answer is 75%, so the surcharge.
 
-## Fix
-- Location: solution plus a dictionary pin (input_files only for a one-line definition, no data changes). Supplementary 3: state exactly which rule produces the 2025 intake counts and pin it, or regenerate the numbers as 1,621/856/991/734/1,442/812/1,178/700 if the literal rule is intended; make the main call's step 6 and supplement 3 use the same intake definition.
-- Optional: tighten the `amount` field note in claims_data_dictionary.xlsx for supplement 4 so the payment-level count is not left to inference.
-- Main recommendation, placement, savings and total need no change.
-
-## Disposition
-
-FIX_NOW applied on 2026-10-15 in one generator pass, `freeze.py` snapshot taken first; the call (the placement and the
-$4,100,000 credit), the stump and the ladder are frozen and `freeze.py check` passes in rubric and in determinism mode:
-no graded figure moved.
-
-- **Supplementary 3, the intake rule.** The filter behind 1,537/822/939/708/1,356/770/1,109/666 is charter 4.1's intake
-  (a first report recording time lost) with the parallel run's second listings counted once. It is the organisation's
-  own definition, and the converted claims' flag is the legacy LOST_TIME indicator, so it is filed as a WHAT in
-  `claims_data_dictionary.xlsx`: `time_off_at_report` is "Y when the first report of injury records time lost from work
-  (disability_began on or before report_date). On claims converted at the 2 June 2025 upgrade the field holds the legacy
-  LOST_TIME indicator, which the legacy system set to Y for any claim with time lost on record."; the extract's file row
-  adds "A first report received in the parallel run of 29 May to 1 June 2025 and keyed in both systems is listed twice,
-  converted under its legacy number and again under its new number, the two rows carrying the same office, segment,
-  class_code, injury_date, report_date and disability_began." The counts do not move. `checks.py` and `verify.py`
-  execute the dictionary literally on their own code paths and land on them (62 pairs one to one, the four converted
-  claims of those days with no new-number twin counted as listed); the rival readings each miss: the flag as filed
-  (1,621/856/991/734/1,442/812/1,178/700), both listings kept (1,546/827/947/710/1,362/773/1,118/669), the strict dates
-  (37 to 124 low), every converted claim of the parallel run dropped (HC-SS, MF-SS, CN-SS low) and a dedup on the six
-  fields across the year (3 to 34 low). The call and supplementary 3 now read one definition: every row reported October
-  2025 to September 2026 is a new-system row whose flag equals its dates, so the fill check's 944 for RW-SS is the
-  filed definition's count (asserted).
-- **Supplementary 4.** `amount` is "Amount of the payment, US dollars, repeated on each line of the payment."; the line
-  sum misses every segment (1.66 to 1.86 times), asserted. VOID reads "voided before it was cashed", each of the 85
-  replaced by a new check for the same claim, benefit, payee, period and amount. The returned EFTs are closed by the
-  bank's return file: each return item sits on one register EFT by trace number, 271 of the 275 paid again by such a
-  check and the other four returned on 29 September 2026; kept, a benefit period is paid twice.
-- **The decisive step's borderline.** Pick memo paragraph 2 named no estimator, sample, reweighting or zero handling, but
-  restated the credit as "what those intakes would pay with their adjusters alone, less what they pay with a team". It
-  now states the credit once: "The credit is the ultimate indemnity that the accident year 2027 intakes the teams take
-  will not pay because the teams took them." The counterfactual is charter 4.2's (an intake no team takes stays with its
-  adjuster); no method is named.
-- **Realism, figure-neutral.** The review workbook's references are workpaper sections B1 to B8 with item numbers in the
-  blind order the files were worked (no group signal, asserted), its remarks vary in form, date style and rate by sheet;
-  the memo carries the reference PR-2026-041. The control digit stays: it sits on the call's join of the review to the
-  register.
-- **Changed under `target/`:** `claims_data_dictionary.xlsx`, `ay2027_indemnity_pick_ern_credit.pdf`,
-  `kpa_ern_indemnity_verification_2026-06-30.xlsx` (the targeted re-read); every other file byte-identical. Outside it,
-  the golden workbook's Notes line on 2025 intakes and the write-up's steps 3 and 6 follow the filed text.
-- **Ask 1 redrawn after the filing.** Filing Ask 1's two devices left it nothing silent (precut red on the ask sheet, a
-  pair of 58.2), so a new device was added in rubric mode with every graded figure frozen: first reports an employer's
-  EDI resent between the upgrade and 15 September 2025 set up second claims, which claims staff merged into the first;
-  the merges sit only in the claims system's merge file, `claim_merges_2025.csv`, described flatly in the dictionary.
-  A literal reader counts a merged claim with the claim it joined, and Ask 1's figures stay 1,537/822/939/708/1,356/770/
-  1,109/666; read without the merge file every segment is 4 to 17 high, both claims dropped 4 to 17 low, a dedup on the
-  first-report fields 23 to 186 low (SF28, asserted). No merged claim falls in the fill check's window, the payment
-  register and the bank's returns change only in renumbered claim numbers, and Ask 2 is unchanged to the cent.
-- **Owed.** The targeted re-read and the one re-judge.
+## Fix: none required (optional)
+- Optional (prompt): add a "round the total once" wording for dollar figures to remove the per-contract rounding fork.
+- Optional (prompt or files): state whether the 40% surcharge applies to the loaded price. Both readings round to 55% and lead to the same election, so this is not a determinism hole.

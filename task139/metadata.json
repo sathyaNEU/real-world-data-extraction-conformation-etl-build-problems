@@ -1,186 +1,115 @@
 {
-  "task": "task139",
-  "title": "Where Haverline Casualty's seventeen Early Return Nursing teams work in 2027 and the AY2027 indemnity they save",
-  "domain": "Actuarial Science & Insurance",
-  "subdomain": "claims-frequency-severity (a workers' compensation nurse programme's saving read as indemnity per assigned intake, frequency times severity, from a randomised pilot, valued per nurse place-day)",
-  "objective": "Forecasting & Predictive Modeling",
-  "prompt_shape": "05: seventeen teams allocated across eight segments (teams and saving per team-year for every segment, the AY2027 credit), the note's chart, and two per-segment asks (2025 intakes; indemnity paid January to September 2026)",
-  "as_of": "2026-11-09",
-  "deliverables": [
-    "ern_placement_ay2027.xlsx",
-    "ern_placement_note_ay2027.pdf"
-  ],
-  "distractor_files": [
-    "ern_programme_charter_2027_draft_v3.docx",
-    "ern_pilot_worker_survey_2023-25.csv",
-    "medical_management_staffing_plan_2027.xlsx"
-  ],
-  "input_gates": {
-    "files": 16,
-    "formats": [
-      "csv",
-      "docx",
-      "pdf",
-      "xlsx"
-    ],
-    "largest_file": "indemnity_payments_2026-01_to_09.csv",
-    "largest_file_rows": 63135
+ "task": "task139",
+ "title": "Whether Copperline renews its Fareline rideshare channel in 2027 at current rates, with the high-use surcharge, or lets it lapse",
+ "setting": "A fictional Texas vehicle service contract obligor and administrator selling Drive Plus contracts through dealers since 2019 and to a rideshare platform's drivers since April 2026, whose rate manual decides the channel's renewal on the forecast lifetime loss ratio of its next year's sales. The company, its partners, its dealers and its people are fictional, and every record is synthetic.",
+ "as_of": "2026-10-19",
+ "deliverables": [
+  "fareline_channel_renewal_2027.pptx",
+  "drive_plus_channel_review_2027.xlsx"
+ ],
+ "distractor_files": [
+  "target/tarrant_mutual_clip_summary.pdf",
+  "target/repair_facility_directory.csv"
+ ],
+ "stated_inputs": [
+  "the 1 January 2027 renewal",
+  "the rate manual's maximum high-use surcharge",
+  "records to 30 September 2026",
+  "loss ratios to the nearest 5 per cent",
+  "dollar figures to the nearest dollar",
+  "75,000"
+ ],
+ "files": [
+  {
+   "file": "ach_returns_report_2025-2026.csv",
+   "source": "Copperline's bank, ACH returns report on dealer remittances, 2025 to September 2026 (fictional, synthetic records)",
+   "date": "2026-10-01",
+   "license": "CC0-1.0 (synthetic, generated for this task)",
+   "rows": 53
   },
-  "sources": [
-    {
-      "files": "all files under target/",
-      "origin": "constructed for this task by task139/generator/build.py (seeded, deterministic) around a fictional Missouri workers' compensation carrier (Haverline Casualty Company), its consulting actuaries (Kellerman Pryce Actuarial), claim units and people; no real organisation, person, employer or claim is depicted. NCCI classification codes and Missouri benefit rules are used descriptively.",
-      "date": "2026-11-09",
-      "license": "CC0-1.0 (original work)"
-    }
-  ],
-  "created": "2026-10-12",
-  "revised": "2026-10-15",
-  "generator": "task139/generator/build.py",
-  "files": [
-    {
-      "path": "ach_returns_2026-01_to_09.csv",
-      "format": "csv",
-      "bytes": 26402,
-      "rows": 275,
-      "source": "Constructed: The bank's ACH return items on workers' compensation EFT payments, January to September 2026",
-      "date": "2026-11-09",
-      "license": "CC0-1.0 (original work, constructed for this task)"
-    },
-    {
-      "path": "ay2027_indemnity_pick_ern_credit.pdf",
-      "format": "pdf",
-      "bytes": 50754,
-      "rows": null,
-      "source": "Constructed: The chief pricing actuary's memorandum on the ERN credit in the AY2027 indemnity pick (28 October 2026)",
-      "date": "2026-11-09",
-      "license": "CC0-1.0 (original work, constructed for this task)"
-    },
-    {
-      "path": "claim_merges_2025.csv",
-      "format": "csv",
-      "bytes": 4543,
-      "rows": 92,
-      "source": "Constructed: Claims merged on the claims system in 2025 (each claim merged, the claim it joined, the date and unit)",
-      "date": "2026-11-09",
-      "license": "CC0-1.0 (original work, constructed for this task)"
-    },
-    {
-      "path": "claims_data_dictionary.xlsx",
-      "format": "xlsx",
-      "bytes": 8746,
-      "rows": null,
-      "source": "Constructed: Data dictionary for the pack's claims files",
-      "date": "2026-11-09",
-      "license": "CC0-1.0 (original work, constructed for this task)"
-    },
-    {
-      "path": "claims_extract_2021-01_to_2026-09.csv",
-      "format": "csv",
-      "bytes": 6068001,
-      "rows": 59875,
-      "source": "Constructed: Haverline Casualty's claims listing: every claim reported January 2021 to September 2026 whose first report recorded time lost or that has paid or reserved indemnity",
-      "date": "2026-11-09",
-      "license": "CC0-1.0 (original work, constructed for this task)"
-    },
-    {
-      "path": "ern_case_log_2023-25.csv",
-      "format": "csv",
-      "bytes": 177314,
-      "rows": 2647,
-      "source": "Constructed: The ERN case system's export of the pilot nurses' files and reopenings",
-      "date": "2026-11-09",
-      "license": "CC0-1.0 (original work, constructed for this task)"
-    },
-    {
-      "path": "ern_pilot_assignments_2023-25.xlsx",
-      "format": "xlsx",
-      "bytes": 192008,
-      "rows": null,
-      "source": "Constructed: The triage screen's assignment register of the Early Return Nursing pilot, with its notes",
-      "date": "2026-11-09",
-      "license": "CC0-1.0 (original work, constructed for this task)"
-    },
-    {
-      "path": "ern_pilot_worker_survey_2023-25.csv",
-      "format": "csv",
-      "bytes": 64957,
-      "rows": 1369,
-      "source": "Constructed: The ERN pilot's worker satisfaction survey",
-      "date": "2026-11-09",
-      "license": "CC0-1.0 (original work, constructed for this task)"
-    },
-    {
-      "path": "ern_programme_charter_2027_draft_v3.docx",
-      "format": "docx",
-      "bytes": 10473,
-      "rows": null,
-      "source": "Constructed: Draft v3 of the 2027 programme charter (18 September 2026), superseded",
-      "date": "2026-11-09",
-      "license": "CC0-1.0 (original work, constructed for this task)"
-    },
-    {
-      "path": "ern_programme_charter_2027_signed.pdf",
-      "format": "pdf",
-      "bytes": 52607,
-      "rows": null,
-      "source": "Constructed: The signed Early Return Nursing programme charter for 2027 (19 October 2026)",
-      "date": "2026-11-09",
-      "license": "CC0-1.0 (original work, constructed for this task)"
-    },
-    {
-      "path": "export_manifest.csv",
-      "format": "csv",
-      "bytes": 1850,
-      "rows": 15,
-      "source": "Constructed: Export manifest: each file, its source system, as-of date and preparer",
-      "date": "2026-11-09",
-      "license": "CC0-1.0 (original work, constructed for this task)"
-    },
-    {
-      "path": "indemnity_payments_2026-01_to_09.csv",
-      "format": "csv",
-      "bytes": 6401289,
-      "rows": 63135,
-      "source": "Constructed: Indemnity payment register lines, January to September 2026",
-      "date": "2026-11-09",
-      "license": "CC0-1.0 (original work, constructed for this task)"
-    },
-    {
-      "path": "kpa_ern_indemnity_verification_2026-06-30.xlsx",
-      "format": "xlsx",
-      "bytes": 81683,
-      "rows": null,
-      "source": "Constructed: Kellerman Pryce Actuarial's verification workbook: verified ultimate indemnity on the sampled pilot claims at 30 June 2026",
-      "date": "2026-11-09",
-      "license": "CC0-1.0 (original work, constructed for this task)"
-    },
-    {
-      "path": "kpa_ern_pilot_review_2026-08.pdf",
-      "format": "pdf",
-      "bytes": 52133,
-      "rows": null,
-      "source": "Constructed: Kellerman Pryce Actuarial's report on the verification of the pilot claims (14 August 2026)",
-      "date": "2026-11-09",
-      "license": "CC0-1.0 (original work, constructed for this task)"
-    },
-    {
-      "path": "medical_management_staffing_plan_2027.xlsx",
-      "format": "xlsx",
-      "bytes": 7705,
-      "rows": null,
-      "source": "Constructed: Medical Case Management's 2027 ERN staffing plan (positions, status, salary midpoints)",
-      "date": "2026-11-09",
-      "license": "CC0-1.0 (original work, constructed for this task)"
-    },
-    {
-      "path": "segment_code_crosswalk_2025.csv",
-      "format": "csv",
-      "bytes": 1207,
-      "rows": 12,
-      "source": "Constructed: Legacy segment codes and the 2025 codes they converted to",
-      "date": "2026-11-09",
-      "license": "CC0-1.0 (original work, constructed for this task)"
-    }
-  ]
+  {
+   "file": "cancellation_requests_2025-2026.csv",
+   "source": "Copperline Vehicle Protection, Drive Plus administration system, cancellation requests received, December 2024 to September 2026 (fictional, synthetic records)",
+   "date": "2026-10-01",
+   "license": "CC0-1.0 (synthetic, generated for this task)",
+   "rows": 1923
+  },
+  {
+   "file": "claim_lines_2019-01_to_2026-09.csv",
+   "source": "Copperline Vehicle Protection, Drive Plus administration system, claim payment lines, January 2019 to September 2026 (fictional, synthetic records)",
+   "date": "2026-10-01",
+   "license": "CC0-1.0 (synthetic, generated for this task)",
+   "rows": 35453
+  },
+  {
+   "file": "contract_number_crosswalk_2024.csv",
+   "source": "Copperline Vehicle Protection, Drive Plus administration system, contract number crosswalk from the March 2024 system migration (fictional, synthetic records)",
+   "date": "2024-03-04",
+   "license": "CC0-1.0 (synthetic, generated for this task)",
+   "rows": 9166
+  },
+  {
+   "file": "dealer_directory.csv",
+   "source": "Copperline Vehicle Protection, approved dealer directory (fictional, synthetic records)",
+   "date": "2026-09-15",
+   "license": "CC0-1.0 (synthetic, generated for this task)",
+   "rows": 64
+  },
+  {
+   "file": "dealer_remittance_bordereaux_2025.xlsx",
+   "source": "Copperline Vehicle Protection, dealer remittance bordereaux received, November 2024 to September 2026 (fictional, synthetic records)",
+   "date": "2026-10-02",
+   "license": "CC0-1.0 (synthetic, generated for this task)",
+   "rows": null
+  },
+  {
+   "file": "drive_plus_contract_register.csv",
+   "source": "Copperline Vehicle Protection, Drive Plus administration system, contract register as at 30 September 2026 (fictional, synthetic records)",
+   "date": "2026-10-01",
+   "license": "CC0-1.0 (synthetic, generated for this task)",
+   "rows": 20858
+  },
+  {
+   "file": "drive_plus_contract_terms.pdf",
+   "source": "Copperline Vehicle Protection, Drive Plus contract terms, form DP-T 4.2 (fictional, synthetic records)",
+   "date": "2023-08-15",
+   "license": "CC0-1.0 (synthetic, generated for this task)",
+   "rows": null
+  },
+  {
+   "file": "drive_plus_rate_manual_2026.pdf",
+   "source": "Copperline Vehicle Protection, Drive Plus rate manual effective 1 January 2026 (fictional, synthetic records)",
+   "date": "2026-01-05",
+   "license": "CC0-1.0 (synthetic, generated for this task)",
+   "rows": null
+  },
+  {
+   "file": "fareline_channel_agreement_summary.pdf",
+   "source": "Copperline Vehicle Protection, Fareline channel agreement summary of terms (fictional, synthetic records)",
+   "date": "2026-03-12",
+   "license": "CC0-1.0 (synthetic, generated for this task)",
+   "rows": null
+  },
+  {
+   "file": "odometer_readings_2019-01_to_2026-09.csv",
+   "source": "Copperline Vehicle Protection, Drive Plus administration system, odometer readings from repair orders, CarLink reporters, maintenance uploads and the Fareline mileage feed, January 2019 to September 2026 (fictional, synthetic records)",
+   "date": "2026-10-01",
+   "license": "CC0-1.0 (synthetic, generated for this task)",
+   "rows": 612712
+  },
+  {
+   "file": "repair_facility_directory.csv",
+   "source": "Copperline Vehicle Protection, claims department repair facility directory (fictional, synthetic records)",
+   "date": "2026-08-31",
+   "license": "CC0-1.0 (synthetic, generated for this task)",
+   "rows": 180
+  },
+  {
+   "file": "tarrant_mutual_clip_summary.pdf",
+   "source": "Tarrant Mutual Casualty Company, contractual liability policy summary TMC-CL-2025-118 (fictional, synthetic records)",
+   "date": "2025-07-01",
+   "license": "CC0-1.0 (synthetic, generated for this task)",
+   "rows": null
+  }
+ ]
 }

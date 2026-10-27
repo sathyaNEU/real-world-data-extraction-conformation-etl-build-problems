@@ -1,83 +1,60 @@
-"""Write task139/metadata.json from the built pack."""
+"""metadata.json in the task folder: per shipped file its source, date, licence and rows, and the distractors."""
 import json
 import os
 import sys
 
 HERE = os.path.dirname(os.path.abspath(__file__))
-sys.path.insert(0, HERE)
-import common as K   # noqa: E402
-
 TASK = os.path.dirname(HERE)
+T = os.path.join(TASK, "target")
+sys.path.insert(0, HERE)
+
+import common as K  # noqa: E402
+
+SYN = " (fictional, synthetic records)"
+LIC = "CC0-1.0 (synthetic, generated for this task)"
+CVP = "Copperline Vehicle Protection"
+ADM = CVP + ", Drive Plus administration system"
 SOURCES = {
-    K.EXTRACT: "Haverline Casualty's claims listing: every claim reported January 2021 to September 2026 whose first "
-               "report recorded time lost or that has paid or reserved indemnity",
-    K.REGISTER: "The triage screen's assignment register of the Early Return Nursing pilot, with its notes",
-    K.NURSE_LOG: "The ERN case system's export of the pilot nurses' files and reopenings",
-    K.REVIEW_BOOK: "Kellerman Pryce Actuarial's verification workbook: verified ultimate indemnity on the sampled pilot "
-                   "claims at 30 June 2026",
-    K.REVIEW_PDF: "Kellerman Pryce Actuarial's report on the verification of the pilot claims (14 August 2026)",
-    K.CHARTER: "The signed Early Return Nursing programme charter for 2027 (19 October 2026)",
-    K.CHARTER_DRAFT_DOC: "Draft v3 of the 2027 programme charter (18 September 2026), superseded",
-    K.PICK_MEMO: "The chief pricing actuary's memorandum on the ERN credit in the AY2027 indemnity pick (28 October 2026)",
-    K.CROSSWALK: "Legacy segment codes and the 2025 codes they converted to",
-    K.PAYMENTS: "Indemnity payment register lines, January to September 2026",
-    K.ACH_RETURNS: "The bank's ACH return items on workers' compensation EFT payments, January to September 2026",
-    K.MERGES: "Claims merged on the claims system in 2025 (each claim merged, the claim it joined, the date and unit)",
-    K.DICTIONARY: "Data dictionary for the pack's claims files",
-    K.MANIFEST: "Export manifest: each file, its source system, as-of date and preparer",
-    K.SURVEY: "The ERN pilot's worker satisfaction survey",
-    K.STAFFING: "Medical Case Management's 2027 ERN staffing plan (positions, status, salary midpoints)",
+    K.REGISTER: (ADM + ", contract register as at 30 September 2026", "2026-10-01"),
+    K.CROSSWALK: (ADM + ", contract number crosswalk from the March 2024 system migration", "2024-03-04"),
+    K.CLAIMS: (ADM + ", claim payment lines, January 2019 to September 2026", "2026-10-01"),
+    K.READINGS: (ADM + ", odometer readings from repair orders, CarLink reporters, maintenance uploads and the "
+                 "Fareline mileage feed, January 2019 to September 2026", "2026-10-01"),
+    K.CANCELS: (ADM + ", cancellation requests received, December 2024 to September 2026", "2026-10-01"),
+    K.BORDEREAUX: (CVP + ", dealer remittance bordereaux received, November 2024 to September 2026", "2026-10-02"),
+    K.RETURNS: ("Copperline's bank, ACH returns report on dealer remittances, 2025 to September 2026", "2026-10-01"),
+    K.DEALERS: (CVP + ", approved dealer directory", "2026-09-15"),
+    K.FACILITIES: (CVP + ", claims department repair facility directory", "2026-08-31"),
+    K.RATE_MANUAL: (CVP + ", Drive Plus rate manual effective 1 January 2026", "2026-01-05"),
+    K.TERMS: (CVP + ", Drive Plus contract terms, form DP-T 4.2", "2023-08-15"),
+    K.AGREEMENT: (CVP + ", Fareline channel agreement summary of terms", "2026-03-12"),
+    K.CLIP: ("Tarrant Mutual Casualty Company, contractual liability policy summary TMC-CL-2025-118", "2025-07-01"),
 }
+DISTRACTORS = ["target/" + K.CLIP, "target/" + K.FACILITIES]
 
 
-def rows_of(path):
-    if path.endswith(".csv"):
-        with open(path, encoding="utf-8") as fh:
-            return sum(1 for _ in fh) - 1
-    return None
-
-
-def write(target, out_path):
+def main():
     files = []
-    for f in sorted(os.listdir(target)):
-        p = os.path.join(target, f)
-        files.append({"path": f, "format": f.rsplit(".", 1)[1], "bytes": os.path.getsize(p), "rows": rows_of(p),
-                      "source": "Constructed: " + SOURCES[f], "date": "2026-11-09",
-                      "license": "CC0-1.0 (original work, constructed for this task)"})
-    big = max((x for x in files if x["rows"]), key=lambda x: x["rows"])
-    meta = {
-        "task": "task139",
-        "title": "Where Haverline Casualty's seventeen Early Return Nursing teams work in 2027 and the AY2027 indemnity "
-                 "they save",
-        "domain": "Actuarial Science & Insurance",
-        "subdomain": "claims-frequency-severity (a workers' compensation nurse programme's saving read as indemnity per "
-                     "assigned intake, frequency times severity, from a randomised pilot, valued per nurse place-day)",
-        "objective": "Forecasting & Predictive Modeling",
-        "prompt_shape": "05: seventeen teams allocated across eight segments (teams and saving per team-year for every "
-                        "segment, the AY2027 credit), the note's chart, and two per-segment asks (2025 intakes; "
-                        "indemnity paid January to September 2026)",
-        "as_of": "2026-11-09",
-        "deliverables": [K.GOLD_BOOK, K.GOLD_NOTE],
-        "distractor_files": list(K.DISTRACTORS),
-        "input_gates": {"files": len(files), "formats": sorted({x["format"] for x in files}),
-                        "largest_file": big["path"], "largest_file_rows": big["rows"]},
-        "sources": [{"files": "all files under target/",
-                     "origin": "constructed for this task by task139/generator/build.py (seeded, deterministic) around a "
-                               "fictional Missouri workers' compensation carrier (Haverline Casualty Company), its "
-                               "consulting actuaries (Kellerman Pryce Actuarial), claim units and people; no real "
-                               "organisation, person, employer or claim is depicted. NCCI classification codes and "
-                               "Missouri benefit rules are used descriptively.",
-                     "date": "2026-11-09", "license": "CC0-1.0 (original work)"}],
-        "created": "2026-10-12",
-        "revised": "2026-10-15",
-        "generator": "task139/generator/build.py",
-        "files": files,
-    }
-    with open(out_path, "w") as fh:
-        json.dump(meta, fh, indent=2)
-        fh.write("\n")
-    return meta
+    for n in sorted(os.listdir(T)):
+        src, date = SOURCES[n]
+        rows = None
+        if n.endswith(".csv"):
+            rows = sum(1 for _ in open(os.path.join(T, n), "rb")) - 1
+        files.append(dict(file=n, source=src + SYN, date=date, license=LIC, rows=rows))
+    meta = dict(task="task139", title="Whether Copperline renews its Fareline rideshare channel in 2027 at current rates, "
+                                      "with the high-use surcharge, or lets it lapse",
+                setting="A fictional Texas vehicle service contract obligor and administrator selling Drive Plus "
+                        "contracts through dealers since 2019 and to a rideshare platform's drivers since April 2026, "
+                        "whose rate manual decides the channel's renewal on the forecast lifetime loss ratio of its next "
+                        "year's sales. The company, its partners, its dealers and its people are fictional, and every "
+                        "record is synthetic.",
+                as_of="2026-10-19", deliverables=[K.DECK, K.BOOK], distractor_files=DISTRACTORS,
+                stated_inputs=["the 1 January 2027 renewal", "the rate manual's maximum high-use surcharge",
+                               "records to 30 September 2026", "loss ratios to the nearest 5 per cent",
+                               "dollar figures to the nearest dollar", "75,000"], files=files)
+    assert set(SOURCES) == set(os.listdir(T)), set(SOURCES) ^ set(os.listdir(T))
+    json.dump(meta, open(os.path.join(TASK, "metadata.json"), "w"), indent=1)
 
 
 if __name__ == "__main__":
-    write(os.path.join(TASK, "target"), os.path.join(TASK, "metadata.json"))
+    main()
