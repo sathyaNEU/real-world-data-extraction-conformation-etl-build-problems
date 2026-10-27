@@ -1,31 +1,31 @@
 {
  "task": "task464",
  "owner": "oviya1301",
- "status": "FAILED_TO_STUMP",
- "domain": "education-learning-sciences",
+ "status": "DESIGN",
+ "domain": "healthcare-delivery-health-economics",
  "objective": "etl",
- "stage": 1,
- "stage_name": "draw",
+ "stage": 2,
+ "stage_name": "design",
  "updated": "2026-10-27",
- "stump": "The default path places each 2025 retiring-test score at its regression prediction from the bridge study, which pulls the low scores toward the sample's mean and out of Level 1, and funds Harlenbrook in Elmorrow's place (Harlenbrook 323 against Elmorrow 315); the concordance funds Elmorrow at 368 and leaves Harlenbrook out at 353.",
- "architecture": 2,
+ "stump": "The default path multiplies each site's attested stations by its rostered sessions, ties the product to realised volume and the adequacy standard, and files a 2027 network capacity about a sixth high with three of the twelve areas wrongly above the standard, because the stations a site attests are the positions it has, not the positions it can work at one time.",
+ "architecture": 3,
  "loops": 0,
  "precut": {
-  "exit": 0,
-  "date": "2026-10-17"
+  "exit": null,
+  "date": ""
  },
  "leak": {
-  "leak_py": "REVIEW (no LEAK), 2026-10-17",
-  "reader": "two rounds: round 1 nothing quoted, literal reading the golden, Q6 analytical, realism tells fixed; round 2 the same, its date tells (a Saturday first day, two-day re-entries, a Monday test pile-up) fixed in the generator with every graded figure byte-identical"
+  "leak_py": "",
+  "reader": ""
  },
  "duplicate_check": {
-  "heart": "WARN (answered at the draw)",
-  "surface": "five card-level promotions (task465, task450, task136, task131, task184), none on the pack's surface after the folder index and dictionary renames"
+  "heart": "",
+  "nearest": "0.08 task479 (v3, lineage)"
  },
  "judge": {
-  "verdict": "DETERMINISTIC",
-  "disposition": "APPROVE",
-  "report": "architecture 1: determinism_check_report.md (NOT_DETERMINISTIC, SEND_BACK); architecture 2: determinism_check_report_pass2.md (DETERMINISTIC, APPROVE)"
+  "verdict": "",
+  "disposition": "",
+  "report": ""
  },
  "returned": [
   {
@@ -41,7 +41,7 @@
    "commit": ""
   }
  ],
- "resume": "Architecture 2 is SPENT on a Gate F failure, not a determinism or rubric one, and the evidence was in the build before it shipped. Three causes, in the design note's Portal result section. (1) The decisive step is the field's standard practice: the note's own Domain test line says psychometrics links two scales by a concordance and that a regression is a prediction pulling scores to the mean, and the golden is that concordance, so the readability screen's test 3 verdict of silent is wrong and a competent analyst reaches it by reflex. (2) The stage-4 reader already named it: round 2's question 6 says the easy routes swap Elmorrow and Harlenbrook while a symmetric equating at 241 and below does not. That was recorded as a pass because its question-6 taxonomy answer was analytical, which it is; the step's kind was never the problem. (3) R2 (inverse regression) and R2b (ranges matched) both land the golden slate, so three of seven rungs reach the call and only the counts separate them. NEXT: re-root at stage 1 as architecture 3, keeping the world, the fourteen applicants, the two vendors, the count-day machinery and the pack's Layer 1 inventory, all of which measured sound, and moving the decisive step. Draw test from this failure: if the Domain test line and the Decisive step line name the same method, test 3 fails and the draw is not ready.",
+ "resume": "Architecture 3 drawn and registered 2026-10-27 (card PASS with one answered WARN on question_form). Stage 2 owes the readability screen, the semantic fork table, the ladder arithmetic, the 22-axis closure table, the literal reader line, the oracles and the ask sheet, then precut.py exit 0. The design risk to close first is the ceiling statistic: every reasonable reading must land on the same integer per site, by C1 on a hard plateau in each site's concurrency distribution and asserted, never by a filed sentence saying how to compute it.",
  "approved": null,
  "delivered": "2026-10-17",
  "portal": "both responses landed the call",

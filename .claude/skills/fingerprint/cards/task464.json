@@ -1,116 +1,131 @@
 {
- "task": "task464",
- "architecture": "v2",
- "drawn": "2026-10-17",
- "slot_note": "wave 4 (re-root). Seed ET21's world spent with architecture 1 (judge SEND_BACK); architecture 2 drawn afresh in the ETL objective: a state education department's 2027 adolescent literacy grants to the districts with the most grade 9 and 10 students at the new state reading test's lowest level, the retiring test's 2025 grade 8 scores placed on the new scale through the 2026 bridge study.",
- "domain": "education-learning-sciences",
- "subdomain": "item-response-theory-test-equating",
- "niche": "a state education department's 2027 adolescent literacy grants to the school districts with the most grade 9 and 10 students at the new state reading test's lowest performance level, where the grade 10 students' only grade 8 scores come from the retiring test and a single-group bridge study links the two scales",
- "objective": "etl",
- "shape": "01",
- "decision_type": "ranked_slate_under_cap",
- "answer_unit": "set_of_items",
- "answer": "Fund Kessick Public Schools (1,113), Varlow City Schools (870), Brenmoor County Schools (503), Calderidge Unified School District (472), Garnet Hills School District (372) and Elmorrow Public Schools (368); Harlenbrook County Schools first left out at 353.",
- "answer_source": "task464/submission.md, block 1",
- "gap": [
-  "population"
- ],
- "pattern": [
-  "none"
- ],
- "generators": [
-  "G1",
-  "G16"
- ],
- "gate_g": "method_or_model_selection",
- "calibration_form": "parallel_run_overlap",
- "stump_strategy": "other",
- "decisive_rule_filed": false,
- "official_decoy": false,
- "validated_decoy": false,
- "context_artifact": "filed_standard",
- "stakeholder_role": "the state education department's adolescent literacy programme director, who takes the 2027 grant awards to the State Board of Education",
- "role_family": "programme_officer",
- "scoring_unit": "units served",
- "spine": {
-  "file": "enrollment_october_2026_grades_9_12.csv",
-  "rows": 91075,
-  "entity": "one student's enrolment spell at one school in grades 9 to 12, autumn 2026",
-  "grain": "student x school spell",
-  "source": "synthetic"
- },
- "forum": "trustees_or_governors",
- "forcing_event": "budget_or_appropriation",
- "org_family": "government_agency",
- "world": {
-  "geography": "an unnamed state of the United States (its department of education, school districts and two test vendors are fictional)",
-  "currency": "USD",
-  "org_type": "a state department of education running an adolescent literacy grant programme",
-  "invented_names": [
-   "Grade-Level Reading Assessment",
-   "Statewide Literacy Measure",
-   "Adolescent Literacy Partnership"
+  "task": "task464",
+  "architecture": 3,
+  "drawn": "2026-10-27",
+  "slot_note": "wave 4 (second re-root). Architecture 2 (placing the retiring reading test's scores on the new scale) spent on the portal 2026-10-27 because the decisive step was psychometrics' own named method for the deciding quantity. Architecture 3 keeps the number and the ETL objective, takes a fresh world, and puts the field's own method in the default path: the decisive step is a reconstruction of the capacity input, not a choice of method.",
+  "domain": "healthcare-delivery-health-economics",
+  "client_domain": "healthcare-delivery-health-economics",
+  "subdomain": "payment-claims-health-plan-analytics",
+  "niche": "a nonprofit Medicaid plan's network unit conforming one capacity dataset for its 2027 outpatient dialysis and infusion contracts out of the provider directory, the licence file, the staffing rosters and four years of timed treatment encounters, where a site's attested stations cannot all run at once",
+  "objective": "etl",
+  "shape": "07",
+  "decision_type": "quantity_figure",
+  "answer_unit": "count",
+  "answer": "",
+  "answer_source": "",
+  "gap": [
+    "population"
   ],
-  "people": [
-   "Jeffrey Warren",
-   "William Holloway"
-  ]
- },
- "deliverables": [
-  "alp_grants_2027.xlsx",
-  "alp_conformed_grade8_reading_2026.csv"
- ],
- "opening_move": "question-first",
- "question_form": "which",
- "driver": "The decisive quantity is how many units fall below a cut on a new instrument's scale when part of the population was measured only on the old instrument; a sample measured on both links the scales, and predicting each unit's new value by regression shrinks every converted value toward the sample's mean, so the converted spread is too narrow and the tail beyond the cut too thin, while matching the percentiles of two groups each measured on one instrument assumes the groups are alike; only a conversion that matches the two instruments' distributions in the sample measured on both keeps the share beyond the cut.",
- "driver_concrete": "Each district's grade 9 and grade 10 students at Level 1 of the new state reading test decide the 2027 grants; the grade 10 students' latest grade 8 scores come from the retiring test in spring 2025, and the spring 2026 bridge study, in which a sample of grade 8 students took both tests, links the scales; placing each 2025 score at the new-scale value the regression of new on old predicts pulls the low scores toward the bridge sample's mean and drops about a fifth of the 2025 cohort's Level 1 students, matching the 2025 and 2026 cohorts' percentiles assumes the cohorts read equally well, and only a concordance that matches the two tests' score distributions in the bridge sample (equipercentile or linear) counts them.",
- "stump": "The default path places each 2025 retiring-test score at its regression prediction from the bridge study, which pulls the low scores toward the sample's mean and out of Level 1, and funds Harlenbrook in Elmorrow's place (Harlenbrook 323 against Elmorrow 315); the concordance funds Elmorrow at 368 and leaves Harlenbrook out at 353.",
- "stump_class": "analytical",
- "analyst_test": "A strong analyst who conforms both vendors' files, keys each student through the count-day enrolment spells, takes each latest grade 8 result and applies the 2415 cut places the 2025 retiring-test scores by the bridge study's regression of new on old and funds Harlenbrook in Elmorrow's place (323 against 315); a concordance matching the two distributions funds Elmorrow (368 against 353).",
- "domain_test": "Psychometrics: the deciding quantity is the share of a cohort below a performance level of a new test, for a cohort measured only on the retired test; the field links two tests' scales by equating or concordance (equipercentile or linear, symmetric and invariant across groups), and a prediction by regression is not a concordance; replacing the concordance with a regression, or with matching two different cohorts' percentiles, changes which districts get the grants.",
- "layer2_family": "field_method",
- "layer2_pattern": "own:concordance by distribution matching, not regression",
- "layer1": [
-  "two vendors' file layouts",
-  "student identifiers in two formats joined through a test-taker crosswalk",
-  "not-tested and invalidation codes with make-up sessions",
-  "transfers between districts after testing",
-  "a merged district's predecessor codes",
-  "enrolment spells with transfers, late entrants and withdrawals",
-  "nonpublic test takers under host district codes",
-  "a fixed form's gappy raw-to-scale table"
- ],
- "mechanism_source": "design_note",
- "differentiation": {
-  "task450": "task450 links two forms given to different groups through common items, separating the instrument's change from the groups' difference; here one group took both tests and the trap is a regression's prediction used as a concordance",
-  "task184": "task184 spreads each offence over its occurrence window across a week's time slots (an interval-censored event time); here two tests' scales are linked through a sample that took both, and the trap is a regression's prediction used as a concordance, which thins the tail beyond a cut"
- },
- "lineage": [
-  {
-   "gap": [
-    "population",
-    "time"
-   ],
-   "pattern": [
+  "pattern": [
     "none"
-   ],
-   "generators": [
-    "G4",
-    "G13",
-    "G16"
-   ],
-   "gate_g": "forecasting",
-   "decision_type": "ranked_slate_under_cap",
-   "stump_strategy": "forecast_method_backtest",
-   "layer2_pattern": "own:weather-normalized emissions on the current operating regime (inverse degree-day models fitted after each building's last non-routine change)",
-   "driver": "The decisive quantity is each unit's output in a standard year of an external driver as the unit now operates, estimated from a response model fitted on the unit's own record; partway through the record many units changed how they respond to the driver or how much they draw regardless of it, on dates no file records, so a model fitted over the whole record or over the latest twelve months, or one recent year scaled by the driver's ratio, misstates the units whose response changed or whose fixed draw does not scale, and each moves a different set of units across the cap.",
-   "driver_concrete": "Each covered building's emissions in a year of the 1991 to 2020 normal weather as it runs at the end of September 2026 comes from degree-day models of each fuel fitted on the bills and oil fills since the building last changed how it runs (a boiler replaced, heat pumps added, a hot water plant converted, a tenant fit-out), found in its own record, and not from the 2025 benchmarking year scaled by the degree-day ratio, a model fitted over the whole record or one fitted over the latest twelve months, which each move a different set of buildings across the twelve advisor places.",
-   "stump": "The default path fits each fuel's degree-day model over each property's whole record and files a slate with 429 Quillen Avenue, 461 Tallman Street and 173 Orrin Place in place of 758 Fenwright Avenue, 843 Merrow Street and 137 Ashlar Street, because those three stepped to a lower heating use in January and February 2026 and three years of their bills still describe the plant they had; the obvious correction, the latest twelve months, still straddles the steps and keeps 461 Tallman Street and 173 Orrin Place in, and the golden fits each fuel on the spans since the property's last change, found in its own record.",
-   "architecture": "v1 (weather-normalized emissions on the current operating regime, Wendlemere covered buildings)",
-   "fate": "judge SEND_BACK 2026-10-17 (NOT_DETERMINISTIC: the post-change window's first span and whether electricity is refit with the heating fuel unforced, a $7,000 12th-to-13th margin inside a $40,000 to $57,000 window freedom; filing the window or a dated change log would make the step rule application); a first redraw (an inventory interval set by shared emission-factor errors) repeats task228's, task229 v1's, task260's and task261's correlated-error drivers and was dropped before registration"
-  }
- ],
- "notes": "architecture 2 drawn 2026-10-17 after architecture 1's SEND_BACK; personas re-drawn from guard.py names --geo 'United States' --seed 464",
- "client_domain": "education-learning-sciences",
- "registered": "2026-10-17T09:40:00Z"
+  ],
+  "generators": [
+    "G8"
+  ],
+  "gate_g": "binding_constraint",
+  "calibration_form": "none",
+  "stump_strategy": "binding_constraint",
+  "decisive_rule_filed": false,
+  "official_decoy": false,
+  "validated_decoy": false,
+  "context_artifact": "capacity_report",
+  "stump_class": "analytical",
+  "analyst_test": "A strong analyst who reads the directory, the licence file, the rosters and the encounter extract correctly multiplies each site's attested stations by its rostered sessions, reconciles the product against realised treatment volume and the contract's utilisation standard, and files a 2027 network capacity about a sixth high with three of the twelve areas above the standard that are below it, because at a third of the sites no week in four years has ever had more than a fixed number of treatments running together, several short of the stations attested.",
+  "domain_test": "The deciding quantity is each contracted site's deliverable treatment capacity for the 2027 network year, which health plan analytics builds as the positions a site can run times its staffed sessions and tests against the utilisation standard the adequacy contract sets; put a warehouse's nouns in and there is no staffed session, no treatment interval and no position a patient occupies for a fixed span, so the quantity disappears.",
+  "layer2_family": "allocation_constraints",
+  "layer2_pattern": "own:the ceiling the overlaps fix",
+  "layer1": [
+    "a directory refreshed on each site's own attestation cycle",
+    "licence rows at the corporate entity and the service address",
+    "two encounter layouts across a clearinghouse change",
+    "treatment start and stop times in local clock with no offset on one feed",
+    "rosters by position rather than by named staff",
+    "sites that moved address and kept their identifier",
+    "a group practice billing three sites under one tax identifier",
+    "cancelled and no-show encounters carried with zero duration"
+  ],
+  "stakeholder_role": "the plan's network capacity planner, who conforms the capacity dataset the 2027 outpatient contracts are written against",
+  "role_family": "capacity_planner",
+  "scoring_unit": "per episode",
+  "spine": {
+    "file": "treatment_encounters_2023_2026.csv",
+    "rows": 0,
+    "entity": "one treatment encounter at one site with its start and stop time",
+    "grain": "encounter x site",
+    "source": "synthetic"
+  },
+  "forum": "operations_desk",
+  "forcing_event": "purchase_order_or_contract",
+  "org_family": "nonprofit_or_charity",
+  "world": {
+    "geography": "an unnamed state of the United States",
+    "currency": "USD",
+    "org_type": "a nonprofit Medicaid managed care plan contracting outpatient dialysis and infusion capacity",
+    "invented_names": [
+      "Outpatient Capacity Register"
+    ],
+    "people": [
+      "Katherine Dalton",
+      "Nicholas Clay"
+    ]
+  },
+  "deliverables": [
+    "outpatient_capacity_2027.csv",
+    "area_capacity_2027.xlsx"
+  ],
+  "opening_move": "question-first",
+  "question_form": "how-many",
+  "driver": "The decisive quantity is how much a set of units can deliver in a forward period, and each unit's deliverable positions are fewer than the positions it reports because some of them cannot be worked at the same time, a ceiling no file states and no attestation reflects; the ceiling is fixed exactly by the greatest number of the unit's own timed service intervals that have ever run together, repeated in every period of a long record, so multiplying reported positions by staffed sessions overstates the total and overstates it most at the units whose ceiling is lowest.",
+  "driver_concrete": "The plan's 2027 contracted outpatient capacity in weekly treatment slots comes from each site's deliverable positions times its rostered sessions; a third of the sites have never, in four years of timed encounters, run more than a fixed number of treatments at once, several short of the stations the directory attests and the licence lists, because those sites share a water loop, a compounding hood or a nurse ratio across the extra chairs, and taking the attested or licensed stations overstates the network by about a sixth and puts three areas above the utilisation standard that are below it.",
+  "stump": "The default path multiplies each site's attested stations by its rostered sessions, ties the product to realised volume and the utilisation standard, and files a 2027 network capacity about a sixth high with three of twelve areas wrongly above the standard, because the stations a site attests are more than the positions its own encounter record has ever shown running together.",
+  "mechanism_source": "design_note",
+  "differentiation": {
+    "task472": "task472 turns on when a job's completion is released, a window outside the job fixing the saving; here nothing is scheduled or released and the constraint is how many of a unit's own positions can be worked at one time, recovered from the overlaps of its service intervals",
+    "task087": "task87 v1 caps a delivered count because two owed items meeting in one slot cannot both be taken by one unit, an exclusivity the schedule encodes; here the exclusivity is inside one unit's own positions and the ceiling is a number the record states nowhere, read off the maximum of its own overlaps",
+    "task092": "task92 v3 prices a capped intervention by what it removes net of a second charge clock, the cap being a per-day service slot; here the capped quantity is the unit's own deliverable size in a forward period and the cap is recovered rather than filed"
+  },
+  "lineage": [
+    {
+      "gap": [
+        "population"
+      ],
+      "pattern": [
+        "none"
+      ],
+      "generators": [
+        "G1",
+        "G16"
+      ],
+      "gate_g": "method_or_model_selection",
+      "decision_type": "ranked_slate_under_cap",
+      "stump_strategy": "other",
+      "layer2_pattern": "own:concordance by distribution matching, not regression",
+      "driver": "The decisive quantity is how many units fall below a cut on a new instrument's scale when part of the population was measured only on the old instrument; a sample measured on both links the scales, and predicting each unit's new value by regression shrinks every converted value toward the sample's mean, so the converted spread is too narrow and the tail beyond the cut too thin, while matching the percentiles of two groups each measured on one instrument assumes the groups are alike; only a conversion that matches the two instruments' distributions in the sample measured on both keeps the share beyond the cut.",
+      "architecture": "v2 (the 2027 Adolescent Literacy Partnership grants)",
+      "fate": "spent on the portal 2026-10-27: both responses landed the call and one filed the runner-up and the gap exactly; the decisive step was the field's own named method for the deciding quantity, so no competent reflex was stopped by it"
+    },
+    {
+      "gap": [
+        "population",
+        "time"
+      ],
+      "pattern": [
+        "none"
+      ],
+      "generators": [
+        "G4",
+        "G13",
+        "G16"
+      ],
+      "gate_g": "forecasting",
+      "decision_type": "ranked_slate_under_cap",
+      "stump_strategy": "forecast_method_backtest",
+      "layer2_pattern": "own:weather-normalized emissions on the current operating regime",
+      "driver": "The decisive quantity is each unit's output in a standard year of an external driver as the unit now operates, estimated from a response model fitted on the unit's own record; partway through the record many units changed how they respond to the driver or how much they draw regardless of it, on dates no file records, so a model fitted over the whole record or over the latest twelve months, or one recent year scaled by the driver's ratio, misstates the units whose response changed or whose fixed draw does not scale, and each moves a different set of units across the cap.",
+      "architecture": "v1 (Wendlemere covered buildings)",
+      "fate": "judge SEND_BACK 2026-10-17 (NOT_DETERMINISTIC: the post-change window's first span and whether electricity is refit with the heating fuel unforced)"
+    }
+  ],
+  "notes": "Registered at the draw. Axes drawn against the window task141, task144, task485: strategy, decisive G-code, calibration, role, artifact, forum, forcing event and shape all clear the three-build bans. The one WARN is repeat.question_form (how-many, also task141): the decision is a count of weekly treatment slots, so how-many is the form the decision gives, and task141's count was re-arrests at a horizon. Shape 07 is chosen against the two the taxonomy calls native for ETL, because both would announce the decisive step: 03 makes the bridge's own line items name the step from attested stations to deliverable positions, and 15 makes each field's transform a filed instruction. A grid of area cells grades the same conformation without naming how any field is built. The design risk carried into stage 2 is determinism on the ceiling statistic: every reasonable reading of a site's operating ceiling (the record maximum, each year's and each month's maximum, a high quantile of concurrency over treating hours) must land on the same integer per site, closed by C1 on the data with a hard plateau and asserted, never by a filed sentence saying how to compute it.",
+  "registered": "2026-10-27T03:24:24Z"
 }
