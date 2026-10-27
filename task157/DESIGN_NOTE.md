@@ -561,6 +561,53 @@ generator pass.
   (`petition_sheet_index_2028.csv`), two declared distractors in `metadata.json` and named nowhere else,
   every file with source, date and licence.
 
+## Clone adjudication, the promoted surface pairs, 2026-10-27
+
+`guard.py surface` screened 298 builds and 297 pairs and promoted ten holding task157, with no BLOCK.
+Eight are surface similarity alone at 0.101 to 0.104 against a corpus 99th percentile of 0.100 (task134,
+task448, task470, task179, task150, task281, task143, task170): a margin of three thousandths on a lexical
+measure, every one of them a petition, register or return world sharing institutional nouns, and none
+sharing a driver. The two promoted on mechanism are adjudicated here because a promotion on mechanism is
+the finding the screen exists for.
+
+- **task156 vs task157, flagged back to back because two of three mechanism axes collide.** The colliding
+  values are `gate_g: forecasting`, `decision_type: quantity_figure` and the `population` member of the
+  gap, and the third axis, `pattern`, reads `none` on both, which is an absence rather than a collision.
+  Those three are among the most common values in the corpus, so what collided is labels. The mechanisms
+  do not: task156 rides heterogeneous hazards, where the fast leavers go first so a pool's observed
+  leaving rate falls as its members age, and this build rides the inclusion probability of a property that
+  belongs to a PAIR of records, so a five per cent sample reveals it with probability one in four hundred
+  rather than one in twenty. No shared latent structure, no shared default path, no shared correction, and
+  the two reflexes a solver brings are opposite (fit a curve to an ageing pool against scale a count by the
+  sampling fraction). No axis ban fires either: the pairing, the subdomain, the strategy
+  (`other` against `forecast_method_backtest`) and the calibration form (`prior_period_close_out` against
+  `none`) all differ, `guard.py check` cleared the draw and `heart` returns WARN with no BLOCK.
+- **task98 vs task157, flagged because gap, pattern and decision family all collide with no surface
+  overlap**, at 0.084 and only the 65th percentile. Same reading: the shared values are the `population`
+  gap, a `none` pattern and `quantity_figure`, plus a genuinely shared organ in
+  `calibration_form: prior_period_close_out`. The driver is not shared: task98 resolves identity across two
+  dated schedules held under different keys where a subset of members stands in both, which is a join
+  problem; this build's decisive step is an inclusion probability, which is a sampling problem. A shared
+  calibration organ is reuse of a proven component, which `clone-check` holds legitimate; what may not be
+  reused is the thing that drives the stump, and that is not shared. task98 is not within the three builds
+  `ban.calibration` reaches.
+
+The screen reads this build as delivered 10-17, which is architecture 1's record in `pipeline.json`, so
+every severity above reads one level higher than it should.
+
+## The standing design risk, stated rather than discovered later
+
+Arizona's real statute prescribes a proportional projection of a signature sample, which is this ladder's
+rung 1 and files 413,240, printing 415,000, and reads sufficient. Nothing in the pack ships that formula:
+the filing record states the sample's size, the number required and the three outcomes, and never an
+expansion, which both the leak reader and the judge's thread confirmed clause by clause. The asking
+sentence asks what a full count would find rather than what the statutory projection gives, and that is
+what keeps the decisive step analytical rather than rule application. The exposure is a domain expert on
+the portal who reaches for the statute's own method from memory rather than from the pack. That is a real
+risk and it is not closable from inside the build without either shipping the formula, which makes the step
+rule application, or asking a different question, which is a redesign. It is recorded here, and if the
+portal returns on it the repair is at stage 2 and not a sentence.
+
 ## Tried and rejected
 
 - The blind-reader evidence this screen first recorded as owed at stage 4 is withdrawn, not deferred.
