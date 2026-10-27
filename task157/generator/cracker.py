@@ -121,12 +121,11 @@ def families_from_pack(target, rows=None):
 import datetime as dt     # noqa: E402
 
 ASKS = [
-    ("A", "each county: the signatures its recorder determined whose registration was in force when "
-          "signed and is cancelled now", 15),
+    ("A", "each county: the signatures its own recorder determined, whatever code it gave, that are "
+          "lapsed as the asking sentence defines it", 15),
     ("B", "each firm and month: the sampled signatures its registered circulators gathered, and those "
           "struck on a ground other than duplication", 48),
-    ("C", "each circulation month: the sampled signatures signed, and those whose registration was in "
-          "force when signed and is cancelled now", 12),
+    ("C", "each circulation month: the signatures signed in it, and how many of them are lapsed", 12),
 ]
 FIGURES = sum(n for _, _, n in ASKS)
 
@@ -134,10 +133,13 @@ FIGURES = sum(n for _, _, n in ASKS)
 # (supplemental-stumping Part 6): Navajo's own code list ships and says where the registration it matched
 # is recorded, the query notices are their own file, the instruction and the filing record both say a sheet
 # is its circulator's number with its own, and the instruction says which lines the division determined.
-DOCUMENTED = ("old_codes", "corrections", "sheet_key", "determined_by")
-# The three the cracker has nothing to read and no sweep to run: each needs a reconstruction over dated
+# `reg_state` joined this set when the stage 4 re-judge sent ask 2 back: closing its fork needed the
+# asking sentence to name the record and the boundary, which files the reconstruction as a rule, so it is
+# scored as handed over rather than as a device.
+DOCUMENTED = ("old_codes", "corrections", "sheet_key", "determined_by", "reg_state")
+# The two the cracker has nothing to read and no sweep to run: each needs a reconstruction over dated
 # records, and each can be done wrong.
-PRIMARIES = ("reg_state", "firm_asof", "dmy")
+PRIMARIES = ("firm_asof", "dmy")
 GOLDEN_HANDLING = DOCUMENTED + PRIMARIES
 
 

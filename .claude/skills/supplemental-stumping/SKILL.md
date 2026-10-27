@@ -251,6 +251,9 @@ Each ask is a ladder of three to five stops, complete competent pipelines at dis
 
 ## Part 5. Determinism and the audit
 
+**Price the determinism closure before the ask is designed, because on the ask side determinism and difficulty trade against each other one for one.** An ask whose device is a reconstruction the records support two ways is a Gate C fork, and the closure that settles it (naming the record, the set and the boundary in the asking sentence) files the reconstruction as a rule, so the device becomes documented rule application and its share of the ask weight transfers to the solver. Measured on task157, closing three such forks on one ask moved the cracker's keep from 0.040 to 0.240 of the ask weight, the landing response from 58.2 to 66.3, the pair ceiling from 36.2 to 45.7 and mirror leakage from 4.0 to 24.0 per cent, with no graded figure moving and the main call frozen. Nothing was done wrong: the fork was real and the closure was right. The lesson is that a device resting on which record establishes a state is worth what it costs to close, so design the ask so the device survives being pinned (it rides rows the sentence can name without naming their handling) or expect to pay the whole ask when a judge finds the fork at stage 4. Two devices built this way cost one ask; the third should be a different family.
+
+
 Every ask answer recomputes from the bundle, forced by the records: enumerate the wording's readings and prove convergence (align the data so every licensed reading selects the same rows) or pin the wording; band by the margin you own; the records, never the ask, force the device; assert disjointness wherever a breakdown could count two ways.
 
 **The reconciliation ask is where determinism dies, and the asking sentence is the only place it can be

@@ -410,6 +410,12 @@ patch.
 - [ ] Mess real and neutral; clean-data test and realism sweep pass; every graded figure mid-bin
 - [ ] 40+ assertions, verifier green from the bundle, byte-identical rebuild, `figures.json`, `guard.py surface`
 
+## An assertion must measure what its own name claims
+
+Two assertions in one day passed while measuring something else, and both would have shipped. One read "a sheet number alone does not identify a sheet" and was true only because a global id sequence was shorter than the row count, so numbers repeated for a reason unrelated to the claim, while the filed sentence saying each issuer has its own series was contradicted by every row. The other read "no single primary lifts a response to a third of the ask weight" and measured the solver's whole total rather than the lift, so it tracked a number its name does not mention.
+
+The test is mechanical and costs one reading: cover the detail string and ask what the name promises, then ask what the code computes. If a different quantity would satisfy the code, the assertion is measuring the wrong thing even while it passes, and a passing assertion of this kind is worse than a missing one because it buys false confidence at a gate. Write the assertion so that the claim fails when the claim is false: for an identity claim, assert the key's parts are each insufficient AND the whole is unique; for a lift, assert the difference and not the level. When an assertion like this is rewritten, check that whatever it used to measure is still gated somewhere, and say in the report which assertion now carries it.
+
 ## An assertion that searches a document proves it read the document
 
 A check that greps a shipped file for a string reports the same "not found" whether the string is

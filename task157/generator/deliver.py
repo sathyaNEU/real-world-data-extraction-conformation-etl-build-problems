@@ -135,8 +135,8 @@ def write_book(path, E):
         ["Query notices supersede the disposition first returned for the line they name."],
         ["A sheet is identified by the circulator's registration number with the sheet number, because "
          "each firm numbered its own sheets."],
-        ["County figures are over the lines each recorder determined; the lines the division determined "
-         "are left out of them."],
+        ["County figures are over the lines each county's own recorder determined, whatever disposition "
+         "code it gave; the lines the division determined are left out of them."],
         ["A signature belongs to the firm that had its circulator registered on the day it was given; "
          "twenty-two circulators registered again under another firm inside the window."],
         ["A registration was in force on a date if its own date is the later of the registration and any "
@@ -352,21 +352,21 @@ def submission(E):
     L.append("1. Projected valid signatures %s to the nearest 5,000, %s per cent of the number required; "
              "statutory outcome: examine all signature lines filed."
              % (n(call["printed"]), fmt_pct(call["pct"])))
-    L.append("2. Each of the fifteen counties, how many of the sampled signatures its recorder determined "
-             "carry a registration in force on the day signed and cancelled in the 10 July 2028 snapshot:")
+    L.append("2. Each of the fifteen counties, how many signatures its own recorder determined, whatever "
+             "code it gave, are lapsed, that is the signer's registration in force on the day signed with "
+             "any cancellation of it after that day and cancelled in the 10 July 2028 snapshot:")
     for cc, name, _ in K.COUNTIES:
         L.append("   - %s: %s" % (name, n(E["a"][cc]["lapsed"])))
-    L.append("3. Each circulator firm and month, the sampled signatures gathered by circulators that firm "
-             "had registered on the day they were given and how many of those were struck on a ground "
-             "other than duplication, %d cells:" % (len(K.FIRMS) * len(K.WINDOW_MONTHS)))
+    L.append("3. Each circulator firm and month, the signatures gathered by circulators that firm had "
+             "registered on the day signed and how many of those were struck on a ground other than "
+             "duplication, %d cells:" % (len(K.FIRMS) * len(K.WINDOW_MONTHS)))
     for fc, name, _, regno in K.FIRMS:
         for m in ["%04d-%02d" % t for t in K.WINDOW_MONTHS]:
             c2 = E["b"][(regno, m)]
             L.append("   - %s, %s: %s sampled signatures, %s struck on other grounds"
                      % (name, m, n(c2["signatures"]), n(c2["struck"])))
-    L.append("4. Each month from January to June 2028, the sampled signatures signed in it and how many of "
-             "those carry a registration in force on the day signed and cancelled in the 10 July 2028 "
-             "snapshot:")
+    L.append("4. Each month from January to June 2028, the signatures signed in it and how many of them "
+             "are lapsed:")
     for m in sorted(E["c"]):
         d = E["c"][m]
         L.append("   - %s: %s sampled signatures, %s cancelled now"

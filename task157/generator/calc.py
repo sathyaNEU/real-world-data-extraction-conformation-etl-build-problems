@@ -197,8 +197,8 @@ def cancelled_now(row):
 
 
 def lapsed(rows, late, sel=None):
-    """Sampled signatures whose signer was registered on the date the signature was given and whose
-    registration the 10 July 2028 snapshot no longer shows as valid."""
+    """Lapsed sampled signatures: the snapshot's own dates put the signer's registration in force on the
+    day signed, with any cancellation of it after that day, and the snapshot now gives it as cancelled."""
     k = 0
     for r in (rows if sel is None else sel):
         if not r["vid"]:
@@ -248,8 +248,10 @@ def sheet_serials(target):
 
 
 def ask_a(target, rows):
-    """For each county: how many of the sampled signatures its recorder determined had a registration the
-    10 July 2028 snapshot shows cancelled although it was in force on the day they signed."""
+    """For each county: how many of the signatures that county's own recorder determined, whatever
+    disposition code it gave, are lapsed as the asking sentence defines it: the 10 July 2028 snapshot's own
+    dates put the signer's registration in force on the day signed, any cancellation of it falls after that
+    day, and the snapshot now gives the registration as cancelled."""
     late = {int(r["voter_reg_id"]): r for r in rd(target, R.F_SNAP_LATE)}
     out = {}
     for cc, name, _ in K.COUNTIES:
@@ -281,9 +283,8 @@ def ask_b(target, rows):
 
 
 def ask_c(target, rows):
-    """For each month of the circulation period: the sampled signatures signed in it, and how many of those
-    had a registration the 10 July 2028 snapshot shows cancelled although it was in force on the day
-    they signed."""
+    """For each month of the circulation period: the signatures signed in it, and how many of them are
+    lapsed on the same definition as ask A, which the asking sentence states once for both."""
     late = {int(r["voter_reg_id"]): r for r in rd(target, R.F_SNAP_LATE)}
     out = {}
     for y, m in K.WINDOW_MONTHS:

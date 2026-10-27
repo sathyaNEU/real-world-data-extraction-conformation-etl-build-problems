@@ -32,7 +32,7 @@ The sample projects 390,000 valid signatures, 101.3 per cent of the 384,924 requ
 ### signature_projection_2028.xlsx
 
 1. Projected valid signatures 390,000 to the nearest 5,000, 101.3 per cent of the number required; statutory outcome: examine all signature lines filed.
-2. Each of the fifteen counties, how many of the sampled signatures its recorder determined carry a registration in force on the day signed and cancelled in the 10 July 2028 snapshot:
+2. Each of the fifteen counties, how many signatures its own recorder determined, whatever code it gave, are lapsed, that is the signer's registration in force on the day signed with any cancellation of it after that day and cancelled in the 10 July 2028 snapshot:
    - Apache: 4
    - Cochise: 10
    - Coconino: 9
@@ -48,7 +48,7 @@ The sample projects 390,000 valid signatures, 101.3 per cent of the 384,924 requ
    - Santa Cruz: 1
    - Yavapai: 25
    - Yuma: 11
-3. Each circulator firm and month, the sampled signatures gathered by circulators that firm had registered on the day they were given and how many of those were struck on a ground other than duplication, 24 cells:
+3. Each circulator firm and month, the signatures gathered by circulators that firm had registered on the day signed and how many of those were struck on a ground other than duplication, 24 cells:
    - Sonoran Petition Services LLC, 2028-01: 685 sampled signatures, 133 struck on other grounds
    - Sonoran Petition Services LLC, 2028-02: 1,515 sampled signatures, 331 struck on other grounds
    - Sonoran Petition Services LLC, 2028-03: 2,180 sampled signatures, 516 struck on other grounds
@@ -73,7 +73,7 @@ The sample projects 390,000 valid signatures, 101.3 per cent of the 384,924 requ
    - Mesquite Civic Outreach LLC, 2028-04: 788 sampled signatures, 165 struck on other grounds
    - Mesquite Civic Outreach LLC, 2028-05: 926 sampled signatures, 232 struck on other grounds
    - Mesquite Civic Outreach LLC, 2028-06: 1,547 sampled signatures, 366 struck on other grounds
-4. Each month from January to June 2028, the sampled signatures signed in it and how many of those carry a registration in force on the day signed and cancelled in the 10 July 2028 snapshot:
+4. Each month from January to June 2028, the signatures signed in it and how many of them are lapsed:
    - 2028-01: 1,057 sampled signatures, 15 cancelled now
    - 2028-02: 2,964 sampled signatures, 59 cancelled now
    - 2028-03: 5,075 sampled signatures, 102 cancelled now

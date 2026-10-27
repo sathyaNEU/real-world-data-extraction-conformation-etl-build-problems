@@ -365,71 +365,87 @@ outcomes.
 ## Ask sheet
 
 Three asks, 75 separately gradable figures, 55 per cent of the rubric. Each is a component, qualifier or audit
-trail of the call, each is multi-dimensional, and each carries its own **primary** device, which is a
-reconstruction over dated records that no shipped sentence states and no sweep of the hygiene battery
-performs. Unit and rounding sit inside the asking sentence: every figure is a whole number.
+trail of the call, each is multi-dimensional, and the asking sentence carries unit and rounding: every figure
+is a whole number.
 
-| ask | the asking sentence's object | figures | primary device | shared hazards |
+| ask | the asking sentence's object | figures | what a response has to do | shared hazards |
 |---|---|---|---|---|
-| A | each of the fifteen counties: how many of the sampled signatures its recorder determined carry a registration in force on the day signed and cancelled in the 10 July 2028 snapshot | 15 | **the registration state at the day signed**, rebuilt from the registration date and the cancellation date the July snapshot carries, so a registration re-established after a cancellation stands, one cancelled after the signature was given stands too, and the status column rather than the presence of a cancellation date decides what is lost now | the 182 lines the division determined rather than a recorder; the day-first signature dates |
-| B | each of the four circulator firms and each month from January to June 2028: the sampled signatures gathered by circulators that firm had registered on the day the signature was given, and how many were struck on a ground other than duplication | 48 | **the firm as at the day signed**, rebuilt from the circulator registration extract, where twenty-two circulators registered again under another firm inside the window and a registration number therefore carries two rows with their own dates | the day-first signature dates; the firm that changed its trading name on one registration number; the firms' manifests, which count what they delivered rather than what was sampled |
-| C | each of those months: the signatures signed in it, and how many carry such a registration | 12 | **the day-first signature dates**, which Mohave County's return writes as the recorder's system does, so a month-first parse silently moves signatures across every month boundary | the registration state at the day signed again, which the second figure shares with ask A, so a response that reconstructs neither loses both figures of every month |
+| A (ask 2) | each of the fifteen counties: how many signatures its own recorder determined, whatever code it gave, are lapsed | 15 | the lapsed test the asking sentence defines, joined to the snapshot on the state's own registration identifier and evaluated per line against the day signed | the 182 lines the division determined rather than a recorder, excluded by the sentence; Mohave's day-first signature dates, which still move that county's figure |
+| B (ask 3) | each of the four circulator firms and each month from January to June 2028: the signatures gathered by circulators that firm had registered on the day signed, and how many were struck on a ground other than duplication | 48 | **the firm as at the day signed**, rebuilt from the circulator registration extract, where twenty-two circulators registered again under another firm inside the window and a registration number therefore carries two rows with their own dates | the day-first signature dates; the firm that changed its trading name on one registration number; the firms' manifests, which count what they delivered rather than what was sampled |
+| C (ask 4) | each of those months: the signatures signed in it, and how many are lapsed | 12 | **the day-first signature dates**, which Mohave County's return writes as the recorder's system does, so a month-first parse silently moves signatures across every month boundary | the lapsed test again, shared with ask A through the one definition the asking sentence states for both |
 
-**The two ask-side forks the stage 4 judge raised are closed by the filing record's own sentences**, which is
-the sanctioned device on this side of the build: rule 3 binds the main call's decisive step and the asks are
-free of it, so an ask may turn on a filed rule. The record's `Circulator registrations` section states that a
-circulator who moves firm is withdrawn as of the day the new registration takes effect and that sheets
-gathered on that day are gathered under the new registration, which fixes the 17 sampled lines signed on a
-handover day; and that a firm which changes its trading name keeps its registration number, which fixes the
-five trading names over four registration numbers at four firms and matches the asking sentence's "four
-circulator firms". Both are asserted in `checks.py` against the extract's own rows rather than against a
-sentence alone, and the extract hands every mover over on one day with no gap and no overlap.
+**The four ask-side forks the stage 4 re-judge sent back, and how each is closed.** The re-judge returned
+NOT_DETERMINISTIC on ask 2 and one boundary line in ask 4 with the main call, the projection, ask 1 and ask 3
+forced. The closure is in the asking sentence, which is licensed on this side: an ask's wording may be
+tightened with its unit and rounding kept, and rule 3 binds the main call's decisive step, not the asks. Every
+reading below is measured on the cut pack and asserted in `checks.py`.
 
-**The cracker sheet**, measured by code on the cut pack. The cracker lands the call, runs the hygiene battery
-(key uniqueness, exact duplicates, unmatched joins, fan-out, count ties), executes every filed rule it points
-at and applies every handling a shipped document states, so it has Navajo's code list, the query notices, the
-sheet key and the division's own determinations, and it meets the three primaries with nothing to read.
+| fork | the readings it admitted | closed by | measured |
+|---|---|---|---|
+| which lines count | any code the recorder gave; or only V, AD and SG; or the division's lines added | "how many signatures its own recorder determined, whatever code it gave, are lapsed" | the sentence's set files **487** with Maricopa 314; V, AD and SG only file 484 with Maricopa 311; adding the division's lines files 489 |
+| whose record establishes the state | the snapshot's own registration and cancellation dates; or the recorder's own finding on the line | "avid_snapshot_extract_20280710.csv's own dates put its signer's registration in force on the day signed" | the snapshot's dates file **487**; the recorder's finding files 506 to 515 and differs in 11 of 15 counties |
+| the same-day boundary | a cancellation on the day signed left the registration in force on that day, or did not | "with any cancellation after that day", in the one definition both asks read | after the day signed files **487** and **488**; the inclusive reading files 488 and 489, moving Pima from 57 to 58 and March from 102 to 103 |
+| the day-first dates | month first or day first on Mohave's return | nothing: the data forces it | of 814 dated Mohave rows, **517 carry a first field over twelve and none a second field over twelve**, so only day first parses the file at all |
+
+The lapsed test is stated once, in a single sentence both asks read, so the two figures cannot diverge on it.
+A registration re-established after its own cancellation would be a fourth reading of "in force on the day
+signed", and it is inert by construction: no snapshot row is cancelled now with a registration later than its
+cancellation, so no such line can be lapsed under any reading, asserted.
+
+**What the closure cost, measured and not tuned.** Naming the record and the boundary files the
+reconstruction as a rule, so the registration state at the day signed is no longer a device: it is scored as
+handed over, in `cracker.py`'s `DOCUMENTED` set beside Navajo's code list, the query notices, the sheet key
+and the division's determinations. Two primaries remain, the firm as at the day signed and the day-first
+dates. The figures moved accordingly and are left where they land.
 
 | ask | the cracker's route | figures it keeps of its own ask | cracker |
 |---|---|---|---|
-| A | the recorder column taken as filed and a registration counted lost wherever the snapshot's status says cancelled | 1 of 15 | miss |
+| A | the lapsed test as filed, but Mohave's dates read month first | 14 of 15 | miss |
 | B | the firm taken from the circulator's current registration row | 2 of 48 | miss |
-| C | every slash-separated signature date read month first | 0 of 12 | miss |
+| C | the lapsed test as filed, every slash-separated signature date read month first | 2 of 12 | miss |
 
 **Both numbers, labelled, because the gate carries the worse one.**
 
 | reading | what the response that lands the call also does | its ask keep | response 1 | response 2 | pair |
 |---|---|---|---|---|---|
-| the cracker's own keep | nothing beyond the battery and the filed rules | 3 of 75, 0.040 | 47.2 | 14.2 | 30.7 |
-| **the worst honest reading, and the gated figure** | also solves whichever single primary is worth most, the registration state at the day signed | 18 of 75, 0.240 | **58.2** | 14.2 | 36.2 |
+| the cracker's own keep | nothing beyond the battery and the filed rules, which now include the lapsed test | 18 of 75, 0.240 | 58.2 | 25.2 | 41.7 |
+| **the worst honest reading, and the gated figure** | also solves whichever single primary is worth most, the day-first dates | 29 of 75, 0.387 | **66.3** | 25.2 | 45.7 |
 
-Pair ceiling: 36.2
+Pair ceiling: 45.7
 
-Pair ceiling on the cracker's own keep for both responses: 30.7
+Pair ceiling on the cracker's own keep for both responses: 41.7
 
 The worse figure is in the gated field on purpose, because a green gate bought with the favourable of two
-numbers is the defect the gate exists to catch. **The single-response figure the coordinator asked about is
-58.2, under 60, and it got there without touching the main call**: what moved it was cutting ask A's count of
-each recorder's own determinations, 15 figures the cracker kept 15 of, because the verification instruction
-tells a reader how to filter them. Cutting them took the cracker's keep from 0.178 of the ask weight to
-0.040 and the worst single response from 66.4 to 58.2. Ask A keeps a population only inside its own asking
-sentence, where it is not separately graded.
+numbers is the defect the gate exists to catch. **The pair ceiling is 45.7 against a build target of 60 and a
+bar of 70, so the bar holds on the pair, which is what the bar measures.** The single-response figure rose
+from 58.2 to 66.3 when the fork closure filed the lapsed test, and it is reported at 66.3 rather than tuned:
+this pass was not permitted to chase the ceiling, and the asks were not rebuilt to win the number back. Each
+primary's own lift is small and measured: the day-first dates lift a response by 0.147 of the ask weight and
+the firm as at the day signed by minus 0.027, since getting the firm right while the month is still wrong
+moves cells that had matched by accident. Both are load-bearing: a response that solves the other one without
+it keeps 16 and 29 of 75.
 
-Easy route, which also takes the documented handlings wrong: 3 of 75. Each of the three primaries is
-load-bearing and `checks.py` asserts it: a response that solves the other two without it still misses, at 16,
-29 and 55 of 75, and no single primary solved alone reaches a third of the ask weight (0.120, 0.013, 0.240).
+Easy route, which also takes the documented handlings wrong: 3 of 75.
 
-Mirror leakage: 4.0 per cent of the ask weight, the share the best response off the call keeps, against a bar
+Mirror leakage: 24.0 per cent of the ask weight, the share the best response off the call keeps, against a bar
 of 50 and a target of two fifths.
 
 Measured by: generator/cracker.py, section 4, run on the cut pack.
 
+**No third judge pass stands behind this closure, and the note does not imply one.** Stage 4 gives one pass
+and one re-judge on a FIX_NOW and both are spent: the first returned DETERMINISTIC on the main call, the
+second returned NOT_DETERMINISTIC on ask 2 and one line of ask 4 with the main call still forced. This
+closure therefore stands on the filed wording quoted above, on the measured alternatives beside it, and on
+the free gates in `## Pre-ship check`, with `freeze.py check task157 --mode rubric` proving the main
+recommendation side unmoved. Nothing here was blessed by a judge.
+
 **What was cut, and the measurement that cut it.** The ask sheet carried a fourth ask, the sampled signatures
 and sheet serials of each of the eleven disposition codes, 22 figures, and the cracker kept 22 of 22: Navajo's
 code list, the query notices and the sheet key are all documented or battery-visible, so nothing on that ask's
-path cost a careful response anything. It was cut at stage 3 and the conformation work it asked for is still
-in the pack and still on the call's own path, where `checks.py` asserts it neutral. Ask A's determination
-count went the same way at this pass and for the same reason, measured rather than argued.
+path cost a careful response anything. Ask A's count of each recorder's own determinations went the same way
+at the following pass, 15 figures the cracker kept 15 of, which took the cracker's keep from 0.178 of the ask
+weight to 0.040 and the worst single response from 66.4 to 58.2. The conformation work both asked for is still
+in the pack and still on the call's own path, where `checks.py` asserts it neutral.
 ## Convergence, on the cut pack and against a rival's family
 
 Computed by `generator/cracker.py` on the shipped bundle, with the bucket each construction files. The
@@ -519,23 +535,26 @@ way.
 
 ## Pre-ship check
 
-Every gate below was re-run on the final build of 2026-10-27, after the stage 4 return was answered in one
-generator pass.
+Every gate below was re-run on the final build of 2026-10-27, after the stage 4 re-judge's ask-side
+send-back was answered in one generator pass with the main recommendation side frozen.
 
-- Generator checks: **146 run, 0 failed**, exit 0. Independent verifier (pandas, bundle only, no generator
+- `freeze.py check task157 --mode rubric`: **exit 0, PASS**, the main call, the stump and every frozen figure
+  unchanged; the workbook is the one ask file that moved and no ask figure moved, because the closure is in
+  the asking sentence and lands on the golden's own readings.
+- Generator checks: **152 run, 0 failed**, exit 0. Independent verifier (pandas, bundle only, no generator
   import): **29 run, 0 failed**, exit 0.
 - Two consecutive builds byte-identical on `target/`, `golden/`, `figures.json` and `submission.md`;
   `target.zip` sha256 `03a605c6acdecb39d97d465b28399eeb013be957155e0dff9aa8b7b4b9901d93` on both.
 - `figures_check.py`: **96 figures in blocks 1 to 4, 0 absent** from `figures.json`, exit 0.
-- `precut.py`: **52 checks, 0 FAIL, 0 WARN**, exit 0. `voice-check.py`: PASS, 970 characters, exit 0.
+- `precut.py`: **52 checks, 0 FAIL, 0 WARN**, exit 0. `voice-check.py`: PASS, 991 characters, exit 0.
 - `leak.py --asof 2028-08-04`: **REVIEW, no LEAK**, exit 1 (the REVIEW verdict's own code). Seven REVIEW
   lines, each answered here. The Navajo code list is that recorder's own code table, which maps codes and
   says nothing about them, so it is data rather than a file that describes the pack. The filing record
   carries the seven words of the committed call because the statute's third outcome is the examination of
   all signature lines filed, stated beside the other two outcomes and with no figure of the projection
   anywhere in it. The three documents carry four to seven of the stump paragraph's twenty-five terms, every
-  one of them a generic institutional noun (division, record, disposition, arizona, sheets, office,
-  recorders, instruction, duplicate, filing) and not one of them a pair, an inclusion probability, a squared
+  one of them a generic institutional noun (division, record, disposition, arizona, sheets, sample, office,
+  recorders, instruction, duplicate) and not one of them a pair, an inclusion probability, a squared
   fraction or a count of signers. The circulator extract and the firms' manifests name the four firms beside
   registration numbers and sheet counts, and neither carries a validity determination or any figure the call
   reads. The statutory figures the filing record must state are declared under `stated_inputs` and the
@@ -544,7 +563,7 @@ generator pass.
   the receiving staff and the firms' contacts are drawn afresh, and the four personas the pack now carries
   (Arizona Secretary, Philip James, Tony Lynch, Verde Petition) raise one NOTE, that `Arizona Secretary` and
   `Verde Petition` are not on the card's `world.people`, which is the author's field to extend. The clone
-  screen's own half promotes eight pairs holding task157, six of them on surface alone at 0.101 to 0.104
+  screen's own half promotes ten pairs holding task157, eight of them on surface alone at 0.101 to 0.104
   where the corpus's 99th percentile is 0.100, one back-to-back pair with task156 on two card axes (gap
   population, decision quantity_figure) and one with task98 v7 on gap, pattern, Gate G and calibration form,
   which `heart` already records as differentiated and which `guard.py check` cleared at the draw. The screen
@@ -779,7 +798,31 @@ portal returns on it the repair is at stage 2 and not a sentence.
   - **The 2024 close-out as a pointer: re-subjected rather than cut.** It read as a file placed to be
     compared with this filing. Its county table is now subjected on the examination itself (lines examined,
     examiner days, examination closed) and its header states that every signature line filed was examined
-    and no sample was drawn, so it carries its own subject and still ties under every expansion basis.
+    and no sample was drawn, so it carries its own subject and still ties under every expansion basis.  - **Ask 2's and ask 4's three live forks: closed in the asking sentence, at the cost of the ask's biggest
+    device.** The stage 4 re-judge returned NOT_DETERMINISTIC on ask 2 and one boundary line in ask 4 with
+    the main call, the projection, ask 1 and ask 3 forced. Which lines count (487 against 484 and 489),
+    whose record establishes the registration state on the day signed (the snapshot's own dates, 487,
+    against the recorder's finding, 506 to 515 and differing in 11 of 15 counties) and the same-day
+    cancellation (487 and 488 against 488 and 489) are now named in the sentence, with the lapsed test
+    stated once for both asks. Naming the record and the boundary files the reconstruction as a rule, so
+    the registration state at the day signed stopped being a device: it moved into `cracker.py`'s
+    `DOCUMENTED` set, the cracker's keep went from 0.040 of the ask weight to 0.240, the single response on
+    the call from 58.2 to 66.3 and the pair ceiling from 36.2 to 45.7. Left where it landed: this pass was
+    not licensed to chase the ceiling, and 45.7 is what the bar measures.
+  - **Closing the same-day boundary by moving the data: not attempted, and would have broken the freeze.**
+    The alternative to wording was to move the one Pima signer's cancellation off the day it signed, which
+    changes a snapshot row the main call's own registration step reads, so `freeze.py check --mode rubric`
+    would have failed on a frozen figure. The wording closure moves nothing graded, which is why ask 2's
+    and ask 4's figures are unchanged at 487 and 488.
+  - **The primary-lift assertion rewritten again, for the same reason as the first time.** With the
+    registration state documented, the assertion that no primary solved alone lifts a response to a third
+    of the ask weight was measuring the cracker's whole total rather than the primary's lift, and the total
+    is already gated at two fifths. It now measures the lift itself (the day-first dates plus 0.147, the
+    firm as at the day signed minus 0.027) and leaves the total to the gate that owns it.
+  - **The reconstruction-moves-the-counties assertion re-based.** It compared ask 2's figures with the
+    cracker's, which collapsed to one county once the lapsed test was filed. It now compares them with the
+    easy route that counts every signer the snapshot shows cancelled (14 of 15 counties move) and asserts
+    separately that the day-first dates still move exactly one county's figure, Mohave's.
 
 ## The licensed re-judge, 2026-10-26
 

@@ -413,13 +413,16 @@ ok("the pair ceiling is under the build target of 60 on the worst honest reading
    "%.1f, from %.1f and %.1f" % (wp, wc, ws2))
 ok("the mirror keeps under half the ask weight", me["cracker_keep"] < 0.50,
    "%.1f per cent" % (100 * me["cracker_keep"]))
-ok("every one of the three primaries is load-bearing: solving the other two without it still misses",
-   all(sum(v.values()) < me["total"] for v in me["minus_primary"].values()),
+ok("every one of the remaining primaries is load-bearing: solving the other without it still misses",
+   len(CR.PRIMARIES) == 2 and all(sum(v.values()) < me["total"] for v in me["minus_primary"].values()),
    ", ".join("without %s %d of %d" % (k, sum(v.values()), me["total"])
              for k, v in sorted(me["minus_primary"].items())))
-ok("no single primary solved alone lifts a response to a third of the ask weight",
-   max(sum(v.values()) for v in me["per_primary"].values()) / float(me["total"]) <= 0.34,
-   ", ".join("%s %.3f" % (k, sum(v.values()) / float(me["total"]))
+_base = sum(me["cracker"].values())
+ok("no single primary lifts a response by as much as a third of the ask weight",
+   max(sum(v.values()) - _base for v in me["per_primary"].values()) / float(me["total"]) <= 0.34,
+   ", ".join("%s lifts the cracker by %+.3f to %.3f"
+             % (k, (sum(v.values()) - _base) / float(me["total"]),
+                sum(v.values()) / float(me["total"]))
              for k, v in sorted(me["per_primary"].items())))
 ok("the separation line: no ask device touches a disposition on a sampled line",
    all(K.round_to(call_of(h), K.BIN) == GOLD_PRINTED for _, h in MESS),
@@ -465,18 +468,84 @@ ok("the ask side's firm-name fork is closed by the filing record's own sentence"
    and len({r["registering_firm"] for r in C.rd(TARGET, R.F_CIRC)}) == 5
    and len({r["firm_registration_no"] for r in C.rd(TARGET, R.F_CIRC)}) == 4,
    "five trading names over four registration numbers, and the record keys a firm by its number")
+PROMPT = norm(open(os.path.join(TASK, "prompt.txt")).read())
+
+
+def lapsed_inclusive(rws, late, sel):
+    """The reading the asking sentence rules out: a cancellation on the day signed left the registration in
+    force on that day."""
+    k = 0
+    for r in sel:
+        if not r["vid"] or r["signed"] is None:
+            continue
+        e = late.get(r["vid"])
+        if e is None or e["registration_status"] != "CANCELLED":
+            continue
+        reg = e["registration_date"].strip()
+        canc = e["cancellation_date"].strip()
+        if not reg:
+            continue
+        reg = dt.date(*(int(x) for x in reg.split("-")))
+        if reg > r["signed"]:
+            continue
+        if canc:
+            cd = dt.date(*(int(x) for x in canc.split("-")))
+            if reg <= cd and r["signed"] > cd:
+                continue
+        k += 1
+    return k
+
+
+_rec_rows = [r for r in rows if r["determined_by"] == "RECORDER"]
+_late = {int(r["voter_reg_id"]): r for r in C.rd(TARGET, R.F_SNAP_LATE)}
+_sub = [c for c in K.CODE_KEYS if c not in ("CA", "NR", "NQ")]
+_gold_a = sum(v["lapsed"] for v in E["a"].values())
+_alt_codes = C.lapsed(rows, _late, [r for r in _rec_rows if r["code"] in ("V", "AD", "SG")])
+_alt_div = C.lapsed(rows, _late, rows)
+_alt_sub = C.lapsed(rows, _late, [r for r in _rec_rows if r["code"] in _sub])
+ok("ask 2's set of lines is named in the asking sentence, and the readings it rules out are measured",
+   "how many signatures its own recorder determined, whatever code it gave, are lapsed" in PROMPT
+   and _gold_a == 487 and _alt_codes == 484 and _alt_div == 489 and _alt_sub == _gold_a,
+   "the sentence's set files %d; V, AD and SG only file %d and adding the division's lines files %d"
+   % (_gold_a, _alt_codes, _alt_div))
+ok("ask 2's and ask 4's record is named in the asking sentence: the snapshot's own dates, not a finding",
+   "avid_snapshot_extract_20280710.csv's own dates put its signer's registration in force on the day "
+   "signed" in PROMPT,
+   "quoted from the asking sentence, which both lapsed figures read")
+ok("the same-day boundary is closed in the asking sentence, and the other reading is measured",
+   "with any cancellation after that day" in PROMPT
+   and lapsed_inclusive(rows, _late, _rec_rows) == _gold_a + 1,
+   "after the day signed files %d; counting a same-day cancellation as in force files %d"
+   % (_gold_a, lapsed_inclusive(rows, _late, _rec_rows)))
+ok("a registration re-established after its cancellation cannot be lapsed, so that reading is inert",
+   sum(1 for e in _late.values() if e["registration_status"] == "CANCELLED"
+       and e["cancellation_date"].strip() and e["registration_date"].strip()
+       and e["registration_date"].strip() > e["cancellation_date"].strip()) == 0,
+   "no snapshot row is cancelled now with a registration later than its cancellation")
+_moh = [r for r in C.rd(TARGET, R.F_RETURNS)
+        if r["county_code"] == K.DMY_COUNTY and r["signature_date"].strip()]
+ok("the day-first dates are forced by the data rather than by a convention",
+   len(_moh) > 0
+   and sum(1 for r in _moh if int(r["signature_date"].split("/")[0]) > 12) > len(_moh) // 2
+   and sum(1 for r in _moh if int(r["signature_date"].split("/")[1]) > 12) == 0,
+   "%d dated Mohave rows, %d with a first field over twelve and none with a second over twelve"
+   % (len(_moh), sum(1 for r in _moh if int(r["signature_date"].split("/")[0]) > 12)))
 ok("the day-first signature dates move every month figure",
    all(E["c"][m]["signatures"] != CR.answers(TARGET, CR.DOCUMENTED)["C"][m]["signatures"]
        for m in E["c"]), "six of six months")
 ok("ask A's figures are determinate where a county has none",
    all(isinstance(v["lapsed"], int) for v in E["a"].values()),
    "%d counties, %d of them nil" % (len(E["a"]), sum(1 for v in E["a"].values() if v["lapsed"] == 0)))
-ok("the registration state reconstruction moves the counties' figures",
-   sum(1 for cc in E["a"]
-       if E["a"][cc]["lapsed"] != CR.answers(TARGET, CR.DOCUMENTED)["A"][cc]["lapsed"]) >= 12,
-   "%d of %d counties"
-   % (sum(1 for cc in E["a"]
-          if E["a"][cc]["lapsed"] != CR.answers(TARGET, CR.DOCUMENTED)["A"][cc]["lapsed"]), len(E["a"])))
+_easy_a = CR.answers(TARGET, ())["A"]
+ok("the asking sentence's lapsed definition moves the counties' figures off the status column alone",
+   sum(1 for cc in E["a"] if E["a"][cc]["lapsed"] != _easy_a[cc]["lapsed"]) >= 12,
+   "%d of %d counties against a response that counts every signer the snapshot shows cancelled"
+   % (sum(1 for cc in E["a"] if E["a"][cc]["lapsed"] != _easy_a[cc]["lapsed"]), len(E["a"])))
+_doc_a = CR.answers(TARGET, CR.DOCUMENTED)["A"]
+ok("the day-first dates still move a county figure in ask 2, now that the reconstruction is filed",
+   sum(1 for cc in E["a"] if E["a"][cc]["lapsed"] != _doc_a[cc]["lapsed"]) == 1
+   and E["a"][K.DMY_COUNTY]["lapsed"] != _doc_a[K.DMY_COUNTY]["lapsed"],
+   "one county of %d, Mohave, whose return writes its dates day first" % len(E["a"]))
 
 # =================================================================================== documents
 print()
