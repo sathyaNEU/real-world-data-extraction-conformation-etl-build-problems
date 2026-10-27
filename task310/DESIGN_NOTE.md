@@ -346,6 +346,26 @@ Measured by: generator/pair.py on the cut pack.
 - Golden realism: the brief and the chart titled with the finding, a source note under every workbook sheet, frozen
   header rows, precision by quantity (kWh to 50, MWh to 100, pilot MWh to one decimal, counts whole).
 
+- Stage 4 (target.zip 6990902f): leak reader (isolated, sonnet, medium) found no decisive-step sentence, no file that
+  ranks the regions, no helper file, question 6 analytical; every mechanical line harmless; its realism notes are
+  minor (uniform serial shapes, a tidy data guide) and left as shipped. Judge (/tmp/determinism-check-task310-1793132094,
+  the first thread killed by an interrupted turn before writing anything, rerun once): DETERMINISTIC, APPROVE, every
+  graded figure reproduced, six reconstruction variants print the golden, the recorded-solar route the only fork that
+  moves the call; Gate G borderline (surface_read_dependency yes, ES-114 states how export control acts), Gate H domain
+  and layers pass, decisive step analytical. Its two optional notes are declined: a line on twin serials reporting one
+  meter would hand ask B's silent device over, and a guideline sentence on array output would announce the decisive
+  step; both forks are left to the data, which separate them.
+- The 10/10 rules re-read against the built pack: the decisive step is rebuilding the limited homes' output from the
+  unlimited homes under the same sky before the battery runs, which no filed rule performs; the clocks, counters,
+  channels, reissued NMIs, claims and certificates stay Layer 1, each mishandling asserted to leave the call.
+
+- Gate G litmus (the judge agent's reconciliation flagged surface_read_dependency against the card's
+  binding_constraint): the rebuilt solar does not overturn a wrong reported read. The record is true of what each
+  inverter delivered under its limit; the guideline's estimand is the energy the battery would have delivered had it
+  been fitted, a counterfactual in which the same limit no longer holds the array back (ES-114 3.1, guideline Appendix
+  A), so the record is censored relative to the estimand and the rebuild is a modelling step (a reference per kWp
+  from unlimited homes under the same sky, its family spread 8 kWh). Ruled analytical; the card stands.
+
 ## Tried and rejected
 
 - The seed's successor-channel architecture (a closed leasing programme's homes buying through its servicer): the call

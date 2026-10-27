@@ -1,10 +1,10 @@
 {
  "task": "task310",
- "status": "PAUSED",
+ "status": "SHIPPED",
  "domain": "energy-systems-utilities",
  "objective": "opportunity-sizing-decision",
- "stage": 4,
- "stage_name": "check",
+ "stage": 5,
+ "stage_name": "ship",
  "updated": "2026-10-27",
  "stump": "A competent analyst simulates the programme battery against each panel home's recorded hourly solar and use and runs the rounds Sandhaven Coast 2027, Eastbrook Metro 2028, Tarrock Highlands 2029 and Yarrandale Valley 2030 at about 1,200 kWh a battery for Yarrandale, because the 28 Yarrandale estate homes on the 0.5 kW constrained-zone agreement recorded only the solar their own use and the limit took; with their output rebuilt hour by hour from the unlimited Yarrandale homes' energy per kilowatt, Yarrandale Valley goes first at about 2,450 kWh a battery.",
  "architecture": 1,
@@ -20,14 +20,20 @@
   "nearest": "task114 0.06 (driver)",
   "surface": "4 pairs at 0.10 (task308 same pairing two back, other decision and driver; task309, task165, task453 surface only), adjudicated clean"
  },
- "judge": null,
+ "judge": {
+  "verdict": "DETERMINISTIC",
+  "disposition": "APPROVE (pass 1)",
+  "report": "task310/determinism_check_report.md",
+  "gate_g": "binding_constraint analytical, borderline surface read",
+  "gate_h": "domain pass, layers pass, decisive step analytical"
+ },
  "returned": [],
- "resume": "stage 4: judge thread running on target.zip 6990902f (/tmp/determinism-check-task310-1793132094/verdict.md); hand the verdict to the determinism-judge agent for the report, fix any finding in one generator pass, re-judge once on FIX_NOW, then ship",
+ "resume": "shipped 2026-10-27; awaiting the portal",
  "approved": null,
- "delivered": null,
+ "delivered": "2026-10-27",
  "portal": null,
  "portal_id": "",
  "portal_status": "",
  "portal_status_date": "",
- "zip_sha256_16": ""
+ "zip_sha256_16": "6990902f5cfbcf85"
 }
