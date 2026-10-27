@@ -560,6 +560,18 @@ exactly, rather than a quantity fitted over a population the analyst chooses. Th
   entered above. The useful residue is that all three put the decisive step in the nonlinearity of a
   records-fixed count, and in every case the nonlinearity was either attained by a one-pass scan or financed by
   a parameter the records do not fix. Architecture 10 is not another nonlinearity on this ground.
+- Architecture 10's ground, corrected the same day. My first reading of the hunt was that
+  `business-operations-analytics` x anomaly-detection was the only ground left, because coverage prints just two
+  never-built drawable anomaly pairings and the other is this slot's own criminology lineage. That was wrong twice.
+  `ban.pairing` reaches only the last three builds, so a pairing used earlier is drawable on its merits, and
+  never-built is a coverage nicety rather than a requirement. And the corpus says where to look: across this lane
+  17 anomaly-detection builds have shipped against 7 stuck, and the split is by what supplies the deciding
+  quantity. The shipped ones sit where it is a physical, instrument or measurement process
+  (`energy-systems-utilities` 3, `physical-environmental-sciences` 2, epidemiology, pharmacology, biomedical,
+  human-factors) or a sampling and estimation process (`survey-research-official-statistics` 2,
+  `general-statistics-data-science` 2). Both stuck accounting slots are this one and task198. So the objective is
+  not closed, three slots have each exhausted one world, and architecture 10 draws a deciding quantity of the
+  first kind rather than the one never-built label.
 - The cell itself is the finding, and it is why architecture 10 moves domain. In `accounting-audit-forensic` the
   only live inherited anomaly-detection task type is `forensic-investigation` mapped to `fraud-aml-detection`
   (`multiple-testing-selective-inference` is closed by the Part 3 screen, `exploratory-data-analysis-distribution-assessment`
