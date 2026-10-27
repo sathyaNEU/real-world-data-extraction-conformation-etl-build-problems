@@ -1,132 +1,146 @@
 {
- "task": "task464",
- "architecture": 3,
- "drawn": "2026-10-27",
- "slot_note": "wave 4 (second re-root). Architecture 2 (placing the retiring reading test's scores on the new scale) spent on the portal 2026-10-27 because the decisive step was psychometrics' own named method for the deciding quantity. Architecture 3 keeps the number and the ETL objective, takes a fresh world, and puts the field's own method in the default path: the decisive step is a reconstruction of the capacity input, not a choice of method.",
- "domain": "healthcare-delivery-health-economics",
- "client_domain": "healthcare-delivery-health-economics",
- "subdomain": "payment-claims-health-plan-analytics",
- "niche": "a nonprofit Medicaid plan's network unit conforming one capacity dataset for its 2027 outpatient dialysis and infusion contracts out of the provider directory, the licence file, the staffing rosters and four years of timed treatment encounters, where a site's attested stations cannot all run at once",
- "objective": "etl",
- "shape": "07",
- "decision_type": "quantity_figure",
- "answer_unit": "count",
- "answer": "",
- "answer_source": "",
- "gap": [
-  "population"
- ],
- "pattern": [
-  "none"
- ],
- "generators": [
-  "G8"
- ],
- "gate_g": "binding_constraint",
- "calibration_form": "none",
- "stump_strategy": "binding_constraint",
- "decisive_rule_filed": false,
- "official_decoy": false,
- "validated_decoy": false,
- "context_artifact": "capacity_report",
- "stump_class": "analytical",
- "analyst_test": "A strong analyst who reads the directory, the licence file, the rosters and the encounter extract correctly multiplies each site's attested stations by its rostered sessions, reconciles the product against realised treatment volume and the contract's utilisation standard, and files a 2027 network capacity about a sixth high with three of the twelve areas above the standard that are below it, because at a third of the sites no week in four years has ever had more than a fixed number of treatments running together, several short of the stations attested.",
- "domain_test": "The deciding quantity is each contracted site's deliverable treatment capacity for the 2027 network year, which health plan analytics builds as the positions a site can run times its staffed sessions and tests against the utilisation standard the adequacy contract sets; put a warehouse's nouns in and there is no staffed session, no treatment interval and no position a patient occupies for a fixed span, so the quantity disappears.",
- "layer2_family": "allocation_constraints",
- "layer2_pattern": "own:the ceiling the overlaps fix",
- "layer1": [
-  "a directory refreshed on each site's own attestation cycle",
-  "licence rows at the corporate entity and the service address",
-  "two encounter layouts across a clearinghouse change",
-  "treatment start and stop times in local clock with no offset on one feed",
-  "rosters by position rather than by named staff",
-  "sites that moved address and kept their identifier",
-  "a group practice billing three sites under one tax identifier",
-  "cancelled and no-show encounters carried with zero duration"
- ],
- "stakeholder_role": "the plan's network capacity planner, who conforms the capacity dataset the 2027 outpatient contracts are written against",
- "role_family": "capacity_planner",
- "scoring_unit": "per episode",
- "spine": {
-  "file": "treatment_encounters_2023_2026.csv",
-  "rows": 0,
-  "entity": "one treatment encounter at one site with its start and stop time",
-  "grain": "encounter x site",
-  "source": "synthetic"
- },
- "forum": "operations_desk",
- "forcing_event": "purchase_order_or_contract",
- "org_family": "nonprofit_or_charity",
- "world": {
-  "geography": "an unnamed state of the United States",
-  "currency": "USD",
-  "org_type": "a nonprofit Medicaid managed care plan contracting outpatient dialysis and infusion capacity",
-  "invented_names": [
-   "Outpatient Capacity Register"
-  ],
-  "people": [
-   "Katherine Dalton",
-   "Nicholas Clay"
-  ]
- },
- "deliverables": [
-  "outpatient_capacity_2027.csv",
-  "area_capacity_2027.xlsx"
- ],
- "opening_move": "question-first",
- "question_form": "how-many",
- "driver": "The decisive quantity is how much a set of units can deliver in a forward period, and each unit's deliverable positions are fewer than the positions it reports because some of them cannot be worked at the same time, a ceiling no file states and no attestation reflects; the ceiling is fixed exactly by the greatest number of the unit's own timed service intervals that have ever run together, repeated in every period of a long record, so multiplying reported positions by staffed sessions overstates the total and overstates it most at the units whose ceiling is lowest.",
- "driver_concrete": "The plan's 2027 contracted outpatient capacity in weekly treatment slots comes from each site's deliverable positions times its rostered sessions; a third of the sites have never, in four years of timed encounters, run more than a fixed number of treatments at once, several short of the stations the directory attests and the licence lists, because those sites share a water loop, a compounding hood or a nurse ratio across the extra chairs, and taking the attested or licensed stations overstates the network by about a sixth and puts three areas above the utilisation standard that are below it.",
- "stump": "The default path multiplies each site's attested stations by its rostered sessions, ties the product to realised volume and the utilisation standard, and files a 2027 network capacity about a sixth high with three of twelve areas wrongly above the standard, because the stations a site attests are more than the positions its own encounter record has ever shown running together.",
- "mechanism_source": "design_note",
- "differentiation": {
-  "task472": "task472 turns on when a job's completion is released, a window outside the job fixing the saving; here nothing is scheduled or released and the constraint is how many of a unit's own positions can be worked at one time, recovered from the overlaps of its service intervals",
-  "task087": "task87 v1 caps a delivered count because two owed items meeting in one slot cannot both be taken by one unit, an exclusivity the schedule encodes; here the exclusivity is inside one unit's own positions and the ceiling is a number the record states nowhere, read off the maximum of its own overlaps",
-  "task092": "task92 v3 prices a capped intervention by what it removes net of a second charge clock, the cap being a per-day service slot; here the capped quantity is the unit's own deliverable size in a forward period and the cap is recovered rather than filed"
- },
- "lineage": [
-  {
-   "gap": [
-    "population"
-   ],
-   "pattern": [
-    "none"
-   ],
-   "generators": [
-    "G1",
-    "G16"
-   ],
-   "gate_g": "method_or_model_selection",
-   "decision_type": "ranked_slate_under_cap",
-   "stump_strategy": "other",
-   "layer2_pattern": "own:concordance by distribution matching, not regression",
-   "driver": "The decisive quantity is how many units fall below a cut on a new instrument's scale when part of the population was measured only on the old instrument; a sample measured on both links the scales, and predicting each unit's new value by regression shrinks every converted value toward the sample's mean, so the converted spread is too narrow and the tail beyond the cut too thin, while matching the percentiles of two groups each measured on one instrument assumes the groups are alike; only a conversion that matches the two instruments' distributions in the sample measured on both keeps the share beyond the cut.",
-   "architecture": "v2 (the 2027 Adolescent Literacy Partnership grants)",
-   "fate": "spent on the portal 2026-10-27: both responses landed the call and one filed the runner-up and the gap exactly; the decisive step was the field's own named method for the deciding quantity, so no competent reflex was stopped by it"
-  },
-  {
-   "gap": [
+  "task": "task464",
+  "architecture": 6,
+  "drawn": "2026-10-27",
+  "slot_note": "wave 4 (second re-root). Architecture 2 (placing the retiring reading test's scores on the new scale) spent on the portal 2026-10-27 because the decisive step was psychometrics' own named method for the deciding quantity. Architecture 3 keeps the number and the ETL objective, takes a fresh world, and puts the field's own method in the default path: the decisive step is a reconstruction of the capacity input, not a choice of method.",
+  "domain": "education-learning-sciences",
+  "client_domain": "education-learning-sciences",
+  "subdomain": "randomized-quasi-experimental-program-evaluation",
+  "niche": "a combined authority's adult skills team choosing which of six delivery partners' models to scale for the 2027 funded place allocation, from two intakes of ballot-rationed place offers, waitlist re-offers that lapse at the enrolment census date, and qualification achievement records",
+  "objective": "experiment-causal",
+  "shape": "11",
+  "decision_type": "pick_one_of_n",
+  "answer_unit": "named_option",
+  "answer": "",
+  "answer_source": "",
+  "gap": [
     "population",
-    "time"
-   ],
-   "pattern": [
+    "objective"
+  ],
+  "pattern": [
     "none"
-   ],
-   "generators": [
-    "G4",
-    "G13",
-    "G16"
-   ],
-   "gate_g": "forecasting",
-   "decision_type": "ranked_slate_under_cap",
-   "stump_strategy": "forecast_method_backtest",
-   "layer2_pattern": "own:weather-normalized emissions on the current operating regime",
-   "driver": "The decisive quantity is each unit's output in a standard year of an external driver as the unit now operates, estimated from a response model fitted on the unit's own record; partway through the record many units changed how they respond to the driver or how much they draw regardless of it, on dates no file records, so a model fitted over the whole record or over the latest twelve months, or one recent year scaled by the driver's ratio, misstates the units whose response changed or whose fixed draw does not scale, and each moves a different set of units across the cap.",
-   "architecture": "v1 (Wendlemere covered buildings)",
-   "fate": "judge SEND_BACK 2026-10-17 (NOT_DETERMINISTIC: the post-change window's first span and whether electricity is refit with the heating fuel unforced)"
-  }
- ],
- "notes": "Registered at the draw. Axes drawn against the window task141, task144, task485: strategy, decisive G-code, calibration, role, artifact, forum, forcing event and shape all clear the three-build bans. The one WARN is repeat.question_form (how-many, also task141): the decision is a count of weekly treatment slots, so how-many is the form the decision gives, and task141's count was re-arrests at a horizon. Shape 07 is chosen against the two the taxonomy calls native for ETL, because both would announce the decisive step: 03 makes the bridge's own line items name the step from attested stations to deliverable positions, and 15 makes each field's transform a filed instruction. A grid of area cells grades the same conformation without naming how any field is built. The design risk carried into stage 2 is determinism on the ceiling statistic: every reasonable reading of a site's operating ceiling (the record maximum, each year's and each month's maximum, a high quantile of concurrency over treating hours) must land on the same integer per site, closed by C1 on the data with a hard plateau and asserted, never by a filed sentence saying how to compute it. Architecture 3 is spent (portal: both responses landed the call; then a determinism SEND_BACK on Gate C, clause 4.2's unit leaving 274, 327 and 351 all reachable). This card is architecture 3's identity and no live build occupies it, so its axes fence off nothing: architecture 4's world is not drawn, and the education-learning-sciences IRT test-equating cell was screened and refused on measurement twice (see task464/pipeline.json's resume). architecture_spent is set so the guard stops reading these axes as a live claim.",
- "registered": "2026-10-27T03:24:24Z",
- "architecture_spent": true
+  ],
+  "generators": [
+    "G9",
+    "G1"
+  ],
+  "gate_g": "binding_constraint",
+  "calibration_form": "none",
+  "stump_strategy": "population_selection",
+  "decisive_rule_filed": false,
+  "official_decoy": false,
+  "validated_decoy": false,
+  "context_artifact": "register",
+  "stump_class": "analytical",
+  "analyst_test": "A strong analyst who conforms both intakes' enrolment layouts, resolves the learner identifiers across the provider merger, reads every field and the allocation policy correctly, uses the ballot rather than attendance so the contrast is randomised, and counts every offer the records hold rather than first-round offers alone, expresses each partner's effect per learner offered a place and files Brenlow at 13.7 additional achievements per 100, with Dunthorpe fourth of six; the golden is Dunthorpe at 19.4 per 100 funded places",
+  "domain_test": "The deciding quantity is what one funded place delivers in additional qualification achievements, estimated the way programme evaluation estimates a rationed offer (a within-partner contrast on the place ballot, carried to the unit the commissioner buys). The noun swap breaks it because the place is funded before the learner decides, a refused place can only be re-offered until the enrolment census date closes the intake, and the achievement is awarded on the academic cycle: swap in hospital beds or megawatt-hours and there is no census date that strands a bought unit unused, so nothing separates a funded unit from a used one",
+  "layer2_family": "estimand_identification",
+  "layer2_pattern": "own:yield-per-funded-place-when-rationed-offers-lapse-at-a-census-date",
+  "layer1": [
+    "two enrolment-extract layouts across an intake-system change",
+    "a provider merger renaming two partners mid-period",
+    "academic year against funding year",
+    "a preliminary and a revised achievement release overlapping",
+    "learner identifiers re-issued across providers",
+    "thousands against units in the funding schedule"
+  ],
+  "stakeholder_role": "the commissioning manager in a combined authority's adult skills team, who puts the 2027 partner slate to the authority's assembly",
+  "role_family": "procurement_lead",
+  "scoring_unit": "flat per seat",
+  "spine": {
+    "file": "place_applications_2025_2026.csv",
+    "rows": 55362,
+    "entity": "one application to one partner for one intake, with its ballot rank and the offers made against it",
+    "grain": "application x partner x intake",
+    "source": "synthetic"
+  },
+  "forum": "council_or_assembly",
+  "forcing_event": "period_close",
+  "org_family": "local_government",
+  "world": {
+    "geography": "an unnamed combined authority area in England",
+    "currency": "GBP",
+    "org_type": "a combined authority commissioning adult education places from six delivery partners",
+    "invented_names": [
+      "Adult Skills Place Ballot"
+    ],
+    "people": [
+      "Glenn Taylor",
+      "Gail Dobson"
+    ]
+  },
+  "deliverables": [
+    "partner_place_yield_2027.csv",
+    "commissioning_slate_2027.xlsx"
+  ],
+  "opening_move": "question-first",
+  "question_form": "which",
+  "driver": "The decisive quantity is what one funded unit delivers, where the buyer commits the unit before the recipient decides and a refused unit can be passed on only until a fixed calendar date closes the cycle, so the share of funded units ever taken up runs from under a half to nearly all across the candidates; an effect estimated per unit taken up, however cleanly identified from the random rationing, ranks the candidates by their effect on a recipient rather than by what the buyer's committed unit returns.",
+  "driver_concrete": "Each partner's place offers were rationed by ballot, so every partner carries a randomised contrast, but a refused place can only be re-offered down the ballot until the enrolment census date, and the partners differ enormously in how much of that waitlist they work (fill rates 0.455 to 0.963). The commissioner buys places, so the deciding figure is additional achievements per 100 funded places, which needs each partner's fill rate measured from the allocation records; no document publishes it.",
+  "stump": "A competent analyst uses the ballot, builds a clean offer contrast and reports each partner's effect per learner offered, naming Brenlow at 13.7 per 100 and placing Dunthorpe fourth of six, because that figure prices the effect on a learner who takes a place rather than the return on a place the authority funds; Dunthorpe's waitlist fills 96 per cent of its places against Brenlow's 64, and per 100 funded places Dunthorpe returns 19.4 against Brenlow's 16.1.",
+  "mechanism_source": "design_note",
+  "differentiation": {
+    "task266": "task266 estimates the share of spells ending one way when others end differently and some are still open, so its decisive step is the cumulative incidence against a product-limit estimate: a survival estimator choice. This build's outcome is observed for everyone in both intakes and carries no censoring; the decisive step is the unit the effect is expressed in.",
+    "task268": "task268 carries each lost unit's survival from the state it was in when lost, an informative-censoring correction. Nothing here is lost to follow-up: the never-offered applicants are in the records throughout.",
+    "task44": "task44's pooled effect is a mixture of opposite effects split by a moderator in no column, so its step is a decomposition. Here each partner's effect is homogeneous within the partner and the gradient across partners is visible; what decides is the denominator the commissioner funds, which no decomposition reveals.",
+    "task83": "task83 conditions a holdout's effect on each unit's own prior treatment history because the target pool's mix differs. This build carries no effect onto another population: the call is among the same partners that were balloted.",
+    "task12": "task12 and task15 recover a population the records hide. Nothing is hidden here: every offer, every ballot rank and every funded place is shipped, and the step is what to divide by.",
+    "task270": "task270 v6 recovers where an item sold without a fixed slot actually landed, because the landing record shows only the items that stayed in the slot they were sold for, so one join over a coverage gap reverses the choice and the judge read the moved bookings as a planted flip. Nothing in this build is mis-recorded or absent: every funded place, every ballot rank, every offer and every achievement is shipped and reconciles, no join reveals a misplacement, and the step is not finding where a unit went but choosing what the per-100 figure is divided by, funded places against learners who took one up."
+  },
+  "lineage": [
+    {
+      "gap": [
+        "population"
+      ],
+      "pattern": [
+        "none"
+      ],
+      "generators": [
+        "G1",
+        "G16"
+      ],
+      "gate_g": "method_or_model_selection",
+      "decision_type": "ranked_slate_under_cap",
+      "stump_strategy": "other",
+      "layer2_pattern": "own:concordance by distribution matching, not regression",
+      "driver": "The decisive quantity is how many units fall below a cut on a new instrument's scale when part of the population was measured only on the old instrument; a sample measured on both links the scales, and predicting each unit's new value by regression shrinks every converted value toward the sample's mean, so the converted spread is too narrow and the tail beyond the cut too thin, while matching the percentiles of two groups each measured on one instrument assumes the groups are alike; only a conversion that matches the two instruments' distributions in the sample measured on both keeps the share beyond the cut.",
+      "architecture": "v2 (the 2027 Adolescent Literacy Partnership grants)",
+      "fate": "spent on the portal 2026-10-27: both responses landed the call and one filed the runner-up and the gap exactly; the decisive step was the field's own named method for the deciding quantity, so no competent reflex was stopped by it"
+    },
+    {
+      "gap": [
+        "population",
+        "time"
+      ],
+      "pattern": [
+        "none"
+      ],
+      "generators": [
+        "G4",
+        "G13",
+        "G16"
+      ],
+      "gate_g": "forecasting",
+      "decision_type": "ranked_slate_under_cap",
+      "stump_strategy": "forecast_method_backtest",
+      "layer2_pattern": "own:weather-normalized emissions on the current operating regime",
+      "driver": "The decisive quantity is each unit's output in a standard year of an external driver as the unit now operates, estimated from a response model fitted on the unit's own record; partway through the record many units changed how they respond to the driver or how much they draw regardless of it, on dates no file records, so a model fitted over the whole record or over the latest twelve months, or one recent year scaled by the driver's ratio, misstates the units whose response changed or whose fixed draw does not scale, and each moves a different set of units across the cap.",
+      "architecture": "v1 (Wendlemere covered buildings)",
+      "fate": "judge SEND_BACK 2026-10-17 (NOT_DETERMINISTIC: the post-change window's first span and whether electricity is refit with the heating fuel unforced)"
+    },
+    {
+      "architecture": "v3 (healthcare payment-claims ETL, outpatient capacity)",
+      "fate": "spent 2026-10-27 at the stage 4 re-judge on Gate C, and its world then measured closed; architecture 4 screened the author's fixed education-and-ETL pairing and refused all four candidate decisive steps on measured arithmetic; architecture 5 screened all six ETL cells in the taxonomy and refused or barred every one, which closed the ETL objective for this number",
+      "domain": "healthcare-delivery-health-economics",
+      "subdomain": "payment-claims-health-plan-analytics",
+      "objective": "etl",
+      "shape": "07",
+      "stump_strategy": "binding_constraint",
+      "gate_g": "binding_constraint",
+      "driver": "The decisive quantity is how much a set of units can deliver in a forward period, and each unit's deliverable positions are fewer than the positions it reports because some of them cannot be worked at the same time, a ceiling no file states and no attestation reflects; the ceiling is fixed exactly by the greatest number of the unit's own timed service intervals that have ever run together, repeated in every period of a long record, so multiplying reported positions by staffed sessions overstates the total and overstates it most at the units whose ceiling is lowest."
+    }
+  ],
+  "notes": "Re-rooted 2026-10-27 to architecture 6 after the ETL objective closed for this number (architecture 5 screened all six ETL cells and refused or barred every one; ETL carries 66 cards across six cells and is the only objective with no never-drawn cell). experiment-causal is the least-spent objective, 9 cards and 30 of 32 cells never drawn. education-learning-sciences x experiment-causal is a never-built pairing and randomized-quasi-experimental-program-evaluation a never-drawn cell. MEASURED AT THE DRAW: the specification-extension law closes adding a control, level, interaction or random effect as a class, so the decisive step is the estimand, which CLAUDE.md blesses. Family screen over 304 cards: per-offer against per-attender 0 hits, effect per place 0 hits, while transport (43, 44, 83), population recovery (12, 15), competing risks (266), informative censoring (268, 184, 487, 308) and staggered adoption (9 cards) are spent. Ladder measured on individual-level data: rung 0 participants against non-participants names Brenlow, rung 1 ballot winners who enrolled against losers names Calderwick, rung 2 the first-round ballot ITT names Calderwick, rung 2b that ITT grossed per place names Brenlow, the clean per-offer contrast names Brenlow, and the golden per 100 funded places names Dunthorpe at a margin of 1.207. The golden sits 4th of 6 on rungs 0, 1 and 2b and 5th on rung 2. Bin test at a bin of 1.0 per 100 places: (a) 7.98, (b) 0.000 because golden equals 100 x offers-ever-made over places-funded x the clean contrast and has no free parameter, (c) 3.18, ratio 2.51, and (a) is not the smallest rung gap. Call stability 287 of 300 draws. Strategy key: causal_design and grain_or_unit are both banned on this window, and population_selection is the honest key for the decisive step, which is what the per-100 figure is divided by (funded places against learners who took a place), with places never taken up as the exposure that differs by partner. Decisive generator is G9, downstream survival against upstream acquisition: the authority funds places and only some survive to an enrolment, the surviving share running 0.455 to 0.963 by partner. G1, the unit of value, is the consequence, which figure the per-100 is divided by. Gate G mechanism is binding_constraint, not method_or_model_selection: no method is selected here, which is why the licensed-family spread measures 0.000 bins. What binds is the enrolment census date, a service limit that stops a refused place being passed further down the ballot, which is why a funded place at one partner strands and at another fills, and it is what removes the natural pick.",
+  "registered": "2026-10-27T23:18:10Z",
+  "architecture_spent": false
 }
