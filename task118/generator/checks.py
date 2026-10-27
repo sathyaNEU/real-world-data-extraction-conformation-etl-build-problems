@@ -1429,11 +1429,15 @@ def run(W, target, out):
     nz = D["cms"][D["cms"].publish_at != ""]["publish_at"]
     notes_txt = re.sub(r"\s+", " ", T[F["cmsnotes"]])
     pub_line = re.search(r"publish_at (.+?) headline_sha1", notes_txt).group(1)
-    L_.check("publish_at device: every publish_at is a bare wall-clock time with no zone marker, the field notes give "
-             "saved_at's clock (UTC) and none for publish_at, and no file in the pack says which clock publish_at uses",
-             nz.str.fullmatch(r"\d{4}-\d\d-\d\dT\d\d:\d\d").all() and "saved_at Time of the save, UTC" in notes_txt
-             and not re.search(r"UTC|AEST|Brisbane|local|zone|clock", pub_line)
-             and not any(re.search(r"publish_at[^.\n]{0,80}(UTC|AEST|Brisbane time|local time|zone)", T[f_]) for f_ in T),
+    # This assertion used to require that NO file named publish_at's clock: the unpinned clock was filed as the
+    # median ask's primary device. The portal's determinism judges read that hole as an open fork, which is what it
+    # was, so the clock is pinned on the field itself now and the assertion asserts the pin.
+    L_.check("publish_at clock pinned: every publish_at is still a bare wall-clock time in the data, and the field "
+             "notes now name the clock on each field, saved_at on UTC and publish_at on Brisbane time, so the "
+             "ten-hour reading is closed by a quoted sentence rather than left to the solver",
+             nz.str.fullmatch(r"\d{4}-\d\d-\d\dT\d\d:\d\d").all()
+             and "saved_at Time of the save, UTC, to the minute." in notes_txt
+             and re.search(r"Brisbane time", pub_line) is not None,
              pub_line)
     # every scheduled article: its first live save against the time its editor set, on each clock
     sch_gap = {"AEST": [], "UTC": []}
