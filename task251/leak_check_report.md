@@ -4,16 +4,13 @@
 
 LEAK stops the ship. REVIEW is a reader's call and the /leak-check command's solver's-eye pass reads every REVIEW line. INFO is a sweep that ran and found nothing or was skipped.
 
-Stump terms swept: occupancy, validation, controller, counted, section, architecture, reader, traffic, contractor, second, generation, bridges, vehicle, nothing, measured, carried, approaches, landed, repair, method, selection, filmed, weather, temperature, fitted
+Stump terms swept: occupancy, validation, controller, counted, section, architecture, reader, traffic, contractor, second, bridges, generation, vehicle, nothing, measured, carried, fitted, approaches, landed, sentence, shipped, points, repair, method, selection
 
 ## 3 answer figures in the pack (REVIEW 1)
 - **REVIEW** `TDP-03_permanent_count_stations_rev4.pdf`: carries 6 of 8 distinctive words of the committed call: 'Flag 7 of the 30 stations in the 2027 report and send them to the spring 2028 recalibration: R02-01, R04-03, R06-01, R08'
 
 ## 4 design-note vocabulary (REVIEW 1)
 - **REVIEW** `TDP-03_permanent_count_stations_rev4.pdf`: 10 of 25 stump-paragraph terms appear (occupancy, validation, controller, counted, section, traffic); read whether the document names the move
-
-## 9 dates after the setting (INFO 1)
-- **INFO** `-`: no --asof given, sweep skipped (pass the fiction's as-of date)
 
 ## 10 container metadata (INFO 1)
 - **INFO** `-`: audit reported no writer signature (1 lines)
@@ -29,6 +26,8 @@ Stump terms swept: occupancy, validation, controller, counted, section, architec
 ## 7 hidden content (clean)
 
 ## 8 column names (clean)
+
+## 9 dates after the setting (clean)
 
 ## 11 prompt gate (clean)
 

@@ -70,3 +70,54 @@ Strong (pass 2); Good (pass 1). Taking the contractor's validation as each stati
 
 ## Next action for the author
 Ship target.zip 6283c112; no re-judge is needed.
+
+---
+
+# Pass 3, 2026-10-27: the repaired pack (target.zip 5266e879)
+
+One isolated thread (Sonnet, medium), licensed by `/fix-determinism` after the portal returned the build
+(determinism block failed, two judges, competing_defensible_answer, fix_location input_files, with one of the
+two responses at 95 per cent on the rubric). It saw only a fresh unzip of the current `target.zip`, `prompt.txt`,
+the submission's five graded blocks and the judge system prompt. Passes 1 and 2 above are history: they judged
+the pre-return packs 41198eaa and 20f316fe, and the pack they end on (6283c112) is superseded.
+
+## Verdict
+DETERMINISTIC. **Disposition:** APPROVE.
+**Gate G:** `mechanism: method_or_model_selection` (calibration transfer outside the validated conditions, bridge
+natural experiment), `stumping_family: analytical_non_defect`, `surface_read_dependency: no`,
+`sole_data_defect: no`.
+**Gate H:** `domain: pass`, `layers: pass`, `decisive_step: analytical`. The easy route (the filmed-day
+sensitivities taken as the year's) flags 2 stations, R14-01 and R25-01, against the correct 7.
+
+## What reproduced
+The thread rebuilt the call independently and filed the same seven: R25-01 -9.3, R14-01 -8.8, R04-03 -8.2,
+R02-01 -7.5, R29-03 -7.3, R06-01 -7.3, R08-05 -7.2 per cent, with the next station R18-01 at -3.7 and then
+R11-01 at -3.1. All 36 visit cells and all 36 power-failure cells matched exactly. Both critical components
+reproduced (the cold miss about one in ten at -10 degrees, all three mixed-generation bridges agreeing and the
+two TCX-4 bridges showing none; the queue loss nearly one in five at 40 per cent occupancy, the five bridges
+agreeing within about one point). The filmed-day limits reproduced at 8.18 per cent occupancy and 13.3 degrees.
+Every partial route gave a wrong list, matching the write-up's own sentences. Variants held the set of seven:
+minimum or maximum temperature for mean, half-scale loss, and R08-05 read as a TCX-4 all year.
+
+## The one defect, and the fix taken
+Step 5 claimed the seven hold with the loss carried to non-bridge stations at any scale from a half to a third
+again. On the generator's own fitted curve that is true: the list holds to 1.35 with R18-01, the largest unlisted
+error, at 4.95 per cent, and breaks at 1.40 at 5.18 per cent. But at 1.3333 the headroom is 0.12 of a point, and
+this thread, fitting the loss curve itself from the shipped bridges, put R18-01 at 5.2 per cent there. Both fits
+are legitimate, so the claim was too tight to ship. The shipped sentence is narrowed to a fifth again (1.20,
+R18-01 at 4.29 per cent, 0.71 of a point clear), which the thread independently confirmed holds in its own fit.
+The asserted SF28 band stays at 0.5 to 1.35, because it measures the design's robustness rather than a reader's
+claim. `submission.md` sits outside `target.zip`, so the pack was not re-cut.
+
+## Residual risks on the record, neither of them determinism
+1. **Ask 2's three reachable readings**, all from the door log plus TDP-03 section 7, and none able to move the
+   main call: 21 TCX-4 station-days with a door opening but neither a labour row nor a validation link; the
+   day-after addition for an attendance running past midnight; and the door-silent TCX-4 reset days read as
+   visits. A solver counting booked labour days only files Ashby 8/24/8/20, Kessel 11/22/9/17, Marlow
+   7/11/10/14. The thread called these the package's weakest determinism points. It also proposed a TDP-03
+   section 7 pin and recommended against it, because it edits a shipped file for an ask that is allowed to turn
+   on rule application. Not taken, for that reason and because the asks are what the portal scored at 95 per
+   cent and are now measured at 0 of 24 on the cracker.
+2. **Gate G read as lightly borderline** between a measurement-bias estimate and a planted effect, with the
+   thread's own qualifier that nothing in any reported figure is wrong and that the estimation is the whole
+   analytical content. Recorded rather than resolved; it is the surviving risk on this build.

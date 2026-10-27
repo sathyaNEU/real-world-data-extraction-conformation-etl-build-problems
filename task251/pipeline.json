@@ -1,11 +1,11 @@
 {
  "task": "task251",
  "owner": "perssathya",
- "status": "RETURNED",
+ "status": "SHIPPED",
  "domain": "general-statistics-data-science",
  "objective": "data-quality-monitoring",
- "stage": 4,
- "stage_name": "check",
+ "stage": 5,
+ "stage_name": "ship",
  "updated": "2026-10-27",
  "stump": "A competent solver takes each station's 2027 error from its summer validation count and flags R14-01 and R25-01; one who also reads the queue loss from the river bridges' paired approaches flags R02-01, R04-03, R08-05, R14-01 and R25-01; the older TCX-2 cards also miss vehicles on cold days, which the summer filming never saw and which the bridges whose two approaches run different controllers show against the airport's temperatures, so the list is R02-01, R04-03, R06-01, R08-05, R14-01, R25-01 and R29-03.",
  "architecture": 5,
@@ -35,6 +35,14 @@
    "verdict": "DETERMINISTIC",
    "disposition": "APPROVE",
    "notes": "every figure reproduced (listed -7.0 to -9.3 per cent, largest unflagged -3.5); residual forks on asks 2 and 3 only (the office resets inferred from door-log silence, two trips inside one TCX-2 break, local quarters); Gate G method_or_model_selection, analytical_non_defect; Gate H domain pass, layers pass, decisive_step analytical; one hygiene note (TDP-03's revision table cell clipped), fixed by wrapping the cells, text unchanged"
+  },
+  "pass3": {
+   "pack": "5266e879",
+   "verdict": "DETERMINISTIC",
+   "disposition": "APPROVE",
+   "gate_g": "method_or_model_selection, analytical_non_defect",
+   "gate_h": "domain pass, layers pass, decisive_step analytical",
+   "notes": "the licensed re-judge of the determinism and rubric repair; one defect, step 5's invariance claim at a per-station loss scale of a third again (1.3333), where the generator's own fit leaves 0.12 points of headroom (R18-01 at 4.88 per cent) and a curve the judge fitted itself from the shipped bridges crosses the 5 per cent line (R18-01 at 5.2 per cent); the shipped sentence is narrowed to a fifth again (1.20, R18-01 at 4.29 per cent, 0.71 points clear, plus 25 per cent confirmed in the judge's own fit) in submission.md and generator/writeup.py, with checks.py SF28 unchanged at 0.5 to 1.35 holding and 1.40 breaking; target.zip not re-cut, submission.md sits outside the pack"
   }
  },
  "returned": [
@@ -44,10 +52,10 @@
    "repair": "determinism and rubric in one pass, at the author's request",
    "what_moved": "the four free parameters the judges found are now measured on the record rather than assumed (SF27 to SF30: no work order touches the counting path, the loss is one function at five separate sites with the list invariant over a per-station scale of 0.5 to 1.35, a drift the two generations share is bounded at 0.00094 per degree against the 0.006 the list needs, and the unfilmed regime at R08-05 and R19-03 is measured by each station's own occupancy channel to 0.6 per cent against the 10 per cent the list needs); the data dictionary was dropped and its facts moved into TDP-03 at authority; both asks were pinned in TDP-03 section 7 and re-devised onto a second grain (the attendance that crosses midnight, the loss a stopped controller could not report), taking the cracker from an estimated 22 of 24 ask figures to a measured 0 of 24",
    "frozen": "the listed seven, the default and single-correction lists, every main-call figure, the margins, the stump sentence, the ladder, the default path and the prompt's call sentence",
-   "commit": ""
+   "commit": "186091d1"
   }
  ],
- "resume": "Repair done and verified (determinism and asks in one pass; the four free parameters measured on the record, the dictionary dropped into TDP-03 at authority, both asks re-devised onto a second grain, cracker 0 of 24, pair 28.5, call side byte-identical). Card differentiation lines written, guard heart PASS. In flight: the one re-judge /fix-determinism licenses, on target.zip 5266e879. On APPROVE set status SHIPPED, rewrite the ledger row and commit RESHIPPED (task251).",
+ "resume": "Third-pass judge DETERMINISTIC APPROVE on target.zip 5266e879 and its one defect closed: step 5's invariance claim narrowed from a third again to a fifth again in submission.md and generator/writeup.py (the generator reproduces the shipped write-up byte for byte; the pack was not re-cut and stays at 5266e879). Gates re-run after the edit: figures_check 0 absent, precut 52 of 52 with 0 WARN, leak.py REVIEW (TDP-03's own vocabulary), heart WARN no BLOCK, validate 0 invalid. freeze.py check --mode determinism still FAILs on the 18 ask figures and the Deliverable Answers block of the ask repair the author ordered, byte-identical output before and after this edit and no --allow passed. Owed: the re-ship commit RESHIPPED (task251) with returned[0].commit filled in and the ledger row replaced from task251/ledger_row_draft.txt.",
  "approved": null,
  "delivered": "2026-10-21",
  "portal": null,

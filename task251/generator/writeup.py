@@ -158,7 +158,7 @@ def submission(fig):
              "counted vehicles over the vehicles so estimated, less one, over the hours it counted (TDP-03 section "
              "5): %d stations beyond 5 per cent, the same %d under the pooled bridge fit, under each station's own "
              "occupancy channel, and with the loss carried to the stations that are on no bridge at any scale from a "
-             "half to a third again." % (c["count"], c["count"]))
+             "half to a fifth again." % (c["count"], c["count"]))
     L.append("6. Counted the maintenance visits as the station-days a technician attended (TDP-03 section 7): the "
              "days labour was booked to each station in %s (Labour joined to Orders' stations, one per station and "
              "day), less the days at a station then on a TCX-4 whose cabinet door logged nothing that local day in "

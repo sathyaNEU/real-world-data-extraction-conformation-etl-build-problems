@@ -153,6 +153,8 @@ Lesson: a validation that never samples the conditions in which an instrument er
 | SF29 | a drift the two controller generations share | none: the winter moves the TCX-2 cards' counting only | a count drift at every station in the cold, which a bridge pair cannot see because it cancels in the ratio | another list at 0.006 per degree (R18-01 in) or at minus 0.012 (four out) | a shared drift moves occupancy per counted vehicle one for one, and the thirteen stations that ran a TCX-4 all year hold within 0.84 per cent over December to February, so the record allows at most 0.00095 per degree against the 0.006 the list needs, 6.3 times as much (asserted) |
 | SF30 | the regime no filmed day covers at the two renumbered stations | each station's own hours carry its own counting, which its occupancy channel measures | the unfilmed regime counted differently, the filmed ratio assumed for it | another list at 1.10 of the unfilmed regime's sensitivity (R08-05 out) | R08-05 before its replacement reads 1.0686 against the all-year TCX-2 stations' 1.0617 (sd 0.0039) and R19-03 after its replacement 1.0026 against the all-year TCX-4 stations' 1.0059 (sd 0.0033), so each matches its own generation to 0.6 per cent, while the list is invariant from 0.90 to 1.05 and needs 1.10 to move (asserted) |
 
+**SF28, third pass.** The shipped claim is deliberately narrower than the asserted band. On the generator's own fitted loss curve the golden list holds at a per-station loss scale of 1.20 (largest unlisted error R18-01 at 4.29 per cent against the 5 per cent line) and still at 1.35 (R18-01 at 4.95 per cent), and breaks only at 1.40 (R18-01 at 5.18 per cent). A loss curve fitted independently from the shipped bridges crosses earlier: the third-pass judge read R18-01 at 5.2 per cent at a scale of 1.3333, the "a third again" step 5 of the write-up first claimed. Step 5 therefore claims invariance over "any scale from a half to a fifth again" (0.5 to 1.20, 0.71 points of headroom, and the judge confirmed plus 25 per cent in its own fit), while checks.py SF28 keeps measuring 0.5 to 1.35 holding and 1.40 breaking, which is the design's robustness rather than a shipped claim.
+
 ## Ladder
 
 | Route | Withdraws | Count | Golden |
@@ -501,3 +503,10 @@ that reading; it is recorded because it is the only path in the table above 2 of
   district and quarter rather than once in the year, and the automatic battery-replacement order was held to the one
   December outage over six hours: an order reading "controller restarted cold after power failure" at every drained
   station would have handed the device to anyone reading the work orders for ask A.
+- Step 5's invariance claim at "a third again" (a per-station loss scale of 1.3333): true on the generator's own
+  fitted curve, which holds the list to 1.35 (R18-01, the largest unlisted error, at 4.95 per cent) and breaks at
+  1.40 (5.18 per cent), but only 0.12 points clear of the 5 per cent line at 1.3333 (4.88 per cent), and the
+  third-pass judge, fitting the loss curve itself from the shipped bridges, read R18-01 at 5.2 per cent there and
+  called the sentence a defect. Narrowed in the shipped sentence to "a fifth again" (1.20, R18-01 at 4.29 per cent,
+  0.71 points clear, confirmed in the judge's own fit); the asserted invariance band stays wider than the shipped
+  claim because an independently fitted curve crosses earlier, so checks.py SF28 goes on measuring 0.5 to 1.35.
