@@ -244,13 +244,13 @@ No shipped artifact ranks the six desks on the decision question. The dashboard 
   minutes. Gate G method or model selection, analytical_non_defect; Gate H domain, layers and decisive step pass. Its one
   note, that step 1's "within 2%" holds on each embedding desk's tests started in the embedding's calendar year, is now
   said in step 1; no figure moved.
-- guard heart BLOCK: ban.strategy (causal_design) and ban.pattern (G1) against task139's architecture 2, drawn and
-  registered on 26 October at 22:19, six hours before this architecture; the draw's check read WARN only. The two share
-  labels, not a mechanism: task139 transports a pilot effect drawn only among units that received a first contact to
-  units the programme never reached; this build nets a correctly measured headline lift for the clicks the page's other
-  headlines would have taken anyway. Both labels are honest here (interference is a causal-design family; the swap is
-  the article's clicks for the site's), so no axis is relabelled: the author's override, or a wait for task139's draw
-  to move, is owed. WARN repeat.question_form against task144, answered at the draw.
+- guard heart BLOCK, waived by the author on 2026-10-27 at ship: ban.strategy (causal_design) and ban.pattern (G1)
+  against task139's architecture 2, drawn and registered on 26 October at 22:19, six hours before this
+  architecture, whose draw check read WARN only. The two share labels, not a mechanism: task139 transports a pilot
+  effect measured only among units that had a first contact to units the programme never reached; this build nets a
+  correctly measured headline lift for the clicks the page's other headlines would have taken anyway. Both labels
+  are honest here, so no axis was relabelled; the waiver sits in the card's notes and the card keeps its draw's
+  filing time. WARN repeat.question_form against task144, answered at the draw.
 - guard surface: 2 pairs promoted, each adjudicated clean, shares components by design. task119 (back to back, the
   objective gap and pick_one_of_n on both cards) sizes the failed waits a unit could have shortened, its own resource
   free or held empty for planned work; task118 nets a correctly measured lift for the clicks the page would have given
