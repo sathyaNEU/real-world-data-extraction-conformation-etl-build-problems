@@ -1,11 +1,11 @@
 {
  "task": "task251",
  "owner": "perssathya",
- "status": "SHIPPED",
+ "status": "RETURNED",
  "domain": "general-statistics-data-science",
  "objective": "data-quality-monitoring",
- "stage": 5,
- "stage_name": "ship",
+ "stage": 4,
+ "stage_name": "check",
  "updated": "2026-10-27",
  "stump": "A competent solver takes each station's 2027 error from its summer validation count and flags R14-01 and R25-01; one who also reads the queue loss from the river bridges' paired approaches flags R02-01, R04-03, R08-05, R14-01 and R25-01; the older TCX-2 cards also miss vehicles on cold days, which the summer filming never saw and which the bridges whose two approaches run different controllers show against the airport's temperatures, so the list is R02-01, R04-03, R06-01, R08-05, R14-01, R25-01 and R29-03.",
  "architecture": 5,
@@ -47,7 +47,7 @@
    "commit": ""
   }
  ],
- "resume": "Repaired 2026-10-27 (determinism and asks). Before the re-ship the author owes two differentiation lines on cards/task251.json (against task269 and task255) to clear guard heart, and the one re-judge /fix-determinism licenses; this pass spawned nothing.",
+ "resume": "Repair done and verified (determinism and asks in one pass; the four free parameters measured on the record, the dictionary dropped into TDP-03 at authority, both asks re-devised onto a second grain, cracker 0 of 24, pair 28.5, call side byte-identical). Card differentiation lines written, guard heart PASS. In flight: the one re-judge /fix-determinism licenses, on target.zip 5266e879. On APPROVE set status SHIPPED, rewrite the ledger row and commit RESHIPPED (task251).",
  "approved": null,
  "delivered": "2026-10-21",
  "portal": null,
@@ -167,7 +167,7 @@
   "checks": 94,
   "verify": 0,
   "byte_identical": true,
-  "target_zip": "a81cadb1",
+  "target_zip": "5266e879",
   "figures_check": 0,
   "precut": "52 of 52, 0 WARN",
   "leak_py": "REVIEW (one carried line: TDP-03's own vocabulary)",

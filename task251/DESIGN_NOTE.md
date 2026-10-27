@@ -148,9 +148,9 @@ Lesson: a validation that never samples the conditions in which an instrument er
 | SF24 | the day's temperature | the airport's daily mean | the maximum, the minimum, a curve or bins, the occupancy channel day by day | same list | asserted (every reading in the family) |
 | SF25 | a day with no temperature | the mean of the days either side | no miss that day; the day's hours dropped | same list | the weather file's M flag; asserted |
 | SF26 | the controller in force | the register's controller, a TCX-2 before a replacement date | the register's current controller all year | same list | the register's Code history ("controller replaced, TCX-2 to TCX-4"); asserted |
-| SF27 | the filmed day's sensitivity against the rest of its year | the filmed day's loops over video is the station's sensitivity for every hour of the controller's time in service | the counting changed inside the year, so the filmed ratio holds for part of it only | another list at 10 per cent or more (R08-05 out) | no work order of the year replaces anything on the counting path, the spring and autumn inspections test the loops at every station, and the stations that ran one controller all year read 1.0000 to 1.0083 (sd 0.0028) on their own occupancy per counted vehicle at matched free-flowing flow between July and the winter, so nothing in the counting moved by more than 0.9 per cent (asserted) |
-| SF28 | the two curves carried to a station that is not on a bridge | one function of occupancy and one of temperature, the loops cut to one detail at every station (TDP-03 section 2) | a loss or a miss of its own at each station | another list once a station's loss is 1.4 times the pooled curve or 0.4 of it | the loss fitted at each of the five bridges on its own gives 0.1774 to 0.1864 at 40 per cent occupancy (sd 2.0 per cent of the mean) and the list is invariant over a per-station scale of 0.5 to 1.35, twelve times that spread; the cold miss read at every station from its own occupancy channel, with no bridge pair, no register and no temperature, files the golden list, and the list is invariant over a cold scale of 0.7 to 1.3 (asserted) |
-| SF29 | a drift the two controller generations share | none: the winter moves the TCX-2 cards' counting only | a count drift at every station in the cold, which a bridge pair cannot see because it cancels in the ratio | another list at 0.006 per degree (R18-01 in) or at minus 0.012 (four out) | a shared drift moves occupancy per counted vehicle one for one, and the thirteen stations that ran a TCX-4 all year hold within 0.83 per cent over December to February, so the record allows at most 0.00094 per degree against the 0.006 the list needs, 6.3 times as much (asserted) |
+| SF27 | the filmed day's sensitivity against the rest of its year | the filmed day's loops over video is the station's sensitivity for every hour of the controller's time in service | the counting changed inside the year, so the filmed ratio holds for part of it only | another list at 10 per cent or more (R08-05 out) | no work order of the year replaces anything on the counting path, the spring and autumn inspections test the loops at every station, and the stations that ran one controller all year read 1.0000 to 1.0084 (sd 0.0028) on their own occupancy per counted vehicle at matched free-flowing flow between July and the winter, so nothing in the counting moved by more than 0.85 per cent (asserted) |
+| SF28 | the two curves carried to a station that is not on a bridge | one function of occupancy and one of temperature, the loops cut to one detail at every station (TDP-03 section 2) | a loss or a miss of its own at each station | another list once a station's loss is 1.4 times the pooled curve or 0.4 of it | the loss fitted at each of the five bridges on its own gives 0.1775 to 0.1864 at 40 per cent occupancy (sd 2.0 per cent of the mean) and the list is invariant over a per-station scale of 0.5 to 1.35, twelve times that spread; the cold miss read at every station from its own occupancy channel, with no bridge pair, no register and no temperature, files the golden list, and the list is invariant over a cold scale of 0.7 to 1.3 (asserted) |
+| SF29 | a drift the two controller generations share | none: the winter moves the TCX-2 cards' counting only | a count drift at every station in the cold, which a bridge pair cannot see because it cancels in the ratio | another list at 0.006 per degree (R18-01 in) or at minus 0.012 (four out) | a shared drift moves occupancy per counted vehicle one for one, and the thirteen stations that ran a TCX-4 all year hold within 0.84 per cent over December to February, so the record allows at most 0.00095 per degree against the 0.006 the list needs, 6.3 times as much (asserted) |
 | SF30 | the regime no filmed day covers at the two renumbered stations | each station's own hours carry its own counting, which its occupancy channel measures | the unfilmed regime counted differently, the filmed ratio assumed for it | another list at 1.10 of the unfilmed regime's sensitivity (R08-05 out) | R08-05 before its replacement reads 1.0686 against the all-year TCX-2 stations' 1.0617 (sd 0.0039) and R19-03 after its replacement 1.0026 against the all-year TCX-4 stations' 1.0059 (sd 0.0033), so each matches its own generation to 0.6 per cent, while the list is invariant from 0.90 to 1.05 and needs 1.10 to move (asserted) |
 
 ## Ladder
@@ -222,9 +222,9 @@ with the traffic.
 
 | Free parameter | What the record allows | What the list needs to move | Margin |
 |---|---|---|---|
-| a change in a station's counting inside the year | 0.9 per cent (the all-year TCX-4 stations, max 1.0083, sd 0.0028) | a regime of its own at 10 per cent | 11 times |
+| a change in a station's counting inside the year | 0.85 per cent (the all-year TCX-4 stations, max 1.0084, sd 0.0028) | a regime of its own at 10 per cent | 11 times |
 | the loss carried to a station that is on no bridge | 2.0 per cent between the five bridges' own fits | a per-station scale of 1.40 or 0.40 | 20 times |
-| a drift the two generations share | 0.00094 per degree below 2 degrees | 0.006 per degree | 6.3 times |
+| a drift the two generations share | 0.00095 per degree below 2 degrees | 0.006 per degree | 6.3 times |
 | the regime no filmed day covers at R08-05 and R19-03 | 0.6 per cent (each matches its own generation's cohort) | 1.10 | 17 times |
 
 ## Oracles
@@ -311,16 +311,21 @@ Pair ceiling: 28.5 ((45.0 + 12.0) / 2), the cracker keeping none of the 24 ask f
 Mirror leakage: 0 per cent of ask weight. The two rows agree by construction rather than by measurement: the asks
 consume nothing the call's construction produces (the separation assertions), so the mirror's ask score is the
 cracker's and only its recommendation weight differs.
-Measured by: generator/pair.py on the cut pack (target.zip fce168cf, 21 complete pipelines). Round 1 of stage 4
+Measured by: generator/pair.py on the cut pack (target.zip 5266e879, 21 complete pipelines). Round 1 of stage 4
 (target.zip 41198eaa): both readers kept 12 of 24 (all of ask B, by the failed-poll episodes inside the TCX-2 breaks),
 so ask B's device was re-sited onto that path; round 2 readers kept 0 of 24. The portal then returned the build with
 one response at 95 per cent, which is the measurement that both devices as shipped were inside a strong reader's
 path, so both asks were re-devised onto a second grain of the same records (the attendance that crosses midnight, the
 loss the controller could not report) and each pinned in section 7, with every earlier path above measured at 0.
 
+Worst credible route in the table: a response that reconstructs both asks correctly and takes the quarters on UTC
+dates keeps 10 of 24, which is 67.9 for a landed call and a pair of 51.4, still under the build target of 60. Local
+dates are filed (TDP-03 section 3, and the export is in local time with its offsets), so the cracker does not take
+that reading; it is recorded because it is the only path in the table above 2 of 24.
+
 ## Pre-ship check
 
-- Free gates, re-run on the repaired pack (target.zip a81cadb1): generator checks 94 passed, 0 failed (the golden list
+- Free gates, re-run on the repaired pack (target.zip 5266e879): generator checks 94 passed, 0 failed (the golden list
   against the world's truth over the hours counted, 50 licensed estimates filing the seven with listed beyond 6.5 and
   others within 4.5, the loss on each direction and each bridge subset, the cold pairs' thresholds and the fit order,
   SF1 to SF30, the four free parameters with the record's bound and the list's corridor side by side, the pairs'
