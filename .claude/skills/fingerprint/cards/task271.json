@@ -26,7 +26,7 @@
   ],
   "gate_g": "decomposition_attribution",
   "calibration_form": "none",
-  "stump_strategy": "population_selection",
+  "stump_strategy": "causal_design",
   "decisive_rule_filed": true,
   "official_decoy": false,
   "validated_decoy": false,
@@ -46,8 +46,8 @@
     "a share consolidation moving prices and quantities mid-year",
     "trading days with an early close"
   ],
-  "stakeholder_role": "head of execution research, preparing the venue review for the wealth board",
-  "role_family": "research_desk",
+  "stakeholder_role": "head of dealing, preparing the venue list paper for the wealth board",
+  "role_family": "operations_director",
   "scoring_unit": "per settled transaction",
   "spine": {
     "file": "brokerA_executions_2026.csv",
@@ -216,6 +216,6 @@
       "fate": "spent 2026-10-26 at stage 4 round 1: both scored readers searched standard 3's five characteristics and filed Brookmere, the judge NOT_DETERMINISTIC and SEND_BACK on the unfiled candidate set (filing the zone names the step), and both readers took all ten ask figures"
     }
   ],
-  "notes": "Architecture 5 drawn 2026-10-27 in a fresh world; architecture 4 moved to lineage with its fate. Axes redrawn at the draw against the window's last three live cards (task118 v2, task157 v2, task204): forum committee_or_panel to board_of_directors (the wealth subsidiary's board approves its order execution policy and venue list before dealing moves in-house), forcing event launch_or_rollout to cutover_or_migration (the platform's client dealing moves from a third-party broker to the central desk on 4 January 2027, the honest clock), role operations_director to research_desk (the requester runs execution research), context artifact filed_standard to monitoring_export (the stakeholder's working file is the transaction cost provider's export), strategy decomposition_attribution and causal_design (both banned in the window) to population_selection (which 2026 fills stand for the platform's lone orders, the scope of the evidence). Gate G stays decomposition_attribution: the post-fill move is correctly recorded and the decision turns on assigning it to the counterparty or to the desk's own continuing trading.",
-  "registered": "2026-10-27T08:15:19Z"
+  "notes": "Architecture 5 drawn 2026-10-27 in a fresh world; architecture 4 moved to lineage with its fate. Axes redrawn at the draw against the window's last three live cards (task118 v2, task157 v2, task204): forum committee_or_panel to board_of_directors (the wealth subsidiary's board approves its order execution policy and venue list before dealing moves in-house), forcing event launch_or_rollout to cutover_or_migration (the platform's client dealing moves from a third-party broker to the central desk on 4 January 2027, the honest clock), role operations_director to research_desk (the requester runs execution research), context artifact filed_standard to monitoring_export (the stakeholder's working file is the transaction cost provider's export), strategy decomposition_attribution and causal_design (both banned in the window) to population_selection (which 2026 fills stand for the platform's lone orders, the scope of the evidence). Gate G stays decomposition_attribution: the post-fill move is correctly recorded and the decision turns on assigning it to the counterparty or to the desk's own continuing trading. Re-checked after the pull on 2026-10-27: task273 v3 and task141 v4, registered earlier the same morning by other sessions and pushed after this card's first check, entered the window, and task141 v4 carries research_desk and population_selection (ban.role, ban.strategy). Both redrawn to the honester remaining labels: the requester is the head of dealing, who owns the router's venue lists (operations_director), with the head of execution research doing the analysis; and the strategy is causal_design (interference: the desk's own following trades in the same stock move the measured outcome of each earlier fill, so the venue's effect on a lone order is read on a comparison that holds them out). The question form 'which' repeats task273 v3 (WARN): the board names a set of venues.",
+  "registered": "2026-10-27T08:18:46Z"
 }
