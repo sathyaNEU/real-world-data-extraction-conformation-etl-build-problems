@@ -18,6 +18,21 @@ def compute(target):
     area = {r["site"]: float(r["proposed_floor_area_m2"]) for r in pk.sites}
     A, B, C = S.ask_a(target), S.ask_b(target), S.ask_c(target)
     tenth = lambda v: round(v / 1e5) / 10.0
+    own = [k for k, x in enumerate(pk.stores) if x["own"]]
+    park_share = {}
+    for p in pk.parks:
+        sh = pk.shares(p["xy"], pk.stores)
+        park_share[p["pc"]] = sum(sh[k] for k in own)
+    side = {"107": "RADDLEFORD WATER HOLIDAY PARK", "105": "WITHYBECK LAKES CARAVAN PARK", "104": "SALLOWMERE MILL CARAVAN PARK"}
+    named = {r[9]: (pk.smv[r[6]][0], r[14]) for r in pk.voa if r[6] in pk.smv and pk.smv[r[6]][1] == "pitches"}
+    v_direct = sum(guests[k] for k in side) / sum(named[v][0] for v in side.values())
+    ad = pk.appraise(v_direct)
+    d_site = max(ad, key=lambda k: ad[k]["add"])
+    fig_extra = dict(
+        park_shares_pct={v.title(): int(round(100 * park_share[named[v][1]])) for v in side.values()},
+        v_direct=int(round(v_direct / 10.0) * 10), direct_site=d_site, direct_add=tenth(ad[d_site]["add"]),
+        direct_s3=tenth(ad[c["site"]]["add"]),
+    )
     fig = dict(
         site=c["site"], site_name=names[c["site"]], add=tenth(c["add"]), add_exact=round(c["add"]),
         V=int(round(c["V"] / 10.0) * 10), V_exact=round(c["V"], 1),
@@ -44,6 +59,7 @@ def compute(target):
         bus_weekday=P.BUS_DAY.strftime("%A"), bus_eve=(P.BUS_DAY - dt.timedelta(days=1)).day,
         store_numbers=sorted(int(k) for k in A),
     )
+    fig.update(fig_extra)
     return fig
 
 

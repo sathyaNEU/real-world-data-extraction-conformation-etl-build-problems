@@ -48,7 +48,7 @@
   "scoring_unit": "other",
   "spine": {
     "file": "voa_list_entries_2026_lq.txt",
-    "rows": 4233,
+    "rows": 4234,
     "entity": "one hereditament on the non-domestic rating list in the planning region",
     "grain": "hereditament",
     "source": "synthetic"

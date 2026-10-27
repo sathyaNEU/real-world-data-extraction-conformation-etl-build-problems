@@ -1,38 +1,37 @@
 # leak check, task305
 
-**Verdict: REVIEW.** 20 files read, 37 golden figures and 5 candidate names taken from submission.md, 25 stump terms taken from the design note.
+**Verdict: REVIEW.** 21 files read, 38 golden figures and 8 candidate names taken from submission.md, 25 stump terms taken from the design note.
 
 LEAK stops the ship. REVIEW is a reader's call and the /leak-check command's solver's-eye pass reads every REVIEW line. INFO is a sweep that ran and found nothing or was skipped.
 
-Stump terms swept: census, origin, grocery, households, wrentoft, pitches, guests, rating, measured, output, holiday, golden, asserted, region, estate, demand, readers, running, committee, method, carries, counts, shares, approves, resident
+Stump terms swept: origin, population, pitches, grocery, reading, guests, outlet, modelled, output, golden, decisive, park-side, sentence, direct, holiday, recovered, wrentoft, out-of-region, households, beside, measured, readers, architecture, census, spatial-interaction
+
+## 1 file names (REVIEW 1)
+- **REVIEW** `voa_list_entries_2026_lq.txt`: a text file in the pack: confirm it is the organisation's own record (a thread, a log, a letter) and does not describe the data
 
 ## 2 author vocabulary (REVIEW 1)
 - **REVIEW** `spend_share_model_2025.pdf`: \bthe model\b x2: ...persedes the parameters of March 2022). Owner: Joshua Ingram. 1. What the model does The model shares grocery spend among the grocery stores that can...
 
-## 3 answer figures in the pack (REVIEW 16)
-- **REVIEW** `property_data_notes.md`: golden figure 107 appears: ...e by store from October 2025 (101 to 106 so far); 107 to 110 still book deliveries in on paper. - `wf...
-- **REVIEW** `property_data_notes.md`: golden figure 110 appears: ...e from October 2025 (101 to 106 so far); 107 to 110 still book deliveries in on paper. - `wfm_paid_ho...
-- **REVIEW** `property_data_notes.md`: golden figure 101 appears: ...ndhelds went in store by store from October 2025 (101 to 106 so far); 107 to 110 still book deliverie...
-- **REVIEW** `property_data_notes.md`: golden figure 106 appears: ...went in store by store from October 2025 (101 to 106 so far); 107 to 110 still book deliveries in on...
-- **REVIEW** `voa_list_entries_2026_lq.txt`: golden figure 822 appears: ...-APR-2026**27050**25132456**096G*****01-APR-2026* 822*3510**00470558034*CS*SHOP AND PREMISES*15534137*L...
-- **REVIEW** `voa_list_entries_2026_lq.txt`: golden figure 103 appears: ...1-APR-2026**6900**15024161**249G*****01-APR-2026* 103*3510**00036110798*CO*OFFICES AND PREMISES*6735360...
-- **REVIEW** `voa_list_entries_2026_lq.txt`: golden figure 764 appears: ...1-APR-2026**8400**24299974**249G*****01-APR-2026* 764*3510**00011499325*CO*OFFICES AND PREMISES*7728252...
-- **REVIEW** `voa_list_entries_2026_lq.txt`: golden figure 107 appears: ...2*3510**00343886523*CA*ADVERTISING RIGHT*93953878*107, SCHOOL LANE, WRENTOFT, LQ8 1QX**107*SCHOOL LANE*...
-- **REVIEW** `voa_list_entries_2026_lq.txt`: golden figure 105 appears: ...10**00543223294*CP*CAR PARK AND PREMISES*11077966*105, GREEN LANE, WITHYBECK, LQ6 1JG**105*GREEN LANE*W...
-- **REVIEW** `voa_list_entries_2026_lq.txt`: golden figure 104 appears: ...1-APR-2026**6500**28647018**203G*****01-APR-2026* 104*3510**00467963099*CS*SHOP AND PREMISES*46814277*L...
-- **REVIEW** `voa_list_entries_2026_lq.txt`: golden figure 108 appears: ...510**00087314822*CO*OFFICES AND PREMISES*21777401*108, WESTWAY, LODERWELL, LQ12 1ZX**108*WESTWAY*LODERW...
-- **REVIEW** `voa_list_entries_2026_lq.txt`: golden figure 102 appears: ...6*3510**00481720636*CS*SHOP AND PREMISES*93802606*102, FORE STREET, BELLINGTOFT, LQ2 2RT**102*FORE STRE...
-- **REVIEW** `voa_list_entries_2026_lq.txt`: golden figure 110 appears: ...1-APR-2026**2700**15735845**249G*****01-APR-2026* 110*3510**00524772763*LH*HOTEL AND PREMISES*72803743*...
-- **REVIEW** `voa_list_entries_2026_lq.txt`: golden figure 109 appears: ...01*LS*LAND USED FOR STORAGE AND PREMISES*67672660*109, MOUNT PLEASANT, QUELLBY, LQ5 3LH**109*MOUNT PLEA...
-- **REVIEW** `voa_list_entries_2026_lq.txt`: golden figure 101 appears: ...10*3510**00392513499*CS*SHOP AND PREMISES*2563406*101, STATION ROAD, RADDLEFORD, LQ9 2PY**101*STATION R...
-- **REVIEW** `voa_list_entries_2026_lq.txt`: golden figure 106 appears: ...1-APR-2026**6200**25266231**096G*****01-APR-2026* 106*3510**00577051335*CO*OFFICES AND PREMISES*3277493...
+## 3 answer figures in the pack (REVIEW 13)
+- **REVIEW** `voa_list_entries_2026_lq.txt`: golden figure 822 appears: ...1-APR-2026**3500**25132456**203G*****01-APR-2026* 822*3510**00470558034*ED*SCHOOL AND PREMISES*12178094...
+- **REVIEW** `voa_list_entries_2026_lq.txt`: golden figure 110 appears: ...-APR-2026**68050**15735845**226G*****01-APR-2026* 110*3510**00524772763*CS*TAKEAWAY AND PREMISES*224369...
+- **REVIEW** `voa_list_entries_2026_lq.txt`: golden figure 103 appears: ...*IW*VEHICLE REPAIR WORKSHOP AND PREMISES*19317764*103, STATION ROAD, QUELLBY, LQ5 1LX**103*STATION ROAD...
+- **REVIEW** `voa_list_entries_2026_lq.txt`: golden figure 106 appears: ...-APR-2026**10450**25266231**249G*****01-APR-2026* 106*3510**00577051335*CS*SHOP AND PREMISES*15590661*5...
+- **REVIEW** `voa_list_entries_2026_lq.txt`: golden figure 109 appears: ...*2300**21929103*04-MAY-2026*249G*****12-APR-2026* 109*3510**00395069382*LP*PUBLIC HOUSE AND PREMISES*53...
+- **REVIEW** `voa_list_entries_2026_lq.txt`: golden figure 102 appears: ...-APR-2026**18350**16077531**227G*****01-APR-2026* 102*3510**00210871037*IW*VEHICLE REPAIR WORKSHOP AND...
+- **REVIEW** `voa_list_entries_2026_lq.txt`: golden figure 105 appears: ...1-APR-2026**1700**15442896**249G*****01-APR-2026* 105*3510**00325805599*CS*SHOP AND PREMISES*45238684*1...
+- **REVIEW** `voa_list_entries_2026_lq.txt`: golden figure 107 appears: ...0*3510**00479424187*CA*ADVERTISING RIGHT*93953878*107, SCHOOL LANE, WRENTOFT, LQ8 1QX**107*SCHOOL LANE*...
+- **REVIEW** `voa_list_entries_2026_lq.txt`: golden figure 104 appears: ...5*3510**00057085026*CA*ADVERTISING RIGHT*41197349*104, NORTHFIELD, WITHYBECK, LQ6 2TW**104*NORTHFIELD*W...
+- **REVIEW** `voa_list_entries_2026_lq.txt`: golden figure 108 appears: ...-APR-2026**27600**19842604**227G*****01-APR-2026* 108*3510**00571307221*CS*SHOP AND PREMISES*66211920*8...
+- **REVIEW** `voa_list_entries_2026_lq.txt`: golden figure 380 appears: ...-APR-2026**24200**17198897**249G*****01-APR-2026* 380*3510**00057740569*IW*WORKSHOP AND PREMISES*112232...
+- **REVIEW** `voa_list_entries_2026_lq.txt`: golden figure 101 appears: ...78*3510**00045012919*CS*SHOP AND PREMISES*2563406*101, STATION ROAD, RADDLEFORD, LQ9 2PY**101*STATION R...
+- **REVIEW** `voa_list_entries_2026_lq.txt`: and 1 more golden figures
 
-## 4 design-note vocabulary (REVIEW 2)
-- **REVIEW** `property_data_notes.md`: 10 of 25 stump-paragraph terms appear (census, grocery, households, pitches, rating, measured); read whether the document names the move
-- **REVIEW** `spend_share_model_2025.pdf`: 8 of 25 stump-paragraph terms appear (census, grocery, households, rating, output, region); read whether the document names the move
+## 4 design-note vocabulary (REVIEW 1)
+- **REVIEW** `spend_share_model_2025.pdf`: 5 of 25 stump-paragraph terms appear (population, grocery, output, households, census); read whether the document names the move
 
 ## 6 ranking artifacts (REVIEW 1)
-- **REVIEW** `site_shortlist_2027.xlsx`: names 3 of 5 answer-set candidates beside numbers; confirm it does not rank them on the decision question
+- **REVIEW** `site_shortlist_2027.xlsx`: names 3 of 8 answer-set candidates beside numbers; confirm it does not rank them on the decision question
 
 ## 7 hidden content (REVIEW 2)
 - **REVIEW** `gtfs_sallowmere_motor_services_20261002.zip`: nested_zip: true
@@ -41,8 +40,6 @@ Stump terms swept: census, origin, grocery, households, wrentoft, pitches, guest
 ## 10 container metadata (INFO 1)
 - **INFO** `-`: audit reported no writer signature (1 lines)
 
-## 1 file names (clean)
-
 ## 5 announcements (clean)
 
 ## 8 column names (clean)
@@ -50,6 +47,7 @@ Stump terms swept: census, origin, grocery, households, wrentoft, pitches, guest
 ## 9 dates after the setting (clean)
 
 ## 11 prompt gate (clean)
+
 
 ## Solver's-eye read
 
@@ -84,3 +82,20 @@ Realism notes taken into the generator after round 4: the competitor entry at Br
 alteration (the grocery stores and parks now carry none), stops beside the sites named after nearby villages (now the
 site's town), the count points' method columns disagreeing, cover at a neighbouring store spread over most
 colleagues, and shift lengths from four fixed values.
+
+### Architecture 2, read 1 (target.zip 5cbd1f6f, 2026-10-27)
+One isolated leak reader (sonnet, medium) on fresh copies of prompt.txt and target/, for leaks only, no solve.
+1. Decisive step: none. Closest, the model sheet's section 4 appraisal rule, "States the contribution formula, not which site wins."
+2. Ranking: none; the shortlist carries cost inputs only.
+3. Analyst-only file: voa_compiled_list_file_specification_2026.pdf, "only the 28-field position key needed to parse the asterisk-delimited" list; the DC procedure read as "a real operating procedure, not analyst-only".
+4. Answer figure: none; it noted that S1 and S3 are the two towns with no Marrable store yet.
+5. Literal sentences: section 2's stores in the share, the proposed floor area, the households not rolled forward, section 4's appraisal; each executes to the golden's population, window and formula.
+6. What decides: "an analytical choice. Every formula is filed, nothing withheld ... No sentence announces this." Its account of the step (re-running the full spend-share computation) is not the decisive step, which it did not name.
+Sweep lines: all harmless (the rating list is the VOA's own record; the coinciding numbers are house numbers and rateable values; "the model" is the property team's own name for its tool; the shortlist ranks nothing; GTFS ships zipped from the Bus Open Data Service).
+Realism notes: the model sheet's round filed parameters; the invented geography and operator names.
+
+### Rulings on architecture 2's read 1 (main thread)
+- Question 3, the VOA file specification: harmless. It is publisher documentation (dataset-generation section 3's roles, one genuine publisher document), the layout the VOA issues with every compiled list download, and nothing the call turns on sits in it: the decisive step reads the list's pitch measures and grocery stores the same way under any field naming. Kept.
+- Questions 1, 2, 4 to 6: nothing to fix; the reader did not reach the decisive step, and no sentence names a store's take of a place as a share to be divided out.
+- Sweep 4 (ruled here, never sent to the reader): the model sheet's population and share sentences are its own subject; they name no take, no unseen place's measurement and no divide.
+- Realism: the model sheet rounds its fitted parameters as a property team's internal sheet does; the geography and operators are the fiction's own. Left as they are.

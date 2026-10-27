@@ -1,46 +1,53 @@
 {
  "task": "task305",
- "status": "DESIGN",
+ "status": "SHIPPED",
  "domain": "urban-regional-science",
  "objective": "opportunity-sizing-decision",
- "stage": 2,
- "stage_name": "design",
+ "stage": 5,
+ "stage_name": "ship",
  "updated": "2026-10-27",
  "stump": "A competent analyst reads the model sheet, carries the holiday parks as origins, prices a pitch from the out-of-region cardholders' season spend at our stores beside Raddleford Water and Withybeck Lakes over those parks' pitches, and approves S1 Bellingtoft at GBP 0.4 million where the golden is S3 Wrentoft at GBP 0.8 million; the step that lands them there is reading our store's take as the park's spend, when a larger competitor beside each park takes most of it and our store's take is only its modelled share.",
  "architecture": 2,
  "loops": 0,
  "precut": {
   "exit": 0,
-  "date": "2026-10-24"
+  "date": "2026-10-27",
+  "checks": "53, 0 FAIL, 0 WARN"
  },
  "leak": {
-  "leak_py": "REVIEW (author vocabulary, coinciding identifiers, design-note vocabulary, the shortlist, nested GTFS zips; all harmless)",
-  "reader": "round 4 on 41415795 with a clean brief: both readers filed S1 at 0.5, asks 10 and 0 of 26, measured pair 22.6; earlier rounds in the design note's pre-ship check"
+  "leak_py": "REVIEW, every line ruled harmless (the rating list's own record and numbers, the model sheet's own word, the shortlist ranks nothing, GTFS zipped)",
+  "reader": "architecture 2 read 1 on 5cbd1f6f: no decisive-step sentence, no ranking, no answer figure; question 6 analytical; question 3 the VOA file specification, ruled publisher documentation"
  },
  "duplicate_check": {
-  "heart": "WARN (repeat.question_form, answered); surface promotes task199, task133, task180 on the card signature, differentiated",
-  "nearest": "task89 lineage and task98 lineage at 0.05; task471 lineage and task53 lineage at 0.04"
+  "heart": "WARN (overuse.objective, repeat.decision, repeat.deliverables, answered at the draw)",
+  "surface": "3 pairs promoted on card axes (task307, task303, task128), each adjudicated clean in the pre-ship check"
  },
  "judge": {
   "verdict": "DETERMINISTIC",
-  "disposition": "APPROVE (pass 4 on 41415795, every graded figure reproduced; passes 2 and 3 approved 1680766e and ec38f0bd)",
-  "report": "determinism_check_report.md"
+  "disposition": "APPROVE (architecture 2 pass 1 on 5cbd1f6f)",
+  "gate_g": "analytical_non_defect (mechanism other, the same as decomposition_attribution)",
+  "gate_h": "domain pass, layers pass, decisive step analytical",
+  "report": "task305/determinism_check_report_arch2.md"
  },
  "returned": [
   {
    "date": "2026-10-27",
    "portal": "both determinism judges competing_defensible_answer, Gates C and D, G pass, F plausible. Main call: the filed spend-share model's origins are the census households and nothing authorises the holiday parks' guests or pins the GBP 2,440 a pitch (five free choices against an overtaking threshold near GBP 1,300); asks: a night shift's two paid-hours lines, the GTFS block duplicates and the turned-away load are filed nowhere. Both responses filed S1 at 0.5 (the call stumped).",
    "repair": "design",
-   "commit": ""
+   "commit": "re-root, architecture 2"
   }
  ],
- "resume": "stage 2 (architecture 2): write the default path, stump sentence, three rules, readability screen, fork table, ladder, closure table, literal reader, oracles and ask sheet; then the generator (model sheet population line, the two competitors, the ask conventions pinned with their silent devices kept), the pack, goldens and submission",
+ "resume": "",
  "approved": null,
- "delivered": "2026-10-24",
+ "delivered": "2026-10-27",
  "portal": null,
  "portal_id": "",
  "portal_status": "",
  "portal_status_date": "",
  "guard_override": "author, 2026-10-24: heart BLOCKs on ban.strategy and ban.forcing_event against task275 arose after the draw when four builds drawn between them were marked spent; overridden rather than relabelled",
- "shipped_zip": "b9d63c0b4f276644c0e205c209fe30441572bae06a9ee94e3157f9a96a2acb2f"
+ "shipped_zip": "5cbd1f6fec20d66794704a1b904705b0e9eedcc921359cd3d6e17d5235b08ed4",
+ "assertions": 225,
+ "verifier": "recomputes the call and all 26 ask figures",
+ "builds_byte_identical": true,
+ "zip_sha256_16": "5cbd1f6fec20d667"
 }

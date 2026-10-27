@@ -157,6 +157,18 @@ def ask_a(target, mode="golden"):
     elif mode == "drop_short":
         drop = {(r["trip_id"], r["stop_seq"]) for r in dels
                 if (_utc(r["depart_utc"]) - _utc(r["arrive_utc"])).total_seconds() / 60.0 < 15}
+    elif mode == "pinned":
+        # the folder notes' rule executed as written: a stop whose load the same store receives again the next day on
+        # a trip of its own is the turned-away one
+        trips = {}
+        for r in rows:
+            trips.setdefault(r["trip_id"], []).append(r)
+        lone = [r for r in dels if len(trips[r["trip_id"]]) == 1]
+        for r in dels:
+            d = to_local(r["arrive_utc"]).date()
+            if any(q["store_no"] == r["store_no"] and q["cases"] == r["cases"] and
+                   (to_local(q["arrive_utc"]).date() - d).days == 1 for q in lone):
+                drop.add((r["trip_id"], r["stop_seq"]))
     elif mode == "dedup_equal":
         seen = {}
         for r in sorted(dels, key=lambda r: r["arrive_utc"]):
@@ -179,7 +191,11 @@ def ask_a(target, mode="golden"):
 # ----------------------------------------------------------------- ask B
 def wfm_lines(target):
     """the paid hours report's lines in file order: colleague, location, date, role and paid hours"""
-    return [dict(r, i=i, paid=float(r["paid_hours"])) for i, r in enumerate(rd(os.path.join(target, P.FILES["wfm"])))]
+    with open(os.path.join(target, P.FILES["wfm"]), encoding="utf-8", newline="") as fh:
+        text = fh.read().split("\n")
+    k = next(i for i, ln in enumerate(text) if ln.startswith("employee_no,"))
+    rows = list(csv.DictReader(io.StringIO("\n".join(text[k:]))))
+    return [dict(r, i=i, paid=float(r["paid_hours"])) for i, r in enumerate(rows)]
 
 
 def punches_by_employee(target):
@@ -187,7 +203,7 @@ def punches_by_employee(target):
     out = {}
     for p in rd(os.path.join(target, P.FILES["punches"])):
         out.setdefault(p["employee_no"], []).append(
-            (dt.datetime.strptime(p["punch_time"], "%Y-%m-%d %H:%M"), p["punch"], reg[p["terminal_id"]]))
+            (dt.datetime.strptime(p["punch_time_local"], "%Y-%m-%d %H:%M"), p["punch"], reg[p["terminal_id"]]))
     for v in out.values():
         v.sort()
     return out
@@ -283,6 +299,17 @@ def ask_b(target, mode="golden"):
             if k not in seen:
                 seen.add(k)
                 use.append(r)
+    elif mode == "pinned":
+        # the folder notes' grain executed as written: a colleague's line that repeats the paid hours and role of their
+        # line on the previous date is that night's second line, and goes
+        prev = {}
+        for r in lines:
+            prev.setdefault((r["employee_no"], r["date"]), []).append((r["role"], r["paid_hours"]))
+        use = []
+        for r in lines:
+            d0 = (dt.date.fromisoformat(r["date"]) - dt.timedelta(days=1)).isoformat()
+            if (r["role"], r["paid_hours"]) not in prev.get((r["employee_no"], d0), []):
+                use.append(r)
     elif mode == "dedup_day":
         use = [g[0] for g in _by_day(lines).values()]
     elif mode == "dedup_day_max":
@@ -311,7 +338,7 @@ def ask_c(target, mode="golden", day=P.BUS_DAY):
     sites = sheet(os.path.join(target, P.FILES["shortlist"]), "Shortlist")
     pc = {r["pcds"]: (float(r["oseast1m"]), float(r["osnrth1m"])) for r in rd(os.path.join(target, P.FILES["onspd"]))}
     site_ll = {r["site"]: geo.bng_to_wgs84(*pc[r["postcode"]]) for r in sites}
-    late = mode not in ("naive", "half")
+    late = mode not in ("naive", "half", "service_day")
     days = [(day, "today")] + ([(day - dt.timedelta(days=1), "eve")] if late else [])
     calls = []                      # (feed, site, which, route, direction, stop, minute, block)
     for fi, key in enumerate(("gtfs_lb", "gtfs_pdc")):
@@ -340,7 +367,7 @@ def ask_c(target, mode="golden", day=P.BUS_DAY):
                     if r["trip_id"] not in tr or (r["pickup_type"] == "1" and mode != "all_calls"):
                         continue
                     m = _mins(r["departure_time"])
-                    if which == "today" and mode != "naive" and m >= 1440:
+                    if which == "today" and mode not in ("naive", "service_day") and m >= 1440:
                         continue
                     if which == "eve" and m < 1440:
                         continue
@@ -349,7 +376,7 @@ def ask_c(target, mode="golden", day=P.BUS_DAY):
                         if r["stop_id"] in near[k]:
                             calls.append((fi, k, which, route, direction, r["stop_id"], m, block))
     out = {k: 0 for k in site_ll}
-    if mode in ("golden", "all_calls", "no_fl"):
+    if mode in ("golden", "all_calls", "no_fl", "service_day"):
         for c in set(c[1:3] + c[5:8] for c in calls):
             out[c[0]] += 1
         return out

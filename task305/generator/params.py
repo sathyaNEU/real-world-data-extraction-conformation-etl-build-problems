@@ -41,21 +41,21 @@ COMP = [  # fascia, town, x, y, rating-list floor area m2
     ("Brightmart", "Withybeck", 44.6, 37.5, 900), ("Valuewise", "Corrinby", 5.6, 39.6, 650),
     ("Brightmart", "Wrentoft", 66.4, 42.3, 850), ("Valuewise", "Raddleford", 27.6, 8.8, 1000),
     ("Brightmart", "Loderwell", 39.6, 11.6, 700), ("Valuewise", "Sedgeton", 53.6, 4.8, 800),
-    ("Brightmart", "Bellingtoft", 49.4, 27.2, 600), ("Valuewise", "Brackenmere", 23.6, 30.4, 500)]
+    ("Brightmart", "Bellingtoft", 49.4, 27.2, 600), ("Valuewise", "Brackenmere", 23.6, 30.4, 500),
+    ("Fairbasket", "Raddleford", 29.75, 6.75, 3600), ("Fairbasket", "Withybeck", 47.3, 41.3, 3200),
+    ("Pettifer's", "Sallowmere", 58.05, 14.5, 3000)]
 SITES = [  # site, address, town, x, y, proposed floor area m2 (rating-list basis), (rent, rates, staffing, other)
-    ("S1", "Fenton Road", "Bellingtoft", 50.2, 28.6, 1800, (334000, 158000, 552000, 156000)),
+    ("S1", "Fenton Road", "Bellingtoft", 50.2, 28.6, 1800, (334000, 158000, 552000, 133000)),
     ("S2", "Eastgate", "Darrowfield", 39.0, 22.5, 1800, (171000, 101000, 470000, 97000)),
-    ("S3", "Mill Lane", "Wrentoft", 66.0, 41.8, 1500, (164000, 92000, 571000, 149000)),
+    ("S3", "Mill Lane", "Wrentoft", 66.0, 41.8, 1500, (144000, 92000, 571000, 117000)),
     ("S4", "Northfield", "Brackenmere", 22.0, 33.0, 1500, (142000, 84000, 380000, 85000)),
     ("S5", "Sutton Road", "Quellby", 16.0, 17.0, 1600, (128000, 77000, 380000, 74000)),
     ("S6", "Westway", "Sallowmere", 57.0, 13.0, 1500, (116000, 72000, 410000, 64000))]
 PARKS = [  # name, x, y, pitches, rating-list description
-    ("Raddleford Water Holiday Park", 29.8, 6.6, 420, "CARAVAN PARK AND PREMISES"),
+    ("Raddleford Water Holiday Park", 29.8, 6.6, 640, "CARAVAN PARK AND PREMISES"),
     ("Wrentoft Lakes Holiday Park", 68.5, 44.0, 1750, "CARAVAN PARK AND PREMISES"),
-    ("Withybeck Lakes Caravan Park", 47.5, 41.5, 240, "CARAVAN PARK AND PREMISES"),
-    ("Sallowmere Mill Caravan Park", 58.0, 14.6, 80, "CARAVAN PARK AND PREMISES"),
-    ("Corrinby Farm Camping and Caravans", 3.5, 42.5, 20, "CAMPING SITE AND PREMISES"),
-    ("Loderwell Brook Touring Park", 42.0, 9.5, 15, "TOURING CARAVAN SITE AND PREMISES")]
+    ("Withybeck Lakes Caravan Park", 47.5, 41.5, 520, "CARAVAN PARK AND PREMISES"),
+    ("Sallowmere Mill Caravan Park", 58.0, 14.6, 160, "CARAVAN PARK AND PREMISES")]
 DC = ("Loderwell Gate distribution centre", 40.5, 11.0)
 PARK_ROAD = {"Raddleford Water Holiday Park": "Water Lane", "Wrentoft Lakes Holiday Park": "Marsh Road",
              "Withybeck Lakes Caravan Park": "Lakes Road", "Sallowmere Mill Caravan Park": "Mill Road",
@@ -88,7 +88,8 @@ FILES = {
     "cards": "card_spend_by_home_sector_fy2025_26.csv",
     "shortlist": "site_shortlist_2027.xlsx",
     "model": "spend_share_model_2025.pdf",
-    "notes": "property_data_notes.md",
+    "voa_spec": "voa_compiled_list_file_specification_2026.pdf",
+    "dc_proc": "loderwell_gate_store_deliveries_procedure.pdf",
     "tms": "tms_stop_export_20251006_20260329.csv",
     "receipts": "goods_in_receipts_20251006_20260329.csv",
     "wfm": "wfm_paid_hours_20251006_20260329.csv",

@@ -20,20 +20,30 @@ def write(path, fig):
     t.append("## 1. Final Recommendation\n")
     t.append("**Marrable Foodstores should open S3, %s, which will add GBP %s million a year to the chain's contribution "
              "once it is trading.**" % (fig["site_name"], m(fig["add"])))
-    t.append("The guests on Wrentoft Lakes Holiday Park's %s pitches live outside the region, so no census output area "
-             "holds them, and at GBP %s of in-store grocery spend a pitch for a season they lift the store's sales to "
-             "GBP %s million. Not S1 Bellingtoft, which leads on the residents' spend alone and adds GBP %s million. Not "
-             "S2 Eastgate, which adds GBP %s million because over a third of its sales would come from our own "
-             "stores.\n" % (c(fig["wrentoft_lakes_pitches"]), c(fig["V"]), m(fig["s3_sales"]), m(s["S1"]["add"]),
-                            m(s["S2"]["add"])))
+    sh = fig["park_shares_pct"]
+    t.append("The guests staying on Wrentoft Lakes Holiday Park's %s pitches spend about GBP %s a pitch a season on "
+             "groceries in store, and S3 is the site nearest them. At the other parks our stores see only part of that "
+             "spend: the model gives them %d per cent of what starts at Raddleford Water, %d per cent at Withybeck Lakes "
+             "and %d per cent at Sallowmere Mill, the rest going to the competitor at each park's gate, so a pitch is "
+             "priced on our take over that share. Carried as an origin, the park lifts S3's sales to GBP %s million. Not "
+             "S1 Bellingtoft, which adds GBP %s million and leads only if a pitch is priced at our stores' take over the "
+             "pitches alone (GBP %s). Not S2 Eastgate, which adds GBP %s million because about a third of its sales "
+             "would come from our own stores.\n"
+             % (c(fig["wrentoft_lakes_pitches"]), c(fig["V"]), sh["Raddleford Water Holiday Park"],
+                sh["Withybeck Lakes Caravan Park"], sh["Sallowmere Mill Caravan Park"], m(fig["s3_sales"]),
+                m(s["S1"]["add"]), c(fig["v_direct"]), m(s["S2"]["add"])))
     t.append("## 2. Critical Components\n")
-    t.append("1. The holiday parks are origins of grocery spend that the census does not count: Wrentoft Lakes Holiday "
-             "Park, the largest with **%s** pitches, is nearer S3 than any other site." % c(fig["wrentoft_lakes_pitches"]))
-    t.append("2. A pitch's guests spend **GBP %s** a season in store, measured from the out-of-region card spend at "
-             "our ten stores." % c(fig["V"]))
-    t.append("3. With the guests carried, S3 sells **GBP %s million** a year and adds **GBP %s million**; on the "
-             "residents alone it adds **GBP %s million**, %s of six, and S1 leads at **GBP %s million**.\n"
-             % (m(fig["s3_sales"]), m(fig["add"]), m(fig["s3_resident"]), fig["s3_resident_rank"], m(fig["resident_add"])))
+    t.append("1. Spend starts where people are, a household's at its output area and anyone else's where they stay "
+             "(%s, section 1): Wrentoft Lakes Holiday Park, the largest pitch-measured site with **%s** pitches, is "
+             "nearer S3 than any other site." % (F["model"], c(fig["wrentoft_lakes_pitches"])))
+    t.append("2. A pitch's guests spend **GBP %s** a season in store: our stores' out-of-region card spend in the season "
+             "over the pitches weighted by the share of each park's spend the model gives our stores (**%d per cent** "
+             "at Raddleford Water, **%d per cent** at Withybeck Lakes, **%d per cent** at Sallowmere Mill)."
+             % (c(fig["V"]), sh["Raddleford Water Holiday Park"], sh["Withybeck Lakes Caravan Park"],
+                sh["Sallowmere Mill Caravan Park"]))
+    t.append("3. With the guests carried, S3 sells **GBP %s million** a year and adds **GBP %s million**; priced at our "
+             "stores' take over the pitches alone (GBP %s a pitch), S1 would lead at **GBP %s million**.\n"
+             % (m(fig["s3_sales"]), m(fig["add"]), c(fig["v_direct"]), m(fig["direct_add"])))
     t.append("## 3. Step-by-Step Solution\n")
     t.append("1. Shared each output area's grocery spend (its households in %s, times the weekly spend in %s, times "
              "%d weeks and %d per cent in store) among the %d grocery stores of %d m2 or more in %s and %s, by floor "

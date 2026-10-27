@@ -49,10 +49,11 @@ def model_sheet(path):
                        "parameters of March 2022). Owner: %s." % P.PEOPLE["property"], small))
     s.append(Spacer(1, 4))
     s.append(Paragraph("1. What the model does", h2))
-    s.append(Paragraph("The model shares grocery spend among the grocery stores that can win it. A store's share of the "
-                       "spend that starts at a place is its pull times its deterrence from that place, divided by the sum "
-                       "of pull times deterrence over every store in the share. A store's sales are the sum of its shares "
-                       "of the spend.", body))
+    s.append(Paragraph("The model shares grocery spend among the grocery stores that can win it. Spend starts where people "
+                       "are: a household's at its output area, and anyone else's at the place where they are staying. A "
+                       "store's share of the spend that starts at a place is its pull times its deterrence from that "
+                       "place, divided by the sum of pull times deterrence over every store in the share. A store's sales "
+                       "are the sum of its shares of the spend.", body))
     s.append(Paragraph("2. The stores in the share", h2))
     s.append(Paragraph("Every grocery store on the VOA rating list for the planning region whose primary description is "
                        "SUPERMARKET AND PREMISES, SUPERSTORE AND PREMISES or FOOD STORE AND PREMISES and whose summary "
@@ -86,69 +87,50 @@ def model_sheet(path):
               onLaterPages=_footer("Marrable Foodstores, Property and Network Planning. Internal."))
 
 
-NOTES = """# Property data folder: notes
-
-Hazel Lucas (GIS), 9 October 2026. What each file is and how it came to us, for the 2027 site appraisal.
-
-## Geography and spend
-
-- `census2021_ts041_households_oa.csv`: Census 2021 table TS041 (number of households) for the output areas of the
-  planning region, as downloaded from the ONS. Households are counted at the census day, 21 March 2021.
-- `oa21_population_weighted_centroids.csv`: ONS population-weighted centroids of the 2021 output areas, British
-  National Grid metres.
-- `grocery_spend_estimates_2026_oa21.csv`: the data provider's modelled mean weekly grocery spend per household, by
-  2021 output area, at 2026 prices (licence renewed March 2026).
-- `onspd_may2026_lq.csv`: our extract of the ONS Postcode Directory (May 2026) for the LQ postcode area. `doterm` is
-  the month a postcode was terminated, blank while it is live; `usertype` 1 is a large user. Grid references are to
-  1 metre; `osgrdind` 1 means the reference is within the building of the matched address.
-
-## Rating list
-
-- `voa_list_entries_2026_lq.txt`: the VOA's compiled 2026 list entries for the billing authority (code 3510), in the
-  VOA's own layout: one entry per line, fields separated by asterisks, no header. The fields, in order: entry number,
-  billing authority code, community code, BA reference, primary description code, primary description, UARN, full
-  property identifier, firm's name, number or name, street, town, postal district, county, postcode, effective date,
-  composite indicator, rateable value, appeal settlement code, assessment reference, list alteration date, SCAT code
-  and suffix, sub-street 3, sub-street 2, sub-street 1, case number, current from date, current to date.
-- `voa_summary_valuations_2026_lq.csv`: the main measure from each assessment's summary valuation (floor area in m2,
-  parking spaces or pitches), keyed by UARN and assessment reference. Assessments valued without a measured summary
-  (rental evidence, receipts and expenditure) have no row.
-
-## Our estate and the shortlist
-
-- `store_estate_2026.xlsx`: the ten stores (floor area as the rating list measures it, sales for FY2025/26, April to
-  March, and the share of sales paid by card).
-- `card_spend_by_home_sector_fy2025_26.csv`: the acquirer's merchant-insight feed: card spend at each of our stores by
-  month and the postcode sector of the cardholder's registered address, FY2025/26. Every sector with a card in the
-  month is listed.
-- `site_shortlist_2027.xlsx`: the six sites on the 2027 shortlist, with the proposed floor area on the rating list's
-  basis and the estimated annual running costs (agents' heads of terms for rent, our rates estimate, the staffing plan
-  and other running costs).
-- `spend_share_model_2025.pdf`: the spend-share parameters and Finance's appraisal rule.
-
-## Distribution, staffing and buses
-
-- `tms_stop_export_20251006_20260329.csv`: the transport management system's stop export from its go-live on
-  6 October 2025: one row per stop on a trip from the Loderwell Gate distribution centre, deliveries (`DEL`) and
-  collections of cages and recyclables (`COL`). Times are the system's own (UTC); `cases` and `cages` come from the
-  trip's load plan, stop by stop.
-- `goods_in_receipts_20251006_20260329.csv`: goods-in receipts scanned on the stores' handhelds, local time, with the
-  delivery note and its cases. The handhelds went in store by store from October 2025 (101 to 106 so far); 107 to
-  110 still book deliveries in on paper.
-- `wfm_paid_hours_20251006_20260329.csv`: the workforce system's paid hours report, 6 October 2025 to 29 March 2026:
-  employee number, location, date, role and paid hours.
-- `ta_punches_20251006_20260329.csv`: the time-and-attendance clock-ins and clock-outs for the same weeks, local
-  time, with the terminal each was made on; `ta_terminals.csv` is the terminal register (store, door, installed).
-- `gtfs_sallowmere_motor_services_20261002.zip`, `gtfs_wrentoft_district_coaches_20261002.zip`: each operator's
-  timetable data as published on the Bus Open Data Service on 2 October 2026 (GTFS).
-
-## Also in the folder
-
-- `dft_aadf_count_points_lq_2025.csv`: DfT annual average daily flows at the count points in the area, 2025.
-- `customer_survey_store_scores_2025.csv`: the 2025 customer survey's store scores.
-"""
+VOA_FIELDS = ["Entry number", "Billing authority code", "Community code", "Billing authority reference",
+              "Primary description code", "Primary description", "Unique address reference number (UARN)",
+              "Full property identifier", "Firm's name", "Number or name", "Street", "Town", "Postal district",
+              "County", "Postcode", "Effective date", "Composite indicator", "Rateable value",
+              "Appeal settlement code", "Assessment reference", "List alteration date", "SCAT code and suffix",
+              "Sub-street level 3", "Sub-street level 2", "Sub-street level 1", "Case number", "Current from date",
+              "Current to date"]
 
 
-def notes(path):
-    with open(path, "w", encoding="utf-8") as fh:
-        fh.write(NOTES)
+def voa_spec(path):
+    """the VOA's own layout for the compiled list entries file (publisher documentation)"""
+    body, h1, h2, small = _styles()
+    s = [Paragraph("Valuation Office Agency: compiled list entries, file specification", h1),
+         Paragraph("Non-domestic rating, 2026 local rating list. Data download service.", small), Spacer(1, 4),
+         Paragraph("Each list entry is one line of text. Fields are separated by an asterisk (*); there is no header "
+                   "line, and an empty field is two consecutive asterisks. Dates are written DD-MON-YYYY. The rateable "
+                   "value is in whole pounds.", body),
+         Paragraph("Field order", h2),
+         _table([["Position", "Field"]] + [[str(k + 1), f] for k, f in enumerate(VOA_FIELDS)], [24, 110])]
+    doc = SimpleDocTemplate(path, pagesize=A4, leftMargin=18 * mm, rightMargin=18 * mm, topMargin=16 * mm,
+                            bottomMargin=18 * mm, title="Compiled list entries: file specification",
+                            author="Valuation Office Agency", creator="Valuation Office Agency", invariant=1)
+    doc.build(s, onFirstPage=_footer("Valuation Office Agency. Open Government Licence v3.0."),
+              onLaterPages=_footer("Valuation Office Agency. Open Government Licence v3.0."))
+
+
+def dc_procedure(path):
+    """the distribution centre's store deliveries procedure (governing document for the DC's records)"""
+    body, h1, h2, small = _styles()
+    s = [Paragraph("Loderwell Gate distribution centre: store deliveries", h1),
+         Paragraph("Transport procedure TP-04, issue 3, September 2025. Owner: transport manager.", small), Spacer(1, 4),
+         Paragraph("1. Planning", h2),
+         Paragraph("Each night's trips are planned on the transport management system from the stores' orders. A trip's "
+                   "load plan gives the cases and cages for each stop; the system keeps every time in UTC.", body),
+         Paragraph("2. At the store", h2),
+         Paragraph("The driver closes each stop on the handset when the trailer leaves the bay. A store may turn a load "
+                   "away at the door, for damage, temperature or no room in the backroom; the driver still closes the "
+                   "stop as delivered, and the planners send the same load again the next day on a trip of its own.",
+                   body),
+         Paragraph("3. Collections", h2),
+         Paragraph("Empty cages and recyclables come back on the same trip and are closed as collections, with no "
+                   "cases.", body)]
+    doc = SimpleDocTemplate(path, pagesize=A4, leftMargin=18 * mm, rightMargin=18 * mm, topMargin=16 * mm,
+                            bottomMargin=18 * mm, title="Store deliveries: transport procedure TP-04", author=P.ORG,
+                            creator=P.ORG, invariant=1)
+    doc.build(s, onFirstPage=_footer("Marrable Foodstores, Loderwell Gate distribution centre. Internal."),
+              onLaterPages=_footer("Marrable Foodstores, Loderwell Gate distribution centre. Internal."))

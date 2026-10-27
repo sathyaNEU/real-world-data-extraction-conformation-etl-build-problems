@@ -129,10 +129,11 @@ def asks(T):
     # B: the report lists a night shift against both dates it covers; the shifts a colleague starts on a date are the
     # clock-ins that date (a clock-out with no clock-in before it is a shift whose clock-in was forgotten, dated by the
     # clock-out), and each takes one of that date's lines, at the store of the terminal it was punched at
-    w = pd.read_csv(os.path.join(T, "wfm_paid_hours_20251006_20260329.csv"), dtype=str)
+    _wl = open(os.path.join(T, "wfm_paid_hours_20251006_20260329.csv"), encoding="utf-8").read().split("\n")
+    w = pd.read_csv(io.StringIO("\n".join(_wl[next(i for i, ln in enumerate(_wl) if ln.startswith("employee_no,")):])), dtype=str)
     p = pd.read_csv(os.path.join(T, "ta_punches_20251006_20260329.csv"), dtype=str)
     term = dict(zip(*[pd.read_csv(os.path.join(T, "ta_terminals.csv"), dtype=str)[c] for c in ("terminal_id", "store_no")]))
-    p["t"] = pd.to_datetime(p["punch_time"])
+    p["t"] = pd.to_datetime(p["punch_time_local"])
     p["store"] = p["terminal_id"].map(term)
     p = p.sort_values(["employee_no", "t"])
     begin = {}

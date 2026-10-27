@@ -1,32 +1,32 @@
 {
- "V": 2440,
- "V_exact": 2443.0,
+ "V": 2480,
+ "V_exact": 2484.2,
  "add": 0.8,
- "add_exact": 803527,
+ "add_exact": 800579,
  "area_code": "LQ",
  "ask_a": {
-  "101": 7456,
-  "102": 7085,
-  "103": 6968,
-  "104": 7290,
-  "105": 5954,
-  "106": 6734,
-  "107": 5710,
-  "108": 4658,
-  "109": 3890,
-  "110": 4429
+  "101": 7020,
+  "102": 6975,
+  "103": 6653,
+  "104": 4704,
+  "105": 3828,
+  "106": 6729,
+  "107": 3228,
+  "108": 3933,
+  "109": 3350,
+  "110": 4359
  },
  "ask_a_exact": {
-  "101": 7456.2,
-  "102": 7084.88,
-  "103": 6968.32,
-  "104": 7289.84,
-  "105": 5954.24,
-  "106": 6733.92,
-  "107": 5710.12,
-  "108": 4657.76,
-  "109": 3890.0,
-  "110": 4429.16
+  "101": 7019.68,
+  "102": 6974.6,
+  "103": 6653.16,
+  "104": 4703.76,
+  "105": 3828.04,
+  "106": 6728.56,
+  "107": 3227.8,
+  "108": 3933.04,
+  "109": 3349.68,
+  "110": 4358.64
  },
  "ask_b": {
   "101": 1890,
@@ -65,141 +65,139 @@
  "bus_eve": 14,
  "bus_weekday": "Friday",
  "deterrence_exponent": -0.22,
+ "direct_add": 0.4,
+ "direct_s3": 0.2,
+ "direct_site": "S1",
  "guests_by_store": {
-  "101": 29833,
-  "102": 2747,
-  "103": 8285,
-  "104": 99411,
-  "105": 328864,
-  "106": 33646,
-  "107": 615358,
-  "108": 53583,
-  "109": 10594,
-  "110": 2496
+  "101": 12734,
+  "102": -474,
+  "103": 2441,
+  "104": 62452,
+  "105": 147547,
+  "106": -426,
+  "107": 285788,
+  "108": 17369,
+  "109": 5389,
+  "110": 189
  },
  "instore_pct": 88,
  "margin_pct": 26,
  "min_area": 280,
- "n_park_sites": 6,
- "n_stores_share": 24,
+ "n_park_sites": 4,
+ "n_stores_share": 27,
+ "park_shares_pct": {
+  "Raddleford Water Holiday Park": 19,
+  "Sallowmere Mill Caravan Park": 17,
+  "Withybeck Lakes Caravan Park": 11
+ },
  "parks": [
   {
    "desc": "CARAVAN PARK AND PREMISES",
    "pitches": 1750,
-   "postcode": "LQ15 4DZ"
+   "postcode": "LQ15 4UE"
   },
   {
    "desc": "CARAVAN PARK AND PREMISES",
-   "pitches": 420,
-   "postcode": "LQ18 4PH"
+   "pitches": 640,
+   "postcode": "LQ18 4XA"
   },
   {
    "desc": "CARAVAN PARK AND PREMISES",
-   "pitches": 240,
-   "postcode": "LQ6 2DB"
+   "pitches": 520,
+   "postcode": "LQ6 2HZ"
   },
   {
    "desc": "CARAVAN PARK AND PREMISES",
-   "pitches": 80,
-   "postcode": "LQ16 1AR"
-  },
-  {
-   "desc": "CAMPING SITE AND PREMISES",
-   "pitches": 20,
-   "postcode": "LQ7 2AA"
-  },
-  {
-   "desc": "TOURING CARAVAN SITE AND PREMISES",
-   "pitches": 15,
-   "postcode": "LQ17 1XA"
+   "pitches": 160,
+   "postcode": "LQ16 1NA"
   }
  ],
  "radius_m": 400,
- "resident_add": 0.5,
+ "resident_add": 0.4,
  "resident_site": "S1",
  "resident_site_name": "Bellingtoft, Fenton Road",
  "roadf": 1.25,
  "runner_up": "S1",
- "runner_up_add": 0.5,
- "s3_cost": 976000,
+ "runner_up_add": 0.4,
+ "s3_cost": 924000,
  "s3_resident": 0.1,
  "s3_resident_rank": "second",
- "s3_sales": 7.1,
- "s3_took": 290,
+ "s3_sales": 6.8,
+ "s3_took": 143,
  "site": "S3",
  "site_name": "Wrentoft, Mill Lane",
  "sites": {
   "S1": {
-   "add": 0.5,
-   "add_exact": 507748,
+   "add": 0.4,
+   "add_exact": 419824,
    "area": 1800,
-   "cost": 1200000,
+   "cost": 1177000,
    "name": "Bellingtoft, Fenton Road",
-   "resident_add": 0.5,
-   "resident_add_exact": 496330,
-   "sales": 7.6,
-   "sales_exact": 7639952,
-   "took": 1071689
+   "resident_add": 0.4,
+   "resident_add_exact": 408667,
+   "sales": 6.8,
+   "sales_exact": 6753698,
+   "took": 612067
   },
   "S2": {
    "add": 0.1,
-   "add_exact": 90687,
+   "add_exact": 64708,
    "area": 1800,
    "cost": 839000,
    "name": "Darrowfield, Eastgate",
    "resident_add": 0.1,
-   "resident_add_exact": 88946,
-   "sales": 5.6,
-   "sales_exact": 5640896,
-   "took": 2065177
+   "resident_add_exact": 63097,
+   "sales": 5.2,
+   "sales_exact": 5235777,
+   "took": 1759978
   },
   "S3": {
    "add": 0.8,
-   "add_exact": 803527,
+   "add_exact": 800579,
    "area": 1500,
-   "cost": 976000,
+   "cost": 924000,
    "name": "Wrentoft, Mill Lane",
    "resident_add": 0.1,
-   "resident_add_exact": 144617,
-   "sales": 7.1,
-   "sales_exact": 7133923,
-   "took": 289588
+   "resident_add_exact": 137306,
+   "sales": 6.8,
+   "sales_exact": 6775669,
+   "took": 142674
   },
   "S4": {
    "add": -0.1,
-   "add_exact": -148023,
+   "add_exact": -146540,
    "area": 1500,
    "cost": 691000,
    "name": "Brackenmere, Northfield",
    "resident_add": -0.1,
-   "resident_add_exact": -148190,
-   "sales": 4.5,
-   "sales_exact": 4481202,
-   "took": 2392827
+   "resident_add_exact": -146675,
+   "sales": 4.4,
+   "sales_exact": 4399247,
+   "took": 2305168
   },
   "S5": {
    "add": -0.1,
-   "add_exact": -122906,
+   "add_exact": -122311,
    "area": 1600,
    "cost": 659000,
    "name": "Quellby, Sutton Road",
    "resident_add": -0.1,
-   "resident_add_exact": -123799,
-   "sales": 4.5,
-   "sales_exact": 4510917,
-   "took": 2449016
+   "resident_add_exact": -123247,
+   "sales": 4.2,
+   "sales_exact": 4237684,
+   "took": 2173497
   },
   "S6": {
    "add": 0.0,
-   "add_exact": -331,
+   "add_exact": -36384,
    "area": 1500,
    "cost": 662000,
    "name": "Sallowmere, Westway",
-   "resident_add": 0.0,
-   "resident_add_exact": -10254,
-   "sales": 5.1,
-   "sales_exact": 5080937,
-   "took": 2536058
+   "resident_add": -0.1,
+   "resident_add_exact": -51802,
+   "sales": 3.6,
+   "sales_exact": 3586357,
+   "took": 1180141
   }
  },
  "store_numbers": [
@@ -216,6 +214,7 @@
  ],
  "turn_base_min": 4,
  "turn_min_per_case": 0.02,
+ "v_direct": 380,
  "weeks": 25,
  "weeks_year": 52,
  "wrentoft_lakes_pitches": 1750

@@ -77,7 +77,8 @@ def workbook(path, fig):
     rows = [[p["desc"].title().replace(" And ", " and "), p["postcode"], p["pitches"]] for p in fig["parks"]]
     rows.append(["Total", "", sum(p["pitches"] for p in fig["parks"])])
     _sheet(ws2, ["Rating-list description", "Postcode", "Pitches"], rows, [36, 12, 10], {"Pitches": "#,##0"},
-           title="Six pitch-measured sites on the 2026 rating list; Wrentoft Lakes is the largest",
+           title="%s pitch-measured sites on the 2026 rating list; Wrentoft Lakes is the largest" % (
+               ["No", "One", "Two", "Three", "Four", "Five", "Six"][len(fig["parks"])]),
            note="Guests' in-store spend: GBP %s a pitch for a season, from the out-of-region card spend at our stores "
                 "(March to October, above each store's November to February level, grossed up by its card share)."
                 % "{:,}".format(fig["V"]))
@@ -167,7 +168,7 @@ def paper(path, fig):
     for sec in d.sections:
         sec.left_margin = sec.right_margin = Cm(2.2)
     p = d.add_paragraph()
-    r = p.add_run("Marrable Foodstores: Property Committee")
+    r = p.add_run("Marrable Foodstores: Executive team")
     r.bold = True
     r.font.size = Pt(9)
     r.font.color.rgb = RGBColor(0x55, 0x55, 0x55)
@@ -185,15 +186,19 @@ def paper(path, fig):
         (fig["site_name"], fig["add"], s["S1"]["add"], s["S1"]["name"]))
     d.add_heading("Why Wrentoft", level=2)
     d.add_paragraph(
-        "Our spend-share model shares the grocery spend of each place among the stores that can win it. Fed only with "
-        "the households the census counts, it ranks Wrentoft %s of six at GBP %.1f million, because the town has few "
-        "residents. But Wrentoft Lakes Holiday Park, %s pitches on the rating list, is nearer this site than any other "
-        "on the shortlist, and its guests live outside the region, so no census output area holds them. Our own card data show what such guests spend: "
-        "at Raddleford and Withybeck, the stores nearest the region's other large parks, cardholders from outside the LQ "
-        "postcode area spend far more from March to October than in the winter months. Taking that excess at every "
-        "store, grossed up for cash, and dividing by the pitches whose spend reaches our stores gives GBP %s of "
-        "in-store grocery spend a pitch for a season." % (fig["s3_resident_rank"], fig["s3_resident"], "{:,}".format(fig["wrentoft_lakes_pitches"]),
-                                                          "{:,}".format(fig["V"])))
+        "Our spend-share model shares the grocery spend that starts at each place among the stores that can win it: a "
+        "household's at its output area, and anyone else's where they are staying. On the households alone Wrentoft "
+        "ranks %s of six at GBP %.1f million. But Wrentoft Lakes Holiday Park, %s pitches on the rating list, is nearer "
+        "this site than any other on the shortlist. What its guests spend we see only through our own stores: at "
+        "Raddleford, Withybeck and Sallowmere, beside the region's other parks, cardholders from outside the LQ postcode "
+        "area spend far more from March to October than in the winter. Those stores take only part of their parks' "
+        "spend, though: a larger competitor stands at each park's gate, and the model gives our stores %d, %d and %d per "
+        "cent of what starts at Raddleford Water, Withybeck Lakes and Sallowmere Mill. Our stores' season excess, grossed "
+        "up for cash, over the pitches weighted by that share is GBP %s of in-store grocery spend a pitch for a season. "
+        "Over the pitches alone it would be about GBP %s a pitch, and Wrentoft would stay behind Bellingtoft." % (
+            fig["s3_resident_rank"], fig["s3_resident"], "{:,}".format(fig["wrentoft_lakes_pitches"]),
+            fig["park_shares_pct"]["Raddleford Water Holiday Park"], fig["park_shares_pct"]["Withybeck Lakes Caravan Park"],
+            fig["park_shares_pct"]["Sallowmere Mill Caravan Park"], "{:,}".format(fig["V"]), "{:,}".format(fig["v_direct"])))
     d.add_paragraph(
         "With every park carried as a place where spend starts, a store at Mill Lane sells GBP %.1f million a year and "
         "takes little from our own stores, because none of them is near. That is the whole difference between the "

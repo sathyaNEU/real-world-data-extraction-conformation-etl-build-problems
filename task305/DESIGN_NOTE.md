@@ -50,182 +50,201 @@ holiday park's grocery spend is recovered from the one share of it our stores ta
   sits between the park and the town, so the out-of-region cardholders our stores see in season are about a quarter
   of what those parks' guests spend on groceries; the rest goes through tills in no file we hold.
 
-## Tried and rejected`). The holiday park is one hereditament among about 4,200 on the rating list, measured in pitches, and its guests leave their trace only as out-of-region cardholders in the acquirer's feed.
-- **Data-native sentence:** Census 2021 counts people at their usual residence, so the guests on Wrentoft Lakes Holiday Park's 1,750 pitches, whose homes are in the West Midlands, the North and London, appear in no output area of the region; the rating list carries the park as a caravan park measured in pitches, and the acquirer's feed shows what such guests spend: at Raddleford and Withybeck, the stores beside the region's two other large parks, cardholders with homes outside the LQ postcode area spend about 583 and 343 thousand pounds from March to October and about 7 thousand each from November to February.
-
-## Three rules
-
-Task type: accessibility-agglomeration-location-analysis (Urban & Regional Science), tagged in the taxonomy for Opportunity Sizing & Decision Support: a new grocery store's trade from a spatial-interaction model of every origin's grocery spend within reach, sized as its addition to the chain's annual contribution, pool to realisable.
-Domain test: The deciding quantity is the new store's trade from the retail geographer's spatial-interaction model, each origin's grocery spend shared among the stores in reach by floor area and distance deterrence, and an origin is wherever spend starts: a holiday park whose guests live outside the region is an origin the census never counts, priced per pitch from the out-of-region cardholders at the chain's stores beside other parks, which moves the pick from Bellingtoft to Wrentoft.
-Swap: "the trade a new store wins once the guests on a holiday park's pitches are carried as an origin the census never counts" put into a hospital's patients or a utility's megawatt-hours loses its mechanism: no hospital catchment is fed by a register of pitches and a feed of where card holders live, no load forecast shares demand among sites by floor area over distance, and neither has a census that counts its users where they sleep.
-Layer 1: Census 2021 output areas with population-weighted centroids on the British National Grid; an ONSPD extract with terminated postcodes and their months; the VOA rating list in its own asterisk layout and descriptions, with the summary valuation's main measure in m2, parking spaces or pitches; a payment acquirer's merchant-insight feed by month and cardholder home postcode sector, out-of-region sectors included, with year-round visitors of residents in every store's rows; modelled grocery spend per household by output area; the chain's April to March year against calendar-month feeds; nothing is placed to be caught.
-Layer 2: field_method: the spatial-interaction model's demand side is every origin of grocery spend within reach, not the census's residents alone; a holiday park is an origin with no census count, its guests' in-store spend per pitch measured where the chain already trades beside parks (the out-of-region cardholders' spend above their year-round level, grossed up by the store's card share, over the pitches whose spend the model gives that store), and carried at the new store's share of the park's spend.
-Decisive step: carrying the holiday parks as origins of grocery spend, each at its pitches times the season's in-store spend per pitch that the card feed measures at the chain's park-side stores, rather than taking the census output areas as every origin of the spend the six sites compete for.
-Not semantics: every field reads as what it is (households, weekly spend per household, the rating list's description and measure, each cardholder's home sector, each store's card share of sales), the model's parameters are read as filed, and the census is complete for its residents; no field, code or definition says that anyone shops in the region who does not live in it, and the analyst who reads all of it correctly still shares the census households' spend.
-Not rule application: the model sheet files the WHAT (a store's sales are its shares of the grocery spend that starts at every place, the stores of 280 m2 or more, 88 per cent of households' spend in store, the appraisal's 26 per cent less what the store takes from ours less its running costs) and says nothing about which places spend starts at beyond the households; executing every filed rule over the census, which is what both probes did, files S1 Bellingtoft at 0.5 million. Family measured on the pack: the enumerated family (twenty-three constructions, with and without the guests) spreads 0.145 to 0.886 on Wrentoft's addition, 7.4 printed units; the standing family that carries the guests (fourteen constructions: pooled, five single stores, two stores, two other off-season windows, no gross-up, caravan parks only, parks at their output areas, and two analogs scaled by pitches) spreads 0.768 to 0.836, 0.68 of a printed unit, every member filing S3 at 0.8; what rules the rest out is no filed clause but the record: the resident route is outside the family because the feed's season shows spend the census does not hold.
-Analyst test: A strong analyst who reads every file correctly runs the filed model over the census households' spend, confirms it on the estate's sales (ratio 1.00) and the card feed, and approves S1 Bellingtoft at GBP 0.5 million, where the golden is S3 Wrentoft at GBP 0.8 million; checks.py runs both on the generator's clean truth and on the pack.
-Estimand: the addition to Marrable Foodstores' annual contribution of the one store the committee approves, once it is trading: 26 per cent of its sales, less 26 per cent of the sales it takes from the chain's ten existing stores, less its running costs, its sales being the sum of its shares of the grocery spend that starts at every place within reach (`spend_share_model_2025.pdf`, sections 1 and 4).
-No decoy: nothing is planted: the census is ONS's count of households, the rating list the VOA's, the feed the acquirer's record of card spend; no memo, draft or figure argues for a site, no file ranks the six, no past appraisal or forecast of a site is in the pack, and no stakeholder figure is set up to be overturned.
-No certified replay: no certified or published figure sits in the pack to be reproduced; the estate's sales are actuals the model is never fitted to, and the method is not recovered from any figure.
-Lesson: a spatial-interaction model is only as complete as its origin set; where the census is the origin set, any lodging whose occupants live elsewhere is demand the model cannot see, and the chain's own card feed, read by where cardholders live and when they come, is what prices it; no build on file prices an origin of demand that its demand data never counts.
-
 ## Default path
 
-1. Reads the model sheet and shares each output area's grocery spend (households x weekly spend x 52 x 0.88) among the 24 grocery stores of 280 m2 or more on the rating list, by floor area over exp(-0.22 x 1.25 x km) from the population-weighted centroids.
-2. Adds each site in turn at its postcode and proposed floor area, takes its sales and what it takes from the ten stores, and applies the appraisal rule with the shortlist's running costs.
-3. Confirms the model on the estate: modelled sales against FY2025/26 actuals at a ratio of 1.00 (0.91 to 1.07 by store); refits on the card feed and recovers the filed deterrence.
-4. Reads the out-of-region cardholders as 1.8 per cent of card spend, visitors already inside the stores' actuals, and leaves the model as filed.
-5. Ranks the six: S1 0.496, S3 0.145, S2 0.089, S6 -0.010, S5 -0.124, S4 -0.148 (million pounds).
+1. Reads the model sheet: spend starts where people are, a household's at its output area and anyone else's where they
+   are staying; shares each output area's grocery spend (households x weekly spend x 52 x 0.88) among the 27 grocery
+   stores of 280 m2 or more on the rating list, by floor area over exp(-0.22 x 1.25 x km).
+2. Finds where visitors stay: the four pitch-measured caravan parks on the rating list. Takes what such guests spend
+   from the card feed: cardholders with homes outside LQ at our stores beside the parks, March to October above the
+   store's winter level, grossed up by its card share.
+3. Prices a pitch at that spend over the park's pitches: Raddleford Water's guests at store 107 over its 640 pitches,
+   Withybeck Lakes' at 105 over 520, Sallowmere Mill's at 104 over 160, about GBP 380 a pitch for a season.
+4. Adds every park as an origin at its pitches times that spend and appraises the six sites by the model sheet's rule:
+   S1 0.410, S3 0.238 (million pounds).
 
-Ends on: S1 Bellingtoft, Fenton Road, GBP 0.5 million
+Ends on: S1 Bellingtoft, Fenton Road, GBP 0.4 million
 Golden: S3 Wrentoft, Mill Lane, GBP 0.8 million
 
 ## Stump sentence
 
-A competent analyst runs the filed spend-share model over the census households' spend, finds it reproduces the estate's sales and approves S1 Bellingtoft, Fenton Road, at GBP 0.5 million, where the golden is S3 Wrentoft, Mill Lane, at GBP 0.8 million; the step that lands them there is taking the census output areas as every origin of grocery spend, when the guests on Wrentoft Lakes Holiday Park's 1,750 pitches live outside the region and spend about GBP 2,440 a pitch in store each season.
+A competent analyst reads the model sheet, carries the holiday parks as origins, prices a pitch from the out-of-region
+cardholders' season spend at our stores beside Raddleford Water, Withybeck Lakes and Sallowmere Mill over those parks'
+pitches (about GBP 380) and approves S1 Bellingtoft, Fenton Road, at GBP 0.4 million, where the golden is S3 Wrentoft,
+Mill Lane, at GBP 0.8 million; the step that lands them there is reading our store's take as the park's spend, when a
+larger competitor at each park's gate takes most of it and our stores' take is only the model's share of it (19, 11 and
+17 per cent), so a pitch spends about GBP 2,480.
+
+## Three rules
+
+Task type: accessibility-agglomeration-location-analysis (Urban & Regional Science), tagged for Opportunity Sizing & Decision Support: a new grocery store's trade from a spatial-interaction model of every origin's grocery spend within reach, sized as its addition to the chain's annual contribution, pool to realisable.
+Domain test: The deciding quantity is the new store's trade from the retail geographer's spatial-interaction model, every origin's spend shared among the stores in reach by floor area and distance deterrence; a holiday park's spend is seen only as our stores' take of it, which the same model shares with the competitors beside the park, so the park's spend is the take over our modelled share; a hospital's patients or a utility's megawatt-hours have no origin whose demand is seen only as one competitor's share of it among stores priced by floor area and distance.
+Swap: "which site adds most once the holiday park's guests are carried at their spend recovered from our stores' share of the parks they stay at" put into a hospital (wards, beds) or a feeder (megawatt-hours) loses its mechanism: no ward's demand is observed as one rival hospital's take divided by a floor-area-over-distance share, and no feeder's load is a competitor's till receipts.
+Layer 1: Census 2021 output areas with population-weighted centroids on the British National Grid; an ONSPD extract with terminated postcodes; the VOA rating list in its own asterisk layout and descriptions, with the summary valuation's main measure in m2, parking spaces or pitches; a payment acquirer's merchant-insight feed by month and cardholder home postcode sector, out-of-region sectors included, with year-round visitors in every store's rows; modelled grocery spend per household by output area; the chain's April to March year against calendar-month feeds; nothing is placed to be caught.
+Layer 2: field_method: an origin of spend no file counts (a holiday park) is priced from what our stores take of the spend of similar origins, and in the spatial-interaction model our store's take of a park is only its modelled share of the park's spend, the competitors in reach taking the rest; the park's spend per pitch is the take over the share, read through the same model, not the take over the pitches.
+Decisive step: recovering a park's grocery spend per pitch from our park-side stores' season take divided by the share of that park's spend the model gives our stores (19, 11 and 17 per cent), rather than dividing the take by the park's pitches.
+Not semantics: every field reads as what it is (households, spend per household, each list entry's description and measure, each cardholder's home sector, each store's card share), the model's parameters are read as filed, and the population is filed; no field, code or definition says that our stores' out-of-region take is a share of the parks' spend, and an analyst who reads all of it correctly and prices a pitch at our take over the pitches files S1.
+Not rule application: no filed rule performs the step: the model sheet files the population and how a store's share of a place's spend is formed, and says nothing about how an unseen place's spend is measured; executing every filed rule with the direct reading files S1 at 0.4. Enumerated family (eleven constructions, direct and recovered): S3's addition 0.184 to 0.829, 6.45 printed units, two calls. Standing family (eight constructions recovering through our share: pooled, three single stores, two stores, two other winter windows, no gross-up): 0.768 to 0.829, 0.61 of a printed unit, every member S3 at 0.8. What rules the direct reading out is the filed share formula read on the park, not a sentence naming the step, and it is quiet: the direct reading reconciles with every file.
+Analyst test: A strong analyst who reads every file correctly carries the parks as the model sheet's population requires, prices a pitch from our park-side stores' out-of-region season spend over the parks' pitches (about GBP 380) and approves S1 Bellingtoft at GBP 0.4 million where the golden is S3 Wrentoft at GBP 0.8 million; checks.py runs it on the generator's clean truth and on the pack.
+Estimand: the addition to Marrable Foodstores' annual contribution of the one store the executive approves, once it is trading: 26 per cent of its sales, less 26 per cent of the sales it takes from the chain's ten existing stores, less its running costs, its sales the sum of its shares of the grocery spend that starts at every place, a household's at its output area and anyone else's where they are staying (`spend_share_model_2025.pdf`, sections 1 and 4).
+No decoy: nothing is planted: the census is ONS's count, the rating list the VOA's, the feed the acquirer's record; the competitors are ordinary list entries the share model needs anyway; no memo, draft or figure argues for a site, no file ranks the six, no stakeholder figure is set up to be overturned.
+No certified replay: no certified or published figure is reproduced; the estate's sales are actuals the model is never fitted to, and the spend per pitch is recovered from the feed through the filed model, not from any figure.
+Lesson: a spatial-interaction model sees an origin's demand only through the outlets it observes, and what one outlet takes is its share of the origin's total; an origin priced on one outlet's take without dividing by that outlet's modelled share is understated by the competitors' part, which is largest where a bigger rival stands nearest; no build on file recovers an origin's total from one outlet's modelled share of it.
 
 ## Readability screen
 
-| Rung | What it needs | Verdict |
-|---|---|---|
-| the filed model over the census households (resident route) | the model sheet, the census, the spend estimates, the rating list | readable |
-| the model checked against the estate's sales | the estate workbook (ratio 1.00) | readable |
-| an uplift for Wrentoft at a park-side store's guest share of its sales | the card feed's out-of-region rows read as a share of a store's sales | readable |
-| a park-side store's guest spend credited to Wrentoft as it stands | the card feed and one analog store, no pitch count | readable |
-| the holiday parks as origins at a measured spend per pitch (decisive) | the rating list's pitch measures, the feed's seasonal out-of-region excess and the model's shares from each park's postcode; no sentence anywhere | silent |
+| Rung | 1 Filed sentence | 2 Schema | 3 Reflex | 4 Control bench | 5 Hygiene | 6 Linear | 7 Dedicated organ | Verdict |
+|---|---|---|---|---|---|---|---|---|
+| R0 the census households alone | the population sentence names anyone else's spend | no | no, the sheet sends the solver beyond it | the estate ratio 1.00 fits it | no | no | no | readable |
+| R1 R0 scaled to the estate | no | the estate's sales | yes | the estate | no | yes, one ratio | no | readable |
+| R2a/R2b a park-side store's guest share or take carried to Wrentoft | no | the card feed's out-of-region rows | yes | no | no | yes | no | readable |
+| R2c a park-side store's take scaled by pitches | no | the list's pitch measures | yes, an analog by size | no | no | yes | no | readable |
+| R3 every park an origin at our take over its pitches | the population sentence | pitches, the feed | yes, price a unit from evidence | no | no | yes, a ratio | no | readable |
+| R4 our take over our modelled share of each park's spend (decisive) | no sentence says a store's take of a place is a share of it to be divided out; section 1 forms shares forward | no column: the share is computed from every store in reach | no: every reflex prices the pitch on what our stores see | none: the direct reading reconciles with every file | no | no: the share is a model output over 27 stores, not a reported figure | no: the competitors are list entries the share model needs for every origin | silent |
 
 ## Semantic fork table
 
 | Id | Term or convention | Golden reading | Alternative | Call under it | Ruled out by |
 |---|---|---|---|---|---|
-| SF1 | add to the chain's annual contribution | 26 per cent of its sales, less 26 per cent of what it takes from our stores, less its running costs | the new store's own contribution (no netting) | S3 at 0.9 (0.879) | the model sheet, section 4 |
-| SF2 | annual | a year of trading at 2026 prices | 2027 prices or a part year | another figure | the model sheet, section 4: a year of trading at 2026 prices |
-| SF3 | households | the census count by output area | another household base | none shipped | the pack carries one count (asserted) |
-| SF4 | the guests' spend and the in-store share | measured in store, so 88 per cent applies to households only | the measured spend times 0.88 | S3 at 0.7 | the model sheet: 88 per cent of households' grocery spend, the rest bought online; the feed is spend at our stores |
-| SF5 | the stores in the share | grocery descriptions of 280 m2 or more | every grocery entry (13 under the line) | S3 at 0.7 | the model sheet, section 2 |
-| SF6 | distance | 1.25 x straight-line km from the population-weighted centroid | straight-line km | same call (S3 0.758) | the model sheet's table |
-| SF7 | a site's location | its postcode's grid reference in the ONSPD extract | its output area's centroid | same call (S3 0.800) | the model sheet's table: a site at its postcode's grid reference |
-| SF8 | what the new store takes from ours | residents' and guests' spend alike | residents' spend only | same call | same call (asserted) |
-| SF9 | a park's location | its postcode's grid reference | its output area's centroid | same call | the model sheet's table: any other address at its postcode |
-| SF10 | the guests' spend at a store | the season's out-of-region spend above the store's November to February level, over its card share | no gross-up; or every out-of-region pound | same call (0.771); 0.9 (0.886) | the record: stores no park reaches carry much the same out-of-region spend all year (asserted), so the year-round level is not guests |
-| SF11 | which pitches | every pitch-measured site | caravan parks only | same call (0.836) | same call |
-| SF12 | the season | March to October, where the excess runs | April to September | S3 at 0.7 (0.728) | the record: March and October run above 1.5 times the off-season level at Raddleford, November does not (asserted) |
-| SF13 | rounding | the addition rounded once | the parts rounded first | same (0.8) | same call (asserted) |
-| SF14 | once it is trading | a year of trading, no opening ramp | a first-year ramp | another figure | the prompt (once it is trading) and the model sheet (a year of trading) |
-| SF15 | the small parks near other sites | carried alike | left out | same call | same call (Sallowmere Mill reaches S6, asserted) |
-| SF16 | the margin | S3 clear of S1 by 0.30 million | a tie | none | asserted |
-| SF17 | households rolled forward | as Census 2021 counted them | grown to 2027 (five per cent) | S3 at 0.9 (0.860) | the model sheet's table: not rolled forward |
-| SF18 | ask A, the 25 weeks | arrivals from 6 October 2025 to 29 March 2026 by UK date | by the export's UTC date | same ten figures | same call (no delivery within two hours of the window's edges, asserted) |
-| SF19 | ask B, the 25 weeks | a shift in the window by the date its clock-in falls | a line by the date the report gives it | same ten figures | same call (every line and every punch falls inside the 25 weeks, so no shift straddles their edges, asserted) |
-| SF20 | ask C, departures | calls with pickup allowed; a trip's final stop is set down only | every call | S1 50, S3 50, the rest unchanged | the prompt asks for departures that pick up passengers, and the feeds' pickup_type marks every final stop set down only (asserted) |
-| SF21 | ask C, within 400 metres of each site | straight-line from the site's postcode | from another point of the site | same figures | no stop lies 360 to 440 m from a site (asserted) |
-| SF22 | ask C, a departure or a journey | a bus leaving a stop near the site | the journeys that serve the site | same figures | no trip departs twice within 400 m of a site (asserted) |
-| SF23 | ask B, a date with more lines than shifts | the lines beyond the shifts that start that date are a night's line for the morning it ended, and go | keep the earlier or the later of the date's lines | same ten figures | every such date's lines carry one paid figure, so which line goes is immaterial (asserted) |
-| SF24 | ask C, a weekday journey the Friday-late timetable lists again | one bus: the same block, the same calls | two departures, one per listed trip | S1 47, S2 118, S3 46, S4 66, S5 76, S6 88 | the feed itself: a block is one vehicle and the repeat runs the same stops at the same times (asserted) |
-| SF25 | ask C, each bus once | each block once at a stop and time, so a journey both feeds list on the joint routes is one bus and a school-day duplicate on a block of its own is another | every same-time call at a stop once | S1 40, S2 102, S3 40, S4 60, S5 68, S6 80 | the feed itself: two trips of one route at one time on two blocks are two vehicles (asserted) |
+| SF1 | add to the chain's annual contribution | 26 per cent of its sales, less 26 per cent of what it takes from ours, less its running costs | the new store's own contribution | another figure | the model sheet, section 4 |
+| SF2 | annual | a year of trading at 2026 prices | 2027 prices or a part year | another figure | section 4 |
+| SF3 | households | the census count by output area | another base | none shipped | the pack carries one count (asserted) |
+| SF4 | the guests' spend and the in-store share | measured in store, so 88 per cent applies to households only | the measured spend times 0.88 | S3 at 0.7 (0.721) | the model sheet: 88 per cent of households' grocery spend; the feed is spend at our stores |
+| SF5 | the stores in the share | grocery descriptions of 280 m2 or more | every grocery entry | another figure | section 2 |
+| SF6 | distance | 1.25 x straight-line km | straight-line km | another figure | the parameter table |
+| SF7 | a site's location | its postcode's grid reference | its output area's centroid | another figure | the parameter table |
+| SF8 | what the new store takes from ours | residents' and guests' spend alike | residents' only | same call | asserted |
+| SF9 | a park's location | its postcode's grid reference | its output area's centroid | S3 at 0.7 (0.651) | the parameter table: any other address at its postcode's grid reference (asserted) |
+| SF10 | the guests' spend at a store | the season's out-of-region spend above the store's November to February level, over its card share | no gross-up; every out-of-region pound | same call (0.768); S3 at 1.0 (0.958) | the record: stores no park reaches carry much the same out-of-region spend all year (asserted) |
+| SF11 | which pitches | every pitch-measured site | caravan parks only | same call (all four are caravan parks) | C1 |
+| SF12 | the season | March to October, where the excess runs | April to September | another figure | the record (asserted) |
+| SF13 | rounding | once, at the end | the parts first | same figure | asserted |
+| SF14 | once it is trading | a year of trading, no ramp | a first-year ramp | another figure | the prompt and section 4 |
+| SF15 | the small park near S6 | carried alike | left out | same call | asserted |
+| SF16 | the margin | S3 clear of S1 by 0.38 million | a tie | none | asserted |
+| SF17 | households rolled forward | as Census 2021 counted them | grown five per cent | another figure | the parameter table |
+| SF18 | ask A, the 25 weeks | UK arrival date | the export's UTC date | same ten figures | asserted |
+| SF19 | ask B, the 25 weeks | a shift by its clock-in date | by the line's date | same ten figures | asserted |
+| SF20 | ask C, departures | calls with pickup allowed | every call | another count at S1 and S3 | the prompt (pick up passengers) and pickup_type (asserted) |
+| SF21 | ask C, within 400 m | straight-line from the postcode | another point | same figures | no stop at 360 to 440 m (asserted) |
+| SF22 | ask C, a departure or a journey | a bus leaving a stop | the journeys | same figures | asserted |
+| SF23 | ask B, which of a night's two lines goes | either, both carry one paid figure | keep the earlier or the later | same ten figures | asserted |
+| SF24 | ask C, a weekday journey the Friday-late timetable lists again | one bus: the same block at the same calls | two departures | another count | GTFS block_id, one vehicle's working (asserted) |
+| SF25 | ask C, each bus once | each block once at a stop and time | every same-time call once | another count | the feeds (asserted) |
+| SF26 | whose spend the model shares | a household's at its output area and anyone else's where they are staying | the census households only | S1 at 0.4 | the model sheet, section 1 (asserted) |
+| SF27 | scaling a park by pitches or by rateable value | pitches | rateable value | same call (one value a pitch, asserted) | C1 |
+| SF28 | ask A, a load turned away | closed as delivered, the same load again the next day on its own trip | delivered | another figure | the DC procedure TP-04, section 2 (asserted) |
+| SF29 | ask B, the report's grain | a shift on every date it covers | one line a shift | another figure | the paid hours report's own header (asserted) |
+| SF30 | ask C, the joint routes and blocks | both feeds list the joint journeys; a block is one vehicle's working | two buses | another count | each feed's routes.txt marks routes 4 and 41 a joint service; GTFS defines block_id (asserted) |
+| SF31 | the year-round out-of-region cardholders | people staying with residents, carried at the output areas or not | parked at the holiday parks | same call and figure either way (asserted); the parks reading is SF10's every-pound rival | SF10's record |
+| SF32 | ask A, which stops were turned away | the stops closed too soon for their cases, re-sent the next day | a dwell cut-off chosen otherwise | same stops at a flat 8.5, 9 or 10 minutes (asserted) | C1 |
+
+The decisive step is not a reading of any term: the population, the share formula and every convention are filed or converge, and S1 comes from an easy method on the same literal estimand, pricing a pitch at our take over the pitches.
 
 ## Ladder
 
-| Rung | Construction | S1 Bellingtoft | S3 Wrentoft | Call |
-|---|---|---|---|---|
-| R0 | the filed model over the census households (default path) | 0.496 | 0.145 (second) | S1 at 0.5, clear by 3.43 |
-| R1 | R0 scaled to the estate's actual sales (ratio 1.003) | 0.501 | 0.148 (second) | S1 at 0.5, clear by 3.39 |
-| R2a | Wrentoft uplifted at Raddleford's guest share of its sales (7.5 per cent) | 0.496 | 0.242 (second) | S1 at 0.5, clear by 2.05 |
-| R2b | Raddleford's guest spend credited to Wrentoft as it stands | 0.496 | 0.305 (second) | S1 at 0.5, clear by 1.63 |
-| R3 | the parks as origins at GBP 2,440 a pitch (golden) | 0.508 | 0.804 | S3 at 0.8, clear by 1.58 |
-| R3' | every out-of-region pound taken as guests | 0.509 | 0.886 | S3 at 0.9 |
+| Rung | Construction | Names (margin) | Killed by |
+|---|---|---|---|
+| R0 | the census households alone | S1 0.409 (2.98x over S3) | the model sheet's population sentence |
+| R1 | R0 scaled to the estate's sales (ratio 0.999) | S1 0.406 (2.99x) | the same sentence |
+| R2a | Wrentoft uplifted at Raddleford's guest share of its sales (6.4 per cent) | S1 0.409 (1.93x over S3 0.212) | the parks carried as origins |
+| R2b | Raddleford's guest take credited to Wrentoft as it stands | S1 0.409 (1.93x) | the same |
+| R2c | a park-side store's take scaled by the pitch ratio, all to Wrentoft | S1 0.409 (1.20x at 107, 1.53x at 105, 1.30x at 104) | the model's shares of Wrentoft Lakes' spend |
+| R3 (default) | every park an origin at our take over its pitches (GBP 376 a pitch; 447, 284 and 390 one store at a time; 174 over every pitch) | S1 0.410 (1.73x over S3 0.238; 1.60x to 2.23x) | our take is the model's share of the park's spend |
+| R4 (golden) | the take over our modelled share (GBP 2,484 a pitch) | S3 0.801 (1.91x over S1 0.420) | (answer) |
 
-R0 is the stump; R2a and R2b are the partial repairs a solver who sees the season makes without the pitches; every rung is asserted in checks.py, each lower rung staying on S1 by at least 1.15 and the golden clear of its cell's edges.
+Worth of the decisive step: a pitch at 6.6 times the direct reading; S3 moves from 0.238 to 0.801. Standing family 0.768 to 0.829. Rivals off the call's figure: every out-of-region pound 0.958, the 0.88 applied 0.721, a park at its output area's centroid 0.651.
 
 ## Closure table
 
 | # | Axis | Reading | Move |
 |---|---|---|---|
-| 1 | Population | every place grocery spend starts within reach: the output areas' households and the holiday parks' pitches | filed WHAT (the model sheet, section 1: a store's sales are its shares of the spend that starts at a place); the construction is the stump |
-| 2 | Unit of account | the site; pounds of contribution a year | filed (the prompt, the model sheet section 4) |
-| 3 | Attribution window | a year of trading at 2026 prices; the feed's FY2025/26 for the spend per pitch | filed (section 4; the feed's own year) |
-| 4 | As-of dating | the 2026 rating list, ONSPD May 2026, households as Census 2021 counted them | filed (file names, the model sheet's table) |
-| 5 | Version basis | the June 2025 parameters, superseding March 2022 | filed (the model sheet) |
-| 6 | Denominator | the pitches weighted by our stores' share of each park's spend | C1 (fourteen standing constructions file one call, asserted) |
-| 7 | Weighting | pooled over our stores or one park-side store | C1 (0.768 to 0.819, asserted) |
-| 8 | Window length | the off-season level from November to February, December to February or January to February | C1 (0.804, 0.804, 0.804, asserted) |
-| 9 | Boundary inclusivity | 280 m2 or more; 400 m; the 25 weeks | C1 (no grocery entry within 10 m2 of 280, no stop at 360 to 440 m, no delivery within two hours of the window's edges, no shift across them; asserted) |
-| 10 | Rounding path | the addition rounded once | asserted (SF13) |
-| 11 | Tie-break | none | asserted (0.30 million clear) |
-| 12 | Maturity and censoring | a year of trading, no ramp | filed (SF14) |
-| 13 | Order of operations | shares, then sums, then the appraisal | filed (the model sheet) |
+| 1 | Population | a household's spend at its output area and anyone else's where they are staying | filed (section 1, SF26); which places and how much is the analysis |
+| 2 | Unit of account | the site; pounds of contribution a year | filed (the prompt, section 4) |
+| 3 | Attribution window | a year of trading at 2026 prices; the feed's FY2025/26 for the spend per pitch | filed |
+| 4 | As-of dating | the 2026 list, ONSPD May 2026, households as Census 2021 counted them | filed |
+| 5 | Version basis | the June 2025 parameters | filed |
+| 6 | Denominator | the pitches weighted by our stores' modelled share of each park's spend | the share formula (section 1) read on the park; the direct reading is C4, wrong on section 1 |
+| 7 | Weighting | pooled over our stores, or one or two stores | C1 (0.768 to 0.829, asserted) |
+| 8 | Window length | the winter level over November to February, December to February or January to February | C1 (asserted) |
+| 9 | Boundary inclusivity | 280 m2; 400 m; the 25 weeks; the dwell cut-off | C1 (asserted, SF32) |
+| 10 | Rounding path | once, at the end | asserted (SF13) |
+| 11 | Tie-break | none | asserted (0.38 million clear) |
+| 12 | Maturity | a year of trading, no ramp | filed (SF14) |
+| 13 | Order of operations | shares, then sums, then the appraisal | filed |
 | 14 | Row order | none | C1 |
-| 15 | Duplicate resolution | none in the call's files; ask A's turned-away loads, ask B's night lines and ask C's joint and Friday-late journeys sit in the asks' files only | asserted |
-| 16 | Identity normalisation | postcodes in one format across the estate, the list, the shortlist and ONSPD; store numbers across the estate and the feed | asserted (every join resolves) |
+| 15 | Duplicate resolution | ask A's turned-away loads, ask B's night lines, ask C's joint and Friday-late journeys, in the asks' files only | filed where each system states it (SF28 to SF30), the records deciding which rows |
+| 16 | Identity normalisation | postcodes and store numbers in one format across files | asserted |
 | 17 | Netting against gross | what the new store takes from ours is netted | filed (section 4) |
-| 18 | Dimensional units | m2, pitches, pounds, metres on the grid, cases, paid hours, departures | units in the data and the prompt |
-| 19 | Code and status semantics | the list's descriptions and pitch measures; DEL and COL; IN and OUT; pickup_type | the files' own documentation; never the stump |
-| 20 | Integerisation | none on the call; asks rounded once | filed (the prompt) |
-| 21 | Clause scope | 88 per cent applies to households' spend; 26 per cent to sales and to what is taken | filed (the model sheet; SF4) |
-| 22 | Forward window contents | the trading year after opening: the 2026 list's stores and the measured season carried | filed (a year of trading at 2026 prices; the list as the share's stores) |
+| 18 | Dimensional units | m2, pitches, pounds, metres, cases, hours, departures | the data and the prompt |
+| 19 | Code and status semantics | descriptions and pitch measures; DEL and COL; IN and OUT; pickup_type | the files' own documentation |
+| 20 | Integerisation | none on the call; asks rounded once | the prompt |
+| 21 | Clause scope | 88 per cent applies to households; 26 per cent to sales and to what is taken | filed (SF4) |
+| 22 | Forward window contents | the trading year: the 2026 list's stores and the measured season carried | filed (section 4, the list as the share's stores) |
 
 ## Literal reader
 
-Executing the prompt and every filed sentence word for word (the model sheet's sections 1 to 5 and its parameter table, the data notes, the shortlist) leaves one open move on the call: which places grocery spend starts at. The model sheet files a store's sales as its shares of the spend that starts at a place and locates any address at its postcode, the census files households and nothing else, and every construction that carries the parks' guests at the feed's measured spend per pitch files S3 at 0.8 (fourteen constructions, asserted); the resident answer comes from an easy method on the same literal estimand, never from another reading of it. Each differing reading of a term (SF1, SF2, SF4, SF5, SF12, SF14, SF17) violates a quotable shipped sentence or the record.
+Executing the prompt and every filed sentence word for word (the model sheet's sections 1 to 5 and its parameter table, the DC's procedure, the report and feed headers, the shortlist) fixes the estimand whole: the population is every household at its output area and anyone else where they are staying, each place's spend shared by the filed formula. What stays open is how a park's spend is measured, and the filed formula forces it: our stores' take of a park is their share of its spend, so the park's spend is the take over that share; every construction doing that files S3 at 0.8 (eight, asserted). The direct reading (the take over the pitches) is an easy method on the same literal estimand that the share formula contradicts, never another reading of a term. Each differing reading of a term (SF4, SF9, SF10, SF12, SF14, SF17, SF26) violates a quotable shipped sentence or the record.
 
 ## Oracles
 
-None on the call: no file ties only under the golden and no past appraisal is shipped. The estate's actual sales run 1.02 and 1.07 times the residents' model at the two park-side stores, inside a store spread of 0.91 to 1.07 that the default path reads as noise, so they corroborate the guests without handing over a level. On the asks, nothing ties only under the golden: the stores' goods-in receipts tie with the TMS under both handlings of ask A, since no turned-away load falls where the handhelds count (asserted), and the receipts alone keep no store's figure; the workforce export's paid hours equal each row's elapsed time less its break whichever row stands and whichever store a shift is credited to; the two GTFS feeds agree on every stop they share, and no count ties only under the golden handling of the duplicates.
+None on the call: no file ties only under the golden and no past appraisal ships. The estate's sales run 0.91 to 1.06 times the residents' model, the park-side stores inside that spread, so they corroborate nothing. On the asks nothing ties only under the golden: the receipts tie with the TMS under both handlings of ask A (no turned-away load falls where the handhelds count), the workforce export's paid hours equal each line's elapsed time less its break whichever line stands, and the two feeds agree on every stop they share.
 
 ## Ask sheet
 
-**Ask A: the cases a week the distribution centre delivered to each of the ten stores in the 25 weeks from 6 October 2025 (10 figures, whole cases).** H18: the committee's case carries the DC's present outbound by store, against which the new store's deliveries are planned; the call reads none of the DC's files (asserted). Use: the DC's headroom for an eleventh store. Primary device, silent (D1, a resubmission that opens no second case): a store sometimes turns a load away at the door; the driver closes the stop, the TMS keeps it as a completed DEL stop with the load plan's cases, and the DC sends the same cases the next day on a trip of their own, so the load is in the export twice. The only trace is a cardinality the habitual sweeps do not make: the turned-away stop closed in three to eight minutes, too soon for its 250 to 1,450 cases to come off, beside a next-day single-drop delivery of the same cases. Over-cleaning half and interior: every store also takes promotion top-ups, 48 to 120 cases on two consecutive days, unloaded in nine to sixteen minutes, so deduplicating next-day repeats or dropping short stops misses too. Hazards: the export's UTC clock (UK dates give the same figures, SF18), backhaul collections at zero cases, the receipts covering six stores from their handheld go-lives (none of the turned-away loads falls there, so they tie under both handlings). Files: tms_stop_export, goods_in_receipts (2 files, 17 columns). Stops (stores 101 to 110): every DEL stop 7,482, 7,154, 6,995, 7,368, 6,003, 6,785, 5,773, 4,705, 3,932, 4,475; stops under 15 minutes dropped 7,439, 7,077, 6,954, 7,271, 5,946, 6,719, 5,695, 4,645, 3,872, 4,418; next-day repeats deduplicated 7,396, 7,075, 6,902, 7,261, 5,936, 6,681, 5,702, 4,622, 3,844, 4,400; golden 7,456, 7,085, 6,968, 7,290, 5,954, 6,734, 5,710, 4,658, 3,890, 4,429. Realism: a TMS whose driver closes a refused stop as completed and whose planners re-send the load as a new trip.
+The three asks and their devices are architecture 1's, kept; the portal's judges found each one's convention unfiled, so each is now filed where its own system states it (the DC's transport procedure, the paid hours report's header, the feeds' route descriptions), and a silent device stays under each pin. The GIS analyst's data notes no longer ship (dataset-generation section 3): the rating list's layout comes from the VOA's own file specification, the clocks from the column names.
 
-**Ask B: the paid hours a week worked at each store in the 25 weeks from 6 October 2025 (10 figures, whole hours).** H18: the staffing line of each site's running costs is planned on the estate's hours per store; the call reads the shortlist's staffing estimate, never the workforce files (asserted). Use: the hours benchmark the new store's staffing plan is set against. Primary device, silent (D6, an event's quantity on every line it covers, grain unstated): the workforce system's paid hours report is built by joining each shift to the calendar dates it covers, so a night shift (22:00 to 06:00, every store has a night crew) is listed against the date it starts and again against the morning it ends, each line carrying the shift's whole paid hours, with no shift key or time on the line; 6,258 lines are a night's second line. On consecutive nights the second line of one night and the first of the next are exact duplicates, so the exact-duplicate sweep repairs those and keeps the line for the morning a run of nights ends, which no shift starts. Over-cleaning half and interior: 591 part-timers' days carry a genuine second shift (an evening cover), many the same length as the first, so one line a colleague a day, or the exact-duplicate sweep, deletes real hours; a day shift with a forgotten clock-in has only its clock-out, so keeping lines only where a clock-in falls drops real shifts. The only trace is a cardinality across files: a colleague's lines on a date against the shifts the terminals record starting that date. Construction mess kept from round 2: the location column is the colleague's store now (the relief team on 101's location, movers' earlier shifts, cover at a neighbouring store), so the store worked is the clock-in terminal's. Files: wfm_paid_hours, ta_punches, ta_terminals (3 files, 13 columns). Stops (stores 101 to 110): every line by location 2,411, 1,788, 1,703, 1,606, 1,376, 1,473, 1,440, 1,083, 907, 805; every line by its punch store 2,197, 1,888, 1,702, 1,620, 1,388, 1,435, 1,443, 1,133, 921, 867; exact duplicate lines removed 1,955, 1,668, 1,530, 1,447, 1,232, 1,293, 1,291, 1,066, 841, 785; one line a colleague a day 1,949, 1,663, 1,526, 1,440, 1,228, 1,287, 1,287, 1,063, 838, 783; lines only where a clock-in falls 1,884, 1,600, 1,481, 1,394, 1,188, 1,254, 1,240, 1,047, 817, 761; clocked time 2,022, 1,718, 1,587, 1,487, 1,271, 1,340, 1,329, 1,117, 873, 808; golden 1,890, 1,608, 1,488, 1,401, 1,194, 1,259, 1,248, 1,052, 822, 764. Realism: a reporting query that joins shifts to the calendar on their start and end dates, the fan-out every such report has until someone splits the hours.
+**Ask A, cases a week by store (10 figures, whole cases).** Pin (SF28, the DC's procedure TP-04): a load turned away is closed as delivered and sent again the next day on a trip of its own. Silent under it: which stops they are (no flag; the stop closes too soon for its cases, SF32), against promotion top-ups of 48 to 120 cases that also go again on a trip of their own the next day, so the rule read as "the same load again next day on its own trip" drops genuine deliveries.
+**Ask B, paid hours a week by store (10 figures, whole hours).** Pin (SF29, the report's own header): a shift is listed on every date it covers at its paid hours. Silent under it: which lines are one shift, read only against the punches, against genuine same-length shifts on consecutive days and second shifts on one day, and the store worked is the clock-in terminal's.
+**Ask C, bus departures by site on Friday 15 January 2027 (6 figures).** Pin (SF30, each feed's route descriptions): both operators list the joint routes; a block is one vehicle's working as GTFS defines it. Silent under it: the Friday by the clock is Friday's services to 24:00 and Thursday's after, against the GTFS service day; school-day duplicates on blocks of their own are second buses.
 
-**Ask C: the bus departures that pick up passengers from stops within 400 metres of each site on Friday 15 January 2027 (6 figures, whole departures).** H18: the planning case for each site carries its public transport access; the call does not turn on it. Use: the staff and customer access line for each site, late shifts included. Primary device, silent (D1, a replay under fresh ids, key kept, beside genuine same-day pairs): Sallowmere Motor Services' Friday-late timetable begins with the weekday journeys from 21:00 on route 4 and from 20:00 on route 41, the same buses on the same blocks, and on a Friday both its weekday and its Friday-late services run, so those journeys are listed twice under new trip ids and journey codes; only the block_id says they are one bus. Over-cleaning half and interior: on school days the lead operator runs a duplicate on the joint routes' first school-time journey each way, morning and afternoon, a second bus on the same timetable on a block of its own, so deduplicating same-time journeys inside a feed loses every duplicate, while the round-3 handling (the larger feed's count of each route, stop and time) counts the Friday-late repeats twice. Construction mess kept from rounds 1 and 2: both operators' feeds carry the jointly run routes 4 and 41, journey for journey on the same NaPTAN stops and blocks; a GTFS service day runs past 24:00, so the Friday by the clock is Friday's services up to 24:00 and Thursday's after it; final stops set down only (SF20); school-day services by calendar dates in one feed and by a term-time calendar with holidays removed in the other. Files: the two GTFS zips (8 tables each), site_shortlist, onspd (4 files). Stops (S1 to S6): the larger feed's count of each call 47, 118, 46, 66, 76, 88; both feeds as one set 40, 102, 40, 60, 68, 80; the Friday's services, every call 42, 106, 42, 62, 70, 82; before 24:00 only 37, 94, 37, 57, 62, 74; both feeds added 81, 220, 80, 100, 144, 156; golden 44, 110, 44, 64, 72, 84. Realism: an operator's export in which a timetable variation's first duties repeat the weekday journeys they continue, the overlap a GTFS validator reports as duplicate trips.
-
-Main population zero-counts: the call reads the census, the centroids, the spend estimates, ONSPD, the rating list, the estate's Stores sheet, the card feed, the shortlist and the model sheet, and none of the TMS, receipts, workforce, punch, terminal or GTFS files; the asks read those and the shortlist's postcodes (asserted, separation).
+Main population zero-counts: the call reads the census, the centroids, the spend estimates, ONSPD, the rating list, the estate's Stores sheet, the card feed, the shortlist and the model sheet, and none of the TMS, receipts, workforce, punch, terminal or GTFS files (asserted, separation).
 
 | Ask | Cracker (lands the call, runs the battery, executes every filed rule) | Verdict |
 |---|---|---|
-| A cases a week | 0 of 10 on every DEL stop, 0 of 10 dropping short stops, 0 of 10 deduplicating next-day repeats | miss |
-| B paid hours a week | 0 of 10 by location, 0 of 10 on every line by its punch store, 0 of 10 with exact duplicates removed, 0 of 10 on one line a colleague a day, 0 of 10 keeping lines only where a clock-in falls, 0 of 10 on clocked time | miss |
-| C departures | 0 of 6 on the larger feed's count of each call, 0 of 6 on both feeds as one set, 0 of 6 on the Friday's services, 0 of 6 before 24:00, 0 of 6 on both feeds added | miss |
+| A cases a week | 0 of 10 on every DEL stop, 0 of 10 dropping short stops, 0 of 10 deduplicating next-day repeats, 0 of 10 on TP-04's rule as written | miss |
+| B paid hours a week | 0 of 10 by location, by punch store, with exact duplicates removed, one line a colleague a day, clock-in dates only, clocked time, or the report header's grain as written | miss |
+| C departures | 0 of 6 on every call, before 24:00 only, both feeds counted, both feeds as one set, the larger feed's count, or the route descriptions and blocks as written, by GTFS service day | miss |
 
-Pair ceiling: 28.5 ((45.0 + 12.0) / 2), the cracker on the call keeping 0 of the 26 ask figures and the mirror on the resident route the same; a cracker that reads one device rises to 39.1 (A or B) or 34.8 (C). This is the paper model; round 1's readers beat the round-1 sheet and rounds 2 and 3 kept asks B and C (below), so the re-sited asks are measured again by two scored readers on a brief that names no stump term.
+Pair ceiling: 28.5 ((45.0 + 12.0) / 2), the cracker on the call keeping 0 of the 26 ask figures and the mirror on the resident route the same; a cracker that reads one device rises to 39.1 (A or B) or 34.8 (C).
 Mirror leakage: 0.0 per cent of ask weight.
 Measured by: generator/pair.py on the cut pack.
 
 ## Pre-ship check
 
-- Free gates on the shipped pack (target.zip b9d63c0b): generator checks 201 passed (the call and the resident route on
-  the clean truth and on the pack, the fourteen-member standing family all printing 0.8, the ladder, SF1 to SF25, every
-  ask figure's edge, the three devices with every modelled wrong path missing every figure, separation, the
-  distractors unread, the input gates); verify.py recomputes the call and all 26 ask figures from the zip alone; two
-  builds byte-identical; figures_check 81 of 81, precut 51 checks clean, voice-check PASS, leak.py REVIEW only.
-- Stage 4 round 1 (bb1aef72): both readers filed S1 at 0.5; asks kept 26 and 16 of 26, so all three asks were re-sited.
-  Round 2 (1680766e): both filed S1 at 0.5, asks 16 and 16 of 26 (pair 45.8); asks B and C re-sited; the judge's pass
-  DETERMINISTIC, APPROVE. Round 3 (ec38f0bd): both landed S3 at 0.8 after a brief that named the stump terms and two
-  ask B figures, asks 16 and 10 of 26; the judge's pass DETERMINISTIC, APPROVE; the brief was fixed (two SKILLS commits)
-  and asks B and C re-sited.
-- Stage 4 round 4 (41415795), on a brief naming no stump term and no answer figure: both readers filed S1 at 0.5 and
-  called the call the filed procedure. One kept 0 of 26 ask figures (every DEL stop, every night line kept on the
-  morning a run ends, both feeds counted); the other kept ask B's ten by matching 12,516 night lines against 6,258
-  night punch pairs, and missed asks A and C (it collapsed the school-day duplicates). Measured pair 22.6 ((33.2 +
-  12.0) / 2), both readers genuinely stumped; score_reader fails the second reader's ask layer at 38.5 per cent
-  against the 35 per cent mirror bar, all of it ask B. Every device ask B has carried is found by a reader who
-  reconciles the paid-hours lines with the punches, so the device stands and the residual is priced: a responder on
-  the call who also reads ask B scores 66.2, which pairs at 39.1 with a responder who misses both.
-- The judge's pass 4 on 41415795: DETERMINISTIC, APPROVE, every graded figure reproduced; four advisory findings (the
-  turned-away loads, the location column, what one bus departure is, the guest baseline) each left unfiled, because
-  the sentence that would close it announces a device or the decisive step, and the judge licenses each golden
-  reading. Gate G method_or_model_selection, analytical_non_defect; Gate H domain pass, layers pass, decisive step
-  analytical.
-- After the judge: one generator pass for the readers' realism notes (the grocery stores and parks carry no
-  alteration on the list, the stops beside each site take its town's name, the count points' method columns agree,
-  cover at a neighbouring store falls to a minority of colleagues, shift lengths vary); no document or prompt
-  changed, the call and asks A and C did not move, ask B's ten figures moved with its data and recompute in verify.py.
-- The 10/10 rules re-read on the built pack: the deciding quantity is the field's own spatial-interaction estimate of
-  a new store's trade; the mess (unspaced postcodes, a UTC clock, the rating list's layout, the acquirer's sectors)
-  only complicates the work; the decisive step is analytical, the census output areas taken as every origin of
-  grocery spend, and both cold readers of round 4 stopped there. Guard: heart BLOCKs on ban.strategy and
-  ban.forcing_event against task275 are the author's override (`## Draw`).
+- Free gates on target.zip 5cbd1f6f (architecture 2): generator checks 225 passed (the resident route and the default
+  path on the clean truth and on the pack, every direct reading at each park-side store and over every pitch on S1, the
+  decisive share 0.10 to 0.35 at each analog park, the golden S3 at 0.801, every rung clearing S1 by 1.15 or more, the
+  eight-member standing family 0.768 to 0.829 all S3 at 0.8, SF1 to SF32, the asks' devices with every wrong path
+  missing every figure, separation, no readme, notes or dictionary under target/, the input gates); verify.py
+  recomputes the call and all 26 ask figures from the zip alone; two builds byte-identical; figures_check 88 of 88;
+  precut 53 checks clean with voice-check PASS; pair.py: pair ceiling 28.5, mirror leakage 0.0 per cent.
+- leak.py REVIEW, each line ruled: sweep 1 the rating list file is the VOA's own record in its own layout; sweep 2
+  "the model" is the property team's own word for its spend-share model; sweep 3 the numbers that coincide with
+  answer figures are house numbers and rateable values on the rating list; sweep 4 the model sheet's population and
+  share sentences are its own subject (it names no take, no share of an unseen place and no divide); sweep 6 the
+  shortlist lists the sites with their costs and ranks nothing; sweep 7 GTFS is published as a zip.
+- Guard: heart WARN (overuse.objective, repeat.decision, repeat.deliverables, answered at the draw). Surface promotes
+  three pairs on card axes, each adjudicated clean here: task307 (same pairing, gap and decision type; its mechanism is
+  what added network capacity saves when users re-route), task303 (gap and decision type; a shared upstream loss logged
+  under each unit's own device), task128 (gap, G5 and decision type; differentiated on the card, a queue's overflow
+  against a team's capacity). None recovers an origin's spend from one outlet's modelled share.
+- Leak reader, architecture 2 read 1 (5cbd1f6f): no decisive-step sentence (its nearest, the appraisal rule, "states
+  the contribution formula, not which site wins"), no ranking file, no answer figure; question 5's sentences execute to
+  the golden; question 6 analytical, and its account of the step is not the decisive one. Question 3 named the VOA's file
+  specification, ruled harmless as publisher documentation in leak_check_report.md.
+- Determinism judge, architecture 2 pass 1 (5cbd1f6f): DETERMINISTIC, APPROVE, derive-then-open kept. Gate G
+  analytical_non_defect (mechanism read as "other", the same mechanism as the card's decomposition_attribution); Gate H
+  domain, layers and decisive step pass; stump power strong. Its cold derivation reproduced S1 at about 0.4 on the
+  households and named, without executing it, "back-solving each park's total spend from the model's own baseline
+  capture share": the decisive step is reachable by a reader who takes the population sentence to the parks, which is
+  the risk this architecture carries into the portal. Its advisory notes (the per-pitch chain and the bus counts traced
+  rather than recomputed; its own TMS recompute 0.3 to 0.5 per cent high from its boundary handling) need no change:
+  verify.py recomputes every graded figure from the zip.
+- The 10/10 rules re-read on the built pack: the deciding quantity is the spatial-interaction model's trade of a new
+  store with every origin's spend in it; the mess (the rating list's layout, the acquirer's sectors, the clocks, the
+  report's preamble) only complicates; the decisive step is analytical, recovering a park's spend from our stores'
+  modelled share of it, and the population it used to turn on is filed.
 
 ## Tried and rejected
 
@@ -239,3 +258,7 @@ Measured by: generator/pair.py on the cut pack.
 - The round-2 asks B and C (2026-10-24, stage 4 on pack 1680766e): both isolated scored readers again missed the call (S1 at 0.5) and every ask A figure, but kept all ten paid-hours figures by attributing each shift to its clock-in terminal's store and all six bus figures by counting the Friday by the clock with the feeds deduplicated, each 16 of 26 for a measured pair of 45.8; both called the asks' handling data semantics. Ask B gained the amended shifts the next extract carries again, with genuine second shifts as the over-cleaning half, and ask C the school-day duplicate buses one feed lists on the same timetable, so both readers' handlings now miss every figure; the judge's pass on 1680766e was DETERMINISTIC, APPROVE, its one note (departures that pick up passengers) taken into the prompt.
 - The round-3 asks B and C, and the round-3 call measurement (2026-10-24, stage 4 on pack ec38f0bd): both isolated scored readers kept all ten paid-hours figures, by deduplicating a colleague's rows on date and start and keeping the later (the row the clock-out follows, which is the golden's row), and one kept all six bus figures by the maximum per route, stop and time across the feeds (the golden's count); every ask A figure held for the sixth reader running. Both readers also landed the call (S3, 0.8), the first of six to do so, and both went first to the rating list's holiday parks at Wrentoft, the two words the brief's stump-vocabulary sweep line had named (the four earlier readers had the same line and missed); build-pipeline classes a rung executed because it was announced as an announcement, not a design failure, so the brief was fixed (a SKILLS commit) and the call is measured again cold, with the rule fixed in advance that if either cold reader lands the call, architecture 1 is spent. Ask B's re-extracted amendment and ask C's same-time cross-feed pairs were seen devices (the careful repair is the golden one); ask B moves to a night shift the paid-hours report lists against both dates it touches and ask C to a Friday-late service that repeats the weekday evening journeys on the same blocks.
 - Architecture 1's determinism repair (portal return 2026-10-27, both judges competing_defensible_answer, Gates C and D, G pass): the fork is the stump. The judges found the population unpinned (the filed model's origins are the census households, and nothing authorises the holiday parks' guests), and the stump sentence says the easy route leaves out that same population. Measured on the shipped pack: the golden prices a pitch at GBP 2,443 (S3 at 0.804); S3 overtakes S1 at about GBP 1,330 a pitch; the per-pitch reading a solver takes once told that non-residents' spend counts (the guests' spend at our park-side stores over those parks' pitches) gives GBP 1,370 to 1,529 and S3 and S1 near a tie at about 0.5, and over every pitch in the region GBP 469 and S1. So a pin that makes the guests literal hands over the question the stump rests on and leaves the site on an unpinned construction at the crossover; no wording closes it. Redesign at stage 2: file the population at authority (a household's spend at its output area and anyone else's where they stay, never which or how many), move the decisive step into the guests' spend per pitch recovered through the model's own shares at the park-side stores, and widen the gap between that and the direct per-pitch reading (competition beside the park-side stores) so the direct reading files S1; close the three ask conventions the judges named (a shift listed on every date it covers, one vehicle per block, a refused load re-sent) each with a silent device kept under its pin.
+- Shrinking Wrentoft's small Brightmart so S3 takes more of Wrentoft Lakes' spend (architecture 2, tuning, 2026-10-27): it also hands S3 the Wrentoft residents' spend, so S3 led even on the resident route and on the direct reading; reverted, and rung 2c was cleared instead by siting a larger competitor at each analog park's gate.
+- The Corrinby camping site and the Loderwell touring site (architecture 2, tuning): once our share of the big parks was cut, these 20- and 15-pitch sites, where our stores take most of the spend, carried the recovered spend per pitch and handed the direct reading at their stores a pitch above the crossover; dropped from the world, and a Pettifer's set at Sallowmere Mill's gate for the same reason.
+- The GIS analyst's data notes (architecture 2, stage 3): leak.py now refuses any shipped file that describes the data (dataset-generation section 3); the notes were cut, the rating list's layout moved to the VOA's own file specification, the refused-load rule to the DC's procedure TP-04, the report's grain to its own header, the joint routes to the feeds' route descriptions, and the punch clock into its column name.
+

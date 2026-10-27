@@ -25,9 +25,11 @@ DISTRACTORS = ("aadf", "survey")
 CONTEXT = ("cards",)
 
 
-def _csv(path, header, rows):
+def _csv(path, header, rows, preamble=()):
     with open(path, "w", newline="", encoding="utf-8") as fh:
         w = csv.writer(fh, lineterminator="\n")
+        for line in preamble:
+            w.writerow(line)
         w.writerow(header)
         w.writerows(rows)
 
@@ -132,14 +134,16 @@ def write_gtfs(path_lb, path_pdc, feeds, stops, at):
                                 "agency_noc"], [noc, agency, "https://www.%s.co.uk" % agency.lower().replace(" & ", "and").replace(" ", ""),
                                                 "Europe/London", "EN", "01632 960%03d" % int(rs.integers(0, 1000)), noc]]
         rmap = {}
-        rows = [["route_id", "agency_id", "route_short_name", "route_long_name", "route_type"]]
+        rows = [["route_id", "agency_id", "route_short_name", "route_long_name", "route_desc", "route_type"]]
+        other = "Wrentoft & District Coaches" if owner == "LB" else "Sallowmere Motor Services"
         for t in trips:
             if t["num"] not in rmap:
                 rmap[t["num"]] = "%s%d" % (noc[:2], 400 + len(rmap) * 7)
                 ends = {"4": "Quellby - Darrowfield - Sallowmere", "41": "Garretstead - Brackenmere - Darrowfield - Bellingtoft - Wrentoft - Skerryby",
                         "7": "Darrowfield Town Circular", "12": "Brackenmere - Corrinby", "15": "Darrowfield - Raddleford - Loderwell",
                         "22": "Bellingtoft - Sallowmere - Sedgeton", "9": "Wrentoft - Withybeck", "S41": "Wrentoft - Withybeck School"}
-                rows.append([rmap[t["num"]], noc, t["num"], ends[t["num"]], 3])
+                rows.append([rmap[t["num"]], noc, t["num"], ends[t["num"]],
+                             "Joint service with %s" % other if t["num"] in ("4", "41") else "", 3])
         files["routes.txt"] = rows
         # each operator's own registrations: Sallowmere Motor Services' run from the October timetable change to the
         # end of March, Wrentoft & District Coaches' from their 12 October change to the start of April
@@ -290,7 +294,10 @@ def build(target):
           "2026-06-22T10:05:00Z", "2026-10-06T11:20:00Z", P.PEOPLE["property"])
     docs.model_sheet(F["model"])
     postprocess.scrub(F["model"], "Microsoft Word 2019", "2025-06-27T14:40:00")
-    docs.notes(F["notes"])
+    docs.voa_spec(F["voa_spec"])
+    postprocess.scrub(F["voa_spec"], "Microsoft Word 2016", "2026-04-01T09:00:00")
+    docs.dc_procedure(F["dc_proc"])
+    postprocess.scrub(F["dc_proc"], "Microsoft Word 2019", "2025-09-15T11:30:00")
     # ask A
     rows, recs, at = O.tms(T, G)
     _csv(F["tms"], ["trip_id", "trailer_id", "depart_dc_utc", "stop_seq", "store_no", "arrive_utc", "depart_utc", "stop_type",
@@ -301,8 +308,11 @@ def build(target):
     # ask B
     shifts, punches, register, st = O.staffing(T)
     _csv(F["wfm"], ["employee_no", "location", "date", "role", "paid_hours"],
-         [[r[0], r[1], r[2].isoformat(), r[3], "%.2f" % r[4]] for r in shifts])
-    _csv(F["punches"], ["employee_no", "terminal_id", "punch_time", "punch"],
+         [[r[0], r[1], r[2].isoformat(), r[3], "%.2f" % r[4]] for r in shifts],
+         preamble=[["Report", "Paid hours by colleague and date"], ["Period", "06/10/2025 to 29/03/2026"],
+                   ["Note", "A shift is shown against each calendar date it covers, with its paid hours on each line"],
+                   []])
+    _csv(F["punches"], ["employee_no", "terminal_id", "punch_time_local", "punch"],
          [[p[0], p[1], hhmm(p[2]), p[3]] for p in punches])
     _csv(F["terminals"], ["terminal_id", "store_no", "door", "installed"], register)
     # ask C

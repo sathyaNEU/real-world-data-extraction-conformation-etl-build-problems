@@ -23,10 +23,9 @@
   ],
   "field_terms": [],
   "input_gates": {
-    "files": 20,
+    "files": 21,
     "formats": [
       "csv",
-      "md",
       "pdf",
       "txt",
       "xlsx",
@@ -76,7 +75,7 @@
     {
       "path": "onspd_may2026_lq.csv",
       "format": "csv",
-      "bytes": 188511,
+      "bytes": 188506,
       "rows": 2308,
       "source": "Constructed (seeded generator) in the layout of the ONS Postcode Directory (May 2026)",
       "date": "2026-10-09",
@@ -85,8 +84,8 @@
     {
       "path": "voa_list_entries_2026_lq.txt",
       "format": "txt",
-      "bytes": 794939,
-      "rows": 4233,
+      "bytes": 795037,
+      "rows": 4234,
       "source": "Constructed (seeded generator) in the layout of the VOA compiled list entries (asterisk-separated)",
       "date": "2026-10-09",
       "license": "CC0-1.0 (original work)"
@@ -94,8 +93,8 @@
     {
       "path": "voa_summary_valuations_2026_lq.csv",
       "format": "csv",
-      "bytes": 122595,
-      "rows": 3763,
+      "bytes": 122630,
+      "rows": 3764,
       "source": "Constructed (seeded generator) in the layout of the VOA summary valuation main measures",
       "date": "2026-10-09",
       "license": "CC0-1.0 (original work)"
@@ -103,7 +102,7 @@
     {
       "path": "store_estate_2026.xlsx",
       "format": "xlsx",
-      "bytes": 6781,
+      "bytes": 6779,
       "rows": null,
       "source": "Constructed (seeded generator) in the layout of the chain's estate workbook",
       "date": "2026-10-09",
@@ -112,8 +111,8 @@
     {
       "path": "card_spend_by_home_sector_fy2025_26.csv",
       "format": "csv",
-      "bytes": 403104,
-      "rows": 13396,
+      "bytes": 272141,
+      "rows": 8924,
       "source": "Constructed (seeded generator) in the layout of a payment acquirer's merchant-insight feed",
       "date": "2026-10-09",
       "license": "CC0-1.0 (original work)"
@@ -121,7 +120,7 @@
     {
       "path": "site_shortlist_2027.xlsx",
       "format": "xlsx",
-      "bytes": 6657,
+      "bytes": 6655,
       "rows": null,
       "source": "Constructed (seeded generator) in the layout of the property team's site schedule",
       "date": "2026-10-09",
@@ -130,26 +129,35 @@
     {
       "path": "spend_share_model_2025.pdf",
       "format": "pdf",
-      "bytes": 3648,
+      "bytes": 3689,
       "rows": null,
       "source": "Constructed (seeded generator) in the layout of the property team's model sheet",
       "date": "2026-10-09",
       "license": "CC0-1.0 (original work)"
     },
     {
-      "path": "property_data_notes.md",
-      "format": "md",
-      "bytes": 4319,
+      "path": "voa_compiled_list_file_specification_2026.pdf",
+      "format": "pdf",
+      "bytes": 3250,
       "rows": null,
-      "source": "Constructed (seeded generator) in the layout of the GIS analyst's notes",
+      "source": "Constructed (seeded generator) in the layout of the VOA's compiled list file specification",
+      "date": "2026-10-09",
+      "license": "CC0-1.0 (original work)"
+    },
+    {
+      "path": "loderwell_gate_store_deliveries_procedure.pdf",
+      "format": "pdf",
+      "bytes": 2339,
+      "rows": null,
+      "source": "Constructed (seeded generator) in the layout of the distribution centre's store deliveries procedure",
       "date": "2026-10-09",
       "license": "CC0-1.0 (original work)"
     },
     {
       "path": "tms_stop_export_20251006_20260329.csv",
       "format": "csv",
-      "bytes": 344435,
-      "rows": 3735,
+      "bytes": 344120,
+      "rows": 3736,
       "source": "Constructed (seeded generator) in the layout of a transport management system's stop export",
       "date": "2026-10-09",
       "license": "CC0-1.0 (original work)"
@@ -157,8 +165,8 @@
     {
       "path": "goods_in_receipts_20251006_20260329.csv",
       "format": "csv",
-      "bytes": 61733,
-      "rows": 1186,
+      "bytes": 61472,
+      "rows": 1181,
       "source": "Constructed (seeded generator) in the layout of store handheld goods-in receipts",
       "date": "2026-10-09",
       "license": "CC0-1.0 (original work)"
@@ -166,8 +174,8 @@
     {
       "path": "wfm_paid_hours_20251006_20260329.csv",
       "format": "csv",
-      "bytes": 2779465,
-      "rows": 60972,
+      "bytes": 2779633,
+      "rows": 60976,
       "source": "Constructed (seeded generator) in the layout of a workforce management system's paid hours report",
       "date": "2026-10-09",
       "license": "CC0-1.0 (original work)"
@@ -175,7 +183,7 @@
     {
       "path": "ta_punches_20251006_20260329.csv",
       "format": "csv",
-      "bytes": 3860236,
+      "bytes": 3860242,
       "rows": 108741,
       "source": "Constructed (seeded generator) in the layout of a time-and-attendance system's clocking punches",
       "date": "2026-10-09",
@@ -193,7 +201,7 @@
     {
       "path": "gtfs_sallowmere_motor_services_20261002.zip",
       "format": "zip",
-      "bytes": 239140,
+      "bytes": 239184,
       "rows": null,
       "source": "Constructed (seeded generator) in the layout of GTFS as published on the Bus Open Data Service",
       "date": "2026-10-09",
@@ -202,7 +210,7 @@
     {
       "path": "gtfs_wrentoft_district_coaches_20261002.zip",
       "format": "zip",
-      "bytes": 205147,
+      "bytes": 205181,
       "rows": null,
       "source": "Constructed (seeded generator) in the layout of GTFS as published on the Bus Open Data Service",
       "date": "2026-10-09",
