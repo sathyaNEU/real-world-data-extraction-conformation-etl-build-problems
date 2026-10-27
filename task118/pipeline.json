@@ -98,10 +98,10 @@
  },
  "approved": null,
  "delivered": "2026-10-27",
- "portal": null,
+ "portal": "FAILED_TO_STUMP 2026-10-27 (round after the determinism reship): both responses filed Business·national at 500,000, runner-up Local·metro 100,000 behind, the golden",
  "source_note": "analytical_tasks/04_opportunity_sizing/OS01_headline-squad-renderable-click-share.md",
- "status": "SHIPPED",
- "resume": "",
+ "status": "FAILED_TO_STUMP",
+ "resume": "re-root at stage 1 (architecture 3): architecture 2 is spent, its decisive step (the share of a won click new to the site, page by page) forced only by the change log, which the portal's second judge read as replay, and announced by the sign-off sentence that closed that fork, after which both responses landed; draw a decisive step the data's own structure forces with no filed selection criterion, in this world or another; the CMS corrections ask (24 figures, two silent primaries) can be kept if the world is",
  "leak": {
   "leak_py": "REVIEW, the same sweeps ruled harmless (sweep 3 the brief, sweep 4 subjects' own words and the sign-off's 'working', sweep 5 the prompt)",
   "reader": "read 2 on 6f5ee314: no decisive-step sentence, no ranking, no answer figure; question 5 executes to the golden; question 6 analytical"
@@ -133,6 +133,12 @@
    "date": "2026-10-27",
    "portal": "determinism block: judge 1 APPROVE; judge 2 competing_defensible_answer (Gates C, D, E, G fail): the lift estimator and the share of a won click new to Bightline stated in no file, recoverable only from the change log (REPLAY), and the model response's raw lift with one fitted factor, Sport·metro at 900,000, filed as a competing answer. Rubric 87 and 44, average 65.5.",
    "repair": "determinism",
+   "commit": ""
+  },
+  {
+   "date": "2026-10-27",
+   "portal": "FAILED_TO_STUMP: both responses filed the golden call cell for cell (Business·national, 500,000 extra article clicks in 2027, runner-up Local·metro, 100,000 behind) after the determinism reship that filed Experimentation's sign-off",
+   "repair": "re-root",
    "commit": ""
   }
  ],
