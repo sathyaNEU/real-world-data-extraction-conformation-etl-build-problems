@@ -1,0 +1,25 @@
+{
+ "task": "task205",
+ "status": "DESIGN",
+ "architecture": 1,
+ "drawn": "2026-10-27",
+ "objective": "anomaly-detection",
+ "domain": "energy-systems-utilities",
+ "subdomain": "efficiency-savings-verification",
+ "card_registered": false,
+ "stage": 2,
+ "verdict": "REFUSED_ON_MEASUREMENT",
+ "resume": "Architecture 1 refused on measurement before any row was cut, and two of the three reasons are legality facts that bind whatever mechanism comes next. FIRST, THE SEED IS MIS-TAGGED AND CANNOT BE BUILT AS WRITTEN: seed AD28's header pairs Economics with Anomaly Detection, and economics-econometrics carries no task type that serves anomaly-detection (its eight task types serve EC, OS, F, RC and DD only), which I verified in the taxonomy myself rather than taking from the hunt. SECOND, the honest measurement-and-verification task type does not serve the objective either: energy-systems-utilities/efficiency-savings-verification serves experiment-causal, and the only AD task type in that domain is grid-reliability-outage-analysis, which this lane has already spent four times (task183, task187, task197, task201) and whose task187 card is this seed's own pick-one-of-n shape. THIRD, and this is the one that would have killed the build even with a legal pairing, the mechanism dies on its own numbers: the rung beneath the decisive one, the same calendar quarter two years apart with no weather model anywhere in it, names the golden building 20 of 20 at 0.96 of the golden's figure, a clearance of 1.10x against the 1.15x floor every rung owes, so family unanimity IS the easy route landing. The dial is one-ended and no tuning repairs it: sweeping the weather-coupled share of the waste from 0 to 1, the cheap rung still names the truth 13 to 20 times out of 20 while the golden family's spread runs from 0.09 to 1.35 of the figure, and 0 of 5 cells have the cheap rung missing and a determinate figure at once. The bin inequality itself was comfortable ((a) 126,214 kWh against (b) 6,015 and (c) 6,909, a factor of 10.5), which is the lesson: the bin test is necessary and not sufficient, and what refused this draw was the readability of the rung beneath the decisive one. The structural statement, measured: anything on this estate whose graded figure is a forward energy estimate must pass through either a like-for-like calendar comparison, which reaches the call 20 of 20, or a baseline model, which forks every graded figure by 0.33 to 1.35 of its own level. There is no third route. ARCHITECTURE 2 IS THEREFORE A NEW WORLD IN A DOMAIN WHOSE TASK TYPE SERVES ANOMALY-DETECTION, and the deciding quantity must not be a forward energy estimate. Of the 14 AD-capable task types in the taxonomy, criminology-justice/crime-incidence-hotspot-analysis has never been drawn on this objective and human-factors-ergonomics/safety-incident-error-analysis carries one card; the subdomains of the last three builds (environmental-monitoring-exceedance, election-polling-forecasting, payment-claims-health-plan-analytics) are banned. The design note's ## Tried and rejected carries the full screened list, the 35 spent AD drivers read one line each, and the reachable-share family refused at sd(log factor) 0.269 to 0.309 against a ceiling near 1.4. The card draft was never registered: guard check returns BLOCK on the task type and on both structural tests, and a card written to pass that gate would be a card written to pass.",
+ "gates": {
+  "precut": "fails, reported in the handback",
+  "card_check": "BLOCK three_rules.task_type, test.same_puzzle_older, test.same_driver_older",
+  "voice_check": "not run, no prompt.txt exists"
+ },
+ "artifacts": {
+  "design_note": "task205/DESIGN_NOTE.md",
+  "card_draft": "author's scratch only, not written into .claude/",
+  "prototype": "author's scratch only"
+ },
+ "stage_name": "design",
+ "updated": "2026-10-27"
+}
