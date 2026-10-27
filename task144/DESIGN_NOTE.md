@@ -118,9 +118,9 @@ Ends on: slidewell, at about 14,000 external stars in its first 90 days (14,309)
 Golden: kilnkit, at about 12,000 (12,086), the spotlight adding about 9,000 (8,929).
 
 The shorter path stops at step 3 and adds the lottery's average lift (5,300 scaled to the October list): tracewire at
-about 12,000 (11,827), the spotlight adding about 5,000. Both draw-time probes on the architecture 2 pack (two isolated
-call-only readers) filed tracewire, one through the average lift and one through a regression of the lottery's lifts
-on each spotlighted repository's owner's followers; neither found the feed cascade without the field notes.
+about 12,000 (11,827), the spotlight adding about 5,000. A regression of the lottery's lifts on each spotlighted
+repository's owner's followers files tracewire too (asserted in Rivals); with the field notes gone, nothing in the
+pack names the feed cascade.
 
 ## Stump sentence
 
@@ -353,23 +353,19 @@ and the organisation members file. The call is unchanged with every ask file and
 zero drift); no campaign, click, nomination or rename row sits in a file the call reads, and `freeze.py check --mode
 rubric` passes on the last re-site (the call, the stump and every frozen figure unchanged, the 12 Ask A figures moved).
 
-Re-sited at stage 4 against measured readers, never against the cracker sheet alone:
-- Round 1 (aa9589a5, the first architecture 2 cut): two scored readers (Sonnet and Opus) both missed the call and both
-  took all 24 figures of the first layer (subscribers delivered to and click-through share; people and share outside),
-  every device on their own route. The asks moved to quantities whose primary sits beyond that route (each issue's
-  clickers and their share; each organisation's repository's people outside it when they nominated it and their share).
-- Round 3 (eb36b41e): both readers missed the call (tracewire at 12,000, 5,000 added). One removed the gateways'
-  fetches, kept their readers' later clicks and took all of Ask A, and resolved one merge hop for six of Ask B: 18 of
-  22. The other kept every fetch (none of Ask A) and resolved people across merges with membership at the time (all ten
-  of Ask B): 10 of 22. Both matched the spotlight by its own tags or its owner/name address and took every signed-out
-  address to an account through the snapshot alone, so one silent primary was stacked on each ask at that step: the
+Re-site history, the device moves only (the in-house reads that prompted them belong to the retired solver flow and
+are not a gate; `CLAUDE.md`, the STOP block):
+- First architecture 2 cut (aa9589a5): the first ask layer (subscribers delivered to and click-through share; people
+  and share outside) sat on a careful solver's own route, so the asks moved to quantities whose primary sits beyond
+  that route (each issue's clickers and their share; each organisation's repository's people outside it when they
+  nominated it and their share).
+- eb36b41e: matching the spotlight by its own tags or its owner/name address, and taking every signed-out address to an
+  account through the snapshot alone, left one step per ask unguarded, so a silent primary was stacked on each: the
   editor's paragraph's permanent-address link (A7) and the work address a signed-in response recorded (B9).
-- Round 4 (b370e2a4): both readers missed the call (tracewire at 11,000 and 13,000). Both resolved the permanent
-  addresses, so A7 sat on both routes and held for neither; B9 held against one (addresses through the snapshot alone)
-  and not the other (accounts and addresses linked both ways). The reader who kept Ask A took a fetch only where it
-  covered every link of the send, so A6 was deepened at that step: some companies' scanners leave a message's
-  unsubscribe link alone, and a fetch is read from the burst (four or more links within two seconds; every link or
-  every link but the unsubscribe link), not from a complete set of links. The golden's figures do not move.
+- b370e2a4: a fetch taken only where it covers every link of the send kept Ask A reachable, so A6 was deepened at that
+  step: some companies' scanners leave a message's unsubscribe link alone, and a fetch is read from the burst (four or
+  more links within two seconds; every link or every link but the unsubscribe link), not from a complete set of
+  links. The golden's figures do not move.
 
 **Ask A. The Sluis issue report, April to September 2026** (12 figures: for each issue, the subscribers who clicked
 through to its spotlighted repository, exact, and their share of the subscribers it was delivered to, per cent to two
@@ -383,7 +379,7 @@ decimals).
   unsubscribe link alone, so their fetch covers every link but that one. Kept, the gateways put the issues at 14,408 to 16,837
   clickers and 3.52 to 3.92 per cent against 6,699 to 7,395 and 1.65 to 1.76 (0 of 12); dropping a gateway's
   subscriber with their own later clicks loses 104 to 126 readers an issue and every share at two decimals (0 of 12).
-  Taking a fetch only where it covers every link of the send (round 4's reader) keeps the scanners that skip the
+  Taking a fetch only where it covers every link of the send keeps the scanners that skip the
   unsubscribe link and misses every figure (0 of 12). The remedy is a reconstruction: a reader's own clicks are what
   is left once each subscriber's fetch (four or more links within two seconds; one click on every link, or on every
   link but the unsubscribe link) is taken out. One reading: three to six links, one second to a minute, all give the
@@ -396,7 +392,7 @@ decimals).
   months another repository from the same shortlist, the spotlight first in two of them and second in the other two
   (intro_1 and intro_2, Postwerk intro-1 and intro-2). The spotlight's own tags or its owner/name address leave out the
   paragraph's clickers who never touched the heading or the button: 5,825 to 6,546 clickers and 1.44 to 1.54 per cent
-  (0 of 12, both round 3 routes); the permanent address alone gives 1,340 to 1,515 (0 of 12). The remedy is a
+  (0 of 12); the permanent address alone gives 1,340 to 1,515 (0 of 12). The remedy is a
   reconstruction: every link of the issue resolved to the repository it reaches, ids through the repositories file.
 - Second device A2 (one issue over three sends to one list): every issue went to the Sluis list in two batches on its
   Tuesday and again on the Thursday to the subscribers who had not opened it; delivered counts the two batches, the
@@ -452,27 +448,27 @@ by deleting every ask file: the call's figures move by zero).
 
 | Handling | Ask A (12) | Ask B (10) |
 |---|---|---|
-| round 3's first reader: gateways' fetches out, the spotlight's own tags | 0 | n/a |
-| round 3's second reader: every fetch kept, the spotlight's owner/name address | 0 | n/a |
-| round 4's first reader: every link resolved, a fetch only where it covers every link of the send | 0 | n/a |
+| gateways' fetches out, the spotlight's own tags | 0 | n/a |
+| every fetch kept, the spotlight's owner/name address | 0 | n/a |
+| every link resolved, a fetch only where it covers every link of the send | 0 | n/a |
 | gateways kept, every link resolved; gateways' subscribers dropped | 0 | n/a |
 | every device but the denominator: every send's delivered summed, or one send per campaign | 6 | n/a |
 | the permanent address only; Thursday clicks left out; by label, per campaign or per link | 0 | n/a |
-| round 3's second reader: addresses from the snapshot only, people across merges, membership then | n/a | 0 |
-| round 3's first reader: addresses from the snapshot only, one merge hop | n/a | 0 |
+| addresses from the snapshot only, people across merges, membership then | n/a | 0 |
+| addresses from the snapshot only, one merge hop | n/a | 0 |
 | the account nominated from; membership now | n/a | 0 |
 | one merge hop; renames unmapped | n/a | 6 |
 | hashes only; no merge map | n/a | 0 |
 | every device | 12 | 10 |
 
-| Cracker (landed the call, ran the battery, executed every filed rule, the round 3 readers' routes) | Ask A (12) | Ask B (10) | Verdict |
+| Cracker (landed the call, ran the battery, executed every filed rule) | Ask A (12) | Ask B (10) | Verdict |
 |---|---|---|---|
 | batches against the Thursday send, links by tag, every click a reader's | 0 | n/a | miss |
 | addresses from the snapshot, no merge map, the account nominated from | n/a | 0 | miss |
 
-Pair ceiling: 28.5 (the strongest response on the call at the round 3 readers' routes: 38 + 7 + 0 = 45.0; the best
-response off the call at the same routes: 5 + 7 + 0 = 12.0); a paper figure until round 4's readers measure it
-Mirror leakage: 27 per cent of ask weight with one device mishandled (6 of 22, a reader handling every device but
+Pair ceiling: 28.5 (the strongest response on the call at the cracker's routes: 38 + 7 + 0 = 45.0; the best
+response off the call at the same routes: 5 + 7 + 0 = 12.0), run on the cut pack by the asks block
+Mirror leakage: 27 per cent of ask weight with one device mishandled (6 of 22, a solver handling every device but
 summing every send's delivered keeps the clickers); no ask whole on fewer than all its devices
 Measured by: generator/checks.py (the asks block runs every handling profile above on the cut pack and asserts the
 ceiling and the leakage)
@@ -514,38 +510,31 @@ the prompt changed, so the leak reader's questions stand (build-pipeline stage 4
 
 ## Gates at ship
 
-On target.zip b370e2a4 (2026-10-27):
-- Generator: 149 checks pass (the three-rules block, SF1 to SF18, the ladder, the back-test, the bins and spreads, the
-  ask profiles, the separation, the input gates, the no-description rule, the realism sweep); `verify.py` agrees on its
-  own path (pick kilnkit at 12,086 adding 8,929, runner-up slidewell, default path tracewire, the whole-life rate on
-  slidewell, both asks); two builds byte-identical (target, golden, metadata.json, figures.json and target.zip).
+On target.zip 9126d810 (2026-10-27), the regular checks only (`CLAUDE.md`, the STOP block):
+- Generator: 150 checks pass (the three-rules block, SF1 to SF18, the ladder, the back-test, the bins and spreads, the
+  ask profiles with the partial-gateway burst, the separation, the input gates, the no-description rule, the realism
+  sweep); `verify.py` agrees on its own path (pick kilnkit at 12,086 adding 8,929, runner-up slidewell, default path
+  tracewire, the whole-life rate on slidewell, both asks); two builds byte-identical (target, golden, metadata.json,
+  figures.json and target.zip).
 - `figures_check.py` 90 figures, 0 absent; `precut.py` 52 checks, 0 FAIL, 0 WARN; `voice-check.py` PASS; the
   container audit clean on target and golden; `leak.py --asof 2026-09-30` REVIEW with every line answered (Leak sweep),
   no LEAK; `guard.py heart` WARN (people.first, repeat.gate_g, answered in Draw); `surface` no hard tell, task150,
   task179 and task268 promoted on the cards alone and differentiated on the card; `freeze.py check --mode rubric` PASS
-  (the call, the stump and every frozen figure unchanged; the 12 Ask A figures moved).
-- Judge, three passes: round 1 (aa9589a5) DETERMINISTIC, FIX_NOW (the back-test's RMSE pair restated in words,
-  applied); round 2 (f0ae1a2f) DETERMINISTIC, APPROVE, every main-call figure reproduced, Ask A then unjudged on later
-  ask-side data (`determinism_check_report.md`); pass 3 (b370e2a4) DETERMINISTIC, APPROVE, every Ask A and Ask B
-  figure reproduced by an independent implementation, the main call spot-checked (`determinism_check_report_pass3.md`).
+  (the call, the stump and every frozen figure unchanged).
+- Leak reader: rounds 1 and 2 (Leak sweep); not re-run, since no document and not the prompt changed after f0ae1a2f.
+- Judge: round 1 (aa9589a5) DETERMINISTIC, FIX_NOW (the back-test's RMSE pair restated in words, applied); round 2
+  (f0ae1a2f) DETERMINISTIC, APPROVE, every main-call figure reproduced (`determinism_check_report.md`); pass 3
+  (b370e2a4) DETERMINISTIC, APPROVE, every Ask A and Ask B figure reproduced by an independent implementation, the main
+  call spot-checked (`determinism_check_report_pass3.md`); pass 4 (9126d810) on the partial-gateway burst DETERMINISTIC, APPROVE, every Ask A figure reproduced, the fetch reading forced by the data (no subscriber between the eight and the nine links of a Postwerk send, no Relaymark burst between four and eight links), thresholds of four to nine links and either edge of the two-second window the same, Ask B and the main call spot-checked (`determinism_check_report_pass4.md`).
   Residual notes, none blocking: a multiplicative regression on the day-8 rate validates at RMSE 288 and still files
   kilnkit at about 11,500 (round 2); the Thursday send's clickers count as clicking through, which the prompt's
   "subscribers who clicked through" over the issue's sends says and the Tuesday batches' reach of the list leaves the
   denominator unaffected by; a gateway's reader who also clicked counts once, as a subscriber who clicked; an owner is
-  a member, as the memberships file lists owners (pass 3).
-- Scored readers (`score_reader.py` with the three call keys, against the 39 keys):
-  - round 1 (aa9589a5): both missed the call (tracewire at 14,000 and 13,000) and kept every figure of the first ask
-    layer; the asks were re-sited;
-  - round 3 (eb36b41e): both missed the call (tracewire at 12,000, 5,000 added) and kept 18 and 10 of the 22 ask
-    figures; one exit 1 on ask share, the other exit 1 only because tracewire's 12,000 equals the golden's call figure
-    (pick and added stars missed); A7 and B9 stacked;
-  - round 4 (b370e2a4), G (Sonnet): missed the call (tracewire at 11,000, 5,000 added), all of Ask A (the permanent
-    addresses resolved and a fetch taken out wherever it covered every link of the send), none of Ask B (addresses
-    through the snapshot alone, so B9 held): 22 of 36 scored figures, 61.1 per cent, estimated share 45.6, exit 1 on
-    ask share; A6 deepened at that step (partial fetches);
-  - round 4 (b370e2a4), H (Opus): missed the call (tracewire at 13,000, 6,000 added), none of Ask A (the permanent
-    addresses resolved, every gateway fetch kept), all of Ask B (accounts and addresses linked both ways, so B9 sat on
-    its route and it took it): 18 of 36 scored figures, 50.0 per cent, estimated share 39.5, exit 2.
+  a member, as the memberships file lists owners (pass 3). Pass 4: a subscriber whose gateway fetched the issue and who also clicked
+  the spotlight on their own (104 to 120 a month) counts as a subscriber who clicked through, the literal reading of the
+  ask; dropping such a subscriber whole files about 1.6 per cent less. The judge's optional closure (a phrase in the ask
+  saying gateway fetches are left out and a subscriber's own clicks kept) is not taken: it would name the gateways in the
+  prompt, which announces A6, and the prompt is at 996 of its 1,000 characters.
 
 ## Pre-ship check
 
@@ -558,7 +547,7 @@ On target.zip b370e2a4 (2026-10-27):
 - Gate G: no shipped artifact ranks the candidates; the two distractors rank nothing and are named in metadata.json.
 - The card is current: context artifact `planning_thread`, the answer kilnkit at about 12,000 with about 9,000 added,
   the deliverables and the spine's 61,929 rows.
-- target.zip is the final rebuild's cut (b370e2a4), equal to the second build's.
+- target.zip is the final rebuild's cut (9126d810), equal to the second build's.
 
 ## Tried and rejected
 

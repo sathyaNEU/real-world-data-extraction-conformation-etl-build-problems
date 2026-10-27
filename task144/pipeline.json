@@ -1,11 +1,11 @@
 {
   "task": "task144",
   "owner": "sathya8571",
-  "status": "PAUSED",
+  "status": "SHIPPED",
   "domain": "product-analytics",
   "objective": "forecasting",
-  "stage": 4,
-  "stage_name": "check",
+  "stage": 5,
+  "stage_name": "ship",
   "updated": "2026-10-27",
   "stump": "A competent solver builds the spotlight's stars as the readers' newsletter stars plus the cascade through their followers' home feeds, measures each repository's stars per follower view over its whole life and spotlights slidewell at about 14,000; the step that lands it there is carrying slidewell's forum-carried launch week into a cascade that starts a month later: from its 8th day public slidewell converts at about 0.7 per cent a view, not the 2.0 of its whole life, and on the rate from day 8, which reproduces the lottery's spotlight lifts, kilnkit is first at about 12,000, the spotlight adding about 9,000.",
   "architecture": 2,
@@ -26,9 +26,9 @@
     "note": "drawn 2026-10-15 after git pull (task261, task455 v2, task262 on file): guard WARN repeat.decision and repeat.question_form, answered in ## Draw; same-puzzle and same-driver against older builds differentiated on the card"
   },
   "judge": {
-    "verdict": "DETERMINISTIC (round 2 on f0ae1a2f, the main call; pass 3 on b370e2a4, both asks)",
-    "disposition": "APPROVE (pass 3: every Ask A and Ask B figure reproduced by an independent implementation, the main call spot-checked; residuals none blocking)",
-    "report": "task144/determinism_check_report.md (round 2), task144/determinism_check_report_pass3.md (pass 3)"
+    "verdict": "DETERMINISTIC (round 2 on f0ae1a2f, the main call; pass 3 on b370e2a4, both asks; pass 4 on 9126d810, Ask A's partial-gateway burst)",
+    "disposition": "APPROVE (pass 4: every Ask A figure reproduced, the fetch reading forced by the data; residual surplus-click reading recorded in the design note, no fix required)",
+    "report": "task144/determinism_check_report.md (round 2), task144/determinism_check_report_pass3.md (pass 3), task144/determinism_check_report_pass4.md (pass 4)"
   },
   "returned": [
     {
@@ -41,10 +41,10 @@
       "date": "2026-10-27",
       "portal": "FAILED_TO_STUMP: both responses landed the call (slidewell, 12,000 external stars by day 90, 9,000 added), building the readers' cascade from each repository's whole-life rate per follower view; the field notes, the extract manifest and the twin pair announced the cascade",
       "repair": "design (architecture 2): the cascade kept as rung R3, the decisive step moved to the period the rate per follower view is read over (from the 8th day public, after a forum-carried launch week, chosen by its fit to the lottery's spotlights); the field notes and manifest deleted and every file made self-describing; the twin pair removed; golden kilnkit at 12,000 with 9,000 added",
-      "commit": ""
+      "commit": "RESHIPPED (task144) on 2026-10-27, target.zip 9126d810"
     }
   ],
-  "resume": "stage 4 round 5 on 9126d810 (A6 deepened: gateways that leave the unsubscribe link alone): checks 150, verify, byte-identical rebuild, freeze rubric PASS, figures_check 90/0, precut 52/0, leak.py REVIEW; scored readers I (Sonnet, scratchpad read5-task144-a) and J (Opus, read5-task144-b) and the judge's narrow pass r4 running; on their return score both, ship when at least one misses the call, neither exits 1 and the pair is at or under 60",
+  "resume": "",
   "approved": null,
   "delivered": "2026-10-15",
   "portal": null,
@@ -62,9 +62,5 @@
     "container": "clean (target and golden)",
     "freeze": "freeze.py check --mode rubric PASS: the call, the stump and every frozen figure unchanged; the 12 Ask A figures moved",
     "target_zip_sha256": "9126d810289fe16aaa6e2c15c1f364895d38aa4c04883c859526509a57abd901"
-  },
-  "readers": {
-    "round_3": "pack eb36b41e: E (Sonnet) and F (Opus) both missed the call (tracewire 12,000, 5,000 added); E kept Ask A 12/12 (gateways' fetches removed, their readers' later clicks kept) and Ask B 6/10 (one merge hop), score_reader exit 1 on ask share 72.2 per cent; F kept Ask A 0/12 (every fetch kept) and Ask B 10/10, exit 1 only because tracewire's 12,000 equals the golden's call figure (pick and added stars missed)",
-    "round_4": "pack b370e2a4: H (Opus) missed the call (tracewire 13,000, 6,000 added), Ask A 0/12, Ask B 10/10, 18 of 36 scored figures, exit 2; G (Sonnet) missed the call (tracewire 11,000, 5,000 added), Ask A 12/12 (ids resolved, a fetch taken out wherever it covered every link), Ask B 0/10, 22 of 36, exit 1"
   }
 }
