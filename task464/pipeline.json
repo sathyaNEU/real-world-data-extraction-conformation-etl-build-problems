@@ -4,8 +4,8 @@
  "status": "BUILD",
  "domain": "healthcare-delivery-health-economics",
  "objective": "etl",
- "stage": 3,
- "stage_name": "build",
+ "stage": 4,
+ "stage_name": "check",
  "updated": "2026-10-27",
  "stump": "The default path multiplies each site's attested stations by its rostered sessions, ties the product to realised volume and the adequacy standard, and files a 2027 network capacity 1.2012 times the golden (4,668 weekly treatment slots against 3,886) with three of the twelve service areas wrongly above the standard, because the stations a site attests are the positions it has, not the positions it can work at one time.",
  "architecture": 3,
@@ -16,12 +16,12 @@
   "detail": "52 checks, 0 FAIL, 0 WARN; voice-check.py exit 0 on prompt.txt at 996 characters"
  },
  "leak": {
-  "leak_py": "",
-  "reader": ""
+  "leak_py": "REVIEW, no LEAK",
+  "reader": "running"
  },
  "duplicate_check": {
-  "heart": "",
-  "nearest": "0.08 task479 (v3, lineage)"
+  "heart": "WARN, no BLOCK",
+  "surface": "clean: the only persona in the cut pack is Nicholas Clay, who is on the card"
  },
  "judge": {
   "verdict": "",
@@ -42,7 +42,7 @@
    "commit": ""
   }
  ],
- "resume": "Stage 3 built 2026-10-27: the generator is architecture 3's throughout (world, sim, pack, docs, golden, answers, checks, verify, writeup, metadata, build, ceiling, ladder_prototype), the bundle is 13 files in 5 formats with a 639,009-row SQLite encounter database, and the two goldens and submission.md are emitted. Every free gate is green and recorded in the design note's Pre-ship check. Stage 4 is the author's: the isolated leak reader and the determinism judge, spawned together. No solver, scored reader or probe is run on any build (CLAUDE.md's STOP block).",
+ "resume": "Stage 3 closed 2026-10-27 with every free gate verified independently, not taken on the build agent report: checks 625, verify exit 0, two byte-identical rebuilds at 0b056f9f, figures_check 144 figures 0 absent, precut 52 checks 0 FAIL 0 WARN, voice-check on a 996-character prompt, leak.py REVIEW, heart WARN, surface clean. Stage 4 spawned the licensed pair together in the background: the isolated leak reader and the determinism judge. No solver, scored reader or probe runs (CLAUDE.md STOP block). On both reports, fix every finding in the generator in one pass, re-run the stage 3 gates, re-judge only on FIX_NOW and re-read only if a document or the prompt changed, then ship.",
  "approved": null,
  "delivered": "2026-10-17",
  "portal": "both responses landed the call",
@@ -58,5 +58,11 @@
   "pair": "Pair ceiling 30.8, Mirror leakage 4.2 per cent, measured by generator/ceiling.py on the cut pack",
   "network_weekly_slots": 3886,
   "areas_short": 6
- }
+ },
+ "checks": 625,
+ "verify": 0,
+ "byte_identical": true,
+ "target_zip": "0b056f9f",
+ "figures_check": 0,
+ "input_gates": "13 files, 5 formats, a 639,009-row SQLite encounter database, 2 distractors declared, every file carrying source, date and licence"
 }
