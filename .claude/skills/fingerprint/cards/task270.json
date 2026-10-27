@@ -1,93 +1,112 @@
 {
  "task": "task270",
- "architecture": "v7 (Hallowmere Foodstores' 2027 HFC pack replacement programme: which of four regions it starts in, on the share of their full charge the region's packs lost in 2026)",
- "drawn": "2026-10-26",
- "slot_note": "Architecture 7 in a fresh world (architectures 1 to 6 spent, lineage). The decisive step estimates each pack's 2026 loss through the year-end holdings its receiver level records, read through the pack's own response to the top-ups its job sheets weigh.",
- "domain": "general-statistics-data-science",
- "subdomain": "missing-data-censoring-measurement-error",
- "client_domain": "general-statistics-data-science",
- "niche": "a regional supermarket chain choosing the region its 2027 HFC refrigeration pack replacement programme starts in, the region whose packs lost the largest share of their full charge in 2026, from its contractor's job sheets and its monitoring bureau's receiver levels",
+ "architecture": "v8 (Iversford Vale GP Federation's 2027-28 statin adherence service: which of its twelve primary care networks get the enhanced tier, the networks where at least 30 per cent of the patients aged 65 and over who collect their own statins held supply for under 80 per cent of 2026)",
+ "drawn": "2026-10-27",
+ "slot_note": "Architecture 8 in a fresh world (architectures 1 to 7 spent, lineage). The decisive step takes out of each network's count every patient whose statin a community pharmacy dispensed on its own compliance-aid cycle, coded or not, found by the dispensing's own regularity.",
+ "domain": "pharmacology-pharmacoepidemiology-safety",
+ "subdomain": "medication-adherence-persistence",
+ "client_domain": "pharmacology-pharmacoepidemiology-safety",
+ "niche": "an integrated care board choosing which primary care networks get the enhanced tier of its 2027-28 community pharmacy statin adherence service, on each network's share of its older self-managing statin patients under 80 per cent of days covered in 2026, read from community pharmacy dispensing in which patients on pharmacy-filled compliance aids are dispensed on the pharmacy's own cycle",
  "objective": "descriptive-distribution",
  "shape": "14",
- "decision_type": "pick_one_of_n",
- "answer_unit": "named_option",
- "answer": "",
- "answer_source": "",
+ "decision_type": "designation_set",
+ "answer_unit": "set_of_items",
+ "answer": "Briskdale, Corvendale, Feldcote, Grevmoor, Krathwold and Nevgarth in the enhanced tier (lowest Briskdale 32.1 per cent; the closest network left out, Iversford, 3.0 points under the 30 per cent line)",
+ "answer_source": "task270/submission.md block 1, generator/figures.json",
  "gap": [
-  "time",
   "population"
  ],
  "pattern": [
   "none"
  ],
  "generators": [
-  "G16",
-  "G13"
+  "G3",
+  "G11"
  ],
  "gate_g": "method_or_model_selection",
  "calibration_form": "none",
- "stump_strategy": "maturity_censoring",
- "decisive_rule_filed": true,
+ "stump_strategy": "population_selection",
+ "decisive_rule_filed": false,
  "official_decoy": false,
  "validated_decoy": false,
- "context_artifact": "register",
+ "context_artifact": "filed_standard",
  "stump_class": "analytical",
- "analyst_test": "A strong analyst who reads every job sheet, the F-gas register and the strategy correctly sums each in-scope pack's 2026 refrigerant charged less recovered (routine and breakdown jobs) over its register charge, the F-gas industry's top-up leak rate, adds each region's packs up and files the North East (16 per cent against Lancashire's 9); the North East's packs entered 2026 short of refrigerant lost in 2025 and Lancashire's and Yorkshire's left it short of refrigerant lost in 2026, amounts their receiver levels record.",
- "domain_test": "The deciding quantity is each pack's refrigerant lost in 2026, which no record holds at the year's two ends: there it sits only in a proxy, the receiver level, whose scale has to be calibrated against direct measurements of the same quantity within the same unit (the weighed top-ups with the levels read before and after them), the measurement-error field's calibration of a proxy against a validation sample, combined with the completion of a count recorded only as it is made good. With hospitals for stores and patients for refrigerant the sentence reads the same, but a ward has no gauge whose reading falls kilogram by kilogram with what it holds and no weighed refills to calibrate it against, so the year-end holdings could not be recovered; the task works only where a continuous proxy and occasional direct measurements see the same physical quantity.",
- "layer2_family": "estimation_fit",
- "layer2_pattern": "own:year-end holdings read through each pack's own receiver response to weighed top-ups",
+ "analyst_test": "A strong analyst who reads the service specification and both practice extracts correctly takes out care home residents and the patients coded as using a compliance aid, computes each network's 2026 share under 80 per cent of days covered over the remaining patients aged 65 and over and names too few networks, because the compliance-aid patients one practice system codes only in part and the other cannot code stay in the denominator at full cover.",
+ "domain_test": "The proportion of days covered is pharmacoepidemiology's refill-adherence measure, and it measures a patient's taking only where the patient's own requests time the refills; a compliance-aid patient's statin is dispensed on the pharmacy's fixed cycle whatever is taken, so the field leaves such patients out of refill adherence, and a swap to gym bookings breaks because a booking carries no supply forward and no supplier books a member on its own cycle into the measure.",
+ "layer2_family": "estimand_identification",
+ "layer2_pattern": "own:cycle-dispensed supply left out of a refill measure's population where no code marks it",
  "layer1": [
-  "job sheets exported with day-first dates and the contractor's store numbers without the chain's leading zeros",
-  "refrigerants named by trade name on some job sheets (Solstice N40, Opteon XP40)",
-  "the bureau's pack tags (HFS-031-MT1) against the register's pack codes (031/MT1)",
-  "days missing from the bureau's export during communications outages and sensor fault codes on some days",
-  "commissioning charges of new CO2 packs and decommissioning recoveries in the same job sheet export",
-  "engineers' receiver readings recorded as whole per cents"
+  "two practice systems' year-end extracts in different layouts (one CSV, one workbook), only one carrying a compliance-aid code",
+  "the integrated care board's data service re-keyed every patient pseudonym on 1 July 2026, with a crosswalk file",
+  "dosage instructions as prescribers typed them (ONE TABLET AT NIGHT, 1 OD, TWO AT NIGHT, AS DIRECTED) to be read into tablets a day",
+  "statins named by brand on some items (Lipitor) and by generic name on others, with strengths and pack sizes from the product list",
+  "two practices that moved network on 1 April 2026",
+  "pharmacies that changed owner and ODS code during 2026",
+  "patients who died or left during 2026, present in the dispensing but not in the year-end extracts"
  ],
- "stakeholder_role": "head of property and sustainability",
+ "stakeholder_role": "head of medicines optimisation",
  "role_family": "programme_officer",
- "scoring_unit": "other",
+ "scoring_unit": "per covered member",
  "spine": {
-  "file": "tarnley_receiver_levels_2024_2026.csv",
-  "rows": 0,
-  "entity": "one row is one pack's daily mean receiver level",
-  "grain": "pack x day",
+  "file": "community_pharmacy_statin_dispensing_2025-12-01_to_2026-12-31.csv",
+  "rows": 368662,
+  "entity": "one statin item a community pharmacy dispensed to a patient of the board's practices",
+  "grain": "dispensed item",
   "source": "synthetic"
  },
- "forum": "executive_team",
- "forcing_event": "period_close",
- "org_family": "retailer_or_ecommerce",
+ "forum": "board_of_directors",
+ "forcing_event": "launch_or_rollout",
+ "org_family": "hospital_or_health_provider",
  "world": {
-  "geography": "England (Yorkshire, Lancashire, the North East and Cumbria)",
+  "geography": "England",
   "currency": "GBP",
-  "org_type": "regional supermarket chain",
+  "org_type": "GP federation (a provider company owned by its member practices)",
   "invented_names": [
-   "Hallowmere Foodstores",
-   "Kelbray Refrigeration",
-   "Tarnley Monitoring"
+   "Iversford Vale GP Federation",
+   "Iversford Vale",
+   "Briskdale",
+   "Corvendale",
+   "Ellinholt",
+   "Feldcote",
+   "Grevmoor",
+   "Krathwold",
+   "Lathcombe",
+   "Marlwold",
+   "Nevgarth",
+   "Pellholt",
+   "Tarvdale",
+   "Iversford",
+   "Quarvis",
+   "Synaris",
+   "Vellmarsh Direct Pharmacy",
+   "Belvfield Pharmacy",
+   "Drevanholm Healthcare",
+   "Pellhope Pharmacy Group",
+   "Ravensholt Chemists"
   ],
   "people": [
-   "Jayne Gallagher",
-   "Denis Webster",
-   "Steven Ashton"
+   "Ashleigh Shah",
+   "Antony Evans",
+   "Frances Thomas"
   ]
  },
  "deliverables": [
-  "hfc_pack_replacements_2027.xlsx",
-  "pack_leakage_2026.png"
+  "statin_service_tiers_2027-28.docx",
+  "statin_adherence_2026_by_network.xlsx"
  ],
  "opening_move": "question-first",
  "question_form": "which",
- "driver": "The decisive quantity is what each unit lost over a calendar year when its losses are recorded only as they are made good, after lags that leave the year's replacements out of step with its losses at both ends of the year; the unit's continuous level reading measures how far short it stood at each end, but in units of the reading, convertible only through the unit's own response to the replacements whose size was recorded.",
- "driver_concrete": "Each HFC pack's 2026 refrigerant loss as the refrigerant charged into it in 2026 less recovered, plus the refrigerant it was short on 31 December 2026 and less what it was short on 31 December 2025, each shortfall read from Tarnley's daily receiver level through the pack's own rise in receiver level per kilogram charged on its 2024 to 2026 job sheets (arrival and departure readings) and its full level as its median departure reading; each region's packs' losses added up over their full charges added up, Lancashire 16 per cent against Yorkshire 13, the North East 13 and Cumbria 11.",
- "stump": "A competent analyst takes each pack's 2026 refrigerant charged less recovered, the F-gas log's top-up method, as its 2026 loss and starts the programme in the North East (16 per cent of charge); the step that lands it there is reading the year's top-ups as the year's losses when the North East's second 2025 round ran in January 2026 and Lancashire's second 2026 round never ran, so packs entered and left 2026 short of charge by amounts their receiver levels record.",
+ "driver": "The decisive quantity is the share of a group's members whose own requests for supply left them short over a year, read from a supply record in which some members are supplied on the supplier's own fixed schedule and so read as never short whatever they use; the record's code marks only some of those members and the rest show only as supply falling on the same weekday at an exact fixed step, so a share taken over every member the code leaves in sits low by however many such members the group holds.",
+ "driver_concrete": "Each primary care network's share of its patients aged 65 and over who collect their own statins whose 2026 proportion of days covered was under 80 per cent, with every patient whose statin a community pharmacy dispensed on its own compliance-aid cycle (each item on the same weekday, exactly 7 or 28 days after the last) out of the count, whether or not the practice's extract codes the aid; the coded patients alone, or care home residents alone, leave the uncoded aid patients' full cover in the denominator.",
+ "stump": "A competent analyst takes out care home residents and the patients system A's extract codes as using a compliance aid, takes each network's share of the rest under 80 per cent of days covered and names too few networks; the step that lands them there is leaving in the compliance-aid patients no code marks (every one of system B's and about a third of system A's), whose statins the pharmacy dispensed on its own 7- or 28-day cycle and who read as fully covered.",
  "mechanism_source": "design_note",
  "differentiation": {
-  "task148": "task148 estimates a patience distribution censored by service in a queue; here nothing is censored by the outcome: each pack's 2026 loss is completed at the year's two ends from the holdings its receiver level records, read through the pack's own response to weighed top-ups.",
-  "task241": "task241 reads a sensor's error against a moving external reference; here the level gauge is never judged against a reference but converted to kilograms through the pack's own weighed top-ups, and the decisive move is completing the year's loss at its two ends.",
-  "task479": "task479 shrinks noisy small-unit records toward a pool; here every pack's loss is measured and none is shrunk, and the move is adding the change in what each pack holds across the year to the year's recorded top-ups.",
-  "task254": "task254 estimates a time-to-event cut from events truncated at a lock date; here no time to an event is estimated: the year's top-ups are a lagged record of the year's losses, completed at both ends by the holdings the level gauge records.",
-  "task501": "task501 picks a pacing basis by a walk-forward test on closed years; here no candidate method is tested on past years, and the material balance's two end-of-year terms come from each pack's own level-to-kilogram response."
+  "task275": "task275 rebuilds the unmeasured operations' discarded share from a random measured subset whose measuring changed the handling; here no measured subset stands for the rest: the members to leave out of the share are found in the supply record itself, by supply that falls on the supplier's fixed cycle.",
+  "task450": "task450 v1 weights sightings at scheduled visits by the interval each samples; here no event is sighted or weighted: members whose supply the supplier sets on its own cycle are left out of a share's denominator.",
+  "task468": "task468 corrects counts for a linker's missed and false links measured on control groups; here nothing is linked to an outside register: the members to leave out show in their own supply's regularity.",
+  "task126": "task126 splits units that a succession link joined; here no unit is split or joined: some members are left out of a share because their supply record measures the supplier's schedule, not their own use.",
+  "task469": "task469 recovers needs censored at an allowance; here nothing is censored at a limit: a share's denominator holds members whose supply never runs short by the supplier's design.",
+  "task270": "v1 corrected correlations for selection on a ranking composite (range restriction) among appointees; here no outcome is restricted by a selection on a score: the members to leave out are those whose supply record measures the supplier's schedule, found by the record's own regularity."
  },
  "lineage": [
   {
@@ -284,9 +303,34 @@
    "driver_concrete": "Each 2027 prime-time rotation spot in schedule B is read at the places where that reference day's prime-time rotation bookings on the same channel actually aired, found by joining the sales houses' bookings to the as-run log on the booking number, so the 1,854 of 4,943 (37.5 per cent) the channels' traffic placed in daytime breaks count at their daytime audiences, and B falls from 31.9 to 20.9 per cent three-plus reach, below A's 26.6.",
    "stump": "A competent analyst replays the three schedules on the reference weeks, reads each rotation spot over the rotation places the as-run log shows in prime time that day and buys schedule B at 31.9 per cent three-plus reach against A's 26.6; the step that lands them there is taking the prime-time rotation places as where a prime-time rotation spot airs, when the bookings joined to the as-run log show the channels placed 1,854 of 4,943 (37.5 per cent) in daytime breaks.",
    "fate": "spent 2026-10-26 at stage 4 round 2 (Gate F): after the repair pass both round 2 readers read the prime-time places through the bookings' janela field and landed buy A, so a join and one field reach the golden; the round 2 judge classed the moved bookings as a planted flip"
+  },
+  {
+   "architecture": "v7",
+   "domain": "general-statistics-data-science",
+   "subdomain": "missing-data-censoring-measurement-error",
+   "niche": "a regional supermarket chain choosing the region its 2027 HFC refrigeration pack replacement programme starts in, the region whose packs lost the largest share of their full charge in 2026, from its contractor's job sheets and its monitoring bureau's receiver levels",
+   "objective": "descriptive-distribution",
+   "shape": "14",
+   "decision_type": "pick_one_of_n",
+   "gap": [
+    "time",
+    "population"
+   ],
+   "pattern": [
+    "none"
+   ],
+   "generators": [
+    "G16",
+    "G13"
+   ],
+   "gate_g": "method_or_model_selection",
+   "stump_strategy": "maturity_censoring",
+   "driver": "The decisive quantity is what each unit lost over a calendar year when its losses are recorded only as they are made good, after lags that leave the year's replacements out of step with its losses at both ends of the year; the unit's continuous level reading measures how far short it stood at each end, but in units of the reading, convertible only through the unit's own response to the replacements whose size was recorded.",
+   "driver_concrete": "Each HFC pack's 2026 refrigerant loss as the refrigerant charged into it in 2026 less recovered, plus the refrigerant it was short on 31 December 2026 and less what it was short on 31 December 2025, each shortfall read from Tarnley's daily receiver level through the pack's own rise in receiver level per kilogram charged on its 2024 to 2026 job sheets (arrival and departure readings) and its full level as its median departure reading; each region's packs' losses added up over their full charges added up, Lancashire 16 per cent against Yorkshire 13, the North East 13 and Cumbria 11.",
+   "stump": "A competent analyst takes each pack's 2026 refrigerant charged less recovered, the F-gas log's top-up method, as its 2026 loss and starts the programme in the North East (16 per cent of charge); the step that lands it there is reading the year's top-ups as the year's losses when the North East's second 2025 round ran in January 2026 and Lancashire's second 2026 round never ran, so packs entered and left 2026 short of charge by amounts their receiver levels record.",
+   "fate": "spent 2026-10-26 at stage 4 round 1 (target.zip aec69c19): both isolated scored readers netted each pack's 2026 charges against the change in its receiver stock with kilograms per level point fitted from its own arrival and departure readings and landed Lancashire; the judge DETERMINISTIC, APPROVE"
   }
  ],
- "notes": "Architecture 6 re-root in a fresh world after architecture 5 was spent at stage 4. Filed after the build because G9 as the decisive pattern was banned while task485 sat in the window; redrawn at filing: forum to executive_team (task308 held the board), context artifact to register (task487 holds the operations log), forcing event to vote_or_meeting (task137 v4 holds purchase_order_or_contract; the Comissão Executiva decides on 2 December, the channels' April bookings close on 11 December). Architecture 7 drawn 2026-10-26 in a fresh world after architecture 6 was spent at stage 4. Architecture 7 spent 2026-10-26 at stage 4 round 1: both isolated scored readers ran the stock-and-flow balance with each pack's own kilograms per level point and landed Lancashire.",
- "registered": "2026-10-26T19:20:47Z",
- "architecture_spent": true
+ "notes": "Architecture 6 re-root in a fresh world after architecture 5 was spent at stage 4. Filed after the build because G9 as the decisive pattern was banned while task485 sat in the window; redrawn at filing: forum to executive_team (task308 held the board), context artifact to register (task487 holds the operations log), forcing event to vote_or_meeting (task137 v4 holds purchase_order_or_contract; the Comissão Executiva decides on 2 December, the channels' April bookings close on 11 December). Architecture 7 drawn 2026-10-26 in a fresh world after architecture 6 was spent at stage 4. Architecture 7 spent 2026-10-26 at stage 4 round 1: both isolated scored readers ran the stock-and-flow balance with each pack's own kilograms per level point and landed Lancashire. Architecture 8 drawn 2026-10-27 in a fresh world after architecture 7 was spent at stage 4; the decisive step is the refill measure's population (patients whose supply is not dispensed on a pharmacy's compliance-aid cycle), labelled population_selection, the honest family (scope). Filed 2026-10-27 at stage 3: the forum, forcing event and organisation family were redrawn when task308 and task307 registered (committee_or_panel and purchase_order_or_contract held by task308, government_agency by task307): the decision moved to Iversford Vale GP Federation, the provider company its member practices own, whose board sets the tier schedule before the service launches on 1 April 2027 (board_of_directors, launch_or_rollout, hospital_or_health_provider), the integrated care board kept as the source of the data and the guidance; the context artifact went back to filed_standard (the service specification, the honest label, free once task204 left the window) when task139 took register.",
+ "registered": "2026-10-27T13:33:10Z"
 }

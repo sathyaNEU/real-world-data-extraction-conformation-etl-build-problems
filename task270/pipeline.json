@@ -1,27 +1,35 @@
 {
  "task": "task270",
- "status": "PAUSED",
+ "status": "BUILD",
  "domain": "pharmacology-pharmacoepidemiology-safety",
  "objective": "descriptive-distribution",
- "stage": 1,
- "stage_name": "draw",
+ "stage": 3,
+ "stage_name": "build",
  "updated": "2026-10-27",
- "stump": "The default path takes out care home residents and the patients Quillon's extract codes as using a compliance aid and names four networks; the uncoded aid patients, dispensed on the pharmacy's own 7- or 28-day cycle, read as fully covered and pull Briskdale under the 30 per cent line; only the dispensing's own regularity finds them (prototype).",
+ "stump": "The default path takes out care home residents and the patients Quarvis's list records as using a compliance aid, takes each network's share of the rest under 80 per cent of days covered and names four networks, Corvendale, Feldcote, Krathwold and Nevgarth; the 1,454 unrecorded aid patients, dispensed on the pharmacy's own 7- or 28-day weekday cycle, read as covered all year and hold Briskdale (27.2) and Grevmoor (28.1) under the 30 per cent line; only the dispensing's own regularity finds them, which puts Briskdale (32.1) and Grevmoor (32.2) in with the four.",
  "architecture": 8,
  "loops": 0,
- "precut": null,
+ "precut": {
+  "exit": 0,
+  "date": "2026-10-27",
+  "checks": 52,
+  "note": "52 of 52 against the v8 card (run on a scratch copy before registration; the filed card is v8 from 13:33Z)"
+ },
  "leak": {
-  "leak_py": "",
+  "leak_py": "REVIEW (one line: the compliance-aid guidance shares record, clinic and supply with the stump paragraph, a true account of supply that names no move)",
   "readers": ""
  },
- "duplicate_check": {},
+ "duplicate_check": {
+  "check": "WARN only at registration (repeat.deliverables against task308, repeat.question_form against task307 and task139), card filed 2026-10-27T13:33:10Z",
+  "surface": "no persona in the pack; no hard tell promoted"
+ },
  "judge": {
   "verdict": "",
   "disposition": "",
   "report": ""
  },
  "returned": [],
- "resume": "Architecture 8 drawn on paper 2026-10-27 (DESIGN_NOTE.md ## Draw to ## Three rules, prototype world_proto.py in the session scratch): the card's only BLOCK is ban.strategy, population_selection held by task141 in the window. File the card the moment task141 leaves the window (guard.py check, then register), commit DRAWN (task270), then stage 2: tune the twelve networks so every share sits a point clear of the line and the analyst's route misses at least two networks, then the readability screen, fork table, ladder, closure, asks and prompt.",
+ "resume": "Stage 3 green on the federation world (build.py: checks 92/92, verify 51/0, byte-identical, cracker 0/16, figures_check 64/64, precut 52/0 on the v8 card). Next: stage 4, the leak reader and the determinism judge spawned together at medium effort, every finding fixed in the generator in one pass, then ship.",
  "architectures": [
   {
    "architecture": 1,
@@ -53,7 +61,7 @@
   },
   {
    "architecture": 8,
-   "fate": "drawn 2026-10-27 (statin adherence tiers, Iversford Vale ICB); card BLOCK on ban.strategy alone (population_selection, task141 in the window)",
+   "fate": "live: drawn 2026-10-27, filed 13:33Z after the window moved (population_selection freed by task139's registration) with the forum, forcing event and organisation family redrawn to Iversford Vale GP Federation's board and the service launch, and the context artifact back to filed_standard",
    "drawn": "2026-10-27"
   }
  ],
@@ -63,5 +71,13 @@
  "portal_id": "",
  "portal_status": "",
  "portal_status_date": "",
- "seed": "none: a fresh world drawn 2026-10-26 (Hallowmere Foodstores' 2027 HFC pack replacement programme)"
+ "seed": "none: a fresh world drawn 2026-10-26 (Hallowmere Foodstores' 2027 HFC pack replacement programme)",
+ "gates": {
+  "checks": "92 of 92",
+  "verify": "51 figures, 0 differ",
+  "byte_identical": true,
+  "figures_check": "64 of 64",
+  "cracker": "0 of 16 ask figures",
+  "voice_check": "PASS (979 characters)"
+ }
 }
