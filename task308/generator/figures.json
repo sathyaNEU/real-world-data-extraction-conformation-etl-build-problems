@@ -1,68 +1,109 @@
 {
- "call": {
-  "region": "Pennine",
-  "value": 0.1,
-  "margin": 0.1
+ "ask_a_mwh": {
+  "Bluestem Valley Electric": 1881448,
+  "Copper Ridge REA": 996183,
+  "Lone Elm Cooperative": 1452327,
+  "Marais Electric": 1309755,
+  "Old Mill Power Association": 856281,
+  "Sweetgrass Rural Electric": 1770626,
+  "Tamarack Electric Cooperative": 1433628,
+  "Wapsi Prairie Electric": 1320285
  },
- "values": {
-  "Fenland": -0.8,
-  "Pennine": 0.1,
-  "Severn Vale": 0.0,
-  "Coastal North": -0.5
+ "ask_b_mw": {
+  "Bluestem Valley Electric": 317.2,
+  "Copper Ridge REA": 167.2,
+  "Lone Elm Cooperative": 245.6,
+  "Marais Electric": 224.8,
+  "Old Mill Power Association": 148.2,
+  "Sweetgrass Rural Electric": 293.3,
+  "Tamarack Electric Cooperative": 240.0,
+  "Wapsi Prairie Electric": 227.5
  },
- "cc": {
-  "pennine_recoveries": 3.75,
-  "pennine_reinstatement": 0.73,
-  "pennine_premium": 2.93,
-  "pennine_exhausting": 4,
-  "layer_limit": 15.0
+ "award": "Red Willow import",
+ "base_eue_exact": 9506.7,
+ "base_eue_mwh": 9500,
+ "class_forced_rate_pct": 5.2,
+ "cp_hours": [
+  "2025-01-30 19:00:00-06:00",
+  "2025-02-18 19:00:00-06:00",
+  "2025-03-03 19:00:00-06:00",
+  "2025-04-04 19:00:00-05:00",
+  "2025-05-22 18:00:00-05:00",
+  "2025-06-30 18:00:00-05:00",
+  "2025-07-01 16:00:00-05:00",
+  "2025-08-01 18:00:00-05:00",
+  "2025-09-04 18:00:00-05:00",
+  "2025-10-28 18:00:00-05:00",
+  "2025-11-17 19:00:00-06:00",
+  "2025-12-12 19:00:00-06:00"
+ ],
+ "easy_route": {
+  "award": "Ketchum Ridge",
+  "peaker_net_musd": 115,
+  "peaker_removed_mwh": 6900
  },
- "steps": {
-  "hours": [
-   72,
-   168
-  ],
-  "index_2027": 146.4,
-  "fit_occurrences": 64,
-  "fit_min_claims": 150,
-  "fit_threshold": 16.5,
-  "fit_slope_pct": 2.8,
-  "pennine_freezes_then": [
-   22.6,
-   25.1
-  ],
-  "pennine_freezes_2027": [
-   44.1,
-   49.6
-  ],
-  "annual_cap": 30.0
+ "eue_by_weather_year": {
+  "2016": 3800,
+  "2017": 5400,
+  "2018": 8400,
+  "2019": 24400,
+  "2020": 500,
+  "2021": 16000,
+  "2022": 2500,
+  "2023": 23400,
+  "2024": 6100,
+  "2025": 4500
  },
- "askA": {
-  "Fenland": {
-   "2023": 117.89,
-   "2024": 117.26,
-   "2025": 121.28
-  },
-  "Pennine": {
-   "2023": 135.36,
-   "2024": 134.52,
-   "2025": 130.95
-  },
-  "Severn Vale": {
-   "2023": 113.58,
-   "2024": 120.57,
-   "2025": 125.88
-  },
-  "Coastal North": {
-   "2023": 122.17,
-   "2024": 116.35,
-   "2025": 135.16
-  }
+ "existing_import_mw": 200,
+ "fuel_cause_code": 9130,
+ "kw_year": [
+  2019
+ ],
+ "net_exact": {
+  "Coulee Flats": -17.145,
+  "Ketchum Ridge": -23.22,
+  "Red Willow import": 105.75,
+  "Sandhill Draw": 11.895
  },
- "askB": {
-  "Fenland": 59442.2,
-  "Pennine": 73441.1,
-  "Severn Vale": 131316.2,
-  "Coastal North": 71630.8
- }
+ "net_musd": {
+  "Coulee Flats": -17,
+  "Ketchum Ridge": -23,
+  "Red Willow import": 106,
+  "Sandhill Draw": 12
+ },
+ "offer_mw": {
+  "Coulee Flats": 500,
+  "Ketchum Ridge": 300,
+  "Red Willow import": 300,
+  "Sandhill Draw": 450
+ },
+ "payment_musd": {
+  "Coulee Flats": 25.8,
+  "Ketchum Ridge": 23.2,
+  "Red Willow import": 35.8,
+  "Sandhill Draw": 28.4
+ },
+ "rated_eford_pct": 4.5,
+ "removed_exact": {
+  "Coulee Flats": 432.7,
+  "Ketchum Ridge": 0.0,
+  "Red Willow import": 7077.8,
+  "Sandhill Draw": 2012.2
+ },
+ "removed_mwh": {
+  "Coulee Flats": 400,
+  "Ketchum Ridge": 0,
+  "Red Willow import": 7100,
+  "Sandhill Draw": 2000
+ },
+ "share_in_fuel_outage_hours_pct": 100,
+ "shortfall_hours": 337,
+ "shortfall_hours_per_year": 33.7,
+ "value_musd": {
+  "Coulee Flats": 9,
+  "Ketchum Ridge": 0,
+  "Red Willow import": 142,
+  "Sandhill Draw": 40
+ },
+ "voll": 20000
 }

@@ -46,6 +46,197 @@ insurance world is carried.
   is answered by the decision: a pick of one offer asks which. Deliverables moved to xlsx and docx after the pdf and xlsx
   set repeated task271.
 
+## Default path
+
+The route a capable analyst takes with every file read and every filed rule executed:
+
+1. Puts the planning load table on UTC (hour ending in local prevailing time, the starred autumn hour the standard-time
+   01:00), reads 2019's load column in MW, and replays the 2027 fleet through the forced events and derates of the
+   outage event log at their latest revision, part hours for their part, with the 200 MW import whenever the tie is in
+   service: 9,500 MWh a year of expected unserved energy.
+2. Adds the Red Willow import (tie in service), Sandhill Draw and Coulee Flats (modelled profiles) hour by hour:
+   7,100, 2,000 and 400 MWh removed.
+3. Counts the Ketchum Ridge peaker, which has no record of its own, at its expected available capacity: 300 MW less its
+   4.5 per cent EFORd (or less the Northgate IT peakers' 5.2 per cent forced outage rate over the ten years) in every
+   hour, and finds it removes 6,900 MWh.
+4. Values each reduction at USD 20,000 per MWh less the 2027 payment and awards the highest.
+
+Ends on: Ketchum Ridge, net USD 115 million (the import second at USD 106 million).
+Golden: Red Willow import, net USD 106 million (Ketchum Ridge removes 0 MWh, net USD -23 million).
+
+## Stump sentence
+
+A capable analyst replays the 2027 fleet through the ten weather years, credits the new Ketchum Ridge peaker with its
+rated (or its class's average) availability in every hour, and awards Ketchum Ridge at a net USD 115 million, because
+the peaker is the cheapest capacity per available megawatt; but the ten existing peakers on Northgate's interruptible
+transportation were out together, on lack of fuel, in every hour that carried a shortfall, so a peaker taking gas on
+the same service would have been out in exactly those hours, removes no unserved energy and loses its whole payment,
+and the 300 MW firm import over the Red Willow tie (net USD 106 million) is the award.
+
+Data-native sentence: the event log's lack-of-fuel outages (cause 9130) take all ten Northgate IT peakers out together
+in the coldest hours, which are the only hours with replayed shortfall; a new unit on that service has no record, so its
+availability in those hours can be read only from its class's record in those hours.
+
+## Three rules
+
+Task type: energy-systems-utilities / generation-capacity-planning (OS): a capacity procurement sized by the
+reliability each offer buys.
+Domain test: the deciding quantity is each offer's reduction in expected unserved energy, which resource adequacy
+planning estimates by running the planning-year fleet through recorded weather years; whether a resource's availability
+moves with the conditions that cause shortfalls (correlated, common-mode forced outages, the reason accreditation moved
+to effective load carrying capability after the winter storms) decides its capacity value.
+Swap: "award the hospital's new theatre to the supplier whose staff would be absent in the weeks the waiting list
+peaks" keeps the words and loses the replay of a fleet through weather years, the forced outage record and the value
+of lost load: no field outside power system planning prices an addition on the shortfall it removes hour by hour.
+Layer 1: the planning table by hour ending in local prevailing time with its starred autumn hour against an event log
+in UTC, profiles by hour beginning in UTC and a tie log in CST and CDT; 2019's load delivered in kW by the old
+forecasting tool; event records revised after first report; derates beside full outages, overlapping on one unit;
+planned and maintenance work in the same log; a retiring unit still in the log; four prices in four units. Every item is
+what a GADS-style outage system, a forecasting tool and an RFO produce; none moves the call (SF1 to SF11 asserted).
+Layer 2: estimand identification: what a unit with no record of its own would have contributed in the hours that carry
+the shortfall, given that its class's outages share one cause with those hours.
+Decisive step: treating the new peaker's availability as dependent on its class's: in each replayed hour it is available
+only as far as the Northgate IT peakers were, because it would take gas on the same interruptible service; its rated or
+average availability is independent of the hours that matter.
+Not semantics: every field, code and unit can be read right (cause 9130 included) and the peaker still be credited at
+4.5 per cent EFORd in every hour, filing Ketchum Ridge; the step is a dependence between a new unit and its class, which
+no field states.
+Not rule application: RA-3 section 7 files only that an addition counts at its expected available capacity in each hour
+from the evidence the record holds; the enumerated family of availability models for the new peaker (rated EFORd, the
+class's ten-year rate with or without lack of fuel, nameplate, the class's hourly share, out in lack-of-fuel hours and
+rated otherwise, two units at the class share) spans 0 to 7,100 MWh removed (71 printed units of 100 MWh) and files two
+different awards; the standing family that reads the class's record in the hour (four constructions) spans 0 MWh,
+every one filing the import; the ruling out is quiet, done by the event log's co-timed outages rather than any clause.
+Analyst test: a strong analyst who resolves the clocks, units, revisions and derates and reads RA-3 literally credits
+the peaker with its 4.5 per cent rated EFORd (or its class's average) in every hour and awards Ketchum Ridge at a net
+USD 115 million; the golden reads the peaker's availability from its class's record in each hour and awards the Red
+Willow import at USD 106 million.
+Estimand: RA-3 Rev. 4 (sections 2 to 7) files the population (the 2027 fleet, Sandoval 1 out, each offer alone), the
+outcome (unserved energy: load less wind, solar, available units and imports, where positive), the window (the ten
+weather years 2016 to 2025, equally weighted, averaged to a year), the unit (MWh a year, valued at USD 20,000) and the
+comparison (EUE without the offer less EUE with it); the RFO files the 2027 payment and the award rule.
+No decoy: nothing is planted: the manufacturer's 4.5 per cent EFORd is a true annual figure for a new peaker and close
+to the class's own record; no memo, draft or stakeholder figure points at the peaker.
+No certified replay: no certified or published figure is reproduced to recover a hidden method; the standard states
+the estimand and the record carries the evidence.
+Lesson: a unit's capacity value lives in the hours of shortfall, and where the units of its kind fail together for one
+shared reason in exactly those hours, a new unit of that kind adds nothing however good its average; no build on file
+values an addition by its dependence on its class's outages.
+
+## Readability screen
+
+| Rung | Test 1 (a filed sentence names it) | Test 2 (a file or column names it) | Test 3 (the field's reflex reaches it) | Verdict |
+|---|---|---|---|---|
+| R1 the clocks and units of the planning table | the table's own headers | yes | yes | readable |
+| R2 the replay of forced events at their latest revision | RA-3 section 4 | yes | yes | readable |
+| R3 hour-by-hour profiles for wind and solar | RA-3 section 7, the RFO | yes | yes | readable |
+| R4 the peaker's availability read from its class in each hour (decisive) | no: section 7 says only expected available capacity from the record | no: no column, file or document names fuel, curtailment, cold or a dependence | no: the field's reflex for a new unit is its EFORd | silent |
+
+## Semantic fork table
+
+| Id | Term or convention | Golden reading | Alternative | Call under it | Ruled out by |
+|---|---|---|---|---|---|
+| SF1 | the 2027 fleet | Sandoval 1 out | Sandoval 1 replayed | same call | the RFO (retires 31 December 2026); asserted |
+| SF2 | forced outages | forced events and derates only | planned and maintenance replayed too | same call | RA-3 section 4; asserted |
+| SF3 | the record of an event | latest revision | first report | same call | RA-3 section 4; asserted |
+| SF4 | part hours | counted for the part | whole hour counted out | same call | RA-3 section 4; asserted |
+| SF5 | overlapping events | least capability governs | losses added | same call | RA-3 section 4; asserted |
+| SF6 | profile clock | hours beginning UTC | read as local | same call | the RFO; asserted |
+| SF7 | hour ending | hour ending, the starred hour standard time | read as hour beginning | same call | RA-3 section 3, the table; asserted |
+| SF8 | tie outages | forced and planned | forced only | same call | RA-3 section 5; asserted |
+| SF9 | the new import's availability | contract quantity while the tie is in service | every hour | same call | RA-3 section 5, the RFO; asserted |
+| SF10 | 2019's load | kW read as MW | left in kW | ruled out: a load a thousand times the fleet | the data; asserted |
+| SF11 | payment | quotes converted to 2027 dollars | a 366-day year | same call | the calendar; asserted |
+| SF12 | expected available capacity | expected megawatts in the hour | a two-state draw for each 150 MW unit | same call | RA-3 section 7; asserted |
+| SF13 | each offer | alone against the fleet | offers combined | same call | RA-3 section 7 |
+| SF14 | the award | the highest value if positive | none | same call | the RFO; asserted |
+| SF15 | weather years | equal weight | recent years weighted | same call | RA-3 section 2; asserted |
+| SF16 | imports in the fleet | the 200 MW contract counted | omitted | same call | the RFO, the fleet list; asserted |
+| SF17 | wind and solar | the contracted output in the table | none | same call | RA-3 section 3 |
+| SF18 | what is compared | capacity payment only | energy costs added | same call | the RFO evaluation basis |
+
+## Ladder
+
+- R0 nameplate (300 MW every hour): Ketchum Ridge, USD 118 million.
+- R1 UCAP at the 100 highest net-load hours (rated EFORd for the peaker, the profiles for wind and solar): Ketchum Ridge.
+- R2 an independent-outage convolution of the fleet at each unit's ten-year forced outage rate: not the import (asserted).
+- R3 the replay with the peaker at its rated 4.5 per cent EFORd: Ketchum Ridge, USD 115 million (the default path).
+- R4 the replay with the peaker at the Northgate IT class's ten-year rate (5.2 per cent, or 4.4 without lack of fuel):
+  Ketchum Ridge, USD 114 or 115 million.
+- Golden: the replay with the peaker at the class's available share in each hour: Red Willow import, USD 106 million,
+  Ketchum Ridge 0 MWh. Every rung's margin over the import is at least USD 8 million (asserted over USD 5 million).
+- Cheap routes on the clean truth that land the call: one, the class's availability read in the peak hours, which is the
+  decisive insight itself.
+
+## Closure table
+
+| # | Axis | Reading | Move |
+|---|---|---|---|
+| 1 | Population | the 2027 fleet (fleet list less Sandoval 1), the 200 MW import, the contracted wind and solar; each offer alone | filed (RA-3 sections 4, 5, 7; the RFO); SF1, SF13, SF16 asserted |
+| 2 | Unit of account | MWh of unserved energy a year; USD million of net value | filed (RA-3 sections 6, 8; the RFO) |
+| 3 | Attribution window | the ten weather years 2016 to 2025 | filed (RA-3 section 2) |
+| 4 | As-of dating | the planning year 2027; the record to the end of 2025 | filed |
+| 5 | Version basis | each event's latest revision | filed (RA-3 section 4); SF3 asserted |
+| 6 | Denominator | the ten years, equally weighted | filed (RA-3 section 2); SF15 asserted |
+| 7 | Weighting | each hour once | filed (RA-3 section 6) |
+| 8 | Window length | the ten years | filed |
+| 9 | Boundary inclusivity | part hours for their part | filed (RA-3 section 4); SF4 asserted |
+| 10 | Rounding path | figures from unrounded hours, rounded once at the stated unit | filed (the prompt) |
+| 11 | Tie-break | none: the award leads by USD 94 million | asserted |
+| 12 | Maturity and censoring | none in the call; the meters' late records in the asks | filed (MS-12 section 2) |
+| 13 | Order of operations | replay, then each offer, then value | filed (RA-3 sections 6, 7; the RFO) |
+| 14 | Row order | none | C1 |
+| 15 | Duplicate resolution | revisions: the latest; meter versions: the highest | filed (RA-3 section 4, MS-12 section 2) |
+| 16 | Identity normalisation | GADS unit codes in the log and the fleet list | the shared key |
+| 17 | Netting against gross | unserved energy only where positive; member energy delivered less received | filed (RA-3 section 6, MS-12 section 3) |
+| 18 | Dimensional units | MW, kW in 2019, four price units | the data and the quotes; SF10, SF11 asserted |
+| 19 | Code and status semantics | event types U1, U2, U3, SF, D1 to D3 forced; PO, MO planned | filed (RA-3 section 4); never the stump |
+| 20 | Integerisation | none | C1 |
+| 21 | Clause scope | section 7 for every offer | filed |
+| 22 | Forward window contents | 2027 is the weather years replayed with the 2027 fleet and load | filed (RA-3 sections 2 to 4) |
+
+## Literal reader
+
+Executed word for word, RA-3 replays the 2027 fleet through each weather year with the forced outages it had and counts
+each offer "at its expected available capacity in that hour, judged from the evidence the record holds". For the import,
+wind and solar the record holds their hour directly. For the peaker the only evidence about a peaker on Northgate IT in
+a given hour is what the ten such peakers did in that hour; in every shortfall hour all ten were out, so the literal
+execution gives 0 MWh. A reading that credits the rated EFORd in every hour does not use the evidence of that hour, and
+a reading by temperature band or day uses other hours; neither is the sentence. The call is the import under every
+member of the standing family (asserted).
+
+## Oracles
+
+The generator's clean truth (world.py, records.py) reproduces the pack's replay to 1e-6 MW per unit-hour; verify.py
+recomputes every graded figure on its own code path (minute grids, hand-rolled clocks, a pivot) with 0 failures; the
+standing family and every rung are asserted in checks.py (202 checks).
+
+## Ask sheet
+
+**Ask A: each member's 2025 net energy delivered (8 figures, whole MWh).** Use: the contract's cost allocation (MS-12).
+Primary device, silent: the current transformers at one or more delivery points of every member were replaced in 2025
+and the MDM went on applying the old multiplier for 30 to 100 days, so those intervals carry half their energy; only the
+meter service orders (ratio and multiplier at the replacement) show it. Interior: four replacements the MDM picked up on
+the day (a blanket correction over-repairs them). Hazards (filed, executed by the cracker): highest version, delivered
+less received, the Lone Elm point moving to Marais on 1 July. Paths: the natural read 0 of 8; year-end members 0 of 8;
+delivered only 0 of 8.
+
+**Ask B: each member's 2025 12-CP average (8 figures, MW to one decimal).** Use: the allocation key itself. Primary
+device, silent: one meter in every member stayed on standard time after the spring change until a technician reset it
+(June to October), so its intervals sit an hour early and its load at each monthly peak is the wrong hour's; the
+service orders record the reset. Second device: ask A's multipliers. Paths: the natural read 0 of 8; delivered only 0 of
+8; after one of the two devices, 0 and 1 of 8.
+
+| Ask | Cracker (lands the call, executes every filed rule, runs the battery) | Verdict |
+|---|---|---|
+| A net energy | 0 of 8 on every path that does not meet the multiplier lag | miss |
+| B 12-CP average | 0 of 8 on every path that meets neither device; 1 of 8 at most after one | miss |
+
+Pair ceiling: 39.3 ((45.0 + 33.6) / 2), the cracker keeping 0 of the 16 ask figures and the mirror (the rated peaker)
+7 of the 10 call figures.
+Mirror leakage: 0.0 per cent of ask weight.
+Measured by: generator/pair.py on the cut pack.
+
 ## Tried and rejected
 
 - 2026-10-25, before the pack: the seed's own step (cannibalisation measured on flat streets carried to a hilly
