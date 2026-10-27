@@ -34,19 +34,22 @@ PEAK_OVER_MEAN_CAP = 2.05
 PEAK_OVER_ATTESTED_CAP = 1.05
 
 # code, name, role, 2027 enrolment growth, 2026 true utilisation, busiest-week mode, sites
+# code, name, role, 2027 enrolment growth, 2026 true utilisation, busiest-week mode, sites.
+# Codes were handed out as the plan opened each area, so the names in code order are not the names in
+# alphabetical order; `checks.py` asserts the two differ.
 AREAS = [
-    ("SA-01", "Ammerly",        "clear", 1.050, 0.620, "stable",   4),
-    ("SA-02", "Bexhollow",      "flip",  1.110, 0.834, "stable",   3),
-    ("SA-03", "Crannock",       "clear", 1.070, 0.600, "stable",   4),
-    ("SA-04", "Durnsfield",     "short", 1.060, 0.915, "stable",   3),
-    ("SA-05", "Eastmoor Reach", "clear", 1.040, 0.660, "seasonal", 3),
-    ("SA-06", "Fallowbray",     "clear", 1.080, 0.580, "stable",   4),
-    ("SA-07", "Granleigh",        "flip",  1.100, 0.845, "stable",   3),
-    ("SA-08", "Hesper Vale",    "clear", 1.060, 0.640, "seasonal", 3),
-    ("SA-09", "Innsmere",       "short", 1.090, 0.895, "stable",   4),
-    ("SA-10", "Jarrowmead",     "clear", 1.050, 0.630, "stable",   3),
-    ("SA-11", "Kettlebrook",       "flip",  1.080, 0.862, "stable",   3),
-    ("SA-12", "Lowenbrook",     "short", 1.070, 0.905, "stable",   3),
+    ("SA-01", "Granleigh",      "clear", 1.050, 0.620, "stable",   4),
+    ("SA-02", "Lowenbrook",     "flip",  1.110, 0.834, "stable",   3),
+    ("SA-03", "Ammerly",        "clear", 1.070, 0.600, "stable",   4),
+    ("SA-04", "Hesper Vale",    "short", 1.060, 0.915, "stable",   3),
+    ("SA-05", "Crannock",       "clear", 1.040, 0.660, "seasonal", 3),
+    ("SA-06", "Innsmere",       "clear", 1.080, 0.580, "stable",   4),
+    ("SA-07", "Bexhollow",      "flip",  1.100, 0.845, "stable",   3),
+    ("SA-08", "Kettlebrook",    "clear", 1.060, 0.640, "seasonal", 3),
+    ("SA-09", "Eastmoor Reach", "short", 1.090, 0.895, "stable",   4),
+    ("SA-10", "Durnsfield",     "clear", 1.050, 0.630, "stable",   3),
+    ("SA-11", "Jarrowmead",     "flip",  1.080, 0.862, "stable",   3),
+    ("SA-12", "Fallowbray",     "short", 1.070, 0.905, "stable",   3),
 ]
 CODES = [a[0] for a in AREAS]
 AREA = {a[0]: dict(code=a[0], name=a[1], role=a[2], growth=a[3], util=a[4], mode=a[5], n=a[6])
@@ -88,20 +91,30 @@ def draw_operator(modality, rnd):
     return pool[-1][0]
 
 
+# keyed on the area's own name, so a locality travels with the area it belongs to
 LOCALITIES = {
-    "SA-01": ["Ammerly", "North Ammerly", "Pendrick", "Ammerly Heights"],
-    "SA-02": ["Bexhollow", "Lower Bexhollow", "Stanmer Cross"],
-    "SA-03": ["Crannock", "Crannock Mills", "Dalbury", "Sarn Hill"],
-    "SA-04": ["Durnsfield", "Durnsfield West", "Oakenby"],
-    "SA-05": ["Eastmoor Reach", "Harbury Point", "Melliscombe"],
-    "SA-06": ["Fallowbray", "Fallowbray South", "Winderly", "Thrushmead"],
-    "SA-07": ["Granleigh", "Granleigh Park", "Ovenshaw"],
-    "SA-08": ["Hesper Vale", "Culvert Bridge", "Rimmerton"],
-    "SA-09": ["Innsmere", "Innsmere Docks", "Falgate", "Brisley Row"],
-    "SA-10": ["Jarrowmead", "Jarrowmead East", "Cawthorne Spur"],
-    "SA-11": ["Kettlebrook", "Kettlebrook Green", "Marlow Dene"],
-    "SA-12": ["Lowenbrook", "Lowenbrook Landing", "Arrowfield"],
+    "Ammerly": ["Ammerly", "North Ammerly", "Pendrick", "Ammerly Heights", "Satterthwaite"],
+    "Bexhollow": ["Bexhollow", "Lower Bexhollow", "Stanmer Cross", "Ovenshaw", "Bexhollow Quay"],
+    "Crannock": ["Crannock", "Crannock Mills", "Dalbury", "Sarn Hill", "Melliscombe"],
+    "Durnsfield": ["Durnsfield", "Durnsfield West", "Oakenby", "Cawthorne Spur", "Tibbersley"],
+    "Eastmoor Reach": ["Eastmoor Reach", "Harbury Point", "Falgate", "Brisley Row", "Eastmoor Quay"],
+    "Fallowbray": ["Fallowbray", "Fallowbray South", "Winderly", "Thrushmead", "Arrowfield"],
+    "Granleigh": ["Granleigh", "Granleigh Park", "Culvert Bridge", "Rimmerton", "Granleigh Vale"],
+    "Hesper Vale": ["Hesper Vale", "Marlow Dene", "Nettleby", "Hesper Cross", "Wraysbury"],
+    "Innsmere": ["Innsmere", "Innsmere Docks", "Shalmer", "Innsmere Heath", "Pellbridge"],
+    "Jarrowmead": ["Jarrowmead", "Jarrowmead East", "Kettlewell Green", "Haddonby", "Lintock"],
+    "Kettlebrook": ["Kettlebrook", "Kettlebrook Green", "Sturmy Hill", "Peverell Bank", "Caddonby"],
+    "Lowenbrook": ["Lowenbrook", "Lowenbrook Landing", "Garnoch", "Lowenbrook Rise", "Tarnsby Row"],
 }
+# what a site is called: a network carries suites, units, centres, clinics and an operator's own brand
+DIALYSIS_SHAPES = [
+    "{loc} Dialysis Center", "{loc} Renal Center", "{loc} Kidney Center", "{loc} Dialysis Unit",
+    "{loc} Renal Clinic", "{op} at {loc}", "{loc} Community Dialysis", "{loc} Renal Care Center",
+]
+INFUSION_SHAPES = [
+    "{loc} Infusion Center", "{loc} Infusion Suite", "{loc} Ambulatory Infusion",
+    "{loc} Infusion Clinic", "{op} at {loc}", "{loc} Day Infusion Unit", "{loc} Infusion Services",
+]
 STREETS = ["Ferrier Road", "Lanchbury Avenue", "Dunmore Street", "Kettlewell Road", "Harbourne Lane",
            "Sedgemill Road", "Pentland Way", "Bramshaw Street", "Colverton Road", "Nettlefold Avenue",
            "Orrell Street", "Wraysbury Road", "Fenniman Lane", "Hallowgate Road", "Sturmy Avenue",
@@ -112,13 +125,32 @@ def _weeks():
     return [REC_START + dt.timedelta(weeks=w) for w in range(REC_WEEKS)]
 
 
+def next_id(stream, state, lo=3, hi=180):
+    """The next identifier in a register that has been issued and retired for years: strictly rising,
+    never by a constant step."""
+    state[0] += stream.randint(lo, hi)
+    return state[0]
+
+
+def site_name(loc, operator, modality, stream):
+    shapes = DIALYSIS_SHAPES if modality == "dialysis" else INFUSION_SHAPES
+    shape = shapes[stream.randrange(len(shapes))]
+    brand = operator.split(" ")[0]
+    return shape.format(loc=loc, op=brand)
+
+
 def build(seed=SEED):
     rnd = random.Random(seed)
     oprnd = random.Random(seed + 991)      # the operator market, drawn off the world's own stream
+    idrnd = random.Random(seed + 7717)     # the plan's own site register
+    strnd = random.Random(seed + 5153)     # street numbers
+    shrnd = random.Random(seed + 3313)     # what a site is called
+    sid_state = [10204]
+    st_state = {}
     sites, sid = [], 0
     for code in CODES:
         a = AREA[code]
-        locs = LOCALITIES[code][:]
+        locs = LOCALITIES[a["name"]][:]
         for k in range(a["n"]):
             sid += 1
             if a["role"] == "flip":
@@ -133,11 +165,15 @@ def build(seed=SEED):
                 ceiling = rnd.choice([7, 8, 8, 10]) if mod == "dialysis" else rnd.choice([4, 4, 5, 6])
             loc = locs[k % len(locs)]
             op = draw_operator(mod, oprnd)
-            name = "%s %s" % (loc, "Dialysis Center" if mod == "dialysis" else "Infusion Center")
+            name = site_name(loc, op, mod, shrnd)
+            street = STREETS[strnd.randrange(len(STREETS))]
+            st_state.setdefault(street, [strnd.randint(10, 400)])
+            st_state[street][0] += strnd.randint(2, 120)
             sites.append(dict(
-                site="PS-%05d" % (10400 + sid * 37), seq=sid, area=code, modality=mod, locality=loc,
+                site="PS-%05d" % next_id(idrnd, sid_state, 7, 240), seq=sid, area=code, modality=mod,
+                locality=loc,
                 operator=op, operator_kind=OPERATOR_KIND[op], name=name,
-                address="%d %s, %s" % (100 + (sid * 53) % 900, STREETS[(sid * 7) % len(STREETS)], loc),
+                address="%d %s, %s" % (st_state[street][0], street, loc),
                 days=days, shifts=shifts, sessions=days * shifts, turns=turns, rounds=days * shifts * turns,
                 ceiling=ceiling, gap=0, role=a["role"], closed_shift=False))
     by_area = collections.defaultdict(list)
@@ -379,22 +415,30 @@ def extras(sites, seed=SEED + 3):
     """The non-contract sites, the register-only facilities and the 2026 area labels."""
     rnd = random.Random(seed)
     oprnd = random.Random(seed + 991)
+    idrnd = random.Random(seed + 7717)
+    strnd = random.Random(seed + 5153)
+    shrnd = random.Random(seed + 3313)
+    sid_state = [23110]
+    st_state = {}
     out = []
     sid = 1000
     for kind, n in (("dropped", DROPPED_N), ("off_plan", OFF_PLAN_N)):
         for i in range(n):
             sid += 1
             code = CODES[(i * 5 + (0 if kind == "dropped" else 2)) % 12]
-            locs = LOCALITIES[code]
+            locs = LOCALITIES[AREA[code]["name"]]
             loc = locs[(i * 3) % len(locs)]
             mod = "dialysis" if rnd.random() < 0.5 else "infusion"
             op = draw_operator(mod, oprnd)
+            street = STREETS[strnd.randrange(len(STREETS))]
+            st_state.setdefault(street, [strnd.randint(10, 400)])
+            st_state[street][0] += strnd.randint(2, 120)
             out.append(dict(
-                site="PS-%05d" % (10400 + sid * 37) if kind == "dropped" else "",
+                site="PS-%05d" % next_id(idrnd, sid_state, 7, 240) if kind == "dropped" else "",
                 seq=sid, kind=kind, area=code, modality=mod, locality=loc, operator=op,
                 operator_kind=OPERATOR_KIND[op],
-                name="%s %s" % (loc, "Dialysis Center" if mod == "dialysis" else "Infusion Center"),
-                address="%d %s, %s" % (100 + (sid * 71) % 900, STREETS[(sid * 11) % len(STREETS)], loc),
+                name=site_name(loc, op, mod, shrnd),
+                address="%d %s, %s" % (st_state[street][0], street, loc),
                 licensed=rnd.choice([6, 8, 8, 10, 12]) if mod == "dialysis" else rnd.choice([4, 5, 6, 8]),
                 weekly=rnd.randint(40, 190) if kind == "dropped" else 0))
     for s in sites:
