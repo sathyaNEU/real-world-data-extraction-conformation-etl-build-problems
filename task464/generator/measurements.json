@@ -41,7 +41,7 @@
     ".pdf",
     ".xlsx"
   ],
-  "largest_file_bytes": 76713984,
+  "largest_file_bytes": 62603264,
   "legibility": {
     "argmax_hour_modal_share_median": 0.29,
     "argmax_hour_modal_share_worst": 0.48,

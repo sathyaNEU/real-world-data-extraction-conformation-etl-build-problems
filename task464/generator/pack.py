@@ -211,10 +211,10 @@ def encounters_db(target, sites, rows, cancels):
     cur = con.cursor()
     cur.execute("PRAGMA page_size=4096")
     cur.execute("""CREATE TABLE encounters_2023_2024 (
-        encounter_id TEXT PRIMARY KEY, service_facility_id TEXT, member_id TEXT, service_date TEXT,
+        encounter_id TEXT, service_facility_id TEXT, member_id TEXT, service_date TEXT,
         service_start TEXT, service_stop TEXT, encounter_status TEXT, service_category TEXT)""")
     cur.execute("""CREATE TABLE encounters_2025_2026 (
-        encounter_id TEXT PRIMARY KEY, service_facility_id TEXT, member_id TEXT, service_date TEXT,
+        encounter_id TEXT, service_facility_id TEXT, member_id TEXT, service_date TEXT,
         service_start TEXT, service_minutes INTEGER, encounter_status TEXT, service_category TEXT)""")
     cat = {s["site"]: ("HD" if s["modality"] == "dialysis" else "AIT") for s in sites}
     a, b, n = [], [], 0

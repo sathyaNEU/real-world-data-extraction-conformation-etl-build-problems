@@ -1,125 +1,234 @@
-"""The independent verifier: recompute the call, the conformed file and the grade 7 figures from target/ alone, with its
-own reading of the files and its own equipercentile and linear linking (no generator module), and compare them with the
-goldens.
+#!/usr/bin/env python3
+"""task464: the independent verifier. Reads the shipped bundle and nothing else.
 
-    python3 task464/generator/verify.py
+    python3 generator/verify.py [--target <dir>] [--figures <path>]
+
+It shares no code with the generator: the positions come from a sweep over the two encounter tables, the
+sessions from the roster, the category figure and the standard from the agreement's own text, and every
+graded figure is compared with generator/figures.json. Exit 0 all agree, 1 any disagreement.
 """
+import argparse
+import collections
 import csv
+import datetime as dt
+import json
 import os
 import re
+import sqlite3
 import sys
-
-import numpy as np
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 TASK = os.path.dirname(HERE)
 
 
-def read(target, name):
-    with open(os.path.join(target, name), encoding="utf-8", newline="") as fh:
-        return list(csv.DictReader(fh))
+def norm(t):
+    return re.sub(r"\s+", " ", t or "")
 
 
-def pdf_text(path):
-    from pypdf import PdfReader
-    return re.sub(r"\s+", " ", " ".join(p.extract_text() for p in PdfReader(path).pages))
+def read_pdf(path):
+    import pdfplumber
+    with pdfplumber.open(path) as d:
+        return norm(" ".join((p.extract_text() or "") for p in d.pages))
 
 
-def equipercentile_k(old, new, cut):
-    """Highest retiring score whose equipercentile equivalent (mid-percentile ranks, uniform kernel) is below cut - 0.5;
-    and the same by linear linking."""
-    vo = np.arange(150, 451)
-    fo = np.array([np.sum(old == v) for v in vo], float) / len(old)
-    Fo = np.cumsum(fo)
-    pr = Fo - fo / 2
-    vn = np.arange(2100, 2901)
-    fn = np.array([np.sum(new == v) for v in vn], float) / len(new)
-    Fn = np.cumsum(fn)
-    eq = np.interp(pr, np.concatenate([[0.0], Fn]), np.concatenate([[2099.5], vn + 0.5]))
-    present = np.array([np.any(old == v) for v in vo])
-    k_eq = int(vo[(eq < cut - 0.5) & present].max())
-    lin = new.mean() + (vo - old.mean()) * new.std() / old.std()
-    k_lin = int(vo[(lin < cut - 0.5) & present].max())
-    return k_eq, k_lin
-
-
-def main(target, golden):
-    files = sorted(os.listdir(target))
-    rules = pdf_text(os.path.join(target, "alp_2027_grant_rules.pdf"))
-    att = rules.split("Attachment A")[-1]
-    applicants = sorted(set(re.findall(r"\b(1\d{3})\b", att)))
-    res = pdf_text(os.path.join(target, "sbe_resolution_2026_22_slm_cut_scores.pdf"))
-    g7cut = int(re.search(r"\b7 (\d{4}) \d{4} \d{4}", res.split("Attachment A")[-1]).group(1))
-    summ = pdf_text(os.path.join(target, "slm_2026_grade8_technical_summary.pdf"))
-    cuts = [int(v) for v in re.search(r"Level 2 begins at (\d{4}), Level 3 at (\d{4}) and Level 4 at (\d{4})",
-                                      summ).groups()]
-    roll = {}
-    for r in read(target, "enrollment_october_2026_grades_9_12.csv"):
-        if r["grade"] in ("9", "10") and r["district_code"] in applicants and r["entry_date"] <= "2026-10-01" and \
-                (r["exit_date"] == "" or r["exit_date"] >= "2026-10-01"):
-            roll[r["state_student_id"]] = (r["district_code"], int(r["grade"]))
-    xw = {r["TEST_TAKER_ID"]: r["STATE_STUDENT_ID"] for r in read(target, "calderwood_examinee_id_crosswalk_2025.csv")}
-    latest = {}
-    for r in read(target, "glra_2025_student_results.csv"):
-        if r["GRADE"] == "8" and r["SCORE_STATUS"] == "SCR":
-            sid = r["STATE_STUDENT_ID"] or xw[r["TEST_TAKER_ID"]]
-            if sid not in latest:
-                latest[sid] = ("GLRA", int(r["SCALE_SCORE"]))
-    for r in read(target, "slm_2026_student_results.csv"):
-        if r["grade"] == "8" and r["status"] == "Scored":
-            latest[r["state_student_id"]] = ("SLM", int(r["scale_score"]))
-    br = read(target, "glra_slm_bridge_study_2026.csv")
-    old = np.array([int(r["glra_scale_score"]) for r in br])
-    new = np.array([int(r["slm_scale_score"]) for r in br])
-    ks = []
-    for c in cuts:
-        k_eq, k_lin = equipercentile_k(old, new, c)
-        assert k_eq == k_lin, (c, k_eq, k_lin)
-        ks.append(k_eq)
-
-    def level(test, sc):
-        return 1 + sum(sc >= c for c in cuts) if test == "SLM" else 1 + sum(sc > k for k in ks)
-    counts = {d: 0 for d in applicants}
-    lev = {}
-    for sid, (d, g) in roll.items():
-        if sid in latest:
-            lev[sid] = level(*latest[sid])
-            counts[d] += lev[sid] == 1
-    order = sorted(applicants, key=lambda d: (-counts[d], d))
-    funded, first = order[:6], order[6]
+def read_xlsx(path, sheet):
     import openpyxl
-    wb = openpyxl.load_workbook(os.path.join(golden, "alp_grants_2027.xlsx"), data_only=True)
-    grows = {r[0]: r for r in wb["Applicants"].iter_rows(min_row=5, values_only=True) if r[0]}
-    funded_g = [r[1] for r in wb["Grants 2027"].iter_rows(min_row=5, max_row=10, values_only=True)]
-    ok = [("the six funded", sorted(funded) == sorted(funded_g)),
-          ("every applicant's students at Level 1", all(grows[d][4] == counts[d] for d in applicants)),
-          ("the first left out and the gap", grows[first][5] == "No" and
-           counts[funded[-1]] - counts[first] == next(r[5] for r in wb["Grants 2027"].iter_rows(min_row=1, values_only=True)
-                                                      if r[0] and str(r[0]).startswith("Gap")))]
-    sch = {str(r[0]): str(r[2]) for r in wb_dir(target)}
-    g7 = {d: [0, 0] for d in applicants}
-    for r in read(target, "slm_2026_student_results.csv"):
-        if r["grade"] == "7" and r["status"] == "Scored" and sch.get(r["school_code"]) in g7:
-            d = sch[r["school_code"]]
-            g7[d][1] += 1
-            g7[d][0] += int(r["scale_score"]) < g7cut
-    ok.append(("each applicant's grade 7 students at Level 1 and their share",
-               all(grows[d][7] == g7[d][0] and grows[d][8] == round(100.0 * g7[d][0] / g7[d][1], 1) for d in applicants)))
-    with open(os.path.join(golden, "alp_conformed_grade8_reading_2026.csv"), encoding="utf-8") as fh:
-        conf = {r["state_student_id"]: int(r["slm_level"]) for r in csv.DictReader(fh)}
-    ok.append(("the conformed file: one row per counted student, each level", conf == lev))
-    for label, good in ok:
-        print("%s  verify: %s" % ("PASS" if good else "FAIL", label))
-    print("verify: %d files read; boundaries %s; funded %s" % (len(files), ks, ", ".join(funded)))
-    if not all(g for _, g in ok):
-        raise SystemExit("verify failed")
+    wb = openpyxl.load_workbook(path, data_only=True)
+    return [[c for c in row] for row in wb[sheet].iter_rows(values_only=True)]
 
 
-def wb_dir(target):
-    import openpyxl
-    wb = openpyxl.load_workbook(os.path.join(target, "district_directory_2026.xlsx"), read_only=True)
-    return [r for r in wb["Schools"].iter_rows(min_row=5, values_only=True) if r[0]]
+def main(argv=None):
+    ap = argparse.ArgumentParser()
+    ap.add_argument("--target", default=os.path.join(TASK, "target"))
+    ap.add_argument("--figures", default=os.path.join(HERE, "figures.json"))
+    a = ap.parse_args(argv)
+    T = a.target
+    want = json.load(open(a.figures, encoding="utf-8"))
+    bad = []
+
+    def same(tag, got, exp):
+        if got != exp:
+            bad.append("%s: verifier %r, figures.json %r" % (tag, got, exp))
+
+    # the agreement's own words give the standard, the window and the category figure
+    ag = read_pdf(os.path.join(T, "network_agreement_2027_capacity_terms.pdf"))
+    cushion = float(re.search(r"at or above ([\d.]+) times", ag).group(1))
+    assert "a week is one fifty-second of a contract year" in ag
+    assert "The 2026 contract year is the calendar year 2026" in ag
+    turns = {"in-centre haemodialysis": 1, "ambulatory infusion": 2}
+    assert "one for in-centre haemodialysis and two for ambulatory infusion" in ag
+    same("constants.cushion", cushion, want["constants"]["cushion"])
+
+    # the population and each site's area and category
+    rows = list(csv.DictReader(open(os.path.join(T, "provider_directory_2027.csv"), encoding="utf-8")))
+    cur = max(int(r["attestation_cycle"]) for r in rows)
+    pop = {r["plan_site_id"]: r for r in rows
+           if int(r["attestation_cycle"]) == cur and r["contract_intent_2027"] == "contract"}
+    same("constants.sites_in_scope", len(pop), want["constants"]["sites_in_scope"])
+
+    # the roster's sessions a week
+    ses = {r["plan_site_id"]: int(r["treatment_sessions_week"]) for r in
+           csv.DictReader(open(os.path.join(T, "staffing_roster_2026q4.csv"), encoding="utf-8"))}
+
+    # the greatest number of each site's treatments running at one time, from both layouts
+    con = sqlite3.connect(os.path.join(T, "treatment_encounters.db"))
+    iv = collections.defaultdict(list)
+    y26 = collections.Counter()
+    half26 = collections.Counter()
+    for sid, sdate, start, stop in con.execute(
+            "SELECT service_facility_id, service_date, service_start, service_stop"
+            " FROM encounters_2023_2024 WHERE encounter_status='completed'"):
+        t0 = dt.datetime.fromisoformat(start.replace(" ", "T"))
+        t1 = dt.datetime.fromisoformat(stop.replace(" ", "T"))
+        iv[sid].append((int(t0.timestamp()) // 60, int((t1 - t0).total_seconds()) // 60))
+    for sid, sdate, start, mins in con.execute(
+            "SELECT service_facility_id, service_date, service_start, service_minutes"
+            " FROM encounters_2025_2026 WHERE encounter_status='completed'"):
+        t0 = dt.datetime.fromisoformat(start)
+        iv[sid].append((int(t0.timestamp()) // 60, int(mins)))
+        d = dt.date.fromisoformat(sdate)
+        if d.year == 2026:
+            y26[sid] += 1
+            half26[(sid, "H1" if d.month <= 6 else "H2")] += 1
+    con.close()
+
+    def sweep(lst):
+        ev = sorted([(t, 1) for t, _ in lst] + [(t + d, -1) for t, d in lst])
+        cur_n, mx = 0, 0
+        for _, k in ev:
+            cur_n += k
+            mx = max(mx, cur_n)
+        return mx
+
+    slots, areas = {}, collections.defaultdict(int)
+    for sid, r in sorted(pop.items()):
+        pos = sweep(iv[sid])
+        s = pos * ses[sid] * turns[r["service_category"]]
+        slots[sid] = s
+        areas[r["service_area_code"]] += s
+        same("site.%s.slots" % sid, s, want["site"][sid]["slots"])
+    same("call.network_weekly_slots", sum(slots.values()), want["call"]["network_weekly_slots"])
+
+    # the demand side
+    growth = {r["service_area_code"]: float(r["projected_growth_factor"]) for r in
+              csv.DictReader(open(os.path.join(T, "enrolment_projection_2027.csv"), encoding="utf-8"))}
+    area_vol = collections.Counter()
+    for sid, r in pop.items():
+        area_vol[r["service_area_code"]] += y26[sid]
+    req, short = {}, []
+    for c in sorted(areas):
+        req[c] = int(round(cushion * growth[c] * area_vol[c] / 52.0))
+        same("area.%s.slots" % c, areas[c], want["area"][c]["slots"])
+        same("area.%s.required" % c, req[c], want["area"][c]["required"])
+        same("area.%s.meets" % c, "yes" if areas[c] >= req[c] else "no", want["area"][c]["meets"])
+        if areas[c] < req[c]:
+            short.append((req[c] - areas[c], c))
+    same("call.areas_short", len(short), want["call"]["areas_short"])
+    same("call.nearest_short_shortfall", min(short)[0], want["call"]["nearest_short_shortfall"])
+    same("call.required_weekly_slots_network", sum(req.values()),
+         want["call"]["required_weekly_slots_network"])
+    same("cc1", sum(sweep(iv[sid]) for sid in pop), want["cc1"])
+    same("cc2", sum(int(r["attested_stations"]) for r in pop.values()), want["cc2"])
+    same("cc4", sum(req.values()), want["cc4"])
+
+    # ask A: the area of the site treated, the service date, the run-out supplement included
+    dropped = {r["site_name"]: r["service_area_code"] for r in rows
+               if int(r["attestation_cycle"]) == cur and r["contract_intent_2027"] == "none"}
+    oon = collections.Counter()
+    for fn in ("out_of_network_payments_2026.csv", "out_of_network_payments_runout_2027q1.csv"):
+        for r in csv.DictReader(open(os.path.join(T, fn), encoding="utf-8")):
+            d = dt.date.fromisoformat(r["service_date"])
+            if d.year != 2026:
+                continue
+            oon[(dropped[r["service_facility_name"]], "H1" if d.month <= 6 else "H2")] += \
+                int(r["treatment_units"])
+    for c in sorted(areas):
+        for h in ("H1", "H2"):
+            inn = sum(half26[(sid, h)] for sid, r in pop.items() if r["service_area_code"] == c)
+            n = oon[(c, h)]
+            tot = n + inn
+            same("ask_a.%s.%s.treatments" % (c, h), n, want["ask_a"][c][h]["treatments"])
+            same("ask_a.%s.%s.share" % (c, h), round(n * 100.0 / tot, 1) if tot else 0.0,
+                 want["ask_a"][c][h]["share"])
+
+    # ask B: the facility row covering the as-of date, per licence number
+    asof = dt.date.fromisoformat(json.load(open(os.path.join(TASK, "metadata.json"),
+                                                encoding="utf-8"))["as_of"])
+    lic = read_xlsx(os.path.join(T, "state_licence_register.xlsx"), "Licences")
+    head = [str(h) for h in lic[0]]
+    cover = {}
+    for r in lic[1:]:
+        d = dict(zip(head, r))
+        if d["holder_type"] != "facility":
+            continue
+        f = dt.date.fromisoformat(str(d["effective_from"])[:10])
+        t = dt.date.fromisoformat(str(d["effective_to"])[:10]) if d["effective_to"] else None
+        if f > asof or (t is not None and t <= asof):
+            continue
+        cover[d["licence_no"]] = (d["county_or_area"], int(d["licensed_stations"]))
+    agg = collections.defaultdict(lambda: [0, 0])
+    for k, (c, st) in cover.items():
+        agg[c][0] += 1
+        agg[c][1] += st
+    for c in sorted(areas):
+        same("ask_b.%s.sites" % c, agg[c][0], want["ask_b"][c]["sites"])
+        same("ask_b.%s.stations" % c, agg[c][1], want["ask_b"][c]["stations"])
+
+    # ask C: the row covering the filing's own position date, distinct sites, the current area
+    fil = read_xlsx(os.path.join(T, "state_adequacy_filing_2026.xlsx"), "Contracted Sites")
+    fh = [str(h) for h in fil[0]]
+    summ = read_xlsx(os.path.join(T, "state_adequacy_filing_2026.xlsx"), "Area Summary")
+    pos_date = None
+    for r in summ:
+        if r and str(r[0]) == "position as at":
+            pos_date = dt.date.fromisoformat(str(r[1])[:10])
+    at_pos = {}
+    for r in lic[1:]:
+        d = dict(zip(head, r))
+        if d["holder_type"] != "facility":
+            continue
+        f = dt.date.fromisoformat(str(d["effective_from"])[:10])
+        t = dt.date.fromisoformat(str(d["effective_to"])[:10]) if d["effective_to"] else None
+        if f > pos_date or (t is not None and t <= pos_date):
+            continue
+        at_pos[d["licence_no"]] = d["service_address"]
+    byaddr = {r["service_address"]: (r["service_area_code"], r["contract_intent_2027"])
+              for r in rows if int(r["attestation_cycle"]) == cur}
+    seen, agg2 = set(), collections.defaultdict(lambda: [0, 0])
+    for r in fil[1:]:
+        d = dict(zip(fh, r))
+        if d["service_address"] in seen:
+            continue
+        seen.add(d["service_address"])
+        hit = byaddr.get(at_pos.get(d["licence_no"], d["service_address"]),
+                         byaddr.get(d["service_address"]))
+        if hit is None or hit[1] != "none":
+            continue
+        agg2[hit[0]][0] += 1
+        agg2[hit[0]][1] += int(d["licensed_stations"])
+    for c in sorted(areas):
+        same("ask_c.%s.sites" % c, agg2[c][0], want["ask_c"][c]["sites"])
+        same("ask_c.%s.stations" % c, agg2[c][1], want["ask_c"][c]["stations"])
+
+    # the deliverables carry the same figures
+    gold = list(csv.DictReader(open(os.path.join(TASK, "golden", "outpatient_capacity_2027.csv"),
+                                    encoding="utf-8")))
+    for r in gold:
+        same("golden csv %s" % r["plan_site_id"], int(r["weekly_treatment_slots"]),
+             slots[r["plan_site_id"]])
+    ac = read_xlsx(os.path.join(TASK, "golden", "area_capacity_2027.xlsx"), "Area Capacity")
+    for r in ac[1:13]:
+        same("golden xlsx %s slots" % r[0], r[2], areas[r[0]])
+        same("golden xlsx %s required" % r[0], r[3], req[r[0]])
+    if bad:
+        for b in bad:
+            print("DISAGREE  %s" % b)
+        print("FAIL  %d disagreements" % len(bad))
+        return 1
+    print("PASS  verify.py: %d sites, %d areas, %d ask figures, every graded figure recomputed from the"
+          " bundle" % (len(pop), len(areas), 48 + 24 + 24))
+    return 0
 
 
 if __name__ == "__main__":
-    main(os.path.join(TASK, "target"), os.path.join(TASK, "golden"))
+    sys.exit(main())
