@@ -68,6 +68,7 @@ def main(target):
     bh = S.bhat(D)
     cday = S.by_day(D, S.cold_fit(*S.cold_points(D, bh, Sr), "knee")[0])
     x, y = S.pair_points(D, bh, Sr, cday)
+    mh = S.fit(x, y, "pl")[0]
     cut = {}
     for c in (22.0, 25.0, 28.0):
         lq = float(np.mean(y[x > c]))
@@ -147,6 +148,87 @@ def main(target):
     D2["hist"] = D["hist"].iloc[0:0]
     l2 = S.call(D2, S=Sr)[1]
     ok(l2 == listed, "SF26 R2 the register's current controller read for the whole year files the same list", l2)
+
+    # SF27 to SF30: the four free parameters the determinism block found, each closed on the record's own arithmetic.
+    # The instrument under all four is the occupancy a station reports per vehicle it counts, read at matched
+    # free-flowing counted flow: a vehicle covers the loop whether the controller counts it or not, so the ratio moves
+    # one for one with a change in the station's counting and not at all with the traffic.
+    ctl = dict(zip(D["reg"]["station"], D["reg"]["controller"]))
+    swapd = {r["new_station"]: pd.Timestamp(r["from_date"]).date() for _, r in D["hist"].iterrows()}
+    all4 = [s for s in D["reg"]["station"] if ctl[s] == "TCX-4" and s not in swapd]
+    all2 = [s for s in D["reg"]["station"] if ctl[s] == "TCX-2" and s not in swapd]
+    mfw = S.matched_table(D, Sr, (12, 1, 2))
+    r4 = np.array([mfw[s] for s in all4])
+    r2 = np.array([mfw[s] for s in all2])
+    tmd = S.tmean(D)
+    ddw = float(np.mean([max(0.0, P.COLD_KNEE - tmd[d]) for d in tmd if d.month in (12, 1, 2)]))
+    cold_w = float(np.mean(cday([d for d in sorted(tmd) if d.month in (12, 1, 2)])))
+    ok(len(all4) == 13 and len(all2) == 15 and r4.max() < 1.010 and abs(r4.mean() - 1) < 0.006,
+       "SF27 SF29 the stations that ran one controller all year: at a TCX-4 the occupancy per counted vehicle at "
+       "matched free flow holds through the winter (max %.4f, mean %.4f, sd %.4f), so nothing the two generations "
+       "share moves a count" % (r4.max(), r4.mean(), r4.std(ddof=1)))
+    ok(abs((1 - 1 / r2.mean()) - cold_w) < 0.006 and r2.min() > 1.07,
+       "SF27 SF28 at a TCX-2 the same ratio is the cold miss the mixed pairs give: %.4f against the pooled curve's "
+       "%.4f over the same days" % (1 - 1 / r2.mean(), cold_w))
+    drift_bound = (r4.max() - 1) / ddw
+    mfun1 = lambda s, occ: mh(occ)
+    cfun1 = lambda s, days: S.chour(D, s, days, cday)
+    drift = lambda k: (lambda s, days, k=k: S.chour(D, s, days, cday) +
+                       np.clip(k * np.array([P.COLD_KNEE - tmd[x] for x in days]), min(0, k * 40), max(0, k * 40)))
+    held = {k: S.listed(S.errors_g(D, bh, mfun1, drift(k), Sr)) for k in (-0.008, -0.004, 0.0025, 0.005)}
+    broke = {k: S.listed(S.errors_g(D, bh, mfun1, drift(k), Sr)) for k in (0.006, -0.012)}
+    ok(all(v == listed for v in held.values()) and all(v != listed for v in broke.values()) and
+       drift_bound < 0.001 and 0.005 * ddw / (r4.max() - 1) > 5,
+       "SF29 a drift common to both generations: the record allows at most %.5f per degree (%.2f per cent over "
+       "December to February) and the list needs 0.006 (%.2f per cent) to move, %.1f times as much"
+       % (drift_bound, 100 * (r4.max() - 1), 100 * 0.006 * ddw, 0.006 / drift_bound))
+    bl = S.bridge_losses(D, bh, Sr, cday)
+    bv = np.array([v[0] for v in bl.values()])
+    site_sd = float(bv.std(ddof=1) / bv.mean())
+    scale = {f: S.listed(S.errors_g(D, bh, lambda s, occ, f=f: f * mh(occ), cfun1, Sr))
+             for f in (0.5, 0.6, 0.8, 1.2, 1.35)}
+    sbroke = {f: S.listed(S.errors_g(D, bh, lambda s, occ, f=f: f * mh(occ), cfun1, Sr)) for f in (0.4, 1.4)}
+    ok(len(bl) == 5 and site_sd < 0.03 and all(v == listed for v in scale.values()) and
+       all(v != listed for v in sbroke.values()),
+       "SF28 the loss is one function of occupancy at five separate sites (%.4f to %.4f at 40 per cent, sd %.1f per "
+       "cent of the mean) and the list is invariant over a per-station scale of 0.5 to 1.35, twelve times that spread"
+       % (bv.min(), bv.max(), 100 * site_sd))
+    cs = S.cold_station(D, Sr)
+    own = S.listed(S.errors_g(D, bh, mfun1, lambda s, days: cs[s](days), Sr))
+    ok(own == listed, "SF28 SF30 the cold miss read at every station from its own occupancy channel, with no bridge "
+                      "pair, no register and no temperature, files the golden list", own)
+    cscale = {f: S.listed(S.errors_g(D, bh, mfun1, lambda s, days, f=f: f * S.chour(D, s, days, cday), Sr))
+              for f in (0.7, 1.3)}
+    ok(all(v == listed for v in cscale.values()), "SF28 the list is invariant over a per-station cold scale of 0.7 "
+                                                  "to 1.3")
+    vday1 = D["validation"].groupby("station")["date"].first().dt.date.to_dict()
+    unf = lambda f: (lambda s, d, days, f=f: np.where(
+        np.array([(x < swapd[s]) == (vday1[s] >= swapd[s]) for x in days]) if s in swapd else False,
+        (1 + bh[(s, d)]) * f, 1 + bh[(s, d)]))
+    reg_held = {f: S.listed(S.errors_g(D, bh, mfun1, cfun1, Sr, unf(f))) for f in (0.90, 0.95, 1.03, 1.05)}
+    reg_broke = {f: S.listed(S.errors_g(D, bh, mfun1, cfun1, Sr, unf(f))) for f in (1.12,)}
+    mf8 = S.matched_ratio(D, "R08-05", (1, 2, 3, 4), (7, 8), Sr)
+    c2 = np.array([S.matched_ratio(D, s, (1, 2, 3, 4), (7, 8), Sr) for s in all2])
+    mf19 = S.matched_ratio(D, "R19-03", (10, 11, 12), (7, 8), Sr)
+    c4 = np.array([S.matched_ratio(D, s, (10, 11, 12), (7, 8), Sr) for s in all4])
+    ok(abs(mf8 / c2.mean() - 1) < 0.015 and abs(mf19 / c4.mean() - 1) < 0.015 and
+       all(v == listed for v in reg_held.values()) and all(v != listed for v in reg_broke.values()),
+       "SF30 the regime no filmed day covers: R08-05 before its replacement reads %.4f against the all-year TCX-2 "
+       "stations' %.4f and R19-03 after its replacement %.4f against the all-year TCX-4 stations' %.4f, so each "
+       "matches its own generation to %.1f per cent, while the list needs 10 per cent to move"
+       % (mf8, c2.mean(), mf19, c4.mean(), 100 * max(abs(mf8 / c2.mean() - 1), abs(mf19 / c4.mean() - 1))))
+    imb = S.imbalance(D, bh, Sr, cday)
+    ok(imb["queued"] > 0.15 and imb["free"] < 0.02 and imb["queued"] / imb["queued_se"] > 100,
+       "the pairs refute no correction at all: the upstream approach counts %.2f per cent fewer vehicles than the "
+       "downstream one above 30 per cent occupancy (se %.3f, t %.0f) against %.2f per cent in free flow, with "
+       "nothing joining or leaving between them"
+       % (100 * imb["queued"], 100 * imb["queued_se"], imb["queued"] / imb["queued_se"], 100 * imb["free"]))
+    bad = D["orders"][D["orders"]["resolution"].str.contains("detector|card", case=False, na=False)]
+    lp = D["orders"][D["orders"]["resolution"].str.contains("loop", case=False, na=False)]
+    ok(len(bad) == 0 and len(lp) >= 12 and lp["resolution"].str.contains("tested", case=False).all(),
+       "SF27 no work order of the year replaces anything on the counting path (the inspections test the loops at "
+       "every station twice), so the filmed day's sensitivity is the sensitivity of every hour of its regime",
+       (len(bad), len(lp)))
 
     # SF3: the cold pairs' free-flow threshold, and the loss fitted before the cold miss is taken out
     thr = {}

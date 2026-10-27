@@ -140,14 +140,25 @@ def submission(fig):
     L.append("3. Paired each bridge's two stations (%s: five bridges, no junction between their stations) and, on the "
              "three bridges whose approaches run one controller of each generation, set each free-flowing day's TCX-2 "
              "count against the TCX-4 count, each on its validated sensitivity, against the day's mean temperature: "
-             "a miss on the TCX-2 that grows below about %d degrees." % (F["network"], k["cold_knee_c"]))
+             "a miss on the TCX-2 that grows below about %d degrees. Read the same miss a second way, off each "
+             "station's own occupancy per counted vehicle (occupancy fitted against the counted vehicles over the "
+             "station's free-flowing hours and read where the summer's and the month's flows overlap, so the traffic "
+             "drops out and only a change in what the controller counts remains): it climbs wherever a TCX-2 was in "
+             "service, including the months before each renumbered station's replacement, and holds flat wherever a "
+             "TCX-4 was, which puts the miss on the older cards and leaves no room for a drift the two generations "
+             "share or for a sensitivity moving inside a regime." % (F["network"], k["cold_knee_c"]))
     L.append("4. With that miss taken out, set in each direction and hour one less the queued approach's count over "
              "the far approach's, each on its validated sensitivity, against the queued approach's occupancy: a loss "
-             "that grows with occupancy above the free-flow range.")
+             "that grows with occupancy above the free-flow range, the two approaches of one bridge differing by a "
+             "fifth of the upstream count in the most queued hours against under a hundredth in free flow, with "
+             "nothing joining or leaving between them, and one function of occupancy fitted at each of the five "
+             "bridges on its own.")
     L.append("5. Divided every hour's count by its sensitivity ratio, by one less the loss at its occupancy and, on a "
              "TCX-2, by one less the cold miss at the day's temperature, and took each station's 2027 error as its "
              "counted vehicles over the vehicles so estimated, less one, over the hours it counted (TDP-03 section "
-             "5): %d stations beyond 5 per cent." % c["count"])
+             "5): %d stations beyond 5 per cent, the same %d under the pooled bridge fit, under each station's own "
+             "occupancy channel, and with the loss carried to the stations that are on no bridge at any scale from a "
+             "half to a third again." % (c["count"], c["count"]))
     L.append("6. Counted the maintenance visits as the days labour was booked to each station in %s (Labour joined to "
              "Orders' stations, one per station and day), less the days at a station then on a TCX-4 whose cabinet "
              "door logged nothing that local day in %s: the controller was reset from the contractor's office; the "

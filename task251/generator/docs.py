@@ -60,7 +60,9 @@ def standard(path, F):
                    "meet, and the annual count report the Region publishes and files with the Province.", body),
          Paragraph("2. Stations", h2),
          Paragraph("A permanent count station has an inductive loop in every lane in both directions, wired to a "
-                   "roadside controller. The controller counts each vehicle that crosses a loop and measures the share "
+                   "roadside controller. The loops are cut to the Region's standard detail at every station, one 2.0 m "
+                   "square loop of three turns in the centre of the lane to drawing TDP-07; the controller is a TCX-2 "
+                   "or a TCX-4. The controller counts each vehicle that crosses a loop and measures the share "
                    "of time the loops are occupied. Stations are numbered by Regional Road; the station register gives "
                    "each station's road, kilometre point, location, district, lanes and controller. When a controller "
                    "is replaced the station keeps its loops and may be given a new number; the register records the "
@@ -96,8 +98,10 @@ def standard(path, F):
          Paragraph("The maintenance contractor inspects every station each spring and autumn, attends faults, and "
                    "books its work against work orders. A maintenance visit is a day one of the maintenance "
                    "contractor's technicians is at a station; two technicians at one station on one day are one "
-                   "visit. A power failure is a loss of mains power at a station's controller, counted once however "
-                   "long it lasts. The annual count report gives, for each district and calendar quarter, the "
+                   "visit, and work the contractor carries out from its own premises is not a visit. A power failure "
+                   "is a loss of mains power at a station's controller, counted once however "
+                   "long it lasts; a supply restored and lost again is a second failure. The annual count report "
+                   "gives, for each district and calendar quarter, the "
                    "maintenance visits to the stations and the power failures the stations had.", body),
          Spacer(1, 4 * mm),
          _table([["Revision", "Date", "Change"],
@@ -151,6 +155,10 @@ def dictionary(path, F):
         "| occupancy | per cent of the hour the loops were occupied, averaged over the lanes (two decimals from the "
         "TCX-4 controllers, one from the TCX-2) |",
         "",
+        "A TCX-2 controller has no standby supply: when its supply is interrupted it stops, discards the hour it is "
+        "in and reports no event of its own, so an interruption at a TCX-2 station shows only as hours absent from "
+        "the export. A TCX-4 carries a battery and counts on it.",
+        "",
         "## %s" % F["validation"],
         "",
         "The validation contractor's 2027 workbook, sheet Counts: one row per site, direction and 15-minute "
@@ -188,8 +196,9 @@ def dictionary(path, F):
         "| station | station number in force when the event was received |",
         "| logged_utc | time the event was logged, UTC, by the clock of whatever raised it |",
         "| raised_by | controller or %s |" % P.SYSTEM,
-        "| event | MAINS_FAIL, MAINS_OK: mains power lost, restored at the controller; DOOR_OPEN, DOOR_CLOSE: cabinet "
-        "door; RESET: controller reset; COLD_START: controller started without a set clock; COMMS_LOST, COMMS_OK: a "
+        "| event | MAINS_FAIL, MAINS_OK: mains power lost, restored at the controller; DOOR_OPEN, DOOR_CLOSE: the "
+        "cabinet door switch, logged on every opening and closing of the cabinet; RESET: controller reset; "
+        "COLD_START: controller started without a set clock; COMMS_LOST, COMMS_OK: a "
         "poll of the station failed, a poll succeeded again; CLOCK_SET: %s set the controller's clock |" % P.SYSTEM,
         "",
         "## %s" % F["orders"],

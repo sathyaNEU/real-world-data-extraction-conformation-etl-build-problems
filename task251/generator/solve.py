@@ -201,6 +201,89 @@ def chour(D, station, days, cday):
     return np.where(is_tcx2(D, station, days), cday(days), 0.0)
 
 
+# ---- the occupancy a station reports per vehicle it counts, at matched counted flow -----------------------------
+# A loop is covered by a vehicle whether or not the controller counts it, so the occupancy a station reports per
+# vehicle it counts rises exactly in proportion with whatever share of vehicles the controller does not count. Read
+# between two sets of months at the same counted flow, the ratio therefore moves one for one with a change in the
+# station's counting and not at all with the traffic. It is the second, pair-free measurement of the cold miss, and it
+# is what bounds a sensitivity that drifts, a drift common to both controller generations, and the counting of a
+# window the validation programme did not film.
+
+def matched_ratio(D, station, months, ref=(7, 8), S=None, free_occ=12.0, minv=60, nmin=50):
+    """one station's occupancy per vehicle in `months` over the same in `ref`, both at the same counted flow"""
+    S = S or series(D)
+    vals, wts = [], []
+    for (s, d), g in S.items():
+        if s != station:
+            continue
+        x = g[(g["occ"] < free_occ) & (g["vehicles"] > minv)]
+        m = np.array([dd.month for dd in x["day"]])
+        a, b = x[np.isin(m, months)], x[np.isin(m, ref)]
+        if len(a) < nmin or len(b) < nmin:
+            continue
+        lo = max(a["vehicles"].quantile(0.1), b["vehicles"].quantile(0.1))
+        hi = min(a["vehicles"].quantile(0.9), b["vehicles"].quantile(0.9))
+        if hi <= lo:
+            continue
+        mid = 0.5 * (lo + hi)
+        fa = np.polyfit(a["vehicles"], a["occ"], 1)
+        fb = np.polyfit(b["vehicles"], b["occ"], 1)
+        vals.append(float(np.polyval(fa, mid) / np.polyval(fb, mid)))
+        wts.append(len(a) + len(b))
+    return float(np.average(vals, weights=wts)) if vals else float("nan")
+
+
+def matched_table(D, S=None, months=(12, 1, 2), ref=(7, 8)):
+    S = S or series(D)
+    return {s: matched_ratio(D, s, months, ref, S) for s in D["reg"]["station"]}
+
+
+MONTHS = tuple(range(1, 13))
+
+
+def cold_station(D, S=None, ref=(7, 8)):
+    """each station's own miss, month by month, from its occupancy per counted vehicle alone: no bridge pair, no
+    register, no temperature. Returns station -> (days -> share missed)"""
+    S = S or series(D)
+    out = {}
+    for s in D["reg"]["station"]:
+        by = {}
+        for m in MONTHS:
+            r = matched_ratio(D, s, (m,), ref, S, nmin=30)
+            by[m] = 0.0 if not np.isfinite(r) else max(0.0, 1.0 - 1.0 / r)
+        out[s] = (lambda days, by=by: np.array([by[d.month] for d in days]))
+    return out
+
+
+def bridge_losses(D, bh, S=None, cday=None, at=40.0):
+    """the loss fitted on each bridge's own pair, read at one occupancy: five sites, one function"""
+    S = S or series(D)
+    cday = cday or ZDAY
+    out = {}
+    for b in bridges(D):
+        xs, ys = [], []
+        for d, up, dn in (("NB", b["south"], b["north"]), ("SB", b["north"], b["south"])):
+            j = S[(up, d)].join(S[(dn, d)], lsuffix="_u", rsuffix="_d", how="inner")
+            j = j[(j["vehicles_u"] > 50) & (j["vehicles_d"] > 50)]
+            days = j["day_u"].tolist()
+            cu, cd = chour(D, up, days, cday), chour(D, dn, days, cday)
+            xs.append(j["occ_u"].to_numpy())
+            ys.append((1 - (j["vehicles_u"] / ((1 + bh[(up, d)]) * (1 - cu))) /
+                       (j["vehicles_d"] / ((1 + bh[(dn, d)]) * (1 - cd)))).to_numpy())
+        f, par = fit(np.concatenate(xs), np.concatenate(ys), "pl")
+        out[b["name"]] = (float(np.ravel(f(np.array([at])))[0]), par)
+    return out
+
+
+def imbalance(D, bh, S=None, cday=None, free=12.0, queued=30.0):
+    """what the pairs say with no loss curve at all: the upstream approach's count against the downstream one's, each
+    on its filmed sensitivity, in free flow and in queued hours, with nothing joining or leaving between them"""
+    x, y = pair_points(D, bh, S, cday)
+    a, b = y[x < free], y[x > queued]
+    return dict(free=float(a.mean()), free_se=float(a.std(ddof=1) / np.sqrt(len(a))), free_n=int(len(a)),
+                queued=float(b.mean()), queued_se=float(b.std(ddof=1) / np.sqrt(len(b))), queued_n=int(len(b)))
+
+
 def pair_points(D, bh, S=None, cday=None):
     S = S or series(D)
     cday = cday or ZDAY
@@ -265,9 +348,11 @@ def fit(x, y, form="pl"):
 FAMILY = ("pl", "power", "quad", "lin22", "bins")
 
 
-def errors(D, bh, mh, cday=None, S=None):
+def errors_g(D, bh, mfun, cfun, S=None, bfun=None):
+    """the stations' errors with the loss, the cold miss and the sensitivity each given per station, so that every
+    variant of the construction runs through one function"""
     S = S or series(D)
-    cday = cday or ZDAY
+    bfun = bfun or (lambda s, d, days: 1 + bh[(s, d)])
     out = {}
     for s in D["reg"]["station"]:
         num = den = 0.0
@@ -275,11 +360,16 @@ def errors(D, bh, mh, cday=None, S=None):
             if s2 != s:
                 continue
             r = g["vehicles"].to_numpy(float)
-            c = chour(D, s, g["day"].tolist(), cday)
+            days = g["day"].tolist()
             num += r.sum()
-            den += (r / ((1 + bh[(s, d)]) * (1 - mh(g["occ"].to_numpy())) * (1 - c))).sum()
+            den += (r / (bfun(s, d, days) * (1 - mfun(s, g["occ"].to_numpy())) * (1 - cfun(s, days)))).sum()
         out[s] = num / den - 1
     return out
+
+
+def errors(D, bh, mh, cday=None, S=None):
+    cday = cday or ZDAY
+    return errors_g(D, bh, lambda s, occ: mh(occ), lambda s, days: chour(D, s, days, cday), S)
 
 
 def listed(e):
@@ -486,15 +576,31 @@ def _cells(pairs, D):
     return out
 
 
-def visits(D, door_days="local"):
-    """the maintenance visits: each station and day labour was booked to it, less the days at a TCX-4 station whose
-    cabinet stayed shut (the controller was reset from the contractor's office)"""
+def visits(D, door_days="local", span=True):
+    """the maintenance visits (TDP-03 section 7): each station and local day one of the maintenance contractor's
+    technicians attended it. Work the contractor carries out from its own premises is not a visit, and the TCX-4 logs
+    the cabinet door switch on every opening, so a day labour was booked to a station then on a TCX-4 whose cabinet
+    stayed shut is a controller reset sent over the link. A TCX-2 logs no door and has no remote reset, so the days
+    labour was booked to it are the days it was attended. An attendance the door log shows running past midnight is a
+    day either side of it."""
     lab = _labour_days(D)
     e = _events(D)
     doors = e[e["event"].isin(["DOOR_OPEN", "DOOR_CLOSE"])]
     key = "day" if door_days == "local" else "uday"
     opened = set(zip(doors["station"], doors[key]))
+    booked = set(zip(lab["station"], lab["day"]))
     pairs = [(s, d) for s, d in zip(lab["station"], lab["day"]) if not tcx4_on(D, s, d) or (s, d) in opened]
+    if span:
+        held, seen = {}, set(pairs)
+        dr = doors.sort_values("t")
+        for s, ev, d in zip(dr["station"], dr["event"], dr[key]):
+            if ev == "DOOR_OPEN":
+                held[s] = d
+            elif ev == "DOOR_CLOSE":
+                o = held.pop(s, None)
+                if o is not None and (d - o).days == 1 and (s, o) in booked and (s, d) not in seen:
+                    pairs.append((s, d))
+                    seen.add((s, d))
     return _cells(pairs, D)
 
 
@@ -518,10 +624,15 @@ def _missing_runs(D):
     return runs
 
 
-def failures(D, quarter_clock="local"):
-    """the power failures: each MAINS_FAIL a TCX-4 reported, once; at a TCX-2, which reports nothing and stops, each
-    break in its hourly record, as many failures as polls it missed and answered again inside the break (at least
-    one); not the two controller replacements"""
+def failures(D, quarter_clock="local", tcx2_only=False):
+    """the power failures (TDP-03 section 7): each loss of mains power at a station's controller, counted once however
+    long it lasts and a supply restored and lost again a second loss. A controller reports a loss it survives
+    (MAINS_FAIL, once: the log repeats some after a lost poll). A loss it does not survive is in the station's hourly
+    record instead, as the hours missing from the one the supply failed in to the one it was counting again in: a
+    TCX-2 has no standby supply and stops at once, and a TCX-4 whose battery runs out stops as well and loses what it
+    had logged, leaving the cold start it raises on the way back under an unset clock. A break holds as many losses as
+    the station answered a poll and failed again inside it, at least one. The two controller replacements are not
+    losses of supply."""
     e = _events(D)
     key = "day" if quarter_clock == "local" else "uday"
     mf = e[e["event"] == "MAINS_FAIL"]
@@ -530,7 +641,7 @@ def failures(D, quarter_clock="local"):
     swap = {(r["new_station"], pd.Timestamp(r["from_date"]).date()) for _, r in D["hist"].iterrows()}
     for s, t0, n in _missing_runs(D):
         day0 = t0.tz_convert(TZ).date()
-        if (s, day0) in swap or tcx4_on(D, s, day0):
+        if (s, day0) in swap or (tcx2_only and tcx4_on(D, s, day0)):
             continue
         t1 = t0 + pd.Timedelta(hours=n)
         k = int(((lost["station"] == s) & (lost["t"] >= t0) & (lost["t"] < t1)).sum())

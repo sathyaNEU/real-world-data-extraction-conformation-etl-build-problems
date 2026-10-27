@@ -629,7 +629,8 @@ def run(W, target, out):
     L_.check("SF13 the publish_at clock: the field notes name Brisbane time on the field itself, beside saved_at's "
              "UTC, so the saves'-clock reading (asserted above to land off the golden median at every desk) violates "
              "a quoted sentence",
-             "the time the editor set for the CMS to publish the document, Brisbane time." in cmsn_
+             "the time the editor set for the CMS to publish the document, Brisbane time, ten hours ahead "
+             "of the save times above." in cmsn_
              and "saved_at Time of the save, UTC, to the minute." in cmsn_)
 
     # ----- the grid, cell by cell
@@ -1437,7 +1438,7 @@ def run(W, target, out):
              "ten-hour reading is closed by a quoted sentence rather than left to the solver",
              nz.str.fullmatch(r"\d{4}-\d\d-\d\dT\d\d:\d\d").all()
              and "saved_at Time of the save, UTC, to the minute." in notes_txt
-             and re.search(r"Brisbane time", pub_line) is not None,
+             and re.search(r"Brisbane time, ten hours ahead of the save times above", pub_line) is not None,
              pub_line)
     # every scheduled article: its first live save against the time its editor set, on each clock
     sch_gap = {"AEST": [], "UTC": []}

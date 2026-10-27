@@ -392,7 +392,7 @@ status             Status recorded with the save: draft, scheduled, live or with
                    publishes the document, and a scheduled revision publishes it at its publish_at; the
                    document first went live when it was first published either way.
 publish_at         On a scheduled revision, the time the editor set for the CMS to publish the document,
-                   Brisbane time.
+                   Brisbane time, ten hours ahead of the save times above.
 headline_sha1      First 12 characters of the SHA-1 of the headline text at that revision.
 correction_note    Text of the correction notice shown with the document at that revision. The CMS copies the
                    note to every later revision until an editor clears it. A note put back after a save that

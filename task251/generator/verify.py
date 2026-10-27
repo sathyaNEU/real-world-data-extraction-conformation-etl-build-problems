@@ -84,16 +84,26 @@ def main(target):
     grid = tab.index.to_numpy() + 0.5
     lval = np.where(grid < 21, 0.0, np.maximum(tab.to_numpy(), 0.0))
     loss = lambda o: np.interp(o, grid, lval)
-    err = {}
-    for s in reg["station"]:
-        num = den = 0.0
-        for c in [c for c in vol.columns if c[0] == s]:
-            k = vol[c].notna().to_numpy()
-            r = vol[c].to_numpy()[k]
-            num += r.sum()
-            den += (r / sens[c] / (1 - loss(occ[c].to_numpy()[k])) / (1 - cmiss[s][k])).sum()
-        err[s] = num / den - 1
-    listed = sorted(s for s, e in err.items() if abs(e) > 0.05)
+    def errs(lossf=None, cmissf=None, sensf=None, lscale=1.0):
+        lossf = lossf or loss
+        cmissf = cmissf or (lambda s: cmiss[s])
+        out = {}
+        for s in reg["station"]:
+            num = den = 0.0
+            for c in [c for c in vol.columns if c[0] == s]:
+                k = vol[c].notna().to_numpy()
+                r = vol[c].to_numpy()[k]
+                b = sensf(c)[k] if sensf else sens[c]
+                num += r.sum()
+                den += (r / b / (1 - lscale * lossf(occ[c].to_numpy()[k])) / (1 - cmissf(s)[k])).sum()
+            out[s] = num / den - 1
+        return out
+
+    def flagged(e):
+        return sorted(s for s, v in e.items() if abs(v) > 0.05)
+
+    err = errs()
+    listed = flagged(err)
     if listed != fig["call"]["listed"]:
         fails.append(("list", listed, fig["call"]["listed"]))
     if not (min(abs(err[s]) for s in listed) > fig["call"]["listed_below_pct"] / 100 and
@@ -103,6 +113,72 @@ def main(target):
         fails.append(("loss at 40", float(loss(np.array([40.0]))[0])))
     if not 0.085 <= float(cold(-10.0)) <= 0.12:
         fails.append(("cold miss at -10", float(cold(-10.0))))
+    # the second instrument, from the shipped files alone: the occupancy a station reports per vehicle it counts, read
+    # at matched free-flowing counted flow. A vehicle covers the loop whether the controller counts it or not, so the
+    # ratio between two sets of months moves one for one with a change in what the station counts.
+    month = pd.Series([d.month for d in dayof], index=vol.index)
+
+    def mratio(s, win, ref=(7, 8), nmin=50):
+        vals, wts = [], []
+        for c in [c for c in vol.columns if c[0] == s]:
+            k = vol[c].notna() & (occ[c] < 12) & (vol[c] > 60)
+            vv, oo = vol[c][k], occ[c][k]
+            mm = month[k]
+            ka, kb = mm.isin(win), mm.isin(ref)
+            if ka.sum() < nmin or kb.sum() < nmin:
+                continue
+            lo = max(vv[ka].quantile(0.1), vv[kb].quantile(0.1))
+            hi = min(vv[ka].quantile(0.9), vv[kb].quantile(0.9))
+            if hi <= lo:
+                continue
+            mid = 0.5 * (lo + hi)
+            fa = np.polyfit(vv[ka], oo[ka], 1)
+            fb = np.polyfit(vv[kb], oo[kb], 1)
+            vals.append(float(np.polyval(fa, mid) / np.polyval(fb, mid)))
+            wts.append(int(ka.sum() + kb.sum()))
+        return float(np.average(vals, weights=wts)) if vals else float("nan")
+
+    all4 = [s for s in reg["station"] if gen[s] == "TCX-4" and s not in swap0]
+    all2 = [s for s in reg["station"] if gen[s] == "TCX-2" and s not in swap0]
+    r4 = np.array([mratio(s, (12, 1, 2)) for s in all4])
+    r2 = np.array([mratio(s, (12, 1, 2)) for s in all2])
+    ddw = float(np.mean([max(0.0, 2.0 - tm[d]) for d in tm.index if d.month in (12, 1, 2)]))
+    wd = [d for d in tm.index if d.month in (12, 1, 2)]
+    cw = float(np.mean(cold(tm[wd].to_numpy())))
+    if not (r4.max() < 1.010 and abs(r4.mean() - 1) < 0.006):
+        fails.append(("TCX-4 stations' winter occupancy per counted vehicle", r4.max(), r4.mean()))
+    if not abs((1 - 1 / r2.mean()) - cw) < 0.006:
+        fails.append(("TCX-2 stations' own channel against the pairs' cold curve", 1 - 1 / r2.mean(), cw))
+    if not (0.006 * ddw) / (r4.max() - 1) > 5:
+        fails.append(("the common drift the list needs against the drift the record allows", r4.max() - 1, ddw))
+    # each station's own miss, month by month, from its own channel: no pair, no register, no temperature
+    own = {}
+    for s in reg["station"]:
+        by = {m: max(0.0, 1 - 1 / mratio(s, (m,), nmin=30)) for m in range(1, 13)}
+        own[s] = np.array([by[m] for m in month])
+    if flagged(errs(cmissf=lambda s: own[s])) != fig["call"]["listed"]:
+        fails.append(("the list under each station's own occupancy channel", flagged(errs(cmissf=lambda s: own[s]))))
+    # the three corridors the determinism block asked for: the loss carried to stations that are not on a bridge, a
+    # drift common to both generations, and the regime no filmed day covers at the two renumbered stations
+    for f in (0.6, 1.3):
+        if flagged(errs(lscale=f)) != fig["call"]["listed"]:
+            fails.append(("the list with the loss scaled", f, flagged(errs(lscale=f))))
+    for k in (-0.005, 0.005):
+        cm2 = {s: cmiss[s] + np.clip(k * (2.0 - tm.reindex(dayof.to_numpy()).to_numpy()), min(0, k * 40), max(0, k * 40))
+               for s in reg["station"]}
+        if flagged(errs(cmissf=lambda s: cm2[s])) != fig["call"]["listed"]:
+            fails.append(("the list under a common drift", k, flagged(errs(cmissf=lambda s: cm2[s]))))
+    vday1 = v.groupby("station")["date"].first().dt.date.to_dict()
+    for f in (0.95, 1.05):
+        def sf(c, f=f):
+            s = c[0]
+            if s in swap0:
+                unfilmed = np.array([(d < swap0[s]) == (vday1[s] >= swap0[s]) for d in dayof])
+                return np.where(unfilmed, sens[c] * f, sens[c])
+            return np.full(len(dayof), sens[c])
+        if flagged(errs(sensf=sf)) != fig["call"]["listed"]:
+            fails.append(("the list with the unfilmed regime's sensitivity scaled", f, flagged(errs(sensf=sf))))
+
     vdays = set(zip(v["station"], v["date"].astype(str).str[:10]))
     mx = h.loc[[(s, d) in vdays for s, d in zip(h["station"], h["local_start"].str[:10])], "occ"].max()
     if round(float(mx), 1) != fig["components"]["validation_max_occupancy_pct"]:

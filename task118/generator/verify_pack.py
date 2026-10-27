@@ -447,7 +447,8 @@ def main(target):
           "the document first went live when it was first published either way." in notes_txt)
     check("SF13 the CMS field notes put publish_at on Brisbane time and saved_at on UTC, so the two clocks are named "
           "on the fields themselves",
-          "the time the editor set for the CMS to publish the document, Brisbane time." in notes_txt
+          "the time the editor set for the CMS to publish the document, Brisbane time, ten hours ahead of the "
+          "save times above." in notes_txt
           and "saved_at Time of the save, UTC, to the minute." in notes_txt)
     # SF11's data half, independent of the brief's wording: the realised impression-weighted rate across every
     # package of a test is strictly below the shipped variant's, so crediting the under-test hours at the mixture

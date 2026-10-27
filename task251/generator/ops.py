@@ -23,7 +23,7 @@ import numpy as np
 import params as P
 import sim
 
-BATTERY_H = 6.0
+BATTERY_H = 3.0
 POLL_S = 900
 BOOT_S = 90
 Y2K = dt.datetime(2000, 1, 1, tzinfo=dt.timezone.utc)
@@ -131,9 +131,14 @@ def outages(W, rng, polls=None):
             qdays = [d for d in days if quarter(d) == qtr]
             have_t2 = any(o["district"] == dist and quarter(o["start"].date()) == qtr and
                           any(controller(sx[c], o["start"].date()) == "TCX-2" for c in o["stations"]) for o in out)
+            # and every cell holds one interruption that outlasts a TCX-4's battery: the controller stops and the
+            # outage is in its record as absent hours rather than in the event log
+            drained = lambda o: (len(o["parts"]) == 1 and (o["end"] - o["start"]).total_seconds() > BATTERY_H * 3600
+                                 and any(controller(sx[c], o["start"].date()) == "TCX-4" for c in o["stations"]))
+            have_drain = any(o["district"] == dist and quarter(o["start"].date()) == qtr and drained(o) for o in out)
             n = int(rng.integers(1, 3))
             made = tries = 0
-            while made < n and tries < 400:
+            while (made < n or not have_drain) and tries < 1500:
                 tries += 1
                 day = qdays[int(rng.integers(len(qdays)))]
                 k = int(rng.integers(1, 5))
@@ -141,16 +146,23 @@ def outages(W, rng, polls=None):
                                                           replace=False)]
                 if not have_t2 and not any(controller(x, day) == "TCX-2" for x in hit):
                     continue
+                long_one = not have_drain
+                if long_one and not any(controller(x, day) == "TCX-4" for x in hit):
+                    continue
                 start = dt.datetime.combine(day, dt.time(int(rng.integers(0, 24)), int(rng.integers(0, 60)),
                                                          int(rng.integers(0, 60))))
-                parts = retrip(start) if rng.random() < 0.55 else None
-                hours = (parts[-1][1] - start).total_seconds() / 3600 if parts else \
-                    float(np.clip(rng.lognormal(np.log(1.6), 0.9), 0.3, 5.5))
+                parts = None if long_one else (retrip(start) if rng.random() < 0.55 else None)
+                if long_one:
+                    hours = float(rng.uniform(BATTERY_H + 0.6, 5.6))
+                else:
+                    hours = (parts[-1][1] - start).total_seconds() / 3600 if parts else \
+                        float(np.clip(rng.lognormal(np.log(1.6), 0.9), 0.3, 5.5))
                 if not clear(dist, start, start + dt.timedelta(hours=hours), hit):
                     continue
                 make(dist, start, hours, hit, parts)
                 made += 1
                 have_t2 = have_t2 or any(controller(x, day) == "TCX-2" for x in hit)
+                have_drain = have_drain or drained(out[-1])
     # momentary interruptions: a recloser opens for under five minutes; a TCX-4 rides through on its battery and logs
     # MAINS_FAIL and MAINS_OK, a TCX-2 drops the hour it is in, and TrafficVault notices only if a poll falls inside
     silent_cells = set()
@@ -215,8 +227,10 @@ def power(W, outs, polls):
                     ev.append((p_lost, "TrafficVault", "COMMS_LOST"))
                     ev.append((p_ok, "TrafficVault", "COMMS_OK"))
                 if ctl == "TCX-4":
-                    ev.append((t0, "controller", "MAINS_FAIL"))
                     if (t1 - t0).total_seconds() > BATTERY_H * 3600:
+                        # the battery runs out: the controller stops, and what it had logged while the modem was down
+                        # with it goes with the supply. Only what it raises after the restart reaches TrafficVault,
+                        # under the unset clock until TrafficVault sets it.
                         drained = True
                         ev.append((Y2K + dt.timedelta(seconds=4), "controller", "COLD_START"))
                         ev.append((Y2K + dt.timedelta(seconds=5), "controller", "MAINS_OK"))
@@ -224,6 +238,7 @@ def power(W, outs, polls):
                         ev.append((clock, "TrafficVault", "CLOCK_SET"))
                         lost |= set(range(hour_index(t0 + dt.timedelta(hours=BATTERY_H)), hour_index(clock) + 1))
                     else:
+                        ev.append((t0, "controller", "MAINS_FAIL"))
                         ev.append((t1, "controller", "MAINS_OK"))
                 else:
                     lost |= set(range(hour_index(t0), hour_index(t1 + dt.timedelta(seconds=BOOT_S)) + 1))
@@ -364,6 +379,26 @@ def maintenance(W, outs, sw, polls, rng):
             if day < swap - dt.timedelta(days=10) and free(code, day, 3):
                 work.append(_fault(x, day, "comms", False, "TCX-2", rng, next_id, tech, wdays, free))
                 n -= 1
+    # the after-hours call-out: a station that stops reporting late in the day is attended the same evening under the
+    # contract's response time, and the work at the cabinet runs past midnight. The labour is booked to the day the
+    # technician was called out; the cabinet door is the only record of the hours either side of midnight.
+    for dist in P.DISTRICTS:
+        for qtr in (1, 2, 3, 4):
+            have = sum(1 for w in work if w.get("night") and sx[w["stations"][0]]["district"] == dist and
+                       quarter(w["labour"][0][0]) == qtr)
+            want = int(rng.integers(1, 3))
+            for _ in range(4000):
+                if have >= want:
+                    break
+                x = st[int(rng.integers(len(st)))]
+                day = wdays[int(rng.integers(len(wdays)))]
+                if x["district"] != dist or quarter(day) != qtr or controller(x, day) != "TCX-4":
+                    continue
+                if day >= dt.date(P.YEAR, 12, 30) or not free(x["code"], day, 2):
+                    continue
+                work.append(_night(x, day, rng, next_id, tech))
+                have += 1
+
     # a surge call-out on the evening of 30 June at a TCX-4 station
     for _ in range(500):
         x = st[int(rng.integers(len(st)))]
@@ -372,15 +407,15 @@ def maintenance(W, outs, sw, polls, rng):
             arrive = dt.datetime.combine(day, dt.time(20, 15)) + dt.timedelta(minutes=int(rng.integers(0, 40)))
             leave = arrive + dt.timedelta(minutes=int(rng.integers(55, 100)))
             work.append(dict(order=next_id(), category="Fault", stations=[x["code"]], opened=day, closed=day,
-                             description="Surge damage after storm, detector cards", resolution="Detector card replaced",
+                             description="Surge damage after storm", resolution="Surge protector and modem replaced",
                              labour=[(day, tech(), _quarter_hours(rng, 2.0, 3.0))], onsite=[(x["code"], arrive, leave)],
                              resets=[], comms=None))
             break
-    # a battery replacement after each outage that ran a TCX-4 battery out
+    # a battery replacement after the long December outage; a battery the next inspection finds flat is changed there
     for o in outs:
         for c in o["stations"]:
             if controller(sx[c], o["start"].date()) == "TCX-4" and \
-                    (o["end"] - o["start"]).total_seconds() > BATTERY_H * 3600:
+                    (o["end"] - o["start"]).total_seconds() > 6 * 3600:
                 day = o["end"].date() + dt.timedelta(days=int(rng.integers(1, 4)))
                 while day.weekday() >= 5 or day in P.HOLIDAYS:
                     day += dt.timedelta(days=1)
@@ -413,6 +448,25 @@ def _uniq(labour):
     return out
 
 
+def _night(x, day, rng, next_id, tech):
+    """a fault reported late in the day and attended the same evening: the technician reaches the cabinet before
+    midnight and leaves after it, so one labour line covers two days at the station"""
+    code = x["code"]
+    tk = tech()
+    fault = dt.datetime.combine(day, dt.time(16, 20)) + dt.timedelta(minutes=int(rng.integers(0, 240)))
+    arrive = dt.datetime.combine(day, dt.time(22, 5)) + dt.timedelta(minutes=int(rng.integers(0, 80)))
+    arrive = max(arrive, fault + dt.timedelta(minutes=75))
+    reset = arrive + dt.timedelta(minutes=int(rng.integers(8, 26)))
+    leave = dt.datetime.combine(day + dt.timedelta(days=1), dt.time(0, 0)) + \
+        dt.timedelta(minutes=int(rng.integers(35, 155)))
+    leave = max(leave, reset + dt.timedelta(minutes=25))
+    return dict(order=next_id(), category="Fault", stations=[code], opened=fault.date(), closed=leave.date(),
+                description="No data from controller since %s" % fault.strftime("%H:%M"),
+                resolution="Controller reset, data recovered",
+                labour=[(day, tk, _quarter_hours(rng, 2.0, 4.0))], onsite=[(code, arrive, leave)],
+                resets=[(code, reset, "KEYPAD")], comms=(code, fault, reset), night=True)
+
+
 def _fault(x, day, kind, remote, ctl, rng, next_id, tech, wdays, free):
     code = x["code"]
     tk = tech()
@@ -443,7 +497,7 @@ def _fault(x, day, kind, remote, ctl, rng, next_id, tech, wdays, free):
                     onsite=[(code, arrive, leave)], resets=[(code, reset, "KEYPAD")] if ctl == "TCX-4" else [],
                     comms=(code, fault, reset))
     desc, res = dict(cabinet=("Cabinet door or lock damaged", "Lock replaced, door realigned"),
-                     surge=("Surge damage after storm", "Detector card and surge protector replaced"),
+                     surge=("Surge damage after storm", "Surge protector replaced, modem reseated"),
                      heater=("Cabinet heater not working", "Heater thermostat replaced"))[kind]
     arrive = dt.datetime.combine(day, dt.time(8, 30)) + dt.timedelta(minutes=int(rng.integers(0, 390)))
     leave = arrive + dt.timedelta(minutes=int(rng.integers(30, 150)))
@@ -511,9 +565,16 @@ def region_checks(W, outs, work, rng):
 
 
 def visits_truth(W, work):
-    """the maintenance visits: each station and local day a technician was there (two technicians are one visit)"""
+    """the maintenance visits: each station and local day a technician was there (two technicians on one day are one
+    visit, and an attendance that runs past midnight is a day either side of it)"""
     sx = {x["code"]: x for x in W["st"]}
-    seen = {(c, a.date()) for w in work for c, a, b in w["onsite"]}
+    seen = set()
+    for w in work:
+        for c, a, b in w["onsite"]:
+            d = a.date()
+            while d <= b.date():
+                seen.add((c, d))
+                d += dt.timedelta(days=1)
     out = {}
     for code, day in seen:
         k = (sx[code]["district"], quarter(day))

@@ -31,7 +31,7 @@
       "xlsx"
     ],
     "largest_file": "trafficvault_hourly_counts_2027.csv",
-    "largest_file_rows": 525338
+    "largest_file_rows": 525172
   },
   "sources": [
     {
@@ -47,7 +47,7 @@
     {
       "path": "TDP-03_permanent_count_stations_rev4.pdf",
       "format": "pdf",
-      "bytes": 5098,
+      "bytes": 5281,
       "rows": null,
       "source": "Constructed (seeded generator)",
       "date": "2028-01-07",
@@ -56,8 +56,8 @@
     {
       "path": "trafficvault_hourly_counts_2027.csv",
       "format": "csv",
-      "bytes": 22381534,
-      "rows": 525338,
+      "bytes": 22374311,
+      "rows": 525172,
       "source": "Constructed (seeded generator)",
       "date": "2028-01-07",
       "license": "CC0-1.0 (original work)"
@@ -101,7 +101,7 @@
     {
       "path": "traffic_data_dictionary.md",
       "format": "md",
-      "bytes": 3146,
+      "bytes": 3479,
       "rows": null,
       "source": "Constructed (seeded generator)",
       "date": "2028-01-07",
@@ -110,8 +110,8 @@
     {
       "path": "trafficvault_station_events_2027.csv",
       "format": "csv",
-      "bytes": 97414,
-      "rows": 1928,
+      "bytes": 99510,
+      "rows": 1973,
       "source": "Constructed (seeded generator)",
       "date": "2028-01-07",
       "license": "CC0-1.0 (original work)"
@@ -119,7 +119,7 @@
     {
       "path": "Carrick_work_orders_2027.xlsx",
       "format": "xlsx",
-      "bytes": 13716,
+      "bytes": 14649,
       "rows": null,
       "source": "Constructed (seeded generator)",
       "date": "2028-01-07",
@@ -128,7 +128,7 @@
     {
       "path": "weather_daily_2027.csv",
       "format": "csv",
-      "bytes": 39739,
+      "bytes": 39711,
       "rows": 365,
       "source": "Constructed (seeded generator)",
       "date": "2028-01-07",
@@ -137,7 +137,7 @@
     {
       "path": "collisions_regional_roads_2027.xlsx",
       "format": "xlsx",
-      "bytes": 16119,
+      "bytes": 15732,
       "rows": null,
       "source": "Constructed (seeded generator)",
       "date": "2028-01-07",
@@ -146,7 +146,7 @@
     {
       "path": "regional_roads_pavement_condition_2026.xlsx",
       "format": "xlsx",
-      "bytes": 23575,
+      "bytes": 24416,
       "rows": null,
       "source": "Constructed (seeded generator)",
       "date": "2028-01-07",

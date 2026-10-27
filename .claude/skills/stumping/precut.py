@@ -118,6 +118,24 @@ METHOD_FAMILIES = {
     "time series": ("arima", "exponential smoothing", "state space", "seasonal decomposition"),
     "flow balance": ("stock and flow", "max flow", "balance identity"),
     "backtest selection": ("backtest", "back-test", "out-of-sample selection"),
+    # A field's own named PROCEDURE collides as surely as its named statistic. Two independent reconnaissance
+    # passes found the statistical list alone clears the colliding lines it was built to catch, so the domain
+    # procedures go in beside them.
+    "audit sampling": ("attribute sample", "attribute sampling", "deviation rate", "sampling unit",
+                       "tolerable rate", "monetary unit sampling", "sampling risk"),
+    "record linkage": ("record linkage", "entity resolution", "probabilistic linkage", "fellegi",
+                       "match weight", "blocking key", "clerical review"),
+    "coverage estimation": ("capture-recapture", "dual system", "dual-system", "coverage estimation",
+                            "post-enumeration"),
+    "mass balance": ("mass balance", "material balance", "conservation identity", "closure error"),
+    "emission inventory": ("emission factor", "tier 2 method", "tier-2 method", "activity data"),
+    "occupancy and capacity": ("concurrency", "occupancy ceiling", "queueing", "erlang",
+                               "utilisation standard", "capacity factor"),
+    "seasonal adjustment": ("seasonal adjustment", "x-13", "x-12", "trading day adjustment"),
+    "risk adjustment": ("risk adjustment", "case mix", "case-mix", "hierarchical condition"),
+    "limit compliance testing": ("delegated authority", "authority schedule", "limit compliance",
+                                 "segregation of duties", "three-way match"),
+    "reserve measurement": ("loss reserve", "provision measurement", "ibnr", "incurred but not reported"),
 }
 
 
