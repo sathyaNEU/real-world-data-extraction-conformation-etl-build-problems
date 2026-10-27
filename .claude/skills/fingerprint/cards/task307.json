@@ -1,0 +1,99 @@
+{
+  "task": "task307",
+  "architecture": "v1",
+  "drawn": "2026-10-27",
+  "slot_note": "",
+  "domain": "urban-regional-science",
+  "subdomain": "optimization",
+  "niche": "ranking the four road projects competing for a metropolitan planning organisation's 2028 congestion-relief slot by the peak-hour vehicle-hours each saves across the whole network, when trips re-route once a project opens and the river crossings downstream of the busiest freeway segment bind",
+  "objective": "opportunity-sizing-decision",
+  "shape": "other",
+  "decision_type": "pick_one_of_n",
+  "answer_unit": "named_option",
+  "answer": "",
+  "answer_source": "",
+  "gap": [
+    "population",
+    "objective"
+  ],
+  "pattern": [
+    "none"
+  ],
+  "generators": [
+    "G1",
+    "G8"
+  ],
+  "gate_g": "binding_constraint",
+  "calibration_form": "none",
+  "stump_strategy": "binding_constraint",
+  "decisive_rule_filed": false,
+  "official_decoy": false,
+  "validated_decoy": false,
+  "context_artifact": "filed_model",
+  "stump_class": "analytical",
+  "analyst_test": "A strong analyst takes the regional model's 2028 no-build loaded network, applies each project's capacity change to its own links and prices the time saved on those links at the no-build volumes through the documented volume-delay functions, so it funds the freeway widening, whose segment carries the most vehicles at the worst volume to capacity ratio; that holds every trip on its no-build route, and once trips re-route the widened freeway feeds the downstream crossing that binds, so the widening saves a fraction of its link-level figure and another project saves the most.",
+  "domain_test": "The deciding quantity is the change in the region's total peak-hour vehicle-hours when a project opens, the transport planner's network appraisal from a user-equilibrium assignment of the trip table over volume-delay functions; swapping hospitals or classrooms in loses route choice, link capacities and the equilibrium in which every trip's route depends on every other trip's, which is what moves the savings.",
+  "layer2_family": "allocation_constraints",
+  "layer2_pattern": "own:project-benefit-from-the-re-equilibrated-network-not-the-improved-links",
+  "layer1": [
+    "the regional model's link file and node file with facility codes and lanes per direction in separate fields",
+    "trip tables as zone-by-zone matrices in long format with zone numbers that skip retired zones",
+    "15-minute continuous count records in local time with the daylight-saving duplicate and gap and stations offline for weeks",
+    "probe speeds by segment that do not share the model's link identifiers",
+    "project sheets in the TIP's own segment names and mileposts"
+  ],
+  "stakeholder_role": "travel demand modelling lead at a metropolitan planning organisation",
+  "role_family": "policy_adviser",
+  "scoring_unit": "other",
+  "spine": {
+    "file": "mampo_count_stations_2025_15min.csv",
+    "rows": 0,
+    "entity": "one 15-minute count at one station and direction",
+    "grain": "station-direction-15-minute",
+    "source": "synthetic"
+  },
+  "forum": "executive_team",
+  "forcing_event": "budget_or_appropriation",
+  "org_family": "government_agency",
+  "world": {
+    "geography": "United States (a fictional river metro)",
+    "currency": "USD",
+    "org_type": "metropolitan planning organisation",
+    "invented_names": [
+      "Merrimont Area Metropolitan Planning Organization"
+    ],
+    "people": [
+      "Krystal Cooke",
+      "Charles Cummings"
+    ]
+  },
+  "deliverables": [
+    "mampo_tip2028_project_ranking.xlsx",
+    "mampo_tip2028_executive_brief.pptx"
+  ],
+  "opening_move": "question-first",
+  "question_form": "which",
+  "driver": "The decisive quantity is what an added capacity saves across a whole system whose users each choose their path given everyone else's, so pricing the time saved on the improved element at today's loads credits it with users who would arrive from parallel paths into a downstream element that binds, and ranks first the element that saves least once the system re-settles.",
+  "driver_concrete": "Each project's 2028 benefit is the drop in the region's total AM and PM peak-hour vehicle-hours between the no-build and the build network, both at user equilibrium over the documented volume-delay functions; the Route 9 widening on the Millbrook segment prices highest at no-build volumes, but once trips re-route it draws traffic off the arterial bridges onto Route 9 and into the Route 9 bridge downstream, which binds, so it keeps about four fifths of its link-level figure, while the Center Street Bridge lane gains by pulling trips off Route 9 and saves about a third more than the widening.",
+  "stump": "A competent solver prices each project on its own links at the regional model's no-build volumes and funds the Route 9 widening; the step that lands it there is holding every trip on its no-build route, when trips re-route once a project opens, the widened segment feeds the Route 9 bridge that binds downstream, and the Center Street Bridge lane pulls trips off Route 9.",
+  "mechanism_source": "design_note",
+  "differentiation": {
+    "task158": "task158 prices new calls at rates earned by traffic that re-sends cached input, a per-unit rate carried to a different kind of unit; task307 carries no rate: its decisive step is that users re-route once capacity is added, so the saving is the re-settled system's and the binding element downstream absorbs most of what the improved one would save."
+  },
+  "lineage": [
+    {
+      "architecture": "seed OS09",
+      "fate": "dropped at the draw 2026-10-27: a mini-split rebate programme's net savings, its honest stump labels held by the guard window and its furniture barred",
+      "driver": "not drawn"
+    },
+    {
+      "architecture": "resource adequacy draft",
+      "fate": "dropped at the draw 2026-10-27 before registration: task308's architecture 3 registered the same world and driver first (a generation cooperative's capacity offers with outages that bunch in the cold)",
+      "driver": "not drawn"
+    }
+  ],
+  "notes": "Redrawn twice at stage 1 under the author's rule that a stuck build is unblocked, not parked: the OS09 seed's world could not carry an honest unbanned draw, and a resource adequacy design collided with task308 v3 at registration time.",
+  "client_domain": "urban-regional-science",
+  "architecture_spent": false,
+  "registered": "2026-10-27T13:18:43Z"
+}

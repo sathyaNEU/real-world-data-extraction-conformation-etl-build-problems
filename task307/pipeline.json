@@ -1,12 +1,12 @@
 {
  "task": "task307",
- "status": "PAUSED",
- "domain": "",
+ "status": "DESIGN",
+ "domain": "urban-regional-science",
  "objective": "opportunity-sizing-decision",
- "stage": 1,
- "stage_name": "draw",
- "updated": "2026-10-25",
- "stump": "",
+ "stage": 2,
+ "stage_name": "design",
+ "updated": "2026-10-27",
+ "stump": "A competent solver prices each project on its own links at the regional model's no-build volumes and funds the Route 9 widening; the step that lands it there is holding every trip on its no-build route, when trips re-route once a project opens, the widened segment feeds the Route 9 bridge that binds downstream, and the Center Street Bridge lane pulls trips off Route 9.",
  "architecture": 1,
  "loops": 0,
  "precut": {
@@ -27,7 +27,7 @@
   "report": ""
  },
  "returned": [],
- "resume": "Stage 1 draw from seed OS09 (a mini-split rebate programme's net first-year savings next year; distributors' monthly outdoor-unit sales by installer account against customer rebate claims). Rejected on paper: installers' added unrebated sales partly taken from competitors in the same market (task302's substitution driver in reverse). The seed's own furniture (a utility filing with its regulator) is barred; economics-econometrics x Opportunity Sizing is task304's only legal home, so prefer another honest pairing here.",
+ "resume": "Stage 2 design from the registered draw (network equilibrium, MAMPO 2028 TIP slot); prototype in the scratch t307n folder (ue2.py, search3.py): bridge 3600, Millbrook segment 2600, Center Street 2700 gives naive Route 9 widening and equilibrium Center Street Bridge.",
  "approved": null,
  "delivered": null,
  "portal": null,
