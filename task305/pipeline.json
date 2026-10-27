@@ -1,11 +1,11 @@
 {
  "task": "task305",
- "status": "SHIPPED",
+ "status": "PAUSED",
  "domain": "urban-regional-science",
  "objective": "opportunity-sizing-decision",
- "stage": 5,
- "stage_name": "ship",
- "updated": "2026-10-24",
+ "stage": 1,
+ "stage_name": "draw",
+ "updated": "2026-10-27",
  "stump": "A competent analyst runs the filed spend-share model over the census households' spend, finds it reproduces the estate's sales and approves S1 Bellingtoft at GBP 0.5 million where the golden is S3 Wrentoft at GBP 0.8 million; the step that lands them there is taking the census output areas as every origin of grocery spend, when the guests on Wrentoft Lakes Holiday Park's 1,750 pitches live outside the region.",
  "architecture": 1,
  "loops": 0,
@@ -26,8 +26,15 @@
   "disposition": "APPROVE (pass 4 on 41415795, every graded figure reproduced; passes 2 and 3 approved 1680766e and ec38f0bd)",
   "report": "determinism_check_report.md"
  },
- "returned": [],
- "resume": "",
+ "returned": [
+  {
+   "date": "2026-10-27",
+   "portal": "both determinism judges competing_defensible_answer, Gates C and D, G pass, F plausible. Main call: the filed spend-share model's origins are the census households and nothing authorises the holiday parks' guests or pins the GBP 2,440 a pitch (five free choices against an overtaking threshold near GBP 1,300); asks: a night shift's two paid-hours lines, the GTFS block duplicates and the turned-away load are filed nowhere. Both responses filed S1 at 0.5 (the call stumped).",
+   "repair": "design",
+   "commit": ""
+  }
+ ],
+ "resume": "Re-root (the author's choice, 2026-10-27, in a fresh session: /build task305): architecture 1's decisive step, the holiday parks' guests as origins of spend, settles the population, so the WHAT screen kills it and no pin repairs it (measured on the shipped pack: golden GBP 2,443 a pitch, S3 0.804; S3 passes S1 at about GBP 1,330; the per-pitch reading a solver takes once told non-residents count gives GBP 1,370 to 1,529 and an S1/S3 near-tie near 0.5; over every pitch GBP 469 and S1). Draw a new decisive step that is a method on a fully filed estimand (stumping 1.2, 1.6a, step three), avoiding the last three builds' axes (guard.py recent; the window moved on 10-27); the world, the people and the ask files may be kept. The asks owe closures for the three conventions the portal judges named, each pinned with a silent device kept under the pin (supplemental-stumping Part 5): a night shift's two paid-hours lines, the GTFS Friday-late and joint-route duplicates (one vehicle per block), and a refused load re-sent the next day. Read the design note's last Tried and rejected line first.",
  "approved": null,
  "delivered": "2026-10-24",
  "portal": null,
