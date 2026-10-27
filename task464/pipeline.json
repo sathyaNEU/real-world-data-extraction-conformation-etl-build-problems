@@ -1,12 +1,12 @@
 {
  "task": "task464",
  "owner": "oviya1301",
- "status": "SHIPPED",
+ "status": "FAILED_TO_STUMP",
  "domain": "education-learning-sciences",
  "objective": "etl",
- "stage": 5,
- "stage_name": "ship",
- "updated": "2026-10-26",
+ "stage": 1,
+ "stage_name": "draw",
+ "updated": "2026-10-27",
  "stump": "The default path places each 2025 retiring-test score at its regression prediction from the bridge study, which pulls the low scores toward the sample's mean and out of Level 1, and funds Harlenbrook in Elmorrow's place (Harlenbrook 323 against Elmorrow 315); the concordance funds Elmorrow at 368 and leaves Harlenbrook out at 353.",
  "architecture": 2,
  "loops": 0,
@@ -33,11 +33,19 @@
    "portal": "prompt check P6 FAIL: the prompt asks for six of fourteen applicants but states no ranking or prioritisation rule, so several sets of six read as defensible",
    "repair": "the question now carries the grant rules' section 3 criterion, the six applicants with the most grade 9 and 10 students on the count day at Level 1 (a count, not a share), and the first ask points at those students; every other word of the prompt, the pack (target.zip unchanged) and every graded figure stay as shipped",
    "gates": "voice-check PASS (921 characters); leak.py --asof 2026-11-20 REVIEW with no LEAK, the same lines as the shipped report; precut 51 checks with 1 FAIL that predates the fix (the 'Measured by:' line a gate added on 10-18 asks of the ask sheet's cracker, which this build measured on paper); no generator check reads the prompt"
+  },
+  {
+   "date": "2026-10-27",
+   "portal": "both responses funded the golden six; the second also filed the runner-up and the gap exactly (Harlenbrook 353, Elmorrow 368, gap 15), so it executed the concordance",
+   "repair": "design",
+   "commit": ""
   }
  ],
- "resume": "",
+ "resume": "Architecture 2 is SPENT on a Gate F failure, not a determinism or rubric one, and the evidence was in the build before it shipped. Three causes, in the design note's Portal result section. (1) The decisive step is the field's standard practice: the note's own Domain test line says psychometrics links two scales by a concordance and that a regression is a prediction pulling scores to the mean, and the golden is that concordance, so the readability screen's test 3 verdict of silent is wrong and a competent analyst reaches it by reflex. (2) The stage-4 reader already named it: round 2's question 6 says the easy routes swap Elmorrow and Harlenbrook while a symmetric equating at 241 and below does not. That was recorded as a pass because its question-6 taxonomy answer was analytical, which it is; the step's kind was never the problem. (3) R2 (inverse regression) and R2b (ranges matched) both land the golden slate, so three of seven rungs reach the call and only the counts separate them. NEXT: re-root at stage 1 as architecture 3, keeping the world, the fourteen applicants, the two vendors, the count-day machinery and the pack's Layer 1 inventory, all of which measured sound, and moving the decisive step. Draw test from this failure: if the Domain test line and the Decisive step line name the same method, test 3 fails and the draw is not ready.",
  "approved": null,
  "delivered": "2026-10-17",
- "portal": null,
- "source_note": "architecture 2 drawn afresh after architecture 1's SEND_BACK: the 2027 adolescent literacy grants on grade 9 and 10 students at the new state reading test's Level 1, the retiring test's 2025 scores placed on the new scale through the 2026 bridge study"
+ "portal": "both responses landed the call",
+ "source_note": "architecture 2 drawn afresh after architecture 1's SEND_BACK: the 2027 adolescent literacy grants on grade 9 and 10 students at the new state reading test's Level 1, the retiring test's 2025 scores placed on the new scale through the 2026 bridge study",
+ "portal_status": "not on the approved list",
+ "portal_status_date": "2026-10-27"
 }

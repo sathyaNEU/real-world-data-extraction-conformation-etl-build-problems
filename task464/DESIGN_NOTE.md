@@ -425,3 +425,56 @@ repair: `leak.py` re-run (REVIEW, the same lines), no third reader.
   the move could not be read from the folder without a filed sentence, a fork; dropped.
 - Asks on the students the count leaves out (no grade 8 result) or on the movers: the complement or a split of the main
   population, so a device on them moves the call's rows; dropped.
+
+## Portal result and the diagnosis, 2026-10-27
+
+**Both responses landed the call.** Each funded the golden six (Kessick, Varlow City, Brenmoor County, Calderidge
+Unified, Garnet Hills, Elmorrow), and the second also filed the runner-up and the gap exactly: "Harlenbrook is first
+left out with 353 eligible students, 15 fewer than Elmorrow's 368", which are the golden's own figures. So the second
+response executed the concordance, not a route that lands the slate by accident. Architecture 2 is spent, and the
+reason is in this note rather than in the portal.
+
+**Cause 1, and it is the root: the decisive step is the field's standard practice, so it is a reflex.** The
+`Domain test:` line says it outright: "psychometrics places one test's scores on another's scale by a concordance that
+matches the two score distributions (equipercentile or linear linking ...), while a regression of one score on the
+other is a prediction that pulls every converted score toward the sample's mean." The golden is that concordance. The
+`## Readability screen` then rated the same move `silent` on test 3 with "no: the prediction reflexes and the cohort
+match land on 231". Both cannot be true. If the field's own method for the deciding quantity is the golden, a
+competent analyst applies it; what the screen measured was that the *wrong* routes are also reflexes, which is not
+what test 3 asks. Test 3 asks whether the decisive move is an opponent default, and for anyone who has linked two
+tests it is the first thing they reach for.
+
+**Cause 2: the stage-4 reader had already solved it, and its answer was read for its taxonomy rather than its
+content.** Round 2's question 6 says the easy routes "swap Elmorrow and Harlenbrook; a symmetric equating (less than
+or equal to 241) does not". That is the decisive step, the correct cut and the correct consequence, in the reader's
+own words, before the build shipped. It was recorded as a pass because question 6's answer was "an analytical
+choice", which it is: the step's KIND was never the problem. Gate F was, and the evidence for failing it was sitting
+in the same paragraph.
+
+**Cause 3: the slate is landable without the decisive step.** The `## Ladder` records it: R2 (inverse regression) and
+R2b (the two scales' ranges matched) both file "the golden six, every count high". Three of the seven rungs land the
+call, so a response that links the scales wrongly in the other direction still banks the recommendation. Only the
+counts separate them, and the counts are ask weight, not the call.
+
+**What this does not need.** The determinism is sound (two judge passes on file), the pack and its Layer 1 inventory
+measured sound, the asks are decoupled and the conformed-file deliverable is good. The world, the fourteen applicants,
+the two vendors and the count-day machinery can all be kept. What has to move is the decisive step.
+
+**What a re-root needs here.** A decisive step that is not the field's named method for the deciding quantity, that no
+competent reflex reaches, and that the records force to one execution. The test to apply at the draw, from this
+failure: if the `Domain test:` line and the `Decisive step:` line name the same method, the screen's test 3 fails and
+the draw is not ready.
+
+
+- Architecture 2's decisive step, the concordance against the regression prediction (2026-10-27, on the portal
+  result): spent. Both responses landed the call and one filed the golden's runner-up and gap exactly. The step is the
+  field's own standard practice, which the note's `Domain test:` line states and the readability screen then rated
+  silent on test 3; a reflex reaching the golden spends the stump whatever the step's kind. The stage-4 reader had
+  already named the symmetric equating and the 241 cut in its own words, which was Gate F evidence recorded as a pass
+  because its question-6 answer was "analytical choice". Compounding it, R2 and R2b land the slate too, so three of
+  seven rungs reach the call and only the counts separate them.
+- Defending the concordance better, or adding a rung above it: refused before it was tried, on task184's measured
+  precedent in this repo. There, deleting the three clauses that licensed the textbook weight left the same answer
+  reachable, because the reader had reached it unprompted; the note's conclusion was that the golden has to move off
+  the textbook move rather than be better defended. The same holds here: the equating is reachable from the bridge
+  file alone.
