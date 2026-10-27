@@ -1,91 +1,162 @@
 {
- "answer": "Lancashire (16 per cent of its HFC packs' full charge lost in 2026, against Yorkshire 13)",
- "deliverables": [
-  "hfc_pack_replacements_2027.xlsx",
-  "pack_leakage_2026.png"
- ],
- "distractor_files": [
-  "target/store_electricity_2024_2026.csv",
-  "target/kelbray_kpi_report_2026.pdf"
- ],
- "domain": "General Statistics & Data Science (missing data, censoring and measurement error)",
- "objective": "Descriptive & Distribution Analysis",
- "provenance": {
-  "data_dictionary.csv": {
-   "date": "2027-01-12",
-   "licence": "CC0 1.0 (constructed for this task)",
-   "source": "constructed by the task generator (seeded); Hallowmere Foodstores, Kelbray Refrigeration, Tarnley Monitoring and every store, pack, job, cylinder and person are fictional; the records follow the forms of a UK retailer's F-gas register, a refrigeration contractor's job sheet export and cylinder log, and a remote monitoring bureau's daily export"
+  "task": "task270",
+  "title": "Which primary care networks a GP federation puts in the enhanced tier of its 2027-28 statin adherence service, on each network's 2026 share of its older self-managing statin patients under 80 per cent of days covered",
+  "domain": "Pharmacology, Pharmacoepidemiology & Safety",
+  "client_domain": "Pharmacology, Pharmacoepidemiology & Safety",
+  "subdomain": "medication-adherence-persistence (a GP federation's enhanced tier for its statin adherence service, each primary care network's 2026 share of its older self-managing statin patients under 80 per cent of days covered, read from community pharmacy dispensing)",
+  "objective": "Descriptive & Distribution Analysis",
+  "prompt_shape": "cuts of a distribution per segment: twelve networks with each network's population and share fallen behind against the 30 per cent line, the closest network left out and its gap, a chart; and a table of the pilot's first consultations (October 2025 to September 2026) and six-week follow-ups by quarter in two networks",
+  "as_of": "2027-01-27",
+  "deliverables": [
+    "statin_service_tiers_2027-28.docx",
+    "statin_adherence_2026_by_network.xlsx"
+  ],
+  "distractor_files": [
+    "community_pharmacy_contractual_framework_summary_2024-26.pdf",
+    "statin_products_dmd_2026-12.csv"
+  ],
+  "field_terms": [],
+  "stated_inputs": [],
+  "input_gates": {
+    "files": 12,
+    "formats": [
+      "csv",
+      "pdf",
+      "xlsx"
+    ],
+    "largest_file": "community_pharmacy_statin_dispensing_2025-12-01_to_2026-12-31.csv",
+    "largest_file_rows": 368662
   },
-  "fgas_register_2026.xlsx": {
-   "date": "2027-01-12",
-   "licence": "CC0 1.0 (constructed for this task)",
-   "source": "constructed by the task generator (seeded); Hallowmere Foodstores, Kelbray Refrigeration, Tarnley Monitoring and every store, pack, job, cylinder and person are fictional; the records follow the forms of a UK retailer's F-gas register, a refrigeration contractor's job sheet export and cylinder log, and a remote monitoring bureau's daily export"
-  },
-  "hallowmere_stores.csv": {
-   "date": "2027-01-12",
-   "licence": "CC0 1.0 (constructed for this task)",
-   "source": "constructed by the task generator (seeded); Hallowmere Foodstores, Kelbray Refrigeration, Tarnley Monitoring and every store, pack, job, cylinder and person are fictional; the records follow the forms of a UK retailer's F-gas register, a refrigeration contractor's job sheet export and cylinder log, and a remote monitoring bureau's daily export"
-  },
-  "kelbray_cylinder_log_2026.csv": {
-   "date": "2027-01-12",
-   "licence": "CC0 1.0 (constructed for this task)",
-   "source": "constructed by the task generator (seeded); Hallowmere Foodstores, Kelbray Refrigeration, Tarnley Monitoring and every store, pack, job, cylinder and person are fictional; the records follow the forms of a UK retailer's F-gas register, a refrigeration contractor's job sheet export and cylinder log, and a remote monitoring bureau's daily export"
-  },
-  "kelbray_job_sheets_2024_2026.csv": {
-   "date": "2027-01-12",
-   "licence": "CC0 1.0 (constructed for this task)",
-   "source": "constructed by the task generator (seeded); Hallowmere Foodstores, Kelbray Refrigeration, Tarnley Monitoring and every store, pack, job, cylinder and person are fictional; the records follow the forms of a UK retailer's F-gas register, a refrigeration contractor's job sheet export and cylinder log, and a remote monitoring bureau's daily export"
-  },
-  "kelbray_kpi_report_2026.pdf": {
-   "date": "2027-01-12",
-   "licence": "CC0 1.0 (constructed for this task)",
-   "source": "constructed by the task generator (seeded); Hallowmere Foodstores, Kelbray Refrigeration, Tarnley Monitoring and every store, pack, job, cylinder and person are fictional; the records follow the forms of a UK retailer's F-gas register, a refrigeration contractor's job sheet export and cylinder log, and a remote monitoring bureau's daily export"
-  },
-  "kelbray_service_specification_2024.pdf": {
-   "date": "2027-01-12",
-   "licence": "CC0 1.0 (constructed for this task)",
-   "source": "constructed by the task generator (seeded); Hallowmere Foodstores, Kelbray Refrigeration, Tarnley Monitoring and every store, pack, job, cylinder and person are fictional; the records follow the forms of a UK retailer's F-gas register, a refrigeration contractor's job sheet export and cylinder log, and a remote monitoring bureau's daily export"
-  },
-  "pack_contents.txt": {
-   "date": "2027-01-12",
-   "licence": "CC0 1.0 (constructed for this task)",
-   "source": "constructed by the task generator (seeded); Hallowmere Foodstores, Kelbray Refrigeration, Tarnley Monitoring and every store, pack, job, cylinder and person are fictional; the records follow the forms of a UK retailer's F-gas register, a refrigeration contractor's job sheet export and cylinder log, and a remote monitoring bureau's daily export"
-  },
-  "refrigerant_strategy_2026.pdf": {
-   "date": "2027-01-12",
-   "licence": "CC0 1.0 (constructed for this task)",
-   "source": "constructed by the task generator (seeded); Hallowmere Foodstores, Kelbray Refrigeration, Tarnley Monitoring and every store, pack, job, cylinder and person are fictional; the records follow the forms of a UK retailer's F-gas register, a refrigeration contractor's job sheet export and cylinder log, and a remote monitoring bureau's daily export"
-  },
-  "store_electricity_2024_2026.csv": {
-   "date": "2027-01-12",
-   "licence": "CC0 1.0 (constructed for this task)",
-   "source": "constructed by the task generator (seeded); Hallowmere Foodstores, Kelbray Refrigeration, Tarnley Monitoring and every store, pack, job, cylinder and person are fictional; the records follow the forms of a UK retailer's F-gas register, a refrigeration contractor's job sheet export and cylinder log, and a remote monitoring bureau's daily export"
-  },
-  "tarnley_pack_tags.csv": {
-   "date": "2027-01-12",
-   "licence": "CC0 1.0 (constructed for this task)",
-   "source": "constructed by the task generator (seeded); Hallowmere Foodstores, Kelbray Refrigeration, Tarnley Monitoring and every store, pack, job, cylinder and person are fictional; the records follow the forms of a UK retailer's F-gas register, a refrigeration contractor's job sheet export and cylinder log, and a remote monitoring bureau's daily export"
-  },
-  "tarnley_receiver_levels_2024_2026.csv": {
-   "date": "2027-01-12",
-   "licence": "CC0 1.0 (constructed for this task)",
-   "source": "constructed by the task generator (seeded); Hallowmere Foodstores, Kelbray Refrigeration, Tarnley Monitoring and every store, pack, job, cylinder and person are fictional; the records follow the forms of a UK retailer's F-gas register, a refrigeration contractor's job sheet export and cylinder log, and a remote monitoring bureau's daily export"
-  },
-  "tarnley_service_description_2025.pdf": {
-   "date": "2027-01-12",
-   "licence": "CC0 1.0 (constructed for this task)",
-   "source": "constructed by the task generator (seeded); Hallowmere Foodstores, Kelbray Refrigeration, Tarnley Monitoring and every store, pack, job, cylinder and person are fictional; the records follow the forms of a UK retailer's F-gas register, a refrigeration contractor's job sheet export and cylinder log, and a remote monitoring bureau's daily export"
-  }
- },
- "rows": {
-  "fgas_register_2026.xlsx": 2164,
-  "hallowmere_stores.csv": 72,
-  "kelbray_cylinder_log_2026.csv": 384,
-  "kelbray_job_sheets_2024_2026.csv": 1489,
-  "store_electricity_2024_2026.csv": 2590,
-  "tarnley_pack_tags.csv": 182,
-  "tarnley_receiver_levels_2024_2026.csv": 196440
- },
- "task": "task270",
- "title": "Hallowmere Foodstores: the first region of the 2027 pack programme"
+  "sources": [
+    {
+      "files": "all files under target/",
+      "origin": "constructed for this task by task270/generator/build.py (seeded, deterministic) around a fictional English GP federation, its twelve primary care networks, their practices on two clinical systems, the community pharmacies and the integrated care board whose data service supplies the extracts, in the layouts of a health data service's dispensing extract and practice lists, a services portal export and a commissioner's payment statements; no real organisation's records or person is depicted.",
+      "date": "2027-01-27",
+      "license": "CC0-1.0 (original work)"
+    }
+  ],
+  "created": "2026-10-27",
+  "generator": "task270/generator/build.py",
+  "files": [
+    {
+      "path": "community_pharmacies_2026-12.csv",
+      "format": "csv",
+      "bytes": 6684,
+      "rows": 82,
+      "role": "input",
+      "source": "Constructed: NHS Iversford Vale Integrated Care Board primary care team, community pharmacy list (December 2026)",
+      "date": "2027-01-27",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "community_pharmacy_contractual_framework_summary_2024-26.pdf",
+      "format": "pdf",
+      "bytes": 41175,
+      "rows": null,
+      "role": "distractor",
+      "source": "Constructed: NHS Iversford Vale Integrated Care Board primary care contracting, a summary of the community pharmacy contractual framework 2024-26 (30 September 2024)",
+      "date": "2027-01-27",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "community_pharmacy_statin_dispensing_2025-12-01_to_2026-12-31.csv",
+      "format": "csv",
+      "bytes": 41670989,
+      "rows": 368662,
+      "role": "input",
+      "source": "Constructed: Iversford Vale Health Data Service, community pharmacy statin dispensing for the patients registered with Iversford Vale GP Federation's member practices, 1 December 2025 to 31 December 2026 (pulled 11 January 2027), pseudonymised",
+      "date": "2027-01-27",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "compliance_aids_prescribing_and_supply_guidance_2025.pdf",
+      "format": "pdf",
+      "bytes": 41711,
+      "rows": null,
+      "role": "input",
+      "source": "Constructed: NHS Iversford Vale Integrated Care Board, compliance aids prescribing and supply guidance (2 June 2025)",
+      "date": "2027-01-27",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "pilot_payment_statements_2025-11_to_2027-01.xlsx",
+      "format": "xlsx",
+      "bytes": 76832,
+      "rows": 1403,
+      "role": "input",
+      "source": "Constructed: Iversford Vale GP Federation finance, pilot payment statements, November 2025 to January 2027",
+      "date": "2027-01-27",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "practice_network_membership_2026.csv",
+      "format": "csv",
+      "bytes": 3728,
+      "rows": 56,
+      "role": "input",
+      "source": "Constructed: NHS Iversford Vale Integrated Care Board primary care team, practice membership of the primary care networks, 2026",
+      "date": "2027-01-27",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "pseudonym_crosswalk_2026-07-01.csv",
+      "format": "csv",
+      "bytes": 775270,
+      "rows": 29817,
+      "role": "input",
+      "source": "Constructed: Iversford Vale Health Data Service, pseudonym crosswalk at the re-keying of 1 July 2026",
+      "date": "2027-01-27",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "quarvis_practices_lipid_cohort_2026-12-31.csv",
+      "format": "csv",
+      "bytes": 432677,
+      "rows": 14551,
+      "role": "input",
+      "source": "Constructed: Iversford Vale Health Data Service, lipid cohort list from the Quarvis practices at 31 December 2026",
+      "date": "2027-01-27",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "services_portal_statin_pilot_export_pulled_2026-10-02.csv",
+      "format": "csv",
+      "bytes": 138736,
+      "rows": 1291,
+      "role": "input",
+      "source": "Constructed: Iversford Vale GP Federation services portal, statin adherence pilot export (pulled 2 October 2026)",
+      "date": "2027-01-27",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "statin_adherence_support_service_specification_2027-28.pdf",
+      "format": "pdf",
+      "bytes": 43928,
+      "rows": null,
+      "role": "input",
+      "source": "Constructed: Iversford Vale GP Federation, Statin Adherence Support Service specification 2027-28 (16 November 2026)",
+      "date": "2027-01-27",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "statin_products_dmd_2026-12.csv",
+      "format": "csv",
+      "bytes": 1590,
+      "rows": 17,
+      "role": "distractor",
+      "source": "Constructed: NHS Iversford Vale Integrated Care Board medicines optimisation team, statin products in use (December 2026)",
+      "date": "2027-01-27",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "synaris_practices_lipid_cohort_2026-12-31.xlsx",
+      "format": "xlsx",
+      "bytes": 525702,
+      "rows": 14381,
+      "role": "input",
+      "source": "Constructed: Iversford Vale Health Data Service, lipid cohort list from the Synaris practices at 31 December 2026",
+      "date": "2027-01-27",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    }
+  ]
 }

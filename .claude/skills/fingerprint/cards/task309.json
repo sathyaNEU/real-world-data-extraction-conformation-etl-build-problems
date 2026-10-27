@@ -1,0 +1,96 @@
+{
+  "task": "task309",
+  "architecture": "v1",
+  "drawn": "2026-10-27",
+  "slot_note": "wave 7 Opportunity Sizing; seed OS11 (express-lane toll under a cap) spent, so the seed's world, decision and quantity are left and the build moves to actuarial-science-insurance x opportunity sizing (catastrophe-exposure-accumulation), a pairing and a task type never drawn",
+  "domain": "actuarial-science-insurance",
+  "subdomain": "catastrophe-exposure-accumulation",
+  "client_domain": "actuarial-science-insurance",
+  "niche": "a Gulf Coast mutual homeowners insurer's board choosing which of four coastal counties gets its 2027 roof-retrofit grant round (about 1,500 eligible homes re-roofed to the FORTIFIED Roof standard), valued as the expected annual hurricane loss the retrofits remove from the county's eligible homes under the hurricane model vendor's 2027 event set, with the retrofit's effect read from the insurer's own storm claims since 2008",
+  "objective": "opportunity-sizing-decision",
+  "shape": "01",
+  "decision_type": "pick_one_of_n",
+  "answer_unit": "named_option",
+  "answer": "planned at the draw: Cypress Ridge County, about USD 2.6 million a year of 2027 expected hurricane loss removed, against Marlin Shoals County, the largest annual loss, that one storm-pooled ratio names; figures fixed in generator/figures.json at stage 3",
+  "answer_source": "task309/generator/figures.json at stage 3",
+  "gap": [
+    "rule",
+    "population"
+  ],
+  "pattern": [
+    "none"
+  ],
+  "generators": [
+    "G6",
+    "G14"
+  ],
+  "gate_g": "method_or_model_selection",
+  "calibration_form": "settled_transaction_ledger",
+  "stump_strategy": "composition_mix",
+  "decisive_rule_filed": false,
+  "official_decoy": false,
+  "validated_decoy": false,
+  "context_artifact": "close_out_summary",
+  "stump_class": "analytical",
+  "analyst_test": "A strong analyst who resolves the claims' supplements and recoveries, converts the older footprints from knots, dates each home's roof certificate at its loss and joins the vendor's event table to its hazard table measures the retrofit's cut in paid loss per insured dollar across the insurer's storms, applies that one ratio to each county's modelled annual loss and names Marlin Shoals, the county with the largest annual loss; the ratio is an average over the storms' mix of local gusts, large where the gust stays under about 130 mph and small above it, it fails the governance standard's storm-by-storm reproduction of the retrofitted homes' paid losses, and carried as one ratio it credits Marlin Shoals, whose annual loss sits almost wholly in its strongest events, with a cut those events do not give.",
+  "domain_test": "The deciding quantity is the expected annual loss a mitigation removes, which catastrophe modelling computes event by event through a vulnerability (damage) function of the event's local wind intensity, the way mitigation credits enter a hurricane model; a roof's benefit varying with gust is wind engineering, and a noun swap into another field breaks the event set, the gust classes, the deductible and the damage function.",
+  "layer2_family": "estimation_fit",
+  "layer2_pattern": "own:a-mitigations-loss-reduction-falls-with-local-gust",
+  "layer1": [
+    "storm footprints before 2015 in knots of peak gust, later ones in mph, one workbook sheet per storm with layouts that change",
+    "claim supplements filed as extra rows under a suffixed claim number and subrogation recoveries as negative rows",
+    "roof designation held on a certificate register with issue and expiry dates, so a home's roof at its loss is a dated join",
+    "in-force snapshots by storm with coverage values in USD thousands before 2019 and in units after",
+    "storm codes in the claims system against storm names in the footprint workbook",
+    "the vendor's event table and hazard table keyed on event IDs written two ways"
+  ],
+  "stakeholder_role": "the insurer's catastrophe risk manager, who takes the 2027 roof-retrofit grant round to the board",
+  "role_family": "portfolio_manager",
+  "scoring_unit": "other",
+  "spine": {
+    "file": "storm_claims_2008_2025.csv",
+    "rows": 60000,
+    "entity": "one payment line on one storm claim",
+    "grain": "claim payment line",
+    "source": "synthetic (fictional US Gulf Coast mutual homeowners insurer)"
+  },
+  "forum": "board_of_directors",
+  "forcing_event": "season_or_peak",
+  "org_family": "financial_institution",
+  "world": {
+    "geography": "United States, Gulf Coast (fictional territory)",
+    "currency": "USD",
+    "org_type": "a mutual homeowners insurer writing wind and hail on the Gulf Coast",
+    "invented_names": [
+      "Sandpiper Mutual Insurance Company",
+      "Corvane Risk Analytics",
+      "Marlin Shoals County",
+      "Cypress Ridge County",
+      "Heron Bay County",
+      "Calloway Flats County"
+    ],
+    "people": [
+      "Sherry Lang",
+      "Andrew Mack",
+      "Eric Brown"
+    ]
+  },
+  "deliverables": [
+    "retrofit_round_2027.xlsx",
+    "avoided_loss_by_county.png",
+    "board_note_retrofit_2027.docx"
+  ],
+  "opening_move": "question-first",
+  "question_form": "which",
+  "driver": "An intervention's effect is measured as one ratio across a record whose exposure mostly sat in the mild part of the intensity range, when the effect is large at mild intensity and small at severe; a filed criterion asks any effect carried forward to reproduce the record event by event, which the single ratio fails and an effect read class by class of intensity passes, and carried event by event through a forward event set it ranks the candidates by where their expected loss sits in the range, not by its size.",
+  "driver_concrete": "The FORTIFIED roof's cut in paid loss per insured dollar, read on the insurer's storms since 2012 class by class of local peak gust, is about 60 per cent under 130 mph and about 15 per cent above; one ratio over all storms misses the governance standard's storm-by-storm reproduction of the retrofitted homes' paid losses, and the vendor's 2027 annual loss for Marlin Shoals sits about nine tenths in events gusting over 130 mph while Cypress Ridge's sits about nine tenths under, so the round removes more from Cypress Ridge though Marlin Shoals carries nearly twice its annual loss.",
+  "stump": "A competent analyst measures the FORTIFIED roof's cut in paid loss per insured dollar across the insurer's storms since 2012, applies that one ratio to each county's 2027 modelled annual loss and names Marlin Shoals, the largest annual loss, without testing the ratio storm by storm as the model-governance standard asks; read class by class of local gust, the cut is about three fifths under 130 mph and about a seventh above, and carried event by event through the vendor's 2027 set it puts Cypress Ridge first, whose annual loss sits almost wholly in its moderate events, at about USD 2.5 million a year against about USD 1.5 million for Marlin Shoals.",
+  "mechanism_source": "design_note",
+  "differentiation": {
+    "task308": "architecture 2 re-costed catastrophe claims at the load each event put on a repair panel (a cost that rises with a capacity's load); this draw values a mitigation through its effect at each event's local wind intensity: no capacity, no reinsurance layer, no demand surge, and the decisive move is an effect modifier, not a cost curve",
+    "task301": "architecture 1 read a deposit falling off with distance from its source; this draw reads a mitigation's effect falling with the event's intensity, measured on paid claims against dated exposures and carried event by event through a vendor event set"
+  },
+  "lineage": [],
+  "notes": "Architecture 1. Seed OS11's corridor world is spent (task308 tried it, task307 holds road networks), so the build keeps OS11's decision form only (which of N gets one scarce programme, sized as an annual sum) and moves domain. Forcing event: the board's January meeting awards the round so contractors re-roof before the 1 June start of the 2027 hurricane season (season_or_peak). Context artifact: the claims department's storm close-out summaries, one per storm since 2008, which the catastrophe risk manager keeps beside the claims ledger (close_out_summary); the vendor's 2027 event set is an input, not the stakeholder's own file. Gap rule: the company's model-governance standard (a filed general criterion) asks any mitigation adjustment to reproduce, storm by storm, the paid losses of the homes carrying it, and the claims settle which construction passes (C2); population second, the history's exposure against each county's event mix.",
+  "registered": "2026-10-27T14:29:58Z"
+}

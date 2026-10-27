@@ -1,62 +1,77 @@
-"""The asks for task270, each device's handling a switch so the golden, the cracker and the checks run one path:
-each region's HFC packs' full charge in tonnes of CO2 equivalent, all and on R404A (each pack at the refrigerant it
-held in 2026, which the job sheets carry and the register does not always), and each region's refrigerant charged in 2026 into its integral
-cabinets and cold rooms (a job's kilograms as the cylinder it came from lost them, the handheld having stamped some
-jobs' totals on every asset line)."""
+"""The asks' golden, read from the pack: each network's population (the call's construction on every network), and
+the 2025-26 pilot's first consultations and six-week follow-ups by quarter in Krathwold and Lathcombe.
+
+The pilot's records are the portal's export joined to the payment statements: a record in a statement and not in the
+export (recorded after the export was pulled) is added from the statement; a recovered first consultation whose
+patient has another first consultation the federation did not recover is that consultation recorded a second time and is
+dropped, while every other recovered record is a consultation held and claimed late, and stays; each pharmacy's
+network is where it stood on the day of the consultation; each patient is carried through the pseudonym crosswalk."""
+from __future__ import annotations
+
+import datetime as dt
+import os
+
+import openpyxl
 import pandas as pd
 
-import analysis as A
-import common as K
+from common import TARGET
+import pilot as PL
+import records as R
+
+NETS = {"Krathwold": "KRT", "Lathcombe": "LTH"}
 
 
-def pack_gas(target, P, J, source="jobs"):
-    """the refrigerant each pack held in 2026: the latest 2024 to 2026 job sheet's refrigerant (a retrofit's new
-    blend), or the register's"""
-    if source == "register":
-        return P["gas"]
-    j = J.sort_values("date")
-    last = j.groupby("code")["refrigerant"].last().map(A.gas)
-    return last.reindex(P.index).fillna(P["gas"])
+def load_pilot(target=TARGET):
+    X = pd.read_csv(os.path.join(target, R.F_XWALK), dtype=str)
+    xmap = dict(zip(X["old_pseudonym"], X["new_pseudonym"]))
+    E = pd.read_csv(os.path.join(target, PL.F_PORTAL), dtype=str)
+    E["date"] = pd.to_datetime(E["consultation_date"], dayfirst=True).dt.date
+    wb = openpyxl.load_workbook(os.path.join(target, PL.F_STATEMENTS), read_only=True)
+    S = []
+    for ws in wb.worksheets:
+        rows = list(ws.iter_rows(values_only=True))
+        for r in rows[1:]:
+            S.append(dict(ods=r[0], record_id=r[1], patient_ref=r[2], consultation_type=r[3],
+                          date=r[4].date() if hasattr(r[4], "date") else r[4], amount=r[5], line=r[6],
+                          statement=ws.title))
+    S = pd.DataFrame(S)
+    P = pd.read_csv(os.path.join(target, PL.F_PHARMACIES), dtype=str).fillna("")
+    return E, S, P, xmap
 
 
-def charge_co2e(target, P, J, source="jobs"):
-    """each region's HFC packs' full charge in tonnes of CO2 equivalent, all packs and the packs on R404A"""
-    g = pack_gas(target, P, J, source)
-    t = P["charge"] * g.map(K.GWP) / 1000.0
-    allp = t.groupby(P["region"]).sum().reindex(K.REGIONS).fillna(0.0)
-    r404 = t[g == "R404A"].groupby(P["region"][g == "R404A"]).sum().reindex(K.REGIONS).fillna(0.0)
-    return allp, r404
+def pilot_figures(target=TARGET):
+    E, S, P, xmap = load_pilot(target)
+    recovered = set(S.loc[S["line"] == "Recovery", "record_id"])
+    pay = S[S["line"] == "Payment"]
+    late = pay[~pay["record_id"].isin(set(E["record_id"]))]
+    rows = E[["record_id", "pharmacy_ods", "patient_ref", "consultation_type", "date"]].copy()
+    add = late.rename(columns={"ods": "pharmacy_ods"})[["record_id", "pharmacy_ods", "patient_ref",
+                                                         "consultation_type", "date"]]
+    rows = pd.concat([rows, add], ignore_index=True)
+    rows["pat"] = rows["patient_ref"].map(lambda k: xmap.get(k, k))
+    rows["recovered"] = rows["record_id"].isin(recovered)
+    is_first = rows["consultation_type"] == "First consultation"
+    kept_first = set(rows.loc[is_first & ~rows["recovered"], "pat"])
+    second = is_first & rows["recovered"] & rows["pat"].isin(kept_first)
+    rows = rows[~second]
+    loc = {r.ods_code: (r.locality, r.relocated_on, r.previous_locality) for r in P.itertuples()}
 
+    def net_on(ods, d):
+        l, when, prev = loc[ods]
+        if when and d < dt.date.fromisoformat(when):
+            l = prev
+        return NETS.get(l)
 
-def equipment_charges(target, mode="cylinder"):
-    """refrigerant charged in 2026 into integral cabinets and cold rooms, by region; mode cylinder reads each job's
-    kilograms from the cylinder log, lines sums the job sheet's asset lines"""
-    J = A.jobs(target)
-    E = A.read(target, "register", sheet="Cabinets and cold rooms")
-    S = A.read(target, "stores")
-    code = {v: k for k, v in K.REGION_NAME.items()}
-    reg = dict(zip(S["store_no"].astype(int), S["region"].map(code)))
-    eq = set(E["Asset"])
-    j = J[(J["date"].dt.year == K.YEAR) & J["asset"].isin(eq)].copy()
-    j["region"] = j["store"].astype(int).map(reg)
-    if mode == "lines":
-        return j.groupby("region")["charged_kg"].sum().reindex(K.REGIONS).fillna(0.0)
-    C = A.read(target, "cylinders")
-    C["used"] = C["gross_before_kg"].astype(float) - C["gross_after_kg"].astype(float)
-    used = C.groupby("job_no")["used"].sum()
-    per_job = j.groupby("job_no").agg(region=("region", "first"))
-    per_job["kg"] = used.reindex(per_job.index).fillna(0.0)
-    return per_job.groupby("region")["kg"].sum().reindex(K.REGIONS).fillna(0.0)
-
-
-def all_asks(target, L=None, P=None, J=None, gas_source="jobs", eq_mode="cylinder"):
-    if P is None:
-        P = A.packs(target)
-    if J is None:
-        J = A.pack_jobs(target, P)
-    if L is None:
-        L = A.losses(target, P=P, J=J)
-    allp, r404 = charge_co2e(target, P, J, gas_source)
-    e = equipment_charges(target, eq_mode)
-    return dict(charge_co2e_t={k: K.r(v) for k, v in allp.items()}, r404a_co2e_t={k: K.r(v) for k, v in r404.items()},
-                equipment_kg={k: K.r(v, 1) for k, v in e.items()})
+    F = rows[(rows["consultation_type"] == "First consultation") & (rows["date"] >= PL.PILOT_START)
+             & (rows["date"] <= PL.PILOT_END)].copy()
+    F["net"] = [net_on(o, d) for o, d in zip(F["pharmacy_ods"], F["date"])]
+    F = F[F["net"].notna()]
+    fu = rows[rows["consultation_type"] == "Follow-up"].groupby("pat")["date"].apply(list).to_dict()
+    C1 = {(n, q): 0 for n in ("KRT", "LTH") for q in (1, 2, 3, 4)}
+    C2 = dict(C1)
+    for r in F.itertuples():
+        k = (r.net, PL.quarter(r.date))
+        C1[k] += 1
+        if any(0 < (d - r.date).days <= 42 for d in fu.get(r.pat, [])):
+            C2[k] += 1
+    return C1, C2

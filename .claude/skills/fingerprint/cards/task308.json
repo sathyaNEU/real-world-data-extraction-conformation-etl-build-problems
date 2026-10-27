@@ -1,166 +1,166 @@
 {
-  "task": "task308",
-  "architecture": "v3",
-  "drawn": "2026-10-27",
-  "slot_note": "re-root at stage 1 after architecture 2 (a catastrophe layer, repair-panel demand surge) was spent at stage 4; moved out of actuarial science to another client domain and dataset under the no-idle-pause rule",
-  "domain": "energy-systems-utilities",
-  "subdomain": "generation-capacity-planning",
-  "client_domain": "energy-systems-utilities",
-  "niche": "a generation and transmission cooperative's resource planning committee awarding one 2027 capacity contract among four offers (a 300 MW gas peaker on interruptible pipeline transport, a 300 MW firm import over the existing tie, a 450 MW wind farm, a 500 MW solar farm), each valued on the expected unserved energy it removes over the ten recorded weather years at the planning standard's value of lost load less its annual capacity payment, when the existing peakers on the same pipeline were out together, for want of gas, in nearly every hour that carried a shortfall",
-  "objective": "opportunity-sizing-decision",
-  "shape": "other",
-  "decision_type": "pick_one_of_n",
-  "answer_unit": "named_option",
-  "answer": "",
-  "answer_source": "task308/submission.md block 1, from generator/figures.json",
-  "gap": [
-    "objective",
-    "population"
+ "task": "task308",
+ "architecture": "v3",
+ "drawn": "2026-10-27",
+ "slot_note": "re-root at stage 1 after architecture 2 (a catastrophe layer, repair-panel demand surge) was spent at stage 4; moved out of actuarial science to another client domain and dataset under the no-idle-pause rule",
+ "domain": "energy-systems-utilities",
+ "subdomain": "generation-capacity-planning",
+ "client_domain": "energy-systems-utilities",
+ "niche": "a generation and transmission cooperative's resource planning committee awarding one 2027 capacity contract among four offers (a 300 MW gas peaker on interruptible pipeline transport, a 300 MW firm import over the existing tie, a 450 MW wind farm, a 500 MW solar farm), each valued on the expected unserved energy it removes over the ten recorded weather years at the planning standard's value of lost load less its annual capacity payment, when the existing peakers on the same pipeline were out together, for want of gas, in nearly every hour that carried a shortfall",
+ "objective": "opportunity-sizing-decision",
+ "shape": "other",
+ "decision_type": "pick_one_of_n",
+ "answer_unit": "named_option",
+ "answer": "Red Willow import: the 300 MW firm import removes 7,100 of the 2027 fleet's 9,500 MWh a year of expected unserved energy, net USD 106 million; Ketchum Ridge removes 0 MWh (net USD -23 million), Sandhill Draw USD 12 million, Coulee Flats USD -17 million",
+ "answer_source": "task308/submission.md block 1, from generator/figures.json",
+ "gap": [
+  "objective",
+  "population"
+ ],
+ "pattern": [
+  "none"
+ ],
+ "generators": [
+  "G14",
+  "G7"
+ ],
+ "gate_g": "method_or_model_selection",
+ "calibration_form": "none",
+ "stump_strategy": "other",
+ "decisive_rule_filed": false,
+ "official_decoy": false,
+ "validated_decoy": false,
+ "context_artifact": "operations_log",
+ "stump_class": "analytical",
+ "analyst_test": "A strong analyst who resolves the event log's revisions, clock and derates, replays the 2027 fleet through the ten weather years and adds each offer gives the new peaker its own rated or class-average forced outage rate in every hour, as planning studies do for a unit with no record, and names the peaker (the cheapest capacity per available megawatt), because nothing says that the peakers on the pipeline's interruptible service were out together for want of gas in almost every hour that carried a shortfall, so a new peaker on the same service would have been out in those hours too.",
+ "domain_test": "The deciding quantity is each offer's reduction in expected unserved energy, which resource adequacy planning estimates by running the planning year's fleet through recorded weather years; how a resource's availability moves with the conditions that cause shortfalls (correlated, common-mode forced outages, the lesson of the winter storms that drove effective load carrying capability accreditation) decides its capacity value, and a noun swap breaks the shortfall, the fleet's outages and the value of lost load.",
+ "layer2_family": "estimand_identification",
+ "layer2_pattern": "own:a-new-units-outages-move-with-its-class-in-the-shortfall-hours",
+ "layer1": [
+  "the outage event log in UTC against a planning table in local prevailing time with its DST hour",
+  "event records revised after first report, the later revision superseding",
+  "forced derates as partial capacity against full outages, overlapping events on one unit",
+  "unit codes in the event log against plant names in the fleet list",
+  "planned and maintenance events beside forced ones",
+  "the candidates' modelled profiles in UTC and per megawatt",
+  "the member metering export with multipliers, transferred delivery points and two-channel meters"
+ ],
+ "stakeholder_role": "the cooperative's resource planning engineer preparing the committee's award paper",
+ "role_family": "capacity_planner",
+ "scoring_unit": "other",
+ "spine": {
+  "file": "weather_years_2027_hourly.csv",
+  "rows": 87672,
+  "entity": "one hour of one recorded weather year carried to the 2027 system",
+  "grain": "hour",
+  "source": "synthetic (fictional US Upper Midwest generation and transmission cooperative)"
+ },
+ "forum": "committee_or_panel",
+ "forcing_event": "purchase_order_or_contract",
+ "org_family": "cooperative_or_member_body",
+ "world": {
+  "geography": "United States, Upper Midwest (fictional territory)",
+  "currency": "USD",
+  "org_type": "a generation and transmission cooperative serving eight member distribution cooperatives",
+  "invented_names": [
+   "Prairie Hollow Power Cooperative",
+   "Northgate Interstate Gas Transmission",
+   "Red Willow Hydro Authority",
+   "Ketchum Ridge Peaking Station",
+   "Sandhill Draw Wind",
+   "Coulee Flats Solar"
   ],
-  "pattern": [
+  "people": [
+   "Joseph Graham",
+   "Rhonda Mcdonald",
+   "Isabel Cole",
+   "Lindsey Ramos",
+   "Nicholas Wilkinson"
+  ]
+ },
+ "deliverables": [
+  "capacity_award_2027.xlsx",
+  "capacity_award_2027.docx"
+ ],
+ "opening_move": "question-first",
+ "question_form": "which",
+ "driver": "An added unit is valued on the shortfall it would have removed in the recorded years, but the units of its kind were out together, from one shared cause, in nearly every hour that carried a shortfall, so a new unit of that kind would have been out in those hours too; crediting it with its rated or average availability counts it most where it would have been absent and sends the award to it.",
+ "driver_concrete": "Each offer is added to the 2027 fleet replayed through 2016 to 2025; the peaker sits on the same interruptible pipeline service as the ten existing peakers, which the event log shows out together on lack of fuel in about 97 per cent of the hours with a shortfall, so in those hours the new peaker would have been out too and removes almost nothing, while the firm import over the tie removes most of the shortfall.",
+ "stump": "A competent analyst who replays the 2027 fleet through the ten weather years with every unit's recorded forced outages and adds each offer, crediting the new peaker with its rated forced outage rate (or its class's average) in every hour, names the Ketchum Ridge peaker, the cheapest capacity per available megawatt; but the ten peakers already on the Northgate pipeline's interruptible service were out together for want of gas in about 97 per cent of the hours that carried a shortfall, so a new peaker on that service would have been out in those hours too, removes almost none of the expected unserved energy and loses its payment, and the firm import over the Red Willow tie is the award.",
+ "mechanism_source": "design_note",
+ "lineage": [
+  {
+   "architecture": "v1",
+   "domain": "product-analytics",
+   "subdomain": "churn-propensity-uplift-modeling",
+   "niche": "which of a bike-share operator's five classic networks gets 300 e-bikes and the net fare revenue a year they add, when the busiest network's stations rarely run dry and the campus network's residence-hall hubs run dry at every teaching-weekday class change, so the rides on record understate the requests",
+   "objective": "opportunity-sizing-decision",
+   "shape": "other",
+   "decision_type": "pick_one_of_n",
+   "gap": [
+    "population",
+    "objective"
+   ],
+   "pattern": [
     "none"
-  ],
-  "generators": [
+   ],
+   "generators": [
+    "G7",
+    "G12"
+   ],
+   "gate_g": "method_or_model_selection",
+   "stump_strategy": "informative_censoring",
+   "calibration_form": "parallel_run_overlap",
+   "context_artifact": "monitoring_export",
+   "forum": "board_of_directors",
+   "forcing_event": "season_or_peak",
+   "org_family": "software_or_platform",
+   "role_family": "product_manager",
+   "layer2_family": "estimation_fit",
+   "layer2_pattern": "own:served-trips-censored-by-empty-docks",
+   "driver": "A launch's added revenue is sized from requests, but the record holds only the requests the service met: where the existing supply runs out at every peak, the unmet requests leave no row, so carrying a pilot's uplift by each candidate's recorded use sends the launch to the candidate whose supply never runs out; only the supply rebuilt second by second from the movements in and out shows which candidate turns away the most requests.",
+   "driver_concrete": "Each network's turned-away requests are rebuilt from each station's classic stock (the 03:00 audit, then every undock, dock and van move, second by second) and its requests per stocked second by month, day type and hour, and University, whose residence-hall hubs run dry at every class change, adds the most net fare revenue, while Central, with the most rides on record, rarely runs dry.",
+   "stump": "A competent analyst carries the pilot's e-bike share and new-rider uplift to each network's 2025 rides and names Central at about USD 50,000 a year, against University at USD 125,000, whose residence-hall hubs turn away the class-change requests the trip record never shows.",
+   "fate": "spent at stage 4 (2026-10-26): both scored readers landed the call (University) by rebuilding the empty-dock seconds; the judge returned SEND_BACK on the grain and the induced riders"
+  },
+  {
+   "architecture": "v2",
+   "domain": "actuarial-science-insurance",
+   "subdomain": "catastrophe-exposure-accumulation",
+   "niche": "a UK mutual home insurer's board choosing which of four regional home books takes a 2027 catastrophe excess of loss layer (GBP 15 million excess of 10 million each loss occurrence, one reinstatement), valued as the expected 2027 recoveries on its own 2010 to 2025 storm, flood and freeze events brought to the 2027 book less the premium and the expected reinstatement premium, when what a claim costs rises with the claims each repair panel firm has to take on at once and one region's book doubled in 2021 while its panel did not grow",
+   "objective": "opportunity-sizing-decision",
+   "shape": "other",
+   "decision_type": "pick_one_of_n",
+   "gap": [
+    "objective",
+    "time"
+   ],
+   "pattern": [
+    "none"
+   ],
+   "generators": [
     "G14",
-    "G7"
-  ],
-  "gate_g": "method_or_model_selection",
-  "calibration_form": "none",
-  "stump_strategy": "other",
-  "decisive_rule_filed": false,
-  "official_decoy": false,
-  "validated_decoy": false,
-  "context_artifact": "operations_log",
-  "stump_class": "analytical",
-  "analyst_test": "A strong analyst who resolves the event log's revisions, clock and derates, replays the 2027 fleet through the ten weather years and adds each offer gives the new peaker its own rated or class-average forced outage rate in every hour, as planning studies do for a unit with no record, and names the peaker (the cheapest capacity per available megawatt), because nothing says that the peakers on the pipeline's interruptible service were out together for want of gas in almost every hour that carried a shortfall, so a new peaker on the same service would have been out in those hours too.",
-  "domain_test": "The deciding quantity is each offer's reduction in expected unserved energy, which resource adequacy planning estimates by running the planning year's fleet through recorded weather years; how a resource's availability moves with the conditions that cause shortfalls (correlated, common-mode forced outages, the lesson of the winter storms that drove effective load carrying capability accreditation) decides its capacity value, and a noun swap breaks the shortfall, the fleet's outages and the value of lost load.",
-  "layer2_family": "estimand_identification",
-  "layer2_pattern": "own:a-new-units-outages-move-with-its-class-in-the-shortfall-hours",
-  "layer1": [
-    "the outage event log in UTC against a planning table in local prevailing time with its DST hour",
-    "event records revised after first report, the later revision superseding",
-    "forced derates as partial capacity against full outages, overlapping events on one unit",
-    "unit codes in the event log against plant names in the fleet list",
-    "planned and maintenance events beside forced ones",
-    "the candidates' modelled profiles in UTC and per megawatt",
-    "the member metering export with multipliers, transferred delivery points and two-channel meters"
-  ],
-  "stakeholder_role": "the cooperative's resource planning engineer preparing the committee's award paper",
-  "role_family": "capacity_planner",
-  "scoring_unit": "other",
-  "spine": {
-    "file": "weather_years_2027_hourly.csv",
-    "rows": 87672,
-    "entity": "one hour of one recorded weather year carried to the 2027 system",
-    "grain": "hour",
-    "source": "synthetic (fictional US Upper Midwest generation and transmission cooperative)"
-  },
-  "forum": "committee_or_panel",
-  "forcing_event": "purchase_order_or_contract",
-  "org_family": "cooperative_or_member_body",
-  "world": {
-    "geography": "United States, Upper Midwest (fictional territory)",
-    "currency": "USD",
-    "org_type": "a generation and transmission cooperative serving eight member distribution cooperatives",
-    "invented_names": [
-      "Prairie Hollow Power Cooperative",
-      "Northgate Interstate Gas Transmission",
-      "Red Willow Hydro Authority",
-      "Ketchum Ridge Peaking Station",
-      "Sandhill Draw Wind",
-      "Coulee Flats Solar"
-    ],
-    "people": [
-      "Joseph Graham",
-      "Rhonda Mcdonald",
-      "Isabel Cole",
-      "Lindsey Ramos",
-      "Nicholas Wilkinson"
-    ]
-  },
-  "deliverables": [
-    "capacity_award_2027.xlsx",
-    "capacity_award_2027.docx"
-  ],
-  "opening_move": "question-first",
-  "question_form": "which",
-  "driver": "An added unit is valued on the shortfall it would have removed in the recorded years, but the units of its kind were out together, from one shared cause, in nearly every hour that carried a shortfall, so a new unit of that kind would have been out in those hours too; crediting it with its rated or average availability counts it most where it would have been absent and sends the award to it.",
-  "driver_concrete": "Each offer is added to the 2027 fleet replayed through 2016 to 2025; the peaker sits on the same interruptible pipeline service as the ten existing peakers, which the event log shows out together on lack of fuel in about 97 per cent of the hours with a shortfall, so in those hours the new peaker would have been out too and removes almost nothing, while the firm import over the tie removes most of the shortfall.",
-  "stump": "A competent analyst who replays the 2027 fleet through the ten weather years with every unit's recorded forced outages and adds each offer, crediting the new peaker with its rated forced outage rate (or its class's average) in every hour, names the Ketchum Ridge peaker, the cheapest capacity per available megawatt; but the ten peakers already on the Northgate pipeline's interruptible service were out together for want of gas in about 97 per cent of the hours that carried a shortfall, so a new peaker on that service would have been out in those hours too, removes almost none of the expected unserved energy and loses its payment, and the firm import over the Red Willow tie is the award.",
-  "mechanism_source": "design_note",
-  "lineage": [
-    {
-      "architecture": "v1",
-      "domain": "product-analytics",
-      "subdomain": "churn-propensity-uplift-modeling",
-      "niche": "which of a bike-share operator's five classic networks gets 300 e-bikes and the net fare revenue a year they add, when the busiest network's stations rarely run dry and the campus network's residence-hall hubs run dry at every teaching-weekday class change, so the rides on record understate the requests",
-      "objective": "opportunity-sizing-decision",
-      "shape": "other",
-      "decision_type": "pick_one_of_n",
-      "gap": [
-        "population",
-        "objective"
-      ],
-      "pattern": [
-        "none"
-      ],
-      "generators": [
-        "G7",
-        "G12"
-      ],
-      "gate_g": "method_or_model_selection",
-      "stump_strategy": "informative_censoring",
-      "calibration_form": "parallel_run_overlap",
-      "context_artifact": "monitoring_export",
-      "forum": "board_of_directors",
-      "forcing_event": "season_or_peak",
-      "org_family": "software_or_platform",
-      "role_family": "product_manager",
-      "layer2_family": "estimation_fit",
-      "layer2_pattern": "own:served-trips-censored-by-empty-docks",
-      "driver": "A launch's added revenue is sized from requests, but the record holds only the requests the service met: where the existing supply runs out at every peak, the unmet requests leave no row, so carrying a pilot's uplift by each candidate's recorded use sends the launch to the candidate whose supply never runs out; only the supply rebuilt second by second from the movements in and out shows which candidate turns away the most requests.",
-      "driver_concrete": "Each network's turned-away requests are rebuilt from each station's classic stock (the 03:00 audit, then every undock, dock and van move, second by second) and its requests per stocked second by month, day type and hour, and University, whose residence-hall hubs run dry at every class change, adds the most net fare revenue, while Central, with the most rides on record, rarely runs dry.",
-      "stump": "A competent analyst carries the pilot's e-bike share and new-rider uplift to each network's 2025 rides and names Central at about USD 50,000 a year, against University at USD 125,000, whose residence-hall hubs turn away the class-change requests the trip record never shows.",
-      "fate": "spent at stage 4 (2026-10-26): both scored readers landed the call (University) by rebuilding the empty-dock seconds; the judge returned SEND_BACK on the grain and the induced riders"
-    },
-    {
-      "architecture": "v2",
-      "domain": "actuarial-science-insurance",
-      "subdomain": "catastrophe-exposure-accumulation",
-      "niche": "a UK mutual home insurer's board choosing which of four regional home books takes a 2027 catastrophe excess of loss layer (GBP 15 million excess of 10 million each loss occurrence, one reinstatement), valued as the expected 2027 recoveries on its own 2010 to 2025 storm, flood and freeze events brought to the 2027 book less the premium and the expected reinstatement premium, when what a claim costs rises with the claims each repair panel firm has to take on at once and one region's book doubled in 2021 while its panel did not grow",
-      "objective": "opportunity-sizing-decision",
-      "shape": "other",
-      "decision_type": "pick_one_of_n",
-      "gap": [
-        "objective",
-        "time"
-      ],
-      "pattern": [
-        "none"
-      ],
-      "generators": [
-        "G14",
-        "G13"
-      ],
-      "gate_g": "binding_constraint",
-      "stump_strategy": "binding_constraint",
-      "calibration_form": "none",
-      "context_artifact": "filed_model",
-      "forum": "board_of_directors",
-      "forcing_event": "purchase_order_or_contract",
-      "org_family": "financial_institution",
-      "role_family": "portfolio_manager",
-      "layer2_family": "field_method",
-      "layer2_pattern": "own:post-event-demand-surge-at-the-cover-years-scale",
-      "driver": "An event's loss carried to a larger book is scaled claim by claim at the cost each claim carried, when what a claim costs rises with how many claims the region's repair capacity has to take on at once; where the book has grown and the capacity has not, the same event costs more per claim at the forward scale, and only the cost per claim read against claims per unit of capacity across every event shows by how much.",
-      "driver_concrete": "Each 2010 to 2025 storm, flood and freeze is re-costed as it would strike the 2027 book: its claims scaled by district policies, each claim's cost re-read from the cost per claim against claims per panel firm at the event's 2027 claims per firm (Pennine's panel stayed at 30 to 34 firms while its book doubled with the 2021 transfer), and the layer applied to the occurrences the hours clause allows.",
-      "stump": "A competent analyst brings every claim to 2027 by its district's policies and the rebuild cost index, adds at most the surge the field reads on a catastrophe's size, applies the layer to the occurrences the hours clause allows and names Severn Vale (GBP 0.0 million at the index alone), where the golden is Pennine at GBP 0.1 million; the step that lands it there is pricing a historical event's claims at the cost each claim carried at the event's own load on the repair panel, when Pennine's four pre-2021 freezes, struck at 22.6 to 25.1 claims a panel firm, would put 44 to 50 claims on each of its 34 firms in 2027.",
-      "fate": "spent 2026-10-26 at stage 4 round 4: a reader landed the call (Pennine) through RC-07 s.3 and the claims per panel contractor; filing that the index leaves out a catastrophe's own repair load hands the step to a reader holding the panel column, and without it the judge read the index alone as the literal estimand"
-    }
-  ],
-  "differentiation": {
-    "task308": "architecture 2 re-costed each catastrophe claim at the claims per repair firm its event would put on the 2027 panel (a cost that rises with the load on a capacity); this draw values an added generating unit on whether it would have been available in the hours of shortfall, when its class's outages share one cause with those hours: a dependence between a new unit and its kind, read in another domain and dataset, with no cost curve, no capacity load and no claim"
-  },
-  "notes": "Architecture 3. Moved to energy-systems-utilities x opportunity sizing (generation-capacity-planning) after architecture 2 was spent; stump_strategy other: the decisive move is a correlated (common-mode) availability for a unit with no record, which no strategy key names. Forcing event: the offers are firm until the committee's award meeting and the contract must be signed for delivery from 1 January 2027 (purchase_order_or_contract). Context artifact: the GADS-style outage event log (operations_log). Axis values redrawn against the window: forum committee_or_panel (executive_team, board_of_directors and council_or_assembly held), org cooperative_or_member_body (university_or_school, financial_institution and local_government held).",
-  "registered": "2026-10-27T12:53:11Z"
+    "G13"
+   ],
+   "gate_g": "binding_constraint",
+   "stump_strategy": "binding_constraint",
+   "calibration_form": "none",
+   "context_artifact": "filed_model",
+   "forum": "board_of_directors",
+   "forcing_event": "purchase_order_or_contract",
+   "org_family": "financial_institution",
+   "role_family": "portfolio_manager",
+   "layer2_family": "field_method",
+   "layer2_pattern": "own:post-event-demand-surge-at-the-cover-years-scale",
+   "driver": "An event's loss carried to a larger book is scaled claim by claim at the cost each claim carried, when what a claim costs rises with how many claims the region's repair capacity has to take on at once; where the book has grown and the capacity has not, the same event costs more per claim at the forward scale, and only the cost per claim read against claims per unit of capacity across every event shows by how much.",
+   "driver_concrete": "Each 2010 to 2025 storm, flood and freeze is re-costed as it would strike the 2027 book: its claims scaled by district policies, each claim's cost re-read from the cost per claim against claims per panel firm at the event's 2027 claims per firm (Pennine's panel stayed at 30 to 34 firms while its book doubled with the 2021 transfer), and the layer applied to the occurrences the hours clause allows.",
+   "stump": "A competent analyst brings every claim to 2027 by its district's policies and the rebuild cost index, adds at most the surge the field reads on a catastrophe's size, applies the layer to the occurrences the hours clause allows and names Severn Vale (GBP 0.0 million at the index alone), where the golden is Pennine at GBP 0.1 million; the step that lands it there is pricing a historical event's claims at the cost each claim carried at the event's own load on the repair panel, when Pennine's four pre-2021 freezes, struck at 22.6 to 25.1 claims a panel firm, would put 44 to 50 claims on each of its 34 firms in 2027.",
+   "fate": "spent 2026-10-26 at stage 4 round 4: a reader landed the call (Pennine) through RC-07 s.3 and the claims per panel contractor; filing that the index leaves out a catastrophe's own repair load hands the step to a reader holding the panel column, and without it the judge read the index alone as the literal estimand"
+  }
+ ],
+ "differentiation": {
+  "task308": "architecture 2 re-costed each catastrophe claim at the claims per repair firm its event would put on the 2027 panel (a cost that rises with the load on a capacity); this draw values an added generating unit on whether it would have been available in the hours of shortfall, when its class's outages share one cause with those hours: a dependence between a new unit and its kind, read in another domain and dataset, with no cost curve, no capacity load and no claim"
+ },
+ "notes": "Architecture 3. Moved to energy-systems-utilities x opportunity sizing (generation-capacity-planning) after architecture 2 was spent; stump_strategy other: the decisive move is a correlated (common-mode) availability for a unit with no record, which no strategy key names. Forcing event: the offers are firm until the committee's award meeting and the contract must be signed for delivery from 1 January 2027 (purchase_order_or_contract). Context artifact: the GADS-style outage event log (operations_log). Axis values redrawn against the window: forum committee_or_panel (executive_team, board_of_directors and council_or_assembly held), org cooperative_or_member_body (university_or_school, financial_institution and local_government held).",
+ "registered": "2026-10-27T12:53:11Z"
 }

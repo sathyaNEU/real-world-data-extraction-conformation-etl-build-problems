@@ -1,292 +1,350 @@
 {
- "task": "task270",
- "architecture": "v7 (Hallowmere Foodstores' 2027 HFC pack replacement programme: which of four regions it starts in, on the share of their full charge the region's packs lost in 2026)",
- "drawn": "2026-10-26",
- "slot_note": "Architecture 7 in a fresh world (architectures 1 to 6 spent, lineage). The decisive step estimates each pack's 2026 loss through the year-end holdings its receiver level records, read through the pack's own response to the top-ups its job sheets weigh.",
- "domain": "general-statistics-data-science",
- "subdomain": "missing-data-censoring-measurement-error",
- "client_domain": "general-statistics-data-science",
- "niche": "a regional supermarket chain choosing the region its 2027 HFC refrigeration pack replacement programme starts in, the region whose packs lost the largest share of their full charge in 2026, from its contractor's job sheets and its monitoring bureau's receiver levels",
- "objective": "descriptive-distribution",
- "shape": "14",
- "decision_type": "pick_one_of_n",
- "answer_unit": "named_option",
- "answer": "",
- "answer_source": "",
- "gap": [
-  "time",
-  "population"
- ],
- "pattern": [
-  "none"
- ],
- "generators": [
-  "G16",
-  "G13"
- ],
- "gate_g": "method_or_model_selection",
- "calibration_form": "none",
- "stump_strategy": "maturity_censoring",
- "decisive_rule_filed": true,
- "official_decoy": false,
- "validated_decoy": false,
- "context_artifact": "register",
- "stump_class": "analytical",
- "analyst_test": "A strong analyst who reads every job sheet, the F-gas register and the strategy correctly sums each in-scope pack's 2026 refrigerant charged less recovered (routine and breakdown jobs) over its register charge, the F-gas industry's top-up leak rate, adds each region's packs up and files the North East (16 per cent against Lancashire's 9); the North East's packs entered 2026 short of refrigerant lost in 2025 and Lancashire's and Yorkshire's left it short of refrigerant lost in 2026, amounts their receiver levels record.",
- "domain_test": "The deciding quantity is each pack's refrigerant lost in 2026, which no record holds at the year's two ends: there it sits only in a proxy, the receiver level, whose scale has to be calibrated against direct measurements of the same quantity within the same unit (the weighed top-ups with the levels read before and after them), the measurement-error field's calibration of a proxy against a validation sample, combined with the completion of a count recorded only as it is made good. With hospitals for stores and patients for refrigerant the sentence reads the same, but a ward has no gauge whose reading falls kilogram by kilogram with what it holds and no weighed refills to calibrate it against, so the year-end holdings could not be recovered; the task works only where a continuous proxy and occasional direct measurements see the same physical quantity.",
- "layer2_family": "estimation_fit",
- "layer2_pattern": "own:year-end holdings read through each pack's own receiver response to weighed top-ups",
- "layer1": [
-  "job sheets exported with day-first dates and the contractor's store numbers without the chain's leading zeros",
-  "refrigerants named by trade name on some job sheets (Solstice N40, Opteon XP40)",
-  "the bureau's pack tags (HFS-031-MT1) against the register's pack codes (031/MT1)",
-  "days missing from the bureau's export during communications outages and sensor fault codes on some days",
-  "commissioning charges of new CO2 packs and decommissioning recoveries in the same job sheet export",
-  "engineers' receiver readings recorded as whole per cents"
- ],
- "stakeholder_role": "head of property and sustainability",
- "role_family": "programme_officer",
- "scoring_unit": "other",
- "spine": {
-  "file": "tarnley_receiver_levels_2024_2026.csv",
-  "rows": 0,
-  "entity": "one row is one pack's daily mean receiver level",
-  "grain": "pack x day",
-  "source": "synthetic"
- },
- "forum": "executive_team",
- "forcing_event": "period_close",
- "org_family": "retailer_or_ecommerce",
- "world": {
-  "geography": "England (Yorkshire, Lancashire, the North East and Cumbria)",
-  "currency": "GBP",
-  "org_type": "regional supermarket chain",
-  "invented_names": [
-   "Hallowmere Foodstores",
-   "Kelbray Refrigeration",
-   "Tarnley Monitoring"
-  ],
-  "people": [
-   "Jayne Gallagher",
-   "Denis Webster",
-   "Steven Ashton"
-  ]
- },
- "deliverables": [
-  "hfc_pack_replacements_2027.xlsx",
-  "pack_leakage_2026.png"
- ],
- "opening_move": "question-first",
- "question_form": "which",
- "driver": "The decisive quantity is what each unit lost over a calendar year when its losses are recorded only as they are made good, after lags that leave the year's replacements out of step with its losses at both ends of the year; the unit's continuous level reading measures how far short it stood at each end, but in units of the reading, convertible only through the unit's own response to the replacements whose size was recorded.",
- "driver_concrete": "Each HFC pack's 2026 refrigerant loss as the refrigerant charged into it in 2026 less recovered, plus the refrigerant it was short on 31 December 2026 and less what it was short on 31 December 2025, each shortfall read from Tarnley's daily receiver level through the pack's own rise in receiver level per kilogram charged on its 2024 to 2026 job sheets (arrival and departure readings) and its full level as its median departure reading; each region's packs' losses added up over their full charges added up, Lancashire 16 per cent against Yorkshire 13, the North East 13 and Cumbria 11.",
- "stump": "A competent analyst takes each pack's 2026 refrigerant charged less recovered, the F-gas log's top-up method, as its 2026 loss and starts the programme in the North East (16 per cent of charge); the step that lands it there is reading the year's top-ups as the year's losses when the North East's second 2025 round ran in January 2026 and Lancashire's second 2026 round never ran, so packs entered and left 2026 short of charge by amounts their receiver levels record.",
- "mechanism_source": "design_note",
- "differentiation": {
-  "task148": "task148 estimates a patience distribution censored by service in a queue; here nothing is censored by the outcome: each pack's 2026 loss is completed at the year's two ends from the holdings its receiver level records, read through the pack's own response to weighed top-ups.",
-  "task241": "task241 reads a sensor's error against a moving external reference; here the level gauge is never judged against a reference but converted to kilograms through the pack's own weighed top-ups, and the decisive move is completing the year's loss at its two ends.",
-  "task479": "task479 shrinks noisy small-unit records toward a pool; here every pack's loss is measured and none is shrunk, and the move is adding the change in what each pack holds across the year to the year's recorded top-ups.",
-  "task254": "task254 estimates a time-to-event cut from events truncated at a lock date; here no time to an event is estimated: the year's top-ups are a lagged record of the year's losses, completed at both ends by the holdings the level gauge records.",
-  "task501": "task501 picks a pacing basis by a walk-forward test on closed years; here no candidate method is tested on past years, and the material balance's two end-of-year terms come from each pack's own level-to-kilogram response."
- },
- "lineage": [
-  {
-   "architecture": "v1",
-   "domain": "psychology-behavioral-science",
-   "subdomain": "psychometric-measurement-scale-validation",
-   "niche": "the predictive validity of a civil-service police entry examination's components across the candidate pool, estimated from an academy outcome that exists only for the candidates appointed in rank order of two of the components",
-   "objective": "descriptive-distribution",
-   "shape": "01",
-   "decision_type": "ranked_slate_under_cap",
-   "answer_unit": "set_of_items",
-   "gap": [
-    "population"
-   ],
-   "pattern": [
-    "none"
-   ],
-   "generators": [
-    "G9",
-    "G17",
-    "G16"
-   ],
-   "gate_g": "method_or_model_selection",
-   "calibration_form": "none",
-   "stump_strategy": "population_selection",
-   "context_artifact": "filed_standard",
-   "role_family": "research_desk",
-   "forum": "committee_or_panel",
-   "forcing_event": "vote_or_meeting",
-   "org_family": "local_government",
-   "layer2_family": "estimation_fit",
-   "layer2_pattern": "own:indirect-range-restriction-on-a-selection-composite",
-   "driver": "The decisive quantity is how strongly each of several measures predicts an outcome across a whole pool when the outcome exists only for the members picked from the pool in rank order of a weighted sum of two of the measures; the correlations among those picked understate every measure, and correcting each measure as if it alone had picked them leaves the two that formed the sum understated, so only a correction that models the pick on the sum, with the measures' spread across the whole pool, restores which measures predict best.",
-   "driver_concrete": "Each examination component's correlation with the police academy's final average across everyone who sat the 2024 and 2025 examinations, recovered from the appointees' grades by the multivariate correction on the written test, the oral board, the veterans' credit and the physical ability test's points the appointments were made on; the appointees' own correlations and a per-component Case II correction both leave the written test and the oral board looking weaker than they are and keep the work style inventory.",
-   "stump": "A competent solver correlates each component with the academy final average among the appointees, or corrects each correlation separately by Case II, and keeps the written test and the work style inventory, because the appointments were made in rank order of the written test and oral board composite, which restricted those two (and the oral board most, beside the written test it was ranked with) far more than the per-component spreads show.",
-   "answer": "The 2027 entry examination should keep the written test and the oral board.",
-   "fate": "spent 2026-10-19 at stage 4 (Gate F): both isolated scored readers landed the call, the order and the first component below; reader 1 applied the multivariate correction for selection on the variables the appointments were ranked on (Lawley) from the filed rules and the plan's pool, reader 2 the same correction; reader 1 also landed all five costs (5 of 14 ask figures), reader 2 all 14; the judge DETERMINISTIC, APPROVE. A filed selection rule plus a filed population of appointees and non-appointees hands a strong reader the textbook correction."
-  },
-  {
-   "architecture": "v2",
-   "domain": "actuarial-science-insurance",
-   "subdomain": "claims-frequency-severity",
-   "niche": "a no-claims step scale makes an at-fault claim cost a policyholder future premium that depends on the step they stand on, so drivers on the middle steps pay small damage themselves; the frequency a region will show once the 2027 wording removes that cost is recovered from the claims nobody absorbs and the size distribution of the policyholders for whom a claim already costs nothing",
-   "objective": "descriptive-distribution",
-   "shape": "01",
-   "decision_type": "designation_set",
-   "answer_unit": "set_of_items",
-   "gap": [
-    "objective",
-    "population"
-   ],
-   "pattern": [
-    "none"
-   ],
-   "generators": [
-    "G12",
-    "G14",
-    "G16"
-   ],
-   "gate_g": "method_or_model_selection",
-   "calibration_form": "pilot_log",
-   "stump_strategy": "population_selection",
-   "context_artifact": "filed_standard",
-   "role_family": "portfolio_manager",
-   "forum": "committee_or_panel",
-   "forcing_event": "launch_or_rollout",
-   "org_family": "cooperative_or_member_body",
-   "layer2_family": "estimation_fit",
-   "layer2_pattern": "own:claims-absorbed-under-a-no-claims-step-scale-recovered-from-the-size-every-step-reports",
-   "driver": "The decisive quantity is how often each group's members will report an event once reporting costs them nothing, when today each member absorbs events smaller than what reporting would cost them and that cost rises and falls with their position on a scale, so the reported count understates most the groups whose members stand where reporting costs most; counting only the events too large for anyone to absorb, scaled by how common events that large are among members for whom reporting already costs nothing, recovers it, while a group that buys out the cost is self-selected and gives the size of events, not their rate.",
-   "driver_concrete": "Each region's claims per 100 vehicle-years under the 2027 protected wording, recovered step by step from the at-fault claims above the size no policyholder absorbs, scaled by the share of claims that large among step-0 policyholders and Step Protection holders, plus the not-at-fault claims everyone already makes; the reported frequency and a lift taken from the Step Protection holders' frequency on steps 6 to 9 leave the middle-step regions understated.",
-   "stump": "A competent solver ranks the regions by their 2024 and 2025 reported claim frequency (or lifts steps 6 to 9 by the Step Protection holders' frequency) and files band C as South East, West Midlands and Yorkshire and the Humber, South East in place of North West, because North West's policyholders stand mostly on the middle steps with the book's highest premiums, where a claim costs the most premium over the climb back, and pay small at-fault damage themselves, so North West reports the smallest share of its accidents while South East, on the top steps and under Step Protection, reports nearly all of its own.",
-   "answer": "Band C of the 2027 rating basis holds North West, West Midlands and Yorkshire and the Humber; South East is the first region below.",
-   "fate": "spent 2026-10-19 at stage 4 (Gate F): reader 6 of six isolated scored readers took the claims above 2,500 pounds as fully reported and scaled them by the protected policies' share above that size, landing the call and the first region below; readers 1 to 5 filed the reported or uplifted band; reader 5 took all 32 ask figures. Section 2.1's counterfactual wording says a correction is owed, and claim sizes by step show where the scale stops mattering, so the recovery is reachable for a strong reader."
-  },
-  {
-   "answer": "The Research Committee should name Quarndale and Thurlwick as the recruiting sites for ARV-1102.",
-   "answer_unit": "set_of_items",
-   "architecture": "v3",
-   "calibration_form": "none",
-   "context_artifact": "filed_standard",
-   "decision_type": "ranked_slate_under_cap",
-   "domain": "psychology-behavioral-science",
-   "driver": "The decisive quantity is how fast each group's members lose a latent ability, read from repeated tests whose second sitting is lifted by the member having sat the test before; a slope through every sitting flattens most for the groups whose members have sat it only a few times, so those groups look slower than they are, and only separating the one-time gain of the second sitting from the trend puts the groups in their true order.",
-   "driver_concrete": "Each memory clinic's average decline in ACE-III points a year over 2022 to September 2026, net of the change the test itself produces, which is the gain a patient's second completed sitting of their whole record carries, estimated within patients across all clinics; sized on the period's sittings alone it is diluted by the patients first assessed before 2022, and a slope through every sitting, per patient or in a random-slopes model, keeps it in, so both leave Quarndale, nearly all of whose patients have sat the test twice, outside the pair and name Thurlwick and Penwardine.",
-   "forcing_event": "launch_or_rollout",
-   "forum": "committee_or_panel",
-   "gap": [
-    "population"
-   ],
-   "gate_g": "decomposition_attribution",
-   "generators": [
-    "G6",
-    "G16"
-   ],
-   "layer2_family": "estimation_fit",
-   "layer2_pattern": "own:practice-gain-at-the-first-retest-separated-from-the-trend",
-   "niche": "the rate at which memory clinic patients' cognition declines, read from repeated ACE-III sittings whose second completed sitting is lifted by the patient having sat the test before, compared across clinics whose patients have sat it a median of two to five times because the clinics opened between 2014 and 2024",
-   "objective": "descriptive-distribution",
-   "org_family": "hospital_or_health_provider",
-   "pattern": [
-    "none"
-   ],
-   "role_family": "research_desk",
-   "shape": "01",
-   "stump": "A competent solver who reads the paper's 3.1 sizes the change the test itself produces on the period's sittings, each patient's first completed sitting from 2022 taken as their first (1.24 points), and files Thurlwick and Penwardine as the two fastest-declining clinics, Penwardine in place of Quarndale, because the gain belongs to each patient's whole record: patients first assessed before 2022 carry it through every sitting in the period, which dilutes a step read inside the period to half its size, while Quarndale, opened in April 2024 with nearly all of its patients at two sittings, stays sixth. Only the gain estimated over each patient's whole record, within patients (2.63), netted from every patient's slope puts Quarndale in the pair.",
-   "stump_strategy": "decomposition_attribution",
-   "subdomain": "longitudinal-growth-curve-modeling",
-   "fate": "spent 2026-10-19 at stage 4 round 2 (Gate F): round 1 readers missed with the outcome unfiled and the judge sent it back; filing it (a change the test itself produces is not part of the rate) named the practice effect, and both round 2 readers estimated it within patients and landed the pair"
-  },
-  {
-   "answer": "",
-   "answer_unit": "set_of_items",
-   "architecture": "v4",
-   "calibration_form": "none",
-   "context_artifact": "register",
-   "decision_type": "designation_set",
-   "domain": "education-learning-sciences",
-   "driver": "The decisive quantity is whether a part of a composite score estimates a unit's true standing on that part more accurately than the whole composite does; the part's own measurement error sits inside the composite, so taking the composite's agreement with the part as agreement between two separate measures credits the composite with the part's own error and finds the composite better for parts where it is not.",
-   "driver_concrete": "A content-area score is printed in 2027 only where its reliability exceeds the share of the area's true-score variance the total score predicts, with the total's covariance with the true area score taken as its covariance with the observed area score less the area's own error variance.",
-   "forcing_event": "launch_or_rollout",
-   "forum": "board_of_directors",
-   "gap": [
-    "objective",
-    "rule"
-   ],
-   "gate_g": "signal_vs_noise_or_hold",
-   "generators": [
-    "G16",
-    "G17"
-   ],
-   "layer2_family": "field_method",
-   "layer2_pattern": "own:a part's value beside a total that contains it, with the part's own error inside the total",
-   "niche": "a fitness professional certification board deciding which of its seven content-area scores to print on 2027 candidate score reports, from the 2026 attempts' item responses",
-   "objective": "descriptive-distribution",
-   "org_family": "nonprofit_or_charity",
-   "pattern": [
-    "none"
-   ],
-   "role_family": "research_desk",
-   "shape": "10",
-   "stump": "A competent analyst disattenuates each area's correlation with the total for the area's unreliability as though the two were separate tests, finds the total predicts the largest area's true score better than that area's own score does, and prints only the most distinct areas; the step that lands them there is treating the total as a separate measure when the area's items, and their errors, are part of it.",
-   "stump_strategy": "uncertainty_hold",
-   "subdomain": "psychometrics",
-   "fate": "spent 2026-10-26 at the draw probes: probes p270a and p270b, call-only Sonnet readers on prototypes of 26,000 attempts, computed Haberman's PRMSE with the part-whole correction (and, with case-study sets added, reliability over the case sets) and printed the golden three each time; the policy's criterion is Haberman's own question"
-  },
-  {
-   "architecture": "v5",
-   "domain": "product-analytics",
-   "subdomain": "metric-definition-measurement-science",
-   "niche": "a second-hand fashion marketplace app choosing which two-week metric reads every 2027 onboarding experiment as its proxy for six-month retention, judged on the platform's per-arm scorecards for about 220 onboarding experiments run since 2024, with user-level data only for the 2025 global holdout",
-   "objective": "descriptive-distribution",
-   "shape": "01",
-   "decision_type": "pick_one_of_n",
-   "gap": [
+  "task": "task270",
+  "architecture": "v9 (Brindholm and Wendholt NHS Foundation Trust's 2027-28 DBT skills groups: which of its eleven community mental health teams get one, the teams where at least 30 per cent of the patients they assessed with the trust's mood app in 2026 have high emotional instability as the Sallowdene Provider Collaborative's app will measure it)",
+  "drawn": "2026-10-27",
+  "slot_note": "Architecture 9, re-rooted in another domain after architecture 8 was spent at stage 4 (architectures 1 to 8 in lineage). The decisive step reads each patient's emotional instability at the three hours between the collaborative app's prompts, from trust app ratings whose adjacent prompts sat about 90 minutes apart.",
+  "domain": "psychology-behavioral-science",
+  "subdomain": "experience-sampling-intensive-longitudinal-analysis",
+  "client_domain": "psychology-behavioral-science",
+  "niche": "an NHS mental health trust choosing which community mental health teams run a 2027-28 dialectical behaviour therapy skills group, on each team's share of the patients it assessed with the trust's own mood app in 2026 whose emotional instability reaches the provider collaborative's standard as the collaborative's three-hourly app will measure it, read from trust app ratings taken at a random minute in each of eight 90-minute blocks a day",
+  "objective": "descriptive-distribution",
+  "shape": "14",
+  "decision_type": "designation_set",
+  "answer_unit": "set_of_items",
+  "answer": "",
+  "answer_source": "",
+  "gap": [
     "objective"
-   ],
-   "pattern": [
+  ],
+  "pattern": [
     "none"
-   ],
-   "generators": [
-    "G16",
-    "G17"
-   ],
-   "gate_g": "signal_vs_noise_or_hold",
-   "stump_strategy": "uncertainty_hold",
-   "driver": "The decisive quantity is how closely two quantities' true changes move together across many trials, when each trial measures both changes on the same sample of members, so the two estimates' errors move together wherever the quantities are correlated member by member; the raw correlation of the estimates counts that shared error as shared change and favours the quantity most like the outcome member by member rather than change by change.",
-   "driver_concrete": "Each candidate's effects across the 2024 to 2026 onboarding experiments are correlated with the experiments' six-month retention effects after each experiment's sampling covariance between the candidate and retention (the holdout panel's user-level correlation times the arms' standard deviations over their users) is taken out of the cross-experiment covariance and each sampling variance out of the variances; first purchase within 14 days leads.",
-   "stump": "A competent analyst correlates the experiments' scorecard effects on each candidate with their six-month retention effects, disattenuates for the sampling error in each, and adopts sessions in days 1 to 14; the step that lands them there is treating each experiment's two sampling errors as independent when both effects are measured on the same users, so the shared error counts as shared change for the metrics most like retention user by user.",
-   "fate": "spent 2026-10-26 at stage 4 round 2 (Gate F): with 2.3 filing that the correlation is between the effects themselves, both isolated readers took the full sampling-covariance correction and landed first purchase; round 1's readers had missed with the estimand unfiled and the judge held the raw correlation open"
+  ],
+  "generators": [
+    "G13",
+    "G16"
+  ],
+  "gate_g": "method_or_model_selection",
+  "calibration_form": "none",
+  "stump_strategy": "other",
+  "decisive_rule_filed": false,
+  "official_decoy": false,
+  "validated_decoy": false,
+  "context_artifact": "filed_standard",
+  "stump_class": "analytical",
+  "analyst_test": "A strong analyst who reads the collaborative's standard and both app exports correctly computes each patient's root mean square change in negative affect between adjacent answered prompts of the 2026 fortnight, applies the standard's 2.0 and funds groups in Dunnerby and Marrowcombe alone, the two teams with personality disorder hubs, because the trust app's adjacent prompts sat about 90 minutes apart while the collaborative's sit three hours apart and negative affect moves further in three hours, so read at three hours Drystow, Haddersley and Cressbeck reach 30 per cent too.",
+  "domain_test": "Emotional instability is experience sampling's own estimand, the root mean square of the change in momentary negative affect between adjacent prompts, and it measures change over the interval the prompt schedule sets, so the field reads an instability threshold only at the spacing it was set on; a swap to a building's temperature log breaks because no prompt schedule, answering window or clinical cut point fixes the interval a drift is read over.",
+  "layer2_family": "estimation_fit",
+  "layer2_pattern": "own:a successive-difference instability index read at the interval its threshold was set on",
+  "layer1": [
+    "the trust app's export changed layout on 15 June 2026 (version 3 to version 4): item scores on 0 to 100 sliders before and 0 to 10 buttons after, local times before and UTC after, so a fortnight across the change sits in both files",
+    "app participant codes keyed to the electronic patient record through an enrolment log, with patients who re-enrolled on a new phone holding two codes",
+    "community team episodes from the patient record, with two Haddersley teams merged into one on 1 October 2026",
+    "the assessment register's clinician-entered fortnight status, which marks some fortnights completed that the trust's own half-answered rule does not",
+    "version 4's offline sync resending some answers, the same prompt arriving twice",
+    "the British Summer Time change inside fortnights"
+  ],
+  "stakeholder_role": "director of psychological therapies",
+  "role_family": "programme_officer",
+  "scoring_unit": "per covered member",
+  "spine": {
+    "file": "mood_app_prompts_v4_2026-06-15_to_2026-12-31.csv",
+    "rows": 0,
+    "entity": "one prompt the trust's mood app sent a patient during a 2026 assessment fortnight",
+    "grain": "prompt",
+    "source": "synthetic"
   },
-  {
-   "architecture": "v6",
-   "domain": "marketing-consumer-research",
-   "subdomain": "media-reach-frequency-audience-measurement",
-   "niche": "a national blood donor charity choosing which of three draft television schedules for a four-week April 2027 youth campaign puts its film before the most adults aged 18 to 34 three or more times, each schedule replayed second by second on the audience panel's March 2026 reference weeks, where the channels' traffic placed oversold prime-time rotation bookings in daytime breaks",
-   "objective": "descriptive-distribution",
-   "shape": "14",
-   "decision_type": "pick_one_of_n",
-   "gap": [
-    "population"
-   ],
-   "pattern": [
-    "none"
-   ],
-   "generators": [
-    "G9",
-    "G3",
-    "G7"
-   ],
-   "gate_g": "method_or_model_selection",
-   "stump_strategy": "population_selection",
-   "driver": "The decisive quantity is where an item sold without a fixed slot would have landed, and the record of where such items landed shows only the ones that landed inside the slot they were sold for as belonging to it; joining the sales record to the landing record finds that a third were placed elsewhere, in slots worth a fraction as much, so reading the item over the in-slot landings alone credits it with value it would not have had and reverses the choice.",
-   "driver_concrete": "Each 2027 prime-time rotation spot in schedule B is read at the places where that reference day's prime-time rotation bookings on the same channel actually aired, found by joining the sales houses' bookings to the as-run log on the booking number, so the 1,854 of 4,943 (37.5 per cent) the channels' traffic placed in daytime breaks count at their daytime audiences, and B falls from 31.9 to 20.9 per cent three-plus reach, below A's 26.6.",
-   "stump": "A competent analyst replays the three schedules on the reference weeks, reads each rotation spot over the rotation places the as-run log shows in prime time that day and buys schedule B at 31.9 per cent three-plus reach against A's 26.6; the step that lands them there is taking the prime-time rotation places as where a prime-time rotation spot airs, when the bookings joined to the as-run log show the channels placed 1,854 of 4,943 (37.5 per cent) in daytime breaks.",
-   "fate": "spent 2026-10-26 at stage 4 round 2 (Gate F): after the repair pass both round 2 readers read the prime-time places through the bookings' janela field and landed buy A, so a join and one field reach the golden; the round 2 judge classed the moved bookings as a planted flip"
-  }
- ],
- "notes": "Architecture 6 re-root in a fresh world after architecture 5 was spent at stage 4. Filed after the build because G9 as the decisive pattern was banned while task485 sat in the window; redrawn at filing: forum to executive_team (task308 held the board), context artifact to register (task487 holds the operations log), forcing event to vote_or_meeting (task137 v4 holds purchase_order_or_contract; the Comissão Executiva decides on 2 December, the channels' April bookings close on 11 December). Architecture 7 drawn 2026-10-26 in a fresh world after architecture 6 was spent at stage 4. Architecture 7 spent 2026-10-26 at stage 4 round 1: both isolated scored readers ran the stock-and-flow balance with each pack's own kilograms per level point and landed Lancashire.",
- "registered": "2026-10-26T19:20:47Z",
- "architecture_spent": true
+  "forum": "committee_or_panel",
+  "forcing_event": "launch_or_rollout",
+  "org_family": "hospital_or_health_provider",
+  "world": {
+    "geography": "England",
+    "currency": "GBP",
+    "org_type": "NHS mental health foundation trust",
+    "invented_names": [
+      "Brindholm and Wendholt NHS Foundation Trust",
+      "Brindholm",
+      "Wendholt",
+      "Sallowdene Provider Collaborative",
+      "Sallowdene",
+      "Dunnerby",
+      "Marrowcombe",
+      "Drystow",
+      "Haddersley",
+      "Cressbeck",
+      "Rennicombe",
+      "Ashwardine",
+      "Bramwick",
+      "Garthby",
+      "Heskeby",
+      "Torrinsby"
+    ],
+    "people": [
+      "Hilary O'Donnell",
+      "Howard Harding",
+      "Jeremy Austin"
+    ]
+  },
+  "deliverables": [
+    "dbt_skills_groups_2027_28.xlsx",
+    "team_instability_2026.png"
+  ],
+  "opening_move": "question-first",
+  "question_form": "which",
+  "driver": "The decisive quantity is the share of a group's members whose root mean square move between two readings a fixed interval apart reaches a set level, read from readings taken at random times about half that interval apart; each member's level wanders and returns, so the mean square of a move grows with the time between the readings and then levels off, and the set level read against the moves between neighbouring readings as taken passes too few members, so only the moves the record holds near the fixed interval, or each member's fitted curve of mean square move against the time between readings read at that interval, sort the groups.",
+  "driver_concrete": "Each of the trust's eleven community mental health teams' share of the patients it assessed with its mood app in 2026 whose emotional instability, the root mean square change in negative affect between adjacent same-day prompts of the Sallowdene Provider Collaborative's app (9:00, 12:00, 15:00, 18:00 and 21:00), reaches the collaborative's 2.0, estimated from the trust app's 2026 ratings taken at a random minute in each of eight 90-minute blocks a day: each patient's change over three hours from the ratings about three hours apart or from a fitted curve of mean squared change against the time between ratings, not the change between adjacent 2026 ratings about 90 minutes apart.",
+  "stump": "A competent analyst computes each patient's root mean square change in negative affect between adjacent answered prompts of their 2026 fortnight, applies the collaborative's 2.0 and funds DBT skills groups in Dunnerby and Marrowcombe alone; the step that lands it there is reading the trust app's ratings, about 90 minutes apart, as the collaborative's app would, when its prompts sit three hours apart and negative affect moves further in three hours, so read at three hours Drystow, Haddersley and Cressbeck reach 30 per cent too.",
+  "mechanism_source": "design_note",
+  "differentiation": {
+    "task272": "task272 v2 scales an income level measured over one quarter to the year across a seasonal calendar that differs by place and by kind of work; this build reads the change between two readings at the interval a threshold was set on, a change that grows with the interval because the level reverts, with no season, no calendar and the same patients throughout"
+  },
+  "lineage": [
+    {
+      "architecture": "v1",
+      "domain": "psychology-behavioral-science",
+      "subdomain": "psychometric-measurement-scale-validation",
+      "niche": "the predictive validity of a civil-service police entry examination's components across the candidate pool, estimated from an academy outcome that exists only for the candidates appointed in rank order of two of the components",
+      "objective": "descriptive-distribution",
+      "shape": "01",
+      "decision_type": "ranked_slate_under_cap",
+      "answer_unit": "set_of_items",
+      "gap": [
+        "population"
+      ],
+      "pattern": [
+        "none"
+      ],
+      "generators": [
+        "G9",
+        "G17",
+        "G16"
+      ],
+      "gate_g": "method_or_model_selection",
+      "calibration_form": "none",
+      "stump_strategy": "population_selection",
+      "context_artifact": "filed_standard",
+      "role_family": "research_desk",
+      "forum": "committee_or_panel",
+      "forcing_event": "vote_or_meeting",
+      "org_family": "local_government",
+      "layer2_family": "estimation_fit",
+      "layer2_pattern": "own:indirect-range-restriction-on-a-selection-composite",
+      "driver": "The decisive quantity is how strongly each of several measures predicts an outcome across a whole pool when the outcome exists only for the members picked from the pool in rank order of a weighted sum of two of the measures; the correlations among those picked understate every measure, and correcting each measure as if it alone had picked them leaves the two that formed the sum understated, so only a correction that models the pick on the sum, with the measures' spread across the whole pool, restores which measures predict best.",
+      "driver_concrete": "Each examination component's correlation with the police academy's final average across everyone who sat the 2024 and 2025 examinations, recovered from the appointees' grades by the multivariate correction on the written test, the oral board, the veterans' credit and the physical ability test's points the appointments were made on; the appointees' own correlations and a per-component Case II correction both leave the written test and the oral board looking weaker than they are and keep the work style inventory.",
+      "stump": "A competent solver correlates each component with the academy final average among the appointees, or corrects each correlation separately by Case II, and keeps the written test and the work style inventory, because the appointments were made in rank order of the written test and oral board composite, which restricted those two (and the oral board most, beside the written test it was ranked with) far more than the per-component spreads show.",
+      "answer": "The 2027 entry examination should keep the written test and the oral board.",
+      "fate": "spent 2026-10-19 at stage 4 (Gate F): both isolated scored readers landed the call, the order and the first component below; reader 1 applied the multivariate correction for selection on the variables the appointments were ranked on (Lawley) from the filed rules and the plan's pool, reader 2 the same correction; reader 1 also landed all five costs (5 of 14 ask figures), reader 2 all 14; the judge DETERMINISTIC, APPROVE. A filed selection rule plus a filed population of appointees and non-appointees hands a strong reader the textbook correction."
+    },
+    {
+      "architecture": "v2",
+      "domain": "actuarial-science-insurance",
+      "subdomain": "claims-frequency-severity",
+      "niche": "a no-claims step scale makes an at-fault claim cost a policyholder future premium that depends on the step they stand on, so drivers on the middle steps pay small damage themselves; the frequency a region will show once the 2027 wording removes that cost is recovered from the claims nobody absorbs and the size distribution of the policyholders for whom a claim already costs nothing",
+      "objective": "descriptive-distribution",
+      "shape": "01",
+      "decision_type": "designation_set",
+      "answer_unit": "set_of_items",
+      "gap": [
+        "objective",
+        "population"
+      ],
+      "pattern": [
+        "none"
+      ],
+      "generators": [
+        "G12",
+        "G14",
+        "G16"
+      ],
+      "gate_g": "method_or_model_selection",
+      "calibration_form": "pilot_log",
+      "stump_strategy": "population_selection",
+      "context_artifact": "filed_standard",
+      "role_family": "portfolio_manager",
+      "forum": "committee_or_panel",
+      "forcing_event": "launch_or_rollout",
+      "org_family": "cooperative_or_member_body",
+      "layer2_family": "estimation_fit",
+      "layer2_pattern": "own:claims-absorbed-under-a-no-claims-step-scale-recovered-from-the-size-every-step-reports",
+      "driver": "The decisive quantity is how often each group's members will report an event once reporting costs them nothing, when today each member absorbs events smaller than what reporting would cost them and that cost rises and falls with their position on a scale, so the reported count understates most the groups whose members stand where reporting costs most; counting only the events too large for anyone to absorb, scaled by how common events that large are among members for whom reporting already costs nothing, recovers it, while a group that buys out the cost is self-selected and gives the size of events, not their rate.",
+      "driver_concrete": "Each region's claims per 100 vehicle-years under the 2027 protected wording, recovered step by step from the at-fault claims above the size no policyholder absorbs, scaled by the share of claims that large among step-0 policyholders and Step Protection holders, plus the not-at-fault claims everyone already makes; the reported frequency and a lift taken from the Step Protection holders' frequency on steps 6 to 9 leave the middle-step regions understated.",
+      "stump": "A competent solver ranks the regions by their 2024 and 2025 reported claim frequency (or lifts steps 6 to 9 by the Step Protection holders' frequency) and files band C as South East, West Midlands and Yorkshire and the Humber, South East in place of North West, because North West's policyholders stand mostly on the middle steps with the book's highest premiums, where a claim costs the most premium over the climb back, and pay small at-fault damage themselves, so North West reports the smallest share of its accidents while South East, on the top steps and under Step Protection, reports nearly all of its own.",
+      "answer": "Band C of the 2027 rating basis holds North West, West Midlands and Yorkshire and the Humber; South East is the first region below.",
+      "fate": "spent 2026-10-19 at stage 4 (Gate F): reader 6 of six isolated scored readers took the claims above 2,500 pounds as fully reported and scaled them by the protected policies' share above that size, landing the call and the first region below; readers 1 to 5 filed the reported or uplifted band; reader 5 took all 32 ask figures. Section 2.1's counterfactual wording says a correction is owed, and claim sizes by step show where the scale stops mattering, so the recovery is reachable for a strong reader."
+    },
+    {
+      "answer": "The Research Committee should name Quarndale and Thurlwick as the recruiting sites for ARV-1102.",
+      "answer_unit": "set_of_items",
+      "architecture": "v3",
+      "calibration_form": "none",
+      "context_artifact": "filed_standard",
+      "decision_type": "ranked_slate_under_cap",
+      "domain": "psychology-behavioral-science",
+      "driver": "The decisive quantity is how fast each group's members lose a latent ability, read from repeated tests whose second sitting is lifted by the member having sat the test before; a slope through every sitting flattens most for the groups whose members have sat it only a few times, so those groups look slower than they are, and only separating the one-time gain of the second sitting from the trend puts the groups in their true order.",
+      "driver_concrete": "Each memory clinic's average decline in ACE-III points a year over 2022 to September 2026, net of the change the test itself produces, which is the gain a patient's second completed sitting of their whole record carries, estimated within patients across all clinics; sized on the period's sittings alone it is diluted by the patients first assessed before 2022, and a slope through every sitting, per patient or in a random-slopes model, keeps it in, so both leave Quarndale, nearly all of whose patients have sat the test twice, outside the pair and name Thurlwick and Penwardine.",
+      "forcing_event": "launch_or_rollout",
+      "forum": "committee_or_panel",
+      "gap": [
+        "population"
+      ],
+      "gate_g": "decomposition_attribution",
+      "generators": [
+        "G6",
+        "G16"
+      ],
+      "layer2_family": "estimation_fit",
+      "layer2_pattern": "own:practice-gain-at-the-first-retest-separated-from-the-trend",
+      "niche": "the rate at which memory clinic patients' cognition declines, read from repeated ACE-III sittings whose second completed sitting is lifted by the patient having sat the test before, compared across clinics whose patients have sat it a median of two to five times because the clinics opened between 2014 and 2024",
+      "objective": "descriptive-distribution",
+      "org_family": "hospital_or_health_provider",
+      "pattern": [
+        "none"
+      ],
+      "role_family": "research_desk",
+      "shape": "01",
+      "stump": "A competent solver who reads the paper's 3.1 sizes the change the test itself produces on the period's sittings, each patient's first completed sitting from 2022 taken as their first (1.24 points), and files Thurlwick and Penwardine as the two fastest-declining clinics, Penwardine in place of Quarndale, because the gain belongs to each patient's whole record: patients first assessed before 2022 carry it through every sitting in the period, which dilutes a step read inside the period to half its size, while Quarndale, opened in April 2024 with nearly all of its patients at two sittings, stays sixth. Only the gain estimated over each patient's whole record, within patients (2.63), netted from every patient's slope puts Quarndale in the pair.",
+      "stump_strategy": "decomposition_attribution",
+      "subdomain": "longitudinal-growth-curve-modeling",
+      "fate": "spent 2026-10-19 at stage 4 round 2 (Gate F): round 1 readers missed with the outcome unfiled and the judge sent it back; filing it (a change the test itself produces is not part of the rate) named the practice effect, and both round 2 readers estimated it within patients and landed the pair"
+    },
+    {
+      "answer": "",
+      "answer_unit": "set_of_items",
+      "architecture": "v4",
+      "calibration_form": "none",
+      "context_artifact": "register",
+      "decision_type": "designation_set",
+      "domain": "education-learning-sciences",
+      "driver": "The decisive quantity is whether a part of a composite score estimates a unit's true standing on that part more accurately than the whole composite does; the part's own measurement error sits inside the composite, so taking the composite's agreement with the part as agreement between two separate measures credits the composite with the part's own error and finds the composite better for parts where it is not.",
+      "driver_concrete": "A content-area score is printed in 2027 only where its reliability exceeds the share of the area's true-score variance the total score predicts, with the total's covariance with the true area score taken as its covariance with the observed area score less the area's own error variance.",
+      "forcing_event": "launch_or_rollout",
+      "forum": "board_of_directors",
+      "gap": [
+        "objective",
+        "rule"
+      ],
+      "gate_g": "signal_vs_noise_or_hold",
+      "generators": [
+        "G16",
+        "G17"
+      ],
+      "layer2_family": "field_method",
+      "layer2_pattern": "own:a part's value beside a total that contains it, with the part's own error inside the total",
+      "niche": "a fitness professional certification board deciding which of its seven content-area scores to print on 2027 candidate score reports, from the 2026 attempts' item responses",
+      "objective": "descriptive-distribution",
+      "org_family": "nonprofit_or_charity",
+      "pattern": [
+        "none"
+      ],
+      "role_family": "research_desk",
+      "shape": "10",
+      "stump": "A competent analyst disattenuates each area's correlation with the total for the area's unreliability as though the two were separate tests, finds the total predicts the largest area's true score better than that area's own score does, and prints only the most distinct areas; the step that lands them there is treating the total as a separate measure when the area's items, and their errors, are part of it.",
+      "stump_strategy": "uncertainty_hold",
+      "subdomain": "psychometrics",
+      "fate": "spent 2026-10-26 at the draw probes: probes p270a and p270b, call-only Sonnet readers on prototypes of 26,000 attempts, computed Haberman's PRMSE with the part-whole correction (and, with case-study sets added, reliability over the case sets) and printed the golden three each time; the policy's criterion is Haberman's own question"
+    },
+    {
+      "architecture": "v5",
+      "domain": "product-analytics",
+      "subdomain": "metric-definition-measurement-science",
+      "niche": "a second-hand fashion marketplace app choosing which two-week metric reads every 2027 onboarding experiment as its proxy for six-month retention, judged on the platform's per-arm scorecards for about 220 onboarding experiments run since 2024, with user-level data only for the 2025 global holdout",
+      "objective": "descriptive-distribution",
+      "shape": "01",
+      "decision_type": "pick_one_of_n",
+      "gap": [
+        "objective"
+      ],
+      "pattern": [
+        "none"
+      ],
+      "generators": [
+        "G16",
+        "G17"
+      ],
+      "gate_g": "signal_vs_noise_or_hold",
+      "stump_strategy": "uncertainty_hold",
+      "driver": "The decisive quantity is how closely two quantities' true changes move together across many trials, when each trial measures both changes on the same sample of members, so the two estimates' errors move together wherever the quantities are correlated member by member; the raw correlation of the estimates counts that shared error as shared change and favours the quantity most like the outcome member by member rather than change by change.",
+      "driver_concrete": "Each candidate's effects across the 2024 to 2026 onboarding experiments are correlated with the experiments' six-month retention effects after each experiment's sampling covariance between the candidate and retention (the holdout panel's user-level correlation times the arms' standard deviations over their users) is taken out of the cross-experiment covariance and each sampling variance out of the variances; first purchase within 14 days leads.",
+      "stump": "A competent analyst correlates the experiments' scorecard effects on each candidate with their six-month retention effects, disattenuates for the sampling error in each, and adopts sessions in days 1 to 14; the step that lands them there is treating each experiment's two sampling errors as independent when both effects are measured on the same users, so the shared error counts as shared change for the metrics most like retention user by user.",
+      "fate": "spent 2026-10-26 at stage 4 round 2 (Gate F): with 2.3 filing that the correlation is between the effects themselves, both isolated readers took the full sampling-covariance correction and landed first purchase; round 1's readers had missed with the estimand unfiled and the judge held the raw correlation open"
+    },
+    {
+      "architecture": "v6",
+      "domain": "marketing-consumer-research",
+      "subdomain": "media-reach-frequency-audience-measurement",
+      "niche": "a national blood donor charity choosing which of three draft television schedules for a four-week April 2027 youth campaign puts its film before the most adults aged 18 to 34 three or more times, each schedule replayed second by second on the audience panel's March 2026 reference weeks, where the channels' traffic placed oversold prime-time rotation bookings in daytime breaks",
+      "objective": "descriptive-distribution",
+      "shape": "14",
+      "decision_type": "pick_one_of_n",
+      "gap": [
+        "population"
+      ],
+      "pattern": [
+        "none"
+      ],
+      "generators": [
+        "G9",
+        "G3",
+        "G7"
+      ],
+      "gate_g": "method_or_model_selection",
+      "stump_strategy": "population_selection",
+      "driver": "The decisive quantity is where an item sold without a fixed slot would have landed, and the record of where such items landed shows only the ones that landed inside the slot they were sold for as belonging to it; joining the sales record to the landing record finds that a third were placed elsewhere, in slots worth a fraction as much, so reading the item over the in-slot landings alone credits it with value it would not have had and reverses the choice.",
+      "driver_concrete": "Each 2027 prime-time rotation spot in schedule B is read at the places where that reference day's prime-time rotation bookings on the same channel actually aired, found by joining the sales houses' bookings to the as-run log on the booking number, so the 1,854 of 4,943 (37.5 per cent) the channels' traffic placed in daytime breaks count at their daytime audiences, and B falls from 31.9 to 20.9 per cent three-plus reach, below A's 26.6.",
+      "stump": "A competent analyst replays the three schedules on the reference weeks, reads each rotation spot over the rotation places the as-run log shows in prime time that day and buys schedule B at 31.9 per cent three-plus reach against A's 26.6; the step that lands them there is taking the prime-time rotation places as where a prime-time rotation spot airs, when the bookings joined to the as-run log show the channels placed 1,854 of 4,943 (37.5 per cent) in daytime breaks.",
+      "fate": "spent 2026-10-26 at stage 4 round 2 (Gate F): after the repair pass both round 2 readers read the prime-time places through the bookings' janela field and landed buy A, so a join and one field reach the golden; the round 2 judge classed the moved bookings as a planted flip"
+    },
+    {
+      "architecture": "v7",
+      "domain": "general-statistics-data-science",
+      "subdomain": "missing-data-censoring-measurement-error",
+      "niche": "a regional supermarket chain choosing the region its 2027 HFC refrigeration pack replacement programme starts in, the region whose packs lost the largest share of their full charge in 2026, from its contractor's job sheets and its monitoring bureau's receiver levels",
+      "objective": "descriptive-distribution",
+      "shape": "14",
+      "decision_type": "pick_one_of_n",
+      "gap": [
+        "time",
+        "population"
+      ],
+      "pattern": [
+        "none"
+      ],
+      "generators": [
+        "G16",
+        "G13"
+      ],
+      "gate_g": "method_or_model_selection",
+      "stump_strategy": "maturity_censoring",
+      "driver": "The decisive quantity is what each unit lost over a calendar year when its losses are recorded only as they are made good, after lags that leave the year's replacements out of step with its losses at both ends of the year; the unit's continuous level reading measures how far short it stood at each end, but in units of the reading, convertible only through the unit's own response to the replacements whose size was recorded.",
+      "driver_concrete": "Each HFC pack's 2026 refrigerant loss as the refrigerant charged into it in 2026 less recovered, plus the refrigerant it was short on 31 December 2026 and less what it was short on 31 December 2025, each shortfall read from Tarnley's daily receiver level through the pack's own rise in receiver level per kilogram charged on its 2024 to 2026 job sheets (arrival and departure readings) and its full level as its median departure reading; each region's packs' losses added up over their full charges added up, Lancashire 16 per cent against Yorkshire 13, the North East 13 and Cumbria 11.",
+      "stump": "A competent analyst takes each pack's 2026 refrigerant charged less recovered, the F-gas log's top-up method, as its 2026 loss and starts the programme in the North East (16 per cent of charge); the step that lands it there is reading the year's top-ups as the year's losses when the North East's second 2025 round ran in January 2026 and Lancashire's second 2026 round never ran, so packs entered and left 2026 short of charge by amounts their receiver levels record.",
+      "fate": "spent 2026-10-26 at stage 4 round 1 (target.zip aec69c19): both isolated scored readers netted each pack's 2026 charges against the change in its receiver stock with kilograms per level point fitted from its own arrival and departure readings and landed Lancashire; the judge DETERMINISTIC, APPROVE"
+    },
+    {
+      "domain": "pharmacology-pharmacoepidemiology-safety",
+      "subdomain": "medication-adherence-persistence",
+      "niche": "an integrated care board choosing which primary care networks get the enhanced tier of its 2027-28 community pharmacy statin adherence service, on each network's share of its older self-managing statin patients under 80 per cent of days covered in 2026, read from community pharmacy dispensing in which patients on pharmacy-filled compliance aids are dispensed on the pharmacy's own cycle",
+      "objective": "descriptive-distribution",
+      "shape": "14",
+      "decision_type": "designation_set",
+      "gap": [
+        "population"
+      ],
+      "gate_g": "method_or_model_selection",
+      "generators": [
+        "G3",
+        "G11"
+      ],
+      "pattern": [
+        "none"
+      ],
+      "stump_strategy": "population_selection",
+      "driver": "The decisive quantity is the share of a group's members whose own requests for supply left them short over a year, read from a supply record in which some members are supplied on the supplier's own fixed schedule and so read as never short whatever they use; the record's code marks only some of those members and the rest show only as supply falling on the same weekday at an exact fixed step, so a share taken over every member the code leaves in sits low by however many such members the group holds.",
+      "driver_concrete": "Each primary care network's share of its patients aged 65 and over who collect their own statins whose 2026 proportion of days covered was under 80 per cent, with every patient whose statin a community pharmacy dispensed on its own compliance-aid cycle (each item on the same weekday, exactly 7 or 28 days after the last) out of the count, whether or not the practice's extract codes the aid; the coded patients alone, or care home residents alone, leave the uncoded aid patients' full cover in the denominator.",
+      "stump": "A competent analyst takes out care home residents and the patients system A's extract codes as using a compliance aid, takes each network's share of the rest under 80 per cent of days covered and names too few networks; the step that lands them there is leaving in the compliance-aid patients no code marks (every one of system B's and about a third of system A's), whose statins the pharmacy dispensed on its own 7- or 28-day cycle and who read as fully covered.",
+      "architecture": "v8",
+      "fate": "spent 2026-10-27 at stage 4 (target.zip dc5e15f6): the leak reader read the decisive step as field reading and stated rules; the judge reproduced every main figure and returned NOT_DETERMINISTIC, SEND_BACK, Gate G planted_defect_flip (surface_read_rejection: the uncoded compliance-aid patients behind a partly recorded flag), Gate H decisive_step data_semantics"
+    }
+  ],
+  "notes": "Architecture 6 re-root in a fresh world after architecture 5 was spent at stage 4. Filed after the build because G9 as the decisive pattern was banned while task485 sat in the window; redrawn at filing: forum to executive_team (task308 held the board), context artifact to register (task487 holds the operations log), forcing event to vote_or_meeting (task137 v4 holds purchase_order_or_contract; the Comissão Executiva decides on 2 December, the channels' April bookings close on 11 December). Architecture 7 drawn 2026-10-26 in a fresh world after architecture 6 was spent at stage 4. Architecture 7 spent 2026-10-26 at stage 4 round 1: both isolated scored readers ran the stock-and-flow balance with each pack's own kilograms per level point and landed Lancashire. Architecture 8 drawn 2026-10-27 in a fresh world after architecture 7 was spent at stage 4; the decisive step is the refill measure's population (patients whose supply is not dispensed on a pharmacy's compliance-aid cycle), labelled population_selection, the honest family (scope). Filed 2026-10-27 at stage 3: the forum, forcing event and organisation family were redrawn when task308 and task307 registered (committee_or_panel and purchase_order_or_contract held by task308, government_agency by task307): the decision moved to Iversford Vale GP Federation, the provider company its member practices own, whose board sets the tier schedule before the service launches on 1 April 2027 (board_of_directors, launch_or_rollout, hospital_or_health_provider), the integrated care board kept as the source of the data and the guidance; the context artifact went back to filed_standard (the service specification, the honest label, free once task204 left the window) when task139 took register. Architecture 8 spent 2026-10-27 at stage 4: the judge's SEND_BACK (Gate G planted_defect_flip, surface_read_rejection; Gate H decisive_step data_semantics): a population hidden behind a partly recorded flag is a surface read rejected; re-rooted to architecture 9 in another domain. Architecture 8 spent 2026-10-27 at stage 4 (the judge's SEND_BACK, a population behind a partly recorded flag). Architecture 9 drawn 2026-10-27 in another domain (psychology, experience sampling): stump_strategy other, the interval dependence of a successive-difference index (no strategy label names it: not time_semantics, since no calendar or as-of reading decides, and not grain_or_unit, since the unit is the patient throughout). Redrawn 2026-10-27 after registration: task309 registered at 14:29Z with board_of_directors, which BLOCKed ban.forum on the registered card; the decision moves to the trust board's Finance and Performance Committee, which approves investment plans under the board's delegated limit (committee_or_panel, free once task308 left the window), the honester label for an allocation of eleven skills groups that sits below the board's reserved decisions. repeat.gate_g against task309 answered: method_or_model_selection is the honest mechanism for an estimator read at the standard's interval, and task309's decisive step (catastrophe exposure accumulation) shares no mechanism with it.",
+  "registered": "2026-10-27T14:59:41Z"
 }

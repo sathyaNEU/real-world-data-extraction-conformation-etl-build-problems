@@ -1,57 +1,73 @@
-"""figures.json: every figure the write-up states, at the precision it states it, from solve.py on the cut pack."""
+"""Every figure the write-up and the goldens state, computed once from the pack and written to figures.json."""
 import json
 import os
-
-import params as P
+import sys
 
 HERE = os.path.dirname(os.path.abspath(__file__))
+sys.path.insert(0, HERE)
+import build  # noqa: E402
+import params as P  # noqa: E402
+import solve as S  # noqa: E402
 
 
-def r1(x):
-    return round(x + 1e-9, 1)
+def r100(v):
+    return int(round(v / 100.0) * 100)
 
 
-def r2(x):
-    return round(x + 1e-9, 2)
+def money(v):
+    return int(round(v))
 
 
-def build(mc, A, Bq, I27):
-    gold = mc["gold"]
-    pick = max(P.REGIONS, key=lambda r: gold[r]["value"])
-    second = max(gold[r]["value"] for r in P.REGIONS if r != pick)
-    pen = gold["Pennine"]
-    O = mc["O"]
-    ex = O[(O.region == "Pennine") & (O.G - P.RETENTION / 1e6 >= P.LIMIT / 1e6)]
-    fz = O[(O.region == "Pennine") & (O.peril == "freeze") & (O.year < 2021)]
-    figs = {
-        "call": {"region": pick, "value": r1(gold[pick]["value"]), "margin": r1(gold[pick]["value"] - second)},
-        "values": {r: r1(gold[r]["value"]) for r in P.REGIONS},
-        "cc": {"pennine_recoveries": r2(pen["recoveries"]), "pennine_reinstatement": r2(pen["rip"]),
-               "pennine_premium": r2(P.PREMIUM["Pennine"] / 1e6), "pennine_exhausting": int(len(ex)),
-               "layer_limit": P.LIMIT / 1e6},
-        "steps": {"hours": [P.HOURS["windstorm"], P.HOURS["flood"]], "index_2027": round(I27, 1),
-                  "fit_occurrences": int((O.n >= 150).sum()), "fit_min_claims": 150,
-                  "fit_threshold": mc["fit"]["u0"], "fit_slope_pct": round(100 * mc["fit"]["k"], 1),
-                  "pennine_freezes_then": [r1(fz.u_all.min()), r1(fz.u_all.max())],
-                  "pennine_freezes_2027": [r1(fz.u27_all.min()), r1(fz.u27_all.max())],
-                  "annual_cap": P.ANNUAL / 1e6},
-        "askA": {r: {str(y): r2(A["golden"]["%s|%d" % (r, y)]) for y in (2023, 2024, 2025)} for r in P.REGIONS},
-        "askB": {r: r1(Bq["golden"][r]["si_m"]) for r in P.REGIONS},
+def compute(target):
+    pk = S.Pack(target, build.FILES)
+    g = pk.call("golden")
+    easy = pk.call("rated")
+    facts = pk.shortfall_facts()
+    m = S.Meter(target, build.FILES)
+    energy = m.energy()
+    cp, peaks = m.cp12()
+    pay = {o: P.annual_payment(o) for o in P.OFFERS}
+    by_year = {}
+    import numpy as np
+    yrs = pk.tb.weather_year.values
+    for y in P.YEARS:
+        by_year[str(y)] = r100(float(np.clip(pk.short[yrs == y], 0, None).sum()))
+    F = {
+        "award": g["best"],
+        "base_eue_mwh": r100(g["base"]),
+        "base_eue_exact": round(g["base"], 1),
+        "shortfall_hours": facts["hours"],
+        "shortfall_hours_per_year": round(facts["hours_per_year"], 1),
+        "share_in_fuel_outage_hours_pct": int(round(100 * facts["share_in_allout"])),
+        "removed_mwh": {o: r100(v) for o, v in g["removed"].items()},
+        "removed_exact": {o: round(v, 1) for o, v in g["removed"].items()},
+        "value_musd": {o: money(g["removed"][o] * P.VOLL / 1e6) for o in P.OFFERS},
+        "payment_musd": {o: round(pay[o] / 1e6, 1) for o in P.OFFERS},
+        "net_musd": {o: money(v) for o, v in g["net"].items()},
+        "net_exact": {o: round(v, 3) for o, v in g["net"].items()},
+        "offer_mw": {o: int(P.OFFER_MW[o]) for o in P.OFFERS},
+        "voll": int(P.VOLL),
+        "easy_route": {"award": easy["best"], "peaker_removed_mwh": r100(easy["removed"]["Ketchum Ridge"]),
+                       "peaker_net_musd": money(easy["net"]["Ketchum Ridge"])},
+        "class_forced_rate_pct": round(100 * pk.ct_rate(), 1),
+        "rated_eford_pct": 4.5,
+        "eue_by_weather_year": by_year,
+        "ask_a_mwh": {k: int(round(v)) for k, v in energy.items()},
+        "ask_b_mw": {k: round(float(v), 1) for k, v in cp.items()},
+        "cp_hours": [str(t.tz_convert(P.TZ)) for t in peaks],
+        "kw_year": pk.kw_years,
+        "fuel_cause_code": 9130,
+        "existing_import_mw": int(P.IMPORT_EX_MW),
     }
-    raw = {
-        "values": {r: gold[r]["value"] for r in P.REGIONS},
-        "recoveries": {r: gold[r]["recoveries"] for r in P.REGIONS},
-        "rip": {r: gold[r]["rip"] for r in P.REGIONS},
-        "default": {r: mc["default"][r]["value"] for r in P.REGIONS},
-        "askA": A["golden"],
-        "askB": {r: Bq["golden"][r] for r in P.REGIONS},
-        "exhausting": [str(s) for s in ex.start],
-        "fit": mc["fit"],
-    }
-    return figs, raw
+    return F
 
 
-def write(figs, path=os.path.join(HERE, "figures.json")):
-    with open(path, "w") as fh:
-        json.dump(figs, fh, indent=1, ensure_ascii=False)
-        fh.write("\n")
+def main(target):
+    F = compute(target)
+    with open(os.path.join(HERE, "figures.json"), "w") as fh:
+        json.dump(F, fh, indent=1, sort_keys=True)
+    return F
+
+
+if __name__ == "__main__":
+    print(json.dumps(main(sys.argv[1] if len(sys.argv) > 1 else os.path.join(build.TASK, "target")), indent=1))

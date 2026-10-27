@@ -1,283 +1,290 @@
-"""The clean world for task270: Hallowmere's 72 stores and their refrigeration packs, each pack's refrigerant losing day
-by day (a background weep, joints that start leaking and are found at a visit, the rare ruptured line), Kelbray's
-routine rounds by region and its call-outs on Tarnley's low-level alarm, the charges weighed in and the receiver
-levels read on arrival and departure, and Tarnley's daily mean receiver level. The truth the analysis has to recover
-is each pack's refrigerant lost in 2026; nothing here is a defect, every record says what it says."""
+"""The world: the board's practices and pharmacies, its patients on a statin, and every statin item dispensed to
+them from 1 October 2025 (the dispensing extract keeps 1 December 2025 onwards) to 31 December 2026.
+
+Self-managing patients collect a 28- or 56-day supply when theirs runs low; how late they come back follows how much
+of each supply they take, scattered by several days either way. A pharmacy-filled compliance aid is dispensed on the
+pharmacy's own cycle (weekly 7-day items, or a 28-day item every 28 days) from the patient's set day, whatever the
+patient takes, moved to the next day the pharmacy opens when the set day is a bank holiday; a care home's residents are
+dispensed on the home's 28-day cycle."""
+from __future__ import annotations
+
 import datetime as dt
 
-import numpy as np
-import pandas as pd
+from common import (BANK_HOLIDAYS, BORN_BY, DISP_START, NETWORKS, NETWORK_MOVE, QUARVIS_CODE_RATE, REKEY,
+                    YEAR_END, YEAR_START, rng, token)
 
-import common as K
+PRACTICE_WORDS = ["Medical Centre", "Surgery", "Health Centre", "Medical Practice", "Family Practice",
+                  "Group Practice"]
+EXTRA_PLACES = ["Ellinwold", "Eskgarth", "Feldmere", "Iverswick", "Morvhope", "Sorrwick", "Stavholt", "Pennstead",
+                "Yeldfield", "Wembdale", "Raskhope", "Tullmere", "Vellmarsh", "Gravholt", "Lathstow", "Corbrennan",
+                "Kirtwick", "Nevcote", "Pellhope", "Tarvshaw", "Briskwold", "Marlhope", "Ivershope", "Lorrdale",
+                "Morvstead", "Sorrfield", "Belvfield", "Drummhope", "Ellincote", "Feldcombe", "Ganthope", "Orrinwick"]
 
-DAYS = pd.date_range(K.START, K.END, freq="D")
-ND = len(DAYS)
-TOWNS = {
-    "YOR": ["Skipton", "Keighley", "Ilkley", "Otley", "Harrogate", "Knaresborough", "Ripon", "Thirsk", "Northallerton",
-            "Selby", "Tadcaster", "Wetherby", "Pontefract", "Castleford", "Goole", "Driffield", "Malton", "Pickering",
-            "Whitby", "Settle", "Richmond", "Bedale"],
-    "LAN": ["Clitheroe", "Garstang", "Kirkham", "Poulton", "Fleetwood", "Longridge", "Chorley", "Leyland", "Ormskirk",
-            "Darwen", "Accrington", "Haslingden", "Rawtenstall", "Colne", "Nelson", "Barnoldswick", "Carnforth",
-            "Morecambe", "Heysham", "Lytham"],
-    "NE": ["Hexham", "Morpeth", "Alnwick", "Amble", "Blyth", "Cramlington", "Ponteland", "Prudhoe", "Consett",
-           "Stanley", "Chester-le-Street", "Durham", "Spennymoor", "Crook", "Barnard Castle", "Seaham", "Peterlee",
-           "Sedgefield"],
-    "CUM": ["Kendal", "Windermere", "Ulverston", "Penrith", "Keswick", "Cockermouth", "Workington", "Whitehaven",
-            "Wigton", "Brampton", "Appleby", "Sedbergh"],
-}
-# each region's routine rounds: (year, month) at which the round starts; a round runs over about three weeks
-ROUNDS = {
-    "YOR": [(2024, 3), (2024, 9), (2025, 4), (2025, 12), (2026, 3), (2026, 6)],
-    "LAN": [(2024, 5), (2024, 11), (2025, 5), (2025, 11), (2026, 5)],          # the November 2026 round not run
-    "NE": [(2024, 4), (2024, 10), (2025, 4), (2026, 1), (2026, 6), (2026, 11)],  # October 2025 run in January 2026
-    "CUM": [(2024, 2), (2024, 8), (2025, 2), (2025, 8), (2026, 2), (2026, 8)],
-}
-LEAK_MEDIAN = {"YOR": 0.086, "LAN": 0.104, "NE": 0.068, "CUM": 0.076}   # background loss a year, share of charge
-RECEIVER = {"YOR": (0.22, 0.30), "LAN": (0.65, 0.80), "NE": (0.38, 0.52), "CUM": (0.36, 0.5)}
-ALARM = 25.0
-
-
-def stores(rng):
-    out, n = [], 0
-    for reg in K.REGIONS:
-        for town in TOWNS[reg]:
-            n += 1
-            opened = int(rng.choice([1988, 1993, 1997, 2001, 2004, 2008, 2011, 2014, 2017, 2020]))
-            out.append(dict(store=n, town=town, region=reg, opened=opened, sqm=int(rng.integers(1400, 4200) // 10 * 10)))
-    return pd.DataFrame(out)
+# product description, ingredient, strength mg, prevalence weight
+PRODUCTS = [
+    ("Atorvastatin 10mg tablets", "atorvastatin", 10, 8), ("Atorvastatin 20mg tablets", "atorvastatin", 20, 30),
+    ("Atorvastatin 40mg tablets", "atorvastatin", 40, 15), ("Atorvastatin 80mg tablets", "atorvastatin", 80, 5),
+    ("Simvastatin 20mg tablets", "simvastatin", 20, 8), ("Simvastatin 40mg tablets", "simvastatin", 40, 14),
+    ("Rosuvastatin 5mg tablets", "rosuvastatin", 5, 4), ("Rosuvastatin 10mg tablets", "rosuvastatin", 10, 6),
+    ("Rosuvastatin 20mg tablets", "rosuvastatin", 20, 3), ("Pravastatin sodium 20mg tablets", "pravastatin", 20, 2),
+    ("Pravastatin sodium 40mg tablets", "pravastatin", 40, 4), ("Fluvastatin 80mg modified-release tablets",
+                                                                   "fluvastatin", 80, 1),
+]
+BRAND = {"Atorvastatin 10mg tablets": "Lipitor 10mg tablets (Viatris UK Healthcare Ltd)",
+         "Atorvastatin 20mg tablets": "Lipitor 20mg tablets (Viatris UK Healthcare Ltd)",
+         "Atorvastatin 40mg tablets": "Lipitor 40mg tablets (Viatris UK Healthcare Ltd)",
+         "Rosuvastatin 10mg tablets": "Crestor 10mg tablets (AstraZeneca UK Ltd)",
+         "Rosuvastatin 20mg tablets": "Crestor 20mg tablets (AstraZeneca UK Ltd)"}
+HALF = {"Atorvastatin 20mg tablets": "Atorvastatin 10mg tablets", "Atorvastatin 40mg tablets":
+        "Atorvastatin 20mg tablets", "Atorvastatin 80mg tablets": "Atorvastatin 40mg tablets",
+        "Simvastatin 40mg tablets": "Simvastatin 20mg tablets", "Rosuvastatin 20mg tablets":
+        "Rosuvastatin 10mg tablets", "Rosuvastatin 10mg tablets": "Rosuvastatin 5mg tablets",
+        "Pravastatin sodium 40mg tablets": "Pravastatin sodium 20mg tablets"}
+ONE_A_DAY = ["ONE TABLET AT NIGHT", "ONE TO BE TAKEN EACH DAY", "TAKE ONE TABLET DAILY", "1 OD", "ONE AT NIGHT",
+             "TAKE ONE ONCE A DAY", "ONE TABLET ONCE DAILY AT NIGHT", "1 TABLET AT NIGHT", "TAKE ONE AT NIGHT"]
+TWO_A_DAY = ["TWO TABLETS AT NIGHT", "TAKE TWO DAILY", "2 AT NIGHT", "TWO TO BE TAKEN AT NIGHT"]
 
 
-def packs(rng, st):
-    rows = []
-    for s in st.itertuples(index=False):
-        kinds = ["LT1", "MT1"] if s.sqm < 2600 else ["LT1", "MT1", "MT2"]
-        if s.sqm < 1800 and rng.random() < 0.5:
-            kinds = ["MT1"]
-        for kind in kinds:
-            lt = kind.startswith("LT")
-            installed = max(s.opened, int(rng.choice([2006, 2009, 2012, 2015, 2018, 2021])))
-            if installed < 2016:
-                gas = "R404A" if rng.random() < 0.45 else str(rng.choice(["R448A", "R449A", "R407F"]))
-            else:
-                gas = str(rng.choice(["R448A", "R449A"]))
-            charge = round(float(rng.choice([95, 110, 130, 150, 170, 190, 220, 250]) * (0.8 if lt else 1.0)
-                                 * rng.uniform(0.94, 1.06)), 1)
-            lo, hi = RECEIVER[s.region]
-            rec = charge * rng.uniform(lo, hi)                     # kg the receiver's level span holds
-            rows.append(dict(store=s.store, region=s.region, kind=kind, code="%03d/%s" % (s.store, kind), gas=gas,
-                             charge=charge, installed=installed, k=100.0 / rec, full=float(rng.uniform(62, 76)),
-                             rate=rng.lognormal(np.log(K_LEAK(s.region)), 0.55) * charge / 365.0))
-    return pd.DataFrame(rows)
+def working_day(d):
+    """A pack due on a bank holiday or a Sunday is dispensed the next day the pharmacy opens."""
+    while d.weekday() == 6 or d in BANK_HOLIDAYS:
+        d += dt.timedelta(days=1)
+    return d
 
 
-def K_LEAK(reg):
-    return LEAK_MEDIAN[reg]
+def anchor_day(r, step):
+    """The patient's set day: never a Sunday, the day the pharmacy prepares that patient's packs."""
+    while True:
+        d = DISP_START + dt.timedelta(days=int(r.integers(0, step)))
+        if d.weekday() != 6:
+            return d
 
 
-def round_days(rng, reg, n_packs):
-    """each pack's routine visit day in each round of its region, spread over three weeks of working days"""
-    out = []
-    for (y, m) in ROUNDS[reg]:
-        start = dt.date(y, m, 2)
-        days = [start + dt.timedelta(days=i) for i in range(26)]
-        days = [d for d in days if d.weekday() < 5 and not (d.month == 12 and d.day >= 22) and not
-                (d.month == 1 and d.day <= 3)]
-        out.append([days[int(rng.integers(0, len(days)))] for _ in range(n_packs)])
+def practices():
+    """Each network's practices: code, name, system, network on 31 December 2026 and before 1 April 2026."""
+    out, used, k = [], set(), 0
+    r = rng("practices")
+    letters = "ABCDEFGHJKLMNPRTUVWY"
+    for code, name, sysx, n, *_rest in NETWORKS:
+        npr = _rest[-1]
+        places = [name] + list(r.choice(EXTRA_PLACES, size=npr - 1, replace=False))
+        for i in range(npr):
+            while True:
+                pc = "%s%05d" % (letters[int(r.integers(0, len(letters)))], int(r.integers(81000, 87999)))
+                if pc not in used:
+                    used.add(pc)
+                    break
+            word = PRACTICE_WORDS[(k + i) % len(PRACTICE_WORDS)]
+            pname = ("The %s %s" % (places[i], word)) if word == "Surgery" else "%s %s" % (places[i], word)
+            out.append(dict(code=pc, name=pname, system=sysx, network=code, network_before=code,
+                            weight=float(r.uniform(0.6, 1.4)), place=places[i]))
+        k += npr
+    # a place that names practices in two networks gets another practice word the second time, so every name is one
+    # practice's (the same place's practices are told apart by their word, as real ones are)
+    seen = set()
+    for p in out:
+        j = 0
+        while p["name"] in seen:
+            word = PRACTICE_WORDS[j % len(PRACTICE_WORDS)]
+            p["name"] = ("The %s %s" % (p["place"], word)) if word == "Surgery" else "%s %s" % (p["place"], word)
+            j += 1
+        seen.add(p["name"])
+    # two practices moved network on 1 April 2026: one Synaris practice from Briskdale to Grevmoor and one
+    # Quarvis practice from Lathcombe to Feldcote; their year-end network is the new one
+    for frm, to in (("BRK", "GRV"), ("LTH", "FEL")):
+        p = [x for x in out if x["network"] == frm][-1]
+        p["network"] = to
     return out
 
 
-def simulate(seed=K.SEED):
-    rng = np.random.default_rng(seed)
-    st = stores(rng)
-    pk = packs(rng, st)
-    idx = {d.date(): i for i, d in enumerate(DAYS)}
-    routine = {}
-    for reg in K.REGIONS:
-        sub = pk.index[pk.region == reg].tolist()
-        for rnd in round_days(rng, reg, len(sub)):
-            for p, d in zip(sub, rnd):
-                routine.setdefault(p, set()).add(idx[d])
-    retro, dec = schedules(seed, st, pk)
-    jobs, levels, deficit = [], np.zeros((len(pk), ND)), np.zeros((len(pk), ND))
-    jn = 41000
-    for p, row in pk.iterrows():
-        prng = np.random.default_rng([seed, 11, p])
-        d = float(prng.uniform(0.0, 0.06)) * row.charge
-        ev = 0.0
-        alarm_since = None
-        for t in range(ND):
-            day = DAYS[t].date()
-            if ev == 0.0 and prng.random() < 1 / 1300:
-                ev = float(prng.lognormal(np.log(0.0014), 0.5)) * row.charge
-            if prng.random() < 1 / 15000:
-                d += float(prng.uniform(0.08, 0.18)) * row.charge
-            d = min(d + float(prng.gamma(2.0, row.rate / 2.0)) + ev, 0.9 * row.charge)
-            lev = row.full - row.k * d
-            if lev < ALARM and alarm_since is None:
-                alarm_since = t
-            visit, jtype = None, None
-            holiday = (day.month == 12 and day.day >= 24) or (day.month == 1 and day.day <= 2)
-            if alarm_since is not None and ((not holiday and prng.random() < 0.35) or (lev < 14 and prng.random() < 0.6)):
-                visit, jtype = True, "BREAKDOWN"
-            elif t in routine.get(p, ()):
-                visit, jtype = True, "ROUTINE"
-            hour = float(prng.uniform(8.5, 16.5))
-            if p in dec and day >= dec[p][0]:
-                if day == dec[p][0]:
-                    arr = float(np.clip(lev + prng.normal(0, 0.25), 0, 100))
-                    jobs.append(dict(job=jn, pack=p, date=day, hour=hour, type="DECOMMISSIONING", charged=0.0,
-                                     recovered=round(row.charge - d, 1), arr=round(arr, 1), dep=None, leak="N",
-                                     d_before=d, d_after=row.charge, gas=retro.get(p, (0, row.gas))[1]))
-                    jn += int(prng.integers(1, 4))
-                levels[p, t] = np.nan
-                deficit[p, t] = np.nan
-                continue
-            if p in retro and day == retro[p][0]:
-                arr = float(np.clip(lev + prng.normal(0, 0.25), 0, 100))
-                dep = float(np.clip(row.full + prng.normal(0, 0.25), 0, 100))
-                jobs.append(dict(job=jn, pack=p, date=day, hour=hour, type="RETROFIT", charged=row.charge,
-                                 recovered=round(row.charge - d, 1), arr=round(arr, 1), dep=round(dep, 1),
-                                 leak="N", d_before=d, d_after=0.0, gas=retro[p][1]))
-                jn += int(prng.integers(1, 4))
-                frac = hour / 24.0
-                levels[p, t] = frac * lev + (1 - frac) * row.full
-                deficit[p, t] = 0.0
-                d, ev, alarm_since = 0.0, 0.0, None
-                continue
-            if visit:
-                found = ev > 0 or jtype == "BREAKDOWN"
-                rec_kg = 0.0
-                if found and prng.random() < 0.12:
-                    rec_kg = round(float(prng.uniform(4, 18)), 1)    # a section recovered to change a component
-                need = d if (d > 0.025 * row.charge or jtype == "BREAKDOWN") else 0.0
-                charged = 0.0
-                if need > 0 or rec_kg > 0:
-                    charged = round(max(0.0, need * float(prng.uniform(0.985, 1.015)) + rec_kg
-                                        + float(prng.normal(0, 0.15))), 1)
-                arr = float(np.clip(lev + prng.normal(0, 0.25), 0, 100))
-                d_after = max(0.0, d - (charged - rec_kg))
-                dep = float(np.clip(row.full - row.k * d_after + prng.normal(0, 0.25), 0, 100))
-                jobs.append(dict(job=jn, pack=p, date=day, hour=hour, type=jtype, charged=charged, recovered=rec_kg,
-                                 arr=round(arr, 1), dep=round(dep, 1), leak="Y" if found else "N",
-                                 d_before=d, d_after=d_after,
-                                 gas=retro[p][1] if p in retro and day > retro[p][0] else row.gas))
-                jn += int(prng.integers(1, 4))
-                if ev > 0 and prng.random() < 0.88:
-                    ev = 0.0
-                frac = (hour - 0.0) / 24.0
-                levels[p, t] = frac * lev + (1 - frac) * (row.full - row.k * d_after)
-                deficit[p, t] = d_after
-                d = d_after
-                alarm_since = None
-            else:
-                levels[p, t] = lev
-                deficit[p, t] = d
-    noise = np.random.default_rng([seed, 23]).normal(0, 0.3, levels.shape)
-    levels = np.clip(levels + noise, 0, 100)
-    return dict(stores=st, packs=pk, jobs=pd.DataFrame(jobs), levels=levels, deficit=deficit, retro=retro, dec=dec)
+def pharmacies(pracs):
+    """Community pharmacies: one cluster per network, plus one distance-selling pharmacy serving every network."""
+    out, used = [], set()
+    r = rng("pharmacies")
+    owners = ["Pellhope Pharmacy Group", "Ravensholt Chemists Ltd", "Drevanholm Healthcare Ltd", None, None, None]
+    for code, name, sysx, n, *_ in NETWORKS:
+        k = max(4, int(round(n / 330)))
+        for i in range(k):
+            while True:
+                ods = "F%s%03d" % ("ABCDEFGHJKLMNPQRSTVWXY"[int(r.integers(0, 22))], int(r.integers(100, 999)))
+                if ods not in used:
+                    used.add(ods)
+                    break
+            owner = owners[int(r.integers(0, len(owners)))]
+            pname = ("%s Pharmacy" % name) if i == 0 else "%s Pharmacy" % EXTRA_PLACES[int(r.integers(0, len(EXTRA_PLACES)))]
+            out.append(dict(ods=ods, name=pname, network=code, owner=owner, kind="community",
+                            weight=float(r.uniform(0.5, 1.5))))
+    _pharmacy_names(out)
+    out.append(dict(ods="FDS801", name="Vellmarsh Direct Pharmacy", network=None, owner="Vellmarsh Direct Ltd",
+                    kind="distance-selling", weight=1.0))
+    return out
 
 
-def schedules(seed, st, pk):
-    """the R404A packs retrofitted to a lower-GWP blend in 2024 and 2025 (day, new gas, register left stale) and the
-    packs decommissioned in 2026 (day, why)"""
-    rng = np.random.default_rng([seed, 29])
-    town = dict(zip(st.town, st.store))
-    dec = {}
-    for reg, tn, kind, day, why in DECOMMISSIONS:
-        for p in pk.index[(pk.store == town[tn]) & ((pk.kind == kind) | (kind == "*"))]:
-            dec[p] = (day, why)
-    retro = {}
-    for p in pk.index[(pk.gas == "R404A")]:
-        if p in dec or rng.random() > 0.45:
-            continue
-        day = dt.date(int(rng.choice([2024, 2025])), int(rng.integers(2, 11)), int(rng.integers(3, 26)))
-        retro[p] = [day, str(rng.choice(["R448A", "R449A"])), bool(rng.random() < 0.3)]
-    for reg in K.REGIONS:                      # the register left unchanged for at least one retrofit in each region
-        mine = [p for p in retro if pk.loc[p, "region"] == reg]
-        if mine and not any(retro[p][2] for p in mine):
-            retro[mine[int(rng.integers(0, len(mine)))]][2] = True
-    return {p: tuple(v) for p, v in retro.items()}, dec
+BRANDS = {"Pellhope Pharmacy Group": "Pellhope Pharmacy", "Ravensholt Chemists Ltd": "Ravensholt Chemists",
+          "Drevanholm Healthcare Ltd": "Drevanholm Pharmacy"}
+STYLES = ("%s Pharmacy", "%s Pharmacy", "%s Chemist", "%s Health Centre Pharmacy", "%s Late Night Pharmacy")
 
 
-def truth(w, year=K.YEAR):
-    """each pack's refrigerant lost in the year: what was charged less what was recovered, plus what it was short at
-    the year's end less what it was short at its start (end of the day before)"""
-    pk, jb, de = w["packs"], w["jobs"], w["deficit"]
-    pk = pk[~pk.index.isin(list(w.get("dec", {})))]
-    jb = jb[jb.type.isin(["ROUTINE", "BREAKDOWN"])]
-    j0 = DAYS.get_loc(pd.Timestamp(year - 1, 12, 31))
-    j1 = DAYS.get_loc(pd.Timestamp(year, 12, 31))
-    yr = jb[pd.to_datetime(jb.date).dt.year == year]
-    net = (yr.charged - yr.recovered).groupby(yr.pack).sum().reindex(pk.index).fillna(0.0)
-    loss = net + de[pk.index, j1] - de[pk.index, j0]
-    return pd.DataFrame({"pack": pk.index, "region": pk.region, "charge": pk.charge, "net": net.values,
-                         "loss": loss.values}).set_index("pack")
+def _pharmacy_names(out):
+    """A chain's branch carries the chain's brand and its place; an independent its place in a style of its own. The
+    names come from their own stream, so no other draw moves, and no two pharmacies share one."""
+    seen = set()
+    for p in out:
+        place = p["name"][:-len(" Pharmacy")]
+        r = rng("pharmacy name", p["ods"])
+        style = int(r.integers(0, len(STYLES)))
+        cands = (["%s %s" % (BRANDS[p["owner"]], place)] if p["owner"] else []) + \
+            [STYLES[(style + j) % len(STYLES)] % place for j in range(len(STYLES))]
+        p["name"] = next(c for c in cands if c not in seen)
+        seen.add(p["name"])
 
 
-DECOMMISSIONS = [("CUM", "Cockermouth", "LT1", dt.date(2026, 4, 21), "CO2"), ("YOR", "Ripon", "MT1", dt.date(2026, 9, 8), "CO2"),
-                 ("NE", "Seaham", "*", dt.date(2026, 10, 12), "CLOSED")]
-CLOSED = {"Seaham": dt.date(2026, 10, 3)}
+def _sm_items(r, start, supply, tpd, adh):
+    """Self-managing collections from the first one in the extract window to the year end."""
+    out = []
+    t = start
+    while t <= YEAR_END:
+        out.append(t)
+        sd = 5.5 if supply == 28 else 8.0
+        gap = max(10, int(round(supply / adh + r.normal(0.0, sd))))
+        t = t + dt.timedelta(days=gap)
+    return out
 
 
-def extras(w, seed=K.SEED):
-    """what sits beside the packs in the same records: the packs decommissioned in 2026 and the CO2 packs that replaced
-    two of them, the R404A packs retrofitted to a lower-GWP blend in 2024 and 2025 (the register not updated for some),
-    each store's integral cabinets and cold rooms with Kelbray's charges on them and the cylinders each charge came from"""
-    rng = np.random.default_rng([seed, 31])
-    st, pk, dec = w["stores"], w["packs"], w["dec"]
-    co2 = []
-    for p, (day, why) in dec.items():
-        if why == "CO2":
-            co2.append(dict(store=int(pk.loc[p, "store"]), kind=pk.loc[p, "kind"], since=day + dt.timedelta(days=2),
-                            charge=round(float(rng.uniform(280, 420)), 1), full=float(rng.uniform(42, 52))))
-    # integral cabinets and cold rooms
-    eq, n = [], 0
-    for s in st.itertuples(index=False):
-        for i in range(max(10, s.sqm // 110)):
-            n += 1
-            yr = int(rng.integers(2008, 2026))
-            gas = "R290" if yr >= 2018 else str(rng.choice(["R404A", "R134a"]))
-            ch = round(float(rng.uniform(0.11, 0.15) if gas == "R290" else rng.uniform(0.35, 1.2)), 2)
-            eq.append(dict(asset="C%04d" % n, store=s.store, region=s.region, type="Integral cabinet", gas=gas,
-                           charge=ch, installed=yr))
-        for i in range(int(rng.integers(2, 5))):
-            n += 1
-            yr = int(rng.integers(2006, 2025))
-            gas = "R404A" if yr < 2015 else str(rng.choice(["R448A", "R449A"]))
-            eq.append(dict(asset="R%04d" % n, store=s.store, region=s.region, type="Cold room", gas=gas,
-                           charge=round(float(rng.uniform(2.5, 7.5)), 1), installed=yr))
-    eq = pd.DataFrame(eq)
-    # Kelbray's visits to cabinets and cold rooms: one visit may charge several assets of one store on one day
-    vis, vno = [], 0
-    for y in (2024, 2025, 2026):
-        for s in st.itertuples(index=False):
-            if s.town in CLOSED and y == 2026 and False:
-                pass
-            sub = eq[(eq.store == s.store) & (eq.gas != "R290")]
-            nvis = int(rng.poisson(1.6 if y < 2026 else 1.8))
-            for _ in range(nvis):
-                day = dt.date(y, int(rng.integers(1, 13)), int(rng.integers(1, 28)))
-                if s.town in CLOSED and day >= CLOSED[s.town]:
-                    continue
-                cold = sub[sub.type == "Cold room"]
-                cab = sub[sub.type == "Integral cabinet"]
-                gasv = str(rng.choice(sorted(set(sub.gas))))
-                pick = []
-                c1 = cold[cold.gas == gasv]
-                if len(c1) and rng.random() < 0.7:
-                    nn = min(len(c1), 2 if rng.random() < 0.45 else 1)
-                    for _, a in c1.sample(nn, random_state=int(rng.integers(1e9))).iterrows():
-                        pick.append(a)
-                c2 = cab[cab.gas == gasv]
-                for _ in range(int(rng.integers(0, 3))):
-                    if len(c2):
-                        pick.append(c2.sample(1, random_state=int(rng.integers(1e9))).iloc[0])
-                if not pick:
-                    continue
-                vno += 1
-                amounts = [round(float(a.charge * rng.uniform(0.15, 0.6)), 1) or 0.1 for a in pick]
-                fits = len(pick) > 1 and round(sum(amounts), 1) <= min(a.charge for a in pick)
-                vis.append(dict(visit=vno, store=s.store, region=s.region, date=day, gas=gasv,
-                                assets=[a.asset for a in pick], kg=amounts, stamp_total=bool(fits and rng.random() < 0.7)))
-    w.update(co2=co2, eq=eq, visits=vis)
-    return w
+def _aid_items(r, weekly, anchor, until=YEAR_END, frm=DISP_START, pause=None):
+    step = 7 if weekly else 28
+    out = []
+    t = anchor
+    while t < frm:
+        t += dt.timedelta(days=step)
+    while t <= until:
+        d = working_day(t)
+        if not (pause and pause[0] <= d < pause[1]):
+            out.append(d)
+        t += dt.timedelta(days=step)
+    return out
+
+
+def patients(pracs, pharms):
+    """Every patient of the board's practices with a statin on repeat in the extract window."""
+    pts = []
+    by_net = {}
+    for p in pracs:
+        by_net.setdefault(p["network"], []).append(p)
+    ph_net = {}
+    for p in pharms:
+        if p["kind"] == "community":
+            ph_net.setdefault(p["network"], []).append(p)
+    dsp = [p for p in pharms if p["kind"] == "distance-selling"][0]
+    prod_names = [x[0] for x in PRODUCTS]
+    prod_w = [x[3] for x in PRODUCTS]
+    pid = 0
+    for code, name, sysx, n, ch, aid, w7, low, _npr in NETWORKS:
+        r = rng("patients", code)
+        nets_pr = by_net[code]
+        pw = [p["weight"] for p in nets_pr]
+        pw = [x / sum(pw) for x in pw]
+        phs = ph_net[code]
+        phw = [p["weight"] for p in phs]
+        phw = [x / sum(phw) for x in phw]
+        # care homes in the network: each with its own 28-day cycle day and its supplying pharmacy
+        homes = []
+        for h in range(max(2, int(round(n * ch / 14)))):
+            homes.append(dict(anchor=anchor_day(r, 28),
+                              pharmacy=phs[int(r.integers(0, len(phs)))]["ods"]))
+        bands = [("65+", n, ch, aid, low), ("60-64", int(round(n * 0.16)), ch * 0.15, aid * 0.25, low + 0.03)]
+        for band, nb, chb, aidb, lowb in bands:
+            n_ch, n_aid = int(round(nb * chb)), int(round(nb * aidb))
+            kinds = ["ch"] * n_ch + ["aid"] * n_aid + ["sm"] * (nb - n_ch - n_aid)
+            for kind in kinds:
+                pid += 1
+                prac = nets_pr[int(r.choice(len(nets_pr), p=pw))]
+                yob = int(r.integers(1931, BORN_BY + 1)) if band == "65+" else int(r.integers(BORN_BY + 1, 1967))
+                if band == "65+" and r.random() < 0.55:      # an older-leaning age mix
+                    yob = int(r.integers(1931, 1956))
+                sex = "F" if r.random() < (0.47 if kind == "sm" else 0.62) else "M"
+                prod = prod_names[int(r.choice(len(prod_names), p=[w / sum(prod_w) for w in prod_w]))]
+                tpd = 2 if (prod in HALF and r.random() < 0.07) else 1
+                item_prod = HALF[prod] if tpd == 2 else prod
+                if item_prod in BRAND and r.random() < 0.06:
+                    item_prod = BRAND[item_prod]
+                dose_text = (TWO_A_DAY[int(r.integers(0, len(TWO_A_DAY)))] if tpd == 2 else
+                             ("AS DIRECTED" if r.random() < 0.03 else ONE_A_DAY[int(r.integers(0, len(ONE_A_DAY)))]))
+                pt = dict(pid=pid, network=code, practice=prac["code"], system=prac["system"], band=band, yob=yob,
+                          sex=sex, kind=kind, product=item_prod, tpd=tpd, dose_text=dose_text, items=[],
+                          left=None, coded_aid=False, aid_code_date=None, care_home_date=None, weekly=None,
+                          aid_from=None)
+                # a few leave the board or die during 2026: dispensing stops and they are not in the year-end lists
+                if r.random() < 0.055:
+                    pt["left"] = YEAR_START + dt.timedelta(days=int(r.integers(20, 350)))
+                if kind == "sm":
+                    supply = 56 if r.random() < 0.18 else 28
+                    adh = (float(r.uniform(0.40, 0.76)) if r.random() < lowb else float(r.uniform(0.86, 1.12)))
+                    pt["adh"] = adh
+                    usual = phs[int(r.choice(len(phs), p=phw))]["ods"]
+                    if r.random() < 0.03:
+                        usual = dsp["ods"]
+                    start = DISP_START + dt.timedelta(days=int(r.integers(0, supply)))
+                    if r.random() < 0.035:               # started a statin during 2026
+                        start = YEAR_START + dt.timedelta(days=int(r.integers(20, 330)))
+                    dates = _sm_items(r, start, supply, tpd, adh)
+                    ptype = ["Repeat", "Repeat dispensing", "Acute"][int(r.choice(3, p=[0.70, 0.25, 0.05]))]
+                    switch_at = YEAR_START + dt.timedelta(days=int(r.integers(60, 300))) if r.random() < 0.05 else None
+                    for d in dates:
+                        ods = usual if r.random() > 0.08 else phs[int(r.integers(0, len(phs)))]["ods"]
+                        p_now = item_prod
+                        if switch_at and d >= switch_at:
+                            p_now = "Atorvastatin 20mg tablets" if "Atorvastatin" not in item_prod else \
+                                "Rosuvastatin 10mg tablets"
+                        pt["items"].append((d, ods, p_now, supply * tpd, ptype))
+                elif kind == "aid":
+                    weekly = r.random() < w7
+                    pt["weekly"] = weekly
+                    anchor = anchor_day(r, 7 if weekly else 28)
+                    ods = phs[int(r.choice(len(phs), p=phw))]["ods"]
+                    pause = None
+                    if r.random() < 0.05:                # (a stay away keeps the cycle: the packs are collected)
+                        r.integers(30, 300), r.integers(10, 40)
+                    aid_from = DISP_START
+                    if r.random() < 0.0:                 # (no patient moved onto an aid during 2026)
+                        aid_from = YEAR_START + dt.timedelta(days=int(r.integers(60, 240)))
+                        pt["aid_from"] = aid_from
+                        adh = float(r.uniform(0.45, 1.0))
+                        for d in _sm_items(r, DISP_START + dt.timedelta(days=int(r.integers(0, 28))), 28, tpd, adh):
+                            if d < aid_from:
+                                pt["items"].append((d, ods, item_prod, 28 * tpd, "Repeat"))
+                    step = 7 if weekly else 28
+                    for d in _aid_items(r, weekly, anchor, frm=aid_from, pause=pause):
+                        pt["items"].append((d, ods, item_prod, step * tpd, "Repeat"))
+                    if prac["system"] == "Q" and r.random() < QUARVIS_CODE_RATE:
+                        pt["coded_aid"] = True
+                        pt["aid_code_date"] = (aid_from if pt["aid_from"] else
+                                               dt.date(int(r.integers(2018, 2026)), int(r.integers(1, 13)), 1)
+                                               + dt.timedelta(days=int(r.integers(0, 27))))
+                else:                                    # care home resident on the home's 28-day cycle
+                    home = homes[int(r.integers(0, len(homes)))]
+                    pt["care_home_date"] = dt.date(int(r.integers(2019, 2026)), int(r.integers(1, 13)), 1) + \
+                        dt.timedelta(days=int(r.integers(0, 27)))
+                    for d in _aid_items(r, False, home["anchor"]):
+                        pt["items"].append((d, home["pharmacy"], item_prod, 28 * tpd, "Repeat"))
+                if pt["left"]:
+                    pt["items"] = [x for x in pt["items"] if x[0] < pt["left"]]
+                pts.append(pt)
+    return pts
+
+
+def keys(pts):
+    """The data service's pseudonyms: an old key on every item before 1 July 2026, a new key from then on and on the
+    year-end lists, and the crosswalk for every patient still registered on 1 July."""
+    for pt in pts:
+        pt["new_key"] = "IV" + token("new", pt["pid"], n=10).upper()
+        pt["old_key"] = "%012d" % (int(token("old", pt["pid"], n=12), 16) % 10 ** 12)
+        pt["in_crosswalk"] = not (pt["left"] and pt["left"] < REKEY)
+    return pts
+
+
+def build():
+    pr = practices()
+    ph = pharmacies(pr)
+    pts = keys(patients(pr, ph))
+    return pr, ph, pts

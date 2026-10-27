@@ -1,81 +1,76 @@
 {
- "asks": {
-  "charge_co2e_t": {
-   "CUM": 8123,
-   "LAN": 13056,
-   "NE": 13054,
-   "YOR": 14087
-  },
-  "equipment_kg": {
-   "CUM": 36.6,
-   "LAN": 28.7,
-   "NE": 23.5,
-   "YOR": 38.9
-  },
-  "r404a_co2e_t": {
-   "CUM": 2057,
-   "LAN": 3744,
-   "NE": 5710,
-   "YOR": 2506
-  }
- },
- "call": {
-  "gap_points": 3,
-  "name": "Lancashire",
-  "region": "LAN",
-  "runner_up": "YOR",
-  "runner_up_name": "Yorkshire"
- },
- "components": {
-  "loss_share_pct": {
-   "CUM": 11,
-   "LAN": 16,
-   "NE": 13,
-   "YOR": 13
-  },
-  "packs_in_scope": {
-   "CUM": 29,
-   "LAN": 48,
-   "NE": 43,
-   "YOR": 56
-  }
- },
- "context": {
-  "ladder": {
-   "R0 top-ups charged": "NE",
-   "R1 top-ups charged less recovered": "NE",
-   "R2 shortfall at the year's end only": "NE",
-   "R3 shortfall at the year's start only": "NE",
-   "R4 level read as the full charge": "YOR",
-   "R5 one response for every pack": "YOR",
-   "golden": "LAN"
-  },
-  "order": [
-   "LAN",
-   "YOR",
-   "NE",
-   "CUM"
+ "closest_left_out": "Iversford",
+ "gap_points": "3.0",
+ "lowest_in": "32.1",
+ "n_base": "24,893",
+ "n_care": "697",
+ "n_cycle": "2,136",
+ "n_cycle_coded": "682",
+ "n_pop": "22,060",
+ "parameters": {
+  "cycle_steps_days": [
+   7,
+   28
   ],
-  "packs_total": 176,
-  "topup_share_pct": {
-   "CUM": 10,
-   "LAN": 9,
-   "NE": 16,
-   "YOR": 9
-  }
- },
- "references": {
-  "calibration_min_net_kg": 0.5,
-  "line_pct": 10,
-  "rounding": "shares to the nearest whole per cent; CO2 equivalents to the nearest tonne; kilograms to one decimal place",
-  "strategy_sections": [
-   2.3
+  "fallen_behind_pct": 80,
+  "follow_up_days": [
+   1,
+   41
   ],
-  "years": [
-   2024,
-   2025,
-   2026,
-   2027
-  ]
- }
+  "specification_sections": [
+   "2.2",
+   "2.3",
+   "3.1"
+  ],
+  "tier_line_pct": 30
+ },
+ "pilot_first_KRT_q1": 124,
+ "pilot_first_KRT_q2": 88,
+ "pilot_first_KRT_q3": 97,
+ "pilot_first_KRT_q4": 72,
+ "pilot_first_LTH_q1": 78,
+ "pilot_first_LTH_q2": 76,
+ "pilot_first_LTH_q3": 83,
+ "pilot_first_LTH_q4": 74,
+ "pilot_followed_KRT_q1": 57,
+ "pilot_followed_KRT_q2": 49,
+ "pilot_followed_KRT_q3": 50,
+ "pilot_followed_KRT_q4": 33,
+ "pilot_followed_LTH_q1": 46,
+ "pilot_followed_LTH_q2": 34,
+ "pilot_followed_LTH_q3": 46,
+ "pilot_followed_LTH_q4": 34,
+ "population_BRK": "1,905",
+ "population_COR": "2,500",
+ "population_ELL": "1,691",
+ "population_FEL": "1,686",
+ "population_GRV": "2,094",
+ "population_IVF": "1,555",
+ "population_KRT": "1,978",
+ "population_LTH": "1,669",
+ "population_MRL": "1,477",
+ "population_NVG": "2,086",
+ "population_PLH": "1,779",
+ "population_TRV": "1,640",
+ "share_BRK": "32.1",
+ "share_COR": "35.1",
+ "share_ELL": "23.9",
+ "share_FEL": "33.6",
+ "share_GRV": "32.2",
+ "share_IVF": "27.0",
+ "share_KRT": "32.9",
+ "share_LTH": "24.9",
+ "share_MRL": "26.3",
+ "share_NVG": "33.4",
+ "share_PLH": "26.0",
+ "share_TRV": "24.1",
+ "tier": [
+  "Briskdale",
+  "Corvendale",
+  "Feldcote",
+  "Grevmoor",
+  "Krathwold",
+  "Nevgarth"
+ ],
+ "tier_count": 6
 }

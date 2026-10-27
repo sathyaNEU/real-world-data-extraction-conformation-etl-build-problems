@@ -1,37 +1,38 @@
 {
  "task": "task308",
- "status": "DESIGN",
+ "status": "SHIPPED",
  "domain": "energy-systems-utilities",
  "objective": "opportunity-sizing-decision",
- "stage": 2,
- "stage_name": "design",
+ "stage": 5,
+ "stage_name": "ship",
  "updated": "2026-10-27",
- "stump": "",
+ "stump": "A capable analyst credits the new Ketchum Ridge peaker with its rated or class-average availability in every replayed hour and awards it (net USD 115 million), but the ten Northgate IT peakers were out together on lack of fuel in every shortfall hour, so a peaker on the same service removes 0 MWh and the Red Willow firm import (net USD 106 million) is the award.",
  "architecture": 3,
  "loops": 0,
  "precut": {
-  "exit": null,
-  "date": ""
+  "exit": 0,
+  "date": "2026-10-27"
  },
  "leak": {
-  "leak_py": "",
-  "reader": ""
+  "leak_py": "REVIEW 2026-10-27 (offer MW and prices as inputs, lists that rank nothing, contract end dates)",
+  "reader": "2026-10-27 isolated sonnet medium: no decisive-step sentence, question 6 analytical, every REVIEW line harmless"
  },
  "duplicate_check": {
-  "heart": "",
-  "nearest": ""
+  "heart": "WARN 2026-10-27 (question form which, against task271)",
+  "nearest": "task281 0.10 (driver)"
  },
  "judge": {
-  "verdict": "",
-  "disposition": "",
-  "report": ""
+  "verdict": "DETERMINISTIC",
+  "disposition": "APPROVE",
+  "report": "determinism_check_report.md"
  },
  "returned": [],
- "resume": "Architecture 3 drawn 2026-10-27 (energy-systems-utilities, generation-capacity-planning): four 2027 capacity offers valued on expected unserved energy removed over the ten weather years, the peakers on interruptible gas out together in the shortfall hours. Next: stage 2 design to precut exit 0, generator in task308/generator (scratch t308a3 prototype).",
+ "resume": "",
  "approved": null,
- "delivered": null,
+ "delivered": "2026-10-27",
  "portal": null,
  "portal_id": "",
  "portal_status": "",
- "portal_status_date": ""
+ "portal_status_date": "",
+ "zip_sha256_16": "7291ae6c30393d00"
 }

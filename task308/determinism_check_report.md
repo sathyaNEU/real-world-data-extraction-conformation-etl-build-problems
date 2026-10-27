@@ -1,65 +1,54 @@
-# determinism-check report, task308, 2026-10-26
+# determinism-check report, task308, 2026-10-27
 
 ## Verdict
-NOT_DETERMINISTIC (competing_defensible_answer / underspecified_objective). The call (University) is robust; supp asks 4 and 6 and the dollar grain are not forced by the shipped text.
-**Disposition:** SEND_BACK (the judge's disposition; the fix is prompt text, so any model runs must be redone)
-**Stumping type:** mechanism: decomposition_attribution/forecasting (censored-demand estimation), stumping_family: analytical_non_defect, surface_read_dependency: no, sole_data_defect: no
+DETERMINISTIC
+**Disposition:** APPROVE (two optional wording tightenings, see Findings)
+**Stumping type:** mechanism: method_or_model_selection (conditional common-mode capacity valuation, with etl_conformance for the member figures), stumping_family: analytical_non_defect, surface_read_dependency: no, sole_data_defect: no
 
 ## Why
-- Supp 6 (workshop jobs): the golden drops 441 of 1,452 jobs as failed road-test retests. No shipped file or the prompt states this. Literal all-jobs answer is 53.2/32.8/50.7/29.6 (e-bike) and 14.0/16.3/16.9/11.2 (classic); 7 of 8 cells differ from the golden.
-- Supp 4 (people): the conditional card-merge rule is not in the prompt or dictionary (dictionary says only "Token of the payment card"). Per-fingerprint gives 9,413/4,793/7,709/5,064/3,232; per-account gives 9,810/5,078/7,999/5,272/3,383.
-- Main and Supp 2/3 (dollars): the estimation grain (month x daytype x hour) is unfiled. Coarser grains move University to 100k or 75k; hour-only ties Central at 75k. University still leads on most grains, but its 125k holds only on the fine grain. The step-5 revenue formula is also not in the files (without the uplift: University 99.8k, Central 36.4k).
-- Supp 1, 5 and the recommendation text are forced or consistent. Energy dedup and local-month rule are defensible from the dictionary.
-- Unverified risk (not a fork): the pilot e-bike share transferring to University at about 60 e-bikes per station against mean capacity 53.
+One judge thread (sonnet, medium) recomputed every load-bearing figure from a fresh unzip. Everything reproduces. The award is forced: Red Willow import is the only offer with a large positive net value once Ketchum Ridge is valued at the availability of the Northgate IT peakers in the shortfall hours. In all 337 shortfall hours the ten IT peakers are out together under cause 9130, so Ketchum removes 0 MWh (RA-3 s7, "in that hour, judged from the evidence the record holds"). Sensitivity variants not licensed by the filed rules (first-report revision, whole-hour outages) do not change the award.
 
 ## Recomputation ledger
 | Figure | Claimed | Judge recomputed | Reproduced |
 |---|---|---|---|
-| University turned away / demand | 29,600 / 205,100 (14.4%) | 29,622 / 205,101 | yes |
-| Central turned away | 7,400 (2.5%) | 7,430 | yes |
-| Pilot e-bike share | 41.7% | 41.73% | yes |
-| Pilot uplift | 4.4% | 4.42% | yes |
-| E-bike premium | USD 0.11 | 0.1130 | yes |
-| Revenue (golden formula) | 75/125/50/25/25k | 76.3/127.8/47.6/22.7/24.2k | yes, only under the filed grain and formula |
-| Revenue, served rides only | Central 50k | Central 52k | yes |
-| People | 9,486 / 4,853 / 7,759 / 5,102 / 3,258 | match under conditional merge | yes, only under the unfiled merge rule |
-| Energy by month | 212 ... 224 | match | yes |
-| Workshop jobs per 10,000 | 49.1 ... 10.2 | match only with the road-test exclusion | no under the literal reading |
+| Fleet EUE, MWh/yr | 9,500 | 9,506.7 | yes (to 100) |
+| Ketchum Ridge removed | 0 | 0.0 | yes |
+| Red Willow removed | 7,100 | 7,077.8 | yes |
+| Sandhill Draw removed | 2,000 | 2,012.2 | yes |
+| Coulee Flats removed | 400 | 432.7 | yes |
+| Payments, USD M | 23.2 / 35.8 / 28.4 / 25.8 | 23.22 / 35.81 / 28.35 / 25.8 | yes (Sandhill 28.35 is a half-up tie) |
+| Net values, USD M | -23 / 106 / 12 / -17 | -23.2 / 105.8 / 11.9 / -17.1 | yes |
+| Member 2025 net energy (8) | golden | identical | yes |
+| Member 12-CP averages (8) | golden | identical | yes |
 
 ## Competing answers that survived
-- Workshop jobs: all jobs (literal) against retests dropped; closing rule not shipped.
-- People: per account / per fingerprint / conditional merge; closing rule not in prompt or dictionary.
-- Dollars: grain of the turned-away estimate (month x daytype x hour against coarser or month x day-of-week) and the uplift form; University 125k against 100k or 75k.
+- Ketchum at its 4.5% EFORd or fleet-average availability: removes about 6,740 to 6,890 MWh, net USD 112 to 115 million, files Ketchum. Ruled out by RA-3 s7 and the record (every IT peaker out in every shortfall hour). This is the declared easy route, not a surviving fork.
+- Temperature-conditional estimator for Ketchum: about 770 MWh, net about -8. The award holds, but Ketchum's two graded figures (0 vs about 800 MWh; -23 vs -8) would differ. Residual fork on graded asks, not on the call.
 
 ## Spec gates
 | Gate | Required | Actual | Pass |
 |---|---|---|---|
-| Files | 10 or more | 17 | yes |
-| Formats | 3 or more | 4 (csv, xlsx, pdf, json) | yes |
-| Large file | 25,000 rows or more | 267,968 rows (rides_2025Q3.csv) | yes |
-| Distractors in metadata.json, none named in a file name | 2 or more | 2 (open_data_bikeshare_trips_by_area_2025.csv, vendor_quote_ebikes_2026.pdf) | yes; the open-data file name does not label it as a distractor |
-| Distractor unused, relevant | yes | open data counts rides by area (same quantity as the trips, suppressed counts); quote is a vendor quotation; judge found them unusable for the graded quantity | yes |
-| Deliverables | 1 to 3, all in golden | 2 (docx, xlsx), both in golden/ | yes |
-| Asks: unit and rounding stated | each | prompt states rounding for revenue, energy, people, jobs | yes |
-| Asks multi-dimensional | yes | people by 5 areas, 12 months, 8 quarter/class cells | yes |
-| Rubric 25 or more criteria | 25 | not generated at this stage; 3 + 5 + 12 + 8 graded figures plus components exceed 25 | yes (by count) |
-| Not LLM-generated, goldens realistic | yes | judge found no provenance or authoring leakage; golden realism not re-read here | yes (not re-read) |
+| Files | 10+ | 14 | yes |
+| Formats | 3+ | 4 (pdf, xlsx, csv, parquet) | yes |
+| Large file | 25,000+ rows | MDM export 351,120; weather 87,672; profiles 87,672 | yes |
+| Distractors | 2+ named in metadata, none in a file name | northgate_hub_forward_curve_2027.xlsx, member_load_forecasts_2027.xlsx; names unlabelled | yes |
+| Distractors unused yet weighable | yes | forward curve (energy settled at market), draft forecasts, vendor EFORd; judge found them relevant and unused | yes |
+| Deliverables | 1 to 3, all in golden | 2 (xlsx, docx), both in golden/ | yes |
+| Asks multi-dimensional, unit and rounding stated | yes | prompt states all roundings and units | yes |
+| Prompt shape, 25+ criteria | yes | 862 characters; 1 + 12 offer figures + award + 16 member figures plus call components exceeds 25 | yes |
+| Not LLM-reading, goldens realistic | yes | judge: synthetic, templated service-order notes, nothing exclusion-level | yes (golden-realism owns the rest) |
 
 ## Gate G reconciliation
-Thread: mechanism censored-demand estimation, family analytical_non_defect, surface_read_dependency no, sole_data_defect no. Design note and card: stump_class analytical; the stump is the rides-served route (Central about 50k) against rebuilt requests (University); the same mechanism. The declared distractors (open data by area, vendor quote) are not named as the surface read carrying the task; the surface read is the served-ride ranking, which is the stump itself. Match, no finding. Gate G passes.
-
-## Gate H
-domain: pass, layers: pass, decisive_step: analytical. Matches the card (analyst_test: strong analyst takes Central at 50k; domain_test: availability-censored demand) and the note's Three rules. Judge residual concern: "2025 demand" undefined, but choosing requests over rides is an estimand choice. The design note's own SF14 and SF20 show the supp devices (card merge, road-test retest) as deliberately silent; the judge reads them as hidden rules, so the literal-determinism bar is not met.
+Thread: mechanism method_or_model_selection, stumping_family analytical_non_defect, surface_read_dependency no, sole_data_defect no. Gate H: domain pass, layers pass, decisive_step analytical.
+Design note and card: stump is correlated common-mode availability (analytical), no decoy, declared distractors are the forward curve and member forecasts. Match. The thread did not name a declared distractor as the surface read carrying the task; the surface read is the vendor EFORd, which the note calls a true annual figure, not a metadata distractor. No Gate G mismatch.
 
 ## Stump power (Gate F)
-The easy route (served-rides ranking, Central 50k) is plausible for a strong solver; doing it right needs the stock rebuild from audit, trips and van moves, plus pilot transfer. Risk: a solver reaching University on a coarser grain files a different dollar figure.
+Moderate to good. The wrong route (EFORd or class average in every hour) files Ketchum at USD 112 to 115 million, a different award, not a rounding slip. Caveat for the main thread: the design note itself records that no filed sentence names fuel, cold or the class's hours, and that the availability-model family spans 0 to 7,100 MWh and files two awards. The judge accepts the record-based reading as literal under RA-3 s7. A strong analyst who reads s7's "in that hour, from the evidence" and looks at the outage co-timing lands the call; the decisive step is a judgment the data settles, so weigh it against the ladder, and against the ban on a decisive rule left unstated, rather than treating it as safely closed.
 
 ## Findings, ranked
-1. Supp 6 workshop jobs: road-test retest exclusion is an unshipped rule; literal answer differs in 7 of 8 cells.
-2. Supp 4 people: card-merge rule unshipped; literal readings differ in every network.
-3. Dollar figures: estimation grain and uplift formula unfiled; University 125k holds only on the fine grain.
-4. The design note's SF8 and SF14 claim the readings are "asserted" closed, but nothing quotable in the shipped files closes them.
-5. Unverified: pilot e-bike share transfer to University at higher bikes per station (risk, not fork).
+1. (Optional, wording) Ketchum's 0 MWh and USD -23 million rest on "in that hour" read literally; a temperature-conditional estimator gives about 770 MWh and about -8. One clause saying the offer is counted at the availability of the Northgate IT peakers in that same hour would close it, but it would file the HOW; weigh against the 10/10 rule on filing method. Alternative: accept the fork as a lower-weight ask risk.
+2. (Optional) Sandhill Draw payment 28.35 is an exact half-up tie; consider moving the payment off the boundary or stating the rounding convention.
+3. (For main thread) The unstated-rule exposure in Stump power above.
 
 ## Next action for the author
-Run /fix-determinism on task308: file the WHAT in prompt.txt for the three groups (what counts as one job after a failed repair, what counts as one person across accounts on one card, demand as the requests made including those turned away with the estimation grain, or coarsen the revenue rounding), not the HOW.
+No determinism repair needed. Decide on findings 1 and 2 (generator-side, no rerun of the judge required), then proceed to ship with the leak reader's verdict.

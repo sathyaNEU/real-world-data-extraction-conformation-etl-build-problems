@@ -1,13 +1,13 @@
 {
  "task": "task270",
- "status": "PAUSED",
- "domain": "pharmacology-pharmacoepidemiology-safety",
+ "status": "DESIGN",
+ "domain": "psychology-behavioral-science",
  "objective": "descriptive-distribution",
- "stage": 1,
- "stage_name": "draw",
+ "stage": 2,
+ "stage_name": "design",
  "updated": "2026-10-27",
- "stump": "The default path takes out care home residents and the patients Quillon's extract codes as using a compliance aid and names four networks; the uncoded aid patients, dispensed on the pharmacy's own 7- or 28-day cycle, read as fully covered and pull Briskdale under the 30 per cent line; only the dispensing's own regularity finds them (prototype).",
- "architecture": 8,
+ "stump": "A competent analyst computes each patient's root mean square change in negative affect between adjacent answered prompts of the 2026 fortnight and funds DBT skills groups in Dunnerby and Marrowcombe alone, reading the trust app's ratings about 90 minutes apart as the collaborative's three-hourly app would; read at three hours, Drystow, Haddersley and Cressbeck reach 30 per cent too.",
+ "architecture": 9,
  "loops": 0,
  "precut": null,
  "leak": {
@@ -21,7 +21,7 @@
   "report": ""
  },
  "returned": [],
- "resume": "Architecture 8 drawn on paper 2026-10-27 (DESIGN_NOTE.md ## Draw to ## Three rules, prototype world_proto.py in the session scratch): the card's only BLOCK is ban.strategy, population_selection held by task141 in the window. File the card the moment task141 leaves the window (guard.py check, then register), commit DRAWN (task270), then stage 2: tune the twelve networks so every share sits a point clear of the line and the analyst's route misses at least two networks, then the readability screen, fork table, ladder, closure, asks and prompt.",
+ "resume": "Architecture 9 drawn and registered (stage 2, design next): the ladder, fork table, closure, readability screen, the asks and prompt.txt to precut.py exit 0, then a new generator in task270/generator (the architecture 8 files are its predecessor's and are replaced). Read DESIGN_NOTE.md's Draw and Tried and rejected first.",
  "architectures": [
   {
    "architecture": 1,
@@ -53,7 +53,12 @@
   },
   {
    "architecture": 8,
-   "fate": "drawn 2026-10-27 (statin adherence tiers, Iversford Vale ICB); card BLOCK on ban.strategy alone (population_selection, task141 in the window)",
+   "fate": "spent 2026-10-27 at stage 4 (target.zip dc5e15f6): the leak reader read the decisive step as field reading and stated rules; the judge reproduced every main figure and returned NOT_DETERMINISTIC, SEND_BACK, Gate G planted_defect_flip (surface_read_rejection: the unrecorded compliance-aid patients behind a partly recorded flag), Gate H decisive_step data_semantics, and the pilot asks' duplicate-record rule unfiled; built state at the STATUS commit recording the spend",
+   "drawn": "2026-10-27"
+  },
+  {
+   "architecture": 9,
+   "fate": "drawn 2026-10-27 in another domain: psychology, experience sampling (Brindholm and Wendholt NHS Foundation Trust's 2027-28 DBT skills groups, each team's share of its 2026 assessed patients whose emotional instability reaches the Sallowdene Provider Collaborative's standard as its three-hourly app will measure it)",
    "drawn": "2026-10-27"
   }
  ],
@@ -63,5 +68,5 @@
  "portal_id": "",
  "portal_status": "",
  "portal_status_date": "",
- "seed": "none: a fresh world drawn 2026-10-26 (Hallowmere Foodstores' 2027 HFC pack replacement programme)"
+ "seed": "none: a fresh world drawn 2026-10-27 (Brindholm and Wendholt NHS Foundation Trust's 2027-28 DBT skills groups)"
 }
