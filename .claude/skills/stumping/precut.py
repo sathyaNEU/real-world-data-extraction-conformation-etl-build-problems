@@ -99,6 +99,37 @@ def tables(body):
     return out
 
 
+# The field's named methods, grouped into families so that two lines naming the same method with different
+# wording ("the hazard of a violation", "the hazard by time on supervision") still collide.
+METHOD_FAMILIES = {
+    "test linking": ("concordance", "equipercentile", "equating", "linking", "percentile match",
+                     "vertical scale", "score conversion"),
+    "regression prediction": ("regression", "ordinary least squares", " ols ", "logistic", "predicted value"),
+    "survival and hazard": ("hazard", "survival curve", "survival function", "kaplan", "proportional hazards",
+                            "life table", "left truncation", "time to event"),
+    "likelihood fitting": ("maximum likelihood", " mle ", "likelihood ratio"),
+    "resampling": ("bootstrap", "cross-validation", "jackknife", "permutation test"),
+    "shrinkage": ("credibility weighting", "shrinkage", "empirical bayes", "partial pooling"),
+    "standardisation": ("standardisation", "standardization", "reweighting", "direct adjustment", "z-score"),
+    "causal design": ("propensity", "difference in differences", "instrumental variable", "regression discontinuity",
+                      "synthetic control"),
+    "triangle development": ("chain ladder", "development triangle", "loss development", "run-off"),
+    "extreme value": ("log-pearson", "extreme value", "generalised pareto", "return period"),
+    "time series": ("arima", "exponential smoothing", "state space", "seasonal decomposition"),
+    "flow balance": ("stock and flow", "max flow", "balance identity"),
+    "backtest selection": ("backtest", "back-test", "out-of-sample selection"),
+}
+
+
+def method_terms(line):
+    """The families of field-named methods a Three-rules line mentions.
+
+    Families, not raw strings: the same method named two ways in two lines must still collide.
+    """
+    low = " " + (line or "").lower() + " "
+    return {fam for fam, pats in METHOD_FAMILIES.items() if any(pat in low for pat in pats)}
+
+
 def labelled(body, label):
     """The text after `Label:`, with its wrapped continuation lines, up to a blank line, a new bullet, a table row,
     a heading or the next `Label:` line."""
@@ -231,6 +262,19 @@ def check_note(task_dir, note_text):
     if tt:
         ok, detail = task_type_serves(task, tt)
         row("task type serves the objective", ok, detail, warn=shipped or ok is None)
+
+    # The reflex collision: if the field's own named method for the deciding quantity IS the decisive step,
+    # the readability screen's test 3 is failed by construction and a competent analyst reaches the golden.
+    # Three builds died this way (a domain's reflex estimator, a textbook weight, a test concordance).
+    dt, ds = labelled(tr, "Domain test"), labelled(tr, "Decisive step")
+    if dt and ds:
+        shared = method_terms(dt) & method_terms(ds)
+        row("the field's method is not the decisive step", not shared,
+            "the Domain test and Decisive step lines share no method term"
+            if not shared else
+            "both lines name %s: if the field's own method for the deciding quantity is the golden, a competent "
+            "analyst applies it by reflex and the screen's test 3 cannot be silent"
+            % ", ".join(sorted(shared)), warn=True)
 
     # Readability screen.
     rs = section(secs, "Readability screen") or ""
