@@ -1,748 +1,213 @@
-# task141: Dorrance County, the detention bed-day bill of the pretrial releases it already makes (architecture 2)
+# task141: Okelan County, felony probation revocations under the 24-month cap (architecture 3)
 
-Private, never ships. A re-root of task141 at stage 1, the number and the objective kept, the county and its records
-kept and the decision changed. Architecture 1 is spent: both portal responses landed its call, and its decisive step
-was the domain's own reflex (the selective labels of a pretrial outcome record) carried by an estimator with seven
-defensible constructions, which `stumping` 1.1j now files as a decisive step with no unique execution. The structural
-reason that architecture could not be hardened is in `## Portal result and the stage 2 diagnosis, 2026-10-26`: every
-large lever in that world is a counterfactual outcome for a defendant a magistrate held, so the decision itself had to
-move to a population whose outcomes the record holds whole. It did. Architecture 2 prices the releases the county
-already makes, where every bed-day is realised and every following stay is closed at the extract, and the difficulty
-is that the larger half of the bill is filed under booking numbers and charge classes the release policy's own
-eligibility list excludes.
+Private, never ships. Architecture 3 of task141, re-rooted on 2026-10-27 at the author's instruction (oviya1301) to
+give the number a stronger stump: architecture 1 (Dorrance County's presumptive release tier) went FAILED_TO_STUMP on
+the portal, both responses landing it, and architecture 2 (the bed-day bill of the county's pretrial releases) was
+superseded at stage 2, its decisive construction being one join and a sum once seen. The number, the Forecasting lane
+and the client domain are kept; the world, the records and the decision are new. Both earlier architectures are under
+`## Earlier architectures`.
 
 ## Draw
 
 | Axis | Value |
 |---|---|
-| Card | `.claude/skills/fingerprint/cards/task141.json`, architecture v2, registered 2026-10-26; `guard.py check` WARN only (no BLOCK), `guard.py validate` clean at 299 cards; architecture 1 moved into `lineage` as spent |
-| Domain / task type | `criminology-justice` (client domain), task type `recidivism-risk-assessment`, the only one of the domain's task types the guard scores as serving forecasting and the truthful one here: the deciding quantity is the custody consequence of re-arrest graded by the assessment score, a recidivism-risk product stated in bed-days instead of in a rate |
-| Objective | Forecasting & Predictive Modeling: the detention bed-days the county must budget for the custody that follows a failure to appear by a defendant it releases at a first appearance, for a year not yet begun, priced on the four closed fiscal years |
-| Shape | `09` (funnel of stages, each stage's volume, rate and cost): eligible screened appearances, released at first appearance, failed to appear, a booking followed, bed-days per following booking, each per assessment score, plus the call, the own-stay term, the gap and the flip, the chart's named parts and the files; arithmetic written into `## Ask sheet` at stage 2 |
-| Decision | `quantity_figure`, answer unit `count` (detention bed-days), scoring unit `units served` |
-| Mechanism | gap population (decisive: the file's row is one booking, the decision's unit is one release and all custody it causes); pattern none, generators G2 (grain mismatch, decisive) then G8 (the larger half of the cost is reachable by no key) and G11 (the eligibility list excludes the charge classes the cost lands on); Gate G `forecasting`; strategy `grain_or_unit` |
-| Layer 2 family / pattern | `field_method` (corrections bed-day accounting done right); `own:net-bed-day-footprint-across-an-unbridged-grain` |
-| Stakeholder | the budget analyst in the county manager's office, pricing contract beds; role family `finance_controller`, forum `operations_desk`, forcing event `season_or_peak` (the detention centre reached 972 of its 1,020 rated beds on 6 October 2025 and began boarding out) |
-| Context artifact | `capacity_report` (the criminal justice advisory council's 2025 jail population report, already in the pack and now squarely on topic as the only capacity statement) |
-| Guard | nearest driver on file 0.07 (task35, task103); `test.same_puzzle_older` and `test.same_driver_older` differentiated against task142, task148 and task173, and `test.own_lineage` against architecture 1; the one WARN is `three_rules.strategy_risk` on `grain_or_unit`, answered below |
-| Frame | the four closed fiscal years FY2022 to FY2025, measured as the only gradeable frame: per score FY2025 alone runs 18 to 24 per cent relative standard error with score 3 above score 4 and only 16 per cent of bootstrap draws monotone, against 10 to 13 per cent and 99.6 per cent monotone over four years |
+| Card | `.claude/skills/fingerprint/cards/task141.json`, architecture v3; `guard.py check` WARN only (`three_rules.strategy_risk`, answered below) with one NOTE (task152, differentiated on the card); architectures 1 and 2 in `lineage` with their fates |
+| Domain / task type | `criminology-justice` (client domain), task type `recidivism-risk-assessment`, the only one in the domain that serves Forecasting: the 2027 count of felony probation revocations, forecast from the county's own supervision record |
+| Objective | Forecasting & Predictive Modeling: the felony probation revocation commitments the Detention Center will admit in calendar 2027, a window not yet open at the extract (30 September 2026), under a statute that takes effect on 1 January 2027 |
+| Shape | `02` (forecast across periods): the plan's quarterly admissions and their two parts carry the call's criteria, the asks the rest; the arithmetic goes under `## Ask sheet` at stage 2 |
+| Decision | `quantity_figure` (the plan's 2027 admissions, from which the filed planning standard sets the violator pods), answer unit `count` |
+| Mechanism | gap time (decisive: the record's petitions were made under terms that ended where they were set; the Act moves every end and ends some 2,900 running terms on one day) then population (the terms past 24 months are a block no new term will form); pattern none, generators G4 (attribution at the transition: which clock each petition rides) then G13 (the forecast horizon holds a transition the window never exercised); Gate G `forecasting`; strategy `time_semantics` |
+| Layer 2 family / pattern | `estimation_fit` (the data's real structure: which clock an event rides); `own:violation-petitions-filed-before-each-term-lapses-ride-the-scheduled-end`. The client library's recidivism cards (calibration, fixed follow-up and time at risk, the fairness criterion, later release cohorts, selective labels, local base rates) are the default path's own careful moves here: the survival projection by time on supervision with the risk score is card 2 and card 4 done well, and it files three pods |
+| Furniture | forum `council_or_assembly` (the County Board of Supervisors adopts the plan), forcing event `statutory_or_regulatory_filing` (the 2027 Jail Operations Plan is due to the State Jail Standards Board on 1 December 2026), organisation family `local_government`, role family `research_desk` (the Sheriff's Office jail planning analyst), context artifact `filed_standard` (the Board's planning instructions with the county's pod standard, and the Act), calibration `none`, opening `question-first`, question form `how-many`. The live window at the draw (task139 v2, task304, task166) carries none of the forum, forcing event, organisation family or role |
+| Spine | `detention_bookings_2019_2026.csv`, the Detention Center's bookings (every booking, a transfer to the annex writing a new row), with the booking reason that marks a revocation commitment; rows set at stage 3; synthetic |
+| Deliverables | `violator_housing_plan_2027.xlsx` (the forecast by quarter and part, the pods), `violator_housing_memo_2027.docx` (the plan's violator housing section), `felony_revocation_admissions_2019_2027.png` (monthly admissions and the forecast) |
+| People | drawn with `guard.py names --geo us --seed 141 --n 30`, skipping every first name the guard warns on: Gina Yoder (Sheriff's Office jail planning analyst, the requester), Larry Pugh (Chief Probation Officer), Colleen Cameron (Detention Center commander), Donald Russo (Probation research and data manager), Megan Chambers (Clerk of the Circuit Court), Gloria Lynch (County Budget Director); none appears in the prompt |
 
-**The strategy-risk WARN, answered.** `grain_or_unit` often decides on reading a field or applying a stated rule. It
-does not here, and the analyst test is what shows it: a solver who reads every field correctly (the booking types, the
-release types, the facility codes, the charge classes, the assessment scores) and applies every filed rule (the draft
-policy's eligibility list, its 365-day window, the README's midnight count) still prices a release at the release's
-own stay, because nothing it has read tells it that the bill is somewhere else. The grain is not misread, it is never
-reached.
+**Guard.** The first probe (decisive G7, role `capacity_planner`, forcing `purchase_order_or_contract`) BLOCKed on
+`ban.role` and `ban.forcing_event` against task137 v4 and on `test.same_puzzle_older` and `test.same_driver_older`
+against seven builds; decisive G13 BLOCKed `ban.pattern` against task166 v3; `dial_setting` BLOCKed `test.same_puzzle`
+inside the batch against task269 v1's lineage. The card reads the honest replacements: the jail planning analyst is a
+research desk, the plan is a statutory filing, G4 names the attribution the stump turns on (each petition to the clock
+it rides, at the transition the Act makes), and the committed answer is the forecast count from which the pods follow.
+`three_rules.strategy_risk` WARNs that `time_semantics` often decides on reading a field or a stated rule: here no
+field or rule carries the clock; it is a process in the record estimated by the field's hazard method from every term
+that reached its end (`## Three rules`, Not semantics and Not rule application). Strategies `causal_design` (task139
+v2) and `composition_mix` (task304) were barred by the window, which ruled out the supervision-intensity designs.
+`people.first` WARNs on Robert, Jessica, Amanda, Justin, Anthony, Richard, Ryan, Lori and Michael were redrawn.
 
-**Data-native sentence.** A release at a first appearance ends a custody episode after a few hours, and the custody it
-costs the jail begins weeks later under a new booking number, on a new case, on a charge the policy's own eligibility
-list excludes, with nothing in the pack linking the two but a person and a date, so the cost of a release is the one
-quantity in this county's records that no key reaches.
+**Same-puzzle test.** Gap time, decisive G4, `quantity_figure`: task152 alone carries the triple, a solar plant's
+decline at a module replacement split into wear the replacement removes and dust it keeps; nothing here is replaced
+or decomposed into a kept and a removed loss: events tied to each term's scheduled end move with the end a statute
+sets and fire together for the terms it ends on one day.
 
-**What the world already carries.** The pack built for architecture 1 holds every record this call needs: 194,461 jail
-booking rows with the annex and contract-facility moves, the contract facility's bills, the advisory council's
-capacity report, the two first-appearance exports across the March 2024 system change, the screens, the charges and the
-clerk's crosswalk. Architecture 2 re-tunes the world so the graded figures sit mid-bin, replaces the deliverables and
-the asks, and files the two population sentences `## Semantic fork table` needs; it does not rebuild the county.
+**Abstraction test.** Stripped of nouns: failures are filed at two moments of each unit's term, early on and at a
+review held as the term lapses, so the failure rate by time since entry carries a spike at each term's own end; a cap
+that moves every end earlier moves the review with it and fires it at once for every unit already past the cap, while
+a forecast that truncates the time-since-entry curve at the cap drops the spike and files a fall. The nearest drivers
+on file (0.09 and under): task134 v2's lineage (inflow from a pool held outside the register), task123 v1's lineage (a
+trailing total over periods an annual filing closes), task62's lineage (an exclusion limited to an instrument's term)
+and task304 (entries into failure from units whose good standing an organisation produced). None has events riding
+each unit's scheduled end, and none has a transition that moves every end and fires the events together. task169 (a
+parole act rerouting arrests the Board had revoked to the courts) is the nearest build in the domain: its insight is a
+processing route the act closes, measured by the conversion the remaining route applies; nothing here is rerouted.
 
-## Default path
+**Sources read, one line each.** `guard.py mechanisms --objective forecasting` (every spent driver on the
+objective): no build reads a second clock tied to each unit's scheduled end. `guard.py slots expiration "term end"
+lapse anniversary`: task123's slot only, on an annual filing; `slots "max date" "remaining sentence" "earned credit"`:
+none. task169's `## Tried and rejected` set aside a discontinuity at a supervision-tier cut-off (a logistic with the
+tier lands it) and positive tests per sanction step (a filed grid), both read and avoided. task141's own portal
+diagnosis (every large lever in the pretrial world is a counterfactual for a held defendant) moved the decision to a
+population whose outcomes the record holds whole: the supervision record is complete for every case to the extract.
+`layer2-rigor-patterns.md`, recidivism-risk-assessment: cards 2 and 4 are the default path's careful moves; card 5's
+selective labels cannot arise (no decision-maker chooses who is supervised).
 
-1. Read the draft revision and the current policy: a defendant released at a first appearance is released on a written
-   promise on the conditions set at it, the pretrial period runs 365 days from release or to the last charge's
-   disposition, whichever comes first, and the eligible charges are the misdemeanors not on Appendix B's excluded list.
-2. Stack the two first-appearance exports (legacy to 3 March 2024 through the clerk's crosswalk, new from 4 March),
-   keep the eligible screened appearances, attach each one's assessment score, and keep the four closed fiscal years to
-   30 September 2025 so every 365-day window has run out.
-3. Take the defendants released within 24 hours of the appearance, the README's definition of release at first
-   appearance: 49,172 of 55,005 eligible screened appearances.
-4. Chain each one's custody episode properly, which a careful solver does: a move to the Mill Street annex closes one
-   booking row and opens another at the same minute, and a board-out to the contract facility closes a row while the
-   defendant stays in the Sheriff's custody, so one episode is several rows; count one bed-day for each midnight the
-   person is held, the README's rule.
-5. Sum the bed-days of those released defendants' own stays, 12,851 over the four years, divide by four and file the
-   county's annual bill at about 3,200 detention bed-days, roughly nine contract beds.
+**World.** Okelan County (fictional, an unnamed state) supervises about 8,300 felony probationers through its Adult
+Probation Department. Under the State's 2019 realignment a felony probation revocation term is served in the county
+of supervision, so every felony revocation is a commitment to the Okelan County Detention Center, booked under its
+own reason code. Felony terms are set by the sentencing judge, 18 to 72 months; a misdemeanor term is 12 months.
+Officers file violation petitions with the Circuit Court: on new arrests, missed reporting, failed drug tests and
+treatment failures through the term, and, in the weeks before a term expires, on matters still unresolved (unpaid
+restitution, a pending charge, unfinished treatment, a probationer who cannot be found), because a petition filed
+before expiration keeps the court's jurisdiction. Senate Bill 26-118, the Felony Probation Term Act, takes effect on 1
+January 2027: a felony term imposed on or after that day may not exceed 24 months, and a running term ends on the
+earlier of its original expiration and 24 months from its start, but not before 31 March 2027. The Sheriff's Office
+writes the 2027 Jail Operations Plan, which the County Board of Supervisors adopts and files with the State Jail
+Standards Board by 1 December 2026; the plan states the felony probation revocation admissions it expects in 2027 and
+staffs violator pods by the county's filed standard. Records to the extract of 30 September 2026.
 
-Ends on: 12,851 bed-days over the four closed years, 3,213 a year (0.241 times the golden; asserted in `checks.py` and
-recomputed by `verify.py`).
-Golden: 53,430 bed-days over the four closed years, 13,358 a year: the released defendants' own stays plus the full
-custody of the booking that follows each failure to appear inside the policy's own window, whatever the charge, which
-is 40,579 bed-days and 3.16 times the own-stay term. Figures are re-tuned at stage 3 so the graded value sits mid-bin.
-
-## Stump sentence
-
-A competent solver stacks the exports, keeps the eligible screened appearances, chains every custody episode correctly
-through the annex and the contract facility, counts midnights by the README's rule, and files the county's annual
-detention bill for its pretrial releases at about 3,200 bed-days (Ends on: 12,851 over four years); the step that
-lands it there is pricing a release at the release's own stay, when the bed-days a release costs are the custody of the
-booking that follows a failure to appear, 85.6 per cent of which sits on charges the policy's own eligibility list
-excludes, so the bill is 53,430 over four years and 13,358 a year.
-
-**Measured, on the built world.**
-
-| | Four years | A year | Times the golden |
-|---|---|---|---|
-| R0, the released defendants' own stays only (Ends on) | 12,851 | 3,213 | 0.241 |
-| R2, own stays plus the following booking on eligible charges only | 18,685 | 4,671 | 0.350 |
-| R3, own stays plus the booking that follows a failure, any charge (golden) | 53,430 | 13,358 | 1.000 |
-| R1, own stays plus the first booking inside 365 days with no failure condition | 105,599 | 26,400 | 1.976 |
-
-| Graded by score | Score 1 | Score 2 | Score 3 | Score 4 | Score 5 | Score 6 |
-|---|---|---|---|---|---|---|
-| Share R0 captures of the golden | 47.7 | 32.8 | 21.9 | 15.2 | 8.1 | 5.3 |
-| Following bed-days per failure | 6.22 | 8.74 | 11.72 | 12.21 | 14.26 | 19.45 |
-| Following bed-days per release | 0.28 | 0.53 | 0.95 | 1.48 | 3.14 | 5.10 |
-
-The default path does not merely undercount, it inverts the reading the budget turns on: the own-stay route captures
-47.7 per cent of the bill at the lowest assessment score and 5.3 per cent at the highest, so it files the high scores
-as the cheapest releases the county makes, while the custody each failure actually costs rises from 6.2 bed-days to
-19.5 across the scale. Monotone in 99.6 per cent of bootstrap draws over the four years.
-
-**Two readings sit too near the golden to be rungs and are closed in `## Semantic fork table`, not used:** summing
-every booking inside the window rather than the first lands 13.3 per cent high, and taking the failure arrest's own
-booking instead of the booking that follows lands 2.7 per cent low. Both are WHAT (which booking, inside which
-window), so both are pinned at authority; the decisive step, that the bill is in the following booking at all and that
-the charge class must not be filtered, stays unfiled.
+**Data-native sentence.** In Okelan County's record about a fifth of felony violation petitions are filed in the last
+75 days before a term's scheduled expiration, on matters left unresolved as the term lapses, so that the court keeps
+jurisdiction: 23 to 24 per cent of terms that reach their last 90 days on supervision carry one, against 3 per cent in
+the same stretch a year earlier. SB 26-118 moves every scheduled expiration and puts some 2,900 of them on 31 March
+2027.
 
 ## Three rules
 
-**Task type:** recidivism-risk-assessment, in criminology-justice, which is the one task type of this domain the guard
-scores as serving Forecasting & Predictive Modeling. It is also the truthful one: the quantity is the custody
-consequence of re-arrest after a pretrial release, graded by the assessment score, which is a recidivism-risk product
-stated in detention bed-days instead of in a rate.
+- Task type: criminology-justice, recidivism-risk-assessment (serves Forecasting): the 2027 count of felony probation
+  revocations the Okelan County Detention Center will admit under SB 26-118, forecast from the county's supervision
+  record.
+- Domain test: the deciding quantity is the forecast count of revocations, which the field projects from failure on
+  supervision (the hazard of a violation by time on supervision and risk, the share of petitions that end in a
+  revocation, the time from petition to commitment); it turns on probation law's tolling: a petition filed before a
+  term expires keeps the court's jurisdiction, so officers file on unresolved matters in the weeks before each
+  scheduled expiration, a second clock that carries about a fifth of the county's felony petitions.
+- Swap: "a gym chain forecasting 2027 cancellations after a cap on contract length" keeps a term and a cap, but
+  nothing in it is filed to keep an authority over a member before the term lapses, a cancellation at the end is the
+  term's own end rather than a filing that extends it, and no transition ends thousands of running contracts on one
+  day, so the reasoning that decides (which clock the petitions ride and where the Act moves it) has no counterpart.
+- Layer 1: the two case-management systems' layouts (the legacy one to June 2023 with terms in days and its own status
+  and office codes, the new one in months), amended petitions under the original number with a suffix, the Detention
+  Center's bookings with annex transfers as new rows and UTC times after its 2025 migration, the person crosswalk
+  across Probation, Sheriff and State identifiers with merged identities, misdemeanor and interstate-compact cases in
+  the same register, and the risk screen's 2023 rescaling; each is what the named system produces, and none decides
+  the call.
+- Layer 2: family `estimation_fit`; the choice that flips the call is reading the record's petitions on two clocks,
+  months on supervision for the ordinary ones and days to scheduled expiration for those filed as a term lapses, and
+  moving the second clock to the end the Act sets.
+- Decisive step: in the field's words, a revocation forecast built on the hazard by time on supervision has to
+  separate the petitions filed against the expiring term (the tolling petitions in the last weeks before scheduled
+  expiration) from the time-on-supervision violations, because the Act moves every scheduled expiration and ends some
+  2,900 running terms on one day, and the tolling petitions follow the end.
+- Not semantics: every field, code and date read correctly (allegation codes, dispositions, booking reasons, the
+  Act's sections) still leaves the time-on-supervision forecast at about 450; no column, code or status marks a
+  petition as filed against the expiring term (its allegations are the codes the ordinary petitions carry), and the
+  clock appears only when filing dates are aligned on each term's scheduled expiration.
+- Not rule application: SB 26-118 sets every term's new end and the planning standard turns admissions into pods, and
+  executing both on the time-on-supervision projection files three pods; no rule or document names a petition clock,
+  a window or a rate. Measured on three paper worlds (`generator/paper/fam.py` on `sim_rev.py`): the enumerated family
+  (persistence, the time-on-supervision hazard pooled or by term length with the score, the two-clock forecast without
+  the transition terms, the two-clock forecast, and the end window counted twice) spreads from 0.44 to 1.12 times the
+  truth, 413 to 1,067 admissions; the standing family (two clocks, the window 60, 90 or 120 days, the score on or off)
+  spreads by under 1 per cent of the figure on each world (968 to 1,008 across the three); the ruling-out is one
+  group-by nothing invites, petitions by days to the term's scheduled expiration, where 23 to 24 per cent of terms
+  that reach their last 90 days on supervision carry one against 3 per cent in the same stretch a year earlier.
+- Analyst test: a strong analyst who conforms the two layouts, the petitions and the commitments, applies the Act to
+  every term and fits revocation by month on supervision with the risk score (the field's survival projection),
+  carrying each case to its new end and adding new starts on 24-month terms, files about 450 admissions (Ends on; a
+  fall of a third from the trailing year's about 700), against the golden's about 950; persistence files about 700.
+- Estimand: felony probation revocation commitments admitted to the Okelan County Detention Center with an admission
+  date in calendar 2027, for felony cases Okelan County supervises, under SB 26-118 as enacted, with the courts, the
+  Department and the Sheriff acting at the rates the record shows (the planning instructions' projection convention);
+  filed in `jail_planning_standard_2026.pdf`.
+- No decoy: nothing is planted; the petitions filed before a term lapses are what tolling makes officers do,
+  generated by one process for every term; no memo, briefing, draft or stakeholder figure forecasts revocations, and
+  the Department's annual report counts last year's admissions only.
+- No certified replay: no certified, published or prior-period figure is reproduced to recover a method; nothing in
+  the pack forecasts 2027 or scores a method.
+- Lesson: an event filed against a term's scheduled end rides that end, not the time since the term began; a reform
+  that moves every end moves those events, and a transition that ends thousands of terms on one day fires them
+  together. No build on file reads a second clock tied to each unit's scheduled end, or a transition that fires it.
 
-**Domain test:** the deciding quantity is the detention bed-day footprint of a pretrial release, which corrections and
-pretrial research estimate by following each released defendant through the failure-to-appear event into the custody
-that follows it, at the midnight-count convention the jail books beds on, and reading it per assessment score. A
-generalist prices the release at the release's own custody episode.
+## Default path
 
-**Swap:** "how many detention bed-days will the defendants we release at a first appearance cost us next year through
-the custody that follows a failure to appear" becomes, with a utility's nouns, "how many megawatt-hours will the
-substations we return to service cost us next year through the generation that follows an outage". It stops making
-sense at the middle term: a substation does not fail to appear, there is no second record opened under a new number on
-an unrelated category when it does, and nothing answers to the policy's eligibility list excluding the very category
-the cost lands in. The chain that carries the whole quantity has no analogue.
+1. Read SB 26-118's sections and the planning instructions: the plan carries the felony probation revocation
+   commitments admitted in 2027 and staffs violator pods by the county's standard.
+2. Conform the probation register (the legacy and new layouts), the petitions (amendments collapsed) and the Detention
+   Center's bookings (annex transfers joined into stays, times to local), linked through the crosswalk; keep felony
+   cases Okelan County supervises.
+3. Set each case's end of supervision under the Act: new terms 24 months; a running term at the earlier of its
+   original expiration and 24 months from start, not before 31 March 2027.
+4. Fit the field's survival model of revocation by month on supervision with the risk score (a discrete-time hazard,
+   censored at closure and the extract); stratifying by term length leaves it where it is.
+5. Carry each active case month by month to its new end, add new starts at the trailing year's rate on 24-month terms
+   and the petitions pending at the extract at their conversion rate.
+6. Sum the commitments dated in 2027: about 450 (459, 449 and 456 on the three paper worlds), a fall of a third, three
+   pods.
 
-**Layer 1:** a court case management system replaced on 4 March 2024, so the appearance history arrives in two exports
-with different layouts, case-number formats and magistrate keys, joined through the clerk's crosswalk; jail booking
-and release stamps in UTC against court times in Eastern local; one custody episode spread across booking rows,
-because a move to the Mill Street annex closes one row and opens another at the same minute and a board-out to the
-contract facility closes a row while the defendant stays in the Sheriff's custody; the contract facility billing per
-day or part of a day against the detention centre's midnight counts; offence codes recoded at the system change while
-the policy appendix is listed by general statute number the charge rows do not carry; a state arrest extract keyed by
-state identification number with warrant arrests mixed in with new-offence arrests; dispositions in a separate export
-with cases still open at the extract. Every item is something the county's own systems produce, none is placed to be
-caught, and the whole of it is handled correctly by a careful solver who still files the wrong bill.
+Ends on: about 450 felony probation revocation admissions in 2027 (three pods; the trailing year carried about 700).
+Golden: about 950 (six pods): about a fifth of the record's felony petitions are filed in the last 75 days before a
+term's scheduled expiration and ride that end, and under the Act the ends of some 2,900 running terms fall on 31 March
+2027, so their petitions and about 300 commitments come in the first half of 2027, on top of the terms reaching 24
+months through the year.
 
-**Layer 2:** `field_method`, corrections bed-day accounting done right. The decision's unit is one release and all
-custody it causes; the file's row is one booking. The analysis that decides is identifying the population of custody a
-release is answerable for, and it crosses the boundary the policy's own eligibility rule draws.
+## Stump sentence
 
-**Decisive step:** follow each released defendant's failure to appear into the booking that follows it, inside the
-policy's own window, and count that custody whatever the charge, because the bed-days a release costs the jail are
-served on the next case and not on the one the release was granted in.
+A competent solver fits revocation by month on supervision with the risk score, carries it over each felony case's
+2027 months to its new end under SB 26-118 and files about 450 admissions (Ends on; three pods); the step that lands
+it there is reading every petition on the time-since-start clock, when about a fifth are filed in the last weeks
+before a term lapses, ride each term's scheduled end, and under the Act fire at once for the terms that end on 31
+March 2027, so the plan carries about 950 (six pods).
 
-**Not semantics:** nothing here turns on a misread field. A solver who reads every booking type, release type and
-facility code correctly, chains the annex moves and the board-outs, resolves the recoded offences through the
-crosswalk, converts UTC to Eastern and counts midnights by the README's rule still files 12,851 bed-days over the four
-years, because the error is not a field read wrongly but a population boundary drawn where the policy draws it. The
-person key exists and the join is available; what is missing is any reason in the record to make it.
+## Paper world
 
-**Not rule application:** no filed rule performs this step. The draft revision and the current policy state who may be
-released, on what conditions, and over what window a pretrial period runs. Not one sentence anywhere in the pack says
-what a release costs the jail, that the cost includes custody opened on a later case, or that the charge class must
-not be filtered when counting it. A solver executing every stated rule to the letter executes rules about release
-eligibility and gets a bill about release eligibility.
+`generator/paper/sim_rev.py`: a county's felony and misdemeanor probation cases from January 2017 to the extract
+(about 210 felony and 150 misdemeanor starts a month, felony terms 18 to 72 months), ordinary petitions on a monthly
+hazard that falls from 3.0 to 0.75 per cent over the first year and a half and scales with the risk score, a petition
+filed between 6 and 75 days before a term's scheduled expiration on 22 per cent of terms that reach their last 90 days
+with none pending, 48 and 50 per cent of the two kinds ending in a commitment some 72 days after filing on average,
+early termination for compliant cases after 18 months and a small absconding hazard. The truth is the generator re-run
+from every case's state at the extract under the Act, eight times. `generator/paper/routes.py` computes each route
+from the record alone and `fam.py` runs them.
 
-**Analyst test:** the easy route stacks the two appearance exports, keeps the eligible screened appearances, takes the
-defendants released within 24 hours, chains their custody episodes correctly, sums the bed-days of those stays and
-files 12,851 over the four closed years, about 3,213 a year (the default path's `Ends on:`), against the golden's
-53,430 and 13,358. It is wrong by a factor of 4.2 and, worse for the budget it feeds, it reverses the grading: it
-captures 47.7 per cent of the bill at the lowest assessment score and 5.3 per cent at the highest, so it reports the
-riskiest releases as the cheapest the county makes.
-
-**Estimand:** the detention bed-days, counted one per midnight held in the Sheriff's custody, served by defendants
-released at a first appearance on eligible screened charges in the four fiscal years to 30 September 2025, on their
-own stays and on the first booking that follows a failure to appear inside the pretrial period, whatever that
-booking's charges, divided by four. Filed as one population sentence in the county budget office's instruction and one
-in the README's detention note; the window and the failure condition come from the draft revision's own section. The
-method of reaching the following booking is nowhere filed.
-
-**No decoy:** nothing is planted to be caught. There is no copied block of readings, no withheld rule, no memo or
-briefing arguing the own-stay figure, and no stakeholder number written to be overturned. The advisory council's
-capacity report, the contract facility's bills and the price list are all correct at their own grain and all tie to
-the jail export; the two declared distractors are relevant enough to weigh and are ruled out by shipped facts.
-
-**No certified replay:** the method is not hidden and recovered by reproducing a certified figure. The capacity report's
-monthly bookings, releases, average daily population and highest count all tie exactly to the jail export under the
-golden convention, and they tie under the own-stay route too, because they are counts of custody and not of the
-footprint of a release decision. No published figure in the pack is reproduced only by the golden method.
-
-**Lesson:** that the resource a reversible decision consumes is often recorded against a different entity, a different
-case and a different category than the decision itself, so the population a cost question is asked over is not the
-population the decision's own rules name. No build on file teaches it: the nearest driver on the corpus measures 0.07,
-and the three builds sharing this gap and mechanism turn on a duration distribution (task142), censored observation
-(task148) and a rate against exposure (task173), none of which is a reachability boundary.
-
-## Readability screen
-
-Six tests per rung: 1 a filed sentence names it or makes the solver ask; 2 schema (a column, key or marker); 3 a
-reflex of the opponent; 4 a control or corpus scores it; 5 the hygiene battery finds it; 6 linear (one subtraction,
-ratio or half of a reported figure). Verdict last.
-
-| Rung | 1 Filed | 2 Schema | 3 Reflex | 4 Control | 5 Hygiene | 6 Linear | Verdict |
+| World (seed) | Truth | Persistence | Time on supervision | By term length | Two clocks without the 31 March terms | Two clocks (golden) | End window counted twice |
 |---|---|---|---|---|---|---|---|
-| R-1 eligibility on the lead charge only | draft 2.1 names every charge | the new export's charges file, the legacy charge list | no | no | no | yes | readable |
-| R-1b the 365-day window with no disposition cap | draft 2.4 names both ends | the dispositions export | no | no | no | yes | readable |
-| R0 each score's safety rate among the eligible defendants magistrates released (the default path) | no | no | yes (validate the scale on the defendants with an outcome) | no | no | yes | readable |
-| R0b the same on the latest closed year (first appearances from 1 October 2024 to 30 September 2025) | no | no | yes | no | no | yes | readable |
-| R0c the held counted as not arrested (every eligible defendant in the denominator, arrests only among the released) | no | no | yes | no | no | yes | readable |
-| R1 a logistic model of a new-offence arrest on the released defendants' scale items, charge class and age, averaged over every eligible defendant at the score | no | the screen's items | yes (adjust for what is observed) | no | no | no | readable |
-| R1b the released defendants reweighted to every eligible defendant on the same observed items (inverse probability of release) | no | no | yes | no | no | no | readable |
-| R2 the held counted as all arrested (the worst case) | no | no | no | no | no | yes | readable |
-| R3 (decisive) each score's rate for every eligible defendant, read from the new-offence arrests per eligible first appearance in each magistrate's caseload against that magistrate's release share at the score, extended to full release | no sentence names a selection, a magistrate's release share, a held defendant's risk or a gradient; draft 2.3 states the population (the defendants the tier releases) and the floor, and the current policy's 2.3 says only that magistrates sit by the chief magistrate's rota | the magistrate key is on every appearance, as on any first-appearance record, and nothing pairs it with an outcome; no column holds a release share, a risk the magistrate saw or a full-release rate | no: the reflexes are R0 to R1b, and each files its own tier | no closed record scores a method: nothing on file states a safety rate by score, by magistrate or for the held | no | no: a fitted gradient across 32 magistrates at each score, extended to a release share no magistrate reached | silent |
-
-The decisive rung is silent because the defendants with an outcome look like the population: they are most of every
-score (about 98 per cent at score 1, 74 per cent at score 4), every file joins cleanly, and the scale's
-validation habit is to read its rates off them. Nothing in the pack says magistrates see more than the scale; the
-records show it only to an analyst who compares the released defendants' outcomes across magistrates who released
-different shares of the same mix of arrests.
-
-## Semantic fork table
-
-Every row measured on the graded quantity (the released defendants' own stays plus the following custody, four closed
-years, golden 53,430). Ids are asserted in `generator/checks.py` and recomputed in `verify.py`.
-
-| Id | Term or convention | Golden reading | The alternative, and what it does | Ruled out by |
-|---|---|---|---|---|
-| SF1 | "released at a first appearance" | left the detention centre within 24 hours of the appearance on the conditions set at it | still in custody 24 hours after is held after it | the README's release note, quoted; a secured bond posted in that time is included |
-| SF2 | "the booking that follows" a failure | the FIRST booking opened after the release inside the window | summing every booking inside the window gives 60,527, **13.3 per cent high** | **pin**: one sentence at authority fixing which booking, in the draft revision's own terms |
-| SF3 | which record the custody is counted on | the booking that follows the failure | the failure arrest's own booking gives 51,967, **2.7 per cent low** | **pin**: the same sentence names the booking opened after the failure, not the arrest that caused it |
-| SF4 | "bed-day" | one per midnight count at which the person is held | days or part of a day gives 105,713, **97.9 per cent high** (the own term alone **382.9 per cent high**, a release's own stay being a few hours) | the README's detention note, quoted; and the contract rate card qualified, below |
-| SF5 | the custody episode across booking rows | annex moves chained, a board-out chained to its return or to the contract facility's date out | the NEW row alone gives 41,163, **23.0 per cent low** (the following term 30.2 per cent low) | the README's detention note with the `TRF` and `BO` code rows; `same call`, since it moves both terms the same way |
-| SF6 | a board-out read as the release | chained | gives 53,163, **0.5 per cent low** | same code rows; inside every bin |
-| SF7 | boarded nights | counted, the defendant staying in the Sheriff's custody | left out gives 53,224, **0.4 per cent low** | the README's "a defendant boarded out stays in the Sheriff's custody while boarded out" |
-| SF8 | a board-out with no return booking | ends at the contract facility's date out | held on to the extract gives 54,799, **2.6 per cent high** | the contract facility's bills, whose date out equals the return date for all 952 returns |
-| SF9 | the clock of the midnight count | Eastern local, the courts' and the county's clock | UTC gives 53,442, **0.0 per cent** (own 1.5 high, following 0.4 low, netting out) | `same call`; below any bin either way |
-| SF10 | the window | 365 days from release or to the last charge's disposition, whichever comes first | a flat uncapped 365 days gives 55,353, **3.6 per cent high** | the draft revision's own pretrial-period sentence, quoted |
-| SF11 | the unit of the population | one released first appearance | one row per defendant, first appearance only, moves the own term **14.1 per cent** (49,172 appearances against 42,348 defendants, 6,824 repeat) | **pin**: the population sentence counts each released appearance |
-| SF12 | "eligible" | every charge a misdemeanor, none on the excluded appendix, no hold for another jurisdiction | the appendix is listed by general statute number the charge rows do not carry | the clerk's crosswalk, which the charge rows join through; measured at stage 3 |
-| SF13 | "screened" | a pretrial assessment screen exists for the appearance | paper screens keyed by state number, not booking number | the extract notes; measured at stage 3 |
-| SF14 | stays open at the extract | none anywhere on the path | nothing to decide | measured: **0 of 49,172** own stays and **0 of 3,082** following stays are open |
-| SF15 | the annual basis | the four closed fiscal years divided by four | the latest year alone, or a trend | **pin**: the budget office's instruction names the basis window; the frame is also the only gradeable one (`## Draw`) |
-
-**The counter-pin, and it is the most dangerous thing in this build.** The contract facility's rate card says its beds
-are billed "per day or part of a day", and that phrase read onto the question's own words is SF4, worth 97.9 per cent.
-Two different quantities carry two different conventions in the same pack: what a neighbouring county bills Dorrance,
-and how Dorrance counts its own beds. A literal judge handed "detention bed-days" with both sentences in the pack can
-reasonably take either. So the rate card's sentence is scoped in its own voice to the invoice it governs, the README's
-midnight sentence is the only one that defines a bed-day, and the question asks for the county's own count without
-naming the method. This row is the one the stage 4 judge is most likely to open, it is a WHAT, and it is closed by
-scoping rather than by adding a method sentence. The 4.8 per cent gap between billed days and bed-days on the
-contract's own stays is then a legitimate reconciliation ask, which is where it is used.
-
-**None of these readings is the stump.** The decisive step is that the bill sits on the following booking at all and
-that the charge class must not be filtered; every row above is a convention, and the three pins are population,
-window and unit, never method.
-
-## Ladder
-
-Four rungs, each a complete competent pipeline reproducing from the raw files, each at a distinct value, measured on
-the built world over the four closed fiscal years.
-
-| Rung | The analysis | Four years | A year | Times the golden |
-|---|---|---|---|---|
-| 0 | the released defendants' own stays only: the natural pipeline, chained correctly, priced on the record the release closes | 12,851 | 3,213 | 0.241 |
-| 1 | own stays plus the first booking inside 365 days for every release, with no failure condition: the obvious correction, that released defendants come back | 105,599 | 26,400 | 1.976 |
-| 2 | own stays plus the following booking restricted to eligible charges: the sophisticated correction, which keeps the policy's own population boundary | 18,685 | 4,671 | 0.350 |
-| 3 | own stays plus the full custody of the booking that follows a failure, inside the window, whatever the charge (golden) | **53,430** | **13,358** | 1.000 |
-
-**Why each rung is satisfying to stop at.** Rung 0 reconciles: the own stays tie to the jail export and to the
-advisory council's booking and release counts. Rung 1 is the correction a good analyst reaches for first, and it
-overshoots by a factor of two because it prices every later booking against a release that did not cause it. Rung 2 is
-the more careful move, scoping the cost to the population the policy governs, and it is the trap: it keeps the
-eligibility filter the policy's own words invite and so throws away 85.6 per cent of the bill. Rung 3 refuses that
-filter.
-
-**The arithmetic.** The walk is not monotone, which is what buys the separation: rung 0 at 0.241, rung 1 at 1.976,
-rung 2 at 0.350, golden at 1.000. One correction (rung 1) overshoots and the next (rung 2) undershoots, so no
-composition of partial fixes lands in the golden's bin, and a solver who stops at the most attractive wrong rung
-(rung 2, the one that looks most rigorous) is 65 per cent low. Nearest rung to the golden is rung 1 at 97.6 per cent
-away; the two readings that sit inside 13.3 per cent are SF2 and SF3 and are closed at authority rather than climbed.
-
-**Graded per score, which is where the inversion bites.**
-
-| | Score 1 | Score 2 | Score 3 | Score 4 | Score 5 | Score 6 |
-|---|---|---|---|---|---|---|
-| Golden bed-days | 7,863 | 13,438 | 11,389 | 9,572 | 5,604 | 5,564 |
-| Share rung 0 captures | 47.7 | 32.8 | 21.9 | 15.2 | 8.1 | 5.3 |
-| Following bed-days per failure | 6.22 | 8.74 | 11.72 | 12.21 | 14.26 | 19.45 |
-
-Rung 0 does not merely undercount: because the share it captures falls from 47.7 to 5.3 across the scale, it reports
-the riskiest releases as the cheapest the county makes, which is the opposite of the truth and the reading a bed
-budget acts on. Monotone in 99.6 per cent of bootstrap draws over the four years.
-
-**Mechanisms stacked, from different gaps:** the population boundary the eligibility rule draws (decisive, gap
-population, G11), the grain of a custody episode against a booking row (G2, and rung 1's family), and the
-reachability of the following record (G8). Rung 1's gap is not the decisive gap.
-
-## Closure table
-
-| # | Axis | Reading and move |
-|---|---|---|
-| 1 | Population | every eligible first appearance at a score (draft 2.1), released or held; members not yet observed: the tier's 2027 defendants, projected from the first appearances whose windows had closed at the extract (1 October 2021 to 30 September 2025); the open windows of the last year counted as far as they run converge (SF9, asserted) |
-| 2 | Unit of account | a first appearance (draft 2.2 applies the tier at each); per defendant converges (SF14, asserted) |
-| 3 | Attribution window | an arrest belongs to an appearance when its offence date falls in that appearance's window (draft 2.4) |
-| 4 | As-of dating | the extracts to 30 September 2026 (pulled 2 October); a score as screened at the booking |
-| 5 | Version basis | offence codes before 4 March 2024 mapped through the clerk's crosswalk; the scale's version 2 throughout (the scoring guide) |
-| 6 | Denominator | every eligible appearance at the score (draft 2.3) |
-| 7 | Weighting | each appearance alike; the magistrate-level fit weighted by caseload or not converges (asserted) |
-| 8 | Window length | the four closed years; two years or one converge (SF9, asserted) |
-| 9 | Boundary inclusivity | "at least 85 per cent"; no estimate within 1.5 points of 85 (SF10, asserted); the window's disposition day counted, the same call with it left out (SF30, asserted); the 365th day after release included (the README's day counts), on which no history outcome turns (asserted) |
-| 10 | Rounding path | estimates carried unrounded to the comparison; the call is a score |
-| 11 | Tie-break | none: one score decides |
-| 12 | Maturity and censoring | the history's windows closed by construction (appearances to 30 September 2025, arrests to 30 September 2026); cases open at the extract end their window at 365 days (asserted none of the history's windows is cut by the extract) |
-| 13 | Order of operations | eligibility, then the screen, then the release, then the window and its arrests, then the estimate |
-| 14 | Row order | file order changes nothing (asserted on shuffled rows) |
-| 15 | Duplicate resolution | one appearance per booking (asserted); arrests repeated across the extract's two charge rows counted once per arrest (asserted) |
-| 16 | Identity normalisation | the state identification number across the jail export, the new court export and the arrest extract; legacy appearances to the jail by booking number; screens by booking number, else name and date of birth (SF15); magistrates through the roster (SF12) |
-| 17 | Netting against gross | none |
-| 18 | Dimensional units | rates per appearance; days for the window |
-| 19 | Code and status semantics | release conditions, jail release types, arrest types, disposition codes and offence classes, each in the README or a code list |
-| 20 | Integerisation | none on the call |
-| 21 | Clause scope | draft 2.1 to 2.5 apply to the tier; the current policy's definitions (1.4) where the draft cites them |
-| 22 | Forward window contents | the 2027 appearances as the history's eligible defendants: the scale, the eligibility rules and the arrest mix unchanged (the draft changes only who decides release at scores in the tier) |
-
-## Literal reader
-
-Executed word for word, the prompt and the draft define the tier's top score as the highest score at which every
-score from 1 up meets the floor (2.5), a score meeting it when at least 85 per cent of the eligible defendants the tier
-releases at that score (2.3: every eligible defendant at the score, 2.2) have no new-offence arrest (2.4: an offence
-committed after the day of release, within 365 days of release or before the last charge is disposed, whichever comes
-first). The draft leaves the estimate for 2027 to the analyst and names no method; the only population with an outcome
-on file is the defendants magistrates released, and the records show that population is not the tier's: magistrates who release more of the same
-mix of arrests see more new-offence arrests among the defendants they release, so the held defendants are riskier and
-the only estimate of the tier's rate the records support is the one read from that gradient out to full release. Every
-term in the fork table resolves to one reading or converges; the only step the text leaves open is how to estimate the
-rate of defendants never released, which the records then settle.
-
-## Oracles
-
-- **None on the call path.** No file states a safety rate, a new-offence rate or a release share by score, by
-  magistrate or for the held, and no file states a tier. The scoring guide gives the scale's items and points only.
-- **The Criminal Justice Advisory Council's 2025 jail population report (distractor)** gives the detention center's
-  bookings, releases and midnight counts by month for 2025, not by score or for the held; the reported-crime series
-  (distractor) gives offences reported by county agencies by year; neither scores a method, and the call and every ask
-  read neither (asserted).
-- **The current policy** has no presumptive tier and states no outcome figure.
-- **The ask paths** (the jail's later stays and Halsey County's bills, the court events and the case index, the
-  monitoring vendor's invoices): no rung of the call reads them (asserted: the call is unchanged with every ask file
-  deleted), and nothing in the pack states a bed-day, missed-date or monitoring figure by score, so none ties only under
-  the golden.
-
-## Ask sheet
-
-**Main call's declared row population:** the eligible first appearances from 1 October 2021 to 30 September 2025 in
-both exports and their charges, their screens, their jail bookings' release times, their arrests in the state extract
-to 30 September 2026 and their cases' disposition dates, with the crosswalk, the roster, the draft, the current policy
-and the README. Device and hazard rows in it: 0 (asserted by count: no boarded-out release or return booking before 30
-September 2025, since the boarding began on 3 November 2025; no eligible history appearance has an indicted case; the
-call reads neither the court events, Halsey's bills nor the vendor's invoices). The asks read the jail export's later
-stays and Halsey County's board bills (Ask A), the court events and the case index (Ask B), and the monitoring
-vendor's invoices (Ask C), all on first appearances from 1 October 2025, outside the call's window. Each is a measure
-every score carries that the call does not turn on; none is keyed to the call, its construction or its figures; the
-three share no primary device and no primary file. No sentence in the pack adjudicates a device: the README states
-each file's fields, the custody count and the release definition, how days after a release are counted and how
-monitoring days are counted for a release, the jail code list each code, the vendor's note its billing basis. The
-README's custody note (stage 4, closing the judge's jail-only reading) does make Ask A's device seen rather than
-silent; Ask A below says what is left of it.
-
-**Ask A. For each new-criminal-activity score, the bed-days in custody to 30 September 2026 of eligible defendants held
-after a first appearance from 1 October 2025 to 30 September 2026** (6 figures, nearest 10): 2,210, 4,660, 5,950,
-8,330, 3,440 and 2,040 at scores 1 to 6 (unrounded 2,213, 4,661, 5,949, 8,329, 3,438, 2,037; each at least 0.2 of its
-bin from an edge).
-- H18 home: the jail use each score's held defendants carry (a measure every candidate tier sets free in part, which
-  the call does not turn on); use: the memo's account of the custody the tier's scores carry.
-- Construction: each eligible appearance not released within 24 hours; its custody from booking to final release,
-  through annex moves (`TRF`, the next booking at the same minute), a boarding at Halsey County (`BO`) and a return
-  (`BI`), or to the date out on Halsey's bills for a defendant released there; one bed-day for each Eastern midnight
-  held, to the count of 30 September 2026; summed by score. Golden equals the clean truth at every score (asserted).
-- Primary device (D4, absence as the signal, evidenced in a file no habitual join reaches): from 3 November 2025 the
-  detention center boarded held defendants at Halsey County's jail; the jail export ends the stay at the boarding and
-  books a return only for those who came back, while about two in five were released from Halsey, whose nights appear
-  only on Halsey's monthly bills under Halsey's booking numbers (three lines in ten without Dorrance's booking number),
-  matched by name and date of birth.
-- Since stage 4 the README files that a boarded-out defendant stays in the Sheriff's custody (SF18; the judge read
-  the detention center's own midnight count, S8, as a defensible reading). A reader of that note knows a boarding with
-  no return booking is a stay still open in the jail export; what stays unannounced is where it ends: on Halsey's
-  bills only, under Halsey's numbers, three lines in ten matched by name and date of birth, a day or part of a day
-  billed against midnights counted. The note names no file and no contract county.
-- Hazards: HA1 (D8) the jail's times are UTC and the count is Eastern; HA2 (D3) Halsey bills a day or part of a day;
-  HA3 (D6) a stay crossing a month end sits on each month's sheet with its own date in; HA4 annex moves book the same
-  defendant under a new booking number at the same minute.
-- Stops (computed and asserted, each missing all 6): S1 `BO` read as the release 1,760, 3,300, 4,770, 6,640, 2,510,
-  1,630; S2 `BO` chained to the next booking 4,590, 10,720, 10,840, 13,490, 6,790, 3,420; S3 Halsey's billed days for
-  the boarded part 2,250, 4,740, 6,030, 8,450, 3,500, 2,070; S4 UTC midnights 2,190, 4,610, 5,890, 8,250, 3,400, 2,020;
-  S5 `BO` chained to a return, else read as the release 1,980, 3,970, 5,360, 7,530, 2,960, 1,850; S6 days or part of a
-  day 2,340, 4,950, 6,290, 8,800, 3,620, 2,160; S7 Halsey's month lines each counted from their dates 2,320, 5,040,
-  6,320, 8,730, 3,670, 2,080; S8 the detention center's own midnight counts, the boarded nights left out 1,820, 3,670,
-  5,040, 7,090, 2,750, 1,760; S9 a boarding with no return held on to the end of the extract (the custody note
-  executed on the jail export alone) 4,630, 12,470, 11,250, 18,580, 9,570, 4,850.
-- Span: the jail export, Halsey's bills, both first-appearance exports and the charges file, the screens, the
-  crosswalk, the README, the jail code list (eight files; booking and release times, types, facility, Halsey's dates
-  and names, eligibility codes, the score).
-- Realism: boarding held defendants at a neighbouring county's jail under a per diem contract is how North Carolina
-  detention centers handle a closed housing unit, and the host county bills by its own booking numbers.
-
-**Ask B. For each failure-to-appear score, how many releases at a first appearance from 1 October 2025 to 30 June 2026
-were followed within 90 days by a missed court date on that appearance's charges, and what share of those releases that
-is** (6 counts and 6 shares, per cent to one decimal), charted in `missed_court_dates_by_fta_score.png`: 260 of 6,860
-(3.8), 349 of 5,525 (6.3), 340 of 3,364 (10.1), 308 of 1,976 (15.6), 78 of 338 (23.1), 20 of 77 (26.0); every share at
-least 0.24 of its bin from an edge.
-- H18 home: the court's appearance record for released defendants at each failure-to-appear score (a measure every
-  release decision carries that the safety floor does not turn on); use: the memo's account of the court dates the
-  tier's written promises ask defendants to keep.
-- Construction: each release within 24 hours, any charge; its cases, and the superior court case each indictment
-  opens (the case index's `district_case_ref`); an FTA event (called and failed, order for arrest issued) in any of
-  them for a court date from the release day to the 90th day after; releases with one or more, by failure-to-appear
-  score, over the releases at the score. Golden equals the clean truth at every score (asserted).
-- Primary device (D7, the true key elsewhere: a prior-id chain): a felony indicted in superior court continues under a
-  new superior court case number and party number; the district case shows the indictment as its disposition, and the
-  superior court case carries the district case number in `district_case_ref`. Joined on the appearance's own case
-  numbers, every superior court failure is missed.
-- Hazards: HB1 orders recalled and reissued (`OFAR`, `OFARI`) beside the one `FTA` event per missed date; HB2 orders in
-  a defendant's other cases inside the 90 days; HB3 paper screens with no booking number (matched by state number).
-- Stops (computed and asserted): S1 the appearance's case numbers only 246, 332, 311, 288, 73, 20 (3.6, 6.0, 9.2,
-  14.6, 21.6, 26.0: 5 of 6 counts and 5 of 6 shares missed); S2 every case under the defendant's district party number
-  253, 354, 354, 334, 93, 23 (3.7, 6.4, 10.5, 16.9, 27.5, 29.9: all 12 missed).
-- Span: the court events, the case index, both first-appearance exports and the charges file, the screens, the jail
-  export, the court code list, the current policy (1.4), the README (nine files).
-- Realism: North Carolina's district and superior courts number a felony's file anew at indictment, and the superior
-  court record carries the district file number.
-
-**Ask C. For each new-criminal-activity score, the days on electronic monitoring to 30 September 2026 of every
-defendant released at a first appearance from 1 October 2025 to 30 September 2026** (6 figures, nearest 10): 28,620,
-26,820, 16,250, 10,380, 4,660 and 2,220 (unrounded 28,618, 26,818, 16,247, 10,382, 4,657, 2,220; each at least 0.2 of
-its bin from an edge).
-- H18 home: the monitoring each score's released defendants wear (a measure every release carries that the call does
-  not turn on); use: the memo's account of the monitoring the county pays for at each score.
-- Construction: the vendor's monthly invoice lines, each enrollment matched to its release (court case number, else
-  name, date of birth and the latest release on or before the enrollment date); each release's monitored days as the
-  union of its enrollments, one per calendar day, a part day counted, to 30 September 2026; summed by NCA score.
-  Golden equals the clean truth (asserted). The README's monitoring note (stage 4) files the day (all or part of it)
-  and the release (counted for each release, under its conditions); it says nothing of enrollments, participant
-  numbers or an equipment change.
-- Primary device (D1, the same records under two key schemes): an equipment change ends one enrollment and opens
-  another under a new participant number the same day, and the vendor bills each enrollment a day or part of a day, so
-  the change day is billed twice; every participant number is unique and no line repeats, so no duplicate check fires.
-- Hazards: HC1 (D6) an enrollment open across months is on each month's invoice with its own enrollment date and no
-  end until its last month; HC2 lines with no court case number (about one enrollment in eight); HC3 enrollments open
-  at 30 September 2026.
-- Stops (computed and asserted, each missing all 6): S1 billable days summed 29,370, 27,510, 16,660, 10,660, 4,790,
-  2,280; S3 each enrollment counted on its own (the same figures: the change day twice); S2 each line's enrollment
-  dates counted 182,160, 176,740, 100,710, 68,170, 31,880, 12,460; S4 elapsed days (a part day not counted) 28,340,
-  26,550, 16,080, 10,260, 4,610, 2,190; S5 a line with no case number put to the defendant's first release in the year
-  28,810, 26,960, 16,120, 10,220, 4,660, 2,210 (5 of 6 missed). Each day once per defendant converges with the golden
-  at every score (no defendant is monitored under two releases on one day).
-- Span: the vendor's invoice lines, both first-appearance exports and the charges file, the screens, the jail export,
-  the README (six files).
-- Realism: monitoring vendors open a new enrollment for a replacement unit and bill per enrollment-day.
-
-**Hazard table**
-
-| Hazard | Root cause | Moves | Per-ask delta |
-|---|---|---|---|
-| HA1 UTC against Eastern midnights | the jail system's clock | Ask A | 20 to 80 bed-days a score (S4) |
-| HA2, HA3 Halsey's day-or-part billing and month sheets | the boarding contract's invoice | Ask A | 30 to 400 a score (S3, S7) |
-| HA4 annex moves | the detention center's housing sites | Ask A | every score, if each booking is ended at its first release |
-| HB1 recalled and reissued orders | orders recalled and reissued | Ask B | none if counted per release |
-| HB2 other cases' orders | defendants with older open cases | Ask B | 3 to 26 releases a score (S2) |
-| HB3 paper screens | the screening system's outage entries | Asks B and C | releases dropped at every score if unmatched |
-| HC1, HC3 month repeats and open enrollments | the vendor's invoice layout | Ask C | six times the days (S2) |
-| HC2 lines with no case number | the vendor's intake form | Ask C | every score, if dropped |
-
-**Referee.** None needed: no designed disagreement between two systems is arbitrated by a third file.
-
-**The cracker sheet.** The cracker filed the golden tier, ran the hygiene battery (keys unique, exact duplicates, every
-join matched or explained, no fan-out, counts that tie) and executed every filed rule. Every ask row misses:
-
-| Ask figures | The cracker's path | What keeps it wrong | Cracker result |
-|---|---|---|---|
-| Ask A, 6 bed-day figures | jail stays from booking to release, Eastern midnights, annex moves chained, `BO` to the return booking, else held on as custody under the README's note to the end of the jail export's record (S9) | about two in five boarded defendants were released at Halsey, their date out only on Halsey's bills under Halsey's booking numbers, three lines in ten without Dorrance's | miss |
-| Ask B, 6 counts | FTA events in the appearance's cases within 90 days, per release (S1) | indicted felonies continue under a superior court number found only through `district_case_ref` | miss |
-| Ask B, 6 shares | the same over the releases | the same | miss |
-| Ask C, 6 monitoring figures | each enrollment's days to its end or 30 September, summed per release (S3) | an equipment change opens a second enrollment the same day, so the change day counts twice | miss |
-
-The tier and score 4's verdict belong to the recommendation block and are carried by the main call. The mirror sheet
-(the same response stopped at R0) differs from the cracker sheet only on the recommendation criteria, so no ask is
-coupled to the call. Ask A is the weakest row since stage 4: a cracker who takes the custody note as a reason to look
-for the boarded defendants' ends finds them on Halsey's bills and lands the golden, the case the pair arithmetic
-already plans for.
-
-Mirror leakage: 6 per cent of the ask weight (method credit on the ask paths, no figure).
-
-**Pair arithmetic.** Planning weights 38 recommendation (the tier, score 4's verdict, the floor's comparison), 7
-instruction following (the three files, the chart's title and axis), 55 asks over 30 figures and the chart's six bars.
-The cracker keeps about 6 per cent of the ask weight: C = 38 + 7 + 3.3 = 48.3. The mirror (R0) keeps the released
-score-4 rate it states and the same 3.3: S = 5 + 7 + 3.3 = 15.3. If the strongest response cracks the most obvious
-device (Ask A's boarding, 6 of 36 ask criteria, about 9 of 55 points), C rises to about 57.5 and the pair to about 36.4.
-Both top responses on the call with no device cracked: 48.3 each, under 50. Both top responses cracking Ask A (the
-risk the custody note adds): the pair at about 41.0, over the 40 target and under the 50 bar.
-
-Pair ceiling: 36.4
-
-Ask C cracked instead weighs the same as Ask A; Ask B with its chart is half the ask weight, so its device carries the
-pair if a strong response finds the superior court continuation (pair about 46): it is the device to watch at the leak
-read. Recomputed from the generated rubric when it exists.
-
-## Pins
-
-| Pin | Authority | What it fixes | Never says |
-|---|---|---|---|
-| The draft revision, sections 2.1 to 2.5 | 1, the senior resident judge's draft local bail policy | eligibility, the tier's release on a written promise, the safety rate's population and window, the 85 per cent floor, the top score | how a score's rate is estimated, any magistrate, any held defendant's risk, any figure |
-| The current local bail policy (2024) | 1 | the definitions the draft cites (1.4 a failure to appear), the conditions of release, the misdemeanor classes (the guideline bond table), that magistrates sit by the chief magistrate's rota (2.3) | any outcome, any tier |
-| The scoring guide | 2 | the scale's items, points and the two six-point scores | any outcome rate |
-| The README and code lists | 4 | each file's fields, the time zones, the detention definition (custody from booking to release from the Sheriff's custody, a boarding included; the midnight count), the release at first appearance (within 24 hours on the conditions set, a secured bond posted in that time included; still in custody at 24 hours is held after it), day counts after a release (from the release date, the last day included), days on electronic monitoring (for each release, all or part of a day), the jail and court codes, the vendor's billing basis | anything about selection, a magistrate's release share, where a boarding ends or is billed, an equipment change or an indictment's renumbering beyond the codes' meaning |
-
-## Prompt
-
-`prompt.txt`, gated by `voice-check.py` (in `precut.py`): the call with its floor and the 2027 policy, the memo, the
-workbook's three tables (bed-days in custody and monitoring days by NCA score; releases followed by a missed court date
-on that appearance's charges, and their share, by failure-to-appear score), the chart, and the rounding once at the
-close. 992 characters. Ask B counts releases (a defendant released twice in the period has two scores), and Ask A asks
-for bed-days in custody, the custody a boarding at Halsey continues. The asks' conventions sit in the README, not the
-prompt (stage 4: custody through a boarding, day counts after a release, monitoring days by release).
-
-## Leak review
-
-`leak.py task141 --asof 2026-10-14` on the built pack: REVIEW, no LEAK. Each REVIEW line answered:
-
-- The draft revision carries 13 of 16 words of the committed call and sits "Pretrial Assessment Scale" beside "top
-  score": it is the policy that defines the tier and its top score (2.2, 2.5) and names no score, rate or method; the
-  answer (score 3) is nowhere in it.
-- Stump-paragraph terms in the README (population, magistrates, arrests, disposition, export), the draft (magistrate,
-  record, setting) and the 2024 policy (magistrates, record, disposition, setting): each is the files' own vocabulary
-  (the jail's population count, the magistrate on duty, a case's disposition, the export's fields); none speaks of
-  selection, a release share, a held defendant's risk or a gradient. The only sentences on assignment are the 2024
-  policy's 2.3 (duty shifts by rota) and the roster's shift notes, which state how appearances are heard, not how a
-  rate is estimated.
-
-Stage 4 reader (one isolated read, appended to `leak_check_report.md`): nothing quoted for questions 1 to 4; question 5
-executes to the golden (2.1, 2.4 and 2.5 fix the population, the outcome and the top-score rule, the method unfiled);
-question 6 analytical, the reader placing the difficulty at the open windows of the latest releases (a lower rung),
-not at the selection of who magistrates released (the decisive step). Its lines, each ruled:
-- Realism, the draft's writing-library template (styles with effects, a preview picture, an empty bibliography part,
-  zero counts): fixed. Both Word documents (the draft under `target/` and the golden memo) now leave the generator in
-  Word's own form (`postprocess.normalize_docx`: no template part, the styles in use only, the document's own session
-  and paragraph ids, statistics counted from the text and its layout, minute stamps and a revision count), asserted
-  in `checks.py` and `verify.py`; the text and its formatting are unchanged (python-docx and a LibreOffice rendering
-  read the same before and after).
-- The safety rate's population, released on a written promise (the prompt) against released on any condition (the
-  README): SF31, the same call on the gradient either way.
-- Ask A's eligibility with the no-detainer test: SF32, draft 2.1's defined term.
-- Missed court dates across an appearance's several cases: SF33, the prompt counts releases.
-- Part days of monitoring: SF34, the README's monitoring note.
-- The open windows of recent releases: the history stops at 30 September 2025, so every window closes inside the
-  extract (closure axis 12).
-
-## Build record
-
-Written at stage 3 green (figures from the final build):
-
-- `python3 task141/generator/build.py`: the world, the pack (20 files, five formats, the state arrest extract at
-  294,770 rows), the goldens, `figures.json` and `metadata.json`; `checks.py` 153 assertions, 0 failed (the three-rules block R1 to R3c on the clean truth and the pack, every rung by
-  name and its margins, the 32-cell grid, SF1 to SF29, mess neutrality, the asks against the clean truth with every
-  stop and each figure's bin distance, the separation line, the distractors, the input gates, the realism sweep); `verify.py` on its own path
-  (the call, both tiers, every score's released and full-release rates, all 30 ask figures, figures.json and the golden
-  workbook agree); a second full build byte-identical (target, golden, metadata.json, figures.json, target.zip).
-- `target.zip` cut from the final build: 20 members, 28.5 MB, sha256 1bdba529a7b1acd5 (first 16 hex digits).
-- `figures_check.py task141`: 61 figures in blocks 1 to 4, none absent. `precut.py task141`: 49 checks, exit 0.
-  `voice-check.py task141`: PASS (992 characters).
-- `guard.py surface task141`: 0 promoted pairs (nearest 0.101). `guard.py heart task141`: PASS (nearest 0.05).
-- `scrub_producer_metadata.py` on target/ and golden/: clean. Realism sweep in `checks.py`: one export time on every
-  file, no library banner in any container, no em dash, no repeated five-row block, personas from the card only.
-- House fixes run: H16 (indictments returned after the extract kept out of the case index), H9 (the README lists every
-  shipped file), H3 and H8 (the write-up's and memo's sentences against the figures and the draft's sections), H1.
-- The call: scores 1 to 3 (score 4 at 75.8 per cent on the caseload-weighted line, under 80 on every construction;
-  score 3 at 90.3). The default path: scores 1 to 4 (score 4 at 87.9 among the released).
-
-Stage 4 fix pass (the judge's optional FIX_NOW on the asks and the reader's lines, one generator pass; figures from
-the final build):
-
-- What moved: under `target/`, `README_pretrial_extracts.txt` (the detention note, two new notes) and
-  `bail_policy_revision_2027_draft.docx` (its container, in Word's form; text and formatting unchanged); in
-  `golden/`, the memo's container the same way; `metadata.json` (the two files' byte counts). Every other file under
-  `target/`, the golden workbook and chart, `figures.json`, `prompt.txt` and `submission.md` are unchanged.
-- `checks.py` 193 assertions, 0 failed (SF1 to SF36 each asserted, the README's notes each in one file, the Word
-  documents' containers); `verify.py` green (the call, both tiers, every rate, all 30 ask figures, the Word documents'
-  word counts on its own path); two full builds byte-identical; `target.zip` 20 members, sha256 662eb5196dcbc2df
-  (first 16 hex digits).
-- `freeze.py check task141` in determinism and rubric modes: exit 0 (no graded figure moved). `figures_check.py`: 61
-  figures, none absent. `precut.py`: 49 checks, exit 0. `voice-check.py`: PASS (992 characters).
-- `leak.py --asof 2026-10-14`: REVIEW, no LEAK (the same REVIEW lines as at stage 3; the README's stump-term count rose
-  with the design note's own terms, `appearances` and `extract` among them, each the file's own vocabulary).
-  `scrub_producer_metadata.py` on `target/` and `golden/`: clean.
-- `guard.py heart`: PASS (nearest 0.08). `guard.py surface`: 1 promoted pair, task139 against task141, two apart:
-  the decisive gap (population) and generator (G9) coincide on the two cards, and task139 shipped on 15 October,
-  after this build's stage 3 screen. The drivers differ (a randomised pilot read per assigned intake there, a
-  selection read from the leniency gradient of rota-assigned magistrates here), recorded under the card's
-  `differentiation` and in the draw's abstraction test; the adjudicated `/clone-check` is the author's call.
-- Ship (2026-10-15): the targeted re-read of the README's notes and the draft found no leak, Q6 analytical; its
-  realism notes are recorded and left (the pre-ship check, point 9). `target.zip` is cut from the final rebuild,
-  byte-identical to the stage 4 pack (sha256 662eb5196dcbc2df); guard heart PASS, validate clean, precut exit 0,
-  leak.py REVIEW on the same lines.
-
-## Pre-ship check
-
-Written at stage 5 against the built pack (the stage 4 fix pass in); the reader and judge lines are stage 4's and
-the targeted re-read's.
-
-1. Domain: the deciding quantity is each Pretrial Assessment Scale score's pretrial new-offense rate among every
-   eligible defendant a presumptive tier would release, estimated past the outcome record's selective labels from the
-   leniency gradient of the magistrates the duty rota assigns; with a hospital's nouns there is no pretrial window
-   from release to disposition, no new-offense arrest recorded only for the released and no rota of magistrates whose
-   release shares identify the held defendants' risk, and with the released defendants' own rate the call moves to
-   scores 1 to 4.
-2. Real work, nothing planted: two first-appearance exports across the clerk's system change (layouts, case numbers,
-   magistrate keys), screens keyed by booking number or by state number and time, UTC jail times against Eastern court
-   times, offense codes recoded through the crosswalk, an arrest extract mixing warrant service and older offenses
-   with new-offense arrests at one row per charge, dispositions in their own export with cases open at the extract; on
-   the ask paths a boarding at a contract county billed under its own numbers, a monitoring vendor's month lines with
-   same-day equipment changes, felonies continuing under superior court numbers. Each is what these systems write;
-   each mishandled leaves the call and the shared bounds where they were (R2, asserted), and the call reads no ask
-   file (asserted). The stage 4 README notes file conventions only (custody, day counts, monitoring days by release).
-3. The flip is a method choice: reading each score's rate for every eligible defendant from the magistrates' release
-   shares out to full release, instead of from the defendants magistrates released; no field, unit or stated rule
-   decides it (draft 2.1 to 2.5 file the estimand and leave the estimate to the analyst), and the default path reads
-   every filed rule the same (R3a on the clean truth: scores 1 to 4).
-4. The analyst test holds: the released defendants' rate files scores 1 to 4 (score 4 at 87.9 per cent); a logistic
-   model on the released, a reweighting to the eligible and the latest closed year the same; the held counted as not
-   arrested a tier above 3, the held counted as arrested scores 1 and 2; only the gradient files 1 to 3, on every
-   construction (score 4 under 80, score 3 at 90 to the nearest 5) and on the clean truth (R3b: 72.5 and 89.9).
-5. One defensible answer: draft 2.1 to 2.5 and the README's release and day-count notes file the estimand; the 36
-   fork rows are each asserted, SF30 (the disposition day) and SF31 (a written promise only) closed at stage 4 as the
-   same call; no estimate on any route sits within 1.5 points of the floor.
-6. No decoy: no file states a safety rate, a release share or a tier; the scoring guide gives items and points only;
-   the CJAC jail population report and the reported-crime series are declared distractors, read by neither the call
-   nor any ask (asserted).
-7. Nothing hidden and recovered: no certified figure or past tier ships to reproduce; the held defendants' outcomes
-   are absent by the nature of the record, not withheld, and the gradient is read from the appearances on file.
-8. A new lesson: an outcome recorded only where a decision-maker let a unit through is selected on what that
-   decision-maker saw, so a rule that lets every unit through is priced from the variation among decision-makers
-   assigned at random, out to full release; no build on file teaches selection by a decision-maker or the leniency
-   design.
-9. Leak reader (stage 4): no leak; Q1 to Q4 none; Q5 executes to the golden; Q6 analytical, the difficulty placed at
-   follow-up censoring (a lower rung); its realism tell fixed and its readings ruled (SF31 to SF34, closure axis 12).
-   The targeted re-read of the README's notes and the draft: no leak, Q6 analytical (selection named as what the easy
-   observed rate ignores); its realism notes (the README's notes reading like a specification after the pins, the
-   draft's 2.4 to 2.6 reading drafted) recorded and left, each further edit reopening a closed fork for no graded
-   figure.
-10. Judge (stage 4): DETERMINISTIC, the main call forced, stump power high, Gate H analytical
-   (`determinism_check_report.md`); its optional ask-side FIX_NOW applied in one generator pass (custody through a
-   boarding, day counts after a release, monitoring days by release, the disposition day a same-call row, both Word
-   documents in Word's form), `freeze.py` passing in both modes, so no graded figure moved; not re-judged. The
-   rubric's exposure is Ask A, whose boarding device the custody note makes seen: the pair on paper is 36.4 with one
-   response cracking it and about 41.0 with both. The clone screen promotes task139 (two apart, gap population and G9
-   on both cards) for the author's `/clone-check`; the drivers differ, recorded on the card.
-
-## Portal result and the stage 2 diagnosis, 2026-10-26
-
-**Both portal responses landed the call.** Response 1 and response 2 each set the tier at NCA scores 1 to 3,
-response 2 naming the top score explicitly, and both produced all three deliverables with the supporting
-calculations. The call is landed, so this is a stage 2 redesign of the decisive step and not a repair
-(`build-pipeline`, Returned tasks): a response that walks the default path to the golden means the decisive
-step is redesigned, never that a rung is added above it.
-
-**Why it was reachable, and it is not a near miss.** The decisive step was the selective-labels correction:
-outcomes exist only for the defendants a magistrate released, the tier releases every eligible defendant at
-its scores, so the rate is read off the magistrates' leniency gradient out to full release. Pretrial risk
-assessment is the textbook setting for that problem and judge leniency is its textbook instrument, so the
-correction is this domain's reflex rather than a step a competent analyst skips. Readability screen test 3
-fires on the decisive rung, and the screen recorded it as `silent`. The ladder also lists seven
-constructions of the gradient, all landing scores 1 to 3; that is the tell for `stumping` 1.1j, filed the
-same day on another build: the decisive step is an estimator fitted over a population the analyst chooses,
-and an estimator never has a unique defensible execution. Both facts point the same way.
-
-**What was measured before redesigning**, on the built pack through `generator/calc.py`, safety rates in per
-cent by NCA score. The world reproduces: the default path returns 95.5, 93.9, 91.9, 87.9, 78.0 and 73.8.
-
-| Candidate decisive step | Score 3 | Score 4 | Score 5 | Tier | Leverage |
-|---|---|---|---|---|---|
-| the default path, window capped at the last disposition | 91.9 | 87.9 | 78.0 | 1 to 4 | the figure to beat |
-| one row per defendant, first appearance only | 92.0 | 87.9 | 78.3 | 1 to 4 | none, 0.0 points |
-| one row per defendant, any failure at that score | 91.5 | 87.3 | 76.6 | 1 to 4 | none, 0.6 points |
-| the window uncapped, 365 days from release | 78.3 | 75.3 | 53.6 | 1 to 1 | very large, and unusable |
-
-**The three findings.** First, **the unit of analysis has no leverage here.** Deduplicating to defendants
-moves score 4 by 0.6 points, because the serial-arrest mix is nearly the same at every score: 74 per cent of
-releases belong to defendants with one appearance in the year, 22 per cent to two and 5 per cent to three or
-more, with failure rates of 8.3, 16.6 and 27.8 per cent at score 4, and those shares barely vary by score.
-Second, **exposure has no leverage either.** The median window is 104 to 108 days at every score and 98 per
-cent of windows are capped by disposition at every score, so there is no differential exposure to price and
-the window-lengthening family (a written promise's higher failure-to-appear rate postponing disposition, or
-custody days converted to street days) is arithmetically too small: the measured arrest hazard is about 0.13
-per cent a day, so moving score 4 three points would need twenty-three extra days of exposure per defendant
-and the largest such mechanism supplies about eight. Third, **the only other large lever is the window
-definition, and the draft rule defines it**, so taking it is rule application and banned as the decisive
-step.
-
-**The structural constraint this leaves.** Every large lever in this world is a counterfactual outcome for
-defendants a magistrate held, and that is the selection family by construction. So a re-root cannot keep the
-decision: a call about releasing currently-held defendants will always need their unobserved outcome. The
-re-rooted call has to be about a population whose outcomes the record holds whole.
-
-**The re-root candidate, measured on the golden stay convention.** The jail's bed-day footprint, where the
-records are complete and the difficulty is a reconstruction rather than a fit.
-
-The first reconnaissance of this candidate computed on the raw convention, in which each NEW row ends at its
-own release so an annex move reads as a release, and the README rules that reading out: "a stay runs from
-booking to release from the Sheriff's custody", with `TRF` coded "Moved to another housing site of the
-detention center" and the annex a housing site of it. Every figure below is the golden convention, and the
-figures the earlier pass filed are struck. Holding an eligible defendant costs **18.4 to 19.6 bed-days**, not
-12.9 to 13.5, and the overall average length of stay is **9.4 days**, not 6.2; the raw reading is the golden
-times 0.70, which is the measured annex lever, so the two sets differ by exactly that one convention. The
-earlier pass's following figures (5.5 and 16.9 days, and 0.2, 1.2 and 4.4 per release) reproduce under no
-definition the second pass could construct and are withdrawn rather than restated.
-
-What the candidate is worth, measured, with the chain validated by reproducing all three shipped asks
-(Ask A to its rounding at every score, Ask B's six missed counts and shares, Ask C's six totals):
-
-| Quantity | Measured |
-|---|---|
-| Following to own bed-days, four years | 3.16 |
-| Share the naive own-stay route captures | 47.7 per cent at score 1, falling to 5.3 at score 6 |
-| Following bed-days per failure | 6.2 at score 1, rising to 19.4 at score 6 |
-| Monotone across the four years | yes, and 99.6 per cent of bootstrap draws |
-| Following bed-days on ineligible charges | 85 per cent |
-| Following stays open at the extract | none, in either frame |
-
-The naive route does not merely undercount, it inverts the reading that matters: an eligible defendant
-released at a first appearance occupies almost no bed-days of their own, so the own-stay route files that the
-high scores are nearly free to release, while the footprint per failure rises with the score. The natural
-pipeline never joins the following booking, because a return is a new booking under a new number on a new
-case with nothing linking it to the earlier release but the person and the date, and 85 per cent of those
-bed-days sit on charges the policy's own eligibility filter excludes.
-
-**The frame is the four closed years, not FY25.** Measured: FY25 alone is not gradeable per score (relative
-standard error 18 to 24 per cent, the ten largest stays carrying 49 to 72 per cent of each score's total,
-score 3 at 1.05 per release above score 4 at 0.93, and only 16 per cent of bootstrap draws monotone). Over
-FY22 to FY25 the same quantities give 10 to 13 per cent and 99.6 per cent monotone. The four-year frame also
-puts the legacy appearance export back on the call's path, 32,314 of the 55,005 appearances under the earlier
-layout, which is Layer 1 the one-year frame would have left as dead weight.
-
-**What the re-root must fix, measured, and how.**
-
-| Finding | Measured | The move |
-|---|---|---|
-| The call's held side is Ask A's own population over FY26, and 8 following bookings are Ask A rows while 5 following stays end on Halsey's bills, Ask A's device | collision on rows and device | the asks are redrawn, which a re-root does anyway; Ask A cannot survive as an ask beside this call |
-| The annex convention | held side 29.0 per cent, following 30.2 per cent | `same call`: it moves both sides the same way and the README plus the `TRF` and `BO` code rows close it; Layer 1, never the stump |
-| "The booking that follows" | the failing arrest's own booking 3.6 per cent low, every booking in the window 17.5 per cent high, any rebooking in 365 days with no failure condition 1.7 to 2.7 times high | pin the WHAT in draft 2.4's own terms (which booking, inside which window, on which condition); the method of following a failure at all stays unfiled, because that is the stump |
-| Day or part of a day against midnight counts | 7.6 per cent | closed by a quoted sentence: "one bed-day is counted for each midnight count at which the person is held" |
-| The clock of the midnight count is never stated | 0.4 per cent | below any bin; one fork row saying so |
-
-**Why this escapes the structural constraint above.** The footprint is measured on defendants who were
-released, whose outcomes the record holds whole, and on following stays none of which is open at the extract.
-There is no counterfactual for a held defendant anywhere on the path, so the selection family that spent
-architecture 1 does not arise.
+| 1 | 949 | 694 (0.73) | 459 (0.48) | 423 (0.45) | 667 (0.70) | 1,008 (1.06) | 1,067 (1.12) |
+| 2 | 917 | 715 (0.78) | 449 (0.49) | 420 (0.46) | 644 (0.70) | 969 (1.06) | 1,025 (1.12) |
+| 3 | 948 | 692 (0.73) | 456 (0.48) | 413 (0.44) | 660 (0.70) | 982 (1.04) | 1,037 (1.09) |
+
+The golden's members (the window 60, 90 or 120 days, the score on or off) run 1,000 to 1,008, 968 to 973 and 978 to
+983. Its 4 to 6 per cent above the truth is the projection's monthly discretisation (the same formula with the
+generator's own parameters sits 5 per cent above a Monte Carlo of new starts), and the time-on-supervision route's
+error is ten times that. Stage 2 tunes the world so that the golden and every wrong route sit mid-bin under the pod
+standard and measures the family again on the built pack.
+
+## Earlier architectures (kept as history)
+
+**Architecture 2 (drawn 2026-10-26, superseded at stage 2 on 2026-10-27).** Dorrance County's detention bed-day bill
+of the pretrial releases it already makes: the default path priced a release at its own short stay (about 3,213
+bed-days a year), the golden at the custody of the booking that follows a failure to appear (13,358 a year, 85.6 per
+cent of it on charges the policy's eligibility list excludes). Drawn and registered by another session (f33106e5); its
+stage 2 reached `precut.py` one FAIL short, the asks not yet redrawn, at 31378a11, where its Draw, Three rules,
+readability screen, fork table, ladder and measurements stand. Superseded at the author's instruction: the decisive
+construction is one person-and-date join from a release to the booking that follows and a sum of midnight counts, so
+the call is arithmetic once the join is seen. Its card moved into `lineage` with that fate.
+
+**Architecture 1 (drawn 2026-10-15, FAILED_TO_STUMP).** Dorrance County's 2027 presumptive written-promise release
+tier on the Pretrial Assessment Scale, each score's safety rate read for every eligible defendant from the
+magistrates' differing release shares under the duty rota (selective labels): both portal responses landed scores 1
+to 3. The portal diagnosis (in full at 31378a11, `## Portal result and the stage 2 diagnosis`) found every large lever
+in that world a counterfactual for a defendant a magistrate held, the selection family by construction, which is why
+architecture 3 leaves the pretrial world for a record whose outcomes are held whole.
 
 ## Tried and rejected
 
@@ -813,3 +278,29 @@ architecture 1 does not arise.
 - Summing every booking inside the window, and taking the failure arrest's own booking, as ladder rungs: refused on
   magnitude. Measured at 13.3 per cent high and 2.7 per cent low, both inside any bin the graded figure can carry, so
   they are semantic forks to close at authority rather than rungs to climb.
+
+- 2026-10-27, architecture 2 superseded (the bed-day bill of the releases the county makes): at the author's
+  instruction; the decisive construction (a release joined to the booking that follows by person and date, then a sum
+  of midnight counts) is arithmetic once the join is seen, and the footprint of a defendant a wider tier would release
+  but a magistrate holds is still architecture 1's counterfactual.
+- 2026-10-27, architecture 3 draw: the supervision level a risk score assigns producing part of the violations
+  recorded at each score (detection), read at the tier cut-off or through overrides: `causal_design` was barred by
+  task139 v2 in the window, and task169 had set aside the cut-off discontinuity as a reflex (a logistic with the tier
+  lands it).
+- 2026-10-27, architecture 3 draw: the parole board's conversion of a violation to a return falling as the maximum
+  sentence date approaches, under retroactive earned credits (a second clock, time to the max date): set aside without
+  a paper run for the expiration review; its lever is a slope in the conversion over the last months before the max,
+  where the expiration review moves the forecast's sign, and a board practice sharp enough to matter would read as a
+  withheld rule.
+- 2026-10-27, architecture 3 draw, the decision and the labels: three housing options as the decision type BLOCKed
+  `test.same_puzzle` against task269 v1's lineage, and decisive G7 or G13 BLOCKed against task137 v4, task166 v3 and
+  seven older builds; the card reads `quantity_figure` with G4, the pods following from the filed standard.
+- 2026-10-27, architecture 3 paper world with felony terms of 36, 48 and 60 months only: the time-on-supervision hazard
+  showed bumps at 33 to 36, 45 to 48 and 57 to 60 months that a careful reader of the hazard curve would read as term
+  ends; felony terms now run 18 to 72 months over eight lengths, so the pooled curve smears and the clock shows only
+  when petitions are aligned on scheduled expiration.
+- 2026-10-27, architecture 3 paper world, the first truth runs: early termination keyed to the last three entries of
+  the whole log in the record and to the case's own entries in the re-run, and the re-run skipping the extract's
+  partial month, both biased the truth, and the golden counted reviews for terms whose window had opened before the
+  extract; fixed (termination needs no petition on the case, a partial month carries its share of the hazard, the
+  review's remaining share read off the record's own filing offsets).

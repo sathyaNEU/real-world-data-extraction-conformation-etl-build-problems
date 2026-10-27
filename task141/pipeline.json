@@ -1,56 +1,68 @@
 {
- "task": "task141",
- "owner": "sathya8571",
- "status": "DESIGN",
- "domain": "criminology-justice",
- "objective": "forecasting",
- "stage": 2,
- "stage_name": "design",
- "updated": "2026-10-26",
- "stump": "A competent solver prices the county's pretrial releases at the released defendants' own short stays and files about 3,213 detention bed-days a year, where the bill is the custody of the booking that follows each failure to appear, 85.6 per cent of it on charges the policy's eligibility list excludes, and the golden is 13,358 a year.",
- "architecture": 2,
- "loops": 0,
- "precut": {
-  "exit": null,
-  "date": ""
- },
- "leak": {
-  "leak_py": "",
-  "reader": ""
- },
- "duplicate_check": {
-  "heart": "",
-  "nearest": "0.07 (task35, task103) at the draw"
- },
- "judge": {
-  "verdict": "",
-  "disposition": "",
-  "report": ""
- },
- "returned": [
-  {
-   "date": "2026-10-26",
-   "portal": "both responses landed the call at NCA scores 1 to 3",
-   "repair": "design",
-   "commit": ""
-  }
- ],
- "resume": "Architecture 2 drawn, registered and committed (f33106e5). Design note's Draw, Default path, Stump sentence and Three rules rewritten for architecture 2, with the ladder measured on the built world (R0 0.241x, R2 0.350x, golden 1.000x, R1 1.976x) and precut.py down to ONE FAIL. That FAIL is the real remaining work and is correct: the Ask sheet has no `Measured by:` line because the asks have not been redrawn yet. They must be, and not as a formality: Ask A's population IS the call's own held side over FY26, 8 following bookings are Ask A rows, and 5 following stays end on the contract facility's bills, which is Ask A's device, so Ask A cannot survive beside this call. Asks B (missed court dates, court events export) and C (electronic monitoring invoices) are both FY26 and touch neither the appearance population nor the jail export, so both survive the separation line; a third ask has to be drawn, and the contract-facility bill reconciled to the county's own midnight count is the candidate (billed days run 4.8 per cent above bed-days because the contract bills per day or part of a day), with the device scoped to board-outs of non-following stays so the asserted count of device rows inside the call's population is zero. NEXT, in order: redraw the asks, then rewrite Readability screen, Semantic fork table (pinning the two population sentences: the FIRST booking inside the window, 13.3 per cent high, and the booking that follows rather than the failure arrest's own, 2.7 per cent low), Ladder, Closure table, Literal reader, Oracles and Ask sheet, all of which still carry architecture 1's content and which precut cannot detect; then re-tune the world at stage 3 so the graded figure sits mid-bin (53,430 over four years and 13,357.5 a year currently sit near a bin edge at every sane rounding); then precut.py exit 0.",
- "approved": null,
- "delivered": "2026-10-15",
- "portal": null,
- "portal_id": "",
- "portal_status": "",
- "portal_status_date": "",
- "wave": "wave 2 (new), seed FC12 (world redrawn)",
- "build": {
-  "checks": "193 assertions, 0 failed",
-  "verify": "pass (independent path, Word documents' word counts included)",
-  "rebuild": "two builds byte-identical (target.zip sha256 662eb5196dcbc2df)",
-  "figures_check": "61 figures, exit 0",
-  "voice_check": "PASS (992 characters)",
-  "containers": "clean (scrub audit, target and golden; both docx in Word's form)",
-  "precut": "49 checks, exit 0",
-  "freeze": "determinism and rubric exit 0"
- }
+  "task": "task141",
+  "owner": "sathya8571",
+  "status": "DESIGN",
+  "domain": "criminology-justice",
+  "objective": "forecasting",
+  "stage": 2,
+  "stage_name": "design",
+  "updated": "2026-10-27",
+  "stump": "A competent solver fits revocation by month on supervision with the risk score, carries it over each felony case's 2027 months to its new end under SB 26-118 and files about 450 admissions (three pods); the step that lands it there is reading every petition on the time-since-start clock, when about a fifth are filed in the last weeks before a term lapses, ride each term's scheduled end, and under the Act fire at once for the terms that end on 31 March 2027, so the plan carries about 950 (six pods).",
+  "architecture": 3,
+  "loops": 0,
+  "precut": {
+    "exit": null,
+    "date": ""
+  },
+  "leak": {
+    "leak_py": "",
+    "reader": ""
+  },
+  "duplicate_check": {
+    "heart": "",
+    "nearest": "0.09 (task134 v2 lineage, task123 v1 lineage) at the draw"
+  },
+  "judge": {
+    "verdict": "",
+    "disposition": "",
+    "report": ""
+  },
+  "returned": [
+    {
+      "date": "2026-10-26",
+      "portal": "both responses landed the call at NCA scores 1 to 3",
+      "repair": "design",
+      "commit": ""
+    }
+  ],
+  "resume": "Architecture 3 drawn and registered 2026-10-27 at the author's instruction (oviya1301): Okelan County's 2027 felony probation revocation admissions under SB 26-118 (felony terms capped at 24 months, running terms ended on 31 March 2027), the stump being the tolling petitions filed in the last weeks before each term lapses, which ride the scheduled end. Paper world in generator/paper (sim_rev.py, routes.py, fam.py). Next, stage 2: set the pod standard and tune the world so the golden and every wrong route sit mid-bin, write the readability screen, fork table, ladder, closure table, literal reader, oracles and ask sheet, draft prompt.txt, then precut.py exit 0.",
+  "approved": null,
+  "delivered": "2026-10-15",
+  "portal": null,
+  "portal_id": "",
+  "portal_status": "",
+  "portal_status_date": "",
+  "wave": "wave 2 (new), seed FC12 (world redrawn)",
+  "build": {
+    "checks": "193 assertions, 0 failed",
+    "verify": "pass (independent path, Word documents' word counts included)",
+    "rebuild": "two builds byte-identical (target.zip sha256 662eb5196dcbc2df)",
+    "figures_check": "61 figures, exit 0",
+    "voice_check": "PASS (992 characters)",
+    "containers": "clean (scrub audit, target and golden; both docx in Word's form)",
+    "precut": "49 checks, exit 0",
+    "freeze": "determinism and rubric exit 0"
+  },
+  "architecture_history": [
+    {
+      "architecture": 1,
+      "fate": "FAILED_TO_STUMP 2026-10-26, both portal responses landed scores 1 to 3",
+      "last_commit": "1ccf689a"
+    },
+    {
+      "architecture": 2,
+      "fate": "superseded at stage 2 on 2026-10-27 at the author's instruction",
+      "last_commit": "31378a11"
+    }
+  ]
 }
