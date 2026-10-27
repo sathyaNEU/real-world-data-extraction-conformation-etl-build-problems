@@ -556,6 +556,29 @@ exactly, rather than a quantity fitted over a population the analyst chooses. Th
 
 ## Tried and rejected
 
+- Architecture 9's draw hunt (2026-10-27): three candidates drawn, gated and killed on measurement, each
+  entered above. The useful residue is that all three put the decisive step in the nonlinearity of a
+  records-fixed count, and in every case the nonlinearity was either attained by a one-pass scan or financed by
+  a parameter the records do not fix. Architecture 10 is not another nonlinearity on this ground.
+- The cell itself is the finding, and it is why architecture 10 moves domain. In `accounting-audit-forensic` the
+  only live inherited anomaly-detection task type is `forensic-investigation` mapped to `fraud-aml-detection`
+  (`multiple-testing-selective-inference` is closed by the Part 3 screen, `exploratory-data-analysis-distribution-assessment`
+  is task202's ground), and on that one type the swap test failed or nearly failed on all three candidates in the
+  same way: the deciding quantity keeps coming out as a combinatorial or weighting property of two record
+  streams, which reads identically with any field's nouns. That is a property of the cell, not of the draws.
+  Nine architectures are now dead across three worlds in this slot.
+- Two bookkeeping defects found by that hunt and fixed the same day: `cards/task184.json` carried
+  `architecture_spent: None` against `pipeline.json`'s `true`, so architecture 8's axis bans
+  (`accounting-audit-forensic`, `audit-testing-sampling`, shape 03, `grain_or_unit`, `monitoring_export`) were
+  fencing off ground no live build occupies and the similarity rules were running against a dead architecture;
+  the card is now flagged spent.
+- `task184/metadata.json` is still architecture 2's criminology pack (the Harbourgate patrol slate, 16 kcp and
+  harbourgate files, `prompt_shape` 07 against the card's 03, as-of 2027-01-22) and is left as it is on purpose:
+  it is the house record, a different schema from the in-pack `target/metadata.json` that the generator writes,
+  so it is rewritten when architecture 10's pack is cut and not before. Copying the in-pack file over it was
+  tried and reverted, because that file carries `provenance`, `stated_inputs` and `distractors` and none of the
+  house record's `domain`, `objective`, `prompt_shape`, `field_terms`, `input_gates` or `sources`.
+
 - 2026-10-21, architecture 3 at the draw: a latent-grouping decisive step in this world, recovering the
   keeper's routine type from the windows and fitting the clock conditional on it. Dead before any design, read
   off the generating model rather than measured on a pack. `offences.covered_record` draws every offence's hour
@@ -762,3 +785,74 @@ exactly, rather than a quantity fitted over a population the analyst chooses. Th
   filed as `stumping` 1.1j and 1.1i is amended with it: dropping the ranking removes the cap boundary but
   does not make the decisive step uniquely executable, so the next draw needs a reconstruction the records
   force, not a fit.
+
+- 2026-10-27, the architecture 9 draw hunt, three candidates drawn and all three closed on
+  measurement at the draw, nothing cut. Harness at
+  `/tmp/claude-0/-home-user/5ec7cb86-793f-5895-a00b-808e36976e12/scratchpad/t184a9hunt/`, every script
+  byte-identical on two runs, every route scored against the world's own truth. Also recorded here for the
+  first time: three closures measured by the 2026-10-27 reconnaissance (scratch `t184draw/`) that were never
+  written into this section, a first-crossing period reconstructed from dated documents against the reported
+  periodic series (the coarse series names the right period 12 of 12 at every seed), a peak against a
+  period-end snapshot (under limits a controller would plausibly set the default path files exactly zero at
+  all five seeds), and the grain family (Gate C and Gate F ride the one dial that shares the line-detail
+  coverage, with no middle). None of the three is re-proposable.
+
+- 2026-10-27, candidate C9-1, the joint-feasibility deficiency (accounting-audit-forensic /
+  forensic-investigation on the client task type fraud-aml-detection, anomaly-detection): the count of depot
+  fuel issues the fleet's own recorded movements cannot jointly account for, against the field's own
+  per-transaction exception test. CLOSED AT BOTH ENDS OF ONE DIAL, and this is the cleanest guard verdict of
+  the three (WARN, exit 0, two WARNs both against a retired build, nearest driver 0.05 against task198 v4),
+  so the ground was open and the mechanism is what failed. The deficiency bites only as the capacity bound on
+  an edge tightens. At the only bound the records force, the tank capacity the fleet register carries, the
+  per-row exception count is exactly zero at five of five seeds and the deficiency is 11 to 20 issues of
+  about 2,650, 0.4 to 0.8 per cent, on figures of 11, 11, 11, 13 and 20 that turn on a handful of
+  coincidences. Every tighter bound is a headroom, which needs a litres-per-kilometre rate applied to
+  odometer movement, a free parameter: over the fractions of capacity a competent analyst could defend
+  (0.80, 0.60, 0.45, 0.30) the graded count runs 164, 448, 816, 1398 at one seed and spreads 8.52x to 12.02x
+  across five, so Gate C is dead wherever Gate F lives. Worse, the step's worth falls as the dial buys reach:
+  the deficiency over the per-row count is 1.22x at 0.80, 1.14x at 0.60, 1.12x at 0.45 and 1.06x at 0.30.
+  And with the capacity bound dropped altogether, so that the presence windows alone bind, the edges are
+  intervals, the Hall bound is therefore attained on an interval, and one sort and one pass over disjoint
+  intervals reaches 95.3 to 97.2 per cent of the deficiency at four of four seeds while the per-row count is
+  again exactly zero. The general form, worth keeping: a feasibility count whose edges are time intervals is
+  a scan, and making the edges non-interval needs a bound the records do not fix, which is 1.1h's two horns
+  in another mechanism.
+
+- 2026-10-27, candidate C9-2, the per-case inverse of a claim probability (same pairing): the count of FY26
+  short-delivery lines, recovered by weighting each claimed shortfall by the inverse of its own drop's
+  checked share, against counting the credit notes. Dead on the cheapest licensed member, and the first pass
+  of the screen was a harness defect that flattered it. Scored on the mean probability over the CLAIMED
+  shortfalls the per-case route cleared the one-divide route by 1.43x at the best dial setting; scored on the
+  world's truth, which is the only honest scoring, one group-by and one divide (claims over the verified
+  sample's own claim rate over all shortfalls) reaches the truth at 0.966, 0.984, 0.966, 1.026 and 1.078
+  against the per-case inverse at 1.023, 1.005, 1.055, 0.995 and 0.994, a mean absolute error of about 4 per
+  cent against about 3, so the per-case detail buys nothing and the ladder is level at best. The probability
+  is not a shipped column either: fitted from a verified sample, the executions a competent analyst would
+  defend (a logistic on the scan share, a linear probability, a decile mean, a quintile crossed with the drop
+  size band) spread the graded count 6.0 to 9.4 per cent, and adding the per-customer grouping takes the
+  spread to 2.86x, 3.59x and 4.15x, which is 1.1j again. The guard blocks it independently: BLOCK
+  test.same_puzzle against task141 v2 inside the batch, BLOCK test.same_puzzle_older against task148 and
+  task173, and BLOCK test.same_driver_older against task120, task239, task264 and task269, a signature spent
+  in four earlier builds, with driver.near 0.15 against task308 v2. And the organ it needs, a sample that
+  observes unclaimed shortfalls, is task192's and task196's spent ground and readability test 7.
+
+- 2026-10-27, candidate C9-3, the displacement pair the count calendar breaks (same pairing): the genuine
+  stock loss behind FY26 branch count variances, where a misbooked movement shows as an offsetting pair whose
+  two sides fall in different windows of a rolling count calendar. DEAD BY IDENTITY, and the premise is
+  simply false: a displacement conserves the group total whatever windows its two sides fall in, so the group
+  net equals the genuine loss exactly, ratio 1.000 at three of three seeds (709 against 709, 878 against 878,
+  767 against 767) with 104 of 256, 108 of 236 and 79 of 205 pairs kept inside one window, and the pairing
+  window is a knob that moves nothing, spread exactly zero at every window from 0 to 3 cycles. The calendar
+  breaks pairs only inside a branch-window cell, never in the reported total, so no calendar structure can
+  make the netted figure wrong. The guard blocks it as well, BLOCK test.same_puzzle_older against task65 v3
+  and task67 v3 and BLOCK test.same_driver_older against task65 v3 and task84.
+
+- 2026-10-27, the candidate the reconnaissance drafted a card for and refused before any measurement,
+  recorded here because it existed only in that scratch card's `notes` field: the joint condition across
+  releases (a purchase commitment reaching the shared group ledger as several releases booked in different
+  trading units, the authorisation control testing the band against each release, so a commitment above the
+  band whose releases each sit inside it is reported by nobody). Refused on two grounds at the draw. The
+  partition of releases into commitments is a keyed group-by, which is readability test 2, the schema
+  announcing the step; and split-commitment testing is the field's own named procurement-audit procedure, so
+  the decisive step is one a competent analyst performs by reflex and a filed sentence would name. Not
+  re-proposable.

@@ -6,9 +6,9 @@
  "objective": "anomaly-detection",
  "stage": 1,
  "stage_name": "draw",
- "updated": "2026-10-26",
+ "updated": "2026-10-27",
  "stump": "The analyst reports the monitoring platform's 10,587 flagged entries as the number of postings that tripped the ruleset for the year to date (or 31,282 from the entry flag rate grossed up by the group's postings); the step that lands there is treating the entry verdict as one observation of one posting, when it is an indicator that fires once however many of the voucher's postings trip the rule, so the count has to be recovered by inverting one minus the complement raised to the postings on the entry, entry by entry, with the rate estimated on each trading unit's own population.",
- "architecture": 8,
+ "architecture": 9,
  "loops": 0,
  "precut": {
   "exit": 0,
@@ -41,7 +41,7 @@
    "commit": ""
   }
  ],
- "resume": "architecture 8 is spent on stumping 1.1j: the decisive step was an estimator and its grouping is a free choice (group 14,712, unit 14,989, unit by stream 14,472, two bins), and the isolated reader reached that estimator unaided. Re-root at stage 1 with a decisive step that has exactly one defensible execution given the records: a reconstruction the records force, not a fit. The accounting world, the pack and the three asks all measured sound and can be kept.",
+ "resume": "Architecture 9 refused on measurement 2026-10-27: three candidates drawn and gated, all three killed with numbers, recorded in the design note. The finding is the cell, not the draws: in accounting-audit-forensic the only live inherited anomaly-detection task type is forensic-investigation mapped to fraud-aml-detection, and on it the deciding quantity keeps coming out as a combinatorial or weighting property of two record streams, which reads identically with any field nouns, so the swap test failed or nearly failed on all three. Architecture 10 moves the cell to business-operations-analytics x anomaly-detection, the one never-built drawable anomaly pairing that is not this slot own lineage (criminology-justice is architectures 2 to 7). Two constraints the nine deaths earn: the decisive step is not another nonlinearity of a records-fixed count, and the bin test now filed in determinism-check is measured on every candidate before it is recommended.",
  "approved": null,
  "delivered": null,
  "portal": null,
