@@ -42,6 +42,8 @@ PARAMS = dict(
     # registrations cancelled after the signature was given, so valid at signing and cancelled in the July
     # snapshot, and registrations cancelled and then restored before signing (status active, cancel date set)
     rate_post_cancel=0.02500, rate_reinstated=0.00210,
+    # electors who registered between the December 2027 snapshot and the day they signed
+    rate_new_registration=0.00180,
     # sampled lines the recorder returned without a determination (the transmitted copy was unreadable) and
     # which the division determined itself
     division_illegible=160,
@@ -107,7 +109,6 @@ def _sheet_layer(w, p, seed):
         wt = wt / wt.sum()
         pick = r.choice(len(ids), size=len(ix), p=wt)
         sheet_circ[ix] = np.array(ids, dtype=object)[pick]
-        sheet_no[ix] = np.arange(1, len(ix) + 1)
         start += len(ix)
 
     # when each sheet was circulated: the campaign accelerates towards the filing deadline
@@ -126,16 +127,24 @@ def _sheet_layer(w, p, seed):
     bundle[order] = np.searchsorted(ends, rank, side="right") + 1
     serial[order] = rank + 1
 
+    # Sheets are issued to a circulator in a numbered pad, so the number printed on a sheet is that
+    # circulator's own series and a sheet is identified by the registration number with that number.
+    seq = {}
+    for j in np.lexsort((np.arange(n), day)).tolist():
+        c = sheet_circ[j]
+        seq[c] = seq.get(c, 0) + 1
+        sheet_no[j] = seq[c]
+
     # the signature lines each sheet carries. A sheet has fifteen lines; the firms filed the sheets they had,
     # so most are full and a tail are not, and the office's count of the lines filed is the statutory total.
-    shape = np.array([15, 14, 13, 12, 11, 10, 9, 8, 7, 6, 5])
-    wts = np.array([0.700, 0.100, 0.060, 0.040, 0.030, 0.025, 0.015, 0.012, 0.008, 0.005, 0.005])
+    shape = np.array([15, 14, 13, 12, 11, 10, 9, 8, 7, 6, 5, 4])
+    wts = np.array([0.280, 0.170, 0.130, 0.100, 0.080, 0.060, 0.050, 0.040, 0.030, 0.025, 0.020, 0.015])
     wts = wts / wts.sum()
     used = r.choice(shape, size=n, p=wts)
     short = K.LINES_FILED - int(used.sum())
     step = 1 if short > 0 else -1
     while short != 0:
-        cand = np.where(used < 15)[0] if step > 0 else np.where(used > 5)[0]
+        cand = np.where(used < 15)[0] if step > 0 else np.where(used > 4)[0]
         take = r.choice(cand, size=min(abs(short), len(cand)), replace=False)
         used[take] += step
         short = K.LINES_FILED - int(used.sum())
@@ -310,6 +319,11 @@ def _signer_layer(w, p, seed):
     pre = (ground == CODE_IX["CA"]) & ~w.signer_ca_mid
     cancel[pre] = -(r.integers(30, 900, size=int(pre.sum())).astype(np.int64))
     cancel_reason[pre] = r.choice([2, 3, 4], size=int(pre.sum()), p=[0.56, 0.27, 0.17])
+    # a registration the snapshot still shows cancelled was registered before the cancellation, never
+    # after it: a record carrying a later registration date against a standing cancellation is a
+    # contradiction, and it is what a strict date test and the status column would disagree about
+    late_reg = pre & (regday >= cancel)
+    regday[late_reg] = cancel[late_reg] - r.integers(60, 5200, size=int(late_reg.sum())).astype(np.int64)
 
     # cancelled after the signature was given: valid at signing, cancelled in the July snapshot
     clean = (ground == 0) & has_rec
@@ -354,6 +368,29 @@ def _signer_layer(w, p, seed):
     rlo = cancel[ix] + 3
     restore[ix] = rlo + (r.random(len(ix)) * (span - 2 - rlo)).astype(np.int64)
     w.signer_late_restored = lr
+    # electors who registered after the December 2027 snapshot and signed afterwards: the archived
+    # snapshot carries no record for them at all, which is what a seven month old extract looks like
+    nr_pool = (ground == 0) & has_rec & (w.signer_first_day > 20)
+    newreg = nr_pool & (r.random(ns) < p["rate_new_registration"])
+    ix = np.where(newreg)[0]
+    fd = w.signer_first_day[ix]
+    cut = (K.EARLY_SNAPSHOT - K.WINDOW_OPEN).days
+    regday[ix] = (cut + 1) + (r.random(len(ix)) * (fd - cut - 2)).astype(np.int64)
+    w.signer_new_registration = newreg
+
+    # the day each registration was last touched, which is what a status log stamps: a registration that
+    # has moved address or been re-verified carries a later stamp than the day it was created
+    touched = regday.copy()
+    moved = r.random(ns) < 0.78
+    span2 = (K.LATE_SNAPSHOT - K.WINDOW_OPEN).days
+    jx = np.where(moved)[0]
+    lo2 = regday[jx] + 30
+    room2 = span2 - lo2
+    keep2 = room2 > 10
+    jx, lo2, room2 = jx[keep2], lo2[keep2], room2[keep2]
+    touched[jx] = lo2 + (r.random(len(jx)) * room2).astype(np.int64)
+    w.signer_touched = touched
+
     w.signer_cancel = cancel
     w.signer_cancel_reason = cancel_reason
     w.signer_restore = restore
@@ -416,6 +453,29 @@ def _sample_layer(w, p, seed):
     w.dup_full = full
 
 
+def _clear_move_days(w):
+    """A circulator moves firm on a day it gathered nothing, so no signature sits on the boundary and the
+    firm a signature belongs to is never a convention."""
+    days = {}
+    for j in range(len(w.line_signer)):
+        c = w.sheet_circ[w.line_sheet[j]]
+        days.setdefault(c, set()).add(int(w.line_day[j]))
+    fixed = {}
+    for cid, (was, now, day) in w.circulator_moves.items():
+        busy = days.get(cid, set())
+        d = day
+        for step in range(0, 40):
+            for cand in (day + step, day - step):
+                if cand not in busy and 30 <= cand <= K.WINDOW_DAYS - 10:
+                    d = cand
+                    break
+            else:
+                continue
+            break
+        fixed[cid] = (was, now, d)
+    w.circulator_moves = fixed
+
+
 def simulate(seed=K.SEED, params=None):
     p = dict(PARAMS)
     if params:
@@ -425,6 +485,7 @@ def simulate(seed=K.SEED, params=None):
     w.params = p
     _sheet_layer(w, p, seed)
     _line_layer(w, p, seed)
+    _clear_move_days(w)
     _signer_layer(w, p, seed)
     _sample_layer(w, p, seed)
     return w

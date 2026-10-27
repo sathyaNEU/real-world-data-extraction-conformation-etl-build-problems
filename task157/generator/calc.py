@@ -248,19 +248,19 @@ def sheet_serials(target):
 
 
 def ask_a(target, rows):
-    """For each county: the sampled signatures its recorder returned a determination for, and how many of
-    those were registered on the day they signed and are no longer shown as valid."""
+    """For each county: how many of the sampled signatures its recorder determined had a registration the
+    10 July 2028 snapshot shows cancelled although it was in force on the day they signed."""
     late = {int(r["voter_reg_id"]): r for r in rd(target, R.F_SNAP_LATE)}
     out = {}
     for cc, name, _ in K.COUNTIES:
         det = [r for r in rows if r["county"] == cc and r["determined_by"] == "RECORDER"]
-        out[cc] = dict(name=name, determined=len(det), lapsed=lapsed(rows, late, det))
+        out[cc] = dict(name=name, lapsed=lapsed(rows, late, det))
     return out
 
 
 def ask_b(target, rows):
-    """For each circulator firm and each month of the circulation period: the sampled signatures gathered by
-    circulators that firm had registered on the day the signature was given, and how many of them the
+    """For each circulator firm and each month of the circulation period: the sampled signatures gathered
+    by circulators that firm had registered on the day the signature was given, and how many of them the
     recorders struck on a ground other than duplication."""
     reg = firm_register(target)
     out = {}
@@ -281,15 +281,15 @@ def ask_b(target, rows):
 
 
 def ask_c(target, rows):
-    """For each month of the circulation period: the sampled signatures signed in it and the petition sheet
-    serials they sit on."""
-    ser = sheet_serials(target)
+    """For each month of the circulation period: the sampled signatures signed in it, and how many of those
+    had a registration the 10 July 2028 snapshot shows cancelled although it was in force on the day
+    they signed."""
+    late = {int(r["voter_reg_id"]): r for r in rd(target, R.F_SNAP_LATE)}
     out = {}
     for y, m in K.WINDOW_MONTHS:
         sel = [r for r in rows if r["signed"] is not None
                and (r["signed"].year, r["signed"].month) == (y, m)]
-        out["%04d-%02d" % (y, m)] = dict(signatures=len(sel),
-                                         sheets=len({ser[(r["circ"], r["sheet_no"])] for r in sel}))
+        out["%04d-%02d" % (y, m)] = dict(signatures=len(sel), lapsed=lapsed(rows, late, sel))
     return out
 
 

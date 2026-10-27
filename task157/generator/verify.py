@@ -81,7 +81,7 @@ def main(target):
     rec = pdf_text(p(RECORD))
     ok("the filing record reads back through this verifier's own extractor", len(rec) > 2000,
        "%d characters" % len(rec))
-    filed = int(re.search(r"receipted 38,080 sheets, bearing ([\d,]+) signature lines",
+    filed = int(re.search(r"receipted [\d,]+ sheets, bearing ([\d,]+) signature lines",
                           rec).group(1).replace(",", ""))
     sample = int(re.search(r"random sample of five per cent of the signature lines filed, ([\d,]+) of the",
                            rec).group(1).replace(",", ""))
@@ -198,10 +198,9 @@ def main(target):
     det = r[r["determined_by"].eq("RECORDER")]
     bad = []
     for cc, g in det.groupby("county_code"):
-        if int(len(g)) != figs["ask_a_%s_determined" % cc] or int(g["lapsed"].sum()) != \
-                figs["ask_a_%s_lapsed" % cc]:
+        if int(g["lapsed"].sum()) != figs["ask_a_%s_lapsed" % cc]:
             bad.append(cc)
-    ok("every county's two figures reproduce", not bad, "15 counties" if not bad else ",".join(bad))
+    ok("every county's figure reproduces", not bad, "15 counties" if not bad else ",".join(bad))
     ok("the lines the division determined are outside every county's figures",
        int(len(det)) + int((~r["determined_by"].eq("RECORDER")).sum()) == sample,
        "%d determined by the division" % int((~r["determined_by"].eq("RECORDER")).sum()))
@@ -254,14 +253,16 @@ def main(target):
     bad = []
     for m in MONTHS:
         sel = r[r["signed"].map(lambda d, m=m: d is not None and "%04d-%02d" % (d.year, d.month) == m)]
-        serials = {ser[(a, b)] for a, b in zip(sel["circulator_reg_no"], sel["sheet_no"])}
-        if int(len(sel)) != figs["ask_c_%s_signatures" % m] or len(serials) != figs["ask_c_%s_sheets" % m]:
+        if int(len(sel)) != figs["ask_c_%s_signatures" % m] or int(sel["lapsed"].sum()) != \
+                figs["ask_c_%s_lapsed" % m]:
             bad.append(m)
-    ok("every month's two figures reproduce on the office's own sheet serials", not bad,
-       "6 months" if not bad else ",".join(bad))
-    ok("a sheet number alone does not identify a sheet",
-       sh["sheet_no"].nunique() < len(sh) and len(ser) == len(sh),
-       "%d sheet numbers over %d sheets" % (sh["sheet_no"].nunique(), len(sh)))
+    ok("every month's two figures reproduce", not bad, "6 months" if not bad else ",".join(bad))
+    per_circ = sh.groupby("circulator_reg_no")["sheet_no"]
+    own = bool((per_circ.min() == 1).all() and (per_circ.max() == per_circ.count()).all())
+    ok("every circulator's sheet numbers are its own series, one to n, so the line key needs both",
+       own and len(ser) == len(sh) and sh["sheet_no"].nunique() < len(sh) / 50,
+       "%d circulators, %d distinct numbers over %d sheets"
+       % (sh["circulator_reg_no"].nunique(), sh["sheet_no"].nunique(), len(sh)))
 
     # ---------------------------------------------------------------- the filed total's other reading
     man = pd.read_csv(p(MANIFEST))

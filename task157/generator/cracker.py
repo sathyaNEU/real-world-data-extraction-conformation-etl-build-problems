@@ -121,11 +121,12 @@ def families_from_pack(target, rows=None):
 import datetime as dt     # noqa: E402
 
 ASKS = [
-    ("A", "each county: the signatures its recorder determined, and those registered when signed and no "
-          "longer valid", 30),
+    ("A", "each county: the signatures its recorder determined whose registration was in force when "
+          "signed and is cancelled now", 15),
     ("B", "each firm and month: the sampled signatures its registered circulators gathered, and those "
           "struck on a ground other than duplication", 48),
-    ("C", "each circulation month: the sampled signatures signed, and the sheet serials they sit on", 12),
+    ("C", "each circulation month: the sampled signatures signed, and those whose registration was in "
+          "force when signed and is cancelled now", 12),
 ]
 FIGURES = sum(n for _, _, n in ASKS)
 
@@ -207,7 +208,7 @@ def answers(target, handle):
     for cc, name, _ in K.COUNTIES:
         sel = [r for r in rows if r["county"] == cc]
         det = [r for r in sel if r["determined_by"] == "RECORDER"] if "determined_by" in handle else sel
-        out["A"][cc] = dict(determined=len(det), lapsed=_lapsed(det, late, handle))
+        out["A"][cc] = dict(lapsed=_lapsed(det, late, handle))
     reg = C.firm_register(target)
     current = {}
     for cid, rws in reg.items():
@@ -232,7 +233,7 @@ def answers(target, handle):
         sel = [r for r in rows if r["signed"] is not None
                and (r["signed"].year, r["signed"].month) == (y, m)]
         out["C"]["%04d-%02d" % (y, m)] = dict(signatures=len(sel),
-                                              sheets=len({serial_of(r) for r in sel}))
+                                              lapsed=_lapsed(sel, late, handle))
     return out
 
 
@@ -257,10 +258,13 @@ def ask_measurement(target):
     gold = answers(target, GOLDEN_HANDLING)
     easy = score(gold, answers(target, ()))
     crack = score(gold, answers(target, DOCUMENTED))
-    per_primary = {}
+    per_primary, minus_primary = {}, {}
     for pr in PRIMARIES:
         per_primary[pr] = score(gold, answers(target, DOCUMENTED + (pr,)))
+        rest = tuple(x for x in PRIMARIES if x != pr)
+        minus_primary[pr] = score(gold, answers(target, DOCUMENTED + rest))
     return dict(total=FIGURES, easy=easy, cracker=crack, per_primary=per_primary,
+                minus_primary=minus_primary,
                 easy_keep=sum(easy.values()) / float(FIGURES),
                 cracker_keep=sum(crack.values()) / float(FIGURES))
 
@@ -376,8 +380,10 @@ def main():
     print("   the cracker keeps %d of %d (%.3f of the ask weight)"
           % (sum(me["cracker"].values()), me["total"], me["cracker_keep"]))
     for pr, sc in sorted(me["per_primary"].items()):
-        print("   the cracker with %-10s solved as well keeps %3d of %d (%.3f)"
-              % (pr, sum(sc.values()), me["total"], sum(sc.values()) / float(me["total"])))
+        print("   the cracker with %-10s solved as well keeps %3d of %d (%.3f); a response that solves the "
+              "other two but not it keeps %3d of %d"
+              % (pr, sum(sc.values()), me["total"], sum(sc.values()) / float(me["total"]),
+                 sum(me["minus_primary"][pr].values()), me["total"]))
     c, s, p = pair(me)
     print("   response 1 lands the call: %.1f" % c)
     print("   response 2 stops at rung 1: %.1f" % s)

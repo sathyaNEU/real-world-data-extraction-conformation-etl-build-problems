@@ -73,6 +73,28 @@ class Shaped:
     pass
 
 
+def receipt_numbers(w, count):
+    """The office numbers every receipt it issues, so this filing's bundles carry a stretch of that
+    register with the other filings' numbers missing from it."""
+    r = K.rng("receipts", seed=w.seed)
+    steps = r.integers(1, 5, size=count)
+    base = 40_861
+    out, at = [], base
+    for st in steps.tolist():
+        at += int(st)
+        out.append("B%05d" % at)
+    return out
+
+
+def receipt_staff(w, count):
+    """Who receipted each bundle. The counter is not a rota: two clerks take most of the filing and the
+    rest take what they are free for."""
+    r = K.rng("staff", seed=w.seed)
+    ids = ["ELEC-%02d" % k for k in (3, 7, 2, 11, 5, 9)]
+    wt = np.array([0.31, 0.24, 0.17, 0.12, 0.09, 0.07])
+    return [ids[i] for i in r.choice(len(ids), size=count, p=wt).tolist()]
+
+
 def shape(w):
     """Everything the shipped files and the deliverables are cut from, at the grain each is written at."""
     S = Shaped()
@@ -103,7 +125,10 @@ def shape(w):
     blank = md_ix[r.random(len(md_ix)) < 0.40]
     outside = np.array(sorted(set(md_ix.tolist()) - set(blank.tolist())), dtype=np.int64)
     sign_date = np.array([K.WINDOW_OPEN + dt.timedelta(days=int(d)) for d in S.day], dtype=object)
-    off = r.integers(-74, -2, size=len(outside))
+    # the serial was issued on 6 December 2027, so a date outside the circulation period is a date before
+    # that; a line dated inside it is in the period whatever month it falls in
+    off = r.integers(-(K.WINDOW_OPEN - K.SERIAL_ISSUED).days - 185,
+                     -(K.WINDOW_OPEN - K.SERIAL_ISSUED).days - 2, size=len(outside))
     for k, i in enumerate(outside):
         sign_date[i] = K.WINDOW_OPEN + dt.timedelta(days=int(off[k]))
     S.sign_date = sign_date
@@ -154,16 +179,19 @@ def shape(w):
     pick.sort()
     S.corrected = {}
     corr = []
-    cdays = _bus_days(K.RETURNS_OPEN + dt.timedelta(days=7), K.CORRECTIONS_CLOSE)
+    cdays = _bus_days(K.RETURNS_OPEN + dt.timedelta(days=3), K.CORRECTIONS_CLOSE)
+    lag = r.integers(1, 5, size=len(pick))
     for k, i in enumerate(pick):
         new = movable[S.code[i]]
         S.corrected[int(i)] = new
+        got = dt.date(*(int(x) for x in S.return_utc[i][:10].split("-")))
+        later = [d for d in cdays if d > got]
+        when = later[min(int(lag[k]) - 1, len(later) - 1)] if later else cdays[-1]
         corr.append(dict(
             correction_id="Q-%s-%04d" % (K.COUNTY_CODES[S.county[i]], 1 + k),
             county_code=K.COUNTY_CODES[S.county[i]], circulator_reg_no=S.circ[i],
             sheet_no=int(S.sheet_no[i]), line_no=int(S.line_no[i]),
-            prior=S.code[i], new=new,
-            corrected_on=cdays[min(len(cdays) - 1, 3 + (k * 7) % (len(cdays) - 3))],
+            prior=S.code[i], new=new, corrected_on=when,
             query_code=QUERY_CODES[(k + S.county[i]) % len(QUERY_CODES)]))
     S.corrections = corr
     S.code_current = np.array([S.corrected.get(i, S.code[i]) for i in range(nS)], dtype=object)
@@ -172,6 +200,8 @@ def shape(w):
     S.n_sheets = K.SHEETS
     rej = _rejected(w, r)
     S.rejected = rej
+    S.bundle_label = dict(zip(range(1, w.n_bundles + 1), receipt_numbers(w, w.n_bundles)))
+    S.bundle_staff = dict(zip(range(1, w.n_bundles + 1), receipt_staff(w, w.n_bundles)))
     return S
 
 
@@ -264,8 +294,12 @@ def _snapshot(w, S, when, late):
         elif shown_cancel and shown_restore:
             cdate = K.iso(day_of(cancel))
             creason = CANCEL_REASON[reason]
-        last = max([regday] + ([cancel] if shown_cancel else []) + ([restore] if shown_restore else []))
-        stamp = dt.datetime.combine(day_of(last), dt.time(8 + (v % 9), (v // 7) % 60))
+        if regday > cut:
+            continue        # the registration did not exist when this snapshot was taken
+        touch = int(w.signer_touched[s])
+        last = max([regday] + ([touch] if touch <= cut else [])
+                   + ([cancel] if shown_cancel else []) + ([restore] if shown_restore else []))
+        stamp = dt.datetime.combine(day_of(last), dt.time(7 + (v % 11), (v // 7) % 60))
         reg = day_of(restore) if shown_restore else day_of(regday)
         out.append(dict(snapshot_date=K.iso(when), voter_reg_id=v, county_code=cc,
                         registration_status=status, registration_date=K.iso(reg),
@@ -273,6 +307,7 @@ def _snapshot(w, S, when, late):
                         cancellation_reason=creason,
                         precinct_code="%s-%03d" % (cc, 1 + int(K.token("prec", v, n=3,
                                                                        alphabet="0123456789"), 10) % 240)))
+    out.sort(key=lambda d: (d["county_code"], d["precinct_code"], d["voter_reg_id"]))
     return out
 
 
@@ -283,7 +318,8 @@ def snapshot_rows(w, S, late):
 def sheet_rows(w, S):
     rej = {(d["firm"], d["seq"]) for d in S.rejected}
     for s in range(K.SHEETS):
-        yield dict(sheet_serial="S%06d" % int(w.sheet_serial[s]), bundle_id="B%04d" % int(w.sheet_bundle[s]),
+        yield dict(sheet_serial="S%06d" % int(w.sheet_serial[s]),
+                   bundle_id=S.bundle_label[int(w.sheet_bundle[s])],
                    receipt_date=K.iso(K.FILED if int(w.sheet_bundle[s]) % 2 else K.RECEIPT_CLOSED),
                    circulator_reg_no=w.sheet_circ[s],
                    sheet_no=int(w.sheet_no[s]), signature_lines=int(w.sheet_lines[s]),
@@ -303,12 +339,12 @@ def receipt_rows(w, S):
         lines = int(w.sheet_lines[ix].sum())
         rj = rej_by_bundle.get(b, [])
         day = K.FILED if b % 2 else K.RECEIPT_CLOSED
-        yield dict(bundle_id="B%04d" % b, received_date=K.iso(day),
+        yield dict(bundle_id=S.bundle_label[b], received_date=K.iso(day),
                    received_utc=K.utc_stamp(dt.datetime.combine(day, dt.time(8 + (b % 9), (b * 17) % 60))),
                    sheets_presented=acc + len(rj), sheets_accepted=acc,
                    sheets_rejected=len(rj), signature_lines_accepted=lines,
                    rejection_code=(WITHDRAWN_REASON if rj else ""),
-                   receipted_by="ELEC-%02d" % (1 + b % 6))
+                   receipted_by=S.bundle_staff[b])
 
 
 def manifest_rows(w, S):
@@ -335,7 +371,7 @@ def manifest_rows(w, S):
         k += 1
         yield dict(manifest_no="M-%s-%03d" % (code, k), firm_name=shown, firm_registration_no=regno,
                    delivered_date=K.iso(day), sheets_submitted=sheets, signatures_claimed=lines,
-                   office_bundle_ref="B%04d" % b)
+                   office_bundle_ref=S.bundle_label[b])
 
 
 def _firm_name_on(fi, when):
@@ -416,14 +452,18 @@ def other_rows(w, S):
     solution never reads it."""
     r = K.rng("other", seed=w.seed)
     n = 512
+    at = 38_402
+    staff = receipt_staff(w, n)
     for b in range(1, n + 1):
+        at += int(r.integers(1, 5))
         firm = K.FIRMS[int(r.integers(0, len(K.FIRMS)))][0]
         acc = int(r.integers(38, 58))
         lines = int(acc * 15 - r.integers(0, 42))
         pres = acc + (1 if r.random() < 0.04 else 0)
-        yield dict(bundle_id="C%04d" % b, received_date=K.iso(dt.date(2028, 7, 3) + dt.timedelta(days=b % 3)),
+        yield dict(bundle_id="B%05d" % at,
+                   received_date=K.iso(dt.date(2028, 7, 3) + dt.timedelta(days=b % 3)),
                    firm_code=firm, sheets_presented=pres, sheets_accepted=acc,
-                   signature_lines_accepted=lines, receipted_by="ELEC-%02d" % (1 + b % 6))
+                   signature_lines_accepted=lines, receipted_by=staff[b - 1])
 
 
 def regstats_rows(w, S):

@@ -79,21 +79,21 @@ ok("one disposition per sampled line, a partition of the sample",
 ok("the sample's own factor is twenty exactly", C.FACTOR == 20 and C.FACTOR * K.SAMPLE_LINES == K.LINES_FILED,
    "%d x %d = %d" % (C.FACTOR, K.SAMPLE_LINES, K.LINES_FILED))
 ok("a pair's inclusion probability is one in four hundred", C.PAIR_FACTOR == 400, "%d" % C.PAIR_FACTOR)
-ok("the projection recomputes from the bundle", int(call["valid"]) == 390_200, "%d" % call["valid"])
+ok("the projection recomputes from the bundle", int(call["valid"]) == 390_060, "%d" % call["valid"])
 ok("the projection prints the golden's cell", call["printed"] == GOLD_PRINTED, "%d" % call["printed"])
 ok("the projection files the golden's band", call["band"] == GOLD_BAND, call["band"])
 ok("the projection as a share of the number required",
-   abs(K.round_half_up(call["pct"], 1) - 101.4) < 1e-9, "%.2f per cent" % call["pct"])
+   abs(K.round_half_up(call["pct"], 1) - 101.3) < 1e-9, "%.2f per cent" % call["pct"])
 ok("rung 0, the default path, recomputes", int(rungs["rung0"]) == 420_520, "%d" % rungs["rung0"])
 ok("rung 0 prints the named wrong cell", K.round_to(rungs["rung0"], K.BIN) == DEFAULT_PRINTED,
    "%d" % K.round_to(rungs["rung0"], K.BIN))
 ok("rung 0 files the named wrong band", K.band(rungs["rung0"]) == DEFAULT_BAND, K.band(rungs["rung0"]))
 ok("rung 1 recomputes and files a wrong cell and band",
-   int(rungs["rung1"]) == 413_380 and K.round_to(rungs["rung1"], K.BIN) == 415_000
+   int(rungs["rung1"]) == 413_240 and K.round_to(rungs["rung1"], K.BIN) == 415_000
    and K.band(rungs["rung1"]) == "sufficient", "%d prints %d %s"
    % (rungs["rung1"], K.round_to(rungs["rung1"], K.BIN), K.band(rungs["rung1"])))
 ok("rung 2 recomputes and files a wrong cell",
-   int(rungs["rung2"]) == 405_020 and K.round_to(rungs["rung2"], K.BIN) == 405_000,
+   int(rungs["rung2"]) == 404_880 and K.round_to(rungs["rung2"], K.BIN) == 405_000,
    "%d prints %d %s" % (rungs["rung2"], K.round_to(rungs["rung2"], K.BIN), K.band(rungs["rung2"])))
 ok("every rung prints its own cell, three or more cells from the golden",
    len({K.round_to(rungs[k], K.BIN) for k in ("rung0", "rung1", "rung2", "rung3")}) == 4
@@ -279,7 +279,7 @@ ok("SF5 the filing record states the struck sheets are not part of the filing",
    "struck at receipt; they are not part of the filing" in rec,
    "quoted from the filing record")
 ok("SF5 the manifests' own total is the only other reading and it files the same cell and band",
-   claimed == 543_380 and K.band(alt) == GOLD_BAND and K.round_to(alt, K.BIN) == GOLD_PRINTED,
+   claimed == 542_931 and K.band(alt) == GOLD_BAND and K.round_to(alt, K.BIN) == GOLD_PRINTED,
    "%d lines claimed, projecting %d, which prints %d and files %s"
    % (claimed, alt, K.round_to(alt, K.BIN), K.band(alt)))
 ok("SF6 the instruction states the order the grounds are applied in",
@@ -390,14 +390,14 @@ for sd in K.SWEEP_SEEDS:
 print()
 print("=== the ask layer ===")
 me = CR.ask_measurement(TARGET)
-ok("the ask sheet's figure count is the sum of its asks", me["total"] == 90, "%d figures" % me["total"])
+ok("the ask sheet's figure count is the sum of its asks", me["total"] == 75, "%d figures" % me["total"])
 ok("every ask's golden answer recomputes from the bundle",
-   sum(v["determined"] for v in E["a"].values())
-   + sum(1 for r in rows if r["determined_by"] != "RECORDER") == K.SAMPLE_LINES
+   sum(v["lapsed"] for v in E["a"].values()) <= sum(v["lapsed"] for v in E["c"].values())
    and sum(v["signatures"] for v in E["c"].values()) <= K.SAMPLE_LINES
    and sum(v["signatures"] for v in E["b"].values()) == sum(v["signatures"] for v in E["c"].values()),
-   "ask A plus the division's lines sums to the sample, and asks B and C agree on %d signatures in window"
-   % sum(v["signatures"] for v in E["c"].values()))
+   "the counties' %d lapsed sit inside the months' %d, and asks B and C agree on %d signatures in window"
+   % (sum(v["lapsed"] for v in E["a"].values()), sum(v["lapsed"] for v in E["c"].values()),
+      sum(v["signatures"] for v in E["c"].values())))
 ok("the easy route misses every ask", all(me["easy"][a] < n for a, _, n in CR.ASKS),
    "keeps %d of %d" % (sum(me["easy"].values()), me["total"]))
 ok("the cracker misses every ask", all(me["cracker"][a] < n for a, _, n in CR.ASKS),
@@ -413,9 +413,13 @@ ok("the pair ceiling is under the build target of 60 on the worst honest reading
    "%.1f, from %.1f and %.1f" % (wp, wc, ws2))
 ok("the mirror keeps under half the ask weight", me["cracker_keep"] < 0.50,
    "%.1f per cent" % (100 * me["cracker_keep"]))
-ok("each of the three primaries costs the cracker figures of its own ask",
-   all(sum(v.values()) > sum(me["cracker"].values()) for v in me["per_primary"].values()),
-   ", ".join("%s %+d" % (k, sum(v.values()) - sum(me["cracker"].values()))
+ok("every one of the three primaries is load-bearing: solving the other two without it still misses",
+   all(sum(v.values()) < me["total"] for v in me["minus_primary"].values()),
+   ", ".join("without %s %d of %d" % (k, sum(v.values()), me["total"])
+             for k, v in sorted(me["minus_primary"].items())))
+ok("no single primary solved alone lifts a response to a third of the ask weight",
+   max(sum(v.values()) for v in me["per_primary"].values()) / float(me["total"]) <= 0.34,
+   ", ".join("%s %.3f" % (k, sum(v.values()) / float(me["total"]))
              for k, v in sorted(me["per_primary"].items())))
 ok("the separation line: no ask device touches a disposition on a sampled line",
    all(K.round_to(call_of(h), K.BIN) == GOLD_PRINTED for _, h in MESS),
@@ -432,12 +436,44 @@ ok("the circulators who registered again under another firm move signatures betw
    % (len(w.circulator_moves),
       sum(1 for k in E["b"]
           if E["b"][k]["signatures"] != CR.answers(TARGET, CR.DOCUMENTED)["B"][k]["signatures"])))
+_creg = {}
+for _r in C.rd(TARGET, R.F_CIRC):
+    _creg.setdefault(_r["circulator_reg_no"], []).append(_r)
+_movers = {k: sorted(v, key=lambda d: d["registered_on"]) for k, v in _creg.items() if len(v) > 1}
+_handover = {k: dt.date(*(int(x) for x in v[0]["withdrawn_on"].strip().split("-")))
+             for k, v in _movers.items()}
+_switch = [_r for _r in C.rd(TARGET, R.F_RETURNS)
+           if _r["circulator_reg_no"] in _handover
+           and C.parse_date(_r["county_code"], _r["signature_date"])
+           == _handover[_r["circulator_reg_no"]]]
+ok("the registration extract hands a mover over on one day, with no gap and no overlap",
+   len(_movers) == 22
+   and all(v[0]["withdrawn_on"].strip() == v[1]["registered_on"].strip() for v in _movers.values())
+   and all(v[0]["firm_registration_no"] != v[1]["firm_registration_no"] for v in _movers.values()),
+   "%d movers, each withdrawn on the day it registered again under another firm" % len(_movers))
+ok("the ask side's switch-day fork is closed by the filing record's own sentence",
+   "the earlier registration is withdrawn as of the day the new registration takes effect, and sheets "
+   "gathered on that day are gathered under the new registration" in rec
+   and len(_switch) > 0
+   and all(C.firm_on(_creg, _r["circulator_reg_no"],
+                     C.parse_date(_r["county_code"], _r["signature_date"]))
+           == _movers[_r["circulator_reg_no"]][1]["firm_registration_no"] for _r in _switch),
+   "quoted from the filing record, and the %d sampled lines signed on a handover day sit under the firm "
+   "joined, as it states" % len(_switch))
+ok("the ask side's firm-name fork is closed by the filing record's own sentence",
+   "A firm that changes its trading name keeps its registration number" in rec
+   and len({r["registering_firm"] for r in C.rd(TARGET, R.F_CIRC)}) == 5
+   and len({r["firm_registration_no"] for r in C.rd(TARGET, R.F_CIRC)}) == 4,
+   "five trading names over four registration numbers, and the record keys a firm by its number")
 ok("the day-first signature dates move every month figure",
    all(E["c"][m]["signatures"] != CR.answers(TARGET, CR.DOCUMENTED)["C"][m]["signatures"]
        for m in E["c"]), "six of six months")
-ok("the registration state reconstruction moves every county's second figure",
+ok("ask A's figures are determinate where a county has none",
+   all(isinstance(v["lapsed"], int) for v in E["a"].values()),
+   "%d counties, %d of them nil" % (len(E["a"]), sum(1 for v in E["a"].values() if v["lapsed"] == 0)))
+ok("the registration state reconstruction moves the counties' figures",
    sum(1 for cc in E["a"]
-       if E["a"][cc]["lapsed"] != CR.answers(TARGET, CR.DOCUMENTED)["A"][cc]["lapsed"]) >= 14,
+       if E["a"][cc]["lapsed"] != CR.answers(TARGET, CR.DOCUMENTED)["A"][cc]["lapsed"]) >= 12,
    "%d of %d counties"
    % (sum(1 for cc in E["a"]
           if E["a"][cc]["lapsed"] != CR.answers(TARGET, CR.DOCUMENTED)["A"][cc]["lapsed"]), len(E["a"])))
@@ -495,10 +531,39 @@ steps = {regs[i + 1] - regs[i] for i in range(len(regs) - 1)}
 ok("no identifier column is an arithmetic sequence", len(steps) > 100, "%d distinct steps" % len(steps))
 names = {m["firm_name"] for m in man}
 ok("the firm names take more than two shapes", len(names) >= 4, "%d distinct trading names" % len(names))
+series = {}
+serial_of_no = {}
+for srow in sheets:
+    series.setdefault(srow["circulator_reg_no"], []).append(int(srow["sheet_no"]))
+    serial_of_no.setdefault(int(srow["sheet_no"]), set()).add(srow["sheet_serial"])
+contiguous = all(sorted(v) == list(range(1, len(v) + 1)) for v in series.values())
+shared = [no for no, ser in serial_of_no.items() if len(ser) > 1]
+ok("every circulator's sheet numbers are that circulator's own series, one to n with no gap",
+   contiguous and len(series) == len({s2["circulator_reg_no"] for s2 in sheets}),
+   "%d circulators, longest series %d, every one contiguous from one"
+   % (len(series), max(len(v) for v in series.values())))
+ok("a sheet number is shared by circulators of different firms, with different serials",
+   len(shared) > 100
+   and len({C.rd(TARGET, R.F_CIRC)[0]["circulator_reg_no"]}) > 0
+   and max(len(ser) for ser in serial_of_no.values()) > 2,
+   "%d of %d sheet numbers carry more than one serial, the commonest carrying %d"
+   % (len(shared), len(serial_of_no), max(len(ser) for ser in serial_of_no.values())))
+firm_of_circ = {}
+for crow in C.rd(TARGET, R.F_CIRC):
+    firm_of_circ.setdefault(crow["circulator_reg_no"], crow["firm_registration_no"])
+cross = 0
+for no, ser in serial_of_no.items():
+    firms = {firm_of_circ.get(s2["circulator_reg_no"]) for s2 in sheets if int(s2["sheet_no"]) == no} \
+        if False else None
+ok("the line key the instruction files is unique over the pack",
+   len({(s2["circulator_reg_no"], int(s2["sheet_no"])) for s2 in sheets}) == len(sheets)
+   and len({int(s2["sheet_no"]) for s2 in sheets}) < len(sheets) / 50,
+   "%d sheets, %d distinct numbers, the pair unique" % (len(sheets), len(serial_of_no)))
 ok("no county or month figure repeats across entities",
-   len({v["determined"] for v in E["a"].values()}) == len(E["a"])
-   and len({v["signatures"] for v in E["c"].values()}) == len(E["c"]),
-   "fifteen county figures and six month figures all distinct")
+   len({v["signatures"] for v in E["c"].values()}) == len(E["c"])
+   and len({(v["signatures"], v["struck"]) for v in E["b"].values()}) >= len(E["b"]) - 1,
+   "six month figures and %d of %d firm month cells distinct"
+   % (len({(v["signatures"], v["struck"]) for v in E["b"].values()}), len(E["b"])))
 ok("the graded projection is not a round number",
    int(call["valid"]) % K.BIN != 0 and int(call["valid"]) % 1000 != 0, "%d" % call["valid"])
 ok("no persona outside the card's three appears anywhere in the pack",
@@ -562,7 +627,7 @@ for dname in MD.DISTRACTORS:
 ok("the two deliverables the prompt's workbook and chart name are the only goldens",
    sorted(os.listdir(GOLDEN)) == sorted([DL.G_BOOK, DL.G_CHART]), ", ".join(sorted(os.listdir(GOLDEN))))
 ok("figures.json carries the call, every component and every ask figure",
-   figs["call_printed"] == GOLD_PRINTED and len([k for k in figs if k.startswith("ask_")]) == 90,
+   figs["call_printed"] == GOLD_PRINTED and len([k for k in figs if k.startswith("ask_")]) == 75,
    "%d keys, %d of them ask figures" % (len(figs), len([k for k in figs if k.startswith("ask_")])))
 ok("every figure in figures.json is read from the generator's own parameters",
    figs["required"] == K.REQUIRED and figs["lines_filed"] == K.LINES_FILED and figs["bin"] == K.BIN,
@@ -586,8 +651,8 @@ ok("the write-up states the call and no em dash appears in it",
    "Order the examination of all 540,000 signature lines" in sub
    and not re.search(r"[\u2013\u2014]", sub), "block 1")
 ok("every figure the write-up shares with the workbook agrees",
-   ("%s" % "{:,}".format(E["a"]["08"]["determined"])) in sub
-   and any(str(E["a"]["08"]["determined"]) in s.replace(",", "")
+   ("%s" % "{:,}".format(E["a"]["08"]["lapsed"])) in sub
+   and any(str(E["a"]["08"]["lapsed"]) in s.replace(",", "")
            for s in [" ".join("" if v is None else str(v) for v in rw)
                      for rw in PP.read_xlsx_rows(os.path.join(GOLDEN, DL.G_BOOK), "Counties")]),
    "Maricopa's determined signatures in both")

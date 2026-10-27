@@ -4,8 +4,8 @@
  "status": "BUILD",
  "domain": "political-science-public-policy/election-polling-forecasting (architecture 2; world: an Arizona state elections division projecting a filed initiative petition from the statutory five per cent random sample)",
  "objective": "forecasting",
- "stage": 3,
- "stage_name": "build",
+ "stage": 4,
+ "stage_name": "check",
  "updated": "2026-10-27",
  "stump": "A competent solver projects the statutory five per cent sample by multiplying its valid lines by twenty, files 420,520 printing 420,000 at 109.3 per cent of the 384,924 required, reads the petition sufficient and puts the measure on the ballot; the step that lands them there is scaling a duplicate strike at the sample's own factor of twenty, when a duplicate is a property of a PAIR of lines and a five per cent sample catches a pair only with probability one in four hundred, so the golden projects 390,200, prints 390,000, and orders the examination of all 540,000 lines filed.",
  "architecture": 2,
@@ -15,8 +15,8 @@
   "date": "2026-10-27"
  },
  "leak": {
-  "leak_py": "REVIEW, no LEAK, sweeps 9 and 11 clean at as-of 2028-08-04",
-  "reader": ""
+  "leak_py": "REVIEW, no LEAK at as-of 2028-08-04 (the one LEAK string in the report is its own legend line, checked)",
+  "reader": "read once at stage 4 on the pre-fix pack: question 1 nothing, question 6 an analytical choice, no ranking file, no answer figure. Its findings are closed in the fix pass; not re-read, because the documents that changed are the filing record's new Circulator registrations section and the rewritten prompt, both of which the re-judge reads literally."
  },
  "duplicate_check": {
   "heart": "WARN, no BLOCK, nearest driver 0.09 (task445 v1): overuse.org_family government_agency, repeat.deliverables png+xlsx against task144, repeat.question_form how-many against task464",
@@ -24,9 +24,9 @@
   "nearest": "9 pairs promoted of 297 in scope, all at surface 0.100 to 0.104 against a corpus 99th percentile of 0.100, and all promoted on card axes rather than mechanism: same decisive gap, same decision type or same context-artifact type against task134, task448, task179, task150 and others. To be adjudicated a line each in the design note before the ship. The screen reads this build as delivered 10-17, which is architecture 1's record, so its severities read one level high."
  },
  "judge": {
-  "verdict": "DETERMINISTIC on the main call",
-  "disposition": "FIX_NOW on the supplementary block",
-  "report": "verdict at /tmp/determinism-check-task157-20261027T103828/verdict.md, report owed at task157/determinism_check_report_pass2.md"
+  "verdict": "pass 1 DETERMINISTIC on the main call",
+  "disposition": "FIX_NOW on the supplementary block, closed in one generator pass",
+  "report": "task157/determinism_check_report_pass2.md owed from the re-judge; architecture 1's report is renamed determinism_check_report_architecture1.md"
  },
  "returned": [
   {
@@ -45,7 +45,7 @@
    "commit": "5826c528"
   }
  ],
- "resume": "Stage 4 is read and the fix pass is dispatched to the build thread in one pass. The judge returned DETERMINISTIC on the main call: it recomputed 390,200 printing 390,000, 101.4 per cent of 384,924, inside the band, full count, and tested nine licensed constructions of the projection. Every reading that keeps the 1-in-400 duplicate factor prints 390,000, the cell moving only if the duplicate count reaches 68 or falls to 55 against a widest reading of 67; the easy route files 413,380 printing 415,000 and qualifies, so the trap is measured. Gate G estimator_choice, Gate H all pass. The FIX_NOW is entirely supplementary and the main call, the projection and the data are frozen: the per-disposition-code ask is missing from the answers and the workbook, the per-month ask gives sheet serials where the prompt asks for the registered-when-signed-and-no-longer-valid counts (25, 65, 115, 117, 136, 98 and 2 in December 2027, 558 in all), the month range is unpinned against 2027-10 to 2027-12 rows in the bundle, and four ask-side forks need closing (nine CANCELLED rows re-registered, 558 against 549; 'no longer valid' read as disposition rather than snapshot status, 558 against 3,232; 24 switch-day circulator lines; and a firm-name variant sharing a registration number, 141 lines). Beyond the judge: I found sheet_no is a single global sequence 1 to 15,044 dealt in row order across all 329 firms, contradicting the filed sentence that sheet numbers are each firm's own series, with the checks.py assertion passing by coincidence; 27,858 of 38,080 sheets carry exactly 15 lines; and the leak read listed consecutive bundle ids, round-robin receiver ids, both snapshots at exactly 24,596 rows with monotonic ids, status_changed_utc equal to registration_date, and an identical PDF CreationDate and ModDate. Two rulings given: the 2024 close-out stays but must carry its own subject rather than read as a sample-against-full-count pointer, and the Navajo code list's disambiguation sentence is legal because an ask may turn on rule application. One number to settle: the cracker keeps 0.178 of the ask weight and a single response scores 66.4, which clears the bar of 70 and misses the build target of 60, with a pair ceiling of 44.1 on the worst honest reading against 38.3 filed for the gate; both numbers go in the ask sheet and the build thread is to say whether 60 is reachable without touching the main call.",
+ "resume": "The stage 4 FIX_NOW is closed in one generator pass and the single licensed re-judge is out. Gates re-run by me on the final build, not taken from the build thread: checks 146 of 146, verify 29 of 29 reading only the bundle, figures_check exit 0 on 96 figures with none absent, precut exit 0 on 52 checks with 0 FAIL and 0 WARN, voice-check exit 0 at 971 characters, two byte-identical rebuilds (target a619d40b90cd6b03, golden 51d6ab25bdeecdb2, target.zip 03a605c6acdecb39), heart WARN with no BLOCK, leak.py REVIEW with no LEAK. Surface is re-running on this build and its result is owed before any ship; on the pre-fix build it exited 1 on a persona false positive that is now fixed in the screen itself. What the pass moved: the global sheet sequence is gone and all 329 circulators are numbered from one over their own sheets (412 distinct numbers over 44,120 sheets, 385 of them held by more than one circulator), with the assertion rewritten to test the claim instead of passing by coincidence; the prompt is rewritten from the three asks the goldens actually carry with the month range pinned; the per-month ask carries its own second figure rather than the cut ask's sheet-serial column; the four ask-side forks are closed, two of them by sentences in the filing record asserted against the extract's rows; the query notices are spread over ten dates each after its own return; and six realism shapes are repaired. The ask layer was rebuilt to 75 figures and the worst honest single-response figure is 58.2 against 66.4 before, under the build target of 60, with the main call untouched; the note files the worse pair ceiling of 36.2 with 30.7 beside it. The projection is 390,060 unrounded, printing 390,000, 101.3 per cent of 384,924, inside the band, a full count, against an easy route of 420,520 printing 420,000 and reading sufficient. STILL OWED BEFORE SHIP: the re-judge verdict, the surface result, the nine promoted surface pairs adjudicated a line each in the note, and the standing design risk recorded in plain words (the real statute prescribes a proportional projection, which is this ladder's rung 1; nothing in the pack ships that formula and the asking sentence asks what a full count would find, but a domain expert on the portal may reach for the statute's own method).",
  "approved": null,
  "delivered": null,
  "portal": null,

@@ -61,7 +61,7 @@
    "date": "2027-12-20",
    "licence": "Constructed for this task from Arizona's own statutory scheme; no third-party material. CC0-1.0.",
    "covers": "Registration records for the identifiers the sample transmittal cites, taken from the archived statewide voter file snapshot of 20 December 2027, the last snapshot before circulation opened.",
-   "rows": 24596,
+   "rows": 24552,
    "made": "Written by task157/generator from the generator's clean truth; no third-party data."
   },
   {
@@ -79,7 +79,7 @@
    "date": "2028-07-07",
    "licence": "Constructed for this task from Arizona's own statutory scheme; no third-party material. CC0-1.0.",
    "covers": "The office's register of the petition sheets it receipted, one row per sheet, with the receipt bundle, the circulator's registration number, the firm's own sheet number and the signature lines the sheet carries.",
-   "rows": 38080,
+   "rows": 44120,
    "made": "Written by task157/generator from the generator's clean truth; no third-party data."
   },
   {
@@ -88,7 +88,7 @@
    "date": "2028-07-07",
    "licence": "Constructed for this task from Arizona's own statutory scheme; no third-party material. CC0-1.0.",
    "covers": "The office's receipt log for the filing, one row per bundle presented, with the sheets accepted, the sheets struck at receipt and the signature lines accepted.",
-   "rows": 784,
+   "rows": 905,
    "made": "Written by task157/generator from the generator's clean truth; no third-party data."
   },
   {
@@ -97,7 +97,7 @@
    "date": "2028-07-07",
    "licence": "Constructed for this task from Arizona's own statutory scheme; no third-party material. CC0-1.0.",
    "covers": "Each circulator firm's own delivery manifest for the bundles it handed over, carrying the firm's own sheet and signature counts and the trading name it filed under.",
-   "rows": 784,
+   "rows": 905,
    "made": "Written by task157/generator from the generator's clean truth; no third-party data."
   },
   {
@@ -115,7 +115,7 @@
    "date": "2028-03-14",
    "licence": "Constructed for this task from Arizona's own statutory scheme; no third-party material. CC0-1.0.",
    "covers": "The register of the statewide list-maintenance run of 14 March 2028: the registrations it cancelled and the registrations it moved to inactive.",
-   "rows": 24746,
+   "rows": 24794,
    "made": "Written by task157/generator from the generator's clean truth; no third-party data."
   },
   {

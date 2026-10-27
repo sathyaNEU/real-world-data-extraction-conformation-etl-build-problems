@@ -1,10 +1,10 @@
 # leak check, task157
 
-**Verdict: REVIEW.** 15 files read, 73 golden figures and 6 candidate names taken from submission.md, 25 stump terms taken from the design note.
+**Verdict: REVIEW.** 15 files read, 58 golden figures and 6 candidate names taken from submission.md, 25 stump terms taken from the design note.
 
 LEAK stops the ship. REVIEW is a reader's call and the /leak-check command's solver's-eye pass reads every REVIEW line. INFO is a sweep that ran and found nothing or was skipped.
 
-Stump terms swept: decisive, measured, division, inclusion, record, duplicate, asserted, registration, factor, probability, fraction, reading, architecture, forecasting, arizona, sheets, shipped, recorders, office, sentence, quantity, sampling, filing, instruction, sufficient
+Stump terms swept: decisive, measured, division, inclusion, record, duplicate, asserted, factor, probability, fraction, disposition, reading, architecture, forecasting, arizona, sheets, shipped, recorders, office, sentence, quantity, sampling, filing, instruction, sufficient
 
 ## 1 file names (REVIEW 1)
 - **REVIEW** `navajo_recorder_disposition_codes_2019.txt`: a text file in the pack: confirm it is the organisation's own record (a thread, a log, a letter) and does not describe the data
@@ -13,9 +13,9 @@ Stump terms swept: decisive, measured, division, inclusion, record, duplicate, a
 - **REVIEW** `sos_filing_and_selection_record_i18-2028.pdf`: carries 7 of 7 distinctive words of the committed call: 'Order the examination of all 540,000 signature lines filed for initiative serial I-18-2028.'
 
 ## 4 design-note vocabulary (REVIEW 3)
-- **REVIEW** `county_recorder_verification_instruction_2027.pdf`: 6 of 25 stump-paragraph terms appear (division, record, registration, arizona, recorders, instruction); read whether the document names the move
-- **REVIEW** `navajo_recorder_disposition_codes_2019.txt`: 4 of 25 stump-paragraph terms appear (record, duplicate, registration, arizona); read whether the document names the move
-- **REVIEW** `sos_filing_and_selection_record_i18-2028.pdf`: 8 of 25 stump-paragraph terms appear (division, record, registration, arizona, sheets, office); read whether the document names the move
+- **REVIEW** `county_recorder_verification_instruction_2027.pdf`: 6 of 25 stump-paragraph terms appear (division, record, disposition, arizona, recorders, instruction); read whether the document names the move
+- **REVIEW** `navajo_recorder_disposition_codes_2019.txt`: 4 of 25 stump-paragraph terms appear (record, duplicate, disposition, arizona); read whether the document names the move
+- **REVIEW** `sos_filing_and_selection_record_i18-2028.pdf`: 7 of 25 stump-paragraph terms appear (division, record, arizona, sheets, office, filing); read whether the document names the move
 
 ## 6 ranking artifacts (REVIEW 2)
 - **REVIEW** `circulator_registration_extract_i18-2028.csv`: names 4 of 6 answer-set candidates beside numbers; confirm it does not rank them on the decision question

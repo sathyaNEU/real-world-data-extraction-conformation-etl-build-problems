@@ -106,20 +106,20 @@ def write_book(path, E):
         w.freeze_panes = freeze
         return w
 
-    sheet("Counties", ["County", "County name", "Signatures the recorder determined",
-                       "Registered when signed, no longer valid"],
-          [[cc, E["a"][cc]["name"], E["a"][cc]["determined"], E["a"][cc]["lapsed"]]
-           for cc, _, _ in K.COUNTIES],
-          [9, 16, 20, 20], {3: "#,##0", 4: "#,##0"})
+    sheet("Counties", ["County", "County name",
+                       "In force when signed, cancelled in the 10 July 2028 snapshot"],
+          [[cc, E["a"][cc]["name"], E["a"][cc]["lapsed"]] for cc, _, _ in K.COUNTIES],
+          [9, 16, 30], {3: "#,##0"})
     sheet("Firm and month", ["Firm registration", "Firm", "Month", "Sampled signatures",
                              "Struck on grounds other than duplication"],
           [[regno, E["b"][(regno, m)]["firm"], m, E["b"][(regno, m)]["signatures"],
             E["b"][(regno, m)]["struck"]]
            for _, _, _, regno in K.FIRMS for m in ["%04d-%02d" % t for t in K.WINDOW_MONTHS]],
           [15, 34, 10, 18, 22], {4: "#,##0", 5: "#,##0"})
-    sheet("Circulation months", ["Month", "Sampled signatures signed", "Petition sheet serials"],
-          [[m, E["c"][m]["signatures"], E["c"][m]["sheets"]] for m in sorted(E["c"])],
-          [12, 22, 20], {2: "#,##0", 3: "#,##0"})
+    sheet("Circulation months", ["Month", "Sampled signatures signed",
+                                 "In force when signed, cancelled in the 10 July 2028 snapshot"],
+          [[m, E["c"][m]["signatures"], E["c"][m]["lapsed"]] for m in sorted(E["c"])],
+          [12, 22, 30], {2: "#,##0", 3: "#,##0"})
 
     nw = wb.create_sheet("Notes")
     notes = [
@@ -258,7 +258,6 @@ def figures(E):
         "division_determined": rg["division_dup"] + 0,
     }
     for cc, _, _ in K.COUNTIES:
-        f["ask_a_%s_determined" % cc] = E["a"][cc]["determined"]
         f["ask_a_%s_lapsed" % cc] = E["a"][cc]["lapsed"]
     for _, _, _, regno in K.FIRMS:
         for m in ["%04d-%02d" % t for t in K.WINDOW_MONTHS]:
@@ -266,9 +265,13 @@ def figures(E):
             f["ask_b_%s_%s_struck" % (regno, m)] = E["b"][(regno, m)]["struck"]
     for m in sorted(E["c"]):
         f["ask_c_%s_signatures" % m] = E["c"][m]["signatures"]
-        f["ask_c_%s_sheets" % m] = E["c"][m]["sheets"]
+        f["ask_c_%s_lapsed" % m] = E["c"][m]["lapsed"]
     f["circulator_moves"] = len(E["moves"]) if "moves" in E else 22
     f["lapsed_total"] = sum(v["lapsed"] for v in E["a"].values())
+    f["lapsed_total_months"] = sum(v["lapsed"] for v in E["c"].values())
+    f["sheets_receipted"] = K.SHEETS
+    f["sheets_presented"] = K.SHEETS_PRESENTED
+    f["sheets_struck"] = K.SHEETS_STRUCK
     return f
 
 
@@ -334,8 +337,10 @@ def submission(E):
              "cancellation dates the July snapshot carries, so a registration re-established after a "
              "cancellation stands and one cancelled after the signature does not, and counted it lost only "
              "where the snapshot's status is cancelled: %s of the signatures the recorders determined "
-             "were registered when signed and are no longer valid, %s of them in Maricopa."
-             % (n(sum(v["lapsed"] for v in E["a"].values())), n(E["a"]["08"]["lapsed"])))
+             "carry a registration in force when signed and cancelled now, %s of them in Maricopa, and %s "
+             "over the sampled lines of all six months."
+             % (n(sum(v["lapsed"] for v in E["a"].values())), n(E["a"]["08"]["lapsed"]),
+                n(sum(v["lapsed"] for v in E["c"].values()))))
     L.append("8. The projection sits between %s and %s, so the office orders the examination of all %s "
              "signature lines filed rather than certifying or rejecting the petition."
              % (n(K.BAND_LO), n(K.BAND_HI), n(K.LINES_FILED)))
@@ -347,13 +352,10 @@ def submission(E):
     L.append("1. Projected valid signatures %s to the nearest 5,000, %s per cent of the number required; "
              "statutory outcome: examine all signature lines filed."
              % (n(call["printed"]), fmt_pct(call["pct"])))
-    L.append("2. Each county, the sampled signatures its recorder returned a determination for and how many "
-             "of those were registered when they signed and are no longer shown as valid, %d counties:"
-             % len(K.COUNTIES))
+    L.append("2. Each of the fifteen counties, how many of the sampled signatures its recorder determined "
+             "carry a registration in force on the day signed and cancelled in the 10 July 2028 snapshot:")
     for cc, name, _ in K.COUNTIES:
-        b = E["a"][cc]
-        L.append("   - %s: %s signatures determined, %s no longer valid"
-                 % (name, n(b["determined"]), n(b["lapsed"])))
+        L.append("   - %s: %s" % (name, n(E["a"][cc]["lapsed"])))
     L.append("3. Each circulator firm and month, the sampled signatures gathered by circulators that firm "
              "had registered on the day they were given and how many of those were struck on a ground "
              "other than duplication, %d cells:" % (len(K.FIRMS) * len(K.WINDOW_MONTHS)))
@@ -362,12 +364,13 @@ def submission(E):
             c2 = E["b"][(regno, m)]
             L.append("   - %s, %s: %s sampled signatures, %s struck on other grounds"
                      % (name, m, n(c2["signatures"]), n(c2["struck"])))
-    L.append("4. Each month of the circulation period, the sampled signatures signed in it and the petition "
-             "sheet serials they sit on, %d months:" % len(K.WINDOW_MONTHS))
+    L.append("4. Each month from January to June 2028, the sampled signatures signed in it and how many of "
+             "those carry a registration in force on the day signed and cancelled in the 10 July 2028 "
+             "snapshot:")
     for m in sorted(E["c"]):
         d = E["c"][m]
-        L.append("   - %s: %s sampled signatures on %s sheet serials"
-                 % (m, n(d["signatures"]), n(d["sheets"])))
+        L.append("   - %s: %s sampled signatures, %s cancelled now"
+                 % (m, n(d["signatures"]), n(d["lapsed"])))
     L.append("")
     L.append("### %s" % G_CHART)
     L.append("")

@@ -1,9 +1,9 @@
 """task157 (architecture 2) constants and helpers shared by every generator module.
 
 The world: the Arizona Secretary of State's elections division holds a filed initiative petition, serial
-I-18-2028, a constitutional initiative for the 7 November 2028 general election. The committee filed 38,320
+I-18-2028, a constitutional initiative for the 7 November 2028 general election. The committee filed 44,360
 petition sheets on Thursday 6 July 2028; the office struck 240 sheets two firms had already filed and
-receipted 38,080 sheets, which carry 540,000 signature lines between them. The required number is 384,924,
+receipted the rest, which carry 540,000 signature lines between them. The required number is 384,924,
 fifteen per cent of the 2,566,154 votes cast for Governor in 2026. The office drew the statutory five per
 cent random sample of the signatures filed, 27,000 lines, on Tuesday 11 July 2028 and transmitted it to the
 fifteen county recorders, whose returns closed on Wednesday 2 August 2028. The division's own consolidation
@@ -78,8 +78,9 @@ MON3 = ["", "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct"
 UMON3 = ["", "JAN", "FEB", "MAR", "APR", "MAY", "JUN", "JUL", "AUG", "SEP", "OCT", "NOV", "DEC"]
 
 # ------------------------------------------------------------------------------------------------- statute
-SHEETS = 38_080                                 # petition sheets receipted
+SHEETS = 44_120                                 # petition sheets receipted
 SHEETS_STRUCK = 240                             # sheets two firms had already filed, struck at receipt
+SHEETS_PRESENTED = SHEETS + SHEETS_STRUCK       # what the committee handed over
 LINES_PER_SHEET = 15                            # the signature lines an Arizona petition sheet carries
 LINES_FILED = 540_000                           # signature lines filed, the office's own count on receipt
 SAMPLE_DIVISOR = 20                             # the statutory five per cent

@@ -36,7 +36,7 @@ live sections below is measured on the cut pack by `generator/cracker.py` and as
   The draw's candidate magnitudes (1,043,000 signatures filed, a three per cent sample, a 623,212 threshold
   and 95 and 110 per cent bands) are California's statute, attached to an Arizona card. Arizona samples
   **five per cent of the signatures filed** and sets the bands at **95 and 105 per cent** of the required
-  number. The world is therefore built on Arizona's: 38,080 receipted sheets carrying **540,000 signature
+  number. The world is therefore built on Arizona's: 44,120 receipted sheets carrying **540,000 signature
   lines**, a **27,000** line sample, a required number of **384,924** (fifteen per cent of the 2,566,154 votes
   cast for Governor in 2026), and bands at **365,678** and **404,170**. Nothing about the decisive step moves:
   the sample is of signature lines, so a pair's inclusion probability is the square of the sampling fraction
@@ -69,7 +69,7 @@ live sections below is measured on the cut pack by `generator/cracker.py` and as
 - **Deliverables:** `signature_projection_2028.xlsx` and `petition_disposition_2028.png`.
 - **Spine:** `county_verification_returns_2028.csv`, one row per sampled signature line and the disposition
   its recorder or the division gave it, **27,000 rows**, grain sampled signature line by county by sheet.
-  Beside it the office's own sheet register, `petition_sheet_index_2028.csv`, 38,080 rows.
+  Beside it the office's own sheet register, `petition_sheet_index_2028.csv`, 44,120 rows.
 
 ## Default path
 
@@ -81,25 +81,25 @@ The pipeline a competent analyst builds from the prompt's words and the files' g
    merged code 02 by the registration the recorder matched, and apply the division's query notices, which
    supersede the disposition first returned for the line they name.
 3. Re-derive the registration grounds from the statewide snapshot current when circulation opened, because
-   the statute asks for registration at the time of signing; that snapshot still shows 357 sampled signers
+   the statute asks for registration at the time of signing; that snapshot still shows 364 sampled signers
    as active who were cancelled in the list-maintenance run of 14 March 2028 and signed afterwards, so those
-   357 are not struck.
+   364 are not struck.
 4. Count the dispositions in the sample: 5,913 invalid on single-signature grounds and 61 struck as
    duplicates, of 27,000 sampled lines.
 5. Expand every class at the sample's own factor of twenty: single grounds 118,260, duplicates 61 times
    twenty, 1,220.
 6. Valid equals 540,000 less 118,260 less 1,220.
 
-Ends on: **420,520** valid signatures, which prints **420,000** to the nearest 5,000 and stands at 109.3 per
+Ends on: **420,520** valid signatures, which prints **420,000** to the nearest 5,000 and stands at 109.2 per
 cent of the required 384,924, above the statute's 105 per cent line, so the petition is sufficient and goes on
 the ballot.
 
-Golden: **390,200** valid signatures, which prints **390,000**, 101.4 per cent of the required number and
+Golden: **390,060** valid signatures, which prints **390,000**, 101.3 per cent of the required number and
 inside the 95 to 105 per cent band, so the examination of all 540,000 signature lines is ordered. The
 duplicate burden is 61 over one four-hundredth, **24,400**, and the single-ground burden is the recorders'
-6,270 strikes expanded at twenty, **125,400**.
+6,277 strikes expanded at twenty, **125,540**.
 
-The two graded figures are 6.06 bins of 5,000 apart and the statutory calls differ, which is the separation
+The two graded figures are 6.09 bins of 5,000 apart and the statutory calls differ, which is the separation
 architecture 1 never had: there the two figures were four bins apart and the decisive step was worth 0.58 of
 one. Every figure here is measured on the cut pack by `generator/cracker.py` and asserted in
 `generator/checks.py`.
@@ -112,7 +112,7 @@ snapshot whose run date precedes the signing window and expands every class at t
 twenty files 420,520 valid signatures and a sufficient petition that goes on the ballot; the step that lands
 them there is expanding the duplicate dispositions at the sampling fraction alongside the single-signature
 grounds, when a duplicate is a relation between two signature lines that the sample sees only where it draws
-both, so the duplicate burden is 24,400 rather than 1,220 and the projection is 390,200, which orders the
+both, so the duplicate burden is 24,400 rather than 1,220 and the projection is 390,060, which orders the
 examination of all 540,000 lines filed.
 
 ## Three rules
@@ -139,7 +139,9 @@ determinations line by line after the returns closed; sheet numbers are each fir
 identified by its circulator's registration number with its number; 182 sampled lines were determined by the
 division rather than by a recorder; 240 sheets two firms had already filed were struck at receipt and sit in
 their own manifests but not in the office's sheet register; one firm changed its trading name in April and
-kept its registration number; registrations cancelled and restored carry a cancellation date against an
+kept its registration number, so one number carries two trading names; twenty-two circulators left one firm
+for another inside the window and carry two registration rows handed over on one day; registrations cancelled
+and restored carry a cancellation date against an
 active registration; lines struck for a missing or out-of-window date carry no usable date; the returns carry
 UTC load stamps against local signing dates; two files are written with CRLF line endings. Each is written by
 the system that produces it, none is placed to be caught, and each is asserted neutral on the call in
@@ -167,12 +169,12 @@ the design.
 Analyst test: a strong analyst who reads every disposition code correctly, puts Navajo's own codes on the
 current set, applies the query notices, validates the recorders' determinations against the snapshot that
 precedes the signing window and applies the required number expands every class at the sample's own factor
-and files **420,520 valid signatures, which prints 420,000 to the nearest 5,000 and stands at 109.3 per cent
+and files **420,520 valid signatures, which prints 420,000 to the nearest 5,000 and stands at 109.2 per cent
 of the required 384,924, above the statute's 105 per cent line, so the petition is sufficient**. Executed in
 `checks.py` under R3a, on the bundle and again on the generator's clean truth.
 
 Estimand: filed at authority in the office's own filing and selection record: the number of signatures a full
-count of the filed petition would find valid, where the filed total (540,000 lines on the 38,080 sheets
+count of the filed petition would find valid, where the filed total (540,000 lines on the 44,120 sheets
 receipted), the sampling fraction (five per cent of the signature lines filed) and the number required
 (384,924) are the statute's own, and the sample is the 27,000 lines the recorders verified. It fixes the
 population, the window, the unit and the comparison, and says nothing about how any disposition class
@@ -197,8 +199,8 @@ with multiplicity, which attaches to a unit and is linear in the fraction).
 Measured, not argued: `generator/cracker.py` enumerates the reflex row from election administration's and
 sampling's own vocabulary for a sample projection and computes every route **on the cut pack**. Ten routes
 were run. **Every route that expands the duplicate class at the sampling fraction files `sufficient`**: the
-linear family lands 4.39 to 6.06 bins away, the counted-line base 4.56 and the either-line correction 4.75,
-and the capture-recapture reflex self-destructs at minus 5,506,932 valid signatures. The only two routes that
+linear family lands 4.39 to 6.09 bins away, the counted-line base 4.56 and the either-line correction 4.75,
+and the capture-recapture reflex self-destructs at minus 5,507,072 valid signatures. The only two routes that
 reach the statutory band both apply the pair's own inclusion probability, and the one that also re-derives
 registration from the July snapshot prints two cells below the golden. So the duplicate class being visible
 in the sample takes a solver to rung 1, and rung 1 is 4.64 bins wrong in the band that certifies the
@@ -207,9 +209,9 @@ petition.
 | rung | 1 filed sentence | 2 schema | 3 reflex | 4 control bench | 5 hygiene | 6 linear | 7 organ | verdict |
 |---|---|---|---|---|---|---|---|---|
 | 0 registration re-derived off the December 2027 snapshot, every class at the sample's factor (420,520) | each snapshot carries its own date | two snapshots in the pack | yes, the opponent validates the recorders' work | none | the battery finds the date overlap | yes, one join | no organ | readable |
-| 1 the recorders' dispositions as filed, every class at the sample's factor (413,380) | the record names the sample and the number required | the disposition column | yes, the opponent's default projection | none | no | yes, one ratio | no organ | readable |
-| 2 pair inclusion on the division's own strikes only, the recorders' strikes at the sample's factor (405,020) | no | the returns name who determined each line | partly, a solver that senses the pair problem | none | no | no | no organ | readable |
-| 3 (decisive) every duplicate strike at the pair's own inclusion probability (390,200) | no shipped sentence names a pair, an inclusion probability, a squared fraction or a count of signers | no column pairs two lines except the registration identifier the recorder matched, which is also what the recorder found the duplicate with | no: 10 of 10 enumerated routes land 2.24 to 6.06 bins away, measured on the cut pack | no control scores the expansion bases | the battery reaches the snapshots and the merged code, not the expansion | no: it is a different power of a number the record states once, and every route that takes the obvious ratios is measured wrong | every file is one the office keeps for its own reasons and the pack ships no reliability factor, manual or allowance | silent |
+| 1 the recorders' dispositions as filed, every class at the sample's factor (413,240) | the record names the sample and the number required | the disposition column | yes, the opponent's default projection | none | no | yes, one ratio | no organ | readable |
+| 2 pair inclusion on the division's own strikes only, the recorders' strikes at the sample's factor (404,880) | no | the returns name who determined each line | partly, a solver that senses the pair problem | none | no | no | no organ | readable |
+| 3 (decisive) every duplicate strike at the pair's own inclusion probability (390,060) | no shipped sentence names a pair, an inclusion probability, a squared fraction or a count of signers | no column pairs two lines except the registration identifier the recorder matched, which is also what the recorder found the duplicate with | no: the nine enumerated routes beside the golden land 2.02 to 6.09 bins from it, measured on the cut pack | no control scores the expansion bases | the battery reaches the snapshots and the merged code, not the expansion | no: it is a different power of a number the record states once, and every route that takes the obvious ratios is measured wrong | every file is one the office keeps for its own reasons and the pack ships no reliability factor, manual or allowance | silent |
 
 **Test 1 and this draw's exposure, answered.** The duplicate class is unavoidable and has to be, or there is
 no decisive step and Gate B fails. What test 1 asks is whether a clause names the decisive quantity, and the
@@ -243,14 +245,14 @@ happened.
 
 | id | the term or convention | the readings | ruled out by |
 |---|---|---|---|
-| SF1 | what the five per cent is five per cent of | the signature lines filed, or the sheets filed | the filing record: "a random sample of five per cent of the signature lines filed, 27,000 of the 540,000 lines receipted"; and the shipped sample is 27,000 signature lines rather than 1,904 sheets, so the sheets reading is refuted by the pack's own extent |
-| SF2 | a duplicate pair is one invalid signature or two | strike the later line, or strike both | the verification instruction: "A signature shall not be counted more than once. Where an elector's signature appears on more than one of the lines before you, count the earliest by the date signed and give each later line code DU"; measured, the both-lines reading files 412,160, a named wrong cell 4.39 bins away, and `sufficient` |
-| SF3 | which registration record places a sampled signature | the recorders' own determinations, or the snapshot current when circulation opened | the instruction: verify "against your county's registration records as they stood on the date written on the line"; C4, the December 2027 reading is rung 0, measured 1.43 bins from rung 1 and filing `sufficient` |
+| SF1 | what the five per cent is five per cent of | the signature lines filed, or the sheets filed | the filing record: "a random sample of five per cent of the signature lines filed, 27,000 of the 540,000 lines receipted"; and the shipped sample is 27,000 signature lines rather than 2,206 sheets, so the sheets reading is refuted by the pack's own extent |
+| SF2 | a duplicate pair is one invalid signature or two | strike the later line, or strike both | the verification instruction: "A signature shall not be counted more than once. Where an elector's signature appears on more than one of the lines before you, count the earliest by the date signed and give each later line code DU"; measured, the both-lines reading files 412,020, a named wrong cell 4.39 bins away, and `sufficient` |
+| SF3 | which registration record places a sampled signature | the recorders' own determinations, or the snapshot current when circulation opened | the instruction: verify "against your county's registration records as they stood on the date written on the line"; C4, the December 2027 reading is rung 0, measured 1.46 bins from rung 1 and filing `sufficient` |
 | SF4 | Navajo County's merged code 02 | folded into one ground, or split between not registered and registration cancelled | both readings are single-signature grounds that carry at the same factor, so no reading of the fold moves any projected class total or the call; asserted equal to the signature on the cut pack, and the split itself is forced by the registration the recorder matched, asserted row by row |
-| SF5 | the filed total | the 540,000 lines the office receipted, or the 543,380 the firms' own manifests claim | the filing record: "240 of those sheets were sheets already filed with this office under the same serial number and were struck at receipt; they are not part of the filing"; measured, the manifest reading projects 392,488, which prints the golden's own cell and files the same band |
+| SF5 | the filed total | the 540,000 lines the office receipted, or the 542,931 the firms' own manifests claim | the filing record: "240 of those sheets were sheets already filed with this office under the same serial number and were struck at receipt; they are not part of the filing"; measured, the manifest reading projects 392,044, which prints the golden's own cell and files the same band |
 | SF6 | the order the grounds are applied in | the instruction's order, or any other | the instruction: "Work down the table and record the first code that applies", and a sampled line carries exactly one disposition, asserted as a partition of the 27,000 lines |
-| SF7 | the rounding path | once on the projected valid total, or per disposition class then summed | the asking sentence rounds the projection to the nearest 5,000 and every other figure as a whole number; C1, both classes project to whole numbers of lines, so summing the classes and rounding the total once give the identical 390,200, asserted |
-| SF8 | the band the projection falls in | at or above 105 per cent, or above it | the filing record's own words, "more than one hundred and five per cent" and "less than ninety-five per cent", both strict; C1, the projection sits 2.79 bins inside the band at the shipped seed and no seed puts it within 2.79 bins of a boundary |
+| SF7 | the rounding path | once on the projected valid total, or per disposition class then summed | the asking sentence rounds the projection to the nearest 5,000 and every other figure as a whole number; C1, both classes project to whole numbers of lines, so summing the classes and rounding the total once give the identical 390,060, asserted |
+| SF8 | the band the projection falls in | at or above 105 per cent, or above it | the filing record's own words, "more than one hundred and five per cent" and "less than ninety-five per cent", both strict; C1, the projection sits 2.82 bins inside the band at the shipped seed and no seed puts it within 2.82 bins of a boundary |
 
 ## Ladder
 
@@ -260,27 +262,27 @@ in `## Bin measurements`.
 
 | rung | the analysis | valid | printed | band | gap to the next rung | dies to |
 |---|---|---|---|---|---|---|
-| 0 | registration re-derived off the snapshot current when circulation opened, every disposition class expanded at the sample's own factor | 420,520 | 420,000 | sufficient | 1.43 bins | each snapshot's own run date against the signing dates, and the list-maintenance run of 14 March inside the circulation window |
-| 1 | the recorders' own determinations taken as the instruction assigns them, every class still expanded at the sample's factor | 413,380 | 415,000 | sufficient | 1.67 bins | the returns are the only file at the signature line's grain, so a duplicate exists in the record only where both of a signer's lines were drawn |
-| 2 | the pair inclusion applied to the division's own strikes only, on the view that a recorder checked its whole county's share of the petition | 405,020 | 405,000 | sufficient | **2.96 bins** | the same shipped fact: no recorder was sent a line outside the sample, so no full-batch check was possible |
-| 3 (decisive) | every duplicate strike at the pair's own inclusion probability, the square of the sampling fraction | 390,200 | 390,000 | **full count** | | |
+| 0 | registration re-derived off the snapshot current when circulation opened, every disposition class expanded at the sample's own factor | 420,520 | 420,000 | sufficient | 1.46 bins | each snapshot's own run date against the signing dates, and the list-maintenance run of 14 March inside the circulation window |
+| 1 | the recorders' own determinations taken as the instruction assigns them, every class still expanded at the sample's factor | 413,240 | 415,000 | sufficient | 1.67 bins | the returns are the only file at the signature line's grain, so a duplicate exists in the record only where both of a signer's lines were drawn |
+| 2 | the pair inclusion applied to the division's own strikes only, on the view that a recorder checked its whole county's share of the petition | 404,880 | 405,000 | sufficient | **2.96 bins** | the same shipped fact: no recorder was sent a line outside the sample, so no full-batch check was possible |
+| 3 (decisive) | every duplicate strike at the pair's own inclusion probability, the square of the sampling fraction | 390,060 | 390,000 | **full count** | | |
 
 **Worth.** Computed on the graded quantity, never an intermediate. Gaps over the six seeds: rung 0 to 1 runs
-1.30 to 1.54 bins (mean 1.44), rung 1 to 2 runs 1.22 to 2.13 (mean 1.61), rung 2 to 3 runs 2.51 to 3.80 (mean
-3.07). **The decisive gap is the largest at every one of the six seeds**, and its worst value, 2.51 bins, is
-1.74 times the largest measured sum of (b) and (c). Architecture 1's decisive gap was 0.58 of a bin and the
+1.37 to 1.49 bins (mean 1.44), rung 1 to 2 runs 1.22 to 1.98 (mean 1.58), rung 2 to 3 runs 2.58 to 3.80 (mean
+3.07). **The decisive gap is the largest at every one of the six seeds**, and its worst value, 2.58 bins, is
+1.80 times the largest measured sum of (b) and (c). Architecture 1's decisive gap was 0.58 of a bin and the
 smallest in its ladder; this is the number that changed.
 
 **Position and dominance, measured and not rounded up.** The decision is a figure and a statutory band. On the
 figure, every rung prints its own cell and the nearest rung is three cells from the golden, so no rung files
 the golden's figure at any seed. On the band, all three rungs file `sufficient` at the shipped seed and rungs
 0 and 1 file `sufficient` at every one of the six seeds; **rung 2 files `sufficient` at the shipped seed with
-850 signatures to spare and falls inside the band at the other five seeds**, which is the one position claim
+710 signatures to spare and falls inside the band at the other five seeds**, which is the one position claim
 this architecture cannot make at every seed, because the golden has to sit 2.5 bins clear of both boundaries
 and rung 2 is only 2.96 bins above it. It costs nothing on the figure (rung 2 prints 405,000, three cells
 out) and it is recorded here rather than smoothed. Dominance: the golden's distance to the nearest band
-boundary is 2.79 bins at the shipped seed (3.56 mean above, 4.14 mean below), against (b) plus (c) of at most
-1.44 bins.
+boundary is 2.82 bins at the shipped seed (3.50 mean above, 4.20 mean below), against (b) plus (c) of at most
+1.43 bins.
 
 **The grid.** Every cell a partial application reaches is a named wrong answer: the December snapshot alone
 (420,000), the recorders' dispositions alone (415,000), both lines of a pair struck (410,000), the
@@ -290,9 +292,9 @@ figures in the `sufficient` band; none files the golden's cell.
 
 **Margins.** No gap under 1.15 times the printed cell at any seed: the smallest measured, 1.22 bins, is 1.22
 times it. Each rung's printed figure sits in its own cell at the shipped seed, with measured cell-edge
-distances of 1,980 for rung 0, 880 for rung 1, 2,480 for rung 2 and 2,300 for the golden. The author's stage 3
-targets were the golden within 1,500 of its cell's centre (measured **200**) and every rung at least 500 from
-its own edge (measured, worst 880, rung 1); the note's earlier wish for 1,500 on rung 1 is not reachable
+distances of 1,980 for rung 0, 740 for rung 1, 2,380 for rung 2 and 2,440 for the golden. The author's stage 3
+targets were the golden within 1,500 of its cell's centre (measured **60**) and every rung at least 500 from
+its own edge (measured, worst 740, rung 1); the note's earlier wish for 1,500 on rung 1 is not reachable
 without moving the golden off its centre, because rung 1 is the golden plus 380 times the duplicate count and
 both cannot be centred at once.
 
@@ -310,7 +312,7 @@ The 22 axes of `determinism-check` section 3, each with the reading it admits an
 | 6 | Denominator | the sampled lines, per county and per class | the filing record states the sampled count; every rate is over the sampled lines of its own cell |
 | 7 | Weighting | pooled or per county | C1, the estimator is a count over a constant the statute fixes, so every grouping gives the identical total; measured at (b) of 0.86 signatures on the cut pack and under 0.0003 bins at every seed |
 | 8 | Window length | none: no rate is measured over a look-back | not applicable today, recorded as such |
-| 9 | Boundary inclusivity | the 95 and 105 per cent band edges | the filing record's own strict words; SF8, and no seed puts the golden within 2.79 bins of a boundary |
+| 9 | Boundary inclusivity | the 95 and 105 per cent band edges | the filing record's own strict words; SF8, and no seed puts the golden within 2.82 bins of a boundary |
 | 10 | Rounding path | once at the end or per class | SF7, the asking sentence rounds the projection once and every other figure as a whole number; both paths measured identical |
 | 11 | Tie-break | none: one figure and three bands | no tie is reachable, recorded as such |
 | 12 | Maturity and censoring | the unsampled lines are never keyed | the pack's own extent: the returns are the only file carrying a line number, asserted on the shipped columns, which is what fixes the duplicate class's inclusion probability |
@@ -329,7 +331,7 @@ The 22 axes of `determinism-check` section 3, each with the reading it admits an
 
 A reader who executes the shipped sentences word for word and infers nothing the files do not carry reaches
 the golden. The filing record files the filed total, the five per cent sample, the number required and the
-three outcomes; it files 540,000 lines on the 38,080 sheets receipted and the 240 sheets struck at receipt as
+three outcomes; it files 540,000 lines on the 44,120 sheets receipted and the 240 sheets struck at receipt as
 outside the filing; the recorders' returns file one disposition per sampled line under a code table that
 ships; and no file in the pack carries a signature line outside the sample. A literal reader therefore has
 exactly one basis on which a duplicate strike could have been found, both lines of the signer drawn, and that
@@ -362,16 +364,26 @@ outcomes.
 
 ## Ask sheet
 
-Three asks, 90 separately gradable figures, 55 per cent of the rubric. Each is a component, qualifier or audit
+Three asks, 75 separately gradable figures, 55 per cent of the rubric. Each is a component, qualifier or audit
 trail of the call, each is multi-dimensional, and each carries its own **primary** device, which is a
 reconstruction over dated records that no shipped sentence states and no sweep of the hygiene battery
 performs. Unit and rounding sit inside the asking sentence: every figure is a whole number.
 
 | ask | the asking sentence's object | figures | primary device | shared hazards |
 |---|---|---|---|---|
-| A | each of the fifteen counties: the sampled signatures its recorder returned a determination for, and how many of those were registered on the day they signed and are no longer shown as valid | 30 | **the registration state at the day signed**, rebuilt from the registration date and the cancellation date the July snapshot carries, so a registration re-established after a cancellation stands and one cancelled after the signature does not, and the status column rather than the presence of a cancellation date decides what is lost now | the 182 lines the division determined; the day-first signature dates |
-| B | each circulator firm and each month of circulation: the sampled signatures gathered by circulators that firm had registered on the day given, and how many of those were struck on a ground other than duplication | 48 | **the firm as at the day signed**, rebuilt from the circulator registration extract, where twenty-two circulators registered again under another firm inside the window and a registration number therefore carries two rows with their own dates | the day-first signature dates; the firm that changed its trading name in April on one registration number; the firms' manifests, which count what they delivered |
-| C | each month of circulation: the sampled signatures signed in it, and the petition sheet serials they sit on | 12 | **the day-first signature dates**, which Mohave County's return writes as the recorder's system does, so a month-first parse silently moves signatures across every month boundary | the sheet numbers each firm printed on its own series, so a sheet is identified by its circulator's number with its own |
+| A | each of the fifteen counties: how many of the sampled signatures its recorder determined carry a registration in force on the day signed and cancelled in the 10 July 2028 snapshot | 15 | **the registration state at the day signed**, rebuilt from the registration date and the cancellation date the July snapshot carries, so a registration re-established after a cancellation stands, one cancelled after the signature was given stands too, and the status column rather than the presence of a cancellation date decides what is lost now | the 182 lines the division determined rather than a recorder; the day-first signature dates |
+| B | each of the four circulator firms and each month from January to June 2028: the sampled signatures gathered by circulators that firm had registered on the day the signature was given, and how many were struck on a ground other than duplication | 48 | **the firm as at the day signed**, rebuilt from the circulator registration extract, where twenty-two circulators registered again under another firm inside the window and a registration number therefore carries two rows with their own dates | the day-first signature dates; the firm that changed its trading name on one registration number; the firms' manifests, which count what they delivered rather than what was sampled |
+| C | each of those months: the signatures signed in it, and how many carry such a registration | 12 | **the day-first signature dates**, which Mohave County's return writes as the recorder's system does, so a month-first parse silently moves signatures across every month boundary | the registration state at the day signed again, which the second figure shares with ask A, so a response that reconstructs neither loses both figures of every month |
+
+**The two ask-side forks the stage 4 judge raised are closed by the filing record's own sentences**, which is
+the sanctioned device on this side of the build: rule 3 binds the main call's decisive step and the asks are
+free of it, so an ask may turn on a filed rule. The record's `Circulator registrations` section states that a
+circulator who moves firm is withdrawn as of the day the new registration takes effect and that sheets
+gathered on that day are gathered under the new registration, which fixes the 17 sampled lines signed on a
+handover day; and that a firm which changes its trading name keeps its registration number, which fixes the
+five trading names over four registration numbers at four firms and matches the asking sentence's "four
+circulator firms". Both are asserted in `checks.py` against the extract's own rows rather than against a
+sentence alone, and the extract hands every mover over on one day with no gap and no overlap.
 
 **The cracker sheet**, measured by code on the cut pack. The cracker lands the call, runs the hygiene battery
 (key uniqueness, exact duplicates, unmatched joins, fan-out, count ties), executes every filed rule it points
@@ -380,40 +392,44 @@ sheet key and the division's own determinations, and it meets the three primarie
 
 | ask | the cracker's route | figures it keeps of its own ask | cracker |
 |---|---|---|---|
-| A | the recorder column taken as filed and a registration counted lost wherever the snapshot's status says cancelled | 16 of 30 | miss |
-| B | the firm taken from the circulator's current registration row | 0 of 48 | miss |
+| A | the recorder column taken as filed and a registration counted lost wherever the snapshot's status says cancelled | 1 of 15 | miss |
+| B | the firm taken from the circulator's current registration row | 2 of 48 | miss |
 | C | every slash-separated signature date read month first | 0 of 12 | miss |
 
-Easy route, which also takes the documented handlings wrong: 4 of 90. Cracker: **16 of 90, 0.178 of the ask
-weight**. Solving whichever single primary is worth most as well: 35 of 90, 0.389.
+**Both numbers, labelled, because the gate carries the worse one.**
 
-Pair ceiling: 44.1
+| reading | what the response that lands the call also does | its ask keep | response 1 | response 2 | pair |
+|---|---|---|---|---|---|
+| the cracker's own keep | nothing beyond the battery and the filed rules | 3 of 75, 0.040 | 47.2 | 14.2 | 30.7 |
+| **the worst honest reading, and the gated figure** | also solves whichever single primary is worth most, the registration state at the day signed | 18 of 75, 0.240 | **58.2** | 14.2 | 36.2 |
 
-Mirror leakage: 17.8 per cent of the ask weight, the share the best response off the call keeps, against a
-bar of 50 and a target of two fifths.
+Pair ceiling: 36.2
+
+Pair ceiling on the cracker's own keep for both responses: 30.7
+
+The worse figure is in the gated field on purpose, because a green gate bought with the favourable of two
+numbers is the defect the gate exists to catch. **The single-response figure the coordinator asked about is
+58.2, under 60, and it got there without touching the main call**: what moved it was cutting ask A's count of
+each recorder's own determinations, 15 figures the cracker kept 15 of, because the verification instruction
+tells a reader how to filter them. Cutting them took the cracker's keep from 0.178 of the ask weight to
+0.040 and the worst single response from 66.4 to 58.2. Ask A keeps a population only inside its own asking
+sentence, where it is not separately graded.
+
+Easy route, which also takes the documented handlings wrong: 3 of 75. Each of the three primaries is
+load-bearing and `checks.py` asserts it: a response that solves the other two without it still misses, at 16,
+29 and 55 of 75, and no single primary solved alone reaches a third of the ask weight (0.120, 0.013, 0.240).
+
+Mirror leakage: 4.0 per cent of the ask weight, the share the best response off the call keeps, against a bar
+of 50 and a target of two fifths.
 
 Measured by: generator/cracker.py, section 4, run on the cut pack.
 
-**Which number the gate carries, stated rather than chosen.** `Pair ceiling` above is the **worst** honest
-reading: the response that lands the call also solves whichever one of the three primaries is worth most
-(0.389 of the ask weight, scoring 66.4) and the response that stops at rung 1 keeps the cracker's own share
-(0.178, scoring 21.8). On the cracker's own keep for both responses the pair is 38.3. The worse figure is in
-the gated field on purpose, because a green gate bought with the favourable of two numbers is the defect the
-gate exists to catch.
-
-**Why ask A's count of determinations is free to the cracker, and why it stays.** Sixteen of the cracker's
-sixteen kept figures are in ask A, and fifteen of them are the count of each recorder's own determinations,
-which the verification instruction tells a reader how to filter. It is kept because the asking sentence needs
-a population for the second figure and because the figure is the audit trail of the division's own
-consolidation check; it costs 0.167 of the ask weight and the layer still measures 0.178.
-
 **What was cut, and the measurement that cut it.** The ask sheet carried a fourth ask, the sampled signatures
 and sheet serials of each of the eleven disposition codes, 22 figures, and the cracker kept 22 of 22: Navajo's
-code list, the query notices and the sheet key are all documented or battery-visible, so nothing on that
-ask's path cost a careful response anything. Cutting it moved the cracker's keep from 0.348 of the ask weight
-to 0.178 and the worst reading from 72.0 to 66.4 for a single response. The conformation work it asked for is
-still in the pack and still on the call's own path, where `checks.py` asserts it neutral.
-
+code list, the query notices and the sheet key are all documented or battery-visible, so nothing on that ask's
+path cost a careful response anything. It was cut at stage 3 and the conformation work it asked for is still
+in the pack and still on the call's own path, where `checks.py` asserts it neutral. Ask A's determination
+count went the same way at this pass and for the same reason, measured rather than argued.
 ## Convergence, on the cut pack and against a rival's family
 
 Computed by `generator/cracker.py` on the shipped bundle, with the bucket each construction files. The
@@ -421,17 +437,17 @@ golden's own family is first and is **not** the evidence; the families a compete
 
 | family | construction | valid | prints | band |
 |---|---|---|---|---|
-| own | the pair inclusion at the square of the sampling fraction | 390,200 | 390,000 | full count |
-| own | the hypergeometric pair inclusion, p times (n-1)/(N-1) | 390,199 | 390,000 | full count |
-| own | the same estimator computed per county and summed | 390,200 | 390,000 | full count |
-| own | the same estimator computed per return batch and summed | 390,200 | 390,000 | full count |
-| own | two steps: the partner seen at the fraction, then expanded at the sample's factor | 390,200 | 390,000 | full count |
-| **rival** | Chao1 unseen pairs off the sample's singletons and doubletons | -5,506,932 | -5,505,000 | insufficient, self-refuting |
-| **rival** | a bootstrap over the sampled lines, 200 draws, mean | 390,070 | 390,000 | full count |
-| **rival** | the linear expansion of every disposition class | 413,380 | 415,000 | sufficient |
+| own | the pair inclusion at the square of the sampling fraction | 390,060 | 390,000 | full count |
+| own | the hypergeometric pair inclusion, p times (n-1)/(N-1) | 390,059 | 390,000 | full count |
+| own | the same estimator computed per county and summed | 390,060 | 390,000 | full count |
+| own | the same estimator computed per return batch and summed | 390,060 | 390,000 | full count |
+| own | two steps: the partner seen at the fraction, then expanded at the sample's factor | 390,060 | 390,000 | full count |
+| **rival** | Chao1 unseen pairs off the sample's singletons and doubletons | -5,507,072 | -5,505,000 | insufficient, self-refuting |
+| **rival** | a bootstrap over the sampled lines, 200 draws, mean | 389,930 | 390,000 | full count |
+| **rival** | the linear expansion of every disposition class | 413,240 | 415,000 | sufficient |
 
 **The same table at every one of the six seeds**, on the generator's clean truth, asserted in `checks.py`:
-the own family's spread is 0.72 to 1.01 signatures, the bootstrap files the golden's band at all six seeds
+the own family's spread is 0.73 to 1.00 signatures, the bootstrap files the golden's band at all six seeds
 and the linear expansion files `sufficient` at all six.
 
 **What this says and what it does not.** The golden's own family is unanimous to the unit, which is (b) of
@@ -450,19 +466,19 @@ Two runs of the harness are byte-identical.
 
 | seed | golden | rung 1 | (a) last | (b) | (c) | band clear above | band clear below | cell centre | gap 0 to 1 | gap 1 to 2 | gap 2 to 3 | all-doubles bias |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|
-| 157 | 390,200 | 413,380 | 2.96 | 0.0002 | 1.34 | 2.79 | 4.90 | 200 | 1.43 | 1.67 | 2.96 | 117 |
-| 158 | 383,140 | 408,220 | 3.80 | 0.0002 | 1.39 | 4.21 | 3.49 | 1,860 | 1.46 | 1.22 | 3.80 | 106 |
-| 159 | 388,560 | 409,460 | 2.58 | 0.0002 | 1.29 | 3.12 | 4.58 | 1,440 | 1.30 | 1.60 | 2.58 | 107 |
-| 160 | 389,080 | 408,460 | 2.51 | 0.0001 | 1.25 | 3.02 | 4.68 | 920 | 1.54 | 1.37 | 2.51 | 110 |
-| 161 | 381,260 | 408,620 | 3.80 | 0.0002 | 1.44 | 4.58 | 3.12 | 1,260 | 1.52 | 1.67 | 3.80 | 114 |
-| 162 | 385,960 | 410,280 | 2.74 | 0.0002 | 1.37 | 3.64 | 4.06 | 960 | 1.36 | 2.13 | 2.74 | 106 |
-| mean | 386,367 | 409,737 | 3.07 | 0.0002 | 1.35 | 3.56 | 4.14 | | 1.44 | 1.61 | 3.07 | 110 |
+| 157 | 390,060 | 413,240 | 2.96 | 0.0002 | 1.34 | 2.82 | 4.88 | 60 | 1.46 | 1.67 | 2.96 | 118 |
+| 158 | 383,540 | 408,620 | 3.80 | 0.0002 | 1.39 | 4.13 | 3.57 | 1,460 | 1.41 | 1.22 | 3.80 | 106 |
+| 159 | 388,240 | 409,140 | 2.58 | 0.0002 | 1.29 | 3.19 | 4.51 | 1,760 | 1.37 | 1.60 | 2.58 | 108 |
+| 160 | 389,740 | 409,500 | 2.58 | 0.0001 | 1.26 | 2.89 | 4.81 | 260 | 1.49 | 1.37 | 2.58 | 108 |
+| 161 | 381,840 | 408,820 | 3.72 | 0.0002 | 1.43 | 4.47 | 3.23 | 1,840 | 1.49 | 1.67 | 3.72 | 114 |
+| 162 | 386,600 | 410,160 | 2.74 | 0.0002 | 1.35 | 3.51 | 4.18 | 1,600 | 1.41 | 1.98 | 2.74 | 106 |
+| mean | 386,670 | 409,913 | 3.07 | 0.0002 | 1.34 | 3.50 | 4.20 | | 1.44 | 1.58 | 3.07 | 110 |
 
 **(a), two readings, both reported.** The decisive step's full worth, the distance from the route that takes
-every other step right to the golden, is 4.64 bins on the shipped pack and 4.52 at the mean. Its worth at the
-last rung, the distance from rung 2 to the golden, is 2.51 to 3.80 bins, mean 3.07. The conservative reading
-is the second, and it is the one the law is read against: **2.51 bins at worst against (b) plus (c) of at most
-1.44, a factor of 1.74**, and the largest gap in the ladder at every seed.
+every other step right to the golden, is 4.64 bins on the shipped pack and 4.65 at the mean. Its worth at the
+last rung, the distance from rung 2 to the golden, is 2.58 to 3.80 bins, mean 3.07. The conservative reading
+is the second, and it is the one the law is read against: **2.58 bins at worst against (b) plus (c) of at most
+1.43, a factor of 1.80**, and the largest gap in the ladder at every seed.
 
 **(b) is 0.0002 bins at every seed, and it is tested rather than asserted.** Five constructions of the
 estimator, the squared fraction, the hypergeometric pair inclusion, the per-county grouping, the per-batch
@@ -471,58 +487,69 @@ a constant the statute fixes: there is no fitted parameter, no window, no band w
 and no grouping for a solver to choose. The hypergeometric construction differs from the squared fraction by
 one signature. The one thing that could open this family is signers who signed three or more times, because
 the all-doubles expansion then overstates by one minus the sampling fraction per registered triple signer:
-**measured at 106 to 117 signatures, 0.021 to 0.023 bins, at every seed**, against 150 triple signers and
+**measured at 106 to 118 signatures, 0.021 to 0.024 bins, at every seed**, against 150 triple signers and
 34,000 double signers. That bound is a construction constraint, not an observation: swept to a five per cent
 triple share among multi-signers the all-doubles estimator is biased 0.59 bins and the multiplicity mix is
 not identified from the sample at all, which would be a Gate B failure. The generator therefore draws
 multiplicity near binary and `checks.py` asserts the bias under 0.05 bins at every seed.
 
-**(c) is 1.25 to 1.44 bins, mean 1.35**, read under the refinement filed in `determinism-check`: the
+**(c) is 1.26 to 1.43 bins, mean 1.34**, read under the refinement filed in `determinism-check`: the
 estimator has no free parameter, so every solver computing it files the same figure to the unit and the
 interval is the quantity's honest uncertainty rather than a fork. It is reported because it sets how much of
 the bin the ladder may not use.
 
 **The stage 3 pin, and what it cost.** The author's three targets are met and measured: the golden sits
-**200** signatures from its cell's centre at the shipped seed (target 1,500), and **both band clearances are
-at or above 2.5 bins at every one of the six seeds**, the worst being 2.79 (target 2.5), where the design
+**60** signatures from its cell's centre at the shipped seed (target 1,500), and **both band clearances are
+at or above 2.5 bins at every one of the six seeds**, the worst being 2.82 (target 2.5), where the design
 stage measured 1.91 at seed 162 against a sampling interval of 1.82. The pin is the campaign's own
 parameters, not a wider bin: the double-signer count, the single-ground rates and the share of the March
 cancellations that fall after their signers' signing dates. What it cost is the decisive step's absolute
 worth, which fell from a design-stage 6.99 bins to a measured 4.64 on the shipped pack, because centring the
 golden inside a band 7.70 bins wide with 5.0 of it reserved for clearance caps the duplicate burden the world
-can carry. The law still holds at every seed with a factor of 1.74, and the decisive gap is still the largest
+can carry. The law still holds at every seed with a factor of 1.80, and the decisive gap is still the largest
 in the ladder at every seed.
 
 **What the arithmetic will not give, recorded rather than smoothed.** Rung 2 cannot be held outside the
 statutory band at all six seeds while the golden is held 2.5 bins clear of both boundaries: rung 2 is the
-golden plus 0.62 of the duplicate burden, so pushing it past the upper line needs a burden the position target
+golden plus 0.64 of the duplicate burden, so pushing it past the upper line needs a burden the position target
 forbids. Sixty parameter sets were measured over the six seeds and none met both. The shipped seed keeps rung
-2 outside the band by 850 signatures; the other five put it inside, with its figure three cells from the
+2 outside the band by 710 signatures; the other five put it inside, with its figure three cells from the
 golden's at every seed. The author's stated targets were taken as primary and this is the claim that gave
 way.
 
 ## Pre-ship check
 
-- Generator checks: **138 run, 0 failed**. Independent verifier (pandas, bundle only, no generator import):
-  **29 run, 0 failed**.
-- Two consecutive builds byte-identical on `target/`, `golden/`, `figures.json` and `submission.md`.
-- `figures_check.py`: **112 figures in blocks 1 to 4, 0 absent** from `figures.json`, exit 0.
-- `precut.py`: **52 checks, 0 FAIL, 0 WARN**, exit 0. `voice-check.py`: PASS, 997 characters, exit 0.
-- `leak.py --asof 2028-08-04`: **REVIEW, no LEAK**. Seven REVIEW lines, each answered here. The Navajo code
-  list is that recorder's own code table, which maps codes and says nothing about them, so it is data rather
-  than a file that describes the pack. The filing record carries the seven words of the committed call
-  because the statute's third outcome is the examination of all signature lines filed, stated beside the
-  other two outcomes and with no figure of the projection anywhere in it. The three documents carry four to
-  eight of the stump paragraph's twenty-five terms, every one of them a generic institutional noun (division,
-  record, registration, arizona, sheets, office, recorders, instruction, duplicate) and not one of them a
-  pair, an inclusion probability, a squared fraction or a count of signers. The circulator extract and the
-  firms' manifests name the four firms beside registration numbers and sheet counts, and neither carries a
-  validity determination or any figure the call reads. The statutory figures the filing record must state
-  are declared under `stated_inputs` and the statute's own nouns under `field_terms` in `metadata.json`.
-- `guard.py surface`: exit 0, one BLOCK, `people.full` on **Santa Cruz**, which is one of Arizona's fifteen
-  counties and sits on the statute's own list of recorders; `Arizona Secretary` and the firm names are NOTEs
-  of the same kind. The card's `world.people` is the author's to extend; nothing in the pack can be renamed
-  to clear it, because the county list is the state's.
+Every gate below was re-run on the final build of 2026-10-27, after the stage 4 return was answered in one
+generator pass.
+
+- Generator checks: **146 run, 0 failed**, exit 0. Independent verifier (pandas, bundle only, no generator
+  import): **29 run, 0 failed**, exit 0.
+- Two consecutive builds byte-identical on `target/`, `golden/`, `figures.json` and `submission.md`;
+  `target.zip` sha256 `03a605c6acdecb39d97d465b28399eeb013be957155e0dff9aa8b7b4b9901d93` on both.
+- `figures_check.py`: **96 figures in blocks 1 to 4, 0 absent** from `figures.json`, exit 0.
+- `precut.py`: **52 checks, 0 FAIL, 0 WARN**, exit 0. `voice-check.py`: PASS, 970 characters, exit 0.
+- `leak.py --asof 2028-08-04`: **REVIEW, no LEAK**, exit 1 (the REVIEW verdict's own code). Seven REVIEW
+  lines, each answered here. The Navajo code list is that recorder's own code table, which maps codes and
+  says nothing about them, so it is data rather than a file that describes the pack. The filing record
+  carries the seven words of the committed call because the statute's third outcome is the examination of
+  all signature lines filed, stated beside the other two outcomes and with no figure of the projection
+  anywhere in it. The three documents carry four to seven of the stump paragraph's twenty-five terms, every
+  one of them a generic institutional noun (division, record, disposition, arizona, sheets, office,
+  recorders, instruction, duplicate, filing) and not one of them a pair, an inclusion probability, a squared
+  fraction or a count of signers. The circulator extract and the firms' manifests name the four firms beside
+  registration numbers and sheet counts, and neither carries a validity determination or any figure the call
+  reads. The statutory figures the filing record must state are declared under `stated_inputs` and the
+  statute's own nouns under `field_terms` in `metadata.json`.
+- `guard.py surface`: **exit 0, no BLOCK**. The persona BLOCK the screen raised on the earlier build is gone:
+  the receiving staff and the firms' contacts are drawn afresh, and the four personas the pack now carries
+  (Arizona Secretary, Philip James, Tony Lynch, Verde Petition) raise one NOTE, that `Arizona Secretary` and
+  `Verde Petition` are not on the card's `world.people`, which is the author's field to extend. The clone
+  screen's own half promotes eight pairs holding task157, six of them on surface alone at 0.101 to 0.104
+  where the corpus's 99th percentile is 0.100, one back-to-back pair with task156 on two card axes (gap
+  population, decision quantity_figure) and one with task98 v7 on gap, pattern, Gate G and calibration form,
+  which `heart` already records as differentiated and which `guard.py check` cleared at the draw. The screen
+  still reads this build as delivered on 10-17, which is architecture 1's record in `pipeline.json`, so its
+  severities are read one level high.
 - `guard.py heart`: exit 0, **WARN, no BLOCK**, nearest driver 0.09 (task445 v1), three WARNs
   (`overuse.org_family` government_agency, `repeat.deliverables` png and xlsx against task144,
   `repeat.question_form` how-many against task464) and two older-build NOTEs, each answered in `## Draw`.
@@ -530,9 +557,9 @@ way.
   after the final pull and before the push.
 - `scrub_producer_metadata.py`: `target/` and `golden/` both clean, no producer signature and no
   out-of-band timestamp.
-- Input gates: **15 files, 4 formats** (csv, pdf, txt, xlsx), largest **38,080 rows**, two declared
-  distractors, every file with source, date and licence in `metadata.json`.
-
+- Input gates: **15 files, 4 formats** (11 csv, 2 pdf, 1 xlsx, 1 txt), largest **44,120 rows**
+  (`petition_sheet_index_2028.csv`), two declared distractors in `metadata.json` and named nowhere else,
+  every file with source, date and licence.
 
 ## Tried and rejected
 
@@ -657,7 +684,55 @@ way.
   - **Floating point in the two expansion factors: removed.** The sample's factor and the pair's
     denominator are computed as integers (twenty and four hundred) because `61 / (0.05 * 0.05)` is
     24,399.999999999996 and cost a signature to rounding in the first write-up.
-
+  - **The global sheet sequence: dead, and the assertion that passed over it with it.** The instruction and
+    the filing record both file that a sheet number is the circulator's own series running from one, which
+    is what makes the line key need the circulator's registration number as well. The generator numbered
+    sheets 1 to 15,044 in one global sequence across all 329 circulators, so no circulator had a series of
+    its own and the key claim was false in the data while `checks.py` passed on it: the assertion tested
+    that some number repeated across circulators, which a global sequence satisfies by coincidence because
+    the returns carry the same number under different circulators only by accident of the draw. Each
+    circulator is now numbered from one over its own sheets in receipt order, 412 distinct numbers over
+    44,120 sheets, and the assertion tests the claim instead: every circulator's own series is one to n and
+    contiguous, and a number is shared by two circulators under different serials.
+  - **Ask A's count of each recorder's own determinations: cut, measured.** It was 15 of the sheet's 90
+    figures and the cracker kept all 15, because the verification instruction tells a reader how to filter
+    the division's lines. Cutting it took the cracker's keep from 0.178 of the ask weight to 0.040 and the
+    worst honest single response from 66.4 to 58.2, under the build target of 60, with the main call and
+    the projection untouched. The population it supplied now lives inside ask A's own asking sentence,
+    where it is not separately graded.
+  - **The per-code ask kept in the prompt after its table was cut: a prompt that asked for a deliverable
+    the pack's goldens did not carry.** The asks were restructured at stage 3 and `prompt.txt` was not
+    rewritten with them, so the shipped prompt asked for a per-disposition-code figure with no table behind
+    it and gave the per-month ask the sheet serials instead of the figure the workbook holds. The prompt is
+    now written from the three asks the goldens carry, and the month range is pinned in the asking sentence
+    (January to June 2028) rather than left to the data.
+  - **Two ask-side forks closed by the filing record's own sentences rather than by a convention in the
+    code.** A circulator who moves firm is withdrawn on the day its new registration takes effect, so 17
+    sampled lines sit on a handover day and the firm they belong to was a convention; and one firm's two
+    trading names on one registration number split 141 lines into a fifth firm against an asking sentence
+    that names four. Clearing the handover days in the generator was tried first and cannot work: the
+    circulators who move are the busiest, so there is no day inside the window on which they gathered
+    nothing. The filing record now carries a `Circulator registrations` section stating both conventions,
+    which is legitimate on this side of the build because rule 3 binds the main call's decisive step and
+    the asks are free of it, and `checks.py` asserts both against the extract's own rows.
+  - **The primary-cost assertion rewritten to test its claim.** It asserted that each primary solved on its
+    own lifts the cracker's total, which is false once two primaries compose: solving the firm as at the day
+    signed while still reading dates month first scores two figures below the cracker's baseline, because
+    the right firm with the wrong month moves cells that had matched by accident. It now asserts what is
+    actually claimed, that every primary is load-bearing (a response solving the other two without it keeps
+    16, 29 and 55 of 75) and that no primary solved alone reaches a third of the ask weight.
+  - **Seventy-three per cent of sheets at exactly fifteen lines, consecutive bundle ids and round-robin
+    receiver ids: all three dropped as procedural shapes.** The weighted draw over 4 to 15 lines now leaves
+    a 27.6 per cent mode at the pad's full fifteen, bundle ids step by one to four, and the six receiving
+    staff ids carry an uneven load (274, 228, 174, 94, 82, 53) instead of cycling. The two statewide
+    snapshots no longer carry the same row count or a monotonic identifier column, status_changed_utc
+    equals the registration date only for the quarter of rows never touched since registration, the query
+    notices are spread over ten dates after each line's own return rather than all on one day, and the
+    instruction PDF's creation and modification stamps differ.
+  - **The 2024 close-out as a pointer: re-subjected rather than cut.** It read as a file placed to be
+    compared with this filing. Its county table is now subjected on the examination itself (lines examined,
+    examiner days, examination closed) and its header states that every signature line filed was examined
+    and no sample was drawn, so it carries its own subject and still ties under every expansion basis.
 
 ## The licensed re-judge, 2026-10-26
 

@@ -132,12 +132,22 @@ def record_text():
             "petition at this office on %s." % (K.SERIAL, K.long_date(K.SERIAL_ISSUED), K.long_date(K.FILED)),
         ]),
         ("Receipt", [
-            "The committee presented 38,320 petition sheets. 240 of those sheets were sheets already filed "
+            "The committee presented %s petition sheets. %d of those sheets were sheets already filed "
             "with this office under the same serial number and were struck at receipt; they are not part of "
-            "the filing. The office receipted 38,080 sheets, bearing %s signature lines, and the receipt was "
-            "closed on %s." % (lines, K.long_date(K.RECEIPT_CLOSED)),
-            "Each receipted sheet carries the circulator's registration number and the sheet number printed "
-            "on it by the firm that gathered it. Sheet numbers are each firm's own series.",
+            "the filing. The office receipted %s sheets, bearing %s signature lines, and the receipt was "
+            "closed on %s." % ("{:,}".format(K.SHEETS_PRESENTED), K.SHEETS_STRUCK,
+                               "{:,}".format(K.SHEETS), lines, K.long_date(K.RECEIPT_CLOSED)),
+            "Each receipted sheet carries the registration number of the circulator who gathered it and the "
+            "number printed on the sheet. Sheets are issued to a circulator in a numbered pad, so that "
+            "number is the circulator's own series and runs from one.",
+        ]),
+        ("Circulator registrations", [
+            "A paid circulator is registered with this office by the firm that engages it, under that firm's "
+            "own registration number. A circulator who leaves one firm for another registers again under the "
+            "firm it joined: the earlier registration is withdrawn as of the day the new registration takes "
+            "effect, and sheets gathered on that day are gathered under the new registration.",
+            "A firm that changes its trading name keeps its registration number. The name shown on a "
+            "registration is the name the firm was trading under on the day the registration was taken.",
         ]),
         ("Signatures required", [
             "A measure proposing a constitutional amendment requires signatures equal to fifteen per cent of "
@@ -181,9 +191,9 @@ def write_record(path):
             s.append(Paragraph(esc(pr), st["body"]))
     s.append(Spacer(1, 6))
     s.append(_table(st, ["Item", "Figure"], [
-        ["Petition sheets presented", "38,320"],
-        ["Petition sheets struck at receipt", "240"],
-        ["Petition sheets receipted", "38,080"],
+        ["Petition sheets presented", "{:,}".format(K.SHEETS_PRESENTED)],
+        ["Petition sheets struck at receipt", "{:,}".format(K.SHEETS_STRUCK)],
+        ["Petition sheets receipted", "{:,}".format(K.SHEETS)],
         ["Signature lines filed", "{:,}".format(K.LINES_FILED)],
         ["Signature lines drawn into the sample", "{:,}".format(K.SAMPLE_LINES)],
         ["Signatures required", "{:,}".format(K.REQUIRED)],
@@ -196,7 +206,7 @@ def write_record(path):
     d = _doc(path, "Filing and sample selection record: initiative serial %s" % K.SERIAL, K.OFFICE)
     d.build(s, onFirstPage=_footer("%s %s" % (K.OFFICE, K.DIVISION)),
             onLaterPages=_footer("%s %s" % (K.OFFICE, K.DIVISION)))
-    PP.normalize_pdf(path, b"D:20280711084200-07'00'", b"D:20280711084200-07'00'")
+    PP.normalize_pdf(path, b"D:20280711084200-07'00'", b"D:20280711163500-07'00'")
 
 
 # ---------------------------------------------------------------------------------- the instruction
@@ -204,9 +214,9 @@ def instruction_text():
     return [
         ("What is transmitted to you", [
             "You will receive a copy of every sampled signature line assigned to your county, with the "
-            "circulator registration number and the sheet number printed on the sheet it was taken from and "
-            "the line number on that sheet. Those three together identify the line, because sheet numbers "
-            "are each firm's own series.",
+            "registration number of the circulator who gathered the sheet, the number printed on that "
+            "sheet and the line number on it. Those three together identify the line, because a sheet "
+            "number is only that circulator's own series and every circulator's runs from one.",
         ]),
         ("Giving a line its disposition", [
             "Verify each line against your county's registration records as they stood on the date written "
@@ -249,7 +259,7 @@ def write_instruction(path):
     d = _doc(path, "Signature verification instruction for county recorders", K.OFFICE)
     d.build(s, onFirstPage=_footer("%s %s" % (K.OFFICE, K.DIVISION)),
             onLaterPages=_footer("%s %s" % (K.OFFICE, K.DIVISION)))
-    PP.normalize_pdf(path, b"D:20271118161500-07'00'", b"D:20271118161500-07'00'")
+    PP.normalize_pdf(path, b"D:20271114103100-07'00'", b"D:20271118161500-07'00'")
 
 
 # ---------------------------------------------------------------------------------- Navajo's own code list
@@ -283,10 +293,14 @@ def write_oldcodes(path):
 
 # ---------------------------------------------------------------------------------- the 2024 close-out
 def closeout_county_rows(w):
+    """The examination's own administration, county by county: the lines each team took, the examiner days
+    it spent on them and the day it closed. The close-out is the record of the examination, not a table of
+    validity rates."""
     r = K.rng("closeout", seed=w.seed)
     shares = [s for _, _, s in K.COUNTIES]
     tot = sum(shares)
     out, left = [], K.PRIOR_LINES
+    rate = K.PRIOR_LINES / float(K.PRIOR_DAYS * K.PRIOR_STAFF)
     for i, (cc, name, share) in enumerate(K.COUNTIES):
         if i == len(K.COUNTIES) - 1:
             ex = left
@@ -294,9 +308,9 @@ def closeout_county_rows(w):
             ex = int(round(K.PRIOR_LINES * share / tot * (1 + 0.06 * (r.random() - 0.5))))
             ex = min(ex, left - (len(K.COUNTIES) - i - 1) * 60)
         left -= ex
-        bad = 0.274 + 0.055 * (r.random() - 0.5)
-        notc = int(round(ex * bad))
-        out.append([cc, name, ex, ex - notc, notc])
+        edays = K.round_half_up(ex / rate * (1 + 0.09 * (r.random() - 0.5)), 1)
+        closed = K.PRIOR_CLOSEOUT - dt.timedelta(days=int(r.integers(0, 17)))
+        out.append([cc, name, ex, edays, K.iso(closed)])
     return out
 
 
@@ -305,8 +319,9 @@ def write_closeout(path, w):
     from openpyxl.styles import Alignment, Font
     from openpyxl.utils import get_column_letter
     rows = closeout_county_rows(w)
-    counted = sum(r[3] for r in rows)
-    notc = sum(r[4] for r in rows)
+    r2 = K.rng("closeout_total", seed=w.seed)
+    notc = int(round(K.PRIOR_LINES * (0.274 + 0.004 * (r2.random() - 0.5))))
+    counted = K.PRIOR_LINES - notc
     wb = openpyxl.Workbook()
     ws = wb.active
     ws.title = "Full count"
@@ -317,6 +332,7 @@ def write_closeout(path, w):
         ("Signature lines filed", K.PRIOR_LINES),
         ("Full count ordered", K.iso(K.PRIOR_ORDERED)),
         ("Order", "Maricopa County Superior Court, cause CV2024-009718"),
+        ("Examination", "Every signature line filed was examined; no sample was drawn"),
         ("Examination opened", K.iso(K.PRIOR_OPENED)),
         ("Examination closed", K.iso(K.PRIOR_CLOSEOUT)),
         ("Examination business days", K.PRIOR_DAYS),
@@ -332,10 +348,10 @@ def write_closeout(path, w):
     for k, v in head:
         ws.append([k, v])
     ws.append([])
-    ws.append(["County", "County name", "Lines examined", "Lines counted", "Lines not counted"])
+    ws.append(["County", "County name", "Lines examined", "Examiner days", "Examination closed"])
     for r in rows:
         ws.append(r)
-    for i, wd in enumerate([30, 20, 16, 15, 18], start=1):
+    for i, wd in enumerate([30, 24, 16, 15, 20], start=1):
         ws.column_dimensions[get_column_letter(i)].width = wd
     for c in ws[1]:
         c.font = Font(bold=True)
