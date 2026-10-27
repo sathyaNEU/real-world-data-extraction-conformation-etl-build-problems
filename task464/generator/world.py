@@ -29,7 +29,7 @@ DEMAND_YEAR = 2026
 WEEKS_IN_CONTRACT_YEAR = 52       # the contract's own divisor
 ROSTER_CHANGE_WEEK = 118          # Monday 2025-04-07: the week the closed shifts come off the roster
 SEASONAL_FILL = 0.95
-PEAK_OVER_MEAN_CAP = 1.80
+PEAK_OVER_MEAN_CAP = 2.05
 PEAK_OVER_ATTESTED_CAP = 1.05
 
 # code, name, role, 2027 enrolment growth, 2026 true utilisation, busiest-week mode, sites
@@ -51,7 +51,7 @@ CODES = [a[0] for a in AREAS]
 AREA = {a[0]: dict(code=a[0], name=a[1], role=a[2], growth=a[3], util=a[4], mode=a[5], n=a[6])
         for a in AREAS}
 CLOSED_SHIFT_AREAS = ("SA-02", "SA-07")      # every site in the area closed its third shift
-EXTRA_CLOSED_AREAS = ("SA-05", "SA-08", "SA-09")   # one site each, so the closure is no marker
+EXTRA_CLOSED_MAX = 3      # further closures elsewhere, so the closed shift is no marker
 
 OPERATORS = [
     ("Marrowdale Renal Group", "chain"), ("Pelbrook Kidney Care", "chain"),
@@ -188,17 +188,47 @@ def build(seed=SEED):
     for code in CLOSED_SHIFT_AREAS:
         for s in by_area[code]:
             s["closed_shift"] = True
-    for code in EXTRA_CLOSED_AREAS:
-        grp = sorted(by_area[code], key=lambda s: s["R3"])
-        (grp[0] if code == "SA-09" else grp[-1])["closed_shift"] = True
-    for s in sites:
-        if s["closed_shift"]:
-            s["sessions_hist"] = (s["days"] * (s["shifts"] + 1) if s["area"] in CLOSED_SHIFT_AREAS
-                                  else s["sessions"] + 1)
+
+    def set_history():
+        for s in sites:
+            s["sessions_hist"] = (s["days"] * (s["shifts"] + 1) if s["closed_shift"] else s["sessions"])
+            s["rounds_hist"] = s["sessions_hist"] * s["turns"]
+            s["R2"] = int(round(s["peak_fill"] * s["ceiling"] * s["sessions_hist"] * s["turns"]))
+
+    # Every area's required figure is kept clear of the rounding boundary by moving one treatment at a
+    # time onto the area's largest site, which no margin feels.
+    for code in CODES:
+        grp = sorted(by_area[code], key=lambda s: -s["R3"])
+        for _ in range(40):
+            wk = sum(s["vol_2026"] for s in grp) / float(WEEKS_IN_CONTRACT_YEAR)
+            x = CUSHION * AREA[code]["growth"] * wk
+            if 0.5 - abs(x - round(x)) >= 0.06:
+                break
+            grp[0]["vol_2026"] += 1
+    set_history()
+    # Further closures, searched rather than placed: a plant-constrained site in a clear area, accepted only
+    # while every ladder condition still holds. Constrained, because at a site whose stations all run the
+    # busiest week would then exceed the current roster's own capacity, which a solver's capacity check sees.
+    cands = sorted((s for s in sites if s["gap"] and s["role"] == "clear" and not s["closed_shift"]),
+                   key=lambda s: -s["R3"])
+    taken = []
+    for s in cands:
+        if len(taken) >= EXTRA_CLOSED_MAX or s["area"] in {t["area"] for t in taken}:
+            continue
+        s["closed_shift"] = True
+        set_history()
+        C = conditions(sites, by_area)
+        if (C["worst_margin"] >= FLOOR and C["closest_pair"] >= FLOOR and C["distinct_sets"] == 4
+                and C["distinct_totals"] == 4 and len(C["r2_misses"]) >= 2 and len(C["r2_adds"]) >= 1
+                and len(C["flips"]) == 3 and not C["partial_reproduce"]
+                and C["partial_worst"] >= FLOOR
+                and C["peak_over_mean"] <= PEAK_OVER_MEAN_CAP
+                and C["peak_over_attested"] <= PEAK_OVER_ATTESTED_CAP
+                and max(C["apparent_util"]) < 0.98 and C["nearest_half"] >= 0.05):
+            taken.append(s)
         else:
-            s["sessions_hist"] = s["sessions"]
-        s["rounds_hist"] = s["sessions_hist"] * s["turns"]
-        s["R2"] = int(round(s["peak_fill"] * s["ceiling"] * s["sessions_hist"] * s["turns"]))
+            s["closed_shift"] = False
+            set_history()
     return sites, by_area
 
 
@@ -275,3 +305,56 @@ if __name__ == "__main__":
     print("2026 treatments %d | four-year estimate %d" % (tre, int(tre * 4.05)))
     print("attested/positions at the constrained sites: " +
           ", ".join("%d/%d" % (s["attested"], s["ceiling"]) for s in sites if s["gap"]))
+
+
+# ============================================================ the populations the call never reads
+# The main call is the 2027 contract-intent sites' own encounters. Everything below sits outside it and
+# carries the ask layer: the sites the plan is not contracting for 2027, the facilities only the state
+# register holds, and the service-area boundaries the plan redrew for 2027.
+DROPPED_N = 14          # in the 2026 filing and in the directory, no 2027 contract intent
+NEW_N = 4               # contract intent for 2027, not in the 2026 filing
+OFF_PLAN_N = 18         # licensed in the twelve areas, never in the plan's directory
+REDRAWN = (("SA-03", "SA-06"), ("SA-09", "SA-10"))   # pairs that exchanged localities for 2027
+
+
+def extras(sites, seed=SEED + 3):
+    """The non-contract sites, the register-only facilities and the 2026 area labels."""
+    rnd = random.Random(seed)
+    out = []
+    sid = 1000
+    for kind, n in (("dropped", DROPPED_N), ("off_plan", OFF_PLAN_N)):
+        for i in range(n):
+            sid += 1
+            code = CODES[(i * 5 + (0 if kind == "dropped" else 2)) % 12]
+            locs = LOCALITIES[code]
+            loc = locs[(i * 3) % len(locs)]
+            mod = "dialysis" if rnd.random() < 0.5 else "infusion"
+            op = OPERATORS[(sid * 5) % len(OPERATORS)]
+            out.append(dict(
+                site="PS-%05d" % (10400 + sid * 37) if kind == "dropped" else "",
+                seq=sid, kind=kind, area=code, modality=mod, locality=loc, operator=op[0],
+                name="%s %s" % (loc, "Dialysis Center" if mod == "dialysis" else "Infusion Center"),
+                address="%d %s, %s" % (100 + (sid * 71) % 900, STREETS[(sid * 11) % len(STREETS)], loc),
+                licensed=rnd.choice([6, 8, 8, 10, 12]) if mod == "dialysis" else rnd.choice([4, 5, 6, 8]),
+                weekly=rnd.randint(40, 190) if kind == "dropped" else 0))
+    for s in sites:
+        s["area_2026"] = s["area"]
+        s["in_2026_filing"] = True
+    news = sorted(sites, key=lambda s: s["seq"])[::7][:NEW_N]
+    for s in news:
+        s["in_2026_filing"] = False
+    # the two redrawn pairs: a locality moved between areas, so the 2026 label differs from the 2027 one
+    moved = []
+    for a, b in REDRAWN:
+        cand = [s for s in sites if s["area"] == b and s["in_2026_filing"]]
+        if cand:
+            cand[0]["area_2026"] = a
+            moved.append(cand[0])
+        cand2 = [s for s in out if s["kind"] == "dropped" and s["area"] == b]
+        if cand2:
+            cand2[0]["area_2026"] = a
+            moved.append(cand2[0])
+    for s in out:
+        s.setdefault("area_2026", s["area"])
+        s["in_2026_filing"] = (s["kind"] == "dropped")
+    return out, moved

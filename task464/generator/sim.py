@@ -86,45 +86,89 @@ def open_days(site):
 
 
 def build(sites, seed=world.SEED + 7):
-    """Returns (encounters, panels). An encounter is a dict; position and round are generator state."""
+    """Returns (encounters, panels). Position and round index are generator state and are never shipped.
+
+    Two phases, so the 2026 contract year's treatment count lands exactly on the clean truth's figure:
+    the weekly shape and the designed busiest week first, then the 2026 days adjusted to the target, then
+    the chains.
+    """
     out, panels = [], {}
-    rnd = random.Random(seed)
     for site in sites:
         srnd = random.Random(seed * 131 + site["seq"])
         T, rounds_by_week, peak_w = weekly_targets(site, srnd)
         K = site["ceiling"]
         durs, turn, openrange, steprange = MIX[site["modality"]]
+        site["ramp_span"] = srnd.randint(*steprange)
         panel_n = max(12, int(round(site["R3"] * site["u"] / (3.0 if site["modality"] == "dialysis" else 1.6))))
         panel = ["M%09d" % (400000000 + site["seq"] * 7919 + i * 13) for i in range(panel_n)]
         panels[site["site"]] = panel
-        span_lo, span_hi = steprange
-        site["ramp_span"] = srnd.randint(span_lo, span_hi)
         days_open = open_days(site)
-        rows = []
+
+        # phase one: a treatment count for every open day
+        dayt, daycap = {}, {}
         for w in range(world.REC_WEEKS):
             rpd = rounds_by_week[w] // site["days"]
-            daycap = K * rpd
-            tw = T[w]
-            # split the week over its open days
-            base = tw // len(days_open)
-            rem = tw - base * len(days_open)
+            cap = K * rpd
+            base, rem = T[w] // len(days_open), T[w] - (T[w] // len(days_open)) * len(days_open)
             order = days_open[:]
             srnd.shuffle(order)
-            dayt = {d: min(daycap, base + (1 if i < rem else 0)) for i, d in enumerate(order)}
-            short = tw - sum(dayt.values())
+            got = {}
+            for i, d in enumerate(order):
+                got[d] = min(cap, base + (1 if i < rem else 0))
+            left = T[w] - sum(got.values())
             for d in order:
-                while short > 0 and dayt[d] < daycap:
-                    dayt[d] += 1
-                    short -= 1
+                while left > 0 and got[d] < cap:
+                    got[d] += 1
+                    left -= 1
             for d in days_open:
-                n = dayt[d]
-                if n <= 0:
-                    continue
                 date = world.REC_START + dt.timedelta(weeks=w, days=d)
                 if date.year > 2026:
                     continue
-                rows += _day(site, date, n, K, rpd, durs, turn, openrange,
-                             (site["ramp_span"], site["ramp_span"] + 28), srnd, panel, w, d)
+                dayt[date] = got[d]
+                daycap[date] = cap
+
+        # every month carries at least one day the site can fill every position on
+        bymonth = collections.defaultdict(list)
+        for d in dayt:
+            bymonth[(d.year, d.month)].append(d)
+        for mon, days in bymonth.items():
+            if not any(dayt[d] >= K for d in days):
+                d = max(days, key=lambda x: dayt[x])
+                dayt[d] = min(daycap[d], K)
+
+        # phase two: the 2026 contract year hits the clean truth exactly, the busiest week untouched,
+        # and no other week is allowed to reach the busiest week's count
+        peak_days = {world.REC_START + dt.timedelta(weeks=peak_w, days=d) for d in range(7)}
+        wk = collections.Counter()
+        for d, v in dayt.items():
+            wk[(d - world.REC_START).days // 7] += v
+        y26 = sorted(d for d in dayt if d.year == 2026 and d not in peak_days)
+        diff = site["vol_2026"] - sum(v for d, v in dayt.items() if d.year == 2026)
+        i, guard = 0, 0
+        while diff != 0 and guard < 400000:
+            d = y26[i % len(y26)]
+            w = (d - world.REC_START).days // 7
+            i += 1
+            guard += 1
+            if diff > 0 and dayt[d] < daycap[d] and wk[w] < site["R2"] - 1:
+                dayt[d] += 1
+                wk[w] += 1
+                diff -= 1
+            elif diff < 0 and dayt[d] > K:
+                dayt[d] -= 1
+                wk[w] -= 1
+                diff += 1
+        assert diff == 0, "%s could not reach its 2026 target, %d left" % (site["site"], diff)
+
+        rows = []
+        for date in sorted(dayt):
+            n = dayt[date]
+            if n <= 0:
+                continue
+            w = (date - world.REC_START).days // 7
+            rpd = rounds_by_week[min(w, world.REC_WEEKS - 1)] // site["days"]
+            rows += _day(site, date, n, K, rpd, durs, turn, openrange,
+                         (site["ramp_span"], site["ramp_span"] + 28), srnd, panel, w, date.weekday())
         _separate_endpoints(rows)
         out += rows
     return out, panels
