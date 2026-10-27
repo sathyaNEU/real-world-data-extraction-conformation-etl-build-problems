@@ -60,23 +60,24 @@ def ask_a_paths(d, half26):
     cur, rows = areas_of(d)
     site_area = {r["site_name"]: r["service_area_code"] for r in rows}
     out = {}
-    # the cracker: the register's own adjudication quarter, its own member residence area, main file only
+    # the cracker: the filed service-date basis and the asked area of the site treated, totals tied to the
+    # reconciliation workbook, so the main file only and every unit row summed
     c = collections.Counter()
     for r in d["out_of_network_payments_2026.csv"]:
-        q = r["adjudication_quarter"]
-        if not q.startswith("2026"):
+        sd = dt.date.fromisoformat(r["service_date"])
+        if sd.year != 2026:
             continue
-        c[(r["member_residence_area"], "H1" if q in ("2026-Q1", "2026-Q2") else "H2")] += \
+        c[(site_area[r["service_facility_name"]], "H1" if sd.month <= 6 else "H2")] += \
             int(r["treatment_units"])
     out["cracker"] = c
-    # the mirror: service date and the run-out supplement, but the member's residence area
+    # the mirror: the same, with the run-out supplement picked up from the folder
     m = collections.Counter()
     for fn in ("out_of_network_payments_2026.csv", "out_of_network_payments_runout_2027q1.csv"):
         for r in d[fn]:
             sd = dt.date.fromisoformat(r["service_date"])
             if sd.year != 2026:
                 continue
-            m[(r["member_residence_area"], "H1" if sd.month <= 6 else "H2")] += \
+            m[(site_area[r["service_facility_name"]], "H1" if sd.month <= 6 else "H2")] += \
                 int(r["treatment_units"])
     out["mirror"] = m
     return out

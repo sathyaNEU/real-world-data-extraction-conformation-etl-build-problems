@@ -24,16 +24,12 @@
   "surface": "clean: the only persona in the cut pack is Nicholas Clay, who is on the card"
  },
  "judge": {
-  "pass3": {
-   "pack": "0b056f9f",
-   "verdict": "NOT_DETERMINISTIC",
-   "disposition": "SEND_BACK",
-   "finding": "competing_defensible_answer (Gate C) on which area comes nearest: Bexhollow holds under 1 of 5 readings (per cent of required, 6.07 against Durnsfield 10.35) while Durnsfield is nearest under the unrounded gap (19.62 against 20.16), under round up and under round down, and the two tie at 20 rounded to nearest",
-   "gate_h": "passes, decisive step analytical",
-   "gate_g": "borderline etl_conformance, leaning no on surface-read dependency",
-   "also": "cc3 and step.5_projected carry 3092 against a recomputed 3093.05; ask 4 halves, ask 5 as-of date and the rounding direction unstated",
-   "reproduced": "40 sites, 274 positions against 327 attested, all 40 site figures, all 12 area totals, the 3,886 network total, every required figure and the 3,556 total, the six short areas, both ladder routes, all 48 out-of-network figures, asks 5 and 6"
-  }
+  "verdict": "NOT_DETERMINISTIC",
+  "disposition": "SEND_BACK",
+  "report": "determinism_check_report_pass3.md",
+  "finding": "Gate C competing_defensible_answer on which area comes nearest the standard",
+  "closed": "the golden moved to the absolute shortfall in slots, C1 on the data gives one nearest area under every rounding with 2 slots of daylight, clause 4.4 files the rounding direction and the delivery-period convention, ask 4's area basis is in the asking sentence with its primary moved to the register's claim header lines, cc3 computed forward, ask 5 carries an as-of",
+  "re_judge": "one licensed, the author's to spawn"
  },
  "returned": [
   {
@@ -49,7 +45,7 @@
    "commit": ""
   }
  ],
- "resume": "Stage 4 reported 2026-10-27. Leak reader clean on the ship-stoppers but found four realism defects, all verified by me and sent back. Determinism judge NOT_DETERMINISTIC SEND_BACK on a Gate C fork in the nearest-area ask, verified by me. Both are with the build agent in one pass. The fork is closed not argued: the golden moves to the natural absolute-shortfall reading, one area made uniquely nearest under every rounding by C1 on the data, the rounding direction and the ask-4 half convention filed at authority, ask 5 given an as-of date, and the 3092 figure corrected. Then the stage 3 gates re-run and ONE licensed re-judge. The architecture is sound: Gate H passes with the decisive step analytical and the judge called the 327 against 274 trap high-leverage.",
+ "resume": "Stage 3 rebuilt 2026-10-27 after the stage-4 realism findings and the determinism judge's Gate C send-back, both closed in one pass (determinism_check_report_pass3.md). Every free gate is green and recorded in the design note's Pre-ship check. One re-judge is licensed and is the author's to spawn, with the leak reader again only if a document changed, which it did: clause 4.4 gained the rounding direction and the delivery-period convention.",
  "approved": null,
  "delivered": "2026-10-17",
  "portal": "both responses landed the call",
@@ -57,14 +53,16 @@
  "portal_status": "not on the approved list",
  "portal_status_date": "2026-10-27",
  "build": {
-  "checks": "625 assertions passed (three rules R1 to R3c, SF1 to SF17, ladder, 22 closure axes, input gates, realism sweep, the five owed figures)",
+  "checks": "652 assertions passed (three rules R1 to R3c, SF1 to SF17, ladder, 22 closure axes, input gates, realism sweep including the four container and naming assertions, the five owed figures)",
   "verify": "PASS, bundle only, own code path: 40 sites, 12 areas, 96 ask figures",
   "rebuilds": "two consecutive builds byte-identical across all 13 target files and target.zip",
-  "figures_check": "PASS, 144 figures in blocks 1 to 4, 0 absent",
+  "figures_check": "PASS, 146 figures in blocks 1 to 4, 0 absent",
   "leak_py": "REVIEW, no LEAK, 4 REVIEW lines answered in the design note's Leak check",
   "pair": "Pair ceiling 30.8, Mirror leakage 4.2 per cent, measured by generator/ceiling.py on the cut pack",
   "network_weekly_slots": 3886,
-  "areas_short": 6
+  "areas_short": 6,
+  "required_weekly_slots_network": 3568,
+  "nearest_short_area": "Durnsfield, 20 slots short"
  },
  "checks": 625,
  "verify": 0,

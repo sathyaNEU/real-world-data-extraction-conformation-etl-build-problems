@@ -408,13 +408,19 @@ def out_of_network(target, sites, extra, rows_in, rnd):
                 # the register carries the member's own residence area, not the area of the site treated
                 res = areas[(n * 5) % 12] if n % 8 == 0 else e["area"]
                 amt = 268.0 + (n % 37) * 4.5
-                row = ["C%d%07d" % (sd.year, n), 1, mem, sd.isoformat(), e["name"], e["address"],
-                       e["licence_no"], res, "%.2f" % amt, adj.isoformat(),
-                       "%d-Q%d" % (adj.year, (adj.month - 1) // 3 + 1), 1]
-                if adj.year == 2026:
-                    main.append(row)
-                elif adj.year == 2027 and adj <= RUNOUT_PULL:
-                    runout.append(row)
+                cid = "C%d%07d" % (sd.year, n)
+                rows_for_claim = [[cid, 1, mem, sd.isoformat(), e["name"], e["address"],
+                                   e["licence_no"], res, "%.2f" % amt, adj.isoformat(),
+                                   "%d-Q%d" % (adj.year, (adj.month - 1) // 3 + 1), 1]]
+                if n % 6 == 0:
+                    rows_for_claim.insert(0, [cid, 0, mem, sd.isoformat(), e["name"], e["address"],
+                                              e["licence_no"], res, "%.2f" % amt, adj.isoformat(),
+                                              "%d-Q%d" % (adj.year, (adj.month - 1) // 3 + 1), 1])
+                for row in rows_for_claim:
+                    if adj.year == 2026:
+                        main.append(row)
+                    elif adj.year == 2027 and adj <= RUNOUT_PULL:
+                        runout.append(row)
             start += dt.timedelta(days=7)
     head = ["claim_id", "line_no", "member_id", "service_date", "service_facility_name",
             "service_facility_address", "licence_no", "member_residence_area", "paid_amount",

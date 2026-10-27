@@ -16,6 +16,7 @@ numbers.
 """
 import collections
 import datetime as dt
+import math
 import itertools
 import random
 
@@ -259,6 +260,32 @@ def build(seed=SEED):
         else:
             s["closed_shift"] = False
             set_history()
+    # C1 on the nearest area: one short area is nearest the standard under the unrounded figure and under
+    # every rounding of it, with two slots of daylight to the runner-up on the tightest reading. The move
+    # is a treatment at a time onto a non-nearest short area's largest site, which no margin feels.
+    for _ in range(600):
+        L = ladder(sites, by_area)
+        short = [c for c in CODES if L["cap"]["R3"][c] < L["req"][c]]
+        if len(short) < 2:
+            break
+        hi = {c: int(math.ceil(L["req_real"][c])) - L["cap"]["R3"][c] for c in short}
+        lo = {c: int(math.floor(L["req_real"][c])) - L["cap"]["R3"][c] for c in short}
+        near = min(short, key=lambda c: (hi[c], c))
+        tight = [c for c in short if c != near and lo[c] - hi[near] < 2]
+        if not tight:
+            break
+        grp = sorted(by_area[min(tight, key=lambda c: lo[c])], key=lambda s: -s["R3"])
+        grp[0]["vol_2026"] += 1
+    # and the required figures stay clear of a half, so round and ceiling differ by a whole slot and no
+    # area's verdict depends on which is taken
+    for code in CODES:
+        grp = sorted(by_area[code], key=lambda s: -s["R3"])
+        for _ in range(60):
+            wk = sum(s["vol_2026"] for s in grp) / float(WEEKS_IN_CONTRACT_YEAR)
+            x = CUSHION * AREA[code]["growth"] * wk
+            if 0.5 - abs(x - round(x)) >= 0.06 and abs(x - round(x)) >= 0.06:
+                break
+            grp[0]["vol_2026"] += 1
     return sites, by_area
 
 
@@ -267,7 +294,7 @@ def ladder(sites, by_area):
     cap = {r: {c: sum(s[r] for s in by_area[c]) for c in CODES} for r in rungs}
     week = {c: sum(s["vol_2026"] for s in by_area[c]) / float(WEEKS_IN_CONTRACT_YEAR) for c in CODES}
     req_real = {c: CUSHION * AREA[c]["growth"] * week[c] for c in CODES}
-    req = {c: int(round(req_real[c])) for c in CODES}
+    req = {c: int(math.ceil(req_real[c])) for c in CODES}
     short = {r: [c for c in CODES if cap[r][c] < req[c]] for r in rungs}
     tot = {r: sum(cap[r].values()) for r in rungs}
     return dict(rungs=rungs, cap=cap, week=week, req=req, req_real=req_real, short=short, tot=tot)

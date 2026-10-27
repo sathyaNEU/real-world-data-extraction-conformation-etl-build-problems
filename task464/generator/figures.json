@@ -2,19 +2,19 @@
   "area": {
     "SA-01": {
       "meets": "yes",
-      "required": 244,
+      "required": 245,
       "shortfall": 0,
       "slots": 326
     },
     "SA-02": {
       "meets": "no",
-      "required": 332,
-      "shortfall": 20,
+      "required": 335,
+      "shortfall": 23,
       "slots": 312
     },
     "SA-03": {
       "meets": "yes",
-      "required": 270,
+      "required": 271,
       "shortfall": 0,
       "slots": 366
     },
@@ -26,20 +26,20 @@
     },
     "SA-05": {
       "meets": "yes",
-      "required": 238,
+      "required": 239,
       "shortfall": 0,
       "slots": 302
     },
     "SA-06": {
       "meets": "yes",
-      "required": 259,
+      "required": 260,
       "shortfall": 0,
       "slots": 360
     },
     "SA-07": {
       "meets": "no",
-      "required": 334,
-      "shortfall": 22,
+      "required": 335,
+      "shortfall": 23,
       "slots": 312
     },
     "SA-08": {
@@ -50,26 +50,26 @@
     },
     "SA-09": {
       "meets": "no",
-      "required": 433,
-      "shortfall": 47,
+      "required": 434,
+      "shortfall": 48,
       "slots": 386
     },
     "SA-10": {
       "meets": "yes",
-      "required": 301,
+      "required": 302,
       "shortfall": 0,
       "slots": 396
     },
     "SA-11": {
       "meets": "no",
-      "required": 520,
-      "shortfall": 34,
+      "required": 521,
+      "shortfall": 35,
       "slots": 486
     },
     "SA-12": {
       "meets": "no",
-      "required": 228,
-      "shortfall": 23,
+      "required": 229,
+      "shortfall": 24,
       "slots": 205
     }
   },
@@ -86,7 +86,7 @@
     },
     "SA-02": {
       "H1": {
-        "share": 3.3,
+        "share": 3.2,
         "treatments": 234
       },
       "H2": {
@@ -297,20 +297,21 @@
   },
   "call": {
     "areas_short": 6,
-    "nearest_short_area": "Bexhollow",
+    "nearest_short_area": "Durnsfield",
     "nearest_short_shortfall": 20,
     "network_weekly_slots": 3886,
-    "required_weekly_slots_network": 3556
+    "required_weekly_slots_network": 3568
   },
   "cc1": 274,
   "cc2": 327,
-  "cc3": 3092,
-  "cc4": 3556,
+  "cc3": 3095,
+  "cc4": 3568,
   "constants": {
     "agreement_adequacy_clause": "4.3",
     "agreement_capacity_clause": "4.2",
+    "agreement_reporting_clause": "4.4",
     "cushion": 1.15,
-    "encounter_rows": 639009,
+    "encounter_rows": 639110,
     "record_months": 48,
     "service_areas": 12,
     "sites_in_scope": 40,
@@ -442,8 +443,8 @@
     "3_attested": 327,
     "3_positions": 274,
     "4_slots": 3886,
-    "5_projected": 3092,
-    "5_required": 3556,
+    "5_projected": 3095,
+    "5_required": 3568,
     "6_ask_a_figures": 24,
     "7_ask_b_figures": 24,
     "7_ask_c_figures": 24,

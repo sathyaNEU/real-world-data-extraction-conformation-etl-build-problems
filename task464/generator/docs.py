@@ -35,6 +35,7 @@ FICTION_STAMP = dt.datetime(2027, 1, 5, 9, 14, 0)
 AGREEMENT = "network_agreement_2027_capacity_terms.pdf"
 CLAUSE_CAPACITY = "4.2"
 CLAUSE_ADEQUACY = "4.3"
+CLAUSE_REPORTING = "4.4"
 FEES = "licence_fee_schedule_2026.pdf"
 
 
@@ -151,8 +152,10 @@ def agreement(target):
         "contract year it covers, so that the 2026 contract year is complete on the extract. Encounters "
         "recorded without a stop time or a recorded length are not delivered treatments.", body))
     st.append(Paragraph(
-        "Capacity and adequacy figures are reported in whole treatment slots, with the required figure "
-        "rounded once at the area level.", body))
+        "Capacity and adequacy figures are reported in whole treatment slots. The figure an area is "
+        "required to hold is rounded once, at the area level, up to the next whole treatment slot, "
+        "because it is a minimum. A treatment is counted in the period of the contract year in which it "
+        "was delivered, whether it was delivered in network or out of network.", body))
     st.append(Paragraph("4.5 Corrective action", h1))
     st.append(Paragraph(
         "Where an area does not meet the adequacy standard for the network year, the Plan opens a "

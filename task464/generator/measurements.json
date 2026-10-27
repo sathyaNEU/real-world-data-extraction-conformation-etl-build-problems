@@ -28,15 +28,15 @@
   "counter_pin_hits": [],
   "crossover_worst": 0.938,
   "encounter_record": {
-    "bytes": 62603264,
-    "cancelled_rows": 7576,
+    "bytes": 62611456,
+    "cancelled_rows": 7577,
     "format": "SQLite database, two tables, one per encounter layout",
-    "rows": 639009,
-    "rows_2023_2024": 331903,
-    "rows_2025_2026": 307106
+    "rows": 639110,
+    "rows_2023_2024": 331926,
+    "rows_2025_2026": 307184
   },
-  "encounter_rows": 639009,
-  "figure_count": 210,
+  "encounter_rows": 639110,
+  "figure_count": 211,
   "files": [
     "encounter_extract_transmittal.json",
     "enrolment_projection_2027.csv",
@@ -68,9 +68,10 @@
     "h1_run_out_supplement_left_out": 12,
     "h2_corporate_rows_counted_as_sites": 24,
     "h2_licence_row_at_the_as_of_date": 6,
-    "h3_member_residence_area": 24
+    "h3_member_residence_area": 24,
+    "primary_a_claim_header_summed_with_its_lines": 24
   },
-  "largest_file_bytes": 62603264,
+  "largest_file_bytes": 62611456,
   "legibility": {
     "argmax_hour_modal_share_median": 0.29,
     "argmax_hour_modal_share_worst": 0.48,
@@ -98,10 +99,12 @@
     "tax_identifier_merge": 4512,
     "two_hour_start_count": 3825
   },
+  "nearest_area": "SA-04",
+  "nearest_daylight_slots": 2,
   "partial_cells": 41,
-  "partial_worst_pct": 6.02,
+  "partial_worst_pct": 6.72,
   "peak_over_attested": 0.988,
-  "peak_over_mean": 1.65,
+  "peak_over_mean": 1.64,
   "quantile_hits": {
     "0.90": 27,
     "0.95": 40,
@@ -118,7 +121,7 @@
     "SA-02",
     "SA-07"
   ],
-  "required_bin_distance": 0.071,
+  "required_bin_distance": 0.06,
   "rung_ratios": {
     "R0": 1.2012,
     "R1": 1.2882,
@@ -171,7 +174,45 @@
     "Licences",
     "Register Summary"
   ],
-  "worst_area_margin": 6.02,
+  "short_area_gaps": {
+    "SA-02": {
+      "ceiling": 23,
+      "floor": 22,
+      "round": 22,
+      "unrounded": 22.07
+    },
+    "SA-04": {
+      "ceiling": 20,
+      "floor": 19,
+      "round": 20,
+      "unrounded": 19.62
+    },
+    "SA-07": {
+      "ceiling": 23,
+      "floor": 22,
+      "round": 22,
+      "unrounded": 22.08
+    },
+    "SA-09": {
+      "ceiling": 48,
+      "floor": 47,
+      "round": 47,
+      "unrounded": 47.06
+    },
+    "SA-11": {
+      "ceiling": 35,
+      "floor": 34,
+      "round": 34,
+      "unrounded": 34.33
+    },
+    "SA-12": {
+      "ceiling": 24,
+      "floor": 23,
+      "round": 23,
+      "unrounded": 23.28
+    }
+  },
+  "worst_area_margin": 6.72,
   "worth": {
     "R0": -0.0,
     "R1": -0.432,

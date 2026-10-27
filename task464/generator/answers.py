@@ -41,13 +41,22 @@ def ask_a(sites, extra, rows, oon_main, oon_runout):
     for e in extra:
         if e["kind"] == "dropped":
             area_of_site[e["name"]] = e["area"]
-    oon = collections.Counter()
+    # a claim with a header line (line 0) states its own treatment count; its service lines repeat it
+    byclaim = {}
     for r in list(oon_main) + list(oon_runout):
         sd = dt.date.fromisoformat(r[3])
         if sd.year != 2026:
             continue
+        key = r[0]
         half = "H1" if sd <= H1[1] else "H2"
-        oon[(area_of_site[r[4]], half)] += int(r[11])
+        slot = byclaim.setdefault(key, dict(header=None, lines=0, area=area_of_site[r[4]], half=half))
+        if int(r[1]) == 0:
+            slot["header"] = int(r[11])
+        else:
+            slot["lines"] += int(r[11])
+    oon = collections.Counter()
+    for key, v in byclaim.items():
+        oon[(v["area"], v["half"])] += v["header"] if v["header"] is not None else v["lines"]
     inn = collections.Counter()
     site_area = {s["site"]: s["area"] for s in sites}
     for r in rows:
@@ -142,7 +151,8 @@ def components(sites, by_area, rows):
         attested_stations=att,
         positions_short_of_attested=att - pos,
         sites_short_of_attested=sum(1 for s in sites if s["attested"] > s["ceiling"]),
-        projected_weekly_demand_2027=int(round(sum(L["req"][c] for c in world.CODES) / world.CUSHION)),
+        projected_weekly_demand_2027=int(round(sum(world.AREA[c]["growth"] * L["week"][c]
+                                                   for c in world.CODES))),
         required_weekly_slots_network=sum(L["req"][c] for c in world.CODES),
         treatments_2026=sum(s["vol_2026"] for s in sites),
         weekly_treatments_2026=round(demand, 1),

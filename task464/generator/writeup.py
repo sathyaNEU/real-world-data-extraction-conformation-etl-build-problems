@@ -43,6 +43,7 @@ def figures(st):
             "encounter_rows": st["na"] + st["nb"],
             "agreement_capacity_clause": docs.CLAUSE_CAPACITY,
             "agreement_adequacy_clause": docs.CLAUSE_ADEQUACY,
+            "agreement_reporting_clause": docs.CLAUSE_REPORTING,
         },
         "step": {
             "3_positions": comp["deliverable_positions"],
@@ -107,12 +108,13 @@ def submission(st, f):
         "clause %s sets the unit: %s weekly treatment slots for the network."
         % (docs.CLAUSE_CAPACITY, n(C["network"])),
         "Took each area's 2026 contract year treatments a week from the same extract and grew them by the "
-        "area's factor in enrolment_projection_2027.csv: %s treatments a week projected and %s weekly "
-        "slots required." % (n(f["cc3"]), n(f["cc4"])),
-        "Rebuilt the out-of-network half-year counts on service date from "
-        "out_of_network_payments_2026.csv with out_of_network_payments_runout_2027q1.csv, placing each "
-        "claim in the area of the site that treated rather than the member's residence area: %d figures "
-        "on the Out of Network 2026 sheet." % (len(A) * 2),
+        "area's factor in enrolment_projection_2027.csv, then applied the 1.15 cushion and rounded each "
+        "area up to the next whole slot as clause %s requires: %s treatments a week projected and %s "
+        "weekly slots required." % (docs.CLAUSE_REPORTING, n(f["cc3"]), n(f["cc4"])),
+        "Counted the out-of-network treatments a claim at a time from out_of_network_payments_2026.csv with "
+        "out_of_network_payments_runout_2027q1.csv, taking a claim's header line as its own treatment "
+        "count where the register writes one and its service lines where it does not: %d figures on the "
+        "Out of Network 2026 sheet." % (len(A) * 2),
         "Took the state_licence_register.xlsx facility row covering the position date for each licence "
         "number, corporate rows excluded, for the licensed supply, and the row covering the 2026 filing's "
         "own position date to resolve each distinct site in state_adequacy_filing_2026.xlsx: %d and %d "

@@ -237,7 +237,7 @@ application, which the client's rule 3 bans.
 | SF10 | the treatments a position delivers in a session | clause 4.2's per-category figure, one and two | a site-level figure read off the encounters | the clause; `SF10` asserts no site carries both service categories |
 | SF11 | projected 2027 demand | clause 4.3: the area's 2026 contract year treatments a week grown by its projected factor | the 2026 calendar year, the last four quarters, a four-year trend | the clause files the base, the window and the factor's source, and the contract year is the calendar year, asserted by selecting the same encounters both ways |
 | SF12 | the standard's direction and inclusivity | at or above the required figure | strictly above | C1: no area sits within 6 per cent of its line on any of the four bases, worst measured 6.02 per cent of required. Asserted as `SF12` |
-| SF13 | the rounding path | the required figure to a whole slot, once, at the area level | per site then summed, or to the nearest ten | clause 4.4 files it; `SF13` asserts every required figure at least 0.05 of a treatment from a half, measured 0.071 at the tightest |
+| SF13 | the rounding path, and which area comes nearest the standard | clause 4.4: the required figure is rounded once, at the area level, up to the next whole treatment slot, because it is a minimum; the area nearest the standard is the one with the smallest shortfall in slots | round to nearest, round down, or the unrounded figure; nearest read as the smallest shortfall as a share of required | the direction is filed at authority, asserted present in the shipped document. No area's verdict depends on the rounding, asserted per area against the unrounded figure, the floor and the ceiling, and no required figure sits within 0.06 of a whole slot or of a half. C1 on the data for the nearest: Durnsfield's shortfall is 19.62 unrounded, 20 to nearest, 20 up and 19 down, and the runner-up Bexhollow's is 22.07, 22, 23 and 22, so one area is nearest under every rounding with 2 slots of daylight on the tightest reading, asserted. The per cent reading is not a reading of nearest the standard, which is a figure in slots |
 | SF14 | a site's service area | the area recorded against the site on the current cycle | the area of the address the site held earlier | clause 4.6 files it, and no site sits in two areas inside the window, asserted; the three sites that changed address kept one area |
 | SF15 | the look-back for the ceiling | the whole four-year record | the most recent 24 or 12 months | C1 through SF1's plateau, asserted per site at 12, 24 and 48 months |
 | SF16 | the key that identifies a site | the plan site identifier, carried on every encounter as the service facility | the tax identifier, which three sites of one group practice share; the service address | clause 4.1 files the unit as the Site and says that sites sharing a tax identifier remain separate Sites. The tax-identifier reading merges those three and files 4,512 weekly slots against the golden's 3,886, a named wrong cell; the plan site identifier is one to one with a site, asserted |
@@ -319,8 +319,8 @@ that cannot move the answer today included.
 | 7 | Weighting | none: an area's figure is the sum over its sites | cannot move the answer; no weighting choice exists, asserted as a sum identity per area |
 | 8 | Window length | the ceiling's four-year look-back | C1, measured: 12, 24 and 48 months return the same integer at all 40 sites (SF15) |
 | 9 | Boundary inclusivity | at or above the required figure | C1, no area within 6 per cent of its line on any of the four bases, worst 6.02 per cent of required (SF12) |
-| 10 | Rounding path | the required figure to a whole treatment slot, once, at the area level | clause 4.4 files it and the asking sentence states whole numbers; SF13 keeps every required figure 0.05 or more from a half treatment, measured 0.071 at the tightest, the generator moving one treatment onto an area's largest site until it clears |
-| 11 | Tie-break | none: the call is a count and a grid, not a ranking | cannot move the answer; asserted that no two areas share a required figure and no area's capacity equals its required figure |
+| 10 | Rounding path | the required figure rounded once, at the area level, **up** to the next whole treatment slot | clause 4.4 files the direction and the asking sentence states whole numbers; SF13 asserts the direction present in the shipped document, every area's verdict identical under the unrounded figure, the floor and the ceiling, and every required figure 0.06 or more from a whole slot and from a half |
+| 11 | Tie-break | which of the short areas comes nearest the standard | C1 on the data: the nearest area is nearest under the unrounded figure and under all three roundings, with 2 slots of daylight to the runner-up on the tightest reading, asserted; no area's capacity equals its required figure |
 | 12 | Maturity and censoring | the 2026 contract year complete at the as-of date, the extract pulled after the filing run-out | clause 4.4 files the ninety day run-out and the transmittal carries the pull date; asserted that no encounter in the pack carries a service date after 31 December 2026, so the contract year is complete on the extract |
 | 13 | Order of operations | positions, then sessions a week, then the category figure, then the area sum, then the standard | the steps commute (multiplication and summation), asserted; the only non-commuting step is rounding, closed at axis 10 |
 | 14 | Row order | the ceiling is a maximum over a set and the totals are sums | C1, asserted invariant over permutations of the encounter tables |
@@ -358,7 +358,7 @@ asserted in `generator/checks.py`.
 | `enrolment_projection_2027.csv` | the growth factor the standard's demand side uses | identical under all four rungs, because every rung shares the demand side | ties on every basis; cannot score a station basis |
 | `network_agreement_2027_capacity_terms.pdf`, Schedule 4 | the population, the unit, the window, the comparison, the standard and the rounding | quotable against no station basis, because it names none | the pin sits once, at authority level 2; the counter-pin sweep over both documents for the constraint's nouns beside a licensing verb returns nothing |
 | `encounter_extract_transmittal.json` | the extract's pull date, its two tables and its row counts by service quarter | ties under every rung, because it counts encounters and not capacity | asserted: its quarter counts sum to the shipped rows, 639,009, and it carries no capacity or position figure |
-| `out_of_network_payments_reconciliation_2026.xlsx` | the register's own control totals by adjudication quarter | it ties exactly on the adjudication basis, which is ask A's primary device: the tie passes and the half-year counts it leads to are wrong | it reads no contracted site and reaches no station basis; asserted zero device rows in the main population |
+| `out_of_network_payments_reconciliation_2026.xlsx` | the register's own control totals by adjudication quarter | it ties exactly to the rows the register holds, claim header lines included, so a count-tie check passes on a unit total that counts a sixth of the claims twice, which is ask A's primary device | it reads no contracted site and reaches no station basis; asserted zero device rows in the main population |
 | `nemt_trips_2026.csv` (distractor) | 2026 transport trips by area and month | a solver ranking areas by trips ranks them by volume | asserted: the six areas with the most trips are not the golden's six short areas, so no shipped artifact ranks the candidates on the decision question |
 | `licence_fee_schedule_2026.pdf` (distractor) | the annual fee a station band attracts | a solver could read the fee bands as a capacity authority | asserted: it carries no station count for any named site and no plan or licence identifier |
 
@@ -373,14 +373,16 @@ rows the call never reads. The main call's declared row population is the 2027 c
 treatment encounters, and the encounter database holds those sites and no others, asserted. Every figure
 below is measured on the cut pack.
 
-**Ask A, out-of-network treatment volume.** By area and half of 2026, the treatments the plan paid for at
-sites it holds no contract with, and their share of all the area's treatments in that half. 24 counts and 24
-shares, 48 graded figures, whole treatments and shares to one decimal, both in the asking sentence.
+**Ask A, out-of-network treatment volume.** By half of 2026 and the area of the site treated, the
+treatments the plan paid for at sites it holds no contract with, and their share of all the area's
+treatments that half. 24 counts and 24 shares, 48 graded figures, whole treatments and shares to one
+decimal, both in the asking sentence.
 - H18 home: the audit trail of the demand side, from the payment register through rows the call never reads to the area's own total.
 - Use: the network unit sizes the leakage it is contracting to pull back in.
-- Primary device (D5 scope with D2 vintage, silent): `out_of_network_payments_2026.csv` holds the claims adjudicated in 2026, so its service dates spill back into 2025 and the 2026 services adjudicated in 2027 sit in `out_of_network_payments_runout_2027q1.csv`. The reconciliation workbook's totals are true on the adjudication basis and the ask needs the service-date basis. Nothing narrates it, the only word is `adjudication_quarter`, and the battery's count-tie check passes against the workbook, which is the tie that passes wrong.
-- Remedy: a reconstruction, the half-year counts rebuilt on service date from the register and its supplement, one correct answer.
-- Measured: taking the register's own adjudication basis moves 48 of the 48 figures; leaving the run-out supplement out moves 12; grouping on the register's own `member_residence_area` instead of the area of the site treated moves 24.
+- Two bases are closed rather than left open, because the determinism judge named both: clause 4.4 files that a treatment is counted in the period of the contract year in which it was delivered, and the asking sentence names the area of the site treated. Both are conventions, and neither names a method.
+- Primary device (D1 duplication with D9 self-validation, silent): the register writes a claim header line, `line_no` 0, for about a sixth of its claims, carrying that claim's own treatment count beside the service lines that make it up, as a claims extract does. Summing `treatment_units` over every row counts those claims twice, and the file's own reconciliation workbook reports the same doubled unit total by adjudication quarter, so the count-tie check passes on a figure the ask cannot use. Nothing names a header line and the key `claim_id` with `line_no` is unique, so key uniqueness and the unmatched-join sweep both pass.
+- Remedy: a reconstruction, one treatment count per claim, the header line where the register writes one and the service lines where it does not, one correct answer.
+- Measured: summing every unit row moves **24 of the 48** figures; leaving the run-out supplement out moves **12**; grouping on the register's own `member_residence_area` instead of the area of the site treated moves **24**.
 - Path: 6 files and 13 columns.
 
 **Ask B, the licensed supply by area.** By area, the licensed dialysis and infusion sites the state register
@@ -408,9 +410,10 @@ in place.
 
 | Hazard | Asks it moves | Figures it moves |
 |---|---|---|
+| the claim header line summed beside its own service lines (ask A's primary) | A | 24 of 48 |
 | h1 the run-out supplement's vintage | A | 12 of 48 |
 | h2 the register's two grains and its reissued numbers | B, C | 24 of 24 and 6 of 24 |
-| h3 the register's member-residence area against the area of the site treated | A | 24 of 48 |
+| h3 the register's member-residence area against the area of the site treated, now a stated basis | A | 24 of 48 |
 
 **The referee.** The extract transmittal's treatment count by quarter arbitrates ask A's designed
 disagreement without handing over a level: it ties under both the adjudication and the service-date readings
@@ -418,7 +421,7 @@ for the contracted sites and so settles nothing about the non-contract rows.
 
 | Ask | Cracker's path (lands the call, runs the hygiene battery, executes every filed rule, matches every control) | Figures it reaches | Verdict |
 |---|---|---|---|
-| A out-of-network volume | ties the half-year counts to the reconciliation workbook, which passes its count-tie check, and groups on the register's own residence area | 0 of 48 | miss |
+| A out-of-network volume | takes the filed service-date basis and the asked area of the site treated, then ties its totals to the reconciliation workbook, so it sums every unit row and reads the main file alone | 0 of 48 | miss |
 | B licensed supply | filters on `licence_status` and counts every active row in the area, corporate rows included | 0 of 24 | miss |
 | C the dropped sites | counts filing rows on the filing's own area labels | 4 of 24 | miss |
 
@@ -466,20 +469,22 @@ and its asserted neutrality on the call. Each is the R2 block of `generator/chec
 
 ## Pre-ship check
 
-The build stage's gates, each run on the shipped pack. The pre-ship block proper is stage 5's.
+The build stage's gates, each run on the shipped pack after the stage-4 realism fixes and the determinism
+judge's finding were closed. The pre-ship block proper is stage 5's.
 
 | Gate | Result |
 |---|---|
-| `generator/checks.py` | 625 assertions passed, including the three-rules block (R1, R2 per mess item, R3a, R3b, R3c), SF1 to SF17, the ladder, the 22 closure axes, the input gates and the realism sweep |
-| `generator/verify.py` | PASS, reading only the bundle on its own code path: 40 sites, 12 areas, 96 ask figures and every graded figure recomputed |
+| `generator/checks.py` | 652 assertions passed: the three-rules block (R1, R2 per mess item, R3a, R3b, R3c), SF1 to SF17, the ladder, the named wrong cells, the legibility block, the ask separation line, the oracles, the input gates, the realism sweep, the 22 closure axes, the documents, the write-up and the five owed figures |
+| `generator/verify.py` | PASS, reading only the bundle on its own code path: 40 sites, 12 areas, 96 ask figures, every graded figure recomputed, the rounding direction and the delivery-period convention read out of the agreement's own text |
 | two consecutive rebuilds | byte-identical `target/` across all 13 files and byte-identical `target.zip` |
-| `figures_check.py` | PASS, 144 figures in blocks 1 to 4, 0 absent from `generator/figures.json` |
-| the realism sweep | inside `checks.py`: no round headline, no repeated yearly count, personas from the card, containers scrubbed, dates coherent, no em dash in the bundle |
-| `golden-realism` | run after the figures froze: named sheets, frozen header, per-column number formats, a chart whose title states the finding, a basis and position line, print area set |
-| `reduce-house-fixes` | H1 containers scrubbed and asserted, H2 every figure emitted, H4 the archive's 13 members equal the declared list, H7 the archive cut last from the final tree, H8 every citation resolves, H9 no describing file, H16 dates coherent, H21 invented names moved clear of real ones, H33 one entry point writes `figures.json` |
-| `leak.py --asof 2027-02-19` | REVIEW, no LEAK, every REVIEW line answered above |
-| `precut.py` | exit 0 |
-
+| `figures_check.py` | PASS, 146 figures in blocks 1 to 4, 0 absent from `generator/figures.json` |
+| the realism sweep | in `checks.py`: no round headline, the required figures not all alike, no repeated yearly count, personas from the card, every container's application and version pair consistent with a title and an author, each document's producer the body that issued it, the operator column in no fixed order with uneven site counts and no name against its own service category, dates coherent, no em dash in the bundle |
+| `golden-realism` | run after the figures froze: named sheets, frozen header, per-column number formats and alignment, a chart whose title states the finding, a basis and position line, print area set |
+| `reduce-house-fixes` | H1 containers scrubbed and asserted, H2 every figure emitted, H4 the archive's 13 members equal the declared list, H7 the archive cut last from the final tree, H8 every citation resolves, H9 no describing file, H16 dates coherent, H21 invented names clear of real ones, H29 the bound figures read against the quantity they bound, H33 one entry point writes `figures.json` |
+| `leak.py --asof 2027-02-19` | REVIEW, no LEAK, every REVIEW line answered in `## Leak check` |
+| `guard.py surface` and `heart` | surface clean with only the card's own personas, heart WARN at a nearest driver of 0.08 (task479, lineage), no BLOCK |
+| `precut.py` | exit 0, 52 checks, 0 FAIL, 0 WARN |
+| `voice-check.py` | PASS, 998 characters |
 ## Leak check
 
 `leak.py --asof 2027-02-19`: **REVIEW**, no LEAK, 13 files read. The pack ships no file whose job is to
@@ -501,7 +506,10 @@ The four REVIEW lines, answered:
   nouns are network, weekly treatment slots and service areas, which Schedule 4 must use because it files
   the unit and the standard. It carries none of the call's figures, asserted: no weekly-slot figure, no
   utilisation figure and no adequacy verdict anywhere in the pack.
-- **sweep 4, the agreement, "8 of 25 stump-paragraph terms appear".** The terms are positions, deliverable,
+- **sweep 4, `licence_fee_schedule_2026.pdf`, "3 of 25 stump-paragraph terms appear".** The terms are
+  station, carries and licence, which is what a facility licensing fee schedule is about. It carries no
+  station count for any named site, asserted.
+- **sweep 4, the agreement, "6 of 25 stump-paragraph terms appear".** The terms are positions, deliverable,
   directory, licence, encounter and demand. Five of the six are the estimand's own parts, which section 1
   requires filed; the sixth, deliverable, is the unit's term. The route words are swept for and absent:
   `concurrent`, `overlap`, `greatest number`, `at one time`, `effective capacity`, `water loop`,
@@ -679,6 +687,28 @@ to make a solver notice a structure.
   with a title and an author on every container, no fixed-order period of 1 to 12 in the operator column,
   uneven site counts, and no operator whose name names one service category while its sites deliver
   another.
+
+- The absolute-shortfall reading of "nearest the standard", left to a rounding (2026-10-27, the
+  determinism judge, NOT_DETERMINISTIC on Gate C `competing_defensible_answer`): with the required figure
+  rounded to nearest, Bexhollow and Durnsfield were both 20 slots short, so the golden's Bexhollow held
+  under one of five readings and the weakest one, the shortfall as a per cent of required. Closed in the
+  order the judge and `determinism-check` both rank: the golden moved to the absolute shortfall in slots,
+  which is what "nearest the standard" plainly means; the data was then moved so one area is nearest under
+  the unrounded figure and under every rounding, Durnsfield at 19.62, 20, 20 and 19 against Bexhollow's
+  22.07, 22, 23 and 22, which is 2 slots of daylight on the tightest reading, built by adding one treatment
+  at a time to a non-nearest short area's largest site; and clause 4.4 now files the direction, up to the
+  next whole slot, because a required figure is a minimum. No pin was spent on a tie-break.
+- Ask A's adjudication-basis primary (2026-10-27, in the same pass): the judge named the date basis and the
+  member's residence area as unstated alternatives on ask 4, and closing both, one at authority and one in
+  the asking sentence, would have left the ask with no primary. The primary moved to the register's own
+  claim header lines, a rollup above its own parts whose unit total the reconciliation workbook reports as
+  the file holds it, so the count-tie check still passes wrong: measured at 24 of the 48 figures, with the
+  run-out supplement at 12 and the residence-area column, now a stated basis, at 24. The cracker still
+  reaches 0 of ask A's 48 figures and the pair ceiling is unchanged at 30.8.
+- The projected-demand component computed back out of the rounded required total (2026-10-27, the judge):
+  `cc3` read 3,092 where the quantity is 3,095, because the generator divided the summed, rounded required
+  figure by the cushion instead of summing each area's own growth times its own weekly base. It is now
+  computed forward and the verifier recomputes it from the bundle.
 
 ## Portal result and the diagnosis, 2026-10-27
 

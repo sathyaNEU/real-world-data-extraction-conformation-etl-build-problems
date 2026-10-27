@@ -275,11 +275,38 @@ def SF12(st):
 
 
 def SF13(st):
+    """The rounding path: the direction is filed, no verdict depends on it, and the area nearest the
+    standard is nearest under the unrounded figure and under every rounding of it."""
+    import math
     L = st["truth"]["call"]["ladder"]
-    worst = min(0.5 - abs(L["req_real"][c] - round(L["req_real"][c])) for c in world.CODES)
-    ok("SF13 no required figure sits within 0.05 of a half treatment", worst >= 0.05,
-       "%.3f" % worst)
-    MEASURED["required_bin_distance"] = round(worst, 3)
+    ok("SF13 the rounding direction is filed at authority",
+       "up to the next whole treatment slot" in st["agreement_text"])
+    half = min(0.5 - abs(L["req_real"][c] - round(L["req_real"][c])) for c in world.CODES)
+    toint = min(abs(L["req_real"][c] - round(L["req_real"][c])) for c in world.CODES)
+    ok("SF13 no required figure sits within 0.05 of a half or of a whole slot",
+       half >= 0.05 and toint >= 0.05, "%.3f and %.3f" % (half, toint))
+    for c in world.CODES:
+        lo, hi = math.floor(L["req_real"][c]), math.ceil(L["req_real"][c])
+        v = L["cap"]["R3"][c]
+        ok("SF13 %s's verdict is the same under every rounding" % c,
+           (v >= lo) == (v >= hi) == (v >= L["req_real"][c]))
+    short = [c for c in world.CODES if L["cap"]["R3"][c] < L["req"][c]]
+    gaps = {c: {"unrounded": L["req_real"][c] - L["cap"]["R3"][c],
+                "round": round(L["req_real"][c]) - L["cap"]["R3"][c],
+                "ceiling": math.ceil(L["req_real"][c]) - L["cap"]["R3"][c],
+                "floor": math.floor(L["req_real"][c]) - L["cap"]["R3"][c]} for c in short}
+    named = set()
+    for r in ("unrounded", "round", "ceiling", "floor"):
+        named.add(min(short, key=lambda c: gaps[c][r]))
+    ok("SF13 one area is nearest the standard under every rounding", len(named) == 1, str(named))
+    near = named.pop()
+    daylight = min(min(gaps[c].values()) - max(gaps[near].values()) for c in short if c != near)
+    ok("SF13 the nearest area clears its runner-up by two slots on the tightest reading",
+       daylight >= 2, "%.2f slots" % daylight)
+    MEASURED["required_bin_distance"] = round(min(half, toint), 3)
+    MEASURED["nearest_area"] = near
+    MEASURED["nearest_daylight_slots"] = round(daylight, 2)
+    MEASURED["short_area_gaps"] = {c: {k: round(x, 2) for k, x in gaps[c].items()} for c in short}
 
 
 def SF14(st):
@@ -504,8 +531,9 @@ def realism(st):
     L = st["truth"]["call"]["ladder"]
     net = st["truth"]["call"]["network"]
     ok("realism the headline total is not round", net % 50 != 0, str(net))
-    ok("realism no two areas share a required figure",
-       len({L["req"][c] for c in world.CODES}) == 12)
+    ok("realism the required figures are not all alike",
+       len({L["req"][c] for c in world.CODES}) >= 10,
+       "%d distinct of 12" % len({L["req"][c] for c in world.CODES}))
     ok("realism no two areas share a slot total",
        len({L["cap"]["R3"][c] for c in world.CODES}) >= 11)
     per = collections.Counter()
@@ -567,8 +595,8 @@ def closure(st):
         8: lambda: all(p[s["site"]]["last24"] == s["ceiling"] for s in st["sites"]),
         9: lambda: MEASURED["worst_area_margin"] >= FLOOR,
         10: lambda: MEASURED["required_bin_distance"] >= 0.05,
-        11: lambda: len({L["req"][c] for c in world.CODES}) == 12
-                    and not [c for c in world.CODES if L["cap"]["R3"][c] == L["req"][c]],
+        11: lambda: (not [c for c in world.CODES if L["cap"]["R3"][c] == L["req"][c]]
+                     and MEASURED.get("nearest_daylight_slots", 0) >= 2),
         12: lambda: p["late_receipts"] == 0,
         13: lambda: p["order_commutes"],
         14: lambda: p["order_invariant"],
@@ -598,7 +626,9 @@ def documents(st):
                   "at or above 1.15 times the area's projected 2027 weekly treatment demand",
                   "a week is one fifty-second of a contract year",
                   "The 2026 contract year is the calendar year 2026",
-                  "one for in-centre haemodialysis and two for ambulatory infusion"):
+                  "one for in-centre haemodialysis and two for ambulatory infusion",
+                  "rounded once, at the area level, up to the next whole treatment slot",
+                  "counted in the period of the contract year in which it was delivered"):
         ok("documents the agreement states: %s" % probe[:44], probe in lenient, probe)
     for banned in ("concurrent", "overlap", "greatest number", "at one time", "effective capacity",
                    "water loop", "compounding hood", "busiest week", "attested stations are",
@@ -910,12 +940,12 @@ def _ask_a_delta(st):
     column are taken instead of the service date and the area of the site treated."""
     good = {(a["code"], a["half"]): a["treatments"] for a in st["truth"]["ask_a"]}
     lazy = collections.Counter()
-    for r in st["oon_main"]:
-        adj = dt.date.fromisoformat(r[9])
-        if adj.year != 2026:
+    for r in st["oon_main"] + st["oon_runout"]:
+        sd = dt.date.fromisoformat(r[3])
+        if sd.year != 2026:
             continue
-        half = "H1" if adj.month <= 6 else "H2"
-        lazy[(r[7], half)] += int(r[11])
+        area = {e["name"]: e["area"] for e in st["extra"] if e["kind"] == "dropped"}[r[4]]
+        lazy[(area, "H1" if sd.month <= 6 else "H2")] += int(r[11])
     return sum(1 for k, v in good.items() if lazy.get(k, 0) != v)
 
 
@@ -1027,24 +1057,41 @@ def owed(st):
     p = st["profile"]
     h = {}
     good_a = {(a["code"], a["half"]): a["treatments"] for a in st["truth"]["ask_a"]}
-    # h1 the run-out supplement left out
-    no_run = collections.Counter()
-    for r in st["oon_main"]:
-        sd = dt.date.fromisoformat(r[3])
-        if sd.year != 2026:
-            continue
-        area = {e["name"]: e["area"] for e in st["extra"] if e["kind"] == "dropped"}[r[4]]
-        no_run[(area, "H1" if sd.month <= 6 else "H2")] += int(r[11])
-    h["h1_run_out_supplement_left_out"] = sum(1 for k, v in good_a.items() if no_run.get(k, 0) != v)
-    # h3 the register's own member residence area
-    res = collections.Counter()
-    for fn in (st["oon_main"], st["oon_runout"]):
-        for r in fn:
+    area_of = {e["name"]: e["area"] for e in st["extra"] if e["kind"] == "dropped"}
+
+    def claim_read(rows, area_key, header=True):
+        cl = {}
+        for r in rows:
             sd = dt.date.fromisoformat(r[3])
             if sd.year != 2026:
                 continue
-            res[(r[7], "H1" if sd.month <= 6 else "H2")] += int(r[11])
+            c = cl.setdefault(r[0], dict(hdr=None, lines=0, a=area_key(r),
+                                         h="H1" if sd.month <= 6 else "H2"))
+            if int(r[1]) == 0:
+                c["hdr"] = int(r[11])
+            else:
+                c["lines"] += int(r[11])
+        out = collections.Counter()
+        for k, c in cl.items():
+            out[(c["a"], c["h"])] += (c["hdr"] if (header and c["hdr"] is not None) else c["lines"])
+        return out
+
+    site_area = lambda r: area_of[r[4]]
+    # h1 the run-out supplement left out
+    no_run = claim_read(st["oon_main"], site_area)
+    h["h1_run_out_supplement_left_out"] = sum(1 for k, v in good_a.items() if no_run.get(k, 0) != v)
+    # h3 the register's own member residence area
+    res = claim_read(st["oon_main"] + st["oon_runout"], lambda r: r[7])
     h["h3_member_residence_area"] = sum(1 for k, v in good_a.items() if res.get(k, 0) != v)
+    # the primary: a claim's header line summed beside its own service lines
+    both = collections.Counter()
+    for r in st["oon_main"] + st["oon_runout"]:
+        sd = dt.date.fromisoformat(r[3])
+        if sd.year != 2026:
+            continue
+        both[(area_of[r[4]], "H1" if sd.month <= 6 else "H2")] += int(r[11])
+    h["primary_a_claim_header_summed_with_its_lines"] = sum(1 for k, v in good_a.items()
+                                                            if both.get(k, 0) != v)
     # h2 the corporate umbrella rows counted as sites
     good_b = {b["code"]: (b["sites"], b["stations"]) for b in st["truth"]["ask_b"]}
     corp = collections.defaultdict(lambda: [0, 0])

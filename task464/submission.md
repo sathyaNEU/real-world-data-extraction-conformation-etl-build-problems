@@ -4,20 +4,20 @@
 
 ## 1. Final Recommendation
 **The 2027 outpatient dialysis and infusion network holds 3,886 weekly treatment slots, and six of the twelve service areas sit below the adequacy standard.**
-Network slots are 3,886 against 3,556 required across the twelve areas, and Bexhollow is the nearest of the six to the standard, 20 slots short. Not the stations the directory attests, which are 327 against 274 deliverable positions and put three of those six areas above the standard. Not the stations the state licence lists, which are higher again. Not each site's busiest week in the record, which measures demand and leaves 8 of the twelve areas short.
+Network slots are 3,886 against 3,568 required across the twelve areas, and Durnsfield is the nearest of the six to the standard, 20 slots short. Not the stations the directory attests, which are 327 against 274 deliverable positions and put three of those six areas above the standard. Not the stations the state licence lists, which are higher again. Not each site's busiest week in the record, which measures demand and leaves 8 of the twelve areas short.
 
 ## 2. Critical Components
 1. Deliverable treatment positions across the forty sites in scope are **274**, against **327** attested stations
-2. Projected 2027 weekly treatment demand across the twelve areas is **3,092** treatments
-3. The weekly treatment slots the standard requires across the twelve areas are **3,556**
+2. Projected 2027 weekly treatment demand across the twelve areas is **3,095** treatments
+3. The weekly treatment slots the standard requires across the twelve areas are **3,568**
 
 ## 3. Step-by-Step Solution
 1. Took the sites carrying a 2027 contract intent on the attestation cycle current at the network position date in provider_directory_2027.csv: forty sites in twelve service areas.
 2. Counted the treatment sessions each site's roster staffs in a week from staffing_roster_2026q4.csv, and the treatments a position delivers in a session from Schedule 4 clause 4.2.
 3. Rebuilt each treatment's service interval from both tables of treatment_encounters.db, the 2023 and 2024 table carrying a stop time and the 2025 and 2026 table a length in minutes, and took each site's deliverable treatment positions as the greatest number of its own treatments running at one time over the four-year record: 274 positions against 327 attested stations.
 4. Multiplied each site's positions by its sessions a week and by its category figure, as Schedule 4 clause 4.2 sets the unit: 3,886 weekly treatment slots for the network.
-5. Took each area's 2026 contract year treatments a week from the same extract and grew them by the area's factor in enrolment_projection_2027.csv: 3,092 treatments a week projected and 3,556 weekly slots required.
-6. Rebuilt the out-of-network half-year counts on service date from out_of_network_payments_2026.csv with out_of_network_payments_runout_2027q1.csv, placing each claim in the area of the site that treated rather than the member's residence area: 48 figures on the Out of Network 2026 sheet.
+5. Took each area's 2026 contract year treatments a week from the same extract and grew them by the area's factor in enrolment_projection_2027.csv, then applied the 1.15 cushion and rounded each area up to the next whole slot as clause 4.4 requires: 3,095 treatments a week projected and 3,568 weekly slots required.
+6. Counted the out-of-network treatments a claim at a time from out_of_network_payments_2026.csv with out_of_network_payments_runout_2027q1.csv, taking a claim's header line as its own treatment count where the register writes one and its service lines where it does not: 48 figures on the Out of Network 2026 sheet.
 7. Took the state_licence_register.xlsx facility row covering the position date for each licence number, corporate rows excluded, for the licensed supply, and the row covering the 2026 filing's own position date to resolve each distinct site in state_adequacy_filing_2026.xlsx: 24 and 24 figures.
 8. Compared each area's slots with its required figure: 6 of the twelve areas sit below the standard and the network holds 3,886 weekly treatment slots.
 
@@ -68,23 +68,23 @@ Network slots are 3,886 against 3,556 required across the twelve areas, and Bexh
 
 ### area_capacity_2027.xlsx
 2. Area Capacity, the twelve areas in the sheet's order, whole slots:
-   - Ammerly: 326 slots, 244 required, meets the standard yes
-   - Bexhollow: 312 slots, 332 required, meets the standard no, 20 slots short
-   - Crannock: 366 slots, 270 required, meets the standard yes
+   - Ammerly: 326 slots, 245 required, meets the standard yes
+   - Bexhollow: 312 slots, 335 required, meets the standard no, 23 slots short
+   - Crannock: 366 slots, 271 required, meets the standard yes
    - Durnsfield: 170 slots, 190 required, meets the standard no, 20 slots short
-   - Eastmoor Reach: 302 slots, 238 required, meets the standard yes
-   - Fallowbray: 360 slots, 259 required, meets the standard yes
-   - Granleigh: 312 slots, 334 required, meets the standard no, 22 slots short
+   - Eastmoor Reach: 302 slots, 239 required, meets the standard yes
+   - Fallowbray: 360 slots, 260 required, meets the standard yes
+   - Granleigh: 312 slots, 335 required, meets the standard no, 23 slots short
    - Hesper Vale: 265 slots, 207 required, meets the standard yes
-   - Innsmere: 386 slots, 433 required, meets the standard no, 47 slots short
-   - Jarrowmead: 396 slots, 301 required, meets the standard yes
-   - Kettlebrook: 486 slots, 520 required, meets the standard no, 34 slots short
-   - Lowenbrook: 205 slots, 228 required, meets the standard no, 23 slots short
-3. Nearest the standard without meeting it: Bexhollow, 20 slots short.
+   - Innsmere: 386 slots, 434 required, meets the standard no, 48 slots short
+   - Jarrowmead: 396 slots, 302 required, meets the standard yes
+   - Kettlebrook: 486 slots, 521 required, meets the standard no, 35 slots short
+   - Lowenbrook: 205 slots, 229 required, meets the standard no, 24 slots short
+3. Nearest the standard without meeting it: Durnsfield, 20 slots short.
 4. Out of Network 2026, twelve areas by half, whole treatments and shares to one decimal:
    - Ammerly, H1: 572 treatments, 9.7 per cent
    - Ammerly, H2: 559 treatments, 9.8 per cent
-   - Bexhollow, H1: 234 treatments, 3.3 per cent
+   - Bexhollow, H1: 234 treatments, 3.2 per cent
    - Bexhollow, H2: 229 treatments, 3.3 per cent
    - Crannock, H1: 650 treatments, 10.1 per cent
    - Crannock, H2: 638 treatments, 10.2 per cent

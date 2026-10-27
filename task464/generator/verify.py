@@ -12,6 +12,7 @@ import collections
 import csv
 import datetime as dt
 import json
+import math
 import os
 import re
 import sqlite3
@@ -53,6 +54,8 @@ def main(argv=None):
     # the agreement's own words give the standard, the window and the category figure
     ag = read_pdf(os.path.join(T, "network_agreement_2027_capacity_terms.pdf"))
     cushion = float(re.search(r"at or above ([\d.]+) times", ag).group(1))
+    assert "up to the next whole treatment slot" in ag, "the rounding direction is not filed"
+    assert "counted in the period of the contract year in which it was delivered" in ag
     assert "a week is one fifty-second of a contract year" in ag
     assert "The 2026 contract year is the calendar year 2026" in ag
     turns = {"in-centre haemodialysis": 1, "ambulatory infusion": 2}
@@ -117,7 +120,7 @@ def main(argv=None):
         area_vol[r["service_area_code"]] += y26[sid]
     req, short = {}, []
     for c in sorted(areas):
-        req[c] = int(round(cushion * growth[c] * area_vol[c] / 52.0))
+        req[c] = int(math.ceil(cushion * growth[c] * area_vol[c] / 52.0 - 1e-9))
         same("area.%s.slots" % c, areas[c], want["area"][c]["slots"])
         same("area.%s.required" % c, req[c], want["area"][c]["required"])
         same("area.%s.meets" % c, "yes" if areas[c] >= req[c] else "no", want["area"][c]["meets"])
@@ -129,19 +132,29 @@ def main(argv=None):
          want["call"]["required_weekly_slots_network"])
     same("cc1", sum(sweep(iv[sid]) for sid in pop), want["cc1"])
     same("cc2", sum(int(r["attested_stations"]) for r in pop.values()), want["cc2"])
+    same("cc3", int(round(sum(growth[c] * area_vol[c] / 52.0 for c in areas))), want["cc3"])
     same("cc4", sum(req.values()), want["cc4"])
 
     # ask A: the area of the site treated, the service date, the run-out supplement included
     dropped = {r["site_name"]: r["service_area_code"] for r in rows
                if int(r["attestation_cycle"]) == cur and r["contract_intent_2027"] == "none"}
-    oon = collections.Counter()
+    claims = {}
     for fn in ("out_of_network_payments_2026.csv", "out_of_network_payments_runout_2027q1.csv"):
         for r in csv.DictReader(open(os.path.join(T, fn), encoding="utf-8")):
             d = dt.date.fromisoformat(r["service_date"])
             if d.year != 2026:
                 continue
-            oon[(dropped[r["service_facility_name"]], "H1" if d.month <= 6 else "H2")] += \
-                int(r["treatment_units"])
+            k = r["claim_id"]
+            c = claims.setdefault(k, dict(hdr=None, lines=0,
+                                          a=dropped[r["service_facility_name"]],
+                                          h="H1" if d.month <= 6 else "H2"))
+            if int(r["line_no"]) == 0:
+                c["hdr"] = int(r["treatment_units"])
+            else:
+                c["lines"] += int(r["treatment_units"])
+    oon = collections.Counter()
+    for k, c in claims.items():
+        oon[(c["a"], c["h"])] += c["hdr"] if c["hdr"] is not None else c["lines"]
     for c in sorted(areas):
         for h in ("H1", "H2"):
             inn = sum(half26[(sid, h)] for sid, r in pop.items() if r["service_area_code"] == c)

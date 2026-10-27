@@ -1,0 +1,41 @@
+plan_site_id,site_name,service_area_code,service_area_name,weekly_treatment_slots
+PS-10437,Ammerly Dialysis Center,SA-01,Ammerly,80
+PS-10474,North Ammerly Infusion Center,SA-01,Ammerly,80
+PS-10511,Pendrick Dialysis Center,SA-01,Ammerly,126
+PS-10548,Ammerly Heights Infusion Center,SA-01,Ammerly,40
+PS-10585,Bexhollow Dialysis Center,SA-02,Bexhollow,96
+PS-10622,Lower Bexhollow Dialysis Center,SA-02,Bexhollow,120
+PS-10659,Stanmer Cross Dialysis Center,SA-02,Bexhollow,96
+PS-10696,Crannock Infusion Center,SA-03,Crannock,40
+PS-10733,Crannock Mills Dialysis Center,SA-03,Crannock,150
+PS-10770,Dalbury Dialysis Center,SA-03,Crannock,96
+PS-10807,Sarn Hill Dialysis Center,SA-03,Crannock,80
+PS-10844,Durnsfield Infusion Center,SA-04,Durnsfield,40
+PS-10881,Durnsfield West Infusion Center,SA-04,Durnsfield,50
+PS-10918,Oakenby Dialysis Center,SA-04,Durnsfield,80
+PS-10955,Eastmoor Reach Dialysis Center,SA-05,Eastmoor Reach,126
+PS-10992,Harbury Point Dialysis Center,SA-05,Eastmoor Reach,96
+PS-11029,Melliscombe Infusion Center,SA-05,Eastmoor Reach,80
+PS-11066,Fallowbray Infusion Center,SA-06,Fallowbray,80
+PS-11103,Fallowbray South Dialysis Center,SA-06,Fallowbray,144
+PS-11140,Winderly Infusion Center,SA-06,Fallowbray,40
+PS-11177,Thrushmead Dialysis Center,SA-06,Fallowbray,96
+PS-11214,Granleigh Dialysis Center,SA-07,Granleigh,108
+PS-11251,Granleigh Park Dialysis Center,SA-07,Granleigh,96
+PS-11288,Ovenshaw Dialysis Center,SA-07,Granleigh,108
+PS-11325,Hesper Vale Infusion Center,SA-08,Hesper Vale,80
+PS-11362,Culvert Bridge Infusion Center,SA-08,Hesper Vale,80
+PS-11399,Rimmerton Dialysis Center,SA-08,Hesper Vale,105
+PS-11436,Innsmere Infusion Center,SA-09,Innsmere,120
+PS-11473,Innsmere Docks Infusion Center,SA-09,Innsmere,120
+PS-11510,Falgate Infusion Center,SA-09,Innsmere,50
+PS-11547,Brisley Row Dialysis Center,SA-09,Innsmere,96
+PS-11584,Jarrowmead Dialysis Center,SA-10,Jarrowmead,120
+PS-11621,Jarrowmead East Dialysis Center,SA-10,Jarrowmead,126
+PS-11658,Cawthorne Spur Dialysis Center,SA-10,Jarrowmead,150
+PS-11695,Kettlebrook Dialysis Center,SA-11,Kettlebrook,162
+PS-11732,Kettlebrook Green Dialysis Center,SA-11,Kettlebrook,180
+PS-11769,Marlow Dene Dialysis Center,SA-11,Kettlebrook,144
+PS-11806,Lowenbrook Dialysis Center,SA-12,Lowenbrook,105
+PS-11843,Lowenbrook Landing Infusion Center,SA-12,Lowenbrook,40
+PS-11880,Arrowfield Infusion Center,SA-12,Lowenbrook,60
