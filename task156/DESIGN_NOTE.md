@@ -460,7 +460,25 @@ original draw and is kept), no BLOCK.
 
 ## Gates at ship
 
-GATES_PENDING
+On target.zip f17b387d (2026-10-27), the regular checks only (`CLAUDE.md`, the STOP block):
+- Generator: 110 checks pass (the call and its 22-construction convergence, the access-holder reading and the
+  day-by-day hand-off, the clean-truth analyst test R3a and the decisive step alone R3b, the closed-cohort back-test,
+  every fork row SF1 to SF14, the ladder, the three asks with their stops and devices, the separation, the realism
+  sweep, NO DESCRIPTION, the input gates); `verify.py` agrees on its own code path (32: 5 2 6 4 4 2 4 3 2, asks 27, 27
+  and 9 figures); two builds byte-identical (target, golden, figures.json, submission.md).
+- `figures_check.py` 112 figures, 0 absent; `precut.py` 52 checks, 0 FAIL, 0 WARN; `voice-check.py` PASS; `leak.py
+  --asof 2026-10-09` REVIEW with every line answered (Leak sweep), no LEAK; the leak reader clean; `guard.py heart`
+  WARN (people.first), `surface` no hard tell, task157 and task452 differentiated on the card.
+- Judge pass 3 (run r3 on f17b387d): DETERMINISTIC, APPROVE, no fix. It recomputed the nine site needs from the bundle
+  (5.33, 1.85, 6.23, 4.14, 4.13, 1.99, 4.00, 3.00, 2.00: 32, 6 above the envelope), the pace (39.8 pooled from the
+  saturated site-months) and the 2027 mean pool (8,814); the total held at 32 across paces of 39.7 to 41, annual and
+  monthly netting, yearly and monthly hazard bands and with or without the floor share, no site within 0.17 FTE of an
+  edge; a constant pool (24), the pooled flat lapse rate (40) and the survivor-biased tenure curve (27) it ruled
+  method errors the data exposes, not defensible alternatives; all 63 ask figures reproduced. Advisory only: the WFM
+  export's site label is each moderator's current site on 1,194 approved lines against the assignment history, Ask B's
+  device, closed by the effective-dated assignments and the handbook's sentence; left as built. Gate G forecasting,
+  analytical_non_defect, surface_read_dependency no; Gate H domain, layers and decisive step pass
+  (`determinism_check_report_pass3.md`).
 
 ## Pre-ship check
 

@@ -1,11 +1,11 @@
 {
   "task": "task156",
   "owner": "sathya8571",
-  "status": "PAUSED",
+  "status": "SHIPPED",
   "domain": "product-analytics/retention-cohort-lifetime-value-modeling (client domain product-analytics; world: trust and safety at a developer Q&A network)",
   "objective": "forecasting",
-  "stage": 4,
-  "stage_name": "check",
+  "stage": 5,
+  "stage_name": "ship",
   "updated": "2026-10-27",
   "stump": "Carrying each site's reviewer pool from September 2026 at its own lapse rate of the last two years, with no new reviewers since access became invitation-only, files 41 FTE (40 on the last twelve months' rate, 38 on the last three); the step that lands it there is reading one stop rate off a pool that was still taking in newcomers, when reviewers stop at about 9 per cent a month in their first year and under one per cent from their fourth: carried on the stop rate of each reviewer's own tenure, counted from when the roster first sees them, the 10,607 active reviewers average about 8,800 a month in 2027 and the request is 32 FTE (27 with the tenure curve read from each grant date).",
   "architecture": 1,
@@ -25,19 +25,19 @@
     "nearest": "driver 0.08 (task243)"
   },
   "judge": {
-    "verdict": "DETERMINISTIC",
-    "disposition": "APPROVE (re-judge covering rounds 1 and 2; every figure reproduced)",
-    "report": "task156/determinism_check_report.md (round 1: task156/determinism_check_report_round1.md)"
+    "verdict": "DETERMINISTIC (pass 3, run r3 on f17b387d, the loop 3 pack)",
+    "disposition": "APPROVE (every main-call and ask figure reproduced; the open pool's rate, a constant pool and the grant-date curve ruled method errors; no fix)",
+    "report": "task156/determinism_check_report_pass3.md (round 1: determinism_check_report_round1.md; round 2: determinism_check_report.md)"
   },
   "returned": [
     {
       "date": "2026-10-27",
       "portal": "FAILED_TO_STUMP: both responses landed the call (35 FTE, 9 above the envelope), building each site's capacity against its inbox at the saturated pace and carrying each pool at its own lapse rate with almost no new reviewers",
       "repair": "design (loop 3): the capacity framing kept as the default path; the decisive step moved to how the pool is carried: two kinds of reviewer (most new reviewers casual, stopping at about 12 per cent a month, a steady core at about 0.5), grants following each site's question level until review access became invitation-only on 1 September 2026 (filed in the operations handbook), so the 2027 pool is a closed cohort carried on survival by tenure read from the left-truncated roster; the data dictionary, file list and markdown notes removed (a handbook and a question count standard carry the conventions); golden 32 FTE (5, 2, 6, 4, 4, 2, 4, 3, 2), 6 above the envelope; the asks unchanged",
-      "commit": ""
+      "commit": "RESHIPPED (task156) on 2026-10-27, target.zip f17b387d"
     }
   ],
-  "resume": "stage 4 on target.zip f17b387d: every free gate green (checks 110, verify, byte-identical, figures_check 112/0, precut 52/0, voice-check, leak.py REVIEW answered, heart WARN, surface no hard tell with task157 and task452 differentiated); the leak reader clean (Q6 analytical); the judge thread r3 running from /tmp/determinism-check-task156-r3/judge_brief.md: on its verdict.md re-invoke the determinism-judge agent for determinism_check_report_pass3.md, fix any FIX_NOW in the generator and re-run the free gates, then write the ledger rows and ship RESHIPPED",
+  "resume": "",
   "approved": null,
   "delivered": "2026-10-17",
   "portal": null,
