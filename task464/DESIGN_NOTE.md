@@ -878,6 +878,29 @@ to make a solver notice a structure.
   task270's architecture 4 draw). The two the cell might be thought to add are barred before measurement: unit
   delineation is `grain_or_unit` and register imputation is a model of the measurement.
 
+- **Architecture 5, cell B (physical-environmental-sciences / emissions-inventory): refused on the driver map
+  and an enumeration, 2026-10-27, no harness spent.** An inventory figure is a sum of activity times factor over a
+  window inside a boundary, so its deciding quantity is one of six inputs and all six have a record: the activity
+  level (task470, task474, task480, task484), the rate (task459, task460, task478), completeness or detection
+  (task452, task462, task470), the allocation of an event to the window (task476, task487), the boundary (a filed
+  population, so rule application filed and Gate C unfiled) and the aggregation structure (arithmetic on shipped
+  columns, with the factor layer the measured instance of the retransformation law at 544.6 to 602.1 tonnes). The
+  two directions left were refused on paper: a per-unit split of a metered system residual out of overlapping group
+  balances is a regression on a residual once meter noise is realistic (section 1.2c bars it by name), and an
+  intersection of two finer logs is a header-found join on two shipped timestamp columns (readability test 2).
+- **Architecture 5, cell D (survey-research-official-statistics / seasonal-adjustment-official-time-series-
+  production): refused on measurement, 2026-10-27, 24 seeds.** The task type's three client rigor cards each have a
+  record (card 1 held in-cell by task146, card 2 a stated vintage and Layer 1, card 3 measured dead at task198 at
+  2.95 distinct turning points of 5 and already set aside at task487's draw), and the six in-cell ETL cards spend the
+  six ways around the seasonal filter. The one shape architecture 4 left standing was instantiated a third time, a
+  certified forward factor applied to a component level recovered from the office's own unit returns, and both horns
+  are measured dead: forced, the cheapest licensed construction IS the golden at 0.000000 bins and in its graded bin
+  24 of 24, with the published component level reaching the same figure by one divide at correlation +1.0000000000,
+  24 of 24; sampled, (a) never exceeds (b) plus (c) in any of 7 dial settings (best ratio 1.044, (c) exactly 0.000
+  bins), and the smallest rung gap is the golden to the cheapest licensed member at 5.36 bins against a decisive step
+  worth 51.46. A certified conversion consumes a level and a key and nothing else, which closes the shape in this
+  cell with no fifth case.
+
 ## Portal result and the diagnosis, 2026-10-27
 
 **Both responses landed the call.** Each funded the golden six (Kessick, Varlow City, Brenmoor County, Calderidge
@@ -1395,3 +1418,226 @@ Writing them would be a design argued past its own measurements. `precut.py` exi
 WARN, and the one FAIL is the card-domain check the author owns (the registered card's domain
 `healthcare-delivery-health-economics` is not in `pipeline.json`'s domain), so every other check is still reading
 architecture 3's note and the exit is not evidence about architecture 5.
+
+
+## Architecture 5, the parallel hunt: cells B and D screened and refused, measured 2026-10-27
+
+The author allocated this pass the two ETL cells the section above says went to a parallel hunt:
+`physical-environmental-sciences / emissions-inventory` (cell B, 11 cards, the most spent cell on the
+objective) and `survey-research-official-statistics / seasonal-adjustment-official-time-series-production`
+(cell D, 6 cards, the least spent of the live cells). Both are refused. Cell B is refused on the driver map
+and an enumeration over the six inputs an inventory figure has, with a record for each. Cell D is refused on
+its three client rigor cards, each with a record, and then on the one shape architecture 4's screen left
+standing, which is priced here for the third time and dies in a new place: its forced horn is an identity at
+0.000000 bins and its sampled horn never clears its own licensed family. The harness is
+`proto_t464_a5.py` in the session scratch directory, 24 seeds, run twice with byte-identical output.
+
+### The insight each spent driver in these two cells already uses, one line per build
+
+Cell B, emissions inventory (11 cards, read from `guard.py mechanisms --objective etl`):
+- task452 a deforestation area from reference points drawn on a preliminary map, each point weighted by its own design weight rather than by the revised classification's strata.
+- task459 an emission rate that falls as output rises and rises again above a unit's base capability, read at the committed level from the interval records rather than carried from a period average.
+- task460 what a new zero-rate source removes, set by the units responding at the margin in the hours it would run, estimated interval by interval and weighted by its own operating profile.
+- task462 a period total of many intermittent sources seen through a few snapshot surveys whose detection chance rises with size, each detection standing for the instances its probability implies.
+- task470 activity at sites seen through a sensor that records every event of some units and none of others, rebuilt as the never-recorded units times the activity per such unit.
+- task474 short classification counts expanded to the year, the facility-served sites carried by their facility's own transaction record rather than by the reference stations' calendar.
+- task476 items found only at an annual survey taken in each district's own month, their unrecorded start times taken from a second record whose items are reported as they begin.
+- task478 a rate rising steeply with a property of an input a third party supplies and records monthly by supply area, each spot test carried from its test month's input to every month's.
+- task480 a future period's miles read from one cumulative odometer, taken against the cross-section's cumulative curve by age rather than as the unit's lifetime average.
+- task484 a period's use of one fuel read through a competing fuel's metered deliveries falling further at the households that own the appliance than at those that do not.
+- task487 events found at a scheduled visit, a share of them started by the previous visit and venting the whole window, the share read from how often each kind is found against the window's length.
+
+Cell D, seasonal adjustment and official time-series production (6 cards on ETL, plus task146 on forecasting):
+- task123 a period total split onto calendar months by how fast it ran inside each reading interval, measured on the densely read sample.
+- task453 a phased questionnaire redesign's effect as the mean of the per-occasion effects, not as the rotation arms' difference.
+- task463 a spending-weighted price change freed of chain drift under stockpiling, by comparisons that do not route through the cut periods' weights.
+- task467 a temporary break and a permanent one beginning the same day, separated within the components the permanent one acts on.
+- task477 a period total recorded on the pay date, each unit's exposure to every pay-date phase estimated from its own quarterly record.
+- task481 a count restated onto a new classification at each month's own mix rather than at the dual-coded window's.
+- task146 (same cell, forecasting) an administrative calendar step in an official weekly series sized by region and by the month of the refusal, which is this task type's rigor card 1 as its own card states.
+
+Read against the five moves the section above found across all 68 ETL drivers, cell B holds the first move
+(complete a record the process could not make) nine times and the re-timing move twice, and cell D holds
+re-timing, re-graining, re-keying and splitting. Neither cell holds the per-case-recovery move, which is why
+the one shape priced below is the only candidate either cell offers and why the enumerations close.
+
+### Cell B refused: six inputs, each with a record, and no seventh
+
+An inventory figure is a sum over sources of an activity level times a factor, over a window and inside a
+boundary. The deciding quantity is therefore one of exactly six inputs, and every one has a record:
+
+| the input the decisive step would move | record |
+|---|---|
+| the activity level per source | task470, task474, task480, task484 |
+| the emission rate or factor per source | task459, task460, task478 |
+| the completeness or detection of the source set | task452, task462, task470 |
+| the allocation of an event to the window (onset, duration) | task476, task487 |
+| the source population (the inventory's boundary) | population, so one of the five parts `determinism-check` section 1 requires filed: filed it is rule application, unfiled it is Gate C, which is this slot's architecture 3 death |
+| the aggregation structure (a filed, certified curve evaluated on shipped rows) | arithmetic on shipped columns, so rule application; and the factor layer itself is the measured instance of the retransformation law, a family spanning 544.6 to 602.1 tonnes with the bin test failing 3 of 5 |
+
+There is no seventh input, because an inventory is that sum and nothing else. The map above says the same
+thing from the mechanism side: all eleven drivers are about how the instrument or the record sees the
+quantity (detection, sensors, snapshot surveys, onset timing, cumulative totals, a third party's
+supply-area property, a marginal response), which is precisely the ground architecture 4's closing line
+ruled out as having no room left for a propagation or a design. The two directions a draw might still have
+reached for were priced on paper and refused without a harness, because each has a named route to the golden
+before a world is drawn: an exact per-unit split of a metered system residual out of overlapping group
+balances is a regression on a residual once meter noise is realistic, which section 1.2c bars by name; and
+an intersection of two finer logs (the hours a process ran while its control device was out) is a
+header-found join on two shipped timestamp columns, so readability test 2 fires and the decisive rung is not
+silent. The mandated-indicator law also fires on the cell directly: a statutory emissions inventory is a
+published output, so a quantity forced from the deciding organisation's own process logs has its correction
+published beside it.
+
+### Cell D refused: the three client rigor cards, each with a record
+
+`layer2-rigor-patterns.md` gives this task type exactly three cards, and they are the candidate set for a
+draw that wants the field's own analysis to decide:
+
+1. **Model outliers and level shifts in regARIMA before seasonal filtering.** Held in-cell by task146, whose
+   own card names this line as its Layer 2 pattern. It is also a model of the measurement, and the card's own
+   pin ("event dates and type given") is rule application.
+2. **Revisions compare real-time concurrent vintages.** The pin is "first release vs a stated later vintage",
+   which is a stated convention; and `CLAUDE.md` rule 2 puts a preliminary and a revised release overlapping
+   in Layer 1, which may never carry the stump.
+3. **Date turning points on the trend-cycle under a phase rule.** Measured dead elsewhere in this repo
+   before this pass: task198's rescue (A) priced the discretised turning point at **2.95 distinct turning
+   points of 5** across the licensed family, max 4, with 19 of 20 worlds having some member naming the true
+   turning point, which is the trap, and the spread running across four quarters of an eight-quarter window,
+   so Gate C fails on the discretised object. It was also already set aside at task487's own draw. No harness
+   was spent re-measuring it here.
+
+So the cell's six ETL cards use none of its three rigor cards: all six go around the seasonal filter, because
+the filter is an estimated object and the decisive step may not be priced by a model of the measurement. The
+six ways around it (re-timing within the interval, the measurement change, the source change, the concurrent
+break, the calendar exposure, the classification bridge) are the six cards listed above.
+
+### Cell D, the one surviving shape priced: a certified adjustment with a per-case recovery
+
+Architecture 4's screen left exactly one shape standing and both of its instances are dead. This is the
+third instance, and the cell it was drawn into is the one the parallel hunt's note says to price: the
+adjustment is **filed and certified in the pack** (a statistics office does publish forward factors, signed
+off, so applying one is a lookup at rung 0 and no estimator noise reaches the graded figure), and the
+decisive step recovers an exact input to it from a finer file. The instantiation: a statistics office
+certifies forward seasonal factors per series and month; a transport authority's 2027 indexed service
+payment is set from the seasonally adjusted December level of one regional component the office publishes
+only unadjusted; the finer file is the office's own monthly unit returns, which the published aggregate
+throws away. Graded to the nearest 1,000 currency units on a golden near 994 bins.
+
+**The closure, as an enumeration with no fifth case.** A certified factor table is a map from (series,
+period) to a factor, applied to a level. It consumes a LEVEL and a KEY and nothing else, so the recovery's
+input is one of four things:
+
+| the input recovered | record |
+|---|---|
+| the level the factor consumes | a sum over shipped rows, measured below at 0.000000 bins: one group-by plus one lookup IS the golden |
+| which period a record belongs to | time semantics, held in-cell by task123, and rule 3 bars it from deciding a call |
+| which series or cell a record belongs to | a classification reading, held in-cell by task481, and rule 3 bars it |
+| the calendar composition of the period | an opportunity count, held in-cell by task477 |
+
+The five pins a forcing file may legitimately supply (a structure, an order, an opportunity count, an overlap
+or a condition) map onto that table with nothing left over: structure is the mix family (task481 in-cell), an
+opportunity count is task477, an overlap is two sources on one case-period, which is the data-integration
+cell the parallel hunt refused, a condition is a field reading, and an ORDER cannot enter at all, because a
+factor is applied to a level and a level has no order.
+
+**Horn A, the recovery's input is present in the records, measured over 24 seeds.**
+
+| quantity | measured |
+|---|---|
+| cheapest licensed construction (one group-by on the unit returns, one certified lookup) against the golden | **0.000000 bins** mean distance |
+| that construction in the golden's graded bin | **24 of 24** |
+| the office's own published component level, one divide, correlation with the golden | **+1.0000000000** |
+| that one-divide route in the golden's graded bin | **24 of 24** |
+
+The first pair is the stop condition the author set, fired at its maximum: the cheap neighbour does not
+merely land the call, it IS the call, so no default path ending on a wrong answer can be written and no
+ladder exists. The second pair is price 1, the mandated-indicator precis, measured on this cell rather than
+cited: an official series publishes its own component levels, so the forcing file ships a one-column precis
+of the recovery and the one-divide route reaches the same figure with no recovery at all.
+
+**Horn C, the certification withdrawn from the component so its factor must be estimated.** (a) is the
+decisive step's worth, the component's own factor against the certified national one, which is also the only
+lever the shape has left. (b) is the spread across the licensed family (stable seasonal factors and the 3x3,
+3x5 and 3x9 moving factors of X-11's own family, plus the national route). (c) is **0.000 bins** at every
+setting, because no member has a fitted parameter: each factor is an exact function of the record, which is
+what the filed conversion was supposed to buy and does buy.
+
+| dial, how far the component's seasonality sits from the national one | (a) bins | (b) bins | (a)/(b) | cells (a) > (b) + (c) |
+|---|---|---|---|---|
+| 0.00 | 0.00 | 23.39 | 0.000 | 0 of 24 |
+| 0.25 | 13.12 | 25.01 | 0.525 | 5 of 24 |
+| 0.50 | 26.07 | 29.61 | 0.880 | 8 of 24 |
+| 1.00 | 51.46 | 49.27 | 1.044 | 10 of 24 |
+| 1.50 | 75.78 | 75.97 | 0.997 | 12 of 24 |
+| 2.25 | 110.19 | 116.80 | 0.943 | 11 of 24 |
+| 3.00 | 145.59 | 160.83 | 0.905 | 9 of 24 |
+
+**0 of 7 settings** have (a) greater than (b) plus (c) on the median, the ratio peaks at **1.044** and never
+reaches any floor, and the joint cell count never passes 12 of 24. The dial is one-ended by arithmetic: the
+only parameter that raises (a) is the component's departure from the national shape, and that same departure
+is what the licensed family disagrees about, so buying the lever buys the spread one for one. (b) is the
+binding term at every setting, and (b) is the WHAT screen read as a number: closing it means filing which
+factor applies, which files the comparison and the unit, so the step becomes rule application. That is
+architecture 3's own law arriving in this cell's nouns.
+
+**The rung-beneath table at the realistic dial (diverge 1.0), 24 seeds.**
+
+| licensed construction | in the golden's bin | mean distance, bins | distance against the nearest rung |
+|---|---|---|---|
+| the certified national factor (the default path) | 0 of 24 | 69.77 | 13.016 |
+| stable seasonal factors, the X-11 reflex | 2 of 24 | 5.36 | 1.000 |
+| 3x3 moving factors | 1 of 24 | 28.67 | 5.350 |
+| 3x5 moving factors | 1 of 24 | 25.21 | 4.703 |
+| 3x9 moving factors | 1 of 24 | 23.60 | 4.404 |
+
+So the smallest rung gap is the golden to the cheapest licensed member, 5.36 bins against a decisive step
+worth 51.46, which is the disqualifying pattern the author's second law names: the bin test is necessary and
+not sufficient, and a draw whose smallest rung gap is the golden to the cheap route is dead even where the
+factor arithmetic is comfortable. One call to the standard stable-factor routine on the component's own
+history sits a tenth of the decisive step's distance from the golden, while no member reaches the golden's
+bin more than 2 times in 24, so Horn C fails Gate C and Gate F at once: the family forks the figure by 49.27
+bins and the cheapest member is the nearest to the truth.
+
+### The axis window, re-measured at the moment of the draw, and the drafted card
+
+It moved twice more inside this pass, which is now four movements in one day. At the first reading the last
+three live cards were task141, task308 and task307, so `committee_or_panel` and `cooperative_or_member_body`
+BLOCKed, as the author's brief recorded. At the reading taken when the card was drafted they were task270,
+task310 and task311, so those two are free again and three different axes are barred. The drafted card
+(`task464_card_arch5.json` in the session scratch directory, never registered) returns, after a
+differentiation line against task450 clears `test.same_driver_older`:
+
+- `BLOCK ban.artifact` context-artifact type published_series repeats a recent build against task311
+- `BLOCK ban.strategy` stump strategy grain_or_unit repeats a recent build against task311
+- `BLOCK ban.org_family` the organisation family (research_or_statistics_office) repeats a recent build against task311
+- `WARN three_rules.strategy_risk` stump strategy grain_or_unit often decides on reading a field or applying a stated rule
+- `WARN overuse.strategy` stump strategy grain_or_unit used in 3 of the last 12 builds
+- `WARN people.first` first name Joshua appears in an older build against task305; Sarah against task108; Jillian against task457
+
+Nearest drivers 0.08 (this slot's own architecture 4, in lineage), 0.07, 0.07, 0.05, 0.05. The artifact and
+the organisation family are redrawable; the strategy is not, because `grain_or_unit` is the honest label for
+a step that recovers a level at a conversion's own grain, and relabelling an axis to pass the guard is banned.
+The `three_rules.strategy_risk` WARN is the measurement arriving mechanically: the guard says this strategy
+often decides on reading a field or applying a stated rule, and Horn A measured exactly that at 0.000000 bins.
+
+### What is not written, and why
+
+**What the objective has left, read off the taxonomy rather than guessed.**
+`guide-to-prompt/references/domains/README.md` tags exactly six subdomains for ETL, and all six are now
+screened or spent: `data-integration-record-linkage-entity-resolution` (cell A) and
+`census-register-administrative-data-quality` (cell C), refused by the parallel hunt today;
+`emissions-inventory` (cell B) and `seasonal-adjustment-official-time-series-production` (cell D), refused
+here today; `item-response-theory-test-equating`, closed by this slot's architecture 4 enumeration; and
+`payment-claims-health-plan-analytics`, which is this slot's own architecture 3, spent on the measured Gate C
+against Gate F one-dial finding and barred to this slot besides by `test.own_lineage`. No unscreened client
+cell on this objective exists. The two moves left are the author's: a house domain inheriting one of those six
+client task types, which does not reopen that task type's deciding quantities and so inherits these
+enumerations, or moving task464 to another objective, where the slot's own law (an input that is neither a
+filed column nor an exact count of shipped rows) is a design constraint rather than a cell property.
+
+There is no numbered default path, no stump sentence, no data-native sentence, no three-rules block, no ask
+layer and no pack design for cells B or D, because the screens they rest on did not hold: Horn A leaves no
+figure that is not the golden, so a default path ending on a wrong answer cannot be written at all. No pair
+is quoted either: the pair arithmetic assumes a ladder keeping one of the top two off the call, and with no
+ladder the number measures nothing, which is the error that retired task190.
