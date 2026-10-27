@@ -1,135 +1,162 @@
 {
- "task": "task139",
- "architecture": "v2",
- "drawn": "2026-10-26",
- "slot_note": "Re-root of task139 (architecture 1 spent on the portal, both responses on the golden). The world, the decision and the quantity are kept (seventeen nurse teams of twenty places across eight claim units, at most three a unit, the ultimate indemnity they save booked in the AY2027 pick, a randomised pilot with an independent verification); the organisation is redrawn from a stock carrier to a group self-insurance trust because financial_institution is banned against task304, and the decisive step is new: the pilot called and assessed every drawn intake before splitting its pairs, so the randomised contrast is the file's increment over a called intake, while a unit with no team has no calls.",
- "domain": "actuarial-science-insurance",
- "subdomain": "claims-frequency-severity",
- "client_domain": "actuarial-science-insurance",
- "niche": "a Missouri employers' group self-insurance trust placing seventeen early-return nurse teams across eight claim units for accident year 2027 and booking the ultimate indemnity they save in its AY2027 pick, when the pilot's nurses called and assessed every drawn intake, worker and employer, before splitting its pairs",
- "objective": "forecasting",
- "shape": "05",
- "decision_type": "allocation_to_total",
- "answer_unit": "count",
- "answer": "",
- "answer_source": "",
- "gap": [
-  "population",
-  "objective"
- ],
- "pattern": [
-  "none"
- ],
- "generators": [
-  "G1",
-  "G12",
-  "G9"
- ],
- "gate_g": "decomposition_attribution",
- "calibration_form": "gold_standard_subsample",
- "stump_strategy": "causal_design",
- "decisive_rule_filed": false,
- "official_decoy": false,
- "validated_decoy": false,
- "context_artifact": "register",
- "stump_class": "analytical",
- "analyst_test": "A strong analyst who reads the register, the review, the charter and the pick memo right reads the randomised pilot per assigned intake, each arm's indemnity-claim rate times its verified severity, values each unit's teams at that saving over an ERN intake's place-days and files HC-SS 2, MF-SS 3, RW-SS and CN-SS none and three to each other-injury unit with a credit of about 2.7 million, because every drawn intake had the opening call before its pair was split, so the usual-handling arm is a called intake and the contrast is only what a file adds; a unit with no team has no calls, and read against the intakes the pilot never drew the call keeps about a fifth of the strain intakes inside the waiting period and reaches every intake of a unit once one team works there.",
- "domain_test": "The deciding quantity is a workers' compensation pure premium per intake, the indemnity-claim rate times the verified ultimate severity, under no call, the call and the call with a file, the call working through the employer's suitable duties inside Missouri's three-day waiting period; with another field's nouns there is no waiting period that turns a short absence into a claim paying nothing, no conversion of a report into an indemnity claim and no accident-year ultimate, and the task stops reading the same.",
- "layer2_family": "estimand_identification",
- "layer2_pattern": "own:randomised-contrast-nets-out-a-shared-opening-call",
- "layer1": [
-  "claim numbers written four ways across the register, the review workbook, the case log and the claims extract",
-  "segment codes recoded at the 2025 claims-system upgrade, joined through a crosswalk",
-  "a review workbook with one sheet per unit, header blocks, control digits and three verification strata",
-  "a nurse case log with reopened files on second rows and US-format dates",
-  "a claims extract mixing intakes with later indemnity conversions that were never intakes",
-  "converted claims carrying the legacy time-off flag, a parallel run's double listings and EDI resends merged into their claims",
-  "a payment register at line grain with voided checks and the bank's returned transfers",
-  "a superseded draft of the charter beside the signed one"
- ],
- "stakeholder_role": "the trust's Early Return Nursing programme manager, who places the teams and supplies the credit to the AY2027 indemnity pick",
- "role_family": "programme_officer",
- "scoring_unit": "per episode",
- "spine": {
-  "file": "claims_extract_2021-01_to_2026-09.csv",
-  "rows": 0,
-  "entity": "one claim reported to the trust with time off work at first report, or one that later paid indemnity",
-  "grain": "claim",
-  "source": "constructed (the trust's claims system listing of time-off and indemnity claims)"
- },
- "forum": "trustees_or_governors",
- "forcing_event": "vote_or_meeting",
- "org_family": "cooperative_or_member_body",
- "world": {
-  "geography": "United States, Missouri",
-  "currency": "USD",
-  "org_type": "group self-insurance trust of Missouri employers, owned by its members and administering its own claims",
-  "invented_names": [
-   "Haverline Workers Compensation Trust",
-   "Kellerman Pryce Actuarial",
-   "Early Return Nursing"
+  "task": "task139",
+  "architecture": "v3",
+  "drawn": "2026-10-27",
+  "slot_note": "Re-root of task139 (architecture 1 spent on the portal, architecture 2 spent at stage 2). Nothing is kept: a new world (a vehicle service contract insurer and its new rideshare channel), a new task type and a new mechanism.",
+  "domain": "actuarial-science-insurance",
+  "subdomain": "pricing-ratemaking-credibility",
+  "client_domain": "actuarial-science-insurance",
+  "niche": "a vehicle service contract insurer deciding whether to renew, surcharge or drop the rideshare-driver channel it opened in April 2026, when a rideshare contract burns its 75,000 covered miles in under two years starting from a higher odometer than the retail book it was priced on",
+  "objective": "forecasting",
+  "shape": "04",
+  "decision_type": "renew_replace_lapse",
+  "answer_unit": "named_option",
+  "answer": "",
+  "answer_source": "",
+  "gap": [
+    "objective",
+    "time"
   ],
-  "people": [
-   "Stephanie Gay",
-   "Samantha Hernandez",
-   "Kaitlyn Payne",
-   "Alicia Oneal",
-   "Margaret York",
-   "Kimberly Williams"
-  ]
- },
- "deliverables": [
-  "ern_placement_ay2027.xlsx",
-  "ern_placement_note_ay2027.pdf"
- ],
- "opening_move": "question-first",
- "question_form": "where",
- "driver": "A pilot that randomised a service only among units that had all first received the programme's opening contact measures only what the service adds to a contacted unit, while a group the programme does not reach gets no contact at all; the programme's saving is the contacted units' own gain over the units the pilot never drew, which every unit of a group receives once one team works there, plus the service's increment on the units the capacity takes, so valuing every team at the randomised increment per unit of capacity sends the capacity away from the groups where the contact does most of the work.",
- "driver_concrete": "Every intake the pilot drew had an Early Return nurse's opening call on its triage day, worker and employer, before its pair was split, and the call's question about suitable duties keeps about a fifth of the strain intakes inside the three-day waiting period; the randomised contrast is the file's increment over a called intake, while the 2027 counterfactual (a unit with no team) has no calls, so the call's saving is read per intake from the two in three intakes the pilot never drew against the called usual-handling arm, credited to every intake of a unit with a team, and the files' increment credited per place-day.",
- "stump": "A competent solver reads the pilot per assigned intake, values each unit's teams at usual handling's indemnity per intake less ERN's over the place-days an ERN intake held, and files two teams in healthcare strains, three in manufacturing strains, none in retail or construction strains and three in each other-injury unit with a credit of about 2,700,000 dollars; the step that lands it there is taking the usual-handling arm as a unit with no team, when every drawn intake had the opening call before its pair was split and a unit with no team has no calls: read against the intakes the screen never drew, the call keeps about a fifth of the strain intakes from ever paying indemnity and reaches every intake of a unit once one team works there, so each strain unit takes a team for its calls, manufacturing strains a second for its files, the other-injury units three each, and the credit is about 5,600,000 dollars.",
- "mechanism_source": "design_note",
- "differentiation": {},
- "lineage": [
-  {
-   "architecture": "v1",
-   "drawn": "2026-10-12",
-   "domain": "actuarial-science-insurance",
-   "subdomain": "claims-frequency-severity",
-   "niche": "a regional workers' compensation carrier placing seventeen early-intervention nurse teams across eight claim segments for accident year 2027 and booking the ultimate indemnity they save in the AY2027 indemnity pick, when the pilot's nurses kept part of their intakes from ever paying indemnity",
-   "objective": "forecasting",
-   "shape": "05",
-   "decision_type": "allocation_to_total",
-   "gap": [
-    "population",
-    "objective"
-   ],
-   "pattern": [
+  "pattern": [
     "none"
-   ],
-   "generators": [
-    "G9",
+  ],
+  "generators": [
     "G1",
-    "G14"
-   ],
-   "gate_g": "method_or_model_selection",
-   "stump_strategy": "causal_design",
-   "layer2_family": "estimand_identification",
-   "layer2_pattern": "own:indemnity-saving-read-per-assigned-intake",
-   "driver": "An intervention assigned at random at intake changes how many of its units go on to become the recorded costly cases as well as what those cases cost, so its effect has to be read per assigned unit, each arm's own conversion times its own cost, and valued per unit of the capacity each assigned unit holds; read per recorded case, it compares a costlier remainder of one arm with the ordinary cases of the other and places the capacity where the recorded cases are dearest.",
-   "driver_concrete": "The pilot assigned intakes with time off at first report at random, half to Early Return nurses, and the nurses kept about a fifth to a quarter of the healthcare, retail and manufacturing strain intakes from ever paying indemnity (back on suitable duties inside the waiting period), while the independent review verified a sample of indemnity claims only; the saving a team buys is indemnity per assigned intake (each arm's own indemnity-claim rate times its own verified severity) over the nurse place-days an assigned intake holds, which puts the teams in the strain segments, where the saving per verified indemnity claim reads as four to six per cent and leaves healthcare and retail strains without a team.",
-   "stump": "A competent solver compares the verified ultimates of the two arms' indemnity claims in each segment, values each segment's teams per place-day of an indemnity claim at that saving and files teams in the other-injury and construction units, none in healthcare or retail strains, with a run-rate credit of 2,000,000 dollars; the step that lands it there is reading the saving per indemnity claim when the nurses kept part of their intakes from ever paying indemnity, so the programme arm's indemnity claims are the costlier remainder: per assigned intake the teams go to the strain segments, retail strains takes the two teams its intakes keep in use, and the credit is 4,100,000 dollars.",
-   "answer": "three teams each to HC-SS, MF-SS, MF-OT, CN-OT and HC-OT, two to RW-SS, none to RW-OT or CN-SS; an AY2027 indemnity credit of 4,100,000 dollars",
-   "forum": "executive_team",
-   "forcing_event": "launch_or_rollout",
-   "org_family": "financial_institution",
-   "stakeholder_role": "director of medical case management, who places the nurse teams and supplies the saving to the AY2027 pick",
-   "role_family": "capacity_planner",
-   "context_artifact": "close_out_summary",
-   "calibration_form": "gold_standard_subsample",
-   "fate": "spent 2026-10-26 on the portal: both responses landed the call (three teams each in HC-SS, MF-SS, MF-OT, CN-OT and HC-OT, two in RW-SS, none in RW-OT or CN-SS, 4.1 million); reading a randomised pilot per assigned intake is the domain's own reflex, and the whole ladder sat inside the register's two arms"
-  }
- ],
- "notes": "stump_strategy causal_design: the decisive step is the comparison the 2027 counterfactual needs (a unit with no team has no calls), which the pilot's own control arm is not; gate_g decomposition_attribution: the programme's saving is split between the call, reaching every intake of a unit with a team, and the file, reaching the intakes the places take, and the split decides the placement. G5 names the mechanism: part of the saving the decision buys is provided by a component both arms received. Lower rungs: G1 (the first team valued per intake reached, later teams per place-day), G9 (architecture 1's per-claim reading). Role redrawn on 2026-10-26 after registration from finance_controller to programme_officer: task141 v2 registered ten minutes earlier with finance_controller; the programme manager who runs Early Return Nursing is the honest requester for a placement of its teams. Architecture 2 spent 2026-10-27 at stage 2 before any pack was cut: its decisive step (the usual-handling arm also had the opening call) rests on one protocol sentence a careful reader of the pilot protocol meets first, in the same world the portal already solved; re-rooted at the author's instruction for a stronger, fully fresh architecture.",
- "registered": "2026-10-26T22:19:29Z",
- "architecture_spent": true
+    "G13"
+  ],
+  "gate_g": "forecasting",
+  "calibration_form": "existing_book_actuals",
+  "stump_strategy": "grain_or_unit",
+  "decisive_rule_filed": true,
+  "official_decoy": false,
+  "validated_decoy": false,
+  "context_artifact": "register",
+  "stump_class": "analytical",
+  "analyst_test": "a strong analyst who reads the contracts, claims, odometer feed and renewal schedule correctly takes the rideshare channel's own claims cost per contract-month (or the retail book's cost by contract age with the commercial loading) over the months a rideshare driver needs to use 75,000 covered miles, forecasts a lifetime loss ratio between 39 and 56 per cent on 2027 sales at the current price and renews; the cost actually accrues per mile and climbs with the odometer, which the channel's six-month history never reaches, so the cover costs about 84 per cent of the price and only the surcharged renewal clears the 70 per cent standard",
+  "domain_test": "the deciding quantity is the expected claims cost of a service contract over its covered miles, the warranty actuary's frequency and severity per mile of exposure by odometer band carried along each contract's mileage path to its mileage or time limit, whichever comes first; a swap to another field's nouns loses the dual term limit, the odometer-driven wear of covered components and the earned-exposure basis, and the task stops reading the same",
+  "layer2_family": "field_method",
+  "layer2_pattern": "own:exposure-on-the-odometer-not-the-contract-clock",
+  "layer1": [
+    "odometer readings from three sources (repair orders, the maintenance-proof uploads and the rideshare platform's weekly mileage feed) at different grains with typed and rolled values",
+    "contract numbers re-keyed when the administration system moved in 2024, joined through a crosswalk",
+    "claims at repair-order line grain with authorised, paid and reversed lines and goodwill payments",
+    "cancellations and refunds pro rata by days or miles under the contract terms, with dealer chargebacks",
+    "a dealer-remitted premium bordereau in the dealers' own layouts",
+    "vehicle identification by VIN with model-year and make normalisation"
+  ],
+  "stakeholder_role": "the head of the rideshare and fleet programme at the insurer, who takes the renewal choice to the product committee",
+  "role_family": "product_manager",
+  "scoring_unit": "per settled transaction",
+  "spine": {
+    "file": "odometer_readings_2019-01_to_2026-09.csv",
+    "rows": 0,
+    "entity": "one odometer reading on one contracted vehicle from a repair order, a maintenance upload or the platform feed",
+    "grain": "reading",
+    "source": "constructed (the administrator's odometer history)"
+  },
+  "forum": "executive_team",
+  "forcing_event": "purchase_order_or_contract",
+  "org_family": "professional_services",
+  "world": {
+    "geography": "United States, Texas",
+    "currency": "USD",
+    "org_type": "a vehicle service contract obligor and administrator selling through franchised and independent dealers, its contracts backed by a contractual liability policy",
+    "invented_names": [
+      "Copperline Vehicle Protection",
+      "Fareline",
+      "Copperline Drive Plus",
+      "Tarrant Mutual Casualty"
+    ],
+    "people": [
+      "Nicholas Reed",
+      "Emily Willis",
+      "Jason Livingston",
+      "Kirsten Weaver",
+      "Philip Butler",
+      "Nicole Monroe"
+    ]
+  },
+  "deliverables": [
+    "fareline_channel_renewal_2027.pptx",
+    "rideshare_contract_experience_2027.xlsx"
+  ],
+  "opening_move": "question-first",
+  "question_form": "which",
+  "driver": "A unit's events accrue with its accumulated use and climb steeply with it, and the record's dominant population accumulates use slowly from a low start; a new population that accumulates four times faster from a higher start reaches the steep part within months, while its own short history shows only its low-use beginning, so the cost of its whole cover is read per unit of use at the same accumulated use from the slow population, not per month of cover from either population.",
+  "driver_concrete": "Copperline's rideshare contracts with Fareline (opened April 2026) cover 75,000 miles or 60 months from sale on cars sold at 50,000 to 100,000 miles and driven about 44,000 miles a year, so the cover is used up in about 20 months at odometers retail contracts reach only late; claim frequency per mile nearly triples and the average claim more than triples between 70,000 and 160,000 miles, so the channel's own six months and every per-month or pooled rate put the cover at 39 to 56 per cent of the price against 84.",
+  "stump": "A competent solver costs a 2027 rideshare contract by its months of cover: the channel's own claims cost per contract-month run over the months a rideshare driver takes to use the 75,000 covered miles, or the retail book's cost by contract age with the commercial loading or on a clock sped up by the mileage ratio, or the book's cost per mile at the odometer times its average claim, and forecasts a lifetime loss ratio between 39 and 56 per cent at the current price, so it renews the channel unchanged (a reader who keeps the cover for its full 60 months files about 110 per cent and lets it lapse); the step that lands it there is costing the cover by its months, when repair claims accrue per mile and both their frequency and their cost climb with the odometer past 70,000 miles, and a rideshare cover runs from 50,000 to 100,000 miles at sale to 75,000 miles more in under two years, past anything the channel's six months have reached: read per mile at each odometer from the retail book, which has driven every band, and stopped at each contract's mileage limit, the cover costs about 84 per cent of the price, so the channel renews only at the maximum high-use surcharge, where it costs about 60 per cent.",
+  "mechanism_source": "design_note",
+  "differentiation": {},
+  "lineage": [
+    {
+      "architecture": "v1",
+      "drawn": "2026-10-12",
+      "domain": "actuarial-science-insurance",
+      "subdomain": "claims-frequency-severity",
+      "niche": "a regional workers' compensation carrier placing seventeen early-intervention nurse teams across eight claim segments for accident year 2027 and booking the ultimate indemnity they save in the AY2027 indemnity pick, when the pilot's nurses kept part of their intakes from ever paying indemnity",
+      "objective": "forecasting",
+      "shape": "05",
+      "decision_type": "allocation_to_total",
+      "gap": [
+        "population",
+        "objective"
+      ],
+      "pattern": [
+        "none"
+      ],
+      "generators": [
+        "G9",
+        "G1",
+        "G14"
+      ],
+      "gate_g": "method_or_model_selection",
+      "stump_strategy": "causal_design",
+      "layer2_family": "estimand_identification",
+      "layer2_pattern": "own:indemnity-saving-read-per-assigned-intake",
+      "driver": "An intervention assigned at random at intake changes how many of its units go on to become the recorded costly cases as well as what those cases cost, so its effect has to be read per assigned unit, each arm's own conversion times its own cost, and valued per unit of the capacity each assigned unit holds; read per recorded case, it compares a costlier remainder of one arm with the ordinary cases of the other and places the capacity where the recorded cases are dearest.",
+      "driver_concrete": "The pilot assigned intakes with time off at first report at random, half to Early Return nurses, and the nurses kept about a fifth to a quarter of the healthcare, retail and manufacturing strain intakes from ever paying indemnity (back on suitable duties inside the waiting period), while the independent review verified a sample of indemnity claims only; the saving a team buys is indemnity per assigned intake (each arm's own indemnity-claim rate times its own verified severity) over the nurse place-days an assigned intake holds, which puts the teams in the strain segments, where the saving per verified indemnity claim reads as four to six per cent and leaves healthcare and retail strains without a team.",
+      "stump": "A competent solver compares the verified ultimates of the two arms' indemnity claims in each segment, values each segment's teams per place-day of an indemnity claim at that saving and files teams in the other-injury and construction units, none in healthcare or retail strains, with a run-rate credit of 2,000,000 dollars; the step that lands it there is reading the saving per indemnity claim when the nurses kept part of their intakes from ever paying indemnity, so the programme arm's indemnity claims are the costlier remainder: per assigned intake the teams go to the strain segments, retail strains takes the two teams its intakes keep in use, and the credit is 4,100,000 dollars.",
+      "answer": "three teams each to HC-SS, MF-SS, MF-OT, CN-OT and HC-OT, two to RW-SS, none to RW-OT or CN-SS; an AY2027 indemnity credit of 4,100,000 dollars",
+      "forum": "executive_team",
+      "forcing_event": "launch_or_rollout",
+      "org_family": "financial_institution",
+      "stakeholder_role": "director of medical case management, who places the nurse teams and supplies the saving to the AY2027 pick",
+      "role_family": "capacity_planner",
+      "context_artifact": "close_out_summary",
+      "calibration_form": "gold_standard_subsample",
+      "fate": "spent 2026-10-26 on the portal: both responses landed the call (three teams each in HC-SS, MF-SS, MF-OT, CN-OT and HC-OT, two in RW-SS, none in RW-OT or CN-SS, 4.1 million); reading a randomised pilot per assigned intake is the domain's own reflex, and the whole ladder sat inside the register's two arms"
+    },
+    {
+      "architecture": "v2",
+      "drawn": "2026-10-26",
+      "domain": "actuarial-science-insurance",
+      "subdomain": "claims-frequency-severity",
+      "niche": "a Missouri employers' group self-insurance trust placing seventeen early-return nurse teams across eight claim units for accident year 2027 and booking the ultimate indemnity they save in its AY2027 pick, when the pilot's nurses called and assessed every drawn intake, worker and employer, before splitting its pairs",
+      "objective": "forecasting",
+      "shape": "05",
+      "decision_type": "allocation_to_total",
+      "gap": [
+        "population",
+        "objective"
+      ],
+      "pattern": [
+        "none"
+      ],
+      "generators": [
+        "G1",
+        "G12",
+        "G9"
+      ],
+      "gate_g": "decomposition_attribution",
+      "driver": "A pilot that randomised a service only among units that had all first received the programme's opening contact measures only what the service adds to a contacted unit, while a group the programme does not reach gets no contact at all; the programme's saving is the contacted units' own gain over the units the pilot never drew, which every unit of a group receives once one team works there, plus the service's increment on the units the capacity takes, so valuing every team at the randomised increment per unit of capacity sends the capacity away from the groups where the contact does most of the work.",
+      "stump": "A competent solver reads the pilot per assigned intake, values each unit's teams at usual handling's indemnity per intake less ERN's over the place-days an ERN intake held, and files two teams in healthcare strains, three in manufacturing strains, none in retail or construction strains and three in each other-injury unit with a credit of about 2,700,000 dollars; the step that lands it there is taking the usual-handling arm as a unit with no team, when every drawn intake had the opening call before its pair was split and a unit with no team has no calls: read against the intakes the screen never drew, the call keeps about a fifth of the strain intakes from ever paying indemnity and reaches every intake of a unit once one team works there, so each strain unit takes a team for its calls, manufacturing strains a second for its files, the other-injury units three each, and the credit is about 5,600,000 dollars.",
+      "stump_strategy": "causal_design",
+      "forum": "trustees_or_governors",
+      "forcing_event": "vote_or_meeting",
+      "org_family": "cooperative_or_member_body",
+      "fate": "spent 2026-10-27 at stage 2 before any pack was cut: its decisive step (both pilot arms had the opening call) rests on one protocol sentence in the world the portal had already solved; re-rooted at the author's instruction"
+    }
+  ],
+  "notes": "architecture 3 drawn 2026-10-27; strategy grain_or_unit: the decisive step is the exposure unit the cover is costed on (miles at the odometer, not contract-months); WARNs answered in the design note",
+  "registered": "2026-10-27T13:28:03Z"
 }

@@ -1,253 +1,175 @@
-# task139: Haverline Workers' Compensation Trust, where the seventeen Early Return Nursing teams work in 2027 and the indemnity they save (architecture 2)
+# task139: Copperline Vehicle Protection, whether the Fareline rideshare channel renews in 2027 at its price, at the high-use surcharge, or lapses (architecture 3)
 
-Private, never ships. Re-rooted on 2026-10-26 after the portal result on architecture 1, where both responses filed its
-golden placement and credit (`## Architecture 1 record`). The world, the decision and the quantity are kept: seventeen
-nurse case-management teams of twenty places placed across eight claim units with at most three a unit, the ultimate
-indemnity they save booked in the AY2027 pick, a randomised pilot verified by an independent actuarial review. Two
-things change. The organisation is redrawn from a stock carrier to a member-owned group self-insurance trust, because
-`financial_institution` is banned against task304 among the three live builds before this draw. And the decisive step
-is new, re-found from how the pilot's two random draws came to exist: the triage screen drew one in three intakes at
-random and a pilot nurse called every intake it drew before the pairs were split at random, so the register records only
-the second draw, while the 2027 counterfactual, a unit with no team, sits on the far side of the first.
+Private, never ships. Re-rooted on 2026-10-27 for the second time. Architecture 1 (where Haverline's nurse teams work, read
+per claim against per intake) was solved by both portal responses; architecture 2 (the same world, the opening call both
+pilot arms received) was spent at stage 2 before any pack was cut (`## Architecture 2 record`). At the author's
+instruction nothing is kept: a new world, a new task type, a new decision and a new mechanism.
 
 ## Draw
 
 | Axis | Value |
 |---|---|
-| Card | `.claude/skills/fingerprint/cards/task139.json`, architecture v2, registered 2026-10-26; architecture 1 moved to `lineage` with its fate |
-| Domain / task type | actuarial-science-insurance / claims-frequency-severity (a client domain): the deciding quantity is a workers' compensation pure premium per intake, the share of intakes paying indemnity times the verified ultimate severity, under three handlings (no call, the call, the call and a file) |
-| Objective | Forecasting & Predictive Modeling: the ultimate indemnity the 2027 teams will save, booked at run rate in the AY2027 pick before the year opens, forecast from the pilot and the book, with each unit's 2027 intakes forecast for the calls and the fill limit |
-| Shape | 05 (allocation to a fixed total): seventeen teams across eight units, each unit's teams and the indemnity they save there in a year, the credit, the note's opening and chart, and the asks |
-| Decision | `allocation_to_total`, answer unit `count` (teams per unit), with each unit's saving and the credit in dollars |
-| Mechanism | gap population (decisive: the register's two arms were both called, the counterfactual unit is not, and the uncalled intakes are outside the register), then objective (the call reaches every intake of a unit once one team works there, so a unit's first team is worth its whole intake stream and later teams only their places); pattern none, generators G1 (the unit of value: the call per intake reported, the file per place-day), G12 (a blank pilot reference on an intake is the record that it was never called, not an absence of evidence), G9 (architecture 1's per-claim reading, now a lower rung); Gate G `decomposition_attribution` (the programme's saving split between the call and the file, which scale on different units and decide the placement between them); strategy `causal_design` (the comparison the 2027 counterfactual needs) |
-| Layer 2 family / pattern | `estimand_identification` (the right counterfactual: the randomised control arm received a component of the programme the counterfactual lacks); `own:randomised-contrast-nets-out-a-shared-opening-call` (Actuarial Science has no library card for it; the nearest is collections-loss-mitigation-strategy 1, compare by assignment, which is this build's rung 1) |
-| Furniture | forum `trustees_or_governors` (the board of trustees approves the placement with the 2027 contributions), forcing event `vote_or_meeting` (the trustees' meeting of 19 November 2026), organisation family `cooperative_or_member_body` (a group self-insurance trust its member employers own), role family `programme_officer` (the trust's Early Return Nursing programme manager places the teams and supplies the credit to the pick), context artifact `register` (the pilot's assignment register), calibration `gold_standard_subsample` (the review's verified ultimates on stratified samples), opening `question-first`, question form `where` |
-| Spine | `claims_extract_2021-01_to_2026-09.csv`, the claims system's listing: one row per claim reported January 2021 to September 2026 whose first report recorded time lost or that has paid or reserved indemnity; constructed |
-| Deliverables | `ern_placement_ay2027.xlsx` (the placement, each unit's saving, the credit, the asks), `ern_placement_note_ay2027.pdf` (one page opening with the placement and charting each unit's saving with its teams) |
-| People | drawn with `guard.py names --geo "United States" --seed 139`: Stephanie Gay (the trust's Early Return Nursing programme manager, the requester, in no file as the author of a figure), Samantha Hernandez (consulting actuary, Kellerman Pryce Actuarial: the review and the AY2027 pick memo), Kaitlyn Payne (ERN clinical lead, the case log), Alicia Oneal (claims operations, the triage screen and the register), Margaret York (data engineering, the upgrade and the extract), Kimberly Williams (chair of the trustees, signs the charter); none in the prompt |
+| Card | `.claude/skills/fingerprint/cards/task139.json`, architecture v3, registered 2026-10-27; architectures 1 and 2 in `lineage` with their fates |
+| Domain / task type | actuarial-science-insurance / pricing-ratemaking-credibility (serves Forecasting): the deciding quantity is the expected claims cost of a vehicle service contract over its cover, the service-contract actuary's frequency and severity per mile of exposure by odometer, carried along each contract's mileage path to its mileage or time limit |
+| Objective | Forecasting & Predictive Modeling: the lifetime loss ratio of the contracts the rideshare channel will sell in 2027, none of which exists yet, forecast from the channel's six months and the retail book's seven years |
+| Shape | 04 (setting one dial: each allowed setting): the three renewal settings each carry a forecast loss ratio, with the asks' grids supplying most of the criteria (arithmetic under `## Ask sheet` at stage 2) |
+| Decision | `renew_replace_lapse`, answer unit `named_option` (renew at current rates, renew with the maximum high-use surcharge, or let the channel lapse) |
+| Mechanism | gap objective (the channel's cost per month of cover is correct and is not what the cover costs) then time (its six months have seen only the start of a cover that runs twenty); pattern none, generators G1 (the unit of exposure: a mile at the odometer, not a contract-month) then G13 (the horizon the channel's history covers against the horizon the cover runs); Gate G `forecasting`; strategy `grain_or_unit` |
+| Layer 2 family / pattern | `field_method` (the exposure base done right); `own:exposure-on-the-odometer-not-the-contract-clock` |
+| Furniture | forum `executive_team` (Copperline's executive product committee elects the renewal), forcing event `purchase_order_or_contract` (the Fareline agreement's election notice is due by 1 December 2026 for the 1 January 2027 renewal), organisation family `professional_services` (a service-contract obligor and administrator, its contracts backed by Tarrant Mutual Casualty's contractual liability policy), role family `product_manager` (the head of the rideshare and fleet programme), context artifact `register` (the contract register), calibration `existing_book_actuals` (the retail book's seven years of contracts, readings and claims), opening `question-first`, question form `which` |
+| Spine | `odometer_readings_2019-01_to_2026-09.csv`, the administrator's odometer history: one reading on one contracted vehicle from a repair order, a maintenance-proof upload or the platform's weekly mileage feed; constructed |
+| Deliverables | `fareline_channel_renewal_2027.pptx` (the committee deck: the election, the forecast and the chart it rests on), `rideshare_contract_experience_2027.xlsx` (the forecast's working and the asks) |
+| People | drawn with `guard.py names --geo us --seed 1393` and `--seed 1397`: Nicholas Reed (head of the rideshare and fleet programme, the requester), Emily Willis (pricing actuary), Jason Livingston (claims director), Kirsten Weaver (administration systems), Philip Butler (Fareline's driver-benefits lead), Nicole Monroe (Tarrant Mutual's programme underwriter); none in the prompt |
 
-**Guard.** `guard.py check` on the draft, then on the registered card: PASS with WARNs. Redrawn against the three live
-builds before this one (task137 v4, task166 v3, task304): the organisation family off `financial_institution` (task304;
-once the carrier is redrawn as a member-owned trust the honest label is `cooperative_or_member_body`, not a relabel of the
-same carrier), the role family off `capacity_planner` (task137), the context artifact off `close_out_summary` (task137),
-the forcing event off `launch_or_rollout` (task304), the decisive generator off G5 (task137) and G3 (task304), both of
-which would also have described the mechanism; G1 is honest, since the step that finishes the golden is valuing the
-first team on the unit's intakes and later teams on their places. The forum moved to the trustees because in a trust
-the trustees decide. WARNs, answered: `people.first` on Stephanie (task133), Alicia (task87) and Margaret (task258), the
-seed's list having no collision-free name left for those roles; `repeat.deliverables` (xlsx and pdf, as task304), kept
-because a placement workbook and a one-page note are what a programme manager takes to trustees. After registration,
-task141 v2 (registered ten minutes before this card) put `finance_controller` in the window, so the role was redrawn to
-`programme_officer` and `check` re-run on the registered card: WARN only, the same four lines. The programme manager who
-runs Early Return Nursing is the honester requester for a placement of its own teams in any case.
+**Guard.** `guard.py check` on the draft BLOCKed `ban.forum` (committee_or_panel) and `ban.org_family`
+(financial_institution) against task304 in the window; the forum is honestly the executive team (the product committee
+of a company this size is its executives), and the organisation is honestly a service-contract obligor and
+administrator, a professional-services firm whose insurance sits with the contractual liability insurer, not a
+financial institution. Registered at WARN: `three_rules.strategy_risk` (grain_or_unit), answered in `## Three rules`
+(the unit is an exposure basis the analysis chooses, no field or rule names it); `people.first` on Kirsten (task457) and
+Nicole (task243), older builds; `repeat.gate_g` (forecasting, beside task171 v5), the lane's own mechanism;
+`repeat.question_form` (which, beside task270), the decision is a pick of one of three settings.
 
-**Strategy label.** `causal_design`: the decisive step is the comparison the 2027 counterfactual implies, which the
-pilot's own control arm is not. Nothing is transported (the 2027 teams call and file the same population the pilot
-drew, by the same routine) and no population is chosen (the estimand files every intake of the eight units at run
-rate).
+**Same-puzzle and same-driver tests.** Gap objective, decisive G1, `renew_replace_lapse`, Gate G `forecasting`: no
+structural block in the last twelve or older.
 
-**Same-puzzle and same-driver tests.** Gap population, decisive G1, decision `allocation_to_total`, Gate G
-`decomposition_attribution`: `guard.py check` returns no structural block in the last twelve or older. Architecture 1
-(population, G9, `method_or_model_selection`) differs in its decisive pattern and its Gate G mechanism.
+**Abstraction test.** Stripped of nouns: a unit's events accrue with its accumulated use and climb steeply with it, and
+the record's dominant population accumulates use slowly from a low start; a new population that accumulates four times
+faster from a higher start reaches the steep part within months while its own short history shows only its beginning,
+so the cost of its whole cover is read per unit of use at the same accumulated use from the slow population, not per
+month of cover from either. Nearest drivers on `check` (0.06 and under): task170 v5 (a per-attempt failure probability
+falling with each operator's own count), task161 (stock ahead of a cost step), task130 v4's lineage (a cover paying only
+for events reported inside its own window): none reads a cover's cost on an exposure scale other than the cover's own
+clock. `guard.py slots` on the mechanism's words (usage scale, per-mile hazard, mileage limit, odometer, telematics) and
+the setting's (vehicle service contract, rideshare drivers, premium deficiency) returns no earlier screen of it.
 
-**Abstraction test.** Stripped of nouns, the driver is: a pilot that randomised a service only among units that had all
-first received the programme's opening contact measures what the service adds to a contacted unit, while a group the
-programme does not reach gets no contact at all; the programme's saving is the contacted units' own gain over the units
-the pilot never drew, which every unit of a group receives once one team works there, plus the service's increment on
-the units the capacity takes. The nearest drivers on `check` (task128 v3 at 0.09, a contact's effect read where a queue
-outran a team, a natural experiment in capacity; task103 v3 at 0.07, one record of contact standing for further units;
-task127 v1 at 0.06, a team's throughput before a period closes) share no latent structure with it: none has a randomised
-contrast netting out a component both arms received. Against task177 v2 (an average effect over a cycle carried to one
-point of it) nothing here is conditioned on a covariate or transported, each of the pilot's two draws being read as
-randomised; against task131 v1 and task249 (spillover inside a parent unit) no unit's outcome moves another's.
-`guard.py slots` on the mechanism's words and on the setting's (opening call, nurse, triage, undrawn, intakes, waiting)
-returns this slot's own architecture 1 only.
+**Data-native sentence.** Copperline's repair claims accrue with the miles a car is driven and climb with its odometer,
+both in how often a covered part fails and in what the repair costs; a rideshare driver puts about 44,000 miles a year
+on a car bought at 50,000 to 100,000 miles, so the 75,000 covered miles run out within two years at odometers the retail
+book reaches only in its last years, and the channel's own six months have seen only the start of the cover.
 
-**Data-native sentence.** Haverline's triage screen drew one in three intakes at random each working morning and a
-pilot nurse called every drawn intake that day, the worker and the employer's contact, before the drawn intakes were
-paired and one of each pair kept on a file at random, so both arms of the register were called and the randomised
-contrast is what a file adds to a called intake; the two in three the screen did not draw went to their adjusters on
-report, uncalled, and they sit in the claims extract with no pilot reference and in the claim audit's sample that the
-funding study verifies for its own ultimates.
+**World.** Copperline Vehicle Protection (Fort Worth, Texas) has sold Copperline Drive Plus vehicle service contracts
+through about 340 franchised and independent dealers in Texas and Oklahoma since 2019, administering its own claims; a
+contractual liability policy from Tarrant Mutual Casualty insures its obligations. Drive Plus covers the powertrain and
+major systems of a used car under ten model years old and under 100,000 miles at sale, for 60 months or 75,000 miles
+from the sale date and odometer, whichever comes first, with a 100 dollar deductible a repair visit; the price is set
+by vehicle class from the rate manual. In April 2026 Copperline opened a channel with Fareline, a rideshare platform,
+selling Drive Plus to its drivers at the class price with a 20 per cent commercial-use loading. The agreement renews on
+1 January 2027 and Copperline elects, by 1 December 2026, to renew at current rates, to renew with the rate manual's
+maximum high-use surcharge of 40 per cent on the class price, or to let the channel lapse. The rate manual's channel
+review standard: a channel renews at current rates if the forecast lifetime loss ratio of its next year's sales is 70
+per cent or less, with the surcharge if the surcharged loss ratio is 70 per cent or less, and otherwise lapses. The
+records run to 30 September 2026; the request is made in October 2026 by the head of the rideshare and fleet programme
+for the committee's November meeting.
 
-**Sources read, one line each.** `guard.py mechanisms --objective forecasting`: transports of a randomised test's
-average (task177 v2), an upgraded level's gain on the untreated part (task165), marginal entrants (task163), a
-protection's exposure overlap (task170 v3) and a capacity-overflow natural experiment (task128): none reads a control arm
-as treated by a component the counterfactual lacks. `layer2-rigor-patterns.md`: collections-loss-mitigation-strategy 1
-(compare by assignment) is architecture 1's reflex and this build's rung 1; frequency-severity 1 (frequency per unit of
-exposure) is the per-intake frame. `measured-drivers.md`: held tasks put the decisive move upstream of every graded
-figure and on a dimension in another file; the uncalled intakes are in the extract and the audit sample, not the
-register, and all eight team counts, all eight savings and the credit move with the call. The portal result on
-architecture 1: both responses read the register's two arms per intake, which is this build's default path.
+**On paper, before any data** (`generator/paper/` prototypes, 14,000 retail and 2,500 rideshare contracts a world; repair
+claims per mile and their cost flat to 70,000 miles and climbing past it, rideshare sales from April 2026 at 50,000 to
+100,000 miles and 44,000 miles a year), every route scaled to the golden at 84 per cent of the price:
 
-**World.** Haverline Workers' Compensation Trust is a group self-insurance trust of Missouri employers in healthcare and
-social assistance, retail and warehousing, manufacturing, construction, transportation and other industries, owned by
-its member employers and administering its own claims from St. Louis and Kansas City; its claims are worked in claim
-units by segment, an industry group crossed with an injury class (strains and sprains, other injuries). An intake is a
-claim whose first report of injury records time lost from work. Missouri pays temporary total disability at two-thirds
-of the average weekly wage up to the state maximum, nothing for the first three days unless the disability passes
-fourteen days, temporary partial disability on reduced earnings, and permanent partial disability on a rating; an intake
-whose worker is back inside the waiting period pays no indemnity.
-
-Early Return Nursing (ERN) has two parts. The opening call: on the working day after the report a nurse calls the
-worker and the employer's contact, assesses the time off to expect and asks the employer what suitable duties it can
-offer. The file: the nurse keeps the intake, coordinates its care, arranges suitable duties and holds the file until the
-worker is back at full duty. The pilot ran on triage dates 1 March 2023 to 28 February 2025: each working morning the
-triage screen drew one in three intakes in the eight units at random, a pilot nurse made the opening call to every drawn
-intake, and the drawn intakes were paired in triage order and one of each pair kept on a file at random, the other
-passed to its adjuster (usual handling); the intakes the screen did not draw went to their adjusters on report.
-Kellerman Pryce Actuarial reviewed the claims in 2026 at a 30 June valuation: for the pilot, 100 indemnity claims at
-random from each unit and group; for the funding study's claim audit, 100 indemnity claims at random from each unit's
-claims reported over the same two years outside the pilot; each verified blind to its group and the open ones projected
-to ultimate. Its report says what it verified and how; it estimates no effect.
-
-For 2027 the trustees funded seventeen teams of twenty places (the charter, signed 19 October 2026 by the chair): a unit
-houses at most three teams and takes no more than its 2027 intakes keep in use over the year; a team's nurses make the
-opening call to every intake their unit reports and take it into a place if one is free, an intake reported while every
-place is taken going to its adjuster after the call; a unit with no team goes on as today, its intakes to their
-adjusters on report; a file holds its place from the day it is taken to the day it closes, both counted, and again on a
-reopening. The pick memo (Kellerman Pryce, 28 October 2026) books the credit as the AY2027 ultimate indemnity the eight
-units' 2027 intakes will not pay because of the placement: what they would pay with no Early Return Nursing in 2027,
-every intake going to its adjuster on report as today, less what they pay with the placement; at run rate (every place
-in use every day of 2027, each unit's 2027 intakes at its intakes reported in the twelve months to September 2026); at
-the review's verified ultimates with no trend; each unit at its own experience; indemnity only. The request is made on
-Monday 9 November 2026 by the trust's ERN programme manager, for the trustees' meeting of 19 November.
-
-**On paper, before any data.** This world's own courses (`generator/world.py`), 200,000 intakes a unit under each
-handling, the call keeping most of what architecture 1's nurses kept at work and the file the rest with its shorter
-disabilities and permanent awards (prototype `proto_call.py`):
-
-| Unit | per intake, no call | the call | call and file | call's saving | file's saving | place-days | call over a year's intakes | a team's files a year |
-|---|---|---|---|---|---|---|---|---|
-| HC-SS | 2,857 | 2,317 | 1,972 | 540 | 345 | 24.2 | 891,000 | 104,000 |
-| HC-OT | 6,387 | 6,277 | 5,217 | 110 | 1,059 | 43.0 | 97,000 | 180,000 |
-| RW-SS | 2,297 | 1,811 | 1,535 | 486 | 276 | 21.0 | 482,000 | 96,000 |
-| RW-OT | 6,776 | 6,661 | 5,751 | 114 | 910 | 51.1 | 94,000 | 130,000 |
-| MF-SS | 3,497 | 2,980 | 2,580 | 516 | 401 | 25.3 | 738,000 | 116,000 |
-| MF-OT | 8,211 | 8,070 | 6,828 | 141 | 1,242 | 45.4 | 116,000 | 199,000 |
-| CN-SS | 4,939 | 4,570 | 4,203 | 369 | 367 | 30.2 | 443,000 | 89,000 |
-| CN-OT | 13,269 | 13,167 | 11,471 | 101 | 1,697 | 61.7 | 72,000 | 201,000 |
-
-Per indemnity claim the call is invisible (healthcare strains 3,357 dollars with no call against 3,429 with it, the
-costlier remainder again), so the call's saving is a frequency effect read per intake. The placements every route
-files (teams for HC-SS, HC-OT, RW-SS, RW-OT, MF-SS, MF-OT, CN-SS, CN-OT):
-
-| Route | Teams | Credit |
+| Route | Lifetime loss ratio | Election |
 |---|---|---|
-| per verified claim, the file's contrast (architecture 1's rung 0) | 0 3 0 3 3 3 2 3 | 2.54 million |
-| per assigned intake, the file's contrast (architecture 1's golden route; this build's default path) | 2 3 0 3 3 3 0 3 | 2.69 million |
-| the call per indemnity claim over every intake, with the files | 0 3 2 3 3 3 0 3 | 2.51 million |
-| the undrawn intakes against the file arm per served intake (architecture 1's golden placement) | 3 3 2 0 3 3 0 3 | 4.02 million |
-| the call over every intake, units ranked on their average team at the cap | 3 0 2 0 3 3 3 3 | 5.06 million |
-| golden: the call over every intake of a unit with a team, the files per place-day, placed on each team's marginal saving | 1 3 1 3 2 3 1 3 | 5.58 million |
+| the channel's own cost per contract-month over the months its drivers take to use the cover | 39 | renew |
+| the same, with the cost per month's trend in contract age carried forward | 50 | renew |
+| the retail book's cost by contract age, with the 20 per cent loading | 47 | renew |
+| the retail book's cost by contract age on a clock sped up by the mileage ratio | 52 | renew |
+| the book's pooled cost per mile, over the 75,000 covered miles | 42 | renew |
+| claim frequency per mile by odometer band, at the book's average claim | 56 | renew |
+| the channel's own cost per contract-month over the full 60 months (the mileage limit dropped) | 110 | lapse |
+| golden: cost per mile at each odometer from the whole book, along each contract's mileage path to its limit | 84 | renew with the surcharge (60 surcharged) |
 
-The golden's cut on paper is MF-SS's second team (115,600) against HC-SS's second (104,000), 1.11 times; the build
-widens it past the 1.15 floor before a pack is cut (stage 2).
+The nearest route sits 14 points under the renewal line and the golden 14 points inside each edge of its band; the build
+measures both on the pack before stage 3.
 
 ## Three rules
 
-- **Task type:** actuarial-science-insurance, claims-frequency-severity (serves Forecasting): the AY2027 indemnity a
-  nurse programme will save, forecast as pure premiums per intake (frequency times severity) under no call, the call and
-  the call with a file, carried to 2027 at run rate with each unit's 2027 intakes forecast for the calls and the places.
-- **Domain test:** the quantity that decides the call is each unit's indemnity per intake under the three handlings,
-  each the share of intakes paying indemnity times the verified ultimate severity, the claims actuary's frequency and
-  severity build; the call works through the employer's suitable duties inside Missouri's three-day waiting period, so in
-  the strain units it moves frequency (intakes that never pay) and leaves severity per indemnity claim where it was.
-- **Swap:** "where should seventeen care-transition teams work across eight hospital service lines in 2027, and how many
-  readmission days will they save" has no waiting period inside which a contact turns a reported absence into a claim
-  that pays nothing, no conversion of a report into an indemnity claim and no accident-year ultimate across temporary
-  total, temporary partial and permanent partial benefits; the call's saving, a frequency effect invisible per claim,
-  has nothing to be in, and the task stops reading the same.
-- **Layer 1:** claim numbers written four ways (the register's legacy numbers, the extract's new numbers with the legacy
-  number beside converted claims, the review's numbers with Kellerman Pryce's control digit, the nurses' typed
-  variants), produced by the 2025 claims-system upgrade and the review's referencing; segment codes recoded at the
-  upgrade, joined through a crosswalk; the review workbook's sheet per unit with header blocks, three benefit columns
-  and three strata; the case log's reopened files on second rows and US dates; an extract mixing intakes with later
-  indemnity conversions, whose converted rows carry the legacy time-off flag; on the ask paths the parallel run's double
-  listings, the EDI resends merged into their claims, a payment register at line grain, voided checks and the bank's
-  returned transfers; a superseded charter draft. Each is what these systems write and none is placed to be caught.
-- **Layer 2:** `estimand_identification`, the right counterfactual: the pilot's randomised contrast is what a file adds
-  to a called intake, the 2027 counterfactual has no call, and the call's own saving is read from the pilot's first
-  random draw (the intakes the screen drew against those it did not), then credited on the unit it reaches.
-- **Decisive step:** read a unit with no team against the intakes the screen never drew rather than against the
-  usual-handling arm, because both arms of the register had the opening call; then credit the call to every intake of a
-  unit with a team and the files to their places, and place the teams on each team's marginal saving.
-- **Not semantics:** every field, code and definition read correctly (the groups, the intake definition, the claim
-  type, the verified TTD, TPD and PPD, the charter's call, the memo's counterfactual) still leaves the easy route on the
-  register's two arms: no sentence defines the usual-handling arm as the counterfactual or excludes it, the call reads as
-  the assessment that sets the pairs, and its saving exists only as an estimate the reader builds from intakes no pilot
-  file lists.
-- **Not rule application:** no filed rule or procedure computes the call's saving or says which intakes estimate a unit
-  with no team: the memo files the counterfactual and the basis, the charter the operation. Enumerated family for the
-  counterfactual, on paper (200,000 intakes a unit): the usual-handling arm per intake files 2 3 0 3 3 3 0 3 at 2.69
-  million; the undrawn intakes per indemnity claim file 0 3 2 3 3 3 0 3 at 2.51 million (the call per claim is minus 72
-  dollars in HC-SS); the undrawn intakes against the file arm per served intake file 3 3 2 0 3 3 0 3 at 4.02 million;
-  the undrawn intakes per intake with the call over every intake file 1 3 1 3 2 3 1 3 at 5.58 million, a spread of 3.07
-  million and four placements. The standing family (the undrawn intakes per intake, counted by report or by triage date,
-  the audit's sample cut to intakes or not) is measured on the pack at stage 2 and must file one placement and one
-  credit bin. What rules the usual-handling arm out is quiet: three sentences in three files (the pilot's protocol, the
-  charter's call, the memo's counterfactual) and a gap of 17 points in the share of strain intakes paying indemnity that
-  shows only once the undrawn intakes are counted.
-- **Analyst test:** a strong analyst who reads the register, the review, the charter and the memo correctly reads the
-  pilot per assigned intake, each arm's indemnity-claim rate times its verified severity, values each unit's teams at
-  that saving over an ERN intake's place-days and files two teams in HC-SS, three in MF-SS, none in RW-SS or CN-SS and
-  three in each other-injury unit with a credit of about 2,700,000 dollars (Ends on); on the generator's clean truth the same
-  route files the same placement, and only the undrawn comparison with the call over every intake files the golden
-  (asserted in `checks.py`).
-- **Estimand:** the pick memo (`ay2027_indemnity_pick_ern_credit.pdf`): the credit is the AY2027 ultimate indemnity the
-  eight units' 2027 intakes will not pay because of the placement, what they would pay with no Early Return Nursing in
-  2027 (every intake to its adjuster on report, as today) less what they pay with the placement; at run rate (every
-  place every day, each unit's 2027 intakes at its intakes reported October 2025 to September 2026); at the review's
-  verified ultimates, no trend; each unit at its own experience; indemnity only. The charter files the teams, places,
-  the three-a-unit limit, the fill rule, the call and the place-day. Population, outcome, window, unit and comparison
-  are filed; which intakes estimate the comparison is not.
-- **No decoy:** no memo, briefing, prior placement, scorecard or stakeholder figure states or argues a saving, an
-  effect or a placement; the review states what it verified and estimates nothing; the usual-handling label is the
-  pilot's own name for an arm handled by its adjuster after the call, not a planted misdirection; the charter draft, the
-  worker survey and the staffing plan are declared distractors that rank nothing.
-- **No certified replay:** no published saving, past placement, programme evaluation or certified figure ships, so the
-  comparison cannot be recovered by matching certified numbers; the review's results are its verified amounts, which
-  every route uses alike.
-- **Lesson:** a randomised pilot whose arms both received an active component measures only the increment over that
-  component; where the decision's counterfactual lacks the component, its value is read from the pilot's own earlier
-  random draw and credited on what it reaches (every intake of a unit with a team), not on the capacity. No build on
-  file reads a randomised control arm as treated by a component the counterfactual lacks (task131 v1 and task249 read
-  spillover inside a parent unit, task177 v2 an average carried to one point of a cycle, task139 v1 the costlier
-  remainder of the verified class).
+- **Task type:** actuarial-science-insurance, pricing-ratemaking-credibility (serves Forecasting): the lifetime loss
+  ratio of next year's rideshare sales, forecast from the exposure each contract will run before its limit.
+- **Domain test:** the deciding quantity is the expected claims cost of a contract over its cover, which the service-contract
+  actuary builds as frequency and severity per mile of exposure by odometer band, the exposure base the cover's wear
+  generates, carried over each contract's mileage path to the earlier of its mileage and time limits; the 70 per cent
+  standard reads that cost against the price.
+- **Swap:** "should a hospital renew its agency-nurse contract at the current rate, with a surcharge, or not, from the
+  agency's first six months" has no dual mileage-or-time limit, no covered parts that wear with use, no repair cost that
+  climbs with an odometer and no earned exposure base for a cover; the quantity the call turns on, cost per mile at the
+  odometer, has nothing to be, and the task stops reading the same.
+- **Layer 1:** odometer readings from three sources (repair orders, maintenance-proof uploads and the platform's weekly
+  feed) at different grains, with typed and rolled values; contract numbers re-keyed when the administration system
+  moved in 2024, joined through a crosswalk; claims at repair-order line grain with authorised, paid and reversed lines
+  and goodwill payments; cancellations refunded pro rata by days or miles with dealer chargebacks; dealer-remitted
+  premium bordereaux in each dealer's layout; vehicles by VIN with make and model-year normalisation. Each is what these
+  systems write; none is placed to be caught, and none carries the call.
+- **Layer 2:** `field_method`, the exposure base done right: the cover's cost accrues per mile driven at each odometer,
+  so it is read per mile at the odometer from the population that has driven every band and integrated along the new
+  contracts' faster mileage paths to their limits.
+- **Decisive step:** cost the cover per mile at the odometer rather than per month of cover, reading each odometer
+  band's frequency and claim cost from the retail book and running every 2027 rideshare contract's mileage path through
+  them to the earlier of its 75,000-mile and 60-month limits.
+- **Not semantics:** every field, code and unit read correctly (the terms, the readings, the claim lines, the
+  deductible, the loading) still leaves the easy route on the channel's own cost per contract-month: nothing in the pack
+  marks the odometer as the clock, the channel's months are real, correctly priced experience, and the step is an
+  exposure choice the analyst makes.
+- **Not rule application:** the terms file the cover (60 months or 75,000 miles) and the standard files the 70 per cent
+  line and the population (next year's sales, like this year's); no rule names an exposure base, a band or a curve.
+  Enumerated family on paper: eight constructions spread the lifetime loss ratio from 39 to 110 per cent (71 points,
+  three elections); the standing family (cost per mile at the odometer from the whole book, by 5,000-, 10,000- or
+  20,000-mile bands or a fitted curve, frequency and severity separately or together) is measured on the pack at stage 2
+  and must file one election; what rules the per-month routes out is one cross-section nothing invites: the retail
+  book's cost per mile by odometer band, flat to 70,000 miles and nearly ten times as high by 160,000.
+- **Analyst test:** a strong analyst who reads the terms, the readings, the claims and the standard correctly takes the
+  channel's own cost per contract-month over the months its drivers need to use 75,000 miles (or the retail book's cost
+  by contract age with the loading, or a pooled cost per mile), forecasts a lifetime loss ratio between 39 and 56 per
+  cent and renews the channel unchanged; only the cost per mile at the odometer files the golden (asserted in
+  `checks.py` on the generator's clean truth).
+- **Estimand:** the rate manual's channel review section (`drive_plus_rate_manual_2026.pdf`): the lifetime loss ratio of
+  the contracts the channel will sell in its next year, the claims Copperline pays over each contract's cover (covered
+  repairs net of the deductible, at 2026 repair costs, no trend) over the contract price, for contracts like those the
+  channel sold in its first year (vehicle, odometer at sale, driving); renew at current rates at 70 per cent or less,
+  with the 40 per cent surcharge if that brings it to 70 or less, otherwise lapse. Population, outcome, window, unit and
+  comparison are filed; the exposure base is not.
+- **No decoy:** no memo, briefing, prior review or stakeholder figure states a cost, a loss ratio or an election; the
+  20 per cent loading is the price Copperline actually charged, a fact of the contracts, never argued as adequate; the
+  dealer bordereaux and the cancellation file are declared distractors that rank nothing.
+- **No certified replay:** no published loss ratio, prior channel review or certified figure ships, so the exposure
+  base cannot be recovered by matching certified numbers; the retail book's experience is raw records every route uses.
+- **Lesson:** a cover's cost accrues on the scale its wear runs on, and a population that runs that scale four times
+  faster from further along it is costed per unit of use at the same accumulated use, from whoever has driven that far,
+  never per month of cover from its own short start. No build on file reads a cover's cost on an exposure scale other
+  than the cover's own clock (task130 v4's lineage reads a reporting window, task170 v5 an operator's own attempt count).
 
 ## Default path
 
-1. Read the charter (seventeen teams of twenty places, at most three a unit, the fill rule over the year, a place-day
-   counted with its first and last days) and the pick memo (run rate, 7,300 place-days a team, the review's verified
-   ultimates, each unit at its own experience).
-2. Join the register's pilot intakes to the claims extract through the legacy claim number (normalised) for each
-   intake's claim type, and to the crosswalk for its 2025 unit; in each unit, each arm's share of its assigned intakes
-   that paid indemnity.
-3. From the review's pilot strata (the control digit stripped, joined to the register for the arm), each arm's mean
-   verified ultimate TTD plus TPD plus PPD; each arm's indemnity per assigned intake is its share times its severity, as
-   the pilot was randomised, and the saving per intake is usual handling's less ERN's.
-4. From the case log, the place-days an ERN intake held (both days counted, a reopening added); a team's year is 7,300
-   place-days over that.
-5. Each unit's saving per team-year is step 3 times step 4; its fill limit is its intakes over the twelve months to
-   September 2026 times the place-days per ERN intake over 7,300, at most three.
-6. Rank the units on saving per team-year and fill each to its limit in turn until seventeen teams are placed; the
-   credit is each team's saving per team-year, summed.
+1. Read the terms (60 months or 75,000 miles from sale, 100 dollar deductible) and the channel review standard (renew at
+   70 per cent or less; with the 40 per cent surcharge if that reaches 70; otherwise lapse).
+2. Build the rideshare contracts from the register (sold since April 2026) and their claims from the repair-order lines
+   (paid net of reversals, the deductible taken off).
+3. The channel's cost per contract-month: its claims cost over its contract-months in force to 30 September 2026.
+4. The months of cover a 2027 contract runs: 75,000 miles over the channel's average driving (from the platform feed),
+   about 20 months, under the 60-month limit.
+5. A 2027 contract's lifetime cost is step 3 times step 4; over the average 2026 price, the lifetime loss ratio.
+6. Apply the standard.
 
-Ends on: two teams to healthcare strains and sprains, three each to manufacturing strains and sprains and the four
-other-injury units, none to retail and warehousing or construction strains and sprains; a credit of about 2,700,000
-dollars (2,686,000 on paper).
-Golden: one team each to healthcare, retail and warehousing and construction strains and sprains, two to manufacturing
-strains and sprains, three to each other-injury unit; a credit of about 5,600,000 dollars (5,582,000 on paper).
+Ends on: renew the channel at current rates (a lifetime loss ratio of about 39 per cent on paper).
+Golden: renew with the maximum high-use surcharge (about 84 per cent at current rates and 60 per cent surcharged).
 
 ## Stump sentence
 
-A competent solver reads the pilot per assigned intake, values each unit's teams at usual handling's indemnity per
-intake less ERN's over the place-days an ERN intake held, and files two teams in healthcare strains, three in
-manufacturing strains, none in retail or construction strains and three in each other-injury unit with a credit of about
-2,700,000 dollars (Ends on); the step that lands it there is taking the usual-handling arm as a unit with no team, when
-every drawn intake had the opening call before its pair was split and a unit with no team has no calls: read against the
-intakes the screen never drew, the call keeps about a fifth of the strain intakes from ever paying indemnity and reaches
-every intake of a unit once one team works there, so each strain unit takes a team for its calls, manufacturing strains
-a second for its files, the other-injury units three each, and the credit is about 5,600,000 dollars.
+A competent solver costs a 2027 rideshare contract by its months of cover, the channel's own claims cost per
+contract-month run over the months a rideshare driver takes to use the 75,000 covered miles (or the retail book's cost by
+contract age with the loading, or the book's pooled cost per mile), forecasts a lifetime loss ratio between 39 and 56 per
+cent and files renew the channel at current rates (Ends on); the step that lands it there is costing the cover by its
+months, when repair claims accrue per mile and both their frequency and their cost climb with the odometer past 70,000
+miles, and a rideshare cover runs from 50,000 to 100,000 miles at sale through 75,000 miles more in under two years, past
+anything the channel's six months have reached: read per mile at each odometer from the retail book and stopped at each
+contract's limit, the cover costs about 84 per cent of the price, so the channel renews only with the maximum high-use
+surcharge, at about 60 per cent.
+
+## Architecture 2 record (spent 2026-10-27)
+
+Haverline Workers' Compensation Trust, the same seventeen Early Return Nursing teams as architecture 1, re-rooted on the
+opening call both pilot arms had received before the file was randomised (the default path read the usual-handling arm
+as a unit with no team; the golden read the call's saving from the intakes the triage screen never drew). Registered
+2026-10-26 and spent the next day at stage 2 before any pack was cut: the decisive step rested on one sentence of the
+pilot protocol, which a careful reader meets first, inside the world the portal had already solved.
 
 ## Architecture 1 record (spent 2026-10-26)
 
@@ -358,3 +280,19 @@ filed. Architecture 2 finds what the two arms share that the counterfactual lack
 - 2026-10-27, architecture 2 spent at stage 2 before any pack was cut (the opening call both pilot arms received): the decisive
   step rests on one sentence of the pilot protocol, which a careful reader meets first, and the world is the one the portal
   already solved; re-rooted at the author's instruction for a fully fresh architecture.
+- 2026-10-27, architecture 3 draw screens, each dead before a card: a larger die's yield read through the wafer-level
+  spread of defect density (task143's driver, a joint chance under a shared group effect, in new nouns); regression
+  dilution corrected with replicate readings (task166 and task178: the probe's reflex); delayed entry for a taken-over
+  book (task133); hearing-loss claims filed after separation (task166's lineage, the probe sliced claimants by status);
+  non-synchronous covariances (task135); a first claims-made year's cost from the report-lag pattern (task130 v4's
+  lineage, and the same-calendar-year claims give it in one filter); long-term disability reserves without the coming
+  Social Security offsets (the field's standard assumption, so a reflex); second deaths after a bereavement (last year's
+  claims rate lands it); a miners' trust's amount-weighted release (task171's screen: last year's release lands it).
+- 2026-10-27, the rideshare channel opened in January 2025 or 2026: with nine or more months of its own experience, the
+  channel's cost per contract-month by contract age, its trend carried forward, landed inside the golden's band; opened
+  in April 2026, its six months stay on the flat part of the wear curve and the trend files renew.
+- 2026-10-27, a retail book sold across 20,000 to 100,000 miles: its cost by contract age with the loading reached 72 to
+  81 per cent, inside the band; the retail book is now mostly sold at 15,000 to 55,000 miles, with a fifth at 60,000 to
+  115,000, which drives every odometer band the rideshare cover reaches.
+- 2026-10-27, cost per mile rising as a power of the odometer from zero: the channel's own six months saw the rise and
+  its trend landed; claims are flat to 70,000 miles and climb past it, as major components start to fail.

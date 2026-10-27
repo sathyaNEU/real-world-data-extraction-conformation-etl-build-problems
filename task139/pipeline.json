@@ -1,12 +1,12 @@
 {
  "task": "task139",
- "status": "DRAWING",
+ "status": "DESIGN",
  "domain": "actuarial-science-insurance",
  "objective": "forecasting",
- "stage": 1,
- "stage_name": "draw",
+ "stage": 2,
+ "stage_name": "design",
  "updated": "2026-10-27",
- "stump": "",
+ "stump": "A competent solver costs a 2027 rideshare contract by its months of cover: the channel's own claims cost per contract-month run over the months a rideshare driver takes to use the 75,000 covered miles, or the retail book's cost by contract age with the commercial loading or on a clock sped up by the mileage ratio, or the book's cost per mile at the odometer times its average claim, and forecasts a lifetime loss ratio between 39 and 56 per cent at the current price, so it renews the channel unchanged (a reader who keeps the cover for its full 60 months files about 110 per cent and lets it lapse); the step that lands it there is costing the cover by its months, when repair claims accrue per mile and both their frequency and their cost climb with the odometer past 70,000 miles, and a rideshare cover runs from 50,000 to 100,000 miles at sale to 75,000 miles more in under two years, past anything the channel's six months have reached: read per mile at each odometer from the retail book, which has driven every band, and stopped at each contract's mileage limit, the cover costs about 84 per cent of the price, so the channel renews only at the maximum high-use surcharge, where it costs about 60 per cent.",
  "architecture": 3,
  "loops": 0,
  "precut": {
@@ -19,8 +19,7 @@
  },
  "duplicate_check": {
   "heart": "",
-  "nearest": "",
-  "note": "drawn 2026-10-26: guard check WARN only (people.first Stephanie, Alicia, Margaret; repeat.deliverables), answered in ## Draw; nearest driver 0.09 (task128 v3)"
+  "nearest": "check WARN only 2026-10-27 on registration (strategy risk, two older first names, repeat.gate_g, repeat.question_form), nearest driver 0.06 (task170 v5, task161)"
  },
  "judge": {
   "verdict": "",
@@ -35,7 +34,7 @@
    "commit": ""
   }
  ],
- "resume": "stage 1 of architecture 3: a fresh world, domain and mechanism, screened with guard.py slots on the mechanism and the setting before any card",
+ "resume": "stage 2 of architecture 3: build world.py on the paper world (retail mostly 15,000 to 55,000 miles at sale with a fifth at 60,000 to 115,000; rideshare from April 2026 at 50,000 to 100,000 and 44,000 miles a year; cost flat to 70,000 miles and climbing), measure the standing family on the clean truth, readability screen, fork table, ladder, closure, asks, prompt.txt, precut.py exit 0",
  "approved": null,
  "delivered": null,
  "portal": null,
