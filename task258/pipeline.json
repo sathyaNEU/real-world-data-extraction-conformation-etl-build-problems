@@ -1,6 +1,6 @@
 {
  "task": "task258",
- "status": "SHIPPED",
+ "status": "SHIPPED_APPROVED",
  "domain": "product-analytics / metric-definition-measurement-science",
  "objective": "descriptive-distribution",
  "stage": 5,
@@ -44,9 +44,11 @@
    "commit": ""
   }
  ],
- "resume": "shipped loop 2 on target.zip 8643a77b; next event is the author's portal result",
+ "resume": "approved on the portal 2026-10-27 (loop 2, Trailhead 4.9 million)",
  "approved": null,
  "delivered": "2026-10-27",
- "portal": null,
- "seed": "DA08 (START_HERE): world, decision and quantity kept"
+ "portal": "APPROVED 2026-10-27",
+ "seed": "DA08 (START_HERE): world, decision and quantity kept",
+ "portal_status": "APPROVED",
+ "portal_status_date": "2026-10-27"
 }
