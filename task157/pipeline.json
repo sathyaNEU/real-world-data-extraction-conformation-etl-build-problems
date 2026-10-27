@@ -1,14 +1,14 @@
 {
  "task": "task157",
  "owner": "sathya8571",
- "status": "SHIPPED",
+ "status": "DESIGN",
  "domain": "product-analytics/retention-cohort-lifetime-value-modeling (client domain product-analytics; world: a Twin Cities ride-hail operator's winter guarantee)",
  "objective": "forecasting",
- "stage": 5,
- "stage_name": "ship",
- "updated": "2026-10-26",
+ "stage": 1,
+ "stage_name": "draw",
+ "updated": "2026-10-27",
  "stump": "Carrying December's roster at last January's qualification shares, adding the onboarding app's approved drivers and the drivers away at last January's return rate files $1,450,000; the step that lands it there is pricing last winter's drivers who are not yet back as a pool at last year's return rate, when they are the rest of a wave whose size is the group's own and whose timing every earlier winter kept, so the part already back on 3 January (1,087 drivers) gives the part still to come: about 1,200 more drivers inside the window, the wave priced at its own January qualification, and a fund of $1,650,000.",
- "architecture": 1,
+ "architecture": 2,
  "loops": 0,
  "precut": {
   "exit": 0,
@@ -46,9 +46,16 @@
    "commit": "",
    "move": "SF14 closed by C1, not by a pin: the demand plan shipped at 316,650 completed trips for the window, 72.5 per cent of the 436,733 the window takes, because it assumed 11.8 per cent growth where the autumn ran 19 to 38 per cent ahead and the window grew 53.7 per cent. The generator now sets its growth off the autumn's own year-on-year rate: the window carries 447,500 trips, which at December 2026's mean qualifier trips is 5,378 qualifiers, clear of 4,700, so no demand-constrained reading binds. SF15 closed in the write-up: the out-of-sample sentence now names the counts its per cent is of, 308 against 306 and 413 against 405. Nothing graded moved.",
    "gates": "checks 84 of 84, verify 0 failed, two byte-identical rebuilds, figures_check 75 figures none absent, precut 0 FAIL 0 WARN, voice-check PASS, guard validate clean and heart PASS, leak.py 0 LEAK with every REVIEW answered, freeze.py check --mode determinism PASS"
+  },
+  {
+   "date": "2026-10-27",
+   "portal": "second return, both judges Gate C and D fail (competing_defensible_answer, underspecified_objective; fix_location input_files and prompt). Both reproduced every ask exactly, reached the stump's mechanism and landed 4,500 to 4,600 drivers and USD 1,600,000 against 4,700 and USD 1,650,000",
+   "repair": "design",
+   "what_moved": "nothing shipped. The cause was measured and architecture 1 is spent: the decisive step is worth 0.58 of a 50,000 bin, the smallest rung gap, while the subgroup choice for the un-returned remainder is worth 0.90 bins and the sampling interval on the golden's own rate 0.31. Three repairs were built and measured and none closes it (a later return profile reaches 2.08 bins and leaves the rival family with 2,215 of headroom; positioning by the campaign size leaves about 8,500 a side; a coarser bin puts the default path in the golden's bucket)",
+   "commit": "pending"
   }
  ],
- "resume": "",
+ "resume": "Architecture 1 spent 2026-10-27 on its second portal return, measured in the design note's ## Architecture 1 is spent. Re-root at stage 1: architecture 2, a fresh draw in the same number and objective, with the old identity moved into the card's lineage. The binding lesson, now filed in determinism-check, is that a graded figure estimated rather than counted needs its bin measured against the decisive step's worth, the defensible-subgroup spread and the estimator's own sampling interval, and that convergence is proved against a rival's family and never the golden's own.",
  "approved": null,
  "delivered": "2026-10-17",
  "portal": null,

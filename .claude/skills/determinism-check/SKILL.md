@@ -241,6 +241,21 @@ time). `precut.py` refuses an unresolved row; `checks.py` asserts every row.
   rather than from the data. Assert the edge distance, and name the tightest figure from the same number.
 - **Bins:** every graded figure mid-bin on a non-round value, flip condition stated as a number; never
   grade an iteration count, an even-set median, or a percentage near a one-decimal edge (Part 3).
+- **The bin is wider than the estimator, measured in bins before data is cut.** Where the graded figure is
+  estimated rather than counted, three quantities are measured in units of its bin and written into the ladder:
+  the decisive step's own worth, the spread between the defensible subgroups or samples an estimate could be
+  read off, and the sampling interval of the one the golden uses. The first must exceed the other two together,
+  and it is never the smallest rung gap. A build whose decisive step is worth a fraction of its bin while a
+  subgroup choice is worth more is not repairable by a pin, a world parameter or a coarser bin: the estimate
+  cannot be forced to that precision, the architecture is spent, and a coarser bin brings the default path into
+  the golden's bucket. task157 shipped twice at 0.58 of a bin for the decisive step against 0.90 for the
+  subgroup choice and 0.31 for the rate's own 95 per cent interval, and both portal rounds landed one bucket out.
+- **Convergence is proved against a rival's family, never the golden's own.** A convergence block that varies
+  only the construction the golden already uses (which periods a ratio is read from, which window, which band
+  widths) measures the golden's internal stability and says nothing about determinism. Every such block names,
+  and computes, at least two families a competent solver would build instead, and the bucket each files.
+  task157's fourteen constructions converged 20 of 20 on the golden in every world tested, including the one
+  two portal judges broke by building a cell model the block never considered.
 - **The call's robustness is not the figures' determinacy, and both are checked before data is cut.**
   Where the method stays open, run every candidate the data does not close and compare two things
   separately: which candidate it names, and what each graded figure prints. task182's architecture 3 had

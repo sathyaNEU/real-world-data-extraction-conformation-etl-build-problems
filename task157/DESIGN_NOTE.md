@@ -475,6 +475,14 @@ screening vendor are left unnamed; personas from `guard.py names`.
 
 ## Tried and rejected
 
+- Architecture 1, the January 2027 qualifier forecast from the seasonal return wave (spent 2026-10-27 on its
+  second portal return): the graded bin is finer than the estimator. Measured above in `## Architecture 1 is
+  spent`. The decisive step was worth 0.58 of a 50,000 bin, the smallest gap in the ladder; the choice between
+  two measurable subgroups for the un-returned remainder is worth 0.90 bins and the sampling error on the right
+  one another 0.31, so no pin, world parameter or rounding choice forces one bucket. Three repairs were built and
+  measured: a later return profile (0.58 to 2.08 bins, still open), positioning the golden by the campaign size
+  (about 8,500 of slack a side), and a coarser bin (kills the stump). Re-rooted, not retired.
+
 - Market dilution (riders' January demand is fixed, so returning drivers split a fixed pool of trips and fewer clear 40), worked at the draw: the qualification count needs the hours distribution and a demand forecast stacked on the supply forecast, and the defensible constructions spread wider than any graded bin; dropped before registration.
 - A moved threshold with bunching at the old and new lines (the notch response estimated from past windows), worked at the draw: the deciding analysis is a labour-supply response to a notch, honestly economics-econometrics, whose pairing with forecasting task155 holds in the ban window; dropped rather than relabelled.
 - The trips-per-driver distribution against the threshold as the decisive step: task151's driver (a stepped payout as the sum of chances from a resampled distribution); kept only as last year's observed rates, never decisive.
@@ -550,3 +558,51 @@ measured: the default path still files USD 1,450,000 against the golden's USD 1,
 and the judge itself put the easy route at 3,500 to 4,300 drivers. `freeze.py check --mode determinism`
 passes, so nothing graded moved in any of this. A further judge pass is the author's call, not mine to take
 on my own initiative.
+
+## Architecture 1 is spent: the bin is finer than the estimator, measured 2026-10-27
+
+The portal returned this build a second time (two judges, Gate C and D fail, taxonomy
+`competing_defensible_answer` and `underspecified_objective`, fix_location `input_files` and `prompt`). Both
+judges reproduced every ask exactly, reached the stump's own mechanism, and landed on 4,500 to 4,600 drivers and
+USD 1,600,000 against the committed 4,700 and USD 1,650,000. The first return's two forks are closed and neither
+reappeared: no judge read the demand plan as a ceiling, and no judge read the 2 per cent band as the fund's
+precision.
+
+What is left is not a fork and no pin reaches it. Measured on the shipped pack:
+
+| Quantity | Measured | In 50,000 bins |
+|---|---|---|
+| The decisive last increment (the wave priced at its own January qualification, not in December-trip bands) | 82.9 drivers, USD 29,001 | 0.58 |
+| The golden's distance to its lower bin edge | USD 19,850 | 0.40 |
+| The subgroup choice for the un-returned remainder (its own January rate 0.8198 against the back-by-December rate 0.9284) | 128 drivers, USD 44,877 | 0.90 |
+| The 95 per cent sampling interval on that January rate alone (n=405, se 0.0191) | plus or minus 45 drivers, USD 15,700 | 0.31 |
+
+The decisive step is the smallest rung gap in the ladder (0.58 bins, against 1.96 to 5.81 for every other rung),
+which `stumping` Part 3 bans outright. Worse, a solver who picks the right subgroup and estimates it correctly
+still carries a third of a bin of sampling error, and the choice between two measurable subgroups carries another
+nine tenths. The graded figure is a behavioural point forecast rounded to about 3 per cent of itself, and this
+pack's own sample cannot pin it to 3 per cent.
+
+**Three repairs were measured and none holds.**
+
+1. **A later seasonal return profile.** Moving the trades' return from November into late December (so the wave
+   carries few December trips and the band pricing is badly wrong) lifts the decisive increment from 0.58 to
+   2.08 bins, moves the default path from 4.00 to 5.65 bins away, populates the returner cells from n=4 to 13 in
+   the low bands up to n=32 to 87, and leaves the committed answer at 4,712 drivers and USD 1,650,000. It is a
+   real improvement and it still does not close the finding: the subgroup choice is 0.64 bins and the sampling
+   error 0.3, so a method half a per cent out still files a different bucket. The rival family's own branches
+   land at USD 1,650,000, 1,650,000 and 1,700,000, with only USD 2,215 of headroom under the upper edge.
+2. **Positioning the golden inside the bin.** The campaign size was swept (2,155 to 2,215 recruits). The rival
+   span is about USD 33,000 of a 50,000 bin, so at best about 8,500 of slack sits on each side: a rival 24
+   drivers out of 4,700 flips the answer. Rival span and decisive worth are both proportional to the
+   un-returned remainder, so no scaling separates them.
+3. **A coarser bin.** At the nearest 250,000 the fork widens to two buckets. At the nearest 500,000 it closes,
+   and the default path lands in the golden's bucket, so the stump dies. A later extract date was rejected
+   without building: it would let the extract see the window's own trips, which makes the call partly a count.
+
+The convergence block this note carried was the blind spot. Its fourteen constructions all varied the golden's
+own family (which winters the timing ratio comes from, the wave window, the band widths), and that family
+converges 20 of 20 on USD 1,650,000 in every world tested, including the one the portal broke. It never varied
+the family a rival builds, and that is where both returns came from.
+
+Architecture 1 is spent. It is re-rooted at stage 1, not retired.
