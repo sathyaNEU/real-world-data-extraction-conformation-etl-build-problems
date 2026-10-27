@@ -96,10 +96,9 @@ and `metadata.json` for this purpose only, and only after the thread has returne
 the declared distractor as the surface read carrying the task is a finding (the distractor is too
 load-bearing). A mismatch is the finding that most reliably predicts a send-back. A thread that classes
 the decisive step analytical because the golden is the field's standard method, and that reached the
-golden itself by applying that method with no judgment the data had to settle, is describing a call the
-blind readers measure as landable: record that under stump power in the report, because the library's
-methods are textbook routes a strong solver takes (`stumping` 1.3), and the main thread weighs it with the
-scored readers' result.
+golden itself by applying that method with no judgment the data had to settle, is describing a landable
+call: record that under stump power in the report, because the library's methods are textbook routes a
+strong solver takes (`stumping` 1.3), and the main thread weighs it against the design note's ladder.
 
 ## Report
 

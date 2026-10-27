@@ -4,6 +4,21 @@ Every `taskNN/` folder is one deterministic analytical task: `prompt.txt`, the b
 the golden deliverables and `submission.md`. The goal is one thing: high-quality, unique, submission-ready
 tasks, shipped one after another. Everything below serves that and nothing else.
 
+## STOP: no solver, no scored reader, no probe, on any build
+
+**Binding on every session and every developer, read before anything else.** The solver flow is retired and is
+never run under any name: no scored readers, no `score_reader.py` (deleted), no call-only or draw probes, no "cold"
+or "blind" reader that solves the prompt and hands back figures, no isolated thread that answers the task. Stump power
+is argued on paper (`precut.py`, the design note's ladder and `## Three rules`) and measured by the portal alone.
+
+**Every returned task is fixed and reshipped on the regular checks only.** A portal send-back of any kind (a
+FAILED_TO_STUMP, a determinism block, a rubric block, a duplicate finding) is fixed in the generator and reshipped once
+these pass: the free gates (generator checks, `verify`, two byte-identical builds, `figures_check.py`, `precut.py`,
+`voice-check.py`), the determinism judge, the leak check (`leak.py` and the one isolated leak reader, which reads the
+pack for leaks and never solves it) and the clone check (`guard.py heart` and `surface`). Nothing waits on a solver's
+score. A skill, note or author file that still describes a reader round, a probe or a scored read describes the retired
+practice: do not run it, and remove it where you find it.
+
 ## The 10/10 rules come first
 
 The client's update of 2026-10-10 sends back more tasks than anything else in this file. Every draw, every
@@ -92,7 +107,8 @@ Each command sets its own effort in its frontmatter, so a session gets the right
 | `/clone-check [scope]` | the adjudicated corpus comparison, **author-triggered only** | medium |
 
 Every spawned agent (the leak reader, the determinism judge, the clone auditor) runs at medium effort, set in
-`.claude/agents/` or on the `Agent` call. There is **no solver round** and none is rebuilt under another name.
+`.claude/agents/` or on the `Agent` call. There is **no solver round**, no scored reader and no probe, and none is
+rebuilt under another name (the STOP block at the top).
 No isolated thread runs on the model's own initiative; the commands above license the ones they name.
 
 ## The workflow
@@ -227,7 +243,7 @@ on the main call; build to 60. A response on the main call banks about 45 before
 off it about 12, so the ladder keeps at least one of the top two off the call, and the asks are built hard
 regardless: each of the top two keeps under two fifths of the ask weight, which puts the pair near 51. If
 both land the call the pair reaches 60 only with each held to about a quarter of the ask weight, so a
-build whose two cold readers both land the call is redesigned, not shipped. The ten points are margin for
+design whose ladder, argued on paper, leaves both responses on the call is redesigned, not shipped. The ten points are margin for
 the portal's regrade. The flip-the-wrong-number trap is banned.
 
 **Goldens look business-realistic**; an LLM first draft is sent back (`golden-realism`).

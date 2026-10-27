@@ -66,6 +66,10 @@ Nothing is committed between those points; a session that stops mid-stage writes
 
 ## Returned tasks
 
+**Every return reships on the regular checks only** (`CLAUDE.md`, the STOP block): the fix in the generator,
+the free gates, the determinism judge, the leak check (`leak.py` and the one leak reader) and the clone check
+(`guard.py heart` and `surface`). No solver, scored reader or probe is run, before the fix or after it.
+
 A portal result comes back in one of three shapes, and each has its own repair. Every repair keeps every free
 gate (generator checks, `verify`, byte-identical rebuilds, `leak.py`, `guard.py validate` and `heart`,
 `voice-check.py` at `.claude/skills/guide-to-prompt/references/voice-check.py`, `figures_check.py`,

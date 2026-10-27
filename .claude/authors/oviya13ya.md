@@ -34,12 +34,11 @@ architecture), new. A task from an objective no developer owns says so.
 runs task100 to task132 plus task500, dated 10-05 to 10-11; every build in this lane was delivered 10-12 or
 later, so no list could have left one out, and `portal` and `portal_status` are empty on all of them. Corrected
 2026-10-25: the twelve delivered builds are `SHIPPED`, pending review, and task184, which was never delivered,
-is `DESIGN` at stage 1. The rework each one owes now rests on a measured blind reader instead, recorded in its
-own `pipeline.json` resume line and marked there as in-house evidence rather than a portal result. Eleven of the
-twelve scoreable reads landed the call; task184 and task186 held theirs. All 13 earlier verdicts were in-house
-Gate F calls
-on clean-truth screens; every one has `portal: None` and an empty `portal_status`. Judge Gate F on the count
-of cheap routes reaching the call, never on one reader landing it (`stumping` Part 1).
+is `DESIGN` at stage 1. The rework each one owes is recorded in its own `pipeline.json` resume line as
+in-house evidence, never a portal result, and no reader or solver is run again to re-measure it (`CLAUDE.md`,
+the STOP block). All 13 earlier verdicts were in-house Gate F calls on clean-truth screens; every one has
+`portal: None` and an empty `portal_status`. Judge Gate F on the count of cheap routes reaching the call,
+measured on the clean truth (`stumping` Part 1).
 
 **Rebuilding a build in this lane.** 19 of the 24 rebuild with `python3 taskNN/generator/build.py`. The
 exceptions, which a rebuild audit must not rediscover: **task197 is TWO STEPS**, `build.py` then `submit.py`,

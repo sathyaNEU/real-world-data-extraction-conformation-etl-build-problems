@@ -110,8 +110,8 @@ A build added a clause pinning the grain ("a partner's household-size band has o
 twelve months ... an award level is not taken claim month by claim month") to close a month-by-month
 reading, and the clause also said the scheme's awards are taken **at** those levels. Read literally that
 collapses the within-cell distribution the committed method depends on, so a whole cell refers or none of
-it does, and the literal answer moved two candidates away from the golden. Both of the next isolated
-threads, a reader and a judge working separately, filed that literal answer. The pin was endorsed in
+it does, and the literal answer moved two candidates away from the golden. The next isolated judge filed
+that literal answer. The pin was endorsed in
 writing as fixing the unit a level is taken at while leaving open how the distribution is recovered; it
 did not leave that open, it determined it. **The stump lives in HOW, never in WHAT.** If a literal estimand makes the call
 easy, the stump was a fork; redesign the decisive step (`stumping`), never keep the estimand vague.
@@ -120,7 +120,7 @@ easy, the stump was a fork; redesign the decisive step (`stumping`), never keep 
 is not. Its signature: the portal's finding is an unpinned population, and the stump sentence says the easy route
 omitted that same population. The pin then tells the reader the one question they were not asking, and no wording
 avoids it. Measured on one build: closing three forks without filing any method left every graded figure frozen and
-every free gate green, and the next cold reader reproduced the committed call cell for cell. The pin does not
+every free gate green, and the call then landed cell for cell. The pin does not
 necessarily make the decisive step unanalytical, but it removes whatever difficulty consisted of nobody asking, so
 decide before building whether anything else carries the task.
 
@@ -130,18 +130,15 @@ On the same build the licensed judge ran 40 variants and measured that every eas
 unconditional reading wrong on three platforms, stopping at the snapshot wrong on four, two field misreadings at
 roughly half and one and a half times the golden), so the decisive step was an estimand choice and rule 3 passed.
 It still failed, because the remaining step was a reflex: a competent solver conditions a survival curve on survival
-to the as-of date without deliberating, and the cold reader's reflex reached the golden while the filed record
-supplied every other convention. **A reflex reaching the golden spends the stump** (`stumping` Part 6), whatever the
-step's kind. When a pin closes the last thing a reader had to ask, list the reflexes for what remains and check that
+to the as-of date without deliberating, and that reflex reaches the golden while the filed record supplies every
+other convention. **A reflex reaching the golden spends the stump** (`stumping` Part 6), whatever the
+step's kind. When a pin closes the last thing a solver had to ask, list the reflexes for what remains and check that
 each lands wrong.
 
-**Do not take a cold reader's account of its own route as evidence about the task.** Ask what it scored, not what it
-thinks it did. On the same build the reader answered that it had followed filed rules and read dates rather than made
-an analytical choice, while the formula in its own write-up carried the survival-conditioning denominator it never
-named as a choice, and it missed ten of fifteen ask figures, which is not what a fully specified procedure predicts.
-Its score is evidence; its introspection is not. Where a reader's self-report and a judge's measurement of the
-alternatives disagree, the measurement decides what kind of step it is, and the reader's landing of the call decides
-whether it stops anyone.
+**A leak reader's question-6 answer is its account of a route, not a measurement.** On the same build a reader
+answered that the call followed filed rules and read dates rather than an analytical choice, while the formula it
+quoted carried the survival-conditioning denominator it never named as a choice. Where a reader's account and the
+judge's measurement of the alternatives disagree, the measurement decides what kind of step it is.
 
 **What is left open after the WHAT is filed must be a method, not a knob.** Filing the five parts is
 mandatory, so a design whose decisive step is one of them has no stump once it is filed, and a design
@@ -187,7 +184,7 @@ time). `precut.py` refuses an unresolved row; `checks.py` asserts every row.
   exhausted and none of them closes it.** Worked on a build whose decisive step corrects a classifier's
   marks with its recall and false-mark rate, and whose open seventh cell is a calibration of the hand code
   on the mark plus a month index, extrapolated past the audited months: it files 504 and prints 500 against
-  a golden of 450, and a blind reader confirmed both the figure and that nothing in the bundle rules it in.
+  a golden of 450, and nothing in the bundle rules it in.
   - **C1 converge** aligns the data so the rival agrees, which here means making the month term extrapolate
     the drift correctly. The rival then becomes a second correct route, so a solver who fits any month trend
     files the golden and Gate F pays for what Gate C gained.

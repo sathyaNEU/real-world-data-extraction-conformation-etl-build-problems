@@ -18,20 +18,19 @@ reporting that the second-best real response lands the call: every figure in it 
 number still mean nothing. And the failure is not recoverable by ask work, because a response on the
 call banks about 45 before any ask, so if both top responses land it the pair reaches 60 only with every
 ask held to about a quarter, a layer no lane has shown it can build. task190 was retired on exactly this. Its measured pair of 38.1 was
-`(56.0 + 20.1) / 2` with the 20.1 a response that misses the call, while its cold reader had already
-landed the call at 80 to 90 per cent and its judge's blind enumeration matched the golden on every
-graded figure. Four passes went into driving that number down, and the premise had been falsified
+`(56.0 + 20.1) / 2` with the 20.1 a response that misses the call, while its judge's blind enumeration
+had already matched the golden on every graded figure. Four passes went into driving that number down, and the premise had been falsified
 before the first of them.
 
-**So the cold thread checks the ladder and the script checks the asks, in that order.** Read the
-reader's committed answer and the judge's Gate F line before the pair is believed: where a cold
-thread lands the call, the pair ceiling is not evidence, the finding is in the ladder, and no ask
-measurement is worth running until the ladder holds. Where both of them miss the call, the pair is
-evidence and the ask work is the work. A build whose cold readers both land the call needs a
-redesigned decisive step, not a fourth device.
+**So the ladder is checked before the asks are priced.** The ladder is argued on paper (`precut.py`, the
+readability screen, the deletion tests) and read by the judge's Gate F line: where Gate F finds the call
+landable, the pair ceiling is not evidence, the finding is in the ladder, and no ask work is worth doing
+until the ladder holds. A design whose ladder leaves both responses on the call needs a redesigned decisive
+step, not a fourth device. No solver, scored reader or probe is run to check either (`CLAUDE.md`, the STOP
+block); the portal is the only measurement.
 
 **Where a whole lane actually bled, measured across thirteen builds: the ask layer, not the call.** An
-in-house audit scored a reader against thirteen FAILED_TO_STUMP builds and the ask figures came back at **61,
+in-house audit of thirteen FAILED_TO_STUMP builds found the ask figures at **61,
 61, 64, 80, 92, 93, 95 and 98 per cent solved** against this part's target of two fifths each, one and a
 half to two and a half times the target. Run the pair arithmetic on those numbers and the cause is
 unambiguous: with one response on the call the pair is `28.5 + 27.5 (Lc + Ls)`, so the audited ask layers
@@ -46,39 +45,28 @@ back high, measure `Lc` before redesigning a single decisive step. The ask layer
 closure argument reaches, because 2.1 licenses an ask to turn on semantics or rule application, which the
 rules that close a main call's decisive step do not touch.
 
-**The instrument can print a pass on an ask layer it never measured, so read its denominator first.**
-`../leak-check/score_reader.py` scores only the keys the reader hands back that `figures.json` also carries.
-A reader given the prompt but not the key list names its own keys, every one of them scores as nothing and
-leaves the denominator, and the run prints `0 of 0 hit (0.0 per cent)` and `PASS`. A shipped build read that
-way: its reader committed to twenty ask figures under its own names, the scorer saw none of them, and the
-build carried a passing ask-layer line it had never earned. The scorer now refuses a run with no scored ask
-figure, and refuses one whose unscoreable keys outnumber its scored ones, because that share is a floor and
-not the measurement. **Brief the reader with the flat `figures.json` key paths to fill**, never the prompt
-alone, and read the printed exclusions against the submission's blocks before believing a share.
-
-**Measured across a whole lane, thirteen builds read by one blind reader each and scored: the ask leak runs
+**Measured across a whole lane of thirteen builds, the ask leak ran
 42.9, 46.4, 55.6, 57.6, 68.4, 74.0, 86.4, 86.7, 92.5, 93.3, 93.6, 97.7 and 100.0 per cent, a median of 86.4
-against this part's target of two fifths.** Three of those are builds whose call the same reader missed,
+against this part's target of two fifths.** Three of those are builds whose call was missed,
 so the devices had every chance to bite and bit nothing. Read together with Part 3's hygiene-battery record, which
 is the same result from the other side, the law is: **an ask figure a competent reader computes straight
 from the pack has no device on its path at all.** Something near the ceiling is the measured default for
 an ask built out of the pack's own quantities, not a bad outcome among good ones, and it is not repaired by
 re-wording the ask or by adding a device the book already lists as executed. **The floor of that range is
 where to look for what works:** the two builds at 42.9 and 46.4 per cent are the lane's best ask layers by
-a wide margin, and both of them route the ask through a reconstruction the reader has to get right before
+a wide margin, and both of them route the ask through a reconstruction the solver has to get right before
 any figure appears (an annex of per-quarter operational counts behind a recording-completeness correction,
 and a per-regulation delay attribution over flights that operated). Read those two before designing a new
 ask layer. The device has to sit where
-the reader's own route runs, which is why 1.1's cracker sheet is drawn from the cracker's path and not from
+the solver's own route runs, which is why 1.1's cracker sheet is drawn from the cracker's path and not from
 the ask list.
 
-**1.0 A device whose discovery and whose remedy are the same act is not a device.** Measured by a controlled
-re-read. One build's ask leaked 21 of 21 litres figures, and its pack also carried a line in the extract
-notes narrating two of that ask's hazards, so the narration was cut and the pack rebuilt and read again by a
-fresh blind reader. **The score did not move: 34 of 59, 57.6 per cent, identically.** The second reader found
-the primary itself, listed all eight reissued survey references by number, and chose to match returns on the
-site address rather than the reference, giving its own reason ("references were reissued, and the name is the
-owner or operator, not the brand"). So the narration was not what handed the device over. The device was
+**1.0 A device whose discovery and whose remedy are the same act is not a device.** One build's ask leaked
+21 of 21 litres figures, and its pack also carried a line in the extract notes narrating two of that ask's
+hazards. Cutting the narration moved nothing: the hygiene battery alone finds the primary, lists all eight
+reissued survey references by number, and matches returns on the site address rather than the reference
+("references were reissued, and the name is the owner or operator, not the brand"). So the narration was not
+what handed the device over. The device was
 reachable, because **noticing that eight references each serve two stations IS noticing that the join must go
 through something else, and the only other identifier on the row is the address**: discovery and remedy
 collapse into one act, and the hygiene battery's unmatched-join and key-uniqueness sweeps perform the
@@ -100,7 +88,7 @@ allocation whose weight is recorded. The work is real and can be done wrong (a g
 key handed over mid-series), and exactly one answer is right. So when a device needs replacing, ask what
 KIND of thing the remedy is before asking how well hidden it is.
 
-Contrast the two ask layers this lane measured lowest, at 42.9 and 46.4 per cent. In both, the reader has to
+Contrast the two ask layers this lane measured lowest, at 42.9 and 46.4 per cent. In both, the solver has to
 **build** something after the discovery (a weekly profile fitted to interval-censored windows, a
 per-regulation delay attribution over flights that operated), and the building is where it goes wrong. So
 the test to apply at design time, alongside readability test 7: **after the solver has noticed the problem,
@@ -109,15 +97,12 @@ order however well hidden, and hiding it better does not help: this one was meas
 
 ## Part 1. Design against the careful solver's path
 
-**The cracker is a model and the reader is the measurement.** Its stops are the author's guesses at the
-opponent's routes, so a reader that beats them has proved them too shallow, not proved itself unusual. One
-build's cracker priced three asks at nought of six each and a single reader at medium effort kept twelve of
-eighteen: ask A's grain device held, while the register's year-to-date convention fell to a tie check
-(passed plus held against the cumulative total) and a two-meaning blank fell to a cross-tab of increments
-against reasons. Both were "seen, reflex repair wrong" devices sold as silent ones. **So when the reader
-keeps an ask, re-device it from the silent list (Part 3) rather than re-pricing the cracker**, and read the
-measured pair off the reader's score: twelve of eighteen with a landed call is a pair near 65, whatever the
-sheet said.
+**The cracker is a model of the opponent, so draw it from the careful solver's route, never from the ask
+list.** Its stops are the author's guesses at that route. One build's cracker priced three asks at nought of
+six each while two of its devices were "seen, reflex repair wrong" devices sold as silent ones: a register's
+year-to-date convention falls to a tie check (passed plus held against the cumulative total) and a
+two-meaning blank to a cross-tab of increments against reasons. **So screen every device against the hygiene
+battery (1.1e) and re-device from the silent list (Part 3)** rather than re-pricing the cracker.
 
 **1.1 The cracker and mirror sheets**, on paper before any device. The **cracker** landed the call, ran the hygiene battery (key uniqueness, exact duplicates, unmatched joins, fan-out, count ties), executed every filed rule it points at and matched every control and published figure. Score each ask figure and chart criterion, a hit within half a unit of the stated rounding: **every row misses** or the ask is rebuilt. The **mirror** stops at the most attractive wrong rung and keeps **under 50 per cent of ask weight** (target two fifths), no ask whole. A figure differing between sheets is coupled: re-route or drop it.
 
@@ -130,21 +115,13 @@ cell) and the all-nil response. More than about a quarter of the cells recoverab
 component measures the data's shape rather than the solver's analysis, and the ask's shape has to change,
 not its wording.
 
-**1.1d A measured row is only measured against the pack it was measured on, and re-siting a device voids
-it.** The cracker's reader-calibrated row may carry a real reader's result, which is the point of 1.1c, but
-that result dies the moment the device under it moves. A build measured its ask A and ask B at 0 of 12 each
-from a live reader, re-sited both devices in the next pass (one had its filed convention removed, the other
-was re-devised onto a different reset), carried the two rows forward still labelled measured, and reported
-a pair of 39.5. The fresh reader on the re-sited pack took **all six of ask A, all six of ask B and all six
-of ask C, 19 of 19 figures it attempted**, for a keep of 18 of 30 and a measured pair of **61.5**. The same
-output had already named the scenario: "a reader which cracked A or B as well would keep 18 of 30 for 61.5".
-So stamp each row with the pack digest it was measured on, treat any row whose device has since moved as a
-model again, and re-measure before the row is read as a gate. The cheapest form of this rule: a pass that
-re-sites a device owes a reader on the pack it cut, not the pair arithmetic of the pack before it.
+**1.1d A cracker row is measured only on the pack it ran on, and re-siting a device voids it.** A build
+carried two ask rows forward still labelled measured after re-siting both devices, and its pair arithmetic
+described a pack that no longer existed. So stamp each row with the pack digest it was computed on, and
+re-run the cracker script on the re-cut pack before the row is read as a gate.
 
-**1.1e The hygiene battery a medium reader runs unprompted.** Fourteen blind scored reads across seven builds
-measured it: every one of these repairs was applied by reflex, so a device resting on any of them is seen,
-never silent, and keeps nothing:
+**1.1e The hygiene battery a careful solver runs unprompted.** Past builds measured it: every one of these
+repairs is applied by reflex, so a device resting on any of them is seen, never silent, and keeps nothing:
 - exact or near-exact duplicate rows, and a repeated total on every line of a bulk receipt;
 - a second series repeating the first one interval early (a check meter), dropped as a duplicate;
 - a clock in UTC or standard time, found from a missing DST gap or an hour profile, and converted;
@@ -156,23 +133,18 @@ never silent, and keeps nothing:
 - a visible rate code or half-price line read as the discount;
 - a comment column ("incl. outreach") read for what it says.
 
-The devices that held against two readers in one round (task169's one order per hearing, task177 v2's credit lines on bills raised before acceptance, task177 v1's day-cut pairs and the vendor desk) shared one property: the repair needed a judgment the hygiene battery does not make, about which records are one event, taken from a cardinality or an identity in the data, with no field, comment or code announcing it. Screen every primary device against the list above before cutting the pack.
+The devices that held in past builds (task169's one order per hearing, task177 v2's credit lines on bills raised before acceptance, task177 v1's day-cut pairs and the vendor desk) shared one property: the repair needed a judgment the hygiene battery does not make, about which records are one event, taken from a cardinality or an identity in the data, with no field, comment or code announcing it. Screen every primary device against the list above before cutting the pack.
 
-**1.1c The cracker table is a model, the isolated reader is the measurement, and the reader wins.** Score
-every figure the stage 4 reader reports against `generator/figures.json`, key by key, before reading its
-verdict: that scoring is the only number on the ask layer that was not written by the author. A reader hit
-means the device is **absent from that reader's path, not weak**, so the repair is to re-site the device
-(another file, another grain, another join in the resolution chain) and never to re-word the ask, widen a
-bin or add a second device beside the first. task190's `## Ask sheet` claimed the cracker missed all three
-asks and the measured pair ceiling was 28.5; its round-3 reader, a medium thread holding only the pack and
-`prompt.txt`, reported 43 of 43 graded figures, the call and all 38 ask figures, and volunteered the
-easy-route error unprompted. The three causes it quoted are the three to screen for before the pack is
-cut: a release note that tells the reader a later extract stands above the published column announces the
-device (Part 3's law 3); two devices whose arithmetic is exact enough to find by inspection, five December
-values at about fourteen times a month and five rollup rows each summing to exactly three members, are
-seen, not silent (law 4 aimed, but landing on a round multiple is a marker); and a device whose two
-handlings both tie hands the ask to whoever notices either. An ask layer re-sited once on paper, from a
-measured 65.5 to a paper 28.5, is still a paper figure: re-measure it with a reader before it counts.
+**1.1c Three tells that hand an ask over, screened before the pack is cut.** A device a solver meets
+announced or finds by inspection is absent from its path, not weak, and the repair is to re-site it (another
+file, another grain, another join in the resolution chain), never to re-word the ask, widen a bin or add a
+second device beside the first. task190's `## Ask sheet` claimed the cracker missed all three asks at a pair
+ceiling of 28.5 while every ask figure was reachable, for three causes: a release note that tells the solver a
+later extract stands above the published column announces the device (Part 3's law 3); two devices whose
+arithmetic is exact enough to find by inspection, five December values at about fourteen times a month and
+five rollup rows each summing to exactly three members, are seen, not silent (law 4 aimed, but landing on a
+round multiple is a marker); and a device whose two handlings both tie hands the ask to whoever notices
+either.
 
 **A fork is not a device, and this is the commonest way an ask layer fails.** A device is found only by an
 internal inconsistency; a fork is resolved by reading a sentence. So closing the fork hands the ask to every
@@ -308,7 +280,7 @@ it in, keeping its force. The other had three pins close the two readings its de
 measured pair ceiling came out at 83.5 against a paper 35.1 with mirror leakage at 100 per cent, so the
 ask paths were re-cut with silent primaries while the call stayed byte-identical (`freeze.py check
 --mode rubric`). Pins and devices are not substitutes: a pinned convention with a silent device under it
-is the shape that holds. Two rigorous readers splitting means a missing organ: fix it, never harden the ask. Assert every stop and delta, recompute every ask in the verifier, and sweep: lazy, necessity matrix (whatever moves nothing comes out; rerun after every parameter change), pair simulation on the cut pack, over-cleaner, oracle, wrong-path battery, separation count, and a grep for each device's words and any organ stated twice. Repair one device at a time, organ and records together; never delete an organ.
+is the shape that holds. Two rigorous readings splitting means a missing organ: fix it, never harden the ask. Assert every stop and delta, recompute every ask in the verifier, and sweep: lazy, necessity matrix (whatever moves nothing comes out; rerun after every parameter change), pair simulation on the cut pack, over-cleaner, oracle, wrong-path battery, separation count, and a grep for each device's words and any organ stated twice. Repair one device at a time, organ and records together; never delete an organ.
 
 **A filed sentence's scope is stated before it is written, and its wording is approved before it ships.**
 Three pins ordered in one session each leaked something different: handling notes became a solver checklist

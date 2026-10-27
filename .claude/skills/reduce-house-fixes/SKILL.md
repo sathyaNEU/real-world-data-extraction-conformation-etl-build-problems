@@ -320,7 +320,7 @@ Entries: **Defect**, **Cost**, **Line** (where the rule stops), **Check**, **Rep
 ## H26. A gate whose "nothing found" and whose "nothing to look at" print the same
 
 **The defect.** A check reports a clean result for a build it could not actually examine, and the clean
-result is indistinguishable from a real pass. The measured instance: the scored-reader gate identifies the
+result is indistinguishable from a real pass. The measured instance: a retired scoring gate identified the
 committed answer by a `call.` key prefix, so on a build that files its call at the top level under its own
 name (`plants_over_amber`, `sectors_over_tolerance`, `referred_count`) it found no call figure, printed
 `call figures 0 of 0 hit`, and exited 0 with `PASS the call missed`. Three of the six builds in one audit
@@ -333,9 +333,9 @@ nest their call under `call.`; nothing in the output said which of the two situa
 
 **The check.** A gate that can be inapplicable says so and exits non-zero. Give every such gate a third
 outcome beside pass and fail: it found the thing and the thing was clean, or it could not find the thing to
-check, and the second is an error with the fix in its own message. The scored reader now takes `--call-key`
-and refuses to run when no call key is present or named, printing the build's own candidate keys. Read any
-gate whose quiet output is a zero count and ask whether a zero means clean or means absent.
+check, and the second is an error with the fix in its own message, printing what it looked for and what it
+found instead. Read any gate whose quiet output is a zero count and ask whether a zero means clean or means
+absent.
 
 ## H27. A draw-time gate run on an already-drawn build, reporting its successors as collisions
 
@@ -364,9 +364,9 @@ generator's own figures file rather than the figures the rubric grades. Builds f
 beside the graded answers, so the denominator and the numerator both swell with things no rubric scores, and
 the percentage says more about a build's filing habits than about the build.
 
-**The measured instance.** A scored reader was reported as leaking 24 of 49 ask figures, 49 per cent, and the
-build was sent for a rubric repair on that number. **Twenty of the twenty-four hits were the pack's own row
-counts, the governing standard's stated constants and the window's dates**: a reader that counts 111,454 rows
+**The measured instance.** A retired scoring script reported a build as leaking 24 of 49 ask figures, 49 per
+cent, and the build was sent for a rubric repair on that number. **Twenty of the twenty-four hits were the pack's own row
+counts, the governing standard's stated constants and the window's dates**: a response that counts 111,454 rows
 in a file and repeats a published 49.920 Hz threshold has shown nothing. Re-scored with those excluded the
 layer sat at 4 of 29, under the bar, and the build needed no repair at all. The real leak was two figures,
 which the same output had buried among twenty-two irrelevancies.
@@ -376,8 +376,8 @@ cause, hidden inside a number that looked decisive. It also cuts the other way: 
 provenance is scored harshly beside one that files a lot.
 
 **The check.** State a score's denominator before reading the score, and make the instrument print what it
-excluded so the exclusion can be argued with. `score_reader.py` now drops a printed list of provenance
-prefixes and offers `--all-keys` to turn it off. More generally: when a measurement decides work, read one
+excluded so the exclusion can be argued with (the cracker and pair-ceiling scripts in `checks.py` included).
+More generally: when a measurement decides work, read one
 case's rows by hand before trusting the fraction.
 
 ## H29. A bound rounded to nearest, so the write-up claims a margin the pack does not hold
@@ -524,7 +524,7 @@ The failure is invisible in exactly the case that matters: the build whose evide
 identical to the build that earned the verdict.
 
 **What it cost.** A shipped build carried a passing ask-layer line on a run that scored zero of its ask
-figures, because the reader had named its own keys and all twenty left the denominator. The line was read
+figures, because all twenty ask keys had left the denominator. The line was read
 as evidence in two later sessions and quoted into a design note.
 
 **The check.** Every script that prints a verdict on a rate refuses to print one when its denominator is
@@ -533,22 +533,21 @@ axis is not a guard on the next: the same script already refused a run with no c
 reason and still passed one with no ask figure. When a rate is computed, grep the script for every
 `if ... else 0` fallback on its denominator and give each one a refusal.
 
-## H35. A measuring brief that names the answer
+## H35. An isolated thread's brief that names the answer
 
-**The defect.** An instrument needs to tell its subject which quantities to report, and the identifiers it
-uses to do that are drawn from the artifact being measured, so an identifier can carry the answer. A key
-path with one component per member of the committed set enumerates that set, and enumerating it beside the
-non-members is what the pack does; enumerating it alone is handing it over.
+**The defect.** A brief for an isolated thread (the leak reader, the judge's thread) carries identifiers drawn
+from the artifact being checked, so an identifier can carry the answer. A key path with one component per
+member of the committed set enumerates that set, and enumerating it beside the non-members is what the pack
+does; enumerating it alone is handing it over.
 
-**What it cost.** A blind reader scored as having landed a call it had been given: the key list it was
-briefed with held one path per slot of the committed slate, eight of the week's forty-two, and the reader
-named that list as its reason for choosing the method. One full reader run was spent and the build's verdict
-had to be withdrawn.
+**What it cost.** A retired scored read was briefed with a key list holding one path per slot of the committed
+slate, eight of the week's forty-two, and named that list as its reason for choosing the method; the verdict
+had to be withdrawn. The leak reader is exposed the same way (`leak-check`, the sweep lines kept out of its
+brief).
 
-**The check.** Generate the brief's identifier list with a tool that drops any identifier whose own
-components name the measured answer, and define that mechanically: a component is distinguishing when every
-sibling at its position is a member of the answer. Then read the subject's own account of why it chose its
-method, because a subject that was handed the answer usually says so.
+**The check.** Brief the leak reader with the prompt and the pack only, never figure keys or figures. Where a
+brief must carry identifiers, drop any identifier whose own components name the answer, defined mechanically:
+a component is distinguishing when every sibling at its position is a member of the answer.
 
 ## H36. A tolerant comparison placed ahead of the exact one
 

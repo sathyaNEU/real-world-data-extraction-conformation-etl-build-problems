@@ -35,17 +35,13 @@ window never saw generates the quantity, or which method a criterion selects whe
 difficulty lives there. The strongest model takes readings others decline (133 v1, 100 on the portal), so
 screen, never assume.
 
-**A Gate F verdict from ONE reader landing the call has measured the design working, not a failure.** Part 0
-requires the ladder to keep all but one response off the call, so the cracker landing it is the intended
-outcome and two landing it is the ladder failure. An in-house audit ran a single reader against thirteen
-builds, saw the call land, and wrote "Gate F failed" on each; that reasoning cannot distinguish the designed
-single lander from a ladder failure. Those verdicts happened to be right, but only because clean-truth screens
-separately showed MULTIPLE cheap routes landing each call (on one build, five one-group-by routes, one of them
-a partition of the default path's own column), and multiple cheap routes is what implies both top responses
-land it. **So judge Gate F on the count of cheap routes that reach the call, measured on the clean truth, or
-on two readers; never on one reader's landing.** The same audit also handed its reader the figure KEY NAMES
-from `figures.json` on at least one build, which its own leak line records: an audit harness is a shipped
-artifact for this purpose and gets the same leak discipline as the pack.
+**Gate F is judged on the count of cheap routes that reach the call, measured on the clean truth.** Part 0
+requires the ladder to keep all but one response off the call, so one cheap route landing it is the intended
+outcome and two landing it is the ladder failure. An in-house audit of thirteen builds found MULTIPLE cheap
+routes landing each call on the clean truth (on one build, five one-group-by routes, one of them a partition
+of the default path's own column), and multiple cheap routes is what implies both top responses land it. So
+`checks.py` counts them on the generator's clean truth; no solver, scored reader or probe is run for it
+(`CLAUDE.md`, the STOP block).
 
 ## Part 1. Find the pitfall
 
@@ -2116,7 +2112,7 @@ the ladder.
   0.30 similarity and warns at 0.12.
 - **The record:** nothing drawn is dead (`strategies.md` Part 6, `shipped-ledger.md`), the pattern's
   discriminator (1.4) can be built here, and a re-root moves the decisive rung.
-- **The library test:** if the golden is a card's method applied as the card states it, a blind reader
+- **The library test:** if the golden is a card's method applied as the card states it, a strong solver
   lands it (1.3). Name the judgment beyond the card that the data settle and the default path misses, or
   the card is the default path, not the stump.
 

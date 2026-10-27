@@ -1,6 +1,6 @@
 ---
 name: leak-check
-description: "Check a built bundle for anything that hands the solver the answer or the author's intent: golden figures in a memo, the stump's vocabulary in a filed document, a sentence that announces the decisive step, a file name that names the trap, hidden sheets or tracked changes, toolchain signatures, a shipped artifact that ranks the candidates, dates after the setting, a prompt that fails the prompt gate. leak.py runs eleven mechanical sweeps and writes leak_check_report.md; the /leak-check command adds one solver's-eye read by one isolated agent. Stage 4 of the build pipeline, together with the duplicate check and before the determinism judge; leak.py again after any rebuild, the reader again only when a document or the prompt changed."
+description: "Check a built bundle for anything that hands the solver the answer or the author's intent: golden figures in a memo, the stump's vocabulary in a filed document, a sentence that announces the decisive step, a file name that names the trap, hidden sheets or tracked changes, toolchain signatures, a shipped artifact that ranks the candidates, dates after the setting, a prompt that fails the prompt gate. leak.py runs eleven mechanical sweeps and writes leak_check_report.md; the /leak-check command adds one isolated leak read that never solves the task. Stage 4 of the build pipeline, together with the duplicate check and before the determinism judge; leak.py again after any rebuild, the reader again only when a document or the prompt changed."
 ---
 
 # Leak check
@@ -80,7 +80,8 @@ step: `build-pipeline` classes a rung executed as a work order as announced, not
 ## The reader: `/leak-check`
 
 `/leak-check taskNN` runs `leak.py`, then one isolated Sonnet agent at medium that sees only fresh copies of
-`prompt.txt` and `target/`, never the design note, generator, submission or report. It answers as a solver:
+`prompt.txt` and `target/`, never the design note, generator, submission or report. It reads the pack for leaks and never solves
+the task (no figures, no answer, no score):
 
 1. Which sentence or file tells you the decisive step? Quote it.
 2. Which file already ranks or scores the candidates on the prompt's question?
@@ -98,86 +99,11 @@ Answers append to the report under `## Solver's-eye read`, with a verdict on eac
 thread rules fix or harmless per line, harmless ones one line each in the design note.
 
 **The stump-vocabulary sweep's lines never reach the reader.** Their parentheses list the stump
-paragraph's own words, so handing them over tells the reader where the decisive step lives and turns its
-call into an announced rung (`build-pipeline` Returned tasks), not a measurement. task305's third pair
-both went first to the rating list's holiday parks at Wrentoft, the two words the sweep line named, and
-both landed a call the four readers before them had missed. The main thread rules those lines itself;
-question 1 asks the same thing cold. **The answer-figure sweep's numbers stay out of the brief for the same
-reason**: each one it quotes is a golden figure, so a line saying "list entry numbers such as 823 and 859"
-hands the reader two answers to check its own against (task305's round-3 brief named ask B's figures for
-stores 110 and 109 that way). Tell the reader which files the sweep flagged, never which numbers.
-
-**The reader also hands back every figure it committed to, as a JSON object keyed exactly as
-`<task>/generator/figures.json` is keyed** (a nested value by a dotted key, `"a1_Norte.contacts": 1965`),
-holding only the figures it actually answered. Score it before reading its verdict:
-
-```
-python3 .claude/skills/leak-check/score_reader.py taskNN <reader.json>   # 0 holds; 2 thin; 1 Gate F failed
-```
-
-A hit is an exact match at the golden's own precision. The scorer prints the reader's estimated rubric
-share (about 45 for a landed call or 12 for a missed one, plus 55 times the ask share); the two scored
-readers' estimates averaged are the pair, which builds to 60 against the bar of 70, and a pair whose readers
-both land the call is a ladder failure whatever it averages. Exit 1 on 55 per cent or more of the ask
-figures, or on a landed call with 40 per cent or more: **a reader hit means the device is absent from that
-reader's path rather than weak**, so the repair re-sites the device and never re-words the ask
-(`supplemental-stumping` 1.1c). Exit 2 is thin: a missed call with 40 to 55 per cent names the ask that
-leaked, and a landed call under 40 per cent holds only while the other reader misses the call. The
-design note's cracker table is a model of the opponent written by the author; this is the measurement, and
-it outranks the table. task190 architecture 6 shipped a cracker table claiming all three asks missed and a
-`precut.py` pair ceiling of 28.5 through three stage 4 rounds; its round-3 reader reported 43 of 43.
-
-**One reader is a sample, so the pack that ships is read twice.** Two isolated scored readers, each on its
-own fresh copy, each scored with `score_reader.py`; the build ships when at least one of them misses the
-call, neither exits 1, and their two estimated rubric shares average 60 or under. Readers on one pack
-differ by whole asks and by the call itself: three readers on task164's frozen call split two landed and
-one missed, and on task162 and task165 one of two readers found an ask device the other never saw. A call
-both readers land is spent, whatever the asks hold; a call one reader lands ships only on the other
-reader's miss, and no third reader is run to break the tie.
-
-## The scored read, and how its own harness leaks
-
-A scored read hands the reader a list of figure names so its answers can be matched to the golden. **Those
-names are part of the pack as the reader sees them, so a key that states the decisive quantity in words hands
-over the step.** One audit handed a reader `sections_twice_failed_in_service` per candidate, and the reader's
-own report then said nothing had told it to use a recurrent-failure model and that it inferred the repeat
-pattern itself, which was false: the key names said it. Another was handed `rung0_count`, which is the
-author's own ladder vocabulary.
-
-So the handed list is built from the **Deliverable Answers the prompt actually asks for**, under the prompt's
-own words, and the Critical Components keys are either relabelled neutrally (`cc1`, `cc2`) or withheld. Sweep
-the list for the design's vocabulary exactly as sweep 2 sweeps the pack, since a key name is a shipped string
-for the length of the read. Where a scored read has already run on a contaminated list, its Gate F evidence is
-contaminated too: say so, and re-establish the verdict from the clean truth rather than from the read.
-
-## Scoring the reader
-
-`score_reader.py` turns the reader's answers into the one ask-layer measurement that counts, and the design
-note's `## Ask sheet` cracker table is a model of the opponent, not evidence (`supplemental-stumping` Part 0).
-
-```
-python3 .claude/skills/leak-check/score_reader.py taskNN --emit-keys [--call-key K]...   # the brief's key list
-python3 .claude/skills/leak-check/score_reader.py taskNN <reader.json> [--call-key K]... # the verdict
-```
-
-**Brief the reader with the emitted key list, never with a raw flatten of `figures.json`.** Two failures sit
-on either side of that sentence, both measured.
-
-- **Name no keys and the run scores nothing.** The reader invents its own names, every one of them scores as
-  nothing and leaves the denominator, and the script divides by an empty set. One shipped build carried a
-  passing ask-layer line earned exactly that way, its reader having committed to twenty ask figures under
-  names `figures.json` does not hold. The script now refuses such a run (house fix H34).
-- **Flatten the keys raw and the path can be the answer.** One build nests its committed slate under
-  `call.slot_offences.<slot>`, one component per slot, so the list named eight of the week's forty-two slots
-  and only those eight. Its reader wrote that its method "reproduces the same eight slots as the slate the
-  key names, which is why I used it", and the run scored the call as landed on a brief that had handed it
-  over (house fix H35). `--emit-keys` drops a path whose own components name the call's members, where
-  **distinguishing** means every sibling at that position is a golden member: a five-plant annex naming the
-  one plant over amber beside four that are not says nothing and is kept.
-
-The reader's call figure is the Gate F measurement: a landed call means the architecture is spent and no ask
-repair reaches it, because the pair then floors at 45 plus 55 times the ask keep. An ask share at or over 35
-per cent means the devices are absent from the reader's path, not weak.
+paragraph's own words, so handing them over tells the reader where the decisive step lives and its
+question 1 is no longer cold. The main thread rules those lines itself; question 1 asks the same thing
+cold. **The answer-figure sweep's numbers stay out of the brief for the same reason**: each one it quotes
+is a golden figure, so a line saying "list entry numbers such as 823 and 859" hands the reader two
+answers. Tell the reader which files the sweep flagged, never which numbers.
 
 ## Not a leak
 
@@ -193,6 +119,4 @@ per cent means the devices are absent from the reader's path, not weak.
 
 - [ ] `leak.py --asof` CLEAN or REVIEW, sweep 11 clean; every REVIEW answered or fixed
 - [ ] Reader run once after the realism sweep: nothing quoted for question 1, every question-5 sentence executes to the golden
-- [ ] `score_reader.py` run on the reader's own figures before its verdict is read: exit 0, or 2 on a landed call under 40 per cent
-- [ ] The pack that ships read by two scored readers: at least one misses the call, neither exits 1, the pair at or under 60
 - [ ] All reader findings fixed in the generator before the judge; `leak.py` re-run after every rebuild
