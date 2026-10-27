@@ -1,10 +1,13 @@
-# task464 design note: the 2027 outpatient capacity register (architecture 3)
+# task464 design note: the 2027 outpatient capacity register (architecture 3, spent)
 
-Status lives in `pipeline.json`; this note holds the design. Read `## Tried and rejected` first: architecture 1
-(the Wendlemere building emissions slate) was sent back by the determinism judge, architecture 2 (placing the
-retiring reading test's scores on the new scale) was solved on the portal because its decisive step was
-psychometrics' own named method for the deciding quantity, and architecture 3 is drawn afresh in the ETL
-objective with the field's method moved into the default path.
+Status lives in `pipeline.json`; this note holds the design. **Read `## Architecture 4: the cell screened and
+refused, measured 2026-10-27` at the foot of this file before anything else, then `## Tried and rejected`.**
+Architecture 1 (the Wendlemere building emissions slate) was sent back by the determinism judge, architecture 2
+(placing the retiring reading test's scores on the new scale) was solved on the portal because its decisive step
+was psychometrics' own named method for the deciding quantity, architecture 3 (below) was sent back at the stage
+4 re-judge on Gate C and its world then measured closed, and architecture 4's screen of the author's fixed
+education and ETL pairing refused all four candidate decisive steps on measured arithmetic. The body of this
+note from `## Draw` to `## Leak check` describes architecture 3 and is kept as the record of a spent design.
 
 ## Draw
 
@@ -752,6 +755,47 @@ to make a solver notice a structure.
   figure by the cushion instead of summing each area's own growth times its own weekly base. It is now
   computed forward and the verifier recomputes it from the bundle.
 
+- **Architecture 4 candidate C1, the conversion certified on a conditioned entry: refused on its own
+  arithmetic, 2026-10-27, measured over 24 seeds at two settings.** A licensure written paper, twelve closed
+  windows, no item carried between any two papers, the standard certified at a base window and carried forward
+  by equating each paper's mark distribution to the preceding paper's; the decisive step is that each window's
+  entry is part returning candidates whose marks are conditioned on having fallen below the preceding cut, at a
+  share that swings with the preceding paper's severity, so the conversion is certified on the first-attempt
+  distributions. Graded on the open window's carried cut in marks: the decisive step is worth a mean of 3.21
+  marks (re-entry 0.55, gain 0.35) and 4.04 marks (re-entry 0.30, gain 0.25), the licensed family spreads the
+  same cut a mean of 2.38 and 2.79 marks (maximum 6 and 7), and the golden estimator's own bootstrap standard
+  deviation is 1.09 and 1.10 marks, so the step exceeds the spread plus the interval in only 10 of 24 and 12 of
+  24 seeds, with the means at 3.21 against 3.46 and 4.04 against 3.90. The rung beneath kills it outright: first
+  attempts equated straight to the base window, which is one equating instead of eleven and therefore the
+  cheapest licensed construction, names the golden's bin in 12 of 24 and 7 of 24 seeds. Graded on the
+  carry-forward count instead the estimator is worse, a bootstrap standard deviation of 845 counts on a mean of
+  11,390, with the common-mix rung within 6 counts of the golden on one of 8 seeds. The discretising rescue
+  fails too: against a filed tolerance of 2 marks, 8.04 of 11 per-window verdict cells sit inside one bootstrap
+  standard deviation of the line and the direct-to-base rung reproduces the whole 11-cell verdict set in 9 of 24
+  seeds. Card drafted and cleared (guard WARN, exit 0, nearest driver 0.06 against task450) and deliberately not
+  registered.
+- **Architecture 4 candidate C2, the path through a chain of administrations: refused, measured inside C1's
+  family spread.** Chaining the cut window by window and equating each window straight to the base are both
+  standard equating practice and neither is refutable by a shipped fact, and they spread the graded cut 1 to 7
+  marks against a decisive step worth 2 to 7 marks, which is 0.59 to 1.75 times the step's own worth. Filing the
+  path makes the carry the literal execution of a filed clause; leaving it free is Gate C on the main call,
+  which is architecture 3's death restated in another world.
+- **Architecture 4 candidate C3, marker severity conformed from an incomplete double-marked overlap: refused,
+  measured over 12 seeds (28 markers, 2,400 scripts, 12 per cent double-marked, allocation by centre batch).**
+  The joint severity solve and the one-line regression of the recorded mark on marker and script indicators are
+  one object, maximum absolute difference 0.000e+00 across all 12 seeds, so what closes the estimator family is
+  what makes the construction one line. The overlap graph is connected in only 3 of 12 seeds and splits into 2
+  or 3 components with 1 or 2 isolated markers in the other 9, where severity is not identified at all, which is
+  Gate B rather than Gate C. In the 3 connected seeds the decisive step moves the graded cut 0.03, 0.42 and 0.48
+  marks while the licensed severity family (the joint solve, two spanning-tree chainings of the pairwise mean
+  differences, and each marker's own mean) spreads the same cut 1.40, 1.49 and 0.75 marks, which is 1.6 to 46
+  times the step's worth. The dial is one-ended: raising the double-marking share until the graph connects is
+  exactly what makes each marker's severity readable off their own overlap, which is one group-by.
+- **Architecture 4 candidate C4, item-bank exposure moving observed difficulty: refused without a prototype.**
+  It is anchor drift under another name, which the author banned as the gravest clone finding against task450,
+  and the mechanism is already spent in the corpus at task249, whose deciding quantity is each form's
+  repeat-examinee exposure gain in a certification examination with resits in any later window.
+
 ## Portal result and the diagnosis, 2026-10-27
 
 **Both responses landed the call.** Each funded the golden six (Kessick, Varlow City, Brenmoor County, Calderidge
@@ -907,3 +951,67 @@ the ETL objective and takes a fresh world, which is a full stage-1 draw and a ne
   distinct value in each of the six (sessions, category) cells across all 40 sites, so it is a function of
   two columns already inside clause 4.2's own formula. Clause 4.2 also files the roster as the source of
   the session count, so the reconstruction contradicts a shipped sentence and is an official decoy besides.
+
+
+## Architecture 4: the cell screened and refused, measured 2026-10-27
+
+The author fixed the pairing (education-learning-sciences, the item-response-theory-test-equating task type,
+objective etl, verified as the only task type in that domain the taxonomy tags for ETL) and barred task450's
+anchor-drift cell, its campus designation, shape 14, the etl_conformance with causal_design pair and its spine
+grain, and barred `org_family: university_or_school` against task204. None of that is what refused the draw. The
+pairing is legal, the cell holds exactly one card (task450), and the candidate driver taken furthest sat at 0.06
+against task450 on the text screen with the abstraction test separating them as well, since no item is carried
+between any two papers and no item is ever compared. What refused the draw is arithmetic, and it is one
+structure rather than four accidents.
+
+**The wall.** Every decisive step that carries a reported number across administrations runs through a
+conversion, and a conversion is an estimated object rather than a records-fixed one. There are three ways to
+make it determinate and all three fail in this cell. File the population the conversion is certified on and the
+path it is carried along, and the carry becomes the literal execution of filed text, which rule 3 bars as the
+decisive step. Leave either free, and two standard constructions each file another figure, which is Gate C on
+the main call, and that is architecture 3's death in this slot written in another world. Make the records force
+it, and the forcing is exactly what a strong analyst reads: measured, the cheapest licensed neighbour names the
+golden's bin in 7 to 12 of 24 seeds. On top of all three, the conversion's own sampling error compounds along
+the chain, 1.09 to 1.10 marks over eleven links against a decisive step worth 3.21 to 4.04 marks, so the graded
+figure is seed hostage before any method choice is made, and the discretising rescue cannot reach it because
+8.04 of 11 verdict cells sit inside one standard deviation of a 2-mark tolerance line.
+
+**The spec says the same thing in its own words, and it says it as a design-time rule rather than as a
+measurement, which is why no repair of C1 was attempted.** `determinism-check` section 1: the comparison is
+WHAT, and every lever below it, the pool and the denominator, is part of the estimand too, so a decisive step
+that is a comparison or a pool choice has to be filed and the stump has to live somewhere else; and the second
+of the three bin quantities is the WHAT screen read as a number, so a candidate whose defensible-subgroup
+spread is closed by filing the population has not been repaired, it has been converted into a banned decisive
+step. The population a conversion is certified on is the pool. The same section prices C2 as an enumeration
+over the four closure moves: two corrections of one graded quantity cannot be separated by the record without
+either naming the separating property, which hands over the step, or making them agree, which lets a solver
+reach the golden by either route. And it names the escape this screen converged on independently: a correction
+with no fitted parameter at all, its rate read off a shipped record rather than estimated, so there is no
+corridor and every figure is determinate.
+
+**What ground is left, stated as a shape to price rather than a mechanism to draw.** One shape survives the
+measurements: a build whose conversion is **filed and certified in the pack**, so the conformation sits at rung
+0 or rung 1 as a lookup and no estimator noise reaches the graded figure, and whose decisive step recovers an
+exact **input** to that filed conversion from a second file at a finer grain than the results extract carries,
+the records supplying it exactly and the easy route omitting it. Two things are priced first, in this order.
+Whether the recovery is a lookup: an awarding body's component and item records usually sum to the total the
+results extract already holds, and then the step is arithmetic on shipped columns, which is rule application,
+so the finer file has to pin something the coarser one does not state at all. And readability test 7: the finer
+file must ship for a reason the organisation independently has (component marks exist because components are
+separately examined, carried forward and billed; a marker allocation exists because markers are paid per script;
+a custody log exists because the board must evidence the chain), or its presence announces the step.
+
+**What is now spent on this cell and should not be re-screened.** Anchor or common-item drift and
+non-equivalent-groups common-item linking (task450, and barred). Any external anchor both groups took, which is
+task450's driver with other nouns. The population a conversion is certified on (C1 above). The path through a
+chain of administrations (C2). Marker severity from a double-marked overlap, in every form, by the
+design-matrix identity (C3). Item-bank exposure (C4, and task249). Placing a retiring instrument's scores on a
+new scale by a single-group bridge concordance, which is this slot's own architecture 2 and was solved on the
+portal.
+
+**The organisation to draw into, if the shape above is taken.** An awarding body rather than a school: a
+chartered professional institute, an examination board, a licensure or certification board, a testing contractor
+or a national assessment agency. Measured, that clears `org_family: university_or_school` against task204 and
+also moves the world off task450's district. `cooperative_or_member_body`, `committee_or_panel` and
+`vote_or_meeting` all measured free at the moment of this screen, and `filed_standard`,
+`monitoring_export` and `capacity_report` measured BLOCKed on `ban.artifact`, with `register` free.

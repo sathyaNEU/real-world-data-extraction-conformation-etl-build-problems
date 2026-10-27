@@ -13,6 +13,7 @@ sheet, and `## Tried and rejected` present. It also runs the prompt gate (voice-
 Exit status: 0 every check passed (WARNs allowed), 1 at least one FAIL, 2 the note or the task is missing.
 It reads files and runs one script; it spawns no agent and costs nothing.
 """
+import json
 import os
 import re
 import subprocess
@@ -239,6 +240,27 @@ def check_note(task_dir, note_text):
     # Draw: the card exists, and the data-native sentence is written somewhere in the note.
     card = os.path.join(CARDS, task + ".json")
     row("card registered", os.path.exists(card), card if os.path.exists(card) else "no card under fingerprint/cards/")
+    # A re-rooted slot whose registered card still belongs to the dead architecture passes every
+    # note-reading check below vacuously, because the sections being read are the dead
+    # architecture's. The card's domain appearing in pipeline.json's domain is the cheap signal:
+    # it holds on 189 of 191 builds, and both exceptions were slots in exactly this state.
+    dom_c = dom_p = ""
+    if os.path.exists(card):
+        try:
+            dom_c = (json.load(open(card)).get("domain") or "").strip()
+        except ValueError:
+            dom_c = ""
+    pj = os.path.join(task_dir, "pipeline.json")
+    if os.path.exists(pj):
+        try:
+            dom_p = (json.load(open(pj)).get("domain") or "").strip()
+        except ValueError:
+            dom_p = ""
+    if dom_c and dom_p:
+        row("the registered card is this architecture's", dom_c in dom_p,
+            "card domain %r is in pipeline domain %r" % (dom_c, dom_p) if dom_c in dom_p else
+            "card domain %r is not in pipeline domain %r, so the card belongs to a dead "
+            "architecture and every check below is reading its note, not this one's" % (dom_c, dom_p))
     row("data-native sentence", bool(re.search(r"data[- ]native", note_text, re.I)),
         "named in the note" if re.search(r"data[- ]native", note_text, re.I) else "no data-native sentence found", warn=True)
 
