@@ -450,6 +450,11 @@ def main(target):
           "the time the editor set for the CMS to publish the document, Brisbane time, ten hours ahead of the "
           "save times above." in notes_txt
           and "saved_at Time of the save, UTC, to the minute." in notes_txt)
+    fieldref_txt = re.sub(r"\s+", " ", find("audience_warehouse_field_reference").read_text())
+    check("SF14 the field reference says the archive holds one concluded test for every headline put under "
+          "test, whether or not a variant was shipped, which closes the reading that nets only the articles "
+          "that shipped a winner",
+          'one for every headline put under test, whether or not a variant was shipped in the end.' in fieldref_txt)
     # SF11's data half, independent of the brief's wording: the realised impression-weighted rate across every
     # package of a test is strictly below the shipped variant's, so crediting the under-test hours at the mixture
     # rate is strictly lower than crediting them at the winning lift, and the brief's sentence is load-bearing.

@@ -632,6 +632,13 @@ def run(W, target, out):
              "the time the editor set for the CMS to publish the document, Brisbane time, ten hours ahead "
              "of the save times above." in cmsn_
              and "saved_at Time of the save, UTC, to the minute." in cmsn_)
+    L_.check("SF14 what tested covers: the field reference says the archive holds one concluded test for "
+             "every headline put under test, whether or not a variant was shipped, so netting only the "
+             "articles that shipped a winner violates a quoted sentence; that reading is the grid's "
+             "shr/plat/won cell and it files Local-metro, not the golden desk",
+             'one for every headline put under test, whether or not a variant was shipped in the end.' in re.sub(r"\s+", " ", T[F["fieldref"]])
+             and GRID_LEADERS.get("shr/plat/won") == "LOC-M"
+             and GRID_LEADERS.get("shr/plat/click") == CUL)
 
     # ----- the grid, cell by cell
     grid = {}

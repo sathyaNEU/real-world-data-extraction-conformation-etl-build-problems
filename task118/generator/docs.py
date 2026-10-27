@@ -320,7 +320,8 @@ variant.
 | `shipped` | `Y` on the one package whose headline stayed live after the test; that is the control when no variant was shipped. |
 
 Winning lift, as reported on the experimentation dashboard, is the shipped package's click-through rate over the
-control's, minus one, and zero when the control is kept. The archive holds concluded tests only.
+control's, minus one, and zero when the control is kept. The archive holds concluded tests only, one for every
+headline put under test, whether or not a variant was shipped in the end.
 
 ## Desk register
 
