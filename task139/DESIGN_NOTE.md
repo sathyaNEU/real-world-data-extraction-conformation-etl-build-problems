@@ -355,3 +355,6 @@ filed. Architecture 2 finds what the two arms share that the counterfactual lack
   figures (stumping 1.6a's task194 death), and the review already projects the open claims; dropped.
 - 2026-10-26, at the draw: segment savings blended by credibility before placing: shrinkage is the opponent's reflex,
   and the credibility standard would have to be filed, which is the method; dropped.
+- 2026-10-27, architecture 2 spent at stage 2 before any pack was cut (the opening call both pilot arms received): the decisive
+  step rests on one sentence of the pilot protocol, which a careful reader meets first, and the world is the one the portal
+  already solved; re-rooted at the author's instruction for a fully fresh architecture.
