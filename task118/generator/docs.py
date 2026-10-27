@@ -240,7 +240,7 @@ def charter_blocks():
               "Each January it moves to one desk for the calendar year, tests that desk's headlines and ships each "
               "winning headline. The squad is judged on incremental article clicks in the twelve months after it "
               "embeds, counted at the owning desk from each article's publication, the hours its headline is under "
-              "test included."),
+              "test included. Clicks in those hours count at the winning headline's lift."),
         ("h", "Where it has been"),
         ("p", "Since 2019 the squad has worked with the app desks: Games, Wellness, Puzzles and Recipes. Its 2026 "
               "year with Puzzles finishes on Friday 18 December. Experimentation keeps the change log of closed "
@@ -388,8 +388,11 @@ doc_type           story, liveblog or post. A post is an entry in the live blog 
 parent_doc         For posts, the doc_id of the live blog.
 revision           Revision number within the document, from 1.
 saved_at           Time of the save, UTC, to the minute.
-status             Status recorded with the save: draft, scheduled, live or withdrawn.
-publish_at         On a scheduled revision, the time the editor set for the CMS to publish the document.
+status             Status recorded with the save: draft, scheduled, live or withdrawn. A save recorded live
+                   publishes the document, and a scheduled revision publishes it at its publish_at; the
+                   document first went live when it was first published either way.
+publish_at         On a scheduled revision, the time the editor set for the CMS to publish the document,
+                   Brisbane time.
 headline_sha1      First 12 characters of the SHA-1 of the headline text at that revision.
 correction_note    Text of the correction notice shown with the document at that revision. The CMS copies the
                    note to every later revision until an editor clears it. A note put back after a save that

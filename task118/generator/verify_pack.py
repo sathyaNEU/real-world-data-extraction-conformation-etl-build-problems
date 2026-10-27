@@ -438,6 +438,33 @@ def main(target):
     check("the CMS field notes state the window a fix and its note are saved within", pair is not None)
     put_back = "A note put back after a save that left it off is the earlier notice, not a new correction" in notes_txt
     check("the CMS field notes say a note put back after a save that left it off is not a new correction", put_back)
+
+    # SF12 and SF13, the two conventions the portal's determinism judges found open, recomputed here from the
+    # shipped text alone: the going-live event and the clock publish_at is read on.
+    check("SF12 the CMS field notes say a save recorded live publishes the document, a scheduled revision publishes "
+          "it at its publish_at, and the document first went live when it was first published either way",
+          "A save recorded live publishes the document, and a scheduled revision publishes it at its publish_at; "
+          "the document first went live when it was first published either way." in notes_txt)
+    check("SF13 the CMS field notes put publish_at on Brisbane time and saved_at on UTC, so the two clocks are named "
+          "on the fields themselves",
+          "the time the editor set for the CMS to publish the document, Brisbane time." in notes_txt
+          and "saved_at Time of the save, UTC, to the minute." in notes_txt)
+    # SF11's data half, independent of the brief's wording: the realised impression-weighted rate across every
+    # package of a test is strictly below the shipped variant's, so crediting the under-test hours at the mixture
+    # rate is strictly lower than crediting them at the winning lift, and the brief's sentence is load-bearing.
+    mix_below = []
+    for tid_, pk_ in tests.items():
+        shp = [p for p in pk_ if p["shipped"] == "Y"]
+        if not shp:
+            continue
+        imp = sum(int(p["impressions"]) for p in pk_)
+        clk = sum(int(p["clicks"]) for p in pk_)
+        s_ctr = int(shp[0]["clicks"]) / int(shp[0]["impressions"])
+        mix_below.append((clk / imp) < s_ctr)
+    check("SF11 the realised impression-weighted click-through across every package of a test is below the shipped "
+          "variant's at every test (%d tests), so the mixture reading of the under-test hours is strictly lower than "
+          "the winning lift the brief names" % len(mix_below),
+          bool(mix_below) and all(mix_below), "%d of %d below" % (sum(mix_below), len(mix_below)))
     W_ = dt.timedelta(minutes={"five": 5, "ten": 10, "fifteen": 15, "twenty": 20}[pair.group(1)])
     count, arts, mins, march = defaultdict(int), defaultdict(int), defaultdict(list), [0, 0]
     m_lo, m_hi = dt.datetime(2026, 2, 28, 14), dt.datetime(2026, 3, 31, 14)      # March 2026, AEST

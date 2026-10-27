@@ -603,6 +603,35 @@ def run(W, target, out):
              "rounding the lift to two decimals first file the same figure", bin_margin(r4[CUL]) >= 15_000,
              "%.0f" % bin_margin(r4[CUL]))
 
+    # SF11 to SF13: the three readings the portal's determinism judges filed. Each is a convention the record left
+    # open, closed now by one sentence at authority; none of them is the decisive step.
+    cmsn_ = re.sub(r"\s+", " ", T[F["cmsnotes"]])
+    a_ = D["arch"].copy()
+    a_["ctr"] = a_["clicks"] / a_["impressions"]
+    mix = a_.groupby("test_id").apply(lambda g: g["clicks"].sum() / g["impressions"].sum())
+    ctl_ = a_[a_["variant"] == "control"].set_index("test_id")["ctr"]
+    shp_ = pk[pk["shipped"] == "Y"].set_index("test_id")
+    mix_L = (mix / ctl_ - 1.0).reindex(shp_.index)
+    short = (shp_["L"] - mix_L).dropna()
+    rec["mixture_lift"] = dict(tests=int(len(short)), below=int((short > 0).sum()),
+                               median_shortfall=round(float(short.median()), 4))
+    L_.check("SF11 the rate during the test hours: the brief counts clicks in those hours at the winning headline's "
+             "lift, and the rival reading (the realised impression-weighted rate across every package shown) is "
+             "strictly lower at every shipped test, so the sentence is load-bearing rather than decorative",
+             "Clicks in those hours count at the winning headline's lift" in brief_
+             and len(short) > 0 and bool((short > 0).all()), str(rec["mixture_lift"]))
+    L_.check("SF12 going live: the field notes say a save recorded live publishes the document and a scheduled "
+             "revision publishes it at its publish_at, and that the document first went live when it was first "
+             "published either way; the first-live-save-only reading is the necessity matrix's own row and moves "
+             "every desk's median",
+             "A save recorded live" in cmsn_ and "publishes the document, and a scheduled revision publishes it at "
+             "its publish_at" in cmsn_ and "first went live when it was first published either way" in cmsn_)
+    L_.check("SF13 the publish_at clock: the field notes name Brisbane time on the field itself, beside saved_at's "
+             "UTC, so the saves'-clock reading (asserted above to land off the golden median at every desk) violates "
+             "a quoted sentence",
+             "the time the editor set for the CMS to publish the document, Brisbane time." in cmsn_
+             and "saved_at Time of the save, UTC, to the minute." in cmsn_)
+
     # ----- the grid, cell by cell
     grid = {}
     for lb in ("dash", "raw", "shr", "pool"):

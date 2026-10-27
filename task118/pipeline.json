@@ -4,7 +4,7 @@
  "objective": "opportunity-sizing-decision",
  "stage": 5,
  "stage_name": "shipped (wave-1 redesign)",
- "updated": "2026-10-12",
+ "updated": "2026-10-27",
  "stump": "A competent solver rebuilds each desk's winning lift from the test archive, shrinks it as the seven closed embeddings' realised holdback lifts require, counts only the clicks that start on surfaces that show the tested headline, and names Local·metro at 2,800,000; the step that lands them there is never asking who ran the tests behind each desk's lift, which the archive's test owners joined to the newsroom staff list answer: Local·metro's own editors already test the headlines behind 71.1% of its platform clicks, so most of the gain the squad was sized on is already in the plan.",
  "harden_loops": 4,
  "solver_rounds": [
@@ -100,7 +100,7 @@
  "source_note": "analytical_tasks/04_opportunity_sizing/OS01_headline-squad-renderable-click-share.md",
  "status": "SHIPPED",
  "owner": "oviya1301",
- "resume": null,
+ "resume": "/fix-determinism in progress, NOT re-shipped. Verified both judges rather than accepting them, and both findings are real: the field notes mark saved_at UTC but give publish_at no zone, AEST appears only as the scope window's zone, and nothing defined going live; the brief puts the test hours in scope but names no rate. Root cause sharper than either judge said and it is in golden.py: the going-live rule and the Brisbane clock are spelled out in the GOLDEN WRITE-UP, the answer file a judge never reads, which is determinism-check section 5 exactly. The note also admits the second half was deliberate ('the median's primary, the publish_at clock, is filed nowhere'), meant as an ask device; an unpinned convention is an open fork, not a device. STUMP TEST PASSES, so this is a repair: the decisive step is never asking who ran the tests behind each desk's lift (Local-metro's own editors already test 71.1 per cent of its platform clicks) and neither fork touches it, both judges' models having picked Culture under the rival reading too. THREE PINS WRITTEN, all WHAT and none naming a method: SF11 the brief's success measure gains 'Clicks in those hours count at the winning headline's lift'; SF12 the field notes' status line says a save recorded live publishes the document and a scheduled revision publishes it at its publish_at, first live being first published either way; SF13 the publish_at line names Brisbane time beside saved_at's UTC. Each matches the golden's own rule verbatim and all four strings are confirmed present in the rebuilt documents. freeze.py check --mode determinism PASS, so nothing graded moved. Three assertions in checks.py and three independent ones in verify_pack.py, including SF11's data half recomputed from the archive. NEXT: finish the rebuild (running), find the one pre-existing failing assertion the first build's truncated log hid, re-cut target.zip, run the free gates (verify, figures_check, precut, leak, voice-check, guard validate and heart), two byte-identical rebuilds, then the ONE licensed re-judge, then RESHIPPED. SEPARATE Gate F observation for the author, not acted on because the command freezes the stump: both judges' own model responses reached Culture-national and judge 2 still graded Gate F strong.",
  "leak": "leak.py REVIEW, no LEAK; three isolated reads: read 1 found the brief's counting phrase read as an all-sources base (fixed), reads 2 and 3 on the fixed pack",
  "asks": {
   "cracker_hits": 0,
@@ -110,5 +110,13 @@
  },
  "assertions": 438,
  "verifier": "78 of 78",
- "builds_byte_identical": true
+ "builds_byte_identical": true,
+ "returned": [
+  {
+   "date": "2026-10-27",
+   "portal": "both determinism judges competing_defensible_answer, Gates C and D fail (judge 1 also E), G pass, F plausible and strong. Fork 1, the rate credited during the hours a headline is under test: the brief puts those hours in scope but names no rate, so the mixture reading gives 750,000 to 800,000 against the committed 1,250,000 and a gap of 150,000 against 450,000. Fork 2, the correction clock: going live is undefined (publish_at against the first live save) and publish_at carries no timezone, moving all six median asks 20 to 40 minutes a desk.",
+   "repair": "determinism",
+   "commit": "in progress"
+  }
+ ]
 }
