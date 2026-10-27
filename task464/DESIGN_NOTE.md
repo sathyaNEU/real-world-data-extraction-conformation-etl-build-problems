@@ -237,7 +237,7 @@ application, which the client's rule 3 bans.
 | SF10 | the treatments a position delivers in a session | clause 4.2's per-category figure, one and two | a site-level figure read off the encounters | the clause; `SF10` asserts no site carries both service categories |
 | SF11 | projected 2027 demand | clause 4.3: the area's 2026 contract year treatments a week grown by its projected factor | the 2026 calendar year, the last four quarters, a four-year trend | the clause files the base, the window and the factor's source, and the contract year is the calendar year, asserted by selecting the same encounters both ways |
 | SF12 | the standard's direction and inclusivity | at or above the required figure | strictly above | C1: no area sits within 6 per cent of its line on any of the four bases, worst measured 6.02 per cent of required. Asserted as `SF12` |
-| SF13 | the rounding path, and which area comes nearest the standard | clause 4.4: the required figure is rounded once, at the area level, up to the next whole treatment slot, because it is a minimum; the area nearest the standard is the one with the smallest shortfall in slots | round to nearest, round down, or the unrounded figure; nearest read as the smallest shortfall as a share of required | the direction is filed at authority, asserted present in the shipped document. No area's verdict depends on the rounding, asserted per area against the unrounded figure, the floor and the ceiling, and no required figure sits within 0.06 of a whole slot or of a half. C1 on the data for the nearest: Durnsfield's shortfall is 19.62 unrounded, 20 to nearest, 20 up and 19 down, and the runner-up Bexhollow's is 22.07, 22, 23 and 22, so one area is nearest under every rounding with 2 slots of daylight on the tightest reading, asserted. The per cent reading is not a reading of nearest the standard, which is a figure in slots |
+| SF13 | the rounding path, and which area comes nearest the standard | clause 4.4: the required figure is rounded once, at the area level, up to the next whole treatment slot, because it is a minimum; the area nearest the standard is the one with the smallest shortfall in slots | round to nearest, round down, or the unrounded figure; nearest read as the smallest shortfall as a share of required | the direction is filed at authority, asserted present in the shipped document. No area's verdict depends on the rounding, asserted per area against the unrounded figure, the floor and the ceiling, and no required figure sits within 0.06 of a whole slot or of a half. C1 on the data for the nearest: Hesper Vale's shortfall is 19.62 unrounded, 20 to nearest, 20 up and 19 down, and the runner-up Lowenbrook's is 22.07, 22, 23 and 22, so one area is nearest under every rounding with 2 slots of daylight on the tightest reading, asserted. The per cent reading is not a reading of nearest the standard, which is a figure in slots |
 | SF14 | a site's service area | the area recorded against the site on the current cycle | the area of the address the site held earlier | clause 4.6 files it, and no site sits in two areas inside the window, asserted; the three sites that changed address kept one area |
 | SF15 | the look-back for the ceiling | the whole four-year record | the most recent 24 or 12 months | C1 through SF1's plateau, asserted per site at 12, 24 and 48 months |
 | SF16 | the key that identifies a site | the plan site identifier, carried on every encounter as the service facility | the tax identifier, which three sites of one group practice share; the service address | clause 4.1 files the unit as the Site and says that sites sharing a tax identifier remain separate Sites. The tax-identifier reading merges those three and files 4,512 weekly slots against the golden's 3,886, a named wrong cell; the plan site identifier is one to one with a site, asserted |
@@ -249,10 +249,10 @@ a prototype's and are replaced here.
 
 | Rung | What it does | Network slots | Over the golden | Areas short of 12 | Its own short set | Worth on the graded quantity |
 |---|---|---|---|---|---|---|
-| R0 | the default path: attested stations times sessions a week times the category figure | 4,668 | 1.2012 | 3 | Durnsfield, Innsmere, Lowenbrook | 0.000, by definition |
-| R1 | the state licence's station count in place of the directory's attestation | 5,006 | 1.2882 | 2 | Durnsfield, Innsmere | -0.432, it walks away from the golden |
-| R2 | the revealed volume ceiling: each site's busiest week in the record | 3,590 | 0.9238 | 8 | Ammerly, Crannock, Durnsfield, Fallowbray, Innsmere, Jarrowmead, Kettlebrook, Lowenbrook | +1.379, it overshoots the correction |
-| R3 | the concurrency ceiling, the golden | 3,886 | 1.0000 | 6 | Bexhollow, Durnsfield, Granleigh, Innsmere, Kettlebrook, Lowenbrook | +1.000 |
+| R0 | the default path: attested stations times sessions a week times the category figure | 4,668 | 1.2012 | 3 | Hesper Vale, Eastmoor Reach, Fallowbray | 0.000, by definition |
+| R1 | the state licence's station count in place of the directory's attestation | 5,006 | 1.2882 | 2 | Hesper Vale, Eastmoor Reach | -0.432, it walks away from the golden |
+| R2 | the revealed volume ceiling: each site's busiest week in the record | 3,590 | 0.9238 | 8 | Granleigh, Ammerly, Hesper Vale, Innsmere, Eastmoor Reach, Durnsfield, Jarrowmead, Fallowbray | +1.379, it overshoots the correction |
+| R3 | the concurrency ceiling, the golden | 3,886 | 1.0000 | 6 | Lowenbrook, Hesper Vale, Bexhollow, Eastmoor Reach, Jarrowmead, Fallowbray | +1.000 |
 
 **Position and dominance.** The golden is bracketed: R1 and R0 overshoot it, R2 undershoots it, and the
 decisive move reverses R2 upward. The four totals are strictly ordered R1 > R0 > R3 > R2 and the closest
@@ -263,9 +263,9 @@ and its own short set.
 
 | Rung | Golden-short areas it clears | Golden-clear areas it calls short | Area cells wrong of 12 |
 |---|---|---|---|
-| R0 | 3 (Bexhollow, Granleigh, Kettlebrook, the flip set) | 0 | 3 |
-| R1 | 4 (Bexhollow, Granleigh, Kettlebrook, Lowenbrook) | 0 | 4 |
-| R2 | 2 (Bexhollow, Granleigh) | 4 (Ammerly, Crannock, Fallowbray, Jarrowmead) | 6 |
+| R0 | 3 (Lowenbrook, Bexhollow, Jarrowmead, the flip set) | 0 | 3 |
+| R1 | 4 (Lowenbrook, Bexhollow, Jarrowmead, Fallowbray) | 0 | 4 |
+| R2 | 2 (Lowenbrook, Bexhollow) | 4 (Granleigh, Ammerly, Innsmere, Durnsfield) | 6 |
 | R3 | none | none | 0 |
 
 This is the defect the first prototype of the arithmetic carried, and the repair. There the volume ceiling
@@ -469,20 +469,22 @@ and its asserted neutrality on the call. Each is the R2 block of `generator/chec
 
 ## Pre-ship check
 
-The build stage's gates, each run on the shipped pack after the stage-4 realism fixes and the determinism
-judge's finding were closed. The pre-ship block proper is stage 5's.
+The build stage's gates, each re-run on the pack as it now stands, after the second leak read's four
+procedural fingerprints were fixed. The pre-ship block proper is stage 5's. The main call itself does not
+ship: the re-judge's Gate C finding sent architecture 3 back and the entry under "## Tried and rejected"
+and `determinism_check_report_pass4.md` carry the ruling.
 
 | Gate | Result |
 |---|---|
-| `generator/checks.py` | 652 assertions passed: the three-rules block (R1, R2 per mess item, R3a, R3b, R3c), SF1 to SF17, the ladder, the named wrong cells, the legibility block, the ask separation line, the oracles, the input gates, the realism sweep, the 22 closure axes, the documents, the write-up and the five owed figures |
+| `generator/checks.py` | 682 assertions passed: the three-rules block (R1, R2 per mess item, R3a, R3b, R3c), SF1 to SF17, the ladder, the named wrong cells, the legibility block, the ask separation line, the oracles, the input gates, the realism sweep, the 22 closure axes, the documents, the write-up, the five owed figures and the five procedural shapes (no id column stepping by a constant and each by at least six distinct amounts, the area names in code order not in alphabetical order, more than two site-name shapes, no two sites sharing a name or an address, no workbook stating a position or pull later than its own file date) |
 | `generator/verify.py` | PASS, reading only the bundle on its own code path: 40 sites, 12 areas, 96 ask figures, every graded figure recomputed, the rounding direction and the delivery-period convention read out of the agreement's own text |
-| two consecutive rebuilds | byte-identical `target/` across all 13 files and byte-identical `target.zip` |
+| two consecutive rebuilds | byte-identical `target/` across all 13 files and byte-identical `target.zip`, md5 `c0e0dfcfcc8ecf0bc864f9e4b9eb8d7a` |
 | `figures_check.py` | PASS, 146 figures in blocks 1 to 4, 0 absent from `generator/figures.json` |
-| the realism sweep | in `checks.py`: no round headline, the required figures not all alike, no repeated yearly count, personas from the card, every container's application and version pair consistent with a title and an author, each document's producer the body that issued it, the operator column in no fixed order with uneven site counts and no name against its own service category, dates coherent, no em dash in the bundle |
+| the realism sweep | in `checks.py`: no round headline, the required figures not all alike, no repeated yearly count, personas from the card, every container's application and version pair consistent with a title and an author, each document's producer the body that issued it, the operator column in no fixed order with uneven site counts and no name against its own service category, dates coherent per document with each PDF carrying its own issue date, no em dash in the bundle |
 | `golden-realism` | run after the figures froze: named sheets, frozen header, per-column number formats and alignment, a chart whose title states the finding, a basis and position line, print area set |
 | `reduce-house-fixes` | H1 containers scrubbed and asserted, H2 every figure emitted, H4 the archive's 13 members equal the declared list, H7 the archive cut last from the final tree, H8 every citation resolves, H9 no describing file, H16 dates coherent, H21 invented names clear of real ones, H29 the bound figures read against the quantity they bound, H33 one entry point writes `figures.json` |
 | `leak.py --asof 2027-02-19` | REVIEW, no LEAK, every REVIEW line answered in `## Leak check` |
-| `guard.py surface` and `heart` | surface clean with only the card's own personas, heart WARN at a nearest driver of 0.08 (task479, lineage), no BLOCK |
+| `guard.py surface` and `heart` | surface clean with only the card's own personas, heart WARN at a nearest driver of 0.05 (task181, lineage), no BLOCK |
 | `precut.py` | exit 0, 52 checks, 0 FAIL, 0 WARN |
 | `voice-check.py` | PASS, 998 characters |
 ## Leak check
@@ -494,7 +496,7 @@ from `leak_check_report.md`: it was taken on a pack that no longer exists. The i
 4's and the author's to spawn; no scored or solving reader is run on any build (`CLAUDE.md`, the STOP block
 of 2026-10-27).
 
-The four REVIEW lines, answered:
+The five REVIEW lines, answered:
 
 - **sweep 3, `licence_fee_schedule_2026.pdf`, "golden figure 105 appears".** 105 is ask C's station total for
   one area and the sweep found it inside the fee `USD 2,105`. A substring of a currency amount in a fee band;
@@ -850,3 +852,28 @@ the ETL objective and takes a fresh world, which is a full stage-1 draw and a ne
   method, so every call this pack can ask routes back through the reflex that spent architecture 2. The count-day
   roll, the crosswalk and the unresulted students are each measured flat. The re-root takes a fresh world in the same
   objective and number.
+
+- Identifiers, area names and site names generated by arithmetic (2026-10-27, the second leak read's four
+  procedural fingerprints): abandoned and replaced. Plan site ids stepped by 37, licence numbers by 23, street
+  numbers by 53, tax ids and claim, member and encounter keys by their own constants; the twelve area names ran
+  A to L in service-area-code order; every site was named "<Locality> Dialysis Center" or "<Locality> Infusion
+  Center"; and the licence register reported a position date three days after its own file date. Each is now
+  drawn from its own stream, off the world's: ids and street numbers rise with uneven gaps, the code to name
+  mapping is shuffled, a site is named from fifteen templates with fourteen distinct shapes appearing over the pack's 72 sites, one carrying an operator's brand, and every
+  document carries its own date and states nothing later than it (the register the evening of the position date
+  it reports, the two plan exports the next morning, the agreement the week its board approved it, the fee
+  schedule the week before it took effect), so the three workbooks no longer share one timestamp either. `checks.py` asserts all five shapes (30 assertions):
+  twelve id-bearing columns each step by at least six distinct amounts and none by a constant, the names in
+  code order differ from the names in alphabetical order, more than two name shapes appear, no two sites share
+  a name or an address, and no workbook states a position or pull later than its own file date. No numeric
+  figure moved: `figures.json` differs only in the 40 site-id labels, whose slot values are identical in order,
+  and in the name of the nearest short area, which is the same area (SA-04) under the name the shuffle gave it.
+- The area names in the live sections of this note (2026-10-27): remapped with the shuffle, so every table above
+  "## Tried and rejected" names the area the pack now names. The short set, the flip set and every figure are
+  per service area code and unchanged. Entries below this heading keep the names they were written with, since
+  the section is append-only: SA-04 is Durnsfield in the history above and Hesper Vale in the pack.
+- A synthesised `sharedStrings.xml` (2026-10-27): refused. The three workbooks are system exports, a register
+  extract, a state filing and a claims reconciliation, and an exporter that writes cell text inline is in
+  character for all three; rewriting every cell's XML to add the part risks the files for no realism gain. The
+  empty `<workbookProtection/>` element the writer emits was stripped instead, because a book with no
+  protection set carries no such element.

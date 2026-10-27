@@ -105,7 +105,13 @@ def build(sites, seed=world.SEED + 7):
         daily_cap = K * (site["rounds_hist"] // site["days"])
         cohorts = 2 if site["modality"] == "dialysis" else site["days"]
         panel_n = cohorts * max(9, int(daily_cap * 1.06) + 2)
-        panel = ["M%09d" % (400000000 + site["seq"] * 7919 + i * 13) for i in range(panel_n)]
+        # the plan's own member numbers: issued as people enrolled, so a site's panel is not a run
+        mrnd = random.Random(world.SEED + 60000 + site["seq"])
+        mk = 400000000 + mrnd.randint(0, 40000000)
+        panel = []
+        for i in range(panel_n):
+            mk += mrnd.randint(37, 90000)
+            panel.append("M%09d" % mk)
         groups = [panel[i::cohorts] for i in range(cohorts)]
         panels[site["site"]] = panel
         days_open = open_days(site)

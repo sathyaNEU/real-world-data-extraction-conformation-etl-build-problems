@@ -30,7 +30,11 @@ ORG = "Wrenlow Community Health Plan"
 REGULATOR = "State licensing authority"
 APPROVER = "Katherine Dalton"
 SECOND = "Nicholas Clay"
-FICTION_STAMP = dt.datetime(2027, 1, 5, 9, 14, 0)
+# each document carries its own date: the agreement the week its board approved it, the schedule the week
+# before it took effect. No document's file date is earlier than a date it reports as already past.
+AGREEMENT_STAMP = dt.datetime(2026, 12, 14, 16, 42, 0)
+FEES_STAMP = dt.datetime(2026, 6, 24, 11, 8, 0)
+FICTION_STAMP = AGREEMENT_STAMP
 
 AGREEMENT = "network_agreement_2027_capacity_terms.pdf"
 CLAUSE_CAPACITY = "4.2"
@@ -51,7 +55,7 @@ def _styles():
     return body, h1, small, title
 
 
-def _doc(path, story, footer, issuer=ORG, title="", author=""):
+def _doc(path, story, footer, issuer=ORG, title="", author="", stamp=None):
     buf = io.BytesIO()
     d = BaseDocTemplate(buf, pagesize=LETTER, leftMargin=0.95 * inch, rightMargin=0.95 * inch,
                         topMargin=0.85 * inch, bottomMargin=0.85 * inch, title="", author="",
@@ -67,18 +71,19 @@ def _doc(path, story, footer, issuer=ORG, title="", author=""):
 
     d.addPageTemplates([PageTemplate(id="p", frames=[frame], onPage=paint)])
     d.build(story)
-    _reserialise(buf.getvalue(), path, issuer, title, author)
+    _reserialise(buf.getvalue(), path, issuer, title, author, stamp)
 
 
-def _reserialise(raw, path, issuer=ORG, title="", author=""):
+def _reserialise(raw, path, issuer=ORG, title="", author="", stamp=None):
+    stamp = stamp or FICTION_STAMP
     r = pypdf.PdfReader(io.BytesIO(raw))
     w = pypdf.PdfWriter()
     for p in r.pages:
         w.add_page(p)
     w.add_metadata({"/Title": title, "/Author": author, "/Subject": title, "/Keywords": "",
                     "/Creator": issuer, "/Producer": issuer,
-                    "/CreationDate": FICTION_STAMP.strftime("D:%Y%m%d%H%M%S-06'00'"),
-                    "/ModDate": FICTION_STAMP.strftime("D:%Y%m%d%H%M%S-06'00'")})
+                    "/CreationDate": stamp.strftime("D:%Y%m%d%H%M%S-06'00'"),
+                    "/ModDate": stamp.strftime("D:%Y%m%d%H%M%S-06'00'")})
     fixed = pypdf.generic.ByteStringObject(b"\x14\x64\x27\x03\x11\x05\x09\x02" * 2)
     w._ID = pypdf.generic.ArrayObject([fixed, fixed])
     with open(path, "wb") as f:
@@ -177,7 +182,7 @@ def agreement(target):
          issuer=ORG,
          title="Provider Network Agreement 2027, Schedule 4: Outpatient Dialysis and Infusion Capacity"
                " and Service Area Adequacy",
-         author="%s, network contracting" % ORG)
+         author="%s, network contracting" % ORG, stamp=AGREEMENT_STAMP)
 
 
 def fee_schedule(target):
@@ -211,7 +216,7 @@ def fee_schedule(target):
          "State licensing authority  |  Outpatient facility fee schedule  |  FS-2026-07",
          issuer=REGULATOR,
          title="Outpatient Facility Licensing Fee Schedule, effective 1 July 2026",
-         author=REGULATOR)
+         author=REGULATOR, stamp=FEES_STAMP)
 
 
 def write(target):

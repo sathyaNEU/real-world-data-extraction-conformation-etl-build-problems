@@ -10,6 +10,7 @@ import datetime as dt
 import json
 import os
 import re
+import random
 import zlib
 import sqlite3
 
@@ -32,7 +33,41 @@ CYCLES = [(2024, dt.date(2024, 11, 14)), (2025, dt.date(2025, 11, 12)), (2026, d
 MOVED_ADDRESS = 3           # sites that changed address and kept their plan identifier
 
 ORG = "Wrenlow Community Health Plan"
-STAMP = dt.datetime(2027, 2, 16, 10, 30, 0)
+# the pack was compiled the day after the network position date it reports, so no document states a
+# position later than its own file date
+STAMP = dt.datetime(2027, 2, 20, 10, 30, 0)
+
+
+_CORP = {}
+_CORPRND = random.Random(world.SEED + 8831)
+_CORPSTATE = [9030]
+
+
+def corp(key):
+    """A corporate umbrella licence number, issued once per holder and area."""
+    if key not in _CORP:
+        _CORPSTATE[0] += _CORPRND.randint(3, 140)
+        _CORP[key] = "CORP-%05d" % _CORPSTATE[0]
+    return _CORP[key]
+
+
+def issue(stream, state, lo, hi):
+    """The next number out of a register that has been issuing and retiring for years."""
+    state[0] += stream.randint(lo, hi)
+    return state[0]
+
+
+# each book was produced by its own system on its own run: the register the evening of the position date
+# it reports, the two plan exports the next morning
+BOOK_STAMPS = {
+    "state_licence_register.xlsx": dt.datetime(2027, 2, 19, 16, 42, 0),
+    "out_of_network_payments_reconciliation_2026.xlsx": dt.datetime(2027, 2, 20, 8, 12, 0),
+    "state_adequacy_filing_2026.xlsx": dt.datetime(2027, 2, 20, 9, 5, 0),
+}
+
+
+def book_stamp(path):
+    return BOOK_STAMPS.get(os.path.basename(path), STAMP)
 
 
 def repack(path, stamp=None, company=None):
@@ -48,6 +83,9 @@ def repack(path, stamp=None, company=None):
             if i.filename == "docProps/core.xml":
                 # the writer stamps its own clock into the modified date; the fiction's date ships
                 data = re.sub(rb"\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z", iso, data)
+            if i.filename == "xl/workbook.xml":
+                # the writer emits an empty protection element; a book with no protection set has none
+                data = data.replace(b"<workbookProtection/>", b"")
             if i.filename == "docProps/app.xml":
                 # and its own name and version into the application; a spreadsheet's own pair ships
                 data = re.sub(rb"<Application>[^<]*</Application>",
@@ -74,19 +112,20 @@ def repack(path, stamp=None, company=None):
 
 
 def save_book(wb, path, creator=None, title=None):
-    finalise(wb, creator, title)
+    stamp = book_stamp(path)
+    finalise(wb, creator, title, stamp)
     wb.save(path)
-    return repack(path, company=creator or ORG)
+    return repack(path, stamp=stamp, company=creator or ORG)
 
 
-def finalise(wb, creator=None, title=None):
+def finalise(wb, creator=None, title=None, stamp=None):
     """One stamp for every workbook: the producer and the dates are the fiction's, so two builds of the
     same pack are byte-identical and no writer name ships (reduce-house-fixes H1)."""
     p = wb.properties
     p.creator = creator or ORG
     p.lastModifiedBy = creator or ORG
-    p.created = STAMP
-    p.modified = STAMP
+    p.created = stamp or STAMP
+    p.modified = stamp or STAMP
     p.title = title
     p.subject = None
     p.description = None
@@ -128,11 +167,16 @@ def _hhmm(minutes):
 def directory(target, sites, extra, rnd):
     rows = []
     taxes = {}
+    txrnd = random.Random(world.SEED + 4409)
+    tx = {}
+    def taxid(key):
+        if key not in tx:
+            tx[key] = "%02d-%07d" % (txrnd.randint(20, 88), txrnd.randint(1000000, 9999999))
+        return tx[key]
     group = sorted(sites, key=lambda s: s["seq"])[:GROUP_PRACTICE]
     group_tax = "47-2210388"
     for s in sites:
-        taxes[s["site"]] = group_tax if s in group else "%02d-%07d" % (20 + s["seq"] % 60,
-                                                                       1100000 + s["seq"] * 1511)
+        taxes[s["site"]] = group_tax if s in group else taxid(s["site"])
     movers = sorted(sites, key=lambda s: -s["seq"])[:MOVED_ADDRESS]
     for cycle, attested_on in CYCLES:
         for s in sites:
@@ -154,7 +198,7 @@ def directory(target, sites, extra, rnd):
             rows.append([cycle, attested_on.isoformat(), e["site"], e["name"], e["operator"], e["address"],
                          e["locality"], e["area"], world.AREA[e["area"]]["name"],
                          "in-centre haemodialysis" if e["modality"] == "dialysis" else "ambulatory infusion",
-                         e["licensed"], "%02d-%07d" % (20 + e["seq"] % 60, 1100000 + e["seq"] * 1511),
+                         e["licensed"], taxid(e["site"] or e["name"]),
                          "none" if cycle == 2026 else ""])
     _w(os.path.join(target, "provider_directory_2027.csv"), rows,
        ["attestation_cycle", "attested_on", "plan_site_id", "site_name", "operator", "service_address",
@@ -167,23 +211,28 @@ def directory(target, sites, extra, rnd):
 def licence_register(target, sites, extra, rnd):
     oprnd = __import__("random").Random(5519)     # the operator market, off every other stream
     facilities, amendments, reissues = [], [], []
-    def num(seq, mod):
-        return "%s-%05d" % ("ESRD" if mod == "dialysis" else "AIT", 21000 + seq * 23)
+    lrnd = random.Random(world.SEED + 2131)
+    state = {"ESRD": [20860], "AIT": [21240], "CORP": [9030]}
+    def num(mod):
+        pre = "ESRD" if mod == "dialysis" else "AIT"
+        return "%s-%05d" % (pre, issue(lrnd, state[pre], 5, 190))
     for s in sites:
-        s["licence_no"] = num(s["seq"], s["modality"])
+        s["licence_no"] = num(s["modality"])
     for e in extra:
-        e["licence_no"] = num(e["seq"], e["modality"])
+        e["licence_no"] = num(e["modality"])
     allf = [(s, s["licensed"], s["modality"], s["area"], s["address"], s["locality"], s["operator"],
              s["licence_no"]) for s in sites]
     allf += [(e, e["licensed"], e["modality"], e["area"], e["address"], e["locality"], e["operator"],
               e["licence_no"]) for e in extra]
     rows = []
+    drnd = random.Random(world.SEED + 6607)
+    arnd = random.Random(world.SEED + 9419)
     for i, (obj, st, mod, area, addr, loc, op, lic) in enumerate(allf):
         cat = "in-centre haemodialysis" if mod == "dialysis" else "ambulatory infusion"
-        eff = dt.date(2015 + (i % 9), 1 + (i * 5) % 12, 1 + (i * 7) % 27)
+        eff = dt.date(drnd.randint(2011, 2021), drnd.randint(1, 12), drnd.randint(1, 28))
         # a superseded amendment row for about a third of the facilities: the station count before a change
         if i % 3 == 0:
-            amend_to = dt.date(2024, 1 + (i * 3) % 11, 2 + (i * 11) % 26)
+            amend_to = dt.date(2024, drnd.randint(1, 11), drnd.randint(2, 27))
             rows.append([lic, op, "facility", addr, loc, area, cat, max(2, st - 2),
                          eff.isoformat(), amend_to.isoformat(), "amended"])
             eff = amend_to
@@ -195,13 +244,15 @@ def licence_register(target, sites, extra, rnd):
     lapsed = [o for o in allf if o[0].get("kind") == "dropped"][:3]
     for i, (obj, st, mod, area, addr, loc, op, lic) in enumerate(lapsed):
         new_op = world.draw_operator("dialysis" if i % 2 == 0 else "infusion", oprnd)
-        new_loc = world.LOCALITIES[world.CODES[(i * 4 + 1) % 12]][0]
-        new_addr = "%d %s, %s" % (300 + i * 23, world.STREETS[(i * 9) % len(world.STREETS)], new_loc)
+        new_code = world.CODES[(i * 4 + 1) % 12]
+        new_loc = world.LOCALITIES[world.AREA[new_code]["name"]][0]
+        new_addr = "%d %s, %s" % (arnd.randint(20, 940), world.STREETS[arnd.randrange(len(world.STREETS))],
+                                  new_loc)
         for r in rows:
             if r[0] == lic and r[10] == "active":
                 r[9] = dt.date(2026, 5 + i, 27 + i).isoformat()
                 r[10] = "lapsed"
-        rows.append([lic, new_op, "facility", new_addr, new_loc, world.CODES[(i * 4 + 1) % 12],
+        rows.append([lic, new_op, "facility", new_addr, new_loc, new_code,
                      "in-centre haemodialysis" if i % 2 == 0 else "ambulatory infusion",
                      5 + i * 2, dt.date(2026, 8 + i, 14).isoformat(), "", "active"])
         reissues.append(lic)
@@ -210,7 +261,8 @@ def licence_register(target, sites, extra, rnd):
     for i, (obj, st, mod, area, addr, loc, op, lic) in enumerate(allf):
         if obj.get("kind") == "off_plan" and len(reissues) < 8:
             old_op = world.draw_operator(mod, oprnd)
-            old_addr = "%d %s, %s" % (200 + i * 17, world.STREETS[(i * 13) % len(world.STREETS)], loc)
+            old_addr = "%d %s, %s" % (arnd.randint(20, 940),
+                                      world.STREETS[arnd.randrange(len(world.STREETS))], loc)
             rows.append([lic, old_op, "facility", old_addr, loc, area,
                          "in-centre haemodialysis" if mod == "dialysis" else "ambulatory infusion",
                          max(2, st - 3), dt.date(2012 + i % 5, 3, 14).isoformat(),
@@ -223,15 +275,16 @@ def licence_register(target, sites, extra, rnd):
             byop[op][area] += st
     for op in sorted(byop):
         for area in sorted(byop[op]):
-            rows.append(["CORP-%05d" % (9000 + zlib.crc32((op + area).encode()) % 900), op, "corporate umbrella", "",
+            rows.append([corp(op + area), op, "corporate umbrella", "",
                          "", area, "multi-category", byop[op][area],
                          dt.date(2016, 4, 1).isoformat(), "", "active"])
     # eight facilities licensed outside the plan's twelve service areas
     for i in range(8):
-        rows.append(["ESRD-%05d" % (31000 + i * 19), world.draw_operator("dialysis", oprnd),
-                     "facility", "%d Marchford Road, Tarnsby" % (40 + i * 13), "Tarnsby", "OUT-OF-AREA",
-                     "in-centre haemodialysis", 6 + i % 7, dt.date(2018 + i % 6, 2, 9).isoformat(), "",
-                     "active"])
+        rows.append([num("dialysis"), world.draw_operator("dialysis", oprnd),
+                     "facility", "%d Marchford Road, Tarnsby" % arnd.randint(20, 940), "Tarnsby",
+                     "OUT-OF-AREA", "in-centre haemodialysis", 6 + i % 7,
+                     dt.date(drnd.randint(2012, 2021), drnd.randint(1, 12), drnd.randint(1, 28)).isoformat(),
+                     "", "active"])
     wb = openpyxl.Workbook()
     ws = wb.active
     ws.title = "Licences"
@@ -289,10 +342,15 @@ def encounters_db(target, sites, rows, cancels):
         service_start TEXT, service_minutes INTEGER, encounter_status TEXT, service_category TEXT)""")
     cat = {s["site"]: ("HD" if s["modality"] == "dialysis" else "AIT") for s in sites}
     a, b, n = [], [], 0
+    ernd = random.Random(world.SEED + 1277)
+    ekey = {}
     allrows = sorted(rows + cancels, key=lambda r: (r["date"], r["site"], r["start"]))
     for r in allrows:
         n += 1
-        eid = "E%d%08d" % (r["date"].year, n)
+        yr = r["date"].year
+        ekey.setdefault(yr, [10000 + ernd.randint(0, 40000)])
+        ekey[yr][0] += ernd.randint(1, 23)
+        eid = "E%d%08d" % (yr, ekey[yr][0])
         st = r.get("status", sim.STATUS_COMPLETED)
         if r["date"].year <= 2024:
             start = "%s %s" % (r["date"].isoformat(), _hhmm(r["start"] % 1440))
@@ -349,7 +407,7 @@ def filing(target, sites, extra, rnd):
                      e["licensed"], "contracted"])
     dup = [e for e in extra if e["kind"] == "dropped"][4:9]
     for e in dup:
-        rows.append(["CORP-%05d" % (9000 + zlib.crc32((e["operator"] + e["area"]).encode()) % 900), e["name"],
+        rows.append([corp(e["operator"] + e["area"]), e["name"],
                      e["address"], e["locality"], e["area_2026"], world.AREA[e["area_2026"]]["name"],
                      "in-centre haemodialysis" if e["modality"] == "dialysis" else "ambulatory infusion",
                      e["licensed"], "contracted"])
@@ -390,6 +448,10 @@ def filing(target, sites, extra, rnd):
 
 # ------------------------------------- 8, 9, 10 the out-of-network register, its run-out and its control
 def out_of_network(target, sites, extra, rows_in, rnd):
+    arnd = random.Random(world.SEED + 5903)
+    mrnd = random.Random(world.SEED + 3701)
+    crnd = random.Random(world.SEED + 4817)
+    mkey, ckey, mseen = [500000000 + mrnd.randint(0, 200000)], {}, {}
     dropped = [e for e in extra if e["kind"] == "dropped"]
     areas = world.CODES
     main, runout, n = [], [], 0
@@ -404,11 +466,16 @@ def out_of_network(target, sites, extra, rows_in, rnd):
                     continue
                 lag = 24 + (n * 7) % 48
                 adj = sd + dt.timedelta(days=lag)
-                mem = "M%09d" % (500000000 + (n * 3571) % 900000)
+                if n not in mseen:
+                    mkey[0] += mrnd.randint(11, 9000)
+                    mseen[n] = "M%09d" % mkey[0]
+                mem = mseen[n]
                 # the register carries the member's own residence area, not the area of the site treated
                 res = areas[(n * 5) % 12] if n % 8 == 0 else e["area"]
-                amt = 268.0 + (n % 37) * 4.5
-                cid = "C%d%07d" % (sd.year, n)
+                amt = round(268.0 + arnd.random() * 162.0, 2)
+                ckey.setdefault(sd.year, [1000000 + crnd.randint(0, 900000)])
+                ckey[sd.year][0] += crnd.randint(3, 400)
+                cid = "C%d%07d" % (sd.year, ckey[sd.year][0])
                 rows_for_claim = [[cid, 1, mem, sd.isoformat(), e["name"], e["address"],
                                    e["licence_no"], res, "%.2f" % amt, adj.isoformat(),
                                    "%d-Q%d" % (adj.year, (adj.month - 1) // 3 + 1), 1]]
