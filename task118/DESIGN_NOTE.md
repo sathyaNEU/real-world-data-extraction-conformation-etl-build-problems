@@ -432,3 +432,36 @@ the reference puts against Opportunity Sizing is `conjoint-choice-willingness-to
 pairing is off-reference. It is recorded and not resolved, because this command freezes the main call and both the
 objective tag and the task type are identity axes on a shipped card.
 
+
+## The describing-file rule, and why this build re-ships under a LEAK, 2026-10-27
+
+`leak.py` reports LEAK on `cms_revisions_export_fields.txt` under the rule "no shipped file describes the data"
+(`dataset-generation` section 3), which landed on 2026-10-27, fifteen days after this build was delivered. The rule
+is right and its rationale is measured: task144's first architecture shipped field notes and an extract manifest, and
+both portal responses built the decisive step out of them.
+
+**It is corpus drift, not a defect of this repair.** Measured across five shipped builds rather than assumed:
+task118 LEAK, task157 LEAK (`supply_pull_data_notes.md`), task306 REVIEW, task186 REVIEW, task187 REVIEW. Two of
+five fail a rule that post-dates them.
+
+**What it costs this repair, stated rather than smoothed over.** All three pins closing the portal's forks live in the
+two files the rule names: SF12 and SF13 in the CMS field notes, SF14 in the audience warehouse field reference, which
+draws its own REVIEW on the same grounds. So every closure sits inside the file class the house now says hands the
+decisive step over. The pins themselves are sound and the licensed judge verified them on this pack, reproducing all
+three main figures, all twelve panel figures and all six medians, and raising none of them; the objection is to the
+files' existence, not to the sentences.
+
+**The author's decision, taken 2026-10-27: shipped builds are grandfathered.** This build re-ships on its otherwise
+green gates with the LEAK recorded here, and the migration belongs to whoever runs the corpus-wide pass. The residual
+risk is named and accepted rather than hidden: a portal response could build the decisive step out of these two files,
+which is precisely the failure the rule was written from, and if that happens the answer is the migration below and
+not another pin.
+
+**The migration, for whoever takes it.** Drop both files and move their facts to authority: the correction-note
+pairing and put-back rules, the status and `publish_at` lines and the clock go to `editorial_standards_s7_corrections.pdf`,
+which already carries 7.4 and 7.5; the surfaces, the winning-lift definition, `desk_code` and the archive's coverage
+sentence go to the placement brief and the dashboard's own export. task251's repair did exactly this successfully,
+dropping its data dictionary and moving the facts into its filed standard at authority. On this build the field
+reference is also load-bearing for SF7 and SF8, so it is a pack redesign needing a fresh judge rather than a
+determinism repair.
+

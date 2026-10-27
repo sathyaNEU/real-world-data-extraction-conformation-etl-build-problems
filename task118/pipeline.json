@@ -3,7 +3,7 @@
  "domain": "marketing-consumer-research",
  "objective": "opportunity-sizing-decision",
  "stage": 5,
- "stage_name": "shipped (wave-1 redesign)",
+ "stage_name": "ship",
  "updated": "2026-10-27",
  "stump": "A competent solver rebuilds each desk's winning lift from the test archive, shrinks it as the seven closed embeddings' realised holdback lifts require, counts only the clicks that start on surfaces that show the tested headline, and names Local·metro at 2,800,000; the step that lands them there is never asking who ran the tests behind each desk's lift, which the archive's test owners joined to the newsroom staff list answer: Local·metro's own editors already test the headlines behind 71.1% of its platform clicks, so most of the gain the squad was sized on is already in the plan.",
  "harden_loops": 4,
@@ -92,7 +92,16 @@
  "judge": {
   "verdict": "DETERMINISTIC; passes 1 and 2 of the redesign",
   "disposition": "FIX_NOW twice, both fixed: step 2 names the embedding test selection and the ratio tolerance (pass 1); the write-up says own-surface clicks and the field reference's related_links row says the links show the current headline (pass 2). No third pass: neither fix moves a figure, a rung or the decisive path.",
-  "report": "task118/determinism_check_report.md (redesign passes 1 and 2; the earlier build's passes 2 to 4 in determinism_check_report_pass2.md to _pass4.md)"
+  "report": "task118/determinism_check_report.md (redesign passes 1 and 2; the earlier build's passes 2 to 4 in determinism_check_report_pass2.md to _pass4.md)",
+  "rejudge_2026_10_27": {
+   "verdict": "DETERMINISTIC",
+   "disposition": "FIX_NOW, fixed in this pass",
+   "gate_g": "method or model selection, shrinkage validated against holdbacks, analytical non-defect, not surface-read rejection",
+   "gate_h": "domain pass, layers pass, decisive step analytical",
+   "reproduced": "the call 1,252,299 to 1,250,000; Local-metro 808,110 to 800,000; the gap 444,189 to 450,000; all twelve panel figures; all six medians 119, 102, 89, 86, 55, 47; the March note count 33",
+   "fix_now": "the definition of tested, closed as SF14; the judge raised none of SF11 to SF13, and never raised the clock, the zone or the offset",
+   "still_open": "R26-08 carry-over, the 7.4 correction-time reading, the 11 January pro-rating, R26-04H's three reruns; none flips the call and none is pinned"
+  }
  },
  "approved": "2026-10-09 (checkpoint B waived by the author; heart WARN)",
  "delivered": "2026-10-12",
@@ -100,8 +109,11 @@
  "source_note": "analytical_tasks/04_opportunity_sizing/OS01_headline-squad-renderable-click-share.md",
  "status": "SHIPPED",
  "owner": "oviya1301",
- "resume": "/fix-determinism in progress, NOT re-shipped. Verified both judges rather than accepting them, and both findings are real: the field notes mark saved_at UTC but give publish_at no zone, AEST appears only as the scope window's zone, and nothing defined going live; the brief puts the test hours in scope but names no rate. Root cause sharper than either judge said and it is in golden.py: the going-live rule and the Brisbane clock are spelled out in the GOLDEN WRITE-UP, the answer file a judge never reads, which is determinism-check section 5 exactly. The note also admits the second half was deliberate ('the median's primary, the publish_at clock, is filed nowhere'), meant as an ask device; an unpinned convention is an open fork, not a device. STUMP TEST PASSES, so this is a repair: the decisive step is never asking who ran the tests behind each desk's lift (Local-metro's own editors already test 71.1 per cent of its platform clicks) and neither fork touches it, both judges' models having picked Culture under the rival reading too. THREE PINS WRITTEN, all WHAT and none naming a method: SF11 the brief's success measure gains 'Clicks in those hours count at the winning headline's lift'; SF12 the field notes' status line says a save recorded live publishes the document and a scheduled revision publishes it at its publish_at, first live being first published either way; SF13 the publish_at line names Brisbane time beside saved_at's UTC. Each matches the golden's own rule verbatim and all four strings are confirmed present in the rebuilt documents. freeze.py check --mode determinism PASS, so nothing graded moved. Three assertions in checks.py and three independent ones in verify_pack.py, including SF11's data half recomputed from the archive. NEXT: finish the rebuild (running), find the one pre-existing failing assertion the first build's truncated log hid, re-cut target.zip, run the free gates (verify, figures_check, precut, leak, voice-check, guard validate and heart), two byte-identical rebuilds, then the ONE licensed re-judge, then RESHIPPED. SEPARATE Gate F observation for the author, not acted on because the command freezes the stump: both judges' own model responses reached Culture-national and judge 2 still graded Gate F strong.",
- "leak": "leak.py REVIEW, no LEAK; three isolated reads: read 1 found the brief's counting phrase read as an all-sources base (fixed), reads 2 and 3 on the fixed pack",
+ "resume": "Re-shipped 2026-10-27 after the determinism repair. Four pins, all WHAT: SF11 the rate credited during the under-test hours (the brief's success measure), SF12 the going-live event and SF13 the publish_at clock (the CMS field notes), and SF14 what tested covers (the field reference's archive paragraph), the last closing a CALL-FLIPPING fork both portal judges missed and the build's own grid had recorded since the pack was cut: shr/plat/won files Local-metro 1,555,000 against Culture-national 1,321,000. The licensed judge returned DETERMINISTIC and reproduced every graded figure. Waits on the portal. THREE THINGS FOR WHOEVER PICKS THIS UP. (1) Gate F is weak and independently measured so: an analyst who restricts to own surfaces, drops already-tested articles and distrusts Sport-metro's 10.8 per cent raw mean from 150 small tests reaches Culture-national with NO shrinkage, which is why both portal judges' models got the desk; shrinkage buys the exact figure and the gap, not the call. That is a redesign question, not a determinism one. (2) The ask layer now stands on ONE device, not two: pinning the clock moved the pair from 27.5 to 45.8, and the measured cell where a solver also catches the July file is 82.5, over the bar. /fix-rubric is the instrument. (3) The describing-file LEAK is grandfathered, with the migration written out in the design note. Also unresolved and recorded: the task type media-reach-frequency-audience-measurement serves Descriptive and Forecasting in the taxonomy, not the Opportunity Sizing tag this build carries.",
+ "leak": {
+  "leak_py": "LEAK on cms_revisions_export_fields.txt under the describing-file rule that landed 2026-10-27, fifteen days after delivery; corpus drift, grandfathered by the author, recorded in the design note with the migration written out",
+  "reader": "not re-run, no document changed near the decisive step beyond the pins themselves"
+ },
  "asks": {
   "cracker_hits": 0,
   "of": 18,
@@ -116,7 +128,8 @@
    "date": "2026-10-27",
    "portal": "both determinism judges competing_defensible_answer, Gates C and D fail (judge 1 also E), G pass, F plausible and strong. Fork 1, the rate credited during the hours a headline is under test: the brief puts those hours in scope but names no rate, so the mixture reading gives 750,000 to 800,000 against the committed 1,250,000 and a gap of 150,000 against 450,000. Fork 2, the correction clock: going live is undefined (publish_at against the first live save) and publish_at carries no timezone, moving all six median asks 20 to 40 minutes a desk.",
    "repair": "determinism",
-   "commit": "in progress"
+   "commit": "RESHIPPED (task118), determinism, 2026-10-27"
   }
- ]
+ ],
+ "zip_sha256_16": "e23bc761f36a9440"
 }
