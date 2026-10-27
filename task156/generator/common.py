@@ -59,13 +59,13 @@ SITES = ["web", "mobile", "data", "databases", "devops", "gamedev", "security", 
 SITE = {
     "web":       dict(name="Frontend & Web", old="Web Development", grp="C", q26=29800, drop=0.598, cover=1.66),
     "mobile":    dict(name="Mobile Apps", old="Mobile Development", grp="C", q26=11900, drop=0.574, cover=1.63),
-    "data":      dict(name="Data & ML", old="Data Science & ML", grp="B", q26=23600, drop=0.437, cover=1.115),
-    "databases": dict(name="Databases", old="Database Administration", grp="B", q26=19700, drop=0.414, cover=1.137),
-    "devops":    dict(name="Infrastructure & DevOps", old="Ops & Cloud", grp="B", q26=16800, drop=0.392, cover=1.13),
-    "gamedev":   dict(name="Game Development", old="Game Development", grp="B", q26=6150, drop=0.451, cover=1.12),
-    "security":  dict(name="Security", old="Information Security", grp="A", q26=8100, drop=0.268, cover=0.845),
-    "embedded":  dict(name="Embedded & Hardware", old="Embedded Systems", grp="A", q26=5050, drop=0.233, cover=0.76),
-    "scicomp":   dict(name="Scientific Computing", old="Scientific Computing", grp="A", q26=3550, drop=0.214, cover=0.83),
+    "data":      dict(name="Data & ML", old="Data Science & ML", grp="B", q26=23600, drop=0.437, cover=1.1531),
+    "databases": dict(name="Databases", old="Database Administration", grp="B", q26=19700, drop=0.414, cover=1.159),
+    "devops":    dict(name="Infrastructure & DevOps", old="Ops & Cloud", grp="B", q26=16800, drop=0.392, cover=1.1365),
+    "gamedev":   dict(name="Game Development", old="Game Development", grp="B", q26=6150, drop=0.451, cover=1.0681),
+    "security":  dict(name="Security", old="Information Security", grp="A", q26=8100, drop=0.268, cover=0.8139),
+    "embedded":  dict(name="Embedded & Hardware", old="Embedded Systems", grp="A", q26=5050, drop=0.233, cover=0.7464),
+    "scicomp":   dict(name="Scientific Computing", old="Scientific Computing", grp="A", q26=3550, drop=0.214, cover=0.826),
 }
 GRAPHICS_OLD = "Graphics & Shaders"      # an old site folded into gamedev on 1 July 2023
 GRAPHICS_SHARE = 0.27                    # its share of the merged site's questions before the merger
@@ -88,10 +88,13 @@ ENVELOPE_2027 = 26                       # FTE, finance's 2027 envelope
 KAPPA = 40.0                             # mean reviews a reviewer completes in a month when work is plentiful
 KAPPA_SIG = 0.15                         # lognormal spread of reviewers' own paces
 ACT_SHAPE = 9.0                          # month-to-month variation in a reviewer's activity (gamma shape)
-CHURN = 0.0205                           # monthly share of reviewers who stop (every site, every year)
-PIPE_MID = dt.date(2024, 9, 15)          # the reputation pipeline runs dry around here
-PIPE_WIDTH_M = 1.4                       # months
-PIPE_FLOOR = 0.004                       # inflow after the pipeline dried up, share of the old steady inflow
+CASUAL_SHARE = 0.85                      # share of new reviewers who review casually and leave early
+STOP_CASUAL = 0.12                       # monthly chance a casual reviewer stops for good
+STOP_STEADY = 0.005                      # monthly chance a steady reviewer stops for good
+GRANT_RAMP_M = 24                        # months after a site's launch before review grants reach their level
+GRANT_ELASTICITY = 1.0                   # review grants follow the site's question level to this power
+INVITE_ONLY = dt.date(2026, 9, 1)        # review access by moderator invitation only from this day
+INVITE_SHARE = 0.004                     # invitations a month, share of the earlier flow of grants
 SKIP_SHARE = 0.0058                      # the network mean of the items no volunteer ever picks up
 SKIP_BY_TYPE = {"close": 0.0091, "first_post": 0.0035, "low_quality": 0.0072, "edit": 0.0040}   # by item type
 HANDOFF_DAYS = 3                         # 72 hours

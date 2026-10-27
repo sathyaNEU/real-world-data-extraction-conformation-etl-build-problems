@@ -85,62 +85,75 @@ def _daily_questions(code, base, hist_days, plan):
     return out
 
 
-def _reviewers(code, R0, T):
-    """The volunteer pool month by month over 2021-01 to 2027-12 (T months).
+def month_ym(j):
+    """(year, month) of month index j, months since January 2021 (negative before it)."""
+    return K.D0.year + j // 12, j % 12 + 1
 
-    Every reviewer stops at the same monthly rate (CHURN); exits are drawn uniformly among the reviewers active that
-    month. The number leaving each month is CHURN times the month's pool with a small month-to-month swing that sums
-    to zero over each calendar quarter, so the exit rate read over any whole quarters equals CHURN. New reviewers
-    arrive at the old steady inflow until the reputation pipeline dries up in the autumn of 2024, then at a trickle."""
-    r = K.rng("reviewers", code)
+
+def grant_shape(code, T):
+    """Review grants a month at unit scale, from the site's launch to December 2027, keyed by month index: they ramp
+    up over the site's first two years and follow the site's question level (the reputation that earns access comes
+    from answering); from 1 September 2026 access is by moderator invitation only, a trickle."""
+    L = (LAUNCH[code][0] - K.D0.year) * 12 + LAUNCH[code][1] - 1
+    closed = K.month_index(K.INVITE_ONLY.year, K.INVITE_ONLY.month)
+    out = {}
+    for t in range(L, T):
+        y, m = month_ym(t)
+        lv = _level(dt.date(y, m, 15), K.SITE[code]["drop"])
+        ramp = min(1.0, (t - L + 1) / K.GRANT_RAMP_M)
+        out[t] = ramp * lv ** K.GRANT_ELASTICITY * (K.INVITE_SHARE if t >= closed else 1.0)
+    return out
+
+
+def expected_pool(shape):
+    """Expected active reviewers a month at unit scale, casual and steady reviewers carried at their own stop rates."""
+    c = v = 0.0
+    out = {}
+    for t in sorted(shape):
+        c = c * (1.0 - K.STOP_CASUAL) + shape[t] * K.CASUAL_SHARE
+        v = v * (1.0 - K.STOP_STEADY) + shape[t] * (1.0 - K.CASUAL_SHARE)
+        out[t] = c + v
+    return out
+
+
+def _reviewers(code, scale, shape, T):
+    """The volunteer pool month by month from the site's launch to December 2027.
+
+    Each new reviewer is casual (CASUAL_SHARE of grants) or steady, and stops for good after any month with that type's
+    own monthly chance; nobody's chance changes with time, so the pool's overall stop rate falls only as its casual
+    reviewers leave first. Review grants a month are the Poisson count at scale times the site's grant shape, read at a
+    fixed quantile per month; each reviewer's type, pace, months active and monthly activity come from their own
+    stream, so a change of scale adds or removes reviewers at the margin and leaves everyone else as they were. A
+    reviewer granted in a month is active from that month; one who stops after month t made a last review in t."""
+    from scipy.stats import poisson
     kap_mu = math.log(K.KAPPA) - K.KAPPA_SIG ** 2 / 2.0
-    kappa, join, last, granted = [], [], [], []
-    active = []
-    # the pool on 1 January 2021: tenure memoryless, access granted up to eight years earlier
-    age = (K.D0.year - LAUNCH[code][0]) * 12 + (K.D0.month - LAUNCH[code][1])
-    for i in range(int(round(R0))):
-        kappa.append(float(r.lognormal(kap_mu, K.KAPPA_SIG)))
-        join.append(-1)
-        last.append(None)
-        ten = int(r.exponential(1.0 / K.CHURN))
-        if ten >= age - 2:
-            ten = int(r.integers(0, max(1, age - 2)))
-        granted.append(ten)
-        active.append(i)
-    inflow0 = K.CHURN * R0
-    pipe_mid = K.month_frac(K.PIPE_MID)
-    swing = None
-    in_swing = [0.0, 0.0, 0.0]
-    act = {}
-    for t in range(T):
-        y, m = K.D0.year + t // 12, t % 12 + 1
-        x = (t + 0.5 - pipe_mid) / K.PIPE_WIDTH_M
-        lam = inflow0 * (1.0 - (1.0 - K.PIPE_FLOOR) * K.logistic(x))
-        if t % 3 == 0:
-            b1, b2 = float(r.uniform(-0.12, 0.12)), float(r.uniform(-0.12, 0.12))
-            in_swing = [b1, b2, -(b1 + b2)]
-        n_in = int(r.poisson(lam)) if lam < 3.0 else int(K.round_half_up(lam * (1.0 + in_swing[t % 3])))
-        for _ in range(n_in):
-            i = len(kappa)
-            kappa.append(float(r.lognormal(kap_mu, K.KAPPA_SIG)))
+    months_ = sorted(shape)
+    u = K.rng("grants", code).random(len(months_))
+    kappa, join, last, stop, acts = [], [], [], [], []
+    for t, ut in zip(months_, u):
+        lam = scale * shape[t]
+        n_in = int(poisson.ppf(ut, lam)) if lam > 0 else 0
+        for k in range(n_in):
+            rr = K.rng("reviewer", code, t, k)
+            casual = rr.random() < K.CASUAL_SHARE
+            th = K.STOP_CASUAL if casual else K.STOP_STEADY
+            life = int(rr.geometric(th))
+            kappa.append(float(rr.lognormal(kap_mu, K.KAPPA_SIG)))
+            stop.append(th)
             join.append(t)
-            last.append(None)
-            granted.append(-1)
-            active.append(i)
-        n = len(active)
-        g = r.gamma(K.ACT_SHAPE, 1.0 / K.ACT_SHAPE, size=n)
-        act[t] = (np.array(active, dtype=np.int64), g)
-        if t % 3 == 0:
-            a1, a2 = float(r.uniform(-0.13, 0.13)), float(r.uniform(-0.13, 0.13))
-            swing = [a1, a2, -(a1 + a2)]
-        e = int(K.round_half_up(K.CHURN * n * (1.0 + swing[t % 3])))
-        e = max(0, min(e, n))
-        idx = r.choice(n, size=e, replace=False) if e else np.array([], dtype=np.int64)
-        gone = set(int(active[j]) for j in idx)
-        for i in gone:
-            last[i] = t
-        active = [i for i in active if i not in gone]
-    return dict(kappa=np.array(kappa), join=join, last=last, granted=granted, act=act)
+            end = t + life - 1
+            last.append(end if end < T else None)
+            span = min(end, T - 1) - t + 1
+            acts.append(rr.gamma(K.ACT_SHAPE, 1.0 / K.ACT_SHAPE, size=max(span, 0)))
+    act_ids = {t: [] for t in range(T)}
+    act_g = {t: [] for t in range(T)}
+    for i, (j, L, g) in enumerate(zip(join, last, acts)):
+        hi = (T - 1) if L is None else L
+        for t in range(max(j, 0), hi + 1):
+            act_ids[t].append(i)
+            act_g[t].append(g[t - j])
+    act = {t: (np.array(act_ids[t], dtype=np.int64), np.array(act_g[t])) for t in range(T)}
+    return dict(kappa=np.array(kappa), join=join, last=last, stop=np.array(stop), act=act)
 
 
 def _capacity(pool, T):
@@ -222,23 +235,15 @@ def simulate():
         S.flags = rf.poisson(S.q * S.flag_rate).astype(float)
         rc = K.rng("flagclosed", code)
         S.flag_closed = rc.binomial(S.flags.astype(np.int64), FLAG_CLOSED_SHARE).astype(float)
-        # the reviewer pool, sized so January to September 2026 cover hits the site's target
+        # the reviewer pool, its grants scaled so January to September 2026 cover hits the site's target
         A_m = np.zeros(T)
         for di, d in enumerate(W.all_days):
             A_m[K.month_index(d.year, d.month)] += sum(S.items[t][di] for t in K.ITEMS)
         months26 = [K.month_index(2026, m) for m in range(1, 10)]
-        pr = []
-        rr = 1.0
-        pipe_mid = K.month_frac(K.PIPE_MID)
-        for t in range(T):
-            x = (t + 0.5 - pipe_mid) / K.PIPE_WIDTH_M
-            inflow = K.CHURN * (1.0 - (1.0 - K.PIPE_FLOOR) * K.logistic(x))
-            rr = rr + inflow - K.CHURN * rr
-            pr.append(rr)
-        pr = np.array(pr)
-        R0 = K.SITE[code]["cover"] * A_m[months26].sum() / (K.KAPPA * pr[months26].sum())
-        S.R0 = R0
-        S.pool = _reviewers(code, R0, T)
+        shape = grant_shape(code, T)
+        ep = expected_pool(shape)
+        S.scale = K.SITE[code]["cover"] * A_m[months26].sum() / (K.KAPPA * sum(ep[t] for t in months26))
+        S.pool = _reviewers(code, S.scale, shape, T)
         S.Km, S.Rm = _capacity(S.pool, T)
         # daily capacity
         rk = K.rng("capday", code)

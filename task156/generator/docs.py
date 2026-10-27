@@ -1,7 +1,7 @@
 """task156 documents: the council's charter and its 2027 handle-time standards, finance's envelope letter, the
-moderation team's flag service standard and operations notes, the posts warehouse notes, the review platform's data
-dictionary, the 2026 member survey (unused by the solution) and the file list. Their text is kept here as data so
-checks.py can quote and execute it."""
+moderation team's flag service standard and operations handbook, the data platform team's question count standard and
+the 2026 member survey (unused by the solution). No file describes the data: every export names its own columns. Their
+text is kept here as data so checks.py can quote and execute it."""
 from __future__ import annotations
 
 import os
@@ -257,159 +257,79 @@ def write_survey(path):
     doc.build(s, onFirstPage=_footer("Millrind community research"), onLaterPages=_footer("Millrind community research"))
 
 
-# ---------------------------------------------------------------------------------------------------- markdown notes
-F_OPS = "moderation_ops_notes.md"
-F_WAREHOUSE = "posts_warehouse_notes.md"
-F_DICT = "review_platform_data_dictionary.md"
-F_FILELIST = "pool_request_files_2026-10-09.md"
+# ---------------------------------------------------------------------------------------------------- handbook
+F_HANDBOOK = "moderation_operations_handbook_2026.pdf"
+HANDBOOK = [
+    ("The paid team", [
+        "The paid team works three shift patterns on Toronto time: days from 08:00, lates from 15:30 and nights from "
+        "23:00, each 8 paid hours with a 30-minute unpaid break. Part-time moderators work three shifts a week.",
+        "Each moderator works one site's queues. Flags and routed review items reach the team through the moderation "
+        "queue of the site they belong to.",
+        "Statutory holidays observed in 2026 so far: 1 January, 16 February, 3 April, 18 May, 1 July, 3 August, "
+        "7 September.",
+    ]),
+    ("Hours", [
+        "The WFM system holds the shift lines. A line is approved by the moderator's lead the Monday after the shift, "
+        "or on the day a correction is approved.",
+        "When a week is corrected the WFM system re-sends the whole week: the original lines are kept, marked "
+        "superseded, and the corrected lines come in approved. Only approved lines are hours worked.",
+        "A shift's hours belong to the site the moderator worked for on that shift, and to the quarter in which the "
+        "shift started, on Toronto time.",
+    ]),
+    ("Review access", [
+        "Since 1 September 2026 review access on every site is given only by invitation of the site's elected "
+        "moderators; members can no longer earn it with reputation. Invited reviewers appear on the reviewer roster "
+        "like any other.",
+    ]),
+    ("Paid review hours", [
+        "The council follows the paid team's review work as paid review hours: each moderator flag a paid moderator "
+        "handled and each community item routed to the team, at the handle-time standard in force for its year "
+        "(close votes at 5.0 minutes to the end of 2026, 2.0 from 2027), in the month the flag was raised or the item "
+        "entered the inbox, on UTC. They are not the hours worked on the WFM lines.",
+        "Months still to come are counted on the planning team's question plan, and October to December 2026 on its "
+        "outlook.",
+    ]),
+]
 
 
-def ops_notes():
-    return """# Moderation operations notes
-
-Duane Zamora, head of moderation operations. Kept for the council's pool work; last updated 6 October 2026.
-
-## The paid team
-
-- The paid team works three shift patterns on Toronto time: days from 08:00, lates from 15:30 and nights from 23:00,
-  each 8 paid hours with a 30-minute unpaid break. Part-time moderators work three shifts a week.
-- Each moderator works one site's queues. Flags and routed review items reach the team through the moderation queue
-  of the site they belong to.
-- Statutory holidays observed in 2026 so far: 1 January, 16 February, 3 April, 18 May, 1 July, 3 August, 7 September.
-
-## Hours
-
-- The WFM system holds the shift lines. A line is approved by the moderator's lead the Monday after the shift, or on
-  the day a correction is approved.
-- When a week is corrected the WFM system re-sends the whole week: the original lines stay in the export marked
-  `superseded` and the corrected lines come in `approved`. Only approved lines are hours worked.
-- A shift's hours belong to the site the moderator worked for on that shift, and to the quarter in which the shift
-  started, on Toronto time.
-- The WFM system still labels Infrastructure & DevOps by its old name, Ops & Cloud.
-
-## Queues
-
-- The review platform replaced the old review system on 1 January 2024. The old system's monthly statistics job was
-  kept for 2021 to 2023 in the monthly queue workbook.
-- The platform's daily inbox export counts, for each site, entry day and item type, the items that entered the inbox
-  and what became of them: reviewed by a volunteer, routed to the moderation queue, or still open when the export ran.
-
-## Paid review hours
-
-- The council follows the paid team's review work as paid review hours: each moderator flag a paid moderator handled
-  and each community item routed to the team, at the handle-time standard in force for its year (close votes at 5.0
-  minutes to the end of 2026, 2.0 from 2027), in the month the flag was raised or the item entered the inbox, on UTC.
-  They are not the hours worked on the WFM lines.
-- Months still to come are counted on the planning team's question plan, and October to December 2026 on its outlook.
-"""
+def write_handbook(path):
+    st = styles("LibSans", "LibSans-Bold", COUNCIL, 10.0)
+    s = [Paragraph("Moderation operations handbook", st["h1"]),
+         Paragraph("Team practice for the paid moderation team (revised 6 October 2026)", st["sub"])]
+    for head, paras in HANDBOOK:
+        s.append(Paragraph(esc(head), st["h2"]))
+        for p in paras:
+            s.append(Paragraph(esc(p), st["body"]))
+    s.append(Paragraph(esc("Duane Zamora, Head of Moderation Operations"), st["small"]))
+    doc = _doc(path, "Moderation operations handbook", K.PEOPLE["ops"])
+    doc.build(s, onFirstPage=_footer("Millrind  |  Moderation operations"),
+              onLaterPages=_footer("Millrind  |  Moderation operations"))
 
 
-def warehouse_notes():
-    return """# Posts warehouse: questions
-
-Data platform team. The warehouse replaced the old reporting jobs on 1 January 2024.
-
-- Questions are counted once each, in the month the question was first asked (UTC), on the site the question is on
-  today.
-- Months before January 2024 are not in the warehouse; the old review system's monthly queue workbook carries the
-  question counts its statistics job reported for 2021 to 2023.
-- The old statistics job counted a question on every site it was posted to. A question moved to another site is posted
-  there anew under a new question id, so the job counted it on its first site in the month it was asked and on its new
-  site in the month it moved.
-- Comparisons with 2021 to 2023 are made on the warehouse's basis.
-- The planning team's question plan counts questions the way the warehouse does.
-- Deleted questions are counted in the month they were asked.
-"""
+# ---------------------------------------------------------------------------------------------------- question counts
+F_COUNTS = "question_count_standard_2024.pdf"
+COUNTS = [
+    "Questions are counted once each, in the month the question was first asked (UTC), on the site the question is on "
+    "today.",
+    "The posts warehouse replaced the old reporting jobs on 1 January 2024. For 2021 to 2023 the old review system's "
+    "monthly queue workbook carries the question counts its statistics job reported.",
+    "The old statistics job counted a question on every site it was posted to. A question moved to another site is "
+    "posted there anew under a new question id, so the job counted it on its first site in the month it was asked and "
+    "on its new site in the month it moved.",
+    "Comparisons with 2021 to 2023 are made on the warehouse's basis.",
+    "The planning team's question plan counts questions the way the warehouse does.",
+    "Deleted questions are counted in the month they were asked.",
+]
 
 
-def data_dictionary():
-    return """# Review platform and moderator tool: export fields
-
-## review_inbox_daily (one row per site, entry day and item type)
-
-| Field | Meaning |
-|---|---|
-| site | site code (see the site register) |
-| entry_date_utc | the day the items entered the site's review inbox, UTC |
-| item_type | close_vote, first_post, low_quality or suggested_edit |
-| entered | items that entered the inbox that day |
-| reviewed_by_volunteer | of those, items a volunteer reviewer reviewed |
-| routed_to_moderation | of those, items routed to the site's moderation queue |
-| open_at_pull | of those, items neither reviewed nor routed when the export ran |
-| pulled_at_utc | when the export ran |
-
-entered is the sum of reviewed_by_volunteer, routed_to_moderation and open_at_pull on every row.
-
-## reviewer_roster (one row per reviewer and site, every reviewer whose review access had not lapsed before 1 January 2024)
-
-| Field | Meaning |
-|---|---|
-| account_id | network account id |
-| site | the site the reviewer reviews on |
-| access_granted | the day review access was granted (may be before the platform) |
-| first_review_on_platform | the reviewer's first review on the platform (blank for a reviewer who made none) |
-| last_review | the reviewer's last review before the export |
-| access_status | active, or lapsed |
-| lapsed_on | the day access lapsed |
-
-A reviewer is active in a month in which they made at least one review. Review access lapses after a calendar month in
-which the reviewer made no reviews, on the first day of the month after it: a reviewer whose last review fell in March
-lapses on 1 May. A reviewer whose access lapsed and who asks for it again gets a new row.
-
-## modtool_flag_summary_daily (one row per site and day)
-
-| Field | Meaning |
-|---|---|
-| flags_raised | moderator flags raised that day, UTC |
-| closed_post_deleted | of those, flags the platform closed because the post was deleted before a moderator acted |
-| handled_by_moderator | of those, flags a paid moderator handled |
-
-## modtool_flags (one row per flag)
-
-| Field | Meaning |
-|---|---|
-| raised_at_utc | when the flag was raised |
-| handled_at_utc | when the flag was marked handled |
-| handled_by | the paid moderator's employee number, or system |
-| outcome | helpful, declined or closed_post_deleted |
-"""
-
-
-def file_list(n_rows):
-    lines = ["# Pool request working files", "",
-             "Duane Zamora, head of moderation operations, 9 October 2026. Pulled for the council's 2027 request; every "
-             "export was pulled on 8 October 2026 unless it says otherwise.", "",
-             "| File | What it is | Rows |", "|---|---|---|"]
-    desc = [
-        (R.F_INBOX, "review platform daily inbox export, January 2024 to September 2026"),
-        (R.F_INBOX_PRE, "the same export for September 2026 as first pulled on 2 October"),
-        (R.F_OLD, "old review system monthly queue workbook, 2021 to 2023 (one sheet a year)"),
-        (R.F_ROSTER, "review platform reviewer roster"),
-        (R.F_FLAGSUM, "moderator tool daily flag summary, January 2024 to September 2026"),
-        (R.F_FLAGS1, "moderator tool flag export, flags raised 1 July to 15 August 2026"),
-        (R.F_FLAGS2, "moderator tool flag export, flags raised 15 August to 30 September 2026"),
-        (R.F_REVIEWS, "decision reviews of the moderator flag decisions taken July to September 2026"),
-        (R.F_POSTS, "posts warehouse, questions by site and month"),
-        (R.F_PLAN, "Planning & Analytics 2027 question plan (issued 18 September)"),
-        (R.F_WFM, "WFM system shift lines, January to September 2026"),
-        (R.F_ASSIGN, "HR assignment history for the paid moderation team"),
-        (R.F_MOVES, "moderators' log of questions moved between sites, 2021 to 2023"),
-        (R.F_PAGEVIEWS, "web analytics, page views by site and month"),
-        (R.F_REGISTER, "site register"),
-        (F_CHARTER, "Moderation Council charter"),
-        (F_STANDARDS, "the council's 2027 handle-time standards"),
-        (F_ENVELOPE, "finance's 2027 envelope"),
-        (F_FLAGSTD, "the flag service standard"),
-        (F_SURVEY, "2026 member survey on AI assistants"),
-        (F_OPS, "moderation operations notes"),
-        (F_WAREHOUSE, "posts warehouse notes"),
-        (F_DICT, "export field notes"),
-    ]
-    for f, d in desc:
-        lines.append("| %s | %s | %s |" % (f, d, ("{:,}".format(n_rows[f]) if f in n_rows else "")))
-    lines += ["", "The 2 October pull of September was taken for the October ops review; the 8 October pull is the "
-              "complete one."]
-    return "\n".join(lines) + "\n"
+def write_counts(path):
+    st = styles("Carlito", "Carlito-Bold", FIN, 10.4)
+    s = [Paragraph("Question counts: the reporting basis", st["h1"]),
+         Paragraph("Data platform team, issued with the posts warehouse (8 January 2024)", st["sub"])]
+    for p in COUNTS:
+        s.append(Paragraph(esc(p), st["body"]))
+    doc = _doc(path, "Question counts: the reporting basis", "Data platform team")
+    doc.build(s, onFirstPage=_footer("Millrind data platform"), onLaterPages=_footer("Millrind data platform"))
 
 
 def write_all(out, n_rows):
@@ -419,12 +339,11 @@ def write_all(out, n_rows):
     write_envelope(p(F_ENVELOPE))
     write_flagstd(p(F_FLAGSTD))
     write_survey(p(F_SURVEY))
-    for f, text in ((F_OPS, ops_notes()), (F_WAREHOUSE, warehouse_notes()), (F_DICT, data_dictionary())):
-        with open(p(f), "w", encoding="utf-8", newline="\n") as fh:
-            fh.write(text)
-    with open(p(F_FILELIST), "w", encoding="utf-8", newline="\n") as fh:
-        fh.write(file_list(n_rows))
+    write_handbook(p(F_HANDBOOK))
+    write_counts(p(F_COUNTS))
     stamps = {F_CHARTER: (b"D:20250312171400-04'00'", b"D:20250312171400-04'00'"),
+              F_HANDBOOK: (b"D:20261006154000-04'00'", b"D:20261006154000-04'00'"),
+              F_COUNTS: (b"D:20240108113000-05'00'", b"D:20240108113000-05'00'"),
               F_STANDARDS: (b"D:20260617193200-04'00'", b"D:20260617193200-04'00'"),
               F_ENVELOPE: (b"D:20260930141100-04'00'", b"D:20260930141100-04'00'"),
               F_FLAGSTD: (b"D:20260204103000-05'00'", b"D:20260204103000-05'00'"),

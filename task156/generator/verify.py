@@ -123,19 +123,39 @@ def main(target):
         months.append((y, m))
         y, m = (y + 1, 1) if m == 12 else (y, m + 1)
     active = defaultdict(int)
-    lapses = defaultdict(int)
     joins = defaultdict(int)
+    # stops and reviewer-months by months since the grant month, each reviewer from the first month the platform
+    # shows them active to their last review, January 2024 to August 2026
+    mnum = lambda ymd: int(ymd[:4]) * 12 + int(ymd[5:7]) - 1
+    hi = mnum("2026-08")
+    stops, at_risk = defaultdict(int), defaultdict(int)
+    sep26 = defaultdict(list)
     for r in read_csv(target, "reviewer_roster_2026-10-08.csv"):
+        if r["access_granted"] >= "2024-01-01":
+            joins[(r["site"],) + month_key(r["access_granted"])] += 1
         if not r["first_review_on_platform"]:
             continue
         a, b = month_key(r["first_review_on_platform"]), month_key(r["last_review"])
         for ym in months:
             if a <= ym <= b:
                 active[(r["site"],) + ym] += 1
-        if r["access_status"] == "lapsed":
-            lapses[(r["site"],) + b] += 1
-        if r["access_granted"] >= "2024-01-01":
-            joins[(r["site"],) + month_key(r["access_granted"])] += 1
+        g, a_, b_ = mnum(r["access_granted"]), mnum(r["first_review_on_platform"]), mnum(r["last_review"])
+        for t in range(a_, min(b_, hi) + 1):
+            at_risk[t - g] += 1
+        if r["access_status"] == "lapsed" and b_ <= hi:
+            stops[b_ - g] += 1
+        if b_ >= mnum("2026-09"):
+            sep26[r["site"]].append(mnum("2026-09") - g)
+    top = max(t for t in at_risk if at_risk[t])
+    tail = sum(stops[t] for t in range(top - 11, top + 1)) / sum(at_risk[t] for t in range(top - 11, top + 1))
+
+    def stop_rate(tau):
+        if tau > top:
+            return tail
+        return stops[tau] / at_risk[tau] if at_risk[tau] else 0.0
+    hb = re.sub(r"\s+", " ", pdf_text(os.path.join(target, "moderation_operations_handbook_2026.pdf")))
+    if "review access on every site is given only by invitation" not in hb:
+        bad.append("the handbook's invitation-only rule not found")
     # the old system's months
     old = []
     restated = {}
@@ -193,13 +213,15 @@ def main(target):
         per_q = {t: sum(ent_t[(s,) + ym + (t,)] for ym in months) / sum(q[(s,) + ym] for ym in months)
                  for t in std if t != "flag"}
         flag_q = sum(flags[(s,) + ym] for ym in months) / sum(q[(s,) + ym] for ym in months)
-        last24 = months[-25:-1]                                      # September 2024 to August 2026
-        h = sum(lapses[(s,) + ym] for ym in last24) / sum(active[(s,) + ym] for ym in last24)
-        inflow = sum(joins[(s,) + ym] for ym in months[-12:]) / 12.0
-        pool = active[(s, 2026, 9)]
+        invited = joins[(s, 2026, 9)]                                # access by invitation only from 1 September
+        surv0 = [1.0]
+        for j in range(15):
+            surv0.append(surv0[-1] * (1 - stop_rate(j)))
         mins = 0.0
+        prob = [1.0] * len(sep26[s])
         for k in range(15):
-            pool = pool * (1 - h) + inflow
+            prob = [p_ * (1 - stop_rate(tau + k)) for p_, tau in zip(prob, sep26[s])]
+            pool = sum(prob) + invited * sum(surv0[:k + 1])
             if k < 3:
                 continue
             qm = plan[s][k - 3]

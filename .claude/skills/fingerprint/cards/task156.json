@@ -1,33 +1,33 @@
 {
   "task": "task156",
-  "architecture": "v1",
+  "architecture": "v1 loop 3",
   "drawn": "2026-10-17",
   "slot_note": "wave 5 (new); seed FC27 kept for its world, decision and quantity only (a developer Q&A network's 2027 paid moderation pool across nine topic sites after generative AI cut question volume, sized in FTE against a finance envelope, decided at the council's December sitting); the seed's charter clause that a need method may be used only if it reproduces every certified figure is not shipped (no certified need table ships at all), and its revised close-queue standard (5.0 to 2.0 minutes) ships as a filed standard every response applies, never the decisive step; the pitfall is re-found from how the network's review records come to exist: a community item reaches the paid team only when no volunteer reviews it in 72 hours",
   "domain": "product-analytics",
   "subdomain": "retention-cohort-lifetime-value-modeling",
   "client_domain": "product-analytics",
-  "niche": "a Toronto-run developer Q&A network's 2027 request for its paid moderation team, sized in whole FTE per site from the hours its nine topic sites' moderator flags and unreviewed community-inbox items will take at the 2027 handle-time standards, when every community item goes first to volunteer reviewers whose pools have been shrinking since the reputation pipeline dried up in autumn 2024, and the sites generative AI hurt least are the ones running out of volunteers",
+  "niche": "a Toronto-run developer Q&A network's 2027 request for its paid moderation team, sized in whole FTE per site from the hours its nine topic sites' moderator flags and unreviewed community-inbox items will take, when every community item goes first to volunteer reviewers, most of whom review casually and stop within months while a steady core stays for years, and review access became invitation-only in September 2026",
   "objective": "forecasting",
   "shape": "other",
   "decision_type": "quantity_figure",
   "answer_unit": "count",
-  "answer": "35 paid moderator FTE for 2027 (Frontend & Web 5, Mobile Apps 2, Data & ML 7, Databases 5, Infrastructure & DevOps 5, Game Development 2, Security 4, Embedded & Hardware 3, Scientific Computing 2), 9 above finance's 26-FTE envelope",
+  "answer": "32 paid moderator FTE for 2027 (Frontend & Web 5, Mobile Apps 2, Data & ML 6, Databases 4, Infrastructure & DevOps 4, Game Development 2, Security 4, Embedded & Hardware 3, Scientific Computing 2), 6 above finance's 26-FTE envelope",
   "answer_source": "task156/generator/calc.py compute() on the shipped bundle, reproduced by task156/generator/verify.py",
   "gap": [
-    "time",
-    "population"
+    "population",
+    "time"
   ],
   "pattern": [
     "none"
   ],
   "generators": [
-    "G5",
-    "G13",
+    "G9",
+    "G6",
     "G16"
   ],
-  "gate_g": "binding_constraint",
+  "gate_g": "forecasting",
   "calibration_form": "none",
-  "stump_strategy": "binding_constraint",
+  "stump_strategy": "forecast_method_backtest",
   "decisive_rule_filed": false,
   "official_decoy": false,
   "validated_decoy": false,
@@ -36,10 +36,10 @@
   "role_family": "operations_director",
   "scoring_unit": "other",
   "spine": {
-    "file": "review_inbox_daily_2024-01-01_2026-09-30.csv (the review platform's daily inbox export) beside reviewer_roster_2026-10-08.csv (its reviewer access spells)",
-    "rows": 36144,
-    "entity": "one site's community review items of one type entering the inbox on one UTC day: entered, reviewed by a volunteer, routed to the paid team",
-    "grain": "site x day x item type",
+    "file": "reviewer_roster_2026-10-08.csv (the review platform's reviewer access spells) beside review_inbox_daily_2024-01-01_2026-09-30.csv (its daily inbox export)",
+    "rows": 23148,
+    "entity": "one reviewer's access spell on one site: grant date, first and last review on the platform, status, lapse date",
+    "grain": "reviewer x site spell",
     "source": "synthetic (constructed in the layout of a Q&A platform's review inbox export and reviewer roster)"
   },
   "forum": "council_or_assembly",
@@ -64,14 +64,14 @@
   ],
   "opening_move": "question-first",
   "question_form": "how-many",
-  "driver": "Work reaches a paid tier only when a volunteer tier falls short, and the volunteer tier's capacity shows only in the periods it fell short, since in every other period it handled everything that arrived; with almost no new volunteers arriving, each pool shrinks at a steady exit rate, so units whose records show almost nothing reaching the paid tier cross below their arrivals inside the forward window, while a share of arrivals carried forward, a trend in the paid work, or capacity read from recent throughput each misses the crossing.",
-  "driver_concrete": "Every community review item at Millrind goes first to the volunteer reviewers and reaches the paid moderators only if no volunteer has reviewed it 72 hours after it entered the inbox; volunteers review at their own pace when the inbox is full and below it when it runs dry, so their pace shows only in months when items were routed (most sites in 2022, Security, Embedded & Hardware and Scientific Computing since 2025), and since almost no member has been granted review access after autumn 2024 every site's pool shrinks by about two per cent a month, which takes Data & ML, Databases, Infrastructure & DevOps and Game Development, with almost nothing routed since January 2024, below their 2027 inbox arrivals.",
-  "stump": "Carrying each site's paid queue hours per question over the last twelve months onto the 2027 question plan files a request of 23 FTE (25 to 28 with each site's routed share or its monthly paid hours trended forward), inside finance's 26-FTE envelope; the step that lands it there is treating routed items as a share of arrivals, when they are the arrivals each site's shrinking reviewer pool cannot review at the pace reviewers keep when the inbox is full, which puts four sites that have routed almost nothing since January 2024 short of their 2027 inbox and files 35 (31 with the pool trended over the platform's whole record, 53 with the pace read from 2026 throughput).",
+  "driver": "Members of a pool leave at their own steady rates, which differ widely, so the fast leavers go first and the pool's overall leaving rate falls as its members age; while new members kept arriving the overall rate held high, and once admission stops the closed pool sheds its newest members and then slows, so carrying the open pool's rate overstates the forward losses, and because the record opens part-way through most members' lives, the rate by tenure has to count each member from when the record first sees them.",
+  "driver_concrete": "Most of Millrind's new volunteer reviewers stop within months (about 9 per cent a month in their first year of access) while reviewers past their third year stop at well under one per cent, so while grants ran at about 320 a month the pool's overall lapse rate held near 3 per cent; review access became invitation-only on 1 September 2026, so the 10,607 reviewers active then are the 2027 pool, shedding their first-year reviewers fast and then slowing, which the open pool's lapse rate overstates; the roster opens in January 2024, so the stop rate by tenure counts each reviewer from the first month the platform shows them active.",
+  "stump": "Carrying each site's reviewer pool from September 2026 at its own lapse rate of the last two years, with no new reviewers since access became invitation-only, files 41 FTE (40 on the last twelve months' rate, 38 on the last three); the step that lands it there is reading one stop rate off a pool that was still taking in newcomers, when reviewers stop at about 9 per cent a month in their first year and under one per cent from their fourth: carried on the stop rate of each reviewer's own tenure, counted from when the roster first sees them, the 10,607 active reviewers average about 8,800 a month in 2027 and the request is 32 FTE (27 with the tenure curve read from each grant date).",
   "stump_class": "analytical",
-  "analyst_test": "A strong analyst who stacks the old monthly queue workbook and the new daily inbox export, maps the old site names to the new codes, and reads the charter's need definition, the 2027 standards and the 2027 question plan correctly carries each site's paid queue hours per question (or each queue's routed share) onto the plan and files 23 FTE, or 25 to 28 with the routed share or the paid hours trended; items reach the paid team only when the volunteers fall short, so each site's 2027 routed items are its 2027 arrivals less what its shrinking reviewer pool can review at the pace reviewers keep when the inbox is full, which files 35.",
-  "domain_test": "The deciding quantity is each site's 2027 volunteer review capacity, forecast the way product analytics forecasts a user segment's retained activity (the reviewer pool projected from its own monthly exits and near-zero arrivals, times the activity each retained reviewer delivers when work is plentiful) and set against the 2027 inbox the plan implies; with another field's nouns (a hospital's agency nurses, a utility's call centre) there is no volunteer user cohort whose engagement decays on its own retention curve and whose output shows only when work outruns it, so the forecast that decides the call has nothing to stand on.",
-  "layer2_family": "allocation_constraints",
-  "layer2_pattern": "own:volunteer-review-capacity-projected-from-reviewer-retention-against-inbox-arrivals",
+  "analyst_test": "A strong analyst who builds each site's capacity right (the reviews a reviewer completes when the inbox outruns the pool, about 40 a month, against the 2027 inbox the plan implies) and reads the handbook's invitation-only clause carries each site's pool from September 2026 at its own lapse rate of the last two years with no new reviewers and files 41 FTE (40 on twelve months, 38 on three); reviewers stop at rates that fall steeply with tenure, so the closed pool sheds its newest reviewers first, and carried on each reviewer's own tenure the request is 32.",
+  "domain_test": "The deciding quantity is a closed volunteer cohort's 2027 survival, forecast the way product analytics forecasts a retained-user cohort (survival by tenure read from a truncated, censored roster and applied to the members who are left, rather than a pooled churn rate), times the activity a retained reviewer delivers when work outruns the pool; with another field's nouns (a hospital's agency nurses, a utility's call centre) there is no self-selecting volunteer cohort whose members drift away at rates that differ by tenure, so the forecast has nothing to stand on.",
+  "layer2_family": "estimation_fit",
+  "layer2_pattern": "own:closed-cohort-survival-by-tenure-left-truncated-against-capacity",
   "layer1": [
     "a review-platform change in January 2024: a monthly per-queue workbook for 2021 to 2023 (one sheet a year, the edit queue added in 2022) beside a daily inbox export by item type from 2024",
     "site names in the old workbook against site codes in the new export, with Graphics folded into Game Development in 2023, mapped by the site register",
@@ -87,9 +87,40 @@
     "task153": "task153 caps what a yard island hands a vehicle at the smaller of the fuel burned between visits and a known tankful, per segment; here the capacity is hidden wherever it was not binding, shrinks on the volunteers' own retention, and the decisive move is its crossing below arrivals in the year the request funds",
     "task150": "task150 carries pupils at rates on their own base and arrivals at steady counts; here nothing arrives at a steady count and the decisive split is a capacity limit against arrivals",
     "task148": "task148 drains a queue by abandonment and prices waits; here no item leaves on its own, the 72-hour hand-off is a routing rule, and the forecast is how many items the volunteers will not reach",
-    "task140": "task140 strikes a residual after higher reservations that include a dependent load; here the volunteers are no reservation and their capacity does not depend on the paid tier"
+    "task140": "task140 strikes a residual after higher reservations that include a dependent load; here the volunteers are no reservation and their capacity does not depend on the paid tier",
+    "task179": "task179 lets a member's chance of leaving fall once it meets the same peers in several groups, a process the forward members no longer pass through; here nobody's chance changes and the overall rate falls only through who is left, read by tenure from a left-truncated roster",
+    "task170": "task170's failure probability falls with each operator's own count of attempts (learning); here a reviewer's stop chance is constant for life and the fall is selection",
+    "task176": "task176 ends units when the youngest dependant reaches a fixed age, a clock other than tenure; here tenure is the clock, read from the record with its left edge",
+    "task134": "task134 turns a conversion hazard near zero for a member's first months into a forward inflow; here the hazard is highest in the first months and the forecast is a closed pool's survival",
+    "task452": "task452 weights each reference observation by its own design inclusion probability after a preliminary classification was revised; here nothing is sampled: the forecast is a closed volunteer cohort's survival by tenure read from a left-truncated roster, set against an inbox"
   },
-  "lineage": [],
-  "notes": "Kinship cards read at the draw: task150, task153, task152, task149 (the lane's last builds), task140, task147, task148, task111, task128 (capacity and overflow drivers on file). No trust-and-safety card in the corpus carries a moderation-capacity driver. Round 1 (stage 4): the rule 3 audit called the retention tag thin and suggested a trust-and-safety or community-moderation workforce task type; vocab.json has none (healthcare's patient-flow workforce type would make the domain a backdrop), so the tag stays product-analytics retention, the deciding quantity being the volunteer reviewer cohort's retained activity.",
+  "lineage": [
+    {
+      "architecture": "v1 (loops 1 and 2)",
+      "drawn": "2026-10-17",
+      "fate": "solved, FAILED_TO_STUMP on the portal (2026-10-27): both responses filed 35 FTE, the then golden, by building each site's capacity against its inbox at the saturated pace and carrying each pool at its own lapse rate with almost no new reviewers; the capacity framing was the strong solver's default, so loop 3 moved the decisive step to how the pool is carried",
+      "driver": "Work reaches a paid tier only when a volunteer tier falls short, and the volunteer tier's capacity shows only in the periods it fell short, since in every other period it handled everything that arrived; with almost no new volunteers arriving, each pool shrinks at a steady exit rate, so units whose records show almost nothing reaching the paid tier cross below their arrivals inside the forward window, while a share of arrivals carried forward, a trend in the paid work, or capacity read from recent throughput each misses the crossing.",
+      "driver_concrete": "Every community review item at Millrind goes first to the volunteer reviewers and reaches the paid moderators only if no volunteer has reviewed it 72 hours after it entered the inbox; volunteers review at their own pace when the inbox is full and below it when it runs dry, so their pace shows only in months when items were routed (most sites in 2022, Security, Embedded & Hardware and Scientific Computing since 2025), and since almost no member has been granted review access after autumn 2024 every site's pool shrinks by about two per cent a month, which takes Data & ML, Databases, Infrastructure & DevOps and Game Development, with almost nothing routed since January 2024, below their 2027 inbox arrivals.",
+      "stump": "Carrying each site's paid queue hours per question over the last twelve months onto the 2027 question plan files a request of 23 FTE (25 to 28 with each site's routed share or its monthly paid hours trended forward), inside finance's 26-FTE envelope; the step that lands it there is treating routed items as a share of arrivals, when they are the arrivals each site's shrinking reviewer pool cannot review at the pace reviewers keep when the inbox is full, which puts four sites that have routed almost nothing since January 2024 short of their 2027 inbox and files 35 (31 with the pool trended over the platform's whole record, 53 with the pace read from 2026 throughput).",
+      "gate_g": "binding_constraint",
+      "gap": [
+        "time",
+        "population"
+      ],
+      "pattern": [
+        "none"
+      ],
+      "generators": [
+        "G5",
+        "G13",
+        "G16"
+      ],
+      "decision_type": "quantity_figure",
+      "stump_strategy": "binding_constraint",
+      "layer2_family": "allocation_constraints",
+      "layer2_pattern": "own:volunteer-review-capacity-projected-from-reviewer-retention-against-inbox-arrivals"
+    }
+  ],
+  "notes": "Kinship cards read at the draw: task150, task153, task152, task149 (the lane's last builds), task140, task147, task148, task111, task128 (capacity and overflow drivers on file). No trust-and-safety card in the corpus carries a moderation-capacity driver. Round 1 (stage 4): the rule 3 audit called the retention tag thin and suggested a trust-and-safety or community-moderation workforce task type; vocab.json has none (healthcare's patient-flow workforce type would make the domain a backdrop), so the tag stays product-analytics retention, the deciding quantity being the volunteer reviewer cohort's retained activity. Loop 3 (2026-10-27): the portal landed the call (35 FTE) on the capacity framing with a flat lapse rate; the decisive step moved to survival by tenure on a closed, left-truncated pool (population_selection, estimation_fit, Gate G forecasting), the old identity in lineage. Strategy forecast_method_backtest: the regime change (review access invitation-only from 1 September 2026) makes the natural fit, the open pool's lapse rate, wrong out of sample, and the closed-cohort back-test separates the methods; population_selection (survivorship) and composition_mix also describe the move and were both banned by the live window at loop 3 (task264 v2 and its neighbours), so the honest third key is used. Generator G9 (downstream survival against upstream acquisition) is decisive: the open pool's rate carries the newcomers acquisition kept feeding in. Registration stamp kept at the draw (2026-10-17T08:19:38Z): the world and its furniture (forum, forcing event, organisation family) date from that draw and are unchanged; restamped at loop 3 the card met ban.forum against task242 and ban.forcing_event against task196 v2, both registered later that day (22:32 and 23:00), an artifact of re-running a draw-time gate (reduce-house-fixes H27); the loop 3 identity was checked against today's corpus with a fresh key first (strategy, gap, pattern and driver tests clear, task452 differentiated).",
   "registered": "2026-10-17T08:19:38Z"
 }

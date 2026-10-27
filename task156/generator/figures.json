@@ -1,14 +1,14 @@
 {
   "call": {
-    "request_fte": 35,
+    "request_fte": 32,
     "envelope_fte": 26,
-    "above_envelope_fte": 9,
+    "above_envelope_fte": 6,
     "need_fte": {
       "Frontend & Web": 5,
       "Mobile Apps": 2,
-      "Data & ML": 7,
-      "Databases": 5,
-      "Infrastructure & DevOps": 5,
+      "Data & ML": 6,
+      "Databases": 4,
+      "Infrastructure & DevOps": 4,
       "Game Development": 2,
       "Security": 4,
       "Embedded & Hardware": 3,
@@ -18,7 +18,8 @@
   "components": {
     "reviews_a_month": 40,
     "saturation_cut_pct": 5,
-    "lapse_pct_a_month": 2,
+    "reviewers_sep_2026": "10,607",
+    "active_a_month_2027": "8,800",
     "newly_short": [
       "Data & ML",
       "Databases",
@@ -38,15 +39,16 @@
   "steps": {
     "never_picked_up_pct": "0.6",
     "fte_hours": 1600,
+    "first_year_stop_pct_a_month": 9,
     "newly_short_from": "October 2026"
   },
   "answers": {
     "need_fte": {
       "Frontend & Web": 5,
       "Mobile Apps": 2,
-      "Data & ML": 7,
-      "Databases": 5,
-      "Infrastructure & DevOps": 5,
+      "Data & ML": 6,
+      "Databases": 4,
+      "Infrastructure & DevOps": 4,
       "Game Development": 2,
       "Security": 4,
       "Embedded & Hardware": 3,

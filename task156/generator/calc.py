@@ -2,9 +2,11 @@
 
 The golden: each site's 2027 need is its handled flags at the plan's questions times the site's flag rate, plus its
 routed community items, each 2027 month's inbox arrivals (the plan's questions times the site's items per question)
-less what its reviewer pool can review: the pool carried from September 2026 at the exit rate the roster shows and the
-reviewers still arriving, each reviewer at the reviews a month reviewers complete when the inbox outruns them. Every
-other route the design names is computed here too, for the checks."""
+less what its reviewer pool can review. Review access is by invitation only from 1 September 2026, so the pool of
+September 2026 only shrinks: each of its reviewers is carried on the monthly stop rate the roster shows at each tenure
+(months since access was granted, each reviewer counted from the month the platform's record first sees them active),
+each at the reviews a month reviewers complete when the inbox outruns them. Every other route the design names is
+computed here too, for the checks."""
 from __future__ import annotations
 
 import csv
@@ -35,6 +37,16 @@ def _rows(path):
 
 def ym_of(s):
     return int(s[:4]), int(s[5:7])
+
+
+def mabs(s):
+    """A month as a running count of months (year times 12 plus month less one)."""
+    return int(s[:4]) * 12 + int(s[5:7]) - 1
+
+
+M_JAN24, M_AUG25, M_SEP25, M_AUG26, M_SEP26 = (y * 12 + m - 1 for y, m in ((2024, 1), (2025, 8), (2025, 9), (2026, 8),
+                                                                          (2026, 9)))
+NT = 400                                 # tenure months held in a curve
 
 
 def read_xlsx(path):
@@ -93,6 +105,14 @@ def load(target):
         if r["access_granted"] >= "2024-01-01":
             joins[s][MIDX[ym_of(r["access_granted"])]] += 1
     D.R, D.exits, D.joins = Rm, exits, joins
+    # each access spell: site, grant month, first and last month active on the platform, lapsed or still active
+    sp = [(r["site"], mabs(r["access_granted"]), mabs(r["first_review_on_platform"]), mabs(r["last_review"]),
+           r["access_status"] == "lapsed") for r in _rows(p(R.F_ROSTER)) if r["first_review_on_platform"]]
+    D.sp_site = np.array([x[0] for x in sp])
+    D.sp_g = np.array([x[1] for x in sp], dtype=np.int64)
+    D.sp_a = np.array([x[2] for x in sp], dtype=np.int64)
+    D.sp_b = np.array([x[3] for x in sp], dtype=np.int64)
+    D.sp_lapsed = np.array([x[4] for x in sp], dtype=bool)
     # plan
     sh = read_xlsx(p(R.F_PLAN))["Plan 2027"]
     plan = {}
@@ -172,6 +192,118 @@ def exit_rate(D, s, months=24):
     return ex / risk, ex
 
 
+def tenure_counts(D, lo=M_JAN24, hi=M_AUG26, sites=None, trunc=True, shift=0):
+    """Stops and reviewer-months by months since review access was granted, over the calendar months lo to hi.
+
+    A reviewer is at risk at each tenure month they are seen active in the window, from their first month active on
+    the platform (the record opens in January 2024, so a reviewer granted earlier enters at their tenure then) to their
+    last review; a stop is the month of the last review of a reviewer whose access lapsed. trunc=False counts every
+    reviewer from the month access was granted (the record's survivors read as whole cohorts). shift moves the stop to
+    the month the access lapsed (two months after the last review)."""
+    ev = np.zeros(NT)
+    rk = np.zeros(NT)
+    m = np.ones(len(D.sp_g), dtype=bool) if sites is None else np.isin(D.sp_site, sites)
+    for g, a, b, lp in zip(D.sp_g[m], D.sp_a[m], D.sp_b[m], D.sp_lapsed[m]):
+        start = max(a, lo) if trunc else g
+        end = min(b + shift, hi)
+        if end < start:
+            continue
+        rk[start - g:end - g + 1] += 1
+        if lp and b + shift <= hi:
+            ev[b + shift - g] += 1
+    return ev, rk
+
+
+def tenure_curve(ev, rk, band=1, tail=12):
+    """Monthly stop rate at each tenure month (pooled over bands of `band` months); past the last tenure with
+    reviewers at risk, the rate of the last `tail` tenure months observed."""
+    h = np.zeros(NT)
+    top = int(np.nonzero(rk)[0].max())
+    for a in range(0, top + 1, band):
+        e, r_ = ev[a:a + band].sum(), rk[a:a + band].sum()
+        h[a:a + band] = e / r_ if r_ else 0.0
+    lo = max(0, top - tail + 1)
+    h[top + 1:] = ev[lo:top + 1].sum() / rk[lo:top + 1].sum()
+    return h
+
+
+def survival_from(h, tau0, k):
+    """Chance that a reviewer active at tenure tau0 is still active k months later."""
+    p = np.ones(len(tau0))
+    out = []
+    for j in range(k):
+        p = p * (1.0 - h[np.minimum(tau0 + j, NT - 1)])
+        out.append(p.sum())
+    return np.array(out)
+
+
+def active_at(D, s, month):
+    m = (D.sp_site == s) & (D.sp_a <= month) & (D.sp_b >= month)
+    return month - D.sp_g[m]
+
+
+def grants_recent(D, s, months=1):
+    """Review grants a month over the last `months` months to September 2026; one month is the invitations since
+    access became invitation-only on 1 September 2026."""
+    hi = MIDX[(2026, 9)]
+    return D.joins[s][hi - months + 1:hi + 1].mean()
+
+
+def project_tenure(D, s, h, inflow=True, months=1):
+    """Active reviewers October 2026 to December 2027: each reviewer active in September 2026 carried on the tenure
+    curve from their own tenure, and the invitations still coming carried on it from tenure 0."""
+    k = len(FWD_MONTHS)
+    pool = survival_from(h, active_at(D, s, M_SEP26), k)
+    if inflow:
+        lam = grants_recent(D, s, months)
+        S = np.concatenate([[1.0], np.cumprod(1.0 - h[:k])])
+        pool = pool + np.array([lam * S[:j + 1].sum() for j in range(k)])
+    return pool
+
+
+def mixture_fit(D, lo=M_JAN24, hi=M_AUG26):
+    """Two kinds of reviewer, each with its own steady monthly stop rate, fitted by maximum likelihood on the
+    window's spells with each reviewer conditioned on being active when the record first sees them."""
+    from scipy.optimize import minimize
+    g, a, b, lp = D.sp_g, D.sp_a, D.sp_b, D.sp_lapsed
+    start = np.maximum(a, lo)
+    keep = np.minimum(b, hi) >= start
+    t0 = (start - g)[keep]
+    n = (np.minimum(b, hi) - start)[keep]
+    ev = (lp & (b <= hi))[keep]
+
+    def nll(x):
+        p = 1 / (1 + math.exp(-x[0]))
+        tc, ts = 1 / (1 + math.exp(-x[1])), 1 / (1 + math.exp(-x[2]))
+        lc = np.log(p) + t0 * np.log1p(-tc) + n * np.log1p(-tc) + np.where(ev, np.log(tc), np.log1p(-tc))
+        ls = np.log(1 - p) + t0 * np.log1p(-ts) + n * np.log1p(-ts) + np.where(ev, np.log(ts), np.log1p(-ts))
+        num = np.logaddexp(lc, ls)
+        den = np.logaddexp(np.log(p) + t0 * np.log1p(-tc), np.log(1 - p) + t0 * np.log1p(-ts))
+        return -(num - den).sum()
+    best = None
+    for x0 in ((1.0, -2.0, -5.0), (0.0, -1.5, -4.5), (2.0, -2.5, -5.5)):
+        r_ = minimize(nll, np.array(x0), method="Nelder-Mead", options=dict(xatol=1e-7, fatol=1e-7, maxiter=4000))
+        if best is None or r_.fun < best.fun:
+            best = r_
+    x = best.x
+    return 1 / (1 + math.exp(-x[0])), 1 / (1 + math.exp(-x[1])), 1 / (1 + math.exp(-x[2]))
+
+
+def project_mixture(D, s, fit, inflow=True, months=1):
+    p, tc, ts = fit
+    tau0 = active_at(D, s, M_SEP26)
+    wc = p * (1 - tc) ** tau0
+    ws = (1 - p) * (1 - ts) ** tau0
+    wc, ws = wc / (wc + ws), ws / (wc + ws)
+    k = np.arange(1, len(FWD_MONTHS) + 1)
+    pool = np.array([(wc * (1 - tc) ** kk + ws * (1 - ts) ** kk).sum() for kk in k])
+    if inflow:
+        lam = grants_recent(D, s, months)
+        S0 = lambda n: p * (1 - tc) ** n + (1 - p) * (1 - ts) ** n
+        pool = pool + np.array([lam * sum(S0(j) for j in range(kk)) for kk in k])
+    return pool
+
+
 def arrivals(D, s, months=12):
     hi = MIDX[(2026, 9)]
     return D.joins[s][hi - months + 1:hi + 1].mean()
@@ -196,8 +328,12 @@ def floor_share(D):
     return num / den
 
 
-def project_pool(D, s, mode="exits", months=24, hz_mult=1.0, inflow=True):
-    """Active reviewers for October 2026 to December 2027 (15 months)."""
+def project_pool(D, s, mode="tenure", months=24, hz_mult=1.0, inflow=True):
+    """Active reviewers for October 2026 to December 2027 (15 months). The golden is the tenure curve (`D.h`); the
+    other modes are the rivals and checks: a flat exit rate over the last `months` months, or a log-linear trend of
+    the pool."""
+    if mode == "tenure":
+        return project_tenure(D, s, D.h, inflow=inflow)
     R0 = D.R[s][MIDX[(2026, 9)]]
     if mode == "exits":
         h, _ = exit_rate(D, s, months)
@@ -380,6 +516,9 @@ def compute(target):
     D = load(target)
     D.pace, D.n_sat = saturated_pace(D)
     D.floor = floor_share(D)
+    D.ev, D.rk = tenure_counts(D)
+    D.h = tenure_curve(D.ev, D.rk)
+    D.fit = mixture_fit(D)
     X = Data()
     X.D = D
     X.need_h, X.need_fte, X.need_round, X.fwd_hours = {}, {}, {}, {}
@@ -400,7 +539,8 @@ def compute(target):
 
 
 def routes(X):
-    """Every route the design names: per-site FTE and the rounded request under each."""
+    """Every route the design names: per-site FTE and the rounded request under each. The rivals first (the ladder),
+    then every defensible construction of the golden (the convergence set)."""
     D = X.D
     out = {}
 
@@ -408,22 +548,45 @@ def routes(X):
         v = {s: f(s) for s in K.SITES}
         return dict(fte=v, request=sum(int(K.round_half_up(x)) for x in v.values()), total=sum(v.values()))
 
+    def with_pool(pools, **kw):
+        return req(lambda s: fte(site_need(D, s, pool=pools[s], **kw)[1]))
+
     out["golden"] = req(lambda s: X.need_fte[s])
+    # the rivals
     out["naive12"] = req(lambda s: fte(naive(D, s, 12)))
     out["naive9"] = req(lambda s: fte(naive(D, s, 9)))
     out["share_trend"] = req(lambda s: fte(share_trend(D, s)))
     out["hours_trend"] = req(lambda s: fte(hours_trend(D, s)))
-    out["pool_trend_all"] = req(lambda s: fte(site_need(D, s, pool=project_pool(D, s, "trend_all"))[1]))
     out["pace_censored"] = req(lambda s: fte(site_need(D, s, pace=censored_pace(D, s))[1]))
-    out["pace_censored_trend_all"] = req(lambda s: fte(site_need(D, s, pace=censored_pace(D, s),
-                                                                pool=project_pool(D, s, "trend_all"))[1]))
+    for n in (24, 12, 3):
+        out["flat%d" % n] = with_pool({s: project_pool(D, s, "exits", n, inflow=False) for s in K.SITES})
+    out["flat24_open"] = with_pool({s: project_pool(D, s, "exits", 24) for s in K.SITES})
+    out["pool_trend_all"] = with_pool({s: project_pool(D, s, "trend_all") for s in K.SITES})
+    out["pool_trend12"] = with_pool({s: project_pool(D, s, "trend12") for s in K.SITES})
+    ev, rk = tenure_counts(D, trunc=False)
+    out["no_truncation"] = with_pool({s: project_tenure(D, s, tenure_curve(ev, rk)) for s in K.SITES})
     # the convergent constructions
-    out["exits12"] = req(lambda s: fte(site_need(D, s, pool=project_pool(D, s, "exits", 12))[1]))
-    out["exits18"] = req(lambda s: fte(site_need(D, s, pool=project_pool(D, s, "exits", 18))[1]))
-    out["trend12"] = req(lambda s: fte(site_need(D, s, pool=project_pool(D, s, "trend12"))[1]))
-    out["trend18"] = req(lambda s: fte(site_need(D, s, pool=project_pool(D, s, "trend18"))[1]))
-    out["trend21"] = req(lambda s: fte(site_need(D, s, pool=project_pool(D, s, "trend21"))[1]))
-    out["no_inflow"] = req(lambda s: fte(site_need(D, s, pool=project_pool(D, s, inflow=False))[1]))
+    for band in (3, 6, 12):
+        h = tenure_curve(D.ev, D.rk, band=band)
+        out["band%d" % band] = with_pool({s: project_tenure(D, s, h) for s in K.SITES})
+    own = {}
+    for s in K.SITES:
+        e, r = tenure_counts(D, sites=[s])
+        own[s] = project_tenure(D, s, tenure_curve(e, r))
+    out["own_site_curve"] = with_pool(own)
+    e, r = tenure_counts(D, shift=2)
+    out["lapse_date"] = with_pool({s: project_tenure(D, s, tenure_curve(e, r)) for s in K.SITES})
+    for lo, tag in ((M_AUG26 - 23, "window24"), (M_AUG26 - 17, "window18")):
+        e, r = tenure_counts(D, lo=lo)
+        out[tag] = with_pool({s: project_tenure(D, s, tenure_curve(e, r)) for s in K.SITES})
+    for tail in (6, 24):
+        h = tenure_curve(D.ev, D.rk, tail=tail)
+        out["tail%d" % tail] = with_pool({s: project_tenure(D, s, h) for s in K.SITES})
+    out["no_invitations"] = with_pool({s: project_tenure(D, s, D.h, inflow=False) for s in K.SITES})
+    out["mixture"] = with_pool({s: project_mixture(D, s, D.fit) for s in K.SITES})
+    se = 1.0 / math.sqrt(D.ev.sum())
+    for sign, tag in ((1, "plus"), (-1, "minus")):
+        out["curve_1se_" + tag] = with_pool({s: project_tenure(D, s, D.h * (1 + sign * se)) for s in K.SITES})
     out["annual"] = req(lambda s: fte(site_need(D, s, grain="annual")[1]))
     for cut in (0.01, 0.02, 0.10, 0.15):
         pc, _ = saturated_pace(D, cut)
@@ -434,9 +597,4 @@ def routes(X):
     out["pace_new_only"] = req(lambda s: fte(site_need(D, s, pace=pn)[1]))
     out["ratios_2025"] = req(lambda s: fte(site_need(D, s, ratio_lo=(2025, 1))[1]))
     out["floor_zero"] = req(lambda s: fte(site_need(D, s, floor=0.0)[1]))
-    for sign, tag in ((1, "plus"), (-1, "minus")):
-        def f(s, sign=sign):
-            _, ex = exit_rate(D, s)
-            return fte(site_need(D, s, pool=project_pool(D, s, hz_mult=1 + sign / math.sqrt(ex)))[1])
-        out["exit_1se_" + tag] = req(f)
     return out

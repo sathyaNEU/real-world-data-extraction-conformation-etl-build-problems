@@ -1,193 +1,163 @@
-# task156: Millrind's 2027 paid moderation pool, nine sites behind a shrinking volunteer review community (architecture 1)
+# task156: Millrind's 2027 paid moderation pool, nine sites behind a closing volunteer review community (architecture 1, loop 3)
 
-Private, never ships. A new build (wave 5), numbered from seed FC27. The seed (a developer Q&A network's 2027 paid
-moderation pool across nine topic sites after generative AI cut question volume, under a finance cap, voted at the
-council's December sitting) was read at its header and Situation only. Its world, decision and quantity are kept. Its two
-banned features are not shipped: the charter clause that a need method may be used only if it reproduces every
-certified figure (no certified need table ships at all, so there is nothing to replay), and the revised close-queue
-standard (5.0 to 2.0 minutes) ships only as a filed standard every response applies to the items it prices, never as the
-decisive step. The committed quantity moves from the seed's split of a fixed pool in proportion to need to the pool
-itself: how many FTE the council should ask finance for, with each site's need as its component. The pitfall is
-re-found from how the network's review records come to exist: every community review item goes first to the volunteer
-reviewers, and reaches the paid moderators only when no volunteer has reviewed it 72 hours after it entered the inbox.
+Private, never ships. A new build (wave 5), numbered from seed FC27, shipped 2026-10-17 and returned by the portal
+on 2026-10-27: both responses landed the call (35 FTE, the then golden), building each site's capacity against its
+inbox at the saturated pace and carrying each pool at its own lapse rate with almost no new reviewers. That route was
+the build's decisive step, so the capacity framing is now the default path, not the stump. Loop 3 moves the decisive
+step to how the pool is carried: the reviewers differ, most new reviewers review casually and stop within months while
+a steady core stays for years, and since 1 September 2026 review access is by invitation only, so the 2027 pool is a
+closed pool shedding its newest reviewers first. The world, decision, quantity, prompt, deliverables and all three asks
+are kept; the review platform's data dictionary, the file list and the two markdown notes are gone (every export names
+its own columns; the operations handbook and the data platform team's question count standard carry the conventions
+the asks and the chart need). The seed's two banned features stay out (no certified need table, the revised close
+standard filed as context).
 
 ## Draw
 
 | Axis | Value |
 |---|---|
-| Card | `.claude/skills/fingerprint/cards/task156.json`, architecture v1; `guard.py check` PASS (one WARN, `domain.house`, answered by naming the client domain on the card); nearest driver 0.09 (task181 v2) |
-| Domain / task type | `product-analytics`, task type `retention-cohort-lifetime-value-modeling` (serves Forecasting): the deciding quantity is each site's 2027 volunteer review capacity, forecast as product analytics forecasts a user segment's retained activity, the reviewer pool projected from its own monthly exits and near-zero arrivals, times the activity each retained reviewer delivers when work is plentiful |
+| Card | `.claude/skills/fingerprint/cards/task156.json`, architecture v1 loop 3, the loop 1 to 2 identity in `lineage` (solved on the portal); `guard.py check` and `heart` run on the re-registered card (Guard below) |
+| Domain / task type | `product-analytics`, task type `retention-cohort-lifetime-value-modeling` (serves Forecasting): the deciding quantity is the 2027 survival of a volunteer reviewer cohort that has stopped taking in members, carried on survival by tenure, as product analytics forecasts a closed user cohort's retained activity |
 | Objective | Forecasting & Predictive Modeling: each site's paid review hours in calendar 2027, a year not begun at the as-of date (Friday 9 October 2026), built from the network's own inbox, reviewer and flag history and its 2027 question plan |
-| Shape | `other`: the pool to request with its nine site needs, the gap to finance's envelope, a council slide charting the network's monthly paid hours with 2027 forecast, and row-set asks on rows the call never reads; criteria counted in `## Ask sheet` |
+| Shape | `other`: the pool to request with its nine site needs, the gap to finance's envelope, a council slide charting the network's monthly paid hours with 2027 forecast, and row-set asks on rows the call never reads |
 | Decision | `quantity_figure`, answer unit `count` (FTE: each site to the nearest whole FTE, the request their sum) |
-| Mechanism | gap time (decisive: the history at four sites shows almost nothing reaching the paid team, and the year the request funds is the one their volunteers fall short in) with population (the items the paid team prices are not a share of arrivals but what the volunteers leave); pattern none; generators G5 (provision elsewhere: the volunteers meet the need up to their capacity), G13, G16; Gate G `binding_constraint`; strategy `binding_constraint` |
-| Layer 2 family / pattern | `allocation_constraints` (capacity and queueing: the work a capacity-limited first tier leaves); `own:volunteer-review-capacity-projected-from-reviewer-retention-against-inbox-arrivals` |
-| Furniture | forum `council_or_assembly` (the Moderation Council, elected by the sites' moderators, votes the request at its December sitting), forcing event `vote_or_meeting` (that sitting), organisation family `software_or_platform`, role family `operations_director` (the head of moderation operations, who takes the request to the council and then to finance), context artifact `monitoring_export` (the review platform's daily inbox export), calibration `none`, opening `question-first`, question form `how-many` |
-| Spine | the review platform's daily inbox export, January 2024 to September 2026 (36,144 rows, one per site, UTC entry day and item type: entered, reviewed by a volunteer, routed to the paid team), beside its reviewer roster (19,391 access spells: first and last review, status, lapse date); constructed |
-| Deliverables | `moderation_pool_2027.xlsx` (the request, the site needs, the ask tables, notes) and `council_pool_request_2027.pptx` (two slides for the December sitting: the request, and the network's monthly paid hours January 2024 to December 2027 with each site stacked and the envelope drawn across); the format set (xlsx and pptx) is in none of the last twelve builds |
-| People | drawn with `guard.py names --geo Canada --seed 156` (checked clean by `guard.py check`): Duane Zamora (head of moderation operations, the operations notes and the file list), Natalie Maxwell (finance business partner, the envelope letter), Claudia Spence (council chair, signatory on the charter and the 2027 standards); the requester is in no file and not in the prompt |
+| Mechanism | population then time (decisive: the pool's overall lapse rate is the rate of an open pool full of newcomers, not the rate of the closed 2027 pool, because stop rates fall steeply with tenure; the roster opens in January 2024, so the tenure curve needs each reviewer counted from the month the record first sees them); generators G6 (composition shift: the pool's tenure mix ages once grants stop), G9, G16; Gate G `forecasting`; strategy `population_selection` |
+| Layer 2 family / pattern | `estimation_fit` (survival with left truncation and heterogeneous hazards); `own:closed-cohort-survival-by-tenure-left-truncated-against-capacity` |
+| Furniture | forum `council_or_assembly` (the Moderation Council votes the request at its December sitting), forcing event `vote_or_meeting`, organisation family `software_or_platform`, role family `operations_director`, context artifact `monitoring_export`, calibration `none`, opening `question-first`, question form `how-many` (all unchanged from the draw) |
+| Spine | the review platform's reviewer roster (23,148 access spells: grant date, first and last review on the platform, status, lapse date) beside its daily inbox export, January 2024 to September 2026 (36,144 rows, one per site, UTC entry day and item type); constructed |
+| Deliverables | `moderation_pool_2027.xlsx` (the request, the site needs, the reviewer pools and their stop rates by tenure, the ask tables, notes) and `council_pool_request_2027.pptx` (the request slide and the monthly hours chart) |
+| People | drawn with `guard.py names --geo Canada --seed 156` at the draw: Duane Zamora (head of moderation operations, the operations handbook), Natalie Maxwell (finance business partner, the envelope letter), Claudia Spence (council chair, the charter and the 2027 standards); the requester is in no file and not in the prompt |
 
-**Guard.** `guard.py check` at the draw: PASS after the client domain was named (the one WARN, `domain.house`). The ban
-window was read twice: at the first check it held task235 (software platform), task465 and task236; by the second it
-held task465, task236 and task264, whose budget round (`budget_or_appropriation`), filed standard and finance role are
-banned now. The forcing event is the seed's own December sitting (`vote_or_meeting`), the honest key for a request the
-council votes; the finance envelope is the comparison the request is read against, not the event that forces it. The
-context artifact is the platform's daily inbox export (`monitoring_export`); the charter and the standards are filed
-documents the call reads but not the stakeholder's working file.
+**Guard.** Re-registered at loop 3 with the decisive step's own identity (driver, stump, strategy, Gate G, Layer 2
+family); the loop 1 to 2 identity sits in `lineage` with its fate, so the similarity rules screen against the solved
+driver. Results in `## Surface screen`.
 
-**Domain tag (round 1).** The rule 3 audit called the product-analytics retention tag thin for a capacity-censored
-queue forecast and suggested a trust-and-safety or community-moderation workforce task type; `vocab.json` carries none
-(the only workforce task type is healthcare's patient flow, which would make the domain a backdrop), so the tag stays
-`product-analytics/retention-cohort-lifetime-value-modeling`, honestly the closest: the deciding quantity is the
-volunteer reviewer cohort's retained activity. The tag line now names the reviewers as the retained-user cohort.
+**Domain tag.** `product-analytics/retention-cohort-lifetime-value-modeling` fits better now than at the draw: the
+decisive quantity is a retained-user cohort's survival by tenure, the cell's own rigor pattern (heterogeneous churn,
+censored and truncated cohorts), set against the queue the cohort must clear.
 
-**Same-puzzle and same-driver tests.** Gap time, decisive G-code G5, decision `quantity_figure`, Gate G
-`binding_constraint`: no build in the last twelve and no older build carries either triple (the guard reports none).
+**Same-puzzle and same-driver tests.** Gap population and time, G6, decision `quantity_figure`, Gate G `forecasting`:
+the guard's structural tests run on the re-registered card (`## Surface screen`).
 
-**Abstraction test.** Stripped of nouns: work reaches a paid tier only when a volunteer tier falls short, the volunteer
-tier's capacity shows only in the periods it fell short, and with almost no new volunteers arriving each pool shrinks at
-a steady exit rate, so units whose records show almost nothing reaching the paid tier cross below their arrivals inside
-the forward window. The nearest by mechanism, read for latent structure rather than score:
-- task153 caps what a yard island hands a vehicle at the smaller of the fuel burned between yard visits and a tankful;
-  the cap there is a known physical constant applied per segment, the decisive move is the grain (the segment), and no
-  capacity is forecast. Here the capacity is a quantity the history hides wherever it was not binding, it shrinks on
-  the volunteers' own retention, and the decisive move is that it crosses below arrivals in the year the request funds.
-- task150 carries pupils at rates on their own base and arrivals at steady counts; here nothing arrives at a steady count,
-  and the decisive split is a capacity limit, not a component carried at the wrong rate.
-- task148 drains a queue by abandonment; here no item leaves on its own, the 72-hour hand-off is a routing rule, and the
-  forecast is how many items the volunteers will not reach, not how long anyone waits.
-- task140 strikes a residual after higher reservations that include a dependent load; here the volunteers are not a
-  reservation and their capacity does not depend on the paid tier.
-- task111 and task128 read overflow onto a workforce late in the day and a contact's effect where the queue outran the
-  team: both are past-window attributions, neither forecasts a capacity crossing.
-- task146 releases a pool at a calendar turn and task134 a hazard-driven inflow: both are flows into the measured
-  population; here the measured flow is the residue of a capacity.
+**Abstraction test.** Stripped of nouns: a pool's members leave at their own steady rates, which differ widely, so the
+fast leavers go first and the pool's overall leaving rate falls as its members age; while new members kept arriving the
+overall rate stayed high, and once arrivals stop the closed pool sheds its newest members and then slows, so carrying
+the open pool's rate overstates the losses; the record opens part-way through most members' lives, so the rate by tenure
+must count each member from when the record first sees them. The nearest by mechanism, read for latent structure:
+- task179 lets a member's chance of leaving fall once it meets the same peers in several groups, a forward process the
+  new members no longer pass through; here nobody's chance changes, the overall rate falls only through who is left.
+- task170 has a per-attempt failure probability falling with each operator's own count of attempts (learning); here a
+  reviewer's stop chance is constant for life and the fall is selection, not learning.
+- task176 ends units when the youngest dependant reaches a fixed age, a clock other than tenure; here tenure is the
+  clock and the curve is read from the record, left-truncated.
+- task134 turns a conversion hazard near zero for a member's first months into a forward inflow; here the hazard is
+  highest in the first months and the forecast is the survival of a closed pool, not an inflow.
+- task174's paused screen found that a survival curve by tenure absorbs a subscription book's stationary structure, so a
+  stump needs a condition the record has not shown; here the record never showed a closed pool (grants ran at about 320
+  a month to August 2026), and the default route (measured on the portal) carried the open pool's rate.
 None shares the latent structure, the default path and the correction.
 
-**Data-native sentence.** Millrind's review platform hands every community item (a close vote, a new account's first
-post, a low-quality answer, a suggested edit) to the volunteer reviewers first and routes it to the paid moderators only
-if no volunteer has reviewed it 72 hours after it entered the inbox; volunteers review at their own pace when the inbox
-is full and below it when it runs dry, so their capacity shows only in the months items were routed (most sites in
-2022, Security, Embedded & Hardware and Scientific Computing since 2025); since almost no member has been granted review
-access after the autumn of 2024, every site's reviewer pool shrinks by about two per cent a month, and the four sites
-generative AI hurt in the middle (Data & ML, Databases, Infrastructure & DevOps, Game Development), whose routed items
-have been near zero since January 2024, cross below their 2027 inbox arrivals.
+**Data-native sentence.** Most of Millrind's new reviewers review casually and stop within months (about 9 per cent a
+month in their first year of access), while reviewers past their third year stop at well under one per cent, so while
+grants ran at about 320 a month the pool's overall lapse rate held near 3 per cent; since 1 September 2026 review access
+is by invitation only, so the 10,607 reviewers active in September 2026 are the 2027 pool, shedding their 2,066
+first-year reviewers fast and then slowing, which the open pool's lapse rate overstates by about half; and the roster
+opens in January 2024, so a tenure curve that counts every reviewer from the day access was granted reads the
+survivors of older cohorts as whole cohorts and understates the losses.
 
 **Sources read, one line each.**
-- Seed FC27 header and Situation (`status.py task156`): the world, the cap, the December sitting and the revised close
-  standard; nothing else of the seed is read or kept.
-- `guard.py mechanisms --objective forecasting` (66 builds): capacity and overflow ground on file is a tankful cap per
-  segment (task153), runs through full units (task147), abandonment (task148), a residual after reservations (task140)
-  and past-window overflow attributions (task111, task128); none forecasts a hidden capacity crossing its arrivals.
-- The kin cards the brief names (task150, task153, task152, task149): the shape moves from placing a fixed count across
-  sites to sizing the pool itself; the decisive quantity is a retained-activity forecast of a volunteer user pool, not a
-  cohort-component projection, a segment cap, a wear decomposition or a pace hazard.
-- No trust-and-safety card in the corpus carries a moderation-capacity driver (task13 and task48 are a fraud ruleset and
-  a claims monitor).
-- `two-layer-task-design.md`: "the data's real structure" (capacity observed only where it binds) and "validating a
-  forecast properly" (a rolling-origin test on the closed months rejects the share and trend routes) are the frames.
-- `layer2-rigor-patterns.md`, product analytics: the retention patterns (censored young cohorts, heterogeneous churn,
-  user-level resampling) are learned, not copied; this build's own version is a pool whose retained activity is the
-  capacity a queue runs against, observed only when the queue outruns it.
-- task150 and task153 design notes (the lane's allocation shapes): the call here is the pool, its site needs the
-  components, and no fixed total is split.
+- The portal's two responses (2026-10-27): both 35 FTE, the capacity built against the inbox at the saturated pace, the
+  pool carried at its own lapse rate; that route is the default path.
+- `guard.py mechanisms --objective forecasting` and `slots` on the candidate driver: the retention and hazard drivers on
+  file (task170, task176, task179, task134, task177) and task174's paused finding, each read above.
+- `layer2-rigor-patterns.md`, product analytics: heterogeneous churn and censored or truncated cohorts are the cell's
+  own patterns; this build's version is a closed cohort's survival read from a left-truncated roster, with the open
+  pool's rate as the easy route.
 
 ## Default path
 
 Built figures (`generator/calc.py` on the shipped files, asserted in `generator/checks.py` and reproduced by
 `generator/verify.py`). Each request is the nine site needs, each rounded to a whole FTE, added up (the charter).
 
-1. Read the charter's need definition (every moderator flag a paid moderator handles, and every community item no
-   volunteer has reviewed 72 hours after it entered the inbox, each at the year's handle-time standard; an FTE is 1,600
-   such hours; each site's need in whole FTE, the request their sum), the 2027 standards (the close item down from 5.0
-   to 2.0 minutes), the 2027 question plan by site and month, and finance's 26-FTE envelope.
-2. Stack the old monthly queue workbook (2021 to 2023) and the daily inbox export (2024 to September 2026, the revised
-   pull), map the old site names to the platform's codes through the site register, and take each site's last twelve
-   months (October 2025 to September 2026).
-3. Price each site's handled flags and routed items over those twelve months at the 2027 standards, divide by its
-   questions, and carry that rate onto the 2027 plan's questions.
-4. Round each site to a whole FTE and add them up.
+1. Read the charter's need definition, the 2027 standards, the 2027 question plan and finance's 26-FTE envelope.
+2. See that items reach the paid team only when the volunteers fall short, and build each site's monthly capacity
+   against its inbox: the reviews a reviewer completes when the inbox outruns the pool, about 40 a month over the 402
+   site-months since 2021 in which more than 5 per cent of entering items were routed.
+3. Carry each site's September 2026 pool forward at its own monthly lapse rate over September 2024 to August 2026 (2.61
+   to 4.35 per cent, 3.1 across the network), with no new reviewers since access became invitation-only.
+4. Route each 2027 month's inbox beyond that capacity, price it and the handled flags at the 2027 standards, round each
+   site to a whole FTE and add them up.
 
-Ends on: 23 FTE, inside the envelope (Data & ML 4, Databases 3, Infrastructure & DevOps 3 and Game Development 1, at
-little more than their flag hours).
+Ends on: 41 FTE (Frontend & Web 5, Mobile Apps 2, Data & ML 9, Databases 6, Infrastructure & DevOps 6, Game Development
+3, Security 5, Embedded & Hardware 3, Scientific Computing 2), 15 above the envelope.
 
-Golden: 35 FTE (Frontend & Web 5, Mobile Apps 2, Data & ML 7, Databases 5, Infrastructure & DevOps 5, Game Development
-2, Security 4, Embedded & Hardware 3, Scientific Computing 2), 9 above the envelope: each site's 2027 routed items are
-each month's inbox arrivals (the plan's questions times the site's items per question) less what its reviewer pool can
-review, the pool projected from September 2026 at its own monthly lapse rate (2.03 to 2.09 per cent, 2.05 across the
-network) with almost no new reviewers, each retained reviewer at the pace reviewers keep when the inbox is full (40.0
-reviews a month, read from the 89 site-months since 2021 in which more than 5 per cent of entering items were routed);
-the handled flags at the plan's questions times the site's flag rate. The generator's own realised 2027 hours give the
-same nine site needs (34.44 FTE against the forecast's 34.97; `checks.py` CALL).
+Golden: 32 FTE (Frontend & Web 5, Mobile Apps 2, Data & ML 6, Databases 4, Infrastructure & DevOps 4, Game Development
+2, Security 4, Embedded & Hardware 3, Scientific Computing 2), 6 above the envelope: each reviewer active in September
+2026 carried on the monthly stop rate the roster shows at their own tenure (months since access was granted, each
+reviewer counted from the first month the platform shows them active, January 2024 to August 2026: 9.07 per cent a
+month in the first year, 5.19 in the second, 2.23 in the third, 0.92 in the fourth, 0.53 after), no new reviewers but
+invitations (none in September); the 10,607 reviewers average about 8,800 a month in 2027; the same capacity, routing
+and pricing. The world's own realised 2027 gives the same nine site needs (31.69 FTE against the forecast's 32.69).
 
 ## Stump sentence
 
-Carrying each site's paid queue hours per question over the last twelve months onto the 2027 question plan files a
-request of 23 FTE, inside finance's 26-FTE envelope, and trending each site's routed share or its monthly paid hours
-forward still files 25 to 28; the step that lands each there is treating the items that reach the paid team as a share
-of what arrives, when they are what arrives beyond what each site's shrinking reviewer pool can review at the pace
-reviewers keep when the inbox is full, so Data & ML, Databases, Infrastructure & DevOps and Game Development, which have
-routed almost nothing since January 2024, fall short of their 2027 inbox and the request needed is 35 FTE (31 with the
-pool trended over the platform's whole record, 53 with the pace read from 2026 throughput).
+Carrying each site's reviewer pool from September 2026 at its own lapse rate of the last two years, with no new
+reviewers since access became invitation-only, files 41 FTE (40 on the last twelve months' rate, 38 on the last three);
+the step that lands it there is reading one stop rate off a pool that was still taking in newcomers, when reviewers stop
+at about 9 per cent a month in their first year and under one per cent from their fourth, so the closed pool sheds its
+newest reviewers and then slows: carried on the stop rate of each reviewer's own tenure, counted from when the roster
+first sees them, the 10,607 active reviewers average about 8,800 a month in 2027 and the request is 32 FTE (27 with the
+tenure curve read from each grant date, which takes the roster's survivors of older cohorts for whole cohorts).
 
 ## Three rules
 
 - **Task type:** product-analytics, retention-cohort-lifetime-value-modeling (serves Forecasting): the deciding quantity
-  is a volunteer user segment's retained activity in 2027, each site's reviewer pool carried forward from its own monthly
-  exits and arrivals, times the reviews a retained reviewer delivers when work is plentiful, set against the inbox the
-  2027 plan implies.
-- **Domain test:** the deciding quantity is each site's 2027 volunteer review capacity, which product analytics
-  forecasts as a cohort's retained activity (survivors of the current pool at the pool's own exit rate, plus the cohorts
-  still arriving, times activity per active member) and trust and safety sets against the review queue it must clear.
+  is a closed volunteer cohort's survival through 2027, carried on its stop rate by tenure, times the reviews a retained
+  reviewer delivers when work is plentiful, set against the inbox the 2027 plan implies.
+- **Domain test:** the deciding quantity is each site's 2027 volunteer review capacity, which product analytics forecasts
+  as a cohort's retained activity: survival by tenure read from a truncated, censored roster, applied to the members who
+  are left, rather than a pooled churn rate; with another field's nouns the quantity stops making sense.
 - **Swap:** "how many agency nurses each of nine wards needs in 2027 to cover what its permanent staff cannot" keeps a
-  two-tier cover, but permanent nurses are rostered to fixed hours, so their capacity is known from the roster rather
-  than hidden whenever the work runs out, and there is no user cohort whose engagement decays on its own retention
-  curve after a reputation pipeline dries up; the quantity that decides the call stops making sense.
-- **Layer 1:** a review-platform change in January 2024 (a monthly per-queue workbook for 2021 to 2023, one sheet a
-  year, the edit queue added in 2022, beside a daily inbox export by item type from 2024), old site names against new
-  codes with Graphics folded into Game Development in 2023 (the site register), UTC day boundaries in the platform
-  exports against Toronto time in the moderation team's records, the September 2026 export pulled twice (a preliminary
-  pull with the last days' routing still open, a revised pull a week later), the moderator tool's flag export pulled in
-  two parts that both carry 15 August, a WFM week re-sent after a payroll query with its original lines kept as
-  superseded, and the roster's 689 reviewers whose access lapsed in January or February 2024 without a review on the
-  platform (first review blank). Each is what these systems write; none carries the stump (`checks.py` R2a to R2e and
-  the lapse-date reading: each mishandled, the same nine site needs).
-- **Layer 2:** `allocation_constraints`: the paid team's work is what a capacity-limited first tier leaves, so it is
-  forecast as arrivals less the first tier's capacity, month by month, the capacity projected from the volunteer pool's
-  own retention and read at the pace volunteers keep when work outruns them; validated out of sample on the closed months.
-- **Decisive step:** project each site's reviewer pool from September 2026 at its own monthly exit rate with the few
-  reviewers still arriving, multiply by the reviews a reviewer completes in a month when the inbox is full (read from
-  the months items were routed, never from months the inbox ran dry), and route each 2027 month's inbox arrivals beyond
-  that capacity to the paid team.
-- **Not semantics:** every field (entered, reviewed by a volunteer, routed to moderation; a reviewer's monthly reviews;
-  the plan's questions; the standards' minutes) and every filed term (the charter's need, the 72-hour hand-off, the
-  FTE's 1,600 hours) is read the same way by the easy routes; no field, code or definition states a capacity, a pace or
-  an exit rate, and the routes that read them all file 23 to 28.
-- **Not rule application:** the shipped sentences that bear on how the need is computed (the charter's need and FTE, the
-  72-hour hand-off, the 2027 standards, the plan) executed word for word on the history give each year's past hours, and
-  on 2027 they fix what is counted and what it costs, not how many items will be left unreviewed; no filed sentence says
-  how many reviewers a site will have, how fast they review when work is plentiful, or that routed items are the
-  arrivals beyond them (asserted: no capacity, pace, exit-rate or pipeline wording anywhere in the pack).
-- **Analyst test:** a strong analyst who stacks the old workbook and the daily export, maps the sites, and reads the
-  charter, the standards and the plan correctly carries each site's paid queue hours per question onto the plan and files
-  23 FTE, or 25 to 28 with the routed share or the monthly paid hours trended forward (executed on the generator's
-  clean truth in `checks.py` R3a: 23; the decisive step alone, R3b: the golden's nine).
+  two-tier cover, but permanent nurses are rostered to fixed hours and replaced by hiring, so there is no self-selecting
+  volunteer cohort whose members drift away at rates that differ by tenure and that stopped admitting members.
+- **Layer 1:** a review-platform change in January 2024 (a monthly per-queue workbook for 2021 to 2023 beside a daily
+  inbox export by item type from 2024), old site names against new codes with Graphics folded into Game Development in
+  2023 (the site register), UTC days on the platform against Toronto time in the WFM records, the September 2026 export
+  pulled twice (a preliminary pull with the last days still open, the full pull of 8 October), the moderator tool's flag
+  export in two parts that both carry 15 August, a WFM week re-sent with its original lines kept as superseded, and the
+  roster's 952 reviewers whose access lapsed in January or February 2024 without a review on the platform (first review
+  blank). Each is what these systems write; none carries the stump (`checks.py` R2a to R2e, the access-holder reading).
+- **Layer 2:** `estimation_fit`: the 2027 pool is survival by tenure from a left-truncated, right-censored roster with
+  heterogeneous stop rates; the open pool's rate, the pool's trend and a curve read from the grant dates are the easy
+  routes, each refuted out of sample by a back-test on the closed cohort of September 2025.
+- **Decisive step:** carry each reviewer active in September 2026 on the monthly stop rate at their own tenure, the rate
+  read from the roster with each reviewer at risk from the first month the platform shows them active to their last
+  review, instead of one lapse rate for the pool.
+- **Not semantics:** every field (grant date, first and last review, status, lapse date) is read the same way by the easy
+  routes; the access-holder reading and the lapse-date stops file the same nine; no field, code or definition states a
+  stop rate, a tenure effect or how many reviewers 2027 will have, and the routes that read every field correctly file
+  41, 40, 38, 27, 24 or 23.
+- **Not rule application:** the shipped sentences that bear on the pool (the charter's need, the 72-hour hand-off, the
+  handbook's invitation-only clause) fix who can review in 2027, never how fast they stop; no filed sentence names a
+  tenure, a stop rate, a lapse rate or a method (asserted: no tenure, stop-rate or retention wording anywhere in the pack).
+- **Analyst test:** a strong analyst who builds the capacity right (the saturated pace, the inbox from the plan) and reads
+  the invitation-only clause carries each pool at its own lapse rate of the last two years and files 41 FTE (executed on
+  the generator's clean truth in `checks.py` R3a: 41, five sites off; the decisive step alone, R3b: the golden's nine).
 - **Estimand:** the prompt and the Moderation Council charter (section on need): the pool, in FTE of 1,600 hours, that
   covers the hours the paid moderators will spend in calendar 2027 (UTC, each item in the year it entered the inbox and
   each flag in the year it was raised) on every moderator flag they handle and every community item that reaches them,
-  including items from posts and accounts that do not
-  yet exist, each at the 2027 handle-time standard, for each of the nine sites and in total, compared with finance's
-  26-FTE envelope; the population, outcome, window, unit and comparison are filed, the method is not.
+  including items from posts and accounts that do not yet exist, each at the 2027 handle-time standard, for each of the
+  nine sites and in total, compared with finance's 26-FTE envelope; the population, outcome, window, unit and comparison
+  are filed, and who can review in 2027 is filed (the handbook), the method is not.
 - **No decoy:** no consultant study, prior need table, staff draft or stakeholder figure states or argues a 2027 need, a
-  routed share or a capacity for any site (asserted, R3c: the only FTE figures in the pack are the envelope and the
-  2026 pool); finance's letter states its envelope and nothing about need.
+  lapse rate, a stop rate or a pool size (asserted, R3c and HOW: the only FTE figures in the pack are the envelope and the
+  2026 pool); the handbook's clause states the access rule and nothing about how fast reviewers stop.
 - **No certified replay:** no certified or published need figure ships and nothing graded is reproduced from one; the
-  closed months are raw records every candidate method is scored on, and the rolling-origin test that rejects the share
-  and trend routes is the analyst's own, run on records no document summarises.
-- **Lesson:** a second tier's workload is the residue of the first tier's capacity, and when the first tier is a
-  volunteer community its capacity is a retention forecast, visible only when work outruns it; a share of arrivals, a
-  trend in the residue or a capacity read from slack months all miss the year a pool crosses below its work. No build on
-  file teaches it.
+  roster is the raw record every carrying method is scored on, and the back-test on the September 2025 cohort is the
+  analyst's own.
+- **Lesson:** a closed cohort's losses follow its members' own stop rates, which fall with tenure when members differ, so
+  the rate a pool showed while it was still admitting members overstates what it will lose once it stops, and a record
+  that opens part-way through members' lives has to count each from when it first sees them.
 
 ## Readability screen
 
@@ -197,11 +167,13 @@ subtraction, ratio or half of a figure). Built figures (`generator/calc.py`; the
 
 | Rung | 1 Filed | 2 Schema | 3 Reflex | 4 Control bench | 5 Hygiene | 6 Linear | Verdict |
 |---|---|---|---|---|---|---|---|
-| R0 each site's paid queue hours per question over the last twelve months carried onto the plan (23) | the charter prices items at the standard and the plan gives the questions, which invites a rate per question | the inbox export and the flag summary carry routed items and flags by site and day | yes, the default | the analyst's own back-test refutes it (from September 2025 it misses the next twelve months' routed items by 73 per cent) | no | yes, one ratio | readable |
-| R1 each site's routed share or monthly paid hours trended forward (25, 28) | no | the same columns | yes, the trend reflex | the same back-test: the trended share misses by 68 per cent, the hours trend at Security, Embedded and Scientific Computing only | no | yes, a fitted line | readable |
-| R2a volunteer capacity against arrivals, the reviewer pool trended over the platform's whole record from January 2024 (31) | no | the roster carries each reviewer's first and last review | a careful forecaster's reflex once capacity is seen | the back-test from September 2025 under-predicts routed items by 31 per cent (the record's first nine months, before the pipeline dried up, flatten the trend) | no | no | readable |
-| R2b volunteer capacity read from each site's own reviews per reviewer in January to September 2026 (53) | no | reviews and reviewers by site and month | the capacity-modeller's reflex (current throughput as capacity) | the back-test over-predicts routed items by 597 per cent: at every site with spare volunteers the throughput is held down by the work that arrived | no | no | readable |
-| R3 (decisive) each site's reviewer pool projected from September 2026 at the exit rate its records show since the pipeline dried up, each reviewer at the pace reviewers keep when the inbox is full, each 2027 month's arrivals beyond that capacity routed (35) | no sentence states a capacity, a pace, an exit rate or a pipeline; the charter defines what reaches the paid team, not how many items will | no column carries capacity, pace or exits: the roster lists access spells, the inbox export counts items, nothing names a site as short | no: the reflexes are a rate per question, a trend, a share, current throughput | none ships: the closed months are raw records every candidate is scored on, no document scores the methods | no: nothing is duplicated, missing or mis-keyed on the call's rows | no: a capacity built from a projected pool and a pace read only where work outran it, set month by month against arrivals | silent |
+| R0 each site's paid queue hours per question over the last twelve months carried onto the plan (24) | the charter prices items and the plan gives the questions | routed items and flags by site and day | yes, the shallow default | the routed history: the B sites routed almost nothing | no | yes, one ratio | readable |
+| R1 each site's routed share or paid hours trended (23) | no | the same columns | yes, the trend reflex | the same | no | yes, a fitted line | readable |
+| R2 the pool trended, or carried with the last year's new reviewers (22 to 24) | the handbook's invitation-only clause rules out new reviewers | grants by date in the roster | a forecaster's reflex on a pool | the back-test and the clause | no | no | readable |
+| R2b the pace read from 2026 throughput (47) | no | reviews and reviewers by site and month | the capacity-modeller's reflex | the saturated months show the pace | no | no | readable |
+| R3 the closed pool at its own lapse rate of the last two years (41; 40 on twelve months, 38 on three) | no | the roster's status and lapse dates | yes: the portal's measured route | the back-test on the September 2025 cohort: 5.5 per cent short of its reviewer-months | no | yes, one rate | readable |
+| R3b the tenure curve read from each grant date (27) | no | the grant date | a cohort analyst's reflex | the same back-test: 11.2 per cent over | no | no | readable |
+| R4 (decisive) each reviewer carried on the stop rate at their own tenure, counted from when the roster first sees them (32) | no sentence names a tenure, a stop rate or a method; the handbook says who may review | no column carries a tenure, a type or a rate: the roster lists spells | no: the reflex is one lapse rate (the portal) | none ships: the back-test is the analyst's own | no: nothing duplicated, missing or mis-keyed on the call's rows | no: a product over each reviewer's tenure path | silent |
 
 ## Semantic fork table
 
@@ -210,17 +182,19 @@ Every term in the main ask and every convention the main computation needs. Ever
 | ID | Term or convention | Golden reading | Alternative | Call under it | Ruled out by |
 |---|---|---|---|---|---|
 | SF1 | "FTE" | 1,600 hours of need at the standards (the charter) | 1,950 or 2,080 paid hours a year | a smaller request | the charter's FTE sentence |
-| SF2 | "need" | the hours the paid moderators will spend on the items that reach them, each at the year's standard (the charter) | the hours the paid team is scheduled or works (the WFM export) | the 2026 pool's hours carried | the charter's need sentence |
-| SF3 | "2027" | calendar 2027, each item in the month it entered the inbox and each flag in the month it was raised, UTC (the charter) | the month an item reaches the paid team; Toronto time | same call (asserted: a tenth of each month's routed items moved into the next month, the same nine) | the charter; same call, asserted |
-| SF4 | the items counted | every moderator flag a paid moderator handles and every community item routed to the paid team, the items no volunteer ever picks up included (the charter) | flags the platform closes because the post was deleted before a moderator acted | a larger flag count | the charter: flags the platform closes cost no moderator time and are left out |
-| SF5 | "each of our nine sites" | the nine sites on the register, Graphics & Shaders inside Game Development since July 2023 | Graphics as a tenth site | same call (Graphics has no records after June 2023) | the site register |
-| SF6 | "the 2027 handle-time standards" | the council's 2027 standards (close 2.0 minutes, every other item as in 2026) | the 2026 standards | a larger request | the prompt and the standards' effective dates |
-| SF7 | "question plan" | the planning team's 2027 questions by site and month, counted as the posts warehouse counts them | a trend of each site's questions | same call (asserted: each site's own questions trended log-linearly from January 2025 file the same nine) | the prompt names the plan |
-| SF8 | the rounding path | each site's need to the nearest whole FTE, the request their sum (the charter) | the network's hours over 1,600 rounded once | same call (55,959 hours is 34.97 FTE, 35; asserted) | the charter's request sentence |
-| SF9 | "how far it sits from finance's envelope" | the request less the envelope, in FTE | a percentage | same call | the prompt's rounding sentence (FTE in whole numbers) |
-| SF10 | items from posts and accounts not yet written | in: the plan's questions carry them | only items on existing posts | a much smaller request | the charter: every item entering the inbox in the year |
-| SF11 | the chart's history | each month's paid review hours at the standards in force then (unchanged from 2023 to 2026), 2027 at the 2027 standards | history restated at the 2027 standards | the chart's history months, not the call | the standards' effective dates; the request is unaffected |
-| SF12 | the September 2026 inbox records | the revised pull of 8 October | the preliminary pull of 2 October (items entering 28 to 30 September still open) | same call (asserted, R2d) | the file list; same call, asserted |
+| SF2 | "need" | the hours the paid moderators will spend on the items that reach them, each at the year's standard (the charter) | the hours the paid team worked in 2026 (the WFM export, 30.6 FTE a year) | 31 | the charter's need sentence |
+| SF3 | "2027" | calendar 2027, each item in the month it entered the inbox and each flag in the month it was raised, UTC (the charter) | the month an item reaches the paid team; Toronto time | same call (asserted) | the charter; same call, asserted |
+| SF4 | the items counted | every moderator flag a paid moderator handles and every community item routed to the paid team (the charter) | flags the platform closes because the post was deleted | a larger request | the charter's flag sentence |
+| SF5 | "each of our nine sites" | the nine sites on the register, Graphics & Shaders inside Game Development since July 2023 | Graphics as a tenth site | same call (no records after June 2023) | the site register |
+| SF6 | "the 2027 handle-time standards" | the council's 2027 standards (close 2.0 minutes) | the 2026 standards | a larger request | the prompt and the standards' effective dates |
+| SF7 | "question plan" | the planning team's 2027 questions by site and month | a trend of each site's questions | a different request | the prompt names the plan |
+| SF8 | the rounding path | each site's need to the nearest whole FTE, the request their sum (the charter) | the network's hours over 1,600 rounded once | 33 | the charter's request sentence |
+| SF9 | "how far it sits from finance's envelope" | the request less the envelope, in FTE | a percentage | same call | the prompt's rounding sentence |
+| SF10 | items from posts and accounts not yet written | in: the plan's questions carry them | only items on existing posts | a much smaller request | the charter |
+| SF11 | the chart's history | each month's paid review hours at the standards in force then, 2027 at the 2027 standards | history restated at the 2027 standards | the chart only | the standards' effective dates |
+| SF12 | the September 2026 inbox records | the full pull of 8 October | the preliminary pull of 2 October (the last days still open) | same call (asserted, R2d) | every row's pull stamp; same call, asserted |
+| SF13 | the pool and its stops | reviewers active in a month (a review in the month), a stop at the last review | access holders (until the lapse date), a stop at the lapse month, the 952 pre-platform lapses among them | same call (asserted) | same call, asserted |
+| SF14 | who reviews in 2027 | the reviewers active in September 2026 and anyone invited (the handbook: access by invitation only from 1 September 2026) | the last year's new reviewers carried on | 24 | the handbook's clause |
 
 ## Ladder
 
@@ -230,71 +204,37 @@ scicomp).
 
 | Rung | Construction | Request | Dies to |
 |---|---|---|---|
-| R0 default | each site's flags and routed items over the last twelve months at the 2027 standards, per question, carried onto the 2027 plan (nine months gives the same) | 23 (5, 2, 4, 3, 3, 1, 2, 2, 1) | the back-test: carrying the routed share from September 2025 misses the next twelve months' routed items by 73 per cent |
-| R1a | each site's routed share trended (the last twelve months against the twelve before) | 25 (5, 2, 4, 3, 3, 1, 3, 3, 1) | the same back-test, 68 per cent low |
-| R1b | each site's monthly paid hours, seasonally adjusted, trended log-linearly from January 2025 | 28 (5, 2, 4, 3, 3, 1, 4, 4, 2) | a trend of the residue cannot see a crossing: Data & ML, Databases, Infrastructure & DevOps and Game Development move by less than a whole FTE from R0 |
-| R2a | capacity against arrivals, the reviewer pool trended log-linearly over January 2024 to September 2026 | 31 (5, 2, 6, 4, 4, 2, 3, 3, 2) | the back-test from September 2025, 31 per cent low: the pools held until new reviewers stopped arriving in the autumn of 2024 |
-| R2b | capacity against arrivals, the pace read from each site's own reviews per reviewer in January to September 2026 | 53 (13, 5, 9, 7, 7, 3, 4, 3, 2) | the back-test, 597 per cent high: where volunteers had spare capacity their throughput was the work that arrived |
-| R3 decisive | each pool projected from September 2026 at its own lapse rate (2.03 to 2.09 per cent a month), each reviewer at the pace kept when the inbox is full (40.0 reviews a month over the 89 saturated site-months since 2021), each 2027 month's arrivals beyond that capacity routed | 35 (5, 2, 7, 5, 5, 2, 4, 3, 2) | golden |
+| R0 | each site's flags and routed items over the last twelve months at the 2027 standards, per question, carried onto the plan | 24 (5, 2, 4, 3, 3, 1, 3, 2, 1) | the routed history is the residue of a capacity, not a share |
+| R1 | each site's routed share or paid hours trended | 23 | the same |
+| R2 | the pool trended over the record or the last year (23, 22), or carried at its lapse rate with the last year's new reviewers (24) | 22 to 24 | the handbook's invitation-only clause; the back-test |
+| R2b | capacity from 2026 throughput | 47 | the saturated months: throughput where work ran out is the work |
+| R3 default | the closed pool at each site's own lapse rate of September 2024 to August 2026 (40 on twelve months, 38 on three) | 41 (5, 2, 9, 6, 6, 3, 5, 3, 2) | the back-test: on the September 2025 cohort it misses its reviewer-months by 5.5 per cent; the stop rate falls with tenure |
+| R3b | the tenure curve read from each grant date | 27 (5, 2, 5, 3, 3, 2, 3, 2, 2) | the roster opens in January 2024: older cohorts appear only as survivors; the back-test 11.2 per cent over |
+| R4 decisive | each reviewer on the stop rate at their own tenure, counted from when the roster first sees them | 32 (5, 2, 6, 4, 4, 2, 4, 3, 2) | golden |
 
-**Position and margins.** The golden is bracketed: R0 to R2a below (23 to 31), R2b above (53). Every correction short
-of the decisive one walks up from 23 and stops at or under 31; only the pace read where work outran the volunteers,
-with the pool projected on its own lapses, reaches 35, and reading the pace from slack months overshoots to 53. The
-nearest principled wrong request is 31, four FTE away; every rung's nine site needs differ from the golden's at two
-sites or more (asserted).
+**Position and margins.** The golden is bracketed: every share, trend, open-pool and whole-cohort route below it (22 to
+27), the closed pool at its own lapse rate and the censored pace above it (38 to 47). The nearest wrong request is 27,
+five FTE away; every rung's nine site needs differ from the golden's at three sites or more (asserted).
 
-**Convergence (C1, asserted on the shipped files).** Every defensible construction of the golden files the same nine
-site needs (18 constructions): the lapse rate read over the last 12, 18 or 24 months or at either end of its one-sigma
-band, or the pool trended log-linearly over the last 12 to 21 months; the trickle of new reviewers carried or dropped;
-the pace read from 2021 to 2023, from 2024 to 2026 or pooled, at any saturation cut from 1 to 15 per cent of items
-routed (39.7 to 40.2 reviews a month across every cut and era), or each site's own pace with the pooled pace where a
-site never ran short; monthly or annual netting; item ratios from 2025; no floor. The network's unrounded need runs
-34.44 to 35.51 FTE across them (the one-sigma lapse rates at the ends), and every site stays 0.17 FTE or more inside
-its bin (Frontend & Web the closest).
+**Convergence (C1, asserted on the shipped files).** Every defensible construction of the golden files the same nine site
+needs (22 constructions plus the access-holder reading and a day-by-day simulation of the 72-hour hand-off): the curve in
+bands of 3, 6 or 12 months, each site's own curve, stops at the lapse month, the curve read over the last 24 or 18
+months, its tail over 6 or 24 tenure months, plus or minus one standard error, a two-kind mixture fitted by maximum
+likelihood (it recovers 85 per cent of reviewers stopping at 11.8 per cent a month and the rest at 0.51), invitations
+dropped, annual netting, the pace at any saturation cut from 1 to 15 per cent or from either era, ratios from 2025, no
+floor. The network's unrounded need runs 31.88 to 32.97 across them, and every site stays 0.16 FTE or more inside its
+bin (Data & ML and Frontend & Web the closest).
 
-**Worth on the graded quantity.** Seeing the volunteers' capacity is worth 8 FTE (R0 23 to R2a 31), and projecting the
-pool on its own lapses and reading the pace where work outran it another 4 (to 35); the censoring error alone costs 18
-the other way. Without the capacity no trend or share moves Data & ML, Databases, Infrastructure & DevOps or Game
-Development by a whole FTE (asserted).
+**Out of sample.** A back-test on a closed cohort the roster shows month by month (the reviewers active in September
+2025, followed to September 2026; `checks.py` BACKTEST): the tenure curve read on January 2024 to August 2025 misses
+their reviewer-months by 0.3 per cent network-wide (worst site 3.2 per cent); the pool's own lapse rate by 5.5 per cent
+short; the curve read from the grant dates by 11.2 per cent over. The test is the analyst's own, on records no document
+summarises.
 
-**Out of sample.** A rolling-origin test on the closed months (fit through September 2025, score the routed items of
-October 2025 to September 2026; `checks.py` BACKTEST): the capacity method misses by 4.9 per cent network-wide (worst
-site 16 per cent); the carried share by 73, the trended share by 68, the full-record pool trend by 31, the censored pace
-by 597 (over). The test is the analyst's own, run on records no document summarises.
-
-**Strength.** P(one strong solver lands) about 0.12: it must see that routed items are the arrivals beyond a capacity
-rather than a share (the dictionary defines the column, nothing else points there), read the volunteers' capacity
-where work outran them rather than from current throughput, and project the pool from its exits since the pipeline
-dried up rather than over the platform's whole record. P(both land) about 0.02 if independent, under 0.1 with any
-plausible correlation. The seed was fixed by rule (task number, then the as-of month and day: 1561009) before any data
-was generated and is never searched; every later move is a design parameter recorded in `## Leak sweep
-
-`leak.py task156 --asof 2026-10-09`: REVIEW, no LEAK. Each REVIEW line, harmless:
-- Sweep 3, the member survey carries 14 of 20 distinctive words of the call: they are the nine site names, which every
-  file carries; the survey states no need, routed share or FTE figure (asserted, R3c).
-- Sweep 4, the charter, the ops notes, the file list and the data dictionary carry 4 to 6 stump-paragraph terms
-  (reviewer, volunteer, platform, routed, export, reviews): the domain's own nouns; none states a capacity, a pace, a
-  lapse rate or how many items volunteers will leave (asserted, HOW).
-- Sweep 6, the question plan and the WFM export name every site beside numbers: planned questions and shift lines, no
-  ranking of the sites on their 2027 need.
-- Sweep 8, `flag_id` in the flag exports and the review log: the moderator tool's own record key (a flag is the
-  domain's noun), no marker column.
-
-## Surface screen
-
-`guard.py surface task156` promotes two pairs for adjudication; neither carries a hard tell (no shared file name,
-schema, same-seed table or invented name), and `guard.py heart` passes (nearest driver 0.09, task181 v2). For the
-author, who alone runs the adjudicated `/clone-check`:
-- task154 vs task156 (two apart): the coarse card axes match (decisive gap time, `quantity_figure`, context artifact
-  `monitoring_export`), each the honest key here; the drivers share nothing (task154 revalues a holder's stock over its
-  own holding period to separate volume from price in a GDP nowcast; task156 forecasts a volunteer pool's capacity
-  crossing below its arrivals). task154 was registered before this draw and `guard.py check` passed then; the keys are
-  not relabelled.
-- task103 vs task156 (surface 0.102, corpus top 1 per cent): the whole score is the flat layout and the same four
-  formats (csv, xlsx, pdf, md) with one shared prompt shingle (prompt Jaccard 0.0095); no file name, column set, value
-  or name is shared. Nothing to rename.
-
-## Tried and rejected`.
+**Strength.** P(one strong solver lands) about 0.25: it must see that the pool's lapse rate belongs to an open pool and
+that stop rates fall with tenure (the portal's two responses did neither), then read the curve with the record's left
+edge. P(both land) about 0.08 if independent. The seed was fixed by rule (1561009) before any data was generated; the
+covers were calibrated to centre each site in its bin with common random numbers, recorded in `## Tried and rejected`.
 
 ## Closure table
 
@@ -303,44 +243,42 @@ author, who alone runs the adjudicated `/clone-check`:
 | 1 | Population | every flag a paid moderator handles and every community item routed to the paid team in 2027 at the nine sites, posts and accounts not yet written included | filed (the charter's need sentence); SF4, SF10 |
 | 2 | Unit of account | FTE of 1,600 hours of need at the standards, whole FTE per site | filed (charter); SF1, SF8 |
 | 3 | Attribution window | calendar 2027, items by entry month and flags by raise month, UTC | filed (charter); SF3 same call asserted |
-| 4 | As-of dating | data through 30 September 2026, pulled 8 October | filed (the file list, every export's pull date) |
-| 5 | Version basis | the revised September pull | SF12 same call asserted |
-| 6 | Denominator | none on the golden path (items and hours are counts); R0's per-question rate is a wrong rung | named in the ladder |
+| 4 | As-of dating | data through 30 September 2026, pulled 8 October | every export's pull stamp; SF12 |
+| 5 | Version basis | the full September pull | SF12 same call asserted |
+| 6 | Denominator | reviewer-months at each tenure | C1: bands, own-site curves and the access-holder reading the same needs (asserted) |
 | 7 | Weighting | none | n/a |
-| 8 | Window length | the months the exit rate and the pace are read from | C1: 12 to 24 months, every saturation cut, the same needs (asserted) |
-| 9 | Boundary inclusivity | the 72-hour hand-off | the charter states it once; the inbox export records the outcome, no reading turns on the boundary |
+| 8 | Window length | the months the curve and the pace are read from | C1: the curve over 18, 24 or 32 months, every saturation cut, the same needs (asserted) |
+| 9 | Boundary inclusivity | the 72-hour hand-off | the charter states it once; a day-by-day simulation files the same nine (asserted) |
 | 10 | Rounding path | each site to the nearest whole FTE, the request their sum | filed (charter); SF8 |
 | 11 | Tie-break | none | n/a |
-| 12 | Maturity and censoring | items entering 28 to 30 September still open in the preliminary pull | C1: the revised pull is complete (asserted) |
-| 13 | Order of operations | arrivals against capacity month by month, then priced | C1: monthly and annual netting the same needs (asserted) |
+| 12 | Maturity and censoring | reviewers still active are censored at August 2026; the roster opens in January 2024 (left truncation) | the decisive step; C1 over the curve's readings; R3b is the curve without the left edge |
+| 13 | Order of operations | arrivals against capacity month by month, then priced | C1: monthly, annual and daily netting the same needs (asserted) |
 | 14 | Row order | sums | C1 |
 | 15 | Duplicate resolution | none on the call's rows | asserted: no duplicate key in the inbox export, the roster or the flag summary |
-| 16 | Identity normalisation | old site names to codes through the register | C1: the pace is pooled over sites, no mapping moves it (asserted: Graphics' old rows left out, the same nine) |
+| 16 | Identity normalisation | old site names to codes through the register | C1: no mapping moves the pace (asserted) |
 | 17 | Netting against gross | none | n/a |
 | 18 | Dimensional units | minutes per item, hours, FTE | filed (standards, charter) |
-| 19 | Code and status semantics | item types; the roster's access status | the dictionary; C1: status and last review agree on every row (asserted) |
-| 20 | Integerisation | whole FTE per site | each site's unrounded need 0.17 FTE or more inside its bin across every construction and one sigma (asserted) |
+| 19 | Code and status semantics | the roster's access status and lapse date | SF13: active or access holder, last review or lapse month, the same nine (asserted) |
+| 20 | Integerisation | whole FTE per site | each site 0.16 FTE or more inside its bin across every construction (asserted) |
 | 21 | Clause scope | the 2027 standards apply to items in 2027 | filed (standards' effective date) |
-| 22 | Forward window contents | the 2027 questions | a shipped driver file: the planning team's 2027 plan by site and month (SF7) |
+| 22 | Forward window contents | the 2027 questions and who may review | the plan (SF7) and the handbook's invitation-only clause (SF14) |
 
 ## Literal reader
 
-Executing the prompt, the charter and the 2027 standards word for word gives, for each site, the hours the paid
-moderators will spend in calendar 2027 on every moderator flag they handle and every community item no volunteer has
-reviewed 72 hours after it entered the inbox, at the 2027 standards, over 1,600 and rounded to a whole FTE, the request
-their sum; no shipped sentence says how many items the volunteers will leave, so a literal reader must forecast it; the
-easy method on the same literal estimand (each site's routed share or paid hours per question carried onto the plan)
-files 23, and the fork table leaves no reading under which 23, 25, 28 or 31 is the golden.
+Executing the prompt, the charter, the 2027 standards and the handbook word for word gives, for each site, the hours the
+paid moderators will spend in calendar 2027 on every moderator flag they handle and every community item no volunteer
+has reviewed 72 hours after it entered the inbox, at the 2027 standards, over 1,600 and rounded to a whole FTE, the
+request their sum, with nobody reviewing in 2027 but the reviewers of September 2026 and the invited; no shipped sentence
+says how many reviewers will stop, so a literal reader must forecast it, and the fork table leaves no reading under
+which 41, 27 or 24 is the golden.
 
 ## Oracles
 
-- The closed months themselves (2021 to September 2026): on the wrong path they suggest a share or a trend to carry,
-  and a rolling-origin test on them rejects both; no document scores any method, and no closed month carries a 2027
-  figure.
+- The roster itself: on the wrong path it offers one lapse rate to carry; followed month by month, the September 2025
+  cohort refutes that rate and the grant-date curve and confirms the tenure curve read from the record's left edge.
 - The 2026 pool (27 FTE) and finance's envelope (26 FTE): figures the request is compared with, consistent with every
   method; neither states a need.
-- The old workbook's routed history (2021 to 2023): raw records, every site's items, reviews, routed items and active
-  reviewers; it shows the pace volunteers kept when work outran them and states nothing about 2027.
+- The old workbook's routed history (2021 to 2023): raw records showing the pace volunteers kept when work outran them.
 - No control ties only under the golden.
 
 ## Ask sheet
@@ -348,7 +286,8 @@ files 23, and the fork table leaves no reading under which 23, 25, 28 or 31 is t
 **Main call's declared row population:** the review platform's daily inbox export (January 2024 to September 2026,
 both September pulls), the old monthly queue workbook's item, review, routed and reviewer columns (2021 to 2023), the
 reviewer roster, the moderator tool's daily flag summary, the posts warehouse's monthly question counts for 2024 to
-2026, the 2027 question plan, the charter, the 2027 standards, the site register and the envelope letter. Device and
+2026, the 2027 question plan, the charter, the 2027 standards, the operations handbook's review-access clause, the
+site register and the envelope letter. Device and
 hazard rows in it: 0 (asserted: the call reads no per-flag export, decision review, WFM line, assignment,
 migration or 2022 question count). The asks read files the call never reads and share no primary device or path.
 
@@ -383,7 +322,7 @@ hours to the nearest hour).
 - H18 home: an audit trail of the 2026 pool, where its hours went site by site, reconciled against the WFM system's own
   totals; the call prices need, never hours worked.
 - Use: the council's paper shows where the 2026 pool was spent.
-- Basis (filed in the moderation team's timesheet note): a shift's hours count for the site the moderator was assigned
+- Basis (filed in the operations handbook): a shift's hours count for the site the moderator was assigned
   to on the day the shift started, in the quarter it started, both on Toronto time.
 - Primary B1 (D7, a field overwritten later): the WFM system's shift export joins each moderator's site from the
   moderator's current record, so the six moderators moved in July and August 2026 (from Frontend & Web, Mobile Apps,
@@ -397,7 +336,7 @@ hours to the nearest hour).
   superseded dropped (27 miss, the nearest 16 hours off); S3 by the assignment on the shift's end day (15 of 27 miss);
   S4 the golden. HB1 unmapped drops Infrastructure & DevOps' three quarters; HB2 kept moves the second quarter at seven
   sites. Every shift line is whole hours, so no total sits on a rounding edge.
-- Span: the WFM export, the assignment history, the timesheet note, the site register, the moderator list (5 files);
+- Span: the WFM export, the assignment history, the operations handbook, the site register, the moderator list (5 files);
   moderator id, shift start, shift end, hours, site, line status, effective from, effective to (8 columns).
 - Realism: workforce systems export the current record's attributes onto historical lines; moderators were moved to
   the three sites whose queues grew.
@@ -407,13 +346,13 @@ cent to one decimal).
 - H18 home: a component of the case: how much each site's volume has fallen, the context the request opens with; the
   call reads no 2022 question count.
 - Use: the first table of the council's paper.
-- Basis (filed in the posts warehouse notes): each question counts once, on the site it lives on now, in the month it
+- Basis (filed in the data platform team's question count standard): each question counts once, on the site it lives on now, in the month it
   was first asked (UTC); comparisons with 2021 to 2023 are made on that basis.
 - Primary C1 (D1, the same records under two sources): the old monthly workbook counted a question moved between sites
   twice, on the site it was asked on and again on the site it moved to, in the month of the move; the 2026 counts come
   from the posts warehouse, which counts each question once. Fair: the moderators' migration log (2021 to 2023) lists
   every move with both question ids, both sites and both dates. Round 1 (the judge's FIX_NOW): the old job's counting is
-  now filed in the warehouse notes in the data team's voice ("The old statistics job counted a question on every site
+  now filed in the question count standard in the data team's voice ("The old statistics job counted a question on every site
   it was posted to ..."), with the comparison basis, so C1 is seen and repaired from the migration log. The two readings
   the judge licensed are asserted out: the old job read as counting each question once on its posting site misses all
   nine (nearest 0.22 points), and no restatement (S2) misses all nine.
@@ -433,14 +372,14 @@ cent to one decimal).
   question once but on the site it was asked on (7 of 9 miss); S4 the careful-but-literal path, every filed rule and the
   migration log applied but the 2022 questions as first reported (9 miss, the nearest 0.27 points off); S5 the golden.
   Applying each move in the month it moved instead of the month asked files the same nine (a convergence, asserted).
-- Span: the 2022 workbook sheet, the posts warehouse export, the migration log, the register, the warehouse notes (5
+- Span: the 2022 workbook sheet, the posts warehouse export, the migration log, the register, the count standard (5
   files); site, month, questions, question id, asked, moved, from, to (8 columns).
 - Realism: a Q&A platform migrates a question by creating it on the new site and closing the original, and a monthly
   report counts posts created per site.
 
 **The chart and slide** (`council_pool_request_2027.pptx`): the request slide and the network's monthly paid review
 hours from January 2024 to December 2027, each site stacked, the envelope (26 FTE, 3,467 hours a month) drawn across,
-graded on its content. Round 1 (the judge's FIX_NOW): the series is filed once in the operations notes (each moderator
+graded on its content. Round 1 (the judge's FIX_NOW): the series is filed once in the operations handbook (each moderator
 flag a paid moderator handled and each community item routed to the team, at the standard in force for its year, by
 the month raised or entered, UTC; not WFM hours; months to come on the plan and its outlook), and the 33 actual months
 are exact counts on it (asserted against the workbook's Monthly hours sheet, where the plotted months sit). Round 2: the
@@ -467,16 +406,34 @@ control):
 | B, Q1 to Q3 by site (27) | superseded lines out, old name mapped, by start day on Toronto time, by the export's site | B1 the six moves overwrite the site on every 2026 shift | miss |
 | C, nine sites (9) | the merger applied, the old job's double count undone from the migration log on the warehouse's basis, the 2022 sheet's questions as first reported | C2 the March 2023 rerun's restatement below the 2022 sheet's notes (C1 is filed since round 1) | miss |
 
-**Mirror sheet.** The mirror stops at R2a (31) or R1 (25 to 28) and meets the same devices; it keeps the chart's parts
-and stacking, the site needs R2a shares with the golden (web, mobile, gamedev, embedded, scicomp), and nothing in A, B
-or C unless it cracks a device.
+**Mirror sheet.** The mirror stops at R3 (41, the closed pool at its overall lapse rate) or R1 (23 to 24) and meets the
+same devices; it keeps the chart's parts and stacking, the site needs R3 shares with the golden (web, mobile, embedded,
+scicomp), and nothing in A, B or C unless it cracks a device.
 
 Mirror leakage: 4.5 per cent of ask weight (the chart's parts, about 3 of 66 ask criteria; no A, B or C figure).
 
 Pair ceiling: 31.4 (the cracker at 38 + 7 + about 3.3 of 55 ask points, the chart's parts and the request slide; the
 mirror at about 5 + 7 + 2.5). If the cracker finds the March 2023 restatement it keeps Ask C too, and the pair rises to
 about 35.2. Round 1 had moved it to 41.0 (Ask C's counting filed and the chart's totals graded); round 2's restatement
-device and the totals' removal bring it back. Rerun from the generated rubric at stage 4.
+device and the totals' removal bring it back. The asks are unchanged by the loop 3 redesign (their files, devices and
+figures are byte-for-byte the same; `checks.py` EXPECT).
+Measured by: generator/checks.py (every ask stop S1 to S5 run on the cut pack and asserted to miss, with the devices'
+fairness rows)
+## Leak sweep
+
+LEAK_SWEEP_PENDING
+
+## Surface screen
+
+SURFACE_PENDING
+
+## Gates at ship
+
+GATES_PENDING
+
+## Pre-ship check
+
+PRESHIP_PENDING
 
 ## Tried and rejected
 
@@ -547,3 +504,25 @@ device and the totals' removal bring it back. Rerun from the generated rubric at
 - Round 2, the chart's three actual yearly totals (round 1): construction figures both top responses land; out of the
   prompt and the deliverable answers. The chart is graded on its content, its series filed in the operations notes and
   its months on the workbook's Monthly hours sheet. The pair ceiling is back to 31.4.
+- Loop 3 (2026-10-27), the portal landed the call: both responses filed 35 FTE (the then golden) by building capacity
+  against the inbox at the saturated pace and carrying each pool at its own lapse rate; the capacity framing was every
+  strong solver's default, so it is now the default path and the decisive step moved to how the pool is carried.
+- Two retention types with the pipeline drying in late 2024 or summer 2025: a trend of the network's lapse rate,
+  extrapolated, landed the golden by coincidence (the closed pool's decline was already plain in the record); review
+  access now closes on 1 September 2026, so the record shows only an open pool's flat rate.
+- Grants following the question level squared (older pools at the sites AI hit hardest): the separations shrank and the
+  trended-rate routes still tracked the golden; grants now follow the question level.
+- Grants drying in January 2026 with the last twelve months' grants carried on: the two errors cancelled on the golden;
+  with invitation-only access filed, no window of past grants is a reading of 2027.
+- Invitations at 2 per cent of the old flow: carrying or dropping them moved a site by 0.44 FTE in all; invitations
+  are now a handful a year and none fell in September.
+- Covers calibrated by re-drawing the whole pool at each step: a site's need jumped by up to a whole FTE between
+  iterations; each reviewer now draws from their own stream and each month's grants from a fixed quantile, so a cover
+  change only adds or removes reviewers at the margin.
+- The data dictionary, the file list, the operations notes and the warehouse notes (markdown): a file that describes the
+  data is a leak (`dataset-generation` section 3); the conventions the asks and the chart need now sit in the operations
+  handbook and the question count standard, and every export names its own columns.
+- Annual netting at Databases and Infrastructure & DevOps 0.07 and 0.12 FTE from their bin edges, and the world's
+  realised 2027 one bin lower at Data & ML (the 72-hour queue carries a short month's backlog into the next month's
+  spare capacity): the three sites were re-centred slightly above their integers, and a day-by-day simulation of the
+  hand-off on the forecast pool is asserted to file the same nine.

@@ -100,6 +100,21 @@ def _month_day(r, y, m, lo=1, hi=None):
     return dt.date(y, m, int(r.integers(lo, hi + 1)))
 
 
+def _granted_on(r, j):
+    y, m = WD.month_ym(j)
+    return _month_day(r, y, m, 1, 20) if j >= 0 else _month_day(r, y, m)
+
+
+def _account_id(r, granted, used):
+    """Network account ids: older accounts hold smaller ids."""
+    base = 180_000 + (granted - dt.date(2008, 1, 1)).days * 2_400
+    aid = int(base + int(r.integers(0, 2_300)))
+    while aid in used:
+        aid += 1
+    used.add(aid)
+    return aid
+
+
 def roster_rows(W):
     """One row per reviewer whose review access had not lapsed before 1 January 2024 (the platform's start).
     A reviewer is active in a month from the month of their first review on the platform to the month of their last;
@@ -111,29 +126,17 @@ def roster_rows(W):
     for s in K.SITES:
         P = W.sites[s].pool
         r = K.rng("roster", s)
-        n = len(P["kappa"])
-        for i in range(n):
+        for i in range(len(P["kappa"])):
             j, L = P["join"][i], P["last"][i]
             if L is not None and L < t24:
                 continue
             if j > tH:
                 continue
-            first_m = max(j, t24) if j >= 0 else t24
+            first_m = max(j, t24)
             last_m = L if (L is not None and L <= tH) else tH
-            if last_m < first_m:
-                continue
-            fy, fm = K.D0.year + first_m // 12, first_m % 12 + 1
-            ly, lm = K.D0.year + last_m // 12, last_m % 12 + 1
-            if j < 0:
-                g_months = P["granted"][i] + 1
-                gy, gm = 2021, 1
-                gm -= g_months
-                while gm <= 0:
-                    gm += 12
-                    gy -= 1
-                granted = _month_day(r, gy, gm)
-            else:
-                granted = _month_day(r, K.D0.year + j // 12, j % 12 + 1, 1, 20)
+            fy, fm = WD.month_ym(first_m)
+            ly, lm = WD.month_ym(last_m)
+            granted = _granted_on(r, j)
             if first_m == t24 and j < t24:
                 first = _month_day(r, 2024, 1, 1, 6)
             else:
@@ -150,13 +153,8 @@ def roster_rows(W):
                 status = "lapsed"
                 ny, nm = (ly + (lm >= 11), (lm + 1) % 12 + 1)
                 lapsed = dt.date(ny, nm, 1).isoformat()
-            # network account ids: older accounts hold smaller ids
-            base = 180_000 + (granted - dt.date(2008, 1, 1)).days * 2_400
-            aid = int(base + int(r.integers(0, 2_300)))
-            while aid in used:
-                aid += 1
-            used.add(aid)
-            rows.append([aid, s, granted.isoformat(), first.isoformat(), last.isoformat(), status, lapsed])
+            rows.append([_account_id(r, granted, used), s, granted.isoformat(), first.isoformat(), last.isoformat(),
+                         status, lapsed])
     # reviewers whose access was still open on 1 January 2024 but who made no review on the platform: their last review
     # fell in November or December 2023, so access lapsed on 1 January or 1 February 2024
     for s in K.SITES:
@@ -166,25 +164,11 @@ def roster_rows(W):
             j, L = P["join"][i], P["last"][i]
             if L is None or L not in (t24 - 2, t24 - 1) or j > L:
                 continue
-            if j < 0:
-                g_months = P["granted"][i] + 1
-                gy, gm = 2021, 1
-                gm -= g_months
-                while gm <= 0:
-                    gm += 12
-                    gy -= 1
-                granted = _month_day(r, gy, gm)
-            else:
-                granted = _month_day(r, K.D0.year + j // 12, j % 12 + 1, 1, 20)
-            ly, lm = K.D0.year + L // 12, L % 12 + 1
+            granted = _granted_on(r, j)
+            ly, lm = WD.month_ym(L)
             last = max(granted, _month_day(r, ly, lm))
             lapsed = dt.date(2024, 1 if lm == 11 else 2, 1).isoformat()
-            base = 180_000 + (granted - dt.date(2008, 1, 1)).days * 2_400
-            aid = int(base + int(r.integers(0, 2_300)))
-            while aid in used:
-                aid += 1
-            used.add(aid)
-            rows.append([aid, s, granted.isoformat(), "", last.isoformat(), "lapsed", lapsed])
+            rows.append([_account_id(r, granted, used), s, granted.isoformat(), "", last.isoformat(), "lapsed", lapsed])
     rows.sort(key=lambda x: x[0])
     return rows
 

@@ -29,11 +29,8 @@ SOURCES = {
     DOC.F_ENVELOPE: "Millrind Finance, 2027 envelope letter for paid moderation (30 September 2026)",
     DOC.F_FLAGSTD: "Millrind moderation operations, flag service standard (revised 4 February 2026)",
     DOC.F_SURVEY: "Millrind community research, 2026 member survey on AI assistants (2 June 2026)",
-    DOC.F_OPS: "Millrind moderation operations notes (6 October 2026)",
-    DOC.F_WAREHOUSE: "Millrind data platform team, posts warehouse notes",
-    DOC.F_DICT: "Millrind review platform and moderator tool, export field notes",
-    DOC.F_FILELIST: "Millrind moderation operations, list of the files pulled for the 2027 pool request (9 October "
-                    "2026)",
+    DOC.F_HANDBOOK: "Millrind moderation operations handbook (revised 6 October 2026)",
+    DOC.F_COUNTS: "Millrind data platform team, question counts: the reporting basis (8 January 2024)",
 }
 DISTRACTORS = [R.F_PAGEVIEWS, DOC.F_SURVEY]
 TITLE = ("How many paid moderator FTE a developer question-and-answer network's council requests for 2027 across its "
@@ -68,7 +65,8 @@ def write(task_dir, n=None):
         "client_domain": "Product Analytics",
         "house_domain": "product-analytics",
         "subdomain": "retention-cohort-lifetime-value-modeling (trust and safety at a developer Q&A network: each "
-                     "site's volunteer reviewer pool carried forward on its own monthly lapse rate, and the reviews a "
+                     "site's volunteer reviewer pool, closed to new members since review access became invitation-only, "
+                     "carried forward on survival by tenure read from a left-truncated roster, and the reviews a "
                      "retained reviewer delivers when the inbox outruns the pool, set against the 2027 inbox the "
                      "question plan implies)",
         "objective": "Forecasting & Predictive Modeling",

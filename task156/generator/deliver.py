@@ -27,12 +27,14 @@ MONTHS_ALL = C.HIST_MONTHS + C.FWD_MONTHS                  # 2024-01 .. 2027-12
 SAT_CUT = 5                                                 # per cent routed: the inbox outran the volunteers
 ENV_MONTH = K.ENVELOPE_2027 * K.FTE_HOURS / 12.0
 ACTUAL_YEARS = (2024, 2025, 2026)                           # 2026: January to September, the months closed
+TENURE_BANDS = ((0, 12, "First year"), (12, 24, "Second year"), (24, 36, "Third year"), (36, 48, "Fourth year"),
+                (48, C.NT, "Fifth year and later"))
 YEAR_LABEL = {2024: "2024", 2025: "2025", 2026: "January to September 2026"}
 
 
 def fmt(x, dp=0):
     v = K.round_half_up(x, dp)
-    return format(v, ",.%df" % dp) if dp else format(int(v), ",")
+    return format(v, ",.%df" % dp) if dp > 0 else format(int(v), ",")
 
 
 def pct(x):
@@ -47,15 +49,19 @@ def compute(target):
     lo, hi = M[(2024, 9)], M[(2026, 8)]
     ex = sum(D.exits[s][lo:hi + 1].sum() for s in K.SITES)
     risk = sum(D.R[s][lo:hi + 1].sum() for s in K.SITES)
-    X.exit_net = ex / risk
-    X.exit_site = {s: C.exit_rate(D, s)[0] for s in K.SITES}
-    X.arr = {s: C.arrivals(D, s) for s in K.SITES}
-    X.joins_2024 = int(sum(D.joins[s][M[(2024, 1)]:M[(2024, 12)] + 1].sum() for s in K.SITES))
-    X.joins_since = int(sum(D.joins[s][M[(2025, 1)]:M[(2026, 9)] + 1].sum() for s in K.SITES))
+    X.exit_net = ex / risk                   # the open pool's overall lapse rate, a rival's input, never the golden's
     X.R_sep26 = {s: int(D.R[s][M[(2026, 9)]]) for s in K.SITES}
+    X.young = {s: int((C.active_at(D, s, C.M_SEP26) < 12).sum()) for s in K.SITES}
+    X.invited = int(sum(D.joins[s][M[(2026, 9)]] for s in K.SITES))
+    X.grants_2026 = int(sum(D.joins[s][M[(2026, 1)]:M[(2026, 8)] + 1].sum() for s in K.SITES))
     X.pool = {s: C.project_pool(D, s) for s in K.SITES}
+    X.bands = []
+    for a, b, label in TENURE_BANDS:
+        X.bands.append((label, D.ev[a:b].sum() / D.rk[a:b].sum(), int(D.rk[a:b].sum()), int(D.ev[a:b].sum())))
     idx27 = [k for k, (y, m) in enumerate(C.FWD_MONTHS) if y == 2027]
     X.idx27 = idx27
+    X.pool_jun27 = {s: X.pool[s][C.FWD_MONTHS.index((2027, 6))] for s in K.SITES}
+    X.pool_mean27 = sum(X.pool[s][idx27].mean() for s in K.SITES)
     X.plan27, X.flags27, X.inbox27, X.cap27, X.routed27, X.short = {}, {}, {}, {}, {}, {}
     for s in K.SITES:
         items, flag = C.ratios(D, s)
@@ -172,37 +178,49 @@ def write_xlsx(path, X):
     ws.sheet_properties.pageSetUpPr.fitToPage = True
 
     w2 = wb.create_sheet("Reviewer pools")
-    _title(w2, "Every site's reviewer pool is losing about %d per cent a month, with almost no new reviewers" % (
-        K.round_half_up(100 * X.exit_net)), [
-        "Active reviewers made at least one review in the month (reviewer roster). Each pool is carried forward month "
-        "by month at its own lapse rate, with the new reviewers it has been getting; every reviewer at about %d "
-        "reviews a month, the pace reviewers keep when the inbox outruns them." % K.round_half_up(D.pace)], "F")
-    _head(w2, 4, ["Site", "Active reviewers, September 2026", "Lapsing a month, September 2024 to August 2026",
-                  "New reviewers a month, October 2025 to September 2026", "Active reviewers, December 2027",
-                  "Months short of the inbox, October 2026 to December 2027"], [24, 14, 16, 17, 14, 17], 58)
+    _title(w2, "The %s reviewers active in September 2026 average about %s a month in 2027: the newest leave fastest" % (
+        fmt(sum(X.R_sep26.values())), fmt(X.pool_mean27, -2)), [
+        "Active reviewers made at least one review in the month (reviewer roster). Review access has been by invitation "
+        "only since 1 September 2026 (operations handbook), so a site's pool now only shrinks. Each reviewer is carried "
+        "forward on the monthly stop rate the roster shows at their tenure (months since access was granted), every "
+        "reviewer at about %d reviews a month, the pace reviewers keep when the inbox outruns them." % K.round_half_up(
+            D.pace)], "F")
+    _head(w2, 4, ["Site", "Active reviewers, September 2026", "Of whom granted access in the previous twelve months",
+                  "Active reviewers expected, June 2027", "Active reviewers expected, December 2027",
+                  "Months short of the inbox, October 2026 to December 2027"], [24, 14, 17, 14, 14, 17], 58)
     r = 5
     for s in K.SITES:
-        vals = [NAME[s], X.R_sep26[s], X.exit_site[s], round(X.arr[s], 2), round(X.pool[s][-1]), len(X.short[s])]
+        vals = [NAME[s], X.R_sep26[s], X.young[s], round(X.pool_jun27[s]), round(X.pool[s][-1]), len(X.short[s])]
         for c, v in enumerate(vals, 1):
             cell = w2.cell(row=r, column=c, value=v)
-            if c == 3:
-                cell.number_format = "0.00%"
-            elif c == 4:
-                cell.number_format = "0.00"
-            elif c in (2, 5):
+            if 2 <= c <= 5:
                 cell.number_format = "#,##0"
         r += 1
-    tot = ["Network", sum(X.R_sep26.values()), X.exit_net, round(sum(X.arr.values()), 2),
+    tot = ["Network", sum(X.R_sep26.values()), sum(X.young.values()), round(sum(X.pool_jun27.values())),
            round(sum(X.pool[s][-1] for s in K.SITES)), None]
     for c, v in enumerate(tot, 1):
         cell = w2.cell(row=r, column=c, value=v)
         cell.font = Font(bold=True)
         cell.fill = TOT
         cell.border = Border(top=THIN)
-        cell.number_format = {2: "#,##0", 3: "0.00%", 4: "0.00", 5: "#,##0"}.get(c, "General")
-    w2.cell(row=r + 2, column=1, value="New reviewers across the network: %s in 2024, %s from January 2025 to September "
-            "2026." % (fmt(X.joins_2024), fmt(X.joins_since)))
+        cell.number_format = "#,##0" if 2 <= c <= 5 else "General"
+    r += 2
+    w2.cell(row=r, column=1, value="Monthly stop rate by tenure, all nine sites, January 2024 to August 2026").font = \
+        Font(bold=True)
+    r += 1
+    _head(w2, r, ["Tenure", "Reviewer-months at risk", "Stops", "Stop rate a month"])
+    for label, rate, risk_, stops in X.bands:
+        r += 1
+        w2.cell(row=r, column=1, value=label)
+        w2.cell(row=r, column=2, value=risk_).number_format = "#,##0"
+        w2.cell(row=r, column=3, value=stops).number_format = "#,##0"
+        w2.cell(row=r, column=4, value=K.round_half_up(100 * rate, 1)).number_format = '0.0"%"'
+    w2.cell(row=r + 2, column=1, value="A reviewer is at risk from the first month the platform's record (January 2024 "
+            "on) shows them active to their last review; a stop is the last review of a reviewer whose access lapsed. "
+            "The projection uses the rate for each month of tenure; the bands summarise it.")
     w2.merge_cells("A%d:F%d" % (r + 2, r + 2))
+    w2.row_dimensions[r + 2].height = 30
+    w2.cell(row=r + 2, column=1).alignment = Alignment(wrap_text=True, vertical="top")
     w2.freeze_panes = "B5"
 
     w3 = wb.create_sheet("Flag response")
@@ -250,7 +268,7 @@ def write_xlsx(path, X):
 
     w6 = wb.create_sheet("Monthly hours")
     _title(w6, "Paid review hours by month and site, January 2024 to December 2027 (the deck's chart)", [
-        "Paid review hours as the operations notes define them: each moderator flag a paid moderator handled and each "
+        "Paid review hours as the operations handbook defines them: each moderator flag a paid moderator handled and each "
         "community item routed to the team, at the handle-time standard in force for its year (close votes 5.0 minutes "
         "to December 2026, 2.0 from January 2027), in the month the flag was raised or the item entered the inbox, UTC. "
         "Actual to September 2026; forecast from October 2026 on the question plan and its outlook."], "M")
@@ -303,11 +321,15 @@ def write_xlsx(path, X):
                           "inbox export and the reviewer roster from 2024). When the inbox runs dry, reviewers review "
                           "only what arrives, so those months show the work, not the pace." % (
                               K.round_half_up(D.pace), D.n_sat, SAT_CUT)),
-        ("Reviewer pools", "Each site's active reviewers in September 2026, carried forward month by month less the "
-                           "share that lapses each month (lapses over active reviewer-months, September 2024 to August "
-                           "2026, the last full month of lapses the roster shows; about %d per cent on every site) plus "
-                           "the new reviewers a month of the last twelve months. Almost no member has been granted "
-                           "review access since late 2024." % K.round_half_up(100 * X.exit_net)),
+        ("Reviewer pools", "Review access has been by invitation only since 1 September 2026 and nobody was invited "
+                           "in September, so the 2027 pool is the September 2026 pool, shrinking. Reviewers stop at very "
+                           "different rates by tenure: about %d per cent a month in their first year, under one per cent "
+                           "from their fourth (the stop-rate table on the Reviewer pools sheet, every reviewer counted "
+                           "from the month the roster first shows them active, so those granted before 2024 enter at "
+                           "their tenure then). Each reviewer is carried on the rate for their own tenure month by month. "
+                           "The pool's overall lapse rate of the last two years, about %d per cent a month, was the rate "
+                           "of a pool still taking in newcomers; carried into a closed pool it would overstate 2027's "
+                           "losses." % (K.round_half_up(100 * X.bands[0][1]), K.round_half_up(100 * X.exit_net))),
         ("Items reaching the team", "Each month, the inbox items beyond the pool's capacity. Where a pool has room to "
                                     "spare, the %.1f per cent of items no volunteer picks up (the routed share in "
                                     "site-months with fewer than one item in 60 routed), as now on %s." % (
@@ -316,8 +338,8 @@ def write_xlsx(path, X):
                     "2.0, each routed item at its site's mix of inbox items. The chart's history and its October to "
                     "December 2026 months at the standards in force to December 2026 (close vote 5.0)."),
         ("Where cover runs out", "%s have sent the paid team only the items no volunteer picks up since January 2024; at the "
-                                 "pace and lapse rate above, their pools fall short of the inbox from %s %d and in "
-                                 "most months of 2027. %s are short already. %s stay covered through 2027." % (
+                                 "pace and the pools above, they fall short of the inbox from %s %d and in most "
+                                 "months of 2027. %s are short already. %s stay covered through 2027." % (
                                      names(X.newly), K.MONTH_NAMES[X.newly_from[1]], X.newly_from[0],
                                      names(X.already), names(X.covered))),
         ("Flag response", "The flag service standard's measure: the share of a site's flags raised in the month, on UTC, "
@@ -332,10 +354,10 @@ def write_xlsx(path, X):
                          "Cloud."),
         ("Questions vs 2022", "The old statistics job counted a question on every site it was posted to, so a moved "
                               "question counted on its first site in the month it was asked and again on its new site "
-                              "in the month it moved (posts warehouse notes). Comparisons are on the warehouse's basis: "
+                              "in the month it moved (question count standard). Comparisons are on the warehouse's basis: "
                               "the migration log puts each moved question on the site it moved to, in the month it was "
                               "asked, once."),
-        ("Paid review hours", "The deck's chart, as the operations notes define them: each moderator flag a paid "
+        ("Paid review hours", "The deck's chart, as the operations handbook defines them: each moderator flag a paid "
                               "moderator handled and each community item routed to the team, at the standard in force "
                               "for its year, in the month the flag was raised or the item entered the inbox (UTC); not "
                               "the hours worked on the WFM lines."),
@@ -487,9 +509,11 @@ def write_pptx(path, X, png):
         ("Every community review item goes to the volunteer reviewers first and reaches the paid team only when no "
          "volunteer has reviewed it in 72 hours. A reviewer clears about %d items a month when the inbox outruns "
          "the pool." % K.round_half_up(X.D.pace), 14, False, ink),
-        ("Each site's pool loses about %d per cent of its reviewers a month, and almost no member has been granted "
-         "review access since late 2024 (%s new reviewers in 2024, %s since)." % (
-             K.round_half_up(100 * X.exit_net), fmt(X.joins_2024), fmt(X.joins_since)), 14, False, ink),
+        ("Review access has been by invitation only since 1 September 2026, so the pools only shrink. The newest "
+         "reviewers leave fastest (about %d per cent a month in their first year, under one per cent from their "
+         "fourth): the %s reviewers active in September 2026 average about %s a month in 2027." % (
+             K.round_half_up(100 * X.bands[0][1]), fmt(sum(X.R_sep26.values())), fmt(X.pool_mean27, -2)), 14, False,
+         ink),
         ("%s, which have sent the paid team almost nothing since January 2024, run short of reviewers from %s %d. %s "
          "are short already; %s stay covered." % (names(X.newly), K.MONTH_NAMES[X.newly_from[1]], X.newly_from[0],
                                                  names(X.already), names(X.covered)), 14, False, ink),
@@ -533,31 +557,33 @@ def site_list(vals):
 def submission(X):
     D = X.D
     pace = int(K.round_half_up(D.pace))
-    exit_pc = int(K.round_half_up(100 * X.exit_net))
+    first = int(K.round_half_up(100 * X.bands[0][1]))
     s = []
     s += ["## Tags", "",
           "**Domain:** Product Analytics (retention, cohort and lifetime value modeling: a Q&A platform's volunteer "
-          "reviewers as a retained-user cohort, each site's pool carried forward on its own lapse hazard with almost no "
-          "new reviewers arriving, times the activity a retained reviewer delivers, seen only where work outran the "
-          "pool).",
+          "reviewers as a retained-user cohort that has stopped taking in members, carried forward on survival by "
+          "tenure, times the activity a retained reviewer delivers, seen only where work outran the pool).",
           "**Analytical objective:** Forecasting & Predictive Modeling.", ""]
     s += ["## 1. Final Recommendation", "",
           "**The council should request %d paid moderator FTE for 2027, %d above finance's %d-FTE envelope: %s.**" % (
               X.request, X.gap, K.ENVELOPE_2027, site_list(X.need_round)),
-          "Items reach the paid team only when the volunteers fall short, so each site's 2027 routed items are the "
-          "inbox beyond what its shrinking reviewer pool can review at about %d reviews a reviewer a month, which puts "
-          "%s short of reviewers after routing almost nothing since January 2024. Not the last twelve months' paid hours "
-          "per question carried onto the plan, which prices only what those sites routed while their pools still "
-          "covered the inbox; not a trend in each site's routed share or paid hours, which extends the past and misses "
-          "the months the pools fall below the inbox; and not a reviewer pace read from 2026 throughput, which on the "
-          "covered sites measures how little work arrived rather than how much reviewers can do." % (
-              pace, names(X.newly)), ""]
+          "Items reach the paid team only when the volunteers fall short, and since review access became "
+          "invitation-only on 1 September 2026 each site's pool only shrinks, fastest among its newest reviewers, so "
+          "the network's %s active reviewers of September 2026 average about %s a month in 2027 and %s fall short of "
+          "their inbox after routing almost nothing since January 2024. Not the pool's overall lapse rate of the last "
+          "two years carried forward, which was the rate of a pool still taking in newcomers and overstates how fast a "
+          "closed pool loses reviewers; not the new reviewers of the last year carried on, which the invitation-only "
+          "rule ended; not a tenure curve that counts every reviewer from the day access was granted, which reads the "
+          "roster's survivors as whole cohorts; and not the last twelve months' paid hours per question carried onto "
+          "the plan, which prices only what those sites routed while their pools covered the inbox." % (
+              fmt(sum(X.R_sep26.values())), fmt(X.pool_mean27, -2), names(X.newly)), ""]
     s += ["## 2. Critical Components", "",
           "1. A volunteer reviewer completes about **%d** reviews a month when the inbox outruns the site's pool, "
           "measured in the site-months in which more than %d per cent of entering items reached the paid team." % (
               pace, SAT_CUT),
-          "2. Every site's reviewer pool loses about **%d** per cent of its active reviewers a month, and almost no new "
-          "reviewers have arrived since late 2024." % exit_pc,
+          "2. The network's **%s** reviewers active in September 2026 average about **%s** active reviewers a month "
+          "in 2027, each carried on the stop rate of their own tenure with no new reviewers." % (
+              fmt(sum(X.R_sep26.values())), fmt(X.pool_mean27, -2)),
           "3. %s fall short of their inbox in 2027, joining %s; %s stay covered." % (
               names(X.newly), names(X.already), names(X.covered)), ""]
     s += ["## 3. Step-by-Step Solution", "",
@@ -565,30 +591,32 @@ def submission(X):
           "review_inbox_daily_2024-01-01_2026-09-30.csv and the active reviewers in reviewer_roster_2026-10-08.csv: "
           "over the site-months in which more than %d per cent of entering items were routed to moderation, volunteer "
           "reviews over active reviewers give about %d reviews a month." % (SAT_CUT, pace),
-          "2. In reviewer_roster_2026-10-08.csv, lapses over active reviewer-months from September 2024 to August 2026 "
-          "give each site's monthly lapse rate, about %d per cent on every site, and the last twelve months' new "
-          "reviewers give each site fewer than one a month." % exit_pc,
-          "3. Carried each site's September 2026 active reviewers forward month by month at its lapse rate plus its new "
-          "reviewers, at about %d reviews a reviewer a month, against the inbox of each month in 2027 (the questions in "
-          "question_plan_2027.xlsx times the site's inbox items per question since January 2024), and routed the items "
-          "beyond that capacity to the paid team (where a pool has room, the %.1f per cent no volunteer picks up): %s "
-          "fall short of their inbox." % (pace, 100 * D.floor, names(X.newly)),
-          "4. Priced each site's handled flags per question since January 2024 "
-          "(modtool_flag_summary_daily_2024-01-01_2026-09-30.csv) times the plan, and its routed items, at "
-          "handle_time_standards_2027.pdf, and divided by the charter's 1,600 hours, each site to the nearest whole "
-          "FTE: %d FTE in all." % X.request,
+          "2. In reviewer_roster_2026-10-08.csv, counted each reviewer from the first month the platform shows them "
+          "active (January 2024 for those granted earlier, at their tenure then) to their last review, and divided "
+          "stops by reviewer-months at each month of tenure since access was granted, January 2024 to August 2026: "
+          "about %d per cent a month in the first year, under one per cent from the fourth." % first,
+          "3. Carried each of the %s reviewers active in September 2026 on that rate from their own tenure, with no new "
+          "reviewers since access became invitation-only on 1 September 2026 (moderation_operations_handbook_2026.pdf) "
+          "and none invited in September: about %s active a month on average in 2027." % (
+              fmt(sum(X.R_sep26.values())), fmt(X.pool_mean27, -2)),
+          "4. At about %d reviews a reviewer a month against the inbox of each month of 2027 (the questions in "
+          "question_plan_2027.xlsx times the site's inbox items per question since January 2024), routed the items "
+          "beyond that capacity to the paid team (where a pool has room, the %.1f per cent no volunteer picks up), "
+          "priced them and each site's handled flags per question since January 2024 "
+          "(modtool_flag_summary_daily_2024-01-01_2026-09-30.csv) at handle_time_standards_2027.pdf, and divided by the "
+          "charter's 1,600 hours, each site to the nearest whole FTE: %d FTE, %d above the %d-FTE envelope in "
+          "finance_envelope_2027_paid_moderation.pdf." % (pace, 100 * D.floor, X.request, X.gap, K.ENVELOPE_2027),
           "5. For the 24-hour flag response, counted each flag once across the two parts of the moderator tool's "
           "export, left out the post-deleted closures and took the first action from "
           "flag_decision_reviews_2026-07_to_2026-09.csv where a decision was reviewed (flag_service_standard.pdf): the "
           "shares in table 4 of the deliverable answers.",
           "6. For the hours worked, kept the approved lines of wfm_shift_lines_2026-01-01_2026-09-30.csv and put each "
           "shift on the site moderator_site_assignments.csv gives for its start day, in the quarter it started on "
-          "Toronto time (moderation_ops_notes.md): the totals in table 5.",
-          "7. For the questions, restated January to September 2022 on the warehouse's basis (posts_warehouse_notes.md) "
-          "from review_queues_monthly_2021-2023.xlsx, its March 2023 rerun replacing May to August, and "
-          "question_moves_2021-2023.csv, with Graphics & Shaders in Game Development: the percentages in table 6.",
-          "8. Against finance_envelope_2027_paid_moderation.pdf the request of %d FTE is %d above the %d-FTE envelope, "
-          "network-wide." % (X.request, X.gap, K.ENVELOPE_2027), ""]
+          "Toronto time (moderation_operations_handbook_2026.pdf): the totals in table 5.",
+          "7. For the questions, restated January to September 2022 on the warehouse's basis "
+          "(question_count_standard_2024.pdf) from review_queues_monthly_2021-2023.xlsx, its March 2023 rerun "
+          "replacing May to August, and question_moves_2021-2023.csv, with Graphics & Shaders in Game Development: the "
+          "percentages in table 6.", ""]
     s += ["## 4. Deliverable Answers", "", "### %s" % XLSX, "",
           "1. 2027 need by site, whole FTE:"]
     for site in K.SITES:
@@ -609,7 +637,7 @@ def submission(X):
     s += ["", "### %s" % PPTX, "",
           "7. Slide 1 states the request: %d paid moderator FTE for 2027, %d above the %d-FTE envelope, with each "
           "site's need." % (X.request, X.gap, K.ENVELOPE_2027),
-          "8. Slide 2 charts the network's monthly paid review hours, as the operations notes define them, from "
+          "8. Slide 2 charts the network's monthly paid review hours, as the operations handbook defines them, from "
           "January 2024 to December 2027, one stacked band per site, the forecast from October 2026 shaded, with "
           "finance's envelope drawn across at %s hours a month (%d FTE); the plotted months are on the workbook's "
           "Monthly hours sheet." % (fmt(ENV_MONTH), K.ENVELOPE_2027), ""]
@@ -622,10 +650,12 @@ def figures(X):
         "call": {"request_fte": X.request, "envelope_fte": K.ENVELOPE_2027, "above_envelope_fte": X.gap,
                  "need_fte": {NAME[s]: X.need_round[s] for s in K.SITES}},
         "components": {"reviews_a_month": int(K.round_half_up(D.pace)), "saturation_cut_pct": SAT_CUT,
-                       "lapse_pct_a_month": int(K.round_half_up(100 * X.exit_net)),
+                       "reviewers_sep_2026": fmt(sum(X.R_sep26.values())),
+                       "active_a_month_2027": fmt(X.pool_mean27, -2),
                        "newly_short": [NAME[s] for s in X.newly], "already_short": [NAME[s] for s in X.already],
                        "covered": [NAME[s] for s in X.covered]},
         "steps": {"never_picked_up_pct": "%.1f" % (100 * D.floor), "fte_hours": int(K.FTE_HOURS),
+                  "first_year_stop_pct_a_month": int(K.round_half_up(100 * X.bands[0][1])),
                   "newly_short_from": "%s %d" % (K.MONTH_NAMES[X.newly_from[1]], X.newly_from[0])},
         "answers": {
             "need_fte": {NAME[s]: X.need_round[s] for s in K.SITES},
