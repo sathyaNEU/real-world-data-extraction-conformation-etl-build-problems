@@ -11,7 +11,7 @@
   "shape": "01",
   "decision_type": "pick_one_of_n",
   "answer_unit": "named_option",
-  "answer": "planned at the draw: Cypress Ridge County, about USD 2.6 million a year of 2027 expected hurricane loss removed, against Marlin Shoals County, the largest annual loss, that one storm-pooled ratio names; figures fixed in generator/figures.json at stage 3",
+  "answer": "Cypress Ridge, USD 2.8 million a year of 2027 expected hurricane loss removed (2.80), Marlin Shoals next at 2.08; the default one storm-pooled ratio (0.106) names Marlin Shoals, the largest annual loss (USD 10.12 million), at 1.07",
   "answer_source": "task309/generator/figures.json at stage 3",
   "gap": [
     "rule",
@@ -81,10 +81,10 @@
     "board_note_retrofit_2027.docx"
   ],
   "opening_move": "question-first",
-  "question_form": "which",
+  "question_form": "where",
   "driver": "An intervention's effect is measured as one ratio across a record whose exposure mostly sat in the mild part of the intensity range, when the effect is large at mild intensity and small at severe; a filed criterion asks any effect carried forward to reproduce the record event by event, which the single ratio fails and an effect read class by class of intensity passes, and carried event by event through a forward event set it ranks the candidates by where their expected loss sits in the range, not by its size.",
   "driver_concrete": "The FORTIFIED roof's cut in paid loss per insured dollar, read on the insurer's storms since 2012 class by class of local peak gust, is about 60 per cent under 130 mph and about 15 per cent above; one ratio over all storms misses the governance standard's storm-by-storm reproduction of the retrofitted homes' paid losses, and the vendor's 2027 annual loss for Marlin Shoals sits about nine tenths in events gusting over 130 mph while Cypress Ridge's sits about nine tenths under, so the round removes more from Cypress Ridge though Marlin Shoals carries nearly twice its annual loss.",
-  "stump": "A competent analyst measures the FORTIFIED roof's cut in paid loss per insured dollar across the insurer's storms since 2012, applies that one ratio to each county's 2027 modelled annual loss and names Marlin Shoals, the largest annual loss, without testing the ratio storm by storm as the model-governance standard asks; read class by class of local gust, the cut is about three fifths under 130 mph and about a seventh above, and carried event by event through the vendor's 2027 set it puts Cypress Ridge first, whose annual loss sits almost wholly in its moderate events, at about USD 2.5 million a year against about USD 1.5 million for Marlin Shoals.",
+  "stump": "A competent analyst measures the FORTIFIED roof's cut in paid loss per insured dollar across the insurer's storms since 2012, applies that one ratio to each county's 2027 modelled annual loss and names Marlin Shoals, the largest annual loss, without testing the ratio storm by storm as the model-governance standard asks; read class by class of local gust, the cut is about three fifths under 130 mph and under a tenth above, and carried event by event through the vendor's 2027 set it puts Cypress Ridge first, whose annual loss sits almost wholly in its moderate events, at about USD 2.5 million a year against about USD 1.5 million for Marlin Shoals.",
   "mechanism_source": "design_note",
   "differentiation": {
     "task308": "architecture 2 re-costed catastrophe claims at the load each event put on a repair panel (a cost that rises with a capacity's load); this draw values a mitigation through its effect at each event's local wind intensity: no capacity, no reinsurance layer, no demand surge, and the decisive move is an effect modifier, not a cost curve",

@@ -1,0 +1,138 @@
+{
+ "aal_musd": {
+  "Calloway Flats": 0.51,
+  "Cypress Ridge": 4.38,
+  "Heron Bay": 5.65,
+  "Marlin Shoals": 10.12
+ },
+ "ask_a": {
+  "Calloway Flats": [
+   1420,
+   504862
+  ],
+  "Cypress Ridge": [
+   1813,
+   823282
+  ],
+  "Heron Bay": [
+   1665,
+   605650
+  ],
+  "Marlin Shoals": [
+   1711,
+   681915
+  ]
+ },
+ "ask_b": {
+  "Hurricane Corwin": [
+   47101,
+   902
+  ],
+  "Hurricane Evander": [
+   19875,
+   9273
+  ],
+  "Tropical Storm Della": [
+   10486,
+   265
+  ]
+ },
+ "ask_c": {
+  "Calloway Flats": [
+   520,
+   185473
+  ],
+  "Cypress Ridge": [
+   610,
+   283409
+  ],
+  "Heron Bay": [
+   382,
+   137967
+  ],
+  "Marlin Shoals": [
+   77,
+   30285
+  ]
+ },
+ "call": "Cypress Ridge",
+ "call_removed_musd": 2.8,
+ "class_cut": {
+  "100": 0.626,
+  "110": 0.639,
+  "120": 0.631,
+  "130": 0.164,
+  "140": 0.103,
+  "150": 0.047,
+  "160": 0.103,
+  "40": 0.83,
+  "50": 0.786,
+  "60": 0.533,
+  "70": 0.634,
+  "80": 0.723,
+  "90": 0.663
+ },
+ "constants": {
+  "class_width_mph": 10,
+  "gust_split_mph": 130,
+  "kt_to_mph": 1.150779,
+  "legacy_last_year": 2011,
+  "mg04_min_musd": 10,
+  "mg04_tol_pct": 10,
+  "roof_age_years": 15,
+  "round_cost_musd": 18.0,
+  "round_homes": 1500,
+  "storms_tested": 5
+ },
+ "cut_130_up": 0.059,
+ "cut_under_130": 0.589,
+ "default_call": "Marlin Shoals",
+ "default_removed_musd": {
+  "Calloway Flats": 0.05,
+  "Cypress Ridge": 0.46,
+  "Heron Bay": 0.6,
+  "Marlin Shoals": 1.07
+ },
+ "mg04_default_pct": {
+  "2016-04": 3.2,
+  "2018-05": 72.4,
+  "2020-08": 46.3,
+  "2022-04": 135.9,
+  "2024-07": 3.7
+ },
+ "mg04_golden_pct": {
+  "2016-04": 1.7,
+  "2018-05": -0.0,
+  "2020-08": -0.6,
+  "2022-04": -3.8,
+  "2024-07": 0.3
+ },
+ "mg04_paid_musd": {
+  "2016-04": 46.4,
+  "2018-05": 16.6,
+  "2020-08": 63.7,
+  "2022-04": 21.5,
+  "2024-07": 271.6
+ },
+ "mg04_storms": [
+  "2016-04",
+  "2018-05",
+  "2020-08",
+  "2022-04",
+  "2024-07"
+ ],
+ "one_ratio_pooled": 0.106,
+ "removed_musd_2dp": {
+  "Calloway Flats": 0.34,
+  "Cypress Ridge": 2.8,
+  "Heron Bay": 1.66,
+  "Marlin Shoals": 2.08
+ },
+ "runner_up": "Marlin Shoals",
+ "share_130_up": {
+  "Calloway Flats": 0,
+  "Cypress Ridge": 1,
+  "Heron Bay": 65,
+  "Marlin Shoals": 81
+ }
+}
