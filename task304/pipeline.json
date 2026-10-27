@@ -6,8 +6,8 @@
  "objective": "opportunity-sizing-decision",
  "stage": 3,
  "stage_name": "build",
- "updated": "2026-10-26",
- "stump": "A competent solver fits the hazard of falling two payments behind on book, the payment rise at the last switch, loan age and current arrears, carries every live account through 2027 at the filed possession rates and files High LTV 2022-24 at about 19 possessions avoided; the step that lands it there is reading the up-to-date first-time buyers' small payment rise as low risk when their remaining term rose at the switch, the Charter extension that hid a budget the new rate broke.",
+ "updated": "2026-10-27",
+ "stump": "A competent solver fits the chance of falling two payments behind on book, current arrears and the payment rise at the last rate switch, carries every account on the book through 2027 at the plan's planning rates and files High LTV 2022-24 first (4.5 possessions avoided against the first-time buyer book's 2.9); the step that lands it there is reading the up-to-date first-time buyers' small payment rise as low risk when their remaining term rose at the switch, the Charter extension that kept a budget the new rate broke up to date for a few months.",
  "architecture": 1,
  "loops": 0,
  "precut": {
@@ -28,7 +28,7 @@
   "report": ""
  },
  "returned": [],
- "resume": "Paused by the author mid stage 3 repair. Read task304/RESUME.md first: last run 159 passed, 3 failed (R3a easy route, ask B Shared ownership loan parts, pair ceiling 40.7); then full make, design note rewrite, card answer, free gates, fresh stage 4, ship.",
+ "resume": "Paused 2026-10-27 mid stage 3. World retuned (seed 2, High LTV litigation 0.75, REC_OFFSET 83, pilot sentence 'under half the cut in arrears'): checks 163 green on --once, golden First-time buyer 9.0 (family 8.0 to 11.9) against High LTV 4.5, easy routes file High LTV, pair 37.7. Next: confirm a full make.py run (two byte-identical builds, verify.py, which takes over ten minutes), finish the design note's Pre-ship check, figures_check, precut, leak.py --asof 2026-09-30, guard heart and surface, then stage 4 (two scored readers and the judge) and ship. Read task304/RESUME.md.",
  "approved": null,
  "delivered": null,
  "portal": null,

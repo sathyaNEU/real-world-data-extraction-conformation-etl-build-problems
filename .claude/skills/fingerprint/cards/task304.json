@@ -11,7 +11,7 @@
  "shape": "other",
  "decision_type": "pick_one_of_n",
  "answer_unit": "count",
- "answer": "Place the Financial Support Team on the First-time buyer 2019-21 book in 2027: it avoids about 20 possessions there, against about 10 in High LTV 2022-24, the next best.",
+ "answer": "Place the Financial Support Team on the First-time buyer 2019-21 book in 2027: it avoids about 10 possessions there, against fewer than 5 in High LTV 2022-24, the next best.",
  "answer_source": "submission.md block 1 and support_team_2027_placement_paper.pdf",
  "gap": [
   "time",
@@ -33,7 +33,7 @@
  "validated_decoy": false,
  "context_artifact": "monitoring_export",
  "stump_class": "analytical",
- "analyst_test": "A strong analyst fits the monthly chance of an account falling two payments behind on book, current arrears and the payment rise at its last rate switch, carries every account on the book through 2027 at the plan's planning rates and files the High LTV 2022-24 book at about 10 possessions avoided, while the 2021 first-time buyers who extended their terms at the 2026 switch fall behind eight to fifteen months later and make the first-time-buyer book the largest at about 20.",
+ "analyst_test": "A strong analyst fits the monthly chance of an account falling two payments behind on book, current arrears and the payment rise at its last rate switch, carries every account on the book through 2027 at the plan's planning rates and files the High LTV 2022-24 book first at 4.5 possessions avoided, while the 2021 first-time buyers who extended their terms at the 2026 switch fall behind eight to fifteen months later and make the first-time-buyer book the largest at about 10 (9.0).",
  "domain_test": "The deciding quantity is each book's 2027 entries into two payments of arrears, the collections forecaster's arrears-entry hazard carried account by account with forbearance as a state: a term extension at the rate switch lowers the payment and keeps the account up to date while the budget the new rate broke stays broken, so the account carries its own hazard by months since the concession; put another field's units in and the rate switch, the Charter concession and the route from arrears to possession stop making sense.",
  "layer2_family": "field_method",
  "layer2_pattern": "own:forbearance-carried-as-a-state-in-the-arrears-entry-forecast",
@@ -80,7 +80,7 @@
  "question_form": "which",
  "driver": "The decisive quantity is next year's entries into a failure state from units whose recorded good standing was produced by the organisation's own concession at a scheduled reset, which lowered what each owes while the condition that prompted it stayed; a forecast keyed on each unit's current state and on the size of the change it absorbed treats them as sound, and only each unit's concession, rebuilt from the changes in an ordinary field over its history, with the delayed re-entry rate the earlier concessions show by time since the concession, carries the forward count.",
  "driver_concrete": "Each book's 2027 borrowers falling two payments behind: the 2021 first-time buyers whose five-year fixes ended in 2026 took term extensions at the switch under the Mortgage Charter, which cut the payment rise and kept them up to date, and they fall behind eight to fifteen months later at the rate the 2024 and 2025 extensions show, so the first-time-buyer book's 2027 entries run far above any model on payment shock and arrears.",
- "stump": "A competent solver fits the chance of falling two payments behind on book, current arrears and the payment rise at the last rate switch, carries every account on the book through 2027 at the plan's planning rates and files High LTV 2022-24 at about 10 possessions avoided; the step that lands it there is reading the up-to-date first-time buyers' small payment rise as low risk when their remaining term rose at the switch, the Charter extension that kept a budget the new rate broke up to date for a few months.",
+ "stump": "A competent solver fits the chance of falling two payments behind on book, current arrears and the payment rise at the last rate switch, carries every account on the book through 2027 at the plan's planning rates and files High LTV 2022-24 first (4.5 possessions avoided against the first-time buyer book's 2.9); the step that lands it there is reading the up-to-date first-time buyers' small payment rise as low risk when their remaining term rose at the switch, the Charter extension that kept a budget the new rate broke up to date for a few months.",
  "mechanism_source": "design_note",
  "differentiation": {
   "task169": "task169 sends the events a closed processing route pre-empted through the remaining route's own conversion after a filed change; task304 has no closed route and no filed change: the organisation's own concession produced the up-to-date record, and the forward count comes from each concession's delayed re-entry hazard by months since it, rebuilt from the remaining-term history."

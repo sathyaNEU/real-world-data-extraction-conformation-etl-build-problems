@@ -12,7 +12,7 @@ by months since the shock; neither examined the remaining-term history.
 | Axis | Value |
 |---|---|
 | Domain / task type | banking-credit-financial-risk / collections-recovery (serves Opportunity Sizing) |
-| Objective | Opportunity Sizing & Decision Support: the headline is the possessions the team avoids in the chosen book, sized from the pool (the book's borrowers who fall two payments behind in 2027) to the realisable (each taken on, possession chance cut by 30 per cent), and the largest figure picks the book |
+| Objective | Opportunity Sizing & Decision Support: the headline is the possessions the team avoids in the chosen book, sized from the pool (the book's borrowers who fall two payments behind in 2027) to the realisable (each taken on, possession chance cut by 15 per cent), and the largest figure picks the book |
 | Decision / answer unit / question form | pick_one_of_n / count / which |
 | Gap / pattern / generators | time, population / none / G3 (record versus operation), G6, G13 |
 | Gate G / strategy | forecasting / composition_mix: the 2027 pool holds far more extended accounts than any period a hazard is fitted on |
@@ -33,9 +33,9 @@ record measures), after (population, G6) and (population, G3) repeated older and
 
 ## Default path
 
-The strong analyst's route, every field read correctly and every filed rule applied (final world, seed 1, the plan's
-printed planning rates: First-time buyer 2019-21 4.8 per cent, High LTV 2022-24 6.5, Shared ownership 2.2, Buy to let
-8.4):
+The strong analyst's route, every field read correctly and every filed rule applied (final world, seed 2, the plan's
+printed planning rates: First-time buyer 2019-21 4.5 per cent, High LTV 2022-24 7.4, Shared ownership 1.9, Buy to let
+10.7):
 1. Rebuild payments in arrears at each month end (arrears balance over the current contractual payment, rounded down,
    policy section 2) and mark each entry, a month the account reaches two or more from fewer than two.
 2. Fit the monthly chance of each move between nought, one and two or more payments behind on the 2024 to 2026
@@ -43,10 +43,10 @@ printed planning rates: First-time buyer 2019-21 4.8 per cent, High LTV 2022-24 
    the switch, or the rise since completion).
 3. Carry every account on the book at 30 September 2026 that is not in litigation or with a receiver through 2027,
    counting each account once, at its first entry, with no allowance for accounts that close (plan section 2).
-4. Take 30 per cent of each book's expected entries times its planning rate: High LTV 2022-24 12.6 possessions
-   avoided, First-time buyer 2019-21 6.0, Shared ownership 1.4, Buy to let 1.9.
-Ends on: High LTV 2022-24, about 10 possessions avoided.
-Golden: First-time buyer 2019-21, about 20 possessions avoided (17.7), with High LTV 2022-24 next at about 10 (12.6),
+4. Take 15 per cent of each book's expected entries times its planning rate: High LTV 2022-24 4.5 possessions avoided,
+   First-time buyer 2019-21 2.9, Shared ownership 0.6, Buy to let 1.2.
+Ends on: High LTV 2022-24, fewer than 5 possessions avoided (4.5), the first-time buyer book at 2.9.
+Golden: First-time buyer 2019-21, about 10 possessions avoided (9.0), with High LTV 2022-24 next at fewer than 5 (4.5),
 once each account whose remaining term rose at its rate switch is carried on the chance the earlier such accounts show
 by months since the increase.
 
@@ -54,15 +54,15 @@ by months since the increase.
 
 A competent solver fits the chance of falling two payments behind on book, current arrears and the payment rise at the
 last rate switch, carries every account on the book through 2027 at the plan's planning rates and files High LTV
-2022-24 at about 10 possessions avoided; the step that lands it there is reading the up-to-date first-time buyers'
-small payment rise as low risk when their remaining term rose at the switch, the Charter extension that kept a budget
-the new rate broke up to date for a few months.
+2022-24 first (4.5 possessions avoided against the first-time buyer book's 2.9); the step that lands it there is reading
+the up-to-date first-time buyers' small payment rise as low risk when their remaining term rose at the switch, the
+Charter extension that kept a budget the new rate broke up to date for a few months.
 
-The data-native sentence: in the payment history 6,573 of the 16,391 first-time buyer accounts on the book at 30
+The data-native sentence: in the payment history 7,129 of the 16,455 first-time buyer accounts on the book at 30
 September 2026 had their remaining term raised, by a median of ten years, at the 2026 switch off their 2021 five-year
 fix, so their payment rose by a median 10 per cent where the switchers who kept their term saw 26 per cent, and of the
-365 accounts whose term rose in 2024, none was two payments or more behind at a month end within eight months of the
-increase and 84 were by 30 September 2026.
+347 accounts whose term rose in 2024, 4 were two payments or more behind at a month end within eight months of the
+increase and 81 were by 30 September 2026.
 
 ## Three rules
 
@@ -73,11 +73,11 @@ Layer 1: the Society's own systems produce every mess item: product codes that l
 Layer 2: field_method, the arrears-entry forecast with forbearance as a state: the 2027 entries come from each account's hazard given its concession history and the months since the concession, not from its current arrears and the payment change it shows.
 Decisive step: carrying each extended account forward on the delayed re-default chance the 2024 and 2025 extensions show by months since the extension, instead of on the chance its up-to-date status and small payment rise imply.
 Not semantics: every field read correctly (remaining_term_months is the months left to run) still leaves the easy route on High LTV, because no field says an account is forborne: the extension is an event read from the path of the remaining term, and the forecast still has to estimate what that event does to the hazard and when, from the earlier extensions' own outcomes.
-Not rule application: no filed rule forecasts entries; the plan paper files who is counted, the year, the book as it stands at 30 September 2026, the planning rate and the 30 per cent cut, and leaves the entry forecast to the analysis. Measured on the final pack (seed 1): the enumerated family (the stock already two behind, this year's pace, a book-level chain, the payment-rise chain, a rate-rise chain by months since the switch) files High LTV with the first-time-buyer book at 1.3 to 6.8; the standing family (twenty-two constructions that carry the extension as a state, across banding, smoothing, fit window, the switch's rise, the closing month and one curve for every extended account) files the first-time-buyer book at 16.3 to 22.8, every member in the 20 bin; the ruling-out is quiet, since no clause, flag or one-group-by comparison on any shipped column separates the extended accounts.
-Analyst test: a strong analyst fits the monthly chance of an account falling two payments behind on book, current arrears and the payment rise at its last rate switch, carries every account on the book through 2027 at the plan's planning rates and files the High LTV 2022-24 book at about 10, while the 2021 first-time buyers who extended their terms at the 2026 switch fall behind eight to fifteen months later and make the first-time-buyer book the largest at about 20.
-Estimand: the plan paper (financial_support_team_2027_plan_paper.pdf, sections 2 and 3) files the population (each book's borrowers whose account first reaches two payments in arrears from fewer than two during 2027, the accounts on the book at 30 September 2026, excluding accounts in litigation or with a receiver, each taken on once), the outcome (possession within 18 months of that month, at the book's own printed planning rate), the window (calendar 2027), the unit (possessions avoided, expected) and the comparison (the team cuts the chance by 30 per cent, per the pilot), each account on the book counted through 2027 with no allowance for accounts that close.
+Not rule application: no filed rule forecasts entries; the plan paper files who is counted, the year, the book as it stands at 30 September 2026, the planning rate and the 15 per cent cut, and leaves the entry forecast to the analysis. Measured on the final pack (seed 2): the enumerated family (the stock already two behind, this year's pace, a book-level chain, the payment-rise chain, a rate-rise chain by months since the switch) files High LTV with the first-time-buyer book at 0.6 to 3.7; the standing family (twenty-two constructions that carry the extension as a state, across banding, smoothing, fit window, the switch's rise, the closing month and one curve for every extended account) files the first-time-buyer book at 8.0 to 11.9, every member in the 10 bin and High LTV under 5 in every member; the ruling-out is quiet, since no clause, flag or one-group-by comparison on any shipped column separates the extended accounts.
+Analyst test: a strong analyst fits the monthly chance of an account falling two payments behind on book, current arrears and the payment rise at its last rate switch, carries every account on the book through 2027 at the plan's planning rates and files the High LTV 2022-24 book first at 4.5, while the 2021 first-time buyers who extended their terms at the 2026 switch fall behind eight to fifteen months later and make the first-time-buyer book the largest at about 10 (9.0).
+Estimand: the plan paper (financial_support_team_2027_plan_paper.pdf, sections 2 and 3) files the population (each book's borrowers whose account first reaches two payments in arrears from fewer than two during 2027, the accounts on the book at 30 September 2026, excluding accounts in litigation or with a receiver, each taken on once), the outcome (possession within 18 months of that month, at the book's own printed planning rate), the window (calendar 2027), the unit (possessions avoided, expected) and the comparison (the team cuts the chance by 15 per cent, the pilot report's planning figure), each account on the book counted through 2027 with no allowance for accounts that close.
 No decoy: nothing is planted to be caught: the extensions are the Charter process the arrears policy describes in one line among its support options, no memo, draft or stakeholder figure argues for a book, and no file ranks the books on the decision.
-No certified replay: no published or certified figure in the pack reproduces the method; the pilot report gives the 30 per cent cut and its own counts, which the history, the litigation actions and the receiver appointments reproduce.
+No certified replay: no published or certified figure in the pack reproduces the method; the pilot report gives the 15 per cent planning cut and its own counts, which the history, the litigation actions and the receiver appointments reproduce.
 Lesson: a borrower's up-to-date status after a concession is the concession's work, not evidence of health, so the concession history is a state the forecast carries with its own clock; no build on file teaches forbearance as a forecast state (task128 sized an early-arrears contact queue, task446 converted watch-list flags by the component that raised them).
 
 ## Readability screen
@@ -86,7 +86,7 @@ Lesson: a borrower's up-to-date status after a concession is the concession's wo
 |---|---|---|
 | payments in arrears at each month end | policy section 2 (the arrears balance over the current payment, rounded down) | readable |
 | who is taken on, counted once, in 2027 | plan section 2 | readable |
-| the planning rate and the 30 per cent cut | plan section 3, the pilot report | readable |
+| the planning rate and the 15 per cent cut | plan section 3, the pilot report | readable |
 | the rate switch and its payment rise | the product code in the history (dashes lost before July 2022) | readable |
 | the term raised at the 2026 switch and the delayed fall into arrears it carries into 2027 (decisive) | no sentence; the path of remaining_term_months in the history and the earlier extensions' outcomes | silent |
 
@@ -94,15 +94,16 @@ Lesson: a borrower's up-to-date status after a concession is the concession's wo
 
 | Rung | Construction | First-time buyer | High LTV | Shared ownership | Buy to let | Call |
 |---|---|---|---|---|---|---|
-| R0 | the accounts already two or more behind at 30 September 2026 as the caseload | 1.3 | 3.1 | 0.3 | 0.5 | High LTV |
-| R1 | this year's pace (January to September 2026 entries, annualised) | 6.3 | 13.5 | 1.3 | 1.8 | High LTV |
-| R2 | a book-level chain (book and arrears only) | 4.1 | 12.6 | 1.5 | 1.9 | High LTV |
-| R3 | the default path: the chain by book and the payment rise at the last switch | 6.0 | 12.6 | 1.4 | 1.9 | High LTV |
-| R4 | the rate rise at the switch by months since the switch | 6.8 | 12.8 | 1.6 | 1.7 | High LTV |
-| R5 | the golden: the term increase as a state by months since it, beside the payment rise | 17.7 | 12.6 | 1.4 | 1.9 | First-time buyer |
+| R0 | the accounts already two or more behind at 30 September 2026 as the caseload | 0.6 | 0.8 | 0.2 | 0.3 | High LTV |
+| R1 | this year's pace (January to September 2026 entries, annualised) | 2.9 | 4.9 | 0.6 | 1.3 | High LTV |
+| R2 | a book-level chain (book and arrears only) | 2.1 | 4.5 | 0.7 | 1.2 | High LTV |
+| R3 | the default path: the chain by book and the payment rise at the last switch | 2.9 | 4.5 | 0.6 | 1.2 | High LTV |
+| R4 | the rate rise at the switch by months since the switch | 3.7 | 4.6 | 0.7 | 1.3 | High LTV |
+| R5 | the golden: the term increase as a state by months since it, beside the payment rise | 9.0 | 4.5 | 0.6 | 1.2 | First-time buyer |
 
 R3 is the stump and R4 the closest repair that misses (it models the switch's timing, not the concession). Every rung
-is asserted in checks.py. Possessions avoided are expected values; the prompt rounds them to the nearest ten.
+is asserted in checks.py. Possessions avoided are expected values; the prompt rounds them to the nearest ten, so the
+golden files the first-time buyer book at 10 and every other book under 5.
 
 ## Semantic fork table
 
@@ -114,21 +115,22 @@ is asserted in checks.py. Possessions avoided are expected values; the prompt ro
 | SF4 | the book | the accounts on it at 30 September 2026, none opened later | the book as it will stand in 2027, new lending included | same call (asserted) | plan section 2: the accounts on it at 30 September 2026 |
 | SF5 | left with the recoveries team | recovery_stage Litigation or Receiver appointed at 30 September 2026 left out | kept in | same call (asserted) | plan section 2 |
 | SF6 | the planning rate | the plan's printed rate for each book | a rate recomputed from the history and the register | same rates (asserted) | plan section 3 table; the recomputation reproduces it |
-| SF7 | the team's effect | 30 per cent of the expected borrowers taken on times the planning rate | the pilot's own ratios (0.68 on four payments behind, 0.88 on claims) | same call, another figure | plan section 3: 30 per cent of its expected 2027 borrowers taken on times its planning rate |
+| SF7 | the team's effect | 15 per cent of the expected borrowers taken on times the planning rate | the pilot's own ratio on four payments behind (0.66, about 35 per cent less often) | same call, another figure | plan section 3: 15 per cent of its expected 2027 borrowers taken on times its planning rate; the pilot report: a 15 per cent cut for planning |
 | SF8 | possessions avoided | an expected number, from expected entries | a whole-number draw | same call | plan section 3 (expected) |
 | SF9 | the next best book | the second-largest possessions avoided on the same measure | the second-largest pool | same book | plan section 3: the book with the most possessions avoided is the one to choose |
-| SF10 | the team's capacity | no cap: about 1,900 cases against at most 1,227 expected in any book | a cap at the capacity | same call | plan section 2: no borrower who qualifies is turned away |
+| SF10 | the team's capacity | no cap: about 1,900 cases against at most 1,338 expected in any book | a cap at the capacity | same call | plan section 2: no borrower who qualifies is turned away |
 | SF11 | the rounding | each book's unrounded expected figure to the nearest ten | the pool rounded first | same figures | the prompt |
-| SF12 | ask A, a claim open at 30 September 2026 | not withdrawn, its order not discharged or set aside, the property not taken into possession (the register) | recovery_stage Litigation in the book | 25, 77, 18 | policy section 5; the dictionary: recovery_stage, the account is with the panel solicitors |
-| SF13 | ask A, a possession order in force | the latest order made or varied on a claim still open | the first order made | another suspended count | policy section 5: a varied order takes the old one's place |
+| SF12 | ask A, a claim open at 30 September 2026 | not withdrawn, its order not discharged, no eviction, the property not taken into possession (the register, which Ridley Varga's reports never reach) | recovery_stage Litigation in the book; the claim file alone | 24, 61, 2; 52, 79, 7 | policy section 5 (a claim stays open until it is withdrawn, the order is discharged or the property is taken into possession); the register |
+| SF13 | ask A, an order made or varied at a hearing | an order line after a hearing; a line repeating the claim's previous order with no hearing between is the same order sent again | every order line an order | 38, 83, 10 orders | policy section 5: the court makes or varies an order at a hearing |
 | SF14 | ask A, the unit | claims (one panel firm writes a line per defendant) | lines | another count | the asking sentence (claims); the dictionary (the defendant the line relates to) |
 | SF15 | ask A, owner-occupied books | First-time buyer 2019-21, High LTV 2022-24, Shared ownership | Buy to let included | none (no buy-to-let claim) | policy sections 5 and 6 |
 | SF16 | ask B, sold from October 2025 to September 2026 | completion date in the window, on the latest statement | statement dates | same rows | the sales file's completion_date |
 | SF17 | ask B, the loss | the debt at possession less the sale price net of fees, nil where the sale covers it | a surplus as a negative loss | another average | policy section 8 |
-| SF18 | ask B, a corrected statement | replaces the earlier one | both counted | another average | the dictionary: re-sent in full with the next number |
+| SF18 | ask B, a corrected statement | replaces the earlier one | both counted | same figures (asserted) | the dictionary: re-sent in full with the next number |
 | SF19 | ask B, the book | the account's lending book among the plan's four, as the payment history carries it for every account | the register's label read as written (its earlier first-time buyer label is not one of the four) | another split | plan section 1 (the four books); the history's book on every account, closed ones included |
 | SF20 | ask B, at a loss | a loss above nil | none | none | policy section 8 |
-| SF21 | the book through 2027 | every account on the book at 30 September 2026 counted for the whole year, none netted off for closing first | each account netted for the chance it redeems before falling behind (15.5 on the golden's construction) | same call (asserted), the same bin | plan section 2: with no allowance for accounts that close during the year |
+| SF21 | the book through 2027 | every account on the book at 30 September 2026 counted for the whole year, none netted off for closing first | each account netted for the chance it redeems before falling behind (8.0 on the golden's construction) | same call (asserted), the same bin | plan section 2: with no allowance for accounts that close during the year |
+| SF22 | ask B, a possession sold | one property: one sale per account and completion date, its debt every register row of the account (one per loan part) | each completion statement a sale, the register's repeated account a re-sent row | 27/5/2,600, 30/18/22,000, 6/0/0 | the asking sentence (possessions sold); the register: the account's rows share one possession date (asserted) |
 
 ## Closure table
 
@@ -144,9 +146,9 @@ is asserted in checks.py. Possessions avoided are expected values; the prompt ro
 | 8 | Window length | the fit window is method: from July 2023, January 2024 or January 2025 every construction files the same call in the same bin | C1 (asserted) |
 | 9 | Boundary inclusivity | month-end positions; January to December | C1 (asserted) |
 | 10 | Rounding path | unrounded expected figures, each to the nearest ten | filed (the prompt) |
-| 11 | Tie-break | none: 17.7 against 12.6 | asserted |
+| 11 | Tie-break | none: 9.0 against 4.5 | asserted |
 | 12 | Maturity and censoring | the 2026 extensions' fall into arrears comes after the record ends; the construction that carries it is the stump | WHAT filed; the decisive step is analytical |
-| 13 | Order of operations | expected entries, times the planning rate, times 30 per cent | filed (plan section 3) |
+| 13 | Order of operations | expected entries, times the planning rate, times 15 per cent | filed (plan section 3) |
 | 14 | Row order | none | C1 |
 | 15 | Duplicate resolution | month rows re-sent in the history dropped (asserted not to move the call); ask A one claim per claim number; ask B the latest statement | asserted |
 | 16 | Identity normalisation | product codes compared with the dashes taken out; one account numbering in the history | asserted |
@@ -154,8 +156,8 @@ is asserted in checks.py. Possessions avoided are expected values; the prompt ro
 | 18 | Dimensional units | payments in arrears from pounds over the current payment; GBP | filed (policy section 2) |
 | 19 | Code and status semantics | account_status, recovery_stage, the litigation actions as the dictionary gives them | filed; never the stump |
 | 20 | Integerisation | none on the call; ask counts are whole claims and sales | filed |
-| 21 | Clause scope | the 30 per cent cut for every borrower the team works with, in any book | filed (pilot report section 3, plan section 3) |
-| 22 | Forward window contents | 2027's entries from the book at 30 September 2026, the extended accounts' fall into arrears inside it | C1 across the standing family (asserted, 16.3 to 22.8, every member in the 20 bin) |
+| 21 | Clause scope | the 15 per cent cut for every borrower the team works with, in any book | filed (pilot report section 3, plan section 3) |
+| 22 | Forward window contents | 2027's entries from the book at 30 September 2026, the extended accounts' fall into arrears inside it | C1 across the standing family (asserted, 8.0 to 11.9, every member in the 10 bin) |
 
 ## Literal reader
 
@@ -163,13 +165,11 @@ Executing the prompt and every filed sentence word for word (the plan's sections
 5 to 8, the pilot report, the field descriptions) leaves one open move on the call: how each account's chance of first
 reaching two payments in arrears in each month of 2027 is forecast. The estimand is filed literally (who is taken on,
 counted once, in calendar 2027, the book as it stands with no allowance for accounts that close, at the printed
-planning rate, cut by 30 per cent), every construction that carries the extended accounts on the chance the earlier
-extensions show by months since the increase files the first-time buyer book at about 20 (16.3 to 22.8 across the
-standing family, asserted), and the constructions that carry them on their current arrears and small payment rise file
-High LTV at about 10: an easy method on the same literal estimand, never another reading of it. One construction is
-measured and set aside: each month since the increase as its own cell, smoothed towards the book's own rate with a
-weight of 100 account-months, files the first-time buyer book at 12.7 (still the book called), because a weight half
-each cell's own exposure pulls the delayed fall back towards the book's average.
+planning rate, cut by 15 per cent), every construction that carries the extended accounts on the chance the earlier
+extensions show by months since the increase files the first-time buyer book at about 10 (8.0 to 11.9 across the
+standing family, asserted, smoothing weights from none to 100 account-months included), and the constructions that
+carry them on their current arrears and small payment rise file High LTV first at 4.5: an easy method on the same
+literal estimand, never another reading of it.
 
 ## Oracles
 
@@ -181,43 +181,42 @@ carries each account's book (ask B), and neither ties a published figure.
 
 ## Ask sheet
 
-**Ask A: the possession claims open at 30 September 2026 in each owner-occupied book, how many with a possession order
-in force and how many of those suspended on terms (9 figures, whole claims).** H18: each book's recoveries caseload,
-the borrowers the team does not take on because they are already in litigation (plan section 2), a measure every
-candidate carries that the call does not turn on; the call reads none of the litigation file (asserted). Use: the
-recoveries team's own plan beside the support team's. Primary device, silent (D4, absence evidenced in a file no
-habitual join reaches): Ridley Varga's case system closes its file at the warrant and reports no eviction, so its
-claims whose property was taken into possession end at "Warrant issued", and while the property is unsold the account
-stays on the book with recovery_stage Litigation and the history shows it live; only the possession register shows the
-claim has ended (4 first-time buyer, 4 high LTV and 1 shared ownership claims at 30 September 2026). Interior: six
-claims with a warrant out for an eviction due after 30 September 2026 are genuinely open (five high LTV, one shared
-ownership), so reading every Ridley Varga warrant as executed over-repairs. Hazards: hearings listed and adjourned after an order on the borrower's own application (the latest action
-read as the state loses the order), suspended orders varied to outright (the first order kept), one line per defendant
-from the same firm. Files: litigation_actions, possession_register, mortgage_book, mortgage_payment_history,
-data_dictionary, arrears policy (6 files, 11 columns). Stops (first-time buyer, high LTV, shared ownership, as open /
-orders / suspended): the book's Litigation stage as the open claims 25, 77, 18; no look at the register 51/40/21,
-96/70/44, 21/15/12; the account still on the book, no register (the careful check) 22/11/8, 67/41/33, 17/11/8; every
-Ridley Varga warrant read as executed 18/7/6, 58/32/27, 15/9/7; the latest action as the state 18/6/5, 63/34/29,
-16/9/8; the first order kept 18/7/7, 63/37/34, 16/10/9; golden 18/7/6, 63/37/32, 16/10/8. Realism: a panel firm whose
-file closes when the warrant goes to the court bailiff, and a lender whose account stays open until the sale.
+**Ask A: in each owner-occupied book, the possession orders the courts made or varied at hearings from October 2025 to
+September 2026, how many of those were suspended on terms, and the possession claims open at 30 September 2026 (9
+figures, whole orders and claims).** H18: each book's recoveries caseload, the borrowers the team does not take on
+because they are already with the panel solicitors (plan section 2), a measure every candidate carries that the call
+does not turn on; the call reads none of the litigation file (asserted). Use: the recoveries team's own plan beside the
+support team's. Primary device, silent (D2, a re-sent record nothing labels): Pennant Moss's case system writes a
+fresh order line whenever the court re-seals an order and sends it again, with the same terms and no hearing between,
+so a quarter of its orders appear twice; only the run of actions on the claim shows the second line is the same order.
+Interior: a suspended order varied on the same terms at a later hearing is a genuine variation and counts, so dropping
+every repeated order over-repairs. Second device on the open claims (D4, absence evidenced in a file no habitual join
+reaches): Ridley Varga's reports end at the warrant, so a claim whose property was taken into possession reads open in
+the claim file; only the possession register closes it. Hazards: one line per defendant from one firm, hearings listed
+and adjourned, transfers between hearing centres. Files: litigation_actions, possession_register, mortgage_book,
+mortgage_payment_history, data_dictionary, arrears policy. Stops (first-time buyer, high LTV, shared ownership, as
+orders / suspended / open): every re-sealed line an order 38/30/17, 83/65/43, 10/10/2 (the careful path, which also
+closes claims through the register); every line counted, defendants included 39/31/17, 93/72/43, 11/11/2; every
+repeated order dropped 34/27/17, 69/54/43, 9/9/2; no look at the register (open) 52, 79, 7; the register checked only
+for accounts still on the book (open) 18, 55, 2; the book's Litigation stage as the open claims 24, 61, 2; golden
+34/27/17, 71/56/43, 9/9/2.
 
-**Ask B: in each owner-occupied book, the possessions sold with completion from October 2025 to September 2026, how many
-at a loss, and the average loss per possession sold (9 figures; counts, and pounds to the nearest hundred).** H18: what a
-possession costs in each book, a second measure every candidate carries beside the possessions the team avoids; the
-call reads none of the sales, receiver or register files (the planning rates are printed; asserted). Use: the loss
-budget that goes with the plan. Primary device, silent (D2, a label stored before a silent switch): the possession
-register keeps the book each row was written under, and before the April 2026 re-cut the first-time buyer book held
-all the Society's lending to first-time buyers, so 42 of the 47 owner-occupied sales in the window sit on register rows
-that read "First-time buyer" whatever their book; only the payment history, which carries every account's book, closed
-accounts included, places them. Interior: the register's rows from April 2026 carry the four books, so reading the old
-label as the 2019-21 book or dropping it both leave rows that are right. Hazards: receivers' sales under their own
+**Ask B: in each owner-occupied book, the possessions sold with completion from October 2025 to September 2026, how
+many of them were sold at a loss, and the average loss per possession sold (9 figures; counts, and pounds to the
+nearest hundred).** H18: what a possession costs in each book, a second measure every candidate carries beside the
+possessions the team avoids; the call reads none of the sales, receiver or register files (the planning rates are
+printed; asserted). Use: the loss budget that goes with the plan. Primary device, silent (D2): an account with a
+further advance holds two loan parts, and the Society writes a register row and a completion statement for each, so
+one property sold reads as two sales with two debts; only reading the account and the completion date together shows
+one possession whose debt is both parts'. Interior: the register's rows before the April 2026 re-cut carry its earlier
+first-time buyer book, so each account's book comes from the payment history. Hazards: receivers' sales under their own
 reference (the receivers' file holds the account), corrected statements re-sent in full (the later one replaces), a
 surplus paid to the borrower (nil loss, policy section 8). Files: possession_sales_completed, possession_register,
-lpa_receiver_appointments, mortgage_payment_history, data_dictionary, arrears policy (6 files, 12 columns). Stops (sold /
-at a loss / average loss): the register's old label read as the 2019-21 book 43/29/17,100, 4/4/18,200, 0/0/none; the
-old label dropped 1/0/0, 4/4/18,200, 0/0/none; both statements kept 16/5/2,300, 27/27/28,700, 5/2/5,000; a surplus as
-a negative loss: first-time buyer -4,700, high LTV 28,700, shared ownership -3,600; golden 16/5/2,300, 26/26/28,700,
-5/2/5,000.
+lpa_receiver_appointments, mortgage_payment_history, data_dictionary, arrears policy. Stops (sold / at a loss /
+average loss): each statement a sale, the register's last row as the debt 27/5/2,600, 30/18/22,000, 6/0/0 (the careful
+path); each statement a sale, the parts' debts summed 27/9/4,100, 30/30/31,400, 6/4/4,400; one sale per account, the
+register's last row 20/5/3,500, 24/18/27,500, 4/0/0; the register's old label read as the 2019-21 book 45/30/18,500,
+3/3/22,800, 0/0/none; golden 20/7/4,500, 24/24/33,300, 4/2/3,300.
 
 Main population zero-counts: the call reads the book, the history, the plan and the policy's measurement section, and
 none of the litigation, sales, receiver or register files; the asks read those four and the history only for each
@@ -225,12 +224,12 @@ account's book (asserted, separation).
 
 | Ask | Cracker (lands the call, runs the battery, executes every filed rule) | Verdict |
 |---|---|---|
-| A claims, orders in force, suspended | 1 of 9 (shared ownership's suspended orders) on the careful on-book path | miss |
-| B sold, at a loss, average loss | 0 of 9 on the register's own book | miss |
+| A orders, suspended, open | 3 of 9 (the open claims in every book) | miss |
+| B sold, at a loss, average loss | 0 of 9 | miss |
 
-Pair ceiling: 31.6 ((48.1 + 15.1) / 2), the cracker keeping 1 of the 18 ask figures on the call and the mirror the same
+Pair ceiling: 37.7 ((54.2 + 21.2) / 2), the cracker keeping 3 of the 18 ask figures on the call and the mirror the same
 on the default path's call.
-Mirror leakage: 5.6 per cent of ask weight.
+Mirror leakage: 16.7 per cent of ask weight.
 Measured by: generator/pair.py on the cut pack.
 
 ## Pre-ship check
@@ -329,3 +328,22 @@ Measured by: generator/pair.py on the cut pack.
 - Recoveries stream offsets 37, 43, 47, 59 and 61 (2026-10-26): on the final world each left an average loss within 20
   pounds of its rounding edge; 41 and 53 held their edges but let the careful cracker keep 3 and 2 of the 18 ask
   figures; offset 67 holds every edge at 29 or more and the cracker keeps 1.
+- A projection window of twelve steps from October 2026 (2026-10-26, stage 4 round 1): the judge ran the chain twelve
+  steps from October 2026 and mismatched the golden; the plan's year is January to December 2027, so the chain now runs
+  October to December 2026 untallied and counts each account's first entry from January to December 2027 only.
+- A 30 per cent cut on the chance of possession (2026-10-26): the pilot measures a cut in four payments behind, not in
+  possessions, and a plan taking the whole arrears cut for possessions overreaches; the plan now takes 15 per cent, under
+  half the pilot's cut in arrears, and the figures fall to the 10 bin and under 5.
+- The first stage 4 asks (2026-10-26): open claims from the book's Litigation stage and the register's old book label
+  were cracked at stage 4; ask A now turns on orders the courts re-seal and send again (one order) against genuine
+  same-terms variations after a hearing, ask B on the loan parts (two register rows and two statements, one possession).
+- The world after the window fix (2026-10-27, seed 1): High LTV's planning rate fell to 4.5 per cent and its figure to
+  2.9, under the rate-rise route's first-time buyer figure (3.5), so the easy routes split; owner-occupied High LTV
+  accounts now go to the panel solicitors faster once five payments behind (0.75 a month against 0.45), seeds 1 to 8
+  scanned: seeds 1, 3, 4, 5 and 7 put High LTV or a family member over 5 or the first-time buyer family across an edge,
+  seed 8 left High LTV 0.15 from 5, seed 6 left Shared ownership a planning rate near nothing; seed 2 holds every member
+  (first-time buyer 8.0 to 11.9, High LTV 4.4 to 4.7, the easy routes' first-time buyer figure at most 3.7).
+- Recoveries stream offsets 67, 71, 73, 79, 89 and 97 on seed 2 (2026-10-27): each left an average loss within 20 pounds
+  of its rounding edge or let a re-sealed order fail to move the Shared ownership orders; 83 holds every check.
+- The pilot's "half the cut in arrears, a 15 per cent cut" (2026-10-27): on seed 2 the stated arrears cut is about 35 per
+  cent, whose half is not 15; the sentence now reads a 15 per cent cut, under half the cut in arrears, asserted.

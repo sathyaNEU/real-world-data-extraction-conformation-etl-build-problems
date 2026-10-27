@@ -1,35 +1,35 @@
 {
  "askA": {
   "FTB": {
-   "open": 18,
-   "orders": 31,
-   "suspended": 21
+   "open": 17,
+   "orders": 34,
+   "suspended": 27
   },
   "HLTV": {
-   "open": 26,
-   "orders": 43,
-   "suspended": 33
+   "open": 43,
+   "orders": 71,
+   "suspended": 56
   },
   "SO": {
-   "open": 6,
-   "orders": 8,
-   "suspended": 6
+   "open": 2,
+   "orders": 9,
+   "suspended": 9
   }
  },
  "askB": {
   "FTB": {
-   "at_loss": 10,
-   "avg_loss": 6000,
-   "sold": 17
+   "at_loss": 7,
+   "avg_loss": 4500,
+   "sold": 20
   },
   "HLTV": {
-   "at_loss": 18,
-   "avg_loss": 25900,
-   "sold": 18
+   "at_loss": 24,
+   "avg_loss": 33300,
+   "sold": 24
   },
   "SO": {
-   "at_loss": 0,
-   "avg_loss": 0,
+   "at_loss": 2,
+   "avg_loss": 3300,
    "sold": 4
   }
  },
@@ -51,10 +51,10 @@
  },
  "call": {
   "avoided": {
-   "BTL": 0.7,
-   "FTB": 8.9,
-   "HLTV": 2.9,
-   "SO": 0.4
+   "BTL": 1.2,
+   "FTB": 9.0,
+   "HLTV": 4.5,
+   "SO": 0.6
   },
   "avoided_ten": {
    "BTL": 0,
@@ -65,18 +65,18 @@
   "book": "First-time buyer 2019-21",
   "next_best": "High LTV 2022-24",
   "rate_pct": {
-   "BTL": 6.5,
-   "FTB": 4.3,
-   "HLTV": 4.5,
-   "SO": 1.4
+   "BTL": 10.7,
+   "FTB": 4.5,
+   "HLTV": 7.4,
+   "SO": 1.9
   }
  },
  "easy": {
   "avoided": {
-   "BTL": 0.7,
-   "FTB": 2.7,
-   "HLTV": 2.9,
-   "SO": 0.4
+   "BTL": 1.2,
+   "FTB": 2.9,
+   "HLTV": 4.5,
+   "SO": 0.6
   },
   "avoided_ten": {
    "BTL": 0,
@@ -87,13 +87,13 @@
   "book": "High LTV 2022-24"
  },
  "ext": {
-  "behind_8m": 3,
-  "behind_by_asof": 98,
-  "ftb_on_book": 16243,
-  "ftb_raised_2026": 6997,
+  "behind_8m": 4,
+  "behind_by_asof": 81,
+  "ftb_on_book": 16455,
+  "ftb_raised_2026": 7129,
   "pay_rise_extended": 10,
   "pay_rise_kept": 26,
-  "raised_2024": 345,
+  "raised_2024": 347,
   "years_added_median": 10
  }
 }

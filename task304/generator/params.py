@@ -1,7 +1,7 @@
 """task304 constants: the world, the files, the people and the dates."""
 
-SEED = 1
-REC_OFFSET = 67                             # the recoveries records' random stream
+SEED = 2
+REC_OFFSET = 83                             # the recoveries records' random stream
 ORG = "Calderbrook Building Society"
 ASOF = "2026-09-30"
 PLAN_DATE = "2026-10-09"

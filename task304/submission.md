@@ -10,14 +10,14 @@ The first-time buyer book's 2021 borrowers who took a longer term at their 2026 
 
 ## 2. Critical Components
 
-1. **6,997** of the **16,243** first-time buyer accounts on the book at 30 September 2026 had their remaining term raised at their 2026 rate switch, a median **10** years, holding their payment rise to a median **10 per cent** against **26 per cent** for the switchers on the book who kept their term.
-2. Of the **345** accounts whose term was raised in 2024, **3** were two payments or more in arrears at a month end within eight months of the increase and **98** were by 30 September 2026.
-3. Possessions avoided in 2027 (nearest ten): First-time buyer 2019-21 **10**; High LTV 2022-24, Shared ownership and Buy to let **fewer than 5** each, at the planning rates of **4.3**, **4.5**, **1.4** and **6.5 per cent** and the plan's **15 per cent** cut.
+1. **7,129** of the **16,455** first-time buyer accounts on the book at 30 September 2026 had their remaining term raised at their 2026 rate switch, a median **10** years, holding their payment rise to a median **10 per cent** against **26 per cent** for the switchers on the book who kept their term.
+2. Of the **347** accounts whose term was raised in 2024, **4** were two payments or more in arrears at a month end within eight months of the increase and **81** were by 30 September 2026.
+3. Possessions avoided in 2027 (nearest ten): First-time buyer 2019-21 **10**; High LTV 2022-24, Shared ownership and Buy to let **fewer than 5** each, at the planning rates of **4.5**, **7.4**, **1.9** and **10.7 per cent** and the plan's **15 per cent** cut.
 
 ## 3. Step-by-Step Solution
 
 1. Rebuilt payments in arrears at each month end from mortgage_payment_history_2019-01_to_2026-09.parquet (the arrears balance over the contractual payment, rounded down, arrears_and_possessions_policy_2026.pdf section 2), with the re-sent month rows dropped.
-2. Marked each rate switch (a new product_code, read with the dashes taken out) and each month the remaining_term_months rose: 6,997 first-time buyer accounts on the book had their term raised at the 2026 switch, and 98 of the 345 raised in 2024 had been two payments behind at a month end by September 2026, 3 of them within eight months of the increase.
+2. Marked each rate switch (a new product_code, read with the dashes taken out) and each month the remaining_term_months rose: 7,129 first-time buyer accounts on the book had their term raised at the 2026 switch, and 81 of the 347 raised in 2024 had been two payments behind at a month end by September 2026, 4 of them within eight months of the increase.
 3. Fitted the monthly chance of each move between nought, one and two or more payments behind on the January 2024 to August 2026 history, by book, the payment rise at the last switch (under 5, 5 to 20, 20 to 40, 40 per cent or more) and the months since a term increase (none, under 8, 8 to 15, 16 or more), leaving out the month an account closes, each cell smoothed towards its book's rate with a weight of 20 account-months.
 4. Carried every account on mortgage_book_2026-09-30.parquet with recovery_stage None from its September 2026 arrears through 2027, month by month, with no allowance for accounts that close, counting each account's first entry from January to December 2027 once and taking it out of the chain there (financial_support_team_2027_plan_paper.pdf section 2).
 5. Took 15 per cent of each book's expected 2027 entries times its planning rate (financial_support_team_2027_plan_paper.pdf section 3): First-time buyer 2019-21 about 10 possessions avoided, High LTV 2022-24 fewer than 5, Shared ownership and Buy to let fewer than 5 each; the same chain without the term-increase state puts High LTV 2022-24 first.
@@ -36,10 +36,10 @@ The first-time buyer book's 2021 borrowers who took a longer term at their 2026 
 ### support_team_2027_workbook.xlsx
 
 1. Possession orders made or varied at hearings from October 2025 to September 2026, of those suspended on terms, and possession claims open at 30 September 2026:
-   - First-time buyer 2019-21: 31, 21, 18
-   - High LTV 2022-24: 43, 33, 26
-   - Shared ownership: 8, 6, 6
+   - First-time buyer 2019-21: 34, 27, 17
+   - High LTV 2022-24: 71, 56, 43
+   - Shared ownership: 9, 9, 2
 2. Possessions sold with completion from October 2025 to September 2026 (sold, sold at a loss, average loss per possession sold):
-   - First-time buyer 2019-21: 17, 10, £6,000
-   - High LTV 2022-24: 18, 18, £25,900
-   - Shared ownership: 4, 0, £0
+   - First-time buyer 2019-21: 20, 7, £4,500
+   - High LTV 2022-24: 24, 24, £33,300
+   - Shared ownership: 4, 2, £3,300

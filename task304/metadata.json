@@ -35,7 +35,7 @@
       "xlsx"
     ],
     "largest_file": "mortgage_payment_history_2019-01_to_2026-09.parquet",
-    "largest_file_rows": 4249009
+    "largest_file_rows": 4260553
   },
   "sources": [
     {
@@ -51,8 +51,8 @@
     {
       "path": "mortgage_book_2026-09-30.parquet",
       "format": "parquet",
-      "bytes": 1758271,
-      "rows": 55273,
+      "bytes": 1768986,
+      "rows": 55605,
       "source": "Constructed (seeded generator)",
       "date": "2026-10-09",
       "license": "CC0-1.0 (original work)"
@@ -60,8 +60,8 @@
     {
       "path": "mortgage_payment_history_2019-01_to_2026-09.parquet",
       "format": "parquet",
-      "bytes": 28307692,
-      "rows": 4249009,
+      "bytes": 28407055,
+      "rows": 4260553,
       "source": "Constructed (seeded generator)",
       "date": "2026-10-09",
       "license": "CC0-1.0 (original work)"
@@ -69,8 +69,8 @@
     {
       "path": "possession_register_2019-01_to_2026-09.csv",
       "format": "csv",
-      "bytes": 10809,
-      "rows": 179,
+      "bytes": 13731,
+      "rows": 227,
       "source": "Constructed (seeded generator)",
       "date": "2026-10-09",
       "license": "CC0-1.0 (original work)"
@@ -78,8 +78,8 @@
     {
       "path": "possession_sales_completed_2019-2026.csv",
       "format": "csv",
-      "bytes": 8264,
-      "rows": 163,
+      "bytes": 10214,
+      "rows": 202,
       "source": "Constructed (seeded generator)",
       "date": "2026-10-09",
       "license": "CC0-1.0 (original work)"
@@ -87,8 +87,8 @@
     {
       "path": "lpa_receiver_appointments_2019-2026.csv",
       "format": "csv",
-      "bytes": 2661,
-      "rows": 41,
+      "bytes": 3613,
+      "rows": 56,
       "source": "Constructed (seeded generator)",
       "date": "2026-10-09",
       "license": "CC0-1.0 (original work)"
@@ -96,8 +96,8 @@
     {
       "path": "litigation_actions_2023-01_to_2026-09.csv",
       "format": "csv",
-      "bytes": 137988,
-      "rows": 1599,
+      "bytes": 175505,
+      "rows": 2034,
       "source": "Constructed (seeded generator)",
       "date": "2026-10-09",
       "license": "CC0-1.0 (original work)"
@@ -123,7 +123,7 @@
     {
       "path": "contact_centre_volumes_2025.csv",
       "format": "csv",
-      "bytes": 2347,
+      "bytes": 2342,
       "rows": 72,
       "source": "Constructed (seeded generator)",
       "date": "2026-10-09",
@@ -141,7 +141,7 @@
     {
       "path": "financial_support_team_2027_plan_paper.pdf",
       "format": "pdf",
-      "bytes": 3590,
+      "bytes": 3591,
       "rows": null,
       "source": "Constructed (seeded generator)",
       "date": "2026-10-09",
@@ -150,7 +150,7 @@
     {
       "path": "financial_support_team_pilot_2024_report.pdf",
       "format": "pdf",
-      "bytes": 3477,
+      "bytes": 3478,
       "rows": null,
       "source": "Constructed (seeded generator)",
       "date": "2026-10-09",

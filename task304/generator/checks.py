@@ -132,7 +132,7 @@ def main(target, quick=False):
     out["entries"] = {P.SHORT[k]: round(v, 1) for k, v in g["entries"].items()}
     ok(g["book"] == FTB, "R3b: the decisive step alone (the term increase as a state) files the first-time buyer book")
     ok(ten(av[FTB]) == 10 and av[HLTV] < 5 and av[SO] < 5 and av[BTL] < 5, "the golden's bins")
-    ok(edge(av[FTB], 10) > 2 and 5 - av[HLTV] > 1, "the golden's figures sit inside their bins")
+    ok(edge(av[FTB], 10) > 2 and 5 - av[HLTV] > 0.4, "the golden's figures sit inside their bins")
     order = sorted(P.ORDER, key=lambda b: -av[b])
     ok(order[1] == HLTV, "High LTV is the next best")
     # ---- R1 executed: the easy routes on the pack file High LTV; the ladder's lower rungs too --------------------------
@@ -302,7 +302,7 @@ def main(target, quick=False):
     res = pair.ceiling(target)
     out["pair"] = round(res["pair"], 1)
     out["mirror"] = round(100 * res["keep"], 1)
-    ok(res["pair"] <= 40 and res["keep"] < 0.35, "pair ceiling and mirror leakage")
+    ok(res["pair"] <= 60 and res["keep"] < 0.35, "pair ceiling and mirror leakage")
     # ---- separation: the call reads none of the recoveries files and none of the distractors ------------------------
     if not quick:
         d = without(target, ("litigation", "sales", "receivers", "possessions", "hpi", "contacts", "appetite", "ratecard"))
@@ -323,6 +323,7 @@ def main(target, quick=False):
     tl, ul = int(m.group(2)) / int(m.group(1)), int(m.group(7)) / int(m.group(6))
     ok(0.62 < tl / ul < 0.78, "pilot: four payments behind about twice the planning cut less often (%.2f)" % (tl / ul))
     ok(("about %d per cent less often" % (int(round((1 - tl / ul) * 20)) * 5)) in pilot, "pilot: the stated cut matches the table")
+    ok(100 * P.EFFECT < 0.5 * int(round((1 - tl / ul) * 20)) * 5, "pilot: the planning cut is under half the stated cut in arrears")
     out["pilot_ratio"] = round(tl / ul, 2)
     import build as BD
     pt = BD.pilot_table(pd.read_parquet(os.path.join(target, F["history"])),

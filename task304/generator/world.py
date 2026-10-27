@@ -57,7 +57,7 @@ OW = dict(FTB=[0.05, 0.10, 0.85])
 PARAMS = dict(b0=0.0010, beta_s=3.0, sigma=0.35, d_rate=0.0006, d_mean=60, d_mult=26.0,
               ext_thresh=0.05, ext_p_d=0.97, ext_p_ok=0.01, coll_ext_p=0.06,
               ltv_k=3.0, slack_mu=1.42, slack_sd=0.16, sig0=0.8, beta_sig=4.0, ext_sig=1.0, hon=(8, 15),
-              slack_2021=1.06, beta_s_btl=0.5, btl_h=0.4, btl_lit=0.45, oo_lit=0.45,
+              slack_2021=1.06, beta_s_btl=0.5, btl_h=0.4, btl_lit=0.45, oo_lit=(0.45, 0.75, 0.45),
               book_h=(1.0, 2.0, 1.0, 1.0), pilot_rescue=0.3)
 
 
@@ -251,7 +251,7 @@ class World:
             self.cap_m[e] = m
             newk[ce] = 0
         litgo = (~self.lit[idx]) & (newk >= 5) & \
-            (rng.random(len(idx)) < np.where(self.book[idx] == 3, p["btl_lit"], p["oo_lit"]))
+            (rng.random(len(idx)) < np.where(self.book[idx] == 3, p["btl_lit"], np.array(p["oo_lit"] + (0,))[self.book[idx]]))
         L = idx[litgo]
         self.lit[L] = True
         self.lit_m[L] = m

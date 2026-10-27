@@ -127,8 +127,8 @@ def pilot(path, res):
          Paragraph("3. Result", h2),
          Paragraph("Borrowers allocated to the team reached four payments in arrears about %d per cent less often "
                    "than those left with usual collections, and %s, though claims are too few to measure that effect "
-                   "on their own. For planning we take half the cut in arrears, a %d per cent cut in the chance of possession "
-                   "for every borrower the team works with, until the possessions themselves can be counted."
+                   "on their own. For planning we take a %d per cent cut in the chance of possession, under half the cut in "
+                   "arrears, for every borrower the team works with, until the possessions themselves can be counted."
                    % (cut4, claims, round(100 * P.EFFECT)), body),
          Paragraph("4. Capacity", h2),
          Paragraph("Each officer carried about 60 open cases at a time and cases stayed open for a median of three "
