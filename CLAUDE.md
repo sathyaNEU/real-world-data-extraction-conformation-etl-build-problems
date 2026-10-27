@@ -74,6 +74,26 @@ objective. The note's `## Three rules`, one labelled line per point of the clien
 line. `checks.py` executes the analyst test on the generator's clean truth (`dataset-generation` §7.1). At
 stage 4 the leak reader's question 6 and the judge's Gate H read the three rules from outside the design.
 
+## A stuck build is unblocked, never parked
+
+No build waits in `PAUSED` for a blocker to clear. The session that meets the blocker removes it at once and
+carries the build on to ship:
+
+- **A guard ban the draw cannot clear** (an axis the last three builds hold, a strategy the window bans, a seed
+  whose own furniture is barred): redraw the axis, and when the seed's world cannot carry an honest unbanned
+  draw, move the build to another client domain, world and dataset under the same objective and number. Never
+  wait for the window to move and never relabel a card to pass it.
+- **A dead design** (`precut.py` fails, the readability screen fires, the judge sends it back, a FIX_NOW fails
+  twice, the portal returns it unstumped): re-root at once with a new draw, a new dataset and a new generator,
+  in another domain when the old one is spent. A re-root past a slot's third architecture needs no checkpoint.
+- **Anything else** (a generator that will not go green, a failing gate, a missing input): fix it in the
+  generator and rebuild.
+
+`PAUSED` means one thing: the session itself is ending with work mid-stage. Its `resume` line names the next
+action, and the next session takes that build before any new number (`status.py next` names it first).
+Retirement and a ban waiver stay the author's call, and neither is a reason to stop: a redraw in another
+domain is always available.
+
 ## Skill routing (binding)
 
 Invoke the skill before the work, whatever the request's wording; if two apply, both, in pipeline order.
@@ -155,7 +175,8 @@ There is one branch, `main`. No build, skill or status branch is created, and no
 - **Commit only at a status change**, never at a stage boundary: `DRAWN (taskNN)` (the card, `pipeline.json`
   and the design note, so other builds' guard sees the draw), `SHIPPED (taskNN): <the call>`, `RESHIPPED
   (taskNN): <what the repair moved>` after a fix command, `PAUSED (taskNN)` with the resume step in
-  `pipeline.json`, `RETIRED (taskNN)`. A skill change is its own commit, `SKILLS: <the rule>`.
+  `pipeline.json` (only when the session ends mid-stage, never for a blocker: the section above),
+  `RETIRED (taskNN)`. A skill change is its own commit, `SKILLS: <the rule>`.
 - **Each commit carries every artifact that status touches:** the task folder, its card, its ledger row, and at
   ship `target.zip` and the `golden/` files added with `git add -f`. Stage paths by name; never `git add -A`.
 - **Before every push:** `git pull --rebase origin main`, then push. Task folders and cards are one file per
@@ -171,8 +192,8 @@ Task numbers come from the root `START_HERE.md`, numbered by objective; each lan
 start read `.claude/authors/<handle>.md` for the session user's email and ignore the others: it holds the lane,
 the status board link and the **backlog**, waves of six tasks to ship worked in order (reworks first). `status.py
 next <handle>` names the next task, `status.py` shows every wave; at most two builds in flight per author.
-Resuming a paused build: read `handoffs/<handle>.md` if it names the task, then `pipeline.json` and the design
-note's `## Tried and rejected`.
+A paused build is resumed before any new number: read `handoffs/<handle>.md` if it names the task, then
+`pipeline.json` and the design note's `## Tried and rejected`.
 
 ## How a build is worked
 

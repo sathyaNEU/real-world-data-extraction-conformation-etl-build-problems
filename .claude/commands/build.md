@@ -49,7 +49,9 @@ only when its gate holds.
    `pipeline.json`, the design note and the findings.
 
 **Write `pipeline.json` at every stage boundary** (with `status` and `updated`), and **commit only at the
-status changes** `build-pipeline` names: `DRAWN`, `SHIPPED`, `PAUSED`, `RETIRED`.
+status changes** `build-pipeline` names: `DRAWN`, `SHIPPED`, `PAUSED`, `RETIRED`. A blocker is removed in this
+session (redraw the axis, re-root into another domain and dataset, fix the generator), never left as a pause;
+`PAUSED` is only for a session that ends mid-stage (`CLAUDE.md`, A stuck build is unblocked, never parked).
 
 **At ship**, report in this order: the committed answer, the stump sentence and the default path's answer,
 the three-rules line, the leak line (`leak.py` verdict and the reader's question 1), the duplicate line (heart

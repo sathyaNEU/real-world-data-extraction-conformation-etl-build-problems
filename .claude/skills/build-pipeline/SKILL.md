@@ -62,7 +62,9 @@ Commit only at a status change: `DRAWN`, `SHIPPED`, `RESHIPPED`, `PAUSED`, `RETI
 commit stages its paths by name: the task folder, `.claude/skills/fingerprint/cards/taskNN.json`, the ledger
 row, and at ship `git add -f taskNN/target.zip taskNN/golden/`. Then `git pull --rebase origin main` and push.
 Nothing is committed between those points; a session that stops mid-stage writes `pipeline.json` with a
-`resume` line and commits `PAUSED`.
+`resume` line and commits `PAUSED`. A blocker is never a reason to stop: the session that meets it removes it
+(a redraw, a re-root into another domain and dataset, a generator fix) and carries the build on (`CLAUDE.md`,
+A stuck build is unblocked, never parked).
 
 ## Returned tasks
 
@@ -146,7 +148,8 @@ The one state file in a task folder: where the build is, never why.
 ```
 
 `status` is one of `DRAWING`, `DESIGN`, `BUILD`, `SHIPPED` (submitted, pending review), `SHIPPED_APPROVED` (the
-portal approved it), `RETURNED`, `FAILED_TO_STUMP` (back in a backlog wave), `PAUSED`, `RETIRED`. Older files may
+portal approved it), `RETURNED`, `FAILED_TO_STUMP` (back in a backlog wave), `PAUSED` (the session ended
+mid-stage; never a waiting state), `RETIRED`. Older files may
 carry `solver_rounds`, `branch` and old stage numbers: history; `status.py` infers their status from
 `stage_name`. `/approve` sets `approved`.
 
@@ -154,7 +157,8 @@ carry `solver_rounds`, `branch` and old stage numbers: history; `status.py` infe
 
 Read `handoffs/<handle>.md` if it names the task, then `pipeline.json` (`status`, `stage`, `resume`) and
 `## Tried and rejected`; re-check that stage's gate before new work. No `pipeline.json` with a finished
-submission is stage 3 complete. A portal result means Returned tasks.
+submission is stage 3 complete. A portal result means Returned tasks. A `PAUSED` build is taken before any new
+number, and `status.py next` names it first.
 
 ## Re-root and retirement
 
@@ -164,8 +168,10 @@ hardening deepens Layer 2 or Layer 1 and never plants; if only a plant would hol
 
 **Re-root:** a new draw at stage 1 in the same objective and number, `architecture` incremented, `loops`
 reset, the old card's lineage saying spent and why, one line in `## Tried and rejected`, committed `DRAWN`.
-**Retire** the number when its third architecture is spent: a `## Retired` section in the design note,
-`status` `RETIRED`, every card kept, committed `RETIRED`. An author file may set another cap.
+A re-root follows a spent architecture in the same session; when the domain or the seed's world is what keeps
+failing, the new draw moves to another client domain and dataset. A slot whose third architecture is spent is
+re-rooted again without a checkpoint; it is **retired** only on the author's word: a `## Retired` section in the
+design note, `status` `RETIRED`, every card kept, committed `RETIRED`.
 
 ## Throughput
 

@@ -189,8 +189,9 @@ before the design exists. task194 drew a sound architecture on `maturity_censori
 register it, because the immediately preceding build in the corpus carried the same label. Two costs
 follow from checking late. The design waits for a window to lapse rather than being drawn into a free
 cell, and the builder is put in front of a choice between relabelling the mechanism to pass the guard,
-which is a lie in the card, and handing the block back. The right answer to that choice is to hand it
-back; the better outcome is never to face it.
+which is a lie in the card, and waiting. Neither is taken: the direction is redrawn at once, and when the
+seed's world offers no honest unbanned direction the build moves to another client domain and dataset
+(`CLAUDE.md`, A stuck build is unblocked, never parked); the better outcome is never to face it.
 
 ## Part 4. How this goes wrong
 

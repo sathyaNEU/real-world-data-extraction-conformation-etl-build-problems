@@ -7,8 +7,11 @@ Account email pers.sathya@gmail.com. A session for anyone else ignores this file
   Opportunity Sizing & Decision Support block, lowest first (task301 up). Two builds in flight; the author allowed a third on
   2026-10-25 (task304 and task307 paused at the draw, task308 opened); `status.py next perssathya`.
 - **Status board:** https://claude.ai/artifact/EJXoU6JxGoZ1oZYKHmSLyt (one row per task: the task and its call, status, links to the prompt, submission and `target.zip` on `main`, a short note, the date), updated at every commit point.
-- **Never retire a task without asking the author.** A re-root past the third architecture, a ban waiver or a
-  retirement is the author's call.
+- **Never retire a task without asking the author.** A ban waiver or a retirement is the author's call; a
+  re-root past the third architecture is not. **Never leave a build paused** (the author, 2026-10-27): a build
+  that is stuck is unblocked in the same session, by redrawing it, moving it to another domain and dataset,
+  re-rooting and rebuilding, whatever it takes, and carried on to ship (`CLAUDE.md`, A stuck build is
+  unblocked, never parked).
 - **Improvise on the stumping ideas.** Write the default path first and put the stump on it: the default
   construction itself is wrong, and a reflex correction (stratify, reweight, shrink, add a control,
   cross-check references) is not a stump. Couple the pitfall to the domain's own method. Before any "spent"

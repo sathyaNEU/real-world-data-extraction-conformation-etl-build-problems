@@ -220,6 +220,19 @@ def ten_ten(t):
 def next_task(handle):
     rec = portal_record()
     ws = waves(handle)
+    # A paused build is never a waiting state (CLAUDE.md, A stuck build is unblocked, never parked): it is named
+    # before any new number, and its blocker is removed in the session that takes it.
+    for n, items in ws:
+        for t, note in items:
+            if status_of(t, rec) == "PAUSED":
+                print("next: %s (wave %d, PAUSED%s): resume it before any new number and remove its blocker now"
+                      " (redraw, re-root into another domain and dataset, or fix the generator)"
+                      % (t, n, ", " + note if note else ""))
+                gate = ten_ten(t)
+                if gate:
+                    print("10/10 gate before any resume: %s. Answer it, or re-root if the old stump is a decoy, a"
+                          " withheld rule, a field reading or an executed procedure." % gate)
+                return 0
     flying = []
     for n, items in ws:
         for t, note in items:
