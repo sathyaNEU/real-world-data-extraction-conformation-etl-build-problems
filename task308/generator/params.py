@@ -56,7 +56,7 @@ OFFERS = ["Ketchum Ridge", "Red Willow import", "Sandhill Draw", "Coulee Flats"]
 OFFER_MW = {"Ketchum Ridge": 300.0, "Red Willow import": 300.0, "Sandhill Draw": 450.0, "Coulee Flats": 500.0}
 # annual capacity payment for 2027, dollars (each offer quotes in its own unit, docs.py)
 PRICE = {"Ketchum Ridge": ("USD per kW-month", 6.45), "Red Willow import": ("USD per MW-day", 327.0),
-         "Sandhill Draw": ("USD per kW-month", 5.25), "Coulee Flats": ("USD per kW-year", 51.60)}
+         "Sandhill Draw": ("USD per kW-month", 5.30), "Coulee Flats": ("USD per kW-year", 51.60)}
 CT_RATED_EFORD = 0.045    # the manufacturer's figure in the Ketchum Ridge offer
 
 

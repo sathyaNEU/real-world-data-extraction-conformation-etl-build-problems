@@ -20,7 +20,7 @@ Not Ketchum Ridge, the cheapest capacity at USD 23.2 million: every hour with a 
 2. Replayed the 2027 fleet in fleet_list_2027.xlsx (Sandoval 1 retires) through the forced outages and derates of outage_event_log_2016_2025.csv at each event's latest revision, a part hour for its part and the least capability governing overlaps (RA-3 sections 4 and 6), with the 200 MW import in every hour the tie is in service (red_willow_tie_outages_2016_2025.csv, CST and CDT stamps): load less wind, solar, units and imports, where positive, averaged over the ten years, is 9,500 MWh.
 3. Every one of those shortfall hours fell inside a lack-of-fuel event (cause 9130) that took all ten Elk Prairie, Torrance and Wexford peakers out together; the fleet list puts them on Northgate IT, the service the Ketchum Ridge offer takes its gas on.
 4. Counted each offer alone in every replayed hour (RA-3 section 7): Ketchum Ridge at 300 MW times the share of the Northgate IT peakers' capability available in that hour, 0 MWh removed; the Red Willow import at 300 MW whenever the tie is in service, 7,100 MWh; Sandhill Draw and Coulee Flats at their modelled output in offer_profiles_2016_2025.parquet (hours beginning UTC), 2,000 and 400 MWh.
-5. Valued each reduction at USD 20,000 per MWh less the 2027 payment the offers sheet quotes (USD 23.2, 35.8, 28.4 and 25.8 million): net USD -23 million, USD 106 million, USD 12 million and USD -17 million; the Red Willow import is the award.
+5. Valued each reduction at USD 20,000 per MWh less the 2027 payment the offers sheet quotes (USD 23.2, 35.8, 28.6 and 25.8 million): net USD -23 million, USD 106 million, USD 12 million and USD -17 million; the Red Willow import is the award.
 6. Member energy: took the highest version of each interval in mdm_interval_export_2025.parquet, delivered less received, each point's member from the assignment history of delivery_point_register_2025.xlsx; where meter_service_orders_2025.csv records a current transformer replacement, the export kept applying the old multiplier for weeks after it, so each interval from the replacement on is carried at the new multiplier; summed by member in MWh.
 7. 12-CP: the same intervals, with the meters the service orders found on standard time moved an hour later from the spring change (2025-03-09 03:00 CDT) up to the first interval after the visit that reset them, and the MDM's estimate for the stamp the reset skipped dropped; each month's peak is the hour with the highest net energy over all points, and a member's 12-CP average is its net energy in those twelve hours averaged.
 
@@ -32,7 +32,7 @@ Not Ketchum Ridge, the cheapest capacity at USD 23.2 million: every hour with a 
 2. Each offer's EUE removed, 2027 capacity payment and net value:
    - Ketchum Ridge: 0 MWh removed; payment USD 23.2 million; net value USD -23 million
    - Red Willow import: 7,100 MWh removed; payment USD 35.8 million; net value USD 106 million
-   - Sandhill Draw: 2,000 MWh removed; payment USD 28.4 million; net value USD 12 million
+   - Sandhill Draw: 2,000 MWh removed; payment USD 28.6 million; net value USD 12 million
    - Coulee Flats: 400 MWh removed; payment USD 25.8 million; net value USD -17 million
 3. Award: Red Willow import
 4. Each member's 2025 net energy delivered, MWh:

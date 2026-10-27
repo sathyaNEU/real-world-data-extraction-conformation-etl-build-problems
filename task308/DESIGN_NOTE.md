@@ -237,6 +237,27 @@ Pair ceiling: 39.3 ((45.0 + 33.6) / 2), the cracker keeping 0 of the 16 ask figu
 Mirror leakage: 0.0 per cent of ask weight.
 Measured by: generator/pair.py on the cut pack.
 
+## Pre-ship check
+
+- 2026-10-27, stage 4 on the cut pack. Leak reader (isolated, sonnet, medium): no decisive-step sentence, no ranking
+  or helper file, no answer-like figure; question 5 lists RA-3 sections 4 to 7 and MS-12 sections 1 to 4, whose
+  literal execution is the golden's construction with the evidence-to-capacity method left open by section 7;
+  question 6 analytical. Every REVIEW line harmless (the offers' MW and prices are inputs; the offer and member lists
+  rank nothing; the fleet list's later dates are a retirement and contract ends).
+- Judge pass 1 (/tmp/determinism-check-task308-r1): DETERMINISTIC, APPROVE; Gate G method_or_model_selection,
+  analytical_non_defect, no surface read; Gate H domain pass, layers pass, decisive step analytical. Every graded
+  figure reproduced. Two optional notes: Sandhill Draw's payment sat on an exact half-up tie (450 MW at USD 5.25 per
+  kW-month, 28.35), moved off it by pricing the offer at 5.30 (28.6; net still USD 12 million, the award unchanged);
+  Ketchum Ridge's 0 MWh rests on section 7's "in that hour", and a temperature-conditional estimator files about
+  770 MWh and a net near USD -8 million with the award unchanged, left as filed because a clause naming the
+  estimator would file the how.
+- After the price move: rebuild with checks, verifier and byte-identical builds, figures_check 61 of 61, precut 53
+  checks 0 FAIL, leak.py REVIEW (the same lines), guard heart WARN (question form which against task271). The price
+  change touched one figure in the offers paper, so the reader was not re-run.
+- The 10/10 rules re-read against the built pack: the decisive step is judging a new peaker's availability in the
+  hours that carry a shortfall from its sister units' record, an analytical choice; the mess (mixed time stamps,
+  revised MDM intervals, a delivery point moved between members) stays Layer 1.
+
 ## Tried and rejected
 
 - 2026-10-25, before the pack: the seed's own step (cannibalisation measured on flat streets carried to a hilly

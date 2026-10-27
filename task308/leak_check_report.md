@@ -35,3 +35,19 @@ Stump terms swept: reader, peaker, record, section, screen, replay, golden, read
 ## 8 column names (clean)
 
 ## 11 prompt gate (clean)
+
+
+## Solver's-eye read
+
+Isolated reader (sonnet, medium), 2026-10-27, on the cut pack only (prompt.txt and target/).
+
+1. Decisive step: none announced. The nearest text is RA-3 section 7 ("counted in each replayed hour at its expected available capacity in that hour, judged from the evidence the record holds"), which files the quantity and leaves the method open.
+2. Ranking or scoring file: none. The RFO paper states the evaluation basis with no results.
+3. File that exists only to help the analyst: none. gads_cause_codes.csv is a plausible lookup; the forward curve, member load forecasts and meter service orders read as distractors or context.
+4. Figure or name that reads as the answer: none. No computed EUE, net value or allocation figure appears anywhere.
+5. Filed sentences fixing the computation: RA-3 sections 4 to 7 (replay every forced event whatever its cause, latest revision; tie outages remove the import; EUE the equal-weight mean of ten weather years; each offer alone against the planning-year fleet; expected available capacity judged from the record) and MS-12 sections 1 to 4 for the member figures. Their literal execution is the golden's construction; section 7 leaves the evidence-to-capacity method open.
+6. What decides the main answer: an analytical choice (how an offer's expected hourly capacity is judged from the record). The ancillary member figures are rule application under MS-12, as asks may be.
+
+Mechanical-sweep rulings: answer-figure sweep harmless (offered MW, prices and the manufacturer's EFORd are inputs); ranking sweep on the RFO paper harmless (capacity and price only, no ranking); ranking sweep on the delivery point register harmless (no energy or peak figures); date sweep on fleet_list_2027.xlsx harmless (a retirement date and contract end dates).
+
+Realism notes: substation names in the delivery point register run in near-alphabetical order and meters repeat from four models; uniform event_id formatting; mixed time formats across files read as deliberate mess. No placeholders, hidden sheets or toolchain signatures.

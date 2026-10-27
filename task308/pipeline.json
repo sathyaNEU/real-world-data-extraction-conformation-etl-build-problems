@@ -1,10 +1,10 @@
 {
  "task": "task308",
- "status": "PAUSED",
+ "status": "SHIPPED",
  "domain": "energy-systems-utilities",
  "objective": "opportunity-sizing-decision",
- "stage": 4,
- "stage_name": "check",
+ "stage": 5,
+ "stage_name": "ship",
  "updated": "2026-10-27",
  "stump": "A capable analyst credits the new Ketchum Ridge peaker with its rated or class-average availability in every replayed hour and awards it (net USD 115 million), but the ten Northgate IT peakers were out together on lack of fuel in every shortfall hour, so a peaker on the same service removes 0 MWh and the Red Willow firm import (net USD 106 million) is the award.",
  "architecture": 3,
@@ -14,24 +14,25 @@
   "date": "2026-10-27"
  },
  "leak": {
-  "leak_py": "REVIEW 2026-10-27 on target.zip 375f0c1b (offer capacity 300 MW in the offers sheet, the standard's generic vocabulary, member and offer lists that rank nothing, contract end dates after the as-of)",
-  "reader": ""
+  "leak_py": "REVIEW 2026-10-27 (offer MW and prices as inputs, lists that rank nothing, contract end dates)",
+  "reader": "2026-10-27 isolated sonnet medium: no decisive-step sentence, question 6 analytical, every REVIEW line harmless"
  },
  "duplicate_check": {
   "heart": "WARN 2026-10-27 (question form which, against task271)",
   "nearest": "task281 0.10 (driver)"
  },
  "judge": {
-  "verdict": "",
-  "disposition": "",
-  "report": ""
+  "verdict": "DETERMINISTIC",
+  "disposition": "APPROVE",
+  "report": "determinism_check_report.md"
  },
  "returned": [],
- "resume": "Stage 3 complete 2026-10-27 (checks 202 passed, verify 0 failures, two byte-identical builds target.zip 375f0c1b, figures_check 61/61, precut 52/0/0, voice-check PASS, leak.py REVIEW, guard surface clean, heart WARN, pair ceiling 39.3). Owed: stage 4, the isolated leak reader and the determinism judge on a scratch copy of prompt.txt and target/ (the fork that built it may not spawn agents), then fixes, Pre-ship check, ship.",
+ "resume": "",
  "approved": null,
- "delivered": null,
+ "delivered": "2026-10-27",
  "portal": null,
  "portal_id": "",
  "portal_status": "",
- "portal_status_date": ""
+ "portal_status_date": "",
+ "zip_sha256_16": "7291ae6c30393d00"
 }
