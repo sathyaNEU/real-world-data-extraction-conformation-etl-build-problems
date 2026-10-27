@@ -1,477 +1,238 @@
-# task157 design note
+# task157 design note: the 2027 initiative petition signature projection (architecture 2)
 
-Architecture 1, drawn 2026-10-17 (wave 5, Forecasting lane, sathya8571), numbered from seed FC28. The seed (a Midwestern
-ride-hail operator's January winter guarantee, $350 to every driver completing 40 trips in four weeks, pre-funded by
-finance as one figure) was read at its header and Situation only. Its world, decision and quantity are kept. Its two
-banned features are not shipped: no file reveals the returning drivers on its own (the insurer's roster acknowledgement
-is not in the pack; the returners are in the same activity extract as every other driver), and no document files a
-method for the payout. The pitfall is re-found from how the returning drivers come back: Larch Rides' first winter
-recruitment campaign (first trips February and March 2026) took on mostly workers laid off for the winter, who went
-back to their trades in April and come back as their trades shut down, a wave that began in mid-November 2026 and peaks
-when the guarantee goes live on Monday 4 January 2027.
+Status lives in `pipeline.json`; this note holds the design. Read `## Tried and rejected` first, and
+`## Architecture 1 is spent: the bin is finer than the estimator` below it: architecture 1 (the January 2027
+winter guarantee qualifier forecast) shipped twice and was returned twice, and the cause was measured rather
+than argued. Architecture 2 is drawn afresh in the same number.
 
 ## Draw
 
-1. Card: `.claude/skills/fingerprint/cards/task157.json`, architecture v1, registered 2026-10-17T11:55:39Z;
-   `guard.py check` PASS (one NOTE: the older signature gap time, G12, Gate G forecasting is differentiated against
-   task231). Nearest driver 0.05 (task116 v1 lineage, task143, task264).
-2. Pairing: Product Analytics (client domain) / `retention-cohort-lifetime-value-modeling` / Forecasting & Predictive
-   Modeling. The seed's house label was Economics (platform labour supply); the client taxonomy files a platform's own
-   user analytics under Product Analytics ("a platform selling into a sector is Product Analytics", domains README), and
-   the deciding analysis here is a supply-side user cohort's reactivation forecast (resurrected users in growth
-   accounting), not a labour-supply elasticity, an incentive response or a labour-market read. Economics &
-   Econometrics would be the honest home only if the decisive step were an elasticity or a behavioural response to the
-   guarantee; it is not, so the ban on economics-econometrics x forecasting (task155) does not bind and is not dodged.
-3. Niche: a regional ride-hail operator in the Twin Cities funding its January 2027 winter guarantee at go-live, when
-   last winter's recruitment campaign put about 2,200 drivers on the road in February and March 2026, most of them
-   seasonal workers whose return wave straddles the funding date.
-4. Call and shape: the guarantee's expected total for the four weeks from Monday 4 January 2027 (`quantity_figure`,
-   currency, question form how-much), to the nearest $50,000 (finance funds the account in $50,000 steps), with the
-   drivers expected to qualify to the nearest 100. Shape `other`: the fund and the drivers with four critical components,
-   two ask tables on files the call never reads (6 and 15 figures), and a two-slide deck; criteria counted in
-   `## Ask sheet`.
-5. Mechanism keys: gap time (the evidence is December's roster and last winter's return; the window holds the rest of a
-   wave already arriving) with population (who is in January's population: returning seasonal drivers on no roster);
-   decisive generator G12 (a summer of blanks is not churn: the campaign recruits' empty months are a return not yet
-   made), then G13 (the window holds the wave's remainder) and G16 (the leading-edge method against the pool rate, chosen
-   out of sample on January 2026); Gate G `forecasting`; strategy `maturity_censoring` (the wave is incompletely arrived
-   at the as-of and is completed from its own arrivals, the return share a property of the cohort and the return
-   timing common to every wave).
-6. Layer 2: `estimation_fit` (censoring), pattern `own:returning-seasonal-wave-sized-from-its-leading-edge`. Library
-   neighbour: product-analytics/retention-cohort-lifetime-value-modeling/1 (young cohorts are censored, not churned);
-   this build's version differs in that the censored cohort's size is read off the part of its own return already
-   arrived, at a timing ratio earlier cohorts kept, rather than from cohorts observed that long.
-7. Furniture: forum `executive_team` (Larch's finance director funds the guarantee account); forcing event
-   `launch_or_rollout` (the 2027 guarantee goes live in the drivers' app at 00:00 on Monday 4 January and is funded in full
-   at go-live; `season_or_peak` was the other honest key and was banned by task155 at the draw, so the call is forced
-   by the programme's go-live, which is what the email and the terms name); organisation family `software_or_platform`;
-   role family `operations_director` (the head of driver supply sends the figure); context artifact `published_series`
-   (the supply team's monthly KPI report, published through November); calibration `prior_period_close_out` (the
-   payments system's payout files for the 2025 and 2026 windows, the closed outcomes the rates and the back-test read).
-8. Spine: the warehouse's monthly driver activity extract (driver x month: completed trips and online time), from Larch's
-   launch in May 2021 to the extract run on Sunday 3 January 2027, in two layouts across the July 2024 dispatch
-   migration; constructed in the layout of a ride-hail data warehouse export.
-9. Deliverables: `guarantee_fund_jan2027.xlsx` (the fund, its critical components and the two ask tables) and
-   `guarantee_fund_jan2027.pptx` (two slides: the fund, and the last two windows' cost from gross to net); the format set
-   (xlsx and pptx) is in none of the last three builds.
-10. People, drawn with `guard.py names --geo "United States" --seed 157` and checked clean: Gary Mathews (head of driver
-    supply, the requester, in no file the prompt names and not in the prompt), Kathy Sherman (finance director, the
-    funding email), Jesse Velasquez (supply analytics, the KPI report's owner and the warehouse extract log), Melvin
-    Harrell (payments operations, the payout files and the returns log). Invented names: Larch Rides (checked against
-    real ride-hail and Minnesota firms: no match); further names (the rental partner, the campaign's name) are checked the
-    same way when the pack is cut.
-
-**Data-native sentence.** Larch's records show every driver's month on the road, so last winter's campaign recruits are
-not hidden anywhere: they drove from February to April 2026 and then took no trip from May to October, which reads as
-churn; but most of them were laid off for the winter and went back to their trades in April, and they come back as their
-trades shut down, in a wave whose timing (a run of returns from mid-November, a lull over the holidays, the largest week
-the week the guarantee goes live) has been the same in every winter on Larch's record, while how many of a winter's
-drivers come back is the group's own; so the part of the wave already back on the Sunday before the window gives the
-part still to come, and no rate on the drivers away or by the month each left can.
-
-**Guard and similarity.** `guard.py check` PASS at registration. The ban window held task155, task464 and task265 (the
-re-pull before the check brought task265 in and moved task237 out, which freed `launch_or_rollout`). WARN answered at an
-earlier check: `repeat.gate_g` (forecasting, task155) is the honest Gate G key for a call whose difficulty is the forecast
-of a forward quantity; the xlsx and docx set (task265) was replaced by xlsx and pptx. Same-puzzle and same-driver tests:
-gap time, decisive G12 and decision `quantity_figure`, Gate G `forecasting`: task231 only (older, differentiated on the
-card: a lagging exit register read from mature rounds, not a returning wave read from its own leading edge).
-
-**Abstraction test.** Stripped of nouns: members of a group that stopped together come back in a wave that begins before
-the forecast date and peaks inside the forward window; how many come back is the group's own and when each comes back
-follows a calendar every earlier wave kept, so the members still to come are the members already back times the ratio
-earlier waves showed between the window and the same date. The nearest by mechanism, read for latent structure:
-- task146 weighs a pool built in the closing quarter by the month each claimant was refused, each region at its own
-  refiling share; there the timing of the refusal is the rate. Here timing carries no rate (it is common to every wave),
-  the group's return share is unknowable from when its members left (the campaign's bonus drivers and its seasonal
-  workers both stopped in April), and the move is reading the group's size off its own arrivals.
-- task151 sums a unit's chances of clearing stepped lines from a resampled distribution of comparable seasons; here there
-  is one line, priced at last year's observed rates, and the decisive quantity is how many members of a returning cohort
-  enter the window at all.
-- task156 projects a shrinking volunteer pool against arrivals of work; here the cohort is coming back, and the forecast
-  reads its size from the leading edge of the return.
-- task133 starts loans at their age at a takeover (delayed entry) and task265 starts hips at their registry enrolment;
-  here nothing is truncated: the cohort's churn is right-censored by a winter not yet over.
-- task134's round-1 architecture converted a pool by months since admission, and task231 reads silent units' exits
-  from mature rounds; here no hazard is fitted, and the pool rate is the rival the out-of-sample check rejects.
-- task181 (the record's nowcast family, F4) completes an arrived count by each route's own delay; here the delay
-  profile is common and known, and what differs between groups is the share that ever comes back, which only the arrived
-  part reveals.
-None shares the latent structure, the default path and the correction.
-
-**Sources, one line each.**
-- Seed FC28 header and Situation (`status.py task157`): the world, the $350 guarantee at 40 trips, the January pre-funding,
-  the first winter campaign whose recruits had mostly stopped by May; nothing else of the seed is read or kept.
-- `guard.py mechanisms --objective forecasting` (68 builds): reactivation and return ground on file is a quarter-turn
-  refiling pool weighted by refusal month (task146), a hazard by time since admission (task134 round 1), mature-round exit
-  shares (task231) and a dormant residue among recirculating stock (task91); none reads a returning group's size off its
-  own arrivals.
-- `stumping/references/client/layer2-rigor-patterns.md`, product-analytics retention-cohort pattern 1 (young cohorts are
-  censored, not churned): the cohort here is censored by a winter that has begun, so the estimator is its own early
-  returns developed at the earlier cohorts' timing, not a survival curve from cohorts observed that long.
-- `stumping/references/strategies.md` F4 (maturity and censoring; vary what is censored, whose speed differs) and F6
-  (method selection out of sample): what is censored is a cohort's return, its speed is common, its size is not.
-- `two-layer-task-design.md`: the client's example of the data's real structure (time to an event with people who left
-  early treated as censored) and of validating a forecast on data it was not built on (the rival rejected on January
-  2026).
-- task156 in this lane (the same pairing, four builds back): a volunteer pool's retained capacity; this build's cohort is
-  a supply-side user cohort's resurrection, and the stump is the leading edge, not a binding capacity.
+- **Card:** `.claude/skills/fingerprint/cards/task157.json` (architecture 2, architecture 1 in `lineage` with
+  its measured fate), registered 2026-10-27, re-checked against the restamped ban window: WARN only, no BLOCK,
+  no person warning, `validate` clean on 299 cards, `heart` WARN. Personas drawn with
+  `guard.py names --geo "United States"` over three seeds and screened to zero `people.*` warnings: Philip
+  James, Laura Davis, Tony Lynch.
+- **Pairing:** `political-science-public-policy` / `election-polling-forecasting`, objective **Forecasting &
+  Predictive Modeling**, prompt shape **03** (bridge between totals, one reconciling item per disposition class
+  per county), decision type `quantity_figure`, answer unit a count of signatures.
+- **Why the objective is Forecasting and not Descriptive.** The call is what a full count would find, which is
+  an unobserved total rather than a future value, and Descriptive & Distribution Analysis was weighed for it.
+  Forecasting is kept for two reasons: the objective is Forecasting **and Predictive Modeling**, and predicting
+  the result of a full count from a probability sample is predictive modeling rather than a description of a
+  population in hand; and the taxonomy maps `election-polling-forecasting` to F alone, so a Descriptive tag
+  would need a task type (`small-area-public-opinion-estimation-mrp`, `legislative-behavior-ideal-point-estimation`)
+  that does not hold this quantity. The tag is the weakest axis of this draw and is recorded as such.
+- **Niche:** a state elections division projecting, from the statutory three per cent random sample of a filed
+  initiative petition, how many of its 1,043,000 signatures a full count would find valid, when the sample is
+  the only part of the petition that is ever keyed.
+- **Strategy:** gap `population` and `rule`, generators `G10` and `G2`, Gate G `forecasting`, strategy `other`,
+  Layer 2 family `field_method`, pattern `own:pairwise-defect-inclusion-is-the-square-of-the-sampling-fraction`,
+  calibration `prior_period_close_out`, context artifact `register`, `stump_class: analytical`, no official
+  decoy, no validated decoy, decisive rule not filed.
+- **Data-native sentence.** Only the sampled sections of this petition are ever keyed, which is how a
+  random-sample check of a petition actually works, so a duplicate signature exists in the record only when the
+  sample happened to draw both signatures by the same signer; every other ground of invalidity is a property of
+  the one signature in front of the verifier, and that difference in what the sample can see is a property of
+  this pack's own generating process rather than of any rule in it.
+- **Sources, one line each.** `guard.py mechanisms` was read on `forecasting` (90 builds) and
+  `opportunity-sizing-decision` (14) before drawing. Almost every forecasting driver on file is a behavioural
+  rate measured on one population and carried to another (returning waves, take-up, roll-off, conversion,
+  reactivation, retention, non-renewal, hazard by age), which is exactly the family the bin law kills and why
+  architecture 1's shape is not repairable by changing its world. task264 v2 is the nearest insight at 0.06, an
+  inclusion probability the record's own design sets, and the differentiation is in the card. task190's
+  architecture 3 is the measured death in this genus and is answered under `## Readability screen`. Nearest
+  driver on file is 0.09 (task445 v1).
+- **Fiction.** Arizona, USD, a state elections division, forum `committee_or_panel`, forcing event
+  `vote_or_meeting`, org family `government_agency`.
+- **Deliverables:** `signature_projection_2027.xlsx` and `petition_disposition_2027.png`.
+- **Spine:** `sample_verification_register_2027.csv`, one row per sampled signature and the disposition its
+  county gave it, 31,290 rows, grain sampled signature by county by sheet section.
 
 ## Default path
-1. Read finance's email and the guarantee terms: the expected total for the window, $350 to every eligible driver who
-   completes 40 trips between 00:00 Monday 4 January and 23:59 Sunday 31 January 2027 (Central time), accounts approved
-   by Sunday 3 January, drivers who are not on the road today included.
-2. Stack the warehouse extract's two layouts (legacy driver numbers through the crosswalk), and take December 2026's
-   roster: every account with a completed trip in December 2026, banded by December trips.
-3. Join the 2026 payout run and its late credits (less the fraud recoveries) to December 2025's roster and read each
-   band's share of accounts paid; carry each band's share onto December 2026's roster.
-4. Add new drivers: the onboarding app's accounts approved by 3 January 2027 (within the 90 days) with no first trip, at
-   the share of last year's such accounts the 2026 guarantee paid.
-5. Add the drivers away: every account with a trip from January to November 2026 and none in December, at the share of
-   last year's drivers away who came back and were paid.
-6. Multiply by $350 and round to the nearest $50,000.
 
-Ends on: $1,450,000 (built: expected total $1,444,669, 4,128 drivers, 4,100 to the nearest 100).
-Golden: $1,650,000 (built: expected total $1,644,850, 4,699.6 drivers, 4,700 to the nearest 100).
+The pipeline a competent analyst builds from the prompt's words and the files' grain.
+
+1. Reconcile the county verification registers to the office receipt log, mapping the one county still filing
+   on the old disposition codes.
+2. Place each sampled signature in the voter file through its two registration vintages.
+3. Count dispositions in the sample: 8,200 of 31,290 invalid on single-signature grounds (26.21 per cent), and
+   106 struck as duplicates.
+4. Expand every class at the statutory sampling fraction: single grounds 273,333, duplicates 106 over three
+   hundredths, 3,533.
+5. Valid equals 1,043,000 less 273,333 less 3,533.
+
+Ends on: about 766,110 valid signatures, which prints **770,000** to the nearest 10,000 and stands at 122.9 per
+cent of the 623,212 threshold, so the board certifies outright.
+
+Golden: about 651,650 valid signatures, which prints **650,000**, 104.6 per cent of the threshold, so the board
+orders a full count. The duplicate burden is 106 over nine ten-thousandths, about 117,780.
+
+The two graded figures are twelve bins of 10,000 apart and the calls differ, which is the separation
+architecture 1 never had. Both figures are candidate magnitudes from the draw's arithmetic and are re-measured
+against the cut pack at stage 3.
 
 ## Stump sentence
-Carrying December's roster at last January's qualification shares, adding the onboarding app's approved drivers and
-the drivers away at last January's return rate files $1,450,000; the step that lands it there is pricing last winter's
-drivers who are not yet back as a pool at last year's return rate, when they are the rest of a wave whose size is the
-group's own and whose timing every earlier winter kept, so the part already back on 3 January (1,087 drivers) gives the
-part still to come: about 1,200 more drivers inside the window, the wave priced at its own January qualification, and
-a fund of $1,650,000.
+
+A competent solver who reads every disposition code, places every sampled signature through both voter file
+vintages and expands the sample at the statutory three per cent files about 766,110 valid signatures and an
+outright certification; the step that lands them there is expanding the duplicate dispositions at the sampling
+fraction alongside the single-signature grounds, when a duplicate is a relation between two signatures that the
+sample sees only when it draws both, so the duplicate burden is about 117,780 rather than 3,533 and the
+projection is about 651,650, which orders a full count.
 
 ## Three rules
 
-Task type: retention-cohort-lifetime-value-modeling (Product Analytics), which serves Forecasting & Predictive Modeling in the taxonomy; the setting is a ride-hail platform's supply-side users and its winter guarantee.
-Domain test: the deciding quantity is how many of last winter's seasonal drivers come back inside the window, forecast the way product analytics forecasts a resurrecting cohort: the cohort's own early returns developed at the return-timing ratio earlier cohorts showed, rather than a churn or reactivation rate on the users away or a cohort's size at another cohort's rate.
-Swap: "how much will a hospital's flu-season retention bonus pay nurses who work ten shifts" keeps a bonus and a threshold but loses the platform's supply-side user cohort recruited through an app campaign one winter, away through the summer in its own trades and resurrecting on those trades' calendar, so the growth-accounting quantity the call turns on (resurrected users by cohort) has no record to be read from.
-Layer 1: the dispatch platform migration of July 2024 (legacy driver numbers and online hours to Sunday 14 July, new driver ids and online minutes after, July 2024 in both exports), the migration crosswalk with 38 drivers registered twice on the old platform mapped to one id, months in which a driver went online without completing a trip, the payments system's two payout layouts (the 2025 run in cents from the old payout report), the bank's ACH return report covering every payout from the account (weekly earnings included), the guarantee window on local time over four Monday-to-Sunday weeks against the warehouse's calendar months, an extract run on the Sunday before the window (its January 2027 holds 1 to 3 January), the KPI report published through November on its own definitions, onboarding and payments timestamps in UTC; each is how those systems write their files, and none carries the call (each asserted neutral in checks.py, R2).
-Layer 2: estimation_fit, censoring: last winter's seasonal drivers look churned and are a return not yet complete; the choice that flips the call is completing the return wave from its own arrived part at the timing ratio earlier waves kept, not pricing the drivers away at last year's return rate.
-Decisive step: size the remainder of the returning seasonal wave inside the window from the part of the wave already back by the funding date, at the ratio of window returns to returns by the same date that the earlier winters' waves showed, and price the wave at its own January qualification.
-Not semantics: every field is read correctly on the default path (each driver's months, trips, the crosswalk, the payout file's paid drivers, the terms' window and threshold, finance's estimand); the campaign recruits' empty summer months are complete and correct, and reading them correctly as no trips still leaves the analyst choosing how to price drivers who are away, which the pool rate does wrong.
-Not rule application: the terms and the email file the estimand (who is paid, for what, in which window, in expected dollars, to the nearest $50,000); no filed rule says how to forecast who comes back, and executing every filed rule on the default path files $1,450,000.
-Analyst test: a strong analyst who stitches the two activity layouts through the crosswalk, reads the terms and finance's email correctly, carries December's roster at last January's qualification shares by December trips, adds the approved drivers without a trip at last year's share and the drivers away at last January's return rate files $1,450,000; only sizing the returning wave from the part already back, at the ratio earlier winters showed, and pricing the wave at its own January qualification files $1,650,000 (executed in checks.py on the generator's clean truth: R3a $1,450,000, R3b $1,650,000, every single lower correction wrong).
-Estimand: finance's funding email (Kathy Sherman to Gary Mathews, 30 December 2026) and the 2027 guarantee terms file the population (every eligible driver who completes 40 trips in the window, eligible meaning an account approved by 23:59 on Sunday 3 January 2027, whether or not on the road at the as-of, returning and new drivers included), the outcome ($350 each), the window (4 to 31 January 2027, Central time), the unit (the expected total in dollars, returns and recoveries left out) and the rounding ($50,000 steps); there is no comparison.
-No decoy: no memo, draft, forecast, stakeholder figure or prior funding request states a fund figure or argues a method; the KPI report answers its own question (monthly supply to November) and ranks nothing; the 2025 rental programme is a real event in the history, there as history.
-No certified replay: no shipped figure is reproduced to recover a method; the payout files are closed outcomes that every method reads alike, and the back-test on January 2026 is the analyst's own validation, not a published control set.
-Lesson: a model learns that a reactivation wave already under way at the forecast date carries its own size in its leading edge, that a return rate measured on last year's away pool does not transfer to a pool whose makeup changed, and that a cohort recruited for a season is censored, not churned, until its season comes round; no build on file reads a returning group's size off its own early returns at a stable timing ratio.
+Task type: election-polling-forecasting: projecting a filed petition's valid signature total from the statutory
+random sample, a task type the taxonomy maps to Forecasting & Predictive Modeling.
+
+Domain test: the deciding quantity is the number of valid signatures a full count would return, estimated the
+way election administration estimates it, by design-based expansion of a probability sample in which each
+ground of invalidity carries its own inclusion probability; put another field's nouns in and the quantity
+disappears, because the estimator exists only where a statute fixes a sampling fraction and a threshold and
+where one ground of invalidity is a relation between two records rather than a property of one.
+
+Swap: "projecting from the statutory three per cent random sample, how many of the 1,043,000 signatures the
+measure filed would a full count find valid, and should the board certify, order a full count or reject"
+becomes "how many of 1,043,000 hospital admissions would a full count find valid", and it reads as one
+multiplication: an admission has no second member that must fall in the same sample for its defect to be
+visible, so the whole decisive step has nothing to attach to.
+
+Layer 1: two voter file registration vintages; one county still filing on the old disposition codes; sheet
+sections keyed by circulator rather than by signer; the office receipt log against the county registers; the
+prior initiative's close-out at a different threshold. Each is written by the system that produces it, none is
+placed to be caught, and each is asserted neutral on the call at stage 3.
+
+Layer 2: field method (design-based estimation): the call flips on recognising that one disposition class's
+inclusion probability is the square of the sampling fraction rather than the fraction.
+
+Decisive step: expanding the duplicate dispositions at the pair inclusion probability, the square of the
+sampling fraction, rather than at the fraction every single-signature ground expands at; in election
+administration's own words, reading the design's inclusion probability for a ground that is a relation between
+two signatures.
+
+Not semantics: every disposition code, both voter file vintages, the threshold and the sampling fraction read
+perfectly still leave the easy route expanding one class at the wrong power of the fraction, because no field,
+code, unit or definition in the pack carries an inclusion probability; the fraction is stated once, in the
+statute, and it is the right number for every other class.
+
+Not rule application: the statute files the sample size, the threshold and the certification bands, and no
+shipped sentence states how a class expands. Executing every filed rule with the statutory fraction applied to
+all classes files the certification, so the step no rule performs is reading the design.
+
+Analyst test: a strong analyst who reads every disposition code correctly, places every sampled signature
+through both vintages, reconciles the registers to the receipt log and applies the filed threshold expands
+every class at the statutory fraction and files about 766,110 valid signatures, printing 770,000 and certifying
+outright. Executed in `checks.py` on the generator's clean truth at stage 3.
+
+Estimand: the statute's sampling section, filed at authority: the number of signatures a full count of the
+filed petition would find valid, where the filed total, the sampling fraction and the threshold are the
+statute's own, and the sample is the signatures the counties verified. It fixes the population, the window, the
+unit and the comparison, and says nothing about how any disposition class expands.
+
+No decoy: nothing is planted to be caught. Duplicate signatures are authentic, because people sign twice at
+different events; no memo, briefing or draft argues for an expansion basis; no file states a valid total or
+ranks the dispositions.
+
+No certified replay: the prior initiative's close-out is the calibration organ and must tie under every
+expansion basis, which is a stage 2 construction constraint recorded below, not a figure that reproduces a
+method.
+
+Lesson: a defect that is a relation between two records enters a probability sample only when both members do,
+so its design weight is not the sample's weight; no build on file teaches an inclusion probability that differs
+by class within one design (task264 carries a per-respondent design weight whose probability rises with
+multiplicity, which attaches to a unit and is linear in the fraction).
 
 ## Readability screen
-Six tests per rung (1 a filed sentence names it or sends the solver looking, 2 a column, key or marker makes it a
-predicate or a header join, 3 an opponent reflex, 4 a control or corpus scores it, 5 the hygiene battery finds it, 6 one
-subtraction, ratio or half of a figure). Figures are built (generator/calc.py, asserted in checks.py).
 
-| Rung | 1 Filed | 2 Schema | 3 Reflex | 4 Control bench | 5 Hygiene | 6 Linear | Verdict |
-|---|---|---|---|---|---|---|---|
-| R0 December's roster at last January's shares by December trips, the approved drivers without a trip, every account with a trip from January to November and none in December at last January's return-and-qualify share ($1,450,000) | the terms and the email name the window and the drivers paid, which invites carrying last January | the activity extract and the 2026 payout file carry December trips and last year's paid drivers | yes, the default | the analyst's own back-test: the pool's rate carried a year forward missed January 2025's returns by 19 per cent and held January 2026's within 1 per cent, a rate that moves with who sits in the pool; on last winter's drivers alone it missed by 14 and 16 per cent | no | yes, one rate | readable |
-| R1 the same with the pool held to last winter's drivers away ($1,500,000) | no | the extract's months | yes, holding the pool to a visible attribute | the same back-test | no | yes | readable |
-| R2a the campaign's recruits at the share of the organic first-winter recruits who came back the next January ($1,450,000) | no | the accounts file's signup channel names the campaign | yes, the analog | the campaign's own December returns run well above the organic recruits' at the same date | no | yes | readable |
-| R2b each driver away at the return rate of drivers who last drove in the same month ($1,500,000) | no | the extract's last month before the summer | yes, a rate by a visible attribute | the campaign's bonus drivers stopped in April with its seasonal workers, so the stop month's rate from earlier drivers misprices the campaign | no | no | readable |
-| R2c a logistic propensity fitted on the 2026 lapsed pool (recency, tenure, lifetime trips, last January's trips) ($1,450,000) | no | the obvious covariates | yes, the modeller's reflex | the campaign's recruits have no last-January history and sit where the 2025 rental drivers, who never came back, taught the fit | no | no | readable |
-| R2d one ratio of January returners to November and December returners over every driver back after a break ($1,550,000) | no | the extract's months | a half-step from the decisive move | its own back-test misses by 10 and 6 per cent in opposite directions (the occasional returners keep no seasonal timing) | no | yes | readable |
-| R2e the rest of the wave developed, but the drivers already back priced by their December trips like the rest of the roster ($1,600,000) | no | December trips | a half-step | at the 2026 funding date December-trip bands put the back-by-December drivers' qualifiers at 295 against 350, where their own share a year earlier put them at 354 | no | no | readable |
-| R3 (decisive) the returning wave's remainder sized from the part already back by 3 January at the ratio of January returns to November and December returns that the 2024 to 2026 winters kept, the wave priced at its own January qualification ($1,650,000) | no sentence names a wave, a return share, a timing ratio or seasonal workers; the terms define who is paid, not who comes back | no column marks a seasonal driver, a return or a leading edge: the extract carries months and trips, the accounts file a signup channel shared by the campaign's bonus drivers and its seasonal workers alike | no: the reflexes are a pool rate, an analog, a rate by attribute, a fitted propensity | none ships: the payout files are closed outcomes every method reads alike, and no document scores a method | no: nothing is duplicated, missing or mis-keyed on the call's rows | no: a group's own arrivals developed at a timing ratio read from earlier groups, then priced segment by segment | silent |
+Owed at stage 2 for architecture 2, a row per rung over the six tests, verdict last, the decisive row `silent`.
+Two rows have to be argued hardest and both are named now rather than discovered later.
+
+**Test 1, the filed sentence, and it is this draw's real risk.** The duplicate dispositions are visible in the
+sample: a solver reading the verification register meets a class of about 106 signatures struck as duplicates
+and is directly confronted with the question of how to expand it. That is a clause it cannot avoid reading,
+which `stumping` 2.1 test 1 says sends the solver looking. The step then rests on whether seeing the class
+leads to seeing that its inclusion probability is the fraction squared, which is a genuine analytical move and
+the reason the draw is worth building, but it is reflex-adjacent for anyone who has done sampling theory. The
+screen must measure it honestly and say so either way; if it reads, the fix is in the design and not in a
+sentence.
+
+**task190's architecture 3 is the measured death in this genus** (`task190/DESIGN_NOTE.md` lines 536 to 560): a
+design-based projection from a probability-proportional sample, where Gate B forced the audit manual and the
+reliability factor table to ship, shipping them handed the route back, and two independent cold threads landed
+the call. The structural difference claimed for this draw, and it must be asserted rather than argued: nothing
+has to ship to make this projection computable, because the sampling fraction and the filed total are world
+facts the prompt's own forcing sentence carries and the decisive move is one division. Two design constraints
+follow and are not optional. The pack ships **no keyed full signer list**, which is realistic because only
+sampled sections are ever keyed, and without which a solver dedupes the petition directly and the build
+collapses. And the `prior_period_close_out` calibration must tie under every expansion basis, which is easiest
+if the prior initiative's duplicate burden was negligible.
 
 ## Semantic fork table
 
-Every term in the main ask and every convention the main computation needs. Every id is asserted in
-`generator/checks.py`.
-
-| ID | Term or convention | Golden reading | Alternative | Call under it | Ruled out by |
-|---|---|---|---|---|---|
-| SF1 | "how much ... need in its account" | the guarantee's expected total for the window (finance's email: the expected total, funded in $50,000 steps) | a cover figure at a high percentile; the main run's cash only | a larger fund; a smaller one | finance's email ("the expected total the guarantee will pay") |
-| SF2 | "every driver who completes 40 trips" | each person once, on completed trips in the window (the terms: one guarantee per driver, merged accounts count once) | each account | same call (merged accounts are a handful; asserted) | the terms; same call, asserted |
-| SF3 | completed trips | trips the rider completed and paid, net of trips refunded for fraud (the terms) | trips accepted, cancellations included | same call (the golden prices on last year's paid drivers, which the payments system counted on the terms) | the terms |
-| SF4 | the window | 00:00 Monday 4 January to 23:59 Sunday 31 January 2027, Central time (the terms) | calendar January; ISO weeks 2 to 5 as in 2025 and 2026 | same call (the golden reads last year's paid drivers, not trip counts; asserted) | the terms |
-| SF5 | drivers not on the road today | in: returning drivers and approved drivers who take their first trip during the window are paid on the same terms | December's roster only | $1,350,000 (asserted) | the terms ("open to every driver whose Larch account is approved by 23:59 on Sunday 3 January 2027 ... including drivers returning to Larch after time away and approved drivers who take their first trip during the guarantee") and the email |
-| SF6 | the as-of | the extract run on Sunday 3 January 2027, every file pulled that day; the extract's January 2027 holds the 1st to the 3rd | data through 31 December | same call (asserted: the 1 to 3 January returns moved to the window file the same fund) | the extract log; same call, asserted |
-| SF7 | the rounding path | the expected total, unrounded, to the nearest $50,000 | each segment rounded first; a ceiling to the next $50,000 step | same call (asserted) | finance's email ("to the nearest $50,000"); same call, asserted |
-| SF8 | who qualified last year | the drivers the 2026 guarantee paid in its main run, late credits added and fraud recoveries removed | the main run alone | same call (asserted: the late credits and recoveries are a few dozen drivers and move no bin) | the payments notes; same call, asserted |
-| SF9 | "drivers you expect to qualify" | the expected number of persons who complete 40 trips | accounts paid | same call | the terms (SF2) |
-| SF10 | the guarantee's terms across years | $350 at 40 completed trips over the four weeks from the first Monday of January, unchanged in 2025, 2026 and 2027 | a change between years | none on file | the 2025 and 2026 payout files and the 2027 terms |
-| SF11 | last winter's drivers | drivers with a trip in January to March 2026 and none from May to October 2026 | trips in December to March; trips in January to April; no trip June to October; a row rather than a trip | same call (asserted: the definitions select the same wave within eight drivers and file the same fund and drivers) | C1, asserted |
-| SF12 | the drivers the guarantee can pay | accounts approved by 23:59 on Sunday 3 January 2027 (the terms, as in 2025 and 2026; 73 drivers who completed 40 trips in the 2026 window on accounts approved later were not paid) | every driver who completes 40 trips, however late approved | about 80 more drivers, 4,800 to the nearest 100 | the terms ("Accounts approved from Monday 4 January take part in the next guarantee.") and the prompt's "every eligible driver" |
-| SF14 | whether the shipped Q1 2027 rider demand plan governs the qualifier forecast | it does not bind: the plan's January window carries 447,500 completed trips, which at December 2026's mean qualifier trips (83.2) is 5,378 qualifiers, clear of the golden's 4,700, so supply is the binding side | the plan is a trip ceiling, so the qualifier count is the pool divided by the trips a qualifier takes | 3,500 drivers and $1,250,000, the portal's first determinism judge | **C1**, asserted on three figures: the plan's window exceeds what the window takes, it exceeds December 2026's actual trips (369,207), and the window's own first three days already ran at 92 per cent of the plan's daily rate. The plan shipped at 316,650 trips, 72.5 per cent of the window it plans, because it assumed 11.8 per cent growth where the business was running 19 to 38 per cent and the window grew 53.7 per cent; the generator now sets its growth off the autumn's own year-on-year rate |
-| SF15 | what the ratio's out-of-sample error is an error of | the count of each earlier winter's January returns, a few hundred drivers: 308 against 306 at the 2025 funding date and 413 against 405 at the 2026 one | the fund's or the driver count's own precision, so about plus or minus 94 drivers on 4,700, which straddles three $50,000 buckets | no figure moves, but the portal's second determinism judge read the headline as unforced on it | the write-up now states the counts the per cent is of, so the referent cannot be read as the fund; the fourteen constructions of the golden span 4,688 to 4,703 drivers and one sigma of the ratio moves 46, both inside the bucket |
-| SF13 | who qualified last year, as the rate basis | every account the payments system counted at 40 completed trips (main run and late credits), less fraud recoveries: a driver qualifies by completing 40 trips, whatever happened to the payment | the drivers who kept a payment (Ask A's drivers paid: returned-and-never-resent payees dropped) | $1,600,000 and 4,600 drivers (4,625; the judge's 4,619) | the terms ("Larch pays $350 to every eligible driver who completes 40 trips between 00:00 on Monday 4 January 2027 and 23:59 on Sunday 31 January 2027, Central time."), the email ("Returned payouts and recoveries come back to the account afterwards, so leave them out.") and the payout notes ("It pays $350 to every account the payments system counts at 40 completed trips"); asserted |
+Owed at stage 2 for architecture 2, `SF1` onward, every row ruled out by a quotable shipped sentence or marked
+`same call`, each asserted in `generator/checks.py`. The rows already known to be needed: what the sampling
+fraction is a fraction of; whether a duplicate pair counts as one invalid signature or two; which registration
+vintage places a sampled signature; the one county's old disposition codes against the current set; the
+threshold's basis; and the rounding path to the nearest 10,000.
 
 ## Ladder
-Built figures from `generator/calc.py`, every row asserted in `generator/checks.py` (LADDER, OOS, R3b). Each fund is
-the expected total at $350 a qualifying driver, to the nearest $50,000.
 
-| Rung | Construction | Fund | Dies to |
-|---|---|---|---|
-| R0 default | December's roster at last January's shares by December trips, the approved drivers without a trip at last year's share, every account with a trip from January to November and none in December at last January's return-and-qualify share | $1,450,000 (expected $1,444,669) | its own back-test (the pool's rate carried a year forward missed January 2025's returns by 19 per cent, held January 2026's within 1 per cent: it moves with who sits in the pool); on last winter's drivers alone the rate missed by 14 and 16 per cent; the campaign's returns already in hand |
-| R0b one ratio, last January's paid accounts over December 2025's roster, on December 2026's roster | $1,350,000 | the returning wave is not on any December roster in proportion; the terms pay drivers not on the road |
-| R1 the pool held to last winter's drivers away | $1,500,000 | the same back-test |
-| R2a the campaign's recruits at the organic first-winter recruits' next-January share (0.204 against 0.221 for the pool) | $1,450,000 | the campaign's own December returns |
-| R2b a return rate by the last month driven before the summer | $1,500,000 | the campaign's bonus drivers stopped in April with its seasonal workers |
-| R2c a fitted propensity on recency, tenure, lifetime trips and last January's trips | $1,450,000 | the campaign's recruits sit where the rental drivers taught the fit |
-| R2d one January-to-November-and-December ratio over every driver back after a break | $1,550,000 | its own back-test misses by 10 and 6 per cent in opposite directions |
-| R2e the rest of the wave developed, the drivers already back priced by December trips | $1,600,000 | the back-test of the back-by-December drivers' qualification (bands 295, own share 354, actual 350) |
-| R3 decisive | the returning wave's remainder sized from the 1,087 back by 3 January at the ratio the 2024 to 2026 winters kept (1.086: 923 January returns for 850 back by December), the wave priced at its own January qualification (92.8 per cent back by December, 82.0 per cent of January's returners), everyone else on December's roster by December trips, the other returners (26) and the approved drivers (195 at 14 of 174) at last year's | $1,650,000 (expected $1,644,850; 4,700 drivers) | golden |
-
-**Position and margins.** The golden is the extreme cell: every rung files less. The default path is 4.0 bins of
-$50,000 under; the nearest rung that skips the leading edge, R2d, 1.96 bins under; every other such rung 3 bins or
-more. The half step R2e (the decisive development without the wave's own pricing) is 0.58 bins under and rounds one bin
-down, $1,600,000; it dies to its own back-test.
-
-**Convergence (C1, asserted).** Fourteen constructions of the golden file $1,650,000 and 4,700 drivers (4,688 to
-4,703 drivers): the timing ratio read from 2026 alone, 2025 and 2026, 2024 to 2026 pooled or as the mean of the three;
-the wave on January to March, December to March or January to April trips, May to October or June to October blanks,
-trips or rows; December's non-wave roster in tens, in the six golden bands or in twenties; the wave's January
-qualification from 2026 or 2025 and 2026 pooled; the other returners as a count or a rate; the new drivers as last
-year's count or on every new qualifier; second accounts dropped. The golden sits 0.40 of a bin from the fund's edge
-and 0.49 from the drivers'; one sigma of the timing ratio (0.0516, binomial on the 1,773 earlier returns) moves 46
-drivers and leaves both rounded figures unchanged; the stated components (about 1,100, about 1.1, about 1,200, about
-2,000) hold across every construction and the winters' own spread of the ratio (sd 0.0127). The campaign's size (2,215
-recruits) placed the golden mid-bin, a design parameter; the seed was fixed by rule and never searched.
-
-**Worth on the graded quantity.** Seeing the returning drivers at all is worth about $90,000 (R0b to R0); sizing the
-wave from its own leading edge rather than from a pool rate, an analog, a stop month or a propensity is worth $150,000
-to $220,000 more; pricing the wave at its own January qualification another $29,000.
-
-**Out of sample.** At the 2025 and 2026 funding dates the leading-edge ratio predicted the January returns of each
-winter's drivers within 2 per cent (308 against 306, 413 against 405); the previous January's share on the drivers
-still away missed by 14 and 16 per cent in opposite directions (263, 469), the 2025 rental programme's drivers sitting
-in the 2026 pool and never coming back; the one ratio over every driver back after a break missed by 10 and 6 per
-cent. The realised window (simulated past the run, never shipped) holds 4,704 eligible qualifiers: the golden is 0.1
-per cent from it, the default path 12.3 per cent under.
-
-**Strength.** P(one strong solver lands) about 0.12: it must see that last winter's campaign recruits are a return not
-yet complete rather than churn, that the wave's size is the group's own and cannot be read from a pool rate, an analog,
-a stop month or a propensity, that the part already back gives it at the timing ratio earlier winters kept, and that the
-wave prices at its own January qualification rather than at December's bands. P(both land) about 0.02 if independent,
-under 0.1 with any plausible correlation. The seed was fixed by rule (task number, then the as-of month and day:
-1570103) before any data was generated and is never searched.
+Owed at stage 2 for architecture 2, measured over at least three seeds. There are about twelve bins of 10,000
+between the default path and the golden, so unlike architecture 1 there is budget to place three or four rungs
+and still leave the decisive gap the **largest** of them, which `stumping` Part 3 requires and architecture 1
+violated at 0.58 of a bin.
 
 ## Closure table
 
-| # | Axis | Reading | Closure |
-|---|---|---|---|
-| 1 | Population | every driver who completes 40 trips in the window, drivers not on the road at the as-of included | filed (the terms and the email); SF5 |
-| 2 | Unit of account | the person, one guarantee each; the expected total in dollars | filed (terms); SF2, SF9 |
-| 3 | Attribution window | 4 to 31 January 2027, Central time | filed (terms); SF4 same call asserted |
-| 4 | As-of dating | the extract run on Sunday 3 January 2027 | filed (the extract log, every export's run date); SF6 |
-| 5 | Version basis | the 2026 payout file as paid, late credits and fraud recoveries applied | SF8 same call asserted |
-| 6 | Denominator | each segment's rate over its own drivers on last year's equivalent date | C1 across segment definitions (asserted) |
-| 7 | Weighting | none: counts priced at $350 | n/a |
-| 8 | Window length | the winters the timing ratio is read from | C1: 2026 alone or 2024 to 2026 the same fund (asserted) |
-| 9 | Boundary inclusivity | 40 trips or more | filed (terms) |
-| 10 | Rounding path | the unrounded expected total to the nearest $50,000 | filed (email); SF7 |
-| 11 | Tie-break | none | n/a |
-| 12 | Maturity and censoring | the returning wave incomplete at the as-of; the extract's January 2027 partial | the decisive step itself (the method, open and forced by the data); SF6 for the partial month |
-| 13 | Order of operations | segments priced and summed, then multiplied and rounded | C1 (asserted) |
-| 14 | Row order | sums and set membership | C1 |
-| 15 | Duplicate resolution | July 2024 in both activity layouts (each holds its own half of the month) | C1: the call's sets read trips as present or absent, the same under either handling (asserted) |
-| 16 | Identity normalisation | legacy driver numbers to driver ids through the crosswalk; merged accounts | C1: the wave and rosters read post-migration months; pooled variants the same fund (asserted) |
-| 17 | Netting against gross | none on the call (bank returns are Ask A's) | n/a |
-| 18 | Dimensional units | trips and dollars; online hours in hours and minutes by layout (not read by the call) | n/a for the call |
-| 19 | Code and status semantics | account status and sign-up source | the dictionary; C1: no status read by the golden (asserted) |
-| 20 | Integerisation | none before the total | the golden mid-bin with one sigma (asserted) |
-| 21 | Clause scope | the terms apply to the 2027 window | filed (terms) |
-| 22 | Forward window contents | the drivers who will drive in the window | forecast from the records (the decisive step); no driver file covers the window |
+Owed at stage 2 for architecture 2: the 22 axes with the reading and the closure move, one row per axis number.
 
 ## Literal reader
-Executing the prompt, finance's email and the 2027 terms word for word gives the expected total of $350 for every
-eligible person (account approved by 23:59 on 3 January) who completes 40 completed trips between 00:00 on 4 January and
-23:59 on 31 January 2027, Central time, drivers not on the road on 3 January and approved drivers who start during the
-window included, to the nearest $50,000; no shipped sentence says how many drivers will come back or start, so a literal
-reader must forecast them; the easy method on the same literal estimand (December's roster and the drivers away at last
-January's rates) files $1,450,000, and the fork table leaves no reading under which any rung is the golden.
+
+Owed at stage 2 for architecture 2.
 
 ## Oracles
 
-- The 2025 and 2026 payout files: closed outcomes (who was paid) that every method reads alike; on the wrong path they
-  supply last January's rates, and the analyst's own back-test on them rejects the pool rate. No closed window carries
-  a 2027 figure.
-- The KPI report (monthly supply to November 2026): answers its own question on its own definitions, consistent with
-  every method; it holds no December and ranks nothing.
-- The onboarding pipeline: the new drivers' base, read alike by every method.
-- No control ties only under the golden.
+Owed at stage 2 for architecture 2. The prior initiative's close-out is the one control to screen hardest: it
+must tie under every expansion basis or be out of scope, never only under the golden.
 
 ## Ask sheet
-**Main call's declared row population:** the warehouse extract's completed-trip column (both layouts, through the
-crosswalk), the 2026 main run's and late credits' paid accounts less the fraud recoveries, the onboarding app's
-approvals by 3 January 2027 and by 4 January 2026 with their first trip times, the 2027 terms and finance's email.
-Device and hazard rows in it: 0 (asserted, DEVICE: the fund computed with the payout events, the bank's return report,
-the screening orders and the 2025 run deleted is unchanged to the driver; the call reads no submitted time).
 
-**Ask A. For each of the 2025 and 2026 guarantees: how much of what it paid out never reached a driver, what it cost
-net of later runs, bank returns and recoveries, and how many drivers it paid** (6 figures, whole dollars and whole
-drivers; the main run and later runs are not asked, they carry no device).
-- H18 home: an audit trail of the call's reference outcome, what last year's guarantee actually paid out and whom; the
-  fund prices qualifiers, never cash flows.
-- Use: the workbook's guarantee table and the deck's second slide (each guarantee from main run to net cost).
-- Basis (filed in Payments Operations' payout notes, the owner's voice): "A guarantee's cost is what its runs paid,
-  less payouts the bank returned that were never paid out again and less what was recovered; returns and recoveries
-  are booked to the guarantee of the payout they reverse, whatever run they land in." and "The drivers a guarantee paid
-  are the people who kept a payment: one per person however many accounts, none for a payout returned and never paid
-  out again or recovered."
-- Primary A1 (D2, the record is the latest accepted): the payments system sends a returned payout again under the same
-  payout id once the driver updates their payout details; the bank's return report still lists the return, and the only
-  record of the second send is the payout's events (a second `submitted` after `returned`, then `settled`); 104
-  guarantee payouts were sent again. Fair: the events log carries every send in order. Silent: the return report is
-  complete and true as a list of returns, no adjustment run carries a repayment, and no shipped sentence mentions a
-  second send (asserted).
-- Hazards: HA1 the 2025 run's amounts in cents (the old payout report; the notes say so), HA2 a 2025 fraud recovery
-  booked in the March 2026 run (the basis books it to 2025), HA3 a driver's second account paid in 2026 and merged in
-  December, its recovery not yet booked (people through merged_into), HA4 the bank's report covers every payout from
-  the account (the guarantee's carry the GUARANTEE entry description and the guarantee's payout ids).
-- Stops (built and asserted): S1/S2 every bank return on a guarantee payout netted, the battery's work otherwise right:
-  all 6 miss (2025 $28,350 / $873,950 / 2,500 drivers, 2026 $37,100 / $1,017,450 / 2,910, against the golden $12,950 /
-  $889,350 / 2,541 and $16,100 / $1,038,450 / 2,966); S3 recoveries booked by run date: both nets miss ($889,700,
-  $1,038,100); HA3 accounts for people: the 2026 drivers paid miss; S4 the golden.
-- Span: the 2025 and 2026 main runs, the adjustment runs, the bank's return report, the payout events, the accounts
-  file, the payout notes (7 files).
-- Realism: payment systems send a returned transfer again under its original id after the payee updates their bank
-  details, and a bank's return report lists each return as it happened.
+Owed at stage 2 for architecture 2, with the pair arithmetic, the cracker and mirror sheets and the separation
+counts.
 
-**Ask B. For each month from June to October 2026, how many people applied to drive, how many of them were approved and
-how many had taken a first trip by 3 January 2027** (15 figures, whole people).
-- H18 home: a component of the call's case, the onboarding pipeline that feeds the window's new drivers, read on
-  months the call never reads.
-- Use: the workbook's onboarding table.
-- Basis (filed in Driver Onboarding's counting notes): "A person is counted once, in the month (Central time) of their
-  first submission; approved means approved on any of their applications; a first trip is any completed trip on their
-  account by the date of the count." and "Someone who applies again after a rejection has a second application but
-  stays one candidate with the screening vendor."
-- Primary B1 (D8, an anchor on the current record, not the first): the onboarding app keeps one application per
-  applicant and overwrites its submitted time when the applicant resubmits after a document is sent back; 2,392
-  applications show a submitted time more than a day after the screening order their first submission placed. Fair: the
-  screening vendor's order export carries the order placed at each first submission ("Submitting an application places
-  the background check order with our screening vendor", the counting notes). Silent: every submitted time is
-  complete, valid and earlier than its decision, and nothing shipped says it moves (asserted).
-- Hazards: HB1 times in UTC (the basis counts Central time), HB2 people who applied again after a rejection (two
-  application ids, one screening candidate).
-- Stops (built and asserted): S1 application rows by their UTC submitted month (15 miss); S2 the battery's work
-  (Central time, people through the vendor's candidates) on the app's submitted time (15 miss: June 454 / 322 / 274
-  against the golden 446 / 313 / 263); S3 the golden.
-- Span: the applications export, the screening orders, the activity extract or the applications' first trips, the
-  counting notes (4 files).
-- Realism: onboarding tools keep one record per applicant and stamp the latest submission; a screening vendor keeps
-  each order with its own time.
+## Convergence, against a rival's family
 
-**The chart** (`guarantee_fund_jan2027.pptx`, slide 2): each guarantee's steps from main run to net cost (main run,
-later runs, never reached a driver, recovered, net cost), graded on its content (Ask A's figures) and its parts (both
-years, each step labelled with its value, the net marked).
+Owed at stage 2 for architecture 2, and it is the section architecture 1 got wrong: its fourteen constructions
+all varied the golden's own method and converged 20 of 20 in every world tested, including the one the portal
+broke. This section computes, on the clean truth, both the golden's own family (the hypergeometric pair
+inclusion against the fraction squared, the per-county, per-circulator and per-section groupings, the
+duplicate-signatures reading at two per pair, a triple-signer variant) and at least two families a competent
+solver builds **instead**: a Chao-style unseen-pairs estimator off the sample's singleton and doubleton counts,
+and a bootstrap over sampled sections. It states the bucket each files.
 
-**Hazard table.**
+## Bin measurements
 
-| Hazard | Asks moved | Per-ask delta |
-|---|---|---|
-| Clocks (UTC in the onboarding app, the screening orders and the payout events, Central time in the terms and the notes) | B | B: applications made after 19:00 Central on a month's last day move a month |
-| Identity (merged second accounts, people with two applications) | A, B | A: 2026 drivers paid by one; B: people applied |
-| Units and layouts (cents in 2025, a return report for every payout from the account) | A | A: the 2025 main run read as dollars; earnings returns netted |
+Owed at stage 2 against the cut pack; the draw's arithmetic gives the candidate figures, verified by hand on
+registration. Bin 10,000 valid signatures. (a) the decisive step's worth, about 114,240 signatures, 11.42 bins.
+(b) the defensible estimator spread, about 4 signatures, 0.0004 bins, because the hypergeometric pair inclusion
+and the fraction squared differ in the eighth decimal and every grouping gives the identical total; bounded at
+0.12 bins if a triple-signer variant is admitted. (c) the golden estimator's 95 per cent sampling interval,
+about plus or minus 22,420 signatures on 106 observed pairs, 2.24 bins. So (a) exceeds (b) plus (c) by about
+five times and is the largest available rung gap rather than the smallest.
 
-**Referee.** The payout notes' basis and the payout events (Ask A), the screening orders (Ask B); neither hands over a
-level.
-
-**Cracker sheet** (the cracker landed the call, ran the hygiene battery, executed every filed rule and matched every
-control):
-
-| Ask figures | The cracker's route | Device that holds | Verdict |
-|---|---|---|---|
-| A, both guarantees' never reached, net cost and drivers paid (6) | every bank return on a guarantee payout netted per the basis, recoveries booked to their payout's guarantee, people through merged_into, cents converted | A1 the payouts sent again under the same id | miss |
-| B, five months' people, approvals and first trips (15) | Central time, people through the vendor's candidates, the first submission read from the app's submitted time | B1 the overwritten submitted time | miss |
-
-**Mirror sheet.** The mirror stops at R0 or R2d and meets the same devices; it keeps the chart's parts and no Ask A or
-B figure unless it cracks a device.
-
-Mirror leakage: 8 per cent of ask weight (design: the chart's parts, about 2 of 25 ask criteria).
-
-Pair ceiling: 32.0 (design: the cracker at 38 + 7 + about 4 of 55 ask points; the mirror at about 5 + 7 + 3). Rerun
-from the generated rubric at stage 4.
-
-Measured by: generator/checks.py, whose ASK block runs each ask's cracker route on the cut pack and
-asserts how much it misses (ASK A S1 to S4 and ASK B S1 and S2; ASK B's two stops miss 15 of 15 figures
-each), and whose DEVICE block recomputes the fund with the payout events, the bank return report, the
-screening orders and the 2025 run deleted and asserts it unchanged to the driver. The pair ceiling and the
-mirror leakage above are the design figures those assertions bound, not a separate measurement.
-
-## Residual
-
-What the stage-4 judge and the rule 3 audit left standing, recorded as measured (every figure asserted in checks.py):
-- The driver count's lower edge is thin. The golden files 4,699.6 drivers and the fund needs 4,643 to 4,785; the
-  drivers' 100-step needs 4,650 to 4,749. My fourteen constructions run 4,688 to 4,703; the judge's reasonable variants
-  (ratio years, band sets from 2 to 20 wide, main-run-only and paid-less-recovered payees, winter pools from Feb or Jan
-  to Apr and Jun to Oct gaps) run 4,658 to 4,728, the lowest 8 drivers above the 4,650 line. Every one files $1,650,000
-  and 4,700; the margin is not widened by nudging the world.
-- Two weaker routes round one step down. The drivers who kept a payment as last year's qualifiers (Ask A's basis) file
-  4,625 (the judge's 4,619), 4,600 and $1,600,000: ruled out by the terms (a driver qualifies by completing 40 trips) and
-  the email (returns and recoveries left out), SF13. A generic pool of drivers back after a k-month break files 4,637
-  for k = 3 (the judge's 4,617) and 4,548 for k = 2 (4,527), $1,600,000 both, while k = 4 and 6 file the golden: inside
-  those pools last winter's drivers return 1.07 to 1.10 in January for each one back by December and the rest 0.05 to
-  0.20, and last winter's share of the pool's December returns rises to 0.92 (k = 2) and 0.97 (k = 3) in 2027 from 0.82
-  to 0.85 and 0.91 to 0.94 before, so a pooled ratio carried forward under-sizes the window; the winter pool's own
-  ratio holds 1.074 to 1.098 in every winter.
-- R2e, the near rival: the wave developed but the drivers already back priced by their December bands, 4,556 to 4,609
-  drivers, $1,600,000, one bin under; separated from the golden by one back-test year (the back-by-December drivers of
-  2026 priced by December 2025's bands at 295 against 350 paid, by their own 2025 share at 354).
-- The demand plan's dilution argument: the plan grows January's completed trips 11.8 per cent while the golden's
-  qualifiers rise 56 per cent on 2026's 3,019; the KPI report answers it, since trips followed supply when the campaign
-  added drivers (active drivers 5,965 in January 2026 to 8,464 in March, trips up 37 and 52 per cent on February and
-  March 2025, trips per active driver 47.1 to 54.4 against 49.5 to 52.6 a year earlier).
-- The 2026 base for the approved drivers without a trip is 174 accounts (approved in the 90 days to 4 January 2026, no
-  first trip by the end of that day); the judge's 183 counted no trip through December and so kept 9 that first drove
-  on 1 to 4 January. The write-up and the workbook now name the rows; both bases file the same fund and drivers.
+(c) is read here under the refinement now filed in `determinism-check`: this estimator is an observed count
+over a constant the statute fixes, with no fitted parameter, window, band width, distribution family or
+grouping, so every solver computing it files the same figure to the unit and the interval is the quantity's
+honest uncertainty rather than a fork. That is the structural difference from architecture 1, whose (c) was a
+fitted rate and therefore became real disagreement. It is tested rather than asserted: the estimator is
+computed under every grouping the records allow and the total shown identical. (c) is also a world dial,
+falling to about 1.40 bins at a five per cent statutory sample, and it is independent of (a), which the
+duplicate burden sets; in architecture 1 the rival span and the decisive worth were both proportional to the
+un-returned remainder, so no scaling separated them.
 
 ## Pre-ship check
 
-- Rule 1, the domain: the deciding quantity is a supply-side cohort's resurrection, how many of last winter's drivers
-  come back inside the window, read the way product analytics reads a resurrecting cohort (its own early returns at the
-  timing earlier cohorts kept); the swap test holds (the judge: with hospital or visits nouns the return-pool dynamics
-  stop reading the same).
-- Rule 2, two layers: Layer 1 is the migration crosswalk and its double registrations, July 2024 in both layouts, the
-  2025 run in cents, UTC against Central time, the partial January 2027, the bank's report covering every payout and the
-  resubmitted applications, each asserted neutral on the call (R2); Layer 2 decides (the judge's Three rules: domain
-  pass, layers pass, decisive step analytical).
-- Rule 3: no plant, no filed method, no field carries the wave (the rule 3 audit: PASS, P(one) about 0.10, P(both)
-  about 0.02 to 0.04); the easy route on the clean truth files $1,450,000 (R3a).
-- Determinism: the judge DETERMINISTIC, APPROVE (determinism_check_report.md); the leak reader clean, the decisive step
-  analytical; the residual above recorded as measured.
-
-## Surface screen
-
-`guard.py surface task157` promotes two pairs for adjudication; neither carries a hard tell (no shared file name,
-schema, same-seed table or invented name), and `guard.py heart` passes (nearest driver 0.07, task146). For the author,
-who alone runs the adjudicated `/clone-check`:
-- task156 vs task157 (consecutive numbers): the coarse card axes match (product-analytics x forecasting, decisive gap
-  time, `quantity_figure`), each the honest key here; the drivers share nothing (task156 projects a volunteer pool's
-  capacity falling below its arrivals of work; task157 sizes a returning cohort's remainder from the part already back
-  at a timing earlier cohorts kept). task156 was registered and shipped before this draw, `guard.py check` passed at
-  registration with the pairing outside the ban window, and the keys are not relabelled.
-- task231 vs task157: gap time, G12 and Gate G forecasting, the same-driver signature, differentiated on the card at the
-  draw (task231 reads silent units' exits from mature rounds of a register; here no hazard is fitted, and a returning
-  group's size is read off its own leading edge).
-
-## Leak sweep
-
-`leak.py task157 --asof 2027-01-03` returns REVIEW (no LEAK); every line answered:
-- Sweep 3, golden figures in the pack (16,100 in a legacy row's online hours; 100, 274, 311, 446 and 500 inside the KPI
-  report's columns): coincidences of digits in data cells, none labelled or near a guarantee figure.
-- Sweep 3, the call's words in the data notes and the terms: the terms define the guarantee the call funds and the
-  notes list the files; neither states a fund, a count or a method.
-- Sweep 4, design-note vocabulary in the KPI report, the data notes, the payout notes and the terms (december, return,
-  campaign, payout, accounts): the files' own subjects (a month, a bank return, the campaign's signup channel, payouts);
-  none names a wave, a return share or a timing ratio (asserted in checks.py, HOW).
-- Sweep 9, dates after the as-of: two submitted times in the onboarding export are UTC on 4 January, Central evening on
-  3 January before the run; the demand plan's weeks are Q1 2027, a forward plan issued 4 December 2026 (allow-listed in
-  checks.py, H16).
-
-## Build record
-
-Stage 3, 2026-10-17; ship pass after stage 4 the same day. `build.py`: checks 79 run, 0 failed (the three-rules block R1 to R3c on the generator's clean truth,
-every SF row SF1 to SF12, the closure axes that can move, the ladder and its back-tests, both asks with stops and
-devices, the realism sweep, the input gates and the distractors' deletion test); `verify.py` (pandas, no generator
-import) 19 passed, 0 failed; two consecutive builds byte-identical (target, golden, figures.json, submission.md);
-`figures_check.py` 0 absent (71 figures); `voice-check.py` PASS (955 characters); H1 audit clean on the pack and the goldens;
-`leak.py` REVIEW, no LEAK; `guard.py validate` clean, `heart` PASS, `surface` two card-level promotions (above);
-20 files in 7 formats, the largest the warehouse activity extract at 165,826 rows; distractors
-`rider_demand_plan_q1_2027.xlsx` and `driver_referral_bonuses_2026.csv` in `metadata.json`. Invented names checked:
-Larch Rides matched no ride-hail or Minnesota operator in a web search; the rental partner, the campaign and the
-screening vendor are left unnamed; personas from `guard.py names`.
+Owed at stage 5 for architecture 2.
 
 ## Tried and rejected
 
@@ -509,6 +270,13 @@ screening vendor are left unnamed; personas from `guard.py names`.
   it as the fund's own precision, about plus or minus 94 drivers on 4,700. The write-up now names the counts,
   308 against 306 and 413 against 405, which are returns in the hundreds. The stump is untouched: the
   default path still files $1,450,000 against the golden's $1,650,000, four bins apart.
+
+- **Architecture 2 draw hunt, 2026-10-27 (screens run on paper before any card was registered, under the bin law now filed in `determinism-check`).** Four directions screened against the brief's test, that the decisive step's worth in bins must exceed the defensible-subgroup spread plus the golden estimator's own sampling interval, and that it must not be the smallest rung gap.
+  - **Pharmacology, population pharmacokinetics and exposure response (a weight-banded concentrate's forward vial commitment, the requirement built from each patient's own measured elimination rather than the per-kg label dose): dead before measurement.** `guard.py slots` put it on `task170/DESIGN_NOTE.md` line 667, where the same cell was screened with twenty in-cell candidates before any card and every one fell into one of four graves, "effective half-life on sparse troughs" among them as a fit whose estimator family forks the graded figure, with the note's own verdict "the cell is spent for this slot". Bins never reached: the candidate dies on determinacy, which is the (b) term.
+  - **Media reach and frequency (a 2027 schedule's net reach from a single-source panel's pairwise duplication against a random-duplication product of marginals): bins pass and Gate F does not.** Measured on paper at a target of 4.21 million with the bin at 100,000 people: decisive step 490,000 people or 4.9 bins, panel sampling interval about 48,000 or 0.48 bins, subgroup spread about 0.2 bins. It dies on readability test 7 instead, because the panel that makes the golden computable makes it a one-group-by (count the distinct respondents the schedule's vehicles reach), and the escape of carrying the joint across a longer window is already recorded dead in `task270/DESIGN_NOTE.md` line 155, a radio schedule's four-week reach from one-week diaries.
+  - **A council's already-born cohort (a forward intake read off births and the dwellings completing rather than off each area's own birth-to-intake ratio): dead on the corpus.** task150 is a school-by-school cohort-component projection with a kindergarten-to-births ratio in its own stump sentence and task153 already differentiates against it; the direction is occupied rather than fresh.
+  - **A regional waste authority's permitted void (the exhaustion quarter built from the settlement consecutive surveys of one lift measure, against the latest survey's filled volume over a lifetime density): bins pass, the guard blocks.** Measured with the bin at one quarter: decisive step about 3 quarters or 3 bins, survey volume error about 0.4 bins, subgroup spread about 0.2 bins, and the decisive gap is the largest rung gap. `guard.py check` returns BLOCK `test.same_driver` inside the batch against task304 on (time, G3, forecasting), which differentiation does not clear, and BLOCK `test.same_driver_older` against task169 v2; the abstraction test also maps its driver onto task89 v9 and v10, time to exhaustion as a stock over the right net change rather than the published stock over a gross outflow (`guard.py nearest` 0.05). Available only on a redrawn gap or decisive pattern.
+  - **Carried forward as the hunt's recommendation:** a pairwise defect's inclusion probability under a sampling design (a filed petition's duplicate signatures seen only when the sample draws both members of a pair, so the duplicate burden expands at the square of the sampling fraction while every single-signature ground expands at the fraction). `guard.py check` WARN, no BLOCK, nearest driver 0.09; measured at 11.4 bins for the decisive step against 2.30 for the sampling interval and at most 0.12 for the subgroup spread. Its two risks are named for whoever takes it: the abstraction adjacency to task264 (an inclusion probability the record's own design sets) and the measured Gate F death of task190's architecture 3, where a design-based projection had to ship the manual that then handed the route back.
 
 ## The licensed re-judge, 2026-10-26
 

@@ -2,41 +2,30 @@
  "task": "task157",
  "owner": "sathya8571",
  "status": "DESIGN",
- "domain": "product-analytics/retention-cohort-lifetime-value-modeling (client domain product-analytics; world: a Twin Cities ride-hail operator's winter guarantee)",
+ "domain": "political-science-public-policy",
  "objective": "forecasting",
- "stage": 1,
- "stage_name": "draw",
+ "stage": 2,
+ "stage_name": "design",
  "updated": "2026-10-27",
- "stump": "Carrying December's roster at last January's qualification shares, adding the onboarding app's approved drivers and the drivers away at last January's return rate files $1,450,000; the step that lands it there is pricing last winter's drivers who are not yet back as a pool at last year's return rate, when they are the rest of a wave whose size is the group's own and whose timing every earlier winter kept, so the part already back on 3 January (1,087 drivers) gives the part still to come: about 1,200 more drivers inside the window, the wave priced at its own January qualification, and a fund of $1,650,000.",
+ "stump": "A competent solver reads every disposition code, places every sampled signature through the two voter file vintages, expands the sample at the statutory three per cent and files about 766,110 valid signatures and an outright certification; the step that lands them there is expanding the duplicate dispositions at the sampling fraction, when a duplicate is a relation between two signatures the sample sees only when it draws both, so the duplicate burden is about 117,780 rather than 3,533 and the projection is about 651,650, which orders a full count.",
  "architecture": 2,
  "loops": 0,
  "precut": {
-  "exit": 0,
-  "date": "2026-10-17",
-  "checks": "49 checks, 0 FAIL, 0 WARN (built figures)"
+  "exit": null,
+  "date": ""
  },
  "leak": {
-  "leak_py": "REVIEW, no LEAK (2026-10-17 at ship, --asof 2027-01-03; every REVIEW line answered in the design note's ## Leak sweep)",
-  "reader": "clean (stage 4), decisive step analytical"
+  "leak_py": "",
+  "reader": ""
  },
  "duplicate_check": {
-  "heart": "PASS, 2026-10-17 (nearest driver 0.07, task146)",
-  "nearest": "nearest driver 0.07 (task146); task116 v1 lineage, task143, task264 at 0.05",
-  "surface": "two card-level promotions, no hard tell: task156 (consecutive numbers, same pairing, gap and decision type, drivers unrelated, keys honest and not relabelled) and task231 (the same-driver signature, differentiated on the card at the draw); written up in the design note ## Surface screen; adjudicated /clone-check left to the author"
+  "heart": "WARN, no BLOCK",
+  "nearest": "0.09 task445 (v1)"
  },
  "judge": {
-  "verdict": "DETERMINISTIC",
-  "disposition": "APPROVE (one residual Gate C caution on the driver count's lower rounding edge, recorded in the design note ## Residual)",
-  "report": "task157/determinism_check_report.md",
-  "rejudge_2026_10_26": {
-   "verdict": "NOT_DETERMINISTIC",
-   "disposition": "SEND_BACK",
-   "label": "margin_or_boundary_fragility",
-   "gate_g": "pass, forecasting, analytical_non_defect, no surface-read dependency, no sole data defect",
-   "gate_h": "pass, domain pass, layers pass, decisive step analytical",
-   "portal_forks": "SF14 and SF15 did not reappear; both closed",
-   "author_disposition": "two of the three new findings verified false (the kept flag feeds band_rates and qualified together, so one definition of paid throughout; the priced groups are disjoint row sets, back & nonwave 0 rows and back & other 0 rows); the third rests on SF13's kept-payments alternative, which three shipped sentences rule out. The finding's real content was that finance's email hard-wrapped the governing phrase across a line so no line-oriented search found it; that instruction is now its own paragraph and asserted present in the raw bytes. Nothing graded moved, freeze.py PASS. A further judge pass is the author's call."
-  }
+  "verdict": "",
+  "disposition": "",
+  "report": ""
  },
  "returned": [
   {
@@ -55,7 +44,7 @@
    "commit": "5826c528"
   }
  ],
- "resume": "Architecture 1 spent 2026-10-27 on its second portal return, measured in the design note's ## Architecture 1 is spent. Re-root at stage 1: architecture 2, a fresh draw in the same number and objective, with the old identity moved into the card's lineage. The binding lesson, now filed in determinism-check, is that a graded figure estimated rather than counted needs its bin measured against the decisive step's worth, the defensible-subgroup spread and the estimator's own sampling interval, and that convergence is proved against a rival's family and never the golden's own.",
+ "resume": "Architecture 2 drawn and registered 2026-10-27, re-checked against the restamped ban window: WARN only, no BLOCK, no person warning, heart WARN. Stage 2 owes the readability screen, the semantic fork table, the ladder, the 22-axis closure table, the literal reader line, the oracles, the ask sheet, the convergence section against a rival's family, and prompt.txt, then precut.py exit 0. Three things are named in the note as the risks to close first: readability test 1, because the duplicate class is visible in the sample and a solver meeting it is sent looking; task190's architecture 3, the measured death in this genus, which this draw answers by shipping nothing to make the projection computable, so the pack carries NO keyed full signer list and the prior-initiative close-out must tie under every expansion basis; and the convergence section, which must compute a rival's family and not the golden's own. Architecture 1's generator, target, target.zip, golden/, submission.md, prompt.txt and metadata.json are all still on disk as it shipped them and are replaced at stage 3.",
  "approved": null,
  "delivered": "2026-10-17",
  "portal": null,

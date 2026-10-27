@@ -1,102 +1,119 @@
 {
- "task": "task157",
- "architecture": "v1",
- "drawn": "2026-10-17",
- "slot_note": "wave 5 (new), seed FC28: the world (a Midwestern ride-hail operator's January winter guarantee, $350 to every driver completing 40 trips in four weeks, pre-funded as one figure), the decision and the quantity kept; the insurer-roster hiding place and any filed payout method not shipped; the pitfall re-found from how last winter's seasonal recruits come back",
- "domain": "product-analytics",
- "subdomain": "retention-cohort-lifetime-value-modeling",
- "client_domain": "product-analytics",
- "niche": "a Twin Cities ride-hail operator funding its January 2027 winter guarantee ($350 to every eligible driver who completes 40 trips in the four weeks from Monday 4 January) at go-live, when last winter's recruitment campaign put about 2,200 drivers on the road in February and March 2026, most of them workers laid off for the winter who went back to their trades in April, and they are coming back in a wave that began in mid-November and peaks as the guarantee opens",
- "objective": "forecasting",
- "shape": "other",
- "decision_type": "quantity_figure",
- "answer_unit": "currency",
- "answer": "$1,650,000 in the winter guarantee account at go-live, 4,700 drivers expected to complete 40 trips between 4 and 31 January 2027 (expected total $1,644,850; the default path files $1,450,000)",
- "answer_source": "task157/generator/calc.py fund() on the shipped bundle, reproduced by task157/generator/verify.py",
- "gap": [
-  "time",
-  "population"
- ],
- "pattern": [
-  "none"
- ],
- "generators": [
-  "G12",
-  "G13",
-  "G16"
- ],
- "gate_g": "forecasting",
- "calibration_form": "prior_period_close_out",
- "stump_strategy": "maturity_censoring",
- "decisive_rule_filed": false,
- "official_decoy": false,
- "validated_decoy": false,
- "context_artifact": "published_series",
- "stakeholder_role": "the operator's head of driver supply, who sends finance the one figure it pre-funds the guarantee account with on the morning the window opens",
- "role_family": "operations_director",
- "scoring_unit": "per active unit per period",
- "spine": {
-  "file": "driver_activity_monthly_2024-07_2027-01.csv (the warehouse's monthly driver activity extract) beside dispatch_legacy_driver_months_2021-05_2024-07.csv (the old platform's export, 91,426 rows) through the migration crosswalk",
-  "rows": 165826,
-  "entity": "one driver's completed trips and online time in one calendar month",
-  "grain": "driver x month",
-  "source": "synthetic (constructed in the layout of a ride-hail warehouse's monthly driver activity extract, two layouts across a dispatch platform migration)"
- },
- "forum": "executive_team",
- "forcing_event": "launch_or_rollout",
- "org_family": "software_or_platform",
- "world": {
-  "geography": "United States, Minnesota (the Twin Cities)",
-  "currency": "USD",
-  "org_type": "regional ride-hail operator",
-  "invented_names": [
-   "Larch Rides"
+  "task": "task157",
+  "architecture": "v2",
+  "drawn": "2026-10-27",
+  "slot_note": "architecture 2 candidate A (draw hunt, not registered): a state elections division projecting a ballot initiative's valid signatures from the statutory random sample",
+  "domain": "political-science-public-policy",
+  "subdomain": "election-polling-forecasting",
+  "client_domain": "political-science-public-policy",
+  "niche": "a state elections division projecting, from the statutory three per cent random sample of a filed initiative petition, how many of its 1,043,000 signatures a full count would find valid, when the sample is the only part of the petition that is ever keyed",
+  "objective": "forecasting",
+  "shape": "03",
+  "decision_type": "quantity_figure",
+  "answer_unit": "count",
+  "answer": "candidate, not measured on a pack: about 651,650 valid signatures (104.6 per cent of the 623,212 threshold), so a full count is ordered; the default path files about 766,110 and certifies",
+  "answer_source": "paper arithmetic at the draw, no generator",
+  "gap": [
+    "population",
+    "rule"
   ],
-  "people": [
-   "Gary Mathews",
-   "Kathy Sherman",
-   "Jesse Velasquez",
-   "Melvin Harrell"
-  ]
- },
- "layer1": [
-  "a dispatch platform migration on 15 July 2024: monthly driver activity in the legacy layout (driver numbers, online hours to one decimal) to 14 July and in the warehouse layout (driver ids, online minutes) from 15 July, July 2024 in both exports",
-  "legacy driver numbers mapped to new driver ids through the migration crosswalk, 38 drivers registered twice on the old platform mapped to one id",
-  "months in which a driver went online without completing a trip (zero-trip rows inside short breaks)",
-  "the guarantee window counted on local time over four Monday-to-Sunday weeks against calendar months in the warehouse extract",
-  "the payout files of two years in two layouts (the 2025 main run from the old payout report, amounts in cents)",
-  "the bank's ACH return report covering every payout from the account, weekly earnings included",
-  "a warehouse extract run on the Sunday before the window, so its last month (January 2027) holds three days",
-  "the monthly supply KPI report published through November, counting accounts on its own definitions",
-  "onboarding, screening and payout event timestamps in UTC against local dates elsewhere"
- ],
- "layer2_family": "estimation_fit",
- "layer2_pattern": "own:returning-seasonal-wave-sized-from-its-leading-edge",
- "deliverables": [
-  "guarantee_fund_jan2027.xlsx",
-  "guarantee_fund_jan2027.pptx"
- ],
- "opening_move": "question-first",
- "question_form": "how-much",
- "driver": "Members of a group that stopped together come back in a wave that begins before the forecast date and peaks inside the forward window; how many of the group come back is the group's own, while when each comes back follows a calendar every earlier wave kept, so the members still to come are the members already back times the ratio earlier waves showed between the window and the same date, and a rate on the members still away, the group's size at an earlier group's rate, a rate by when each stopped, a propensity fitted on last year's returners, or one ratio over every member who came back after a gap each misstates it.",
- "driver_concrete": "Larch's winter 2026 recruitment campaign put about 2,200 drivers on the road from February, most of them workers laid off for the winter who went back to their trades in April, and they come back as their trades shut down, a wave that began in mid-November and peaks when the guarantee opens on 4 January; by the funding date 1,087 of last winter's drivers are back, and every earlier winter brought about 1.09 January returns for each one back in November and December, so about 1,200 more return inside the window; a pool rate on the drivers away, the campaign recruits at the organic recruits' rate, a rate by the month each stopped, a fitted propensity or one ratio over every driver back after a break each leaves the fund $100,000 to $220,000 short ($1,650,000 against $1,450,000 on the default path).",
- "stump": "Carrying December's roster at last January's qualification shares, adding the onboarding app's approved drivers and the drivers away at last January's return rate files $1,450,000; the step that lands it there is pricing last winter's drivers who are not yet back as a pool at last year's return rate, when they are the rest of a wave whose size is the group's own and whose timing every earlier winter kept, so the part already back on 3 January (1,087 drivers) gives the part still to come: about 1,200 more drivers inside the window, the wave priced at its own January qualification, and a fund of $1,650,000.",
- "stump_class": "analytical",
- "analyst_test": "A strong analyst who stitches the two activity layouts through the crosswalk, reads the guarantee terms and finance's request correctly, carries December's roster at last January's qualification shares by December trips, adds the approved drivers without a trip at last year's share and the drivers away at last January's return rate files $1,450,000; only sizing the returning wave from the part already back, at the ratio of January returns to November and December returns that earlier winters showed, and pricing the wave at its own January qualification files $1,650,000 (executed in checks.py: R3a $1,450,000 and R3b $1,650,000 on the generator's clean truth).",
- "domain_test": "The deciding quantity is how many of last winter's seasonal drivers come back inside the window, forecast the way product analytics forecasts a resurrecting cohort: the cohort's own early returns developed at the return-timing ratio of earlier cohorts, rather than a churn or reactivation rate on the users away; with a hospital's patients or a utility's megawatt-hours there is no supply-side user cohort recruited one winter, away through the summer and returning on its trades' calendar, so the quantity that decides the call has nothing to stand on.",
- "mechanism_source": "design_note",
- "differentiation": {
-  "task146": "task146 weighs a pool built in the closing quarter by the month each claimant was refused, at each region's own refiling share; here the pool's timing is common to every wave and carries no rate, the returning share is the group's own and unknowable from when each left (bonus drivers and seasonal workers both stopped in April), and the decisive move is reading the group's size off the part of its wave already back",
-  "task151": "task151 sums a unit's chances of clearing stepped lines from a resampled distribution of comparable seasons; here the line is one and is priced at last year's observed rates, and the decisive quantity is how many members of a returning cohort enter the window at all",
-  "task156": "task156 projects a volunteer pool's capacity from its own exits and near-zero arrivals against arrivals of work; here the cohort is not shrinking toward a crossing but coming back, and the forecast reads its size from the leading edge of its return",
-  "task133": "task133 counts taken-over loans only from their age at the takeover (delayed entry); here nothing is truncated, the cohort's churn is right-censored by a winter not yet over, and its remainder is developed from its own early returns",
-  "task134": "task134's round-1 architecture converted a pool by months since admission (a hazard by time since entry); here no hazard is fitted, and the pool rate is the rival the out-of-sample check rejects",
-  "task231": "task231 reads the exited share of a round's silent units from rounds old enough for a lagging exit register to have caught up; here no record lags (every driver's absence is complete in the trip record), the group's return lies ahead of the forecast date, and its size is read off the part of its own wave already back, at a timing ratio every earlier wave kept",
-  "task192": "task192 v2's lineage shares gap time with a quantity_figure, but its decisive quantity is how many of a cohort will ever show an event when a competing terminal end can remove a member from the risk set for good, so its correction is a competing-risks one on a cohort whose members are leaving permanently. Here nobody leaves the risk set: the group has already stopped together and the question is how many of it come back and when, with the size read from the part already back and the timing from the calendar earlier waves kept.",
-  "task482": "task482 v10's lineage is also a maturity problem on a period still running, but its decisive quantity is each member's share of a lifetime total that keeps growing, so the correction develops a denominator that later spells will add to. Here the graded quantity has no denominator to develop: it is a count of members arriving inside a four-week window, and the correction sizes the part still to arrive from the part already arrived at a ratio three earlier winters held.",
-  "task250": "task250 v2 shares gap time and Gate G forecasting on a count for a forward window, but its reconstruction undoes an intervention: the record's own alerts repaired the faults that produced them, so the drifts were cut short and the count a laxer limit would raise has to be grown back past the repair. Nothing here is cut short or intervened on; the wave's earlier members simply arrived before the forecast date, and they are evidence of the wave's size rather than a truncated version of it."
- },
- "lineage": [],
- "notes": "Domain: the seed's house label was economics (platform labour supply); the client taxonomy files platform analytics under product-analytics ('a platform selling into a sector is Product Analytics') and the decisive analysis here is a supply-side user cohort's reactivation forecast, so the honest home is product-analytics/retention-cohort-lifetime-value-modeling, not economics-econometrics. Forcing event: the 2027 guarantee goes live in the drivers' app at 00:00 on Monday 4 January and finance funds its account in full at go-live (launch_or_rollout); season_or_peak was the other honest key and was banned by task155 at the draw.",
- "registered": "2026-10-17T11:55:39Z"
+  "pattern": [
+    "none"
+  ],
+  "generators": [
+    "G10",
+    "G2"
+  ],
+  "gate_g": "forecasting",
+  "calibration_form": "prior_period_close_out",
+  "stump_strategy": "other",
+  "decisive_rule_filed": false,
+  "official_decoy": false,
+  "validated_decoy": false,
+  "context_artifact": "register",
+  "stump_class": "analytical",
+  "analyst_test": "A strong analyst who reads every disposition code in the sample verification register correctly, places every sampled signature in its county and sheet, applies the filed threshold and expands the sample by the statutory sampling fraction still scales the duplicate dispositions linearly with every other ground of invalidity and files about 766,110 valid signatures, which certifies the measure outright, because a duplicate is a property of a pair of signatures and the sample sees a pair only when both of its members fall in it.",
+  "domain_test": "The deciding quantity is the number of valid signatures a full count would return, estimated the way election administration estimates it, by design-based expansion of a probability sample in which each ground of invalidity carries its own inclusion probability; swap the nouns and ask how many of 1,043,000 hospital admissions a full count would find valid and the quantity has nothing to stand on, because an admission has no second member that must fall in the same sample for its defect to be visible, so every ground scales linearly and the projection is one multiplication.",
+  "layer2_family": "field_method",
+  "layer2_pattern": "own:pairwise-defect-inclusion-is-the-square-of-the-sampling-fraction",
+  "layer1": [
+    "the sample drawn by sheet sections, so the keyed rows are sections rather than signatures",
+    "two voter registration file vintages either side of the state's list maintenance run",
+    "county verification registers in two layouts, one county still on the old disposition codes",
+    "handwritten dates transcribed as text, some in two formats",
+    "circulator affidavits filed per sheet, a few sheets filed twice",
+    "the statewide registration extract in a fixed-width legacy layout",
+    "petition sheet counts reported by the counties against the office's own receipt log"
+  ],
+  "stakeholder_role": "the elections division's verification manager, who signs the projection the state canvassing board reads when it decides whether to certify the measure, order a full count or reject it",
+  "role_family": "compliance_or_audit",
+  "scoring_unit": "per accepted item",
+  "spine": {
+    "file": "sample_verification_register_2027.csv",
+    "rows": 31290,
+    "entity": "one sampled signature and the disposition the county gave it",
+    "grain": "sampled signature x county x sheet section",
+    "source": "synthetic (constructed in the layout of a state elections division's random-sample verification register)"
+  },
+  "forum": "committee_or_panel",
+  "forcing_event": "vote_or_meeting",
+  "org_family": "government_agency",
+  "world": {
+    "geography": "United States, Arizona",
+    "currency": "USD",
+    "org_type": "state elections division",
+    "invented_names": [
+      "Saguaro Water Fairness Committee"
+    ],
+    "people": [
+      "Philip James",
+      "Laura Davis",
+      "Tony Lynch"
+    ]
+  },
+  "deliverables": [
+    "signature_projection_2027.xlsx",
+    "petition_disposition_2027.png"
+  ],
+  "opening_move": "question-first",
+  "question_form": "how-many",
+  "driver": "One class of defect in a sampled population is a property of a pair of records rather than of a record, so the sample reveals it only when both members of the pair fall in the sample and its inclusion probability is the square of the sampling fraction while every other class carries the fraction itself; expanding every class alike at the design's own fraction, which is what the record's codes invite, understates that class by the reciprocal of the fraction and files a total far above the one a full enumeration would return.",
+  "driver_concrete": "A duplicate signature is struck only because a second signature by the same signer exists, so a three per cent sample of a 1,043,000 signature petition finds a duplicate pair with probability nine ten-thousandths rather than three hundredths; expanding the 106 duplicate strikes the sample found at the sampling fraction gives 3,540 duplicates and 766,110 valid signatures, which certifies the measure, while expanding them at the square of the fraction gives 118,000 duplicates and 651,650 valid signatures, inside the band that orders a full count.",
+  "stump": "A competent solver reads every disposition code, places every sampled signature through the two voter file vintages, expands the sample at the statutory three per cent and files about 766,110 valid signatures and an outright certification; the step that lands them there is expanding the duplicate dispositions at the sampling fraction alongside every single-signature ground, when a duplicate is a relation between two signatures that the sample sees only when it draws both, so the duplicate burden is the found strikes over the square of the fraction, 118,000 rather than 3,540, and the projection is about 651,650, which orders a full count.",
+  "mechanism_source": "design_note",
+  "differentiation": {
+    "task264": "task264 weights each sampled person by the inverse of an inclusion probability that rises with how many events the person makes, so its correction is a per-respondent design weight on the decision's own unit; here the decision's unit is the signature and the correction attaches to no unit at all, it changes the exponent on the design's fraction for one disposition class while every other class stays linear, and the pair whose detection it governs is a relation between two records rather than a multiplicity of one",
+    "task190": "task190's architecture 3 recovered an unrecorded monetary selection interval and then applied the field's own probability-proportional projection, which its audit manual had to ship for Gate B and which two cold threads then read back; here the sampling fraction is a statutory number already in the world, nothing has to ship to make the projection computable, and what is open is not a constant to recover but which power of that fraction one disposition class carries",
+    "task157_v1": "architecture 1 sized a returning behavioural wave from the part of it already back and graded money to three per cent of itself; here nothing behavioural is forecast, the deciding quantity is a count a full enumeration would return and the decisive step is worth more than eleven of its bins",
+    "task98": "task98 v7 removes a subset twice because two dated schedules held under different keys each list it, so its decisive move is a member-level join between a code-keyed and an address-keyed file and the whole population is enumerated; here nothing is joined and nothing is enumerated outside the sample, the duplication is between two signatures of one signer that no file lists, and what decides the count is the probability the design gave that pair of being seen at all",
+    "task192": "task192 v1 counts the distinct generating processes behind overlapping bursts by the interval each process repeats on, a recovery from the timing of events the record holds in full; here the record holds three per cent of the population and the decisive quantity is not a process behind the observed items but the inclusion probability of a relation between two items, which is the square of the design's fraction and carries no timing"
+  },
+  "lineage": [
+    {
+      "architecture": "v1",
+      "domain": "product-analytics",
+      "subdomain": "retention-cohort-lifetime-value-modeling",
+      "objective": "forecasting",
+      "gap": [
+        "time",
+        "population"
+      ],
+      "pattern": [
+        "none"
+      ],
+      "generators": [
+        "G12",
+        "G13",
+        "G16"
+      ],
+      "gate_g": "forecasting",
+      "stump_strategy": "maturity_censoring",
+      "decision_type": "quantity_figure",
+      "answer_unit": "currency",
+      "driver": "Members of a group that stopped together come back in a wave that begins before the forecast date and peaks inside the forward window; how many of the group come back is the group's own, while when each comes back follows a calendar every earlier wave kept, so the members still to come are the members already back times the ratio earlier waves showed between the window and the same date, and a rate on the members still away, the group's size at an earlier group's rate, a rate by when each stopped, a propensity fitted on last year's returners, or one ratio over every member who came back after a gap each misstates it.",
+      "fate": "spent 2026-10-27 after two portal returns (both Gates C and D, competing_defensible_answer and underspecified_objective): the graded bin was finer than the estimator, the decisive step worth 0.58 of a USD 50,000 bin and the smallest rung gap, against 0.90 bins for the un-returned remainder's subgroup choice and 0.31 for the golden rate's own 95 per cent interval; three repairs were built and measured and none closed it"
+    }
+  ],
+  "notes": "Draw hunt only, not registered. stump_strategy filed as other: the decisive move is an inclusion probability under the realised design, which no listed strategy names; grain_or_unit would read as a grain reading and the move is not a reading. Calibration prior_period_close_out is the previous initiative that went to a full count; it has to be cut so it ties under every expansion basis or it becomes an oracle for the method.",
+  "registered": "2026-10-27T04:36:05Z"
 }

@@ -250,6 +250,14 @@ time). `precut.py` refuses an unresolved row; `checks.py` asserts every row.
   cannot be forced to that precision, the architecture is spent, and a coarser bin brings the default path into
   the golden's bucket. task157 shipped twice at 0.58 of a bin for the decisive step against 0.90 for the
   subgroup choice and 0.31 for the rate's own 95 per cent interval, and both portal rounds landed one bucket out.
+  **Read the third quantity by whether the estimator has a free parameter.** Where the golden's estimator is a
+  fitted rate, its sampling interval becomes real disagreement, because solvers fit it on different subgroups and
+  file different figures: that is what sank task157. Where it is an observed count over a constant the design
+  fixes, with no fitted parameter, window, band width, distribution family or grouping, every solver computing it
+  files the same figure to the unit, and the interval is the quantity's honest uncertainty rather than a fork. It
+  is still measured and still written down, because it sets how much of the bin the ladder may not use, but a
+  build is not spent for it. The distinction is tested, never asserted: compute the estimator under every
+  grouping the records allow and show the total is identical.
 - **Convergence is proved against a rival's family, never the golden's own.** A convergence block that varies
   only the construction the golden already uses (which periods a ratio is read from, which window, which band
   widths) measures the golden's internal stability and says nothing about determinism. Every such block names,
