@@ -6,15 +6,15 @@
   "prompt_shape": "07",
   "as_of": "2027-02-19",
   "currency": "USD",
-  "compiled_by": "Harrowgate Community Health Plan, network contracting",
+  "compiled_by": "Wrenlow Community Health Plan, network contracting",
   "compiled_on": "2027-02-16",
-  "licence": "Compiled by Harrowgate Community Health Plan network contracting for the 2027 network year. Plan records are the plan's own and are released for contracting use; the state licensing register and the fee schedule are public records of the state licensing authority, reproduced as published.",
+  "licence": "Compiled by Wrenlow Community Health Plan network contracting for the 2027 network year. Plan records are the plan's own and are released for contracting use; the state licensing register and the fee schedule are public records of the state licensing authority, reproduced as published.",
   "files": [
     {
       "path": "target/provider_directory_2027.csv",
       "role": "spine",
       "covers": "The plan's own provider directory, one row per site per annual attestation cycle.",
-      "source": "Harrowgate Community Health Plan, provider data management",
+      "source": "Wrenlow Community Health Plan, provider data management",
       "date": "2026-11-18",
       "licence": "plan record, released for contracting use"
     },
@@ -30,7 +30,7 @@
       "path": "target/staffing_roster_2026q4.csv",
       "role": "operating extract",
       "covers": "The roster of staffed treatment sessions a week by site, effective 1 October 2026.",
-      "source": "Harrowgate Community Health Plan, clinical operations",
+      "source": "Wrenlow Community Health Plan, clinical operations",
       "date": "2026-10-01",
       "licence": "plan record, released for contracting use"
     },
@@ -38,7 +38,7 @@
       "path": "target/treatment_encounters.db",
       "role": "spine",
       "covers": "Four contract years of outpatient dialysis and infusion treatment encounters, in the two layouts the clearinghouse change left behind.",
-      "source": "Harrowgate Community Health Plan, encounter data warehouse",
+      "source": "Wrenlow Community Health Plan, encounter data warehouse",
       "date": "2027-01-05",
       "licence": "plan record, released for contracting use"
     },
@@ -46,7 +46,7 @@
       "path": "target/enrolment_projection_2027.csv",
       "role": "operating extract",
       "covers": "The plan's enrolment projection by service area for 2027.",
-      "source": "Harrowgate Community Health Plan, actuarial services",
+      "source": "Wrenlow Community Health Plan, actuarial services",
       "date": "2027-01-15",
       "licence": "plan record, released for contracting use"
     },
@@ -54,7 +54,7 @@
       "path": "target/network_agreement_2027_capacity_terms.pdf",
       "role": "governing document",
       "covers": "Schedule 4 of the 2027 provider network agreement: capacity and service area adequacy.",
-      "source": "Harrowgate Community Health Plan, network contracting",
+      "source": "Wrenlow Community Health Plan, network contracting",
       "date": "2026-12-10",
       "licence": "plan record, released for contracting use"
     },
@@ -62,7 +62,7 @@
       "path": "target/state_adequacy_filing_2026.xlsx",
       "role": "context artifact",
       "covers": "The plan's annual network adequacy filing for the 2026 network year, position as at 1 January 2026.",
-      "source": "Harrowgate Community Health Plan, regulatory reporting",
+      "source": "Wrenlow Community Health Plan, regulatory reporting",
       "date": "2026-03-31",
       "licence": "plan record, released for contracting use"
     },
@@ -70,7 +70,7 @@
       "path": "target/out_of_network_payments_2026.csv",
       "role": "operating extract",
       "covers": "Out-of-network outpatient dialysis and infusion claim lines adjudicated in 2026.",
-      "source": "Harrowgate Community Health Plan, claims operations",
+      "source": "Wrenlow Community Health Plan, claims operations",
       "date": "2027-01-09",
       "licence": "plan record, released for contracting use"
     },
@@ -78,7 +78,7 @@
       "path": "target/out_of_network_payments_runout_2027q1.csv",
       "role": "operating extract",
       "covers": "2026 services adjudicated after the 2026 close, to the run-out pull.",
-      "source": "Harrowgate Community Health Plan, claims operations",
+      "source": "Wrenlow Community Health Plan, claims operations",
       "date": "2027-02-16",
       "licence": "plan record, released for contracting use"
     },
@@ -86,7 +86,7 @@
       "path": "target/out_of_network_payments_reconciliation_2026.xlsx",
       "role": "control",
       "covers": "The out-of-network register's own control totals by adjudication quarter.",
-      "source": "Harrowgate Community Health Plan, claims operations",
+      "source": "Wrenlow Community Health Plan, claims operations",
       "date": "2027-01-09",
       "licence": "plan record, released for contracting use"
     },
@@ -94,7 +94,7 @@
       "path": "target/encounter_extract_transmittal.json",
       "role": "control",
       "covers": "The encounter extract's transmittal: pull date, tables and row counts by service quarter.",
-      "source": "Harrowgate Community Health Plan, encounter data warehouse",
+      "source": "Wrenlow Community Health Plan, encounter data warehouse",
       "date": "2027-01-05",
       "licence": "plan record, released for contracting use"
     },
@@ -102,7 +102,7 @@
       "path": "target/nemt_trips_2026.csv",
       "role": "distractor",
       "covers": "Non-emergency medical transport trips by service area and month, 2026.",
-      "source": "Harrowgate Community Health Plan, transportation benefit",
+      "source": "Wrenlow Community Health Plan, transportation benefit",
       "date": "2027-01-07",
       "licence": "plan record, released for contracting use"
     },

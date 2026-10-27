@@ -1,3 +1,7 @@
+> Architecture 2's report. It was taken on the 2027 adolescent literacy grants pack, which no longer
+> exists: architecture 3 is a fresh world and a new bundle. Stage 4's judge run on the current pack is
+> what counts for this build.
+
 # determinism-check report, task464, 2026-10-17
 
 ## Verdict

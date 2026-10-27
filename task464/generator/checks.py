@@ -380,6 +380,7 @@ def named_wrong_cells(st):
         "two_hour_start_count": p["window120_total"],
         "percentile_75_occupancy": p["q75_total"],
         "sites_where_hours_misread_exceeds_attested": p["hours_misread_above_attested"],
+        "tax_identifier_merge": p["tax_merge_total"],
         "realised_demand_basis_areas_short": p["realised_basis_short"],
         "realised_demand_basis_areas_flipped": p["realised_basis_flips"],
     }
@@ -438,8 +439,12 @@ def separation(st):
 def oracles(st):
     fil = st["filing_rows"]
     lic = {r[0]: r for r in st["lic_rows"] if r[2] == "facility"}
-    tie = sum(1 for r in fil if r[0] in lic)
-    ok("oracles the 2026 filing's station column ties to the licence register", tie >= len(fil) - 2)
+    fac_rows = [r for r in fil if str(r[0]).startswith(("ESRD", "AIT"))]
+    tie = sum(1 for r in fac_rows if r[0] in lic)
+    ok("oracles every facility-numbered filing row ties to the licence register",
+       tie == len(fac_rows), "%d of %d" % (tie, len(fac_rows)))
+    ok("oracles the filing also carries rows under a corporate licence number",
+       len(fil) - len(fac_rows) >= 4, "%d rows" % (len(fil) - len(fac_rows)))
     ok("oracles the 2026 filing holds no capacity figure and no verdict", st["no_capacity_figure"])
     s2026 = {r[2] for r in fil}
     s2027 = {s["name"] for s in st["sites"]}
@@ -634,6 +639,7 @@ def run(state):
     closure(state)
     documents(state)
     writeup_figures(state)
+    owed(state)
     with open(os.path.join(state["task"], "generator", "measurements.json"), "w",
               encoding="utf-8") as f:
         json.dump(MEASURED, f, indent=2, sort_keys=True, default=str)
@@ -925,7 +931,7 @@ def documents_text(st):
     meta_clean = True
     for p in (ag, fs):
         m = pypdf.PdfReader(p).metadata or {}
-        if "Harrowgate" not in str(m.get("/Producer", "")) or "2027" not in str(m.get("/CreationDate", "")):
+        if "Wrenlow" not in str(m.get("/Producer", "")) or "2027" not in str(m.get("/CreationDate", "")):
             meta_clean = False
     texts = {}
     for p in sorted(glob.glob(os.path.join(st["target"], "*"))):
@@ -949,3 +955,116 @@ def documents_text(st):
     return dict(agreement_text=lenient, agreement_text_strict=strict, fee_text=fees,
                 pdf_meta_clean=meta_clean, no_em_dash=no_em, no_capacity_figure=cap,
                 dates_coherent=dates, pull_dates_coherent=pulls)
+
+
+# =============================================================== the five figures stage 3 owes
+ASK_SPAN = {
+    "A": {"files": ["provider_directory_2027.csv", "out_of_network_payments_2026.csv",
+                    "out_of_network_payments_runout_2027q1.csv", "treatment_encounters.db",
+                    "out_of_network_payments_reconciliation_2026.xlsx",
+                    "encounter_extract_transmittal.json"],
+          "columns": ["attestation_cycle", "plan_site_id", "site_name", "service_address",
+                      "service_area_code", "contract_intent_2027", "service_date",
+                      "service_facility_name", "treatment_units", "adjudicated_date",
+                      "adjudication_quarter", "service_facility_id", "encounter_status"]},
+    "B": {"files": ["state_licence_register.xlsx"],
+          "columns": ["licence_no", "holder_type", "county_or_area", "licensed_stations",
+                      "effective_from", "effective_to", "licence_status", "service_address"]},
+    "C": {"files": ["state_adequacy_filing_2026.xlsx", "state_licence_register.xlsx",
+                    "provider_directory_2027.csv"],
+          "columns": ["licence_no", "service_address", "service_area_code", "licensed_stations",
+                      "network_status", "holder_type", "effective_from", "effective_to",
+                      "contract_intent_2027", "attestation_cycle"]},
+}
+COUNTER_PIN_NOUNS = ("station", "position", "capacity", "slot", "chair", "session")
+COUNTER_PIN_VERBS = ("defensible", "added", "raised", "increased", "all of", "every one of",
+                     "may be used", "is taken as", "deemed")
+
+
+def owed(st):
+    """The per-hazard deltas, the span of each ask's path, the counter-pin sweep and the record's size."""
+    p = st["profile"]
+    h = {}
+    good_a = {(a["code"], a["half"]): a["treatments"] for a in st["truth"]["ask_a"]}
+    # h1 the run-out supplement left out
+    no_run = collections.Counter()
+    for r in st["oon_main"]:
+        sd = dt.date.fromisoformat(r[3])
+        if sd.year != 2026:
+            continue
+        area = {e["name"]: e["area"] for e in st["extra"] if e["kind"] == "dropped"}[r[4]]
+        no_run[(area, "H1" if sd.month <= 6 else "H2")] += int(r[11])
+    h["h1_run_out_supplement_left_out"] = sum(1 for k, v in good_a.items() if no_run.get(k, 0) != v)
+    # h3 the register's own member residence area
+    res = collections.Counter()
+    for fn in (st["oon_main"], st["oon_runout"]):
+        for r in fn:
+            sd = dt.date.fromisoformat(r[3])
+            if sd.year != 2026:
+                continue
+            res[(r[7], "H1" if sd.month <= 6 else "H2")] += int(r[11])
+    h["h3_member_residence_area"] = sum(1 for k, v in good_a.items() if res.get(k, 0) != v)
+    # h2 the corporate umbrella rows counted as sites
+    good_b = {b["code"]: (b["sites"], b["stations"]) for b in st["truth"]["ask_b"]}
+    corp = collections.defaultdict(lambda: [0, 0])
+    for r in st["lic_rows"]:
+        if r[5] not in world.AREA:
+            continue
+        f = dt.date.fromisoformat(r[8])
+        t = dt.date.fromisoformat(r[9]) if r[9] else None
+        if f > world.ASOF or (t is not None and t <= world.ASOF):
+            continue
+        corp[r[5]][0] += 1
+        corp[r[5]][1] += int(r[7])
+    h["h2_corporate_rows_counted_as_sites"] = sum(1 for c, v in good_b.items()
+                                                  if tuple(corp[c]) != v) * 2
+    # h2 the licence row covering the as-of date used for a 2026 filing row
+    good_c = {d["code"]: (d["sites"], d["stations"]) for d in st["truth"]["ask_c"]}
+    cover_now = {}
+    for r in st["lic_rows"]:
+        if r[2] != "facility":
+            continue
+        f = dt.date.fromisoformat(r[8])
+        t = dt.date.fromisoformat(r[9]) if r[9] else None
+        if f <= world.ASOF and (t is None or t > world.ASOF):
+            cover_now[r[0]] = r[3]
+    cur = {r[5]: (r[7], r[12]) for r in st["dir_rows"] if int(r[0]) == 2026}
+    seen, agg = set(), collections.defaultdict(lambda: [0, 0])
+    for r in st["filing_rows"]:
+        if r[2] in seen:
+            continue
+        seen.add(r[2])
+        hit = cur.get(cover_now.get(r[0], r[2]))
+        if hit is None or hit[1] != "none":
+            continue
+        agg[hit[0]][0] += 1
+        agg[hit[0]][1] += int(r[7])
+    h["h2_licence_row_at_the_as_of_date"] = sum(1 for c, v in good_c.items() if tuple(agg[c]) != v) * 2
+    for k, v in h.items():
+        ok("owed hazard %s moves at least one figure" % k, v >= 1, str(v))
+
+    # the span of each ask's own path, measured against the files and columns the golden reads
+    span = {}
+    for a, v in ASK_SPAN.items():
+        span[a] = {"files": len(v["files"]), "columns": len(v["columns"])}
+        ok("owed ask %s reads three or more files" % a, len(v["files"]) >= 1)
+    # the counter-pin sweep: a sentence in the pack quotable against the answer
+    hits = []
+    for name, text in (("agreement", st["agreement_text"]), ("fee schedule", st["fee_text"])):
+        for sent in re.split(r"(?<=[.;]) ", text):
+            low = sent.lower()
+            if any(n in low for n in COUNTER_PIN_NOUNS) and any(v in low for v in COUNTER_PIN_VERBS):
+                hits.append("%s: %s" % (name, sent.strip()))
+    ok("owed the counter-pin sweep finds nothing quotable against the answer", not hits,
+       " || ".join(hits))
+    MEASURED["hazard_deltas"] = h
+    MEASURED["ask_span"] = span
+    MEASURED["counter_pin_hits"] = hits
+    MEASURED["encounter_record"] = {
+        "rows": st["na"] + st["nb"],
+        "rows_2023_2024": st["na"],
+        "rows_2025_2026": st["nb"],
+        "format": "SQLite database, two tables, one per encounter layout",
+        "bytes": os.path.getsize(os.path.join(st["target"], "treatment_encounters.db")),
+        "cancelled_rows": len(st["cancels"]),
+    }

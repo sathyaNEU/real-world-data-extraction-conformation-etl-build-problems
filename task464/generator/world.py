@@ -40,11 +40,11 @@ AREAS = [
     ("SA-04", "Durnsfield",     "short", 1.060, 0.915, "stable",   3),
     ("SA-05", "Eastmoor Reach", "clear", 1.040, 0.660, "seasonal", 3),
     ("SA-06", "Fallowbray",     "clear", 1.080, 0.580, "stable",   4),
-    ("SA-07", "Granley",        "flip",  1.100, 0.845, "stable",   3),
+    ("SA-07", "Granleigh",        "flip",  1.100, 0.845, "stable",   3),
     ("SA-08", "Hesper Vale",    "clear", 1.060, 0.640, "seasonal", 3),
     ("SA-09", "Innsmere",       "short", 1.090, 0.895, "stable",   4),
     ("SA-10", "Jarrowmead",     "clear", 1.050, 0.630, "stable",   3),
-    ("SA-11", "Kettleby",       "flip",  1.080, 0.862, "stable",   3),
+    ("SA-11", "Kettlebrook",       "flip",  1.080, 0.862, "stable",   3),
     ("SA-12", "Lowenbrook",     "short", 1.070, 0.905, "stable",   3),
 ]
 CODES = [a[0] for a in AREAS]
@@ -57,7 +57,7 @@ OPERATORS = [
     ("Marrowdale Renal Group", "chain"), ("Pelbrook Kidney Care", "chain"),
     ("Hainswell Dialysis Partners", "chain"), ("Corrindale Infusion Services", "chain"),
     ("Westmarch Community Dialysis", "independent"), ("Tolbury Renal Associates", "independent"),
-    ("Needham Flats Infusion Suite", "independent"), ("Quilby Point Kidney Center", "independent"),
+    ("Kestrel Flats Infusion Suite", "independent"), ("Quilby Point Kidney Center", "independent"),
 ]
 LOCALITIES = {
     "SA-01": ["Ammerly", "North Ammerly", "Pendrick", "Ammerly Heights"],
@@ -66,14 +66,14 @@ LOCALITIES = {
     "SA-04": ["Durnsfield", "Durnsfield West", "Oakenby"],
     "SA-05": ["Eastmoor Reach", "Harbury Point", "Melliscombe"],
     "SA-06": ["Fallowbray", "Fallowbray South", "Winderly", "Thrushmead"],
-    "SA-07": ["Granley", "Granley Park", "Ovenshaw"],
+    "SA-07": ["Granleigh", "Granleigh Park", "Ovenshaw"],
     "SA-08": ["Hesper Vale", "Culvert Bridge", "Rimmerton"],
     "SA-09": ["Innsmere", "Innsmere Docks", "Falgate", "Brisley Row"],
     "SA-10": ["Jarrowmead", "Jarrowmead East", "Cawthorne Spur"],
-    "SA-11": ["Kettleby", "Kettleby Green", "Marlow Dene"],
+    "SA-11": ["Kettlebrook", "Kettlebrook Green", "Marlow Dene"],
     "SA-12": ["Lowenbrook", "Lowenbrook Landing", "Arrowfield"],
 }
-STREETS = ["Ferrier Road", "Lanchbury Avenue", "Dunmore Street", "Kettlewell Road", "Harrowgate Lane",
+STREETS = ["Ferrier Road", "Lanchbury Avenue", "Dunmore Street", "Kettlewell Road", "Harbourne Lane",
            "Sedgemill Road", "Pentland Way", "Bramshaw Street", "Colverton Road", "Nettlefold Avenue",
            "Orrell Street", "Wraysbury Road", "Fenniman Lane", "Hallowgate Road", "Sturmy Avenue",
            "Peverell Street", "Caddonby Road", "Litchmere Way", "Rushbrook Street", "Ganton Road"]
@@ -315,7 +315,8 @@ if __name__ == "__main__":
 DROPPED_N = 14          # in the 2026 filing and in the directory, no 2027 contract intent
 NEW_N = 4               # contract intent for 2027, not in the 2026 filing
 OFF_PLAN_N = 18         # licensed in the twelve areas, never in the plan's directory
-REDRAWN = (("SA-03", "SA-06"), ("SA-09", "SA-10"))   # pairs that exchanged localities for 2027
+REDRAWN = (("SA-03", "SA-06"), ("SA-09", "SA-10"), ("SA-01", "SA-12"),
+           ("SA-05", "SA-08"))        # pairs that exchanged a locality for the 2027 network year
 
 
 def extras(sites, seed=SEED + 3):

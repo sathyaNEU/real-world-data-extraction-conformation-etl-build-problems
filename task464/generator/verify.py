@@ -194,14 +194,15 @@ def main(argv=None):
         at_pos[d["licence_no"]] = d["service_address"]
     byaddr = {r["service_address"]: (r["service_area_code"], r["contract_intent_2027"])
               for r in rows if int(r["attestation_cycle"]) == cur}
-    seen, agg2 = set(), collections.defaultdict(lambda: [0, 0])
+    best = {}
     for r in fil[1:]:
         d = dict(zip(fh, r))
-        if d["service_address"] in seen:
-            continue
-        seen.add(d["service_address"])
-        hit = byaddr.get(at_pos.get(d["licence_no"], d["service_address"]),
-                         byaddr.get(d["service_address"]))
+        rank = 0 if d["licence_no"] in at_pos else 1
+        if d["service_address"] not in best or rank < best[d["service_address"]][0]:
+            best[d["service_address"]] = (rank, d)
+    agg2 = collections.defaultdict(lambda: [0, 0])
+    for addr, (rank, d) in sorted(best.items()):
+        hit = byaddr.get(at_pos.get(d["licence_no"], addr))
         if hit is None or hit[1] != "none":
             continue
         agg2[hit[0]][0] += 1

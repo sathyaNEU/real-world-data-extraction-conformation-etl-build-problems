@@ -78,7 +78,7 @@ def submission(st, f):
              % n(C["network"]))
     L.append("Network slots are %s against %s required across the twelve areas, and %s is the nearest of "
              "the six to the standard, %s slots short. Not the stations the directory attests, which are "
-             "%s positions against %s and put three of those six areas above the standard. Not the "
+             "%s against %s deliverable positions and put three of those six areas above the standard. Not the "
              "stations the state licence lists, which are higher again. Not each site's busiest week in "
              "the record, which measures demand and leaves %d of the twelve areas short.\n"
              % (n(C["network"]), n(f["cc4"]), f["call"]["nearest_short_area"],
@@ -112,7 +112,7 @@ def submission(st, f):
         "Rebuilt the out-of-network half-year counts on service date from "
         "out_of_network_payments_2026.csv with out_of_network_payments_runout_2027q1.csv, placing each "
         "claim in the area of the site that treated rather than the member's residence area: %d figures "
-        "on the Out of Network 2026 sheet." % len(A),
+        "on the Out of Network 2026 sheet." % (len(A) * 2),
         "Took the state_licence_register.xlsx facility row covering the position date for each licence "
         "number, corporate rows excluded, for the licensed supply, and the row covering the 2026 filing's "
         "own position date to resolve each distinct site in state_adequacy_filing_2026.xlsx: %d and %d "

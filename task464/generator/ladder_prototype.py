@@ -12,6 +12,7 @@ import itertools
 import json
 import os
 import random
+import zlib
 import sys
 
 SEED = int(sys.argv[1]) if len(sys.argv) > 1 and not sys.argv[1].startswith("-") else 464
@@ -228,7 +229,7 @@ def plateau(s):
     stag = max(3, min(10, (dur - plat) // max(1, K - 1)))
     b = (d * s["u"] - 1.0) / (d - 1) if d > 1 else s["u"]
     hist, mmax, ymax, rec = collections.Counter(), [], [], 0
-    r2 = random.Random(hash((SEED, s["site"])) & 0xffffffff)
+    r2 = random.Random(zlib.crc32(("%d-%s" % (SEED, s["site"])).encode("utf-8")))
     for month in range(48):
         mm = 0
         for _ in range(s["days"] * 4 + r2.choice([0, 1])):

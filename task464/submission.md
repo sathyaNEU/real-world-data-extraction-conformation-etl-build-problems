@@ -4,7 +4,7 @@
 
 ## 1. Final Recommendation
 **The 2027 outpatient dialysis and infusion network holds 3,886 weekly treatment slots, and six of the twelve service areas sit below the adequacy standard.**
-Network slots are 3,886 against 3,556 required across the twelve areas, and Bexhollow is the nearest of the six to the standard, 20 slots short. Not the stations the directory attests, which are 327 positions against 274 and put three of those six areas above the standard. Not the stations the state licence lists, which are higher again. Not each site's busiest week in the record, which measures demand and leaves 8 of the twelve areas short.
+Network slots are 3,886 against 3,556 required across the twelve areas, and Bexhollow is the nearest of the six to the standard, 20 slots short. Not the stations the directory attests, which are 327 against 274 deliverable positions and put three of those six areas above the standard. Not the stations the state licence lists, which are higher again. Not each site's busiest week in the record, which measures demand and leaves 8 of the twelve areas short.
 
 ## 2. Critical Components
 1. Deliverable treatment positions across the forty sites in scope are **274**, against **327** attested stations
@@ -17,7 +17,7 @@ Network slots are 3,886 against 3,556 required across the twelve areas, and Bexh
 3. Rebuilt each treatment's service interval from both tables of treatment_encounters.db, the 2023 and 2024 table carrying a stop time and the 2025 and 2026 table a length in minutes, and took each site's deliverable treatment positions as the greatest number of its own treatments running at one time over the four-year record: 274 positions against 327 attested stations.
 4. Multiplied each site's positions by its sessions a week and by its category figure, as Schedule 4 clause 4.2 sets the unit: 3,886 weekly treatment slots for the network.
 5. Took each area's 2026 contract year treatments a week from the same extract and grew them by the area's factor in enrolment_projection_2027.csv: 3,092 treatments a week projected and 3,556 weekly slots required.
-6. Rebuilt the out-of-network half-year counts on service date from out_of_network_payments_2026.csv with out_of_network_payments_runout_2027q1.csv, placing each claim in the area of the site that treated rather than the member's residence area: 24 figures on the Out of Network 2026 sheet.
+6. Rebuilt the out-of-network half-year counts on service date from out_of_network_payments_2026.csv with out_of_network_payments_runout_2027q1.csv, placing each claim in the area of the site that treated rather than the member's residence area: 48 figures on the Out of Network 2026 sheet.
 7. Took the state_licence_register.xlsx facility row covering the position date for each licence number, corporate rows excluded, for the licensed supply, and the row covering the 2026 filing's own position date to resolve each distinct site in state_adequacy_filing_2026.xlsx: 24 and 24 figures.
 8. Compared each area's slots with its required figure: 6 of the twelve areas sit below the standard and the network holds 3,886 weekly treatment slots.
 
@@ -46,9 +46,9 @@ Network slots are 3,886 against 3,556 required across the twelve areas, and Bexh
    - PS-11103, Fallowbray: 144
    - PS-11140, Fallowbray: 40
    - PS-11177, Fallowbray: 96
-   - PS-11214, Granley: 108
-   - PS-11251, Granley: 96
-   - PS-11288, Granley: 108
+   - PS-11214, Granleigh: 108
+   - PS-11251, Granleigh: 96
+   - PS-11288, Granleigh: 108
    - PS-11325, Hesper Vale: 80
    - PS-11362, Hesper Vale: 80
    - PS-11399, Hesper Vale: 105
@@ -59,9 +59,9 @@ Network slots are 3,886 against 3,556 required across the twelve areas, and Bexh
    - PS-11584, Jarrowmead: 120
    - PS-11621, Jarrowmead: 126
    - PS-11658, Jarrowmead: 150
-   - PS-11695, Kettleby: 162
-   - PS-11732, Kettleby: 180
-   - PS-11769, Kettleby: 144
+   - PS-11695, Kettlebrook: 162
+   - PS-11732, Kettlebrook: 180
+   - PS-11769, Kettlebrook: 144
    - PS-11806, Lowenbrook: 105
    - PS-11843, Lowenbrook: 40
    - PS-11880, Lowenbrook: 60
@@ -74,11 +74,11 @@ Network slots are 3,886 against 3,556 required across the twelve areas, and Bexh
    - Durnsfield: 170 slots, 190 required, meets the standard no, 20 slots short
    - Eastmoor Reach: 302 slots, 238 required, meets the standard yes
    - Fallowbray: 360 slots, 259 required, meets the standard yes
-   - Granley: 312 slots, 334 required, meets the standard no, 22 slots short
+   - Granleigh: 312 slots, 334 required, meets the standard no, 22 slots short
    - Hesper Vale: 265 slots, 207 required, meets the standard yes
    - Innsmere: 386 slots, 433 required, meets the standard no, 47 slots short
    - Jarrowmead: 396 slots, 301 required, meets the standard yes
-   - Kettleby: 486 slots, 520 required, meets the standard no, 34 slots short
+   - Kettlebrook: 486 slots, 520 required, meets the standard no, 34 slots short
    - Lowenbrook: 205 slots, 228 required, meets the standard no, 23 slots short
 3. Nearest the standard without meeting it: Bexhollow, 20 slots short.
 4. Out of Network 2026, twelve areas by half, whole treatments and shares to one decimal:
@@ -94,16 +94,16 @@ Network slots are 3,886 against 3,556 required across the twelve areas, and Bexh
    - Eastmoor Reach, H2: 535 treatments, 9.5 per cent
    - Fallowbray, H1: 806 treatments, 12.8 per cent
    - Fallowbray, H2: 790 treatments, 12.9 per cent
-   - Granley, H1: 468 treatments, 6.3 per cent
-   - Granley, H2: 457 treatments, 6.3 per cent
+   - Granleigh, H1: 468 treatments, 6.3 per cent
+   - Granleigh, H2: 457 treatments, 6.3 per cent
    - Hesper Vale, H1: 494 treatments, 9.9 per cent
    - Hesper Vale, H2: 484 treatments, 10.1 per cent
    - Innsmere, H1: 338 treatments, 3.6 per cent
    - Innsmere, H2: 329 treatments, 3.6 per cent
    - Jarrowmead, H1: 364 treatments, 5.2 per cent
    - Jarrowmead, H2: 357 treatments, 5.3 per cent
-   - Kettleby, H1: 520 treatments, 4.5 per cent
-   - Kettleby, H2: 510 treatments, 4.5 per cent
+   - Kettlebrook, H1: 520 treatments, 4.5 per cent
+   - Kettlebrook, H2: 510 treatments, 4.5 per cent
    - Lowenbrook, H1: 676 treatments, 12.1 per cent
    - Lowenbrook, H2: 664 treatments, 12.3 per cent
 5. Licensed Supply, twelve areas, whole sites and stations:
@@ -113,11 +113,11 @@ Network slots are 3,886 against 3,556 required across the twelve areas, and Bexh
    - Durnsfield: 6 sites, 39 stations
    - Eastmoor Reach: 5 sites, 51 stations
    - Fallowbray: 8 sites, 66 stations
-   - Granley: 5 sites, 50 stations
+   - Granleigh: 5 sites, 50 stations
    - Hesper Vale: 6 sites, 38 stations
    - Innsmere: 6 sites, 36 stations
    - Jarrowmead: 6 sites, 59 stations
-   - Kettleby: 5 sites, 55 stations
+   - Kettlebrook: 5 sites, 55 stations
    - Lowenbrook: 5 sites, 38 stations
 6. Sites Dropped, twelve areas, whole sites and stations:
    - Ammerly: 2 sites, 15 stations
@@ -126,10 +126,10 @@ Network slots are 3,886 against 3,556 required across the twelve areas, and Bexh
    - Durnsfield: 1 sites, 5 stations
    - Eastmoor Reach: 1 sites, 12 stations
    - Fallowbray: 2 sites, 16 stations
-   - Granley: 1 sites, 6 stations
+   - Granleigh: 1 sites, 6 stations
    - Hesper Vale: 1 sites, 5 stations
    - Innsmere: 1 sites, 6 stations
    - Jarrowmead: 1 sites, 8 stations
-   - Kettleby: 1 sites, 6 stations
+   - Kettlebrook: 1 sites, 6 stations
    - Lowenbrook: 1 sites, 8 stations
 7. Bar chart of weekly treatment slots against the required figure on the Area Capacity sheet, the six areas below the standard carrying their shortfall in the sheet's own shortfall column.

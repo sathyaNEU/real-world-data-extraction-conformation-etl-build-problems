@@ -52,6 +52,10 @@ def write(out_dir, sites, by_area, extra, rows, lic_rows, filing_rows, dir_rows,
     for a in C["areas"]:
         ws.append([a["code"], a["name"], a["slots"], a["required"], "yes" if a["meets"] else "no",
                    a["shortfall"] if not a["meets"] else None])
+    for row in ws.iter_rows(min_row=2, max_row=13):
+        row[4].alignment = Alignment(horizontal="center")
+        for c in row[2:4] + row[5:6]:
+            c.alignment = Alignment(horizontal="right")
     r = ws.max_row + 1
     ws.cell(row=r, column=2, value="network").font = Font(bold=True)
     ws.cell(row=r, column=3, value=C["network"]).font = Font(bold=True)
@@ -89,6 +93,8 @@ def write(out_dir, sites, by_area, extra, rows, lic_rows, filing_rows, dir_rows,
                "out_of_network_treatments", "share_of_all_area_treatments_pct"], [20, 20, 14, 26, 30])
     for a in A:
         s2.append([a["code"], a["name"], a["half"], a["treatments"], a["share"]])
+    for row in s2.iter_rows(min_row=2):
+        row[2].alignment = Alignment(horizontal="center")
     for row in s2.iter_rows(min_row=2, min_col=4, max_col=4):
         for c in row:
             c.number_format = "#,##0"
@@ -113,5 +119,5 @@ def write(out_dir, sites, by_area, extra, rows, lic_rows, filing_rows, dir_rows,
                 c.number_format = "#,##0"
     ws.print_area = "A1:F17"
     ws.page_setup.orientation = "landscape"
-    wb.save(os.path.join(out_dir, XLSX_NAME))
+    pack.save_book(wb, os.path.join(out_dir, XLSX_NAME))
     return dict(call=C, sites=S, ask_a=A, ask_b=B, ask_c=D)

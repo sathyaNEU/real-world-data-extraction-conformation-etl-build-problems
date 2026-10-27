@@ -7,14 +7,13 @@
  "stage": 3,
  "stage_name": "build",
  "updated": "2026-10-27",
- "stump": "The default path multiplies each site's attested stations by its rostered sessions, ties the product to realised volume and the adequacy standard, and files a 2027 network capacity 1.15 times the golden with three of the twelve service areas wrongly above the standard, because the stations a site attests are the positions it has, not the positions it can work at one time.",
+ "stump": "The default path multiplies each site's attested stations by its rostered sessions, ties the product to realised volume and the adequacy standard, and files a 2027 network capacity 1.2012 times the golden (4,668 weekly treatment slots against 3,886) with three of the twelve service areas wrongly above the standard, because the stations a site attests are the positions it has, not the positions it can work at one time.",
  "architecture": 3,
  "loops": 0,
  "precut": {
   "exit": 0,
-  "checks": 52,
-  "warn": 0,
-  "date": "2026-10-27"
+  "date": "2026-10-27",
+  "detail": "52 checks, 0 FAIL, 0 WARN; voice-check.py exit 0 on prompt.txt at 996 characters"
  },
  "leak": {
   "leak_py": "",
@@ -43,11 +42,21 @@
    "commit": ""
   }
  ],
- "resume": "Stage 2 closed 2026-10-27: precut.py exit 0, 52 checks, 0 FAIL, 0 WARN, voice-check exit 0 on a 988 character prompt. Stage 3 owes the whole pack. NOTE the generator is deliberately inconsistent right now: generator/checks.py is architecture 3's assertion module (SF1 to SF17 plus the ladder, partial-application, analyst-test, separation, hygiene and oracle blocks) while every other file under generator/, plus target.zip, golden/ and submission.md, is still architecture 2's and is rewritten at stage 3. Five things are owed against the cut pack and must not be taken from the design note as measured: the per-ask hazard deltas and column counts, the pair ceiling and mirror leakage (36.5 and 29.2 are a model, not a reader measurement; the sensitivity is 39.3 to 47.5 if the cracker keeps a tenth to two fifths of the ask weight), the counter-pin sweep on the adequacy contract's wording, the encounter file's row count and format (about 1.1 million reconstructed intervals, intended as a database file), and the realism sweep.",
+ "resume": "Stage 3 built 2026-10-27: the generator is architecture 3's throughout (world, sim, pack, docs, golden, answers, checks, verify, writeup, metadata, build, ceiling, ladder_prototype), the bundle is 13 files in 5 formats with a 639,009-row SQLite encounter database, and the two goldens and submission.md are emitted. Every free gate is green and recorded in the design note's Pre-ship check. Stage 4 is the author's: the isolated leak reader and the determinism judge, spawned together. No solver, scored reader or probe is run on any build (CLAUDE.md's STOP block).",
  "approved": null,
  "delivered": "2026-10-17",
  "portal": "both responses landed the call",
  "source_note": "architecture 2 drawn afresh after architecture 1's SEND_BACK: the 2027 adolescent literacy grants on grade 9 and 10 students at the new state reading test's Level 1, the retiring test's 2025 scores placed on the new scale through the 2026 bridge study",
  "portal_status": "not on the approved list",
- "portal_status_date": "2026-10-27"
+ "portal_status_date": "2026-10-27",
+ "build": {
+  "checks": "625 assertions passed (three rules R1 to R3c, SF1 to SF17, ladder, 22 closure axes, input gates, realism sweep, the five owed figures)",
+  "verify": "PASS, bundle only, own code path: 40 sites, 12 areas, 96 ask figures",
+  "rebuilds": "two consecutive builds byte-identical across all 13 target files and target.zip",
+  "figures_check": "PASS, 144 figures in blocks 1 to 4, 0 absent",
+  "leak_py": "REVIEW, no LEAK, 4 REVIEW lines answered in the design note's Leak check",
+  "pair": "Pair ceiling 30.8, Mirror leakage 4.2 per cent, measured by generator/ceiling.py on the cut pack",
+  "network_weekly_slots": 3886,
+  "areas_short": 6
+ }
 }

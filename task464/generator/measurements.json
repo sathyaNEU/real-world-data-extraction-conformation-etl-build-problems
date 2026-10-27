@@ -6,12 +6,35 @@
   "ask_deltas": {
     "ask_a_adjudication_basis": 24,
     "ask_b_status_only": 12,
-    "ask_c_row_count": 5
+    "ask_c_row_count": 10
+  },
+  "ask_span": {
+    "A": {
+      "columns": 13,
+      "files": 6
+    },
+    "B": {
+      "columns": 8,
+      "files": 1
+    },
+    "C": {
+      "columns": 10,
+      "files": 3
+    }
   },
   "closed_shift_sites": 6,
   "closest_pair_pct": 7.62,
   "constrained_sites": 16,
+  "counter_pin_hits": [],
   "crossover_worst": 0.938,
+  "encounter_record": {
+    "bytes": 62603264,
+    "cancelled_rows": 7576,
+    "format": "SQLite database, two tables, one per encounter layout",
+    "rows": 639009,
+    "rows_2023_2024": 331903,
+    "rows_2025_2026": 307106
+  },
   "encounter_rows": 639009,
   "figure_count": 210,
   "files": [
@@ -41,6 +64,12 @@
     ".pdf",
     ".xlsx"
   ],
+  "hazard_deltas": {
+    "h1_run_out_supplement_left_out": 12,
+    "h2_corporate_rows_counted_as_sites": 24,
+    "h2_licence_row_at_the_as_of_date": 6,
+    "h3_member_residence_area": 24
+  },
   "largest_file_bytes": 62603264,
   "legibility": {
     "argmax_hour_modal_share_median": 0.29,
@@ -66,6 +95,7 @@
     "realised_demand_basis_areas_flipped": 0,
     "realised_demand_basis_areas_short": 3,
     "sites_where_hours_misread_exceeds_attested": 40,
+    "tax_identifier_merge": 4512,
     "two_hour_start_count": 3825
   },
   "partial_cells": 41,

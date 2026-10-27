@@ -9,6 +9,8 @@ import csv
 import datetime as dt
 import json
 import os
+import re
+import zlib
 import sqlite3
 
 import openpyxl
@@ -28,6 +30,63 @@ PROJECTION_PUBLISHED = dt.date(2027, 1, 15)
 AGREEMENT_APPROVED = dt.date(2026, 12, 10)
 CYCLES = [(2024, dt.date(2024, 11, 14)), (2025, dt.date(2025, 11, 12)), (2026, dt.date(2026, 11, 18))]
 MOVED_ADDRESS = 3           # sites that changed address and kept their plan identifier
+
+ORG = "Wrenlow Community Health Plan"
+STAMP = dt.datetime(2027, 2, 16, 10, 30, 0)
+
+
+def repack(path, stamp=None):
+    """Rewrite a workbook's own archive with one fixed entry date, members in the order the writer put
+    them, so two builds of the same pack are byte-identical (reduce-house-fixes H1 and H7)."""
+    import zipfile
+    stamp = stamp or STAMP
+    iso = stamp.strftime("%Y-%m-%dT%H:%M:%SZ").encode()
+    with zipfile.ZipFile(path) as z:
+        members = []
+        for i in z.infolist():
+            data = z.read(i.filename)
+            if i.filename == "docProps/core.xml":
+                # the writer stamps its own clock into the modified date; the fiction's date ships
+                data = re.sub(rb"\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z", iso, data)
+            if i.filename == "docProps/app.xml":
+                # and its own name into the application; the organisation's system ships instead
+                data = re.sub(rb"<Application>[^<]*</Application>",
+                              b"<Application>Microsoft Excel</Application>", data)
+            members.append((i, data))
+    with zipfile.ZipFile(path, "w", zipfile.ZIP_DEFLATED, compresslevel=9) as z:
+        for info, data in members:
+            zi = zipfile.ZipInfo(info.filename, date_time=(stamp.year, stamp.month, stamp.day,
+                                                           stamp.hour, stamp.minute, stamp.second))
+            zi.compress_type = zipfile.ZIP_DEFLATED
+            zi.external_attr = info.external_attr
+            z.writestr(zi, data)
+    return path
+
+
+def save_book(wb, path, creator=None):
+    finalise(wb, creator)
+    wb.save(path)
+    return repack(path)
+
+
+def finalise(wb, creator=None):
+    """One stamp for every workbook: the producer and the dates are the fiction's, so two builds of the
+    same pack are byte-identical and no writer name ships (reduce-house-fixes H1)."""
+    p = wb.properties
+    p.creator = creator or ORG
+    p.lastModifiedBy = creator or ORG
+    p.created = STAMP
+    p.modified = STAMP
+    p.title = None
+    p.subject = None
+    p.description = None
+    p.keywords = None
+    p.category = None
+    p.lastPrinted = None
+    p.revision = None
+    p.version = None
+    return wb
+
 GROUP_PRACTICE = 3          # sites billing under one tax identifier
 
 
@@ -153,7 +212,7 @@ def licence_register(target, sites, extra, rnd):
             byop[op][area] += st
     for op in sorted(byop):
         for area in sorted(byop[op]):
-            rows.append(["CORP-%05d" % (9000 + abs(hash(op + area)) % 900), op, "corporate umbrella", "",
+            rows.append(["CORP-%05d" % (9000 + zlib.crc32((op + area).encode()) % 900), op, "corporate umbrella", "",
                          "", area, "multi-category", byop[op][area],
                          dt.date(2016, 4, 1).isoformat(), "", "active"])
     # eight facilities licensed outside the plan's twelve service areas
@@ -185,7 +244,7 @@ def licence_register(target, sites, extra, rnd):
     s2.append(["all categories", len(set(r[0] for r in rows))])
     for i, w in enumerate((34, 26), start=1):
         s2.column_dimensions[get_column_letter(i)].width = w
-    wb.save(os.path.join(target, "state_licence_register.xlsx"))
+    save_book(wb, os.path.join(target, "state_licence_register.xlsx"), "State licensing authority")
     return rows, reissues, amendments
 
 
@@ -276,9 +335,9 @@ def filing(target, sites, extra, rnd):
                      world.AREA[e["area_2026"]]["name"],
                      "in-centre haemodialysis" if e["modality"] == "dialysis" else "ambulatory infusion",
                      e["licensed"], "contracted"])
-    dup = [e for e in extra if e["kind"] == "dropped"][4:6]
+    dup = [e for e in extra if e["kind"] == "dropped"][4:9]
     for e in dup:
-        rows.append(["CORP-%05d" % (9000 + abs(hash(e["operator"] + e["area"])) % 900), e["name"],
+        rows.append(["CORP-%05d" % (9000 + zlib.crc32((e["operator"] + e["area"]).encode()) % 900), e["name"],
                      e["address"], e["locality"], e["area_2026"], world.AREA[e["area_2026"]]["name"],
                      "in-centre haemodialysis" if e["modality"] == "dialysis" else "ambulatory infusion",
                      e["licensed"], "contracted"])
@@ -312,7 +371,7 @@ def filing(target, sites, extra, rnd):
                    int(round(v[1] * 46.0 * (1.0 + (ord(c[-1]) % 7) / 40.0)))])
     for i, w in enumerate((22, 24, 18, 20, 26), start=1):
         s2.column_dimensions[get_column_letter(i)].width = w
-    wb.save(os.path.join(target, "state_adequacy_filing_2026.xlsx"))
+    save_book(wb, os.path.join(target, "state_adequacy_filing_2026.xlsx"))
     return rows
 
 
@@ -371,7 +430,7 @@ def out_of_network(target, sites, extra, rows_in, rnd):
     for r in ws.iter_rows(min_row=4, max_row=4):
         for c in r:
             c.font = Font(bold=True)
-    wb.save(os.path.join(target, "out_of_network_payments_reconciliation_2026.xlsx"))
+    save_book(wb, os.path.join(target, "out_of_network_payments_reconciliation_2026.xlsx"))
     return main, runout
 
 

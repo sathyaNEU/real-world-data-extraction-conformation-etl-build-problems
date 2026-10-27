@@ -111,14 +111,18 @@ def ask_c(sites, extra, filing_rows, licence_rows, directory_rows, position=None
         if int(r[0]) != 2026:
             continue
         cur[r[5]] = (r[7], r[12])           # service_address -> (area, contract intent)
-    seen, agg = set(), collections.defaultdict(lambda: [0, 0])
+    # one row per distinct facility: where an address is filed twice, the row whose licence number the
+    # register resolves at the filing's own position date is the facility's own
+    best = {}
     for r in filing_rows:
         lic, name, addr, loc, a26, a26n, cat, stations, status = r
-        key = addr
-        if key in seen:
-            continue
-        seen.add(key)
-        hit = cur.get(cover.get(lic, addr), cur.get(addr))
+        rank = 0 if lic in cover else 1
+        if addr not in best or rank < best[addr][0]:
+            best[addr] = (rank, r)
+    agg = collections.defaultdict(lambda: [0, 0])
+    for addr, (rank, r) in sorted(best.items()):
+        lic, name, a2, loc, a26, a26n, cat, stations, status = r
+        hit = cur.get(cover.get(lic, addr))
         if hit is None or hit[1] != "none":
             continue
         agg[hit[0]][0] += 1
