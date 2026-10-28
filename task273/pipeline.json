@@ -24,7 +24,7 @@
  "judge": {
   "verdict": "DETERMINISTIC",
   "disposition": "APPROVE",
-  "report": "determinism_check_report.md (pass 2; pass 1 SEND_BACK kept as determinism_check_report_a4_pass1.md)"
+  "report": "determinism_check_report.md (pass 2 on f17337a6; pass 1 SEND_BACK kept as determinism_check_report_a4_pass1.md); shipped ea742c6b differs only in policy 3.1's decider, PDF producers and register texture, figures identical"
  },
  "returned": [
   {

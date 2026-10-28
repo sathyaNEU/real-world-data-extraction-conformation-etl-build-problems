@@ -172,6 +172,8 @@ Measured by: generator/cracker.py on the cut pack (target.zip digest ea742c6b9ff
 - `ccsp_panel_policy_v3.pdf`, 9 stump-paragraph terms: the policy files the estimand (population, outcome, unit, line) and the programme's reporting rules; it names no method. Harmless.
 - `prompt`, the question sentence: the call's own question. Harmless.
 - Isolated reader (2026-10-28): question 1 none, 2 none, 3 none, 6 an analytical choice; its question 4 hint (an island GP group nominating ARSACS) and its realism tells (texture variants past their genes' coding lengths, a fixed id stride, a round member total) are fixed in the generator.
+- Isolated reader, pass 2 (on f17337a6): questions 1 to 4 none, 6 an analytical choice. A limit on that read, not a finding: its context held this session's git log, whose DRAWN commit message describes the mechanism; it opened no file outside its scratch copy, and the portal's solvers see no git history.
+- Judged and shipped packs: judge pass 2 approved target.zip f17337a6; the shipped pack is ea742c6b. Text compared file by file: the policy differs only in clause 3.1's decider (the Director of Public Health in place of the Executive Leadership Team), the methods report's text is identical (its producer metadata changed), every data file is byte-identical except the variant register, whose identity, class and position fields are identical and whose differences are the texture entries' protein notation and classification dates and eleven pre-2022 first-entry dates in the change history; figures.json is identical key by key.
 
 ## Pre-ship check
 
