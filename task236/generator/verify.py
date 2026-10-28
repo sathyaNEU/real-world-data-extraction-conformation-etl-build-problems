@@ -45,12 +45,42 @@ def compute(target):
     erp = defaultdict(int)
     for r in rows(target, POP):
         erp[regions[r["postcode"]]] += int(r["erp_30_june_2026"])
+    # the person behind each result: a specimen is taken from one person, so gateway keys that share one are one
+    # person; a key whose ages jump by more than a year carries two people (a year more is a birthday)
+    res = rows(target, RES)
+    parent = {}
+
+    def find(k):
+        while parent.get(k, k) != k:
+            k = parent[k]
+        return k
+    keys_of = defaultdict(set)
+    for r in res:
+        keys_of[r["specimen_id"]].add(r["patient_key"])
+    for ks in keys_of.values():
+        ks = sorted(ks)
+        for k in ks[1:]:
+            a, b = find(ks[0]), find(k)
+            if a != b:
+                parent[max(a, b)] = min(a, b)
+    ages = defaultdict(set)
+    for r in res:
+        ages[find(r["patient_key"])].add(int(r["age_years"]))
+    part = {}
+    for k, a in ages.items():
+        a = sorted(a)
+        lab, n = {a[0]: 0}, 0
+        for x, y in zip(a, a[1:]):
+            n += y - x > 1
+            lab[y] = n
+        part[k] = lab
     # cases: each person's positive results in collection order, a new case 14 days or more after the case's first
     by_person = defaultdict(list)
-    for r in rows(target, RES):
+    for r in res:
         if reports_influenza(r["result"]):
-            by_person[r["patient_key"]].append((r["collection_date"], r["received_utc"], r["residential_postcode"],
-                                                r["requester_postcode"]))
+            k = find(r["patient_key"])
+            by_person[(k, part[k][int(r["age_years"])])].append(
+                (r["collection_date"], r["received_utc"], r["residential_postcode"], r["requester_postcode"]))
     cases = []
     for key, xs in by_person.items():
         xs.sort()
@@ -58,13 +88,15 @@ def compute(target):
         for d, rec, pc, req in xs:
             day = dt.date.fromisoformat(d)
             if cur is None or (day - cur["first"]).days >= 14:
-                cur = {"first": day, "rec": rec, "pc": pc, "req": req}
+                cur = {"first": day, "rec": rec, "pc": "", "req": req}
                 cases.append(cur)
             elif rec < cur["rec"]:
                 cur["rec"] = rec
+            if not cur["pc"] and pc not in ("", "0000"):
+                cur["pc"] = pc
     count = defaultdict(int)
     for c in cases:
-        region = regions.get(c["req"]) if c["pc"] in ("", "0000") else regions.get(c["pc"])
+        region = regions.get(c["pc"]) if c["pc"] else regions.get(c["req"])
         if region is None or c["rec"] > CUT:
             continue
         count[(region, c["first"].isocalendar()[1])] += 1

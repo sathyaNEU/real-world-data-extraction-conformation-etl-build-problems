@@ -1,8 +1,10 @@
 """task236 checks: the three rules executed on the simulator's clean truth (R1 to R3c), every semantic fork row (SF1 to
-SF12), the golden against the world's own ascertainment with its margins, the rungs and the corridor of index
-constructions, the ask devices and their stops, the separation of the call from the devices, the documents' pins, the
-input gates and the realism sweep."""
+SF15), the golden against the world's own ascertainment with its margins, the rungs and the corridor of index
+constructions, the ask devices and their stops, the cracker sheet (every careful reading of the asks' rows misses every
+figure), the separation of the call from the devices and the main side frozen against the shipped pack, the
+documents' pins, the input gates and the realism sweep."""
 import datetime as dt
+import hashlib
 import json
 import os
 import re
@@ -12,6 +14,7 @@ import sys
 import numpy as np
 import pandas as pd
 
+import asks as AK
 import estim as E
 import params as P
 
@@ -62,6 +65,21 @@ def truth_cases(R):
     c = pd.DataFrame(out)
     c["week"] = [d.isocalendar()[1] for d in c["first"]]
     return c[c.region.notna()]
+
+
+def main_rows(D):
+    """the gateway results rows the call reads, by count and sha256: each of the eight regions' change window and the
+    South West and Far West in weeks 26 to 35, a row placed by its residential postcode under the concordance in
+    force or, with none recorded, by the requesting service's"""
+    r = D["res"]
+    now = E.concordance_now(D)
+    unk = r.residential_postcode.isin(E.UNKNOWN)
+    reg = r.residential_postcode.map(now).where(~unk, r.requester_postcode.map(now))
+    wk = E.iso_week(r.collection_date)
+    win = {c: set(range(cw - E.WINDOW, cw + E.WINDOW)) for c, (_, cw, _) in E.changes(D).items()}
+    win.update({c: set(range(26, 36)) for c in ("SW", "FW")})
+    m = r[[g in win and w in win[g] for g, w in zip(reg, wk)]].sort_values("result_id")
+    return len(m), hashlib.sha256(m.to_csv(index=False, lineterminator="\n").encode()).hexdigest()
 
 
 def run(target, golden, o, X):
@@ -232,8 +250,8 @@ def run(target, golden, o, X):
        == sorted(E.EIGHT), "ask A primary: the 28 June boundary review touches all eight regions")
     # ------------------------------------------------------------ separation: no device row in the call's windows
     straddle = base[(base.notified_utc <= E.CUTOFF_UTC)].merge(
-        E.cases(D, finals_only=True)[["patient_key", "first_collection", "notified_utc"]],
-        on=["patient_key", "first_collection"], how="left", suffixes=("", "_final"))
+        E.cases(D, finals_only=True)[["person", "first_collection", "notified_utc"]],
+        on=["person", "first_collection"], how="left", suffixes=("", "_final"))
     straddle = straddle[straddle.notified_utc_final.isna() | (straddle.notified_utc_final > E.CUTOFF_UTC)]
     win = {(c, w) for c, (_, cw, _) in ch.items() for w in range(cw - 4, cw + 4)}
     ok(not any((r.region, r.week) in win for r in straddle.itertuples()) and len(straddle) > 40,
@@ -241,6 +259,80 @@ def run(target, golden, o, X):
     ok(not any((r.region, r.week) in win for r in late.itertuples()), "separation: no case notified after the cut-off is in a window")
     pre = base[base.postcode.isin(set(moved.postcode)) & (base.first_collection <= moved.effective_to.max())]
     ok(len(pre) >= 15 and pre.week.max() < 26, "separation: the %d cases in moved postcodes before the boundary are all before week 26" % len(pre))
+
+    # ------------------------------------------------------------ the asks' rows (asks.py): the person matching and the
+    # laboratories' two reporting systems, on people outside every change window
+    man, res0 = o["man"], o["res0"]
+    for kind in AK.KINDS:
+        want = sum(sum(n for _, n in v[kind]) if kind == "address" else sum(v[kind]) for v in P.ASK_PLAN.values())
+        ok(len(man[kind]) == want, "asks' rows: %d of %d planned %s instances placed" % (len(man[kind]), want, kind))
+    elig = set(AK.eligible(res0, R).patient_key)
+    changed = (o["res"] != res0).any(axis=1)
+    touched = set(res0.loc[changed, "patient_key"])
+    named = ({m["key"] for k in ("two_keys", "birthday", "address") for m in man[k]} | {m["infant"] for m in man["infant"]})
+    ok(named <= touched <= elig, "separation: the %d changed rows belong to %d people, every one with each result "
+       "outside its region's change window and at the gateway by the cut-off" % (changed.sum(), len(touched)))
+    ok(touched <= elig and not (touched & set(base[base.notified_utc > E.CUTOFF_UTC].patient_key)),
+       "separation: no changed row belongs to a case in a window or to a case notified after the cut-off")
+    ok(res0.groupby("specimen_id").patient_key.nunique().max() == 1 and res0.groupby("patient_key").age_years.nunique().max() == 1,
+       "asks' rows: before them every specimen sits under one key and every key shows one age")
+    two = res.groupby("specimen_id").patient_key.nunique()
+    two = two[two > 1]
+    ok(sorted(two.index) == sorted(m["specimen"] for m in man["two_keys"]) and (two == 2).all(),
+       "two keys: the %d specimens under two keys are the instances, no other" % len(two))
+    pf = res[res.specimen_id.isin(two.index)]
+    ok(all(set(x[x.result_status == "P"].patient_key) == {m["key"]} and set(x[x.result_status == "F"].patient_key) == {m["key2"]}
+           and x.sex.nunique() == x.age_years.nunique() == x.residential_postcode.nunique() == 1
+           for m in man["two_keys"] for x in [pf[pf.specimen_id == m["specimen"]]]),
+       "two keys: each a preliminary under one key and its final under another, same sex, age and residential postcode")
+    ages = res.groupby("patient_key").age_years.agg(lambda s: sorted({int(v) for v in s}))
+    multi = ages[ages.map(len) > 1]
+    moms, bdays = {m["mother"] for m in man["infant"]}, {m["key"] for m in man["birthday"]}
+    ok(set(multi.index) == moms | bdays, "the %d keys showing two ages are the infants' mothers and the birthdays" % len(multi))
+    ok(all(multi[k][0] == 0 and multi[k][1] >= 19 for k in moms) and all(multi[k][1] - multi[k][0] == 1 for k in bdays),
+       "infant: each mother's key shows an infant of 0 and an adult of 19 or more; birthday: each age rises by one")
+    now = E.concordance_now(D)
+    ad = res[res.specimen_id.isin({m["specimen"] for m in man["address"]})]
+    ok(all(x[x.result_status == "P"].residential_postcode.isin(E.UNKNOWN).all()
+           and x[x.result_status == "F"].residential_postcode.map(now).eq(m["region"]).all()
+           and x.requester_postcode.map(now).eq(m["to"]).all() and m["to"] != m["region"]
+           for m in man["address"] for x in [ad[ad.specimen_id == m["specimen"]]]),
+       "address: each preliminary has no residential postcode, its final has one in the region, the requester sits in "
+       "the next region")
+    flow = {c: sum(m["to"] == c for m in man["address"]) - sum(m["region"] == c for m in man["address"]) for c in E.EIGHT}
+    ok(all(flow[c] for c in E.EIGHT), "address: every region's net of cases sent from a requester next door is non-zero %s" % flow)
+
+    # ------------------------------------------------------------ the main side frozen against the shipped pack
+    shipped = json.load(open(os.path.join(HERE, "shipped.json")))
+    for f, h in shipped["files"].items():
+        if f != B.FILES["res"]:
+            ok(hashlib.sha256(open(os.path.join(target, f), "rb").read()).hexdigest() == h,
+               "frozen: %s byte-identical to the shipped pack" % f)
+    ok(hashlib.sha256(res0.to_csv(index=False, lineterminator="\n").encode()).hexdigest() == shipped["files"][B.FILES["res"]],
+       "frozen: the gateway's results before the asks' rows are the shipped file byte for byte")
+    n_main, h_main = main_rows(D)
+    ok((n_main, h_main) == (shipped["main_rows"], shipped["main_rows_sha256"]),
+       "frozen: the %d results rows the call reads byte-identical to the shipped pack" % n_main)
+    names = {r[0]: r[1] for r in P.REGIONS}
+    comp = shipped["call"]["components"]
+    ok(sorted(names[c] for c in flags) == sorted(shipped["call"]["flags"])
+       and all([X["windows"][c]["before"], X["windows"][c]["after"]] == comp["notified_before_after"][names[c]]
+               and "%.2f" % round(ratio[c], 2) == comp["share_notified_after_over_before"][names[c]] for c in E.EIGHT),
+       "frozen: the four flags, each region's notified cases either side of its change and its share-notified change as shipped")
+    ok(all(X["season"][c] == shipped["asks"][c]["season_to_date"] and "%.1f" % X["rate36"][c] == shipped["asks"][c]["rate_week36"]
+           for c in E.EIGHT), "the asks' golden figures as shipped: the asks' rows move no case in the clean truth")
+
+    # ------------------------------------------------------------ the cracker sheet: every careful reading misses, and
+    # no reading moves the call (SF14, SF15)
+    for name, c in E.readings(D).items():
+        a, b = E.season_to_date(c), E.week_rate(c, X["erp"])
+        ok(all(a[k] != gA[k] for k in E.EIGHT) and all(abs(b[k] - gB[k]) >= 0.05 for k in E.EIGHT),
+           "cracker sheet: %s misses all sixteen figures" % name)
+        Nr = E.series(c)
+        ok(E.flagged(E.share_change(Nr, Xi, ch)) == GOLD and all(
+            int(E.window_sum(Nr, k, E.windows(cw)[0])) == X["windows"][k]["before"]
+            and int(E.window_sum(Nr, k, E.windows(cw)[1])) == X["windows"][k]["after"] for k, (_, cw, _) in ch.items()),
+           "SF14/SF15 %s: the same call and the same notified cases in every window" % name)
 
     # ------------------------------------------------------------ the documents
     sec4 = prot[prot.index("4. Testing-change break flags"):prot.index("5. Weekly checks")]

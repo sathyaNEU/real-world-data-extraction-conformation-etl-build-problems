@@ -5,31 +5,38 @@
  "objective": "data-quality-monitoring",
  "stage": 5,
  "stage_name": "ship",
- "updated": "2026-10-17",
+ "updated": "2026-10-28",
  "stump": "A competent solver adjusts for testing by comparing each region's positivity in the four weeks from its testing change with the four weeks before and files 5 of the 8 regions wrong (North Coast, Tablelands, Central West and Metropolitan North flagged, Far North missed); the step that lands it there is reading the share of infections notified off the tests the region's own services ran, which the testing change itself moved, instead of off the sentinel practices' influenza-like-illness consultations attributed to influenza by their protocol swabs, which no testing change reaches.",
  "architecture": 1,
- "loops": 0,
+ "loops": 1,
  "precut": {
   "exit": 0,
-  "date": "2026-10-17"
+  "date": "2026-10-28"
  },
  "leak": {
-  "leak_py": "REVIEW (no LEAK), --asof 2027-09-14",
-  "reader": "three passes: Q1 none each time; Q6 an analytical choice; realism notes fixed"
+  "leak_py": "LEAK on DATA_DICTIONARY.md and README.md under the describing-file rule of 2026-10-27, after the ship (both in the pack the portal judged; left as shipped for the author's call), REVIEW otherwise, --asof 2027-09-14",
+  "reader": "pass 4 at the reship: Q1 s.4's estimand only, Q2 to Q4 none beyond the dictionary and readme as orientation, Q6 an analytical choice; nothing narrates the person matching or the address, no marker in the results"
  },
  "duplicate_check": {
-  "heart": "WARN (overuse.org_family, repeat.question_form; same_puzzle_older differentiated)",
-  "nearest": "task57 0.06 (driver); surface pairs task234, task235, task233 for the author's read"
+  "heart": "BLOCK on ban.role and ban.forum (task154) and test.same_puzzle (task463): retroactive, all drawn before this build, heart WARN at the ship; same_puzzle_older (task480 v1) and same_driver_older (task464 v8) answered on the card",
+  "nearest": "surface exit 0, eleven promoted pairs for the author's read"
  },
  "judge": {
   "verdict": "DETERMINISTIC",
   "disposition": "APPROVE",
-  "report": "determinism_check_report.md"
+  "report": "determinism_check_report_pass2.md"
  },
- "returned": [],
- "resume": "shipped; next: wave 3 (task237)",
+ "returned": [
+  {
+   "date": "2026-10-28",
+   "portal": "rubric 79 with the main call held (both top responses off the call, every supplementary figure collected)",
+   "repair": "rubric",
+   "commit": ""
+  }
+ ],
+ "resume": "reshipped 2026-10-28 (rubric): the asks rebuilt on the gateway's person matching and a preliminary's missing address, the main side byte-identical; next: the portal",
  "approved": null,
- "delivered": "2026-10-17",
+ "delivered": "2026-10-28",
  "portal": null,
  "portal_id": "",
  "portal_status": "",

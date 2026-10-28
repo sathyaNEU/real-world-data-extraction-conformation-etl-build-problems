@@ -95,14 +95,16 @@ def chart(path, A):
         ax.set_ylabel("notified cases", fontsize=8)
     for ax in axes[1, :]:
         ax.set_xlabel("report week, 2027", fontsize=8)
-    fig.tight_layout(rect=(0, 0, 1, 0.87), h_pad=2.2)
+    fig.tight_layout(rect=(0, 0, 1, 0.85), h_pad=2.2)
     fl = [r["name"] for r in A["regions"] if r["flag"]]
-    fig.text(0.012, 0.985, "Flag %s and %s from their change weeks; the other four series stay comparable"
-             % (", ".join(fl[:-1]), fl[-1]), fontsize=12.5, fontweight="bold", va="top", color=INK)
-    fig.text(0.012, 0.945, "Bars: notified influenza cases by report week (week 36 hatched: as counted at 09:00 Monday 13 "
-                           "September). Line (right axis): sentinel general practice influenza-like-illness consultations "
-                           "per 100,000 patients\ntimes the share of protocol swabs positive for influenza. Red bars: weeks "
-                           "a flag covers. Dashed line: the testing change.", fontsize=8.2, va="top", color="#333333",
+    un = [r["name"] for r in A["regions"] if not r["flag"]]
+    fig.text(0.012, 0.985, "Flag %s and %s from their change weeks" % (", ".join(fl[:-1]), fl[-1]), fontsize=12.5,
+             fontweight="bold", va="top", color=INK)
+    fig.text(0.012, 0.945, "%s and %s stay comparable across their changes.\nBars: notified influenza cases by report "
+                           "week (week 36 hatched: as counted at 09:00 Monday 13 September). Line (right axis): sentinel "
+                           "general practice influenza-like-illness consultations per 100,000 patients\ntimes the share of "
+                           "protocol swabs positive for influenza. Red bars: weeks a flag covers. Dashed line: the testing "
+                           "change." % (", ".join(un[:-1]), un[-1]), fontsize=8.2, va="top", color="#333333",
              linespacing=1.4)
     fig.savefig(path, metadata={"Software": None})
     plt.close(fig)

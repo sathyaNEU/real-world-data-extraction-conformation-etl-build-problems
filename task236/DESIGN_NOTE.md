@@ -193,6 +193,8 @@ half of a reported figure.
 | SF11 | the week of a change | the report week its effective date falls in | the week after | every change takes effect on a Monday | register (asserted) |
 | SF12 | compared unrounded | unrounded | at two decimals | every region 15 per cent or more from the line | s.4; same call (asserted) |
 | SF13 | "the first result reporting influenza" | every result reporting influenza, preliminary or final | the final report only | same call (every window's final reports arrived long before the cut-off); only the asks' week 36 cases move | s.2 (a preliminary positive is a result and reports influenza); same call (asserted) |
+| SF14 | "a person" (s.2: a case is a person) | gateway keys that share a specimen are one person; a key carrying an infant's results and an adult's is two people; an age one higher on a later specimen is the same person | every gateway key a person; keys split at every age they show | same call: every changed row sits outside every window, and each of the 35 readings gives the four flags and every window's cases as shipped; only the asks move | a specimen is taken from one person; an infant of 0 and an adult of 19 or more are two people; the readings asserted |
+| SF15 | the case's residential postcode (s.2: "a case whose residential postcode was not recorded") | the postcode recorded on any of the case's results | the first row's postcode, so a preliminary sent without the address falls to the requesting service's region | same call (every such preliminary is a week 36 row); only the asks move | s.2: the case's postcode was recorded, on its final report; same call (asserted) |
 
 ## Ladder
 
@@ -277,43 +279,104 @@ moves the call, and the difficulty is the estimation, not the words.
 
 ## Ask sheet
 
-Two asks, 16 figures, decoupled from the call: the call reads the windows' cases (weeks 26 to 35) and the sentinel
-data; the asks read the season to date (weeks 14 to 36) and week 36, the cut-off, the boundary review's pre-June rows,
-the report status and the population.
+Two asks, 16 figures, decoupled from the call: the call reads each region's change window (its cases and tests in the
+four report weeks before its change and the four from it), the South West and Far West in weeks 26 to 35 and the
+sentinel data; the asks read the season to date (weeks 14 to 36) and week 36, which take in every region's weeks outside
+its window, and the population. Rebuilt on the portal's return (2026-10-28: rubric 79, the call held, no ask figure
+missed): every device of the first build was a sentence of CDB-FLU-03 s.2 or the dictionary, so the top responses
+executed each one (see the tried-and-rejected lines). The asks now turn on what the gateway's person matching and the
+laboratories' two reporting systems do to the records, which no sentence states and the clean truth does not see.
 
-**Main population (zero device rows, asserted):** no case of a designed device sits in a window: the 172 cases notified
-after the cut-off and the cases whose final report came after it are all week 36 cases, and the 20 cases in moved
-postcodes before the boundary review all fall before week 26. The Layer 1 items that run through the whole season
-(inpatient re-swabs, unknown addresses, residents of other states) are on the call's path and leave every flag where
-it is (R2, asserted).
+**Main population (zero device rows, asserted):** every device sits on people whose every result was collected outside
+their region's window and reached the gateway by the cut-off: the 113 changed rows belong to 82 such people, and no
+changed row belongs to a case in a window. The 115,176 results rows the call reads and every other file of the pack are
+byte-identical to the shipped pack (`generator/shipped.json`: sha256 per file and of the call's rows), and each of the
+35 readings below gives the four flags and every window's notified cases as shipped (SF14, SF15). The first build's
+filed-rule hazards keep their separation (the cases notified after the cut-off and those whose final came after it are
+week 36 cases; the moved postcodes' cases before the boundary review fall before week 26).
 
-| Ask | Figures | H18 home | Use | Primary device (family) | Hazards | Path (files, columns) | Stops |
+| Ask | Figures | H18 home | Use | Primary devices (family) | Hazards | Path (files, columns) | Stops |
 |---|---|---|---|---|---|---|---|
-| A: each region's notified cases for the season to date (weeks 14 to 36) | 8 | a measure every region carries that the call does not turn on | the report's season table printed beside the flags | D2, an attribute at the wrong vintage: the 28 June boundary review moved a postcode between each pair of the eight regions, the concordance carries both assignments with their dates, and the report counts every week under the concordance in force at the report; the careful as-at-collection join for an effective-dated map puts the cases collected before 28 June in their old regions | the preliminary reports (shared with B); the cut-off; inpatient re-swabs anchored on the previous positive; unknown addresses; residents of other states | results (patient_key, collection_date, result, result_status, received_utc, residential_postcode, requester_postcode), concordance (postcode, region_code, effective_from, effective_to), CDB-FLU-03 s.2, dictionary: 4 files, 11 columns | regions as at collection (every region 3 to 7 off); final reports only (every region 2 to 27 low); episodes anchored on the previous positive (6 to 45 low); no cut-off (11 to 33 high); 09:00 read as UTC (7 to 24 high); unknown addresses dropped (27 to 148 low); residents of other states counted where tested (7 to 54 high); the answer |
-| B: each region's week 36 notified rate per 100,000 residents | 8 | a measure every region carries that the call does not turn on | the report's week 36 rate column | D2, the first delivered, not the latest accepted: laboratories send a preliminary positive for emergency and inpatient specimens and for every positive at the Public Health Laboratory, then a final report hours to days later; a case is notified when the first result reporting influenza reaches the gateway, and the battery's latest-status collapse dates it by the final, dropping the week 36 cases whose preliminary came before the cut-off and final after | the cut-off; the population's concordance rows; unknown addresses; inpatient re-swabs | results (as A), concordance (as A), population (postcode, erp_30_june_2026), CDB-FLU-03 s.2 and s.3, dictionary: 5 files, 13 columns | final reports only (every region 0.3 to 2.4 per 100,000 low); no cut-off (1.5 to 7.0 high); 09:00 read as UTC (1.3 to 3.7 high); every concordance row summed (the four regions that lost a postcode 2.9 to 17.9 low); the old boundaries (every region 2.2 to 22.2 off); unknown addresses dropped (0.2 to 1.2 low); the answer |
+| A: each region's notified cases for the season to date (weeks 14 to 36) | 8 | a measure every region carries that the call does not turn on | the report's season table printed beside the flags | D7, the true key elsewhere: 28 specimens (20 in week 36) whose preliminary the gateway keyed to one person and whose final, with that person's later results at the laboratory, to a second, the laboratory having registered the specimen against its own patient record between the two reports; the specimen is the only link. D1, a key carrying two people: 16 infants registered under their mother's details and keyed to her, an age of 0 beside an adult's the only sign; its over-cleaning half, 10 people whose age rises by one between two specimens of one case (a birthday) | the first build's filed rules, kept: the concordance in force, the cut-off in UTC, the first result reporting influenza, blank and 0000 by the requester, residents of other states out, episodes anchored on the first | results (patient_key, specimen_id, result, result_status, age_years, collection_date, received_utc, residential_postcode, requester_postcode), concordance (postcode, region_code, effective_to), CDB-FLU-03 s.2, dictionary: 4 files, 12 columns | every gateway key a person (every region 1 or 2 high); keys joined through their specimens, none split (1 to 3 low); keys split at every age (1 or 2 high); the first row's postcode (every region 2 off); each specimen read off its first report or its latest final; the cracker, all three at once (FN, TB, MN, MS 1 low, NC, CW, MW, SC 4 high); the answer |
+| B: each region's week 36 notified rate per 100,000 residents | 8 | as A | the report's week 36 rate column | the two above in week 36, and D4 with D7, a field on one report only: 16 week 36 preliminaries sent without the residential address from a requesting service in the next region, their finals carrying it (each pair of regions sends three one way and one the other: Far North and North Coast, Tablelands and Central West, Metropolitan North and Metropolitan West, Metropolitan South and South Coast) | as A, and the population's concordance rows | results (as A), concordance, population (postcode, erp_30_june_2026), CDB-FLU-03 s.2 and s.3, dictionary: 5 files, 14 columns | every gateway key a person (every region 1 case high); keys joined, none split (1 or 2 low); keys split at every age (1 high); the first row's postcode (every region 2 off); each specimen's latest final (the week 36 cases whose final came after the cut-off fall out); the cracker (FN 53.4, NC 39.7, TB 54.1, CW 51.4, MN 36.6, MS 24.8, MW 68.7, SC 104.8); the answer |
 
-- **Span:** five files and 13 columns across the asks. The preliminary reports move both asks in every region; the
-  cut-off moves both in every region; the boundary review moves A's counts and B's denominators.
-- **Shared hazards:** the preliminary reports (A 2 to 27 low, B 0.3 to 2.4 low, every region); the cut-off (A 7 to 33
-  high, B 1.3 to 7.0 high); unknown addresses (A 27 to 148 low, B 0.2 to 1.2 low); inpatient re-swabs (A 6 to 45 low,
-  B five regions 0.2 to 0.5 low).
-- **Realism:** a preliminary positive followed by a final typed or subtyped report is how laboratories report urgent
-  and reference specimens; a boundary review taking effect at the start of a quarter's first reporting week, with the
-  concordance carrying both assignments, is how health regions change; clearance swabs of inpatients are how
-  hospitals manage influenza wards.
+- **Span:** five files and 14 columns across the asks. The preliminary and its final are the hub: the second key rides on
+  the final, the missing address on the preliminary, and reading a specimen off its first report or its latest final
+  breaks one of the two while the infant's key breaks both.
+- **Shared hazards:** the second key (A: every region 1 to 2 high; B: 1 case high), the infant under its mother's key
+  (A: 1 to 3 low; B: 1 to 2 low), the missing address (A and B: every region 2 off, out of one region and into its pair),
+  the birthday (A: 1 or 2 high, B: 1 high, for a reader who splits keys at every age), the preliminary straddling the
+  cut-off (A and B: 2 to 27 low for a reader of latest finals). Every count asserted per region; the per-region counts
+  were set so that no subset of mishandlings composes back to a golden figure, and the 35 readings below are the proof.
+- **A reconstruction, not a work order (1.0):** a solver who notices a specimen under two keys still has to join the keys
+  and rebuild every episode across them; one who notices a key with two ages has to separate the people while leaving a
+  birthday's one-year rise alone, and on a joined key the two rules pull against each other; one who notices a
+  preliminary without an address has to place the case by whichever of its results recorded one. No column, status or
+  comment marks any device row; each sits beside thousands of ordinary rows of the same kind.
+- **Realism:** a preliminary from a laboratory's rapid result interface with the details on the request and a final from
+  its information system with the patient's details as the laboratory holds them; a gateway's person matching keying a
+  mismatch to a second person; newborns registered under the mother's details; ages at collection moving on a birthday;
+  patients attending an emergency department or a clinic across a regional border. Each is how notification feeds behave.
+- **Fair (law 6):** the reading that reproduces the clean truth is asserted: the golden's season-to-date counts and week
+  36 rates equal the clean truth's (`Records.positives`) and the shipped figures exactly; before the asks' rows no
+  specimen sat under two keys and no key showed two ages, so the golden's person and postcode rules move no other case
+  (asserted), and each instance leaves the inconsistency a grader can confirm (the specimen under two keys, the key with
+  two ages, the preliminary without the address beside its final with it). Block 3 of `submission.md` names each handling.
 - **Referee:** none.
 
 | Ask figure | Where the cracker's path goes | Mirror (stops at rung 0) | Cracker (lands the call, runs the battery) |
 |---|---|---|---|
-| A season to date (8) | executes s.2 through the concordance in force, the requesting service's postcode for blank and 0000, residents of other states out and the cut-off converted to UTC; its battery collapses each specimen's preliminary and final reports to the final, so each case is dated by its final report and the week 36 cases whose final came after the cut-off fall out | misses the same way | miss |
-| B week 36 rate (8) | the same week 36 cases over the ERP of the concordance in force: every region 0.3 to 2.4 per 100,000 low | misses the same way | miss |
+| A season to date (8) | executes s.2 by gateway key over every result, the first row's postcode placing each case: a specimen under two keys counts twice, an infant under its mother's key once with her, a week 36 preliminary without the address goes to the requesting service's region (FN 3,559, NC 4,117, TB 1,504, CW 2,495, MN 12,036, MS 6,132, MW 11,234, SC 3,650 against 3,560, 4,113, 1,505, 2,491, 12,037, 6,133, 11,230 and 3,646) | misses the same way | miss |
+| B week 36 rate (8) | the same week 36 cases over the ERP of the concordance in force (FN 53.4, NC 39.7, TB 54.1, CW 51.4, MN 36.6, MS 24.8, MW 68.7, SC 104.8 against 53.7, 39.1, 54.6, 50.6, 36.7, 24.9, 68.4 and 104.0) | misses the same way | miss |
 
-- **Cracker keeps:** under 0.05 of the ask weight (every figure turns on the preliminary reports). A solver that keeps
-  each specimen's first report and anchors episodes on the first positive lands both asks; A's boundary review and
-  inpatient re-swabs and B's population rows remain on its path.
-- Mirror leakage: 5 per cent of ask weight (the mirror's ask path is the cracker's; the asks do not touch the call's
-  construction).
-- Pair ceiling: 31.3 (C = 38 + 7 + 55 x 0.05 = 47.8; S = 5 + 7 + 55 x 0.05 = 14.8; mean 31.3).
+Every careful reading of who a person is, which postcode places a case and which report a specimen is read off, scored
+by `ceiling.py` on the cut pack (target.zip sha256 5ef00068c44e380a4bc2570bfe6d6e4a72f8139c4a56815cb15eb4a9a1f4e945):
+
+| Reading (the cracker's first, then every careful variant) | Figures kept | Cracker sheet |
+|---|---|---|
+| every gateway key a person; the first row's postcode; every report | none | miss |
+| every gateway key a person; the first row's postcode; each specimen's first report | none | miss |
+| every gateway key a person; the first row's postcode; each specimen's latest final | none | miss |
+| every gateway key a person; the postcode any of its results recorded; every report | none | miss |
+| every gateway key a person; the postcode any of its results recorded; each specimen's first report | none | miss |
+| every gateway key a person; the postcode any of its results recorded; each specimen's latest final | none | miss |
+| keys sharing a specimen joined, no key split; the first row's postcode; every report | none | miss |
+| keys sharing a specimen joined, no key split; the first row's postcode; each specimen's first report | none | miss |
+| keys sharing a specimen joined, no key split; the first row's postcode; each specimen's latest final | none | miss |
+| keys sharing a specimen joined, no key split; the postcode any of its results recorded; every report | none | miss |
+| keys sharing a specimen joined, no key split; the postcode any of its results recorded; each specimen's first report | none | miss |
+| keys sharing a specimen joined, no key split; the postcode any of its results recorded; each specimen's latest final | none | miss |
+| each key split at every age it shows; the first row's postcode; every report | none | miss |
+| each key split at every age it shows; the first row's postcode; each specimen's first report | none | miss |
+| each key split at every age it shows; the first row's postcode; each specimen's latest final | none | miss |
+| each key split at every age it shows; the postcode any of its results recorded; every report | none | miss |
+| each key split at every age it shows; the postcode any of its results recorded; each specimen's first report | none | miss |
+| each key split at every age it shows; the postcode any of its results recorded; each specimen's latest final | none | miss |
+| keys split where ages jump, not joined; the first row's postcode; every report | none | miss |
+| keys split where ages jump, not joined; the first row's postcode; each specimen's first report | none | miss |
+| keys split where ages jump, not joined; the first row's postcode; each specimen's latest final | none | miss |
+| keys split where ages jump, not joined; the postcode any of its results recorded; every report | none | miss |
+| keys split where ages jump, not joined; the postcode any of its results recorded; each specimen's first report | none | miss |
+| keys split where ages jump, not joined; the postcode any of its results recorded; each specimen's latest final | none | miss |
+| keys joined, then split at every age; the first row's postcode; every report | none | miss |
+| keys joined, then split at every age; the first row's postcode; each specimen's first report | none | miss |
+| keys joined, then split at every age; the first row's postcode; each specimen's latest final | none | miss |
+| keys joined, then split at every age; the postcode any of its results recorded; every report | none | miss |
+| keys joined, then split at every age; the postcode any of its results recorded; each specimen's first report | none | miss |
+| keys joined, then split at every age; the postcode any of its results recorded; each specimen's latest final | none | miss |
+| keys joined and split where ages jump; the first row's postcode; every report | none | miss |
+| keys joined and split where ages jump; the first row's postcode; each specimen's first report | none | miss |
+| keys joined and split where ages jump; the first row's postcode; each specimen's latest final | none | miss |
+| keys joined and split where ages jump; the postcode any of its results recorded; each specimen's first report | none | miss |
+| keys joined and split where ages jump; the postcode any of its results recorded; each specimen's latest final | none | miss |
+
+- **Cracker keeps:** 0 of the 16 figures; the best of the 35 careful readings keeps 0 (asserted in `checks.py`, one
+  check per reading). What either response keeps of the ask weight is the chart's structural parts.
+- Mirror leakage: 15.0 per cent of ask weight (the chart's three structural parts; the mirror's ask path is the
+  cracker's, the asks consuming nothing the call's construction produces, and every figure misses).
+- Pair ceiling: 38.1 (C = 38 + 7 + 55 x 0.20 = 56.0, the cracker keeping the chart's four parts; S = 5 + 7 + 55 x 0.15
+  = 20.2; mean 38.1), against the portal's 79 on the first build.
+- Measured by: generator/ceiling.py, run on the cut pack.
 
 ## Pre-ship check
 
@@ -343,18 +406,35 @@ it is (R2, asserted).
    with the merging laboratory named as in the services list, each region's point-of-care codes in their own block,
    s.4's quarter written against the level before the change); the flags, every graded figure and both goldens' figures
    are unchanged (125 checks and the verifier on the rebuilt pack).
-6. Asks: A is moved in every region by the boundary review (3 to 7), the preliminary reports (2 to 27 low) and the
-   cut-off (7 to 33 high); B in every region by the preliminary reports (0.3 to 2.4 per 100,000 low) and the cut-off (1.3
-   to 7.0 high); the call reads neither device (no device row in any window, asserted).
+   Judge at the rubric reship (target.zip 5ef00068, `determinism_check_report_pass2.md`): DETERMINISTIC, APPROVE; Gate
+   G method_or_model_selection, analytical_non_defect, no surface read, not a sole data defect; Gate H domain pass,
+   layers pass, decisive step analytical. It rebuilt the cases from the raw results and reproduced every window count
+   and every share-notified change exactly, finding from the data alone that keys sharing a specimen are one person and
+   that a key whose ages jump by 21 to 40 years is two (the one-year rises left alone). Its own season-to-date and week
+   36 figures came out 2 cases high in four regions and 2 low in the other four, netting to zero: exactly the deltas of the
+   address device read off each case's first row, which it could not trace and did not escalate, reading
+   s.2's fallback as unambiguous. Block 3 now names the handling (a preliminary sent without the address takes its
+   final report's postcode) so a grader can confirm it.
+6. Asks, rebuilt on the portal's return of 2026-10-28 (rubric 79, the call held): each region's two figures are moved
+   for the cracker by the gateway's person matching (a specimen's preliminary and final under two keys, A 1 or 2 high
+   and B 1 case high; an infant under its mother's key, A 1 to 3 low) and, in week 36, by the preliminary sent without
+   the address from a requesting service in the next region (every region 2 off); the 35 careful readings miss all 16
+   figures (`ceiling.py`, one assertion per reading). The call reads none of it: no changed row in any window, the call's
+   115,176 rows and every other file byte-identical to the shipped pack, every reading giving the four flags and every
+   window's cases as shipped (asserted). The first build's filed-rule devices stay as hazards.
 7. Input gates: 13 files in four formats (csv, md, pdf, xlsx), the gateway results at 229,848 rows, two distractors
-   named in metadata.json; 125 generator checks with the realism sweep; the verifier (its own case build and index)
-   green; two builds byte-identical; figures_check 93 of 93; containers clean.
+   named in metadata.json; 224 generator checks with the realism sweep; the verifier (its own case build, person
+   matching and index) green; two builds byte-identical; figures_check 93 of 93; containers clean.
 8. Duplicate guard: `guard.py heart` WARN (overuse.org_family; repeat.question_form against task235; same_puzzle_older
    differentiated against task453 and task463); the shape moved from 07 to 11 at stage 3 (task465's architecture 2 holds
    07). `guard.py surface` promoted task234, task235 and task233 (the same author's Data Quality builds: a README and
    dictionary layout and a designation set; task234 predicts a stream's tests from its positivity, task235 judges a
    missing event by its phone's next session, task233 a register statistic's departure under missing not at random)
    and task81, task95 and task73 (surface only), for the author's adjudicated read.
+   At the rubric reship, `guard.py heart` BLOCKs on ban.role and ban.forum (task154) and test.same_puzzle (task463),
+   all three drawn before this build and outside its window when it shipped (heart WARN then); the draw is a fact of
+   the shipped build and is not relabelled. test.same_puzzle_older (task480 v1) and test.same_driver_older (task464 v8)
+   are answered on the card. `guard.py surface` exit 0, eleven promoted pairs for the author's read.
 
 ## Leak check
 
@@ -375,6 +455,16 @@ centres and courier runs unchanged" came closest to a verdict and was cut; the s
 definition stays (every sentinel protocol states it, and it names no comparison with notified cases). Reader pass 3
 (the register after the cut): Q1 to Q3 none, realism good.
 
+Rubric reship (2026-10-28, target.zip 5ef00068): leak.py LEAK on DATA_DICTIONARY.md and README.md under the
+describing-file rule added on 2026-10-27, after this build shipped; both were in the pack the portal judged, the
+dictionary carries conventions the call and its critical components read (local time at UTC+10, 0000 as an unrecorded
+address, the report status), and a rubric repair leaves the documents the call reads as they are: left as shipped, for
+the author's call. Otherwise REVIEW as before. Reader pass 4 (a fresh copy of the pack and the prompt): Q1 s.4's flag
+rule, the estimand (its Q6: nothing says how a region's infections are estimated); Q2 to Q4 none beyond the dictionary
+and readme as orientation; Q5 s.3 and the Monday cut-off execute to the golden; Q6 an analytical choice; on the asks,
+nothing states or narrates that two keys can be one person or one key two people, nothing beyond s.2 says which
+result's postcode places a case, and no marker, stamp, code or comment singles out rows of the results.
+
 ## Tried and rejected
 
 - The seed's laboratory joining a network, read on positivity: positivity as the estimator is spent (task234), and a
@@ -390,3 +480,23 @@ definition stays (every sentinel protocol states it, and it names no comparison 
   postcode moved between each pair of the eight regions.
 - A Tuesday 09:00 cut-off with laboratory results inside two days: 62 late cases, a few per region and none in some;
   the cut-off moved to Monday 09:00, with turnaround spread over one to five days and a morning validation round.
+- The first build's ask primaries, returned by the portal on 2026-10-28 (rubric 79 with the call held, no ask figure
+  missed): the preliminary reports (D2, the first delivered, not the latest accepted) are s.2's "the first result
+  reporting influenza", so the top responses kept every preliminary and dated each case by it; demoted to a hazard.
+- The 28 June boundary review as ask A's primary (D2, an attribute at the wrong vintage): s.2's "under the postcode
+  concordance in force at the report" files it, and the responses read every case under the current rows; a hazard.
+- The cut-off in UTC, blank and 0000 by the requesting service and residents of other states as the asks' hazards of
+  weight: each a sentence of s.2 or the dictionary's received_utc, executed by both responses; kept as hazards, the asks
+  now carried by the person matching and by an address recorded on one report only.
+- An amended result (a positive corrected to not detected) as an as-of device for the asks: whether a case withdrawn
+  after the cut-off still counts in the week 36 report, and whether an address recorded after the cut-off places a
+  case, are open readings of "as the week 36 report counts them" (s.2's Monday cut-off against the readme's Tuesday
+  extract); dropped, and every device instance sits on people whose every result reached the gateway by the cut-off.
+- One laboratory stamping receipt in local time as UTC (D8): it makes the dictionary's received_utc false for one
+  service; dropped.
+- A specimen under two keys with no later results under the second key, alone: a reader who collapses each specimen to
+  its first report absorbs it, so the infant under its mother's key and the address on the final carry that reader.
+- The birthday's over-cleaning half spread over every region's season: the South Coast has no person outside its
+  window with two positive specimens before week 28, so its season keeps the week 36 birthday alone; the per-region
+  counts were then re-set so that no subset of mishandlings composes back (the Central West's season keeps one birthday
+  because its two straddling cases would cancel two).

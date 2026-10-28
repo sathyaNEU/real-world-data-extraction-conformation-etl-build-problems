@@ -104,3 +104,11 @@ POSTCODES_PER_REGION = {"FN": 9, "NC": 12, "TB": 7, "CW": 10, "MN": 22, "MS": 20
 # postcodes moved on BOUNDARY_DATE under the 2027 boundary review: from, to, and which of the receiving region's
 # postcodes (ranks by population, largest first)
 MOVED = [("NC", "FN", (2,)), ("CW", "TB", (1, 5)), ("MN", "MW", (0,)), ("SC", "MS", (1,))]
+
+# the asks' rows (asks.py), people outside every change window: per region, (week 36, other weeks) counts of a specimen
+# keyed to two people, an infant keyed to its mother and a birthday between two specimens, and the week 36
+# preliminaries sent with no address from a requesting service in a neighbouring region
+ASK_PLAN = {}
+for _out, _in in (("FN", "NC"), ("TB", "CW"), ("MN", "MW"), ("MS", "SC")):
+    ASK_PLAN[_out] = dict(two_keys=(3, 1), infant=(2, 1), birthday=(1, 0), address=[(_in, 3)])
+    ASK_PLAN[_in] = dict(two_keys=(2, 1), infant=(1, 0), birthday=(1, 1 if _in in ("NC", "MW") else 0), address=[(_out, 1)])

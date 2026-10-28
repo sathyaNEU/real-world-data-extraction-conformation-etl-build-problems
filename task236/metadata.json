@@ -40,7 +40,7 @@
     {
       "path": "gateway_influenza_results_2027-04-05_to_2027-09-12.csv",
       "format": "csv",
-      "bytes": 41025294,
+      "bytes": 41025220,
       "rows": 229848,
       "source": "Constructed (seeded generator)",
       "date": "2027-09-14",

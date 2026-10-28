@@ -49,10 +49,14 @@ def answers(X, files):
         "Cases: CDB-FLU-03 section 2, built from the gateway's results. A person's positive results collected within 14 "
         "days of the first positive specimen are one case, counted in the report week of that specimen and notified when "
         "the first result reporting influenza reached the gateway, preliminary or final.",
-        "Regions: residential postcode under the concordance in force at the report (the postcodes moved on 28 June 2027 "
-        "counted in their new regions for the whole season); cases with no residential postcode (blank, or 0000 at "
-        "Northgate Diagnostics and Southern Districts Pathology) in the region of the requesting service's postcode; "
-        "residents of other states not counted.",
+        "People: a specimen's preliminary and final reports that the gateway keyed to two people are one person, with "
+        "that person's later results under either key; an infant whose results came under its mother's key is its own "
+        "case. An age one year higher on a later specimen is the same person after a birthday.",
+        "Regions: the residential postcode recorded on any of the case's results (a preliminary sent without the address "
+        "is placed by its final report), under the concordance in force at the report (the postcodes moved on 28 June "
+        "2027 counted in their new regions for the whole season); cases with no residential postcode on any result "
+        "(blank, or 0000 at Northgate Diagnostics and Southern Districts Pathology) in the region of the requesting "
+        "service's postcode; residents of other states not counted.",
         "Cut-off: cases notified by 09:00 on Monday 13 September 2027 (23:00 UTC on Sunday 12 September). Week 36 fills "
         "in after the cut-off; later notifications are counted from the week 37 report.",
         "Rates: estimated resident population at 30 June 2026 of the region's postcodes under the concordance in force.",
@@ -142,11 +146,13 @@ def submission(A):
     L.append("## 3. Step-by-Step Solution\n")
     L.append("1. Took every result in %s reporting influenza A or B, preliminary or final, and built cases under "
              "CDB-FLU-03 section 2 (%s): a person's positives collected within 14 days of the case's first positive "
-             "specimen are one case, in the report week of that specimen, notified at the first such result's receipt; "
-             "%s cases." % (F["res"], F["prot"], format(A["tot"]["cases"], ",")))
-    L.append("2. Placed each case by residential postcode under the concordance in force at the report (%s, rows with no "
-             "effective_to), a case with no postcode (blank or 0000) by the requesting service's postcode, and left out "
-             "residents of other states: %s cases in the eight regions with a change in %s." %
+             "specimen are one case, in the report week of that specimen, notified at the first such result's receipt, "
+             "keys that share a specimen being one person and a key carrying an infant's and an adult's results two "
+             "(an age one higher is a birthday); %s cases." % (F["res"], F["prot"], format(A["tot"]["cases"], ",")))
+    L.append("2. Placed each case by the residential postcode recorded on any of its results (a preliminary sent without "
+             "the address taking its final report's), under the concordance in force at the report (%s, rows with no "
+             "effective_to), a case with none recorded on any result (blank or 0000) by the requesting service's "
+             "postcode, and left out residents of other states: %s cases in the eight regions with a change in %s." %
              (F["conc"], format(A["tot"]["eight"], ","), F["reg"]))
     L.append("3. Counted each region's notified cases in the four report weeks before its change week and the four from it "
              "(section 4), all notified well before the week 36 cut-off: from %s (%s, before) to %s (%s, after)." %

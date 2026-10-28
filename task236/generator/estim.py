@@ -1,8 +1,9 @@
 """task236 estimators, read only from the pack: the notified series counted under protocol CDB-FLU-03 from the gateway's
-results, each region's change in the share of its influenza infections notified the golden way (its notified cases
-read against the sentinel network's influenza-like-illness consultations attributed to influenza by its protocol
-swabs), the other ways of building that index, the routes a solver reaches for instead, and the two asks (season-to-date
-notified cases, the week 36 rate per 100,000 residents)."""
+results (the person behind each result, the postcode a case's results recorded), each region's change in the share of
+its influenza infections notified the golden way (its notified cases read against the sentinel network's
+influenza-like-illness consultations attributed to influenza by its protocol swabs), the other ways of building that
+index, the routes a solver reaches for instead, the two asks (season-to-date notified cases, the week 36 rate per
+100,000 residents) and every careful reading of the asks' rows."""
 import datetime as dt
 import os
 from decimal import Decimal, ROUND_HALF_UP
@@ -61,15 +62,74 @@ def concordance_now(D):
     return c[c.effective_to == ""].set_index("postcode").region_code
 
 
-def cases(D, anchor="first", finals_only=False, asof=False, unknown="requester", interstate="exclude"):
+def persons(r, identity="person"):
+    """the person behind each row. `person`: gateway keys that share a specimen are one person (a specimen is taken
+    from one person), and a key whose rows' ages jump by more than a year carries two people (an infant registered
+    under its mother's details); an age that rises by one is a birthday. `key`: every gateway key a person. `link`:
+    keys joined through their specimens, no key split. `split_age`, `link_split_age`: a key split at every age it
+    shows. `split_gap`: a key split where the ages jump, keys not joined."""
+    key = r.patient_key
+    if identity in ("person", "link", "link_split_age"):
+        n = r.groupby("specimen_id").patient_key.nunique()
+        shared = r[r.specimen_id.isin(n[n > 1].index)]
+        parent = {}
+
+        def find(x):
+            while parent.get(x, x) != x:
+                x = parent[x]
+            return x
+        for ks in shared.groupby("specimen_id", sort=True).patient_key.unique():
+            ks = sorted(ks)
+            for k in ks[1:]:
+                a, b = find(ks[0]), find(k)
+                if a != b:
+                    parent[max(a, b)] = min(a, b)
+        if parent:
+            sel = key.isin(parent)
+            key = key.copy()
+            key[sel] = key[sel].map(find)
+    if identity in ("split_age", "link_split_age"):
+        return key + "|" + r.age_years.astype(str)
+    if identity in ("person", "split_gap"):
+        age = r.age_years.astype(int)
+        ages = pd.DataFrame({"k": key.values, "a": age.values}).groupby("k").a.unique()
+        label = {}
+        for k, a in ages[ages.map(len) > 1].items():
+            a = sorted(a)
+            lab, cur = {a[0]: 0}, 0
+            for x, y in zip(a, a[1:]):
+                cur += int(y - x > 1)
+                lab[y] = cur
+            label[k] = lab
+        if label:
+            sel = key.isin(label)
+            key = key.copy()
+            key[sel] = ["%s|%d" % (k, label[k][a]) for k, a in zip(key[sel], age[sel])]
+    return key
+
+
+def first_reports(r, which):
+    """each specimen read off one report: its first (`first`) or its latest final (`final`)"""
+    if which == "first":
+        return r[r.received_utc == r.groupby("specimen_id").received_utc.transform("min")]
+    f = r[r.result_status == "F"]
+    return f[f.received_utc == f.groupby("specimen_id").received_utc.transform("max")]
+
+
+def cases(D, anchor="first", finals_only=False, asof=False, unknown="requester", interstate="exclude",
+          identity="person", postcode="recorded", report=None):
     """one row per case: its first positive specimen's collection date and week, when it was notified (the first
-    result reporting influenza for it reaching the gateway, UTC) and its region (s.2)"""
+    result reporting influenza for it reaching the gateway, UTC) and its region (s.2): the residential postcode its
+    results recorded (`postcode="first"` reads the first row's alone), the requesting service's where none did"""
     r = D["res"]
+    r = r.assign(person=persons(r, identity))
+    if report:
+        r = first_reports(r, report)
     p = r[is_positive(r.result)]
     if finals_only:
         p = p[p.result_status == "F"]
-    p = p.sort_values(["patient_key", "collection_date", "received_utc"])
-    keys = p.patient_key.values
+    p = p.sort_values(["person", "collection_date", "received_utc"])
+    keys = p.person.values
     days = pd.to_datetime(p.collection_date).values.astype("datetime64[D]").astype(np.int64)
     ep = np.empty(len(p), dtype=np.int64)
     n, prev, first, last = -1, None, 0, 0
@@ -85,9 +145,13 @@ def cases(D, anchor="first", finals_only=False, asof=False, unknown="requester",
         ep[i] = n
     p = p.assign(ep=ep)
     g = p.groupby("ep", sort=True)
-    c = pd.DataFrame({"patient_key": g.patient_key.first(), "first_collection": g.collection_date.min(),
-                      "notified_utc": g.received_utc.min(), "postcode": g.residential_postcode.first(),
-                      "requester": g.requester_postcode.first()})
+    c = pd.DataFrame({"patient_key": g.patient_key.first(), "person": g.person.first(),
+                      "first_collection": g.collection_date.min(), "notified_utc": g.received_utc.min(),
+                      "postcode": g.residential_postcode.first(), "requester": g.requester_postcode.first()})
+    if postcode == "recorded":
+        rec = p[~p.residential_postcode.isin(UNKNOWN)].groupby("ep").residential_postcode.first()
+        has = c.index.isin(rec.index)
+        c.loc[has, "postcode"] = rec.reindex(c.index[has]).values
     now = concordance_now(D)
     unk = c.postcode.isin(UNKNOWN)
     c["region"] = c.postcode.map(now)
@@ -260,6 +324,24 @@ def ask_stops(D):
     B["every concordance row summed"] = week_rate(base, erp_by_region(D, "all"))
     B["population on the old boundaries"] = week_rate(base, erp_by_region(D, "old"))
     return A, B
+
+
+def readings(D):
+    """the cases under every careful reading in READINGS, the cracker's among them"""
+    return {name: cases(D, **kw) for name, kw in READINGS.items()}
+
+
+# every careful reading of who a person is, which postcode places a case and which report a specimen is read off; the
+# golden is the one with `identity="person"`, `postcode="recorded"` and every report read
+IDENTITIES = {"key": "every gateway key a person", "link": "keys sharing a specimen joined, no key split",
+              "split_age": "each key split at every age it shows", "split_gap": "keys split where ages jump, not joined",
+              "link_split_age": "keys joined, then split at every age", "person": "keys joined and split where ages jump"}
+POSTCODES = {"first": "the first row's postcode", "recorded": "the postcode any of its results recorded"}
+REPORTS = {None: "every report", "first": "each specimen's first report", "final": "each specimen's latest final"}
+READINGS = {"%s; %s; %s" % (IDENTITIES[i], POSTCODES[p], REPORTS[u]): dict(identity=i, postcode=p, report=u)
+            for i in IDENTITIES for p in POSTCODES for u in REPORTS
+            if (i, p, u) != ("person", "recorded", None)}
+CRACKER = "%s; %s; %s" % (IDENTITIES["key"], POSTCODES["first"], REPORTS[None])
 
 
 # ------------------------------------------------------------------ everything the goldens and the write-up owe

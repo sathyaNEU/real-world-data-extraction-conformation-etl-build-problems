@@ -1,6 +1,7 @@
 """Write the task236 pack into a target folder and return the clean truth for the checks."""
 import os
 
+import asks
 import docs
 import params as P
 import records as RC
@@ -28,7 +29,8 @@ def run(target):
     os.makedirs(target, exist_ok=True)
     W = sim.make()
     R = RC.Records(W)
-    res = R.results()
+    res0 = R.results()
+    res, man = asks.apply(res0, R, P.ASK_PLAN)
     ret = R.sentinel_returns()
     sw = R.sentinel_swabs()
     p = lambda k: os.path.join(target, FILES[k])
@@ -49,4 +51,4 @@ def run(target):
         fh.write(docs.dictionary(FILES))
     with open(p("readme"), "w") as fh:
         fh.write(docs.readme(FILES))
-    return dict(W=W, R=R, res=res, ret=ret, sw=sw, reg=reg)
+    return dict(W=W, R=R, res=res, res0=res0, man=man, ret=ret, sw=sw, reg=reg)
