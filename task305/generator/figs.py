@@ -18,11 +18,22 @@ def compute(target):
     area = {r["site"]: float(r["proposed_floor_area_m2"]) for r in pk.sites}
     A, B, C = S.ask_a(target), S.ask_b(target), S.ask_c(target)
     tenth = lambda v: round(v / 1e5) / 10.0
-    own = [k for k, x in enumerate(pk.stores) if x["own"]]
+    # our stores' modelled share of each park's spend in the card feed's year, on the stores and pitches of then
+    own = [k for k, x in enumerate(pk.stores_2025) if x["own"]]
     park_share = {}
+    for p in pk.parks_2025:
+        sh = pk.shares(p["xy"], pk.stores_2025)
+        park_share[p["pc"]] = sum(sh[k] for k in own)
+    own_now = [k for k, x in enumerate(pk.stores) if x["own"]]
+    park_share_now = {}
     for p in pk.parks:
         sh = pk.shares(p["xy"], pk.stores)
-        park_share[p["pc"]] = sum(sh[k] for k in own)
+        park_share_now[p["pc"]] = sum(sh[k] for k in own_now)
+    v_now = pk.v_per_pitch(stores=pk.stores, parks=pk.parks)
+    a_now = pk.appraise(v_now)
+    p25 = {p["pc"]: int(p["n"]) for p in pk.parks_2025}
+    a25 = {x["id"]: x["a"] for x in pk.stores_2025 if x["own"]}
+    anow = {x["id"]: x["a"] for x in pk.stores if x["own"]}
     side = {"107": "RADDLEFORD WATER HOLIDAY PARK", "105": "WITHYBECK LAKES CARAVAN PARK", "104": "SALLOWMERE MILL CARAVAN PARK"}
     named = {r[9]: (pk.smv[r[6]][0], r[14]) for r in pk.voa if r[6] in pk.smv and pk.smv[r[6]][1] == "pitches"}
     v_direct = sum(guests[k] for k in side) / sum(named[v][0] for v in side.values())
@@ -30,6 +41,12 @@ def compute(target):
     d_site = max(ad, key=lambda k: ad[k]["add"])
     fig_extra = dict(
         park_shares_pct={v.title(): int(round(100 * park_share[named[v][1]])) for v in side.values()},
+        park_shares_now_pct={v.title(): int(round(100 * park_share_now[named[v][1]])) for v in side.values()},
+        pitches_2025={v.title(): p25[named[v][1]] for v in list(side.values()) + ["WRENTOFT LAKES HOLIDAY PARK"]},
+        pitches_now={v.title(): int(named[v][0]) for v in list(side.values()) + ["WRENTOFT LAKES HOLIDAY PARK"]},
+        area_2025={k: round(a25[k]) for k in ("105", "107")}, area_now={k: round(anow[k]) for k in ("105", "107")},
+        v_now=int(round(v_now / 10.0) * 10), now_add=tenth(a_now[c["site"]]["add"]),
+        now_site=max(a_now, key=lambda k: a_now[k]["add"]),
         v_direct=int(round(v_direct / 10.0) * 10), direct_site=d_site, direct_add=tenth(ad[d_site]["add"]),
         direct_s3=tenth(ad[c["site"]]["add"]),
     )

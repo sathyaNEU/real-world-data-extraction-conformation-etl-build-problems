@@ -31,6 +31,8 @@ SOURCES = {
     "households": "Census 2021 table TS041 (ONS bulk download)", "pwc": "the ONS output area population-weighted centroids",
     "spend": "a data provider's modelled weekly grocery spend per household", "onspd": "the ONS Postcode Directory (May 2026)",
     "voa_list": "the VOA compiled list entries (asterisk-separated)", "voa_smv": "the VOA summary valuation main measures",
+    "voa_hist": "the VOA historic list entries (asterisk-separated, each version with its current from and to dates)",
+    "voa_hist_smv": "the VOA summary valuation main measures for historic assessments",
     "estate": "the chain's estate workbook", "cards": "a payment acquirer's merchant-insight feed",
     "shortlist": "the property team's site schedule", "model": "the property team's model sheet",
     "voa_spec": "the VOA's compiled list file specification", "dc_proc": "the distribution centre's store deliveries procedure",
@@ -93,20 +95,30 @@ def metadata(target):
         fh.write("\n")
 
 
+def walk(folder):
+    """every file under a folder, by its path relative to it"""
+    out = []
+    for root, dirs, files in os.walk(folder):
+        dirs.sort()
+        for f in files:
+            out.append(os.path.relpath(os.path.join(root, f), folder))
+    return sorted(out)
+
+
 def stamp(folder):
     t = dt.datetime(*STAMP, tzinfo=dt.timezone.utc).timestamp()
-    for f in os.listdir(folder):
+    for f in walk(folder):
         os.utime(os.path.join(folder, f), (t, t))
 
 
 def digest(folder):
-    return {f: hashlib.sha256(open(os.path.join(folder, f), "rb").read()).hexdigest() for f in sorted(os.listdir(folder))}
+    return {f: hashlib.sha256(open(os.path.join(folder, f), "rb").read()).hexdigest() for f in walk(folder)}
 
 
 def cut_zip():
     zp = os.path.join(TASK, "target.zip")
     with zipfile.ZipFile(zp, "w", zipfile.ZIP_DEFLATED) as z:
-        for f in sorted(os.listdir(TARGET)):
+        for f in walk(TARGET):
             zi = zipfile.ZipInfo(f, date_time=STAMP)
             zi.compress_type = zipfile.ZIP_DEFLATED
             zi.external_attr = 0o644 << 16
@@ -116,8 +128,7 @@ def cut_zip():
 
 def fresh(folder):
     if os.path.isdir(folder):
-        for f in os.listdir(folder):
-            os.remove(os.path.join(folder, f))
+        shutil.rmtree(folder)
     os.makedirs(folder, exist_ok=True)
 
 

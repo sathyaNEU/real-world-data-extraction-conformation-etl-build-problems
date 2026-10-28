@@ -6,28 +6,28 @@
  "stage": 5,
  "stage_name": "ship",
  "updated": "2026-10-27",
- "stump": "A competent analyst reads the model sheet, carries the holiday parks as origins, prices a pitch from the out-of-region cardholders' season spend at our stores beside Raddleford Water and Withybeck Lakes over those parks' pitches, and approves S1 Bellingtoft at GBP 0.4 million where the golden is S3 Wrentoft at GBP 0.8 million; the step that lands them there is reading our store's take as the park's spend, when a larger competitor beside each park takes most of it and our store's take is only its modelled share.",
+ "stump": "A competent analyst carries the holiday parks as origins, recovers their guests' spend through our modelled share of each park, works that share on the rating list as shipped and files S3 Wrentoft, Mill Lane, at GBP 0.5 million where the golden is GBP 0.8 million; the step that lands them there is inverting the 2025 season's take through today's stores and parks, when the cards were used at stores 105 and 107 before their 2026 extensions and at parks before their new pitches.",
  "architecture": 2,
- "loops": 0,
+ "loops": 1,
  "precut": {
   "exit": 0,
   "date": "2026-10-27",
   "checks": "53, 0 FAIL, 0 WARN"
  },
  "leak": {
-  "leak_py": "REVIEW, every line ruled harmless (the rating list's own record and numbers, the model sheet's own word, the shortlist ranks nothing, GTFS zipped)",
-  "reader": "architecture 2 read 1 on 5cbd1f6f: no decisive-step sentence, no ranking, no answer figure; question 6 analytical; question 3 the VOA file specification, ruled publisher documentation"
+  "leak_py": "REVIEW, every line ruled harmless",
+  "reader": "loop 1 read 1 on c91a09a2: no decisive-step sentence, no ranking file, no answer figure; question 3 the VOA file specification; question 5 the golden's reading; question 6 analytical; the archive reads as a real analyst's downloads"
  },
  "duplicate_check": {
   "heart": "WARN (overuse.objective, repeat.decision, repeat.deliverables, answered at the draw)",
   "surface": "3 pairs promoted on card axes (task307, task303, task128), each adjudicated clean in the pre-ship check"
  },
  "judge": {
-  "verdict": "DETERMINISTIC",
-  "disposition": "APPROVE (architecture 2 pass 1 on 5cbd1f6f)",
-  "gate_g": "analytical_non_defect (mechanism other, the same as decomposition_attribution)",
+  "verdict": "DETERMINISTIC, APPROVE (loop 1 pass 1, zip c91a09a2)",
+  "disposition": "APPROVE; non-blocking note on the park shares answered (our ten stores together)",
+  "gate_g": "method_or_model_selection, analytical_non_defect, surface_read_dependency no",
   "gate_h": "domain pass, layers pass, decisive step analytical",
-  "report": "task305/determinism_check_report_arch2.md"
+  "report": "task305/determinism_check_report_loop1.md"
  },
  "returned": [
   {
@@ -35,12 +35,18 @@
    "portal": "both determinism judges competing_defensible_answer, Gates C and D, G pass, F plausible. Main call: the filed spend-share model's origins are the census households and nothing authorises the holiday parks' guests or pins the GBP 2,440 a pitch (five free choices against an overtaking threshold near GBP 1,300); asks: a night shift's two paid-hours lines, the GTFS block duplicates and the turned-away load are filed nowhere. Both responses filed S1 at 0.5 (the call stumped).",
    "repair": "design",
    "commit": "re-root, architecture 2"
+  },
+  {
+   "date": "2026-10-27",
+   "portal": "FAILED_TO_STUMP: both responses filed S3 Mill Lane, Wrentoft at GBP 0.8 million (the golden), the share inversion landed",
+   "repair": "design",
+   "commit": "RESHIPPED (task305), 2026-10-27"
   }
  ],
  "resume": "",
  "approved": null,
  "delivered": "2026-10-27",
- "portal": null,
+ "portal": "FAILED_TO_STUMP 2026-10-27: both responses filed the golden call (S3 Wrentoft, Mill Lane, GBP 0.8 million)",
  "portal_id": "",
  "portal_status": "",
  "portal_status_date": "",
@@ -49,5 +55,5 @@
  "assertions": 225,
  "verifier": "recomputes the call and all 26 ask figures",
  "builds_byte_identical": true,
- "zip_sha256_16": "5cbd1f6fec20d667"
+ "zip_sha256_16": "c91a09a227bb7365"
 }

@@ -23,7 +23,7 @@
   ],
   "field_terms": [],
   "input_gates": {
-    "files": 21,
+    "files": 23,
     "formats": [
       "csv",
       "pdf",
@@ -84,7 +84,7 @@
     {
       "path": "voa_list_entries_2026_lq.txt",
       "format": "txt",
-      "bytes": 795037,
+      "bytes": 795103,
       "rows": 4234,
       "source": "Constructed (seeded generator) in the layout of the VOA compiled list entries (asterisk-separated)",
       "date": "2026-10-09",
@@ -100,9 +100,27 @@
       "license": "CC0-1.0 (original work)"
     },
     {
+      "path": "archive/voa_historic_list_entries_lq_20261002.txt",
+      "format": "txt",
+      "bytes": 954390,
+      "rows": 4850,
+      "source": "Constructed (seeded generator) in the layout of the VOA historic list entries (asterisk-separated, each version with its current from and to dates)",
+      "date": "2026-10-09",
+      "license": "CC0-1.0 (original work)"
+    },
+    {
+      "path": "archive/voa_historic_summary_valuations_lq_20261002.csv",
+      "format": "csv",
+      "bytes": 140719,
+      "rows": 4320,
+      "source": "Constructed (seeded generator) in the layout of the VOA summary valuation main measures for historic assessments",
+      "date": "2026-10-09",
+      "license": "CC0-1.0 (original work)"
+    },
+    {
       "path": "store_estate_2026.xlsx",
       "format": "xlsx",
-      "bytes": 6779,
+      "bytes": 6941,
       "rows": null,
       "source": "Constructed (seeded generator) in the layout of the chain's estate workbook",
       "date": "2026-10-09",
@@ -111,8 +129,8 @@
     {
       "path": "card_spend_by_home_sector_fy2025_26.csv",
       "format": "csv",
-      "bytes": 272141,
-      "rows": 8924,
+      "bytes": 231510,
+      "rows": 7538,
       "source": "Constructed (seeded generator) in the layout of a payment acquirer's merchant-insight feed",
       "date": "2026-10-09",
       "license": "CC0-1.0 (original work)"
@@ -120,7 +138,7 @@
     {
       "path": "site_shortlist_2027.xlsx",
       "format": "xlsx",
-      "bytes": 6655,
+      "bytes": 6656,
       "rows": null,
       "source": "Constructed (seeded generator) in the layout of the property team's site schedule",
       "date": "2026-10-09",
@@ -129,7 +147,7 @@
     {
       "path": "spend_share_model_2025.pdf",
       "format": "pdf",
-      "bytes": 3689,
+      "bytes": 3730,
       "rows": null,
       "source": "Constructed (seeded generator) in the layout of the property team's model sheet",
       "date": "2026-10-09",
@@ -156,7 +174,7 @@
     {
       "path": "tms_stop_export_20251006_20260329.csv",
       "format": "csv",
-      "bytes": 344120,
+      "bytes": 344100,
       "rows": 3736,
       "source": "Constructed (seeded generator) in the layout of a transport management system's stop export",
       "date": "2026-10-09",

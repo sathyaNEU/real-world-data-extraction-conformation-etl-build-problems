@@ -32,6 +32,19 @@ def stores_now():
     return s
 
 
+def stores_2025():
+    """the stores as they traded in the card feed's year: our park-side stores before their 2026 extensions"""
+    s = stores_now()
+    for x in s:
+        if x["kind"] == "own" and x["id"] in P.OWN_2025:
+            x["area"] = P.OWN_2025[x["id"]]
+    return s
+
+
+def parks_2025():
+    return [(n, x, y, P.PARKS_2025.get(n, k), d) for n, x, y, k, d in P.PARKS]
+
+
 def site_store(site):
     sid, addr, town, x, y, a, _ = site
     return dict(id=sid, kind="own", town=town, x=x, y=y, area=a)
@@ -48,13 +61,13 @@ def resident_spend(o):
     return o["hh"] * o["spend"] * 52 * P.INSTORE
 
 
-def flows(oas, stores, parks=True):
+def flows(oas, stores, parks=True, park_list=None):
     """resident and guest in-store spend each store wins in a year"""
     res = np.zeros(len(stores)); vis = np.zeros(len(stores))
     for o in oas:
         res += resident_spend(o) * shares(o["x"], o["y"], stores)
     if parks:
-        for name, x, y, n, _ in P.PARKS:
+        for name, x, y, n, _ in (park_list or P.PARKS):
             vis += n * P.V_PITCH * shares(x, y, stores)
     return res, vis
 
@@ -78,9 +91,10 @@ def appraise(oas, with_parks=True, stores=None):
 
 
 def truth():
+    """the card feed's year trades on the 2025 stores and parks; the appraisal looks forward on today's"""
     rs, oas = build()
     st = stores_now()
-    r0, v0 = flows(oas, st)
+    r0, v0 = flows(oas, stores_2025(), True, parks_2025())
     ers = np.random.default_rng(P.SEED + 1000)
     eps = {s["id"]: float(ers.normal(0, 0.045)) for s in st if s["kind"] == "own"}
     card = {s["id"]: round(float(ers.uniform(0.93, 0.96)), 3) for s in st if s["kind"] == "own"}

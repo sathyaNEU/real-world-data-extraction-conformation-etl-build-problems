@@ -6,6 +6,13 @@ per pitch was pinned nowhere; the decisive step settled the population, so the W
 people, the shortlist and the three asks' files are kept; the population is now filed, and the decisive step is how a
 holiday park's grocery spend is recovered from the one share of it our stores take.
 
+Redesigned at stage 2 on 2026-10-27 after the portal's FAILED_TO_STUMP (both responses filed S3 Wrentoft at GBP 0.8
+million, the golden: the share inversion was landed). At the author's direction the stump moves into the figure as well
+as the site: the inversion has to run on the stores and parks as they stood when the card feed recorded the take, which
+the shipped rating list no longer shows (the 2026 alterations), and only the VOA's historic entries, in an archive folder
+nothing mentions, hold that state; the estate register keeps one previous floor area (SCD type 3), the historic list
+every version (SCD type 2). Architecture 2 and its card are kept, loop 1.
+
 ## Draw
 
 - **Card:** `.claude/skills/fingerprint/cards/task305.json`, architecture v2 (v1 in `lineage`, spent), registered
@@ -49,47 +56,57 @@ holiday park's grocery spend is recovered from the one share of it our stores ta
 - **Data-native sentence:** beside Raddleford Water and Withybeck Lakes a Fairbasket superstore larger than our store
   sits between the park and the town, so the out-of-region cardholders our stores see in season are about a quarter
   of what those parks' guests spend on groceries; the rest goes through tills in no file we hold.
-
+- **The redesign's world change (2026-10-27):** after the card feed's year our two park-side stores were extended twice
+  (store 105 from 945 to about 1,250 m2 on 27 April 2026 and to 1,413 on 7 September; store 107 from 1,008 to about 1,350 on
+  11 May and to 1,490 on 17 August), and three parks added pitches (Raddleford Water 480 to 640 from 18 May 2026, Withybeck
+  Lakes 400 to 520 from 8 June, Wrentoft Lakes 1,450 to 1,750 from 22 June). The shipped 2026 list carries each alteration with
+  its effective date; the estate register shows each store's floor area and the one before it with the day it changed;
+  `archive/` holds the VOA's historic entries (every version since April 2023 with its current-from and current-to
+  dates) and their measures. The model sheet's section 2 now files the stores in a share as those trading when the
+  spend is made, at their floor area then. Measured on the pack: the inversion on the shipped list prices a pitch at
+  GBP 1,560 and files S3 at 0.5; on the card year's state GBP 2,550 and 0.8 (the golden).
+- **Data-native sentence (redesign):** our stores saw the 2025 season's park guests through their 2025 tills, smaller
+  than the stores the list shows now and beside parks with fewer pitches, so the share that turns their take back into
+  each park's spend is the 2025 share; worked on today's list it understates the parks' spend by two fifths.
 ## Default path
 
 1. Reads the model sheet: spend starts where people are, a household's at its output area and anyone else's where they
    are staying; shares each output area's grocery spend (households x weekly spend x 52 x 0.88) among the 27 grocery
    stores of 280 m2 or more on the rating list, by floor area over exp(-0.22 x 1.25 x km).
-2. Finds where visitors stay: the four pitch-measured caravan parks on the rating list. Takes what such guests spend
-   from the card feed: cardholders with homes outside LQ at our stores beside the parks, March to October above the
-   store's winter level, grossed up by its card share.
-3. Prices a pitch at that spend over the park's pitches: Raddleford Water's guests at store 107 over its 640 pitches,
-   Withybeck Lakes' at 105 over 520, Sallowmere Mill's at 104 over 160, about GBP 380 a pitch for a season.
-4. Adds every park as an origin at its pitches times that spend and appraises the six sites by the model sheet's rule:
-   S1 0.410, S3 0.238 (million pounds).
+2. Carries the four pitch-measured parks as origins and prices a pitch from the card feed: cardholders with homes
+   outside LQ at our stores, March to October above each store's winter level, grossed up by its card share.
+3. Recovers the parks' spend through our share, as both portal responses did: our take over the pitches weighted by the
+   model's share of each park's spend going to our stores, worked on the rating list as shipped (stores 105 and 107 at
+   1,413 and 1,490 m2, Raddleford Water at 640 pitches, Withybeck Lakes at 520): GBP 1,560 a pitch.
+4. Appraises the six sites by the model sheet's rule: S3 0.5, S1 0.4 (million pounds).
 
-Ends on: S1 Bellingtoft, Fenton Road, GBP 0.4 million
+Ends on: S3 Wrentoft, Mill Lane, GBP 0.5 million
 Golden: S3 Wrentoft, Mill Lane, GBP 0.8 million
 
 ## Stump sentence
 
-A competent analyst reads the model sheet, carries the holiday parks as origins, prices a pitch from the out-of-region
-cardholders' season spend at our stores beside Raddleford Water, Withybeck Lakes and Sallowmere Mill over those parks'
-pitches (about GBP 380) and approves S1 Bellingtoft, Fenton Road, at GBP 0.4 million, where the golden is S3 Wrentoft,
-Mill Lane, at GBP 0.8 million; the step that lands them there is reading our store's take as the park's spend, when a
-larger competitor at each park's gate takes most of it and our stores' take is only the model's share of it (19, 11 and
-17 per cent), so a pitch spends about GBP 2,480.
+A competent analyst carries the holiday parks as origins, recovers their guests' spend through our modelled share of
+each park, works that share on the rating list as shipped and files S3 Wrentoft, Mill Lane, at GBP 0.5 million, where the
+golden is GBP 0.8 million; the step that lands them there is inverting the 2025 season's take through today's stores and
+parks, when the cards were used at stores 105 and 107 before their 2026 extensions (945 and 1,008 m2, not 1,413 and 1,490) and at
+parks before their new pitches (Raddleford Water 480, Withybeck Lakes 400), so our share of each park's spend was the 2025
+share and a pitch spends about GBP 2,550, not 1,560; the 2025 state is on no shipped list but the VOA's historic entries.
 
 ## Three rules
 
 Task type: accessibility-agglomeration-location-analysis (Urban & Regional Science), tagged for Opportunity Sizing & Decision Support: a new grocery store's trade from a spatial-interaction model of every origin's grocery spend within reach, sized as its addition to the chain's annual contribution, pool to realisable.
 Domain test: The deciding quantity is the new store's trade from the retail geographer's spatial-interaction model, every origin's spend shared among the stores in reach by floor area and distance deterrence; a holiday park's spend is seen only as our stores' take of it, which the same model shares with the competitors beside the park, so the park's spend is the take over our modelled share; a hospital's patients or a utility's megawatt-hours have no origin whose demand is seen only as one competitor's share of it among stores priced by floor area and distance.
 Swap: "which site adds most once the holiday park's guests are carried at their spend recovered from our stores' share of the parks they stay at" put into a hospital (wards, beds) or a feeder (megawatt-hours) loses its mechanism: no ward's demand is observed as one rival hospital's take divided by a floor-area-over-distance share, and no feeder's load is a competitor's till receipts.
-Layer 1: Census 2021 output areas with population-weighted centroids on the British National Grid; an ONSPD extract with terminated postcodes; the VOA rating list in its own asterisk layout and descriptions, with the summary valuation's main measure in m2, parking spaces or pitches; a payment acquirer's merchant-insight feed by month and cardholder home postcode sector, out-of-region sectors included, with year-round visitors in every store's rows; modelled grocery spend per household by output area; the chain's April to March year against calendar-month feeds; nothing is placed to be caught.
-Layer 2: field_method: an origin of spend no file counts (a holiday park) is priced from what our stores take of the spend of similar origins, and in the spatial-interaction model our store's take of a park is only its modelled share of the park's spend, the competitors in reach taking the rest; the park's spend per pitch is the take over the share, read through the same model, not the take over the pitches.
-Decisive step: recovering a park's grocery spend per pitch from our park-side stores' season take divided by the share of that park's spend the model gives our stores (19, 11 and 17 per cent), rather than dividing the take by the park's pitches.
-Not semantics: every field reads as what it is (households, spend per household, each list entry's description and measure, each cardholder's home sector, each store's card share), the model's parameters are read as filed, and the population is filed; no field, code or definition says that our stores' out-of-region take is a share of the parks' spend, and an analyst who reads all of it correctly and prices a pitch at our take over the pitches files S1.
-Not rule application: no filed rule performs the step: the model sheet files the population and how a store's share of a place's spend is formed, and says nothing about how an unseen place's spend is measured; executing every filed rule with the direct reading files S1 at 0.4. Enumerated family (eleven constructions, direct and recovered): S3's addition 0.184 to 0.829, 6.45 printed units, two calls. Standing family (eight constructions recovering through our share: pooled, three single stores, two stores, two other winter windows, no gross-up): 0.768 to 0.829, 0.61 of a printed unit, every member S3 at 0.8. What rules the direct reading out is the filed share formula read on the park, not a sentence naming the step, and it is quiet: the direct reading reconciles with every file.
-Analyst test: A strong analyst who reads every file correctly carries the parks as the model sheet's population requires, prices a pitch from our park-side stores' out-of-region season spend over the parks' pitches (about GBP 380) and approves S1 Bellingtoft at GBP 0.4 million where the golden is S3 Wrentoft at GBP 0.8 million; checks.py runs it on the generator's clean truth and on the pack.
-Estimand: the addition to Marrable Foodstores' annual contribution of the one store the executive approves, once it is trading: 26 per cent of its sales, less 26 per cent of the sales it takes from the chain's ten existing stores, less its running costs, its sales the sum of its shares of the grocery spend that starts at every place, a household's at its output area and anyone else's where they are staying (`spend_share_model_2025.pdf`, sections 1 and 4).
+Layer 1: Census 2021 output areas with population-weighted centroids on the British National Grid; an ONSPD extract with terminated postcodes; the VOA rating list in its own asterisk layout and descriptions, with the summary valuation's main measure in m2, parking spaces or pitches, each entry carrying its effective date; the VOA's historic entries in the GIS analyst's archive folder, each superseded version with its current-from and current-to dates; the estate register's floor area with the one before it and the day it changed; a payment acquirer's merchant-insight feed by month and cardholder home postcode sector; modelled grocery spend per household by output area; the chain's April to March year against calendar-month feeds; nothing is placed to be caught.
+Layer 2: field_method with as-of calibration: a holiday park's spend is seen only as our stores' take of it, which the spatial-interaction model shares with the competitors in reach, so the park's spend is the take over our modelled share; and the share that inverts a take is the share in force when the take was made, the stores and parks of FY2025/26, while the forward appraisal runs on the stores and parks of 2027.
+Decisive step: recovering a park's grocery spend per pitch from our park-side stores' FY2025/26 take divided by the share of that park's spend the model gave our stores then (15, 8 and 17 per cent on the 2025 stores and pitches, not 19, 11 and 17 on today's), and pricing 2027 on today's list.
+Not semantics: every field reads as what it is (each list entry's description, measure and effective date, each historic version's dates, the register's previous floor area and the day it changed, each cardholder's home sector, each store's card share); an analyst who reads all of it correctly and inverts the take on the list as shipped files S3 at 0.5, because the error is calibrating a past take on today's stores, not a misread field.
+Not rule application: the model sheet files how a share is formed and that its stores are those trading when the spend is made; no filed rule says the take is to be inverted or that the stores have changed since the cards were used; enumerated family (the direct reading, the inversion on today's list, on the register's previous floor areas with today's or the 2025 pitches, on the 2025 floor areas with today's pitches, on today's floor areas with the 2025 pitches, the 2025 state for 2027 as well, and the golden): S3 0.22 to 0.80 and S1 at 0.4, seven printed values; standing family (the golden inversion on the 2025 state, pooled, one store at a time, two stores, two other winter windows, no gross-up): every member S3 at 0.8; what rules the rest out is quiet: the shipped list's effective dates in 2026 and an archive folder no document names.
+Analyst test: a strong analyst who reads every file correctly carries the parks, recovers their spend through our modelled share as the portal's responses did, works it on the rating list as shipped and files S3 Wrentoft, Mill Lane, at GBP 0.5 million (GBP 1,560 a pitch) where the golden is GBP 0.8 million; checks.py runs it on the pack.
+Estimand: the addition to Marrable Foodstores' annual contribution of the one store the executive approves, once it is trading: 26 per cent of its sales, less 26 per cent of the sales it takes from the chain's ten existing stores, less its running costs, its sales the sum of its shares of the grocery spend that starts at every place, a household's at its output area and anyone else's where they are staying, each share formed among the grocery stores trading when the spend is made at their floor area then (spend_share_model_2025.pdf, sections 1, 2 and 4).
 No decoy: nothing is planted: the census is ONS's count, the rating list the VOA's, the feed the acquirer's record; the competitors are ordinary list entries the share model needs anyway; no memo, draft or figure argues for a site, no file ranks the six, no stakeholder figure is set up to be overturned.
 No certified replay: no certified or published figure is reproduced; the estate's sales are actuals the model is never fitted to, and the spend per pitch is recovered from the feed through the filed model, not from any figure.
-Lesson: a spatial-interaction model sees an origin's demand only through the outlets it observes, and what one outlet takes is its share of the origin's total; an origin priced on one outlet's take without dividing by that outlet's modelled share is understated by the competitors' part, which is largest where a bigger rival stands nearest; no build on file recovers an origin's total from one outlet's modelled share of it.
+Lesson: a model inverted on observed takes must be inverted on the configuration that produced them: our stores' 2025 tills saw the parks' guests through the 2025 stores and pitches, and a share computed on today's larger stores and parks understates each park's spend; the history of a slowly changing record (a register keeping only the last change, a list showing only the current entry) lives in its historic versions, and no build on file calibrates a past take on the state that made it.
 
 ## Readability screen
 
@@ -100,7 +117,9 @@ Lesson: a spatial-interaction model sees an origin's demand only through the out
 | R2a/R2b a park-side store's guest share or take carried to Wrentoft | no | the card feed's out-of-region rows | yes | no | no | yes | no | readable |
 | R2c a park-side store's take scaled by pitches | no | the list's pitch measures | yes, an analog by size | no | no | yes | no | readable |
 | R3 every park an origin at our take over its pitches | the population sentence | pitches, the feed | yes, price a unit from evidence | no | no | yes, a ratio | no | readable |
-| R4 our take over our modelled share of each park's spend (decisive) | no sentence says a store's take of a place is a share of it to be divided out; section 1 forms shares forward | no column: the share is computed from every store in reach | no: every reflex prices the pitch on what our stores see | none: the direct reading reconciles with every file | no | no: the share is a model output over 27 stores, not a reported figure | no: the competitors are list entries the share model needs for every origin | silent |
+| R4 our take over our modelled share of each park's spend, on the list as shipped | no sentence says a store's take of a place is a share of it to be divided out; section 1 forms shares forward | no column: the share is computed from every store in reach | no: every reflex prices the pitch on what our stores see | none: the direct reading reconciles with every file | no | no: the share is a model output over 27 stores, not a reported figure | no: the competitors are list entries the share model needs for every origin | readable |
+| R5 the register's previous floor areas for the 2025 stores | no | previous_floor_area_m2, floor_area_changed | yes, the last change undone | no | no | no | no | readable |
+| R6 the take inverted on the stores and parks trading when the cards were used, from the historic entries (decisive) | the model sheet files the stores in a share as those trading when the spend is made; no sentence says the take is a past spend, that the stores have changed or where the past list is | no shipped list shows the 2025 state: the 2026 list carries only current entries and the register one previous floor area | no: every reflex works the share on the list in hand | none: no file ties under one state and not another | no: nothing is duplicated, unmatched or out of window | no: the share is a model output over 27 stores | no: the archive is the GIS analyst's own download folder | silent |
 
 ## Semantic fork table
 
@@ -138,8 +157,12 @@ Lesson: a spatial-interaction model sees an origin's demand only through the out
 | SF30 | ask C, the joint routes and blocks | both feeds list the joint journeys; a block is one vehicle's working | two buses | another count | each feed's routes.txt marks routes 4 and 41 a joint service; GTFS defines block_id (asserted) |
 | SF31 | the year-round out-of-region cardholders | people staying with residents, carried at the output areas or not | parked at the holiday parks | same call and figure either way (asserted); the parks reading is SF10's every-pound rival | SF10's record |
 | SF32 | ask A, which stops were turned away | the stops closed too soon for their cases, re-sent the next day | a dwell cut-off chosen otherwise | same stops at a flat 8.5, 9 or 10 minutes (asserted) | C1 |
+| SF33 | the stores in a share | those trading when the spend is made, at their floor area then | the list as shipped | S3 at 0.5 (asserted) | the model sheet, section 2 (asserted) |
+| SF34 | the card feed's year | one state: every alteration since takes effect after 31 March 2026 | a state that changes within the year | the same spend per pitch on 1 April 2025, 31 October 2025 and 31 March 2026 (asserted) | C1 |
+| SF35 | the 2025 floor areas | the historic entries' version current in FY2025/26 | the register's previous floor area (the value before the last change) | S3 at 0.6 or 0.7 (asserted) | the register's change dates are in 2026; the historic entries date each version |
+| SF36 | the 2027 trade | today's list and pitches | the 2025 state carried forward | S3 at 0.7 (asserted) | SF33: 2027's spend is shared among 2027's stores |
 
-The decisive step is not a reading of any term: the population, the share formula and every convention are filed or converge, and S1 comes from an easy method on the same literal estimand, pricing a pitch at our take over the pitches.
+The decisive step is not a reading of any term: the population, the share formula and every convention are filed or converge, and the wrong figures come from easy methods on the same literal estimand: pricing a pitch at our take over the pitches (S1), or inverting the take on today's stores and parks (S3 at 0.5).
 
 ## Ladder
 
@@ -151,7 +174,10 @@ The decisive step is not a reading of any term: the population, the share formul
 | R2b | Raddleford's guest take credited to Wrentoft as it stands | S1 0.409 (1.93x) | the same |
 | R2c | a park-side store's take scaled by the pitch ratio, all to Wrentoft | S1 0.409 (1.20x at 107, 1.53x at 105, 1.30x at 104) | the model's shares of Wrentoft Lakes' spend |
 | R3 (default) | every park an origin at our take over its pitches (GBP 376 a pitch; 447, 284 and 390 one store at a time; 174 over every pitch) | S1 0.410 (1.73x over S3 0.238; 1.60x to 2.23x) | our take is the model's share of the park's spend |
-| R4 (golden) | the take over our modelled share (GBP 2,484 a pitch) | S3 0.801 (1.91x over S1 0.420) | (answer) |
+| R4 (default since the portal) | the take over our modelled share, worked on the list as shipped | S3 0.5 (GBP 1,560 a pitch) | the model sheet's section 2: the stores trading when the spend is made |
+| R5 | the register's previous floor areas with today's or the 2025 pitches; the 2025 floor areas with today's pitches; today's floor areas with the 2025 pitches | S3 0.6 or 0.7 | the historic entries' dates |
+| R6 | the 2025 state carried into 2027 (Wrentoft Lakes at 1,450 pitches) | S3 0.7 | 2027's spend shared among 2027's stores |
+| R7 (golden) | the take over our modelled share (GBP 2,484 a pitch) | S3 0.801 (1.91x over S1 0.420) | (answer) |
 
 Worth of the decisive step: a pitch at 6.6 times the direct reading; S3 moves from 0.238 to 0.801. Standing family 0.768 to 0.829. Rivals off the call's figure: every out-of-region pound 0.958, the 0.88 applied 0.721, a park at its output area's centroid 0.651.
 
@@ -162,7 +188,7 @@ Worth of the decisive step: a pitch at 6.6 times the direct reading; S3 moves fr
 | 1 | Population | a household's spend at its output area and anyone else's where they are staying | filed (section 1, SF26); which places and how much is the analysis |
 | 2 | Unit of account | the site; pounds of contribution a year | filed (the prompt, section 4) |
 | 3 | Attribution window | a year of trading at 2026 prices; the feed's FY2025/26 for the spend per pitch | filed |
-| 4 | As-of dating | the 2026 list, ONSPD May 2026, households as Census 2021 counted them | filed |
+| 4 | As-of dating | the take on the stores and parks of FY2025/26 (the historic entries); 2027 on the list as shipped; ONSPD May 2026; households as Census 2021 counted them | filed (section 2, SF33); C1 within the year (SF34) |
 | 5 | Version basis | the June 2025 parameters | filed |
 | 6 | Denominator | the pitches weighted by our stores' modelled share of each park's spend | the share formula (section 1) read on the park; the direct reading is C4, wrong on section 1 |
 | 7 | Weighting | pooled over our stores, or one or two stores | C1 (0.768 to 0.829, asserted) |
@@ -170,7 +196,7 @@ Worth of the decisive step: a pitch at 6.6 times the direct reading; S3 moves fr
 | 9 | Boundary inclusivity | 280 m2; 400 m; the 25 weeks; the dwell cut-off | C1 (asserted, SF32) |
 | 10 | Rounding path | once, at the end | asserted (SF13) |
 | 11 | Tie-break | none | asserted (0.38 million clear) |
-| 12 | Maturity | a year of trading, no ramp | filed (SF14) |
+| 12 | Maturity | a year of trading, no ramp; the 2026 extensions and pitches traded from their effective dates | filed (SF14); the 2027 trade on today's list (SF36) |
 | 13 | Order of operations | shares, then sums, then the appraisal | filed |
 | 14 | Row order | none | C1 |
 | 15 | Duplicate resolution | ask A's turned-away loads, ask B's night lines, ask C's joint and Friday-late journeys, in the asks' files only | filed where each system states it (SF28 to SF30), the records deciding which rows |
@@ -184,7 +210,16 @@ Worth of the decisive step: a pitch at 6.6 times the direct reading; S3 moves fr
 
 ## Literal reader
 
-Executing the prompt and every filed sentence word for word (the model sheet's sections 1 to 5 and its parameter table, the DC's procedure, the report and feed headers, the shortlist) fixes the estimand whole: the population is every household at its output area and anyone else where they are staying, each place's spend shared by the filed formula. What stays open is how a park's spend is measured, and the filed formula forces it: our stores' take of a park is their share of its spend, so the park's spend is the take over that share; every construction doing that files S3 at 0.8 (eight, asserted). The direct reading (the take over the pitches) is an easy method on the same literal estimand that the share formula contradicts, never another reading of a term. Each differing reading of a term (SF4, SF9, SF10, SF12, SF14, SF17, SF26) violates a quotable shipped sentence or the record.
+Executing the prompt and every filed sentence word for word (the model sheet's sections 1 to 5 and its parameter table,
+the DC's procedure, the report and feed headers, the shortlist) fixes the estimand whole: the population is every
+household at its output area and anyone else where they are staying, each place's spend shared by the filed formula
+among the stores trading when the spend is made, at their floor area then. What stays open is how a park's spend is
+measured, and the filed formula forces it: our stores' FY2025/26 take of a park is their share of its spend among the
+stores then trading, so the park's spend is the take over that share, and the stores and pitches then are the historic
+entries' versions current over the year. Every construction doing that files S3 at 0.8 (the standing family, asserted);
+the direct reading and the inversion on today's list are easy methods on the same literal estimand that the share
+formula and section 2 contradict, never other readings of a term. Each differing reading of a term (SF4, SF9, SF10,
+SF12, SF14, SF17, SF26, SF33 to SF36) converges or violates a quotable shipped sentence or the record.
 
 ## Oracles
 
@@ -212,39 +247,31 @@ Measured by: generator/pair.py on the cut pack.
 
 ## Pre-ship check
 
-- Free gates on target.zip 5cbd1f6f (architecture 2): generator checks 225 passed (the resident route and the default
-  path on the clean truth and on the pack, every direct reading at each park-side store and over every pitch on S1, the
-  decisive share 0.10 to 0.35 at each analog park, the golden S3 at 0.801, every rung clearing S1 by 1.15 or more, the
-  eight-member standing family 0.768 to 0.829 all S3 at 0.8, SF1 to SF32, the asks' devices with every wrong path
-  missing every figure, separation, no readme, notes or dictionary under target/, the input gates); verify.py
-  recomputes the call and all 26 ask figures from the zip alone; two builds byte-identical; figures_check 88 of 88;
-  precut 53 checks clean with voice-check PASS; pair.py: pair ceiling 28.5, mirror leakage 0.0 per cent.
-- leak.py REVIEW, each line ruled: sweep 1 the rating list file is the VOA's own record in its own layout; sweep 2
-  "the model" is the property team's own word for its spend-share model; sweep 3 the numbers that coincide with
-  answer figures are house numbers and rateable values on the rating list; sweep 4 the model sheet's population and
-  share sentences are its own subject (it names no take, no share of an unseen place and no divide); sweep 6 the
-  shortlist lists the sites with their costs and ranks nothing; sweep 7 GTFS is published as a zip.
-- Guard: heart WARN (overuse.objective, repeat.decision, repeat.deliverables, answered at the draw). Surface promotes
-  three pairs on card axes, each adjudicated clean here: task307 (same pairing, gap and decision type; its mechanism is
-  what added network capacity saves when users re-route), task303 (gap and decision type; a shared upstream loss logged
-  under each unit's own device), task128 (gap, G5 and decision type; differentiated on the card, a queue's overflow
-  against a team's capacity). None recovers an origin's spend from one outlet's modelled share.
-- Leak reader, architecture 2 read 1 (5cbd1f6f): no decisive-step sentence (its nearest, the appraisal rule, "states
-  the contribution formula, not which site wins"), no ranking file, no answer figure; question 5's sentences execute to
-  the golden; question 6 analytical, and its account of the step is not the decisive one. Question 3 named the VOA's file
-  specification, ruled harmless as publisher documentation in leak_check_report.md.
-- Determinism judge, architecture 2 pass 1 (5cbd1f6f): DETERMINISTIC, APPROVE, derive-then-open kept. Gate G
-  analytical_non_defect (mechanism read as "other", the same mechanism as the card's decomposition_attribution); Gate H
-  domain, layers and decisive step pass; stump power strong. Its cold derivation reproduced S1 at about 0.4 on the
-  households and named, without executing it, "back-solving each park's total spend from the model's own baseline
-  capture share": the decisive step is reachable by a reader who takes the population sentence to the parks, which is
-  the risk this architecture carries into the portal. Its advisory notes (the per-pitch chain and the bus counts traced
-  rather than recomputed; its own TMS recompute 0.3 to 0.5 per cent high from its boundary handling) need no change:
-  verify.py recomputes every graded figure from the zip.
+- Free gates on target.zip c91a09a2 (architecture 2 loop 1, the as-of redesign): generator checks 238 (the resident
+  route and the default paths on the clean truth and the pack, the share inversion on the card year's stores and parks,
+  every as-of rung SF33 to SF36 filing S3 at 0.69 or less, the standing family all S3 at 0.8, SF1 to SF36, the asks'
+  devices, separation, no readme, notes or dictionary, the input gates); verify.py recomputes the call from the zip with
+  the historic entries on its own code path, and all 26 ask figures; two builds byte-identical; figures_check 99 of 99;
+  precut 53 clean with voice-check PASS; pair.py: pair ceiling 28.5, mirror leakage 0.0 per cent.
+- leak.py REVIEW, each line ruled harmless (the two VOA text files are the publisher's current and historic list
+  data; "the model" is the document's own subject; the shared numbers are UARNs, house numbers and measures; the
+  shortlist ranks nothing; the GTFS zips are standard feeds; the design-note vocabulary line is generic words). Leak
+  reader, loop 1 read 1 (c91a09a2): no decisive-step sentence, no ranking file, no answer figure; question 3 the VOA
+  file specification (publisher documentation); question 5's section 2 sentence executes to the golden's reading;
+  question 6 analytical, the reader naming neither the share inversion nor the as-of state; the archive "reads as a
+  real analyst's folder of earlier downloads".
+- Determinism judge, loop 1 pass 1 (c91a09a2): DETERMINISTIC, APPROVE. Gate G method_or_model_selection (secondary a
+  vintage-matching constraint), analytical_non_defect, no surface-read dependency; Gate H domain, layers and decisive
+  step pass. Its non-blocking note, the park shares (its 12.3, 7.5 and 15.1 per cent against the write-up's 15, 8 and
+  17), is each park-side store's own share against our ten stores together, which the spend per pitch divides by; the
+  write-up and the paper now say "our ten stores together". Informational: asks traced, not fully executed;
+  distractors are ordinary unused confounds.
+- Guard: check and heart WARN (overuse.objective, repeat.decision, repeat.deliverables, answered at the draw;
+  test.same_puzzle_older differentiated against task128); surface: personas Joshua Ingram and Pauline Sullivan only.
 - The 10/10 rules re-read on the built pack: the deciding quantity is the spatial-interaction model's trade of a new
-  store with every origin's spend in it; the mess (the rating list's layout, the acquirer's sectors, the clocks, the
-  report's preamble) only complicates; the decisive step is analytical, recovering a park's spend from our stores'
-  modelled share of it, and the population it used to turn on is filed.
+  store with every origin's spend in it, a park's spend recovered from our stores' modelled share as it stood when the
+  take was made; the mess (the list's layout and effective dates, the historic entries, the register's previous floor
+  area, the acquirer's sectors, the clocks) complicates; the decisive steps are analytical.
 
 ## Tried and rejected
 
@@ -261,4 +288,13 @@ Measured by: generator/pair.py on the cut pack.
 - Shrinking Wrentoft's small Brightmart so S3 takes more of Wrentoft Lakes' spend (architecture 2, tuning, 2026-10-27): it also hands S3 the Wrentoft residents' spend, so S3 led even on the resident route and on the direct reading; reverted, and rung 2c was cleared instead by siting a larger competitor at each analog park's gate.
 - The Corrinby camping site and the Loderwell touring site (architecture 2, tuning): once our share of the big parks was cut, these 20- and 15-pitch sites, where our stores take most of the spend, carried the recovered spend per pitch and handed the direct reading at their stores a pitch above the crossover; dropped from the world, and a Pettifer's set at Sallowmere Mill's gate for the same reason.
 - The GIS analyst's data notes (architecture 2, stage 3): leak.py now refuses any shipped file that describes the data (dataset-generation section 3); the notes were cut, the rating list's layout moved to the VOA's own file specification, the refused-load rule to the DC's procedure TP-04, the report's grain to its own header, the joint routes to the feeds' route descriptions, and the punch clock into its column name.
+- Architecture 2 as shipped (portal 2026-10-27, FAILED_TO_STUMP): both responses filed S3 Wrentoft, Mill Lane, at GBP
+  0.8 million, the golden: they carried the parks, recovered the parks' spend through our modelled share and appraised.
+  The share inversion is landable once the model sheet's population sentence sends the reader to the parks. Redesigned
+  at the author's direction (2026-10-27) so the figure carries a stump of its own: the take is the 2025 season's, made
+  through the 2025 stores and parks, and the shipped list is today's (two extensions at each park-side store and new
+  pitches at three parks in 2026); the inversion on today's list now files S3 at 0.5, the register's previous floor
+  areas 0.6 or 0.7, and only the historic entries' 2025 versions file 0.8. A site flip on the same layer was measured
+  and not taken: with S1 at 0.42 every intermediate route lands between 0.54 and 0.69, so placing S1 to flip the
+  default would leave the partial routes ambiguous against it.
 

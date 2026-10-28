@@ -4,6 +4,7 @@ the ladder, every semantic fork row, the bins, the ask devices, separation, the 
 
     python3 task305/generator/checks.py <target dir>
 """
+import collections
 import csv
 import re
 import datetime as dt
@@ -36,6 +37,13 @@ def ok(cond, msg):
 
 def edge(v, u):
     return u / 2 - abs(v - round(v / u) * u)
+
+
+def walk(folder):
+    out = []
+    for root, dirs, fs in os.walk(folder):
+        out += [os.path.relpath(os.path.join(root, f), folder) for f in fs]
+    return sorted(out)
 
 
 def tenth(v):
@@ -90,12 +98,13 @@ def main(target):
     P.V_PITCH = old_v
     ok(max(tdir, key=lambda k: tdir[k]["add"]) == EASY_SITE and tenth(tdir[EASY_SITE]["add"]) == 0.4,
        "analyst test, clean truth: the parks carried at our park-side stores' take over their pitches file S1 at 0.4")
-    sh_side = {s_: sum(pk.shares(next(p["xy"] for p in pk.parks if p["pc"] == pc_), pk.stores)[k]
-                       for k, x in enumerate(pk.stores) if x["own"])
+    sh_side = {s_: sum(pk.shares(next(p["xy"] for p in pk.parks_2025 if p["pc"] == pc_), pk.stores_2025)[k]
+                       for k, x in enumerate(pk.stores_2025) if x["own"])
                for s_, pc_ in (("107", next(r[14] for r in pk.voa if r[9] == side["107"])),
                                ("105", next(r[14] for r in pk.voa if r[9] == side["105"])))}
-    ok(all(0.10 <= v <= 0.35 for v in sh_side.values()), "the decisive quantity: our stores take %s of the two parks' "
-       "spend, the competitor beside each the most of the rest" % {k: round(v, 3) for k, v in sh_side.items()})
+    ok(all(0.05 <= v <= 0.35 for v in sh_side.values()), "the decisive quantity: in the card feed's year our stores took "
+       "%s of the two parks' spend, the competitor beside each the most of the rest" % {k: round(v, 3) for k, v in
+                                                                                         sh_side.items()})
     ok(V >= 3 * v_direct["both"], "the decisive step's worth: recovered through our share a pitch is %.2f times the "
        "direct reading" % (V / v_direct["both"]))
     # ---- R3b: the decisive step alone files the golden ------------------------------------------------------------
@@ -183,8 +192,9 @@ def main(target):
     ok(joint == {"gtfs_lb": {"4", "41"}, "gtfs_pdc": {"4", "41"}}, "SF30 ask C: both feeds mark routes 4 and 41 as a joint "
        "service with the other operator; a block is one vehicle's working as GTFS defines block_id; the Friday-late "
        "repeats, the school-day duplicates and the clock past 24:00 are left to the feeds (%s)" % joint)
-    bad = [f for f in os.listdir(target) if f.lower().endswith((".md", ".txt")) and f != P.FILES["voa_list"]]
-    ok(not bad and not [f for f in os.listdir(target) if re.search(r"(?i)read_?me|dictionar|field_?notes|manifest|data_?notes", f)],
+    allf = walk(target)
+    bad = [f for f in allf if f.lower().endswith((".md", ".txt")) and f not in (P.FILES["voa_list"], P.FILES["voa_hist"])]
+    ok(not bad and not [f for f in allf if re.search(r"(?i)read_?me|dictionar|field_?notes|manifest|data_?notes", f)],
        "dataset-generation 3: no readme, dictionary, notes or manifest file ships (%s)" % bad)
     ok("a year of trading at 2026 prices" in model_src, "SF2 a year at 2026 prices")
     ok(len({r["date"] for r in S.rd(F["households"])}) == 1, "SF3 one census count of households, 2021")
@@ -206,7 +216,8 @@ def main(target):
     oa_of = {r["pcds"]: r["oa21"] for r in S.rd(F["onspd"])}
     pwc = {r["OA21CD"]: (float(r["x"]), float(r["y"])) for r in S.rd(F["pwc"])}
     parks2 = [dict(p, xy=pwc[oa_of[p["pc"]]]) for p in pk.parks]
-    a9 = pk.appraise(pk.v_per_pitch(parks=parks2), parks=parks2)
+    parks25 = [dict(p, xy=pwc[oa_of[p["pc"]]]) for p in pk.parks_2025]
+    a9 = pk.appraise(pk.v_per_pitch(parks=parks25), parks=parks2)
     w9 = max(a9, key=lambda k: a9[k]["add"])
     print("SF9 a park at its output area's centroid files %s %.3f (the filed reading files %s %.3f)" % (
         w9, a9[w9]["add"] / 1e6, GOLD_SITE, c["add"] / 1e6))
@@ -240,7 +251,8 @@ def main(target):
         ok(seas / offm > 5, "SF10 store %s: the season runs %.0f times its year-round level" % (s, seas / offm))
     # SF11: every pitch-measured site, or caravan parks only: same call
     car = [p for p in pk.parks if "CARAVAN PARK" in p["desc"]]
-    a11 = pk.appraise(pk.v_per_pitch(parks=car), parks=car)
+    car25 = [p for p in pk.parks_2025 if "CARAVAN PARK" in p["desc"]]
+    a11 = pk.appraise(pk.v_per_pitch(parks=car25), parks=car)
     ok(max(a11, key=lambda k: a11[k]["add"]) == GOLD_SITE and tenth(a11[GOLD_SITE]["add"]) == 0.8, "SF11 same call")
     # SF12: the season's months: the excess runs March to October; April to September only files another figure
     off = np.mean([sum(nl["107"].get(m, 0) for m in S.OFF) / 4.0])
@@ -277,6 +289,46 @@ def main(target):
        "ours (%.3f)" % (g["S2"]["took"] / g["S2"]["new"]))
     pdist = {r["site"]: math.dist(pk.pc[r["postcode"]], max(pk.parks, key=lambda p: p["n"])["xy"]) for r in pk.sites}
     ok(min(pdist, key=pdist.get) == GOLD_SITE, "component 1: the largest park is nearer S3 than any other site (%s)" % pdist)
+    # ---- the stores and parks as they stood when the take was made (the 2023 list to its close) ---------------------
+    ok("The grocery stores trading when the spend is made, each at its floor area then" in model_src,
+       "SF33 the model sheet files the stores in a share: those trading when the spend is made, at their floor area then")
+    hist = [ln.rstrip("\r\n").split("*") for ln in open(F["voa_hist"], encoding="utf-8", newline="") if ln.strip()]
+    cur_eff = {r[6]: dt.datetime.strptime(r[15], "%d-%b-%Y").date() for r in pk.voa}
+    moved = sorted({r[6] for r in pk.voa if r[6] in pk.smv and cur_eff[r[6]] > P.LIST_2026 and
+                    (r[5] in P.GROCERY or pk.smv[r[6]][1] == "pitches")})
+    ok(all(cur_eff[u] > P.FY[1] for u in moved), "SF34 every alteration since the card feed's year takes effect after 31 "
+       "March 2026, so the year traded on one state")
+    by_u = collections.defaultdict(list)
+    for r in hist:
+        by_u[r[6]].append((dt.datetime.strptime(r[26], "%d-%b-%Y").date(),
+                           dt.datetime.strptime(r[27], "%d-%b-%Y").date() if r[27] else dt.date(9999, 1, 1)))
+    ok(all(any(a <= P.FY[0] and b >= P.FY[1] for a, b in by_u[r[6]]) for r in pk.voa
+           if r[5] in P.GROCERY or (r[6] in pk.smv and pk.smv[r[6]][1] == "pitches")),
+       "SF34 every grocery store and park has one historic version spanning the whole card feed's year")
+    for day in (dt.date(2025, 4, 1), dt.date(2025, 10, 31), dt.date(2026, 3, 31)):
+        hsmv = {r["assessment_reference"]: (float(r["main_measure"]), r["unit_of_measurement"]) for r in S.rd(F["voa_hist_smv"])}
+        own_pc = {r["postcode"]: str(r["store_no"]) for r in pk.estate}
+        st_d, pk_d = pk.state_on(hist, hsmv, own_pc, day)
+        ok(abs(pk.v_per_pitch(stores=st_d, parks=pk_d) - V) < 1e-6, "SF34 the state on %s gives the same spend per pitch" % day)
+    est = {str(r["store_no"]): r for r in pk.estate}
+    prev = [dict(x, a=float(est[x["id"]]["previous_floor_area_m2"])) if x["own"] and
+            est[x["id"]]["previous_floor_area_m2"] and str(est[x["id"]]["floor_area_changed"])[:4] == "2026" else x
+            for x in pk.stores]
+    asof = {"the take inverted on today's stores and parks (the list as shipped)": pk.v_per_pitch(stores=pk.stores, parks=pk.parks),
+            "the estate's previous floor areas, today's pitches": pk.v_per_pitch(stores=prev, parks=pk.parks),
+            "the estate's previous floor areas, the 2025 pitches": pk.v_per_pitch(stores=prev, parks=pk.parks_2025),
+            "the 2025 floor areas, today's pitches": pk.v_per_pitch(stores=pk.stores_2025, parks=pk.parks),
+            "today's floor areas, the 2025 pitches": pk.v_per_pitch(stores=pk.stores, parks=pk.parks_2025)}
+    for lab, v in asof.items():
+        a_ = pk.appraise(v)
+        w_ = max(a_, key=lambda k: a_[k]["add"])
+        ok(w_ == GOLD_SITE and a_[w_]["add"] / 1e6 <= 0.69,
+           "SF35 rung: %s files %s %.3f (GBP %.0f a pitch), not 0.8" % (lab, w_, a_[w_]["add"] / 1e6, v))
+    a_o = pk.appraise(V, parks=pk.parks_2025)
+    ok(tenth(a_o[GOLD_SITE]["add"]) <= 0.7, "SF36 the 2027 trade on the 2025 parks (Wrentoft Lakes at %d pitches, not %d) "
+       "files %.3f: 2027's spend is shared among 2027's stores and parks" % (
+           min(p["n"] for p in pk.parks_2025 if p["n"] > 1000), max(p["n"] for p in pk.parks), a_o[GOLD_SITE]["add"] / 1e6))
+    ok(len(hist) > len(pk.voa), "SF34 the historic entries hold the 2023 list and every superseded version (%d lines)" % len(hist))
     # ---- R2: each Layer 1 item mishandled leaves the call where it is ---------------------------------------------
     term = {r["pcds"] for r in S.rd(F["onspd"]) if r["doterm"]}
     used = {r["postcode"] for r in pk.sites} | {r[14] for r in pk.voa if r[5] in P.GROCERY} | {p["pc"] for p in pk.parks}
@@ -523,7 +575,7 @@ def main(target):
         ok('F["%s"]' % k not in call_src, "separation: the call reads no %s" % k)
     for k in DISTRACTORS:
         ok('"%s"' % k not in src, "distractor %s unread" % k)
-    files = [f for f in os.listdir(target)]
+    files = walk(target)
     ok(len(files) >= 10 and len({f.rsplit(".", 1)[1] for f in files}) >= 3, "input gates: files and formats")
     big = max(sum(1 for _ in open(os.path.join(target, f), encoding="utf-8", errors="ignore")) for f in files if f.endswith((".csv", ".txt")))
     ok(big >= 25000, "input gates: a file of %d rows" % big)

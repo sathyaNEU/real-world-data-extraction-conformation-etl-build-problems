@@ -98,7 +98,22 @@ def call(T):
     share = dict(zip(est["store_no"], est["card_share_of_sales"]))
     guests = {s: float((nl.loc[s, season] - off[s]).sum()) / float(share[s]) for s in nl.index}
     own_idx = [i for i, (sid, _, _) in enumerate(stores) if sid]
-    den = sum(n * sum(sh(p, stores)[i] for i in own_idx) for p, n in parks)
+    # the take was made in FY2025/26: invert it on the stores and parks of then, from the historic entries (each
+    # version's current-from and current-to dates), joined to their measures by assessment reference
+    hl = pd.read_csv(os.path.join(T, "archive", "voa_historic_list_entries_lq_20261002.txt"), sep="*", header=None,
+                     dtype=str, keep_default_na=False)
+    hs = pd.read_csv(os.path.join(T, "archive", "voa_historic_summary_valuations_lq_20261002.csv"), dtype=str)
+    hl = hl.merge(hs, left_on=19, right_on="assessment_reference", how="inner")
+    hl["frm"] = pd.to_datetime(hl[26], format="%d-%b-%Y")
+    hl["to"] = pd.to_datetime(hl[27], format="%d-%b-%Y")
+    then = hl[(hl["frm"] <= "2025-04-01") & (hl["to"] >= "2026-03-31")].copy()
+    then["mm"] = pd.to_numeric(then["main_measure"], errors="coerce")
+    g25 = then[then[5].isin(["SUPERMARKET AND PREMISES", "SUPERSTORE AND PREMISES", "FOOD STORE AND PREMISES"]) &
+               (then["unit_of_measurement"] == "m2") & (then["mm"] >= 280)]
+    stores25 = [(ownpc.get(r[14]), xy(r[14]), r["mm"]) for _, r in g25.iterrows()]
+    parks25 = [(xy(r[14]), r["mm"]) for _, r in then[then["unit_of_measurement"] == "pitches"].iterrows()]
+    own25 = [i for i, (sid, _, _) in enumerate(stores25) if sid]
+    den = sum(n * sum(sh(p, stores25)[i] for i in own25) for p, n in parks25)
     V = sum(guests.values()) / den
     origins = [((r["x"], r["y"]), r["d"]) for _, r in oa.iterrows()] + [(p, n * V) for p, n in parks]
     res_only = [((r["x"], r["y"]), r["d"]) for _, r in oa.iterrows()]

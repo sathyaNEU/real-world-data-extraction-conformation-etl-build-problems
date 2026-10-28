@@ -55,6 +55,33 @@ class Pack:
             if uarn in self.smv and self.smv[uarn][1] == "pitches":
                 self.parks.append(dict(uarn=uarn, desc=desc, pc=pc, xy=self.pc[pc], n=self.smv[uarn][0]))
         self.cards = rd(F["cards"])
+        # the rating list as it stood in the card feed's year, from the historic entries (each version with the days it
+        # was current); an entry with no version then was not on the list then
+        with open(F["voa_hist"], encoding="utf-8", newline="") as fh:
+            hist = [ln.rstrip("\r\n").split("*") for ln in fh if ln.strip()]
+        hsmv = {r["assessment_reference"]: (float(r["main_measure"]), r["unit_of_measurement"])
+                for r in rd(F["voa_hist_smv"])}
+        self.stores_2025, self.parks_2025 = self.state_on(hist, hsmv, own_pc, dt.date(2025, 7, 1))
+
+    def state_on(self, hist, hsmv, own_pc, day):
+        """the grocery stores and the pitch-measured parks on the list on a day"""
+        stores, parks = [], []
+        for r in hist:
+            frm = dt.datetime.strptime(r[26], "%d-%b-%Y").date()
+            to = dt.datetime.strptime(r[27], "%d-%b-%Y").date() if r[27] else dt.date(9999, 1, 1)
+            if not (frm <= day <= to):
+                continue
+            desc, uarn, pc, ass = r[5], r[6], r[14], r[19]
+            if ass not in hsmv:
+                continue
+            meas, unit = hsmv[ass]
+            if desc in P.GROCERY and unit == "m2" and meas >= P.MIN_AREA:
+                stores.append(dict(id=own_pc.get(pc, "u" + uarn), own=pc in own_pc, xy=self.pc[pc], a=meas))
+            if unit == "pitches":
+                parks.append(dict(uarn=uarn, desc=desc, pc=pc, xy=self.pc[pc], n=meas))
+        key = {s["id"]: k for k, s in enumerate(self.stores)}
+        stores.sort(key=lambda s: key.get(s["id"], 10 ** 6))
+        return stores, parks
 
     # ------------------------------------------------------------- the spend-share model
     @staticmethod
@@ -87,13 +114,16 @@ class Pack:
             out[s] = g / (share[s] if gross else 1.0)
         return out
 
-    def v_per_pitch(self, guests=None, parks=None, only=None):
+    def v_per_pitch(self, guests=None, parks=None, only=None, stores=None):
+        """our stores' guest take over the pitches weighted by our modelled share of each park's spend; the golden
+        weighs them on the stores and parks as they stood when the take was made"""
         guests = guests if guests is not None else self.guests()
-        parks = parks if parks is not None else self.parks
-        own = [k for k, s in enumerate(self.stores) if s["own"] and (only is None or s["id"] in only)]
+        parks = parks if parks is not None else self.parks_2025
+        stores = stores if stores is not None else self.stores_2025
+        own = [k for k, s in enumerate(stores) if s["own"] and (only is None or s["id"] in only)]
         den = 0.0
         for p in parks:
-            sh = self.shares(p["xy"], self.stores)
+            sh = self.shares(p["xy"], stores)
             den += p["n"] * sum(sh[k] for k in own)
         num = sum(v for s, v in guests.items() if only is None or s in only)
         return num / den

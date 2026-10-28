@@ -47,7 +47,7 @@ COMP = [  # fascia, town, x, y, rating-list floor area m2
 SITES = [  # site, address, town, x, y, proposed floor area m2 (rating-list basis), (rent, rates, staffing, other)
     ("S1", "Fenton Road", "Bellingtoft", 50.2, 28.6, 1800, (334000, 158000, 552000, 133000)),
     ("S2", "Eastgate", "Darrowfield", 39.0, 22.5, 1800, (171000, 101000, 470000, 97000)),
-    ("S3", "Mill Lane", "Wrentoft", 66.0, 41.8, 1500, (144000, 92000, 571000, 117000)),
+    ("S3", "Mill Lane", "Wrentoft", 66.0, 41.8, 1500, (144000, 92000, 571000, 134000)),
     ("S4", "Northfield", "Brackenmere", 22.0, 33.0, 1500, (142000, 84000, 380000, 85000)),
     ("S5", "Sutton Road", "Quellby", 16.0, 17.0, 1600, (128000, 77000, 380000, 74000)),
     ("S6", "Westway", "Sallowmere", 57.0, 13.0, 1500, (116000, 72000, 410000, 64000))]
@@ -56,6 +56,20 @@ PARKS = [  # name, x, y, pitches, rating-list description
     ("Wrentoft Lakes Holiday Park", 68.5, 44.0, 1750, "CARAVAN PARK AND PREMISES"),
     ("Withybeck Lakes Caravan Park", 47.5, 41.5, 520, "CARAVAN PARK AND PREMISES"),
     ("Sallowmere Mill Caravan Park", 58.0, 14.6, 160, "CARAVAN PARK AND PREMISES")]
+# what changed after the card feed's year (2026, on the 2026 list): our two park-side stores were extended twice and
+# three parks added pitches; the 2025 state stands on the 2023 list to its close on 31 March 2026
+OWN_2025 = {"105": 950, "107": 1000}
+OWN_STEPS = {"105": [(dt.date(2026, 4, 27), 1250), (dt.date(2026, 9, 7), 1400)],
+             "107": [(dt.date(2026, 5, 11), 1350), (dt.date(2026, 8, 17), 1500)]}
+OWN_EARLIER = {"101": (dt.date(2019, 3, 4), 2050), "103": (dt.date(2022, 6, 13), 1550),
+               "108": (dt.date(2021, 9, 27), 1150)}       # earlier extensions the estate register still shows
+PARKS_2025 = {"Raddleford Water Holiday Park": 480, "Withybeck Lakes Caravan Park": 400,
+              "Wrentoft Lakes Holiday Park": 1450}
+PARK_STEPS = {"Raddleford Water Holiday Park": dt.date(2026, 5, 18), "Withybeck Lakes Caravan Park": dt.date(2026, 6, 8),
+              "Wrentoft Lakes Holiday Park": dt.date(2026, 6, 22)}
+LIST_2023 = (dt.date(2023, 4, 1), dt.date(2026, 3, 31))
+LIST_2026 = dt.date(2026, 4, 1)
+
 DC = ("Loderwell Gate distribution centre", 40.5, 11.0)
 PARK_ROAD = {"Raddleford Water Holiday Park": "Water Lane", "Wrentoft Lakes Holiday Park": "Marsh Road",
              "Withybeck Lakes Caravan Park": "Lakes Road", "Sallowmere Mill Caravan Park": "Mill Road",
@@ -84,6 +98,8 @@ FILES = {
     "onspd": "onspd_may2026_lq.csv",
     "voa_list": "voa_list_entries_2026_lq.txt",
     "voa_smv": "voa_summary_valuations_2026_lq.csv",
+    "voa_hist": "archive/voa_historic_list_entries_lq_20261002.txt",
+    "voa_hist_smv": "archive/voa_historic_summary_valuations_lq_20261002.csv",
     "estate": "store_estate_2026.xlsx",
     "cards": "card_spend_by_home_sector_fy2025_26.csv",
     "shortlist": "site_shortlist_2027.xlsx",

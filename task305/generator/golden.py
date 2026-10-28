@@ -192,13 +192,22 @@ def paper(path, fig):
         "this site than any other on the shortlist. What its guests spend we see only through our own stores: at "
         "Raddleford, Withybeck and Sallowmere, beside the region's other parks, cardholders from outside the LQ postcode "
         "area spend far more from March to October than in the winter. Those stores take only part of their parks' "
-        "spend, though: a larger competitor stands at each park's gate, and the model gives our stores %d, %d and %d per "
-        "cent of what starts at Raddleford Water, Withybeck Lakes and Sallowmere Mill. Our stores' season excess, grossed "
-        "up for cash, over the pitches weighted by that share is GBP %s of in-store grocery spend a pitch for a season. "
-        "Over the pitches alone it would be about GBP %s a pitch, and Wrentoft would stay behind Bellingtoft." % (
+        "spend: a larger competitor stands at each park's gate. The share that turns our take back into the parks' "
+        "spend is the one we had when the cards were used, in FY2025/26, before this year's extensions at Withybeck "
+        "and Raddleford and the new pitches at Raddleford Water and Withybeck Lakes: the stores then traded on %s and "
+        "%s m2 and the parks had %s and %s pitches, and on those the model gives our ten stores together %d, %d and %d "
+        "per cent of "
+        "what starts at Raddleford Water, Withybeck Lakes and Sallowmere Mill. Our stores' season excess, grossed up "
+        "for cash, over the pitches weighted by that share is GBP %s of in-store grocery spend a pitch for a season. "
+        "Worked on today's floor areas and pitches instead it would be about GBP %s a pitch, and the site would add "
+        "only GBP %.1f million." % (
             fig["s3_resident_rank"], fig["s3_resident"], "{:,}".format(fig["wrentoft_lakes_pitches"]),
+            "{:,}".format(fig["area_2025"]["105"]), "{:,}".format(fig["area_2025"]["107"]),
+            "{:,}".format(fig["pitches_2025"]["Raddleford Water Holiday Park"]),
+            "{:,}".format(fig["pitches_2025"]["Withybeck Lakes Caravan Park"]),
             fig["park_shares_pct"]["Raddleford Water Holiday Park"], fig["park_shares_pct"]["Withybeck Lakes Caravan Park"],
-            fig["park_shares_pct"]["Sallowmere Mill Caravan Park"], "{:,}".format(fig["V"]), "{:,}".format(fig["v_direct"])))
+            fig["park_shares_pct"]["Sallowmere Mill Caravan Park"], "{:,}".format(fig["V"]), "{:,}".format(fig["v_now"]),
+            fig["now_add"]))
     d.add_paragraph(
         "With every park carried as a place where spend starts, a store at Mill Lane sells GBP %.1f million a year and "
         "takes little from our own stores, because none of them is near. That is the whole difference between the "

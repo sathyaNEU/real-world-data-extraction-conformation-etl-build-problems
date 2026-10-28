@@ -55,10 +55,11 @@ def model_sheet(path):
                        "place, divided by the sum of pull times deterrence over every store in the share. A store's sales "
                        "are the sum of its shares of the spend.", body))
     s.append(Paragraph("2. The stores in the share", h2))
-    s.append(Paragraph("Every grocery store on the VOA rating list for the planning region whose primary description is "
-                       "SUPERMARKET AND PREMISES, SUPERSTORE AND PREMISES or FOOD STORE AND PREMISES and whose summary "
-                       "valuation measures 280 m2 or more, our own stores included. A proposed store enters the share at "
-                       "its proposed floor area from the site schedule.", body))
+    s.append(Paragraph("The grocery stores trading when the spend is made, each at its floor area then: every entry on "
+                       "the VOA rating list for the planning region whose primary description is SUPERMARKET AND "
+                       "PREMISES, SUPERSTORE AND PREMISES or FOOD STORE AND PREMISES and whose summary valuation measures "
+                       "280 m2 or more, our own stores included. A proposed store enters the share at its proposed floor "
+                       "area from the site schedule.", body))
     s.append(Paragraph("3. Parameters", h2))
     s.append(_table([["Term", "Value", "Source"],
                      ["Pull", "floor area in m2, to the power 1.0", "summary valuation, main measure"],

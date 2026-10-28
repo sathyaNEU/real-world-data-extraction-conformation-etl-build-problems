@@ -259,23 +259,44 @@ def build(target):
          [[o["oa"], "%.2f" % o["spend"]] for o in sorted(oas, key=lambda o: o["oa"])])
     _csv(F["onspd"], ["pcd", "pcd2", "pcds", "dointr", "doterm", "usertype", "oseast1m", "osnrth1m", "osgrdind", "oa21",
                       "lsoa21", "oslaua"], R.onspd_rows(G))
-    rl, smv = R.rating_list(G)
+    rl, smv, hist, hist_smv = R.rating_list(G)
     with open(F["voa_list"], "w", encoding="utf-8", newline="") as fh:
         for r in rl:
             fh.write("*".join("" if v is None else str(v) for v in r) + "\r\n")
     _csv(F["voa_smv"], ["uarn", "assessment_reference", "scat_code", "main_measure", "unit_of_measurement"], smv)
+    os.makedirs(os.path.dirname(F["voa_hist"]), exist_ok=True)
+    with open(F["voa_hist"], "w", encoding="utf-8", newline="") as fh:
+        for r in hist:
+            fh.write("*".join("" if v is None else str(v) for v in r) + "\r\n")
+    _csv(F["voa_hist_smv"], ["uarn", "assessment_reference", "scat_code", "main_measure", "unit_of_measurement"],
+         hist_smv)
     # the card feed; the estate's sales are what the feed's card spend implies at each store's card share
     cf, card_tot = R.card_feed(G, T)
     sales = {sid: card_tot[sid] / T["card"][sid] for sid in card_tot}
     # the estate
     own = [s for s in G["stores"] if s["kind"] == "own"]
     opened = {o[0]: o[5] for o in P.OWN}
+    steps_of = {s["id"]: s.get("area_steps") for s in own}
+
+    def previous(sid):
+        """the register keeps a store's floor area and the one before it, with the day it changed"""
+        if steps_of.get(sid):
+            (d0, a0), (d1, a1) = steps_of[sid][-2:]
+            return a0, d1
+        if sid in P.OWN_EARLIER:
+            d, a = P.OWN_EARLIER[sid]
+            u = np.random.default_rng(P.SEED + 900 + int(sid)).uniform(-0.012, 0.012)
+            return round(a * (1 + u), 2), d
+        return None, None
     _xlsx(F["estate"], [("Stores", ["store_no", "store", "address", "postcode", "opened", "floor_area_m2",
-                                    "sales_fy2025_26_gbp", "card_share_of_sales"],
+                                    "previous_floor_area_m2", "floor_area_changed", "sales_fy2025_26_gbp",
+                                    "card_share_of_sales"],
                          [[s["id"], "Marrable %s" % s["town"], "%s, %s" % (R.STREETS[int(s["id"]) % len(R.STREETS)], s["town"]),
-                           s["pc"], opened[s["id"]], s["area"], int(round(sales[s["id"]])), T["card"][s["id"]]]
-                          for s in own], [10, 22, 34, 12, 9, 15, 19, 18],
-                         {"sales_fy2025_26_gbp": "#,##0", "card_share_of_sales": "0.000"})],
+                           s["pc"], opened[s["id"]], s["area"], previous(s["id"])[0], previous(s["id"])[1],
+                           int(round(sales[s["id"]])), T["card"][s["id"]]]
+                          for s in own], [10, 22, 34, 12, 9, 15, 15, 15, 19, 18],
+                         {"sales_fy2025_26_gbp": "#,##0", "card_share_of_sales": "0.000",
+                          "floor_area_changed": "dd/mm/yyyy"})],
           "2021-05-04T09:12:00Z", "2026-10-07T16:44:00Z", P.PEOPLE["property"])
     _csv(F["cards"], ["store_no", "month", "cardholder_home_sector", "cards", "transactions", "spend_gbp"],
          [[r[0], r[1], r[2], r[3], r[4], "%.2f" % r[5]] for r in cf])
@@ -343,7 +364,7 @@ def build(target):
     _csv(F["survey"], ["store_no", "wave", "responses", "overall_satisfaction_0_10", "net_promoter_score", "availability_pct",
                        "queue_time_pct", "staff_helpfulness_pct", "value_for_money_pct"],
          survey_rows(own, ds))
-    return dict(T=T, G=G, rl=rl, smv=smv, cf=cf, shifts=shifts, punches=punches, register=register, st=st, tms=rows,
+    return dict(T=T, G=G, rl=rl, smv=smv, hist=hist, hist_smv=hist_smv, cf=cf, shifts=shifts, punches=punches, register=register, st=st, tms=rows,
                 recs=recs, at=at, feeds=feeds, stops=stops, bt=bt, near=near, dups=dups, seam=seam)
 
 

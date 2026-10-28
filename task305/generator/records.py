@@ -95,6 +95,13 @@ def geography():
         s["pc"] = place(s["x"], s["y"], 1 if s["kind"] == "own" else int(gs.uniform() < .5), town=s["town"])
         # the valuation officer's measured area, to the hundredth of a square metre
         s["area"] = round(s["area"] * (1 + float(ar.uniform(-0.012, 0.012))), 2)
+    hr = np.random.default_rng(P.SEED + 84)
+    for s in st:
+        if s["kind"] == "own" and s["id"] in P.OWN_STEPS:
+            # each version of the entry measured when it was valued: the 2025 store and each 2026 extension
+            s["area_2025"] = round(P.OWN_2025[s["id"]] * (1 + float(hr.uniform(-0.012, 0.012))), 2)
+            s["area_steps"] = [(d, round(a * (1 + float(hr.uniform(-0.012, 0.012))), 2)) for d, a in
+                               P.OWN_STEPS[s["id"]][:-1]] + [(P.OWN_STEPS[s["id"]][-1][0], s["area"])]
     sites = {}
     for site in P.SITES:
         sites[site[0]] = place(site[3], site[4], 0, "202%d%02d" % (int(gs.integers(3, 6)), int(gs.integers(1, 13))),
@@ -174,7 +181,10 @@ def rating_list(G):
     ref = 1000
     ent = 0
 
-    def add(desc, code, scat, pc, firm, measure, unit, rv, town=None, name=None, road=None, stable=False):
+    meta = []
+
+    def add(desc, code, scat, pc, firm, measure, unit, rv, town=None, name=None, road=None, stable=False,
+            eff_on=None, hist=None):
         nonlocal uarn, ref, ent
         uarn += int(gs.integers(1, 40))
         ref += int(gs.integers(1, 9))
@@ -187,6 +197,9 @@ def rating_list(G):
         if stable:
             alt = ""                                  # the grocery stores and the parks stand as compiled
         eff = "01-APR-2026"
+        if eff_on is not None:                        # altered in 2026: effective that day, the list altered days later
+            eff = eff_on.strftime("%d-%b-%Y").upper()
+            alt = (eff_on + dt.timedelta(days=int(gs.integers(9, 30)))).strftime("%d-%b-%Y").upper()
         if alt and ed.uniform() < .55:
             # an alteration takes effect on or before the day the list is altered
             mon = ["APR", "MAY", "JUN", "JUL", "AUG", "SEP"]
@@ -201,6 +214,8 @@ def rating_list(G):
                      eff, ""])
         if unit:
             smv.append([uarn, "%d" % (16200000 + ent * 7), scat + "G", "%.2f" % measure if unit == "m2" else measure, unit])
+        meta.append(dict(row=rows[-1], measure=measure, unit=unit, rv=rv, scat=scat + "G", hist=hist,
+                         altered=bool(alt) or eff != "01-APR-2026"))
         return uarn
     for j in range(N_HEREDITAMENTS):
         d = DESCS[int(gs.choice(len(DESCS), p=ps))]
@@ -228,12 +243,25 @@ def rating_list(G):
         rv = int(round(s["area"] * gs.uniform(105, 132) / 250.0)) * 250
         road = STREETS[int(s["id"]) % len(STREETS)] if s["kind"] == "own" else None
         number = str(3 + (sum(map(ord, s["id"])) * 37) % 140)
+        steps = s.get("area_steps") if s["kind"] == "own" else None
+        hist = None
+        if steps:
+            # the 2023 list's state to its close, then each 2026 version before the one now current
+            first = s["area_2025"]
+            hist = [(P.LIST_2023[0], P.LIST_2023[1], first), (P.LIST_2026, steps[0][0] - dt.timedelta(days=1), first)]
+            for (d0, a0), (d1, _) in zip(steps, steps[1:]):
+                hist.append((d0, d1 - dt.timedelta(days=1), a0))
         s["uarn"] = add(kind, "CS", "217" if s["area"] < 2000 else "218", s["pc"], firm, s["area"], "m2", rv, s["town"],
-                        name=number, road=road, stable=True)
+                        name=number, road=road, stable=True, eff_on=steps[-1][0] if steps else None, hist=hist)
     for name, x, y, n, desc in P.PARKS:
         rv = int(round(n * (330 if "CARAVAN PARK" in desc else 150) / 250.0)) * 250
+        step = P.PARK_STEPS.get(name)
+        hist = None
+        if step:
+            was = P.PARKS_2025[name]
+            hist = [(P.LIST_2023[0], P.LIST_2023[1], was), (P.LIST_2026, step - dt.timedelta(days=1), was)]
         add(desc, "LC", "045" if "CARAVAN PARK" in desc else "049", G["parks"][name], "", n, "pitches", rv,
-            name=name, road=P.PARK_ROAD[name], stable=True)
+            name=name, road=P.PARK_ROAD[name], stable=True, eff_on=step, hist=hist)
     for s in G["stores"]:
         if s["kind"] == "own" and s["id"] in ("101", "102", "104"):
             add("PETROL FILLING STATION AND PREMISES", "CG", "211", s["pc"], "Marrable Foodstores Ltd", "", "",
@@ -269,7 +297,49 @@ def rating_list(G):
     for m in smv:
         m[0], m[1] = uarns[m[0]], ass_map[m[1]]
     smv.sort(key=lambda r: r[0])
-    return rows, smv
+    hist_rows, hist_smv = [], []
+    hs = np.random.default_rng(P.SEED + 83)
+
+    def fmt(d):
+        return d.strftime("%d-%b-%Y").upper()
+
+    def version(m, frm, to, measure, rv):
+        a = "%d" % int(ns.integers(10000000, 29999999))
+        while a in used_ass:
+            a = "%d" % int(ns.integers(10000000, 29999999))
+        used_ass.add(a)
+        r = list(m["row"])
+        r[15], r[17], r[19], r[20] = fmt(frm), rv, a, ""
+        r[26], r[27] = fmt(frm), fmt(to)
+        hist_rows.append(r)
+        if m["unit"]:
+            hist_smv.append([r[6], a, m["scat"], "%.2f" % measure if m["unit"] == "m2" else measure, m["unit"]])
+
+    for m in meta:
+        rv23 = int(round(m["rv"] * hs.uniform(0.80, 0.92) / 50.0)) * 50
+        if m["hist"]:
+            for frm, to, meas in m["hist"]:
+                rv = rv23 if to <= P.LIST_2023[1] else m["rv"]
+                version(m, frm, to, meas, int(round(rv * (meas / m["measure"]) / 50.0)) * 50 if m["unit"] else rv)
+            continue
+        if hs.uniform() < 0.04:                       # altered once during the 2023 list
+            mid = P.LIST_2023[0] + dt.timedelta(days=int(hs.integers(120, 1000)))
+            version(m, P.LIST_2023[0], mid - dt.timedelta(days=1), m["measure"],
+                    int(round(rv23 * hs.uniform(0.9, 1.1) / 50.0)) * 50)
+            version(m, mid, P.LIST_2023[1], m["measure"], rv23)
+        else:
+            version(m, P.LIST_2023[0], P.LIST_2023[1], m["measure"], rv23)
+        if m["altered"]:
+            eff = dt.datetime.strptime(m["row"][15], "%d-%b-%Y").date()
+            if eff > P.LIST_2026:
+                version(m, P.LIST_2026, eff - dt.timedelta(days=1), m["measure"],
+                        int(round(m["rv"] * hs.uniform(0.9, 1.1) / 50.0)) * 50)
+    order = hs.permutation(len(hist_rows))
+    hist_rows = [hist_rows[i] for i in order]
+    for i, r in enumerate(hist_rows):
+        r[0] = i + 1
+    hist_smv.sort(key=lambda r: (r[0], r[1]))
+    return rows, smv, hist_rows, hist_smv
 
 
 # ----------------------------------------------------------------- the card feed
@@ -292,7 +362,8 @@ def card_feed(G, T):
     """card spend at our stores by month and the home sector of the cardholder; residents' spend shared by the model
     from every output area, visitors of residents all year, and the guests of the holiday parks in the season"""
     gs = np.random.default_rng(P.SEED + 31)
-    st, oas = G["stores"], G["oas"]
+    oas = G["oas"]
+    st = [dict(s, area=s.get("area_2025", s["area"])) for s in G["stores"]]
     own = [k for k, s in enumerate(st) if s["kind"] == "own"]
     res_w = np.array([.083, .083, .081, .083, .084, .080, .082, .081, .094, .077, .074, .083]); res_w /= res_w.sum()
     flow = {st[k]["id"]: {} for k in own}
