@@ -10,6 +10,14 @@ The mirror stops at the most attractive wrong rung: the move's own date as the d
 payroll's playing-time lines at face value as the plate-appearance bonuses. Neither reads generator code or the world;
 both read only the pack.
 
+Two pinning measurements follow the pair, both on the pack alone. Ask A without the weekly report: each stint's
+effective date read as the day after the player's last batting line before the transaction, but never more than three
+days before it (22.1's limit), days by 22.7 and the calendar; this is the reading a solver brings from the field when no
+report pins the date, and it shows whether any ask-only source can move the dates. Ask B against the contracts: every
+playing-time payroll line set beside half the plate-appearance and games-started lines the player reached for the Club
+(the register's terms, the batting lines), which shows whether the club ever paid anything the contract formula does
+not produce.
+
     python3 task151/generator/ceiling.py                 the pack at <task>/target, or target.zip when absent
     python3 task151/generator/ceiling.py PATH            a pack folder or a zip"""
 from __future__ import annotations
@@ -87,15 +95,19 @@ class Pack:
         lc = {r["legacy_code"]: r["abbrev"] for r in clubs}
         tm = {int(r["team_id"]): r["abbrev"] for r in clubs}
         self.games = defaultdict(list)
+        self.apps = defaultdict(set)            # every date a player has a batting line (started or entered), any club
         for r in rows(f("lsf_batting_2021_2024.txt"), "|"):
             d = mdy(r["GAME_DT"])
+            self.apps[xw[r["PLAYER_CD"]]].add(d)
             if d.year >= 2024:
                 pa = sum(int(r[c]) for c in ("AB", "BB", "HBP", "SH", "SF", "CI"))
-                self.games[(d.year, xw[r["PLAYER_CD"]])].append((d, int(r["GAME_CT"]), lc[r["TEAM_CD"]], pa))
+                self.games[(d.year, xw[r["PLAYER_CD"]])].append((d, int(r["GAME_CT"]), lc[r["TEAM_CD"]], pa,
+                                                                r["SEQ"] == "1"))
         for r in rows(f("lsf_batting_2025_2026.csv")):
             d = ymd(r["official_date"])
+            self.apps[int(r["player_id"])].add(d)
             self.games[(d.year, int(r["player_id"]))].append((d, int(r["game_number"]), tm[int(r["team_id"])],
-                                                             int(r["pa"])))
+                                                             int(r["pa"]), int(r["batting_order"]) % 100 == 0))
 
 
 def five(P):
@@ -136,6 +148,9 @@ def ask_a(P, path):
                 rr = sorted((r for r in P.rep if r["player"] == "%s, %s" % (last, first) and
                              mdy(r["placed"]) == s["placed"]), key=lambda r: r["report_date"])
                 eff = mdy(rr[0]["eligible"]) - dt.timedelta(days=MIN_DAYS[rr[0]["injured_list"]])
+            elif path == "batting":            # no weekly report: the day after his last batting line before the
+                last_app = max(d for d in P.apps[P.lg[n]] if d < s["placed"])         # move, 22.1's three days at most
+                eff = max(last_app + dt.timedelta(days=1), s["placed"] - dt.timedelta(days=3))
             else:                              # the mirror: the move's own date
                 eff = s["placed"]
             od, last_day = P.cal[s["placed"].year]
@@ -171,11 +186,53 @@ def ask_b(P, path):
         if r["status"] in ("VOIDED", "VOID REVERSAL") or y not in terms[e]["seasons"]:
             continue
         t, n, c = terms[e], 0, 0
-        for d2, g, club, pa in sorted(P.games[(y, P.name_lg[t["name"]])]):
+        for d2, g, club, pa, st in sorted(P.games[(y, P.name_lg[t["name"]])]):
             before, c = c, c + pa
             n += sum(1 for T in t["lines"] if before < T <= c and club == "RAL")   # lines reached for the Club
         out[(y, t["name"])] += t["amt"] * n / 2                         # the plate-appearance half of the season
     return {k: v for k, v in out.items() if abs(v) > 0.5}
+
+
+def formula_tie(P):
+    """Every 2024-2026 playing-time payroll line to a player whose register row carries plate-appearance terms, set
+    beside half the plate-appearance and games-started lines he reached for the Club that season (the register's terms,
+    the batting lines). Returns the lines tied to the dollar and the residuals of the rest."""
+    terms = {}
+    for r in P.reg:
+        t = r["Plate-appearance bonuses (each season)"]
+        if not t:
+            continue
+        m = re.match(r"\$([\d,]+) each for ([\d, and]+) plate appearances", t)
+        g = re.search(r"\$([\d,]+) for (\d+) games started", r["Other bonuses"] or "")
+        a, b = (str(r["Seasons"]).split("-") + [str(r["Seasons"])])[:2]
+        terms[r["Employee ID"]] = dict(name=r["Player"], amt=int(m.group(1).replace(",", "")),
+                                       lines=[int(x) for x in re.findall(r"\d+", m.group(2))],
+                                       gamt=int(g.group(1).replace(",", "")) if g else 0, gT=int(g.group(2)) if g else 0,
+                                       seasons=range(int(a), int(b) + 1), other=r["Other bonuses"] or "")
+    tied, off = 0, []
+    for r in P.pay:
+        e = P.hmap.get(r["employee_id"], r["employee_id"])
+        d = ymd(r["pay_date"])
+        if e not in terms or r["status"] != "PAID" or float(r["amount"]) <= 0:
+            continue
+        if not (r["earning_code"] == "BPA" or (r["earning_code"] == "E40" and d.month in (10, 1))):
+            continue
+        y = d.year if d.month >= 7 else d.year - 1
+        if y not in (2024, 2025, 2026) or y not in terms[e]["seasons"]:
+            continue
+        t, n, c, s, gs = terms[e], 0, 0, 0, 0
+        for d2, g, club, pa, st in sorted(P.games[(y, P.name_lg[t["name"]])]):
+            before, c = c, c + pa
+            n += sum(1 for T in t["lines"] if before < T <= c and club == "RAL")
+            if st:
+                s += 1
+                gs += int(s == t["gT"] and club == "RAL")
+        want = (t["amt"] * n + t["gamt"] * gs) / 2
+        if abs(float(r["amount"]) - want) < 0.5:
+            tied += 1
+        else:
+            off.append((r["pay_date"], t["name"], float(r["amount"]) - want, t["other"]))
+    return tied, off
 
 
 # ------------------------------------------------------------------------------------------------------- scoring
@@ -234,6 +291,8 @@ def main(src=None):
         ga, gb = golden()
         cr = score(P, "cracker", ga, gb)
         mi = score(P, "mirror", ga, gb)
+        ba = [h for lab, h in score(P, "batting", ga, gb) if lab.startswith("A ")]
+        tied, off = formula_tie(P)
     finally:
         if tmp:
             shutil.rmtree(tmp)
@@ -249,7 +308,13 @@ def main(src=None):
     print("pair, one response on the call (the cracker) and one off it (the mirror): %.1f" % one)
     print("pair, neither on the call, both on the cracker's ask path (the portal's case): %.1f" % none_)
     print("pair, neither on the call, one cracker and one mirror: %.1f" % mixed)
-    return dict(cracker=c, mirror=m, n=n, pair_one=one, pair_none=none_, pair_mixed=mixed)
+    print("Ask A with no weekly report, each date read from the batting lines (the day after the last line before the "
+          "move, at most three days back): %d of %d figures" % (sum(ba), len(ba)))
+    print("Ask B against the contracts: %d of %d playing-time lines equal half the plate-appearance and games-started "
+          "lines reached for the Club%s" % (tied, tied + len(off), "".join(
+              "; %s %s off by %+.0f (register: %s)" % (d, nm, x, o) for d, nm, x, o in off)))
+    return dict(cracker=c, mirror=m, n=n, pair_one=one, pair_none=none_, pair_mixed=mixed, batting=sum(ba),
+                tied=tied, off=len(off))
 
 
 if __name__ == "__main__":

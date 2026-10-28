@@ -443,6 +443,19 @@ the 10-27 lines): Ask A's date is forced through 22.2 and 22.9, Ask B's split th
 every other quantity the ask-only files yield is either filed or a fork. The prompt, the pack and every figure are
 unchanged; the main side is untouched (`freeze.py check --mode rubric`).
 
+**Revision, 2026-10-28, the author's new ask-only source.** The author authorised one or more new data files used only
+by the asks. Measured first, on the shipped pack with `generator/ceiling.py`: no new source can move a figure, because
+both asks' figures are pinned by the frozen main-call files. Ask A with no weekly report at all, each date read as the
+day after the player's last batting line before the move but never more than three days back (22.1's limit), lands 18
+of 18 figures, and Medina's first 2024 stint is forced outright (last line May 18, activated May 29, a 10-day list: May
+19 is the only date 22.2 allows), so no League-side file can hold a row. Ask B: 11 of the 12 playing-time payroll lines
+for 2024 to 2026 equal half the plate-appearance and games-started lines the player reached for the Club to the dollar,
+and the twelfth differs by Cedeno's filed All-Star term; the cracker's route (the register's terms against the batting
+lines, per half paid) reads no payment amount, so only off-contract payments on every player-season would move every
+row, which is a plant, not mess. No file was added and no pack cut; the prompt, the pack and every figure are unchanged
+(`freeze.py check --mode rubric` PASS). Holding the asks needs a re-site onto quantities the frozen main files do not
+pin, which changes the asks' figure shapes and is the author's decision (`## Tried and rejected`, the 10-28 lines).
+
 **Main call's declared row population:** the two box-score files (every row and column the golden reads: player, game,
 date, club, lineup slot, starter, plate appearances or their components), the crosswalk, the club directory, the
 vendor's winter depth charts, the five term sheets, the 2027 depth chart, FIN-14 and the feed notes (the look-back also
@@ -546,12 +559,17 @@ control: no file ties only under the golden.
 | B 2025 player rows and total (4) | the same path | 4 of 4 | hit |
 | B 2026 player rows and total (3) | the same path | 3 of 3 | hit |
 
+Pinned without the weekly report: Ask A from the batting lines alone (the day after the last batting line before the
+move, at most three days back), 18 of 18 figures. Pinned against the contracts: Ask B, 11 of 12 playing-time lines
+equal to the dollar half the plate-appearance and games-started lines reached for the Club, the twelfth (October 15,
+2024, Cedeno) by his filed All-Star term, +50,000.
 Mirror leakage: 0.0 per cent of the ask weight (the mirror stops at the move's own date and at the payroll's
 playing-time lines at face value, 0 of 28; the shipped sheet called these the cracker's path).
 Pair ceiling: 67.0 (Part 0's weights, neither top response on the call and both on the cracker's ask path, the
 portal's case; one cracker on the call with the mirror off it, 56.0; the portal measured 84 and 79 because its main
 side left a response off the call about 20 points rather than 5).
-Measured by: `generator/ceiling.py`, on the shipped target.zip (sha256 83bf068f).
+Measured by: `generator/ceiling.py`, on the shipped target.zip (sha256 83bf068f), the pair and both pinning
+measurements (10-28).
 
 ## Residual
 
@@ -690,6 +708,26 @@ What the shipped build still carries, each item measured and none moving a commi
   (a reader matches its days and recovers the date); an official plate-appearance certification departing from the
   feed (a reconciliation break whose discovery is its remedy). None holds every row, so no pack was cut and the ask
   side waits on the author: a new ask-only source the author approves, or a re-root.
+- Ask A held as worded with a new League source (rubric repair, 10-28, the author's new ask-only source): the weekly
+  report's first date of reinstatement withdrawn and a League service-time ledger by player, club and month (days on
+  the active list, on an injured list, on other lists) added, so each date had to be rebuilt from a month's days. The
+  frozen batting lines pin every date with no report at all: the day after the player's last batting line before the
+  move, never more than three days back, lands 18 of 18 figures (`ceiling.py`), and Medina's first 2024 stint is
+  forced outright (last line May 18, activated May 29, 10-day list: May 19 only, by 22.2). No League-side source can
+  hold a row; designations moved off the day after the last game would also leave Medina's row where it is.
+- Ask B held as worded with a new club source (10-28): an off-cycle bonus register outside the player earnings export,
+  a treasury or accounts-payable channel to a departed player, a contract-amendment log behind the register's terms,
+  and the register's terms withdrawn with each installment row carrying the season's award. The cracker's route reads
+  no payment amount and the club paid to the contracts (11 of 12 lines to the dollar, the twelfth by Cedeno's filed
+  All-Star term, `ceiling.py`, as B3c asserts), so a primary moving every row needs off-contract payments on every
+  player-season, a plant; a channel moves only its own player, and withdrawing the terms leaves two readings of an
+  installment row that only a control settles, which the cracker matches.
+- Re-wording either ask with every figure kept (10-28): every date-and-days quantity about a batter (the date a stint
+  took effect, its transaction, its reinstatement, the days it covered, its days on the 60-day list) is fixed by the
+  batting lines and Article 22 or read off the wire, and every plate-appearance payment by the register and the
+  batting lines, so a wording that keeps the figures keeps the pin. Holding the asks needs a re-site that changes
+  their figure shapes onto quantities the main files do not pin (the club's own cash where no box-score formula
+  reaches it), the author's decision; nothing was cut.
 
 ## Build record
 

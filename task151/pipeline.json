@@ -5,7 +5,7 @@
  "objective": "forecasting",
  "stage": 5,
  "stage_name": "ship",
- "updated": "2026-10-27",
+ "updated": "2026-10-28",
  "stump": "Running FIN-14 4.4's look-back on the bases at hand (the vendor's projection with a band from its past misses, the players' own seasons, the depth charts' starting nines' seasons taken whole) keeps the starting nines' seasons and accrues $4,500,000; the step that lands it there is reading each signing off seasons that keep the catchers in and ignore where each hitter bats, when his 2027 total is his new lineup slot's plate appearances per start times the starts a winter-planned non-catcher regular makes, the basis that scores lowest and accrues $4,250,000.",
  "architecture": 1,
  "loops": 2,
@@ -57,9 +57,17 @@
    "finding": "generator/ceiling.py on the shipped pack: the cracker (22.1 to 22.9 and the register's Notes executed) keeps 28 of 28 ask figures, the mirror 0 of 28; pair 67.0 on Part 0's weights with both off the call, 81.5 at the portal",
    "outcome": "blocked, handed back: no device holds either ask (design note, Tried and rejected, the 10-27 lines); prompt, pack and every figure unchanged; freeze.py check --mode rubric PASS",
    "commit": ""
+  },
+  {
+   "date": "2026-10-28",
+   "by": "/fix-rubric, the author's authorisation of a new ask-only source",
+   "repair": "rubric",
+   "finding": "generator/ceiling.py on the shipped pack: both asks are pinned by the frozen main-call files, so no new ask-only source can move a figure. Ask A with no weekly report, each date read from the batting lines (the day after the last batting line before the move, at most three days back under 22.1), lands 18 of 18, and Medina's first 2024 stint is forced by 22.2 (last line May 18, activated May 29, 10-day list); Ask B, 11 of 12 playing-time payroll lines equal half the plate-appearance and games-started lines reached for the Club to the dollar, the twelfth by Cedeno's filed All-Star term, and the cracker's route reads no payment amount",
+   "outcome": "blocked, handed back: holding the asks needs a re-site onto quantities the main files do not pin, which changes the asks' figure shapes (design note, Ask sheet revision of 10-28, Tried and rejected, the 10-28 lines); no file added, no pack cut; prompt, pack and every figure unchanged; freeze.py check --mode rubric PASS",
+   "commit": ""
   }
  ],
- "resume": "the author's decision on the ask side (design note, Ask sheet revision of 10-27): approve a new ask-only source or re-root; /fix-rubric task151 then starts from generator/ceiling.py's measured baseline (cracker 28 of 28)",
+ "resume": "the author's decision (design note, Ask sheet revision of 10-28): re-site the ask layer onto quantities the frozen main-call files do not pin, which changes the asks' figure shapes and waives 'every figure kept' (the five's injury record has no unpinned form; the club's own cash where no box-score formula reaches it does), or re-root; /fix-rubric task151 then starts from generator/ceiling.py's measured baseline (cracker 28 of 28; Ask A 18 of 18 from the batting lines with no report; Ask B 11 of 12 payroll lines on the contract formula, the twelfth by the filed All-Star term)",
  "approved": null,
  "delivered": "2026-10-17",
  "portal": "returned 10-27 on the rubric: both top responses missed the call (USD 4,000,000 at signing against USD 4,250,000) and landed every ask, 84 and 79 per cent against 70",
