@@ -619,6 +619,7 @@
   "decomposition_attribution": "an outcome split across causes, components or periods, where overlap or interaction decides the split",
   "causal_design": "confounding, spillover or interference, regression to the mean, control or comparison choice, pre-trends",
   "uncertainty_hold": "signal against noise, multiple comparisons, power or sample size; holding can be the answer",
+  "classification_error": "a category is only ever observed through a classification that is right at different rates for different categories, so the observed composition is a biased image of the true one and inverting the per-category hit rates recovers it",
   "other": "none of the above, named in the card's notes (never counts as a collision)",
   "informative_censoring": "each record observes its own position only within a window whose placement is set by an observer's routine rather than by the event, so the window carries information about the position inside it and a likelihood treating it as uninformative is misspecified; distinct from maturity_censoring, which is about an outcome not yet developed at the extract"
  },
