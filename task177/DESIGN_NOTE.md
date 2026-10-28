@@ -1,12 +1,121 @@
 # task177 design note
 
-**Status: PAUSED 2026-10-23, architecture 3 spent at stage 4 on Gate F (rebuild from scratch).** The number was RETIRED on 2026-10-22 and
-reopened the next day under the author's rule that no number stays retired. Two rebuild cells found nothing that
-holds (quantitative-finance volatility, biomedical survival; `## Tried and rejected`, `## Rebuild (2026-10-23)`);
-the third cell, banking-credit-financial-risk / credit-scoring-pd-modeling (Forecasting), carries architecture 3
-below. Architectures 1 and 2 are kept as records further down.
+**Status: DESIGN 2026-10-28, architecture 4 (re-root at stage 1, banking-credit-financial-risk / credit-scoring-pd-modeling).** Architecture 3 (the payroll-deduction PD read per exit from the employer's payroll) was spent at stage 4 on Gate F on 2026-10-23 and the slot paused after three more cells found nothing; it is kept below as `## Architecture 3 record`, with architectures 1 and 2 after it. Architecture 4 stays in banking at the author's request for a banking and credit risk task outside the portal list, and moves the world from payroll lending to joint-liability microloans, ground no card or slot note holds.
 
 ## Draw
+
+- **Card:** `.claude/skills/fingerprint/cards/task177.json`, architecture v4 (v1, v2 and v3 in its lineage with their
+  fates).
+- **Pairing:** client domain Banking, Credit & Financial Risk, task type credit-scoring-pd-modeling, which serves
+  Forecasting & Predictive Modeling. The committed figure is a forward count: how many of the member loans in the pool
+  an NBFC-MFI offers a bank under direct assignment, every loan current at the 31 December 2026 cut-off, will be 90 or
+  more days past due on 30 June 2027, a window not yet open.
+- **World (fictional organisations, real geography):** Prachi Valley Microfinance Pvt Ltd, an NBFC-MFI in Bhubaneswar,
+  lends to women in joint-liability groups of five; about four groups meet together as a centre every fortnight on the
+  centre's own weekday, and each member repays a 24-instalment fortnightly loan of INR 30,000 to 60,000 at the meeting.
+  When a member cannot pay, her co-members pay her instalment there and then, and the collection app records the
+  instalment as paid with the payer's member id and a group-support code. A severe cyclone crossed the coast on
+  16 October 2026 and hit fishing, paddy and housing across the MFI's coastal blocks in Kendrapara, Jagatsinghpur,
+  Bhadrak and Balasore; its inland branches in Jajpur and Cuttack were spared. Tamralipta Bank Ltd, a private-sector
+  bank, buys pools of microloans to meet its priority-sector targets; the MFI offers it every loan current at the
+  cut-off in its 14 branches (about 14,500 loans, about INR 50 crore outstanding), and the bank's direct-assignment
+  desk must book or decline the pool before its FY2026-27 priority-sector return closes on 31 March 2027. The desk
+  prices the pool from its forecast of the loans that will be 90 days past due on 30 June 2027.
+- **Shape:** `other` on the card: the total (1), the pool's loans by how many members their group carried at its last
+  meeting before the cut-off (4, records-fixed), the six-month 90-day rate the history gives each of those states (4),
+  the forecast by district (6), Ask A's twelve branch cells, Ask B's six district cells, the two files (2): 35.
+- **Decision:** `quantity_figure`, answer unit count, question form how-many. Forum `operations_desk` (the bank's
+  direct-assignment desk books pools within its delegated limit), forcing event `statutory_or_regulatory_filing` (a
+  pool counts toward the FY2026-27 priority-sector return only if booked by 31 March 2027), org family
+  `financial_institution`, role family `portfolio_manager` (the head of the bank's direct-assignment and
+  priority-sector lending portfolio).
+- **Strategy and family:** `binding_constraint`; Layer 2 family `estimand_identification` (spillover between
+  co-borrowers), pattern `own:jlg-default-read-on-concurrent-group-cover`. A group can carry one short member at a
+  meeting and not two: that per-meeting capacity is a limit its members share, and a member-level reading of risk
+  double-books it whenever two co-members are short together. `composition_mix` was weighed and set aside: it names the
+  estimator (a rate by state) and not the step (the shared per-meeting limit).
+- **Gap, pattern, generators:** gap population (the unit that fails is the group at a meeting, not the member), then
+  time (the pool's states were made by a cyclone, the history's by ordinary shortfalls); pattern C, the share of pool
+  loans whose group carried two or more at its last meeting, an absolute share built behind the join of the pool tape
+  to the meeting ledger, never a column; generators G8 (can the group carry this member: binary, one at a time), G2,
+  G14.
+- **Data-native sentence:** in a joint-liability group the co-members pay a short member's instalment at the meeting,
+  so her loan stays current and every loan-level and member-level record shows it performing, and a group can carry one
+  short member at a meeting but not two, so when two are short together it stops and every member's loan, the payers'
+  included, runs past 90 days; the meeting ledger, kept because each member's loan account must be credited with who
+  paid it, is the only file that shows how many members each group is carrying at once.
+- **Sources, one line each.** Client cards credit-scoring-underwriting 1 to 4 (through-the-door, prior correction,
+  out-of-time, fairness at the cutoff): textbook routes, none the stump; this build's rung 0 is the out-of-time roll
+  rate from the current bucket, the static-pool method a direct-assignment desk runs. Client card
+  expected-credit-loss-allowance 4 (open workouts) is not this ground. task446 prices a flag by the kind of member
+  that raised it, a member attribute; here no member attribute decides. task166 v2 set a junior loan's exit by its
+  whole stack's blended price and the portal's models took it, the stack's price being the obvious prepayment
+  variable; here the group's state is a per-meeting count of members carried at once, a binary capacity and not a
+  continuous group price, and the obvious group variable (members carried over the recent meetings) misses.
+  task128 reads a contact's effect where a dialler's queue outran its team; here no queue and no contact. task116
+  counts groups eligible through contracts a register keys to one member; here no eligibility and no mis-keyed
+  register. task106's held device (suppliers on one corridor share the same spare legs, so sizing each against every
+  leg double-books) is the device this build re-skins: one shared capacity, double-booked by sizing each member
+  against it; its driver (a transport corridor's return legs) is not repeated.
+- **Same-puzzle and same-driver tests:** gap population, pattern C, decision quantity_figure, Gate G
+  binding_constraint: no build in the last twelve, lineage included; the older task45 and task75 (same puzzle) and
+  task116 (same driver) carry differentiation lines on the card, as does this slot's own v3.
+- **Abstraction test:** stripped of nouns, the nearest drivers (`guard.py check`: task127 0.09, task128 0.08,
+  task308 0.07, task482 0.07, task139 0.07) are a fixed team's throughput in a period, a contact's effect where a
+  queue outran a team, an added unit valued on a shortfall its kin removed, a per-member rate carried by last period's
+  relation, and a pilot randomised among units already contacted; none carries a unit's failure as an event of its
+  team triggered by two coinciding shortfalls.
+- **Setting screen (`guard.py slots`):** joint liability, microfinance, group lending, self-help group, solidarity
+  group, peer cover, group support, group contribution, co-member, co-borrower, centre meeting, direct assignment,
+  NBFC, cyclone: no slot note holds the ground (the two hits, a named-storm exclusion and a child-care room rule, are
+  other ground).
+- **Guard:** `guard.py check` WARN, one line answered here: `repeat.deliverables` (docx and xlsx, as task304's
+  architecture 3 carries) is the desk's own idiom, a pricing workbook and a purchase note, and the format set carries
+  no driver. Registered on 2026-10-28.
+- **People:** Raagini Bose and Hardik Karnik, drawn with `guard.py names --geo India --seed 177`.
+
+## Screen
+
+The pricing sequence, run on the prototype before a word of design (scratchpad `t177/proto`, `jlg6c.py`, each output
+byte-identical over two runs).
+
+- **World of the prototype.** 3,000 groups of five, fortnightly meetings from January 2024, a member falling short at
+  0.3 per cent a meeting and recovering at 20 per cent a meeting (a shortfall lasts five meetings on average); a group
+  stops paying at 0.4 per cent a meeting while it carries one member, 20 per cent while it carries two and 50 per cent
+  with three or more; every member's loan in a stopped group runs past 90 days. The cyclone raises onsets in two
+  coastal districts for about three meetings, and by the cut-off they are back to the background rate.
+- **The ladder against the golden, six seeds.** The loan-level six-month roll rate from the current bucket files 0.39
+  to 0.43 of the golden; each member's own state at her last meeting (carried or paid herself) 0.48 to 0.52; the group
+  read on the distinct members it carried over its last six meetings 1.28 to 1.63; every carried member defaulting
+  about 3.0. The golden family (the state at the last meeting against the larger of the last two meetings) 1.00 to
+  1.11, to be tightened in the generator so it sits inside one printed bin.
+- **The record's own contrast.** Of the history's groups that carried two or more distinct members over six
+  meetings, 26.3 per cent of members reached 90 days within six months where two were carried at the same meeting and
+  1.6 per cent where only one was at a time: the data say loudly which state decides, so the golden is determinate,
+  and nothing in a loan-level or member-level pipeline looks there.
+- **WHAT screen.** The estimand files the population (the pool's loans, all current at the cut-off), the outcome (90
+  days past due on 30 June 2027 under the MFI's own days-past-due rule), the unit (loans), the window (the cut-off to
+  30 June 2027) and the comparison (none); the decisive step settles none of the five.
+- **Grouping dichotomy.** The step is not a choice of pooling level: no rival grouping estimates the same quantity at
+  another level; the member-level and window readings condition on the wrong state, and the data refute them by the
+  contrast above.
+- **Partial coverage and the attaining subset.** The correction leaves the groups carrying nobody alone, most of the
+  pool, and every route gives them the same rate; what moves is the loans of groups carrying someone. The history's
+  groups carrying two at once are the evidence the golden reads, not a shortcut around it: reaching them needs the
+  per-meeting count the step builds.
+- **One-group-by route.** Pool loans in groups carrying two or more at their last meeting, times the history's rate
+  for that state, is the golden itself, and it needs the per-meeting carried count built from the ledger, which no file
+  carries as a column.
+- **Proxy screen.** The MFI's monthly portfolio report publishes PAR and collection efficiency by branch; its
+  collection efficiency counts group support as collected, so it reads above 99 per cent in the cyclone branches and
+  summarises nothing the step needs.
+- **Multiplicative floor and dispersion.** Not a ranking: the call is a level, a count of loans, so the floor law and
+  the ceiling on bounded quantities do not apply; the lever is a count of groups over a capacity, moved by whole groups
+  of five.
+
+## Architecture 3 record (banking-credit-financial-risk / credit-scoring-pd-modeling, spent at Gate F on 2026-10-23)
+
+### Draw
 
 - **Card:** `.claude/skills/fingerprint/cards/task177.json`, architecture v3 (v1 and v2 in its lineage with their
   fates).
@@ -77,7 +186,7 @@ below. Architectures 1 and 2 are kept as records further down.
   natural records; the forcing event is then the 2027 budget's provision for the first private-employer loans, the
   role the finance manager who books it, and the forum the board that approves the budget. Third pass after registration (H31): task178 v3 was marked spent after this card filed, which pulled task175 into the live window and fired `ban.role` on `finance_controller`; the stakeholder is redrawn as the head of the payroll-deduction lending portfolio (`portfolio_manager`), who owns the book's forecast and brings it to the board, and the golden note is written from that unit.
 
-## Screen
+### Screen
 
 Measured on code before any card (scratchpad `b177c/proto/p2.py`, `p2sweep.py`, output `sweep_p2.out`; seeds 1 to
 20 fixed before outcomes). The world: 70,000 public loans over 96 months across 70 agencies (permanent staff
@@ -118,7 +227,7 @@ route of 0.2 per cent a month. Graded figure: the launch loans' share in default
   loans defaulting after their treasury deductions stop for good; it is the golden's own construction once the
   exposure is seen, and nothing in the pack names it.
 
-## Default path
+### Default path
 
 1. Read the prompt, the product sheet and the credit policy: 2,400 loans disbursed on 1 February 2027, default is 90
    days past due on the loan, the window ends on 31 January 2028.
@@ -134,14 +243,14 @@ Golden: about 250 (about 10 per cent), the launch loans' chance of their borrowe
 while the loan is open, from each employer's own payroll registers, times the share of public loans that defaulted
 after their deductions stopped for good, plus the on-payroll rate.
 
-## Stump sentence
+### Stump sentence
 
 A PD model fitted on the public book's borrower attributes and scored on the launch file files about 50 of the 2,400
 loans in default by 31 January 2028; the public book's defaults run almost wholly through borrowers leaving the
 payroll with the loan open, which the private employers' own payroll registers show five to six times as often, so the
 count is about 250.
 
-## Three rules
+### Three rules
 
 Task type: credit-scoring-pd-modeling (Banking, Credit & Financial Risk), which serves Forecasting & Predictive Modeling in the taxonomy; the call is a forward first-year default count for a new segment.
 Domain test: the deciding quantity is the launch loans' first-year probability of default, which payroll-deduction lending reads as the chance that the borrower leaves the paying employer's payroll while the loan is open times the share of such loans that then reach 90 days past due, the leaving rate taken from each employer's own payroll and the conversion from the public book.
@@ -157,7 +266,7 @@ No decoy: nothing in the pack is planted to be caught; no memo, draft, briefing 
 No certified replay: the method is not recovered by reproducing certified or published figures; no shipped figure is reproduced only by the decomposition, and the conversion and leaving rates exist only by construction from the records.
 Lesson: a rate learned on one population carries to another only per occurrence of the event that produces it, and when that event's frequency differs between the populations it has to be measured on the new one's own records; no build on file reads an outcome rate per exit from the body that collects the obligation (task169 closes a route, task446 prices a flag by its kind, task177 v2 times a test's effect within a billing cycle).
 
-## Layer 1 inventory
+### Layer 1 inventory
 
 | Item | System that writes it | File | Natural mishandling and what it moves |
 |---|---|---|---|
@@ -170,7 +279,7 @@ Lesson: a rate learned on one population carries to another only per occurrence 
 | Fortnightly and monthly payers side by side; June and December PRIMA registers; settlements in the last period | the employers' payroll systems | payroll registers | counting rows instead of months; the golden counts employee-months (R2) |
 | Cures and the default register's legacy numbers | credit risk | default register | none on the call (first default per loan) |
 
-## Readability screen
+### Readability screen
 
 | Rung | 1 filed sentence | 2 schema | 3 reflex | 4 control bench | 5 hygiene | 6 linear | Verdict |
 |---|---|---|---|---|---|---|---|
@@ -179,7 +288,7 @@ Lesson: a rate learned on one population carries to another only per occurrence 
 | 2 public rate scaled by private over public leaving | none | registers and returns both ship | partial (a scaling reflex once leaving is suspected) | none | no | one ratio | readable |
 | 3 (decisive) conversion per payroll exit times each employer's leaving hazard, by month left in the window | no sentence relates leaving to default; rules 4.1 names final-settlement payments only as what an upload contains | no column holds a leaving rate, a conversion or a PD; the SIN SALARIO code covers any month without pay | not the field's PD reflex: the scorecard route models the outcome on the borrower, not on the event that produces it | no control or published figure ties to it | the battery finds nothing about it | a construction over two files at two grains with a lag curve | silent |
 
-## Semantic fork table
+### Semantic fork table
 
 | Id | Term or convention | Golden reading | Alternative | Call under it | Ruled out by |
 |---|---|---|---|---|---|
@@ -194,7 +303,7 @@ Lesson: a rate learned on one population carries to another only per occurrence 
 | SF9 | which public loans count toward the conversion | every loan whose borrower stopped being paid (a SIN SALARIO run) with the loan open, January 2017 to December 2025 | permanent-contract loans only; runs since 2019 or since July 2021 | same call (asserted: 245 to 248) | the data (the conversion does not depend on contract type) |
 | SF10 | which staff carry the forward leaving rate | staff with twelve or more months' service (every launch borrower has saved twelve months) | all staff, six or 24 months | same call (asserted: 238 to 246) | product rules 2.1 and the registers' hire dates |
 
-## Ladder
+### Ladder
 
 | Rung | Construction | Figure (loans, unrounded) | Printed | Dies to |
 |---|---|---|---|---|
@@ -215,7 +324,7 @@ Lesson: a rate learned on one population carries to another only per occurrence 
   9.6, food 7.9 to 9.5 (each 10), clinics 5.4 to 6.7 (5).
 - Worth: the decisive rung moves the figure by about 200 loans, eight times the cell's half-width.
 
-## Closure table
+### Closure table
 
 | Axis | Reading | Closure |
 |---|---|---|
@@ -242,7 +351,7 @@ Lesson: a rate learned on one population carries to another only per occurrence 
 | 21 Clause scope | rules 5.1 default definition applies to every loan | rules 5.1 |
 | 22 Forward window contents | the launch file and each employer's own registers | shipped files; the market held at its 2025 to 2026 level |
 
-## Literal reader
+### Literal reader
 
 Executed literally, the prompt and the product rules file the estimand completely (the 2,400 launch loans, default at
 90 days past due at a month-end, entries up to 31 January 2028, counted, by the register's sector, rounded once) and
@@ -251,7 +360,7 @@ comes from an easy method on the same literal estimand, not from another reading
 structure: the record's defaults run through the borrower leaving the payroll with the loan open, so the forecast
 transports the conversion per exit and measures the exits on the launch employers' own registers.
 
-## Oracles
+### Oracles
 
 - `supervisor_annual_return_2025.pdf`: the public book's balance 90 or more days past due at each year end (2021 to
   2025); on the wrong path it confirms a public default rate near 2 per cent and ties to nothing in the golden.
@@ -259,7 +368,7 @@ transports the conversion per exit and measures the exits on the launch employer
   macro adjustment and ties to nothing.
 - No control, published figure or reconciliation column ties only under the golden.
 
-## Ask sheet
+### Ask sheet
 
 The asks sit on files the call never reads: the savings contribution schedules and the collection account statement
 (Ask A, the private employers' remittances), the receipts on defaulted public loans and the members' savings ledger
@@ -298,7 +407,7 @@ Pair ceiling: 28.5 (cracker 45.0, mirror 12.0, on 38, 7 and 55 with a wrong call
 Mirror leakage: 0.0 per cent of ask weight (the mirror takes the same ask routes)
 
 
-## Leak sweep
+### Leak sweep
 
 `leak.py --asof 2027-01-22` on the stage 3 pack: REVIEW, five lines, no LEAK.
 - Rules PDF carries the call's distinctive words: they are the product's name, the launch date and the default
@@ -1638,6 +1747,29 @@ its group's surviving records), the same family by its label.
   booking, an order, a building), and there the forward book's lever comes exactly from groups the record never
   watched, whose joint behaviour is then an assumption, while every mechanical group event is the actuarial
   textbook's joint-life or per-occurrence function.
+- **Architecture 4 draw (2026-10-28), banking-credit-financial-risk / credit-scoring-pd-modeling, directions dead on
+  paper before the world was chosen, one line each.** Deposit outflows in a run throttled by the old daily transfer
+  limit and re-timed under a raised one: task170 records payment limits as rule application or a reading. Reject
+  inference for a lowered cut-off from rejects' bureau performance elsewhere: task179's death. LGD on open workouts by
+  workout route: task181's driver (each route's own completion). A merchant acquirer's future-delivery exposure as a
+  stock of card sales not yet delivered: Little's law, a reflex, and the swap test reads it as any deferred revenue.
+  Fire-sale discounts rising with a district's repossession count: a fitted price-impact form, a fork. Right
+  truncation of a loss-timing curve read off defaulted loans: the hazard by months on book a solver fits is already
+  right. Gold-loan forfeiture after a price fall: the option-exercise reading is the textbook route. Every stress-test
+  and deposit channel task170 and task174 list (joint incomes, combined LTV, foreclosure timelines, seasoning, cure
+  under collector load, surge layers, betas, cohort decay, notice periods) left untouched.
+- **Architecture 4 prototypes (scratchpad `t177/proto`, `jlg1.py` to `jlg8.py`), the settings that died.** A stock of
+  every 90-day loan since 2022 as the outcome (`jlg1`): the forward count was the old failures, not the forecast.
+  New 90-day entries with failed groups' pipeline inside the pool (`jlg2`, `jlg3`): the pipeline carried 60 to 75 per
+  cent of the count and the loan-level roll rate sat within 10 to 20 per cent of the golden; moved to a pool of loans
+  current at the cut-off, which is also what a direct-assignment pool is. A past flood district as the analog
+  episode (`jlg4`, `jlg6`): the flood-only calibration of the golden ran 0.66 to 1.03 of the pooled one over four
+  seeds, a fork on the main call, so the history carries no single shock to borrow from. Monthly meetings (`jlg7`):
+  the golden family spread 8 to 14 per cent between the last meeting and the last two, and the member-level route
+  closed to 0.71 to 0.85. Local shocks scattered through the history (`jlg8`): their aftermaths inflated the pooled
+  rates by state (the golden 1.7 times the realised count) and closed the member-level route to 0.79 to 0.90. Long
+  shortfalls (recovery 6 per cent a meeting, `jlg4`): the group read over its recent meetings matched the per-meeting
+  state within 3 per cent, so any group-aware reading landed; shortened to five meetings on average (`jlg6c`).
 
 ## Retired
 
@@ -1719,6 +1851,6 @@ stage 1 for the coordinator to assign another cell.
 
 ## Resume
 
-PAUSED 2026-10-23: the fourth rebuild cell (actuarial-science-insurance / claims-frequency-severity) found no draw that
-holds (`## Tried and rejected`); architectures 1, 2 and 3 are spent and in the card's lineage notes, and the card is
-unchanged. Resume at stage 1 in the next cell the main session assigns, reading `## Tried and rejected` first.
+DESIGN 2026-10-28, architecture 4 drawn and registered (card v4); next the stage-2 sections (default path, stump
+sentence, three rules, readability screen, fork table, ladder, closure table, literal reader, oracles, ask sheet) and
+`prompt.txt`, then `precut.py`. Read `## Tried and rejected` first.

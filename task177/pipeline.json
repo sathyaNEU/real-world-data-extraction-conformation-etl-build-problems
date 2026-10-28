@@ -1,288 +1,317 @@
 {
- "task": "task177",
- "status": "PAUSED",
- "domain": "banking-credit-financial-risk/credit-scoring-pd-modeling",
- "objective": "forecasting",
- "stage": 1,
- "stage_name": "draw",
- "updated": "2026-10-23",
- "stump": "A PD model fitted on the public book's borrower attributes and scored on the launch file files about 50 of the 2,400 loans in default by 31 January 2028; the public book's defaults run almost wholly through borrowers leaving the payroll with the loan open, which the private employers' own salary batches show five to six times as often, so the count is about 250.",
- "architecture": 3,
- "loops": 0,
- "precut": {
-  "exit": 0,
-  "date": "2026-10-23",
-  "checks": 51
- },
- "leak": {
-  "leak_py": "REVIEW 2026-10-23 --asof 2027-01-22 (five lines, each answered in the design note's ## Leak sweep; no LEAK)",
-  "reader": ""
- },
- "duplicate_check": {
-  "surface": "exit 0 2026-10-23, no promoted pair, personas Paola Ayala and Esteban Ospina only",
-  "heart": "WARN 2026-10-23 after the role redraw (task178 v3 marked spent after this card filed pulled task175 into the window and fired ban.role on finance_controller; redrawn to portfolio_manager, H31); overuse.strategy, overuse.objective, overuse.gate_g; task45 and task75 differentiated",
-  "nearest": "task268 0.08, task446 0.07, task130 0.06"
- },
- "judge": {
-  "verdict": "",
-  "disposition": "",
-  "report": ""
- },
- "returned": [],
- "resume": "PAUSED 2026-10-23: the fourth rebuild cell (actuarial-science-insurance / claims-frequency-severity, chosen shape first) found no draw that holds; architecture 3 spent at stage 4 on Gate F (target.zip 2db9de82); the next cell comes from the main session; resume at stage 1 reading the design note's ## Tried and rejected first",
- "approved": null,
- "delivered": null,
- "portal": null,
- "portal_id": "",
- "portal_status": "",
- "portal_status_date": "",
- "rebuild_2026_10_23_credit": {
-  "cell": "banking-credit-financial-risk / credit-scoring-pd-modeling, Forecasting (assigned 2026-10-23)",
-  "worktree": "/home/user/b_177n (origin/main e7f776e4)",
-  "measured_dead": "R4 rating momentum (recency routes move 0.1 to 2.3 per cent against a truth 18 to 24 per cent over the per-grade PD; latest-year PIT -5 to +9); S1 rating staleness (review-age routes -1 to -7 per cent, the wrong way; history support beyond 12 months 0.1 per cent)",
-  "held": "P: payroll-deduction PD read per exit from the employer's payroll; 20 seeds: truth 8.5 to 10.6 per cent, decomposition family spread at most 0.42 pp, logistic on attributes 1.3 to 2.1, all-staff turnover scaling 3.3 to 4.7",
-  "prototypes": "scratchpad b177c/proto: r4.py, s1.py, p1.py, p2.py, p2sweep.py (sweep_p2.out)"
- },
- "card_registered": true,
- "architecture_1": {
-  "stump": "One learning rate fitted to every contact and simulated through the assistant-first weeks files 40 per cent; the overflow transfers in the record, the only contacts a jobseeker did not choose, move their later choices about a fifth as far as a conversation they opened, so eight weeks of release 4.0 answering their calls convert far fewer of them and the share is 25 per cent.",
-  "precut": {
-   "exit": 0,
-   "date": "2026-10-19"
-  },
-  "leak": {
-   "leak_py": "REVIEW 2026-10-21 on the round 5 pack (five lines, each answered in the design note's ## Leak sweep; no LEAK)",
-   "reader": "round 5 on target.zip 3be16ba3: reader I landed the call (25, from 26.2 with a fitted outcome-weighted habit model), Gate F fails and architecture 1 is spent; round 4 on a2c932a3 readers G and H had missed (10 and 20), asks 0 of 24 each"
-  },
-  "duplicate_check": {
-   "heart": "BLOCK 2026-10-21 on ban.forum, ban.forcing_event and ban.org_family against task248 and task165, ruled by the author: the bans passed at registration (19 October 07:01Z) and fire only because task269 and task468 re-rooted after it; the window stays fixed at the draw",
-   "nearest": "task107 ledger row 0.07; drivers task242 0.06, task238 0.05"
-  },
-  "judge": {
-   "verdict": "DETERMINISTIC",
-   "disposition": "APPROVE",
-   "report": "round 5 re-judge on target.zip 3be16ba3: DETERMINISTIC, APPROVE (round 4 on a2c932a3 had been FIX_NOW at 26.9 to 27.2 against the 27.5 edge, fixed by plan 3.3 and the re-centring to 25.21)"
-  },
-  "screen": {
-   "redraw_cell": "psychology-behavioral-science / decision-making-computational-behavioral-modeling, Forecasting (allocated 2026-10-19)",
-   "A_goal_reference_point": "dead: card-literate pile route -11 to -13%, the live-day judgment is pattern E / G14 (banned this round) and leaves the forecast unchanged",
-   "E_ddm_speed_accuracy": "dead: truncation within 0.8 to 1.4% of the adapted truth at a central cut; the tail lever is the DDM textbook route",
-   "F_imposed_contact_learning": "held: one-rate RL +48.6 to +50.0%, nearest rival pooled logistic +10.4 to +12.4%, golden split -0.8 to +2.0%, truth sigma 0.19 to 0.25 pp, profile 0.37 pp per SE",
-   "paper_deaths": "hot stove, titration pooling, income targeting, prevalence criterion, rate-by-state designs, habituation, peak-end, goal gradient, compromise/decoy, magnitude effect, partition dependence, enforcement description-experience, bold play, promise reference, learner share",
-   "prototypes": "scratchpad r177/proto: a_goal.py, e_ddm.py, f_forced.py, f_forced2.py, f_forced3.py, f_forced5.py, f5_profile.py, f5_cost.py, f5_het.py, f5_het2.py",
-   "seed_world_screen": {
-    "assigned": "the decisive step a forecasting judgment a waste-services or demand analyst would recognise, inferred from the data, the rival rejected out of sample; idea named: the right comparison group for the summer curve, peers inferred from behaviour or composition across the haulage districts; graded figures whole bins to add per point and the total, every standard variant agreeing on every point's whole bins with the golden a quarter-bin from an edge with one sigma",
-    "candidate_1": "three kinds (residents, coastal villages with some lets, holiday cottages; Larchmere cottages inside the Town district): 140 mature and 30 new points, weekly noise 8 per cent, seeds 1 to 3; golden (8 nearest peers on the Christmas and half-term responses) 153, 146, 156 bins to add; family -12 to +3, -15 to +1, -8 to +3 per cent (silhouette k-means and quadratic fit low); one sigma 2.8 to 3.3 per cent; per point a median spread of 3.1 bins needed, up to 6.3; reflexes: district -56 to -62, dashboard -56 to -62, all points -67 to -71, nearest points -55 to -69, coast distance -58 to -65, the Coast index for the holiday-looking -36 to -44, flat 1.25 -31 to -37, flat 1.5 +33 to +34, size peers -24, -30, -4; behavioural readings inside the family (holiday points pooled -12, -8, -3; top-ratio peers -1, +3, +9; half-term alone -5, -10, -3); flat crossing at 1.37 to 1.38 (1.35 and 1.40 within 7 to 14 bins); back-test RMS log 0.056 to 0.066 against the district's 0.21 to 0.23 (off-district kinds 0.047 to 0.071 against 0.43 to 0.46); no rounding of 10, 20 or 25 holds the family with one sigma, 50 holds it in two seeds with flat 1.35 and 1.40 and the behavioural readings inside the bin",
-    "candidate_2": "lets told from second homes (Larchmere lets; owner-used second-home villages the lure; the coast's new points lets and estates): 148 mature and the same 30 new points, seeds 1 to 3; golden 236, 233, 238; family -5 to +2, -6 to +2, -2 to +2 per cent; one sigma 2.7 to 3.9 per cent; per point a median spread of 2.4 to 3.2 bins, up to 7.9; the bracket held (holiday points pooled +28 to +39, top-ratio peers +32 to +42, district -44, the Coast index for the lake -31 to -33) but flat 1.5 sits +4 to +8 (crossing at 1.46 to 1.47), the half-term alone -1 to +1 on these new points despite a back-test RMS of 0.24 to 0.28, the size peers +3 in seed 1 and the nearest point -1 in seed 3; back-test 0.057 to 0.065 against 0.35 to 0.36 (off-district 0.060 to 0.068 against 0.62 to 0.64); no rounding of 10, 20, 25 or 50 holds the family with one sigma inside a quarter-bin margin in any seed",
-    "per_point": "infeasible on both: every defensible variant within a quarter-bin at 20 to 30 bins needed is about 1 per cent of the July forecast, needing a within-kind ratio spread near 1 per cent and weekly noise near 3 per cent (lockstep); measured spreads 2.4 to 3.2 bins",
-    "eda6c8c_screens": "run as code on the clean truth for both: dispersion does not apply (a level; within-kind ratio CV 0.022 to 0.063); variance-only passes (golden 1.77 to 2.61 times the district route); the common-exposure subset (filters on district, all points, nearest points, coast distance, size, the Coast district for the holiday-looking) misses by 15 to 71 per cent except the size peers (candidate 1 seed 3, candidate 2 seed 1) and the nearest point (candidate 2 seed 3); truncation direction does not apply (overflow logged as side waste)",
-    "registration": "the comparison-group step is honestly composition_mix (F5; task124's label for a kind read from records), which task165 registered at 14:10 and task173 carries in the queue; forecast_method_backtest would have passed and was not used; the window after task165 (task201, task247, task165) banned season_or_peak and purchase_order_or_contract, utility_or_infrastructure and local_government, field_unit_lead and operations_director",
-    "taxonomy": "the seasonal-population quantity sits in sociology-demography population-estimation-demographic-projection (F); the literal home urban-regional-science municipal-service-demand-resource-allocation (F) is task165's pairing in the window",
-    "repeat_screen": "guard.py recent, mechanisms --objective forecasting and slots before any card; slots on both driver sentences and on peers, analogs, summer, holiday, half-term, seasonality, second homes, lets, owners, occupancy, cold start, like demand, comparable sites, seasonal index district, summer uplift, drop-off bins: no slot spent the mechanism; closest card by mechanism task124",
-    "paper_only": "new points' ramp (FC04, task133's seed); peers' July completed past capacity (task168's driver); the two Julys weather-normalised (8 to 12 per cent, inside the bin); the summer holiday's start (the same late-July days in 2025 to 2027, no lever); deposits diverted from nearby points (no lever); dwellings times a kind's yield (determinate only under lockstep capture); the total July weekly fill (a flat uplift lands)",
-    "prototypes": "scratchpad b177/proto: world1.py, world3.py, world4.py, p1.py to p11.py, typestats.py, sig6.py, screen177.py (output screen177.out, byte-identical with screen177_run2.out over two runs)"
-   }
-  },
-  "stage3": {
-   "build": "generator/build.py 2026-10-19: checks.py PASS 92 of 92, verify.py PASS 24 of 24, a second full build byte-identical (18 files), target.zip cut from the final rebuild",
-   "figures_check": "exit 0 (42 figures)",
-   "voice_check": "PASS (735 characters)",
-   "precut": "exit 0 (51 checks)",
-   "scrub": "target and golden clean",
-   "surface": "exit 0; promoted pairs card-level only (task168, task70, task463, task104 differentiated on the card), no shared table schema",
-   "cracker": "pair ceiling 28.5, mirror leakage 0.0",
-   "call_keys": [
-    "call_share"
-   ],
-   "ask_keys": [
-    "ask_employers.<Month>",
-    "ask_own.<Month>"
-   ],
-   "component_keys": [
-    "ratio_words",
-    "share_af"
-   ]
-  },
-  "round2": {
-   "zip_sha256": "2c11b94b6f21b973a4b7eb825faaed037ca6119732720e7f3f6b58a87928c8dd",
-   "repair": "ask B's primary re-sited onto the vendor's support desk in the staff console (org_ref 724906318, the supplier's GST/HST number on the invoices); ask A's clock moves every month (employers' month-end wage-subsidy filings, draw k); plan 1.3 files release 4.0's resolution for the app, the web and the voice service",
-   "moved_figures": "ask_employers (all twelve months); vendor_bn added; the call, both components and every other figure unchanged",
-   "build": "checks.py PASS 109 of 109 (J: the call's files and rows are the judged pack's), verify.py PASS 25 of 25, a second full build byte-identical (18 files)",
-   "gates": "figures_check exit 0 (43); precut exit 0 (51); voice-check PASS; leak.py REVIEW (4 answered); scrub clean; surface exit 0; heart WARN",
-   "cracker": "pair ceiling 28.5 (cracker and mirror keep 0 of 24 on the round 1 readers' paths), mirror leakage 0.0"
-  },
-  "round3": {
-   "zip_sha256": "8ab100af3c9d6ed0a4ac80df07e65454ef4de12964bb058ec3c16215e456a176",
-   "repair": "ask A's primary re-sited onto the employer widget's day cut (a session open at 00:00:00 UTC closed there and carried on at that second as a new conversation from the same account: 183 pairs, 7 to 25 a month); the widget's UTC kept as a hazard; the assistant-first share dropped from block 2, step 4 and the workbook, component 2 now the 11,154 transfers among 413,866 contacts",
-   "moved_figures": "none graded; n_day_cut (183) added",
-   "build": "checks.py PASS 113 of 113 (J: the call's files and rows are the judged pack's), verify.py PASS 26 of 26, a second full build byte-identical (18 files)",
-   "gates": "figures_check exit 0 (44); precut exit 0 (51); voice-check PASS; leak.py REVIEW (4 answered); scrub clean; surface exit 0; heart BLOCK (window shift, see duplicate_check)",
-   "cracker": "pair ceiling 28.5 on the round 2 readers' path (ask B's row measured on 2c11b94b, ask A's a model), mirror leakage 0.0"
-  },
-  "round4": {
-   "zip_sha256": "a2c932a3a4f6960c4f8aba8572c8bfa018c106e12752b52100e7306ab7a0c10a",
-   "repair": "the share asked to the nearest 5 per cent (golden 26.05 prints 25, 1.45 points inside its cell); plan 5.1 files the denominator (every contact started) and the start channel (a claimant-line call is a phone start whoever answers it); plan 4.1 takes each check-in on its due date; the learner, rates and transfer weighting unfiled",
-   "moved_figures": "call_share 26 -> 25; in the workbook's model comparison only, share_no_persev 26 -> 25 and share_persev_exp 28 -> 30 (the forecasts now at the nearest 5 per cent)",
-   "build": "checks.py PASS 130 of 130 (J3: every reading round 3's judge took, under the filed conventions, prints 25 or is ruled out), verify.py PASS 26 of 26, a second full build byte-identical (18 files)",
-   "gates": "figures_check exit 0 (44); precut exit 0 (51); voice-check PASS (741 characters); leak.py REVIEW (5 answered); scrub clean; surface exit 0; heart BLOCK (ruled)",
-   "cracker": "pair ceiling 28.5, mirror leakage 0.0 (both asks measured at 0 of 24 by the round 3 readers on 8ab100af)"
-  },
-  "round5": {
-   "zip_sha256": "3be16ba3488501d4a5ed86fb3f8754cb144a21aafe9b3017ec3ac8db3633402d",
-   "diagnosis": "outsider re-implementation replicates 26.01; the judge's 27.1 is the phone's outcome over every call incl. transfers (+0.49, class a) plus the transferred calls' choice out of the likelihood (+0.62, class c); no-history start at the mean state -1.12 (c); values starting at 0 or 1 +1.76/-2.71 (b, 6,017 and 11,385 units); assistant-first pull to the channel met +2.91 (b, 133 units); phone value moved in the assistant-first weeks -0.27 (b)",
-   "repair": "plan 3.3 files the phone's outcome over the calls the queue keeps; acceptance count 2,041 -> 2,003 of 2,400 re-centres the forecast at 25.21 (2.29 inside its cell); open readings 24.13 to 25.80, the judge's pair 26.28",
-   "moved_figures": "share_unrounded 0.2605 -> 0.2521; accept_resolved 2,041 -> 2,003 (submission step 4); p_new_pct 85.0 -> 83.5 and share_persev_exp 30 -> 25 (workbook only); call_share stays 25",
-   "build": "checks.py PASS 138 of 138, verify.py PASS 26 of 26, a second full build byte-identical (18 files)",
-   "gates": "figures_check exit 0 (44); precut exit 0 (51); voice-check PASS; leak.py REVIEW (5 answered); scrub clean; surface exit 0; heart BLOCK (ruled, window fixed at draw)",
-   "cracker": "pair ceiling 28.5, mirror leakage 0.0 (asks measured at 0 of 24 by the round 4 readers on a2c932a3)"
-  },
-  "gate_f": {
-   "zip_sha256": "3be16ba3488501d4a5ed86fb3f8754cb144a21aafe9b3017ec3ac8db3633402d",
-   "fate": "architecture 1 spent at Gate F: the re-judge DETERMINISTIC, APPROVE, but reader I landed the 25 bin",
-   "reader_I_path": "Channel choice is habit-driven (fitted latent habit model: decays 0.63 per contact, weights by previous contact outcome; resolved chat strongly raises next chat use, voice resolved raises it modestly, abandoned calls push to chat); release 4.0 filed at 83.5 per cent (acceptance); Chat share of contacts 1 Mar-25 Apr = 26.2 per cent, rounded to 25",
-   "lesson": "whole per cent failed determinism and nearest 5 admitted an outcome-weighted habit model, so the lever between the golden and its neighbours was no wider than the golden family's own spread"
-  },
-  "wave": "wave 8 (new), seed FC48: the seed's world (drop-off recycling bins) died at stage 1 on measurement; redrawn in a new world in the cell psychology-behavioral-science / decision-making-computational-behavioral-modeling (Prairie Works Manitoba, the assistant's share of jobseekers' own contacts after eight assistant-first weeks)",
-  "architecture": 1,
-  "domain": "psychology-behavioral-science",
-  "fate": "spent at stage 4 Gate F on target.zip 3be16ba3 (2026-10-21); see the card lineage and the design note"
- },
- "rebuild_2026_10_23": {
-  "cell": "quantitative-finance / volatility-derivatives-pricing, Forecasting (assigned 2026-10-23)",
-  "worktree": "/home/user/b_177n",
-  "measured": "G, dealer gamma from an overwriting programme's short calls damping intraday moves, the programme wound up: index form lever 27 to 35 per cent only at kappa G 0.47 to 0.66; golden family spread 9.5 to 14.0 per cent median (19.8 to 26.5 worst) over 20 seeds; crude lowest-decile-gamma ratio route 1.06 to 1.10 of the golden (0.87 to 1.42); single-stock form lever 18 to 24 per cent against a 9.5 to 12.2 per cent spread, buildable nearest-10 bins in 8 to 14 of 30 seeds",
-  "paper_deaths": "leverage relevered, bond future notional coupon (CTD), power cap (retirement, new load), index reweight or removal, stale-price index methodology, closing auction bounce, trading hours change, Samuelson effect, minimum-variance delta, forward-start skew, reserve scarcity, securities lending utilisation, CPI basket reweight, mortgage prepayment (task171's driver), CVA wrong-way risk, degree-day station change, barrier on auction closes",
-  "finding": "a volatility-level forecast carries a 5.6 to 14 per cent median model spread at realistic vol-of-vol, so only a lever near 50 per cent survives rounding; the mechanisms that move a volatility that far are textbook identities once the change is read, and dealer gamma gives 20 to 35 per cent at plausible strength",
-  "prototypes": "scratchpad b177n/proto: g1.py to g5.py, screen177n.out (byte-identical with screen177n_run2.out)",
-  "card": "none registered; cards/task177.json unchanged (lineage already holds architectures v1 and v2)"
- },
- "rebuild_2026_10_23_survival": {
-  "cell": "biomedical-clinical-research / survival-time-to-event-analysis, Forecasting (assigned 2026-10-23)",
-  "worktree": "/home/user/b_177n (origin/main 682b11dd)",
-  "measured": "H1, deaths in a quarter on the time since each member's last discharge after a December admission surge: at realistic strength the duration curve times the season share +0.6 per cent and the mean first-quarter rate +1.0 against a golden family of -3.8 to +4.9; at implausible strength (fivefold surge, tenfold excess) the best reflex -6.3 against -2.3 to +4.4. A1, graft failure on attained age: duration-only +0.8 to +9.5, age-at-transplant strata +0.8 to +10.0, against the attained-age golden -2.7 to +6.1",
-  "paper_deaths": "starts moved to discharge, acute-state marker selection, postmenstrual age, healthy-volunteer effect, case-cohort sample, lead time, stage migration, learning curve at new centres, rationed transplant supply, colonisation pressure, timing modifiers, run-in exclusions, relapse against reinfection, imminent re-fracture, essential heterogeneity, frailty-attenuated hazard ratio, too-sick delisting (task169), effect before a recurring session (architecture 2), distance to centre",
-  "finding": "a stationary clinical record absorbs any hazard clock into the duration curve with a season term, and after a synchronising event the duration curve times the season share stays within 0.6 to 6.3 per cent of the golden, even at strengths beyond any registry; a 30 per cent lever needs a forward change, which in this cell names its step, closes a competing route or repeats architecture 2",
-  "prototypes": "scratchpad b177s/proto: h1.py (h1_run2.out, h1_run3.out byte-identical; h1_strong.out), a1.py (a1.out; a1_r2.out, a1_r3.out byte-identical)",
-  "card": "none registered; cards/task177.json unchanged"
- },
- "wave": "wave 8 (new), seed FC48: the seed's world (drop-off recycling bins) died at stage 1 on measurement; redrawn in a new world in the cell psychology-behavioral-science / decision-making-computational-behavioral-modeling (Prairie Works Manitoba, the assistant's share of jobseekers' own contacts after eight assistant-first weeks)",
- "architecture_2": {
-  "domain": "product-analytics/churn-propensity-uplift-modeling",
-  "stump": "An uplift model on last January's half-and-half test (two-model or transformed outcome on the subscriber features) scored on this year's list files about 10 per cent; the test's subscribers whose next bill fell within two weeks of the send were kept at about twice the overall rate and almost none of the rest, and every bill on this year's list falls six days after the send, so the share is about 20 per cent.",
-  "precut": {
-   "exit": 0,
-   "date": "2026-10-21",
-   "checks": 51
-  },
-  "leak": {
-   "leak_py": "REVIEW 2026-10-22 on target.zip c2789bda (four lines, each answered in the design note's ## Leak sweep; no LEAK)"
-  },
-  "duplicate_check": {
-   "surface": "exit 0 2026-10-22: the same six card-level pairs as rounds 1 and 2",
-   "heart": "PASS at registration (2026-10-21T05:48:20Z) and after rounds 1 and 2's pulls; BLOCK on 2026-10-22 after the pull to bbc366d5 on ban.strategy (composition_mix) and ban.forum (executive_team) against task446 v3, registered at 05:35:41Z on 2026-10-21 in another session and on main only after round 1; no axis relabelled, left for the author; moot at retirement"
-  },
-  "judge": {
-   "verdict": "DETERMINISTIC",
-   "disposition": "APPROVE",
-   "report": "round 3 re-judge on target.zip c2789bda: the call reproduces at 20 (95 per cent half-width about 0.7 points), all of ask A and all 12 ask B cells; round 2 on cc5a56de NOT_DETERMINISTIC on ask B only (the line convention), round 1 on 4827dc5d DETERMINISTIC with hygiene"
-  },
-  "screen_v2": {
-   "cell": "product-analytics / churn-propensity-uplift-modeling, Forecasting (assigned 2026-10-21, second and last cell of the round)",
-   "held": "C2: the offer effect by the days from delivery to each subscriber next bill, carried from an anniversary-billed test (31 Jan 2026) to a list billed on the 1st (26 Jan 2027, every bill six days after the send)",
-   "outsider": "c2out.py on file-only mini-packs (seeds 7, 8, 9; truth 20.1 to 20.3): routes without the step 9.4 to 9.9 (bin 10), routes with it 18.0 to 21.0 (bin 20); lever about 10.5 points against an outsider spread of 3.0 (1.5 without single-day bins); scalings 31 to 80; wrong-built days 5.7 to 18.3",
-   "paper_deaths": "deferral horizon, channel exposure scaling, take rate against holdout, programme-shaped labels, stated intent, dose saturation, staggered rollout, paid sharing, trial withdrawal, promo step-up, repeat offers (task83), relative scale (task165), sleeping dogs, rationed offer, threshold design, winner curse",
-   "prototypes": "scratchpad r177/c2/proto: c2a.py to c2f.py, c2pack.py, c2out.py"
-  },
-  "stage3": {
-   "build": "generator/build.py 2026-10-22 (round 3 pack): checks.py PASS 147 of 147 (FROZEN call side unchanged), verify.py PASS 35 of 35, a second full build byte-identical (19 files, the write-up included), target.zip cut from the final rebuild",
-   "zip_sha256": "c2789bda6ae4c102d0537e9577f81f5d5fe14a81ad937dcc3e116db40d738b4a",
-   "figures_check": "exit 0 (51 figures); figures.json byte-identical to rounds 1 and 2, so no graded figure moved",
-   "voice_check": "PASS (763 characters, unchanged)",
-   "precut": "exit 0 (51 checks)",
-   "cracker": "pair ceiling 28.5, mirror leakage 0.0; the cracker, the mirror and readers A, B (as quoted and with both credit-note variants), C and D each 0 of 21; thinnest misses 90 on a takers count (reader C) and 152 pounds (ask B October Family, the header route)",
-   "call": "20 per cent (19.88, frozen); default 10 (9.65)",
-   "figures_json_call_keys": [
-    "call_fortnight_kept",
-    "call_later_kept",
-    "call_lead_days",
-    "call_n_fort",
-    "call_n_ly",
-    "call_n_ty",
-    "call_share",
-    "call_share_unrounded",
-    "call_ty_days",
-    "call_ty_next",
-    "call_whole_list",
-    "call_window_days"
-   ]
-  },
-  "readers": {
-   "round1": "target.zip 4827dc5d: reader A call 10, asks 9 of 21; reader B call 10, asks 21 of 21",
-   "round2": "target.zip cc5a56de: reader C call 10, asks 0 of 21 (PASS); reader D call 10, ask A 9 of 9 through the -MA rate lines, ask B 0 of 12 (FAIL at 42.9 per cent); ask A re-sited onto credits posted against the acceptance, ask B's convention filed",
-   "round3": "target.zip c2789bda: reader E call 10, asks 12 of 21 (ask A 0 of 9, the credit lines held; ask B 12 of 12 through the filed qty convention), score_reader FAIL at 57.1 per cent; reader F's result lost in a container restart"
-  },
-  "retired": {
-   "date": "2026-10-22",
-   "why": "the asks never cleared two readers in one round of architecture 2 (round 1: 9 and 21 of 21; round 2: 0 and 9; round 3: 12 of 21), the call holding in every blind read; architecture 1 spent at Gate F",
-   "lesson": "an ask device whose determinism needs a filed convention dies when the convention is filed",
-   "device_records": "vendor desk, day cut (architecture 1), the offer's half price posted as credits (architecture 2), in the design note's ## Retired"
-  },
-  "architecture": 2,
-  "fate": "RETIRED 2026-10-22: the asks never cleared two readers in one round; the call held in every blind read"
- },
- "stage3": {
-  "build": "generator/build.py 2026-10-23: checks.py PASS 158 of 158, verify.py PASS 40 of 40, a second full build byte-identical (20 files), target.zip cut from the final rebuild",
-  "zip_sha256": "2db9de82be2793c80156c2e585cd5f120e6de975fdc7e7e5686bf0b4fe973bc3",
-  "figures_check": "exit 0 (43 figures)",
-  "voice_check": "PASS (798 characters)",
-  "precut": "exit 0 (51 checks)",
-  "scrub": "target and golden clean",
-  "cracker": "pair ceiling 28.5, mirror leakage 0.0 (cracker routes 0 of 12 on ask A twice, 0 of 8 on ask B twice)",
-  "call": "250 loans (247.0 expected); sector shares 20, 10, 10, 10, 10, 5; default path 50 (46.7)",
-  "golden_family": "237 to 264 loans over the standing family, every sector in its cell; crude annual approximation 278 the only form outside",
-  "figures_json_call_keys": [
-   "call_share",
-   "call_share_unrounded",
-   "call_total",
-   "call_total_unrounded"
-  ],
-  "ask_keys": [
-   "ask_a_deducted.<sector>",
-   "ask_a_outstanding.<sector>",
-   "ask_b_recovered.<2023|2024>.<unit type>"
-  ],
-  "sectors": [
-   "contact centres",
-   "retail chains",
-   "security services",
-   "logistics and courier",
-   "food processing",
-   "private clinics"
-  ],
-  "unit_types": [
-   "national",
-   "territorial",
-   "health",
-   "education"
-  ],
-  "component_keys": [
-   "cc_conversion_pct",
-   "cc_leave_launch_pct"
-  ],
-  "context_keys": "counts.* and parameters.* (provenance, not graded)",
-  "score_reader": "python3 .claude/skills/leak-check/score_reader.py task177 <reader.json> --call-key call_total --call-key call_share"
- },
- "architecture_3_fate": "spent at stage 4 Gate F on target.zip 2db9de82: reader B landed the call 7 of 7 (250; 20/10/10/10/10/5) via LIQUIDACION-based separation hazards and the 53.5 per cent SIN SALARIO pass-through; reader A filed 450; asks 20 of 20 for both readers; judge stopped by the main session",
- "readers": {
-  "stage4_round1": "target.zip 2db9de82: reader A call 450 (missed), asks 20 of 20; reader B call 250 and all sector shares (7 of 7), asks 20 of 20"
- },
- "rebuild_2026_10_23_claims": {
-  "cell": "actuarial-science-insurance / claims-frequency-severity, Forecasting (chosen by the build shape first, 2026-10-23, after the coordinator's exclusions)",
-  "worktree": "/home/user/b_177n (origin/main 2811e60c)",
-  "measured": "T1 school-trip pupils detached from the party: per-policy rate +458 to +472 per cent, booking events per traveller +93 to +98, solo adults +207 to +221, golden family (any-member decomposition) -19.0 to +1.2 (relatives term and adults' slope collinear), dead on determinacy and a readability-1 wording; T3 multi-generation bookings: reflexes -45 to +65, product -1.0 to +1.8, linear probability +1.2 to +4.9, product over logit 17 to 26 ll; T4 with lead-time hazards (seed 1): booking logit +89, log-link Poisson +143, LPM -35, passenger logit -56 and +56 with party terms, GBM -37, additive hazard +1.1 to +2.1 (68 ll over logit), dead on the v3 law: the wording names the companion channel and solo travellers plus families less parents land +3 to +15 by filter and subtraction (t4s.py), and big-party joint cancellation is a behaviour the record shows only for small parties",
-  "paper_deaths": "delivery stops (task170), pool vehicles, ticket parties, building-size theft and kerb density (task175 device), bike-share destinations in range (task175 driver; task170 died there too), parcel-locker infill (replay), crosstown fare per boarding, escape of water from above (15 to 20 per cent), turnovers, connections, handlings and hires (plain group-by), hours against payroll (wage on-level), leak valves by plumbing, component platforms, crossbreeds, crop transitional yields and unit structure, pre-existing exclusions, other insurance and package refunds (task169 route), bonus hunger, bundled awareness, voluntary group participation",
-  "finding": "every exposure a forward book can differ on is a rating factor, usage measure or group-by count the per-policy GLM reaches; the one structure that escapes it, a claim generated by an event of the policy's group, takes its lever from groups the record never watched, so their joint behaviour is an assumption, and every mechanical group event is the textbook joint-life or per-occurrence function",
-  "prototypes": "scratchpad b177w/proto: t1.py (t1.out, t1_run2.out byte-identical), t3.py, t3b.py, t3c.py, t3d.py (t3.out, t3_run2.out byte-identical), t4.py (t4.out, seed 1), t4s.py (t4s.out, t4s_run2.out byte-identical)",
-  "card": "none registered; cards/task177.json unchanged"
- }
+    "task": "task177",
+    "status": "DESIGN",
+    "domain": "banking-credit-financial-risk/credit-scoring-pd-modeling",
+    "objective": "forecasting",
+    "stage": 2,
+    "stage_name": "design",
+    "updated": "2026-10-28",
+    "stump": "A competent analyst who rebuilds each pool loan's arrears from the meeting ledger, reads the group-support postings correctly and carries the history's six-month 90-day rates by each member's own payment at her last meeting onto the pool files about 50 loans 90 days past due on 30 June 2027 against about 150; the step that lands it there is treating every carried member as carried, when a group carries one short member at a meeting and stops once two are short at the same meeting.",
+    "architecture": 4,
+    "loops": 0,
+    "precut": {
+        "exit": null,
+        "date": ""
+    },
+    "leak": {
+        "leak_py": "",
+        "reader": ""
+    },
+    "duplicate_check": {
+        "heart": "",
+        "surface": "",
+        "check": "WARN 2026-10-28 at registration (repeat.deliverables docx+xlsx against task304 architecture 3, answered in ## Draw); NOTE lines for task45, task75 (same puzzle) and task116 (same driver), each differentiated on the card, and this slot v3",
+        "nearest": "task127 0.09, task308 0.07, task482 0.07, task139 0.07"
+    },
+    "judge": {
+        "verdict": "",
+        "disposition": "",
+        "report": ""
+    },
+    "returned": [],
+    "resume": "DESIGN 2026-10-28, architecture 4 (joint-liability microloan pool, Tamralipta Bank and Prachi Valley Microfinance): write the stage-2 sections and prompt.txt, then precut.py; read ## Tried and rejected first",
+    "approved": null,
+    "delivered": null,
+    "portal": null,
+    "portal_id": "",
+    "portal_status": "",
+    "portal_status_date": "",
+    "card_registered": true,
+    "architecture_4": {
+        "cell": "banking-credit-financial-risk / credit-scoring-pd-modeling, Forecasting (re-root 2026-10-28 at the author's request for a banking task outside the portal list)",
+        "world": "Tamralipta Bank Ltd (direct-assignment desk) and Prachi Valley Microfinance Pvt Ltd (NBFC-MFI, joint-liability groups, Odisha), cyclone 16 October 2026, pool cut-off 31 December 2026, call: pool loans 90+ DPD on 30 June 2027",
+        "prototype": "scratchpad t177/proto jlg6c.py: loan-level roll rate 0.39 to 0.43 of the golden, member own state 0.48 to 0.52, group read over six meetings 1.28 to 1.63, every carried member defaulting about 3.0; golden family 1.00 to 1.11 (to tighten in the generator)"
+    },
+    "architecture_3": {
+        "stump": "A PD model fitted on the public book's borrower attributes and scored on the launch file files about 50 of the 2,400 loans in default by 31 January 2028; the public book's defaults run almost wholly through borrowers leaving the payroll with the loan open, which the private employers' own salary batches show five to six times as often, so the count is about 250.",
+        "precut": {
+            "exit": 0,
+            "date": "2026-10-23",
+            "checks": 51
+        },
+        "leak": {
+            "leak_py": "REVIEW 2026-10-23 --asof 2027-01-22 (five lines, each answered in the design note's ## Leak sweep; no LEAK)",
+            "reader": ""
+        },
+        "duplicate_check": {
+            "surface": "exit 0 2026-10-23, no promoted pair, personas Paola Ayala and Esteban Ospina only",
+            "heart": "WARN 2026-10-23 after the role redraw (task178 v3 marked spent after this card filed pulled task175 into the window and fired ban.role on finance_controller; redrawn to portfolio_manager, H31); overuse.strategy, overuse.objective, overuse.gate_g; task45 and task75 differentiated",
+            "nearest": "task268 0.08, task446 0.07, task130 0.06"
+        },
+        "judge": {
+            "verdict": "",
+            "disposition": "",
+            "report": ""
+        },
+        "stage3": {
+            "build": "generator/build.py 2026-10-23: checks.py PASS 158 of 158, verify.py PASS 40 of 40, a second full build byte-identical (20 files), target.zip cut from the final rebuild",
+            "zip_sha256": "2db9de82be2793c80156c2e585cd5f120e6de975fdc7e7e5686bf0b4fe973bc3",
+            "figures_check": "exit 0 (43 figures)",
+            "voice_check": "PASS (798 characters)",
+            "precut": "exit 0 (51 checks)",
+            "scrub": "target and golden clean",
+            "cracker": "pair ceiling 28.5, mirror leakage 0.0 (cracker routes 0 of 12 on ask A twice, 0 of 8 on ask B twice)",
+            "call": "250 loans (247.0 expected); sector shares 20, 10, 10, 10, 10, 5; default path 50 (46.7)",
+            "golden_family": "237 to 264 loans over the standing family, every sector in its cell; crude annual approximation 278 the only form outside",
+            "figures_json_call_keys": [
+                "call_share",
+                "call_share_unrounded",
+                "call_total",
+                "call_total_unrounded"
+            ],
+            "ask_keys": [
+                "ask_a_deducted.<sector>",
+                "ask_a_outstanding.<sector>",
+                "ask_b_recovered.<2023|2024>.<unit type>"
+            ],
+            "sectors": [
+                "contact centres",
+                "retail chains",
+                "security services",
+                "logistics and courier",
+                "food processing",
+                "private clinics"
+            ],
+            "unit_types": [
+                "national",
+                "territorial",
+                "health",
+                "education"
+            ],
+            "component_keys": [
+                "cc_conversion_pct",
+                "cc_leave_launch_pct"
+            ],
+            "context_keys": "counts.* and parameters.* (provenance, not graded)",
+            "score_reader": "python3 .claude/skills/leak-check/score_reader.py task177 <reader.json> --call-key call_total --call-key call_share"
+        },
+        "readers": {
+            "stage4_round1": "target.zip 2db9de82: reader A call 450 (missed), asks 20 of 20; reader B call 250 and all sector shares (7 of 7), asks 20 of 20"
+        },
+        "fate": "spent at stage 4 Gate F on target.zip 2db9de82: reader B landed the call 7 of 7 (250; 20/10/10/10/10/5) via LIQUIDACION-based separation hazards and the 53.5 per cent SIN SALARIO pass-through; reader A filed 450; asks 20 of 20 for both readers; judge stopped by the main session",
+        "domain": "banking-credit-financial-risk/credit-scoring-pd-modeling",
+        "architecture": 3
+    },
+    "rebuild_2026_10_23_credit": {
+        "cell": "banking-credit-financial-risk / credit-scoring-pd-modeling, Forecasting (assigned 2026-10-23)",
+        "worktree": "/home/user/b_177n (origin/main e7f776e4)",
+        "measured_dead": "R4 rating momentum (recency routes move 0.1 to 2.3 per cent against a truth 18 to 24 per cent over the per-grade PD; latest-year PIT -5 to +9); S1 rating staleness (review-age routes -1 to -7 per cent, the wrong way; history support beyond 12 months 0.1 per cent)",
+        "held": "P: payroll-deduction PD read per exit from the employer's payroll; 20 seeds: truth 8.5 to 10.6 per cent, decomposition family spread at most 0.42 pp, logistic on attributes 1.3 to 2.1, all-staff turnover scaling 3.3 to 4.7",
+        "prototypes": "scratchpad b177c/proto: r4.py, s1.py, p1.py, p2.py, p2sweep.py (sweep_p2.out)"
+    },
+    "architecture_1": {
+        "stump": "One learning rate fitted to every contact and simulated through the assistant-first weeks files 40 per cent; the overflow transfers in the record, the only contacts a jobseeker did not choose, move their later choices about a fifth as far as a conversation they opened, so eight weeks of release 4.0 answering their calls convert far fewer of them and the share is 25 per cent.",
+        "precut": {
+            "exit": 0,
+            "date": "2026-10-19"
+        },
+        "leak": {
+            "leak_py": "REVIEW 2026-10-21 on the round 5 pack (five lines, each answered in the design note's ## Leak sweep; no LEAK)",
+            "reader": "round 5 on target.zip 3be16ba3: reader I landed the call (25, from 26.2 with a fitted outcome-weighted habit model), Gate F fails and architecture 1 is spent; round 4 on a2c932a3 readers G and H had missed (10 and 20), asks 0 of 24 each"
+        },
+        "duplicate_check": {
+            "heart": "BLOCK 2026-10-21 on ban.forum, ban.forcing_event and ban.org_family against task248 and task165, ruled by the author: the bans passed at registration (19 October 07:01Z) and fire only because task269 and task468 re-rooted after it; the window stays fixed at the draw",
+            "nearest": "task107 ledger row 0.07; drivers task242 0.06, task238 0.05"
+        },
+        "judge": {
+            "verdict": "DETERMINISTIC",
+            "disposition": "APPROVE",
+            "report": "round 5 re-judge on target.zip 3be16ba3: DETERMINISTIC, APPROVE (round 4 on a2c932a3 had been FIX_NOW at 26.9 to 27.2 against the 27.5 edge, fixed by plan 3.3 and the re-centring to 25.21)"
+        },
+        "screen": {
+            "redraw_cell": "psychology-behavioral-science / decision-making-computational-behavioral-modeling, Forecasting (allocated 2026-10-19)",
+            "A_goal_reference_point": "dead: card-literate pile route -11 to -13%, the live-day judgment is pattern E / G14 (banned this round) and leaves the forecast unchanged",
+            "E_ddm_speed_accuracy": "dead: truncation within 0.8 to 1.4% of the adapted truth at a central cut; the tail lever is the DDM textbook route",
+            "F_imposed_contact_learning": "held: one-rate RL +48.6 to +50.0%, nearest rival pooled logistic +10.4 to +12.4%, golden split -0.8 to +2.0%, truth sigma 0.19 to 0.25 pp, profile 0.37 pp per SE",
+            "paper_deaths": "hot stove, titration pooling, income targeting, prevalence criterion, rate-by-state designs, habituation, peak-end, goal gradient, compromise/decoy, magnitude effect, partition dependence, enforcement description-experience, bold play, promise reference, learner share",
+            "prototypes": "scratchpad r177/proto: a_goal.py, e_ddm.py, f_forced.py, f_forced2.py, f_forced3.py, f_forced5.py, f5_profile.py, f5_cost.py, f5_het.py, f5_het2.py",
+            "seed_world_screen": {
+                "assigned": "the decisive step a forecasting judgment a waste-services or demand analyst would recognise, inferred from the data, the rival rejected out of sample; idea named: the right comparison group for the summer curve, peers inferred from behaviour or composition across the haulage districts; graded figures whole bins to add per point and the total, every standard variant agreeing on every point's whole bins with the golden a quarter-bin from an edge with one sigma",
+                "candidate_1": "three kinds (residents, coastal villages with some lets, holiday cottages; Larchmere cottages inside the Town district): 140 mature and 30 new points, weekly noise 8 per cent, seeds 1 to 3; golden (8 nearest peers on the Christmas and half-term responses) 153, 146, 156 bins to add; family -12 to +3, -15 to +1, -8 to +3 per cent (silhouette k-means and quadratic fit low); one sigma 2.8 to 3.3 per cent; per point a median spread of 3.1 bins needed, up to 6.3; reflexes: district -56 to -62, dashboard -56 to -62, all points -67 to -71, nearest points -55 to -69, coast distance -58 to -65, the Coast index for the holiday-looking -36 to -44, flat 1.25 -31 to -37, flat 1.5 +33 to +34, size peers -24, -30, -4; behavioural readings inside the family (holiday points pooled -12, -8, -3; top-ratio peers -1, +3, +9; half-term alone -5, -10, -3); flat crossing at 1.37 to 1.38 (1.35 and 1.40 within 7 to 14 bins); back-test RMS log 0.056 to 0.066 against the district's 0.21 to 0.23 (off-district kinds 0.047 to 0.071 against 0.43 to 0.46); no rounding of 10, 20 or 25 holds the family with one sigma, 50 holds it in two seeds with flat 1.35 and 1.40 and the behavioural readings inside the bin",
+                "candidate_2": "lets told from second homes (Larchmere lets; owner-used second-home villages the lure; the coast's new points lets and estates): 148 mature and the same 30 new points, seeds 1 to 3; golden 236, 233, 238; family -5 to +2, -6 to +2, -2 to +2 per cent; one sigma 2.7 to 3.9 per cent; per point a median spread of 2.4 to 3.2 bins, up to 7.9; the bracket held (holiday points pooled +28 to +39, top-ratio peers +32 to +42, district -44, the Coast index for the lake -31 to -33) but flat 1.5 sits +4 to +8 (crossing at 1.46 to 1.47), the half-term alone -1 to +1 on these new points despite a back-test RMS of 0.24 to 0.28, the size peers +3 in seed 1 and the nearest point -1 in seed 3; back-test 0.057 to 0.065 against 0.35 to 0.36 (off-district 0.060 to 0.068 against 0.62 to 0.64); no rounding of 10, 20, 25 or 50 holds the family with one sigma inside a quarter-bin margin in any seed",
+                "per_point": "infeasible on both: every defensible variant within a quarter-bin at 20 to 30 bins needed is about 1 per cent of the July forecast, needing a within-kind ratio spread near 1 per cent and weekly noise near 3 per cent (lockstep); measured spreads 2.4 to 3.2 bins",
+                "eda6c8c_screens": "run as code on the clean truth for both: dispersion does not apply (a level; within-kind ratio CV 0.022 to 0.063); variance-only passes (golden 1.77 to 2.61 times the district route); the common-exposure subset (filters on district, all points, nearest points, coast distance, size, the Coast district for the holiday-looking) misses by 15 to 71 per cent except the size peers (candidate 1 seed 3, candidate 2 seed 1) and the nearest point (candidate 2 seed 3); truncation direction does not apply (overflow logged as side waste)",
+                "registration": "the comparison-group step is honestly composition_mix (F5; task124's label for a kind read from records), which task165 registered at 14:10 and task173 carries in the queue; forecast_method_backtest would have passed and was not used; the window after task165 (task201, task247, task165) banned season_or_peak and purchase_order_or_contract, utility_or_infrastructure and local_government, field_unit_lead and operations_director",
+                "taxonomy": "the seasonal-population quantity sits in sociology-demography population-estimation-demographic-projection (F); the literal home urban-regional-science municipal-service-demand-resource-allocation (F) is task165's pairing in the window",
+                "repeat_screen": "guard.py recent, mechanisms --objective forecasting and slots before any card; slots on both driver sentences and on peers, analogs, summer, holiday, half-term, seasonality, second homes, lets, owners, occupancy, cold start, like demand, comparable sites, seasonal index district, summer uplift, drop-off bins: no slot spent the mechanism; closest card by mechanism task124",
+                "paper_only": "new points' ramp (FC04, task133's seed); peers' July completed past capacity (task168's driver); the two Julys weather-normalised (8 to 12 per cent, inside the bin); the summer holiday's start (the same late-July days in 2025 to 2027, no lever); deposits diverted from nearby points (no lever); dwellings times a kind's yield (determinate only under lockstep capture); the total July weekly fill (a flat uplift lands)",
+                "prototypes": "scratchpad b177/proto: world1.py, world3.py, world4.py, p1.py to p11.py, typestats.py, sig6.py, screen177.py (output screen177.out, byte-identical with screen177_run2.out over two runs)"
+            }
+        },
+        "stage3": {
+            "build": "generator/build.py 2026-10-19: checks.py PASS 92 of 92, verify.py PASS 24 of 24, a second full build byte-identical (18 files), target.zip cut from the final rebuild",
+            "figures_check": "exit 0 (42 figures)",
+            "voice_check": "PASS (735 characters)",
+            "precut": "exit 0 (51 checks)",
+            "scrub": "target and golden clean",
+            "surface": "exit 0; promoted pairs card-level only (task168, task70, task463, task104 differentiated on the card), no shared table schema",
+            "cracker": "pair ceiling 28.5, mirror leakage 0.0",
+            "call_keys": [
+                "call_share"
+            ],
+            "ask_keys": [
+                "ask_employers.<Month>",
+                "ask_own.<Month>"
+            ],
+            "component_keys": [
+                "ratio_words",
+                "share_af"
+            ]
+        },
+        "round2": {
+            "zip_sha256": "2c11b94b6f21b973a4b7eb825faaed037ca6119732720e7f3f6b58a87928c8dd",
+            "repair": "ask B's primary re-sited onto the vendor's support desk in the staff console (org_ref 724906318, the supplier's GST/HST number on the invoices); ask A's clock moves every month (employers' month-end wage-subsidy filings, draw k); plan 1.3 files release 4.0's resolution for the app, the web and the voice service",
+            "moved_figures": "ask_employers (all twelve months); vendor_bn added; the call, both components and every other figure unchanged",
+            "build": "checks.py PASS 109 of 109 (J: the call's files and rows are the judged pack's), verify.py PASS 25 of 25, a second full build byte-identical (18 files)",
+            "gates": "figures_check exit 0 (43); precut exit 0 (51); voice-check PASS; leak.py REVIEW (4 answered); scrub clean; surface exit 0; heart WARN",
+            "cracker": "pair ceiling 28.5 (cracker and mirror keep 0 of 24 on the round 1 readers' paths), mirror leakage 0.0"
+        },
+        "round3": {
+            "zip_sha256": "8ab100af3c9d6ed0a4ac80df07e65454ef4de12964bb058ec3c16215e456a176",
+            "repair": "ask A's primary re-sited onto the employer widget's day cut (a session open at 00:00:00 UTC closed there and carried on at that second as a new conversation from the same account: 183 pairs, 7 to 25 a month); the widget's UTC kept as a hazard; the assistant-first share dropped from block 2, step 4 and the workbook, component 2 now the 11,154 transfers among 413,866 contacts",
+            "moved_figures": "none graded; n_day_cut (183) added",
+            "build": "checks.py PASS 113 of 113 (J: the call's files and rows are the judged pack's), verify.py PASS 26 of 26, a second full build byte-identical (18 files)",
+            "gates": "figures_check exit 0 (44); precut exit 0 (51); voice-check PASS; leak.py REVIEW (4 answered); scrub clean; surface exit 0; heart BLOCK (window shift, see duplicate_check)",
+            "cracker": "pair ceiling 28.5 on the round 2 readers' path (ask B's row measured on 2c11b94b, ask A's a model), mirror leakage 0.0"
+        },
+        "round4": {
+            "zip_sha256": "a2c932a3a4f6960c4f8aba8572c8bfa018c106e12752b52100e7306ab7a0c10a",
+            "repair": "the share asked to the nearest 5 per cent (golden 26.05 prints 25, 1.45 points inside its cell); plan 5.1 files the denominator (every contact started) and the start channel (a claimant-line call is a phone start whoever answers it); plan 4.1 takes each check-in on its due date; the learner, rates and transfer weighting unfiled",
+            "moved_figures": "call_share 26 -> 25; in the workbook's model comparison only, share_no_persev 26 -> 25 and share_persev_exp 28 -> 30 (the forecasts now at the nearest 5 per cent)",
+            "build": "checks.py PASS 130 of 130 (J3: every reading round 3's judge took, under the filed conventions, prints 25 or is ruled out), verify.py PASS 26 of 26, a second full build byte-identical (18 files)",
+            "gates": "figures_check exit 0 (44); precut exit 0 (51); voice-check PASS (741 characters); leak.py REVIEW (5 answered); scrub clean; surface exit 0; heart BLOCK (ruled)",
+            "cracker": "pair ceiling 28.5, mirror leakage 0.0 (both asks measured at 0 of 24 by the round 3 readers on 8ab100af)"
+        },
+        "round5": {
+            "zip_sha256": "3be16ba3488501d4a5ed86fb3f8754cb144a21aafe9b3017ec3ac8db3633402d",
+            "diagnosis": "outsider re-implementation replicates 26.01; the judge's 27.1 is the phone's outcome over every call incl. transfers (+0.49, class a) plus the transferred calls' choice out of the likelihood (+0.62, class c); no-history start at the mean state -1.12 (c); values starting at 0 or 1 +1.76/-2.71 (b, 6,017 and 11,385 units); assistant-first pull to the channel met +2.91 (b, 133 units); phone value moved in the assistant-first weeks -0.27 (b)",
+            "repair": "plan 3.3 files the phone's outcome over the calls the queue keeps; acceptance count 2,041 -> 2,003 of 2,400 re-centres the forecast at 25.21 (2.29 inside its cell); open readings 24.13 to 25.80, the judge's pair 26.28",
+            "moved_figures": "share_unrounded 0.2605 -> 0.2521; accept_resolved 2,041 -> 2,003 (submission step 4); p_new_pct 85.0 -> 83.5 and share_persev_exp 30 -> 25 (workbook only); call_share stays 25",
+            "build": "checks.py PASS 138 of 138, verify.py PASS 26 of 26, a second full build byte-identical (18 files)",
+            "gates": "figures_check exit 0 (44); precut exit 0 (51); voice-check PASS; leak.py REVIEW (5 answered); scrub clean; surface exit 0; heart BLOCK (ruled, window fixed at draw)",
+            "cracker": "pair ceiling 28.5, mirror leakage 0.0 (asks measured at 0 of 24 by the round 4 readers on a2c932a3)"
+        },
+        "gate_f": {
+            "zip_sha256": "3be16ba3488501d4a5ed86fb3f8754cb144a21aafe9b3017ec3ac8db3633402d",
+            "fate": "architecture 1 spent at Gate F: the re-judge DETERMINISTIC, APPROVE, but reader I landed the 25 bin",
+            "reader_I_path": "Channel choice is habit-driven (fitted latent habit model: decays 0.63 per contact, weights by previous contact outcome; resolved chat strongly raises next chat use, voice resolved raises it modestly, abandoned calls push to chat); release 4.0 filed at 83.5 per cent (acceptance); Chat share of contacts 1 Mar-25 Apr = 26.2 per cent, rounded to 25",
+            "lesson": "whole per cent failed determinism and nearest 5 admitted an outcome-weighted habit model, so the lever between the golden and its neighbours was no wider than the golden family's own spread"
+        },
+        "wave": "wave 8 (new), seed FC48: the seed's world (drop-off recycling bins) died at stage 1 on measurement; redrawn in a new world in the cell psychology-behavioral-science / decision-making-computational-behavioral-modeling (Prairie Works Manitoba, the assistant's share of jobseekers' own contacts after eight assistant-first weeks)",
+        "architecture": 1,
+        "domain": "psychology-behavioral-science",
+        "fate": "spent at stage 4 Gate F on target.zip 3be16ba3 (2026-10-21); see the card lineage and the design note"
+    },
+    "rebuild_2026_10_23": {
+        "cell": "quantitative-finance / volatility-derivatives-pricing, Forecasting (assigned 2026-10-23)",
+        "worktree": "/home/user/b_177n",
+        "measured": "G, dealer gamma from an overwriting programme's short calls damping intraday moves, the programme wound up: index form lever 27 to 35 per cent only at kappa G 0.47 to 0.66; golden family spread 9.5 to 14.0 per cent median (19.8 to 26.5 worst) over 20 seeds; crude lowest-decile-gamma ratio route 1.06 to 1.10 of the golden (0.87 to 1.42); single-stock form lever 18 to 24 per cent against a 9.5 to 12.2 per cent spread, buildable nearest-10 bins in 8 to 14 of 30 seeds",
+        "paper_deaths": "leverage relevered, bond future notional coupon (CTD), power cap (retirement, new load), index reweight or removal, stale-price index methodology, closing auction bounce, trading hours change, Samuelson effect, minimum-variance delta, forward-start skew, reserve scarcity, securities lending utilisation, CPI basket reweight, mortgage prepayment (task171's driver), CVA wrong-way risk, degree-day station change, barrier on auction closes",
+        "finding": "a volatility-level forecast carries a 5.6 to 14 per cent median model spread at realistic vol-of-vol, so only a lever near 50 per cent survives rounding; the mechanisms that move a volatility that far are textbook identities once the change is read, and dealer gamma gives 20 to 35 per cent at plausible strength",
+        "prototypes": "scratchpad b177n/proto: g1.py to g5.py, screen177n.out (byte-identical with screen177n_run2.out)",
+        "card": "none registered; cards/task177.json unchanged (lineage already holds architectures v1 and v2)"
+    },
+    "rebuild_2026_10_23_survival": {
+        "cell": "biomedical-clinical-research / survival-time-to-event-analysis, Forecasting (assigned 2026-10-23)",
+        "worktree": "/home/user/b_177n (origin/main 682b11dd)",
+        "measured": "H1, deaths in a quarter on the time since each member's last discharge after a December admission surge: at realistic strength the duration curve times the season share +0.6 per cent and the mean first-quarter rate +1.0 against a golden family of -3.8 to +4.9; at implausible strength (fivefold surge, tenfold excess) the best reflex -6.3 against -2.3 to +4.4. A1, graft failure on attained age: duration-only +0.8 to +9.5, age-at-transplant strata +0.8 to +10.0, against the attained-age golden -2.7 to +6.1",
+        "paper_deaths": "starts moved to discharge, acute-state marker selection, postmenstrual age, healthy-volunteer effect, case-cohort sample, lead time, stage migration, learning curve at new centres, rationed transplant supply, colonisation pressure, timing modifiers, run-in exclusions, relapse against reinfection, imminent re-fracture, essential heterogeneity, frailty-attenuated hazard ratio, too-sick delisting (task169), effect before a recurring session (architecture 2), distance to centre",
+        "finding": "a stationary clinical record absorbs any hazard clock into the duration curve with a season term, and after a synchronising event the duration curve times the season share stays within 0.6 to 6.3 per cent of the golden, even at strengths beyond any registry; a 30 per cent lever needs a forward change, which in this cell names its step, closes a competing route or repeats architecture 2",
+        "prototypes": "scratchpad b177s/proto: h1.py (h1_run2.out, h1_run3.out byte-identical; h1_strong.out), a1.py (a1.out; a1_r2.out, a1_r3.out byte-identical)",
+        "card": "none registered; cards/task177.json unchanged"
+    },
+    "wave": "wave 8 (new), seed FC48: the seed's world (drop-off recycling bins) died at stage 1 on measurement; redrawn in a new world in the cell psychology-behavioral-science / decision-making-computational-behavioral-modeling (Prairie Works Manitoba, the assistant's share of jobseekers' own contacts after eight assistant-first weeks)",
+    "architecture_2": {
+        "domain": "product-analytics/churn-propensity-uplift-modeling",
+        "stump": "An uplift model on last January's half-and-half test (two-model or transformed outcome on the subscriber features) scored on this year's list files about 10 per cent; the test's subscribers whose next bill fell within two weeks of the send were kept at about twice the overall rate and almost none of the rest, and every bill on this year's list falls six days after the send, so the share is about 20 per cent.",
+        "precut": {
+            "exit": 0,
+            "date": "2026-10-21",
+            "checks": 51
+        },
+        "leak": {
+            "leak_py": "REVIEW 2026-10-22 on target.zip c2789bda (four lines, each answered in the design note's ## Leak sweep; no LEAK)"
+        },
+        "duplicate_check": {
+            "surface": "exit 0 2026-10-22: the same six card-level pairs as rounds 1 and 2",
+            "heart": "PASS at registration (2026-10-21T05:48:20Z) and after rounds 1 and 2's pulls; BLOCK on 2026-10-22 after the pull to bbc366d5 on ban.strategy (composition_mix) and ban.forum (executive_team) against task446 v3, registered at 05:35:41Z on 2026-10-21 in another session and on main only after round 1; no axis relabelled, left for the author; moot at retirement"
+        },
+        "judge": {
+            "verdict": "DETERMINISTIC",
+            "disposition": "APPROVE",
+            "report": "round 3 re-judge on target.zip c2789bda: the call reproduces at 20 (95 per cent half-width about 0.7 points), all of ask A and all 12 ask B cells; round 2 on cc5a56de NOT_DETERMINISTIC on ask B only (the line convention), round 1 on 4827dc5d DETERMINISTIC with hygiene"
+        },
+        "screen_v2": {
+            "cell": "product-analytics / churn-propensity-uplift-modeling, Forecasting (assigned 2026-10-21, second and last cell of the round)",
+            "held": "C2: the offer effect by the days from delivery to each subscriber next bill, carried from an anniversary-billed test (31 Jan 2026) to a list billed on the 1st (26 Jan 2027, every bill six days after the send)",
+            "outsider": "c2out.py on file-only mini-packs (seeds 7, 8, 9; truth 20.1 to 20.3): routes without the step 9.4 to 9.9 (bin 10), routes with it 18.0 to 21.0 (bin 20); lever about 10.5 points against an outsider spread of 3.0 (1.5 without single-day bins); scalings 31 to 80; wrong-built days 5.7 to 18.3",
+            "paper_deaths": "deferral horizon, channel exposure scaling, take rate against holdout, programme-shaped labels, stated intent, dose saturation, staggered rollout, paid sharing, trial withdrawal, promo step-up, repeat offers (task83), relative scale (task165), sleeping dogs, rationed offer, threshold design, winner curse",
+            "prototypes": "scratchpad r177/c2/proto: c2a.py to c2f.py, c2pack.py, c2out.py"
+        },
+        "stage3": {
+            "build": "generator/build.py 2026-10-22 (round 3 pack): checks.py PASS 147 of 147 (FROZEN call side unchanged), verify.py PASS 35 of 35, a second full build byte-identical (19 files, the write-up included), target.zip cut from the final rebuild",
+            "zip_sha256": "c2789bda6ae4c102d0537e9577f81f5d5fe14a81ad937dcc3e116db40d738b4a",
+            "figures_check": "exit 0 (51 figures); figures.json byte-identical to rounds 1 and 2, so no graded figure moved",
+            "voice_check": "PASS (763 characters, unchanged)",
+            "precut": "exit 0 (51 checks)",
+            "cracker": "pair ceiling 28.5, mirror leakage 0.0; the cracker, the mirror and readers A, B (as quoted and with both credit-note variants), C and D each 0 of 21; thinnest misses 90 on a takers count (reader C) and 152 pounds (ask B October Family, the header route)",
+            "call": "20 per cent (19.88, frozen); default 10 (9.65)",
+            "figures_json_call_keys": [
+                "call_fortnight_kept",
+                "call_later_kept",
+                "call_lead_days",
+                "call_n_fort",
+                "call_n_ly",
+                "call_n_ty",
+                "call_share",
+                "call_share_unrounded",
+                "call_ty_days",
+                "call_ty_next",
+                "call_whole_list",
+                "call_window_days"
+            ]
+        },
+        "readers": {
+            "round1": "target.zip 4827dc5d: reader A call 10, asks 9 of 21; reader B call 10, asks 21 of 21",
+            "round2": "target.zip cc5a56de: reader C call 10, asks 0 of 21 (PASS); reader D call 10, ask A 9 of 9 through the -MA rate lines, ask B 0 of 12 (FAIL at 42.9 per cent); ask A re-sited onto credits posted against the acceptance, ask B's convention filed",
+            "round3": "target.zip c2789bda: reader E call 10, asks 12 of 21 (ask A 0 of 9, the credit lines held; ask B 12 of 12 through the filed qty convention), score_reader FAIL at 57.1 per cent; reader F's result lost in a container restart"
+        },
+        "retired": {
+            "date": "2026-10-22",
+            "why": "the asks never cleared two readers in one round of architecture 2 (round 1: 9 and 21 of 21; round 2: 0 and 9; round 3: 12 of 21), the call holding in every blind read; architecture 1 spent at Gate F",
+            "lesson": "an ask device whose determinism needs a filed convention dies when the convention is filed",
+            "device_records": "vendor desk, day cut (architecture 1), the offer's half price posted as credits (architecture 2), in the design note's ## Retired"
+        },
+        "architecture": 2,
+        "fate": "RETIRED 2026-10-22: the asks never cleared two readers in one round; the call held in every blind read"
+    },
+    "rebuild_2026_10_23_claims": {
+        "cell": "actuarial-science-insurance / claims-frequency-severity, Forecasting (chosen by the build shape first, 2026-10-23, after the coordinator's exclusions)",
+        "worktree": "/home/user/b_177n (origin/main 2811e60c)",
+        "measured": "T1 school-trip pupils detached from the party: per-policy rate +458 to +472 per cent, booking events per traveller +93 to +98, solo adults +207 to +221, golden family (any-member decomposition) -19.0 to +1.2 (relatives term and adults' slope collinear), dead on determinacy and a readability-1 wording; T3 multi-generation bookings: reflexes -45 to +65, product -1.0 to +1.8, linear probability +1.2 to +4.9, product over logit 17 to 26 ll; T4 with lead-time hazards (seed 1): booking logit +89, log-link Poisson +143, LPM -35, passenger logit -56 and +56 with party terms, GBM -37, additive hazard +1.1 to +2.1 (68 ll over logit), dead on the v3 law: the wording names the companion channel and solo travellers plus families less parents land +3 to +15 by filter and subtraction (t4s.py), and big-party joint cancellation is a behaviour the record shows only for small parties",
+        "paper_deaths": "delivery stops (task170), pool vehicles, ticket parties, building-size theft and kerb density (task175 device), bike-share destinations in range (task175 driver; task170 died there too), parcel-locker infill (replay), crosstown fare per boarding, escape of water from above (15 to 20 per cent), turnovers, connections, handlings and hires (plain group-by), hours against payroll (wage on-level), leak valves by plumbing, component platforms, crossbreeds, crop transitional yields and unit structure, pre-existing exclusions, other insurance and package refunds (task169 route), bonus hunger, bundled awareness, voluntary group participation",
+        "finding": "every exposure a forward book can differ on is a rating factor, usage measure or group-by count the per-policy GLM reaches; the one structure that escapes it, a claim generated by an event of the policy's group, takes its lever from groups the record never watched, so their joint behaviour is an assumption, and every mechanical group event is the textbook joint-life or per-occurrence function",
+        "prototypes": "scratchpad b177w/proto: t1.py (t1.out, t1_run2.out byte-identical), t3.py, t3b.py, t3c.py, t3d.py (t3.out, t3_run2.out byte-identical), t4.py (t4.out, seed 1), t4s.py (t4s.out, t4s_run2.out byte-identical)",
+        "card": "none registered; cards/task177.json unchanged"
+    }
 }
