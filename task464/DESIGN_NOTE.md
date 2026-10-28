@@ -1094,6 +1094,17 @@ Reship of 2026-10-28 after the portal's two returns (the determinism block's for
   turn, without computing one. Filing them would file the method; instead C15 and V15 sweep them wide (1,600 and
   108 settings) and the placement and runner-up never move. Its 1,243 for critical component 2 counted patients who
   ever held such a repeat; the write-up now says the repeat their latest issue was made on (1,232, SF30).
+- Architecture 9 spent, 2026-10-28, at the portal's second determinism return on the same fork (Gate C/D,
+  competing_defensible_answer, golden_wrong): the brief's "each patient's own chance, on what that patient's record
+  shows at the searches" admitted a joint-outcome model fitted and validated on the 30 November 2024 and 2025
+  cohorts, which files Cobbet Street then Fennbridge (the judge's 2025 analog cohort Cobbet Street 147 against
+  Marrick House 90). The fork is the estimator, and the estimator is the decisive step, so every closure spends the
+  stump or moves the golden: filing the method is rule application; a filed back-test criterion hands the clock to
+  any patient-level model, since in both earlier cohorts patients whose current repeat runs out before March lapse
+  at 18.5 and 17.5 per cent against 4.0 and 3.0 for the rest; the judge's own route files another practice. The
+  stump lived in the fork. A decisive step that is a forecast's estimator, left open in the brief and forced only by
+  the analyst noticing the clock, cannot pass a literal judge; a redraw needs a decisive step the filed estimand
+  forces once noticed (a reconstruction over rows the record supplies), not a choice among estimators.
 
 ## Portal result and the diagnosis, 2026-10-27
 
