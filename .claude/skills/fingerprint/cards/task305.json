@@ -1,149 +1,148 @@
 {
- "task": "task305",
- "architecture": "v1",
- "drawn": "2026-10-27",
- "slot_note": "wave 6, Opportunity Sizing block; seed OS07 (the world, the decision and the quantity only: a regional grocer opening one of six shortlisted sites next year, sized by its incremental annual contribution)",
- "domain": "urban-regional-science",
- "subdomain": "accessibility-agglomeration-location-analysis",
- "niche": "which shortlisted site a regional grocery chain opens next year, sized by a spend-share (Huff) model whose origins are census output areas, when one site is the nearest of the six to a 1,750-pitch holiday park whose guests live outside the region",
- "objective": "opportunity-sizing-decision",
- "shape": "other",
- "decision_type": "pick_one_of_n",
- "answer_unit": "named_option",
- "answer": "S3 Wrentoft, Mill Lane, adding GBP 0.8 million a year to the chain's contribution",
- "answer_source": "golden workbook and submission.md, from generator/figures.json",
- "gap": [
-  "population"
- ],
- "pattern": [
-  "none"
- ],
- "generators": [
-  "G5",
-  "G3",
-  "G6"
- ],
- "gate_g": "decomposition_attribution",
- "calibration_form": "existing_book_actuals",
- "stump_strategy": "decomposition_attribution",
- "decisive_rule_filed": false,
- "official_decoy": false,
- "validated_decoy": false,
- "context_artifact": "filed_model",
- "stump_class": "analytical",
- "analyst_test": "A strong analyst who reads every field correctly carries the parks, recovers their spend through our modelled share as the portal's responses did, works the share on the rating list as shipped and files S3 Wrentoft at GBP 0.5 million (GBP 1,560 a pitch) where the golden is GBP 0.8 million.",
- "domain_test": "The deciding quantity is a new store's trade from the retail geographer's spatial-interaction model, every origin's grocery spend shared among the stores in reach by floor area and distance deterrence; a holiday park's spend is not observed, only our stores' take of it, which the same model shares with the competitors beside it, so it is recovered by dividing the take by our modelled share; with a hospital's patients or a utility's megawatt-hours there is no origin whose spend is seen only as one competitor's share of it.",
- "layer2_family": "field_method",
- "layer2_pattern": "own:spatial-interaction-origin-spend-recovered-from-one-outlet's-share",
- "layer1": [
-  "Census 2021 output areas with population-weighted centroids on the British National Grid",
-  "ONS Postcode Directory extract with terminated postcodes and their termination months",
-  "VOA non-domestic rating list in its own descriptions, with the summary valuation's main measure in m2, parking spaces or pitches",
-  "a payment acquirer's merchant-insight feed of card spend by month and cardholder home postcode sector, out-of-region sectors included",
-  "modelled grocery spend per household by output area from a data provider",
-  "the chain's financial year (April to March) against calendar-month feeds",
-  "the VOA's historic list entries, each superseded version with its current-from and current-to dates, in an archive folder",
-  "the estate register's floor area with the one before it and the day it changed"
- ],
- "stakeholder_role": "the chain's finance director, who chairs the property committee",
- "role_family": "finance_controller",
- "scoring_unit": "other",
- "spine": {
-  "file": "voa_list_entries_2026_lq.txt",
-  "rows": 4234,
-  "entity": "one hereditament on the non-domestic rating list in the planning region",
-  "grain": "hereditament",
-  "source": "synthetic"
- },
- "forum": "executive_team",
- "forcing_event": "vote_or_meeting",
- "org_family": "retailer_or_ecommerce",
- "world": {
-  "geography": "England (a planning region of twelve towns and sixty-one rural parishes on the British National Grid, postcode area LQ)",
-  "currency": "GBP",
-  "org_type": "regional grocery chain, ten stores",
-  "invented_names": [
-   "Marrable Foodstores",
-   "Fairbasket",
-   "Brightmart",
-   "Pettifer's",
-   "Valuewise",
-   "Darrowfield",
-   "Bellingtoft",
-   "Brackenmere",
-   "Sallowmere",
-   "Quellby",
-   "Withybeck",
-   "Corrinby",
-   "Wrentoft",
-   "Raddleford",
-   "Sedgeton",
-   "Haddrell Fen",
-   "Loderwell",
-   "Sallowdale",
-   "Wrentoft Lakes Holiday Park",
-   "Raddleford Water Holiday Park",
-   "Withybeck Lakes Caravan Park",
-   "Sallowmere Mill Caravan Park",
-   "Corrinby Farm Camping and Caravans",
-   "Loderwell Brook Touring Park",
-   "Loderwell Gate distribution centre",
-   "Sallowmere Motor Services",
-   "Wrentoft & District Coaches",
-   "61 rural parishes (params.PARISHES)"
-  ],
-  "people": [
-   "Pauline Sullivan",
-   "Joshua Ingram",
-   "Hazel Lucas",
-   "Hollie Richardson",
-   "Kathryn Hughes"
-  ]
- },
- "deliverables": [
-  "marrable_site_appraisal_2027.xlsx",
-  "new_store_case_2027.docx"
- ],
- "opening_move": "question-first",
- "question_form": "which",
- "driver": "An origin's total is known only through what one outlet among several took from it in a past period, as its modelled share of that total; the share that inverts the take is the one formed among the outlets and origin sizes of that period, which the current register no longer shows, so inverting on today's larger outlets and origins understates the origin and the figure built on it, while the forward projection runs on today's.",
- "driver_concrete": "The guests' grocery spend per pitch is recovered from the out-of-region cardholders' FY2025/26 season spend at our park-side stores, which took only our modelled share of each park's spend; the share is the 2025 one, on stores 105 and 107 before their 2026 extensions and on Raddleford Water and Withybeck Lakes before their new pitches, held only in the VOA's historic entries in an archive folder (the estate register keeps one previous floor area), so a pitch spends about GBP 2,550, not GBP 1,560 on today's list, and S3 Wrentoft adds GBP 0.8 million, not 0.5.",
- "stump": "A competent analyst carries the holiday parks as origins, recovers their guests' spend through our modelled share of each park, works that share on the rating list as shipped and files S3 Wrentoft, Mill Lane, at GBP 0.5 million where the golden is GBP 0.8 million; the step that lands them there is inverting the 2025 season's take through today's stores and parks, when the cards were used at stores 105 and 107 before their 2026 extensions and at parks before their new pitches.",
- "mechanism_source": "design_note",
- "differentiation": {
-  "task199": "task199's record holds an event only where a watcher filed it, so a unit's rise is read against its own filing volume; here no record depends on a watcher: the census is complete for the region's residents, and the missing origin is a holiday park's guests, who appear in no count and are priced per pitch from the out-of-region cardholders the acquirer's feed shows at the chain's stores beside other parks.",
-  "task268": "task268's first architecture carried people present at small areas from a commuting table at a survey's on-site rate, and its later ones a stock retreating from collectors and survival through lost follow-up; here the missing people are holiday guests who live outside the region, absent from every table in the pack, whose only measure is the grocery spend per pitch that out-of-region cardholders leave at stores beside other parks.",
-  "task133": "task133's loan record never watched the months before a system takeover, a left truncation of exposure in a unit-level record; here nothing is truncated or unwatched: the census is complete for its residents and the gap is an origin of spend it never holds.",
-  "task180": "task180's catalogue masks small events in the noisy hours of a daily cycle, a detection gap inside one record; here no event goes undetected: the census counts residents correctly and the decisive origin, a holiday park's guests, is outside its scope altogether.",
-  "task196": "task196 recovers how many events a record only partly captures from the overlap of two capture channels; here nothing is under-captured, since the census is complete for the residents it counts, and the missing origin is a body of non-resident guests priced per pitch from the seasonal out-of-region card spend at the chain's own stores.",
-  "task255": "task255 reads the upper tail of a size distribution truncated at item-specific floors and capped by a moving ceiling; here no item is truncated or censored, and the decisive step is the spend-share model's origin set, which leaves out a population the census never counts.",
-  "task271": "task271 corrects a risk estimate for clusters that reached the record through an affected member; here no unit enters any file through its outcome, and the guests are absent from the census by where they live, not by selection on what they spend.",
-  "task273": "task273 infers each group's exposure from the uninvolved parties of two-party events drawn where events are frequent; here the omitted demand is measured directly, the guests' card spend in season at the chain's stores, and priced per pitch over the parks that send it.",
-  "task456": "task456 estimates how often a state holds from three records that each misclassify; here every record reads as what it is, and the call turns on which places the demand model takes spend to start from.",
-  "task462": "task462 totals intermittent sources seen only by snapshot surveys whose detection rises with size; here the omitted demand is not missed by a survey but never counted by the census, and the card feed measures it month by month.",
-  "task128": "task128 v3 sizes a queue's overflow against a team's capacity; this build recovers an origin's unobserved spend from the one outlet's modelled share of it, with no queue, capacity or team"
- },
- "lineage": [
-  {
-   "architecture": "v1",
-   "fate": "spent 2026-10-27 at the portal's determinism return: both judges competing_defensible_answer (Gates C and D), the filed model's origins the census households and the guests' spend per pitch pinned nowhere; the decisive step settled the population, so the WHAT screen kills it and no pin repairs it",
-   "driver": "The demand model's origins are the resident count, and a body of short-stay occupants counted at homes outside the area sits in no origin; their spend, measured at existing outlets beside similar lodgings and priced per lodging unit, decides which candidate adds most.",
-   "gap": [
+  "task": "task305",
+  "architecture": "v3",
+  "drawn": "2026-10-27",
+  "slot_note": "Re-root of a spent world (Marrable, architectures 1 and 2): every remaining step in it was an input recovery the filed appraisal formula announced.",
+  "domain": "product-analytics",
+  "subdomain": "churn-propensity-uplift-modeling",
+  "niche": "a free plan's three-project limit rolled out to one app first, sized by the paid upgrades it wins net of the free users it drives away",
+  "objective": "opportunity-sizing-decision",
+  "shape": "03",
+  "decision_type": "pick_one_of_n",
+  "answer_unit": "named_option",
+  "answer": "",
+  "answer_source": "",
+  "gap": [
     "population"
-   ],
-   "pattern": [
-    "none"
-   ],
-   "gate_g": "method_or_model_selection",
-   "stump_strategy": "population_selection",
-   "generators": [
-    "G12",
-    "G3",
-    "G6"
-   ],
-   "decision_type": "pick_one_of_n"
-  }
- ],
- "notes": "Shape other: the call is one of six sites with its addition to the chain's annual contribution (2 criteria plus its components), and the asks grade the existing estate and the six sites on measures the call does not turn on (26 figures: DC cases a week by store, paid hours a week by store, bus departures by site on a Friday); grading every site's addition would pay the resident route five of six. Probes before the draw (2026-10-24, call-only, isolated, medium): sonnet and opus both approved the site now named S1 Bellingtoft; opus refitted the model to the card feed, called the out-of-region cardholders 1.7 per cent of card spend and read the park-side store's end-of-season fall as competition. Redrawn at check: context artifact filed_model (ban against task482) to monitoring_export, the acquirer's merchant-insight feed; Gate G method_or_model_selection (repeat of task482, overuse 5 of 12) to forecasting, the honest key since the fitted model back-tests on the estate and the correctly read past does not pin the new store's trade; deliverables an xlsx appraisal and a docx committee paper. Stage 3: every invented name re-screened against OS Open Names (edit distance three or more, no contained place name) and replaced; the golden S3 at 0.800 against the resident route's S1 at 0.493; standing family of fourteen constructions 0.768 to 0.832, all printing 0.8. Author override (2026-10-24, stage 4 round 4): guard.py heart BLOCKs on ban.strategy (population_selection) and ban.forcing_event (vote_or_meeting) against task275, which was drawn the day before; the draw passed check when filed, and the window reached task275 only after the four builds drawn between them (task279, task482, task484, task486) were marked spent. The labels are the honest ones, so the author chose to override rather than relabel. Architecture 2 (re-rooted 2026-10-27 after the portal's determinism return, at the author's direction, same world): the model sheet files the population (a household's spend at its output area and anyone else's where they stay), the decisive step moves to recovering a park's spend from our store's modelled share of it, and the world gains a larger competitor beside each park-side store. Redrawn at check (2026-10-27): forum committee_or_panel (ban against task270) to executive_team, the chain's executive approving its one 2027 opening; context artifact monitoring_export (ban against task310) to filed_model, the property team's model sheet that files the share. Redesign 2026-10-27 (loop 1, author's direction after the portal's FAILED_TO_STUMP, both responses on S3 at 0.8): the figure carries the as-of inversion; the share inversion stays the site's step.",
- "registered": "2026-10-27T22:50:51Z"
+  ],
+  "pattern": [
+    "E"
+  ],
+  "generators": [
+    "G14",
+    "G9",
+    "G13"
+  ],
+  "gate_g": "forecasting",
+  "calibration_form": "existing_book_actuals",
+  "stump_strategy": "causal_design",
+  "decisive_rule_filed": false,
+  "official_decoy": false,
+  "validated_decoy": false,
+  "context_artifact": "filed_model",
+  "stump_class": "analytical",
+  "analyst_test": "A strong analyst who reads every file correctly prices each app's limit at the upgrades its heavy free users already make of their own accord, with none of them leaving, and files Canvasly; the golden is Ledgerline, because users a limit stops answer as the users the storage limit already stops do: few upgrade, many leave, most trim.",
+  "domain_test": "The deciding quantity is the conversion and churn response of free users when a plan limit binds, estimated from the users the existing storage limit already binds, the monetisation team's own forecast of a pricing change; put a hospital or a utility in its place and there is no free plan whose limit forces a pay, trim or leave choice.",
+  "layer2_family": "estimand_identification",
+  "layer2_pattern": "own:response-to-a-binding-plan-limit-read-from-the-limit-already-in-force",
+  "layer1": [
+    "an event log in UTC from the app clients, retried events sent twice",
+    "accounts merged when users joined two apps under one sign-in",
+    "an app renamed in 2025, its old name on earlier rows",
+    "a billing ledger in three currencies with proration and credit notes"
+  ],
+  "stakeholder_role": "head of monetisation",
+  "role_family": "product_manager",
+  "scoring_unit": "per active unit per period",
+  "spine": {
+    "file": "",
+    "rows": 0,
+    "entity": "one event an app client sent",
+    "grain": "user x event",
+    "source": "synthetic"
+  },
+  "forum": "executive_team",
+  "forcing_event": "vote_or_meeting",
+  "org_family": "software_or_platform",
+  "world": {
+    "geography": "United Kingdom",
+    "currency": "GBP",
+    "org_type": "software company",
+    "invented_names": [
+      "Larkfield Software",
+      "Canvasly",
+      "Taskfold",
+      "Ledgerline",
+      "Formbox",
+      "Notewell"
+    ],
+    "people": [
+      "Lynne Powell",
+      "Leonard Young",
+      "Frederick Nicholls"
+    ]
+  },
+  "deliverables": [
+    "free_plan_limit_2027.xlsx",
+    "free_plan_limit_case_2027.docx"
+  ],
+  "opening_move": "question-first",
+  "question_form": "which",
+  "driver": "A change forces a choice on members who until now chose freely; their response is read from the members an existing limit of the same kind already forces, not from what unforced members do of their own accord, so the candidate that wins on the unforced behaviour loses once the forced members' exits are counted against what each exit costs.",
+  "driver_concrete": "From 1 January 2027 one app's free plan stops at three active projects; the free users over it upgrade, trim or leave as the users the two-gigabyte storage limit already stops do (about 7 in 100 upgrade, 28 leave, the rest trim), not at the 14 in 100 a year the heavy free users upgrade of their own accord, and with each leaver's lost free-plan revenue counted Ledgerline adds most, not Canvasly.",
+  "stump": "A competent analyst prices the limit at the heavy free users' own upgrade rate with nobody leaving and files Canvasly, when users a limit stops respond as the storage limit's users do and the leavers cost each app its free-plan revenue.",
+  "mechanism_source": "design_note",
+  "differentiation": {
+    "task199": "task199's record holds an event only where a watcher filed it, so a unit's rise is read against its own filing volume; here no record depends on a watcher: the census is complete for the region's residents, and the missing origin is a holiday park's guests, who appear in no count and are priced per pitch from the out-of-region cardholders the acquirer's feed shows at the chain's stores beside other parks.",
+    "task268": "task268's first architecture carried people present at small areas from a commuting table at a survey's on-site rate, and its later ones a stock retreating from collectors and survival through lost follow-up; here the missing people are holiday guests who live outside the region, absent from every table in the pack, whose only measure is the grocery spend per pitch that out-of-region cardholders leave at stores beside other parks.",
+    "task133": "task133's loan record never watched the months before a system takeover, a left truncation of exposure in a unit-level record; here nothing is truncated or unwatched: the census is complete for its residents and the gap is an origin of spend it never holds.",
+    "task180": "task180's catalogue masks small events in the noisy hours of a daily cycle, a detection gap inside one record; here no event goes undetected: the census counts residents correctly and the decisive origin, a holiday park's guests, is outside its scope altogether.",
+    "task196": "task196 recovers how many events a record only partly captures from the overlap of two capture channels; here nothing is under-captured, since the census is complete for the residents it counts, and the missing origin is a body of non-resident guests priced per pitch from the seasonal out-of-region card spend at the chain's own stores.",
+    "task255": "task255 reads the upper tail of a size distribution truncated at item-specific floors and capped by a moving ceiling; here no item is truncated or censored, and the decisive step is the spend-share model's origin set, which leaves out a population the census never counts.",
+    "task271": "task271 corrects a risk estimate for clusters that reached the record through an affected member; here no unit enters any file through its outcome, and the guests are absent from the census by where they live, not by selection on what they spend.",
+    "task273": "task273 infers each group's exposure from the uninvolved parties of two-party events drawn where events are frequent; here the omitted demand is measured directly, the guests' card spend in season at the chain's stores, and priced per pitch over the parks that send it.",
+    "task456": "task456 estimates how often a state holds from three records that each misclassify; here every record reads as what it is, and the call turns on which places the demand model takes spend to start from.",
+    "task462": "task462 totals intermittent sources seen only by snapshot surveys whose detection rises with size; here the omitted demand is not missed by a survey but never counted by the census, and the card feed measures it month by month.",
+    "task128": "task128 v3 sizes a queue's overflow against a team's capacity; this build recovers an origin's unobserved spend from the one outlet's modelled share of it, with no queue, capacity or team",
+    "task166": "Here a choice is forced on free users by a new plan limit and their response (upgrade, trim or leave) is read from the users an existing limit already forces; task166 v2 prices a junior unit's exit on a stack's blended price against a new senior unit, an asset-replacement threshold, not a member's forced choice.",
+    "task228": "Here a choice is forced on free users by a new plan limit and their response (upgrade, trim or leave) is read from the users an existing limit already forces; task228 calibrates a false-alarm budget per monitored run and later ranks units on their own error against a latent signal; no choice is forced and no response is transported.",
+    "task28": "Here a choice is forced on free users by a new plan limit and their response (upgrade, trim or leave) is read from the users an existing limit already forces; task28 v1 conditions an at-stake volume on a portability property recovered through a credential join; nothing there is a behavioural response to a limit.",
+    "task30": "Here a choice is forced on free users by a new plan limit and their response (upgrade, trim or leave) is read from the users an existing limit already forces; task30 carries a forward gap across closed parallel cases on a transmission variable or segments a calibration corpus at a method change; no member's choice under a new limit is read from a forced analog.",
+    "task32": "Here a choice is forced on free users by a new plan limit and their response (upgrade, trim or leave) is read from the users an existing limit already forces; task32 v1 conditions an offer's delivered cost on the collection programme behind it, a supply yield, not a member's response to a limit.",
+    "task53": "Here a choice is forced on free users by a new plan limit and their response (upgrade, trim or leave) is read from the users an existing limit already forces; task53 pools eligible volume against a scale break or a term window; the pick turns on eligibility and timing, not on a forced response.",
+    "task124": "Here a choice is forced on free users by a new plan limit and their response (upgrade, trim or leave) is read from the users an existing limit already forces; task124's newcomers are priced from analogs whose measured draw an intervention held down (or from units examined because they showed signs); there the analog is biased by the organisation's own action, here the analog is the unbiased forced group and the unforced heavy users are the biased reading.",
+    "task170": "Here a choice is forced on free users by a new plan limit and their response (upgrade, trim or leave) is read from the users an existing limit already forces; task170 v5 conditions a per-attempt failure probability on each operator's own count of attempts, a learning curve, not a response to a limit.",
+    "task177": "Here a choice is forced on free users by a new plan limit and their response (upgrade, trim or leave) is read from the users an existing limit already forces; task177 v2 reweights a randomised effect by where an intervention lands in each unit's own decision cycle; no new limit forces a choice."
+  },
+  "lineage": [
+    {
+      "architecture": "v1",
+      "fate": "spent 2026-10-27 at the portal's determinism return: both judges competing_defensible_answer (Gates C and D), the filed model's origins the census households and the guests' spend per pitch pinned nowhere; the decisive step settled the population, so the WHAT screen kills it and no pin repairs it",
+      "driver": "The demand model's origins are the resident count, and a body of short-stay occupants counted at homes outside the area sits in no origin; their spend, measured at existing outlets beside similar lodgings and priced per lodging unit, decides which candidate adds most.",
+      "gap": [
+        "population"
+      ],
+      "pattern": [
+        "none"
+      ],
+      "gate_g": "method_or_model_selection",
+      "stump_strategy": "population_selection",
+      "generators": [
+        "G12",
+        "G3",
+        "G6"
+      ],
+      "decision_type": "pick_one_of_n"
+    },
+    {
+      "architecture": "v2",
+      "fate": "spent 2026-10-27 at the portal (FAILED_TO_STUMP twice): both responses filed the golden S3 Wrentoft at GBP 0.8 million as first shipped and again after the as-of redesign; every layer was announced by the sentence filed to make it deterministic (the population sentence, the share formula, the trading-when-the-spend-is-made sentence)",
+      "driver": "An origin's total is known only through what one outlet among several took from it in a past period, as its modelled share of that total; the share that inverts the take is the one formed among the outlets and origin sizes of that period, which the current register no longer shows, so inverting on today's larger outlets and origins understates the origin and the figure built on it, while the forward projection runs on today's.",
+      "stump": "A competent analyst carries the holiday parks as origins, recovers their guests' spend through our modelled share of each park, works that share on the rating list as shipped and files S3 Wrentoft, Mill Lane, at GBP 0.5 million where the golden is GBP 0.8 million; the step that lands them there is inverting the 2025 season's take through today's stores and parks, when the cards were used at stores 105 and 107 before their 2026 extensions and at parks before their new pitches.",
+      "domain": "urban-regional-science",
+      "subdomain": "accessibility-agglomeration-location-analysis",
+      "gap": [
+        "population"
+      ],
+      "pattern": [
+        "none"
+      ],
+      "gate_g": "decomposition_attribution",
+      "stump_strategy": "decomposition_attribution"
+    }
+  ],
+  "notes": "v3 drawn 2026-10-27 after v2 was spent at the portal.",
+  "client_domain": "product-analytics",
+  "architecture_spent": false,
+  "registered": "2026-10-28T03:06:30Z"
 }

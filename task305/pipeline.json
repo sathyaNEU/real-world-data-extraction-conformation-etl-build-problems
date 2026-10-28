@@ -1,33 +1,30 @@
 {
  "task": "task305",
- "status": "SHIPPED",
- "domain": "urban-regional-science",
+ "status": "DESIGN",
+ "domain": "product-analytics / churn-propensity-uplift-modeling",
  "objective": "opportunity-sizing-decision",
- "stage": 5,
- "stage_name": "ship",
+ "stage": 2,
+ "stage_name": "design",
  "updated": "2026-10-27",
- "stump": "A competent analyst carries the holiday parks as origins, recovers their guests' spend through our modelled share of each park, works that share on the rating list as shipped and files S3 Wrentoft, Mill Lane, at GBP 0.5 million where the golden is GBP 0.8 million; the step that lands them there is inverting the 2025 season's take through today's stores and parks, when the cards were used at stores 105 and 107 before their 2026 extensions and at parks before their new pitches.",
- "architecture": 2,
- "loops": 1,
+ "stump": "A competent analyst prices the limit at the heavy free users' own upgrade rate with nobody leaving and files Canvasly, when users a limit stops respond as the storage limit's users do and the leavers cost each app its free-plan revenue; the golden is Ledgerline.",
+ "architecture": 3,
+ "loops": 0,
  "precut": {
-  "exit": 0,
-  "date": "2026-10-27",
-  "checks": "53, 0 FAIL, 0 WARN"
+  "exit": null,
+  "date": ""
  },
  "leak": {
-  "leak_py": "REVIEW, every line ruled harmless",
-  "reader": "loop 1 read 1 on c91a09a2: no decisive-step sentence, no ranking file, no answer figure; question 3 the VOA file specification; question 5 the golden's reading; question 6 analytical; the archive reads as a real analyst's downloads"
+  "leak_py": "",
+  "reader": ""
  },
  "duplicate_check": {
-  "heart": "WARN (overuse.objective, repeat.decision, repeat.deliverables, answered at the draw)",
-  "surface": "3 pairs promoted on card axes (task307, task303, task128), each adjudicated clean in the pre-ship check"
+  "heart": "",
+  "nearest": "0.07"
  },
  "judge": {
-  "verdict": "DETERMINISTIC, APPROVE (loop 1 pass 1, zip c91a09a2)",
-  "disposition": "APPROVE; non-blocking note on the park shares answered (our ten stores together)",
-  "gate_g": "method_or_model_selection, analytical_non_defect, surface_read_dependency no",
-  "gate_h": "domain pass, layers pass, decisive step analytical",
-  "report": "task305/determinism_check_report_loop1.md"
+  "verdict": "",
+  "disposition": "",
+  "report": ""
  },
  "returned": [
   {
@@ -41,12 +38,18 @@
    "portal": "FAILED_TO_STUMP: both responses filed S3 Mill Lane, Wrentoft at GBP 0.8 million (the golden), the share inversion landed",
    "repair": "design",
    "commit": "RESHIPPED (task305), 2026-10-27"
+  },
+  {
+   "date": "2026-10-27",
+   "portal": "FAILED_TO_STUMP: both responses filed the golden again after the as-of redesign (S3 Mill Lane, Wrentoft, GBP 0.8 million)",
+   "repair": "re-root",
+   "commit": "DRAWN (task305) architecture 3"
   }
  ],
- "resume": "",
+ "resume": "stage 2 (architecture 3, Larkfield Software's free-plan limit): prototype the five apps (no churn -> Canvasly, all non-upgraders leaving -> Formbox, the storage limit's response 7/28/65 -> Ledgerline), then the design note's sections, the prompt and precut",
  "approved": null,
  "delivered": "2026-10-27",
- "portal": "FAILED_TO_STUMP 2026-10-27: both responses filed the golden call (S3 Wrentoft, Mill Lane, GBP 0.8 million)",
+ "portal": "FAILED_TO_STUMP 2026-10-27 (architecture 2 loop 1): both responses filed the golden, S3 Wrentoft at GBP 0.8 million",
  "portal_id": "",
  "portal_status": "",
  "portal_status_date": "",
