@@ -98,7 +98,8 @@
     "task468": "task468 corrects outcome counts for a linker's false and missed links measured on control groups; here every record is exact and the observed trips are chosen at random, and only the vessels' behaviour while observed differs from the rest of the fleet's.",
     "task469": "task469 reads a share seen in full only where an earlier allowance was already short, the rest censored by the record's own rule; here nothing is censored by a rule: the unobserved trips' discards go unrecorded because nobody is aboard to see them, and are rebuilt from the observed trips' catch per hour by ground less what the unobserved trips declared.",
     "task273": "task273 re-weights crash exposure by each stratum's mileage from not-at-fault vehicles; here no exposure is weighted: the unobserved trips' discards are rebuilt from the observed trips' unwanted catch per hour on each ground, because vessels behave differently with an observer aboard.",
-    "task476": "task476 dates items found only at a periodic inspection after an unrecorded start; here every trip's record is complete and timed, and what differs is the observed trips' own landing and fishing behaviour."
+    "task476": "task476 dates items found only at a periodic inspection after an unrecorded start; here every trip's record is complete and timed, and what differs is the observed trips' own landing and fishing behaviour.",
+    "task270": "task270 v8 read a population hidden behind a partly recorded flag, a field-reading step its judge sent back; here the measured trips change what they land, and the unmeasured trips' discards are rebuilt from the catch an hour a ground yields, which no observer changes, less what those trips declared"
   },
   "lineage": [],
   "notes": "",

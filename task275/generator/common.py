@@ -1,6 +1,7 @@
 """Constants for task275: the Wrayburn Coast Fish Producers' Organisation, its eight fleet segments, the five grounds,
 the species, the ports, the buyers, the people, the dates and the pack's file names."""
 import datetime as dt
+import os
 
 SEED = 6
 YEAR = 2025
@@ -169,3 +170,18 @@ VESSEL_NAMES = [
     "Steadfast", "Sunbeam", "Sustain", "Tranquility", "Trident", "Trust", "Unity", "Valiant", "Vanguard",
     "Venture", "Vigilant", "Wanderer", "Westward", "Wild Rose", "Willing Boys", "Zephyr",
 ]
+
+
+# the distance no vessel covers between two reports in one UTC hour, for the two-terminal evidence (nautical miles)
+APART_NM = 20
+
+
+def _font_dir():
+    """the Liberation fonts: the Linux package path first, then a user or Homebrew install on macOS"""
+    for d in ("/usr/share/fonts/truetype/liberation/", os.path.expanduser("~/Library/Fonts/"), "/Library/Fonts/"):
+        if os.path.exists(os.path.join(d, "LiberationSans-Regular.ttf")):
+            return d
+    raise FileNotFoundError("LiberationSans-Regular.ttf")
+
+
+FONT_DIR = _font_dir()

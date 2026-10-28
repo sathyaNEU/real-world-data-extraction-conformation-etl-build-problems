@@ -209,6 +209,48 @@ def run(task, b, fig, res):
     check("SF10 the ground from the logbook or from the observer's shot positions: every observed haul lies in its "
           "trip's ground (same call)", outside == 0, "%d haul rows outside" % outside)
     check("SF11 more than 10 per cent or at least 10 per cent: no segment within 1.5 points (same call)", m >= 1.5)
+    # SF12 an observed trip's weighings raised from the hauls sampled to its hours fished (the manual's section 3 and
+    # the deployment log's hauls_sampled: the haul records hold the hauls sampled)
+    Tu, _ = PK.trip_records(target, raise_hauls=False)
+    famu = A.family(Tu)
+    whole_r = {s: sorted({int(round(g[s])) for g in fam.values()}) for s in K.SEG}
+    check("SF12 sampled hauls raised to the trip: every member holds the golden's whole per cent; summed as sampled "
+          "the call holds", all(whole_r[s] == [fig["segments"][s]["share"]] for s in K.SEG) and
+          {A.designated(g) for g in famu.values()} == {des},
+          "as sampled TR1 %.2f to %.2f" % (min(g["TR1"] for g in famu.values()), max(g["TR1"] for g in famu.values())))
+    # SF13 the raising variable is one an observer does not change: marketable landings give the golden's whole per
+    # cent; total landed weight with the BMS (which the observed trips land twelve times as fast) keeps the call
+    mk = fam["ground/mk/decl"]
+    for t in T:
+        t["landed_all"] = t["land_mk"] + t["land_bms"]
+    A_aux = A._aux
+    A._aux = lambda t, aux, observed: t["landed_all"] if aux == "all" else A_aux(t, aux, observed)
+    try:
+        allw = A.golden(T, aux="all")
+    finally:
+        A._aux = A_aux
+    check("SF13 raised by marketable landings, every segment's whole per cent is the golden's; by landed weight with "
+          "the BMS, the same call", all(int(round(mk[s])) == fig["segments"][s]["share"] for s in K.SEG) and
+          A.designated(allw) == des, " ".join("%s %.2f/%.2f" % (s, mk[s], allw[s]) for s in K.SEG))
+    # SF14 the raising basis never moves the call: the observers' discards alone name NEP however they are raised
+    r2 = res["routes"]["R2 the observed discards per hour by ground, raised (default path)"]
+    check("SF14 the observers' discards raised by hours or by landed weight name NEP alone; the golden's family "
+          "names the four by every raising variable", A.designated(r2) == A.designated(res["r2b"]) == ("NEP",) and
+          tuple(fig["default_path_by_landed_weight_designated"]) == ("NEP",) and set(by_aux.values()) == {des},
+          "by landed weight %s" % " ".join("%s %.2f" % (s, res["r2b"][s]) for s in ("TR1", "TR2", "NEP", "BT")))
+    # SF15 a VMS report's vessel is the one carrying its terminal (terms 4.2, its reports); the extract names the
+    # last vessel a terminal was fitted to (the dictionary), under which the moved terminals' second vessels report
+    # from two terminals at once
+    nv, nh, na = AS.two_terminal_hours(target)
+    check("SF15 under the extract's names %d vessels report from two terminals in the same UTC hour (%d hours, %d of "
+          "them with the nearest pair more than %d nm apart): the moved terminals' second vessels, each terminal one "
+          "vessel's previous and another's current in the equipment record" % (nv, nh, na, K.APART_NM),
+          nv == len(rc.moves) and na > nh / 2 and fig["vms_two_terminals"] == {
+              "vessels": nv, "vessel_hours": nh, "apart_nm": K.APART_NM, "apart_hours": na})
+    from pypdf import PdfReader
+    pdf = lambda k: " ".join(" ".join(p.extract_text() for p in PdfReader(os.path.join(target, K.FILES[k])).pages).split())
+    check("COUNTERPIN the manual says nothing of how the crew sort the catch with an observer aboard",
+          "normally" not in pdf("manual") and "takes no part in sorting" in pdf("manual"))
 
     # ---------------------------------------------------------------- evidence the decisive step rests on
     bms = res["bms"]
@@ -220,6 +262,11 @@ def run(task, b, fig, res):
     gn = [v for k, v in bms.items() if k[0] == "GN"]
     check("EVIDENCE GN: most gillnetters land their BMS every trip (observed under three times unobserved)",
           all(v[0] < 3 * v[1] for v in gn))
+    par = {s: (fig["segments"][s]["marketable_kg_per_hour_observed"], fig["segments"][s]["marketable_kg_per_hour_unobserved"])
+           for s in K.SEG}
+    check("EVIDENCE every segment's observed and unobserved trips land the same marketable catch an hour (within 7 per "
+          "cent), so the hauls bring aboard alike", all(abs(o / u - 1) < 0.07 for o, u in par.values()),
+          " ".join("%s %.1f/%.1f" % (s, o, u) for s, (o, u) in par.items()))
     nur = res["grounds"]
     check("EVIDENCE BT: observed beam trawl trips fish WC14 and WC15 less (deployment effect)",
           nur[("BT", True)]["WC14"] + nur[("BT", True)]["WC15"] <

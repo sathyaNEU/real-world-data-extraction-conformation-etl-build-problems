@@ -1,30 +1,30 @@
 # leak check, task275
 
-**Verdict: REVIEW.** 17 files read, 22 golden figures and 1 candidate names taken from submission.md, 25 stump terms taken from the design note.
+**Verdict: LEAK.** 17 files read, 22 golden figures and 1 candidate names taken from submission.md, 25 stump terms taken from the design note.
 
 LEAK stops the ship. REVIEW is a reader's call and the /leak-check command's solver's-eye pass reads every REVIEW line. INFO is a sweep that ran and found nothing or was skipped.
 
-Stump terms swept: observer, observed, unobserved, ground, declared, vessel, scheme, declarations, unwanted, measured, returned, landing, family, decisive, raised, deployment, raising, report, grounds, measurement, effect, readable, terminal, records, changes
+Stump terms swept: observer, observed, unobserved, ground, vessel, declared, scheme, declarations, raising, grounds, unwanted, returned, family, measured, raised, landing, report, decisive, landed, deployment, observers, readers, terminal, measurement, effect
+
+## 1 file names (LEAK 2, REVIEW 1)
+- **LEAK** `README_files.txt`: a file whose name says it describes the data (README): no dictionary, field notes, readme or manifest ships (dataset-generation section 3)
+- **LEAK** `wcfpo_data_dictionary_2025.pdf`: a file whose name says it describes the data (data_dictionary_2025): no dictionary, field notes, readme or manifest ships (dataset-generation section 3)
+- **REVIEW** `quota_uptake_2025.xlsx`: a sheet named 'Notes': confirm it is the organisation's own notes and does not describe the data's columns or files
 
 ## 3 answer figures in the pack (REVIEW 3)
 - **REVIEW** `sales_notes_2025.csv`: golden figure 3,561.4 appears: ...,2025-10-20,Brindlesea,KE 335,CELTIC MIST,HAD,GUT,3,561.4,1.52,853.33,2025-10-21 14:38 BFM/25/05734,RB0437,...
 - **REVIEW** `sales_notes_2025.csv`: golden figure 2,332.9 appears: ...-03-15,2025-03-15,Gullsby,GL 93,SINCERITY,NEP,WHL,2,332.9,6.56,2183.82,2025-03-16 17:59 1203-001790,RB1203,...
-- **REVIEW** `selectivity_programme_terms_2027.pdf`: golden figure 4.1 appears: ...of the PO's species list. 4. Costs and funding 4.1 Gear and cameras are paid for from the PO's sele...
+- **REVIEW** `selectivity_programme_terms_2027.pdf`: golden figure 4.1 appears: ...r of the PO's species list. 4. Costs and funding 4.1 Gear and cameras are paid for from the PO's sele...
 
 ## 4 design-note vocabulary (REVIEW 5)
-- **REVIEW** `README_files.txt`: 11 of 25 stump-paragraph terms appear (observer, ground, vessel, scheme, declarations, landing); read whether the document names the move
-- **REVIEW** `observer_scheme_manual_2025.pdf`: 12 of 25 stump-paragraph terms appear (observer, observed, unobserved, vessel, scheme, returned); read whether the document names the move
-- **REVIEW** `selectivity_programme_terms_2027.pdf`: 4 of 25 stump-paragraph terms appear (vessel, returned, landing, report); read whether the document names the move
-- **REVIEW** `wcfpo_data_dictionary_2025.pdf`: 12 of 25 stump-paragraph terms appear (observer, observed, ground, declared, vessel, scheme); read whether the document names the move
+- **REVIEW** `README_files.txt`: 11 of 25 stump-paragraph terms appear (observer, ground, vessel, scheme, declarations, grounds); read whether the document names the move
+- **REVIEW** `observer_scheme_manual_2025.pdf`: 13 of 25 stump-paragraph terms appear (observer, observed, unobserved, vessel, scheme, raising); read whether the document names the move
+- **REVIEW** `selectivity_programme_terms_2027.pdf`: 5 of 25 stump-paragraph terms appear (vessel, returned, landing, report, landed); read whether the document names the move
+- **REVIEW** `wcfpo_data_dictionary_2025.pdf`: 12 of 25 stump-paragraph terms appear (observer, observed, ground, vessel, declared, scheme); read whether the document names the move
 - **REVIEW** `prompt`: prompt sentence carries two or more stump terms: 'Put every segment in segment_discards_2025.xlsx with its 2025 discard share in whole per cent and whether it is designated, the first-sale value of its 2025 landings in thousands of pounds to one decimal place, and its v'
-
-## 9 dates after the setting (INFO 1)
-- **INFO** `-`: no --asof given, sweep skipped (pass the fiction's as-of date)
 
 ## 10 container metadata (INFO 1)
 - **INFO** `-`: audit reported no writer signature (1 lines)
-
-## 1 file names (clean)
 
 ## 2 author vocabulary (clean)
 
@@ -35,6 +35,8 @@ Stump terms swept: observer, observed, unobserved, ground, declared, vessel, sch
 ## 7 hidden content (clean)
 
 ## 8 column names (clean)
+
+## 9 dates after the setting (clean)
 
 ## 11 prompt gate (clean)
 
@@ -64,3 +66,11 @@ Stump terms swept: observer, observed, unobserved, ground, declared, vessel, sch
 - REVIEW lines: the sales notes' 2,338.2 (grade 2 beside weight 338.2) and the terms' 4.3 (a clause number) harmless for both; the four documents and the prompt name the scheme, not the move (both).
 - Realism: no file-level tell from either. r275e called one statistical tell, the observer DIS ratio nearly constant within a segment across grounds, time bands and meshes; r275d had remarked the same in round 2. Fixed in the generator after the round: lawful discards now follow each segment's grounds (at least 1.35 times apart) and a seasonal swing, with each segment's year total unchanged, asserted in `checks.py`.
 - Asks: both re-sited devices held for both readers. Neither reader saw the terminal moves: r275e counted the swaps as harmless for a distinct-day count, and r275f relied on the vessel the extract names.
+
+## Reader at the reship (2026-10-28, after the portal's round 1)
+
+- The manual's section 3 reworded (the crew's sorting no longer described); one isolated reader, fresh copy of the pack and the prompt only.
+- Q1 decisive step: terms 2.1, the designation rule the prompt restates. Q2 ranking file: none. Q3 analyst-only file: the dictionary and the README. Q4 answer-looking figure: none. Q5 literal sentences: terms 3.1 to 3.4, 4.2 and 4.3 and the logbook's 50 kg discard field, each executing to the estimand with the method open. Q6 what decides: an analytical choice (nothing filed says which source or raising is right).
+- REVIEW lines: the manual's section 3 harmless (no sentence compares observed with unobserved trips or says how to estimate discards); the terms and the dictionary name the scheme, not the move; the figure hits are incidental.
+- leak.py's LEAK lines on README_files.txt and the data dictionary come from the describing-file rule added on 27 October, after this build shipped; both files are as the portal judged them and are left for the author's call (design note, Build record).
+

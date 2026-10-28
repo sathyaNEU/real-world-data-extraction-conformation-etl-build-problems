@@ -30,7 +30,7 @@ def results(target):
         parts[s] = dict(trips=len(X), observed=sum(t["observed"] for t in X))
     return dict(T=T, unmatched=unmatched, shares=shares, fam=fam, routes=A.routes(T), r2b=A.ratio_to_landings(T),
                 bms=A.bms_rates(T), grounds=A.nursery_share(T), vessels=vessels, parts=parts,
-                ask_a=AS.ask_a(target), ask_b=AS.ask_b(target))
+                ask_a=AS.ask_a(target), ask_b=AS.ask_b(target), two=AS.two_terminal_hours(target))
 
 
 def figures(res):
@@ -45,7 +45,12 @@ def figures(res):
                       designated=s in des, first_sale_gbp_thousands=res["ask_a"][s], days_at_sea=res["ask_b"][s],
                       bms_kg_per_hour_observed=half_up(sum(t["land_bms"] for t in O) / sum(t["hours"] for t in O), 2),
                       bms_kg_per_hour_unobserved=half_up(sum(t["land_bms"] for t in N) / sum(t["hours"] for t in N),
-                                                         2))
+                                                         2),
+                      marketable_kg_per_hour_observed=half_up(sum(t["land_mk"] for t in O) /
+                                                              sum(t["hours"] for t in O), 1),
+                      marketable_kg_per_hour_unobserved=half_up(sum(t["land_mk"] for t in N) /
+                                                                sum(t["hours"] for t in N), 1),
+                      share_raised_by_marketable_landings=half_up(res["fam"]["ground/mk/decl"][s]))
     return {
         "threshold": K.THRESHOLD,
         "call": {"designated": list(des), "count": len(des),
@@ -60,6 +65,9 @@ def figures(res):
                    "observed_trips": sum(p["observed"] for p in res["parts"].values())},
         "default_path": {s: half_up(res["routes"]["R2 the observed discards per hour by ground, raised (default "
                                                   "path)"][s], 1) for s in K.SEG},
+        "default_path_by_landed_weight_designated": list(A.designated(res["r2b"])),
+        "vms_two_terminals": {"vessels": res["two"][0], "vessel_hours": res["two"][1], "apart_nm": K.APART_NM,
+                              "apart_hours": res["two"][2]},
         "inshore_hours_share": {s: {"observed": half_up(100 * (res["grounds"][(s, True)]["WC14"] +
                                                                 res["grounds"][(s, True)]["WC15"])),
                                     "unobserved": half_up(100 * (res["grounds"][(s, False)]["WC14"] +
@@ -74,7 +82,7 @@ def chart_png(path, fig):
     import matplotlib.pyplot as plt
     from matplotlib import font_manager
     for f in ("LiberationSans-Regular.ttf", "LiberationSans-Bold.ttf"):
-        p = "/usr/share/fonts/truetype/liberation/" + f
+        p = os.path.join(K.FONT_DIR, f)
         if os.path.exists(p):
             font_manager.fontManager.addfont(p)
     plt.rcParams.update({"font.family": "Liberation Sans", "svg.hashsalt": "task275", "font.size": 10})

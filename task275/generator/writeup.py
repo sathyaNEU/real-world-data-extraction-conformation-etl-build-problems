@@ -45,7 +45,8 @@ def main():
            "%.2f. Not the observed trips' unwanted catch with the grounds pooled, which leaves BT under the line "
            "because observed beam trawl trips fish the inshore grounds less; and not every unobserved trip's BMS "
            "counted as discarded, which puts GN over it although most gillnetters land their BMS every trip."
-           % (min(sg[s]["share"] for s in des), max(sg[s]["share"] for s in des), near_over, sg[near_over]["share"],
+           % (min(sg[s]["share"] for s in des), max(sg[s]["share"] for s in des),
+              joined([s for s in des if sg[s]["share"] == sg[near_over]["share"]]), sg[near_over]["share"],
               near_under, sg[near_under]["share"], "NEP", "NEP", dp["NEP"], "TR1", dp["TR1"], "TR2", dp["TR2"],
               "BT", dp["BT"], "TR1", sg["TR1"]["bms_kg_per_hour_observed"], sg["TR1"]["bms_kg_per_hour_unobserved"]),
            "",
@@ -72,23 +73,37 @@ def main():
            % format(tot["trips"], ","),
            "3. Matched the %d observed trips in observer_deployments_2025.csv to the logbook by vessel (port letters "
            "and number written alike) and notified departure in UK time, and summed observer_hauls_2025.csv by "
-           "fraction." % tot["observed_trips"],
+           "fraction, each trip's sampled hauls raised to its hours fished (the haul records hold the hauls sampled)."
+           % tot["observed_trips"],
            "4. Compared observed with unobserved trips on the same grounds: BMS declared an hour fished (TR1 %.2f "
-           "against %.2f kg) and hours on WC14 and WC15 (BT %d against %d per cent)."
-           % (sg["TR1"]["bms_kg_per_hour_observed"], sg["TR1"]["bms_kg_per_hour_unobserved"], ins["observed"],
-              ins["unobserved"]),
+           "against %.2f kg) against the marketable catch landed an hour, which matched (TR1 %.1f against %.1f kg), "
+           "so an observer aboard changes what a vessel lands, not what its hauls bring aboard; and hours on WC14 "
+           "and WC15 (BT %d against %d per cent)."
+           % (sg["TR1"]["bms_kg_per_hour_observed"], sg["TR1"]["bms_kg_per_hour_unobserved"],
+              sg["TR1"]["marketable_kg_per_hour_observed"], sg["TR1"]["marketable_kg_per_hour_unobserved"],
+              ins["observed"], ins["unobserved"]),
            "5. For each segment and ground, raised the observed trips' unwanted catch (BMS and DIS) an hour fished "
-           "to the unobserved trips' hours there, took off the BMS those trips declared, and added the observed "
-           "trips' DIS.",
+           "to the unobserved trips' hours there, which is what those trips' hauls brought aboard below size or "
+           "unwanted; the BMS they declared was landed and the rest went back to the sea, since the terms' catch is "
+           "what was landed and what was returned, so took off the BMS they declared, and added the observed trips' "
+           "DIS. Raised by the marketable catch landed instead of hours (BMS left out, being what an observer "
+           "changes), the same construction gives every segment the same whole per cent; the observers' discards "
+           "alone name %s alone, raised by hours or by landed weight."
+           % joined(f["default_path_by_landed_weight_designated"]),
            "6. Divided each segment's discards by its catch (every trip's declared landings plus those discards) and "
            "designated the segments above 10 per cent: %s." % joined(des),
            "7. For first-sale value, summed sales_notes_2025.csv over 2025 landing dates, leaving out the lines Barlow "
            "& Hobbs filed at Kestlemouth and Brindlesea for lots the market sold (the vessel, landing date, species "
            "and grade of a market lot, the weight within 3 per cent of the lot's).",
            "8. For days at sea, counted UK calendar days with a report outside port_limits.csv in "
-           "vms_positions_2025.csv, each report given to the vessel that carried its terminal: a terminal "
-           "vms_transponders.csv holds as one vessel's previous and another's current was the first vessel's until "
-           "that vessel's own terminal began reporting, the second's after its previous terminal stopped.",
+           "vms_positions_2025.csv, each report given to the vessel that carried its terminal (the terms count a "
+           "vessel's own reports). Under the vessel the extract names, %d vessels report from two terminals in the "
+           "same UTC hour, in %s hours, most of them more than %d nautical miles apart, and one of each vessel's two is "
+           "a terminal vms_transponders.csv holds as one vessel's previous (the terminal it carried before) and "
+           "another's current; so such a terminal was the first vessel's until that vessel's own terminal began "
+           "reporting, the second's after its previous terminal stopped."
+           % (f["vms_two_terminals"]["vessels"], format(f["vms_two_terminals"]["vessel_hours"], ","),
+              f["vms_two_terminals"]["apart_nm"]),
            "",
            "## 4. Deliverable Answers", "",
            "### segment_discards_2025.xlsx", "",

@@ -30,7 +30,7 @@ def utc_to_uk(s):
     return pd.to_datetime(s).dt.tz_localize("UTC").dt.tz_convert(UK).dt.tz_localize(None)
 
 
-def call(D):
+def call(D, keep=False):
     seg = dict(zip(D["reg"]["vessel_pln"], D["reg"]["segment"]))
     tr = D["trips"].copy()
     tr["seg"] = tr["vessel_pln"].map(seg)
@@ -50,6 +50,10 @@ def call(D):
     h = D["hauls"].copy()
     h["w"] = h["weight_kg"].astype(float)
     frac = h.pivot_table(index="observer_trip_ref", columns="fraction", values="w", aggfunc="sum", fill_value=0.0)
+    # the haul records hold the hauls sampled: each observed trip's weighings raised to its hours fished
+    hh = h.drop_duplicates(["observer_trip_ref", "haul_no"])
+    sampled = ((pd.to_datetime(hh["hauled_local"]) - pd.to_datetime(hh["shot_local"])).dt.total_seconds() / 3600
+               ).groupby(hh["observer_trip_ref"]).sum()
     tr["obs"] = False
     tr["o_bms"] = 0.0
     tr["o_dis"] = 0.0
@@ -58,8 +62,9 @@ def call(D):
         gap = (c["dep_uk"] - r["when"]).abs()
         i = gap.idxmin()
         assert gap[i] <= pd.Timedelta(hours=12), r["deployment_ref"]
-        tr.loc[i, ["obs", "o_bms", "o_dis"]] = [True, frac.loc[r["observer_trip_ref"], "BMS"],
-                                                frac.loc[r["observer_trip_ref"], "DIS"]]
+        f = tr.loc[i, "hours"] / sampled[r["observer_trip_ref"]]
+        tr.loc[i, ["obs", "o_bms", "o_dis"]] = [True, frac.loc[r["observer_trip_ref"], "BMS"] * f,
+                                                frac.loc[r["observer_trip_ref"], "DIS"] * f]
     out = {}
     for s, X in tr.groupby("seg"):
         O, N = X[X["obs"]], X[~X["obs"]]
@@ -72,7 +77,48 @@ def call(D):
             disc += U - Ng["bms"].sum()
             catch += U
         out[s] = 100.0 * disc / catch
-    return out
+    return (out, tr) if keep else out
+
+
+def routes(tr):
+    """the golden raised by marketable landings, the observers' discards raised by hours and by landed weight, and
+    each segment's marketable catch landed an hour, observed against unobserved"""
+    tr = tr.assign(landed=tr["mk"] + tr["bms"])
+    by_mk, r2h, r2w, par = {}, {}, {}, {}
+    for s, X in tr.groupby("seg"):
+        O, N = X[X["obs"]], X[~X["obs"]]
+        disc = O["o_dis"].sum()
+        catch = (O["mk"] + O["bms"] + O["o_dis"]).sum() + N["mk"].sum()
+        for g, Ng in N.groupby("po_ground"):
+            Og = O[O["po_ground"] == g]
+            U = (Og["o_bms"] + Og["o_dis"]).sum() / Og["mk"].sum() * Ng["mk"].sum()
+            disc += U - Ng["bms"].sum()
+            catch += U
+        by_mk[s] = 100.0 * disc / catch
+        for col, out in (("hours", r2h), ("landed", r2w)):
+            d = 0.0
+            for g, Xg in X.groupby("po_ground"):
+                Og = Xg[Xg["obs"]]
+                if len(Og):
+                    d += Og["o_dis"].sum() / Og[col].sum() * Xg[col].sum()
+            out[s] = 100.0 * d / (X["landed"].sum() + d)
+        par[s] = (O["mk"].sum() / O["hours"].sum(), N["mk"].sum() / N["hours"].sum())
+    return by_mk, r2h, r2w, par
+
+
+def two_terminals(D, apart_nm):
+    v = D["vms"].assign(hr=D["vms"]["position_utc"].str[:13], la=D["vms"]["latitude"].astype(float),
+                        lo=D["vms"]["longitude"].astype(float))
+    n = v.groupby(["vessel_pln", "hr"])["terminal_id"].nunique()
+    two = n[n >= 2]
+    sub = v.set_index(["vessel_pln", "hr"]).loc[two.index].reset_index()
+    apart = 0
+    for _, g in sub.groupby(["vessel_pln", "hr"]):
+        a, b = [x[["la", "lo"]].to_numpy() for _, x in g.groupby("terminal_id")][:2]
+        dx = (a[:, None, 1] - b[None, :, 1]) * 60 * np.cos(np.radians((a[:, None, 0] + b[None, :, 0]) / 2))
+        dy = (a[:, None, 0] - b[None, :, 0]) * 60
+        apart += np.hypot(dx, dy).min() > apart_nm
+    return two.index.get_level_values(0).nunique(), len(two), apart
 
 
 def ask_a(D):
@@ -159,6 +205,27 @@ def run(task):
         a = int(np.floor(sh[s] + 0.5))
         if a != f["share"]:
             print("verify share %s: FAIL %d against %d" % (s, a, f["share"]))
+            fails += 1
+    sh, tr = call(D, keep=True)
+    by_mk, r2h, r2w, par = routes(tr)
+    half = lambda x, nd=0: float(np.floor(x * 10 ** nd + 0.5) / 10 ** nd)
+    checks_ = [("raised by marketable landings, every whole per cent the golden's",
+                all(int(np.floor(by_mk[s] + 0.5)) == fig["segments"][s]["share"] for s in order)),
+               ("the observers' discards by hours and by landed weight name NEP alone",
+                sorted(s for s in r2h if r2h[s] > fig["threshold"]) == ["NEP"] ==
+                sorted(s for s in r2w if r2w[s] > fig["threshold"]) == fig["default_path_by_landed_weight_designated"]),
+               ("marketable catch landed an hour, observed and unobserved",
+                all((half(par[s][0], 1), half(par[s][1], 1)) == (fig["segments"][s]["marketable_kg_per_hour_observed"],
+                                                                  fig["segments"][s]["marketable_kg_per_hour_unobserved"])
+                    for s in order)),
+               ("vessels and hours with two terminals under the extract's names, most of them miles apart",
+                two_terminals(D, fig["vms_two_terminals"]["apart_nm"]) ==
+                (fig["vms_two_terminals"]["vessels"], fig["vms_two_terminals"]["vessel_hours"],
+                 fig["vms_two_terminals"]["apart_hours"]) and
+                fig["vms_two_terminals"]["apart_hours"] > fig["vms_two_terminals"]["vessel_hours"] / 2)]
+    for name, ok in checks_:
+        if not ok:
+            print("verify %s: FAIL" % name)
             fails += 1
     A = ask_a(D)
     for s in order:

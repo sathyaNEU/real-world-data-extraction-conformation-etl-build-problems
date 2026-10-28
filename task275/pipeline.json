@@ -5,7 +5,7 @@
  "objective": "descriptive-distribution",
  "stage": 5,
  "stage_name": "ship",
- "updated": "2026-10-23",
+ "updated": "2026-10-28",
  "stump": "A competent analyst who sets aside the logbooks' blank discard fields raises the observer scheme's discard share by ground to each segment's hours fished and names only the Nephrops trawlers; observed trips land the undersized quota fish and keep off the nursery grounds, so only the unwanted catch per hour by ground, raised to unobserved hours and net of the BMS unobserved trips declared, names the golden four.",
  "architecture": 1,
  "loops": 0,
@@ -14,20 +14,27 @@
   "date": "2026-10-23"
  },
  "leak": {
-  "leak_py": "REVIEW (grade fields beside weight fields in the sales notes, clause numbers in the terms; the documents' scheme vocabulary), read harmless by six readers",
-  "reader": "three rounds, six isolated scored readers all off the call (NEP alone); round 3 on 04c5972e: r275e and r275f 6 of 32 ask figures each, exit 0, both re-sited devices held"
+  "leak_py": "LEAK under the describing-file rule of 27 October (README_files.txt, the data dictionary, both as shipped and as the portal judged them, left for the author's call); the rest REVIEW, harmless",
+  "reader": "reship round 2026-10-28: Q1 terms 2.1, Q2 and Q4 none, Q3 the README and the dictionary, Q5 executes to the estimand, Q6 analytical; the reworded manual harmless"
  },
  "duplicate_check": {
-  "heart": "WARN (deliverable-pair overuse only); surface exit 0, promoted pairs answered on the card",
+  "heart": "BLOCK on ban.pattern (task169 v2), ban.role and ban.forum (task478 v7): retroactive, its ship-time predecessors since marked spent; similarity rules against task270 v8 answered on the card; surface exit 0",
   "nearest": "task268 v2 lineage 0.06"
  },
  "judge": {
   "verdict": "DETERMINISTIC",
   "disposition": "APPROVE",
-  "report": "determinism_check_report.md (round 1, b24d9e4b), determinism_check_report_pass2.md (round 2, d6cd71d9), determinism_check_report_pass3.md (round 3, 04c5972e); Gate G method_or_model_selection / analytical_non_defect, Gate H domain pass, layers pass, decisive_step analytical"
+  "report": "determinism_check_report_pass4.md (re-judge after the portal's round 1); passes 1 to 3 before the ship"
  },
- "returned": [],
- "resume": "Shipped on target.zip ce3d9e72 after round 3 (both readers off the call at 6 of 32 ask figures; judge APPROVE on 04c5972e, its optional grade-key note and the readers' lawful-discard uniformity remark fixed in the generator on the APPROVE disposition, stage-3 gates re-run green). Next: the portal result.",
+ "returned": [
+  {
+   "date": "2026-10-28",
+   "portal": "determinism block 1 of 2 judges failed (judge 1: the raising basis read as a fork, and the extract's VMS vessel read as the report's); both responses NEP alone (11.59, 11.88); rubric 35 and 11",
+   "repair": "determinism",
+   "commit": ""
+  }
+ ],
+ "resume": "",
  "approved": null,
  "delivered": "2026-10-23",
  "portal": null,

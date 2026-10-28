@@ -142,6 +142,21 @@ def owners(target):
     return who, between
 
 
+def two_terminal_hours(target):
+    """under the vessel the extract names on each report: (vessels, vessel-hours) with reports from two terminals in
+    the same UTC hour, and the hours whose nearest pair of the two terminals' reports lies more than APART_NM apart"""
+    seen = collections.defaultdict(lambda: collections.defaultdict(list))
+    for r in PK.vms(target):
+        seen[(r["vessel_pln"], r["position_utc"][:13])][r["terminal_id"]].append(
+            (float(r["latitude"]), float(r["longitude"])))
+    two = {k: v for k, v in seen.items() if len(v) >= 2}
+    apart = 0
+    for v in two.values():
+        a, b = list(v.values())[:2]
+        apart += min(_nm(p, q) for p in a for q in b) > K.APART_NM
+    return len({k[0] for k in two}), len(two), apart
+
+
 def vessel_days(target, attribution="record", clock="uk", where="limits"):
     """{vessel_pln: set of dates at sea}: attribution "record" (the vessel that carried the terminal, from the PO's
     equipment record), "label" (the vessel the extract names), "current" (the vessel whose current terminal it is,

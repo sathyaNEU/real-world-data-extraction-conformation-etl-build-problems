@@ -26,6 +26,9 @@
   "TR1": 4.0,
   "TR2": 4.1
  },
+ "default_path_by_landed_weight_designated": [
+  "NEP"
+ ],
  "inshore_hours_share": {
   "BT": {
    "observed": 39,
@@ -67,9 +70,12 @@
    "days_at_sea": 2128,
    "designated": true,
    "first_sale_gbp_thousands": 9649.8,
+   "marketable_kg_per_hour_observed": 70.1,
+   "marketable_kg_per_hour_unobserved": 66.1,
    "name": "Beam trawl",
    "observed_trips": 56,
    "share": 12,
+   "share_raised_by_marketable_landings": 12,
    "trips": 664,
    "vessels": 11
   },
@@ -79,9 +85,12 @@
    "days_at_sea": 2419,
    "designated": false,
    "first_sale_gbp_thousands": 1719.9,
+   "marketable_kg_per_hour_observed": 24.4,
+   "marketable_kg_per_hour_unobserved": 24.1,
    "name": "Set gillnet",
    "observed_trips": 154,
    "share": 7,
+   "share_raised_by_marketable_landings": 7,
    "trips": 2329,
    "vessels": 17
   },
@@ -91,9 +100,12 @@
    "days_at_sea": 1362,
    "designated": false,
    "first_sale_gbp_thousands": 693.8,
+   "marketable_kg_per_hour_observed": 24.0,
+   "marketable_kg_per_hour_unobserved": 23.9,
    "name": "Set longline",
    "observed_trips": 74,
    "share": 5,
+   "share_raised_by_marketable_landings": 5,
    "trips": 1156,
    "vessels": 10
   },
@@ -103,9 +115,12 @@
    "days_at_sea": 3517,
    "designated": true,
    "first_sale_gbp_thousands": 8053.4,
+   "marketable_kg_per_hour_observed": 42.3,
+   "marketable_kg_per_hour_unobserved": 42.2,
    "name": "Nephrops trawl",
    "observed_trips": 125,
    "share": 14,
+   "share_raised_by_marketable_landings": 14,
    "trips": 1761,
    "vessels": 15
   },
@@ -115,9 +130,12 @@
    "days_at_sea": 2593,
    "designated": false,
    "first_sale_gbp_thousands": 2332.9,
+   "marketable_kg_per_hour_observed": 27.1,
+   "marketable_kg_per_hour_unobserved": 27.5,
    "name": "Pots and creels",
    "observed_trips": 171,
    "share": 6,
+   "share_raised_by_marketable_landings": 6,
    "trips": 2526,
    "vessels": 16
   },
@@ -127,9 +145,12 @@
    "days_at_sea": 1737,
    "designated": false,
    "first_sale_gbp_thousands": 3561.4,
+   "marketable_kg_per_hour_observed": 126.3,
+   "marketable_kg_per_hour_unobserved": 124.1,
    "name": "Seine",
    "observed_trips": 94,
    "share": 8,
+   "share_raised_by_marketable_landings": 8,
    "trips": 1176,
    "vessels": 9
   },
@@ -139,9 +160,12 @@
    "days_at_sea": 2236,
    "designated": true,
    "first_sale_gbp_thousands": 12062.3,
+   "marketable_kg_per_hour_observed": 197.5,
+   "marketable_kg_per_hour_unobserved": 192.0,
    "name": "Demersal otter trawl, 18 m and over",
    "observed_trips": 44,
    "share": 13,
+   "share_raised_by_marketable_landings": 13,
    "trips": 474,
    "vessels": 12
   },
@@ -151,9 +175,12 @@
    "days_at_sea": 3032,
    "designated": true,
    "first_sale_gbp_thousands": 7174.4,
+   "marketable_kg_per_hour_observed": 99.0,
+   "marketable_kg_per_hour_unobserved": 98.3,
    "name": "Demersal otter trawl, 12 m to under 18 m",
    "observed_trips": 138,
    "share": 12,
+   "share_raised_by_marketable_landings": 12,
    "trips": 1914,
    "vessels": 17
   }
@@ -165,5 +192,11 @@
   "observed_trips": 856,
   "trips": 12000,
   "vessels": 107
+ },
+ "vms_two_terminals": {
+  "apart_hours": 1114,
+  "apart_nm": 20,
+  "vessel_hours": 1718,
+  "vessels": 14
  }
 }

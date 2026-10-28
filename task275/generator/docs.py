@@ -15,7 +15,7 @@ from reportlab.platypus import Paragraph, SimpleDocTemplate, Spacer, Table, Tabl
 
 import common as K   # noqa: E402
 
-FONT_DIR = "/usr/share/fonts/truetype/liberation/"
+FONT_DIR = K.FONT_DIR
 for nm, f in (("Sans", "LiberationSans-Regular"), ("Sans-B", "LiberationSans-Bold"), ("Sans-I", "LiberationSans-Italic"),
               ("Serif", "LiberationSerif-Regular"), ("Serif-B", "LiberationSerif-Bold")):
     pdfmetrics.registerFont(TTFont(nm, FONT_DIR + f + ".ttf"))
@@ -150,8 +150,8 @@ def write_manual(path):
           Paragraph("3. At sea", S["h2"]),
           Paragraph("The observer samples every haul (every set, for static gear) that they can attend; on a long "
                     "trip a haul shot during the observer's rest is not sampled, and the haul records hold the hauls "
-                    "sampled. The crew sort the catch as they normally do; the observer weighs each species in each "
-                    "of three fractions, subsampling large hauls and raising the subsample to the haul:", S["body"]),
+                    "sampled. The observer takes no part in sorting the catch, and weighs each species in each of "
+                    "three fractions, subsampling large hauls and raising the subsample to the haul:", S["body"]),
           _table(S, [["Fraction", "What it holds"],
                      ["RET", "catch retained to be landed for human consumption"],
                      ["BMS", "catch of a species under the landing obligation below its minimum conservation "
