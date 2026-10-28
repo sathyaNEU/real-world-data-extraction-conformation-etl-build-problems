@@ -1,15 +1,16 @@
-"""One-sheet and multi-sheet workbooks written with openpyxl and saved in Excel's own dialect (postprocess.py)."""
+"""Workbooks written with openpyxl and saved in Excel's own dialect (postprocess.py)."""
 import datetime as dt
 
 from openpyxl import Workbook
-from openpyxl.styles import Alignment, Font, PatternFill
+from openpyxl.styles import Font, PatternFill
 
 import postprocess as PP
 
 STAMPS = {}
 
 
-def _sheet(ws, head, rows, widths=None, money_cols=(), title=None, date_fmt="m/d/yyyy"):
+def _sheet(ws, head, rows, widths=None, money_cols=(), title=None, date_fmt="m/d/yyyy", datetime_cols=(),
+           datetime_fmt="yyyy-mm-dd hh:mm"):
     r0 = 1
     if title:
         ws.cell(row=1, column=1, value=title).font = Font(bold=True, size=12)
@@ -24,7 +25,9 @@ def _sheet(ws, head, rows, widths=None, money_cols=(), title=None, date_fmt="m/d
             if v is None or v == "":
                 continue
             c = ws.cell(row=i, column=j, value=v)
-            if isinstance(v, dt.date):
+            if isinstance(v, dt.datetime):
+                c.number_format = datetime_fmt
+            elif isinstance(v, dt.date):
                 c.number_format = date_fmt
             elif (j - 1) in money_cols:
                 c.number_format = "#,##0.00"
@@ -37,28 +40,13 @@ def _sheet(ws, head, rows, widths=None, money_cols=(), title=None, date_fmt="m/d
     return n
 
 
-def write_table(path, sheet, head, rows, widths=None, title=None, money_cols=(), creator="Corriemoor University", modified=None):
+def write_table(path, sheet, head, rows, widths=None, title=None, money_cols=(), creator="Merrow DOC", modified=None,
+                datetime_cols=()):
     wb = Workbook()
     ws = wb.active
     ws.title = sheet
-    n = _sheet(ws, head, rows, widths, money_cols, title)
+    n = _sheet(ws, head, rows, widths, money_cols, title, datetime_cols=datetime_cols)
     wb.save(path)
-    who, when = STAMPS.get(path.rsplit("/", 1)[-1], ("Corriemoor University", "2026-10-14T03:10:00Z"))
-    PP.normalize_ooxml(path, who, who, when, when, excel=True)
-    return n
-
-
-def write_workbook(path, sheets, widths=None, creator="Corriemoor University", date_fmt="d/mm/yyyy"):
-    """sheets: [(title, head, rows)]; every sheet frozen under its header."""
-    wb = Workbook()
-    first = True
-    n = 0
-    for title, head, rows in sheets:
-        ws = wb.active if first else wb.create_sheet()
-        first = False
-        ws.title = title
-        n += _sheet(ws, head, rows, widths, date_fmt=date_fmt)
-    wb.save(path)
-    who, when = STAMPS.get(path.rsplit("/", 1)[-1], ("Corriemoor University", "2026-10-14T03:10:00Z"))
-    PP.normalize_ooxml(path, who, who, when, when, excel=True)
+    who, when = STAMPS.get(path.rsplit("/", 1)[-1], (creator, "2027-01-05T14:10:00Z"))
+    PP.normalize_ooxml(path, who, who, when, when, excel=True, company=who)
     return n

@@ -1,302 +1,376 @@
-"""task179 goldens: the projection workbook and the teaching-groups chart, figures.json, submission.md and
-metadata.json, every figure computed once here from the pack."""
+"""The goldens (the 2027 GPS order workbook and the Category V forecast memo), generator/figures.json, submission.md and
+metadata.json, all computed from the shipped files through calc.py."""
 from __future__ import annotations
 
+import datetime as dt
 import json
 import os
 
 import numpy as np
 
-import common as C
 import calc
+import common as C
 
-FAC_NAME = dict(C.FACULTIES)
-FAC_SHORT = {"ASS": "Arts and Social Sciences", "BUS": "Business and Law", "SCI": "Science",
-             "ENG": "Engineering and Computing", "HLT": "Health Sciences"}
-
-
-def r250(x):
-    return int(250 * round(x / 250.0))
+MONTHS = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October",
+          "November", "December"]
+JAILS = {"D": "Darrow County Jail", "K": "Keswick County Jail"}
+GOLDEN_FORM = "victim 12 months"
 
 
 def compute(target):
-    r = calc.compute(target)
-    a = r["frame"]
-    f = a[a["intake"] == 2026]
-    o = dict(r)
-    o["call_r"] = r250(r["call"])
-    o["no_repeat_2026"] = int((f["ties"] == 0).sum())
-    hist = []
-    for y in range(2019, 2026):
-        h = a[a["intake"] == y]
-        hist.append((y, int(len(h)), int(h["gone"].sum())))
-    o["hist"] = hist
-    # the model without the count, on the record's own entrants who meet fewer than 10 others in two or more classes
-    h = a[a["intake"] < 2026]
-    low = (h["ties"] < 10).values
-    y = h["gone"].values.astype(float)
-    X0 = calc.design(h, "none")
-    b_all, _ = calc.logit_fit(X0, y)
-    o["seg"] = dict(n=int(low.sum()), gone=int(y[low].sum()),
-                    all=float((1 / (1 + np.exp(-(X0[low] @ b_all)))).sum()))
-    # a class is the same unit on both sides of the cutover: places, entrants and classes in each system's extract,
-    # and who shares them (entrants meeting 10 or more others twice)
-    o["comp"] = calc.class_comparability(r["data"], a)
+    s = calc.Solution(target)
+    o = dict(s=s)
+    o["forms"] = s.all_forms()
+    o["golden"] = o["forms"][GOLDEN_FORM][0]
+    o["default"] = o["forms"]["own attributes"][0]
+    f26 = s.f26
+    o["caseload"] = int(len(f26))
+    o["victims_2026"] = int(f26["v12"].sum())
+    f25 = s.frames[2025]
+    o["victims_2025"] = int(f25["v12"].sum())
+    tr = s.train
+    o["rate_victims"] = float(tr.loc[tr["v12"] == 1, "y"].mean())
+    o["rate_others"] = float(tr.loc[tr["v12"] == 0, "y"].mean())
+    o["n_victim_years"] = int((tr["v12"] == 1).sum())
+    h = s.d["hpd"]
+    hi = h[(h["victim_type"] == "I") & (h["supplement_no"] == "0")].drop_duplicates(["incident_number", "victim_seq"])
+    yr = hi["occurred_date"].str[6:10].astype(int).value_counts()
+    o["city_victims"] = {2025: int(yr[2025]), 2026: int(yr[2026])}
+    ch = yr[2026] / yr[2025] - 1
+    o["city_change_word"] = ("fell %.1f per cent" % (-100 * ch)) if ch < -0.005 else ("rose %.1f per cent" % (100 * ch) if ch > 0.005 else "was flat")
+    o["gps"], o["gps_detail"] = calc.gps_days(s)
+    o["zones"] = calc.zones(s)
+    nb = s.panel.nb
+    o["schedb_bookings"] = int(nb.loc[nb["schedb"] & (nb["date"] >= C.RECORDS_START) & (nb["date"] <= C.RECORDS_END)].shape[0])
     return o
 
 
 def figures(o):
-    F = {"call_not_enrolled_2027": o["call_r"],
-         "_unrounded": {"call_not_enrolled_2027": round(o["call"], 1)},
-         "cc1_intake_2026_at_census": o["n2026"],
-         "cc2_intake_2026_no_repeat_classmate": o["no_repeat_2026"]}
-    for fc in C.FAC_CODES:
-        for lev in calc.LEVELS:
-            small, big = o["groups"][(fc, lev)]
-            tag = "200" if lev == "200" else "300up"
-            F["ask_groups_s1_2026_%s_%s_30orfewer" % (fc.lower(), tag)] = small
-            F["ask_groups_s1_2026_%s_%s_over30" % (fc.lower(), tag)] = big
-    F["_model_form"] = o["form"]
-    F["_stated"] = {"rounding_of_the_call": 250, "paper_levels": [200, 300]}
-    F["hist_intake_entrants_not_enrolled"] = [list(x) for x in o["hist"]]
-    F["check_fewer_than_10_twice_2019_2025"] = {"entrants": o["seg"]["n"], "not_enrolled": o["seg"]["gone"],
-                                                "count_free_predicted": round(o["seg"]["all"], 1)}
-    F["check_class_unit_across_cutover"] = o["comp"]
-    return F
+    f = {"call_forecast_2027": C.nearest(o["golden"], C.ROUND_CALL)}
+    f["golden_unrounded"] = round(o["golden"], 1)
+    f["default_unrounded"] = round(o["default"], 1)
+    f["default_printed"] = C.nearest(o["default"], C.ROUND_CALL)
+    f["cc_caseload_2026"] = o["caseload"]
+    f["cc_victims_on_caseload_2026"] = o["victims_2026"]
+    f["cc_victims_on_caseload_2025"] = o["victims_2025"]
+    # the victim counts move by a few with the match key and the date field, so the write-up states them to the nearest 10
+    f["cc_victims_on_caseload_2026_about"] = C.nearest(o["victims_2026"], 10)
+    f["cc_victims_on_caseload_2025_about"] = C.nearest(o["victims_2025"], 10)
+    f["cc_rate_victims_pct"] = round(100 * o["rate_victims"], 1)
+    f["cc_rate_others_pct"] = round(100 * o["rate_others"], 1)
+    f["step_schedb_bookings_2018_2026"] = o["schedb_bookings"]
+    f["years_train"] = [2018, 2025]
+    f["year_end_origin"] = 2026
+    f["round_call_to"] = C.ROUND_CALL
+    for m in range(12):
+        f["ask_gps_days_2026_%02d" % (m + 1)] = int(o["gps"][m])
+    f["ask_gps_days_2026_total"] = int(sum(o["gps"]))
+    for m in range(12):
+        f["ask_zones_2026_%02d" % (m + 1)] = int(o["zones"][m])
+    f["ask_zones_2026_total"] = int(sum(o["zones"]))
+    return f
 
 
-def write_workbook(path, o):
-    import xlsx_writer as XW
+# ------------------------------------------------------------------ goldens
+def write_workbook(path, o, f):
     from openpyxl import Workbook
-    from openpyxl.styles import Font, PatternFill, Alignment
+    from openpyxl.styles import Alignment, Font, PatternFill, Border, Side
+    import postprocess as PP
     wb = Workbook()
     ws = wb.active
-    ws.title = "Projection"
+    ws.title = "2027 reservation"
     bold = Font(bold=True)
-    fill = PatternFill("solid", fgColor="D9E1F2")
-    ws["A1"] = "Continuing enrolment projection 2027: first-year intake"
+    hdr = PatternFill("solid", fgColor="D9E1F2")
+    ws["A1"] = "Region 4: 2027 Belvantis order, enrolments reserved under Directive 26-07"
     ws["A1"].font = Font(bold=True, size=12)
-    ws["A2"] = "Planning and Insight, prepared 16 October 2026 from the 1 October 2026 census"
-    rows = [("2026 intake enrolled at the 1 October 2026 census", o["n2026"]),
-            ("Projected not enrolled at the 1 October 2027 census (nearest 250)", o["call_r"]),
-            ("Model sum of probabilities", round(o["call"], 1)),
-            ("2026 entrants meeting no other entrant in two or more classes", o["no_repeat_2026"])]
-    for i, (k, v) in enumerate(rows, 4):
-        ws.cell(row=i, column=1, value=k)
-        c = ws.cell(row=i, column=2, value=v)
-        c.number_format = "#,##0.0" if isinstance(v, float) else "#,##0"
+    ws["A2"] = "Prepared 8 January 2027 from the records to 31 December 2026"
+    rows = [("People on the Region 4 caseload at the end of 31 December 2026", o["caseload"]),
+            ("Forecast: of those, booked on a new Category V charge in 2027 while still supervised", f["call_forecast_2027"]),
+            ("Enrolments to reserve for 2027", f["call_forecast_2027"])]
+    for k, (a, b) in enumerate(rows, 4):
+        ws.cell(row=k, column=1, value=a)
+        c = ws.cell(row=k, column=2, value=b)
+        c.number_format = "#,##0"
     ws.cell(row=5, column=1).font = bold
     ws.cell(row=5, column=2).font = bold
-    ws.cell(row=9, column=1, value="Earlier intakes").font = bold
-    for j, h in enumerate(["Intake", "Entrants at census", "Not enrolled at next census", "Share"], 1):
-        c = ws.cell(row=10, column=j, value=h)
-        c.font = bold
-        c.fill = fill
-    for i, (y, n, g) in enumerate(o["hist"], 11):
-        ws.cell(row=i, column=1, value=y)
-        ws.cell(row=i, column=2, value=n).number_format = "#,##0"
-        ws.cell(row=i, column=3, value=g).number_format = "#,##0"
-        ws.cell(row=i, column=4, value="=C%d/B%d" % (i, i)).number_format = "0.0%"
-    ws.column_dimensions["A"].width = 62
-    for col in "BCD":
-        ws.column_dimensions[col].width = 16
-    ws2 = wb.create_sheet("Teaching groups S1 2026")
-    head = ["Faculty", "Level", "30 students or fewer", "More than 30", "Groups"]
-    for j, h in enumerate(head, 1):
-        c = ws2.cell(row=1, column=j, value=h)
-        c.font = bold
-        c.fill = fill
-    i = 2
-    for fc in C.FAC_CODES:
-        for lev in calc.LEVELS:
-            small, big = o["groups"][(fc, lev)]
-            ws2.cell(row=i, column=1, value=FAC_SHORT[fc])
-            ws2.cell(row=i, column=2, value="200" if lev == "200" else "300 and above")
-            ws2.cell(row=i, column=3, value=small)
-            ws2.cell(row=i, column=4, value=big)
-            ws2.cell(row=i, column=5, value="=C%d+D%d" % (i, i))
-            i += 1
-    ws2.cell(row=i, column=1, value="Total").font = bold
-    for col in "CDE":
-        ws2["%s%d" % (col, i)] = "=SUM(%s2:%s%d)" % (col, col, i - 1)
-        ws2["%s%d" % (col, i)].font = bold
-    ws2.column_dimensions["A"].width = 28
-    ws2.column_dimensions["B"].width = 15
-    for col in "CDE":
-        ws2.column_dimensions[col].width = 19
+    ws["A8"] = ("Forecast to the nearest 100; see the forecast memo for the model. Exclusion zones for 2027 are not "
+                "forecast here.")
+    ws.column_dimensions["A"].width = 84
+    ws.column_dimensions["B"].width = 12
+    ws2 = wb.create_sheet("Enrolment days 2026")
+    ws2["A1"] = "Enrolment days owed to Belvantis for 2026, by month (Schedule C)"
+    ws2["A1"].font = Font(bold=True, size=12)
+    ws2["A3"] = "Month"
+    ws2["B3"] = "Enrolment days"
+    for c in ("A3", "B3"):
+        ws2[c].font = bold
+        ws2[c].fill = hdr
+    for m in range(12):
+        ws2.cell(row=4 + m, column=1, value="%s 2026" % MONTHS[m])
+        c = ws2.cell(row=4 + m, column=2, value=f["ask_gps_days_2026_%02d" % (m + 1)])
+        c.number_format = "#,##0"
+    ws2.cell(row=16, column=1, value="Total 2026").font = bold
+    c = ws2.cell(row=16, column=2, value="=SUM(B4:B15)")
+    c.number_format = "#,##0"
+    c.font = bold
+    ws2["A18"] = ("Days on which a client held a device on the Region 4 account, less suspended days, days in either county "
+                  "jail and days after Region 4's supervision ended; voided events disregarded, and a client Belvantis holds "
+                  "under both a legacy offender number and a CMS id counted once.")
+    ws2.column_dimensions["A"].width = 24
+    ws2.column_dimensions["B"].width = 16
+    ws3 = wb.create_sheet("Exclusion zones 2026")
+    ws3["A1"] = "Exclusion zones Directive 26-07 section 4 would have set in 2026, by month"
+    ws3["A1"].font = Font(bold=True, size=12)
+    ws3["A3"], ws3["B3"] = "Month", "Zones set"
+    for c in ("A3", "B3"):
+        ws3[c].font = bold
+        ws3[c].fill = hdr
+    for m in range(12):
+        ws3.cell(row=4 + m, column=1, value="%s 2026" % MONTHS[m])
+        c = ws3.cell(row=4 + m, column=2, value=f["ask_zones_2026_%02d" % (m + 1)])
+        c.number_format = "#,##0"
+    ws3.cell(row=16, column=1, value="Total 2026").font = bold
+    c = ws3.cell(row=16, column=2, value="=SUM(B4:B15)")
+    c.number_format = "#,##0"
+    c.font = bold
+    ws3["A18"] = ("Halverton Police Department arrests of Region 4 supervisees on Category V charges, at the first booking on "
+                  "each incident; one zone per supervisee for each Halverton residence of the incident's victims, a "
+                  "residence counted once however the report and its supplements write it.")
+    for col, wv in (("A", 24), ("B", 14)):
+        ws3.column_dimensions[col].width = wv
     ws4 = wb.create_sheet("Notes")
-    notes = [
-        "Definitions follow Continuing Enrolment Projection 2027: Conventions (Planning and Insight, 5 October 2026).",
-        "Intake: first-time bachelor's entrants with an enrolled programme attempt at the 1 October census; entrants "
-        "with credit are excluded. Approved leave counts as not enrolled.",
-        "Earlier intakes: enrolment at the next census from the census history; the 2025 intake through the "
-        "SIRIUS to ARC crosswalk.",
-        "Projection: logistic model fitted on the 2019 to 2025 intakes (admissions attributes, week-6 progress check, "
-        "faculty, and whether the entrant met 10 or more other entrants in two or more Semester 1 classes, the form "
-        "with the lowest AIC), applied to the 2026 intake; reported to the nearest 250.",
-        "Teaching groups, 200 level and above: each distinct set of active Semester 1 2026 classes meeting together "
-        "in one room on the same day, start and teaching weeks is a group however often it meets, so two classes "
-        "sharing only one of their meetings are three groups. A group's size is the students on its classes' lists "
-        "who are enrolled at the 2026 census in the census history; places still held by students on approved leave "
-        "or with no 2026 attempt are not counted.",
-        "Sources: Registry census history and first-year cohort extracts; Admissions; Student Success week-6 "
-        "progress check; Timetabling Semester 1 2026 timetable at the census; ARC class enrolments at the census.",
-    ]
+    notes = [("As of", "Records to 31 December 2026; prepared 8 January 2027."),
+             ("Caseload", "People with an open Region 4 episode at the end of 31 December 2026, counted once (CMS export)."),
+             ("Category V", "Directive 26-07, Appendix; former Title 21 and Title 8 sections read through the Revisor's 2024 table."),
+             ("Forecast", "New-arrest bookings in either county jail in 2027 while still supervised, people booked at least once."),
+             ("Enrolment day", "Belvantis contract MDOC-2025-117, Schedule C: a day a client holds a device on the Region 4 "
+                               "account, less suspended days, custody days and days after Region 4's supervision ended."),
+             ("Exclusion zone", "Directive 26-07, section 4: one per Halverton residence of the incident's victims, per "
+                                "supervisee and incident, set in the month of the first booking."),
+             ("Prepared by", "Zachary Wallace, Research and Planning, Region 4.")]
     ws4["A1"] = "Notes"
-    ws4["A1"].font = bold
-    for i, t in enumerate(notes, 3):
-        ws4.cell(row=i, column=1, value=t).alignment = Alignment(wrap_text=True, vertical="top")
-    ws4.column_dimensions["A"].width = 110
-    ws2.freeze_panes = "A2"
+    ws4["A1"].font = Font(bold=True, size=12)
+    for k, (a, b) in enumerate(notes, 3):
+        ws4.cell(row=k, column=1, value=a).font = bold
+        ws4.cell(row=k, column=2, value=b)
+    ws4.column_dimensions["A"].width = 16
+    ws4.column_dimensions["B"].width = 110
+    for w_ in (ws, ws2, ws3):
+        w_.sheet_view.showGridLines = False
+    ws2.freeze_panes = "A4"
+    ws3.freeze_panes = "A4"
     wb.save(path)
+    PP.normalize_ooxml(path, "Zachary Wallace", "Zachary Wallace", "2027-01-07T15:22:00Z", "2027-01-08T16:05:00Z",
+                       excel=True, company=C.DEPT)
+
+
+def write_memo(path, o, f):
+    from docx import Document
+    from docx.enum.text import WD_ALIGN_PARAGRAPH
+    from docx.shared import Pt, RGBColor, Cm
     import postprocess as PP
-    PP.normalize_ooxml(path, "Cillian Coholan", "Cillian Coholan", "2026-10-15T22:05:00Z", "2026-10-16T03:31:00Z",
-                       excel=True)
+    doc = Document()
+    sec = doc.sections[0]
+    sec.left_margin = sec.right_margin = Cm(2.3)
+    st = doc.styles["Normal"]
+    st.font.name = "Calibri"
+    st.font.size = Pt(10.5)
+    st.paragraph_format.space_after = Pt(6)
+    fmt = lambda x: "{:,}".format(x)
+    t = doc.add_paragraph()
+    r = t.add_run("MEMORANDUM")
+    r.bold = True
+    r.font.size = Pt(14)
+    for k, v in (("To", "Region 4 Executive Team"), ("From", "Zachary Wallace, Research and Planning"),
+                 ("Date", "8 January 2027"), ("Subject", "2027 Belvantis order: enrolments for Directive 26-07")):
+        p = doc.add_paragraph()
+        p.paragraph_format.space_after = Pt(0)
+        p.add_run("%s:\t" % k).bold = True
+        p.add_run(v)
+    doc.add_paragraph()
+    p = doc.add_paragraph()
+    r = p.add_run("Reserve %s enrolments: about %s of the %s people on the caseload at 31 December 2026 will be booked on a "
+                  "new Category V charge in 2027" % (fmt(f["call_forecast_2027"]), fmt(f["call_forecast_2027"]), fmt(o["caseload"])))
+    r.bold = True
+    r.font.size = Pt(12)
+    doc.add_paragraph(
+        "From 1 January Directive 26-07 puts every supervisee booked on a new Category V charge on GPS. Of the %s people "
+        "on our caseload at the end of 31 December 2026, %s are expected to be booked into the Darrow County or Keswick "
+        "County jail on such a charge at least once in 2027 while still under Region 4 supervision, to the nearest 100. "
+        "That is the number of enrolments the order should reserve at the reserved rate." % (fmt(o["caseload"]), fmt(f["call_forecast_2027"])))
+    doc.add_paragraph(
+        "The figure is higher than our usual year-end risk model gives on its own (%s). The difference is violence "
+        "against the people we supervise. Matching the Halverton Police Department's violent-incident victims to the "
+        "caseload by name and date of birth, about %s people on the 2026 year-end caseload were recorded as victims in "
+        "2026, against about %s on the 2025 year-end caseload, most of them from September to November. Across the 2018 to 2025 "
+        "year ends, supervisees recorded as victims in the prior twelve months were booked on a Category V charge the "
+        "following year at %.1f per cent, against %.1f per cent for everyone else, and the model without the police "
+        "records under-predicts them in every one of those years. None of this shows in our own records: the city's "
+        "count of victims %s in 2026, and the caseload's ages, offences, scores and terms look like any other year's."
+        % (fmt(f["default_printed"]), fmt(f["cc_victims_on_caseload_2026_about"]), fmt(f["cc_victims_on_caseload_2025_about"]),
+           f["cc_rate_victims_pct"], f["cc_rate_others_pct"], o["city_change_word"]))
+    doc.add_paragraph(
+        "Method. Both jails' booking notices were put on one clock (Keswick's are in UTC) and one record per booking, new "
+        "arrests only, with charges under former Title 21 and Title 8 sections read through the Revisor's 2024 conversion "
+        "table.\u00b9 Each year end's caseload comes from the case-management export, each person counted once across "
+        "concurrent cases and county transfers. The model is a logistic regression of a Category V new-arrest booking in "
+        "the following calendar year while still supervised, fitted on the 2018 to 2025 year ends, on age, sex, prior "
+        "felonies, lead offence, supervision type, county, Halverton residence, months to expiration, first year of "
+        "supervision, the latest MRAS total, the prior year's new-arrest and Category V bookings and a police victim "
+        "record in the prior twelve months. The 2026 caseload is scored with its own 2026 records and the probabilities "
+        "summed.")
+    rows = [("Caseload at the end of 31 December 2026", fmt(o["caseload"])),
+            ("Recorded by HPD as victims of violence in 2026 (nearest 10)", "about " + fmt(f["cc_victims_on_caseload_2026_about"])),
+            ("The same, 2025 year-end caseload, in 2025 (nearest 10)", "about " + fmt(f["cc_victims_on_caseload_2025_about"])),
+            ("Category V booking rate the next year, victims, 2018 to 2025 year ends", "%.1f%%" % f["cc_rate_victims_pct"]),
+            ("Category V booking rate the next year, everyone else", "%.1f%%" % f["cc_rate_others_pct"]),
+            ("Forecast for 2027, with the police records", fmt(f["call_forecast_2027"])),
+            ("Forecast for 2027, own records only", fmt(f["default_printed"]))]
+    tb = doc.add_table(rows=len(rows) + 1, cols=2)
+    tb.style = "Table Grid"
+    tb.cell(0, 0).text = "Forecast basis"
+    tb.cell(0, 1).text = "Figure"
+    for k, (a, b) in enumerate(rows, 1):
+        tb.cell(k, 0).text = a
+        tb.cell(k, 1).text = b
+        tb.cell(k, 1).paragraphs[0].alignment = WD_ALIGN_PARAGRAPH.RIGHT
+    for c in tb.rows[0].cells:
+        for run in c.paragraphs[0].runs:
+            run.bold = True
+    src = doc.add_paragraph("Sources: CMS episode export; Darrow and Keswick booking notices; HPD violent-incident extract; "
+                            "MRAS assessments. Forecasts to the nearest 100.")
+    src.runs[0].font.size = Pt(8.5)
+    doc.add_paragraph(
+        "Also in the order workbook: the 2026 enrolment days we owe Belvantis by month (%s for the year, Schedule C) and "
+        "the exclusion zones section 4 of the directive would have set each month of 2026 for the Halverton police's "
+        "Category V arrests of our supervisees (%s in all)." % (fmt(f["ask_gps_days_2026_total"]), fmt(f["ask_zones_2026_total"])))
+    n = doc.add_paragraph("\u00b9 Directive 26-07, section 2. Keswick's charge table kept the former sections until its update "
+                          "of 1 April 2025.")
+    n.runs[0].font.size = Pt(8.5)
+    doc.save(path)
+    PP.normalize_docx(path, "Zachary Wallace", "Zachary Wallace", "2027-01-07T16:40:00Z", "2027-01-08T15:58:00Z", 4, 96, "t179",
+                      company=C.DEPT)
 
 
-def write_chart(path, o):
-    import matplotlib
-    matplotlib.use("Agg")
-    import matplotlib.pyplot as plt
-    labels, small, big = [], [], []
-    for fc in C.FAC_CODES:
-        for lev in calc.LEVELS:
-            labels.append("200 level" if lev == "200" else "300 and up")
-            small.append(o["groups"][(fc, lev)][0])
-            big.append(o["groups"][(fc, lev)][1])
-    fig, ax = plt.subplots(figsize=(11.5, 5.8), dpi=110)
-    x = np.arange(len(labels)) + np.repeat(np.arange(5) * 0.6, 2)
-    ax.bar(x, small, 0.8, color="#9db9d8", label="30 students or fewer")
-    ax.bar(x, big, 0.8, bottom=small, color="#2f5d8c", label="More than 30 students")
-    for i in range(len(x)):
-        ax.text(x[i], small[i] / 2, str(small[i]), ha="center", va="center", fontsize=8.5)
-        ax.text(x[i], small[i] + big[i] / 2, str(big[i]), ha="center", va="center", fontsize=8.5, color="white")
-    ax.set_xticks(x)
-    ax.set_xticklabels(labels, fontsize=8)
-    for j, fc in enumerate(C.FAC_CODES):
-        ax.text((x[2 * j] + x[2 * j + 1]) / 2, -0.11, FAC_SHORT[fc].replace(" and ", " and\n"), transform=ax.get_xaxis_transform(),
-                ha="center", va="top", fontsize=9)
-    ax.set_ylabel("Teaching groups")
-    ax.set_title("Semester 1 2026 teaching groups at 200 level and above: most run with more than 30 students",
-                 fontsize=10, loc="left")
-    ax.spines[["top", "right"]].set_visible(False)
-    ax.legend(frameon=False, fontsize=8.5, loc="upper right")
-    fig.text(0.01, 0.01, "Source: Timetabling, Semester 1 2026 timetable at the 1 October 2026 census. Groups as taught.",
-             fontsize=7.5, color="#555555")
-    fig.tight_layout(rect=(0, 0.06, 1, 1))
-    fig.savefig(path, metadata={"Software": None})
-    plt.close(fig)
-
-
-def write_submission(path, o, F):
-    g = o["groups"]
+# ------------------------------------------------------------------ write-up
+def submission(o, f):
+    g = f
+    z = o["zones"]
     L = []
-    L.append("## Tags\n")
-    L.append("**Domain:** Education and learning sciences, learning analytics and early-warning models.  ")
-    L.append("**Analytical objective:** Forecasting and predictive modeling.\n")
-    L.append("## 1. Final Recommendation\n")
-    L.append("**Plan for about %s of the %s first-time entrants enrolled at the 1 October 2026 census not to be "
-             "enrolled at the 1 October 2027 census, to the nearest 250.**" % ("{:,}".format(o["call_r"]),
-                                                                              "{:,}".format(o["n2026"])))
-    L.append("The figure reads each entrant's chance at the number of other entrants met in two or more of the "
-             "entrant's own Semester 1 classes, and %s of the 2026 entrants meet no other entrant twice. Not an "
-             "early-warning model on entrant attributes and week-6 ratings alone, validated on intakes in which most "
-             "full-time entrants shared three classes with the same 27 others. Not the earlier intakes' rate, for "
-             "the same reason." % "{:,}".format(o["no_repeat_2026"]))
+    L.append("## Tags")
     L.append("")
-    L.append("## 2. Critical Components\n")
-    L.append("1. First-time entrants enrolled at the 1 October 2026 census: **%s**" % "{:,}".format(o["n2026"]))
-    L.append("2. 2026 entrants who meet no other entrant in two or more of their classes: **%s**"
-             % "{:,}".format(o["no_repeat_2026"]))
+    L.append("**Domain:** Criminology & Justice (recidivism risk assessment).")
+    L.append("**Analytical objective:** Forecasting & Predictive Modeling.")
     L.append("")
-    L.append("## 3. Step-by-Step Solution\n")
-    L.append("1. Took each intake's first-time entrants (Entry Basis First-time) from admissions_entrants_2019_2026.xlsx "
-             "with an enrolled attempt at their own census in census_enrolments_2019_2026.csv: %s in 2026."
-             % "{:,}".format(o["n2026"]))
-    L.append("2. Marked each 2019 to 2025 entrant not enrolled at the next census when no EN or Enrolled attempt is "
-             "there (leave is not enrolled, per the conventions), the 2025 intake through "
-             "sirius_arc_student_crosswalk.csv.")
-    L.append("3. Counted for every entrant the other entrants of the same intake met in two or more of the entrant's "
-             "Semester 1 classes (sirius_fy_cohort_classes_2019_2025.csv by term and class number, "
-             "arc_s1_2026_first_year_classes.csv by class code; the dictionary files both as one row per Semester 1 "
-             "class enrolment of a first-time entrant at the census): %s of the 2026 entrants meet none."
-             % "{:,}".format(o["no_repeat_2026"]))
-    cp = o["comp"]
-    L.append("4. Checked that a class is the same unit on both sides of the cutover, so the 2026 counts can be read "
-             "against the earlier intakes': each class number or class code carries one paper at 15 points, and the "
-             "extracts hold %s class places for %s entrants in %s classes in 2019 to 2025 and %s for %s in %s in 2026, "
-             "about %.1f classes an entrant and %d entrants a class on both sides; what changed is who shares them, "
-             "%s of the 2019 to 2025 entrants meeting 10 or more others twice against %s of 2026's."
-             % ("{:,}".format(cp["places_2019_2025"]), "{:,}".format(cp["entrants_2019_2025"]),
-                "{:,}".format(cp["classes_2019_2025"]), "{:,}".format(cp["places_2026"]),
-                "{:,}".format(cp["entrants_2026"]), "{:,}".format(cp["classes_2026"]), cp["per_entrant_1dp"],
-                cp["class_size_whole"], "{:,}".format(cp["meet10_2019_2025"]), "{:,}".format(cp["meet10_2026"])))
-    L.append("5. Fitted logistic models of not being enrolled at the next census on the 2019 to 2025 entrants (ASC "
-             "points, first in family, part-time, aged 21 or over, hardship grant, mean week-6 rating with Satisfactory "
-             "0, Some concern 1 and At risk 2, living-learning community, hall, offer acceptance day, faculty) with that "
-             "count in several forms, and kept the lowest Akaike information criterion, per the conventions: a flag "
-             "for meeting 10 or more other entrants twice; every form within 12 AIC of it prints %s."
-             % "{:,}".format(o["call_r"]))
-    L.append("6. Checked what the model without the count misses where the 2026 intake sits: fitted on all the 2019 to "
-             "2025 entrants with step 5's attributes and no count, it predicts %s not enrolled among the %s of them who "
-             "meet fewer than 10 other entrants in two or more of their classes, and %s of those %s were not enrolled at "
-             "the next census." % ("{:,.1f}".format(o["seg"]["all"]), "{:,}".format(o["seg"]["n"]),
-                                   "{:,}".format(o["seg"]["gone"]), "{:,}".format(o["seg"]["n"])))
-    L.append("7. Applied the kept model to the 2026 entrants and summed their probabilities: %s, about %s to the nearest 250."
-             % ("{:,.1f}".format(o["call"]), "{:,}".format(o["call_r"])))
-    L.append("8. Counted Semester 1 2026 teaching groups at 200 level and above from s1_2026_class_timetable.xlsx: each "
-             "distinct set of active classes meeting together in one room on the same day, start and teaching weeks is "
-             "one group however often it meets, so two classes that share only one of their meetings make three groups "
-             "(the two at the shared meeting and each at its own); a group's size is the students its classes list in arc_s1_2026_class_enrolments.csv who hold an enrolled "
-             "programme attempt at the 2026 census in the census history, so places still held by students on approved "
-             "leave or with no 2026 attempt are not counted (ARC Scheduling's Enrolled at Census counts them, and shows "
-             "a combination's two classes together on each).")
+    L.append("## 1. Final Recommendation")
     L.append("")
-    L.append("## 4. Deliverable Answers\n")
-    L.append("### %s\n" % C.DELIV_XLSX)
-    L.append("1. First-time entrants enrolled at the 1 October 2026 census not enrolled at the 1 October 2027 census: "
-             "**%s** (nearest 250)" % "{:,}".format(o["call_r"]))
-    L.append("2. Semester 1 2026 teaching groups by faculty and level, with 30 students or fewer and with more than "
-             "thirty at the census:")
-    for fc in C.FAC_CODES:
-        for lev in calc.LEVELS:
-            sm, bg = g[(fc, lev)]
-            L.append("   - %s, %s: **%s** with thirty or fewer, **%s** with more than thirty"
-                     % (FAC_SHORT[fc], "200 level" if lev == "200" else "300 level and above", sm, bg))
+    L.append("**Reserve %s GPS enrolments in Region 4's 2027 Belvantis order: %s people on the 31 December 2026 caseload will "
+             "be booked on a new Category V charge in 2027 while still supervised.** Not the %s a risk model on the "
+             "caseload's own records gives, which misses the roughly %s supervisees the Halverton police recorded as "
+             "victims of violence in 2026."
+             % ("{:,}".format(g["call_forecast_2027"]), "{:,}".format(g["call_forecast_2027"]),
+                "{:,}".format(g["default_printed"]), "{:,}".format(g["cc_victims_on_caseload_2026_about"])))
     L.append("")
-    L.append("### %s\n" % C.DELIV_PNG)
-    L.append("1. One stacked bar per faculty and level, groups of 30 students or fewer and of more than 30, each "
-             "segment labelled with its count as in answer 2 above.")
-    open(path, "w", encoding="utf-8").write("\n".join(L) + "\n")
+    L.append("## 2. Critical Components")
+    L.append("")
+    L.append("1. The caseload at the end of 31 December 2026 is **%s** people." % "{:,}".format(g["cc_caseload_2026"]))
+    L.append("2. About **%s** of them were recorded by the Halverton police as victims of a violent "
+             "incident that occurred in 2026, against about **%s** on the 2025 year-end caseload for incidents in 2025."
+             % ("{:,}".format(g["cc_victims_on_caseload_2026_about"]), "{:,}".format(g["cc_victims_on_caseload_2025_about"])))
+    L.append("3. On the 2018 to 2025 year ends, supervisees with a police victim record in the prior twelve months were "
+             "booked on a Category V charge the next year at **%.1f%%**, against **%.1f%%** for the rest."
+             % (g["cc_rate_victims_pct"], g["cc_rate_others_pct"]))
+    L.append("")
+    L.append("## 3. Step-by-Step Solution")
+    L.append("")
+    steps = [
+        "Read %s (one booking per booking_no) and %s (UTC converted to Merrow time), kept new arrests per Directive "
+        "26-07 section 2, read former sections through %s and flagged Category V charges by the directive's Appendix: "
+        "%s Category V new-arrest bookings of supervisees from 2018 to 2026."
+        % (C.F_DARROW, C.F_KESWICK, C.F_CODE, "{:,}".format(g["step_schedb_bookings_2018_2026"])),
+        "Built each year end's caseload from %s, an episode open from its start date through its close date and each "
+        "person counted once: %s people at the end of 2026." % (C.F_EPIS, "{:,}".format(g["cc_caseload_2026"])),
+        "Matched the individual victims in %s to the caseload on surname, the first word of the given name and date of "
+        "birth, the names in capitals with the suffixes JR, SR, II, III and IV and every character but a letter dropped, "
+        "each victimization dated by the incident's occurred date: about %s of the 2026 year-end caseload victims in "
+        "2026, about %s of the 2025 year-end caseload in 2025."
+        % (C.F_HPD, "{:,}".format(g["cc_victims_on_caseload_2026_about"]), "{:,}".format(g["cc_victims_on_caseload_2025_about"])),
+        "Fitted a logistic model of a Category V new-arrest booking in the next calendar year while supervised on the "
+        "2018 to 2025 year ends (age, sex, prior felonies, lead offence family, supervision type, county, city residence, "
+        "months to expiration, first year of supervision, latest MRAS total with legacy numbers through %s, prior-year "
+        "new-arrest and Category V bookings, and a police victim record in the prior twelve months), where victims "
+        "book at %.1f%% against %.1f%%." % (C.F_XWALK, g["cc_rate_victims_pct"], g["cc_rate_others_pct"]),
+        "Scored the 2026 year-end caseload and summed the probabilities: %.1f, %s to the nearest 100 (the same model "
+        "without the victim records gives %.1f)." % (g["golden_unrounded"], "{:,}".format(g["call_forecast_2027"]),
+                                                     g["default_unrounded"]),
+        "Rebuilt each client's held days in %s from effective dates with voided events dropped, a legacy offender "
+        "number and its case-management id per %s read as one client, removed suspended days, every day the client "
+        "spent any part of in either jail per both booking files and every day after Region 4's supervision ended per "
+        "%s, a transfer between Darrow and Keswick counties continuing it (Schedule C, %s): %s enrolment days in 2026."
+        % (C.F_GPS, C.F_XWALK, C.F_EPIS, C.F_SCHED, "{:,}".format(g["ask_gps_days_2026_total"])),
+        "For each supervisee's Halverton police Category V arrest, once per supervisee and incident at its first booking, "
+        "counted the distinct Halverton residences of the incident's individual victims in %s across the original "
+        "report and its supplements (Directive 26-07 section 4, unit marks and street types read alike) in the month of "
+        "that booking: %s zones in 2026." % (C.F_HPD, "{:,}".format(g["ask_zones_2026_total"])),
+        "Reserve %s enrolments for 2027." % "{:,}".format(g["call_forecast_2027"]),
+    ]
+    for k, s_ in enumerate(steps, 1):
+        L.append("%d. %s" % (k, s_))
+    L.append("")
+    L.append("## 4. Deliverable Answers")
+    L.append("")
+    L.append("### %s" % C.DELIV_DOCX)
+    L.append("")
+    L.append("1. %s people booked on a new Category V charge in 2027 while still supervised, to the nearest 100." %
+             "{:,}".format(g["call_forecast_2027"]))
+    L.append("")
+    L.append("### %s" % C.DELIV_XLSX)
+    L.append("")
+    L.append("1. Forecast: %s." % "{:,}".format(g["call_forecast_2027"]))
+    L.append("2. Enrolment days owed to Belvantis for 2026, whole days:")
+    for m in range(12):
+        L.append("   - %s: %s" % (MONTHS[m], "{:,}".format(g["ask_gps_days_2026_%02d" % (m + 1)])))
+    L.append("3. Exclusion zones the directive would have set in 2026 for the Halverton police's Category V arrests of "
+             "supervisees, whole zones:")
+    for m in range(12):
+        L.append("   - %s: %s" % (MONTHS[m], "{:,}".format(g["ask_zones_2026_%02d" % (m + 1)])))
+    return "\n".join(L) + "\n"
 
 
-def write_metadata(path):
-    meta = {"task": C.TASK,
-            "distractor_files": ["target/" + f for f in C.DISTRACTORS + [C.F_TRF, C.F_CAT]],
-            "deliverables": [C.DELIV_XLSX, C.DELIV_PNG],
-            "objective": "Forecasting & Predictive Modeling",
-            "domain": "Education & Learning Sciences / Learning Analytics & Early-Warning Models",
-            "setting": "Corriemoor University and the Republic of Aldmark are fictional; every record is synthetic, "
-                       "built by the task's generator, and no real institution, student system or person is "
-                       "represented.",
-            "sources": {f: {"source": "synthetic (task generator)", "date": "2026-10-16", "license": "CC0-1.0"}
-                        for f in [C.F_SCLS, C.F_ACLS, C.F_CENSUS, C.F_XWALK, C.F_ADM, C.F_PROG, C.F_TT, C.F_CLE, C.F_CAT,
-                                  C.F_TRF, C.F_CUT, C.F_CONV, C.F_DICT, C.F_HALL, C.F_NSL]}}
-    json.dump(meta, open(path, "w"), indent=2)
-    open(path, "a").write("\n")
+def metadata(n):
+    src = {}
+    made = {C.F_EPIS: "case-management export of every supervision episode open at any time in 2018 to 2026",
+            C.F_XWALK: "the June 2022 conversion of legacy offender numbers to case-management person ids",
+            C.F_ASSESS: "every MRAS assessment from 2017 to 2026, legacy numbers before the conversion",
+            C.F_DARROW: "Darrow County Jail's booking notices of Region 4 supervisees, one row per booking charge",
+            C.F_KESWICK: "Keswick County Jail's booking notices of Region 4 supervisees, one row per booking, UTC",
+            C.F_HPD: "Halverton Police Department's violent-incident extract, one row per victim per offence",
+            C.F_GPS: "Belvantis's event export for the Region 4 account",
+            C.F_PROG: "programme referrals of Region 4 supervisees (distractor)",
+            C.F_DIRECTIVE: "Department directive on GPS placement after a Category V booking",
+            C.F_CODE: "Legislative Revisor's conversion table for the 2024 recodification",
+            C.F_SCHED: "Belvantis contract Schedule C, billing rules",
+            C.F_BRIEF: "Department research brief on statewide three-year rearrest (distractor)"}
+    for f, what in made.items():
+        src[f] = {"source": "synthetic (task generator)", "date": "2027-01-08", "license": "CC0-1.0", "covers": what,
+                  "rows": n.get(f)}
+    return {"task": "task179", "distractor_files": ["target/" + x for x in C.DISTRACTORS],
+            "deliverables": [C.DELIV_XLSX, C.DELIV_DOCX], "objective": "Forecasting & Predictive Modeling",
+            "domain": "Criminology & Justice / Recidivism Risk Assessment",
+            "setting": ("The State of Merrow, its Department of Corrections, Region 4, Darrow and Keswick counties, the City "
+                        "of Halverton and Belvantis are fictional; every record is synthetic, built by the task's generator, "
+                        "and no real agency, person or case is represented. People's names are drawn from Faker's public "
+                        "name lists (MIT licence)."),
+            "sources": src}
 
 
-def main(target, golden, figpath, subpath, metapath, quiet=False):
-    os.makedirs(golden, exist_ok=True)
+def main(target, golden_dir, figures_path, submission_path, metadata_path, n=None):
     o = compute(target)
-    F = figures(o)
-    json.dump(F, open(figpath, "w"), indent=2, sort_keys=True)
-    open(figpath, "a").write("\n")
-    write_workbook(os.path.join(golden, C.DELIV_XLSX), o)
-    write_chart(os.path.join(golden, C.DELIV_PNG), o)
-    write_submission(subpath, o, F)
-    write_metadata(metapath)
-    if not quiet:
-        print("call %.1f -> %d (%s); intake %d; no repeat %d" % (o["call"], o["call_r"], o["form"], o["n2026"],
-                                                                o["no_repeat_2026"]))
-        print("groups", o["groups"])
+    f = figures(o)
+    os.makedirs(golden_dir, exist_ok=True)
+    write_workbook(os.path.join(golden_dir, C.DELIV_XLSX), o, f)
+    write_memo(os.path.join(golden_dir, C.DELIV_DOCX), o, f)
+    json.dump(f, open(figures_path, "w"), indent=1, sort_keys=True)
+    open(submission_path, "w").write(submission(o, f))
+    json.dump(metadata(n or {}), open(metadata_path, "w"), indent=2)
+    return o, f

@@ -11,8 +11,8 @@
   "shape": "other",
   "decision_type": "quantity_figure",
   "answer_unit": "count",
-  "answer": "",
-  "answer_source": "",
+  "answer": "Reserve 500 GPS enrolments in Region 4's 2027 Belvantis order: about 500 of the 7,688 people on the caseload at the end of 31 December 2026 will be booked on a new Category V charge in 2027 while still supervised (to the nearest 100), not the 400 a risk model on the caseload's own records gives.",
+  "answer_source": "task179/submission.md block 1; task179/generator/figures.json call_forecast_2027",
   "gap": [
     "time",
     "population"
@@ -32,8 +32,8 @@
   "validated_decoy": false,
   "context_artifact": "other",
   "stump_class": "analytical",
-  "analyst_test": "With the two jails' booking extracts conformed (local time against UTC, warrant-only, violation-only, transport and re-bookings set aside), the 2024 recodification mapped to the agreement's Schedule B, the 2022 case-system migration crosswalked and each person counted once across concurrent episodes, the easy route fits a model of a Schedule B booking within the year on each year-end caseload's own risk-instrument score, age, priors, offence, supervision type, months remaining and recent bookings over the 2018 to 2025 year ends, back-tests it on 2024 and 2025 within a few per cent, scores the 31 December 2026 caseload and files 450 against 500, because it never reads which supervisees the city police recorded as victims of violence in the second half of 2026.",
-  "domain_test": "The deciding quantity is the year-end caseload's 2027 bookings on a new violent-felony or firearm charge, forecast as each supervisee's risk-model hazard raised for about two years after the city police record them as the victim of a violent incident (the victim-offender overlap, an acute dynamic risk factor no supervision instrument scores), measured by linking the police victim records to the caseload by name and date of birth and carried through the second half of 2026, when that exposure nearly tripled; with a hospital's or a utility's nouns there is no arrest hazard, no victim-offender overlap and no supervision caseload, so the task does not survive the swap.",
+  "analyst_test": "With the two jails' booking extracts conformed (local time against UTC, warrant-only, violation-only, transport and re-bookings set aside), the 2024 recodification mapped to the directive's Category V, the 2022 case-system migration crosswalked and each person counted once across concurrent episodes, the easy route fits a model of a Category V booking within the year on each year-end caseload's own risk-instrument score, age, priors, offence, supervision type, months remaining and recent bookings over the 2018 to 2025 year ends, back-tests it on the 2024 and 2025 year ends within six per cent, scores the 31 December 2026 caseload and files 400 against 500, because it never reads which supervisees the city police recorded as victims of violence in the autumn of 2026.",
+  "domain_test": "The deciding quantity is the year-end caseload's 2027 bookings on a new violent-felony or firearm charge, forecast as each supervisee's risk-model hazard raised for about two years after the city police record them as the victim of a violent incident (the victim-offender overlap, an acute dynamic risk factor no supervision instrument scores), measured by linking the police victim records to the caseload by name and date of birth and carried through 2026, when that exposure rose two and a half times; with a hospital's or a utility's nouns there is no arrest hazard, no victim-offender overlap and no supervision caseload, so the task does not survive the swap.",
   "layer2_family": "field_method",
   "layer2_pattern": "own:victimization-as-a-time-varying-arrest-exposure-from-police-records",
   "layer1": [
@@ -43,14 +43,15 @@
     "bookings for court transport, warrant-only, violation-only and hospital re-bookings beside new arrests",
     "concurrent supervision episodes for one person, county transfers closing and reopening an episode",
     "victim names and dates of birth in the police layout against the supervision layout, supplements re-listing victims, business victims with no birth date",
-    "the 2023 risk-instrument revision with new cut-offs"
+    "the 2023 risk-instrument revision with new cut-offs",
+    "the vendor's GPS event export: events logged in UTC with local effective dates, voided duplicate entries, device exchanges as two events, suspensions on some custody spells, legacy offender numbers as client references and re-registered clients' legacy records left open until the vendor's batch closure"
   ],
   "stakeholder_role": "Region 4 research and planning lead",
   "role_family": "research_desk",
   "scoring_unit": "other",
   "spine": {
     "file": "cms_supervision_episodes_2018-2026.csv",
-    "rows": 0,
+    "rows": 46042,
     "entity": "one supervision episode of one person",
     "grain": "person x episode",
     "source": "synthetic (constructed in the layout of a community supervision case-management export)"
@@ -67,7 +68,7 @@
       "Darrow County",
       "Keswick County",
       "Merrow",
-      "Trakwell"
+      "Belvantis"
     ],
     "people": [
       "Zachary Wallace",
@@ -76,20 +77,21 @@
   },
   "deliverables": [
     "region4_2027_gps_order.xlsx",
-    "region4_2027_schedule_b_forecast.docx"
+    "region4_2027_category_v_forecast.docx"
   ],
   "opening_move": "question-first",
   "question_form": "how-many",
-  "driver": "A member's chance of the outcome rises for about two years after another body records it as the injured party in a harmful event, so a forecast from each member's own attributes misses a half-year in which that body recorded nearly three times as many members injured, which only linking the two bodies' records person by person shows.",
-  "driver_concrete": "Supervisees whom the city police list as the victim of a violent incident are booked on new violent-felony or firearm charges at several times their risk-model rate for about two years afterwards, and from July 2026 the police recorded nearly three times as many of Region 4's caseload as victims as in any earlier half-year, so the year-end caseload's 2027 Schedule B bookings run above every model of the caseload's own attributes.",
-  "stump": "A competent analyst fits the region's Schedule B booking model on the caseload's own risk score, history and supervision terms, back-tests it cleanly on 2024 and 2025, scores the 31 December 2026 caseload and files 450 against 500, because it never links the city police's victim records to the caseload by name and date of birth and so never carries the second half of 2026's rise in victimization into 2027.",
+  "driver": "A member's chance of the outcome rises for about two years after another body records it as the injured party in a harmful event, so a forecast from each member's own attributes misses a year in which that body recorded two and a half times as many members injured, which only linking the two bodies' records person by person shows.",
+  "driver_concrete": "Supervisees whom the city police list as the victim of a violent incident are booked on new violent-felony or firearm charges at several times their risk-model rate for about two years afterwards, and in 2026, most of it from September to November, the police recorded two and a half times as many of Region 4's year-end caseload as victims as in 2025, so the year-end caseload's 2027 Category V bookings run above every model of the caseload's own attributes.",
+  "stump": "A competent analyst fits the region's Category V booking model on the caseload's own risk score, history and supervision terms, back-tests it cleanly on the 2024 and 2025 year ends, scores the 31 December 2026 caseload and files 400 against 500, because it never links the city police's victim records to the caseload by name and date of birth and so never carries the autumn 2026 rise in victimization into 2027.",
   "mechanism_source": "design_note",
   "differentiation": {
     "task157": "task157 reads a defect that shows only when both members of a sampled pair fall in the sample (and its v1 a group that stopped together coming back in a wave); task179 reads no sample and no returning wave: each supervisee's own arrest hazard is raised for a year after another agency records them as a victim, and the 2026 rise in that exposure is carried forward.",
     "task192": "task192 counts units carrying a property an instrument labels after its validation window, or distinct processes behind bursts; task179 has no instrument to validate and no bursts: the exposure is a dated police record linked person by person, and the decisive quantity is the arrest hazard it raises.",
     "task482": "task482 carries a running period's rate by its own relation at the cut while some members sit in episodes recorded only at their end; task179 has no episode recorded late: the victim record is dated when the police take the report and the outcome is a booking dated when it happens.",
     "task231": "task231 reads a rate over units still active when exits reach the record a year late and follow-up favours active units; task179 has no late exit record and no confirmation bias: the supervision record is complete, it simply never holds the exposure another agency recorded.",
-    "task250": "task250 counts alerts a less sensitive limit raises from a record the current limit cut short by repairs; task179 has no limit and no repair: a person's arrest hazard rises after a recorded victimization and decays over about a year."
+    "task250": "task250 counts alerts a less sensitive limit raises from a record the current limit cut short by repairs; task179 has no limit and no repair: a person's arrest hazard rises after a recorded victimization and decays over about a year.",
+    "task180": "task180 counts the small events an instrument records only in the quiet hours of a daily noise cycle, so a unit's record understates them by the share of the day they are masked; task179 has no instrument, no detection threshold and no masking: the police record of each victimization is complete for what it records, and the step is reading that record of a person in another role against the caseload, person by person."
   },
   "lineage": [
     {

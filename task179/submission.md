@@ -1,46 +1,61 @@
 ## Tags
 
-**Domain:** Education and learning sciences, learning analytics and early-warning models.  
-**Analytical objective:** Forecasting and predictive modeling.
+**Domain:** Criminology & Justice (recidivism risk assessment).
+**Analytical objective:** Forecasting & Predictive Modeling.
 
 ## 1. Final Recommendation
 
-**Plan for about 3,250 of the 8,659 first-time entrants enrolled at the 1 October 2026 census not to be enrolled at the 1 October 2027 census, to the nearest 250.**
-The figure reads each entrant's chance at the number of other entrants met in two or more of the entrant's own Semester 1 classes, and 3,778 of the 2026 entrants meet no other entrant twice. Not an early-warning model on entrant attributes and week-6 ratings alone, validated on intakes in which most full-time entrants shared three classes with the same 27 others. Not the earlier intakes' rate, for the same reason.
+**Reserve 500 GPS enrolments in Region 4's 2027 Belvantis order: 500 people on the 31 December 2026 caseload will be booked on a new Category V charge in 2027 while still supervised.** Not the 400 a risk model on the caseload's own records gives, which misses the roughly 530 supervisees the Halverton police recorded as victims of violence in 2026.
 
 ## 2. Critical Components
 
-1. First-time entrants enrolled at the 1 October 2026 census: **8,659**
-2. 2026 entrants who meet no other entrant in two or more of their classes: **3,778**
+1. The caseload at the end of 31 December 2026 is **7,688** people.
+2. About **530** of them were recorded by the Halverton police as victims of a violent incident that occurred in 2026, against about **210** on the 2025 year-end caseload for incidents in 2025.
+3. On the 2018 to 2025 year ends, supervisees with a police victim record in the prior twelve months were booked on a Category V charge the next year at **30.7%**, against **4.4%** for the rest.
 
 ## 3. Step-by-Step Solution
 
-1. Took each intake's first-time entrants (Entry Basis First-time) from admissions_entrants_2019_2026.xlsx with an enrolled attempt at their own census in census_enrolments_2019_2026.csv: 8,659 in 2026.
-2. Marked each 2019 to 2025 entrant not enrolled at the next census when no EN or Enrolled attempt is there (leave is not enrolled, per the conventions), the 2025 intake through sirius_arc_student_crosswalk.csv.
-3. Counted for every entrant the other entrants of the same intake met in two or more of the entrant's Semester 1 classes (sirius_fy_cohort_classes_2019_2025.csv by term and class number, arc_s1_2026_first_year_classes.csv by class code; the dictionary files both as one row per Semester 1 class enrolment of a first-time entrant at the census): 3,778 of the 2026 entrants meet none.
-4. Checked that a class is the same unit on both sides of the cutover, so the 2026 counts can be read against the earlier intakes': each class number or class code carries one paper at 15 points, and the extracts hold 218,044 class places for 57,073 entrants in 8,407 classes in 2019 to 2025 and 33,064 for 8,659 in 1,279 in 2026, about 3.8 classes an entrant and 26 entrants a class on both sides; what changed is who shares them, 45,433 of the 2019 to 2025 entrants meeting 10 or more others twice against 928 of 2026's.
-5. Fitted logistic models of not being enrolled at the next census on the 2019 to 2025 entrants (ASC points, first in family, part-time, aged 21 or over, hardship grant, mean week-6 rating with Satisfactory 0, Some concern 1 and At risk 2, living-learning community, hall, offer acceptance day, faculty) with that count in several forms, and kept the lowest Akaike information criterion, per the conventions: a flag for meeting 10 or more other entrants twice; every form within 12 AIC of it prints 3,250.
-6. Checked what the model without the count misses where the 2026 intake sits: fitted on all the 2019 to 2025 entrants with step 5's attributes and no count, it predicts 4,166.2 not enrolled among the 11,640 of them who meet fewer than 10 other entrants in two or more of their classes, and 5,029 of those 11,640 were not enrolled at the next census.
-7. Applied the kept model to the 2026 entrants and summed their probabilities: 3,253.0, about 3,250 to the nearest 250.
-8. Counted Semester 1 2026 teaching groups at 200 level and above from s1_2026_class_timetable.xlsx: each distinct set of active classes meeting together in one room on the same day, start and teaching weeks is one group however often it meets, so two classes that share only one of their meetings make three groups (the two at the shared meeting and each at its own); a group's size is the students its classes list in arc_s1_2026_class_enrolments.csv who hold an enrolled programme attempt at the 2026 census in the census history, so places still held by students on approved leave or with no 2026 attempt are not counted (ARC Scheduling's Enrolled at Census counts them, and shows a combination's two classes together on each).
+1. Read darrow_county_jail_booking_notices_2018-2026.csv (one booking per booking_no) and keswick_county_jail_bookings_2018-2026.xlsx (UTC converted to Merrow time), kept new arrests per Directive 26-07 section 2, read former sections through criminal_code_conversion_table_2024.pdf and flagged Category V charges by the directive's Appendix: 5,676 Category V new-arrest bookings of supervisees from 2018 to 2026.
+2. Built each year end's caseload from cms_supervision_episodes_2018-2026.csv, an episode open from its start date through its close date and each person counted once: 7,688 people at the end of 2026.
+3. Matched the individual victims in hpd_violent_incident_victims_2018-2026.csv to the caseload on surname, the first word of the given name and date of birth, the names in capitals with the suffixes JR, SR, II, III and IV and every character but a letter dropped, each victimization dated by the incident's occurred date: about 530 of the 2026 year-end caseload victims in 2026, about 210 of the 2025 year-end caseload in 2025.
+4. Fitted a logistic model of a Category V new-arrest booking in the next calendar year while supervised on the 2018 to 2025 year ends (age, sex, prior felonies, lead offence family, supervision type, county, city residence, months to expiration, first year of supervision, latest MRAS total with legacy numbers through oms_cms_person_crosswalk_2022.csv, prior-year new-arrest and Category V bookings, and a police victim record in the prior twelve months), where victims book at 30.7% against 4.4%.
+5. Scored the 2026 year-end caseload and summed the probabilities: 495.0, 500 to the nearest 100 (the same model without the victim records gives 413.7).
+6. Rebuilt each client's held days in belvantis_r4_device_events_2025-2026.json from effective dates with voided events dropped, a legacy offender number and its case-management id per oms_cms_person_crosswalk_2022.csv read as one client, removed suspended days, every day the client spent any part of in either jail per both booking files and every day after Region 4's supervision ended per cms_supervision_episodes_2018-2026.csv, a transfer between Darrow and Keswick counties continuing it (Schedule C, belvantis_service_schedule_2025.pdf): 75,758 enrolment days in 2026.
+7. For each supervisee's Halverton police Category V arrest, once per supervisee and incident at its first booking, counted the distinct Halverton residences of the incident's individual victims in hpd_violent_incident_victims_2018-2026.csv across the original report and its supplements (Directive 26-07 section 4, unit marks and street types read alike) in the month of that booking: 143 zones in 2026.
+8. Reserve 500 enrolments for 2027.
 
 ## 4. Deliverable Answers
 
-### continuing_enrolment_2027.xlsx
+### region4_2027_category_v_forecast.docx
 
-1. First-time entrants enrolled at the 1 October 2026 census not enrolled at the 1 October 2027 census: **3,250** (nearest 250)
-2. Semester 1 2026 teaching groups by faculty and level, with 30 students or fewer and with more than thirty at the census:
-   - Arts and Social Sciences, 200 level: **14** with thirty or fewer, **40** with more than thirty
-   - Arts and Social Sciences, 300 level and above: **20** with thirty or fewer, **45** with more than thirty
-   - Business and Law, 200 level: **15** with thirty or fewer, **39** with more than thirty
-   - Business and Law, 300 level and above: **22** with thirty or fewer, **46** with more than thirty
-   - Science, 200 level: **15** with thirty or fewer, **39** with more than thirty
-   - Science, 300 level and above: **22** with thirty or fewer, **38** with more than thirty
-   - Engineering and Computing, 200 level: **18** with thirty or fewer, **33** with more than thirty
-   - Engineering and Computing, 300 level and above: **25** with thirty or fewer, **34** with more than thirty
-   - Health Sciences, 200 level: **17** with thirty or fewer, **36** with more than thirty
-   - Health Sciences, 300 level and above: **25** with thirty or fewer, **32** with more than thirty
+1. 500 people booked on a new Category V charge in 2027 while still supervised, to the nearest 100.
 
-### s1_2026_teaching_groups.png
+### region4_2027_gps_order.xlsx
 
-1. One stacked bar per faculty and level, groups of 30 students or fewer and of more than 30, each segment labelled with its count as in answer 2 above.
+1. Forecast: 500.
+2. Enrolment days owed to Belvantis for 2026, whole days:
+   - January: 6,256
+   - February: 5,669
+   - March: 6,334
+   - April: 6,140
+   - May: 6,348
+   - June: 5,872
+   - July: 6,241
+   - August: 6,418
+   - September: 6,093
+   - October: 6,572
+   - November: 6,820
+   - December: 6,995
+3. Exclusion zones the directive would have set in 2026 for the Halverton police's Category V arrests of supervisees, whole zones:
+   - January: 9
+   - February: 17
+   - March: 16
+   - April: 13
+   - May: 13
+   - June: 11
+   - July: 13
+   - August: 11
+   - September: 11
+   - October: 13
+   - November: 8
+   - December: 8

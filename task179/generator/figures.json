@@ -1,91 +1,46 @@
 {
-  "_model_form": "ge10",
-  "_stated": {
-    "paper_levels": [
-      200,
-      300
-    ],
-    "rounding_of_the_call": 250
-  },
-  "_unrounded": {
-    "call_not_enrolled_2027": 3253.0
-  },
-  "ask_groups_s1_2026_ass_200_30orfewer": 14,
-  "ask_groups_s1_2026_ass_200_over30": 40,
-  "ask_groups_s1_2026_ass_300up_30orfewer": 20,
-  "ask_groups_s1_2026_ass_300up_over30": 45,
-  "ask_groups_s1_2026_bus_200_30orfewer": 15,
-  "ask_groups_s1_2026_bus_200_over30": 39,
-  "ask_groups_s1_2026_bus_300up_30orfewer": 22,
-  "ask_groups_s1_2026_bus_300up_over30": 46,
-  "ask_groups_s1_2026_eng_200_30orfewer": 18,
-  "ask_groups_s1_2026_eng_200_over30": 33,
-  "ask_groups_s1_2026_eng_300up_30orfewer": 25,
-  "ask_groups_s1_2026_eng_300up_over30": 34,
-  "ask_groups_s1_2026_hlt_200_30orfewer": 17,
-  "ask_groups_s1_2026_hlt_200_over30": 36,
-  "ask_groups_s1_2026_hlt_300up_30orfewer": 25,
-  "ask_groups_s1_2026_hlt_300up_over30": 32,
-  "ask_groups_s1_2026_sci_200_30orfewer": 15,
-  "ask_groups_s1_2026_sci_200_over30": 39,
-  "ask_groups_s1_2026_sci_300up_30orfewer": 22,
-  "ask_groups_s1_2026_sci_300up_over30": 38,
-  "call_not_enrolled_2027": 3250,
-  "cc1_intake_2026_at_census": 8659,
-  "cc2_intake_2026_no_repeat_classmate": 3778,
-  "check_class_unit_across_cutover": {
-    "class_size_whole": 26,
-    "classes_2019_2025": 8407,
-    "classes_2026": 1279,
-    "entrants_2019_2025": 57073,
-    "entrants_2026": 8659,
-    "meet10_2019_2025": 45433,
-    "meet10_2026": 928,
-    "one_paper_a_class": true,
-    "per_entrant_1dp": 3.8,
-    "places_2019_2025": 218044,
-    "places_2026": 33064
-  },
-  "check_fewer_than_10_twice_2019_2025": {
-    "count_free_predicted": 4166.2,
-    "entrants": 11640,
-    "not_enrolled": 5029
-  },
-  "hist_intake_entrants_not_enrolled": [
-    [
-      2019,
-      7900,
-      2022
-    ],
-    [
-      2020,
-      7983,
-      1991
-    ],
-    [
-      2021,
-      8067,
-      1974
-    ],
-    [
-      2022,
-      8151,
-      1970
-    ],
-    [
-      2023,
-      8237,
-      2020
-    ],
-    [
-      2024,
-      8324,
-      2050
-    ],
-    [
-      2025,
-      8411,
-      2058
-    ]
-  ]
+ "ask_gps_days_2026_01": 6256,
+ "ask_gps_days_2026_02": 5669,
+ "ask_gps_days_2026_03": 6334,
+ "ask_gps_days_2026_04": 6140,
+ "ask_gps_days_2026_05": 6348,
+ "ask_gps_days_2026_06": 5872,
+ "ask_gps_days_2026_07": 6241,
+ "ask_gps_days_2026_08": 6418,
+ "ask_gps_days_2026_09": 6093,
+ "ask_gps_days_2026_10": 6572,
+ "ask_gps_days_2026_11": 6820,
+ "ask_gps_days_2026_12": 6995,
+ "ask_gps_days_2026_total": 75758,
+ "ask_zones_2026_01": 9,
+ "ask_zones_2026_02": 17,
+ "ask_zones_2026_03": 16,
+ "ask_zones_2026_04": 13,
+ "ask_zones_2026_05": 13,
+ "ask_zones_2026_06": 11,
+ "ask_zones_2026_07": 13,
+ "ask_zones_2026_08": 11,
+ "ask_zones_2026_09": 11,
+ "ask_zones_2026_10": 13,
+ "ask_zones_2026_11": 8,
+ "ask_zones_2026_12": 8,
+ "ask_zones_2026_total": 143,
+ "call_forecast_2027": 500,
+ "cc_caseload_2026": 7688,
+ "cc_rate_others_pct": 4.4,
+ "cc_rate_victims_pct": 30.7,
+ "cc_victims_on_caseload_2025": 212,
+ "cc_victims_on_caseload_2025_about": 210,
+ "cc_victims_on_caseload_2026": 533,
+ "cc_victims_on_caseload_2026_about": 530,
+ "default_printed": 400,
+ "default_unrounded": 413.7,
+ "golden_unrounded": 495.0,
+ "round_call_to": 100,
+ "step_schedb_bookings_2018_2026": 5676,
+ "year_end_origin": 2026,
+ "years_train": [
+  2018,
+  2025
+ ]
 }

@@ -13,9 +13,9 @@ on this number before is kept below as history (`## Tried and rejected`, `## Ear
 |---|---|
 | Card | `cards/task179.json` architecture v5, registered 2026-10-28; v2 and v3 in its lineage |
 | Pairing | criminology-justice / recidivism-risk-assessment, Forecasting & Predictive Modeling; client domain Criminology & Justice |
-| Call | how many of the people on Region 4's supervision caseload at the end of 31 December 2026 will be booked into either county jail at least once in 2027 on a new charge on Directive 26-07's Schedule B (a violent felony or a firearm offence) while still under Region 4 supervision, to the nearest 50; the figure sizes the GPS enrolments the Region reserves in its 2027 order, since the directive places every such supervisee on GPS from 1 January 2027 |
-| Shape | other: the call and its critical components, then the asks (the 2026 Schedule B booking notices by jail and quarter, the 2026 GPS days the vendor may bill by month, the year-end caseload by county and risk level), in two deliverables, an order workbook and a forecast memo |
-| Strategy | other: an acute dynamic risk factor recorded only by another agency (violent victimization in the city police's incident records), linked to the caseload by name and date of birth, whose prevalence nearly tripled in the second half of 2026; Layer 2 family field_method |
+| Call | how many of the people on Region 4's supervision caseload at the end of 31 December 2026 will be booked into either county jail at least once in 2027 on a new charge on Directive 26-07's Category V (a violent felony or a firearm offence) while still under Region 4 supervision, to the nearest 100; the figure sizes the GPS enrolments the Region reserves in its 2027 order, since the directive places every such supervisee on GPS from 1 January 2027 |
+| Shape | other: the call and its critical components, then the asks (the enrolment days owed to Belvantis for each month of 2026, and the exclusion zones the directive would have set in each month of 2026 for the Halverton police's Category V arrests of supervisees), in two deliverables, an order workbook and a forecast memo |
+| Strategy | other: an acute dynamic risk factor recorded only by another agency (violent victimization in the city police's incident records), linked to the caseload by name and date of birth, whose prevalence rose two and a half times in 2026, most of it from September to November; Layer 2 family field_method |
 | Gap, pattern, Gate G | time then population; G12 (the supervision record's silence on victimization is an absence of record, not a record of absence) and G14 (the raised booking hazard is conditioned on a victim record in the window before the year end); forecasting |
 | Forum, forcing event, org, role | executive_team (the Region's executive team signs the order); purchase_order_or_contract (the 2027 GPS order reserves enrolments in advance); government_agency; research_desk (the Region 4 research and planning lead) |
 | People | Zachary Wallace and Ashlee Evans, from `guard.py names --geo us --seed 179` |
@@ -86,58 +86,308 @@ exactly as the default path and the golden would be on the built pack; the gener
    victim rows are matched to the caseload; the link is a victim to a supervisee, the opposite role from every link a
    supervision analyst runs (arrestee to supervisee, by state number).
 3. **A textbook route that back-tests well.** The own-attribute model (age, sex, priors, offence, supervision type,
-   months remaining, risk score, recent bookings) back-tests on the 2022 to 2025 year ends at 429 against 430, 440
-   against 421, 415 against 443 and 390 against 434 on the prototype; the generator holds every back-test within five
-   per cent (a stage 3 assertion), and the model's 2026 caseload mean risk equals 2025's (0.0549 against 0.0559).
+   months remaining, risk score, recent bookings), fitted on the year ends before each origin, forecasts the 2023, 2024
+   and 2025 year ends' next-year counts at 410.0 against 359, 403.1 against 426 and 407.2 against 393 on the built pack
+   (the prototype's were 429 against 430 to 390 against 434); `generator/checks.py` holds every back-test within 15 per
+   cent, inside the observed counts' own swing of 359 to 426, and the model's mean risk on the 2026 caseload (0.0538)
+   sits beside 2025's (0.0530).
 4. **No framing or helper file that exposes the step.** The pack ships no data dictionary, no memo on violence, no
-   research brief on victimization; the directive defines Schedule B by statute and the vendor's order form counts
+   research brief on victimization; the directive defines Category V by statute and the vendor's order form counts
    enrolments; nothing names the police file as a source of risk.
 5. **A mechanism a practitioner would not name unprompted.** The overlap is a research finding, not a forecasting
    input: no supervision instrument (LSI-R, ORAS, COMPAS, the state's own) scores victimization, and a planning lead
    forecasting bookings reaches for the instrument, history and terms. The police file sits in the pack for an ask
    (below), so its presence is explained without the step.
-6. **No strong textbook feature pointing at the driver.** The prototype's own-attribute model ranks months remaining
-   (0.50 in coefficient times standard deviation), age (0.33), risk score (0.32), sex (0.26) and a violent lead offence
-   (0.25) first; none moves in 2026 (mean risk 0.0549 against 0.0559), and the textbook score predicts who carries a
-   2026 victim record no better than general risk does (AUC 0.675). Asking what changes any of them leads back to the
-   caseload, never to the police.
+6. **No strong textbook feature pointing at the driver.** The built own-attribute model ranks months remaining (0.48 in
+   coefficient times standard deviation), the MRAS total (0.41), age (-0.32), Halverton residence (0.25), a violent
+   lead offence (0.22) and sex (0.20) first; none moves in 2026 (mean risk 0.0538 against 0.0530), and the model's
+   score separates the people who carry a 2026 victim record only as it separates any higher-risk group (AUC 0.713).
+   Asking what changes any of them leads back to the caseload, never to the police.
 7. **The shock's file has its own evident purpose.** The city police's violent-incident extract (one row per victim per
    incident) is in the pack because Directive 26-07 requires a GPS exclusion zone around each victim of a supervisee's
-   Schedule B charge who lives in the city, and the vendor bills each zone: an ask counts the 2026 zones by joining the
+   Category V charge who lives in the city, and the vendor bills each zone: an ask counts the 2026 zones by joining the
    bookings to the incidents on the arresting agency's case number, a keyed join on the offender side.
 8. **The link is an identity resolution across records of different entities that no key joins.** Victims carry no
    state number; the police write `LAST, FIRST M` with dates as `MM/DD/YYYY` and the case-management export separate
    name fields with ISO dates; the match is a cleaned surname, given name and birth date, and the generator asserts it
    unique (no two people share a cleaned name and birth date, every true match agrees after cleaning).
-9. **The shock reads as ordinary, explained movement and is not the pack's largest anomaly.** The city's recorded
-   violent victimizations fall 4.2 per cent in 2026 (12,479 to 11,949), continuing the decline from the 2021 peak
-   (-7.1, -10.8, -8.5, -5.7 per cent a year), with every district down (-0.9 to -9.3 per cent) and September to December
-   2026 inside the monthly year-on-year range of 2019 to 2025 (-17.4 to +22.7 per cent). Supervisees are 2.6 per cent of
-   the city's victims in 2025 and 6.6 per cent in 2026, visible only after the link. The pack's larger anomalies are
-   ordinary and explained: the 2020 to 2021 rise in violence (+10.3 and +14.6 per cent), the spring 2020 booking
-   collapse, the June 2022 case-system migration and the July 2024 recodification of every statute.
+9. **The shock reads as ordinary, explained movement and is not the pack's largest anomaly.** On the built pack the
+   city's recorded violent victimizations fall 0.6 per cent in 2026 (12,636 to 12,560), after the decline from the 2021
+   peak (-8.3, -5.9, -4.9 and -5.3 per cent a year), with the districts from -5.4 to +4.0 per cent and September to
+   December 2026 (+12.8, +13.9, +3.3 and -7.1 per cent on the year) inside the monthly year-on-year range of 2019 to
+   2025 (-19.2 to +26.0 per cent). People linked to the caseload are 2.4 per cent of the city's victims in 2025 and 5.2
+   per cent in 2026 (305 and 647 people), visible only after the link. The pack's larger anomalies are ordinary and
+   explained: the 2020 to 2021 rise in violence (+6.2 and +15.4 per cent), the spring 2020 booking collapse, the June
+   2022 case-system migration and the July 2024 recodification of every statute.
 
 **The prototype's call.** The own-attribute model files 426.4 (450 at the nearest 50); the same model with a 2026
 victim record (the twelve months before each year end, as fitted on 2018 to 2025) files 496.2, and every linked form
 sits from 488.5 to 499.5 (the AIC-best, the twelve months, the twelve to twenty-four months and ever, 494.4), 500 at the
 nearest 50. The 2027 truth the prototype simulates is 497. The cheap routes off the record land 383.0 (recalibrated on
-the latest back-test), 395.8 (2026's rate on the 2026 caseload) and 426.3 (a district violence covariate).
+the latest back-test), 395.8 (2026's rate on the 2026 caseload) and 426.3 (a district violence covariate). The built pack's call
+is in the ladder below: the own-attribute model files 413.7 (400 at the nearest 100) and the linked family
+488.5 to 500.7 (500).
 
 ## Three rules
 
 - Task type: criminology-justice / recidivism-risk-assessment, which serves Forecasting: the 2027 count of a supervision caseload's people booked on a new violent-felony or firearm charge, forecast person by person from their risk.
-- Domain test: the quantity that decides the call is the year-end caseload's 2027 count of people booked on a Schedule B charge, which recidivism risk assessment forecasts as each supervisee's booking hazard over a fixed year from static and dynamic risk factors; the dynamic factor that moved is acute, recent violent victimization (the victim-offender overlap), measured by linking the city police's victim records to the caseload by name and date of birth and carried into 2027 for the two years the record shows the raised hazard lasting.
+- Domain test: the quantity that decides the call is the year-end caseload's 2027 count of people booked on a Category V charge, which recidivism risk assessment forecasts as each supervisee's booking hazard over a fixed year from static and dynamic risk factors; the dynamic factor that moved is acute, recent violent victimization (the victim-offender overlap), measured by linking the city police's victim records to the caseload by name and date of birth and carried into 2027 for the two years the record shows the raised hazard lasting.
 - Swap: "how many of a hospital's discharged patients will be readmitted in 2027": a readmission is not raised by a police victim record, no overlap between victims and offenders exists, and no second agency records the patients under another role by name alone, so the linked exposure that decides this call stops meaning anything.
 - Layer 1: every mess item comes from the agencies' own systems: two county jails' booking notices in different layouts (one row per booking charge in local time; one row per booking with charges concatenated, in UTC), warrant-only, violation-only, court-transport and hospital re-bookings beside new arrests, the July 2024 recodification with its crosswalk published as a PDF table, the June 2022 case-management migration with legacy offender numbers on the older assessments and merged duplicates in the crosswalk, concurrent episodes for one person and county transfers closing and reopening an episode, the 2023 revision of the risk instrument with new cut-offs, the police's victim names and birth dates in their own layout with supplements re-listing victims and business victims with no birth date, the vendor's device swaps; nothing placed to be caught.
-- Layer 2: field_method, a forecast whose information set omits an acute dynamic risk factor: a supervisee's Schedule B booking hazard is raised for about two years after a police victim record, the caseload's victimization nearly tripled in the second half of 2026, and a risk model on the caseload's own records cannot see either; adding the linked exposure flips the call.
-- Decisive step: recognising that a supervisee recorded as the victim of a violent incident is booked on violent and firearm charges at several times the risk model's rate, linking the city police's victim rows to the caseload by cleaned name and date of birth, estimating the raised hazard on the 2018 to 2025 year ends and scoring the 31 December 2026 caseload with its own 2026 victim records.
-- Not semantics: every field reads plainly (a booking type, a statute, a victim's name and birth date, an episode's dates) and reading all of them correctly still leaves the risk model on 450, because no supervision or jail field carries victimization and the police file never names a supervisee: the deciding exposure exists only once two agencies' records of one person in two roles are matched.
-- Not rule application: no filed rule, directive or form says victims are at raised risk or that the police file belongs in the forecast, and executing Schedule B, the booking types and every counting rule files 450; enumerated family on the prototype: own-attribute logistic models, recalibrated on the latest back-test, the 2026 rate on the 2026 caseload, a district violence covariate and the linked forms (twelve months, twelve and twenty-four, six and six to twelve, a count, ever, all three), 383.0 to 499.5 across three printed calls (400, 450, 500); standing family: the linked forms, since the record's own control shows the 2018 to 2025 victims booked at several times the own-attribute model's rate (an odds ratio of about 5.6 on the twelve-month flag), 488.5 to 499.5, one printed call (500); the ruling-out is not loud: no file, field or one-group-by names victimization, the city's count falls in 2026 and the own-attribute model back-tests within its noise, so only the link shows it.
-- Analyst test: with both jails' notices conformed, the recodification mapped to Schedule B, the migration crosswalked and each person counted once, the easy route fits a Schedule B booking model on each year end's own risk score, age, sex, priors, offence, supervision type, months remaining and recent bookings over 2018 to 2025, back-tests it on the later year ends, scores the 31 December 2026 caseload and files 450, because it never links the city police's victim records to the caseload, so the second half of 2026's rise in victimization never enters it.
-- Estimand: the prompt files it: the people with an open Region 4 supervision episode at the end of 31 December 2026, counted once, who are booked into the Darrow County Jail or the Keswick County Jail at least once from 1 January to 31 December 2027 (local time) on a new charge that Directive 26-07's Schedule B lists, while their Region 4 supervision is still open, to the nearest 50; Schedule B and the booking types sit in the directive, the population in the case-management export.
+- Layer 2: field_method, a forecast whose information set omits an acute dynamic risk factor: a supervisee's Category V booking hazard is raised for about two years after a police victim record, the caseload's victimization rose two and a half times in 2026, most of it from September to November, and a risk model on the caseload's own records cannot see either; adding the linked exposure flips the call.
+- Decisive step: recognising that a supervisee recorded as the victim of a violent incident is booked on violent and firearm charges at several times the risk model's rate, matching the city police's victim rows to the caseload by cleaned name and date of birth, estimating on the 2018 to 2025 year ends how far a victim record raises the next year's booking risk, and scoring the 31 December 2026 caseload with its own 2026 victim records.
+- Not semantics: every field reads plainly (a booking type, a statute, a victim's name and birth date, an episode's dates) and reading all of them correctly still leaves the risk model on 400, because no supervision or jail field carries victimization and the police file never names a supervisee: the deciding exposure exists only once two agencies' records of one person in two roles are matched.
+- Not rule application: no filed rule, directive or form says victims are at raised risk or that the police file belongs in the forecast, and executing Category V, the booking types and every counting rule files 400; enumerated family on the built pack: the own-attribute logistic model, recalibrated on the latest back-test, the 2025 rate on the 2026 caseload, a trend in the yearly rate, the city's victims as a scale factor or a covariate, boosted trees, and the linked forms (twelve months, twelve and twenty-four, six and six to twelve, a count, ever, all three, boosted trees with the flag), 392.4 to 500.7 across two printed calls (400, 500); standing family: the linked forms, since the record's own control shows the 2018 to 2025 victims booked at 3.1 to 4.4 times the own-attribute model's rate (an odds ratio of 8.2 on the twelve-month flag), 488.5 to 500.7, one printed call (500); the ruling-out is not loud: no file, field or one-group-by names victimization, the city's count falls in 2026 and the own-attribute model back-tests within its noise, so only the link shows it.
+- Analyst test: with both jails' notices conformed, the recodification mapped to Category V, the migration crosswalked and each person counted once, the easy route fits a Category V booking model on each year end's own risk score, age, sex, priors, offence, supervision type, months remaining and recent bookings over 2018 to 2025, back-tests it on the later year ends, scores the 31 December 2026 caseload and files 400, because it never links the city police's victim records to the caseload, so the autumn 2026 rise in victimization never enters it.
+- Estimand: the prompt files it: the people with an open Region 4 supervision episode at the end of 31 December 2026, counted once, who are booked into the Darrow County Jail or the Keswick County Jail at least once from 1 January to 31 December 2027 (local time) on a new charge that Directive 26-07's Category V lists, while their Region 4 supervision is still open, to the nearest 100; Category V and the booking types sit in the directive, the population in the case-management export.
 - No decoy: nothing is planted: the victimization rise is ordinary police records of ordinary incidents, no memo, brief or file argues a figure or ranks anything on 2027, the statewide recidivism brief and the programme referrals are distractors named in `metadata.json`, and the police file is in the pack for the exclusion-zone ask it serves.
 - No certified replay: no certified or published figure is reproduced to recover a method: the raised hazard and its duration are estimated from the linked records, and no file states a 2027 figure or a past year's forecast.
 - Lesson: a risk forecaster learns to ask which acute risk factors moved since the instrument was scored and which agency records them: a caseload's violent victimization is recorded only by the police, under names, and a surge in it raises next year's violent and firearm bookings where no static factor moves; no build on file forecasts an outcome from an exposure another body records about the same people in another role, linked by name and birth date.
+
+## Default path
+
+1. Conform the bookings: `darrow_county_jail_booking_notices_2018-2026.csv` grouped to one booking per `booking_no`,
+   `keswick_county_jail_bookings_2018-2026.xlsx` turned from UTC to Merrow time with its charge strings split (its `NA`
+   reason code read as a code, not a blank); keep new arrests (Directive 26-07, section 2); read every former Title 21
+   and Title 8 section through the Revisor's table (Darrow before 1 July 2024, Keswick's charge table until 1 April
+   2025); flag Category V by the directive's Appendix: 5,676 Category V new-arrest bookings of supervisees, 2018 to 2026.
+2. Build each year end's caseload from `cms_supervision_episodes_2018-2026.csv` (an episode open from its start date
+   through its close date, each person once across concurrent cases and county transfers): 7,688 people at the end of
+   2026.
+3. Attach each person's year-end attributes: age, sex, prior felonies, lead offence family (former sections converted),
+   supervision type, county, Halverton residence, months to expiration, first year under supervision, the latest MRAS
+   total (legacy numbers through `oms_cms_person_crosswalk_2022.csv`), new-arrest bookings and a Category V booking in
+   the prior twelve months.
+4. Outcome per year end: a Category V new-arrest booking in the following calendar year while still supervised.
+5. Fit the field's year-end logistic risk model on the 2018 to 2025 year ends (61,039 person-years) and validate it
+   on the later year ends: fitted on the year ends before each origin, it forecasts the 2023, 2024 and 2025 year ends'
+   next-year counts at 410.0, 403.1 and 407.2 against 359, 426 and 393 observed, inside the observed counts' own swing
+   from year to year, and its mean risk on the 2026 caseload (0.0538) sits beside 2025's (0.0530).
+6. Score the 31 December 2026 caseload and sum the probabilities: 413.7.
+
+Ends on: 400
+Golden: 500
+
+## Stump sentence
+
+A competent analyst conforms both jails' notices, maps the recodification to Category V, builds each year end's caseload
+from the episodes and fits the field's year-end risk model on age, priors, offence, terms, the MRAS score and recent
+bookings, which validates on the later year ends within the years' own noise, and files 400, because it never links the
+Halverton police's victim records to the caseload by name and date of birth and so never sees that 533 people on the
+year-end caseload were recorded as victims of violence in 2026 (against 212 on the 2025 year-end caseload in 2025),
+people the record books on Category V charges the next year at 30.7 per cent against 4.4 per cent for everyone else.
+
+## Readability screen
+
+| Rung | 1 Filed sentence | 2 Schema | 3 Reflex | 4 Control bench | 5 Hygiene | 6 Linear | 7 Dedicated organ | Verdict |
+|---|---|---|---|---|---|---|---|---|
+| 0 own-attribute risk model | fires: the prompt asks a count a year-end model forecasts | fires: the episodes, assessments and notices join on the person id and state number | fires: the field's year-end logistic model | quiet | fires: the conformed bookings | quiet | quiet | readable |
+| 1 recalibrated on the latest back-test | quiet | quiet | fires: recalibration in the large | quiet | quiet | fires: one ratio | quiet | readable |
+| 2 latest year's rate on the 2026 caseload | quiet | quiet | fires: a base rate | quiet | quiet | fires: one ratio | quiet | readable |
+| 3 trend in the yearly rate | quiet | quiet | fires: a trend line | quiet | quiet | fires: one fitted line | quiet | readable |
+| 4 the city's 2026 violence as a scale factor | quiet | fires: the police file's dates | fires: a crime-environment adjustment | quiet | quiet | fires: one ratio | quiet | readable |
+| 5 the city's violence as a covariate | quiet | fires: the police file's dates | fires: a crime-environment term | quiet | quiet | quiet | quiet | readable |
+| 6 boosted trees on own attributes | quiet | quiet | fires: a stronger learner | quiet | quiet | quiet | quiet | readable |
+| 7 (decisive) the police victim record linked to the caseload | quiet: no filed sentence names victimization as a risk; the directive's zone clause reads the victims of a supervisee's incident | quiet: the police file carries no state number or person id, and its name and birth-date columns differ in name and layout from the export's | quiet: supervision instruments score history, needs and terms, never a police victim record | quiet: no control ties under either reading | quiet: no unmatched join, duplicate or clock sweep reaches it | quiet: one fitted term on a reconstruction no shipped figure halves or subtracts | quiet: the extract is in the pack for the exclusion-zone ask and would ship without the step | silent |
+
+## Semantic fork table
+
+| Id | Term or convention | Golden reading | Alternative | Call under it | Ruled out by |
+|---|---|---|---|---|---|
+| SF1 | the caseload at the end of 31 December 2026 | episodes open through their close date | open until the close date | 494.6, 500 | `same call`; the directive: an episode is open from its start date through its close date |
+| SF2 | the people | each person once | one row per open episode | 500.0, 500 | `same call`; the prompt counts people and the directive's supervisee is a person |
+| SF3 | booked in 2027 | Merrow time | Keswick's UTC stamps as written | 495.1, 500 | `same call` |
+| SF4 | a new charge | the jail's new-arrest bookings | every booking type | 496.1, 500 | `same call`; the directive, section 2: a warrant, violation, court order, return or commitment is not a new charge |
+| SF5 | a Category V charge | the Appendix, former sections through the Revisor's table | former sections left as written | not computable before July 2024 | the directive, section 2: a former section is read as the section the table gives |
+| SF6 | while still under our supervision | a booking on a day an episode is open | every notice, including the week after a discharge | 497.0, 500 | `same call`; the prompt's own clause |
+| SF7 | either county jail | both jails' notices | one jail | a partial count | the prompt names both jails |
+| SF8 | how many | the expected count, the probabilities summed | the median of simulated counts | 496, 500 | `same call` |
+| SF9 | a victim record's date | the incident's occurred date | the report date | 495.5, 500 | `same call` |
+| SF10 | the person on a victim row | cleaned surname, given name and date of birth | the same with nicknames read as names | 495.3, 500 | `same call` |
+| SF11 | the training year ends | 2018 to 2025 | 2018 to 2025 without the 2020 outcome year | 502.3, 500 | `same call` |
+| SF12 | the MRAS score | the total as recorded | totals standardised within each instrument version | 495.4, 500 | `same call` |
+| SF13 | the population | the year-end caseload | 2027's intakes as well | not the question | the prompt: the people on the caseload at the end of 31 December 2026 |
+
+## Ladder
+
+| Rung | Route | 2027 figure | Printed (nearest 100) | Distance below the golden's cell (450 to 550) | Dies to |
+|---|---|---|---|---|---|
+| 0 | the default path: the year-end risk model on the caseload's own attributes | 413.7 | 400 | 36.3 | the linked victim record |
+| 1 | rung 0 recalibrated on the 2025 year end's back-test | 399.3 | 400 | 50.7 | the linked victim record |
+| 2 | the 2025 year end's observed rate on the 2026 caseload | 395.0 | 400 | 55.0 | the linked victim record |
+| 3 | a linear trend in the yearly rate, 2018 to 2025 year ends | 392.4 | 400 | 57.6 | the linked victim record |
+| 4 | rung 0 scaled by the city's 2026 victims against 2025's | 411.3 | 400 | 38.7 | the linked victim record |
+| 5 | the city's yearly victims as a covariate for Halverton residents | 412.9 | 400 | 37.1 | the linked victim record |
+| 6 | boosted trees on the caseload's own attributes | 413.2 | 400 | 36.8 | the linked victim record |
+| 7 | golden family: the risk model with the linked police victim record, six logistic forms (twelve months; twelve and twenty-four; six and six to twelve; a count; ever; all three) and boosted trees with the twelve-month flag | 488.7 to 501.4 | 500 | inside, 38.7 or more from each edge | |
+
+Position and margins: every route that stops short of the link prints 400, the nearest 36.3 below the golden's cell;
+the decisive step moves the figure 81.3 (19.7 per cent of the default) against a standing-family spread of 12.6 on a
+cell of 100; the golden (495.0, the twelve-month form) sits 45.0 from its nearer edge. The determinism judge's own
+estimators and the partial routes, measured in `generator/checks.py`, all sit a quarter unit or more inside the cell:
+victim-stratified rates 481.6; a logistic model with a September to November victim flag 519.6; rates stratified by
+the time since the last victim record 495.3; the linked model on the 2022 to 2025 year ends only 486.9; a six-month
+victim flag only 505.8; a flag that keeps only the records 12 to 24 months old prints 400 (415.3). The record's own
+control: the own-attribute model under-predicts the year-end victims' next-year Category V bookings by a factor of
+3.08 to 4.41 in every training year, and every linked form beats it by 979.9 AIC or more. The linked model
+recalibrated on the latest back-test files 491.3, the same call.
+
+## Closure table
+
+| Axis | Reading | Closure |
+|---|---|---|
+| 1 Population | the people with an open Region 4 episode at the end of 31 December 2026 | filed in the prompt and the directive's supervisee; C1 (SF1, SF2) |
+| 2 Unit of account | a person booked at least once | the prompt asks how many people; C1 against bookings counted (SF2) |
+| 3 Attribution window | calendar 2027, Merrow time | the prompt; C1 (SF3) |
+| 4 As-of dating | each person's state at the year end, features from records to that day | the prompt's year end; the data run to 31 December 2026 |
+| 5 Version basis | MRAS 1.3 and 2.0 totals; former and new code sections | C1 (SF12); the Revisor's table (SF5) |
+| 6 Denominator | none on the call (a count); the components' rates are over year-end person-years | the write-up names the base |
+| 7 Weighting | each person once | the count has no weights |
+| 8 Window length | 2018 to 2025 year ends; a twelve-month victim window | C1 (SF11); C3 across the victim forms (the family) |
+| 9 Boundary inclusivity | an episode open through its close date; a booking on a close date is supervised | the directive's pin; C1 (SF1) |
+| 10 Rounding path | the summed probabilities rounded once to the nearest 100 | the prompt |
+| 11 Tie-break | none | nothing ranks |
+| 12 Maturity and censoring | every training year end has its whole next year; 2026 is the origin | the data run to 31 December 2026 |
+| 13 Order of operations | conform, convert, classify, link, fit, score | each step commutes with the next on the graded figure |
+| 14 Row order | none | the sum is order-free |
+| 15 Duplicate resolution | Darrow's charge rows grouped by booking; the police's supplements and offence rows leave a person's victim dates unchanged; concurrent cases counted once | C1 (M1, SF2) |
+| 16 Identity normalisation | state number for bookings; the crosswalk for legacy assessments; cleaned name and birth date for victims | C1 (M2, M4, SF10) |
+| 17 Netting against gross | none | a count of people |
+| 18 Dimensional units | people | one unit throughout |
+| 19 Code and status semantics | booking types, Category V, former sections, close reasons (a county transfer continues supervision) | the directive and the Revisor's table; C1 (SF4, M3) |
+| 20 Integerisation | the expected count rounded | C1 (SF8) |
+| 21 Clause scope | the directive's definitions govern the call and the zone ask; Schedule C the enrolment-day ask | each document's own scope |
+| 22 Forward window contents | 2027's own victimizations are not in the record | the year-end model carries the record's relation between a year end's victim records and the next year's bookings; C3 across the forms (the family's windows from six months to ever) |
+
+## Literal reader
+
+Executing the prompt and Directive 26-07 word for word (the people with an open episode at the end of 31 December
+2026, counted once; a new arrest at either jail in 2027; a charge on the Appendix, former sections through the table;
+while an episode is open) fixes every term of the count; the only open thing is the forecasting method, and every
+licensed form that reads the pack's records of the people themselves, the police's victim rows included, prints 500
+(SF1 to SF13 asserted in `generator/checks.py`), while every route that leaves those rows unread prints 400.
+
+## Oracles
+
+none: no file ties to the golden or to a wrong reading. The Department's statewide recidivism brief (three-year rearrest
+for any offence, statewide, 2021 placements) is a distractor on another basis and ranks nothing; the programme referrals
+are a distractor whose completion flag, added as a feature, leaves the call where it is (492.7).
+
+## Layer 1 inventory
+
+| Mess | System that writes it | File | Natural mishandling | Effect on the call (asserted) |
+|---|---|---|---|---|
+| one row per booking charge, the booking's clock and release on every row | Darrow County Jail's JMS export | `darrow_county_jail_booking_notices_2018-2026.csv` | each row read as a booking (M1) | same call |
+| one row per booking, stamps in UTC, charges in one string, reason codes (`NA` reads as a blank in spreadsheet tools) | Keswick County Jail's export | `keswick_county_jail_bookings_2018-2026.xlsx` | UTC kept (SF3) | same call |
+| warrant, violation-hold and return-from-hospital bookings beside new arrests | both jails | both booking files | every type read as a new charge (SF4) | same call |
+| former Title 21 and Title 8 sections before the recodification, and at Keswick until its charge table's update of 1 April 2025 | the jails' charge tables, the courts | both booking files, the episodes' lead offence | left unconverted (SF5) | the table covers every former section on file |
+| notices for the week after a discharge (the state's list updates weekly) | the jails' notice interface | both booking files | kept as supervised bookings (SF6) | same call |
+| concurrent cases (two open episodes for one person) and county transfers closing one episode and opening the next | the case-management system | `cms_supervision_episodes_2018-2026.csv` | episodes counted (SF2); a transfer read as a new spell (M3) | same call |
+| legacy offender numbers on assessments before the June 2022 conversion, with merged duplicates | the legacy OMS and the conversion | `mras_assessments_2017-2026.csv`, `oms_cms_person_crosswalk_2022.csv` | assessments left unmatched (M2) | same call |
+| the MRAS 2.0 revision of July 2023 with new level cut-offs | the instrument's owner | `mras_assessments_2017-2026.csv` | totals standardised by version (SF12) | same call |
+| victims written `LAST SUFFIX, FIRST MIDDLE` in capitals, hyphens and apostrophes dropped on some rows, birth dates `MM/DD/YYYY`, a few rows with no birth date or a nickname, juveniles redacted, business and public victims, one row per victim per offence, supplements re-listing victims | the city police's RMS export | `hpd_violent_incident_victims_2018-2026.csv` | names matched as written (M4); nicknames read (SF10); report dates (SF9) | same call |
+| events logged in UTC with local effective dates, voided duplicate entries, device exchanges as two events, suspensions on some custody spells, legacy numbers as client references | Belvantis's platform and the officers who enter clients | `belvantis_r4_device_events_2025-2026.json` | the call never reads it | none |
+
+Nothing is placed to be caught: each item is the producing system's ordinary behaviour, and the realism sweep in
+`generator/checks.py` asserts the pack carries no copied block, round total or constant step.
+
+## Ask sheet
+
+**Ask A: the enrolment days owed to Belvantis for each month of 2026 (12 figures).** H18 home: the 2027 order prices
+the reserved enrolments at USD 4.10 a day against the 2026 bill's standard USD 4.85 (Schedule C.1), so the order
+workbook carries 2026's owed days beside the reservation. Path: `belvantis_r4_device_events_2025-2026.json`,
+`belvantis_service_schedule_2025.pdf`, `cms_supervision_episodes_2018-2026.csv`, both jails' booking files,
+`oms_cms_person_crosswalk_2022.csv` (6 files, 20 columns). Primary device (D1, the same records under two key schemes):
+41 clients enrolled under a legacy offender number were re-registered under their case-management id at a device
+service, and the legacy record stayed open, still showing the device it last held, until the vendor's batch closed it at the
+first half-year end after six idle months (or the enrolment ended); a day counted per vendor record bills those clients twice in every month of 2026, while Schedule C bills a
+client per day. Nothing marks the rows: the re-registration opens with a plain enrolment, the legacy record closes with
+a plain end, and the two references meet only through the crosswalk. Hazards: voided duplicate entries, swaps logged as
+two events, suspensions only some custody spells carry, custody from both jails (Keswick in UTC, hospital releases),
+transfers out of the region credited from the case-management close date, legacy numbers on 59 of 844
+client references, ends logged up to 25 days after their effective date. Stops: the vendor's export as it reads (per
+record, no custody or region credit) 78,310 days for the year; every Schedule C rule executed per vendor record 77,106; the
+golden 75,758.
+
+**Ask B: the exclusion zones Directive 26-07 would have set in each month of 2026 for the Halverton police's Category V
+arrests of supervisees (12 figures).** H18 home: Schedule C bills each zone at USD 1.20 a month, a line of the 2027
+order. Path: both jails' booking files, `hpd_violent_incident_victims_2018-2026.csv`,
+`directive_26-07_gps_placement.pdf`, `criminal_code_conversion_table_2024.pdf`, `cms_supervision_episodes_2018-2026.csv`
+(6 files, 23 columns). Primary device (D7,
+dirty keys inside the filed rule): a residence is written `APT 4` on one row and `#4`, or with its street type spelled
+out, on another, both across the members of one household and where a supplement's officer re-enters a victim already
+listed; residences compared as written, case and spacing evened, count one household or one victim twice, while the
+directive gives a household one zone. Hazards: re-bookings on the same incident (the directive keeps the zones already
+set), including 2026 re-bookings on incidents first booked in 2025; co-arrestees (each supervisee's own zones);
+supplements that add a victim the original report did not list; business and public victims; victims living outside the
+city; three case-number formats; Keswick's UTC stamps at month ends. Stops: victims counted per booking, every booking
+174 zones for the year; residences as written, every filed rule executed 194; the golden 143.
+
+Main population zero-counts: no device row sits in the call's rows: the call reads nothing from the Belvantis export,
+every supplement-only victim is someone not on the caseload, and the residence column the zone device rides is one the
+call never reads (asserted in `generator/checks.py`).
+
+| Ask cell | Golden | Cracker (on the call, the battery and every filed rule) | Mirror (off the call, the files as they read) | Cracker verdict |
+|---|---|---|---|---|
+| A January enrolment days | 6,256 | 6,452 | 6,536 | miss |
+| A February enrolment days | 5,669 | 5,865 | 5,924 | miss |
+| A March enrolment days | 6,334 | 6,551 | 6,642 | miss |
+| A April enrolment days | 6,140 | 6,305 | 6,426 | miss |
+| A May enrolment days | 6,348 | 6,457 | 6,545 | miss |
+| A June enrolment days | 5,872 | 5,881 | 6,048 | miss |
+| A July enrolment days | 6,241 | 6,254 | 6,414 | miss |
+| A August enrolment days | 6,418 | 6,459 | 6,564 | miss |
+| A September enrolment days | 6,093 | 6,156 | 6,245 | miss |
+| A October enrolment days | 6,572 | 6,681 | 6,747 | miss |
+| A November enrolment days | 6,820 | 6,957 | 7,027 | miss |
+| A December enrolment days | 6,995 | 7,088 | 7,192 | miss |
+| B January zones | 9 | 11 | 10 | miss |
+| B February zones | 17 | 30 | 21 | miss |
+| B March zones | 16 | 21 | 22 | miss |
+| B April zones | 13 | 16 | 18 | miss |
+| B May zones | 13 | 18 | 15 | miss |
+| B June zones | 11 | 14 | 12 | miss |
+| B July zones | 13 | 17 | 13 | miss |
+| B August zones | 11 | 15 | 17 | miss |
+| B September zones | 11 | 12 | 11 | miss |
+| B October zones | 13 | 19 | 16 | miss |
+| B November zones | 8 | 12 | 11 | miss |
+| B December zones | 8 | 9 | 8 | miss |
+
+Pair ceiling: 31.9 (the cracker on the call 45.0, keeping 0.0 per cent of the ask weight; the mirror off it 18.9)
+Mirror leakage: 12.5 per cent of the ask weight (the mirror's cells that tie the golden)
+Measured by: generator/ceiling.py, run on the cut pack
+
+## Stage 3 gates
+
+Run 2026-10-28 on the final rebuild (target.zip sha256 f02cc3ff...a4f3e19, 12 members), the cut judged in stage 4
+round 2 but for the conversion table's added rows, which move no figure.
+
+- `generator/checks.py`: 111 assertions, 0 failed; `generator/verify.py`: 0 failed on its own path; two builds
+  byte-identical (17 files, 0 differ); `figures_check.py`: 44 figures, 0 absent; `precut.py`: 53 checks, 0 FAIL, 0 WARN
+  (the prompt gate PASS, 812 characters); `generator/ceiling.py`: the cracker misses all 24 cells, the mirror keeps
+  12.5 per cent, pair ceiling 31.9.
+- `leak.py --asof 2027-01-08`: REVIEW, four lines, no LEAK, each ruled harmless (`leak_check_report.md`).
+- `guard.py validate` clean; `heart` WARN, no BLOCK; `surface` exit 0 with three card-label pairs (task180, task231,
+  task250), each differentiated on the card. Container scrub clean.
+
+Stage 4: round 1 on 570c2a77, the judge NOT_DETERMINISTIC on the enrolment-days ask only (Merrow's clock, a
+same-date suspension and resumption, January's nine days), FIX_NOW, the call 500 forced; round 2 on b8a231ab
+DETERMINISTIC with one solution figure (the non-victim rate), every graded figure reproduced, the forecast 478 to 516
+with the victim records and 407 to 417 without them, 34 or more inside the 450 to 550 cell; Gate G forecasting,
+analytical_non_defect; Gate H pass. The non-victim rate's cause was the golden's victim key (a police first given
+name against a whole two-word given name): the key now matches the first word on both sides, the judge's own 533,
+212, 30.7 and 4.4 per cent, and the call does not move. Two leak reads, neither solving, found no decisive-step
+sentence and read the decisive step as analytical.
+
+Pre-ship check, the three rules re-read against the built pack: the quantity deciding the call is the caseload's 2027
+Category V bookings forecast as a person-level event under remaining supervision, the field's own recidivism
+forecast; the mess (two jails' layouts and codes, the vendor's dual records and voids, former Title 21 and 8
+charges, a 2022 id migration, local time against UTC) complicates the counting and cleaning it leaves the default
+path at 400; the decisive step is linking the police's victim records to the caseload by name and date of birth and
+carrying 2026's victimisation through the lift a back-test on past year ends supports, which no field, filed rule or
+planted row decides (Gate H at both rounds: decisive_step analytical). Residual risk, recorded for the portal: the
+victim-offender overlap is a known criminology finding, so a strong solver who links the police file can land 500.
 
 ## Tried and rejected
 - **Architecture v2 (the serial interval read from transmission links right truncated at the extract), spent at stage 4 Gate F on target.zip 9e1843f8:** scored reader B landed 5,000 cases, R 1.6 and 13 days on its own first route, "Serial interval: onset differences on transmission links where both ends are cases; sources with early onset (right-truncation), mean about 13 days, gamma (shape 2.86, scale 4.6). R from r via gamma moment generating function: 1.59", then the renewal projection with the halving from 2 November; it kept 0 of 16 ask figures. The correction is a reflex at medium effort in this field (the textbook nowcasting caution), so it was the default path, not the stump; the judge and reader A were stopped.
@@ -536,12 +786,57 @@ the latest back-test), 395.8 (2026's rate on the 2026 caseload) and 426.3 (a dis
   ledger row carries it, and it meets all nine properties on paper (`## Draw`).
 - 2026-10-28, architecture 5's calibration (prototype `proto.py`, `proto2.py`): any new charge as the outcome moved the
   call by 4 per cent (2,110 against 2,200 at the nearest 100, one bin on its edge), so the outcome narrowed to the
-  directive's Schedule B (violent felonies and firearm offences), where the raised hazard concentrates; a twelve-month
+  directive's Category V (violent felonies and firearm offences), where the raised hazard concentrates; a twelve-month
   raised hazard with the surge late in the year split the linked forms (the twelve-month flag under-reads victims
   recorded in the last months by about two fifths), so the hazard lasts about two years and starts about two months
   after the record, which keeps every linked form in one bin and keeps the surge out of the 2026 back-test (its
   recalibration ratio 0.90 to 1.04 on the seeds tried). A jail hold-bed decision was dropped as task141's furniture (a
   jail plan sized on supervision bookings); the GPS order replaces it.
+- 2026-10-28, the first ask layer (the 2026 Category V notices by jail and quarter, the GPS days by month, the year-end
+  caseload by county and risk level): the notice counts and the caseload cuts are the call's own construction over the
+  call's own population, so no device could sit in them (supplemental-stumping 2.1); the asks were re-sited to the
+  Belvantis bill and the exclusion zones, rows the call never reads.
+- 2026-10-28, ask B by quarter and jail (8 cells): the cracker kept 8 of 8 before devices and 1 of 8 after them, a
+  quarter's three months averaging the device out; re-sited to months (12 cells).
+- 2026-10-28, ask A's dual records as first cut: the re-registration and the legacy closure carried their own notes
+  ("re-registered", "legacy record closed") and the legacy end carried no device serial, three markers on the device
+  rows alone (ban 2), and the legacy record closed at the next half-year end, which left July, August and December 2026
+  with no day on two records (the cracker kept 5 of 12). The notes are gone, the legacy record keeps the device it last
+  held, and the vendor closes a record at the first half-year end after six idle months.
+- 2026-10-28, ask B's cracker as first written read only the original reports, dropping supplements as duplicates:
+  that is a reflex the careful route does not need, so the cracker now reads every report and supplement, and the
+  residence device gains its mass where it really arises, a supplement's officer typing each victim's residence again.
+- 2026-10-28, the Belvantis export carried ends logged after its own generation stamp (an end effective in late December
+  logged up to 25 days late); the export now holds only what was logged by 4 January 2027, asserted in `checks.py`.
+- 2026-10-28, the GPS vendor first named Trakwell: one letter from Trackwell, a real Icelandic tracking-software company
+  holding a US trademark for GPS hardware and software (house fix H21); renamed Belvantis, with its files, serial and
+  event-id prefixes, and the export's `device_serial` and `generated_utc` keys renamed `serial_no` and `exported_utc`
+  (leak.py sweep 8 reads `device` and `generated` as an author's words).
+- 2026-10-28, the directive's list first named Schedule B: task487's prompt and filing carry a Schedule B beside a
+  Directive, a shared invented name `guard.py surface` promotes as a hard tell; renamed Category V everywhere (the
+  directive's Appendix, the prompt, the memo's file name, the goldens and this note). The surface screen's card-axis
+  pairs (task180 back to back on G12; task231 and task250 on the same-driver signature) are differentiated on the card.
+- 2026-10-28, stage 4 round 1 (zip 570c2a77): the forecast at the nearest 50. The determinism judge's own valid
+  estimators ran 481.6 (victim-stratified rates) to 522.7 (a logistic model with a September to November victim
+  flag), 6.6 and 2.3 inside the 475 and 525 lines, under a quarter of the unit; the generator measured them at 481.1
+  and 518.9. At the nearest 100 every route that reads the police rows sits 30 or more inside 450 and 550 and every
+  route that leaves them unread, or keeps only the records 12 to 24 months old, prints 400 at least 25 below 450, so
+  the prompt rounds to the nearest 100 and `checks.py` asserts each margin.
+- 2026-10-28, stage 4 round 1: the enrolment-day ask's literal reading moved on three unfiled conventions, Merrow
+  time's offset (Keswick's UTC stamps against Schedule C's calendar days in Merrow time), a same-date suspension and
+  resumption logged in the reverse order, and a county transfer inside the region read as the end of Region 4's
+  supervision (9 January days on one client); Schedule C.2 and C.3 now file all three in the contract's own words and
+  the export header names the account's time zone. The critical component's victim counts moved by a few with the
+  match key and the date field (531 against 532 and 534), so the write-up states them to the nearest 10.
+- 2026-10-28, stage 4 round 2 (zip b8a231ab): the critical component's non-victim rate printed 4.5 per cent where the
+  judge recomputed 4.446. The cause was the golden's victim key, which compared the police's first given name with the
+  whole of a two-word CMS given name ("LUIS" against "LUISMANUEL"), so the 406 people with a two-word given name could
+  never be linked. The key now meets the first word on both sides and step 3 files it in full; the counts move 531 to
+  533 and 209 to 212 (about 530 and about 210 as stated), the rates 30.6 and 4.5 per cent to 30.7 and 4.4 (the judge's
+  own 30.66 and 4.446), the golden 494.4 to 495.0, and the call, the default and every ask cell stay where they were.
+- 2026-10-28, stage 4 round 2: the Revisor's table carried almost exactly the sections the records cite, which a table
+  converting two whole titles would not; it now lists 55 more former sections of Title 21 and Title 8, each to its own
+  new section and none to Category V, and the generator never draws a charge from them.
 
 ## Earlier architectures (history)
 

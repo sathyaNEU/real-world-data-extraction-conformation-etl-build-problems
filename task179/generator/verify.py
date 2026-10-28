@@ -1,198 +1,327 @@
-"""task179 independent verifier: its own readers (the csv module and openpyxl), its own repeat-classmate count (pair
-counting per class), statsmodels' IRLS for the logistic model, its own teaching-group and continuing-student counts.
-Recomputes every graded figure in figures.json from target/ alone. Exit 1 on a mismatch.
+"""task179 independent verifier: reads only the bundle under target/ (and the figures the write-up states), on its own
+code path (csv, openpyxl, pypdf and scikit-learn rather than the generator's pandas and statsmodels), and recomputes
+the call, the critical components and every ask figure.
 
-    python3 task179/generator/verify.py [target]"""
+    python3 verify.py <target>        exit 0 when every figure reproduces"""
 from __future__ import annotations
 
 import csv
 import datetime as dt
 import json
 import os
+import re
 import sys
 from collections import defaultdict
-from itertools import combinations
+from zoneinfo import ZoneInfo
 
 import numpy as np
-import openpyxl
-import statsmodels.api as sm
 
 HERE = os.path.dirname(os.path.abspath(__file__))
-FAC = {"FASS": "ass", "FBUS": "bus", "FSCI": "sci", "FENG": "eng", "FHLT": "hlt",
-       "ASS": "ass", "BUS": "bus", "SCI": "sci", "ENG": "eng", "HLT": "hlt"}
+TZ = ZoneInfo("America/Chicago")
+D = dt.date
+FAIL = []
+
+
+def ok(name, cond, detail=""):
+    print("  %-4s %-58s %s" % ("PASS" if cond else "FAIL", name, detail))
+    if not cond:
+        FAIL.append(name)
+
+
+def pdf_text(path):
+    from pypdf import PdfReader
+    return "\n".join(p.extract_text() or "" for p in PdfReader(path).pages)
 
 
 def rows(path):
-    with open(path, newline="", encoding="utf-8") as f:
+    with open(path, encoding="utf-8", newline="") as f:
         return list(csv.DictReader(f))
+
+
+def iso(s):
+    return D(int(s[0:4]), int(s[5:7]), int(s[8:10]))
+
+
+def mdy(s):
+    return D(int(s[6:10]), int(s[0:2]), int(s[3:5]))
 
 
 def main(target):
     figs = json.load(open(os.path.join(HERE, "figures.json")))
-    P = lambda f: os.path.join(target, f)
-    bad = []
-    # census: enrolled ids by year
-    enrolled = defaultdict(set)
-    for r in rows(P("census_enrolments_2019_2026.csv")):
-        d = r["CENSUS_DATE"]
-        y = int(d[-4:]) if "/" in d else int(d[:4])
-        if r["STATUS"] in ("EN", "Enrolled"):
-            enrolled[y].add(r["STUDENT_ID"])
-    xw = {r["SIRIUS_STUDENT_NO"]: r["ARC_ID"] for r in rows(P("sirius_arc_student_crosswalk.csv"))}
-    # admissions
-    wb = openpyxl.load_workbook(P("admissions_entrants_2019_2026.xlsx"), read_only=True)
-    ent = {}
-    for ws in wb.worksheets:
-        y = int(ws.title[:4])
-        it = ws.iter_rows(values_only=True)
-        head = list(next(it))
-        for v in it:
-            rec = dict(zip(head, v))
-            if rec["Entry Basis"] != "First-time":
-                continue
-            sid = str(rec.get("Student No") or rec.get("Student ID"))
-            if sid not in enrolled[y]:
-                continue
-            asc = rec.get("ASC Points") or rec.get("ASC Score")
-            dob = rec["Date of Birth"]
-            acc = rec["Offer Accepted"]
-            ent[(y, sid)] = dict(asc=float(asc), fif=rec["First in Family"] == "Y", pt=rec["Attendance"] == "PT",
-                                 hard=rec["Hardship Grant"] == "Y", lc=rec["Living-Learning Community"] == "Y",
-                                 hall=rec["Accommodation"] not in ("Family home", "Private"),
-                                 mature=(y - dob.year) >= 21, acc=(acc - dt.datetime(y, 1, 1)).days, fac=rec["Faculty"])
-    # classes and repeat classmates
-    members = defaultdict(list)
-    for r in rows(P("sirius_fy_cohort_classes_2019_2025.csv")):
-        members[(int(r["COHORT_YR"]), r["TERM"] + "/" + r["CLASS_NBR"])].append(r["STUDENT_NO"])
-    for r in rows(P("arc_s1_2026_first_year_classes.csv")):
-        members[(2026, r["class_code"])].append(r["arc_student_id"])
-    shared = defaultdict(int)
-    for (y, _), ms in members.items():
-        for a, b in combinations(sorted(ms), 2):
-            shared[(y, a, b)] += 1
-    rep = defaultdict(int)
-    for (y, a, b), n in shared.items():
-        if n >= 2:
-            rep[(y, a)] += 1
-            rep[(y, b)] += 1
-    # SF15: a class is the same unit on both sides of the cutover, counted from the extracts for the enrolled entrants
-    cp = figs["check_class_unit_across_cutover"]
-    tally = {"2019_2025": [0, set(), set()], "2026": [0, set(), set()]}
-    for (y, c), ms in members.items():
-        k = "2026" if y == 2026 else "2019_2025"
-        for m_ in ms:
-            if (y, m_) in ent:
-                tally[k][0] += 1
-                tally[k][1].add((y, m_))
-                tally[k][2].add((y, c))
-    for k, (n_pl, en_, cl_) in tally.items():
-        if (n_pl, len(en_), len(cl_)) != (cp["places_" + k], cp["entrants_" + k], cp["classes_" + k]):
-            bad.append("SF15 %s places %d entrants %d classes %d" % (k, n_pl, len(en_), len(cl_)))
-    m10 = {"2019_2025": sum(1 for (y, sid) in ent if y < 2026 and rep.get((y, sid), 0) >= 10),
-           "2026": sum(1 for (y, sid) in ent if y == 2026 and rep.get((y, sid), 0) >= 10)}
-    if (m10["2019_2025"], m10["2026"]) != (cp["meet10_2019_2025"], cp["meet10_2026"]):
-        bad.append("SF15 meeting 10 or more twice %s" % m10)
-    # progress ratings
-    val = {"S": 0, "C": 1, "R": 2, "Satisfactory": 0, "Some concern": 1, "At risk": 2}
-    pr = defaultdict(list)
-    for r in rows(P("progress_check_wk6_2019_2026.csv")):
-        if r["RATING"] in val:
-            pr[(int(r["YEAR"]), r["STUDENT"])].append(val[r["RATING"]])
-    base, tie, yv, isf = [], [], [], []
-    for (y, sid), e in sorted(ent.items()):
-        ps = pr.get((y, sid))
-        base.append([1.0, (e["asc"] - 186) / 34, e["fif"], e["pt"], e["mature"], e["hard"], np.mean(ps) if ps else 0.5,
-                     e["lc"], e["hall"], e["acc"] / 100.0] + [float(e["fac"] == f) for f in ("BUS", "SCI", "ENG", "HLT")])
-        tie.append(rep.get((y, sid), 0))
-        isf.append(y == 2026)
-        if y < 2026:
-            nxt = enrolled[y + 1] if y < 2025 else enrolled[2026]
-            key = sid if y < 2025 else xw.get(sid)
-            yv.append(0.0 if key in nxt else 1.0)
-    base, tie, isf = np.array(base, float), np.array(tie, float), np.array(isf)
+    files = sorted(os.listdir(target))
+    exts = set(os.path.splitext(f)[1] for f in files)
+    ok("input gate: ten or more files", len(files) >= 10, "%d files" % len(files))
+    ok("input gate: three or more formats", len(exts) >= 3, ", ".join(sorted(exts)))
 
-    def feats(form):
-        if form.startswith("ge"):
-            return (tie >= int(form[2:]))[:, None].astype(float)
-        if form == "log":
-            return np.log1p(tie)[:, None]
-        if form == "sqrt":
-            return np.sqrt(tie)[:, None]
-        e = {"bands": [0, 1, 2, 3, 4, 6, 9, 15, 22, 10 ** 9], "bands5": [0, 1, 3, 6, 10, 10 ** 9]}[form]
-        return np.column_stack([((tie >= lo) & (tie < hi)).astype(float) for lo, hi in zip(e[:-1], e[1:])][1:])
-    fits = {}
-    for form in ("bands", "bands5", "ge5", "ge7", "ge10", "ge15", "ge22", "log", "sqrt"):
-        Xa = np.column_stack([base, feats(form)])
-        m = sm.GLM(np.array(yv), Xa[~isf], family=sm.families.Binomial()).fit()
-        fits[form] = (float(m.predict(Xa[isf]).sum()), float(m.aic))
-    form = min(fits, key=lambda k: fits[k][1])
-    call = fits[form][0]
-    # SF12: the count-free model loses by far on the filed criterion, and the cutover notes carry no section 6;
-    # SF13: the forms here printing outside the bin (the log, the 22-classmate indicator) lose to every form inside it
-    m0 = sm.GLM(np.array(yv), base[~isf], family=sm.families.Binomial()).fit()
-    if not float(m0.aic) - fits[form][1] > 800:
-        bad.append("SF12 count-free model only %.1f AIC worse" % (float(m0.aic) - fits[form][1]))
-    inside = [k for k in fits if int(250 * round(fits[k][0] / 250.0)) == figs["call_not_enrolled_2027"]]
-    outside = [k for k in fits if k not in inside]
-    if any(fits[k][1] <= max(fits[j][1] for j in inside) for k in outside):
-        bad.append("SF13 a form outside the bin beats one inside: %s" % ", ".join(outside))
-    from pypdf import PdfReader
-    cut = " ".join(" ".join(p.extract_text().split()) for p in PdfReader(P("arc_cutover_notes_registry.pdf")).pages)
-    if "6. Class enrolments" in cut or "choose their classes" in cut or "who chooses" in cut:
-        bad.append("SF12 the cutover notes carry a class-enrolment section")
-    # SF14: the count-free model misses the record's own entrants who meet fewer than 10 others twice
-    yh = np.array(yv)
-    th = tie[~isf]
-    lowm = th < 10
-    p_all = m0.predict(base[~isf][lowm]).sum()
-    seg = figs["check_fewer_than_10_twice_2019_2025"]
-    if (int(lowm.sum()) != seg["entrants"] or int(yh[lowm].sum()) != seg["not_enrolled"]
-            or abs(p_all - seg["count_free_predicted"]) > 0.15):
-        bad.append("SF14 segment check %d %d %.2f" % (lowm.sum(), yh[lowm].sum(), p_all))
-    Xf = base[isf]
-    printed = int(250 * round(call / 250.0))
-    if printed != figs["call_not_enrolled_2027"]:
-        bad.append("call %.1f (%s)" % (call, form))
-    if len(Xf) != figs["cc1_intake_2026_at_census"]:
-        bad.append("intake %d" % len(Xf))
-    none2026 = sum(1 for (y, sid) in ent if y == 2026 and rep.get((y, sid), 0) == 0)
-    if none2026 != figs["cc2_intake_2026_no_repeat_classmate"]:
-        bad.append("no repeat %d" % none2026)
-    # teaching groups, 200 level and above: each distinct set of active classes meeting together in one room at one
-    # time (day, start, teaching weeks) is one group; its size is the students its classes list who hold an enrolled
-    # programme attempt at the 2026 census
-    ws = openpyxl.load_workbook(P("s1_2026_class_timetable.xlsx"), read_only=True).worksheets[0]
-    it = ws.iter_rows(values_only=True)
-    head = list(next(it))
-    slot_classes = defaultdict(set)
-    info = {}
-    for v in it:
-        rec = dict(zip(head, v))
-        if rec["Class Status"] != "Active" or int(rec["Level"]) < 200:
+    # ------------------------------------------------------------ documents
+    dtext = pdf_text(os.path.join(target, "directive_26-07_gps_placement.pdf"))
+    ctext = pdf_text(os.path.join(target, "criminal_code_conversion_table_2024.pdf"))
+    stext = pdf_text(os.path.join(target, "belvantis_service_schedule_2025.pdf"))
+    flat = lambda t: " ".join(t.split())
+    ok("directive read back (positive control)", "An episode is open from its start date through its close date" in flat(dtext))
+    ok("directive: new charge is a new arrest", "records as a new arrest" in flat(dtext))
+    ok("schedule read back (positive control)", "booking records show the client held for any part of the day" in flat(stext)
+       and "same date suspend that one day" in flat(stext) and "six hours behind UTC" in flat(stext)
+       and "offices or counties leaves the account where it is" in flat(stext))
+    ok("conversion table read back (positive control)", "Former section" in ctext and "302.10" in ctext)
+    app = flat(dtext).split("Appendix: Category V")[-1]
+    sched_b = set(re.findall(r"\b(\d{3}\.\d{2})\b", app))
+    ok("Category V read from the directive", len(sched_b) == 19, "%d sections" % len(sched_b))
+    conv = {}
+    for m in re.finditer(r"((?:21|8)-[0-9a-z/()]+)\s+(\d{3}\.\d{2})", ctext):
+        conv[m.group(1)] = m.group(2)
+    ok("conversion table parsed", len(conv) >= 45, "%d former sections" % len(conv))
+
+    def new(c):
+        c = c.strip()
+        return conv.get(c, c)
+
+    # ------------------------------------------------------------ episodes
+    ep = rows(os.path.join(target, "cms_supervision_episodes_2018-2026.csv"))
+    ok("spine has 25,000 or more rows, or a larger file does",
+       len(ep) >= 25000 or os.path.getsize(os.path.join(target, "hpd_violent_incident_victims_2018-2026.csv")) > 1e7, "%d episodes" % len(ep))
+    per = defaultdict(list)
+    for r in ep:
+        r["s"] = iso(r["start_date"])
+        r["c"] = iso(r["close_date"]) if r["close_date"] else None
+        r["x"] = iso(r["expiration_date"])
+        per[r["cms_person_id"]].append(r)
+    sid2p = {r["sid"]: r["cms_person_id"] for r in ep}
+
+    def open_end(p, d):
+        return [r for r in per[p] if r["s"] <= d and (r["c"] is None or r["c"] >= d)]
+
+    def during(p, d):
+        return any(r["s"] <= d and (r["c"] is None or r["c"] >= d) for r in per.get(p, []))
+
+    def caseload(d):
+        return sorted(p for p in per if open_end(p, d))
+
+    c26 = caseload(D(2026, 12, 31))
+    ok("caseload at the end of 2026", len(c26) == figs["cc_caseload_2026"], "%d against %d" % (len(c26), figs["cc_caseload_2026"]))
+
+    # ------------------------------------------------------------ bookings
+    import openpyxl
+    bks = []
+    darrow = defaultdict(list)
+    for r in rows(os.path.join(target, "darrow_county_jail_booking_notices_2018-2026.csv")):
+        darrow[r["booking_no"]].append(r)
+    for bno, rs in darrow.items():
+        r = rs[0]
+        t = dt.datetime.strptime(r["booked"], "%Y-%m-%d %H:%M")
+        rel = dt.datetime.strptime(r["released"], "%Y-%m-%d %H:%M") if r["released"] else None
+        bks.append(dict(j="D", sid=r["sid"], t=t, rel=rel, new=r["booking_type"] == "NEW ARREST", ag=r["arresting_agency"],
+                        case=r["agency_case_no"], ch=[new(x["statute"]) for x in rs if x["statute"]]))
+    wb = openpyxl.load_workbook(os.path.join(target, "keswick_county_jail_bookings_2018-2026.xlsx"), read_only=True)
+    ws = wb["Bookings"]
+    first = True
+    for row in ws.iter_rows(values_only=True):
+        if first:
+            first = False
             continue
-        info[rec["Class Code"]] = (rec["Owning Faculty"], int(rec["Level"]))
-        slot_classes[(rec["Room"], rec["Day"], rec["Start"], rec["Teaching Weeks"])].add(rec["Class Code"])
-    enrolled26 = {r["STUDENT_ID"] for r in rows(P("census_enrolments_2019_2026.csv"))
-                  if r["CENSUS_DATE"] == "2026-10-01" and r["STATUS"] == "Enrolled"}
-    members = defaultdict(set)
-    for r in rows(P("arc_s1_2026_class_enrolments.csv")):
-        members[r["class_code"]].add(r["arc_student_id"])
-    cnt = defaultdict(int)
-    for gset in {frozenset(s) for s in slot_classes.values()}:
-        cs = sorted(gset)
-        lv = min(info[c][1] for c in cs)
-        size = len(set().union(*(members[c] for c in cs)) & enrolled26)
-        tag = "200" if lv == 200 else "300up"
-        cnt[(FAC[info[cs[0]][0]], tag, "over30" if size > 30 else "30orfewer")] += 1
-    for f in ("ass", "bus", "sci", "eng", "hlt"):
-        for tag in ("200", "300up"):
-            for band in ("30orfewer", "over30"):
-                k = "ask_groups_s1_2026_%s_%s_%s" % (f, tag, band)
-                if cnt[(f, tag, band)] != figs[k]:
-                    bad.append("%s %d" % (k, cnt[(f, tag, band)]))
-    print("verify: call %.1f (%s) -> %d, intake %d, %d graded figures checked, %d failed%s"
-          % (call, form, printed, len(Xf), 3 + 20, len(bad), (": " + "; ".join(bad)) if bad else ""))
-    return 1 if bad else 0
+        if row[0] is None:
+            continue
+        t = row[1].replace(tzinfo=dt.timezone.utc).astimezone(TZ).replace(tzinfo=None)
+        rel = row[2].replace(tzinfo=dt.timezone.utc).astimezone(TZ).replace(tzinfo=None) if row[2] else None
+        ch = []
+        if row[10] and row[10] != "PROB/PAROLE VIOLATION":
+            ch = [new(p.split(" ")[0]) for p in row[10].split(" | ")]
+        bks.append(dict(j="K", sid=row[4], t=t, rel=rel, new=row[7] == "NA", ag=row[8], case=str(row[9]), ch=ch))
+    for b in bks:
+        b["d"] = b["t"].date()
+        b["p"] = sid2p.get(b["sid"])
+        b["b"] = any(c in sched_b for c in b["ch"])
+        b["under"] = b["p"] is not None and during(b["p"], b["d"])
+    nb = [b for b in bks if b["new"] and b["under"]]
+    nsb = sum(1 for b in nb if b["b"])
+    ok("Category V new-arrest bookings 2018 to 2026", nsb == figs["step_schedb_bookings_2018_2026"], "%d" % nsb)
+    hist = defaultdict(list)
+    for b in nb:
+        hist[b["p"]].append((b["d"], b["b"]))
+
+    # ------------------------------------------------------------ police victims
+    key = {}
+    for r in ep:
+        ln = re.sub(r"[^A-Z]", "", re.sub(r"\b(JR|SR|II|III|IV)\b", " ", r["last_name"].upper()))
+        fn = re.sub(r"[^A-Z]", "", r["first_name"].upper().split(" ")[0])
+        key[(ln, fn, r["date_of_birth"])] = r["cms_person_id"]
+    vic = defaultdict(set)
+    hpd = rows(os.path.join(target, "hpd_violent_incident_victims_2018-2026.csv"))
+    for r in hpd:
+        if r["victim_type"] != "I" or r["victim_name"] == "JUVENILE" or not r["victim_dob"]:
+            continue
+        last, rest = r["victim_name"].split(", ", 1)
+        ln = re.sub(r"[^A-Z]", "", re.sub(r"\b(JR|SR|II|III|IV)\b", " ", last))
+        fn = re.sub(r"[^A-Z]", "", rest.split(" ")[0])
+        dob = mdy(r["victim_dob"]).isoformat()
+        p = key.get((ln, fn, dob))
+        if p:
+            vic[p].add(mdy(r["occurred_date"]))
+    v26 = sum(1 for p in c26 if any(D(2026, 1, 1) <= x <= D(2026, 12, 31) for x in vic.get(p, ())))
+    ok("caseload victims recorded in 2026", v26 == figs["cc_victims_on_caseload_2026"], "%d" % v26)
+
+    # ------------------------------------------------------------ the model, on scikit-learn
+    xw = {r["legacy_offender_number"]: r["cms_person_id"] for r in rows(os.path.join(target, "oms_cms_person_crosswalk_2022.csv"))}
+    sc = defaultdict(list)
+    for r in rows(os.path.join(target, "mras_assessments_2017-2026.csv")):
+        sc[xw.get(r["offender_ref"], r["offender_ref"])].append((iso(r["assessment_date"]), int(r["total_score"])))
+    for k in sc:
+        sc[k].sort()
+    fams = {"VIOLENT": [], "WEAPON": [], "PROPERTY": [], "DRUG": [], "DUI": []}
+    famof = {}
+    for m in re.finditer(r"((?:21|8)-[0-9a-z/()]+)\s+(\d{3}\.\d{2})\s+([^\n]+)", ctext):
+        famof[m.group(2)] = m.group(3)
+
+    def fam(code):
+        c = new(code)
+        if c in sched_b:
+            return "WEAPON" if c.startswith("501") else "VIOLENT"
+        if c[:1] == "4" and c not in ("403.05",):
+            return "PROPERTY"
+        if c[:1] == "6":
+            return "DRUG"
+        if c in ("701.01", "701.02"):
+            return "DUI"
+        return "OTHER"
+
+    def frame(Y, outcome=True):
+        o = D(Y, 12, 31)
+        X, y = [], []
+        for p in caseload(o):
+            eps = sorted(open_end(p, o), key=lambda r: r["s"])
+            r0 = eps[0]
+            age = (o - iso(r0["date_of_birth"])).days / 365.25
+            f = fam(sorted(eps, key=lambda r: (r["s"], r["episode_id"]))[0]["lead_offense_statute"])
+            par = int(any(r["supervision_type"] == "PAROLE" for r in eps))
+            kes = int(eps[-1]["county"] == "KESWICK")
+            city = int(any(r["residence_city"] == "Halverton" and r["county"] == "DARROW" for r in eps))
+            rem = min(12.0, max(0.0, (max(r["x"] for r in eps) - o).days / 30.4375))
+            s0 = min(r["s"] for r in per[p] if r["s"] <= o and (r["c"] is None or r["c"] >= o))
+            changed = True
+            while changed:
+                changed = False
+                for r in per[p]:
+                    if r["c"] is not None and r["s"] < s0 and (s0 - r["c"]).days <= 1:
+                        s0, changed = r["s"], True
+            tos12 = int((o - s0).days / 30.4375 < 12)
+            pri = max(int(r["prior_felony_convictions"]) for r in eps)
+            ss = [v for d, v in sc.get(p, []) if d <= o]
+            h = hist.get(p, [])
+            n12 = min(3, sum(1 for d, b in h if o - dt.timedelta(days=365) < d <= o))
+            b12 = int(any(b for d, b in h if o - dt.timedelta(days=365) < d <= o))
+            v12 = int(any(o - dt.timedelta(days=365) < x <= o for x in vic.get(p, ())))
+            X.append([age, int(r0["sex"] == "M"), np.log1p(pri)] + [int(f == k) for k in fams] +
+                     [par, kes, city, rem, tos12, ss[-1] if ss else np.nan, n12, b12, v12])
+            if outcome:
+                y.append(int(any(b for d, b in h if D(Y + 1, 1, 1) <= d <= D(Y + 1, 12, 31))))
+        X = np.array(X, float)
+        return X, np.array(y)
+
+    from sklearn.linear_model import LogisticRegression
+    Xs, ys = [], []
+    for Y in range(2018, 2026):
+        X, y = frame(Y)
+        Xs.append(X)
+        ys.append(y)
+    X = np.vstack(Xs)
+    y = np.concatenate(ys)
+    med = np.nanmedian(X[:, 13])
+    X[np.isnan(X[:, 13]), 13] = med
+    X26, _ = frame(2026, outcome=False)
+    X26[np.isnan(X26[:, 13]), 13] = np.nanmedian(X26[:, 13])
+    mu, sd = X.mean(0), X.std(0) + 1e-12
+    out = {}
+    for name, cols in (("own", list(range(16))), ("linked", list(range(17)))):
+        m = LogisticRegression(penalty=None, max_iter=5000, tol=1e-10)
+        m.fit((X[:, cols] - mu[cols]) / sd[cols], y)
+        out[name] = float(m.predict_proba((X26[:, cols] - mu[cols]) / sd[cols])[:, 1].sum())
+    ok("the forecast (linked model)", abs(out["linked"] - figs["golden_unrounded"]) < 0.5,
+       "%.2f against %.1f" % (out["linked"], figs["golden_unrounded"]))
+    ok("the forecast prints the call", int(100 * np.floor(out["linked"] / 100 + 0.5)) == figs["call_forecast_2027"])
+    ok("the own-attribute model", abs(out["own"] - figs["default_unrounded"]) < 0.5, "%.2f against %.1f" % (out["own"], figs["default_unrounded"]))
+    vi = X[:, 16] == 1
+    ok("victims' rate on the 2018 to 2025 year ends", abs(100 * y[vi].mean() - figs["cc_rate_victims_pct"]) < 0.051, "%.2f" % (100 * y[vi].mean()))
+    ok("others' rate on the 2018 to 2025 year ends", abs(100 * y[~vi].mean() - figs["cc_rate_others_pct"]) < 0.051, "%.2f" % (100 * y[~vi].mean()))
+
+    # ------------------------------------------------------------ ask A: Belvantis days
+    g = json.load(open(os.path.join(target, "belvantis_r4_device_events_2025-2026.json")))
+    evs = g["events"]
+    dead = set(e["voids_event_id"] for e in evs if e["event"] == "VOID")
+    by = defaultdict(list)
+    rank = {"ENROL": 0, "DEVICE_RETURN": 1, "DEVICE_ISSUE": 2, "SUSPEND": 3, "RESUME": 4, "END": 5, "ACCOUNT_TRANSFER": 6}
+    for e in evs:
+        if e["event"] == "VOID" or e["event_id"] in dead:
+            continue
+        by[(e["client_ref"], xw.get(e["client_ref"], e["client_ref"]))].append((iso(e["effective_date"]), rank[e["event"]], e["event"]))
+    p2sid = {v: k for k, v in sid2p.items()}
+    custody = defaultdict(set)
+    for b in bks:
+        a = b["d"]
+        z = b["rel"].date() if b["rel"] else D(2026, 12, 31)
+        while a <= z:
+            custody[b["sid"]].add(a)
+            a += dt.timedelta(days=1)
+    month = [0] * 12
+    held_p, susp_p = defaultdict(set), defaultdict(set)
+    for ref, lst in by.items():
+        lst.sort()
+        on = None
+        held, susp = set(), set()
+        for d, _, e in lst:
+            if e == "ENROL":
+                if on is None:
+                    on = d
+            elif e in ("END", "ACCOUNT_TRANSFER") and on is not None:
+                held |= {on + dt.timedelta(days=k) for k in range((d - on).days + 1)}
+                on = None
+        if on is not None:
+            held |= {on + dt.timedelta(days=k) for k in range((D(2026, 12, 31) - on).days + 1)}
+        # Schedule C.2: each suspension through the first resumption effective on or after it, whatever the logged order
+        open_res = sorted(d for d, _, e in lst if e == "RESUME")
+        for a in sorted(d for d, _, e in lst if e == "SUSPEND"):
+            b = next((r_ for r_ in open_res if r_ >= a), None)
+            if b is not None:
+                open_res.remove(b)
+            z = b if b is not None else D(2026, 12, 31)
+            susp |= {a + dt.timedelta(days=k) for k in range((z - a).days + 1)}
+        p = ref[1]
+        held_p[p] |= held
+        susp_p[p] |= susp
+    for p, held in held_p.items():
+        cus = custody.get(p2sid.get(p), set())
+        for d in held:
+            if d.year == 2026 and d not in susp_p[p] and d not in cus and during(p, d):
+                month[d.month - 1] += 1
+    for m in range(12):
+        ok("enrolment days 2026-%02d" % (m + 1), month[m] == figs["ask_gps_days_2026_%02d" % (m + 1)],
+           "%d against %d" % (month[m], figs["ask_gps_days_2026_%02d" % (m + 1)]))
+
+    # ------------------------------------------------------------ ask B: zones
+    res = defaultdict(set)
+    words = {"STREET": "ST", "AVENUE": "AVE", "DRIVE": "DR", "ROAD": "RD", "LANE": "LN", "COURT": "CT", "PLACE": "PL",
+             "BOULEVARD": "BLVD", "APARTMENT": "UNIT", "APT": "UNIT", "#": "UNIT"}
+    for r in hpd:
+        if r["victim_type"] == "I" and r["victim_res_city"] == "HALVERTON" and r["victim_residence"]:
+            toks = re.sub(r"[,.]", " ", r["victim_residence"].upper()).replace("#", " # ").split()
+            res[r["incident_number"]].add(" ".join(words.get(t, t) for t in toks))
+    cells = defaultdict(int)
+    done = set()
+    for b in sorted(nb, key=lambda b: b["t"]):
+        if not (b["b"] and b["ag"] == "HPD"):
+            continue
+        m = re.fullmatch(r"(\d{2})-(\d{6})", b["case"]) if b["j"] == "D" else re.fullmatch(r"HPD(\d{2})(\d{6})", b["case"])
+        if not m:
+            continue
+        num = "HPD-%s-%s" % m.groups()
+        if (b["p"], num) in done:
+            continue
+        done.add((b["p"], num))
+        if b["d"].year == 2026:
+            cells[b["d"].month] += len(res.get(num, ()))
+    for m in range(1, 13):
+        ok("zones 2026-%02d" % m, cells[m] == figs["ask_zones_2026_%02d" % m], "%d against %d" % (cells[m], figs["ask_zones_2026_%02d" % m]))
+    print("verify: %d failed" % len(FAIL))
+    return 1 if FAIL else 0
 
 
 if __name__ == "__main__":

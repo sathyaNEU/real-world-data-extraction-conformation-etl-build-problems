@@ -1,361 +1,466 @@
-"""task179 golden computation, from the pack alone (target/), the way the Planning Office's analyst works it.
+"""task179 reference solution, computed from the shipped files under target/ only.
 
-The call: each 2019 to 2025 first-time entrant's enrolment at the next census, modelled on the entrant's attributes,
-the week-6 progress ratings and the number of other entrants of the intake the entrant meets in two or more of the
-entrant's own Semester 1 classes (repeat classmates, in bands); the model applied to the 2026 intake and summed.
-The ask: Semester 1 2026 teaching groups at 200 level and at 300 level and above by owning faculty, at 30 students or
-fewer and over 30: each distinct set of classes taught together in one room at one time is a group, and its size is
-its classes' students enrolled at the census (the census history's definition). The model form is the one with the
-lowest Akaike information criterion, as the conventions file."""
+The call: the people with an open Region 4 episode at the end of 31 December 2026, counted once, who are booked into
+the Darrow or the Keswick County jail at least once in 2027 on a new charge Directive 26-07's Category V lists, while
+still under Region 4 supervision; the golden forecasts it with a year-end risk model fitted on the 2018 to 2025 year
+ends, each supervisee's own records joined to the city police's victim records by cleaned name and date of birth."""
 from __future__ import annotations
 
+import datetime as dt
+import json
 import os
+import re
+from collections import defaultdict
+from zoneinfo import ZoneInfo
 
 import numpy as np
 import pandas as pd
-import scipy.sparse as sp
 
+import codes as K
 import common as C
 
-FAC_ARC = {"FASS": "ASS", "FBUS": "BUS", "FSCI": "SCI", "FENG": "ENG", "FHLT": "HLT"}
-RATE = {"S": 0, "C": 1, "R": 2, "Satisfactory": 0, "Some concern": 1, "At risk": 2}
-BANDS = [0, 1, 2, 3, 4, 6, 9, 15, 22, 10 ** 9]
+TZ = ZoneInfo("America/Chicago")
+OLD_TO_NEW = dict(K.OLD_TO_NEW)
+SCHED_B = set(K.SCHEDULE_B)
+FAMILY = dict(K.FAMILY)
+YEARS = list(range(2018, 2026))          # training year ends; each one's outcome year is the next
 
 
+# ------------------------------------------------------------------ loading
 def load(target):
-    P = lambda f: os.path.join(target, f)
     d = {}
-    d["scls"] = pd.read_csv(P(C.F_SCLS), dtype={"STUDENT_NO": str})
-    d["acls"] = pd.read_csv(P(C.F_ACLS), dtype=str)
-    d["census"] = pd.read_csv(P(C.F_CENSUS), dtype={"STUDENT_ID": str})
-    d["xwalk"] = pd.read_csv(P(C.F_XWALK), dtype=str)
-    d["prog"] = pd.read_csv(P(C.F_PROG), dtype={"STUDENT": str, "CLASS": str}, keep_default_na=False)
-    d["adm"] = pd.read_excel(P(C.F_ADM), sheet_name=None, dtype={"Student No": str, "Student ID": str})
-    d["tt"] = pd.read_excel(P(C.F_TT))
-    d["cle"] = pd.read_csv(P(C.F_CLE), dtype=str)
+    d["epi"] = pd.read_csv(os.path.join(target, C.F_EPIS), dtype=str, keep_default_na=False)
+    d["xw"] = pd.read_csv(os.path.join(target, C.F_XWALK), dtype=str, keep_default_na=False)
+    d["ras"] = pd.read_csv(os.path.join(target, C.F_ASSESS), dtype=str, keep_default_na=False)
+    d["dj"] = pd.read_csv(os.path.join(target, C.F_DARROW), dtype=str, keep_default_na=False)
+    d["kj"] = pd.read_excel(os.path.join(target, C.F_KESWICK), dtype=object, keep_default_na=False, na_values=[])
+    d["hpd"] = pd.read_csv(os.path.join(target, C.F_HPD), dtype=str, keep_default_na=False)
+    d["gps"] = json.load(open(os.path.join(target, C.F_GPS)))
     return d
 
 
-def census_year(s):
-    s = str(s)
-    return int(s[-4:]) if "/" in s else int(s[:4])
+def new_code(s):
+    s = str(s).strip()
+    if s in SCHED_B or s in FAMILY:
+        return s
+    return OLD_TO_NEW.get(s, s)
 
 
-def enrolled_sets(d):
-    """census year -> set of student ids with an enrolled programme attempt (leave is not enrolled)"""
-    cz = d["census"].copy()
-    cz["Y"] = cz["CENSUS_DATE"].map(census_year)
-    en = cz[cz["STATUS"].isin(["EN", "Enrolled"])]
-    return {y: set(g["STUDENT_ID"]) for y, g in en.groupby("Y")}
+# ------------------------------------------------------------------ supervision
+class Supervision:
+    """person-level Region 4 supervision from the case-management episodes; an episode is open from its start date
+    through its close date (Directive 26-07, section 2), or, as the alternative reading, until its close date"""
+    def __init__(self, epi, inclusive=True):
+        e = epi.copy()
+        e["start"] = pd.to_datetime(e["start_date"]).dt.date
+        e["close"] = e["close_date"].map(lambda x: dt.date.fromisoformat(x) if x else None)
+        e["exp"] = pd.to_datetime(e["expiration_date"]).dt.date
+        self.e = e
+        self.inclusive = inclusive
+        self.by_person = defaultdict(list)
+        for row in e.itertuples(index=False):
+            self.by_person[row.cms_person_id].append(row)
+        for k in self.by_person:
+            self.by_person[k].sort(key=lambda r: r.start)
+        self.sid_to_pid = dict(zip(e["sid"], e["cms_person_id"]))
 
+    def _open(self, r, d):
+        if r.start > d:
+            return False
+        if r.close is None:
+            return True
+        return r.close >= d if self.inclusive else r.close > d
 
-def entrants(d):
-    """first-time entrants per intake, one row each, with the admissions attributes"""
-    out = []
-    for name, df in d["adm"].items():
-        y = int(name.split()[0])
-        df = df.copy()
-        idc = "Student No" if "Student No" in df.columns else "Student ID"
-        df = df.rename(columns={idc: "sid", "ASC Points": "asc", "ASC Score": "asc"})
-        df["intake"] = y
-        out.append(df)
-    a = pd.concat(out, ignore_index=True)
-    a = a[a["Entry Basis"] == "First-time"].copy()
-    a["sid"] = a["sid"].astype(str)
-    return a
+    def open_on(self, pid, d):
+        """episodes open at the end of day d"""
+        return [r for r in self.by_person.get(pid, []) if self._open(r, d)]
 
+    def supervised(self, pid, d):
+        """under Region 4 supervision during day d (an episode open that day)"""
+        return any(r.start <= d and (r.close is None or r.close >= d) for r in self.by_person.get(pid, []))
 
-def ties(pairs):
-    """pairs: DataFrame with columns sid, cls. Repeat classmates: other students met in two or more classes."""
-    sids = pd.Index(pairs["sid"].unique())
-    cls = pd.Index(pairs["cls"].unique())
-    r = sids.get_indexer(pairs["sid"])
-    c = cls.get_indexer(pairs["cls"])
-    A = sp.csr_matrix((np.ones(len(r)), (r, c)), shape=(len(sids), len(cls)))
-    M = (A @ A.T).tocsr()
-    M.setdiag(0)
-    M.eliminate_zeros()
-    t2 = np.asarray((M >= 2).sum(1)).ravel()
-    return pd.Series(t2, index=sids)
-
-
-def frame(d):
-    a = entrants(d)
-    en = enrolled_sets(d)
-    xw = dict(zip(d["xwalk"]["SIRIUS_STUDENT_NO"], d["xwalk"]["ARC_ID"]))
-    a = a[[sid in en.get(y, set()) for sid, y in zip(a["sid"], a["intake"])]].copy()
-    nxt = []
-    for sid, y in zip(a["sid"], a["intake"]):
-        if y >= 2026:
-            nxt.append(np.nan)
-        elif y + 1 < 2026:
-            nxt.append(0 if sid in en[y + 1] else 1)
+    def caseload(self, d, episodes=False):
+        e = self.e
+        if self.inclusive:
+            m = (e["start"] <= d) & (e["close"].map(lambda c: c is None or c >= d))
         else:
-            nxt.append(0 if xw.get(sid) in en[2026] else 1)
-    a["gone"] = nxt
-    # classes
-    s = d["scls"].rename(columns={"STUDENT_NO": "sid"})
-    s["cls"] = s["TERM"] + ":" + s["CLASS_NBR"].astype(str)
-    s["intake"] = s["COHORT_YR"]
-    r = d["acls"].rename(columns={"arc_student_id": "sid"})
-    r["cls"] = r["class_code"]
-    r["intake"] = 2026
-    t = []
-    for y, g in pd.concat([s[["sid", "cls", "intake"]], r[["sid", "cls", "intake"]]]).groupby("intake"):
-        tt = ties(g)
-        t.append(pd.DataFrame({"sid": tt.index, "intake": y, "ties": tt.values}))
-    t = pd.concat(t)
-    a = a.merge(t, on=["sid", "intake"], how="left")
-    a["ties"] = a["ties"].fillna(0)
-    # week-6 progress ratings
-    pr = d["prog"].copy()
-    pr["v"] = pr["RATING"].map(RATE)
-    m = pr.groupby(["STUDENT", "YEAR"])["v"].mean().rename("prisk").reset_index()
-    m = m.rename(columns={"STUDENT": "sid", "YEAR": "intake"})
-    a = a.merge(m, on=["sid", "intake"], how="left")
-    a["prisk"] = a["prisk"].fillna(0.5)
-    # attributes
-    a["fif"] = (a["First in Family"] == "Y").astype(float)
-    a["pt"] = (a["Attendance"] == "PT").astype(float)
-    a["hard"] = (a["Hardship Grant"] == "Y").astype(float)
-    a["lc"] = (a["Living-Learning Community"] == "Y").astype(float)
-    a["hall"] = (~a["Accommodation"].isin(["Family home", "Private"])).astype(float)
-    dob = pd.to_datetime(a["Date of Birth"])
-    a["age"] = a["intake"] - dob.dt.year
-    a["mature"] = (a["age"] >= 21).astype(float)
-    acc = pd.to_datetime(a["Offer Accepted"])
-    a["acc_day"] = (acc - pd.to_datetime(a["intake"].astype(str) + "-01-01")).dt.days
-    a["asc"] = a["asc"].astype(float)
-    return a
+            m = (e["start"] <= d) & (e["close"].map(lambda c: c is None or c > d))
+        if episodes:
+            return list(e.loc[m, "cms_person_id"])
+        return sorted(set(e.loc[m, "cms_person_id"]))
+
+    merge_transfers = True
+
+    def spell_start(self, pid, d):
+        """the start of the continuous Region 4 supervision that covers day d"""
+        eps = [r for r in self.by_person[pid]]
+        cur = None
+        for r in eps:
+            if r.start <= d and (r.close is None or r.close >= d):
+                cur = r if cur is None or r.start < cur.start else cur
+        if cur is None:
+            return None
+        s = cur.start
+        changed = self.merge_transfers
+        while changed:
+            changed = False
+            for r in eps:
+                if r.close is not None and r.start < s and (s - r.close).days <= 1:
+                    s = r.start
+                    changed = True
+        return s
 
 
-BASE = ["asc", "fif", "pt", "mature", "hard", "prisk", "lc", "hall", "acc_day"]
+# ------------------------------------------------------------------ bookings
+def bookings(d, utc=True, group_rows=True):
+    """one row per booking from both jails, local time, new-section charges (utc=False keeps Keswick's UTC clock;
+    group_rows=False reads each Darrow charge row as a booking)"""
+    dj = d["dj"]
+    out = []
+    groups = dj.groupby("booking_no", sort=False) if group_rows else ((k, dj.iloc[[k]]) for k in range(len(dj)))
+    for bno, g in groups:
+        r0 = g.iloc[0]
+        booked = dt.datetime.strptime(r0["booked"], "%Y-%m-%d %H:%M")
+        rel = dt.datetime.strptime(r0["released"], "%Y-%m-%d %H:%M") if r0["released"] else None
+        ch = [new_code(s) for s in g["statute"] if s]
+        typ = r0["booking_type"]
+        out.append(dict(jail="D", bno=bno, sid=r0["sid"], booked=booked, released=rel, rel_reason=r0["release_reason"],
+                        type="NEW ARREST" if typ == "NEW ARREST" else typ, agency=r0["arresting_agency"],
+                        case=r0["agency_case_no"], charges=ch))
+    kj = d["kj"]
+    conv = (lambda t: t.replace(tzinfo=dt.timezone.utc).astimezone(TZ).replace(tzinfo=None)) if utc else (lambda t: t)
+    for row in kj.itertuples(index=False):
+        b = conv(pd.Timestamp(row[1]).to_pydatetime())
+        rel = None
+        if row[2] not in (None, ""):
+            rel = conv(pd.Timestamp(row[2]).to_pydatetime())
+        ch = []
+        if isinstance(row[10], str) and row[10] != "PROB/PAROLE VIOLATION":
+            for part in row[10].split(" | "):
+                ch.append(new_code(part.split(" ")[0]))
+        typ = {"NA": "NEW ARREST", "WT": "WARRANT", "PV": "VIOLATION", "RH": "RETURN FROM HOSPITAL"}[row[7]]
+        out.append(dict(jail="K", bno=row[0], sid=row[4], booked=b, released=rel, rel_reason=row[3] or "",
+                        type=typ, agency=row[8], case=str(row[9]), charges=ch))
+    bk = pd.DataFrame(out)
+    bk["date"] = bk["booked"].map(lambda t: t.date())
+    bk["new"] = bk["type"] == "NEW ARREST"
+    bk["schedb"] = bk["charges"].map(lambda cs: any(c in SCHED_B for c in cs))
+    return bk
 
 
-def design(a, form):
-    X = [a[c].values.astype(float) for c in BASE]
-    X[0] = (X[0] - 186.0) / 34.0
-    X[-1] = X[-1] / 100.0
-    for f in ["BUS", "SCI", "ENG", "HLT"]:
-        X.append((a["Faculty"] == f).values.astype(float))
-    t = a["ties"].values.astype(float)
-    if form == "bands":
-        e = BANDS
-        X += [((t >= lo) & (t < hi)).astype(float) for lo, hi in zip(e[:-1], e[1:])][1:]
-    elif form == "bands5":
-        e = [0, 1, 3, 6, 10, 10 ** 9]
-        X += [((t >= lo) & (t < hi)).astype(float) for lo, hi in zip(e[:-1], e[1:])][1:]
-    elif form == "bands4":
-        e = [0, 1, 3, 6, 10 ** 9]
-        X += [((t >= lo) & (t < hi)).astype(float) for lo, hi in zip(e[:-1], e[1:])][1:]
-    elif form.startswith("ge"):
-        X.append((t >= int(form[2:])).astype(float))
-    elif form == "any":
-        X.append((t >= 1).astype(float))
-    elif form == "lin":
-        X.append(t)
-    elif form == "log":
-        X.append(np.log1p(t))
-    elif form.startswith("sat"):
-        X.append(1 - np.exp(-t / float(form[3:])))
-    elif form == "sqrt":
-        X.append(np.sqrt(t))
-    elif form == "none":
-        pass
+# ------------------------------------------------------------------ the police's victims
+def norm_last(s):
+    s = re.sub(r"\b(JR|SR|II|III|IV)\b\.?", " ", s.upper())
+    return re.sub(r"[^A-Z]", "", s)
+
+
+def norm_first(s):
+    return re.sub(r"[^A-Z]", "", s.upper())
+
+
+def victim_links(d, sup, use="occurred", fuzzy=False, clean=True):
+    """person id -> sorted dates the city police recorded the person as an individual victim"""
+    e = sup.e
+    key = {}
+    nl = norm_last if clean else (lambda x: x.upper().strip())
+    nf = norm_first if clean else (lambda x: x.upper().strip())
+    for row in e.drop_duplicates("cms_person_id").itertuples(index=False):
+        # the police write a victim LAST, FIRST MIDDLE, so a two-word given name meets its first word
+        given = row.first_name.split(" ")[0] if clean else row.first_name
+        key[(nl(row.last_name), nf(given), row.date_of_birth)] = row.cms_person_id
+    h = d["hpd"]
+    h = h[(h["victim_type"] == "I") & (h["victim_name"] != "JUVENILE")]
+    col = "occurred_date" if use == "occurred" else "report_date"
+    out = defaultdict(set)
+    nick = {}
+    if fuzzy:
+        import names as NM
+        nick = {v.upper(): k.upper() for k, v in NM.NICKNAMES.items()}
+    for nm, dob, dd in zip(h["victim_name"], h["victim_dob"], h[col]):
+        if not dob:
+            continue
+        last, rest = nm.split(", ", 1)
+        first = rest.split(" ")[0]
+        dob_iso = "%s-%s-%s" % (dob[6:10], dob[0:2], dob[3:5])
+        k = (nl(last), nf(first), dob_iso)
+        pid = key.get(k)
+        if pid is None and fuzzy and first in nick:
+            pid = key.get((nl(last), nf(nick[first]), dob_iso))
+        if pid is not None:
+            out[pid].add(dt.date(int(dd[6:10]), int(dd[0:2]), int(dd[3:5])))
+    return {k: sorted(v) for k, v in out.items()}
+
+
+# ------------------------------------------------------------------ panel
+def assessments_by_person(d, xwalk=True, std_score=False):
+    ras = d["ras"]
+    if xwalk == "first":
+        x = d["xw"][~d["xw"]["conversion_note"].str.contains("MERGED|DUPLICATE")]
+        xw = dict(zip(x["legacy_offender_number"], x["cms_person_id"]))
     else:
-        raise KeyError(form)
-    return np.column_stack([np.ones(len(a))] + X)
+        xw = dict(zip(d["xw"]["legacy_offender_number"], d["xw"]["cms_person_id"])) if xwalk else {}
+    pid = ras["offender_ref"].map(lambda x: xw.get(x, x))
+    a = pd.DataFrame({"pid": pid, "date": pd.to_datetime(ras["assessment_date"]).dt.date,
+                      "score": ras["total_score"].astype(int), "inst": ras["instrument"]})
+    if std_score:
+        z = a.groupby("inst")["score"].transform(lambda x: (x - x.mean()) / x.std())
+        a["score"] = 18 + 6 * z
+    out = defaultdict(list)
+    for r in a.itertuples(index=False):
+        out[r.pid].append((r.date, r.score, r.inst))
+    for k in out:
+        out[k].sort()
+    return out
 
 
-def logit_fit(X, y, it=60):
-    """Newton-Raphson maximum likelihood for a logistic model; returns coefficients and the log-likelihood"""
-    b = np.zeros(X.shape[1])
-    for _ in range(it):
-        eta = X @ b
-        p = 1 / (1 + np.exp(-eta))
-        W = p * (1 - p)
-        g = X.T @ (y - p)
-        H = (X * W[:, None]).T @ X
-        step = np.linalg.solve(H + 1e-9 * np.eye(len(b)), g)
-        b += step
-        if np.max(np.abs(step)) < 1e-10:
-            break
-    p = 1 / (1 + np.exp(-(X @ b)))
-    ll = float(np.sum(y * np.log(p) + (1 - y) * np.log(1 - p)))
-    return b, ll
+def lead_family(code):
+    c = new_code(code)
+    return FAMILY.get(c, "OTHER")
 
 
-def forecast(a, form="bands", years=None):
-    h = a[a["intake"] < 2026]
-    if years is not None:
-        h = h[h["intake"].isin(years)]
-    f = a[a["intake"] == 2026]
-    b, ll = logit_fit(design(h, form), h["gone"].values.astype(float))
-    p = 1 / (1 + np.exp(-(design(f, form) @ b)))
-    return float(p.sum()), ll, b
+class Panel:
+    def __init__(self, d, sup, bk, links, ras, under_only=True, new_only=True, persons_once=True):
+        self.d, self.sup, self.bk, self.links, self.ras = d, sup, bk, links, ras
+        self.persons_once = persons_once
+        b = bk.copy()
+        b["pid"] = b["sid"].map(sup.sid_to_pid)
+        b = b[b["pid"].notna()]
+        # bookings while under Region 4 supervision
+        b["under"] = [sup.supervised(p, dd) for p, dd in zip(b["pid"], b["date"])] if under_only else True
+        self.b = b
+        nb = b[(b["new"] | (not new_only)) & b["under"]]
+        self.nb = nb
+        self.nb_by = defaultdict(list)
+        for p, dd, sb in zip(nb["pid"], nb["date"], nb["schedb"]):
+            self.nb_by[p].append((dd, sb))
+
+    def frame(self, Y, with_outcome=True):
+        sup = self.sup
+        o = dt.date(Y, 12, 31)
+        pids = sup.caseload(o, episodes=not self.persons_once)
+        rows = []
+        for p in pids:
+            eps = sup.open_on(p, o)
+            main = [r for r in eps if r.lead_offense_statute]
+            r0 = sorted(eps, key=lambda r: r.start)[0]
+            dob = dt.date.fromisoformat(r0.date_of_birth)
+            age = (o - dob).days / 365.25
+            fam = lead_family(sorted(eps, key=lambda r: (r.start, r.episode_id))[0].lead_offense_statute)
+            parole = any(r.supervision_type == "PAROLE" for r in eps)
+            county = sorted(eps, key=lambda r: r.start)[-1].county
+            city = any(r.residence_city == "Halverton" and r.county == "DARROW" for r in eps)
+            exp = max(r.exp for r in eps)
+            rem = min(12.0, max(0.0, (exp - o).days / 30.4375))
+            s0 = sup.spell_start(p, o)
+            tos = (o - s0).days / 30.4375 if s0 else 0.0
+            pri = max(int(r.prior_felony_convictions) for r in eps)
+            sc = [x for x in self.ras.get(p, []) if x[0] <= o]
+            score = sc[-1][1] if sc else np.nan
+            hist = self.nb_by.get(p, [])
+            n12 = sum(1 for dd, sb in hist if o - dt.timedelta(days=365) < dd <= o)
+            b12 = int(any(sb for dd, sb in hist if o - dt.timedelta(days=365) < dd <= o))
+            vd = self.links.get(p, [])
+            v12 = int(any(o - dt.timedelta(days=365) < x <= o for x in vd))
+            v24 = int(any(o - dt.timedelta(days=730) < x <= o - dt.timedelta(days=365) for x in vd))
+            vev = int(any(x <= o for x in vd))
+            v6 = int(any(o - dt.timedelta(days=182) < x <= o for x in vd))
+            v6_12 = int(any(o - dt.timedelta(days=365) < x <= o - dt.timedelta(days=182) for x in vd))
+            vc12 = min(3, sum(1 for x in vd if o - dt.timedelta(days=365) < x <= o))
+            y = np.nan
+            if with_outcome:
+                y = int(any(sb for dd, sb in hist if dt.date(Y + 1, 1, 1) <= dd <= dt.date(Y + 1, 12, 31)))
+            rows.append(dict(pid=p, Y=Y, age=age, male=int(r0.sex == "M"), lpri=np.log1p(pri), fam=fam, parole=int(parole),
+                             keswick=int(county == "KESWICK"), city=int(city), rem=rem, tos12=int(tos < 12), score=score,
+                             n12=min(3, n12), b12=b12, v12=v12, v24=v24, vever=vev, v6=v6, v6_12=v6_12, vc12=vc12, y=y))
+        f = pd.DataFrame(rows)
+        for fm in ("VIOLENT", "WEAPON", "PROPERTY", "DRUG", "DUI"):
+            f["f_" + fm] = (f["fam"] == fm).astype(int)
+        f["score"] = f["score"].fillna(f["score"].median() if f["score"].notna().any() else 17.0)
+        return f
 
 
-# ------------------------------------------------------------------ the ask: teaching groups
-LEVELS = ("200", "300+")
-SLOT = ("Room", "Day", "Start", "Teaching Weeks")
+BASE = ["age", "male", "lpri", "f_VIOLENT", "f_WEAPON", "f_PROPERTY", "f_DRUG", "f_DUI", "parole", "keswick", "city",
+        "rem", "tos12", "score", "n12", "b12"]
+FORMS = {"own attributes": [], "victim 12 months": ["v12"], "victim 12 and 24 months": ["v12", "v24"],
+         "victim 6 and 6-12 months": ["v6", "v6_12"], "victim count 12 months": ["vc12"], "victim ever": ["vever"],
+         "victim 12, 24 and ever": ["v12", "v24", "vever"]}
 
 
-def class_info(tt):
-    """active classes at 200 level and above: faculty, level, the timetable's enrolment figure, the largest room"""
-    act = tt[(tt["Class Status"] == "Active") & (tt["Level"] >= 200)]
-    info = act.groupby("Class Code").agg(fac=("Owning Faculty", "first"), level=("Level", "first"),
-                                         n=("Enrolled at Census", "first"), cap=("Room Capacity", "max"))
-    return act, info
+def fit(train, feats):
+    import statsmodels.api as sm
+    X = sm.add_constant(train[feats].astype(float))
+    m = sm.Logit(train["y"].astype(float), X).fit(disp=0, maxiter=200)
+    return m
 
 
-def groupings(tt, how="sets", cols=SLOT):
-    """the groups as sets of class codes. sets: each distinct set of classes meeting together (the golden); uf: classes
-    joined through any shared meeting; ident: classes with identical meeting sets; meeting: every meeting its own
-    group; class: one group per class"""
-    act, info = class_info(tt)
-    meet = act[["Class Code"] + list(cols)].drop_duplicates()
-    slots = meet.groupby(list(cols))["Class Code"].apply(frozenset)
-    if how == "sets":
-        return sorted(set(slots), key=sorted)
-    if how == "meeting":
-        return sorted(slots, key=sorted)
-    if how == "class":
-        return [frozenset([c]) for c in sorted(info.index)]
-    if how == "ident":
-        sig = meet.assign(k=meet[list(cols)].astype(str).agg("|".join, axis=1)).groupby("Class Code")["k"].apply(
-            lambda s: tuple(sorted(set(s))))
+def predict(m, f, feats):
+    import statsmodels.api as sm
+    X = sm.add_constant(f[feats].astype(float), has_constant="add")
+    return float(m.predict(X).sum())
+
+
+class Solution:
+    """the golden reading by default; each option is one alternative reading or one mess item mishandled"""
+    def __init__(self, target, data=None, inclusive=True, utc=True, group_rows=True, new_only=True, xwalk=True,
+                 std_score=False, persons_once=True, victim_date="occurred", fuzzy=False, under_only=True, years=None,
+                 clean_names=True, merge_transfers=True):
+        self.d = data if data is not None else load(target)
+        self.sup = Supervision(self.d["epi"], inclusive=inclusive)
+        self.sup.merge_transfers = merge_transfers
+        self.bk = bookings(self.d, utc=utc, group_rows=group_rows)
+        self.links = victim_links(self.d, self.sup, use=victim_date, fuzzy=fuzzy, clean=clean_names)
+        self.ras = assessments_by_person(self.d, xwalk=xwalk, std_score=std_score)
+        self.panel = Panel(self.d, self.sup, self.bk, self.links, self.ras, under_only=under_only, new_only=new_only,
+                           persons_once=persons_once)
+        self.years = years or YEARS
+        self.frames = {Y: self.panel.frame(Y, with_outcome=(Y < 2026)) for Y in sorted(set(self.years) | set(YEARS)) + [2026]}
+        self.train = pd.concat([self.frames[Y] for Y in self.years], ignore_index=True)
+        self.f26 = self.frames[2026]
+
+    def forecast(self, form, train=None, f=None):
+        feats = BASE + FORMS[form]
+        m = fit(self.train if train is None else train, feats)
+        return predict(m, self.f26 if f is None else f, feats), m
+
+    def all_forms(self):
         out = {}
-        for c, s in sig.items():
-            out.setdefault(s, set()).add(c)
-        return sorted((frozenset(v) for v in out.values()), key=sorted)
-    parent = {c: c for c in info.index}
-
-    def find(x):
-        while parent[x] != x:
-            parent[x] = parent[parent[x]]
-            x = parent[x]
-        return x
-    for s in slots:
-        cs = sorted(s)
-        for c in cs[1:]:
-            ra, rb = find(cs[0]), find(c)
-            if ra != rb:
-                parent[rb] = ra
-    comp = {}
-    for c in info.index:
-        comp.setdefault(find(c), set()).add(c)
-    return sorted((frozenset(v) for v in comp.values()), key=sorted)
-
-
-def census_status_2026(d):
-    """each student's state at the 2026 census: Enrolled when any attempt is enrolled, else On leave"""
-    c = d["census"]
-    c26 = c[c["CENSUS_DATE"] == "2026-10-01"]
-    st = {}
-    for sid, s in zip(c26["STUDENT_ID"], c26["STATUS"]):
-        if st.get(sid) != "Enrolled":
-            st[sid] = s
-    return st
-
-
-def sizes(d, groups, basis="enrolled"):
-    """enrolled: the group's students on the class lists who are enrolled at the census (golden); lists: every student
-    on the lists; keep_leave: those with any attempt at the census; keep_left: every listed student but those on
-    leave; tt_golden, tt_sum, tt_once: the timetable's figures under the repeated-figure rule, added, the largest"""
-    act, info = class_info(d["tt"])
-    if basis.startswith("tt_"):
-        out = []
-        for s in groups:
-            ns = [int(info.at[c, "n"]) for c in sorted(s)]
-            if basis == "tt_sum" or len(ns) == 1:
-                out.append(sum(ns))
-            elif basis == "tt_once":
-                out.append(max(ns))
-            else:
-                same = len(set(ns)) == 1
-                out.append(ns[0] if (same and sum(ns) > max(int(info.at[c, "cap"]) for c in s)) else sum(ns))
+        for k in FORMS:
+            v, m = self.forecast(k)
+            out[k] = (v, m.aic, m.llf)
         return out
-    st = census_status_2026(d)
-    keep = {"enrolled": lambda x: st.get(x) == "Enrolled", "lists": lambda x: True,
-            "keep_leave": lambda x: x in st, "keep_left": lambda x: st.get(x) != "On leave"}[basis]
-    members = d["cle"].groupby("class_code")["arc_student_id"].apply(set).to_dict()
-    return [sum(1 for x in set().union(*(members.get(c, set()) for c in s)) if keep(x)) for s in groups]
 
 
-def cells(d, how="sets", basis="enrolled", cols=SLOT):
-    """the 20 ask figures under one route, keyed as figures.json keys them"""
-    act, info = class_info(d["tt"])
-    gs = groupings(d["tt"], how, cols)
-    sz = sizes(d, gs, basis)
-    out = {}
-    one_fac = True
-    for s, v in zip(gs, sz):
-        facs = {info.at[c, "fac"] for c in s}
-        one_fac &= len(facs) == 1
-        lv = min(int(info.at[c, "level"]) for c in s)
-        lev = "200" if lv == 200 else "300+"
-        key = (FAC_ARC[sorted(facs)[0]], lev)
-        a, b = out.get(key, (0, 0))
-        out[key] = (a + (v <= 30), b + (v > 30))
-    return out, one_fac
+# ------------------------------------------------------------------ ask A: Belvantis enrolment days owed, 2026
+def custody_days(bk, sid):
+    """the days person sid was held in either county jail for any part of the day, from both jails' records"""
+    days = set()
+    sel = bk["sid"] == sid
+    for t, rl in zip(bk.loc[sel, "booked"], bk.loc[sel, "released"]):
+        a = t.date()
+        b = C.RECORDS_END if (rl is None or pd.isna(rl)) else rl.date()
+        x = a
+        while x <= b:
+            days.add(x)
+            x += dt.timedelta(days=1)
+    return days
 
 
-def teaching_groups(d, how="sets", basis="enrolled"):
-    out, one_fac = cells(d, how, basis)
-    return {k: out.get(k, (0, 0)) for k in [(f, lev) for f in ["ASS", "BUS", "SCI", "ENG", "HLT"] for lev in LEVELS]}, one_fac
+def _ref_days(g):
+    """held and suspended days of one vendor record (one client reference), from its effective dates; Schedule C.2: a
+    suspension runs from its effective date through the effective date of the resumption that answers it (the first
+    one on or after it), so a suspension and a resumption on the same date suspend that one day"""
+    held, susp = set(), set()
+    on = None
+    sus, res = [], []
+    for e, d in zip(g["event"], g["eff"]):
+        if e == "ENROL":
+            if on is None:
+                on = d
+        elif e in ("END", "ACCOUNT_TRANSFER") and on is not None:
+            x = on
+            while x <= d:
+                held.add(x)
+                x += dt.timedelta(days=1)
+            on = None
+        elif e == "SUSPEND":
+            sus.append(d)
+        elif e == "RESUME":
+            res.append(d)
+    if on is not None:
+        x = on
+        while x <= C.RECORDS_END:
+            held.add(x)
+            x += dt.timedelta(days=1)
+    res = sorted(res)
+    used = [False] * len(res)
+    for a in sorted(sus):
+        j = next((j for j, r in enumerate(res) if not used[j] and r >= a), None)
+        b = C.RECORDS_END
+        if j is not None:
+            used[j] = True
+            b = res[j]
+        x = a
+        while x <= b:
+            susp.add(x)
+            x += dt.timedelta(days=1)
+    return held, susp
 
 
-FORMS = ["none", "bands", "bands5", "bands4", "ge5", "ge7", "ge10", "ge15", "ge22", "any", "lin", "log", "sqrt",
-         "sat4", "sat8"]
+def gps_events(sol):
+    ev = pd.DataFrame(sol.d["gps"]["events"])
+    voided = set(ev.loc[ev["event"] == "VOID", "voids_event_id"])
+    ev = ev[(ev["event"] != "VOID") & ~ev["event_id"].isin(voided)].copy()
+    ev["eff"] = pd.to_datetime(ev["effective_date"]).dt.date
+    order = {"ENROL": 0, "DEVICE_RETURN": 1, "DEVICE_ISSUE": 2, "SUSPEND": 3, "RESUME": 4, "END": 5, "ACCOUNT_TRANSFER": 6}
+    ev["o"] = ev["event"].map(order)
+    xw = dict(zip(sol.d["xw"]["legacy_offender_number"], sol.d["xw"]["cms_person_id"]))
+    ev["pid"] = ev["client_ref"].map(lambda x: xw.get(x, x))
+    return ev.sort_values(["client_ref", "eff", "o"])
 
 
-def aic_table(a, forms=FORMS):
-    """each form's forecast, log-likelihood and Akaike information criterion on the 2019 to 2025 intakes"""
-    out = {}
-    for form in forms:
-        f, ll, b = forecast(a, form)
-        out[form] = (f, ll, 2 * len(b) - 2 * ll)
-    return out
+def gps_days(sol):
+    """Schedule C: a day per client on which the client holds an assigned device, less suspended days, days in
+    either jail and days the client was not under Region 4 supervision; two vendor records of one person are one
+    client"""
+    ev = gps_events(sol)
+    sup = sol.sup
+    pid_to_sid = {v: k for k, v in sup.sid_to_pid.items()}
+    held_p, susp_p = defaultdict(set), defaultdict(set)
+    for ref, g in ev.groupby("client_ref"):
+        h, s_ = _ref_days(g)
+        p = g["pid"].iloc[0]
+        held_p[p] |= h
+        susp_p[p] |= s_
+    months = defaultdict(int)
+    detail = {}
+    for p, held in held_p.items():
+        sid = pid_to_sid.get(p)
+        cust = custody_days(sol.bk, sid) if sid is not None else set()
+        bill = [x for x in held if x.year == 2026 and x not in susp_p[p] and x not in cust and sup.supervised(p, x)]
+        for x in bill:
+            months[x.month] += 1
+        detail[p] = len(bill)
+    return [months[m] for m in range(1, 13)], detail
 
 
-def class_comparability(d, a):
-    """a class on both sides of the cutover: the class places, entrants and classes each system's first-year extract
-    holds for the enrolled entrants, one paper and one credit value a class, and the entrants meeting 10 or more others
-    in two or more classes"""
-    s = d["scls"].rename(columns={"STUDENT_NO": "sid"})
-    s["cls"] = s["TERM"] + ":" + s["CLASS_NBR"].astype(str)
-    s["intake"] = s["COHORT_YR"]
-    r = d["acls"].rename(columns={"arc_student_id": "sid"})
-    r["cls"] = r["class_code"]
-    r["intake"] = 2026
-    keep = set(zip(a["sid"], a["intake"]))
-    out = {}
-    for tag, t in (("2019_2025", s), ("2026", r)):
-        t = t[[(x, y) in keep for x, y in zip(t["sid"], t["intake"])]]
-        out["places_" + tag] = int(len(t))
-        out["entrants_" + tag] = int(t.groupby(["intake", "sid"]).ngroups)
-        out["classes_" + tag] = int(t.groupby(["intake", "cls"]).ngroups)
-    per = [out["places_" + k] / out["entrants_" + k] for k in ("2019_2025", "2026")]
-    size = [out["places_" + k] / out["classes_" + k] for k in ("2019_2025", "2026")]
-    assert round(per[0], 1) == round(per[1], 1) and round(size[0]) == round(size[1])
-    out["per_entrant_1dp"] = round(per[0], 1)
-    out["class_size_whole"] = int(round(size[0]))
-    out["one_paper_a_class"] = bool(s.groupby(["TERM", "CLASS_NBR"])["PAPER"].nunique().max() == 1
-                                    and d["acls"].groupby("class_code")["paper_code"].nunique().max() == 1)
-    h, f = a[a["intake"] < 2026], a[a["intake"] == 2026]
-    out["meet10_2019_2025"] = int((h["ties"] >= 10).sum())
-    out["meet10_2026"] = int((f["ties"] >= 10).sum())
-    return out
+# ------------------------------------------------------------------ ask B: exclusion zones, 2026
+def hpd_number(case, jail):
+    case = str(case).strip()
+    m = re.fullmatch(r"(\d{2})-(\d{6})", case) if jail == "D" else re.fullmatch(r"HPD(\d{2})(\d{6})", case)
+    if not m:
+        return None
+    return "HPD-%s-%s" % (m.group(1), m.group(2))
 
 
-def compute(target):
-    d = load(target)
-    a = frame(d)
-    res = {"frame": a, "data": d}
-    res["n2026"] = int((a["intake"] == 2026).sum())
-    res["aic"] = aic_table(a)
-    res["form"] = min(res["aic"], key=lambda k: res["aic"][k][2])
-    res["call"], res["ll"], res["coef"] = forecast(a, res["form"])
-    res["groups"], one_fac = teaching_groups(d)
-    assert one_fac
-    return res
+STREET_WORDS = {"STREET": "ST", "AVENUE": "AVE", "DRIVE": "DR", "ROAD": "RD", "LANE": "LN", "COURT": "CT",
+                "PLACE": "PL", "BOULEVARD": "BLVD", "APARTMENT": "UNIT", "APT": "UNIT", "#": "UNIT"}
+
+
+def norm_addr(a):
+    """a residence as one key: case, spacing, the unit mark and the street type written alike"""
+    a = a.upper().replace(",", " ").replace(".", " ").replace("#", " # ")
+    return " ".join(STREET_WORDS.get(t, t) for t in a.split())
+
+
+def zones(sol):
+    """Directive 26-07 section 4: for each supervisee booked on a new Category V charge after a Halverton police arrest,
+    one zone per Halverton residence of the incident's victims, once per supervisee and incident, in the month of the
+    first booking on that incident (Merrow time), 2026 bookings"""
+    h = sol.d["hpd"]
+    h = h[(h["victim_type"] == "I") & (h["victim_res_city"] == "HALVERTON") & (h["victim_residence"] != "")]
+    res = defaultdict(set)
+    for num, a in zip(h["incident_number"], h["victim_residence"]):
+        res[num].add(norm_addr(a))
+    nb = sol.panel.nb
+    nb = nb[(nb["agency"] == "HPD") & nb["schedb"]].sort_values("booked")
+    seen = set()
+    cells = defaultdict(int)
+    for p, case, jail, d in zip(nb["pid"], nb["case"], nb["jail"], nb["date"]):
+        num = hpd_number(case, jail)
+        if num is None or (p, num) in seen:
+            continue
+        seen.add((p, num))
+        if d.year != 2026:
+            continue
+        cells[d.month] += len(res.get(num, ()))
+    return [cells[m] for m in range(1, 13)]

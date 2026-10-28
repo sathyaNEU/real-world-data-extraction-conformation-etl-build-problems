@@ -1,18 +1,18 @@
 {
  "task": "task179",
- "status": "DESIGN",
+ "status": "SHIPPED",
  "domain": "criminology-justice",
  "objective": "forecasting",
- "stage": 2,
- "stage_name": "design",
+ "stage": 5,
+ "stage_name": "ship",
  "updated": "2026-10-28",
  "architecture": 5,
- "stump": "A competent analyst fits the region's Schedule B booking model on the caseload's own risk score, history and supervision terms, back-tests it cleanly on the later year ends, scores the 31 December 2026 caseload and files 450 against 500, because it never links the city police's victim records to the caseload by name and date of birth and so never carries the second half of 2026's rise in victimization into 2027.",
+ "stump": "A competent analyst fits the region's Category V booking model on the caseload's own risk score, history and supervision terms, back-tests it cleanly on the 2024 and 2025 year ends, scores the 31 December 2026 caseload and files 400 against 500, because it never links the city police's victim records to the caseload by name and date of birth and so never carries the autumn 2026 rise in victimization into 2027.",
  "loops": 0,
  "card_registered": true,
- "precut": null,
- "draw": "criminology-justice / recidivism-risk-assessment, Forecasting: Region 4 (State of Merrow) year-end caseload's 2027 Schedule B bookings for the GPS order; the victim-offender overlap read through the Halverton police's victim records linked by name and date of birth; card v5 registered 2026-10-28; nine survivor properties argued in the note's ## Draw on prototype proto2.py (no probe, no solver, CLAUDE.md STOP block)",
- "resume": "architecture 5 DRAWN: next, stage 2 design in DESIGN_NOTE.md (default path ending on 450, stump sentence, readability screen, fork table, ladder, closure table, literal reader, oracles, ask sheet with Measured by), prompt.txt (no persona, a new shell against task175's), precut.py task179 exit 0; then the generator, pack, goldens and submission.md under task179/ (the v3 files there are replaced), every free gate, and the stage 4 handoff without spawning the leak reader or the judge",
+ "precut": "PASS 2026-10-28 (53 checks, 0 FAIL, 0 WARN)",
+ "draw": "criminology-justice / recidivism-risk-assessment, Forecasting: Region 4 (State of Merrow) year-end caseload's 2027 Category V bookings for the GPS order; the victim-offender overlap read through the Halverton police's victim records linked by name and date of birth; card v5 registered 2026-10-28; nine survivor properties argued in the note's ## Draw on prototype proto2.py (no probe, no solver, CLAUDE.md STOP block)",
+ "resume": "",
  "portal_id": "2d6c30f6-8d7e-42ed-b73f-8630464142c7",
  "earlier": {
   "architecture 3": {
@@ -193,5 +193,37 @@
    "portal_status_date": "2026-10-25",
    "zip_md5": "01124ef49b164b4860ea4326bd0aa901"
   }
+ },
+ "gates": {
+  "build": "build 12, 2026-10-28: checks.py 111 of 111, verify.py 0 failed, rebuild 17 files compared 0 differ",
+  "zip_sha256": "f02cc3ff2f6902d5ed7522c09828e61e03ac2076f2a0fc85b30939f35a4f3e19",
+  "zip_md5": "0cde5c5dc2544adfe01edf3ffd4fb514",
+  "figures_check": "44 figures, 0 absent",
+  "precut": "53 checks, 0 FAIL",
+  "voice_check": "PASS",
+  "leak_py": "REVIEW (no LEAK), --asof 2027-01-08",
+  "guard_surface": "exit 0; card-axis pairs task180, task231, task250, each differentiated on the card; personas Ashlee Evans and Zachary Wallace",
+  "guard_heart": "WARN, no BLOCK",
+  "scrub_audit": "target and golden clean",
+  "ask_ceiling": "generator/ceiling.py: cracker misses 24 of 24 cells, mirror keeps 12.5 per cent, pair 31.9",
+  "target_zip_sha256": "f02cc3ff2f6902d5ed7522c09828e61e03ac2076f2a0fc85b30939f35a4f3e19",
+  "checks": "111 of 111",
+  "verify": "0 failed",
+  "byte_identical": true,
+  "guard": "heart WARN no BLOCK, surface exit 0"
+ },
+ "round1": "stage 4 round 1 on zip 570c2a77: judge NOT_DETERMINISTIC (external_dependency) on the enrolment days only, FIX_NOW; call 500 forced; leak read clean (questions 1 to 4 none, 6 analytical) with four realism tells; all fixed in one generator pass, zip b8a231ab; round 1's determinism_check_report.md kept as evidence",
+ "round2": "stage 4 round 2 on zip b8a231ab: judge DETERMINISTIC with one FIX_NOW (component 3's 4.5 recomputed 4.446); the cause was the victim key on two-word given names, fixed at its source (rates 30.7 and 4.4, exact counts 533 and 212, golden 495.0, call 500); leak reader round 2 clean with the Revisor's table filled out; zip f02cc3ff",
+ "delivered": "2026-10-28",
+ "judge": {
+  "verdict": "DETERMINISTIC",
+  "disposition": "APPROVE after the FIX_NOW",
+  "report": "task179/determinism_check_report_pass2.md (round 2 on b8a231ab: DETERMINISTIC, the non-victim rate corrected to 4.4 per cent by the victim key fix); round 1 task179/determinism_check_report.md (NOT_DETERMINISTIC on the enrolment-days ask, FIX_NOW, closed in one pass)",
+  "gate_g": "forecasting, analytical_non_defect, surface_read_dependency no, sole_data_defect no",
+  "gate_h": "domain pass, layers pass, decisive_step analytical"
+ },
+ "leak": {
+  "leak_py": "REVIEW 2026-10-28 --asof 2027-01-08 on f02cc3ff, four lines, no LEAK, each ruled harmless",
+  "reader": "two isolated leak reads, neither solving (STOP rule): questions 1 to 4 none and question 6 analytical at both, the victim records never named; their realism tells fixed in the generator"
  }
 }

@@ -1,563 +1,530 @@
-"""task179 pack: the Registry's, Admissions' and Timetabling's extracts as the Planning Office receives them, in each
-system's own layout. Layer 1 only: two student systems with their own identifiers, dates and codes joined by a
-crosswalk, leave carried on the census, conjoint students on two attempts, credit-transfer entrants beside first-time
-entrants, an admissions workbook whose columns drift by intake, a timetable at meeting grain. The Semester 1 classes
-are exactly the classes each entrant sat in at the census."""
+"""task179 exports: each file in the layout, clock and code set its own system writes."""
 from __future__ import annotations
 
 import datetime as dt
+import os
+from zoneinfo import ZoneInfo
 
 import numpy as np
 
+import codes as K
 import common as C
+import names as NM
 import xlsx_writer as XW
 
-ARC_FAC = {"ASS": "FASS", "BUS": "FBUS", "SCI": "FSCI", "ENG": "FENG", "HLT": "FHLT"}
-RATING_ARC = {"S": "Satisfactory", "C": "Some concern", "R": "At risk", "": ""}
-TITLES = {
-    "UNIV101": "Academic Communication", "ARTS101": "Ideas and Society", "ARTS102": "Inquiry and Argument",
-    "BUSN101": "Business Foundations", "ECON101": "Principles of Economics", "SCIE101": "Science in Practice",
-    "MATH101": "Mathematics for the Sciences", "ENGR101": "Engineering Fundamentals", "MATH151": "Engineering Mathematics 1",
-    "HLTH101": "Health and Society", "HLTH102": "The Human Body", "HIST110": "Making the Modern World",
-    "ENGL110": "Reading Literature", "POLS110": "Power and Politics", "PHIL110": "Reasoning and Ethics",
-    "SOCI110": "Introducing Sociology", "PSYC110": "Psychology: Mind and Behaviour", "FINE110": "Studio Foundations",
-    "ACCT110": "Accounting Essentials", "MKTG110": "Marketing Principles", "MGMT110": "Organisations and People",
-    "LAWS110": "Law and Society", "BIOL110": "Cells and Organisms", "CHEM110": "Chemical Principles",
-    "PHYS110": "Physics in Everyday Life", "STAT110": "Statistics and Data", "BMED110": "Foundations of Biomedicine",
-    "ENGR120": "Design and Making", "COMP110": "Programming 1", "NURS110": "Foundations of Nursing Practice",
-    "HSCI110": "Health Science Foundations", "SPEX110": "Exercise and Performance",
+TZ = ZoneInfo("America/Chicago")
+UTC = dt.timezone.utc
+TD = dt.timedelta
+GPS_EXPORTED = dt.datetime(2027, 1, 4, 15, 12, 44, tzinfo=dt.timezone.utc)
+
+CLOSE_TEXT = {"EXPIRED": "EXPIRATION OF SENTENCE", "DISCHARGED EARLY": "EARLY DISCHARGE",
+              "REVOKED": "REVOKED - COMMITTED TO MDOC", "DECEASED": "DECEASED"}
+NIBRS = {"13A": "AGGRAVATED ASSAULT", "13A-F": "AGGRAVATED ASSAULT", "13B": "SIMPLE ASSAULT", "13C": "INTIMIDATION",
+         "120": "ROBBERY", "09A": "MURDER/NONNEGLIGENT MANSLAUGHTER", "11A": "RAPE", "100": "KIDNAPPING/ABDUCTION",
+         "520": "WEAPON LAW VIOLATIONS"}
+OLD_TITLE = {}
+for _r in K.ROWS:
+    OLD_TITLE[_r[0]] = _r[2]
+
+
+def to_utc(t):
+    return t.replace(tzinfo=TZ).astimezone(UTC)
+
+
+SPELLED = {"ST": "STREET", "AVE": "AVENUE", "DR": "DRIVE", "RD": "ROAD", "LN": "LANE", "CT": "COURT", "PL": "PLACE",
+           "BLVD": "BOULEVARD"}
+
+
+NOTE_FORMS = {
+    "SUSPEND": (["client in custody", "in custody", "custody", "jail hold per officer", "booked", "officer request", ""],
+                [0.36, 0.15, 0.14, 0.07, 0.06, 0.05, 0.17]),
+    "RESUME": (["released", "client released", ""], [0.12, 0.06, 0.82]),
+    "VOID": (["duplicate entry", "entered twice", "dup", "duplicate", "keyed in error", ""], [0.42, 0.16, 0.1, 0.12, 0.08, 0.12]),
+    "ACCOUNT_TRANSFER": (["moved to receiving region account", "transfer of supervision", "region transfer", ""],
+                         [0.5, 0.2, 0.15, 0.15]),
+    "DEVICE_ISSUE": (["replacement unit", ""], [0.08, 0.92]),
 }
-WORDS = ["Methods", "Theory", "Practice", "Analysis", "Design", "Systems", "Studies", "Topics", "Research",
-         "Applications", "Perspectives", "Principles", "Processes", "Contexts", "Modelling", "Policy"]
-SUBJ = {"HIST": "History", "ENGL": "Literature", "POLS": "Politics", "PHIL": "Philosophy", "SOCI": "Sociology",
-        "PSYC": "Psychology", "FINE": "Fine Arts", "LING": "Linguistics", "ANTH": "Anthropology", "MUSC": "Music",
-        "ACCT": "Accounting", "MKTG": "Marketing", "MGMT": "Management", "ECON": "Economics", "FINC": "Finance",
-        "LAWS": "Law", "INFS": "Information Systems", "BIOL": "Biology", "CHEM": "Chemistry", "PHYS": "Physics",
-        "STAT": "Statistics", "MATH": "Mathematics", "GEOL": "Earth Science", "BMED": "Biomedical Science",
-        "ENVS": "Environmental Science", "ENGR": "Engineering", "COMP": "Computing", "ELEC": "Electrical Engineering",
-        "MECH": "Mechanical Engineering", "CIVL": "Civil Engineering", "SOFT": "Software Engineering",
-        "NURS": "Nursing", "HSCI": "Health Science", "SPEX": "Exercise Science", "PUBH": "Public Health",
-        "NUTR": "Nutrition"}
-BUILDINGS = {"ASS": ["HUM", "LIB", "AR"], "BUS": ["BL", "MC"], "SCI": ["SC", "LS"], "ENG": ["EN", "TB"],
-             "HLT": ["HS", "CL"]}
-DAYS = ["Mon", "Tue", "Wed", "Thu", "Fri"]
-STARTS = ["08:00", "09:00", "10:00", "11:00", "12:00", "13:00", "14:00", "15:00", "16:00", "17:00"]
+
+
+def gps_note(event, note, r):
+    """the note column as the officers and the vendor's desk fill it: several wordings of one reason, often none"""
+    if event == "DEVICE_RETURN":
+        return note if r.random() < 0.88 else ""
+    if event in NOTE_FORMS:
+        forms, p = NOTE_FORMS[event]
+        return forms[int(r.choice(len(forms), p=p))]
+    return note
+
+
+def retype(addr, r):
+    """a residence as another officer types it: the unit mark or the street type written the other way"""
+    toks = addr.split()
+    unit = next((k for k, t in enumerate(toks) if t in ("APT", "UNIT") or t.startswith("#")), None)
+    if unit is not None and r.random() < 0.6:
+        t = toks[unit]
+        if t.startswith("#"):
+            toks[unit:unit + 1] = ["APT", t[1:]]
+        else:
+            toks[unit:unit + 2] = ["#" + (toks[unit + 1] if unit + 1 < len(toks) else "")]
+        return " ".join(toks)
+    back = {v: k for k, v in SPELLED.items()}
+    for k in range(len(toks) - 1, 0, -1):
+        if toks[k] in SPELLED:
+            toks[k] = SPELLED[toks[k]]
+            return " ".join(toks)
+        if toks[k] in back:
+            toks[k] = back[toks[k]]
+            return " ".join(toks)
+    return addr
+
+
+def code_for(new, when, jail=None):
+    """the section a record carries: the former section before the recodification took effect, or in the Keswick jail's
+    charge table until its update of 1 April 2025"""
+    cut = C.RECODIFIED if jail != "K" else dt.date(2025, 4, 1)
+    if when < cut:
+        return K.NEW[new][0]
+    return new
+
+
+def title_for(code):
+    if code in K.NEW:
+        return K.NEW[code][2]
+    return OLD_TITLE[code]
+
+
+def proper(s):
+    out = []
+    for part in s.split("-"):
+        if part.startswith("O'"):
+            out.append("O'" + part[2:].capitalize())
+        else:
+            out.append(part.capitalize())
+    return "-".join(out)
 
 
 class Pack:
-    def __init__(self, w):
-        self.w = w
-        self.g = C.stream("pack")
-        self._class_codes()
-        self._timetable_rows()
+    def __init__(self, w, ev):
+        self.w, self.ev = w, ev
+        self.r = C.stream("layout")
 
-    # ------------------------------------------------------------------ identifiers and class numbers
-    def sid_of(self, s, year):
-        return str(s["arc"]) if year >= 2026 else str(s["legacy"])
-
-    def _class_codes(self):
-        """SIRIUS class numbers (five digits, unique in a term) and ARC class codes. A class's number says nothing
-        about the group it was allocated to: numbers run in the order Timetabling created the classes."""
-        g = C.stream("classcodes")
-        self.cnum = {}
-        for y, c in self.w.cohorts.items():
-            for p in sorted(c.nclasses):
-                n = c.nclasses[p]
-                perm = g.permutation(n) + 1
-                for k in range(1, n + 1):
-                    self.cnum[(y, p, k)] = int(perm[k - 1])
-        self.base = {}
-        for y in C.INTAKES:
-            papers = sorted(self.w.cohorts[y].nclasses)
-            start = 30000 + 1000 * (y - 2019) + int(g.integers(0, 200))
-            off = start
-            for p in papers:
-                self.base[(y, p)] = off
-                off += self.w.cohorts[y].nclasses[p] + int(g.integers(3, 12))
-
-    def sirius_class(self, y, p, k):
-        return self.base[(y, p)] + self.cnum[(y, p, k)]
-
-    def arc_class(self, p, k):
-        return "%s-26S1-%03d" % (p, self.cnum[(2026, p, k)])
-
-    # ------------------------------------------------------------------ first-year class extracts
-    def write_sirius_classes(self, path):
+    # ------------------------------------------------------------------ case management
+    def write_episodes(self, out):
+        w, ev, r = self.w, self.ev, self.r
         rows = []
-        for y in C.INTAKES[:-1]:
-            c = self.w.cohorts[y]
-            studs = [s for s in self.w.students if s["cohort"] == y]
-            for s in studs:
-                i = s["ci"]
-                for (p, k) in c.classes[i]:
-                    rows.append((s["legacy"], "%dS1" % y, p, self.sirius_class(y, p, k), "15.00", "E", y))
-        rows.sort(key=lambda r: (r[6], r[3], r[0]))
-        head = ["STUDENT_NO", "TERM", "PAPER", "CLASS_NBR", "POINTS", "CENSUS_STAT", "COHORT_YR"]
-        return C.write_csv(path, head, rows)
-
-    def write_arc_classes(self, path):
-        c = self.w.cohorts[2026]
-        rows = []
-        for s in self.w.students:
-            if s["cohort"] != 2026:
+        epid = r.choice(np.arange(10_000_000, 99_999_999), size=len(ev.episodes), replace=False)
+        self.episode_rows = []
+        for k, e in enumerate(sorted(ev.episodes, key=lambda x: (x["start"], x["p"]))):
+            if e["start"] > C.RECORDS_END or (e["end"] is not None and e["end"] < C.RECORDS_START):
                 continue
-            for (p, k) in c.classes[s["ci"]]:
-                rows.append((s["arc"], "2026-S1", p, self.arc_class(p, k), "15", "ENROLLED", "2026-10-01"))
-        rows.sort(key=lambda r: (r[3], r[0]))
-        head = ["arc_student_id", "study_period", "paper_code", "class_code", "credit_points", "enrolment_status",
-                "census_date"]
-        return C.write_csv(path, head, rows, crlf=False)
-
-    # ------------------------------------------------------------------ census history
-    def census_rows(self):
-        out = []
-        for s in self.w.students:
-            for y, (st, yos) in sorted(s["rows"].items()):
-                progs = [s.get("prog_before", s["prog"]) if y < 2026 else s["prog"]]
-                if s["prog2"]:
-                    progs.append(s["prog2"])
-                att = []
-                if y >= 2026 and s.get("stale_old"):
-                    att.append((1, s["stale_old"]))
-                    att.append((2, s["prog"]))
+            i = e["p"]
+            end = e["end"] if (e["end"] is not None and e["end"] <= C.RECORDS_END) else None
+            why = ""
+            if end is not None:
+                if e["why"] == "TRANSFERRED - COUNTY":
+                    why = "TRANSFER - %s COUNTY" % ("KESWICK" if e["county"] == 0 else "DARROW")
+                elif e["why"] == "TRANSFER OUT":
+                    why = "TRANSFER - REGION %d" % [1, 2, 3, 5, 6][int(r.integers(5))]
                 else:
-                    base = 2 if (y >= 2026 and "prog_before" in s) else 1
-                    for j, pr in enumerate(progs):
-                        att.append((base + j, pr))
-                pt = s["pt"]
-                for seq, pr in att:
-                    load = (0.5 if pt else 1.0) / (len(att) if s["prog2"] else 1)
-                    out.append((y, s, seq, pr, st, yos, pt, load))
-        return out
-
-    def write_census(self, path):
-        rows = []
-        for y, s, seq, pr, st, yos, pt, load in self.census_rows():
-            fac = C.PROG[pr][2]
-            if y < 2026:
-                rows.append((C.dmy(C.census_date(y)), self.sid_of(s, y), "SIRIUS", seq, pr, fac, yos,
-                             "PT" if pt else "FT", "%.3f" % load, st))
+                    why = CLOSE_TEXT.get(e["why"], "EXPIRATION OF SENTENCE")
+            county = "DARROW" if e["county"] == 0 else "KESWICK"
+            if e["county"] == 0 and w.city[i]:
+                office = "HALVERTON NORTH" if w.dist[i] in (1, 2) else "HALVERTON SOUTH"
+                rescity = "Halverton"
+            elif e["county"] == 0:
+                office = "DARROW RURAL"
+                rescity = ev.addr[i][4] if ev.addr[i][4] != "Halverton" else "Pell Junction"
             else:
-                rows.append((C.iso(C.census_date(y)), self.sid_of(s, y), "ARC", seq, pr, ARC_FAC[fac], yos,
-                             "Part-time" if pt else "Full-time", "%.3f" % load,
-                             {"EN": "Enrolled", "LV": "On leave"}[st]))
-        rows.sort(key=lambda r: (r[0][-4:] if "/" in r[0] else r[0][:4], r[1], r[3]))
-        head = ["CENSUS_DATE", "STUDENT_ID", "SOURCE", "ATTEMPT_SEQ", "PROGRAMME", "FACULTY", "YEAR_OF_STUDY",
-                "ATTENDANCE", "EFTS", "STATUS"]
-        return C.write_csv(path, head, rows)
+                office = "KESWICK"
+                rescity = ev.addr[i][4] if ev.addr[i][4] in NM.TOWNS_KESWICK else "Keswick"
+            lead = e["lead"]
+            conv = e["start"] if e["first_seg"] else e["start"]
+            code = code_for(lead, conv)
+            legacy = ev.oms.get(i, [""])[0] if e["start"] < C.MIGRATION else ""
+            pri = int(w.priors[i]) + sum(1 for x in ev.person_eps[i] if x["start"] < e["start"] and x["first_seg"]
+                                          and not x.get("concurrent") and x["why"] == "REVOKED")
+            eth = "H" if w.hispanic[i] else "N"
+            race = ["W", "B", "W", "A"][int(w.race[i])]
+            rows.append([int(ev.pid[i]), ev.sid[i], ev.last[i], ev.first[i], ev.middle[i], ev.suffix[i],
+                         ev.dob[i].isoformat(), "M" if w.male[i] else "F", race, eth, "E%d" % int(epid[k]), e["case"],
+                         "PAROLE" if e["parole"] else "PROBATION", county, office, rescity, e["start"].isoformat(),
+                         (e["expires"] - TD(days=1)).isoformat(), C.iso(end), why, code, title_for(code), pri, legacy])
+            self.episode_rows.append((e, rows[-1]))
+        head = ["cms_person_id", "sid", "last_name", "first_name", "middle_name", "name_suffix", "date_of_birth", "sex",
+                "race", "ethnicity", "episode_id", "court_case_number", "supervision_type", "county", "supervising_office",
+                "residence_city", "start_date", "expiration_date", "close_date", "close_reason", "lead_offense_statute",
+                "lead_offense_description", "prior_felony_convictions", "legacy_offender_number"]
+        return C.write_csv(os.path.join(out, C.F_EPIS), head, rows)
 
-    def write_crosswalk(self, path):
+    def write_crosswalk(self, out):
+        ev, r = self.ev, self.r
         rows = []
-        for s in self.w.students:
-            if s["legacy"] is not None and s["arc"] is not None:
-                rows.append((s["legacy"], s["arc"], "2026-06-01"))
-        rows.sort()
-        return C.write_csv(path, ["SIRIUS_STUDENT_NO", "ARC_ID", "MIGRATED"], rows)
-
-    # ------------------------------------------------------------------ admissions workbook
-    def write_admissions(self, path):
-        g = C.stream("admissions")
-        sheets = []
-        for y in C.INTAKES:
-            rows = []
-            c = self.w.cohorts[y]
-            for s in self.w.students:
-                if s["intake"] != y:
-                    continue
-                if s["basis"] == "FT1":
-                    i = s["ci"]
-                    acc = c.hall_name[i] if c.hall[i] else ("Family home" if g.random() < 0.6 else "Private")
-                    lc = "Y" if c.lc[i] else ""
-                    rows.append([self.sid_of(s, y), "First-time", c.prog[i], c.prog2[i] or "",
-                                 C.PROG[c.prog[i]][2], "PT" if c.pt[i] else "FT", c.dob[i], c.sex[i], c.region[i],
-                                 "Y" if c.fif[i] else "N", int(c.asc[i]), "Y" if c.hard[i] else "N", acc, lc,
-                                 c.accepted[i]])
-                elif s["basis"] == "TRC":
-                    dob = dt.date(y - int(g.integers(19, 34)), 1, 1) + dt.timedelta(days=int(g.integers(0, 365)))
-                    acc_d = dt.date(y - 1, 11, 1) + dt.timedelta(days=int(g.integers(0, 280)))
-                    rows.append([self.sid_of(s, y), "Credit transfer", s.get("prog_before", s["prog"]), "",
-                                 C.PROG[s.get("prog_before", s["prog"])][2], "PT" if s["pt"] else "FT", dob,
-                                 g.choice(["F", "M"]), g.choice(["Corriemoor", "Westray", "Halden", "Overseas"]),
-                                 "", "", "N", "Private", "", acc_d])
-            order = g.permutation(len(rows))
-            rows = [rows[j] for j in order]
-            rows.sort(key=lambda r: r[14])
-            score = "ASC Points" if y <= 2022 else "ASC Score"
-            head = ["Student No" if y < 2026 else "Student ID", "Entry Basis", "Programme", "Conjoint With", "Faculty",
-                    "Attendance", "Date of Birth", "Gender", "Home Region", "First in Family", score,
-                    "Hardship Grant", "Accommodation", "Living-Learning Community", "Offer Accepted"]
-            sheets.append(("%d intake" % y, head, rows))
-        XW.write_workbook(path, sheets, widths=[12, 15, 11, 13, 8, 10, 13, 7, 13, 9, 10, 9, 15, 10, 13])
-        return sum(len(s[2]) for s in sheets)
-
-    # ------------------------------------------------------------------ week-6 progress check
-    def write_progress(self, path):
-        rows = []
-        for y in C.INTAKES:
-            c = self.w.cohorts[y]
-            for s in self.w.students:
-                if s["cohort"] != y:
-                    continue
-                i = s["ci"]
-                for (p, k), r in zip(c.classes[i], c.ratings[i]):
-                    if y < 2026:
-                        rows.append((y, "W6", self.sid_of(s, y), p, self.sirius_class(y, p, k), r))
-                    else:
-                        rows.append((y, "Week 6", self.sid_of(s, y), p, self.arc_class(p, k), RATING_ARC[r]))
-        rows.sort(key=lambda r: (r[0], str(r[4]), r[2]))
-        return C.write_csv(path, ["YEAR", "CHECK", "STUDENT", "PAPER", "CLASS", "RATING"], rows)
-
-    # ------------------------------------------------------------------ programme catalogue and transfers
-    def write_catalogue(self, path):
-        rows = []
-        for code, title, fac, yrs, _, _ in C.PROGRAMMES:
-            rows.append(("Programme", code, title, ARC_FAC[fac], yrs, ""))
-        for a, b in C.CONJOINTS:
-            rows.append(("Conjoint", "%s/%s" % (a, b), "%s and %s" % (C.PROG[a][1], C.PROG[b][1]),
-                         ARC_FAC[C.PROG[a][2]], max(C.PROG[a][3], C.PROG[b][3]) + 1,
-                         "%s;%s" % (a, b)))
-        return C.write_csv(path, ["TYPE", "CODE", "TITLE", "OWNING_FACULTY", "YEARS_FT", "COMPONENTS"], rows)
-
-    def write_transfers(self, path):
-        rows = []
-        g = C.stream("transfer_rows")
-        for t in self.w.transfers:
-            s = t["s"]
-            d = t["approved"]
-            sid = str(s["arc"]) if d >= C.CUTOVER else str(s["legacy"])
-            rows.append((sid, t["old"], t["new"], C.iso(d), "2026 S1" if d.month >= 6 or d.year == 2026 else "2026 S1",
-                         g.choice(["Student request", "Student request", "Student request", "Academic advice"])))
-        return C.write_csv(path, ["STUDENT", "FROM_PROGRAMME", "TO_PROGRAMME", "APPROVED", "EFFECTIVE", "REASON"], rows)
-
-    # ------------------------------------------------------------------ Semester 1 2026 timetable
-    def _timetable_rows(self):
-        g = C.stream("tt_rows")
-        from faker import Faker
-        fk = Faker("en_IE")
-        fk.seed_instance(179)
-        fk2 = Faker("en_GB")
-        fk2.seed_instance(1790)
-        staff = {f: [] for f in C.FAC_CODES}
-        seen = set()
-        for f in C.FAC_CODES:
-            while len(staff[f]) < 140:
-                nm = (fk if g.random() < 0.6 else fk2).name()
-                nm = nm.replace("Dr. ", "").replace("Mr. ", "").replace("Mrs. ", "").replace("Ms. ", "").replace("Prof. ", "")
-                if nm in seen or len(nm.split()) != 2:
-                    continue
-                seen.add(nm)
-                staff[f].append(nm)
-        rooms = {}
-        for f in C.FAC_CODES:
-            rs = []
-            for b in BUILDINGS[f]:
-                for fl in range(1, 4):
-                    for n in range(1, 9):
-                        cap = int(g.choice([32, 32, 36, 40, 48, 60, 80, 120, 180, 240]))
-                        rs.append(("%s %d.%02d" % (b, fl, n + 10 * int(g.integers(0, 2))), cap))
-            rooms[f] = sorted(set(rs))
-        busy = set()                    # (room, day, start, weeks-half)
-        tbusy = set()                   # (teacher, day, start)
-        self.tt = []                    # one dict per meeting row
-        classes = self.w.classes
-        paired = {}
-        for a, b in self.w.pairs:
-            paired[(b["paper"], b["k"])] = (a["paper"], a["k"])
-        code_of = {}
-        for x in classes:
-            if x["level"] == 100:
-                code_of[(x["paper"], x["k"])] = self.arc_class(x["paper"], x["k"])
-            else:
-                code_of[(x["paper"], x["k"])] = "%s-26S1-%03d" % (x["paper"], x["k"])
-        meetings = {}
-
-        def place(x, nmeet, teacher, weeks="1-12", own=False):
-            f = x["fac"]
-            need = x["enrolled"] if (x.get("pair") is None or own) else x["enrolled"] + self._mate(x)["enrolled"]
-            if x.get("combined") and not own:
-                cand = [r for r in rooms[f] if need <= r[1] < 2 * need]
-            else:
-                cand = [r for r in rooms[f] if r[1] >= need] or [max(rooms[f], key=lambda r: r[1])]
-            out = []
-            days = list(g.permutation(DAYS))
-            for d in days:
-                if len(out) == nmeet:
-                    break
-                for _ in range(40):
-                    st = STARTS[int(g.integers(len(STARTS)))]
-                    r = cand[int(g.integers(len(cand)))]
-                    if (r[0], d, st) in busy or (teacher, d, st) in tbusy:
-                        continue
-                    busy.add((r[0], d, st))
-                    tbusy.add((teacher, d, st))
-                    out.append((d, st, r))
-                    break
-            return out
-        self._by_key = {(x["paper"], x["k"]): x for x in classes}
-        for x in sorted(classes, key=lambda x: (x["fac"], x["level"], x["paper"], x["k"])):
-            key = (x["paper"], x["k"])
-            if key in paired:
-                continue                      # placed with its 300-level mate
-            teacher = staff[x["fac"]][int(g.integers(len(staff[x["fac"]])))]
-            if x.get("partial"):
-                # papers carried from SIRIUS that share the lecture only: each keeps its own coordinator and workshop
-                gp = C.stream("tt_partial_" + key[0])
-                t2 = staff[x["fac"]][int(gp.integers(len(staff[x["fac"]])))]
-                while t2 == teacher:
-                    t2 = staff[x["fac"]][int(gp.integers(len(staff[x["fac"]])))]
-                shared = place(x, 1, teacher)
-                for (d, st, r) in shared:
-                    tbusy.add((t2, d, st))
-                own_a = place(x, 1, teacher, own=True)
-                own_b = place(self._mate(x), 1, t2, own=True)
-                meetings[key] = (teacher, shared + own_a)
-                meetings[x["pair"]] = (t2, shared + own_b)
+        rn = C.stream("xwalk_notes")
+        merged = ["MERGED DUPLICATE", "MERGED DUPLICATE - SAME SID", "DUPLICATE OMS RECORD MERGED", "MERGED INTO SURVIVING RECORD"]
+        kept = ["NAME CORRECTED", "DOB CORRECTED", "MANUAL MATCH", "SID ADDED AT CONVERSION"]
+        shown = set(e["p"] for e, _ in self.episode_rows)
+        for i, nums in sorted(self.ev.oms.items(), key=lambda kv: kv[1][0]):
+            if i not in shown:
                 continue
-            nmeet = 2 if x["level"] == 100 else int(g.choice([1, 2, 2]))
-            mt = place(x, nmeet, teacher)
-            meetings[key] = (teacher, mt)
-            if x.get("pair") is not None:
-                # an ARC Scheduling combination carries one teacher of record; classes carried from SIRIUS keep each
-                # paper's own coordinator
-                t2 = staff[x["fac"]][int(g.integers(len(staff[x["fac"]])))]
-                while t2 == teacher:
-                    t2 = staff[x["fac"]][int(g.integers(len(staff[x["fac"]])))]
-                meetings[x["pair"]] = (teacher if x.get("combined") else t2, mt)
-        # rows
-        g2 = C.stream("tt_hazards")
-        cancel = set()
-        for x in classes:
-            if x["level"] >= 200 and x["enrolled"] <= 8 and x.get("pair") is None and g2.random() < 0.35:
-                cancel.add((x["paper"], x["k"]))
-        for x in sorted(classes, key=lambda x: (x["paper"], x["k"])):
-            key = (x["paper"], x["k"])
-            teacher, mt = meetings[key]
-            title = TITLES.get(x["paper"]) or "%s %s" % (SUBJ[x["paper"][:4]], WORDS[(int(x["paper"][4:]) * 7) % len(WORDS)])
-            status = "Cancelled" if key in cancel else "Active"
-            enrolled = 0 if key in cancel else x["enrolled"]
-            if x.get("combined"):
-                # ARC Scheduling writes a combination's census enrolment on each of its classes
-                enrolled = x["enrolled"] + self._mate(x)["enrolled"]
-            if key in cancel:
-                x["cancelled"] = True
-            team = x["level"] >= 200 and x.get("pair") is None and g2.random() < 0.05 and key not in cancel
-            moved = x["level"] >= 200 and x.get("pair") is None and g2.random() < 0.04 and key not in cancel
-            others = [rr for rr in rooms[x["fac"]] if rr[1] >= x["enrolled"]]
-            moved = moved and len(others) > 1
-            for (d, st, r) in mt:
-                end = "%02d:00" % (int(st[:2]) + (2 if x["level"] >= 200 and len(mt) == 1 else 1))
-                base = dict(code=code_of[key], paper=x["paper"], title=title, fac=ARC_FAC[x["fac"]],
-                            level=x["level"], day=d, start=st, end=end, room=r[0], cap=r[1], teacher=teacher,
-                            enrolled=enrolled, status=status, weeks="1-12")
-                if moved:
-                    other = [rr for rr in rooms[x["fac"]] if rr[1] >= x["enrolled"] and rr[0] != r[0]
-                             and (rr[0], d, st) not in busy]
-                    r2 = other[int(g2.integers(len(other)))]
-                    busy.add((r2[0], d, st))
-                    self.tt.append(dict(base, weeks="1-4"))
-                    self.tt.append(dict(base, weeks="5-12", room=r2[0], cap=r2[1]))
+            for j, n in enumerate(nums):
+                d = dt.date(2022, 6, 11) if r.random() < 0.6 else dt.date(2022, 6, 12)
+                if j > 0:
+                    note = merged[int(rn.choice(4, p=[0.55, 0.2, 0.15, 0.1]))]
                 else:
-                    self.tt.append(base)
-                if team:
-                    t2 = staff[x["fac"]][int(g2.integers(len(staff[x["fac"]])))]
-                    self.tt.append(dict(self.tt[-1], teacher=t2))
-        # half-semester papers sharing a slot, a teacher and a room (weeks 1-6 and 7-12): two groups
-        self.halves = []
-        for f in C.FAC_CODES:
-            for j in range(2):
-                stem = [k for k, v in SUBJ.items() if k in [p[:4] for p in self._papers_of(f)]][j % 3]
-                teacher = staff[f][int(g2.integers(len(staff[f])))]
-                lvl = 200 if j == 0 else 300
-                taken = set(r["paper"] for r in self.tt) | set(x["paper"] for x in self.w.classes)
-                n0 = 50
-                while True:
-                    pa, pb = "%s%d%02d" % (stem, lvl // 100, n0), "%s%d%02d" % (stem, lvl // 100, n0 + 1)
-                    if pa not in taken and pb not in taken:
-                        break
-                    n0 += 2
-                r = [rr for rr in rooms[f] if rr[1] >= 40][int(g2.integers(4))]
-                while True:
-                    d, st = DAYS[int(g2.integers(5))], STARTS[int(g2.integers(10))]
-                    if (r[0], d, st) not in busy and (teacher, d, st) not in tbusy:
-                        busy.add((r[0], d, st))
-                        tbusy.add((teacher, d, st))
-                        break
-                for pp, wk in ((pa, "1-6"), (pb, "7-12")):
-                    n = int(g2.integers(16, 31))
-                    self.tt.append(dict(code="%s-26S1-001" % pp, paper=pp, title="%s %s" % (SUBJ[stem], WORDS[(j * 5 + len(wk)) % len(WORDS)]),
-                                        fac=ARC_FAC[f], level=lvl, day=d, start=st, end="%02d:00" % (int(st[:2]) + 2),
-                                        room=r[0], cap=r[1], teacher=teacher, enrolled=n, status="Active", weeks=wk))
-                    self.halves.append(dict(paper=pp, k=1, fac=f, level=lvl, enrolled=n, pair=None))
-        self.tt.sort(key=lambda r: (r["fac"], r["paper"], r["code"], DAYS.index(r["day"]), r["start"], r["weeks"]))
+                    u = rn.random()
+                    note = kept[int(rn.integers(4))] if u < 0.09 else ""
+                rows.append([n, int(ev.pid[i]), d.isoformat(), note])
+        rows.sort(key=lambda x: x[0])
+        return C.write_csv(os.path.join(out, C.F_XWALK), ["legacy_offender_number", "cms_person_id", "converted_on",
+                                                           "conversion_note"], rows)
 
-    # ------------------------------------------------------------------ class enrolments, 200 level and above
-    def class_lists(self):
-        """Each active class's students at the census as ARC holds them (its own students; a combination's figure in
-        the timetable is the two classes' together). Most students on approved leave and those who left before the
-        census had their class places dropped; some still hold them, which ARC Scheduling's figure counts. Those places
-        sit where they cannot carry a group across 30, except two classes a faculty and level just over 30, which only
-        both kinds of place together bring to 30."""
-        if getattr(self, "_lists", None) is not None:
-            return self._lists
-        g = C.stream("class_lists")
-        code = lambda x: "%s-26S1-%03d" % (x["paper"], x["k"])
-        recs = [x for x in self.w.classes if x["level"] >= 200 and not x.get("cancelled")] + list(self.halves)
-        byc = {code(x): x for x in recs}
-        # the groups as the conventions read them: each distinct set of classes taught together in one meeting
-        sets = {}
-        for r in self.tt:
-            if r["status"] == "Active" and r["level"] >= 200:
-                sets.setdefault((r["room"], r["day"], r["start"], r["weeks"]), set()).add(r["code"])
-        groups = sorted({frozenset(v) for v in sets.values()}, key=lambda s: sorted(s))
-        of = {}
-        for gi, s in enumerate(groups):
-            for c in s:
-                of.setdefault(c, []).append(gi)
-        size = [sum(byc[c]["enrolled"] for c in s) for s in groups]
-        stale = [0] * len(groups)
-        lists = {c: [] for c in byc}
-        # pools by faculty and year of study at the 2026 census
-        en, lv, wd = {}, {}, {}
-        for s in self.w.students:
-            r = s["rows"].get(2026)
-            if r and r[1] >= 2:
-                (en if r[0] == "EN" else lv).setdefault((s["fac"], min(r[1], 4)), []).append(s["arc"])
-            r5 = s["rows"].get(2025)
-            if not r and r5 and r5[0] == "EN" and r5[1] in (1, 2) and s.get("arc"):
-                wd.setdefault((s["fac"], r5[1] + 1), []).append(s["arc"])
-        for k in en:
-            en[k].sort()
-        years = {200: (2, 3), 300: (3, 4), 400: (4, 3)}
-
-        def ok_to_add(c, sid):
-            if byc[c].get("flip") or sid in lists[c]:
-                return False
-            for gi in of[c]:
-                if any(sid in lists[o] for o in groups[gi] if o != c):
-                    return False
-                if size[gi] > 30 and size[gi] - stale[gi] - 1 <= 30:
-                    return False
-            return True
-
-        def add(c, sid, is_stale):
-            lists[c].append(sid)
-            if is_stale:
-                for gi in of[c]:
-                    stale[gi] += 1
-        for f in C.FAC_CODES:
-            mine = sorted([c for c in byc if byc[c]["fac"] == f], key=lambda c: c)
-            # the flips first: a + b places, neither kind alone enough
-            plan = {32: [(1, 1)], 33: [(2, 1), (1, 2)], 34: [(2, 2), (3, 1), (1, 3)]}
-            for c in [c for c in mine if byc[c].get("flip")]:
-                n = byc[c]["enrolled"]
-                a, b = plan[n][int(g.integers(len(plan[n])))]
-                y0 = years[byc[c]["level"]][0]
-                for pool, cnt in ((lv, a), (wd, b)):
-                    cand = sorted(set(pool.get((f, y0), []) + pool.get((f, years[byc[c]["level"]][1]), [])))
-                    for j in g.permutation(len(cand)):
-                        if cnt == 0:
-                            break
-                        if cand[j] not in lists[c]:
-                            add(c, cand[j], True)
-                            cnt -= 1
-            # the other stale places: some students on leave and some who left still hold two or three classes
-            stale_ids = []
-            for y in (2, 3, 4):
-                ids = sorted(lv.get((f, y), []))
-                stale_ids += [(sid, y) for i, sid in enumerate(ids) if g.random() < 0.6]
-                ids = sorted(wd.get((f, y), []))
-                stale_ids += [(sid, y) for sid in ids if g.random() < 0.08]
-            for sid, y in stale_ids:
-                lvls = [L for L in (200, 300, 400) if y in years[L]]
-                cand = [c for c in mine if byc[c]["level"] in lvls and len(lists[c]) < byc[c]["enrolled"]]
-                want = int(g.integers(2, 4))
-                for j in g.permutation(len(cand)):
-                    if want == 0:
-                        break
-                    if ok_to_add(cand[j], sid):
-                        add(cand[j], sid, True)
-                        want -= 1
-            # everyone else's places: enrolled students of the faculty, the least loaded first
-            load = {}
-            for c in mine:
-                lvl = byc[c]["level"]
-                need = byc[c]["enrolled"] - len(lists[c])
-                y1, y2 = years[lvl]
-                n1 = int(g.binomial(need, 0.8))
-                for y, cnt in ((y1, n1), (y2, need - n1)):
-                    pool = en.get((f, y), [])
-                    keyed = sorted(pool, key=lambda sid: (load.get(sid, 0), g.random()))
-                    for sid in keyed:
-                        if cnt == 0:
-                            break
-                        if sid in lists[c] or any(sid in lists[o] for gi in of[c] for o in groups[gi] if o != c):
-                            continue
-                        add(c, sid, False)
-                        load[sid] = load.get(sid, 0) + 1
-                        cnt -= 1
-                    if cnt:
-                        raise RuntimeError("pool short for %s year %d" % (c, y))
-        for c in lists:
-            assert len(lists[c]) == byc[c]["enrolled"], c
-        self._lists = lists
-        return lists
-
-    def write_class_enrolments(self, path):
-        lists = self.class_lists()
-        paper = {}
-        for r in self.tt:
-            paper[r["code"]] = (r["paper"], r["level"])
+    def write_assessments(self, out):
+        ev, r = self.ev, self.r
         rows = []
-        for c, ids in lists.items():
-            p, lvl = paper[c]
-            for sid in ids:
-                rows.append((sid, "2026-S1", p, c, "30" if lvl == 400 else "15", "ENROLLED", "2026-10-01"))
-        rows.sort(key=lambda r: (r[3], r[0]))
-        head = ["arc_student_id", "study_period", "paper_code", "class_code", "credit_points", "enrolment_status",
-                "census_date"]
-        return C.write_csv(path, head, rows, crlf=False)
+        ids = r.choice(np.arange(3_000_000, 8_999_999), size=len(ev.assessments), replace=False)
+        assessors = ["R4-%03d" % x for x in r.choice(np.arange(100, 999), size=64, replace=False)]
+        for k, a in enumerate(sorted(ev.assessments, key=lambda x: (x["date"], x["p"]))):
+            if a["date"] > C.RECORDS_END:
+                continue
+            i = a["p"]
+            if a["date"] < C.MIGRATION:
+                nums = ev.oms.get(i)
+                if not nums:
+                    continue
+                ref = nums[-1] if (len(nums) > 1 and r.random() < 0.5) else nums[0]
+            else:
+                ref = str(int(ev.pid[i]))
+            tot = a["total"]
+            if a["v2"]:
+                lvl = "LOW" if tot <= 12 else ("MODERATE" if tot <= 20 else ("HIGH" if tot <= 28 else "VERY HIGH"))
+                inst = "MRAS-CS 2.0"
+            else:
+                lvl = "LOW" if tot <= 10 else ("MODERATE" if tot <= 18 else ("HIGH" if tot <= 26 else "VERY HIGH"))
+                inst = "MRAS-CS 1.3"
+            ov = ""
+            if r.random() < 0.015:
+                order = ["LOW", "MODERATE", "HIGH", "VERY HIGH"]
+                j = order.index(lvl)
+                ov = order[min(3, j + 1)] if r.random() < 0.7 else order[max(0, j - 1)]
+                if ov == lvl:
+                    ov = ""
+            rows.append(["A%d" % int(ids[k]), ref, a["date"].isoformat(), inst] + a["parts"] + [tot, lvl, ov,
+                                                                                                 assessors[int(r.integers(64))]])
+        head = ["assessment_id", "offender_ref", "assessment_date", "instrument", "criminal_history",
+                "education_employment", "family_social", "neighborhood", "substance_use", "peer_associations",
+                "criminal_attitudes", "total_score", "risk_level", "override_level", "assessor"]
+        return C.write_csv(os.path.join(out, C.F_ASSESS), head, rows)
 
-    def _mate(self, x):
-        return self._by_key[x["pair"]]
+    # ------------------------------------------------------------------ jails
+    def _in_window(self, b):
+        return C.RECORDS_START <= b["booked"].date() <= C.RECORDS_END
 
-    def _papers_of(self, f):
-        return sorted(set(x["paper"] for x in self.w.classes if x["fac"] == f and x["level"] >= 200))
+    def write_darrow(self, out):
+        ev, r = self.ev, self.r
+        rows = []
+        for b in ev.bookings:
+            if b["jail"] != "D" or not self._in_window(b):
+                continue
+            i = b["p"]
+            when = b["booked"].date()
+            case = b["case"]
+            if isinstance(case, tuple):
+                case = "%02d-%06d" % (case[1], case[2])
+            out_by_extract = b["release"] is not None and b["release"].date() <= C.RECORDS_END
+            rel = b["release"].strftime("%Y-%m-%d %H:%M") if out_by_extract else ""
+            typ = {"NEW ARREST": "NEW ARREST", "WARRANT": "WARRANT - FTA", "RETURN FROM HOSPITAL": "RETURN FROM HOSPITAL",
+                   "PROBATION/PAROLE VIOLATION": "SUPERVISION VIOLATION HOLD"}[b["type"]]
+            base = [b["bid"], b["booked"].strftime("%Y-%m-%d %H:%M"), rel, b["release_reason"] if out_by_extract else "", ev.sid[i],
+                    ev.last[i].upper(), ev.first[i].upper(), C.mdy(ev.dob[i]), typ, b["agency"], case]
+            if b["type"] == "PROBATION/PAROLE VIOLATION" or not b["charges"]:
+                rows.append(base + [1, "", "PROBATION/PAROLE VIOLATION", ""])
+                continue
+            for j, c in enumerate(b["charges"], 1):
+                code = code_for(c, when, "D")
+                rows.append(base + [j, code, title_for(code).upper(), K.LEVEL[c]])
+        head = ["booking_no", "booked", "released", "release_reason", "sid", "last_name", "first_name", "dob",
+                "booking_type", "arresting_agency", "agency_case_no", "charge_seq", "statute", "charge_description",
+                "charge_level"]
+        return C.write_csv(os.path.join(out, C.F_DARROW), head, rows)
 
-    def write_timetable(self, path):
-        head = ["Class Code", "Paper", "Paper Title", "Owning Faculty", "Level", "Day", "Start", "End", "Teaching Weeks",
-                "Room", "Room Capacity", "Teacher", "Enrolled at Census", "Class Status"]
-        rows = [[r["code"], r["paper"], r["title"], r["fac"], r["level"], r["day"], r["start"], r["end"], r["weeks"],
-                 r["room"], r["cap"], r["teacher"], r["enrolled"], r["status"]] for r in self.tt]
-        XW.write_workbook(path, [("S1 2026 classes", head, rows)],
-                          widths=[20, 9, 34, 9, 6, 6, 7, 7, 9, 10, 9, 22, 11, 10])
+    def write_keswick(self, out):
+        ev = self.ev
+        rows = []
+        for b in ev.bookings:
+            if b["jail"] != "K" or not self._in_window(b):
+                continue
+            i = b["p"]
+            when = b["booked"].date()
+            case = b["case"]
+            if isinstance(case, tuple):
+                case = "HPD%02d%06d" % (case[1], case[2])
+            code = {"NEW ARREST": "NA", "WARRANT": "WT", "PROBATION/PAROLE VIOLATION": "PV", "RETURN FROM HOSPITAL": "RH"}[b["type"]]
+            if b["type"] == "PROBATION/PAROLE VIOLATION" or not b["charges"]:
+                ch = "PROB/PAROLE VIOLATION"
+                lvl = ""
+            else:
+                parts = []
+                for c in b["charges"]:
+                    cc = code_for(c, when, "K")
+                    parts.append("%s %s" % (cc, title_for(cc)))
+                ch = " | ".join(parts)
+                lv = [K.LEVEL[c] for c in b["charges"]]
+                lvl = sorted(lv, key=lambda x: (x[0] != "F", int(x[1:])))[0]
+            booked = to_utc(b["booked"]).replace(tzinfo=None)
+            out_by_extract = b["release"] is not None and b["release"].date() <= C.RECORDS_END
+            rel = to_utc(b["release"]).replace(tzinfo=None) if out_by_extract else None
+            nm = ev.last[i].upper() + ", " + ev.first[i].upper() + ((" " + ev.middle[i][0].upper()) if ev.middle[i] else "")
+            rows.append([b["bid"], booked, rel, b["release_reason"].title() if (b["release_reason"] and out_by_extract) else None, ev.sid[i],
+                         nm, ev.dob[i], code, b["agency"], case, ch, lvl])
+        head = ["Booking Number", "Booked (UTC)", "Released (UTC)", "Release Type", "SID", "Inmate Name", "DOB",
+                "Reason", "Agency", "Agency Case", "Charges", "Top Level"]
+        XW.write_table(os.path.join(out, C.F_KESWICK), "Bookings", head, rows,
+                       widths=[13, 18, 18, 18, 12, 28, 11, 7, 7, 14, 70, 9], creator="Keswick County Sheriff's Office",
+                       datetime_cols=(1, 2))
         return len(rows)
 
-    # ------------------------------------------------------------------ distractors
-    def write_halls(self, path):
-        g = C.stream("halls")
-        rows = []
-        beds = {"Ferrier Hall": 420, "Ashby House": 310, "Linton Court": 520, "Stanmore Hall": 380, "Wexcombe Hall": 290}
-        for y in C.INTAKES:
-            start = dt.date(y, 8, 24)
-            for wk in range(1, 41):
-                d = start + dt.timedelta(days=7 * (wk - 1))
-                if d > dt.date(2026, 10, 12):
-                    break
-                for h, b in beds.items():
-                    occ = b * (0.97 - 0.004 * max(0, wk - 14) - (0.05 if 15 <= wk <= 19 else 0)) + g.normal(0, 4)
-                    rows.append((y, wk, C.iso(d), h, b, int(min(b, round(occ)))))
-        return C.write_csv(path, ["ACADEMIC_YEAR", "WEEK", "WEEK_BEGINNING", "HALL", "BEDS", "OCCUPIED"], rows)
+    # ------------------------------------------------------------------ Halverton police
+    def victim_name(self, i, r):
+        ev = self.ev
+        last = ev.last[i].upper()
+        if "-" in last and r.random() < 0.5:
+            last = last.replace("-", " ")
+        if last.startswith("O'") and r.random() < 0.5:
+            last = last.replace("'", "")
+        if ev.suffix[i] and r.random() < 0.7:
+            last = last + " " + ev.suffix[i]
+        first = ev.first[i].upper()
+        if r.random() < 0.015 and ev.first[i] in NM.NICKNAMES:
+            first = NM.NICKNAMES[ev.first[i]].upper()
+        mid = ev.middle[i].upper() if ev.middle[i] else ""
+        u = r.random()
+        if mid and len(mid) > 1:
+            mid = mid if u < 0.40 else (mid[0] if u < 0.75 else "")
+        elif mid and u < 0.3:
+            mid = ""
+        return last + ", " + first + ((" " + mid) if mid else "")
 
-    def write_school_leavers(self, path):
-        g = C.stream("nsl")
-        regs = ["Corriemoor", "Westray", "Halden", "Northmoor", "Kelso Bay", "Upper Tarn", "Ruthven"]
-        base = {"Corriemoor": 9800, "Westray": 4100, "Halden": 3600, "Northmoor": 3300, "Kelso Bay": 2700,
-                "Upper Tarn": 2400, "Ruthven": 2100}
+    def write_hpd(self, out):
+        ev, w = self.ev, self.w
+        r = C.stream("hpd_layout")
+        rt = C.stream("hpd_reentry")
         rows = []
-        for y in range(2019, 2027):
-            for r in regs:
-                n = int(base[r] * (1 + 0.006 * (y - 2019)) + g.normal(0, 60))
-                ue = int(n * (0.47 + 0.004 * (y - 2019) + g.normal(0, 0.01)))
-                rows.append((y, r, n, ue, int(ue * (0.52 + g.normal(0, 0.02)))))
-        return C.write_csv(path, ["YEAR", "REGION", "SCHOOL_LEAVERS", "WITH_UNIVERSITY_ENTRANCE",
-                                  "ENROLLED_IN_DEGREE_NEXT_YEAR"], rows)
+        self.hpd_sup_rows = []
+        for inc in ev.incidents:
+            yy, n = inc["number"]
+            num = "HPD-%02d-%06d" % (yy, n)
+            offs = [("13A" if o == "13A-F" else o) for o in inc["offenses"]]
+            vrows = []
+            seq = 0
+            home = {}
+            for v in inc["victims"]:
+                seq += 1
+                if v["kind"] == "society":
+                    vrows.append([seq, "S", "SOCIETY/PUBLIC", "", "", "", "", "", "", "", ""])
+                    continue
+                if v["kind"] == "business":
+                    vrows.append([seq, "B", v["name"], "", "", "", "", "", "", "", ""])
+                    continue
+                if v["kind"] == "sup":
+                    i = v["p"]
+                    d = inc["occurred"].date()
+                    age = (d - ev.dob[i]).days // 365
+                    name = self.victim_name(i, r)
+                    dob = C.mdy(ev.dob[i]) if r.random() >= 0.02 else ""
+                    num_, st, t, unit = ev.addr[i][:4]
+                    addr = "%d %s %s%s" % (num_, st.upper(), t.upper(), (" " + unit) if unit else "")
+                    sex = "M" if w.male[i] else "F"
+                    race = ["W", "B", "W", "A"][int(w.race[i])]
+                    eth = "H" if w.hispanic[i] else "N"
+                    city = "HALVERTON"
+                    self.hpd_sup_rows.append((num, i, name, dob))
+                else:
+                    age = v["age"]
+                    if age < 18:
+                        vrows.append([seq, "I", "JUVENILE", "", age, "M" if v["male"] else "F", v["race"],
+                                      "H" if v["hisp"] else "N", self._injury(offs[0], r), "", ""])
+                        continue
+                    mid = v["middle"].upper()
+                    if mid and len(mid) > 1 and r.random() < 0.4:
+                        mid = mid[0]
+                    last = v["last"].upper() + ((" " + v["suffix"]) if v["suffix"] else "")
+                    name = last + ", " + v["first"].upper() + ((" " + mid) if mid else "")
+                    dob = C.mdy(v["dob"]) if r.random() >= 0.03 else ""
+                    num_, st, t, unit = v["addr"]
+                    if v.get("household_of") is not None:
+                        h = inc["victims"][v["household_of"]]
+                        if h.get("kind") == "gen":
+                            num_, st, t, unit = h["addr"]
+                            u2 = r.random()
+                            if unit and u2 < 0.45:
+                                unit = unit.replace("APT ", "#").replace("UNIT ", "#")
+                            elif u2 < 0.75:
+                                t = {"ST": "STREET", "AVE": "AVENUE", "DR": "DRIVE", "RD": "ROAD", "LN": "LANE",
+                                     "CT": "COURT", "PL": "PLACE", "BLVD": "BOULEVARD"}.get(t.upper(), t)
+                            v["city"] = h["city"]
+                    addr = "%d %s %s%s" % (num_, st.upper(), t.upper(), (" " + unit) if unit else "") if v["city"] else ""
+                    sex = "M" if v["male"] else "F"
+                    race = v["race"]
+                    eth = "H" if v["hisp"] else "N"
+                    city = v["city"]
+                vrows.append([seq, "I", name, dob, age, sex, race, eth, self._injury(offs[0], r), addr, city])
+            reps = [(0, inc["report"])]
+            if inc["supplement"]:
+                d2 = inc["report"] + TD(days=int(r.integers(3, 41)))
+                if d2 <= C.RECORDS_END:
+                    reps.append((1, d2))
+            added = set(k + 1 for k, v in enumerate(inc["victims"]) if v.get("added"))
+            for sup, rd in reps:
+                if sup:
+                    # the supplement's officer re-enters each victim's residence in the RMS form
+                    vrows = [vr[:9] + [retype(vr[9], rt) if (vr[1] == "I" and vr[9] and rt.random() < 0.7) else vr[9]] + vr[10:]
+                             for vr in vrows]
+                for o in offs:
+                    for vr in vrows:
+                        if sup == 0 and vr[0] in added:
+                            continue
+                        rows.append([num, sup, C.mdy(rd), C.mdy(inc["occurred"].date()), inc["occurred"].strftime("%H:%M"),
+                                     NM.DISTRICT_NAMES[inc["dist"]].upper(), "%d%s%d" % (inc["dist"], "NECSW"[inc["dist"] - 1], inc["beat"]),
+                                     o, NIBRS[o], inc["weapon"] if o != "520" else "FIREARM"] + vr)
+        head = ["incident_number", "supplement_no", "report_date", "occurred_date", "occurred_time", "district", "beat",
+                "nibrs_code", "offense", "weapon", "victim_seq", "victim_type", "victim_name", "victim_dob", "victim_age",
+                "victim_sex", "victim_race", "victim_ethnicity", "injury", "victim_residence", "victim_res_city"]
+        return C.write_csv(os.path.join(out, C.F_HPD), head, rows)
+
+    def _injury(self, off, r):
+        if off == "09A":
+            return "DECEASED"
+        if off in ("13A",):
+            return "SERIOUS" if r.random() < 0.4 else ("MINOR" if r.random() < 0.85 else "NONE")
+        if off in ("13B", "11A", "100"):
+            return "MINOR" if r.random() < 0.6 else "NONE"
+        if off == "120":
+            return "NONE" if r.random() < 0.6 else ("MINOR" if r.random() < 0.9 else "SERIOUS")
+        return "NONE"
+
+    # ------------------------------------------------------------------ Belvantis
+    def write_gps(self, out):
+        ev = self.ev
+        r = C.stream("gps_layout")
+        events = []
+        for en in ev.enrolments:
+            last = None
+            for x in en["events"]:
+                last = x["d"]
+            if last is not None and last < C.GPS_LOG_START:
+                continue
+            i = en["p"]
+            nm = "%s, %s" % (ev.last[i], ev.first[i])
+            cms = str(int(ev.pid[i]))
+            ref = cms
+            plan = [(cms, x) for x in en["events"]]
+            if i in ev.oms and r.random() < 0.60:
+                ref = ev.oms[i][0]
+                plan = [(ref, x) for x in en["events"]]
+                s, e = en["events"][0]["d"], min(en["end"], C.RECORDS_END)
+                if (e - s).days > 75 and r.random() < 0.85 and s < dt.date(2026, 10, 1):
+                    # re-registered under the case-management id at a device service; the vendor closes a record
+                    # with no activity for six months at its next half-year batch, so the legacy record stays open,
+                    # still showing the device it last held, until then or until the enrolment ends
+                    X = s + TD(days=int(r.integers(20, (e - s).days - 40)))
+                    held, s0 = [], None
+                    for x in en["events"]:
+                        if x["t"] == "SUSPEND" and s0 is None:
+                            s0 = x["d"]
+                        elif x["t"] == "RESUME" and s0 is not None:
+                            held.append((s0, x["d"]))
+                            s0 = None
+                    if s0 is not None:
+                        held.append((s0, e))
+                    for a, b in held:
+                        if a <= X <= b:
+                            X = b + TD(days=1)
+                    if X < e - TD(days=20):
+                        idle = X + TD(days=183)
+                        qe = dt.date(idle.year, 6, 30) if idle.month <= 6 else dt.date(idle.year, 12, 31)
+                        newdev = "BV%07d" % int(r.integers(1_000_000, 9_999_999))
+                        cur = None
+                        plan = []
+                        for x in en["events"]:
+                            if x["d"] < X:
+                                if x["t"] in ("ENROL", "DEVICE_ISSUE"):
+                                    cur = x["dev"]
+                                plan.append((ref, x))
+                            else:
+                                y = dict(x)
+                                if y.get("dev") == cur:
+                                    y["dev"] = newdev
+                                plan.append((cms, y))
+                        plan.append((cms, dict(t="ENROL", d=X, dev=newdev)))
+                        plan.append((ref, dict(t="END", d=min(en["end"], qe), dev=cur)))
+                        plan.sort(key=lambda t: (t[1]["d"], ["ENROL", "DEVICE_RETURN", "DEVICE_ISSUE", "SUSPEND", "RESUME",
+                                                             "END", "ACCOUNT_TRANSFER"].index(t[1]["t"])))
+            for ref_x, x in plan:
+                if x["d"] > C.RECORDS_END:
+                    continue
+                late = 0
+                if x["t"] == "END" and r.random() < 0.15:
+                    late = int(r.integers(5, 26))
+                elif r.random() < 0.25:
+                    late = int(r.integers(1, 3))
+                ld = x["d"] + TD(days=late)
+                hh = int(r.integers(8, 18))
+                lt = dt.datetime(ld.year, ld.month, ld.day, hh, int(r.integers(0, 60)), int(r.integers(0, 60)))
+                lu = to_utc(lt)
+                e = dict(logged=lu, effective=x["d"], ref=ref_x, name=nm, serial=x["dev"], event=x["t"],
+                         note=x.get("note", ""))
+                events.append(e)
+                if x["t"] in ("ENROL", "DEVICE_ISSUE") and r.random() < 0.02:
+                    dup = dict(e)
+                    dup["logged"] = lu + TD(minutes=int(r.integers(2, 90)))
+                    dup["dup"] = True
+                    events.append(dup)
+        events.sort(key=lambda e: e["logged"])
+        ids = r.choice(np.arange(100_000_000, 999_999_999), size=len(events) + 200, replace=False)
+        k = 0
+        out_ev = []
+        voids = []
+        for e in events:
+            e["id"] = "BVE%d" % int(ids[k])
+            k += 1
+            if e.get("dup"):
+                vd = e["logged"] + TD(days=int(r.integers(0, 6)), hours=int(r.integers(1, 6)))
+                voids.append(dict(logged=vd, effective=e["effective"], ref=e["ref"], name=e["name"], serial=None,
+                                  event="VOID", voids=e["id"], note="duplicate entry"))
+        for v in voids:
+            v["id"] = "BVE%d" % int(ids[k])
+            k += 1
+        allev = [e for e in sorted(events + voids, key=lambda e: e["logged"]) if e["logged"] <= GPS_EXPORTED]
+        rn = C.stream("gps_notes")
+        for e in allev:
+            e["note"] = gps_note(e["event"], e["note"], rn)
+        for e in allev:
+            out_ev.append({"event_id": e["id"], "logged_utc": e["logged"].strftime("%Y-%m-%dT%H:%M:%SZ"),
+                           "effective_date": e["effective"].isoformat(), "client_ref": e["ref"], "client_name": e["name"],
+                           "serial_no": e["serial"], "event": e["event"], "voids_event_id": e.get("voids"),
+                           "note": e["note"] or None})
+        obj = {"account": "MDOC-R4", "account_name": "Merrow DOC Community Supervision Region 4",
+               "account_time_zone": "US/Central",
+               "export": {"exported_utc": GPS_EXPORTED.strftime("%Y-%m-%dT%H:%M:%SZ"), "from": "2025-01-01", "to": "2026-12-31",
+                          "scope": "events for enrolments active on or after 2025-01-01"},
+               "events": out_ev}
+        C.write_json(os.path.join(out, C.F_GPS), obj)
+        self.gps_events_written = allev
+        return len(out_ev)
+
+    # ------------------------------------------------------------------ programmes (distractor)
+    def write_programs(self, out):
+        ev = self.ev
+        r = C.stream("prog_layout")
+        provs = {"T4C": "Region 4 Programs Unit", "MRT": "Region 4 Programs Unit", "SUD-IOP": "Bridgeway Recovery",
+                 "SUD-OP": "Bridgeway Recovery", "EMPLOY": "Darrow Workforce Partners", "ANGER MGMT": "Keswick Family Services"}
+        rows = []
+        ids = r.choice(np.arange(400_000, 999_999), size=len(ev.referrals), replace=False)
+        for k, x in enumerate(sorted(ev.referrals, key=lambda x: x["date"])):
+            if x["date"] > C.RECORDS_END:
+                continue
+            rows.append(["RF%d" % int(ids[k]), int(ev.pid[x["p"]]), x["prog"], x["date"].isoformat(), C.iso(x["start"]),
+                         C.iso(x["end"]), x["outcome"], provs[x["prog"]]])
+        head = ["referral_id", "cms_person_id", "program", "referral_date", "start_date", "discharge_date",
+                "discharge_status", "provider"]
+        return C.write_csv(os.path.join(out, C.F_PROG), head, rows)

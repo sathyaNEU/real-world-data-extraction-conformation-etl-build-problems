@@ -1,103 +1,61 @@
-"""task179 shared constants: the in-fiction calendar, the university's structure, file names, random streams and
-byte-stable writers."""
+"""task179 shared constants and writers: the in-fiction calendar, file names, random streams and byte-stable writers."""
 from __future__ import annotations
 
 import csv
 import datetime as dt
 import hashlib
 import io
+import json
 
 import numpy as np
 
-UNI = "Corriemoor University"
-COUNTRY = "Republic of Aldmark"
-TASK = "task179"
+STATE = "State of Merrow"
+DEPT = "Merrow Department of Corrections"
+DIVISION = "Division of Community Supervision"
+REGION = "Region 4"
+CITY = "Halverton"
+HPD = "Halverton Police Department"
+COUNTIES = ("Darrow", "Keswick")
+DARROW_JAIL = "Darrow County Jail"
+KESWICK_JAIL = "Keswick County Jail"
+VENDOR = "Belvantis Monitoring Solutions"
 
-INTAKES = list(range(2019, 2027))          # first-time entrant cohorts in the record; 2026 is the forward cohort
-FORWARD = 2026
-PRE = list(range(2014, 2019))              # earlier cohorts, present only as continuing students
-CENSUS_YEARS = list(range(2019, 2027))     # 1 October censuses in the census history
-CUTOVER = dt.date(2026, 6, 1)              # SIRIUS to ARC
-ASSEMBLED = dt.date(2026, 10, 16)
+SIM_START = dt.date(2013, 1, 1)
+RECORDS_START = dt.date(2018, 1, 1)
+RECORDS_END = dt.date(2026, 12, 31)
+MIGRATION = dt.date(2022, 6, 13)          # legacy OMS to CMS cutover
+RECODIFIED = dt.date(2024, 7, 1)          # the criminal code recodification took effect
+INSTRUMENT_V2 = dt.date(2023, 7, 1)       # risk instrument revision
+GPS_LOG_START = dt.date(2025, 1, 1)
+ASSEMBLED = dt.date(2027, 1, 8)
+DIRECTIVE_DATE = dt.date(2026, 11, 16)
 
+# bundle file names
+F_EPIS = "cms_supervision_episodes_2018-2026.csv"
+F_XWALK = "oms_cms_person_crosswalk_2022.csv"
+F_ASSESS = "mras_assessments_2017-2026.csv"
+F_DARROW = "darrow_county_jail_booking_notices_2018-2026.csv"
+F_KESWICK = "keswick_county_jail_bookings_2018-2026.xlsx"
+F_HPD = "hpd_violent_incident_victims_2018-2026.csv"
+F_GPS = "belvantis_r4_device_events_2025-2026.json"
+F_PROG = "program_referrals_2018-2026.csv"
+F_DIRECTIVE = "directive_26-07_gps_placement.pdf"
+F_CODE = "criminal_code_conversion_table_2024.pdf"
+F_SCHED = "belvantis_service_schedule_2025.pdf"
+F_BRIEF = "merrow_recidivism_brief_2025.pdf"
 
-def census_date(y):
-    return dt.date(y, 10, 1)
+DELIV_XLSX = "region4_2027_gps_order.xlsx"
+DELIV_DOCX = "region4_2027_category_v_forecast.docx"
+DISTRACTORS = [F_PROG, F_BRIEF]
 
-
-FACULTIES = [
-    ("ASS", "Faculty of Arts and Social Sciences"),
-    ("BUS", "Faculty of Business and Law"),
-    ("SCI", "Faculty of Science"),
-    ("ENG", "Faculty of Engineering and Computing"),
-    ("HLT", "Faculty of Health Sciences"),
-]
-FAC_CODES = [f for f, _ in FACULTIES]
-FAC_SHARE = {"ASS": 0.24, "BUS": 0.22, "SCI": 0.20, "ENG": 0.16, "HLT": 0.18}
-FAC_EFFECT = {"ASS": 0.10, "BUS": 0.0, "SCI": -0.05, "ENG": 0.06, "HLT": -0.14}
-
-# programme code, title, faculty, years full time, share within faculty, first-year programme papers
-PROGRAMMES = [
-    ("BA", "Bachelor of Arts", "ASS", 3, 0.55, ["HIST110", "ENGL110", "POLS110", "PHIL110"]),
-    ("BSOCSC", "Bachelor of Social Sciences", "ASS", 3, 0.30, ["SOCI110", "PSYC110"]),
-    ("BFA", "Bachelor of Fine Arts", "ASS", 3, 0.15, ["FINE110"]),
-    ("BCOM", "Bachelor of Commerce", "BUS", 3, 0.50, ["ACCT110", "MKTG110"]),
-    ("BBUS", "Bachelor of Business", "BUS", 3, 0.25, ["MGMT110"]),
-    ("LLB", "Bachelor of Laws", "BUS", 4, 0.25, ["LAWS110"]),
-    ("BSC", "Bachelor of Science", "SCI", 3, 0.70, ["BIOL110", "CHEM110", "PHYS110", "STAT110"]),
-    ("BBIOMED", "Bachelor of Biomedical Science", "SCI", 3, 0.30, ["BMED110"]),
-    ("BENGH", "Bachelor of Engineering with Honours", "ENG", 4, 0.60, ["ENGR120"]),
-    ("BCOMPSC", "Bachelor of Computer Science", "ENG", 3, 0.40, ["COMP110"]),
-    ("BNURS", "Bachelor of Nursing", "HLT", 3, 0.45, ["NURS110"]),
-    ("BHSC", "Bachelor of Health Sciences", "HLT", 3, 0.35, ["HSCI110"]),
-    ("BSPEX", "Bachelor of Sport and Exercise Science", "HLT", 3, 0.20, ["SPEX110"]),
-]
-PROG = {p[0]: p for p in PROGRAMMES}
-CONJOINTS = [("BA", "LLB"), ("BCOM", "LLB"), ("BSC", "BCOM"), ("BA", "BSC"), ("BENGH", "BCOM"), ("BCOMPSC", "BSC"),
-             ("BHSC", "BCOM"), ("BSPEX", "BCOM")]
-
-# first-year papers every full-time entrant of a faculty takes in Semester 1 (with UNIV101)
-FAC_PAPERS = {
-    "ASS": ["ARTS101", "ARTS102"],
-    "BUS": ["BUSN101", "ECON101"],
-    "SCI": ["SCIE101", "MATH101"],
-    "ENG": ["ENGR101", "MATH151"],
-    "HLT": ["HLTH101", "HLTH102"],
-}
-UNIV = "UNIV101"
-ELECTIVES = sorted(set(p for pr in PROGRAMMES for p in pr[5]))
-CLASS_CAP = 30
-BLOCK = 28
-
-HALLS = ["Ferrier Hall", "Ashby House", "Linton Court", "Stanmore Hall", "Greyfriars Hall"]
-
-# file names in the pack
-F_SCLS = "sirius_fy_cohort_classes_2019_2025.csv"
-F_ACLS = "arc_s1_2026_first_year_classes.csv"
-F_CENSUS = "census_enrolments_2019_2026.csv"
-F_XWALK = "sirius_arc_student_crosswalk.csv"
-F_ADM = "admissions_entrants_2019_2026.xlsx"
-F_PROG = "progress_check_wk6_2019_2026.csv"
-F_TT = "s1_2026_class_timetable.xlsx"
-F_CLE = "arc_s1_2026_class_enrolments.csv"
-F_CAT = "programme_catalogue_2026.csv"
-F_TRF = "programme_transfers_2025_2026.csv"
-F_CUT = "arc_cutover_notes_registry.pdf"
-F_CONV = "continuing_enrolment_projection_conventions_2027.pdf"
-F_DICT = "data_dictionary.txt"
-F_HALL = "hall_occupancy_weekly_2019_2026.csv"
-F_NSL = "national_school_leavers_2019_2026.csv"
-DISTRACTORS = [F_HALL, F_NSL]
-
-DELIV_XLSX = "continuing_enrolment_2027.xlsx"
-DELIV_PNG = "s1_2026_teaching_groups.png"
+ROUND_CALL = 100
 
 
-SALT = ""      # screening only: a different world draw; the shipped world uses the empty salt
+SALT = "s1"
 
 
 def stream(name):
-    h = int.from_bytes(hashlib.sha256(("task179/" + SALT + name).encode()).digest()[:8], "little")
+    h = int.from_bytes(hashlib.sha256(("task179/a5/%s/%s" % (SALT, name)).encode()).digest()[:8], "little")
     return np.random.default_rng(h)
 
 
@@ -114,9 +72,50 @@ def write_csv(path, head, rows, crlf=True):
     return n
 
 
-def dmy(d):
-    return "" if d is None else "%02d/%02d/%04d" % (d.day, d.month, d.year)
+def write_json(path, obj):
+    with open(path, "w", encoding="utf-8", newline="\n") as f:
+        json.dump(obj, f, indent=1, ensure_ascii=False, sort_keys=False)
+        f.write("\n")
 
 
 def iso(d):
     return "" if d is None else d.isoformat()
+
+
+def mdy(d):
+    return "" if d is None else "%02d/%02d/%04d" % (d.month, d.day, d.year)
+
+
+def month_index(d):
+    return d.year * 12 + d.month - 1
+
+
+def month_start(mi):
+    return dt.date(mi // 12, mi % 12 + 1, 1)
+
+
+def month_days(mi):
+    a = month_start(mi)
+    b = month_start(mi + 1)
+    return (b - a).days
+
+
+def add_months(d, n):
+    mi = month_index(d) + n
+    y, m = mi // 12, mi % 12 + 1
+    last = month_days(mi)
+    return dt.date(y, m, min(d.day, last))
+
+
+def quarter(d):
+    return (d.month - 1) // 3 + 1
+
+
+def nearest(v, unit):
+    return int(unit * np.floor(v / unit + 0.5))
+
+
+def edge_distance(v, unit):
+    """distance from v to the nearest edge of the cell its rounding prints"""
+    c = unit * np.floor(v / unit + 0.5)
+    return unit / 2.0 - abs(v - c)
