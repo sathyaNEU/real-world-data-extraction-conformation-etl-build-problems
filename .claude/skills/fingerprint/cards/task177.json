@@ -11,14 +11,14 @@
   "shape": "other",
   "decision_type": "quantity_figure",
   "answer_unit": "count",
-  "answer": "",
-  "answer_source": "",
+  "answer": "about 300 of the pool's 12,880 loans 90 or more days past due on 30 June 2027 (278.1 before rounding)",
+  "answer_source": "task177/submission.md block 1; task177/generator/figures.json (call, call_unrounded)",
   "gap": [
     "population",
     "time"
   ],
   "pattern": [
-    "C"
+    "E"
   ],
   "generators": [
     "G8",
@@ -33,26 +33,27 @@
   "validated_decoy": false,
   "context_artifact": "monitoring_export",
   "stump_class": "analytical",
-  "analyst_test": "A strong analyst who rebuilds every loan's days past due from the meeting ledger, reads the group-support postings correctly and applies every filed rule, then reads each pool loan's six-month risk off its own member's payment at the last meeting before the cut-off (carried by the group or paid herself), files about 50 loans 90 days past due on 30 June 2027, a third of the golden 150, because the history's carried members almost always sat alone in groups that kept paying while the pool's carried members after the cyclone often share their group's meeting with a second.",
+  "analyst_test": "A strong analyst who rebuilds every loan's days past due from the meeting ledger, reads the group-support postings correctly and applies every filed rule, then reads each pool loan's six-month risk off its own member's payment at the last meeting on or before the cut-off (paid by the group or by herself), files 100 loans 90 days past due on 30 June 2027 (119.5 before rounding) against the golden 300 (278.1), because a carried member in a group carrying two at once is priced like one carried alone and every payer in such a group like a safe borrower, while the record shows 31.15 per cent of loans in groups carrying two reaching 90 days within six months against 3.11 per cent in groups carrying one.",
   "domain_test": "The deciding quantity is each pool loan's probability of reaching 90 days past due within six months, which joint-liability microlending reads off the loan's group, because co-members pay a short member's instalment until two are short at one meeting and then the whole group stops; with another field's nouns the question loses its object, since no other book's loans are current only because their co-borrowers are paying for them.",
   "layer2_family": "estimand_identification",
   "layer2_pattern": "own:jlg-default-read-on-concurrent-group-cover",
   "layer1": [
-    "two collection platforms either side of a 2025 core migration, member ids re-keyed through a crosswalk and the group-contribution posting coded GS on the old platform and GRP_CONTRIB on the new",
-    "fortnightly centre meetings on each centre's own weekday, rescheduled around holidays, against month-end reporting",
+    "two collection platforms either side of the 1 April 2025 core migration, member, loan and group ids re-keyed through a crosswalk and the co-member payment coded GS on the old platform and GRP_SUPP on the new",
+    "fortnightly centre meetings on each centre's own weekday, moved by holidays and Sundays, against month-end reporting",
     "the MFI's monthly portfolio report in INR lakh on Indian fiscal-year sheets whose layout changed in FY2025-26",
-    "group numbers reused within a centre across loan cycles",
-    "credit bureau refresh with masked KYC ids and the same loan reported in two weekly submissions"
+    "group numbers reused within a centre across loan cycles on the old platform",
+    "a credit bureau portfolio review whose summary columns count member codes rather than institutions, a converted MFI reporting under its old and its successor code, a bank's correspondent portfolio under a second code, and one lender's pre-migration account numbers still reported active beside the new ones"
   ],
   "stakeholder_role": "the head of the bank's direct-assignment and priority-sector lending portfolio, who brings the pool's six-month delinquency forecast to the purchase decision",
   "role_family": "portfolio_manager",
   "scoring_unit": "other",
   "spine": {
-    "file": "centre_meeting_ledger_2023_2026.parquet",
-    "rows": 0,
+    "file": "kshetra_collections_2025-04_to_2026-12.parquet",
+    "rows": 776608,
     "entity": "one member's instalment at one centre meeting",
     "grain": "member x meeting",
-    "source": "synthetic"
+    "source": "synthetic",
+    "note": "with collectpro_collections_FY2023-24.csv (333,018 rows) and collectpro_collections_FY2024-25.csv (445,272 rows), one ledger of 1,554,898 instalment rows"
   },
   "forum": "operations_desk",
   "forcing_event": "statutory_or_regulatory_filing",
@@ -77,14 +78,22 @@
   "opening_move": "question-first",
   "question_form": "how-many",
   "driver": "A unit's failure is an event of the team it belongs to: teammates absorb one shortfall so the unit's own record looks sound, and the team stops altogether once two shortfalls coincide, so the forward count is the team-state rate by the number of shortfalls being carried at the last contact, applied to every member of each team and measured on the record's own past episodes; read per unit from its own record, or from a past episode's per-unit rates, it misses because how shortfalls cluster within teams differs between episodes.",
-  "driver_concrete": "In a joint-liability group the co-members pay a short member's instalment, so her loan stays current, and the group stops paying once two members are short at the same meeting, every member's loan then running to 90 days past due; the pool's six-month 90-day count is therefore each group's rate by how many members it carried at its last meeting before the cut-off, from the meeting ledger's own 2023 to 2026 history, times its loans in the pool, where the loan-level roll rate sees no arrears at all and the 2023 flood's rates split by each member's own last payment carry that flood's heavier clustering.",
-  "stump": "A competent analyst who rebuilds each pool loan's arrears from the meeting ledger, reads the group-support postings correctly and carries the history's six-month 90-day rates by each member's own payment at her last meeting (carried by her group or paid herself) onto the pool files about 50 loans 90 days past due on 30 June 2027 against about 150; the step that lands it there is treating every carried member as carried, when a group carries one short member at a meeting and stops once two are short at the same meeting, every member's loan then running past 90 days.",
+  "driver_concrete": "In a joint-liability group the co-members pay a short member's instalment, so her loan stays current, and the group stops paying once two members are short at the same meeting, every member's loan then running to 90 days past due; the pool's six-month 90-day count is therefore each group's rate by how many members it carried at its last meeting on or before the cut-off, from the meeting ledger's own July 2023 to June 2026 month ends, times its loans in the pool, where the loan-level roll rate sees no arrears at all and rates split by each member's own last payment price a member carried beside a second like one carried alone.",
+  "stump": "A competent analyst who rebuilds each pool loan's arrears from the meeting ledger, reads the group-support postings correctly and carries the history's six-month 90-day rates by each member's own payment at her last meeting (paid by her group or by herself) onto the pool files 100 loans 90 days past due on 30 June 2027 (119.5 before rounding) against 300 (278.1); the step that lands it there is treating every carried member as carried, when a group carries one short member at a meeting and stops once two are short at the same meeting, every member's loan then running past 90 days.",
   "mechanism_source": "design_note",
   "differentiation": {
     "task177": "v3 read each loan's default through its own borrower leaving the employer's payroll, an exit hazard per member; here no member's own event decides: a loan defaults because two co-members of its group are short at the same meeting, and the forecast is each group's rate by how many it carried at its last meeting before the cut-off.",
     "task116": "task116 counts groups eligible for an offer through contracts a register keys to one member (identity and grain on a filed eligibility rule); here nothing is eligible and no key is mis-assigned: a group's loans default together once two members are short at one meeting, a behaviour measured from the meeting ledger's own history.",
     "task45": "task45 nets a contracted scope against a holding position rebuilt from a movement ledger (positions still carrying an affected unit); here no scope or position: the share is pool loans in groups carrying two or more members at their last meeting, read against a forward default rate measured by that state.",
-    "task75": "task75 finds a second arrival channel as the residual between two internal counts and times it by a recurrence; here nothing is missing from any count and no channel bypasses a gate: every loan is current, and its group's concurrent shortfalls set its forward default."
+    "task75": "task75 finds a second arrival channel as the residual between two internal counts and times it by a recurrence; here nothing is missing from any count and no channel bypasses a gate: every loan is current, and its group's concurrent shortfalls set its forward default.",
+    "task167": "task167 splits units by which of two unnamed drawing schedules each follows, a latent attribute of the unit itself; here the unit's outcome is set by its group's state at one meeting, how many of the group's members its other members paid for there, because the group carries one short member and stops once two are short together; the state is rebuilt per group and meeting from who paid each instalment, and no unit attribute, schedule, history of its own or moderator decides.",
+    "task170": "task170 reads a failure rate on each operator's own count of attempts, a learning curve per unit; here the unit's outcome is set by its group's state at one meeting, how many of the group's members its other members paid for there, because the group carries one short member and stops once two are short together; the state is rebuilt per group and meeting from who paid each instalment, and no unit attribute, schedule, history of its own or moderator decides.",
+    "task31": "task31 splits a lag on whether a provider holds a prior approval with the counterparty, the unit's own relation; here the unit's outcome is set by its group's state at one meeting, how many of the group's members its other members paid for there, because the group carries one short member and stops once two are short together; the state is rebuilt per group and meeting from who paid each instalment, and no unit attribute, schedule, history of its own or moderator decides.",
+    "task44": "task44 measures a behavioural moderator over a prior instance of the window to split a pilot's opposite effects; no pilot or treatment here: here the unit's outcome is set by its group's state at one meeting, how many of the group's members its other members paid for there, because the group carries one short member and stops once two are short together; the state is rebuilt per group and meeting from who paid each instalment, and no unit attribute, schedule, history of its own or moderator decides.",
+    "task56": "task56 finds a population billed on another basis by its absence from event streams; nobody is absent here, every loan is current on the record, and here the unit's outcome is set by its group's state at one meeting, how many of the group's members its other members paid for there, because the group carries one short member and stops once two are short together; the state is rebuilt per group and meeting from who paid each instalment, and no unit attribute, schedule, history of its own or moderator decides.",
+    "task57": "task57 separates candidate measures that reproduce their own year by identity, through a held-out year; nothing reproduces anything here: here the unit's outcome is set by its group's state at one meeting, how many of the group's members its other members paid for there, because the group carries one short member and stops once two are short together; the state is rebuilt per group and meeting from who paid each instalment, and no unit attribute, schedule, history of its own or moderator decides.",
+    "task76": "task76 removes a class built from a per-unit look-back over failed contacts; no class of units here: here the unit's outcome is set by its group's state at one meeting, how many of the group's members its other members paid for there, because the group carries one short member and stops once two are short together; the state is rebuilt per group and meeting from who paid each instalment, and no unit attribute, schedule, history of its own or moderator decides.",
+    "task83": "task83 conditions a randomised holdout's effect on each unit's own prior treatment history; no experiment and no unit's own history decides here: here the unit's outcome is set by its group's state at one meeting, how many of the group's members its other members paid for there, because the group carries one short member and stops once two are short together; the state is rebuilt per group and meeting from who paid each instalment, and no unit attribute, schedule, history of its own or moderator decides."
   },
   "lineage": [
     {
@@ -195,6 +204,6 @@
       "fate": "spent 2026-10-23 at stage 4 on Gate F (target.zip 2db9de82): a blind reader landed the call 7 of 7 from the employers' payroll exits and the public pass-through; payroll exit as the default channel is field knowledge"
     }
   ],
-  "notes": "Architecture v4 (2026-10-28). stump_strategy binding_constraint: a joint-liability group's capacity is one carried member per meeting, a limit the member-level reading double-books when two co-members are short at the same meeting; composition_mix was weighed and set aside because it names the estimator (a rate by state) rather than the step (the shared per-meeting limit). Pattern C: the decisive quantity is the share of pool loans whose group carried two or more at its last meeting, built behind the join of the pool tape to the meeting ledger, never a column. Gate G binding_constraint: the limit itself moves the forecast, every member of an over-limit group defaulting. Forcing event: the bank books the pool by 31 March 2027 for its priority-sector return for FY2026-27.",
+  "notes": "Architecture v4 (2026-10-28). stump_strategy binding_constraint: a joint-liability group's capacity is one carried member per meeting, a limit the member-level reading double-books when two co-members are short at the same meeting; composition_mix was weighed and set aside because it names the estimator (a rate by state) rather than the step (the shared per-meeting limit). Pattern E (redrawn from C on 2026-10-28 at stage 3, when task281's architecture 2 registered with pattern C after this card and put C in the window): the decisive quantity is the six-month default rate conditioned on the group's count of members paid for at its last meeting, a yield conditioned on a state no column names; C read the same step as the share of pool loans in groups over their capacity, and E is the more exact label for the estimator the golden runs. Gate G binding_constraint: the limit itself moves the forecast, every member of an over-limit group defaulting. Forcing event: the bank books the pool by 31 March 2027 for its priority-sector return for FY2026-27. The pattern was edited in place from C to E on 2026-10-28 at stage 3 (task281's architecture 2 card took pattern C in place after this card was filed); the filing stamp stays the draw's, 04:36:26Z, as the window stays fixed at the draw. The personas drawn at the draw (guard.py names) stay on the card; the pack and the goldens name no person.",
   "registered": "2026-10-28T04:36:26Z"
 }

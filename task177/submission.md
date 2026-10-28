@@ -1,66 +1,49 @@
 ## Tags
 
-**Domain:** Banking, Credit & Financial Risk, credit scoring and PD modelling.
+**Domain:** Banking, Credit & Financial Risk (credit scoring and PD modeling).
 **Analytical objective:** Forecasting & Predictive Modeling.
 
 ## 1. Final Recommendation
 
-**About 250 of the 2,400 Libranza Empresarial loans disbursed on 1 February 2027 will go into default by 31 January 2028.**
-A payroll-deduction loan defaults almost only when its borrower stops being paid by the payroll with the loan open, 53 per cent of such public loans went into default, and the agreement employers' staff with a year's service work their last month at about 3 per cent a month. Not the 50 a PD model on the public book's borrower attributes gives, which reads the public servants' rare leaving as borrower quality.
+**About 300 of the pool's 12,880 loans will be 90 or more days past due on 30 June 2027.** Each loan is read off its group: the history's six-month rate for loans whose group was paying for none, one, two or three or more members at its last meeting, applied to the pool's loans in those states, gives 278.1. Not the 100 that reading each member's own payment gives, which treats every carried member as carried and every payer as safe. Not the 200 that flags a group for carrying anyone, which prices a group paying for two at one meeting like a group paying for one.
 
 ## 2. Critical Components
 
-1. Of the public loans whose borrower stopped being paid by the payroll with the loan open, **53 per cent** went into default.
-2. Staff with a year's service at the employers of the launch loans work their last month at about **3 per cent** a month.
+1. The pool's loans by how many members their group paid for at its last meeting on or before 31 December 2026: **9,082** none, **3,372** one, **412** two, **14** three or more.
+2. Groups paying for two or more members at that meeting: **97**, holding **426** of the pool's loans.
 
 ## 3. Step-by-Step Solution
 
-1. Joined payroll_loans_public_2017_2026.csv, treasury_deduction_returns_2017_2026.csv (legacy numbers through legacy_core_crosswalk_2021.csv) and default_register_2017_2026.csv; marked the first month of each run of SIN SALARIO (01) returns on a loan, the month the Tesoreria stopped paying the borrower with the loan open.
-2. For runs starting January 2017 to December 2025, took the share of those loans whose default date falls within each number of months of that first month: 53 per cent by five months, none before three, the conversion by months left.
-3. Took the monthly default rate of loans still paid by the payroll (defaults with no SIN SALARIO run before them, per loan-month) as the on-payroll route.
-4. From employer_payroll_registers_2025_2026.csv (repeated uploads dropped, employee ids without the CC prefix and dots), took each employer's monthly rate of staff with twelve or more months' service working their last month (the LIQUIDACION row), over employee-months since its first register.
-5. For each loan in libranza_empresarial_disbursement_file_2027-02-01.csv, summed over February 2027 to January 2028 the chance its borrower leaves at the end of each month times the conversion for the months then left, plus the on-payroll route; by sector through deduction_agreements_register.xlsx.
-6. Savings in savings_contribution_schedules_2025_2026.csv: where an employer filed a second schedule for a month with the same members, only the later counts, and a schedule for members missing from the month adds to it; received from collection_account_statement_2025_2026.csv, a returned transfer counted once, a group parent's single transfer paying its own and its subsidiary's schedules of the month (its amount is their sum).
-7. Recoveries in defaulted_loan_receipts_2023_2026.csv on the loans whose default date in default_register_2017_2026.csv falls in 2023 or 2024, net of reversals, leaving out transfers from the borrowing member's own account in member_savings_ledger_2023_2026.csv (another member's savings account paying is a recovery), by unit_type in payroll_loans_public_2017_2026.csv.
-8. Recommendation: about 250 of the 2,400 loans in default by 31 January 2028.
+1. Joined collectpro_collections_FY2023-24.csv and collectpro_collections_FY2024-25.csv to kshetra_collections_2025-04_to_2026-12.parquet through kshetra_migration_map_20250401.csv, reading SELF and OWN as paid by the member, GS and GRP_SUPP as paid by another member of her group and NIL and NOT_PAID as unpaid (operating policy section 4): one ledger of 1,554,898 instalment rows.
+2. Took each loan's days past due from the due date of its oldest unpaid instalment (operating policy section 6).
+3. At each month end from 31 July 2023 to 30 June 2026, took the loans current then and disbursed at least 91 days earlier, counted the instalments other members paid in the loan's group at its last meeting on or before the month end, and read the share of loans 90 or more days past due 181 days later: 0.34, 3.11, 31.15 and 100.00 per cent for none, one, two and three or more.
+4. Counted the pool tape's 12,880 loans by the same count at their group's last meeting on or before 31 December 2026: 9,082, 3,372, 412 and 14.
+5. Multiplied each count by its rate and added: 278.1 loans, 300 to the nearest 100.
+6. For the guardrails, kept active JLG and MFI-IND accounts in cic_portfolio_review_PVM_20261231.csv, counted Salandi's MFI0447 and SFB0029 and Gandhamardan's BNK0102 and BNK0115 as one institution each through the successor_code and parent_code of cic_member_directory_202612.csv (CPN-MF-07 section 3), and counted a loan once where SFB0014 reports the same opening date and sanctioned amount under two account numbers, taking the report later than 13 March 2026: 2,528 borrowers in breach, INR 821.3 lakh of pool principal.
+7. Recommendation: about 300 loans 90 or more days past due on 30 June 2027.
 
 ## 4. Deliverable Answers
 
-### libranza_empresarial_default_forecast.xlsx
+### pool_90dpd_forecast.xlsx
 
-1. Libranza Empresarial loans in default by 31 January 2028: 250.
-2. Share of each sector's launch loans in default by 31 January 2028, nearest 5 per cent:
-   - Contact centres: 20 per cent
-   - Retail chains: 10 per cent
-   - Security services: 10 per cent
-   - Logistics and courier: 10 per cent
-   - Food processing: 10 per cent
-   - Private clinics: 5 per cent
-3. Members' savings contributions the employers deducted for the months of 2026, VMP to the nearest 1,000:
-   - Contact centres: VMP 793,629,000
-   - Retail chains: VMP 521,966,000
-   - Security services: VMP 572,968,000
-   - Logistics and courier: VMP 444,405,000
-   - Food processing: VMP 547,196,000
-   - Private clinics: VMP 474,370,000
-4. Of that, not received by 31 December 2026, VMP to the nearest 1,000:
-   - Contact centres: VMP 79,019,000
-   - Retail chains: VMP 46,902,000
-   - Security services: VMP 51,867,000
-   - Logistics and courier: VMP 37,041,000
-   - Food processing: VMP 51,328,000
-   - Private clinics: VMP 38,066,000
-5. Recovered by 31 December 2026 other than by netting the member's own savings, VMP to the nearest 1,000:
-   - Defaulted in 2023, national: VMP 561,001,000
-   - Defaulted in 2023, territorial: VMP 247,085,000
-   - Defaulted in 2023, health: VMP 86,931,000
-   - Defaulted in 2023, education: VMP 222,767,000
-   - Defaulted in 2024, national: VMP 759,670,000
-   - Defaulted in 2024, territorial: VMP 412,827,000
-   - Defaulted in 2024, health: VMP 147,806,000
-   - Defaulted in 2024, education: VMP 175,862,000
+1. Forecast: 300 loans 90 or more days past due on 30 June 2027.
+2. Borrowers in breach of the microfinance guardrails on the bureau at the cut-off, and the pool principal outstanding on their loans (INR lakh), by branch:
+   - KND Kendrapara: 191 borrowers, INR 63.4 lakh
+   - PTM Pattamundai: 164 borrowers, INR 51.8 lakh
+   - RJN Rajnagar: 168 borrowers, INR 55.0 lakh
+   - JSP Jagatsinghpur: 210 borrowers, INR 69.7 lakh
+   - TRT Tirtol: 198 borrowers, INR 64.4 lakh
+   - ERS Ersama: 173 borrowers, INR 51.6 lakh
+   - BDK Bhadrak: 217 borrowers, INR 67.8 lakh
+   - CHB Chandbali: 192 borrowers, INR 66.4 lakh
+   - BLS Balasore: 254 borrowers, INR 81.3 lakh
+   - BST Basta: 208 borrowers, INR 72.0 lakh
+   - JJR Jajpur Road: 143 borrowers, INR 47.3 lakh
+   - BNJ Binjharpur: 139 borrowers, INR 46.2 lakh
+   - SLP Salepur: 150 borrowers, INR 47.7 lakh
+   - NIA Niali: 121 borrowers, INR 36.7 lakh
 
-### launch_default_note.docx
+### pool_purchase_note.docx
 
-1. The forecast for the board: about 250 of the 2,400 loans in default by 31 January 2028, with the reason (leaving the payroll with the loan open, far more frequent at the agreement employers).
-2. Bar chart of the expected share in default by sector against the public loans' first-year rate.
+1. The forecast: about 300 of the pool's 12,880 loans 90 or more days past due on 30 June 2027.
+2. One chart: horizontal bars of the expected loans 90 or more days past due by how many members the group paid for at its last meeting on or before the cut-off, each state labelled with its pool loan count.

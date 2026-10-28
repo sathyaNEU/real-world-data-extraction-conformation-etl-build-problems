@@ -35,10 +35,10 @@
   double-books it whenever two co-members are short together. `composition_mix` was weighed and set aside: it names the
   estimator (a rate by state) and not the step (the shared per-meeting limit).
 - **Gap, pattern, generators:** gap population (the unit that fails is the group at a meeting, not the member), then
-  time (the pool's states were made by a cyclone, the history's by ordinary shortfalls); pattern C, the share of pool
-  loans whose group carried two or more at its last meeting, an absolute share built behind the join of the pool tape
-  to the meeting ledger, never a column; generators G8 (can the group carry this member: binary, one at a time), G2,
-  G14.
+  time (the pool's states were made by a cyclone, the history's by ordinary shortfalls); pattern E, the six-month
+  default rate conditioned on how many members the group paid for at its last meeting, a yield conditioned on a state
+  rebuilt from the ledger that no column names (edited in place from C on 2026-10-28, see the guard line);
+  generators G8 (can the group carry this member: binary, one at a time), G2, G14.
 - **Data-native sentence:** in a joint-liability group the co-members pay a short member's instalment at the meeting,
   so her loan stays current and every loan-level and member-level record shows it performing, and a group can carry one
   short member at a meeting but not two, so when two are short together it stops and every member's loan, the payers'
@@ -57,9 +57,10 @@
   register. task106's held device (suppliers on one corridor share the same spare legs, so sizing each against every
   leg double-books) is the device this build re-skins: one shared capacity, double-booked by sizing each member
   against it; its driver (a transport corridor's return legs) is not repeated.
-- **Same-puzzle and same-driver tests:** gap population, pattern C, decision quantity_figure, Gate G
-  binding_constraint: no build in the last twelve, lineage included; the older task45 and task75 (same puzzle) and
-  task116 (same driver) carry differentiation lines on the card, as does this slot's own v3.
+- **Same-puzzle and same-driver tests:** gap population, pattern E, decision quantity_figure, Gate G
+  binding_constraint: no build in the last twelve, lineage included; the older task167, task170, task31, task44,
+  task56, task57 and task76 (same puzzle) and task83 (same driver) carry differentiation lines on the card, as do
+  task45, task75 and task116 from the C reading and this slot's own v3.
 - **Abstraction test:** stripped of nouns, the nearest drivers (`guard.py check`: task127 0.09, task128 0.08,
   task308 0.07, task482 0.07, task139 0.07) are a fixed team's throughput in a period, a contact's effect where a
   queue outran a team, an added unit valued on a shortfall its kin removed, a per-member rate carried by last period's
@@ -71,7 +72,13 @@
   other ground).
 - **Guard:** `guard.py check` WARN, one line answered here: `repeat.deliverables` (docx and xlsx, as task304's
   architecture 3 carries) is the desk's own idiom, a pricing workbook and a purchase note, and the format set carries
-  no driver. Registered on 2026-10-28.
+  no driver. Registered on 2026-10-28 at 04:36:26Z. At stage 3 `heart` returned BLOCK on `ban.pattern` C against
+  task281's architecture 2, whose card took pattern C in place after this card was filed; the pattern was redrawn in
+  place to E, the more exact label for the step (the golden is a six-month rate conditioned on the group's count, a
+  conditioned yield; C read the same step as the share of loans in over-capacity groups), with differentiation lines
+  for the older E builds. A re-registration made to file the edit re-stamped the card at 05:51Z and pulled task162's
+  architecture 2 (registered 04:48Z, after this card) into the window; the stamp was set back to the draw's, since the
+  window stays fixed at the draw. `heart` then WARN (the deliverable line only).
 - **People:** Raagini Bose and Hardik Karnik, drawn with `guard.py names --geo India --seed 177`.
 
 ## Screen
@@ -112,6 +119,296 @@ byte-identical over two runs).
 - **Multiplicative floor and dispersion.** Not a ranking: the call is a level, a count of loans, so the floor law and
   the ceiling on bounded quantities do not apply; the lever is a count of groups over a capacity, moved by whole groups
   of five.
+
+- **On the built pack (generator, seed 4).** The member-level route files 119.5 and the golden 278.1; the loan-level
+  roll rate 94.7, the group flagged for carrying anyone 183.1, the group read over six meetings 347.3; the 32-member
+  family 268.9 to 319.3. The prototype's ratios held.
+
+## Default path
+
+The pipeline a competent analyst builds from the prompt's words and the files' grain, every field read correctly:
+
+1. Read the pool tape (12,880 loans, every one current at the cut-off and disbursed on or before 1 October 2026).
+2. Rebuild one meeting ledger from CollectPro's two yearly exports (July 2023 to March 2025) and Kshetra's
+   collections file (April 2025 to December 2026), joined through the migration map; read SELF and OWN as paid by
+   the member, GS and GRP_SUPP as paid at the meeting by a co-member, NIL and NOT_PAID as unpaid.
+3. From the ledger, each loan's days past due on any date under the operating policy's rule (from the due date of
+   its oldest instalment not paid in full).
+4. Because the pool is post-cyclone and its loans look current only on the record, refine the field's static-pool
+   roll rate: at each month-end from July 2023 to June 2026, take the loans current then (and past the holding
+   period), split them by whether the member's own instalment at her last meeting was paid by a co-member, and read
+   each split's share 90 or more days past due six months (181 days) later.
+5. Apply the two rates to the pool's loans by the same split at the last meeting on or before the cut-off and add.
+
+Ends on: 100 loans (119.5 before rounding).
+Golden: 300 loans (278.1 before rounding).
+
+## Stump sentence
+
+The default path files 100 loans 90 days past due on 30 June 2027 (119.5 before rounding) against 300, because it
+reads each loan's risk off its own member's payment at her last meeting, when a joint-liability group carries one
+short member at a meeting and stops paying once two are short together, every member's loan then running past 90
+days: the pool's carried members after the cyclone sit far more often beside a second carried member than the
+history's did, and the members paying for them are at their group's risk, not their own.
+
+## Three rules
+
+- Task type: banking-credit-financial-risk / credit-scoring-pd-modeling, which serves Forecasting; the deciding
+  quantity is each pool loan's probability of reaching 90 days past due within six months.
+- Domain test: the deciding quantity is the six-month probability of default of a joint-liability microloan,
+  which the field reads off the loan's group, because co-members pay a short member's instalment until two are
+  short at the same meeting; the estimator is the history's six-month 90-day rate by the group's carried count at
+  its last meeting on or before each month-end, applied to the pool's groups at their last meeting on or before the cut-off.
+- Swap: "how many of the hospital's patients will be readmitted by June when two nurses on a ward are off at
+  once" keeps a threshold but loses the object: no other book's loans are current only because their co-borrowers
+  are paying for them, and no ward's patients default with the ward.
+- Layer 1: two collection platforms either side of the 1 April 2025 migration (CollectPro's CSV with DD/MM/YYYY
+  dates, branch-coded member and loan numbers, centre-scoped group numbers that a re-formed group takes over, and
+  modes SELF, GS, NIL; Kshetra's parquet with new ids and types OWN, GRP_SUPP, NOT_PAID), joined through the
+  migration map; meetings on each centre's own weekday, moved by holidays, against month-end reporting; the
+  portfolio report in INR lakh on Indian fiscal-year sheets whose layout changed with the migration; the bureau's
+  repeated summary columns; KYC gram panchayats recorded at enrolment. Every item is what those systems produce.
+- Layer 2: estimand_identification (spillover between co-borrowers); the methodological choice is the unit whose
+  state carries a loan's forward default, the group at its last meeting rather than the member or the loan.
+- Decisive step: condition each loan's six-month default on how many members its group was carrying at its last
+  meeting before the cut-off, because a group pays for one short member and stops once two are short at once, so a
+  paying member's loan is at her group's risk; read the rate by that state off the history and apply it to the pool.
+- Not semantics: reading every posting code correctly (GS and GRP_SUPP as paid by a co-member) still files 100 on
+  the member-level split, 200 on the group flagged when it carries anyone and 100 on the loan-level roll rate; the
+  codes are read right on every one of those routes.
+- Not rule application: no filed rule says how a group behaves when two members are short; the operating policy
+  says only that the group may pay for a member. Once every filed rule is read, the analyst still chooses the state
+  a loan's risk is read on. Enumerated family of that construction (as-of at month-ends or every meeting, the
+  holding period applied to the history or not, the whole ledger or the Kshetra months only, the group's state at
+  its last meeting or the larger of its last two, states 0 to 3+ or 0 to 2+): 32 members spread 268.9 to 319.3, all
+  printing 300 at the nearest 100; the standing family, the members the data do not refute, is the same 32.
+  Ruling-out loudness: the history's own contrast (of loans whose group carried two distinct members over its last six
+  meetings, 31.3 per cent reached 90 days within six months where the two were carried at the same meeting, 3.1 per
+  cent where they were not) is a cut nobody makes without the step, and the readings it refutes (the member's
+  own posting at 119.5, the group flagged at 183.1) are not in the family.
+- Analyst test: a strong analyst who rebuilds every loan's days past due from both platforms, reads every code
+  correctly and applies every filed rule, then splits the history's six-month rate by each member's own posting at
+  her last meeting files 100 loans (119.5), the default path's Ends on.
+- Estimand: the pool's member loans (the pool tape's 12,880 lines, fixed at the cut-off, no loan added) that will
+  be 90 or more days past due on 30 June 2027 under the operating policy's days-past-due rule, a count to the
+  nearest 100; filed by the prompt's question and the operating policy's section 6.
+- No decoy: nothing is planted to be caught; the portfolio report's collection efficiency counts a co-member's
+  payment as collected because that is how the MFI measures collection, and no memo, draft or stakeholder figure
+  carries a forecast.
+- No certified replay: no certified or published figure exists for the forecast or its rates; the method is
+  recovered from nothing.
+- Lesson: under joint liability a loan's default is an event of its group, which pays for one short member and
+  stops once two are short at the same meeting, so a forecast reads each loan off its group's carried count at its
+  last meeting, not off the member's own payment; no build on file has a co-borrower group or reads a unit's risk
+  off how many of its co-members others are paying for.
+
+## Readability screen
+
+| Rung | 1 filed sentence | 2 schema | 3 reflex | 4 control bench | 5 hygiene | 6 linear | 7 dedicated organ | verdict |
+|---|---|---|---|---|---|---|---|---|
+| R0 loan-level roll rate (94.7) | silent | silent | the field's static-pool reflex | silent | silent | silent | silent | readable |
+| R1 member's own posting (119.5) | silent | the GRP_SUPP code invites it | a reflex once the code is read | silent | silent | silent | silent | readable |
+| R2 group flagged when carrying anyone (183.1) | silent | silent | a natural group refinement | silent | silent | silent | silent | readable |
+| R3 (decisive) group's carried count at its last meeting | silent: the policy says the group may pay, never what two short members do | silent: no column carries a count; it is built per group per meeting from the payer on each row | silent: nothing in a loan or member pipeline groups rows by meeting | silent: no control or published figure scores any state | silent: no sweep groups postings by group and meeting | silent: a rate per state times a count per state, with the states built first | silent: the ledger is the MFI's collection record, kept to credit each member's loan with who paid it; it ships for any repayment analysis | silent |
+
+## Semantic fork table
+
+| Id | Term or convention | Golden reading | Alternatives | Call under each | Ruled out by |
+|---|---|---|---|---|---|
+| SF1 | "the pool" | the pool tape's 12,880 lines at the cut-off | loans current in the ledger at the cut-off (the same set re-derived) | same call | the term sheet's clause 3 names the pool tape as the pool |
+| SF2 | "90 or more days past due" | from the due date of the oldest instalment not paid in full, on 30 June 2027 | days counted from the first instalment missed after a later part payment; arrears in instalments | same call | the operating policy's section 6; no part payments occur, so the readings coincide |
+| SF3 | "on 30 June 2027" | the state on that date | the state at the month-end of June, at the last meeting before it | same call | the date is a month-end; a loan's days past due on it is fixed by its first unpaid due date |
+| SF4 | a co-member's payment | the instalment is paid (current) | the instalment unpaid | same call for current status; it is the state's content | the operating policy's section 4: a GRP_SUPP or GS instalment is paid |
+| SF5 | the history's as-of | each month-end, the loans current then | each meeting | same call (277.6 against 278.1) | asserted across the family |
+| SF6 | the six-month horizon | 181 days after the as-of | six calendar months; 26 weeks | same call | asserted across the family (the cut-off to 30 June is 181 days) |
+| SF7 | the group's state | the count of co-member payments at its last meeting on or before the as-of | the larger of its last two meetings | same call (316.9) | asserted across the family |
+| SF8 | states above two | 0, 1, 2, 3 or more | 0, 1, 2 or more | same call (269.2) | asserted across the family |
+| SF9 | the history's span | the whole ledger, July 2023 to June 2026 as-ofs | the Kshetra months only | same call (270.6) | asserted across the family |
+| SF10 | the holding period at past as-ofs | applied (loans disbursed 91 days before the as-of) | not applied | same call (281.3) | asserted across the family |
+| SF11 | a re-formed group's centre-scoped number in CollectPro | the active group at that meeting | the stopped group under the same number | same call | the stopped group's rows are all NIL, so no co-member payment is counted for it and none of its loans is current |
+| SF12 | rounding | the expected count to the nearest 100 | to the nearest 50 | the prompt's last sentence | the prompt files the nearest 100 |
+| SF13 | the group's last meeting "at the cut-off" | on or before 31 December 2026 | strictly before it (263 groups met on the day) | same call (277.3 against 278.1) | asserted (`sf_cutoff_strict`); the ledger runs through 31 December |
+| SF14 | the grain of the history's rates | one rate per state, every branch pooled | by district, by branch, by the loan's cycle counted in the ledger | same call (276.8, 277.1, 254.7) | asserted (`sf_grain_*`); the cycle split rests on a left-censored count, since the ledger starts in July 2023 and holds no cycle column |
+
+## Ladder
+
+| Rung | Construction | Figure | Printed | Margin to the golden's bin |
+|---|---|---|---|---|
+| 0 | loan-level six-month roll rate from the current bucket | 94.7 | 100 | 155.3 below the bin's floor of 250 |
+| 1 (default path) | rate split by the member's own posting at her last meeting | 119.5 | 100 | 130.5 below |
+| 2 | rate split by whether the group carried anyone at its last meeting | 183.1 | 200 | 66.9 below |
+| 3 (golden) | rate by the group's carried count at its last meeting | 278.1 | 300 | 28.1 from 250, 71.9 from 350 |
+| over-correction | every member carried at the cut-off defaults | 935.6 | 900 | 585.6 above the bin's ceiling |
+| group-aware window | distinct members carried over the group's last six meetings | 347.3 | 300 | inside the bin (a group-level route that has taken the step) |
+
+- Position and dominance: the golden is bracketed, three wrong rungs below and the over-correction above; each
+  rung is a complete pipeline, and each dies to one shipped construction (the member's own posting dies to the
+  group contrast; the any-carried flag dies to the same contrast at two concurrent; the over-correction to the
+  history's own rate for a carried member, about 5 per cent).
+- Family: 32 members 268.9 to 319.3, every one printing 300; nearest edge 18.9 (the Kshetra-only, no holding
+  period member).
+- Worth in bins (bin of 100): the decisive step's worth (golden less the default path) 1.59 bins; the spread
+  between defensible constructions 0.50 bins; the golden's sampling interval, a bootstrap over groups (400 draws),
+  242.7 to 308.6 at 95 per cent (`boot_p025`, `boot_p975` in figures.json), 0.66 bins; 1.59 against 1.16. The interval is the estimate's honest uncertainty, not
+  a fork: every solver who builds the states and reads the history's rates files the same 278.1.
+- Pool states (records-fixed): groups carrying none at their last meeting 9,082 loans, one 3,372, two 412, three
+  or more 14; the history's six-month rates 0.34, 3.11, 31.15 and 100 per cent (the last on four loan-months).
+
+## Closure table
+
+| # | Axis | Reading | Closure |
+|---|---|---|---|
+| 1 | Population | the pool tape's lines | the term sheet clause 3; C1 (the ledger re-derivation gives the same 12,880) |
+| 2 | Unit of account | member loans (one per member in the pool) | the prompt names loans; each member has one pool loan, asserted |
+| 3 | Attribution window | the state on 30 June 2027 | the prompt; SF3 |
+| 4 | As-of dating | the cut-off for the pool's states; month-ends for the history | the term sheet's cut-off; family asserted (SF5) |
+| 5 | Version basis | CollectPro before 1 April 2025, Kshetra after | the migration map; no row in both, asserted |
+| 6 | Denominator | loans current at the as-of and past the holding period | family asserted (SF10) |
+| 7 | Weighting | loans equally (a count) | the prompt asks how many loans |
+| 8 | Window length | 181 days | SF6, family asserted |
+| 9 | Boundary inclusivity | 90 or more | the prompt and the policy say "90 or more" |
+| 10 | Rounding path | expected count, once, to the nearest 100 | the prompt's last sentence |
+| 11 | Tie-break | none needed | the golden sits mid-bin |
+| 12 | Maturity and censoring | as-ofs only where 181 days of follow-up exist in the ledger | the history's last as-of is 30 June 2026; asserted |
+| 13 | Order of operations | states built before rates are read | one order exists |
+| 14 | Row order | none | groupings are order-free, asserted over a shuffled ledger |
+| 15 | Duplicate resolution | none (no row repeats) | asserted: one row per loan per instalment |
+| 16 | Identity normalisation | CollectPro ids to Kshetra ids through the migration map | C4: unmapped ids belong to loans and groups closed before the migration |
+| 17 | Netting against gross | none | counts only |
+| 18 | Dimensional units | INR in both ledgers | the asks' INR lakh is the prompt's unit |
+| 19 | Code and status semantics | SELF and OWN, GS and GRP_SUPP paid; NIL and NOT_PAID unpaid | the operating policy's section 4 (never the stump) |
+| 20 | Integerisation | none before the final rounding | asserted |
+| 21 | Clause scope | the policy's days-past-due rule applies to every loan | the policy's section 6 |
+| 22 | Forward window contents | no event after the cut-off is shipped; the window is forecast from the states | the pack ends at the cut-off, asserted |
+
+## Literal reader
+
+Executed word for word, the prompt asks for a count of the pool tape's loans 90 or more days past due on 30 June
+2027 under the policy's rule, which no file records because the date is ahead; every literal route has to forecast
+it from the ledger's history, and every reading of the estimand's terms (SF1 to SF12) gives the same printed call
+or is ruled out by a quoted sentence; the easy answer (100) comes from an easy method on the same estimand, the
+member-level split, never from another reading.
+
+## Oracles
+
+none: no control, published figure, reconciliation column or corpus in the pack scores the forecast or any state's
+rate. The portfolio report's PAR and collection efficiency are monthly branch metrics that tie under every route
+(they are history, not forecasts) and favour no rung.
+
+## Layer 1 inventory
+
+| Item | The system that writes it | File | Natural mishandling | Neutral to the call |
+|---|---|---|---|---|
+| Two collection platforms, new ids from 1 April 2025 | the core migration from CollectPro to Kshetra | the two CollectPro exports, the Kshetra file, the migration map | reading the Kshetra months alone | prints 300 (270.6, R2a) |
+| CollectPro's centre-scoped group numbers, taken over by a re-formed group | CollectPro numbered groups within a centre | the CollectPro exports | reading a number as one group across time | prints 300 (R2b): a stopped group's rows are all NIL |
+| Meetings on each centre's weekday, moved by holidays and Sundays | the centre calendar | every ledger file | assuming a fourteen-day grid | every pool group met in the fortnight before the cut-off (R2c) |
+| Fiscal-year sheets in INR lakh, a layout change in FY2025-26 | the assignor's MIS | the portfolio report | reading PAR as the pool's | not read by the call (R2d, a declared distractor) |
+| The bureau's consumer summary repeated on every account row; closed and non-microfinance accounts in the file | the bureau's portfolio review export | the bureau file | reading the summary | moves only the ledgered ask (A2, A5) |
+| Gram panchayats as recorded at each member's enrolment | the KYC capture | the KYC extract | none graded | not read by any graded figure |
+
+## Ask sheet
+
+**Ask A: the guardrail screen, branch by branch** (28 figures: for each of the fourteen branches, the pool borrowers
+in breach of CPN-MF-07 on the bureau at the cut-off, and the pool principal outstanding on their loans in INR lakh to
+one decimal).
+
+- H18 home: the pool's over-indebtedness under the bank's own guardrails, which CPN-MF-07 section 4 reports to the
+  Credit Committee with each pool by branch of the assignor; it moves neither the pool nor the call.
+- Use: the guardrail line of the purchase paper.
+- Path: the pool tape (member, branch, principal), the KYC extract (bureau reference), the bureau's portfolio review
+  (member code, account number, account type, status, opening date, sanctioned amount, balance, report date), the
+  bureau's member directory (institution, parent and successor codes), CPN-MF-07: five files, fifteen columns.
+- Primary device (cracker): Nirmala Small Finance Bank renumbered its accounts on 14 March 2026 and left many old
+  numbers active on the bureau at their balance that day, reported last on 13 March 2026, beside the new number
+  carrying the same loan (D1, the same records under two key schemes). CPN-MF-07 says a loan counts once at its
+  latest report; executed by account number it keeps both rows. Every branch moves: counts by 3 to 4, principal by
+  INR 1.1 to 2.0 lakh (A2, A4); 2,122 loans carry the pair.
+- Mirror devices: the bureau's own summary columns (they count member codes and include the stale balances);
+  Salandi's conversion (two member codes, the directory's successor link) and Gandhamardan's correspondent portfolio (a
+  second member code, the directory's parent link) counted as separate lenders.
+- Hazards: closed accounts at zero and other credit (gold loans, Kisan credit cards) in the same file.
+- Stops, against the golden by branch: the bureau summary +11 to +25; member codes as lenders +8 to +22; the
+  directory's parent link ignored (Salandi merged, Gandhamardan's correspondent code counted apart) +4 to +15; stale
+  rows kept +3 to +4; the golden.
+- Realism: a converted MFI keeps reporting its pre-conversion loans under its old member code, and a bank's core
+  migration that fails to close old account numbers at the bureau leaves exactly this pair; both are known bureau
+  data-quality patterns, not planted rows.
+- Separation: the call reads the pool tape, the two CollectPro exports, the Kshetra file and the migration map; the
+  bureau, its directory, the KYC and CPN-MF-07 are read by the ask alone (A5), so no device row sits in the call's
+  population.
+- Referee: the report dates and the directory are byte-clean; nothing ties only under the golden.
+
+| Ask figures | The cracker's route | Against the golden | Verdict |
+|---|---|---|---|
+| A, borrowers in breach, each of the fourteen branches | institutions merged by the directory, a loan once by its account number | over by 3 to 4 in every branch | miss |
+| A, pool principal on their loans, each of the fourteen branches | the same | over by INR 1.1 to 2.0 lakh in every branch | miss |
+
+Measured by: generator/ceiling.py
+Pair ceiling: 28.5 (cracker 45.0 on the call, its components and none of 28 ask figures; mirror 12.0)
+Mirror leakage: 0.0 per cent of ask weight (the bureau summary misses all 28)
+
+## Pre-ship check
+
+- **The decisive step is still analytical, on the built pack.** A strong analyst who rebuilds every loan's days past due
+  from both platforms, reads GS and GRP_SUPP as paid by a co-member and applies every filed rule still files 100 (119.5)
+  on the member-level split (R3a); only conditioning on the group's count at its last meeting on or before the cut-off
+  files 300 (278.1), and each lower rung stays wrong (R3b: the loan-level roll rate 94.7, the group flagged for carrying
+  anyone 183.1). No filed sentence says how a group behaves when two are short: the policy's section 3 says only that
+  co-members may pay. Not semantics, not rule application, nothing planted (R3c).
+- **The mess is still only Layer 1.** Reading the Kshetra months alone prints 300 (270.6, R2a); CollectPro's centre-scoped
+  group numbers read raw leave the call (R2b); the portfolio report, the bureau, the KYC and the field update are not
+  read by the call (R2d). The ask's bureau devices sit on rows the call never reads (A1 to A6).
+- **The domain still decides.** The deciding quantity is the six-month probability of default of a joint-liability loan
+  conditioned on its group's state, read off the assignor's own collections ledger (R1a); no column holds a group count,
+  a probability or a forecast (R1b).
+- **Determinacy on the built pack.** The 32-member family 268.9 to 319.3 (L3, nearest edge 18.9); the cut-off's own
+  meetings left out 277.3 (SF13); rates by district, branch and counted cycle 276.8, 277.1 and 254.7 (SF14); the
+  group-clustered bootstrap 242.7 to 308.6. Every one prints 300.
+- **Gate G.** No shipped artifact ranks or forecasts the pool: the portfolio report carries branch PAR and collection
+  efficiency (a declared distractor), the field update carries no rate, share or forecast.
+- **House fixes run (`reduce-house-fixes`).** H1: the PDFs' writer comments blanked at equal length, the note's
+  python-docx description cleared, every container stamped by its fictional owner; H3: "last meeting before" made "on
+  or before" in the write-up and both goldens; H8: every cited section resolves (policy 3, 4, 6; CPN-MF-07 2, 3; term
+  sheet 3); H14: the finer grains print 300 (SF14); H16: the claims register cut at its export; H21: two lender names
+  renamed. `golden-realism` run on both goldens (memo block, finding title, footnote to policy section 6, sources sheet,
+  number formats, chart labels at the table's rounding).
+
+## Leak sweep
+
+- `leak.py --asof 2027-01-08`, 2026-10-28, pack `90d1fbd324871a49`: REVIEW, four lines, no LEAK, after two fixes in the
+  generator: the term sheet's pool count (12,880 loans) is filed under `stated_inputs`, since the term sheet states the
+  pool's size as a term and the forecast is not it; the credit-life claims register is cut at its 8 January 2027
+  export (two claims intimated later left it), with claims intimated in its last thirty days still open.
+- Answer-figure sweep, `pvm_jlg_operating_policy_v6.pdf` shares three of five distinctive words with the call: harmless;
+  the words are the policy's own definitions (loans, days past due, section 6), and no figure of the answer is in it.
+- Stump-vocabulary sweep, the policy (nine of 25 terms: meeting, members, groups, portfolio, policy), the term sheet
+  (seven: meetings, portfolio, section, current, instalment) and the field update (three: meetings, portfolio):
+  harmless; each is the document's operating vocabulary (centre meetings, members of a group, portfolio at risk, the
+  eligibility clause's current loans, collections remitted monthly, meetings continuing after the cyclone). The policy's
+  section 3 says only that co-members may pay a short member's instalment; no document says how a group behaves when
+  two are short or ties a group's state to default, and the cold reader's question 1 found nothing.
+
+## Determinism judge
+
+- **Pass 1, 2026-10-28, pack `b4bdda9106e04f1d`: NOT_DETERMINISTIC, FIX_NOW, on Ask A only.** The main call reproduced
+  exactly from a rebuilt 1,554,898-row ledger (9,082, 3,372, 412 and 14 loans by state; 97 groups holding 426 loans;
+  278.1, printing 300). Gate H: domain pass, layers pass, decisive step analytical. Gate G: forecasting (also
+  method_or_model_selection), analytical_non_defect, no surface read, no sole data defect. The finding: the directory
+  linked Salandi's two codes by a field but tied Gandhamardan's correspondent code BNK0115 to the bank only by its
+  name, so merging by the field alone filed 2,652 borrowers and INR 860.1 lakh, every branch moved. Fixed in the
+  generator: the directory carries `parent_code` (BNK0115 reports for BNK0102), and the golden, the verifier and the
+  cracker all merge through the directory's parent and successor codes, no name parsed; every graded figure unchanged.
+- **Pass 2, 2026-10-28, pack `03afa0d90f6245ea`: NOT_DETERMINISTIC, labelled SEND_BACK, the same fork one file on.**
+  The directory's `parent_code` was read and the main call again reproduced exactly; Gate G forecasting and
+  analytical_non_defect, Gate H pass, Gate F strong. The finding: CPN-MF-07 section 3 named only succession as a
+  second code counting as an institution's, and the directory gives BNK0115 its own name, so a literal reader who
+  merges only the succession the note names files 2,652 and INR 860.0 lakh. Read against the gate table
+  (`determinism-check` section 6): the failing gate is C, confined to a supplementary ask, with the main call forced
+  and G and H passing, so it is an ask-layer wording repair and spends no architecture (the task196 lesson). Fixed in
+  the generator: section 3 now reads that loans reported under a member code the directory lists with an institution
+  as its parent, and loans under the code of an institution it succeeded, count as that institution's. The same fork
+  closed further, so no third judge (`/fix-determinism` step 6); the reader re-ran because a document's sentence
+  changed.
 
 ## Architecture 3 record (banking-credit-financial-risk / credit-scoring-pd-modeling, spent at Gate F on 2026-10-23)
 
@@ -1770,6 +2067,11 @@ its group's surviving records), the same family by its label.
   rates by state (the golden 1.7 times the realised count) and closed the member-level route to 0.79 to 0.90. Long
   shortfalls (recovery 6 per cent a meeting, `jlg4`): the group read over its recent meetings matched the per-meeting
   state within 3 per cent, so any group-aware reading landed; shortened to five meetings on average (`jlg6c`).
+- **Two lender names renamed at stage 3 (2026-10-28).** The bureau's "Sahyog Microfinance Ltd" sat one letter from a real NBFC-MFI (Sahayog Microfinance, Bhopal) and "Utkala Rural Bank" one letter and a synonym from Utkal Grameen Bank, a real Odisha RRB (`reduce-house-fixes` H21); renamed to Salandi Microfinance Ltd (with its successor Salandi Small Finance Bank Ltd) and Gandhamardan Gramya Bank, both after Odisha geography, with no real lender found under either. Labels only: every figure unchanged.
+- **The correspondent code tied to its bank by the name alone (architecture 4, stage 4, 2026-10-28).** The golden merged
+  BNK0115 into BNK0102 by the " - BC Portfolio" suffix; judge pass 1 read the merge as inferred (2,652 and INR 860.1
+  lakh on the successor link alone), and pass 2, after the directory gained `parent_code`, found CPN-MF-07 section 3
+  naming succession only. Both links are now filed: the directory's `parent_code` and section 3's parent clause.
 
 ## Retired
 

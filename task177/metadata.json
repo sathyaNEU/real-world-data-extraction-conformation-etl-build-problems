@@ -1,197 +1,185 @@
 {
  "task": "task177",
- "title": "How many of a public servants' savings and credit cooperative's first 2,400 payroll-deduction loans to members employed by private firms will go into default within the first year, forecast from ten years of payroll loans to public servants and the private employers' own payroll registers",
+ "title": "How many of the microloans in a pool an Odisha NBFC-MFI offers a bank, every loan current at the 31 December 2026 cut-off ten weeks after a cyclone, will be 90 or more days past due on 30 June 2027",
  "domain": "Banking, Credit & Financial Risk",
  "client_domain": "banking-credit-financial-risk",
- "subdomain": "credit scoring and PD modelling (the first-year default of payroll-deduction loans to a new population of borrowers whose employers' staff leave far more often than the record's)",
+ "subdomain": "credit-scoring-pd-modeling (six-month default of joint-liability group microloans in a direct-assignment pool)",
  "objective": "Forecasting & Predictive Modeling",
- "prompt_shape": "one forecast count to the nearest 50 loans and each employer sector's share in default to the nearest 5 per cent; the savings deducted for 2026 and not received by year end by sector; the recoveries on 2023 and 2024 public defaults by unit type",
- "as_of": "2027-01-22",
+ "prompt_shape": "one forecast count to the nearest 100 loans; for each of the fourteen branches the pool borrowers in breach of the bank's microfinance guardrails on the bureau and the pool principal outstanding on their loans in INR lakh; a purchase note with one chart",
+ "as_of": "2027-01-08",
  "deliverables": [
-  "libranza_empresarial_default_forecast.xlsx",
-  "launch_default_note.docx"
+  "pool_90dpd_forecast.xlsx",
+  "pool_purchase_note.docx"
  ],
  "distractor_files": [
-  "supervisor_annual_return_2025.pdf",
-  "labour_market_bulletin_2026q3.csv"
+  "pvm_credit_life_claims_2023-2026.csv",
+  "pvm_field_officer_postings_2026.csv",
+  "pvm_portfolio_report_FY2024-25_to_FY2026-27.xlsx"
  ],
  "distractors": [
   {
-   "file": "supervisor_annual_return_2025.pdf",
+   "file": "pvm_credit_life_claims_2023-2026.csv",
    "wrong_basis": false,
-   "why_relevant": "the cooperative's own reported default share of its payroll-deduction book by year, which looks like the benchmark rate for a new payroll-deduction product",
-   "why_unused": "it reports the public book's balance in default at each year end, a stock on a balance basis, not a first-year default count; no figure reads it",
-   "ruled_out_by": "its own basis (balance 90+ days past due at 31 December, defaults kept for 24 months) and the product rules' default definition"
+   "why_relevant": "deaths close members' loans through the credit-life cover, which looks like it should come off a default forecast or out of the pool",
+   "why_unused": "the pool tape holds live borrowers' current loans at the cut-off; a claim settles a loan that is no longer in the pool, and no figure reads the register",
+   "ruled_out_by": "the term sheet's clause 3 (the pool is the pool tape)"
   },
   {
-   "file": "labour_market_bulletin_2026q3.csv",
+   "file": "pvm_field_officer_postings_2026.csv",
    "wrong_basis": false,
-   "why_relevant": "unemployment and employment by branch of activity, which looks like a way to adjust a default rate for the private sectors' labour markets",
-   "why_unused": "national rates by branch say nothing about the 38 employers' own staff; their payroll registers do; no figure reads it",
-   "ruled_out_by": "the employers' payroll registers, which record their own staff month by month"
+   "why_relevant": "field officer coverage and moves look like a driver of collections in the cyclone months",
+   "why_unused": "no figure reads a field officer; the forecast reads each group's own meetings",
+   "ruled_out_by": "the ledger, which records every instalment at the meeting it fell due"
+  },
+  {
+   "file": "pvm_portfolio_report_FY2024-25_to_FY2026-27.xlsx",
+   "wrong_basis": false,
+   "why_relevant": "the assignor's own PAR and collection efficiency by branch and month, which look like the pool's track record",
+   "why_unused": "branch-level metrics cannot show which loans are current because co-members paid for them; the forecast reads the ledger at the group and meeting",
+   "ruled_out_by": "the operating policy's section 6 (collection efficiency counts every instalment collected at the meeting) and the ledger's GRP_SUPP and GS rows"
   }
  ],
  "stated_inputs": [
-  "2,400",
-  "1 February 2027",
-  "31 January 2028"
+  "31 December 2026",
+  "30 June 2027",
+  "90 or more days past due",
+  "fourteen branches",
+  "12,880",
+  "INR 2,00,000"
  ],
- "field_terms": [],
  "input_gates": {
-  "files": 15,
+  "files": 16,
   "formats": [
    "csv",
+   "parquet",
    "pdf",
    "xlsx"
   ],
-  "largest_file": "employer_payroll_registers_2025_2026.csv",
-  "largest_file_rows": 391077
+  "largest_file": "kshetra_collections_2025-04_to_2026-12.parquet",
+  "largest_file_rows": 776608
  },
  "sources": [
   {
    "files": "all files under target/",
-   "origin": "constructed for this task by task177/generator/build.py (seeded, deterministic) around a fictional public servants' savings and credit cooperative (Coopservir) in a fictional country (Republica de Valdemora), its payroll-deduction loans, the fictional national treasury's returns and 38 fictional private employers. Members and employees are identified by number only. No real organisation's records or person is depicted.",
-   "date": "2027-01-22",
+   "origin": "constructed for this task by task177/generator/build.py (seeded, deterministic) around a fictional NBFC-MFI (Prachi Valley Microfinance Pvt Ltd), a fictional bank (Tamralipta Bank Ltd), fictional lenders on a fictional credit bureau's report and a fictional October 2026 cyclone, set in real Odisha districts and blocks; villages and gram panchayats are invented names. Members are identified by number only. No real organisation's records or person is depicted.",
+   "date": "2027-01-08",
    "license": "CC0-1.0 (original work)"
   }
  ],
- "created": "2026-10-23",
+ "created": "2026-10-28",
  "generator": "task177/generator/build.py",
  "files": [
   {
-   "path": "collection_account_statement_2025_2026.csv",
+   "file": "pool_tape_PVM_2026-12_cutoff_20261231.csv",
    "format": "csv",
-   "bytes": 220348,
-   "rows": 2622,
-   "source": "Constructed for this task (seeded, deterministic): Coopservir treasury, collection account statement export",
-   "date": "2027-01-22",
-   "license": "CC0-1.0 (original work, constructed for this task)"
+   "rows": 12880,
+   "covers": "the loans offered in Pool PVM/2026-12 at the cut-off, one row per loan",
+   "made": "constructed by task177/generator/build.py (seeded, deterministic)"
   },
   {
-   "path": "data_dictionary.xlsx",
-   "format": "xlsx",
-   "bytes": 10511,
-   "rows": 92,
-   "source": "Constructed for this task (seeded, deterministic): Coopservir finance, field descriptions for the pull",
-   "date": "2027-01-21",
-   "license": "CC0-1.0 (original work, constructed for this task)"
+   "file": "kshetra_collections_2025-04_to_2026-12.parquet",
+   "format": "parquet",
+   "rows": 776608,
+   "covers": "every instalment due at a centre meeting from April 2025 to the cut-off, as Kshetra recorded it",
+   "made": "constructed by task177/generator/build.py (seeded, deterministic)"
   },
   {
-   "path": "deduction_agreements_register.xlsx",
-   "format": "xlsx",
-   "bytes": 8627,
-   "rows": 38,
-   "source": "Constructed for this task (seeded, deterministic): Coopservir commercial directorate, register of Libranza Empresarial deduction agreements",
-   "date": "2026-11-03",
-   "license": "CC0-1.0 (original work, constructed for this task)"
-  },
-  {
-   "path": "default_register_2017_2026.csv",
+   "file": "collectpro_collections_FY2023-24.csv",
    "format": "csv",
-   "bytes": 102900,
-   "rows": 2473,
-   "source": "Constructed for this task (seeded, deterministic): Coopservir credit risk, register of Libranza Publica defaults (90 days past due)",
-   "date": "2027-01-22",
-   "license": "CC0-1.0 (original work, constructed for this task)"
+   "rows": 333018,
+   "covers": "every instalment due at a centre meeting, July 2023 to March 2024, as CollectPro exported it",
+   "made": "constructed by task177/generator/build.py (seeded, deterministic)"
   },
   {
-   "path": "defaulted_loan_receipts_2023_2026.csv",
+   "file": "collectpro_collections_FY2024-25.csv",
    "format": "csv",
-   "bytes": 361423,
-   "rows": 4892,
-   "source": "Constructed for this task (seeded, deterministic): Coopservir collections system, receipts applied to defaulted Libranza Publica loans",
-   "date": "2027-01-22",
-   "license": "CC0-1.0 (original work, constructed for this task)"
+   "rows": 445272,
+   "covers": "every instalment due at a centre meeting, April 2024 to March 2025, as CollectPro exported it",
+   "made": "constructed by task177/generator/build.py (seeded, deterministic)"
   },
   {
-   "path": "employer_payroll_registers_2025_2026.csv",
+   "file": "kshetra_migration_map_20250401.csv",
    "format": "csv",
-   "bytes": 46704234,
-   "rows": 391077,
-   "source": "Constructed for this task (seeded, deterministic): Coopservir intake portal, payroll registers uploaded by the 38 agreement employers",
-   "date": "2027-01-22",
-   "license": "CC0-1.0 (original work, constructed for this task)"
+   "rows": 37403,
+   "covers": "CollectPro identifiers of members, loans and groups and their Kshetra identifiers from 1 April 2025",
+   "made": "constructed by task177/generator/build.py (seeded, deterministic)"
   },
   {
-   "path": "labour_market_bulletin_2026q3.csv",
+   "file": "member_kyc_pool_20261231.csv",
    "format": "csv",
-   "bytes": 5527,
-   "rows": 120,
-   "source": "Constructed for this task (seeded, deterministic): Instituto Nacional de Estadistica de Valdemora (fictional), quarterly labour market bulletin, unemployment and employment by branch",
-   "date": "2026-11-14",
-   "license": "CC0-1.0 (original work, constructed for this task)"
+   "rows": 12880,
+   "covers": "KYC of the pool's borrowers: bureau reference, enrolment date, village, gram panchayat and block as recorded at enrolment",
+   "made": "constructed by task177/generator/build.py (seeded, deterministic)"
   },
   {
-   "path": "legacy_core_crosswalk_2021.csv",
+   "file": "centre_master_20261231.csv",
    "format": "csv",
-   "bytes": 442373,
-   "rows": 13404,
-   "source": "Constructed for this task (seeded, deterministic): Coopservir core system migration, legacy to core loan numbers for the loans open at the July 2021 move",
-   "date": "2021-07-01",
-   "license": "CC0-1.0 (original work, constructed for this task)"
+   "rows": 866,
+   "covers": "the assignor's centres: codes on both platforms, branch, village, meeting day, field officer",
+   "made": "constructed by task177/generator/build.py (seeded, deterministic)"
   },
   {
-   "path": "libranza_empresarial_disbursement_file_2027-02-01.csv",
+   "file": "cic_portfolio_review_PVM_20261231.csv",
    "format": "csv",
-   "bytes": 262890,
-   "rows": 2400,
-   "source": "Constructed for this task (seeded, deterministic): Coopservir credit directorate, launch disbursement file of approved Libranza Empresarial applications",
-   "date": "2027-01-22",
-   "license": "CC0-1.0 (original work, constructed for this task)"
+   "rows": 54991,
+   "covers": "the credit bureau's portfolio review of the pool's borrowers at the cut-off, one row per account",
+   "made": "constructed by task177/generator/build.py (seeded, deterministic)"
   },
   {
-   "path": "libranza_empresarial_product_rules_2026.pdf",
+   "file": "cic_member_directory_202612.csv",
+   "format": "csv",
+   "rows": 13,
+   "covers": "the bureau's member directory for the lenders in the review",
+   "made": "constructed by task177/generator/build.py (seeded, deterministic)"
+  },
+  {
+   "file": "pvm_jlg_operating_policy_v6.pdf",
    "format": "pdf",
-   "bytes": 54686,
    "rows": null,
-   "source": "Constructed for this task (seeded, deterministic): Coopservir credit directorate, Libranza Empresarial product rules, version 2.0",
-   "date": "2026-11-20",
-   "license": "CC0-1.0 (original work, constructed for this task)"
+   "covers": "the assignor's JLG operating policy, version 6.1",
+   "made": "constructed by task177/generator/build.py (seeded, deterministic)"
   },
   {
-   "path": "member_savings_ledger_2023_2026.csv",
-   "format": "csv",
-   "bytes": 6547577,
-   "rows": 115921,
-   "source": "Constructed for this task (seeded, deterministic): Coopservir savings system, ledger extract for members with loans in collections and other members whose accounts paid them",
-   "date": "2027-01-22",
-   "license": "CC0-1.0 (original work, constructed for this task)"
-  },
-  {
-   "path": "payroll_loans_public_2017_2026.csv",
-   "format": "csv",
-   "bytes": 6254588,
-   "rows": 46535,
-   "source": "Constructed for this task (seeded, deterministic): Coopservir (fictional) core banking system, Libranza Publica loan book extract at 31 December 2026, loans disbursed January 2017 to December 2026",
-   "date": "2027-01-22",
-   "license": "CC0-1.0 (original work, constructed for this task)"
-  },
-  {
-   "path": "savings_contribution_schedules_2025_2026.csv",
-   "format": "csv",
-   "bytes": 6066009,
-   "rows": 102536,
-   "source": "Constructed for this task (seeded, deterministic): Coopservir intake portal, savings contribution schedules filed by the agreement employers",
-   "date": "2027-01-22",
-   "license": "CC0-1.0 (original work, constructed for this task)"
-  },
-  {
-   "path": "supervisor_annual_return_2025.pdf",
+   "file": "tb_term_sheet_PVM-2026-12.pdf",
    "format": "pdf",
-   "bytes": 54031,
    "rows": null,
-   "source": "Constructed for this task (seeded, deterministic): Coopservir finance, 2025 annual return to the supervisor (fictional), form F-12 summary",
-   "date": "2026-03-27",
-   "license": "CC0-1.0 (original work, constructed for this task)"
+   "covers": "the bank's indicative term sheet for the pool",
+   "made": "constructed by task177/generator/build.py (seeded, deterministic)"
   },
   {
-   "path": "treasury_deduction_returns_2017_2026.csv",
+   "file": "tb_cpn_mf07_microfinance_guardrails.pdf",
+   "format": "pdf",
+   "rows": null,
+   "covers": "the bank's credit policy note on microfinance guardrails",
+   "made": "constructed by task177/generator/build.py (seeded, deterministic)"
+  },
+  {
+   "file": "pvm_field_update_cyclone_2026-11.pdf",
+   "format": "pdf",
+   "rows": null,
+   "covers": "the assignor's field update to lenders after the October 2026 cyclone",
+   "made": "constructed by task177/generator/build.py (seeded, deterministic)"
+  },
+  {
+   "file": "pvm_portfolio_report_FY2024-25_to_FY2026-27.xlsx",
+   "format": "xlsx",
+   "rows": null,
+   "covers": "the assignor's monthly branch portfolio report, April 2024 to December 2026",
+   "made": "constructed by task177/generator/build.py (seeded, deterministic)"
+  },
+  {
+   "file": "pvm_credit_life_claims_2023-2026.csv",
    "format": "csv",
-   "bytes": 735269,
-   "rows": 14093,
-   "source": "Constructed for this task (seeded, deterministic): Tesoreria General de Valdemora (fictional) monthly returns of payroll deductions not applied, as loaded by Coopservir",
-   "date": "2027-01-22",
-   "license": "CC0-1.0 (original work, constructed for this task)"
+   "rows": 138,
+   "covers": "credit-life claims on members' deaths, 2023 to 2026",
+   "made": "constructed by task177/generator/build.py (seeded, deterministic)"
+  },
+  {
+   "file": "pvm_field_officer_postings_2026.csv",
+   "format": "csv",
+   "rows": 324,
+   "covers": "field officers' postings in 2026",
+   "made": "constructed by task177/generator/build.py (seeded, deterministic)"
   }
  ]
 }

@@ -1,347 +1,201 @@
-"""task177 documents: the deduction agreements register and the data dictionary (Excel), the Libranza Empresarial
-product rules and the cooperative's 2025 annual return to its supervisor (PDF). Their text is held here as data so
-checks.py can quote it and verify.py can read it back."""
+"""The data room's documents: the MFI's operating policy, the bank's term sheet and guardrails policy, the MFI's field
+update after the cyclone (PDF, reportlab, fixed metadata so builds are byte-identical), and the MFI's monthly
+portfolio report (xlsx, openpyxl, fixed document properties)."""
 from __future__ import annotations
 
 import datetime as dt
-import os
+import io
+import zipfile
 
-import numpy as np
+from reportlab.lib.pagesizes import A4
+from reportlab.lib.styles import ParagraphStyle
+from reportlab.lib.units import mm
+from reportlab.platypus import Paragraph, SimpleDocTemplate, Spacer, Table, TableStyle
+from reportlab.lib import colors
 from reportlab import rl_config
 
+import params as P
+
 rl_config.invariant = 1
-from reportlab.lib import colors                                                        # noqa: E402
-from reportlab.lib.pagesizes import A4                                                  # noqa: E402
-from reportlab.lib.styles import ParagraphStyle                                         # noqa: E402
-from reportlab.lib.units import mm                                                      # noqa: E402
-from reportlab.pdfbase import pdfmetrics                                                # noqa: E402
-from reportlab.pdfbase.ttfonts import TTFont                                            # noqa: E402
-from reportlab.platypus import Paragraph, SimpleDocTemplate, Spacer, Table, TableStyle  # noqa: E402
 
-import common as C          # noqa: E402
-import postprocess as PP    # noqa: E402
-
-FONT_DIR = "/usr/share/fonts/truetype/"
-for _n, _f in (("Carlito", "crosextra/Carlito-Regular.ttf"), ("Carlito-Bold", "crosextra/Carlito-Bold.ttf"),
-               ("LibSans", "liberation/LiberationSans-Regular.ttf"), ("LibSans-Bold", "liberation/LiberationSans-Bold.ttf")):
-    pdfmetrics.registerFont(TTFont(_n, FONT_DIR + _f))
-INK = colors.HexColor("#1b2430")
-GREY = colors.HexColor("#5d6875")
-ACCENT = colors.HexColor("#1f5b4a")
-RULE = colors.HexColor("#c9d1d6")
-
-# --------------------------------------------------------------------------------------------- the product rules
-RULES_DATE = dt.date(2026, 11, 20)
-RULES_TITLE = "Libranza Empresarial: product rules"
-RULES_SUB = ("Coopservir, Credit Directorate. Version 2.0, approved by the Board of Directors on 20 November 2026 "
-             "(minutes 2026-21). Owner: Esteban Ospina, Credit Director.")
-RULES = [
-    ("1. Scope", [
-        "1.1 Libranza Empresarial is a payroll-deduction loan to a member employed by a private employer that has signed "
-        "a deduction agreement with the cooperative. The libranza for public servants (Libranza Publica) is governed by "
-        "its own rules and is not changed by these.",
-    ]),
-    ("2. Eligibility", [
-        "2.1 The member has made savings contributions through the employer's payroll in each of the twelve months "
-        "before the application.",
-        "2.2 The instalment does not exceed 30 per cent of the member's net monthly pay in the employer's latest "
-        "ordinary payroll, after the deductions already in force.",
-        "2.3 The member is at most 65 years old at the loan's last instalment.",
-    ]),
-    ("3. Terms", [
-        "3.1 Amounts from VMP 1,000,000 to VMP 40,000,000, over 12 to 60 months, at the monthly rate of the rate card in "
-        "force on the disbursement date, as a fixed monthly instalment.",
-        "3.2 The first instalment is deducted in the first payroll after disbursement. An employer that pays "
-        "fortnightly deducts half of the instalment in each fortnight.",
-    ]),
-    ("4. The employer under the agreement", [
-        "4.1 The employer uploads its payroll register for every pay period to the cooperative's intake portal within "
-        "three business days of the pay date, ordinary, bonus and final-settlement payments included.",
-        "4.2 The employer deducts each member's savings contribution and each instalment and transfers them to the "
-        "collection account within five business days of the pay date, with the period in the transfer reference.",
-        "4.3 The employer files a savings contribution schedule for each month through the portal.",
-    ]),
-    ("5. Default", [
-        "5.1 A loan is in default from the month-end at which an instalment is 90 or more days past due, the definition "
-        "the cooperative applies to every loan in its annual return.",
-        "5.2 On default the cooperative may net the member's own savings against the loan's balance (Statutes, article "
-        "41).",
-    ]),
-    ("6. Launch", [
-        "6.1 The first Libranza Empresarial loans are disbursed together on 1 February 2027 to the applications approved "
-        "in the launch disbursement file.",
-    ]),
-]
-RULES_REVISIONS = ("Version 2.0 (20 November 2026): section 6 added; 2.1 to twelve months. Version 1.1 "
-                   "(14 March 2025): section 4. Version 1.0 (30 January 2025).")
-
-# ------------------------------------------------------------------------------------------ the supervisor return
-SUPER_DATE = dt.date(2026, 3, 27)
-SUPER_TITLE = "Annual return 2025: payroll-deduction portfolio"
-SUPER_SUB = ("Coopservir to the Superintendencia de la Economia Solidaria de Valdemora, form F-12 summary. Filed 27 March "
-             "2026. Figures at each 31 December.")
+BODY = ParagraphStyle("b", fontName="Helvetica", fontSize=9.5, leading=12.5, spaceAfter=5)
+HEAD = ParagraphStyle("h", fontName="Helvetica-Bold", fontSize=10.5, leading=13, spaceBefore=6, spaceAfter=4)
+TITLE = ParagraphStyle("t", fontName="Helvetica-Bold", fontSize=12.5, leading=15, spaceAfter=3)
+SMALL = ParagraphStyle("s", fontName="Helvetica", fontSize=8, leading=10, textColor=colors.HexColor("#444444"))
 
 
-def esc(s):
-    return s.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;")
+def _pdf(path, story, title, author, created):
+    buf = io.BytesIO()
+    doc = SimpleDocTemplate(buf, pagesize=A4, leftMargin=20 * mm, rightMargin=20 * mm, topMargin=18 * mm,
+                            bottomMargin=18 * mm, title=title, author=author, creator=author, producer=author,
+                            subject="", keywords="")
+    doc.build(story)
+    data = buf.getvalue()
+    stamp = created.strftime("D:%Y%m%d%H%M%S+05'30'").encode()
+    import re
+    data = re.sub(rb"/CreationDate \(D:[^)]*\)", b"/CreationDate (" + stamp + b")", data)
+    data = re.sub(rb"/ModDate \(D:[^)]*\)", b"/ModDate (" + stamp + b")", data)
+    # the writer's comment lines, blanked after their % marker at equal length so no offset moves
+    for sig in (b"ReportLab Generated PDF document (opensource)",
+                b"ReportLab generated PDF document -- digest (opensource)"):
+        data = data.replace(sig, b" " * len(sig))
+    assert b"reportlab" not in data.lower()
+    with open(path, "wb") as f:
+        f.write(data)
 
 
-def pdf_stamp(d, hh=10, mi=0):
-    return ("D:%04d%02d%02d%02d%02d00-05'00'" % (d.year, d.month, d.day, hh, mi)).encode()
+def _p(t, s=BODY):
+    return Paragraph(t, s)
 
 
-def _styles():
-    return dict(
-        org=ParagraphStyle("org", fontName="Carlito-Bold", fontSize=9.5, leading=12, textColor=ACCENT, spaceAfter=2),
-        h1=ParagraphStyle("h1", fontName="LibSans-Bold", fontSize=15, leading=19, textColor=INK, spaceAfter=4),
-        sub=ParagraphStyle("sub", fontName="Carlito", fontSize=9.2, leading=12, textColor=GREY, spaceAfter=12),
-        h2=ParagraphStyle("h2", fontName="LibSans-Bold", fontSize=11, leading=14, textColor=ACCENT, spaceBefore=8,
-                          spaceAfter=3),
-        body=ParagraphStyle("body", fontName="Carlito", fontSize=10.8, leading=14.4, textColor=INK, spaceAfter=5),
-        cell=ParagraphStyle("cell", fontName="Carlito", fontSize=9.4, leading=12, textColor=INK),
-        small=ParagraphStyle("small", fontName="Carlito", fontSize=8.6, leading=11, textColor=GREY, spaceBefore=10))
+def operating_policy(path):
+    s = [_p("Prachi Valley Microfinance Pvt Ltd", SMALL), _p("Joint Liability Group Lending: Operating Policy", TITLE),
+         _p("Version 6.1, approved by the Board on 24 April 2025, effective 1 May 2025 (supersedes version 6)", SMALL),
+         Spacer(1, 6)]
+    secs = [
+        ("1. Groups and centres",
+         "Loans are made to women in joint liability groups (JLGs) of five members. Members of a group live in the "
+         "same village, are not closely related to one another and agree to be jointly responsible for each "
+         "other's repayment. Three to five groups meeting at the same place form a centre. A centre meets every "
+         "fourteen days on a fixed weekday at a fixed place; where the meeting day is a public holiday or Sunday "
+         "the meeting is held on the next working day. The field officer attends every meeting."),
+        ("2. Loans",
+         "The JLG loan (product JLG-24F) is repaid in 52 equal fortnightly instalments of principal and interest at "
+         "the centre meeting, the first falling due at the meeting fourteen days after disbursement. A member who "
+         "repays a loan in full may be offered a further loan at the next meeting. A group that has stopped "
+         "repaying is not given further loans; a new group may be formed at the centre."),
+        ("3. Group responsibility",
+         "Each member pays her own instalment at the meeting. Where a member cannot pay, the other members of her "
+         "group may pay it on her behalf at the meeting, as the group's joint responsibility provides. The company "
+         "does not require a group to pay for a member and does not charge one member's dues to another member's "
+         "loan account."),
+        ("4. Recording collections",
+         "The field officer records each instalment collected against the member's own loan account, with the "
+         "member number of the person who paid it. Transaction types in Kshetra: OWN, paid by the member herself; "
+         "GRP_SUPP, paid at the meeting by another member of the group on her behalf; NOT_PAID, not paid at the "
+         "meeting. Until 31 March 2025 CollectPro recorded the same as SELF, GS and NIL. An instalment recorded "
+         "OWN, GRP_SUPP, SELF or GS is paid in full on its due date."),
+        ("5. Migration",
+         "All members, groups and loans held in CollectPro on 31 March 2025 were migrated to Kshetra on 1 April "
+         "2025 under new identifiers; the migration map lists each CollectPro identifier and its Kshetra "
+         "identifier. CollectPro numbered groups within a centre (1 to 5); Kshetra gives each group its own "
+         "identifier."),
+        ("6. Days past due and portfolio quality",
+         "An instalment not paid in full on its due date is overdue from the following day. A loan's days past due "
+         "on any date is the number of days from the due date of its oldest instalment not paid in full to that "
+         "date; a loan with no such instalment is current. Portfolio at risk (PAR 30, PAR 90) is the principal "
+         "outstanding of loans 30 or more (90 or more) days past due, as a share of the gross loan portfolio, at "
+         "the month end. Collection efficiency for a month is the instalments collected at the meetings of that "
+         "month as a share of the instalments falling due in it."),
+        ("7. Write-off",
+         "A loan 360 or more days past due is written off at the month end; recovery continues."),
+    ]
+    for h, b in secs:
+        s += [_p(h, HEAD), _p(b)]
+    _pdf(path, s, "JLG Operating Policy v6.1", "Prachi Valley Microfinance Pvt Ltd", dt.datetime(2025, 4, 28, 11, 0))
 
 
-def _footer(text):
-    def draw(canvas, doc):
-        canvas.saveState()
-        canvas.setFont("Carlito", 7.8)
-        canvas.setFillColor(GREY)
-        canvas.drawString(20 * mm, 11 * mm, text)
-        canvas.drawRightString(A4[0] - 20 * mm, 11 * mm, "Page %d" % doc.page)
-        canvas.restoreState()
-    return draw
+def term_sheet(path, n_loans, principal_lakh):
+    s = [_p("Tamralipta Bank Ltd, Inclusive Lending and Direct Assignment", SMALL),
+         _p("Indicative term sheet: direct assignment of microfinance loans, Pool PVM/2026-12", TITLE),
+         _p("Issued 8 January 2027. Indicative only and subject to due diligence and the Bank's approvals.", SMALL),
+         Spacer(1, 6)]
+    rows = [
+        ["1. Assignor and servicer", "Prachi Valley Microfinance Pvt Ltd (NBFC-MFI)"],
+        ["2. Assignee", "Tamralipta Bank Ltd"],
+        ["3. Pool", "The loans listed in the pool tape dated 31 December 2026 (%s loans, principal outstanding "
+                    "INR %.2f lakh at the cut-off)" % (f"{n_loans:,}", principal_lakh)],
+        ["4. Cut-off date", "31 December 2026"],
+        ["5. Eligibility", "JLG-24F loans current at the cut-off (no instalment due on or before the cut-off left "
+                           "unpaid), disbursed on or before 1 October 2026 (minimum holding period of three "
+                           "months), from the Assignor's fourteen branches in Odisha"],
+        ["6. Minimum retention", "10 per cent of each loan retained by the Assignor; the Assignee acquires 90 per "
+                                 "cent of the principal outstanding"],
+        ["7. Consideration", "At par on the Assignee's share of principal outstanding at the cut-off"],
+        ["8. Servicing", "By the Assignor at its centre meetings; collections remitted monthly"],
+        ["9. Priority sector", "Microfinance loans to women borrowers; weaker sections"],
+        ["10. Settlement", "On or before 30 March 2027, subject to the Assignee's credit approval"],
+        ["11. Data room", "Pool tape; CollectPro collection exports (July 2023 to March 2025); Kshetra collections "
+                          "(April 2025 to December 2026); the migration map; member KYC for the pool; centre "
+                          "master; the Assignor's monthly portfolio report; credit bureau portfolio review of the "
+                          "pool's borrowers at the cut-off"],
+    ]
+    t = Table([[_p(a), _p(b)] for a, b in rows], colWidths=[45 * mm, 120 * mm])
+    t.setStyle(TableStyle([("VALIGN", (0, 0), (-1, -1), "TOP"), ("LINEBELOW", (0, 0), (-1, -1), 0.25,
+                                                                   colors.HexColor("#bbbbbb"))]))
+    s.append(t)
+    _pdf(path, s, "Term sheet PVM/2026-12", "Tamralipta Bank Ltd", dt.datetime(2027, 1, 8, 16, 20))
 
 
-def _doc(path, title, author):
-    return SimpleDocTemplate(path, pagesize=A4, leftMargin=20 * mm, rightMargin=20 * mm, topMargin=20 * mm,
-                             bottomMargin=20 * mm, title=title, author=author, subject="", creator="", producer="")
+def guardrails(path):
+    s = [_p("Tamralipta Bank Ltd, Credit Policy Note CPN-MF-07", SMALL),
+         _p("Microfinance guardrails for direct assignment and co-lending", TITLE),
+         _p("Approved by the Credit Policy Committee on 2 May 2025; applies to pools assessed after that date", SMALL),
+         Spacer(1, 6)]
+    secs = [
+        ("1. Purpose",
+         "The Bank buys and co-lends microfinance loans only where the borrowers' total microfinance indebtedness "
+         "is within the industry's guardrails. This note sets out how a borrower is assessed for a pool."),
+        ("2. Breach",
+         "A borrower is in breach of the guardrails if, on the credit bureau report at the pool's cut-off, she has "
+         "active microfinance loans from four or more lending institutions, counting the institution whose loan is "
+         "offered, or more than INR 2,00,000 outstanding in total across her active microfinance loans."),
+        ("3. Counting",
+         "Microfinance loans are the bureau's JLG and MFI-IND account types; closed accounts and other credit (gold "
+         "loans, Kisan credit cards, consumer loans) are not counted. A lending institution is counted once. Loans "
+         "reported under a member code that the bureau's member directory lists with an institution as its parent, "
+         "and loans reported under the member code of an institution it succeeded, count as that institution's. "
+         "A loan is counted once, at its latest report."),
+        ("4. Reporting",
+         "The assessment is reported to the Credit Committee with each pool, by branch of the assignor."),
+    ]
+    for h, b in secs:
+        s += [_p(h, HEAD), _p(b)]
+    _pdf(path, s, "CPN-MF-07 Microfinance guardrails", "Tamralipta Bank Ltd", dt.datetime(2025, 5, 2, 15, 5))
 
 
-def _table(rows, widths, st):
-    data = [[Paragraph(esc(str(c)), st["cell"]) for c in r] for r in rows]
-    t = Table(data, colWidths=widths)
-    t.setStyle(TableStyle([("LINEBELOW", (0, 0), (-1, 0), 0.6, RULE), ("VALIGN", (0, 0), (-1, -1), "TOP"),
-                           ("TOPPADDING", (0, 0), (-1, -1), 2), ("BOTTOMPADDING", (0, 0), (-1, -1), 2),
-                           ("FONTNAME", (0, 0), (-1, 0), "Carlito-Bold")]))
-    return t
+def field_update(path):
+    s = [_p("Prachi Valley Microfinance Pvt Ltd, Operations", SMALL),
+         _p("Field update after the October cyclone", TITLE),
+         _p("Circulated to lenders on 18 November 2026", SMALL), Spacer(1, 6)]
+    paras = [
+        "The severe cyclonic storm that crossed the Odisha coast on the night of 16 October 2026 damaged houses, "
+        "boats, nets and standing paddy across our branches in Kendrapara and Jagatsinghpur districts, and to a "
+        "lesser extent in Bhadrak and Balasore. Our branches in Jajpur and Cuttack were not affected.",
+        "All staff are safe. Centre meetings have continued on their schedule; where a meeting place was flooded "
+        "the field officer held the meeting at the nearest dry place on the same day. Field officers had visited "
+        "every coastal centre by 15 November.",
+        "We have not announced a moratorium and no lender has asked for one. We will share our monthly portfolio "
+        "report with lenders as usual.",
+    ]
+    for t in paras:
+        s.append(_p(t))
+    _pdf(path, s, "Field update, October cyclone", "Prachi Valley Microfinance Pvt Ltd", dt.datetime(2026, 11, 18, 10, 30))
 
 
-def rules_text():
-    out = [RULES_TITLE, RULES_SUB]
-    for h, paras in RULES:
-        out.append(h)
-        out.extend(paras)
-    out.append(RULES_REVISIONS)
-    return out
+APP_XML = (b'<?xml version="1.0" encoding="UTF-8" standalone="yes"?>\n'
+           b'<Properties xmlns="http://schemas.openxmlformats.org/officeDocument/2006/extended-properties" '
+           b'xmlns:vt="http://schemas.openxmlformats.org/officeDocument/2006/docPropsVTypes">'
+           b'<Application>Microsoft Excel</Application><DocSecurity>0</DocSecurity><ScaleCrop>false</ScaleCrop>'
+           b'<Company>%s</Company><AppVersion>16.0300</AppVersion></Properties>')
 
 
-def write_rules(out):
-    path = os.path.join(out, C.F_RULES)
-    st = _styles()
-    doc = _doc(path, RULES_TITLE, "Credit Directorate")
-    story = [Paragraph(esc(C.ORG + " | Credit Directorate"), st["org"]), Paragraph(esc(RULES_TITLE), st["h1"]),
-             Paragraph(esc(RULES_SUB), st["sub"])]
-    for h, paras in RULES:
-        story.append(Paragraph(esc(h), st["h2"]))
-        for p in paras:
-            story.append(Paragraph(esc(p), st["body"]))
-    story.append(Spacer(1, 4))
-    story.append(Paragraph(esc(RULES_REVISIONS), st["small"]))
-    foot = "Coopservir. Credit Directorate. Board approved product rules."
-    doc.build(story, onFirstPage=_footer(foot), onLaterPages=_footer(foot))
-    PP.normalize_pdf(path, pdf_stamp(RULES_DATE, 17, 5), pdf_stamp(RULES_DATE, 17, 5))
-
-
-def supervisor_rows(P):
-    """the libranza book at each 31 December 2021 to 2025, as the return reports it"""
-    rows = []
-    for y in range(2021, 2026):
-        t = C.mi(y, 12)
-        open_ = (P["disb"] <= t) & ((P["end_m"] < 0) | (P["end_m"] > t)) & ((P["dflt_m"] < 0) | (P["dflt_m"] > t))
-        bal = 0.0
-        for i in np.where(open_)[0]:
-            bal += C.balance_after(P["principal"][i], P["rate"][i], int(P["term"][i]), int(t - P["disb"][i]))
-        in_def = (P["dflt_m"] >= 0) & (P["dflt_m"] <= t) & (P["dflt_m"] > t - 24)
-        dbal = 0.0
-        for i in np.where(in_def)[0]:
-            k = int(P["dflt_m"][i] - P["disb"][i]) - 3
-            dbal += C.balance_after(P["principal"][i], P["rate"][i], int(P["term"][i]), max(0, k))
-        tot = bal + dbal
-        rows.append((str(y), "{:,}".format(int(open_.sum() + in_def.sum())), "{:,.0f}".format(tot / 1e6),
-                     "%.2f%%" % (100 * dbal / tot), "{:,.0f}".format(dbal * 0.62 / 1e6)))
-    return rows
-
-
-def write_supervisor(out, P):
-    path = os.path.join(out, C.F_SUPER)
-    st = _styles()
-    doc = _doc(path, SUPER_TITLE, "Finance")
-    story = [Paragraph(esc(C.ORG + " | Finance"), st["org"]), Paragraph(esc(SUPER_TITLE), st["h1"]),
-             Paragraph(esc(SUPER_SUB), st["sub"])]
-    story.append(Paragraph(esc("Libranza Publica portfolio"), st["h2"]))
-    story.append(_table([("31 December", "Loans", "Balance, VMP million", "90+ days past due, share of balance",
-                          "Provision held, VMP million")] + supervisor_rows(P),
-                        [24 * mm, 22 * mm, 36 * mm, 46 * mm, 38 * mm], st))
-    story.append(Paragraph(esc("The balance includes loans in default for up to 24 months after default; loans written "
-                               "off are excluded. Provisions follow the Superintendencia's schedule for payroll-deduction "
-                               "consumer loans."), st["body"]))
-    story.append(Paragraph(esc("Libranza Empresarial: no loans at 31 December 2025."), st["body"]))
-    foot = "Coopservir. Form F-12 summary, 2025."
-    doc.build(story, onFirstPage=_footer(foot), onLaterPages=_footer(foot))
-    PP.normalize_pdf(path, pdf_stamp(SUPER_DATE, 11, 40), pdf_stamp(SUPER_DATE, 11, 40))
-
-
-# ------------------------------------------------------------------------------------------------- Excel files
-def write_agreements(out, E):
-    from openpyxl import Workbook
-    from openpyxl.styles import Font, PatternFill
-    path = os.path.join(out, C.F_AGREE)
-    wb = Workbook()
-    ws = wb.active
-    ws.title = "agreements"
-    head = ("employer_nit", "legal_name", "sector", "agreement_signed", "first_register_period", "city")
-    fill = PatternFill("solid", fgColor="DCE7E2")
-    for j, h in enumerate(head):
-        c = ws.cell(row=1, column=j + 1, value=h)
-        c.font = Font(bold=True)
-        c.fill = fill
-    rng = C.stream("agreements_xlsx")
-    import world as W
-    for i, e in enumerate(sorted(E, key=lambda e: e["start"])):
-        y, m = C.ym(e["start"])
-        signed = dt.date(y, m, 1) - dt.timedelta(days=int(rng.integers(5, 40)))
-        city = W.PLACES[int(rng.integers(0, len(W.PLACES)))]
-        vals = (e["nit"], e["name"], e["sector"], signed, "%04d-%02d" % (y, m), city)
-        for j, v in enumerate(vals):
-            c = ws.cell(row=i + 2, column=j + 1, value=v)
-            if j == 3:
-                c.number_format = "yyyy-mm-dd"
-    for col, w in zip("ABCDEF", (16, 42, 22, 16, 20, 22)):
-        ws.column_dimensions[col].width = w
-    ws.freeze_panes = "A2"
-    wb.save(path)
-    PP.normalize_ooxml(path, "Paola Ayala", "Paola Ayala", "2025-01-28T14:02:00Z", "2026-11-03T16:21:00Z",
-                       excel=True, company=C.ORG)
-
-
-FIELDS = (
-    (C.F_LOANS, "loan_no", "text", "The loan's number in the core system. Loans closed before the core system went live in July 2021 keep their legacy number; legacy loans open at the move carry a new number (see the crosswalk)."),
-    (C.F_LOANS, "member_id", "integer", "The member's national id number."),
-    (C.F_LOANS, "payroll_unit", "text", "The Tesoreria payroll unit that pays the member's salary and takes the deduction."),
-    (C.F_LOANS, "unit_type", "text", "national, territorial, health or education, from the Tesoreria's unit list."),
-    (C.F_LOANS, "contract_type", "text", "The member's appointment at origination: CARRERA, LIBRE NOMBRAMIENTO or TEMPORAL in the core system; P (permanent) or T (temporary) as stored by the legacy system."),
-    (C.F_LOANS, "hire_date", "date", "First day of the month the member entered the payroll unit's service."),
-    (C.F_LOANS, "birth_year", "integer", "The member's year of birth."),
-    (C.F_LOANS, "net_pay_at_origination", "number", "Net monthly pay on the payroll certificate at origination, in pesos; legacy-system loans in thousands of pesos."),
-    (C.F_LOANS, "disbursement_date", "date", "Date the loan was disbursed."),
-    (C.F_LOANS, "principal", "number", "Amount lent, in pesos; legacy-system loans in thousands of pesos."),
-    (C.F_LOANS, "term_months", "integer", "Number of monthly instalments."),
-    (C.F_LOANS, "monthly_rate", "number", "Monthly interest rate."),
-    (C.F_LOANS, "instalment", "number", "Fixed monthly instalment, in pesos; legacy-system loans in thousands of pesos."),
-    (C.F_LOANS, "collection_channel", "text", "How the loan was being collected on 31 December 2026: NOMINA (payroll deduction), DEBITO DIRECTO (debit to the member's account), COBRANZA (in collections after default) or CERRADO."),
-    (C.F_LOANS, "closed_date", "date", "Date the loan closed, for CERRADO loans."),
-    (C.F_LOANS, "closure_reason", "text", "VENCIMIENTO (paid to term) or COMPRA DE CARTERA (paid off by another lender)."),
-    (C.F_LOANS, "origin_system", "text", "LEGACY for loans disbursed in the legacy system (to June 2021), CORE after."),
-    (C.F_XWALK, "legacy_loan_no", "text", "Legacy loan number."),
-    (C.F_XWALK, "core_loan_no", "text", "Number given in the core system to a legacy loan open at the move."),
-    (C.F_XWALK, "migrated_on", "date", "Migration date."),
-    (C.F_RETURNS, "period", "text", "Payroll month of the return: YYYYMM to March 2023, YYYY-MM from April 2023."),
-    (C.F_RETURNS, "payroll_unit", "text", "The Tesoreria payroll unit."),
-    (C.F_RETURNS, "national_id", "integer", "The member's national id number."),
-    (C.F_RETURNS, "loan_reference", "text", "The loan number the deduction order carries (legacy numbers to June 2021)."),
-    (C.F_RETURNS, "amount", "number", "Instalment not deducted, in pesos (legacy loans: as ordered, in pesos)."),
-    (C.F_RETURNS, "reason", "text", "Why the deduction was not applied: 01 or SIN SALARIO, no salary paid to the member in the month; 02 or SIN CUPO, salary paid but insufficient margin after priority deductions. One row per deduction not applied; deductions applied are not returned."),
-    (C.F_DEFAULTS, "loan_reference", "text", "The loan's number at the default date (legacy numbers to June 2021)."),
-    (C.F_DEFAULTS, "member_id", "integer", "The member's national id number."),
-    (C.F_DEFAULTS, "default_date", "date", "The month-end at which an instalment first stood 90 or more days past due."),
-    (C.F_DEFAULTS, "balance_at_default", "number", "Principal balance owed at the default date, in pesos."),
-    (C.F_DEFAULTS, "cure_date", "date", "Date the arrears were cleared, if they were."),
-    (C.F_RECEIPTS, "receipt_id", "text", "Receipt number in the collections system."),
-    (C.F_RECEIPTS, "receipt_date", "date", "Date the payment was received."),
-    (C.F_RECEIPTS, "loan_reference", "text", "The defaulted loan the payment was applied to."),
-    (C.F_RECEIPTS, "member_id", "integer", "The borrowing member's national id number."),
-    (C.F_RECEIPTS, "channel", "text", "TRANSFERENCIA (transfer into the collection account), CAJA (cash at a branch) or REVERSO (a receipt reversed because the payment was returned)."),
-    (C.F_RECEIPTS, "originating_account", "text", "For transfers, the paying account as bank code and account number."),
-    (C.F_RECEIPTS, "amount", "number", "Amount applied, in pesos; reversals negative."),
-    (C.F_SAVINGS, "savings_account", "text", "The member's savings account at the cooperative, bank code 0731."),
-    (C.F_SAVINGS, "member_id", "integer", "The account holder's national id number."),
-    (C.F_SAVINGS, "movement_date", "date", "Date of the movement."),
-    (C.F_SAVINGS, "movement", "text", "SALDO INICIAL (balance on 1 January 2023), APORTE (contribution), INTERES (annual interest) or RETIRO (withdrawal or transfer out)."),
-    (C.F_SAVINGS, "amount", "number", "Amount in pesos, withdrawals negative."),
-    (C.F_SAVINGS, "balance", "number", "Balance after the movement."),
-    (C.F_REGISTERS, "employer_nit", "text", "The employer's tax number."),
-    (C.F_REGISTERS, "register_no", "text", "The employer's register number for the upload."),
-    (C.F_REGISTERS, "period_start", "date", "First day of the pay period."),
-    (C.F_REGISTERS, "period_end", "date", "Last day of the pay period."),
-    (C.F_REGISTERS, "pay_date", "date", "Date the payment was made."),
-    (C.F_REGISTERS, "payment_type", "text", "NOMINA (ordinary pay), PRIMA (the June and December service bonus) or LIQUIDACION (final settlement at the end of employment)."),
-    (C.F_REGISTERS, "employee_id", "text", "The employee's national id as the intake portal stored it."),
-    (C.F_REGISTERS, "hire_date", "date", "First day of the month the employee was hired."),
-    (C.F_REGISTERS, "base_salary", "number", "Monthly base salary, in pesos."),
-    (C.F_REGISTERS, "gross_pay", "number", "Gross pay for the period, in pesos."),
-    (C.F_REGISTERS, "deductions", "number", "All deductions for the period, in pesos."),
-    (C.F_REGISTERS, "net_pay", "number", "Net pay for the period, in pesos."),
-    (C.F_LAUNCH, "loan_no", "text", "Libranza Empresarial loan number."),
-    (C.F_LAUNCH, "member_id", "integer", "The member's national id number."),
-    (C.F_LAUNCH, "employer_nit", "text", "The employer's tax number."),
-    (C.F_LAUNCH, "hire_date", "date", "From the employer's employment certificate."),
-    (C.F_LAUNCH, "member_since", "date", "Month the member's first contribution was received."),
-    (C.F_LAUNCH, "certified_net_pay", "number", "Net monthly pay certified by the employer for the application, in pesos."),
-    (C.F_LAUNCH, "principal", "number", "Amount to be disbursed, in pesos."),
-    (C.F_LAUNCH, "term_months", "integer", "Number of monthly instalments."),
-    (C.F_LAUNCH, "monthly_rate", "number", "Monthly interest rate."),
-    (C.F_LAUNCH, "instalment", "number", "Fixed monthly instalment, in pesos."),
-    (C.F_LAUNCH, "disbursement_date", "date", "Disbursement date."),
-    (C.F_LAUNCH, "first_deduction_period", "text", "Payroll month of the first deduction."),
-    (C.F_SCHED, "schedule_no", "text", "Number of the savings contribution schedule."),
-    (C.F_SCHED, "employer_nit", "text", "The employer's tax number."),
-    (C.F_SCHED, "period", "text", "Month of the contributions."),
-    (C.F_SCHED, "filed_on", "date", "Date the schedule was filed through the portal."),
-    (C.F_SCHED, "member_id", "integer", "The member's national id number."),
-    (C.F_SCHED, "contribution", "number", "Savings contribution deducted, in pesos."),
-    (C.F_STMT, "posting_date", "date", "Posting date on the collection account."),
-    (C.F_STMT, "description", "text", "The bank's transaction description."),
-    (C.F_STMT, "payer_id", "text", "Tax number or national id of the payer, as the paying bank sent it."),
-    (C.F_STMT, "payer_name", "text", "Payer's name, as the paying bank sent it."),
-    (C.F_STMT, "reference", "text", "Reference sent with the payment."),
-    (C.F_STMT, "credit", "number", "Credit, in pesos."),
-    (C.F_STMT, "debit", "number", "Debit, in pesos."),
-    (C.F_STMT, "balance", "number", "Running balance from 1 January 2025, in pesos."),
-    (C.F_LABOUR, "trimestre", "text", "Quarter."),
-    (C.F_LABOUR, "rama_actividad", "text", "Branch of economic activity."),
-    (C.F_LABOUR, "tasa_desempleo_pct", "number", "Unemployment rate, per cent."),
-    (C.F_LABOUR, "ocupados_miles", "number", "Employed persons, thousands."),
-    (C.F_AGREE, "employer_nit", "text", "The employer's tax number."),
-    (C.F_AGREE, "legal_name", "text", "Registered name."),
-    (C.F_AGREE, "sector", "text", "The cooperative's sector for the employer."),
-    (C.F_AGREE, "agreement_signed", "date", "Date the deduction agreement was signed."),
-    (C.F_AGREE, "first_register_period", "text", "First month for which the employer uploaded its payroll register."),
-    (C.F_AGREE, "city", "text", "City of the employer's main site."),
-)
-
-
-def write_dictionary(out):
-    from openpyxl import Workbook
-    from openpyxl.styles import Alignment, Font, PatternFill
-    path = os.path.join(out, C.F_DICT)
-    wb = Workbook()
-    ws = wb.active
-    ws.title = "fields"
-    head = ("file", "field", "type", "description")
-    fill = PatternFill("solid", fgColor="DCE7E2")
-    for j, h in enumerate(head):
-        c = ws.cell(row=1, column=j + 1, value=h)
-        c.font = Font(bold=True)
-        c.fill = fill
-    for i, row in enumerate(FIELDS):
-        for j, v in enumerate(row):
-            c = ws.cell(row=i + 2, column=j + 1, value=v)
-            if j == 3:
-                c.alignment = Alignment(wrap_text=True, vertical="top")
-    for col, w in zip("ABCD", (44, 26, 10, 100)):
-        ws.column_dimensions[col].width = w
-    ws.freeze_panes = "A2"
-    wb.save(path)
-    PP.normalize_ooxml(path, "Paola Ayala", "Paola Ayala", "2025-02-11T15:40:00Z", "2027-01-21T18:12:00Z",
-                       excel=True, company=C.ORG)
+def fixed_xlsx(path, when=(2027, 1, 6, 9, 0, 0), company=b"Prachi Valley Microfinance Pvt Ltd", author=None):
+    """openpyxl writes the current time into docProps/core.xml and itself into docProps/app.xml; pin the times to the
+    file's own date, name the issuer, and fix the zip entries' dates."""
+    stamp = ("%04d-%02d-%02dT%02d:%02d:%02dZ" % when).encode()
+    with zipfile.ZipFile(path) as z:
+        items = [(i, z.read(i.filename)) for i in z.infolist()]
+    import re
+    with zipfile.ZipFile(path, "w", zipfile.ZIP_DEFLATED) as z:
+        for info, data in items:
+            if info.filename == "docProps/core.xml":
+                data = re.sub(rb"(<dcterms:created[^>]*>)[^<]*(</dcterms:created>)", rb"\g<1>" + stamp + rb"\g<2>", data)
+                data = re.sub(rb"(<dcterms:modified[^>]*>)[^<]*(</dcterms:modified>)", rb"\g<1>" + stamp + rb"\g<2>", data)
+                if author:
+                    data = re.sub(rb"(<dc:creator[^>]*>)[^<]*(</dc:creator>)", rb"\g<1>" + author + rb"\g<2>", data)
+            if info.filename == "docProps/app.xml":
+                data = APP_XML % company
+            zi = zipfile.ZipInfo(info.filename, date_time=when)
+            zi.compress_type = zipfile.ZIP_DEFLATED
+            z.writestr(zi, data)
