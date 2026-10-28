@@ -72,8 +72,9 @@ def brief():
                    "issued to them from 1 March to 30 June 2027, for whatever reason.", LIST, bulletText="•"),
          Paragraph("A patient who leaves the practice or dies before 30 June 2027 is not counted. A patient first "
                    "issued a statin after 30 November 2026 is not in the figure. Each practice's figure is an "
-                   "expected number of patients, rounded to the nearest 10; the practices are compared on their "
-                   "figures before rounding.", BODY),
+                   "expected number of patients: each patient's own chance, on what that patient's record shows at "
+                   "the searches, added up over the practice's patients and rounded to the nearest 10; the practices "
+                   "are compared on their figures before rounding.", BODY),
          Paragraph("A statin here is atorvastatin, simvastatin, rosuvastatin, pravastatin or fluvastatin, at any "
                    "strength, on an acute or a repeat prescription. Ezetimibe is not a statin.", BODY),
          Paragraph("Timetable", H2)]

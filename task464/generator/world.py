@@ -131,6 +131,44 @@ REISSUE_P = 0.22               # share of issues of a short line in its window c
 TWIN_P = 0.012                 # duplicate requests both dispensed, any non-statin repeat
 REPRINT_P = 0.004              # spoilt or lost paper prescriptions reprinted, non-statin repeats
 
+# Ask A, how each system's records carry a dose. Some prescribers write an ACE inhibitor or ARB dose in milligrams
+# ("5mg once daily"), which on a repeat of half that strength is two a day; system B's repeat search reports each
+# repeat as it was authorised, with later edits only in the change log; system A's audit export files every change
+# against the drug line's current repeat.
+MG_SHARE = 0.30
+MG_TWO_OK = {("Ramipril", "2.5mg"), ("Ramipril", "5mg"), ("Lisinopril", "10mg"), ("Lisinopril", "20mg"),
+             ("Perindopril erbumine", "4mg"), ("Losartan", "50mg"), ("Candesartan", "8mg"), ("Irbesartan", "150mg")}
+MG_ONCE = ["%s once daily", "%s daily", "Take %s once a day", "%s each day"]
+
+
+def units_per_dose(text):
+    """Tablets or capsules per dose in the simulator's own direction wording."""
+    s = " %s " % text.lower()
+    if " two " in s or " 2 " in s: return 2
+    if " half " in s: return 0.5
+    return 1
+
+
+def mg_text(text, strength, variant):
+    """The same directions with the dose written in milligrams."""
+    mg = units_per_dose(text) * float(strength[:-2])
+    dose = ("%g" % mg) + "mg"
+    s = text.lower()
+    if "twice" in s or " bd" in " " + s: return "%s twice daily" % dose
+    if "morning" in s: return "%s in the morning" % dose
+    if "night" in s or "nocte" in s: return "%s at night" % dose
+    return MG_ONCE[variant % len(MG_ONCE)] % dose
+
+
+# Ask B, how the hospitals code the event on a discharge summary: a heart attack as an infarction, a STEMI, an NSTEMI
+# or the synonym 'Heart attack'; unstable angina is not an infarction, and its summaries often carry the patient's
+# earlier infarction as a history code dated the day it was coded.
+MI_FAMILY = {"22298006": "Myocardial infarction", "401303003": "Acute ST segment elevation myocardial infarction",
+             "401314000": "Acute non-ST segment elevation myocardial infarction"}
+HEART_ATTACK = ("22298006", "Heart attack")
+UNSTABLE_ANGINA = ("4557003", "Unstable angina")
+OLD_MI = ("1755008", "Old myocardial infarction")
+
 # Ask B: ticagrelor 90mg after a heart attack.
 MI_Y = 0.012                   # heart attacks a year among the network's statin patients (plus new presentations)
 TICAGRELOR_ISSUES = 13         # the GP repeat after discharge: thirteen 28-day issues

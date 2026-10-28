@@ -1,19 +1,20 @@
 """task464 architecture 9: the ask layer's ceiling, measured on the cut pack.
 
-The cracker (supplemental-stumping Part 1.1) lands the call, runs the hygiene battery and executes every filed
-rule the return specification points at. On R1 it drops the cancelled items, keeps the duplicate requests that
-were dispensed, carries supply forward within the drug, and reads each issue's days at the dose in the repeat's
-directions, which the authorisation extract gives as they stand at the searches. On R2 it takes the day a
-patient started ticagrelor 90mg from the issue records, the practice's first issue of it. That is the strongest
-reading of the asks a response can take without rebuilding the directions in force on each issue from the change
-log, or finding the start in the discharge summaries' coded entries.
+The cracker (supplemental-stumping Part 1.1) is the route the portal's responses showed: it lands the call, drops
+the cancelled items, keeps the duplicate requests that were dispensed, carries supply forward within the drug, reads
+every dose in the directions right (a dose written in milligrams against the product's strength), and rebuilds the
+directions on each issue by walking the change log back from the directions each repeat list gives, matching each
+change to the repeat its row names. On R2 it takes each start from the discharge summaries' coded entries, pairs it
+with the infarction coded within three days, counts it at the practice registered that day and its 90mg issues at
+any practice, and reads a term naming a myocardial infarction as the infarction.
 
   C = 38 + 7 + 55 * Lc     the landed call's score
   S = 5  + 7 + 55 * Ls     the best response off the call
   pair = (C + S) / 2       the ceiling precut.py reads
 
 The asks read no row the call reads (checks.py, the separation block), so a response off the call takes the same
-ask path as the cracker and Ls equals Lc by construction.
+ask path as the cracker and Ls equals Lc by construction. The variants below are the other uniform readings a
+careful response could take; the worst of them is reported beside the cracker's, and the gated figure is the worse.
 """
 import json, os, hashlib
 import world as W
@@ -31,16 +32,26 @@ def digest():
     return h.hexdigest()[:16]
 
 
-def cracker(D):
-    a = A.ask_a(D, use_history=False, drop_cancelled=True)
-    b = A.ask_b(D, anchor="gp")
-    return a, b
+VARIANTS = {
+    "cracker: walk back by repeat reference, infarction by term": (dict(join="ref", walk="back"), dict(mi="term")),
+    "walk forward through the log by repeat reference": (dict(join="ref", walk="log"), dict(mi="term")),
+    "walk back, the patient's changes pooled by product": (dict(join="line", walk="back"), dict(mi="term")),
+    "walk back by reference, infarction as the one concept": (dict(join="ref", walk="back"), dict(mi="code")),
+    "the listed directions, no log": (dict(use_history=False), dict(mi="term")),
+    "doses read as tablets a day, walk back": (dict(join="ref", walk="back", parse="words"), dict(mi="term")),
+}
+CRACKER = "cracker: walk back by repeat reference, infarction by term"
 
 
-def rows(D=None, wide=False):
+def cracker(D, variant=CRACKER):
+    ka, kb = VARIANTS[variant]
+    return A.ask_a(D, **ka), A.ask_b(D, **kb)
+
+
+def rows(D=None, wide=False, variant=CRACKER):
     D = D or A.Data()
     F = A.figures(D, write=False)
-    a, b = cracker(D)
+    a, b = cracker(D, variant)
     out = []
     for c in sorted(F["ask_a"]):
         k = W.BY_CODE[c]["name"]
@@ -67,7 +78,12 @@ def hazards(D, F):
         return A.pct(sum(v[1] for v in x.values()), sum(v[0] for v in x.values()), 0)
     g_a, g_b = F["ask_a_network"]["pct"], F["ask_b_network"]["pct"]
     out = {
-        "R1 current dosage (the device)": net_a(A.ask_a(D, use_history=False)) - g_a,
+        "R1 the repeat lists' directions, no log": net_a(A.ask_a(D, use_history=False)) - g_a,
+        "R1 log rows matched by the reference they name": net_a(A.ask_a(D, join="ref")) - g_a,
+        "R1 walked back from the listed directions": net_a(A.ask_a(D, walk="back")) - g_a,
+        "R1 milligram doses read as tablets a day": net_a(A.ask_a(D, parse="words")) - g_a,
+        "R2 infarction as the one concept 22298006": net_b(A.ask_b(D, mi="code")) - g_b,
+        "R2 infarction as any term naming one": net_b(A.ask_b(D, mi="term")) - g_b,
         "R1 cancelled items kept": net_a(A.ask_a(D, drop_cancelled=False)) - g_a,
         "R1 second issue within 7 days dropped": net_a(A.ask_a(D, dedup_days=7)) - g_a,
         "R1 every issue read as 28 days": net_a(A.ask_a(D, fixed_days=28)) - g_a,
@@ -92,7 +108,14 @@ def main(write=True):
     kept, Lc, Ls, pair = pair_of(rs)
     wide = rows(D, wide=True)
     kw, Lw, _, pw = pair_of(wide)
+    var = {}
+    for v in VARIANTS:
+        rv = rows(D, variant=v)
+        k2, L2, _, p2 = pair_of(rv)
+        var[v] = dict(kept=k2, L=round(L2, 4), pair=round(p2, 1), keeps=[r[0] for r in rv if r[3]])
+    worst = max(var, key=lambda v: var[v]["pair"])
     res = dict(pack=digest(), asked_figures=len(rs), kept=kept, Lc=round(Lc, 4), Ls=round(Ls, 4), pair=round(pair, 1),
+               variants=var, worst_variant=worst, gated_pair=max(round(pair, 1), var[worst]["pair"]),
                mirror_leakage_pct=round(100 * Ls, 1),
                every_return_column=dict(figures=len(wide), kept=kw, L=round(Lw, 4), pair=round(pw, 1)),
                rows=[dict(figure=n, golden=g, cracker=v, kept=h) for n, g, v, h in rs],
@@ -108,6 +131,9 @@ if __name__ == "__main__":
         print("%-44s %8s %8s %s" % (x["figure"], x["golden"], x["cracker"], "KEEP" if x["kept"] else "miss"))
     print("pack %s: cracker keeps %d of %d asked figures, Lc %.3f, pair ceiling %.1f, mirror leakage %.1f%%"
           % (r["pack"], r["kept"], r["asked_figures"], r["Lc"], r["pair"], r["mirror_leakage_pct"]))
+    for k, v in r["variants"].items():
+        print("  variant %-58s keeps %2d, pair %.1f %s" % (k, v["kept"], v["pair"], ("(" + ", ".join(v["keeps"]) + ")") if v["keeps"] else ""))
+    print("gated pair ceiling %.1f (worst: %s)" % (r["gated_pair"], r["worst_variant"]))
     for k, v in r["hazards"].items():
         print("  hazard %-48s network move %+.1f points" % (k, v))
     w = r["every_return_column"]

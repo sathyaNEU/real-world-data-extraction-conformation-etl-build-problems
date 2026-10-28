@@ -68,7 +68,7 @@ def load_templates():
             q = int(r["Quantity"].split()[0])
             out[r["Repeat Ref"]] = dict(code=r["Practice Code"], pid=r["Patient Ref"], ref=r["Repeat Ref"], vtm=v,
                                         strength=s, form=f, cls=c, directions=r["Dosage"],
-                                        qty=q, L=int(round(q / doses_per_day(r["Dosage"]))),
+                                        qty=q, L=int(round(q / doses_per_day(r["Dosage"], s))),
                                         M=int(r["Authorised Issues"]), start=dnum(r["Authorised Date"]),
                                         end=dnum(r["End Date"]) if r["End Date"] else None)
     with open(os.path.join(T, "repeat_authorisations_system_b.csv"), encoding="utf-8") as fh:
@@ -77,7 +77,7 @@ def load_templates():
             q = int(r["qty_per_issue"])
             out[r["authorisation"]] = dict(code=r["org"], pid=r["patient_pseudo"], ref=r["authorisation"], vtm=v,
                                            strength=s, form=f, cls=c, directions=r["directions"],
-                                           qty=q, L=int(round(q / doses_per_day(r["directions"]))),
+                                           qty=q, L=int(round(q / doses_per_day(r["directions"], s))),
                                            M=int(r["issues_authorised"]), start=dnum(r["start_date"]),
                                            end=dnum(r["end_date"]) if r["end_date"] else None)
     return out
@@ -170,6 +170,43 @@ def reauth_rate(D, lo=None, hi=None, per=False, follow=60, drop_left=True):
     return {c: pool for c in n}, n, f
 
 
+def reauth_groups(D, follow=60):
+    """The same share split by the patient's history: how many earlier statin repeats of theirs in the record ran
+    their authorised issues out (each one a review passed, since a later repeat followed it), and the issue length."""
+    n = collections.Counter(); f = collections.Counter()
+    for pid, tl in D.statin_tpl.items():
+        for i, tp in enumerate(tl):
+            if tp["start"] < W.EXTRACT_FROM or D.made[tp["ref"]] < tp["M"]:
+                continue
+            last = max(r["t"] for r in D.statin_by[pid] if r["ref"] == tp["ref"])
+            if not (W.EXTRACT_FROM <= last <= W.ASOF - 150): continue
+            end = last + tp["L"]
+            if not registered_at(D.reg, pid, tp["code"], end + follow): continue
+            passed = min(sum(1 for x in tl[:i] if D.made[x["ref"]] >= x["M"]), 2)
+            nxt = [x for x in tl[i + 1:] if x["start"] >= last]
+            fail = not (nxt and nxt[0]["start"] <= end + follow)
+            for k in (("passed", passed), ("days", tp["L"])):
+                n[k] += 1; f[k] += fail
+    return {k: (n[k], f[k] / n[k]) for k in n}
+
+
+def season_share(D, pop, year):
+    """A practice's share of an earlier year's statin patients (issued one from September to November, registered
+    on 30 November and on 30 June) with no statin from March to June, carried to every patient now in its population."""
+    A1, O1, W1 = W.day("%d-11-30" % year), W.day("%d-06-30" % (year + 1)), W.day("%d-03-01" % (year + 1))
+    num = collections.Counter(); den = collections.Counter()
+    for pid, rows in D.statin_by.items():
+        for c in sorted({r["code"] for r in rows}):
+            if not any(r["code"] == c and A1 - 90 < r["t"] <= A1 for r in rows): continue
+            if not registered_at(D.reg, pid, c, A1) or not registered_at(D.reg, pid, c, O1): continue
+            den[c] += 1
+            if not any(W1 <= r["t"] <= O1 for r in rows): num[c] += 1
+    return num, den
+
+
+SUPPLY_UNIT = 28   # stops between reviews are rated per this many days of statin supply
+
+
 def first_statin(D, pid):
     return D.statin_by[pid][0]["t"]
 
@@ -185,7 +222,7 @@ def stop_rates(D, per=False, split=True, gap=150):
         for r in rows:
             if r["acute"] or r["t"] > W.ASOF - gap: continue
             k = 0 if (split and new_start and r["t"] - t0 < 182) else 1
-            ex[r["code"]][k] += D.tpl[r["ref"]]["L"] / 28 if r["ref"] in D.tpl else 1
+            ex[r["code"]][k] += D.tpl[r["ref"]]["L"] / SUPPLY_UNIT if r["ref"] in D.tpl else 1
         for tp in D.statin_tpl.get(pid, []):
             if tp["start"] < W.EXTRACT_FROM: continue
             mm = D.made[tp["ref"]]
@@ -270,7 +307,7 @@ def golden(D, pop, rate, bg, pace, stay, pending="lapsed"):
         while True:
             req = t + L + pace
             early = s["new"] and t - s["first"] < 182
-            q = (bg[code][0] if early else bg[code][1]) * L / 28
+            q = (bg[code][0] if early else bg[code][1]) * L / SUPPLY_UNIT
             if last_issue < W.W0: prob += alive * q
             alive *= 1 - q
             if left <= 0:
@@ -357,19 +394,96 @@ def trailing_stops(D, pop, gap=122):
 DOSE_WORDS = {"one": 1, "1": 1, "two": 2, "2": 2, "half": 0.5}
 
 
-def doses_per_day(text):
+MG_RE = re.compile(r"(\d+(?:\.\d+)?)mg\b")
+
+
+def doses_per_day(text, strength=None):
+    """Tablets or capsules a day from the directions; a dose written in milligrams is read against the product's
+    strength ("5mg once daily" on 2.5mg capsules is two a day)."""
     s = text.lower()
-    n = None
-    for w0, v in DOSE_WORDS.items():
-        if re.search(r"\b%s\b" % re.escape(w0), s):
-            n = v; break
-    if n is None: n = 1
+    m = MG_RE.search(s)
+    if m and strength:
+        n = float(m.group(1)) / float(strength[:-2])
+    else:
+        n = None
+        for w0, v in DOSE_WORDS.items():
+            if re.search(r"\b%s\b" % re.escape(w0), s):
+                n = v; break
+        if n is None: n = 1
     if "twice" in s or re.search(r"\bbd\b", s): n *= 2
     return n
 
 
 def directions_at(D, changes, ref, t):
-    """The directions in force for a repeat on a day: the current directions, walked back through the change log."""
+    """The directions in force for a repeat on a day. A repeat the change log shows changed carries the log's own
+    history: the first change's old value until that change, then each change's new value from its day."""
+    rows = changes.get(ref)
+    if not rows:
+        return D.tpl[ref]["directions"]
+    cur = rows[0][1]
+    for (when, old, new) in rows:
+        if when <= t:
+            cur = new
+    return cur
+
+
+def load_changes(D=None):
+    """The change log's dose rows, each attached to the repeat the patient held on the day it was made: the repeat
+    the row names when that repeat was in force that day, otherwise the patient's repeat of the same product that
+    was (system A's audit export files a change against the drug line's current repeat)."""
+    D = D or Data()
+    held = collections.defaultdict(list)
+    for ref, tp in D.tpl.items():
+        held[(tp["pid"], tp["vtm"], tp["strength"], tp["form"])].append(tp)
+    ch = collections.defaultdict(list)
+    with open(os.path.join(T, "repeat_changes_2024-01_to_2026-11.csv"), encoding="utf-8") as fh:
+        for r in csv.DictReader(fh):
+            if r["field"] != "Dosage":
+                continue
+            when = dnum(r["changed_on"])
+            tp = D.tpl[r["repeat_ref"]]
+            if not (tp["start"] <= when and (tp["end"] is None or when <= tp["end"])):
+                cand = [x for x in held[(tp["pid"], tp["vtm"], tp["strength"], tp["form"])]
+                        if x["start"] <= when and (x["end"] is None or when <= x["end"])]
+                assert len(cand) == 1, (r, len(cand))
+                tp = cand[0]
+            ch[tp["ref"]].append((when, r["old_value"], r["new_value"]))
+    for v in ch.values():
+        v.sort()
+    return dict(ch)
+
+
+def change_rows():
+    with open(os.path.join(T, "repeat_changes_2024-01_to_2026-11.csv"), encoding="utf-8") as fh:
+        return [(dnum(r["changed_on"]), r["repeat_ref"], r["old_value"], r["new_value"])
+                for r in csv.DictReader(fh) if r["field"] == "Dosage"]
+
+
+def route_changes(D, join):
+    """The change log keyed the way a reading keys it: 'held' attaches each row to the repeat in force that day (the
+    golden), 'ref' to the repeat the row names, 'line' pools the patient's rows for the product."""
+    if join == "held":
+        return load_changes(D)
+    ch = collections.defaultdict(list)
+    if join == "ref":
+        for when, ref, o, n in change_rows():
+            ch[ref].append((when, o, n))
+    else:
+        by_line = collections.defaultdict(list)
+        for when, ref, o, n in change_rows():
+            tp = D.tpl[ref]
+            by_line[(tp["pid"], tp["vtm"], tp["strength"], tp["form"])].append((when, o, n))
+        for ref, tp in D.tpl.items():
+            k = (tp["pid"], tp["vtm"], tp["strength"], tp["form"])
+            if k in by_line:
+                ch[ref] = list(by_line[k])
+    for v in ch.values():
+        v.sort()
+    return dict(ch)
+
+
+def directions_back(D, changes, ref, t):
+    """The reading that takes a repeat's listed directions as they stand and walks the change log back from them."""
     cur = D.tpl[ref]["directions"]
     for (when, old, new) in sorted(changes.get(ref, []), reverse=True):
         if when > t:
@@ -377,19 +491,12 @@ def directions_at(D, changes, ref, t):
     return cur
 
 
-def load_changes():
-    ch = collections.defaultdict(list)
-    with open(os.path.join(T, "repeat_changes_2024-01_to_2026-11.csv"), encoding="utf-8") as fh:
-        for r in csv.DictReader(fh):
-            if r["field"] == "Dosage":
-                ch[r["repeat_ref"]].append((dnum(r["changed_on"]), r["old_value"], r["new_value"]))
-    return ch
-
-
-def ask_a(D, use_history=True, drop_cancelled=True, dedup_days=None, fixed_days=None):
+def ask_a(D, use_history=True, drop_cancelled=True, dedup_days=None, fixed_days=None, join="held", walk="log",
+          parse="mg", per_issue=None):
     """ACE inhibitor or ARB adherence, 2025: patients registered with the practice throughout 2025 and issued one
     in each quarter, and the share whose 2025 issues covered 80 per cent or more of the year's 365 days."""
-    changes = load_changes() if use_history else {}
+    changes = route_changes(D, join) if use_history else {}
+    dir_fn = directions_at if walk == "log" else directions_back
     y0, y1 = W.day("2025-01-01"), W.day("2025-12-31")
     qs = [(W.day("2025-01-01"), W.day("2025-03-31")), (W.day("2025-04-01"), W.day("2025-06-30")),
           (W.day("2025-07-01"), W.day("2025-09-30")), (W.day("2025-10-01"), W.day("2025-12-31"))]
@@ -416,10 +523,13 @@ def ask_a(D, use_history=True, drop_cancelled=True, dedup_days=None, fixed_days=
         covered = set(); run_end = {}
         for r in rows:
             if r["ref"] and r["ref"] in D.tpl:
-                d = directions_at(D, changes, r["ref"], r["t"]) if use_history else D.tpl[r["ref"]]["directions"]
+                d = dir_fn(D, changes, r["ref"], r["t"]) if use_history else D.tpl[r["ref"]]["directions"]
             else:
                 d = "ONE daily"
-            days = fixed_days if fixed_days else int(round(r["qty"] / doses_per_day(d)))
+            per = doses_per_day(d, r["strength"]) if parse == "mg" else doses_per_day(d)
+            if per_issue is not None:
+                per = per_issue(r, per)
+            days = fixed_days if fixed_days else int(round(r["qty"] / per))
             start = max(r["t"], run_end.get(r["vtm"], r["t"]))
             end = start + days
             run_end[r["vtm"]] = end
@@ -449,7 +559,7 @@ def anniversary(t):
     return (a - W.D0).days
 
 
-def ask_b(D, anchor="hospital", any_strength=False):
+def ask_b(D, anchor="hospital", any_strength=False, mi="family"):
     """Ticagrelor 90mg after a heart attack: patients who started it between 1 July 2024 and 30 June 2025, and how
     many were issued it after the anniversary of the day they started it."""
     lo, hi = W.day("2024-07-01"), W.day("2025-06-30")
@@ -462,10 +572,17 @@ def ask_b(D, anchor="hospital", any_strength=False):
         ev = load_events()
         for pid, rows in ev.items():
             starts = [(t, c) for (t, c, code, term) in rows if code == "1290071000000109"]
-            mi = [t for (t, c, code, term) in rows if code == "22298006"]
+            # the heart attack: the diagnosis's own concepts (the golden), the one concept 22298006, or any term
+            # naming an infarction; 'none' takes every start in the window
+            keep = {"family": lambda code, term: code in W.MI_FAMILY, "code": lambda code, term: code == "22298006",
+                    "term": lambda code, term: "myocardial infarction" in term.lower(),
+                    "none": lambda code, term: False}[mi]
+            mis = [t for (t, c, code, term) in rows if keep(code, term)]
             for t, c in starts:
-                near = [m for m in mi if abs(t - m) <= 3]
-                if not (lo <= t <= hi) or not near or not (lo <= near[0] <= hi): continue
+                near = [m for m in mis if abs(t - m) <= 3]
+                if mi == "none":
+                    if not (lo <= t <= hi): continue
+                elif not (lo <= t <= hi) or not near or not (lo <= near[0] <= hi): continue
                 res[c][0] += 1
                 if any(r["t"] > anniversary(t) for r in tic.get(pid, [])): res[c][1] += 1
     else:
@@ -522,7 +639,7 @@ def figures(D=None, write=True):
         stop_rate_late_per_28d=list(bg.values())[0][1], stop_rate_early_per_28d=list(bg.values())[0][0],
         pace_mean=pace_mean, stay=stay, stay_pct=round(100 * stay, 1),
         stop_rate_early_pct=round(100 * list(bg.values())[0][0], 2), stop_rate_late_pct=round(100 * list(bg.values())[0][1], 2),
-        stop_gap_days=150, reauth_follow_days=60, return_year=W.RETURN_YEAR, population_total=sum(npop.values()),
+        stop_gap_days=150, reauth_follow_days=60, stop_rate_supply_days=SUPPLY_UNIT, return_year=W.RETURN_YEAR, population_total=sum(npop.values()),
         default_km={c: km[c] for c in km}, default_pick=max(km, key=km.get), default_pick_name=name[max(km, key=km.get)],
         last_year={c: ly[c] for c in ly}, last_year_pick=max(ly, key=ly.get),
         trailing={c: tr[c] for c in tr}, trailing_pick=max(tr, key=tr.get),

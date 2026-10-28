@@ -4,7 +4,7 @@ The clinical events extract (the network's CVD code search: diagnoses, observati
 discharge summaries), the repeat change log, the product lookup, the practice profiles, and two files the solution
 never reads: the 2025-26 QOF CVD indicators and the dispensed-items extract.
 """
-import csv, json, os, collections
+import csv, json, os, collections, hashlib
 import numpy as np
 from openpyxl import Workbook
 from openpyxl.styles import Font, Alignment, PatternFill
@@ -18,11 +18,90 @@ def _rng(*k):
     return np.random.default_rng([46991] + list(k))
 
 
+def _anniv(t):
+    d = W.date_of(t)
+    try:
+        a = d.replace(year=d.year + 1)
+    except ValueError:
+        a = d.replace(year=d.year + 1, day=28)
+    return (a - W.date_of(0)).days
+
+
+def _pct(k, n):
+    return int((200 * k + n) // (2 * n))
+
+
+KINDS = {"mi": [("22298006", "Myocardial infarction")], "heart": [W.HEART_ATTACK],
+         "stemi": [("401303003", W.MI_FAMILY["401303003"])], "nstemi": [("401314000", W.MI_FAMILY["401314000"])],
+         "ua": [W.UNSTABLE_ANGINA], "ua_old": [W.UNSTABLE_ANGINA, W.OLD_MI]}
+
+
+def event_coding(w):
+    """How each discharge summary codes the event: the hospital's own diagnosis (an infarction, a STEMI, an NSTEMI,
+    the synonym 'Heart attack', or unstable angina, whose summary may carry an earlier infarction as a history code).
+    In the return's year each practice's mix is drawn so that every way of reading the codes short of the diagnosis
+    itself lands on another percentage."""
+    lo, hi = W.day("2024-07-01"), W.day("2025-06-30")
+    mis = [e for e in w.events if e["code"] == "22298006"]
+    starts = {(e["pid"], e["t"]) for e in w.events if e["code"] == "1290071000000109"}
+    tic = collections.defaultdict(list)
+    for r in w.issues:
+        if r["drug"] == "Ticagrelor" and r["strength"] == "90mg" and not r["cancelled"] and r["t"] <= W.ASOF:
+            tic[r["pid"]].append(r["t"])
+    kind = {}
+    for e in mis:
+        hv = int(hashlib.sha256(("mi" + e["pid"] + str(e["t"])).encode()).hexdigest()[:12], 16) % 100
+        kind[(e["pid"], e["t"])] = "mi" if hv < 30 else "heart" if hv < 45 else "stemi" if hv < 72 else "nstemi"
+        if not (lo <= e["t"] <= hi) and hv % 11 == 0:
+            kind[(e["pid"], e["t"])] = "ua_old" if hv % 2 else "ua"
+    pairs = collections.defaultdict(list)
+    for e in mis:
+        st = [t for t in (e["t"], e["t"] + 1) if (e["pid"], t) in starts]
+        if st and lo <= e["t"] <= hi and lo <= st[0] <= hi and e["filed"] <= W.ASOF + 1:
+            out = any(x > _anniv(st[0]) for x in tic.get(e["pid"], []))
+            pairs[W.BY_KEY[e["key"]]["code"]].append(((e["pid"], e["t"]), out))
+    def routes(lst, k):
+        res = {}
+        for name, keep in (("golden", lambda x: x in ("mi", "heart", "stemi", "nstemi")),
+                           ("code", lambda x: x in ("mi", "heart")),
+                           ("term", lambda x: x in ("mi", "stemi", "nstemi", "ua_old")),
+                           ("every", lambda x: True)):
+            sel = [o for (key, o) in lst if keep(k[key])]
+            res[name] = (sum(sel), len(sel))
+        return res
+    for code in sorted(pairs):
+        lst = sorted(pairs[code], key=lambda x: hashlib.sha256(str(x[0]).encode()).hexdigest())
+        done = False
+        for i in range(len(lst)):
+            for j in range(len(lst)):
+                if done or i == j: continue
+                k = dict(kind)
+                k[lst[i][0]] = "ua_old"
+                if not any(k[x[0]] == "heart" for x in lst if x[0] != lst[i][0]):
+                    k[lst[j][0]] = "heart"
+                elif not any(k[x[0]] in ("stemi", "nstemi") for x in lst if x[0] != lst[i][0]):
+                    k[lst[j][0]] = "stemi"
+                res = routes(lst, k)
+                g = res["golden"]
+                if g[1] == 0 or (200 * g[0]) % (2 * g[1]) == g[1]: continue
+                gp = _pct(*g)
+                if all(res[r][1] and _pct(*res[r]) != gp for r in ("code", "term", "every")):
+                    kind = k; done = True
+        if not done:
+            raise SystemExit("event coding: no aimed mix for %s" % code)
+    return kind
+
+
 def events(w, pids):
     """The coded CVD events: the discharge summaries' coded entries plus routine observations and results."""
     rows = []
+    kind = event_coding(w)
     for e in w.events:
         if W.KEEP_FROM <= e["t"] <= W.ASOF and e["filed"] <= W.ASOF + 1:
+            if e["code"] == "22298006":
+                for c, term in KINDS[kind[(e["pid"], e["t"])]]:
+                    rows.append((e["t"], e["pid"], W.BY_KEY[e["key"]]["code"], c, term, "", ""))
+                continue
             rows.append((e["t"], e["pid"], W.BY_KEY[e["key"]]["code"], e["code"], e["term"], e["value"], e["unit"]))
     obs = [
         ("163030003", "Systolic blood pressure", "mmHg", 118, 168),
@@ -68,6 +147,20 @@ def events(w, pids):
     return len(rows)
 
 
+def line_current(w, tp, t):
+    """The patient's latest repeat of the same medicine at the searches, when it was authorised after day t."""
+    if not LINES:
+        for x in w.templates:
+            if x["authorised"] <= W.ASOF:
+                LINES.setdefault((x["pid"], x["drug"], x["strength"], x["form"]), []).append(x)
+    cand = LINES.get((tp["pid"], tp["drug"], tp["strength"], tp["form"]), [tp])
+    last = max(cand, key=lambda x: (x["authorised"], x["tid"]))
+    return last if last["authorised"] > t else tp
+
+
+LINES = {}
+
+
 def change_log(w):
     """The repeat change log the network's medicines safety search pulls: every edit to a repeat in place."""
     rows = []
@@ -75,24 +168,11 @@ def change_log(w):
         if W.EXTRACT_FROM <= e["t"] <= W.ASOF:
             tp = w.templates[e["tid"]]
             rows.append([e["t"], tp, e["field"], e["old"], e["new"], e["by"]])
-    # wording-only edits (no change of dose), prescriber reassignments when a partner retired, and notes
-    r = _rng(5)
+    # wording-only edits (no change of dose) and notes, planned with the repeats (pack.reword_plan), and prescriber
+    # reassignments when a partner retired
+    rows += [list(x) for x in PK.PLAN]
     tps = [tp for tp in w.templates if tp["authorised"] <= W.ASOF and (tp["ended"] is None or tp["ended"] >= W.EXTRACT_FROM)]
-    reword = {"ONE daily": "ONE in the morning", "1 daily": "ONE daily", "ONE at night": "Take ONE tablet at night",
-              "1 at night": "ONE at night", "one a day": "ONE daily", "1 nocte": "ONE at night",
-              "ONE twice a day": "ONE twice daily", "1 bd": "ONE twice a day", "TWO daily": "TWO to be taken each day"}
-    for tp in tps:
-        if r.random() < 0.035 and tp["directions"] in reword:
-            t = max(tp["authorised"], W.EXTRACT_FROM) + int(r.integers(1, 200))
-            if t <= min(W.ASOF, tp["ended"] or W.ASOF):
-                rows.append([t, tp, "Dosage", tp["directions"], reword[tp["directions"]], "GP"])
-        if r.random() < 0.02:
-            t = max(tp["authorised"], W.EXTRACT_FROM) + int(r.integers(1, 250))
-            if t <= min(W.ASOF, tp["ended"] or W.ASOF):
-                note = ["Pt prefers to collect from branch surgery", "Check BP before next issue",
-                        "Please synchronise with other repeats", "Pt has dosette - pharmacy aware",
-                        "Requested via NHS App"][int(r.integers(0, 5))]
-                rows.append([t, tp, "Notes", "", note, "Administrator"])
+    r = PK.PLAN_RNG[0]
     retire = W.day("2025-07-31")
     for tp in tps:
         if tp["key"] == "E" and tp["authorised"] <= retire and (tp["ended"] is None or tp["ended"] > retire) and r.random() < 0.38:
@@ -103,11 +183,17 @@ def change_log(w):
         wr.writerow(["changed_on", "practice_code", "patient_ref", "repeat_ref", "item", "field", "old_value",
                      "new_value", "changed_by"])
         for t, tp, field, old, new, by in rows:
-            item = PK.product_a(tp)
             if field == "Quantity":
                 u = PK.unit_word(tp)
                 old = "%s %s" % (old, u); new = "%s %s" % (new, u)
-            wr.writerow([W.iso(t), W.BY_KEY[tp["key"]]["code"], tp["pid"], PK.tref(tp), item, field, old, new, by])
+            elif field == "Dosage":
+                o2, n2 = PK.render(tp, old, PK.MG), PK.render(tp, new, PK.MG)
+                old, new = o2, (n2 if n2 != o2 else PK.render(tp, new, PK.MG, 1))
+            # system A's audit export files a change against the drug line's current repeat; system B against the
+            # repeat that was changed
+            held = line_current(w, tp, t) if W.BY_KEY[tp["key"]]["system"] == "A" else tp
+            wr.writerow([W.iso(t), W.BY_KEY[tp["key"]]["code"], tp["pid"], PK.tref(held), PK.product_a(held), field,
+                         old, new, by])
     return len(rows)
 
 

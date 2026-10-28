@@ -43,45 +43,45 @@
  },
  "ask_b": {
   "P81066": {
+   "overrun": 8,
+   "pct": 80.0,
+   "started": 10
+  },
+  "P81177": {
+   "overrun": 4,
+   "pct": 80.0,
+   "started": 5
+  },
+  "P81283": {
    "overrun": 9,
    "pct": 82.0,
    "started": 11
   },
-  "P81177": {
-   "overrun": 5,
-   "pct": 83.0,
-   "started": 6
-  },
-  "P81283": {
-   "overrun": 10,
-   "pct": 83.0,
-   "started": 12
-  },
   "P81402": {
    "overrun": 20,
-   "pct": 71.0,
-   "started": 28
+   "pct": 74.0,
+   "started": 27
   },
   "P81555": {
-   "overrun": 16,
-   "pct": 84.0,
-   "started": 19
+   "overrun": 15,
+   "pct": 83.0,
+   "started": 18
   },
   "P81719": {
    "overrun": 7,
-   "pct": 58.0,
-   "started": 12
+   "pct": 64.0,
+   "started": 11
   },
   "P81940": {
    "overrun": 6,
-   "pct": 55.0,
-   "started": 11
+   "pct": 60.0,
+   "started": 10
   }
  },
  "ask_b_network": {
-  "overrun": 73,
-  "pct": 74.0,
-  "started": 99
+  "overrun": 69,
+  "pct": 75.0,
+  "started": 92
  },
  "call": "P81555",
  "call_expected": 170,
@@ -172,6 +172,7 @@
  "stop_rate_early_per_28d": 0.009262662647945306,
  "stop_rate_late_pct": 0.2,
  "stop_rate_late_per_28d": 0.0020199230012257654,
+ "stop_rate_supply_days": 28,
  "trailing": {
   "P81066": 38.253708168834955,
   "P81177": 31.45698043750916,

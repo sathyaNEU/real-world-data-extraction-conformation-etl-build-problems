@@ -15,17 +15,17 @@
   "date": "2026-10-28"
  },
  "leak": {
-  "leak_py": "REVIEW, three lines ruled harmless in the design note",
-  "reader": "five isolated reads, no leak, question 6 analytical; the last on the final prompt and pack"
+  "leak_py": "REVIEW, four lines ruled harmless in the design note",
+  "reader": "read 6 on ab3f7d9a (the brief's new sentence): no decisive-step sentence, no ranking file, question 5 the golden's reading with the method open, question 6 analytical"
  },
  "duplicate_check": {
-  "heart": "WARN (no BLOCK), nearest driver 0.11 task157 v1",
+  "heart": "WARN (no BLOCK), nearest driver 0.09 task468 v2",
   "surface": "exit 0; task33 and task114 promoted at history severity on shared card labels, differentiated on the card"
  },
  "judge": {
-  "verdict": "DETERMINISTIC",
-  "disposition": "APPROVE",
-  "report": "determinism_check_report_pass8.md; pass 7 NOT_DETERMINISTIC on the top figure and ranks 4 to 7 only, repaired by narrowing the prompt to the placement, runner-up and populations; pass 6 APPROVE"
+  "verdict": "NOT_DETERMINISTIC",
+  "disposition": "SEND_BACK label, read as a repair against the gate table (G and H pass)",
+  "report": "determinism_check_report_pass9.md; its Gate C/E risk on the forecast's open choices closed by C15 and V15 (1,600 and 108 settings, placement and runner-up never move) and its critical component 2 count by SF30's wording; pack unchanged from the judged ab3f7d9a; no third judge"
  },
  "returned": [
   {
@@ -39,6 +39,20 @@
    "portal": "both responses funded the golden six; the second also filed the runner-up and the gap exactly (Harlenbrook 353, Elmorrow 368, gap 15), so it executed the concordance",
    "repair": "design",
    "commit": ""
+  },
+  {
+   "date": "2026-10-28",
+   "portal": "determinism block failed: Gate C/D competing_defensible_answer, the empirical practice share from the two earlier seasons carried to this year's patients files Cobbet Street then Fennbridge; the brief filed the estimand but not what the expected number is conditioned on",
+   "repair": "determinism",
+   "move": "one WHAT sentence in the brief (each patient's own chance on what that patient's record shows at the searches, added up), SF26; the re-authorisation share by earlier reviews passed and issue length asserted (C14, V12); the forecast's open choices swept (C15, V15); critical component 2's wording (SF30)",
+   "commit": ""
+  },
+  {
+   "date": "2026-10-28",
+   "portal": "rubric 72 with the call held: both responses executed R1's dose walk-back through the change log and R2's discharge-coded start",
+   "repair": "rubric",
+   "move": "R1: system B's current repeats listed as authorised, system A's audit keyed by the drug line, doses written in milligrams; R2: the hospitals' coded diagnosis (STEMI, NSTEMI, 'Heart attack'; unstable angina with an old infarction); cracker 0 of 14, worst uniform reading 4 of 14, gated pair 44.2",
+   "commit": ""
   }
  ],
  "resume": "",
@@ -49,6 +63,6 @@
  "portal_status": "",
  "portal_status_date": "",
  "portal_id": "",
- "target_zip_md5": "b4b0fc88223e45b9a5097174052794cd",
+ "target_zip_md5": "ab3f7d9afa77303ad3b4b8888f1eda6c",
  "shipped_call": "Marrick House Surgery hosts the 2027 statin continuity sessions, Cobbet Street Surgery next"
 }

@@ -1,5 +1,6 @@
 """task464 architecture 9: the orchestrator. Wipes target/ and rebuilds the pack, the goldens and the write-up."""
 import os, shutil, sys, time
+os.environ["TZ"] = "UTC"; time.tzset()  # the PDFs stamp their dates in local time
 HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)
 BASE = os.path.dirname(HERE)

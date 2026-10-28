@@ -4,10 +4,11 @@
 
 LEAK stops the ship. REVIEW is a reader's call and the /leak-check command's solver's-eye pass reads every REVIEW line. INFO is a sweep that ran and found nothing or was skipped.
 
-Stump terms swept: marrick, window, architecture, patient, issues, decisive, repeats, cobbet, street, record, months, family, measured, forward, persistence, authorisation, re-authorisation, method, register, current, authorised, reading, carried, re-authorised, fennbridge
+Stump terms swept: marrick, window, patient, architecture, issues, record, decisive, repeats, cobbet, street, months, family, measured, forward, persistence, authorisation, re-authorisation, method, register, current, authorised, reading, carried, re-authorised, fennbridge
 
-## 4 design-note vocabulary (REVIEW 1)
+## 4 design-note vocabulary (REVIEW 2)
 - **REVIEW** `icb_cvd_repeat_return_2025_spec.pdf`: 5 of 25 stump-paragraph terms appear (patient, issues, months, register, carried); read whether the document names the move
+- **REVIEW** `statin_continuity_sessions_brief.pdf`: 3 of 25 stump-paragraph terms appear (patient, record, register); read whether the document names the move
 
 ## 6 ranking artifacts (REVIEW 2)
 - **REVIEW** `pcn_practice_profiles_2026.xlsx`: names 7 of 8 answer-set candidates beside numbers; confirm it does not rank them on the decision question
@@ -31,6 +32,7 @@ Stump terms swept: marrick, window, architecture, patient, issues, decisive, rep
 ## 9 dates after the setting (clean)
 
 ## 11 prompt gate (clean)
+
 
 ## Solver's-eye read
 
@@ -56,3 +58,28 @@ harmless (a different measure and period, a declared distractor).
 
 Realism: minor notes only (the brief's timetable and the specification's version line read a little tidy; file
 names carry their date range).
+
+### Read 6, the reshipped pack
+Isolated reader (general-purpose, sonnet, medium), read 6, on the reshipped prompt and pack (target.zip
+ab3f7d9afa77303ad3b4b8888f1eda6c), run because the determinism repair added a sentence to the board brief. Reads
+1 to 5 ran on earlier packs.
+1. Decisive step stated: none. The reader quoted the brief's selection rule ("The board will place the sessions at
+   the practice with the largest expected number of patients who:"), the estimand the prompt points at, and said
+   it states the rule, not a result or a method.
+2. A file ranking the candidates on the question: none.
+3. A file existing only to help: the reader named cvd_product_lookup.csv, a drug-name crosswalk between the two
+   systems. Ruled harmless in the main thread: the network's own join table, used for every medicine on both
+   systems, carries no patient or practice row and says nothing about stopping, repeats or reviews.
+4. A figure or name reading as the answer: none.
+5. Literal reading of the brief's new sentence: each practice's patients meeting both bullets, the figure the sum of
+   each patient's own chance of no statin issued from March to June 2027, compared unrounded and reported to the
+   nearest 10; it fixes the WHAT and leaves how each patient's chance is modelled open. This is the golden's
+   reading.
+6. What decides the main answer: an analytical choice, a forward probability per patient built from the record,
+   with no field, code or stated procedure handing over the chance.
+REVIEW lines: the practice profiles, harmless (list size, staffing, systems, sessions); the QOF file, harmless
+(four unrelated indicators).
+Realism notes, ruled in the main thread: the PDFs' dates read US Eastern to the reader, but the raw metadata is
+D:20261203101500+00'00' and D:20260715143000+00'00', GMT, and the reader's tool printed them in its machine's
+zone; system B's pseudonym equals the register's, which is the network's one pseudonym across systems by design
+(and those files are byte-identical to the shipped pack); nothing else.

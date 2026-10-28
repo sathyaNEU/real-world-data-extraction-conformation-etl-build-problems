@@ -14,6 +14,9 @@ T = os.path.join(BASE, "target")
 RES = []
 
 
+SHIPPED = "cd164874"   # the commit that shipped this build, the separation line's reference
+
+
 def check(label, ok, detail=""):
     RES.append((label, bool(ok), detail))
 
@@ -106,6 +109,32 @@ def main():
     check("C12 the re-authorisation rate agrees by practice and window within 0.8 points", spread < 0.008,
           "%.2f points" % (100 * spread))
     check("C13 the pooled rate prints 12 per cent", F["reauth_fail_whole"] == 12, "%.2f" % F["reauth_fail_pct"])
+    # C15: the forecast's open choices swept wide, the call and the runner-up identical across the whole grid
+    import itertools
+    pm_, pmed_ = A.pacing(D); stay_ = A.stay_share(D)
+    rts = {(f, k): A.reauth_rate(D, follow=f, per=(k == "practice"))[0] for f in (30, 45, 60, 90, 120) for k in ("pooled", "practice")}
+    bgs_ = {(gp, k): A.stop_rates(D, gap=gp, split=(k == "split")) for gp in (60, 90, 122, 150, 180) for k in ("split", "flat")}
+    pairs = collections.Counter(); m1 = m2 = 9.0
+    for rk, bk, pc, st, pend in itertools.product(rts, bgs_, (0, pmed_, pm_, pm_ + 7), (stay_, 1.0), ("lapsed", "rate")):
+        e = A.golden(D, pop, rts[rk], bgs_[bk], pc, st, pending=pend)
+        o = sorted(e, key=lambda c: -e[c]); pairs[(o[0], o[1])] += 1
+        m1 = min(m1, e[o[0]] / e[o[1]]); m2 = min(m2, e[o[1]] / e[o[2]])
+    check("C15 the placement and the runner-up hold across 1,600 settings of the forecast's open choices (share window "
+          "30 to 120 days pooled or by practice, stop gap 60 to 180 days, pacing, leavers, a passed review)",
+          list(pairs) == [(call, sec)] and sum(pairs.values()) == 1600 and m1 > 1.15 and m2 > 1.15,
+          "%d settings, tightest margins %.3fx and %.3fx" % (sum(pairs.values()), m1, m2))
+    # SF30: critical component 2 counts the patients whose latest statin issue is on such a repeat, not every
+    # patient who has held one
+    fm = (W.day("2026-02-01"), W.day("2026-03-31"))
+    six = lambda tp: tp["cls"] == "Statin" and tp["M"] == 6 and tp["L"] == 56 and fm[0] <= tp["start"] <= fm[1] and tp["code"] == call
+    held = sum(1 for pid, c in pop.items() if c == call and any(six(tp) for tp in D.statin_tpl.get(pid, [])))
+    on = sum(1 for pid, c in pop.items() if c == call and
+             six(D.tpl[[r for r in D.statin_by[pid] if r["code"] == c and r["t"] <= W.ASOF][-1]["ref"]] if
+                 not [r for r in D.statin_by[pid] if r["code"] == c and r["t"] <= W.ASOF][-1]["acute"] else {"cls": ""}))
+    check("SF30 critical component 2 counts the patients whose latest statin issue is on such a repeat (%d), the wording "
+          "the write-up gives, not every patient who has held one (%d)" % (on, held),
+          on == F["six_56day_feb_mar_2026"][call] and "latest statin issue on a repeat of six 56-day issues" in
+          open(os.path.join(BASE, "submission.md"), encoding="utf-8").read())
 
     # ------------------------------------------------------------------ semantic fork rows
     reg = D.reg
@@ -164,12 +193,13 @@ def main():
     a_strict = A.ask_a(D)
     check("SF14 R1's 'throughout 2025' read inclusively or strictly gives one denominator", edge_reg == 0,
           "%d registrations of R1 patients start or end on the year's edge" % edge_reg)
-    ch = A.load_changes()
-    dose_edits = sum(1 for v in ch.values() for (t, o, n) in v if A.doses_per_day(o) != A.doses_per_day(n))
+    ch = A.load_changes(D)
+    dpd = lambda text, ref: A.doses_per_day(text, D.tpl[ref]["strength"])
+    dose_edits = sum(1 for ref, v in ch.items() for (t, o, n) in v if dpd(o, ref) != dpd(n, ref))
     check("SF15 R1's directions on the prescription differ from the authorisation's for some issues", dose_edits > 0,
           "%d dose edits" % dose_edits)
     a_cur = A.ask_a(D, use_history=False)
-    check("SF16 R1 under the authorisation's current directions misses every practice",
+    check("SF16 R1 under the directions the repeat lists show misses every practice",
           all(a_cur[c][1] != a_strict[c][1] for c in a_strict))
     a_canc = A.ask_a(D, drop_cancelled=False)
     tot = lambda x: (sum(v[1] for v in x.values()), sum(v[0] for v in x.values()))
@@ -193,7 +223,7 @@ def main():
     lo, hi = W.day("2024-07-01"), W.day("2025-06-30")
     straddle = 0
     for pid, rows in ev.items():
-        mi = [t for (t, c, code, term) in rows if code == "22298006"]
+        mi = [t for (t, c, code, term) in rows if code in W.MI_FAMILY]
         for (t, c, code, term) in rows:
             if code != "1290071000000109": continue
             m = [x for x in mi if abs(t - x) <= 3]
@@ -221,7 +251,7 @@ def main():
     for pid, rows in ev.items():
         for (t, cc, code, term) in rows:
             if code == "1290071000000109" and lo <= t <= hi:
-                mi_t = [x for (x, c2, code2, term2) in rows if code2 == "22298006" and abs(x - t) <= 3]
+                mi_t = [x for (x, c2, code2, term2) in rows if code2 in W.MI_FAMILY and abs(x - t) <= 3]
                 if not mi_t or not (lo <= mi_t[0] <= hi): continue
                 a0, k0 = same_practice.get(cc, (0, 0))
                 own = any(r["t"] > A.anniversary(t) and r["code"] == cc for r in D.issues
@@ -232,6 +262,55 @@ def main():
           "starting practice alone would move %d practices" % len(moved_pct), "at any practice" in spec)
     check("SF25 practices are compared before rounding, as the brief says; the order is the golden's unrounded order",
           "compared on their figures before rounding" in brief and order_ok if (order_ok := (F["ranking"][0] == call)) else False)
+
+    # SF27: an issue made the same day as a dose change to its repeat, read before the change or after it
+    saved = A.directions_at
+    def after_issue(D_, changes, ref, t):
+        rows = changes.get(ref)
+        if not rows: return D_.tpl[ref]["directions"]
+        cur = rows[0][1]
+        for (when, old, new) in rows:
+            if when < t: cur = new
+        return cur
+    A.directions_at = after_issue
+    try:
+        a_after = A.ask_a(D)
+    finally:
+        A.directions_at = saved
+    same_day = sum(1 for ref, v in ch.items() for (when, o, n) in v for r in D.issues if r["ref"] == ref and r["t"] == when
+                   and dpd(o, ref) != dpd(n, ref)) if False else None
+    check("SF27 an issue on the day of a dose change to its repeat, read before or after the change, gives the same R1 figures",
+          all(a_after[c][:2] == a_strict[c][:2] for c in a_strict))
+    concepts = collections.Counter(code for rows in ev.values() for (t, c, code, term) in rows)
+    terms = {term for rows in ev.values() for (t, c, code, term) in rows if code == "22298006"}
+    check("SF28 R2's heart attack is the diagnosis however the hospital coded it: STEMI, NSTEMI and 'Heart attack' are "
+          "infarctions, unstable angina and an old infarction are not",
+          set(W.MI_FAMILY) == {"22298006", "401303003", "401314000"} and all(concepts[c] > 0 for c in
+          ("401303003", "401314000", "4557003", "1755008")) and "Heart attack" in terms,
+          ", ".join("%s %d" % (c, concepts[c]) for c in ("22298006", "401303003", "401314000", "4557003", "1755008")))
+    check("SF29 a changed repeat's directions on a day are the change log's own history, whichever way its system "
+          "lists the repeat", all(len(v) == len({x[0] for x in v}) for v in ch.values()) and len(ch) > 500,
+          "%d changed repeats" % len(ch))
+
+    npop_c = collections.Counter(pop.values())
+    seasons = [A.season_share(D, pop, y) for y in (2024, 2025)]
+    carried = {}
+    for label, parts in (("2024-25", seasons[:1]), ("2025-26", seasons[1:]), ("both seasons", seasons)):
+        num = collections.Counter(); den = collections.Counter()
+        for nm_, dn_ in parts: num.update(nm_); den.update(dn_)
+        carried[label] = {c: num[c] / den[c] * npop_c[c] for c in den}
+    picks = {k: max(v, key=v.get) for k, v in carried.items()}
+    check("SF26 the brief's 'each patient's own chance, on what that patient's record shows at the searches' rules "
+          "out a practice's earlier-year share carried to its patients, which names another practice in every season",
+          "each patient's own chance, on what that patient's record shows at the searches" in brief
+          and all(p_ != call for p_ in picks.values()),
+          "; ".join("%s %s" % (k, name[v]) for k, v in picks.items()))
+    grp = A.reauth_groups(D)
+    pooled = F["reauth_fail_pct"] / 100
+    dev = max(abs(v[1] - pooled) for v in grp.values())
+    check("C14 the share not re-authorised agrees by earlier reviews passed and by issue length within 1.5 points",
+          dev < 0.015 and min(v[0] for v in grp.values()) >= 1000,
+          ", ".join("%s %s %.1f%% of %d" % (k[0], k[1], 100 * v[1], v[0]) for k, v in sorted(grp.items())))
 
     # ------------------------------------------------------------------ the three rules, executed
     issue_rows = rows_of(os.path.join(T, "repeat_issues_system_a_2024-01_to_2026-11.csv")) + \
@@ -295,7 +374,7 @@ def main():
     # ------------------------------------------------------------------ separation
     statin_refs = {ref for ref, tp in D.tpl.items() if tp["cls"] == "Statin"}
     dose_on_statin = sum(1 for ref, v in ch.items() if ref in statin_refs for (t, o, n) in v
-                         if A.doses_per_day(o) != A.doses_per_day(n))
+                         if dpd(o, ref) != dpd(n, ref))
     check("S1 no dose edit sits on a statin repeat", dose_on_statin == 0, "%d" % dose_on_statin)
     check("S2 no cancelled item is a statin", canc_statin == 0)
     with open(os.path.join(T, "cvd_product_lookup.csv"), encoding="utf-8") as fh:
@@ -311,7 +390,68 @@ def main():
     check("D1 the cracker misses every asked figure", all(not r[3] for r in rs),
           "keeps " + ", ".join(r[0] for r in rs if r[3]) if any(r[3] for r in rs) else "%d of %d missed" % (len(rs), len(rs)))
     gap_a = min(abs(F["ask_a"][c]["pct"] - A.pct(a_cur[c][1], a_cur[c][0], 1)) for c in a_strict)
-    check("D2 R1's device moves every practice by a point or more", gap_a >= 1.0, "smallest %.1f" % gap_a)
+    check("D2 the repeat lists' own directions move every practice's R1 by a point or more", gap_a >= 1.0,
+          "smallest %.1f" % gap_a)
+    sysa = {p["code"] for p in W.PRACTICES if p["system"] == "A"}; sysb = set(a_strict) - sysa
+    miss = lambda v, cs, places=1, key="ask_a": [c for c in cs if A.pct(v[c][1], v[c][0], places) == F[key][c]["pct"]]
+    by_ref = A.ask_a(D, join="ref", walk="log")
+    check("D4 system A's changes read against the repeat each log row names miss every system A practice",
+          not miss(by_ref, sysa), "lands " + ", ".join(miss(by_ref, sysa)) if miss(by_ref, sysa) else
+          ", ".join("%s %.1f" % (c, A.pct(by_ref[c][1], by_ref[c][0], 1)) for c in sorted(sysa)))
+    back = A.ask_a(D, walk="back")
+    check("D5 system B's current repeats walked back from their listed directions miss every system B practice",
+          not miss(back, sysb), ", ".join("%s %d against %d" % (c, back[c][1], a_strict[c][1]) for c in sorted(sysb)))
+    words = A.ask_a(D, parse="words")
+    check("D6 doses written in milligrams read as tablets a day miss every practice", not miss(words, a_strict),
+          "smallest gap %d patients" % min(abs(words[c][1] - a_strict[c][1]) for c in a_strict))
+    cr = A.ask_a(D, join="ref", walk="back")
+    check("D7 the walk back by repeat reference (the careful route) misses every practice", not miss(cr, a_strict),
+          ", ".join("%s %d" % (c, cr[c][1] - a_strict[c][1]) for c in sorted(a_strict)))
+    for mi in ("code", "term", "none"):
+        v = A.ask_b(D, mi=mi)
+        lands = [c for c in b_h if c in v and v[c][0] and A.pct(v[c][1], v[c][0], 0) == F["ask_b"][c]["pct"]]
+        check("D8 R2 with the infarction read as '%s' misses every practice" % {"code": "the one concept 22298006",
+              "term": "any term naming a myocardial infarction", "none": "any ticagrelor start"}[mi], not lands,
+              ", ".join("%s %s" % (c, A.pct(v[c][1], v[c][0], 0) if c in v and v[c][0] else "-") for c in sorted(b_h)))
+    # fair: the change log's history, attached to the repeat held on the day, is the simulator's own dose on every
+    # issue the return reads
+    import sim as S
+    w = S.simulate(S.SEED)
+    truth = {}
+    for r in w.issues:
+        if r["slot"] == "raas":
+            truth[(r["pid"], r["t"], r["eps"], r["drug"], r["strength"])] = r["doses"]
+    bad = n_iss = 0
+    for r in D.issues:
+        if r["cls"] in ("ACE inhibitor", "Angiotensin II receptor antagonist") and W.day("2024-01-01") <= r["t"] <= y1:
+            k = (r["pid"], r["t"], r["eps"], r["vtm"], r["strength"])
+            if k not in truth: continue
+            n_iss += 1
+            d = A.directions_at(D, ch, r["ref"], r["t"])
+            bad += abs(A.doses_per_day(d, r["strength"]) - truth[k]) > 1e-9
+    own = A.ask_a(D, per_issue=lambda r, per: truth.get((r["pid"], r["t"], r["eps"], r["vtm"], r["strength"]), per))
+    check("D9 the golden's dose is the simulator's own on every 2024-25 ACE inhibitor and ARB issue but the re-sent and "
+          "duplicate copies dated across a change, and R1 is the same either way",
+          bad <= 5 and n_iss > 50000 and all(own[c][:2] == a_strict[c][:2] for c in a_strict),
+          "%d of %d issues differ, every figure the same" % (bad, n_iss))
+    # the call's files: byte-identical to the shipped commit, bar the brief's one filed sentence (the determinism
+    # repair); the shared repeat lists keep every statin row
+    import subprocess, io
+    shipped = zipfile.ZipFile(io.BytesIO(subprocess.run(["git", "show", "%s:task464/target.zip" % SHIPPED],
+                                                       cwd=BASE, capture_output=True, check=True).stdout))
+    same = [n for n in ("repeat_issues_system_a_2024-01_to_2026-11.csv", "repeat_issues_system_b_2024-01_to_2026-11.jsonl",
+                        "patient_register_2026-12-01.csv", "cvd_product_lookup.csv")
+            if shipped.read(n) == open(os.path.join(T, n), "rb").read()]
+    check("S5 the issue extracts, the register and the lookup are byte-identical to the shipped pack", len(same) == 4,
+          "%d of 4" % len(same))
+    kept = True
+    for n, key, prod, cls_of in (("repeat_authorisations_system_a.csv", "Repeat Ref", "Drug", "system_a_drug"),
+                                 ("repeat_authorisations_system_b.csv", "authorisation", "product", "system_b_product")):
+        cls = {r[cls_of]: r["bnf_class"] for r in look}
+        old_rows = [r for r in csv.DictReader(io.StringIO(shipped.read(n).decode("utf-8"))) if cls[r[prod]] == "Statin"]
+        new_rows = [r for r in csv.DictReader(open(os.path.join(T, n), encoding="utf-8")) if cls[r[prod]] == "Statin"]
+        kept = kept and old_rows == new_rows and len(old_rows) > 1000
+    check("S6 both repeat lists keep every statin row as shipped, and no column", kept)
     pdc_twin = sum(1 for r in D.issues if r["cls"] in ("ACE inhibitor", "Angiotensin II receptor antagonist")
                    and not r["cancelled"])
     check("D3 R1 reads more than a few thousand issues", pdc_twin > 20000, "%d" % pdc_twin)

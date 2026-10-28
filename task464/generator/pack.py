@@ -7,7 +7,7 @@ JSON lines. The network's searches ran on 1 December 2026 and cover issues from 
 
 Nothing written here states a rate, an expected count or a ranking of the practices.
 """
-import csv, json, os, collections
+import csv, json, os, collections, hashlib
 import numpy as np
 import world as W
 
@@ -36,6 +36,8 @@ def unit_word(r):
 
 
 REFS = {}
+MG = {}          # repeats written in milligrams, filled by write()
+CURRENT = {}     # a repeat's directions after a wording-only edit, filled by extras.reword_plan()
 
 
 def assign_refs(templates):
@@ -65,6 +67,80 @@ def tref_b(tp):
 
 def tref(tp):
     return REFS[tp["tid"]]
+
+
+# ------------------------------------------------------------ how each system carries a repeat's dose (ask A)
+def dose_history(w):
+    """Each ACE inhibitor or ARB repeat's in-place dose edits, in order (the simulator's titrations)."""
+    out = collections.defaultdict(list)
+    for e in w.edits:
+        out[e["tid"]].append(e)
+    for v in out.values():
+        v.sort(key=lambda e: (e["t"], e["field"]))
+    return out
+
+
+def mg_repeats(w):
+    """The ACE inhibitor and ARB repeats whose prescriber writes the dose in milligrams: a share of them, chosen by
+    the repeat's own reference, among repeats whose every dose has a licensed milligram form."""
+    hist = dose_history(w)
+    out = {}
+    for tp in w.templates:
+        if tp["slot"] != "raas":
+            continue
+        texts = [tp["directions"]] + [x for e in hist.get(tp["tid"], []) if e["field"] == "Dosage" for x in (e["old"], e["new"])]
+        units = {W.units_per_dose(x) for x in texts}
+        if not units <= {1, 2} or (2 in units and (tp["drug"], tp["strength"]) not in W.MG_TWO_OK):
+            continue
+        hv = int(hashlib.sha256(("mg" + REFS[tp["tid"]]).encode()).hexdigest()[:12], 16)
+        if (hv % 10000) / 10000.0 < W.MG_SHARE:
+            out[tp["tid"]] = hv % 97
+    return out
+
+
+def render(tp, text, mg, shift=0):
+    v = mg.get(tp["tid"])
+    return text if v is None else W.mg_text(text, tp["strength"], v + shift)
+
+
+def as_authorised(tp, hist):
+    """A repeat as it was authorised: the directions and quantity before any edit."""
+    dose = [e for e in hist.get(tp["tid"], []) if e["field"] == "Dosage"]
+    qty = [e for e in hist.get(tp["tid"], []) if e["field"] == "Quantity"]
+    return (dose[0]["old"] if dose else tp["directions"]), (int(qty[0]["old"]) if qty else tp["qty"])
+
+
+PLAN = []         # the change log's wording edits and notes, filled by reword_plan()
+PLAN_RNG = []     # the plan's random stream, which the change log carries on for the reassignments
+REWORD = {"ONE daily": "ONE in the morning", "1 daily": "ONE daily", "ONE at night": "Take ONE tablet at night",
+          "1 at night": "ONE at night", "one a day": "ONE daily", "1 nocte": "ONE at night",
+          "ONE twice a day": "ONE twice daily", "1 bd": "ONE twice a day", "TWO daily": "TWO to be taken each day"}
+
+
+def reword_plan(w):
+    """Wording-only edits (no change of dose) and notes, as the medicines safety search logs them. A wording edit
+    sits on a repeat after any change of its dose and rewords the directions the repeat then carried; statin
+    repeats carry none."""
+    PLAN.clear(); CURRENT.clear()
+    hist = dose_history(w)
+    r = np.random.default_rng([46991, 5])
+    tps = [tp for tp in w.templates if tp["authorised"] <= W.ASOF and (tp["ended"] is None or tp["ended"] >= W.EXTRACT_FROM)]
+    for tp in tps:
+        if r.random() < 0.035 and tp["directions"] in REWORD:
+            t = max(tp["authorised"], W.EXTRACT_FROM) + int(r.integers(1, 200))
+            last_dose = max([e["t"] for e in hist.get(tp["tid"], [])] or [-1])
+            if t <= min(W.ASOF, tp["ended"] or W.ASOF) and tp["slot"] != "statin" and t > last_dose:
+                PLAN.append([t, tp, "Dosage", tp["directions"], REWORD[tp["directions"]], "GP"])
+                CURRENT[tp["tid"]] = REWORD[tp["directions"]]
+        if r.random() < 0.02:
+            t = max(tp["authorised"], W.EXTRACT_FROM) + int(r.integers(1, 250))
+            if t <= min(W.ASOF, tp["ended"] or W.ASOF):
+                note = ["Pt prefers to collect from branch surgery", "Check BP before next issue",
+                        "Please synchronise with other repeats", "Pt has dosette - pharmacy aware",
+                        "Requested via NHS App"][int(r.integers(0, 5))]
+                PLAN.append([t, tp, "Notes", "", note, "Administrator"])
+    PLAN_RNG[:] = [r]
+    return PLAN
 
 
 # Item cancellations other than the 2025 out-of-stock re-sends, as the EPS tracker's item report carries them: an
@@ -142,6 +218,10 @@ def write(w):
         keep.append(tp)
     keep.sort(key=lambda tp: (W.BY_KEY[tp["key"]]["code"], tp["pid"], tp["authorised"], tp["slot"]))
     mi_filed = {(e["pid"], e["t"]): e["filed"] for e in w.events if e["code"] == "22298006"}
+    hist = dose_history(w)
+    mg = mg_repeats(w)
+    MG.clear(); MG.update(mg)
+    reword_plan(w)
     fa = open(os.path.join(OUT, "repeat_authorisations_system_a.csv"), "w", newline="", encoding="utf-8")
     fbb = open(os.path.join(OUT, "repeat_authorisations_system_b.csv"), "w", newline="", encoding="utf-8")
     wa = csv.writer(fa, lineterminator="\r\n"); wb = csv.writer(fbb, lineterminator="\n")
@@ -166,12 +246,16 @@ def write(w):
                      and x["authorised"] <= W.ASOF]
             end = min(x["authorised"] for x in later) if later else None
         if p["system"] == "A":
-            wa.writerow([p["code"], tp["pid"], tref_a(tp), product_a(tp), tp["directions"],
+            # system A lists each repeat as it stands, any wording change included
+            wa.writerow([p["code"], tp["pid"], tref_a(tp), product_a(tp), render(tp, CURRENT.get(tp["tid"], tp["directions"]), mg),
                          "%d %s" % (tp["qty"], unit_word(tp)), tp["M"], uk(tp["authorised"]),
                          "" if end is None else uk(end), "Active" if end is None else "Inactive"])
             nta += 1
         else:
-            wb.writerow([p["code"], tp["pid"], tref_b(tp), product_b(tp), tp["directions"], tp["qty"],
+            # system B's search reads its current repeats as they were authorised, with changes made since in the
+            # change log; a repeat that has ended is archived as it stood when it ended
+            d0, q0 = as_authorised(tp, hist) if end is None else (CURRENT.get(tp["tid"], tp["directions"]), tp["qty"])
+            wb.writerow([p["code"], tp["pid"], tref_b(tp), product_b(tp), render(tp, d0, mg), q0,
                          tp["M"], W.iso(tp["authorised"]), "" if end is None else W.iso(end)])
             ntb += 1
     fa.close(); fbb.close()
