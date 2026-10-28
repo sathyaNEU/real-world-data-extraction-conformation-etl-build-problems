@@ -1,35 +1,33 @@
 {
  "task": "task464",
- "status": "DESIGN",
+ "status": "PAUSED",
  "domain": "education-learning-sciences",
  "objective": "descriptive-distribution",
- "stage": 2,
- "stage_name": "design",
+ "stage": 1,
+ "stage_name": "draw",
  "updated": "2026-10-28",
- "stump": "A competent analyst counts the coded reasons and commits the 2027 retention budget to work hours clash at 24.8 per cent of withdrawals, because the coded counts measure which reasons the coders recognise rather than which reasons learners had; inverting the per-category hit rates the service's own re-coded sample measures puts caring role first at 25.0 per cent against 20.5.",
+ "stump": "A competent analyst counts the coded reasons and commits the 2027 retention budget to work hours clash at 24.4 per cent of withdrawals, because the coded counts measure which reasons the coders recognise rather than which reasons learners had; the manual's caring-role category is recognised in 68 of every 100 cases that belong to it against work hours clash's 90, and work hours clash takes most of the spill, so reweighting the coded counts by what the service's own moderation return measures behind each code puts caring role first at 25.1 per cent against 19.4.",
  "architecture": 8,
- "architecture_spent": "3, on the re-judge's Gate C finding. Architecture 4 refused and its refusal covers the whole education-learning-sciences / item-response-theory-test-equating cell (0 of 168 cells over 24 seeds at 7 settings). Architecture 5 screened the two ETL cells the author allocated this pass, general-statistics-data-science / data-integration-record-linkage-entity-resolution (cell A) and survey-research-official-statistics / census-register-administrative-data-quality (cell C), and both are refused on measurement: see DESIGN_NOTE.md, '## Architecture 5' at the foot of the file, and the two architecture 5 lines in '## Tried and rejected'.",
+ "architecture_spent": "8, at stage 4 on the judge's Gate H3 SEND_BACK (decisive_step planted: correcting the coded shares is the retired surface-read flip). Earlier: 3, on the re-judge's Gate C finding. Architecture 4 refused and its refusal covers the whole education-learning-sciences / item-response-theory-test-equating cell (0 of 168 cells over 24 seeds at 7 settings). Architecture 5 screened the two ETL cells the author allocated this pass, general-statistics-data-science / data-integration-record-linkage-entity-resolution (cell A) and survey-research-official-statistics / census-register-administrative-data-quality (cell C), and both are refused on measurement: see DESIGN_NOTE.md, '## Architecture 5' at the foot of the file, and the two architecture 5 lines in '## Tried and rejected'.",
  "loops": 0,
  "precut": {
-  "exit": null,
-  "date": ""
+  "exit": 0,
+  "date": "2026-10-28"
  },
  "leak": {
   "leak_py": "REVIEW, no LEAK",
-  "reader": "running"
+  "reader": "done 2026-10-28: Q6 'following a stated rule, with a planted-data component'"
  },
  "duplicate_check": {
-  "heart": "WARN, no BLOCK",
-  "surface": "clean: the only persona in the cut pack is Nicholas Clay, who is on the card"
+  "heart": "WARN, no BLOCK (repeat.question_form against task305)",
+  "surface": "clean: no persona off the card"
  },
  "judge": {
-  "verdict": "NOT_DETERMINISTIC",
+  "verdict": "DETERMINISTIC",
   "disposition": "SEND_BACK",
-  "report": "determinism_check_report_pass4.md",
-  "raw_verdict": "determinism_check_report_pass4_raw_verdict.md",
-  "finding": "Gate C competing_defensible_answer on the MAIN CALL by underspecified_objective: clause 4.2 defines deliverable positions but nothing files what evidence fixes the count, so the concurrency sweep (274 positions, 3,886 slots, 6 areas below), the directory's attested stations (327, 4,668, 3) and the register's licensed stations (351, 5,006, 2) are all reachable and each changes the call",
-  "closed": "not closed and not closable: the author ruled architecture 3's decisive step spent. Any closure that forces the golden reading tells the analyst not to take the attested count, which is the default path's whole error, so the construction becomes the only route left; the judge's own suggested sentence files the HOW and makes the step rule application, which rule 3 bans. Gate C and Gate F ride one dial here with no middle",
-  "re_judge": "spent: one was licensed and run"
+  "report": "determinism_check_report_pass5.md",
+  "finding": "Gate H3 decisive_step planted; Gate G mechanism planted_defect_flip, surface_read_rejection; residual fork on the terms of reference's re-code sentence",
+  "re_judge": "not licensed: SEND_BACK re-roots"
  },
  "returned": [
   {
@@ -45,7 +43,7 @@
    "commit": ""
   }
  ],
- "resume": "Stage 2 design, architecture 8. The draw is registered and committed and the note carries ## Draw, ## Default path, ## Stump sentence and ## Three rules. Still owed before precut.py can exit 0: ## Readability screen, ## Semantic fork table, ## Ladder, ## Closure table (22 axes), ## Literal reader, ## Oracles, ## Ask sheet with a cracker sheet and a Measured by line naming an existing script, and prompt.txt through voice-check.py. The generator is rewritten for this world: architecture 6's world.py, sim.py and pack.py are the six-partner place ballot and do not apply. The estimand is filed in the review's terms of reference as the share of withdrawals that HAPPENED for each reason, which forces the correction without naming it. Guard against shipping any document that states a per-category hit rate or a corrected share, which would be the oracle. Measurements are in the scratchpad under t464.",
+ "resume": "Re-root at stage 1 as architecture 9 under the same number and objective (descriptive-distribution), in another client domain and dataset (education is spent at architectures 2, 4 and 8). The 10/10 rules first: every reported number in the pack is right and the decisive step is an estimand or method choice, never a correction of a reported label or figure. Read '## Tried and rejected' (the architecture 8 line and the four laws) before drawing. Architecture 8's generator is kept as history in git and is not reused.",
  "approved": null,
  "delivered": "2026-10-17",
  "portal": "both responses landed the call",
@@ -53,23 +51,20 @@
  "portal_status": "not on the approved list",
  "portal_status_date": "2026-10-27",
  "build": {
-  "checks": "682 assertions passed (three rules R1 to R3c, SF1 to SF17, ladder, 22 closure axes, input gates, realism sweep, the five procedural shapes, the five owed figures)",
-  "verify": "PASS, bundle only, own code path: 40 sites, 12 areas, 96 ask figures",
-  "rebuilds": "two consecutive builds byte-identical across all 13 target files and target.zip, md5 c0e0dfcfcc8ecf0bc864f9e4b9eb8d7a",
-  "figures_check": "PASS, 146 figures in blocks 1 to 4, 0 absent",
-  "leak_py": "REVIEW, no LEAK, 4 REVIEW lines answered in the design note's Leak check",
-  "pair": "Pair ceiling 30.8, Mirror leakage 4.2 per cent, measured by generator/ceiling.py on the cut pack",
-  "network_weekly_slots": 3886,
-  "areas_short": 6,
-  "required_weekly_slots_network": 3568,
-  "nearest_short_area": "SA-04, 20 slots short (named Hesper Vale after the area-name shuffle)"
+  "checks": "52 assertions passed (three rules R1 to R4, SF1 to SF9, L1 mess neutrality, the ladder, the ask device and separation, the realism sweep, the ceiling)",
+  "verify": "PASS, 52 checks on its own code path (pypdf read-back, its own cutover linkage)",
+  "rebuilds": "two consecutive builds byte-identical across target/, golden/, submission.md and target.zip, md5 251a89463055374373c77eae0691f55c",
+  "figures_check": "PASS, 43 figures in blocks 1 to 4, 0 absent",
+  "leak_py": "REVIEW, no LEAK",
+  "pair": "Pair ceiling 28.5, Mirror leakage 0.0 per cent, cracker keeps 0 of 16, measured by generator/ceiling.py on the cut pack",
+  "call": "Caring responsibilities 25.1 against Work hours clash 19.4, gap 5.7; default path work hours clash 24.4"
  },
- "checks": 682,
+ "checks": 52,
  "verify": 0,
  "byte_identical": true,
- "target_zip": "c0e0dfcf",
+ "target_zip": "251a8946",
  "figures_check": 0,
- "input_gates": "13 files, 5 formats, a 639,110-row SQLite encounter database, 2 distractors declared, every file carrying source, date and licence",
+ "input_gates": "13 files, 4 formats, a 90,540-row enrolment extract, 2 distractors declared, every file carrying source, date and licence",
  "architecture_screens": {
   "arch5_cellB_emissions_inventory": "REFUSED 2026-10-27, enumeration over six inputs, each with a record; no harness",
   "arch5_cellD_seasonal_adjustment": "REFUSED 2026-10-27, measured: Horn A 0.000000 bins and 24 of 24, price 1 corr +1.0000000000 and 24 of 24, Horn C 0 of 7 dial settings, smallest rung gap golden to cheapest member at 5.36 bins against a step worth 51.46",

@@ -1,143 +1,151 @@
 {
   "task": "task464",
-  "domain": "healthcare-delivery-health-economics",
-  "subdomain": "payment-claims-health-plan-analytics",
-  "objective": "etl",
-  "prompt_shape": "07",
-  "as_of": "2027-02-19",
-  "currency": "USD",
-  "compiled_by": "Wrenlow Community Health Plan, network contracting",
-  "compiled_on": "2027-02-16",
-  "licence": "Compiled by Wrenlow Community Health Plan network contracting for the 2027 network year. Plan records are the plan's own and are released for contracting use; the state licensing register and the fee schedule are public records of the state licensing authority, reproduced as published.",
+  "domain": "education-learning-sciences",
+  "subdomain": "text-analysis",
+  "objective": "descriptive-distribution",
+  "prompt_shape": "05",
+  "as_of": "2026-11-18",
+  "currency": "GBP",
+  "compiled_by": "Thornmere Adult Education Service, retention lead's office",
+  "compiled_on": "2026-11-18",
+  "licence": "Compiled by Thornmere Adult Education Service for its 2025/26 withdrawal review. Every file is the service's own record, synthetic, and released for the review's use.",
   "files": [
     {
-      "path": "target/provider_directory_2027.csv",
+      "path": "target/withdrawals_autumn_winter_2025.csv",
       "role": "spine",
-      "covers": "The plan's own provider directory, one row per site per annual attestation cycle.",
-      "source": "Wrenlow Community Health Plan, provider data management",
-      "date": "2026-11-18",
-      "licence": "plan record, released for contracting use"
+      "covers": "Withdrawals recorded in the autumn and winter terms of 2025/26, exported from the student record system in use until the winter term closed, with each learner's exit comment and the reason code a coder gave it.",
+      "source": "Thornmere Adult Education Service, student records (legacy system export)",
+      "date": "2026-01-09",
+      "licence": "service record, synthetic, released for the review's use"
     },
     {
-      "path": "target/state_licence_register.xlsx",
+      "path": "target/withdrawals_spring_summer_2026.json",
       "role": "spine",
-      "covers": "The state licensing authority's outpatient facility register, facility and corporate rows with the amendment history.",
-      "source": "State licensing authority, public register extract",
-      "date": "2027-02-19",
-      "licence": "public record of the state licensing authority"
+      "covers": "Withdrawals recorded in the spring and summer terms, from the Horizon SR v4 learner withdrawal extract, with the winter withdrawals keyed after the old system closed.",
+      "source": "Thornmere Adult Education Service, student records (Horizon SR v4)",
+      "date": "2026-08-03",
+      "licence": "service record, synthetic, released for the review's use"
     },
     {
-      "path": "target/staffing_roster_2026q4.csv",
-      "role": "operating extract",
-      "covers": "The roster of staffed treatment sessions a week by site, effective 1 October 2026.",
-      "source": "Wrenlow Community Health Plan, clinical operations",
-      "date": "2026-10-01",
-      "licence": "plan record, released for contracting use"
-    },
-    {
-      "path": "target/treatment_encounters.db",
+      "path": "target/coding_moderation_2025_26.csv",
       "role": "spine",
-      "covers": "Four contract years of outpatient dialysis and infusion treatment encounters, in the two layouts the clearinghouse change left behind.",
-      "source": "Wrenlow Community Health Plan, encounter data warehouse",
-      "date": "2027-01-05",
-      "licence": "plan record, released for contracting use"
+      "covers": "The year's moderation return: the withdrawals the quality team drew by reason code, with the code recorded and the category the moderating coder placed the comment in.",
+      "source": "Thornmere Adult Education Service, quality team",
+      "date": "2026-08-21",
+      "licence": "service record, synthetic, released for the review's use"
     },
     {
-      "path": "target/enrolment_projection_2027.csv",
-      "role": "operating extract",
-      "covers": "The plan's enrolment projection by service area for 2027.",
-      "source": "Wrenlow Community Health Plan, actuarial services",
-      "date": "2027-01-15",
-      "licence": "plan record, released for contracting use"
-    },
-    {
-      "path": "target/network_agreement_2027_capacity_terms.pdf",
+      "path": "target/coding_manual_2025.pdf",
       "role": "governing document",
-      "covers": "Schedule 4 of the 2027 provider network agreement: capacity and service area adequacy.",
-      "source": "Wrenlow Community Health Plan, network contracting",
-      "date": "2026-12-10",
-      "licence": "plan record, released for contracting use"
+      "covers": "The exit comment coding manual, version 4.2: the six reason codes and when to use each.",
+      "source": "Thornmere Adult Education Service, quality team",
+      "date": "2025-09-01",
+      "licence": "service record, synthetic, released for the review's use"
     },
     {
-      "path": "target/state_adequacy_filing_2026.xlsx",
+      "path": "target/quality_assurance_procedure.pdf",
+      "role": "governing document",
+      "covers": "How the quality team draws and moderates the coding sample.",
+      "source": "Thornmere Adult Education Service, quality team",
+      "date": "2025-09-01",
+      "licence": "service record, synthetic, released for the review's use"
+    },
+    {
+      "path": "target/withdrawal_review_terms_of_reference.pdf",
+      "role": "governing document",
+      "covers": "The terms of reference of the 2025/26 withdrawal review.",
+      "source": "Thornmere Adult Education Service, head of service",
+      "date": "2026-11-18",
+      "licence": "service record, synthetic, released for the review's use"
+    },
+    {
+      "path": "target/reason_code_list.csv",
+      "role": "reference",
+      "covers": "The six reason codes and labels in manual order.",
+      "source": "Thornmere Adult Education Service, student records",
+      "date": "2025-09-01",
+      "licence": "service record, synthetic, released for the review's use"
+    },
+    {
+      "path": "target/enrolments_2025_26.csv",
+      "role": "operating extract",
+      "covers": "Every 2025/26 enrolment on the student record, one row per learner, course and term.",
+      "source": "Thornmere Adult Education Service, student records (Horizon SR v4)",
+      "date": "2026-08-03",
+      "licence": "service record, synthetic, released for the review's use"
+    },
+    {
+      "path": "target/course_catalogue_2025_26.csv",
+      "role": "reference",
+      "covers": "The 2025/26 course catalogue: each course reference with its centre, curriculum area, planned guided hours, start term and the number of terms it was planned over.",
+      "source": "Thornmere Adult Education Service, curriculum planning",
+      "date": "2026-08-03",
+      "licence": "service record, synthetic, released for the review's use"
+    },
+    {
+      "path": "target/site_directory.csv",
+      "role": "reference",
+      "covers": "The service's five centres, with the former names the merger replaced.",
+      "source": "Thornmere Adult Education Service, estates",
+      "date": "2026-01-05",
+      "licence": "service record, synthetic, released for the review's use"
+    },
+    {
+      "path": "target/retention_budget_2027_lines.xlsx",
       "role": "context artifact",
-      "covers": "The plan's annual network adequacy filing for the 2026 network year, position as at 1 January 2026.",
-      "source": "Wrenlow Community Health Plan, regulatory reporting",
-      "date": "2026-03-31",
-      "licence": "plan record, released for contracting use"
+      "covers": "The 2027 retention budget lines and their status.",
+      "source": "Thornmere Adult Education Service, finance",
+      "date": "2026-11-02",
+      "licence": "service record, synthetic, released for the review's use"
     },
     {
-      "path": "target/out_of_network_payments_2026.csv",
-      "role": "operating extract",
-      "covers": "Out-of-network outpatient dialysis and infusion claim lines adjudicated in 2026.",
-      "source": "Wrenlow Community Health Plan, claims operations",
-      "date": "2027-01-09",
-      "licence": "plan record, released for contracting use"
-    },
-    {
-      "path": "target/out_of_network_payments_runout_2027q1.csv",
-      "role": "operating extract",
-      "covers": "2026 services adjudicated after the 2026 close, to the run-out pull.",
-      "source": "Wrenlow Community Health Plan, claims operations",
-      "date": "2027-02-16",
-      "licence": "plan record, released for contracting use"
-    },
-    {
-      "path": "target/out_of_network_payments_reconciliation_2026.xlsx",
-      "role": "control",
-      "covers": "The out-of-network register's own control totals by adjudication quarter.",
-      "source": "Wrenlow Community Health Plan, claims operations",
-      "date": "2027-01-09",
-      "licence": "plan record, released for contracting use"
-    },
-    {
-      "path": "target/encounter_extract_transmittal.json",
-      "role": "control",
-      "covers": "The encounter extract's transmittal: pull date, tables and row counts by service quarter.",
-      "source": "Wrenlow Community Health Plan, encounter data warehouse",
-      "date": "2027-01-05",
-      "licence": "plan record, released for contracting use"
-    },
-    {
-      "path": "target/nemt_trips_2026.csv",
+      "path": "target/learner_satisfaction_2025_26.xlsx",
       "role": "distractor",
-      "covers": "Non-emergency medical transport trips by service area and month, 2026.",
-      "source": "Wrenlow Community Health Plan, transportation benefit",
-      "date": "2027-01-07",
-      "licence": "plan record, released for contracting use"
+      "covers": "The 2025/26 learner satisfaction survey by centre and by curriculum area.",
+      "source": "Thornmere Adult Education Service, quality team",
+      "date": "2026-08-14",
+      "licence": "service record, synthetic, released for the review's use"
     },
     {
-      "path": "target/licence_fee_schedule_2026.pdf",
+      "path": "target/attendance_rates_2025_26.csv",
       "role": "distractor",
-      "covers": "The state licensing authority's annual outpatient facility fee schedule, effective 1 July 2026.",
-      "source": "State licensing authority",
-      "date": "2026-07-01",
-      "licence": "public record of the state licensing authority"
+      "covers": "Scheduled sessions and attendance rates by curriculum area and term.",
+      "source": "Thornmere Adult Education Service, quality team",
+      "date": "2026-08-14",
+      "licence": "service record, synthetic, released for the review's use"
     }
   ],
   "distractor_files": [
-    "target/nemt_trips_2026.csv",
-    "target/licence_fee_schedule_2026.pdf"
+    "target/learner_satisfaction_2025_26.xlsx",
+    "target/attendance_rates_2025_26.csv"
   ],
   "stated_inputs": {
-    "service_areas": 12,
-    "contract_year_for_demand": 2026,
-    "network_year": "2027"
+    "terms": [
+      "T1",
+      "T2",
+      "T3",
+      "T4"
+    ],
+    "centres": 5,
+    "reason_codes": 6,
+    "decision_year": "2027"
   },
   "field_terms": [
-    "station",
-    "chair",
-    "session",
-    "position",
-    "slot"
+    "withdrawal",
+    "reason code",
+    "moderation",
+    "learner-course",
+    "planned guided hours"
   ],
   "deliverables": [
-    "outpatient_capacity_2027.csv",
-    "area_capacity_2027.xlsx"
+    "withdrawal_reason_composition_2025_26.csv",
+    "retention_target_2027.xlsx"
   ],
   "portal": {
-    "call": "the 2027 network's weekly treatment slots and the twelve service areas against the adequacy standard",
-    "network_weekly_slots": 3886,
-    "areas_short": 6
+    "call": "the one withdrawal reason the 2027 retention budget line targets",
+    "answer": "Caring responsibilities",
+    "share_pct": 25.1,
+    "runner_up": "Work hours clash",
+    "gap_points": 5.7
   }
 }

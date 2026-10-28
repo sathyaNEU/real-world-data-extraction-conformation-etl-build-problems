@@ -19,10 +19,18 @@ def main():
     rows += extras.write_all()
     import golden as _g
     _g.main()
+    import answers as _a
+    _a.main()
+    import meta as _m
+    _m.main()
+    import writeup as _w
+    _w.main()
     for n, k, ch in postprocess.run(OUT):
         pass
     for n, k, ch in postprocess.run(os.path.join(os.path.dirname(HERE), "golden")):
         pass
+    import cut as _c
+    _c.main()
     print()
     names = sorted(os.listdir(OUT))
     exts = sorted({os.path.splitext(n)[1] for n in names})

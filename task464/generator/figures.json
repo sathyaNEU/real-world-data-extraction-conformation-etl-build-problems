@@ -1,77 +1,70 @@
 {
  "call": "CR",
  "call_label": "Caring responsibilities",
- "call_share_pct": 26.1,
+ "call_share_pct": 25.1,
  "runner_up": "WH",
  "runner_up_label": "Work hours clash",
- "runner_up_share_pct": 19.3,
- "gap_points": 6.8,
+ "runner_up_share_pct": 19.4,
+ "gap_points": 5.7,
  "corrected_share_pct": {
-  "CR": 26.1,
-  "WH": 19.3,
-  "TR": 14.1,
-  "CD": 15.1,
-  "HL": 13.2,
-  "OT": 12.2
+  "CR": 25.1,
+  "WH": 19.4,
+  "TR": 14.7,
+  "CD": 15.5,
+  "HL": 13.5,
+  "OT": 11.8
  },
  "coded_share_pct": {
-  "CR": 19.8,
-  "WH": 24.3,
-  "TR": 12.9,
-  "CD": 15.2,
-  "HL": 12.9,
-  "OT": 14.8
+  "CR": 19.4,
+  "WH": 24.4,
+  "TR": 13.6,
+  "CD": 15.4,
+  "HL": 13.2,
+  "OT": 14.0
  },
- "withdrawals_total": 17200,
- "moderated_total": 2700,
- "ask1_curriculum": {
-  "English and maths": {
-   "learner_courses": 11421,
-   "planned_hours": 817575
-  },
-  "Digital skills": {
-   "learner_courses": 11575,
-   "planned_hours": 932775
-  },
-  "ESOL": {
-   "learner_courses": 11246,
-   "planned_hours": 718605
-  },
-  "Health and social care": {
-   "learner_courses": 11259,
-   "planned_hours": 796890
-  },
-  "Business administration": {
-   "learner_courses": 11448,
-   "planned_hours": 833685
-  },
-  "Construction skills": {
-   "learner_courses": 11287,
-   "planned_hours": 759885
-  }
+ "withdrawals_total": 17231,
+ "coded_counts": {
+  "CR": 3337,
+  "WH": 4199,
+  "TR": 2349,
+  "CD": 2656,
+  "HL": 2274,
+  "OT": 2416
  },
- "ask2_started_and_completed_pct": {
-  "Cross Gate Centre": 65.1,
-  "Hollowdean Centre": 64.0,
-  "Lathe Street Centre": 63.0,
-  "Northmarket Centre": 64.8,
-  "Westbury Centre": 64.1
+ "wh_coded_belonging_cr_pct": 14.8,
+ "cr_coded_confirmed_pct": 86.2,
+ "moderated_total": 4416,
+ "ask1_planned_hours": {
+  "English and maths": 832566,
+  "Digital skills": 734640,
+  "ESOL": 749682,
+  "Health and social care": 756246,
+  "Business administration": 726420,
+  "Construction skills": 687663
  },
- "ask3_carried_over": {
-  "T1": 7546,
-  "T2": 5438,
-  "T3": 4780
+ "ask2_started": {
+  "Cassgrove": 11468,
+  "Hollowdean Learning Hub": 12849,
+  "The Lathe Street Building": 15857,
+  "Northmarket Centre": 17228,
+  "Wyebrook Adult Learning Centre": 11749
  },
- "ask4_changed_on_moderation": {
-  "CR": 46,
-  "WH": 123,
-  "TR": 89,
-  "CD": 65,
-  "HL": 72,
-  "OT": 175
+ "ask2_completed_pct": {
+  "Cassgrove": 64.6,
+  "Hollowdean Learning Hub": 64.1,
+  "The Lathe Street Building": 64.7,
+  "Northmarket Centre": 65.5,
+  "Wyebrook Adult Learning Centre": 63.9
  },
- "ask4_changed_total": 570,
- "learner_courses_in_scope": 68236,
- "enrolment_rows_in_scope": 86000,
- "enrolment_rows_in_extract": 90130
+ "ask2_completed_raw": {
+  "Cassgrove": 64.62329961632368,
+  "Hollowdean Learning Hub": 64.11393882792436,
+  "The Lathe Street Building": 64.6654474364634,
+  "Northmarket Centre": 65.49802646853959,
+  "Wyebrook Adult Learning Centre": 63.928845008085794
+ },
+ "cutover_links": 25,
+ "learner_courses_in_scope": 69151,
+ "enrolment_rows_in_scope": 86413,
+ "enrolment_rows_in_extract": 90540
 }

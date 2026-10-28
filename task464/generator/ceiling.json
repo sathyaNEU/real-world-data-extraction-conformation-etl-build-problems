@@ -1,7 +1,7 @@
 {
- "ask_figures": 20,
- "cracker_keeps": 14,
- "Lc": 0.7,
- "pair_ceiling": 67.0,
- "mirror_leakage_pct": 70.0
+ "ask_figures": 16,
+ "cracker_keeps": 0,
+ "Lc": 0.0,
+ "pair_ceiling": 28.5,
+ "mirror_leakage_pct": 0.0
 }
