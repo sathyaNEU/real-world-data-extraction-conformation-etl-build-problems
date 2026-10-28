@@ -83,6 +83,16 @@ CURRICULUM = ["English and maths", "Digital skills", "ESOL", "Health and social 
 SUBCONTRACT_SITE = {"code": "MDV", "name": "Meadowvale (subcontracted)"}
 SUBCONTRACT_ENROLMENTS = 4130
 
+# Courses that run across two terms. The student record opens an enrolment row for the learner in EACH term
+# the course spans, and both rows carry the WHOLE course's planned hours, because the hours belong to the
+# course and not to the term. Summing the column over rows therefore counts a two-term course's hours twice.
+# Nothing flags it: (learner, course, term) is unique, and a learner holding two rows for one course is
+# correct data. Only course_catalogue.csv, which carries each course's hours once, resolves it.
+TWO_TERM_SHARE = 0.34          # share of courses that span two terms
+# Learners who move centre mid-course keep the same course and appear at both centres, the sending centre's
+# row left at continuing and the receiving centre's closed at completed.
+TRANSFER_SHARE = 0.047
+
 SEED = 46486
 
 
