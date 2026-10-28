@@ -1,846 +1,143 @@
 # task179 design note
 
-**Architecture v3, drawn 2026-10-23: a from-scratch rebuild in education-learning-sciences /
-learning-analytics-early-warning-models (Forecasting).** The number was RETIRED on 2026-10-21 and reopened under the
-author's rule that no number stays retired. Every world, cell and mechanism worked on it before (the ambulance surge
-pool, the macro-econometrics cell, architecture v2's truncated serial interval, the product-analytics adoption cell
-and the population-pharmacokinetics cell) is spent and kept below as history (`## Architecture v2 record`,
-`## First-cell record`, `## Tried and rejected`, `## Retired`, `## Rebuild (2026-10-23)`).
+**Architecture 5, drawn 2026-10-28: criminology-justice / recidivism-risk-assessment (Forecasting).** Architecture 3
+(the Corriemoor first-year entrants' repeat classmates) was returned on 2026-10-25 for Duplicate against task175, and
+architecture 4's candidates (probes 5 to 10, candidates B and C1) died before any card registered; both are in
+`## Tried and rejected`. Under `CLAUDE.md`'s STOP block no probe, solver or scored reader is run on this draw: the stump
+is argued on paper against the nine survivor properties (`## Draw`) and measured by the portal alone. Everything worked
+on this number before is kept below as history (`## Tried and rejected`, `## Earlier architectures`).
 
 ## Draw
 
-1. **Card.** `cards/task179.json`, architecture v3, registered 2026-10-23 through `register_serial.sh` (commit
-   4afaec0a), the old identity (v2, spent) in `lineage`. Two earlier attempts BLOCKed under the lock: on `ban.strategy`
-   composition_mix against task274, then, once spent cards left the live window, on `ban.strategy`, `ban.pattern` (G6),
-   `ban.artifact` (register) and `ban.forum` (executive_team) against task175. composition_mix is this draw's honest
-   family (stumping strategies F5: a pooled rate does not fit a pool whose mix on a property rebuilt from a history
-   differs), so nothing was relabelled; the draw registered when task173's DRAWN pushed task175 out of the window.
-   `guard.py check` on the registered card: WARN only (`overuse.objective`, `overuse.gate_g`, `repeat.gate_g`,
-   `repeat.decision`, `repeat.question_form`, `repeat.deliverables`, answered in item 9), with the older (time, G6)
-   signatures differentiated against task125, task150 and task501 v3. The very first check BLOCKed `test.same_puzzle`
-   and `test.same_driver` on (population, G6) against task175; the decisive gap was redrawn to time, which names the
-   difference as honestly (the record's intakes were placed in class groups by an allocation run and the forecast bets
-   on the first intake after the run ended), population kept second.
-2. **Pairing.** Client domain education-learning-sciences, task type learning-analytics-early-warning-models (serves
-   Forecasting; no earlier card sits in this task type); objective Forecasting & Predictive Modeling; decision a
-   quantity figure (a count of students); shape 07, a grid: the call, with the asks' grids of Semester 1 2026 teaching
-   groups by faculty and continuing students by faculty and year of study.
-3. **World, fictional throughout.** Corriemoor University, a public university of about 30,000 students in the city of
-   Corriemoor, Republic of Aldmark (both invented; no real university, ministry, student system or student record is
-   used, and `metadata.json` says the setting is fictional and the data synthetic). Five faculties, thirteen bachelor's
-   programmes and eight conjoint combinations; about 8,000 first-time entrants a year. A first-year full-time entrant
-   takes UNIV101 Academic Communication, the faculty's two first-year papers and one first-year elective in Semester 1,
-   in classes of up to 30. Until 2025 the Registry's student system SIRIUS ran a class allocation each July that
-   placed confirmed full-time entrants in groups of 28 taking UNIV101 and the faculty's two papers together; entrants
-   confirmed after the run, part-time entrants and a few others enrolled in remaining seats. On 1 June 2026 the
-   university moved to ARC; the allocation was not rebuilt, and the 2026 entrants enrolled themselves through ARC from
-   6 July. The halls office kept placing its living-learning communities (about 11 per cent of entrants) together.
-   Personas from `guard.py names --locale en_IE --seed 179`: Cillian Coholan (Planning Office senior analyst, owner of
-   the projection), Malcolm Hussey (Registry systems manager, author of the cutover notes), Keri Keating (Director of
-   Planning and Insight, author of the projection conventions). None is in the prompt.
-4. **Decision and call.** The Planning Office's continuing-enrolment projection sets the 2027 teaching plan (how many
-   second-year teaching groups each faculty schedules) and the 2027 fee budget, and goes to the senior leadership team
-   in November. The call, forward facing (the window closes on 1 October 2027): how many of the first-time bachelor's
-   entrants enrolled at the 1 October 2026 census will not be enrolled at the 1 October 2027 census, to the nearest
-   250.
-5. **The quantity.** Each 2026 entrant's probability of not being enrolled at the next census, the early-warning
-   model's own target, summed over the 2026 entrants.
-6. **Mechanism keys.** Gap time (the record's intakes sat in allocated class groups, the forecast intake did not),
-   then population; generators G6 (composition shift: the 2026 intake sits at the other end of an exposure the record
-   measures), G14 (the conditioned yield that fixes it), G2 (the exposure lives at the class-membership grain, finer
-   than any entrant field). Gate G `forecasting`. Strategy `composition_mix`. Layer 2 family
-   `estimand_identification`, pattern `own:retention-read-on-repeat-classmates-after-class-allocation-ended`. The
-   library card learning-analytics-early-warning-models 1 (features that exist at alert time, validated on a later
-   cohort) is the default path and passes here, because the later cohort it validates on (2025) was still
-   allocated; the judgment the card takes for granted is that the forward intake was produced the way the
-   validation intake was.
-7. **Data-native sentence.** The record holds every entrant's Semester 1 classes at the census; in the allocated
-   years about four in five full-time entrants shared UNIV101 and two faculty papers with the same 27 others, so the
-   number of other entrants an entrant meets in two or more classes runs from none to about 27, and an entrant who
-   meets few others twice is about twice as likely not to be back at the next census; the 2026 entrants enrolled
-   themselves, and outside the living-learning communities they meet on average under one other entrant twice.
-8. **Sources read (stumping 1.3).** The cell's four library cards (alert-time features and a later cohort; cut-off
-   by support capacity; regression discontinuity at the risk-score cut-off; error rates by group): the first is the
-   default path, the other three are not this decision. task176's death in this cell (credits by identity under a
-   new course size, a function of several draws: task143's driver) and task143's card were read as spent: nothing
-   here is a joint or tail quantity. task175 (the shape that shipped clean: a forward population at the other end of
-   a covariate the record measures at a finer grain) was read as the shape, never the template: its covariate is a
-   spatial fill a service sequence sorted, this one a count of repeat co-members in a bipartite class network that
-   no column or key holds, made different by an administrative placement that ended at a records cutover.
-9. **Guard WARNs answered.** `overuse.objective`, `overuse.gate_g` and `repeat.gate_g`: the lane is Forecasting and its
-   Gate G is the forecast itself. `repeat.deliverables` (png and xlsx, against task173): a workbook and a chart are what
-   a planning office hands the leadership team; the chart is the ask's grid. `repeat.decision` (quantity_figure) and `repeat.question_form` (how-many): the decision is a count
-   of students the teaching plan and the fee budget are sized on, so the honest form is how many.
-10. **Axes against the live window** (task274, task176, task177 at the draw): forum `executive_team` (the senior
-    leadership team approves the teaching plan), forcing event `other` (the 2027 teaching plan and budget round,
-    which has no vocabulary key), organisation `university_or_school`, role `research_desk`, artifact `register` (the
-    census history), calibration `realised_outcome_roster` (earlier intakes' next-census enrolment), shape 07.
+| Item | Value |
+|---|---|
+| Card | `cards/task179.json` architecture v5, registered 2026-10-28; v2 and v3 in its lineage |
+| Pairing | criminology-justice / recidivism-risk-assessment, Forecasting & Predictive Modeling; client domain Criminology & Justice |
+| Call | how many of the people on Region 4's supervision caseload at the end of 31 December 2026 will be booked into either county jail at least once in 2027 on a new charge on Directive 26-07's Schedule B (a violent felony or a firearm offence) while still under Region 4 supervision, to the nearest 50; the figure sizes the GPS enrolments the Region reserves in its 2027 order, since the directive places every such supervisee on GPS from 1 January 2027 |
+| Shape | other: the call and its critical components, then the asks (the 2026 Schedule B booking notices by jail and quarter, the 2026 GPS days the vendor may bill by month, the year-end caseload by county and risk level), in two deliverables, an order workbook and a forecast memo |
+| Strategy | other: an acute dynamic risk factor recorded only by another agency (violent victimization in the city police's incident records), linked to the caseload by name and date of birth, whose prevalence nearly tripled in the second half of 2026; Layer 2 family field_method |
+| Gap, pattern, Gate G | time then population; G12 (the supervision record's silence on victimization is an absence of record, not a record of absence) and G14 (the raised booking hazard is conditioned on a victim record in the window before the year end); forecasting |
+| Forum, forcing event, org, role | executive_team (the Region's executive team signs the order); purchase_order_or_contract (the 2027 GPS order reserves enrolments in advance); government_agency; research_desk (the Region 4 research and planning lead) |
+| People | Zachary Wallace and Ashlee Evans, from `guard.py names --geo us --seed 179` |
+| Spine | `cms_supervision_episodes_2018-2026.csv`, one row per supervision episode open at any time from 2018 to 2026 (person x episode) |
+| Seed | none: drawn without a seed; the world (a state supervision region of two counties and one city) is new to the lane |
 
-## Screens (stumping 1.2, as code)
+**Why this cell.** The directive excludes the domains probes 6 to 10 used (Actuarial, Sociology and Demography,
+Economics and Econometrics, Energy) and Education, healthcare delivery and product analytics. Criminology & Justice
+serves Forecasting through one task type, recidivism-risk-assessment, which `guard.py check` passes for this card;
+task141 (violator pods under a term cap) and task169 (parole returns re-routed through the courts) sit in the same cell
+with other drivers, and this draw keeps away from their furniture: no jail capacity decision, no statute changing who is
+revoked, no commission, a vendor order instead of a jail plan.
 
-Prototypes in the session scratchpad, b179x/screen (`u1.py` to `u1e.py`, `u1sum.py` on a stylised world; then
-`wfam.py`, `wseeds.py` on the generator's own world, seven world draws by salt, seeds fixed before outcomes).
-Figures are the 2026 intake's expected non-enrolment at the 2027 census against each route, on the generator's
-world (truth 3,190 to 3,207 over seven draws, about 37.6 per cent of 8,499 entrants against the record's 24.7; the shipped world then set the 2026 intake at 8,659).
+**The guard's answers.** `guard.py check` on the card: WARN, no BLOCK.
+- overuse.org_family (government_agency, in 41 builds): a state corrections department's supervision region is a
+  government agency; local_government would misstate it, and no other family is honest.
+- repeat.gate_g (forecasting, task118 v3 and task304 v2): the objective is Forecasting and the deciding quantity is a
+  forecast; task118 v3 (a deprescribing team's fall admissions) and task304 v2 (a hepatitis C charity's van) share only
+  the tag.
+- repeat.deliverables (docx and xlsx, task118 v3): a planning lead sends a contracts office the order workbook and a
+  short memo; task118 v3 is a health build in another domain and retired.
+- test.same_puzzle_older and test.same_driver_older (time, G12, quantity_figure, forecasting): differentiated on the
+  card against task157 v1, task192 v2, task482 v10, task231 and task250 v2 (a defect seen only when both members of a
+  sampled pair fall in the sample; an instrument's labels after its validation window; episodes recorded only at their
+  end; exits reaching the record a year late; alerts a less sensitive limit would raise). None reads an exposure a
+  second agency records about the same people under another role.
+- Abstraction test against the nearest drivers (0.07 to 0.08): task179 v3 (this slot: repeat classmates in a cohort's
+  own classes) and task177 v3 (one event leaving the paying body) are each a member's own record; task137's candidates
+  (a new site's demand, pairs of exposures, a register of long-term members) read the provider's own files. The
+  closest in shape is task166 (founders linked to leavers across customers' workspaces by mobile number): the same
+  device, a link across two bodies' records, but its quantity is a pipeline of new arrivals produced by another
+  population's exits, while here no new member arrives and nobody leaves: each existing member's own hazard is raised
+  by an event a second agency records about that member in another role.
+- `guard.py slots` on the mechanism's words (victim, victimization, overlap) and the setting's (supervisee, probation,
+  parole, booking, jail, police) found no slot note with this mechanism; task141's jail extract with UTC times is a
+  Layer 1 neighbour, so this pack's UTC jail is the second county's whole extract, not a mid-series switch.
 
-- **The default family lands a third low and tightly:** a logistic early-warning model on every entrant attribute
-  -33.6 to -34.7 per cent; the last intake's rate times the 2026 intake -40 per cent; the pooled rate -34 per cent.
-- **The golden family converges where the data close it:** repeat classmates in bands (0, 1, 2, 3, 4 to 5, 6 to 8, 9
-  to 14, 15 to 21, 22 or more), five bands, four bands, and an indicator at five, seven or ten repeat classmates file
-  within 1 to 2 per cent of each other on every draw and -1.8 to +2.2 per cent of the truth (bands). Forms the data
-  reject sit lower: a saturating curve at scale 8 (4 to 26 log-likelihood units worse) -0.5 to -4.3, a linear term (10
-  to 35 worse) -1.2 to -4.4, log(1 + repeat classmates) (12 to 45 worse) -1.4 to -6.8.
-- **Wrong constructions of the exposure are loud:** any repeat classmate as a yes or no (about 237 units worse) -30
-  per cent; classmates met in three or more classes (about 145 worse) -15; the largest number of classes shared with
-  one classmate -13 to -15; a full-group indicator at 20 repeat classmates (about 54 worse) -1 to -7.
-- **Dispersion:** the decisive quantity is a level (the isolated entrant's rate), not a spread.
-- **Variance-only:** the step moves the point by a third of the figure.
-- **Common-exposure subset:** the record's entrants who met few others twice are the attaining subset, and their
-  rate, adjusted for the covariates, is the golden's own construction once the exposure is built; their plain rate
-  times the 2026 intake overshoots by about 8 per cent because the living-learning communities stayed placed.
-  Building the exposure from class memberships is the decisive step, and no column, key or code holds it.
-- **Truncation direction:** no suppressing threshold on the path.
-- **The functional-form fork, found and closed in the world.** In the first world the forward intake's repeat
-  classmates sat at 1 to 4, where the record had little support, and the forms forked 7 per cent (`wfam.py` on the
-  first generator world: bands 2,936 against a linear term's 2,819 and log's 2,725). Two facts of the world close it:
-  the fourth first-year paper is a university-wide elective (so self-enrolled entrants meet few others twice, as the
-  record's late entrants did), and the protection a group gives is near flat below five repeat classmates.
-- **Precision:** the golden's own spread over seven world draws is 1.3 per cent of the figure; with the call to the
-  nearest 250 (3.8 per cent either side of the centre) the standing family and a one-sigma move stay inside one bin
-  (asserted in `checks.py`).
-- `guard.py slots` on the driver and on the setting's words (timetabling, retention, classmates, self-enrolment,
-  allocation, census, persistence, peers, contagion, network): vocabulary hits only; task179's own product-analytics
-  screen recorded local contagion of adoption inside customer accounts, a different mechanism.
+**Data-native sentence.** The city police record a victim by the name and birth date given at the scene and never by
+the state identification number, because victims are not fingerprinted, so a supervisee who is shot or assaulted
+appears in the police extract as a stranger, while the jails' booking notices carry the state number of every
+supervisee they book.
 
-## Default path
+**A line per source.**
+- The client's `recidivism-risk-assessment` rigor cards (calibration is not discrimination, fixed follow-up, later
+  cohorts for validation, selective labels, local base rates) are the default path's own virtues here: the easy route
+  validates on later year ends, follows each person for a fixed year and is well calibrated overall; the decisive step
+  is none of them, it is an exposure the instrument never scores.
+- The criminological literature on the victim-offender overlap (violent victimization raising later violent offending
+  and weapon carrying) is the domain's knowledge the step uses; supervision risk instruments score criminal history,
+  attitudes, associates, employment and substance use, and no instrument on file, nor any build, scores a police
+  victim record.
+- task166 and task137 v4, the two builds that held on the portal with a linked second record, are the anatomy the
+  nine properties below were read from; this draw takes the anatomy, never their drivers (a founder pipeline,
+  deterrence after run-outs), both banned for this number.
+- The death record of probes 5 to 10 and candidates B and C1 (`## Tried and rejected`) set what the anatomy must
+  avoid: a column for the actor (probe6), the domain's own reflex (probe7), a filed event or precedent (probe8), the
+  textbook model's strongest feature pointing at the driver (probe9), a keyed join and a shock that is the largest file's
+  largest spike (probe10).
 
-1. Read the projection conventions: the population is the first-time bachelor's entrants with an enrolled programme
-   attempt at the 1 October 2026 census (entrants with credit and returning students are not first-time); an entrant
-   counts as enrolled at the 1 October 2027 census when any programme attempt is enrolled there, and a student on
-   approved leave is not enrolled.
-2. Stitch the SIRIUS extracts (2019 to 2025 intakes) and the ARC extracts (2026) through the student crosswalk, keep
-   each intake's first-time entrants enrolled at their own census, and take each 2019 to 2025 entrant's outcome from
-   the next census (the 2025 intake's from the ARC census of 2026).
-3. Fit the early-warning model on every entrant attribute the record carries: Aldmark Secondary Certificate points,
-   first in family, part-time study, age at entry, hardship grant, the week-6 progress ratings, faculty, hall
-   residence, living-learning community and acceptance date; validate it on the 2025 intake held out (calibrated).
-4. Score the 2026 entrants and sum their probabilities.
+**The nine survivor properties, argued** (prototype `scratchpad/t179_a11/proto2.py hr=8 surge=6 sm=7 vwb=-0.8 seed=1`,
+a monthly simulation of the caseload, its bookings and the city's violent victimizations from 2014 to 2027, fitted
+exactly as the default path and the golden would be on the built pack; the generator re-measures every figure at stage 3).
 
-Ends on: 2,250 students not enrolled at the 1 October 2027 census (2,142 unrounded)
+1. **An actor with no column.** No supervision, assessment or jail file carries victimization: the case-management
+   export has offence, priors, terms and addresses, the instrument scores seven needs domains, and the jails record
+   only bookings. The actor is whoever assaulted the supervisee, recorded by a third agency.
+2. **A signature only through an untypical link inside the main data.** The raised hazard shows only once the police
+   victim rows are matched to the caseload; the link is a victim to a supervisee, the opposite role from every link a
+   supervision analyst runs (arrestee to supervisee, by state number).
+3. **A textbook route that back-tests well.** The own-attribute model (age, sex, priors, offence, supervision type,
+   months remaining, risk score, recent bookings) back-tests on the 2022 to 2025 year ends at 429 against 430, 440
+   against 421, 415 against 443 and 390 against 434 on the prototype; the generator holds every back-test within five
+   per cent (a stage 3 assertion), and the model's 2026 caseload mean risk equals 2025's (0.0549 against 0.0559).
+4. **No framing or helper file that exposes the step.** The pack ships no data dictionary, no memo on violence, no
+   research brief on victimization; the directive defines Schedule B by statute and the vendor's order form counts
+   enrolments; nothing names the police file as a source of risk.
+5. **A mechanism a practitioner would not name unprompted.** The overlap is a research finding, not a forecasting
+   input: no supervision instrument (LSI-R, ORAS, COMPAS, the state's own) scores victimization, and a planning lead
+   forecasting bookings reaches for the instrument, history and terms. The police file sits in the pack for an ask
+   (below), so its presence is explained without the step.
+6. **No strong textbook feature pointing at the driver.** The prototype's own-attribute model ranks months remaining
+   (0.50 in coefficient times standard deviation), age (0.33), risk score (0.32), sex (0.26) and a violent lead offence
+   (0.25) first; none moves in 2026 (mean risk 0.0549 against 0.0559), and the textbook score predicts who carries a
+   2026 victim record no better than general risk does (AUC 0.675). Asking what changes any of them leads back to the
+   caseload, never to the police.
+7. **The shock's file has its own evident purpose.** The city police's violent-incident extract (one row per victim per
+   incident) is in the pack because Directive 26-07 requires a GPS exclusion zone around each victim of a supervisee's
+   Schedule B charge who lives in the city, and the vendor bills each zone: an ask counts the 2026 zones by joining the
+   bookings to the incidents on the arresting agency's case number, a keyed join on the offender side.
+8. **The link is an identity resolution across records of different entities that no key joins.** Victims carry no
+   state number; the police write `LAST, FIRST M` with dates as `MM/DD/YYYY` and the case-management export separate
+   name fields with ISO dates; the match is a cleaned surname, given name and birth date, and the generator asserts it
+   unique (no two people share a cleaned name and birth date, every true match agrees after cleaning).
+9. **The shock reads as ordinary, explained movement and is not the pack's largest anomaly.** The city's recorded
+   violent victimizations fall 4.2 per cent in 2026 (12,479 to 11,949), continuing the decline from the 2021 peak
+   (-7.1, -10.8, -8.5, -5.7 per cent a year), with every district down (-0.9 to -9.3 per cent) and September to December
+   2026 inside the monthly year-on-year range of 2019 to 2025 (-17.4 to +22.7 per cent). Supervisees are 2.6 per cent of
+   the city's victims in 2025 and 6.6 per cent in 2026, visible only after the link. The pack's larger anomalies are
+   ordinary and explained: the 2020 to 2021 rise in violence (+10.3 and +14.6 per cent), the spring 2020 booking
+   collapse, the June 2022 case-system migration and the July 2024 recodification of every statute.
 
-Golden: 3,250 students not enrolled at the 1 October 2027 census (3,253 unrounded)
-
-## Stump sentence
-
-A competent solver fits an early-warning model on the entrants' own attributes (secondary score, first in family,
-part-time study, age, hardship grant, week-6 progress ratings, faculty, hall, living-learning community and acceptance
-date) to the 2019 to 2025 entrants' enrolment at the next census, validates it on the 2025 intake, scores the 8,659
-2026 entrants and files 2,250 not enrolled on 1 October 2027 (2,142), against 3,250, because it never reads each
-entrant's chance at the number of other entrants met in two or more of the entrant's own classes: the Registry's
-allocation run kept that near 26 for four in five entrants of every intake it validates on, and the 2026 entrants,
-who enrolled themselves after the ARC cutover, meet on average under one other entrant twice.
+**The prototype's call.** The own-attribute model files 426.4 (450 at the nearest 50); the same model with a 2026
+victim record (the twelve months before each year end, as fitted on 2018 to 2025) files 496.2, and every linked form
+sits from 488.5 to 499.5 (the AIC-best, the twelve months, the twelve to twenty-four months and ever, 494.4), 500 at the
+nearest 50. The 2027 truth the prototype simulates is 497. The cheap routes off the record land 383.0 (recalibrated on
+the latest back-test), 395.8 (2026's rate on the 2026 caseload) and 426.3 (a district violence covariate).
 
 ## Three rules
 
-Task type: learning-analytics-early-warning-models (education-learning-sciences), which serves Forecasting: the forward count of an intake's students who will not be enrolled at the next census, worked from the record's entrants student by student.
-Domain test: the deciding quantity is each first-year entrant's probability of not being enrolled at the next census, the early-warning model's own target, which persistence research ties to the student's academic and social integration; here integration is read from the co-enrolment network, the other entrants met in two or more of the entrant's own classes, and carried to an intake whose classes were not allocated.
-Swap: "how many of the 2026 hires will not be on the payroll in 2027" keeps a rate times a population, but there is no census, no class allocation run, no living-learning community, no class co-enrolment and no re-enrolment year, so the step that moves the answer has nothing to stand on.
-Layer 1: a student-records cutover (SIRIUS extracts with seven-digit numbers and day-first dates, ARC extracts with C-numbers, ISO dates and new class codes, a crosswalk between them, Registry); census and progress-rating codes that differ between the systems; students on approved leave carried on the census; conjoint students on two attempts and two rows; entrants with credit and returning students in the admissions workbook beside first-time entrants, one sheet per intake with drifting column names (Admissions); a class timetable with one row per weekly meeting, room changes and cancelled classes (Timetabling); nothing placed to be caught.
-Layer 2: estimand_identification: the record's intakes were placed in class groups and the forward intake was not, so neither the record's rate nor a model validated on a later allocated intake transfers; the comparison the data force is an entrant with as few repeat classmates as the forward entrant's own.
-Decisive step: read each entrant's chance of not being enrolled at the next census at the number of other entrants met in two or more of the entrant's own Semester 1 classes, from the 2019 to 2025 entrants' census classes and outcomes, and carry it to the 2026 entrants' own classes, instead of a model on entrant attributes validated on an intake that was still allocated.
-Not semantics: every field (census status, programme attempt, progress rating, crosswalk, class number, acceptance date) can be read correctly and the early-warning model still files 2,250; nothing in any file says an entrant's chance depends on classmates, and no column, key or code holds the number of repeat classmates or marks an allocated group.
-Not rule application: no filed rule or procedure says how an entrant's chance is estimated or what goes into the model; the conventions fix who is counted, the two censuses, leave as not enrolled, the rounding, and that among models fitted to the same intakes the projection uses the lowest Akaike information criterion (SELECT_PIN, added in the round 1 fix to close the judge's functional-form note). The criterion picks among what the analyst fits and names no covariate: a model without the repeat-classmate count is 897 AIC units worse, but nothing tells the analyst to build that count. The enumerated family (bands of nine, five and four, indicators at 5, 7, 10, 15 and 22, saturating curves at 4 and 8, a linear, log and square-root term, fit windows of seven, four and three intakes) spreads 2,974.8 to 3,296.8; the standing family, every form within 12 AIC units of the best and every window, spreads 3,172.5 to 3,269.3, one printed call (3,250); the forms outside it are 20 or more AIC units worse (square root 20.3, log 23.0, scale-4 curve 32.9, the 22-classmate indicator 184.9).
-Analyst test: a strong analyst who stitches both systems through the crosswalk, keeps first-time entrants enrolled at each census, reads leave as not enrolled and fits a validated early-warning model on every entrant attribute and the week-6 ratings files 2,250 (Ends on) of the 2026 entrants not enrolled at the 1 October 2027 census, against 3,250.
-Estimand: the number of first-time bachelor's entrants with an enrolled programme attempt at the 1 October 2026 census who will have no enrolled programme attempt at the 1 October 2027 census (a student on approved leave not enrolled), to the nearest 250; filed in continuing_enrolment_projection_conventions_2027.pdf sections 2 and 3 (with the model-selection criterion), the count asked in the prompt.
-No decoy: nothing is planted to be caught: no forecast, target, earlier projection, memo or stakeholder figure ships; the early-warning model is the solver's own arithmetic on the record, and the cutover notes and conventions state only facts the Registry and the Planning Office file.
-No certified replay: no certified or published figure is reproduced to recover the method; the conventions file the WHAT and no figure in the pack is an output of a forecasting method.
-Lesson: a retention model validated on a later intake is only as good as the process that produced that intake; a model learns to ask what changed in how the forward intake met its classmates, and to read the change at the class-membership grain no field carries, which no build on file teaches (task175 conditions on a street's build-out, task165 on a service headroom, task143 on a group effect inside a joint tail).
-
-## Readability screen
-
-| Rung | Filed sentence | Schema | Reflex | Control bench | Hygiene | Linear | Verdict |
-|---|---|---|---|---|---|---|---|
-| 0 the record's non-enrolment rate, or the 2025 intake's, times the 2026 intake | no | yes (census history) | yes (carry the rate forward) | no | no | yes | readable |
-| 1 an early-warning model on entrant attributes and week-6 ratings, validated on the 2025 intake | no | yes (admissions, progress check) | yes (the field's textbook model, card 1's later-cohort validation) | yes (2025 predicted 2,068 against 2,058 actual) | no | no | readable |
-| 2 a yes-or-no for any repeat classmate, or the plain rate of the record's entrants with none | no | no (no column holds it) | no | no | no | no | silent |
-| 3 (decisive) repeat classmates counted from each entrant's own classes, the chance read in bands and carried to the 2026 classes | no | no (built from the class extracts by pairing class members) | no (the opponent's reflexes are pool, analogue, validate on the latest cohort, add the visible attributes) | no | no | no | silent |
-
-## Semantic fork table
-
-| Id | Term or convention | Golden reading | Alternative | Call under it | Ruled out by |
-|---|---|---|---|---|---|
-| SF1 | not enrolled at the 2027 census | no enrolled attempt; approved leave is not enrolled | leave read as enrolled | 3,037, prints 3,000 | ENROLLED_PIN (conventions section 2) |
-| SF2 | first-time entrants | Entry Basis First-time | credit-transfer entrants included | another population | INTAKE_PIN (section 3) |
-| SF3 | conjoint entrants (two attempts, two rows) | one student | two | same call (asserted) | same call; INTAKE_PIN counts entrants |
-| SF4 | a blank week-6 rating | the middle value | the median of the ratings | 3,268.7, same call | same call (asserted) |
-| SF5 | ASC points across intakes | raw points | standardised within each intake | 3,268.8, same call | same call (asserted) |
-| SF6 | whose classmates count | other first-time entrants of the intake (the extracts hold no one else) | every student in the class | same call | the class extracts are first-time entrants only (asserted) |
-| SF7 | a forecast count | the expected number | a simulated count's median | 3,268, same call | same call (asserted) |
-| SF8 | age | 21 or over at entry | age as a number | 3,270.3, same call | same call (asserted) |
-| SF9 | an entrant's faculty | the admissions Faculty (first-listed programme) | the second programme's | same call | conjoint entrants are 3 per cent and the faculty terms are small (asserted under SF3) |
-| SF10 | the model's form for the repeat-classmate count | the lowest Akaike information criterion among the forms fitted (an indicator at 10, 3,253.0) | a log or square-root term (judge round 1: 3,115, 3,130), a 22-classmate indicator (2,976) | 3,000 | SELECT_PIN (conventions section 3); every form within 12 AIC prints the call (asserted SF10, B0, B1, B3) |
-| SF11 | the ask's teaching group (judge pass 3) | the whole set of students taught together in one room at one time, counted once however often and wherever it meets: each distinct set of classes meeting together | every room-and-time meeting its own group (FASS 200 21 and 66); one group per class code (15 and 43) | asks only, the call reads no timetable row | the prompt's clause (2026-10-24) and GROUP_PIN's sentence on two classes sharing one meeting (judge r5), asserted SF11, A4 |
-| SF12 | whether the model reads the entrants' classes (portal judge 2, 2026-10-24) | the 2026 intake's class enrolments are its own while every intake the model is fitted on had the Registry's, so the forecast tests the classes it carries (3,253.0 on the count) | a model on entrant attributes and week-6 ratings alone, the classes never read (2,141.9); the 2026 collapse in repeat classmates read as a migration artefact | 2,250 | SELECT_PIN: the count-free model 897.2 AIC worse once the count is a candidate (asserted SF12, verify); the dictionary files both first-year class extracts as one row per Semester 1 class enrolment of a first-time entrant at the census (cited in write-up step 3). Section 6, the round 2 closure, was withdrawn after portal round 4 landed the call on it (2026-10-25); SF12 now asserts the cutover notes carry no class-enrolment section |
-| SF13 | the count's form (portal judge 2) | the lowest AIC among the forms fitted (an indicator at 10) | a logarithm of the count alone (3,113.6) or a scale-4 curve (3,090.9) | 3,000 | SELECT_PIN: every form printing outside the bin loses to every form printing inside it (the log 23.0 AIC worse than the best, 3.1 worse than the linear count and 2.7 worse than the square root), so any comparison of two forms prints the call (asserted SF13, verify) |
-| SF14 | whether the repeat-classmate count is comparable across the cutover (portal round 3, 2026-10-25) | a class enrolment records the same thing in both systems, the student on the class's list at the census, so the 2026 collapse in repeat classmates is a change in who chose the classes and the count is carried (3,253.0) | the count read as measured differently across the cutover and dropped as not transportable (2,141.9) | 2,250 | the record's own 11,640 entrants meeting fewer than 10 others twice are 5,029 not enrolled against 4,166.2 from the count-free model (write-up step 5); the count's model fitted on the 9,497 entrants the July run did not place prints 3,293.8 (flag at 10) and 3,264.4 (five bands), and reweighted to the 2026 mix of the count 3,263.6 and 3,279.3 (asserted SF14, verify). The comparability sentence, the round 3 closure, was withdrawn with section 6 after portal round 4 |
-| SF15 | whether the 2026 class extract measures the same unit as SIRIUS's (portal round 5, judge 1) | the same unit: one paper and 15 points a class in both, 218,044 places for 57,073 entrants in 8,407 classes (2019 to 2025) and 33,064 for 8,659 in 1,279 (2026), about 3.8 classes an entrant and 26 entrants a class on both sides; only who shares them changed (45,433 of 57,073 meeting 10 or more others twice against 928 of 8,659) | the collapse read as a class-code artefact and the count dropped (2,141.9) | 2,250 | the extracts themselves (write-up step 4) and the cutover notes' Table 1, which maps the class number to the class code; the record's own control (step 6); every form within 12 AIC of the lowest prints 3,250 (step 5) (asserted SF15, verify) |
-
-## Ladder
-
-| Rung | Route | 2026 intake not enrolled at the 2027 census | Printed (nearest 250) | Distance from the golden's bin (3,125 to 3,375) | Dies to |
-|---|---|---|---|---|---|
-| 0a | the 2025 intake's rate times the 2026 intake | 2,118.7 | 2,000 | 1,006 | the record's intakes sat in allocated class groups |
-| 0b | the 2019 to 2025 pooled rate | 2,136.9 | 2,250 | 988 | same |
-| 1 | early-warning model on attributes and week-6 ratings (the default path) | 2,141.9 | 2,250 | 983 | same; 455 log-likelihood units worse than the golden |
-| 2a | a yes-or-no for any repeat classmate | 2,489.1 | 2,500 | 636 | a random shared pair is not a group; 216 units worse |
-| 2b | log(1 + repeat classmates) or its square root | 3,113.6 / 3,128.5 | 3,000 / 3,250 | 11 / inside | 23.0 and 20.3 AIC units worse (SELECT_PIN) |
-| 2c | a saturating curve at scale 4; an indicator at 22 repeat classmates | 3,090.9 / 2,974.8 | 3,000 | 34 / 150 | 32.9 and 184.9 AIC units worse |
-| 2d | the record's entrants with no repeat classmate, their plain rate times the 2026 intake | 3,824.4 | 3,750 | 449 | the living-learning communities stayed placed, and the covariates |
-| 3 | golden family (every form within 12 AIC units: indicators at 10, 5, 7 and 15, bands of nine, five and four, a saturating curve at 8; the chosen form on 2022 to 2025 and 2023 to 2025) | 3,172.5 to 3,269.3 | 3,250 | inside, 47.5 or more from each edge | |
-
-Position and margins: the golden sits above every textbook rung and below the half-handled plain subset; the nearest
-refuted form (log) is 11 past the lower edge and 23 AIC units worse; the golden's own bootstrap sigma is 37.1 (1.1 per
-cent) and a one-sigma move keeps 3,250 (asserted R4). Worth: the step moves the call from 2,142 to 3,253, 34.2 per cent
-of the golden.
-
-## Closure table
-
-| Axis | Reading | Closure |
-|---|---|---|
-| 1 Population | first-time bachelor's entrants enrolled at the 1 October 2026 census | INTAKE_PIN |
-| 2 Unit of account | students | the question names it |
-| 3 Attribution window | the 1 October 2027 census | the question and CALL_PIN |
-| 4 As-of dating | records to the 2026 census, assembled 16 October 2026 | dictionary and cutover notes |
-| 5 Version basis | the census history as loaded in ARC | cutover notes section 1 |
-| 6 Denominator | the 8,659 entrants of 2026 | INTAKE_PIN; every route counts the same (cc1) |
-| 7 Weighting | student by student | the estimand sums students |
-| 8 Window length | seven intakes, 2019 to 2025 | B1: fits on 2022 to 2025 and 2023 to 2025 print the call |
-| 9 Boundary inclusivity | census day inclusive | the census is one day |
-| 10 Rounding path | the count to the nearest 250 | the prompt and CALL_PIN; family inside one bin (B1) |
-| 11 Tie-break | none | no ranking |
-| 12 Maturity and censoring | every 2019 to 2025 outcome is observed at the next census | the 2026 census closes the 2025 outcomes |
-| 13 Order of operations | the model form chosen before the forecast | SELECT_PIN (lowest AIC); B0 |
-| 14 Row order | none | n/a |
-| 15 Duplicate resolution | conjoint entrants once | SF3 |
-| 16 Identity normalisation | SIRIUS to ARC through the crosswalk | cutover notes section 2; mess neutral |
-| 17 Netting against gross | none | n/a |
-| 18 Dimensional units | counts | n/a |
-| 19 Code and status semantics | EN and Enrolled; LV and On leave | ENROLLED_PIN; cutover notes Table 1; SF1 |
-| 20 Integerisation | rounding of an expected count | SF7 |
-| 21 Clause scope | the conventions govern the 2027 projection | conventions section 1 |
-| 22 Forward window contents | the 2026 intake's classes at the census | the ARC first-year extract |
-
-## Literal reader
-
-Executed word for word, the prompt and the conventions fix the count (first-time bachelor's entrants enrolled at the
-1 October 2026 census, not enrolled at the 1 October 2027 census, approved leave not enrolled, to the nearest 250) and
-leave the estimate of each entrant's chance to the data. Every reading of SF1 to SF13 either violates a quoted
-sentence or files the same call, and the easy answer (2,250) comes from an easy method on the same literal estimand,
-not from another reading. The cutover notes' section 6 files that the 2026 class enrolments are the entrants' own and
-every earlier intake's were the Registry's, so the change the class records show is a recorded fact, and a model
-that never reads those records ignores a filed difference between the intakes it is fitted on and the one it
-forecasts; no sentence names the count, its form or its effect. The same section files that a class enrolment
-records the same thing in both systems, so a reading that drops the count as measured differently across the
-cutover breaks a quoted sentence (SF14).
-
-## Oracles
-
-none: no control, published figure or reconciliation column in the pack confirms either the early-warning model or
-the golden; the 2025 intake validates the default model (2,068 predicted, 2,058 actual), which is the default path's
-own check and says nothing about 2026; the hall occupancy and school-leaver files (the distractors) carry no
-enrolment outcome.
-
-## Ask sheet
-
-Weights on the portal's generated rubric: 18 the call, 20 the two components, 55 the asks over 20 figures, 7
-instruction following and the chart. The ask sits on rows the call never reads (asserted S2 to S4 and F1 to F3: every
-file the call reads is the shipped one, the dictionary only gains the class list's entry).
-
-- **The ask: Semester 1 2026 teaching groups at 200 level and at 300 level and above, by faculty, with 30 students or
-  fewer and with more than 30 at the census (20 figures).** H18 home: the teaching plan sets this year's upper-level
-  groups beside the projection when it sizes the second-year groups for 2027. Files: `s1_2026_class_timetable.xlsx`,
-  `arc_s1_2026_class_enrolments.csv`, the census history and the conventions (GROUP_PIN: the students taught together,
-  in one room at one time; a group's faculty is its paper's; its size is the number of students enrolled at the census
-  whom it teaches; a cancelled class is not a group; ENROLLED_PIN: enrolled at a census means an enrolled programme
-  attempt in the census history, and approved leave is not enrolled).
-- **Primary 1, which classes are one group (D6, seen, the reflex repair wrong).** In every faculty and level two pairs
-  of papers carried from SIRIUS share only their lecture and keep a workshop each: a paper over 30 with a small
-  partner, and a pair at 30 or under. The students taught together are then three groups, the lecture and each
-  workshop. Joining classes through any shared meeting (the portal's route on the first pack) makes one; merging
-  identical meeting sets makes two. Fair: each such pair's classes share exactly one slot and hold one more each, and
-  the prompt counts a group as the whole set of students taught together in one room at one time, once however
-  often and wherever it meets, and GROUP_PIN says two classes sharing one meeting make three groups, so the three
-  sets are the only reading (asserted A4, SF11). Filed, this primary is rule application a careful reader
-  executes (reader E did without it); primary 2 carries the ask for that reader, and every route with the
-  grouping right still keeps 0 of 20 (readers G and H, on the pack before the sentence, kept every listed place).
-- **Primary 2, a group's size (D4, absence as the signal, split across two files, silent).** ARC Scheduling's Enrolled
-  at Census, and the class list that ties to it, still count places held by students on approved leave (423) and by
-  students with no 2026 census attempt (558). Only the class list joined to the census history gives the students
-  enrolled at the census. In every faculty and level two single classes stand at 32 to 34 on ARC's figure and at 30 on
-  enrolled students, and neither kind of place alone brings them to 30 (asserted A8, A9); every other stale place sits
-  where it cannot carry a group across 30. Fair: each listed student's state is in the census history, and every list
-  but the combinations' ties to the timetable's figure (asserted A6, A7).
-- **Hazards kept from the first pack:** a combination's figure written on each ARC class (each class's list holds its
-  own students), cancelled classes, rooms changed at week 5, team-taught rows and half-semester papers sharing a slot.
-- **Chart (`s1_2026_teaching_groups.png`):** its segments are the ask's cells.
-- Screened against 1.1e and the portal's path: no column, code or comment marks a lecture-only pair or a stale place;
-  the census state sits in a file the ask's obvious path never joins, and a lecture-only pair shows only as one shared
-  slot among three. The repeated figure read against the room, which the portal's responses executed, is a hazard
-  here, never a primary.
-
-| Ask | Figures | Cracker and the portal's path (ceiling.py routes) | Verdict |
-|---|---|---|---|
-| 200 level, 30 or fewer, by faculty | 5 | portal route; shared meetings joined; identical meeting sets; one group per class; each meeting a group; the grouping right on the timetable's figures, on every listed student, with leave kept, with leavers kept; enrolled students under either wrong grouping | miss |
-| 200 level, more than 30, by faculty | 5 | the same routes | miss |
-| 300 and above, 30 or fewer, by faculty | 5 | the same routes | miss |
-| 300 and above, more than 30, by faculty | 5 | the same routes | miss |
-
-Pair ceiling: 28.5 (each of the 14 routes keeps 0 of 20; cracker 45.0, mirror 12.0; on the portal's rubric a response off the call that has one device keeps about 17)
-
-Mirror leakage: 0.0 per cent of ask weight (every route, the portal's path among them)
-
-Measured by: generator/ceiling.py
-
-## Stage 4 round 1 (on target.zip fab8b152) and the fix pass
-
-- Readers: A and B both filed 2,250 on the call (the default path: a logistic model on attendance, week-6 ratings,
-  programme and background, back-tested on 2023 to 2025); neither looked at classmates. The call held 2 of 2.
-- Asks: reader A 10 of 25 (all ten teaching-group cells, by merging classes with identical room, day and time in every
-  meeting and adding; all fifteen continuing cells missed by keeping attempt 1 for 31 two-attempt students, which is the
-  judge's open fork, not the device); reader B 25 of 25 (identical meeting sets merged and added; the transfer register
-  joined to the two-attempt students). Both devices sat on the careful reader's path.
-- Judge: DETERMINISTIC, FIX_NOW optional, 3,270 and every ask cell reproduced. Notes: the nearest-250 bucket depends on
-  the exposure's form (log 3,115, square root 3,130, a 22-or-more indicator 2,976, each fitting worse, no criterion
-  filed); the faculty of a student with old and new attempts after a transfer is unfiled.
-- Fix 1, the form: the conventions file the model-selection criterion (SELECT_PIN: the lowest Akaike information
-  criterion among the models fitted to the same intakes). The data separate the candidates by it: the chosen form (an
-  indicator at 10 repeat classmates) prints 3,250 (3,253.0) and every form within 12 AIC units prints 3,250, while log,
-  square root and the 22 indicator are 20 to 185 units worse (asserted B0 to B3). No recent build files a selection
-  criterion (task175, task176, task171 and task173 checked). The printed call is unchanged; the unrounded golden moved
-  from 3,269.3 (nine bands) to 3,253.0 (the criterion's form).
-- Fix 2, the transfer fork: the continuing-students ask was dropped rather than pinned, since pinning the new programme
-  hands the ask over (reader B already joined the register); its files stay as distractors and no sentence about
-  continuing students remains in the conventions.
-- Fix 3, the ask layer: the teaching-groups ask was re-sited onto a figure whose identity the data force (`## Ask sheet`)
-  and widened to faculty, level and size band (20 cells), every cell moved by the device on every route.
-
-## Stage 3 gates (2026-10-23, re-run after the round 1 fix)
-
-- Generator: `python3 task179/generator/build.py`; `checks.py` 73 assertions green (input gates G1 to G6, the call and
-  its bin R1 to R4, the criterion's choice and the form family B0 to B4, L1, the three-rules block on the clean truth T1
-  to T4, SF1 to SF10, the ask's routes and device facts A0 to A5, separation S2 and S3, documents D1 to D4, realism Q1);
-  `verify.py` (csv and openpyxl readers, pair counting per class, statsmodels GLM over nine forms with its own AIC)
-  picks the same form and recomputes the call (3,253.0, printed 3,250), both components and all 20 ask figures, 0
-  failed; two consecutive builds byte-identical over 19 files; `target.zip` md5 in `pipeline.json`.
-- `figures_check.py` PASS (44 figures); `voice-check.py` PASS (651 characters); `ceiling.py` worst route 1 of 20, both
-  round 1 readers' paths 0 of 20, pair ceiling 31.2, mirror leakage 5.0; container scrub clean.
-- `leak.py --asof 2026-10-16` REVIEW, each line harmless: the conventions and dictionary carry the estimand's words; no
-  figure and no decisive-step word (asserted D2 and D3).
-- `precut.py` exit 0; `guard.py surface` no hard tell. `guard.py heart` now BLOCKs on four axes (`ban.strategy`
-  composition_mix, `ban.pattern` G6, `ban.artifact` register, `ban.forum` executive_team) against task175: the card
-  registered under the lock at WARN (4afaec0a) while task173 was live, and task173 was later spent, which re-formed the
-  live window around task175 (drawn before this build). Recorded per H27's reading of a re-run draw-time gate, not
-  relabelled. Author's standing ruling, "Ship, window fixed at draw", covers it: the window is the one the card
-  registered against. Driver and stump similarity stay
-  low (nearest 0.07, task143).
-- Keys for the readers: the call `call_not_enrolled_2027`; components `cc1_intake_2026_at_census`,
-  `cc2_intake_2026_no_repeat_classmate`; the ask `ask_groups_s1_2026_<ass|bus|sci|eng|hlt>_<200|300up>_<30orfewer|over30>`;
-  withhold `_unrounded`, `_model_form`, `_stated`, `label_*` and `hist_*`.
-- Main-call Gate F risk stays as written at the draw: persistence through social integration is a channel the
-  retention literature names, carried by class extracts every reader opens; nothing in the pack names the allocation,
-  a block or a classmate, and both round 1 readers missed it.
-
-## Rubric repair (portal, 2026-10-24)
-
-- Portal: the call stumped both responses, but the rubric came back over 60: both answered all 20 teaching-group cells
-  (55 of the 100 points) by joining classes through shared meetings and reading a figure the room could not seat added
-  once, which was the golden route.
-- Repair (`/fix-rubric`, call side frozen): the timetable re-laid with two lecture-only pairs and two flip classes a
-  faculty and level (the `tt_devices` and `tt_partial` streams, so every other draw stands), and the class list added
-  (`arc_s1_2026_class_enrolments.csv`, 49,237 places for 16,597 students). The prompt is unchanged; GROUP_PIN and
-  ENROLLED_PIN are the shipped sentences.
-- Gates: `checks.py` 88 green (A0 to A10, S2 to S4, F1 to F3), `verify.py` 23 figures, two builds byte-identical over
-  20 files, `figures_check.py` 44 figures, `voice-check.py` PASS, `freeze.py check --mode rubric` PASS (the call, the
-  stump and every frozen figure unchanged; 14 ask figures moved).
-- Measured on zip c1b19cef: cold readers E and F both missed the call (2,250 against 3,250) and kept 0 of the 20
-  cells. Reader E took the golden grouping and sized groups from every listed place, so each cell is off by the
-  two flip classes; reader F merged only classes with identical meetings and also counted every listed place.
-  On the portal's weights each scores about 17 (the baseline component and instruction following).
-- Judge pass 3 (judge-task179z): the call DETERMINISTIC (3,253.6; every form within reach of the lowest AIC
-  prints 3,250), all 20 cells reproduced, FIX_NOW on the group unit: section 4's "in one room at one time"
-  left every room-and-time meeting, or every class code, defensible as one group. Closed by one clause in the
-  prompt's ask sentence (SF11), not in section 4, so no file the call reads moved and the zip is unchanged;
-  voice-check PASS (782 characters), precut 51 PASS, leak.py unchanged, freeze PASS.
-- Re-judge (judge-task179w, pass 4): DETERMINISTIC, APPROVE, no fix. The call 3,253.7, every AIC-competitive
-  form 3,208 to 3,256; all 20 cells reproduced; the remaining risk it names is the asks' own (lecture-only
-  pairs read against the clause), not the call's.
-
-## Determinism repair (portal, 2026-10-24)
-
-- Portal round 2 on zip c1b19cef: both responses filed 2,250 (the call held). Determinism judge 1 PASS on every gate;
-  judge 2 FAIL, competing_defensible_answer: nothing required reading the entrants' classes, so a count-free model
-  (2,141.9) broke no shipped rule; the count's form was open; and no file recorded a change at the cutover, so the 2026
-  collapse in repeat classmates could be a migration artefact.
-- Stump test: the fork is not the stump. The closure leaves the default path where it was (it never opens the class
-  records and still prints 2,250), and the golden's lead comes from building the repeat-classmate count, which no
-  sentence names.
-- Move: a Registry fact in the cutover notes' 14 August revision, section 6: in SIRIUS the Registry entered first-year
-  entrants' Semester 1 class enrolments, and from Semester 1 2026 entrants choose and enrol in their classes themselves
-  (SF12). No count, form, grouping or effect is named, and D2 still finds none of the decisive step's words. SF13 stays
-  with SELECT_PIN: every form printing outside the bin loses to every form inside it.
-- Gates: checks 92 green (SF11 to SF13 and F4 added; F1 now admits the cutover notes and F4 proves only section 6
-  was added), verify 0 failed (its own count-free fit and its own read of section 6), two builds byte-identical
-  over 20 files, figures_check 44, precut 51 PASS, voice-check PASS (the prompt unchanged), leak.py REVIEW (the
-  cutover notes now share the pack's own words, entrant, classes, record and Registry; no figure and none of the
-  decisive step's words), guard validate 0 invalid, heart BLOCK unchanged since the first ship (the author's
-  ruling, window fixed at draw), freeze --mode determinism PASS. target.zip 256adf20.
-- Readers G and H (zip 256adf20): both missed the call (2,250; G 2,167 after testing its UNIV101 class's make-up,
-  H 2,143 to 2,148 after a class random intercept) and kept 0 of the 20 cells. G read section 6 as a hint that
-  the 2026 classes differ that "does not say what to do about it" and quoted no sentence naming the step.
-- Re-judge (determinism-check-task179-r5, order kept: its blind derivation on disk first, its blind call 2,250):
-  DETERMINISTIC; the call reproduced from the bundle at 3,240 to 3,253 and forced by SELECT_PIN with section 6
-  as the reason to read the classes; Gate G analytical_non_defect, Gate H pass. FIX_NOW, optional, on ask 2:
-  nothing filed said two classes sharing one meeting make three groups, nor that weeks are part of one time.
-  Closed in GROUP_PIN (conventions section 4) in the write-up's own words, step 6 and the workbook note aligned;
-  the same fork (SF11) closed further, so no third judge. Checks 93 (F5: only that sentence moved), verify 0
-  failed, two builds byte-identical, freeze --mode determinism PASS, ceiling 0 of 20 on every route.
-  target.zip 5f48e01e.
-
-## Determinism repair, portal round 3 (2026-10-25)
-
-- Portal round 3 on zip 5f48e01e: the call held (rubric 18 per cent). Determinism FAIL, gates C and D,
-  competing_defensible_answer, fix_location input_files. The judge reproduced 3,244 with the flag at 10 and 2,141
-  without, and read section 6 (the Registry entered SIRIUS class enrolments, ARC entrants enrol themselves) as a change
-  in how the count is measured: 79 to 80 per cent of the record's entrants meet 10 or more others twice against 10.7
-  per cent of 2026's, class counts and sizes otherwise alike, so a forecaster who deems the count not transportable
-  drops it and files 2,250; the AIC convention presupposes a candidate set; no control closes it.
-- Stump test: the fork is not the stump. Closing it leaves the default path where it was (a model on entrant
-  attributes never opens the class records and still prints 2,250), and the golden's lead still comes from building
-  the count, which no sentence names. The judge's suggested rule (a predictor whose collection changed at the cutover
-  is excluded unless validated) files the HOW and, read literally, excludes the count: rejected.
-- Move: one Registry sentence added to section 6, after its two filed sentences: the change is in who chooses an
-  entrant's classes, not in what a class enrolment records; in both systems it is the student on the class's list at
-  the census, and the two systems' first-year class extracts hold the same thing (SF14). No count, form, group or
-  effect is named, and D2 finds none of the decisive step's words. The record carries the control the judge asked
-  for, and the write-up's new step 5 states it: the 11,640 entrants of 2019 to 2025 who meet fewer than 10 others
-  twice, one in five of the record and where the 2026 intake sits, were 5,029 not enrolled, and the count-free model
-  predicts 4,166.2 of them. Transport asserted: the count's model fitted on the 9,497 entrants the July run did not
-  place (part-time, or accepted after it) prints 3,293.8 and 3,264.4, and reweighted to the 2026 mix 3,263.6 and
-  3,279.3, all 3,250.
-- Gates: checks 100 green (SF14's seven rows; F4 proves section 6 gained only that sentence), verify 0 failed (its
-  own read of the sentence and its own count-free fit on the segment), two builds byte-identical over 20 files,
-  figures_check 47 present, precut 51 PASS, voice-check PASS (the prompt unchanged), leak.py REVIEW (the documents
-  share the pack's own words; no figure, none of the decisive step's words), guard validate 0 invalid, heart BLOCK
-  unchanged since the first ship, freeze --mode determinism PASS. target.zip c8032390.
-- Reader (leak-task179r3, scored): 2,250 against 3,250 from attribute models with class-size bands, 0 of 20 cells,
-  exit 0; it quoted no sentence naming the step and read section 6 as hinting that the 2026 class profile differs
-  "but it does not say how that matters".
-- Re-judge (determinism-check-task179-r6, order kept, blind call 2,250): DETERMINISTIC, APPROVE. It built the count
-  after its blind pass and reproduced 3,252 to 3,254, every AIC-competitive form inside the bin and the segment check
-  (4,165.9); all 20 cells exact; Gate G analytical_non_defect, Gate H pass. Report: determinism_check_report.md.
-
-## Call landed, portal round 4 (2026-10-25)
-
-- Portal round 4 on zip c8032390: both responses filed 3,250, the golden, so the call landed. The author: what the
-  repairs have been doing is not working; start again from the version whose supplemental score was being reduced (the
-  first ship, about 72 per cent with the call held), since the client's cutoff is now 70 per cent; or fix this version
-  so it stumps.
-- Diagnosis. The call held on six of six portal responses in rounds 1 to 3 (a9f8b878, c1b19cef, 5f48e01e) and on
-  every blind reader, and landed on both the first time the cutover notes carried the comparability sentence. Each
-  closure was true and named no count, but section 6 says the 2026 class enrolments came from a different hand and its
-  comparability sentence says the record means the same on both sides and that the change is in who chooses an
-  entrant's classes, which together are the step's premise. The round 2 and round 3 stump tests asked only whether
-  the default path moved (it never reads the classes), not whether the closure turned a strong solver towards the
-  classes: the stump lived partly in the fork.
-- Choice: back to the call side that held, not a new rung on this one. Fixing this version would need a decisive step
-  beneath the classmate count, which is a redesign of the step that has held six times; the first ship's call side
-  costs one withdrawn section.
-- Move: cutover notes section 6 withdrawn whole, so the cutover notes are the first ship's bytes and every file the
-  call reads is the first ship's (F1 asserts each sha256 against shipped_digests.json). The rubric repair's ask layer
-  stays (the class list, the lecture-only pairs, the flip classes, the prompt's group clause), and GROUP_PIN stays
-  (asks only): with the call held it scored 18 per cent in round 3, against about 72 with the first ship's asks. The
-  write-up keeps the record's own control (step 5), and step 3 now cites the dictionary's one definition of both
-  first-year class extracts, which answers the migration-artefact reading from a filed sentence rather than a new one.
-- Open by design: portal round 2's judge 2 found the count unforced on this call side (nothing filed requires reading
-  the classes, no file records a change at the cutover). It is closed as far as it can be without naming the step:
-  SELECT_PIN (the count-free model 897.2 AIC worse once the count is a candidate), SF13, and the control in step 5.
-  The closures that went further are what landed the call, so the residual risk is recorded as the trade, not closed.
-- Pack: target.zip 01124ef4. Against c8032390 only the cutover notes differ; against c1b19cef only the conventions
-  (GROUP_PIN); against a9f8b878 the conventions, the dictionary, the timetable and the added class list.
-- Gates: checks 99 green (SF12 asserts no section 6; SF14's sentence row removed; F1 now covers the cutover notes; F4
-  asserts sections 1 to 5 and nothing since), verify 0 failed (23 figures), two builds byte-identical over 20 files,
-  figures_check 47, precut 51 PASS, voice-check PASS (the prompt unchanged), freeze --mode determinism PASS, leak.py
-  REVIEW (the same shared words), guard validate 0 invalid, heart BLOCK unchanged since the first ship (the author's
-  ruling, window fixed at draw).
-- Readers (scored): both 2,250 against 3,250 (attribute models, about 2,140 to 2,144), neither quoting a sentence
-  that names the count. Asks: reader A 20 of 20 (it joined the class lists to the census history, the device's
-  own remedy), reader B 0 of 20 (the extract's ENROLLED status). On the portal's weights a response that misses
-  the call and keeps every cell scores about 72, as round 1 measured, so the pair stays under 70 unless both
-  responses do; the same ask files scored 18 per cent on the portal in round 3. Kept, and named here as the risk.
-- Judge (determinism-check-task179-r7, order kept, blind call 2,250): DETERMINISTIC, APPROVE, no fix. The call
-  3,239 to 3,259 across the lowest-AIC family, the segment check 5,029 of 11,640, all 20 cells exact; every rival
-  peer definition and the attribute model dominated on AIC by 500 or more (the log count by 23); Gate G forecasting,
-  analytical_non_defect; Gate H pass. Its one advisory: nothing in the files names the class-sharing shift, which
-  it rules correct under the no-method-filing rule since the AIC gap decides. Report: determinism_check_report_pass2.md.
-
-## Determinism repair, portal round 5 (2026-10-25)
-
-- Portal round 5 on 01124ef4 (section 6 withdrawn): judge 2 passed every gate (3,239 to 3,250, all 20 cells); judge 1 failed,
-  underspecified_objective with Gate G: the count unforced, and the 2026 collapse in repeat classmates read as a definitional
-  mismatch between SIRIUS's class numbers and ARC's class codes (89 against 20 per cent meeting fewer than 10 twice).
-- Diagnosis: the same reading portal round 2's judge 2 took on this call side; judge 2 here checked the classes per entrant
-  and called the collapse a real delivery-structure change. The files settle it: the class is the same unit on both sides.
-- Stump test: the fork is not the stump, and no sentence is added to the pack (round 4 showed what a filed account of the
-  change costs). The move is in the solution: step 4 states the comparability as exact counts from the two extracts, step 5
-  the form corridor. target.zip 01124ef4 unchanged.
-- Gates: checks 102 (SF15's three rows), verify 0 failed, two builds byte-identical over 20 files, figures_check 58, precut
-  51, freeze --mode determinism PASS.
-- Re-judge (determinism-check-task179-r8, order kept, blind call 2,250): DETERMINISTIC; the forecast 3,244 to 3,250 with
-  the flag and 2,142 without, every threshold from 3 to 15 printing 3,250, all 20 cells exact; Gate G forecasting,
-  analytical_non_defect; Gate H pass. FIX_NOW on step 6 only: it fitted the count-free model on the 11,640 low-exposure
-  entrants and applied it to 2026 (3,408 to 3,436), a reading the step's wording allowed. Step 6 now names the model
-  (all 2019 to 2025 entrants, step 5's attributes, no count) and the entrants it predicts for; 4,166.2 unchanged and
-  asserted, figures.json unchanged, freeze PASS. Report: determinism_check_report_pass3.md.
-
-## Architecture v2 record (spent, kept as history)
-
-The v2 design as it stood when it was spent at stage 4 Gate F; every heading below is history.
-
-### v2 Draw
-
-1. Card: `.claude/skills/fingerprint/cards/task179.json`, architecture v2, first registered 2026-10-21 and
-   re-registered at the re-site. `guard.py check` WARN only: `repeat.gate_g` against task178 (answered in item 5);
-   `test.same_puzzle_older` and `test.same_driver_older` against task133, task196 and task180 (G12) and earlier
-   task126, task138 and task82 (G3), differentiated on the card (left truncation of loan exposure, capture-recapture
-   of uncounted events, events masked by instrument noise; none reads a delay distribution from linked pairs).
-   Nearest drivers 0.07 (task251 v4) and 0.06 (task192 v1).
-2. Pairing: Epidemiology & Public Health (client domain) / `infectious-disease-transmission-modeling` /
-   Forecasting & Predictive Modeling. The one build on file in this task type is task501 (a next-generation matrix
-   built from contact diaries of the season's regime); nothing here touches a contact matrix or an eigenvalue.
-3. Niche: Larrowmede Medical Relief, a medical humanitarian organisation running two treatment centres in the
-   fictional Dunmarrow Province of the fictional Republic of Orvanthe, projecting the cases its centres must plan
-   for in epidemiological weeks 49 to 52 (30 November to 27 December 2026) of an outbreak of Tamberlow virus disease
-   (a fictional haemorrhagic fever first described in this outbreak) under the provincial response plan's central
-   scenario, from the province's line list and the response's transmission links.
-4. Call and shape: the number of new cases (confirmed and probable, by date of symptom onset) in weeks 49 to 52
-   under the central scenario, to the nearest thousand (`quantity_figure`, `count`, question form how-many), with the
-   reproduction number and the mean serial interval as components. Shape `single-figure`.
-5. Mechanism keys: gap population (the transmission links are not the population of transmission intervals, they
-   are the subset whose case has already fallen ill) then time; generators G12 (absence of a record against a record
-   of absence: the long intervals are missing because their later event has not happened, not because they do not
-   exist), G3 (the record's interval against the process's), G13 (each pair observed only inside its source's
-   horizon to the extract). G13 led the first draft and G3 the second; task178 and task484 took them into the window
-   in turn, and G12 reads the step as honestly. Gate G `forecasting` (a forecast the correctly read past does not
-   pin); the WARN `repeat.gate_g` against task178 is answered by the honest key, since no validation or standard pins
-   a method here. Strategy `maturity_censoring` (right truncation of a delay at the extract).
-6. Layer 2: `estimation_fit` (censoring and truncation), pattern
-   `epidemiology-public-health/infectious-disease-transmission-modeling/1` (Rt needs onset timing and the
-   generation interval). The default path is that card's method; the stump is the judgment it takes for granted,
-   that the serial interval read from the outbreak's own pairs is the interval the renewal equation needs.
-7. Furniture: forum `operations_desk` (the organisation's emergency desk orders beds and staff on the planning
-   lead's figure); forcing event `incident_or_complaint` (the outbreak, with the response plan's phase 3 starting 2
-   November); organisation family `hospital_or_health_provider` (a non-governmental operator whose role here is
-   running treatment centres); role family `capacity_planner`; context artifact `capacity_report` (the centres'
-   weekly bed and roster file); calibration `none`.
-8. Spine: the provincial line list as extracted on Sunday 18 October 2026 (one row per notified suspected,
-   probable or confirmed case); the 25,000-row file is the contact registry (one row per listing of a person).
-9. Deliverables: `tvd_projection_w49-w52.xlsx` (the projection, its components and the ask tables) and
-   `tvd_projection_curve.svg` (observed and projected weekly cases with phase 3's start marked).
-10. World, fictional throughout: the Republic of Orvanthe and its Dunmarrow Province (provincial capital
-    Kettlebank), seven districts with cases (Tamberlow, Quillmarsh, Threlmarren, Wendlecombe, Brindlecourt, Kettlebank
-    North, Kettlebank South), the Dunmarrow Provincial Health Directorate, the Kettlebank public health laboratory
-    and the Tamberlow field laboratory, Larrowmede Medical Relief and its two centres, and Tamberlow virus disease
-    with its own provincial case definition. No real administrative geography, agency, product or report voice is
-    used; `metadata.json` states that the setting is fictional and the data synthetic. The epidemiology is kept
-    real: a growing outbreak (doubling about every 18 days), onset to notification to laboratory to outcome links,
-    contact tracing. Personas from `guard.py names --geo "Republic of Orvanthe" --seed 179`: Jacqueline Arnold
-    (response epidemiologist, owner of the planning note), Tanner Molina (emergency coordinator), Kristin Sampson
-    (treatment-centre medical lead).
-11. As-of: the line list and the transmission links extracted Sunday 18 October 2026 at 23:59 (Orvanthe Standard
-    Time, UTC+1); notification closes within four days of onset, so onsets to Sunday 11 October are complete; the
-    laboratories' exports were pulled at 08:00 on Monday 19 October.
-12. Sources read for the domain (stumping 1.3): the cell's two library cards (renewal-equation Rt with onset timing
-    and the generation interval; the next-generation matrix's eigenvalue); task501 (a contact matrix pooled over two
-    regimes); task232 (a transmission rate per exposure from closed episodes whose outcomes surface after a delay
-    window; here the delay itself is the estimated quantity); task181's lineage (counts read before their records
-    finish arriving; here the counts are complete and the intervals between linked records are what the cut-off
-    bends); task133 (left truncation; here truncation is on the right and by the later event).
-13. Data-native sentence: a source-to-case link is entered in the tracing system only when the infected contact
-    falls ill and is notified, and the outbreak doubles about every 18 days, so at the extract most sources are
-    recent and appear only with the cases they infected within the few weeks they have had, which bends the links'
-    intervals short in exactly the cohort the renewal equation's growth window reads.
-
-### v2 Screens (stumping 1.2, as code)
-
-Prototypes in the session scratchpad, b179e/screen (`a1.py` to `a4.py`, `e1.py`; seeds fixed before outcomes,
-the outbreaks that died out before 2,500 cases skipped). The world screened is a discrete-day onset process,
-offspring negative binomial (R 1.7, k 0.4), serial interval a discretised gamma (mean 12.6, sd 7.4 days), 62 per
-cent of cases linked to a source, extract at day 165; eight outbreaks of 6,979 to 18,354 cases with 4,364 to
-11,356 pairs. Figures are the projected cases in a four-week window starting five weeks after a 40 per cent cut,
-each route against the golden (truncated maximum likelihood, gamma) on the same pack.
-
-- The default family lands about a quarter low and tightly: every pair fitted (empirical or gamma) -27.2 per cent
-  (sd 0.8), the same with the renewal-ratio R -27.0 (2.5), dropping pairs whose case fell ill in the last 21 or 42
-  days (the hygiene reflex, on the case's clock) -27.9 and -26.9.
-- The golden family converges where the data close it: truncated gamma 0.0, truncated Weibull +0.5 (0.1), the
-  reverse-time nonparametric estimator 0.0, sources whose onset is 50 or 70 days before the cut-off (the
-  complete-cohort subset, on the source's clock) +0.9 (3.0) and +0.3 (4.9). The lognormal reads +4.0 and the data
-  reject it (negative log-likelihood 64 to 183 units worse than the gamma on every pack).
-- The open residue is the current reproduction number's window and estimator: from the growth rate over 42 days
-  it is the golden, over 28 days -0.1 with sd 7.4, the renewal ratio over the same 42 days +0.6 with sd 3.0. That
-  is a knob, not the stump, so the window is filed (the six weeks to 11 October, weeks 36 to 41) and the spread of
-  the two estimators on that window is measured on the cut pack before the rounding is set.
-- Dispersion: the decisive quantity is a delay distribution's location; the parametric forms the data do not
-  reject agree within 0.5 per cent and the nonparametric estimator within 0.1.
-- Variance-only: the step moves the point (a quarter of the figure), it does not widen an interval.
-- Common-exposure subset: the subset already complete, sources old enough that every case they caused has fallen
-  ill, lands within its own sampling noise; choosing it means filtering on the source's onset, which is the
-  decisive step itself. On the case's clock (the reflex) it lands the default.
-- Truncation direction: the cut-off hides the top of the interval distribution (the long intervals), which is the
-  case the screen keeps alive.
-- Literature reflex: none applies in the re-sited world, since the virus is described only in this outbreak and the
-  planning note says no parameter comes from elsewhere; in the screened world an outside interval (15.3 days, sd 9.3)
-  landed +30 per cent, outside the golden's bin either way.
-- `guard.py slots --driver`: vocabulary hits only (task194, task190, task253, task117, task501); no slot records
-  a truncated delay distribution or a serial interval dying.
-
-### v2 Default path
-
-1. Daily onsets of confirmed and probable cases from the line list (people found not to be cases and suspected cases
-   left out, a case notified twice under two numbers kept once by its sample), complete to 11 October.
-2. The serial interval from every source-to-case pair in the transmission links: onset of case less onset of source,
-   2,449 pairs, a gamma fitted or the pairs' own distribution (mean 11 days).
-3. The reproduction number implied by the exponential growth rate of daily onsets over weeks 36 to 41 (0.038 a day)
-   through that interval (1.5).
-4. The renewal equation forward from 12 October, the reproduction number halved for every source with onset from
-   2 November, cases summed over weeks 49 to 52 (3,564).
-
-Ends on: 4,000 cases
-Golden: 5,000 cases
-
-### v2 Stump sentence
-
-A competent analyst fits the serial interval to every source-to-case pair in the transmission links (11 days), takes
-the reproduction number implied by the growth of onsets over weeks 36 to 41 (1.5), halves it from 2 November and
-projects about 4,000 cases for weeks 49 to 52 instead of about 5,000, because the tracing system holds a link only
-once its case has fallen ill, so September's and October's sources appear only with the cases they infected quickly;
-read against the time each source had to 11 October, the links give the 13-day interval the chains run on, a
-reproduction number of 1.6 and a December that holds a quarter higher.
-
-### v2 Three rules
-
-Task type: infectious-disease-transmission-modeling (Epidemiology & Public Health): the outbreak's line list and transmission links turned into a serial interval, a reproduction number and a renewal-equation projection of cases under the response plan's central scenario, a projection serving Forecasting & Predictive Modeling.
-
-Domain test: the deciding quantity is the serial interval distribution the renewal equation runs on, estimated from the outbreak's own transmission pairs the way a transmission modeller estimates a delay during a growing epidemic: each pair read against the longest interval its source could show at the cut-off (right truncation), then the reproduction number from the growth rate through that interval (Wallinga and Lipsitch) and the renewal equation forward under the scenario's halving.
-
-Swap: "how many referrals a sales network brings in December, from referrer-to-referee links" keeps a link between two dated events and loses the step's ground: no renewal equation turning a growth rate into a reproduction number through the generation interval, no scenario that halves transmission by the source's onset, no epidemic whose growth makes the recent sources the numerous ones.
-
-Layer 1: a case notified a second time from a neighbouring district under a new number with the same laboratory sample, people found not to be cases and suspected cases awaiting a result in the line list, rows fed from the field laboratory's forms carrying ISO dates beside day-first ones, links graded by certainty and links whose case was later discarded; each is how a surveillance line list and a tracing system write, nothing is placed to be caught, and checks.py asserts the call holds under each (SF1, SF6, L1, L2).
-
-Layer 2: estimation_fit, the data's real structure: the serial interval is read from pairs that exist only once the later case has fallen ill, so the sample is right truncated at the extract, and during growth the truncation falls on the recent sources that are most of the pairs.
-
-Decisive step: estimating the serial interval with each pair conditioned on its interval being no longer than 11 October less its source's onset (or any estimator that reads the pairs against their sources' horizon), which moves the mean from 11 to 13 days, the reproduction number from 1.5 to 1.6 and weeks 49 to 52 from 3,564 to 5,049 cases.
-
-Not semantics: every field, code and definition read correctly (the classifications, the duplicate case numbers, the two date formats, the links' source and target, the dictionary's note that a link is entered when the target case is notified) still leaves the easy route fitting the pairs as they stand, because no field says the pairs are a truncated sample of the outbreak's intervals; the step is the inference that a growing outbreak cut off at an extract holds only the quick intervals of its recent sources, which the data show (the mean interval of the pairs falls from 13.5 days for sources ill in August to 11.0 for September's and 5.2 for October's) and no sentence says.
-
-Not rule application: the planning note files the population, outcome, window, unit, scenario and the reproduction number's basis, and no rule says how the serial interval is read from the links; executing every filed rule with the pairs fitted as they stand files 4,000 cases.
-
-Analyst test: a strong analyst who cleans the line list and reads every rule, fitting the serial interval to every pair in the links, files 4,000 cases (the default path's Ends on); one who drops the pairs whose case fell ill in the last fortnight (the hygiene reflex, on the case's clock) files 4,000 too; only reading each pair against its source's time to 11 October files 5,000; checks.py runs the three on the generator's clean truth (R3a, R3b, R3c).
-
-Estimand: the planning note (planning_note_phase3_2026-10-19.pdf, sections 1 to 3): the population (new cases of Tamberlow virus disease, confirmed and probable under the provincial case definition, in the seven districts with cases), the outcome and unit (cases by date of symptom onset), the window (ISO weeks 49 to 52, 30 November to 27 December 2026), the scenario (every case with onset on or after 2 November causes half as many new cases as cases did over weeks 36 to 41, whose reproduction number is the one implied by the exponential growth rate of their daily onsets), the records (the line list and the transmission links as extracted on 18 October, onsets complete to 11 October, no outside parameter).
-
-No decoy: nothing is planted: the line list, links, contact registry, laboratory exports, capacity report and situation report are the producing systems' records, the planning note states the scenario without a method, and no serial interval, reproduction number, projection or published parameter ships anywhere in the pack.
-
-No certified replay: no certified or published serial interval, reproduction number or projection ships; the planning note says the virus is described only in this outbreak, so the method is not recovered by reproducing any figure.
-
-Lesson: a delay read from linked records that exist only once the later event has happened is truncated at the extract, and while the process grows that truncation sits on the recent sources, which are most of the record; no build on file estimates a delay distribution from linked pairs read against each pair's own horizon.
-
-### v2 Readability screen
-
-Each rung, the sentence or file a reader would have to read to take it, and whether any shipped text hands it over.
-
-| Rung | What takes the reader there | Verdict |
-|---|---|---|
-| Layer 1: the duplicate case numbers, non-cases and suspects, two date formats | the dictionary and the line list | readable |
-| R0 growth of onsets over weeks 36 to 41 | the planning note, section 2 | readable |
-| R1 (default path) the serial interval from every pair as it stands | the transmission links and the dictionary | readable |
-| R1b the pairs whose case fell ill in the last fortnight dropped | the hygiene reflex on the links' dates | readable |
-| R2 (decisive) each pair read against its source's time to 11 October | nothing: no sentence names truncation, the interval's bias, a cohort of complete sources or an estimator; the dictionary says when a link is entered and nothing about what that does to the intervals | silent |
-
-### v2 Semantic fork table
-
-| ID | Term or convention | Golden reading | Alternative | Call under it | Ruled out by |
-|---|---|---|---|---|---|
-| SF1 | a case | Confirmed and Probable, a person notified twice under two numbers counted once by sample | both numbers kept; Not a case kept | same call (5,206; 4,898) | planning note section 3; checks.py SF1 |
-| SF2 | completeness | onsets to 11 October complete, pairs whose case fell ill by 11 October | pairs and onsets to the 18 October extract | same call (4,739) | planning note section 3; SF2 |
-| SF3 | the growth rate | log-linear least squares on daily onsets, 31 August to 11 October | Poisson regression on daily onsets; weekly counts | same call (5,005; 5,004) | SF3 |
-| SF4 | the reproduction number's basis | the one implied by the exponential growth rate through the serial interval | the renewal ratio over the same six weeks (5,508) | not the filed estimand | planning note section 2, "implied by the exponential growth rate of their daily onsets" |
-| SF5 | the halving | every source with onset on or after 2 November transmits at half | cases whose own onset falls on or after 2 November halved (2,525) | not the filed scenario | planning note section 2, "every case with symptom onset on or after 2 November causes half as many new cases" |
-| SF6 | the links' certainty | every link | Low certainty dropped | same call (4,992) | SF6 |
-| SF7 | the interval's family | discretised gamma | Weibull; the reverse-time nonparametric estimator; lognormal | same call (5,062; 5,047; 5,406, the lognormal 36 log-likelihood units worse) | SF7 |
-| SF8 | the window | ISO weeks 49 to 52 by onset, 30 November to 27 December | none | filed | planning note section 1 |
-| SF9 | rounding | the unrounded projection to the nearest thousand | none | prompt | prompt.txt |
-| SF10 | the projection's start | the renewal equation from 12 October on onsets to 11 October | the onsets of 12 to 18 October read as complete (4,241) | not the filed record | planning note section 3, "onsets to Sunday 11 October are complete in the extract"; SF10 |
-
-### v2 Ladder
-
-Built values from the cut pack (generator/checks.py R1 to R3c, SF1 to SF10), cases in weeks 49 to 52.
-
-| Rung | Route | Serial interval (days) | R | Cases | Call |
-|---|---|---|---|---|---|
-| R1 (default path) | every pair as it stands, gamma or empirical | 11.13 | 1.484 | 3,564 | 4,000 |
-| R1b | pairs whose case fell ill in the last 14 days dropped | 11.09 | 1.483 | 3,549 | 4,000 |
-| Golden | truncated gamma, each pair conditioned on its source's time to 11 October | 13.16 | 1.586 | 5,049 | 5,000 |
-| Golden family | truncated Weibull; reverse-time nonparametric; sources 50 or 60 days old only | 13.04; 13.14; 13.15; 12.83 | 1.585; 1.586; 1.589; 1.573 | 5,062; 5,047; 5,092; 4,857 | 5,000 |
-
-- Dominance: every member of the golden family sits in [4,500, 5,500), the nearest 7.4 per cent from an edge (the
-  complete-cohort subset at 60 days, 4,857), the golden 8.9 per cent; a bootstrap of the pairs (60 draws) puts the
-  golden's sd at 3.0 per cent and every draw in the bin (B1); the default family sits in [3,500, 4,500).
-- The data separates the readings: the mean interval of the pairs by the month their source fell ill falls from 13.5
-  days (August, 519 pairs) to 11.0 (September, 1,486) and 5.2 (October, 215), which an interval that does not change
-  cannot do unless the record is cut off; read against each source's horizon, the truncated fit's interval holds
-  (sources 50 days old or more, whose cases have all fallen ill, give 13.15 days).
-
-### v2 Closure table
-
-| # | Axis | Reading | Move |
-|---|---|---|---|
-| 1 | Population | new cases, confirmed and probable, in the seven districts with cases | filed (planning note 1, 3) |
-| 2 | Unit of account | a case by date of symptom onset | filed (planning note 1) |
-| 3 | Attribution window | ISO weeks 49 to 52, 30 November to 27 December 2026 | filed (SF8) |
-| 4 | As-of dating | the extract of 18 October 23:59, onsets complete to 11 October | planning note 3; manifest (SF2) |
-| 5 | Version basis | one line list and one links export, no earlier release | the manifest |
-| 6 | Denominator | none (a count) | commutes |
-| 7 | Weighting | each pair once, each day's onsets as counted | SF3, SF7 |
-| 8 | Window length | the growth window weeks 36 to 41 | filed (planning note 2) |
-| 9 | Boundary inclusivity | onset on or after 2 November halved; 30 November and 27 December inside | filed (SF5, SF8) |
-| 10 | Rounding path | the unrounded projection to the nearest thousand | prompt (SF9) |
-| 11 | Tie-break | none | the golden family 3.0 per cent or more inside its bin |
-| 12 | Maturity and censoring | the pairs right truncated at 11 October; onsets complete to 11 October | the decisive step; SF2 |
-| 13 | Order of operations | clean, pair, fit, grow, project from complete onsets, sum | SF10 |
-| 14 | Row order | none | commutes |
-| 15 | Duplicate resolution | a case notified twice counted once by its sample | SF1 |
-| 16 | Identity normalisation | case numbers across the line list and the links, duplicates mapped to the first | SF1 |
-| 17 | Netting against gross | not a case and suspected rows out | filed (planning note 3, SF1) |
-| 18 | Dimensional units | days, cases | the dictionary |
-| 19 | Code and status semantics | classifications, certainty grades | the dictionary (SF6); never the stump |
-| 20 | Integerisation | none before the rounding | commutes |
-| 21 | Clause scope | the halving applies to every source in every district from 2 November | filed (SF5) |
-| 22 | Forward window contents | cases not yet ill, the scenario's halving the only change | filed (planning note 2) |
-
-### v2 Literal reader
-
-The planning note executed word for word asks for the cases with onset in weeks 49 to 52 under a scenario whose base
-is the reproduction number the growth of weeks 36 to 41 implies through the outbreak's serial interval; the literal
-question is the interval the chains run on, which the links show only in part, since a link exists once its case has
-fallen ill. A literal reader who fits the links as they stand has assumed the extract holds every interval its
-sources will produce, which the falling mean interval by source month contradicts; every other reading converges or
-violates a quoted sentence (fork table). Re-run on the finished pack.
-
-### v2 Oracles
-
-- No shipped file carries a serial interval, a reproduction number, a projection or a published parameter for the
-  virus; the planning note says none comes from elsewhere.
-- The Kettlebank public health laboratory's results, the centres' admissions and the safe burials log are
-  distractors (metadata.json); none ranks a projection.
-- The situation report counts cases by week of notification as notified at 13 October; it projects nothing.
-- No control ties only under the golden on the asks.
-
-### v2 Ask sheet
-
-- **Ask A, contacts first listed in weeks 37 to 39 in Tamberlow, Quillmarsh, Kettlebank North and Brindlecourt:
-  different people and the percentage who completed follow-up (eight figures, whole numbers and one decimal).**
-  Home: the planning note's section 4 (the follow-up the scenario leans on). Path: the contact registry. Primary
-  device: the same records under two key schemes: in the four districts the directorate's paper listings are
-  entered at the district office beside the organisation's tablet listings of the same contacts, and the paper form
-  carries an estimated age one to three years off the tablet's, so the exact person key counts those people twice;
-  only source case, household, initials and sex, listed within a day, tie them. Hazards: a person exposed to two
-  cases is listed once for each; completion is the person's last listing, not each listing's.
-- **Ask B, the Tamberlow field laboratory's diagnostic samples by ISO week of collection, weeks 38 to 41: average
-  hours from collection to final result and the percentage resulted within 24 hours (eight figures, one decimal).**
-  Home: the planning note's section 4 (the laboratory turnaround). Path: the field laboratory's workbook. Primary
-  device: a clock basis: the analyser writes its result time on UTC while collection and reception are keyed on
-  local time (UTC+1); the evidence is in the data, results less than the 92-minute cartridge run after reception and
-  positives a day before the line list's lab_result_date. Hazards: the final result is the re-run after
-  Indeterminate; discharge-control samples are out.
-- **The construction layer:** the call, its two components and the chart; the cracker has them.
-- **Main population zero-counts (asserted):** the call reads the line list and the links only; the registry and the
-  laboratory workbook are read by the asks only (X1).
-- **Hazard table (asserted):** A1 to A3, B1 to B3 in checks.py; none moves the call.
-- **Referee:** none.
-
-| Ask | Cracker (lands the call, runs the battery, executes every filed rule it points at) | Verdict |
-|---|---|---|
-| A, people and completion by district | the exact person key, the last listing's status; keeps 0 of 8 | miss |
-| B, turnaround by week | the final result on the clock the file shows; keeps 0 of 8 | miss |
-
-- Mirror leakage: 0.0 per cent of ask weight on the cut pack (0 of 16).
-- Pair ceiling: 28.5 on the cut pack (weights 38 / 7 / 55: the cracker keeps the call and instructions, 45.0; the
-  mirror at the default path misses the call and keeps no ask figure, 12.0). Re-measured by the stage 4 readers.
-- Measured by: generator/ceiling.py on the cut pack.
-
-## First-cell record
-
-**First cell (2026-10-18).** New, Forecasting, seed FC50. The world was
-moved honestly off `local_government`: a private ambulance company holds a city's 911 ambulance contract (the city
-stays as the contract's counterparty) and decides its own summer surge pool, ten medic units for the weekend
-20:00 to 24:00 block from June to August, any it does not need offered to the county's mutual-aid roster for the
-summer; the contract's deployment standard staffs so that on nine weekend evenings in ten the units can answer every
-call in the block at 1.2 unit-hours a call, and from June dispatch sends any unit in a district to any call in it,
-North (planning areas 1 and 2), Central (3 and 4) and South (5). The world, the decision and the quantity were kept.
-The seed's own mechanisms (a filed staffing formula executed literally, the public dataset's suppression of one-
-and two-call cells, a sentence telling the solver to pool the areas) were never candidates. Two decisive steps were
-screened on code, each one of the brief's ideas in its strongest form, over three seeds each plus sweeps, and
-neither held. No architecture is live. This note holds the screen record only; it carries none of the `precut.py`
-sections, because no design exists. The prototypes stay in the session scratchpad (b179/screen:
-`c1_pool.py`, `c1_summary.py`, `c1_station.py`, `c1_total.py`, `c2_level.py`, `c2_sigma.py` and `screen179.py`,
-whose output `screen179.out` is byte-identical with `screen179_run2.out` over two runs).
-
-**The structural sentence, and the first thing to read.** The quantity cannot carry a graded whole-unit call under
-the bar, whatever the decisive step. A district's units at the 9-in-10 standard are the ceiling of 0.3 times the
-90th percentile of its block calls over one summer's 39 or 40 Friday, Saturday and Sunday evenings, and the record that
-estimates that percentile is at most nine or ten summers of those evenings: the golden's own bootstrap sigma is
-0.40 to 0.91 units in every realistic world measured (1.51 at twice the size), against the 0.25 units a whole-unit
-bin leaves once its quarter-bin margin is taken, and on one pack the defensible estimators of that percentile
-spread 0.44 to 1.19 units; only small Poisson-dominated districts reach 0.24 and 0.22, where every lever on file
-(pooling, co-movement, a trend, a break, a one-off) moves the call by at most one unit and the cheap routes land.
-The total of the three districts is worse: its sigma is 1.09 to 1.19 units at the base world (`c1_total.py`).
-And the one forward change this world really carries, district dispatch, is the estimand's unit: once the standard
-names the district's block as what its units must answer, the district's own evening totals in the record,
-filtered, summed and quantiled with a trend, are the golden family, which is the first thing a strong analyst
-builds. A draw on this quantity needs a graded figure resting on many more events than one evening's percentile (a
-season's unit-hours, say, which changes the seed's quantity), or another world.
-
-**The registration finding.** Nothing was registered and no axis of the window was spent. The window moved during
-the screen: at fa74407 it was task201, task247 and task165; at 2689b12 it is task165 (`council_or_assembly`,
-`purchase_order_or_contract`, `local_government`, `operations_director`, `register`, `single-figure`,
-`composition_mix`), task268 (`board_of_directors`, `launch_or_rollout`, `retailer_or_ecommerce`,
-`operations_director`, `operations_log`, `14`, `composition_mix`) and task248 (`line_manager_or_team`,
-`cutover_or_migration`, `government_agency`, `capacity_planner`, `monitoring_export`, `03`, `other`). The keys this
-world offers honestly outside it, had a design held: organisation `hospital_or_health_provider` (a licensed
-ambulance service), forum `customer_or_counterparty` (the city's EMS contract office receives the summer deployment
-plan), forcing event `other` (the county's mutual-aid roster closing in May), context artifact `filed_standard`
-(the contract's deployment standard), calibration `prior_period_close_out` (the summers' close-outs), shape `05`
-(ten units across three districts, the rest released). The honest role is `capacity_planner` (the contractor's
-deployment planner), which task248 now holds, and the honest strategies are `grain_or_unit` for candidate 1's
-pooling reading and `forecast_method_backtest` for candidate 2, both free.
-
-**The taxonomy finding.** The honest home is Healthcare Delivery & Health Economics,
-`utilization-access-demand-forecasting` (ambulance demand forecasting; the client library's pattern 4 there, plan
-capacity to an overdispersed quantile against a mean plus a Poisson margin, is this quantity exactly), or
-`patient-flow-beds-workforce-optimization` (staffing to the standard). The urban-regional municipal-service cell is
-held by task165's subdomain in the window.
-
-**The repeat screen.** `guard.py recent`, `coverage`, `mechanisms --objective forecasting` and `slots` ran before
-any card, `slots` on the pooled-percentile driver, the level driver and the terms pooling, percentile, surge,
-ambulance, medic and dispatch: no slot or card spent a pooled-percentile or a surge-pool level mechanism. The binding
-matches are by the abstraction test: candidate 1's co-movement reading is task143's driver (a joint tail of a few
-members whose error is mostly a component they share, the members treated as independent misstating it, the shared
-component carried into the joint quantity), and its percentile-of-a-total reading sits beside task142 (an upper
-percentile of a period's total built from the units that generate it). The brief's near drivers were read in full
-on their cards: task148 (Erlang A with reneging in a 911 queue), task159 (platform backlog behind full trains),
-task160 (regional waves timed by their lag) and task162 (version uptake set by the monthly restart burst); neither
-candidate touches them.
+- Task type: criminology-justice / recidivism-risk-assessment, which serves Forecasting: the 2027 count of a supervision caseload's people booked on a new violent-felony or firearm charge, forecast person by person from their risk.
+- Domain test: the quantity that decides the call is the year-end caseload's 2027 count of people booked on a Schedule B charge, which recidivism risk assessment forecasts as each supervisee's booking hazard over a fixed year from static and dynamic risk factors; the dynamic factor that moved is acute, recent violent victimization (the victim-offender overlap), measured by linking the city police's victim records to the caseload by name and date of birth and carried into 2027 for the two years the record shows the raised hazard lasting.
+- Swap: "how many of a hospital's discharged patients will be readmitted in 2027": a readmission is not raised by a police victim record, no overlap between victims and offenders exists, and no second agency records the patients under another role by name alone, so the linked exposure that decides this call stops meaning anything.
+- Layer 1: every mess item comes from the agencies' own systems: two county jails' booking notices in different layouts (one row per booking charge in local time; one row per booking with charges concatenated, in UTC), warrant-only, violation-only, court-transport and hospital re-bookings beside new arrests, the July 2024 recodification with its crosswalk published as a PDF table, the June 2022 case-management migration with legacy offender numbers on the older assessments and merged duplicates in the crosswalk, concurrent episodes for one person and county transfers closing and reopening an episode, the 2023 revision of the risk instrument with new cut-offs, the police's victim names and birth dates in their own layout with supplements re-listing victims and business victims with no birth date, the vendor's device swaps; nothing placed to be caught.
+- Layer 2: field_method, a forecast whose information set omits an acute dynamic risk factor: a supervisee's Schedule B booking hazard is raised for about two years after a police victim record, the caseload's victimization nearly tripled in the second half of 2026, and a risk model on the caseload's own records cannot see either; adding the linked exposure flips the call.
+- Decisive step: recognising that a supervisee recorded as the victim of a violent incident is booked on violent and firearm charges at several times the risk model's rate, linking the city police's victim rows to the caseload by cleaned name and date of birth, estimating the raised hazard on the 2018 to 2025 year ends and scoring the 31 December 2026 caseload with its own 2026 victim records.
+- Not semantics: every field reads plainly (a booking type, a statute, a victim's name and birth date, an episode's dates) and reading all of them correctly still leaves the risk model on 450, because no supervision or jail field carries victimization and the police file never names a supervisee: the deciding exposure exists only once two agencies' records of one person in two roles are matched.
+- Not rule application: no filed rule, directive or form says victims are at raised risk or that the police file belongs in the forecast, and executing Schedule B, the booking types and every counting rule files 450; enumerated family on the prototype: own-attribute logistic models, recalibrated on the latest back-test, the 2026 rate on the 2026 caseload, a district violence covariate and the linked forms (twelve months, twelve and twenty-four, six and six to twelve, a count, ever, all three), 383.0 to 499.5 across three printed calls (400, 450, 500); standing family: the linked forms, since the record's own control shows the 2018 to 2025 victims booked at several times the own-attribute model's rate (an odds ratio of about 5.6 on the twelve-month flag), 488.5 to 499.5, one printed call (500); the ruling-out is not loud: no file, field or one-group-by names victimization, the city's count falls in 2026 and the own-attribute model back-tests within its noise, so only the link shows it.
+- Analyst test: with both jails' notices conformed, the recodification mapped to Schedule B, the migration crosswalked and each person counted once, the easy route fits a Schedule B booking model on each year end's own risk score, age, sex, priors, offence, supervision type, months remaining and recent bookings over 2018 to 2025, back-tests it on the later year ends, scores the 31 December 2026 caseload and files 450, because it never links the city police's victim records to the caseload, so the second half of 2026's rise in victimization never enters it.
+- Estimand: the prompt files it: the people with an open Region 4 supervision episode at the end of 31 December 2026, counted once, who are booked into the Darrow County Jail or the Keswick County Jail at least once from 1 January to 31 December 2027 (local time) on a new charge that Directive 26-07's Schedule B lists, while their Region 4 supervision is still open, to the nearest 50; Schedule B and the booking types sit in the directive, the population in the case-management export.
+- No decoy: nothing is planted: the victimization rise is ordinary police records of ordinary incidents, no memo, brief or file argues a figure or ranks anything on 2027, the statewide recidivism brief and the programme referrals are distractors named in `metadata.json`, and the police file is in the pack for the exclusion-zone ask it serves.
+- No certified replay: no certified or published figure is reproduced to recover a method: the raised hazard and its duration are estimated from the linked records, and no file states a 2027 figure or a past year's forecast.
+- Lesson: a risk forecaster learns to ask which acute risk factors moved since the instrument was scored and which agency records them: a caseload's violent victimization is recorded only by the police, under names, and a surge in it raises next year's violent and firearm bookings where no static factor moves; no build on file forecasts an outcome from an exposure another body records about the same people in another role, linked by name and birth date.
 
 ## Tried and rejected
 - **Architecture v2 (the serial interval read from transmission links right truncated at the extract), spent at stage 4 Gate F on target.zip 9e1843f8:** scored reader B landed 5,000 cases, R 1.6 and 13 days on its own first route, "Serial interval: onset differences on transmission links where both ends are cases; sources with early onset (right-truncation), mean about 13 days, gamma (shape 2.86, scale 4.6). R from r via gamma moment generating function: 1.59", then the renewal projection with the halving from 2 November; it kept 0 of 16 ask figures. The correction is a reflex at medium effort in this field (the textbook nowcasting caution), so it was the default path, not the stump; the judge and reader A were stopped.
@@ -1215,8 +512,383 @@ candidate touches them.
 - Same round, considered: a new rung under the classmate count to re-stump the landed version. Rejected: it redesigns
   the step that held six of six, against one withdrawn section.
 - Portal round 5 (2026-10-25, 01124ef4): the write-up without the files' comparability evidence. Judge 1 read the 2026 collapse as a class-code artefact; the evidence (classes per entrant, class sizes, one paper a class) moved into step 4 as exact counts; nothing filed, the pack unchanged.
+- **Architecture v3 (the Corriemoor entrants' repeat classmates), returned 2026-10-25 on version 391 for Duplicate:**
+  the portal read it as a templated near duplicate of task175 (an unnamed neighbour count with the forecast
+  population at its floor) after the call had held on four of six portal rounds; re-rooted on 2026-10-26 to
+  architecture 4 under the coordinator's go, with a new driver, prompt and deliverable shell required.
+- 2026-10-26, probe5 (alert-time leakage: week-6 ratings stored as revised at results for 2019 to 2025 and as at the week-8 extract for 2026, rebuilt from a migrated audit trail): landed two of two. Opus p179aa filed 6,000 (6,015.3) in about five minutes: it rebuilt every year's ratings from the audit trail as at Friday of week 8 with ARC's UTC turned to local time, saw 2026 at 18.7 per cent At risk and 32.6 Some concern against about 12 and 20, tied it to the bulletin's late timetable and one-day orientation, back-tested on 2025 (6,215 against 6,208) and threw out the stored-ratings model as "inflated by hindsight" (AUC 0.83). Opus p179ab filed 6,000 (6,027.3) by the same rebuild at 25 days after each record's first rating, on one clock. Lesson: a file whose only job is to reconstruct history (an audit trail next to a snapshot) gives the step away. The probe asks why the file is there and does the point-in-time rebuild by reflex. Point-in-time rebuilding is spent in every form that ships the history. Layer 1 tells the probe named, never to ship again: (a) the mid-semester raises to Some concern for students who kept attending gave the revised ratings an inverted retention (Some concern 0.91 against Satisfactory 0.88); (b) the hall occupancy distractor ran weekly to mid-December, past the 9 October extract.
+- 2026-10-26, candidate B for architecture 5 (a professional body's students certify practical experience only under a registered training principal; a 2026 surge of principal exits at sole and small practices stalls the certification of those principals' students, visible only by linking each student's last certifying principal to the membership register). Measured on clean truth, not built: the surge put 7.7 to 11.7 per cent of active students under an exited principal (1.2 to 3.2 per cent in earlier years), but the twelve-month completion count moved only 34 to 73 on about 2,100 across three seeds, inside the textbook model's back-test error of 10 to 30. Only students due inside the window are delayed, and small practices replace a principal within months. Too small to carry a call at the nearest 100 without an unrealistic surge (scratchpad t179_a5/sim_b.py).
+- 2026-10-26, the Education and Learning Sciences screen (closes the cell for this number): only the early-warning task type serves Forecasting in ELS, so every ELS setting is a fixed cohort's outcome, and the survivor anatomy needs a hidden flow into or out of the target. Corriemoor's actors are all recorded (programme, hall, hardship grant, offer date), banned (classmates, tutors, advisers, siblings), framed by a policy document (allowance, visa, fee and exclusion rules) or unseen in the university's own files (transfers to Halden or the polytech, employers). Variants worked and dropped: pre-census managed withdrawals skipped in 2026 (a data-quality join finds it), students moved off their admitted programme (the faculty rule points at it), full-time to part-time switchers (the 2026 part-time share is visibly up), students with no rating (a plain count finds them), moderated first-semester grades (a group effect and an unstated rule), hall retention when beds are spare (the spent capacity driver). Apprenticeships, K-12 and online courses fail the same way. The coordinator's go of 2026-10-26 moved task179 to another Forecasting cell.
+- 2026-10-26, candidate C1 for architecture 5 (a motor book's accidental damage claims when the compulsory excess rises from 250 to 400: policyholders claim only when the bill net of the excess beats what the claim costs them in lost no-claims discount, so the rise moves every policyholder's own claiming point and the size-of-loss elimination misses half the cut). Measured on clean truth (scratchpad t179_a6/sim_xs.py, three seeds): observed 41,000, truth 36,800, the elimination route 39,100, the raw cross-section on voluntary excess 32,400, a large-claim-normalised cross-section 35,900 to 36,800. Dropped before the card: it is task270 v2's driver (claims absorbed under a no-claims scale, large claims as the unabsorbed count, protected policies as the self-selected reference), which a stage 4 reader landed, and task174's pricing-cell screen files the deductible change in that family.
+- probe6 (Actuarial reserving, Sandhill Prairie Mutual CAT26-07 hail IBNR claims, contractor canvass halted by snow in 38 ZIP codes, golden 6,000, default 1,000): died at the first Opus call-only probe (p179ba, 2026-10-26), which landed 6,000 (5,938.8) by splitting the claims on the report channel (contractor, public adjuster and attorney as solicited), reading the solicited-to-self-reported ratio of 1.61 off every closed event and ZIP, and taking CAT23-09's March 2024 wave as the winter halt's evidence; the second probe was stopped. The actor had a column of its own (the report channel), so survivor property 1 failed, and the ratio was tidy enough to read straight off.
+- probe7 (probe6's Sandhill world with the actor columnless: crews' claims reported by homeowners through the ordinary channels, the canvass visible only as each ZIP's own early burst and later wave, ratios by roof basis, golden 7,000, default 1,000): died at Opus probe 2 (p179cb, 2026-10-27), which landed 7,000 (6,970.6) by splitting every ZIP's claims into a first-notice burst and one later wave ("likely contractor canvassing", named unprompted), taking the wave's ratio by roof basis (RC 2.07, ACV 0.25), finding the 47 unreached ZIPs and reading CAT23-09's March and April wave as the spring resumption; probe 1 was stopped. The hail canvass is the domain's own knowledge, so removing its column left the reflex intact: readability test 3 fires on the decisive rung. The Sandhill world is spent for this number.
+- probe8 (Sociology and Demography event history: Kinloch Logistics' Harrow Point DC 2027 leavers, express-bus riders leaving faster for a year after the route turns local, Route 9 Limited in 2023 as the calibration and Route 14 Express ending 31 December 2026, golden 350, default 250): died at Opus probe 1 (p179da, 2026-10-27), which landed 350 (353.5) by reading the route's end in the pass vendor's SKU catalogue, linking the riders through the payroll deduction's external reference, and taking Route 9 Limited's 2023 conversion as the precedent (2.82 times the tenure-expected rate, a difference-in-differences of 2.91); probe 2 was stopped. A filed event (the catalogue's end date) and a readable precedent in the same data are the banned "visible step at a filed event" and "precedent" drivers in another dress: the forcing structure must not also be the discovery path.
+- 2026-10-27, probe9 draws set aside before any data was cut: (a) latent lightning damage to distribution transformers, read through a spatial join of strike records to the asset register, dropped on survivor property 5 (storm damage is on every asset engineer's checklist, and a strike file in the pack has only that job) and on task173's induced-failure driver in the same cell; (b) a bank's 2027 card defaults after one landlord group repriced its homes at 2026 renewals, read through the holders' rent debits on the checking side, BLOCKed at guard.py check on org family (financial_institution) and context artifact (monitoring_export) against task304, and its excess was under a tenth of the book's defaults.
+- probe9 (Economics and Econometrics forecasting: Weldon & Pryor's 1 February 2027 delinquent roll, escrowed accounts missing their first owner-paid bill after a 2026 payoff surge from 2011's fifteen-year refinances, golden 1,200, default 1,000): died at Opus probe 1 (p179ea, 2026-10-27), which landed 1,200 (1,171.1): the prior payment channel (a servicer batch) was the strongest feature in its own collection model, so it asked what ends a servicer's payments, linked the clerk's lien releases to accounts by property ID and legal description, read a release with no new mortgage or sale nearby as a payoff (about 23 per cent delinquent against 1.3), and saw the 2026 surge across every lender; probe 2 was stopped. A mechanism that the textbook model's own strongest feature points at is found by asking what changes that feature; the clerk's index sitting in the pack invited the link.
+- probe10 (Energy Systems and Utilities load forecasting: Corvell Hydro's 2027 residential rooftop solar applications, houses whose shading tree is felled applying at 6.7 in 100 against 1.6, a 2026 dead-ash felling surge in the field orders, golden 1,500, default 1,200): died at Opus probe 2 (p179fb, 2026-10-27), which landed 1,500 (1,458.6) by linking the field orders to premises through the new and legacy service point ids, reading a four to five times application rate 6 to 24 months after a felling ("consistent with removing shade"), and carrying the 2026 ash removals through it; probe 1 was stopped. The surge was the largest file's biggest 2026 spike and the join a standard premise key, so a reader that mines every order type against later applications finds it; the causal story (shade off, solar on) is intuitive once the spike is seen.
+- 2026-10-28, architecture 5's draw, candidates set aside before the card (paper only, under the STOP block): (a) the
+  release of a co-defendant raising a supervisee's arrest hazard, read through shared court case numbers, dropped as
+  close to task170's peer note and to task179 v3's and task175's neighbour counts; (b) a private-equity roll-up
+  redirecting business deposits, close to task447's change-of-owner redirect; (c) newspaper circulation and home sales,
+  gift subscriptions, bundle roll-offs and cord-cutting, each a reflex or an invited join; (d) a bank's payroll switch,
+  a probe8-like group shock with the direct-deposit feature pointing at the driver (property 6); (e) contagion through
+  common owners, close to task446's ownership links. The victim-offender overlap was kept: no card, slot note or
+  ledger row carries it, and it meets all nine properties on paper (`## Draw`).
+- 2026-10-28, architecture 5's calibration (prototype `proto.py`, `proto2.py`): any new charge as the outcome moved the
+  call by 4 per cent (2,110 against 2,200 at the nearest 100, one bin on its edge), so the outcome narrowed to the
+  directive's Schedule B (violent felonies and firearm offences), where the raised hazard concentrates; a twelve-month
+  raised hazard with the surge late in the year split the linked forms (the twelve-month flag under-reads victims
+  recorded in the last months by about two fifths), so the hazard lasts about two years and starts about two months
+  after the record, which keeps every linked form in one bin and keeps the surge out of the 2026 back-test (its
+  recalibration ratio 0.90 to 1.04 on the seeds tried). A jail hold-bed decision was dropped as task141's furniture (a
+  jail plan sized on supervision bookings); the GPS order replaces it.
 
-## Retired
+## Earlier architectures (history)
+
+Architecture v2's record, the first cell's record, the retirement and the 2026-10-23 rebuild, kept as
+written; architecture v3's sections were replaced by this draw and live in the repository history.
+
+### Architecture v2 record (spent, kept as history)
+
+The v2 design as it stood when it was spent at stage 4 Gate F; every heading below is history.
+
+#### v2 Draw
+
+1. Card: `.claude/skills/fingerprint/cards/task179.json`, architecture v2, first registered 2026-10-21 and
+   re-registered at the re-site. `guard.py check` WARN only: `repeat.gate_g` against task178 (answered in item 5);
+   `test.same_puzzle_older` and `test.same_driver_older` against task133, task196 and task180 (G12) and earlier
+   task126, task138 and task82 (G3), differentiated on the card (left truncation of loan exposure, capture-recapture
+   of uncounted events, events masked by instrument noise; none reads a delay distribution from linked pairs).
+   Nearest drivers 0.07 (task251 v4) and 0.06 (task192 v1).
+2. Pairing: Epidemiology & Public Health (client domain) / `infectious-disease-transmission-modeling` /
+   Forecasting & Predictive Modeling. The one build on file in this task type is task501 (a next-generation matrix
+   built from contact diaries of the season's regime); nothing here touches a contact matrix or an eigenvalue.
+3. Niche: Larrowmede Medical Relief, a medical humanitarian organisation running two treatment centres in the
+   fictional Dunmarrow Province of the fictional Republic of Orvanthe, projecting the cases its centres must plan
+   for in epidemiological weeks 49 to 52 (30 November to 27 December 2026) of an outbreak of Tamberlow virus disease
+   (a fictional haemorrhagic fever first described in this outbreak) under the provincial response plan's central
+   scenario, from the province's line list and the response's transmission links.
+4. Call and shape: the number of new cases (confirmed and probable, by date of symptom onset) in weeks 49 to 52
+   under the central scenario, to the nearest thousand (`quantity_figure`, `count`, question form how-many), with the
+   reproduction number and the mean serial interval as components. Shape `single-figure`.
+5. Mechanism keys: gap population (the transmission links are not the population of transmission intervals, they
+   are the subset whose case has already fallen ill) then time; generators G12 (absence of a record against a record
+   of absence: the long intervals are missing because their later event has not happened, not because they do not
+   exist), G3 (the record's interval against the process's), G13 (each pair observed only inside its source's
+   horizon to the extract). G13 led the first draft and G3 the second; task178 and task484 took them into the window
+   in turn, and G12 reads the step as honestly. Gate G `forecasting` (a forecast the correctly read past does not
+   pin); the WARN `repeat.gate_g` against task178 is answered by the honest key, since no validation or standard pins
+   a method here. Strategy `maturity_censoring` (right truncation of a delay at the extract).
+6. Layer 2: `estimation_fit` (censoring and truncation), pattern
+   `epidemiology-public-health/infectious-disease-transmission-modeling/1` (Rt needs onset timing and the
+   generation interval). The default path is that card's method; the stump is the judgment it takes for granted,
+   that the serial interval read from the outbreak's own pairs is the interval the renewal equation needs.
+7. Furniture: forum `operations_desk` (the organisation's emergency desk orders beds and staff on the planning
+   lead's figure); forcing event `incident_or_complaint` (the outbreak, with the response plan's phase 3 starting 2
+   November); organisation family `hospital_or_health_provider` (a non-governmental operator whose role here is
+   running treatment centres); role family `capacity_planner`; context artifact `capacity_report` (the centres'
+   weekly bed and roster file); calibration `none`.
+8. Spine: the provincial line list as extracted on Sunday 18 October 2026 (one row per notified suspected,
+   probable or confirmed case); the 25,000-row file is the contact registry (one row per listing of a person).
+9. Deliverables: `tvd_projection_w49-w52.xlsx` (the projection, its components and the ask tables) and
+   `tvd_projection_curve.svg` (observed and projected weekly cases with phase 3's start marked).
+10. World, fictional throughout: the Republic of Orvanthe and its Dunmarrow Province (provincial capital
+    Kettlebank), seven districts with cases (Tamberlow, Quillmarsh, Threlmarren, Wendlecombe, Brindlecourt, Kettlebank
+    North, Kettlebank South), the Dunmarrow Provincial Health Directorate, the Kettlebank public health laboratory
+    and the Tamberlow field laboratory, Larrowmede Medical Relief and its two centres, and Tamberlow virus disease
+    with its own provincial case definition. No real administrative geography, agency, product or report voice is
+    used; `metadata.json` states that the setting is fictional and the data synthetic. The epidemiology is kept
+    real: a growing outbreak (doubling about every 18 days), onset to notification to laboratory to outcome links,
+    contact tracing. Personas from `guard.py names --geo "Republic of Orvanthe" --seed 179`: Jacqueline Arnold
+    (response epidemiologist, owner of the planning note), Tanner Molina (emergency coordinator), Kristin Sampson
+    (treatment-centre medical lead).
+11. As-of: the line list and the transmission links extracted Sunday 18 October 2026 at 23:59 (Orvanthe Standard
+    Time, UTC+1); notification closes within four days of onset, so onsets to Sunday 11 October are complete; the
+    laboratories' exports were pulled at 08:00 on Monday 19 October.
+12. Sources read for the domain (stumping 1.3): the cell's two library cards (renewal-equation Rt with onset timing
+    and the generation interval; the next-generation matrix's eigenvalue); task501 (a contact matrix pooled over two
+    regimes); task232 (a transmission rate per exposure from closed episodes whose outcomes surface after a delay
+    window; here the delay itself is the estimated quantity); task181's lineage (counts read before their records
+    finish arriving; here the counts are complete and the intervals between linked records are what the cut-off
+    bends); task133 (left truncation; here truncation is on the right and by the later event).
+13. Data-native sentence: a source-to-case link is entered in the tracing system only when the infected contact
+    falls ill and is notified, and the outbreak doubles about every 18 days, so at the extract most sources are
+    recent and appear only with the cases they infected within the few weeks they have had, which bends the links'
+    intervals short in exactly the cohort the renewal equation's growth window reads.
+
+#### v2 Screens (stumping 1.2, as code)
+
+Prototypes in the session scratchpad, b179e/screen (`a1.py` to `a4.py`, `e1.py`; seeds fixed before outcomes,
+the outbreaks that died out before 2,500 cases skipped). The world screened is a discrete-day onset process,
+offspring negative binomial (R 1.7, k 0.4), serial interval a discretised gamma (mean 12.6, sd 7.4 days), 62 per
+cent of cases linked to a source, extract at day 165; eight outbreaks of 6,979 to 18,354 cases with 4,364 to
+11,356 pairs. Figures are the projected cases in a four-week window starting five weeks after a 40 per cent cut,
+each route against the golden (truncated maximum likelihood, gamma) on the same pack.
+
+- The default family lands about a quarter low and tightly: every pair fitted (empirical or gamma) -27.2 per cent
+  (sd 0.8), the same with the renewal-ratio R -27.0 (2.5), dropping pairs whose case fell ill in the last 21 or 42
+  days (the hygiene reflex, on the case's clock) -27.9 and -26.9.
+- The golden family converges where the data close it: truncated gamma 0.0, truncated Weibull +0.5 (0.1), the
+  reverse-time nonparametric estimator 0.0, sources whose onset is 50 or 70 days before the cut-off (the
+  complete-cohort subset, on the source's clock) +0.9 (3.0) and +0.3 (4.9). The lognormal reads +4.0 and the data
+  reject it (negative log-likelihood 64 to 183 units worse than the gamma on every pack).
+- The open residue is the current reproduction number's window and estimator: from the growth rate over 42 days
+  it is the golden, over 28 days -0.1 with sd 7.4, the renewal ratio over the same 42 days +0.6 with sd 3.0. That
+  is a knob, not the stump, so the window is filed (the six weeks to 11 October, weeks 36 to 41) and the spread of
+  the two estimators on that window is measured on the cut pack before the rounding is set.
+- Dispersion: the decisive quantity is a delay distribution's location; the parametric forms the data do not
+  reject agree within 0.5 per cent and the nonparametric estimator within 0.1.
+- Variance-only: the step moves the point (a quarter of the figure), it does not widen an interval.
+- Common-exposure subset: the subset already complete, sources old enough that every case they caused has fallen
+  ill, lands within its own sampling noise; choosing it means filtering on the source's onset, which is the
+  decisive step itself. On the case's clock (the reflex) it lands the default.
+- Truncation direction: the cut-off hides the top of the interval distribution (the long intervals), which is the
+  case the screen keeps alive.
+- Literature reflex: none applies in the re-sited world, since the virus is described only in this outbreak and the
+  planning note says no parameter comes from elsewhere; in the screened world an outside interval (15.3 days, sd 9.3)
+  landed +30 per cent, outside the golden's bin either way.
+- `guard.py slots --driver`: vocabulary hits only (task194, task190, task253, task117, task501); no slot records
+  a truncated delay distribution or a serial interval dying.
+
+#### v2 Default path
+
+1. Daily onsets of confirmed and probable cases from the line list (people found not to be cases and suspected cases
+   left out, a case notified twice under two numbers kept once by its sample), complete to 11 October.
+2. The serial interval from every source-to-case pair in the transmission links: onset of case less onset of source,
+   2,449 pairs, a gamma fitted or the pairs' own distribution (mean 11 days).
+3. The reproduction number implied by the exponential growth rate of daily onsets over weeks 36 to 41 (0.038 a day)
+   through that interval (1.5).
+4. The renewal equation forward from 12 October, the reproduction number halved for every source with onset from
+   2 November, cases summed over weeks 49 to 52 (3,564).
+
+Ends on: 4,000 cases
+Golden: 5,000 cases
+
+#### v2 Stump sentence
+
+A competent analyst fits the serial interval to every source-to-case pair in the transmission links (11 days), takes
+the reproduction number implied by the growth of onsets over weeks 36 to 41 (1.5), halves it from 2 November and
+projects about 4,000 cases for weeks 49 to 52 instead of about 5,000, because the tracing system holds a link only
+once its case has fallen ill, so September's and October's sources appear only with the cases they infected quickly;
+read against the time each source had to 11 October, the links give the 13-day interval the chains run on, a
+reproduction number of 1.6 and a December that holds a quarter higher.
+
+#### v2 Three rules
+
+Task type: infectious-disease-transmission-modeling (Epidemiology & Public Health): the outbreak's line list and transmission links turned into a serial interval, a reproduction number and a renewal-equation projection of cases under the response plan's central scenario, a projection serving Forecasting & Predictive Modeling.
+
+Domain test: the deciding quantity is the serial interval distribution the renewal equation runs on, estimated from the outbreak's own transmission pairs the way a transmission modeller estimates a delay during a growing epidemic: each pair read against the longest interval its source could show at the cut-off (right truncation), then the reproduction number from the growth rate through that interval (Wallinga and Lipsitch) and the renewal equation forward under the scenario's halving.
+
+Swap: "how many referrals a sales network brings in December, from referrer-to-referee links" keeps a link between two dated events and loses the step's ground: no renewal equation turning a growth rate into a reproduction number through the generation interval, no scenario that halves transmission by the source's onset, no epidemic whose growth makes the recent sources the numerous ones.
+
+Layer 1: a case notified a second time from a neighbouring district under a new number with the same laboratory sample, people found not to be cases and suspected cases awaiting a result in the line list, rows fed from the field laboratory's forms carrying ISO dates beside day-first ones, links graded by certainty and links whose case was later discarded; each is how a surveillance line list and a tracing system write, nothing is placed to be caught, and checks.py asserts the call holds under each (SF1, SF6, L1, L2).
+
+Layer 2: estimation_fit, the data's real structure: the serial interval is read from pairs that exist only once the later case has fallen ill, so the sample is right truncated at the extract, and during growth the truncation falls on the recent sources that are most of the pairs.
+
+Decisive step: estimating the serial interval with each pair conditioned on its interval being no longer than 11 October less its source's onset (or any estimator that reads the pairs against their sources' horizon), which moves the mean from 11 to 13 days, the reproduction number from 1.5 to 1.6 and weeks 49 to 52 from 3,564 to 5,049 cases.
+
+Not semantics: every field, code and definition read correctly (the classifications, the duplicate case numbers, the two date formats, the links' source and target, the dictionary's note that a link is entered when the target case is notified) still leaves the easy route fitting the pairs as they stand, because no field says the pairs are a truncated sample of the outbreak's intervals; the step is the inference that a growing outbreak cut off at an extract holds only the quick intervals of its recent sources, which the data show (the mean interval of the pairs falls from 13.5 days for sources ill in August to 11.0 for September's and 5.2 for October's) and no sentence says.
+
+Not rule application: the planning note files the population, outcome, window, unit, scenario and the reproduction number's basis, and no rule says how the serial interval is read from the links; executing every filed rule with the pairs fitted as they stand files 4,000 cases.
+
+Analyst test: a strong analyst who cleans the line list and reads every rule, fitting the serial interval to every pair in the links, files 4,000 cases (the default path's Ends on); one who drops the pairs whose case fell ill in the last fortnight (the hygiene reflex, on the case's clock) files 4,000 too; only reading each pair against its source's time to 11 October files 5,000; checks.py runs the three on the generator's clean truth (R3a, R3b, R3c).
+
+Estimand: the planning note (planning_note_phase3_2026-10-19.pdf, sections 1 to 3): the population (new cases of Tamberlow virus disease, confirmed and probable under the provincial case definition, in the seven districts with cases), the outcome and unit (cases by date of symptom onset), the window (ISO weeks 49 to 52, 30 November to 27 December 2026), the scenario (every case with onset on or after 2 November causes half as many new cases as cases did over weeks 36 to 41, whose reproduction number is the one implied by the exponential growth rate of their daily onsets), the records (the line list and the transmission links as extracted on 18 October, onsets complete to 11 October, no outside parameter).
+
+No decoy: nothing is planted: the line list, links, contact registry, laboratory exports, capacity report and situation report are the producing systems' records, the planning note states the scenario without a method, and no serial interval, reproduction number, projection or published parameter ships anywhere in the pack.
+
+No certified replay: no certified or published serial interval, reproduction number or projection ships; the planning note says the virus is described only in this outbreak, so the method is not recovered by reproducing any figure.
+
+Lesson: a delay read from linked records that exist only once the later event has happened is truncated at the extract, and while the process grows that truncation sits on the recent sources, which are most of the record; no build on file estimates a delay distribution from linked pairs read against each pair's own horizon.
+
+#### v2 Readability screen
+
+Each rung, the sentence or file a reader would have to read to take it, and whether any shipped text hands it over.
+
+| Rung | What takes the reader there | Verdict |
+|---|---|---|
+| Layer 1: the duplicate case numbers, non-cases and suspects, two date formats | the dictionary and the line list | readable |
+| R0 growth of onsets over weeks 36 to 41 | the planning note, section 2 | readable |
+| R1 (default path) the serial interval from every pair as it stands | the transmission links and the dictionary | readable |
+| R1b the pairs whose case fell ill in the last fortnight dropped | the hygiene reflex on the links' dates | readable |
+| R2 (decisive) each pair read against its source's time to 11 October | nothing: no sentence names truncation, the interval's bias, a cohort of complete sources or an estimator; the dictionary says when a link is entered and nothing about what that does to the intervals | silent |
+
+#### v2 Semantic fork table
+
+| ID | Term or convention | Golden reading | Alternative | Call under it | Ruled out by |
+|---|---|---|---|---|---|
+| SF1 | a case | Confirmed and Probable, a person notified twice under two numbers counted once by sample | both numbers kept; Not a case kept | same call (5,206; 4,898) | planning note section 3; checks.py SF1 |
+| SF2 | completeness | onsets to 11 October complete, pairs whose case fell ill by 11 October | pairs and onsets to the 18 October extract | same call (4,739) | planning note section 3; SF2 |
+| SF3 | the growth rate | log-linear least squares on daily onsets, 31 August to 11 October | Poisson regression on daily onsets; weekly counts | same call (5,005; 5,004) | SF3 |
+| SF4 | the reproduction number's basis | the one implied by the exponential growth rate through the serial interval | the renewal ratio over the same six weeks (5,508) | not the filed estimand | planning note section 2, "implied by the exponential growth rate of their daily onsets" |
+| SF5 | the halving | every source with onset on or after 2 November transmits at half | cases whose own onset falls on or after 2 November halved (2,525) | not the filed scenario | planning note section 2, "every case with symptom onset on or after 2 November causes half as many new cases" |
+| SF6 | the links' certainty | every link | Low certainty dropped | same call (4,992) | SF6 |
+| SF7 | the interval's family | discretised gamma | Weibull; the reverse-time nonparametric estimator; lognormal | same call (5,062; 5,047; 5,406, the lognormal 36 log-likelihood units worse) | SF7 |
+| SF8 | the window | ISO weeks 49 to 52 by onset, 30 November to 27 December | none | filed | planning note section 1 |
+| SF9 | rounding | the unrounded projection to the nearest thousand | none | prompt | prompt.txt |
+| SF10 | the projection's start | the renewal equation from 12 October on onsets to 11 October | the onsets of 12 to 18 October read as complete (4,241) | not the filed record | planning note section 3, "onsets to Sunday 11 October are complete in the extract"; SF10 |
+
+#### v2 Ladder
+
+Built values from the cut pack (generator/checks.py R1 to R3c, SF1 to SF10), cases in weeks 49 to 52.
+
+| Rung | Route | Serial interval (days) | R | Cases | Call |
+|---|---|---|---|---|---|
+| R1 (default path) | every pair as it stands, gamma or empirical | 11.13 | 1.484 | 3,564 | 4,000 |
+| R1b | pairs whose case fell ill in the last 14 days dropped | 11.09 | 1.483 | 3,549 | 4,000 |
+| Golden | truncated gamma, each pair conditioned on its source's time to 11 October | 13.16 | 1.586 | 5,049 | 5,000 |
+| Golden family | truncated Weibull; reverse-time nonparametric; sources 50 or 60 days old only | 13.04; 13.14; 13.15; 12.83 | 1.585; 1.586; 1.589; 1.573 | 5,062; 5,047; 5,092; 4,857 | 5,000 |
+
+- Dominance: every member of the golden family sits in [4,500, 5,500), the nearest 7.4 per cent from an edge (the
+  complete-cohort subset at 60 days, 4,857), the golden 8.9 per cent; a bootstrap of the pairs (60 draws) puts the
+  golden's sd at 3.0 per cent and every draw in the bin (B1); the default family sits in [3,500, 4,500).
+- The data separates the readings: the mean interval of the pairs by the month their source fell ill falls from 13.5
+  days (August, 519 pairs) to 11.0 (September, 1,486) and 5.2 (October, 215), which an interval that does not change
+  cannot do unless the record is cut off; read against each source's horizon, the truncated fit's interval holds
+  (sources 50 days old or more, whose cases have all fallen ill, give 13.15 days).
+
+#### v2 Closure table
+
+| # | Axis | Reading | Move |
+|---|---|---|---|
+| 1 | Population | new cases, confirmed and probable, in the seven districts with cases | filed (planning note 1, 3) |
+| 2 | Unit of account | a case by date of symptom onset | filed (planning note 1) |
+| 3 | Attribution window | ISO weeks 49 to 52, 30 November to 27 December 2026 | filed (SF8) |
+| 4 | As-of dating | the extract of 18 October 23:59, onsets complete to 11 October | planning note 3; manifest (SF2) |
+| 5 | Version basis | one line list and one links export, no earlier release | the manifest |
+| 6 | Denominator | none (a count) | commutes |
+| 7 | Weighting | each pair once, each day's onsets as counted | SF3, SF7 |
+| 8 | Window length | the growth window weeks 36 to 41 | filed (planning note 2) |
+| 9 | Boundary inclusivity | onset on or after 2 November halved; 30 November and 27 December inside | filed (SF5, SF8) |
+| 10 | Rounding path | the unrounded projection to the nearest thousand | prompt (SF9) |
+| 11 | Tie-break | none | the golden family 3.0 per cent or more inside its bin |
+| 12 | Maturity and censoring | the pairs right truncated at 11 October; onsets complete to 11 October | the decisive step; SF2 |
+| 13 | Order of operations | clean, pair, fit, grow, project from complete onsets, sum | SF10 |
+| 14 | Row order | none | commutes |
+| 15 | Duplicate resolution | a case notified twice counted once by its sample | SF1 |
+| 16 | Identity normalisation | case numbers across the line list and the links, duplicates mapped to the first | SF1 |
+| 17 | Netting against gross | not a case and suspected rows out | filed (planning note 3, SF1) |
+| 18 | Dimensional units | days, cases | the dictionary |
+| 19 | Code and status semantics | classifications, certainty grades | the dictionary (SF6); never the stump |
+| 20 | Integerisation | none before the rounding | commutes |
+| 21 | Clause scope | the halving applies to every source in every district from 2 November | filed (SF5) |
+| 22 | Forward window contents | cases not yet ill, the scenario's halving the only change | filed (planning note 2) |
+
+#### v2 Literal reader
+
+The planning note executed word for word asks for the cases with onset in weeks 49 to 52 under a scenario whose base
+is the reproduction number the growth of weeks 36 to 41 implies through the outbreak's serial interval; the literal
+question is the interval the chains run on, which the links show only in part, since a link exists once its case has
+fallen ill. A literal reader who fits the links as they stand has assumed the extract holds every interval its
+sources will produce, which the falling mean interval by source month contradicts; every other reading converges or
+violates a quoted sentence (fork table). Re-run on the finished pack.
+
+#### v2 Oracles
+
+- No shipped file carries a serial interval, a reproduction number, a projection or a published parameter for the
+  virus; the planning note says none comes from elsewhere.
+- The Kettlebank public health laboratory's results, the centres' admissions and the safe burials log are
+  distractors (metadata.json); none ranks a projection.
+- The situation report counts cases by week of notification as notified at 13 October; it projects nothing.
+- No control ties only under the golden on the asks.
+
+#### v2 Ask sheet
+
+- **Ask A, contacts first listed in weeks 37 to 39 in Tamberlow, Quillmarsh, Kettlebank North and Brindlecourt:
+  different people and the percentage who completed follow-up (eight figures, whole numbers and one decimal).**
+  Home: the planning note's section 4 (the follow-up the scenario leans on). Path: the contact registry. Primary
+  device: the same records under two key schemes: in the four districts the directorate's paper listings are
+  entered at the district office beside the organisation's tablet listings of the same contacts, and the paper form
+  carries an estimated age one to three years off the tablet's, so the exact person key counts those people twice;
+  only source case, household, initials and sex, listed within a day, tie them. Hazards: a person exposed to two
+  cases is listed once for each; completion is the person's last listing, not each listing's.
+- **Ask B, the Tamberlow field laboratory's diagnostic samples by ISO week of collection, weeks 38 to 41: average
+  hours from collection to final result and the percentage resulted within 24 hours (eight figures, one decimal).**
+  Home: the planning note's section 4 (the laboratory turnaround). Path: the field laboratory's workbook. Primary
+  device: a clock basis: the analyser writes its result time on UTC while collection and reception are keyed on
+  local time (UTC+1); the evidence is in the data, results less than the 92-minute cartridge run after reception and
+  positives a day before the line list's lab_result_date. Hazards: the final result is the re-run after
+  Indeterminate; discharge-control samples are out.
+- **The construction layer:** the call, its two components and the chart; the cracker has them.
+- **Main population zero-counts (asserted):** the call reads the line list and the links only; the registry and the
+  laboratory workbook are read by the asks only (X1).
+- **Hazard table (asserted):** A1 to A3, B1 to B3 in checks.py; none moves the call.
+- **Referee:** none.
+
+| Ask | Cracker (lands the call, runs the battery, executes every filed rule it points at) | Verdict |
+|---|---|---|
+| A, people and completion by district | the exact person key, the last listing's status; keeps 0 of 8 | miss |
+| B, turnaround by week | the final result on the clock the file shows; keeps 0 of 8 | miss |
+
+- Mirror leakage: 0.0 per cent of ask weight on the cut pack (0 of 16).
+- Pair ceiling: 28.5 on the cut pack (weights 38 / 7 / 55: the cracker keeps the call and instructions, 45.0; the
+  mirror at the default path misses the call and keeps no ask figure, 12.0). Re-measured by the stage 4 readers.
+- Measured by: generator/ceiling.py on the cut pack.
+
+### First-cell record
+
+**First cell (2026-10-18).** New, Forecasting, seed FC50. The world was
+moved honestly off `local_government`: a private ambulance company holds a city's 911 ambulance contract (the city
+stays as the contract's counterparty) and decides its own summer surge pool, ten medic units for the weekend
+20:00 to 24:00 block from June to August, any it does not need offered to the county's mutual-aid roster for the
+summer; the contract's deployment standard staffs so that on nine weekend evenings in ten the units can answer every
+call in the block at 1.2 unit-hours a call, and from June dispatch sends any unit in a district to any call in it,
+North (planning areas 1 and 2), Central (3 and 4) and South (5). The world, the decision and the quantity were kept.
+The seed's own mechanisms (a filed staffing formula executed literally, the public dataset's suppression of one-
+and two-call cells, a sentence telling the solver to pool the areas) were never candidates. Two decisive steps were
+screened on code, each one of the brief's ideas in its strongest form, over three seeds each plus sweeps, and
+neither held. No architecture is live. This note holds the screen record only; it carries none of the `precut.py`
+sections, because no design exists. The prototypes stay in the session scratchpad (b179/screen:
+`c1_pool.py`, `c1_summary.py`, `c1_station.py`, `c1_total.py`, `c2_level.py`, `c2_sigma.py` and `screen179.py`,
+whose output `screen179.out` is byte-identical with `screen179_run2.out` over two runs).
+
+**The structural sentence, and the first thing to read.** The quantity cannot carry a graded whole-unit call under
+the bar, whatever the decisive step. A district's units at the 9-in-10 standard are the ceiling of 0.3 times the
+90th percentile of its block calls over one summer's 39 or 40 Friday, Saturday and Sunday evenings, and the record that
+estimates that percentile is at most nine or ten summers of those evenings: the golden's own bootstrap sigma is
+0.40 to 0.91 units in every realistic world measured (1.51 at twice the size), against the 0.25 units a whole-unit
+bin leaves once its quarter-bin margin is taken, and on one pack the defensible estimators of that percentile
+spread 0.44 to 1.19 units; only small Poisson-dominated districts reach 0.24 and 0.22, where every lever on file
+(pooling, co-movement, a trend, a break, a one-off) moves the call by at most one unit and the cheap routes land.
+The total of the three districts is worse: its sigma is 1.09 to 1.19 units at the base world (`c1_total.py`).
+And the one forward change this world really carries, district dispatch, is the estimand's unit: once the standard
+names the district's block as what its units must answer, the district's own evening totals in the record,
+filtered, summed and quantiled with a trend, are the golden family, which is the first thing a strong analyst
+builds. A draw on this quantity needs a graded figure resting on many more events than one evening's percentile (a
+season's unit-hours, say, which changes the seed's quantity), or another world.
+
+**The registration finding.** Nothing was registered and no axis of the window was spent. The window moved during
+the screen: at fa74407 it was task201, task247 and task165; at 2689b12 it is task165 (`council_or_assembly`,
+`purchase_order_or_contract`, `local_government`, `operations_director`, `register`, `single-figure`,
+`composition_mix`), task268 (`board_of_directors`, `launch_or_rollout`, `retailer_or_ecommerce`,
+`operations_director`, `operations_log`, `14`, `composition_mix`) and task248 (`line_manager_or_team`,
+`cutover_or_migration`, `government_agency`, `capacity_planner`, `monitoring_export`, `03`, `other`). The keys this
+world offers honestly outside it, had a design held: organisation `hospital_or_health_provider` (a licensed
+ambulance service), forum `customer_or_counterparty` (the city's EMS contract office receives the summer deployment
+plan), forcing event `other` (the county's mutual-aid roster closing in May), context artifact `filed_standard`
+(the contract's deployment standard), calibration `prior_period_close_out` (the summers' close-outs), shape `05`
+(ten units across three districts, the rest released). The honest role is `capacity_planner` (the contractor's
+deployment planner), which task248 now holds, and the honest strategies are `grain_or_unit` for candidate 1's
+pooling reading and `forecast_method_backtest` for candidate 2, both free.
+
+**The taxonomy finding.** The honest home is Healthcare Delivery & Health Economics,
+`utilization-access-demand-forecasting` (ambulance demand forecasting; the client library's pattern 4 there, plan
+capacity to an overdispersed quantile against a mean plus a Poisson margin, is this quantity exactly), or
+`patient-flow-beds-workforce-optimization` (staffing to the standard). The urban-regional municipal-service cell is
+held by task165's subdomain in the window.
+
+**The repeat screen.** `guard.py recent`, `coverage`, `mechanisms --objective forecasting` and `slots` ran before
+any card, `slots` on the pooled-percentile driver, the level driver and the terms pooling, percentile, surge,
+ambulance, medic and dispatch: no slot or card spent a pooled-percentile or a surge-pool level mechanism. The binding
+matches are by the abstraction test: candidate 1's co-movement reading is task143's driver (a joint tail of a few
+members whose error is mostly a component they share, the members treated as independent misstating it, the shared
+component carried into the joint quantity), and its percentile-of-a-total reading sits beside task142 (an upper
+percentile of a period's total built from the units that generate it). The brief's near drivers were read in full
+on their cards: task148 (Erlang A with reneging in a 911 queue), task159 (platform backlog behind full trains),
+task160 (regional waves timed by their lag) and task162 (version uptake set by the monthly restart burst); neither
+candidate touches them.
+
+### Retired
 
 Retired on 2026-10-21 under the author's rule for this round (a number that dies in its second new cell is
 retired). Three worlds were worked. The first cell, the seed's own world (a private ambulance contractor's summer
@@ -1255,7 +927,7 @@ here as reusable records:
   added. Measured: the clock read as local missed every week's mean and within-24-hour share; the re-run after an
   indeterminate result is the hazard beside it.
 
-## Rebuild (2026-10-23)
+### Rebuild (2026-10-23)
 
 Reopened under the author's rule that no number stays retired, for a from-scratch rebuild in product-analytics /
 feature-adoption-diffusion-modeling (Forecasting), worktree `b_179n`. No candidate held at stage 1: three measured dead on

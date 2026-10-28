@@ -1,18 +1,18 @@
 {
   "task": "task179",
-  "architecture": "v3",
-  "drawn": "2026-10-23",
-  "slot_note": "reopened from RETIRED under the author's rule that no number stays retired; rebuilt from scratch in the cell education-learning-sciences / learning-analytics-early-warning-models (Forecasting) after the product-analytics adoption and population-pharmacokinetics rebuild cells died at stage 1 without a card (design note, Tried and rejected)",
-  "domain": "education-learning-sciences",
-  "subdomain": "learning-analytics-early-warning-models",
-  "client_domain": "education-learning-sciences",
-  "niche": "a fictional university's planning office forecasting how many of its 2026 first-year entrants will not be enrolled at the 1 October 2027 census, the first intake that enrolled itself in classes after the Registry's allocation of first-year class groups ended at a student-records cutover, from seven intakes' census classes, week-6 progress ratings and next-census enrolment",
+  "architecture": "v5",
+  "drawn": "2026-10-28",
+  "slot_note": "",
+  "domain": "criminology-justice",
+  "subdomain": "recidivism-risk-assessment",
+  "client_domain": "criminology-justice",
+  "niche": "a state community supervision region's 2027 count of its year-end caseload booked on a new violent-felony or firearm charge, sizing the GPS enrolments it reserves under the Department's 2027 directive",
   "objective": "forecasting",
-  "shape": "07",
+  "shape": "other",
   "decision_type": "quantity_figure",
   "answer_unit": "count",
-  "answer": "Plan for about 3,250 of the 8,659 first-time entrants enrolled at the 1 October 2026 census not to be enrolled at the 1 October 2027 census, to the nearest 250.",
-  "answer_source": "task179/submission.md, block 1; continuing_enrolment_2027.xlsx (Projection)",
+  "answer": "",
+  "answer_source": "",
   "gap": [
     "time",
     "population"
@@ -21,84 +21,75 @@
     "none"
   ],
   "generators": [
-    "G6",
-    "G14",
-    "G2"
+    "G12",
+    "G14"
   ],
   "gate_g": "forecasting",
-  "calibration_form": "realised_outcome_roster",
-  "stump_strategy": "composition_mix",
+  "calibration_form": "none",
+  "stump_strategy": "other",
   "decisive_rule_filed": false,
   "official_decoy": false,
   "validated_decoy": false,
-  "context_artifact": "register",
+  "context_artifact": "other",
   "stump_class": "analytical",
-  "analyst_test": "A strong analyst who stitches the SIRIUS and ARC extracts through the crosswalk, keeps the first-time bachelor's entrants enrolled at each census, reads leave as not enrolled and fits a validated early-warning model on every entrant attribute and the week-6 progress ratings files 2,250 (2,142) of the 2026 entrants not enrolled at the 1 October 2027 census, against 3,250, because the record's entrants mostly sat in allocated class groups and the 2026 entrants did not.",
-  "domain_test": "The deciding quantity is each first-year entrant's probability of not being enrolled at the next census, the early-warning model's own target, which persistence research ties to a student's academic and social integration; here integration is read from the co-enrolment network (the other entrants met in two or more of the entrant's own classes), and putting nurses and shifts in place of students and classes loses the census, the first-year class allocation, the living-learning community and the next year's re-enrolment that the quantity and its cause stand on.",
-  "layer2_family": "estimand_identification",
-  "layer2_pattern": "own:retention-read-on-repeat-classmates-after-class-allocation-ended",
+  "analyst_test": "With the two jails' booking extracts conformed (local time against UTC, warrant-only, violation-only, transport and re-bookings set aside), the 2024 recodification mapped to the agreement's Schedule B, the 2022 case-system migration crosswalked and each person counted once across concurrent episodes, the easy route fits a model of a Schedule B booking within the year on each year-end caseload's own risk-instrument score, age, priors, offence, supervision type, months remaining and recent bookings over the 2018 to 2025 year ends, back-tests it on 2024 and 2025 within a few per cent, scores the 31 December 2026 caseload and files 450 against 500, because it never reads which supervisees the city police recorded as victims of violence in the second half of 2026.",
+  "domain_test": "The deciding quantity is the year-end caseload's 2027 bookings on a new violent-felony or firearm charge, forecast as each supervisee's risk-model hazard raised for about two years after the city police record them as the victim of a violent incident (the victim-offender overlap, an acute dynamic risk factor no supervision instrument scores), measured by linking the police victim records to the caseload by name and date of birth and carried through the second half of 2026, when that exposure nearly tripled; with a hospital's or a utility's nouns there is no arrest hazard, no victim-offender overlap and no supervision caseload, so the task does not survive the swap.",
+  "layer2_family": "field_method",
+  "layer2_pattern": "own:victimization-as-a-time-varying-arrest-exposure-from-police-records",
   "layer1": [
-    "a student-records cutover: SIRIUS extracts with seven-digit student numbers and day-first dates for 2019 to 2025, ARC extracts with C-numbers, ISO dates and new class codes for 2026, joined through a crosswalk",
-    "census status codes and week-6 progress rating codes that differ between the two systems",
-    "students on approved leave carried on the census with a leave status",
-    "conjoint students on two programme attempts and two census rows",
-    "entrants with credit and returning students in the admissions workbook beside first-time entrants",
-    "an admissions workbook with one sheet per intake whose column names drift",
-    "a class timetable with one row per weekly meeting, room changes during semester and cancelled classes"
+    "two county jails' booking extracts in different layouts, one per booking charge in local time and one per booking with charges concatenated in UTC",
+    "the 1 July 2024 criminal code recodification, with the statute crosswalk published as a PDF table",
+    "the June 2022 case-management migration: legacy offender numbers on the older risk assessments, a crosswalk with merged duplicates",
+    "bookings for court transport, warrant-only, violation-only and hospital re-bookings beside new arrests",
+    "concurrent supervision episodes for one person, county transfers closing and reopening an episode",
+    "victim names and dates of birth in the police layout against the supervision layout, supplements re-listing victims, business victims with no birth date",
+    "the 2023 risk-instrument revision with new cut-offs"
   ],
-  "stakeholder_role": "the Planning Office's senior analyst who produces the continuing-enrolment projection behind the 2027 teaching plan",
+  "stakeholder_role": "Region 4 research and planning lead",
   "role_family": "research_desk",
-  "scoring_unit": "per active unit per period",
+  "scoring_unit": "other",
   "spine": {
-    "file": "census_enrolments_2019_2026.csv",
-    "rows": 202057,
-    "entity": "one student's programme attempt on one 1 October census",
-    "grain": "student programme attempt x census",
-    "source": "constructed (the Registry's census history)"
+    "file": "cms_supervision_episodes_2018-2026.csv",
+    "rows": 0,
+    "entity": "one supervision episode of one person",
+    "grain": "person x episode",
+    "source": "synthetic (constructed in the layout of a community supervision case-management export)"
   },
   "forum": "executive_team",
-  "forcing_event": "other",
-  "org_family": "university_or_school",
+  "forcing_event": "purchase_order_or_contract",
+  "org_family": "government_agency",
   "world": {
-    "geography": "Republic of Aldmark (fictional), city of Corriemoor",
-    "currency": "AMD",
-    "org_type": "public university",
+    "geography": "United States (the fictional State of Merrow: a supervision region of two counties, Darrow and Keswick, and the City of Halverton)",
+    "currency": "USD",
+    "org_type": "state department of corrections, community supervision division",
     "invented_names": [
-      "Corriemoor University",
-      "Republic of Aldmark",
-      "Aldmark Secondary Certificate",
-      "SIRIUS",
-      "ARC",
-      "Ferrier Hall",
-      "Ashby House",
-      "Linton Court",
-      "Stanmore Hall",
-      "Wexcombe Hall"
+      "Halverton",
+      "Darrow County",
+      "Keswick County",
+      "Merrow",
+      "Trakwell"
     ],
     "people": [
-      "Cillian Coholan",
-      "Malcolm Hussey",
-      "Keri Keating"
+      "Zachary Wallace",
+      "Ashlee Evans"
     ]
   },
   "deliverables": [
-    "continuing_enrolment_2027.xlsx",
-    "s1_2026_teaching_groups.png"
+    "region4_2027_gps_order.xlsx",
+    "region4_2027_schedule_b_forecast.docx"
   ],
   "opening_move": "question-first",
   "question_form": "how-many",
-  "driver": "A member's chance of leaving falls steeply once it meets enough of the same peers in more than one of its own small groups, and the record's members were mostly placed in fixed groups by a process the forward members no longer pass through, so the record's leaving rate and a model on the members' own attributes understate the forward count; each forward member's chance has to be read at its own count of repeat peers, built from the group memberships, from the record's members who met as few.",
-  "driver_concrete": "Until 2025 the Registry's allocation run placed about four in five full-time entrants in a group of 28 who took UNIV101 and their faculty's two first-year papers together; from the 2026 ARC cutover entrants enrolled themselves and only the halls' living-learning communities were still placed together, so a 2026 entrant meets on average under one other entrant in two or more of their classes against about 26 in the allocated years, and an entrant who meets few others twice is about twice as likely not to be enrolled at the next census: about 3,250 of the 8,659 2026 entrants will not be enrolled on 1 October 2027, not the 2,250 the record's rate and an early-warning model on entrant attributes give.",
-  "stump": "A competent solver fits an early-warning model on the entrants' own attributes (secondary score, first in family, part-time, age, hardship grant, week-6 progress ratings, faculty, hall, living-learning community and acceptance date) to the 2019 to 2025 entrants' enrolment at the next census, scores the 2026 entrants and files 2,250 (2,142) not enrolled on 1 October 2027 against 3,250, because it never reads each entrant's chance at the number of other entrants met in two or more of the entrant's own classes, which the allocation run kept near 26 and self-enrolment leaves near one.",
+  "driver": "A member's chance of the outcome rises for about two years after another body records it as the injured party in a harmful event, so a forecast from each member's own attributes misses a half-year in which that body recorded nearly three times as many members injured, which only linking the two bodies' records person by person shows.",
+  "driver_concrete": "Supervisees whom the city police list as the victim of a violent incident are booked on new violent-felony or firearm charges at several times their risk-model rate for about two years afterwards, and from July 2026 the police recorded nearly three times as many of Region 4's caseload as victims as in any earlier half-year, so the year-end caseload's 2027 Schedule B bookings run above every model of the caseload's own attributes.",
+  "stump": "A competent analyst fits the region's Schedule B booking model on the caseload's own risk score, history and supervision terms, back-tests it cleanly on 2024 and 2025, scores the 31 December 2026 caseload and files 450 against 500, because it never links the city police's victim records to the caseload by name and date of birth and so never carries the second half of 2026's rise in victimization into 2027.",
   "mechanism_source": "design_note",
   "differentiation": {
-    "task175": "task175 reads a vacant lot's permit chance at the homes already standing on its own street, a spatial fill the utility's service sequence sorted; here the unit is a person, the covariate is a count of repeat co-members in a bipartite class network that no column or key holds, the forward population differs because an administrative placement process ended at a records cutover rather than because service went where building was, and the quantity is a next-census re-enrolment",
-    "task143": "task143 carries a group effect shared by a pack's three cells into the joint chance that the weakest fails, a correlation inside a function of several draws; here nothing is a joint or tail quantity, each entrant's own chance is read at that entrant's count of repeat classmates and summed",
-    "task169": "task169 reroutes an outcome a closed processing route pre-empted through the remaining route's conversion; here no route is closed, the outcome process is the same and the forward population sits at the other end of an exposure the record measures",
-    "task177": "task177 decomposes default through one exit event whose forward rate another file shows; here no event is decomposed, the protective exposure is constructed from the class memberships of the record and of the forward cohort",
-    "task125": "task125 tracks an aggregate distorted by a recruitment filter carried by each intake through a fixed run of later periods; here no filter acts on recruitment and nothing compounds over periods, each forward entrant's own chance is read at the repeat classmates its own class memberships give",
-    "task150": "task150 splits a unit's next-period count into carried-on members, steady arrivals and sibling transfers so a ratio does not carry the past mix forward; here no count is split by source, the forward cohort's members sit at the other end of a co-enrolment exposure the record measures student by student",
-    "task501": "task501 rebuilds a contact matrix from the observation days of the coming season's regime and reads its eigenvalue; here no matrix or threshold is computed, the regime change ended an allocation process and the forward count sums each entrant's own chance read at that entrant's repeat classmates"
+    "task157": "task157 reads a defect that shows only when both members of a sampled pair fall in the sample (and its v1 a group that stopped together coming back in a wave); task179 reads no sample and no returning wave: each supervisee's own arrest hazard is raised for a year after another agency records them as a victim, and the 2026 rise in that exposure is carried forward.",
+    "task192": "task192 counts units carrying a property an instrument labels after its validation window, or distinct processes behind bursts; task179 has no instrument to validate and no bursts: the exposure is a dated police record linked person by person, and the decisive quantity is the arrest hazard it raises.",
+    "task482": "task482 carries a running period's rate by its own relation at the cut while some members sit in episodes recorded only at their end; task179 has no episode recorded late: the victim record is dated when the police take the report and the outcome is a booking dated when it happens.",
+    "task231": "task231 reads a rate over units still active when exits reach the record a year late and follow-up favours active units; task179 has no late exit record and no confirmation bias: the supervision record is complete, it simply never holds the exposure another agency recorded.",
+    "task250": "task250 counts alerts a less sensitive limit raises from a record the current limit cut short by repairs; task179 has no limit and no repair: a person's arrest hazard rises after a recorded victimization and decays over about a year."
   },
   "lineage": [
     {
@@ -116,8 +107,13 @@
       "gate_g": "forecasting",
       "decision_type": "quantity_figure",
       "driver": "An interval between two linked events, read from the pairs a record holds at its cut-off, is shorter than the interval the process runs on while the process is growing, because a pair enters the record only once its later event has happened and the pairs still open at the cut-off are the long ones from the recent and most numerous earlier events; the reproduction number taken from the growth rate on the record's interval is too low, so a projection under a planned cut in transmission falls away too fast."
+    },
+    {
+      "architecture": "v3",
+      "fate": "returned 10-25 on version 391 for Duplicate (a templated near duplicate of task175: an unnamed neighbour count with the forecast population at its floor); re-rooted 10-26 to architecture 4, whose candidates probes 5 to 10 were landed or set aside before any draw registered",
+      "driver": "A member's chance of leaving falls steeply once it meets enough of the same peers in more than one of its own small groups, and the record's members were mostly placed in fixed groups by a process the forward members no longer pass through, so the record's leaving rate and a model on the members' own attributes understate the forward count; each forward member's chance has to be read at its own count of repeat peers, built from the group memberships, from the record's members who met as few."
     }
   ],
-  "notes": "architecture v3 is a from-scratch rebuild in a new cell; v2 (the right-truncated serial interval, epidemiology) stays in lineage with its fate. org_family university_or_school: the forecasting organisation is a university's planning office. forcing_event other: the 2027 teaching plan and budget round, which has no vocabulary key of its own. Stump strategy composition_mix: the forward cohort differs from the record on a covariate the record measures at a finer grain (each entrant's class memberships) than any field or textbook model carries; gap time first (the record's intakes were allocated to class groups and the forecast bets on the first intake after the allocation ended), population second; decisive generator G6 (composition shift), with G14 (the conditioned yield that fixes it) and G2 (the exposure lives at the class-membership grain, finer than the entrant record) behind it. The first check BLOCKed test.same_puzzle and test.same_driver on (population, G6) against task175 in the batch: the gap was redrawn to time, which names the decisive difference as honestly (the forward intake is the first after the allocation ended), and the older (time, G6) builds are differentiated.",
-  "registered": "2026-10-23T11:02:26Z"
+  "notes": "Architecture 5, re-root 2026-10-28. Probes retired by CLAUDE.md; stump power argued on paper against the nine survivor properties (design note ## Draw).",
+  "registered": "2026-10-28T00:52:11Z"
 }

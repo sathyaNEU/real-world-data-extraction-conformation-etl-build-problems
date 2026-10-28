@@ -1,180 +1,197 @@
 {
  "task": "task179",
- "status": "RETURNED",
- "domain": "education-learning-sciences",
+ "status": "DESIGN",
+ "domain": "criminology-justice",
  "objective": "forecasting",
- "stage": 5,
- "stage_name": "ship",
- "updated": "2026-10-26",
- "stump": "A competent solver fits an early-warning model on the entrants' own attributes to the 2019 to 2025 entrants' enrolment at the next census, validates it on the 2025 intake, scores the 8,659 2026 entrants and files 2,250 not enrolled on 1 October 2027 against 3,250, because it never reads each entrant's chance at the number of other entrants met in two or more of the entrant's own classes, which the Registry's allocation run kept near 26 and self-enrolment after the ARC cutover leaves near one.",
- "architecture": 3,
- "loops": 1,
+ "stage": 2,
+ "stage_name": "design",
+ "updated": "2026-10-28",
+ "architecture": 5,
+ "stump": "A competent analyst fits the region's Schedule B booking model on the caseload's own risk score, history and supervision terms, back-tests it cleanly on the later year ends, scores the 31 December 2026 caseload and files 450 against 500, because it never links the city police's victim records to the caseload by name and date of birth and so never carries the second half of 2026's rise in victimization into 2027.",
+ "loops": 0,
  "card_registered": true,
- "precut": {
-  "exit": 0,
-  "date": "2026-10-23"
- },
- "leak": {
-  "leak_py": "REVIEW (2026-10-25, on 01124ef4): the conventions, dictionary and cutover notes share the pack's own words; no figure, none of the decisive step's words",
-  "reader": "round 1 (fab8b152): call held 2 of 2 (2,250), asks A 10 of 25, B 25 of 25; round 2 (a9f8b878): readers C and D 2,250 against 3,250, 0 of 20 asks each, PASS; the call held in 4 of 4 blind reads; rubric repair (c1b19cef): readers E and F 2,250 against 3,250, 0 of 20 asks each; reader E's leak answers quote no decisive-step sentence and no ranking file; determinism repair (256adf20): readers G and H 2,250 against 3,250, 0 of 20 asks each; G quotes no sentence naming the decisive step; determinism repair round 3 (c8032390): reader 2,250 against 3,250, 0 of 20 asks, exit 0; round 4 rework (01124ef4): readers A and B 2,250 against 3,250, asks A 20 of 20 (class lists joined to the census history) and B 0 of 20; neither quotes a sentence naming the step"
- },
- "duplicate_check": {
-  "heart": "BLOCK (2026-10-23) on four axes against task175 after task173 was spent and the live window re-formed; registered under the lock at WARN",
-  "nearest": "driver 0.07 task143",
-  "ruling": "Author's standing ruling, 'Ship, window fixed at draw': the card registered under the lock at WARN (4afaec0a) and the later heart BLOCK against task175 comes from the window moving after task173 was spent; nothing relabelled."
- },
- "judge": {
-  "verdict": "DETERMINISTIC (r8, 01124ef4), FIX_NOW applied (step 6 wording)",
-  "disposition": "portal round 5's class-code-artefact reading answered by the extracts' comparability in write-up step 4; blind call 2,250",
-  "report": "task179/determinism_check_report_pass3.md (thread: scratchpad determinism-check-task179-r8/verdict.md)"
- },
- "returned": [
-  {
-   "date": "2026-10-24",
-   "portal": "the call held on both responses; both answered all 20 S1 2026 teaching-group cells (weights 2 to 3, 55 of 100) by joining classes through shared meetings and reading a figure the room could not seat added once, the shipped golden route",
-   "repair": "rubric",
-   "rounds": [
-    {
-     "round": 1,
-     "zip": "c1b19cef",
-     "moves": "two lecture-only SIRIUS pairs a faculty and level (three groups, not one or two) and two flip classes a faculty and level whose lists hold places of students on approved leave or with no 2026 census attempt; arc_s1_2026_class_enrolments.csv added (49,237 places); every other file byte-identical to the shipped pack except the timetable and one dictionary entry; ceiling 0 of 20 on all 14 routes",
-     "reader": "scored-task179ze and scored-task179zf: both missed the call (2,250) and kept 0 of the 20 cells; E took the golden grouping and counted every listed place (each cell off by the two flip classes), F merged only classes with identical meetings and counted every listed place",
-     "judge": "judge-task179z (pass 3): the call DETERMINISTIC (3,253.6), all 20 cells reproduced, FIX_NOW on the group unit (every room-and-time meeting, or every class code, as defensible as the distinct sets under section 4 alone)"
-    },
-    {
-     "round": 2,
-     "zip": "c1b19cef, the pack unchanged",
-     "moves": "one clause in the prompt's ask sentence: a group is the whole set of students taught together in one room at one time, counted once however often and wherever it meets (SF11); no file the call reads moved; voice-check PASS at 782 characters, precut 51 PASS, leak.py unchanged, freeze PASS",
-     "judge": "judge-task179w (the one re-judge): DETERMINISTIC, APPROVE, no fix; the call 3,253.7, every AIC-competitive form 3,208 to 3,256; all 20 cells reproduced; Gate G analytical_non_defect, Gate H pass"
-    }
-   ],
-   "freeze": "rubric PASS: the main call, the stump and every frozen figure unchanged; 14 ask figures moved; the prompt's first sentence unchanged, its ask sentence gained the group clause",
-   "commit": "RESHIPPED (task179): rubric, lecture-only pairs as three groups and class lists holding places of students on leave or with no 2026 attempt, the group unit filed in the prompt"
-  },
-  {
-   "date": "2026-10-24",
-   "portal": "round 2 on c1b19cef: both responses filed 2,250; determinism judge 1 PASS, judge 2 FAIL (competing_defensible_answer: nothing required reading the entrants' classes, the count's form open, the 2026 collapse in repeat classmates undocumented at the cutover)",
-   "repair": "determinism",
-   "rounds": [
-    {
-     "round": 1,
-     "zip": "256adf20",
-     "moves": "cutover notes section 6 in the 14 August revision: in SIRIUS the Registry entered first-year entrants' Semester 1 class enrolments, and from Semester 1 2026 entrants choose and enrol in their classes themselves (SF12); SF13 asserted (every form printing outside the bin loses to every form inside it); SF11 asserted",
-     "reader": "scored-task179zg and scored-task179zh: both 2,250 (G 2,167 after its UNIV101 class's make-up, H 2,143 to 2,148 after a class random intercept), 0 of 20 cells each; G's leak answers quote no sentence naming the step",
-     "judge": "determinism-check-task179-r5 (order kept, blind call 2,250): DETERMINISTIC, the call 3,240 to 3,253 forced by SELECT_PIN with section 6; Gate G analytical_non_defect, Gate H pass; FIX_NOW optional on ask 2 (two classes sharing one meeting not filed as three groups, weeks not filed as part of one time)"
-    },
-    {
-     "round": 2,
-     "zip": "5f48e01e",
-     "moves": "GROUP_PIN (conventions section 4) files the group in the write-up's words: each distinct set of classes meeting together in one room on the same day, start and teaching weeks, however often it meets, so two classes sharing only one meeting make three groups; step 6 and the workbook note aligned; F5 proves only that sentence moved",
-     "judge": "none: the same fork (SF11) closed further, per /fix-determinism step 6"
-    }
-   ],
-   "freeze": "determinism PASS: the main call, the stump and every frozen figure unchanged",
-   "commit": "RESHIPPED (task179): determinism, the cutover notes record who entered first-year class enrolments and the conventions file two classes sharing one meeting as three groups"
-  },
-  {
-   "date": "2026-10-25",
-   "portal": "round 3 on 5f48e01e: the call held (rubric 18 per cent); determinism FAIL, gates C and D, competing_defensible_answer, fix_location input_files: section 6 read as a change in how the repeat-classmate count is measured, so a forecaster who drops it as not transportable files 2,250 (3,244 with the flag at 10, 2,141 without)",
-   "repair": "determinism",
-   "rounds": [
-    {
-     "round": 1,
-     "zip": "c8032390",
-     "moves": "one Registry sentence added to cutover notes section 6: the change is in who chooses an entrant's classes, not in what a class enrolment records, the student on the class's list at the census in both systems (SF14); write-up step 5 states the record's own control, 5,029 of the 11,640 entrants of 2019 to 2025 meeting fewer than 10 others twice not enrolled against 4,166.2 from the count-free model; transport asserted (the count's model on the 9,497 entrants the July run did not place 3,293.8 and 3,264.4, reweighted to the 2026 mix 3,263.6 and 3,279.3)",
-     "reader": "leak-task179r3: 2,250 against 3,250 (attributes with class-size bands), 0 of 20 cells, score_reader exit 0; no sentence quoted as the decisive step",
-     "judge": "determinism-check-task179-r6 (order kept, blind call 2,250): DETERMINISTIC, APPROVE; the call 3,252 to 3,254, every AIC-competitive form inside 3,125 to 3,375; the segment check reproduced (4,165.9); all 20 cells exact; Gate G analytical_non_defect, Gate H pass"
-    }
-   ],
-   "freeze": "determinism PASS: the main call, the stump and every frozen figure unchanged",
-   "commit": "RESHIPPED (task179): determinism, the cutover notes file a class enrolment as the same record in both systems"
-  },
-  {
-   "date": "2026-10-25",
-   "portal": "round 4 on c8032390: both responses filed 3,250, the call landed; the author: start again from the version whose supplemental score was being reduced (about 72 per cent with the call held), the client's cutoff now 70 per cent, or fix this version so it stumps",
-   "repair": "design",
-   "rounds": [
-    {
-     "round": 1,
-     "zip": "01124ef4",
-     "moves": "cutover notes section 6 withdrawn whole (the Registry's class-enrolment paragraph and the comparability sentence), so every file the call reads is the first ship's, sha256-asserted; the rubric repair's ask layer, the prompt's group clause and GROUP_PIN kept; the write-up keeps the record's own control (step 5) and step 3 cites the dictionary's one definition of both first-year class extracts",
-     "reader": "leak-task179r4a and leak-task179r4b: both 2,250; asks A 20 of 20, B 0 of 20",
-     "judge": "determinism-check-task179-r7 (order kept, blind call 2,250): DETERMINISTIC, APPROVE, no fix; Gate G forecasting, analytical_non_defect; Gate H pass"
-    }
-   ],
-   "freeze": "determinism PASS: the main call, the stump and every frozen figure unchanged",
-   "commit": "RESHIPPED (task179): design, cutover notes section 6 withdrawn so the call side is the first ship's"
-  },
-  {
-   "date": "2026-10-25",
-   "portal": "round 5 on 01124ef4: judge 2 passed every gate (3,250, all 20 cells); judge 1 failed (underspecified_objective, Gate G): the count unforced and the 2026 collapse in repeat classmates read as a class-code artefact",
-   "repair": "determinism",
-   "rounds": [
-    {
-     "round": 1,
-     "zip": "01124ef4 (unchanged)",
-     "moves": "write-up only: step 4 states from the two extracts that a class is the same unit across the cutover (one paper a class; 218,044 places for 57,073 entrants in 8,407 classes against 33,064 for 8,659 in 1,279) and that only the sharing changed (45,433 against 928 meeting 10 or more others twice); step 5 the form corridor; step 6 names the count-free model and its target (after the re-judge's FIX_NOW); SF15 in checks and verify",
-     "judge": "determinism-check-task179-r8 (order kept, blind call 2,250): DETERMINISTIC, FIX_NOW on step 6's wording only, applied; Gate G analytical_non_defect, Gate H pass"
-    }
-   ],
-   "freeze": "determinism PASS: the main call, the stump and every frozen figure unchanged; figures.json unchanged after the step 6 rewording",
-   "commit": "RESHIPPED (task179): determinism, the class unit's comparability across the cutover in the write-up"
-  },
-  {
-   "date": "2026-10-25",
-   "portal": "version 391, reported by the author 2026-10-26: every check passed except Duplicate. The reviewer read it as a re-skin of an accepted task with the same trap (the forecast population at the floor of a local peer count no document names and the standard model leaves out), the same method (the count built from a linkage file, entered as bands or a flag chosen by the conventions' fit criterion, unit-level chances summed and rounded coarsely), the same critical components (the population, then how many sit at zero on the count), the same file roles and the same prompt shell (how many, a workbook with a count-once side table, one labelled stacked bar, nearest N). Our records match it to task175 (Port Ardell 2027 permits, each lot read at the homes on its street): heart BLOCK against task175 at ship, and the card's differentiation line against it. Smaller notes: the 2026 collapse in class sharing has no in-world cause in the pack (section 6 of the cutover notes was withdrawn in round 4), and the side table moves exactly 2 groups in every one of its 20 cells.",
-   "repair": "a redraw of the driver, the prompt shell and the critical components (architecture 4), on the author's decision"
-  }
- ],
- "wave": "new, seed FC50: the world, the decision and the quantity kept, the world moved honestly off local_government to a private ambulance company holding a city's 911 ambulance contract (the city the counterparty), deciding its own ten summer surge medic units for the weekend 20:00 to 24:00 block from June to August across three districts at the contract's 9-in-10 evenings standard at 1.2 unit-hours a call, the rest offered to the county's mutual-aid roster; the seed's filed staffing formula, the public dataset's suppression of one- and two-call cells and a pooling sentence were never candidates; redraw cell 1 econometrics time-series macro (2026-10-19, dead), redraw cell 2 epidemiology infectious-disease-transmission-modeling (2026-10-21, architecture v2, re-sited to the fictional Republic of Saldane after the first world was declined on the real-place records concern)",
- "screen": {
-  "assigned": "a forecasting judgment an EMS deployment analyst would recognise, inferred from the data, the rival rejected out of sample; ideas named: pooling with the areas' co-movement measured in the record, the lever of 30 per cent or more on units needed with no pooling discount or square-root law landing, next summer's level against the record's under a trend or a known change, a back-test on past summers",
-  "candidate_1": "the district requirement from the areas' joint evenings (c1_pool.py, c1_summary.py, c1_station.py, c1_total.py; seeds 1 to 3): golden sigma 0.40 to 0.91 units in every realistic world (1.51 at twice the size, 0.24 only in small Poisson districts), the family spreading 0.44 to 1.19 units on one pack and two whole numbers in 6 of 9 district-seeds at the base world; the truth's pooling lever one unit a pooled district (8 per cent of units needed), 29 to 33 per cent only if the closed summers were staffed station by station; independence and the square-root law land the golden in 3 to 6 of 6 district-seeds wherever sigma is under 0.9 (one dial); the common-exposure subset fires 6 of 6 (the district's own totals filtered, summed and quantiled are the golden); pooling is the estimand's unit (rule application once filed) and the co-movement reading is task143's driver by abstraction; three-district total sigma 1.09 to 1.19",
-  "candidate_2": "next summer's level (c2_level.py, c2_sigma.py; seeds 1 to 3 and 101 to 120) on small Poisson districts: steady 3 per cent, North accelerating 4 to 9 per cent a year, Central 18 per cent lower from 2025, South 20 per cent higher in 2026 only; routes' own sigma 0.10 to 0.48 units (0.26 to 0.48 with a trend), every lever a unit or less; the flat hold, the plain mean and the last summer land, the plain mean lands scenario C by cancellation, and the back-test on 2025 and 2026 lands the truth in 13, 17 and 2 of 20 (A, C, D) while picking six different routes",
-  "eda6c8c_screens": "run as code in screen179.py (screen179.out byte-identical with screen179_run2.out): candidate 1 dispersion fires (family 0.49 to 0.78 units on one pack), variance-only passes, common-exposure fires 6 of 6, truncation direction hides the bottom and leaves every district's units unchanged at imputations of 0, 1, 1.5 and 2 (Layer 1); candidate 2 dispersion and truncation do not apply, variance-only passes, common-exposure fires in 8 of 12 scenario-seeds",
-  "registration": "window at 2689b12 task165, task268, task248 (it moved during the screen from task201, task247, task165 at fa74407); honest free keys had a design held: hospital_or_health_provider, customer_or_counterparty, forcing event other (the county mutual-aid roster closing in May), filed_standard, prior_period_close_out, shape 05; the honest role capacity_planner is held by task248; strategies grain_or_unit (candidate 1) and forecast_method_backtest (candidate 2) free",
-  "taxonomy": "healthcare-delivery-health-economics, utilization-access-demand-forecasting (the client library's pattern 4, capacity to an overdispersed quantile, is this quantity) or patient-flow-beds-workforce-optimization; urban-regional-science municipal-service-demand-resource-allocation held by task165's subdomain",
-  "repeat_screen": "guard.py recent, coverage, mechanisms --objective forecasting and slots before any card (the pooled-percentile driver, the level driver, pooling, percentile, surge, ambulance, medic, dispatch): no slot or card spent either mechanism; binding matches by abstraction task143 (shared component in a joint tail) and task142 (a percentile of a period total); near drivers task148, task159, task160 and task162 read on their cards and untouched",
-  "paper_only": "heat normalised over a long weather record (the lever's sign set by the draw, contested); a venue's event calendar (composition_mix, held, and the venue's event evenings filtered and divided); a development's occupancy (two filters and a divide); an alternative-response pilot going city-wide (a filed condition, the pilot district at the coming exposure, a few per cent); a frequent-caller programme (a few per cent); capacity-censored demand under area dispatch (task168's driver, or a join on a complete mutual-aid log); the county's cut units overflowing to the contractor (task156's driver); offload delays or cross-area travel (the filed 1.2 unit-hours, else task142's driver); peak concurrency (task142, task148); hourly fractiles or station requirements summed (the estimand's unit); the predictive spread widened by next summer's level shock (variance-only); a summer-specific growth (a few per cent); one joint 9-in-10 condition across districts (the estimand, then a count)",
-  "prototypes": "scratchpad b179/screen: c1_pool.py, c1_summary.py (c1_summary.out), c1_station.py, c1_total.py, c2_level.py (c2_level.out), c2_sigma.py (c2_sigma.out), screen179.py (screen179.out, byte-identical with screen179_run2.out over two runs)",
-  "redraw_cell_2026_10_19": {
-   "cell": "economics-econometrics / time-series-macro-econometrics, forecasting (the ambulance world spent)",
-   "window": "a932f79: task249, task177, task270 live (causal_design, forecast_method_backtest, population_selection; G14, G16, G12); task269 spent and skipped",
-   "measured": "survey balance against the mean move (s1_cp.py: nearest reflex about one golden sigma away, golden sd 12 per cent of the figure, separation only at an unprecedented spread); long memory (lm1.py: AR by AIC, AR(1) and estimated d agree, all miss through the sample mean); bottom-up regional persistence (d1.py: lever 0.108 against a golden error sd of 0.085); agreement catch-up (w1.py, w2.py: trailing-inflation regression within 5 to 17 per cent, symmetric against asymmetric catch-up split 0.4 points)",
-   "paper": "dominant-currency pass-through (task145, task153), asymmetric error correction (task153), steady-pace recoveries (task161, strategy in window), rent-cap backlog (task161, task79), capacity-convex prices (task79, task149), mortgage lock-in (task166), lunar holiday (task162), indexation reset step and year-end appropriation spending (task146), downward wage rigidity (0.09-point lever, task16), cointegration and ECM variants (cards 1 and 2 as stated), signal extraction (IMA(1,1) lands), minimum wage bite (task165), shadow rate, trend-growth hold (variance-only), inventory payback and carry-over, tariff diversion",
-   "prototypes": "scratchpad b179r/screen: s1_cp.py, lm1.py (lm1.out byte-identical with lm1_run2.out), d1.py, w1.py, w2.py, screen179r.py (screen179r.out byte-identical with screen179r_run2.out)"
-  },
-  "rebuild_2026_10_23": {
-   "cell": "product-analytics / feature-adoption-diffusion-modeling, forecasting (reopened from RETIRED under the author's rule; worktree b_179n)",
-   "window": "a544497: task173, task178, task482",
-   "default_path": "the field's textbook routes: a Bass curve fitted to the adoption series, analogue launches, a logistic on account features; the cell's three library cards; task144 and task162 drivers read as spent",
-   "measured": "local account contagion against global Bass mixing (a1.py, a2.py: recent pace lands on 13 weeks at +1.4 and +4.5 per cent; on 52 weeks the nearest route Bass with the whole base -14.6 to -15.5 per cent while the two-stage account construction forks the golden family at -51 to -53); the session clock (b1.py: the eligible-denominator card's active-week hazard +10.5 to +13.1 per cent, the golden one divide and one group-by); substitution inside the account (c1.py: the decay-extrapolated pooled hazard lands -3.9 and -5.4 in some seeds, the decisive fact visible as about 1.2 adopters per adopting account)",
-   "paper": "staged-rollout last wave or holdout release, an in-app prompt read as imitation, device or self-hosted upgrade echoes (task46, task162), renewal or business-review timing (task177 v2), a need pool by group-by, cross-market lead-lag, Norton-Bass generations, current-user influence after disadoption, hard-deleted churned accounts, churn as a competing exit, later adopters' lighter use, late-arriving telemetry, two-sided or artifact contagion (task144), a waitlist (task168), beta transported to general availability, interference in a user-randomised test",
-   "prototypes": "scratchpad b179n/screen: a1.py, a2.py, b1.py, c1.py; screen179n.out byte-identical with screen179n_run2.out"
-  },
-  "rebuild_2026_10_23_cell2": {
-   "cell": "pharmacology-pharmacoepidemiology-safety / population-pharmacokinetics-exposure-response, forecasting (chosen by this build)",
-   "why_window_changes": "300 mg every three weeks to 600 mg every six puts each trough into the low concentrations where target-mediated elimination bends, reached in the record only during holds",
-   "measured": "pk1.py, pk1fit.py: Km 2 truth 21.7 and 21.5 per cent below 8 mg/L, the per-patient linear fit 21.2 and 21.0 (linear clearance alone 11.5 and 12.3); Km 6 with 5 per cent holds truth 33.5, linear fit 28.8 (lever 14 per cent)",
-   "paper": "two compartments, loading-phase half-life, time-varying clearance, induced anti-drug antibodies, confounded exposure-response, dose-response PK/PD; election-polling (instant runoff, on-cycle, compulsory voting, withdrawal, voting age); deposits and credit (guarantee limit, branch closures, payroll loss, reject inference, payment holiday end, forbearance withdrawn)",
-   "prototypes": "scratchpad b179n/screen2: pk1.py, pk1fit.py; pk_screen.out byte-identical with pk_screen_run2.out"
-  },
-  "rebuild_2026_10_23_cell3": {
-   "cell": "education-learning-sciences / learning-analytics-early-warning-models, forecasting (assigned by the main session; worktree b_179n)",
-   "architecture": "v3: an intake's next-census non-enrolment read at each entrant's repeat classmates (other entrants met in two or more of the entrant's own classes) after the Registry's class allocation ended at the ARC cutover",
-   "measured": "u1.py to u1e.py, u1sum.py (stylised worlds), wfam.py and wseeds.py on the generator world over seven salts: default early-warning model -33.6 to -34.7 per cent; the flexible golden family within 1 to 2 per cent of itself and -1.8 to +2.2 of the truth; the golden's own spread 1.3 per cent; the first generator world forked 7 per cent on functional form and was repaired in the world",
-   "paper": "exam bunching, a final-year mathematics gap, a hall closing, instructor mix, online sections, dual-enrolment credit, a grant ending (RD), a tutoring programme ending (RD), deadline anchoring, mid-semester grade reporting, the leaving age, siblings, school consolidation, LMS portability",
-   "prototypes": "scratchpad b179x/screen",
-   "stage3": "built and green: checks 61/61, verify 0 failed, byte-identical rebuild, figures_check PASS, voice-check PASS, ceiling 0 of 25 (pair 28.5, mirror 0.0), scrub clean; target.zip md5 fab8b152c3c15fd556fc4114233c2d8e; call 3,250 (3,269.3), default 2,250 (2,142)",
-   "registration": "registered 2026-10-23 (4afaec0a) after two lock BLOCKs on the window (ban.strategy composition_mix vs task274, then vs task175); not relabelled"
-  }
- },
- "resume": "author's decision: re-root task179 to architecture 4 with a new driver, prompt and deliverable shell and critical components (the reviewer suggests a selection-adjusted programme effect with an overlap check, an early-warning contact list recalibrated out of time on 2025, or a 2028 count chained through the census states with leave as its own state), keeping the Corriemoor pack's Layer 1",
- "approved": null,
- "delivered": "2026-10-24",
- "portal": null,
+ "precut": null,
+ "draw": "criminology-justice / recidivism-risk-assessment, Forecasting: Region 4 (State of Merrow) year-end caseload's 2027 Schedule B bookings for the GPS order; the victim-offender overlap read through the Halverton police's victim records linked by name and date of birth; card v5 registered 2026-10-28; nine survivor properties argued in the note's ## Draw on prototype proto2.py (no probe, no solver, CLAUDE.md STOP block)",
+ "resume": "architecture 5 DRAWN: next, stage 2 design in DESIGN_NOTE.md (default path ending on 450, stump sentence, readability screen, fork table, ladder, closure table, literal reader, oracles, ask sheet with Measured by), prompt.txt (no persona, a new shell against task175's), precut.py task179 exit 0; then the generator, pack, goldens and submission.md under task179/ (the v3 files there are replaced), every free gate, and the stage 4 handoff without spawning the leak reader or the judge",
  "portal_id": "2d6c30f6-8d7e-42ed-b73f-8630464142c7",
- "portal_status": "returned 2026-10-25 (version 391: Duplicate failed, a templated near duplicate of an accepted task, matched in our records to task175; determinism main and supplementary, solution main and supplementary, task type and stumped type all passed); before that returned 2026-10-25 (round 5: judge 1 FAIL, judge 2 PASS), reshipped 2026-10-25 with the write-up's comparability evidence, the pack unchanged",
- "portal_status_date": "2026-10-25",
- "zip_md5": "01124ef49b164b4860ea4326bd0aa901"
+ "earlier": {
+  "architecture 3": {
+   "status": "RETURNED",
+   "domain": "education-learning-sciences",
+   "objective": "forecasting",
+   "stage": 5,
+   "stage_name": "ship",
+   "updated": "2026-10-26",
+   "stump": "A competent solver fits an early-warning model on the entrants' own attributes to the 2019 to 2025 entrants' enrolment at the next census, validates it on the 2025 intake, scores the 8,659 2026 entrants and files 2,250 not enrolled on 1 October 2027 against 3,250, because it never reads each entrant's chance at the number of other entrants met in two or more of the entrant's own classes, which the Registry's allocation run kept near 26 and self-enrolment after the ARC cutover leaves near one.",
+   "architecture": 3,
+   "loops": 1,
+   "card_registered": true,
+   "precut": {
+    "exit": 0,
+    "date": "2026-10-23"
+   },
+   "leak": {
+    "leak_py": "REVIEW (2026-10-25, on 01124ef4): the conventions, dictionary and cutover notes share the pack's own words; no figure, none of the decisive step's words",
+    "reader": "round 1 (fab8b152): call held 2 of 2 (2,250), asks A 10 of 25, B 25 of 25; round 2 (a9f8b878): readers C and D 2,250 against 3,250, 0 of 20 asks each, PASS; the call held in 4 of 4 blind reads; rubric repair (c1b19cef): readers E and F 2,250 against 3,250, 0 of 20 asks each; reader E's leak answers quote no decisive-step sentence and no ranking file; determinism repair (256adf20): readers G and H 2,250 against 3,250, 0 of 20 asks each; G quotes no sentence naming the decisive step; determinism repair round 3 (c8032390): reader 2,250 against 3,250, 0 of 20 asks, exit 0; round 4 rework (01124ef4): readers A and B 2,250 against 3,250, asks A 20 of 20 (class lists joined to the census history) and B 0 of 20; neither quotes a sentence naming the step"
+   },
+   "duplicate_check": {
+    "heart": "BLOCK (2026-10-23) on four axes against task175 after task173 was spent and the live window re-formed; registered under the lock at WARN",
+    "nearest": "driver 0.07 task143",
+    "ruling": "Author's standing ruling, 'Ship, window fixed at draw': the card registered under the lock at WARN (4afaec0a) and the later heart BLOCK against task175 comes from the window moving after task173 was spent; nothing relabelled."
+   },
+   "judge": {
+    "verdict": "DETERMINISTIC (r8, 01124ef4), FIX_NOW applied (step 6 wording)",
+    "disposition": "portal round 5's class-code-artefact reading answered by the extracts' comparability in write-up step 4; blind call 2,250",
+    "report": "task179/determinism_check_report_pass3.md (thread: scratchpad determinism-check-task179-r8/verdict.md)"
+   },
+   "returned": [
+    {
+     "date": "2026-10-24",
+     "portal": "the call held on both responses; both answered all 20 S1 2026 teaching-group cells (weights 2 to 3, 55 of 100) by joining classes through shared meetings and reading a figure the room could not seat added once, the shipped golden route",
+     "repair": "rubric",
+     "rounds": [
+      {
+       "round": 1,
+       "zip": "c1b19cef",
+       "moves": "two lecture-only SIRIUS pairs a faculty and level (three groups, not one or two) and two flip classes a faculty and level whose lists hold places of students on approved leave or with no 2026 census attempt; arc_s1_2026_class_enrolments.csv added (49,237 places); every other file byte-identical to the shipped pack except the timetable and one dictionary entry; ceiling 0 of 20 on all 14 routes",
+       "reader": "scored-task179ze and scored-task179zf: both missed the call (2,250) and kept 0 of the 20 cells; E took the golden grouping and counted every listed place (each cell off by the two flip classes), F merged only classes with identical meetings and counted every listed place",
+       "judge": "judge-task179z (pass 3): the call DETERMINISTIC (3,253.6), all 20 cells reproduced, FIX_NOW on the group unit (every room-and-time meeting, or every class code, as defensible as the distinct sets under section 4 alone)"
+      },
+      {
+       "round": 2,
+       "zip": "c1b19cef, the pack unchanged",
+       "moves": "one clause in the prompt's ask sentence: a group is the whole set of students taught together in one room at one time, counted once however often and wherever it meets (SF11); no file the call reads moved; voice-check PASS at 782 characters, precut 51 PASS, leak.py unchanged, freeze PASS",
+       "judge": "judge-task179w (the one re-judge): DETERMINISTIC, APPROVE, no fix; the call 3,253.7, every AIC-competitive form 3,208 to 3,256; all 20 cells reproduced; Gate G analytical_non_defect, Gate H pass"
+      }
+     ],
+     "freeze": "rubric PASS: the main call, the stump and every frozen figure unchanged; 14 ask figures moved; the prompt's first sentence unchanged, its ask sentence gained the group clause",
+     "commit": "RESHIPPED (task179): rubric, lecture-only pairs as three groups and class lists holding places of students on leave or with no 2026 attempt, the group unit filed in the prompt"
+    },
+    {
+     "date": "2026-10-24",
+     "portal": "round 2 on c1b19cef: both responses filed 2,250; determinism judge 1 PASS, judge 2 FAIL (competing_defensible_answer: nothing required reading the entrants' classes, the count's form open, the 2026 collapse in repeat classmates undocumented at the cutover)",
+     "repair": "determinism",
+     "rounds": [
+      {
+       "round": 1,
+       "zip": "256adf20",
+       "moves": "cutover notes section 6 in the 14 August revision: in SIRIUS the Registry entered first-year entrants' Semester 1 class enrolments, and from Semester 1 2026 entrants choose and enrol in their classes themselves (SF12); SF13 asserted (every form printing outside the bin loses to every form inside it); SF11 asserted",
+       "reader": "scored-task179zg and scored-task179zh: both 2,250 (G 2,167 after its UNIV101 class's make-up, H 2,143 to 2,148 after a class random intercept), 0 of 20 cells each; G's leak answers quote no sentence naming the step",
+       "judge": "determinism-check-task179-r5 (order kept, blind call 2,250): DETERMINISTIC, the call 3,240 to 3,253 forced by SELECT_PIN with section 6; Gate G analytical_non_defect, Gate H pass; FIX_NOW optional on ask 2 (two classes sharing one meeting not filed as three groups, weeks not filed as part of one time)"
+      },
+      {
+       "round": 2,
+       "zip": "5f48e01e",
+       "moves": "GROUP_PIN (conventions section 4) files the group in the write-up's words: each distinct set of classes meeting together in one room on the same day, start and teaching weeks, however often it meets, so two classes sharing only one meeting make three groups; step 6 and the workbook note aligned; F5 proves only that sentence moved",
+       "judge": "none: the same fork (SF11) closed further, per /fix-determinism step 6"
+      }
+     ],
+     "freeze": "determinism PASS: the main call, the stump and every frozen figure unchanged",
+     "commit": "RESHIPPED (task179): determinism, the cutover notes record who entered first-year class enrolments and the conventions file two classes sharing one meeting as three groups"
+    },
+    {
+     "date": "2026-10-25",
+     "portal": "round 3 on 5f48e01e: the call held (rubric 18 per cent); determinism FAIL, gates C and D, competing_defensible_answer, fix_location input_files: section 6 read as a change in how the repeat-classmate count is measured, so a forecaster who drops it as not transportable files 2,250 (3,244 with the flag at 10, 2,141 without)",
+     "repair": "determinism",
+     "rounds": [
+      {
+       "round": 1,
+       "zip": "c8032390",
+       "moves": "one Registry sentence added to cutover notes section 6: the change is in who chooses an entrant's classes, not in what a class enrolment records, the student on the class's list at the census in both systems (SF14); write-up step 5 states the record's own control, 5,029 of the 11,640 entrants of 2019 to 2025 meeting fewer than 10 others twice not enrolled against 4,166.2 from the count-free model; transport asserted (the count's model on the 9,497 entrants the July run did not place 3,293.8 and 3,264.4, reweighted to the 2026 mix 3,263.6 and 3,279.3)",
+       "reader": "leak-task179r3: 2,250 against 3,250 (attributes with class-size bands), 0 of 20 cells, score_reader exit 0; no sentence quoted as the decisive step",
+       "judge": "determinism-check-task179-r6 (order kept, blind call 2,250): DETERMINISTIC, APPROVE; the call 3,252 to 3,254, every AIC-competitive form inside 3,125 to 3,375; the segment check reproduced (4,165.9); all 20 cells exact; Gate G analytical_non_defect, Gate H pass"
+      }
+     ],
+     "freeze": "determinism PASS: the main call, the stump and every frozen figure unchanged",
+     "commit": "RESHIPPED (task179): determinism, the cutover notes file a class enrolment as the same record in both systems"
+    },
+    {
+     "date": "2026-10-25",
+     "portal": "round 4 on c8032390: both responses filed 3,250, the call landed; the author: start again from the version whose supplemental score was being reduced (about 72 per cent with the call held), the client's cutoff now 70 per cent, or fix this version so it stumps",
+     "repair": "design",
+     "rounds": [
+      {
+       "round": 1,
+       "zip": "01124ef4",
+       "moves": "cutover notes section 6 withdrawn whole (the Registry's class-enrolment paragraph and the comparability sentence), so every file the call reads is the first ship's, sha256-asserted; the rubric repair's ask layer, the prompt's group clause and GROUP_PIN kept; the write-up keeps the record's own control (step 5) and step 3 cites the dictionary's one definition of both first-year class extracts",
+       "reader": "leak-task179r4a and leak-task179r4b: both 2,250; asks A 20 of 20, B 0 of 20",
+       "judge": "determinism-check-task179-r7 (order kept, blind call 2,250): DETERMINISTIC, APPROVE, no fix; Gate G forecasting, analytical_non_defect; Gate H pass"
+      }
+     ],
+     "freeze": "determinism PASS: the main call, the stump and every frozen figure unchanged",
+     "commit": "RESHIPPED (task179): design, cutover notes section 6 withdrawn so the call side is the first ship's"
+    },
+    {
+     "date": "2026-10-25",
+     "portal": "round 5 on 01124ef4: judge 2 passed every gate (3,250, all 20 cells); judge 1 failed (underspecified_objective, Gate G): the count unforced and the 2026 collapse in repeat classmates read as a class-code artefact",
+     "repair": "determinism",
+     "rounds": [
+      {
+       "round": 1,
+       "zip": "01124ef4 (unchanged)",
+       "moves": "write-up only: step 4 states from the two extracts that a class is the same unit across the cutover (one paper a class; 218,044 places for 57,073 entrants in 8,407 classes against 33,064 for 8,659 in 1,279) and that only the sharing changed (45,433 against 928 meeting 10 or more others twice); step 5 the form corridor; step 6 names the count-free model and its target (after the re-judge's FIX_NOW); SF15 in checks and verify",
+       "judge": "determinism-check-task179-r8 (order kept, blind call 2,250): DETERMINISTIC, FIX_NOW on step 6's wording only, applied; Gate G analytical_non_defect, Gate H pass"
+      }
+     ],
+     "freeze": "determinism PASS: the main call, the stump and every frozen figure unchanged; figures.json unchanged after the step 6 rewording",
+     "commit": "RESHIPPED (task179): determinism, the class unit's comparability across the cutover in the write-up"
+    },
+    {
+     "date": "2026-10-25",
+     "portal": "version 391, reported by the author 2026-10-26: every check passed except Duplicate. The reviewer read it as a re-skin of an accepted task with the same trap (the forecast population at the floor of a local peer count no document names and the standard model leaves out), the same method (the count built from a linkage file, entered as bands or a flag chosen by the conventions' fit criterion, unit-level chances summed and rounded coarsely), the same critical components (the population, then how many sit at zero on the count), the same file roles and the same prompt shell (how many, a workbook with a count-once side table, one labelled stacked bar, nearest N). Our records match it to task175 (Port Ardell 2027 permits, each lot read at the homes on its street): heart BLOCK against task175 at ship, and the card's differentiation line against it. Smaller notes: the 2026 collapse in class sharing has no in-world cause in the pack (section 6 of the cutover notes was withdrawn in round 4), and the side table moves exactly 2 groups in every one of its 20 cells.",
+     "repair": "a redraw of the driver, the prompt shell and the critical components (architecture 4), on the author's decision"
+    }
+   ],
+   "wave": "new, seed FC50: the world, the decision and the quantity kept, the world moved honestly off local_government to a private ambulance company holding a city's 911 ambulance contract (the city the counterparty), deciding its own ten summer surge medic units for the weekend 20:00 to 24:00 block from June to August across three districts at the contract's 9-in-10 evenings standard at 1.2 unit-hours a call, the rest offered to the county's mutual-aid roster; the seed's filed staffing formula, the public dataset's suppression of one- and two-call cells and a pooling sentence were never candidates; redraw cell 1 econometrics time-series macro (2026-10-19, dead), redraw cell 2 epidemiology infectious-disease-transmission-modeling (2026-10-21, architecture v2, re-sited to the fictional Republic of Saldane after the first world was declined on the real-place records concern)",
+   "screen": {
+    "assigned": "a forecasting judgment an EMS deployment analyst would recognise, inferred from the data, the rival rejected out of sample; ideas named: pooling with the areas' co-movement measured in the record, the lever of 30 per cent or more on units needed with no pooling discount or square-root law landing, next summer's level against the record's under a trend or a known change, a back-test on past summers",
+    "candidate_1": "the district requirement from the areas' joint evenings (c1_pool.py, c1_summary.py, c1_station.py, c1_total.py; seeds 1 to 3): golden sigma 0.40 to 0.91 units in every realistic world (1.51 at twice the size, 0.24 only in small Poisson districts), the family spreading 0.44 to 1.19 units on one pack and two whole numbers in 6 of 9 district-seeds at the base world; the truth's pooling lever one unit a pooled district (8 per cent of units needed), 29 to 33 per cent only if the closed summers were staffed station by station; independence and the square-root law land the golden in 3 to 6 of 6 district-seeds wherever sigma is under 0.9 (one dial); the common-exposure subset fires 6 of 6 (the district's own totals filtered, summed and quantiled are the golden); pooling is the estimand's unit (rule application once filed) and the co-movement reading is task143's driver by abstraction; three-district total sigma 1.09 to 1.19",
+    "candidate_2": "next summer's level (c2_level.py, c2_sigma.py; seeds 1 to 3 and 101 to 120) on small Poisson districts: steady 3 per cent, North accelerating 4 to 9 per cent a year, Central 18 per cent lower from 2025, South 20 per cent higher in 2026 only; routes' own sigma 0.10 to 0.48 units (0.26 to 0.48 with a trend), every lever a unit or less; the flat hold, the plain mean and the last summer land, the plain mean lands scenario C by cancellation, and the back-test on 2025 and 2026 lands the truth in 13, 17 and 2 of 20 (A, C, D) while picking six different routes",
+    "eda6c8c_screens": "run as code in screen179.py (screen179.out byte-identical with screen179_run2.out): candidate 1 dispersion fires (family 0.49 to 0.78 units on one pack), variance-only passes, common-exposure fires 6 of 6, truncation direction hides the bottom and leaves every district's units unchanged at imputations of 0, 1, 1.5 and 2 (Layer 1); candidate 2 dispersion and truncation do not apply, variance-only passes, common-exposure fires in 8 of 12 scenario-seeds",
+    "registration": "window at 2689b12 task165, task268, task248 (it moved during the screen from task201, task247, task165 at fa74407); honest free keys had a design held: hospital_or_health_provider, customer_or_counterparty, forcing event other (the county mutual-aid roster closing in May), filed_standard, prior_period_close_out, shape 05; the honest role capacity_planner is held by task248; strategies grain_or_unit (candidate 1) and forecast_method_backtest (candidate 2) free",
+    "taxonomy": "healthcare-delivery-health-economics, utilization-access-demand-forecasting (the client library's pattern 4, capacity to an overdispersed quantile, is this quantity) or patient-flow-beds-workforce-optimization; urban-regional-science municipal-service-demand-resource-allocation held by task165's subdomain",
+    "repeat_screen": "guard.py recent, coverage, mechanisms --objective forecasting and slots before any card (the pooled-percentile driver, the level driver, pooling, percentile, surge, ambulance, medic, dispatch): no slot or card spent either mechanism; binding matches by abstraction task143 (shared component in a joint tail) and task142 (a percentile of a period total); near drivers task148, task159, task160 and task162 read on their cards and untouched",
+    "paper_only": "heat normalised over a long weather record (the lever's sign set by the draw, contested); a venue's event calendar (composition_mix, held, and the venue's event evenings filtered and divided); a development's occupancy (two filters and a divide); an alternative-response pilot going city-wide (a filed condition, the pilot district at the coming exposure, a few per cent); a frequent-caller programme (a few per cent); capacity-censored demand under area dispatch (task168's driver, or a join on a complete mutual-aid log); the county's cut units overflowing to the contractor (task156's driver); offload delays or cross-area travel (the filed 1.2 unit-hours, else task142's driver); peak concurrency (task142, task148); hourly fractiles or station requirements summed (the estimand's unit); the predictive spread widened by next summer's level shock (variance-only); a summer-specific growth (a few per cent); one joint 9-in-10 condition across districts (the estimand, then a count)",
+    "prototypes": "scratchpad b179/screen: c1_pool.py, c1_summary.py (c1_summary.out), c1_station.py, c1_total.py, c2_level.py (c2_level.out), c2_sigma.py (c2_sigma.out), screen179.py (screen179.out, byte-identical with screen179_run2.out over two runs)",
+    "redraw_cell_2026_10_19": {
+     "cell": "economics-econometrics / time-series-macro-econometrics, forecasting (the ambulance world spent)",
+     "window": "a932f79: task249, task177, task270 live (causal_design, forecast_method_backtest, population_selection; G14, G16, G12); task269 spent and skipped",
+     "measured": "survey balance against the mean move (s1_cp.py: nearest reflex about one golden sigma away, golden sd 12 per cent of the figure, separation only at an unprecedented spread); long memory (lm1.py: AR by AIC, AR(1) and estimated d agree, all miss through the sample mean); bottom-up regional persistence (d1.py: lever 0.108 against a golden error sd of 0.085); agreement catch-up (w1.py, w2.py: trailing-inflation regression within 5 to 17 per cent, symmetric against asymmetric catch-up split 0.4 points)",
+     "paper": "dominant-currency pass-through (task145, task153), asymmetric error correction (task153), steady-pace recoveries (task161, strategy in window), rent-cap backlog (task161, task79), capacity-convex prices (task79, task149), mortgage lock-in (task166), lunar holiday (task162), indexation reset step and year-end appropriation spending (task146), downward wage rigidity (0.09-point lever, task16), cointegration and ECM variants (cards 1 and 2 as stated), signal extraction (IMA(1,1) lands), minimum wage bite (task165), shadow rate, trend-growth hold (variance-only), inventory payback and carry-over, tariff diversion",
+     "prototypes": "scratchpad b179r/screen: s1_cp.py, lm1.py (lm1.out byte-identical with lm1_run2.out), d1.py, w1.py, w2.py, screen179r.py (screen179r.out byte-identical with screen179r_run2.out)"
+    },
+    "rebuild_2026_10_23": {
+     "cell": "product-analytics / feature-adoption-diffusion-modeling, forecasting (reopened from RETIRED under the author's rule; worktree b_179n)",
+     "window": "a544497: task173, task178, task482",
+     "default_path": "the field's textbook routes: a Bass curve fitted to the adoption series, analogue launches, a logistic on account features; the cell's three library cards; task144 and task162 drivers read as spent",
+     "measured": "local account contagion against global Bass mixing (a1.py, a2.py: recent pace lands on 13 weeks at +1.4 and +4.5 per cent; on 52 weeks the nearest route Bass with the whole base -14.6 to -15.5 per cent while the two-stage account construction forks the golden family at -51 to -53); the session clock (b1.py: the eligible-denominator card's active-week hazard +10.5 to +13.1 per cent, the golden one divide and one group-by); substitution inside the account (c1.py: the decay-extrapolated pooled hazard lands -3.9 and -5.4 in some seeds, the decisive fact visible as about 1.2 adopters per adopting account)",
+     "paper": "staged-rollout last wave or holdout release, an in-app prompt read as imitation, device or self-hosted upgrade echoes (task46, task162), renewal or business-review timing (task177 v2), a need pool by group-by, cross-market lead-lag, Norton-Bass generations, current-user influence after disadoption, hard-deleted churned accounts, churn as a competing exit, later adopters' lighter use, late-arriving telemetry, two-sided or artifact contagion (task144), a waitlist (task168), beta transported to general availability, interference in a user-randomised test",
+     "prototypes": "scratchpad b179n/screen: a1.py, a2.py, b1.py, c1.py; screen179n.out byte-identical with screen179n_run2.out"
+    },
+    "rebuild_2026_10_23_cell2": {
+     "cell": "pharmacology-pharmacoepidemiology-safety / population-pharmacokinetics-exposure-response, forecasting (chosen by this build)",
+     "why_window_changes": "300 mg every three weeks to 600 mg every six puts each trough into the low concentrations where target-mediated elimination bends, reached in the record only during holds",
+     "measured": "pk1.py, pk1fit.py: Km 2 truth 21.7 and 21.5 per cent below 8 mg/L, the per-patient linear fit 21.2 and 21.0 (linear clearance alone 11.5 and 12.3); Km 6 with 5 per cent holds truth 33.5, linear fit 28.8 (lever 14 per cent)",
+     "paper": "two compartments, loading-phase half-life, time-varying clearance, induced anti-drug antibodies, confounded exposure-response, dose-response PK/PD; election-polling (instant runoff, on-cycle, compulsory voting, withdrawal, voting age); deposits and credit (guarantee limit, branch closures, payroll loss, reject inference, payment holiday end, forbearance withdrawn)",
+     "prototypes": "scratchpad b179n/screen2: pk1.py, pk1fit.py; pk_screen.out byte-identical with pk_screen_run2.out"
+    },
+    "rebuild_2026_10_23_cell3": {
+     "cell": "education-learning-sciences / learning-analytics-early-warning-models, forecasting (assigned by the main session; worktree b_179n)",
+     "architecture": "v3: an intake's next-census non-enrolment read at each entrant's repeat classmates (other entrants met in two or more of the entrant's own classes) after the Registry's class allocation ended at the ARC cutover",
+     "measured": "u1.py to u1e.py, u1sum.py (stylised worlds), wfam.py and wseeds.py on the generator world over seven salts: default early-warning model -33.6 to -34.7 per cent; the flexible golden family within 1 to 2 per cent of itself and -1.8 to +2.2 of the truth; the golden's own spread 1.3 per cent; the first generator world forked 7 per cent on functional form and was repaired in the world",
+     "paper": "exam bunching, a final-year mathematics gap, a hall closing, instructor mix, online sections, dual-enrolment credit, a grant ending (RD), a tutoring programme ending (RD), deadline anchoring, mid-semester grade reporting, the leaving age, siblings, school consolidation, LMS portability",
+     "prototypes": "scratchpad b179x/screen",
+     "stage3": "built and green: checks 61/61, verify 0 failed, byte-identical rebuild, figures_check PASS, voice-check PASS, ceiling 0 of 25 (pair 28.5, mirror 0.0), scrub clean; target.zip md5 fab8b152c3c15fd556fc4114233c2d8e; call 3,250 (3,269.3), default 2,250 (2,142)",
+     "registration": "registered 2026-10-23 (4afaec0a) after two lock BLOCKs on the window (ban.strategy composition_mix vs task274, then vs task175); not relabelled"
+    }
+   },
+   "resume": "author's decision: re-root task179 to architecture 4 with a new driver, prompt and deliverable shell and critical components (the reviewer suggests a selection-adjusted programme effect with an overlap check, an early-warning contact list recalibrated out of time on 2025, or a 2028 count chained through the census states with leave as its own state), keeping the Corriemoor pack's Layer 1",
+   "approved": null,
+   "delivered": "2026-10-24",
+   "portal": null,
+   "portal_status": "returned 2026-10-25 (version 391: Duplicate failed, a templated near duplicate of an accepted task, matched in our records to task175; determinism main and supplementary, solution main and supplementary, task type and stumped type all passed); before that returned 2026-10-25 (round 5: judge 1 FAIL, judge 2 PASS), reshipped 2026-10-25 with the write-up's comparability evidence, the pack unchanged",
+   "portal_status_date": "2026-10-25",
+   "zip_md5": "01124ef49b164b4860ea4326bd0aa901"
+  }
+ }
 }
